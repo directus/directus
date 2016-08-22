@@ -1,7 +1,8 @@
 <?php
 // If config file doesnt exist, go to install file
-if(!file_exists('api/config.php') || filesize('api/config.php') == 0) {
+if (!file_exists('api/config.php') || filesize('api/config.php') == 0) {
     header('Location: installation/index.php');
+    exit;
 }
 
 // Composer Autoloader
@@ -13,7 +14,8 @@ define('API_PATH', BASE_PATH . '/api');
 require "api/config.php";
 require "api/globals.php";
 
-\Directus\Hook\Hook::run('directus.login.start');
+$emitter = \Directus\Bootstrap::get('hookEmitter');
+$emitter->run('directus.login.start');
 
 // Temporary solution for disabling this page for logged in users.
 if(\Directus\Auth\Provider::loggedIn()) {
@@ -32,6 +34,7 @@ $cacheBuster = Directus\Util\Git::getCloneHash($git);
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no,maximum-scale=1.0">
+    <meta name="robots" content="noindex">
 
     <title>Directus Login</title>
 
@@ -103,7 +106,7 @@ $(function(){
         }
     }
 
-    <?php if(isset($_GET['inactive'])) {echo 'message("'+__t('logged_out_due_to_inactivity')+'", true);';}?>
+    <?php if(isset($_GET['inactive'])) {echo 'message("'.__t('logged_out_due_to_inactivity').'", true);';}?>
 
     function clear_messages() {
         $login_error.hide();

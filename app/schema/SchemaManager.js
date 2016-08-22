@@ -8,6 +8,7 @@ define(function(require, exports, module) {
   var ColumnModel        = require('./ColumnModel'),
       ColumnsCollection  = require('./ColumnsCollection'),
       TableModel         = require('./TableModel'),
+      Backbone           = require('backbone'),
       UIModel            = require('./UIModel'),
       DirectusCollection = require('core/collection'),
       PreferenceModel    = require('core/PreferenceModel');
@@ -52,8 +53,8 @@ define(function(require, exports, module) {
   var tableSchemas = {
     tables: new TableCollection([], {
       filters: {
-        columns: ['table_name','comment','active','date_modified','single'],
-        conditions: {hidden: false, is_junction_table: false}
+        columns: ['table_name','comment','status','date_modified','single'],
+        conditions: {hidden: false}
       }
     })
   };
@@ -91,7 +92,7 @@ define(function(require, exports, module) {
         { schema: directusSchemas.directus_groups },
         { schema: directusSchemas.directus_files.getFiles() },
         { schema: directusSchemas.directus_messages },
-        { schema: directusSchemas.directus_users.getUsers(app.locales) }
+        { schema: directusSchemas.directus_users.getUsers(app.locales, app.timezones) }
       ];
 
       this.register('tables', defaultTables);
@@ -150,6 +151,30 @@ define(function(require, exports, module) {
       }, this);
     },
 
+    addTable: function(tableName, callback) {
+      var model = new Backbone.Model();
+      model.url = app.API_URL + 'privileges/1';
+      // @todo: set default values in the server side
+      model.set({
+        group_id: 1,
+        allow_add:1,
+        allow_edit:2,
+        allow_delete:2,
+        allow_alter:1,
+        allow_view:2,
+        table_name: tableName,
+        addTable: true
+      });
+
+      var self = this;
+      model.save({}, {success: function(permission) {
+        self.registerPrivileges([permission.toJSON()]);
+        app.schemaManager.getOrFetchTable(tableName, function(table) {
+          callback(table);
+        });
+      }});
+    },
+
     addSetting: function(collection, data) {
       var settingsCollection = columnSchemas['settings'][collection];
       settingsCollection.add(new ColumnModel(data, {parse: true}));
@@ -193,12 +218,43 @@ define(function(require, exports, module) {
       return tableSchemas.tables.get(tableName);
     },
 
+    getOrFetchTable: function(tableName, callback) {
+      var tableModel = this.getTable(tableName);
+      var tablePreferences = this.getPreferences(tableName);
+      var tablePrivileges = this.getPrivileges(tableName);
+
+      if (tableModel && tablePreferences && tablePrivileges) {
+        return callback(tableModel);
+      }
+
+      tableModel = new TableModel({
+        id: tableName,
+        table_name: tableName
+      }, {
+        parse: true,
+        url: app.API_URL + 'tables/' + tableName
+      });
+
+      var self = this;
+      tableModel.fetch({
+        success: function(model) {
+          self.register('tables', [{schema: tableModel.toJSON()}]);
+          self.registerPreferences([tableModel.preferences.toJSON()]);
+          callback(model);
+        }
+      });
+    },
+
     getTables: function() {
       return tableSchemas.tables;
     },
 
     getPrivileges: function(tableName) {
       return privileges[tableName];
+    },
+
+    getPreferences: function(tableName) {
+      return preferences[tableName];
     },
 
     updatePrivileges: function(tableName, attributes) {

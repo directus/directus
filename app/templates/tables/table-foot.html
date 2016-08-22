@@ -4,7 +4,7 @@
   {{#if selectable}}<td></td>{{/if}}
   {{#columns}}
   <td>
-    {{#if isNumeric}}
+    {{#if showFooter}}
     <div class="footer-function" data-column="{{title}}">
       <span class="value">{{value}}</span>
       <span class="method">{{selectedFunction}}</span>
@@ -15,17 +15,14 @@
       </ul>
     </div>
 
-  <!--
+    {{!--
     <select style="width:85px; margin-top:12px" data-id="{{title}}">
     <option>Sum</option>
     <option>Average</option>
     <option>Min/Max</option>
     </select>
     <p style="margin-top:10px; font-weight:bold;">{{value}}</p>
-  -->
-
-
-
+    --}}
 
     {{/if}}
   </td>

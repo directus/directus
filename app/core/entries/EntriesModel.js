@@ -13,6 +13,16 @@ define(function(require, exports, module) {
 
   var EntriesModel = module.exports = Backbone.Model.extend({
 
+    inputs: {},
+
+    addInput: function(attr, input) {
+      this.inputs[attr] = input;
+    },
+
+    getInput: function(attr) {
+      return this.inputs[attr];
+    },
+
     parse: function(result) {
 
       this._lastFetchedResult = result;
@@ -70,13 +80,15 @@ define(function(require, exports, module) {
         }
 
         var nullDisallowed = column.get('is_nullable') === 'NO';
+        var ui = UIManager._getUI(column.get('ui'));
+        var forceUIValidation = ui.forceUIValidation === true;
         var isNull = isNothing(value);
 
         var uiSettings = UIManager.getSettings(column.get('ui'));
 
         var skipSerializationIfNull = uiSettings.skipSerializationIfNull;
 
-        var mess = (!skipSerializationIfNull && nullDisallowed && isNull) ?
+        var mess = (!forceUIValidation && !skipSerializationIfNull && nullDisallowed && isNull) ?
           'The field cannot be empty'
           : UIManager.validate(this, key, value);
 
@@ -138,7 +150,7 @@ define(function(require, exports, module) {
               parse:true,
               filters: {columns_visible: columns},
               privileges: SchemaManager.getPrivileges(tableRelated)
-              //preferences: app.preferences[column.get('table_related')],
+              //preferences: app.preferences[column.get('related_table')],
             };
 
 
@@ -202,7 +214,7 @@ define(function(require, exports, module) {
       }
 
       _.each(attrs, function(val, key) {
-        if (this.get(key) != val) changedAttrs[key] = val;
+        if (this.get(key) !== val) changedAttrs[key] = val;
       },this);
 
       //Always pass id
@@ -247,8 +259,6 @@ define(function(require, exports, module) {
 
       if (options.ignoreWriteFieldBlacklisted) {
         options.attrs = _.omit(options.attrs, this.getWriteFieldBlacklist());
-
-        console.log(options.attrs);
       }
 
       return Backbone.sync.apply(this, [method, model, options]);
@@ -287,7 +297,19 @@ define(function(require, exports, module) {
     },
 
     getWriteFieldBlacklist: function() {
-      return (this.collection.privileges.get('write_field_blacklist') || '').split(',');
+      return this.collection.getWriteFieldBlacklist();
+    },
+
+    getReadFieldBlacklist: function() {
+      return this.collection.getWriteFieldBlacklist();
+    },
+
+    isWriteBlacklisted: function(attribute) {
+      return this.collection.isWriteBlacklisted(attribute);
+    },
+
+    isReadBlacklisted: function(attribute) {
+      return this.collection.isReadBlacklisted(attribute);
     },
 
     canDelete: function() {
@@ -306,7 +328,7 @@ define(function(require, exports, module) {
       options = options || {};
 
       if (options.changed && !this.isNew()) {
-        attributes = this.changed;
+        attributes = this.unsavedAttributes() || this.changed;
         // always include id
         if (this.id) {
           attributes.id = this.id;

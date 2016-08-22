@@ -74,7 +74,6 @@ define(function(require, exports, module) {
         "is_nullable":"YES",
         "ui":"datetime",
         "system":false,
-        "master":false,
         "hidden_list":false,
         "hidden_input":true,
         "required":false,
@@ -90,7 +89,6 @@ define(function(require, exports, module) {
         "is_nullable":"YES",
         "ui":"datetime",
         "system":false,
-        "master":false,
         "hidden_list":false,
         "hidden_input":true,
         "required":false,
@@ -108,10 +106,9 @@ define(function(require, exports, module) {
         "sort":38,
         "ui":"one_to_many",
         "system":false,
-        "master":false,
         "hidden_list":true,
         "hidden_input":true,
-        "table_related":"directus_messages",
+        "related_table":"directus_messages",
         "junction_key_right":"response_to",
         "required":false,
         "is_writable":true,
@@ -121,7 +118,7 @@ define(function(require, exports, module) {
         },
         "relationship": {
           "type": "ONETOMANY",
-          "table_related": "directus_messages",
+          "related_table": "directus_messages",
           "junction_key_right": "response_to"
         }
       },

@@ -35,7 +35,7 @@ function(app, Backbone, __t, Directus, BasePageView, Widgets) {
 
     saveCheck: function(e) {
       var data = this.editView.data();
-      if(data[app.statusMapping.status_name] && data[app.statusMapping.status_name] == app.statusMapping.deleted_num) {
+      if(data[app.statusMapping.status_name] && data[app.statusMapping.status_name] === app.statusMapping.deleted_num) {
         var that = this;
         app.router.openModal({type: 'confirm', text: 'Are you sure? This item will be removed from the system!', callback: function() {
           that.save(e);

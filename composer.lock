@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "aaba5f0b2f1c1f840aa2d1b1164e4d2c",
-    "content-hash": "bb2ef801812b5c07727f81b05e2310ad",
+    "hash": "b6a68cf6c861637852966013959327ed",
+    "content-hash": "34306e3ac30beaaf51d90888c00e6e60",
     "packages": [
         {
             "name": "directus/migrations",
@@ -13,12 +13,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/WellingGuzman/Migrations.git",
-                "reference": "0dda4cb1aa42d7d4292c3dff684e57bf06b66a69"
+                "reference": "3f0f3a1eb7739b2d903dea8d53ca2d294edc654b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/WellingGuzman/Migrations/zipball/0dda4cb1aa42d7d4292c3dff684e57bf06b66a69",
-                "reference": "0dda4cb1aa42d7d4292c3dff684e57bf06b66a69",
+                "url": "https://api.github.com/repos/WellingGuzman/Migrations/zipball/3f0f3a1eb7739b2d903dea8d53ca2d294edc654b",
+                "reference": "3f0f3a1eb7739b2d903dea8d53ca2d294edc654b",
                 "shasum": ""
             },
             "require": {
@@ -57,20 +57,20 @@
             "description": "Framework for generating and managing database migrations",
             "homepage": "https://github.com/wellingguzman/migrations",
             "abandoned": true,
-            "time": "2016-05-22 08:02:18"
+            "time": "2016-07-28 18:37:42"
         },
         {
             "name": "league/flysystem",
-            "version": "1.0.24",
+            "version": "1.0.26",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/flysystem.git",
-                "reference": "9aca859a303fdca30370f42b8c611d9cf0dedf4b"
+                "reference": "fb3b30dca320b36931ea878fea17ebe136fba1b0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/9aca859a303fdca30370f42b8c611d9cf0dedf4b",
-                "reference": "9aca859a303fdca30370f42b8c611d9cf0dedf4b",
+                "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/fb3b30dca320b36931ea878fea17ebe136fba1b0",
+                "reference": "fb3b30dca320b36931ea878fea17ebe136fba1b0",
                 "shasum": ""
             },
             "require": {
@@ -83,7 +83,7 @@
                 "ext-fileinfo": "*",
                 "mockery/mockery": "~0.9",
                 "phpspec/phpspec": "^2.2",
-                "phpunit/phpunit": "~4.8 || ~5.0"
+                "phpunit/phpunit": "~4.8"
             },
             "suggest": {
                 "ext-fileinfo": "Required for MimeType",
@@ -140,7 +140,7 @@
                 "sftp",
                 "storage"
             ],
-            "time": "2016-06-03 19:11:39"
+            "time": "2016-08-03 09:49:11"
         },
         {
             "name": "slim/extras",
@@ -148,14 +148,8 @@
             "target-dir": "Slim/Extras",
             "source": {
                 "type": "git",
-                "url": "https://github.com/codeguy/Slim-Extras.git",
-                "reference": "5bceb3658f77a2b237f5b70ac02a0834fed871f9"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/codeguy/Slim-Extras/zipball/5bceb3658f77a2b237f5b70ac02a0834fed871f9",
-                "reference": "5bceb3658f77a2b237f5b70ac02a0834fed871f9",
-                "shasum": ""
+                "url": "https://github.com/wellingguzman/Slim-Extras",
+                "reference": "e087c60dee9b933f8df5b4454230bba303152f91"
             },
             "require": {
                 "php": ">=5.3.0",
@@ -168,20 +162,18 @@
                     "Slim\\Extras": "."
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
             "authors": [
                 {
-                    "name": "Andrew Smith",
-                    "email": "a.smith@silentworks.co.uk",
-                    "homepage": "http://www.silentworks.co.uk/"
-                },
-                {
                     "name": "Josh Lockhart",
                     "email": "info@joshlockhart.com",
                     "homepage": "http://www.joshlockhart.com/"
+                },
+                {
+                    "name": "Andrew Smith",
+                    "email": "a.smith@silentworks.co.uk"
                 }
             ],
             "description": "Extras package for the Slim Framework",
@@ -191,7 +183,7 @@
                 "middleware",
                 "templating"
             ],
-            "time": "2013-05-24 13:41:59"
+            "time": "2016-07-30 16:37:23"
         },
         {
             "name": "slim/slim",
@@ -239,23 +231,23 @@
         },
         {
             "name": "swiftmailer/swiftmailer",
-            "version": "v5.4.2",
+            "version": "v5.4.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/swiftmailer/swiftmailer.git",
-                "reference": "d8db871a54619458a805229a057ea2af33c753e8"
+                "reference": "4cc92842069c2bbc1f28daaaf1d2576ec4dfe153"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/swiftmailer/swiftmailer/zipball/d8db871a54619458a805229a057ea2af33c753e8",
-                "reference": "d8db871a54619458a805229a057ea2af33c753e8",
+                "url": "https://api.github.com/repos/swiftmailer/swiftmailer/zipball/4cc92842069c2bbc1f28daaaf1d2576ec4dfe153",
+                "reference": "4cc92842069c2bbc1f28daaaf1d2576ec4dfe153",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.3"
             },
             "require-dev": {
-                "mockery/mockery": "~0.9.1,<0.9.4"
+                "mockery/mockery": "~0.9.1"
             },
             "type": "library",
             "extra": {
@@ -288,25 +280,80 @@
                 "mail",
                 "mailer"
             ],
-            "time": "2016-05-01 08:45:47"
+            "time": "2016-07-08 11:51:25"
         },
         {
-            "name": "zendframework/zend-db",
-            "version": "2.2.10",
+            "name": "twig/twig",
+            "version": "v1.24.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/zendframework/zend-db.git",
-                "reference": "229dbc409bac376813303d56aec7c6e7da97c480"
+                "url": "https://github.com/twigphp/Twig.git",
+                "reference": "3566d311a92aae4deec6e48682dc5a4528c4a512"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/zend-db/zipball/229dbc409bac376813303d56aec7c6e7da97c480",
-                "reference": "229dbc409bac376813303d56aec7c6e7da97c480",
+                "url": "https://api.github.com/repos/twigphp/Twig/zipball/3566d311a92aae4deec6e48682dc5a4528c4a512",
+                "reference": "3566d311a92aae4deec6e48682dc5a4528c4a512",
                 "shasum": ""
             },
             "require": {
+                "php": ">=5.2.7"
+            },
+            "require-dev": {
+                "symfony/debug": "~2.7",
+                "symfony/phpunit-bridge": "~2.7"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.24-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Twig_": "lib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com",
+                    "homepage": "http://fabien.potencier.org",
+                    "role": "Lead Developer"
+                },
+                {
+                    "name": "Armin Ronacher",
+                    "email": "armin.ronacher@active-4.com",
+                    "role": "Project Founder"
+                },
+                {
+                    "name": "Twig Team",
+                    "homepage": "http://twig.sensiolabs.org/contributors",
+                    "role": "Contributors"
+                }
+            ],
+            "description": "Twig, the flexible, fast, and secure template language for PHP",
+            "homepage": "http://twig.sensiolabs.org",
+            "keywords": [
+                "templating"
+            ],
+            "time": "2016-05-30 09:11:59"
+        },
+        {
+            "name": "zendframework/zend-db",
+            "version": "dev-directus",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/wellingguzman/zend-db",
+                "reference": "500d52674ff4e92d970015eda74a3d1d3caea71d"
+            },
+            "require": {
                 "php": ">=5.3.3",
-                "zendframework/zend-stdlib": "self.version"
+                "zendframework/zend-stdlib": "2.2.*@dev"
             },
             "require-dev": {
                 "fabpot/php-cs-fixer": "1.7.*",
@@ -319,7 +366,7 @@
             "suggest": {
                 "zendframework/zend-eventmanager": "Zend\\EventManager component",
                 "zendframework/zend-servicemanager": "Zend\\ServiceManager component",
-                "zendframework/zend-stdlib": "2.2.10"
+                "zendframework/zend-stdlib": "dev-directus"
             },
             "type": "library",
             "extra": {
@@ -333,16 +380,21 @@
                     "Zend\\Db\\": "src/"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
+            "autoload-dev": {
+                "psr-4": {
+                    "ZendTest\\Db\\": "test/"
+                }
+            },
             "license": [
                 "BSD-3-Clause"
             ],
+            "description": " ",
             "homepage": "https://github.com/zendframework/zend-db",
             "keywords": [
                 "db",
                 "zf2"
             ],
-            "time": "2015-02-17 19:56:04"
+            "time": "2016-08-03 01:50:57"
         },
         {
             "name": "zendframework/zend-stdlib",
@@ -768,16 +820,16 @@
         },
         {
             "name": "symfony/yaml",
-            "version": "v2.8.8",
+            "version": "v2.8.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/yaml.git",
-                "reference": "dba4bb5846798cd12f32e2d8f3f35d77045773c8"
+                "reference": "0ceab136f43ed9d3e97b3eea32a7855dc50c121d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/yaml/zipball/dba4bb5846798cd12f32e2d8f3f35d77045773c8",
-                "reference": "dba4bb5846798cd12f32e2d8f3f35d77045773c8",
+                "url": "https://api.github.com/repos/symfony/yaml/zipball/0ceab136f43ed9d3e97b3eea32a7855dc50c121d",
+                "reference": "0ceab136f43ed9d3e97b3eea32a7855dc50c121d",
                 "shasum": ""
             },
             "require": {
@@ -813,7 +865,7 @@
             ],
             "description": "Symfony Yaml Component",
             "homepage": "https://symfony.com",
-            "time": "2016-06-29 05:29:29"
+            "time": "2016-07-17 09:06:15"
         }
     ],
     "aliases": [],
@@ -826,7 +878,7 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": ">=5.4.0"
+        "php": ">=5.5.0"
     },
     "platform-dev": []
 }

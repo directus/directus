@@ -4,49 +4,49 @@ define(function(require, exports, module) {
 
   // Register Core UI's
   var defaultUis = ([
-    require('core-ui/textinput'),
-    require('core-ui/directus_columns'),
-    require('core-ui/instructions'),
-    require('core-ui/checkbox/checkbox'),
-    require('core-ui/color'),
-    require('core-ui/numeric'),
-    require('core-ui/slider'),
-    require('core-ui/single_file'),
-    require('core-ui/slug'),
-    require('core-ui/textarea'),
-    require('core-ui/directus_user'),
-    require('core-ui/directus_activity'),
-    require('core-ui/datetime'),
-    require('core-ui/date'),
-    require('core-ui/time'),
-    require('core-ui/directus_user_activity'),
-    require('core-ui/directus_user_avatar'),
-    require('core-ui/directus_file_size'),
-    require('core-ui/blob'),
-    require('core-ui/alias'),
-    require('core-ui/salt'),
-    require('core-ui/select'),
-    require('core-ui/tags'),
-    require('core-ui/many_to_one'),
-    require('core-ui/radiobuttons'),
-    require('core-ui/many_to_many'),
-    require('core-ui/one_to_many'),
-    require('core-ui/wysiwyg'),
-    require('core-ui/directus_messages_recipients'),
-    require('core-ui/password'),
-    require('core-ui/random'),
-    require('core-ui/many_to_one_typeahead'),
-    require('core-ui/enum'),
-    require('core-ui/multi_select'),
-    require('core-ui/system'),
-    require('core-ui/user'),
-    require('core-ui/directus_file'),
-    require('core-ui/directus_file_title'),
-    require('core-ui/map'),
-    //require('core-ui/markdown'),
-    require('core-ui/multiple_files'),
-    require('core-ui/translation'),
-    require('core-ui/template_chooser')
+    require('core/uis/textinput'),
+    require('core/uis/directus_columns'),
+    require('core/uis/instructions'),
+    require('core/uis/checkbox/checkbox'),
+    require('core/uis/color'),
+    require('core/uis/numeric'),
+    require('core/uis/slider'),
+    require('core/uis/single_file'),
+    require('core/uis/slug'),
+    require('core/uis/textarea'),
+    require('core/uis/directus_user'),
+    require('core/uis/directus_activity'),
+    require('core/uis/datetime/datetime'),
+    require('core/uis/datetime/date'),
+    require('core/uis/datetime/time'),
+    require('core/uis/directus_user_activity'),
+    require('core/uis/directus_user_avatar'),
+    require('core/uis/directus_file_size'),
+    require('core/uis/blob'),
+    require('core/uis/alias'),
+    require('core/uis/salt'),
+    require('core/uis/select'),
+    require('core/uis/tags'),
+    require('core/uis/many_to_one'),
+    require('core/uis/radiobuttons'),
+    require('core/uis/many_to_many'),
+    require('core/uis/one_to_many'),
+    require('core/uis/wysiwyg'),
+    require('core/uis/directus_messages_recipients'),
+    require('core/uis/password'),
+    require('core/uis/random'),
+    require('core/uis/many_to_one_typeahead'),
+    require('core/uis/enum'),
+    require('core/uis/multi_select'),
+    require('core/uis/system'),
+    require('core/uis/user'),
+    require('core/uis/directus_file'),
+    require('core/uis/directus_file_title'),
+    require('core/uis/map'),
+    require('core/uis/markdown'),
+    require('core/uis/multiple_files'),
+    require('core/uis/translation'),
+    require('core/uis/template_chooser')
   ]);
 
   var jQuery = require('jquery');
@@ -63,6 +63,19 @@ define(function(require, exports, module) {
    * Holds all Sytem fields and mapped UI
    */
   var system_fields = {
+  };
+
+  var castType = function(type, value) {
+    if (typeof value === 'undefined') {
+      return value;
+    }
+    switch(type) {
+      // '0', 0 and false should be false
+      case 'Boolean': return false != value;
+      case 'Number': return Number(value);
+      case 'String': return String(value);
+      default: return value;
+    }
   };
 
   // Attach all methods to the UIManager prototype.
@@ -256,7 +269,7 @@ define(function(require, exports, module) {
 
       var UIObject = this.getUIByModel(model, attr);
       // If there is no UI, return just text
-      if (UIObject == false) {
+      if (UIObject === false) {
         var attribute = model.get(attr);
         if (!attribute || attribute === "") {
           if (!defaultValue) {
@@ -278,7 +291,7 @@ define(function(require, exports, module) {
 
       // Section is the name of a method that represents an value.
       // list: represents the value that will be shown on a list.
-      var section = _.has(UIObject.UI, section) ? section : 'list';
+      var section = UIObject.UI[section] !== null ? section : 'list';
       this.triggerBeforeValue(section, UIObject.UI, UIOptions);
       var value = UIObject.UI[section](UIOptions);
       this.triggerAfterValue(section, UIObject.UI, UIOptions);
@@ -307,23 +320,26 @@ define(function(require, exports, module) {
         return;
       }
 
+      if (!settings.defaultAttributes) settings.defaultAttributes = {};
+      if (!settings.attributeTypes) settings.attributeTypes = {};
+
       _.each(UI.variables, function(variable) {
-        if (typeof variable.def != 'undefined') {
-          if (!settings.defaultAttributes) settings.defaultAttributes = {};
+        if (typeof variable.def !== 'undefined') {
           settings.defaultAttributes[variable.id] = variable.def;
         }
+        settings.attributeTypes[variable.id] = variable.type;
       });
 
       settings.get = function(attr) {
         var attribute = this.attributes[attr];
-        if (this.defaultAttributes && attribute == undefined) {
+        if (this.defaultAttributes && attribute === undefined) {
           var defaultAttribute = this.defaultAttributes[attr];
           if (defaultAttribute) {
             attribute = defaultAttribute;
           }
         }
 
-        return attribute;
+        return castType(this.attributeTypes[attr], attribute);
       };
     },
 
@@ -360,8 +376,9 @@ define(function(require, exports, module) {
       var schema = structure.get(attr);
       var UI = this._getModelUI(model, attr, schema);
 
-      if (UI.hasOwnProperty('validate')) {
+      if (UI.validate) {
         return UI.validate(value, {
+          view: model.getInput ? model.getInput(attr) : undefined,
           model: model,
           collection: collection,
           settings: schema.options,

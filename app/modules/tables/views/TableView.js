@@ -26,8 +26,8 @@ function(app, Backbone, __t, BasePageView, ListViewManager, Widgets) {
         //this.widgets.bookmarkWidget
       ];
 
-      if (this.collection.hasPermission('add')) {
-        if(!this.widgets.addWidget) {
+      if (this.collection.structure.length > 1 && this.collection.hasPermission('add')) {
+        if (!this.widgets.addWidget) {
           this.widgets.addWidget = new Widgets.ButtonWidget({widgetOptions: {buttonId: "addBtn", iconClass: "add", buttonClass: "", buttonText: __t('new_item')}});
         }
 
@@ -139,13 +139,13 @@ function(app, Backbone, __t, BasePageView, ListViewManager, Widgets) {
         this.batchEdit = $('.select-row:checked').length > 1;
 
         if(this.actionButtons || this.batchEdit) {
-          if(this.leftSecondaryCurrentState != 'actions') {
+          if(this.leftSecondaryCurrentState !== 'actions') {
             this.leftSecondaryCurrentState = 'actions';
             this.reRender();
           }
         }
         else {
-          if(this.leftSecondaryCurrentState != 'default') {
+          if(this.leftSecondaryCurrentState !== 'default') {
             this.leftSecondaryCurrentState = 'default';
             this.reRender();
           }
@@ -153,7 +153,7 @@ function(app, Backbone, __t, BasePageView, ListViewManager, Widgets) {
       }, this);
 
       this.collection.on('sort', function() {
-        if(this.leftSecondaryCurrentState != 'default') {
+        if(this.leftSecondaryCurrentState !== 'default') {
           this.leftSecondaryCurrentState = 'default';
           this.reRender();
         }

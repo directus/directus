@@ -1,9 +1,18 @@
-define(function(require, module, exports) {
-  var Backbone = require('backbone');
-  var Handlebars = require('handlebars');
+define(['backbone', 'handlebars', 'helpers/ui', 'core/t'], function(Backbone, Handlebars, UIHelper, __t) {
   var UIComponentsOptions = ['id'];
   var UIComponent = function(options) {
     _.extend(this, _.pick(UIComponentsOptions, options));
+
+    if (this.isNumeric() && this.supportsNumber()) {
+      this.variables = this.variables || [];
+      this.variables.push({
+        id: 'footer',
+        type: 'Boolean',
+        def: false,
+        ui: 'checkbox',
+        comment: __t('numeric_footer_comment')
+      });
+    }
   };
 
   UIComponent.extend = Backbone.Model.extend;
@@ -23,12 +32,6 @@ define(function(require, module, exports) {
     list: function(options) {
       return options.value;
     },
-    // Validate gets called when model is attepting to save. It returns an error message if there is a validation issue, none if it is valid
-    // @param value : String : Value for this UI
-    // @param options : Object : Contains Options for this UI (collection [TableCollection], model [EntriesModel], schema, settings)
-    validate: function(value, options) {
-      return true;
-    },
     // Value used to sort the UI
     sort: function(options) {
       return options.value;
@@ -39,6 +42,14 @@ define(function(require, module, exports) {
       data || (data = {});
 
       return template(data);
+    },
+    isNumeric: function() {
+      return this.id === 'numeric';
+    },
+    supportsNumber: function() {
+      return _.some(this.dataTypes, function(type) {
+        return UIHelper.supportsNumeric(type);
+      });
     }
   });
 

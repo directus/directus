@@ -16,6 +16,27 @@ class ArrayUtilsTest extends PHPUnit_Framework_TestCase
         $items = ['name' => 'Jim', 'age' => 79, 'sex' => 'M', 'country' => 'N/A'];
         $this->assertEquals(count(ArrayUtils::pick($items, ['name', 'age'])), 2);
         $this->assertEquals(count(ArrayUtils::pick($items, ['name', 'age', 'city'])), 2);
+        $this->assertEquals(ArrayUtils::pick($items, 'name'), ['name' => 'Jim']);
+
+        $this->assertEquals(count(ArrayUtils::filterByKey($items, ['name', 'age'])), 2);
+        $this->assertEquals(count(ArrayUtils::filterByKey($items, ['name', 'age', 'city'])), 2);
+        $this->assertEquals(ArrayUtils::filterByKey($items, 'name'), ['name' => 'Jim']);
+
+        $this->assertEquals(count(ArrayUtils::filterByKey($items, ['name', 'age'], false)), 2);
+        $this->assertEquals(count(ArrayUtils::filterByKey($items, ['name', 'age', 'city'], false)), 2);
+        $this->assertEquals(ArrayUtils::filterByKey($items, 'name'), ['name' => 'Jim'], false);
+    }
+
+    public function testOmitItems()
+    {
+        $items = ['name' => 'Jim', 'age' => 79, 'sex' => 'M', 'country' => 'N/A'];
+        $this->assertEquals(count(ArrayUtils::omit($items, ['country'])), 3);
+        $this->assertEquals(count(ArrayUtils::omit($items, ['country', 'city'])), 3);
+        $this->assertEquals(ArrayUtils::omit($items, 'name'), ['age' => 79, 'sex' => 'M', 'country' => 'N/A']);
+
+        $this->assertEquals(count(ArrayUtils::filterByKey($items, ['country'], true)), 3);
+        $this->assertEquals(count(ArrayUtils::filterByKey($items, ['name', 'age', 'city'], true)), 2);
+        $this->assertEquals(ArrayUtils::filterByKey($items, 'name', true), ['age' => 79, 'sex' => 'M', 'country' => 'N/A']);
     }
 
     public function testContainsItems()

@@ -29,6 +29,22 @@ class InstallerUtils
         static::createConfigurationFile($data, $path);
     }
 
+    public static function createConfigFileContent($data)
+    {
+        $configStub = file_get_contents(__DIR__.'/stubs/config.stub');
+        $data = ArrayUtils::pick($data, [
+            'db_type',
+            'db_host',
+            'db_port',
+            'db_name',
+            'db_user',
+            'db_password',
+            'directus_path'
+        ]);
+
+        return static::replacePlaceholderValues($configStub, $data);
+    }
+
     /**
      * Create config file into $path
      * @param $data
@@ -36,8 +52,7 @@ class InstallerUtils
      */
     protected static function createConfigFile($data, $path)
     {
-        $configStub = file_get_contents(__DIR__.'/stubs/config.stub');
-        $configStub = static::replacePlaceholderValues($configStub, $data);
+        $configStub = static::createConfigFileContent($data);
 
         $configPath = rtrim($path, '/').'/config.php';
         file_put_contents($configPath, $configStub);
@@ -101,7 +116,7 @@ class InstallerUtils
             'name' => DB_NAME,
             'user' => DB_USER,
             'pass' => DB_PASSWORD,
-            'directory' => 'directus',
+            'directory' => 'schema',
             'prefix' => '',
         ));
 
@@ -141,14 +156,19 @@ class InstallerUtils
 
     /**
      * Add Directus default user
+     *
      * @param array $data
+     * @return array
      */
     public static function addDefaultUser($data)
     {
         $db = Bootstrap::get('ZendDb');
         $tableGateway = new TableGateway('directus_users', $db);
 
-        $hash = password_hash($data['directus_password'], PASSWORD_DEFAULT, ["cost" => 12]);
+        $hash = password_hash($data['directus_password'], PASSWORD_DEFAULT, ['cost' => 12]);
+
+        $data['user_salt'] = StringUtils::randomString();
+        $data['user_token'] = StringUtils::randomString(32);
 
         $tableGateway->insert([
             'active' => 1,
@@ -156,11 +176,13 @@ class InstallerUtils
             'last_name' => 'User',
             'email' => $data['directus_email'],
             'password' => $hash,
-            'salt' => StringUtils::randomString(),
-            'token' => StringUtils::randomString(32),
+            'salt' => $data['user_salt'],
             'group' => 1,
+            'token' => $data['user_token'],
             'language' => $data['default_language']
         ]);
+
+        return $data;
     }
 
     /**
@@ -242,7 +264,7 @@ class InstallerUtils
             [
                 'collection' => 'global',
                 'name' => 'project_url',
-                'value' => 'http://examplesite.dev/'
+                'value' => get_url()
             ],
             [
                 'collection' => 'global',

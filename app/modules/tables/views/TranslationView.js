@@ -9,9 +9,7 @@ define([
 function(app, Backbone, Handlebars, Directus, EntriesManager) {
 
   return Backbone.Layout.extend({
-    template: Handlebars.compile('<div class="section-header"><span class="big-label-text">Translations</span> \
-      <select id="activeLanguageSelect" class="section-dropdown">{{#languages}}<option {{#if active}}selected{{/if}} value="{{val}}">{{name}}</option>{{/languages}}</select></div> \
-      <div id="translateEditFormEntry"></div>'),
+    template: 'modules/tables/translation',
     events: {
       'change #activeLanguageSelect': function(e) {
         var that = this;
@@ -58,6 +56,12 @@ function(app, Backbone, Handlebars, Directus, EntriesManager) {
 
     updateTranslateConnection: function() {
       this.translateCollection = this.model.get(this.translateId);
+      var tracking = function(model) {
+        model.startTracking();
+      };
+
+      this.translateCollection.each(tracking);
+      this.translateCollection.on('add', tracking);
 
       this.languageCollection = EntriesManager.getInstance(this.translateSettings.languages_table);
       this.listenTo(this.languageCollection, 'sync', function() {this.initializeTranslateView();});
@@ -75,7 +79,7 @@ function(app, Backbone, Handlebars, Directus, EntriesManager) {
       this.translateModel = null;
 
       this.translateCollection.forEach(function(model) {
-        if(model.get(that.translateSettings.left_column_name) == that.activeLanguageId) {
+        if(model.get(that.translateSettings.left_column_name) === that.activeLanguageId) {
           that.translateModel = model;
         }
       });
@@ -97,12 +101,13 @@ function(app, Backbone, Handlebars, Directus, EntriesManager) {
     },
     serialize: function() {
       var data = {};
+      data.translateField = app.capitalize(this.translateId);
 
       var that = this;
 
       if(this.languageCollection) {
         data.languages = this.languageCollection.map(function(item) {
-          return {val: item.id, name: item.get(that.translateSettings.languages_name_column), active: (item.id == that.activeLanguageId)};
+          return {val: item.id, name: item.get(that.translateSettings.languages_name_column), active: (item.id === that.activeLanguageId)};
         });
       }
 

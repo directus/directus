@@ -43,11 +43,15 @@ define(function(require, exports, module) {
     },
 
     afterRender: function() {
-      if (this.model.isRequired()) {
+      var obj = this.view || this.model;
+      if (obj.isRequired()) {
         this.$el.addClass('required');
       }
-    }
+    },
 
+    initialize: function(options) {
+      this.view = options.view;
+    }
   });
 
   var EditView = module.exports = Backbone.Layout.extend({
@@ -67,21 +71,32 @@ define(function(require, exports, module) {
       this.structure.each(function(column) {
 
         // Skip ID
-        // if('id' == column.id) {
-        if (column.get('column_key') == 'PRI') {
+        // if('id' === column.id) {
+        if (column.get('column_key') === 'PRI') {
           return;
         }
+
+        if (this.model.isReadBlacklisted && this.model.isReadBlacklisted(column.id)) {
+          return false;
+        }
+
         //Skip magic owner column if we dont have bigedit
-        if(this.model.table && this.model.table.get('user_create_column') == column.id && !this.model.collection.hasPermission('bigedit')) {
+        if (this.model.table && this.model.table.get('user_create_column') === column.id && !this.model.collection.hasPermission('bigedit')) {
           return;
         }
 
+        if (app.statusMapping.status_name === column.id) {
+          var collection = this.model.collection;
+          var canAdd = this.model.isNew() && collection.canAdd();
+          var canEdit = !this.model.isNew() && collection.canEdit();
+          if (!canAdd && !canEdit) {
+            return;
+          }
 
-
-        if(app.statusMapping.status_name == column.id) {
-          if(this.options.collectionAdd) {
+          if (this.options.collectionAdd) {
             this.model.set(app.statusMapping.status_name, app.statusMapping.active_num);
           }
+
           if(this.model.isNew()) {
             var tableStatusColumn = this.model.structure.get(app.statusMapping.status_name);
             if(tableStatusColumn && tableStatusColumn.get('default_value')) {
@@ -99,21 +114,27 @@ define(function(require, exports, module) {
         }
 
         var view = UIManager.getInputInstance(this.model, column.id, {structure: this.structure, inModal: this.inModal});
+        if (this.model.addInput) {
+          this.model.addInput(column.id, view);
+        }
 
         // Display:none; hidden fields
         var isHidden = _.contains(this.hiddenFields, column.id);
         if (isHidden) {
-          // return;
           view.$el.css({'display':'none'});
         }
 
-        if (column.isRequired()) {
+        if (view.isRequired()) {
           view.$el.addClass('required');
           column.set('required', true);
         }
 
         if (!isHidden) {
-          var uiContainer = new UIContainer({model: column, batchEdit: this.options.batchIds !== undefined});
+          var uiContainer = new UIContainer({
+            model: column,
+            batchEdit: this.options.batchIds !== undefined,
+            view: view
+          });
           uiContainer.insertView('.trow', view);
           views[column.id] = uiContainer;
         } else {
@@ -130,7 +151,7 @@ define(function(require, exports, module) {
         var i = 1;
         grouping.split('^').forEach(function(group) {
           var title = "";
-          if(group.indexOf(':') != -1) {
+          if(group.indexOf(':') !== -1) {
             title = group.substring(0, group.indexOf(':'));
             group = group.substring(group.indexOf(':') + 1);
           }
@@ -213,6 +234,7 @@ define(function(require, exports, module) {
 
       this.hiddenFields = _.union(optionsHiddenFields, structureHiddenFields, this.hiddenFields);
       this.visibleFields = _.difference(this.structure.pluck('id'), this.hiddenFields);
+
 
       // @todo rewrite this!
       this.model.on('invalid', function(model, errors) {

@@ -12,6 +12,7 @@ require.config({
     "backbone":   "../assets/js/libs/backbone",
     "handlebars": "../assets/js/libs/handlebars",
     "sortable":  "../assets/js/libs/sortable",
+    "marked":    "../assets/js/libs/marked.min",
     "moment":     "../assets/js/libs/moment.min",
     "noty":     "../assets/js/libs/noty",
     "noty_theme": "../assets/js/libs/noty_theme",
@@ -25,7 +26,7 @@ require.config({
     // Extensions
     "extensions": '../customs/extensions',
     "listviews":  '../customs/listviews',
-    "ui":         '../customs/ui'
+    "uis":         '../customs/uis'
   },
 
   shim: {
@@ -51,6 +52,10 @@ require.config({
       deps: ["jquery", "noty"]
     },
 
+    "marked": {
+      exports: 'marked'
+    },
+
     "polyglot": {
       exports: 'Polyglot'
     },
@@ -58,6 +63,7 @@ require.config({
     "plugins/jquery.flashrow": ['jquery'],
 
     "plugins/backbone.layoutmanager": ["backbone"],
+    'plugins/backbone.trackit': ['backbone'],
     "plugins/bootstrap-dropdown": ["jquery"],
     "plugins/typeahead": ["jquery"],
     "plugins/bootstrap-tooltip": ["jquery"]

@@ -8,10 +8,10 @@ function(app, Backbone, EntriesModel) {
   return EntriesModel.extend({
 
     getUnreadCount: function() {
-      var unread = this.get('read') == 1 ? 0 : 1;
+      var unread = this.get('read') === 1 ? 0 : 1;
 
       var unreadResponses = this.get('responses').reduce(function(memo, model){
-        var unread = model.get('read') == 1 ? 0 : 1;
+        var unread = model.get('read') === 1 ? 0 : 1;
         return memo + unread;
       }, 0);
 

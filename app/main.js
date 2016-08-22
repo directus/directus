@@ -9,13 +9,14 @@
 require(["config", 'polyfills'], function() {
 
   require([
-    "app",
+    'app',
     'core/UIManager',
-    "router",
-    "backbone",
-    "alerts",
-    "core/tabs",
-    "core/bookmarks",
+    'router',
+    'backbone',
+    'alerts',
+    'core/t',
+    'core/tabs',
+    'core/bookmarks',
     'modules/messages/messages',
     'schema/SchemaManager',
     'modules/settings/SettingsCollection',
@@ -28,13 +29,15 @@ require(["config", 'polyfills'], function() {
     'core/notification'
   ],
 
-  function(app, UIManager, Router, Backbone, alerts, Tabs, Bookmarks, Messages, SchemaManager, SettingsCollection, ExtensionManager, EntriesManager, ListViewManager, Idle, ToolTip, ContextualDate, Notification) {
+  function(app, UIManager, Router, Backbone, alerts, __t, Tabs, Bookmarks, Messages, SchemaManager, SettingsCollection, ExtensionManager, EntriesManager, ListViewManager, Idle, ToolTip, ContextualDate, Notification) {
 
     "use strict";
 
     var defaultOptions = {
       locale: 'en',
       localesAvailable: [],
+      timezone: 'America/New_York',
+      timezones: [],
       path: '/directus/',
       page: '',
       authenticatedUser: 7,
@@ -74,7 +77,10 @@ require(["config", 'polyfills'], function() {
     app.authenticatedUserId = window.directusData.authenticatedUser;
     app.storageAdapters = window.directusData.storage_adapters;
     app.statusMapping = window.directusData.statusMapping;
+    app.locale = options.locale;
     app.locales = options.localesAvailable;
+    app.timezone = options.timezone;
+    app.timezones = options.timezones;
 
     $.xhrPool = []; // array of uncompleted requests
     $.xhrPool.abortAll = function() { // our abort function
@@ -291,7 +297,7 @@ require(["config", 'polyfills'], function() {
           }
         }
       } else {
-        console.log("The nav override JSON for this user group is malformed – the default nav will be used instead");
+        console.error("The nav override JSON for this user group is malformed – the default nav will be used instead");
       }
 
       var isCustomBookmarks = false;
@@ -338,14 +344,16 @@ require(["config", 'polyfills'], function() {
           }
         };
 
-        options.error = errorCodeHandler;
+        if (options.errorPropagation !== false) {
+          options.error = errorCodeHandler;
+        }
 
         // Force fix: https://github.com/RNGR/Directus/issues/776
         // when $.ajax global is false there's not global event fired
         // the code below wouldn't run on .ajaxSend
         // therefore we run it here
 
-        if(options.global == false) {
+        if(options.global === false) {
           var url = '';
           var collection = {};
 
@@ -362,7 +370,7 @@ require(["config", 'polyfills'], function() {
           }
 
           if (url) {
-            var isApiRequest = url.substr(0, app.API_URL.length) == app.API_URL;
+            var isApiRequest = url.substr(0, app.API_URL.length) === app.API_URL;
             if(isApiRequest) {
               nonce = nonces.pool.unshift();
               options.beforeSend = function(xhr) {
@@ -422,30 +430,60 @@ require(["config", 'polyfills'], function() {
       });
 
       // Capture sync errors...
-      $(document).ajaxError(function(e, xhr) {
-        var type, messageTitle, messageBody, details;
-        if(xhr.statusText == "abort") {
+      $(document).ajaxError(function(e, xhr, settings) {
+        if (settings.errorPropagation === false) {
           return;
         }
-        switch(xhr.status) {
-          case 403:
-            // var response = $.parseJSON(xhr.responseText);
-            messageTitle = 'Restricted Access';
-            // messageBody = "You don't have permission to access this table. Please send this to IT:<br>\n\n" + xhr.responseText;
-            details = true;
-            break;
-          default:
-            type = 'Server ' + xhr.status;
-            messageTitle = "Server Error";
-            details = encodeURIComponent(xhr.responseText);
-            // app.logErrorToServer(type, messageTitle, details);
-            break;
+
+        var type, messageTitle, messageBody, details;
+        if(xhr.statusText === "abort") {
+          return;
         }
 
         if(xhr.responseJSON) {
           messageBody = xhr.responseJSON.message;
         } else {
           messageBody = xhr.responseText;
+        }
+
+        switch(xhr.status) {
+          case 404:
+            messageTitle = __t('not_found');
+            messageBody = __t('url_not_found') + '<br>' + settings.url;
+            break;
+          case 403:
+            // var response = $.parseJSON(xhr.responseText);
+            messageTitle = __t('restricted_access');
+            // messageBody = "You don't have permission to access this table. Please send this to IT:<br>\n\n" + xhr.responseText;
+            details = true;
+            break;
+          case 413:
+            details = false;
+            messageTitle = __t('max_file_size_exceeded_x_x', {
+              size: app.settings.getMaxFileSize(),
+              unit: app.settings.getMaxFileSizeUnit()
+            });
+            break;
+          default:
+            type = 'Server ' + xhr.status;
+            messageTitle = __t('server_error');
+            details = encodeURIComponent(xhr.responseText);
+
+            if (_.isString(messageBody)) {
+              try {
+                messageBody = JSON.parse(messageBody);
+              } catch (e) {
+                // do nothing
+              }
+            }
+
+            if (messageBody.message) {
+              messageBody = messageBody.message;
+              details = false;
+            }
+
+            // app.logErrorToServer(type, messageTitle, details);
+            break;
         }
 
         app.trigger('alert:error', messageTitle, messageBody, details)
@@ -468,7 +506,7 @@ require(["config", 'polyfills'], function() {
           nonce;
 
       $(document).ajaxSend(function(event, jqXHR, settings) {
-        var isApiRequest = settings.url.substr(0, app.API_URL.length) == app.API_URL;
+        var isApiRequest = settings.url.substr(0, app.API_URL.length) === app.API_URL;
         if(isApiRequest) {
           nonce = nonces.pool.unshift();
           jqXHR.setRequestHeader(nonces.nonce_request_header, nonce);
@@ -512,7 +550,7 @@ require(["config", 'polyfills'], function() {
         var root = location.protocol + "//" + location.host + app.root;
 
         // Ensure the root is part of the anchor href, meaning it's relative.
-        if (href.prop.slice(0, root.length) === root && href.target != '_BLANK') {
+        if (href.prop.slice(0, root.length) === root && href.target !== '_BLANK') {
           // Stop the default event to ensure the link will not cause a page
           // refresh.
           evt.preventDefault();

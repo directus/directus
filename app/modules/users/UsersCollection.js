@@ -1,11 +1,12 @@
 define([
-  "app",
-  "backbone",
-  "core/entries/EntriesCollection",
-  "modules/users/UsersModel"
+  'app',
+  'backbone',
+  'core/entries/EntriesCollection',
+  'core/t',
+  'modules/users/UsersModel'
 ],
 
-function(app, Backbone, EntriesCollection, UsersModel) {
+function(app, Backbone, EntriesCollection, __t, UsersModel) {
 
   return EntriesCollection.extend({
 
@@ -14,6 +15,15 @@ function(app, Backbone, EntriesCollection, UsersModel) {
     getCurrentUser: function() {
       var authenticatedUser = app.authenticatedUserId;
       return this.get(authenticatedUser.id);
+    },
+
+    get: function(id) {
+      var user = EntriesCollection.__super__.get.call(this, id);
+      if (!_.isObject(id) && !user) {
+        user = new UsersModel({id: id, first_name: __t('a_missing_or_removed_user')});
+      }
+
+      return user;
     },
 
     initialize: function() {

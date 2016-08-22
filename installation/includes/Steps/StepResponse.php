@@ -102,6 +102,15 @@ class StepResponse
         $this->warnings = [];
     }
 
+    /**
+     * Deletes all warning and errors messages
+     */
+    public function clearAll()
+    {
+        $this->clearErrors();
+        $this->clearWarnings();
+    }
+
     protected function addMessage($name, $messages)
     {
         if (!property_exists($this, $name)) {

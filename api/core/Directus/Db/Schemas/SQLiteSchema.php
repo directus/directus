@@ -70,7 +70,6 @@ class SQLiteSchema extends AbstractSchema
             'table_name',
             'hidden' => new Expression('IFNULL(hidden, 0)'),
             'single' => new Expression('IFNULL(single, 0)'),
-            'is_junction_table',
             'user_create_column',
             'user_update_column',
             'date_create_column',
@@ -123,7 +122,6 @@ class SQLiteSchema extends AbstractSchema
             'count' => null,
             'hidden' =>  ArrayUtils::get($directusTableInfo, 'hidden', 0),
             'single' => ArrayUtils::get($directusTableInfo, 'single', 0),
-            'is_junction_table' => ArrayUtils::get($directusTableInfo, 'is_junction_table', 0),
             'user_create_column' => ArrayUtils::get($directusTableInfo, 'user_create_column', null),
             'user_update_column' => ArrayUtils::get($directusTableInfo, 'user_update_column', null),
             'date_create_column' => ArrayUtils::get($directusTableInfo, 'date_create_column', null),
@@ -147,6 +145,22 @@ class SQLiteSchema extends AbstractSchema
     /**
      * @inheritDoc
      */
+    public function tableExists($tableName)
+    {
+        return $this->hasTable($tableName);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function someTableExists(array $tablesName)
+    {
+        return false;
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function getTable($tableName)
     {
         $tablesObject = $this->metadata->getTable($tableName);
@@ -165,7 +179,6 @@ class SQLiteSchema extends AbstractSchema
             'table_name',
             'hidden' => new Expression('IFNULL(hidden, 0)'),
             'single' => new Expression('IFNULL(single, 0)'),
-            'is_junction_table',
             'user_create_column',
             'user_update_column',
             'date_create_column',
@@ -267,12 +280,10 @@ class SQLiteSchema extends AbstractSchema
             'sort' => $columnInfo->getOrdinalPosition(),
             'column_type' => $columnInfo->getDataType(),
             'ui' => ArrayUtils::get($directusColumnInfo, 'ui', null),
-            'system' => ArrayUtils::get($directusColumnInfo, 'system', 0),
-            'master' => ArrayUtils::get($directusColumnInfo, 'master', 0),
             'hidden_list' => ArrayUtils::get($directusColumnInfo, 'hidden_list', 0),
             'hidden_input' => ArrayUtils::get($directusColumnInfo, 'hidden_input', 0),
             'relationship_type' => ArrayUtils::get($directusColumnInfo, 'relationship_type', null),
-            'table_related' => ArrayUtils::get($directusColumnInfo, 'table_related', null),
+            'related_table' => ArrayUtils::get($directusColumnInfo, 'related_table', null),
             'junction_table' => ArrayUtils::get($directusColumnInfo, 'junction_table', null),
             'junction_key_left' => ArrayUtils::get($directusColumnInfo, 'junction_key_left', null),
             'junction_key_right' => ArrayUtils::get($directusColumnInfo, 'junction_key_right', null),
@@ -307,12 +318,10 @@ class SQLiteSchema extends AbstractSchema
             'sort',
             'column_type' => new Expression('NULL'),
             'ui',
-            'system',
-            'master',
             'hidden_list',
             'hidden_input',
             'relationship_type',
-            'table_related',
+            'related_table',
             'junction_table',
             'junction_key_left',
             'junction_key_right',
@@ -417,5 +426,10 @@ class SQLiteSchema extends AbstractSchema
     public function getColumnUI($column)
     {
         // TODO: Implement getColumnUI() method.
+    }
+
+    public function parseType($data, $type = null)
+    {
+        return $data;
     }
 }

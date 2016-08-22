@@ -1,5 +1,4 @@
-assets/bower
-
+# Ignore configuration files
 api/config.php
 api/configuration.php
 
@@ -16,43 +15,21 @@ composer.phar
 vendor
 
 # Ignore log files, but track the log README
-api/logs/*.log
-api/tests/logs/coverage/*
+*.log
 
-docs/api-responses
-/log
-
-customFooterHTML.html
-assets/css/custom.css
-
-node_modules
-npm-debug.log
-
-build_test
-build_test.html
-build_test_release
-
-extensions/*
-!extensions/.gitignore
-ui/*
-!ui/.gitignore
-/listviews/*
-!listviews/.gitignore
-!media/.gitignore
-!media/thumbs/.gitignore
-media_auth_proxy/client_auth_proxies/*
-!media_auth_proxy/client_auth_proxies/.gitignore
-
-utils
-seperator
-
-.project
+!customs/endpoints/_example.php
+customs/extensions/*
+!customs/extensions/.gitignore
+!customs/extensions/_example/
+customs/uis/*
+!customs/uis/.gitignore
+/customs/listviews/*
+!customs/listviews/.gitignore
+!storage/uploads/.gitignore
+!storage/uploads/thumbs/.gitignore
 
 # Ignore dev files
-assets/less/directus/config.codekit
-installation/config.codekit
 .idea
-assets/scss/.sass-cache
-assets/scss/.DS_Store
 .sass-cache
 .gulp-scss-cache
+node_modules

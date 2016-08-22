@@ -87,7 +87,7 @@ function(app, Backbone, Handlebars, Directus, BasePageView, Widgets, __t, moment
         // Put non-active users into the Inactive Group.
         var hasStatusColumn = model.has(app.statusMapping.status_name);
         var statusValue = model.get(app.statusMapping.status_name);
-        if (hasStatusColumn && statusValue != app.statusMapping.active_num) {
+        if (hasStatusColumn && statusValue !== app.statusMapping.active_num) {
           data.group_id = 0;
           data.group_name = 'Inactive';
           data.inactive = true;
@@ -116,7 +116,7 @@ function(app, Backbone, Handlebars, Directus, BasePageView, Widgets, __t, moment
       for(var group in groupedData) {
         // skip inactive group
         // and push it at the end
-        if (group != 'group_0') {
+        if (group !== 'group_0') {
           data.push(groupedData[group]);
         }
       }
@@ -216,7 +216,7 @@ function(app, Backbone, Handlebars, Directus, BasePageView, Widgets, __t, moment
       }
     },
     leftToolbar: function() {
-      if(app.users.getCurrentUser().get('group').id == 1) {
+      if(app.users.getCurrentUser().get('group').id === 1) {
         return [
           new Widgets.ButtonWidget({widgetOptions: {buttonId: "addBtn", iconClass: "add", buttonClass: "", buttonText: __t('new_user')}})
         ];
@@ -266,13 +266,13 @@ function(app, Backbone, Handlebars, Directus, BasePageView, Widgets, __t, moment
 
     afterRender: function() {
       this.setView('#page-content', this.table);
-      var active = this.collection.preferences.attributes['active'];
+      var status = this.collection.preferences.get('status');
       // Ignore preferences and get all users
       // @todo: make a better solution
-      this.collection.preferences.unset('active');
-      this.collection.filters['active'] = '0,1,2';
+      this.collection.preferences.unset('status');
+      this.collection.filters['status'] = '0,1,2';
       this.collection.fetch();
-      this.collection.preferences.set('active', active);
+      this.collection.preferences.set('status', status);
     },
 
     initialize: function() {

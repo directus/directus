@@ -65,7 +65,7 @@ define(function() {
     var querystring = location.search;
 
     var params = [];
-    if (querystring && querystring.indexOf('?') == 0) {
+    if (querystring && querystring.indexOf('?') === 0) {
       params = querystring.substr(1).split('&');
     }
 
@@ -88,15 +88,15 @@ define(function() {
     var keyExistsAtIndex = -1;
     var paramFound = null;
 
-    encodeKey = typeof encodeKey == 'undefined' ? true : !!encodeKey;
-    encodeValue = typeof encodeValue  == 'undefined' ? true : !!encodeValue;
+    encodeKey = typeof encodeKey === 'undefined' ? true : !!encodeKey;
+    encodeValue = typeof encodeValue  === 'undefined' ? true : !!encodeValue;
 
     if (params) {
       for (var index in params) {
         var param = params[index];
         var result = param.indexOf('=') ? param.split('=') : param;
 
-        if (result[0] == key || result[0] == encodeURIComponent(key)) {
+        if (result[0] === key || result[0] === encodeURIComponent(key)) {
           keyExistsAtIndex = index;
           paramFound = result;
         }

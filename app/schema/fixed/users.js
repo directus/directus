@@ -4,30 +4,33 @@ define(function(require, exports, module) {
 
   var app = require('app');
 
-  function parseLocales(locales) {
-    if (!locales) {
+  function parseSelectOptions(list, callback) {
+    if (!list) {
       return null;
     }
 
     var result = {};
-    for (var key in locales) {
-      var locale = locales[key];
-      result[locale.code] = locale.name;
+    for (var key in list) {
+      if (list.hasOwnProperty(key)) {
+        callback(key, list, list[key], result);
+      }
     }
 
     return JSON.stringify(result);
   }
 
   module.exports = {
-    getUsers: function(locales) {
+    getUsers: function(locales, timezones) {
       var statusName = app.statusMapping.status_name;
+      var defaultTimezone = app.timezone;
+      var defaultLocale = app.locale;
+
       return {
         "id":"directus_users",
         "table_name":"directus_users",
         "title":"Users",
         "hidden":true,
         "single":false,
-        "is_junction_table":false,
         "footer": 1,
         "count":0,
         statusName:0,
@@ -41,7 +44,6 @@ define(function(require, exports, module) {
             "comment":"",
             "sort":0,
             "system":true,
-            "master":false,
             "hidden_list":false,
             "hidden_input":true,
             "required":false,
@@ -57,7 +59,6 @@ define(function(require, exports, module) {
             "comment":"",
             "sort":1,
             "system":true,
-            "master":false,
             "hidden_list":false,
             "hidden_input":false,
             "required":false,
@@ -72,7 +73,6 @@ define(function(require, exports, module) {
             "comment":"",
             "ui":"single_file",
             "system":false,
-            "master":false,
             "hidden_list":false,
             "hidden_input":false,
             "required":false,
@@ -86,7 +86,7 @@ define(function(require, exports, module) {
             },
             "relationship":{
               "type":"MANYTOONE",
-              "table_related":"directus_files",
+              "related_table":"directus_files",
               "junction_key_right":"avatar_file_id"
             }
           },
@@ -98,7 +98,6 @@ define(function(require, exports, module) {
             "comment":"",
             "sort":2,
             "system":false,
-            "master":false,
             "hidden_list":false,
             "hidden_input":true,
             "required":false,
@@ -112,7 +111,6 @@ define(function(require, exports, module) {
             "is_nullable":"NO",
             "ui":"directus_user",
             "system":false,
-            "master":false,
             "hidden_list":true,
             "hidden_input":true,
             "required":false,
@@ -126,13 +124,13 @@ define(function(require, exports, module) {
             "type":"VARCHAR",
             "char_length":"50",
             "is_nullable":"NO",
+            "default_value":"",
             "comment":"",
             "sort":3,
             "system":false,
-            "master":false,
             "hidden_list":false,
             "hidden_input":false,
-            "required":false,
+            "required":true,
             "ui":"textinput",
             "options": {
               "size": "medium"
@@ -148,10 +146,9 @@ define(function(require, exports, module) {
             "comment":"",
             "sort":5,
             "system":false,
-            "master":false,
             "hidden_list":false,
             "hidden_input":false,
-            "required":false,
+            "required":true,
             "ui":"textinput",
             "options": {
               "size": "medium"
@@ -168,10 +165,9 @@ define(function(require, exports, module) {
             "sort":6,
             "ui":"textinput",
             "system":false,
-            "master":false,
             "hidden_list":false,
             "hidden_input":false,
-            "required":false,
+            "required":true,
             "options": {
               "size": "medium"
             }
@@ -187,7 +183,6 @@ define(function(require, exports, module) {
             "sort":30,
             "ui":"textinput",
             "system":false,
-            "master":false,
             "hidden_list":false,
             "hidden_input":false,
             "required":false,
@@ -206,7 +201,6 @@ define(function(require, exports, module) {
             "sort":31,
             "ui":"textinput",
             "system":false,
-            "master":false,
             "hidden_list":false,
             "hidden_input":false,
             "required":false,
@@ -225,7 +219,6 @@ define(function(require, exports, module) {
             "sort":32,
             "ui":"textinput",
             "system":false,
-            "master":false,
             "hidden_list":false,
             "hidden_input":false,
             "required":false,
@@ -244,7 +237,6 @@ define(function(require, exports, module) {
             "sort":33,
             "ui":"textinput",
             "system":false,
-            "master":false,
             "hidden_list":false,
             "hidden_input":false,
             "required":false,
@@ -263,7 +255,6 @@ define(function(require, exports, module) {
             "sort":34,
             "ui":"textinput",
             "system":false,
-            "master":false,
             "hidden_list":false,
             "hidden_input":false,
             "required":false,
@@ -282,7 +273,6 @@ define(function(require, exports, module) {
             "sort":35,
             "ui":"textinput",
             "system":false,
-            "master":false,
             "hidden_list":false,
             "hidden_input":false,
             "required":false,
@@ -301,7 +291,6 @@ define(function(require, exports, module) {
             "sort":36,
             "ui":"textinput",
             "system":false,
-            "master":false,
             "hidden_list":false,
             "hidden_input":false,
             "required":false,
@@ -318,7 +307,6 @@ define(function(require, exports, module) {
             "comment":"CMS messages will also be sent to email address above",
             "sort":6,
             "system":false,
-            "master":false,
             "hidden_list":false,
             "hidden_input":false,
             "required":false,
@@ -334,7 +322,6 @@ define(function(require, exports, module) {
             "comment":"Passwords are encrypted, if forgotten they must be reset",
             "sort":10,
             "system":true,
-            "master":false,
             "hidden_list":true,
             "hidden_input":false,
             "required":true,
@@ -353,7 +340,6 @@ define(function(require, exports, module) {
             "comment":"",
             "sort":11,
             "system":true,
-            "master":false,
             "hidden_list":true,
             "hidden_input":true,
             "required":true,
@@ -369,7 +355,6 @@ define(function(require, exports, module) {
             "comment":"This is your user's API authentication token. Keep it safe!",
             "sort":12,
             "system":true,
-            "master":false,
             "hidden_list":false,
             "hidden_input":false,
             "required":true,
@@ -389,7 +374,6 @@ define(function(require, exports, module) {
             "comment":"",
             "sort":13,
             "system":true,
-            "master":false,
             "hidden_list":true,
             "hidden_input":true,
             "required":false,
@@ -405,7 +389,6 @@ define(function(require, exports, module) {
             "comment":"",
             "sort":14,
             "system":true,
-            "master":false,
             "hidden_list":false,
             "hidden_input":true,
             "required":false,
@@ -419,7 +402,6 @@ define(function(require, exports, module) {
             "comment":"",
             "sort":15,
             "system":true,
-            "master":false,
             "hidden_list":false,
             "hidden_input":true,
             "required":false,
@@ -434,7 +416,6 @@ define(function(require, exports, module) {
             "comment":"",
             "sort":20,
             "system":false,
-            "master":false,
             "hidden_list":false,
             "hidden_input":true,
             "required":false,
@@ -449,7 +430,6 @@ define(function(require, exports, module) {
             "comment":"",
             "sort":21,
             "system":false,
-            "master":false,
             "hidden_list":false,
             "hidden_input":true,
             "required":false,
@@ -465,7 +445,6 @@ define(function(require, exports, module) {
             "comment":"",
             "sort":22,
             "system":false,
-            "master":false,
             "hidden_list":false,
             "hidden_input":true,
             "required":false,
@@ -481,7 +460,6 @@ define(function(require, exports, module) {
             "comment":"",
             "sort":23,
             "system":true,
-            "master":false,
             "hidden_list":false,
             "hidden_input":true,
             "required":false,
@@ -495,7 +473,6 @@ define(function(require, exports, module) {
             "comment":"Determines this user's access",
             "sort":8,
             "system":false,
-            "master":false,
             "hidden_list":false,
             "hidden_input":false,
             "required":true,
@@ -505,13 +482,14 @@ define(function(require, exports, module) {
             "ui":"many_to_one",
             "options": {
               "id": "many_to_one",
-              "table_related": "directus_groups",
+              "related_table": "directus_groups",
               "visible_column": "name",
+              "allow_null": 0,
               "visible_column_template": "{{name}}"
             },
             "relationship":{
               "type":"MANYTOONE",
-              "table_related":"directus_groups",
+              "related_table":"directus_groups",
               "junction_key_right":"group_id"
             }
           },
@@ -521,18 +499,40 @@ define(function(require, exports, module) {
             "type":"VARCHAR",
             "char_length":"8",
             "is_nullable":"YES",
-            "default_value":"en",
+            "default_value": defaultLocale,
             "comment":"",
             "sort":37,
             "ui":"select",
             "system":false,
-            "master":false,
             "hidden_list":false,
             "hidden_input":false,
             "required":false,
             "options": {
               "allow_null": false,
-              "options": parseLocales(locales)
+              "options": parseSelectOptions(locales, function(key, list, locale, result) {
+                result[locale.code] = locale.name;
+              })
+            }
+          },
+          {
+            "id":"timezone",
+            "column_name":"timezone",
+            "type":"VARCHAR",
+            "char_length":"32",
+            "is_nullable":"YES",
+            "default_value": defaultTimezone,
+            "comment":"",
+            "sort":38,
+            "ui":"select",
+            "system":false,
+            "hidden_list":false,
+            "hidden_input":false,
+            "required":false,
+            "options": {
+              "allow_null": false,
+              "options": parseSelectOptions(timezones, function(key, list, name, result) {
+                result[key] = name;
+              })
             }
           }
         ]

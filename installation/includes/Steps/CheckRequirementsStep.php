@@ -16,8 +16,8 @@ class CheckRequirementsStep extends AbstractStep
         parent::preRun($state);
 
         $errors = [];
-        if (version_compare(PHP_VERSION, '5.4.0', '<')) {
-            $errors[] = 'Your host needs to use PHP 5.4.10 or higher to run this version of Directus!';
+        if (version_compare(PHP_VERSION, '5.5.0', '<')) {
+            $errors[] = 'Your host needs to use PHP 5.5.0 or higher to run this version of Directus!';
         }
 
         if (!defined('PDO::ATTR_DRIVER_NAME')) {
@@ -26,6 +26,10 @@ class CheckRequirementsStep extends AbstractStep
 
         if (!extension_loaded('gd') || !function_exists('gd_info')) {
             $errors[] = 'Your host needs to have GD Library enabled to run this version of Directus!';
+        }
+
+        if (!extension_loaded('fileinfo') || !class_exists('finfo')) {
+            $errors[] = 'Your host needs to have File Information extension enabled to run this version of Directus!';
         }
 
         if (!file_exists(BASE_PATH.'/vendor/autoload.php')) {
@@ -38,10 +42,5 @@ class CheckRequirementsStep extends AbstractStep
         }
 
         return $this->response;
-    }
-
-    public function validate($data)
-    {
-        parent::validate($data);
     }
 }

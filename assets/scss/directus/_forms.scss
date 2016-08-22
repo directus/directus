@@ -160,9 +160,13 @@ select,
   &:hover {
     // color: darken($darkGrey, 20%);
     border-color: $mediumGrey;
+    &:disabled {
+      border-color: $fieldColor;
+    }
   }
   &:disabled {
     color: $mediumGrey;
+    cursor: not-allowed;
   }
   &:disabled:hover {
     //border: solid 1px $lightGrey;
@@ -296,6 +300,7 @@ select,
       padding: 44px $standardPad $largePad $largePad;
       vertical-align: top;
       width: 200px;
+      min-width: 200px;
       label {
         position: relative;
         text-transform: capitalize;

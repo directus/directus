@@ -136,7 +136,7 @@ define(['moment', 'core/t'], function(moment, __t) {
         return '';
       }
       //@todo: convert value to correct timezone
-      value = (value.substr(-1).toLowerCase() == 'z') ? value : value + 'z';
+      value = (value.substr(-1).toLowerCase() === 'z') ? value : value + 'z';
       return moment(value).fromNow();
     },
 

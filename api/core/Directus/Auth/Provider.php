@@ -73,7 +73,10 @@ class Provider {
             $password = self::hashPassword($passwordAttempt);
             $zendDb = Bootstrap::get('zendDb');
             $usersTable = new TableGateway('directus_users', $zendDb);
-            $usersTable->update(['password' => $password], ['id' => $uid]);
+            $usersTable->update([
+                'password' => $password,
+                'access_token' => sha1($uid.StringUtils::random())
+            ], ['id' => $uid]);
         }
 
         if(password_verify($passwordAttempt, $password)) {

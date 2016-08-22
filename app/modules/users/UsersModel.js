@@ -9,6 +9,11 @@ function(app, Backbone, EntriesModel, moment) {
 
   return EntriesModel.extend({
 
+    defaults: {
+      first_name: '',
+      last_name: ''
+    },
+
     getAvatar: function() {
       var currentUserAvatar = this.get('avatar');
       if (this.get('avatar_file_id') && this.get('avatar_file_id').has('name')) {
@@ -18,7 +23,7 @@ function(app, Backbone, EntriesModel, moment) {
       } else {
         currentUserAvatar = currentUserAvatar.replace('?s=100','?s=200');
       }
-      
+
       return currentUserAvatar;
     },
 

@@ -61,7 +61,7 @@ define(function(require, exports, module) {
         preferences.columns_visible = preferences.columns_visible.split(',');
       }
 
-      var result = _.extend(filters, _.pick(preferences, 'columns_visible', 'sort', 'sort_order', app.statusMapping.status_name));
+      var result = _.extend(filters, _.pick(preferences, 'columns_visible', 'sort', 'sort_order', 'status'));
 
       // preferences normally trump filters, this is an edge case
       // @todo fix the data structure to make this logic less wierd
@@ -86,7 +86,7 @@ define(function(require, exports, module) {
         return Math.max(this.table.get('total'), collectionCount);
       }
 
-      var visibleStates = this.getFilter(app.statusMapping.status_name).split(',');
+      var visibleStates = this.getFilter('status').split(',');
       totalCount = 0;
 
       var that = this;
@@ -97,7 +97,6 @@ define(function(require, exports, module) {
       });
 
       return Math.max(totalCount, collectionCount);
-
     },
 
     updateActiveCount: function(diff) {
@@ -105,7 +104,7 @@ define(function(require, exports, module) {
         return;
       }
 
-      switch (this.getFilter('active')) {
+      switch (this.getFilter('status')) {
         case '1':
           this.table.set({'active': this.table.get('active') - diff});
           break;
@@ -273,16 +272,62 @@ define(function(require, exports, module) {
         permissionName = permissionType.substr(3);
       }
 
-      if (this.privileges.has('allow_' + permissionName) && permissionLevel <= this.privileges.get('allow_' + permissionName)) {
+      if (this.privileges && this.privileges.has('allow_' + permissionName) && permissionLevel <= this.privileges.get('allow_' + permissionName)) {
         return true;
       }
 
       return false;
     },
 
+    getFieldBlacklist: function(permission) {
+      var fieldBlacklist = [];
+      if (this.privileges) {
+        fieldBlacklist = this.privileges.get(permission + '_field_blacklist') || '';
+        fieldBlacklist = fieldBlacklist.split(',');
+      }
+
+      return fieldBlacklist;
+    },
+
+    can: function(permission) {
+      var privileges = this.privileges;
+      if (permission.indexOf('allow_') !== 0) {
+        permission = 'allow_' + permission;
+      }
+
+      return (privileges && this.privileges.get(permission) > 0);
+    },
+
+    canView: function() {
+      return this.can('view');
+    },
+
+    canEdit: function() {
+      return this.can('edit');
+    },
+
+    canAdd: function() {
+      return this.can('add')
+    },
+
+    canDelete: function() {
+      return this.can('delete');
+    },
+
+    getWriteFieldBlacklist: function() {
+      return this.getFieldBlacklist('write');
+    },
+
+    getReadFieldBlacklist: function() {
+      return this.getFieldBlacklist('read');
+    },
+
     isWriteBlacklisted: function(attribute) {
-      var writeBlacklist = (this.privileges.get('write_field_blacklist') || '').split(',');
-      return _.contains(writeBlacklist, attribute);
+      return _.contains(this.getWriteFieldBlacklist(), attribute);
+    },
+
+    isReadBlacklisted: function(attribute) {
+      return _.contains(this.getReadFieldBlacklist(), attribute);
     },
 
     initialize: function(models, options) {
@@ -312,7 +357,7 @@ define(function(require, exports, module) {
         this.filters['sort'] = 'sort';
       }
 
-      this.filters[app.statusMapping.status_name] = '1,2';
+      this.filters['status'] = '1,2';
 
       if (options.preferences) {
         this.preferences = options.preferences;

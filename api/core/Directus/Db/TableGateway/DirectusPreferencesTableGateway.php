@@ -40,7 +40,7 @@ class DirectusPreferencesTableGateway extends AclAwareTableGateway {
     public static $defaultPreferencesValues = array(
         "sort"          => "id",
         "sort_order"    => "ASC",
-        STATUS_COLUMN_NAME        => "1,2",
+        "status"        => "1,2",
         "title"         => null
     );
 
@@ -148,13 +148,15 @@ class DirectusPreferencesTableGateway extends AclAwareTableGateway {
             ->selectWith($select)
             ->current();
 
-        if($preferences) {
+        if ($preferences) {
             $preferences = $preferences->toArray();
-        } else {
+        }
+
+        if ($preferences) {
             $preferences = $this->constructPreferences($user_id, $table, $preferences);
         }
 
-        return $preferences;
+        return $this->parseRecord($preferences);
     }
 
     /*
@@ -173,15 +175,15 @@ class DirectusPreferencesTableGateway extends AclAwareTableGateway {
             ->selectWith($select)
             ->current();
 
-        if(!$preferences) {
+        if (!$preferences) {
           return $this->constructPreferences($user_id, $table);
         }
 
-        if($preferences) {
+        if ($preferences) {
             $preferences = $preferences->toArray();
         }
 
-        return $preferences;
+        return $this->parseRecord($preferences);
     }
 
     public function updateDefaultByName($user_id, $table, $data) {
@@ -204,7 +206,7 @@ class DirectusPreferencesTableGateway extends AclAwareTableGateway {
     // @param $assoc return associative array with table_name as keys
     public function fetchAllByUser($user_id, $assoc = false) {
       $select = new Select($this->table);
-      $select->columns(array('id', 'user', 'table_name', 'columns_visible', 'sort', 'sort_order', STATUS_COLUMN_NAME, 'title', 'search_string'));
+      $select->columns(array('id', 'user', 'table_name', 'columns_visible', 'sort', 'sort_order', 'status', 'title', 'search_string'));
 
       $select->where->equalTo('user', $user_id)
         ->isNull('title');

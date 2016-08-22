@@ -43,7 +43,7 @@ define(function(require, exports, module) {
           this.relationship.parent = this;
         }
 
-        result.header = result.master || result.header === true || result.header === "true" || result.header == 1;
+        result.header = result.header === true || result.header === "true" || result.header === 1;
         // UI Settings input should not be require by default
         // if required and is_nullable is not set
         // should fallback to required = false, is_nullable = YES
@@ -58,7 +58,7 @@ define(function(require, exports, module) {
       },
 
       getRelated: function() {
-        return this.relationship.get('table_related');
+        return this.relationship.get('related_table');
       },
 
       getTable: function() {

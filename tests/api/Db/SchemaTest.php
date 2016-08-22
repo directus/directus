@@ -73,6 +73,12 @@ class SchemaTest extends PHPUnit_Framework_TestCase
         $this->checkArrayKeys(Schema::getTemplates());
     }
 
+    public function testDirectusTables()
+    {
+        $this->assertTrue(Schema::isDirectusTable('directus_files'));
+        $this->assertFalse(Schema::isDirectusTable('directus_storage'));
+    }
+
     private function checkArrayKeys(array $array)
     {
         foreach($array as $item) {

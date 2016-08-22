@@ -3,7 +3,7 @@ define(['schema/fixed/users'], function(schema) {
 
   beforeEach(function() {
     defaultAppOptions(require('app'));
-    users = schema.getUsers();
+    users = schema.getUsers({en: "English"});
   });
 
   describe('Users Table', function() {
@@ -13,7 +13,6 @@ define(['schema/fixed/users'], function(schema) {
       expect(users.title).toBe('Users');
       expect(users.hidden).toBe(true);
       expect(users.single).toBe(false);
-      expect(users.is_junction_table).toBe(false);
       expect(users.footer).toBe(1);
       expect(users.count).toBe(0);
       expect(users.statusName).toBe(0);
@@ -49,7 +48,9 @@ define(['schema/fixed/users'], function(schema) {
         'last_login',
         'last_page',
         'ip',
-        'group'
+        'group',
+        'language',
+        'timezone'
       ];
 
       expect(columns.length).toBe(expectedColumns.length);

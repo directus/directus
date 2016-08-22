@@ -61,6 +61,9 @@
 .margin-top-standard {
     margin-top: $standardPad;
 }
+.field-note {
+  max-width: 420px;
+}
 
 ////////////
 //  BUTTONS
@@ -479,10 +482,11 @@ input[type="date"]::-webkit-inner-spin-button {
 }
 .tt-suggestions {
   background-color: $white;
-  border: 1px solid $lightGrey;
-  width: 200px;
+  border: 1px solid $primaryColor;
+  width: auto;
   padding: 0;
-  margin: 0;
+  margin: 4px 0 0 0;
+  @include border-radius(4px, 4px, 4px, 4px);
   .tt-suggestion {
     display: block;
     height: 100%;
@@ -492,6 +496,7 @@ input[type="date"]::-webkit-inner-spin-button {
     max-height: 80px;
     overflow: hidden;
     text-overflow: ellipsis;
+    @include border-radius(4px, 4px, 4px, 4px);
     &.tt-is-under-cursor, &.tt-cursor {
       background-color: $tableRowHover;
     }

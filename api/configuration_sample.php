@@ -9,16 +9,16 @@ return array(
   // @TODO: the option to have multiple filesystem
   'filesystem' => array(
     'adapter' => 'local',
-    // By default the media directory is located within the directus root
-    // To shift a outsite the Directus root directory use this instead
+    // By default the media directory is located within the Directus root
+    // To shift a outsite the Directus root directory use this instead:
     // 'root' => realpath(BASE_PATH.'/../media'),
     // Note: BASE_PATH constant does not end with a trailing slash
-    'root' => BASE_PATH . '/media',
+    'root' => BASE_PATH . '/storage/uploads',
     // This is the url where all files/media will be pointing to
     // All orignial files will exist at your-domain.com/media
-    'root_url' => '/media',
+    'root_url' => '/storage/uploads',
     // All thumbnails will exist at your-domain.com/media/thumbs
-    'root_thumb_url' => '/media/thumbs',
+    'root_thumb_url' => '/storage/uploads/thumbs',
     //   'key'    => 's3-key',
     //   'secret' => 's3-key',
     //   'region' => 's3-region',
@@ -51,10 +51,6 @@ return array(
 
   // Use these hooks to extend the base Directus functionality
   'hooks' => array(
-    'application.error' => function($e) {
-      $log = \Directus\Bootstrap::get('log');
-      $log->error($e);
-    },
     'postInsert' => function ($TableGateway, $record, $db, $acl) {
       // ...
     },
@@ -91,4 +87,5 @@ return array(
       'sort' => 2
     )
   )
+
 );

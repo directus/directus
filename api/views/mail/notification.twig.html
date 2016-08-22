@@ -1,1 +1,6 @@
-<?= $message; ?>
+{% extends "mail/base.twig.html" %}
+{% block content %}
+
+{{ message }}
+
+{% endblock %}

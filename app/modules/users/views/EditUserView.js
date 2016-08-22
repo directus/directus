@@ -29,7 +29,7 @@ function(app, Backbone, Directus, BasePageView, __t, Widgets) {
     saveConfirm: function(e) {
       var data = this.editView.data();
       var that = this;
-      if(data[app.statusMapping.status_name] && data[app.statusMapping.status_name] == app.statusMapping.deleted_num) {
+      if(data[app.statusMapping.status_name] && data[app.statusMapping.status_name] === app.statusMapping.deleted_num) {
         app.router.openModal({type: 'confirm', text: __t('confirm_delete_item'), callback: function() {
           that.save(e);
         }});
@@ -58,7 +58,6 @@ function(app, Backbone, Directus, BasePageView, __t, Widgets) {
         };
       } else {
         success = function(model, response, options) {
-          console.log("Success");
           var route = Backbone.history.fragment.split('/');
           route.pop();
           if (action === 'save-form-add') {
@@ -71,7 +70,6 @@ function(app, Backbone, Directus, BasePageView, __t, Widgets) {
       }
 
       if (action === 'save-form-copy') {
-        console.log('cloning...');
         var clone = model.toJSON();
         delete clone.id;
         model = new collection.model(clone, {collection: collection, parse: true});
@@ -82,7 +80,7 @@ function(app, Backbone, Directus, BasePageView, __t, Widgets) {
       model.save(model.diff(data), {
         success: success,
         error: function(model, xhr, options) {
-          console.log('err');
+          console.error('err');
         },
         wait: true,
         patch: true,
@@ -91,6 +89,13 @@ function(app, Backbone, Directus, BasePageView, __t, Widgets) {
     },
 
     leftToolbar: function() {
+      var collection = this.model.collection;
+      var canAdd = this.model.isNew() && collection.canAdd();
+      var canEdit = !this.model.isNew() && collection.canEdit();
+      if (!canAdd && !canEdit) {
+        return;
+      }
+
       this.saveWidget = new Widgets.SaveWidget({widgetOptions: {basicSave: this.headerOptions.basicSave}});
       this.saveWidget.setSaved(false);
       return [

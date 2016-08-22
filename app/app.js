@@ -12,6 +12,10 @@ define(function(require, exports, module) {
   // Load layout manager so it can be configured
   require('plugins/backbone.layoutmanager');
 
+  // Load Backbone Model Track it plugin
+  // Track Model changes
+  require('plugins/backbone.trackit');
+
   // Globally load Bootstrap plugins
   require('plugins/bootstrap-dropdown');
   require('plugins/typeahead');
@@ -117,15 +121,6 @@ define(function(require, exports, module) {
     var formData = new FormData();
 
     var success = function(responseData) {
-
-      //Parse response date
-      responseData = _.map(responseData, function(item) {
-        // Safari hates dashes apparently
-        // http://stackoverflow.com/a/5646753/1772076
-        item.date_uploaded = new Date(item.date_uploaded.replace(/-/g, '/'));
-        return item;
-      });
-
       callback.apply(this, [responseData]);
     };
 
@@ -144,9 +139,9 @@ define(function(require, exports, module) {
       contentType: false,
       processData: false,
       success: success,
-      error: function(err1, err2, err3) {
+      error: function() {
         app.trigger('alert','upload failed', arguments);
-        //console.log('ERRRRRROOOORRR!!', err1, err2, err3);
+        callback.apply(this, []);
       },
       xhr: function() {  // custom xhr
         var myXhr = $.ajaxSettings.xhr();

@@ -9,11 +9,20 @@ use Directus\Bootstrap;
 
 class ExceptionHandler
 {
+    /**
+     * Hook Emitter Instance
+     *
+     * @var \Directus\Hook\Emitter
+     */
+    protected $emitter;
+
     public function __construct()
     {
         set_error_handler([$this, 'handleError']);
         set_exception_handler([$this, 'handleException']);
         register_shutdown_function([$this, 'handleShutdown']);
+
+        $this->emitter = Bootstrap::get('hookEmitter');
     }
 
     /**
@@ -31,7 +40,7 @@ class ExceptionHandler
     {
         if (error_reporting() & $level) {
             $e = new ErrorException($message, 0, $level, $file, $line);
-            Hook::run('application.error', $e);
+            $this->emitter->run('application.error', $e);
         }
     }
 
@@ -43,7 +52,7 @@ class ExceptionHandler
      */
     public function handleException($e)
     {
-        Hook::run('application.error', $e);
+        $this->emitter->run('application.error', $e);
         $app = Bootstrap::get('app');
         $exceptionView = new ExceptionView();
         $exceptionView->exceptionHandler($app, $e);
@@ -61,7 +70,7 @@ class ExceptionHandler
                 $error['message'], $error['type'], 0, $error['file'], $error['line']
             );
 
-            Hook::run('application.error', $e);
+            $this->emitter->run('application.error', $e);
         }
     }
 

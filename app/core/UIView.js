@@ -9,7 +9,7 @@ define(function(require, exports, module) {
 
   module.exports = Backbone.Layout.extend({
     // base template route
-    prefix: 'app/core-ui/',
+    prefix: 'app/core/uis/',
     // Handlebars template source
     templateSource: null,
     templateCompileOptions: {},
@@ -23,6 +23,10 @@ define(function(require, exports, module) {
     columnSchema: null,
     model: null,
     settings: null,
+
+    isRequired: function() {
+      return this.columnSchema.get('required') === true;
+    },
 
    /**
     * Default constructor

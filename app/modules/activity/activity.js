@@ -71,24 +71,24 @@ function(app, Backbone, Handlebars, Directus, Chart, Files, BasePageView, moment
         }
 
         //If table is files set to clip
-        if(data.table == "directus_files") {
+        if(data.table === "directus_files") {
           data.is_file = true;
           data.title = JSON.parse(model.get('data'))['name'];
         }
 
         //If table is files set to clip
-        if(data.table == "directus_ui") {
+        if(data.table === "directus_ui") {
           data.is_system = true;
           data.title = model.get('identifier').substring(0, model.get('identifier').indexOf(','));
         }
 
         //If table is Messages set to message
-        if(data.table == "directus_messages") {
+        if(data.table === "directus_messages") {
           if(JSON.parse(model.get('data')).response_to) {
             data.is_reply = true;
             data.link = "messages/" + JSON.parse(model.get('data')).response_to;
           } else {
-            if(model.get('type') == "MESSAGE") {
+            if(model.get('type') === "MESSAGE") {
               if(!app.messages.get(model.get('row_id'))) {
                 data.hidden = true;
               } else {
@@ -114,7 +114,7 @@ function(app, Backbone, Handlebars, Directus, Chart, Files, BasePageView, moment
           if(!data.title) {
             data.title = model.get('identifier');
           }
-          if(model.get('action') == "ADD") {
+          if(model.get('action') === "ADD") {
             data.isNew = true;
           }
         }
@@ -147,7 +147,7 @@ function(app, Backbone, Handlebars, Directus, Chart, Files, BasePageView, moment
         var date = moment(group.timestamp).format('MMMM-D-YYYY');
         if(!groupedData[date]) {
           //If Today Have it say Today
-          if(date == moment().format('MMMM-D-YYYY')) {
+          if(date === moment().format('MMMM-D-YYYY')) {
             groupedData[date] = {title: "Today", data: []};
           } else {
             groupedData[date] = {title: moment(group.timestamp).format('MMMM D, YYYY'), data: []};

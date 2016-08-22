@@ -18,30 +18,45 @@ function(app, Backbone, Handlebars, __t, Directus, BasePageView, Widgets, Histor
       this.insertView("#editFormEntry", this.editView);
       this.insertView("#historyFormEntry", this.historyView);
 
-      if(this.translateView) {
-        this.insertView("#translateFormEntry", this.translateView);
+      if (this.translateViews.length) {
+        _.each(this.translateViews, function(view) {
+          this.insertView("#translateFormEntry", view);
+        }, this);
       }
 
-      if(this.model.isNew()) {
+      if (this.skipFetch || this.model.isNew()) {
         this.editView.render();
       }
     },
     beforeSaveHook: function() {
-      if(this.translateView) {
-        this.translateView.saveTranslation();
+      if (this.translateViews.length) {
+        _.each(this.translateViews, function(view) {
+          view.saveTranslation();
+        }, this);
       }
     },
     data: function() {
       return this.editView.data();
     },
     initialize: function(options) {
-      var uis = options.model.structure.pluck('ui');
-      var translationIndex = uis.indexOf('translation');
-      if(translationIndex !== -1) {
-        var translateId = options.model.structure.models[translationIndex].id;
-        options.hiddenFields = [translateId];
-        this.translateView = new TranslationView({model: options.model, translateId: translateId, translateSettings:options.model.structure.models[translationIndex].options.attributes, translateRelationship: options.model.structure.models[translationIndex].relationship.attributes});
-      }
+      this.skipFetch = options.skipFetch;
+      this.translateViews = [];
+
+      options.hiddenFields = [];
+      options.model.structure.each(function(model) {
+        if (model.get('ui') === 'translation') {
+          var translateId = model.id;
+          options.hiddenFields.push(translateId);
+          var view = new TranslationView({
+            model: options.model,
+            translateId: translateId,
+            translateSettings: model.options.attributes,
+            translateRelationship: model.relationship.attributes
+          });
+
+          this.translateViews.push(view);
+        }
+      }, this);
 
       this.editView = new Directus.EditView(options);
       this.historyView = new HistoryView(options);
@@ -100,7 +115,7 @@ function(app, Backbone, Handlebars, __t, Directus, BasePageView, Widgets, Histor
     saveConfirm: function(e) {
       var data = this.editView.data();
       var that = this;
-      if(data[app.statusMapping.status_name] && data[app.statusMapping.status_name] == app.statusMapping.deleted_num) {
+      if(data[app.statusMapping.status_name] && data[app.statusMapping.status_name] === app.statusMapping.deleted_num) {
         app.router.openModal({type: 'confirm', text: 'Are you sure you want to delete this item?', callback: function() {
           that.save(e);
         }});
@@ -118,7 +133,7 @@ function(app, Backbone, Handlebars, __t, Directus, BasePageView, Widgets, Histor
       }
 
       if(this.single && action !== 'save-form-stay' && action !== 'save-form-leave') {
-        console.log('This shouldn\'t be happening');
+        console.error('This shouldn\'t be happening');
         return;
       }
 
@@ -130,8 +145,8 @@ function(app, Backbone, Handlebars, __t, Directus, BasePageView, Widgets, Histor
       var success;
 
       for(var key in data) {
-        if(model.structure.get(key).options && model.structure.get(key).options.get('allow_null') == '1') {
-          if(data[key] == '') {
+        if(model.structure.get(key).options && model.structure.get(key).options.get('allow_null') === '1') {
+          if(data[key] === '') {
             data[key] = null;
           }
         }
@@ -169,7 +184,7 @@ function(app, Backbone, Handlebars, __t, Directus, BasePageView, Widgets, Histor
 
       var changedValues = model.diff(data);
 
-      if(changedValues[app.statusMapping.status_name] && changedValues[app.statusMapping.status_name] == app.statusMapping.deleted_num ) {
+      if(changedValues[app.statusMapping.status_name] && changedValues[app.statusMapping.status_name] === app.statusMapping.deleted_num ) {
         var value = app.statusMapping.deleted_num;
         var options = {success: success, wait: true, patch: true, includeRelationships: true};
         try {
@@ -184,12 +199,12 @@ function(app, Backbone, Handlebars, __t, Directus, BasePageView, Widgets, Histor
         model.save(changedValues, {
           success: success,
           error: function(model, xhr, options) {
-            console.log('err');
+            console.error('err');
             //Duplicate entry, forced but works
             //@todo finds a better way to determine whether there's an duplicate error
             // and what's the column's name
             var response = JSON.parse(xhr.responseText);
-            if (response.message.indexOf('Duplicate entry') != -1) {
+            if (response.message.indexOf('Duplicate entry') !== -1) {
               var columnName = response.message.split('for key')[1].trim();
               columnName = columnName.substring(1, columnName.lastIndexOf("'"));
               app.router.openModal({type: 'alert', text: 'This item was not saved because its "' + columnName + '" value is not unique.'});
@@ -208,7 +223,7 @@ function(app, Backbone, Handlebars, __t, Directus, BasePageView, Widgets, Histor
       this.setView('#page-content', this.editView);
 
       //Fetch Model if Exists
-      if (this.model.has(this.model.idAttribute)) {
+      if (!this.skipFetch && this.model.has(this.model.idAttribute)) {
         this.model.fetch({
           dontTrackChanges: true,
           error: function(model, XMLHttpRequest) {
@@ -238,13 +253,16 @@ function(app, Backbone, Handlebars, __t, Directus, BasePageView, Widgets, Histor
     },
 
     initialize: function(options) {
+      options = _.defaults({}, options, {skipFetch: false});
       this.headerOptions = this.getHeaderOptions();
       this.isBatchEdit = options.batchIds !== undefined;
       this.single = this.model.collection.table.get('single');
       this.editView = new EditView(options);
       this.headerOptions.route.isOverlay = false;
       this.headerOptions.basicSave = false;
-      if(this.single) {
+      this.skipFetch = options.skipFetch;
+
+      if (this.single) {
         this.headerOptions.route.title = 'Editing ' + this.model.collection.table.id;
         this.headerOptions.route.breadcrumbs = [{ title: __t('tables'), anchor: '#tables'}];
       } else {

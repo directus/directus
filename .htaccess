@@ -1,3 +1,6 @@
+# Hide directory listings
+Options -Indexes
+
 # No font warnings please
 AddType font/ttf .ttf
 AddType font/eot .eot
@@ -6,6 +9,8 @@ AddType font/woff .woff
 
 <ifModule mod_rewrite.c>
     RewriteEngine On
+    # Uncomment this if you are getting routing errors:
+    # RewriteBase /
 
     RewriteRule ^assets - [L,NC]
     RewriteRule ^extensions/([^/]+) - [L,NC]

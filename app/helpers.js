@@ -8,8 +8,6 @@ require([
 
   "use strict";
 
-  var unknowUserMessage = "A missing or removed user";
-
   Handlebars.registerHelper('imagesPath', function() {
     return app.PATH + 'assets/img/';
   });
@@ -75,7 +73,7 @@ require([
       //throw new Error('The date is not in a correct date format');
       return '-';
     }
-    //date = (date.substr(-1).toLowerCase() == 'z') ? date : date + 'z';
+    //date = (date.substr(-1).toLowerCase() === 'z') ? date : date + 'z';
     return new Handlebars.SafeString('<div class="contextual-date" title="'+ new Date(date) +'">' + moment(date).fromNow() + '</div>');
   });
 
@@ -85,7 +83,6 @@ require([
 
   Handlebars.registerHelper('avatarSmall', function(userId) {
     var user = app.users.get(userId);
-    if (user === undefined) return unknowUserMessage;
     return '<img src="' + user.getAvatar() + '" style="margin-right:7px;" class="avatar">' + user.get('first_name');
   });
 
@@ -105,16 +102,15 @@ require([
   Handlebars.registerHelper('userName', function(userId) {
     if (_.isNaN(userId)) return;
     var user = app.users.get(userId);
-    if (user === undefined) return unknowUserMessage;// return undefined;
     var firstName = user.get('first_name').toLowerCase();
     var lastNameFirstCharacter = user.get('last_name').toLowerCase().charAt(0);
     var nickName = firstName;
     var hit = app.users.find(function(model) {
-      return model.get('first_name').toLowerCase() === firstName && model.id != userId;
+      return model.get('first_name').toLowerCase() === firstName && model.id !== userId;
     });
     if (hit !== undefined) {
       nickName = firstName + ' ' + lastNameFirstCharacter + '.';
-      hit = app.users.find(function(model) { return model.get('first_name').toLowerCase() === firstName && model.get('last_name').toLowerCase().charAt(0) === lastNameFirstCharacter && model.id != userId; });
+      hit = app.users.find(function(model) { return model.get('first_name').toLowerCase() === firstName && model.get('last_name').toLowerCase().charAt(0) === lastNameFirstCharacter && model.id !== userId; });
       if (hit !== undefined) {
         nickName = firstName + ' ' + user.get('last_name');
       }
@@ -125,16 +121,15 @@ require([
   Handlebars.registerHelper('userShort', function(userId) {
     if (_.isNaN(userId)) return;
     var user = app.users.get(userId);
-    if (user === undefined) return 'Unknown User';
     var firstName = user.get('first_name').toLowerCase();
     var lastNameFirstCharacter = user.get('last_name').toLowerCase().charAt(0);
     var nickName = firstName;
     var hit = app.users.find(function(model) {
-      return model.get('first_name').toLowerCase() === firstName && model.id != userId;
+      return model.get('first_name').toLowerCase() === firstName && model.id !== userId;
     });
     if (hit !== undefined) {
       nickName = firstName + ' ' + lastNameFirstCharacter + '.';
-      hit = app.users.find(function(model) { return model.get('first_name').toLowerCase() === firstName && model.get('last_name').toLowerCase().charAt(0) === lastNameFirstCharacter && model.id != userId; });
+      hit = app.users.find(function(model) { return model.get('first_name').toLowerCase() === firstName && model.get('last_name').toLowerCase().charAt(0) === lastNameFirstCharacter && model.id !== userId; });
       if (hit !== undefined) {
         nickName = firstName + ' ' + user.get('last_name');
       }
@@ -144,16 +139,7 @@ require([
 
   Handlebars.registerHelper('userAvatar', function(userId) {
     var user = app.users.get(userId);
-    var avatar = '';
-
-    if(user) {
-      avatar = user.getAvatar();
-    } else {
-      // empty user object
-      var UsersModel = require('modules/users/UsersModel');
-      user = new UsersModel({}, {collection: {}});
-      avatar = user.getDefaultAvatar();
-    }
+    var avatar = user.getAvatar();
 
     return new Handlebars.SafeString('<img src="'+avatar+'" class="avatar" title="'+user.get('first_name')+' '+user.get('last_name')+'"/>');
   });
@@ -165,9 +151,6 @@ require([
 
   Handlebars.registerHelper('userFirstAndLastName', function(userId) {
     var user = app.users.get(userId);
-    if (user === undefined) {
-      return unknowUserMessage;
-    }
     return new Handlebars.SafeString(user.get('first_name')+' '+user.get('last_name'));
   });
 

@@ -28,6 +28,8 @@ class View
                 ['step' => $step, 'content' => $output]
             )
         );
+
+        $step->getResponse()->clearAll();
     }
 
     /**

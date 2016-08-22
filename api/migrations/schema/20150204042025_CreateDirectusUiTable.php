@@ -25,13 +25,11 @@ class CreateDirectusUiTable extends Ruckusing_Migration_Base
     {
       $t = $this->create_table("directus_ui", array(
           "id"=>false,
-          "options"=>""
         )
       );
 
       //columns
       $t->column("id", "integer", array(
-          "limit"=>11,
           "unsigned"=>true,
           "null"=>false,
           "auto_increment"=>true,
@@ -75,9 +73,6 @@ class CreateDirectusUiTable extends Ruckusing_Migration_Base
             'name' => 'allowed_filetypes',
             'value' => 'image/'
         ]);
-      /*$this->execute("INSERT INTO `directus_ui` (`table_name`, `column_name`, `ui_name`, `name`, `value`)
-VALUES
-  ('directus_users','avatar_file_id', 'single_file', 'allowed_filetypes', 'image/');");*/
     }//up()
 
     public function down()

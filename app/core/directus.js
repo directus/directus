@@ -35,12 +35,8 @@ function(app, EntriesCollection, EntriesModel, EntriesNestedCollection, Collecti
 
       // Allow for optionally omitting trailing /.  Since base routes do not
       // trigger with a trailing / this is actually kind of important =)
-      if (prefix[prefix.length-1] == "/") {
+      if (prefix[prefix.length-1] === "/") {
         prefix = prefix.slice(0, prefix.length-1);
-
-      // If a prefix exists, add a trailing /
-      } else if (prefix) {
-        prefix += "/";
       }
 
       // Every route needs to be prefixed

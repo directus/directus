@@ -39,4 +39,63 @@ class DateUtilsTest extends PHPUnit_Framework_TestCase
         $this->assertInstanceOf('\DateTime', $result);
         $this->assertEquals('2016-06-28 12:13:18', $result->format('Y-m-d H:i:s'));
     }
+
+    public function testDate()
+    {
+        $time = 1405267200;
+        $datetime = DateUtils::date($time);
+        $this->assertInternalType('string', $datetime);
+
+        $expected = '2014-07-13 16:00:00';
+        $this->assertEquals($expected, $datetime);
+
+        $datetime = DateUtils::date($time, '+1 days');
+        $expected = '2014-07-14 16:00:00';
+        $this->assertEquals($expected, $datetime);
+
+        $datetime = DateUtils::date($time, '+1 days', 'Y-m-d');
+        $expected = '2014-07-14';
+        $this->assertEquals($expected, $datetime);
+    }
+
+    public function testNow()
+    {
+        $datetime = DateUtils::now();
+        $this->assertInternalType('string', $datetime);
+    }
+
+    public function testAgo()
+    {
+        $datetime = DateUtils::daysAgo(1, 1405267200);
+        $this->assertInternalType('string', $datetime);
+
+        $expected = '2014-07-12 16:00:00';
+        $this->assertEquals($expected, $datetime);
+    }
+
+    public function testFutureDate()
+    {
+        $datetime = DateUtils::inDays(1, 1405267200);
+        $this->assertInternalType('string', $datetime);
+
+        $expected = '2014-07-14 16:00:00';
+        $this->assertEquals($expected, $datetime);
+    }
+
+    public function testISO()
+    {
+        $time = 1405267200;
+        $expected = '2014-07-13T16:00:00+00:00';
+
+        $datetime = DateUtils::date($time);
+        $isoDatetime = DateUtils::convertToISOFormat($datetime);
+        $this->assertEquals($expected, $isoDatetime);
+
+        $isoDatetime = DateUtils::convertToISOFormat($time);
+        $this->assertEquals($expected, $isoDatetime);
+
+        $expected = '2014-07-13T12:00:00-04:00';
+        $isoDatetime = DateUtils::convertToISOFormat($time, 'UTC', 'America/Santo_Domingo');
+        $this->assertEquals($expected, $isoDatetime);
+    }
 }

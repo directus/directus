@@ -53,13 +53,15 @@ class DirectusUiTableGateway extends AclAwareTableGateway {
      */
     public function fetchExisting() {
         $select = new Select($this->table);
-        $select->join(
-            'directus_columns',
-            'directus_ui.column_name = directus_columns.column_name AND directus_ui.table_name = directus_columns.table_name AND directus_ui.ui_name = directus_columns.ui',
-            array(),
-            $select::JOIN_INNER
-        );
 
+        // @TODO: columns created outside Directus will not exists on directus columns table
+        // This will cause to all these columns to not have any options related to it.
+        // $select->join(
+        //     'directus_columns',
+        //     'directus_ui.column_name = directus_columns.column_name AND directus_ui.table_name = directus_columns.table_name AND directus_ui.ui_name = directus_columns.ui',
+        //     array(),
+        //     $select::JOIN_INNER
+        // );
         return $this->selectWith($select);
     }
 

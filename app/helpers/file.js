@@ -27,7 +27,7 @@ define(function() {
   };
 
   FileHelper.isFileObject = function(file) {
-    return typeof File != 'undefined' ? file instanceof File : false;
+    return typeof File !== 'undefined' ? file instanceof File : false;
   };
 
   FileHelper.getDataFromInput = function(inputFile, fn) {
@@ -146,6 +146,30 @@ define(function() {
   FileHelper.getSizeFromData = function(data) {
     return (data.length - 814) / 1.37;
   };
+
+  FileHelper.humanBytesInfo = function(size, precision) {
+    precision = precision || 2;
+    var i = 0;
+    var humanSize;
+    var unit;
+
+    while ((size/1024) > 0.9) {
+      size /= 1024;
+      i++;
+    }
+
+    humanSize = Math.round(size);
+    unit = getUnit(i);
+
+    return {
+      size: humanSize.toFixed(precision),
+      unit: unit
+    }
+  };
+
+  function getUnit(index) {
+    return ['B','KB','MB','GB','TB','PB','EB','ZB','YB'][index];
+  }
 
   return FileHelper;
 });

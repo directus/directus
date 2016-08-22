@@ -83,7 +83,11 @@ function(app, Backbone, ModelHelper, TableHead, TableBody, TableFooter) {
     afterRender: function() {
       var now = new Date().getTime();
       //console.log('rendered table ' + this.collection.table.id + ' in '+ (now-this.startRenderTime)+' ms');
-      document.body.scrollTop = this.bodyScrollTop;
+
+      if (this.bodyScrollTop) {
+        document.body.scrollTop = this.bodyScrollTop;
+      }
+
       this.bodyScrollTop = undefined;
       app.on('load', function() {
         if(this.flashItemID) {

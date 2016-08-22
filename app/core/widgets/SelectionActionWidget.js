@@ -28,7 +28,7 @@ function(app, Backbone, Handlebars) {
     events: {
       'click .actionBtn': function(e) {
         var value = $(e.target).closest('li').attr('data-value');
-        if(value == 0) {
+        if(value === 0) {
           var that = this;
           app.router.openModal({type: 'confirm', text: 'Are you sure? This item will be removed from the system!', callback: function() {
             that.doAction(e);
@@ -52,7 +52,7 @@ function(app, Backbone, Handlebars) {
     doAction: function(e) {
       var value = $(e.target).closest('li').attr('data-value');
       var collection = this.collection;
-      var active = collection.getFilter('active');
+      var status = collection.getFilter('status');
       var $checked = $('.select-row:checked');
       var models = [];
       var actionCollection = collection.clone();
@@ -77,7 +77,7 @@ function(app, Backbone, Handlebars) {
       };
 
       var options = {patch: true, validate: false, wait: true, success: success};
-      if (actionCollection.size() == 1) {
+      if (actionCollection.size() === 1) {
         app.changeItemStatus(actionCollection.first(), value, options);
       } else {
         app.changeCollectionStatus(actionCollection, value, options);
@@ -93,12 +93,12 @@ function(app, Backbone, Handlebars) {
       data.mapping = [];
       for (var key in mapping) {
         // if there's not permission to delete, we skip delete
-        if (!canDelete && key==app.statusMapping.deleted_num) {
+        if (!canDelete && key === app.statusMapping.deleted_num) {
           continue;
         }
 
         // if there's not status column we skip everything but delete
-        if (!hasStatusColumn && key != app.statusMapping.deleted_num) {
+        if (!hasStatusColumn && key !== app.statusMapping.deleted_num) {
           continue;
         }
 
@@ -123,7 +123,7 @@ function(app, Backbone, Handlebars) {
       this.stopListening(this.collection, 'select');
       this.listenTo(this.collection, 'select', function() {
         var batchEdit = $('.select-row:checked').length > 1;
-        if(this.options.widgetOptions.batchEdit != batchEdit) {
+        if(this.options.widgetOptions.batchEdit !== batchEdit) {
           this.options.widgetOptions.batchEdit = batchEdit;
           this.render();
         }

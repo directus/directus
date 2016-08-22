@@ -127,14 +127,23 @@
     .secondary-info {
       -webkit-font-smoothing: antialiased;
     }
+    .delete-hover, .add-hover {
+      i {
+        vertical-align: inherit;
+      }
+    }
     .delete-hover {
       &:hover {
         i {
           color: $deleteColor;
         }
       }
-      i {
-        vertical-align: inherit;
+    }
+    .add-hover {
+      &:hover {
+        i {
+          color: $addColor;
+        }
       }
     }
     .sort {
@@ -179,7 +188,7 @@
         background-color:$white;
         text-align:center;
         padding: 10px 10px 8px 10px;
-        position: absolute;
+        margin: 10px 0;
         top: 0;
         left: 0;
         display: inline-block;
@@ -516,7 +525,7 @@
       .history-comment {
         position: relative;
         display: inline-block;
-        padding: 20px;
+        padding: 20px 20px 18px 20px;
         background-color: $white;
         @include border-radius(4px, 4px, 4px, 4px);
         border: 1px solid $fieldColor;
@@ -554,6 +563,9 @@
           position: absolute;
           right: 15px;
           bottom: 15px;
+          &.disabled {
+            background-color: $fieldColor;
+          }
         }
         textarea {
           border: none;
