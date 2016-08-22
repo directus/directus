@@ -17,6 +17,7 @@ vendor
 # Ignore log files, but track the log README
 *.log
 
+!customs/endpoints/_example.php
 customs/extensions/*
 !customs/extensions/.gitignore
 !customs/extensions/_example/
