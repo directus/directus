@@ -197,7 +197,7 @@ define(['app', 'core/UIComponent', 'core/uis/one_to_many', 'core/table/table.vie
       {id: 'add_button', type: 'Boolean', def: true, ui: 'checkbox'},
       {id: 'choose_button', type: 'Boolean', def: true, ui: 'checkbox'},
       {id: 'remove_button', type: 'Boolean', def: true, ui: 'checkbox'},
-      {id: 'filter_type', def:'', ui: 'select', options: {options: {'dropdown':__t('dropdown'),'textinput':__t('text_input')} }},
+      {id: 'filter_type', type: 'String', def:'', ui: 'select', options: {options: {'dropdown':__t('dropdown'),'textinput':__t('text_input')} }},
       {id: 'filter_column', type: 'String', def:'', ui: 'textinput', char_length: 255, comment: __t('m2m_filter_column_comment')},
       {id: 'visible_column_template', type: 'String', def:'', ui: 'textinput', char_length: 255, comment: __t('m2m_visible_column_template_comment')},
       {id: 'min_entries', type: 'Number', def: 0, ui: 'numeric', char_length: 11, comment: __t('m2m_min_entries_comment')},

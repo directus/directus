@@ -59,7 +59,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
     id: 'numeric',
     dataTypes: ['TINYINT', 'INT', 'NUMERIC', 'FLOAT', 'YEAR', 'VARCHAR', 'CHAR', 'DOUBLE', 'BIGINT'],
     variables: [
-      {id: 'size', def: 'large', ui: 'select', options: {options: {'large':__t('size_large'),'medium':__t('size_medium'),'small':__t('size_small')} }},
+      {id: 'size', type: 'String', def: 'large', ui: 'select', options: {options: {'large':__t('size_large'),'medium':__t('size_medium'),'small':__t('size_small')} }},
       {id: 'placeholder_text', type: 'String', def: '', ui: 'textinput', char_length:200},
       {id: 'allow_null', type: 'Boolean', def: false, ui: 'checkbox'}
     ],

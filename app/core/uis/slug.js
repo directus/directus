@@ -70,7 +70,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
       // Disables editing of the field while still letting users see the value
       {id: 'readonly', type: 'Boolean', def: true, ui: 'checkbox'},
       // Adjusts the max width of the input (Small, Medium, Large)
-      {id: 'size', def:'large', ui: 'select', options: {options: {'large':__t('size_large'),'medium':__t('size_medium'),'small':__t('size_small')} }},
+      {id: 'size', type: 'String', def:'large', ui: 'select', options: {options: {'large':__t('size_large'),'medium':__t('size_medium'),'small':__t('size_small')} }},
       // Enter the column name of the field the slug will pull it's value from
       {id: 'mirrored_field', type: 'String', def: '', ui: 'textinput', char_length: 200}
     ],

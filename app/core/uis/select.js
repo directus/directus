@@ -60,7 +60,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'],function(app, UIComp
     id: 'select',
     dataTypes: ['VARCHAR', 'INT'],
     variables: [
-      {id: 'options', type: 'String', def: '', ui: 'textarea', options:{'rows': 25, 'placeholder_text': "{\n    \"value1\":\"Option One\",\n    \"value2\":\"Option Two\",\n    \"value3\":\"Option Three\"\n}"}, comment: __t('select_options_comment')},
+      {id: 'options', def: '', ui: 'textarea', options:{'rows': 25, 'placeholder_text': "{\n    \"value1\":\"Option One\",\n    \"value2\":\"Option Two\",\n    \"value3\":\"Option Three\"\n}"}, comment: __t('select_options_comment')},
       {id: 'allow_null', type: 'Boolean', def: false, ui: 'checkbox'},
       {id: 'placeholder_text', type: 'String', def: '', ui: 'textinput', char_length: 255, required: false, comment: __t('select_placeholder_text')}
     ],
