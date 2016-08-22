@@ -57,7 +57,7 @@ class UserModule extends ModuleBase
         );
 
         $this->commands_help  = array(
-         'password' => __t('Change user password: ').PHP_EOL.PHP_EOL."\t\t"
+         'password' => __t('Change User Password: ').PHP_EOL.PHP_EOL."\t\t"
             .$this->__module_name.':password -e user_email -p new_password -d directus_path'.PHP_EOL
         );
 

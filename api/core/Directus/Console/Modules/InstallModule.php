@@ -74,9 +74,9 @@ class InstallModule extends ModuleBase
         $this->commands_help = array(
          'config' => __t('Configure Directus: ').PHP_EOL.PHP_EOL."\t\t"
             .$this->__module_name.':config -h db_host -n db_name -u db_user -p db_pass -d directus_path'.PHP_EOL,
-         'database' => __t('Populate the DB with the schema: ').PHP_EOL.PHP_EOL."\t\t"
+         'database' => __t('Populate the Database Schema: ').PHP_EOL.PHP_EOL."\t\t"
             .$this->__module_name.':database -d directus_path'.PHP_EOL,
-         'install' => __t('Install the initial configurations: ').PHP_EOL.PHP_EOL."\t\t"
+         'install' => __t('Install Initial Configurations: ').PHP_EOL.PHP_EOL."\t\t"
             .$this->__module_name.':install -e admin_email -p admin_password -t site_name'.PHP_EOL,
         );
     }
