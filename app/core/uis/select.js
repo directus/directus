@@ -22,7 +22,10 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'],function(app, UIComp
       var selectedValue = this.options.value;
       var options = this.options.settings.get('options');
 
-      if (selectedValue === undefined) {
+      // if selectedValue is null
+      // we use the schema default value
+      // it should not be undefined.
+      if (selectedValue === null) {
         selectedValue = this.options.schema.get('default_value');
       }
 
