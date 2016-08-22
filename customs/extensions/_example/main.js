@@ -1,25 +1,15 @@
-define([
-  'app',
-  'backbone',
-  'core/directus',
-  'core/BasePageView'
-],
-
-function(app, Backbone, Directus, BasePageView) {
-
-  var Extension = {
+define(['app', 'core/extensions'], function(app, Extension) {
+  var ext = {
     id: 'example_extension',
     icon: 'icon-folder',
     title: 'Example Extension'
   };
 
-  var ExampleContainerView = Backbone.Layout.extend({
-    prefix: 'customs/extensions/example/templates/',
-    template: 'example',
+  var ExampleContainerView = Extension.View.extend({
+    template: 'example/templates/example'
   });
 
-  var View = BasePageView.extend({
-
+  var ExamplePageView = Extension.BasePageView.extend({
     headerOptions: {
       route: {
         title: 'Example Extension',
@@ -32,27 +22,27 @@ function(app, Backbone, Directus, BasePageView) {
       this.setView('#page-content', this.exampleView);
       this.exampleView.render();
     },
-    initialize: function(options) {
+
+    initialize: function() {
       this.exampleView = new ExampleContainerView();
     }
   });
 
-  Extension.Router = Directus.SubRoute.extend({
+  ext.Router = Extension.Router.extend({
     routes: {
       "(/)":         "index"
     },
 
     index: function() {
-      this.view = new View({model: this.model});
+      this.view = new ExamplePageView({model: this.model});
       app.router.v.main.setView('#content', this.view);
       app.router.v.main.render();
     },
 
     initialize: function() {
     }
-
   });
 
 
-  return Extension;
+  return ext;
 });
