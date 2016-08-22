@@ -36,6 +36,7 @@ require(["config", 'polyfills'], function() {
     var defaultOptions = {
       locale: 'en',
       localesAvailable: [],
+      timezone: 'America/New_York',
       timezones: [],
       path: '/directus/',
       page: '',
@@ -76,7 +77,9 @@ require(["config", 'polyfills'], function() {
     app.authenticatedUserId = window.directusData.authenticatedUser;
     app.storageAdapters = window.directusData.storage_adapters;
     app.statusMapping = window.directusData.statusMapping;
+    app.locale = options.locale;
     app.locales = options.localesAvailable;
+    app.timezone = options.timezone;
     app.timezones = options.timezones;
 
     $.xhrPool = []; // array of uncompleted requests

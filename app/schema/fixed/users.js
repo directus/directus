@@ -22,6 +22,9 @@ define(function(require, exports, module) {
   module.exports = {
     getUsers: function(locales, timezones) {
       var statusName = app.statusMapping.status_name;
+      var defaultTimezone = app.timezone;
+      var defaultLocale = app.locale;
+
       return {
         "id":"directus_users",
         "table_name":"directus_users",
@@ -496,7 +499,7 @@ define(function(require, exports, module) {
             "type":"VARCHAR",
             "char_length":"8",
             "is_nullable":"YES",
-            "default_value":"en",
+            "default_value": defaultLocale,
             "comment":"",
             "sort":37,
             "ui":"select",
@@ -517,7 +520,7 @@ define(function(require, exports, module) {
             "type":"VARCHAR",
             "char_length":"32",
             "is_nullable":"YES",
-            "default_value":"America/New_York",
+            "default_value": defaultTimezone,
             "comment":"",
             "sort":38,
             "ui":"select",
