@@ -14,7 +14,7 @@ function(app, Backbone, Directus, BasePageView) {
   };
 
   var ExampleContainerView = Backbone.Layout.extend({
-    prefix: 'extensions/example/templates/',
+    prefix: 'customs/extensions/example/templates/',
     template: 'example',
   });
 
