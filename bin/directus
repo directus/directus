@@ -6,9 +6,11 @@ $loader = require __DIR__ . '/../vendor/autoload.php';
 require __DIR__. '/../api/config.php';
 define('BASE_PATH', __DIR__ . '/../');
 
-use Directus\Util\Installation\Console;
+use Directus\Console\Cli;
 
-$cli = new Console(dirname(dirname(__FILE__)));
+define('BASE_PATH', dirname(dirname(__FILE__)));
+
+$cli = new Cli();
 
 $cli->run();
 
