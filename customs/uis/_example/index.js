@@ -19,7 +19,7 @@ define(['core/UIComponent', 'core/BaseUIView'], function(UIComponent, UIView) {
   });
 
   var Component = UIComponent.extend({
-    id: 'textlimit',
+    id: 'exampletextlimit',
     dataTypes: ['TEXT'],
     Input: Input
   });
