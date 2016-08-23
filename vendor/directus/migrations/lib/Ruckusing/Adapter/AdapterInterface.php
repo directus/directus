@@ -184,6 +184,16 @@ interface AdapterInterface
     public function change_column($table_name, $column_name, $type, $options = array());
 
     /**
+     * has column
+     *
+     * @param string $table_name  The table name
+     * @param string $column_name The column name
+     *
+     * @return bool
+     */
+    public function has_column($table_name, $column_name);
+
+    /**
      * remove index
      *
      * @param string $table_name  The table name

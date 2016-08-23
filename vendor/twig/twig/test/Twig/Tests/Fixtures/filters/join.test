@@ -1,0 +1,12 @@
+--TEST--
+"join" filter
+--TEMPLATE--
+{{ ["foo", "bar"]|join(', ') }}
+{{ foo|join(', ') }}
+{{ bar|join(', ') }}
+--DATA--
+return array('foo' => new TwigTestFoo(), 'bar' => new ArrayObject(array(3, 4)))
+--EXPECT--
+foo, bar
+1, 2
+3, 4

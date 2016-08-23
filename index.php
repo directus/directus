@@ -1,8 +1,9 @@
 <?php
 
 //If config file doesnt exist, go to install file
-if(!file_exists('api/config.php') || filesize('api/config.php') == 0) {
-  header('Location: installation/index.php');
+if (!file_exists('api/config.php') || filesize('api/config.php') == 0) {
+    header('Location: installation/index.php');
+    exit;
 }
 
 // Composer Autoloader
@@ -24,9 +25,10 @@ use Directus\Db\TableGateway\DirectusPrivilegesTableGateway;
 use Directus\Db\TableGateway\DirectusMessagesTableGateway;
 use Directus\Db\TableGateway\DirectusUsersTableGateway;
 use Directus\Db\TableSchema;
-use Directus\Hook\Hook;
 
-Hook::run('directus.index.start');
+$emitter = Bootstrap::get('hookEmitter');
+
+$emitter->run('directus.index.start');
 
 // No access, forward to login page
 unset($_SESSION['_directus_login_redirect']);
@@ -193,6 +195,10 @@ function getSettings() {
     $settings = new DirectusSettingsTableGateway($acl, $ZendDb);
     $items = array();
     foreach ($settings->fetchAll() as $key => $value) {
+        if ($key == 'global') {
+            $value['max_file_size'] = get_max_upload_size();
+        }
+
         $value['id'] = $key;
         $items[] = $value;
     };
@@ -246,7 +252,7 @@ function getExtensions($currentUserGroup) {
 
     // Append relative path and filename for dynamic loading
     foreach ($extensions as &$extension) {
-        $extension = DIRECTUS_PATH . $extension . '.js';
+        $extension = ltrim($extension, '/');
     };
 
     return $extensions;
@@ -259,13 +265,7 @@ function getPrivileges($groupId) {
 }
 
 function getUI() {
-    $uis = array_values(Bootstrap::get('uis'));
-    // Add full path
-    foreach ($uis as &$ui) {
-        $ui = DIRECTUS_PATH . $ui . '.js';
-    }
-
-    return $uis;
+    return Bootstrap::get('uis');
 }
 
 function getListViews() {
@@ -363,6 +363,8 @@ $data = array(
     'locale' => get_user_locale(),
     'localesAvailable' => parseLocalesAvailable(get_locales_available()),
     'phrases' => get_phrases(get_user_locale()),
+    'timezone' => get_user_timezone(),
+    'timezones' => get_timezone_list(),
     'listViews' => getListViews(),
     'messages' => getInbox(),
     'bookmarks' => getBookmarks(),

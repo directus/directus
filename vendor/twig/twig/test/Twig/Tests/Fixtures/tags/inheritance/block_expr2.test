@@ -1,0 +1,34 @@
+--TEST--
+block_expr2
+--TEMPLATE--
+{% extends "base2.twig" %}
+
+{% block element -%}
+    Element:
+    {{- parent() -}}
+{% endblock %}
+--TEMPLATE(base2.twig)--
+{% extends "base.twig" %}
+--TEMPLATE(base.twig)--
+{% spaceless %}
+{% block element -%}
+    <div>
+        {%- if item.children is defined %}
+            {%- for item in item.children %}
+                {{- block('element') -}}
+            {% endfor %}
+        {%- endif -%}
+    </div>
+{%- endblock %}
+{% endspaceless %}
+--DATA--
+return array(
+    'item' => array(
+        'children' => array(
+            null,
+            null,
+        )
+    )
+)
+--EXPECT--
+Element:<div>Element:<div></div>Element:<div></div></div>

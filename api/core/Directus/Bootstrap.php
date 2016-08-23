@@ -5,16 +5,19 @@ namespace Directus;
 use Directus\Acl\Acl;
 use Directus\Auth\Provider as AuthProvider;
 use Directus\Db\Connection;
-use Directus\Db\SchemaManager;
 use Directus\Db\Schemas\MySQLSchema;
 use Directus\Db\Schemas\SQLiteSchema;
+use Directus\Embed\EmbedManager;
 use Directus\Filesystem\Filesystem;
 use Directus\Filesystem\FilesystemFactory;
 use Directus\Db\TableGateway\DirectusUsersTableGateway;
 use Directus\Db\TableGateway\DirectusPrivilegesTableGateway;
 use Directus\Db\TableGateway\DirectusSettingsTableGateway;
 use Directus\Db\TableGateway\DirectusTablesTableGateway;
+use Directus\Hook\Emitter;
 use Directus\Language\LanguageManager;
+use Directus\View\Twig\DirectusTwigExtension;
+use Slim\Extras\Views\Twig;
 use Slim\Slim;
 use Slim\Extras\Log\DateTimeFileWriter;
 
@@ -58,6 +61,23 @@ class Bootstrap {
     }
 
     /**
+     * Get all custom endpoints
+     * @return array - list of endpoint files loaded
+     * @throws \Exception
+     */
+    public static function getCustomEndpoints()
+    {
+        self::requireConstants('APPLICATION_PATH', __FUNCTION__);
+        $endpointsDirectory = APPLICATION_PATH . '/customs/endpoints';
+
+        if (!file_exists($endpointsDirectory)) {
+            return [];
+        }
+
+        return find_php_files($endpointsDirectory, true);
+    }
+
+    /**
      * Used to interrupt the bootstrapping of a singleton if the constants it
      * requires aren't defined.
      * @param  string|array $constants       One or more constant names
@@ -85,17 +105,28 @@ class Bootstrap {
      * @return Slim
      */
     private static function app() {
-        self::requireConstants(array('DIRECTUS_ENV','APPLICATION_PATH'), __FUNCTION__);
-        $loggerSettings = array(
+        self::requireConstants(['DIRECTUS_ENV','APPLICATION_PATH'], __FUNCTION__);
+        $loggerSettings = [
             'path' => APPLICATION_PATH . '/api/logs'
-        );
-        $app = new Slim(array(
+        ];
+
+        $app = new Slim([
             'templates.path'=> APPLICATION_PATH.'/api/views/',
             'mode'          => DIRECTUS_ENV,
             'debug'         => false,
             'log.enable'    => true,
-            'log.writer'    => new DateTimeFileWriter($loggerSettings)
-        ));
+            'log.writer'    => new DateTimeFileWriter($loggerSettings),
+            'view'          => new Twig()
+        ]);
+
+        Twig::$twigExtensions = [
+            new DirectusTwigExtension()
+        ];
+
+        $app->container->singleton('emitter', function() {
+            return Bootstrap::get('hookEmitter');
+        });
+
         return $app;
     }
 
@@ -118,7 +149,6 @@ class Bootstrap {
         }
 
         $mailConfig = $config['mail'];
-        // $smtp = $config['SMTP'];
         switch ($mailConfig['transport']) {
             case 'smtp':
                 $transport = \Swift_SmtpTransport::newInstance($mailConfig['host'], $mailConfig['port']);
@@ -137,10 +167,9 @@ class Bootstrap {
                 $transport = \Swift_MailTransport::newInstance();
                 break;
         }
-        // $transport = \Swift_SmtpTransport::newInstance($smtp['host'], $smtp['port'])
-        //     ->setUsername($smtp['username'])
-        //     ->setPassword($smtp['password']);
+
         $mailer = \Swift_Mailer::newInstance($transport);
+
         return $mailer;
     }
 
@@ -371,20 +400,17 @@ class Bootstrap {
      */
     private static function uis() {
         self::requireConstants('APPLICATION_PATH', __FUNCTION__);
-        $uiDirectory = APPLICATION_PATH . '/customs/ui';
+        $uiDirectory = APPLICATION_PATH . '/customs/uis';
         $uis = array();
 
         if (!file_exists($uiDirectory)) {
             return $uis;
         }
 
-        $objects = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($uiDirectory), \RecursiveIteratorIterator::SELF_FIRST);
-        foreach($objects as $name => $object){
-            if("js" == pathinfo($name, PATHINFO_EXTENSION)) {
-                $uiPath = substr($name, strlen(APPLICATION_PATH) + 1);
-                $uiName = basename($name);
-                $uis[$uiName] = substr($uiPath, 0, -3);
-            }
+        $filePaths = find_js_files($uiDirectory, true);
+        foreach($filePaths as $path) {
+            $uiPath = trim(substr($path, strlen(APPLICATION_PATH)), '/');
+            $uis[] = substr($uiPath, 0, -3);
         }
 
         return $uis;
@@ -421,16 +447,84 @@ class Bootstrap {
      */
     private static function languagesManager()
     {
-        $localesPath = BASE_PATH.'/customs/locales/*.json';
-
-        $languages = [];
-        foreach (glob($localesPath) as $filename) {
-            $languages[] = pathinfo($filename, PATHINFO_FILENAME);
-        }
+        $languages = get_locales_filename();
 
         return new LanguageManager($languages);
     }
 
+    /**
+     * @return \Directus\Embed\EmbedManager
+     */
+    private static function embedManager()
+    {
+        $embedManager = new EmbedManager();
 
+        $acl = static::get('acl');
+        $adapter = static::get('ZendDb');
 
+        // Fetch files settings
+        $SettingsTable = new DirectusSettingsTableGateway($acl, $adapter);
+        try {
+            $settings = $SettingsTable->fetchCollection('files', array(
+                'thumbnail_size', 'thumbnail_quality', 'thumbnail_crop_enabled'
+            ));
+        } catch (\Exception $e) {
+            $settings = [];
+            $log = static::get('log');
+            $log->warn($e);
+        }
+
+        $providers = [
+            '\Directus\Embed\Provider\VimeoProvider',
+            '\Directus\Embed\Provider\YoutubeProvider'
+        ];
+
+        $path = implode(DIRECTORY_SEPARATOR, [
+            BASE_PATH,
+            'customs',
+            'embeds',
+            '*.php'
+        ]);
+
+        foreach(glob($path) as $filename) {
+            $providers[] = '\\Directus\\Embed\\Provider\\' . basename($filename, '.php');
+        }
+
+        foreach($providers as $providerClass) {
+            $provider = new $providerClass($settings);
+            $embedManager->register($provider);
+        }
+
+        return $embedManager;
+    }
+
+    /**
+     * Get Hook Emitter
+     *
+     * @return Emitter
+     */
+    private static function hookEmitter()
+    {
+        $emitter = new Emitter();
+
+        $emitter->addAction('application.error', function($e) {
+            $log = Bootstrap::get('log');
+            $log->error($e);
+        });
+
+        $emitter->addAction('table.insert.directus_groups', function($data) {
+            $acl = Bootstrap::get('acl');
+            $zendDb = Bootstrap::get('zendDb');
+            $privilegesTable = new DirectusPrivilegesTableGateway($acl, $zendDb);
+
+            $privilegesTable->insertPrivilege([
+                'group_id' => $data['id'],
+                'table_name' => 'directus_users',
+                'read_field_blacklist' => 'token',
+                'write_field_blacklist' => 'token'
+            ]);
+        });
+
+        return $emitter;
+    }
 }

@@ -1,0 +1,18 @@
+--TEST--
+"for" tag keeps the context safe
+--TEMPLATE--
+{% for item in items %}
+  {% for item in items %}
+    * {{ item }}
+  {% endfor %}
+  * {{ item }}
+{% endfor %}
+--DATA--
+return array('items' => array('a', 'b'))
+--EXPECT--
+      * a
+      * b
+    * a
+      * a
+      * b
+    * b

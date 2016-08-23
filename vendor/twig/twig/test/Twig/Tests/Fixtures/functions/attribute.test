@@ -1,0 +1,18 @@
+--TEST--
+"attribute" function
+--TEMPLATE--
+{{ attribute(obj, method) }}
+{{ attribute(array, item) }}
+{{ attribute(obj, "bar", ["a", "b"]) }}
+{{ attribute(obj, "bar", arguments) }}
+{{ attribute(obj, method) is defined ? 'ok' : 'ko' }}
+{{ attribute(obj, nonmethod) is defined ? 'ok' : 'ko' }}
+--DATA--
+return array('obj' => new TwigTestFoo(), 'method' => 'foo', 'array' => array('foo' => 'bar'), 'item' => 'foo', 'nonmethod' => 'xxx', 'arguments' => array('a', 'b'))
+--EXPECT--
+foo
+bar
+bar_a-b
+bar_a-b
+ok
+ko

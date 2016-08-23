@@ -10,5 +10,6 @@ return array(
     'Zend\\Db\\' => array($vendorDir . '/zendframework/zend-db/src'),
     'League\\Flysystem\\' => array($vendorDir . '/league/flysystem/src'),
     'Directus\\Installation\\' => array($baseDir . '/installation/includes'),
+    'Directus\\Embed\\Provider\\' => array($baseDir . '/customs/embeds'),
     'Directus\\' => array($baseDir . '/api/core/Directus'),
 );

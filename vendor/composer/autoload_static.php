@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInitd2e6fed1b9f10719c8da60e95779b803
+class ComposerStaticInit10bd4504c26f6b7e6e14e063444a0028
 {
     public static $files = array (
         '2c102faa651ef8ea5874edb585946bce' => __DIR__ . '/..' . '/swiftmailer/swiftmailer/lib/swift_required.php',
@@ -24,6 +24,7 @@ class ComposerStaticInitd2e6fed1b9f10719c8da60e95779b803
         'D' => 
         array (
             'Directus\\Installation\\' => 22,
+            'Directus\\Embed\\Provider\\' => 24,
             'Directus\\' => 9,
         ),
     );
@@ -45,6 +46,10 @@ class ComposerStaticInitd2e6fed1b9f10719c8da60e95779b803
         array (
             0 => __DIR__ . '/../..' . '/installation/includes',
         ),
+        'Directus\\Embed\\Provider\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/customs/embeds',
+        ),
         'Directus\\' => 
         array (
             0 => __DIR__ . '/../..' . '/api/core/Directus',
@@ -57,6 +62,10 @@ class ComposerStaticInitd2e6fed1b9f10719c8da60e95779b803
             'Twig_Extensions_' => 
             array (
                 0 => __DIR__ . '/..' . '/slim/extras/Views/Extension',
+            ),
+            'Twig_' => 
+            array (
+                0 => __DIR__ . '/..' . '/twig/twig/lib',
             ),
             'Task' => 
             array (
@@ -86,9 +95,9 @@ class ComposerStaticInitd2e6fed1b9f10719c8da60e95779b803
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInitd2e6fed1b9f10719c8da60e95779b803::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInitd2e6fed1b9f10719c8da60e95779b803::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInitd2e6fed1b9f10719c8da60e95779b803::$prefixesPsr0;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit10bd4504c26f6b7e6e14e063444a0028::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit10bd4504c26f6b7e6e14e063444a0028::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit10bd4504c26f6b7e6e14e063444a0028::$prefixesPsr0;
 
         }, null, ClassLoader::class);
     }

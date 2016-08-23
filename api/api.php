@@ -1,10 +1,15 @@
 <?php
 
 // Composer Autoloader
-$loader = require __DIR__.'/../vendor/autoload.php';
+$loader = require __DIR__ . '/../vendor/autoload.php';
 
 // Non-autoload components
-require dirname(__FILE__) . '/config.php';
+$configFile = __DIR__ . '/config.php';
+if (!file_exists($configFile)) {
+    return create_ping_server();
+}
+
+require $configFile;
 
 // Define directus environment
 defined('DIRECTUS_ENV')
@@ -47,12 +52,14 @@ use Directus\Db\TableGateway\RelationalTableGatewayWithConditions as TableGatewa
 use Directus\Db\SchemaManager;
 use Directus\Db\TableSchema;
 use Directus\Exception\ExceptionHandler;
-use Directus\Hook\Hook;
 // use Directus\Files;
 // use Directus\Files\Upload;
 use Directus\Mail\Mail;
 use Directus\MemcacheProvider;
+use Directus\Util\ArrayUtils;
 use Directus\Util\StringUtils;
+use Directus\Util\SchemaUtils;
+use Directus\Util\DateUtils;
 use Directus\View\JsonView;
 use Directus\View\ExceptionView;
 // use Directus\Db\TableGateway\DirectusIPWhitelist;
@@ -88,7 +95,7 @@ if (array_key_exists('filters', $config)) {
 $app->config('debug', false);
 $exceptionView = new ExceptionView();
 $exceptionHandler = function (\Exception $exception) use ($app, $exceptionView) {
-    Hook::run('application.error', [$exception]);
+    $app->emitter->run('application.error', [$exception]);
     $exceptionView->exceptionHandler($app, $exception);
 };
 $app->error($exceptionHandler);
@@ -123,11 +130,16 @@ $ZendDb = Bootstrap::get('ZendDb');
  */
 $acl = Bootstrap::get('acl');
 
-Hook::run('application.boot', $app);
+$app->emitter->run('application.boot', $app);
+
+/**
+ * Creates and /<version>/ping endpoint
+ */
+create_ping_route($app);
 
 $app->hook('slim.before.dispatch', function() use ($app, $requestNonceProvider, $authAndNonceRouteWhitelist, $ZendDb, $acl) {
     // API/Server is about to initialize
-    Hook::run('application.init', $app);
+    $app->emitter->run('application.init', $app);
 
     /** Skip routes which don't require these protections */
     $routeName = $app->router()->getCurrentRoute()->getName();
@@ -155,23 +167,37 @@ $app->hook('slim.before.dispatch', function() use ($app, $requestNonceProvider, 
             $userFound = $user->count() > 0 ? true : false;
 
             if (!$userFound) {
-                $app->halt(401, __t('you_must_be_logged_in_to_access_api'));
+                $app->halt(401, __t('you_must_be_logged_in_to_access_the_api'));
             }
 
             $user = $user->toArray();
             $user = reset($user);
 
+            // ------------------------------
+            // Check if group needs whitelist
+            $groupId = $user['group'];
+            $directusGroupsTableGateway = new DirectusGroupsTableGateway($acl, $ZendDb);
+            if (!$directusGroupsTableGateway->acceptIP($groupId, $app->request->getIp())) {
+                $app->contentType('application/javascript');
+                $app->response->setStatus(401);
+                JsonView::render([
+                    'message' => 'Request not allowed from IP address',
+                    'success' => false
+                ]);
+                $app->stop();
+            }
+
             // Uf the request it's done by authentication
             // Store the session information in a global variable
             // And we retrieve this information back to session at the end of the execution.
             // See slim.after hook.
-            $GLOBALS['_SESSION'] = $_SESSION;
+            $GLOBALS['__SESSION'] = $_SESSION;
             // Reset SESSION values
             $_SESSION = [];
 
             Auth::setLoggedUser($user['id']);
-            Hook::run('directus.authenticated', [$app, $user]);
-            Hook::run('directus.authenticated.token', [$app, $user]);
+            $app->emitter->run('directus.authenticated', [$app, $user]);
+            $app->emitter->run('directus.authenticated.token', [$app, $user]);
 
             // Reload all user permissions
             // At this point ACL has run and loaded all permissions
@@ -186,7 +212,7 @@ $app->hook('slim.before.dispatch', function() use ($app, $requestNonceProvider, 
 
         /** Enforce required authentication. */
         if(!Auth::loggedIn()) {
-            $app->halt(401, __t('you_must_be_logged_in_to_access_api'));
+            $app->halt(401, __t('you_must_be_logged_in_to_access_the_api'));
         }
 
         /** Enforce required request nonces. */
@@ -202,7 +228,7 @@ $app->hook('slim.before.dispatch', function() use ($app, $requestNonceProvider, 
 
         // User is authenticated
         // And Directus is about to start
-        Hook::run('directus.start', $app);
+        $app->emitter->run('directus.start', $app);
 
         /** Include new request nonces in the response headers */
         $response = $app->response();
@@ -215,12 +241,12 @@ $app->hook('slim.before.dispatch', function() use ($app, $requestNonceProvider, 
 $app->hook('slim.after', function() use ($app) {
     // retrieve session from global
     // if the session exists on globals it means this is a request with basic authentication
-    if (array_key_exists('_SESSION', $GLOBALS)) {
-        $_SESSION = $GLOBALS['_SESSION'];
+    if (array_key_exists('__SESSION', $GLOBALS)) {
+        $_SESSION = $GLOBALS['__SESSION'];
     }
 
     // API/Server is about to shutdown
-    Hook::run('application.shutdown', $app);
+    $app->emitter->run('application.shutdown', $app);
 });
 
 /**
@@ -249,6 +275,11 @@ if(Auth::loggedIn()) {
 
 $params = $_GET;
 $requestPayload = json_decode($app->request()->getBody(), true);
+
+$endpoints = Bootstrap::getCustomEndpoints();
+foreach($endpoints as $endpoint) {
+    require $endpoint;
+}
 
 /**
  * Extension Alias
@@ -309,25 +340,20 @@ $app->post("/$v/auth/login/?", function() use ($app, $ZendDb, $acl, $requestNonc
     $Users = new DirectusUsersTableGateway($acl, $ZendDb);
     $user = $Users->findOneBy('email', $email);
 
+    if (!$user) {
+        return JsonView::render($response);
+    }
+
     // ------------------------------
     // Check if group needs whitelist
     $groupId = $user['group'];
     $directusGroupsTableGateway = new DirectusGroupsTableGateway($acl, $ZendDb);
-    $group = $directusGroupsTableGateway->find($groupId);
-
-    // if (1 == $group['restrict_to_ip_whitelist']) {
-    //     $directusIPWhitelist = new DirectusIPWhitelist($acl, $ZendDb);
-    //     if (!$directusIPWhitelist->hasIP($_SERVER['REMOTE_ADDR'])) {
-    //         return JsonView::render(array(
-    //             'message' => 'Request not allowed from IP address',
-    //             'success' => false,
-    //             'all_nonces' => $requestNonceProvider->getAllNonces()
-    //         ));
-    //     }
-    // }
-
-    if (!$user) {
-        return JsonView::render($response);
+    if (!$directusGroupsTableGateway->acceptIP($groupId, $app->request->getIp())) {
+        return JsonView::render([
+            'message' => 'Request not allowed from IP address',
+            'success' => false,
+            'all_nonces' => $requestNonceProvider->getAllNonces()
+        ]);
     }
 
     // @todo: Login should fail on correct information when user is not active.
@@ -348,13 +374,12 @@ $app->post("/$v/auth/login/?", function() use ($app, $ZendDb, $acl, $requestNonc
     }
 
     if($response['success']) {
-        Hook::run('directus.authenticated', [$app, $user]);
-        Hook::run('directus.authenticated.admin', [$app, $user]);
+        $app->emitter->run('directus.authenticated', [$app, $user]);
+        $app->emitter->run('directus.authenticated.admin', [$app, $user]);
         unset($response['message']);
         $response['last_page'] = json_decode($user['last_page']);
         $userSession = Auth::getUserInfo();
-        $datetime = new DateTime('NOW', new DateTimeZone('GMT'));
-        $set = array('last_login' => $datetime->format('Y-m-d H:i:s'), 'access_token' => $userSession['access_token']);
+        $set = array('last_login' => DateUtils::now(), 'access_token' => $userSession['access_token']);
         $where = array('id' => $user['id']);
         $updateResult = $Users->update($set, $where);
         $Activity = new DirectusActivityTableGateway($acl, $ZendDb);
@@ -415,17 +440,15 @@ $app->get("/$v/auth/reset-password/:token/?", function($token) use ($app, $acl, 
         $app->halt(200, __t('password_reset_incorrect_token'));
     }
 
-    $expirationDate = new DateTime($user['reset_expiration']);
-    $currentDate = new DateTime;
-
-    if ($expirationDate < $currentDate) {
+    $expirationDate = new DateTime($user['reset_expiration'] , new DateTimeZone('UTC'));
+    if (DateUtils::hasPassed($expirationDate)) {
         $app->halt(200, __t('password_reset_expired_token'));
     }
 
-    $password = StringUtils::random();
+    $password = StringUtils::randomString();
     $set = [];
     // @NOTE: this is not being used for hashing the password anymore
-    $set['salt'] = StringUtils::random();
+    $set['salt'] = StringUtils::randomString();
     $set['password'] = Auth::hashPassword($password, $set['salt']);
     $set['reset_token'] = '';
 
@@ -437,7 +460,7 @@ $app->get("/$v/auth/reset-password/:token/?", function($token) use ($app, $acl, 
         $app->halt(200, __t('password_reset_error'));
     }
 
-    $data = ['newPassword' => $password];
+    $data = ['new_password' => $password];
     Mail::send('mail/forgot-password.twig.html', $data, function($message) use ($user) {
         $message->setSubject(__t('password_reset_new_password_email_subject'));
         $message->setTo($user['email']);
@@ -465,13 +488,9 @@ $app->post("/$v/auth/forgot-password/?", function() use ($app, $acl, $ZendDb) {
         ));
     }
 
-    $date = new DateTime;
-    $date->modify('+2 day');
-    $reset_expiration = $date->format('Y-m-d H:i:s');
-
     $set = [];
-    $set['reset_token'] = StringUtils::random(20);
-    $set['reset_expiration'] = $reset_expiration;
+    $set['reset_token'] = StringUtils::randomString(30);
+    $set['reset_expiration'] = DateUtils::inDays(2);
 
     // Skip ACL
     $DirectusUsersTableGateway = new \Zend\Db\TableGateway\TableGateway('directus_users', $ZendDb);
@@ -522,7 +541,7 @@ $app->post("/$v/hash/?", function() use ($app) {
 
 $app->post("/$v/random/?", function() use ($app) {
     // default random string length
-    $length = 16;
+    $length = 32;
     if (array_key_exists('length', $_POST)) {
         $length = (int)$_POST['length'];
     }
@@ -544,6 +563,13 @@ $app->get("/$v/privileges/:groupId(/:tableName)/?", function ($groupId, $tableNa
 
     $privileges = new DirectusPrivilegesTableGateway($acl, $ZendDb);
     $response = $privileges->fetchPerTable($groupId, $tableName);
+    if (!$response) {
+        $app->response()->setStatus(404);
+        $response = array(
+            'message' => __t('unable_to_find_privileges_for_x_in_group_x',['table' => $tableName, 'group_id' => $groupId]),
+            'success' => false
+        );
+    }
 
     return JsonView::render($response);
 });
@@ -557,23 +583,29 @@ $app->map("/$v/privileges/:groupId/?", function ($groupId) use ($acl, $ZendDb, $
     }
 
     if (isset($requestPayload['addTable'])) {
-      $isTableNameAlphanumeric = preg_match("/[a-z0-9]+/i", $requestPayload['table_name']);
-      $zeroOrMoreUnderscoresDashes = preg_match("/[_-]*/i", $requestPayload['table_name']);
+        $isTableNameAlphanumeric = preg_match("/[a-z0-9]+/i", $requestPayload['table_name']);
+        $zeroOrMoreUnderscoresDashes = preg_match("/[_-]*/i", $requestPayload['table_name']);
 
-      if (!($isTableNameAlphanumeric && $zeroOrMoreUnderscoresDashes)) {
-          $app->response->setStatus(400);
-          return JsonView::render(array('message'=> __t('invalid_table_name')));
-      }
+        if (!($isTableNameAlphanumeric && $zeroOrMoreUnderscoresDashes)) {
+            $app->response->setStatus(400);
+            return JsonView::render(array('message'=> __t('invalid_table_name')));
+        }
 
-      unset($requestPayload['addTable']);
+        unset($requestPayload['addTable']);
 
-      Hook::run('table.create:before', $requestPayload['table_name']);
-      SchemaManager::createTable($requestPayload['table_name']);
-      Hook::run('table.create', $requestPayload['table_name']);
-      Hook::run('table.create:after', $requestPayload['table_name']);
+        if (!SchemaManager::tableExists($requestPayload['table_name'])) {
+            $app->emitter->run('table.create:before', $requestPayload['table_name']);
+            // Through API:
+            // Remove spaces and symbols from table name
+            // And in lowercase
+            $requestPayload['table_name'] = strtolower(SchemaUtils::cleanTableName($requestPayload['table_name']));
+            SchemaManager::createTable($requestPayload['table_name']);
+            $app->emitter->run('table.create', $requestPayload['table_name']);
+            $app->emitter->run('table.create:after', $requestPayload['table_name']);
+        }
     }
 
-    $privileges = new DirectusPrivilegesTableGateway($acl, $ZendDb);;
+    $privileges = new DirectusPrivilegesTableGateway($acl, $ZendDb);
     $response = $privileges->insertPrivilege($requestPayload);
 
     return JsonView::render($response);
@@ -688,9 +720,6 @@ $app->get("/$v/tables/:table/typeahead/?", function($table, $query = null) use (
   if(!isset($params['columns'])) {
     $params['columns'] = '';
   }
-  if(!array_key_exists('include_inactive', $params)) {
-    $params[STATUS_COLUMN_NAME] = STATUS_ACTIVE_NUM;
-  }
 
   $columns = ($params['columns']) ? explode(',', $params['columns']) : array();
   if(count($columns) > 0) {
@@ -752,8 +781,14 @@ $app->map("/$v/tables/:table/rows/:id/?", function ($table, $id) use ($ZendDb, $
     $params[$TableGateway->primaryKeyFieldName] = $id;
     // GET a table entry
     $Table = new TableGateway($acl, $table, $ZendDb);
-    $entries = $Table->getEntries($params);
-    JsonView::render($entries);
+    $response = $Table->getEntries($params);
+    if (!$response) {
+        $response = array(
+            'message' => __t('unable_to_find_record_in_x_with_id_x',['table' => $table, 'id' => $id]),
+            'success' => false
+        );
+    }
+    JsonView::render($response);
 })->via('DELETE', 'GET', 'PUT','PATCH');
 
 /**
@@ -764,12 +799,10 @@ $app->map("/$v/tables/:table/rows/:id/?", function ($table, $id) use ($ZendDb, $
 // ex: /activity/:table, /activity/recents/:days
 $app->get("/$v/activity/?", function () use ($params, $ZendDb, $acl) {
     $Activity = new DirectusActivityTableGateway($acl, $ZendDb);
-    $datetime = new DateTime('NOW', new DateTimeZone('GMT'));
-    $datetime->modify('-30 days');
     // @todo move this to backbone collection
     if (!$params['adv_search']) {
       unset($params['perPage']);
-      $params['adv_search'] = "datetime >= '" . $datetime->format('Y-m-d H:i:s') . "'";
+      $params['adv_search'] = "datetime >= '" . DateUtils::daysAgo(30) . "'";
     }
     $new_get = $Activity->fetchFeed($params);
     $new_get['active'] = $new_get['total'];
@@ -796,6 +829,10 @@ $app->map("/$v/tables/:table/columns/?", function ($table_name) use ($ZendDb, $p
         }
 
         $tableGateway = new TableGateway($acl, $table_name, $ZendDb);
+        // Through API:
+        // Remove spaces and symbols from column name
+        // And in lowercase
+        $requestPayload['column_name'] = strtolower(SchemaUtils::cleanColumnName($requestPayload['column_name']));
         $params['column_name'] = $tableGateway->addColumn($table_name, $requestPayload);
     }
 
@@ -841,9 +878,40 @@ $app->map("/$v/tables/:table/columns/:column/?", function ($table, $column) use 
 
     if($app->request()->isPut()) {
         $TableGateway = new TableGateway($acl, 'directus_columns', $ZendDb);
-        $TableGateway->updateCollection($requestPayload);
+        $columnData = $TableGateway->select([
+            'table_name' => $table,
+            'column_name' => $column
+        ])->current();
+
+        if ($columnData) {
+            $columnData = $columnData->toArray();
+            $requestPayload = ArrayUtils::pick($requestPayload, [
+                'data_type',
+                'ui',
+                'hidden_input',
+                'hidden_list',
+                'required',
+                'relationship_type',
+                'related_table',
+                'junction_table',
+                'junction_key_left',
+                'junction_key_right',
+                'sort',
+                'comment'
+            ]);
+
+            $requestPayload['id'] = $columnData['id'];
+            $TableGateway->updateCollection($requestPayload);
+        }
     }
+
     $response = TableSchema::getSchemaArray($table, $params);
+    if (!$response) {
+        $response = array(
+            'message' => __t('unable_to_find_column_x',['column' => $column]),
+            'success' => false
+        );
+    }
     JsonView::render($response);
 })->via('GET', 'PUT', 'DELETE');
 
@@ -900,9 +968,20 @@ $app->get("/$v/groups/:id/?", function ($id = null) use ($ZendDb, $acl) {
     // @TODO need POST and PUT
     // Hardcoding ID temporarily
     is_null($id) ? $id = 1 : null;
-    $Groups = new TableGateway($acl, 'directus_groups', $ZendDb);
-    $get_new = $Groups->find($id);
-    JsonView::render($get_new);
+    $tableName = 'directus_groups';
+    $Groups = new TableGateway($acl, $tableName, $ZendDb);
+    $response = $Groups->find($id);
+    if (!$response) {
+        $response = array(
+            'message' => __t('unable_to_find_group_with_id_x',['id' => $id]),
+            'success' => false
+        );
+    }
+
+    $columns = TableSchema::getAllNonAliasTableColumns($tableName);
+    $response = SchemaManager::parseRecordValuesByType($response, $columns);
+
+    JsonView::render($response);
 });
 
 /**
@@ -922,7 +1001,7 @@ $app->map("/$v/files(/:id)/?", function ($id = null) use ($app, $ZendDb, $acl, $
     switch ($app->request()->getMethod()) {
       case "POST":
         $requestPayload['user'] = $currentUser['id'];
-        $requestPayload['date_uploaded'] = gmdate('Y-m-d H:i:s');
+        $requestPayload['date_uploaded'] = DateUtils::now();
 
         // When the file is uploaded there's not a data key
         if (array_key_exists('data', $requestPayload)) {
@@ -932,8 +1011,8 @@ $app->map("/$v/files(/:id)/?", function ($id = null) use ($app, $ZendDb, $acl, $
             } else {
                 $recordData = $Files->saveData($requestPayload['data'], $requestPayload['name']);
             }
-            // $requestPayload['file_name'] = $requestPayload['name'];
-            $requestPayload = array_merge($requestPayload, $recordData);
+
+            $requestPayload = array_merge($recordData, ArrayUtils::omit($requestPayload, ['data', 'name']));
         }
         $newRecord = $TableGateway->manageRecordUpdate($table, $requestPayload, $activityMode);
         $params['id'] = $newRecord['id'];
@@ -948,23 +1027,15 @@ $app->map("/$v/files(/:id)/?", function ($id = null) use ($app, $ZendDb, $acl, $
     }
 
     $Files = new TableGateway($acl, $table, $ZendDb);
-    $get_new = $Files->getEntries($params);
+    $response = $Files->getEntries($params);
+    if (!$response) {
+        $response = array(
+            'message' => __t('unable_to_find_file_with_id_x',['id' => $id]),
+            'success' => false
+        );
+    }
 
-//    @TODO: Returns date in ISO 8601 Ex: 2016-06-06T17:18:20Z
-//    see: https://en.wikipedia.org/wiki/ISO_8601
-//    if (array_key_exists('rows', $get_new)) {
-//        foreach ($get_new['rows'] as &$row) {
-//          if(isset($row['date_uploaded'])) {
-//            $row['date_uploaded'] .= ' UTC';
-//          }
-//        }
-//    } else {
-//      if(isset($get_new['date_uploaded'])) {
-//        $get_new['date_uploaded'] .= ' UTC';
-//      }
-//    }
-
-    JsonView::render($get_new);
+    JsonView::render($response);
 })->via('GET','PATCH','POST','PUT');
 
 /**
@@ -1015,10 +1086,18 @@ $app->map("/$v/tables/:table/preferences/?", function($table) use ($ZendDb, $acl
 
     if(isset($params['newTitle'])) {
         $jsonResponse = $Preferences->fetchByUserAndTableAndTitle($currentUser['id'], $table, $params['newTitle']);
-        // $Preferences->updateDefaultByName($currentUser['id'], $table, $jsonResponse);
     } else {
         $jsonResponse = $Preferences->fetchByUserAndTableAndTitle($currentUser['id'], $table);
     }
+
+    if (!$jsonResponse) {
+        $app->response()->setStatus(404);
+        $jsonResponse = array(
+            'message' => __t('unable_to_find_preferences'),
+            'success' => false
+        );
+    }
+
     JsonView::render($jsonResponse);
 })->via('GET','POST','PUT', 'DELETE');
 
@@ -1087,9 +1166,16 @@ $app->map("/$v/settings(/:id)/?", function ($id = null) use ($acl, $ZendDb, $par
     }
 
     $settings_new = $Settings->fetchAll();
-    $get_new = is_null($id) ? $settings_new : $settings_new[$id];
+    // $get_new = is_null($id) ? $settings_new : $settings_new[$id];
+    $response = array_key_exists($id, $settings_new) ? $settings_new : null;
+    if (!$response) {
+        $response = array(
+            'message' => __t('unable_to_find_setting_collection_x',['collection' => $id]),
+            'success' => false
+        );
+    }
 
-    JsonView::render($get_new);
+    JsonView::render($response);
 })->via('GET','POST','PUT');
 
 /**
@@ -1137,7 +1223,6 @@ $app->map("/$v/tables/:table/?", function ($table) use ($ZendDb, $acl, $params, 
       'table_name' => $data['table_name'],
       'hidden' => (int)$data['hidden'],
       'single' => (int)$data['single'],
-      'is_junction_table' => (int)$data['is_junction_table'],
       'footer' => (int)$data['footer'],
       'primary_column' => array_key_exists('primary_column', $data) ? $data['primary_column'] : ''
     );
@@ -1156,18 +1241,17 @@ $app->map("/$v/tables/:table/?", function ($table) use ($ZendDb, $acl, $params, 
     foreach ($data['columns'] as $col) {
       $columnData = array(
         'table_name' => $table,
-        'column_name'=>$col['column_name'],
-        'ui'=>$col['ui'],
-        'hidden_input'=>$col['hidden_input'],
-        'hidden_list' => $col['hidden_list'],
-        'required'=>$col['required'],
-        'master'=>$col['master'],
-        'sort'=> array_key_exists('sort', $col) ? $col['sort'] : 99999,
-        'comment'=> array_key_exists('comment', $col) ? $col['comment'] : ''
+        'column_name' => $col['column_name'],
+        'ui' => $col['ui'],
+        'hidden_input' => $col['hidden_input'] ? 1 : 0,
+        'hidden_list' => $col['hidden_list'] ? 1 : 0,
+        'required' => $col['required'] ? 1 : 0,
+        'sort' => array_key_exists('sort', $col) ? $col['sort'] : 99999,
+        'comment' => array_key_exists('comment', $col) ? $col['comment'] : ''
       );
 
       // hotfix #1069 single_file UI not saving relational settings
-      $extraFields = ['data_type', 'relationship_type', 'table_related', 'junction_key_right'];
+      $extraFields = ['data_type', 'relationship_type', 'related_table', 'junction_key_right'];
       foreach($extraFields as $field) {
         if (array_key_exists($field, $col)) {
           $columnData[$field] = $col[$field];
@@ -1175,16 +1259,24 @@ $app->map("/$v/tables/:table/?", function ($table) use ($ZendDb, $acl, $params, 
       }
 
       $existing = $ColumnsTableGateway->select(array('table_name' => $table, 'column_name' => $col['column_name']))->toArray();
-      if(count($existing) > 0) {
+      if (count($existing) > 0) {
         $columnData['id'] = $existing[0]['id'];
       }
+
       array_push($column_settings, $columnData);
     }
+
+
     $ColumnsTableGateway->updateCollection($column_settings);
   }
+
   $response = TableSchema::getTable($table);
+
   if (!$response) {
-    $response = [];
+      $response = array(
+          'message' => __t('unable_to_find_table_x',['table_name' => $table]),
+          'success' => false
+      );
   }
   JsonView::render($response);
 })->via('GET', 'PUT', 'DELETE')->name('table_meta');
@@ -1213,7 +1305,7 @@ $app->post("/$v/upload/link/?", function () use ($params, $requestPayload, $app,
 
     $app->response->setStatus(400);
 
-    if (isset($_POST['link']) && is_string($_POST['link'])) {
+    if (isset($_POST['link']) && filter_var($_POST['link'], FILTER_VALIDATE_URL)) {
         $fileData = array('caption'=>'','tags'=>'','location'=>'');
         $linkInfo = $Files->getLink($_POST['link']);
 
@@ -1222,6 +1314,7 @@ $app->post("/$v/upload/link/?", function () use ($params, $requestPayload, $app,
             $app->response->setStatus(200);
             $fileData = array_merge($fileData, $linkInfo);
 
+            $result = [];
             $result[] = array(
                 'type' => $fileData['type'],
                 'name' => $fileData['name'],
@@ -1233,7 +1326,8 @@ $app->post("/$v/upload/link/?", function () use ($params, $requestPayload, $app,
                 'size' => $fileData['size'],
                 'width' => $fileData['width'],
                 'height' => $fileData['height'],
-                'url' => (isset($fileData['url'])) ? $fileData['url'] : '',
+                'html' => isset($fileData['html']) ? $fileData['html'] : null,
+                'embed_id' => (isset($fileData['embed_id'])) ? $fileData['embed_id'] : '',
                 'data' => (isset($fileData['data'])) ? $fileData['data'] : null,
                 'user' => $currentUser['id']
                 //'date_uploaded' => $fileData['date_uploaded'] . ' UTC',
@@ -1440,6 +1534,7 @@ $app->post("/$v/comments/?", function() use ($params, $requestPayload, $app, $ac
     }
   }
 
+  $requestPayload['datetime'] = DateUtils::now();
   $newRecord = $TableGateway->manageRecordUpdate("directus_messages", $requestPayload, TableGateway::ACTIVITY_ENTRY_MODE_DISABLED);
   $params['id'] = $newRecord['id'];
 
@@ -1515,9 +1610,37 @@ $app->map("/$v/tables/:table/columns/:column/:ui/?", function($table, $column, $
         $TableGateway->updateCollection($column_settings);
     }
     $UiOptions = new DirectusUiTableGateway($acl, $ZendDb);
-    $get_new = $UiOptions->fetchOptions($table, $column, $ui);
-    JsonView::render($get_new);
+    $response = $UiOptions->fetchOptions($table, $column, $ui);
+    if (!$response) {
+        $app->response()->setStatus(404);
+        $response = array(
+            'message' => __t('unable_to_find_column_x_options_for_x', ['column' => $column, 'ui' => $ui]),
+            'success' => false
+        );
+    }
+
+    JsonView::render($response);
 })->via('GET','POST','PUT');
+
+$app->notFound(function() use ($app, $acl, $ZendDb) {
+    $app->response()->header('Content-Type', 'text/html; charset=utf-8');
+
+    $settingsTable = new DirectusSettingsTableGateway($acl, $ZendDb);
+    $settings = $settingsTable->fetchCollection('global');
+
+    $projectName = isset($settings['project_name']) ? $settings['project_name'] : 'Directus';
+    $projectLogoURL = '/assets/img/directus-logo-flat.svg';
+    if (isset($settings['cms_thumbnail_url']) && $settings['cms_thumbnail_url']) {
+        $projectLogoURL = $settings['cms_thumbnail_url'];
+    }
+
+    $data = [
+        'project_name' => $projectName,
+        'project_logo' => $projectLogoURL,
+    ];
+
+    $app->render('errors/404.twig.html', $data);
+});
 
 /**
  * Run the Router

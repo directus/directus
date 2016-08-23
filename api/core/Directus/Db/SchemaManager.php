@@ -17,6 +17,7 @@ class SchemaManager
 {
     /**
      * Directus core tables
+     *
      * @var array
      */
     protected static $directusTables = [
@@ -38,6 +39,7 @@ class SchemaManager
 
     /**
      * Create a new table
+     *
      * @param string $name
      * @return void
      */
@@ -69,7 +71,6 @@ class SchemaManager
      * Add the core table prefix to to a table name.
      *
      * @param $tables
-     *
      * @return string|array
      */
     public static function addCoreTablePrefix($tables)
@@ -84,6 +85,42 @@ class SchemaManager
         }
 
         return array_map($filterFunction, $tables);
+    }
+
+    /**
+     * Get Directus Core tables name
+     *
+     * @return array
+     */
+    public static function getCoreTables()
+    {
+        return static::addCoreTablePrefix(static::$directusTables);
+    }
+
+    /**
+     * Check if a table name exists
+     *
+     * @param $tableName
+     * @return bool
+     */
+    public static function tableExists($tableName)
+    {
+        $schema = Bootstrap::get('schema');
+
+        return $schema->tableExists($tableName);
+    }
+
+    /**
+     * Check if one or more table in the list exists.
+     *
+     * @param array $tablesName
+     * @return bool
+     */
+    public static function someTableExists(array $tablesName)
+    {
+        $schema = Bootstrap::get('schema');
+
+        return $schema->someTableExists($tablesName);
     }
 
     /**
@@ -104,7 +141,6 @@ class SchemaManager
      * Get all Directus core tables name
      *
      * @param array $filterNames
-     *
      * @return array
      */
     public static function getDirectusTables(array $filterNames = [])
@@ -115,6 +151,17 @@ class SchemaManager
         }
 
         return static::addCoreTablePrefix($tables);
+    }
+
+    /**
+     * Check if a given table is a directus core table name
+     *
+     * @param $tableName
+     * @return bool
+     */
+    public static function isDirectusTable($tableName)
+    {
+        return in_array($tableName, static::getDirectusTables());
     }
 
     public static function getSupportedDatabases()
@@ -129,11 +176,26 @@ class SchemaManager
 
     public static function getTemplates()
     {
-        return [
-            'ui_gallery' => [
-                'id' => 'ui_gallery',
-                'name' => 'UI Gallery'
-            ]
-        ];
+        // @TODO: SchemaManager shouldn't be a class with static methods anymore
+        // the UI templates list will be provided by a container or bootstrap.
+        $path = implode(DIRECTORY_SEPARATOR, [
+            BASE_PATH,
+            'api',
+            'migrations',
+            'templates',
+            '*'
+        ]);
+
+        $templatesDirs = glob($path, GLOB_ONLYDIR);
+        $templatesData = [];
+        foreach($templatesDirs as $dir) {
+            $key = basename($dir);
+            $templatesData[$key] = [
+                'id' => $key,
+                'name' => uc_convert($key)
+            ];
+        }
+
+        return $templatesData;
     }
 }

@@ -13,11 +13,15 @@ use Directus\Bootstrap;
 use Directus\Db\Exception\SuppliedArrayAsColumnValue;
 use Directus\Db\Exception\DuplicateEntryException;
 use Directus\Db\RowGateway\AclAwareRowGateway;
+use Directus\Db\SchemaManager;
 use Directus\Db\TableSchema;
+use Directus\Files\Files;
 use Directus\Hook\Hook;
+use Directus\Util\ArrayUtils;
 use Directus\Util\DateUtils;
 use Directus\Util\Formatting;
 use Zend\Db\Adapter\AdapterInterface;
+use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\Sql\AbstractSql;
 use Zend\Db\Sql\Ddl;
 use Zend\Db\Sql\Delete;
@@ -38,6 +42,13 @@ class AclAwareTableGateway extends TableGateway {
     public $primaryKeyFieldName = 'id';
     public $imagickExtensions = array('tiff', 'tif', 'psd', 'pdf');
     public $memcache;
+
+    /**
+     * Hook Emitter Instance
+     *
+     * @var \Directus\Hook\Emitter
+     */
+    protected $emitter;
 
     /**
      * Constructor
@@ -84,6 +95,7 @@ class AclAwareTableGateway extends TableGateway {
         $rowGatewayFeature = new RowGatewayFeature($rowGatewayPrototype);
         $this->featureSet->addFeature($rowGatewayFeature);
         $this->memcache = new MemcacheProvider();
+        $this->emitter = Bootstrap::get('hookEmitter');
 
         parent::__construct($table, $adapter, $this->featureSet, $resultSetPrototype, $sql);
     }
@@ -193,14 +205,17 @@ class AclAwareTableGateway extends TableGateway {
     }
 
     public function addOrUpdateRecordByArray(array $recordData, $tableName = null) {
+        $tableName = is_null($tableName) ? $this->table : $tableName;
         foreach($recordData as $columnName => $columnValue) {
             if(is_array($columnValue)) {
-                $table = is_null($tableName) ? $this->table : $tableName;
-                throw new SuppliedArrayAsColumnValue("Attempting to write an array as the value for column `$table`.`$columnName`.");
+                // $table = is_null($tableName) ? $this->table : $tableName;
+                throw new SuppliedArrayAsColumnValue("Attempting to write an array as the value for column `$tableName`.`$columnName`.");
             }
         }
 
-        $tableName = is_null($tableName) ? $this->table : $tableName;
+        $columns = TableSchema::getAllNonAliasTableColumns($tableName);
+        $recordData = SchemaManager::parseRecordValuesByType($recordData, $columns);
+
         $TableGateway = new self($this->acl, $tableName, $this->adapter);
         $rowExists = isset($recordData[$TableGateway->primaryKeyFieldName]);
         if($rowExists) {
@@ -209,11 +224,13 @@ class AclAwareTableGateway extends TableGateway {
             $Update->where(array($TableGateway->primaryKeyFieldName => $recordData[$TableGateway->primaryKeyFieldName]));
             $TableGateway->updateWith($Update);
 
-            Hook::run('postUpdate', [$TableGateway, $recordData, $this->adapter, $this->acl]);
-            // Hook::run('table.update.'.$tableName, [$recordData]);
+            $this->emitter->run('postUpdate', [$TableGateway, $recordData, $this->adapter, $this->acl]);
         } else {
             $d = $recordData;
             unset($d['data']);
+            if ($tableName == 'directus_files') {
+                $d['user'] = Auth::getUserInfo('id');
+            }
             $TableGateway->insert($d);
             $recordData[$TableGateway->primaryKeyFieldName] = $TableGateway->getLastInsertValue();
 
@@ -241,8 +258,7 @@ class AclAwareTableGateway extends TableGateway {
               }
             }
 
-            Hook::run('postInsert', [$TableGateway, $recordData, $this->adapter, $this->acl]);
-            // Hook::run('table.insert.'.$tableName, [$recordData]);
+            $this->emitter->run('postInsert', [$TableGateway, $recordData, $this->adapter, $this->acl]);
         }
 
         $columns = TableSchema::getAllNonAliasTableColumnNames($tableName);
@@ -275,7 +291,7 @@ class AclAwareTableGateway extends TableGateway {
         $drop = new Ddl\DropTable($tableName);
         $query = $sql->getSqlStringForSqlObject($drop);
 
-        Hook::run('table.drop:before', [$tableName]);
+        $this->emitter->run('table.drop:before', [$tableName]);
 
         $dropped = $this->adapter->query(
             $query
@@ -285,7 +301,8 @@ class AclAwareTableGateway extends TableGateway {
             return false;
         }
 
-        Hook::run('table.drop:after', [$tableName]);
+        $this->emitter->run('table.drop', [$tableName]);
+        $this->emitter->run('table.drop:after', [$tableName]);
 
         // remove table privileges
         if ($tableName != 'directus_privileges') {
@@ -357,12 +374,12 @@ class AclAwareTableGateway extends TableGateway {
     */
     public function addColumn($tableName, $tableData) {
       $directus_types = array('MANYTOMANY', 'ONETOMANY', 'ALIAS');
-      $data_type = $tableData['data_type'];
+      $relationshipType = ArrayUtils::get($tableData, 'relationship_type', null);
       // TODO: list all types which need manytoone ui
       // Hard-coded
       $manytoones = array('single_file', 'many_to_one', 'many_to_one_typeahead', 'MANYTOONE');
 
-      if (in_array($data_type, $directus_types)) {
+      if (in_array($relationshipType, $directus_types)) {
           //This is a 'virtual column'. Write to directus schema instead of MYSQL
           $this->addVirtualColumn($tableName, $tableData);
       } else {
@@ -393,7 +410,7 @@ class AclAwareTableGateway extends TableGateway {
     }
 
     protected function addVirtualColumn($tableName, $columnData) {
-      $alias_columns = array('table_name', 'column_name', 'data_type', 'table_related', 'junction_table', 'junction_key_left','junction_key_right', 'sort', 'ui', 'comment', 'relationship_type');
+      $alias_columns = array('table_name', 'column_name', 'data_type', 'related_table', 'junction_table', 'junction_key_left','junction_key_right', 'sort', 'ui', 'comment', 'relationship_type');
 
       $columnData['table_name'] = $tableName;
       $columnData['sort'] = 9999;
@@ -453,6 +470,52 @@ class AclAwareTableGateway extends TableGateway {
     }
 
     /**
+     * Post select process
+     * @param array $selectState
+     * @param ResultSet $result
+     * @return ResultSet
+     */
+    protected function processSelect($selectState, $result)
+    {
+        // Add file url and thumb url
+        if ($selectState['table'] == 'directus_files') {
+            $fileRows = $result->toArray();
+            $files = new Files();
+            foreach ($fileRows as &$row) {
+                $config = Bootstrap::get('config');
+                $fileURL = $config['filesystem']['root_url'];
+                $thumbnailURL = $config['filesystem']['root_thumb_url'];
+                $thumbnailFilenameParts = explode('.', $row['name']);
+                $thumbnailExtension = array_pop($thumbnailFilenameParts);
+
+                $row['url'] = $fileURL . '/' . $row['name'];
+                if (in_array($thumbnailExtension, ['tif', 'tiff', 'psd', 'pdf'])) {
+                    $thumbnailExtension = 'jpg';
+                }
+
+                $thumbnailFilename = $row['id'] . '.' . $thumbnailExtension;
+                $row['thumbnail_url'] = $thumbnailURL . '/' . $thumbnailFilename;
+                // hotfix: there's not thumbnail for this file
+                if (!$files->exists('thumbs/' . $thumbnailFilename)) {
+                    $row['thumbnail_url'] = null;
+                }
+
+                $embedManager = Bootstrap::get('embedManager');
+                $provider = $embedManager->getByType($row['type']);
+                $row['html'] = null;
+                if ($provider) {
+                    $row['html'] = $provider->getCode($row);
+                }
+            }
+
+            $filesArrayObject = new \ArrayObject($fileRows);
+            $result->initialize($filesArrayObject->getIterator());
+        }
+
+        return $result;
+    }
+
+    /**
      * OVERRIDES
      */
 
@@ -470,7 +533,19 @@ class AclAwareTableGateway extends TableGateway {
         $table = $this->getRawTableNameFromQueryStateTable($selectState['table']);
 
         // Enforce field read blacklist on Select's main table
-        $this->acl->enforceBlacklist($table, $selectState['columns'], Acl::FIELD_READ_BLACKLIST);
+        try {
+            // @TODO: Enforce must return a list of columns without the blacklist
+            // when asterisk (*) is used
+            // and only throw and error when all the selected columns are blacklisted
+            $this->acl->enforceBlacklist($table, $selectState['columns'], Acl::FIELD_READ_BLACKLIST);
+        } catch (\Exception $e) {
+            if ($selectState['columns'][0] != '*') {
+                throw $e;
+            }
+
+            $selectState['columns'] = TableSchema::getAllNonAliasTableColumns($table);
+            $this->acl->enforceBlacklist($table, $selectState['columns'], Acl::FIELD_READ_BLACKLIST);
+        }
 
         // Enforce field read blacklist on Select's join tables
         foreach($selectState['joins'] as $join) {
@@ -479,7 +554,7 @@ class AclAwareTableGateway extends TableGateway {
         }
 
         try {
-            return parent::executeSelect($select);
+            return $this->processSelect($selectState, parent::executeSelect($select));
         } catch(\Zend\Db\Adapter\Exception\InvalidQueryException $e) {
             if('production' !== DIRECTUS_ENV) {
                 throw new \RuntimeException("This query failed: " . $this->dumpSql($select), 0, $e);
@@ -505,20 +580,29 @@ class AclAwareTableGateway extends TableGateway {
         $insertTable = $this->getRawTableNameFromQueryStateTable($insertState['table']);
         $insertData = $insertState['values'];
 
-        if(!$this->acl->hasTablePrivilege($insertTable, 'add')) {
+        if (!$this->acl->hasTablePrivilege($insertTable, 'add')) {
             $aclErrorPrefix = $this->acl->getErrorMessagePrefix();
             throw new UnauthorizedTableAddException($aclErrorPrefix . "Table add access forbidden on table $insertTable");
         }
 
-        // Enforce write field blacklist (if user lacks bigedit privileges on this table)
-        if(!$this->acl->hasTablePrivilege($insertTable, 'bigedit')) {
-            $this->acl->enforceBlacklist($insertTable, $insertState['columns'], Acl::FIELD_WRITE_BLACKLIST);
-        }
+        // Enforce write field blacklist
+        $this->acl->enforceBlacklist($insertTable, $insertState['columns'], Acl::FIELD_WRITE_BLACKLIST);
 
         try {
-            Hook::run('table.insert.'.$insertTable.':before', [$insertData]);
+            // Data to be inserted with the column name as assoc key.
+            $insertDataAssoc = array_combine($insertState['columns'], $insertData);
+
+            $this->emitter->run('table.insert:before', [$insertTable, $insertDataAssoc]);
+            $this->emitter->run('table.insert.' . $insertTable . ':before', [$insertDataAssoc]);
+
             $result = parent::executeInsert($insert);
-            Hook::run('table.insert.'.$insertTable.':after', [$insertData]);
+            $insertTableGateway = new self($this->acl, $insertTable, $this->adapter);
+            $resultData = $insertTableGateway->find($this->getLastInsertValue());
+
+            $this->emitter->run('table.insert', [$insertTable, $resultData]);
+            $this->emitter->run('table.insert.' . $insertTable, [$resultData]);
+            $this->emitter->run('table.insert:after', [$insertTable, $resultData]);
+            $this->emitter->run('table.insert.' . $insertTable . ':after', [$resultData]);
 
             return $result;
         } catch(\Zend\Db\Adapter\Exception\InvalidQueryException $e) {
@@ -546,10 +630,11 @@ class AclAwareTableGateway extends TableGateway {
     protected function executeUpdate(Update $update)
     {
         $currentUserId = null;
-        if(Auth::loggedIn()) {
+        if (Auth::loggedIn()) {
             $currentUser = Auth::getUserInfo();
             $currentUserId = intval($currentUser['id']);
         }
+
         $updateState = $update->getRawState();
         $updateTable = $this->getRawTableNameFromQueryStateTable($updateState['table']);
         $cmsOwnerColumn = $this->acl->getCmsOwnerColumnByTable($updateTable);
@@ -567,12 +652,12 @@ class AclAwareTableGateway extends TableGateway {
             $permissionName = 'delete';
         }
 
-        if(!$this->acl->hasTablePrivilege($updateTable, 'big' . $permissionName)) {
+        if (!$this->acl->hasTablePrivilege($updateTable, 'big' . $permissionName)) {
             // Parsing for the column name is unnecessary. Zend enforces raw column names.
             /**
              * Enforce Privilege: "Big" Edit
              */
-            if(false === $cmsOwnerColumn) {
+            if (false === $cmsOwnerColumn) {
                 // All edits are "big" edits if there is no magic owner column.
                 $aclErrorPrefix = $this->acl->getErrorMessagePrefix();
                 throw new UnauthorizedTableBigEditException($aclErrorPrefix . "The table `$updateTable` is missing the `user_create_column` within `directus_tables` (BigEdit Permission Forbidden)");
@@ -580,7 +665,7 @@ class AclAwareTableGateway extends TableGateway {
                 // Who are the owners of these rows?
                 list($resultQty, $ownerIds) = $this->acl->getCmsOwnerIdsByTableGatewayAndPredicate($this, $updateState['where']);
                 // Enforce
-                if(is_null($currentUserId) || count(array_diff($ownerIds, array($currentUserId)))) {
+                if (is_null($currentUserId) || count(array_diff($ownerIds, array($currentUserId)))) {
                     // $aclErrorPrefix = $this->acl->getErrorMessagePrefix();
                     // throw new UnauthorizedTableBigEditException($aclErrorPrefix . "Table bigedit access forbidden on $resultQty `$updateTable` table record(s) and " . count($ownerIds) . " CMS owner(s) (with ids " . implode(", ", $ownerIds) . ").");
                     $groupsTableGateway = self::makeTableGatewayFromTableName($this->acl, 'directus_groups', $this->adapter);
@@ -588,34 +673,37 @@ class AclAwareTableGateway extends TableGateway {
                     throw new UnauthorizedTableBigEditException("[{$group['name']}] permissions only allow you to [$permissionName] your own items.");
                 }
             }
-
-            /**
-             * Enforce write field blacklist (if user lacks bigedit privileges on this table)
-             */
-            $attemptOffsets = array_keys($updateState['set']);
-            $this->acl->enforceBlacklist($updateTable, $attemptOffsets, Acl::FIELD_WRITE_BLACKLIST);
         }
 
-        if(!$this->acl->hasTablePrivilege($updateTable, $permissionName)) {
+        if (!$this->acl->hasTablePrivilege($updateTable, $permissionName)) {
             /**
              * Enforce Privilege: "Little" Edit (I am the record CMS owner)
              */
-            if(false !== $cmsOwnerColumn) {
-                if(!isset($predicateResultQty)) {
+            if (false !== $cmsOwnerColumn) {
+                if (!isset($predicateResultQty)) {
                     // Who are the owners of these rows?
                     list($predicateResultQty, $predicateOwnerIds) = $this->acl->getCmsOwnerIdsByTableGatewayAndPredicate($this, $updateState['where']);
                 }
-                if(in_array($currentUserId, $predicateOwnerIds)) {
+
+                if (in_array($currentUserId, $predicateOwnerIds)) {
                     $aclErrorPrefix = $this->acl->getErrorMessagePrefix();
                     throw new UnauthorizedTableEditException($aclErrorPrefix . "Table edit access forbidden on $predicateResultQty `$updateTable` table records owned by the authenticated CMS user (#$currentUserId).");
                 }
             }
         }
 
+        // Enforce write field blacklist
+        $attemptOffsets = array_keys($updateState['set']);
+        $this->acl->enforceBlacklist($updateTable, $attemptOffsets, Acl::FIELD_WRITE_BLACKLIST);
+
         try {
-            Hook::run('table.update.'.$updateTable.':after', [$updateData]);
+            $this->emitter->run('table.update:before', [$updateTable, $updateData]);
+            $this->emitter->run('table.update.' . $updateTable . ':before', [$updateData]);
             $result = parent::executeUpdate($update);
-            Hook::run('table.update.'.$updateTable.':after', [$updateData]);
+            $this->emitter->run('table.update', [$updateTable, $updateData]);
+            $this->emitter->run('table.update:after', [$updateTable, $updateData]);
+            $this->emitter->run('table.update.' . $updateTable, [$updateData]);
+            $this->emitter->run('table.update.' . $updateTable . ':after', [$updateData]);
 
             return $result;
         } catch(\Zend\Db\Adapter\Exception\InvalidQueryException $e) {
@@ -654,11 +742,8 @@ class AclAwareTableGateway extends TableGateway {
         $canBigDelete = $this->acl->hasTablePrivilege($deleteTable, 'bigdelete');
         $canDelete = $this->acl->hasTablePrivilege($deleteTable, 'delete');
         $aclErrorPrefix = $this->acl->getErrorMessagePrefix();
-        // Is this table a junction table?
-        $deleteTableSchema = TableSchema::getTable($deleteTable);
-        $isDeleteTableAJunction = array_key_exists('is_junction_table', $deleteTableSchema) ? (bool)$deleteTableSchema['is_junction_table'] : false;
 
-        if ($isDeleteTableAJunction || !TableSchema::hasTableColumn($deleteTable, STATUS_COLUMN_NAME)) {
+        if (!TableSchema::hasTableColumn($deleteTable, STATUS_COLUMN_NAME)) {
           if ($this->acl->hasTablePrivilege($deleteTable, 'bigdelete')) {
             $canBigDelete = true;
           } else if ($this->acl->hasTablePrivilege($deleteTable, 'delete')) {
@@ -701,9 +786,13 @@ class AclAwareTableGateway extends TableGateway {
         }
 
         try {
-            Hook::run('table.delete.'.$deleteTable.':before');
+            $this->emitter->run('table.delete:before', [$deleteTable]);
+            $this->emitter->run('table.delete.' . $deleteTable . ':before');
             $result = parent::executeDelete($delete);
-            Hook::run('table.delete.'.$deleteTable.':after');
+            $this->emitter->run('table.delete', [$deleteTable]);
+            $this->emitter->run('table.delete:after', [$deleteTable]);
+            $this->emitter->run('table.delete.' . $deleteTable);
+            $this->emitter->run('table.delete.' . $deleteTable . ':after');
             return $result;
         } catch(\Zend\Db\Adapter\Exception\InvalidQueryException $e) {
             if('production' !== DIRECTUS_ENV) {
@@ -712,5 +801,44 @@ class AclAwareTableGateway extends TableGateway {
             // @todo send developer warning
             throw $e;
         }
+    }
+
+    public function convertDates(array $records, array $schemaArray, $tableName = null)
+    {
+        $tableName = $tableName === null ? $this->table : $tableName;
+        if (!SchemaManager::isDirectusTable($tableName)) {
+            return $records;
+        }
+
+        // hotfix: records sometimes are no set as an array of rows.
+        $items = !is_numeric_keys_array($records) ? [&$records] : $records;
+        foreach($items as &$row) {
+            foreach($schemaArray as $column) {
+                if (in_array(strtolower($column['type']), ['timestamp', 'datetime'])) {
+                    $columnName = $column['id'];
+                    $row[$columnName] = DateUtils::convertToISOFormat($row[$columnName], 'UTC', get_user_timezone());
+                }
+            }
+        }
+
+        return $records;
+    }
+
+    protected function parseRecordValuesByType($records, $tableName = null)
+    {
+        $tableName = $tableName === null ? $this->table : $tableName;
+        $columns = TableSchema::getAllNonAliasTableColumns($tableName);
+
+        return SchemaManager::parseRecordValuesByType($records, $columns);
+    }
+
+    protected function parseRecord($records, $tableName = null)
+    {
+        $tableName = $tableName === null ? $this->table : $tableName;
+        $records = $this->parseRecordValuesByType($records, $tableName);
+        $columns = TableSchema::getAllNonAliasTableColumns($tableName);
+        $records = $this->convertDates($records, $columns, $tableName);
+
+        return $records;
     }
 }

@@ -45,7 +45,6 @@ class MySQLSchema extends AbstractSchema
             [
                 'hidden' => new Expression('IFNULL(hidden, 0)'),
                 'single' => new Expression('IFNULL(single, 0)'),
-                'is_junction_table',
                 'user_create_column',
                 'user_update_column',
                 'date_create_column',
@@ -107,7 +106,35 @@ class MySQLSchema extends AbstractSchema
      */
     public function hasTable($tableName)
     {
-        // TODO: Implement hasTable() method.
+        return $this->getTable($tableName) ? true : false;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function tableExists($tableName)
+    {
+        return $this->hasTable($tableName);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function someTableExists(array $tablesName)
+    {
+        $select = new Select();
+        $select->columns(['TABLE_NAME']);
+        $select->from(['T' => new TableIdentifier('TABLES', 'INFORMATION_SCHEMA')]);
+        $select->where([
+            new In('T.TABLE_NAME', $tablesName),
+            'T.TABLE_SCHEMA' => $this->adapter->getCurrentSchema()
+        ]);
+
+        $sql = new Sql($this->adapter);
+        $statement = $sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+
+        return $result->count();
     }
 
     /**
@@ -131,7 +158,6 @@ class MySQLSchema extends AbstractSchema
             [
                 'hidden' => new Expression('IFNULL(hidden, 0)'),
                 'single' => new Expression('IFNULL(single, 0)'),
-                'is_junction_table',
                 'user_create_column',
                 'user_update_column',
                 'date_create_column',
@@ -183,12 +209,10 @@ class MySQLSchema extends AbstractSchema
             'C.COLUMN_NAME = D.column_name AND C.TABLE_NAME = D.table_name',
             [
                 'ui',
-                'system' => new Expression('IFNULL(system, 0)'),
-                'master' => new Expression('IFNULL(master, 0)'),
                 'hidden_list' => new Expression('IFNULL(hidden_list, 0)'),
                 'hidden_input' => new Expression('IFNULL(hidden_input, 0)'),
                 'relationship_type',
-                'table_related',
+                'related_table',
                 'junction_table',
                 'junction_key_left',
                 'junction_key_right',
@@ -225,12 +249,10 @@ class MySQLSchema extends AbstractSchema
             'sort',
             'column_type' => new Expression('NULL'),
             'ui',
-            'system',
-            'master',
             'hidden_list',
             'hidden_input',
             'relationship_type',
-            'table_related',
+            'related_table',
             'junction_table',
             'junction_key_left',
             'junction_key_right',
@@ -246,7 +268,7 @@ class MySQLSchema extends AbstractSchema
             ->OR
             ->equalTo('column_name', $columnName)
             ->unnest()
-            ->addPredicate(new IsNotNull('data_type'));
+            ->addPredicate(new IsNotNull('relationship_type'));
 
         if (count($blacklist)) {
             $where->addPredicate(new NotIn('COLUMN_NAME', $blacklist));
@@ -285,12 +307,10 @@ class MySQLSchema extends AbstractSchema
             'C.COLUMN_NAME = D.column_name AND C.TABLE_NAME = D.table_name',
             [
                 'ui',
-                'system' => new Expression('IFNULL(system, 0)'),
-                'master' => new Expression('IFNULL(master, 0)'),
                 'hidden_list' => new Expression('IFNULL(hidden_list, 0)'),
                 'hidden_input' => new Expression('IFNULL(hidden_input, 0)'),
                 'relationship_type',
-                'table_related',
+                'related_table',
                 'junction_table',
                 'junction_key_left',
                 'junction_key_right',
@@ -324,12 +344,10 @@ class MySQLSchema extends AbstractSchema
             'column_type' => new Expression('NULL'),
             'column_key' => new Expression('NULL'),
             'ui',
-            'system',
-            'master',
             'hidden_list',
             'hidden_input',
             'relationship_type',
-            'table_related',
+            'related_table',
             'junction_table',
             'junction_key_left',
             'junction_key_right',
@@ -431,4 +449,55 @@ class MySQLSchema extends AbstractSchema
         // TODO: Implement getColumnUI() method.
     }
 
+    /**
+     * Cast string values to its database type.
+     *
+     * @param $data
+     * @param $type
+     * @param $length
+     *
+     * @return mixed
+     */
+    public function parseType($data, $type = null, $length = false)
+    {
+        $type = strtolower($type);
+
+        switch ($type) {
+            case null:
+                break;
+            case 'blob':
+            case 'mediumblob':
+                return base64_encode($data);
+            case 'year':
+            case 'bigint':
+            case 'smallint':
+            case 'mediumint':
+            case 'int':
+            case 'long':
+            case 'tinyint':
+                return ($data === null) ? null : (int) $data;
+            case 'float':
+                return (float) $data;
+            case 'date':
+            case 'datetime':
+                $nullDate = empty($data) || ("0000-00-00 00:00:00" == $data) || ('0000-00-00' === $data);
+                if ($nullDate) {
+                    return null;
+                }
+                $date = new \DateTime($data);
+                $formatted = $date->format('Y-m-d H:i:s');
+                return $formatted;
+            case 'time':
+                return !empty($data) ? $data : null;
+            case 'char':
+            case 'varchar':
+            case 'text':
+            case 'tinytext':
+            case 'mediumtext':
+            case 'longtext':
+            case 'var_string':
+                return $data;
+        }
+        return $data;
+    }
 }

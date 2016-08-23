@@ -1,0 +1,16 @@
+--TEST--
+"include" tag sandboxed
+--TEMPLATE--
+{{ include("foo.twig", sandboxed = true) }}
+{{ include("bar.twig") }}
+--TEMPLATE(foo.twig)--
+foo
+--TEMPLATE(bar.twig)--
+{{ foo|e }}
+--DATA--
+return array('foo' => 'bar<br />')
+--EXPECT--
+foo
+
+
+bar&lt;br /&gt;

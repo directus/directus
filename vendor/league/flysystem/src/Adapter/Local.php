@@ -71,6 +71,7 @@ class Local extends AbstractAdapter
      */
     public function __construct($root, $writeFlags = LOCK_EX, $linkHandling = self::DISALLOW_LINKS, array $permissions = [])
     {
+        $root = is_link($root) ? realpath($root) : $root;
         $this->permissionMap = array_replace_recursive(static::$permissions, $permissions);
         $realRoot = $this->ensureDirectory($root);
 
@@ -96,7 +97,7 @@ class Local extends AbstractAdapter
     {
         if ( ! is_dir($root)) {
             $umask = umask(0);
-            mkdir($root, $this->permissionMap['dir']['public'], true);
+            @mkdir($root, $this->permissionMap['dir']['public'], true);
             umask($umask);
 
             if ( ! is_dir($root)) {
@@ -147,7 +148,7 @@ class Local extends AbstractAdapter
     {
         $location = $this->applyPathPrefix($path);
         $this->ensureDirectory(dirname($location));
-        $stream = fopen($location, 'w+');
+        $stream = fopen($location, 'w+b');
 
         if ( ! $stream) {
             return false;
@@ -172,7 +173,7 @@ class Local extends AbstractAdapter
     public function readStream($path)
     {
         $location = $this->applyPathPrefix($path);
-        $stream = fopen($location, 'r');
+        $stream = fopen($location, 'rb');
 
         return compact('stream', 'path');
     }
@@ -304,8 +305,13 @@ class Local extends AbstractAdapter
     {
         $location = $this->applyPathPrefix($path);
         $finfo = new Finfo(FILEINFO_MIME_TYPE);
+        $mimetype = $finfo->file($location);
 
-        return ['mimetype' => $finfo->file($location)];
+        if (in_array($mimetype, ['application/octet-stream', 'inode/x-empty'])) {
+            $mimetype = Util\MimeType::detectByFilename($location);
+        }
+
+        return ['mimetype' => $mimetype];
     }
 
     /**

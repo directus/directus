@@ -207,17 +207,19 @@ input[type=number] {
   font-size: 15px;
   outline: none;
   display: block;
-  background-color: #aaaaaa;
+  background-color: #4f4f4f;
   border: none;
   color: #ffffff;
   cursor: pointer;
   padding: 20px 15px 20px 15px;
-  margin: 30px 0 10px 0;
+  margin: 40px 0 10px 0;
   text-transform: uppercase;
   letter-spacing: 0.02em;
   font-weight: 600; }
   .button:hover {
-    background-color: #4f4f4f; }
+    background-color: #aaaaaa; }
+  .button.no-t-margin {
+    margin-top: 0; }
   .button.primary {
     background-color: #b26cee; }
     .button.primary:hover {
@@ -253,7 +255,7 @@ input[type=number] {
   font-weight: 500; }
 
 .label-success {
-  color: #b26cee;
+  color: #aaaaaa;
   font-weight: bold; }
 
 .input-left {
@@ -270,8 +272,9 @@ input[type=number] {
 .step-3 h3 {
   font-size: 16px;
   margin-bottom: 0px;
-  margin-top: 30px;
-  font-weight: 400; }
+  margin-top: 40px;
+  font-weight: 400;
+  color: #666666; }
 .step-3 table {
   font-size: 12px;
   width: 100%; }
@@ -284,7 +287,8 @@ input[type=number] {
   margin: 0; }
 
 .config-paste {
-  font-size: 12px; }
+  font-size: 12px;
+  padding-left: 30px; }
 
 .error-container {
   background-color: #c1272d;
@@ -298,5 +302,8 @@ input[type=number] {
 
 .error {
   border: 1px solid #c1272d !important; }
+
+.errors {
+  color: #c1272d; }
 
 /*# sourceMappingURL=install.css.map */

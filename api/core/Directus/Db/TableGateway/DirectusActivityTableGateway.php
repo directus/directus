@@ -5,6 +5,7 @@ namespace Directus\Db\TableGateway;
 use Directus\Acl\Acl;
 use Directus\Db\TableGateway\AclAwareTableGateway;
 use Directus\Db\TableSchema;
+use Directus\Util\DateUtils;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Predicate;
 use Zend\Db\Sql\Sql;
@@ -87,6 +88,7 @@ class DirectusActivityTableGateway extends RelationalTableGateway {
 
         $rowset = $this->selectWith($select);
         $rowset = $rowset->toArray();
+        $rowset = $this->convertDates($rowset, $tableSchemaArray);
 
 //        @TODO: Returns date in ISO 8601 Ex: 2016-06-06T17:18:20Z
 //        see: https://en.wikipedia.org/wiki/ISO_8601
@@ -138,7 +140,7 @@ class DirectusActivityTableGateway extends RelationalTableGateway {
           'table_name'        => 'directus_users',
           'action'            => self::ACTION_LOGIN,
           'user'              => $userid,
-          'datetime'          => gmdate('Y-m-d H:i:s'),
+          'datetime'          => DateUtils::now(),
           'parent_id'         => null,
           'logged_ip'         => isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '',
           'user_agent'        => isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : ''
@@ -163,7 +165,7 @@ class DirectusActivityTableGateway extends RelationalTableGateway {
           'table_name'        => 'directus_messages',
           'action'            => $action,
           'user'              => $userId,
-          'datetime'          => gmdate('Y-m-d H:i:s'),
+          'datetime'          => DateUtils::now(),
           'parent_id'         => null,
           'data'              => json_encode($data),
           'delta'             => "[]",

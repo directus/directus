@@ -73,7 +73,10 @@ class Provider {
             $password = self::hashPassword($passwordAttempt);
             $zendDb = Bootstrap::get('zendDb');
             $usersTable = new TableGateway('directus_users', $zendDb);
-            $usersTable->update(['password' => $password], ['id' => $uid]);
+            $usersTable->update([
+                'password' => $password,
+                'access_token' => sha1($uid.StringUtils::random())
+            ], ['id' => $uid]);
         }
 
         if(password_verify($passwordAttempt, $password)) {
@@ -145,13 +148,20 @@ class Provider {
 
     /**
      * Retrieve metadata about the currently logged in user.
-     * @return array Authenticated user metadata.
+     * @param null|string $attribute
+     * @return mixed|array Authenticated user metadata.
      * @throws  \Directus\Auth\UserIsntLoggedInException
      */
-    public static function getUserInfo() {
+    public static function getUserInfo($attribute = null) {
         self::prependSessionKey();
         self::enforceUserIsAuthenticated();
-        return $_SESSION[self::$SESSION_KEY];
+
+        $info = $_SESSION[self::$SESSION_KEY];
+        if ($attribute !== null) {
+            return array_key_exists($attribute, $info) ? $info[$attribute] : null;
+        }
+
+        return $info;
     }
 
     public static function expireCachedUserRecord() {
@@ -208,7 +218,7 @@ class Provider {
         if(self::loggedIn()) {
             throw new UserAlreadyLoggedInException(__t('attempting_to_authenticate_a_user_when_a_user_is_already_authenticated'));
         }
-        $user = array( 'id' => $uid, 'access_token' => sha1($uid.StringUtils::random()) );
+        $user = array( 'id' => $uid, 'access_token' => sha1($uid . StringUtils::randomString()) );
         $_SESSION[self::$SESSION_KEY] = $user;
         self::$authenticated = true;
     }

@@ -1,0 +1,12 @@
+--TEST--
+Exception for multiline tag with undefined variable
+--TEMPLATE--
+{% include 'foo'
+   with vars
+%}
+--TEMPLATE(foo)--
+Foo
+--DATA--
+return array()
+--EXCEPTION--
+Twig_Error_Runtime: Variable "vars" does not exist in "index.twig" at line 3

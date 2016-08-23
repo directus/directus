@@ -1,0 +1,14 @@
+--TEST--
+sandbox tag
+--TEMPLATE--
+{%- sandbox %}
+    {%- include "foo.twig" %}
+
+    {% if 1 %}
+        {%- include "foo.twig" %}
+    {% endif %}
+{%- endsandbox %}
+--TEMPLATE(foo.twig)--
+foo
+--EXCEPTION--
+Twig_Error_Syntax: Only "include" tags are allowed within a "sandbox" section in "index.twig" at line 5.

@@ -1,0 +1,14 @@
+--TEST--
+"date" filter
+--TEMPLATE--
+{{ date1|date }}
+{{ date1|date('d/m/Y') }}
+--DATA--
+date_default_timezone_set('UTC');
+$twig->getExtension('core')->setDateFormat('Y-m-d', '%d days %h hours');
+return array(
+    'date1' => mktime(13, 45, 0, 10, 4, 2010),
+)
+--EXPECT--
+2010-10-04
+04/10/2010

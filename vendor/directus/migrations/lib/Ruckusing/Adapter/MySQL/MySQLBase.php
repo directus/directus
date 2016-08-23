@@ -795,6 +795,36 @@ class MySQLBase extends Ruckusing_Adapter_Base implements Ruckusing_Adapter_Inte
     }//change_column
 
     /**
+     * Has a column
+     *
+     * @param string $table_name the table name
+     * @param string $column_name the column name
+     *
+     * @throws Ruckusing_Exception
+     * @return boolean
+     */
+    public function has_column($table_name, $column_name)
+    {
+        if (empty($table_name)) {
+            throw new Ruckusing_Exception(
+                "Missing table name parameter",
+                Ruckusing_Exception::INVALID_ARGUMENT
+            );
+        }
+        if (empty($column_name)) {
+            throw new Ruckusing_Exception(
+                "Missing column name parameter",
+                Ruckusing_Exception::INVALID_ARGUMENT
+            );
+        }
+
+        $sql = sprintf('SHOW COLUMNS FROM %s WHERE Field = "%s"', $this->identifier($table_name), $column_name);
+        $result = $this->query($sql);
+
+        return $result ? true : false;
+    }
+
+    /**
      * Get a column info
      *
      * @param string $table the table name

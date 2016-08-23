@@ -2,14 +2,19 @@
 
 namespace League\Flysystem\Adapter\Polyfill;
 
+/**
+ * A helper for adapters that only handle strings to provide read streams.
+ */
 trait StreamedReadingTrait
 {
     /**
-     * Get the contents of a file in a stream.
+     * Reads a file as a stream.
      *
      * @param string $path
      *
-     * @return resource|false false when not found, or a resource
+     * @return array|false
+     *
+     * @see League\Flysystem\ReadInterface::readStream()
      */
     public function readStream($path)
     {
@@ -17,7 +22,7 @@ trait StreamedReadingTrait
             return false;
         }
 
-        $stream = tmpfile();
+        $stream = fopen('php://temp', 'w+b');
         fwrite($stream, $data['contents']);
         rewind($stream);
         $data['stream'] = $stream;
@@ -26,12 +31,14 @@ trait StreamedReadingTrait
         return $data;
     }
 
-    // Required abstract method
-
     /**
+     * Reads a file.
+     *
      * @param string $path
      *
-     * @return resource
+     * @return array|false
+     *
+     * @see League\Flysystem\ReadInterface::read()
      */
     abstract public function read($path);
 }

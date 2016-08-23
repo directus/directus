@@ -9,16 +9,16 @@ return array(
   // @TODO: the option to have multiple filesystem
   'filesystem' => array(
     'adapter' => 'local',
-    // By default the media directory is located within the directus root
-    // To shift a outsite the Directus root directory use this instead
+    // By default the media directory is located within the Directus root
+    // To shift a outsite the Directus root directory use this instead:
     // 'root' => realpath(BASE_PATH.'/../media'),
     // Note: BASE_PATH constant does not end with a trailing slash
-    'root' => BASE_PATH . '/media',
+    'root' => BASE_PATH . '/storage/uploads',
     // This is the url where all files/media will be pointing to
     // All orignial files will exist at your-domain.com/media
-    'root_url' => '/media',
+    'root_url' => '/storage/uploads',
     // All thumbnails will exist at your-domain.com/media/thumbs
-    'root_thumb_url' => '/media/thumbs',
+    'root_thumb_url' => '/storage/uploads/thumbs',
     //   'key'    => 's3-key',
     //   'secret' => 's3-key',
     //   'region' => 's3-region',
@@ -51,10 +51,6 @@ return array(
 
   // Use these hooks to extend the base Directus functionality
   'hooks' => array(
-    'application.error' => function($e) {
-      $log = \Directus\Bootstrap::get('log');
-      $log->error($e);
-    },
     'postInsert' => function ($TableGateway, $record, $db, $acl) {
       // ...
     },
@@ -75,20 +71,21 @@ return array(
   // These values are used within a table's status column (if included)
   // By default, `active` is the status column's name
   'statusMapping' => array(
-    '0' => array(
+    0 => array(
       'name' => 'Delete',
       'color' => '#C1272D',
       'sort' => 3
     ),
-    '1' => array(
+    1 => array(
       'name' => 'Active',
       'color' => '#5B5B5B',
       'sort' => 1
     ),
-    '2' => array(
+    2 => array(
       'name' => 'Draft',
       'color' => '#BBBBBB',
       'sort' => 2
     )
   )
+
 );

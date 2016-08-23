@@ -1,0 +1,14 @@
+--TEST--
+Twig supports method calls
+--TEMPLATE--
+{{ items.foo }}
+{{ items['foo'] }}
+{{ items[foo] }}
+{{ items[items[foo]] }}
+--DATA--
+return array('foo' => 'bar', 'items' => array('foo' => 'bar', 'bar' => 'foo'))
+--EXPECT--
+bar
+bar
+foo
+bar

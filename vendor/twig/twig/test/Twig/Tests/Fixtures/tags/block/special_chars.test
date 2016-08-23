@@ -1,0 +1,10 @@
+--TEST--
+"§" special chars in a block name
+--TEMPLATE--
+{% block § %}
+§
+{% endblock § %}
+--DATA--
+return array()
+--EXPECT--
+§

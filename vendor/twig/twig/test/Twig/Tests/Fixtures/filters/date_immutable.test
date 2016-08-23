@@ -1,0 +1,37 @@
+--TEST--
+"date" filter
+--CONDITION--
+version_compare(phpversion(), '5.5.0', '>=')
+--TEMPLATE--
+{{ date1|date }}
+{{ date1|date('d/m/Y') }}
+{{ date1|date('d/m/Y H:i:s', 'Asia/Hong_Kong') }}
+{{ date1|date('d/m/Y H:i:s', timezone1) }}
+{{ date1|date('d/m/Y H:i:s') }}
+{{ date1|date_modify('+1 hour')|date('d/m/Y H:i:s') }}
+
+{{ date2|date('d/m/Y H:i:s P', 'Europe/Paris') }}
+{{ date2|date('d/m/Y H:i:s P', 'Asia/Hong_Kong') }}
+{{ date2|date('d/m/Y H:i:s P', false) }}
+{{ date2|date('e', 'Europe/Paris') }}
+{{ date2|date('e', false) }}
+--DATA--
+date_default_timezone_set('Europe/Paris');
+return array(
+    'date1' => new DateTimeImmutable('2010-10-04 13:45'),
+    'date2' => new DateTimeImmutable('2010-10-04 13:45', new DateTimeZone('America/New_York')),
+    'timezone1' => new DateTimeZone('America/New_York'),
+)
+--EXPECT--
+October 4, 2010 13:45
+04/10/2010
+04/10/2010 19:45:00
+04/10/2010 07:45:00
+04/10/2010 13:45:00
+04/10/2010 14:45:00
+
+04/10/2010 19:45:00 +02:00
+05/10/2010 01:45:00 +08:00
+04/10/2010 13:45:00 -04:00
+Europe/Paris
+America/New_York

@@ -1,0 +1,14 @@
+--TEST--
+"§" as a macro name
+--TEMPLATE--
+{% import _self as macros %}
+
+{{ macros.§('foo') }}
+
+{% macro §(foo) %}
+  §{{ foo }}§
+{% endmacro %}
+--DATA--
+return array()
+--EXPECT--
+§foo§

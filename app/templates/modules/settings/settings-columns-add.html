@@ -1,5 +1,6 @@
 <div class="table-shadow">
     <ul class="fields">
+        {{#unless hideFieldName}}
         <li class="batchcontainer required">
             <div class="table">
                 <div class="trow">
@@ -11,10 +12,12 @@
                     </div>
                     <div class="field required">
                         <input type="text" id="columnName" name="column_name" value="{{column_name}}" class="medium" placeholder="{{t 'columns_add_field_name_placeholder'}}"/>
+                        <span id="cleanColumnName"></span>
                     </div>
                 </div>
             </div>
         </li>
+        {{/unless}}
 
         <li class="batchcontainer required">
             <div class="table">
@@ -26,11 +29,14 @@
                         </label>
                     </div>
                     <div class="field required">
-                        <select id="uiType" name="ui_type">
-                            {{#ui_types}}
-                            <option {{#if selected}}selected{{/if}} value="{{title}}">{{capitalize title}}</option>
-                            {{/ui_types}}
-                        </select>
+                        <div class="select-container">
+                            <select id="uiType" name="ui_type">
+                                {{#ui_types}}
+                                <option {{#if selected}}selected{{/if}} value="{{title}}">{{capitalize title}}</option>
+                                {{/ui_types}}
+                            </select>
+                            <i class="material-icons select-arrow">arrow_drop_down</i>
+                        <div>
                     </div>
                 </div>
             </div>
@@ -46,11 +52,20 @@
                         </label>
                     </div>
                     <div class="field required">
-                        <select id="dataType" name="data_type">
-                            {{#data_types}}
-                            <option {{#if selected}}selected{{/if}}>{{title}}</option>
-                            {{/data_types}}
-                        </select>
+                        <div class="select-container">
+                            <select id="dataType" name="data_type">
+                                {{#data_types}}
+                                <option {{#if selected}}selected{{/if}}>{{#if value}}{{value}}{{else}}{{title}}{{/if}}</option>
+                                {{/data_types}}
+                            </select>
+                            <i class="material-icons select-arrow">arrow_drop_down</i>
+                        </div>
+                        {{#if isAlias}}
+                        <div class="field-note">
+                            <p><em>{{t "alias_column_description"}}</em></p>
+                            <p><strong>{{t "relationship_type"}}</strong> {{selectedRelationshipType}}</p>
+                        </div>
+                        {{/if}}
                     </div>
                 </div>
             </div>
@@ -85,11 +100,36 @@
                         </label>
                     </div>
                     <div class="field required">
-                        <select name="table_related" id="table_related">
-                            {{#tables}}
-                            <option {{#if selected}}selected{{/if}}>{{this.id}}</option>
-                            {{/tables}}
-                        </select>
+                        <div class="select-container">
+                            <select name="related_table" id="related_table" {{#if disabledTableRelated}}disabled{{/if}}>
+                                {{#tables}}
+                                <option {{#if selected}}selected{{/if}}>{{this.id}}</option>
+                                {{/tables}}
+                            </select>
+                            <i class="material-icons select-arrow">arrow_drop_down</i>
+                        <div>
+                    </div>
+                </div>
+            </div>
+        </li>
+        <li class="batchcontainer required">
+            <div class="table">
+                <div class="trow">
+                    <div class="label">
+                        <label>
+                            {{t "right_column"}}
+                            <span class="note">{{t "columns_add_right_column_note"}}</span>
+                        </label>
+                    </div>
+                    <div class="field required">
+                        <div class="select-container">
+                            <select id="junction_key_right" name="junction_key_right" {{#if disabledJunctionKeyRight}}disabled{{/if}}>
+                                {{#columns_right}}
+                                <option {{#if selected}}selected{{/if}}>{{column_name}}</option>
+                                {{/columns_right}}
+                            </select>
+                            <i class="material-icons select-arrow">arrow_drop_down</i>
+                        <div>
                     </div>
                 </div>
             </div>
@@ -107,11 +147,14 @@
                         </label>
                     </div>
                     <div class="field required">
-                        <select name="table_related" id="table_related">
-                            {{#tables}}
-                            <option {{#if selected}}selected{{/if}}>{{this.id}}</option>
-                            {{/tables}}
-                        </select>
+                        <div class="select-container">
+                            <select name="related_table" id="related_table" {{#if disabledTableRelated}}disabled{{/if}}>
+                                {{#tables}}
+                                <option {{#if selected}}selected{{/if}}>{{this.id}}</option>
+                                {{/tables}}
+                            </select>
+                            <i class="material-icons select-arrow">arrow_drop_down</i>
+                        <div>
                     </div>
                 </div>
             </div>
@@ -127,11 +170,14 @@
                         </label>
                     </div>
                     <div class="field required">
-                        <select id="junction_key_right" name="junction_key_right">
-                            {{#columns}}
-                            <option {{#if selected}}selected{{/if}}>{{column_name}}</option>
-                            {{/columns}}
-                        </select>
+                        <div class="select-container">
+                            <select id="junction_key_right" name="junction_key_right">
+                                {{#columns}}
+                                <option {{#if selected}}selected{{/if}}>{{column_name}}</option>
+                                {{/columns}}
+                            </select>
+                            <i class="material-icons select-arrow">arrow_drop_down</i>
+                        <div>
                     </div>
                 </div>
             </div>
@@ -149,11 +195,14 @@
                         </label>
                     </div>
                     <div class="field required">
-                        <select id="table_related" name="table_related">
-                            {{#tables}}
-                            <option {{#if selected}}selected{{/if}}>{{this.id}}</option>
-                            {{/tables}}
-                        </select>
+                        <div class="select-container">
+                            <select id="related_table" name="related_table" {{#if disabledTableRelated}}disabled{{/if}}>
+                                {{#tables}}
+                                <option {{#if selected}}selected{{/if}}>{{this.id}}</option>
+                                {{/tables}}
+                            </select>
+                            <i class="material-icons select-arrow">arrow_drop_down</i>
+                        <div>
                     </div>
                 </div>
             </div>
@@ -169,11 +218,14 @@
                         </label>
                     </div>
                     <div class="field required">
-                        <select id="table_junction" name="table_junction">
-                            {{#junctionTables}}
-                            <option {{#if selected}}selected{{/if}}>{{this.id}}</option>
-                            {{/junctionTables}}
-                        </select>
+                        <div class="select-container">
+                            <select id="table_junction" name="table_junction">
+                                {{#junctionTables}}
+                                <option {{#if selected}}selected{{/if}}>{{this.id}}</option>
+                                {{/junctionTables}}
+                            </select>
+                            <i class="material-icons select-arrow">arrow_drop_down</i>
+                        <div>
                     </div>
                 </div>
             </div>
@@ -189,11 +241,14 @@
                         </label>
                     </div>
                     <div class="field required">
-                        <select id="junction_key_left" name="junction_key_left">
-                            {{#columns_left}}
-                            <option {{#if selected}}selected{{/if}}>{{column_name}}</option>
-                            {{/columns_left}}
-                        </select>
+                        <div class="select-container">
+                            <select id="junction_key_left" name="junction_key_left">
+                                {{#columns_left}}
+                                <option {{#if selected}}selected{{/if}}>{{column_name}}</option>
+                                {{/columns_left}}
+                            </select>
+                            <i class="material-icons select-arrow">arrow_drop_down</i>
+                        <div>
                     </div>
                 </div>
             </div>
@@ -209,11 +264,14 @@
                         </label>
                     </div>
                     <div class="field required">
-                        <select id="junction_key_right" name="junction_key_right">
-                            {{#columns_right}}
-                            <option {{#if selected}}selected{{/if}}>{{column_name}}</option>
-                            {{/columns_right}}
-                        </select>
+                        <div class="select-container">
+                            <select id="junction_key_right" name="junction_key_right">
+                                {{#columns_right}}
+                                <option {{#if selected}}selected{{/if}}>{{column_name}}</option>
+                                {{/columns_right}}
+                            </select>
+                            <i class="material-icons select-arrow">arrow_drop_down</i>
+                        <div>
                     </div>
                 </div>
             </div>

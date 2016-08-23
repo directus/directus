@@ -23,15 +23,12 @@ class Thumbnail {
             case 'psd':
             case 'tif':
             case 'tiff':
+            case 'svg':
               if(extension_loaded('imagick')) {
                 $image = new \Imagick();
-                // $image->readImage($localPath);
 				$image->readImageBlob($localPath);
                 $image->setIteratorIndex(0);
                 $image->setImageFormat('jpeg');
-                // $tempName = tempnam(sys_get_temp_dir(), 'DirectusThumbnail');
-                // $image->writeImage($tempName);
-                // $img = imagecreatefromjpeg($tempName);
 				$img = $image->getImageBlob();
               } else {
                 return false;

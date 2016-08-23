@@ -32,7 +32,6 @@ class CreateDirectusColumnsTable extends Ruckusing_Migration_Base
     {
       $t = $this->create_table("directus_columns", array(
         "id"=>false,
-        "options"=>""
         )
       );
 
@@ -66,16 +65,29 @@ class CreateDirectusColumnsTable extends Ruckusing_Migration_Base
         "default"=>NULL
         )
       );
-      $t->column("system", "tinyinteger", array(
-          "limit"=>1,
-          "null"=>false,
-          "default"=>0
+      $t->column("relationship_type", "string", array(
+          "limit"=>20,
+          "default"=>NULL
         )
       );
-      $t->column("master", "tinyinteger", array(
-          "limit"=>1,
-          "null"=>false,
-          "default"=>0
+      $t->column("related_table", "string", array(
+          "limit"=>64,
+          "default"=>NULL
+        )
+      );
+      $t->column("junction_table", "string", array(
+          "limit"=>64,
+          "default"=>NULL
+        )
+      );
+      $t->column("junction_key_left", "string", array(
+          "limit"=>64,
+          "default"=>NULL
+        )
+      );
+      $t->column("junction_key_right", "string", array(
+          "limit"=>64,
+          "default"=>NULL
         )
       );
       $t->column("hidden_input", "tinyinteger", array(
@@ -96,33 +108,7 @@ class CreateDirectusColumnsTable extends Ruckusing_Migration_Base
           "default"=>0
         )
       );
-      $t->column("relationship_type", "string", array(
-          "limit"=>20,
-          "default"=>NULL
-        )
-      );
-      $t->column("table_related", "string", array(
-          "limit"=>64,
-          "default"=>NULL
-        )
-      );
-      $t->column("junction_table", "string", array(
-          "limit"=>64,
-          "default"=>NULL
-        )
-      );
-      $t->column("junction_key_left", "string", array(
-          "limit"=>64,
-          "default"=>NULL
-        )
-      );
-      $t->column("junction_key_right", "string", array(
-          "limit"=>64,
-          "default"=>NULL
-        )
-      );
       $t->column("sort", "integer", array(
-          "limit"=>11,
           "default"=>NULL
         )
       );
@@ -145,13 +131,11 @@ class CreateDirectusColumnsTable extends Ruckusing_Migration_Base
           'column_name' => 'group',
           'data_type' => NULL,
           'ui' => 'many_to_one',
-          'system' => 0,
-          'master' => 0,
           'hidden_input' => 0,
           'hidden_list' => 0,
           'required' => 0,
           'relationship_type' => 'MANYTOONE',
-          'table_related' => 'directus_groups',
+          'related_table' => 'directus_groups',
           'junction_table' => NULL,
           'junction_key_left' => NULL,
           'junction_key_right' => 'group_id',
@@ -164,13 +148,11 @@ class CreateDirectusColumnsTable extends Ruckusing_Migration_Base
         'column_name' => 'avatar_file_id',
         'data_type' => 'INT',
         'ui' => 'single_file',
-        'system' => 0,
-        'master' => 0,
         'hidden_input' => 0,
         'hidden_list' => 0,
         'required' => 0,
         'relationship_type' => 'MANYTOONE',
-        'table_related' => 'directus_files',
+        'related_table' => 'directus_files',
         'junction_table' => NULL,
         'junction_key_left' => NULL,
         'junction_key_right' => 'avatar_file_id',

@@ -26,7 +26,7 @@ class FileExistsException extends Exception
     }
 
     /**
-     * Get the path which was not found.
+     * Get the path which was found.
      *
      * @return string
      */

@@ -39,8 +39,8 @@ use LogicException;
  * @method array|false getMetadata($path)
  * @method Handler get($path, Handler $handler = null)
  * @method Filesystem flushCache()
- * @method assertPresent($path)
- * @method assertAbsent($path)
+ * @method void assertPresent($path)
+ * @method void assertAbsent($path)
  * @method Filesystem addPlugin(PluginInterface $plugin)
  */
 class MountManager

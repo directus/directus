@@ -168,6 +168,11 @@ class Base
         return $this->_adapter->add_column($table_name, $column_name, $type, $options);
     }
 
+    public function has_column($table_name, $column_name)
+    {
+        return $this->_adapter->has_column($table_name, $column_name);
+    }
+
     /**
      * Remove a column
      *
@@ -224,6 +229,13 @@ class Base
         return $this->_adapter->remove_index($table_name, $column_name, $options);
     }
 
+    public function has_index($table_name, $column_name, $index_name)
+    {
+        return $this->_adapter->has_index($table_name, $column_name, [
+            'name' => $index_name
+        ]);
+    }
+
     /**
      * Create a table
      * @param string $table_name the name of the table
@@ -233,6 +245,16 @@ class Base
     public function create_table($table_name, $options = array())
     {
         return $this->_adapter->create_table($table_name, $options);
+    }
+
+    public function has_table($table_name)
+    {
+        return $this->table_exists($table_name);
+    }
+
+    public function table_exists($table_name)
+    {
+        return $this->_adapter->table_exists($table_name);
     }
 
     /**

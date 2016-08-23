@@ -66,16 +66,14 @@ CREATE TABLE `directus_columns` (
   `column_name` varchar(64) NOT NULL DEFAULT '',
   `data_type` varchar(64) DEFAULT NULL,
   `ui` varchar(64) DEFAULT NULL,
-  `system` tinyint(1) NOT NULL DEFAULT '0',
-  `master` tinyint(1) NOT NULL DEFAULT '0',
-  `hidden_input` tinyint(1) NOT NULL DEFAULT '0',
-  `hidden_list` tinyint(1) NOT NULL DEFAULT '0',
-  `required` tinyint(1) NOT NULL DEFAULT '0',
   `relationship_type` varchar(20) DEFAULT NULL,
-  `table_related` varchar(64) DEFAULT NULL,
+  `related_table` varchar(64) DEFAULT NULL,
   `junction_table` varchar(64) DEFAULT NULL,
   `junction_key_left` varchar(64) DEFAULT NULL,
   `junction_key_right` varchar(64) DEFAULT NULL,
+  `hidden_input` tinyint(1) NOT NULL DEFAULT '0',
+  `hidden_list` tinyint(1) NOT NULL DEFAULT '0',
+  `required` tinyint(1) NOT NULL DEFAULT '0',
   `sort` int DEFAULT NULL,
   `comment` varchar(1024) DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -85,10 +83,10 @@ CREATE TABLE `directus_columns` (
 LOCK TABLES `directus_columns` WRITE;
 /*!40000 ALTER TABLE `directus_columns` DISABLE KEYS */;
 
-INSERT INTO `directus_columns` (`id`, `table_name`, `column_name`, `data_type`, `ui`, `system`, `master`, `hidden_input`, `hidden_list`, `required`, `relationship_type`, `table_related`, `junction_table`, `junction_key_left`, `junction_key_right`, `sort`, `comment`)
+INSERT INTO `directus_columns` (`id`, `table_name`, `column_name`, `data_type`, `ui`, `hidden_input`, `hidden_list`, `required`, `relationship_type`, `related_table`, `junction_table`, `junction_key_left`, `junction_key_right`, `sort`, `comment`)
 VALUES
-  (1,'directus_users','group',NULL,'many_to_one',0,0,0,0,0,'MANYTOONE','directus_groups',NULL,NULL,'group_id',NULL,''),
-  (2,'directus_users','avatar_file_id','INT','single_file',0,0,0,0,0,'MANYTOONE','directus_files',NULL,NULL,'avatar_file_id',NULL,'');
+  (1,'directus_users','group',NULL,'many_to_one',0,0,0,'MANYTOONE','directus_groups',NULL,NULL,'group_id',NULL,''),
+  (2,'directus_users','avatar_file_id','INT','single_file',0,0,0,'MANYTOONE','directus_files',NULL,NULL,'avatar_file_id',NULL,'');
 
 /*!40000 ALTER TABLE `directus_columns` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -127,7 +125,7 @@ CREATE TABLE `directus_groups` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(100) DEFAULT NULL,
   `description` varchar(500) DEFAULT NULL,
-  `restrict_to_ip_whitelist` tinyint(1) NOT NULL DEFAULT '0',
+  `restrict_to_ip_whitelist` TEXT DEFAULT NULL,
   `show_activity` tinyint(1) NOT NULL DEFAULT '1',
   `show_messages` tinyint(1) NOT NULL DEFAULT '1',
   `show_users` tinyint(1) NOT NULL DEFAULT '1',
@@ -141,7 +139,7 @@ LOCK TABLES `directus_groups` WRITE;
 
 INSERT INTO `directus_groups` (`id`, `name`, `description`, `restrict_to_ip_whitelist`, `show_activity`, `show_messages`, `show_users`, `show_files`, `nav_override`)
 VALUES
-  (1,'Administrator',NULL,0,1,1,1,1,NULL);
+  (1,'Administrator',NULL,NULL,1,1,1,1,NULL);
 
 /*!40000 ALTER TABLE `directus_groups` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -190,7 +188,7 @@ CREATE TABLE `directus_preferences` (
   `columns_visible` varchar(300) DEFAULT NULL,
   `sort` varchar(64) DEFAULT 'id',
   `sort_order` varchar(5) DEFAULT 'asc',
-  `active` varchar(5) DEFAULT '3',
+  `status` varchar(5) DEFAULT '3',
   `search_string` text,
   PRIMARY KEY (`id`),
   UNIQUE KEY `user` (`user`,`table_name`,`title`),
@@ -206,7 +204,7 @@ CREATE TABLE `directus_privileges` (
   `group_id` int unsigned NOT NULL,
   `read_field_blacklist` varchar(1000) CHARACTER SET latin1 DEFAULT NULL,
   `write_field_blacklist` varchar(1000) CHARACTER SET latin1 DEFAULT NULL,
-  `nav_listed` tinyint(1) DEFAULT '0' COMMENT '0=not listed in navs, 1=listed in navs',
+  `nav_listed` tinyint(1) NOT NULL DEFAULT '0' COMMENT '0=not listed in navs, 1=listed in navs',
   `allow_view` tinyint(1) DEFAULT '0' COMMENT '0=no viewing, 1=view your records, 2=view everyones records',
   `allow_add` tinyint(1) DEFAULT '0' COMMENT '0=no adding, 1=add records',
   `allow_edit` tinyint(1) DEFAULT '0' COMMENT '0=no editing, 1=edit your records, 2=edit everyones records',
@@ -278,7 +276,6 @@ CREATE TABLE `directus_tables` (
   `table_name` varchar(64) NOT NULL DEFAULT '',
   `hidden` tinyint(1) NOT NULL DEFAULT '0',
   `single` tinyint(1) NOT NULL DEFAULT '0',
-  `is_junction_table` tinyint(1) NOT NULL DEFAULT '0',
   `footer` tinyint(1) DEFAULT '0',
   `list_view` varchar(200) DEFAULT NULL,
   `column_groupings` varchar(255) DEFAULT NULL,
@@ -294,13 +291,13 @@ CREATE TABLE `directus_tables` (
 LOCK TABLES `directus_tables` WRITE;
 /*!40000 ALTER TABLE `directus_tables` DISABLE KEYS */;
 
-INSERT INTO `directus_tables` (`table_name`, `hidden`, `single`, `is_junction_table`, `footer`, `list_view`, `column_groupings`, `primary_column`, `user_create_column`, `user_update_column`, `date_create_column`, `date_update_column`, `filter_column_blacklist`)
+INSERT INTO `directus_tables` (`table_name`, `hidden`, `single`, `footer`, `list_view`, `column_groupings`, `primary_column`, `user_create_column`, `user_update_column`, `date_create_column`, `date_update_column`, `filter_column_blacklist`)
 VALUES
-  ('directus_messages_recipients',1,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),
-  ('directus_bookmarks',1,0,0,0,NULL,NULL,NULL,'user',NULL,NULL,NULL,NULL),
-  ('directus_files',1,0,0,0,NULL,NULL,NULL,'user',NULL,NULL,NULL,NULL),
-  ('directus_preferences',1,0,0,0,NULL,NULL,NULL,'user',NULL,NULL,NULL,NULL),
-  ('directus_users',1,0,0,0,NULL,NULL,NULL,'id',NULL,NULL,NULL,NULL);
+  ('directus_messages_recipients',1,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),
+  ('directus_bookmarks',1,0,0,NULL,NULL,NULL,'user',NULL,NULL,NULL,NULL),
+  ('directus_files',1,0,0,NULL,NULL,NULL,'user',NULL,NULL,NULL,NULL),
+  ('directus_preferences',1,0,0,NULL,NULL,NULL,'user',NULL,NULL,NULL,NULL),
+  ('directus_users',1,0,0,NULL,NULL,NULL,'id',NULL,NULL,NULL,NULL);
 
 /*!40000 ALTER TABLE `directus_tables` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -355,6 +352,7 @@ CREATE TABLE `directus_users` (
   `state` varchar(2) DEFAULT NULL,
   `zip` varchar(10) DEFAULT NULL,
   `language` varchar(8) DEFAULT 'en',
+  `timezone` varchar(32) DEFAULT 'America/New_York',
   PRIMARY KEY (`id`),
   UNIQUE KEY `directus_users_email_unique` (`email`),
   UNIQUE KEY `directus_users_token_unique` (`token`)

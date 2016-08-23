@@ -58,15 +58,15 @@ class RelationalTableGatewayWithConditions extends RelationalTableGateway {
             if($column['column_name'] != $params['orderBy']) {
                 continue;
             }
-            // Must have defined table_related
-            if(!isset($column['relationship']) || !is_array($column['relationship']) || !isset($column['relationship']['table_related'])) {
+            // Must have defined related_table
+            if(!isset($column['relationship']) || !is_array($column['relationship']) || !isset($column['relationship']['related_table'])) {
                 break;
             }
             // Must have defined visible_column
             if(!isset($column['options']) || !is_array($column['options']) || !isset($column['options']['visible_column'])) {
                 break;
             }
-            $relatedTable = $column['relationship']['table_related'];
+            $relatedTable = $column['relationship']['related_table'];
             $visibleColumn = $column['options']['visible_column'];
             $keyLeft = $params['table_name'] . "." . $params['orderBy'];
             // @todo it's wrong to assume PKs are "id" but this is currently endemic to directus6
@@ -170,7 +170,7 @@ class RelationalTableGatewayWithConditions extends RelationalTableGateway {
             // TODO: fix this, it must be refactored
             if(isset($target['relationship']) && $target['relationship']['type'] == "MANYTOMANY") {
 
-              $relatedTable = $target['relationship']['table_related'];
+              $relatedTable = $target['relationship']['related_table'];
               $relatedAliasName = $relatedTable."_".$i;
 
               if($target['relationship']['type'] == "MANYTOMANY") {
@@ -227,7 +227,7 @@ class RelationalTableGatewayWithConditions extends RelationalTableGateway {
                   $select->where($jkeyleft.' = '.$this->adapter->platform->quoteValue($search_col['value']));
               }
             } elseif (isset($target['relationship']) && $target['relationship']['type'] == "MANYTOONE") {
-              $relatedTable = $target['relationship']['table_related'];
+              $relatedTable = $target['relationship']['related_table'];
 
               $keyRight = $this->getTable() . "." . $target['relationship']['junction_key_right'];
               $keyLeft = $relatedTable . ".id";

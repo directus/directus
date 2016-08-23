@@ -1,0 +1,12 @@
+--TEST--
+Twig supports unary operators (not, -, +)
+--TEMPLATE--
+{{ not 1 }}/{{ not 0 }}
+{{ +1 + 1 }}/{{ -1 - 1 }}
+{{ not (false or true) }}
+--DATA--
+return array()
+--EXPECT--
+/1
+2/-2
+

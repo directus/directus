@@ -8,7 +8,6 @@
             <th class="field-hidden-input" style="width:60px;">{{t "hidden_input"}}</th>
             <th class="field-hidden-list" style="width:60px;">{{t "hidden_list"}}</th>
             <th class="field-required" style="width:50px;">{{t "required"}}</th>
-            <!-- <th class="field-master" style="width:50px;">{{t "primary"}}</th> -->
             <th class="field-note">{{t "note"}}</th>
             <th class="field-delete" style="width:50px">{{t "delete"}}</th>
         </tr>
@@ -38,11 +37,11 @@
                 <i class="material-icons select-arrow">arrow_drop_down</i>
               </div>
               {{#if uiHasVariables}}
-                <i class="material-icons open-ui-options" data-action="ui" data-id="{{id}}" title="Edit Input Options">tune</i>
-                {{#unless valid}}<i class="material-icons" title="Problem with Input Options">warning</i>{{/unless}}
+                <i class="material-icons open-ui-options" data-action="ui" data-id="{{id}}" title="Edit Options">tune</i>
+                {{#unless valid}}<i class="material-icons" title="Problem with Options">warning</i>{{/unless}}
               {{/if}}
               {{#if uiHasRelationship}}
-                <i class="material-icons open-ui-options" data-action="relationship" data-id="{{id}}" title="Edit Input Relationship">swap_horiz</i> <!-- merge_type or device_hub or compare_arrows or swap_horiz-->
+                <i class="material-icons open-ui-options" data-action="relationship" data-id="{{id}}" title="Edit Relationship">swap_horiz</i> <!-- merge_type or device_hub or compare_arrows or swap_horiz-->
               {{/if}}
             </td>
             <td>
@@ -52,7 +51,6 @@
                 <input type="checkbox" name="hidden_list" id="hidden_list" {{#if hidden_list}}checked{{/if}} value="1" data-id="{{id}}" title="{{t 'hidden_list'}}">
             </td>
             <td><input type="checkbox" name="required" {{#if required}}checked{{/if}} value="1" data-id="{{id}}" {{#if requiredDisabled}}disabled="disabled"{{/if}} title="{{t 'allow_null' is_nullable=is_nullable}}"></td>
-            <!-- <td><input type="radio" {{#if master}}checked{{/if}} name="master" id="master" {{#if alias}}disabled{{/if}} data-id="{{id}}" title="Primary"></td> -->
             <td class="field-comment-container"><input type="text" value="{{comment}}" name="comment" data-id="{{id}}" class="table-input field-comment" placeholder="{{t 'placeholder_add_a_note'}}"></td>
             <td title="Permanently Delete Field" class="delete-hover">{{#unless system}}<i class="destroy material-icons">close</i>{{/unless}}</td>
             {{/if}}

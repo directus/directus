@@ -1,0 +1,8 @@
+--TEST--
+"escape" filter
+--TEMPLATE--
+{{ "愛していますか？ <br />"|e }}
+--DATA--
+return array()
+--EXPECT--
+愛していますか？ &lt;br /&gt;

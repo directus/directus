@@ -5,6 +5,7 @@ namespace Directus\Db\RowGateway;
 use Directus\Auth\Provider as AuthProvider;
 use Directus\Bootstrap;
 use Directus\Db\TableGateway\AclAwareTableGateway;
+use Directus\Util\DateUtils;
 use Zend\Db\RowGateway\RowGateway;
 use Zend\Db\Sql\Expression;
 
@@ -30,7 +31,7 @@ class DirectusUsersRowGateway extends AclAwareRowGateway {
         if(AuthProvider::loggedIn()) {
             $currentUser = AuthProvider::getUserInfo();
             if(isset($rowData['id']) && $rowData['id'] == $currentUser['id']) {
-                $rowData['last_access'] = new Expression("NOW()");
+                $rowData['last_access'] = DateUtils::now();
             }
         }
 

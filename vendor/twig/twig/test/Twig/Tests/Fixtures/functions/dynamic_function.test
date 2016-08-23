@@ -1,0 +1,10 @@
+--TEST--
+dynamic function
+--TEMPLATE--
+{{ foo_path('bar') }}
+{{ a_foo_b_bar('bar') }}
+--DATA--
+return array()
+--EXPECT--
+foo/bar
+a/b/bar

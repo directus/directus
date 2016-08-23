@@ -1,0 +1,837 @@
+* 1.24.1 (2016-05-30)
+
+ * fixed reserved keywords (forbids true, false, null and none keywords for variables names)
+ * fixed support for PHP7 (Throwable support)
+ * marked the following methods as being internals on Twig_Environment: 
+   getFunctions(), getFilters(), getTests(), getFunction(), getFilter(), getTest(),
+   getTokenParsers(), getTags(), getNodeVisitors(), getUnaryOperators(), getBinaryOperators(),
+   getFunctions(), getFilters(), getGlobals(), initGlobals(), initExtensions(), and initExtension()
+
+* 1.24.0 (2016-01-25)
+
+ * adding support for the ?? operator
+ * fixed the defined test when used on a constant, a map, or a sequence
+ * undeprecated _self (should only be used to get the template name, not the template instance)
+ * fixed parsing on PHP7
+
+* 1.23.3 (2016-01-11)
+
+ * fixed typo
+
+* 1.23.2 (2015-01-11)
+
+ * added versions in deprecated messages
+ * made file cache tolerant for trailing (back)slashes on directory configuration
+ * deprecated unused Twig_Node_Expression_ExtensionReference class
+
+* 1.23.1 (2015-11-05)
+
+ * fixed some exception messages which triggered PHP warnings
+ * fixed BC on Twig_Test_NodeTestCase
+
+* 1.23.0 (2015-10-29)
+
+ * deprecated the possibility to override an extension by registering another one with the same name
+ * deprecated Twig_ExtensionInterface::getGlobals() (added Twig_Extension_GlobalsInterface for BC)
+ * deprecated Twig_ExtensionInterface::initRuntime() (added Twig_Extension_InitRuntimeInterface for BC)
+ * deprecated Twig_Environment::computeAlternatives()
+
+* 1.22.3 (2015-10-13)
+
+ * fixed regression when using null as a cache strategy
+ * improved performance when checking template freshness
+ * fixed warnings when loaded templates do not exist
+ * fixed template class name generation to prevent possible collisions
+ * fixed logic for custom escapers to call them even on integers and null values
+ * changed template cache names to take into account the Twig C extension
+
+* 1.22.2 (2015-09-22)
+
+ * fixed a race condition in template loading
+
+* 1.22.1 (2015-09-15)
+
+ * fixed regression in template_from_string
+
+* 1.22.0 (2015-09-13)
+
+ * made Twig_Test_IntegrationTestCase more flexible
+ * added an option to force PHP bytecode invalidation when writing a compiled template into the cache
+ * fixed the profiler duration for the root node
+ * changed template cache names to take into account enabled extensions
+ * deprecated Twig_Environment::clearCacheFiles(), Twig_Environment::getCacheFilename(),
+   Twig_Environment::writeCacheFile(), and Twig_Environment::getTemplateClassPrefix()
+ * added a way to override the filesystem template cache system
+ * added a way to get the original template source from Twig_Template
+
+* 1.21.2 (2015-09-09)
+
+ * fixed variable names for the deprecation triggering code
+ * fixed escaping strategy detection based on filename
+ * added Traversable support for replace, merge, and sort
+ * deprecated support for character by character replacement for the "replace" filter
+
+* 1.21.1 (2015-08-26)
+
+ * fixed regression when using the deprecated Twig_Test_* classes
+
+* 1.21.0 (2015-08-24)
+
+ * added deprecation notices for deprecated features
+ * added a deprecation "framework" for filters/functions/tests and test fixtures
+
+* 1.20.0 (2015-08-12)
+
+ * forbid access to the Twig environment from templates and internal parts of Twig_Template
+ * fixed limited RCEs when in sandbox mode
+ * deprecated Twig_Template::getEnvironment()
+ * deprecated the _self variable for usage outside of the from and import tags
+ * added Twig_BaseNodeVisitor to ease the compatibility of node visitors 
+   between 1.x and 2.x
+
+* 1.19.0 (2015-07-31)
+
+ * fixed wrong error message when including an undefined template in a child template
+ * added support for variadic filters, functions, and tests
+ * added support for extra positional arguments in macros
+ * added ignore_missing flag to the source function
+ * fixed batch filter with zero items
+ * deprecated Twig_Environment::clearTemplateCache()
+ * fixed sandbox disabling when using the include function
+
+* 1.18.2 (2015-06-06)
+
+ * fixed template/line guessing in exceptions for nested templates
+ * optimized the number of inodes and the size of realpath cache when using the cache
+
+* 1.18.1 (2015-04-19)
+
+ * fixed memory leaks in the C extension
+ * deprecated Twig_Loader_String
+ * fixed the slice filter when used with a SimpleXMLElement object
+ * fixed filesystem loader when trying to load non-files (like directories)
+
+* 1.18.0 (2015-01-25)
+
+ * fixed some error messages where the line was wrong (unknown variables or argument names)
+ * added a new way to customize the main Module node (via empty nodes)
+ * added Twig_Environment::createTemplate() to create a template from a string
+ * added a profiler
+ * fixed filesystem loader cache when different file paths are used for the same template
+
+* 1.17.0 (2015-01-14)
+
+ * added a 'filename' autoescaping strategy, which dynamically chooses the
+   autoescaping strategy for a template based on template file extension.
+
+* 1.16.3 (2014-12-25)
+
+ * fixed regression for dynamic parent templates
+ * fixed cache management with statcache
+ * fixed a regression in the slice filter
+
+* 1.16.2 (2014-10-17)
+
+ * fixed timezone on dates as strings
+ * fixed 2-words test names when a custom node class is not used
+ * fixed macros when using an argument named like a PHP super global (like GET or POST)
+ * fixed date_modify when working with DateTimeImmutable
+ * optimized for loops
+ * fixed multi-byte characters handling in the split filter
+ * fixed a regression in the in operator
+ * fixed a regression in the slice filter
+
+* 1.16.1 (2014-10-10)
+
+ * improved error reporting in a sandboxed template
+ * fixed missing error file/line information under certain circumstances
+ * fixed wrong error line number in some error messages
+ * fixed the in operator to use strict comparisons
+ * sped up the slice filter
+ * fixed for mb function overload mb_substr acting different
+ * fixed the attribute() function when passing a variable for the arguments
+
+* 1.16.0 (2014-07-05)
+
+ * changed url_encode to always encode according to RFC 3986
+ * fixed inheritance in a 'use'-hierarchy
+ * removed the __toString policy check when the sandbox is disabled
+ * fixed recursively calling blocks in templates with inheritance
+
+* 1.15.1 (2014-02-13)
+
+ * fixed the conversion of the special '0000-00-00 00:00' date
+ * added an error message when trying to import an undefined block from a trait
+ * fixed a C extension crash when accessing defined but uninitialized property.
+
+* 1.15.0 (2013-12-06)
+
+ * made ignoreStrictCheck in Template::getAttribute() works with __call() methods throwing BadMethodCallException
+ * added min and max functions
+ * added the round filter
+ * fixed a bug that prevented the optimizers to be enabled/disabled selectively
+ * fixed first and last filters for UTF-8 strings
+ * added a source function to include the content of a template without rendering it
+ * fixed the C extension sandbox behavior when get or set is prepend to method name
+
+* 1.14.2 (2013-10-30)
+
+ * fixed error filename/line when an error occurs in an included file
+ * allowed operators that contain whitespaces to have more than one whitespace
+ * allowed tests to be made of 1 or 2 words (like "same as" or "divisible by")
+
+* 1.14.1 (2013-10-15)
+
+ * made it possible to use named operators as variables
+ * fixed the possibility to have a variable named 'matches'
+ * added support for PHP 5.5 DateTimeInterface
+
+* 1.14.0 (2013-10-03)
+
+ * fixed usage of the html_attr escaping strategy to avoid double-escaping with the html strategy
+ * added new operators: ends with, starts with, and matches
+ * fixed some compatibility issues with HHVM
+ * added a way to add custom escaping strategies
+ * fixed the C extension compilation on Windows
+ * fixed the batch filter when using a fill argument with an exact match of elements to batch
+ * fixed the filesystem loader cache when a template name exists in several namespaces
+ * fixed template_from_string when the template includes or extends other ones
+ * fixed a crash of the C extension on an edge case
+
+* 1.13.2 (2013-08-03)
+
+ * fixed the error line number for an error occurs in and embedded template
+ * fixed crashes of the C extension on some edge cases
+
+* 1.13.1 (2013-06-06)
+
+ * added the possibility to ignore the filesystem constructor argument in Twig_Loader_Filesystem
+ * fixed Twig_Loader_Chain::exists() for a loader which implements Twig_ExistsLoaderInterface
+ * adjusted backtrace call to reduce memory usage when an error occurs
+ * added support for object instances as the second argument of the constant test
+ * fixed the include function when used in an assignment
+
+* 1.13.0 (2013-05-10)
+
+ * fixed getting a numeric-like item on a variable ('09' for instance)
+ * fixed getting a boolean or float key on an array, so it is consistent with PHP's array access:
+   `{{ array[false] }}` behaves the same as `echo $array[false];` (equals `$array[0]`)
+ * made the escape filter 20% faster for happy path (escaping string for html with UTF-8)
+ * changed ☃ to § in tests
+ * enforced usage of named arguments after positional ones
+
+* 1.12.3 (2013-04-08)
+
+ * fixed a security issue in the filesystem loader where it was possible to include a template one
+   level above the configured path
+ * fixed fatal error that should be an exception when adding a filter/function/test too late
+ * added a batch filter
+ * added support for encoding an array as query string in the url_encode filter
+
+* 1.12.2 (2013-02-09)
+
+ * fixed the timezone used by the date filter and function when the given date contains a timezone (like 2010-01-28T15:00:00+02:00)
+ * fixed globals when getGlobals is called early on
+ * added the first and last filter
+
+* 1.12.1 (2013-01-15)
+
+ * added support for object instances as the second argument of the constant function
+ * relaxed globals management to avoid a BC break
+ * added support for {{ some_string[:2] }}
+
+* 1.12.0 (2013-01-08)
+
+ * added verbatim as an alias for the raw tag to avoid confusion with the raw filter
+ * fixed registration of tests and functions as anonymous functions
+ * fixed globals management
+
+* 1.12.0-RC1 (2012-12-29)
+
+ * added an include function (does the same as the include tag but in a more flexible way)
+ * added the ability to use any PHP callable to define filters, functions, and tests
+ * added a syntax error when using a loop variable that is not defined
+ * added the ability to set default values for macro arguments
+ * added support for named arguments for filters, tests, and functions
+ * moved filters/functions/tests syntax errors to the parser
+ * added support for extended ternary operator syntaxes
+
+* 1.11.1 (2012-11-11)
+
+ * fixed debug info line numbering (was off by 2)
+ * fixed escaping when calling a macro inside another one (regression introduced in 1.9.1)
+ * optimized variable access on PHP 5.4
+ * fixed a crash of the C extension when an exception was thrown from a macro called without being imported (using _self.XXX)
+
+* 1.11.0 (2012-11-07)
+
+ * fixed macro compilation when a variable name is a PHP reserved keyword
+ * changed the date filter behavior to always apply the default timezone, except if false is passed as the timezone
+ * fixed bitwise operator precedences
+ * added the template_from_string function
+ * fixed default timezone usage for the date function
+ * optimized the way Twig exceptions are managed (to make them faster)
+ * added Twig_ExistsLoaderInterface (implementing this interface in your loader make the chain loader much faster)
+
+* 1.10.3 (2012-10-19)
+
+ * fixed wrong template location in some error messages
+ * reverted a BC break introduced in 1.10.2
+ * added a split filter
+
+* 1.10.2 (2012-10-15)
+
+ * fixed macro calls on PHP 5.4
+
+* 1.10.1 (2012-10-15)
+
+ * made a speed optimization to macro calls when imported via the "import" tag
+ * fixed C extension compilation on Windows
+ * fixed a segfault in the C extension when using DateTime objects
+
+* 1.10.0 (2012-09-28)
+
+ * extracted functional tests framework to make it reusable for third-party extensions
+ * added namespaced templates support in Twig_Loader_Filesystem
+ * added Twig_Loader_Filesystem::prependPath()
+ * fixed an error when a token parser pass a closure as a test to the subparse() method
+
+* 1.9.2 (2012-08-25)
+
+ * fixed the in operator for objects that contain circular references
+ * fixed the C extension when accessing a public property of an object implementing the \ArrayAccess interface
+
+* 1.9.1 (2012-07-22)
+
+ * optimized macro calls when auto-escaping is on
+ * fixed wrong parent class for Twig_Function_Node
+ * made Twig_Loader_Chain more explicit about problems
+
+* 1.9.0 (2012-07-13)
+
+ * made the parsing independent of the template loaders
+ * fixed exception trace when an error occurs when rendering a child template
+ * added escaping strategies for CSS, URL, and HTML attributes
+ * fixed nested embed tag calls
+ * added the date_modify filter
+
+* 1.8.3 (2012-06-17)
+
+ * fixed paths in the filesystem loader when passing a path that ends with a slash or a backslash
+ * fixed escaping when a project defines a function named html or js
+ * fixed chmod mode to apply the umask correctly
+
+* 1.8.2 (2012-05-30)
+
+ * added the abs filter
+ * fixed a regression when using a number in template attributes
+ * fixed compiler when mbstring.func_overload is set to 2
+ * fixed DateTimeZone support in date filter
+
+* 1.8.1 (2012-05-17)
+
+ * fixed a regression when dealing with SimpleXMLElement instances in templates
+ * fixed "is_safe" value for the "dump" function when "html_errors" is not defined in php.ini
+ * switched to use mbstring whenever possible instead of iconv (you might need to update your encoding as mbstring and iconv encoding names sometimes differ)
+
+* 1.8.0 (2012-05-08)
+
+ * enforced interface when adding tests, filters, functions, and node visitors from extensions
+ * fixed a side-effect of the date filter where the timezone might be changed
+ * simplified usage of the autoescape tag; the only (optional) argument is now the escaping strategy or false (with a BC layer)
+ * added a way to dynamically change the auto-escaping strategy according to the template "filename"
+ * changed the autoescape option to also accept a supported escaping strategy (for BC, true is equivalent to html)
+ * added an embed tag
+
+* 1.7.0 (2012-04-24)
+
+ * fixed a PHP warning when using CIFS
+ * fixed template line number in some exceptions
+ * added an iterable test
+ * added an error when defining two blocks with the same name in a template
+ * added the preserves_safety option for filters
+ * fixed a PHP notice when trying to access a key on a non-object/array variable
+ * enhanced error reporting when the template file is an instance of SplFileInfo
+ * added Twig_Environment::mergeGlobals()
+ * added compilation checks to avoid misuses of the sandbox tag
+ * fixed filesystem loader freshness logic for high traffic websites
+ * fixed random function when charset is null
+
+* 1.6.5 (2012-04-11)
+
+ * fixed a regression when a template only extends another one without defining any blocks
+
+* 1.6.4 (2012-04-02)
+
+ * fixed PHP notice in Twig_Error::guessTemplateLine() introduced in 1.6.3
+ * fixed performance when compiling large files
+ * optimized parent template creation when the template does not use dynamic inheritance
+
+* 1.6.3 (2012-03-22)
+
+ * fixed usage of Z_ADDREF_P for PHP 5.2 in the C extension
+ * fixed compilation of numeric values used in templates when using a locale where the decimal separator is not a dot
+ * made the strategy used to guess the real template file name and line number in exception messages much faster and more accurate
+
+* 1.6.2 (2012-03-18)
+
+ * fixed sandbox mode when used with inheritance
+ * added preserveKeys support for the slice filter
+ * fixed the date filter when a DateTime instance is passed with a specific timezone
+ * added a trim filter
+
+* 1.6.1 (2012-02-29)
+
+ * fixed Twig C extension
+ * removed the creation of Twig_Markup instances when not needed
+ * added a way to set the default global timezone for dates
+ * fixed the slice filter on strings when the length is not specified
+ * fixed the creation of the cache directory in case of a race condition
+
+* 1.6.0 (2012-02-04)
+
+ * fixed raw blocks when used with the whitespace trim option
+ * made a speed optimization to macro calls when imported via the "from" tag
+ * fixed globals, parsers, visitors, filters, tests, and functions management in Twig_Environment when a new one or new extension is added
+ * fixed the attribute function when passing arguments
+ * added slice notation support for the [] operator (syntactic sugar for the slice operator)
+ * added a slice filter
+ * added string support for the reverse filter
+ * fixed the empty test and the length filter for Twig_Markup instances
+ * added a date function to ease date comparison
+ * fixed unary operators precedence
+ * added recursive parsing support in the parser
+ * added string and integer handling for the random function
+
+* 1.5.1 (2012-01-05)
+
+ * fixed a regression when parsing strings
+
+* 1.5.0 (2012-01-04)
+
+ * added Traversable objects support for the join filter
+
+* 1.5.0-RC2 (2011-12-30)
+
+ * added a way to set the default global date interval format
+ * fixed the date filter for DateInterval instances (setTimezone() does not exist for them)
+ * refactored Twig_Template::display() to ease its extension
+ * added a number_format filter
+
+* 1.5.0-RC1 (2011-12-26)
+
+ * removed the need to quote hash keys
+ * allowed hash keys to be any expression
+ * added a do tag
+ * added a flush tag
+ * added support for dynamically named filters and functions
+ * added a dump function to help debugging templates
+ * added a nl2br filter
+ * added a random function
+ * added a way to change the default format for the date filter
+ * fixed the lexer when an operator ending with a letter ends a line
+ * added string interpolation support
+ * enhanced exceptions for unknown filters, functions, tests, and tags
+
+* 1.4.0 (2011-12-07)
+
+ * fixed lexer when using big numbers (> PHP_INT_MAX)
+ * added missing preserveKeys argument to the reverse filter
+ * fixed macros containing filter tag calls
+
+* 1.4.0-RC2 (2011-11-27)
+
+ * removed usage of Reflection in Twig_Template::getAttribute()
+ * added a C extension that can optionally replace Twig_Template::getAttribute()
+ * added negative timestamp support to the date filter
+
+* 1.4.0-RC1 (2011-11-20)
+
+ * optimized variable access when using PHP 5.4
+ * changed the precedence of the .. operator to be more consistent with languages that implements such a feature like Ruby
+ * added an Exception to Twig_Loader_Array::isFresh() method when the template does not exist to be consistent with other loaders
+ * added Twig_Function_Node to allow more complex functions to have their own Node class
+ * added Twig_Filter_Node to allow more complex filters to have their own Node class
+ * added Twig_Test_Node to allow more complex tests to have their own Node class
+ * added a better error message when a template is empty but contain a BOM
+ * fixed "in" operator for empty strings
+ * fixed the "defined" test and the "default" filter (now works with more than one call (foo.bar.foo) and for both values of the strict_variables option)
+ * changed the way extensions are loaded (addFilter/addFunction/addGlobal/addTest/addNodeVisitor/addTokenParser/addExtension can now be called in any order)
+ * added Twig_Environment::display()
+ * made the escape filter smarter when the encoding is not supported by PHP
+ * added a convert_encoding filter
+ * moved all node manipulations outside the compile() Node method
+ * made several speed optimizations
+
+* 1.3.0 (2011-10-08)
+
+no changes
+
+* 1.3.0-RC1 (2011-10-04)
+
+ * added an optimization for the parent() function
+ * added cache reloading when auto_reload is true and an extension has been modified
+ * added the possibility to force the escaping of a string already marked as safe (instance of Twig_Markup)
+ * allowed empty templates to be used as traits
+ * added traits support for the "parent" function
+
+* 1.2.0 (2011-09-13)
+
+no changes
+
+* 1.2.0-RC1 (2011-09-10)
+
+ * enhanced the exception when a tag remains unclosed
+ * added support for empty Countable objects for the "empty" test
+ * fixed algorithm that determines if a template using inheritance is valid (no output between block definitions)
+ * added better support for encoding problems when escaping a string (available as of PHP 5.4)
+ * added a way to ignore a missing template when using the "include" tag ({% include "foo" ignore missing %})
+ * added support for an array of templates to the "include" and "extends" tags ({% include ['foo', 'bar'] %})
+ * added support for bitwise operators in expressions
+ * added the "attribute" function to allow getting dynamic attributes on variables
+ * added Twig_Loader_Chain
+ * added Twig_Loader_Array::setTemplate()
+ * added an optimization for the set tag when used to capture a large chunk of static text
+ * changed name regex to match PHP one "[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*" (works for blocks, tags, functions, filters, and macros)
+ * removed the possibility to use the "extends" tag from a block
+ * added "if" modifier support to "for" loops
+
+* 1.1.2 (2011-07-30)
+
+ * fixed json_encode filter on PHP 5.2
+ * fixed regression introduced in 1.1.1 ({{ block(foo|lower) }})
+ * fixed inheritance when using conditional parents
+ * fixed compilation of templates when the body of a child template is not empty
+ * fixed output when a macro throws an exception
+ * fixed a parsing problem when a large chunk of text is enclosed in a comment tag
+ * added PHPDoc for all Token parsers and Core extension functions
+
+* 1.1.1 (2011-07-17)
+
+ * added a performance optimization in the Optimizer (also helps to lower the number of nested level calls)
+ * made some performance improvement for some edge cases
+
+* 1.1.0 (2011-06-28)
+
+ * fixed json_encode filter
+
+* 1.1.0-RC3 (2011-06-24)
+
+ * fixed method case-sensitivity when using the sandbox mode
+ * added timezone support for the date filter
+ * fixed possible security problems with NUL bytes
+
+* 1.1.0-RC2 (2011-06-16)
+
+ * added an exception when the template passed to "use" is not a string
+ * made 'a.b is defined' not throw an exception if a is not defined (in strict mode)
+ * added {% line \d+ %} directive
+
+* 1.1.0-RC1 (2011-05-28)
+
+Flush your cache after upgrading.
+
+ * fixed date filter when using a timestamp
+ * fixed the defined test for some cases
+ * fixed a parsing problem when a large chunk of text is enclosed in a raw tag
+ * added support for horizontal reuse of template blocks (see docs for more information)
+ * added whitespace control modifier to all tags (see docs for more information)
+ * added null as an alias for none (the null test is also an alias for the none test now)
+ * made TRUE, FALSE, NONE equivalent to their lowercase counterparts
+ * wrapped all compilation and runtime exceptions with Twig_Error_Runtime and added logic to guess the template name and line
+ * moved display() method to Twig_Template (generated templates should now use doDisplay() instead)
+
+* 1.0.0 (2011-03-27)
+
+ * fixed output when using mbstring
+ * fixed duplicate call of methods when using the sandbox
+ * made the charset configurable for the escape filter
+
+* 1.0.0-RC2 (2011-02-21)
+
+ * changed the way {% set %} works when capturing (the content is now marked as safe)
+ * added support for macro name in the endmacro tag
+ * make Twig_Error compatible with PHP 5.3.0 >
+ * fixed an infinite loop on some Windows configurations
+ * fixed the "length" filter for numbers
+ * fixed Template::getAttribute() as properties in PHP are case sensitive
+ * removed coupling between Twig_Node and Twig_Template
+ * fixed the ternary operator precedence rule
+
+* 1.0.0-RC1 (2011-01-09)
+
+Backward incompatibilities:
+
+ * the "items" filter, which has been deprecated for quite a long time now, has been removed
+ * the "range" filter has been converted to a function: 0|range(10) -> range(0, 10)
+ * the "constant" filter has been converted to a function: {{ some_date|date('DATE_W3C'|constant) }} -> {{ some_date|date(constant('DATE_W3C')) }}
+ * the "cycle" filter has been converted to a function: {{ ['odd', 'even']|cycle(i) }} -> {{ cycle(['odd', 'even'], i) }}
+ * the "for" tag does not support "joined by" anymore
+ * the "autoescape" first argument is now "true"/"false" (instead of "on"/"off")
+ * the "parent" tag has been replaced by a "parent" function ({{ parent() }} instead of {% parent %})
+ * the "display" tag has been replaced by a "block" function ({{ block('title') }} instead of {% display title %})
+ * removed the grammar and simple token parser (moved to the Twig Extensions repository)
+
+Changes:
+
+ * added "needs_context" option for filters and functions (the context is then passed as a first argument)
+ * added global variables support
+ * made macros return their value instead of echoing directly (fixes calling a macro in sandbox mode)
+ * added the "from" tag to import macros as functions
+ * added support for functions (a function is just syntactic sugar for a getAttribute() call)
+ * made macros callable when sandbox mode is enabled
+ * added an exception when a macro uses a reserved name
+ * the "default" filter now uses the "empty" test instead of just checking for null
+ * added the "empty" test
+
+* 0.9.10 (2010-12-16)
+
+Backward incompatibilities:
+
+ * The Escaper extension is enabled by default, which means that all displayed
+   variables are now automatically escaped. You can revert to the previous
+   behavior by removing the extension via $env->removeExtension('escaper')
+   or just set the 'autoescape' option to 'false'.
+ * removed the "without loop" attribute for the "for" tag (not needed anymore
+   as the Optimizer take care of that for most cases)
+ * arrays and hashes have now a different syntax
+     * arrays keep the same syntax with square brackets: [1, 2]
+     * hashes now use curly braces (["a": "b"] should now be written as {"a": "b"})
+     * support for "arrays with keys" and "hashes without keys" is not supported anymore ([1, "foo": "bar"] or {"foo": "bar", 1})
+ * the i18n extension is now part of the Twig Extensions repository
+
+Changes:
+
+ * added the merge filter
+ * removed 'is_escaper' option for filters (a left over from the previous version) -- you must use 'is_safe' now instead
+ * fixed usage of operators as method names (like is, in, and not)
+ * changed the order of execution for node visitors
+ * fixed default() filter behavior when used with strict_variables set to on
+ * fixed filesystem loader compatibility with PHAR files
+ * enhanced error messages when an unexpected token is parsed in an expression
+ * fixed filename not being added to syntax error messages
+ * added the autoescape option to enable/disable autoescaping
+ * removed the newline after a comment (mimics PHP behavior)
+ * added a syntax error exception when parent block is used on a template that does not extend another one
+ * made the Escaper extension enabled by default
+ * fixed sandbox extension when used with auto output escaping
+ * fixed escaper when wrapping a Twig_Node_Print (the original class must be preserved)
+ * added an Optimizer extension (enabled by default; optimizes "for" loops and "raw" filters)
+ * added priority to node visitors
+
+* 0.9.9 (2010-11-28)
+
+Backward incompatibilities:
+ * the self special variable has been renamed to _self
+ * the odd and even filters are now tests:
+     {{ foo|odd }} must now be written {{ foo is odd }}
+ * the "safe" filter has been renamed to "raw"
+ * in Node classes,
+        sub-nodes are now accessed via getNode() (instead of property access)
+        attributes via getAttribute() (instead of array access)
+ * the urlencode filter had been renamed to url_encode
+ * the include tag now merges the passed variables with the current context by default
+   (the old behavior is still possible by adding the "only" keyword)
+ * moved Exceptions to Twig_Error_* (Twig_SyntaxError/Twig_RuntimeError are now Twig_Error_Syntax/Twig_Error_Runtime)
+ * removed support for {{ 1 < i < 3 }} (use {{ i > 1 and i < 3 }} instead)
+ * the "in" filter has been removed ({{ a|in(b) }} should now be written {{ a in b }})
+
+Changes:
+ * added file and line to Twig_Error_Runtime exceptions thrown from Twig_Template
+ * changed trans tag to accept any variable for the plural count
+ * fixed sandbox mode (__toString() method check was not enforced if called implicitly from complex statements)
+ * added the ** (power) operator
+ * changed the algorithm used for parsing expressions
+ * added the spaceless tag
+ * removed trim_blocks option
+ * added support for is*() methods for attributes (foo.bar now looks for foo->getBar() or foo->isBar())
+ * changed all exceptions to extend Twig_Error
+ * fixed unary expressions ({{ not(1 or 0) }})
+ * fixed child templates (with an extend tag) that uses one or more imports
+ * added support for {{ 1 not in [2, 3] }} (more readable than the current {{ not (1 in [2, 3]) }})
+ * escaping has been rewritten
+ * the implementation of template inheritance has been rewritten
+   (blocks can now be called individually and still work with inheritance)
+ * fixed error handling for if tag when a syntax error occurs within a subparse process
+ * added a way to implement custom logic for resolving token parsers given a tag name
+ * fixed js escaper to be stricter (now uses a whilelist-based js escaper)
+ * added the following filers: "constant", "trans", "replace", "json_encode"
+ * added a "constant" test
+ * fixed objects with __toString() not being autoescaped
+ * fixed subscript expressions when calling __call() (methods now keep the case)
+ * added "test" feature (accessible via the "is" operator)
+ * removed the debug tag (should be done in an extension)
+ * fixed trans tag when no vars are used in plural form
+ * fixed race condition when writing template cache
+ * added the special _charset variable to reference the current charset
+ * added the special _context variable to reference the current context
+ * renamed self to _self (to avoid conflict)
+ * fixed Twig_Template::getAttribute() for protected properties
+
+* 0.9.8 (2010-06-28)
+
+Backward incompatibilities:
+ * the trans tag plural count is now attached to the plural tag:
+    old: `{% trans count %}...{% plural %}...{% endtrans %}`
+    new: `{% trans %}...{% plural count %}...{% endtrans %}`
+
+ * added a way to translate strings coming from a variable ({% trans var %})
+ * fixed trans tag when used with the Escaper extension
+ * fixed default cache umask
+ * removed Twig_Template instances from the debug tag output
+ * fixed objects with __isset() defined
+ * fixed set tag when used with a capture
+ * fixed type hinting for Twig_Environment::addFilter() method
+
+* 0.9.7 (2010-06-12)
+
+Backward incompatibilities:
+ * changed 'as' to '=' for the set tag ({% set title as "Title" %} must now be {% set title = "Title" %})
+ * removed the sandboxed attribute of the include tag (use the new sandbox tag instead)
+ * refactored the Node system (if you have custom nodes, you will have to update them to use the new API)
+
+ * added self as a special variable that refers to the current template (useful for importing macros from the current template)
+ * added Twig_Template instance support to the include tag
+ * added support for dynamic and conditional inheritance ({% extends some_var %} and {% extends standalone ? "minimum" : "base" %})
+ * added a grammar sub-framework to ease the creation of custom tags
+ * fixed the for tag for large arrays (some loop variables are now only available for arrays and objects that implement the Countable interface)
+ * removed the Twig_Resource::resolveMissingFilter() method
+ * fixed the filter tag which did not apply filtering to included files
+ * added a bunch of unit tests
+ * added a bunch of phpdoc
+ * added a sandbox tag in the sandbox extension
+ * changed the date filter to support any date format supported by DateTime
+ * added strict_variable setting to throw an exception when an invalid variable is used in a template (disabled by default)
+ * added the lexer, parser, and compiler as arguments to the Twig_Environment constructor
+ * changed the cache option to only accepts an explicit path to a cache directory or false
+ * added a way to add token parsers, filters, and visitors without creating an extension
+ * added three interfaces: Twig_NodeInterface, Twig_TokenParserInterface, and Twig_FilterInterface
+ * changed the generated code to match the new coding standards
+ * fixed sandbox mode (__toString() method check was not enforced if called implicitly from a simple statement like {{ article }})
+ * added an exception when a child template has a non-empty body (as it is always ignored when rendering)
+
+* 0.9.6 (2010-05-12)
+
+ * fixed variables defined outside a loop and for which the value changes in a for loop
+ * fixed the test suite for PHP 5.2 and older versions of PHPUnit
+ * added support for __call() in expression resolution
+ * fixed node visiting for macros (macros are now visited by visitors as any other node)
+ * fixed nested block definitions with a parent call (rarely useful but nonetheless supported now)
+ * added the cycle filter
+ * fixed the Lexer when mbstring.func_overload is used with an mbstring.internal_encoding different from ASCII
+ * added a long-syntax for the set tag ({% set foo %}...{% endset %})
+ * unit tests are now powered by PHPUnit
+ * added support for gettext via the `i18n` extension
+ * fixed twig_capitalize_string_filter() and fixed twig_length_filter() when used with UTF-8 values
+ * added a more useful exception if an if tag is not closed properly
+ * added support for escaping strategy in the autoescape tag
+ * fixed lexer when a template has a big chunk of text between/in a block
+
+* 0.9.5 (2010-01-20)
+
+As for any new release, don't forget to remove all cached templates after
+upgrading.
+
+If you have defined custom filters, you MUST upgrade them for this release. To
+upgrade, replace "array" with "new Twig_Filter_Function", and replace the
+environment constant by the "needs_environment" option:
+
+  // before
+  'even'   => array('twig_is_even_filter', false),
+  'escape' => array('twig_escape_filter', true),
+
+  // after
+  'even'   => new Twig_Filter_Function('twig_is_even_filter'),
+  'escape' => new Twig_Filter_Function('twig_escape_filter', array('needs_environment' => true)),
+
+If you have created NodeTransformer classes, you will need to upgrade them to
+the new interface (please note that the interface is not yet considered
+stable).
+
+ * fixed list nodes that did not extend the Twig_NodeListInterface
+ * added the "without loop" option to the for tag (it disables the generation of the loop variable)
+ * refactored node transformers to node visitors
+ * fixed automatic-escaping for blocks
+ * added a way to specify variables to pass to an included template
+ * changed the automatic-escaping rules to be more sensible and more configurable in custom filters (the documentation lists all the rules)
+ * improved the filter system to allow object methods to be used as filters
+ * changed the Array and String loaders to actually make use of the cache mechanism
+ * included the default filter function definitions in the extension class files directly (Core, Escaper)
+ * added the // operator (like the floor() PHP function)
+ * added the .. operator (as a syntactic sugar for the range filter when the step is 1)
+ * added the in operator (as a syntactic sugar for the in filter)
+ * added the following filters in the Core extension: in, range
+ * added support for arrays (same behavior as in PHP, a mix between lists and dictionaries, arrays and hashes)
+ * enhanced some error messages to provide better feedback in case of parsing errors
+
+* 0.9.4 (2009-12-02)
+
+If you have custom loaders, you MUST upgrade them for this release: The
+Twig_Loader base class has been removed, and the Twig_LoaderInterface has also
+been changed (see the source code for more information or the documentation).
+
+ * added support for DateTime instances for the date filter
+ * fixed loop.last when the array only has one item
+ * made it possible to insert newlines in tag and variable blocks
+ * fixed a bug when a literal '\n' were present in a template text
+ * fixed bug when the filename of a template contains */
+ * refactored loaders
+
+* 0.9.3 (2009-11-11)
+
+This release is NOT backward compatible with the previous releases.
+
+  The loaders do not take the cache and autoReload arguments anymore. Instead,
+  the Twig_Environment class has two new options: cache and auto_reload.
+  Upgrading your code means changing this kind of code:
+
+      $loader = new Twig_Loader_Filesystem('/path/to/templates', '/path/to/compilation_cache', true);
+      $twig = new Twig_Environment($loader);
+
+  to something like this:
+
+      $loader = new Twig_Loader_Filesystem('/path/to/templates');
+      $twig = new Twig_Environment($loader, array(
+        'cache' => '/path/to/compilation_cache',
+        'auto_reload' => true,
+      ));
+
+ * deprecated the "items" filter as it is not needed anymore
+ * made cache and auto_reload options of Twig_Environment instead of arguments of Twig_Loader
+ * optimized template loading speed
+ * removed output when an error occurs in a template and render() is used
+ * made major speed improvements for loops (up to 300% on even the smallest loops)
+ * added properties as part of the sandbox mode
+ * added public properties support (obj.item can now be the item property on the obj object)
+ * extended set tag to support expression as value ({% set foo as 'foo' ~ 'bar' %} )
+ * fixed bug when \ was used in HTML
+
+* 0.9.2 (2009-10-29)
+
+ * made some speed optimizations
+ * changed the cache extension to .php
+ * added a js escaping strategy
+ * added support for short block tag
+ * changed the filter tag to allow chained filters
+ * made lexer more flexible as you can now change the default delimiters
+ * added set tag
+ * changed default directory permission when cache dir does not exist (more secure)
+ * added macro support
+ * changed filters first optional argument to be a Twig_Environment instance instead of a Twig_Template instance
+ * made Twig_Autoloader::autoload() a static method
+ * avoid writing template file if an error occurs
+ * added $ escaping when outputting raw strings
+ * enhanced some error messages to ease debugging
+ * fixed empty cache files when the template contains an error
+
+* 0.9.1 (2009-10-14)
+
+  * fixed a bug in PHP 5.2.6
+  * fixed numbers with one than one decimal
+  * added support for method calls with arguments ({{ foo.bar('a', 43) }})
+  * made small speed optimizations
+  * made minor tweaks to allow better extensibility and flexibility
+
+* 0.9.0 (2009-10-12)
+
+ * Initial release

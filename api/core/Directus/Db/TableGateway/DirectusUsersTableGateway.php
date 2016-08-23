@@ -61,35 +61,16 @@ class DirectusUsersTableGateway extends AclAwareTableGateway {
      * Get either a Gravatar URL or complete image tag for a specified email address.
      *
      * @param string $email The email address
-     * @param string $s Size in pixels, defaults to 80px [ 1 - 2048 ]
+     * @param int $s Size in pixels, defaults to 80px [ 1 - 2048 ]
      * @param string $d Default imageset to use [ 404 | mm | identicon | monsterid | wavatar ]
      * @param string $r Maximum rating (inclusive) [ g | pg | r | x ]
-     * @param boole $img True to return a complete IMG tag False for just the URL
+     * @param bool $img True to return a complete IMG tag False for just the URL
      * @param array $atts Optional, additional key/value attributes to include in the IMG tag
      * @return String containing either just a URL or a complete image tag
      * @source http://gravatar.com/site/implement/images/php/
      */
     public static function get_avatar( $email, $s = 100, $d = 'identicon', $r = 'g', $img = false, $atts = array() ) {
-        $url = '//gravatar.com/avatar/';
-        $url .= md5( strtolower( trim( $email ) ) );
-
-        //If no Gravatar Exist, set field to null
-        // @TODO: remove this part, not that necessary
-        $response = get_headers('https:'.$url."?d=404");
-        if ($response[0] == "HTTP/1.0 404 Not Found"){
-            $img = false;
-            $url = null;
-        } else {
-          $url .= "?s=$s&d=$d&r=$r";
-        }
-
-        if ( $img ) {
-            $url = '<img src="' . $url . '"';
-            foreach ( $atts as $key => $val )
-                $url .= ' ' . $key . '="' . $val . '"';
-            $url .= ' />';
-        }
-        return $url;
+        return get_gravatar($email, $s, $d, $r, $img, $atts);
     }
 
 }

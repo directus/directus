@@ -1,0 +1,14 @@
+--TEST--
+Super globals as macro arguments
+--TEMPLATE--
+{% import _self as macros %}
+
+{{ macros.foo('foo') }}
+
+{% macro foo(GET) %}
+    {{ GET }}
+{% endmacro %}
+--DATA--
+return array()
+--EXPECT--
+foo
