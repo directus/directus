@@ -209,17 +209,39 @@ gulp.task('singlepage', function () {
     .pipe(gulp.dest('dist'));
 });
 
-// --------------------
-// Composer - Gulp Task
-// --------------------
-gulp.task('composer', function(cb) {
-  var child = cp.spawn('composer', ['install', '--ansi', '--prefer-dist', '--no-dev'], {cwd: './dist/'});
+function executeCommand(cb, opts) {
+  var command = opts.command;
+  var args = opts.args;
+  var options = opts.options;
+  var child = cp.spawn(command, args, options);
 
   child.stdout.on('data', function(chunk) {
     process.stdout.write(chunk);
   });
   child.on('close', function(){
     cb();
+  });
+}
+
+// --------------------
+// Composer - Gulp Task
+// --------------------
+gulp.task('composer', function(cb) {
+  executeCommand(cb, {
+    command: 'composer',
+    args: ['install', '--ansi', '--prefer-dist', '--no-dev'],
+    options: {cwd: './dist/'}
+  });
+});
+
+// --------------------
+// Git Sub-modules- Gulp Task
+// --------------------
+gulp.task('submodules', function(cb) {
+  executeCommand(cb, {
+    command: 'git',
+    args: ['submodule', 'update', '--init', '--recursive'],
+    options: {cwd: './dist/'}
   });
 });
 
@@ -312,7 +334,7 @@ gulp.task('jscs', function() {
 // Run all the tasks
 // ------------------- 'composer',
 gulp.task('build', function(cb) {
-    runSequence(['scripts', 'templates', 'singlepage', 'styles', 'fonts', 'images', 'move', 'composer', cb]);
+    runSequence(['scripts', 'templates', 'singlepage', 'styles', 'fonts', 'images', 'move', 'composer', 'submodules', cb]);
 });
 
 // Default task
