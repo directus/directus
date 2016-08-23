@@ -71,17 +71,17 @@ return array(
     ),
 
     'statusMapping' => array(
-        '0' => array(
+        0 => array(
             'name' => 'Delete',
             'color' => '#C1272D',
             'sort' => 3
         ),
-        '1' => array(
+        1 => array(
             'name' => 'Active',
             'color' => '#5B5B5B',
             'sort' => 1
         ),
-        '2' => array(
+        2 => array(
             'name' => 'Draft',
             'color' => '#BBBBBB',
             'sort' => 2
