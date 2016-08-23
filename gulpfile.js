@@ -111,9 +111,10 @@ gulp.task('scripts:app', function() {
       "underscore": "../assets/js/libs/underscore",
       "backbone":   "../assets/js/libs/backbone",
       "handlebars": "../assets/js/libs/handlebars",
-      "sortable":   "../assets/js/libs/sortable",
+      "sortable":  "../assets/js/libs/sortable",
+      "marked":    "../assets/js/libs/marked.min",
       "moment":     "../assets/js/libs/moment.min",
-      "noty":       "../assets/js/libs/noty",
+      "noty":     "../assets/js/libs/noty",
       "noty_theme": "../assets/js/libs/noty_theme",
       "polyglot":   "../assets/js/libs/polyglot.min",
 
@@ -129,58 +130,43 @@ gulp.task('scripts:app', function() {
     },
 
     shim: {
-      'underscore': {
-        exports: '_'
+
+      "backbone": {
+        deps: ["underscore", "jquery"],
+        exports: "Backbone"
       },
+
       "handlebars": {
         exports: "Handlebars"
       },
-      'backbone': {
-        deps: [
-          'underscore',
-          'jquery'
-        ],
-        exports: 'Backbone'
+
+      "underscore": {
+        exports: '_'
       },
-      'bootstrap': {
-        deps: [
-          'jquery'
-        ]
+
+      "noty": {
+        deps: ["jquery"]
       },
-      'noty': {
-        deps: [
-          'jquery'
-        ]
-      },
+
       "noty_theme": {
-        deps: [
-          "jquery",
-          "noty"
-        ]
+        deps: ["jquery", "noty"]
       },
+
+      "marked": {
+        exports: 'marked'
+      },
+
       "polyglot": {
         exports: 'Polyglot'
       },
-      "plugins/backbone.layoutmanager": {
-        deps: [
-          "backbone"
-        ]
-      },
-      "plugins/bootstrap-dropdown": {
-        deps: [
-          "jquery"
-        ],
-      },
-      'plugins/typeahead': {
-        deps: [
-          'jquery'
-        ]
-      },
-      "plugins/bootstrap-tooltip": {
-        deps:[
-          "jquery"
-        ]
-      }
+
+      "plugins/jquery.flashrow": ['jquery'],
+
+      "plugins/backbone.layoutmanager": ["backbone"],
+      'plugins/backbone.trackit': ['backbone'],
+      "plugins/bootstrap-dropdown": ["jquery"],
+      "plugins/typeahead": ["jquery"],
+      "plugins/bootstrap-tooltip": ["jquery"]
     }
   }))
     .pipe(gulp.dest('./dist/assets/js/')); // pipe it to the output DIR
@@ -268,7 +254,7 @@ gulp.task('move', function() {
     // These two directories are moved separately below
     //'./listviews/**',
     //'./media/**/*',
-    './media_auth_proxy/**',
+    //'./media_auth_proxy/**',
     //'./ui/**/*',
     './.htaccess',
     './favicon.ico',
@@ -280,12 +266,13 @@ gulp.task('move', function() {
   ];
 
   var dirsToKeep = [
-    './customs/ui/.gitignore',
+    './customs/uis/.gitignore',
+    './customs/endpoints/.htaccess',
     './customs/extensions/.htaccess',
     './customs/extensions/.gitignore',
-    './media/.htaccess',
-    './media/**/.gitignore',
-    './media_auth_proxy/client_auth_proxies/.gitignore',
+    './storage/uploads/.htaccess',
+    './storage/uploads/**/.gitignore',
+    //'./media_auth_proxy/client_auth_proxies/.gitignore',
     './customs/listviews/.gitignore'
   ];
 
