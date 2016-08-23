@@ -1,6 +1,6 @@
 {
   "name": "Directus",
-  "version": "6.3.0RC",
+  "version": "6.3.0",
   "description": "",
   "main": "gulpfile.js",
   "scripts": {
