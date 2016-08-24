@@ -50,8 +50,12 @@ define(['app', 'core/UIComponent', 'core/UIView', 'moment', 'helpers/ui', 'core/
     },
 
     serialize: function() {
-      var date = this.value;
       var settings = this.options.settings;
+      if (settings.get('auto-populate_when_hidden_and_null') === true && !this.value.isValid()) {
+        this.value = moment();
+      }
+
+      var date = this.value;
       var dateValue = date.format('YYYY-MM-DD');
 
       return {
