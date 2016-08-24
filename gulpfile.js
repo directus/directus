@@ -240,7 +240,7 @@ gulp.task('composer', function(cb) {
 gulp.task('submodules', function(cb) {
   executeCommand(cb, {
     command: 'git',
-    args: ['submodule', 'update', '--init', '--recursive'],
+    args: ['submodule', 'update', '--init', 'api/migrations/templates'],
     options: {cwd: './dist/'}
   });
 });
@@ -334,7 +334,7 @@ gulp.task('jscs', function() {
 // Run all the tasks
 // ------------------- 'composer',
 gulp.task('build', function(cb) {
-    runSequence(['scripts', 'templates', 'singlepage', 'styles', 'fonts', 'images', 'move', 'composer', 'submodules', cb]);
+    runSequence(['scripts', 'templates', 'singlepage', 'styles', 'fonts', 'images', 'move', 'submodules', 'composer', cb]);
 });
 
 // Default task
