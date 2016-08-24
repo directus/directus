@@ -83,10 +83,10 @@ define(['app', 'core/UIComponent', 'core/UIView', 'moment', 'helpers/ui', 'core/
     id: 'date',
     dataTypes: ['DATE'],
     variables: [
-      {id: 'readonly', type: 'Boolean', def: false, ui: 'checkbox'},
-      {id: 'format', type: 'String', ui: 'textinput', char_length: 255, def: 'YYYY-MM-DD', comment: '<a href="http://momentjs.com/docs/#/displaying/format/" target="_blank">Formatting Rules</a>', options: {placeholder_text: 'eg: YYYY-MM-DD HH:mm:ss'}},
+      {id: 'readonly', type: 'Boolean', default_value: false, ui: 'checkbox'},
+      {id: 'format', type: 'String', ui: 'textinput', char_length: 255, default_value: 'YYYY-MM-DD', comment: '<a href="http://momentjs.com/docs/#/displaying/format/" target="_blank">Formatting Rules</a>', options: {placeholder_text: 'eg: YYYY-MM-DD HH:mm:ss'}},
       {id: 'contextual_date_in_listview', type: 'Boolean', ui: 'checkbox', comment: 'Eg: 3 days ago'},
-      {id: 'auto-populate_when_hidden_and_null', type: 'Boolean', ui: 'checkbox', def: true}
+      {id: 'auto-populate_when_hidden_and_null', type: 'Boolean', ui: 'checkbox', default_value: true}
     ],
     Input: Input,
     validate: function(value, options) {

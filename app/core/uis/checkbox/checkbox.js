@@ -55,7 +55,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
     id: 'checkbox',
     dataTypes: ['TINYINT'],
     variables: [
-      {id: 'mandatory', type: 'Boolean', def: false, ui: 'checkbox', comment: 'if this field should always be checked by the user.'}
+      {id: 'mandatory', type: 'Boolean', default_value: false, ui: 'checkbox', comment: 'if this field should always be checked by the user.'}
     ],
     Input: Input,
     validate: function(value, options) {

@@ -271,11 +271,11 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/table/table.view', 'core
     dataTypes: ['ONETOMANY'],
     variables: [
       {id: 'visible_columns', type: 'String', ui: 'textinput', char_length: 255, required: true},
-      {id: 'result_limit', type: 'Number', ui: 'numeric', char_length: 10, def: 100, comment: __t('o2m_result_limit_comment')},
+      {id: 'result_limit', type: 'Number', ui: 'numeric', char_length: 10, default_value: 100, comment: __t('o2m_result_limit_comment')},
       {id: 'add_button', type: 'Boolean', ui: 'checkbox'},
-      {id: 'choose_button', type: 'Boolean', ui: 'checkbox', def: true},
+      {id: 'choose_button', type: 'Boolean', ui: 'checkbox', default_value: true},
       {id: 'remove_button', type: 'Boolean', ui: 'checkbox'},
-      {id: 'only_unassigned', type: 'Boolean', ui: 'checkbox', def: false}
+      {id: 'only_unassigned', type: 'Boolean', ui: 'checkbox', default_value: false}
     ],
     Input: Input,
     validate: function(collection, options) {

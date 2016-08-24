@@ -8,7 +8,7 @@ define(['backbone', 'handlebars', 'helpers/ui', 'core/t'], function(Backbone, Ha
       this.variables.push({
         id: 'footer',
         type: 'Boolean',
-        def: false,
+        default_value: false,
         ui: 'checkbox',
         comment: __t('numeric_footer_comment')
       });
