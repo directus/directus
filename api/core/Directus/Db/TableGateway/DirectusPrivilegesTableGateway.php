@@ -202,9 +202,9 @@ class DirectusPrivilegesTableGateway extends AclAwareTableGateway {
             return strcmp($a['table_name'], $b['table_name']);
         });
 
-        $records = is_null($tableName) ? $privileges : reset($privileges);
+        $privileges = is_null($tableName) ? $privileges : reset($privileges);
 
-        return $this->parseRecord($records);
+        return $this->parseRecord($privileges);
     }
 
     public function fetchGroupPrivilegesRaw($group_id) {
