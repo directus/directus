@@ -28,18 +28,12 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
 
     serialize: function() {
       var value = this.options.value;
+      var selected = false;
 
       // Get default value if there is one...
-      if (value === undefined && this.options.schema.has('def')) {
-        value = this.options.schema.get('def');
-      }
-
-      var selected = parseInt(value, 10) === 1;
-
-      if (
-        this.options.model.isNew() &&
-        this.options.schema.has('default_value')) {
-          selected = parseInt(this.options.schema.get('default_value'), 10) === 1;
+      if (value === undefined && this.options.schema.has('default_value')) {
+        value = this.options.schema.get('default_value');
+        selected = (value === true);
       }
 
       return {
