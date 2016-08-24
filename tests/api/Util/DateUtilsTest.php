@@ -4,6 +4,13 @@ use Directus\Util\DateUtils;
 
 class DateUtilsTest extends PHPUnit_Framework_TestCase
 {
+    public function setUp()
+    {
+        if (!ini_get('date.timezone')) {
+            ini_set('date.timezone', 'America/New_York');
+        }
+    }
+
     public function testDaysLeft()
     {
         $this->assertEquals(11, DateUtils::daysLeft(1462380876, 1461380876));
