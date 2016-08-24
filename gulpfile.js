@@ -235,6 +235,16 @@ gulp.task('composer', function(cb) {
 });
 
 // --------------------
+// Remove all .git inside the vendor - Gulp Task
+// Avoiding all posibles repositories being marked as submodule
+// --------------------
+gulp.task('clean-git', function(cb) {
+  cp.exec('find ./dist/vendor | grep .git | xargs rm -rf', function() {
+    cb()
+  });
+});
+
+// --------------------
 // Git Sub-modules- Gulp Task
 // --------------------
 gulp.task('submodules', function(cb) {
@@ -334,7 +344,7 @@ gulp.task('jscs', function() {
 // Run all the tasks
 // ------------------- 'composer',
 gulp.task('build', function(cb) {
-    runSequence(['scripts', 'templates', 'singlepage', 'styles', 'fonts', 'images', 'move', 'submodules', 'composer', cb]);
+    runSequence(['scripts', 'templates', 'singlepage', 'styles', 'fonts', 'images', 'move', 'submodules', 'composer', 'clean-git', cb]);
 });
 
 // Default task
