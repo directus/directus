@@ -1,5 +1,0 @@
-/build
-/composer.lock
-/ext/twig/autom4te.cache/
-/phpunit.xml
-/vendor
