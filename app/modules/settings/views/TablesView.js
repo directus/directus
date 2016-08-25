@@ -195,12 +195,14 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
         data.data_types.push(item);
       });
 
-      //Check if we need length field
-      if(['VARCHAR', 'CHAR', 'ENUM'].indexOf(this.selectedDataType) > -1)
-      {
+      // Check if the data type needs length
+      // ENUM and SET doesn't actually needs a LENGTH,
+      // but the "length" value is a list of string separate by comma
+      if (['VARCHAR', 'CHAR', 'ENUM', 'SET'].indexOf(this.selectedDataType) > -1) {
         data.SHOW_CHAR_LENGTH = true;
         if (!this.model.get('char_length')) {
-          this.model.set({char_length: 100});
+          var charLength = ['ENUM', 'SET'].indexOf(this.selectedDataType) > -1 ? '' : 100;
+          this.model.set({char_length: charLength});
         }
         data.char_length = this.model.get('char_length');
       } else {

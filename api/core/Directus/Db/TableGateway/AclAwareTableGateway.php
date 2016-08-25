@@ -402,8 +402,20 @@ class AclAwareTableGateway extends TableGateway {
       $comment = $columnData['comment'];
 
       if (array_key_exists('char_length', $columnData)) {
-          $data_type = $data_type.'('.$columnData['char_length'].')';
+          $charLength = $columnData['char_length'];
+          // SET and ENUM data type has its values in the char_length attribute
+          // each value are separated by commas
+          // it must be wrap into quotes
+          if (strpos($charLength, ',') !== false) {
+              $charLength = implode(',', array_map(function($value) {
+                  return "'". trim($value) . "'";
+              }, explode(',', $charLength)));
+          }
+
+          $data_type = $data_type.'('.$charLength.')';
       }
+
+      // TODO: wrap this into an abstract DDL class
       $sql = "ALTER TABLE `$tableName` ADD COLUMN `$column_name` $data_type COMMENT '$comment'";
 
       $this->adapter->query( $sql )->execute();
