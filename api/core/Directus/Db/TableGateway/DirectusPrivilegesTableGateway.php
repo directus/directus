@@ -212,7 +212,8 @@ class DirectusPrivilegesTableGateway extends AclAwareTableGateway {
         $select->where->equalTo('group_id', $group_id);
         $rowset = $this->selectWith($select);
         $rowset = $rowset->toArray();
-        return $rowset;
+
+        return $this->parseRecord($rowset);
     }
 
     public function findByStatus($table_name, $group_id, $status_id) {
