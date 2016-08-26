@@ -41,7 +41,7 @@ define(['app', 'underscore', 'core/UIComponent', 'core/UIView'], function(app, _
       var data = {};
 
       var mapping = app.statusMapping.mapping;
-      var value = this.options.value;
+      var value = Number(this.options.value);
 
       data.mapping = [];
 
@@ -54,7 +54,7 @@ define(['app', 'underscore', 'core/UIComponent', 'core/UIView'], function(app, _
           return false;
         }
 
-        var entry = status;//mapping[key];
+        var entry = status;
         entry.id = key;
         entry.active = key === value;
 
