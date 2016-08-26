@@ -435,7 +435,7 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
       // If Single_file UI, force related table to be directus_files
       // and relationship type to manytoone
       data['related_table'] = null;
-      data['datatype'] = null;
+      data['data_type'] = null;
       data['relationship_type'] = null;
       data['junction_key_right'] = null;
       data['junction_key_left'] = null;
@@ -452,7 +452,7 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
       switch(value) {
         case 'single_file':
           data['related_table'] = 'directus_files';
-          data['datatype'] = 'INT';
+          data['data_type'] = 'INT';
           data['relationship_type'] = 'MANYTOONE';
           data['junction_key_right'] = id;
           break;
@@ -460,7 +460,7 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
           data['related_table'] = 'directus_files';
         case 'many_to_many':
           data['junction_key_right'] = id;
-          data['datatype'] = 'MANYTOMANY';
+          data['data_type'] = 'ALIAS';
           data['relationship_type'] = 'MANYTOMANY';
           break;
         case 'many_to_one':
@@ -469,6 +469,7 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
           data['junction_key_right'] = id;
           break;
         case 'one_to_many':
+          data['data_type'] = 'ALIAS';
           data['relationship_type'] = 'ONETOMANY';
           data['junction_key_right'] = id;
           break;
