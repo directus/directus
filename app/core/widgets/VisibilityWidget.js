@@ -1,10 +1,11 @@
 define([
   'app',
+  'underscore',
   'backbone',
   'handlebars',
   'core/PreferenceModel'
 ],
-function(app, Backbone, Handlebars, PreferenceModel) {
+function(app, _, Backbone, Handlebars, PreferenceModel) {
 
   "use strict";
 
@@ -60,8 +61,11 @@ function(app, Backbone, Handlebars, PreferenceModel) {
       var statusSelected = this.collection.getFilter('status');
 
       var keys = [];
-      for (var key in mapping) {
-        //Do not show option for deleted status
+      _.each(mapping, function(value, key) {
+        // Convert status id to number
+        key = Number(key);
+
+        // Do not show option for deleted status
         if (key !== app.statusMapping.deleted_num) {
           data.mapping.push({
             id: key,
@@ -71,7 +75,7 @@ function(app, Backbone, Handlebars, PreferenceModel) {
           });
           keys.push(key);
         }
-      }
+      });
 
       data.mapping.sort(function(a, b) {
         if (a.sort < b.sort) {
