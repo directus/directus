@@ -823,17 +823,23 @@ class AclAwareTableGateway extends TableGateway {
         }
 
         // hotfix: records sometimes are no set as an array of rows.
-        $items = !is_numeric_keys_array($records) ? [&$records] : $records;
-        foreach($items as &$row) {
+        // NOTE: this code is duplicate @see: AbstractSchema::parseRecordValuesByType
+        $singleRecord = false;
+        if (!is_numeric_keys_array($records)) {
+            $records = [$records];
+            $singleRecord = true;
+        }
+
+        foreach($records as $index => $row) {
             foreach($schemaArray as $column) {
                 if (in_array(strtolower($column['type']), ['timestamp', 'datetime'])) {
                     $columnName = $column['id'];
-                    $row[$columnName] = DateUtils::convertToISOFormat($row[$columnName], 'UTC', get_user_timezone());
+                    $records[$index][$columnName] = DateUtils::convertToISOFormat($row[$columnName], 'UTC', get_user_timezone());
                 }
             }
         }
 
-        return $records;
+        return $singleRecord ? reset($records) : $records;
     }
 
     protected function parseRecordValuesByType($records, $tableName = null)
