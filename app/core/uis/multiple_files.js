@@ -110,7 +110,12 @@ define([
       </div>'),
 
     addItem: function() {
-      this.addModel(new this.relatedCollection.nestedCollection.model({}, {collection: this.relatedCollection.nestedCollection, parse: true}));
+      if (this.showAddButton && this.canEdit) {
+        this.addModel(new this.relatedCollection.nestedCollection.model({}, {
+          collection: this.relatedCollection.nestedCollection,
+          parse: true
+        }));
+      }
     },
 
     removeItem: function(e) {
@@ -238,7 +243,7 @@ define([
 
       var relatedCollection = this.model.get(this.name);
       var junctionStructure = relatedCollection.junctionStructure;
-      var sortable = (junctionStructure.get('sort') !== undefined)? true : false;
+      var sortable = (junctionStructure.get('sort') !== undefined);
 
       return {
         rows: rows,
