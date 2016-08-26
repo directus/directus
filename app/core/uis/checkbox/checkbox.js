@@ -28,17 +28,17 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
 
     serialize: function() {
       var value = this.options.value;
-      var selected = false;
 
       // Get default value if there is one...
       if (value === undefined && this.options.schema.has('default_value')) {
         value = this.options.schema.get('default_value');
-        selected = (value === true);
       }
 
       return {
         name: this.options.name,
-        selected: selected,
+        // Hotfix: We can't tell on the server if this option is a string or an actual number
+        // TODO: Add a new field into `directus_ui` that state the type of the value
+        selected: (Boolean(parseInt(value, 10)) === true),
         comment: this.options.schema.get('comment'),
         readonly: !this.options.canWrite
       };
