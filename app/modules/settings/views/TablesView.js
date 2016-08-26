@@ -251,18 +251,16 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
         var junctionTable = this.model.get('junction_table');
         var junctionKeyRight = this.model.get('junction_key_right');
 
-        if (this.selectedUI === 'multiple_files') {
-          tables = [{id: 'directus_files', selected: true}];
-        } else {
-          tables = app.schemaManager.getTables();
-          tables = tables.map(function (model) {
-            if (!tableRelated) {
-              tableRelated = model.id;
-              this.model.set({related_table: model.id});
-            }
-            return {id: model.get('table_name'), selected: (model.id === this.model.get('related_table'))};
-          }, this);
-        }
+        // List of junction tables
+        tables = app.schemaManager.getTables();
+        tables = tables.map(function (model) {
+          if (!tableRelated) {
+            tableRelated = model.id;
+            this.model.set({related_table: model.id});
+          }
+          return {id: model.get('table_name'), selected: (model.id === this.model.get('related_table'))};
+        }, this);
+
         data.tables = tables;
 
         if(this.selectedDataType === 'MANYTOMANY') {
