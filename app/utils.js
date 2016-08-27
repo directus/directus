@@ -118,11 +118,7 @@ define(function() {
   };
 
   Utils.convertToBoolean = function(value) {
-    if (value !== true || value !== false) {
-      value = value != '0';
-    }
-
-    return value;
+    return value != false;
   };
 
   return Utils;
