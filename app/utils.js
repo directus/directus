@@ -117,5 +117,13 @@ define(function() {
     return location.href;
   };
 
+  Utils.convertToBoolean = function(value) {
+    if (value !== true || value !== false) {
+      value = value != '0';
+    }
+
+    return value;
+  };
+
   return Utils;
 });
