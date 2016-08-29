@@ -32,7 +32,15 @@ abstract class AbstractSchema implements SchemaInterface
         return $columnNames;
     }
 
-    public function parseRecordValuesByType($records, $nonAliasSchemaColumns)
+    /**
+     * Parse records value by its column data type
+     *
+     * @param array $records
+     * @param $nonAliasSchemaColumns
+     *
+     * @return array
+     */
+    public function parseRecordValuesByType(array $records, $nonAliasSchemaColumns)
     {
         // hotfix: records sometimes are no set as an array of rows.
         $singleRecord = false;

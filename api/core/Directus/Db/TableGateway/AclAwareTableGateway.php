@@ -822,8 +822,10 @@ class AclAwareTableGateway extends TableGateway {
             return $records;
         }
 
+        // ==========================================================================
         // hotfix: records sometimes are no set as an array of rows.
         // NOTE: this code is duplicate @see: AbstractSchema::parseRecordValuesByType
+        // ==========================================================================
         $singleRecord = false;
         if (!is_numeric_keys_array($records)) {
             $records = [$records];
@@ -842,7 +844,7 @@ class AclAwareTableGateway extends TableGateway {
         return $singleRecord ? reset($records) : $records;
     }
 
-    protected function parseRecordValuesByType($records, $tableName = null)
+    protected function parseRecordValuesByType(array $records, $tableName = null)
     {
         $tableName = $tableName === null ? $this->table : $tableName;
         $columns = TableSchema::getAllNonAliasTableColumns($tableName);
@@ -852,10 +854,12 @@ class AclAwareTableGateway extends TableGateway {
 
     protected function parseRecord($records, $tableName = null)
     {
-        $tableName = $tableName === null ? $this->table : $tableName;
-        $records = $this->parseRecordValuesByType($records, $tableName);
-        $columns = TableSchema::getAllNonAliasTableColumns($tableName);
-        $records = $this->convertDates($records, $columns, $tableName);
+        if (is_array($records)) {
+            $tableName = $tableName === null ? $this->table : $tableName;
+            $records = $this->parseRecordValuesByType($records, $tableName);
+            $columns = TableSchema::getAllNonAliasTableColumns($tableName);
+            $records = $this->convertDates($records, $columns, $tableName);
+        }
 
         return $records;
     }
