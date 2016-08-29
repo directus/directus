@@ -588,7 +588,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
         'currentPage' => 0,
         'id' => -1,
         'search' => null,
-        STATUS_COLUMN_NAME => null
+        'status' => null
     );
 
     public function applyDefaultEntriesSelectParams(array $params) {
