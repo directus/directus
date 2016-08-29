@@ -237,7 +237,8 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
       'collection': 'global',
       id: 'google_api_key',
       ui: 'textinput',
-      char_length:200
+      char_length:200,
+      comment: __t('maps_ui_global_settings_google_api_key')
     }],
     Input: Input,
     list: function(options) {
