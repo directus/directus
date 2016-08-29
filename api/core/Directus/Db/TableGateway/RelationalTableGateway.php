@@ -736,16 +736,14 @@ class RelationalTableGateway extends AclAwareTableGateway {
         // the foreach loop below.
         $foundRows = count($results);
 
+        // ==========================================================================
         // Perform data casting based on the column types in our schema array
-        foreach ($results as &$row) {
-            $row = $this->parseRecord($row);
-        }
+        // and Convert dates into ISO 8601 Format
+        // ==========================================================================
+        $results = $this->parseRecord($results);
 
         // Eager-load related ManyToOne records
         $results = $this->loadManyToOneRelationships($schemaArray, $results);
-
-        // Convert dates into ISO 8601 Format
-        $results = $this->convertDates($results, $schemaArray);
 
         /**
          * Fetching a set of data
