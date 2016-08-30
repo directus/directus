@@ -9,6 +9,7 @@
 
 define([
     'app',
+    'underscore',
     'backbone',
     'handlebars',
     'sortable',
@@ -17,7 +18,7 @@ define([
     'core/overlays/overlays',
     'core/t',
   ],
-  function(app, Backbone, Handlebars, Sortable, UIComponent, UIView, Overlays, __t) {
+  function(app, _, Backbone, Handlebars, Sortable, UIComponent, UIView, Overlays, __t) {
 
   'use strict';
 
@@ -165,7 +166,7 @@ define([
 
       view.save = function() {
         _.each(view.table.selection(), function(id) {
-          var data = collection.get(id).toJSON();
+          var data = _.clone(collection.get(id).attributes);
           me.relatedCollection.add(data, {parse: true, silent: true, nest: true});
         }, this);
         me.relatedCollection.trigger('add');

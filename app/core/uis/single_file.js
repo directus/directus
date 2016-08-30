@@ -18,6 +18,7 @@
 
 define([
     'app',
+    'underscore',
     'backbone',
     'core/t',
     'core/UIComponent',
@@ -25,7 +26,7 @@ define([
     'core/table/table.view',
     'core/overlays/overlays'
   ],
-  function(app, Backbone, __t, UIComponent, UIView, TableView, Overlays) {
+  function(app, _, Backbone, __t, UIComponent, UIView, TableView, Overlays) {
 
   'use strict';
 
@@ -226,7 +227,7 @@ define([
           return false;
         }
         fileModel.clear({silent: true});
-        fileModel.set(model.toJSON());
+        fileModel.set(_.clone(model.attributes));
         app.router.removeOverlayPage(this);
       };
     },
