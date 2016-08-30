@@ -402,8 +402,20 @@ class AclAwareTableGateway extends TableGateway {
       $comment = $columnData['comment'];
 
       if (array_key_exists('char_length', $columnData)) {
-          $data_type = $data_type.'('.$columnData['char_length'].')';
+          $charLength = $columnData['char_length'];
+          // SET and ENUM data type has its values in the char_length attribute
+          // each value are separated by commas
+          // it must be wrap into quotes
+          if (strpos($charLength, ',') !== false) {
+              $charLength = implode(',', array_map(function($value) {
+                  return "'". trim($value) . "'";
+              }, explode(',', $charLength)));
+          }
+
+          $data_type = $data_type.'('.$charLength.')';
       }
+
+      // TODO: wrap this into an abstract DDL class
       $sql = "ALTER TABLE `$tableName` ADD COLUMN `$column_name` $data_type COMMENT '$comment'";
 
       $this->adapter->query( $sql )->execute();
@@ -810,21 +822,29 @@ class AclAwareTableGateway extends TableGateway {
             return $records;
         }
 
+        // ==========================================================================
         // hotfix: records sometimes are no set as an array of rows.
-        $items = !is_numeric_keys_array($records) ? [&$records] : $records;
-        foreach($items as &$row) {
+        // NOTE: this code is duplicate @see: AbstractSchema::parseRecordValuesByType
+        // ==========================================================================
+        $singleRecord = false;
+        if (!is_numeric_keys_array($records)) {
+            $records = [$records];
+            $singleRecord = true;
+        }
+
+        foreach($records as $index => $row) {
             foreach($schemaArray as $column) {
                 if (in_array(strtolower($column['type']), ['timestamp', 'datetime'])) {
                     $columnName = $column['id'];
-                    $row[$columnName] = DateUtils::convertToISOFormat($row[$columnName], 'UTC', get_user_timezone());
+                    $records[$index][$columnName] = DateUtils::convertToISOFormat($row[$columnName], 'UTC', get_user_timezone());
                 }
             }
         }
 
-        return $records;
+        return $singleRecord ? reset($records) : $records;
     }
 
-    protected function parseRecordValuesByType($records, $tableName = null)
+    protected function parseRecordValuesByType(array $records, $tableName = null)
     {
         $tableName = $tableName === null ? $this->table : $tableName;
         $columns = TableSchema::getAllNonAliasTableColumns($tableName);
@@ -834,10 +854,12 @@ class AclAwareTableGateway extends TableGateway {
 
     protected function parseRecord($records, $tableName = null)
     {
-        $tableName = $tableName === null ? $this->table : $tableName;
-        $records = $this->parseRecordValuesByType($records, $tableName);
-        $columns = TableSchema::getAllNonAliasTableColumns($tableName);
-        $records = $this->convertDates($records, $columns, $tableName);
+        if (is_array($records)) {
+            $tableName = $tableName === null ? $this->table : $tableName;
+            $records = $this->parseRecordValuesByType($records, $tableName);
+            $columns = TableSchema::getAllNonAliasTableColumns($tableName);
+            $records = $this->convertDates($records, $columns, $tableName);
+        }
 
         return $records;
     }

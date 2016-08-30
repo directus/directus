@@ -75,17 +75,19 @@ $(window).ready(function() {
       return false;
     }
   });
+
   var fetching = false;
   $('#retryButton').click(function(e) {
-    $target = $(e.target);
-    if(fetching) {
+    e.preventDefault();
+
+    if (fetching) {
       return;
     }
-    fetching = true;
 
-    $.get('config_test.php', function(res) {
+    fetching = true;
+    $.get('index.php?step=4&check_config', function(res) {
       fetching = false;
-      if(res === 'true') {
+      if (res === 'true') {
         $('#failSpan').html('<span class="label label-success">Yes</span>');
       }
     });

@@ -14,10 +14,10 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
     id: 'translation',
     dataTypes: ['ONETOMANY'],
     variables: [
-      {id: 'languages_table', type: 'String', def: '', ui: 'textinput', char_length: 255, comment: __t('translation_languages_table_comment')},
-      {id: 'languages_name_column', type: 'String', def: '', ui: 'textinput', char_length: 255, comment: __t('translation_languages_name_column_comment')},
+      {id: 'languages_table', type: 'String', default_value: '', ui: 'textinput', char_length: 255, comment: __t('translation_languages_table_comment')},
+      {id: 'languages_name_column', type: 'String', default_value: '', ui: 'textinput', char_length: 255, comment: __t('translation_languages_name_column_comment')},
       {id: 'default_language_id', type: 'Number', ui: 'numeric', comment: __t('translation_default_language_id_comment')},
-      {id: 'left_column_name', type: 'String', def: '', ui: 'textinput', char_length: 255, comment: __t('translation_left_column_name_comment')},
+      {id: 'left_column_name', type: 'String', default_value: '', ui: 'textinput', char_length: 255, comment: __t('translation_left_column_name_comment')},
     ],
     Input: UIView,
 

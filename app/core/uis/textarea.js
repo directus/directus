@@ -32,8 +32,8 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'],function(app, UIComp
     dataTypes: ['TEXT', 'VARCHAR'],
     variables: [
       // The number of text rows available for the input before scrolling
-      {id: 'rows', type: 'Number', def: 12, ui: 'numeric', char_length: 3},
-      {id: 'placeholder_text', def:'', type: 'String', ui: 'textinput', char_length:200},
+      {id: 'rows', type: 'Number', default_value: 12, ui: 'numeric', char_length: 3},
+      {id: 'placeholder_text', default_value:'', type: 'String', ui: 'textinput', char_length:200},
     ],
     Input: Input,
     validate: function(value, options) {

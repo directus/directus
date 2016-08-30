@@ -95,9 +95,9 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
     dataTypes: ['VARCHAR'],
     variables: [
       // Disables editing of the field while still letting users see the value
-      {id: 'readonly', type: 'Boolean', def: false, ui: 'checkbox'},
+      {id: 'readonly', type: 'Boolean', default_value: false, ui: 'checkbox'},
       // Shows a color box representation on the Item Listing page
-      {id: 'show_color_on_list', type: 'Boolean', def: false, ui: 'checkbox'}
+      {id: 'show_color_on_list', type: 'Boolean', default_value: false, ui: 'checkbox'}
     ],
     Input: Input,
     validate: function(value, options) {
