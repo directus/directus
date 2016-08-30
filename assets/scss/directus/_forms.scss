@@ -223,7 +223,11 @@ select,
     background-color: $white;
     pointer-events:none;
 }
-
+.clean-column-name {
+    width: 100%;
+    display: inline-block;
+    margin-top: 10px;
+}
 .table-striped tr td.field-comment-container {
   // padding-right: 20px;
   .field-comment {

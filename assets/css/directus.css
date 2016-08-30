@@ -2564,6 +2564,11 @@ select,
   background-color: #ffffff;
   pointer-events: none; }
 
+.clean-column-name {
+  width: 100%;
+  display: inline-block;
+  margin-top: 10px; }
+
 .table-striped tr td.field-comment-container .field-comment {
   width: 100%; }
 
