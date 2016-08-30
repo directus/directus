@@ -1677,7 +1677,8 @@ img.grayscale {
   text-overflow: ellipsis; }
 
 span.gc-cs-link {
-  color: #666666 !important; }
+  color: #666666 !important;
+  text-decoration: none; }
 
 .main-container {
   -webkit-transition: all 400ms ease-in-out;
@@ -3511,7 +3512,7 @@ input[type="checkbox"].custom-check + label tbody.remove-hover-state .sort span:
     .cards .card.inactive {
       opacity: 0.4; }
     .cards .card:hover .info .featured .primary-info {
-      color: #4ca6de; }
+      color: #1a1a1a; }
     .cards .card .header-image {
       overflow: hidden;
       height: 200px;
