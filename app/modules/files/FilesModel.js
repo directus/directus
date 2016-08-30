@@ -1,5 +1,6 @@
 define([
   'app',
+  'underscore',
   'backbone',
   'core/entries/EntriesModel',
   'core/notification',
@@ -7,7 +8,7 @@ define([
   'helpers/file'
 ],
 
-function(app, Backbone, EntriesModel, Notification, __t, File) {
+function(app, _, Backbone, EntriesModel, Notification, __t, File) {
   var FilesModel = EntriesModel.extend({
 
     initialize: function() {
@@ -32,6 +33,8 @@ function(app, Backbone, EntriesModel, Notification, __t, File) {
         atts = _.clone(this.attributes);
       }
 
+      // TODO: avoid omitting url and html at some point
+      // rewrite this so we omit these values when we really want it to be omitted.
       return _.omit(atts, 'thumbnailData', 'url', 'file_url', 'file_thumb_url', 'thumbnail_url', 'html');
     },
 
