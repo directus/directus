@@ -70,7 +70,7 @@ define(function(require, exports, module) {
             "hidden_list":false,
             "hidden_input":true,
             "required":false,
-            "ui":"directus_file"
+            "ui":"textinput"
           },
           {
             "id":"title",
