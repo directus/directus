@@ -362,7 +362,7 @@ define([
     id: 'single_file',
     dataTypes: ['INT'],
     variables: [
-      {id: 'allowed_filetypes', type: 'String', def:'', ui: 'textinput', char_length:200}
+      {id: 'allowed_filetypes', type: 'String', default_value:'', ui: 'textinput', char_length:200}
     ],
     Input: Input,
     validate: function(value, options) {

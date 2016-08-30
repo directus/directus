@@ -416,11 +416,16 @@ class TableSchema {
             }
 
             $anAlias = static::isColumnTypeAnAlias($row['type']);
-            if ($row['is_nullable'] === 'NO' && !isset($row['default_value']) && !$anAlias) {
+            $hasDefaultValue = isset($row['default_value']);
+            if ($row['is_nullable'] === 'NO' && !$hasDefaultValue && !$anAlias) {
                 $row["required"] = true;
             }
 
             // Basic type casting. Should eventually be done with the schema
+            if ($hasDefaultValue) {
+                $row['default_value'] = SchemaManager::parseType($row['default_value'], $row['type']);
+            }
+
             $row["required"] = (bool) $row['required'];
             $row["system"] = (bool) static::isSystemColumn($row['id']);
             $row["hidden_list"] = (bool) $row["hidden_list"];
@@ -634,12 +639,17 @@ class TableSchema {
             $row['is_nullable'] = "YES";
         }
 
+        $hasDefaultValue = isset($row['default_value']);
         $anAlias = static::isColumnTypeAnAlias($row['type']);
-        if ($row['is_nullable'] === 'NO' && !isset($row['default_value']) && !$anAlias) {
+        if ($row['is_nullable'] === 'NO' && !$hasDefaultValue && !$anAlias) {
             $row["required"] = true;
         }
 
         // Basic type casting. Should eventually be done with the schema
+        if ($hasDefaultValue) {
+            $row['default_value'] = SchemaManager::parseType($row['default_value'], $row['type']);
+        }
+
         $row["required"] = (bool) $row['required'];
         $row["system"] = (bool) static::isSystemColumn($row['id']);
         $row["hidden_list"] = (bool) $row["hidden_list"];

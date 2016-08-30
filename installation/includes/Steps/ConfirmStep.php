@@ -22,6 +22,13 @@ class ConfirmStep extends AbstractStep
 
     public function preRun(&$state)
     {
+        // Request for checking if the api is writeable
+        // returns a true or false string
+        if (isset($_GET['check_config'])) {
+            echo is_writeable(BASE_PATH . '/api') ? 'true' : 'false';
+            exit;
+        }
+
         $steps = $state['steps'];
         foreach($steps as $step) {
             if ($step->getName() != 'database') {

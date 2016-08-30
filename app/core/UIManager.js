@@ -324,8 +324,8 @@ define(function(require, exports, module) {
       if (!settings.attributeTypes) settings.attributeTypes = {};
 
       _.each(UI.variables, function(variable) {
-        if (typeof variable.def !== 'undefined') {
-          settings.defaultAttributes[variable.id] = variable.def;
+        if (typeof variable.default_value !== 'undefined') {
+          settings.defaultAttributes[variable.id] = variable.default_value;
         }
         settings.attributeTypes[variable.id] = variable.type;
       });

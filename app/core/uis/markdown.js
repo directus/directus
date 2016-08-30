@@ -79,11 +79,11 @@ define(['app', 'core/UIComponent', 'core/UIView', 'marked'],function(app, UIComp
     id: 'markdown',
     dataTypes: ['TEXT', 'VARCHAR'],
     variables: [
-      {id: 'rows', type: 'Number', def: 14, ui: 'numeric', char_length: 3},
-      {id: 'github_flavored_markdown', type: 'Boolean', def: false, ui: 'checkbox'},
-      {id: 'tables', type: 'Boolean', def: false, ui: 'checkbox'},
-      {id: 'breaks', type: 'Boolean', def: false, ui: 'checkbox'},
-      {id: 'sanitize', type: 'Boolean', def: false, ui: 'checkbox'}
+      {id: 'rows', type: 'Number', default_value: 14, ui: 'numeric', char_length: 3},
+      {id: 'github_flavored_markdown', type: 'Boolean', default_value: false, ui: 'checkbox'},
+      {id: 'tables', type: 'Boolean', default_value: false, ui: 'checkbox'},
+      {id: 'breaks', type: 'Boolean', default_value: false, ui: 'checkbox'},
+      {id: 'sanitize', type: 'Boolean', default_value: false, ui: 'checkbox'}
     ],
     Input: Input,
     validate: function(value, options) {

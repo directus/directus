@@ -117,5 +117,9 @@ define(function() {
     return location.href;
   };
 
+  Utils.convertToBoolean = function(value) {
+    return value != false;
+  };
+
   return Utils;
 });

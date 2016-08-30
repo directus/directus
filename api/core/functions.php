@@ -805,7 +805,7 @@ if (!function_exists('get_gravatar')) {
      *
      * @source https://gravatar.com/site/implement/images/php/
      */
-    function get_gravatar($email, $s = 80, $d = 'identicon', $r = 'g', $img = false, $atts = array() )
+    function get_gravatar($email, $s = 200, $d = 'identicon', $r = 'g', $img = false, $atts = array() )
     {
         $url = '//www.gravatar.com/avatar/';
         $url .= md5(strtolower(trim($email)));
