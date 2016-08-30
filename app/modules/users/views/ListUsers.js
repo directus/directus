@@ -51,7 +51,7 @@ function(app, Backbone, Handlebars, Directus, BasePageView, Widgets, __t, moment
           '<ul class="extra">' +
             '<li title="{{location}}">{{#if location}}{{location}}{{else}}<span class="secondary-info">--</span>{{/if}}<span class="icon icon-home"></span></li>' +
             '<li title="{{phone}}">{{#if phone}}{{phone}}{{else}}<span class="secondary-info">--</span>{{/if}}<span class="icon icon-phone"></span></li>' +
-            '<li title="{{email}}">{{#if email}}<a href="mailto:{{email}}">{{email}}</a>{{else}}<span class="secondary-info">--</span>{{/if}}<span class="icon icon-mail"></span></li>' +
+            '<li title="{{email}}">{{#if email}}<a href="mailto:{{email}}" target="_blank">{{email}}</a>{{else}}<span class="secondary-info">--</span>{{/if}}<span class="icon icon-mail"></span></li>' +
           '</ul>' +
         '</div>' +
       '</li>' +
