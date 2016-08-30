@@ -24,7 +24,7 @@ before_script:
 
 script:
   - npm test
-  - vendor/bin/phpunit --coverage-text --coverage-clover=coverage.clover
+  - vendor/bin/phpunit
 
 after_script:
   - wget https://scrutinizer-ci.com/ocular.phar

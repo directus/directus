@@ -128,12 +128,12 @@ interface SchemaInterface
     /**
      * Parse record values by the schema type
      *
-     * @param array $records
+     * @param $record
      * @param $nonAliasSchemaColumns
      *
      * @return array
      */
-    public function parseRecordValuesByType(array $records, $nonAliasSchemaColumns);
+    public function parseRecordValuesByType($record, $nonAliasSchemaColumns);
 
     /**
      * Cast string values to its database type.

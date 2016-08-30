@@ -195,14 +195,12 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
         data.data_types.push(item);
       });
 
-      // Check if the data type needs length
-      // ENUM and SET doesn't actually needs a LENGTH,
-      // but the "length" value is a list of string separate by comma
-      if (['VARCHAR', 'CHAR', 'ENUM', 'SET'].indexOf(this.selectedDataType) > -1) {
+      //Check if we need length field
+      if(['VARCHAR', 'CHAR', 'ENUM'].indexOf(this.selectedDataType) > -1)
+      {
         data.SHOW_CHAR_LENGTH = true;
         if (!this.model.get('char_length')) {
-          var charLength = ['ENUM', 'SET'].indexOf(this.selectedDataType) > -1 ? '' : 100;
-          this.model.set({char_length: charLength});
+          this.model.set({char_length: 100});
         }
         data.char_length = this.model.get('char_length');
       } else {
@@ -251,16 +249,18 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
         var junctionTable = this.model.get('junction_table');
         var junctionKeyRight = this.model.get('junction_key_right');
 
-        // List of junction tables
-        tables = app.schemaManager.getTables();
-        tables = tables.map(function (model) {
-          if (!tableRelated) {
-            tableRelated = model.id;
-            this.model.set({related_table: model.id});
-          }
-          return {id: model.get('table_name'), selected: (model.id === this.model.get('related_table'))};
-        }, this);
-
+        if (this.selectedUI === 'multiple_files') {
+          tables = [{id: 'directus_files', selected: true}];
+        } else {
+          tables = app.schemaManager.getTables();
+          tables = tables.map(function (model) {
+            if (!tableRelated) {
+              tableRelated = model.id;
+              this.model.set({related_table: model.id});
+            }
+            return {id: model.get('table_name'), selected: (model.id === this.model.get('related_table'))};
+          }, this);
+        }
         data.tables = tables;
 
         if(this.selectedDataType === 'MANYTOMANY') {
@@ -435,7 +435,7 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
       // If Single_file UI, force related table to be directus_files
       // and relationship type to manytoone
       data['related_table'] = null;
-      data['data_type'] = null;
+      data['datatype'] = null;
       data['relationship_type'] = null;
       data['junction_key_right'] = null;
       data['junction_key_left'] = null;
@@ -452,7 +452,7 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
       switch(value) {
         case 'single_file':
           data['related_table'] = 'directus_files';
-          data['data_type'] = 'INT';
+          data['datatype'] = 'INT';
           data['relationship_type'] = 'MANYTOONE';
           data['junction_key_right'] = id;
           break;
@@ -460,7 +460,7 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
           data['related_table'] = 'directus_files';
         case 'many_to_many':
           data['junction_key_right'] = id;
-          data['data_type'] = 'ALIAS';
+          data['datatype'] = 'MANYTOMANY';
           data['relationship_type'] = 'MANYTOMANY';
           break;
         case 'many_to_one':
@@ -469,7 +469,6 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
           data['junction_key_right'] = id;
           break;
         case 'one_to_many':
-          data['data_type'] = 'ALIAS';
           data['relationship_type'] = 'ONETOMANY';
           data['junction_key_right'] = id;
           break;

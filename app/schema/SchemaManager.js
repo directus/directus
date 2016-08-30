@@ -163,7 +163,6 @@ define(function(require, exports, module) {
         allow_alter:1,
         allow_view:2,
         table_name: tableName,
-        nav_listed: 1,
         addTable: true
       });
 

@@ -1,7 +1,5 @@
 body {
 	padding: 20px !important;
-    -webkit-font-smoothing: antialiased !important;
-    text-rendering: optimizeLegibility !important;
 }
 blockquote {
 	color: #bbbbbb;

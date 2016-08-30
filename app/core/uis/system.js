@@ -7,7 +7,7 @@
 //  http://www.getdirectus.com
 /*jshint multistr: true */
 
-define(['app', 'underscore', 'core/UIComponent', 'core/UIView'], function(app, _, UIComponent, UIView) {
+define(['app', 'core/UIComponent', 'core/UIView'], function(app, UIComponent, UIView) {
 
   'use strict';
 
@@ -41,25 +41,25 @@ define(['app', 'underscore', 'core/UIComponent', 'core/UIView'], function(app, _
       var data = {};
 
       var mapping = app.statusMapping.mapping;
-      var value = Number(this.options.value);
+      var value = this.options.value;
 
       data.mapping = [];
 
-      _.each(mapping, function(status, key) {
-        // Convert status id into number
-        key = Number(key);
-
-        // If new model, skip delete option
-        if (this.model.isNew() && key === app.statusMapping.deleted_num) {
-          return false;
+      for(var key in mapping) {
+        //If new model, skip delete option
+        if(this.model.isNew() && key === app.statusMapping.deleted_num) {
+          continue;
         }
 
-        var entry = status;
+        var entry = mapping[key];
         entry.id = key;
-        entry.active = key === value;
-
+        if(key === value) {
+          entry.active = true;
+        } else {
+          entry.active = false;
+        }
         data.mapping.push(entry);
-      }, this);
+      }
 
       data.mapping.sort(function(a, b) {
         if(a.sort < b.sort) {
