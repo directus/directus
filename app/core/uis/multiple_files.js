@@ -21,23 +21,7 @@ define([
 
   'use strict';
 
-  var Input = UIView.extend({
-    events: {
-      'click [data-action=add]': 'addItem',
-      'click span[data-action=insert]': 'insertItem',
-      'click .remove-slideshow-item': 'removeItem',
-      'click .media-slideshow-item > img': function(e) {
-        if (!this.canEdit) {
-          return;
-        }
-        var cid = $(e.target).attr('data-file-cid');
-        var model = this.relatedCollection.get(cid, true);
-        this.editModel(model);
-      }
-    },
-
-    template: Handlebars.compile(
-      '<style type="text/css"> \
+  var template = '<style type="text/css"> \
         .ui-file-container:after { \
           clear: both; \
           content: ""; \
@@ -87,6 +71,7 @@ define([
           text-align: center; \
           display: inline-block; \
           line-height: 18px; \
+          padding: 0 30px 0 30px; \
         } \
         div.single-image-thumbnail.empty span i.material-icons { \
           display: block; \
@@ -101,13 +86,29 @@ define([
           cursor: pointer; \
         } \
       </style> \
-      <div class="ui-file-container">{{#rows}}<span class="media-slideshow-item show-circle margin-right-small margin-bottom-small"><img data-file-cid="{{cid}}" data-file-id="{{id}}" src={{url}}>{{#if ../showRemoveButton}}<div class="remove-slideshow-item large-circle white-circle"><span class="icon icon-cross"></span></div>{{/if}}</span>{{/rows}}<div class="swap-method single-image-thumbnail empty ui-thumbnail-dropzone" data-action=add><span><i class="material-icons">collections</i>{{t "drag_and_drop"}}<br>{{t "file_here"}}</span></div></div> \
-      <div class="related-table"></div> \
+      <div class="ui-file-container">{{#rows}}<span class="media-slideshow-item show-circle margin-right-small margin-bottom-small"><img data-file-cid="{{cid}}" data-file-id="{{id}}" src={{url}}>{{#if ../showRemoveButton}}<div class="remove-slideshow-item large-circle white-circle"><span class="icon icon-cross"></span></div>{{/if}}</span>{{/rows}}<div class="swap-method single-image-thumbnail empty ui-thumbnail-dropzone" data-action=add><span><i class="material-icons">collections</i>{{t "directus_files_drop_or_choose_file"}}</span></div></div> \
+      <!-- <div class="related-table"></div> --> \
       <div class="multiple-image-actions"> \
-        {{#if showAddButton}}<span data-action="add">{{t "file_upload"}}</span>{{/if}} \
-        {{#if showAddButton}}{{#if showChooseButton}} {{t "or"}}  {{/if}}{{/if}} \
-        {{#if showChooseButton}}<span data-action="insert">{{t "directus_files"}}</span>{{/if}} \
-      </div>'),
+        {{#if showAddButton}}<button class="btn btn-primary btn-small margin-right-small" data-action="add" type="button">{{t "file_upload"}}</button>{{/if}} \
+        {{#if showChooseButton}}<button class="btn btn-primary btn-small" data-action="choose" type="button">{{t "directus_files"}}</button>{{/if}} \
+      </div>';
+
+  var Input = UIView.extend({
+    templateSource: template,
+
+    events: {
+      'click [data-action=add]': 'addItem',
+      'click [data-action=choose]': 'chooseItem',
+      'click .remove-slideshow-item': 'removeItem',
+      'click .media-slideshow-item > img': function(e) {
+        if (!this.canEdit) {
+          return;
+        }
+        var cid = $(e.target).attr('data-file-cid');
+        var model = this.relatedCollection.get(cid, true);
+        this.editModel(model);
+      }
+    },
 
     addItem: function() {
       if (this.showAddButton && this.canEdit) {
@@ -155,7 +156,7 @@ define([
       };
     },
 
-    insertItem: function() {
+    chooseItem: function() {
       var collection = app.files;
       var view = new Overlays.ListSelect({collection: collection});
       var me = this;

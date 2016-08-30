@@ -60,6 +60,7 @@ define([
                     text-align: center; \
                     display: inline-block; \
                     line-height: 18px; \
+                    padding: 0 30px 0 30px; \
                   } \
                   div.single-image-thumbnail.empty span i.material-icons { \
                     display: block; \
@@ -113,14 +114,14 @@ define([
                     margin-top: 8px; \
                     margin-right: 10px; \
                   } \
-                  .swap-method-btn { \
+                  .choose-method-btn { \
                     display:block; \
                     clear: both; \
                     padding-top: 5px; \
                     cursor: pointer; \
                   } \
                   .single-image-actions { \
-                    margin: 10px 0 0 0; \
+                    margin: 20px 0 0 0; \
                     display: block; \
                     font-size: 12px; \
                   } \
@@ -145,16 +146,15 @@ define([
                       <button class="btn btn-primary" data-action="remove-single-file" type="button">{{t "remove_file"}}</button> \
                     </div> \
                     {{else}} \
-                    <div class="swap-method single-image-thumbnail empty ui-thumbnail-dropzone"><span><i class="material-icons">collections</i>Drag and drop<br>file here</span></div> \
-                    <input id="urlInput" type="text" class="hide swap-method medium" /><button class="hide swap-method btn btn-small btn-primary margin-left-small" id="retriveUrlBtn" type="button">Retrieve</button> \
-                    <!--<div class="swap-method swap-method-btn secondary-info">Or use a URL – for embedded videos like YouTube</div><div class="hide swap-method swap-method-btn secondary-info">Or Use a File</div>--> \
+                    <div class="choose-method single-image-thumbnail empty ui-thumbnail-dropzone"><span><i class="material-icons">collections</i>{{t "directus_files_drop_or_choose_file"}}</span></div> \
+                    <input id="urlInput" type="text" class="hide choose-method medium" /><button class="hide choose-method btn btn-small btn-primary margin-left-small" id="retriveUrlBtn" type="button">Retrieve</button> \
                     {{/if}} \
                     <input style="display:none" id="fileAddInput" type="file" class="large" /> \
                   </div> \
                   <div class="single-image-actions"> \
-                    <span data-action="computer">{{t "file_upload"}}</span>, \
-                    <span data-action="url">{{t "url_import"}}</span>, or \
-                    <span data-action="swap">{{t "directus_files"}}</span> \
+                    <button class="btn btn-primary btn-small margin-right-small" data-action="computer" type="button">{{t "file_upload"}}</button> \
+                    <button class="btn btn-primary btn-small margin-right-small" data-action="url" type="button">{{t "url_import"}}</button> \
+                    <button class="btn btn-primary btn-small" data-action="choose" type="button">{{t "directus_files"}}</button> \
                   </div>';
 
   var Input = UIView.extend({
@@ -162,10 +162,10 @@ define([
 
     events: {
       'click button[data-action="remove-single-file"]': 'removeFile',
-      'click span[data-action="swap"],.ui-thumbnail-dropzone': 'swap',
+      'click button[data-action="choose"]': 'choose',
       'click .has-file': 'edit',
-      'click .swap-method-btn': function() {
-        this.$el.find('.swap-method').toggleClass('hide');
+      'click .choose-method-btn': function() {
+        this.$el.find('.choose-method').toggleClass('hide');
 
         if(this.$el.find('#urlInput').is(':visible')) {
           this.$el.find('#urlInput').focus();
@@ -182,10 +182,10 @@ define([
         var model = this.fileModel;
         model.setFile(file);
       },
-      'click span[data-action="computer"]': function(e) {
+      'click button[data-action="computer"],.ui-thumbnail-dropzone': function(e) {
         this.$el.find('#fileAddInput').click();
       },
-      'click span[data-action="url"]': function(e) {
+      'click button[data-action="url"]': function(e) {
         var that = this;
         app.router.openModal({type: 'prompt', text: __t('enter_the_url_to_a_file'), callback: function(url) {
           that.getLinkData(url);
@@ -207,7 +207,7 @@ define([
       this.fileModel.set({id: null});
     },
 
-    swap: function() {
+    choose: function() {
       var collection = app.files;
       var model;
       var fileModel = this.fileModel;
