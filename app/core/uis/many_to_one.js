@@ -113,14 +113,14 @@ define(['app', 'backbone', 'handlebars', 'core/UIComponent', 'core/UIView', 'cor
     id: 'many_to_one',
     dataTypes: ['INT'],
     variables: [
-      {id: 'readonly', type: 'Boolean', default_value: false, ui: 'checkbox'},
-      {id: 'visible_column', type: 'String', default_value: '', ui: 'textinput', char_length: 64, required: true, comment: __t('m2o_visible_column_comment')},
-      {id: 'visible_column_template', type: 'String', default_value:'', ui: 'textinput', char_length: 64, required: true, comment: __t('m2o_visible_column_template_comment')},
-      {id: 'visible_status_ids', type: 'String', ui: 'textinput', char_length: 64, required: true, default_value: '1', comment: __t('m2o_visible_status_ids_comment')},
-      {id: 'placeholder_text', type: 'String', default_value: '', ui: 'textinput', char_length: 255, required: false, comment: __t('m2o_placeholder_text_comment')},
-      {id: 'allow_null', type: 'Boolean', default_value: false, ui: 'checkbox'},
-      {id: 'filter_type', type: 'String', default_value: 'dropdown', required: true, ui: 'select', options: {options: {'dropdown':__t('dropdown'),'textinput':__t('text_input')} }},
-      {id: 'filter_column', type: 'String', default_value: '', ui: 'textinput', char_length: 255, comment: __t('m2o_filter_column_comment')}
+      {id: 'readonly', type: 'Boolean', def: false, ui: 'checkbox'},
+      {id: 'visible_column', type: 'String', def: '', ui: 'textinput', char_length: 64, required: true, comment: __t('m2o_visible_column_comment')},
+      {id: 'visible_column_template', type: 'String', def:'', ui: 'textinput', char_length: 64, required: true, comment: __t('m2o_visible_column_template_comment')},
+      {id: 'visible_status_ids', type: 'String', ui: 'textinput', char_length: 64, required: true, def: '1', comment: __t('m2o_visible_status_ids_comment')},
+      {id: 'placeholder_text', type: 'String', def: '', ui: 'textinput', char_length: 255, required: false, comment: __t('m2o_placeholder_text_comment')},
+      {id: 'allow_null', type: 'Boolean', def: false, ui: 'checkbox'},
+      {id: 'filter_type', type: 'String', def: 'dropdown', required: true, ui: 'select', options: {options: {'dropdown':__t('dropdown'),'textinput':__t('text_input')} }},
+      {id: 'filter_column', type: 'String', def: '', ui: 'textinput', char_length: 255, comment: __t('m2o_filter_column_comment')}
     ],
     Input: Input,
     forceUIValidation: true,

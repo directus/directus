@@ -588,7 +588,7 @@ class RelationalTableGateway extends AclAwareTableGateway {
         'currentPage' => 0,
         'id' => -1,
         'search' => null,
-        'status' => null
+        STATUS_COLUMN_NAME => null
     );
 
     public function applyDefaultEntriesSelectParams(array $params) {
@@ -627,10 +627,10 @@ class RelationalTableGateway extends AclAwareTableGateway {
 
         // Note: be sure to explicitly check for null, because the value may be
         // '0' or 0, which is meaningful.
-        if (null !== $params['status'] && $hasActiveColumn) {
-            $haystack = is_array($params['status'])
-                ? $params['status']
-                : explode(',', $params['status']);
+        if (null !== $params[STATUS_COLUMN_NAME] && $hasActiveColumn) {
+            $haystack = is_array($params[STATUS_COLUMN_NAME])
+                ? $params[STATUS_COLUMN_NAME]
+                : explode(",", $params[STATUS_COLUMN_NAME]);
             $select->where->in(STATUS_COLUMN_NAME, $haystack);
         }
 
@@ -736,14 +736,16 @@ class RelationalTableGateway extends AclAwareTableGateway {
         // the foreach loop below.
         $foundRows = count($results);
 
-        // ==========================================================================
         // Perform data casting based on the column types in our schema array
-        // and Convert dates into ISO 8601 Format
-        // ==========================================================================
-        $results = $this->parseRecord($results);
+        foreach ($results as &$row) {
+            $row = $this->parseRecord($row);
+        }
 
         // Eager-load related ManyToOne records
         $results = $this->loadManyToOneRelationships($schemaArray, $results);
+
+        // Convert dates into ISO 8601 Format
+        $results = $this->convertDates($results, $schemaArray);
 
         /**
          * Fetching a set of data

@@ -1676,9 +1676,6 @@ img.grayscale {
   overflow: hidden;
   text-overflow: ellipsis; }
 
-span.gc-cs-link {
-  color: #666666 !important; }
-
 .main-container {
   -webkit-transition: all 400ms ease-in-out;
   -moz-transition: all 400ms ease-in-out;

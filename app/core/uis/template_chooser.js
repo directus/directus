@@ -93,8 +93,8 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'],function(app, UIComp
     id: 'template_chooser',
     dataTypes: ['VARCHAR', 'INT', 'TINYINT'],
     variables: [
-      {id: 'options', type: 'String', default_value: '', ui: 'textarea', options:{'rows': 25}  },
-      {id: 'allow_null', type: 'Boolean', default_value: false, ui: 'checkbox'}
+      {id: 'options', type: 'String', def: '', ui: 'textarea', options:{'rows': 25}  },
+      {id: 'allow_null', type: 'Boolean', def: false, ui: 'checkbox'}
     ],
     Input: Input,
     list: function(options) {

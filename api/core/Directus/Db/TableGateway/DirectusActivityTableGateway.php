@@ -56,7 +56,7 @@ class DirectusActivityTableGateway extends RelationalTableGateway {
           //'currentPage' => 0,
           'id' => -1,
           'search' => null,
-          'status' => null
+          STATUS_COLUMN_NAME => null
         );
     }
 

@@ -23,7 +23,7 @@ define([
 
   var Input = UIView.extend({
     events: {
-      'click [data-action=add]': 'addItem',
+      'click span[data-action=add]': 'addItem',
       'click span[data-action=insert]': 'insertItem',
       'click .remove-slideshow-item': 'removeItem',
       'click .media-slideshow-item > img': function(e) {
@@ -101,7 +101,7 @@ define([
           cursor: pointer; \
         } \
       </style> \
-      <div class="ui-file-container">{{#rows}}<span class="media-slideshow-item show-circle margin-right-small margin-bottom-small"><img data-file-cid="{{cid}}" data-file-id="{{id}}" src={{url}}>{{#if ../showRemoveButton}}<div class="remove-slideshow-item large-circle white-circle"><span class="icon icon-cross"></span></div>{{/if}}</span>{{/rows}}<div class="swap-method single-image-thumbnail empty ui-thumbnail-dropzone" data-action=add><span><i class="material-icons">collections</i>{{t "drag_and_drop"}}<br>{{t "file_here"}}</span></div></div> \
+      <div class="ui-file-container">{{#rows}}<span class="media-slideshow-item show-circle margin-right-small margin-bottom-small"><img data-file-cid="{{cid}}" data-file-id="{{id}}" src={{url}}>{{#if ../showRemoveButton}}<div class="remove-slideshow-item large-circle white-circle"><span class="icon icon-cross"></span></div>{{/if}}</span>{{/rows}}<div class="swap-method single-image-thumbnail empty ui-thumbnail-dropzone"><span><i class="material-icons">collections</i>{{t "drag_and_drop"}}<br>{{t "file_here"}}</span></div></div> \
       <div class="related-table"></div> \
       <div class="multiple-image-actions"> \
         {{#if showAddButton}}<span data-action="add">{{t "file_upload"}}</span>{{/if}} \
@@ -110,12 +110,7 @@ define([
       </div>'),
 
     addItem: function() {
-      if (this.showAddButton && this.canEdit) {
-        this.addModel(new this.relatedCollection.nestedCollection.model({}, {
-          collection: this.relatedCollection.nestedCollection,
-          parse: true
-        }));
-      }
+      this.addModel(new this.relatedCollection.nestedCollection.model({}, {collection: this.relatedCollection.nestedCollection, parse: true}));
     },
 
     removeItem: function(e) {
@@ -243,7 +238,7 @@ define([
 
       var relatedCollection = this.model.get(this.name);
       var junctionStructure = relatedCollection.junctionStructure;
-      var sortable = (junctionStructure.get('sort') !== undefined);
+      var sortable = (junctionStructure.get('sort') !== undefined)? true : false;
 
       return {
         rows: rows,
@@ -337,9 +332,9 @@ define([
       }
 
       this.canEdit = !(options.inModal || false);
-      this.showRemoveButton = this.columnSchema.options.get('remove_button') === true;
-      this.showChooseButton = this.columnSchema.options.get('choose_button') === true;
-      this.showAddButton = this.columnSchema.options.get('add_button') === true;
+      this.showRemoveButton = this.columnSchema.options.get('remove_button') === "1";
+      this.showChooseButton = this.columnSchema.options.get('choose_button') === "1";
+      this.showAddButton = this.columnSchema.options.get('add_button') === "1";
       this.sortable = sortable;
 
       this.relatedCollection = relatedCollection;
@@ -357,11 +352,11 @@ define([
     dataTypes: ['MANYTOMANY'],
     variables: [
       // Toggles an "Add" button for adding new files directly into the UI
-      {id: 'add_button', type: 'Boolean', default_value: true, ui: 'checkbox'},
+      {id: 'add_button', type: 'Boolean', def: true, ui: 'checkbox'},
       // Toggles a "Choose" button that opens a modal with all existing Directus files to choose from
-      {id: 'choose_button', type: 'Boolean', default_value: true, ui: 'checkbox'},
+      {id: 'choose_button', type: 'Boolean', def: true, ui: 'checkbox'},
       // Toggles "Remove" buttons for each file that let's you delete the file
-      {id: 'remove_button', type: 'Boolean', default_value: true, ui: 'checkbox'},
+      {id: 'remove_button', type: 'Boolean', def: true, ui: 'checkbox'},
     ],
     Input: Input,
     validate: function(value, options) {

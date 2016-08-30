@@ -67,7 +67,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
     id: 'instructions',
     dataTypes: ['VARCHAR', 'TEXT'],
     variables: [
-      {id: 'instructions', type: 'String', default_value: '', ui: 'wysiwyg', options: {'h1':true,'ul':true,'ol':true }}
+      {id: 'instructions', type: 'String', def: '', ui: 'wysiwyg', options: {'h1':true,'ul':true,'ol':true }}
     ],
     Input: Input,
     list: function(options) {

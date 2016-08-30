@@ -73,7 +73,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
     dataTypes: ['TEXT','VARCHAR','CHAR'],
     variables: [
       // When on, all entered tags are converted to lowercase
-      {id: 'force_lowercase', type: 'Boolean', default_value: true, ui: 'checkbox'}
+      {id: 'force_lowercase', type: 'Boolean', def: true, ui: 'checkbox'}
     ],
     Input: Input,
     validate: function(value, options) {

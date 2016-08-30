@@ -96,8 +96,8 @@ define(['app', 'moment', 'core/UIComponent', 'core/UIView', 'core/t'], function(
     id: 'time',
     dataTypes: ['TIME'],
     variables: [
-      {id: 'readonly', type: 'Boolean', default_value: false, ui: 'checkbox'},
-      {id: 'include_seconds', type: 'Boolean', default_value: false, ui: 'checkbox'}
+      {id: 'readonly', type: 'Boolean', def: false, ui: 'checkbox'},
+      {id: 'include_seconds', type: 'Boolean', def: false, ui: 'checkbox'}
     ],
     Input: Input,
     validate: function(value, options) {

@@ -222,9 +222,9 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
     currentPlainPassword: '',
     variables: [
       // Toggles the second input ("Confirm Password"). On by default.
-      {id: 'require_confirmation', default_value: true, type: 'Boolean', ui: 'checkbox'},
+      {id: 'require_confirmation', def: true, type: 'Boolean', ui: 'checkbox'},
       // The name of the column to be used as a salt in the password hash
-      {id: 'salt_field', type: 'String', default_value: 'salt', ui: 'textinput'}
+      {id: 'salt_field', type: 'String', def: 'salt', ui: 'textinput'}
     ],
     Input: Input,
     validate: function(value, options) {

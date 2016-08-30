@@ -34,15 +34,5 @@ define(['utils'], function(Utils) {
 
       expect(Utils.addParam(url, 'query', '%QUERY', true, false)).toBe(url+'?query=%QUERY');
     });
-
-    it('should return boolean', function() {
-      expect(Utils.convertToBoolean(true)).toBe(true);
-      expect(Utils.convertToBoolean(false)).toBe(false);
-      expect(Utils.convertToBoolean(1)).toBe(true);
-      expect(Utils.convertToBoolean(0)).toBe(false);
-      expect(Utils.convertToBoolean('1')).toBe(true);
-      expect(Utils.convertToBoolean('0')).toBe(false);
-      expect(Utils.convertToBoolean('text')).toBe(true);
-    });
   });
 });

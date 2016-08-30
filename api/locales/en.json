@@ -14,7 +14,6 @@
     "users": "Users",
     "group": "Group",
     "user": "User",
-    "a_missing_or_removed_user": "A missing or removed user",
     "please_fill_in_a_valid_name": "Please Fill In a Valid Name",
     "visit_project": "Visit Project",
     "there_are_no_tables_you_have_permission_to_view": "There are no tables you have permission to view",
@@ -37,7 +36,6 @@
     "global_settings_cms_thumbnail_url_comment": "Add a image URL for the main logo (170x100)",
     "global_settings_cms_user_auto_sign_out_comment": "Minutes before users are automatically logged out",
     "global_settings_rows_per_page_comment": "The number of items shown per listing page",
-    "maps_ui_global_settings_google_api_key": "Google API key for Maps UI",
     "settings_files_file_naming_comment": "The file-system naming convention for uploads",
     "settings_files_file_naming_file_name": "File Name",
     "settings_files_file_naming_file_id": "File ID",
@@ -71,7 +69,6 @@
     "left_column": "Left Column",
     "right_column": "Right Column",
     "relationship_settings": "Relationship Settings",
-    "unregistered_tables": "Unregistered Tables",
     "allow_null": "Allow Null: %{is_nullable}",
     "system_column_details_default": "This is a system field",
     "system_column_details_id": "System Field: (Required) Unique Primary-Key for each item",
@@ -127,7 +124,6 @@
     "permissions_can_delete_any_items": "Can Delete Any Items",
     "permissions_can_delete_their_items": "Can Delete Their Items: %{user_create_column}",
     "permissions_can_not_delete_items": "Can Not Delete Items",
-    "show_directus_tables": "Show Directus Tables",
     "new_user": "New User",
     "editing_item": "Editing Item",
     "creating_new_item": "Creating New Item",
@@ -212,12 +208,7 @@
     "m2o_placeholder_text_comment": "Enter Placeholder Text",
     "m2o_filter_column_comment": "Enter Column thats value is used for filter search",
 
-    "m2o_typeahead_placeholder": "Search for an item...",
-    "m2o_typeahead_clear": "Clear this related item",
-    "m2o_typeahead_visible_column_comment": "A CSV of columns used when filtering this field",
-    "m2o_typeahead_size_comment": "Determines the size/width of the search field",
-    "m2o_typeahead_template_comment": "A twig template for how items are displayed. eg: {{l_name}}, {{f_name}} – {{title}}",
-    "m2o_typeahead_include_inactive_comment": "Include items with an inactive/draft status. Only applicable if the related table uses the status column",
+    "m2o_typeahead_include_inactive_comment": "Include Inactive Items",
 
     "map_mapHeight_comment": "Height in Pixels",
     "map_mapLatLng_comment": "Display latlng Textbox below map",
@@ -247,8 +238,6 @@
     "you_must_hash_your_password": "You Must Hash Your Password",
 
     "radiobuttons_options_comment": "Use a Comma Delimited list",
-
-    "numeric_footer_comment": "Show a footer on the Item Listing page with useful info, such as: Min, Max, Avg, Sum",
 
     "select_options_comment": "Enter JSON key value pairs with the saved value and text displayed.",
     "select_placeholder_text": "Enter Placeholder Text",
@@ -337,22 +326,12 @@
     "rows_no_specified": "Rows no specified",
     "row_without_primary_key_field": "Row without primary key field",
 
-    "this_column_will_be_saved_as_x": "This column will be saved as %{column_name}",
-    "this_table_was_saved_as_x": "This table was saved as %{table_name}",
-    "unable_to_find_column_x": "Unable to find the column [%{column}]",
-    "unable_to_find_column_x_options_for_x": "Unable to find the column [%{column}] UI options for [%{ui}]",
     "unable_to_remove_column_x": "Unable to remove the column [%{column}]",
     "column_x_was_removed": "Column [%{column}] was removed",
-    "unable_to_find_table_x": "Unable to find the table [%{table_name}]",
     "unable_to_remove_table_x": "Unable to remove the table [%{table_name}]",
     "table_x_was_removed": "Table [%{table}] was removed",
     "invalid_unsupported_url": "Invalid/Unsupported URL",
     "message_not_found": "Message not found",
-
-    "unable_to_find_file_with_id_x": "Unable to find the file record with ID [%{id}]",
-    "unable_to_find_group_with_id_x": "Unable to find the group record with ID [%{id}]",
-    "unable_to_find_record_in_x_with_id_x": "Unable to find the record in [%{table}] with ID [%{id}]",
-    "unable_to_find_setting_collection_x": "Unable to find setting collection [%{collection}]",
 
     "cannot_select_all_from_table_x_with_nonempty_read_field_blacklist": "Cannot select all (`*`) from table %{table_name} with non-empty read field blacklist.",
     "write_access_forbidden_to_table_x_indices_y": "Write (set) access forbidden to table `%{table}` indices: %{indices}",
@@ -368,11 +347,9 @@
     "argument_must_be_callable": "Argument must be callable",
     "attempting_to_authenticate_a_user_when_a_user_is_already_authenticated": "Attempting to authenticate a user when a user is already authenticated.",
 
-    "url_x_cannot_be_parse_by_x": "URL %{url} cannot be parse by %{class}",
-    "video": "Video",
-    "x_x_id_not_detected": "%{service} %{type} ID not detected. Please paste the whole URL.",
+    "x_video_id_not_detected": "%{service} video ID not detected. Please paste the whole URL.",
     "unable_to_retrieve_x_title": "Unable to Retrieve %{service} Title",
-    "x_type_x": "%{service} %{type}",
+    "x_video": "%{service} Video",
     "bad_x_api_key": "Bad %{service} API Key",
     "mail_configuration_not_defined": "Mail configuration not defined.",
 
@@ -389,11 +366,6 @@
     "installation_core_table_exists": "Database has existing Directus Core tables.. Perhaps Directus is already installed.",
     "schema_template_x_does_not_exists": "Schema Template '%{template}' does not exists.",
     "mysql_strict_mode_warning": "MySQL Strict mode is enabled, this mode can make Directus throw errors at some point due to a limitations with the PDO and the MySQL Driver",
-
-    "max_file_size_exceeded": "Max file size exceeded.",
-    "max_file_size_exceeded_x_x": "Max file size exceeded. (%{size}%{unit})",
-    "server_error": "Server Error",
-    "restricted_access": "Restricted Access",
 
     "ok": "OK",
     "cancel": "Cancel",
