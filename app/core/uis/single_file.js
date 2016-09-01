@@ -141,7 +141,7 @@ define([
                       {{/if}} \
                     </div> \
                     <div class="ui-img-details single_file"> \
-                      <a href="{{link}}" class="title" target="single_file" title="{{fileModel.title}}">{{fileModel.title}}</a> \
+                      <a href="#" class="title" title="{{fileModel.title}}">{{fileModel.title}}</a> \
                       <!--Uploaded by {{userName fileModel.user}} {{contextualDate fileModel.date_uploaded}}<br> --> \
                       <i>{{#if isImage}}{{fileModel.width}} &times; {{fileModel.height}} –{{/if}} {{fileModel.size}} - {{fileModel.type}}</i><br> \
                       <button class="btn btn-primary" data-action="remove-single-file" type="button">{{t "remove_file"}}</button> \
@@ -164,7 +164,7 @@ define([
     events: {
       'click button[data-action="remove-single-file"]': 'removeFile',
       'click button[data-action="choose"]': 'choose',
-      'click .has-file': 'edit',
+      'click .ui-img-details .title': 'edit',
       'click .choose-method-btn': function() {
         this.$el.find('.choose-method').toggleClass('hide');
 
