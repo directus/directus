@@ -137,7 +137,7 @@ define([
                       {{#if html}}\
                         {{{html}}}\
                       {{else}} \
-                        <a href="{{link}}" class="title" target="single_file"><img src="{{thumbUrl}}"></a> \
+                        <a href="#" class="title"><img src="{{thumbUrl}}"></a> \
                       {{/if}} \
                     </div> \
                     <div class="ui-img-details single_file"> \
@@ -183,7 +183,7 @@ define([
         var model = this.fileModel;
         model.setFile(file);
       },
-      'click button[data-action="computer"],.ui-thumbnail-dropzone': function(e) {
+      'click button[data-action="computer"], .ui-thumbnail-dropzone, .single-image-thumbnail img': function(e) {
         this.$el.find('#fileAddInput').click();
       },
       'click button[data-action="url"]': function(e) {
