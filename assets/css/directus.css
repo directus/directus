@@ -4506,7 +4506,7 @@ body.initial-load #sidebar {
     width: 30px;
     height: 21px;
     float: left;
-    margin-top: 7px;
+    margin-top: 12px;
     margin-right: 20px;
     cursor: pointer; }
     .responsive-nav-toggle:hover .hamburger-line {
