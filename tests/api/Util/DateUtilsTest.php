@@ -105,4 +105,15 @@ class DateUtilsTest extends PHPUnit_Framework_TestCase
         $isoDatetime = DateUtils::convertToISOFormat($time, 'UTC', 'America/Santo_Domingo');
         $this->assertEquals($expected, $isoDatetime);
     }
+
+    public function testPassed()
+    {
+        $datetime = new DateTime('now');
+
+        $datetime->modify('-1 days');
+        $this->assertTrue(DateUtils::hasPassed($datetime));
+
+        $datetime->modify('2 days');
+        $this->assertFalse(DateUtils::hasPassed($datetime));
+    }
 }
