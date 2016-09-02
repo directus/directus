@@ -258,6 +258,8 @@
     "regex": "Regex",
     "textinput_validation_string_comment": "Tous les caractères ci-dessous seront appliqués",
 
+    "translation_title": "Traductions",
+    "translations_x": "%{field}",
     "translation_languages_table_comment": "Rajoutez un tableau qui contient toutes les langues supportées",
     "translation_languages_name_column_comment": "Titre de la langue",
     "translation_default_language_id_comment": "ID de la langue par défaut dans le tableau de langues",
