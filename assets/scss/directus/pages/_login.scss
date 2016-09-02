@@ -50,6 +50,10 @@
     margin: 0;
     padding: 15px 0 0 10px;
     text-align: center;
+    .material-icons {
+        vertical-align: middle;
+        padding-right: 10px;
+    }
   }
 }
 .directus-version {
