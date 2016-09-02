@@ -80,10 +80,6 @@ define(['app', 'core/UIComponent', 'core/UIView'], function(app, UIComponent, UI
                     padding-top: 5px; \
                     cursor: pointer; \
                   } \
-                  .ui-text-hover:hover { \
-                    color: #333333; \
-                    cursor: pointer; \
-                  } \
                   </style> \
                   {{#if url}} \
                   <div class="ui-thumbnail has-file"> \
@@ -98,7 +94,7 @@ define(['app', 'core/UIComponent', 'core/UIView'], function(app, UIComponent, UI
                     {{/if}} \
                   </div> \
                   <div class="ui-img-details"> \
-                    <span class="ui-text-hover" data-action="swap">{{t "directus_files_swap_file"}}</span> \
+                    <button class="btn btn-primary btn-small ui-text-hover" data-action="swap" type="button">{{t "directus_files_swap_file"}}</button> \
                   </div> \
                   {{/if}} \
                   <div class="swap-container" {{#if url}}style="display:none"{{/if}}> \
@@ -203,12 +199,12 @@ define(['app', 'core/UIComponent', 'core/UIView'], function(app, UIComponent, UI
       'click .ui-thumbnail-dropzone': function(e) {
         this.$el.find('#fileAddInput').click();
       },
-      'click span[data-action="swap"]': function(e) {
+      'click button[data-action="swap"]': function(e) {
         this.$el.find('.swap-container').toggle();
         this.$el.find('.ui-thumbnail.has-file').toggle();
-        var swapText = this.$el.find('.ui-text-hover').text();
+        var swapText = this.$el.find('.ui-text-hover').html();
         var newSwapText = (swapText === 'Swap file')? 'Cancel' : 'Swap file';
-        this.$el.find('.ui-text-hover').text(newSwapText);
+        this.$el.find('.ui-text-hover').html(newSwapText);
       }
     },
 
