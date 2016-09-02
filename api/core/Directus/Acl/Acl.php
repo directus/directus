@@ -52,8 +52,8 @@ class Acl {
     );
 
     protected $groupPrivileges;
-    protected $userId = "null";
-    protected $groupId = "null";
+    protected $userId = null;
+    protected $groupId = null;
 
     public function __construct(array $groupPrivileges = array()) {
         $this->setGroupPrivileges($groupPrivileges);
@@ -150,7 +150,7 @@ class Acl {
                     ]));
                 case self::FIELD_READ_BLACKLIST:
                     $prefix = $this->getErrorMessagePrefix();
-                    throw new UnauthorizedFieldWriteException($prefix . __t('read_access_forbidden_to_table_x_indices_y', [
+                    throw new UnauthorizedFieldReadException($prefix . __t('read_access_forbidden_to_table_x_indices_y', [
                             'table' => $table,
                             'indices' => $forbiddenIndices
                     ]));
@@ -285,9 +285,9 @@ class Acl {
         if(!($isRowGateway || is_array($record))) {
             // TODO: get_class only works on object
             // if $record is an array get_class will return false
-            throw new \InvalidArgumentException('record_must_be_array_or_rowgateway_x_given', [
-                'type' => get_class($record)
-            ]);
+            throw new \InvalidArgumentException(__t('record_must_be_array_or_rowgateway_x_given', [
+                'type' => is_object($record) ? get_class($record) : gettype($record)
+            ]));
         }
         $ownerColumnName = $this->getCmsOwnerColumnByTable($table);
         if(false === $ownerColumnName) {
