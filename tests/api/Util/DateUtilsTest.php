@@ -117,10 +117,10 @@ class DateUtilsTest extends PHPUnit_Framework_TestCase
         $this->assertFalse(DateUtils::hasPassed($datetime));
 
 
-        $datetime->modify('-1 days');
+        $datetime->modify('-3 days');
         $this->assertTrue(DateUtils::hasPassed($datetime->format('Y-m-d H:i:s')));
 
-        $datetime->modify('2 days');
+        $datetime->modify('4 days');
         $this->assertFalse(DateUtils::hasPassed($datetime->format('Y-m-d H:i:s')));
     }
 }
