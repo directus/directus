@@ -4677,6 +4677,11 @@ body.initial-load #sidebar {
     margin: 0;
     padding: 15px 0 0 10px;
     text-align: center; }
+    .login-box p.message .material-icons, .login-box p.message .custom-check input[type="checkbox"] + label span:before, .custom-check input[type="checkbox"] + label .login-box p.message span:before, .login-box p.message .custom-check input[type="radio"] + label span:before, .custom-check input[type="radio"] + label .login-box p.message span:before,
+    .login-box p.message input[type="checkbox"].custom-check + label span:before,
+    input[type="checkbox"].custom-check + label .login-box p.message span:before, .login-box p.message input[type="radio"].custom-check + label span:before, input[type="radio"].custom-check + label .login-box p.message span:before {
+      vertical-align: middle;
+      padding-right: 10px; }
 
 .directus-version {
   position: fixed;
