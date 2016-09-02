@@ -259,6 +259,8 @@
     "regex": "正则表达式",
     "textinput_validation_string_comment": "所有以下字符将被强制验证",
 
+    "translation_title": "译文",
+    "translations_x": "%{field}",
     "translation_languages_table_comment": "输入语言表格的名称",
     "translation_languages_name_column_comment": "语言标题字段",
     "translation_default_language_id_comment": "默认语言在语言表格中的 ID",
