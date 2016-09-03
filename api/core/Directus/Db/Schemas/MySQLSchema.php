@@ -94,7 +94,7 @@ class MySQLSchema extends AbstractSchema
         $rows = iterator_to_array($statement->execute());
 
         $tables = [];
-        foreach($rows as $row) {
+        foreach ($rows as $row) {
             $tables[] = $row['table_name'];
         }
 
@@ -475,9 +475,9 @@ class MySQLSchema extends AbstractSchema
             case 'int':
             case 'long':
             case 'tinyint':
-                return ($data === null) ? null : (int) $data;
+                return ($data === null) ? null : (int)$data;
             case 'float':
-                return (float) $data;
+                return (float)$data;
             case 'date':
             case 'datetime':
                 $nullDate = empty($data) || ("0000-00-00 00:00:00" == $data) || ('0000-00-00' === $data);

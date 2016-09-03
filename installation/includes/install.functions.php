@@ -11,7 +11,8 @@ $install_state = [];
  * Get the installation default state values
  * @return array
  */
-function install_get_default_state() {
+function install_get_default_state()
+{
     return [
         'current_step' => 0,
         'steps' => [
@@ -22,7 +23,7 @@ function install_get_default_state() {
             new \Directus\Installation\Steps\ConfirmStep(),
         ],
         'settings' => [
-            'views_path' => INSTALLATION_PATH.'/views/'
+            'views_path' => INSTALLATION_PATH . '/views/'
         ]
     ];
 }
@@ -31,7 +32,8 @@ function install_get_default_state() {
  * Bootstrap installation
  * @param $root_path
  */
-function install_directus($root_path) {
+function install_directus($root_path)
+{
     global $install_state;
 
     install_session_init($root_path);
@@ -69,7 +71,7 @@ function install_directus($root_path) {
         Session::save($install_state);
     } else {
         Session::save($install_state);
-        $install_step = install_get_step(($install_step->getNumber()+1));
+        $install_step = install_get_step(($install_step->getNumber() + 1));
         if ($install_step == false) {
             if (install_confirmed()) {
                 install_goto_directus($install_state);
@@ -87,7 +89,8 @@ function install_directus($root_path) {
  * @param int $step
  * @return bool
  */
-function install_get_step($step) {
+function install_get_step($step)
+{
     global $install_state;
 
     $steps = $install_state['steps'];
@@ -101,7 +104,8 @@ function install_get_step($step) {
  * @param $state
  * @return bool
  */
-function install_can_do($step, $state) {
+function install_can_do($step, $state)
+{
     if (!is_numeric($step)) {
         $step = $this->getNumber();
     }
@@ -114,7 +118,7 @@ function install_can_do($step, $state) {
     }
 
     // There's not step done. can do this further step
-    for($number = 0; $number<$step; $number++) {
+    for ($number = 0; $number < $step; $number++) {
         $stepObject = install_get_step($number);
         if ($stepObject->isPending()) {
             return false;
@@ -130,7 +134,8 @@ function install_can_do($step, $state) {
  * @param $state
  * @return bool
  */
-function install_do(\Directus\Installation\Steps\StepInterface $step, &$state) {
+function install_do(\Directus\Installation\Steps\StepInterface $step, &$state)
+{
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $response = $step->run($_POST, $step, $state);
 
@@ -156,9 +161,10 @@ function install_do(\Directus\Installation\Steps\StepInterface $step, &$state) {
  * Redirect to Directus
  * @param $state
  */
-function install_goto_directus($state) {
+function install_goto_directus($state)
+{
     Session::clear();
-    header('Location: '.$state['root_path']);
+    header('Location: ' . $state['root_path']);
 }
 
 /**
@@ -166,9 +172,10 @@ function install_goto_directus($state) {
  * @param $step
  * @param $state
  */
-function install_goto_step($step, $state) {
+function install_goto_step($step, $state)
+{
     if ($step === false) {
-        foreach($state['steps'] as $s) {
+        foreach ($state['steps'] as $s) {
             if ($s->isPending()) {
                 $step = $s;
                 break;
@@ -188,12 +195,13 @@ function install_goto_step($step, $state) {
  * Redirect to a given step
  * @param $step
  */
-function install_redirect_step($step) {
+function install_redirect_step($step)
+{
     global $install_state;
 
     Session::save($install_state);
 
-    header('Location: '.install_url((int)$step));
+    header('Location: ' . install_url((int)$step));
 }
 
 /**
@@ -201,12 +209,13 @@ function install_redirect_step($step) {
  * @param int $step
  * @return string
  */
-function install_url($step = 0) {
+function install_url($step = 0)
+{
     global $install_state;
 
-    $query_string = '?step='.(int)$step;
+    $query_string = '?step=' . (int)$step;
 
-    return rtrim($install_state['root_path'], '/').'/installation/index.php'.$query_string;
+    return rtrim($install_state['root_path'], '/') . '/installation/index.php' . $query_string;
 }
 
 /**
@@ -214,7 +223,8 @@ function install_url($step = 0) {
  * Assuming this file existed means installation was completed.
  * @return bool
  */
-function install_confirmed() {
+function install_confirmed()
+{
     if (!file_exists('../api/config.php') || filesize('../api/config.php') == 0) {
         return false;
     }
@@ -227,7 +237,8 @@ function install_confirmed() {
  * @param $root_path
  * @return void
  */
-function install_session_init($root_path) {
+function install_session_init($root_path)
+{
     global $install_state;
 
     if (session_status() == PHP_SESSION_NONE) {
@@ -237,7 +248,7 @@ function install_session_init($root_path) {
     $session = Session::read();
     if (empty($session)) {
         $install_state = install_get_default_state();
-        foreach($install_state['steps'] as $step) {
+        foreach ($install_state['steps'] as $step) {
             $step->setDone(false);
         }
         $install_state['root_path'] = $root_path;

@@ -3,24 +3,26 @@
 namespace Directus\Slim;
 
 use Directus\Auth\Provider as Auth;
-use Directus\Bootstrap;
 use Directus\View\JsonView;
 use Slim\Slim;
 
-class Middleware {
+class Middleware
+{
 
     public static $refusalResponseTypes = array('redirect', 'json');
 
-    protected static function validateResponseType($responseType) {
-        if(!in_array($responseType, self::$refusalResponseTypes)) {
+    protected static function validateResponseType($responseType)
+    {
+        if (!in_array($responseType, self::$refusalResponseTypes)) {
             throw new \RuntimeException("Invalid refusal \$responseType: $responseType");
         }
     }
 
-    public static function refuseWithErrorMessage($errorMessage, $responseType = 'redirect', $errorCode = "403 Forbidden") {
+    public static function refuseWithErrorMessage($errorMessage, $responseType = 'redirect', $errorCode = "403 Forbidden")
+    {
         header('HTTP/1.1 ' . $errorCode);
         $app = Slim::getInstance();
-        switch($responseType) {
+        switch ($responseType) {
             case 'json':
                 $jsonResponse = array(
                     'success' => false,
@@ -42,33 +44,36 @@ class Middleware {
         exit;
     }
 
-    public static function refuseUnauthenticatedUsers($responseType = 'redirect') {
+    public static function refuseUnauthenticatedUsers($responseType = 'redirect')
+    {
         self::validateResponseType($responseType);
-        return function() use ($responseType) {
-            if(Auth::loggedIn()) {
+        return function () use ($responseType) {
+            if (Auth::loggedIn()) {
                 return true;
             }
-	        $errorMessage = 'You must be logged in to perform that action.';
-	        \Directus\Slim\Middleware::refuseWithErrorMessage($errorMessage, $responseType);
+            $errorMessage = 'You must be logged in to perform that action.';
+            \Directus\Slim\Middleware::refuseWithErrorMessage($errorMessage, $responseType);
         };
     }
 
-    public static function refuseAuthenticatedUsers($responseType = 'redirect') {
+    public static function refuseAuthenticatedUsers($responseType = 'redirect')
+    {
         self::validateResponseType($responseType);
-        return function() use ($responseType) {
-            if(!Auth::loggedIn()) {
+        return function () use ($responseType) {
+            if (!Auth::loggedIn()) {
                 return true;
             }
             $errorMessage = 'You must be logged out to perform that action.';
-	        \Directus\Slim\Middleware::refuseWithErrorMessage($errorMessage, $responseType);
+            \Directus\Slim\Middleware::refuseWithErrorMessage($errorMessage, $responseType);
         };
     }
 
-    public static function renderJson() {
+    public static function renderJson()
+    {
         $app = \Slim\Slim::getInstance();
-        $view =$app->view();
+        $view = $app->view();
         $viewData = $view->getData();
-        if(!array_key_exists('jsonResponse', $viewData)) {
+        if (!array_key_exists('jsonResponse', $viewData)) {
             throw new \RuntimeException("renderJson middleware expected `jsonResponse` key within the view data array.");
         }
         JsonView::render($viewData['jsonResponse']);

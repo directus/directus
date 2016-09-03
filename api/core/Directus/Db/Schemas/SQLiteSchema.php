@@ -2,10 +2,10 @@
 
 namespace Directus\Db\Schemas;
 
+use Directus\Bootstrap;
 use Directus\Db\SchemaManager;
 use Directus\Util\ArrayUtils;
 use Zend\Db\Metadata\Source\SqliteMetadata;
-use Directus\Bootstrap;
 use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Predicate\In;
 use Zend\Db\Sql\Predicate\NotIn;
@@ -49,7 +49,7 @@ class SQLiteSchema extends AbstractSchema
         $tablesObject = $this->metadata->getTables();
 
         $tables = [];
-        foreach($tablesObject as $tableObject) {
+        foreach ($tablesObject as $tableObject) {
             $tables[] = $tableObject->getName();
         }
 
@@ -97,9 +97,9 @@ class SQLiteSchema extends AbstractSchema
     protected function formatTablesFromInfo($tablesObject, $directusTablesInfo)
     {
         $tables = [];
-        foreach($tablesObject as $tableObject) {
+        foreach ($tablesObject as $tableObject) {
             $directusTableInfo = [];
-            foreach($directusTablesInfo as $index => $table) {
+            foreach ($directusTablesInfo as $index => $table) {
                 if ($table['table_name'] == $tableObject->getName()) {
                     $directusTableInfo = $table;
                     unset($directusTablesInfo[$index]);
@@ -120,7 +120,7 @@ class SQLiteSchema extends AbstractSchema
             'date_created' => null,
             'comment' => '',
             'count' => null,
-            'hidden' =>  ArrayUtils::get($directusTableInfo, 'hidden', 0),
+            'hidden' => ArrayUtils::get($directusTableInfo, 'hidden', 0),
             'single' => ArrayUtils::get($directusTableInfo, 'single', 0),
             'user_create_column' => ArrayUtils::get($directusTableInfo, 'user_create_column', null),
             'user_update_column' => ArrayUtils::get($directusTableInfo, 'user_update_column', null),
@@ -212,7 +212,7 @@ class SQLiteSchema extends AbstractSchema
         // @TODO this should be a job for the SchemaManager
         $columnName = isset($params['column_name']) ? $params['column_name'] : -1;
         if ($columnName != -1) {
-            foreach($columnsInfo as $index => $column) {
+            foreach ($columnsInfo as $index => $column) {
                 if ($column->getName() == $columnName) {
                     unset($columnsInfo[$index]);
                     break;
@@ -231,9 +231,9 @@ class SQLiteSchema extends AbstractSchema
         $allColumns = [];
         $allTables = $this->getTables();
 
-        foreach($allTables as $table) {
+        foreach ($allTables as $table) {
             $columns = $this->getColumns($table['table_name']);
-            foreach($columns as $index => $column) {
+            foreach ($columns as $index => $column) {
                 $columns[$index]['table_name'] = $table['table_name'];
             }
 
@@ -247,9 +247,9 @@ class SQLiteSchema extends AbstractSchema
     {
         $columns = [];
 
-        foreach($columnsInfo as $columnInfo) {
+        foreach ($columnsInfo as $columnInfo) {
             $directusColumnInfo = [];
-            foreach($directusColumnsInfo as $index => $column) {
+            foreach ($directusColumnsInfo as $index => $column) {
                 if ($column['column_name'] == $columnInfo->getName()) {
                     $directusColumnInfo = $column;
                     unset($directusColumnsInfo[$index]);
@@ -331,13 +331,13 @@ class SQLiteSchema extends AbstractSchema
         $where = new Where();
         $where
             ->equalTo('TABLE_NAME', $tableName)
-             ->addPredicate(new In('data_type', ['alias', 'MANYTOMANY', 'ONETOMANY']));
-            // ->nest()
-            // ->addPredicate(new \Zend\Db\Sql\Predicate\Expression("'$columnName' = '-1'"))
-            // ->OR
-            // ->equalTo('column_name', $columnName)
-            // ->unnest()
-            // ->addPredicate(new IsNotNull('data_type'));
+            ->addPredicate(new In('data_type', ['alias', 'MANYTOMANY', 'ONETOMANY']));
+        // ->nest()
+        // ->addPredicate(new \Zend\Db\Sql\Predicate\Expression("'$columnName' = '-1'"))
+        // ->OR
+        // ->equalTo('column_name', $columnName)
+        // ->unnest()
+        // ->addPredicate(new IsNotNull('data_type'));
 
         if ($columnName != -1) {
             $where->equalTo('column_name', $columnName);
@@ -392,7 +392,7 @@ class SQLiteSchema extends AbstractSchema
         $columnName = null;
 
         $constraints = $this->metadata->getConstraints($tableName);
-        foreach($constraints as $constraint) {
+        foreach ($constraints as $constraint) {
             if ($constraint->isPrimaryKey()) {
                 // @TODO: Directus should handle multiple columns
                 $columns = $constraint->getColumns();

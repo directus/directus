@@ -25,115 +25,115 @@ class CreateDirectusTablesTable extends Ruckusing_Migration_Base
 {
     public function up()
     {
-      $t = $this->create_table("directus_tables", array(
-          "id"=>false,
-        )
-      );
+        $t = $this->create_table("directus_tables", array(
+                "id" => false,
+            )
+        );
 
-      //columns
-      $t->column("table_name", "string", array(
-          "limit"=>64,
-          "null"=>false,
-          "default"=>"",
-          "primary_key"=>true
-        )
-      );
-      $t->column("hidden", "tinyinteger", array(
-          "limit"=>1,
-          "null"=>false,
-          "default"=>0
-        )
-      );
-      $t->column("single", "tinyinteger", array(
-          "limit"=>1,
-          "null"=>false,
-          "default"=>0
-        )
-      );
-      $t->column("default_status", "tinyinteger", array(
-          "limit"=>1,
-          "null"=>false,
-          "default"=>1
-        )
-      );
-      $t->column("footer", "tinyinteger", array(
-          "limit"=>1,
-          "default"=>0
-        )
-      );
-      $t->column("list_view", "string", array(
-          "limit"=>200,
-          "default"=>NULL
-        )
-      );
-      $t->column("column_groupings", "string", array(
-          "limit"=>255,
-          "default"=>NULL
-        )
-      );
-      $t->column("primary_column", "string", array(
-          "limit"=>255,
-          "default"=>NULL
-        )
-      );
-      $t->column("user_create_column", "string", array(
-          "limit"=>64,
-          "default"=>NULL
-        )
-      );
-      $t->column("user_update_column", "string", array(
-          "limit"=>64,
-          "default"=>NULL
-        )
-      );
-      $t->column("date_create_column", "string", array(
-          "limit"=>64,
-          "default"=>NULL
-        )
-      );
-      $t->column("date_update_column", "string", array(
-          "limit"=>64,
-          "default"=>NULL
-        )
-      );
-      $t->column("filter_column_blacklist", "text");
+        //columns
+        $t->column("table_name", "string", array(
+                "limit" => 64,
+                "null" => false,
+                "default" => "",
+                "primary_key" => true
+            )
+        );
+        $t->column("hidden", "tinyinteger", array(
+                "limit" => 1,
+                "null" => false,
+                "default" => 0
+            )
+        );
+        $t->column("single", "tinyinteger", array(
+                "limit" => 1,
+                "null" => false,
+                "default" => 0
+            )
+        );
+        $t->column("default_status", "tinyinteger", array(
+                "limit" => 1,
+                "null" => false,
+                "default" => 1
+            )
+        );
+        $t->column("footer", "tinyinteger", array(
+                "limit" => 1,
+                "default" => 0
+            )
+        );
+        $t->column("list_view", "string", array(
+                "limit" => 200,
+                "default" => NULL
+            )
+        );
+        $t->column("column_groupings", "string", array(
+                "limit" => 255,
+                "default" => NULL
+            )
+        );
+        $t->column("primary_column", "string", array(
+                "limit" => 255,
+                "default" => NULL
+            )
+        );
+        $t->column("user_create_column", "string", array(
+                "limit" => 64,
+                "default" => NULL
+            )
+        );
+        $t->column("user_update_column", "string", array(
+                "limit" => 64,
+                "default" => NULL
+            )
+        );
+        $t->column("date_create_column", "string", array(
+                "limit" => 64,
+                "default" => NULL
+            )
+        );
+        $t->column("date_update_column", "string", array(
+                "limit" => 64,
+                "default" => NULL
+            )
+        );
+        $t->column("filter_column_blacklist", "text");
 
-      $t->finish();
+        $t->finish();
 
-      $this->insert('directus_tables', [
-          'table_name' => 'directus_messages_recipients',
-          'hidden' => 1,
-          'single' => 0,
-          'footer' => 0,
-          'list_view' => NULL,
-          'column_groupings' => NULL,
-          'primary_column' => NULL,
-          'user_create_column' => NULL,
-          'user_update_column' => NULL,
-          'date_create_column' => NULL,
-          'date_update_column' => NULL,
-      ]);
+        $this->insert('directus_tables', [
+            'table_name' => 'directus_messages_recipients',
+            'hidden' => 1,
+            'single' => 0,
+            'footer' => 0,
+            'list_view' => NULL,
+            'column_groupings' => NULL,
+            'primary_column' => NULL,
+            'user_create_column' => NULL,
+            'user_update_column' => NULL,
+            'date_create_column' => NULL,
+            'date_update_column' => NULL,
+        ]);
 
-      $tables = [
-        'directus_bookmarks',
-        'directus_files',
-        'directus_preferences'
-      ];
-      foreach($tables as $table) {
-          $this->insert('directus_tables', [
-              'table_name' => $table,
-              'hidden' => 1,
-              'single' => 0,
-              'footer' => 0,
-              'list_view' => NULL,
-              'column_groupings' => NULL,
-              'primary_column' => NULL,
-              'user_create_column' => 'user',
-              'user_update_column' => NULL,
-              'date_create_column' => NULL,
-              'date_update_column' => NULL,
-          ]);
-      }
+        $tables = [
+            'directus_bookmarks',
+            'directus_files',
+            'directus_preferences'
+        ];
+        foreach ($tables as $table) {
+            $this->insert('directus_tables', [
+                'table_name' => $table,
+                'hidden' => 1,
+                'single' => 0,
+                'footer' => 0,
+                'list_view' => NULL,
+                'column_groupings' => NULL,
+                'primary_column' => NULL,
+                'user_create_column' => 'user',
+                'user_update_column' => NULL,
+                'date_create_column' => NULL,
+                'date_update_column' => NULL,
+            ]);
+        }
 
         $this->insert('directus_tables', [
             'table_name' => 'directus_users',
@@ -152,6 +152,6 @@ class CreateDirectusTablesTable extends Ruckusing_Migration_Base
 
     public function down()
     {
-      $this->drop_table("directus_tables");
+        $this->drop_table("directus_tables");
     }//down()
 }

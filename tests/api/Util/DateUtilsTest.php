@@ -26,7 +26,7 @@ class DateUtilsTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(-11, DateUtils::daysLeft(gmdate('Y-m-d', 1461380876), gmdate('Y-m-d', 1462380876), true));
         $this->assertEquals(-18, DateUtils::daysLeft(new DateTime('2016-03-29'), new DateTime('2016-04-16'), true));
 
-        $this->assertEquals(1, DateUtils::daysLeft(time()+DateUtils::DAY_IN_SECONDS));
+        $this->assertEquals(1, DateUtils::daysLeft(time() + DateUtils::DAY_IN_SECONDS));
     }
 
     public function testConvertUTCDateTimezone()

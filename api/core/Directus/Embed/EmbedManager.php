@@ -20,7 +20,7 @@ class EmbedManager
      */
     public function parse($url)
     {
-        foreach($this->providers as $provider) {
+        foreach ($this->providers as $provider) {
             if ($provider->validateURL($url)) {
                 return $provider->parse($url);
             }

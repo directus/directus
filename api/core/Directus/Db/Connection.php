@@ -37,7 +37,7 @@ class Connection extends Adapter
      */
     public function isStrictModeEnabled()
     {
-        switch($this->driverName) {
+        switch ($this->driverName) {
             case 'mysql':
                 $enabled = $this->isMySQLStrictModeEnabled();
                 break;
@@ -60,7 +60,7 @@ class Connection extends Adapter
         $modesEnabled = $result->current();
 
         $modes = explode(',', $modesEnabled['modes']);
-        foreach($modes as  $name) {
+        foreach ($modes as $name) {
             $modeName = strtoupper(trim($name));
             if (in_array($modeName, $strictModes)) {
                 return true;

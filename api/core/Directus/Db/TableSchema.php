@@ -5,33 +5,28 @@ namespace Directus\Db;
 use Directus\Auth\Provider as Auth;
 use Directus\Bootstrap;
 use Directus\Db\TableGateway\DirectusPreferencesTableGateway;
-use Directus\Db\TableGateway\RelationalTableGateway;
 use Directus\Db\TableGateway\DirectusUiTableGateway;
+use Directus\Db\TableGateway\RelationalTableGateway;
 use Directus\MemcacheProvider;
-use Directus\Util\DateUtils;
-use Directus\Util\StringUtils;
-use Zend\Db\Adapter\ParameterContainer;
 use Directus\Util\ArrayUtils;
-use Zend\Db\Sql\Expression;
-use Zend\Db\Sql\Predicate\In;
-use Zend\Db\Sql\Predicate\IsNotNull;
+use Directus\Util\DateUtils;
 use Zend\Db\Sql\Predicate\NotIn;
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\TableIdentifier;
-use Zend\Db\Sql\Where;
 
-class TableSchema {
+class TableSchema
+{
 
     public static $many_to_one_uis = array('many_to_one', 'single_files');
 
     // These columns types are aliases for "associations". They don't have
     // real, corresponding columns in the DB.
-    public static $association_types = array('ONETOMANY','MANYTOMANY','ALIAS');
+    public static $association_types = array('ONETOMANY', 'MANYTOMANY', 'ALIAS');
 
-	protected $table;
-	protected $db;
-	protected $_loadedSchema;
+    protected $table;
+    protected $db;
+    protected $_loadedSchema;
 
     /**
      * TRANSITIONAL MAPPER. PENDING BUGFIX FOR MANY TO ONE UIS.
@@ -41,8 +36,8 @@ class TableSchema {
      * @var array
      */
     public static $many_to_one_column_name_to_related_table = array(
-        'group_id'          => 'directus_groups',
-        'group'             => 'directus_groups',
+        'group_id' => 'directus_groups',
+        'group' => 'directus_groups',
 
         // These confound me. They'll be ignored and write silent warnings to the API log:
         // 'position'           => '',
@@ -56,8 +51,9 @@ class TableSchema {
      * @param  $column_name string
      * @return string
      */
-    public static function getRelatedTableFromManyToOneColumnName($column_name) {
-        if(!array_key_exists($column_name, self::$many_to_one_column_name_to_related_table)) {
+    public static function getRelatedTableFromManyToOneColumnName($column_name)
+    {
+        if (!array_key_exists($column_name, self::$many_to_one_column_name_to_related_table)) {
             $log = Bootstrap::get('log');
             $log->warn("TRANSITIONAL MAPPER: Attempting to resolve unknown column name `$column_name` to a related_table value. Ignoring.");
             return;
@@ -71,8 +67,9 @@ class TableSchema {
     /**
      * @todo  for ALTER requests, caching schemas can't be allowed
      */
-    public static function getSchemaArray($table, $params = null, $allowCache = true) {
-        if(!$allowCache || !array_key_exists($table, self::$_schemas)) {
+    public static function getSchemaArray($table, $params = null, $allowCache = true)
+    {
+        if (!$allowCache || !array_key_exists($table, self::$_schemas)) {
             self::$_schemas[$table] = self::loadSchema($table, $params);
         }
 
@@ -84,7 +81,7 @@ class TableSchema {
         $tableColumnsSchema = static::getSchemaArray($tableName);
         $column = null;
 
-        foreach($tableColumnsSchema as $columnSchema) {
+        foreach ($tableColumnsSchema as $columnSchema) {
             if ($columnName === $columnSchema['id']) {
                 $column = $columnSchema;
                 break;
@@ -108,9 +105,10 @@ class TableSchema {
         return in_array($columnName, $systemFields);
     }
 
-    public static function getFirstNonSystemColumn($schema) {
+    public static function getFirstNonSystemColumn($schema)
+    {
         foreach ($schema as $column) {
-            if(isset($column['system']) && false != $column['system']) {
+            if (isset($column['system']) && false != $column['system']) {
                 continue;
             }
             return $column;
@@ -158,26 +156,28 @@ class TableSchema {
         return static::isColumnAnAlias($column);
     }
 
-    public static function getAllNonAliasTableColumnNames($table) {
+    public static function getAllNonAliasTableColumnNames($table)
+    {
         $columnNames = array();
         $columns = self::getAllNonAliasTableColumns($table);
-        if(false === $columns) {
+        if (false === $columns) {
             return false;
         }
-        foreach($columns as $column) {
+        foreach ($columns as $column) {
             $columnNames[] = $column['id'];
         }
         return $columnNames;
     }
 
-    public static function getAllNonAliasTableColumns($table) {
+    public static function getAllNonAliasTableColumns($table)
+    {
         $columns = array();
         $schemaArray = self::loadSchema($table);
-        if(false === $schemaArray) {
+        if (false === $schemaArray) {
             return false;
         }
-        foreach($schemaArray as $column) {
-            if(self::columnIsCollectionAssociation($column)) {
+        foreach ($schemaArray as $column) {
+            if (self::columnIsCollectionAssociation($column)) {
                 continue;
             }
             $columns[] = $column;
@@ -185,11 +185,12 @@ class TableSchema {
         return $columns;
     }
 
-    public static function getAllAliasTableColumns($table, $onlyNames = false) {
+    public static function getAllAliasTableColumns($table, $onlyNames = false)
+    {
         $columns = array();
         $schemaArray = self::loadSchema($table);
-        foreach($schemaArray as $column) {
-            if(!self::columnIsCollectionAssociation($column)) {
+        foreach ($schemaArray as $column) {
+            if (!self::columnIsCollectionAssociation($column)) {
                 continue;
             }
             if ($onlyNames) {
@@ -200,9 +201,10 @@ class TableSchema {
         return $columns;
     }
 
-    public static function getTableColumns($table, $limit = null, $skipIgnore = false) {
+    public static function getTableColumns($table, $limit = null, $skipIgnore = false)
+    {
 
-        if(!self::canGroupViewTable($table)) {
+        if (!self::canGroupViewTable($table)) {
             return array();
             // return false;
         }
@@ -215,15 +217,15 @@ class TableSchema {
             $primaryKeyFieldName = 'id';
         }
 
-        $ignoreColumns = ($skipIgnore !== true) ? array($primaryKeyFieldName,STATUS_COLUMN_NAME,'sort') : array();
+        $ignoreColumns = ($skipIgnore !== true) ? array($primaryKeyFieldName, STATUS_COLUMN_NAME, 'sort') : array();
         $i = 0;
-        foreach($result as $columnName) {
+        foreach ($result as $columnName) {
             if (!in_array($columnName, $ignoreColumns)) {
                 array_push($columns, $columnName);
             }
 
             $i++;
-            if($i === $limit) {
+            if ($i === $limit) {
                 break;
             }
         }
@@ -231,20 +233,22 @@ class TableSchema {
         return $columns;
     }
 
-    public static function hasTableColumn($table, $column, $includeAlias = false) {
-      $columns = array_flip(self::getTableColumns($table, null, true));
-      if ($includeAlias) {
-          $columns = array_merge($columns, array_flip(self::getAllAliasTableColumns($table, true)));
-      }
+    public static function hasTableColumn($table, $column, $includeAlias = false)
+    {
+        $columns = array_flip(self::getTableColumns($table, null, true));
+        if ($includeAlias) {
+            $columns = array_merge($columns, array_flip(self::getAllAliasTableColumns($table, true)));
+        }
 
-      if (array_key_exists($column, $columns)) {
-        return true;
-      }
+        if (array_key_exists($column, $columns)) {
+            return true;
+        }
 
-      return false;
+        return false;
     }
 
-    public static function getUniqueColumnName($tbl_name) {
+    public static function getUniqueColumnName($tbl_name)
+    {
         // @todo for safe joins w/o name collision
     }
 
@@ -253,12 +257,13 @@ class TableSchema {
      * Get all table names
      *
      */
-    public static function getTablenames($params=null) {
+    public static function getTablenames($params = null)
+    {
         $result = SchemaManager::getTablesName();
 
         $tables = array();
-        foreach($result as $tableName) {
-            if(self::canGroupViewTable($tableName)) {
+        foreach ($result as $tableName) {
+            if (self::canGroupViewTable($tableName)) {
                 $tables[] = $tableName;
             }
         }
@@ -269,7 +274,8 @@ class TableSchema {
     /**
      * Get info about all tables
      */
-    public static function getTables($userGroupId, $versionHash) {
+    public static function getTables($userGroupId, $versionHash)
+    {
         $acl = Bootstrap::get('acl');
         $zendDb = Bootstrap::get('ZendDb');
         $Preferences = new DirectusPreferencesTableGateway($acl, $zendDb);
@@ -293,8 +299,8 @@ class TableSchema {
 
             $currentUser = Auth::getUserInfo();
 
-            foreach($result as $row) {
-                if(!self::canGroupViewTable($row['id'])) {
+            foreach ($result as $row) {
+                if (!self::canGroupViewTable($row['id'])) {
                     continue;
                 }
                 $tbl["schema"] = self::getTable($row['id']);
@@ -310,7 +316,8 @@ class TableSchema {
         return $tables;
     }
 
-    public static function canGroupViewTable($tableName) {
+    public static function canGroupViewTable($tableName)
+    {
         $acl = Bootstrap::get('acl');
         $tablePrivilegeList = $acl->getTablePrivilegeList($tableName, $acl::TABLE_PERMISSIONS);
         if (array_key_exists('allow_view', $tablePrivilegeList) && $tablePrivilegeList['allow_view'] > 0) {
@@ -319,7 +326,8 @@ class TableSchema {
         return false;
     }
 
-    public static function getTable($tbl_name) {
+    public static function getTable($tbl_name)
+    {
         $acl = Bootstrap::get('acl');
         $zendDb = Bootstrap::get('ZendDb');
 
@@ -327,7 +335,7 @@ class TableSchema {
         // or and empty array instead of false
         // in any given situation that the table
         // can be find or used.
-        if(!self::canGroupViewTable($tbl_name)) {
+        if (!self::canGroupViewTable($tbl_name)) {
             return false;
         }
 
@@ -338,11 +346,11 @@ class TableSchema {
         }
 
         if ($info) {
-            $info['count'] = (int) $info['count'];
+            $info['count'] = (int)$info['count'];
             $info['date_created'] = DateUtils::convertToISOFormat($info['date_created'], 'UTC', get_user_timezone());
-            $info['hidden'] = (boolean) $info['hidden'];
-            $info['single'] = (boolean) $info['single'];
-            $info['footer'] = (boolean) $info['footer'];
+            $info['hidden'] = (boolean)$info['hidden'];
+            $info['single'] = (boolean)$info['single'];
+            $info['footer'] = (boolean)$info['footer'];
         }
 
         $relationalTableGateway = new RelationalTableGateway($acl, $tbl_name, $zendDb);
@@ -372,11 +380,12 @@ class TableSchema {
         return self::$_primaryKeys[$tableName] = $columnName;
     }
 
-    protected static function createParamArray($values, $prefix) {
+    protected static function createParamArray($values, $prefix)
+    {
         $result = array();
 
-        foreach($values as $i => $field) {
-            $result[$prefix.$i] = $field;
+        foreach ($values as $i => $field) {
+            $result[$prefix . $i] = $field;
         }
 
         return $result;
@@ -387,14 +396,15 @@ class TableSchema {
      * @param $tbl_name
      * @param $params
      */
-    protected static function loadSchema($tbl_name, $params = null) {
+    protected static function loadSchema($tbl_name, $params = null)
+    {
 
         // Omit columns which are on this table's read field blacklist for the group of
         // the currently authenticated user.
         $acl = Bootstrap::get('acl');
 
         $columns = SchemaManager::getColumns($tbl_name, $params);
-        if(!self::canGroupViewTable($tbl_name)) {
+        if (!self::canGroupViewTable($tbl_name)) {
             // return array();
             return false;
         }
@@ -426,10 +436,10 @@ class TableSchema {
                 $row['default_value'] = SchemaManager::parseType($row['default_value'], $row['type']);
             }
 
-            $row["required"] = (bool) $row['required'];
-            $row["system"] = (bool) static::isSystemColumn($row['id']);
-            $row["hidden_list"] = (bool) $row["hidden_list"];
-            $row["hidden_input"] = (bool) $row["hidden_input"];
+            $row["required"] = (bool)$row['required'];
+            $row["system"] = (bool)static::isSystemColumn($row['id']);
+            $row["hidden_list"] = (bool)$row["hidden_list"];
+            $row["hidden_input"] = (bool)$row["hidden_input"];
             $row["is_writable"] = !in_array($row['id'], $writeFieldBlacklist);
 
             if (array_key_exists('sort', $row)) {
@@ -448,7 +458,7 @@ class TableSchema {
             }
 
             if (array_key_exists('ui', $row)) {
-                $options = self::getUIOptions( $tbl_name, $row['id'], $row['ui'] );
+                $options = self::getUIOptions($tbl_name, $row['id'], $row['ui']);
             }
 
             if (isset($options)) {
@@ -494,13 +504,14 @@ class TableSchema {
     //---------------------------------------------------------------------------
 
 
-    public static function getAllSchemas($userGroupId, $versionHash) {
+    public static function getAllSchemas($userGroupId, $versionHash)
+    {
         $cacheKey = MemcacheProvider::getKeyDirectusGroupSchema($userGroupId, $versionHash);
         $acl = Bootstrap::get('acl');
         $ZendDb = Bootstrap::get('ZendDb');
         $directusPreferencesTableGateway = new DirectusPreferencesTableGateway($acl, $ZendDb);
 
-        $getPreferencesFn = function() use ($directusPreferencesTableGateway) {
+        $getPreferencesFn = function () use ($directusPreferencesTableGateway) {
             $currentUser = Auth::getUserInfo();
             $preferences = $directusPreferencesTableGateway->fetchAllByUser($currentUser['id']);
             return $preferences;
@@ -513,7 +524,7 @@ class TableSchema {
             foreach ($tableSchemas as &$table) {
                 $tableName = $table['id'];
                 $table['columns'] = array_values($columnSchemas[$tableName]);
-                foreach($columnSchemas[$tableName] as $column) {
+                foreach ($columnSchemas[$tableName] as $column) {
                     if ($column['column_key'] == 'PRI') {
                         $table['primary_column'] = $column['column_name'];
                         break;
@@ -539,13 +550,14 @@ class TableSchema {
         return $schemas;
     }
 
-    public static function getTableSchemas() {
+    public static function getTableSchemas()
+    {
         $allTables = SchemaManager::getTables();
 
         $tables = [];
-        foreach($allTables as $index => $row) {
+        foreach ($allTables as $index => $row) {
             // Only include tables w ACL privileges
-            if(self::canGroupViewTable($row['table_name'])) {
+            if (self::canGroupViewTable($row['table_name'])) {
                 $tables[] = self::formatTableRow($row);
             }
         }
@@ -553,7 +565,8 @@ class TableSchema {
         return $tables;
     }
 
-    public static function getColumnSchemas() {
+    public static function getColumnSchemas()
+    {
         $acl = Bootstrap::get('acl');
         $zendDb = Bootstrap::get('ZendDb');
         $result = SchemaManager::getAllColumns();
@@ -562,7 +575,7 @@ class TableSchema {
         $tables = array();
         $tableName = null;
 
-        foreach($result as $row) {
+        foreach ($result as $row) {
             $tableName = $row['table_name'];
             $columnName = $row['column_name'];
 
@@ -611,14 +624,16 @@ class TableSchema {
         return $tables;
     }
 
-    private static function formatTableRow($info) {
-        $info['hidden'] = (boolean) $info['hidden'];
-        $info['single'] = (boolean) $info['single'];
-        $info['footer'] = (boolean) $info['footer'];
+    private static function formatTableRow($info)
+    {
+        $info['hidden'] = (boolean)$info['hidden'];
+        $info['single'] = (boolean)$info['single'];
+        $info['footer'] = (boolean)$info['footer'];
         return $info;
     }
 
-    private static function formatColumnRow($row) {
+    private static function formatColumnRow($row)
+    {
         $columnName = $row['column_name'];
 
         foreach ($row as $key => $value) {
@@ -650,10 +665,10 @@ class TableSchema {
             $row['default_value'] = SchemaManager::parseType($row['default_value'], $row['type']);
         }
 
-        $row["required"] = (bool) $row['required'];
-        $row["system"] = (bool) static::isSystemColumn($row['id']);
-        $row["hidden_list"] = (bool) $row["hidden_list"];
-        $row["hidden_input"] = (bool) $row["hidden_input"];
+        $row["required"] = (bool)$row['required'];
+        $row["system"] = (bool)static::isSystemColumn($row['id']);
+        $row["hidden_list"] = (bool)$row["hidden_list"];
+        $row["hidden_input"] = (bool)$row["hidden_input"];
 
 
         //$row["is_writable"] = !in_array($row['id'], $writeFieldBlacklist);
@@ -701,8 +716,9 @@ class TableSchema {
         return $row;
     }
 
-    public static function columnTypeToUIType($column_type) {
-        switch($column_type) {
+    public static function columnTypeToUIType($column_type)
+    {
+        switch ($column_type) {
             case "ALIAS":
                 return "alias";
             case "MANYTOMANY":
@@ -743,11 +759,12 @@ class TableSchema {
     /**
      *  Get ui options
      *
-     *  @param $tbl_name
-     *  @param $col_name
-     *  @param $datatype_name
+     * @param $tbl_name
+     * @param $col_name
+     * @param $datatype_name
      */
-     public static function getUIOptions( $tbl_name, $col_name, $datatype_name ) {
+    public static function getUIOptions($tbl_name, $col_name, $datatype_name)
+    {
         $result = array();
         $item = array();
         $zendDb = Bootstrap::get('zendDb');
@@ -772,9 +789,11 @@ class TableSchema {
         $statement = $sql->prepareStatementForSqlObject($select);
         $rows = $statement->execute();
 
-        foreach($rows as $row) {
+        foreach ($rows as $row) {
             //first case
-            if (!isset($ui)) { $item['id'] = $ui = $row['id']; }
+            if (!isset($ui)) {
+                $item['id'] = $ui = $row['id'];
+            }
             //new ui = new item
             if ($ui != $row['id']) {
                 array_push($result, $item);
@@ -790,6 +809,6 @@ class TableSchema {
             return $result[0];
         }
         return array();
-     }
+    }
 
 }

@@ -2,16 +2,16 @@
 
 namespace Directus\View;
 
-use Directus\Bootstrap;
 use Directus\Acl\Exception\AclException;
+use Directus\Db\Exception\CustomUiValidationError;
 use Directus\Db\Exception\DuplicateEntryException;
 use Directus\Db\Exception\RelationshipMetadataException;
-use Directus\Db\Exception\SuppliedArrayAsColumnValue;
-use Directus\Db\Exception\CustomUiValidationError;
 
-class ExceptionView {
+class ExceptionView
+{
 
-    public static function exceptionHandler($app, $exception) {
+    public static function exceptionHandler($app, $exception)
+    {
 
         $response = $app->response();
         $response->header('Content-type', 'application/json');
@@ -22,15 +22,13 @@ class ExceptionView {
         /**
          * Directus\Acl\Exception\AclException & subclasses
          */
-        if($exception instanceof AclException || is_subclass_of($exception, "Directus\Acl\Exception\AclException")) {
+        if ($exception instanceof AclException || is_subclass_of($exception, "Directus\Acl\Exception\AclException")) {
             $httpCode = 403;
             $data = array('message' => $exception->getMessage());
-        }
-
-        /**
+        } /**
          * Directus\Db\Exception\RelationshipMetadataException
          */
-        elseif($exception instanceof RelationshipMetadataException) {
+        elseif ($exception instanceof RelationshipMetadataException) {
             $httpCode = 424;
             $data = array('message' => $exception->getMessage());
         }
@@ -46,23 +44,19 @@ class ExceptionView {
         /**
          * Directus\Db\Exception\CustomUiValidationError
          */
-        elseif($exception instanceof CustomUiValidationError) {
+        elseif ($exception instanceof CustomUiValidationError) {
             $httpCode = 422;
             $data = array('message' => $exception->getMessage());
-        }
-
-        /**
+        } /**
          * Directus\Db\Exception\DuplicateEntryException
          */
-        elseif($exception instanceof DuplicateEntryException) {
+        elseif ($exception instanceof DuplicateEntryException) {
             $httpCode = 409;
             $data = array('message' => $exception->getMessage());
-        }
-
-        // @todo log error nonetheless
+        } // @todo log error nonetheless
         else {
             $data = array('message' => __t('internal_server_error'));
-            if('production' !== DIRECTUS_ENV) {
+            if ('production' !== DIRECTUS_ENV) {
                 $data = array(
                     'code' => $exception->getCode(),
                     'class' => get_class($exception),
@@ -76,7 +70,7 @@ class ExceptionView {
         }
 
         $data = @json_encode($data);
-        if('production' !== DIRECTUS_ENV) {
+        if ('production' !== DIRECTUS_ENV) {
             $data = JsonView::format_json($data);
         }
 

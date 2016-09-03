@@ -2,10 +2,8 @@
 
 namespace Directus\Filesystem;
 
-use Directus\Bootstrap;
 use League\Flysystem\Filesystem as Flysystem;
 use League\Flysystem\FilesystemInterface as FlysystemInterface;
-use League\Flysystem\AdapterInterface;
 
 class Filesystem
 {

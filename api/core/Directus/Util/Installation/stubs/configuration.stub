@@ -9,7 +9,7 @@
 return array(
 
     'session' => array(
-        'prefix' =>  'directus6_'
+        'prefix' => 'directus6_'
     ),
 
     'default_language' => '{{default_language}}',
@@ -59,16 +59,14 @@ return array(
         },
         'postUpdate' => function ($TableGateway, $record, $db, $acl) {
             $tableName = $TableGateway->getTable();
-            switch($tableName) {
+            switch ($tableName) {
                 // ...
             }
         }
     ),
 
     // These tables will not be loaded in the directus schema
-    'tableBlacklist' => array(
-
-    ),
+    'tableBlacklist' => array(),
 
     'statusMapping' => array(
         0 => array(

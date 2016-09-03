@@ -3,11 +3,8 @@
 namespace Directus\Db\TableGateway;
 
 use Directus\Acl\Acl;
-use Directus\Db\TableGateway\AclAwareTableGateway;
-use Zend\Db\Adapter\AdapterInterface;
-use Zend\Db\Sql\Select;
-use Zend\Db\Sql\Sql;
 use Zend\Db\Adapter\Adapter;
+use Zend\Db\Adapter\AdapterInterface;
 
 class DirectusGroupsTableGateway extends AclAwareTableGateway
 {

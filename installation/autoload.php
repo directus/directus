@@ -7,8 +7,7 @@
  */
 function autoload_register($prefix, $baseDir)
 {
-    return function ($class) use($prefix, $baseDir)
-    {
+    return function ($class) use ($prefix, $baseDir) {
         // does the class use the namespace prefix?
         $len = strlen($prefix);
         if (strncmp($prefix, $class, $len) !== 0) {
@@ -44,5 +43,5 @@ function autoload_register($prefix, $baseDir)
  * @return void
  */
 
-spl_autoload_register(autoload_register('Directus', BASE_PATH.'/api/core/Directus'));
-spl_autoload_register(autoload_register('Directus\\Installation\\', __DIR__.'/includes/'));
+spl_autoload_register(autoload_register('Directus', BASE_PATH . '/api/core/Directus'));
+spl_autoload_register(autoload_register('Directus\\Installation\\', __DIR__ . '/includes/'));

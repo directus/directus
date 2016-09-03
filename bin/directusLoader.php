@@ -9,7 +9,7 @@ require __DIR__ . '/../api/core/functions.php';
 
 // Define directus environment
 defined('DIRECTUS_ENV')
-    || define('DIRECTUS_ENV', (getenv('DIRECTUS_ENV') ? getenv('DIRECTUS_ENV') : 'production'));
+|| define('DIRECTUS_ENV', (getenv('DIRECTUS_ENV') ? getenv('DIRECTUS_ENV') : 'production'));
 
 switch (DIRECTUS_ENV) {
     case 'development_enforce_nonce':

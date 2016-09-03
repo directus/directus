@@ -6,7 +6,7 @@ class FormattingTest extends PHPUnit_Framework_TestCase
 {
     public function testFilenameToTitle()
     {
-        $path = __DIR__.'/a-test_file.txt';
+        $path = __DIR__ . '/a-test_file.txt';
         $this->assertEquals('A Test File', Formatting::fileNameToFileTitle($path));
     }
 

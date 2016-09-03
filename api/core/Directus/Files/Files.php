@@ -3,11 +3,10 @@
 namespace Directus\Files;
 
 use Directus\Bootstrap;
-use Directus\Hook\Hook;
 use Directus\Db\TableGateway\DirectusSettingsTableGateway;
+use Directus\Hook\Hook;
 use Directus\Util\DateUtils;
 use Directus\Util\Formatting;
-use League\Flysystem\FileNotFoundException;
 
 class Files
 {
@@ -15,9 +14,9 @@ class Files
     private $filesSettings = [];
     private $filesystem = null;
     private $defaults = [
-        'caption'   =>  '',
-        'tags'      =>  '',
-        'location'  =>  ''
+        'caption' => '',
+        'tags' => '',
+        'location' => ''
     ];
 
     /**
@@ -65,7 +64,7 @@ class Files
 
         $ext = pathinfo($file['name'], PATHINFO_EXTENSION);
         if ($ext) {
-            $thumbPath = 'thumbs/'.$file['id'].'.'.$ext;
+            $thumbPath = 'thumbs/' . $file['id'] . '.' . $ext;
             if ($this->exists($thumbPath)) {
                 $this->emitter->run('files.thumbnail.deleting', array($file));
                 $this->filesystem->getAdapter()->delete($thumbPath);
@@ -258,7 +257,7 @@ class Files
         $imageData = $this->saveData($fileData['data'], $fileName);
 
         $keys = ['date_uploaded', 'storage_adapter'];
-        foreach($keys as $key) {
+        foreach ($keys as $key) {
             if (array_key_exists($key, $imageData)) {
                 $fileData[$key] = $imageData[$key];
             }
@@ -330,15 +329,15 @@ class Files
 
                 $location = [];
                 if (isset($iptc['2#090']) && $iptc['2#090'][0] != '') {
-                  $location[] = $iptc['2#090'][0];
+                    $location[] = $iptc['2#090'][0];
                 }
 
                 if (isset($iptc["2#095"][0]) && $iptc['2#095'][0] != '') {
-                  $location[] = $iptc['2#095'][0];
+                    $location[] = $iptc['2#095'][0];
                 }
 
                 if (isset($iptc["2#101"]) && $iptc['2#101'][0] != '') {
-                  $location[] = $iptc['2#101'][0];
+                    $location[] = $iptc['2#101'][0];
                 }
 
                 $info['location'] = implode(', ', $location);
@@ -391,16 +390,16 @@ class Files
      *
      * @return void
      */
-     // @TODO: it should return thumbnail info.
+    // @TODO: it should return thumbnail info.
     private function createThumbnails($imageName)
     {
         $targetFileName = $this->getConfig('root') . '/' . $imageName;
         $info = pathinfo($targetFileName);
 
-        if (in_array($info['extension'], array('jpg','jpeg','png','gif','tif', 'tiff', 'psd', 'pdf'))) {
+        if (in_array($info['extension'], array('jpg', 'jpeg', 'png', 'gif', 'tif', 'tiff', 'psd', 'pdf'))) {
             $targetContent = $this->filesystem->getAdapter()->read($imageName);
             $img = Thumbnail::generateThumbnail($targetContent, $info['extension'], $this->getSettings('thumbnail_size'), $this->getSettings('thumbnail_crop_enabled'));
-            if($img) {
+            if ($img) {
                 $thumbnailTempName = 'thumbs/THUMB_' . $imageName;
                 $thumbImg = Thumbnail::writeImage($info['extension'], $thumbnailTempName, $img, $this->getSettings('thumbnail_quality'));
                 $this->emitter->run('files.thumbnail.saving', array('name' => $imageName, 'size' => strlen($thumbImg)));
@@ -428,7 +427,7 @@ class Files
         $fileData['title'] = Formatting::fileNameToFileTitle($targetName);
 
         $targetName = $this->getFileName($targetName);
-        $finalPath = rtrim($mediaPath, '/').'/'.$targetName;
+        $finalPath = rtrim($mediaPath, '/') . '/' . $targetName;
         $data = file_get_contents($filePath);
 
         $this->emitter->run('files.saving', array('name' => $targetName, 'size' => strlen($data)));
@@ -463,7 +462,7 @@ class Files
      *
      * @param string $fileName
      * @param string $targetPath
-     * @param int    $attempt - Optional
+     * @param int $attempt - Optional
      *
      * @return bool
      */
@@ -477,12 +476,12 @@ class Files
         $name = $this->sanitizeName($name);
 
         $fileName = "$name.$ext";
-        if($this->filesystem->exists($fileName)) {
+        if ($this->filesystem->exists($fileName)) {
             $matches = array();
-            $trailingDigit = '/\-(\d)\.('.$ext.')$/';
-            if(preg_match($trailingDigit, $fileName, $matches)) {
+            $trailingDigit = '/\-(\d)\.(' . $ext . ')$/';
+            if (preg_match($trailingDigit, $fileName, $matches)) {
                 // Convert "fname-1.jpg" to "fname-2.jpg"
-                $attempt = 1 + (int) $matches[1];
+                $attempt = 1 + (int)$matches[1];
                 $newName = preg_replace($trailingDigit, "-{$attempt}.$ext", $fileName);
                 $fileName = basename($newName);
             } else {
@@ -508,7 +507,7 @@ class Files
      */
     private function getFileName($fileName)
     {
-        switch($this->getSettings('file_naming')) {
+        switch ($this->getSettings('file_naming')) {
             case 'file_hash':
                 $fileName = $this->hashFileName($fileName);
                 break;
@@ -528,7 +527,7 @@ class Files
     {
         $ext = pathinfo($fileName, PATHINFO_EXTENSION);
         $fileHashName = md5(microtime() . $fileName);
-        return $fileHashName.'.'.$ext;
+        return $fileHashName . '.' . $ext;
     }
 
     /**
@@ -542,12 +541,12 @@ class Files
      */
     private function get_string_between($string, $start, $end)
     {
-      $string = " ".$string;
-      $ini = strpos($string,$start);
-      if ($ini == 0) return "";
-      $ini += strlen($start);
-      $len = strpos($string,$end,$ini) - $ini;
-      return substr($string,$ini,$len);
+        $string = " " . $string;
+        $ini = strpos($string, $start);
+        if ($ini == 0) return "";
+        $ini += strlen($start);
+        $len = strpos($string, $end, $ini) - $ini;
+        return substr($string, $ini, $len);
     }
 
     /**

@@ -10,8 +10,8 @@ class SchemaTest extends PHPUnit_Framework_TestCase
 
         $tables = ['users', 'tables'];
         $prefixedTables = Schema::addCoreTablePrefix($tables);
-        foreach($tables as $table) {
-            $this->assertTrue(in_array('directus_'.$table, $prefixedTables));
+        foreach ($tables as $table) {
+            $this->assertTrue(in_array('directus_' . $table, $prefixedTables));
         }
     }
 
@@ -34,7 +34,7 @@ class SchemaTest extends PHPUnit_Framework_TestCase
             'users'
         ]);
 
-        foreach($coreTables as $coreTable) {
+        foreach ($coreTables as $coreTable) {
             $this->assertTrue(in_array($coreTable, Schema::getDirectusTables()));
         }
     }
@@ -53,7 +53,7 @@ class SchemaTest extends PHPUnit_Framework_TestCase
 
         $filteredTables = Schema::getDirectusTables(array_merge($pickCoreTables, $notExistingTable));
 
-        foreach($pickCoreTables as $pickCoreTable) {
+        foreach ($pickCoreTables as $pickCoreTable) {
             $result = in_array(Schema::addCoreTablePrefix($pickCoreTable), $filteredTables);
             if (!in_array($pickCoreTable, $notExistingTable)) {
                 $this->assertFalse($result);
@@ -81,7 +81,7 @@ class SchemaTest extends PHPUnit_Framework_TestCase
 
     private function checkArrayKeys(array $array)
     {
-        foreach($array as $item) {
+        foreach ($array as $item) {
             $this->assertInternalType('array', $item);
             $this->assertArrayHasKey('name', $item);
             $this->assertArrayHasKey('id', $item);

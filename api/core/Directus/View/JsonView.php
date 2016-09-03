@@ -7,7 +7,8 @@ use Directus\Bootstrap;
 /**
  * @todo  Could be implemented as middleware.
  */
-class JsonView {
+class JsonView
+{
 
     /**
      * @var callable
@@ -21,7 +22,8 @@ class JsonView {
      * @param  callable $callable
      * @return null
      */
-    public static function preDispatch($callable) {
+    public static function preDispatch($callable)
+    {
         if (!is_callable($callable)) {
             throw new \InvalidArgumentException(__t('predispatch_callable_must_be_callable'));
         }
@@ -29,19 +31,20 @@ class JsonView {
     }
 
     /**
-     * @param  array  $responseData           The new API layer's response.
-     * @param  array  $responseDataComparison The old API layer's response
+     * @param  array $responseData The new API layer's response.
+     * @param  array $responseDataComparison The old API layer's response
      * @return null
      * @todo only format JSON for non-prod environments when DIRECTUS_ENV
      * is available
      */
-    public static function render(array $responseData, $responseDataComparison = null) {
-        if(!is_null(self::$preDispatch)) {
+    public static function render(array $responseData, $responseDataComparison = null)
+    {
+        if (!is_null(self::$preDispatch)) {
             $preDispatch = self::$preDispatch;
             $responseData = $preDispatch($responseData);
         }
         $responseData = json_encode($responseData);
-        if('production' !== DIRECTUS_ENV) { // e.g. 'production' !== DIRECTUS_ENV
+        if ('production' !== DIRECTUS_ENV) { // e.g. 'production' !== DIRECTUS_ENV
             //$responseData = self::format_json($responseData);
             //$responseData .= "\n";
         }
@@ -50,30 +53,31 @@ class JsonView {
          * TRANSITIONAL - Do comparison between two possible responses, the old
          * DB layer response data and the new.
          */
-        if(!is_null($responseDataComparison)) {
+        if (!is_null($responseDataComparison)) {
             self::compareApiResponses($responseData, $responseDataComparison);
         }
 
         echo $responseData;
     }
 
-    public static function compareApiResponses($new, $old) {
+    public static function compareApiResponses($new, $old)
+    {
         $id = time();
         $old = self::format_json(json_encode($old));
         $log = Bootstrap::get('app')->getLog();
         $uri = $_SERVER['REQUEST_URI'];
-        if(0 === strcmp($new, $old))
+        if (0 === strcmp($new, $old))
             return $log->info("The response comparison matched. [$uri]");
         $log->warn("The response comparison failed. [$uri]");
         // Output path
         $fname_prefix = "cmp_$id";
         $dir = APPLICATION_PATH . '/docs/api-responses';
-        if(!is_dir($dir)) {
+        if (!is_dir($dir)) {
             $log->fatal("Can't write API responses to output directory: $dir");
             return;
         }
         // Write API responses to disk
-        foreach (array('new','old') as $version) {
+        foreach (array('new', 'old') as $version) {
             $fname = "{$fname_prefix}_$version.json";
             $fpath = "$dir/$fname";
             $fp = fopen($fpath, 'w+');
@@ -88,17 +92,18 @@ class JsonView {
      * @param string $json The original JSON string to process.
      * @return string Indented version of the original JSON string.
      */
-    public static function format_json($json) {
+    public static function format_json($json)
+    {
 
-        $result      = '';
-        $pos         = 0;
-        $strLen      = strlen($json);
-        $indentStr   = '  ';
-        $newLine     = "\n";
-        $prevChar    = '';
+        $result = '';
+        $pos = 0;
+        $strLen = strlen($json);
+        $indentStr = '  ';
+        $newLine = "\n";
+        $prevChar = '';
         $outOfQuotes = true;
 
-        for ($i=0; $i<=$strLen; $i++) {
+        for ($i = 0; $i <= $strLen; $i++) {
 
             // Grab the next character in the string.
             $char = substr($json, $i, 1);
@@ -107,12 +112,12 @@ class JsonView {
             if ($char == '"' && $prevChar != '\\') {
                 $outOfQuotes = !$outOfQuotes;
 
-            // If this character is the end of an element,
-            // output a new line and indent the next line.
-            } else if(($char == '}' || $char == ']') && $outOfQuotes) {
+                // If this character is the end of an element,
+                // output a new line and indent the next line.
+            } else if (($char == '}' || $char == ']') && $outOfQuotes) {
                 $result .= $newLine;
-                $pos --;
-                for ($j=0; $j<$pos; $j++) {
+                $pos--;
+                for ($j = 0; $j < $pos; $j++) {
                     $result .= $indentStr;
                 }
             }
@@ -125,7 +130,7 @@ class JsonView {
             if (($char == ',' || $char == '{' || $char == '[') && $outOfQuotes) {
                 $result .= $newLine;
                 if ($char == '{' || $char == '[') {
-                    $pos ++;
+                    $pos++;
                 }
 
                 for ($j = 0; $j < $pos; $j++) {

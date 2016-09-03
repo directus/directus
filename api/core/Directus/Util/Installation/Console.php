@@ -3,7 +3,6 @@
 namespace Directus\Util\Installation;
 
 use Directus\Bootstrap;
-use Directus\Db\TableGateway\DirectusUsersTableGateway;
 use Zend\Db\TableGateway\TableGateway;
 
 class Console
@@ -29,28 +28,28 @@ class Console
 
     public function run()
     {
-        switch($this->command) {
+        switch ($this->command) {
             case 'config':
-                echo __t('creating_config_files').'...';
+                echo __t('creating_config_files') . '...';
                 $this->createConfig();
-                echo __t('done').PHP_EOL;
+                echo __t('done') . PHP_EOL;
                 break;
             case 'database':
-                echo __t('creating_database').'...';
+                echo __t('creating_database') . '...';
                 $this->createDatabase();
-                echo __t('done').PHP_EOL;
+                echo __t('done') . PHP_EOL;
                 break;
             case 'install':
-                echo __t('installing_settings').'...';
+                echo __t('installing_settings') . '...';
                 $this->install();
-                echo __t('done').PHP_EOL;
+                echo __t('done') . PHP_EOL;
                 break;
             // this is a quick solution to recover your password
             // a new improved console application is being under development
             case 'user:update_password':
-                echo __t('Updating user').'...';
+                echo __t('Updating user') . '...';
                 $this->updatePassword();
-                echo __t('done').PHP_EOL;
+                echo __t('done') . PHP_EOL;
                 break;
         }
     }
@@ -67,8 +66,8 @@ class Console
         ];
 
         $options = $this->options;
-        foreach($options as $key => $value) {
-            switch($key) {
+        foreach ($options as $key => $value) {
+            switch ($key) {
                 case 'h':
                 case 'host':
                     $data['db_host'] = $value;
@@ -97,7 +96,7 @@ class Console
             }
         }
 
-        InstallerUtils::createConfig($data, $this->directusPath.'/api');
+        InstallerUtils::createConfig($data, $this->directusPath . '/api');
 
         $this->clear();
     }
@@ -113,8 +112,8 @@ class Console
     {
         $data = [];
         $options = $this->options;
-        foreach($options as $key => $value) {
-            switch($key) {
+        foreach ($options as $key => $value) {
+            switch ($key) {
                 case 'e':
                     $data['directus_email'] = $value;
                     unset($options[$key]);
@@ -131,7 +130,7 @@ class Console
         }
 
         if (!isset($data['directus_password']) || !isset($data['directus_email'])) {
-            echo PHP_EOL.__t('missing_email_or_password').PHP_EOL;
+            echo PHP_EOL . __t('missing_email_or_password') . PHP_EOL;
             exit;
         }
 
@@ -145,8 +144,8 @@ class Console
     {
         $data = [];
         $options = $this->options;
-        foreach($options as $key => $value) {
-            switch($key) {
+        foreach ($options as $key => $value) {
+            switch ($key) {
                 case 'uid':
                 case 'u':
                     $data['id'] = $value;
@@ -161,7 +160,7 @@ class Console
         }
 
         if (!isset($data['password']) || !isset($data['id'])) {
-            echo PHP_EOL.__t('Missing User ID or Password').PHP_EOL;
+            echo PHP_EOL . __t('Missing User ID or Password') . PHP_EOL;
             exit;
         }
 
@@ -170,7 +169,7 @@ class Console
 
         $result = $userTableGateway->update([
             'password' => \Directus\Auth\Provider::hashPassword($data['password']),
-            'access_token' => sha1($data['id'].\Directus\Util\StringUtils::random())
+            'access_token' => sha1($data['id'] . \Directus\Util\StringUtils::random())
         ], ['id' => $data['id']]);
 
         $message = 'Error trying to update the password.';
@@ -178,7 +177,7 @@ class Console
             $message = 'Password updated successfully';
         }
 
-        echo PHP_EOL.__t($message).PHP_EOL;
+        echo PHP_EOL . __t($message) . PHP_EOL;
     }
 
     private function clear()
@@ -191,8 +190,8 @@ class Console
     {
         $options = array();
 
-        foreach($argv as $arg) {
-            if(preg_match("/^(-{1,2})([A-Za-z0-9-_]+)(=)?(.+)*$/", $arg, $argMatch)) {
+        foreach ($argv as $arg) {
+            if (preg_match("/^(-{1,2})([A-Za-z0-9-_]+)(=)?(.+)*$/", $arg, $argMatch)) {
                 $value = '';
                 if (count($argMatch) == 5) {
                     $value = $argMatch[4];

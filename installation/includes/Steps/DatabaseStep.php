@@ -79,7 +79,7 @@ class DatabaseStep extends AbstractStep
         }
 
         $dbConfig = array(
-            'driver' => 'pdo_'.$data['db_type'],
+            'driver' => 'pdo_' . $data['db_type'],
             'host' => $data['db_host'],
             'port' => $data['db_port'],
             'database' => $data['db_name'],

@@ -75,9 +75,9 @@ class SchemaManager
      */
     public static function addCoreTablePrefix($tables)
     {
-        $filterFunction = function($table) {
+        $filterFunction = function ($table) {
             // @TODO: Directus tables prefix will be dynamic
-            return 'directus_'.$table;
+            return 'directus_' . $table;
         };
 
         if (!is_array($tables)) {
@@ -188,7 +188,7 @@ class SchemaManager
 
         $templatesDirs = glob($path, GLOB_ONLYDIR);
         $templatesData = [];
-        foreach($templatesDirs as $dir) {
+        foreach ($templatesDirs as $dir) {
             $key = basename($dir);
             $templatesData[$key] = [
                 'id' => $key,

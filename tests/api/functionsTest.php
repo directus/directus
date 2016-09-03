@@ -164,7 +164,7 @@ class FunctionsTest extends PHPUnit_Framework_TestCase
         mkdir($path);
         mkdir($path . '/dir');
 
-        foreach($files as $file) {
+        foreach ($files as $file) {
             file_put_contents($path . '/' . $file, '');
         }
     }
@@ -174,7 +174,7 @@ class FunctionsTest extends PHPUnit_Framework_TestCase
         $path = $this->path;
         $files = $this->files;
 
-        foreach($files as $file) {
+        foreach ($files as $file) {
             unlink($path . '/' . $file);
         }
 

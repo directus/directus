@@ -94,7 +94,7 @@ class DateUtils
      * Given a date/time in UTC and a target timezone, yields a DateTime object converted from
      * UTC to the target timezone.
      *
-     * @param  mixed $datetime       \DateTime instance or String.
+     * @param  mixed $datetime \DateTime instance or String.
      * @param  mixed $targetTimeZone \DateTimeZone instance or String.
      *
      * @return \DateTime

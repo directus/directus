@@ -30,150 +30,150 @@ class CreateDirectusColumnsTable extends Ruckusing_Migration_Base
 {
     public function up()
     {
-      $t = $this->create_table("directus_columns", array(
-        "id"=>false,
-        )
-      );
+        $t = $this->create_table("directus_columns", array(
+                "id" => false,
+            )
+        );
 
-      //columns
-      $t->column("id", "integer", array(
-        "unsigned"=>true,
-        "auto_increment"=>true,
-        "null"=>false,
-        "primary_key"=>true
-        )
-      );
-      $t->column("table_name", "string", array(
-        "limit"=>64,
-        "null"=>false,
-        "default"=>""
-        )
-      );
-      $t->column("column_name", "string", array(
-        "limit"=>64,
-        "null"=>false,
-        "default"=>""
-        )
-      );
-      $t->column("data_type", "string", array(
-        "limit"=>64,
-        "default"=>NULL
-        )
-      );
-      $t->column("ui", "string", array(
-        "limit"=>64,
-        "default"=>NULL
-        )
-      );
-      $t->column("relationship_type", "string", array(
-          "limit"=>20,
-          "default"=>NULL
-        )
-      );
-      $t->column("related_table", "string", array(
-          "limit"=>64,
-          "default"=>NULL
-        )
-      );
-      $t->column("junction_table", "string", array(
-          "limit"=>64,
-          "default"=>NULL
-        )
-      );
-      $t->column("junction_key_left", "string", array(
-          "limit"=>64,
-          "default"=>NULL
-        )
-      );
-      $t->column("junction_key_right", "string", array(
-          "limit"=>64,
-          "default"=>NULL
-        )
-      );
-      $t->column("hidden_input", "tinyinteger", array(
-          "limit"=>1,
-          "null"=>false,
-          "default"=>0
-        )
-      );
-      $t->column("hidden_list", "tinyinteger", array(
-          "limit"=>1,
-          "null"=>false,
-          "default"=>0
-        )
-      );
-      $t->column("required", "tinyinteger", array(
-          "limit"=>1,
-          "null"=>false,
-          "default"=>0
-        )
-      );
-      $t->column("sort", "integer", array(
-          "default"=>NULL
-        )
-      );
-      $t->column("comment", "string", array(
-          "limit"=>1024,
-          "default"=>NULL
-        )
-      );
+        //columns
+        $t->column("id", "integer", array(
+                "unsigned" => true,
+                "auto_increment" => true,
+                "null" => false,
+                "primary_key" => true
+            )
+        );
+        $t->column("table_name", "string", array(
+                "limit" => 64,
+                "null" => false,
+                "default" => ""
+            )
+        );
+        $t->column("column_name", "string", array(
+                "limit" => 64,
+                "null" => false,
+                "default" => ""
+            )
+        );
+        $t->column("data_type", "string", array(
+                "limit" => 64,
+                "default" => NULL
+            )
+        );
+        $t->column("ui", "string", array(
+                "limit" => 64,
+                "default" => NULL
+            )
+        );
+        $t->column("relationship_type", "string", array(
+                "limit" => 20,
+                "default" => NULL
+            )
+        );
+        $t->column("related_table", "string", array(
+                "limit" => 64,
+                "default" => NULL
+            )
+        );
+        $t->column("junction_table", "string", array(
+                "limit" => 64,
+                "default" => NULL
+            )
+        );
+        $t->column("junction_key_left", "string", array(
+                "limit" => 64,
+                "default" => NULL
+            )
+        );
+        $t->column("junction_key_right", "string", array(
+                "limit" => 64,
+                "default" => NULL
+            )
+        );
+        $t->column("hidden_input", "tinyinteger", array(
+                "limit" => 1,
+                "null" => false,
+                "default" => 0
+            )
+        );
+        $t->column("hidden_list", "tinyinteger", array(
+                "limit" => 1,
+                "null" => false,
+                "default" => 0
+            )
+        );
+        $t->column("required", "tinyinteger", array(
+                "limit" => 1,
+                "null" => false,
+                "default" => 0
+            )
+        );
+        $t->column("sort", "integer", array(
+                "default" => NULL
+            )
+        );
+        $t->column("comment", "string", array(
+                "limit" => 1024,
+                "default" => NULL
+            )
+        );
 
-      $t->finish();
+        $t->finish();
 
-      $this->add_index("directus_columns", array("table_name","column_name"), array(
-        "unique"=>true,
-        "name"=>"table-column"
-        )
-      );
+        $this->add_index("directus_columns", array("table_name", "column_name"), array(
+                "unique" => true,
+                "name" => "table-column"
+            )
+        );
 
-      $this->insert('directus_columns', [
-          'table_name' => 'directus_users',
-          'column_name' => 'group',
-          'data_type' => NULL,
-          'ui' => 'many_to_one',
-          'hidden_input' => 0,
-          'hidden_list' => 0,
-          'required' => 0,
-          'relationship_type' => 'MANYTOONE',
-          'related_table' => 'directus_groups',
-          'junction_table' => NULL,
-          'junction_key_left' => NULL,
-          'junction_key_right' => 'group_id',
-          'sort' => NULL,
-          'comment' => ''
-      ]);
+        $this->insert('directus_columns', [
+            'table_name' => 'directus_users',
+            'column_name' => 'group',
+            'data_type' => NULL,
+            'ui' => 'many_to_one',
+            'hidden_input' => 0,
+            'hidden_list' => 0,
+            'required' => 0,
+            'relationship_type' => 'MANYTOONE',
+            'related_table' => 'directus_groups',
+            'junction_table' => NULL,
+            'junction_key_left' => NULL,
+            'junction_key_right' => 'group_id',
+            'sort' => NULL,
+            'comment' => ''
+        ]);
 
-      $this->insert('directus_columns', [
-        'table_name' => 'directus_users',
-        'column_name' => 'avatar_file_id',
-        'data_type' => 'INT',
-        'ui' => 'single_file',
-        'hidden_input' => 0,
-        'hidden_list' => 0,
-        'required' => 0,
-        'relationship_type' => 'MANYTOONE',
-        'related_table' => 'directus_files',
-        'junction_table' => NULL,
-        'junction_key_left' => NULL,
-        'junction_key_right' => 'avatar_file_id',
-        'sort' => NULL,
-        'comment' => ''
-      ]);
+        $this->insert('directus_columns', [
+            'table_name' => 'directus_users',
+            'column_name' => 'avatar_file_id',
+            'data_type' => 'INT',
+            'ui' => 'single_file',
+            'hidden_input' => 0,
+            'hidden_list' => 0,
+            'required' => 0,
+            'relationship_type' => 'MANYTOONE',
+            'related_table' => 'directus_files',
+            'junction_table' => NULL,
+            'junction_key_left' => NULL,
+            'junction_key_right' => 'avatar_file_id',
+            'sort' => NULL,
+            'comment' => ''
+        ]);
 
-      /*$this->execute("INSERT INTO `directus_columns` (`id`, `table_name`, `column_name`, `data_type`, `ui`, `system`, `master`, `hidden_input`, `hidden_list`, `required`, `relationship_type`, `table_related`, `junction_table`, `junction_key_left`, `junction_key_right`, `sort`, `comment`)
-VALUES
-  (1,'directus_users','group',NULL,'many_to_one',0,0,0,0,0,'MANYTOONE','directus_groups',NULL,NULL,'group_id',NULL,''),
-  (2,'directus_users','avatar_file_id','INT','single_file',0,0,0,0,0,'MANYTOONE','directus_files',NULL,NULL,'avatar_file_id',NULL,'');");*/
+        /*$this->execute("INSERT INTO `directus_columns` (`id`, `table_name`, `column_name`, `data_type`, `ui`, `system`, `master`, `hidden_input`, `hidden_list`, `required`, `relationship_type`, `table_related`, `junction_table`, `junction_key_left`, `junction_key_right`, `sort`, `comment`)
+  VALUES
+    (1,'directus_users','group',NULL,'many_to_one',0,0,0,0,0,'MANYTOONE','directus_groups',NULL,NULL,'group_id',NULL,''),
+    (2,'directus_users','avatar_file_id','INT','single_file',0,0,0,0,0,'MANYTOONE','directus_files',NULL,NULL,'avatar_file_id',NULL,'');");*/
     }//up()
 
     public function down()
     {
-      $this->remove_index("directus_columns", array("table_name","column_name"), array(
-        "unique"=>true,
-        "name"=>"table-column"
-        )
-      );
+        $this->remove_index("directus_columns", array("table_name", "column_name"), array(
+                "unique" => true,
+                "name" => "table-column"
+            )
+        );
 
-      $this->drop_table("directus_columns");
+        $this->drop_table("directus_columns");
     }//down()
 }

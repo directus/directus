@@ -7,7 +7,7 @@ class InstallerUtilsTest extends PHPUnit_Framework_TestCase
     public function testCreateFileException()
     {
         $this->setExpectedException('InvalidArgumentException');
-        InstallerUtils::createConfig([], __DIR__.'/');
+        InstallerUtils::createConfig([], __DIR__ . '/');
     }
 
     public function testVariableReplacement()
@@ -44,20 +44,20 @@ class InstallerUtilsTest extends PHPUnit_Framework_TestCase
             'db_password' => 'password',
             'directus_path' => '/directus/',
             'directus_email' => 'admin@directus.local'
-        ], __DIR__.'/');
+        ], __DIR__ . '/');
 
-        $this->assertSame(sha1_file(__DIR__.'/mock/config.sample.php'), sha1_file(__DIR__.'/config.php'));
-        $this->assertSame(sha1_file(__DIR__.'/mock/configuration.sample.php'), sha1_file(__DIR__.'/configuration.php'));
+        $this->assertSame(sha1_file(__DIR__ . '/mock/config.sample.php'), sha1_file(__DIR__ . '/config.php'));
+        $this->assertSame(sha1_file(__DIR__ . '/mock/configuration.sample.php'), sha1_file(__DIR__ . '/configuration.php'));
     }
 
     public function tearDown()
     {
-        if (file_exists(__DIR__.'/config.php')) {
-            unlink(__DIR__.'/config.php');
+        if (file_exists(__DIR__ . '/config.php')) {
+            unlink(__DIR__ . '/config.php');
         }
 
-        if (file_exists(__DIR__.'/configuration.php')) {
-            unlink(__DIR__.'/configuration.php');
+        if (file_exists(__DIR__ . '/configuration.php')) {
+            unlink(__DIR__ . '/configuration.php');
         }
     }
 }

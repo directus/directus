@@ -26,7 +26,7 @@ if (!function_exists('uc_convert')) {
             "Ipod" => 'iPod',
             "Pdf" => 'PDF',
             "Pdfs" => 'PDFs',
-            'Ui'  => 'UI',
+            'Ui' => 'UI',
             "Url" => 'URL',
             "Ip" => 'IP',
             "Ftp" => 'FTP',
@@ -56,8 +56,7 @@ if (!function_exists('uc_convert')) {
 if (!function_exists('ping_route')) {
     function ping_route($app)
     {
-        return function() use ($app)
-        {
+        return function () use ($app) {
             if ('production' === DIRECTUS_ENV) {
                 return $app->halt('404');
             }
@@ -260,7 +259,7 @@ if (!function_exists('is_numeric_array')) {
 if (!function_exists('is_numeric_keys_array')) {
     function is_numeric_keys_array($array)
     {
-        foreach(array_keys($array) as $key) {
+        foreach (array_keys($array) as $key) {
             if (!is_numeric($key)) {
                 return false;
             }
@@ -303,7 +302,8 @@ if (!function_exists('load_registered_hooks')) {
 }
 
 if (!function_exists('get_user_timezone')) {
-    function get_user_timezone() {
+    function get_user_timezone()
+    {
         $userTimeZone = get_auth_timezone();
 
         if (!$userTimeZone) {
@@ -315,7 +315,8 @@ if (!function_exists('get_user_timezone')) {
 }
 
 if (!function_exists('get_user_locale')) {
-    function get_user_locale() {
+    function get_user_locale()
+    {
         $locale = $defaultLocale = 'en';
 
         if (isset($_SESSION['install_locale'])) {
@@ -335,7 +336,8 @@ if (!function_exists('get_user_locale')) {
 }
 
 if (!function_exists('get_default_locale')) {
-    function get_default_locale() {
+    function get_default_locale()
+    {
         // if there's not config files created
         if (!defined('BASE_PATH') || !defined('APPLICATION_PATH')) {
             return null;
@@ -348,7 +350,8 @@ if (!function_exists('get_default_locale')) {
 }
 
 if (!function_exists('get_auth_info')) {
-    function get_auth_info($attribute) {
+    function get_auth_info($attribute)
+    {
         // if there's not config files created
         if (!defined('BASE_PATH') || !defined('APPLICATION_PATH')) {
             return null;
@@ -365,13 +368,15 @@ if (!function_exists('get_auth_info')) {
 }
 
 if (!function_exists('get_auth_locale')) {
-    function get_auth_locale() {
+    function get_auth_locale()
+    {
         return get_auth_info('language');
     }
 }
 
 if (!function_exists('get_auth_timezone')) {
-    function get_auth_timezone() {
+    function get_auth_timezone()
+    {
         return get_auth_info('timezone');
     }
 }
@@ -430,7 +435,8 @@ if (!function_exists('get_locale_keys')) {
 }
 
 if (!function_exists('get_locales_available')) {
-    function get_locales_available() {
+    function get_locales_available()
+    {
         $languagesManager = \Directus\Bootstrap::get('languagesManager');
 
         return $languagesManager->getLanguagesAvailable();
@@ -438,7 +444,8 @@ if (!function_exists('get_locales_available')) {
 }
 
 if (!function_exists('is_locale_available')) {
-    function is_locale_available($locale) {
+    function is_locale_available($locale)
+    {
         $languagesManager = \Directus\Bootstrap::get('languagesManager');
 
         return $languagesManager->isLanguageAvailable($locale);
@@ -446,17 +453,19 @@ if (!function_exists('is_locale_available')) {
 }
 
 if (!function_exists('get_default_phrases')) {
-    function get_default_phrases() {
-        $phrasesPath = BASE_PATH.'/api/locales/en.json';
+    function get_default_phrases()
+    {
+        $phrasesPath = BASE_PATH . '/api/locales/en.json';
 
         return json_decode(file_get_contents($phrasesPath), true);
     }
 }
 
 if (!function_exists('get_phrases')) {
-    function get_phrases($locale = 'en') {
+    function get_phrases($locale = 'en')
+    {
         $defaultPhrases = get_default_phrases();
-        $langFile = BASE_PATH . '/api/locales/'.$locale.'.json';
+        $langFile = BASE_PATH . '/api/locales/' . $locale . '.json';
 
         $phrases = [];
         if (file_exists($langFile)) {
@@ -484,7 +493,8 @@ if (!function_exists('__t')) {
 }
 
 if (!function_exists('get_timezones_list')) {
-    function get_timezone_list() {
+    function get_timezone_list()
+    {
         // List from: https://github.com/tamaspap/timezones
         return [
             'Pacific/Midway' => '(UTC-11:00) Midway Island',
@@ -695,14 +705,14 @@ if (!function_exists('find_files')) {
             $searchPaths = [$searchPaths];
         }
 
-        $validPath = function($path) {
+        $validPath = function ($path) {
             $filename = pathinfo($path, PATHINFO_FILENAME);
 
             return $filename[0] !== '_';
         };
 
         $filesPath = [];
-        foreach($searchPaths as $searchPath) {
+        foreach ($searchPaths as $searchPath) {
             $searchPath = rtrim($searchPath, '/');
             $result = array_filter(glob($searchPath . '/' . rtrim($pattern, '/'), $flags), $validPath);
             $filesPath = array_merge($filesPath, $result);
@@ -778,10 +788,10 @@ if (!function_exists('find_templates')) {
             define('BASE_PATH', realpath(__DIR__ . '/../../'));
         }
 
-        $getTemplateKeyPath = function($suffix) {
+        $getTemplateKeyPath = function ($suffix) {
             $basePath = BASE_PATH . '/' . trim($suffix, '/') . '/';
 
-            return array_map(function($path) use ($basePath) {
+            return array_map(function ($path) use ($basePath) {
                 return substr($path, strlen($basePath));
             }, find_html_files($basePath, true));
         };
@@ -805,7 +815,7 @@ if (!function_exists('get_gravatar')) {
      *
      * @source https://gravatar.com/site/implement/images/php/
      */
-    function get_gravatar($email, $s = 200, $d = 'identicon', $r = 'g', $img = false, $atts = array() )
+    function get_gravatar($email, $s = 200, $d = 'identicon', $r = 'g', $img = false, $atts = array())
     {
         $url = '//www.gravatar.com/avatar/';
         $url .= md5(strtolower(trim($email)));

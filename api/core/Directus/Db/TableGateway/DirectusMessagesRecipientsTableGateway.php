@@ -3,28 +3,27 @@
 namespace Directus\Db\TableGateway;
 
 use Directus\Acl\Acl;
-use Directus\Db\TableGateway\AclAwareTableGateway;
 use Directus\MemcacheProvider;
 use Zend\Db\Adapter\AdapterInterface;
-use Zend\Db\Sql\Sql;
+use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Update;
-use Zend\Db\Sql\Insert;
-use Zend\Db\Sql\Expression;
-use Zend\Db\Adapter\Adapter;
 
-class DirectusMessagesRecipientsTableGateway extends AclAwareTableGateway {
+class DirectusMessagesRecipientsTableGateway extends AclAwareTableGateway
+{
 
     public static $_tableName = "directus_messages_recipients";
 
-    public function __construct(Acl $acl, AdapterInterface $adapter) {
+    public function __construct(Acl $acl, AdapterInterface $adapter)
+    {
         parent::__construct($acl, self::$_tableName, $adapter);
     }
 
-    public function fetchMessageRecipients($messageIds = array()) {
+    public function fetchMessageRecipients($messageIds = array())
+    {
         $select = new Select($this->getTable());
         $select
-            ->columns(array('id','message_id','recipient'))
+            ->columns(array('id', 'message_id', 'recipient'))
             ->where->in('message_id', $messageIds);
 
         $records = $this->selectWith($select)->toArray();
@@ -41,7 +40,8 @@ class DirectusMessagesRecipientsTableGateway extends AclAwareTableGateway {
         return $recipientMap;
     }
 
-    public function markAsRead($messageIds, $uid) {
+    public function markAsRead($messageIds, $uid)
+    {
         $update = new Update($this->getTable());
         $update
             ->set(array('read' => 1))
@@ -52,11 +52,12 @@ class DirectusMessagesRecipientsTableGateway extends AclAwareTableGateway {
         return $this->updateWith($update);
     }
 
-    public function countMessages($uid) {
+    public function countMessages($uid)
+    {
         $fetchFn = function () use ($uid) {
             $select = new Select($this->table);
             $select
-                ->columns(array('id','read','count' => new Expression('COUNT(`id`)'),'max_id' => new Expression('MAX(`message_id`)')))
+                ->columns(array('id', 'read', 'count' => new Expression('COUNT(`id`)'), 'max_id' => new Expression('MAX(`message_id`)')))
                 ->where->equalTo('recipient', $uid);
             $select
                 ->group(array('id', 'read'));
@@ -67,17 +68,17 @@ class DirectusMessagesRecipientsTableGateway extends AclAwareTableGateway {
         $result = $this->memcache->getOrCache($cacheKey, $fetchFn, 1800);
 
         $count = array(
-            'read'=> 0,
+            'read' => 0,
             'unread' => 0,
             'total' => 0,
             'max_id' => 0
         );
 
-        foreach($result as $item) {
+        foreach ($result as $item) {
             if ((int)$item['max_id'] > $count['max_id']) {
                 $count['max_id'] = (int)$item['max_id'];
             }
-            switch($item['read']) {
+            switch ($item['read']) {
                 case '1':
                     $count['read'] = (int)$item['count'];
                     break;
@@ -92,18 +93,19 @@ class DirectusMessagesRecipientsTableGateway extends AclAwareTableGateway {
         return $count;
     }
 
-    public function getMessagesNewerThan($maxId, $currentUser) {
+    public function getMessagesNewerThan($maxId, $currentUser)
+    {
         $fetchFn = function () use ($maxId, $currentUser) {
             $select = new Select($this->getTable());
             $select
-                ->columns(array('id','message_id'))
-                ->join('directus_messages', 'directus_messages_recipients.message_id = directus_messages.id',array('response_to'))
+                ->columns(array('id', 'message_id'))
+                ->join('directus_messages', 'directus_messages_recipients.message_id = directus_messages.id', array('response_to'))
                 ->where
-                    ->greaterThan('message_id', $maxId)
-                    ->and
-                    ->equalTo('recipient', $currentUser)
-                    ->and
-                    ->equalTo('read', 0);
+                ->greaterThan('message_id', $maxId)
+                ->and
+                ->equalTo('recipient', $currentUser)
+                ->and
+                ->equalTo('read', 0);
             $result = $this->selectWith($select)->toArray();
             return $result;
         };

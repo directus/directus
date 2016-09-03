@@ -1,6 +1,6 @@
-$(window).ready(function() {
+$(window).ready(function () {
 
-  switch(step) {
+  switch (step) {
     case 1:
       CheckLanguageStep();
       break;
@@ -15,11 +15,11 @@ $(window).ready(function() {
       break;
   }
 
-  $('input').on('change keypress paste focus textInput input', function(e) {
-    switch(step) {
+  $('input').on('change keypress paste focus textInput input', function (e) {
+    switch (step) {
       case 1:
-       CheckLanguageStep();
-       break;
+        CheckLanguageStep();
+        break;
       case 2:
         CheckProjectStep();
         break;
@@ -39,12 +39,13 @@ $(window).ready(function() {
     var pass = $('input[name=directus_password]').val();
     var passconfirm = $('input[name=directus_password_confirm]').val();
 
-    if(name && email && pass && passconfirm && pass === passconfirm) {
+    if (name && email && pass && passconfirm && pass === passconfirm) {
       $('button[type=submit]').removeClass('disabled');
     } else {
       $('button[type=submit]').addClass('disabled');
     }
   }
+
   function CheckDatabaseStep() {
     var name = $('input[name=db_host]').val();
     var user = $('input[name=db_user]').val();
@@ -52,7 +53,7 @@ $(window).ready(function() {
     // var pass = $('input[name=password]').val();
     var dbname = $('input[name=db_name]').val();
 
-    if(name && user /*&& pass*/ && dbname) {
+    if (name && user /*&& pass*/ && dbname) {
       $('button[type=submit]').removeClass('disabled');
     } else {
       $('button[type=submit]').addClass('disabled');
@@ -69,15 +70,15 @@ $(window).ready(function() {
     $('button[type=submit]').removeClass('disabled');
   }
 
-  $('button').click(function(e) {
-    if($(e.target).hasClass('disabled')) {
+  $('button').click(function (e) {
+    if ($(e.target).hasClass('disabled')) {
       e.preventDefault();
       return false;
     }
   });
 
   var fetching = false;
-  $('#retryButton').click(function(e) {
+  $('#retryButton').click(function (e) {
     e.preventDefault();
 
     if (fetching) {
@@ -85,7 +86,7 @@ $(window).ready(function() {
     }
 
     fetching = true;
-    $.get('index.php?step=4&check_config', function(res) {
+    $.get('index.php?step=4&check_config', function (res) {
       fetching = false;
       if (res === 'true') {
         $('#failSpan').html('<span class="label label-success">Yes</span>');

@@ -114,14 +114,14 @@ class StepResponse
     protected function addMessage($name, $messages)
     {
         if (!property_exists($this, $name)) {
-            throw new \BadMethodCallException("Property '$name' does not exists in ".__CLASS__);
+            throw new \BadMethodCallException("Property '$name' does not exists in " . __CLASS__);
         }
 
         if (!is_array($messages)) {
             $messages = (array)$messages;
         }
 
-        foreach($messages as $message) {
+        foreach ($messages as $message) {
             array_push($this->{$name}, $message);
         }
     }
@@ -136,7 +136,7 @@ class StepResponse
     protected function getMessages($messages, $raw = false)
     {
         if ($raw !== true) {
-            foreach($messages as &$message) {
+            foreach ($messages as &$message) {
                 $message = htmlentities($message, ENT_QUOTES);
             }
         }

@@ -10,13 +10,14 @@ use Directus\Acl\Exception\UnauthorizedTableDeleteException;
 use Directus\Acl\Exception\UnauthorizedTableEditException;
 use Directus\Auth\Provider as Auth;
 use Directus\Bootstrap;
-use Directus\Db\Exception\SuppliedArrayAsColumnValue;
 use Directus\Db\Exception\DuplicateEntryException;
+use Directus\Db\Exception\SuppliedArrayAsColumnValue;
 use Directus\Db\RowGateway\AclAwareRowGateway;
 use Directus\Db\SchemaManager;
 use Directus\Db\TableSchema;
 use Directus\Files\Files;
 use Directus\Hook\Hook;
+use Directus\MemcacheProvider;
 use Directus\Util\ArrayUtils;
 use Directus\Util\DateUtils;
 use Directus\Util\Formatting;
@@ -29,13 +30,12 @@ use Zend\Db\Sql\Insert;
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Update;
-use Zend\Db\Sql\Where;
-use Zend\Db\TableGateway\TableGateway;
 use Zend\Db\TableGateway\Feature;
 use Zend\Db\TableGateway\Feature\RowGatewayFeature;
-use Directus\MemcacheProvider;
+use Zend\Db\TableGateway\TableGateway;
 
-class AclAwareTableGateway extends TableGateway {
+class AclAwareTableGateway extends TableGateway
+{
 
     protected $acl;
 
@@ -82,7 +82,7 @@ class AclAwareTableGateway extends TableGateway {
             $this->featureSet = new Feature\FeatureSet();
         }
 
-        if($primaryKeyName !== null) {
+        if ($primaryKeyName !== null) {
             $this->primaryKeyFieldName = $primaryKeyName;
         } else {
             $tablePrimaryKey = TableSchema::getTablePrimaryKey($table);
@@ -108,10 +108,11 @@ class AclAwareTableGateway extends TableGateway {
      * Underscore to camelcase table name to namespaced table gateway classname,
      * e.g. directus_users => \Directus\Db\TableGateway\DirectusUsersTableGateway
      */
-    public static function makeTableGatewayFromTableName($acl, $table, $adapter) {
+    public static function makeTableGatewayFromTableName($acl, $table, $adapter)
+    {
         $tableGatewayClassName = Formatting::underscoreToCamelCase($table) . "TableGateway";
         $tableGatewayClassName = __NAMESPACE__ . "\\$tableGatewayClassName";
-        if(class_exists($tableGatewayClassName)) {
+        if (class_exists($tableGatewayClassName)) {
             return new $tableGatewayClassName($acl, $adapter);
         }
         return new self($acl, $table, $adapter);
@@ -121,23 +122,26 @@ class AclAwareTableGateway extends TableGateway {
      * HELPER FUNCTIONS
      */
 
-    public function withKey($key, $resultSet) {
+    public function withKey($key, $resultSet)
+    {
         $withKey = array();
-        foreach($resultSet as $row) {
+        foreach ($resultSet as $row) {
             $withKey[$row[$key]] = $row;
         }
         return $withKey;
     }
 
-    protected function convertResultSetDateTimesTimeZones(array $resultSet, $targetTimeZone, $fields = array('datetime'), $yieldObjects = false) {
-        foreach($resultSet as &$result) {
+    protected function convertResultSetDateTimesTimeZones(array $resultSet, $targetTimeZone, $fields = array('datetime'), $yieldObjects = false)
+    {
+        foreach ($resultSet as &$result) {
             $result = $this->convertRowDateTimesToTimeZone($result, $targetTimeZone, $fields);
         }
         return $resultSet;
     }
 
-    protected function convertRowDateTimesToTimeZone(array $row, $targetTimeZone, $fields = array('datetime'), $yieldObjects = false) {
-        foreach($fields as $field) {
+    protected function convertRowDateTimesToTimeZone(array $row, $targetTimeZone, $fields = array('datetime'), $yieldObjects = false)
+    {
+        foreach ($fields as $field) {
             $col =& $row[$field];
             $datetime = DateUtils::convertUtcDateTimeToTimeZone($col, $targetTimeZone);
             $col = $yieldObjects ? $datetime : $datetime->format("Y-m-d H:i:s T");
@@ -153,7 +157,8 @@ class AclAwareTableGateway extends TableGateway {
         return $row;
     }
 
-    public function find($id, $pk_field_name = null) {
+    public function find($id, $pk_field_name = null)
+    {
         if ($pk_field_name == null) {
             $pk_field_name = $this->primaryKeyFieldName;
         }
@@ -161,9 +166,10 @@ class AclAwareTableGateway extends TableGateway {
         return $record;
     }
 
-    public function fetchAll($selectModifier = null) {
-        return $this->select(function(Select $select) use ($selectModifier) {
-            if(is_callable($selectModifier)) {
+    public function fetchAll($selectModifier = null)
+    {
+        return $this->select(function (Select $select) use ($selectModifier) {
+            if (is_callable($selectModifier)) {
                 $selectModifier($select);
             }
         });
@@ -172,42 +178,46 @@ class AclAwareTableGateway extends TableGateway {
     /**
      * @return array All rows in array form with record IDs for the array's keys.
      */
-    public function fetchAllWithIdKeys($selectModifier = null) {
+    public function fetchAllWithIdKeys($selectModifier = null)
+    {
         $allWithIdKeys = array();
         $all = $this->fetchAll($selectModifier)->toArray();
         return $this->withKey('id', $all);
     }
 
-    public function findOneBy($field, $value) {
-        $rowset = $this->select(function(Select $select) use ($field, $value) {
+    public function findOneBy($field, $value)
+    {
+        $rowset = $this->select(function (Select $select) use ($field, $value) {
             $select->limit(1);
             $select->where->equalTo($field, $value);
         });
         $row = $rowset->current();
         // Supposing this "one" doesn't exist in the DB
-        if(false === $row) {
+        if (false === $row) {
             return false;
         }
         $row = $row->toArray();
         return $row;
     }
 
-    public function findOneByArray(array $data) {
+    public function findOneByArray(array $data)
+    {
         $rowset = $this->select($data);
 
         $row = $rowset->current();
         // Supposing this "one" doesn't exist in the DB
-        if(false === $row) {
+        if (false === $row) {
             return false;
         }
         $row = $row->toArray();
         return $row;
     }
 
-    public function addOrUpdateRecordByArray(array $recordData, $tableName = null) {
+    public function addOrUpdateRecordByArray(array $recordData, $tableName = null)
+    {
         $tableName = is_null($tableName) ? $this->table : $tableName;
-        foreach($recordData as $columnName => $columnValue) {
-            if(is_array($columnValue)) {
+        foreach ($recordData as $columnName => $columnValue) {
+            if (is_array($columnValue)) {
                 // $table = is_null($tableName) ? $this->table : $tableName;
                 throw new SuppliedArrayAsColumnValue("Attempting to write an array as the value for column `$tableName`.`$columnName`.");
             }
@@ -218,7 +228,7 @@ class AclAwareTableGateway extends TableGateway {
 
         $TableGateway = new self($this->acl, $tableName, $this->adapter);
         $rowExists = isset($recordData[$TableGateway->primaryKeyFieldName]);
-        if($rowExists) {
+        if ($rowExists) {
             $Update = new Update($tableName);
             $Update->set($recordData);
             $Update->where(array($TableGateway->primaryKeyFieldName => $recordData[$TableGateway->primaryKeyFieldName]));
@@ -234,35 +244,35 @@ class AclAwareTableGateway extends TableGateway {
             $TableGateway->insert($d);
             $recordData[$TableGateway->primaryKeyFieldName] = $TableGateway->getLastInsertValue();
 
-            if($tableName == "directus_files") {
-              $Files = new \Directus\Files\Files();
-              $ext = pathinfo($recordData['name'], PATHINFO_EXTENSION);
+            if ($tableName == "directus_files") {
+                $Files = new \Directus\Files\Files();
+                $ext = pathinfo($recordData['name'], PATHINFO_EXTENSION);
 
-              $thumbnailPath = 'thumbs/THUMB_' . $recordData['name'];
-              if ($Files->exists($thumbnailPath)) {
-                $Files->rename($thumbnailPath, 'thumbs/' . $recordData[$this->primaryKeyFieldName] . '.' . $ext);
-              }
+                $thumbnailPath = 'thumbs/THUMB_' . $recordData['name'];
+                if ($Files->exists($thumbnailPath)) {
+                    $Files->rename($thumbnailPath, 'thumbs/' . $recordData[$this->primaryKeyFieldName] . '.' . $ext);
+                }
 
-              $updateArray = array();
-              if ($Files->getSettings('file_naming') == 'file_id') {
-                $Files->rename($recordData['name'], str_pad($recordData[$this->primaryKeyFieldName],11,"0", STR_PAD_LEFT).'.'.$ext);
-                $updateArray['name'] = str_pad($recordData[$this->primaryKeyFieldName],11,"0", STR_PAD_LEFT).'.'.$ext;
-                $recordData['name'] = $updateArray['name'];
-              }
+                $updateArray = array();
+                if ($Files->getSettings('file_naming') == 'file_id') {
+                    $Files->rename($recordData['name'], str_pad($recordData[$this->primaryKeyFieldName], 11, "0", STR_PAD_LEFT) . '.' . $ext);
+                    $updateArray['name'] = str_pad($recordData[$this->primaryKeyFieldName], 11, "0", STR_PAD_LEFT) . '.' . $ext;
+                    $recordData['name'] = $updateArray['name'];
+                }
 
-              if(!empty($updateArray)) {
-                $Update = new Update($tableName);
-                $Update->set($updateArray);
-                $Update->where(array($TableGateway->primaryKeyFieldName => $recordData[$TableGateway->primaryKeyFieldName]));
-                $TableGateway->updateWith($Update);
-              }
+                if (!empty($updateArray)) {
+                    $Update = new Update($tableName);
+                    $Update->set($updateArray);
+                    $Update->where(array($TableGateway->primaryKeyFieldName => $recordData[$TableGateway->primaryKeyFieldName]));
+                    $TableGateway->updateWith($Update);
+                }
             }
 
             $this->emitter->run('postInsert', [$TableGateway, $recordData, $this->adapter, $this->acl]);
         }
 
         $columns = TableSchema::getAllNonAliasTableColumnNames($tableName);
-        $recordData = $TableGateway->fetchAll(function($select) use ($recordData, $columns, $TableGateway) {
+        $recordData = $TableGateway->fetchAll(function ($select) use ($recordData, $columns, $TableGateway) {
             $select
                 ->columns($columns)
                 ->limit(1);
@@ -272,7 +282,8 @@ class AclAwareTableGateway extends TableGateway {
         return $recordData;
     }
 
-    public function drop($tableName = null) {
+    public function drop($tableName = null)
+    {
         if ($tableName == null) {
             $tableName = $this->table;
         }
@@ -325,7 +336,8 @@ class AclAwareTableGateway extends TableGateway {
         return $dropped;
     }
 
-    public function dropColumn($columnName, $tableName = null) {
+    public function dropColumn($columnName, $tableName = null)
+    {
         if ($tableName == null) {
             $tableName = $this->table;
         }
@@ -372,72 +384,77 @@ class AclAwareTableGateway extends TableGateway {
       Temporary solutions to fix add column error
         This add column is the same old-db add_column method
     */
-    public function addColumn($tableName, $tableData) {
-      $directus_types = array('MANYTOMANY', 'ONETOMANY', 'ALIAS');
-      $relationshipType = ArrayUtils::get($tableData, 'relationship_type', null);
-      // TODO: list all types which need manytoone ui
-      // Hard-coded
-      $manytoones = array('single_file', 'many_to_one', 'many_to_one_typeahead', 'MANYTOONE');
+    public function addColumn($tableName, $tableData)
+    {
+        $directus_types = array('MANYTOMANY', 'ONETOMANY', 'ALIAS');
+        $relationshipType = ArrayUtils::get($tableData, 'relationship_type', null);
+        // TODO: list all types which need manytoone ui
+        // Hard-coded
+        $manytoones = array('single_file', 'many_to_one', 'many_to_one_typeahead', 'MANYTOONE');
 
-      if (in_array($relationshipType, $directus_types)) {
-          //This is a 'virtual column'. Write to directus schema instead of MYSQL
-          $this->addVirtualColumn($tableName, $tableData);
-      } else {
-          $this->addTableColumn($tableName, $tableData);
-          // Temporary solutions to #481, #645
-          if(array_key_exists('ui', $tableData) && in_array($tableData['ui'], $manytoones)) {
-            $tableData['relationship_type'] = 'MANYTOONE';
-            $tableData['junction_key_right'] = $tableData['column_name'];
-          }
+        if (in_array($relationshipType, $directus_types)) {
+            //This is a 'virtual column'. Write to directus schema instead of MYSQL
+            $this->addVirtualColumn($tableName, $tableData);
+        } else {
+            $this->addTableColumn($tableName, $tableData);
+            // Temporary solutions to #481, #645
+            if (array_key_exists('ui', $tableData) && in_array($tableData['ui'], $manytoones)) {
+                $tableData['relationship_type'] = 'MANYTOONE';
+                $tableData['junction_key_right'] = $tableData['column_name'];
+            }
 
-          $this->addVirtualColumn($tableName, $tableData);
-      }
+            $this->addVirtualColumn($tableName, $tableData);
+        }
 
-      return $tableData['column_name'];
+        return $tableData['column_name'];
     }
 
-    protected function addTableColumn($tableName, $columnData) {
-      $column_name = $columnData['column_name'];
-      $data_type = $columnData['data_type'];
-      $comment = $columnData['comment'];
+    protected function addTableColumn($tableName, $columnData)
+    {
+        $column_name = $columnData['column_name'];
+        $data_type = $columnData['data_type'];
+        $comment = $columnData['comment'];
 
-      if (array_key_exists('char_length', $columnData)) {
-          $charLength = $columnData['char_length'];
-          // SET and ENUM data type has its values in the char_length attribute
-          // each value are separated by commas
-          // it must be wrap into quotes
-          if (strpos($charLength, ',') !== false) {
-              $charLength = implode(',', array_map(function($value) {
-                  return "'". trim($value) . "'";
-              }, explode(',', $charLength)));
-          }
+        if (array_key_exists('char_length', $columnData)) {
+            $charLength = $columnData['char_length'];
+            // SET and ENUM data type has its values in the char_length attribute
+            // each value are separated by commas
+            // it must be wrap into quotes
+            if (strpos($charLength, ',') !== false) {
+                $charLength = implode(',', array_map(function ($value) {
+                    return "'" . trim($value) . "'";
+                }, explode(',', $charLength)));
+            }
 
-          $data_type = $data_type.'('.$charLength.')';
-      }
+            $data_type = $data_type . '(' . $charLength . ')';
+        }
 
-      // TODO: wrap this into an abstract DDL class
-      $sql = "ALTER TABLE `$tableName` ADD COLUMN `$column_name` $data_type COMMENT '$comment'";
+        // TODO: wrap this into an abstract DDL class
+        $sql = "ALTER TABLE `$tableName` ADD COLUMN `$column_name` $data_type COMMENT '$comment'";
 
-      $this->adapter->query( $sql )->execute();
+        $this->adapter->query($sql)->execute();
     }
 
-    protected function addVirtualColumn($tableName, $columnData) {
-      $alias_columns = array('table_name', 'column_name', 'data_type', 'related_table', 'junction_table', 'junction_key_left','junction_key_right', 'sort', 'ui', 'comment', 'relationship_type');
+    protected function addVirtualColumn($tableName, $columnData)
+    {
+        $alias_columns = array('table_name', 'column_name', 'data_type', 'related_table', 'junction_table', 'junction_key_left', 'junction_key_right', 'sort', 'ui', 'comment', 'relationship_type');
 
-      $columnData['table_name'] = $tableName;
-      $columnData['sort'] = 9999;
+        $columnData['table_name'] = $tableName;
+        $columnData['sort'] = 9999;
 
-      $data = array_intersect_key($columnData, array_flip($alias_columns));
-      return $this->addOrUpdateRecordByArray($data, 'directus_columns');
+        $data = array_intersect_key($columnData, array_flip($alias_columns));
+        return $this->addOrUpdateRecordByArray($data, 'directus_columns');
     }
 
-    protected function logger() {
+    protected function logger()
+    {
         return Bootstrap::get('app')->getLog();
     }
 
-    public function castFloatIfNumeric(&$value, $key) {
+    public function castFloatIfNumeric(&$value, $key)
+    {
         if ($key != 'table_name') {
-            $value = is_numeric($value) ? (float) $value : $value;
+            $value = is_numeric($value) ? (float)$value : $value;
         }
     }
 
@@ -446,7 +463,8 @@ class AclAwareTableGateway extends TableGateway {
      * @param  AbstractSql $query
      * @return null
      */
-    public function dumpSql(AbstractSql $query) {
+    public function dumpSql(AbstractSql $query)
+    {
         $sql = new Sql($this->adapter);
         $query = $sql->getSqlStringForSqlObject($query, $this->adapter->getPlatform());
         return $query;
@@ -458,23 +476,25 @@ class AclAwareTableGateway extends TableGateway {
      * \Zend\Db\Sql\Insert|\Zend\Db\Sql\Update#getRawState
      * @return array
      */
-    protected function extractRawColumnNames($columns) {
+    protected function extractRawColumnNames($columns)
+    {
         $columnNames = array();
         foreach ($insertState['columns'] as $column) {
             $sansSpaces = preg_replace('/\s/', '', $column);
             preg_match('/(\W?\w+\W?\.)?\W?([\*\w+])\W?/', $sansSpaces, $matches);
-            if(isset($matches[2])) {
+            if (isset($matches[2])) {
                 $columnNames[] = $matches[2];
             }
         }
         return $columnNames;
     }
 
-    protected function getRawTableNameFromQueryStateTable($table) {
-        if(is_string($table)) {
+    protected function getRawTableNameFromQueryStateTable($table)
+    {
+        if (is_string($table)) {
             return $table;
         }
-        if(is_array($table)) {
+        if (is_array($table)) {
             // The only value is the real table name (key is alias).
             return array_pop($table);
         }
@@ -560,15 +580,15 @@ class AclAwareTableGateway extends TableGateway {
         }
 
         // Enforce field read blacklist on Select's join tables
-        foreach($selectState['joins'] as $join) {
+        foreach ($selectState['joins'] as $join) {
             $joinTable = $this->getRawTableNameFromQueryStateTable($join['name']);
             $this->acl->enforceBlacklist($joinTable, $join['columns'], Acl::FIELD_READ_BLACKLIST);
         }
 
         try {
             return $this->processSelect($selectState, parent::executeSelect($select));
-        } catch(\Zend\Db\Adapter\Exception\InvalidQueryException $e) {
-            if('production' !== DIRECTUS_ENV) {
+        } catch (\Zend\Db\Adapter\Exception\InvalidQueryException $e) {
+            if ('production' !== DIRECTUS_ENV) {
                 throw new \RuntimeException("This query failed: " . $this->dumpSql($select), 0, $e);
             }
             // @todo send developer warning
@@ -617,13 +637,13 @@ class AclAwareTableGateway extends TableGateway {
             $this->emitter->run('table.insert.' . $insertTable . ':after', [$resultData]);
 
             return $result;
-        } catch(\Zend\Db\Adapter\Exception\InvalidQueryException $e) {
+        } catch (\Zend\Db\Adapter\Exception\InvalidQueryException $e) {
             // @todo send developer warning
-            if (strpos(strtolower($e->getMessage()), 'duplicate entry')!==FALSE) {
+            if (strpos(strtolower($e->getMessage()), 'duplicate entry') !== FALSE) {
                 throw new DuplicateEntryException($e->getMessage());
             }
 
-            if('production' !== DIRECTUS_ENV) {
+            if ('production' !== DIRECTUS_ENV) {
                 throw new \RuntimeException("This query failed: " . $this->dumpSql($insert), 0, $e);
             }
 
@@ -718,14 +738,14 @@ class AclAwareTableGateway extends TableGateway {
             $this->emitter->run('table.update.' . $updateTable . ':after', [$updateData]);
 
             return $result;
-        } catch(\Zend\Db\Adapter\Exception\InvalidQueryException $e) {
+        } catch (\Zend\Db\Adapter\Exception\InvalidQueryException $e) {
             // @TODO: these lines are the same as the executeInsert,
             // let's put it together
-            if (strpos(strtolower($e->getMessage()), 'duplicate entry')!==FALSE) {
+            if (strpos(strtolower($e->getMessage()), 'duplicate entry') !== FALSE) {
                 throw new DuplicateEntryException($e->getMessage());
             }
 
-            if('production' !== DIRECTUS_ENV) {
+            if ('production' !== DIRECTUS_ENV) {
                 throw new \RuntimeException("This query failed: " . $this->dumpSql($update), 0, $e);
             }
 
@@ -744,7 +764,7 @@ class AclAwareTableGateway extends TableGateway {
     protected function executeDelete(Delete $delete)
     {
         $cuurrentUserId = null;
-        if(Auth::loggedIn()) {
+        if (Auth::loggedIn()) {
             $currentUser = Auth::getUserInfo();
             $currentUserId = intval($currentUser['id']);
         }
@@ -756,45 +776,45 @@ class AclAwareTableGateway extends TableGateway {
         $aclErrorPrefix = $this->acl->getErrorMessagePrefix();
 
         if (!TableSchema::hasTableColumn($deleteTable, STATUS_COLUMN_NAME)) {
-          if ($this->acl->hasTablePrivilege($deleteTable, 'bigdelete')) {
-            $canBigDelete = true;
-          } else if ($this->acl->hasTablePrivilege($deleteTable, 'delete')) {
-            $canDelete = true;
-          }
+            if ($this->acl->hasTablePrivilege($deleteTable, 'bigdelete')) {
+                $canBigDelete = true;
+            } else if ($this->acl->hasTablePrivilege($deleteTable, 'delete')) {
+                $canDelete = true;
+            }
         }
 
         // @todo: clean way
         if ($deleteTable === 'directus_bookmarks') {
-          $canBigDelete = true;
+            $canBigDelete = true;
         }
 
         /**
          * ACL Enforcement
          */
 
-        if(!$canBigDelete && !$canDelete) {
-          throw new UnauthorizedTableBigDeleteException($aclErrorPrefix . " forbidden to hard delete on table `$deleteTable` because it has Status Column.");
+        if (!$canBigDelete && !$canDelete) {
+            throw new UnauthorizedTableBigDeleteException($aclErrorPrefix . " forbidden to hard delete on table `$deleteTable` because it has Status Column.");
         }
 
         if (false === $cmsOwnerColumn) {
-          // cannot delete if there's no magic owner column and can't big delete
-          if (!$canBigDelete) {
-            // All deletes are "big" deletes if there is no magic owner column.
-            throw new UnauthorizedTableBigDeleteException($aclErrorPrefix . "The table `$deleteTable` is missing the `user_create_column` within `directus_tables` (BigHardDelete Permission Forbidden)");
-          }
-        } else {
-          if(!$canBigDelete){
-            // Who are the owners of these rows?
-            list($predicateResultQty, $predicateOwnerIds) = $this->acl->getCmsOwnerIdsByTableGatewayAndPredicate($this, $deleteState['where']);
-            if (!in_array($currentUserId, $predicateOwnerIds)) {
-            //   $exceptionMessage = "Table harddelete access forbidden on $predicateResultQty `$deleteTable` table records owned by the authenticated CMS user (#$currentUserId).";
-              $groupsTableGateway = self::makeTableGatewayFromTableName($this->acl, 'directus_groups', $this->adapter);
-              $group = $groupsTableGateway->find($this->acl->getGroupId());
-              $exceptionMessage = "[{$group['name']}] permissions only allow you to [delete] your own items.";
-            //   $aclErrorPrefix = $this->acl->getErrorMessagePrefix();
-              throw new UnauthorizedTableDeleteException($exceptionMessage);
+            // cannot delete if there's no magic owner column and can't big delete
+            if (!$canBigDelete) {
+                // All deletes are "big" deletes if there is no magic owner column.
+                throw new UnauthorizedTableBigDeleteException($aclErrorPrefix . "The table `$deleteTable` is missing the `user_create_column` within `directus_tables` (BigHardDelete Permission Forbidden)");
             }
-          }
+        } else {
+            if (!$canBigDelete) {
+                // Who are the owners of these rows?
+                list($predicateResultQty, $predicateOwnerIds) = $this->acl->getCmsOwnerIdsByTableGatewayAndPredicate($this, $deleteState['where']);
+                if (!in_array($currentUserId, $predicateOwnerIds)) {
+                    //   $exceptionMessage = "Table harddelete access forbidden on $predicateResultQty `$deleteTable` table records owned by the authenticated CMS user (#$currentUserId).";
+                    $groupsTableGateway = self::makeTableGatewayFromTableName($this->acl, 'directus_groups', $this->adapter);
+                    $group = $groupsTableGateway->find($this->acl->getGroupId());
+                    $exceptionMessage = "[{$group['name']}] permissions only allow you to [delete] your own items.";
+                    //   $aclErrorPrefix = $this->acl->getErrorMessagePrefix();
+                    throw new UnauthorizedTableDeleteException($exceptionMessage);
+                }
+            }
         }
 
         try {
@@ -806,8 +826,8 @@ class AclAwareTableGateway extends TableGateway {
             $this->emitter->run('table.delete.' . $deleteTable);
             $this->emitter->run('table.delete.' . $deleteTable . ':after');
             return $result;
-        } catch(\Zend\Db\Adapter\Exception\InvalidQueryException $e) {
-            if('production' !== DIRECTUS_ENV) {
+        } catch (\Zend\Db\Adapter\Exception\InvalidQueryException $e) {
+            if ('production' !== DIRECTUS_ENV) {
                 throw new \RuntimeException("This query failed: " . $this->dumpSql($delete), 0, $e);
             }
             // @todo send developer warning
@@ -832,8 +852,8 @@ class AclAwareTableGateway extends TableGateway {
             $singleRecord = true;
         }
 
-        foreach($records as $index => $row) {
-            foreach($schemaArray as $column) {
+        foreach ($records as $index => $row) {
+            foreach ($schemaArray as $column) {
                 if (in_array(strtolower($column['type']), ['timestamp', 'datetime'])) {
                     $columnName = $column['id'];
                     $records[$index][$columnName] = DateUtils::convertToISOFormat($row[$columnName], 'UTC', get_user_timezone());

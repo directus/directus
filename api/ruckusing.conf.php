@@ -12,7 +12,8 @@ if (!defined('RUCKUSING_WORKING_BASE')) {
 }
 
 if (!function_exists('getDatabaseConfig')) {
-    function getDatabaseConfig($config = array()) {
+    function getDatabaseConfig($config = array())
+    {
         $db = array(
             'env' => defined('DIRECTUS_ENV') ? DIRECTUS_ENV : 'development',
             'type' => defined('DB_TYPE') ? DB_TYPE : 'mysql',
@@ -23,7 +24,7 @@ if (!function_exists('getDatabaseConfig')) {
             'pass' => defined('DB_PASSWORD') ? DB_PASSWORD : '',
             'prefix' => defined('DB_PREFIX') ? DB_PREFIX : '',
             'engine' => defined('DB_ENGINE') ? DB_ENGINE : 'InnoDB',
-            'charset' => defined('DB_CHARSET') ? DB_CHARSET: 'utf8',
+            'charset' => defined('DB_CHARSET') ? DB_CHARSET : 'utf8',
             'directory' => 'schema',
             //'socket' => '/var/run/mysqld/mysqld.sock'
         );
