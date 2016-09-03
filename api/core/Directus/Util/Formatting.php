@@ -391,7 +391,7 @@ class Formatting
                 . chr(244) . chr(245) . chr(246) . chr(248) . chr(249) . chr(250) . chr(251)
                 . chr(252) . chr(253) . chr(255);
 
-            $chars['out'] = "EfSZszYcYuAAAAAACEEEEIIIINOOOOOOUUUUYaaaaaaceeeeiiiinoooooouuuuyy";
+            $chars['out'] = 'EfSZszYcYuAAAAAACEEEEIIIINOOOOOOUUUUYaaaaaaceeeeiiiinoooooouuuuyy';
 
             $string = strtr($string, $chars['in'], $chars['out']);
             $double_chars['in'] = array(chr(140), chr(156), chr(198), chr(208), chr(222), chr(223), chr(230), chr(240), chr(254));

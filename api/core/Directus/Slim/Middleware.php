@@ -14,11 +14,11 @@ class Middleware
     protected static function validateResponseType($responseType)
     {
         if (!in_array($responseType, self::$refusalResponseTypes)) {
-            throw new \RuntimeException("Invalid refusal \$responseType: $responseType");
+            throw new \RuntimeException('Invalid refusal $responseType: ' . $responseType);
         }
     }
 
-    public static function refuseWithErrorMessage($errorMessage, $responseType = 'redirect', $errorCode = "403 Forbidden")
+    public static function refuseWithErrorMessage($errorMessage, $responseType = 'redirect', $errorCode = '403 Forbidden')
     {
         header('HTTP/1.1 ' . $errorCode);
         $app = Slim::getInstance();
@@ -74,7 +74,7 @@ class Middleware
         $view = $app->view();
         $viewData = $view->getData();
         if (!array_key_exists('jsonResponse', $viewData)) {
-            throw new \RuntimeException("renderJson middleware expected `jsonResponse` key within the view data array.");
+            throw new \RuntimeException('renderJson middleware expected `jsonResponse` key within the view data array.');
         }
         JsonView::render($viewData['jsonResponse']);
     }

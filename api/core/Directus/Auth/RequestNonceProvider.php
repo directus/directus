@@ -45,7 +45,7 @@ class RequestNonceProvider
 
         $this->options = array_merge($default_options, $options);
 
-        if ("" == session_id()) {
+        if ('' == session_id()) {
             session_start();
         }
 
@@ -161,7 +161,7 @@ class RequestNonceProvider
     public function getNewNoncesThisRequest()
     {
         if (is_null($this->valid_nonce_this_request)) {
-            $message = "You can fetch new nonces after checking the request for old ones.";
+            $message = 'You can fetch new nonces after checking the request for old ones.';
             throw new RequestNonceHasntBeenProcessed($message);
         }
         // Force array on json encode

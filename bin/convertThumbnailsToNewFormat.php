@@ -17,7 +17,7 @@ function out($string)
 
 $supportedExtensions = array('jpg', 'jpeg', 'png', 'gif');
 
-out("Running script with the following supported extensions: " . implode(", ", $supportedExtensions));
+out('Running script with the following supported extensions: ' . implode(', ', $supportedExtensions));
 
 $db = \Directus\Bootstrap::get('ZendDb');
 $acl = \Directus\Bootstrap::get('acl');
@@ -33,30 +33,30 @@ foreach ($storageAdaptersById as $id => $storageAdapter) {
     // @TODO: fix this, this class was removed time ago.
     $storageAdaptersById[$id] = \Directus\Files\Storage\Storage::getStorage($storageAdapter);
 }
-out("\nLoaded " . count($storageAdaptersById) . " storage adapters.");
+out("\nLoaded " . count($storageAdaptersById) . ' storage adapters.');
 
 $DirectusMedia = new TableGateway('directus_files', $db);
 $mediaRecords = $DirectusMedia->select();
 
-out("Found " . $mediaRecords->count() . " Directus media records.");
+out('Found ' . $mediaRecords->count() . ' Directus media records.');
 
 $thumbnailStorageAdapterResultSet = $StorageAdapters->fetchByUniqueRoles(array('THUMBNAIL'));
 if (1 != count($thumbnailStorageAdapterResultSet)) {
-    throw new \RuntimeException("Fatal: exactly one storage adapter with role THUMBNAIL is required");
+    throw new \RuntimeException('Fatal: exactly one storage adapter with role THUMBNAIL is required');
 }
 $thumbnailStorageAdapterSettings = array_pop($thumbnailStorageAdapterResultSet);
 if ('FileSystemAdapter' != $thumbnailStorageAdapterSettings['adapter_name']) {
-    throw new \RuntimeException("Fatal: THUMBNAIL storage adapter: only FileSystemAdapter is currently supported by this script");
+    throw new \RuntimeException('Fatal: THUMBNAIL storage adapter: only FileSystemAdapter is currently supported by this script');
 }
 $thumbnailStorageAdapter = $storageAdaptersById[$thumbnailStorageAdapterSettings['id']];
 
 $tempStorageAdapterResultSet = $StorageAdapters->fetchByUniqueRoles(array('TEMP'));
 if (1 != count($tempStorageAdapterResultSet)) {
-    throw new \RuntimeException("Fatal: exactly one storage adapter with role TEMP is required");
+    throw new \RuntimeException('Fatal: exactly one storage adapter with role TEMP is required');
 }
 $tempStorageAdapterSettings = array_pop($tempStorageAdapterResultSet);
 if ('FileSystemAdapter' != $tempStorageAdapterSettings['adapter_name']) {
-    throw new \RuntimeException("Fatal: TEMP storage adapter: only FileSystemAdapter is currently supported by this script");
+    throw new \RuntimeException('Fatal: TEMP storage adapter: only FileSystemAdapter is currently supported by this script');
 }
 $tempStorageAdapter = $storageAdaptersById[$tempStorageAdapterSettings['id']];
 
@@ -69,13 +69,13 @@ $statistics = array(
 foreach ($mediaRecords as $media) {
     $adapterSettings = $tempStorageAdapterSettings;
     if (!$tempStorageAdapter->fileExists($media['name'], $adapterSettings['destination'])) {
-        out("Skipping media record #" . $media['id'] . " -- adapter can't locate original file.\n");
+        out('Skipping media record #' . $media['id'] . " -- adapter can't locate original file.\n");
         $statistics['failure']++;
         continue;
     }
     $info = pathinfo($media['name']);
     if (!in_array($info['extension'], $supportedExtensions)) {
-        out("Skipping media record #" . $media['id'] . " -- the following extension is unsupported: " . $info['extension'] . "\n");
+        out('Skipping media record #' . $media['id'] . ' -- the following extension is unsupported: ' . $info['extension'] . "\n");
         $statistics['failure']++;
         continue;
     }
@@ -88,7 +88,7 @@ foreach ($mediaRecords as $media) {
     $img = Thumbnail::generateThumbnail($localFile, $info['extension'], $filesSettings['thumbnail_size'], $filesSettings['thumbnail_crop_enabled']);
     $thumbnailTempName = tempnam(sys_get_temp_dir(), 'DirectusThumbnail');
     Thumbnail::writeImage($info['extension'], $thumbnailTempName, $img, $filesSettings['thumbnail_quality']);
-    $fileData = $thumbnailStorageAdapter->acceptFile($thumbnailTempName, $media['id'] . "." . $info['extension'], $thumbnailStorageAdapterSettings['destination']);
+    $fileData = $thumbnailStorageAdapter->acceptFile($thumbnailTempName, $media['id'] . '.' . $info['extension'], $thumbnailStorageAdapterSettings['destination']);
     $statistics['success']++;
 }
 

@@ -1,13 +1,13 @@
 <?php
-return array(
+return [
 
     // Unique session naming
-    'session' => array(
+    'session' => [
         'prefix' => 'directus6_'
-    ),
+    ],
 
     // @TODO: the option to have multiple filesystem
-    'filesystem' => array(
+    'filesystem' => [
         'adapter' => 'local',
         // By default the media directory is located within the Directus root
         // To shift a outsite the Directus root directory use this instead:
@@ -24,24 +24,24 @@ return array(
         //   'region' => 's3-region',
         //   'version' => 's3-version',
         //   'bucket' => 's3-bucket'
-    ),
+    ],
 
     // HTTP Settings
-    'HTTP' => array(
+    'HTTP' => [
         'forceHttps' => false,
         'isHttpsFn' => function () {
             // Override this check for custom arrangements, e.g. SSL-termination @ load balancer
             return isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off';
         }
-    ),
+    ],
 
     // Define this to send emails (eg. forgot password)
-    'mail' => array(
-        'from' => array(
+    'mail' => [
+        'from' => [
             'directus@localhost' => 'Directus'
-        ),
+        ],
         'transport' => 'mail'
-    ),
+    ],
     // 'SMTP' => array(
     //   'host' => '',
     //   'port' => 25,
@@ -50,7 +50,7 @@ return array(
     // ),
 
     // Use these hooks to extend the base Directus functionality
-    'hooks' => array(
+    'hooks' => [
         'postInsert' => function ($TableGateway, $record, $db, $acl) {
             // ...
         },
@@ -60,31 +60,29 @@ return array(
                 // ...
             }
         }
-    ),
+    ],
 
     // These tables will be excluded and won't be managed by Directus
-    'tableBlacklist' => array(// ...
-    ),
+    'tableBlacklist' => [],
 
     // Below you can adjust the global Status Options
     // These values are used within a table's status column (if included)
     // By default, `active` is the status column's name
-    'statusMapping' => array(
-        0 => array(
+    'statusMapping' => [
+        0 => [
             'name' => 'Delete',
             'color' => '#C1272D',
             'sort' => 3
-        ),
-        1 => array(
+        ],
+        1 => [
             'name' => 'Active',
             'color' => '#5B5B5B',
             'sort' => 1
-        ),
-        2 => array(
+        ],
+        2 => [
             'name' => 'Draft',
             'color' => '#BBBBBB',
             'sort' => 2
-        )
-    )
-
-);
+        ]
+    ]
+];

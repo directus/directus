@@ -67,23 +67,23 @@ class JsonView
         $log = Bootstrap::get('app')->getLog();
         $uri = $_SERVER['REQUEST_URI'];
         if (0 === strcmp($new, $old))
-            return $log->info("The response comparison matched. [$uri]");
-        $log->warn("The response comparison failed. [$uri]");
+            return $log->info('The response comparison matched. [' . $uri . ']');
+        $log->warn('The response comparison failed. [' . $uri . ']');
         // Output path
-        $fname_prefix = "cmp_$id";
+        $fname_prefix = 'cmp_' . $id;
         $dir = APPLICATION_PATH . '/docs/api-responses';
         if (!is_dir($dir)) {
-            $log->fatal("Can't write API responses to output directory: $dir");
+            $log->fatal('Can\'t write API responses to output directory: ' . $dir);
             return;
         }
         // Write API responses to disk
         foreach (array('new', 'old') as $version) {
-            $fname = "{$fname_prefix}_$version.json";
-            $fpath = "$dir/$fname";
+            $fname = $fname_prefix . '_' . $version . '.json';
+            $fpath = $dir . '/' . $fname;
             $fp = fopen($fpath, 'w+');
             fwrite($fp, $$version);
             fclose($fp);
-            $log->info("Wrote $version API response version to $fpath");
+            $log->info('Wrote $version API response version to ' . $fpath);
         }
     }
 

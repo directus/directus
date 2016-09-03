@@ -96,7 +96,7 @@ function parseTables($tableSchema)
 
 function getExtendedUserColumns($tableSchema)
 {
-    $userColumns = array("activity", "avatar", "name", "id", "active", "first_name", "last_name", "email", "email_messages", "password", "salt", "token", "reset_token", "reset_expiration", "last_login", "last_page", "ip", "group");
+    $userColumns = array('activity', 'avatar', 'name', 'id', 'active', 'first_name', 'last_name', 'email', 'email_messages', 'password', 'salt', 'token', 'reset_token', 'reset_expiration', 'last_login', 'last_page', 'ip', 'group');
 
     $schema = array_filter($tableSchema, function ($table) {
         return $table['schema']['id'] === 'directus_users';
@@ -337,7 +337,7 @@ if ($forceHttps) {
     if (!$isHttpsFn()) {
         $host = 'https://' . $_SERVER['SERVER_NAME'];
         if ('80' != $_SERVER['SERVER_PORT']) {
-            $host .= ":" . $_SERVER['SERVER_PORT'];
+            $host .= ':' . $_SERVER['SERVER_PORT'];
         }
         $httpsUrl = $host . $_SERVER['REQUEST_URI'];
         header('Location: ' . $httpsUrl);

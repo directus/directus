@@ -6,15 +6,15 @@
  * We need to distinguish between configuration and application constants.
  */
 
-return array(
+return [
 
-    'session' => array(
+    'session' => [
         'prefix' => 'directus6_'
-    ),
+    ],
 
     'default_language' => 'en',
 
-    'filesystem' => array(
+    'filesystem' => [
         'adapter' => 'local',
         // By default media directory are located at the same level of directus root
         // To make them a level up outsite the root directory
@@ -32,20 +32,20 @@ return array(
         //   'region' => 's3-region',
         //   'version' => 's3-version',
         //   'bucket' => 's3-bucket'
-    ),
+    ],
 
-    'HTTP' => array(
+    'HTTP' => [
         'forceHttps' => false,
         'isHttpsFn' => function () {
             // Override this check for custom arrangements, e.g. SSL-termination @ load balancer
             return isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off';
         }
-    ),
+    ],
 
-    'mail' => array(
+    'mail' => [
         'transport' => 'mail',
         'from' => 'admin@directus.local'
-    ),
+    ],
     // 'SMTP' => array(
     //   'host' => '',
     //   'port' => 25,
@@ -53,7 +53,7 @@ return array(
     //   'password' => ''
     // ),
 
-    'hooks' => array(
+    'hooks' => [
         'postInsert' => function ($TableGateway, $record, $db, $acl) {
 
         },
@@ -63,27 +63,26 @@ return array(
                 // ...
             }
         }
-    ),
+    ],
 
     // These tables will not be loaded in the directus schema
-    'tableBlacklist' => array(),
+    'tableBlacklist' => [],
 
-    'statusMapping' => array(
-        0 => array(
+    'statusMapping' => [
+        0 => [
             'name' => 'Delete',
             'color' => '#C1272D',
             'sort' => 3
-        ),
-        1 => array(
+        ],
+        1 => [
             'name' => 'Active',
             'color' => '#5B5B5B',
             'sort' => 1
-        ),
-        2 => array(
+        ],
+        2 => [
             'name' => 'Draft',
             'color' => '#BBBBBB',
             'sort' => 2
-        )
-    )
-
-);
+        ]
+    ]
+];

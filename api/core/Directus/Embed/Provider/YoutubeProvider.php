@@ -56,7 +56,7 @@ class YoutubeProvider extends AbstractProvider
             return $info;
         }
 
-        $youtubeFormatUrlString = "https://www.googleapis.com/youtube/v3/videos?id=%s&key=%s&part=snippet,contentDetails";
+        $youtubeFormatUrlString = 'https://www.googleapis.com/youtube/v3/videos?id=%s&key=%s&part=snippet,contentDetails';
         $url = sprintf($youtubeFormatUrlString, $videoID, $this->config['youtube_api_key']);
 
         $ch = curl_init();

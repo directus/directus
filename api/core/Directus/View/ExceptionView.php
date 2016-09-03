@@ -22,7 +22,7 @@ class ExceptionView
         /**
          * Directus\Acl\Exception\AclException & subclasses
          */
-        if ($exception instanceof AclException || is_subclass_of($exception, "Directus\Acl\Exception\AclException")) {
+        if ($exception instanceof AclException || is_subclass_of($exception, 'Directus\Acl\Exception\AclException')) {
             $httpCode = 403;
             $data = array('message' => $exception->getMessage());
         } /**

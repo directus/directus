@@ -33,7 +33,7 @@ class Cache
     public function addScrapeFilter($filter)
     {
         if (!is_callable($filter)) {
-            throw new \RuntimeException("Filter must be callable.");
+            throw new \RuntimeException('Filter must be callable.');
         }
         $this->scrapeFilters[] = $filter;
     }
@@ -74,7 +74,7 @@ class Cache
     private function getDueDate()
     {
         $due = time() - self::$scrapeIntervalSeconds;
-        $due = date("c", $due);
+        $due = date('c', $due);
         return $due;
     }
 
@@ -110,7 +110,7 @@ class Cache
         $cb = Bootstrap::get('codebird');
         $statuses = (array)$cb->statuses_userTimeline(array('screen_name' => $feed['name'], 'count' => $count));
         // The Twitter account is "protected"
-        if (isset($statuses['error']) && $statuses['error'] = "Not authorized") {
+        if (isset($statuses['error']) && $statuses['error'] = 'Not authorized') {
             return $feed;
         }
         $httpStatus = $statuses['httpstatus'];
@@ -168,7 +168,7 @@ class Cache
         }
         // Ping endpoint
         $socialSettings = $this->getInstagramSettings();
-        $endpoint = "https://api.instagram.com/v1/users/%s/media/recent?client_id=%s&access_token=%s&count=%s";
+        $endpoint = 'https://api.instagram.com/v1/users/%s/media/recent?client_id=%s&access_token=%s&count=%s';
         $endpoint = sprintf($endpoint, $feed['foreign_id'], $socialSettings['instagram_client_id'], $socialSettings['instagram_oauth_access_token'], $count);
         try {
             $mediaRecent = @file_get_contents($endpoint);
@@ -200,9 +200,9 @@ class Cache
                 // Exists in cache. Does the data need updating?
                 $this->updateFeedEntryDataIfNewer($feed, $cachedCopy, $photo);
             } else {
-                $created = date("F j, Y, g:i a", $photo['created_time']);
+                $created = date('F j, Y, g:i a', $photo['created_time']);
                 // Never cached. Cache it.
-                $published = new \DateTime($created, new \DateTimeZone("UTC"));
+                $published = new \DateTime($created, new \DateTimeZone('UTC'));
                 $this->newFeedEntry($feed, $photo, $published);
             }
         }
@@ -245,7 +245,7 @@ class Cache
         }
         // Ping endpoint
         $socialSettings = $this->getInstagramSettings();
-        $endpoint = "https://api.instagram.com/v1/users/search?q=%s&access_token=%s";
+        $endpoint = 'https://api.instagram.com/v1/users/search?q=%s&access_token=%s';
         $endpoint = sprintf($endpoint, urlencode($username), urlencode($socialSettings['instagram_oauth_access_token']));
         try {
             $userData = file_get_contents($endpoint);

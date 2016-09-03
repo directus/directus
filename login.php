@@ -11,8 +11,8 @@ $loader = require 'vendor/autoload.php';
 define('BASE_PATH', dirname(__FILE__));
 define('API_PATH', BASE_PATH . '/api');
 
-require "api/config.php";
-require "api/globals.php";
+require 'api/config.php';
+require 'api/globals.php';
 
 $emitter = \Directus\Bootstrap::get('hookEmitter');
 $emitter->run('directus.login.start');

@@ -14,33 +14,33 @@ if (!function_exists('uc_convert')) {
     {
         $phrase = preg_replace('!\s+!', ' ', trim(ucwords(strtolower(str_replace('_', ' ', $text)))));
         $specialCaps = [
-            "Ids" => 'IDs',
-            "Ssn" => 'SSN',
-            "Ein" => 'EIN',
-            "Nda" => 'NDA',
-            "Api" => 'API',
-            "Youtube" => 'YouTube',
-            "Faq" => 'FAQ',
-            "Iphone" => 'iPhone',
-            "Ipad" => 'iPad',
-            "Ipod" => 'iPod',
-            "Pdf" => 'PDF',
-            "Pdfs" => 'PDFs',
+            'Ids' => 'IDs',
+            'Ssn' => 'SSN',
+            'Ein' => 'EIN',
+            'Nda' => 'NDA',
+            'Api' => 'API',
+            'Youtube' => 'YouTube',
+            'Faq' => 'FAQ',
+            'Iphone' => 'iPhone',
+            'Ipad' => 'iPad',
+            'Ipod' => 'iPod',
+            'Pdf' => 'PDF',
+            'Pdfs' => 'PDFs',
             'Ui' => 'UI',
-            "Url" => 'URL',
-            "Ip" => 'IP',
-            "Ftp" => 'FTP',
-            "Db" => 'DB',
-            "Cv" => 'CV',
-            "Id" => 'ID',
-            "Ph" => 'pH',
-            "Php" => 'PHP',
-            "Html" => 'HTML',
-            "Js" => 'JS',
-            "Css" => 'CSS',
-            "Ios" => 'iOS',
-            "Iso" => 'ISO',
-            "Rngr" => 'RNGR'
+            'Url' => 'URL',
+            'Ip' => 'IP',
+            'Ftp' => 'FTP',
+            'Db' => 'DB',
+            'Cv' => 'CV',
+            'Id' => 'ID',
+            'Ph' => 'pH',
+            'Php' => 'PHP',
+            'Html' => 'HTML',
+            'Js' => 'JS',
+            'Css' => 'CSS',
+            'Ios' => 'iOS',
+            'Iso' => 'ISO',
+            'Rngr' => 'RNGR'
         ];
 
         $searchPattern = array_keys($specialCaps);
@@ -194,8 +194,8 @@ if (!function_exists(' get_file_info')) {
             $info['width'] = $size[0];
             $info['height'] = $size[1];
 
-            if (isset($meta["APP13"])) {
-                $iptc = iptcparse($meta["APP13"]);
+            if (isset($meta['APP13'])) {
+                $iptc = iptcparse($meta['APP13']);
                 $info['caption'] = $iptc['2#120'][0];
                 $info['title'] = $iptc['2#005'][0];
                 $info['tags'] = implode($iptc['2#025'], ',');

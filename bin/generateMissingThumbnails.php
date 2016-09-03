@@ -15,7 +15,7 @@ function out($string)
 
 $supportedExtensions = array('jpg', 'jpeg', 'png', 'gif', 'psd', 'psf', 'tif', 'tiff');
 
-out("Running script with the following supported extensions: " . implode(", ", $supportedExtensions));
+out('Running script with the following supported extensions: ' . implode(', ', $supportedExtensions));
 
 $db = \Directus\Bootstrap::get('ZendDb');
 $acl = \Directus\Bootstrap::get('acl');
@@ -31,20 +31,20 @@ foreach ($storageAdaptersById as $id => $storageAdapter) {
     $storageAdaptersById[$id] = \Directus\Files\Storage\Storage::getStorage($storageAdapter);
 }
 
-out("Loaded " . count($storageAdaptersById) . " storage adapters.");
+out('Loaded ' . count($storageAdaptersById) . ' storage adapters.');
 
 $DirectusMedia = new TableGateway('directus_files', $db);
 $mediaRecords = $DirectusMedia->select();
 
-out("Found " . $mediaRecords->count() . " Directus media records.");
+out('Found ' . $mediaRecords->count() . ' Directus media records.');
 
 $thumbnailStorageAdapterResultSet = $StorageAdapters->fetchByUniqueRoles(array('THUMBNAIL'));
 if (1 != count($thumbnailStorageAdapterResultSet)) {
-    throw new \RuntimeException("Fatal: exactly one storage adapter with role THUMBNAIL is required");
+    throw new \RuntimeException('Fatal: exactly one storage adapter with role THUMBNAIL is required');
 }
 $thumbnailStorageAdapterSettings = array_pop($thumbnailStorageAdapterResultSet);
 if ('FileSystemAdapter' != $thumbnailStorageAdapterSettings['adapter_name']) {
-    throw new \RuntimeException("Fatal: THUMBNAIL storage adapter: only FileSystemAdapter is currently supported by this script");
+    throw new \RuntimeException('Fatal: THUMBNAIL storage adapter: only FileSystemAdapter is currently supported by this script');
 }
 $thumbnailStorageAdapter = $storageAdaptersById[$thumbnailStorageAdapterSettings['id']];
 
@@ -56,7 +56,7 @@ $statistics = array(
 
 foreach ($mediaRecords as $media) {
     if (!isset($storageAdaptersById[$media['storage_adapter']])) {
-        throw new \RuntimeException("Files record #" . $media['id'] . " refers to non-existent storage adapter #" . $media['storage_adapter']);
+        throw new \RuntimeException('Files record #' . $media['id'] . ' refers to non-existent storage adapter #' . $media['storage_adapter']);
     }
     $storageAdapter = $storageAdaptersById[1];
     $adapterSettings = $storageAdapter->getSettings();
@@ -67,16 +67,16 @@ foreach ($mediaRecords as $media) {
       continue;
     }*/
     if (!$storageAdapter->fileExists($media['name'], '/Users/developer1/Desktop/hat/')) {
-        out("Skipping media record #" . $media['id'] . " -- adapter can't locate original file.");
+        out('Skipping media record #' . $media['id'] . ' -- adapter can\'t locate original file.');
         $statistics['failure']++;
         continue;
     }
     if (!in_array($info['extension'], $supportedExtensions)) {
-        out("Skipping media record #" . $media['id'] . " -- the following extension is unsupported: " . $info['extension']);
+        out('Skipping media record #' . $media['id'] . ' -- the following extension is unsupported: ' . $info['extension']);
         $statistics['failure']++;
         continue;
     }
-    if ($thumbnailStorageAdapter->fileExists($media['id'] . "." . $info['extension'], '/Users/developer1/Desktop/thumbnails/')) {
+    if ($thumbnailStorageAdapter->fileExists($media['id'] . '.' . $info['extension'], '/Users/developer1/Desktop/thumbnails/')) {
         $statistics['exists']++;
         continue;
     }

@@ -104,16 +104,16 @@ $exceptionHandler = new ExceptionHandler;
 
 // Routes which do not need protection by the authentication and the request
 // nonce enforcement.
-$authAndNonceRouteWhitelist = array(
-    "auth_login",
-    "auth_logout",
-    "auth_session",
-    "auth_clear_session",
-    "auth_nonces",
-    "auth_reset_password",
-    "auth_permissions",
-    "debug_acl_poc",
-);
+$authAndNonceRouteWhitelist = [
+    'auth_login',
+    'auth_logout',
+    'auth_session',
+    'auth_clear_session',
+    'auth_nonces',
+    'auth_reset_password',
+    'auth_permissions',
+    'debug_acl_poc',
+];
 
 /**
  * Bootstrap Providers
@@ -233,7 +233,7 @@ $app->hook('slim.before.dispatch', function () use ($app, $requestNonceProvider,
         $response = $app->response();
         $newNonces = $requestNonceProvider->getNewNoncesThisRequest();
         $nonce_options = $requestNonceProvider->getOptions();
-        $response[$nonce_options['nonce_response_header']] = implode($newNonces, ",");
+        $response[$nonce_options['nonce_response_header']] = implode($newNonces, ',');
     }
 });
 
@@ -287,7 +287,7 @@ if (isset($_REQUEST['run_extension']) && $_REQUEST['run_extension']) {
     // Validate extension name
     $extensionName = $_REQUEST['run_extension'];
     if (!Bootstrap::extensionExists($extensionName)) {
-        header("HTTP/1.0 404 Not Found");
+        header('HTTP/1.0 404 Not Found');
         return JsonView::render(array('message' => __t('no_such_extensions')));
     }
     // Validate request nonce
@@ -301,15 +301,15 @@ if (isset($_REQUEST['run_extension']) && $_REQUEST['run_extension']) {
         //         return JsonView::render(array('message' => __t('unauthorized_nonce')));
         //     }
     }
-    $extensionsDirectory = APPLICATION_PATH . "/customs/extensions";
+    $extensionsDirectory = APPLICATION_PATH . '/customs/extensions';
     $responseData = require "$extensionsDirectory/$extensionName/api.php";
     $nonceOptions = $requestNonceProvider->getOptions();
     $newNonces = $requestNonceProvider->getNewNoncesThisRequest();
-    header($nonceOptions['nonce_response_header'] . ': ' . implode($newNonces, ","));
+    header($nonceOptions['nonce_response_header'] . ': ' . implode($newNonces, ','));
     if (!is_array($responseData)) {
         throw new \RuntimeException(__t('extension_x_must_return_array_got_y_instead', [
-            "extension_name" => $extensionName,
-            "type" => gettype($responseData)
+            'extension_name' => $extensionName,
+            'type' => gettype($responseData)
         ]));
     }
     return JsonView::render($responseData);
@@ -392,9 +392,9 @@ $app->get("/$v/auth/logout(/:inactive)", function ($inactive = null) use ($app) 
         Auth::logout();
     }
     if ($inactive) {
-        $app->redirect(DIRECTUS_PATH . "login.php?inactive=1");
+        $app->redirect(DIRECTUS_PATH . 'login.php?inactive=1');
     } else {
-        $app->redirect(DIRECTUS_PATH . "login.php");
+        $app->redirect(DIRECTUS_PATH . 'login.php');
     }
 })->name('auth_logout');
 
@@ -419,11 +419,11 @@ $app->get("/$v/auth/clear-session/?", function () use ($app) {
     }
 
     $_SESSION = array();
-    if (ini_get("session.use_cookies")) {
+    if (ini_get('session.use_cookies')) {
         $params = session_get_cookie_params();
         setcookie(session_name(), '', time() - 42000,
-            $params["path"], $params["domain"],
-            $params["secure"], $params["httponly"]
+            $params['path'], $params['domain'],
+            $params['secure'], $params['httponly']
         );
     }
     session_destroy();
@@ -651,7 +651,7 @@ $app->map("/$v/tables/:table/rows/?", function ($table) use ($acl, $ZendDb, $par
     $TableGateway = new TableGateway($acl, $table, $ZendDb);
 
     // any CREATE requests should md5 the email
-    if ("directus_users" === $table &&
+    if ('directus_users' === $table &&
         in_array($app->request()->getMethod(), array('POST')) &&
         array_key_exists('email', $requestPayload)
     ) {
@@ -753,7 +753,7 @@ $app->map("/$v/tables/:table/rows/:id/?", function ($table, $id) use ($ZendDb, $
     $params['table_name'] = $table;
 
     // any UPDATE requests should md5 the email
-    if ("directus_users" === $table &&
+    if ('directus_users' === $table &&
         in_array($app->request()->getMethod(), array('PUT', 'PATCH')) &&
         array_key_exists('email', $requestPayload)
     ) {
@@ -801,7 +801,7 @@ $app->get("/$v/activity/?", function () use ($params, $ZendDb, $acl) {
     // @todo move this to backbone collection
     if (!$params['adv_search']) {
         unset($params['perPage']);
-        $params['adv_search'] = "datetime >= '" . DateUtils::daysAgo(30) . "'";
+        $params['adv_search'] = 'datetime >= "' . DateUtils::daysAgo(30) . '"';
     }
     $new_get = $Activity->fetchFeed($params);
     $new_get['active'] = $new_get['total'];
@@ -948,13 +948,13 @@ $app->map("/$v/groups/?", function () use ($app, $ZendDb, $acl, $requestPayload)
     $GroupsTableGateway = new TableGateway($acl, $tableName, $ZendDb);
     $currentUser = Auth::getUserInfo();
     switch ($app->request()->getMethod()) {
-        case "POST":
+        case 'POST':
             $newRecord = $GroupsTableGateway->manageRecordUpdate($tableName, $requestPayload);
             $newGroupId = $newRecord['id'];
             $newGroup = $GroupsTableGateway->find($newGroupId);
             $outputData = $newGroup;
             break;
-        case "GET":
+        case 'GET':
         default:
             $get_new = $GroupsTableGateway->getEntries();
             $outputData = $get_new;
@@ -991,14 +991,14 @@ $app->map("/$v/files(/:id)/?", function ($id = null) use ($app, $ZendDb, $acl, $
     if (!is_null($id))
         $params['id'] = $id;
 
-    $table = "directus_files";
+    $table = 'directus_files';
     $currentUser = Auth::getUserInfo();
     $TableGateway = new TableGateway($acl, $table, $ZendDb);
     $activityLoggingEnabled = !(isset($_GET['skip_activity_log']) && (1 == $_GET['skip_activity_log']));
     $activityMode = $activityLoggingEnabled ? TableGateway::ACTIVITY_ENTRY_MODE_PARENT : TableGateway::ACTIVITY_ENTRY_MODE_DISABLED;
 
     switch ($app->request()->getMethod()) {
-        case "POST":
+        case 'POST':
             $requestPayload['user'] = $currentUser['id'];
             $requestPayload['date_uploaded'] = DateUtils::now();
 
@@ -1016,9 +1016,9 @@ $app->map("/$v/files(/:id)/?", function ($id = null) use ($app, $ZendDb, $acl, $
             $newRecord = $TableGateway->manageRecordUpdate($table, $requestPayload, $activityMode);
             $params['id'] = $newRecord['id'];
             break;
-        case "PATCH":
+        case 'PATCH':
             $requestPayload['id'] = $id;
-        case "PUT":
+        case 'PUT':
             if (!is_null($id)) {
                 $TableGateway->manageRecordUpdate($table, $requestPayload, $activityMode);
                 break;
@@ -1047,10 +1047,10 @@ $app->map("/$v/tables/:table/preferences/?", function ($table) use ($ZendDb, $ac
     $Preferences = new DirectusPreferencesTableGateway($acl, $ZendDb);
     $TableGateway = new TableGateway($acl, 'directus_preferences', $ZendDb);
     switch ($app->request()->getMethod()) {
-        case "PUT":
+        case 'PUT':
             $TableGateway->manageRecordUpdate('directus_preferences', $requestPayload, TableGateway::ACTIVITY_ENTRY_MODE_DISABLED);
             break;
-        case "POST":
+        case 'POST':
             //If Already exists and not saving with title, then updateit!
             $existing = $Preferences->fetchByUserAndTableAndTitle($currentUser['id'], $table, isset($requestPayload['title']) ? $requestPayload['title'] : null);
             if (!empty($existing)) {
@@ -1059,7 +1059,7 @@ $app->map("/$v/tables/:table/preferences/?", function ($table) use ($ZendDb, $ac
             $requestPayload['user'] = $currentUser['id'];
             $id = $TableGateway->manageRecordUpdate('directus_preferences', $requestPayload, TableGateway::ACTIVITY_ENTRY_MODE_DISABLED);
             break;
-        case "DELETE":
+        case 'DELETE':
             if ($requestPayload['user'] != $currentUser['id']) {
                 return;
             }
@@ -1116,15 +1116,15 @@ $app->map("/$v/bookmarks(/:id)/?", function ($id = null) use ($params, $app, $Ze
     $currentUser = Auth::getUserInfo();
     $bookmarks = new DirectusBookmarksTableGateway($acl, $ZendDb);
     switch ($app->request()->getMethod()) {
-        case "PUT":
+        case 'PUT':
             $bookmarks->updateBookmark($requestPayload);
             $id = $requestPayload['id'];
             break;
-        case "POST":
+        case 'POST':
             $requestPayload['user'] = $currentUser['id'];
             $id = $bookmarks->insertBookmark($requestPayload);
             break;
-        case "DELETE":
+        case 'DELETE':
             $bookmark = $bookmarks->fetchByUserAndId($currentUser['id'], $id);
             if ($bookmark) {
                 echo $bookmarks->delete(array('id' => $id));
@@ -1156,8 +1156,8 @@ $app->map("/$v/settings(/:id)/?", function ($id = null) use ($acl, $ZendDb, $par
     $Settings = new DirectusSettingsTableGateway($acl, $ZendDb);
 
     switch ($app->request()->getMethod()) {
-        case "POST":
-        case "PUT":
+        case 'POST':
+        case 'PUT':
             $data = $requestPayload;
             unset($data['id']);
             $Settings->setValues($id, $data);
@@ -1364,8 +1364,8 @@ $app->get("/$v/messages/rows/:id/?", function ($id) use ($params, $requestPayloa
     $message = $messagesTableGateway->fetchMessageWithRecipients($id, $currentUser['id']);
 
     if (!isset($message)) {
-        header("HTTP/1.0 404 Not Found");
-        return JsonView::render(array('message' => ___t('message_not_found')));
+        header('HTTP/1.0 404 Not Found');
+        return JsonView::render(array('message' => __t('message_not_found')));
     }
 
     JsonView::render($message);
@@ -1379,11 +1379,11 @@ $app->map("/$v/messages/rows/:id/?", function ($id) use ($params, $requestPayloa
     $message = $messagesTableGateway->fetchMessageWithRecipients($id, $currentUser['id']);
 
     $ids = array($message['id']);
-    $message['read'] = '1';
+    $message['read'] = 1;
 
     foreach ($message['responses']['rows'] as &$response) {
         $ids[] = $response['id'];
-        $response['read'] = "1";
+        $response['read'] = 1;
     }
 
     $messagesRecipientsTableGateway->markAsRead($ids, $currentUser['id']);
@@ -1462,8 +1462,8 @@ $app->get("/$v/messages/recipients/?", function () use ($params, $requestPayload
 
 $app->post("/$v/comments/?", function () use ($params, $requestPayload, $app, $acl, $ZendDb) {
     $currentUser = Auth::getUserInfo();
-    $params['table_name'] = "directus_messages";
-    $TableGateway = new TableGateway($acl, "directus_messages", $ZendDb);
+    $params['table_name'] = 'directus_messages';
+    $TableGateway = new TableGateway($acl, 'directus_messages', $ZendDb);
 
     $groupRecipients = array();
     $userRecipients = array();
@@ -1498,22 +1498,22 @@ $app->post("/$v/comments/?", function () use ($params, $requestPayload, $app, $a
         $messageBody = $requestPayload['message'];
         $results = $results[0];
 
-        $recipientString = "";
+        $recipientString = '';
         $len = count($results);
         $i = 0;
         foreach ($results as $result) {
             $newresult = substr($result, 0, -1);
-            $newresult = substr($newresult, strpos($newresult, " ") + 1);
+            $newresult = substr($newresult, strpos($newresult, ' ') + 1);
             $messageBody = str_replace($result, $newresult, $messageBody);
 
             if ($i == $len - 1) {
                 if ($i > 0) {
-                    $recipientString .= " and " . $newresult;
+                    $recipientString .= ' and ' . $newresult;
                 } else {
                     $recipientString .= $newresult;
                 }
             } else {
-                $recipientString .= $newresult . ", ";
+                $recipientString .= $newresult . ', ';
             }
             $i++;
         }
@@ -1534,7 +1534,7 @@ $app->post("/$v/comments/?", function () use ($params, $requestPayload, $app, $a
     }
 
     $requestPayload['datetime'] = DateUtils::now();
-    $newRecord = $TableGateway->manageRecordUpdate("directus_messages", $requestPayload, TableGateway::ACTIVITY_ENTRY_MODE_DISABLED);
+    $newRecord = $TableGateway->manageRecordUpdate('directus_messages', $requestPayload, TableGateway::ACTIVITY_ENTRY_MODE_DISABLED);
     $params['id'] = $newRecord['id'];
 
     // GET all table entries
@@ -1593,8 +1593,8 @@ $app->post("/$v/comments/?", function () use ($params, $requestPayload, $app, $a
 $app->map("/$v/tables/:table/columns/:column/:ui/?", function ($table, $column, $ui) use ($acl, $ZendDb, $params, $requestPayload, $app) {
     $TableGateway = new TableGateway($acl, 'directus_ui', $ZendDb);
     switch ($app->request()->getMethod()) {
-        case "PUT":
-        case "POST":
+        case 'PUT':
+        case 'POST':
             $keys = array('table_name' => $table, 'column_name' => $column, 'ui_name' => $ui);
             $uis = to_name_value($requestPayload, $keys);
 

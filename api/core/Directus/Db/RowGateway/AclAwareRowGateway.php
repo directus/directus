@@ -56,8 +56,8 @@ class AclAwareRowGateway extends RowGateway
     {
         // Underscore to camelcase table name to namespaced row gateway classname,
         // e.g. directus_users => \Directus\Db\RowGateway\DirectusUsersRowGateway
-        $rowGatewayClassName = Formatting::underscoreToCamelCase($table) . "RowGateway";
-        $rowGatewayClassName = __NAMESPACE__ . "\\$rowGatewayClassName";
+        $rowGatewayClassName = Formatting::underscoreToCamelCase($table) . 'RowGateway';
+        $rowGatewayClassName = __NAMESPACE__ . '\\' . $rowGatewayClassName;
         if (class_exists($rowGatewayClassName))
             return new $rowGatewayClassName($acl, $pkFieldName, $table, $adapter);
         return new self($acl, $pkFieldName, $table, $adapter);
@@ -66,9 +66,10 @@ class AclAwareRowGateway extends RowGateway
     public static function stringifyPrimaryKeyForRecordDebugRepresentation(array $primaryKeyData)
     {
         if (null === $primaryKeyData) {
-            return "null primary key";
+            return 'null primary key';
         }
-        return "primary key (" . implode(":", array_keys($primaryKeyData)) . ") \"" . implode(":", $primaryKeyData) . "\"";
+
+        return 'primary key (' . implode(':', array_keys($primaryKeyData)) . ') "' . implode(':', $primaryKeyData) . '"';
     }
 
     // // as opposed to toArray()
@@ -110,8 +111,9 @@ class AclAwareRowGateway extends RowGateway
     public function toArrayWithImmediateRelationships(RelationalTableGateway $TableGateway)
     {
         if ($this->table !== $TableGateway->getTable()) {
-            throw new \InvalidArgumentException("The table of the gateway parameter must match this row's table.");
+            throw new \InvalidArgumentException('The table of the gateway parameter must match this row\'s table.');
         }
+
         $entry = $this->toArray();
         $schemaArray = TableSchema::getSchemaArray($this->table);
         $aliasColumns = $TableGateway->filterSchemaAliasFields($schemaArray);
@@ -119,6 +121,7 @@ class AclAwareRowGateway extends RowGateway
         list($entry) = $TableGateway->loadManyToOneRelationships($schemaArray, array($entry));
         // One-to-Many, Many-to-Many
         $entry = $TableGateway->loadToManyRelationships($entry, $aliasColumns);
+
         return $entry;
     }
 
@@ -160,7 +163,7 @@ class AclAwareRowGateway extends RowGateway
 
         if (!$canDelete && !$canBigDelete) {
             $aclErrorPrefix = $this->acl->getErrorMessagePrefix();
-            throw new UnauthorizedTableBigDeleteException($aclErrorPrefix . " forbidden to hard delete on table `{$this->table}` because it has status column.");
+            throw new UnauthorizedTableBigDeleteException($aclErrorPrefix . ' forbidden to hard delete on table `' . $this->table . '` because it has status column.');
         }
 
         /**
@@ -169,15 +172,15 @@ class AclAwareRowGateway extends RowGateway
         if ($isCurrentUserOwner && !$canDelete) {
             $recordPk = self::stringifyPrimaryKeyForRecordDebugRepresentation($this->primaryKeyData);
             $aclErrorPrefix = $this->acl->getErrorMessagePrefix();
-            throw new UnauthorizedTableDeleteException($aclErrorPrefix . "Table harddelete access forbidden on `" . $this->table . "` table record with $recordPk owned by the authenticated CMS user (#$cmsOwnerId).");
+            throw new UnauthorizedTableDeleteException($aclErrorPrefix . 'Table harddelete access forbidden on `' . $this->table . '` table record with ' . $recordPk . ' owned by the authenticated CMS user (#' . $cmsOwnerId . ').');
         } elseif (!$isCurrentUserOwner && !$canBigDelete) {
             /**
              * Enforce Privilege: "Big" Delete (I am not the record CMS owner)
              */
             $recordPk = self::stringifyPrimaryKeyForRecordDebugRepresentation($this->primaryKeyData);
-            $recordOwner = (false === $cmsOwnerId) ? "no magic owner column" : "the CMS owner #$cmsOwnerId";
+            $recordOwner = (false === $cmsOwnerId) ? 'no magic owner column' : 'the CMS owner #' . $cmsOwnerId;
             $aclErrorPrefix = $this->acl->getErrorMessagePrefix();
-            throw new UnauthorizedTableBigDeleteException($aclErrorPrefix . "Table bigharddelete access forbidden on `" . $this->table . "` table record with $recordPk and $recordOwner.");
+            throw new UnauthorizedTableBigDeleteException($aclErrorPrefix . 'Table bigharddelete access forbidden on `' . $this->table . '` table record with $recordPk and ' . $recordOwner . '.');
         }
 
         return parent::delete();
@@ -204,7 +207,7 @@ class AclAwareRowGateway extends RowGateway
              */
             if (!$this->acl->hasTablePrivilege($this->table, 'add')) {
                 $aclErrorPrefix = $this->acl->getErrorMessagePrefix();
-                throw new UnauthorizedTableAddException($aclErrorPrefix . "Table add access forbidden on table " . $this->table);
+                throw new UnauthorizedTableAddException($aclErrorPrefix . 'Table add access forbidden on table ' . $this->table);
             }
         } else {
             $cmsOwnerId = $this->acl->getRecordCmsOwnerId($this, $this->table);
@@ -215,7 +218,7 @@ class AclAwareRowGateway extends RowGateway
                 if (!$this->acl->hasTablePrivilege($this->table, 'edit')) {
                     $recordPk = self::stringifyPrimaryKeyForRecordDebugRepresentation($this->primaryKeyData);
                     $aclErrorPrefix = $this->acl->getErrorMessagePrefix();
-                    throw new UnauthorizedTableEditException($aclErrorPrefix . "Table edit access forbidden on `" . $this->table . "` table record with $recordPk owned by the authenticated CMS user (#$cmsOwnerId).");
+                    throw new UnauthorizedTableEditException($aclErrorPrefix . 'Table edit access forbidden on `' . $this->table . '` table record with ' . $recordPk . ' owned by the authenticated CMS user (#' . $cmsOwnerId . ').');
                 }
             } /**
              * Enforce Privilege: "Big" Edit (I am not the record CMS owner)
@@ -223,9 +226,9 @@ class AclAwareRowGateway extends RowGateway
             else {
                 if (!$this->acl->hasTablePrivilege($this->table, 'bigedit')) {
                     $recordPk = self::stringifyPrimaryKeyForRecordDebugRepresentation($this->primaryKeyData);
-                    $recordOwner = (false === $cmsOwnerId) ? "no magic owner column" : "the CMS owner #$cmsOwnerId";
+                    $recordOwner = (false === $cmsOwnerId) ? 'no magic owner column' : 'the CMS owner #' . $cmsOwnerId;
                     $aclErrorPrefix = $this->acl->getErrorMessagePrefix();
-                    throw new UnauthorizedTableBigEditException($aclErrorPrefix . "Table bigedit access forbidden on `" . $this->table . "` table record with $recordPk and $recordOwner.");
+                    throw new UnauthorizedTableBigEditException($aclErrorPrefix . 'Table bigedit access forbidden on `' . $this->table . '` table record with ' . $recordPk . ' and ' . $recordOwner . '.');
                 }
             }
         }
@@ -233,7 +236,7 @@ class AclAwareRowGateway extends RowGateway
         try {
             return parent::save();
         } catch (InvalidQueryException $e) {
-            $this->logger()->fatal("Error running save on this data: " . print_r($this->data, true));
+            $this->logger()->fatal('Error running save on this data: ' . print_r($this->data, true));
             throw $e;
         }
     }

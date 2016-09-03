@@ -332,11 +332,11 @@ class Files
                     $location[] = $iptc['2#090'][0];
                 }
 
-                if (isset($iptc["2#095"][0]) && $iptc['2#095'][0] != '') {
+                if (isset($iptc['2#095'][0]) && $iptc['2#095'][0] != '') {
                     $location[] = $iptc['2#095'][0];
                 }
 
-                if (isset($iptc["2#101"]) && $iptc['2#101'][0] != '') {
+                if (isset($iptc['2#101']) && $iptc['2#101'][0] != '') {
                     $location[] = $iptc['2#101'][0];
                 }
 
@@ -541,9 +541,9 @@ class Files
      */
     private function get_string_between($string, $start, $end)
     {
-        $string = " " . $string;
+        $string = ' ' . $string;
         $ini = strpos($string, $start);
-        if ($ini == 0) return "";
+        if ($ini == 0) return '';
         $ini += strlen($start);
         $len = strpos($string, $end, $ini) - $ini;
         return substr($string, $ini, $len);

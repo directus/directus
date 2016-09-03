@@ -13,16 +13,16 @@ use Zend\Db\Sql\Select;
 class Acl
 {
 
-    const TABLE_PERMISSIONS = "permissions";
-    const FIELD_READ_BLACKLIST = "read_field_blacklist";
-    const FIELD_WRITE_BLACKLIST = "write_field_blacklist";
+    const TABLE_PERMISSIONS = 'permissions';
+    const FIELD_READ_BLACKLIST = 'read_field_blacklist';
+    const FIELD_WRITE_BLACKLIST = 'write_field_blacklist';
 
     /**
      * The magic Directus column identifying the record's CMS owner.
      * NOTE: Out of use, in favor of the transitional mapper below.
      * @see  self::$cms_owner_columns_by_table and self#getRecordCmsOwnerId
      */
-    const ROW_OWNER_COLUMN = "directus_user";
+    const ROW_OWNER_COLUMN = 'directus_user';
 
     public static $cms_owner_columns_by_table = array(
         'directus_files' => 'user',
@@ -153,7 +153,7 @@ class Acl
             }
         }
         if (count($forbiddenIndices)) {
-            $forbiddenIndices = implode(", ", $forbiddenIndices);
+            $forbiddenIndices = implode(', ', $forbiddenIndices);
             switch ($blacklist) {
                 case self::FIELD_WRITE_BLACKLIST:
                     $prefix = $this->getErrorMessagePrefix();
@@ -234,7 +234,7 @@ class Acl
             if (count($disallowedReadBlacklistFields)) {
                 trigger_error(
                     __t('table_x_contains_read_blacklist_items_which_are_designated_as_mandatory_read_fields', ['table' => $table])
-                    . ": " . print_r($disallowedReadBlacklistFields, true)
+                    . ': ' . print_r($disallowedReadBlacklistFields, true)
                 );
                 // Filter out mandatory read items
                 $privilegeList = array_diff($privilegeList, $mandatoryReadFields);
@@ -299,7 +299,7 @@ class Acl
      */
     public function getRecordCmsOwnerId($record, $table)
     {
-        $isRowGateway = $record instanceof RowGateway || is_subclass_of($record, "Zend\Db\RowGateway\RowGateway");
+        $isRowGateway = $record instanceof RowGateway || is_subclass_of($record, 'Zend\Db\RowGateway\RowGateway');
         if (!($isRowGateway || is_array($record))) {
             // TODO: get_class only works on object
             // if $record is an array get_class will return false

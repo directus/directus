@@ -27,7 +27,7 @@ class Provider
      * The key where we store authentication information on the session array.
      * @var string
      */
-    public static $SESSION_KEY = "auth_user";
+    public static $SESSION_KEY = 'auth_user';
 
     /**
      * Change where authentication information is stored on the session array.
@@ -127,7 +127,7 @@ class Provider
         }
 
         self::prependSessionKey();
-        if (php_sapi_name() != 'cli' && "" === session_id()) {
+        if (php_sapi_name() != 'cli' && '' === session_id()) {
             session_start();
         }
         self::$authenticated = $isLoggedIn = false;
@@ -244,7 +244,7 @@ class Provider
      */
     public static function hashPassword($password, $salt = '')
     {
-        return password_hash($password, PASSWORD_DEFAULT, ["cost" => 12]);
+        return password_hash($password, PASSWORD_DEFAULT, ['cost' => 12]);
     }
 
     /**

@@ -181,7 +181,7 @@ class MemcacheProvider
      */
     public static function getKeyDirectusUserFind($userId)
     {
-        return "directus_users?user_id=$userId";
+        return 'directus_users?user_id=' . $userId;
     }
 
     public static function getKeyDirectusTables()
@@ -191,7 +191,7 @@ class MemcacheProvider
 
     public static function getKeyDirectusGroupPrivileges($userId)
     {
-        return "directus_group_privileges?group_id=$userId";
+        return 'directus_group_privileges?group_id=' . $userId;
     }
 
     public static function getKeyDirectusStorageAdapters()
@@ -201,17 +201,17 @@ class MemcacheProvider
 
     public static function getKeyDirectusCountMessages($uid)
     {
-        return "directus_count_messages?uid=$uid";
+        return 'directus_count_messages?uid=' . $uid;
     }
 
     public static function getKeyDirectusMessagesNewerThan($maxId, $uid)
     {
-        return "directus_get_messages_newer_than?uid=$uid&maxId=$maxId";
+        return 'directus_get_messages_newer_than?uid=' . $uid . '&maxId=' . $maxId;
     }
 
     public static function getKeyDirectusGroupSchema($userGroupId, $versionHash)
     {
-        return "directus_schema_by_group_and_version?group_id=$userGroupId&version=$versionHash";
+        return 'directus_schema_by_group_and_version?group_id=' . $userGroupId . '&version=' . $versionHash;
     }
 
 }

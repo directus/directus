@@ -41,13 +41,13 @@ class Bootstrap
     {
         $key = strtolower($key);
         if (!method_exists(__CLASS__, $key)) {
-            throw new \InvalidArgumentException("No such factory function on " . __CLASS__ . ": $key");
+            throw new \InvalidArgumentException('No such factory function on ' . __CLASS__ . ': ' . $key);
         }
         if ($newInstance) {
-            return call_user_func(__CLASS__ . "::$key", $arg);
+            return call_user_func(__CLASS__ . '::' . $key, $arg);
         }
         if (!array_key_exists($key, self::$singletons)) {
-            self::$singletons[$key] = call_user_func(__CLASS__ . "::$key", $arg);
+            self::$singletons[$key] = call_user_func(__CLASS__ . '::' . $key, $arg);
         }
         return self::$singletons[$key];
     }
@@ -95,7 +95,7 @@ class Bootstrap
         }
         foreach ($constants as $constant) {
             if (!defined($constant)) {
-                throw new \Exception(__CLASS__ . "#$dependentFunctionName depends on undefined constant $constant");
+                throw new \Exception(__CLASS__ . '#' . $dependentFunctionName . 'depends on undefined constant ' . $constant);
             }
         }
     }
@@ -138,7 +138,7 @@ class Bootstrap
     private static function config()
     {
         self::requireConstants('BASE_PATH', __FUNCTION__);
-        $config = require APPLICATION_PATH . "/api/configuration.php";
+        $config = require APPLICATION_PATH . '/api/configuration.php';
         return $config;
     }
 
@@ -204,7 +204,7 @@ class Bootstrap
             'password' => DB_PASSWORD_SLAVE,
             'charset' => 'utf8',
             \PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true,
-            \PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"
+            \PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'
         );
         $db = new \Zend\Db\Adapter\Adapter($dbConfig);
         return $db;
@@ -225,7 +225,7 @@ class Bootstrap
             'password' => DB_PASSWORD_SLAVE_CRON,
             'charset' => 'utf8',
             \PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true,
-            \PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"
+            \PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'
         );
         $db = new \Zend\Db\Adapter\Adapter($dbConfig);
         return $db;
@@ -248,7 +248,7 @@ class Bootstrap
             'password' => DB_PASSWORD,
             'charset' => 'utf8',
             \PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true,
-            \PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"
+            \PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'
         );
 
         try {
@@ -398,7 +398,7 @@ class Bootstrap
             $extensionName = $file->getFilename();
 
             // Ignore all extensions prefixed with an underscore
-            if ($extensionName[0] == "_") {
+            if ($extensionName[0] == '_') {
                 continue;
             }
 
