@@ -110,8 +110,8 @@ class AclAwareTableGateway extends TableGateway
      */
     public static function makeTableGatewayFromTableName($acl, $table, $adapter)
     {
-        $tableGatewayClassName = Formatting::underscoreToCamelCase($table) . "TableGateway";
-        $tableGatewayClassName = __NAMESPACE__ . "\\$tableGatewayClassName";
+        $tableGatewayClassName = Formatting::underscoreToCamelCase($table) . 'TableGateway';
+        $tableGatewayClassName = __NAMESPACE__ . '\\' . $tableGatewayClassName;
         if (class_exists($tableGatewayClassName)) {
             return new $tableGatewayClassName($acl, $adapter);
         }
@@ -144,7 +144,7 @@ class AclAwareTableGateway extends TableGateway
         foreach ($fields as $field) {
             $col =& $row[$field];
             $datetime = DateUtils::convertUtcDateTimeToTimeZone($col, $targetTimeZone);
-            $col = $yieldObjects ? $datetime : $datetime->format("Y-m-d H:i:s T");
+            $col = $yieldObjects ? $datetime : $datetime->format('Y-m-d H:i:s T');
         }
         return $row;
     }
@@ -219,7 +219,7 @@ class AclAwareTableGateway extends TableGateway
         foreach ($recordData as $columnName => $columnValue) {
             if (is_array($columnValue)) {
                 // $table = is_null($tableName) ? $this->table : $tableName;
-                throw new SuppliedArrayAsColumnValue("Attempting to write an array as the value for column `$tableName`.`$columnName`.");
+                throw new SuppliedArrayAsColumnValue('Attempting to write an array as the value for column `' . $tableName . '`.`' . $columnName . '.');
             }
         }
 
@@ -244,7 +244,7 @@ class AclAwareTableGateway extends TableGateway
             $TableGateway->insert($d);
             $recordData[$TableGateway->primaryKeyFieldName] = $TableGateway->getLastInsertValue();
 
-            if ($tableName == "directus_files") {
+            if ($tableName == 'directus_files') {
                 $Files = new \Directus\Files\Files();
                 $ext = pathinfo($recordData['name'], PATHINFO_EXTENSION);
 
@@ -255,8 +255,8 @@ class AclAwareTableGateway extends TableGateway
 
                 $updateArray = array();
                 if ($Files->getSettings('file_naming') == 'file_id') {
-                    $Files->rename($recordData['name'], str_pad($recordData[$this->primaryKeyFieldName], 11, "0", STR_PAD_LEFT) . '.' . $ext);
-                    $updateArray['name'] = str_pad($recordData[$this->primaryKeyFieldName], 11, "0", STR_PAD_LEFT) . '.' . $ext;
+                    $Files->rename($recordData['name'], str_pad($recordData[$this->primaryKeyFieldName], 11, '0', STR_PAD_LEFT) . '.' . $ext);
+                    $updateArray['name'] = str_pad($recordData[$this->primaryKeyFieldName], 11, '0', STR_PAD_LEFT) . '.' . $ext;
                     $recordData['name'] = $updateArray['name'];
                 }
 
@@ -294,7 +294,7 @@ class AclAwareTableGateway extends TableGateway
 
         if (!$this->acl->hasTablePrivilege($tableName, 'alter')) {
             $aclErrorPrefix = $this->acl->getErrorMessagePrefix();
-            throw new UnauthorizedTableAddException($aclErrorPrefix . "Table alter access forbidden on table $tableName");
+            throw new UnauthorizedTableAddException($aclErrorPrefix . 'Table alter access forbidden on table ' . $tableName);
         }
 
         // get drop table query
@@ -348,7 +348,7 @@ class AclAwareTableGateway extends TableGateway
 
         if (!$this->acl->hasTablePrivilege($tableName, 'alter')) {
             $aclErrorPrefix = $this->acl->getErrorMessagePrefix();
-            throw new UnauthorizedTableAddException($aclErrorPrefix . "Table alter access forbidden on table $tableName");
+            throw new UnauthorizedTableAddException($aclErrorPrefix . 'Table alter access forbidden on table ' . $tableName);
         }
 
         // Drop table column if is a non-alias column
@@ -422,7 +422,7 @@ class AclAwareTableGateway extends TableGateway
             // it must be wrap into quotes
             if (strpos($charLength, ',') !== false) {
                 $charLength = implode(',', array_map(function ($value) {
-                    return "'" . trim($value) . "'";
+                    return '"' . trim($value) . '"';
                 }, explode(',', $charLength)));
             }
 
@@ -430,7 +430,7 @@ class AclAwareTableGateway extends TableGateway
         }
 
         // TODO: wrap this into an abstract DDL class
-        $sql = "ALTER TABLE `$tableName` ADD COLUMN `$column_name` $data_type COMMENT '$comment'";
+        $sql = 'ALTER TABLE `' . $tableName . '` ADD COLUMN `' . $column_name . '` ' . $data_type . ' COMMENT ' . $comment;
 
         $this->adapter->query($sql)->execute();
     }
@@ -498,7 +498,7 @@ class AclAwareTableGateway extends TableGateway
             // The only value is the real table name (key is alias).
             return array_pop($table);
         }
-        throw new \InvalidArgumentException("Unexpected parameter of type " . get_class($table));
+        throw new \InvalidArgumentException('Unexpected parameter of type ' . get_class($table));
     }
 
     /**
@@ -589,7 +589,7 @@ class AclAwareTableGateway extends TableGateway
             return $this->processSelect($selectState, parent::executeSelect($select));
         } catch (\Zend\Db\Adapter\Exception\InvalidQueryException $e) {
             if ('production' !== DIRECTUS_ENV) {
-                throw new \RuntimeException("This query failed: " . $this->dumpSql($select), 0, $e);
+                throw new \RuntimeException('This query failed: ' . $this->dumpSql($select), 0, $e);
             }
             // @todo send developer warning
             throw $e;
@@ -614,7 +614,7 @@ class AclAwareTableGateway extends TableGateway
 
         if (!$this->acl->hasTablePrivilege($insertTable, 'add')) {
             $aclErrorPrefix = $this->acl->getErrorMessagePrefix();
-            throw new UnauthorizedTableAddException($aclErrorPrefix . "Table add access forbidden on table $insertTable");
+            throw new UnauthorizedTableAddException($aclErrorPrefix . 'Table add access forbidden on table ' . $insertTable);
         }
 
         // Enforce write field blacklist
@@ -644,7 +644,7 @@ class AclAwareTableGateway extends TableGateway
             }
 
             if ('production' !== DIRECTUS_ENV) {
-                throw new \RuntimeException("This query failed: " . $this->dumpSql($insert), 0, $e);
+                throw new \RuntimeException('This query failed: ' . $this->dumpSql($insert), 0, $e);
             }
 
             throw $e;
@@ -692,7 +692,7 @@ class AclAwareTableGateway extends TableGateway
             if (false === $cmsOwnerColumn) {
                 // All edits are "big" edits if there is no magic owner column.
                 $aclErrorPrefix = $this->acl->getErrorMessagePrefix();
-                throw new UnauthorizedTableBigEditException($aclErrorPrefix . "The table `$updateTable` is missing the `user_create_column` within `directus_tables` (BigEdit Permission Forbidden)");
+                throw new UnauthorizedTableBigEditException($aclErrorPrefix . 'The table `' . $updateTable . '` is missing the `user_create_column` within `directus_tables` (BigEdit Permission Forbidden)');
             } else {
                 // Who are the owners of these rows?
                 list($resultQty, $ownerIds) = $this->acl->getCmsOwnerIdsByTableGatewayAndPredicate($this, $updateState['where']);
@@ -702,7 +702,7 @@ class AclAwareTableGateway extends TableGateway
                     // throw new UnauthorizedTableBigEditException($aclErrorPrefix . "Table bigedit access forbidden on $resultQty `$updateTable` table record(s) and " . count($ownerIds) . " CMS owner(s) (with ids " . implode(", ", $ownerIds) . ").");
                     $groupsTableGateway = self::makeTableGatewayFromTableName($this->acl, 'directus_groups', $this->adapter);
                     $group = $groupsTableGateway->find($this->acl->getGroupId());
-                    throw new UnauthorizedTableBigEditException("[{$group['name']}] permissions only allow you to [$permissionName] your own items.");
+                    throw new UnauthorizedTableBigEditException('[' . $group['name'] . '] permissions only allow you to [' . $permissionName . '] your own items.');
                 }
             }
         }
@@ -719,7 +719,7 @@ class AclAwareTableGateway extends TableGateway
 
                 if (in_array($currentUserId, $predicateOwnerIds)) {
                     $aclErrorPrefix = $this->acl->getErrorMessagePrefix();
-                    throw new UnauthorizedTableEditException($aclErrorPrefix . "Table edit access forbidden on $predicateResultQty `$updateTable` table records owned by the authenticated CMS user (#$currentUserId).");
+                    throw new UnauthorizedTableEditException($aclErrorPrefix . 'Table edit access forbidden on ' . $predicateResultQty . '`' . $updateTable . '` table records owned by the authenticated CMS user (#' . $currentUserId . '.');
                 }
             }
         }
@@ -746,7 +746,7 @@ class AclAwareTableGateway extends TableGateway
             }
 
             if ('production' !== DIRECTUS_ENV) {
-                throw new \RuntimeException("This query failed: " . $this->dumpSql($update), 0, $e);
+                throw new \RuntimeException('This query failed: ' . $this->dumpSql($update), 0, $e);
             }
 
             // @todo send developer warning
@@ -793,14 +793,14 @@ class AclAwareTableGateway extends TableGateway
          */
 
         if (!$canBigDelete && !$canDelete) {
-            throw new UnauthorizedTableBigDeleteException($aclErrorPrefix . " forbidden to hard delete on table `$deleteTable` because it has Status Column.");
+            throw new UnauthorizedTableBigDeleteException($aclErrorPrefix . ' forbidden to hard delete on table `' . $deleteTable . '` because it has Status Column.');
         }
 
         if (false === $cmsOwnerColumn) {
             // cannot delete if there's no magic owner column and can't big delete
             if (!$canBigDelete) {
                 // All deletes are "big" deletes if there is no magic owner column.
-                throw new UnauthorizedTableBigDeleteException($aclErrorPrefix . "The table `$deleteTable` is missing the `user_create_column` within `directus_tables` (BigHardDelete Permission Forbidden)");
+                throw new UnauthorizedTableBigDeleteException($aclErrorPrefix . 'The table `' . $deleteTable . '` is missing the `user_create_column` within `directus_tables` (BigHardDelete Permission Forbidden)');
             }
         } else {
             if (!$canBigDelete) {
@@ -810,7 +810,7 @@ class AclAwareTableGateway extends TableGateway
                     //   $exceptionMessage = "Table harddelete access forbidden on $predicateResultQty `$deleteTable` table records owned by the authenticated CMS user (#$currentUserId).";
                     $groupsTableGateway = self::makeTableGatewayFromTableName($this->acl, 'directus_groups', $this->adapter);
                     $group = $groupsTableGateway->find($this->acl->getGroupId());
-                    $exceptionMessage = "[{$group['name']}] permissions only allow you to [delete] your own items.";
+                    $exceptionMessage = '[' . $group['name'] . '] permissions only allow you to [delete] your own items.';
                     //   $aclErrorPrefix = $this->acl->getErrorMessagePrefix();
                     throw new UnauthorizedTableDeleteException($exceptionMessage);
                 }
@@ -828,7 +828,7 @@ class AclAwareTableGateway extends TableGateway
             return $result;
         } catch (\Zend\Db\Adapter\Exception\InvalidQueryException $e) {
             if ('production' !== DIRECTUS_ENV) {
-                throw new \RuntimeException("This query failed: " . $this->dumpSql($delete), 0, $e);
+                throw new \RuntimeException('This query failed: ' . $this->dumpSql($delete), 0, $e);
             }
             // @todo send developer warning
             throw $e;

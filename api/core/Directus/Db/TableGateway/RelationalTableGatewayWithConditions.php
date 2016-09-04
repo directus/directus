@@ -61,14 +61,14 @@ class RelationalTableGatewayWithConditions extends RelationalTableGateway
             }
             $relatedTable = $column['relationship']['related_table'];
             $visibleColumn = $column['options']['visible_column'];
-            $keyLeft = $params['table_name'] . "." . $params['orderBy'];
+            $keyLeft = $params['table_name'] . '.' . $params['orderBy'];
             // @todo it's wrong to assume PKs are "id" but this is currently endemic to directus6
-            $keyRight = $relatedTable . ".id";
-            $joinedSortColumn = $relatedTable . "." . $visibleColumn;
+            $keyRight = $relatedTable . '.id';
+            $joinedSortColumn = $relatedTable . '.' . $visibleColumn;
             $select
                 ->reset(Select::ORDER)
-                ->join($relatedTable, "$keyLeft = $keyRight", array(), Select::JOIN_LEFT)
-                ->order("$joinedSortColumn " . $params['orderDirection']);
+                ->join($relatedTable, $keyLeft . '=' . $keyRight, array(), Select::JOIN_LEFT)
+                ->order($joinedSortColumn . ' ' . $params['orderDirection']);
             break;
         }
 
@@ -161,43 +161,43 @@ class RelationalTableGatewayWithConditions extends RelationalTableGateway
                 }
 
                 // TODO: fix this, it must be refactored
-                if (isset($target['relationship']) && $target['relationship']['type'] == "MANYTOMANY") {
+                if (isset($target['relationship']) && $target['relationship']['type'] == 'MANYTOMANY') {
 
                     $relatedTable = $target['relationship']['related_table'];
-                    $relatedAliasName = $relatedTable . "_" . $i;
+                    $relatedAliasName = $relatedTable . '_' . $i;
 
-                    if ($target['relationship']['type'] == "MANYTOMANY") {
+                    if ($target['relationship']['type'] == 'MANYTOMANY') {
                         $junctionTable = $target['relationship']['junction_table'];
                         $jkl = $target['relationship']['junction_key_left'];
                         $jkr = $target['relationship']['junction_key_right'];
 
-                        $keyleft = $params['table_name'] . ".id";
+                        $keyleft = $params['table_name'] . '.id';
                         $keyRight = $junctionTable . '.' . $jkl;
 
                         $jkeyleft = $junctionTable . '.' . $jkr;
-                        $jkeyright = $relatedAliasName . ".id";
+                        $jkeyright = $relatedAliasName . '.id';
 
 
                         $select->join($junctionTable,
-                            "$keyleft = $keyRight",
+                            $keyleft . '=' . $keyRight,
                             array(),
                             Select::JOIN_INNER);
                     } else {
                         $select->join(array($relatedAliasName => $relatedTable),
-                            $tableName . '.' . $target['column_name'] . " = " . $relatedAliasName . ".id",
+                            $tableName . '.' . $target['column_name'] . ' = ' . $relatedAliasName . '.id',
                             array(),
                             Select::JOIN_INNER);
                     }
 
                     $relatedTableMetadata = TableSchema::getSchemaArray($relatedTable);
 
-                    if ($search_col['type'] == "like") {
+                    if ($search_col['type'] == 'like') {
                         $select->join(array($relatedAliasName => $relatedTable),
-                            "$jkeyleft = $jkeyright",
+                            $jkeyleft . '=' . $jkeyright,
                             array(),
                             Select::JOIN_INNER);
 
-                        $search_col['value'] = "%" . $search_col['value'] . "%";
+                        $search_col['value'] = '%' . $search_col['value'] . '%';
                         if (isset($target['options']['filter_column'])) {
                             $targetCol = $target['options']['filter_column'];
                         } else {
@@ -209,8 +209,8 @@ class RelationalTableGatewayWithConditions extends RelationalTableGateway
                                 if ($col['type'] == 'VARCHAR' || $col['type'] == 'INT') {
                                     $where = $select->where->nest;
                                     $columnName = $this->adapter->platform->quoteIdentifier($col['column_name']);
-                                    $columnName = $relatedAliasName . "." . $columnName;
-                                    $like = new Predicate\Expression("LOWER($columnName) LIKE ?", $search_col['value']);
+                                    $columnName = $relatedAliasName . '.' . $columnName;
+                                    $like = new Predicate\Expression('LOWER(' . $columnName . ') LIKE ?', $search_col['value']);
                                     $where->addPredicate($like, Predicate\Predicate::OP_OR);
                                     $where->unnest;
                                 }
@@ -219,20 +219,20 @@ class RelationalTableGatewayWithConditions extends RelationalTableGateway
                     } else {
                         $select->where($jkeyleft . ' = ' . $this->adapter->platform->quoteValue($search_col['value']));
                     }
-                } elseif (isset($target['relationship']) && $target['relationship']['type'] == "MANYTOONE") {
+                } elseif (isset($target['relationship']) && $target['relationship']['type'] == 'MANYTOONE') {
                     $relatedTable = $target['relationship']['related_table'];
 
-                    $keyRight = $this->getTable() . "." . $target['relationship']['junction_key_right'];
-                    $keyLeft = $relatedTable . ".id";
+                    $keyRight = $this->getTable() . '.' . $target['relationship']['junction_key_right'];
+                    $keyLeft = $relatedTable . '.id';
                     $filterColumn = $target['options']['visible_column'];
-                    $joinedFilterColumn = $relatedTable . "." . $filterColumn;
+                    $joinedFilterColumn = $relatedTable . '.' . $filterColumn;
 
                     // do not let join this table twice
                     // TODO: do a extra checking in case it's being used twice
                     // and none for sorting
                     if ($target['column_name'] != $params['orderBy']) {
                         $select
-                            ->join($relatedTable, "$keyLeft = $keyRight", array(), Select::JOIN_LEFT);
+                            ->join($relatedTable, $keyLeft . '=' . $keyRight, array(), Select::JOIN_LEFT);
                     }
 
                     if ($search_col['type'] == 'like') {
@@ -242,29 +242,29 @@ class RelationalTableGatewayWithConditions extends RelationalTableGateway
                         };
                         $select->where($spec);
                     } else {
-                        $select->where($search_col['id'] . " " . $search_col['type'] . " " . $this->adapter->platform->quoteValue($search_col['value']));
+                        $select->where($search_col['id'] . ' ' . $search_col['type'] . ' ' . $this->adapter->platform->quoteValue($search_col['value']));
                     }
 
                 } else {
-                    if ($target['type'] == "DATETIME" && strpos($search_col['value'], " ") == false) {
-                        $select->where('date(' . $tableName . '.' . $search_col['id'] . ") = " . $this->adapter->platform->quoteValue($search_col['value']));
+                    if ($target['type'] == 'DATETIME' && strpos($search_col['value'], ' ') == false) {
+                        $select->where('date(' . $tableName . '.' . $search_col['id'] . ') = ' . $this->adapter->platform->quoteValue($search_col['value']));
                     } else {
-                        if ($search_col['type'] == "like") {
-                            $select->where($tableName . '.' . $search_col['id'] . " " . $search_col['type'] . " " . $this->adapter->platform->quoteValue("%" . $search_col['value'] . "%"));
+                        if ($search_col['type'] == 'like') {
+                            $select->where($tableName . '.' . $search_col['id'] . ' ' . $search_col['type'] . ' ' . $this->adapter->platform->quoteValue('%' . $search_col['value'] . '%'));
                         } else {
-                            $select->where($tableName . '.' . $search_col['id'] . " " . $search_col['type'] . " " . $this->adapter->platform->quoteValue($search_col['value']));
+                            $select->where($tableName . '.' . $search_col['id'] . ' ' . $search_col['type'] . ' ' . $this->adapter->platform->quoteValue($search_col['value']));
                         }
                     }
                 }
                 $i++;
             }
         } else if (isset($params['search']) && !empty($params['search'])) {
-            $params['search'] = "%" . $params['search'] . "%";
+            $params['search'] = '%' . $params['search'] . '%';
             $where = $select->where->nest;
             foreach ($schema as $col) {
                 if ($col['type'] == 'VARCHAR' || $col['type'] == 'INT') {
                     $columnName = $this->adapter->platform->quoteIdentifier($col['column_name']);
-                    $like = new Predicate\Expression("LOWER($columnName) LIKE ?", strtolower($params['search']));
+                    $like = new Predicate\Expression('LOWER(' . $columnName . ') LIKE ?', strtolower($params['search']));
                     $where->addPredicate($like, Predicate\Predicate::OP_OR);
                 }
             }

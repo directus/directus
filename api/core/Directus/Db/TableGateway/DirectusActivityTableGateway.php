@@ -15,20 +15,20 @@ class DirectusActivityTableGateway extends RelationalTableGateway
 {
 
     // Populates directus_activity.type
-    const TYPE_ENTRY = "ENTRY";
-    const TYPE_FILES = "FILES";
-    const TYPE_SETTINGS = "SETTINGS";
-    const TYPE_UI = "UI";
-    const TYPE_LOGIN = "LOGIN";
-    const TYPE_MESSAGE = "MESSAGE";
+    const TYPE_ENTRY = 'ENTRY';
+    const TYPE_FILES = 'FILES';
+    const TYPE_SETTINGS = 'SETTINGS';
+    const TYPE_UI = 'UI';
+    const TYPE_LOGIN = 'LOGIN';
+    const TYPE_MESSAGE = 'MESSAGE';
 
     // Populates directus_activity.action
-    const ACTION_ADD = "ADD";
-    const ACTION_UPDATE = "UPDATE";
-    const ACTION_DELETE = "DELETE";
-    const ACTION_LOGIN = "LOGIN";
+    const ACTION_ADD = 'ADD';
+    const ACTION_UPDATE = 'UPDATE';
+    const ACTION_DELETE = 'DELETE';
+    const ACTION_LOGIN = 'LOGIN';
 
-    public static $_tableName = "directus_activity";
+    public static $_tableName = 'directus_activity';
 
     public static function makeLogTypeFromTableName($table)
     {
@@ -38,7 +38,7 @@ class DirectusActivityTableGateway extends RelationalTableGateway
                 return self::TYPE_UI;
             case 'directus_settings':
                 return self::TYPE_SETTINGS;
-            case "directus_files":
+            case 'directus_files':
                 return self::TYPE_FILES;
             default:
                 return self::TYPE_ENTRY;
@@ -160,9 +160,9 @@ class DirectusActivityTableGateway extends RelationalTableGateway
     public function recordMessage($data, $userId)
     {
         if (isset($data['response_to']) && $data['response_to'] > 0) {
-            $action = "REPLY";
+            $action = 'REPLY';
         } else {
-            $action = "ADD";
+            $action = 'ADD';
         }
 
         $logData = array(
@@ -173,7 +173,7 @@ class DirectusActivityTableGateway extends RelationalTableGateway
             'datetime' => DateUtils::now(),
             'parent_id' => null,
             'data' => json_encode($data),
-            'delta' => "[]",
+            'delta' => '[]',
             'identifier' => $data['subject'],
             'row_id' => $data['id'],
             'logged_ip' => isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '',

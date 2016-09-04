@@ -14,7 +14,7 @@ use Zend\Db\Sql\Update;
 class DirectusPrivilegesTableGateway extends AclAwareTableGateway
 {
 
-    public static $_tableName = "directus_privileges";
+    public static $_tableName = 'directus_privileges';
 
     // @todo: make this part of every table gateway
     private $fillable = array(
@@ -84,7 +84,7 @@ class DirectusPrivilegesTableGateway extends AclAwareTableGateway
         foreach ($rowset as $row) {
             foreach ($row as $field => &$value) {
                 if ($this->acl->isTableListValue($field))
-                    $value = explode(",", $value);
+                    $value = explode(',', $value);
                 $privilegesByTable[$row['table_name']] = $row;
             }
         }

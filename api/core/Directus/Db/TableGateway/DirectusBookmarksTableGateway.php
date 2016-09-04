@@ -11,7 +11,7 @@ use Zend\Db\Sql\Update;
 class DirectusBookmarksTableGateway extends AclAwareTableGateway
 {
 
-    public static $_tableName = "directus_bookmarks";
+    public static $_tableName = 'directus_bookmarks';
 
     public function __construct(Acl $acl, AdapterInterface $adapter)
     {
@@ -20,25 +20,25 @@ class DirectusBookmarksTableGateway extends AclAwareTableGateway
 
     public static $defaultBookmarksValues = array(
         'Activity' => array(
-            "title" => "Activity",
-            "url" => "activity",
-            "icon_class" => "icon-bell",
-            "section" => "other"),
+            'title' => 'Activity',
+            'url' => 'activity',
+            'icon_class' => 'icon-bell',
+            'section' => 'other'),
         'Files' => array(
-            "title" => "Files",
-            "url" => "files",
-            "icon_class" => "icon-attach",
-            "section" => "other"),
+            'title' => 'Files',
+            'url' => 'files',
+            'icon_class' => 'icon-attach',
+            'section' => 'other'),
         'Messages' => array(
-            "title" => "Messages",
-            "url" => "messages",
-            "icon_class" => "icon-chat",
-            "section" => "other"),
+            'title' => 'Messages',
+            'url' => 'messages',
+            'icon_class' => 'icon-chat',
+            'section' => 'other'),
         'Users' => array(
-            "title" => "Users",
-            "url" => "users",
-            "icon_class" => "icon-users",
-            "section" => "other")
+            'title' => 'Users',
+            'url' => 'users',
+            'icon_class' => 'icon-users',
+            'section' => 'other')
     );
 
     public function createDefaultBookmark($title, $bookmark)
@@ -46,7 +46,7 @@ class DirectusBookmarksTableGateway extends AclAwareTableGateway
         // Global default values
         if (isset(self::$defaultBookmarksValues[$title])) {
             foreach (self::$defaultBookmarksValues[$title] as $field => $defaultValue) {
-                if (!isset($bookmark[$field]) || ("0" !== $bookmark[$field] && empty($bookmark[$field]))) {
+                if (!isset($bookmark[$field]) || ('0' !== $bookmark[$field] && empty($bookmark[$field]))) {
                     if (!isset($bookmark[$field])) {
                         $bookmark[$field] = $defaultValue;
                     }

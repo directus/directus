@@ -13,7 +13,7 @@ use Zend\Db\Sql\Where;
 class DirectusSocialPostsTableGateway extends AclAwareTableGateway
 {
 
-    public static $_tableName = "directus_social_posts";
+    public static $_tableName = 'directus_social_posts';
 
     public function __construct(Acl $acl, AdapterInterface $adapter)
     {

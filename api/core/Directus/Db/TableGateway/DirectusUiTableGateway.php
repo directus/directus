@@ -9,7 +9,7 @@ use Zend\Db\Sql\Select;
 class DirectusUiTableGateway extends AclAwareTableGateway
 {
 
-    public static $_tableName = "directus_ui";
+    public static $_tableName = 'directus_ui';
 
     public function __construct(Acl $acl, AdapterInterface $adapter)
     {

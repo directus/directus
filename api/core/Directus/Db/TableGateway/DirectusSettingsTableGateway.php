@@ -11,7 +11,7 @@ use Zend\Db\Sql\Sql;
 class DirectusSettingsTableGateway extends AclAwareTableGateway
 {
 
-    public static $_tableName = "directus_settings";
+    public static $_tableName = 'directus_settings';
 
     private $_defaults = array();
 
@@ -68,7 +68,7 @@ class DirectusSettingsTableGateway extends AclAwareTableGateway
             $result[$row['name']] = $row['value'];
         }
         if (count(array_diff($requiredKeys, array_keys($result)))) {
-            throw new \Exception("The following keys must be defined in the `$collection` settings collection: " . implode(", ", $requiredKeys));
+            throw new \Exception('The following keys must be defined in the `' . $collection . '` settings collection: ' . implode(', ', $requiredKeys));
         }
         return $result;
     }
@@ -84,7 +84,7 @@ class DirectusSettingsTableGateway extends AclAwareTableGateway
         $rowset = $this->selectWith($select);
         $result = $rowset->current();
         if (false === $result) {
-            throw new \Exception("Required `directus_setting` with collection `$collection` and name `$name` not found.");
+            throw new \Exception('Required `directus_setting` with collection `' . $collection . '` and name `' . $name . '` not found.');
         }
         return $result;
     }
@@ -93,7 +93,7 @@ class DirectusSettingsTableGateway extends AclAwareTableGateway
     public function setValues($collection, $data)
     {
         if ($collection !== 'files' && $collection !== 'global') {
-            throw new \Exception("The settings collection $collection is not supported");
+            throw new \Exception('The settings collection ' . $collection . ' is not supported');
         }
 
         foreach ($data as $key => $value) {

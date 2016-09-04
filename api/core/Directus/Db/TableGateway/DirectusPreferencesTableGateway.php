@@ -14,7 +14,7 @@ use Zend\Db\Sql\Update;
 class DirectusPreferencesTableGateway extends AclAwareTableGateway
 {
 
-    public static $_tableName = "directus_preferences";
+    public static $_tableName = 'directus_preferences';
 
     /**
      * List of table that does not need preferences.
@@ -36,17 +36,17 @@ class DirectusPreferencesTableGateway extends AclAwareTableGateway
     }
 
     public static $defaultPreferencesValues = array(
-        "sort" => "id",
-        "sort_order" => "ASC",
-        "status" => "1,2",
-        "title" => null
+        'sort' => 'id',
+        'sort_order' => 'ASC',
+        'status' => '1,2',
+        'title' => null
     );
 
     public static $defaultPreferencesValuesByTable = array(
-        "directus_files" => array(
-            "sort" => "date_uploaded",
-            "sort_order" => "DESC",
-            "columns_visible" => "name,title,caption,type,size,user,date_uploaded"
+        'directus_files' => array(
+            'sort' => 'date_uploaded',
+            'sort_order' => 'DESC',
+            'columns_visible' => 'name,title,caption,type,size,user,date_uploaded'
         )
     );
 
@@ -67,7 +67,7 @@ class DirectusPreferencesTableGateway extends AclAwareTableGateway
             self::$defaultPreferencesValues['sort'] = $primaryKeyFieldName;
         }
         foreach (self::$defaultPreferencesValues as $field => $defaultValue) {
-            if (!isset($preferences[$field]) || ("0" !== $preferences[$field] && empty($preferences[$field]))) {
+            if (!isset($preferences[$field]) || ('0' !== $preferences[$field] && empty($preferences[$field]))) {
                 if (!isset($preferences[$field])) {
                     $preferences[$field] = $defaultValue;
                 }

@@ -312,7 +312,7 @@ class SQLiteSchema extends AbstractSchema
             'column_name',
             'type' => new Expression('upper(data_type)'),
             'char_length' => new Expression('NULL'),
-            'is_nullable' => new Expression("'NO'"),
+            'is_nullable' => new Expression('"NO"'),
             'default_value' => new Expression('NULL'),
             'comment',
             'sort',

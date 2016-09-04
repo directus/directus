@@ -12,7 +12,7 @@ use Zend\Db\Sql\Update;
 class DirectusMessagesRecipientsTableGateway extends AclAwareTableGateway
 {
 
-    public static $_tableName = "directus_messages_recipients";
+    public static $_tableName = 'directus_messages_recipients';
 
     public function __construct(Acl $acl, AdapterInterface $adapter)
     {

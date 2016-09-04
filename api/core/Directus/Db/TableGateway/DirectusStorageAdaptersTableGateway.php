@@ -9,7 +9,7 @@ use Zend\Db\Sql\Select;
 class DirectusStorageAdaptersTableGateway extends AclAwareTableGateway
 {
 
-    public static $_tableName = "directus_storage_adapters";
+    public static $_tableName = 'directus_storage_adapters';
 
     public function __construct(Acl $acl, AdapterInterface $adapter)
     {

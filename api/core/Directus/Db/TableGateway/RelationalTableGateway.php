@@ -161,8 +161,8 @@ class RelationalTableGateway extends AclAwareTableGateway
         })->current();
 
         if (!$fullRecordData) {
-            $recordType = $recordIsNew ? "new" : "pre-existing";
-            throw new \RuntimeException("Attempted to load $recordType record post-insert with empty result. Lookup via row id: " . print_r($rowId, true));
+            $recordType = $recordIsNew ? 'new' : 'pre-existing';
+            throw new \RuntimeException('Attempted to load ' . $recordType . ' record post-insert with empty result. Lookup via row id: ' . print_r($rowId, true));
         }
 
         $fullRecordData = (array)$fullRecordData;
@@ -220,7 +220,7 @@ class RelationalTableGateway extends AclAwareTableGateway
                         }
                     }
                     // Save parent log entry
-                    $parentLogEntry = AclAwareRowGateway::makeRowGatewayFromTableName($this->acl, "directus_activity", $this->adapter);
+                    $parentLogEntry = AclAwareRowGateway::makeRowGatewayFromTableName($this->acl, 'directus_activity', $this->adapter);
                     $logData = array(
                         'type' => DirectusActivityTableGateway::makeLogTypeFromTableName($this->table),
                         'table_name' => $tableName,
@@ -373,7 +373,7 @@ class RelationalTableGateway extends AclAwareTableGateway
             $lowercaseColumnType = strtolower($relationship['type']);
 
             // Ignore empty OneToMany collections
-            $fieldIsOneToMany = ("onetomany" === $lowercaseColumnType);
+            $fieldIsOneToMany = ('onetomany' === $lowercaseColumnType);
 
             // Ignore non-arrays and empty collections
             if (empty($parentRow[$colName])) {
@@ -437,7 +437,7 @@ class RelationalTableGateway extends AclAwareTableGateway
             $lowercaseColumnType = strtolower($relationship['type']);
 
             // Ignore empty OneToMany collections
-            $fieldIsOneToMany = ("onetomany" === $lowercaseColumnType);
+            $fieldIsOneToMany = ('onetomany' === $lowercaseColumnType);
 
             // Ignore non-arrays and empty collections
             if (empty($parentRow[$colName])) {//} || ($fieldIsOneToMany && )) {
@@ -659,12 +659,12 @@ class RelationalTableGateway extends AclAwareTableGateway
         if (isset($params['adv_search']) && !empty($params['adv_search'])) {
             $select->where($params['adv_search']);
         } else if (isset($params['search']) && !empty($params['search'])) {
-            $params['search'] = "%" . $params['search'] . "%";
+            $params['search'] = '%' . $params['search'] . '%';
             $where = $select->where->nest;
             foreach ($schema as $col) {
                 if ($col['type'] == 'VARCHAR' || $col['type'] == 'INT') {
                     $columnName = $this->adapter->platform->quoteIdentifier($col['column_name']);
-                    $like = new Predicate\Expression("LOWER($columnName) LIKE ?", strtolower($params['search']));
+                    $like = new Predicate\Expression('LOWER($columnName) LIKE ?', strtolower($params['search']));
                     $where->addPredicate($like, Predicate\Predicate::OP_OR);
                 }
             }
@@ -802,8 +802,8 @@ class RelationalTableGateway extends AclAwareTableGateway
             }
         }
         if (!empty($erroneouslyNullKeys)) {
-            $msg = "Required column/ui metadata columns on table $tableName lack values: ";
-            $msg .= implode(" ", $requiredKeys);
+            $msg = 'Required column/ui metadata columns on table ' . $tableName . ' lack values: ';
+            $msg .= implode(' ', $requiredKeys);
             throw new Exception\RelationshipMetadataException($msg);
         }
     }
@@ -922,10 +922,10 @@ class RelationalTableGateway extends AclAwareTableGateway
                 } else {
                     $message = 'Non single_file Many-to-One relationship lacks `related_table` value.';
                     if (array_key_exists('column_name', $col)) {
-                        $message .= " Column: " . $col['column_name'];
+                        $message .= ' Column: ' . $col['column_name'];
                     }
                     if (array_key_exists('table_name', $col)) {
-                        $message .= " Table: " . $col['table_name'];
+                        $message .= ' Table: ' . $col['table_name'];
                     }
                     throw new Exception\RelationshipMetadataException($message);
                 }
@@ -1002,16 +1002,16 @@ class RelationalTableGateway extends AclAwareTableGateway
     public function loadManyToManyRelationships($table_name, $foreign_table, $junction_table, $junction_key_left, $junction_key_right, $column_equals)
     {
         $foreign_table_pk = TableSchema::getTablePrimaryKey($foreign_table);
-        $foreign_join_column = "$foreign_table.$foreign_table_pk";
-        $junction_join_column = "$junction_table.$junction_key_right";
-        $junction_comparison_column = "$junction_table.$junction_key_left";
+        $foreign_join_column = $foreign_table . '.' . $foreign_table_pk;
+        $junction_join_column = $junction_table . '.' . $junction_key_right;
+        $junction_comparison_column = $junction_table . '.' . $junction_key_left;
 
         $junction_table_pk = TableSchema::getTablePrimaryKey($junction_table);
-        $junction_id_column = "$junction_table." . $junction_table_pk;
+        $junction_id_column = $junction_table . '.' . $junction_table_pk;
 
         // Less likely name collision:
-        $junction_id_column_alias = "directus_junction_id_column_518d31856e131";
-        $junction_sort_column_alias = "directus_junction_sort_column_518d318e3f0f5";
+        $junction_id_column_alias = 'directus_junction_id_column_518d31856e131';
+        $junction_sort_column_alias = 'directus_junction_sort_column_518d318e3f0f5';
 
         $junctionSelectColumns = array($junction_id_column_alias => $junction_table_pk);
 
@@ -1023,15 +1023,15 @@ class RelationalTableGateway extends AclAwareTableGateway
         // @hint TableSchema#getUniqueColumnName
         $junctionColumns = TableSchema::getAllNonAliasTableColumnNames($junction_table);
         if (in_array('sort', $junctionColumns)) {
-            $junctionSelectColumns[$junction_sort_column_alias] = "sort";
+            $junctionSelectColumns[$junction_sort_column_alias] = 'sort';
             $select->order($junction_sort_column_alias);
         }
 
         $select
             ->from($foreign_table)
-            ->join($junction_table, "$foreign_join_column = $junction_join_column", $junctionSelectColumns)
+            ->join($junction_table, $foreign_join_column . '=' . $junction_join_column, $junctionSelectColumns)
             ->where(array($junction_comparison_column => $column_equals))
-            ->order("$junction_id_column ASC");
+            ->order($junction_id_column . 'ASC');
 
         // Only select the fields not on the currently authenticated user group's read field blacklist
         $columns = TableSchema::getAllNonAliasTableColumnNames($foreign_table);
@@ -1087,7 +1087,7 @@ class RelationalTableGateway extends AclAwareTableGateway
         if (is_subclass_of($record, 'Zend\Db\RowGateway\AbstractRowGateway')) {
             $record = $record->toArray();
         } elseif (!is_array($record)) {
-            throw new \InvalidArgumentException("\$record must an array or a subclass of AbstractRowGateway");
+            throw new \InvalidArgumentException('$record must an array or a subclass of AbstractRowGateway');
         }
         $keyCount = count($record);
         return array_key_exists($pkFieldName, $record) ? $keyCount > 1 : $keyCount > 0;

@@ -9,7 +9,7 @@ use Zend\Db\Sql\Select;
 class DirectusTabPrivilegesTableGateway extends AclAwareTableGateway
 {
 
-    public static $tableName = "directus_tab_privileges";
+    public static $tableName = 'directus_tab_privileges';
 
     public function __construct(Acl $acl, AdapterInterface $adapter)
     {

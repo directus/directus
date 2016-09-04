@@ -10,7 +10,7 @@ use Zend\Db\Sql\Select;
 class DirectusUsersTableGateway extends AclAwareTableGateway
 {
 
-    public static $_tableName = "directus_users";
+    public static $_tableName = 'directus_users';
 
     public function __construct(Acl $acl, AdapterInterface $adapter)
     {
@@ -22,8 +22,8 @@ class DirectusUsersTableGateway extends AclAwareTableGateway
     // @todo sanitize parameters and implement ACL
     public function findUserByFirstOrLastName($tokens)
     {
-        $tokenString = implode("|", $tokens);
-        $sql = "SELECT id, 'directus_users' as type, CONCAT(first_name, ' ', last_name) name from `directus_users` WHERE `first_name` REGEXP '^($tokenString)' OR `last_name` REGEXP '^($tokenString)'";
+        $tokenString = implode('|', $tokens);
+        $sql = 'SELECT id, "directus_users" as type, CONCAT(first_name, " ", last_name) name from `directus_users` WHERE `first_name` REGEXP "^(' . $tokenString . ')" OR `last_name` REGEXP "^(' . $tokenString . ')"';
         $result = $this->adapter->query($sql, Adapter::QUERY_MODE_EXECUTE);
         return $result->toArray();
     }
@@ -32,8 +32,8 @@ class DirectusUsersTableGateway extends AclAwareTableGateway
     {
         $rowset = $this->select(function (Select $select) {
             $select->join(
-                "directus_groups",
-                "directus_groups.id = directus_users.group",
+                'directus_groups',
+                'directus_groups.id = directus_users.group',
                 array('group_name' => 'name'),
                 $select::JOIN_LEFT
             );

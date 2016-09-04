@@ -13,7 +13,7 @@ use Zend\Db\Sql\Select;
 class DirectusMessagesTableGateway extends AclAwareTableGateway
 {
 
-    public static $_tableName = "directus_messages";
+    public static $_tableName = 'directus_messages';
 
     public function __construct(Acl $acl, AdapterInterface $adapter)
     {
@@ -49,13 +49,13 @@ class DirectusMessagesTableGateway extends AclAwareTableGateway
             if ((int)$recipient == (int)$from) {
                 $read = 1;
             }
-            $values[] = "($messageId, $recipient, $read)";
+            $values[] = '(' . $messageId . ', ' . $recipient . ', ' . $read . ')';
         }
 
         $valuesString = implode(',', $values);
 
         //@todo sanitize and implement ACL
-        $sql = "INSERT INTO directus_messages_recipients (`message_id`, `recipient`, `read`) VALUES $valuesString";
+        $sql = 'INSERT INTO directus_messages_recipients (`message_id`, `recipient`, `read`) VALUES ' . $valuesString;
         $result = $this->adapter->query($sql, Adapter::QUERY_MODE_EXECUTE);
 
         return $messageId;

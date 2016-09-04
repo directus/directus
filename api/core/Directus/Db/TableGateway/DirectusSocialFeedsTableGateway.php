@@ -11,7 +11,7 @@ use Zend\Db\Sql\Where;
 class DirectusSocialFeedsTableGateway extends AclAwareTableGateway
 {
 
-    public static $_tableName = "directus_social_feeds";
+    public static $_tableName = 'directus_social_feeds';
 
     const TYPE_TWITTER = 1;
     const TYPE_INSTAGRAM = 2;
