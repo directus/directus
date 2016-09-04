@@ -11,7 +11,7 @@ class InsertSystemTableUserColumn extends Ruckusing_Migration_Base
             'directus_preferences'
         ];
 
-        foreach($tables as $tableName) {
+        foreach ($tables as $tableName) {
             try {
                 $this->insert('directus_tables', [
                     'table_name' => $tableName,
@@ -27,9 +27,9 @@ class InsertSystemTableUserColumn extends Ruckusing_Migration_Base
                     'date_update_column' => NULL
                 ]);
             } catch (\Exception $e) {
-               if (strpos($e->getMessage(), 'Duplicate entry') === false) {
-                   throw $e;
-               }
+                if (strpos($e->getMessage(), 'Duplicate entry') === false) {
+                    throw $e;
+                }
             }
         }
     }//up()
