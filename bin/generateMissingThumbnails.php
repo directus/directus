@@ -13,7 +13,7 @@ function out($string)
     echo "$string\n";
 }
 
-$supportedExtensions = array('jpg', 'jpeg', 'png', 'gif', 'psd', 'psf', 'tif', 'tiff');
+$supportedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'psd', 'psf', 'tif', 'tiff'];
 
 out('Running script with the following supported extensions: ' . implode(', ', $supportedExtensions));
 
@@ -21,9 +21,9 @@ $db = \Directus\Bootstrap::get('ZendDb');
 $acl = \Directus\Bootstrap::get('acl');
 
 $Settings = new DirectusSettingsTableGateway($acl, $db);
-$filesSettings = $Settings->fetchCollection('media', array(
+$filesSettings = $Settings->fetchCollection('media', [
     'thumbnail_size', 'thumbnail_quality', 'thumbnail_crop_enabled'
-));
+]);
 
 $StorageAdapters = new DirectusStorageAdaptersTableGateway($acl, $db);
 $storageAdaptersById = $StorageAdapters->fetchAllWithIdKeys();
@@ -38,7 +38,7 @@ $mediaRecords = $DirectusMedia->select();
 
 out('Found ' . $mediaRecords->count() . ' Directus media records.');
 
-$thumbnailStorageAdapterResultSet = $StorageAdapters->fetchByUniqueRoles(array('THUMBNAIL'));
+$thumbnailStorageAdapterResultSet = $StorageAdapters->fetchByUniqueRoles(['THUMBNAIL']);
 if (1 != count($thumbnailStorageAdapterResultSet)) {
     throw new \RuntimeException('Fatal: exactly one storage adapter with role THUMBNAIL is required');
 }
@@ -48,11 +48,11 @@ if ('FileSystemAdapter' != $thumbnailStorageAdapterSettings['adapter_name']) {
 }
 $thumbnailStorageAdapter = $storageAdaptersById[$thumbnailStorageAdapterSettings['id']];
 
-$statistics = array(
+$statistics = [
     'success' => 0,
     'failure' => 0,
     'exists' => 0
-);
+];
 
 foreach ($mediaRecords as $media) {
     if (!isset($storageAdaptersById[$media['storage_adapter']])) {

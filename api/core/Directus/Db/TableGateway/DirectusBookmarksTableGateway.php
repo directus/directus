@@ -18,28 +18,32 @@ class DirectusBookmarksTableGateway extends AclAwareTableGateway
         parent::__construct($acl, self::$_tableName, $adapter);
     }
 
-    public static $defaultBookmarksValues = array(
-        'Activity' => array(
+    public static $defaultBookmarksValues = [
+        'Activity' => [
             'title' => 'Activity',
             'url' => 'activity',
             'icon_class' => 'icon-bell',
-            'section' => 'other'),
-        'Files' => array(
+            'section' => 'other'
+        ],
+        'Files' => [
             'title' => 'Files',
             'url' => 'files',
             'icon_class' => 'icon-attach',
-            'section' => 'other'),
-        'Messages' => array(
+            'section' => 'other'
+        ],
+        'Messages' => [
             'title' => 'Messages',
             'url' => 'messages',
             'icon_class' => 'icon-chat',
-            'section' => 'other'),
-        'Users' => array(
+            'section' => 'other'
+        ],
+        'Users' => [
             'title' => 'Users',
             'url' => 'users',
             'icon_class' => 'icon-users',
-            'section' => 'other')
-    );
+            'section' => 'other'
+        ]
+    ];
 
     public function createDefaultBookmark($title, $bookmark)
     {
@@ -121,9 +125,9 @@ class DirectusBookmarksTableGateway extends AclAwareTableGateway
         }
 
         foreach ($defaultBookmarks as $defaultBookmark) {
-            $data = array(
+            $data = [
                 'user' => $user_id
-            );
+            ];
 
             $row = $this->createDefaultBookmark($defaultBookmark, $data);
             $id = $this->insertBookmark($row);

@@ -27,7 +27,7 @@ class DirectusUiTableGateway extends AclAwareTableGateway
     {
 
         $rowset = $this->select(function (Select $select) use ($tbl_name, $col_name, $datatype_name) {
-            $columns = array('id' => 'ui_name', 'name', 'value');
+            $columns = ['id' => 'ui_name', 'name', 'value'];
             $select->columns($columns)->order('ui_name');
             $select
                 ->where
@@ -38,7 +38,7 @@ class DirectusUiTableGateway extends AclAwareTableGateway
                 ->equalTo('ui_name', $datatype_name);
         });
 
-        $ui_options = array();
+        $ui_options = [];
 
         foreach ($rowset as $row) {
             if (!array_key_exists('id', $ui_options))
@@ -62,7 +62,7 @@ class DirectusUiTableGateway extends AclAwareTableGateway
         // $select->join(
         //     'directus_columns',
         //     'directus_ui.column_name = directus_columns.column_name AND directus_ui.table_name = directus_columns.table_name AND directus_ui.ui_name = directus_columns.ui',
-        //     array(),
+        //     [],
         //     $select::JOIN_INNER
         // );
         return $this->selectWith($select);

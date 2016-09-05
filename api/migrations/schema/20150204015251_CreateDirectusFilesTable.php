@@ -29,96 +29,80 @@ class CreateDirectusFilesTable extends Ruckusing_Migration_Base
 {
     public function up()
     {
-        $t = $this->create_table("directus_files", array(
-                "id" => false,
-                //"options"=>"COMMENT='Directus Files Storage'"
-            )
-        );
+        $t = $this->create_table('directus_files', [
+            'id' => false,
+            //'options' => 'COMMENT="Directus Files Storage"'
+        ]);
 
         //columns
-        $t->column("id", "integer", array(
-                "unsigned" => true,
-                "null" => false,
-                "auto_increment" => true,
-                "primary_key" => true
-            )
-        );
-        $t->column("active", "tinyinteger", array(
-                "limit" => 1,
-                "default" => 1
-            )
-        );
-        $t->column("name", "string", array(
-                "limit" => 255,
-                "default" => NULL
-            )
-        );
-        $t->column("title", "string", array(
-                "limit" => 255,
-                "default" => ""
-            )
-        );
-        $t->column("location", "string", array(
-                "limit" => 200,
-                "default" => NULL
-            )
-        );
-        $t->column("caption", "text");
-        $t->column("type", "string", array(
-                "limit" => 50,
-                "default" => ""
-            )
-        );
-        $t->column("charset", "string", array(
-                "limit" => 50,
-                "default" => ""
-            )
-        );
-        $t->column("tags", "string", array(
-                "limit" => 255,
-                "default" => ""
-            )
-        );
-        $t->column("width", "integer", array(
-                "unsigned" => true,
-                "default" => 0
-            )
-        );
-        $t->column("height", "integer", array(
-                "unsigned" => true,
-                "default" => 0
-            )
-        );
-        $t->column("size", "integer", array(
-                "unsigned" => true,
-                "default" => 0
-            )
-        );
-        $t->column("embed_id", "string", array(
-                "limit" => 200,
-                "default" => NULL
-            )
-        );
-        $t->column("user", "integer", array(
-                "unsigned" => true,
-                "null" => false
-            )
-        );
-        $t->column("date_uploaded", "datetime", array(
-                "default" => NULL
-            )
-        );
-        $t->column("storage_adapter", "string", array(
-                "limit" => 50,
-                "default" => NULL
-            )
-        );
+        $t->column('id', 'integer', [
+            'unsigned' => true,
+            'null' => false,
+            'auto_increment' => true,
+            'primary_key' => true
+        ]);
+        $t->column('active', 'tinyinteger', [
+            'limit' => 1,
+            'default' => 1
+        ]);
+        $t->column('name', 'string', [
+            'limit' => 255,
+            'default' => NULL
+        ]);
+        $t->column('title', 'string', [
+            'limit' => 255,
+            'default' => ''
+        ]);
+        $t->column('location', 'string', [
+            'limit' => 200,
+            'default' => NULL
+        ]);
+        $t->column('caption', 'text');
+        $t->column('type', 'string', [
+            'limit' => 50,
+            'default' => ''
+        ]);
+        $t->column('charset', 'string', [
+            'limit' => 50,
+            'default' => ''
+        ]);
+        $t->column('tags', 'string', [
+            'limit' => 255,
+            'default' => ''
+        ]);
+        $t->column('width', 'integer', [
+            'unsigned' => true,
+            'default' => 0
+        ]);
+        $t->column('height', 'integer', [
+            'unsigned' => true,
+            'default' => 0
+        ]);
+        $t->column('size', 'integer', [
+            'unsigned' => true,
+            'default' => 0
+        ]);
+        $t->column('embed_id', 'string', [
+            'limit' => 200,
+            'default' => NULL
+        ]);
+        $t->column('user', 'integer', [
+            'unsigned' => true,
+            'null' => false
+        ]);
+        $t->column('date_uploaded', 'datetime', [
+            'default' => NULL
+        ]);
+        $t->column('storage_adapter', 'string', [
+            'limit' => 50,
+            'default' => NULL
+        ]);
 
         $t->finish();
     }//up()
 
     public function down()
     {
-        $this->drop_table("directus_files");
+        $this->drop_table('directus_files');
     }//down()
 }

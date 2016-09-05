@@ -12,7 +12,7 @@ class RequestNonceProvider
      * See constructor for defaults.
      * @var array
      */
-    private $options = array();
+    private $options = [];
 
     /**
      * Cache return val for #requestHasValidNonce()
@@ -33,15 +33,15 @@ class RequestNonceProvider
      * Access using #getNewNoncesThisRequest()
      * @var array
      */
-    private $new_nonces_this_request = array();
+    private $new_nonces_this_request = [];
 
-    public function __construct($options = array())
+    public function __construct($options = [])
     {
-        $default_options = array(
+        $default_options = [
             'nonce_pool_size' => 10,
             'nonce_request_header' => 'X-Directus-Request-Nonce',
             'nonce_response_header' => 'X-Directus-New-Request-Nonces'
-        );
+        ];
 
         $this->options = array_merge($default_options, $options);
 
@@ -50,7 +50,7 @@ class RequestNonceProvider
         }
 
         if (!isset($_SESSION['request_nonces'])) {
-            $_SESSION['request_nonces'] = array();
+            $_SESSION['request_nonces'] = [];
         }
 
         $this->nonce_pool = &$_SESSION['request_nonces'];

@@ -420,7 +420,7 @@ class TableSchema
 
         $columns = SchemaManager::getColumns($tbl_name, $params);
         if (!self::canGroupViewTable($tbl_name)) {
-            // return array();
+            // return [];
             return false;
         }
 

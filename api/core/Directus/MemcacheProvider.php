@@ -25,10 +25,10 @@ class MemcacheProvider
      * @todo populate these using config
      * @var array
      */
-    private $memcachedServerAddresses = array(
-        'development' => array(),
-        'production' => array()
-    );
+    private $memcachedServerAddresses = [
+        'development' => [],
+        'production' => []
+    ];
 
     /**
      * @var bool
@@ -148,7 +148,7 @@ class MemcacheProvider
      */
     public function appendToEntry($cacheKey, $value, $expire = self::DEFAULT_CACHE_EXPIRE_SECONDS)
     {
-        $set = array($value);
+        $set = [$value];
         $entry = $this->get($cacheKey);
         if ($entry) {
             $set = $entry;

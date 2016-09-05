@@ -52,7 +52,7 @@ class RelationalTableGateway extends AclAwareTableGateway
         return $identifier;
     }
 
-    public function manageRecordUpdate($tableName, $recordData, $activityEntryMode = self::ACTIVITY_ENTRY_MODE_PARENT, &$childLogEntries = null, &$parentCollectionRelationshipsChanged = false, $parentData = array())
+    public function manageRecordUpdate($tableName, $recordData, $activityEntryMode = self::ACTIVITY_ENTRY_MODE_PARENT, &$childLogEntries = null, &$parentCollectionRelationshipsChanged = false, $parentData = [])
     {
         $log = $this->logger();
 
@@ -97,8 +97,8 @@ class RelationalTableGateway extends AclAwareTableGateway
         }
 
         // Recursive functions will append to this array by reference
-        // $nestedLogEntries = $thisIsNested ? $childLogEntries : array();
-        $nestedLogEntries = array();
+        // $nestedLogEntries = $thisIsNested ? $childLogEntries : [];
+        $nestedLogEntries = [];
         if ($thisIsNested) {
             $nestedLogEntries = &$childLogEntries;
         }
@@ -144,10 +144,10 @@ class RelationalTableGateway extends AclAwareTableGateway
 
         // parent
         if ($activityEntryMode === self::ACTIVITY_ENTRY_MODE_PARENT) {
-            $parentData = array(
+            $parentData = [
                 'id' => array_key_exists($this->primaryKeyFieldName, $recordData) ? $recordData[$this->primaryKeyFieldName] : null,
                 'table_name' => $tableName
-            );
+            ];
         }
 
         $draftRecord = $TableGateway->addOrUpdateToManyRelationships($schemaArray, $draftRecord, $nestedLogEntries, $nestedCollectionRelationshipsChanged, $parentData);
@@ -168,14 +168,14 @@ class RelationalTableGateway extends AclAwareTableGateway
         $fullRecordData = (array)$fullRecordData;
 
 
-        $deltaRecordData = $recordIsNew ? array() : array_intersect_key((array)$parentRecordWithForeignKeys, (array)$fullRecordData);
+        $deltaRecordData = $recordIsNew ? [] : array_intersect_key((array)$parentRecordWithForeignKeys, (array)$fullRecordData);
 
         switch ($activityEntryMode) {
 
             // Activity logging is enabled, and I am a nested action
             case self::ACTIVITY_ENTRY_MODE_CHILD:
                 $logEntryAction = $recordIsNew ? DirectusActivityTableGateway::ACTION_ADD : DirectusActivityTableGateway::ACTION_UPDATE;
-                $childLogEntries[] = array(
+                $childLogEntries[] = [
                     'type' => DirectusActivityTableGateway::makeLogTypeFromTableName($this->table),
                     'table_name' => $tableName,
                     'action' => $logEntryAction,
@@ -189,7 +189,7 @@ class RelationalTableGateway extends AclAwareTableGateway
                     'identifier' => $this->findRecordIdentifier($schemaArray, $fullRecordData),
                     'logged_ip' => isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '',
                     'user_agent' => isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : ''
-                );
+                ];
                 if ($recordIsNew) {
                     /**
                      * This is a nested call, creating a new record w/in a foreign collection.
@@ -221,7 +221,7 @@ class RelationalTableGateway extends AclAwareTableGateway
                     }
                     // Save parent log entry
                     $parentLogEntry = AclAwareRowGateway::makeRowGatewayFromTableName($this->acl, 'directus_activity', $this->adapter);
-                    $logData = array(
+                    $logData = [
                         'type' => DirectusActivityTableGateway::makeLogTypeFromTableName($this->table),
                         'table_name' => $tableName,
                         'action' => $logEntryAction,
@@ -235,7 +235,7 @@ class RelationalTableGateway extends AclAwareTableGateway
                         'row_id' => $rowId,
                         'logged_ip' => isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '',
                         'user_agent' => isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : ''
-                    );
+                    ];
                     $parentLogEntry->populate($logData, false);
                     $parentLogEntry->save();
                     // Update & insert nested activity entries
@@ -274,7 +274,7 @@ class RelationalTableGateway extends AclAwareTableGateway
         $filesTableGateway = new RelationalTableGateway($this->acl, $tableName, $this->adapter);
         $primaryKeyFieldName = $filesTableGateway->primaryKeyFieldName;
 
-        $params = array();
+        $params = [];
         $params[$primaryKeyFieldName] = $recordData[$primaryKeyFieldName];
         $file = $filesTableGateway->getEntries($params);
 
@@ -415,7 +415,7 @@ class RelationalTableGateway extends AclAwareTableGateway
      * @param array $parentRow The parent record being updated.
      * @return  array
      */
-    public function addOrUpdateToManyRelationships($schema, $parentRow, &$childLogEntries = null, &$parentCollectionRelationshipsChanged = false, $parentData = array())
+    public function addOrUpdateToManyRelationships($schema, $parentRow, &$childLogEntries = null, &$parentCollectionRelationshipsChanged = false, $parentData = [])
     {
         $log = $this->logger();
 
@@ -451,7 +451,7 @@ class RelationalTableGateway extends AclAwareTableGateway
 
             /** One-to-Many, Many-to-Many */
             if ($fieldIsCollectionAssociation) {
-                $this->enforceColumnHasNonNullValues($column['relationship'], array('related_table', 'junction_key_right'), $this->table);
+                $this->enforceColumnHasNonNullValues($column['relationship'], ['related_table', 'junction_key_right'], $this->table);
                 $foreignTableName = $column['relationship']['related_table'];
                 $foreignJoinColumn = $column['relationship']['junction_key_right'];
                 switch ($lowercaseColumnType) {
@@ -508,7 +508,7 @@ class RelationalTableGateway extends AclAwareTableGateway
                          */
                         $noDuplicates = isset($column['options']['no_duplicates']) ? $column['options']['no_duplicates'] : 0;
 
-                        $this->enforceColumnHasNonNullValues($column['relationship'], array('junction_table', 'junction_key_left'), $this->table);
+                        $this->enforceColumnHasNonNullValues($column['relationship'], ['junction_table', 'junction_key_left'], $this->table);
                         $junctionTableName = $column['relationship']['junction_table'];
                         $junctionKeyLeft = $column['relationship']['junction_key_left'];
                         $junctionKeyRight = $column['relationship']['junction_key_right'];
@@ -550,10 +550,10 @@ class RelationalTableGateway extends AclAwareTableGateway
                             /** Update foreign record */
                             $foreignRecord = $ForeignTable->manageRecordUpdate($foreignTableName, $junctionRow['data'], self::ACTIVITY_ENTRY_MODE_CHILD, $childLogEntries, $parentCollectionRelationshipsChanged, $parentData);
                             // Junction/Association row
-                            $junctionTableRecord = array(
+                            $junctionTableRecord = [
                                 $junctionKeyLeft => $parentRow[$this->primaryKeyFieldName],
                                 $foreignJoinColumn => $foreignRecord[$ForeignTable->primaryKeyFieldName]
-                            );
+                            ];
 
                             // Update fields on the Junction Record
                             $junctionTableRecord = array_merge($junctionTableRecord, $junctionRow);
@@ -580,7 +580,7 @@ class RelationalTableGateway extends AclAwareTableGateway
         return $parentRow;
     }
 
-    public static $defaultEntriesSelectParams = array(
+    public static $defaultEntriesSelectParams = [
         'orderBy' => 'id', // @todo validate $params['order*']
         'orderDirection' => 'ASC',
         'fields' => '*',
@@ -589,7 +589,7 @@ class RelationalTableGateway extends AclAwareTableGateway
         'id' => -1,
         'search' => null,
         'status' => null
-    );
+    ];
 
     public function applyDefaultEntriesSelectParams(array $params)
     {
@@ -604,7 +604,7 @@ class RelationalTableGateway extends AclAwareTableGateway
             $params['currentPage'] = $params['current_page'] * $params['perPage'];
 
         if (isset($params['fields']) && is_array($params['fields']))
-            $params['fields'] = array_merge(array('id'), $params['fields']);
+            $params['fields'] = array_merge(['id'], $params['fields']);
 
         $params = array_merge(self::$defaultEntriesSelectParams, $params);
 
@@ -614,14 +614,14 @@ class RelationalTableGateway extends AclAwareTableGateway
             $params['orderBy'] = 'sort';
         }
 
-        array_walk($params, array($this, 'castFloatIfNumeric'));
+        array_walk($params, [$this, 'castFloatIfNumeric']);
 
         return $params;
     }
 
     public function applyParamsToTableEntriesSelect(array $params, Select $select, array $schema, $hasActiveColumn = false)
     {
-        $select->order(implode(' ', array($params['orderBy'], $params['orderDirection'])));
+        $select->order(implode(' ', [$params['orderBy'], $params['orderDirection']]));
         if (isset($params['perPage']) && isset($params['currentPage'])) {
             $select->limit($params['perPage'])
                 ->offset($params['currentPage'] * $params['perPage']);
@@ -678,7 +678,7 @@ class RelationalTableGateway extends AclAwareTableGateway
      * Relational Getter
      * NOTE: equivalent to old DB#get_entries
      */
-    public function getEntries($params = array())
+    public function getEntries($params = [])
     {
         // @todo this is for backwards compatibility, make sure this doesn't happen and ditch the following 2 if-blocks
         if (!array_key_exists('orderBy', $params) && array_key_exists('sort', $params)) {
@@ -753,7 +753,7 @@ class RelationalTableGateway extends AclAwareTableGateway
          */
 
         if (-1 == $params[$this->primaryKeyFieldName]) {
-            $set = array();
+            $set = [];
             if ($hasActiveColumn) {
                 $countActive = $this->countActive($hasActiveColumn);
                 $set = array_merge($set, $countActive);
@@ -795,7 +795,7 @@ class RelationalTableGateway extends AclAwareTableGateway
      */
     private function enforceColumnHasNonNullValues($column, $requiredKeys, $tableName)
     {
-        $erroneouslyNullKeys = array();
+        $erroneouslyNullKeys = [];
         foreach ($requiredKeys as $key) {
             if (!isset($column[$key]) || (strlen(trim($column[$key])) === 0)) {
                 $erroneouslyNullKeys[] = $key;
@@ -823,7 +823,7 @@ class RelationalTableGateway extends AclAwareTableGateway
                 $relationship = $alias['relationship'];
                 switch ($relationship['type']) {
                     case 'MANYTOMANY':
-                        $this->enforceColumnHasNonNullValues($alias['relationship'], array('related_table', 'junction_table', 'junction_key_left', 'junction_key_right'), $this->table);
+                        $this->enforceColumnHasNonNullValues($alias['relationship'], ['related_table', 'junction_table', 'junction_key_left', 'junction_key_right'], $this->table);
                         if (in_array($this->table, $this->toManyCallStack)) {
                             return $entry;
                         }
@@ -834,7 +834,7 @@ class RelationalTableGateway extends AclAwareTableGateway
                         $noDuplicates = isset($alias['options']['no_duplicates']) ? $alias['options']['no_duplicates'] : 0;
                         // @todo: better way to handle this.
                         if ($noDuplicates) {
-                            $uniquesID = array();
+                            $uniquesID = [];
                             foreach ($foreign_data['rows'] as $index => $row) {
                                 if (!in_array($row['data']['id'], $uniquesID)) {
                                     array_push($uniquesID, $row['data']['id']);
@@ -846,7 +846,7 @@ class RelationalTableGateway extends AclAwareTableGateway
                         }
                         break;
                     case 'ONETOMANY':
-                        $this->enforceColumnHasNonNullValues($alias['relationship'], array('related_table', 'junction_key_right'), $this->table);
+                        $this->enforceColumnHasNonNullValues($alias['relationship'], ['related_table', 'junction_key_right'], $this->table);
                         if (in_array($alias['relationship']['related_table'], $this->toManyCallStack)) {
                             return $entry;
                         }
@@ -892,7 +892,7 @@ class RelationalTableGateway extends AclAwareTableGateway
         $schemaArray = TableSchema::getSchemaArray($table);
         $results = $this->loadManyToOneRelationships($schemaArray, $results);
 
-        return array('rows' => $results);
+        return ['rows' => $results];
     }
 
     /**
@@ -957,7 +957,7 @@ class RelationalTableGateway extends AclAwareTableGateway
                 $rowset = $TableGateway->selectWith($select);
                 $results = $rowset->toArray();
 
-                $foreign_table = array();
+                $foreign_table = [];
                 foreach ($results as $row) {
                     $row = $this->parseRecord($row, $foreign_table_name);
                     $foreign_table[$row['id']] = $row;
@@ -1013,7 +1013,7 @@ class RelationalTableGateway extends AclAwareTableGateway
         $junction_id_column_alias = 'directus_junction_id_column_518d31856e131';
         $junction_sort_column_alias = 'directus_junction_sort_column_518d318e3f0f5';
 
-        $junctionSelectColumns = array($junction_id_column_alias => $junction_table_pk);
+        $junctionSelectColumns = [$junction_id_column_alias => $junction_table_pk];
 
         $sql = new Sql($this->adapter);
         $select = $sql->select();
@@ -1030,7 +1030,7 @@ class RelationalTableGateway extends AclAwareTableGateway
         $select
             ->from($foreign_table)
             ->join($junction_table, $foreign_join_column . '=' . $junction_join_column, $junctionSelectColumns)
-            ->where(array($junction_comparison_column => $column_equals))
+            ->where([$junction_comparison_column => $column_equals])
             ->order($junction_id_column . 'ASC');
 
         // Only select the fields not on the currently authenticated user group's read field blacklist
@@ -1041,7 +1041,7 @@ class RelationalTableGateway extends AclAwareTableGateway
         $results = $ForeignTable->selectWith($select);
         $results = $results->toArray();
 
-        $foreign_data = array();
+        $foreign_data = [];
         $columns = TableSchema::getAllNonAliasTableColumns($foreign_table);
         foreach ($results as $row) {
             $row = $recordData = SchemaManager::parseRecordValuesByType($row, $columns);
@@ -1049,7 +1049,7 @@ class RelationalTableGateway extends AclAwareTableGateway
             $junction_table_id = (int)$row[$junction_id_column_alias];
             unset($row[$junction_id_column_alias]);
 
-            $entry = array($junction_table_pk => $junction_table_id);
+            $entry = [$junction_table_pk => $junction_table_id];
             if (in_array('sort', $junctionColumns)) {
                 // @TODO: check why is this a string instead of an integer.
                 $entry['sort'] = (int)$row[$junction_sort_column_alias];
@@ -1065,7 +1065,7 @@ class RelationalTableGateway extends AclAwareTableGateway
             $foreign_data[] = $entry;
         }
 
-        return array('rows' => $foreign_data);
+        return ['rows' => $foreign_data];
     }
 
     /**
@@ -1100,7 +1100,7 @@ class RelationalTableGateway extends AclAwareTableGateway
      */
     public function updateCollection($entries)
     {
-        $entries = is_numeric_array($entries) ? $entries : array($entries);
+        $entries = is_numeric_array($entries) ? $entries : [$entries];
         foreach ($entries as $entry) {
             $entry = $this->manageRecordUpdate($this->table, $entry);
             $entry->save();
@@ -1122,7 +1122,7 @@ class RelationalTableGateway extends AclAwareTableGateway
     public function selectWithImmediateRelationships(Select $select)
     {
         $resultSet = $this->selectWith($select);
-        $entriesWithRelationships = array();
+        $entriesWithRelationships = [];
         foreach ($resultSet as $rowGateway) {
             $entriesWithRelationships[] = $rowGateway->toArrayWithImmediateRelationships($this);
         }
@@ -1137,7 +1137,7 @@ class RelationalTableGateway extends AclAwareTableGateway
      */
     public function filterSchemaAliasFields(&$schema)
     {
-        $alias_fields = array();
+        $alias_fields = [];
         foreach ($schema as $i => $col) {
             // Is it a "virtual"/alias column?
             if (TableSchema::isColumnAnAlias($col)) {
@@ -1172,7 +1172,7 @@ class RelationalTableGateway extends AclAwareTableGateway
     public function countTotal(PredicateInterface $predicate = null)
     {
         $select = new Select($this->table);
-        $select->columns(array('total' => new Expression('COUNT(*)')));
+        $select->columns(['total' => new Expression('COUNT(*)')]);
         if (!is_null($predicate)) {
             $select->where($predicate);
         }
@@ -1191,12 +1191,12 @@ class RelationalTableGateway extends AclAwareTableGateway
     {
         $select = new Select($this->table);
         $select
-            ->columns(array(STATUS_COLUMN_NAME, 'quantity' => new Expression('COUNT(*)')))
+            ->columns([STATUS_COLUMN_NAME, 'quantity' => new Expression('COUNT(*)')])
             ->group(STATUS_COLUMN_NAME);
         $sql = new Sql($this->adapter, $this->table);
         $statement = $sql->prepareStatementForSqlObject($select);
         $results = $statement->execute();
-        $stats = array();
+        $stats = [];
         $statusMap = Bootstrap::get('status');
         foreach ($results as $row) {
             if (isset($row[STATUS_COLUMN_NAME])) {
@@ -1222,21 +1222,22 @@ class RelationalTableGateway extends AclAwareTableGateway
     {
         $select = new Select($this->table);
 
-        return array(
+        return [
             'active' => 0,
             'inactive' => 0,
             'trash' => 0
-        );
+        ];
 
-        $result = array('active' => 0);
+        $result = ['active' => 0];
         if ($no_active) {
-            $select->columns(array('count' => new \Zend\Db\Sql\Expression('COUNT(*)'), STATUS_COLUMN_NAME => STATUS_COLUMN_NAME));
+            $select->columns(['count' => new \Zend\Db\Sql\Expression('COUNT(*)'), STATUS_COLUMN_NAME => STATUS_COLUMN_NAME]);
         } else {
-            $select->columns(array(
+            $select->columns([
                 new \Zend\Db\Sql\Expression('CASE ' . STATUS_COLUMN_NAME . 'WHEN 0 THEN \'trash\'
               WHEN 1 THEN \'active\'
               WHEN 2 THEN \'active\'
-            END AS ' . STATUS_COLUMN_NAME), 'count' => new \Zend\Db\Sql\Expression('COUNT(*)')));
+            END AS ' . STATUS_COLUMN_NAME), 'count' => new \Zend\Db\Sql\Expression('COUNT(*)')
+            ]);
             $select->group(STATUS_COLUMN_NAME);
         }
 

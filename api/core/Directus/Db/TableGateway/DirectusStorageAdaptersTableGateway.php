@@ -25,7 +25,7 @@ class DirectusStorageAdaptersTableGateway extends AclAwareTableGateway
         if (!empty($string) && $decoded = json_decode($string, true)) {
             return $decoded;
         }
-        return array();
+        return [];
     }
 
     public function fetchByUniqueRoles(array $roleNames)
@@ -34,7 +34,7 @@ class DirectusStorageAdaptersTableGateway extends AclAwareTableGateway
         $select->group('role');
         $select->where->in('role', $roleNames);
         $rows = $this->selectWith($select);
-        $roles = array();
+        $roles = [];
         foreach ($rows as $row) {
             $row = $row->toArray();
             // The adapter's `params` column is JSON serialized.
@@ -82,7 +82,7 @@ class DirectusStorageAdaptersTableGateway extends AclAwareTableGateway
     public function fetchAllByIdNoParams()
     {
         $all = $this->select()->toArray();
-        $allByKey = array();
+        $allByKey = [];
         foreach ($all as $row) {
             unset($row['params']);
             $allByKey[$row['id']] = $row;

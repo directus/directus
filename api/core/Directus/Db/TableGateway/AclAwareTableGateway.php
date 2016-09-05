@@ -40,7 +40,7 @@ class AclAwareTableGateway extends TableGateway
     protected $acl;
 
     public $primaryKeyFieldName = 'id';
-    public $imagickExtensions = array('tiff', 'tif', 'psd', 'pdf');
+    public $imagickExtensions = ['tiff', 'tif', 'psd', 'pdf'];
     public $memcache;
 
     /**
@@ -67,7 +67,7 @@ class AclAwareTableGateway extends TableGateway
 
         if ($features !== null) {
             if ($features instanceof Feature\AbstractFeature) {
-                $features = array($features);
+                $features = [$features];
             }
             if (is_array($features)) {
                 $this->featureSet = new Feature\FeatureSet($features);
@@ -124,14 +124,14 @@ class AclAwareTableGateway extends TableGateway
 
     public function withKey($key, $resultSet)
     {
-        $withKey = array();
+        $withKey = [];
         foreach ($resultSet as $row) {
             $withKey[$row[$key]] = $row;
         }
         return $withKey;
     }
 
-    protected function convertResultSetDateTimesTimeZones(array $resultSet, $targetTimeZone, $fields = array('datetime'), $yieldObjects = false)
+    protected function convertResultSetDateTimesTimeZones(array $resultSet, $targetTimeZone, $fields = ['datetime'], $yieldObjects = false)
     {
         foreach ($resultSet as &$result) {
             $result = $this->convertRowDateTimesToTimeZone($result, $targetTimeZone, $fields);
@@ -139,7 +139,7 @@ class AclAwareTableGateway extends TableGateway
         return $resultSet;
     }
 
-    protected function convertRowDateTimesToTimeZone(array $row, $targetTimeZone, $fields = array('datetime'), $yieldObjects = false)
+    protected function convertRowDateTimesToTimeZone(array $row, $targetTimeZone, $fields = ['datetime'], $yieldObjects = false)
     {
         foreach ($fields as $field) {
             $col =& $row[$field];
@@ -180,7 +180,7 @@ class AclAwareTableGateway extends TableGateway
      */
     public function fetchAllWithIdKeys($selectModifier = null)
     {
-        $allWithIdKeys = array();
+        $allWithIdKeys = [];
         $all = $this->fetchAll($selectModifier)->toArray();
         return $this->withKey('id', $all);
     }
@@ -231,7 +231,7 @@ class AclAwareTableGateway extends TableGateway
         if ($rowExists) {
             $Update = new Update($tableName);
             $Update->set($recordData);
-            $Update->where(array($TableGateway->primaryKeyFieldName => $recordData[$TableGateway->primaryKeyFieldName]));
+            $Update->where([$TableGateway->primaryKeyFieldName => $recordData[$TableGateway->primaryKeyFieldName]]);
             $TableGateway->updateWith($Update);
 
             $this->emitter->run('postUpdate', [$TableGateway, $recordData, $this->adapter, $this->acl]);
@@ -253,7 +253,7 @@ class AclAwareTableGateway extends TableGateway
                     $Files->rename($thumbnailPath, 'thumbs/' . $recordData[$this->primaryKeyFieldName] . '.' . $ext);
                 }
 
-                $updateArray = array();
+                $updateArray = [];
                 if ($Files->getSettings('file_naming') == 'file_id') {
                     $Files->rename($recordData['name'], str_pad($recordData[$this->primaryKeyFieldName], 11, '0', STR_PAD_LEFT) . '.' . $ext);
                     $updateArray['name'] = str_pad($recordData[$this->primaryKeyFieldName], 11, '0', STR_PAD_LEFT) . '.' . $ext;
@@ -263,7 +263,7 @@ class AclAwareTableGateway extends TableGateway
                 if (!empty($updateArray)) {
                     $Update = new Update($tableName);
                     $Update->set($updateArray);
-                    $Update->where(array($TableGateway->primaryKeyFieldName => $recordData[$TableGateway->primaryKeyFieldName]));
+                    $Update->where([$TableGateway->primaryKeyFieldName => $recordData[$TableGateway->primaryKeyFieldName]]);
                     $TableGateway->updateWith($Update);
                 }
             }
@@ -318,20 +318,20 @@ class AclAwareTableGateway extends TableGateway
         // remove table privileges
         if ($tableName != 'directus_privileges') {
             $privilegesTableGateway = new TableGateway('directus_privileges', $this->adapter);
-            $privilegesTableGateway->delete(array('table_name' => $tableName));
+            $privilegesTableGateway->delete(['table_name' => $tableName]);
         }
 
         // remove column from directus_tables
         $tablesTableGateway = new TableGateway('directus_tables', $this->adapter);
-        $tablesTableGateway->delete(array(
+        $tablesTableGateway->delete([
             'table_name' => $tableName
-        ));
+        ]);
 
         // remove column from directus_preferences
         $preferencesTableGateway = new TableGateway('directus_preferences', $this->adapter);
-        $preferencesTableGateway->delete(array(
+        $preferencesTableGateway->delete([
             'table_name' => $tableName
-        ));
+        ]);
 
         return $dropped;
     }
@@ -365,17 +365,17 @@ class AclAwareTableGateway extends TableGateway
 
         // Remove column from directus_columns
         $columnsTableGateway = new TableGateway('directus_columns', $this->adapter);
-        $columnsTableGateway->delete(array(
+        $columnsTableGateway->delete([
             'table_name' => $tableName,
             'column_name' => $columnName
-        ));
+        ]);
 
         // Remove column from directus_ui
         $uisTableGateway = new TableGateway('directus_ui', $this->adapter);
-        $uisTableGateway->delete(array(
+        $uisTableGateway->delete([
             'table_name' => $tableName,
             'column_name' => $columnName
-        ));
+        ]);
 
         return true;
     }
@@ -386,11 +386,11 @@ class AclAwareTableGateway extends TableGateway
     */
     public function addColumn($tableName, $tableData)
     {
-        $directus_types = array('MANYTOMANY', 'ONETOMANY', 'ALIAS');
+        $directus_types = ['MANYTOMANY', 'ONETOMANY', 'ALIAS'];
         $relationshipType = ArrayUtils::get($tableData, 'relationship_type', null);
         // TODO: list all types which need manytoone ui
         // Hard-coded
-        $manytoones = array('single_file', 'many_to_one', 'many_to_one_typeahead', 'MANYTOONE');
+        $manytoones = ['single_file', 'many_to_one', 'many_to_one_typeahead', 'MANYTOONE'];
 
         if (in_array($relationshipType, $directus_types)) {
             //This is a 'virtual column'. Write to directus schema instead of MYSQL
@@ -437,7 +437,7 @@ class AclAwareTableGateway extends TableGateway
 
     protected function addVirtualColumn($tableName, $columnData)
     {
-        $alias_columns = array('table_name', 'column_name', 'data_type', 'related_table', 'junction_table', 'junction_key_left', 'junction_key_right', 'sort', 'ui', 'comment', 'relationship_type');
+        $alias_columns = ['table_name', 'column_name', 'data_type', 'related_table', 'junction_table', 'junction_key_left', 'junction_key_right', 'sort', 'ui', 'comment', 'relationship_type'];
 
         $columnData['table_name'] = $tableName;
         $columnData['sort'] = 9999;
@@ -478,7 +478,7 @@ class AclAwareTableGateway extends TableGateway
      */
     protected function extractRawColumnNames($columns)
     {
-        $columnNames = array();
+        $columnNames = [];
         foreach ($insertState['columns'] as $column) {
             $sansSpaces = preg_replace('/\s/', '', $column);
             preg_match('/(\W?\w+\W?\.)?\W?([\*\w+])\W?/', $sansSpaces, $matches);
@@ -697,7 +697,7 @@ class AclAwareTableGateway extends TableGateway
                 // Who are the owners of these rows?
                 list($resultQty, $ownerIds) = $this->acl->getCmsOwnerIdsByTableGatewayAndPredicate($this, $updateState['where']);
                 // Enforce
-                if (is_null($currentUserId) || count(array_diff($ownerIds, array($currentUserId)))) {
+                if (is_null($currentUserId) || count(array_diff($ownerIds, [$currentUserId]))) {
                     // $aclErrorPrefix = $this->acl->getErrorMessagePrefix();
                     // throw new UnauthorizedTableBigEditException($aclErrorPrefix . "Table bigedit access forbidden on $resultQty `$updateTable` table record(s) and " . count($ownerIds) . " CMS owner(s) (with ids " . implode(", ", $ownerIds) . ").");
                     $groupsTableGateway = self::makeTableGatewayFromTableName($this->acl, 'directus_groups', $this->adapter);

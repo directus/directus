@@ -17,20 +17,20 @@ class ExceptionView
         $response->header('Content-type', 'application/json');
 
         $httpCode = 500;
-        $data = array();
+        $data = [];
 
         /**
          * Directus\Acl\Exception\AclException & subclasses
          */
         if ($exception instanceof AclException || is_subclass_of($exception, 'Directus\Acl\Exception\AclException')) {
             $httpCode = 403;
-            $data = array('message' => $exception->getMessage());
+            $data = ['message' => $exception->getMessage()];
         } /**
          * Directus\Db\Exception\RelationshipMetadataException
          */
         elseif ($exception instanceof RelationshipMetadataException) {
             $httpCode = 424;
-            $data = array('message' => $exception->getMessage());
+            $data = ['message' => $exception->getMessage()];
         }
 
         /**
@@ -46,18 +46,18 @@ class ExceptionView
          */
         elseif ($exception instanceof CustomUiValidationError) {
             $httpCode = 422;
-            $data = array('message' => $exception->getMessage());
+            $data = ['message' => $exception->getMessage()];
         } /**
          * Directus\Db\Exception\DuplicateEntryException
          */
         elseif ($exception instanceof DuplicateEntryException) {
             $httpCode = 409;
-            $data = array('message' => $exception->getMessage());
+            $data = ['message' => $exception->getMessage()];
         } // @todo log error nonetheless
         else {
-            $data = array('message' => __t('internal_server_error'));
+            $data = ['message' => __t('internal_server_error')];
             if ('production' !== DIRECTUS_ENV) {
-                $data = array(
+                $data = [
                     'code' => $exception->getCode(),
                     'class' => get_class($exception),
                     'message' => $exception->getMessage(),
@@ -65,7 +65,7 @@ class ExceptionView
                     'line' => $exception->getLine(),
                     'trace' => $exception->getTrace(),
                     'traceAsString' => $exception->getTraceAsString(),
-                );
+                ];
             }
         }
 

@@ -259,6 +259,6 @@ class AclTest extends PHPUnit_Framework_TestCase
         $mockDriver->expects($this->any())->method('getConnection')->will($this->returnValue($mockConnection));
 
         // setup mock adapter
-        return $this->getMock('Zend\Db\Adapter\Adapter', null, array($mockDriver));
+        return $this->getMock('Zend\Db\Adapter\Adapter', null, [$mockDriver]);
     }
 }

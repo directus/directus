@@ -26,32 +26,28 @@ class DropDirectusTabPrivileges extends Ruckusing_Migration_Base
     {
         if (!$this->has_table('directus_tab_privileges')) {
             // we won't use this anymore
-            $t = $this->create_table("directus_tab_privileges", array(
-                    "id" => false,
-                    "options" => ""
-                )
-            );
+            $t = $this->create_table('directus_tab_privileges', [
+                'id' => false,
+                'options' => ''
+            ]);
 
             //columns
-            $t->column("id", "integer", array(
-                    "limit" => 11,
-                    "unsigned" => true,
-                    "null" => false,
-                    "auto_increment" => true,
-                    "primary_key" => true
-                )
-            );
-            $t->column("group_id", "integer", array(
-                    "limit" => 11,
-                    "default" => NULL
-                )
-            );
-            $t->column("tab_blacklist", "string", array(
-                    "limit" => 500,
-                    "default" => NULL
-                )
-            );
-            $t->column("nav_override", "text");
+            $t->column('id', 'integer', [
+                'limit' => 11,
+                'unsigned' => true,
+                'null' => false,
+                'auto_increment' => true,
+                'primary_key' => true
+            ]);
+            $t->column('group_id', 'integer', [
+                'limit' => 11,
+                'default' => NULL
+            ]);
+            $t->column('tab_blacklist', 'string', [
+                'limit' => 500,
+                'default' => NULL
+            ]);
+            $t->column('nav_override', 'text');
 
             $t->finish();
         }

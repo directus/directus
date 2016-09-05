@@ -35,20 +35,20 @@ class DirectusPreferencesTableGateway extends AclAwareTableGateway
         parent::__construct($acl, self::$_tableName, $adapter);
     }
 
-    public static $defaultPreferencesValues = array(
+    public static $defaultPreferencesValues = [
         'sort' => 'id',
         'sort_order' => 'ASC',
         'status' => '1,2',
         'title' => null
-    );
+    ];
 
-    public static $defaultPreferencesValuesByTable = array(
-        'directus_files' => array(
+    public static $defaultPreferencesValuesByTable = [
+        'directus_files' => [
             'sort' => 'date_uploaded',
             'sort_order' => 'DESC',
             'columns_visible' => 'name,title,caption,type,size,user,date_uploaded'
-        )
-    );
+        ]
+    ];
 
     public function applyDefaultPreferences($table, $preferences)
     {
@@ -109,12 +109,12 @@ class DirectusPreferencesTableGateway extends AclAwareTableGateway
 
         // User doesn't have any preferences for this table yet. Please create!
         $columns_visible = TableSchema::getTableColumns($table, 6);
-        $data = array(
+        $data = [
             'user' => $user_id,
             'columns_visible' => implode(',', $columns_visible),
             'table_name' => $table,
             'title' => $title
-        );
+        ];
         if (TableSchema::hasTableColumn($table, 'sort')) {
             $data['sort'] = 'sort';
         }
@@ -196,7 +196,7 @@ class DirectusPreferencesTableGateway extends AclAwareTableGateway
         unset($data['table_name']);
         unset($data['user']);
         if (!isset($data) || !is_array($data)) {
-            $data = array();
+            $data = [];
         }
         $update->set($data)
             ->where
@@ -210,7 +210,7 @@ class DirectusPreferencesTableGateway extends AclAwareTableGateway
     public function fetchAllByUser($user_id, $assoc = false)
     {
         $select = new Select($this->table);
-        $select->columns(array('id', 'user', 'table_name', 'columns_visible', 'sort', 'sort_order', 'status', 'title', 'search_string'));
+        $select->columns(['id', 'user', 'table_name', 'columns_visible', 'sort', 'sort_order', 'status', 'title', 'search_string']);
 
         $select->where->equalTo('user', $user_id)
             ->isNull('title');
@@ -226,8 +226,8 @@ class DirectusPreferencesTableGateway extends AclAwareTableGateway
 
         $rows = $this->selectWith($select)->toArray();
 
-        $preferences = array();
-        $tablePrefs = array();
+        $preferences = [];
+        $tablePrefs = [];
 
         foreach ($rows as $row) {
             $tablePrefs[$row['table_name']] = $row;

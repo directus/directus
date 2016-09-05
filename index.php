@@ -45,14 +45,14 @@ if (!AuthProvider::loggedIn()) {
 
 $acl = Bootstrap::get('acl');
 $ZendDb = Bootstrap::get('ZendDb');
-$authenticatedUser = AuthProvider::loggedIn() ? AuthProvider::getUserInfo() : array();
+$authenticatedUser = AuthProvider::loggedIn() ? AuthProvider::getUserInfo() : [];
 
 function getNonces()
 {
     $requestNonceProvider = new RequestNonceProvider();
-    $nonces = array_merge($requestNonceProvider->getOptions(), array(
+    $nonces = array_merge($requestNonceProvider->getOptions(), [
         'pool' => $requestNonceProvider->getAllNonces()
-    ));
+    ]);
 
     return $nonces;
 }
@@ -75,7 +75,7 @@ function getStorageAdapters()
 
 function parseTables($tableSchema)
 {
-    $tables = array();
+    $tables = [];
 
     foreach ($tableSchema as $table) {
         $tableName = $table['schema']['id'];
@@ -96,7 +96,7 @@ function parseTables($tableSchema)
 
 function getExtendedUserColumns($tableSchema)
 {
-    $userColumns = array('activity', 'avatar', 'name', 'id', 'active', 'first_name', 'last_name', 'email', 'email_messages', 'password', 'salt', 'token', 'reset_token', 'reset_expiration', 'last_login', 'last_page', 'ip', 'group');
+    $userColumns = ['activity', 'avatar', 'name', 'id', 'active', 'first_name', 'last_name', 'email', 'email_messages', 'password', 'salt', 'token', 'reset_token', 'reset_expiration', 'last_login', 'last_page', 'ip', 'group'];
 
     $schema = array_filter($tableSchema, function ($table) {
         return $table['schema']['id'] === 'directus_users';
@@ -114,7 +114,7 @@ function getExtendedUserColumns($tableSchema)
 
 function parsePreferences($tableSchema)
 {
-    $preferences = array();
+    $preferences = [];
 
     foreach ($tableSchema as $table) {
         if (isset($table['preferences'])) {
@@ -129,14 +129,12 @@ function getUsers()
 {
     global $ZendDb, $acl;
     $tableGateway = new TableGateway($acl, 'directus_users', $ZendDb);
-    $users = $tableGateway->getEntries(
-        array(
-            'table_name' => 'directus_users',
-            'perPage' => 1000,
-            STATUS_COLUMN_NAME => STATUS_ACTIVE_NUM,
-            'columns_visible' => array(STATUS_COLUMN_NAME, 'avatar', 'first_name', 'last_name', 'group', 'email', 'position', 'last_access')
-        )
-    );
+    $users = $tableGateway->getEntries([
+        'table_name' => 'directus_users',
+        'perPage' => 1000,
+        STATUS_COLUMN_NAME => STATUS_ACTIVE_NUM,
+        'columns_visible' => [STATUS_COLUMN_NAME, 'avatar', 'first_name', 'last_name', 'group', 'email', 'position', 'last_access']
+    ]);
 
     // Lets get the gravatar if no avatar is set.
     // TODO: Add this on insert/update of any user.
@@ -206,7 +204,7 @@ function getSettings()
 {
     global $ZendDb, $acl;
     $settings = new DirectusSettingsTableGateway($acl, $ZendDb);
-    $items = array();
+    $items = [];
     foreach ($settings->fetchAll() as $key => $value) {
         if ($key == 'global') {
             $value['max_file_size'] = get_max_upload_size();
@@ -357,7 +355,7 @@ $tableSchema = TableSchema::getAllSchemas($currentUserInfo['group']['id'], $cach
 // $tabPrivileges = getTabPrivileges(($currentUserInfo['group']['id']));
 $groupId = $currentUserInfo['group']['id'];
 $groups = getGroups();
-$currentUserGroup = array();
+$currentUserGroup = [];
 if (isset($groups['rows']) && count($groups['rows'] > 0)) {
     foreach ($groups['rows'] as $group) {
         if ($group['id'] === $groupId) {
@@ -367,10 +365,10 @@ if (isset($groups['rows']) && count($groups['rows'] > 0)) {
     }
 }
 
-$statusMapping = array('active_num' => STATUS_ACTIVE_NUM, 'deleted_num' => STATUS_DELETED_NUM, 'status_name' => STATUS_COLUMN_NAME);;
+$statusMapping = ['active_num' => STATUS_ACTIVE_NUM, 'deleted_num' => STATUS_DELETED_NUM, 'status_name' => STATUS_COLUMN_NAME];
 $statusMapping['mapping'] = $config['statusMapping'];
 
-$data = array(
+$data = [
     'cacheBuster' => $cacheBuster,
     'nonces' => getNonces(),
     'storage_adapters' => getStorageAdapters(),
@@ -397,9 +395,9 @@ $data = array(
     'bookmarks' => getBookmarks(),
     'extendedUserColumns' => getExtendedUserColumns($tableSchema),
     'statusMapping' => $statusMapping
-);
+];
 
-$templateVars = array(
+$templateVars = [
     'cacheBuster' => $cacheBuster,
     'data' => json_encode($data),
     'path' => DIRECTUS_PATH,
@@ -407,6 +405,6 @@ $templateVars = array(
     'dir' => 'ltr',
     'customFooterHTML' => getCusomFooterHTML(),
     'cssFilePath' => getCSSFilePath()
-);
+];
 
 echo template(file_get_contents('main.html'), $templateVars);

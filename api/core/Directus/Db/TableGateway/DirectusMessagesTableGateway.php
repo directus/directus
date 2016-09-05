@@ -22,28 +22,28 @@ class DirectusMessagesTableGateway extends AclAwareTableGateway
 
     public function sendMessage($payload, $recipients, $from)
     {
-        $defaultValues = array(
+        $defaultValues = [
             'response_to' => null
-        );
+        ];
 
         $payload = array_merge($defaultValues, $payload);
 
         $insert = new Insert($this->getTable());
         $insert
-            ->columns(array('from', 'subject', 'message'))
-            ->values(array(
+            ->columns(['from', 'subject', 'message'])
+            ->values([
                 'from' => $from,
                 'subject' => $payload['subject'],
                 'message' => $payload['message'],
                 'datetime' => DateUtils::now(),
                 'response_to' => $payload['response_to']
-            ));
+            ]);
         $rows = $this->insertWith($insert);
 
         $messageId = $this->lastInsertValue;
 
         // Insert recipients
-        $values = array();
+        $values = [];
         foreach ($recipients as $recipient) {
             $read = 0;
             if ((int)$recipient == (int)$from) {
@@ -65,8 +65,8 @@ class DirectusMessagesTableGateway extends AclAwareTableGateway
     {
         $select = new Select($this->getTable());
         $select
-            ->columns(array('id', 'from', 'subject', 'message', 'attachment', 'datetime', 'response_to'))
-            ->join('directus_messages_recipients', 'directus_messages.id = directus_messages_recipients.message_id', array('read'))
+            ->columns(['id', 'from', 'subject', 'message', 'attachment', 'datetime', 'response_to'])
+            ->join('directus_messages_recipients', 'directus_messages.id = directus_messages_recipients.message_id', ['read'])
             ->where
             ->equalTo('directus_messages_recipients.recipient', $uid)
             ->and
@@ -98,17 +98,17 @@ class DirectusMessagesTableGateway extends AclAwareTableGateway
     {
         $select = new Select($this->table);
         $select
-            ->columns(array(
+            ->columns([
                 'message_id' => 'response_to',
                 'thread_length' => new Expression('COUNT(`directus_messages`.`id`)')
-            ))
-            ->join('directus_messages_recipients', 'directus_messages_recipients.message_id = directus_messages.id', array(
+            ])
+            ->join('directus_messages_recipients', 'directus_messages_recipients.message_id = directus_messages.id', [
                 'id',
                 'message_id',
                 'recipient',
                 'read',
                 'group'
-            ));
+            ]);
         $select
             ->where->equalTo('recipient', $uid);
 
@@ -129,35 +129,34 @@ class DirectusMessagesTableGateway extends AclAwareTableGateway
         }
 
         $select
-            ->group(array(
-                    'directus_messages_recipients.id',
-                    'directus_messages_recipients.message_id',
-                    'directus_messages_recipients.recipient',
-                    'directus_messages_recipients.read',
-                    'directus_messages_recipients.group',
-                    'response_to',
-                    'directus_messages.id'
-                )
-            )
+            ->group([
+                'directus_messages_recipients.id',
+                'directus_messages_recipients.message_id',
+                'directus_messages_recipients.recipient',
+                'directus_messages_recipients.read',
+                'directus_messages_recipients.group',
+                'response_to',
+                'directus_messages.id'
+            ])
             ->order('directus_messages.id DESC');
 
         $result = $this->selectWith($select)->toArray();
-        $messageIds = array();
+        $messageIds = [];
 
         foreach ($result as $message) {
             $messageIds[] = $message['message_id'];
         }
 
         if (sizeof($messageIds) == 0) {
-            return array();
+            return [];
         };
 
         $result = $this->fetchMessageThreads($messageIds, $uid);
 
-        if (sizeof($result) == 0) return array();
+        if (sizeof($result) == 0) return [];
 
-        $resultLookup = array();
-        $ids = array();
+        $resultLookup = [];
+        $ids = [];
 
         // Grab ids;
         foreach ($result as $item) {
@@ -168,7 +167,7 @@ class DirectusMessagesTableGateway extends AclAwareTableGateway
         $recipients = $directusMessagesTableGateway->fetchMessageRecipients($ids);
 
         foreach ($result as $item) {
-            $item['responses'] = array('rows' => array());
+            $item['responses'] = ['rows' => []];
             $item['recipients'] = implode(',', $recipients[$item['id']]);
             $resultLookup[$item['id']] = $item;
         }

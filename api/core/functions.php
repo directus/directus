@@ -185,7 +185,7 @@ if (!function_exists(' get_file_info')) {
     {
         $finfo = new finfo(FILEINFO_MIME);
         $type = explode('; charset=', $finfo->file($file));
-        $info = array('type' => $type[0], 'charset' => $type[1]);
+        $info = ['type' => $type[0], 'charset' => $type[1]];
 
         $type_str = explode('/', $info['type']);
 
@@ -228,9 +228,9 @@ if (!function_exists('template')) {
 if (!function_exists('to_name_value')) {
     function to_name_value($array, $keys = null)
     {
-        $data = array();
+        $data = [];
         foreach ($array as $name => $value) {
-            $row = array('name' => $name, 'value' => $value);
+            $row = ['name' => $name, 'value' => $value];
             if (isset($keys)) $row = array_merge($row, $keys);
             array_push($data, $row);
         }
@@ -815,7 +815,7 @@ if (!function_exists('get_gravatar')) {
      *
      * @source https://gravatar.com/site/implement/images/php/
      */
-    function get_gravatar($email, $s = 200, $d = 'identicon', $r = 'g', $img = false, $atts = array())
+    function get_gravatar($email, $s = 200, $d = 'identicon', $r = 'g', $img = false, $atts = [])
     {
         $url = '//www.gravatar.com/avatar/';
         $url .= md5(strtolower(trim($email)));

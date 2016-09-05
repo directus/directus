@@ -38,7 +38,7 @@ class DirectusSocialPostsTableGateway extends AclAwareTableGateway
         $select = new Select($this->table);
         $select
             ->limit($limit)
-            ->join('directus_social_feeds', 'directus_social_posts.feed = directus_social_feeds.id', array('feed_type' => 'type'))
+            ->join('directus_social_feeds', 'directus_social_posts.feed = directus_social_feeds.id', ['feed_type' => 'type'])
             ->order('datetime DESC');
         $select
             ->where
@@ -59,7 +59,7 @@ class DirectusSocialPostsTableGateway extends AclAwareTableGateway
             $select->limit($limit);
         }
         $select
-            ->join('directus_social_feeds', 'directus_social_feeds.id = directus_social_posts.feed', array('feed_type' => 'type'))
+            ->join('directus_social_feeds', 'directus_social_feeds.id = directus_social_posts.feed', ['feed_type' => 'type'])
             ->order('directus_social_posts.datetime DESC');
         $select
             ->where
@@ -91,7 +91,7 @@ class DirectusSocialPostsTableGateway extends AclAwareTableGateway
     {
         $Update = new Update(self::$_tableName);
         $Update
-            ->set(array(STATUS_COLUMN_NAME => 0));
+            ->set([STATUS_COLUMN_NAME => 0]);
         $Update
             ->where
             ->addPredicate(new NotIn('foreign_id', $postIds))

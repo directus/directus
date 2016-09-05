@@ -19,20 +19,20 @@ class DirectusMessagesRecipientsTableGateway extends AclAwareTableGateway
         parent::__construct($acl, self::$_tableName, $adapter);
     }
 
-    public function fetchMessageRecipients($messageIds = array())
+    public function fetchMessageRecipients($messageIds = [])
     {
         $select = new Select($this->getTable());
         $select
-            ->columns(array('id', 'message_id', 'recipient'))
+            ->columns(['id', 'message_id', 'recipient'])
             ->where->in('message_id', $messageIds);
 
         $records = $this->selectWith($select)->toArray();
-        $recipientMap = array();
+        $recipientMap = [];
 
         foreach ($records as $record) {
             $messageId = $record['message_id'];
             if (!array_key_exists($messageId, $recipientMap)) {
-                $recipientMap[$messageId] = array();
+                $recipientMap[$messageId] = [];
             }
             $recipientMap[$messageId][] = $record['recipient'];
         }
@@ -44,7 +44,7 @@ class DirectusMessagesRecipientsTableGateway extends AclAwareTableGateway
     {
         $update = new Update($this->getTable());
         $update
-            ->set(array('read' => 1))
+            ->set(['read' => 1])
             ->where->in('message_id', $messageIds)
             ->and
             ->where->equalTo('recipient', $uid);
@@ -57,22 +57,22 @@ class DirectusMessagesRecipientsTableGateway extends AclAwareTableGateway
         $fetchFn = function () use ($uid) {
             $select = new Select($this->table);
             $select
-                ->columns(array('id', 'read', 'count' => new Expression('COUNT(`id`)'), 'max_id' => new Expression('MAX(`message_id`)')))
+                ->columns(['id', 'read', 'count' => new Expression('COUNT(`id`)'), 'max_id' => new Expression('MAX(`message_id`)')])
                 ->where->equalTo('recipient', $uid);
             $select
-                ->group(array('id', 'read'));
+                ->group(['id', 'read']);
             $result = $this->selectWith($select)->toArray();
             return $result;
         };
         $cacheKey = MemcacheProvider::getKeyDirectusCountMessages($uid);
         $result = $this->memcache->getOrCache($cacheKey, $fetchFn, 1800);
 
-        $count = array(
+        $count = [
             'read' => 0,
             'unread' => 0,
             'total' => 0,
             'max_id' => 0
-        );
+        ];
 
         foreach ($result as $item) {
             if ((int)$item['max_id'] > $count['max_id']) {
@@ -98,8 +98,8 @@ class DirectusMessagesRecipientsTableGateway extends AclAwareTableGateway
         $fetchFn = function () use ($maxId, $currentUser) {
             $select = new Select($this->getTable());
             $select
-                ->columns(array('id', 'message_id'))
-                ->join('directus_messages', 'directus_messages_recipients.message_id = directus_messages.id', array('response_to'))
+                ->columns(['id', 'message_id'])
+                ->join('directus_messages', 'directus_messages_recipients.message_id = directus_messages.id', ['response_to'])
                 ->where
                 ->greaterThan('message_id', $maxId)
                 ->and
@@ -112,7 +112,7 @@ class DirectusMessagesRecipientsTableGateway extends AclAwareTableGateway
         $cacheKey = MemcacheProvider::getKeyDirectusMessagesNewerThan($maxId, $currentUser);
         $result = $this->memcache->getOrCache($cacheKey, $fetchFn, 1800);
 
-        $messageThreads = array();
+        $messageThreads = [];
 
         foreach ($result as $message) {
             $messageThreads[] = empty($message['response_to']) ? $message['message_id'] : $message['response_to'];

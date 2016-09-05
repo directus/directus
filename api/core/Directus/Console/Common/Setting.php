@@ -98,10 +98,10 @@ class Setting
     public function settingExists($collection, $setting)
     {
         try {
-            $rowset = $this->settingsTableGateway->select(array(
+            $rowset = $this->settingsTableGateway->select([
                 'collection' => $collection,
                 'name' => $setting
-            ));
+            ]);
             if ($rowset->count() > 0) {
                 return true;
             }
@@ -128,11 +128,11 @@ class Setting
     public function createSetting($collection, $setting, $value)
     {
 
-        $insert = array(
+        $insert = [
             'collection' => $collection,
             'name' => $setting,
             'value' => $value
-        );
+        ];
 
         try {
             $this->settingsTableGateway->insert($insert);
@@ -164,15 +164,15 @@ class Setting
             return $this->createSetting($collection, $setting, $value);
         }
 
-        $update = array(
+        $update = [
             'value' => $value
-        );
+        ];
 
         try {
-            $changed = $this->settingsTableGateway->update($update, array(
+            $changed = $this->settingsTableGateway->update($update, [
                 'collection' => $collection,
                 'name' => $setting
-            ));
+            ]);
             if ($changed == 0) {
                 throw new SettingUpdateException(__t('Could not change setting ') . $collection . '.' . $setting . ': ' . __t('Setting not found or unchanged'));
             }

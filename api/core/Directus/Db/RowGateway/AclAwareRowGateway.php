@@ -118,7 +118,7 @@ class AclAwareRowGateway extends RowGateway
         $schemaArray = TableSchema::getSchemaArray($this->table);
         $aliasColumns = $TableGateway->filterSchemaAliasFields($schemaArray);
         // Many-to-One
-        list($entry) = $TableGateway->loadManyToOneRelationships($schemaArray, array($entry));
+        list($entry) = $TableGateway->loadManyToOneRelationships($schemaArray, [$entry]);
         // One-to-Many, Many-to-Many
         $entry = $TableGateway->loadToManyRelationships($entry, $aliasColumns);
 

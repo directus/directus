@@ -20,7 +20,7 @@ class Cache
      * Functions used to filter API responses. (e.g. isolate certain hashtags)
      * @var array
      */
-    protected $scrapeFilters = array();
+    protected $scrapeFilters = [];
 
     public function __construct()
     {
@@ -54,10 +54,10 @@ class Cache
         $feed = $this->SocialFeedsTableGateway->getFeedByHandleAndType($handle, $type);
         // Create the feeds table record if it doesn't exist
         if (false === $feed) {
-            $this->SocialFeedsTableGateway->insert(array(
+            $this->SocialFeedsTableGateway->insert([
                 'type' => $type,
                 'name' => $handle
-            ));
+            ]);
             $feedId = $this->SocialFeedsTableGateway->getLastInsertValue();
             $feed = $this->SocialFeedsTableGateway->find($feedId);
         } else {
@@ -83,7 +83,7 @@ class Cache
         if (!Cache::$scrapingEnabled) {
             return;
         }
-        $updatedFeed = array();
+        $updatedFeed = [];
         switch ($feed['type']) {
             case DirectusSocialFeedsTableGateway::TYPE_TWITTER:
                 $updatedFeed = $this->scrapeTwitterFeed($feed);
@@ -97,25 +97,25 @@ class Cache
                 break;
         }
         // Update feed's last_checked value
-        $set = array('last_checked' => new Expression('NOW()'));
+        $set = ['last_checked' => new Expression('NOW()')];
         if (!empty($updatedFeed)) {
             $set = array_merge($updatedFeed, $set);
         }
-        $where = array('id' => $feed['id']);
+        $where = ['id' => $feed['id']];
         $this->SocialFeedsTableGateway->update($set, $where);
     }
 
     private function scrapeTwitterFeed(array $feed, $count = 200)
     {
         $cb = Bootstrap::get('codebird');
-        $statuses = (array)$cb->statuses_userTimeline(array('screen_name' => $feed['name'], 'count' => $count));
+        $statuses = (array)$cb->statuses_userTimeline(['screen_name' => $feed['name'], 'count' => $count]);
         // The Twitter account is "protected"
         if (isset($statuses['error']) && $statuses['error'] = 'Not authorized') {
             return $feed;
         }
         $httpStatus = $statuses['httpstatus'];
         unset($statuses['httpstatus']);
-        $responseStatusIds = array();
+        $responseStatusIds = [];
         foreach ($statuses as $idx => $status) {
             $status = (array)$status;
             // This occurs during API-end failure states
@@ -186,7 +186,7 @@ class Cache
         $mediaRecent = json_decode($mediaRecent, true);
         $mediaRecent = $mediaRecent['data'];
 
-        $responseStatusIds = array();
+        $responseStatusIds = [];
         // Scrape entries
         foreach ($mediaRecent as $photo) {
             $photo = $this->filterFeedItem($photo, DirectusSocialFeedsTableGateway::TYPE_INSTAGRAM);
@@ -224,7 +224,7 @@ class Cache
         $acl = Bootstrap::get('acl');
         $ZendDb = Bootstrap::get('ZendDb');
         $SettingsTableGateway = new DirectusSettingsTableGateway($acl, $ZendDb);
-        $requiredKeys = array('instagram_oauth_access_token', 'instagram_client_id');
+        $requiredKeys = ['instagram_oauth_access_token', 'instagram_client_id'];
         return $SettingsTableGateway->fetchCollection('social', $requiredKeys);
     }
 
@@ -278,11 +278,11 @@ class Cache
         }
         $newEntryData = json_encode($newEntryData);
         if ($newEntryData !== $cachedEntry['data']) {
-            $set = array('data' => $newEntryData);
-            $where = array(
+            $set = ['data' => $newEntryData];
+            $where = [
                 'foreign_id' => $cachedEntry['foreign_id'],
                 'feed' => $feed['id']
-            );
+            ];
             $this->SocialPostsTableGateway->update($set, $where);
         }
     }
@@ -293,12 +293,12 @@ class Cache
             $newEntryData = (array)$newEntryData;
         }
         $entryAsJson = json_encode($newEntryData);
-        return $this->SocialPostsTableGateway->insert(array(
+        return $this->SocialPostsTableGateway->insert([
             'feed' => $feed['id'],
             'datetime' => $published->format('c'),
             'foreign_id' => $newEntryData['id'],
             'data' => $entryAsJson
-        ));
+        ]);
     }
 
     // private function getFeedIfDue($handle, $type) {

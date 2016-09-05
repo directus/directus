@@ -24,39 +24,39 @@ class Acl
      */
     const ROW_OWNER_COLUMN = 'directus_user';
 
-    public static $cms_owner_columns_by_table = array(
+    public static $cms_owner_columns_by_table = [
         'directus_files' => 'user',
         'directus_users' => 'id'
-    );
+    ];
 
     /**
      * Baseline/fallback ACL
      * @var array
      */
-    public static $base_acl = array(
-        self::TABLE_PERMISSIONS => array('add', 'edit', 'delete', 'view'),
-        self::FIELD_READ_BLACKLIST => array(),
-        self::FIELD_WRITE_BLACKLIST => array()
-    );
+    public static $base_acl = [
+        self::TABLE_PERMISSIONS => ['add', 'edit', 'delete', 'view'],
+        self::FIELD_READ_BLACKLIST => [],
+        self::FIELD_WRITE_BLACKLIST => []
+    ];
 
     /**
      * These fields cannot be included on any FIELD_READ_BLACKLIST. (It is required
      * that they are readable in order for the application to function.)
      * @var array
      */
-    public static $mandatory_read_lists = array(
+    public static $mandatory_read_lists = [
         // key: table name ('*' = all tables, baseline definition)
         // value: array of column names
-        '*' => array('id', STATUS_COLUMN_NAME),
-        'directus_activity' => array('user'),
-        'directus_files' => array('user')
-    );
+        '*' => ['id', STATUS_COLUMN_NAME],
+        'directus_activity' => ['user'],
+        'directus_files' => ['user']
+    ];
 
     protected $groupPrivileges;
     protected $userId = null;
     protected $groupId = null;
 
-    public function __construct(array $groupPrivileges = array())
+    public function __construct(array $groupPrivileges = [])
     {
         $this->setGroupPrivileges($groupPrivileges);
     }
@@ -130,7 +130,7 @@ class Acl
      */
     public function enforceBlacklist($table, $offsets, $blacklist)
     {
-        $offsets = is_array($offsets) ? $offsets : array($offsets);
+        $offsets = is_array($offsets) ? $offsets : [$offsets];
         $fieldBlacklist = $this->getTablePrivilegeList($table, $blacklist);
         /**
          * Enforce catch-all offset attempts.
@@ -146,7 +146,7 @@ class Acl
          * if $offsets contains objects such as Zend\Db\Sql\Expression
          * @todo How should ACL react to Expression objects?
          */
-        $forbiddenIndices = array();
+        $forbiddenIndices = [];
         foreach ($offsets as $offset) {
             if (in_array($offset, $fieldBlacklist)) {
                 $forbiddenIndices[] = $offset;
@@ -187,9 +187,9 @@ class Acl
         $groupHasTablePrivileges = array_key_exists($table, $this->groupPrivileges);
         // @TODO: remove permissions.
         if ($list === 'permissions') {
-            $permissionFields = array_merge(self::$base_acl[self::TABLE_PERMISSIONS], array(
+            $permissionFields = array_merge(self::$base_acl[self::TABLE_PERMISSIONS], [
                 'alter'
-            ));
+            ]);
             $permissionFields = array_map(function ($name) {
                 return 'allow_' . $name;
             }, $permissionFields);
@@ -197,7 +197,7 @@ class Acl
             if ($groupHasTablePrivileges) {
                 $privilegeList = array_intersect_key($this->groupPrivileges[$table], array_flip($permissionFields));
             } else {
-                $privilegeList = array();
+                $privilegeList = [];
                 foreach ($permissionFields as $permission) {
                     $privilegeList[$permission] = 1;
                 }
@@ -321,18 +321,18 @@ class Acl
 
     public function getCmsOwnerIdsByTableGatewayAndPredicate(AclAwareTableGateway $TableGateway, PredicateSet $predicate)
     {
-        $ownerIds = array();
+        $ownerIds = [];
         $table = $TableGateway->getTable();
         $cmsOwnerColumn = $this->getCmsOwnerColumnByTable($table);
         $select = new Select($table);
         $select
-            ->columns(array($TableGateway->primaryKeyFieldName, $cmsOwnerColumn));
+            ->columns([$TableGateway->primaryKeyFieldName, $cmsOwnerColumn]);
         $select->where($predicate);
         $results = $TableGateway->selectWith($select);
         foreach ($results as $row) {
             $ownerIds[] = $row[$cmsOwnerColumn];
         }
-        return array(count($results), $ownerIds);
+        return [count($results), $ownerIds];
     }
 
 }

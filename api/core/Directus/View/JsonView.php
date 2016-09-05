@@ -77,7 +77,7 @@ class JsonView
             return;
         }
         // Write API responses to disk
-        foreach (array('new', 'old') as $version) {
+        foreach (['new', 'old'] as $version) {
             $fname = $fname_prefix . '_' . $version . '.json';
             $fpath = $dir . '/' . $fname;
             $fp = fopen($fpath, 'w+');

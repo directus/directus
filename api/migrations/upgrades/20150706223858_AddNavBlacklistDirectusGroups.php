@@ -6,10 +6,10 @@ class AddNavBlacklistDirectusGroups extends Ruckusing_Migration_Base
     public function up()
     {
         if (!$this->has_column('directus_groups', 'nav_blacklist')) {
-            $this->add_column('directus_groups', 'nav_blacklist', 'string', array(
+            $this->add_column('directus_groups', 'nav_blacklist', 'string', [
                 'limit' => 500,
                 'default' => NULL
-            ));
+            ]);
         }
     }//up()
 

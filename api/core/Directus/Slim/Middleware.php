@@ -9,7 +9,7 @@ use Slim\Slim;
 class Middleware
 {
 
-    public static $refusalResponseTypes = array('redirect', 'json');
+    public static $refusalResponseTypes = ['redirect', 'json'];
 
     protected static function validateResponseType($responseType)
     {
@@ -24,10 +24,10 @@ class Middleware
         $app = Slim::getInstance();
         switch ($responseType) {
             case 'json':
-                $jsonResponse = array(
+                $jsonResponse = [
                     'success' => false,
                     'message' => $errorMessage
-                );
+                ];
                 $view = $app->view();
                 $view->setData('jsonResponse', $jsonResponse);
                 \Directus\Slim\Middleware::renderJson();

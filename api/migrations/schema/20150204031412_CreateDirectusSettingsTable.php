@@ -17,51 +17,44 @@ class CreateDirectusSettingsTable extends Ruckusing_Migration_Base
 {
     public function up()
     {
-        $t = $this->create_table("directus_settings", array(
-                "id" => false,
-            )
-        );
+        $t = $this->create_table('directus_settings', [
+            'id' => false,
+        ]);
 
         //columns
-        $t->column("id", "integer", array(
-                "unsigned" => true,
-                "null" => false,
-                "auto_increment" => true,
-                "primary_key" => true
-            )
-        );
-        $t->column("collection", "string", array(
-                "limit" => 250,
-                "default" => NULL
-            )
-        );
-        $t->column("name", "string", array(
-                "limit" => 250,
-                "default" => NULL
-            )
-        );
-        $t->column("value", "string", array(
-                "limit" => 250,
-                "default" => NULL
-            )
-        );
+        $t->column('id', 'integer', [
+            'unsigned' => true,
+            'null' => false,
+            'auto_increment' => true,
+            'primary_key' => true
+        ]);
+        $t->column('collection', 'string', [
+            'limit' => 250,
+            'default' => NULL
+        ]);
+        $t->column('name', 'string', [
+            'limit' => 250,
+            'default' => NULL
+        ]);
+        $t->column('value', 'string', [
+            'limit' => 250,
+            'default' => NULL
+        ]);
 
         $t->finish();
 
-        $this->add_index("directus_settings", array("collection", "name"), array(
-                "unique" => true,
-                "name" => "Unique Collection and Name"
-            )
-        );
+        $this->add_index('directus_settings', ['collection', 'name'], [
+            'unique' => true,
+            'name' => 'Unique Collection and Name'
+        ]);
     }//up()
 
     public function down()
     {
-        $this->remove_index("directus_settings", array("collection", "name"), array(
-                "unique" => true,
-                "name" => "Unique Collection and Name"
-            )
-        );
-        $this->drop_table("directus_settings");
+        $this->remove_index('directus_settings', ['collection', 'name'], [
+            'unique' => true,
+            'name' => 'Unique Collection and Name'
+        ]);
+        $this->drop_table('directus_settings');
     }//down()
 }

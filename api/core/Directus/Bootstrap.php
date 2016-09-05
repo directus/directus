@@ -27,7 +27,7 @@ use Slim\Slim;
 class Bootstrap
 {
 
-    public static $singletons = array();
+    public static $singletons = [];
 
     /**
      * Returns the instance of the specified singleton, instantiating one if it
@@ -91,7 +91,7 @@ class Bootstrap
     private static function requireConstants($constants, $dependentFunctionName)
     {
         if (!is_array($constants)) {
-            $constants = array($constants);
+            $constants = [$constants];
         }
         foreach ($constants as $constant) {
             if (!defined($constant)) {
@@ -195,8 +195,8 @@ class Bootstrap
         if (!defined('DB_HOST_SLAVE')) {
             return self::zenddb();
         }
-        self::requireConstants(array('DIRECTUS_ENV', 'DB_HOST_SLAVE', 'DB_NAME', 'DB_USER_SLAVE', 'DB_PASSWORD_SLAVE'), __FUNCTION__);
-        $dbConfig = array(
+        self::requireConstants(['DIRECTUS_ENV', 'DB_HOST_SLAVE', 'DB_NAME', 'DB_USER_SLAVE', 'DB_PASSWORD_SLAVE'], __FUNCTION__);
+        $dbConfig = [
             'driver' => 'Pdo_Mysql',
             'host' => DB_HOST_SLAVE,
             'database' => DB_NAME,
@@ -205,7 +205,7 @@ class Bootstrap
             'charset' => 'utf8',
             \PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true,
             \PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'
-        );
+        ];
         $db = new \Zend\Db\Adapter\Adapter($dbConfig);
         return $db;
     }
@@ -216,8 +216,8 @@ class Bootstrap
         if (!defined('DB_HOST_SLAVE')) {
             return self::zenddb();
         }
-        self::requireConstants(array('DIRECTUS_ENV', 'DB_HOST_SLAVE', 'DB_NAME', 'DB_USER_SLAVE_CRON', 'DB_PASSWORD_SLAVE_CRON'), __FUNCTION__);
-        $dbConfig = array(
+        self::requireConstants(['DIRECTUS_ENV', 'DB_HOST_SLAVE', 'DB_NAME', 'DB_USER_SLAVE_CRON', 'DB_PASSWORD_SLAVE_CRON'], __FUNCTION__);
+        $dbConfig = [
             'driver' => 'Pdo_Mysql',
             'host' => DB_HOST_SLAVE,
             'database' => DB_NAME,
@@ -226,7 +226,7 @@ class Bootstrap
             'charset' => 'utf8',
             \PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true,
             \PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'
-        );
+        ];
         $db = new \Zend\Db\Adapter\Adapter($dbConfig);
         return $db;
     }
@@ -238,8 +238,8 @@ class Bootstrap
      */
     private static function zenddb()
     {
-        self::requireConstants(array('DIRECTUS_ENV', 'DB_TYPE', 'DB_HOST', 'DB_PORT', 'DB_NAME', 'DB_USER', 'DB_PASSWORD'), __FUNCTION__);
-        $dbConfig = array(
+        self::requireConstants(['DIRECTUS_ENV', 'DB_TYPE', 'DB_HOST', 'DB_PORT', 'DB_NAME', 'DB_USER', 'DB_PASSWORD'], __FUNCTION__);
+        $dbConfig = [
             'driver' => 'Pdo_' . DB_TYPE,
             'host' => DB_HOST,
             'port' => DB_PORT,
@@ -249,7 +249,7 @@ class Bootstrap
             'charset' => 'utf8',
             \PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true,
             \PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'
-        );
+        ];
 
         try {
             $db = new Connection($dbConfig);
@@ -329,7 +329,7 @@ class Bootstrap
 
         $tableRecords = $DirectusTablesTableGateway->memcache->getOrCache(MemcacheProvider::getKeyDirectusTables(), $getTables, 1800);
 
-        $magicOwnerColumnsByTable = array();
+        $magicOwnerColumnsByTable = [];
         foreach ($tableRecords as $tableRecord) {
             if (!empty($tableRecord['user_create_column'])) {
                 $magicOwnerColumnsByTable[$tableRecord['table_name']] = $tableRecord['user_create_column'];
@@ -384,7 +384,7 @@ class Bootstrap
     private static function extensions()
     {
         self::requireConstants('APPLICATION_PATH', __FUNCTION__);
-        $extensions = array();
+        $extensions = [];
         $extensionsDirectory = APPLICATION_PATH . '/customs/extensions/';
 
         if (!file_exists($extensionsDirectory)) {
@@ -417,7 +417,7 @@ class Bootstrap
     {
         self::requireConstants('APPLICATION_PATH', __FUNCTION__);
         $uiDirectory = APPLICATION_PATH . '/customs/uis';
-        $uis = array();
+        $uis = [];
 
         if (!file_exists($uiDirectory)) {
             return $uis;
@@ -440,7 +440,7 @@ class Bootstrap
     private static function listViews()
     {
         self::requireConstants('APPLICATION_PATH', __FUNCTION__);
-        $listViews = array();
+        $listViews = [];
         $listViewsDirectory = APPLICATION_PATH . '/customs/listviews/';
 
         if (!file_exists($listViewsDirectory)) {
@@ -482,9 +482,9 @@ class Bootstrap
         // Fetch files settings
         $SettingsTable = new DirectusSettingsTableGateway($acl, $adapter);
         try {
-            $settings = $SettingsTable->fetchCollection('files', array(
+            $settings = $SettingsTable->fetchCollection('files', [
                 'thumbnail_size', 'thumbnail_quality', 'thumbnail_crop_enabled'
-            ));
+            ]);
         } catch (\Exception $e) {
             $settings = [];
             $log = static::get('log');

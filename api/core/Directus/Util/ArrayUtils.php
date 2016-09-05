@@ -84,7 +84,7 @@ class ArrayUtils
     public static function contains($array, $keys)
     {
         if (!is_array($keys)) {
-            $keys = array($keys);
+            $keys = [$keys];
         }
 
         foreach ($keys as $key) {

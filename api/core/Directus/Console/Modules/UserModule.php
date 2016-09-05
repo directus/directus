@@ -49,17 +49,17 @@ class UserModule extends ModuleBase
     public function __construct()
     {
 
-        $this->help = array(
+        $this->help = [
             'password' => ''
                 . PHP_EOL . "\t\t-e " . __t('User e-mail address.')
                 . PHP_EOL . "\t\t-p " . __t('New password for the user.')
                 . PHP_EOL . "\t\t-d " . __t('Directus path. Default: ' . BASE_PATH)
-        );
+        ];
 
-        $this->commands_help = array(
+        $this->commands_help = [
             'password' => __t('Change User Password: ') . PHP_EOL . PHP_EOL . "\t\t"
                 . $this->__module_name . ':password -e user_email -p new_password -d directus_path' . PHP_EOL
-        );
+        ];
 
         $this->__module_name = 'user';
         $this->__module_description = 'commands to manage Directus users';

@@ -150,13 +150,13 @@ if (!$url) {
 
     // Passed url not specified.
     $contents = 'ERROR: url not specified';
-    $status = array('http_code' => 'ERROR');
+    $status = ['http_code' => 'ERROR'];
 
 } else if (!preg_match($valid_url_regex, $url)) {
 
     // Passed url doesn't match $valid_url_regex.
     $contents = 'ERROR: invalid url';
-    $status = array('http_code' => 'ERROR');
+    $status = ['http_code' => 'ERROR'];
 
 } else {
     $ch = curl_init($url);
@@ -167,7 +167,7 @@ if (!$url) {
     }
 
     if ($_GET['send_cookies']) {
-        $cookie = array();
+        $cookie = [];
         foreach ($_COOKIE as $key => $value) {
             $cookie[] = $key . '=' . $value;
         }
@@ -198,7 +198,7 @@ $header_text = preg_split('/[\r\n]+/', $header);
 if ($_GET['mode'] == 'native') {
     if (!$enable_native) {
         $contents = 'ERROR: invalid mode';
-        $status = array('http_code' => 'ERROR');
+        $status = ['http_code' => 'ERROR'];
     }
 
     // Propagate headers to response.
@@ -213,11 +213,11 @@ if ($_GET['mode'] == 'native') {
 } else {
 
     // $data will be serialized into JSON data.
-    $data = array();
+    $data = [];
 
     // Propagate all HTTP headers into the JSON data object.
     if ($_GET['full_headers']) {
-        $data['headers'] = array();
+        $data['headers'] = [];
 
         foreach ($header_text as $header) {
             preg_match('/^(.+?):\s+(.*)$/', $header, $matches);
@@ -231,7 +231,7 @@ if ($_GET['mode'] == 'native') {
     if ($_GET['full_status']) {
         $data['status'] = $status;
     } else {
-        $data['status'] = array();
+        $data['status'] = [];
         $data['status']['http_code'] = $status['http_code'];
     }
 

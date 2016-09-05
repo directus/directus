@@ -6,10 +6,10 @@ class AddTimezoneColumnToUsers extends Ruckusing_Migration_Base
     public function up()
     {
         if (!$this->has_column('directus_users', 'timezone')) {
-            $this->add_column('directus_users', 'timezone', 'string', array(
+            $this->add_column('directus_users', 'timezone', 'string', [
                 'limit' => 32,
                 'default' => ''
-            ));
+            ]);
         }
     }//up()
 

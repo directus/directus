@@ -20,61 +20,52 @@ class CreateDirectusMessagesTable extends Ruckusing_Migration_Base
 {
     public function up()
     {
-        $t = $this->create_table("directus_messages", array(
-                "id" => false,
-            )
-        );
+        $t = $this->create_table('directus_messages', [
+            'id' => false,
+        ]);
 
         //columns
-        $t->column("id", "integer", array(
-                "unsigned" => true,
-                "null" => false,
-                "auto_increment" => true,
-                "primary_key" => true
-            )
-        );
+        $t->column('id', 'integer', [
+            'unsigned' => true,
+            'null' => false,
+            'auto_increment' => true,
+            'primary_key' => true
+        ]);
 
-        $t->column("from", "integer", array(
-                "unsigned" => true,
-                "default" => NULL
-            )
-        );
-        $t->column("subject", "string", array(
-                "limit" => 255,
-                "null" => false,
-                "default" => ""
-            )
-        );
-        $t->column("message", "text", array(
-                "null" => false
-            )
-        );
-        $t->column("datetime", "timestamp", array(
-                "null" => false,
-                "default" => "CURRENT_TIMESTAMP"
-            )
-        );
-        $t->column("attachment", "integer", array(
-                "unsigned" => true,
-                "default" => NULL
-            )
-        );
-        $t->column("response_to", "integer", array(
-                "unsigned" => true,
-                "default" => NULL
-            )
-        );
-        $t->column("comment_metadata", "string", array(
-                "limit" => 255,
-                "default" => NULL
-            )
-        );
+        $t->column('from', 'integer', [
+            'unsigned' => true,
+            'default' => NULL
+        ]);
+        $t->column('subject', 'string', [
+            'limit' => 255,
+            'null' => false,
+            'default' => ''
+        ]);
+        $t->column('message', 'text', [
+            'null' => false
+        ]);
+        $t->column('datetime', 'timestamp', [
+            'null' => false,
+            'default' => 'CURRENT_TIMESTAMP'
+        ]);
+        $t->column('attachment', 'integer', [
+            'unsigned' => true,
+            'default' => NULL
+        ]);
+        $t->column('response_to', 'integer', [
+            'unsigned' => true,
+            'default' => NULL
+        ]);
+        $t->column('comment_metadata', 'string', [
+            'limit' => 255,
+            'default' => NULL
+        ]);
 
         $t->finish();
     }//up()
 
     public function down()
     {
-        $this->drop_table("directus_messages");
+        $this->drop_table('directus_messages');
     }//down()
 }

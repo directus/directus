@@ -162,7 +162,7 @@ $app->hook('slim.before.dispatch', function () use ($app, $requestNonceProvider,
 
         if ($authToken) {
             $DirectusUsersTableGateway = new \Zend\Db\TableGateway\TableGateway('directus_users', $ZendDb);
-            $user = $DirectusUsersTableGateway->select(array('token' => $authToken));
+            $user = $DirectusUsersTableGateway->select(['token' => $authToken]);
             $userFound = $user->count() > 0 ? true : false;
 
             if (!$userFound) {
@@ -288,7 +288,7 @@ if (isset($_REQUEST['run_extension']) && $_REQUEST['run_extension']) {
     $extensionName = $_REQUEST['run_extension'];
     if (!Bootstrap::extensionExists($extensionName)) {
         header('HTTP/1.0 404 Not Found');
-        return JsonView::render(array('message' => __t('no_such_extensions')));
+        return JsonView::render(['message' => __t('no_such_extensions')]);
     }
     // Validate request nonce
     // NOTE: do no use nonce until it's well implemented
@@ -322,11 +322,11 @@ if (isset($_REQUEST['run_extension']) && $_REQUEST['run_extension']) {
 
 $app->post("/$v/auth/login/?", function () use ($app, $ZendDb, $acl, $requestNonceProvider) {
 
-    $response = array(
+    $response = [
         'message' => __t('incorrect_email_or_password'),
         'success' => false,
         'all_nonces' => $requestNonceProvider->getAllNonces()
-    );
+    ];
 
     if (Auth::loggedIn()) {
         $response['success'] = true;
@@ -378,8 +378,8 @@ $app->post("/$v/auth/login/?", function () use ($app, $ZendDb, $acl, $requestNon
         unset($response['message']);
         $response['last_page'] = json_decode($user['last_page']);
         $userSession = Auth::getUserInfo();
-        $set = array('last_login' => DateUtils::now(), 'access_token' => $userSession['access_token']);
-        $where = array('id' => $user['id']);
+        $set = ['last_login' => DateUtils::now(), 'access_token' => $userSession['access_token']];
+        $where = ['id' => $user['id']];
         $updateResult = $Users->update($set, $where);
         $Activity = new DirectusActivityTableGateway($acl, $ZendDb);
         $Activity->recordLogin($user['id']);
@@ -400,7 +400,7 @@ $app->get("/$v/auth/logout(/:inactive)", function ($inactive = null) use ($app) 
 
 $app->get("/$v/auth/nonces/?", function () use ($app, $requestNonceProvider) {
     $all_nonces = $requestNonceProvider->getAllNonces();
-    $response = array('nonces' => $all_nonces);
+    $response = ['nonces' => $all_nonces];
     JsonView::render($response);
 })->name('auth_nonces');
 
@@ -418,7 +418,7 @@ $app->get("/$v/auth/clear-session/?", function () use ($app) {
         return $app->halt('404');
     }
 
-    $_SESSION = array();
+    $_SESSION = [];
     if (ini_get('session.use_cookies')) {
         $params = session_get_cookie_params();
         setcookie(session_name(), '', time() - 42000,
@@ -453,7 +453,7 @@ $app->get("/$v/auth/reset-password/:token/?", function ($token) use ($app, $acl,
 
     // Skip ACL
     $DirectusUsersTableGateway = new \Zend\Db\TableGateway\TableGateway('directus_users', $ZendDb);
-    $affectedRows = $DirectusUsersTableGateway->update($set, array('id' => $user['id']));
+    $affectedRows = $DirectusUsersTableGateway->update($set, ['id' => $user['id']]);
 
     if (1 !== $affectedRows) {
         $app->halt(200, __t('password_reset_error'));
@@ -471,20 +471,20 @@ $app->get("/$v/auth/reset-password/:token/?", function ($token) use ($app, $acl,
 
 $app->post("/$v/auth/forgot-password/?", function () use ($app, $acl, $ZendDb) {
     if (!isset($_POST['email'])) {
-        return JsonView::render(array(
+        return JsonView::render([
             'success' => false,
             'message' => __t('password_forgot_invalid_email')
-        ));
+        ]);
     }
 
     $DirectusUsersTableGateway = new DirectusUsersTableGateway($acl, $ZendDb);
     $user = $DirectusUsersTableGateway->findOneBy('email', $_POST['email']);
 
     if (false === $user) {
-        return JsonView::render(array(
+        return JsonView::render([
             'success' => false,
             'message' => __t('password_forgot_no_account_found')
-        ));
+        ]);
     }
 
     $set = [];
@@ -493,12 +493,12 @@ $app->post("/$v/auth/forgot-password/?", function () use ($app, $acl, $ZendDb) {
 
     // Skip ACL
     $DirectusUsersTableGateway = new \Zend\Db\TableGateway\TableGateway('directus_users', $ZendDb);
-    $affectedRows = $DirectusUsersTableGateway->update($set, array('id' => $user['id']));
+    $affectedRows = $DirectusUsersTableGateway->update($set, ['id' => $user['id']]);
 
     if (1 !== $affectedRows) {
-        return JsonView::render(array(
+        return JsonView::render([
             'success' => false
-        ));
+        ]);
     }
 
     $data = ['reset_token' => $set['reset_token']];
@@ -508,9 +508,9 @@ $app->post("/$v/auth/forgot-password/?", function () use ($app, $acl, $ZendDb) {
     });
 
     $success = true;
-    return JsonView::render(array(
+    return JsonView::render([
         'success' => $success
-    ));
+    ]);
 
 })->name('auth_permissions');
 
@@ -520,22 +520,22 @@ $app->get("/$v/auth/permissions/?", function () use ($app, $acl) {
         return $app->halt('404');
     }
     $groupPrivileges = $acl->getGroupPrivileges();
-    JsonView::render(array('groupPrivileges' => $groupPrivileges));
+    JsonView::render(['groupPrivileges' => $groupPrivileges]);
 })->name('auth_permissions');
 
 $app->post("/$v/hash/?", function () use ($app) {
     if (!(isset($_POST['password']) && !empty($_POST['password']))) {
-        return JsonView::render(array(
+        return JsonView::render([
             'success' => false,
             'message' => __t('hash_must_provide_string')
-        ));
+        ]);
     }
     $salt = isset($_POST['salt']) && !empty($_POST['salt']) ? $_POST['salt'] : '';
     $hashedPassword = Auth::hashPassword($_POST['password'], $salt);
-    return JsonView::render(array(
+    return JsonView::render([
         'success' => true,
         'password' => $hashedPassword
-    ));
+    ]);
 });
 
 $app->post("/$v/random/?", function () use ($app) {
@@ -547,9 +547,9 @@ $app->post("/$v/random/?", function () use ($app) {
 
     $randomString = StringUtils::randomString($length);
 
-    return JsonView::render(array(
+    return JsonView::render([
         'random' => $randomString
-    ));
+    ]);
 });
 
 $app->get("/$v/privileges/:groupId(/:tableName)/?", function ($groupId, $tableName = null) use ($acl, $ZendDb, $params, $requestPayload, $app) {
@@ -564,10 +564,10 @@ $app->get("/$v/privileges/:groupId(/:tableName)/?", function ($groupId, $tableNa
     $response = $privileges->fetchPerTable($groupId, $tableName);
     if (!$response) {
         $app->response()->setStatus(404);
-        $response = array(
+        $response = [
             'message' => __t('unable_to_find_privileges_for_x_in_group_x', ['table' => $tableName, 'group_id' => $groupId]),
             'success' => false
-        );
+        ];
     }
 
     return JsonView::render($response);
@@ -587,7 +587,7 @@ $app->map("/$v/privileges/:groupId/?", function ($groupId) use ($acl, $ZendDb, $
 
         if (!($isTableNameAlphanumeric && $zeroOrMoreUnderscoresDashes)) {
             $app->response->setStatus(400);
-            return JsonView::render(array('message' => __t('invalid_table_name')));
+            return JsonView::render(['message' => __t('invalid_table_name')]);
         }
 
         unset($requestPayload['addTable']);
@@ -652,7 +652,7 @@ $app->map("/$v/tables/:table/rows/?", function ($table) use ($acl, $ZendDb, $par
 
     // any CREATE requests should md5 the email
     if ('directus_users' === $table &&
-        in_array($app->request()->getMethod(), array('POST')) &&
+        in_array($app->request()->getMethod(), ['POST']) &&
         array_key_exists('email', $requestPayload)
     ) {
         $avatar = DirectusUsersTableGateway::get_avatar($requestPayload['email']);
@@ -671,7 +671,7 @@ $app->map("/$v/tables/:table/rows/?", function ($table) use ($acl, $ZendDb, $par
         case 'PUT':
             if (!is_numeric_array($requestPayload)) {
                 $params[$TableGateway->primaryKeyFieldName] = $requestPayload[$TableGateway->primaryKeyFieldName];
-                $requestPayload = array($requestPayload);
+                $requestPayload = [$requestPayload];
             }
             $TableGateway->updateCollection($requestPayload);
             break;
@@ -720,7 +720,7 @@ $app->get("/$v/tables/:table/typeahead/?", function ($table, $query = null) use 
         $params['columns'] = '';
     }
 
-    $columns = ($params['columns']) ? explode(',', $params['columns']) : array();
+    $columns = ($params['columns']) ? explode(',', $params['columns']) : [];
     if (count($columns) > 0) {
         $params['group_by'] = $columns[0];
 
@@ -738,12 +738,12 @@ $app->get("/$v/tables/:table/typeahead/?", function ($table, $query = null) use 
     $response = [];
     foreach ($entries as $entry) {
         $val = '';
-        $tokens = array();
+        $tokens = [];
         foreach ($columns as $col) {
             array_push($tokens, $entry[$col]);
         }
         $val = implode(' ', $tokens);
-        array_push($response, array('value' => $val, 'tokens' => $tokens, 'id' => $entry['id']));
+        array_push($response, ['value' => $val, 'tokens' => $tokens, 'id' => $entry['id']]);
     }
     JsonView::render($response);
 });
@@ -754,7 +754,7 @@ $app->map("/$v/tables/:table/rows/:id/?", function ($table, $id) use ($ZendDb, $
 
     // any UPDATE requests should md5 the email
     if ('directus_users' === $table &&
-        in_array($app->request()->getMethod(), array('PUT', 'PATCH')) &&
+        in_array($app->request()->getMethod(), ['PUT', 'PATCH']) &&
         array_key_exists('email', $requestPayload)
     ) {
         $avatar = DirectusUsersTableGateway::get_avatar($requestPayload['email']);
@@ -773,7 +773,7 @@ $app->map("/$v/tables/:table/rows/:id/?", function ($table, $id) use ($ZendDb, $
             break;
         // DELETE a given table entry
         case 'DELETE':
-            echo $TableGateway->delete(array($TableGateway->primaryKeyFieldName => $id));
+            echo $TableGateway->delete([$TableGateway->primaryKeyFieldName => $id]);
             return;
     }
 
@@ -782,10 +782,10 @@ $app->map("/$v/tables/:table/rows/:id/?", function ($table, $id) use ($ZendDb, $
     $Table = new TableGateway($acl, $table, $ZendDb);
     $response = $Table->getEntries($params);
     if (!$response) {
-        $response = array(
+        $response = [
             'message' => __t('unable_to_find_record_in_x_with_id_x', ['table' => $table, 'id' => $id]),
             'success' => false
-        );
+        ];
     }
     JsonView::render($response);
 })->via('DELETE', 'GET', 'PUT', 'PATCH');
@@ -846,10 +846,10 @@ $app->map("/$v/tables/:table/columns/:column/?", function ($table, $column) use 
         $tableGateway = new TableGateway($acl, $table, $ZendDb);
         $success = $tableGateway->dropColumn($column);
 
-        $response = array(
+        $response = [
             'message' => __t('unable_to_remove_column_x', ['column_name' => $column]),
             'success' => false
-        );
+        ];
 
         if ($success) {
             $response['success'] = true;
@@ -906,10 +906,10 @@ $app->map("/$v/tables/:table/columns/:column/?", function ($table, $column) use 
 
     $response = TableSchema::getSchemaArray($table, $params);
     if (!$response) {
-        $response = array(
+        $response = [
             'message' => __t('unable_to_find_column_x', ['column' => $column]),
             'success' => false
-        );
+        ];
     }
     JsonView::render($response);
 })->via('GET', 'PUT', 'DELETE');
@@ -926,7 +926,7 @@ $app->post("/$v/tables/:table/columns/:column/?", function ($table, $column) use
     //$data['column_name'] = $data['junction_key_left'];
     $data['column_name'] = $column;
     $data['table_name'] = $table;
-    $row = $TableGateway->findOneByArray(array('table_name' => $table, 'column_name' => $column));
+    $row = $TableGateway->findOneByArray(['table_name' => $table, 'column_name' => $column]);
 
     if ($row) {
         $data['id'] = $row['id'];
@@ -971,10 +971,10 @@ $app->get("/$v/groups/:id/?", function ($id = null) use ($ZendDb, $acl) {
     $Groups = new TableGateway($acl, $tableName, $ZendDb);
     $response = $Groups->find($id);
     if (!$response) {
-        $response = array(
+        $response = [
             'message' => __t('unable_to_find_group_with_id_x', ['id' => $id]),
             'success' => false
-        );
+        ];
     }
 
     $columns = TableSchema::getAllNonAliasTableColumns($tableName);
@@ -1028,10 +1028,10 @@ $app->map("/$v/files(/:id)/?", function ($id = null) use ($app, $ZendDb, $acl, $
     $Files = new TableGateway($acl, $table, $ZendDb);
     $response = $Files->getEntries($params);
     if (!$response) {
-        $response = array(
+        $response = [
             'message' => __t('unable_to_find_file_with_id_x', ['id' => $id]),
             'success' => false
-        );
+        ];
     }
 
     JsonView::render($response);
@@ -1065,11 +1065,11 @@ $app->map("/$v/tables/:table/preferences/?", function ($table) use ($ZendDb, $ac
             }
 
             if (isset($requestPayload['id'])) {
-                echo $TableGateway->delete(array('id' => $requestPayload['id']));
+                echo $TableGateway->delete(['id' => $requestPayload['id']]);
             } else if (isset($requestPayload['title']) && isset($requestPayload['table_name'])) {
                 $jsonResponse = $Preferences->fetchByUserAndTableAndTitle($currentUser['id'], $requestPayload['table_name'], $requestPayload['title']);
                 if ($jsonResponse['id']) {
-                    echo $TableGateway->delete(array('id' => $jsonResponse['id']));
+                    echo $TableGateway->delete(['id' => $jsonResponse['id']]);
                 } else {
                     echo 1;
                 }
@@ -1091,10 +1091,10 @@ $app->map("/$v/tables/:table/preferences/?", function ($table) use ($ZendDb, $ac
 
     if (!$jsonResponse) {
         $app->response()->setStatus(404);
-        $jsonResponse = array(
+        $jsonResponse = [
             'message' => __t('unable_to_find_preferences'),
             'success' => false
-        );
+        ];
     }
 
     JsonView::render($jsonResponse);
@@ -1127,7 +1127,7 @@ $app->map("/$v/bookmarks(/:id)/?", function ($id = null) use ($params, $app, $Ze
         case 'DELETE':
             $bookmark = $bookmarks->fetchByUserAndId($currentUser['id'], $id);
             if ($bookmark) {
-                echo $bookmarks->delete(array('id' => $id));
+                echo $bookmarks->delete(['id' => $id]);
             }
             return;
     }
@@ -1168,10 +1168,10 @@ $app->map("/$v/settings(/:id)/?", function ($id = null) use ($acl, $ZendDb, $par
     // $get_new = is_null($id) ? $settings_new : $settings_new[$id];
     $response = array_key_exists($id, $settings_new) ? $settings_new : null;
     if (!$response) {
-        $response = array(
+        $response = [
             'message' => __t('unable_to_find_setting_collection_x', ['collection' => $id]),
             'success' => false
-        );
+        ];
     }
 
     JsonView::render($response);
@@ -1188,7 +1188,7 @@ $app->get("/$v/tables/?", function () use ($ZendDb, $acl, $app) {
     $tablesNames = TableSchema::getTablenames(false);
 
     $tables = array_map(function ($table) {
-        return array('table_name' => $table);
+        return ['table_name' => $table];
     }, $tablesNames);
 
     JsonView::render($tables);
@@ -1200,10 +1200,10 @@ $app->map("/$v/tables/:table/?", function ($table) use ($ZendDb, $acl, $params, 
         $tableGateway = new TableGateway($acl, $table, $ZendDb);
         $success = $tableGateway->drop();
 
-        $response = array(
+        $response = [
             'message' => __t('unable_to_remove_table_x', ['table_name' => $table]),
             'success' => false
-        );
+        ];
 
         if ($success) {
             $response['success'] = true;
@@ -1218,27 +1218,27 @@ $app->map("/$v/tables/:table/?", function ($table) use ($ZendDb, $acl, $params, 
     /* PUT updates the table */
     if ($app->request()->isPut()) {
         $data = $requestPayload;
-        $table_settings = array(
+        $table_settings = [
             'table_name' => $data['table_name'],
             'hidden' => (int)$data['hidden'],
             'single' => (int)$data['single'],
             'footer' => (int)$data['footer'],
             'primary_column' => array_key_exists('primary_column', $data) ? $data['primary_column'] : ''
-        );
+        ];
 
         //@TODO: Possibly pretty this up so not doing direct inserts/updates
-        $set = $TableGateway->select(array('table_name' => $table))->toArray();
+        $set = $TableGateway->select(['table_name' => $table])->toArray();
 
         //If item exists, update, else insert
         if (count($set) > 0) {
-            $TableGateway->update($table_settings, array('table_name' => $table));
+            $TableGateway->update($table_settings, ['table_name' => $table]);
         } else {
             $TableGateway->insert($table_settings);
         }
 
-        $column_settings = array();
+        $column_settings = [];
         foreach ($data['columns'] as $col) {
-            $columnData = array(
+            $columnData = [
                 'table_name' => $table,
                 'column_name' => $col['column_name'],
                 'ui' => $col['ui'],
@@ -1247,7 +1247,7 @@ $app->map("/$v/tables/:table/?", function ($table) use ($ZendDb, $acl, $params, 
                 'required' => $col['required'] ? 1 : 0,
                 'sort' => array_key_exists('sort', $col) ? $col['sort'] : 99999,
                 'comment' => array_key_exists('comment', $col) ? $col['comment'] : ''
-            );
+            ];
 
             // hotfix #1069 single_file UI not saving relational settings
             $extraFields = ['data_type', 'relationship_type', 'related_table', 'junction_key_right'];
@@ -1257,7 +1257,7 @@ $app->map("/$v/tables/:table/?", function ($table) use ($ZendDb, $acl, $params, 
                 }
             }
 
-            $existing = $ColumnsTableGateway->select(array('table_name' => $table, 'column_name' => $col['column_name']))->toArray();
+            $existing = $ColumnsTableGateway->select(['table_name' => $table, 'column_name' => $col['column_name']])->toArray();
             if (count($existing) > 0) {
                 $columnData['id'] = $existing[0]['id'];
             }
@@ -1272,10 +1272,10 @@ $app->map("/$v/tables/:table/?", function ($table) use ($ZendDb, $acl, $params, 
     $response = TableSchema::getTable($table);
 
     if (!$response) {
-        $response = array(
+        $response = [
             'message' => __t('unable_to_find_table_x', ['table_name' => $table]),
             'success' => false
-        );
+        ];
     }
     JsonView::render($response);
 })->via('GET', 'PUT', 'DELETE')->name('table_meta');
@@ -1297,15 +1297,15 @@ $app->post("/$v/upload/?", function () use ($params, $requestPayload, $app, $acl
 
 $app->post("/$v/upload/link/?", function () use ($params, $requestPayload, $app, $acl, $ZendDb) {
     $Files = new \Directus\Files\Files();
-    $result = array(
+    $result = [
         'message' => __t('invalid_unsupported_url'),
         'success' => false
-    );
+    ];
 
     $app->response->setStatus(400);
 
     if (isset($_POST['link']) && filter_var($_POST['link'], FILTER_VALIDATE_URL)) {
-        $fileData = array('caption' => '', 'tags' => '', 'location' => '');
+        $fileData = ['caption' => '', 'tags' => '', 'location' => ''];
         $linkInfo = $Files->getLink($_POST['link']);
 
         if ($linkInfo) {
@@ -1314,7 +1314,7 @@ $app->post("/$v/upload/link/?", function () use ($params, $requestPayload, $app,
             $fileData = array_merge($fileData, $linkInfo);
 
             $result = [];
-            $result[] = array(
+            $result[] = [
                 'type' => $fileData['type'],
                 'name' => $fileData['name'],
                 'title' => $fileData['title'],
@@ -1330,7 +1330,7 @@ $app->post("/$v/upload/link/?", function () use ($params, $requestPayload, $app,
                 'data' => (isset($fileData['data'])) ? $fileData['data'] : null,
                 'user' => $currentUser['id']
                 //'date_uploaded' => $fileData['date_uploaded'] . ' UTC',
-            );
+            ];
         }
     }
 
@@ -1365,7 +1365,7 @@ $app->get("/$v/messages/rows/:id/?", function ($id) use ($params, $requestPayloa
 
     if (!isset($message)) {
         header('HTTP/1.0 404 Not Found');
-        return JsonView::render(array('message' => __t('message_not_found')));
+        return JsonView::render(['message' => __t('message_not_found')]);
     }
 
     JsonView::render($message);
@@ -1378,7 +1378,7 @@ $app->map("/$v/messages/rows/:id/?", function ($id) use ($params, $requestPayloa
 
     $message = $messagesTableGateway->fetchMessageWithRecipients($id, $currentUser['id']);
 
-    $ids = array($message['id']);
+    $ids = [$message['id']];
     $message['read'] = 1;
 
     foreach ($message['responses']['rows'] as &$response) {
@@ -1396,8 +1396,8 @@ $app->post("/$v/messages/rows/?", function () use ($params, $requestPayload, $ap
 
     // Unpack recipients
     $recipients = explode(',', $requestPayload['recipients']);
-    $groupRecipients = array();
-    $userRecipients = array();
+    $groupRecipients = [];
+    $userRecipients = [];
 
     foreach ($recipients as $recipient) {
         $typeAndId = explode('_', $recipient);
@@ -1465,8 +1465,8 @@ $app->post("/$v/comments/?", function () use ($params, $requestPayload, $app, $a
     $params['table_name'] = 'directus_messages';
     $TableGateway = new TableGateway($acl, 'directus_messages', $ZendDb);
 
-    $groupRecipients = array();
-    $userRecipients = array();
+    $groupRecipients = [];
+    $userRecipients = [];
 
     preg_match_all('/@\[.*? /', $requestPayload['message'], $results);
     $results = $results[0];
@@ -1595,12 +1595,12 @@ $app->map("/$v/tables/:table/columns/:column/:ui/?", function ($table, $column, 
     switch ($app->request()->getMethod()) {
         case 'PUT':
         case 'POST':
-            $keys = array('table_name' => $table, 'column_name' => $column, 'ui_name' => $ui);
+            $keys = ['table_name' => $table, 'column_name' => $column, 'ui_name' => $ui];
             $uis = to_name_value($requestPayload, $keys);
 
-            $column_settings = array();
+            $column_settings = [];
             foreach ($uis as $col) {
-                $existing = $TableGateway->select(array('table_name' => $table, 'column_name' => $column, 'ui_name' => $ui, 'name' => $col['name']))->toArray();
+                $existing = $TableGateway->select(['table_name' => $table, 'column_name' => $column, 'ui_name' => $ui, 'name' => $col['name']])->toArray();
                 if (count($existing) > 0) {
                     $col['id'] = $existing[0]['id'];
                 }
@@ -1612,10 +1612,10 @@ $app->map("/$v/tables/:table/columns/:column/:ui/?", function ($table, $column, 
     $response = $UiOptions->fetchOptions($table, $column, $ui);
     if (!$response) {
         $app->response()->setStatus(404);
-        $response = array(
+        $response = [
             'message' => __t('unable_to_find_column_x_options_for_x', ['column' => $column, 'ui' => $ui]),
             'success' => false
-        );
+        ];
     }
 
     JsonView::render($response);

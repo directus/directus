@@ -11,7 +11,7 @@ class Formatting
         $ext = $info['extension'];
         $name = basename($fileName, '.' . $ext);
         $name = strtolower($name);
-        $name = str_replace(array('_', '-'), array(' ', ' '), $name);
+        $name = str_replace(['_', '-'], [' ', ' '], $name);
         $name = ucwords($name);
         return $name;
     }
@@ -70,10 +70,10 @@ class Formatting
 
         if ('save' == $context) {
             // Convert nbsp, ndash and mdash to hyphens
-            $title = str_replace(array('%c2%a0', '%e2%80%93', '%e2%80%94'), '-', $title);
+            $title = str_replace(['%c2%a0', '%e2%80%93', '%e2%80%94'], '-', $title);
 
             // Strip these characters entirely
-            $title = str_replace(array(
+            $title = str_replace([
                 // iexcl and iquest
                 '%c2%a1', '%c2%bf',
                 // angle quotes
@@ -85,7 +85,7 @@ class Formatting
                 '%c2%a9', '%c2%ae', '%c2%b0', '%e2%80%a6', '%e2%84%a2',
                 // grave accent, acute accent, macron, caron
                 '%cc%80', '%cc%81', '%cc%84', '%cc%8c',
-            ), '', $title);
+            ], '', $title);
 
             // Convert times to x
             $title = str_replace('%c3%97', 'x', $title);
@@ -135,7 +135,7 @@ class Formatting
     public static function utf8_uri_encode($utf8_string, $length = 0)
     {
         $unicode = '';
-        $values = array();
+        $values = [];
         $num_octets = 1;
         $unicode_length = 0;
 
@@ -165,7 +165,7 @@ class Formatting
                         $unicode_length += 6;
                     }
 
-                    $values = array();
+                    $values = [];
                     $num_octets = 1;
                 }
             }
@@ -186,7 +186,7 @@ class Formatting
             return $string;
 
         if (self::seems_utf8($string)) {
-            $chars = array(
+            $chars = [
                 // Decompositions for Latin-1 Supplement
                 chr(194) . chr(170) => 'a', chr(194) . chr(186) => 'o',
                 chr(195) . chr(128) => 'A', chr(195) . chr(129) => 'A',
@@ -360,7 +360,7 @@ class Formatting
                 chr(199) . chr(153) => 'U', chr(199) . chr(154) => 'u',
                 // grave accent
                 chr(199) . chr(155) => 'U', chr(199) . chr(156) => 'u',
-            );
+            ];
 
             // @TODO: find a substitute for get_locale (get_user_locale?)
             // This function is a wordpress function and it doesn't exists in Directus
@@ -394,8 +394,8 @@ class Formatting
             $chars['out'] = 'EfSZszYcYuAAAAAACEEEEIIIINOOOOOOUUUUYaaaaaaceeeeiiiinoooooouuuuyy';
 
             $string = strtr($string, $chars['in'], $chars['out']);
-            $double_chars['in'] = array(chr(140), chr(156), chr(198), chr(208), chr(222), chr(223), chr(230), chr(240), chr(254));
-            $double_chars['out'] = array('OE', 'oe', 'AE', 'DH', 'TH', 'ss', 'ae', 'dh', 'th');
+            $double_chars['in'] = [chr(140), chr(156), chr(198), chr(208), chr(222), chr(223), chr(230), chr(240), chr(254)];
+            $double_chars['out'] = ['OE', 'oe', 'AE', 'DH', 'TH', 'ss', 'ae', 'dh', 'th'];
             $string = str_replace($double_chars['in'], $double_chars['out'], $string);
         }
 

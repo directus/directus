@@ -49,7 +49,7 @@ class DirectusActivityTableGateway extends RelationalTableGateway
     {
         parent::__construct($acl, self::$_tableName, $adapter);
 
-        self::$defaultEntriesSelectParams = array(
+        self::$defaultEntriesSelectParams = [
             'orderBy' => 'id', // @todo validate $params['order*']
             'orderDirection' => 'DESC',
             'fields' => '*',
@@ -58,7 +58,7 @@ class DirectusActivityTableGateway extends RelationalTableGateway
             'id' => -1,
             'search' => null,
             'status' => null
-        );
+        ];
     }
 
     public function fetchFeed($params = null)
@@ -73,7 +73,7 @@ class DirectusActivityTableGateway extends RelationalTableGateway
         $hasActiveColumn = $this->schemaHasActiveColumn($tableSchemaArray);
         $params = $this->applyDefaultEntriesSelectParams($params);
 
-        $columns = array('id', 'identifier', 'action', 'table_name', 'row_id', 'user', 'datetime', 'type', 'data');
+        $columns = ['id', 'identifier', 'action', 'table_name', 'row_id', 'user', 'datetime', 'type', 'data'];
         $select->columns($columns);
         // ->order('id DESC');
         $select
@@ -105,15 +105,15 @@ class DirectusActivityTableGateway extends RelationalTableGateway
             ->equalTo('type', 'FILES');
         $activityTotal = $this->countTotal($countTotalWhere);
 
-        return array(
+        return [
             'total' => $activityTotal,
             'rows' => $rowset
-        );
+        ];
     }
 
     public function fetchRevisions($row_id, $table_name)
     {
-        $columns = array('id', 'action', 'user', 'datetime');
+        $columns = ['id', 'action', 'user', 'datetime'];
 
         $sql = new Sql($this->adapter);
         $select = $sql->select()
@@ -139,7 +139,7 @@ class DirectusActivityTableGateway extends RelationalTableGateway
 
     public function recordLogin($userid)
     {
-        $logData = array(
+        $logData = [
             'type' => self::TYPE_LOGIN,
             'table_name' => 'directus_users',
             'action' => self::ACTION_LOGIN,
@@ -148,7 +148,7 @@ class DirectusActivityTableGateway extends RelationalTableGateway
             'parent_id' => null,
             'logged_ip' => isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '',
             'user_agent' => isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : ''
-        );
+        ];
 
         $insert = new Insert($this->getTable());
         $insert
@@ -165,7 +165,7 @@ class DirectusActivityTableGateway extends RelationalTableGateway
             $action = 'ADD';
         }
 
-        $logData = array(
+        $logData = [
             'type' => self::TYPE_MESSAGE,
             'table_name' => 'directus_messages',
             'action' => $action,
@@ -178,7 +178,7 @@ class DirectusActivityTableGateway extends RelationalTableGateway
             'row_id' => $data['id'],
             'logged_ip' => isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '',
             'user_agent' => isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : ''
-        );
+        ];
 
         $insert = new Insert($this->getTable());
 

@@ -52,7 +52,7 @@ class InstallModule extends ModuleBase
 
     public function __construct()
     {
-        $this->help = array(
+        $this->help = [
             'config' => ''
                 . PHP_EOL . "\t\t-h " . __t('Hostname or IP address of the MySQL DB to be used. Default: localhost')
                 . PHP_EOL . "\t\t-n " . __t('Name of the database to use for Directus. Default: directus')
@@ -69,16 +69,16 @@ class InstallModule extends ModuleBase
                 . PHP_EOL . "\t\t-p " . __t('Initial administrator password. Default: directus')
                 . PHP_EOL . "\t\t-t " . __t('Name for this Directus installation. Default: Directus')
                 . PHP_EOL . "\t\t-d " . __t('Installation path of Directus. Default: ' . BASE_PATH)
-        );
+        ];
 
-        $this->commands_help = array(
+        $this->commands_help = [
             'config' => __t('Configure Directus: ') . PHP_EOL . PHP_EOL . "\t\t"
                 . $this->__module_name . ':config -h db_host -n db_name -u db_user -p db_pass -d directus_path' . PHP_EOL,
             'database' => __t('Populate the Database Schema: ') . PHP_EOL . PHP_EOL . "\t\t"
                 . $this->__module_name . ':database -d directus_path' . PHP_EOL,
             'install' => __t('Install Initial Configurations: ') . PHP_EOL . PHP_EOL . "\t\t"
                 . $this->__module_name . ':install -e admin_email -p admin_password -t site_name' . PHP_EOL,
-        );
+        ];
     }
 
     public function cmdHelp($args, $extra)

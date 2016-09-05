@@ -35,7 +35,7 @@ class DirectusSocialFeedsTableGateway extends AclAwareTableGateway
 
     public function fetchFeedsById($feeds)
     {
-        $socialFeedsById = array();
+        $socialFeedsById = [];
         $select = new Select(self::$_tableName);
         $FeedWhere = new Where;
         $SocialCache = new SocialCache();

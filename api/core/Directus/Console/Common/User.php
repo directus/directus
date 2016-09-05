@@ -87,15 +87,15 @@ class User
         $hash = Provider::hashPassword($password, $salt);
 
         try {
-            $user = $this->usersTableGateway->select(array('email' => $email))->current();
+            $user = $this->usersTableGateway->select(['email' => $email])->current();
 
-            $update = array(
+            $update = [
                 'password' => $hash,
                 'salt' => $salt,
                 'access_token' => sha1($user->id . StringUtils::random())
-            );
+            ];
 
-            $changed = $this->usersTableGateway->update($update, array('email' => $email));
+            $changed = $this->usersTableGateway->update($update, ['email' => $email]);
             if ($changed == 0) {
                 throw new PasswordChangeException(__t('Could not change password for ') . $email . ': ' . __t('e-mail not found.'));
             }
@@ -124,12 +124,12 @@ class User
     public function changeEmail($id, $email)
     {
 
-        $update = array(
+        $update = [
             'email' => $email
-        );
+        ];
 
         try {
-            $changed = $this->usersTableGateway->update($update, array('id' => $id));
+            $changed = $this->usersTableGateway->update($update, ['id' => $id]);
             if ($changed == 0) {
                 throw new UserUpdateException(__t('Could not change email for ID ') . $id . ': ' . __t('ID not found or e-mail already changed.'));
             }

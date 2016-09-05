@@ -23,7 +23,7 @@ class DirectusTabPrivilegesTableGateway extends AclAwareTableGateway
         $select->where->equalTo('group_id', $groupId);
         $row = $this->selectWith($select)->toArray();
         if (!$row) {
-            return array();
+            return [];
         }
 
         $row = $row[0];

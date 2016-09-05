@@ -8,13 +8,13 @@ use Zend\Db\TableGateway\TableGateway;
 class Console
 {
     private $command = '';
-    private $options = array();
+    private $options = [];
     private $directusPath = '';
 
-    public function __construct($directusPath = '', $argv = array())
+    public function __construct($directusPath = '', $argv = [])
     {
         if (!$argv) {
-            $argv = $_SERVER['argv'] ?: array();
+            $argv = $_SERVER['argv'] ?: [];
         }
 
         // get rid of the command name
@@ -183,12 +183,12 @@ class Console
     private function clear()
     {
         $this->command = '';
-        $this->options = array();
+        $this->options = [];
     }
 
     private function parseOptions($argv)
     {
-        $options = array();
+        $options = [];
 
         foreach ($argv as $arg) {
             if (preg_match("/^(-{1,2})([A-Za-z0-9-_]+)(=)?(.+)*$/", $arg, $argMatch)) {

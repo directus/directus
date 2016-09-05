@@ -17,7 +17,7 @@ class DirectusPrivilegesTableGateway extends AclAwareTableGateway
     public static $_tableName = 'directus_privileges';
 
     // @todo: make this part of every table gateway
-    private $fillable = array(
+    private $fillable = [
         'allow_view',
         'allow_add',
         'allow_delete',
@@ -29,7 +29,7 @@ class DirectusPrivilegesTableGateway extends AclAwareTableGateway
         'group_id',
         'table_name',
         'status_id',
-    );
+    ];
 
     public function __construct(Acl $acl, AdapterInterface $adapter)
     {
@@ -80,7 +80,7 @@ class DirectusPrivilegesTableGateway extends AclAwareTableGateway
         $select->where->equalTo('group_id', $group_id);
         $rowset = $this->selectWith($select);
         $rowset = $rowset->toArray();
-        $privilegesByTable = array();
+        $privilegesByTable = [];
         foreach ($rowset as $row) {
             foreach ($row as $field => &$value) {
                 if ($this->acl->isTableListValue($field))
@@ -161,7 +161,7 @@ class DirectusPrivilegesTableGateway extends AclAwareTableGateway
             'directus_ui',
             'directus_users_copy'
         );*/
-        $blacklist = array();
+        $blacklist = [];
 
 
         $select = new Select($this->table);
@@ -175,8 +175,8 @@ class DirectusPrivilegesTableGateway extends AclAwareTableGateway
 
         $tableSchema = new TableSchema();
         $tables = $tableSchema->getTablenames();
-        $privileges = array();
-        $privilegesHash = array();
+        $privileges = [];
+        $privilegesHash = [];
 
         foreach ($rowset as $item) {
             if (in_array($item['table_name'], $blacklist)) {
@@ -199,7 +199,7 @@ class DirectusPrivilegesTableGateway extends AclAwareTableGateway
                 continue;
             }
 
-            $item = array('table_name' => $table, 'group_id' => $groupId, 'status_id' => null);
+            $item = ['table_name' => $table, 'group_id' => $groupId, 'status_id' => null];
 
             $privileges[] = $item;
         }

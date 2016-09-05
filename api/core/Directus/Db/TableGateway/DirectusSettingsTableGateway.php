@@ -13,44 +13,44 @@ class DirectusSettingsTableGateway extends AclAwareTableGateway
 
     public static $_tableName = 'directus_settings';
 
-    private $_defaults = array();
+    private $_defaults = [];
 
     public function __construct(Acl $acl, AdapterInterface $adapter)
     {
         parent::__construct($acl, self::$_tableName, $adapter);
 
-        $this->_defaults['global'] = array(
+        $this->_defaults['global'] = [
             'cms_user_auto_sign_out' => 60,
             'project_name' => 'Directus',
             'project_url' => 'http://localhost/',
             'rows_per_page' => 200,
             'cms_thumbnail_url' => ''
-        );
+        ];
 
-        $this->_defaults['files'] = array(
+        $this->_defaults['files'] = [
             'allowed_thumbnails' => '',
             'thumbnail_quality' => 100,
             'thumbnail_size' => 200,
             'file_naming' => 'file_id',
             'thumbnail_crop_enabled' => 1,
             'youtube_api_key' => ''
-        );
+        ];
     }
 
     public function fetchAll($selectModifier = null)
     {
         $sql = new Sql($this->adapter);
         $select = $sql->select()->from($this->table);
-        $select->columns(array('id', 'collection', 'name', 'value'))
+        $select->columns(['id', 'collection', 'name', 'value'])
             ->order('collection');
         // Fetch row
         $rowset = $this->selectWith($select);
         $rowset = $rowset->toArray();
-        $result = array();
+        $result = [];
         foreach ($rowset as $row) {
             $collection = $row['collection'];
             if (!array_key_exists($collection, $result)) {
-                $result[$collection] = array();
+                $result[$collection] = [];
             }
             $result[$collection][$row['name']] = $row['value'];
         }
@@ -58,12 +58,12 @@ class DirectusSettingsTableGateway extends AclAwareTableGateway
         return $result;
     }
 
-    public function fetchCollection($collection, $requiredKeys = array())
+    public function fetchCollection($collection, $requiredKeys = [])
     {
         $select = new Select($this->table);
         $select->where->equalTo('collection', $collection);
         $rowset = $this->selectWith($select)->toArray();
-        $result = array();
+        $result = [];
         foreach ($rowset as $row) {
             $result[$row['name']] = $row['value'];
         }

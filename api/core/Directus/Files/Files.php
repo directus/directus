@@ -37,9 +37,9 @@ class Files
 
         // Fetch files settings
         $Settings = new DirectusSettingsTableGateway($acl, $adapter);
-        $this->filesSettings = $Settings->fetchCollection('files', array(
+        $this->filesSettings = $Settings->fetchCollection('files', [
             'thumbnail_size', 'thumbnail_quality', 'thumbnail_crop_enabled'
-        ));
+        ]);
     }
 
     // @TODO: remove exists() and rename() method
@@ -57,18 +57,18 @@ class Files
     public function delete($file)
     {
         if ($this->exists($file['name'])) {
-            $this->emitter->run('files.deleting', array($file));
+            $this->emitter->run('files.deleting', [$file]);
             $this->filesystem->getAdapter()->delete($file['name']);
-            $this->emitter->run('files.deleting:after', array($file));
+            $this->emitter->run('files.deleting:after', [$file]);
         }
 
         $ext = pathinfo($file['name'], PATHINFO_EXTENSION);
         if ($ext) {
             $thumbPath = 'thumbs/' . $file['id'] . '.' . $ext;
             if ($this->exists($thumbPath)) {
-                $this->emitter->run('files.thumbnail.deleting', array($file));
+                $this->emitter->run('files.thumbnail.deleting', [$file]);
                 $this->filesystem->getAdapter()->delete($thumbPath);
-                $this->emitter->run('files.thumbnail.deleting:after', array($file));
+                $this->emitter->run('files.thumbnail.deleting:after', [$file]);
             }
         }
     }
@@ -396,15 +396,15 @@ class Files
         $targetFileName = $this->getConfig('root') . '/' . $imageName;
         $info = pathinfo($targetFileName);
 
-        if (in_array($info['extension'], array('jpg', 'jpeg', 'png', 'gif', 'tif', 'tiff', 'psd', 'pdf'))) {
+        if (in_array($info['extension'], ['jpg', 'jpeg', 'png', 'gif', 'tif', 'tiff', 'psd', 'pdf'])) {
             $targetContent = $this->filesystem->getAdapter()->read($imageName);
             $img = Thumbnail::generateThumbnail($targetContent, $info['extension'], $this->getSettings('thumbnail_size'), $this->getSettings('thumbnail_crop_enabled'));
             if ($img) {
                 $thumbnailTempName = 'thumbs/THUMB_' . $imageName;
                 $thumbImg = Thumbnail::writeImage($info['extension'], $thumbnailTempName, $img, $this->getSettings('thumbnail_quality'));
-                $this->emitter->run('files.thumbnail.saving', array('name' => $imageName, 'size' => strlen($thumbImg)));
+                $this->emitter->run('files.thumbnail.saving', ['name' => $imageName, 'size' => strlen($thumbImg)]);
                 $this->filesystem->getAdapter()->write($thumbnailTempName, $thumbImg);
-                $this->emitter->run('files.thumbnail.saving:after', array('name' => $imageName, 'size' => strlen($thumbImg)));
+                $this->emitter->run('files.thumbnail.saving:after', ['name' => $imageName, 'size' => strlen($thumbImg)]);
             }
         }
     }
@@ -430,9 +430,9 @@ class Files
         $finalPath = rtrim($mediaPath, '/') . '/' . $targetName;
         $data = file_get_contents($filePath);
 
-        $this->emitter->run('files.saving', array('name' => $targetName, 'size' => strlen($data)));
+        $this->emitter->run('files.saving', ['name' => $targetName, 'size' => strlen($data)]);
         $this->filesystem->getAdapter()->write($targetName, $data);
-        $this->emitter->run('files.saving:after', array('name' => $targetName, 'size' => strlen($data)));
+        $this->emitter->run('files.saving:after', ['name' => $targetName, 'size' => strlen($data)]);
 
         $fileData['name'] = basename($finalPath);
         $fileData['date_uploaded'] = DateUtils::now();
@@ -477,7 +477,7 @@ class Files
 
         $fileName = "$name.$ext";
         if ($this->filesystem->exists($fileName)) {
-            $matches = array();
+            $matches = [];
             $trailingDigit = '/\-(\d)\.(' . $ext . ')$/';
             if (preg_match($trailingDigit, $fileName, $matches)) {
                 // Convert "fname-1.jpg" to "fname-2.jpg"
@@ -558,7 +558,7 @@ class Files
      */
     public function getLinkInfo($link)
     {
-        $fileData = array();
+        $fileData = [];
 
         $urlHeaders = get_headers($link, 1);
         $urlInfo = pathinfo($link);
@@ -571,7 +571,7 @@ class Files
         $linkContent = file_get_contents($link);
         $url = 'data:' . $urlHeaders['Content-Type'] . ';base64,' . base64_encode($linkContent);
 
-        $fileData = array_merge($fileData, array(
+        $fileData = array_merge($fileData, [
             'type' => $urlHeaders['Content-Type'],
             'name' => $urlInfo['basename'],
             'title' => $urlInfo['filename'],
@@ -581,7 +581,7 @@ class Files
             'height' => $height,
             'data' => $url,
             'url' => ($width) ? $url : ''
-        ));
+        ]);
 
         return $fileData;
     }

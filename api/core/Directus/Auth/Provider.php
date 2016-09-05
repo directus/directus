@@ -113,7 +113,7 @@ class Provider
         self::prependSessionKey();
         self::enforceUserIsAuthenticated();
         self::expireCachedUserRecord();
-        $_SESSION[self::$SESSION_KEY] = array();
+        $_SESSION[self::$SESSION_KEY] = [];
     }
 
     /**
@@ -132,18 +132,18 @@ class Provider
         }
         self::$authenticated = $isLoggedIn = false;
         $ZendDb = Bootstrap::get('ZendDb');
-        $session = array();
+        $session = [];
         if (isset($_SESSION[self::$SESSION_KEY]) && !empty($_SESSION[self::$SESSION_KEY])) {
             $session = $_SESSION[self::$SESSION_KEY];
         }
 
-        if (is_array($session) && ArrayUtils::contains($session, array('id', 'access_token'))) {
+        if (is_array($session) && ArrayUtils::contains($session, ['id', 'access_token'])) {
             $DirectusUsersTableGateway = new \Zend\Db\TableGateway\TableGateway('directus_users', $ZendDb);
 
-            $user = $DirectusUsersTableGateway->select(array(
+            $user = $DirectusUsersTableGateway->select([
                 'id' => $session['id'],
                 'access_token' => $session['access_token']
-            ));
+            ]);
 
             if ($user->count()) {
                 self::$authenticated = $isLoggedIn = true;
@@ -231,7 +231,7 @@ class Provider
         if (self::loggedIn()) {
             throw new UserAlreadyLoggedInException(__t('attempting_to_authenticate_a_user_when_a_user_is_already_authenticated'));
         }
-        $user = array('id' => $uid, 'access_token' => sha1($uid . StringUtils::randomString()));
+        $user = ['id' => $uid, 'access_token' => sha1($uid . StringUtils::randomString())];
         $_SESSION[self::$SESSION_KEY] = $user;
         self::$authenticated = true;
     }

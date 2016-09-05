@@ -109,7 +109,7 @@ class InstallerUtils
 
         require_once $directusPath . '/api/config.php';
         $config = require $directusPath . '/api/ruckusing.conf.php';
-        $dbConfig = getDatabaseConfig(array(
+        $dbConfig = getDatabaseConfig([
             'type' => DB_TYPE,
             'host' => DB_HOST,
             'port' => DB_PORT,
@@ -118,13 +118,13 @@ class InstallerUtils
             'pass' => DB_PASSWORD,
             'directory' => 'schema',
             'prefix' => '',
-        ));
+        ]);
 
         $config = array_merge($config, $dbConfig);
         $main = new Ruckusing_Framework($config);
 
-        $main->execute(array('', 'db:setup'));
-        $main->execute(array('', 'db:migrate'));
+        $main->execute(['', 'db:setup']);
+        $main->execute(['', 'db:migrate']);
     }
 
     /**
@@ -228,7 +228,7 @@ class InstallerUtils
         require_once $directusPath . '/api/config.php';
 
         $config = require $directusPath . '/api/ruckusing.conf.php';
-        $dbConfig = getDatabaseConfig(array(
+        $dbConfig = getDatabaseConfig([
             'type' => DB_TYPE,
             'host' => DB_HOST,
             'port' => DB_PORT,
@@ -237,12 +237,12 @@ class InstallerUtils
             'pass' => DB_PASSWORD,
             'directory' => 'templates/' . $name,
             'prefix' => '',
-        ));
+        ]);
 
         $config = array_merge($config, $dbConfig);
         $main = new Ruckusing_Framework($config);
 
-        $main->execute(array('', 'db:migrate'));
+        $main->execute(['', 'db:migrate']);
     }
 
     /**

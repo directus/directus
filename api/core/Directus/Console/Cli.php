@@ -9,16 +9,16 @@ class Cli
 {
     private $command = '';
     private $help_module = '';
-    private $options = array();
-    private $extra = array();
+    private $options = [];
+    private $extra = [];
     private $directusPath = '';
 
-    private $cmd_modules = array();
+    private $cmd_modules = [];
 
-    public function __construct($directusPath = BASE_PATH, $argv = array())
+    public function __construct($directusPath = BASE_PATH, $argv = [])
     {
         if (!$argv) {
-            $argv = $_SERVER['argv'] ?: array();
+            $argv = $_SERVER['argv'] ?: [];
         }
 
         // get rid of the command name
@@ -115,7 +115,7 @@ class Cli
 
     private function parseOptions($argv)
     {
-        $options = array();
+        $options = [];
 
         $num_args = count($argv);
         $arg_idx = 0;

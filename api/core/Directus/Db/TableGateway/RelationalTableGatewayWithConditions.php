@@ -23,22 +23,22 @@ class RelationalTableGatewayWithConditions extends RelationalTableGateway
         //If this is a relational order, than it is an array.
         if (is_array($params['orderBy'])) {
             $select->join(
-                array('jsort' => $params['orderBy']['junction_table']),
+                ['jsort' => $params['orderBy']['junction_table']],
                 'jsort.' . $params['orderBy']['jkeyRight'] . ' = ' . $tableName . '.' . $this->primaryKeyFieldName,
-                array(),
+                [],
                 $select::JOIN_LEFT
             );
 
             $select->join(
-                array('rsort' => $params['orderBy']['related_table']),
+                ['rsort' => $params['orderBy']['related_table']],
                 'rsort.id = jsort.' . $params['orderBy']['jkeyLeft'],
-                array(),
+                [],
                 $select::JOIN_LEFT
             );
 
             $select->order('rsort.title', $params['orderDirection']);
         } else {
-            $select->order(implode(' ', array($params['orderBy'], $params['orderDirection'])));
+            $select->order(implode(' ', [$params['orderBy'], $params['orderDirection']]));
         }
 
         if (isset($params['perPage']) && isset($params['currentPage'])) {
@@ -67,7 +67,7 @@ class RelationalTableGatewayWithConditions extends RelationalTableGateway
             $joinedSortColumn = $relatedTable . '.' . $visibleColumn;
             $select
                 ->reset(Select::ORDER)
-                ->join($relatedTable, $keyLeft . '=' . $keyRight, array(), Select::JOIN_LEFT)
+                ->join($relatedTable, $keyLeft . '=' . $keyRight, [], Select::JOIN_LEFT)
                 ->order($joinedSortColumn . ' ' . $params['orderDirection']);
             break;
         }
@@ -148,7 +148,7 @@ class RelationalTableGatewayWithConditions extends RelationalTableGateway
         if (isset($params['adv_search']) && !empty($params['adv_search'])) {
             $i = 0;
             foreach ($params['adv_search'] as $search_col) {
-                $target = array();
+                $target = [];
                 foreach ($schema as $col) {
                     if ($col['id'] == $search_col['id']) {
                         $target = $col;
@@ -180,21 +180,21 @@ class RelationalTableGatewayWithConditions extends RelationalTableGateway
 
                         $select->join($junctionTable,
                             $keyleft . '=' . $keyRight,
-                            array(),
+                            [],
                             Select::JOIN_INNER);
                     } else {
-                        $select->join(array($relatedAliasName => $relatedTable),
+                        $select->join([$relatedAliasName => $relatedTable],
                             $tableName . '.' . $target['column_name'] . ' = ' . $relatedAliasName . '.id',
-                            array(),
+                            [],
                             Select::JOIN_INNER);
                     }
 
                     $relatedTableMetadata = TableSchema::getSchemaArray($relatedTable);
 
                     if ($search_col['type'] == 'like') {
-                        $select->join(array($relatedAliasName => $relatedTable),
+                        $select->join([$relatedAliasName => $relatedTable],
                             $jkeyleft . '=' . $jkeyright,
-                            array(),
+                            [],
                             Select::JOIN_INNER);
 
                         $search_col['value'] = '%' . $search_col['value'] . '%';
@@ -232,7 +232,7 @@ class RelationalTableGatewayWithConditions extends RelationalTableGateway
                     // and none for sorting
                     if ($target['column_name'] != $params['orderBy']) {
                         $select
-                            ->join($relatedTable, $keyLeft . '=' . $keyRight, array(), Select::JOIN_LEFT);
+                            ->join($relatedTable, $keyLeft . '=' . $keyRight, [], Select::JOIN_LEFT);
                     }
 
                     if ($search_col['type'] == 'like') {
@@ -272,6 +272,4 @@ class RelationalTableGatewayWithConditions extends RelationalTableGateway
         }
         return $select;
     }
-
-
 }
