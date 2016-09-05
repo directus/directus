@@ -226,7 +226,7 @@ class MySQLSchema extends AbstractSchema
             ->equalTo('C.TABLE_SCHEMA', $zendDb->getCurrentSchema())
             ->equalTo('C.TABLE_NAME', $tableName)
             ->nest()
-            ->addPredicate(new \Zend\Db\Sql\Predicate\Expression('"$columnName" = -1'))
+            ->addPredicate(new \Zend\Db\Sql\Predicate\Expression('"'. $columnName . '" = -1'))
             ->OR
             ->equalTo('C.column_name', $columnName)
             ->unnest();
@@ -264,7 +264,8 @@ class MySQLSchema extends AbstractSchema
             ->equalTo('TABLE_NAME', $tableName)
             ->addPredicate(new In('data_type', ['alias', 'MANYTOMANY', 'ONETOMANY']))
             ->nest()
-            ->addPredicate(new \Zend\Db\Sql\Predicate\Expression('"$columnName" = -1'))
+            // NOTE: is this actually necessary?
+            ->addPredicate(new \Zend\Db\Sql\Predicate\Expression('"' . $columnName . '" = -1'))
             ->OR
             ->equalTo('column_name', $columnName)
             ->unnest()
