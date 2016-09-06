@@ -422,12 +422,11 @@ if (!function_exists('get_locale_keys')) {
      */
     function get_locale_keys($locale)
     {
-        $content = file_get_contents(BASE_PATH . '/api/locales/' . $locale . '.json');
-        $json = json_decode($content, true);
+        $phrases = get_locale_phrases($locale);
 
         $keys = [];
-        if ($json) {
-            $keys = array_keys($json);
+        if ($phrases) {
+            $keys = array_keys($phrases);
         }
 
         return $keys;
@@ -453,9 +452,14 @@ if (!function_exists('is_locale_available')) {
 }
 
 if (!function_exists('get_default_phrases')) {
-    function get_default_phrases()
-    {
-        $phrasesPath = BASE_PATH . '/api/locales/en.json';
+    function get_default_phrases() {
+        return get_locale_phrases('en');
+    }
+}
+
+if (!function_exists('get_locale_phrases')) {
+    function get_locale_phrases($locale) {
+        $phrasesPath = BASE_PATH . '/api/locales/' . $locale . '.json';
 
         return json_decode(file_get_contents($phrasesPath), true);
     }

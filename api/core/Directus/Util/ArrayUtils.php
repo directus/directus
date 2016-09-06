@@ -135,4 +135,24 @@ class ArrayUtils
         return $results;
     }
 
+    /**
+     * Get the missing values from a array in another array
+     *
+     * @param array $from
+     * @param array $target
+     *
+     * @return array
+     */
+    public static function missing(array $from, array $target)
+    {
+        $missing = [];
+
+        foreach($target as $value) {
+            if (!in_array($value, $from)) {
+                $missing[] = $value;
+            }
+        }
+
+        return $missing;
+    }
 }
