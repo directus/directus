@@ -1031,7 +1031,7 @@ class RelationalTableGateway extends AclAwareTableGateway
             ->from($foreign_table)
             ->join($junction_table, $foreign_join_column . '=' . $junction_join_column, $junctionSelectColumns)
             ->where([$junction_comparison_column => $column_equals])
-            ->order($junction_id_column . 'ASC');
+            ->order($junction_id_column . ' ASC');
 
         // Only select the fields not on the currently authenticated user group's read field blacklist
         $columns = TableSchema::getAllNonAliasTableColumnNames($foreign_table);
