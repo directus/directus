@@ -221,9 +221,9 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/table/table.view', 'core
         }});
       }
 
-      this.showRemoveButton = this.columnSchema.options.get('remove_button') === 1;
-      this.showAddButton = this.columnSchema.options.get('add_button') === 1;
-      this.showChooseButton = this.columnSchema.options.get('choose_button') === 1;
+      this.showRemoveButton = this.columnSchema.options.get('remove_button') === true;
+      this.showAddButton = this.columnSchema.options.get('add_button') === true;
+      this.showChooseButton = this.columnSchema.options.get('choose_button') === true;
 
       this.nestedTableView = new TableView({
         collection: relatedCollection,

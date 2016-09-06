@@ -113,9 +113,9 @@ define(['app', 'core/UIComponent', 'core/uis/one_to_many', 'core/table/table.vie
       }
 
       this.canEdit = !(options.inModal || false);
-      this.showRemoveButton = this.columnSchema.options.get('remove_button') === "1";
-      this.showChooseButton = this.columnSchema.options.get('choose_button') === "1";
-      this.showAddButton = this.columnSchema.options.get('add_button') === "1";
+      this.showRemoveButton = this.columnSchema.options.get('remove_button') === true;
+      this.showChooseButton = this.columnSchema.options.get('choose_button') === true;
+      this.showAddButton = this.columnSchema.options.get('add_button') === true;
 
       var relatedCollection = this.model.get(this.name);
       var relatedSchema = relatedCollection.structure;
