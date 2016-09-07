@@ -11,6 +11,8 @@ define(function(require, exports, module) {
   "use strict";
 
   var app              = require('app'),
+      _                = require('underscore'),
+      Notification     = require('core/Notification'),
       //Directus       = require('core/directus'),
       Tabs             = require('core/tabs'),
       Bookmarks        = require('core/bookmarks'),
@@ -130,6 +132,16 @@ define(function(require, exports, module) {
       if(mainSidebar) {
         mainSidebar.scrollTop = this.scrollTop;
       }
+
+      _.each(app.user_notifications, function(notification) {
+        var title = notification.title;
+        var text = notification.text;
+        var type = notification.type || 'Information';
+
+        Notification.show(title, text, type);
+      });
+
+      app.user_notifications = [];
     },
 
     go: function() {

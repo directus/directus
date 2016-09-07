@@ -355,6 +355,14 @@ $app->post("/$v/auth/login/?", function () use ($app, $ZendDb, $acl, $requestNon
         ]);
     }
 
+    // =============================================================================
+    // Fetch information about the latest version to the admin
+    // when they first log in.
+    // =============================================================================
+    if (is_null($user['last_login']) && $user['group'] == 1) {
+        $_SESSION['first_version_check'] = true;
+    }
+
     // @todo: Login should fail on correct information when user is not active.
     $response['success'] = Auth::login($user['id'], $user['password'], $user['salt'], $password);
 

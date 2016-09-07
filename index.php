@@ -11,6 +11,7 @@ $loader = require 'vendor/autoload.php';
 
 // Non-autoloaded components
 require 'api/api.php';
+require 'api/globals.php';
 
 use Directus\Auth\Provider as AuthProvider;
 use Directus\Auth\RequestNonceProvider;
@@ -239,6 +240,49 @@ function getInbox()
     return $tableGateway->fetchMessagesInboxWithHeaders($authenticatedUser['id']);
 }
 
+/**
+ * Get new version notification
+ *
+ * @return null|array
+ */
+function getVersionNotification()
+{
+    $message = null;
+    $data = check_version(isset($_SESSION['first_version_check']));
+    unset($_SESSION['first_version_check']);
+
+    if ($data['outdated'] == true) {
+        $message = [
+            'title' => __t('version_outdated_title'),
+            'text' => __t('version_outdated_text_x', [
+                'installed_version' => DIRECTUS_VERSION,
+                'current_version' => $data['current_version']
+            ])
+        ];
+    }
+
+    return $message;
+}
+
+/**
+ * Notification messages
+ *
+ * This notification will be presented to the user when they logged in
+ *
+ * return array
+ */
+function getLoginNotification()
+{
+    $messages = [];
+
+    $versionNotification = getVersionNotification();
+    if ($versionNotification) {
+        array_push($messages, $versionNotification);
+    }
+
+    return $messages;
+}
+
 // @todo: this is a quite sloppy and temporary solution
 // bake it into Bootstrap?
 function filterPermittedExtensions($extensions, $blacklist)
@@ -392,6 +436,7 @@ $data = [
     'timezones' => get_timezone_list(),
     'listViews' => getListViews(),
     'messages' => getInbox(),
+    'user_notifications' => getLoginNotification(),
     'bookmarks' => getBookmarks(),
     'extendedUserColumns' => getExtendedUserColumns($tableSchema),
     'statusMapping' => $statusMapping

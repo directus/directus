@@ -397,6 +397,9 @@
     "server_error": "Server Error",
     "restricted_access": "Restricted Access",
 
+    "version_outdated_title": "Directus Update Available",
+    "version_outdated_text_x": "The latest stable release is v%{current_version}<br>You are currently running v%{installed_version}",
+
     "ok": "OK",
     "cancel": "Cancel",
     "yes": "Yes",

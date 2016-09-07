@@ -837,3 +837,82 @@ if (!function_exists('get_gravatar')) {
         return $url;
     }
 }
+
+
+if (!function_exists('get_contents')) {
+    /**
+     * Get content from an URL
+     *
+     * @param $url
+     * @param $headers
+     *
+     * @return mixed
+     */
+    function get_contents($url, $headers = [])
+    {
+        $ch = curl_init();
+
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_URL, $url);
+
+        if ($headers) {
+            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        }
+
+        $result = curl_exec($ch);
+        curl_close($ch);
+
+        return $result;
+    }
+}
+
+if (!function_exists('get_json')) {
+    /**
+     * Get json from an url
+     *
+     * @param $url
+     * @param array $headers
+     *
+     * @return mixed
+     */
+    function get_json($url, $headers = [])
+    {
+        $content = get_contents($url, array_merge(['Content-Type: application/json'], $headers));
+
+        return json_decode($content, true);
+    }
+}
+
+if (!function_exists('check_version')) {
+    /**
+     * Check Directus latest version
+     *
+     * @param bool $firstCheck
+     *
+     * @return array
+     */
+    function check_version($firstCheck = false)
+    {
+        $data = [
+            'outdated' => false,
+        ];
+
+        // =============================================================================
+        // Getting the latest version, silently skip it if the server is no responsive.
+        // =============================================================================
+        try {
+            $responseData = get_json('https://directus.io/check-version' . ($firstCheck ? '?first_check=1' : ''));
+
+            if ($responseData && isset($responseData['success']) && $responseData['success'] == true) {
+                $versionData = $responseData['data'];
+                $data = array_merge($data, $versionData);
+                $data['outdated'] = version_compare(DIRECTUS_VERSION, $versionData['current_version'], '<');
+            }
+        } catch (\Exception $e) {
+            // Do nothing
+        }
+
+        return $data;
+    }
+}

@@ -11,10 +11,12 @@ $loader = require 'vendor/autoload.php';
 define('BASE_PATH', dirname(__FILE__));
 define('API_PATH', BASE_PATH . '/api');
 
-require 'api/config.php';
-require 'api/globals.php';
+use Directus\Bootstrap;
 
-$emitter = \Directus\Bootstrap::get('hookEmitter');
+require "api/config.php";
+require "api/globals.php";
+
+$emitter = Bootstrap::get('hookEmitter');
 $emitter->run('directus.login.start');
 
 // Temporary solution for disabling this page for logged in users.
@@ -91,8 +93,7 @@ $cacheBuster = Directus\Util\Git::getCloneHash($git);
     </div>
     <p class="error" style="display:none;"></p>
     <p class="message" style="display:none;"></p>
-    <div class="directus-version"
-         title="<?php echo $cacheBuster; ?>"><?= __t('version'); ?> <?php echo(DIRECTUS_VERSION) ?></div>
+    <div class="directus-version" title="<?php echo $cacheBuster; ?>"><?= __t('version'); ?> <?php echo(DIRECTUS_VERSION) ?></div>
 </form>
 
 <script type="text/javascript" src="<?= DIRECTUS_PATH ?>assets/js/libs/jquery.js"></script>
