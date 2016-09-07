@@ -1500,7 +1500,7 @@ $app->post("/$v/comments/?", function () use ($params, $requestPayload, $app, $a
 
         $messagesTableGateway = new DirectusMessagesTableGateway($acl, $ZendDb);
         $id = $messagesTableGateway->sendMessage($requestPayload, array_unique($userRecipients), $currentUser['id']);
-        $params['id'] = $id;
+        $requestPayload['id'] = $params['id'] = $id;
 
         preg_match_all('/@\[.*?\]/', $requestPayload['message'], $results);
         $messageBody = $requestPayload['message'];
