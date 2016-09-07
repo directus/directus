@@ -251,7 +251,7 @@ gulp.task('submodules', function(cb) {
   executeCommand(cb, {
     command: 'git',
     args: ['submodule', 'update', '--init', 'api/migrations/templates'],
-    options: {cwd: './'}
+    options: {cwd: './dist'}
   });
 });
 
