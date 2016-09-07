@@ -331,7 +331,7 @@ gulp.task('watch', function() {
 
 gulp.task('deploy', function() {
   return gulp.src(['./dist/**/*'], {dot: true})
-        .pipe(deploy({branch: 'build', remoteUrl:'https://github.com/RNGR/Directus'}));
+        .pipe(deploy({branch: 'build', remoteUrl:'https://github.com/directus/directus'}));
 });
 
 gulp.task('jscs', function() {
@@ -344,7 +344,7 @@ gulp.task('jscs', function() {
 // Run all the tasks
 // ------------------- 'composer',
 gulp.task('build', function(cb) {
-    runSequence(['scripts', 'templates', 'singlepage', 'styles', 'fonts', 'images', 'move', 'submodules', 'composer', 'clean-git', cb]);
+    runSequence(['scripts', 'templates', 'singlepage', 'styles', 'fonts', 'images', 'submodules', 'move', 'composer', 'clean-git', cb]);
 });
 
 // Default task
