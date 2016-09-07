@@ -251,8 +251,14 @@ gulp.task('submodules', function(cb) {
   executeCommand(cb, {
     command: 'git',
     args: ['submodule', 'update', '--init', 'api/migrations/templates'],
-    options: {cwd: './dist'}
+    options: {cwd: './'}
   });
+});
+
+gulp.task('copySchemasTemplates', function() {
+  return gulp.src(['api/migrations/templates/**/*'], { base: './' })
+    .pipe(excludeGitignore())
+    .pipe(gulp.dest('dist'));
 });
 
 // -------------------
@@ -344,7 +350,7 @@ gulp.task('jscs', function() {
 // Run all the tasks
 // ------------------- 'composer',
 gulp.task('build', function(cb) {
-    runSequence(['scripts', 'templates', 'singlepage', 'styles', 'fonts', 'images', 'move', 'submodules', 'composer', 'clean-git', cb]);
+    runSequence(['scripts', 'templates', 'singlepage', 'styles', 'fonts', 'images', 'move', 'submodules', 'copySchemasTemplates', 'composer', 'clean-git', cb]);
 });
 
 // Default task
