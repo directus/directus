@@ -73,4 +73,13 @@ class ArrayUtilsTest extends PHPUnit_Framework_TestCase
         $this->assertArrayHasKey('user_name', $result);
         $this->assertArrayHasKey('user_country_name', $result);
     }
+
+    public function testMissing()
+    {
+        $array1 = ['one', 'two', 'three', 'five'];
+        $array2 = ['one', 'four', 'five'];
+        $result = ArrayUtils::missing($array1, $array2);
+
+        $this->assertTrue(in_array('four', $result));
+    }
 }

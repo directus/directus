@@ -25,40 +25,38 @@ class CreateDirectusActivityTable extends Ruckusing_Migration_Base
 {
     public function up()
     {
-      $t = $this->create_table("directus_activity", array(
-        "id"=> false,
-        //"options"=> "COMMENT='Contains history of revisions'"
-        )
-      );
+        $t = $this->create_table('directus_activity', [
+            'id' => false,
+            //'options'=> 'COMMENT="Contains history of revisions"'
+        ]);
 
-      //columns
-      $t->column("id", "integer", array(
-          "unsigned"=>true,
-          "null"=>false,
-          "auto_increment"=>true,
-          "primary_key"=>true
-        )
-      );
-      $t->column("type", "string", array("limit"=>100, "default"=>NULL));
-      $t->column("action", "string", array("limit"=>100, "null"=>false));
-      $t->column("identifier", "string", array("limit"=>100, "default"=>NULL));
-      $t->column("table_name", "string", array("limit"=>100, "null"=>false, "default"=> ""));
-      $t->column("row_id", "integer", array("unsigned"=>true, "default"=>0));
-      $t->column("user", "integer", array("unsigned"=>true, "null"=>false, "default"=>0));
-      $t->column("data", "text");
-      $t->column("delta", "text", array("null"=>true));
-      $t->column("parent_id", "integer", array("unsigned"=>true, "default"=>NULL));
-      $t->column('parent_table', 'string', array('limit' => 100));
-      $t->column("parent_changed", "tinyinteger", array("limit"=>1, "null"=>false, "comment"=>"Did the top-level record in the change set alter (scalar values/many-to-one relationships)? Or only the data within its related foreign collection records? (*toMany)"));
-      $t->column("datetime", "datetime", array("default"=>NULL));
-      $t->column("logged_ip", "string", array("limit"=>20, "default"=>NULL));
-      $t->column('user_agent', 'string', array('limit' => 256));
-      $t->finish();
+        //columns
+        $t->column('id', 'integer', [
+            'unsigned' => true,
+            'null' => false,
+            'auto_increment' => true,
+            'primary_key' => true
+        ]);
+        $t->column('type', 'string', ['limit' => 100, 'default' => NULL]);
+        $t->column('action', 'string', ['limit' => 100, 'null' => false]);
+        $t->column('identifier', 'string', ['limit' => 100, 'default' => NULL]);
+        $t->column('table_name', 'string', ['limit' => 100, 'null' => false, 'default' => '']);
+        $t->column('row_id', 'integer', ['unsigned' => true, 'default' => 0]);
+        $t->column('user', 'integer', ['unsigned' => true, 'null' => false, 'default' => 0]);
+        $t->column('data', 'text');
+        $t->column('delta', 'text', ['null' => true]);
+        $t->column('parent_id', 'integer', ['unsigned' => true, 'default' => NULL]);
+        $t->column('parent_table', 'string', ['limit' => 100]);
+        $t->column('parent_changed', 'tinyinteger', ['limit' => 1, 'null' => false, 'comment' => 'Did the top-level record in the change set alter (scalar values/many-to-one relationships)? Or only the data within its related foreign collection records? (*toMany)']);
+        $t->column('datetime', 'datetime', ['default' => NULL]);
+        $t->column('logged_ip', 'string', ['limit' => 20, 'default' => NULL]);
+        $t->column('user_agent', 'string', ['limit' => 256]);
+        $t->finish();
 
     }//up()
 
     public function down()
     {
-      $this->drop_table("directus_activity");
+        $this->drop_table('directus_activity');
     }//down()
 }

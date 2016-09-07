@@ -19,79 +19,71 @@ class CreateDirectusPrivilegesTable extends Ruckusing_Migration_Base
 {
     public function up()
     {
-        $t = $this->create_table('directus_privileges', array(
-                'id' => false,
-            )
-        );
+        $t = $this->create_table('directus_privileges', [
+            'id' => false,
+        ]);
 
         //columns
-        $t->column('id', 'integer', array(
-                'unsigned' => true,
-                'null' => false,
-                'auto_increment' => true,
-                'primary_key' => true
-            )
-        );
-        $t->column('table_name', 'string', array(
-                'limit' => 255,
-                'null' => false,
-                'character' => 'latin1'
-            )
-        );
-        $t->column('allow_view', 'tinyinteger', array(
+        $t->column('id', 'integer', [
+            'unsigned' => true,
+            'null' => false,
+            'auto_increment' => true,
+            'primary_key' => true
+        ]);
+        $t->column('table_name', 'string', [
+            'limit' => 255,
+            'null' => false,
+            'character' => 'latin1'
+        ]);
+        $t->column('allow_view', 'tinyinteger', [
             'limit' => 1,
             'null' => false,
             'default' => 0,
-        ));
-        $t->column('allow_add', 'tinyinteger', array(
+        ]);
+        $t->column('allow_add', 'tinyinteger', [
             'limit' => 1,
             'null' => false,
             'default' => 0,
-        ));
-        $t->column('allow_edit', 'tinyinteger', array(
+        ]);
+        $t->column('allow_edit', 'tinyinteger', [
             'limit' => 1,
             'null' => false,
             'default' => 0,
-        ));
-        $t->column('allow_delete', 'tinyinteger', array(
+        ]);
+        $t->column('allow_delete', 'tinyinteger', [
             'limit' => 1,
             'null' => false,
             'default' => 0,
-        ));
-        $t->column('allow_alter', 'tinyinteger', array(
+        ]);
+        $t->column('allow_alter', 'tinyinteger', [
             'limit' => 1,
             'null' => false,
             'default' => 0,
-        ));
-        $t->column('group_id', 'integer', array(
-                'unsigned' => true,
-                'null' => false
-            )
-        );
-        $t->column('read_field_blacklist', 'string', array(
-                'limit' => 1000,
-                'default' => NULL,
-                'character' => 'latin1',
-            )
-        );
-        $t->column('write_field_blacklist', 'string', array(
-                'limit' => 1000,
-                'default' => NULL,
-                'character' => 'latin1',
-            )
-        );
-        $t->column('nav_listed', 'tinyinteger', array(
-                'null' => false,
-                'limit' => 1,
-                'default' => 1
-            )
-        );
-        $t->column('status_id', 'tinyinteger', array(
-                'limit' => 1,
-                'default' => 0,
-                'null' => false
-            )
-        );
+        ]);
+        $t->column('group_id', 'integer', [
+            'unsigned' => true,
+            'null' => false
+        ]);
+        $t->column('read_field_blacklist', 'string', [
+            'limit' => 1000,
+            'default' => NULL,
+            'character' => 'latin1',
+        ]);
+        $t->column('write_field_blacklist', 'string', [
+            'limit' => 1000,
+            'default' => NULL,
+            'character' => 'latin1',
+        ]);
+        $t->column('nav_listed', 'tinyinteger', [
+            'null' => false,
+            'limit' => 1,
+            'default' => 1
+        ]);
+        $t->column('status_id', 'tinyinteger', [
+            'limit' => 1,
+            'default' => 0,
+            'null' => false
+        ]);
 
         $t->finish();
 

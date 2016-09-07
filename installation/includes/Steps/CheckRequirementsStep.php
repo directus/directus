@@ -32,7 +32,7 @@ class CheckRequirementsStep extends AbstractStep
             $errors[] = 'Your host needs to have File Information extension enabled to run this version of Directus!';
         }
 
-        if (!file_exists(BASE_PATH.'/vendor/autoload.php')) {
+        if (!file_exists(BASE_PATH . '/vendor/autoload.php')) {
             $errors[] = 'Composer dependencies must be installed first.';
         }
 

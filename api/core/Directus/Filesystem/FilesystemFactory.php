@@ -3,9 +3,9 @@
 namespace Directus\Filesystem;
 
 use Aws\S3\S3Client;
+use League\Flysystem\Adapter\Local as LocalAdapter;
 use League\Flysystem\AwsS3v3\AwsS3Adapter as S3Adapter;
 use League\Flysystem\Filesystem as Flysystem;
-use League\Flysystem\Adapter\Local as LocalAdapter;
 
 class FilesystemFactory
 {
@@ -13,10 +13,10 @@ class FilesystemFactory
     {
         // @TODO: This need to be more dynamic
         // As the app get more organized this will too
-        switch($config['adapter']) {
+        switch ($config['adapter']) {
             case 's3':
                 return self::createS3Adapter($config);
-            break;
+                break;
             case 'local':
             default:
                 return self::createLocalAdapter($config);
@@ -33,13 +33,13 @@ class FilesystemFactory
     {
         $client = S3Client::factory([
             'credentials' => [
-                'key'    => $config['key'],
+                'key' => $config['key'],
                 'secret' => $config['secret'],
             ],
             'region' => $config['region'],
-            'version' => ($config['version']?:'latest'),
+            'version' => ($config['version'] ?: 'latest'),
         ]);
 
-        return new Flysystem(new S3Adapter($client, $config['bucket'], $config['root']?:null));
+        return new Flysystem(new S3Adapter($client, $config['bucket'], $config['root'] ?: null));
     }
 }

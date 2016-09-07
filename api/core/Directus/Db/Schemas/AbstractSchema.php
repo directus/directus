@@ -25,7 +25,7 @@ abstract class AbstractSchema implements SchemaInterface
         $columns = $this->getColumns($tableName);
 
         $columnNames = [];
-        foreach($columns as $column) {
+        foreach ($columns as $column) {
             $columnNames[] = $column['column_name'];
         }
 
@@ -50,7 +50,7 @@ abstract class AbstractSchema implements SchemaInterface
         }
 
         foreach ($nonAliasSchemaColumns as $column) {
-            foreach($records as $index => $record) {
+            foreach ($records as $index => $record) {
                 $col = $column['id'];
                 if (array_key_exists($col, $record)) {
                     $records[$index][$col] = $this->parseType($record[$col], $column['type']);

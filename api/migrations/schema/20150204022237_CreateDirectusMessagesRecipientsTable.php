@@ -17,49 +17,43 @@ class CreateDirectusMessagesRecipientsTable extends Ruckusing_Migration_Base
 {
     public function up()
     {
-      $t = $this->create_table("directus_messages_recipients", array(
-          "id"=>false,
-        )
-      );
+        $t = $this->create_table('directus_messages_recipients', [
+            'id' => false,
+        ]);
 
-      //columns
-      $t->column("id", "integer", array(
-          "unsigned"=>true,
-          "null"=>false,
-          "auto_increment"=>true,
-          "primary_key"=>true
-        )
-      );
+        //columns
+        $t->column('id', 'integer', [
+            'unsigned' => true,
+            'null' => false,
+            'auto_increment' => true,
+            'primary_key' => true
+        ]);
 
-      $t->column("message_id", "integer", array(
-          "unsigned"=>true,
-          "null"=>false
-        )
-      );
+        $t->column('message_id', 'integer', [
+            'unsigned' => true,
+            'null' => false
+        ]);
 
-      $t->column("recipient", "integer", array(
-          "unsigned"=>true,
-          "null"=>false
-        )
-      );
+        $t->column('recipient', 'integer', [
+            'unsigned' => true,
+            'null' => false
+        ]);
 
-      $t->column("read", "tinyinteger", array(
-          "limit"=>1,
-          "null"=>false
-        )
-      );
+        $t->column('read', 'tinyinteger', [
+            'limit' => 1,
+            'null' => false
+        ]);
 
-      $t->column("group", "integer", array(
-          "unsigned"=>true,
-          "default"=>NULL
-        )
-      );
+        $t->column('group', 'integer', [
+            'unsigned' => true,
+            'default' => NULL
+        ]);
 
-      $t->finish();
+        $t->finish();
     }//up()
 
     public function down()
     {
-      $this->drop_table("directus_messages_recipients");
+        $this->drop_table('directus_messages_recipients');
     }//down()
 }

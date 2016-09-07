@@ -41,7 +41,8 @@ class StringUtilsTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(1, strlen(StringUtils::random(1)));
 
         if (!function_exists('random_bytes')) {
-            function random_bytes($length) {
+            function random_bytes($length)
+            {
                 if ($length == 99) {
                     throw new \Exception('Random exception');
                 }

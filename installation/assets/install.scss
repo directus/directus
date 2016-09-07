@@ -15,12 +15,13 @@ $black: #1a1a1a; // Directus Black
 //////////////////////////////////////////////////////////////////////////////
 // Mixins
 
-@mixin border-radius ($radius: 3px) {
+@mixin border-radius($radius: 3px) {
     -webkit-border-radius: $radius;
     -moz-border-radius: $radius;
     border-radius: $radius;
 }
-@mixin transition ($prop: all, $time: 200ms, $ease: linear) {
+
+@mixin transition($prop: all, $time: 200ms, $ease: linear) {
     -webkit-transition: $prop $time $ease;
     -moz-transition: $prop $time $ease;
     -o-transition: $prop $time $ease;
@@ -32,45 +33,45 @@ $black: #1a1a1a; // Directus Black
 // Material Design Icons
 
 @font-face {
-  font-family: 'Material Icons';
-  font-style: normal;
-  font-weight: 400;
-  src: url(../../assets/fonts/material-design/MaterialIcons-Regular.eot); /* For IE6-8 */
-  src: local('Material Icons'),
-       local('MaterialIcons-Regular'),
-       url(../../assets/fonts/material-design/MaterialIcons-Regular.woff2) format('woff2'),
-       url(../../assets/fonts/material-design/MaterialIcons-Regular.woff) format('woff'),
-       url(../../assets/fonts/material-design/MaterialIcons-Regular.ttf) format('truetype');
+    font-family: 'Material Icons';
+    font-style: normal;
+    font-weight: 400;
+    src: url(../../assets/fonts/material-design/MaterialIcons-Regular.eot); /* For IE6-8 */
+    src: local('Material Icons'),
+    local('MaterialIcons-Regular'),
+    url(../../assets/fonts/material-design/MaterialIcons-Regular.woff2) format('woff2'),
+    url(../../assets/fonts/material-design/MaterialIcons-Regular.woff) format('woff'),
+    url(../../assets/fonts/material-design/MaterialIcons-Regular.ttf) format('truetype');
 }
 
 .material-icons {
-  font-family: 'Material Icons';
-  font-weight: normal;
-  font-style: normal;
-  font-size: 24px;  /* Preferred icon size */
-  display: inline-block;
-  width: 1em;
-  height: 1em;
-  line-height: 1;
-  text-transform: none;
-  letter-spacing: normal;
-  word-wrap: normal;
-  white-space: nowrap;
-  direction: ltr;
+    font-family: 'Material Icons';
+    font-weight: normal;
+    font-style: normal;
+    font-size: 24px; /* Preferred icon size */
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    line-height: 1;
+    text-transform: none;
+    letter-spacing: normal;
+    word-wrap: normal;
+    white-space: nowrap;
+    direction: ltr;
 
-  /* Support for all WebKit browsers. */
-  -webkit-font-smoothing: antialiased;
-  /* Support for Safari and Chrome. */
-  text-rendering: optimizeLegibility;
+    /* Support for all WebKit browsers. */
+    -webkit-font-smoothing: antialiased;
+    /* Support for Safari and Chrome. */
+    text-rendering: optimizeLegibility;
 
-  /* Support for Firefox. */
-  -moz-osx-font-smoothing: grayscale;
+    /* Support for Firefox. */
+    -moz-osx-font-smoothing: grayscale;
 
-  /* Support for IE. */
-  font-feature-settings: 'liga';
-  &.vertical-middle {
-    vertical-align: middle;
-  }
+    /* Support for IE. */
+    font-feature-settings: 'liga';
+    &.vertical-middle {
+        vertical-align: middle;
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -86,34 +87,41 @@ body {
     color: #bbbbbb;
     font-weight: 500;
 }
+
 a {
     color: inherit;
     text-decoration: none;
 }
+
 h1 {
     font-weight: 400;
     font-size: 24px;
     margin: 10px 0 30px 0;
     color: $darkGrey;
 }
+
 hr {
     border: 0;
     color: #bbbbbb;
     background-color: #bbbbbb;
     height: 1px;
 }
+
 form {
     margin-bottom: 60px;
 }
+
 label {
     font-size: 13px;
     text-transform: uppercase;
 }
+
 input[type=checkbox] {
     margin: 0 10px 0 0;
     top: -1px;
     position: relative;
 }
+
 textarea {
     width: 100%;
     min-height: 200px;
@@ -125,6 +133,7 @@ textarea {
     overflow-x: scroll;
     margin: 10px 0 10px 0;
 }
+
 .header {
     background-color: #ffffff;
     top: 0;
@@ -156,6 +165,7 @@ textarea {
         }
     }
 }
+
 .container {
     width: 100%;
     margin: 40px auto 10px;
@@ -168,6 +178,7 @@ textarea {
         line-height: 30px;
     }
 }
+
 select,
 input[type=text],
 input[type=email],
@@ -207,18 +218,21 @@ input[type=number] {
         -webkit-appearance: none;
     }
     &[type='number'] {
-        -moz-appearance:textfield;
+        -moz-appearance: textfield;
     }
 }
+
 .select-container {
     position: relative;
 }
+
 .select-arrow {
     position: absolute;
     top: 10px;
     right: 4px;
     font-size: 29px;
 }
+
 .button {
     @include border-radius;
     @include transition (all, 200ms, linear);
@@ -254,6 +268,7 @@ input[type=number] {
         }
     }
 }
+
 .no-button {
     width: 100%;
     outline: none;
@@ -275,29 +290,35 @@ input[type=number] {
 .hide {
     display: none;
 }
+
 .note {
     font-style: italic;
     font-size: 11px;
 }
+
 .label-important {
     color: $bad;
     font-weight: 500;
 }
+
 .label-success {
     color: $mediumGrey;
     font-weight: bold;
 }
+
 .input-left {
     float: left;
     display: inline-block;
     width: 65%;
     padding-right: 5%;
 }
+
 .input-right {
     float: left;
     display: inline-block;
     width: 30%;
 }
+
 .step-3 {
     h3 {
         font-size: 16px;
@@ -322,10 +343,12 @@ input[type=number] {
         margin: 0;
     }
 }
+
 .config-paste {
     font-size: 12px;
     padding-left: 30px;
 }
+
 .error-container {
     background-color: $bad;
     color: white;
@@ -336,7 +359,8 @@ input[type=number] {
     border-radius: 5px;
     font-size: 14px;
 }
-.error{
+
+.error {
     border: 1px solid $bad !important;
 }
 

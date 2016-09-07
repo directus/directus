@@ -6,21 +6,20 @@ class ChangeToEnumDirectusColumnsRelationshipTypeColumn extends Ruckusing_Migrat
     public function up()
     {
         if ($this->has_column('directus_columns', 'relationship_type')) {
-            $this->change_column('directus_columns', 'relationship_type', 'enum', array(
-                'values' => array('MANYTOONE', 'MANYTOMANY', 'ONETOMANY'),
+            $this->change_column('directus_columns', 'relationship_type', 'enum', [
+                'values' => ['MANYTOONE', 'MANYTOMANY', 'ONETOMANY'],
                 'default' => null
-            ));
+            ]);
         }
     }//up()
 
     public function down()
     {
         if ($this->has_column('directus_columns', 'relationship_type')) {
-            $this->change_column('directus_columns', 'relationship_type', 'string', array(
-                    'limit' => 20,
-                    'default' => null
-                )
-            );
+            $this->change_column('directus_columns', 'relationship_type', 'string', [
+                'limit' => 20,
+                'default' => null
+            ]);
         }
     }//down()
 }

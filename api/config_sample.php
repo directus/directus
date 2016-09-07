@@ -12,33 +12,33 @@ define('API_VERSION', 1);
  *   'staging' => no error suppression, no nonce protection (allows manual viewing of API output)
  *   'development_enforce_nonce' => no error suppression, nonce protection
  */
-define('DIRECTUS_ENV', 	'development');
+define('DIRECTUS_ENV', 'development');
 
 // MySQL Settings
-define('DB_TYPE',        'mysql');
-define('DB_HOST',        'localhost');
-define('DB_PORT',        3306);
-define('DB_NAME',        'directus');
-define('DB_USER',        'root');
-define('DB_PASSWORD',    'password');
-define('DB_PREFIX',      '');
+define('DB_TYPE', 'mysql');
+define('DB_HOST', 'localhost');
+define('DB_PORT', 3306);
+define('DB_NAME', 'directus');
+define('DB_USER', 'root');
+define('DB_PASSWORD', 'password');
+define('DB_PREFIX', '');
 
 
-define('DB_HOST_SLAVE',        ''); //Leave undefined to fall back on master
-define('DB_USER_SLAVE',        '');
-define('DB_PASSWORD_SLAVE',    '');
+define('DB_HOST_SLAVE', ''); //Leave undefined to fall back on master
+define('DB_USER_SLAVE', '');
+define('DB_PASSWORD_SLAVE', '');
 
 // Url path to Directus
 define('DIRECTUS_PATH', '/directus/');
 
 
 $host = 'www.example.com'; // (Make it work for CLI)
-if(isset($_SERVER['SERVER_NAME'])) {
+if (isset($_SERVER['SERVER_NAME'])) {
     $host = $_SERVER['SERVER_NAME'];
 }
 
 define('ROOT_URL', '//' . $host);
-if (!defined('ROOT_URL_WITH_SCHEME')){
+if (!defined('ROOT_URL_WITH_SCHEME')) {
     //Use this for emailing URLs(links, images etc) as some clients will trip on the scheme agnostic ROOT_URL
     define('ROOT_URL_WITH_SCHEME', 'https://' . $host);
 }

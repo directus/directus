@@ -9,7 +9,7 @@ class VimeoProviderTest extends PHPUnit_Framework_TestCase
 
     public function testVimeoEmbed()
     {
-        $vimeo= new VimeoProvider();
+        $vimeo = new VimeoProvider();
 
         $this->assertTrue($vimeo->validateURL($this->vimeoURL));
 

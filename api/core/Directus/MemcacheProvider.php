@@ -2,14 +2,15 @@
 
 namespace Directus;
 
-use \Memcache;
+use Memcache;
 
 /**
  * Class MemcacheProvider
  * @package Directus
  * Wraps the standard memcache methods to provide namespacing between branches/databases (namespace set in directus config-- untracked)
  */
-class MemcacheProvider {
+class MemcacheProvider
+{
 
     protected static $MEMCACHED_ENABLED = true;
     /**
@@ -24,10 +25,10 @@ class MemcacheProvider {
      * @todo populate these using config
      * @var array
      */
-    private $memcachedServerAddresses = array(
-        'development' => array(),
-        'production' => array()
-    );
+    private $memcachedServerAddresses = [
+        'development' => [],
+        'production' => []
+    ];
 
     /**
      * @var bool
@@ -37,23 +38,23 @@ class MemcacheProvider {
     /**
      * Instantiates memcache only if the extension is loaded and adds server(s) to the pool
      */
-    public function __construct(){
+    public function __construct()
+    {
 
-        if(isset($_SERVER['SERVER_NAME'])) {
-            if(false !== strpos($_SERVER['SERVER_NAME'], 'localhost')) {
+        if (isset($_SERVER['SERVER_NAME'])) {
+            if (false !== strpos($_SERVER['SERVER_NAME'], 'localhost')) {
                 self::$MEMCACHED_ENABLED = false;
             }
         }
 
         $this->mc = false;
-        if (extension_loaded('memcache') && self::$MEMCACHED_ENABLED && count($this->memcachedServerAddresses[DIRECTUS_ENV])){
+        if (extension_loaded('memcache') && self::$MEMCACHED_ENABLED && count($this->memcachedServerAddresses[DIRECTUS_ENV])) {
             $this->mc = new Memcache();
-            if (self::$LOCAL){
+            if (self::$LOCAL) {
                 $this->mc->addServer('127.0.0.1', 11211);
-            }
-            else {
+            } else {
                 $servers = $this->memcachedServerAddresses[DIRECTUS_ENV];
-                foreach ($servers as $s){
+                foreach ($servers as $s) {
                     $this->mc->addserver($s, 11211);
                 }
             }
@@ -69,9 +70,10 @@ class MemcacheProvider {
      * @param $expire - seconds to expire in
      * @return bool - success/fail
      */
-    public function set($key, $val, $compressionFlag,  $expire = self::DEFAULT_CACHE_EXPIRE_SECONDS){
-        if($this->mc) {
-            $setSuccess = $this->mc->set($key, $val, $compressionFlag,  $expire);
+    public function set($key, $val, $compressionFlag, $expire = self::DEFAULT_CACHE_EXPIRE_SECONDS)
+    {
+        if ($this->mc) {
+            $setSuccess = $this->mc->set($key, $val, $compressionFlag, $expire);
             return $setSuccess;
         }
     }
@@ -82,8 +84,9 @@ class MemcacheProvider {
      * @param $key
      * @return mixed - Cache return data, or false if nothing retrieved from cache
      */
-    public function get($key){
-        if($this->mc) {
+    public function get($key)
+    {
+        if ($this->mc) {
             $cacheReturn = $this->mc->get($key);
             return $cacheReturn;
         }
@@ -99,11 +102,12 @@ class MemcacheProvider {
      * @return mixed - Returns retrieved data from cache or else returns the return value of passed-in anonymous function
      *
      */
-    public function getOrCache($key, $functionReturningVal, $expire = self::DEFAULT_CACHE_EXPIRE_SECONDS){
-        if ($this->mc && $this->mc->getStats()){
+    public function getOrCache($key, $functionReturningVal, $expire = self::DEFAULT_CACHE_EXPIRE_SECONDS)
+    {
+        if ($this->mc && $this->mc->getStats()) {
             $key = MEMCACHED_ENV_NAMESPACE . '/' . $key;
             $cacheReturn = $this->get($key);
-            if (!$cacheReturn){
+            if (!$cacheReturn) {
                 $val = $functionReturningVal();
                 $this->set($key, $val, MEMCACHE_COMPRESSED, $expire);
                 return $val;
@@ -117,8 +121,9 @@ class MemcacheProvider {
      * @param $key - Key to delete
      * @return bool - success or fail
      */
-    public function delete($key){
-        if ($this->mc && $this->mc->getStats()){
+    public function delete($key)
+    {
+        if ($this->mc && $this->mc->getStats()) {
             $key = MEMCACHED_ENV_NAMESPACE . '/' . $key;
             return $this->mc->delete($key);
         }
@@ -130,8 +135,9 @@ class MemcacheProvider {
      *
      * @return bool - success or fail
      */
-    public function flush(){
-        if ($this->mc && $this->mc->getStats()){
+    public function flush()
+    {
+        if ($this->mc && $this->mc->getStats()) {
             return $this->mc->flush();
         }
         return false;
@@ -140,10 +146,11 @@ class MemcacheProvider {
     /**
      * Shortcut for appending to a cached array.
      */
-    public function appendToEntry($cacheKey, $value, $expire = self::DEFAULT_CACHE_EXPIRE_SECONDS) {
-        $set = array($value);
+    public function appendToEntry($cacheKey, $value, $expire = self::DEFAULT_CACHE_EXPIRE_SECONDS)
+    {
+        $set = [$value];
         $entry = $this->get($cacheKey);
-        if($entry) {
+        if ($entry) {
             $set = $entry;
             $set[] = $value;
         }
@@ -153,10 +160,11 @@ class MemcacheProvider {
     /**
      * Shortcut for deleting all keys within a namespace key
      */
-    public function deleteNamespaceKeys($namespaceKey) {
+    public function deleteNamespaceKeys($namespaceKey)
+    {
         $keys = $this->get($namespaceKey);
-        if($keys) {
-            foreach($keys as $key) {
+        if ($keys) {
+            foreach ($keys as $key) {
                 $this->delete($key);
             }
             return true;
@@ -171,26 +179,39 @@ class MemcacheProvider {
      * @param $classId
      * @return string
      */
-    public static function getKeyDirectusUserFind($userId) {
-        return "directus_users?user_id=$userId";
+    public static function getKeyDirectusUserFind($userId)
+    {
+        return 'directus_users?user_id=' . $userId;
     }
-    public static function getKeyDirectusTables() {
+
+    public static function getKeyDirectusTables()
+    {
         return 'directus_tables';
     }
-    public static function getKeyDirectusGroupPrivileges($userId) {
-        return "directus_group_privileges?group_id=$userId";
+
+    public static function getKeyDirectusGroupPrivileges($userId)
+    {
+        return 'directus_group_privileges?group_id=' . $userId;
     }
-    public static function getKeyDirectusStorageAdapters(){
+
+    public static function getKeyDirectusStorageAdapters()
+    {
         return 'directus_storage_adapters';
     }
-    public static function getKeyDirectusCountMessages($uid) {
-        return "directus_count_messages?uid=$uid";
+
+    public static function getKeyDirectusCountMessages($uid)
+    {
+        return 'directus_count_messages?uid=' . $uid;
     }
-    public static function getKeyDirectusMessagesNewerThan($maxId, $uid) {
-        return "directus_get_messages_newer_than?uid=$uid&maxId=$maxId";
+
+    public static function getKeyDirectusMessagesNewerThan($maxId, $uid)
+    {
+        return 'directus_get_messages_newer_than?uid=' . $uid . '&maxId=' . $maxId;
     }
-    public static function getKeyDirectusGroupSchema($userGroupId, $versionHash){
-        return "directus_schema_by_group_and_version?group_id=$userGroupId&version=$versionHash";
+
+    public static function getKeyDirectusGroupSchema($userGroupId, $versionHash)
+    {
+        return 'directus_schema_by_group_and_version?group_id=' . $userGroupId . '&version=' . $versionHash;
     }
 
 }

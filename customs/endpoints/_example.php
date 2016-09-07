@@ -7,7 +7,7 @@ use Directus\View\JsonView;
 $app = Bootstrap::get('app');
 
 // Simple GET endpoint example
-$app->get('/example', function() {
+$app->get('/example', function () {
     return JsonView::render([
         'item 1',
         'item 2'

@@ -6,43 +6,43 @@ class UpdateDirectusPrivileges extends Ruckusing_Migration_Base
     public function up()
     {
         if (!$this->has_column('directus_privileges', 'to_view') && !$this->has_column('directus_privileges', 'allow_view')) {
-            $this->add_column('directus_privileges', 'to_view', 'tinyinteger', array(
+            $this->add_column('directus_privileges', 'to_view', 'tinyinteger', [
                 'limit' => 1,
                 'null' => false,
                 'default' => 0
-            ));
+            ]);
         }
 
         if (!$this->has_column('directus_privileges', 'to_add') && !$this->has_column('directus_privileges', 'allow_add')) {
-            $this->add_column('directus_privileges', 'to_add', 'tinyinteger', array(
+            $this->add_column('directus_privileges', 'to_add', 'tinyinteger', [
                 'limit' => 1,
                 'null' => false,
                 'default' => 0
-            ));
+            ]);
         }
 
         if (!$this->has_column('directus_privileges', 'to_edit') && !$this->has_column('directus_privileges', 'allow_edit')) {
-            $this->add_column('directus_privileges', 'to_edit', 'tinyinteger', array(
+            $this->add_column('directus_privileges', 'to_edit', 'tinyinteger', [
                 'limit' => 1,
                 'null' => false,
                 'default' => 0
-            ));
+            ]);
         }
 
         if (!$this->has_column('directus_privileges', 'to_delete') && !$this->has_column('directus_privileges', 'allow_delete')) {
-            $this->add_column('directus_privileges', 'to_delete', 'tinyinteger', array(
+            $this->add_column('directus_privileges', 'to_delete', 'tinyinteger', [
                 'limit' => 1,
                 'null' => false,
                 'default' => 0
-            ));
+            ]);
         }
 
         if (!$this->has_column('directus_privileges', 'to_alter') && !$this->has_column('directus_privileges', 'allow_alter')) {
-            $this->add_column('directus_privileges', 'to_alter', 'tinyinteger', array(
+            $this->add_column('directus_privileges', 'to_alter', 'tinyinteger', [
                 'limit' => 1,
                 'null' => false,
                 'default' => 0
-            ));
+            ]);
         }
 
         if (!$this->has_column('directus_privileges', 'listed') && $this->has_column('directus_privileges', 'unlisted')) {
@@ -53,7 +53,7 @@ class UpdateDirectusPrivileges extends Ruckusing_Migration_Base
             $tableName = $this->get_adapter()->identifier('directus_privileges');
             $columns = array_map(function ($columnName) {
                 return $this->get_adapter()->identifier($columnName);
-            }, array('id', 'permissions', 'listed'));
+            }, ['id', 'permissions', 'listed']);
 
             $results = $this->execute('SELECT ' . implode(',', $columns) . ' FROM ' . $tableName);
             foreach ($results as $row) {

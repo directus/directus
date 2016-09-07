@@ -96,17 +96,17 @@ abstract class AbstractStep implements StepInterface
 
     public function isDone()
     {
-        return (bool) $this->isDone;
+        return (bool)$this->isDone;
     }
 
     public function isPending()
     {
-        return ! $this->isDone();
+        return !$this->isDone();
     }
 
     public function setDone($done = true)
     {
-        $this->isDone = (bool) $done;
+        $this->isDone = (bool)$done;
     }
 
     public function setDataContainer(DataContainer $dataContainer)
@@ -142,7 +142,7 @@ abstract class AbstractStep implements StepInterface
 
     public function getField($name)
     {
-        foreach($this->fields as $field) {
+        foreach ($this->fields as $field) {
             if ($field['name'] == $name) {
                 return $field;
             }
@@ -156,7 +156,7 @@ abstract class AbstractStep implements StepInterface
         $fields = $this->fields;
         foreach ($fields as $field) {
             if (isset($field['rules'])) {
-                foreach(explode('|', $field['rules']) as $rule) {
+                foreach (explode('|', $field['rules']) as $rule) {
                     $name = $field['name'];
                     $value = array_key_exists($name, $data) ? $data[$name] : null;
 
@@ -177,7 +177,7 @@ abstract class AbstractStep implements StepInterface
 
         if (strpos($rule, '|') !== FALSE) {
             list($field, $attribute) = explode('|', $rule);
-            $response = call_user_func_array([$this, 'validate'.ucwords($field)], [$field, $value, $attribute]);
+            $response = call_user_func_array([$this, 'validate' . ucwords($field)], [$field, $value, $attribute]);
         } elseif (preg_match("/(.+)\[(.*)\]/", $rule, $matches)) {
             $matchFieldName = $matches[2];
             if (!($matchField = $this->getField($matchFieldName))) {
@@ -233,7 +233,7 @@ abstract class AbstractStep implements StepInterface
     public function run($formData, $step, &$state)
     {
         $response = $this->response;
-        foreach($formData as  $key => $value) {
+        foreach ($formData as $key => $value) {
             $response->setData($key, $value);
         }
 
@@ -247,7 +247,7 @@ abstract class AbstractStep implements StepInterface
             }
 
             $this->validate($formData);
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             $response->addError($e->getMessage());
         }
 

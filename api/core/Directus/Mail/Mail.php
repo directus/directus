@@ -2,10 +2,10 @@
 
 namespace Directus\Mail;
 
-use InvalidArgumentException;
 use Clousure;
-use Swift_Message;
 use Directus\Bootstrap;
+use InvalidArgumentException;
+use Swift_Message;
 
 class Mail
 {

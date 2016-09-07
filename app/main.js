@@ -49,6 +49,7 @@ require(["config", 'polyfills'], function() {
       bookmarks: {},
       extensions: [],
       messages: {},
+      user_notifications: [],
       me: { id: 7 },
       settings: {
         global: {},
@@ -81,6 +82,7 @@ require(["config", 'polyfills'], function() {
     app.locales = options.localesAvailable;
     app.timezone = options.timezone;
     app.timezones = options.timezones;
+    app.user_notifications = options.user_notifications;
 
     $.xhrPool = []; // array of uncompleted requests
     $.xhrPool.abortAll = function() { // our abort function
