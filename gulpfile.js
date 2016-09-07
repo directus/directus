@@ -255,12 +255,6 @@ gulp.task('submodules', function(cb) {
   });
 });
 
-gulp.task('copySchemasTemplates', function() {
-  return gulp.src(['api/migrations/templates/**/*'], { base: './' })
-    .pipe(excludeGitignore())
-    .pipe(gulp.dest('dist'));
-});
-
 // -------------------
 // Move - Gulp Task
 // Move required files
@@ -350,7 +344,7 @@ gulp.task('jscs', function() {
 // Run all the tasks
 // ------------------- 'composer',
 gulp.task('build', function(cb) {
-    runSequence(['scripts', 'templates', 'singlepage', 'styles', 'fonts', 'images', 'move', 'submodules', 'copySchemasTemplates', 'composer', 'clean-git', cb]);
+    runSequence(['scripts', 'templates', 'singlepage', 'styles', 'fonts', 'images', 'submodules', 'move', 'composer', 'clean-git', cb]);
 });
 
 // Default task
