@@ -11,15 +11,17 @@ $loader = require 'vendor/autoload.php';
 define('BASE_PATH', dirname(__FILE__));
 define('API_PATH', BASE_PATH . '/api');
 
+use Directus\Bootstrap;
+
 require "api/config.php";
 require "api/globals.php";
 
-$emitter = \Directus\Bootstrap::get('hookEmitter');
+$emitter = Bootstrap::get('hookEmitter');
 $emitter->run('directus.login.start');
 
 // Temporary solution for disabling this page for logged in users.
-if(\Directus\Auth\Provider::loggedIn()) {
-    header('Location: ' . DIRECTUS_PATH );
+if (\Directus\Auth\Provider::loggedIn()) {
+    header('Location: ' . DIRECTUS_PATH);
     exit;
 }
 
@@ -50,17 +52,20 @@ $cacheBuster = Directus\Util\Git::getCloneHash($git);
     <link rel="apple-touch-icon" sizes="144x144" href="<?= DIRECTUS_PATH ?>assets/img/icons/apple-icon-144x144.png">
     <link rel="apple-touch-icon" sizes="152x152" href="<?= DIRECTUS_PATH ?>assets/img/icons/apple-icon-152x152.png">
     <link rel="apple-touch-icon" sizes="180x180" href="<?= DIRECTUS_PATH ?>assets/img/icons/apple-icon-180x180.png">
-    <link rel="icon" type="image/png" sizes="192x192"  href="<?= DIRECTUS_PATH ?>assets/img/icons/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="192x192"
+          href="<?= DIRECTUS_PATH ?>assets/img/icons/android-icon-192x192.png">
     <link rel="icon" type="image/png" sizes="32x32" href="<?= DIRECTUS_PATH ?>assets/img/icons/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="96x96" href="<?= DIRECTUS_PATH ?>assets/img/icons/favicon-96x96.png">
     <link rel="icon" type="image/png" sizes="16x16" href="<?= DIRECTUS_PATH ?>assets/img/icons/favicon-16x16.png">
     <link rel="manifest" href="<?= DIRECTUS_PATH ?>assets/img/icons/manifest.json">
-    <link href='//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+    <link
+        href='//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800'
+        rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="assets/css/directus.min.css"/>
     <style>
-        html,body {
-            margin:0;
-            padding:0;
+        html, body {
+            margin: 0;
+            padding: 0;
             height: 100%;
             width: 100%;
         }
@@ -71,125 +76,129 @@ $cacheBuster = Directus\Util\Git::getCloneHash($git);
 <form action="<?= DIRECTUS_PATH ?>api/1/auth/login" method="post" class="login-box" autocomplete="off">
     <div class='login-panel'>
         <p class="">
-        <input type="email" name="email" placeholder="<?=__t('placeholder_email_address');?>" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off" />
+            <input type="email" name="email" placeholder="<?= __t('placeholder_email_address'); ?>" spellcheck="false"
+                   autocomplete="off" autocorrect="off" autocapitalize="off"/>
         </p>
         <p class="">
-            <input type="password" name="password" placeholder="<?=__t('password_placeholder');?>" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off" />
-            <span id="forgot-password" title="<?=__t('forgot_password');?>" class="btn btn-primary"><i class="material-icons">help</i></span>
+            <input type="password" name="password" placeholder="<?= __t('password_placeholder'); ?>" spellcheck="false"
+                   autocomplete="off" autocorrect="off" autocapitalize="off"/>
+            <span id="forgot-password" title="<?= __t('forgot_password'); ?>" class="btn btn-primary"><i
+                    class="material-icons">help</i></span>
         </p>
         <p class="clearfix no-margin">
-            <button type="submit" class="btn primary"><?=__t('sign_in');?></button>
+            <button type="submit" class="btn primary"><?= __t('sign_in'); ?></button>
         </p>
     </div>
     <p class="error" style="display:none;"></p>
     <p class="message" style="display:none;"></p>
-    <div class="directus-version" title="<?php echo $cacheBuster; ?>"><?=__t('version');?> <?php echo(DIRECTUS_VERSION) ?></div>
+    <div class="directus-version" title="<?php echo $cacheBuster; ?>"><?= __t('version'); ?> <?php echo(DIRECTUS_VERSION) ?></div>
 </form>
 
 <script type="text/javascript" src="<?= DIRECTUS_PATH ?>assets/js/libs/jquery.js"></script>
 <script type="text/javascript">
-$(function(){
+    $(function () {
+        var $login_message = $('p.message');
+        var $login_error = $('p.error');
 
-    var $login_message = $('p.message');
-    var $login_error = $('p.error');
-
-    function message(message, error) {
-        error = error || false;
-        if(error) {
-            $login_error.html("<i class=\"material-icons\">warning</i>" + message);
-            $login_error.show();
-        } else {
-            $login_message.html("<i class=\"material-icons\">warning</i>" + message);
-            $login_message.show();
-        }
-    }
-
-    <?php if(isset($_GET['inactive'])) {echo 'message("'.__t('logged_out_due_to_inactivity').'", true);';}?>
-
-    function clear_messages() {
-        $login_error.hide();
-        $login_message.hide();
-    }
-
-    $('#forgot-password').bind('click', function(e){
-        e.preventDefault();
-        clear_messages();
-
-        var $form = $(this).closest('form'),
-            email = $.trim($form.find('input[name=email]').val());
-
-        if(email.length == 0) {
-            message("<?=__t('enter_a_valid_email_address');?>", true);
-            return false;
+        function message(message, error) {
+            error = error || false;
+            if (error) {
+                $login_error.html("<i class=\"material-icons\">warning</i>" + message);
+                $login_error.show();
+            } else {
+                $login_message.html("<i class=\"material-icons\">warning</i>" + message);
+                $login_message.show();
+            }
         }
 
-        if(confirm("<?=__t('are_you_sure_you_want_to_reset_your_password');?>")) {
-            $.ajax('<?= DIRECTUS_PATH . 'api/' . API_VERSION . '/auth/forgot-password' ?>', {
-                data: { email: email },
+        <?php if (isset($_GET['inactive'])) {
+        echo 'message("' . __t('logged_out_due_to_inactivity') . '", true);';
+    }?>
+
+        function clear_messages() {
+            $login_error.hide();
+            $login_message.hide();
+        }
+
+        $('#forgot-password').bind('click', function (e) {
+            e.preventDefault();
+            clear_messages();
+
+            var $form = $(this).closest('form'),
+                email = $.trim($form.find('input[name=email]').val());
+
+            if (email.length == 0) {
+                message("<?=__t('enter_a_valid_email_address');?>", true);
+                return false;
+            }
+
+            if (confirm("<?=__t('are_you_sure_you_want_to_reset_your_password');?>")) {
+                $.ajax('<?= DIRECTUS_PATH . 'api/' . API_VERSION . '/auth/forgot-password' ?>', {
+                    data: {email: email},
+                    dataType: 'json',
+                    type: 'POST',
+                    success: function (data, textStatus, jqXHR) {
+                        if (!data.success) {
+                            var errorMessage = "<?=__t('oops_an_error_occurred');?>";
+                            if (data.message) {
+                                errorMessage = data.message;
+                            }
+                            message(errorMessage, true);
+                            return;
+                        }
+                        message("<?=__t('reset_instructions_have_been_sent');?>")
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        message("<?=__t('server_error_occurred');?>", true);
+                    }
+                });
+            }
+        });
+
+        $('form').bind('submit', function (e) {
+            e.preventDefault();
+            clear_messages();
+
+            var email = $.trim($(this).find('input[name=email]').val()),
+                password = $.trim($(this).find('input[name=password]').val());
+
+            if (email.length == 0 || password.length == 0) {
+                return message("<?=__t('enter_your_email_and_password');?>", true);
+            }
+
+            $.ajax('<?= DIRECTUS_PATH . 'api/' . API_VERSION . '/auth/login' ?>', {
+                data: {email: email, password: password},
                 dataType: 'json',
                 type: 'POST',
-                success: function(data, textStatus, jqXHR) {
-                    if(!data.success) {
-                        var errorMessage = "<?=__t('oops_an_error_occurred');?>";
-                        if(data.message) {
-                                errorMessage = data.message;
-                        }
-                        message(errorMessage, true);
+                success: function (data, textStatus, jqXHR) {
+                    var defaultPath = 'users';
+
+                    <?php
+                    $redirectPath = '';
+                    if (isset($_SESSION['_directus_login_redirect'])) {
+                        $redirectPath = $_SESSION['_directus_login_redirect'];
+                    }
+                    ?>
+
+                    var redirectPath = '<?php echo trim($redirectPath, '/'); ?>';
+                    var lastPage = data.last_page;
+                    var lastPagePath = lastPage ? lastPage.path : '';
+
+                    path = redirectPath || lastPagePath || defaultPath;
+
+                    if (!data.success) {
+                        message(data.message, true);
                         return;
                     }
-                    message("<?=__t('reset_instructions_have_been_sent');?>")
+                    // $('.login-box').css('opacity', 0);
+                    window.location = "<?= DIRECTUS_PATH ?>" + path;
                 },
-                error: function(jqXHR, textStatus, errorThrown) {
+                error: function (jqXHR, textStatus, errorThrown) {
                     message("<?=__t('server_error_occurred');?>", true);
                 }
             });
-        }
-    });
-
-    $('form').bind('submit', function(e){
-        e.preventDefault();
-        clear_messages();
-
-        var email = $.trim($(this).find('input[name=email]').val()),
-            password = $.trim($(this).find('input[name=password]').val());
-
-        if(email.length == 0 || password.length == 0) {
-            return message("<?=__t('enter_your_email_and_password');?>", true);
-        }
-
-        $.ajax('<?= DIRECTUS_PATH . 'api/' . API_VERSION . '/auth/login' ?>', {
-            data: { email: email, password: password },
-            dataType: 'json',
-            type: 'POST',
-            success: function(data, textStatus, jqXHR) {
-                var defaultPath = 'users';
-
-                <?php
-                $redirectPath = '';
-                if (isset($_SESSION['_directus_login_redirect'])) {
-                    $redirectPath = $_SESSION['_directus_login_redirect'];
-                }
-                ?>
-
-                var redirectPath = '<?php echo trim($redirectPath, '/'); ?>';
-                var lastPage = data.last_page;
-                var lastPagePath = lastPage ? lastPage.path : '';
-
-                path = redirectPath || lastPagePath || defaultPath;
-
-                if(!data.success) {
-                    message(data.message, true);
-                    return;
-                }
-                // $('.login-box').css('opacity', 0);
-                window.location = "<?= DIRECTUS_PATH ?>"+path;
-            },
-            error: function(jqXHR, textStatus, errorThrown) {
-                message("<?=__t('server_error_occurred');?>", true);
-            }
         });
     });
-});
 </script>
 </body>
 </html>

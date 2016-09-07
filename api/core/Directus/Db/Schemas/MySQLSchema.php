@@ -94,7 +94,7 @@ class MySQLSchema extends AbstractSchema
         $rows = iterator_to_array($statement->execute());
 
         $tables = [];
-        foreach($rows as $row) {
+        foreach ($rows as $row) {
             $tables[] = $row['table_name'];
         }
 
@@ -226,7 +226,7 @@ class MySQLSchema extends AbstractSchema
             ->equalTo('C.TABLE_SCHEMA', $zendDb->getCurrentSchema())
             ->equalTo('C.TABLE_NAME', $tableName)
             ->nest()
-            ->addPredicate(new \Zend\Db\Sql\Predicate\Expression("'$columnName' = '-1'"))
+            ->addPredicate(new \Zend\Db\Sql\Predicate\Expression('"'. $columnName . '" = -1'))
             ->OR
             ->equalTo('C.column_name', $columnName)
             ->unnest();
@@ -243,7 +243,7 @@ class MySQLSchema extends AbstractSchema
             'column_name',
             'type' => new Expression('UCASE(data_type)'),
             'char_length' => new Expression('NULL'),
-            'is_nullable' => new Expression("'NO'"),
+            'is_nullable' => new Expression('"NO"'),
             'default_value' => new Expression('NULL'),
             'comment',
             'sort',
@@ -264,7 +264,8 @@ class MySQLSchema extends AbstractSchema
             ->equalTo('TABLE_NAME', $tableName)
             ->addPredicate(new In('data_type', ['alias', 'MANYTOMANY', 'ONETOMANY']))
             ->nest()
-            ->addPredicate(new \Zend\Db\Sql\Predicate\Expression("'$columnName' = '-1'"))
+            // NOTE: is this actually necessary?
+            ->addPredicate(new \Zend\Db\Sql\Predicate\Expression('"' . $columnName . '" = -1'))
             ->OR
             ->equalTo('column_name', $columnName)
             ->unnest()
@@ -338,7 +339,7 @@ class MySQLSchema extends AbstractSchema
             'sort',
             'type' => new Expression('UCASE(data_type)'),
             'char_length' => new Expression('NULL'),
-            'is_nullable' => new Expression("'NO'"),
+            'is_nullable' => new Expression('"NO"'),
             'default_value' => new Expression('NULL'),
             'comment',
             'column_type' => new Expression('NULL'),
@@ -475,12 +476,12 @@ class MySQLSchema extends AbstractSchema
             case 'int':
             case 'long':
             case 'tinyint':
-                return ($data === null) ? null : (int) $data;
+                return ($data === null) ? null : (int)$data;
             case 'float':
-                return (float) $data;
+                return (float)$data;
             case 'date':
             case 'datetime':
-                $nullDate = empty($data) || ("0000-00-00 00:00:00" == $data) || ('0000-00-00' === $data);
+                $nullDate = empty($data) || ('0000-00-00 00:00:00' == $data) || ('0000-00-00' === $data);
                 if ($nullDate) {
                     return null;
                 }

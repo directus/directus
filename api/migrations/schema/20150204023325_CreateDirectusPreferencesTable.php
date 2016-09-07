@@ -23,82 +23,69 @@ class CreateDirectusPreferencesTable extends Ruckusing_Migration_Base
 {
     public function up()
     {
-      $t = $this->create_table("directus_preferences", array(
-          "id"=>false,
-        )
-      );
+        $t = $this->create_table('directus_preferences', [
+            'id' => false,
+        ]);
 
-      //columns
-      $t->column("id", "integer", array(
-          "unsigned"=>true,
-          "null"=>false,
-          "auto_increment"=>true,
-          "primary_key"=>true
-        )
-      );
-      $t->column("user", "integer", array(
-          "unsigned"=>true,
-          "default"=>NULL
-        )
-      );
-      $t->column("table_name", "string", array(
-          "limit"=>64,
-          "default"=>NULL
-        )
-      );
-      $t->column("title", "string", array(
-          "limit"=>255,
-          "default"=>NULL
-        )
-      );
-      $t->column("columns_visible", "string", array(
-          "limit"=>300,
-          "default"=>NULL
-        )
-      );
-      $t->column("sort", "string", array(
-          "limit"=>64,
-          "default"=>"id"
-        )
-      );
-      $t->column("sort_order", "string", array(
-          "limit"=>5,
-          "default"=>"ASC"
-        )
-      );
-      $t->column("status", "string", array(
-          "limit"=>5,
-          "default"=>3
-        )
-      );
-      $t->column("search_string", "text");
+        //columns
+        $t->column('id', 'integer', [
+            'unsigned' => true,
+            'null' => false,
+            'auto_increment' => true,
+            'primary_key' => true
+        ]);
+        $t->column('user', 'integer', [
+            'unsigned' => true,
+            'default' => NULL
+        ]);
+        $t->column('table_name', 'string', [
+            'limit' => 64,
+            'default' => NULL
+        ]);
+        $t->column('title', 'string', [
+            'limit' => 255,
+            'default' => NULL
+        ]);
+        $t->column('columns_visible', 'string', [
+            'limit' => 300,
+            'default' => NULL
+        ]);
+        $t->column('sort', 'string', [
+            'limit' => 64,
+            'default' => 'id'
+        ]);
+        $t->column('sort_order', 'string', [
+            'limit' => 5,
+            'default' => 'ASC'
+        ]);
+        $t->column('status', 'string', [
+            'limit' => 5,
+            'default' => 3
+        ]);
+        $t->column('search_string', 'text');
 
-      $t->finish();
+        $t->finish();
 
-      $this->add_index("directus_preferences", array("user","table_name", "title"), array(
-        "unique"=>true,
-        "name"=>"user"
-        )
-      );
-      $this->add_index("directus_preferences", array("user","table_name", "title"), array(
-        "unique"=>true,
-        "name"=>"pref_title_constraint"
-        )
-      );
+        $this->add_index('directus_preferences', ['user', 'table_name', 'title'], [
+            'unique' => true,
+            'name' => 'user'
+        ]);
+        $this->add_index('directus_preferences', ['user', 'table_name', 'title'], [
+            'unique' => true,
+            'name' => 'pref_title_constraint'
+        ]);
     }//up()
 
     public function down()
     {
-      $this->remove_index("directus_preferences", array("user","table_name", "title"), array(
-        "unique"=>true,
-        "name"=>"user"
-        )
-      );
-      $this->remove_index("directus_preferences", array("user","table_name", "title"), array(
-        "unique"=>true,
-        "name"=>"pref_title_constraint"
-        )
-      );
-      $this->drop_table("directus_preferences");
+        $this->remove_index('directus_preferences', ['user', 'table_name', 'title'], [
+            'unique' => true,
+            'name' => 'user'
+        ]);
+        $this->remove_index('directus_preferences', ['user', 'table_name', 'title'], [
+            'unique' => true,
+            'name' => 'pref_title_constraint'
+        ]);
+        $this->drop_table('directus_preferences');
     }//down()
 }

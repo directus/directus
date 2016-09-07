@@ -1689,6 +1689,10 @@ img.grayscale {
   overflow: hidden;
   text-overflow: ellipsis; }
 
+span.gc-cs-link {
+  color: #666666 !important;
+  text-decoration: none; }
+
 .main-container {
   -webkit-transition: all 400ms ease-in-out;
   -moz-transition: all 400ms ease-in-out;
@@ -2579,6 +2583,11 @@ select,
   font-size: 29px;
   background-color: #ffffff;
   pointer-events: none; }
+
+.clean-column-name {
+  width: 100%;
+  display: inline-block;
+  margin-top: 10px; }
 
 .table-striped tr td.field-comment-container .field-comment {
   width: 100%; }
@@ -3533,7 +3542,7 @@ input[type="checkbox"].custom-check + label tbody.remove-hover-state .sort span:
     .cards .card.inactive {
       opacity: 0.4; }
     .cards .card:hover .info .featured .primary-info {
-      color: #4ca6de; }
+      color: #1a1a1a; }
     .cards .card .header-image {
       overflow: hidden;
       height: 200px;
@@ -3556,7 +3565,7 @@ input[type="checkbox"].custom-check + label tbody.remove-hover-state .sort span:
         border: solid 1px #ececec;
         border-bottom: 0px;
         font-size: 45px;
-        font-weight: 500;
+        font-weight: 100;
         height: 199px;
         line-height: 190px;
         text-align: center; }
@@ -4534,7 +4543,7 @@ body.initial-load #sidebar {
     width: 30px;
     height: 21px;
     float: left;
-    margin-top: 7px;
+    margin-top: 12px;
     margin-right: 20px;
     cursor: pointer; }
     .responsive-nav-toggle:hover .hamburger-line {
@@ -4696,6 +4705,11 @@ body.initial-load #sidebar {
     margin: 0;
     padding: 15px 0 0 10px;
     text-align: center; }
+    .login-box p.message .material-icons, .login-box p.message .custom-check input[type="checkbox"] + label span:before, .custom-check input[type="checkbox"] + label .login-box p.message span:before, .login-box p.message .custom-check input[type="radio"] + label span:before, .custom-check input[type="radio"] + label .login-box p.message span:before, .login-box p.message
+    input[type="checkbox"].custom-check + label span:before,
+    input[type="checkbox"].custom-check + label .login-box p.message span:before, .login-box p.message input[type="radio"].custom-check + label span:before, input[type="radio"].custom-check + label .login-box p.message span:before {
+      vertical-align: middle;
+      padding-right: 10px; }
 
 .directus-version {
   position: fixed;

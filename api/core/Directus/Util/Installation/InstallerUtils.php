@@ -31,7 +31,7 @@ class InstallerUtils
 
     public static function createConfigFileContent($data)
     {
-        $configStub = file_get_contents(__DIR__.'/stubs/config.stub');
+        $configStub = file_get_contents(__DIR__ . '/stubs/config.stub');
         $data = ArrayUtils::pick($data, [
             'db_type',
             'db_host',
@@ -54,7 +54,7 @@ class InstallerUtils
     {
         $configStub = static::createConfigFileContent($data);
 
-        $configPath = rtrim($path, '/').'/config.php';
+        $configPath = rtrim($path, '/') . '/config.php';
         file_put_contents($configPath, $configStub);
     }
 
@@ -69,10 +69,10 @@ class InstallerUtils
             $data['default_language'] = 'en';
         }
 
-        $configurationStub = file_get_contents(__DIR__.'/stubs/configuration.stub');
+        $configurationStub = file_get_contents(__DIR__ . '/stubs/configuration.stub');
         $configurationStub = static::replacePlaceholderValues($configurationStub, $data);
 
-        $configurationPath = rtrim($path, '/').'/configuration.php';
+        $configurationPath = rtrim($path, '/') . '/configuration.php';
         file_put_contents($configurationPath, $configurationStub);
     }
 
@@ -107,9 +107,9 @@ class InstallerUtils
          */
         static::checkConfigurationFile($directusPath);
 
-        require_once $directusPath.'/api/config.php';
-        $config = require $directusPath.'/api/ruckusing.conf.php';
-        $dbConfig = getDatabaseConfig(array(
+        require_once $directusPath . '/api/config.php';
+        $config = require $directusPath . '/api/ruckusing.conf.php';
+        $dbConfig = getDatabaseConfig([
             'type' => DB_TYPE,
             'host' => DB_HOST,
             'port' => DB_PORT,
@@ -118,13 +118,13 @@ class InstallerUtils
             'pass' => DB_PASSWORD,
             'directory' => 'schema',
             'prefix' => '',
-        ));
+        ]);
 
         $config = array_merge($config, $dbConfig);
         $main = new Ruckusing_Framework($config);
 
-        $main->execute(array('', 'db:setup'));
-        $main->execute(array('', 'db:migrate'));
+        $main->execute(['', 'db:setup']);
+        $main->execute(['', 'db:migrate']);
     }
 
     /**
@@ -142,14 +142,14 @@ class InstallerUtils
          */
         static::checkConfigurationFile($directusPath);
 
-        require_once $directusPath.'/api/config.php';
+        require_once $directusPath . '/api/config.php';
 
         $db = Bootstrap::get('ZendDb');
 
         $defaultSettings = static::getDefaultSettings($data);
 
         $tableGateway = new TableGateway('directus_settings', $db);
-        foreach($defaultSettings as $setting) {
+        foreach ($defaultSettings as $setting) {
             $tableGateway->insert($setting);
         }
     }
@@ -196,7 +196,7 @@ class InstallerUtils
     public static function schemaTemplateExists($name, $directusPath)
     {
         $directusPath = rtrim($directusPath, '/');
-        $schemaTemplatePath = $directusPath.'/api/migrations/templates/'.$name;
+        $schemaTemplatePath = $directusPath . '/api/migrations/templates/' . $name;
 
         if (!file_exists($schemaTemplatePath)) {
             return false;
@@ -225,24 +225,24 @@ class InstallerUtils
          */
         static::checkConfigurationFile($directusPath);
 
-        require_once $directusPath.'/api/config.php';
+        require_once $directusPath . '/api/config.php';
 
-        $config = require $directusPath.'/api/ruckusing.conf.php';
-        $dbConfig = getDatabaseConfig(array(
+        $config = require $directusPath . '/api/ruckusing.conf.php';
+        $dbConfig = getDatabaseConfig([
             'type' => DB_TYPE,
             'host' => DB_HOST,
             'port' => DB_PORT,
             'name' => DB_NAME,
             'user' => DB_USER,
             'pass' => DB_PASSWORD,
-            'directory' => 'templates/'.$name,
+            'directory' => 'templates/' . $name,
             'prefix' => '',
-        ));
+        ]);
 
         $config = array_merge($config, $dbConfig);
         $main = new Ruckusing_Framework($config);
 
-        $main->execute(array('', 'db:migrate'));
+        $main->execute(['', 'db:migrate']);
     }
 
     /**
@@ -314,11 +314,11 @@ class InstallerUtils
     private static function checkConfigurationFile($directusPath)
     {
         $directusPath = rtrim($directusPath, '/');
-        if (!file_exists($directusPath.'/api/config.php')) {
+        if (!file_exists($directusPath . '/api/config.php')) {
             throw new \Exception('Config file does not exists, run [directus config]');
         }
 
-        if (!file_exists($directusPath.'/api/ruckusing.conf.php')) {
+        if (!file_exists($directusPath . '/api/ruckusing.conf.php')) {
             throw new \Exception('Migration configuration file does not exists');
         }
     }

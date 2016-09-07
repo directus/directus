@@ -16,7 +16,7 @@ class VimeoProvider extends AbstractProvider
      */
     public function validateURL($url)
     {
-        return strpos($url,'vimeo.com') !== false;
+        return strpos($url, 'vimeo.com') !== false;
     }
 
     /**
@@ -53,8 +53,8 @@ class VimeoProvider extends AbstractProvider
         // Get Data
         $url = 'http://vimeo.com/api/v2/video/' . $videoID . '.json';
         $ch = curl_init($url);
-        curl_setopt ($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt ($ch, CURLOPT_CONNECTTIMEOUT, 0);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 0);
         $content = curl_exec($ch);
         curl_close($ch);
 

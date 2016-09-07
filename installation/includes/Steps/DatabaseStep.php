@@ -78,15 +78,15 @@ class DatabaseStep extends AbstractStep
             throw new \InvalidArgumentException("Database type '{$data['db_type']}' not supported.");
         }
 
-        $dbConfig = array(
-            'driver' => 'pdo_'.$data['db_type'],
+        $dbConfig = [
+            'driver' => 'pdo_' . $data['db_type'],
             'host' => $data['db_host'],
             'port' => $data['db_port'],
             'database' => $data['db_name'],
             'username' => $data['db_user'],
             'password' => $data['db_password'],
             'charset' => 'utf8'
-        );
+        ];
 
         $connection = new Connection($dbConfig);
         $connection->connect();

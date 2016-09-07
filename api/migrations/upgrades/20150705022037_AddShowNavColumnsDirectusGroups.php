@@ -6,35 +6,35 @@ class AddShowNavColumnsDirectusGroups extends Ruckusing_Migration_Base
     public function up()
     {
         if (!$this->has_column('directus_groups', 'show_activity')) {
-            $this->add_column('directus_groups', 'show_activity', 'tinyinteger', array(
+            $this->add_column('directus_groups', 'show_activity', 'tinyinteger', [
                 'limit' => 1,
                 'null' => false,
                 'default' => 1
-            ));
+            ]);
         }
 
         if (!$this->has_column('directus_groups', 'show_messages')) {
-            $this->add_column('directus_groups', 'show_messages', 'tinyinteger', array(
+            $this->add_column('directus_groups', 'show_messages', 'tinyinteger', [
                 'limit' => 1,
                 'null' => false,
                 'default' => 1
-            ));
+            ]);
         }
 
         if (!$this->has_column('directus_groups', 'show_users')) {
-            $this->add_column('directus_groups', 'show_users', 'tinyinteger', array(
+            $this->add_column('directus_groups', 'show_users', 'tinyinteger', [
                 'limit' => 1,
                 'null' => false,
                 'default' => 1
-            ));
+            ]);
         }
 
         if (!$this->has_column('directus_groups', 'show_files')) {
-            $this->add_column('directus_groups', 'show_files', 'tinyinteger', array(
+            $this->add_column('directus_groups', 'show_files', 'tinyinteger', [
                 'limit' => 1,
                 'null' => false,
                 'default' => 1
-            ));
+            ]);
         }
     }//up()
 

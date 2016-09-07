@@ -95,7 +95,7 @@ standards:
   .. code-block:: jinja
 
      {% block foo %}
-        {% if true %}
-            true
-        {% endif %}
+         {% if true %}
+             true
+         {% endif %}
      {% endblock %}

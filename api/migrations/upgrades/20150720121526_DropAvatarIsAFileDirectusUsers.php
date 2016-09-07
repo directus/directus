@@ -13,11 +13,10 @@ class DropAvatarIsAFileDirectusUsers extends Ruckusing_Migration_Base
     public function down()
     {
         if (!$this->has_column('directus_users', 'avatar_is_file')) {
-            $this->add_column('avatar_is_file', 'tinyinteger', array(
-                    'limit' => 1,
-                    'default' => 0
-                )
-            );
+            $this->add_column('avatar_is_file', 'tinyinteger', [
+                'limit' => 1,
+                'default' => 0
+            ]);
         }
     }//down()
 }

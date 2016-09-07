@@ -16,21 +16,25 @@ class DateUtils
 
     /**
      * DateTime modifier format days into the future
+     *
      * @var string
      */
     const IN_DAYS = '+%s days';
 
     /**
      * DateTime modifier format days ago
+     *
      * @var string
      */
     const DAYS_AGO = '-%s days';
 
     /**
      * Get the current date in $format and modified by $modify
+     *
      * @param string $time
      * @param null $modify
      * @param string $format
+     *
      * @return string
      */
     public static function date($time = null, $modify = null, $format = 'Y-m-d H:i:s')
@@ -52,6 +56,7 @@ class DateUtils
 
     /**
      * Get the current time in UTC
+     *
      * @return string
      */
     public static function now()
@@ -61,8 +66,10 @@ class DateUtils
 
     /**
      * Get a date in $days into the future from current time UTC
+     *
      * @param $days
      * @param $time
+     *
      * @return string
      */
     public static function inDays($days, $time = null)
@@ -72,8 +79,10 @@ class DateUtils
 
     /**
      * Get a date $days ago from current time UTC
+     *
      * @param $days
      * @param $time
+     *
      * @return string
      */
     public static function daysAgo($days, $time = null)
@@ -85,7 +94,7 @@ class DateUtils
      * Given a date/time in UTC and a target timezone, yields a DateTime object converted from
      * UTC to the target timezone.
      *
-     * @param  mixed $datetime       \DateTime instance or String.
+     * @param  mixed $datetime \DateTime instance or String.
      * @param  mixed $targetTimeZone \DateTimeZone instance or String.
      *
      * @return \DateTime
@@ -107,9 +116,11 @@ class DateUtils
 
     /**
      * Convert date into ISO 8601 Format.
+     *
      * @param $datetime
      * @param string $datetimezone - $datetime timezone
      * @param string $isotimezone - timezone for the result date
+     *
      * @return null|string
      */
     public static function convertToISOFormat($datetime, $datetimezone = 'UTC', $isotimezone = 'UTC')
@@ -166,7 +177,9 @@ class DateUtils
 
     /**
      * Determine if a given date time has passed UTC
+     *
      * @param $datetime
+     *
      * @return bool
      */
     public static function hasPassed($datetime)
@@ -175,7 +188,7 @@ class DateUtils
             $datetime = new DateTime($datetime, new DateTimeZone('UTC'));
         }
 
-        $currentDateTime = static::now();
+        $currentDateTime = new DateTime(static::now());
 
         return $currentDateTime > $datetime;
     }

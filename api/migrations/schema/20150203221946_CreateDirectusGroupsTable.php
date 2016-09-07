@@ -14,45 +14,40 @@ class CreateDirectusGroupsTable extends Ruckusing_Migration_Base
 {
     public function up()
     {
-      $t = $this->create_table("directus_groups", array(
-        "id"=>false,
-        )
-      );
+        $t = $this->create_table('directus_groups', [
+            'id' => false,
+        ]);
 
-      // columns
-      $t->column("id", "integer", array(
-          "unsigned"=>true,
-          "null"=>false,
-          "auto_increment"=>true,
-          "primary_key"=>true
-        )
-      );
-      $t->column("name", "string", array(
-        "limit" => 100,
-        "default"=>NULL
-        )
-      );
-      $t->column("description", "string", array(
-        "limit" => 500,
-        "default"=>NULL
-        )
-      );
-      $t->column("restrict_to_ip_whitelist", "text", array(
-        "null" => true,
-        )
-      );
-      $t->finish();
+        // columns
+        $t->column('id', 'integer', [
+            'unsigned' => true,
+            'null' => false,
+            'auto_increment' => true,
+            'primary_key' => true
+        ]);
+        $t->column('name', 'string', [
+            'limit' => 100,
+            'default' => NULL
+        ]);
+        $t->column('description', 'string', [
+            'limit' => 500,
+            'default' => NULL
+        ]);
+        $t->column('restrict_to_ip_whitelist', 'text', [
+            'null' => true,
+        ]);
+        $t->finish();
 
-      $this->insert('directus_groups', [
-          'id' => 1,
-          'name' => 'Administrator',
-          'description' => NULL,
-          'restrict_to_ip_whitelist' => 0
-      ]);
+        $this->insert('directus_groups', [
+            'id' => 1,
+            'name' => 'Administrator',
+            'description' => NULL,
+            'restrict_to_ip_whitelist' => 0
+        ]);
     }//up()
 
     public function down()
     {
-      $this->drop_table("directus_groups");
+        $this->drop_table('directus_groups');
     }//down()
 }

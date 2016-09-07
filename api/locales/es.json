@@ -258,6 +258,8 @@
     "regex": "Regex",
     "textinput_validation_string_comment": "Todos los caracteres siguiente seran forzados",
 
+    "translation_title": "Traducciones",
+    "translations_x": "%{field}",
     "translation_languages_table_comment": "Ingresa la table que contiene todos los idiomas soportado",
     "translation_languages_name_column_comment": "Campo del titulo de idioma",
     "translation_default_language_id_comment": "ID por defecto del idioma in la tabla de languajes",
@@ -293,7 +295,6 @@
     "server_error_occurred": "Ocurrió un error en el servidor",
     "enter_your_email_and_password": "Ingresa tu correo y contraseña",
     "reset_instructions_have_been_sent": "Instrucciones para restablecer la contraseña ha sido enviada.",
-    "oops_an_error_ocurred": "Oops, ocurrió un error",
     "are_you_sure_you_want_to_reset_your_password": "Estas seguro que quieres restablecer tu contraseña?",
     "enter_a_valid_email_address": "Ingresa una dirección de correo valido",
     "logged_out_due_to_inactivity": "Session cerrada por inactividad",
@@ -343,11 +344,11 @@
     "you_must_define_session_prefix_in_configuration": "Debes definir session.prefix en api/configuration.php - ver ejemplo de archivo de configuración.",
     "undefined_user_cache_refresh_provider": "Cache refresh provider de usuario no definido.",
     "argument_must_be_callable": "Argumento debe ser callable",
-    "attempting_to_authenticate_a_user_when_a_user_is_already_authenticated'": "Intentando autenticar a un usuario que ya esta autenticado.",
+    "attempting_to_authenticate_a_user_when_a_user_is_already_authenticated": "Intentando autenticar a un usuario que ya esta autenticado.",
 
-    "x_video_id_not_detected": "ID de Video de %{service} no fue detectado. Por favor, utilize la URL completa.",
+    "x_x_id_not_detected": "ID de %{type} de %{service} no fue detectado. Por favor, utilize la URL completa.",
     "unable_to_retrieve_x_title": "Incapaz de obtener el titulo de %{service}",
-    "x_video": "Video de %{service}",
+    "x_type_x": "%{type} de %{service}",
     "bad_x_api_key": "Llave de API de %{service} Incorrecta",
     "mail_configuration_not_defined": "Configuracion de Correo no esta definida.",
 

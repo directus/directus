@@ -34,147 +34,151 @@ namespace Directus\Console\Common;
 
 
 use Directus\Bootstrap;
-use Directus\Util\StringUtils;
+use Directus\Console\Common\Exception\SettingUpdateException;
 use Zend\Db\TableGateway\TableGateway;
 
-use Directus\Console\Common\Exception\SettingUpdateException;
+class Setting
+{
 
-class Setting {
+    private $directus_path;
+    private $db;
+    private $settingsTableGateway;
 
-  private $directus_path;
-  private $db;
-  private $settingsTableGateway;
+    public function __construct($base_path)
+    {
 
-  public function __construct($base_path) {
+        if ($base_path == null) {
+            $base_path = BASE_PATH;
+        } else {
+            $this->directus_path = $base_path;
+        }
 
-    if ($base_path == null) {
-      $base_path = BASE_PATH;
-    } else {
-      $this->directus_path = $base_path;
+        require_once $this->directus_path . '/api/config.php';
+        $this->db = Bootstrap::get('ZendDb');
+
+        $this->settingsTableGateway = new TableGateway('directus_settings', $this->db);
     }
 
-    require_once $this->directus_path.'/api/config.php';
-    $this->db = Bootstrap::get('ZendDb');
-
-    $this->settingsTableGateway = new TableGateway('directus_settings', $this->db);
-  }
-
-  /**
-   *  Check if base settings have already been defined.
-   *
-   *  The function return true if base settings have already been defined,
-   *  false in any othe case.
-   *
-   *  @return boolean True if settings have already been defined. False in any
-   *                  other case.
-   *
-   */
-  public function isConfigured() {
-    try {
-      $rowset = $this->settingsTableGateway->select();
-      if ($rowset->count() > 0) {
-        return true;
-      }
-      return false;
-    } catch (PDOException $ex) {
-      return false;
-    }
-  }
-
-  /**
-   *  Check if a settings has already been defined.
-   *
-   *  The function return true if the setting has already been defined for a collection,
-   *  false in any othe case.
-   *
-   *  @param string $collection The collection to which this setting applies.
-   *  @param string $setting The name of the setting to check.
-   *
-   *  @return boolean True if setting has been defined for the collection. False in any
-   *                  other case.
-   *
-   */
-  public function settingExists($collection, $setting) {
-    try {
-      $rowset = $this->settingsTableGateway->select(array(
-          'collection' => $collection,
-          'name' => $setting
-      ));
-      if ($rowset->count() > 0) {
-        return true;
-      }
-      return false;
-    } catch (PDOException $ex) {
-      return false;
-    }
-  }
-
-  /**
-   *  Creates a setting and sets its value for Directus.
-   *
-   *  The function will create the given setting with the passed value.
-   *
-   *  @param string $collection The collection to which this setting applies.
-   *  @param string $setting The name of the setting to create.
-   *  @param string $value The value of the setting.
-   *
-   *  @return void
-   *
-   *  @throws SettingUpdateException Thrown when the creation of the setting fails.
-   *
-   */
-  public function createSetting($collection, $setting, $value) {
-
-    $insert = array(
-      'collection' => $collection,
-      'name' => $setting,
-      'value' => $value
-    );
-
-    try {
-      $this->settingsTableGateway->insert($insert);
-    } catch (PDOException $ex) {
-      throw new SettingUpdateException(__t('Could not create setting ').$collection.'.'.$setting.': '.__t('PDO Error: ').string($ex));
+    /**
+     *  Check if base settings have already been defined.
+     *
+     *  The function return true if base settings have already been defined,
+     *  false in any othe case.
+     *
+     * @return boolean True if settings have already been defined. False in any
+     *                  other case.
+     *
+     */
+    public function isConfigured()
+    {
+        try {
+            $rowset = $this->settingsTableGateway->select();
+            if ($rowset->count() > 0) {
+                return true;
+            }
+            return false;
+        } catch (PDOException $ex) {
+            return false;
+        }
     }
 
-  }
-
-  /**
-   *  Sets the value of a setting for Directus, creating it if needed.
-   *
-   *  The function will change the given setting to the passed value if it already
-   *  exists and will create it if it doesn't.
-   *
-   *  @param string $collection The collection to which this setting applies.
-   *  @param string $setting The name of the setting to change.
-   *  @param string $value The value of the setting.
-   *
-   *  @return void
-   *
-   *  @throws SettingUpdateException Thrown when the changing the setting fails.
-   *
-   */
-  public function setSetting($collection, $setting, $value) {
-
-    if (!$this->settingExists($collection,  $setting)) {
-      return $this->createSetting($collection, $setting, $value);
+    /**
+     *  Check if a settings has already been defined.
+     *
+     *  The function return true if the setting has already been defined for a collection,
+     *  false in any othe case.
+     *
+     * @param string $collection The collection to which this setting applies.
+     * @param string $setting The name of the setting to check.
+     *
+     * @return boolean True if setting has been defined for the collection. False in any
+     *                  other case.
+     *
+     */
+    public function settingExists($collection, $setting)
+    {
+        try {
+            $rowset = $this->settingsTableGateway->select([
+                'collection' => $collection,
+                'name' => $setting
+            ]);
+            if ($rowset->count() > 0) {
+                return true;
+            }
+            return false;
+        } catch (PDOException $ex) {
+            return false;
+        }
     }
 
-    $update = array(
-      'value' => $value
-    );
+    /**
+     *  Creates a setting and sets its value for Directus.
+     *
+     *  The function will create the given setting with the passed value.
+     *
+     * @param string $collection The collection to which this setting applies.
+     * @param string $setting The name of the setting to create.
+     * @param string $value The value of the setting.
+     *
+     * @return void
+     *
+     * @throws SettingUpdateException Thrown when the creation of the setting fails.
+     *
+     */
+    public function createSetting($collection, $setting, $value)
+    {
 
-    try {
-      $changed = $this->settingsTableGateway->update($update, array(
-        'collection' => $collection,
-        'name' => $setting
-      ));
-      if ($changed == 0) {
-        throw new SettingUpdateException(__t('Could not change setting ').$collection.'.'.$setting.': '.__t('Setting not found or unchanged'));
-      }
-    } catch (PDOException $ex) {
-      throw new SettingUpdateException(__t('Could not change setting ').$collection.'.'.$setting.': '.__t('PDO Error: ').string($ex));
+        $insert = [
+            'collection' => $collection,
+            'name' => $setting,
+            'value' => $value
+        ];
+
+        try {
+            $this->settingsTableGateway->insert($insert);
+        } catch (PDOException $ex) {
+            throw new SettingUpdateException(__t('Could not create setting ') . $collection . '.' . $setting . ': ' . __t('PDO Error: ') . string($ex));
+        }
+
     }
-  }
+
+    /**
+     *  Sets the value of a setting for Directus, creating it if needed.
+     *
+     *  The function will change the given setting to the passed value if it already
+     *  exists and will create it if it doesn't.
+     *
+     * @param string $collection The collection to which this setting applies.
+     * @param string $setting The name of the setting to change.
+     * @param string $value The value of the setting.
+     *
+     * @return void
+     *
+     * @throws SettingUpdateException Thrown when the changing the setting fails.
+     *
+     */
+    public function setSetting($collection, $setting, $value)
+    {
+
+        if (!$this->settingExists($collection, $setting)) {
+            return $this->createSetting($collection, $setting, $value);
+        }
+
+        $update = [
+            'value' => $value
+        ];
+
+        try {
+            $changed = $this->settingsTableGateway->update($update, [
+                'collection' => $collection,
+                'name' => $setting
+            ]);
+            if ($changed == 0) {
+                throw new SettingUpdateException(__t('Could not change setting ') . $collection . '.' . $setting . ': ' . __t('Setting not found or unchanged'));
+            }
+        } catch (PDOException $ex) {
+            throw new SettingUpdateException(__t('Could not change setting ') . $collection . '.' . $setting . ': ' . __t('PDO Error: ') . string($ex));
+        }
+    }
 
 }

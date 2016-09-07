@@ -2,10 +2,10 @@
 
 namespace Directus\Exception;
 
-use ErrorException;
+use Directus\Bootstrap;
 use Directus\Hook\Hook;
 use Directus\View\ExceptionView;
-use Directus\Bootstrap;
+use ErrorException;
 
 class ExceptionHandler
 {
@@ -27,11 +27,11 @@ class ExceptionHandler
 
     /**
      *
-     * @param  int  $level
-     * @param  string  $message
-     * @param  string  $file
-     * @param  int  $line
-     * @param  array  $context
+     * @param  int $level
+     * @param  string $message
+     * @param  string $file
+     * @param  int $line
+     * @param  array $context
      * @return void
      *
      * @throws \ErrorException
@@ -47,7 +47,7 @@ class ExceptionHandler
     /**
      * Handle an uncaught exception
      *
-     * @param  \Throwable  $e
+     * @param  \Throwable $e
      * @return void
      */
     public function handleException($e)
@@ -65,7 +65,7 @@ class ExceptionHandler
      */
     public function handleShutdown()
     {
-        if (! is_null($error = error_get_last()) && $this->isFatal($error['type'])) {
+        if (!is_null($error = error_get_last()) && $this->isFatal($error['type'])) {
             $e = new ErrorException(
                 $error['message'], $error['type'], 0, $error['file'], $error['line']
             );
@@ -77,7 +77,7 @@ class ExceptionHandler
     /**
      * Determine if the error type is fatal.
      *
-     * @param  int  $type
+     * @param  int $type
      * @return bool
      */
     protected function isFatal($type)

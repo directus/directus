@@ -6,10 +6,10 @@ class AddAccessTokenColumnToUsers extends Ruckusing_Migration_Base
     public function up()
     {
         if (!$this->has_column('directus_users', 'access_token')) {
-            $this->add_column('directus_users', 'access_token', 'string', array(
+            $this->add_column('directus_users', 'access_token', 'string', [
                 'limit' => 255,
                 'default' => ''
-            ));
+            ]);
         }
     }//up()
 

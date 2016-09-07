@@ -7,9 +7,9 @@ class ArrayUtils
     /**
      * Get an item from an array
      *
-     * @param  array   $array
-     * @param  string  $key
-     * @param  mixed   $default
+     * @param  array $array
+     * @param  string $key
+     * @param  mixed $default
      *
      * @return mixed
      */
@@ -53,8 +53,8 @@ class ArrayUtils
 
     /**
      * Return a copy of the object, filtered to only have values for the whitelisted keys (or array of valid keys).
-     * @param  array         $array
-     * @param  string|array  $keys
+     * @param  array $array
+     * @param  string|array $keys
      * @return array
      */
     public static function pick($array, $keys)
@@ -64,8 +64,8 @@ class ArrayUtils
 
     /**
      * Return a copy of the object, filtered to omit values for the blacklisted keys (or array of valid keys).
-     * @param  array         $array
-     * @param  string|array  $keys
+     * @param  array $array
+     * @param  string|array $keys
      * @return array
      */
     public static function omit($array, $keys)
@@ -76,15 +76,15 @@ class ArrayUtils
     /**
      * Return whether or not a set of keys exists in an array
      *
-     * @param  array        $array
-     * @param  array|mixed  $keys
+     * @param  array $array
+     * @param  array|mixed $keys
      *
      * @return bool
      */
     public static function contains($array, $keys)
     {
         if (!is_array($keys)) {
-            $keys = array($keys);
+            $keys = [$keys];
         }
 
         foreach ($keys as $key) {
@@ -99,8 +99,8 @@ class ArrayUtils
     /**
      * Flatten a multi-dimensional associative array with a dots.
      *
-     * @param  array   $array
-     * @param  string  $prepend
+     * @param  array $array
+     * @param  string $prepend
      * @return array
      */
     public static function dot($array, $prepend = '')
@@ -112,8 +112,8 @@ class ArrayUtils
      * Flatten a multi-dimensional associative array with a character.
      *
      * @param  string $separator
-     * @param  array   $array
-     * @param  string  $prepend
+     * @param  array $array
+     * @param  string $prepend
      * @return array
      */
     public static function flatKey($separator, $array, $prepend = '')
@@ -135,4 +135,24 @@ class ArrayUtils
         return $results;
     }
 
+    /**
+     * Get the missing values from a array in another array
+     *
+     * @param array $from
+     * @param array $target
+     *
+     * @return array
+     */
+    public static function missing(array $from, array $target)
+    {
+        $missing = [];
+
+        foreach($target as $value) {
+            if (!in_array($value, $from)) {
+                $missing[] = $value;
+            }
+        }
+
+        return $missing;
+    }
 }

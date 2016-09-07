@@ -38,171 +38,140 @@ class CreateDirectusUsersTable extends Ruckusing_Migration_Base
 {
     public function up()
     {
-      $t = $this->create_table("directus_users", array(
-          "id"=>false,
-        )
-      );
+        $t = $this->create_table('directus_users', [
+            'id' => false,
+        ]);
 
-      //columns
-      $t->column("id", "integer", array(
-          "unsigned"=>true,
-          "null"=>false,
-          "auto_increment"=>true,
-          "primary_key"=>true
-        )
-      );
-      $t->column("active", "tinyinteger", array(
-          "limit"=>1,
-          "default"=>1
-        )
-      );
-      $t->column("first_name", "string", array(
-          "limit"=>50,
-          "default"=>""
-        )
-      );
-      $t->column("last_name", "string", array(
-          "limit"=>50,
-          "default"=>""
-        )
-      );
-      $t->column("email", "string", array(
-          "limit"=>255,
-          "default"=>""
-        )
-      );
-      $t->column("password", "string", array(
-          "limit"=>255,
-          "default"=>""
-        )
-      );
-      $t->column("salt", "string", array(
-          "limit"=>255,
-          "default"=>""
-        )
-      );
-      $t->column("token", "string", array(
-          "limit"=>255,
-          "null"=>false
-        )
-      );
-      $t->column("access_token", "string", array(
-          "limit"=>255,
-          "default"=>""
-        )
-      );
-      $t->column("reset_token", "string", array(
-          "limit"=>255,
-          "default"=>""
-        )
-      );
-      $t->column("reset_expiration", "datetime", array(
-          "default"=>NULL
-        )
-      );
-      $t->column("position", "string", array(
-          "limit"=>500,
-          "default"=>""
-        )
-      );
-      $t->column("email_messages", "tinyinteger", array(
-          "limit"=>1,
-          "default"=>1
-        )
-      );
-      $t->column("last_login", "datetime", array(
-          "default"=>NULL
-        )
-      );
-      $t->column("last_access", "datetime", array(
-          "default"=>NULL
-        )
-      );
-      $t->column("last_page", "string", array(
-          "limit"=>255,
-          "default"=>""
-        )
-      );
-      $t->column("ip", "string", array(
-          "limit"=>50,
-          "default"=>""
-        )
-      );
-      $t->column("group", "integer", array(
-          "unsigned"=>true,
-          "default"=>NULL
-        )
-      );
-      $t->column("avatar", "string", array(
-          "limit"=>500,
-          "default"=>NULL
-        )
-      );
-      $t->column("avatar_file_id", "integer", array(
-          "unsigned"=>true,
-          "default"=>NULL
-        )
-      );
-      $t->column("location", "string", array(
-          "limit"=>255,
-          "default"=>NULL
-        )
-      );
-      $t->column("phone", "string", array(
-          "limit"=>255,
-          "default"=>NULL
-        )
-      );
-      $t->column("address", "string", array(
-          "limit"=>255,
-          "default"=>NULL
-        )
-      );
-      $t->column("city", "string", array(
-          "limit"=>255,
-          "default"=>NULL
-        )
-      );
-      $t->column("state", "string", array(
-          "limit"=>2,
-          "default"=>NULL
-        )
-      );
-      $t->column("zip", "string", array(
-          "limit"=>10,
-          "default"=>NULL
-        )
-      );
+        //columns
+        $t->column('id', 'integer', [
+            'unsigned' => true,
+            'null' => false,
+            'auto_increment' => true,
+            'primary_key' => true
+        ]);
+        $t->column('active', 'tinyinteger', [
+            'limit' => 1,
+            'default' => 1
+        ]);
+        $t->column('first_name', 'string', [
+            'limit' => 50,
+            'default' => ''
+        ]);
+        $t->column('last_name', 'string', [
+            'limit' => 50,
+            'default' => ''
+        ]);
+        $t->column('email', 'string', [
+            'limit' => 255,
+            'default' => ''
+        ]);
+        $t->column('password', 'string', [
+            'limit' => 255,
+            'default' => ''
+        ]);
+        $t->column('salt', 'string', [
+            'limit' => 255,
+            'default' => ''
+        ]);
+        $t->column('token', 'string', [
+            'limit' => 255,
+            'null' => false
+        ]);
+        $t->column('access_token', 'string', [
+            'limit' => 255,
+            'default' => ''
+        ]);
+        $t->column('reset_token', 'string', [
+            'limit' => 255,
+            'default' => ''
+        ]);
+        $t->column('reset_expiration', 'datetime', [
+            'default' => NULL
+        ]);
+        $t->column('position', 'string', [
+            'limit' => 500,
+            'default' => ''
+        ]);
+        $t->column('email_messages', 'tinyinteger', [
+            'limit' => 1,
+            'default' => 1
+        ]);
+        $t->column('last_login', 'datetime', [
+            'default' => NULL
+        ]);
+        $t->column('last_access', 'datetime', [
+            'default' => NULL
+        ]);
+        $t->column('last_page', 'string', [
+            'limit' => 255,
+            'default' => ''
+        ]);
+        $t->column('ip', 'string', [
+            'limit' => 50,
+            'default' => ''
+        ]);
+        $t->column('group', 'integer', [
+            'unsigned' => true,
+            'default' => NULL
+        ]);
+        $t->column('avatar', 'string', [
+            'limit' => 500,
+            'default' => NULL
+        ]);
+        $t->column('avatar_file_id', 'integer', [
+            'unsigned' => true,
+            'default' => NULL
+        ]);
+        $t->column('location', 'string', [
+            'limit' => 255,
+            'default' => NULL
+        ]);
+        $t->column('phone', 'string', [
+            'limit' => 255,
+            'default' => NULL
+        ]);
+        $t->column('address', 'string', [
+            'limit' => 255,
+            'default' => NULL
+        ]);
+        $t->column('city', 'string', [
+            'limit' => 255,
+            'default' => NULL
+        ]);
+        $t->column('state', 'string', [
+            'limit' => 2,
+            'default' => NULL
+        ]);
+        $t->column('zip', 'string', [
+            'limit' => 10,
+            'default' => NULL
+        ]);
 
-      $t->column("language", "string", array(
-          "limit"=>8,
-          "default"=>'en'
-        )
-      );
+        $t->column('language', 'string', [
+            'limit' => 8,
+            'default' => 'en'
+        ]);
 
-      $t->column("timezone", "string", array(
-          "limit"=>32,
-          "default"=>'America/New_York'
-        )
-      );
+        $t->column('timezone', 'string', [
+            'limit' => 32,
+            'default' => 'America/New_York'
+        ]);
 
-      $t->finish();
+        $t->finish();
 
-      $this->add_index("directus_users", "email", array(
-        "unique"=>true,
-        "name"=>"directus_users_email_unique"
-        )
-      );
+        $this->add_index('directus_users', 'email', [
+            'unique' => true,
+            'name' => 'directus_users_email_unique'
+        ]);
 
-      $this->add_index("directus_users", "token", array(
-        "unique"=>true,
-        "name"=>"directus_users_token_unique"
-        )
-      );
+        $this->add_index('directus_users', 'token', [
+            'unique' => true,
+            'name' => 'directus_users_token_unique'
+        ]);
     }//up()
 
     public function down()
     {
-      $this->drop_table("directus_users");
+        $this->drop_table('directus_users');
     }//down()
 }

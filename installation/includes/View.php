@@ -12,7 +12,7 @@ class View
     public static function displayStep($step, $state)
     {
         $stepsData = [];
-        foreach($state['steps'] as  $aStep) {
+        foreach ($state['steps'] as $aStep) {
             if ($stepData = $aStep->getData()) {
                 $stepsData = array_merge($stepsData, $stepData);
             }

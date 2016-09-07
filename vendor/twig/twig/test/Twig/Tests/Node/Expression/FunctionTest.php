@@ -23,7 +23,7 @@ class Twig_Tests_Node_Expression_FunctionTest extends Twig_Test_NodeTestCase
 
     public function getTests()
     {
-        $environment = new Twig_Environment($this->getMock('Twig_LoaderInterface'));
+        $environment = new Twig_Environment($this->getMockBuilder('Twig_LoaderInterface')->getMock());
         $environment->addFunction(new Twig_SimpleFunction('foo', 'foo', array()));
         $environment->addFunction(new Twig_SimpleFunction('bar', 'bar', array('needs_environment' => true)));
         $environment->addFunction(new Twig_SimpleFunction('foofoo', 'foofoo', array('needs_context' => true)));

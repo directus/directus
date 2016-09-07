@@ -13,12 +13,11 @@ class DropDirectusColumnsSystemColumn extends Ruckusing_Migration_Base
     public function down()
     {
         if (!$this->has_column('directus_columns', 'system')) {
-            $this->add_column('system', 'tinyinteger', array(
-                    'limit' => 1,
-                    'null' => false,
-                    'default' => 0
-                )
-            );
+            $this->add_column('system', 'tinyinteger', [
+                'limit' => 1,
+                'null' => false,
+                'default' => 0
+            ]);
         }
     }//down()
 }

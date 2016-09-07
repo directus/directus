@@ -25,14 +25,22 @@ abstract class AbstractSchema implements SchemaInterface
         $columns = $this->getColumns($tableName);
 
         $columnNames = [];
-        foreach($columns as $column) {
+        foreach ($columns as $column) {
             $columnNames[] = $column['column_name'];
         }
 
         return $columnNames;
     }
 
-    public function parseRecordValuesByType($records, $nonAliasSchemaColumns)
+    /**
+     * Parse records value by its column data type
+     *
+     * @param array $records
+     * @param $nonAliasSchemaColumns
+     *
+     * @return array
+     */
+    public function parseRecordValuesByType(array $records, $nonAliasSchemaColumns)
     {
         // hotfix: records sometimes are no set as an array of rows.
         $singleRecord = false;
@@ -42,7 +50,7 @@ abstract class AbstractSchema implements SchemaInterface
         }
 
         foreach ($nonAliasSchemaColumns as $column) {
-            foreach($records as $index => $record) {
+            foreach ($records as $index => $record) {
                 $col = $column['id'];
                 if (array_key_exists($col, $record)) {
                     $records[$index][$col] = $this->parseType($record[$col], $column['type']);

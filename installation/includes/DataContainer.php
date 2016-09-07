@@ -16,7 +16,7 @@ class DataContainer
      */
     public function __construct($attributes = [])
     {
-        foreach($attributes as $key => $attribute) {
+        foreach ($attributes as $key => $attribute) {
             $this->attributes[$key] = $attribute;
         }
     }

@@ -46,11 +46,17 @@ class YoutubeProvider extends AbstractProvider
     {
         $info = [];
 
-        if (!isset($this->config['youtube_api_key'])) {
+        $info['title'] = __t('unable_to_retrieve_x_title', ['service' => 'YouTube']);
+        $info['size'] = 0;
+        $info['height'] = 340;
+        $info['width'] = 560;
+        $info['data'] = $this->getThumbnail($videoID);
+
+        if (!isset($this->config['youtube_api_key']) || empty($this->config['youtube_api_key'])) {
             return $info;
         }
 
-        $youtubeFormatUrlString = "https://www.googleapis.com/youtube/v3/videos?id=%s&key=%s&part=snippet,contentDetails";
+        $youtubeFormatUrlString = 'https://www.googleapis.com/youtube/v3/videos?id=%s&key=%s&part=snippet,contentDetails';
         $url = sprintf($youtubeFormatUrlString, $videoID, $this->config['youtube_api_key']);
 
         $ch = curl_init();
@@ -67,12 +73,6 @@ class YoutubeProvider extends AbstractProvider
         if (property_exists($content, 'error')) {
             throw new \Exception(__t('bad_x_api_key', ['service' => 'YouTube']));
         }
-
-        $info['title'] = __t('unable_to_retrieve_x_title', ['service' => 'YouTube']);
-        $info['size'] = 0;
-        $info['height'] = 340;
-        $info['width'] = 560;
-        $info['data'] = $this->getThumbnail($videoID);
 
         if (property_exists($content, 'items') && count($content->items) > 0) {
             $videoDataSnippet = $content->items[0]->snippet;

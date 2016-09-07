@@ -14,16 +14,23 @@ class ConfirmStep extends AbstractStep
     protected $shortTitle = 'Confirm';
     protected $viewName = 'confirm.php';
     protected $fields = [
-      [
-          'name' => 'send_config_email',
-          'label' => 'Send Config E-Mail'
-      ]
+        [
+            'name' => 'send_config_email',
+            'label' => 'Send Config E-Mail'
+        ]
     ];
 
     public function preRun(&$state)
     {
+        // Request for checking if the api is writeable
+        // returns a true or false string
+        if (isset($_GET['check_config'])) {
+            echo is_writeable(BASE_PATH . '/api') ? 'true' : 'false';
+            exit;
+        }
+
         $steps = $state['steps'];
-        foreach($steps as $step) {
+        foreach ($steps as $step) {
             if ($step->getName() != 'database') {
                 continue;
             }
@@ -46,7 +53,7 @@ class ConfirmStep extends AbstractStep
         }
 
         $stepsData = [];
-        foreach($state['steps'] as  $aStep) {
+        foreach ($state['steps'] as $aStep) {
             if ($stepData = $aStep->getData()) {
                 $stepsData = array_merge($stepsData, $stepData);
             }
@@ -105,7 +112,7 @@ class ConfirmStep extends AbstractStep
     {
         $data = $step->getData();
         $connection = new Connection([
-            'driver' => 'pdo_'.$data['db_type'],
+            'driver' => 'pdo_' . $data['db_type'],
             'host' => $data['db_host'],
             'port' => $data['db_port'],
             'database' => $data['db_name'],

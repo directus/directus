@@ -63,11 +63,11 @@ class Twig_Tests_Loader_ChainTest extends PHPUnit_Framework_TestCase
 
     public function testExists()
     {
-        $loader1 = $this->getMock('Twig_Loader_Array', array('exists', 'getSource'), array(), '', false);
+        $loader1 = $this->getMockBuilder('Twig_Loader_Array')->setMethods(array('exists', 'getSource'))->disableOriginalConstructor()->getMock();
         $loader1->expects($this->once())->method('exists')->will($this->returnValue(false));
         $loader1->expects($this->never())->method('getSource');
 
-        $loader2 = $this->getMock('Twig_LoaderInterface');
+        $loader2 = $this->getMockBuilder('Twig_LoaderInterface')->getMock();
         $loader2->expects($this->once())->method('getSource')->will($this->returnValue('content'));
 
         $loader = new Twig_Loader_Chain();

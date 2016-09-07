@@ -14,33 +14,33 @@ if (!function_exists('uc_convert')) {
     {
         $phrase = preg_replace('!\s+!', ' ', trim(ucwords(strtolower(str_replace('_', ' ', $text)))));
         $specialCaps = [
-            "Ids" => 'IDs',
-            "Ssn" => 'SSN',
-            "Ein" => 'EIN',
-            "Nda" => 'NDA',
-            "Api" => 'API',
-            "Youtube" => 'YouTube',
-            "Faq" => 'FAQ',
-            "Iphone" => 'iPhone',
-            "Ipad" => 'iPad',
-            "Ipod" => 'iPod',
-            "Pdf" => 'PDF',
-            "Pdfs" => 'PDFs',
-            'Ui'  => 'UI',
-            "Url" => 'URL',
-            "Ip" => 'IP',
-            "Ftp" => 'FTP',
-            "Db" => 'DB',
-            "Cv" => 'CV',
-            "Id" => 'ID',
-            "Ph" => 'pH',
-            "Php" => 'PHP',
-            "Html" => 'HTML',
-            "Js" => 'JS',
-            "Css" => 'CSS',
-            "Ios" => 'iOS',
-            "Iso" => 'ISO',
-            "Rngr" => 'RNGR'
+            'Ids' => 'IDs',
+            'Ssn' => 'SSN',
+            'Ein' => 'EIN',
+            'Nda' => 'NDA',
+            'Api' => 'API',
+            'Youtube' => 'YouTube',
+            'Faq' => 'FAQ',
+            'Iphone' => 'iPhone',
+            'Ipad' => 'iPad',
+            'Ipod' => 'iPod',
+            'Pdf' => 'PDF',
+            'Pdfs' => 'PDFs',
+            'Ui' => 'UI',
+            'Url' => 'URL',
+            'Ip' => 'IP',
+            'Ftp' => 'FTP',
+            'Db' => 'DB',
+            'Cv' => 'CV',
+            'Id' => 'ID',
+            'Ph' => 'pH',
+            'Php' => 'PHP',
+            'Html' => 'HTML',
+            'Js' => 'JS',
+            'Css' => 'CSS',
+            'Ios' => 'iOS',
+            'Iso' => 'ISO',
+            'Rngr' => 'RNGR'
         ];
 
         $searchPattern = array_keys($specialCaps);
@@ -56,8 +56,7 @@ if (!function_exists('uc_convert')) {
 if (!function_exists('ping_route')) {
     function ping_route($app)
     {
-        return function() use ($app)
-        {
+        return function () use ($app) {
             if ('production' === DIRECTUS_ENV) {
                 return $app->halt('404');
             }
@@ -186,7 +185,7 @@ if (!function_exists(' get_file_info')) {
     {
         $finfo = new finfo(FILEINFO_MIME);
         $type = explode('; charset=', $finfo->file($file));
-        $info = array('type' => $type[0], 'charset' => $type[1]);
+        $info = ['type' => $type[0], 'charset' => $type[1]];
 
         $type_str = explode('/', $info['type']);
 
@@ -195,8 +194,8 @@ if (!function_exists(' get_file_info')) {
             $info['width'] = $size[0];
             $info['height'] = $size[1];
 
-            if (isset($meta["APP13"])) {
-                $iptc = iptcparse($meta["APP13"]);
+            if (isset($meta['APP13'])) {
+                $iptc = iptcparse($meta['APP13']);
                 $info['caption'] = $iptc['2#120'][0];
                 $info['title'] = $iptc['2#005'][0];
                 $info['tags'] = implode($iptc['2#025'], ',');
@@ -229,9 +228,9 @@ if (!function_exists('template')) {
 if (!function_exists('to_name_value')) {
     function to_name_value($array, $keys = null)
     {
-        $data = array();
+        $data = [];
         foreach ($array as $name => $value) {
-            $row = array('name' => $name, 'value' => $value);
+            $row = ['name' => $name, 'value' => $value];
             if (isset($keys)) $row = array_merge($row, $keys);
             array_push($data, $row);
         }
@@ -260,7 +259,7 @@ if (!function_exists('is_numeric_array')) {
 if (!function_exists('is_numeric_keys_array')) {
     function is_numeric_keys_array($array)
     {
-        foreach(array_keys($array) as $key) {
+        foreach (array_keys($array) as $key) {
             if (!is_numeric($key)) {
                 return false;
             }
@@ -303,7 +302,8 @@ if (!function_exists('load_registered_hooks')) {
 }
 
 if (!function_exists('get_user_timezone')) {
-    function get_user_timezone() {
+    function get_user_timezone()
+    {
         $userTimeZone = get_auth_timezone();
 
         if (!$userTimeZone) {
@@ -315,7 +315,8 @@ if (!function_exists('get_user_timezone')) {
 }
 
 if (!function_exists('get_user_locale')) {
-    function get_user_locale() {
+    function get_user_locale()
+    {
         $locale = $defaultLocale = 'en';
 
         if (isset($_SESSION['install_locale'])) {
@@ -335,7 +336,8 @@ if (!function_exists('get_user_locale')) {
 }
 
 if (!function_exists('get_default_locale')) {
-    function get_default_locale() {
+    function get_default_locale()
+    {
         // if there's not config files created
         if (!defined('BASE_PATH') || !defined('APPLICATION_PATH')) {
             return null;
@@ -348,7 +350,8 @@ if (!function_exists('get_default_locale')) {
 }
 
 if (!function_exists('get_auth_info')) {
-    function get_auth_info($attribute) {
+    function get_auth_info($attribute)
+    {
         // if there's not config files created
         if (!defined('BASE_PATH') || !defined('APPLICATION_PATH')) {
             return null;
@@ -365,13 +368,15 @@ if (!function_exists('get_auth_info')) {
 }
 
 if (!function_exists('get_auth_locale')) {
-    function get_auth_locale() {
+    function get_auth_locale()
+    {
         return get_auth_info('language');
     }
 }
 
 if (!function_exists('get_auth_timezone')) {
-    function get_auth_timezone() {
+    function get_auth_timezone()
+    {
         return get_auth_info('timezone');
     }
 }
@@ -417,12 +422,11 @@ if (!function_exists('get_locale_keys')) {
      */
     function get_locale_keys($locale)
     {
-        $content = file_get_contents(BASE_PATH . '/api/locales/' . $locale . '.json');
-        $json = json_decode($content, true);
+        $phrases = get_locale_phrases($locale);
 
         $keys = [];
-        if ($json) {
-            $keys = array_keys($json);
+        if ($phrases) {
+            $keys = array_keys($phrases);
         }
 
         return $keys;
@@ -430,7 +434,8 @@ if (!function_exists('get_locale_keys')) {
 }
 
 if (!function_exists('get_locales_available')) {
-    function get_locales_available() {
+    function get_locales_available()
+    {
         $languagesManager = \Directus\Bootstrap::get('languagesManager');
 
         return $languagesManager->getLanguagesAvailable();
@@ -438,7 +443,8 @@ if (!function_exists('get_locales_available')) {
 }
 
 if (!function_exists('is_locale_available')) {
-    function is_locale_available($locale) {
+    function is_locale_available($locale)
+    {
         $languagesManager = \Directus\Bootstrap::get('languagesManager');
 
         return $languagesManager->isLanguageAvailable($locale);
@@ -447,16 +453,23 @@ if (!function_exists('is_locale_available')) {
 
 if (!function_exists('get_default_phrases')) {
     function get_default_phrases() {
-        $phrasesPath = BASE_PATH.'/api/locales/en.json';
+        return get_locale_phrases('en');
+    }
+}
+
+if (!function_exists('get_locale_phrases')) {
+    function get_locale_phrases($locale) {
+        $phrasesPath = BASE_PATH . '/api/locales/' . $locale . '.json';
 
         return json_decode(file_get_contents($phrasesPath), true);
     }
 }
 
 if (!function_exists('get_phrases')) {
-    function get_phrases($locale = 'en') {
+    function get_phrases($locale = 'en')
+    {
         $defaultPhrases = get_default_phrases();
-        $langFile = BASE_PATH . '/api/locales/'.$locale.'.json';
+        $langFile = BASE_PATH . '/api/locales/' . $locale . '.json';
 
         $phrases = [];
         if (file_exists($langFile)) {
@@ -484,7 +497,8 @@ if (!function_exists('__t')) {
 }
 
 if (!function_exists('get_timezones_list')) {
-    function get_timezone_list() {
+    function get_timezone_list()
+    {
         // List from: https://github.com/tamaspap/timezones
         return [
             'Pacific/Midway' => '(UTC-11:00) Midway Island',
@@ -695,14 +709,14 @@ if (!function_exists('find_files')) {
             $searchPaths = [$searchPaths];
         }
 
-        $validPath = function($path) {
+        $validPath = function ($path) {
             $filename = pathinfo($path, PATHINFO_FILENAME);
 
             return $filename[0] !== '_';
         };
 
         $filesPath = [];
-        foreach($searchPaths as $searchPath) {
+        foreach ($searchPaths as $searchPath) {
             $searchPath = rtrim($searchPath, '/');
             $result = array_filter(glob($searchPath . '/' . rtrim($pattern, '/'), $flags), $validPath);
             $filesPath = array_merge($filesPath, $result);
@@ -778,10 +792,10 @@ if (!function_exists('find_templates')) {
             define('BASE_PATH', realpath(__DIR__ . '/../../'));
         }
 
-        $getTemplateKeyPath = function($suffix) {
+        $getTemplateKeyPath = function ($suffix) {
             $basePath = BASE_PATH . '/' . trim($suffix, '/') . '/';
 
-            return array_map(function($path) use ($basePath) {
+            return array_map(function ($path) use ($basePath) {
                 return substr($path, strlen($basePath));
             }, find_html_files($basePath, true));
         };
@@ -805,7 +819,7 @@ if (!function_exists('get_gravatar')) {
      *
      * @source https://gravatar.com/site/implement/images/php/
      */
-    function get_gravatar($email, $s = 80, $d = 'identicon', $r = 'g', $img = false, $atts = array() )
+    function get_gravatar($email, $s = 200, $d = 'identicon', $r = 'g', $img = false, $atts = [])
     {
         $url = '//www.gravatar.com/avatar/';
         $url .= md5(strtolower(trim($email)));
@@ -821,5 +835,84 @@ if (!function_exists('get_gravatar')) {
         }
 
         return $url;
+    }
+}
+
+
+if (!function_exists('get_contents')) {
+    /**
+     * Get content from an URL
+     *
+     * @param $url
+     * @param $headers
+     *
+     * @return mixed
+     */
+    function get_contents($url, $headers = [])
+    {
+        $ch = curl_init();
+
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_URL, $url);
+
+        if ($headers) {
+            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        }
+
+        $result = curl_exec($ch);
+        curl_close($ch);
+
+        return $result;
+    }
+}
+
+if (!function_exists('get_json')) {
+    /**
+     * Get json from an url
+     *
+     * @param $url
+     * @param array $headers
+     *
+     * @return mixed
+     */
+    function get_json($url, $headers = [])
+    {
+        $content = get_contents($url, array_merge(['Content-Type: application/json'], $headers));
+
+        return json_decode($content, true);
+    }
+}
+
+if (!function_exists('check_version')) {
+    /**
+     * Check Directus latest version
+     *
+     * @param bool $firstCheck
+     *
+     * @return array
+     */
+    function check_version($firstCheck = false)
+    {
+        $data = [
+            'outdated' => false,
+        ];
+
+        // =============================================================================
+        // Getting the latest version, silently skip it if the server is no responsive.
+        // =============================================================================
+        try {
+            $responseData = get_json('https://directus.io/check-version' . ($firstCheck ? '?first_check=1' : ''));
+
+            if ($responseData && isset($responseData['success']) && $responseData['success'] == true) {
+                $versionData = $responseData['data'];
+                $data = array_merge($data, $versionData);
+                $data['outdated'] = version_compare(DIRECTUS_VERSION, $versionData['current_version'], '<');
+            }
+        } catch (\Exception $e) {
+            // Do nothing
+        }
+
+        return $data;
     }
 }

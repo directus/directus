@@ -3,53 +3,55 @@
 namespace Directus\Db\TableGateway;
 
 use Directus\Acl\Acl;
-use Directus\Bootstrap;
-use Directus\Db\TableGateway\AclAwareTableGateway;
-use Directus\Db\TableGateway\RelationalTableGateway;
-use Directus\Db\TableSchema;
 use Zend\Db\Adapter\AdapterInterface;
-use Zend\Db\Sql\Sql;
-use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Insert;
+use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Update;
 
-class DirectusBookmarksTableGateway extends AclAwareTableGateway {
+class DirectusBookmarksTableGateway extends AclAwareTableGateway
+{
 
-    public static $_tableName = "directus_bookmarks";
+    public static $_tableName = 'directus_bookmarks';
 
-    public function __construct(Acl $acl, AdapterInterface $adapter) {
+    public function __construct(Acl $acl, AdapterInterface $adapter)
+    {
         parent::__construct($acl, self::$_tableName, $adapter);
     }
 
-    public static $defaultBookmarksValues = array(
-        'Activity' => array(
-            "title" => "Activity",
-            "url" => "activity",
-            "icon_class" => "icon-bell",
-            "section" => "other"),
-        'Files' => array(
-            "title" => "Files",
-            "url" => "files",
-            "icon_class" => "icon-attach",
-            "section" => "other"),
-        'Messages' => array(
-            "title" => "Messages",
-            "url" => "messages",
-            "icon_class" => "icon-chat",
-            "section" => "other"),
-        'Users' => array(
-            "title" => "Users",
-            "url" => "users",
-            "icon_class" => "icon-users",
-            "section" => "other")
-    );
+    public static $defaultBookmarksValues = [
+        'Activity' => [
+            'title' => 'Activity',
+            'url' => 'activity',
+            'icon_class' => 'icon-bell',
+            'section' => 'other'
+        ],
+        'Files' => [
+            'title' => 'Files',
+            'url' => 'files',
+            'icon_class' => 'icon-attach',
+            'section' => 'other'
+        ],
+        'Messages' => [
+            'title' => 'Messages',
+            'url' => 'messages',
+            'icon_class' => 'icon-chat',
+            'section' => 'other'
+        ],
+        'Users' => [
+            'title' => 'Users',
+            'url' => 'users',
+            'icon_class' => 'icon-users',
+            'section' => 'other'
+        ]
+    ];
 
-    public function createDefaultBookmark($title, $bookmark) {
+    public function createDefaultBookmark($title, $bookmark)
+    {
         // Global default values
-        if(isset(self::$defaultBookmarksValues[$title])) {
-            foreach(self::$defaultBookmarksValues[$title] as $field => $defaultValue) {
-                if(!isset($bookmark[$field]) || ("0" !== $bookmark[$field] && empty($bookmark[$field]))) {
-                    if(!isset($bookmark[$field])) {
+        if (isset(self::$defaultBookmarksValues[$title])) {
+            foreach (self::$defaultBookmarksValues[$title] as $field => $defaultValue) {
+                if (!isset($bookmark[$field]) || ('0' !== $bookmark[$field] && empty($bookmark[$field]))) {
+                    if (!isset($bookmark[$field])) {
                         $bookmark[$field] = $defaultValue;
                     }
                 }
@@ -58,20 +60,23 @@ class DirectusBookmarksTableGateway extends AclAwareTableGateway {
         return $bookmark;
     }
 
-    public function updateBookmark($payload) {
+    public function updateBookmark($payload)
+    {
         $update = new Update($this->table);
         $update->set($payload);
         $this->updateWith($update);
     }
 
-    public function insertBookmark($payload) {
+    public function insertBookmark($payload)
+    {
         $insert = new Insert($this->table);
         $insert->values($payload);
         $this->insertWith($insert);
         return $this->lastInsertValue;
     }
 
-    public function fetchByUserAndId($user_id, $id) {
+    public function fetchByUserAndId($user_id, $id)
+    {
         $select = new Select($this->table);
         $select->limit(1);
         $select
@@ -83,24 +88,25 @@ class DirectusBookmarksTableGateway extends AclAwareTableGateway {
             ->selectWith($select)
             ->current();
 
-        if($bookmarks) {
+        if ($bookmarks) {
             $bookmarks = $bookmarks->toArray();
         }
 
         return $bookmarks;
     }
 
-    public function fetchAllByUser($user_id) {
+    public function fetchAllByUser($user_id)
+    {
         $select = new Select($this->table);
         $select
-          ->where
+            ->where
             ->equalTo('user', $user_id);
 
         $bookmarks = $this->selectWith($select)->toArray();
 
         $defaultBookmarks = array_keys(self::$defaultBookmarksValues);
 
-        foreach($bookmarks as $index => $row) {
+        foreach ($bookmarks as $index => $row) {
             $title = $row['title'];
 
             if (($key = array_search($title, $defaultBookmarks)) !== false) unset($defaultBookmarks[$key]);
@@ -118,10 +124,10 @@ class DirectusBookmarksTableGateway extends AclAwareTableGateway {
             $bookmarks[$title] = $row;
         }
 
-        foreach($defaultBookmarks as $defaultBookmark) {
-            $data = array(
+        foreach ($defaultBookmarks as $defaultBookmark) {
+            $data = [
                 'user' => $user_id
-            );
+            ];
 
             $row = $this->createDefaultBookmark($defaultBookmark, $data);
             $id = $this->insertBookmark($row);

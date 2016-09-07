@@ -1,3 +1,9 @@
+* 1.24.2 (2016-09-01)
+
+ * fixed static callables
+ * fixed a potential PHP warning when load the cache
+ * fixed a case where the autoescaping does not work as expected
+
 * 1.24.1 (2016-05-30)
 
  * fixed reserved keywords (forbids true, false, null and none keywords for variables names)
