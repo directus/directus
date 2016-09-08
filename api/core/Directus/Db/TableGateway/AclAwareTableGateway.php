@@ -430,7 +430,7 @@ class AclAwareTableGateway extends TableGateway
         }
 
         // TODO: wrap this into an abstract DDL class
-        $sql = 'ALTER TABLE `' . $tableName . '` ADD COLUMN `' . $column_name . '` ' . $data_type . ' COMMENT ' . $comment;
+        $sql = 'ALTER TABLE `' . $tableName . '` ADD COLUMN `' . $column_name . '` ' . $data_type . ' COMMENT "' . $comment . '"';
 
         $this->adapter->query($sql)->execute();
     }
