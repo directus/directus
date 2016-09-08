@@ -303,11 +303,11 @@ define([
       var url, link;
       if (this.fileModel.has('name')) {
         if (this.fileModel.isNew()) {
-          url = this.fileModel.get('thumbnailData') || this.fileModel.get('url');
           link = '#';
+          url = this.fileModel.get('thumbnailData') || this.fileModel.get('url');
         } else {
-          url = this.fileModel.makeFileUrl(true);
           link = this.fileModel.makeFileUrl();
+          url = this.fileModel.makeFileUrl(true) || link;
         }
       }
 
