@@ -334,7 +334,9 @@ define(function(require, exports, module) {
         var attribute = this.attributes[attr];
         if (this.defaultAttributes && attribute === undefined) {
           var defaultAttribute = this.defaultAttributes[attr];
-          if (defaultAttribute) {
+          // Falsy values are accepted as default values
+          // excepted undefined (#1256)
+          if (defaultAttribute !== undefined) {
             attribute = defaultAttribute;
           }
         }
