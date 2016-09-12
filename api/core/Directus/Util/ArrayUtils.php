@@ -15,6 +15,10 @@ class ArrayUtils
      */
     public static function get($array, $key, $default = null)
     {
+        if (strpos($key, '.') !== FALSE) {
+            $array = static::dot($array);
+        }
+
         if (array_key_exists($key, $array)) {
             return $array[$key];
         }

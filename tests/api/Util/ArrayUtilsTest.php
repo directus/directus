@@ -6,9 +6,11 @@ class ArrayUtilsTest extends PHPUnit_Framework_TestCase
 {
     public function testGetItem()
     {
-        $item = ['name' => 'Jim'];
+        $item = ['name' => 'Jim', 'country' => ['name' => 'Germany', 'population' => '9']];
         $this->assertEquals(ArrayUtils::get($item, 'name'), 'Jim');
         $this->assertEquals(ArrayUtils::get($item, 'age', 18), 18);
+        $this->assertSame('Germany', ArrayUtils::get($item, 'country.name'));
+        $this->assertSame('German', ArrayUtils::get($item, 'country.language', 'German'));
     }
 
     public function testPickItems()
