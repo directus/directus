@@ -1,5 +1,13 @@
 <?php
 
+/**
+ * Directus – <http://getdirectus.com>
+ *
+ * @link      The canonical repository – <https://github.com/directus/directus>
+ * @copyright Copyright 2006-2016 RANGER Studio, LLC – <http://rangerstudio.com>
+ * @license   GNU General Public License (v3) – <http://www.gnu.org/copyleft/gpl.html>
+ */
+
 namespace Directus\Acl;
 
 use Directus\Acl\Exception\UnauthorizedFieldReadException;
@@ -10,9 +18,13 @@ use Zend\Db\RowGateway\RowGateway;
 use Zend\Db\Sql\Predicate\PredicateSet;
 use Zend\Db\Sql\Select;
 
+/**
+ * ACL
+ *
+ * @author Daniel Bickett <daniel@rngr.org>
+ */
 class Acl
 {
-
     const TABLE_PERMISSIONS = 'permissions';
     const FIELD_READ_BLACKLIST = 'read_field_blacklist';
     const FIELD_WRITE_BLACKLIST = 'write_field_blacklist';
@@ -169,6 +181,8 @@ class Acl
                         ]));
             }
         }
+
+        return null;
     }
 
     /**
