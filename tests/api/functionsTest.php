@@ -22,6 +22,12 @@ class FunctionsTest extends PHPUnit_Framework_TestCase
 
     public function testGetURL()
     {
+        $url = get_url();
+        $this->assertSame('http://localhost/', $url);
+
+        $url = get_url('/users', 'example.local');
+        $this->assertSame('http://example.local/users', $url);
+
         $_SERVER['HTTP_HOST'] = 'localhost';
 
         $url = get_url();
