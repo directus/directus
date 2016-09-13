@@ -169,14 +169,11 @@ class Setting
         ];
 
         try {
-            $changed = $this->settingsTableGateway->update($update, [
+            $this->settingsTableGateway->update($update, [
                 'collection' => $collection,
                 'name' => $setting
             ]);
-            if ($changed == 0) {
-                throw new SettingUpdateException(__t('Could not change setting ') . $collection . '.' . $setting . ': ' . __t('Setting not found or unchanged'));
-            }
-        } catch (PDOException $ex) {
+        } catch (\PDOException $ex) {
             throw new SettingUpdateException(__t('Could not change setting ') . $collection . '.' . $setting . ': ' . __t('PDO Error: ') . string($ex));
         }
     }

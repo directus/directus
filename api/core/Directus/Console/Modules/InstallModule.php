@@ -182,22 +182,22 @@ class InstallModule extends ModuleBase
 
             $setting = new Setting($directus_path);
 
-            if ($setting->isConfigured()) {
-                $setting->setSetting('global', 'project_name', $data['directus_name']);
-            } else {
+            if (!$setting->isConfigured()) {
                 InstallerUtils::addDefaultSettings($data, $directus_path);
+                InstallerUtils::addDefaultUser($data);
+            } else {
+                $setting->setSetting('global', 'project_name', $data['directus_name']);
+                 // NOTE: Do we really want to change the email when re-run install command?
+                 $user = new User($directus_path);
+                 try {
+                     $user->changeEmail(1, $data['directus_email']);
+                     $user->changePassword($data['directus_email'], $data['directus_password']);
+                 } catch (UserUpdateException $ex) {
+                     throw new CommandFailedException(__t('Error changing admin e-mail') . ': ' . $ex->getMessage());
+                 } catch (PasswordChangeException $ex) {
+                     throw new CommandFailedException(__t('Error changing user password') . ': ' . $ex->getMessage());
+                 }
             }
-
-            $user = new User($directus_path);
-            try {
-                $user->changeEmail(1, $data['directus_email']);
-                $user->changePassword($data['directus_email'], $data['directus_password']);
-            } catch (UserUpdateException $ex) {
-                throw new CommandFailedException(__t('Error changing admin e-mail') . ': ' . $ex->getMessage());
-            } catch (PasswordChangeException $ex) {
-                throw new CommandFailedException(__t('Error changing user password') . ': ' . $ex->getMessage());
-            }
-
         } catch (PDOException $e) {
             echo PHP_EOL . "PDO Excetion!!" . PHP_EOL;
             echo PHP_EOL . PHP_EOL . __t('Module ') . $module . __t(' error: ') . $e->getMessage() . PHP_EOL . PHP_EOL;

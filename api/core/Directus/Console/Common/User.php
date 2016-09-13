@@ -85,10 +85,13 @@ class User
 
         $salt = StringUtils::random();
         $hash = Provider::hashPassword($password, $salt);
+        $user = $this->usersTableGateway->select(['email' => $email])->current();
+
+        if (!$user) {
+            throw new \InvalidArgumentException(__t('User not found'));
+        }
 
         try {
-            $user = $this->usersTableGateway->select(['email' => $email])->current();
-
             $update = [
                 'password' => $hash,
                 'salt' => $salt,
@@ -129,11 +132,8 @@ class User
         ];
 
         try {
-            $changed = $this->usersTableGateway->update($update, ['id' => $id]);
-            if ($changed == 0) {
-                throw new UserUpdateException(__t('Could not change email for ID ') . $id . ': ' . __t('ID not found or e-mail already changed.'));
-            }
-        } catch (PDOException $ex) {
+            $this->usersTableGateway->update($update, ['id' => $id]);
+        } catch (\PDOException $ex) {
             throw new PasswordChangeException(__t('Could not change email for ID ') . $id . ': ' . str($ex));
         }
     }
