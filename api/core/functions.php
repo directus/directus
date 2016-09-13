@@ -143,13 +143,16 @@ if (!function_exists('get_url')) {
      * Get Directus URL
      *
      * @param $path - Extra path to add to the url
+     * @param $defaultHost
+     *
      * @return string
      */
-    function get_url($path = '')
+    function get_url($path = '', $defaultHost = 'localhost')
     {
         $schema = is_ssl() ? 'https://' : 'http://';
+        $host = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : $defaultHost;
         $directusPath = defined('DIRECTUS_PATH') ? DIRECTUS_PATH : '/';
-        $directusHost = rtrim($_SERVER['HTTP_HOST'] . $directusPath, '/') . '/';
+        $directusHost = rtrim($host . $directusPath, '/') . '/';
 
         return $schema . $directusHost . ltrim($path, '/');
     }
