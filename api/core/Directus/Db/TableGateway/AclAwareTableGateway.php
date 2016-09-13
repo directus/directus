@@ -237,10 +237,11 @@ class AclAwareTableGateway extends TableGateway
             $this->emitter->run('postUpdate', [$TableGateway, $recordData, $this->adapter, $this->acl]);
         } else {
             $d = $recordData;
-            unset($d['data']);
             if ($tableName == 'directus_files') {
+                unset($d['data']);
                 $d['user'] = Auth::getUserInfo('id');
             }
+
             $TableGateway->insert($d);
             $recordData[$TableGateway->primaryKeyFieldName] = $TableGateway->getLastInsertValue();
 
