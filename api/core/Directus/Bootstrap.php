@@ -3,8 +3,10 @@
 namespace Directus;
 
 use Directus\Acl\Acl;
+use Directus\Application\Application;
 use Directus\Auth\Provider as AuthProvider;
 use Directus\Db\Connection;
+use Directus\Db\SchemaManager;
 use Directus\Db\Schemas\MySQLSchema;
 use Directus\Db\Schemas\SQLiteSchema;
 use Directus\Db\TableGateway\DirectusPrivilegesTableGateway;
@@ -16,6 +18,9 @@ use Directus\Filesystem\Filesystem;
 use Directus\Filesystem\FilesystemFactory;
 use Directus\Hook\Emitter;
 use Directus\Language\LanguageManager;
+use Directus\Session\Session;
+use Directus\Session\Storage\NativeSessionStorage;
+use Directus\Util\ArrayUtils;
 use Directus\View\Twig\DirectusTwigExtension;
 use Slim\Extras\Log\DateTimeFileWriter;
 use Slim\Extras\Views\Twig;
@@ -115,7 +120,7 @@ class Bootstrap
             'path' => APPLICATION_PATH . '/api/logs'
         ];
 
-        $app = new Slim([
+        $app = new Application([
             'templates.path' => APPLICATION_PATH . '/api/views/',
             'mode' => DIRECTUS_ENV,
             'debug' => false,
@@ -260,41 +265,14 @@ class Bootstrap
         }
 
         return $db;
-        //        $dbConfig = array(
-        //            'driver'    => 'Pdo_Mysql',
-        //            'host'      => DB_HOST,
-        //            'database'  => DB_NAME,
-        //            'username'  => DB_USER,
-        //            'password'  => DB_PASSWORD,
-        //            'charset'   => 'utf8',
-        ////            'options' => array(
-        ////                \PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true
-        ////            ),
-        ////            'driver_options' => array(
-        ////                \PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8; SET CHARACTER SET utf8;",
-        //////                \PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true
-        ////            )
-        //        );
-        //        $db = new \Zend\Db\Adapter\Adapter($dbConfig);
-        //        $connection = $db->getDriver()->getConnection();
-        //        try { $connection->connect(); }
-        //        catch(\PDOException $e) {
-        //            echo "Database connection failed.<br />";
-        //            self::get('log')->fatal(print_r($e, true));
-        //            if('production' !== DIRECTUS_ENV) {
-        //                die(var_dump($e));
-        //            }
-        //            die;
-        //        }
-        //        $dbh = $connection->getResource();
-        //        $dbh->exec("SET CHARACTER SET utf8");
-        //        $dbh->query("SET NAMES utf8");
-        ////        $pdo = $db->getDriver()->getConnection()->getResource();
-        ////        $pdo->setAttribute(\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, true);
-        //        return $db;
     }
 
-    private static function schema()
+    private static function schemaManager()
+    {
+        return new SchemaManager(static::get('schemaAdapter'));
+    }
+
+    private static function schemaAdapter()
     {
         $adapter = self::get('ZendDb');
         $databaseName = $adapter->getPlatform()->getName();
@@ -319,7 +297,8 @@ class Bootstrap
      */
     private static function acl()
     {
-        $acl = new acl;
+        $acl = new acl();
+        $auth = self::get('auth');
         $db = self::get('ZendDb');
 
         $DirectusTablesTableGateway = new DirectusTablesTableGateway($acl, $db);
@@ -337,8 +316,8 @@ class Bootstrap
         }
         $acl::$cms_owner_columns_by_table = $magicOwnerColumnsByTable;
 
-        if (AuthProvider::loggedIn()) {
-            $currentUser = AuthProvider::getUserInfo();
+        if ($auth->loggedIn()) {
+            $currentUser = $auth->getUserInfo();
             $Users = new DirectusUsersTableGateway($acl, $db);
             $cacheFn = function () use ($currentUser, $Users) {
                 return $Users->find($currentUser['id']);
@@ -350,6 +329,7 @@ class Bootstrap
                 $acl->setGroupPrivileges($privilegesTable->getGroupPrivileges($currentUser['group']));
             }
         }
+
         return $acl;
     }
 
@@ -358,24 +338,6 @@ class Bootstrap
         $config = self::get('config');
         return new Filesystem(FilesystemFactory::createAdapter($config['filesystem']));
     }
-
-    /**
-     * Construct CodeBird Twitter API Client
-     * @return \Codebird\Codebird
-     */
-    // private static function codebird() {
-    //     $acl = self::get('acl');
-    //     $db = self::get('ZendDb');
-    //     // Social settings
-    //     $SettingsTableGateway = new DirectusSettingsTableGateway($acl, $db);
-    //     $requiredKeys = array('twitter_consumer_key','twitter_consumer_secret', 'twitter_oauth_token', 'twitter_oauth_token_secret');
-    //     $socialSettings = $SettingsTableGateway->fetchCollection('social', $requiredKeys);
-    //     // Codebird initialization
-    //     \Codebird\Codebird::setConsumerKey($socialSettings['twitter_consumer_key'], $socialSettings['twitter_consumer_secret']);
-    //     $cb = \Codebird\Codebird::getInstance();
-    //     $cb->setToken($socialSettings['twitter_oauth_token'], $socialSettings['twitter_oauth_token_secret']);
-    //     return $cb;
-    // }
 
     /**
      * Scan for extensions.
@@ -543,5 +505,20 @@ class Bootstrap
         });
 
         return $emitter;
+    }
+
+    private static function session()
+    {
+        return new Session(new NativeSessionStorage());
+    }
+
+    private static function auth()
+    {
+        $zendDb = self::get('zendDb');
+        $session = self::get('session');
+        $config = self::get('config');
+        $prefix = ArrayUtils::get($config, 'session.prefix', 'directus_');
+
+        return new AuthProvider($zendDb, $session, $prefix);
     }
 }

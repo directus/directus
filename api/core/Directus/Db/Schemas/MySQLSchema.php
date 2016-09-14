@@ -1,11 +1,16 @@
 <?php
 
+/**
+ * Directus – <http://getdirectus.com>
+ *
+ * @link      The canonical repository – <https://github.com/directus/directus>
+ * @copyright Copyright 2006-2016 RANGER Studio, LLC – <http://rangerstudio.com>
+ * @license   GNU General Public License (v3) – <http://www.gnu.org/copyleft/gpl.html>
+ */
+
 namespace Directus\Db\Schemas;
 
-
 use Directus\Bootstrap;
-use Directus\Db\SchemaManager;
-use Directus\Db\TableGateway\DirectusPreferencesTableGateway;
 use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Predicate\In;
 use Zend\Db\Sql\Predicate\IsNotNull;
@@ -15,28 +20,28 @@ use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\TableIdentifier;
 use Zend\Db\Sql\Where;
 
+/**
+ * MySQLSchema.
+ *
+ * @author Olov Sundström <olov@rngr.org>
+ * @author Daniel Bickett <daniel@rngr.org>
+ * @author Jason El-Massih <jason@rngr.org>
+ * @author Welling Guzmán <welling@rngr.org>
+ */
 class MySQLSchema extends AbstractSchema
 {
     /**
      * @inheritDoc
      */
-    public function getTables()
+    public function getTables(array $filter = [])
     {
-        $zendDb = Bootstrap::get('zendDb');
-        $config = Bootstrap::get('config');
-
-        $blacklist = [];
-        if (array_key_exists('tableBlacklist', $config)) {
-            $blacklist = $config['tableBlacklist'];
-        }
-
         $select = new Select();
         $select->columns([
             'id' => 'TABLE_NAME',
             'table_name' => 'TABLE_NAME',
             'date_created' => 'CREATE_TIME',
             'comment' => 'TABLE_COMMENT',
-            'count' => 'TABLE_ROWS'
+            'row_count' => 'TABLE_ROWS'
         ]);
         $select->from(['ST' => new TableIdentifier('TABLES', 'INFORMATION_SCHEMA')]);
         $select->join(
@@ -45,6 +50,7 @@ class MySQLSchema extends AbstractSchema
             [
                 'hidden' => new Expression('IFNULL(hidden, 0)'),
                 'single' => new Expression('IFNULL(single, 0)'),
+                'default_status' => new Expression('IFNULL(single, NULL)'),
                 'user_create_column',
                 'user_update_column',
                 'date_create_column',
@@ -58,18 +64,22 @@ class MySQLSchema extends AbstractSchema
             $select::JOIN_LEFT
         );
 
-        $ignoredTables = SchemaManager::getDirectusTables(DirectusPreferencesTableGateway::$IGNORED_TABLES);
-        $select->where([
-            'ST.TABLE_SCHEMA' => $zendDb->getCurrentSchema(),
-            'ST.TABLE_TYPE' => 'BASE TABLE',
-            new NotIn('ST.TABLE_NAME', array_merge($ignoredTables, (array)$blacklist)),
-        ]);
+        $condition = [
+            'ST.TABLE_SCHEMA' => $this->adapter->getCurrentSchema(),
+            'ST.TABLE_TYPE' => 'BASE TABLE'
+        ];
 
-        $sql = new Sql($zendDb);
+        if ($filter) {
+            $condition[] = new NotIn('ST.TABLE_NAME', $filter);
+        }
+
+        $select->where($condition);
+
+        $sql = new Sql($this->adapter);
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
 
-        return iterator_to_array($result);
+        return $result;
     }
 
     /**
@@ -77,7 +87,6 @@ class MySQLSchema extends AbstractSchema
      */
     public function getTablesName()
     {
-        $zendDb = Bootstrap::get('zendDb');
         $select = new Select();
 
         $select->columns([
@@ -85,20 +94,15 @@ class MySQLSchema extends AbstractSchema
         ]);
         $select->from(new TableIdentifier('TABLES', 'INFORMATION_SCHEMA'));
         $select->where([
-            'TABLE_SCHEMA' => $zendDb->getCurrentSchema(),
+            'TABLE_SCHEMA' => $this->adapter->getCurrentSchema(),
             'TABLE_TYPE' => 'BASE TABLE'
         ]);
 
-        $sql = new Sql($zendDb);
+        $sql = new Sql($this->adapter);
         $statement = $sql->prepareStatementForSqlObject($select);
-        $rows = iterator_to_array($statement->execute());
+        $result = $statement->execute();
 
-        $tables = [];
-        foreach ($rows as $row) {
-            $tables[] = $row['table_name'];
-        }
-
-        return $tables;
+        return $result;
     }
 
     /**
@@ -148,7 +152,7 @@ class MySQLSchema extends AbstractSchema
             'table_name' => 'TABLE_NAME',
             'date_created' => 'CREATE_TIME',
             'comment' => 'TABLE_COMMENT',
-            'count' => 'TABLE_ROWS'
+            'row_count' => 'TABLE_ROWS'
         ]);
 
         $select->from(['T' => new TableIdentifier('TABLES', 'INFORMATION_SCHEMA')]);
@@ -158,11 +162,16 @@ class MySQLSchema extends AbstractSchema
             [
                 'hidden' => new Expression('IFNULL(hidden, 0)'),
                 'single' => new Expression('IFNULL(single, 0)'),
+                'default_status' => new Expression('IFNULL(single, NULL)'),
                 'user_create_column',
                 'user_update_column',
                 'date_create_column',
                 'date_update_column',
                 'footer',
+                'list_view',
+                'column_groupings',
+                'filter_column_blacklist',
+                'primary_column'
             ],
             $select::JOIN_LEFT
         );
@@ -176,7 +185,7 @@ class MySQLSchema extends AbstractSchema
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
 
-        return $result->current();
+        return $result;
     }
 
     /**
@@ -184,10 +193,6 @@ class MySQLSchema extends AbstractSchema
      */
     public function getColumns($tableName, $params = null)
     {
-        $zendDb = Bootstrap::get('zendDb');
-        $acl = Bootstrap::get('acl');
-
-        $blacklist = $readFieldBlacklist = $acl->getTablePrivilegeList($tableName, $acl::FIELD_READ_BLACKLIST);
         $columnName = isset($params['column_name']) ? $params['column_name'] : -1;
 
         $selectOne = new Select();
@@ -197,6 +202,8 @@ class MySQLSchema extends AbstractSchema
             'column_name' => 'COLUMN_NAME',
             'type' => new Expression('UCASE(C.DATA_TYPE)'),
             'char_length' => 'CHARACTER_MAXIMUM_LENGTH',
+            'precision' => 'NUMERIC_PRECISION',
+            'scale' => 'NUMERIC_SCALE',
             'is_nullable' => 'IS_NULLABLE',
             'default_value' => 'COLUMN_DEFAULT',
             'comment' => new Expression('IFNULL(comment, COLUMN_COMMENT)'),
@@ -223,7 +230,7 @@ class MySQLSchema extends AbstractSchema
 
         $where = new Where();
         $where
-            ->equalTo('C.TABLE_SCHEMA', $zendDb->getCurrentSchema())
+            ->equalTo('C.TABLE_SCHEMA', $this->adapter->getCurrentSchema())
             ->equalTo('C.TABLE_NAME', $tableName)
             ->nest()
             ->addPredicate(new \Zend\Db\Sql\Predicate\Expression('"'. $columnName . '" = -1'))
@@ -231,8 +238,8 @@ class MySQLSchema extends AbstractSchema
             ->equalTo('C.column_name', $columnName)
             ->unnest();
 
-        if (count($blacklist)) {
-            $where->addPredicate(new NotIn('C.COLUMN_NAME', $blacklist));
+        if (isset($params['blacklist']) && count($params['blacklist']) > 0) {
+            $where->addPredicate(new NotIn('C.COLUMN_NAME', $params['blacklist']));
         }
 
         $selectOne->where($where);
@@ -243,6 +250,8 @@ class MySQLSchema extends AbstractSchema
             'column_name',
             'type' => new Expression('UCASE(data_type)'),
             'char_length' => new Expression('NULL'),
+            'precision' => new Expression('NULL'),
+            'scale' => new Expression('NULL'),
             'is_nullable' => new Expression('"NO"'),
             'default_value' => new Expression('NULL'),
             'comment',
@@ -271,8 +280,8 @@ class MySQLSchema extends AbstractSchema
             ->unnest()
             ->addPredicate(new IsNotNull('relationship_type'));
 
-        if (count($blacklist)) {
-            $where->addPredicate(new NotIn('COLUMN_NAME', $blacklist));
+        if (isset($params['blacklist']) && count($params['blacklist']) > 0) {
+            $where->addPredicate(new NotIn('COLUMN_NAME', $params['blacklist']));
         }
 
         $selectTwo->where($where);
@@ -280,11 +289,11 @@ class MySQLSchema extends AbstractSchema
 
         $selectOne->combine($selectTwo);
 
-        $sql = new Sql($zendDb);
+        $sql = new Sql($this->adapter);
         $statement = $sql->prepareStatementForSqlObject($selectOne);
         $result = $statement->execute();
 
-        return iterator_to_array($result);
+        return $result;
     }
 
     public function getAllColumns()
@@ -366,8 +375,9 @@ class MySQLSchema extends AbstractSchema
 
         $sql = new Sql($this->adapter);
         $statement = $sql->prepareStatementForSqlObject($selectOne);
+        $result = $statement->execute();
 
-        return iterator_to_array($statement->execute());
+        return $result;
     }
 
     /**
@@ -459,16 +469,16 @@ class MySQLSchema extends AbstractSchema
      *
      * @return mixed
      */
-    public function parseType($data, $type = null, $length = false)
+    public function castValue($data, $type = null, $length = false)
     {
         $type = strtolower($type);
 
         switch ($type) {
-            case null:
-                break;
             case 'blob':
             case 'mediumblob':
-                return base64_encode($data);
+                // NOTE: Do we really need to encode the blob?
+                $data = base64_encode($data);
+                break;
             case 'year':
             case 'bigint':
             case 'smallint':
@@ -476,20 +486,30 @@ class MySQLSchema extends AbstractSchema
             case 'int':
             case 'long':
             case 'tinyint':
-                return ($data === null) ? null : (int)$data;
+                $data = ($data === null) ? null : (int)$data;
+                break;
             case 'float':
-                return (float)$data;
+                $data = (float)$data;
+                break;
             case 'date':
             case 'datetime':
-                $nullDate = empty($data) || ('0000-00-00 00:00:00' == $data) || ('0000-00-00' === $data);
-                if ($nullDate) {
-                    return null;
+                $format = 'Y-m-d';
+                $zeroData = '0000-00-00';
+                if ($type === 'datetime') {
+                    $format .= ' H:i:s';
+                    $zeroData .= ' 00:00:00';
                 }
-                $date = new \DateTime($data);
-                $formatted = $date->format('Y-m-d H:i:s');
-                return $formatted;
+
+                if ($data === $zeroData) {
+                    $data = null;
+                }
+                $datetime = \DateTime::createFromFormat($format, $data);
+                $data = $datetime ? $datetime->format($format) : null;
+                break;
             case 'time':
-                return !empty($data) ? $data : null;
+                // NOTE: Assuming this are all valid formatted data
+                $data = !empty($data) ? $data : null;
+                break;
             case 'char':
             case 'varchar':
             case 'text':
@@ -497,8 +517,14 @@ class MySQLSchema extends AbstractSchema
             case 'mediumtext':
             case 'longtext':
             case 'var_string':
-                return $data;
+                break;
         }
+
         return $data;
+    }
+
+    public function parseType($data, $type = null, $length = false)
+    {
+        return $this->castValue($data, $type, $length);
     }
 }

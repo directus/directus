@@ -2,6 +2,7 @@
 
 namespace Directus\Db\TableGateway;
 
+use Directus\Database\Object\Table;
 use Directus\Db\Exception;
 use Directus\Db\TableSchema;
 use Zend\Db\Sql\Predicate;
@@ -11,7 +12,7 @@ use Zend\Db\Sql\Where;
 class RelationalTableGatewayWithConditions extends RelationalTableGateway
 {
 
-    public function applyParamsToTableEntriesSelect(array $params, Select $select, array $schema, $hasActiveColumn = false)
+    public function applyParamsToTableEntriesSelect(array $params, Select $select, /*array*/ Table $schema, $hasActiveColumn = false)
     {
 
         $tableName = $this->getTable();

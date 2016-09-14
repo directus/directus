@@ -17,6 +17,12 @@ use Zend\Db\Sql\TableIdentifier;
 
 class TableSchema
 {
+    /**
+     * Schema Manager Instance
+     *
+     * @var SchemaManager
+     */
+    protected static $schemaManager = null;
 
     public static $many_to_one_uis = ['many_to_one', 'single_files'];
 
@@ -27,6 +33,8 @@ class TableSchema
     protected $table;
     protected $db;
     protected $_loadedSchema;
+    protected static $_schemas = [];
+    protected static $_primaryKeys = [];
 
     /**
      * TRANSITIONAL MAPPER. PENDING BUGFIX FOR MANY TO ONE UIS.
@@ -46,36 +54,31 @@ class TableSchema
     ];
 
     /**
-     * TRANSITIONAL MAPPER. PENDING BUGFIX FOR MANY TO ONE UIS.
-     * @see  https://github.com/RNGR/directus6/issues/188
-     * @param  $column_name string
-     * @return string
+     * Get the schema manager instance
+     *
+     * @return SchemaManager
      */
-    public static function getRelatedTableFromManyToOneColumnName($column_name)
+    public static function getSchemaManagerInstance()
     {
-        if (!array_key_exists($column_name, self::$many_to_one_column_name_to_related_table)) {
-            $log = Bootstrap::get('log');
-            $log->warn('TRANSITIONAL MAPPER: Attempting to resolve unknown column name `' . $column_name . '` to a related_table value. Ignoring.');
-
-            return;
+        if (static::$schemaManager === null) {
+            static::$schemaManager = Bootstrap::get('schemaManager');
         }
 
-        return self::$many_to_one_column_name_to_related_table[$column_name];
+        return static::$schemaManager;
     }
-
-    protected static $_schemas = [];
-    protected static $_primaryKeys = [];
 
     /**
      * @todo  for ALTER requests, caching schemas can't be allowed
      */
-    public static function getSchemaArray($table, $params = null, $allowCache = true)
+    public static function getSchemaArray($table, $params = null, $fromCache = true)
     {
-        if (!$allowCache || !array_key_exists($table, self::$_schemas)) {
-            self::$_schemas[$table] = self::loadSchema($table, $params);
-        }
+//        if (!$fromCache || !array_key_exists($table, self::$_schemas)) {
+//            self::$_schemas[$table] = self::loadSchema($table, $params);
+//        }
 
-        return self::$_schemas[$table];
+//        return self::$_schemas[$table];
+
+        return static::getSchemaManagerInstance()->getTableSchema($table, $params, $fromCache);
     }
 
     public static function getColumnSchemaArray($tableName, $columnName)
@@ -123,18 +126,20 @@ class TableSchema
     /**
      * Check whether or not a column is an Alias
      *
-     * @param $column
+     * @param \Directus\Database\Object\Column $column
      *
      * @return bool
      */
     public static function isColumnAnAlias($column)
     {
-        $isLegacyAliasType = static::isColumnTypeAnAlias($column['type']);
+        $isLegacyAliasType = static::isColumnTypeAnAlias($column->getType());
         $isAliasType = false;
 
-        if (isset($column['relationship'])) {
-            $relationship = $column['relationship'];
-            $isAliasType = static::isColumnTypeAnAlias(ArrayUtils::get($relationship, 'type', null));
+        // if (isset($column['relationship'])) {
+        $relationship = $column->getRelationship();
+        if ($relationship) {
+            //$isAliasType = static::isColumnTypeAnAlias(ArrayUtils::get($relationship, 'type', null));
+            $isAliasType = static::isColumnTypeAnAlias($relationship->getType());
         }
 
         return $isLegacyAliasType || $isAliasType;
@@ -169,25 +174,32 @@ class TableSchema
         }
 
         foreach ($columns as $column) {
-            $columnNames[] = $column['id'];
+            $columnNames[] = $column->getId();
         }
 
         return $columnNames;
     }
 
-    public static function getAllNonAliasTableColumns($table)
+    /**
+     * @param $tableName
+     * @return \Directus\Database\Object\Column |bool
+     */
+    public static function getAllNonAliasTableColumns($tableName)
     {
         $columns = [];
-        $schemaArray = self::loadSchema($table);
+        $schemaArray = static::getSchemaManagerInstance()->getColumns($tableName);//self::loadSchema($table);
         if (false === $schemaArray) {
             return false;
         }
 
         foreach ($schemaArray as $column) {
-            if (self::columnIsCollectionAssociation($column)) {
+            /*if (self::columnIsCollectionAssociation($column)) {
                 continue;
             }
-            $columns[] = $column;
+            $columns[] = $column;*/
+            if (!static::isColumnAnAlias($column)) {
+                $columns[] = $column;
+            }
         }
 
         return $columns;
@@ -218,7 +230,8 @@ class TableSchema
             return [];
         }
 
-        $result = SchemaManager::getColumnsNames($table);
+        $schemaManager = Bootstrap::get('schemaManager');
+        $result = $schemaManager->getColumnsName($table);
 
         $columns = [];
         $primaryKeyFieldName = self::getTablePrimaryKey($table);
@@ -390,7 +403,9 @@ class TableSchema
             return self::$_primaryKeys[$tableName];
         }
 
-        $columnName = SchemaManager::getPrimaryKey($tableName);
+        $schemaManager = Bootstrap::get('schemaManager');
+
+        $columnName = $schemaManager->getPrimaryKey($tableName);
 
         return self::$_primaryKeys[$tableName] = $columnName;
     }
@@ -417,8 +432,9 @@ class TableSchema
         // Omit columns which are on this table's read field blacklist for the group of
         // the currently authenticated user.
         $acl = Bootstrap::get('acl');
+        $schemaManager = Bootstrap::get('schemaManager');
 
-        $columns = SchemaManager::getColumns($tbl_name, $params);
+        $columns = $schemaManager->getColumns($tbl_name, $params);
         if (!self::canGroupViewTable($tbl_name)) {
             // return [];
             return false;
@@ -448,7 +464,7 @@ class TableSchema
 
             // Basic type casting. Should eventually be done with the schema
             if ($hasDefaultValue) {
-                $row['default_value'] = SchemaManager::parseType($row['default_value'], $row['type']);
+                $row['default_value'] = $schemaManager->getSchema()->parseType($row['default_value'], $row['type']);
             }
 
             $row['required'] = (bool)$row['required'];

@@ -1,82 +1,150 @@
 <?php
 
+/**
+ * Directus – <http://getdirectus.com>
+ *
+ * @link      The canonical repository – <https://github.com/directus/directus>
+ * @copyright Copyright 2006-2016 RANGER Studio, LLC – <http://rangerstudio.com>
+ * @license   GNU General Public License (v3) – <http://www.gnu.org/copyleft/gpl.html>
+ */
+
 namespace Directus\Auth;
 
-use Directus\Bootstrap;
+use Directus\Auth\Exception\UserAlreadyLoggedInException;
+use Directus\Auth\Exception\UserIsntLoggedInException;
+use Directus\Session\Session;
 use Directus\Util\ArrayUtils;
 use Directus\Util\StringUtils;
+use Zend\Db\Adapter\Adapter;
 use Zend\Db\TableGateway\TableGateway;
 
+/**
+ * Authentication Provider
+ *
+ * @author Daniel Bickett <daniel@rngr.org>
+ * @author Jason El-Massih <jason@rngr.org>
+ * @author Welling Guzmán <welling@rngr.org>
+ */
 class Provider
 {
-
     const USER_RECORD_CACHE_SESSION_KEY = 'auth_provider_user_record_cache';
 
-    protected static $prependedSessionKey = false;
-    protected static $authenticated;
-
-    public static $userCacheRefreshProvider;
+    protected $prependedSessionKey = false;
+    protected $authenticated;
+    protected $userCacheRefreshProvider;
 
     /**
      * The user ID of the public API user.
+     *
      * @var integer
      */
-    public static $PUBLIC_USER_ID = 0;
+    protected $PUBLIC_USER_ID = 0;
 
     /**
      * The key where we store authentication information on the session array.
+     *
      * @var string
      */
-    public static $SESSION_KEY = 'auth_user';
+    protected $SESSION_KEY = 'auth_user';
+
+    /**
+     * Db Connection
+     *
+     * @var Adapter
+     */
+    protected $dbConnection;
+
+    /**
+     * Session object
+     *
+     * @var Session
+     */
+    protected $session;
+
+    /**
+     * Session prefix
+     *
+     * @var array
+     */
+    protected $prefix;
+
+    public function __construct(Adapter $dbConnection, Session $session, $prefix = 'directus_')
+    {
+        $this->dbConnection = $dbConnection;
+        $this->session = $session;
+        $this->prefix = $prefix;
+
+        if (!is_string($this->prefix) || empty($prefix)) {
+            throw new \RuntimeException(__t('you_must_define_session_prefix_in_configuration'));
+        }
+    }
 
     /**
      * Change where authentication information is stored on the session array.
+     *
      * @param string $key
+     *
      * @return  null
      */
-    public static function setSessionKey($key)
+    public function setSessionKey($key)
     {
-        self::$SESSION_KEY = $key;
-        self::$prependedSessionKey = false;
-        self::prependSessionKey();
+        $this->SESSION_KEY = $key;
+        $this->prependedSessionKey = false;
+        $this->prependSessionKey();
     }
 
-    protected static function prependSessionKey()
+    /**
+     * Get the session key
+     *
+     * @return string
+     */
+    public function getSessionKey()
     {
-        if (self::$prependedSessionKey) {
-            return;
-        }
-        $config = Bootstrap::get('config');
-        if (!isset($config['session']) || !isset($config['session']['prefix']) || empty($config['session']['prefix'])) {
-            throw new \RuntimeException(__t('you_must_define_session_prefix_in_configuration'));
-        }
-        self::$SESSION_KEY = $config['session']['prefix'] . self::$SESSION_KEY;
-        self::$prependedSessionKey = true;
+        return $this->SESSION_KEY;
     }
 
-    protected static function enforceUserIsAuthenticated()
+    /**
+     * Prepend the prefix to the key
+     *
+     * @return void
+     */
+    protected function prependSessionKey()
     {
-        self::prependSessionKey();
-        if (!self::loggedIn()) {
+        // @TODO: Prepend should be done immediately
+        if (!$this->prependedSessionKey) {
+            $this->SESSION_KEY = $this->prefix . $this->SESSION_KEY;
+            $this->prependedSessionKey = true;
+        }
+    }
+
+    /**
+     * @throws UserIsntLoggedInException
+     */
+    protected function enforceUserIsAuthenticated()
+    {
+        $this->prependSessionKey();
+        if (!$this->loggedIn()) {
             throw new UserIsntLoggedInException(__t('attempting_to_inspect_the_authenticated_user_when_a_user_is_not_authenticated'));
         }
     }
 
     /**
      * Attempt authentication after user submission.
+     *
      * @param  int $uid The User account's ID.
      * @param  string $password The User account's (actual) hashed password string.
      * @param  string $salt The User account's salt string.
      * @param  string $passwordAttempt The User's attempted, unhashed password string.
+     *
      * @return boolean
      */
-    public static function login($uid, $password, $salt, $passwordAttempt)
+    public function login($uid, $password, $salt, $passwordAttempt)
     {
-        self::prependSessionKey();
-        //$hashedPasswordAttempt = self::hashPassword($passwordAttempt, $salt);
-        if (self::needsReHashPassword($password, $salt, $passwordAttempt)) {
-            $password = self::hashPassword($passwordAttempt);
-            $zendDb = Bootstrap::get('zendDb');
+        $this->prependSessionKey();
+        if ($this->needsReHashPassword($password, $salt, $passwordAttempt)) {
+            $password = $this->hashPassword($passwordAttempt);
+            // TODO: Pass the user table instead
+            $zendDb = $this->dbConnection;
             $usersTable = new TableGateway('directus_users', $zendDb);
             $usersTable->update([
                 'password' => $password,
@@ -85,9 +153,10 @@ class Provider
         }
 
         if (password_verify($passwordAttempt, $password)) {
-            self::completeLogin($uid);
+            $this->completeLogin($uid);
             return true;
         }
+
         return false;
     }
 
@@ -95,48 +164,49 @@ class Provider
      * Force a user id to be the logged user
      *
      * @param  int $uid The User account's ID.
+     *
      * @return boolean
      */
-    public static function setLoggedUser($uid)
+    public function setLoggedUser($uid)
     {
-        self::$authenticated = false;
-        self::completeLogin($uid);
+        $this->authenticated = false;
+        $this->completeLogin($uid);
     }
 
     /**
      * De-authenticate the logged-in user.
+     *
      * @return null
-     * @throws  \Directus\Auth\UserIsntLoggedInException
+     *
+     * @throws  \Directus\Auth\Exception\UserIsntLoggedInException
      */
-    public static function logout()
+    public function logout()
     {
-        self::prependSessionKey();
-        self::enforceUserIsAuthenticated();
-        self::expireCachedUserRecord();
-        $_SESSION[self::$SESSION_KEY] = [];
+        $this->prependSessionKey();
+        $this->enforceUserIsAuthenticated();
+        $this->expireCachedUserRecord();
+        $this->session->set($this->SESSION_KEY, []);
     }
 
     /**
      * Check if a user is logged in.
+     *
      * @return boolean
      */
-    public static function loggedIn()
+    public function loggedIn()
     {
-        if (self::$authenticated != null) {
-            return self::$authenticated;
+        if ($this->authenticated != null) {
+            return $this->authenticated;
         }
 
-        self::prependSessionKey();
-        if (php_sapi_name() != 'cli' && '' === session_id()) {
-            session_start();
-        }
-        self::$authenticated = $isLoggedIn = false;
-        $ZendDb = Bootstrap::get('ZendDb');
-        $session = [];
-        if (isset($_SESSION[self::$SESSION_KEY]) && !empty($_SESSION[self::$SESSION_KEY])) {
-            $session = $_SESSION[self::$SESSION_KEY];
+        $this->prependSessionKey();
+        if (!$this->session->isStarted()) {
+            $this->session->start();
         }
 
+        $this->authenticated = $isLoggedIn = false;
+        $ZendDb = $this->dbConnection;
+        $session = $this->session->get($this->SESSION_KEY);
         if (is_array($session) && ArrayUtils::contains($session, ['id', 'access_token'])) {
             $DirectusUsersTableGateway = new \Zend\Db\TableGateway\TableGateway('directus_users', $ZendDb);
 
@@ -146,26 +216,28 @@ class Provider
             ]);
 
             if ($user->count()) {
-                self::$authenticated = $isLoggedIn = true;
+                $this->authenticated = $isLoggedIn = true;
             }
         }
-
 
         return $isLoggedIn;
     }
 
     /**
      * Retrieve metadata about the currently logged in user.
+     *
      * @param null|string $attribute
+     *
      * @return mixed|array Authenticated user metadata.
-     * @throws  \Directus\Auth\UserIsntLoggedInException
+     *
+     * @throws  \Directus\Auth\Exception\UserIsntLoggedInException
      */
-    public static function getUserInfo($attribute = null)
+    public function getUserInfo($attribute = null)
     {
-        self::prependSessionKey();
-        self::enforceUserIsAuthenticated();
+        $this->prependSessionKey();
+        $this->enforceUserIsAuthenticated();
 
-        $info = $_SESSION[self::$SESSION_KEY];
+        $info = $this->session->get($this->SESSION_KEY);
         if ($attribute !== null) {
             return array_key_exists($attribute, $info) ? $info[$attribute] : null;
         }
@@ -173,19 +245,19 @@ class Provider
         return $info;
     }
 
-    public static function expireCachedUserRecord()
+    public function expireCachedUserRecord()
     {
-        self::prependSessionKey();
-        $_SESSION[self::USER_RECORD_CACHE_SESSION_KEY] = null;
+        $this->prependSessionKey();
+
+        $this->session->set(self::USER_RECORD_CACHE_SESSION_KEY, null);
     }
 
-    public static function getUserRecord()
+    public function getUserRecord()
     {
-        self::prependSessionKey();
+        $this->prependSessionKey();
+        $this->enforceUserIsAuthenticated();
 
-        self::enforceUserIsAuthenticated();
-
-        $userRefreshProvider = self::$userCacheRefreshProvider;
+        $userRefreshProvider = $this->userCacheRefreshProvider;
         if (!is_callable($userRefreshProvider)) {
             throw new \RuntimeException(__t('undefined_user_cache_refresh_provider'));
         }
@@ -193,68 +265,65 @@ class Provider
         /**
          * @todo  tmp until cache expiration is nailed down.
          */
-        $userInfo = self::getUserInfo();
-        return $userRefreshProvider($userInfo['id']);
+        $userInfo = $this->getUserInfo();
 
-        /* All of this is unreachable
-        if(!isset($_SESSION[self::USER_RECORD_CACHE_SESSION_KEY])) {
-            self::expireCachedUserRecord();
-        }
-        $cachedUserRecord =& $_SESSION[self::USER_RECORD_CACHE_SESSION_KEY];
-        if(is_null($cachedUserRecord)) {
-            $userInfo = self::getUserInfo();
-            $userRefreshProvider = self::$userCacheRefreshProvider;
-            $cachedUserRecord = $userRefreshProvider($userInfo['id']);
-        }
-        return $cachedUserRecord;
-        */
+        return $userRefreshProvider($userInfo['id']);
     }
 
-    public static function setUserCacheRefreshProvider($callable)
+    public function setUserCacheRefreshProvider($callable)
     {
-        self::prependSessionKey();
+        $this->prependSessionKey();
         if (!is_callable($callable)) {
             throw new \InvalidArgumentException(__t('argument_must_be_callable'));
         }
-        self::$userCacheRefreshProvider = $callable;
+
+        $this->userCacheRefreshProvider = $callable;
     }
 
     /**
      * After a successful login attempt, registers the user in the session.
+     *
      * @param  int $uid The User account's ID.
+     *
      * @return null
-     * @throws  \Directus\Auth\UserAlreadyLoggedInException
+     *
+     * @throws  \Directus\Auth\Exception\UserAlreadyLoggedInException
      */
-    private static function completeLogin($uid)
+    private function completeLogin($uid)
     {
-        self::prependSessionKey();
-        if (self::loggedIn()) {
+        $this->prependSessionKey();
+        if ($this->loggedIn()) {
             throw new UserAlreadyLoggedInException(__t('attempting_to_authenticate_a_user_when_a_user_is_already_authenticated'));
         }
+
         $user = ['id' => $uid, 'access_token' => sha1($uid . StringUtils::randomString())];
-        $_SESSION[self::$SESSION_KEY] = $user;
-        self::$authenticated = true;
+        $this->session->set($this->SESSION_KEY, $user);
+        $this->authenticated = true;
     }
 
     /**
      * Run the hashing algorithm on a password and salt value.
+     *
      * @param  string $password
      * @param  string $salt
+     *
      * @return string
      */
-    public static function hashPassword($password, $salt = '')
+    public function hashPassword($password, $salt = '')
     {
         return password_hash($password, PASSWORD_DEFAULT, ['cost' => 12]);
     }
 
     /**
      * Check if the password hash needs to be rehashed
+     *
      * @param  string $password The User account's (actual) hashed password string.
      * @param  string $salt The User account's salt string.
      * @param  string $passwordAttempt The User's attempted, unhashed password string.
+     *
      * @return boolean
      */
-    public static function needsReHashPassword($password, $salt, $passwordAttempt)
+    public function needsReHashPassword($password, $salt, $passwordAttempt)
     {
         // if this was the old hash algorithm (sha1), it needs to be rehashed
         if (sha1($salt . $passwordAttempt) === $password) {
@@ -263,16 +332,4 @@ class Provider
 
         return false;
     }
-
-}
-
-/**
- * Exceptions
- */
-class UserAlreadyLoggedInException extends \Exception
-{
-}
-
-class UserIsntLoggedInException extends \Exception
-{
 }

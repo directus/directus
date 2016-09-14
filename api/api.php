@@ -72,7 +72,7 @@ $v = API_VERSION;
  */
 
 $app = Bootstrap::get('app');
-$requestNonceProvider = new RequestNonceProvider();
+$requestNonceProvider = new RequestNonceProvider(Bootstrap::get('session'));
 
 /**
  * Load Registered Hooks
@@ -128,6 +128,7 @@ $ZendDb = Bootstrap::get('ZendDb');
  * @var \Directus\Acl
  */
 $acl = Bootstrap::get('acl');
+$authentication = Bootstrap::get('auth');
 
 $app->emitter->run('application.boot', $app);
 
@@ -136,7 +137,7 @@ $app->emitter->run('application.boot', $app);
  */
 create_ping_route($app);
 
-$app->hook('slim.before.dispatch', function () use ($app, $requestNonceProvider, $authAndNonceRouteWhitelist, $ZendDb, $acl) {
+$app->hook('slim.before.dispatch', function () use ($app, $requestNonceProvider, $authAndNonceRouteWhitelist, $ZendDb, $acl, $authentication) {
     // API/Server is about to initialize
     $app->emitter->run('application.init', $app);
 
@@ -194,7 +195,7 @@ $app->hook('slim.before.dispatch', function () use ($app, $requestNonceProvider,
             // Reset SESSION values
             $_SESSION = [];
 
-            Auth::setLoggedUser($user['id']);
+            $authentication->setLoggedUser($user['id']);
             $app->emitter->run('directus.authenticated', [$app, $user]);
             $app->emitter->run('directus.authenticated.token', [$app, $user]);
 
@@ -210,7 +211,7 @@ $app->hook('slim.before.dispatch', function () use ($app, $requestNonceProvider,
         }
 
         /** Enforce required authentication. */
-        if (!Auth::loggedIn()) {
+        if (!$authentication->loggedIn()) {
             $app->halt(401, __t('you_must_be_logged_in_to_access_the_api'));
         }
 
@@ -253,7 +254,7 @@ $app->hook('slim.after', function () use ($app) {
  */
 
 $DirectusUsersTableGateway = new DirectusUsersTableGateway($acl, $ZendDb);
-Auth::setUserCacheRefreshProvider(function ($userId) use ($DirectusUsersTableGateway) {
+$authentication->setUserCacheRefreshProvider(function ($userId) use ($DirectusUsersTableGateway) {
     $cacheFn = function () use ($userId, $DirectusUsersTableGateway) {
         return $DirectusUsersTableGateway->find($userId);
     };
@@ -262,8 +263,8 @@ Auth::setUserCacheRefreshProvider(function ($userId) use ($DirectusUsersTableGat
     return $user;
 });
 
-if (Auth::loggedIn()) {
-    $user = Auth::getUserRecord();
+if ($authentication->loggedIn()) {
+    $user = $authentication->getUserRecord();
     $acl->setUserId($user['id']);
     $acl->setGroupId($user['group']);
 }
@@ -949,12 +950,12 @@ $app->post("/$v/tables/:table/columns/:column/?", function ($table, $column) use
 
 /** (Optional slim route params break when these two routes are merged) */
 
-$app->map("/$v/groups/?", function () use ($app, $ZendDb, $acl, $requestPayload) {
+$app->map("/$v/groups/?", function () use ($app, $ZendDb, $acl, $requestPayload, $authentication) {
     // @TODO need PUT
     $GroupsTableGateway = new TableGateway($acl, 'directus_groups', $ZendDb);
     $tableName = 'directus_groups';
     $GroupsTableGateway = new TableGateway($acl, $tableName, $ZendDb);
-    $currentUser = Auth::getUserInfo();
+    $currentUser = $authentication->getUserInfo();
     switch ($app->request()->getMethod()) {
         case 'POST':
             $newRecord = $GroupsTableGateway->manageRecordUpdate($tableName, $requestPayload);

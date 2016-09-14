@@ -3,6 +3,7 @@ namespace Directus\Db\TableGateway;
 
 use Directus\Auth\Provider as AuthProvider;
 use Directus\Bootstrap;
+use Directus\Database\Object\Table;
 use Directus\Db\Exception;
 use Directus\Db\RowGateway\AclAwareRowGateway;
 use Directus\Db\SchemaManager;
@@ -65,7 +66,7 @@ class RelationalTableGateway extends AclAwareTableGateway
 
         $schemaArray = TableSchema::getSchemaArray($tableName);
 
-        $currentUser = AuthProvider::getUserRecord();
+        $currentUser = Bootstrap::get('auth')->getUserRecord();
 
         // Upload file if necessary
         $TableGateway->copyFiles($tableName, $recordData);
@@ -619,7 +620,7 @@ class RelationalTableGateway extends AclAwareTableGateway
         return $params;
     }
 
-    public function applyParamsToTableEntriesSelect(array $params, Select $select, array $schema, $hasActiveColumn = false)
+    public function applyParamsToTableEntriesSelect(array $params, Select $select, /*array*/ Table $schema, $hasActiveColumn = false)
     {
         $select->order(implode(' ', [$params['orderBy'], $params['orderDirection']]));
         if (isset($params['perPage']) && isset($params['currentPage'])) {
@@ -699,12 +700,13 @@ class RelationalTableGateway extends AclAwareTableGateway
 
         // table only has one column
         // return an empty array
-        if (!is_numeric_array($schemaArray)) {
+        // if (!is_array($schemaArray)) {
+        if (count($schemaArray->getColumns()) <= 1) {
             return [];
         }
 
         // Table has `status` column?
-        $hasActiveColumn = $this->schemaHasActiveColumn($schemaArray);
+        $hasActiveColumn = $schemaArray->hasStatusColumn();//$this->schemaHasActiveColumn($schemaArray);
 
         $params = $this->applyDefaultEntriesSelectParams($params);
 
@@ -723,7 +725,7 @@ class RelationalTableGateway extends AclAwareTableGateway
         $select = $this->applyParamsToTableEntriesSelect($params, $select, $schemaArray, $hasActiveColumn);
 
         $currentUserId = null;
-        $currentUser = AuthProvider::getUserInfo();
+        $currentUser = Bootstrap::get('auth')->getUserInfo();
         $currentUserId = intval($currentUser['id']);
 
         $cmsOwnerId = $this->acl->getCmsOwnerColumnByTable($this->table);
@@ -1150,20 +1152,20 @@ class RelationalTableGateway extends AclAwareTableGateway
         return $alias_fields;
     }
 
-    /**
-     * Does a table schema array contain an `status` column?
-     * @param  array $schema Table schema array.
-     * @return boolean
-     */
-    public function schemaHasActiveColumn($schema)
-    {
-        foreach ($schema as $col) {
-            if (STATUS_COLUMN_NAME == $col['column_name']) {
-                return true;
-            }
-        }
-        return false;
-    }
+//    /**
+//     * Does a table schema array contain an `status` column?
+//     * @param  array $schema Table schema array.
+//     * @return boolean
+//     */
+//    public function schemaHasActiveColumn($schema)
+//    {
+//        foreach ($schema as $col) {
+//            if (STATUS_COLUMN_NAME == $col['column_name']) {
+//                return true;
+//            }
+//        }
+//        return false;
+//    }
 
     /**
      * Yield total number of rows on a table, irrespective of any status column.

@@ -2,8 +2,17 @@
 
 namespace Directus\Db\Schemas;
 
+use Zend\Db\ResultSet\ResultSet;
+
 interface SchemaInterface
 {
+    /**
+     * Get the schema name
+     *
+     * @return string
+     */
+    public function getSchemaName();
+
     /**
      * Get a list of all tables structures.
      *
@@ -55,23 +64,24 @@ interface SchemaInterface
      *
      * @param string $tableName
      * @param array $params
-     * @return array
+     *
+     * @return ResultSet
      */
     public function getColumns($tableName, $params = null);
 
     /**
-     * Get all the column names on the given table name
+     * Get all columns of the current schema
      *
-     * @param $tableName
-     * @return array
+     * @return ResultSet
      */
-    public function getColumnsNames($tableName);
+    public function getAllColumns();
 
     /**
      * Check if the given table name has a given column name
      *
      * @param $tableName
      * @param $columnName
+     *
      * @return bool
      */
     public function hasColumn($tableName, $columnName);
@@ -81,6 +91,7 @@ interface SchemaInterface
      *
      * @param $tableName
      * @param $columnName
+     *
      * @return array
      */
     public function getColumn($tableName, $columnName);
@@ -89,6 +100,7 @@ interface SchemaInterface
      * Check if the given table name has primary key column
      *
      * @param $tableName
+     *
      * @return bool
      */
     public function hasPrimaryKey($tableName);
@@ -97,6 +109,7 @@ interface SchemaInterface
      * Get the primary key of the given table name.
      *
      * @param $tableName
+     *
      * @return array
      */
     public function getPrimaryKey($tableName);
@@ -113,6 +126,7 @@ interface SchemaInterface
      *
      * @param $tableName
      * @param $columnName
+     *
      * @return array
      */
     public function getUIOptions($tableName, $columnName);
@@ -121,25 +135,51 @@ interface SchemaInterface
      * Get the column UI
      *
      * @param $column
+     *
      * @return string
      */
     public function getColumnUI($column);
 
     /**
-     * Parse record values by the schema type
+     * Cast record values by the schema type
      *
      * @param array $records
-     * @param $nonAliasSchemaColumns
+     * @param array $columns
      *
      * @return array
      */
-    public function parseRecordValuesByType(array $records, $nonAliasSchemaColumns);
+    public function castRecordValues(array $records, $columns);
 
     /**
-     * Cast string values to its database type.
+     * Cast value to its database type.
      *
-     * @param $data
-     * @param null $type
+     * @param mixed $data
+     * @param null  $type
+     *
+     * @return mixed
+     */
+    public function castValue($data, $type = null);
+
+    // TODO: remove parseRecordValuesByType and ParseType
+    /**
+     * Cast record values by the schema type
+     *
+     * @see SschemaInterface::castRecordValues
+     *
+     * @param array $records
+     * @param array $columns
+     *
+     * @return array
+     */
+    public function parseRecordValuesByType(array $records, $columns);
+
+    /**
+     * Cast value to its database type.
+     *
+     * @see SchemaInterface::castValue
+     *
+     * @param mixed $data
+     * @param null  $type
      *
      * @return mixed
      */

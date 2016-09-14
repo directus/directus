@@ -40,6 +40,29 @@ class FunctionsTest extends PHPUnit_Framework_TestCase
 
         $result = find($array, 'name', 'john');
         $this->assertSame('john', $result['name']);
+        $this->assertNull(find($array, 'name', 'peter'));
+    }
+
+    public function testToNameValue()
+    {
+        $array = [
+            'john' => 2300,
+            'peter' => 330
+        ];
+
+        $result = to_name_value($array, null);
+        $expected = [
+            ['name' => 'john', 'value' => 2300],
+            ['name' => 'peter', 'value' => 330]
+        ];
+        $this->assertSame($expected, $result);
+
+        $result = to_name_value($array, ['status' => 1]);
+        $expected = [
+            ['name' => 'john', 'value' => 2300, 'status' => 1],
+            ['name' => 'peter', 'value' => 330, 'status' => 1]
+        ];
+        $this->assertSame($expected, $result);
     }
 
     public function testIsNumericKeyArray()

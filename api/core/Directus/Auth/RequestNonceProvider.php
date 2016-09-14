@@ -1,11 +1,32 @@
 <?php
 
+/**
+ * Directus – <http://getdirectus.com>
+ *
+ * @link      The canonical repository – <https://github.com/directus/directus>
+ * @copyright Copyright 2006-2016 RANGER Studio, LLC – <http://rangerstudio.com>
+ * @license   GNU General Public License (v3) – <http://www.gnu.org/copyleft/gpl.html>
+ */
+
 namespace Directus\Auth;
 
 use Directus\Util\StringUtils;
+use Directus\Session\Session;
+use Directus\Auth\Exception\RequestNonceHasntBeenProcessed;
 
+/**
+ * Request Nonce Provider
+ *
+ * @author Daniel Bickett <daniel@rngr.org>
+ */
 class RequestNonceProvider
 {
+    /**
+     * Session instance
+     *
+     * @var Session
+     */
+    protected $session;
 
     /**
      * Define via constructor argument.
@@ -35,7 +56,7 @@ class RequestNonceProvider
      */
     private $new_nonces_this_request = [];
 
-    public function __construct($options = [])
+    public function __construct(Session $session, $options = [])
     {
         $default_options = [
             'nonce_pool_size' => 10,
@@ -45,15 +66,17 @@ class RequestNonceProvider
 
         $this->options = array_merge($default_options, $options);
 
-        if ('' == session_id()) {
-            session_start();
+        $this->session = $session;
+        if (!$this->session->isStarted()) {
+            $this->session->start();
         }
 
-        if (!isset($_SESSION['request_nonces'])) {
-            $_SESSION['request_nonces'] = [];
+        if (!$this->session->get('request_nonces')) {
+            $this->session->set('request_nonces', []);
         }
 
-        $this->nonce_pool = &$_SESSION['request_nonces'];
+        $requestNonces = $this->session->get('request_nonces');
+        $this->nonce_pool = &$requestNonces;
 
         if (empty($this->nonce_pool)) {
             $this->replenishNoncePool();
@@ -97,7 +120,8 @@ class RequestNonceProvider
     {
         if (is_null($this->nonce_this_request)) {
             $nonce_header = $this->options['nonce_request_header'];
-            $this->nonce_this_request = false;
+            // NOTE: reason to set this to false?
+            // $this->nonce_this_request = false;
             $headerAsSuperglobalKey = 'HTTP_' . strtoupper(str_replace('-', '_', $nonce_header));
             if (isset($_SERVER[$headerAsSuperglobalKey])) {
                 $this->nonce_this_request = $_SERVER[$headerAsSuperglobalKey];
@@ -182,11 +206,4 @@ class RequestNonceProvider
         return $this->options;
     }
 
-}
-
-/**
- * Exceptions
- */
-class RequestNonceHasntBeenProcessed extends \Exception
-{
 }

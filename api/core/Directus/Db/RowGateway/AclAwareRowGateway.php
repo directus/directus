@@ -15,6 +15,7 @@ use Directus\Db\TableSchema;
 use Directus\Util\Formatting;
 use Zend\Db\Adapter\Exception\InvalidQueryException;
 use Zend\Db\RowGateway\RowGateway;
+use Zend\Db\Adapter\AdapterInterface;
 
 class AclAwareRowGateway extends RowGateway
 {
@@ -23,11 +24,13 @@ class AclAwareRowGateway extends RowGateway
 
     /**
      * Constructor
+     *
      * @param acl $acl
      * @param string $primaryKeyColumn
      * @param string|\Zend\Db\Sql\TableIdentifier $table
-     * @param Adapter|Sql $adapterOrSql
-     * @throws Exception\InvalidArgumentException
+     * @param AdapterInterface|Sql $adapterOrSql
+     *
+     * @throws \InvalidArgumentException
      */
     public function __construct(Acl $acl, $primaryKeyColumn, $table, $adapterOrSql)
     {
@@ -65,22 +68,11 @@ class AclAwareRowGateway extends RowGateway
 
     public static function stringifyPrimaryKeyForRecordDebugRepresentation(array $primaryKeyData)
     {
-        if (null === $primaryKeyData) {
+        if (empty($primaryKeyData)) {
             return 'null primary key';
         }
 
         return 'primary key (' . implode(':', array_keys($primaryKeyData)) . ') "' . implode(':', $primaryKeyData) . '"';
-    }
-
-    // // as opposed to toArray()
-    // // used only for proof of concept
-    // public function __getUncensoredDataForTesting() {
-    //     return $this->data;
-    // }
-
-    public function logger()
-    {
-        return Bootstrap::get('app')->getLog();
     }
 
     /**
@@ -94,9 +86,6 @@ class AclAwareRowGateway extends RowGateway
      */
     public function populateSkipAcl(array $rowData, $rowExistsInDatabase = false)
     {
-        // $log = $this->logger();
-        // $log->info(__CLASS__."#".__FUNCTION__);
-        // $log->info("args: " . print_r(func_get_args(), true));
         $this->initialize();
         $rowData = $this->preSaveDataHook($rowData, $rowExistsInDatabase);
         $this->data = $rowData;
@@ -236,8 +225,7 @@ class AclAwareRowGateway extends RowGateway
         try {
             return parent::save();
         } catch (InvalidQueryException $e) {
-            $this->logger()->fatal('Error running save on this data: ' . print_r($this->data, true));
-            throw $e;
+            throw new \Exception('Error running save on this data: ' . print_r($this->data, true));
         }
     }
 

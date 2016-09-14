@@ -1,48 +1,47 @@
 <?php
 
+/**
+ * Directus – <http://getdirectus.com>
+ *
+ * @link      The canonical repository – <https://github.com/directus/directus>
+ * @copyright Copyright 2006-2016 RANGER Studio, LLC – <http://rangerstudio.com>
+ * @license   GNU General Public License (v3) – <http://www.gnu.org/copyleft/gpl.html>
+ */
+
 namespace Directus\Db;
 
-use Directus\Util\StringUtils;
 use Zend\Db\Adapter\Adapter;
 
+/**
+ * Connection Adapter
+ *
+ * @author Welling Guzmán <welling@rngr.org>
+ */
 class Connection extends Adapter
 {
     /**
-     * Name of the connection driver
-     * @var string
-     */
-    protected $driverName;
-
-    /**
      * Database configuration
+     *
      * @var array
      */
     protected $config = [];
 
     /**
-     * Connection constructor.
-     * @param array $config
-     */
-    public function __construct(array $config)
-    {
-        $this->config = $config;
-
-        parent::__construct($config);
-    }
-
-    /**
      * Check if this connection has strict mode enabled.
+     *
      * @return bool
+     *
      * @throws \BadMethodCallException
      */
     public function isStrictModeEnabled()
     {
-        switch ($this->driverName) {
+        $enabled = false;
+        $driverName = $this->getDriver()->getDatabasePlatformName();
+
+        switch (strtolower($driverName)) {
             case 'mysql':
                 $enabled = $this->isMySQLStrictModeEnabled();
                 break;
-            default:
-                return null;
         }
 
         return $enabled;
@@ -50,12 +49,13 @@ class Connection extends Adapter
 
     /**
      * Check if MySQL has Strict mode enabled
+     *
      * @return bool
      */
     protected function isMySQLStrictModeEnabled()
     {
         $strictModes = ['STRICT_ALL_TABLES', 'STRICT_TRANS_TABLES'];
-        $statement = $this->prepare('SELECT @@sql_mode as modes');
+        $statement = $this->query('SELECT @@sql_mode as modes');
         $result = $statement->execute();
         $modesEnabled = $result->current();
 
@@ -70,28 +70,13 @@ class Connection extends Adapter
         return false;
     }
 
-    protected function createDriver($parameters)
-    {
-        $driver = parent::createDriver($parameters);
-        $driverName = strtolower($parameters['driver']);
-
-        if (StringUtils::startsWith($driverName, 'pdo_')) {
-            $driverName = substr($driverName, 4);
-        }
-
-        $this->driverName = $driverName;
-
-        return $driver;
-    }
-
     /**
-     * Map all calls to the driver connection object.
-     * @param $name
-     * @param $arguments
-     * @return mixed
+     * Connect to the database
+     *
+     * @return \Zend\Db\Adapter\Driver\ConnectionInterface
      */
-    public function __call($name, $arguments)
+    public function connect()
     {
-        return call_user_func_array([$this->getDriver()->getConnection(), $name], $arguments);
+        return call_user_func_array([$this->getDriver()->getConnection(), 'connect'], func_get_args());
     }
 }

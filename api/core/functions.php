@@ -357,11 +357,12 @@ if (!function_exists('get_auth_info')) {
             return null;
         }
 
-        if (!Directus\Auth\Provider::loggedIn()) {
+        $authentication = \Directus\Bootstrap::get('auth');
+        if (!$authentication->loggedIn()) {
             return null;
         }
 
-        $userInfo = \Directus\Auth\Provider::getUserRecord();
+        $userInfo = $authentication->getUserRecord();
 
         return isset($userInfo[$attribute]) ? $userInfo[$attribute] : null;
     }

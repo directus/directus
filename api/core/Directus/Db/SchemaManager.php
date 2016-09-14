@@ -1,11 +1,20 @@
 <?php
+
 /**
- * This class will replace TableSchema
+ * Directus – <http://getdirectus.com>
+ *
+ * @link      The canonical repository – <https://github.com/directus/directus>
+ * @copyright Copyright 2006-2016 RANGER Studio, LLC – <http://rangerstudio.com>
+ * @license   GNU General Public License (v3) – <http://www.gnu.org/copyleft/gpl.html>
  */
+
 namespace Directus\Db;
 
-
 use Directus\Bootstrap;
+use Directus\Database\Object\Column;
+use Directus\Database\Object\Table;
+use Directus\Db\Schemas\SchemaInterface;
+use Directus\Db\TableGateway\DirectusPreferencesTableGateway;
 use Directus\Util\ArrayUtils;
 use Zend\Db\Sql\Ddl\Column\Boolean;
 use Zend\Db\Sql\Ddl\Column\Integer;
@@ -13,14 +22,35 @@ use Zend\Db\Sql\Ddl\Constraint\PrimaryKey;
 use Zend\Db\Sql\Ddl\CreateTable;
 use Zend\Db\Sql\Sql;
 
+/**
+ * Schema Manager
+ *
+ * This class will replace TableSchema
+ *
+ * @author Welling Guzmán <welling@rngr.org>
+ */
 class SchemaManager
 {
+    /**
+     * Schema object instance
+     *
+     * @var \Directus\Db\Schemas\SchemaInterface
+     */
+    protected $schema;
+
+    /**
+     * Schema data information
+     *
+     * @var array
+     */
+    protected $data = [];
+
     /**
      * Directus core tables
      *
      * @var array
      */
-    protected static $directusTables = [
+    protected $directusTables = [
         'activity',
         'bookmarks',
         'columns',
@@ -37,13 +67,18 @@ class SchemaManager
         'users'
     ];
 
+    public function __construct(SchemaInterface $schema)
+    {
+        $this->schema = $schema;
+    }
+
     /**
      * Create a new table
      *
      * @param string $name
      * @return void
      */
-    public static function createTable($name)
+    public function createTable($name)
     {
         $table = new CreateTable($name);
 
@@ -68,12 +103,48 @@ class SchemaManager
 
 
     /**
+     * Get the table schema information
+     *
+     * @param string $tableName
+     * @param array  $params
+     * @param bool   $fromCache
+     *
+     * @return \Directus\Database\Object\Table
+     */
+    public function getTableSchema($tableName, $params = [], $fromCache = true)
+    {
+        $tableSchema = ArrayUtils::get($this->data, 'tables.' . $tableName, null);
+        if (!$tableSchema) {
+            // Get the table schema data from the source
+            $tableResult = $this->schema->getTable($tableName);
+            $tableData = $tableResult->current();
+
+            // Create a table object based of the table schema data
+            $tableSchema = new Table(array_merge($tableData, [
+                'schema' => $this->schema->getSchemaName()
+            ]));
+
+            // save the column into the data
+            // @NOTE: this is the early implmenetation of cache
+            // soon this will be change to cache
+            $this->data['tables'][$tableName] = $tableSchema;
+        }
+
+        // Set table columns
+        $tableColumns = $this->getColumns($tableName);
+        $tableSchema->setColumns($tableColumns);
+
+        return $tableSchema;
+    }
+
+    /**
      * Add the core table prefix to to a table name.
      *
-     * @param $tables
+     * @param string $tables
+     *
      * @return string|array
      */
-    public static function addCoreTablePrefix($tables)
+    public function addCoreTablePrefix($tables)
     {
         $filterFunction = function ($table) {
             // @TODO: Directus tables prefix will be dynamic
@@ -92,9 +163,9 @@ class SchemaManager
      *
      * @return array
      */
-    public static function getCoreTables()
+    public function getCoreTables()
     {
-        return static::addCoreTablePrefix(static::$directusTables);
+        return $this->addCoreTablePrefix($this->directusTables);
     }
 
     /**
@@ -103,11 +174,9 @@ class SchemaManager
      * @param $tableName
      * @return bool
      */
-    public static function tableExists($tableName)
+    public function tableExists($tableName)
     {
-        $schema = Bootstrap::get('schema');
-
-        return $schema->tableExists($tableName);
+        return $this->schema->tableExists($tableName);
     }
 
     /**
@@ -116,54 +185,136 @@ class SchemaManager
      * @param array $tablesName
      * @return bool
      */
-    public static function someTableExists(array $tablesName)
+    public function someTableExists(array $tablesName)
     {
-        $schema = Bootstrap::get('schema');
+        return $this->schema->someTableExists($tablesName);
+    }
 
-        return $schema->someTableExists($tablesName);
+    public function getTables($filter = [])
+    {
+        // TODO: Filter should be outsite
+        // $schema = Bootstrap::get('schema');
+        // $config = Bootstrap::get('config');
+
+        // $ignoredTables = static::getDirectusTables(DirectusPreferencesTableGateway::$IGNORED_TABLES);
+        // $blacklistedTable = $config['tableBlacklist'];
+        // array_merge($ignoredTables, $blacklistedTable)
+        return $this->schema->getTables($filter);
+    }
+
+    public function getTablesName()
+    {
+        $rows = $this->schema->getTablesName();
+
+        $tables = [];
+        foreach ($rows as $row) {
+            $tables[] = $row['table_name'];
+        }
+
+        return $tables;
     }
 
     /**
-     * Proxy method calls to the current database schema object
+     * Get all columns in the given table name
      *
-     * @param $name
-     * @param $arguments
-     * @return mixed
+     * @param $tableName
+     * @param array $params
+     *
+     * @return \Directus\Database\Object\Column[]
      */
-    public static function __callStatic($name, $arguments)
+    public function getColumns($tableName, $params = [])
     {
-        $schema = Bootstrap::get('schema');
+        // TODO: filter black listed fields
+        // $acl = Bootstrap::get('acl');
+        // $blacklist = $readFieldBlacklist = $acl->getTablePrivilegeList($tableName, $acl::FIELD_READ_BLACKLIST);
 
-        return call_user_func_array([$schema, $name], $arguments);
+        $columnsSchema = ArrayUtils::get($this->data, 'columns.' . $tableName, null);
+        if (!$columnsSchema) {
+            $columnsResult = $this->schema->getColumns($tableName, $params);
+            $columnsSchema = [];
+            foreach($columnsResult as $column) {
+                $columnsSchema[] = new Column($column);
+            }
+
+            $this->data['columns'][$tableName] = $columnsSchema;
+        }
+
+        return $columnsSchema;
+
+        // return iterator_to_array($this->schema->getColumns($tableName, $params));
+    }
+
+    public function getColumnsName($tableName)
+    {
+        $columns = $this->getColumns($tableName);
+
+        $columnNames = [];
+        foreach ($columns as $column) {
+            $columnNames[] = $column->getName();
+        }
+
+        return $columnNames;
+    }
+
+    public function getAllColumns()
+    {
+        return iterator_to_array($this->schema->getAllColumns());
+    }
+
+    public function getPrimaryKey($tableName)
+    {
+        return $this->schema->getPrimaryKey($tableName);
+    }
+
+    public function castRecordValues($records, $columns)
+    {
+        return $this->schema->castRecordValues($records, $columns);
     }
 
     /**
      * Get all Directus core tables name
      *
      * @param array $filterNames
+     *
      * @return array
      */
-    public static function getDirectusTables(array $filterNames = [])
+    public function getDirectusTables(array $filterNames = [])
     {
-        $tables = static::$directusTables;
+        $tables = $this->directusTables;
         if ($filterNames) {
             $tables = ArrayUtils::pick($tables, $filterNames);
         }
 
-        return static::addCoreTablePrefix($tables);
+        return $this->addCoreTablePrefix($tables);
     }
 
     /**
      * Check if a given table is a directus core table name
      *
      * @param $tableName
+     *
      * @return bool
      */
-    public static function isDirectusTable($tableName)
+    public function isDirectusTable($tableName)
     {
-        return in_array($tableName, static::getDirectusTables());
+        return in_array($tableName, $this->getDirectusTables());
     }
 
+    /**
+     * Get the schema adapter
+     *
+     * @return SchemaInterface
+     */
+    public function getSchema()
+    {
+        return $this->schema;
+    }
+
+    /**
+     * List of supported databases
+     *
+     * @return array
+     */
     public static function getSupportedDatabases()
     {
         return [

@@ -1,5 +1,13 @@
 <?php
 
+/**
+ * Directus – <http://getdirectus.com>
+ *
+ * @link      The canonical repository – <https://github.com/directus/directus>
+ * @copyright Copyright 2006-2016 RANGER Studio, LLC – <http://rangerstudio.com>
+ * @license   GNU General Public License (v3) – <http://www.gnu.org/copyleft/gpl.html>
+ */
+
 namespace Directus\Db\TableGateway;
 
 use Directus\Acl\Acl;
@@ -10,6 +18,7 @@ use Directus\Acl\Exception\UnauthorizedTableDeleteException;
 use Directus\Acl\Exception\UnauthorizedTableEditException;
 use Directus\Auth\Provider as Auth;
 use Directus\Bootstrap;
+use Directus\Database\Object\Column;
 use Directus\Db\Exception\DuplicateEntryException;
 use Directus\Db\Exception\SuppliedArrayAsColumnValue;
 use Directus\Db\RowGateway\AclAwareRowGateway;
@@ -23,6 +32,7 @@ use Directus\Util\DateUtils;
 use Directus\Util\Formatting;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\ResultSet\ResultSet;
+use Zend\Db\ResultSet\ResultSetInterface;
 use Zend\Db\Sql\AbstractSql;
 use Zend\Db\Sql\Ddl;
 use Zend\Db\Sql\Delete;
@@ -34,13 +44,27 @@ use Zend\Db\TableGateway\Feature;
 use Zend\Db\TableGateway\Feature\RowGatewayFeature;
 use Zend\Db\TableGateway\TableGateway;
 
+/**
+ * AclAwareTableGateway
+ *
+ * Table Layer that implements ACL
+ */
 class AclAwareTableGateway extends TableGateway
 {
-
+    /**
+     * ACL Instance
+     *
+     * @var Acl
+     */
     protected $acl;
 
+    /**
+     * Primary key field name
+     *
+     * @var string
+     */
     public $primaryKeyFieldName = 'id';
-    public $imagickExtensions = ['tiff', 'tif', 'psd', 'pdf'];
+
     public $memcache;
 
     /**
@@ -53,13 +77,14 @@ class AclAwareTableGateway extends TableGateway
     /**
      * Constructor
      *
-     * @param AclProvider $acl
+     * @param Acl $acl
      * @param string $table
      * @param AdapterInterface $adapter
      * @param Feature\AbstractFeature|Feature\FeatureSet|Feature\AbstractFeature[] $features
      * @param ResultSetInterface $resultSetPrototype
      * @param Sql $sql
-     * @throws Exception\InvalidArgumentException
+     *
+     * @throws \InvalidArgumentException
      */
     public function __construct(Acl $acl, $table, AdapterInterface $adapter, $features = null, ResultSetInterface $resultSetPrototype = null, Sql $sql = null, $primaryKeyName = null)
     {
@@ -74,7 +99,7 @@ class AclAwareTableGateway extends TableGateway
             } elseif ($features instanceof Feature\FeatureSet) {
                 $this->featureSet = $features;
             } else {
-                throw new Exception\InvalidArgumentException(
+                throw new \InvalidArgumentException(
                     'TableGateway expects $feature to be an instance of an AbstractFeature or a FeatureSet, or an array of AbstractFeatures'
                 );
             }
@@ -835,10 +860,20 @@ class AclAwareTableGateway extends TableGateway
         }
     }
 
-    public function convertDates(array $records, array $schemaArray, $tableName = null)
+    /**
+     * Convert all directus dates into ISO 8601
+     *
+     * @param array $records
+     * @param Column[] $columnsSchema
+     * @param null $tableName
+     *
+     * @return array|mixed
+     */
+    public function convertDates(array $records, array $columnsSchema, $tableName = null)
     {
         $tableName = $tableName === null ? $this->table : $tableName;
-        if (!SchemaManager::isDirectusTable($tableName)) {
+        $schemaManager = Bootstrap::get('schemaManager');
+        if (!$schemaManager->isDirectusTable($tableName)) {
             return $records;
         }
 
@@ -853,9 +888,9 @@ class AclAwareTableGateway extends TableGateway
         }
 
         foreach ($records as $index => $row) {
-            foreach ($schemaArray as $column) {
-                if (in_array(strtolower($column['type']), ['timestamp', 'datetime'])) {
-                    $columnName = $column['id'];
+            foreach ($columnsSchema as $column) {
+                if (in_array(strtolower($column->getType()), ['timestamp', 'datetime'])) {
+                    $columnName = $column->getId();
                     $records[$index][$columnName] = DateUtils::convertToISOFormat($row[$columnName], 'UTC', get_user_timezone());
                 }
             }
@@ -868,8 +903,9 @@ class AclAwareTableGateway extends TableGateway
     {
         $tableName = $tableName === null ? $this->table : $tableName;
         $columns = TableSchema::getAllNonAliasTableColumns($tableName);
+        $schemaManager = Bootstrap::get('schemaManager');
 
-        return SchemaManager::parseRecordValuesByType($records, $columns);
+        return $schemaManager->castRecordValues($records, $columns);
     }
 
     protected function parseRecord($records, $tableName = null)
