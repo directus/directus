@@ -9,7 +9,7 @@ class Session
     /**
      * Session Storage
      *
-     * @var array|\ArrayAccess
+     * @var SessionStorageInterface
      */
     protected $storage = null;
 
