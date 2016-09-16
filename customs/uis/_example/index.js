@@ -1,7 +1,7 @@
 define(['core/UIComponent', 'core/BaseUIView'], function(UIComponent, UIView) {
   var charactersLimit = 100;
   var Input = UIView.extend({
-    template: '_example/templates/input',
+    template: 'example/templates/input',
     events: {
       'keyup textarea': 'updateCount'
     },
