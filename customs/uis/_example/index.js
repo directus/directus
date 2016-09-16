@@ -1,4 +1,4 @@
-define(['core/UIComponent', 'core/BaseUIView'], function(UIComponent, UIView) {
+define(['core/UIComponent', 'core/CustomUIView'], function(UIComponent, UIView) {
   var charactersLimit = 100;
   var Input = UIView.extend({
     template: 'example/templates/input',
