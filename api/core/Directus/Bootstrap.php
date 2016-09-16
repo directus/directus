@@ -416,7 +416,8 @@ class Bootstrap
     private static function uis()
     {
         self::requireConstants('APPLICATION_PATH', __FUNCTION__);
-        $uiDirectory = APPLICATION_PATH . '/customs/uis';
+        $uiBasePath = APPLICATION_PATH . '/customs';
+        $uiDirectory = $uiBasePath . '/uis';
         $uis = [];
 
         if (!file_exists($uiDirectory)) {
@@ -425,7 +426,7 @@ class Bootstrap
 
         $filePaths = find_js_files($uiDirectory, true);
         foreach ($filePaths as $path) {
-            $uiPath = trim(substr($path, strlen(APPLICATION_PATH)), '/');
+            $uiPath = trim(substr($path, strlen($uiBasePath)), '/');
             $uis[] = substr($uiPath, 0, -3);
         }
 
