@@ -12,7 +12,7 @@ define(function(require, exports, module) {
 
   var app              = require('app'),
       _                = require('underscore'),
-      Notification     = require('core/Notification'),
+      Notification     = require('core/notification'),
       //Directus       = require('core/directus'),
       Tabs             = require('core/tabs'),
       Bookmarks        = require('core/bookmarks'),
