@@ -173,6 +173,10 @@ function(app, Backbone, Handlebars, __t, Directus, BasePageView, Widgets, Histor
             route.push('new');
           }
 
+          if (self.onSuccess) {
+            self.onSuccess(model, response, options);
+          }
+
           // @TODO: check if this view is a overlay then close the overlay
           //        instead redirecting to the listing page
           // -------------------------------------------------------------
@@ -270,6 +274,7 @@ function(app, Backbone, Handlebars, __t, Directus, BasePageView, Widgets, Histor
       this.headerOptions.route.isOverlay = false;
       this.headerOptions.basicSave = false;
       this.skipFetch = options.skipFetch;
+      this.onSuccess = options.onSuccess;
 
       if (this.single) {
         this.headerOptions.route.title = 'Editing ' + this.model.collection.table.id;
