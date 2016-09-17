@@ -104,6 +104,7 @@ $exceptionHandler = new ExceptionHandler;
 
 // Routes which do not need protection by the authentication and the request
 // nonce enforcement.
+// @TODO: Move this to a middleware
 $authAndNonceRouteWhitelist = [
     'auth_login',
     'auth_logout',
@@ -113,6 +114,7 @@ $authAndNonceRouteWhitelist = [
     'auth_reset_password',
     'auth_permissions',
     'debug_acl_poc',
+    'request_token',
 ];
 
 /**
@@ -319,6 +321,39 @@ if (isset($_REQUEST['run_extension']) && $_REQUEST['run_extension']) {
  * Slim Routes
  * (Collections arranged alphabetically)
  */
+
+$app->post("/$v/auth/request-token/?", function() use ($app, $ZendDb) {
+    $response = [
+        'message' => __t('incorrect_email_or_password'),
+        'success' => false,
+    ];
+
+    $request = $app->request();
+    // @NOTE: Slim request do not parse a json request body
+    //        We need to parse it ourselves
+    if ($request->getMediaType() == 'application/json') {
+        $jsonRequest = json_decode($request->getBody(), true);
+        $email = ArrayUtils::get($jsonRequest, 'email', false);
+        $password = ArrayUtils::get($jsonRequest, 'password', false);
+    } else {
+        $email = $request->post('email');
+        $password = $request->post('password');
+    }
+
+    if ($email && $password) {
+        $user = Auth::getUserByAuthentication($email, $password);
+
+        if ($user) {
+            unset($response['message']);
+            $response['success'] = true;
+            $response['data'] = [
+                'token' => $user['token']
+            ];
+        }
+    }
+
+    return JsonView::render($response);
+})->name('request_token');
 
 $app->post("/$v/auth/login/?", function () use ($app, $ZendDb, $acl, $requestNonceProvider) {
 
