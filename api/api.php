@@ -324,8 +324,8 @@ if (isset($_REQUEST['run_extension']) && $_REQUEST['run_extension']) {
 
 $app->post("/$v/auth/request-token/?", function() use ($app, $ZendDb) {
     $response = [
-        'message' => __t('incorrect_email_or_password'),
         'success' => false,
+        'message' => __t('incorrect_email_or_password'),
     ];
 
     $request = $app->request();
