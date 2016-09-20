@@ -28,6 +28,7 @@ if (!function_exists('uc_convert')) {
             'Pdfs' => 'PDFs',
             'Ui' => 'UI',
             'Url' => 'URL',
+            'Urls' => 'URLs',
             'Ip' => 'IP',
             'Ftp' => 'FTP',
             'Db' => 'DB',
@@ -38,6 +39,7 @@ if (!function_exists('uc_convert')) {
             'Html' => 'HTML',
             'Js' => 'JS',
             'Css' => 'CSS',
+            'Csv' => 'CSV',
             'Ios' => 'iOS',
             'Iso' => 'ISO',
             'Rngr' => 'RNGR'
