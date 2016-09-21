@@ -1207,9 +1207,11 @@ $app->map("/$v/settings(/:id)/?", function ($id = null) use ($acl, $ZendDb, $par
             break;
     }
 
-    $settings_new = $Settings->fetchAll();
-    // $get_new = is_null($id) ? $settings_new : $settings_new[$id];
-    $response = array_key_exists($id, $settings_new) ? $settings_new : null;
+    $response = $Settings->fetchAll();
+    if (!is_null($id)) {
+        $response = array_key_exists($id, $response) ? $response[$id] : null;
+    }
+
     if (!$response) {
         $response = [
             'message' => __t('unable_to_find_setting_collection_x', ['collection' => $id]),
