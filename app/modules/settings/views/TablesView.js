@@ -297,7 +297,7 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
       }
 
       var dataType = this.selectedDataType;
-      if (this.selectedRelationshipType) {
+      if (this.isAlias === true) {
         dataType = 'ALIAS';
       }
       this.model.set({data_type: dataType, ui: this.selectedUI});
