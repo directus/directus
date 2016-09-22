@@ -450,12 +450,6 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
       }
 
       switch(value) {
-        case 'single_file':
-          data['related_table'] = 'directus_files';
-          data['data_type'] = 'INT';
-          data['relationship_type'] = 'MANYTOONE';
-          data['junction_key_right'] = id;
-          break;
         case 'multiple_files':
           data['related_table'] = 'directus_files';
         case 'many_to_many':
@@ -463,8 +457,11 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
           data['data_type'] = 'ALIAS';
           data['relationship_type'] = 'MANYTOMANY';
           break;
+        case 'single_file':
+          data['related_table'] = 'directus_files';
         case 'many_to_one':
         case 'many_to_one_typeahead':
+          data['data_type'] = 'INT';
           data['relationship_type'] = 'MANYTOONE';
           data['junction_key_right'] = id;
           break;
