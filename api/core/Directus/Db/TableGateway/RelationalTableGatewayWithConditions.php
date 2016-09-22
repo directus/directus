@@ -98,6 +98,15 @@ class RelationalTableGatewayWithConditions extends RelationalTableGateway
             }
         }
 
+        // Filter entries that match one of these values separated by comma
+        // in[field]=value1,value2
+        if (array_key_exists('in', $params) && is_array($params['in'])) {
+            foreach($params['in'] as $field => $values) {
+                $values = explode(',', $values);
+                $select->where->in($field, $values);
+            }
+        }
+
         // Where
         if (isset($params[$this->primaryKeyFieldName]) && $params[$this->primaryKeyFieldName] != -1) {
             $select
