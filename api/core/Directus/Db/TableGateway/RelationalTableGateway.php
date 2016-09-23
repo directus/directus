@@ -593,7 +593,6 @@ class RelationalTableGateway extends AclAwareTableGateway
 
     public function applyDefaultEntriesSelectParams(array $params)
     {
-
         if ($this->primaryKeyFieldName != 'id') {
             unset(self::$defaultEntriesSelectParams['id']);
             self::$defaultEntriesSelectParams[$this->primaryKeyFieldName] = -1;
@@ -610,7 +609,7 @@ class RelationalTableGateway extends AclAwareTableGateway
 
         // Is there a sort column?
         $tableColumns = array_flip(TableSchema::getTableColumns($this->table, null, true));
-        if (array_key_exists('sort', $tableColumns)) {
+        if (!array_key_exists('orderBy', $params) && array_key_exists('sort', $tableColumns)) {
             $params['orderBy'] = 'sort';
         }
 
