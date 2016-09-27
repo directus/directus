@@ -832,6 +832,7 @@ class RelationalTableGateway extends AclAwareTableGateway
                             $entry[$this->primaryKeyFieldName]);
                         $noDuplicates = isset($alias['options']['no_duplicates']) ? $alias['options']['no_duplicates'] : 0;
                         // @todo: better way to handle this.
+                        // @TODO: fetch uniques/non-duplicates entries
                         if ($noDuplicates) {
                             $uniquesID = [];
                             foreach ($foreign_data['rows'] as $index => $row) {
@@ -842,6 +843,34 @@ class RelationalTableGateway extends AclAwareTableGateway
                                 }
                             }
                             unset($uniquesID);
+                            // =========================================================
+                            // Reset keys
+                            // ---------------------------------------------------------
+                            // This prevent json output using numeric ids as key
+                            // Ex:
+                            // {
+                            //      rows: {
+                            //          "1": {
+                            //              data: {id: 1}
+                            //          },
+                            //          "3" {
+                            //              data: {id: 2}
+                            //          }
+                            //      }
+                            // }
+                            // Instead of:
+                            // {
+                            //      rows: [
+                            //          {
+                            //              data: {id: 1}
+                            //          },
+                            //          {
+                            //              data: {id: 2}
+                            //          }
+                            //      ]
+                            // }
+                            // =========================================================
+                            $foreign_data['rows'] = array_values($foreign_data['rows']);
                         }
                         break;
                     case 'ONETOMANY':
