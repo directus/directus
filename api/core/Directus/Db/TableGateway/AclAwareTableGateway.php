@@ -529,22 +529,24 @@ class AclAwareTableGateway extends TableGateway
                 $thumbnailFilename = $row['id'] . '.' . $thumbnailExtension;
                 $row['thumbnail_url'] = $thumbnailURL . '/' . $thumbnailFilename;
 
-		// filename-ext-100-100-true.jpg
-		$row['thumbnail_url'] = null;
-		$filename = implode('.', $thumbnailFilenameParts);
-		if ($row['type'] == 'embed/vimeo') {
-			$oldThumbnailFilename = $row['name'] . '-vimeo-220-124-true.jpg';
-		} else {
-			$oldThumbnailFilename = $filename . '-' . $thumbnailExtension . '-100-100-true.jpg';
-		}
-		
-		// 314551321-vimeo-220-124-true.jpg		
+                // filename-ext-100-100-true.jpg
+                // @TODO: This should be a hook
+                // @TODO: Create a select hook
+                $row['thumbnail_url'] = null;
+                $filename = implode('.', $thumbnailFilenameParts);
+                if ($row['type'] == 'embed/vimeo') {
+                    $oldThumbnailFilename = $row['name'] . '-vimeo-220-124-true.jpg';
+                } else {
+                    $oldThumbnailFilename = $filename . '-' . $thumbnailExtension . '-100-100-true.jpg';
+                }
+
+                // 314551321-vimeo-220-124-true.jpg
                 // hotfix: there's not thumbnail for this file
                 if ($files->exists('thumbs/' . $oldThumbnailFilename)) {
-			$row['thumbnail_url'] = $thumbnailURL . '/' . $oldThumbnailFilename;
-		}
+                    $row['thumbnail_url'] = $thumbnailURL . '/' . $oldThumbnailFilename;
+                }
 
- 		if ($files->exists('thumbs/' . $thumbnailFilename)) {
+                if ($files->exists('thumbs/' . $thumbnailFilename)) {
                     $row['thumbnail_url'] = $thumbnailURL . '/' . $thumbnailFilename;
                 }
 
