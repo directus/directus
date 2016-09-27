@@ -537,7 +537,7 @@ class AclAwareTableGateway extends TableGateway
                 if ($row['type'] == 'embed/vimeo') {
                     $oldThumbnailFilename = $row['name'] . '-vimeo-220-124-true.jpg';
                 } else {
-                    $oldThumbnailFilename = $filename . '-' . $thumbnailExtension . '-100-100-true.jpg';
+                    $oldThumbnailFilename = $filename . '-' . $thumbnailExtension . '-160-160-true.jpg';
                 }
 
                 // 314551321-vimeo-220-124-true.jpg
