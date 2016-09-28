@@ -44,7 +44,7 @@ define(['app', 'underscore', 'core/uis/datetime/date', 'moment'], function(app, 
       return dateFormat;
     },
     getTimeFormat: function() {
-      var includeSeconds = this.options.settings.get('include_seconds') === 1;
+      var includeSeconds = this.options.settings.get('include_seconds') === true;
 
       return includeSeconds ? timeFormat : timeFormat.replace(':ss', '');
     },
