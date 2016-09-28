@@ -93,11 +93,6 @@ class Acl
         return $this->groupId;
     }
 
-    public function logger()
-    {
-        return Bootstrap::get('app')->getLog();
-    }
-
     public function setGroupPrivileges(array $groupPrivileges)
     {
         $this->groupPrivileges = $groupPrivileges;
