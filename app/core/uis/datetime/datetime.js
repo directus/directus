@@ -68,7 +68,7 @@ define(['app', 'underscore', 'core/uis/datetime/date', 'moment'], function(app, 
   });
 
   var variables = UIDate.prototype.variables.slice();
-  variables.push({id: 'include_seconds', type: 'Boolean', default_value: false, ui: 'checkbox'});
+  variables.push({id: 'include_seconds', type: 'Boolean', default_value: true, ui: 'checkbox'});
 
   var Component = UIDate.extend({
     id: 'datetime',
