@@ -544,7 +544,7 @@ class Bootstrap
                 'allow_alter' => 0,
                 'table_name' => 'directus_users',
                 'read_field_blacklist' => 'token',
-                'write_field_blacklist' => 'token'
+                'write_field_blacklist' => 'group,token'
             ]);
         });
 
