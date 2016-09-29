@@ -70,6 +70,8 @@
     "junction_table": "Junction Table",
     "left_column": "Left Column",
     "right_column": "Right Column",
+    "alias_column_description": "ALIAS columns do not exist within the table's schema – instead, they represent a field that doesn't store data or stores it elsewhere.",
+    "relationship_type": "Relationship Type",
     "relationship_settings": "Relationship Settings",
     "unregistered_tables": "Unregistered Tables",
     "allow_null": "Allow Null: %{is_nullable}",
