@@ -287,10 +287,26 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
               return {column_name: model.id, selected: (model.id === junctionKeyRight)};
             }, this);
           }
-          if(!junctionKeyRight && data.columns.length > 0) {
-            junctionKeyRight = data.columns[0].column_name;
-            this.model.set({junction_key_right: junctionKeyRight});
+
+          // hotfix: make sure the column exists in the junction table schema
+          // @TODO: Verify that any other related/junction columns exists
+          if (junctionKeyRight === undefined) {
+            junctionKeyRight = '';
           }
+
+          if (data.columns.length > 0) {
+            var column = _.find(data.columns, function(column) {
+              return column.column_name === junctionKeyRight;
+            });
+
+            if (column === undefined) {
+              column = _.first(data.columns);
+            }
+
+            junctionKeyRight = column.column_name;
+          }
+
+          this.model.set({junction_key_right: junctionKeyRight});
         }
 
         this.model.set({relationship_type: this.selectedDataType});

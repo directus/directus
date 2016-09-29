@@ -275,7 +275,7 @@ define(['app', 'handlebars', 'core/UIComponent', 'core/UIView', 'core/overlays/o
         that.textChanged(that);
       });
       this.editor.on('load', function() {
-        if (that.options.settings.get('readonly') === 1) {
+        if (that.options.settings.get('readonly') === true) {
           that.editor.disable();
         }
       });
