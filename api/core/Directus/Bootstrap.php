@@ -537,6 +537,8 @@ class Bootstrap
 
             $privilegesTable->insertPrivilege([
                 'group_id' => $data['id'],
+                'allow_view' => 1,
+                'allow_edit' => 1,
                 'table_name' => 'directus_users',
                 'read_field_blacklist' => 'token',
                 'write_field_blacklist' => 'token'
