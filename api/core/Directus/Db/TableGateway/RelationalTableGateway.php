@@ -698,7 +698,7 @@ class RelationalTableGateway extends AclAwareTableGateway
 
         // table only has one column
         // return an empty array
-        if (!is_numeric_array($schemaArray)) {
+        if (!is_array($schemaArray) || !is_numeric_array($schemaArray)) {
             return [];
         }
 
