@@ -264,7 +264,8 @@ select,
     padding: 0px;
     width: 100%;
     li {
-      margin-top: 1px;
+      // margin-top: 1px;
+      border-top: 1px #f9f9f9 solid;
       position: relative;
       width: 100%;
       //@extend .card-shadow;
@@ -301,7 +302,7 @@ select,
       background-color: $white;
       color: $darkGrey;
       font-weight: 500;
-      padding: 44px $standardPad $largePad $largePad;
+      padding: 34px $standardPad $largePad $largePad;
       vertical-align: top;
       width: 200px;
       min-width: 200px;
@@ -350,7 +351,7 @@ select,
     .field {
       @extend .clear-fix;
       background-color: $white;
-      padding: $largePad;
+      padding: $standardPad;
       position: relative;
       font-weight: 400;
       input[type="text"], textarea, .input {
