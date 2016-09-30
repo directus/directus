@@ -388,6 +388,16 @@ if ($forceHttps) {
 }
 
 $users = getUsers();
+// hotfix
+// @NOTE: if the user doesn't have permission to view users
+// it should be log out
+// see: https://github.com/directus/directus/issues/1268
+if (!$users) {
+    AuthProvider::logout();
+    $_SESSION['error_message'] = 'Your user doesn\'t have permission to log in';
+    header('Location: ' . DIRECTUS_PATH . 'login.php');
+    exit;
+}
 $currentUserInfo = getCurrentUserInfo($users);
 
 // Cache buster
