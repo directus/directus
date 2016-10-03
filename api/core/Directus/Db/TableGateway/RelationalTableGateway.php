@@ -632,7 +632,11 @@ class RelationalTableGateway extends AclAwareTableGateway
             $haystack = is_array($params['status'])
                 ? $params['status']
                 : explode(',', $params['status']);
-            $select->where->in(STATUS_COLUMN_NAME, $haystack);
+            $statusColumnName = implode($this->adapter->platform->getIdentifierSeparator(), [
+                $this->table,
+                STATUS_COLUMN_NAME
+            ]);
+            $select->where->in($statusColumnName, $haystack);
         }
 
         // Select only ids from the ids if provided

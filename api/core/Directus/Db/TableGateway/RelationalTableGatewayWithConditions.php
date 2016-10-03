@@ -86,7 +86,12 @@ class RelationalTableGatewayWithConditions extends RelationalTableGateway
                 $tableName = $params['table_name'];
             }
 
-            $select->where->in(STATUS_COLUMN_NAME, $haystack);
+            $statusColumnName = implode($this->adapter->platform->getIdentifierSeparator(), [
+                $this->table,
+                STATUS_COLUMN_NAME
+            ]);
+
+            $select->where->in($statusColumnName, $haystack);
         }
 
         // Select only ids from the ids if provided
