@@ -610,8 +610,6 @@ class Bootstrap
 
                     $filesArrayObject = new \ArrayObject($fileRows);
                     $result->initialize($filesArrayObject->getIterator());
-
-                    $data['result'] = $result;
                 }
 
             return $result;
