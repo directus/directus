@@ -23,7 +23,7 @@ function(app, Backbone, __t, BasePageView, Widgets, moment) {
     serialize: function() {
       var data = this.collection.map(function(model) {
         var data = model.toJSON();
-        var momentDate = moment(data.date_updated + ' UTC');
+        var momentDate = moment(data.date_updated);
         data.timestamp = parseInt(momentDate.format('X'), 10);
         data.niceDate = moment().diff(momentDate, 'days') > 1 ? momentDate.format('MMMM D') : momentDate.fromNow();
         data.read = model.getUnreadCount() === 0;
