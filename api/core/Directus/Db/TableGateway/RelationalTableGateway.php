@@ -8,7 +8,6 @@ use Directus\Db\RowGateway\AclAwareRowGateway;
 use Directus\Db\SchemaManager;
 use Directus\Db\TableSchema;
 use Directus\Files;
-use Directus\Hook\Hook;
 use Directus\Util\DateUtils;
 use Zend\Db\RowGateway\AbstractRowGateway;
 use Zend\Db\Sql\Expression;
@@ -21,41 +20,14 @@ use Zend\Db\TableGateway\TableGateway;
 
 class RelationalTableGateway extends AclAwareTableGateway
 {
-
     const ACTIVITY_ENTRY_MODE_DISABLED = 0;
     const ACTIVITY_ENTRY_MODE_PARENT = 1;
     const ACTIVITY_ENTRY_MODE_CHILD = 2;
 
     protected $toManyCallStack = [];
 
-    /**
-     * Find the identifying string to effectively represent a record in the activity log.
-     * @param  array $schemaArray
-     * @param  array|AclAwareRowGateway $fulRecordData
-     * @return string
-     */
-    public function findRecordIdentifier($schemaArray, $fullRecordData)
-    {
-        // Decide on the correct column name
-        $identifierColumnName = null;
-        $column = TableSchema::getFirstNonSystemColumn($schemaArray);
-        if ($column) {
-            $identifierColumnName = $column['column_name'];
-        }
-
-        // Yield the column contents
-        $identifier = null;
-        if (isset($fullRecordData[$identifierColumnName])) {
-            $identifier = $fullRecordData[$identifierColumnName];
-        }
-
-        return $identifier;
-    }
-
     public function manageRecordUpdate($tableName, $recordData, $activityEntryMode = self::ACTIVITY_ENTRY_MODE_PARENT, &$childLogEntries = null, &$parentCollectionRelationshipsChanged = false, $parentData = [])
     {
-        $log = $this->logger();
-
         $TableGateway = $this;
         if ($tableName !== $this->table) {
             $TableGateway = new RelationalTableGateway($this->acl, $tableName, $this->adapter);
