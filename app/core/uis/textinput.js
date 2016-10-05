@@ -22,7 +22,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
   // Template Used for this UI
   var template = '<div class="char-count-container {{size}}"> \
                     <input type="text" placeholder="{{placeholder}}" value="{{value}}" name="{{name}}" id="{{name}}" maxLength="{{maxLength}}" class="{{size}}" {{#if readonly}}readonly{{/if}}/> \
-                  <span class="char-count hide">{{characters}}</span></div>';
+                  {{#if length}}<span class="char-count hide">{{characters}}</span>{{/if}}</div>';
 
   var Input = UIView.extend({
     templateSource: template,
@@ -41,8 +41,10 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
 
     // Update the character counter with the remaining characters available
     updateMaxLength: function(e) {
-      var length = this.options.schema.get('char_length') - e.target.value.length;
-      this.$el.find('.char-count').html(length);
+      if (this.maxCharLength) {
+        var charsLeft = this.maxCharLength - e.target.value.length;
+        this.$el.find('.char-count').html(charsLeft);
+      }
     },
 
     // afterRender gets called after the template is rendered
@@ -52,7 +54,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
 
     // Called before template is rendered, serialize returns an object that gets used as data for template string
     serialize: function() {
-      var length = this.options.schema.get('char_length');
+      var length = this.maxCharLength;
       var value = this.options.value || '';
 
       // Fill in default value if this column has a default value.
@@ -86,6 +88,10 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
       }
 
       return true;
+    },
+
+    initialize: function() {
+      this.maxCharLength = this.options.schema.get('char_length');
     }
   });
 

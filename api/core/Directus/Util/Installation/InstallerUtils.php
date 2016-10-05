@@ -181,7 +181,7 @@ class InstallerUtils
             'avatar' => $data['avatar'],
             'group' => 1,
             'token' => $data['user_token'],
-            'language' => $data['default_language']
+            'language' => ArrayUtils::get($data, 'default_language', 'en')
         ]);
 
         return $data;

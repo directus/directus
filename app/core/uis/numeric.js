@@ -66,7 +66,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
     Input: Input,
     validate: function(value, options) {
       // _.isEmpty (in the installed version) does not support INTs properly
-      if (options.schema.isRequired() && !value) {
+      if (options.schema.isRequired() && value != 0 && !value) {
         return __t('this_field_is_required');
       }
     },

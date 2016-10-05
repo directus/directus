@@ -24,8 +24,10 @@ AddType font/woff .woff
     # Files Proxy
     # - Only define one of the URL segments /.../ here so that the request format
     #   can be more flexibly maintained in the PHP/Slim router
-    RewriteCond %{REQUEST_URI} media_auth_proxy/([^/]+)/(.+)$
-    RewriteRule ^ /media_auth_proxy/index.php [L]
+    # @NOTE: media_auth_proxy was removed
+    # @TODO: Implement files proxy using the new files object
+    # RewriteCond %{REQUEST_URI} media_auth_proxy/([^/]+)/(.+)$
+    # RewriteRule ^ /media_auth_proxy/index.php [L]
 
     # Directus Front Controller
     RewriteCond %{REQUEST_FILENAME} !-f

@@ -162,15 +162,28 @@ function(app, Backbone, Handlebars, __t, Directus, BasePageView, Widgets, Histor
           }
         };
       } else {
+        var self = this;
         success = function(model, response, options) {
           var route = Backbone.history.fragment.split('/');
+
           route.pop();
           if (action === 'save-form-add') {
             // Trick the router to refresh this page when we are dealing with new items
             if (isNew) app.router.navigate("#", {trigger: false, replace: true});
             route.push('new');
           }
-          app.router.go(route);
+
+          if (self.onSuccess) {
+            self.onSuccess(model, response, options);
+          }
+
+          // @TODO: check if this view is a overlay then close the overlay
+          //        instead redirecting to the listing page
+          // -------------------------------------------------------------
+          // if it's an overlay view do not go to any route
+          if (!self.headerOptions.route.isOverlay) {
+            app.router.go(route);
+          }
         };
       }
       if (action === 'save-form-copy') {
@@ -261,6 +274,7 @@ function(app, Backbone, Handlebars, __t, Directus, BasePageView, Widgets, Histor
       this.headerOptions.route.isOverlay = false;
       this.headerOptions.basicSave = false;
       this.skipFetch = options.skipFetch;
+      this.onSuccess = options.onSuccess;
 
       if (this.single) {
         this.headerOptions.route.title = 'Editing ' + this.model.collection.table.id;

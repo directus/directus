@@ -48,6 +48,8 @@ define(['app', 'moment', 'core/UIComponent', 'core/UIView', 'core/t'], function(
     template: 'datetime/input',
 
     events: {
+      'blur  input.time':   'updateValue',
+      'change  input.time': 'updateValue',
       'click .now': 'makeNow'
     },
 
@@ -59,6 +61,32 @@ define(['app', 'moment', 'core/UIComponent', 'core/UIView', 'core/t'], function(
 
       this.value = moment().format(timeFormat);
       this.render();
+    },
+
+    getTime: function() {
+
+      var format = 'HH:mm';
+
+      if (this.options.settings.get('include_seconds') == 1) {
+        format += ':ss';
+      }
+
+      return {
+        value: this.$('input[type=time]').val(),
+        format: format
+      }
+    },
+
+    updateValue: function() {
+      var time = this.getTime();
+      var val = time.value;
+      var format = time.format;
+
+      if (moment(val, format).isValid()) {
+        this.$('#'+this.name).val(val);
+      } else {
+        this.$('#'+this.name).val('');
+      }
     },
 
     serialize: function() {
@@ -96,6 +124,7 @@ define(['app', 'moment', 'core/UIComponent', 'core/UIView', 'core/t'], function(
     id: 'time',
     dataTypes: ['TIME'],
     variables: [
+      // @TODO: add time step setting
       {id: 'readonly', type: 'Boolean', default_value: false, ui: 'checkbox'},
       {id: 'include_seconds', type: 'Boolean', default_value: false, ui: 'checkbox'}
     ],

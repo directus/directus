@@ -82,7 +82,7 @@ define(['app', 'core/UIComponent', 'core/uis/one_to_many', 'core/table/table.vie
         _.each(view.table.selection(), function(id) {
           var data = collection.get(id).toJSON();
           // prevent duplicate
-          if (me.columnSchema.options.get('no_duplicates') === 1) {
+          if (me.columnSchema.options.get('no_duplicates') === true) {
             var duplicated = false;
             me.relatedCollection.each(function(model) {
               if (model.get('data').id === id) {

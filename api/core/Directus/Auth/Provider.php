@@ -10,13 +10,8 @@
 
 namespace Directus\Auth;
 
-use Directus\Auth\Exception\UserAlreadyLoggedInException;
-use Directus\Auth\Exception\UserIsntLoggedInException;
 use Directus\Session\Session;
-use Directus\Util\ArrayUtils;
-use Directus\Util\StringUtils;
 use Zend\Db\Adapter\Adapter;
-use Zend\Db\TableGateway\TableGateway;
 
 /**
  * Authentication Provider
@@ -158,6 +153,27 @@ class Provider
         }
 
         return false;
+    }
+
+    public static function verify($email, $password)
+    {
+        return self::getUserByAuthentication($email, $password) !== false;
+    }
+
+    public static function getUserByAuthentication($email, $password)
+    {
+        self::prependSessionKey();
+        $zendDb = Bootstrap::get('zendDb');
+        $usersTable = new TableGateway('directus_users', $zendDb);
+        $user = $usersTable->select(['email' => $email])->current();
+        $correct = false;
+
+        if ($user) {
+            $passwordHash = $user['password'];
+            $correct = password_verify($password, $passwordHash);
+        }
+
+        return $correct ? $user : false;
     }
 
     /**

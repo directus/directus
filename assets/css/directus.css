@@ -2609,7 +2609,7 @@ select,
   padding: 0px;
   width: 100%; }
   .two-column-form .fields li {
-    margin-top: 1px;
+    border-top: 1px #f9f9f9 solid;
     position: relative;
     width: 100%; }
   .two-column-form .fields .fieldset-smoke {
@@ -2633,7 +2633,7 @@ select,
     background-color: #ffffff;
     color: #666666;
     font-weight: 500;
-    padding: 44px 20px 30px 30px;
+    padding: 34px 20px 30px 30px;
     vertical-align: top;
     width: 200px;
     min-width: 200px; }
@@ -2671,7 +2671,7 @@ select,
         margin-right: 4px; }
   .two-column-form .fields .field {
     background-color: #ffffff;
-    padding: 30px;
+    padding: 20px;
     position: relative;
     font-weight: 400; }
     .two-column-form .fields .field input[type="text"], .two-column-form .fields .field textarea, .two-column-form .fields .field .input {

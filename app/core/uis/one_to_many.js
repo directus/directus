@@ -141,7 +141,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/table/table.view', 'core
       view.save = function() {
         _.each(view.table.selection(), function(id) {
           var data = collection.get(id).toJSON();
-          if (me.columnSchema.options.get('only_unassigned') == 1) {
+          if (me.columnSchema.options.get('only_unassigned') === true) {
             var orphan = false;
 
             collection.each(function(model) {

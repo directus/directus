@@ -287,17 +287,33 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
               return {column_name: model.id, selected: (model.id === junctionKeyRight)};
             }, this);
           }
-          if(!junctionKeyRight && data.columns.length > 0) {
-            junctionKeyRight = data.columns[0].column_name;
-            this.model.set({junction_key_right: junctionKeyRight});
+
+          // hotfix: make sure the column exists in the junction table schema
+          // @TODO: Verify that any other related/junction columns exists
+          if (junctionKeyRight === undefined) {
+            junctionKeyRight = '';
           }
+
+          if (data.columns.length > 0) {
+            var column = _.find(data.columns, function(column) {
+              return column.column_name === junctionKeyRight;
+            });
+
+            if (column === undefined) {
+              column = _.first(data.columns);
+            }
+
+            junctionKeyRight = column.column_name;
+          }
+
+          this.model.set({junction_key_right: junctionKeyRight});
         }
 
         this.model.set({relationship_type: this.selectedDataType});
       }
 
       var dataType = this.selectedDataType;
-      if (this.selectedRelationshipType) {
+      if (this.isAlias === true) {
         dataType = 'ALIAS';
       }
       this.model.set({data_type: dataType, ui: this.selectedUI});
@@ -423,12 +439,22 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
       var id = e.target.getAttribute('data-id');
       var attr = e.target.name;
       var value = e.target.value;
+      var uiName = null;
       var model = this.collection.get(id);
       var relationship = model.relationship;
       var data = {};
 
       if (e.target.type === 'checkbox' || e.target.type === 'radio') {
         value = $(e.target).is(':checked') ? 1 : 0;
+      }
+
+      // hotfix: uiName was depending on the target element that was changed
+      //         if the element triggering the event is not the dropdown
+      //         the uiName should be the one already on the model.
+      if (e.target.type === 'select-one') {
+        uiName = value;
+      } else {
+        uiName = model.get('ui');
       }
 
       // hotfix #1069 single_file UI not saving relational settings
@@ -449,13 +475,7 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
         data['junction_table'] = relationship.get('junction_table');
       }
 
-      switch(value) {
-        case 'single_file':
-          data['related_table'] = 'directus_files';
-          data['data_type'] = 'INT';
-          data['relationship_type'] = 'MANYTOONE';
-          data['junction_key_right'] = id;
-          break;
+      switch(uiName) {
         case 'multiple_files':
           data['related_table'] = 'directus_files';
         case 'many_to_many':
@@ -463,8 +483,11 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
           data['data_type'] = 'ALIAS';
           data['relationship_type'] = 'MANYTOMANY';
           break;
+        case 'single_file':
+          data['related_table'] = 'directus_files';
         case 'many_to_one':
         case 'many_to_one_typeahead':
+          data['data_type'] = 'INT';
           data['relationship_type'] = 'MANYTOONE';
           data['junction_key_right'] = id;
           break;

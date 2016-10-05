@@ -54,10 +54,10 @@ return [
     // ),
 
     'hooks' => [
-        'postInsert' => function ($TableGateway, $record, $db, $acl) {
+        'postInsert' => function ($TableGateway, $record, $db) {
 
         },
-        'postUpdate' => function ($TableGateway, $record, $db, $acl) {
+        'postUpdate' => function ($TableGateway, $record, $db) {
             $tableName = $TableGateway->getTable();
             switch ($tableName) {
                 // ...

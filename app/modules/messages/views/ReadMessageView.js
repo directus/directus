@@ -1,11 +1,12 @@
 define([
   'app',
+  'underscore',
   'backbone',
   'handlebars',
   'moment',
   'core/BasePageView'
 ],
-function(app, Backbone, Handlebars, moment, BasePageView) {
+function(app, _, Backbone, Handlebars, moment, BasePageView) {
 
 
   var ReadView = Backbone.Layout.extend({
@@ -61,17 +62,14 @@ function(app, Backbone, Handlebars, moment, BasePageView) {
 
     serialize: function() {
       var data = this.model.toJSON();
-      data.datetime += ' UTC';
       data.recipients = data.recipients.split(',');
       data.recipientsCount = data.recipients.length;
       data.collapseRecipients = data.recipients.length > this.maxRecipients;
       data.current_user = app.authenticatedUserId;
 
-      _.each(data.responses, function(data) {
-        data.datetime += ' UTC';
-      });
-
-      data.responses = data.responses.reverse();
+      data.responses = _.sortBy(data.responses, function(response) {
+        return new Date(response.datetime);
+      }).reverse();
 
       var title = data.message;
       var offset = 0;
