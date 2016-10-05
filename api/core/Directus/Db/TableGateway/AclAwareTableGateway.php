@@ -874,7 +874,9 @@ class AclAwareTableGateway extends TableGateway
             foreach ($schemaArray as $column) {
                 if (in_array(strtolower($column['type']), ['timestamp', 'datetime'])) {
                     $columnName = $column['id'];
-                    $records[$index][$columnName] = DateUtils::convertToISOFormat($row[$columnName], 'UTC', get_user_timezone());
+                    if (array_key_exists($columnName, $row)) {
+                        $records[$index][$columnName] = DateUtils::convertToISOFormat($row[$columnName], 'UTC', get_user_timezone());
+                    }
                 }
             }
         }
