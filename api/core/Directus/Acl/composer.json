@@ -11,7 +11,7 @@
   },
   "autoload": {
     "psr-4": {
-      "Directus\\ACL\\": ""
+      "Directus\\Acl\\": ""
     }
   }
 }
