@@ -439,12 +439,22 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
       var id = e.target.getAttribute('data-id');
       var attr = e.target.name;
       var value = e.target.value;
+      var uiName = null;
       var model = this.collection.get(id);
       var relationship = model.relationship;
       var data = {};
 
       if (e.target.type === 'checkbox' || e.target.type === 'radio') {
         value = $(e.target).is(':checked') ? 1 : 0;
+      }
+
+      // hotfix: uiName was depending on the target element that was changed
+      //         if the element triggering the event is not the dropdown
+      //         the uiName should be the one already on the model.
+      if (e.target.type === 'select-one') {
+        uiName = value;
+      } else {
+        uiName = model.get('ui');
       }
 
       // hotfix #1069 single_file UI not saving relational settings
@@ -465,7 +475,7 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
         data['junction_table'] = relationship.get('junction_table');
       }
 
-      switch(value) {
+      switch(uiName) {
         case 'multiple_files':
           data['related_table'] = 'directus_files';
         case 'many_to_many':
