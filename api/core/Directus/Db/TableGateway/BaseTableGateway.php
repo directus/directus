@@ -21,7 +21,6 @@ use Zend\Db\Sql\Update;
 use Zend\Db\TableGateway\Feature;
 use Zend\Db\TableGateway\Feature\RowGatewayFeature;
 use Zend\Db\TableGateway\TableGateway;
-use Zend\Db\ResultSet\ResultSet;
 
 class BaseTableGateway extends TableGateway
 {
@@ -103,6 +102,30 @@ class BaseTableGateway extends TableGateway
     /**
      * HELPER FUNCTIONS
      */
+
+    /**
+     * Find the identifying string to effectively represent a record in the activity log.
+     * @param  array $schemaArray
+     * @param  array|AclAwareRowGateway $fullRecordData
+     * @return string
+     */
+    public function findRecordIdentifier($schemaArray, $fullRecordData)
+    {
+        // Decide on the correct column name
+        $identifierColumnName = null;
+        $column = TableSchema::getFirstNonSystemColumn($schemaArray);
+        if ($column) {
+            $identifierColumnName = $column['column_name'];
+        }
+
+        // Yield the column contents
+        $identifier = null;
+        if (isset($fullRecordData[$identifierColumnName])) {
+            $identifier = $fullRecordData[$identifierColumnName];
+        }
+
+        return $identifier;
+    }
 
     public function withKey($key, $resultSet)
     {
