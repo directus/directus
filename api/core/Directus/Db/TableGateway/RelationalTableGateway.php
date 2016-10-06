@@ -800,10 +800,10 @@ class RelationalTableGateway extends AclAwareTableGateway
                 switch ($relationship['type']) {
                     case 'MANYTOMANY':
                         $this->enforceColumnHasNonNullValues($alias['relationship'], ['related_table', 'junction_table', 'junction_key_left', 'junction_key_right'], $this->table);
-                        if (in_array($this->table, $this->toManyCallStack)) {
+                        if (in_array($relationship['related_table'], $this->toManyCallStack)) {
                             return $entry;
                         }
-                        array_push($this->toManyCallStack, $this->table);
+                        array_push($this->toManyCallStack, $relationship['related_table']);
                         $foreign_data = $this->loadManyToManyRelationships($this->table, $alias['relationship']['related_table'],
                             $alias['relationship']['junction_table'], $alias['relationship']['junction_key_left'], $alias['relationship']['junction_key_right'],
                             $entry[$this->primaryKeyFieldName]);
