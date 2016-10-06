@@ -10,8 +10,14 @@
 
 namespace Directus\Auth;
 
+use Directus\Auth\Exception\UserAlreadyLoggedInException;
+use Directus\Auth\Exception\UserIsntLoggedInException;
+use Directus\Bootstrap;
 use Directus\Session\Session;
+use Directus\Util\ArrayUtils;
+use Directus\Util\StringUtils;
 use Zend\Db\Adapter\Adapter;
+use Zend\Db\TableGateway\TableGateway;
 
 /**
  * Authentication Provider
@@ -224,7 +230,7 @@ class Provider
         $ZendDb = $this->dbConnection;
         $session = $this->session->get($this->SESSION_KEY);
         if (is_array($session) && ArrayUtils::contains($session, ['id', 'access_token'])) {
-            $DirectusUsersTableGateway = new \Zend\Db\TableGateway\TableGateway('directus_users', $ZendDb);
+            $DirectusUsersTableGateway = new TableGateway('directus_users', $ZendDb);
 
             $user = $DirectusUsersTableGateway->select([
                 'id' => $session['id'],
