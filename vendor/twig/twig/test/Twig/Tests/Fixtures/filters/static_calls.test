@@ -1,0 +1,10 @@
+--TEST--
+Filters as static method calls
+--TEMPLATE--
+{{ 'foo'|static_call_string }}
+{{ 'foo'|static_call_array }}
+--DATA--
+return array('foo' => 'foo')
+--EXPECT--
+*foo*
+*foo*

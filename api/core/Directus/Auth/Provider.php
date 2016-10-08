@@ -41,6 +41,8 @@ class Provider
         self::prependSessionKey();
     }
 
+    // @NOTE: this should be done by the constructor
+    //        and the session key setter
     protected static function prependSessionKey()
     {
         if (self::$prependedSessionKey) {
@@ -89,6 +91,27 @@ class Provider
             return true;
         }
         return false;
+    }
+
+    public static function verify($email, $password)
+    {
+        return self::getUserByAuthentication($email, $password) !== false;
+    }
+
+    public static function getUserByAuthentication($email, $password)
+    {
+        self::prependSessionKey();
+        $zendDb = Bootstrap::get('zendDb');
+        $usersTable = new TableGateway('directus_users', $zendDb);
+        $user = $usersTable->select(['email' => $email])->current();
+        $correct = false;
+
+        if ($user) {
+            $passwordHash = $user['password'];
+            $correct = password_verify($password, $passwordHash);
+        }
+
+        return $correct ? $user : false;
     }
 
     /**

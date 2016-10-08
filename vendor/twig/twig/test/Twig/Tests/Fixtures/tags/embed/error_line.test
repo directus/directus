@@ -13,4 +13,4 @@ BAR
 --DATA--
 return array()
 --EXCEPTION--
-Twig_Error_Runtime: Variable "nothing" does not exist in "index.twig" at line 5
+Twig_Error_Runtime: Variable "nothing" does not exist in "index.twig" at line 5.

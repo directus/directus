@@ -7,7 +7,7 @@ version_compare(phpversion(), '5.3.0', '>=')
 {{ date2|date('%d days') }}
 --DATA--
 date_default_timezone_set('UTC');
-$twig->getExtension('core')->setDateFormat('Y-m-d', '%d days %h hours');
+$twig->getExtension('Twig_Extension_Core')->setDateFormat('Y-m-d', '%d days %h hours');
 return array(
     'date2' => new DateInterval('P2D'),
 )

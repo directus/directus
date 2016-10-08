@@ -10,6 +10,18 @@
  */
 class Twig_Tests_LexerTest extends PHPUnit_Framework_TestCase
 {
+    public function testStreamSource()
+    {
+        $env = new Twig_Environment($this->getMockBuilder('Twig_LoaderInterface')->getMock());
+        $lexer = new Twig_Lexer($env);
+
+        $env->disableDebug();
+        $this->assertSame('', $lexer->tokenize('foo')->getSource());
+
+        $env->enableDebug();
+        $this->assertSame('foo', $lexer->tokenize('foo')->getSource());
+    }
+
     public function testNameLabelForTag()
     {
         $template = '{% § %}';

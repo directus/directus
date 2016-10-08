@@ -35,6 +35,6 @@ class Twig_Test_Method extends Twig_Test
 
     public function compile()
     {
-        return sprintf('$this->env->getExtension(\'%s\')->%s', $this->extension->getName(), $this->method);
+        return sprintf('$this->env->getExtension(\'%s\')->%s', get_class($this->extension), $this->method);
     }
 }

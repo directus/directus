@@ -51,10 +51,11 @@ class Twig_Tests_Loader_FilesystemTest extends PHPUnit_Framework_TestCase
         );
     }
 
-    public function testPaths()
+    /**
+     * @dataProvider getBasePaths
+     */
+    public function testPaths($basePath)
     {
-        $basePath = dirname(__FILE__).'/Fixtures';
-
         $loader = new Twig_Loader_Filesystem(array($basePath.'/normal', $basePath.'/normal_bis'));
         $loader->setPaths(array($basePath.'/named', $basePath.'/named_bis'), 'named');
         $loader->addPath($basePath.'/named_ter', 'named');
@@ -77,13 +78,19 @@ class Twig_Tests_Loader_FilesystemTest extends PHPUnit_Framework_TestCase
             $basePath.'/named_ter',
         ), $loader->getPaths('named'));
 
-        $this->assertEquals(
-            realpath($basePath.'/named_quater/named_absolute.html'),
-            realpath($loader->getCacheKey('@named/named_absolute.html'))
-        );
+        // do not use realpath here as it would make the test unuseful
+        $this->assertEquals(str_replace('\\', '/', $basePath.'/named_quater/named_absolute.html'), str_replace('\\', '/', $loader->getCacheKey('@named/named_absolute.html')));
         $this->assertEquals("path (final)\n", $loader->getSource('index.html'));
         $this->assertEquals("path (final)\n", $loader->getSource('@__main__/index.html'));
         $this->assertEquals("named path (final)\n", $loader->getSource('@named/index.html'));
+    }
+
+    public function getBasePaths()
+    {
+        return array(
+            array(dirname(__FILE__).'/Fixtures'),
+            array('test/Twig/Tests/Loader/Fixtures'),
+        );
     }
 
     public function testEmptyConstructor()
@@ -171,5 +178,18 @@ class Twig_Tests_Loader_FilesystemTest extends PHPUnit_Framework_TestCase
 
         $template = $twig->loadTemplate($templateName);
         $this->assertSame('VALID Child', $template->renderBlock('body', array()));
+    }
+
+    /**
+     * @requires PHP 5.3
+     */
+    public function testLoadTemplateFromPhar()
+    {
+        $loader = new Twig_Loader_Filesystem(array());
+        // phar-sample.phar was created with the following script:
+        // $f = new Phar('phar-test.phar');
+        // $f->addFromString('hello.twig', 'hello from phar');
+        $loader->addPath('phar://'.dirname(__FILE__).'/Fixtures/phar/phar-sample.phar');
+        $this->assertSame('hello from phar', $loader->getSource('hello.twig'));
     }
 }

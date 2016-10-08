@@ -104,6 +104,7 @@ $exceptionHandler = new ExceptionHandler;
 
 // Routes which do not need protection by the authentication and the request
 // nonce enforcement.
+// @TODO: Move this to a middleware
 $authAndNonceRouteWhitelist = [
     'auth_login',
     'auth_logout',
@@ -113,6 +114,7 @@ $authAndNonceRouteWhitelist = [
     'auth_reset_password',
     'auth_permissions',
     'debug_acl_poc',
+    'request_token',
 ];
 
 /**
@@ -319,6 +321,39 @@ if (isset($_REQUEST['run_extension']) && $_REQUEST['run_extension']) {
  * Slim Routes
  * (Collections arranged alphabetically)
  */
+
+$app->post("/$v/auth/request-token/?", function() use ($app, $ZendDb) {
+    $response = [
+        'success' => false,
+        'message' => __t('incorrect_email_or_password'),
+    ];
+
+    $request = $app->request();
+    // @NOTE: Slim request do not parse a json request body
+    //        We need to parse it ourselves
+    if ($request->getMediaType() == 'application/json') {
+        $jsonRequest = json_decode($request->getBody(), true);
+        $email = ArrayUtils::get($jsonRequest, 'email', false);
+        $password = ArrayUtils::get($jsonRequest, 'password', false);
+    } else {
+        $email = $request->post('email');
+        $password = $request->post('password');
+    }
+
+    if ($email && $password) {
+        $user = Auth::getUserByAuthentication($email, $password);
+
+        if ($user) {
+            unset($response['message']);
+            $response['success'] = true;
+            $response['data'] = [
+                'token' => $user['token']
+            ];
+        }
+    }
+
+    return JsonView::render($response);
+})->name('request_token');
 
 $app->post("/$v/auth/login/?", function () use ($app, $ZendDb, $acl, $requestNonceProvider) {
 
@@ -605,7 +640,7 @@ $app->map("/$v/privileges/:groupId/?", function ($groupId) use ($acl, $ZendDb, $
             // Through API:
             // Remove spaces and symbols from table name
             // And in lowercase
-            $requestPayload['table_name'] = strtolower(SchemaUtils::cleanTableName($requestPayload['table_name']));
+            $requestPayload['table_name'] = SchemaUtils::cleanTableName($requestPayload['table_name']);
             SchemaManager::createTable($requestPayload['table_name']);
             $app->emitter->run('table.create', $requestPayload['table_name']);
             $app->emitter->run('table.create:after', $requestPayload['table_name']);
@@ -839,7 +874,7 @@ $app->map("/$v/tables/:table/columns/?", function ($table_name) use ($ZendDb, $p
         // Through API:
         // Remove spaces and symbols from column name
         // And in lowercase
-        $requestPayload['column_name'] = strtolower(SchemaUtils::cleanColumnName($requestPayload['column_name']));
+        $requestPayload['column_name'] = SchemaUtils::cleanColumnName($requestPayload['column_name']);
         $params['column_name'] = $tableGateway->addColumn($table_name, $requestPayload);
     }
 
@@ -1172,9 +1207,11 @@ $app->map("/$v/settings(/:id)/?", function ($id = null) use ($acl, $ZendDb, $par
             break;
     }
 
-    $settings_new = $Settings->fetchAll();
-    // $get_new = is_null($id) ? $settings_new : $settings_new[$id];
-    $response = array_key_exists($id, $settings_new) ? $settings_new : null;
+    $response = $Settings->fetchAll();
+    if (!is_null($id)) {
+        $response = array_key_exists($id, $response) ? $response[$id] : null;
+    }
+
     if (!$response) {
         $response = [
             'message' => __t('unable_to_find_setting_collection_x', ['collection' => $id]),

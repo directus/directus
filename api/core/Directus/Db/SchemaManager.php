@@ -4,10 +4,9 @@
  */
 namespace Directus\Db;
 
-
 use Directus\Bootstrap;
 use Directus\Util\ArrayUtils;
-use Zend\Db\Sql\Ddl\Column\Boolean;
+use Directus\Database\Ddl\Column\Boolean;
 use Zend\Db\Sql\Ddl\Column\Integer;
 use Zend\Db\Sql\Ddl\Constraint\PrimaryKey;
 use Zend\Db\Sql\Ddl\CreateTable;
@@ -53,8 +52,7 @@ class SchemaManager
         $table->addColumn($primaryColumn);
         $table->addConstraint(new PrimaryKey('id'));
         // Status column
-        $statusColumn = new Boolean(STATUS_COLUMN_NAME);
-        $statusColumn->setDefault(STATUS_DRAFT_NUM);
+        $statusColumn = new Boolean(STATUS_COLUMN_NAME, false, STATUS_DRAFT_NUM);
         $table->addColumn($statusColumn);
 
         $connection = Bootstrap::get('ZendDb');

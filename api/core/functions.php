@@ -28,6 +28,7 @@ if (!function_exists('uc_convert')) {
             'Pdfs' => 'PDFs',
             'Ui' => 'UI',
             'Url' => 'URL',
+            'Urls' => 'URLs',
             'Ip' => 'IP',
             'Ftp' => 'FTP',
             'Db' => 'DB',
@@ -38,6 +39,7 @@ if (!function_exists('uc_convert')) {
             'Html' => 'HTML',
             'Js' => 'JS',
             'Css' => 'CSS',
+            'Csv' => 'CSV',
             'Ios' => 'iOS',
             'Iso' => 'ISO',
             'Rngr' => 'RNGR'
@@ -143,13 +145,16 @@ if (!function_exists('get_url')) {
      * Get Directus URL
      *
      * @param $path - Extra path to add to the url
+     * @param $defaultHost
+     *
      * @return string
      */
-    function get_url($path = '')
+    function get_url($path = '', $defaultHost = 'localhost')
     {
         $schema = is_ssl() ? 'https://' : 'http://';
+        $host = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : $defaultHost;
         $directusPath = defined('DIRECTUS_PATH') ? DIRECTUS_PATH : '/';
-        $directusHost = rtrim($_SERVER['HTTP_HOST'] . $directusPath, '/') . '/';
+        $directusHost = rtrim($host . $directusPath, '/') . '/';
 
         return $schema . $directusHost . ltrim($path, '/');
     }

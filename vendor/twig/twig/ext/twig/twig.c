@@ -144,7 +144,7 @@ static zval *TWIG_GET_ARRAYOBJECT_ELEMENT(zval *object, zval *offset TSRMLS_DC)
 
 		if (!retval) {
 			if (!EG(exception)) {
-				zend_error(E_ERROR, "Undefined offset for object of type %s used as array", ce->name);
+				zend_error(E_ERROR, "Undefined offset for object of type %s used as array.", ce->name);
 			}
 			return NULL;
 		}
@@ -167,7 +167,7 @@ static int TWIG_ISSET_ARRAYOBJECT_ELEMENT(zval *object, zval *offset TSRMLS_DC)
 
 		if (!retval) {
 			if (!EG(exception)) {
-				zend_error(E_ERROR, "Undefined offset for object of type %s used as array", ce->name);
+				zend_error(E_ERROR, "Undefined offset for object of type %s used as array.", ce->name);
 			}
 			return 0;
 		}
@@ -811,15 +811,15 @@ PHP_FUNCTION(twig_template_get_attributes)
 	}
 */
 			if (TWIG_INSTANCE_OF(object, zend_ce_arrayaccess TSRMLS_CC)) {
-				TWIG_RUNTIME_ERROR(template TSRMLS_CC, "Key \"%s\" in object with ArrayAccess of class \"%s\" does not exist", item, TWIG_GET_CLASS_NAME(object TSRMLS_CC));
+				TWIG_RUNTIME_ERROR(template TSRMLS_CC, "Key \"%s\" in object with ArrayAccess of class \"%s\" does not exist.", item, TWIG_GET_CLASS_NAME(object TSRMLS_CC));
 			} else if (Z_TYPE_P(object) == IS_OBJECT) {
-				TWIG_RUNTIME_ERROR(template TSRMLS_CC, "Impossible to access a key \"%s\" on an object of class \"%s\" that does not implement ArrayAccess interface", item, TWIG_GET_CLASS_NAME(object TSRMLS_CC));
+				TWIG_RUNTIME_ERROR(template TSRMLS_CC, "Impossible to access a key \"%s\" on an object of class \"%s\" that does not implement ArrayAccess interface.", item, TWIG_GET_CLASS_NAME(object TSRMLS_CC));
 			} else if (Z_TYPE_P(object) == IS_ARRAY) {
 				if (0 == zend_hash_num_elements(Z_ARRVAL_P(object))) {
-					TWIG_RUNTIME_ERROR(template TSRMLS_CC, "Key \"%s\" does not exist as the array is empty", item);
+					TWIG_RUNTIME_ERROR(template TSRMLS_CC, "Key \"%s\" does not exist as the array is empty.", item);
 				} else {
 					char *array_keys = TWIG_IMPLODE_ARRAY_KEYS(", ", object TSRMLS_CC);
-					TWIG_RUNTIME_ERROR(template TSRMLS_CC, "Key \"%s\" for array with keys \"%s\" does not exist", item, array_keys);
+					TWIG_RUNTIME_ERROR(template TSRMLS_CC, "Key \"%s\" for array with keys \"%s\" does not exist.", item, array_keys);
 					efree(array_keys);
 				}
 			} else {
@@ -829,15 +829,15 @@ PHP_FUNCTION(twig_template_get_attributes)
 					convert_to_string(object);
 					TWIG_RUNTIME_ERROR(template TSRMLS_CC,
 						(strcmp("array", type) == 0)
-							? "Impossible to access a key (\"%s\") on a %s variable"
-							: "Impossible to access an attribute (\"%s\") on a %s variable",
+							? "Impossible to access a key (\"%s\") on a %s variable."
+							: "Impossible to access an attribute (\"%s\") on a %s variable.",
 						item, type_name);
 				} else {
 					convert_to_string(object);
 					TWIG_RUNTIME_ERROR(template TSRMLS_CC,
 						(strcmp("array", type) == 0)
-							? "Impossible to access a key (\"%s\") on a %s variable (\"%s\")"
-							: "Impossible to access an attribute (\"%s\") on a %s variable (\"%s\")",
+							? "Impossible to access a key (\"%s\") on a %s variable (\"%s\")."
+							: "Impossible to access an attribute (\"%s\") on a %s variable (\"%s\").",
 						item, type_name, Z_STRVAL_P(object));
 				}
 				zval_ptr_dtor(&object);
@@ -883,11 +883,11 @@ PHP_FUNCTION(twig_template_get_attributes)
 		if (Z_TYPE_P(object) == IS_NULL) {
 			convert_to_string_ex(&object);
 
-			TWIG_RUNTIME_ERROR(template TSRMLS_CC, "Impossible to invoke a method (\"%s\") on a %s variable", item, type_name);
+			TWIG_RUNTIME_ERROR(template TSRMLS_CC, "Impossible to invoke a method (\"%s\") on a %s variable.", item, type_name);
 		} else {
 			convert_to_string_ex(&object);
 
-			TWIG_RUNTIME_ERROR(template TSRMLS_CC, "Impossible to invoke a method (\"%s\") on a %s variable (\"%s\")", item, type_name, Z_STRVAL_P(object));
+			TWIG_RUNTIME_ERROR(template TSRMLS_CC, "Impossible to invoke a method (\"%s\") on a %s variable (\"%s\").", item, type_name, Z_STRVAL_P(object));
 		}
 
 		zval_ptr_dtor(&object);
@@ -916,8 +916,8 @@ PHP_FUNCTION(twig_template_get_attributes)
 				return true;
 			}
 
-			if ($this->env->hasExtension('sandbox')) {
-				$this->env->getExtension('sandbox')->checkPropertyAllowed($object, $item);
+			if ($this->env->hasExtension('Twig_Extension_Sandbox')) {
+				$this->env->getExtension('Twig_Extension_Sandbox')->checkPropertyAllowed($object, $item);
 			}
 
 			return $object->$item;
@@ -935,8 +935,8 @@ PHP_FUNCTION(twig_template_get_attributes)
 				efree(item);
 				RETURN_TRUE;
 			}
-			if (TWIG_CALL_SB(TWIG_PROPERTY_CHAR(template, "env" TSRMLS_CC), "hasExtension", "sandbox" TSRMLS_CC)) {
-				TWIG_CALL_ZZ(TWIG_CALL_S(TWIG_PROPERTY_CHAR(template, "env" TSRMLS_CC), "getExtension", "sandbox" TSRMLS_CC), "checkPropertyAllowed", object, zitem TSRMLS_CC);
+			if (TWIG_CALL_SB(TWIG_PROPERTY_CHAR(template, "env" TSRMLS_CC), "hasExtension", "Twig_Extension_Sandbox" TSRMLS_CC)) {
+				TWIG_CALL_ZZ(TWIG_CALL_S(TWIG_PROPERTY_CHAR(template, "env" TSRMLS_CC), "getExtension", "Twig_Extension_Sandbox" TSRMLS_CC), "checkPropertyAllowed", object, zitem TSRMLS_CC);
 			}
 			if (EG(exception)) {
 				efree(item);
@@ -1020,7 +1020,7 @@ PHP_FUNCTION(twig_template_get_attributes)
 			return null;
 		}
 
-		throw new Twig_Error_Runtime(sprintf('Method "%s" for object "%s" does not exist', $item, get_class($object)), -1, $this->getTemplateName());
+		throw new Twig_Error_Runtime(sprintf('Method "%s" for object "%s" does not exist.', $item, get_class($object)), -1, $this->getTemplateName());
 	}
 
 	if ($isDefinedTest) {
@@ -1040,7 +1040,7 @@ PHP_FUNCTION(twig_template_get_attributes)
 				efree(item);
 				return;
 			}
-			TWIG_RUNTIME_ERROR(template TSRMLS_CC, "Neither the property \"%s\" nor one of the methods \"%s()\", \"get%s()\"/\"is%s()\" or \"__call()\" exist and have public access in class \"%s\"", item, item, item, item, TWIG_GET_CLASS_NAME(object TSRMLS_CC));
+			TWIG_RUNTIME_ERROR(template TSRMLS_CC, "Neither the property \"%s\" nor one of the methods \"%s()\", \"get%s()\"/\"is%s()\" or \"__call()\" exist and have public access in class \"%s\".", item, item, item, item, TWIG_GET_CLASS_NAME(object TSRMLS_CC));
 			efree(item);
 			return;
 		}
@@ -1052,14 +1052,14 @@ PHP_FUNCTION(twig_template_get_attributes)
 			RETURN_TRUE;
 		}
 /*
-	if ($this->env->hasExtension('sandbox')) {
-		$this->env->getExtension('sandbox')->checkMethodAllowed($object, $method);
+	if ($this->env->hasExtension('Twig_Extension_Sandbox')) {
+		$this->env->getExtension('Twig_Extension_Sandbox')->checkMethodAllowed($object, $method);
 	}
 */
 		MAKE_STD_ZVAL(zmethod);
 		ZVAL_STRING(zmethod, method, 1);
-		if (TWIG_CALL_SB(TWIG_PROPERTY_CHAR(template, "env" TSRMLS_CC), "hasExtension", "sandbox" TSRMLS_CC)) {
-			TWIG_CALL_ZZ(TWIG_CALL_S(TWIG_PROPERTY_CHAR(template, "env" TSRMLS_CC), "getExtension", "sandbox" TSRMLS_CC), "checkMethodAllowed", object, zmethod TSRMLS_CC);
+		if (TWIG_CALL_SB(TWIG_PROPERTY_CHAR(template, "env" TSRMLS_CC), "hasExtension", "Twig_Extension_Sandbox" TSRMLS_CC)) {
+			TWIG_CALL_ZZ(TWIG_CALL_S(TWIG_PROPERTY_CHAR(template, "env" TSRMLS_CC), "getExtension", "Twig_Extension_Sandbox" TSRMLS_CC), "checkMethodAllowed", object, zmethod TSRMLS_CC);
 		}
 		zval_ptr_dtor(&zmethod);
 		if (EG(exception)) {

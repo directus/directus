@@ -8,7 +8,6 @@ use Directus\Db\RowGateway\AclAwareRowGateway;
 use Directus\Db\SchemaManager;
 use Directus\Db\TableSchema;
 use Directus\Files;
-use Directus\Hook\Hook;
 use Directus\Util\DateUtils;
 use Zend\Db\RowGateway\AbstractRowGateway;
 use Zend\Db\Sql\Expression;
@@ -21,41 +20,14 @@ use Zend\Db\TableGateway\TableGateway;
 
 class RelationalTableGateway extends AclAwareTableGateway
 {
-
     const ACTIVITY_ENTRY_MODE_DISABLED = 0;
     const ACTIVITY_ENTRY_MODE_PARENT = 1;
     const ACTIVITY_ENTRY_MODE_CHILD = 2;
 
     protected $toManyCallStack = [];
 
-    /**
-     * Find the identifying string to effectively represent a record in the activity log.
-     * @param  array $schemaArray
-     * @param  array|AclAwareRowGateway $fulRecordData
-     * @return string
-     */
-    public function findRecordIdentifier($schemaArray, $fullRecordData)
-    {
-        // Decide on the correct column name
-        $identifierColumnName = null;
-        $column = TableSchema::getFirstNonSystemColumn($schemaArray);
-        if ($column) {
-            $identifierColumnName = $column['column_name'];
-        }
-
-        // Yield the column contents
-        $identifier = null;
-        if (isset($fullRecordData[$identifierColumnName])) {
-            $identifier = $fullRecordData[$identifierColumnName];
-        }
-
-        return $identifier;
-    }
-
     public function manageRecordUpdate($tableName, $recordData, $activityEntryMode = self::ACTIVITY_ENTRY_MODE_PARENT, &$childLogEntries = null, &$parentCollectionRelationshipsChanged = false, $parentData = [])
     {
-        $log = $this->logger();
-
         $TableGateway = $this;
         if ($tableName !== $this->table) {
             $TableGateway = new RelationalTableGateway($this->acl, $tableName, $this->adapter);
@@ -593,7 +565,6 @@ class RelationalTableGateway extends AclAwareTableGateway
 
     public function applyDefaultEntriesSelectParams(array $params)
     {
-
         if ($this->primaryKeyFieldName != 'id') {
             unset(self::$defaultEntriesSelectParams['id']);
             self::$defaultEntriesSelectParams[$this->primaryKeyFieldName] = -1;
@@ -610,7 +581,7 @@ class RelationalTableGateway extends AclAwareTableGateway
 
         // Is there a sort column?
         $tableColumns = array_flip(TableSchema::getTableColumns($this->table, null, true));
-        if (array_key_exists('sort', $tableColumns)) {
+        if (!array_key_exists('orderBy', $params) && array_key_exists('sort', $tableColumns)) {
             $params['orderBy'] = 'sort';
         }
 
@@ -633,7 +604,11 @@ class RelationalTableGateway extends AclAwareTableGateway
             $haystack = is_array($params['status'])
                 ? $params['status']
                 : explode(',', $params['status']);
-            $select->where->in(STATUS_COLUMN_NAME, $haystack);
+            $statusColumnName = implode($this->adapter->platform->getIdentifierSeparator(), [
+                $this->table,
+                STATUS_COLUMN_NAME
+            ]);
+            $select->where->in($statusColumnName, $haystack);
         }
 
         // Select only ids from the ids if provided
@@ -699,7 +674,7 @@ class RelationalTableGateway extends AclAwareTableGateway
 
         // table only has one column
         // return an empty array
-        if (!is_numeric_array($schemaArray)) {
+        if (!is_array($schemaArray) || !is_numeric_array($schemaArray)) {
             return [];
         }
 
@@ -824,15 +799,16 @@ class RelationalTableGateway extends AclAwareTableGateway
                 switch ($relationship['type']) {
                     case 'MANYTOMANY':
                         $this->enforceColumnHasNonNullValues($alias['relationship'], ['related_table', 'junction_table', 'junction_key_left', 'junction_key_right'], $this->table);
-                        if (in_array($this->table, $this->toManyCallStack)) {
+                        if (in_array($relationship['related_table'], $this->toManyCallStack)) {
                             return $entry;
                         }
-                        array_push($this->toManyCallStack, $this->table);
+                        array_push($this->toManyCallStack, $relationship['related_table']);
                         $foreign_data = $this->loadManyToManyRelationships($this->table, $alias['relationship']['related_table'],
                             $alias['relationship']['junction_table'], $alias['relationship']['junction_key_left'], $alias['relationship']['junction_key_right'],
                             $entry[$this->primaryKeyFieldName]);
                         $noDuplicates = isset($alias['options']['no_duplicates']) ? $alias['options']['no_duplicates'] : 0;
                         // @todo: better way to handle this.
+                        // @TODO: fetch uniques/non-duplicates entries
                         if ($noDuplicates) {
                             $uniquesID = [];
                             foreach ($foreign_data['rows'] as $index => $row) {
@@ -843,6 +819,34 @@ class RelationalTableGateway extends AclAwareTableGateway
                                 }
                             }
                             unset($uniquesID);
+                            // =========================================================
+                            // Reset keys
+                            // ---------------------------------------------------------
+                            // This prevent json output using numeric ids as key
+                            // Ex:
+                            // {
+                            //      rows: {
+                            //          "1": {
+                            //              data: {id: 1}
+                            //          },
+                            //          "3" {
+                            //              data: {id: 2}
+                            //          }
+                            //      }
+                            // }
+                            // Instead of:
+                            // {
+                            //      rows: [
+                            //          {
+                            //              data: {id: 1}
+                            //          },
+                            //          {
+                            //              data: {id: 2}
+                            //          }
+                            //      ]
+                            // }
+                            // =========================================================
+                            $foreign_data['rows'] = array_values($foreign_data['rows']);
                         }
                         break;
                     case 'ONETOMANY':

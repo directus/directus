@@ -258,17 +258,17 @@
     },
     {
         "name": "twig/twig",
-        "version": "v1.24.2",
-        "version_normalized": "1.24.2.0",
+        "version": "v1.26.1",
+        "version_normalized": "1.26.1.0",
         "source": {
             "type": "git",
             "url": "https://github.com/twigphp/Twig.git",
-            "reference": "33093f6e310e6976baeac7b14f3a6ec02f2d79b7"
+            "reference": "a09d8ee17ac1cfea29ed60c83960ad685c6a898d"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/twigphp/Twig/zipball/33093f6e310e6976baeac7b14f3a6ec02f2d79b7",
-            "reference": "33093f6e310e6976baeac7b14f3a6ec02f2d79b7",
+            "url": "https://api.github.com/repos/twigphp/Twig/zipball/a09d8ee17ac1cfea29ed60c83960ad685c6a898d",
+            "reference": "a09d8ee17ac1cfea29ed60c83960ad685c6a898d",
             "shasum": ""
         },
         "require": {
@@ -278,11 +278,11 @@
             "symfony/debug": "~2.7",
             "symfony/phpunit-bridge": "~2.7"
         },
-        "time": "2016-09-01 17:50:53",
+        "time": "2016-10-05 18:57:41",
         "type": "library",
         "extra": {
             "branch-alias": {
-                "dev-master": "1.24-dev"
+                "dev-master": "1.26-dev"
             }
         },
         "installation-source": "dist",
@@ -321,17 +321,17 @@
     },
     {
         "name": "league/flysystem",
-        "version": "1.0.27",
-        "version_normalized": "1.0.27.0",
+        "version": "1.0.28",
+        "version_normalized": "1.0.28.0",
         "source": {
             "type": "git",
             "url": "https://github.com/thephpleague/flysystem.git",
-            "reference": "50e2045ed70a7e75a5e30bc3662904f3b67af8a9"
+            "reference": "a9663643ff2d16d7f66ed1e0d3212c5491bc9044"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/50e2045ed70a7e75a5e30bc3662904f3b67af8a9",
-            "reference": "50e2045ed70a7e75a5e30bc3662904f3b67af8a9",
+            "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/a9663643ff2d16d7f66ed1e0d3212c5491bc9044",
+            "reference": "a9663643ff2d16d7f66ed1e0d3212c5491bc9044",
             "shasum": ""
         },
         "require": {
@@ -360,7 +360,7 @@
             "league/flysystem-webdav": "Allows you to use WebDAV storage",
             "league/flysystem-ziparchive": "Allows you to use ZipArchive adapter"
         },
-        "time": "2016-08-10 08:55:11",
+        "time": "2016-10-07 12:20:37",
         "type": "library",
         "extra": {
             "branch-alias": {

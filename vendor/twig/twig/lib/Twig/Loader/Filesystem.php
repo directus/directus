@@ -198,11 +198,7 @@ class Twig_Loader_Filesystem implements Twig_LoaderInterface, Twig_ExistsLoaderI
 
         foreach ($this->paths[$namespace] as $path) {
             if (is_file($path.'/'.$shortname)) {
-                if (false !== $realpath = realpath($path.'/'.$shortname)) {
-                    return $this->cache[$name] = $realpath;
-                }
-
-                return $this->cache[$name] = $path.'/'.$shortname;
+                return $this->cache[$name] = $this->normalizePath($path.'/'.$shortname);
             }
         }
 
@@ -256,5 +252,21 @@ class Twig_Loader_Filesystem implements Twig_LoaderInterface, Twig_ExistsLoaderI
                 throw new Twig_Error_Loader(sprintf('Looks like you try to load a template outside configured directories (%s).', $name));
             }
         }
+    }
+
+    private function normalizePath($path)
+    {
+        $parts = explode('/', str_replace('\\', '/', $path));
+        $isPhar = strpos($path, 'phar://') === 0;
+        $new = array();
+        foreach ($parts as $i => $part) {
+            if ('..' === $part) {
+                array_pop($new);
+            } elseif ('.' !== $part && ('' !== $part || 0 === $i || $isPhar && $i < 3)) {
+                $new[] = $part;
+            }
+        }
+
+        return implode('/', $new);
     }
 }

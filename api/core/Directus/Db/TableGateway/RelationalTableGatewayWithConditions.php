@@ -86,7 +86,12 @@ class RelationalTableGatewayWithConditions extends RelationalTableGateway
                 $tableName = $params['table_name'];
             }
 
-            $select->where->in(STATUS_COLUMN_NAME, $haystack);
+            $statusColumnName = implode($this->adapter->platform->getIdentifierSeparator(), [
+                $this->table,
+                STATUS_COLUMN_NAME
+            ]);
+
+            $select->where->in($statusColumnName, $haystack);
         }
 
         // Select only ids from the ids if provided
@@ -95,6 +100,15 @@ class RelationalTableGatewayWithConditions extends RelationalTableGateway
 
             if (count($entriesIds) > 0) {
                 $select->where->in($this->primaryKeyFieldName, $entriesIds);
+            }
+        }
+
+        // Filter entries that match one of these values separated by comma
+        // in[field]=value1,value2
+        if (array_key_exists('in', $params) && is_array($params['in'])) {
+            foreach($params['in'] as $field => $values) {
+                $values = explode(',', $values);
+                $select->where->in($field, $values);
             }
         }
 

@@ -51,10 +51,10 @@ return [
 
     // Use these hooks to extend the base Directus functionality
     'hooks' => [
-        'postInsert' => function ($TableGateway, $record, $db, $acl) {
+        'postInsert' => function ($TableGateway, $record, $db) {
             // ...
         },
-        'postUpdate' => function ($TableGateway, $record, $db, $acl) {
+        'postUpdate' => function ($TableGateway, $record, $db) {
             $tableName = $TableGateway->getTable();
             switch ($tableName) {
                 // ...

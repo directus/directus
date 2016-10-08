@@ -9,4 +9,4 @@ Foo
 --DATA--
 return array()
 --EXCEPTION--
-Twig_Error_Runtime: Variable "vars" does not exist in "index.twig" at line 3
+Twig_Error_Runtime: Variable "vars" does not exist in "index.twig" at line 3.

@@ -27,7 +27,12 @@ class Twig_Node_For extends Twig_Node
             $body = new Twig_Node_If(new Twig_Node(array($ifexpr, $body)), null, $lineno, $tag);
         }
 
-        parent::__construct(array('key_target' => $keyTarget, 'value_target' => $valueTarget, 'seq' => $seq, 'body' => $body, 'else' => $else), array('with_loop' => true, 'ifexpr' => null !== $ifexpr), $lineno, $tag);
+        $nodes = array('key_target' => $keyTarget, 'value_target' => $valueTarget, 'seq' => $seq, 'body' => $body);
+        if (null !== $else) {
+            $nodes['else'] = $else;
+        }
+
+        parent::__construct($nodes, array('with_loop' => true, 'ifexpr' => null !== $ifexpr), $lineno, $tag);
     }
 
     public function compile(Twig_Compiler $compiler)
@@ -40,7 +45,7 @@ class Twig_Node_For extends Twig_Node
             ->raw(");\n")
         ;
 
-        if (null !== $this->getNode('else')) {
+        if ($this->hasNode('else')) {
             $compiler->write("\$context['_iterated'] = false;\n");
         }
 
@@ -69,7 +74,7 @@ class Twig_Node_For extends Twig_Node
             }
         }
 
-        $this->loop->setAttribute('else', null !== $this->getNode('else'));
+        $this->loop->setAttribute('else', $this->hasNode('else'));
         $this->loop->setAttribute('with_loop', $this->getAttribute('with_loop'));
         $this->loop->setAttribute('ifexpr', $this->getAttribute('ifexpr'));
 
@@ -85,7 +90,7 @@ class Twig_Node_For extends Twig_Node
             ->write("}\n")
         ;
 
-        if (null !== $this->getNode('else')) {
+        if ($this->hasNode('else')) {
             $compiler
                 ->write("if (!\$context['_iterated']) {\n")
                 ->indent()

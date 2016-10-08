@@ -379,7 +379,7 @@ class Twig_ExpressionParser
                     }
                 }
             } else {
-                throw new Twig_Error_Syntax('Expected name or number', $lineno, $this->parser->getFilename());
+                throw new Twig_Error_Syntax('Expected name or number.', $lineno, $this->parser->getFilename());
             }
 
             if ($node instanceof Twig_Node_Expression_Name && null !== $this->parser->getImportedSymbol('template', $node->getAttribute('name'))) {
@@ -541,7 +541,7 @@ class Twig_ExpressionParser
             $token = $this->parser->getStream()->expect(Twig_Token::NAME_TYPE, null, 'Only variables can be assigned to');
             $value = $token->getValue();
             if (in_array(strtolower($value), array('true', 'false', 'none', 'null'))) {
-                throw new Twig_Error_Syntax(sprintf('You cannot assign a value to "%s"', $value), $token->getLine(), $this->parser->getFilename());
+                throw new Twig_Error_Syntax(sprintf('You cannot assign a value to "%s".', $value), $token->getLine(), $this->parser->getFilename());
             }
             $targets[] = new Twig_Node_Expression_AssignName($value, $token->getLine());
 

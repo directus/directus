@@ -136,7 +136,13 @@ Creating a filter is as simple as associating a name with a PHP callable::
     // or a simple PHP function
     $filter = new Twig_SimpleFilter('rot13', 'str_rot13');
 
+    // or a class static method
+    $filter = new Twig_SimpleFilter('rot13', array('SomeClass', 'rot13Filter'));
+    $filter = new Twig_SimpleFilter('rot13', 'SomeClass::rot13Filter');
+
     // or a class method
+    $filter = new Twig_SimpleFilter('rot13', array($this, 'rot13Filter'));
+    // the one below needs a runtime implementation (see below for more information)
     $filter = new Twig_SimpleFilter('rot13', array('SomeClass', 'rot13Filter'));
 
 The first argument passed to the ``Twig_SimpleFilter`` constructor is the name
@@ -525,10 +531,6 @@ reusable class like adding support for internationalization. An extension can
 define tags, filters, tests, operators, global variables, functions, and node
 visitors.
 
-Creating an extension also makes for a better separation of code that is
-executed at compilation time and code needed at runtime. As such, it makes
-your code faster.
-
 Most of the time, it is useful to create a single extension for your project,
 to host all the specific tags and filters you want to add to Twig.
 
@@ -613,32 +615,27 @@ An extension is a class that implements the following interface::
          * Returns the name of the extension.
          *
          * @return string The extension name
+         *
+         * @deprecated since 1.26 (to be removed in 2.0), not used anymore internally
          */
         function getName();
     }
 
-To keep your extension class clean and lean, it can inherit from the built-in
-``Twig_Extension`` class instead of implementing the whole interface. That
-way, you just need to implement the ``getName()`` method as the
-``Twig_Extension`` provides empty implementations for all other methods.
-
-The ``getName()`` method must return a unique identifier for your extension.
-
-Now, with this information in mind, let's create the most basic extension
-possible::
+To keep your extension class clean and lean, inherit from the built-in
+``Twig_Extension`` class instead of implementing the interface as it provides
+empty implementations for all methods:
 
     class Project_Twig_Extension extends Twig_Extension
     {
-        public function getName()
-        {
-            return 'project';
-        }
     }
+
+Of course, this extension does nothing for now. We will customize it in the
+next sections.
 
 .. note::
 
-    Of course, this extension does nothing for now. We will customize it in
-    the next sections.
+    Prior to Twig 1.26, you must implement the ``getName()`` method which must
+    return a unique identifier for the extension.
 
 Twig does not care where you save your extension on the filesystem, as all
 extensions must be registered explicitly to be available in your templates.
@@ -651,7 +648,7 @@ main ``Environment`` object::
 
 .. tip::
 
-    The bundled extensions are great examples of how extensions work.
+    The Twig core extensions are great examples of how extensions work.
 
 Globals
 ~~~~~~~
@@ -770,6 +767,101 @@ The ``getTests()`` method lets you add new test functions::
         // ...
     }
 
+Definition vs Runtime
+~~~~~~~~~~~~~~~~~~~~~
+
+Twig filters, functions, and tests runtime implementations can be defined as
+any valid PHP callable:
+
+* **functions/static methods**: Simple to implement and fast (used by all Twig
+  core extensions); but it is hard for the runtime to depend on external
+  objects;
+
+* **closures**: Simple to implement;
+
+* **object methods**: More flexible and required if your runtime code depends
+  on external objects.
+
+The simplest way to use methods is to define them on the extension itself::
+
+    class Project_Twig_Extension extends Twig_Extension
+    {
+        private $rot13Provider;
+
+        public function __construct($rot13Provider)
+        {
+            $this->rot13Provider = $rot13Provider;
+        }
+
+        public function getFunctions()
+        {
+            return array(
+                new Twig_SimpleFunction('rot13', array($this, 'rot13')),
+            );
+        }
+
+        public function rot13($value)
+        {
+            return $rot13Provider->rot13($value);
+        }
+    }
+
+This is very convenient but not recommended as it makes template compilation
+depend on runtime dependencies even if they are not needed (think for instance
+as a dependency that connects to a database engine).
+
+As of Twig 1.26, you can easily decouple the extension definitions from their
+runtime implementations by registering a ``Twig_RuntimeLoaderInterface``
+instance on the environment that knows how to instantiate such runtime classes
+(runtime classes must be autoload-able)::
+
+    class RuntimeLoader implements Twig_RuntimeLoaderInterface
+    {
+        public function load($class)
+        {
+            // implement the logic to create an instance of $class
+            // and inject its dependencies
+            // most of the time, it means using your dependency injection container
+            if ('Project_Twig_RuntimeExtension' === $class) {
+                return new $class(new Rot13Provider());
+            } else {
+                // ...
+            }
+        }
+    }
+
+    $twig->addRuntimeLoader(new RuntimeLoader());
+
+It is now possible to move the runtime logic to a new
+``Project_Twig_RuntimeExtension`` class and use it directly in the extension::
+
+    class Project_Twig_RuntimeExtension extends Twig_Extension
+    {
+        private $rot13Provider;
+
+        public function __construct($rot13Provider)
+        {
+            $this->rot13Provider = $rot13Provider;
+        }
+
+        public function rot13($value)
+        {
+            return $rot13Provider->rot13($value);
+        }
+    }
+
+    class Project_Twig_Extension extends Twig_Extension
+    {
+        public function getFunctions()
+        {
+            return array(
+                new Twig_SimpleFunction('rot13', array('Project_Twig_RuntimeExtension', 'rot13')),
+                // or
+                new Twig_SimpleFunction('rot13', 'Project_Twig_RuntimeExtension::rot13'),
+            );
+        }
+    }
+
 Overloading
 -----------
 
@@ -790,11 +882,6 @@ possible** (order matters)::
         {
             // do something different from the built-in date filter
         }
-
-        public function getName()
-        {
-            return 'project';
-        }
     }
 
     $twig = new Twig_Environment($loader);
@@ -802,7 +889,7 @@ possible** (order matters)::
 
 Here, we have overloaded the built-in ``date`` filter with a custom one.
 
-If you do the same on the Twig_Environment itself, beware that it takes
+If you do the same on the ``Twig_Environment`` itself, beware that it takes
 precedence over any other registered extensions::
 
     $twig = new Twig_Environment($loader);

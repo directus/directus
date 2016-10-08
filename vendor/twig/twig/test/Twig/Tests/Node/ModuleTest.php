@@ -73,6 +73,11 @@ class __TwigTemplate_%x extends Twig_Template
     {
         return array (  19 => 1,);
     }
+
+    public function getSource()
+    {
+        return "";
+    }
 }
 EOF
         , $twig, true);
@@ -126,6 +131,11 @@ class __TwigTemplate_%x extends Twig_Template
     {
         return array (  26 => 1,  24 => 2,  11 => 1,);
     }
+
+    public function getSource()
+    {
+        return "";
+    }
 }
 EOF
         , $twig, true);
@@ -139,7 +149,7 @@ EOF
                         2
                     );
 
-        $node = new Twig_Node_Module($body, $extends, $blocks, $macros, $traits, new Twig_Node(array()), $filename);
+        $node = new Twig_Node_Module($body, $extends, $blocks, $macros, $traits, new Twig_Node(array()), $filename, '{{ foo }}');
         $tests[] = array($node, <<<EOF
 <?php
 
@@ -173,6 +183,11 @@ class __TwigTemplate_%x extends Twig_Template
     public function getDebugInfo()
     {
         return array (  17 => 2,  15 => 4,  9 => 2,);
+    }
+
+    public function getSource()
+    {
+        return "{{ foo }}";
     }
 }
 EOF

@@ -28,7 +28,7 @@ class Twig_Tests_Node_ForTest extends Twig_Test_NodeTestCase
         $this->assertTrue($node->getAttribute('ifexpr'));
         $this->assertEquals('Twig_Node_If', get_class($node->getNode('body')));
         $this->assertEquals($body, $node->getNode('body')->getNode('tests')->getNode(1)->getNode(0));
-        $this->assertNull($node->getNode('else'));
+        $this->assertFalse($node->hasNode('else'));
 
         $else = new Twig_Node_Print(new Twig_Node_Expression_Name('foo', 1), 1);
         $node = new Twig_Node_For($keyTarget, $valueTarget, $seq, $ifexpr, $body, $else, 1);

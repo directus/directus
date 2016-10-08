@@ -1,7 +1,30 @@
+* 1.26.1 (2016-10-05)
+
+ * fixed default implementation of Twig_Template::getDebugInfo() for better BC
+ * fixed regression on static calls for functions/filters/tests
+
+* 1.26.0 (2016-10-02)
+
+ * added template cache invalidation based on more environment options
+ * added a missing deprecation notice
+ * fixed template paths when a template is stored in a PHAR file
+ * allowed filters/functions/tests implementation to use a different class than the extension they belong to
+ * deprecated Twig_ExtensionInterface::getName()
+
+* 1.25.0 (2016-09-21)
+
+ * changed the way we store template source in template classes
+ * removed usage of realpath in cache keys
+ * fixed Twig cache sharing when used with different versions of PHP
+ * removed embed parent workaround for simple use cases
+ * deprecated the ability to store non Node instances in Node::$nodes
+ * deprecated Twig_Environment::getLexer(), Twig_Environment::getParser(), Twig_Environment::getCompiler()
+ * deprecated Twig_Compiler::getFilename()
+
 * 1.24.2 (2016-09-01)
 
  * fixed static callables
- * fixed a potential PHP warning when load the cache
+ * fixed a potential PHP warning when loading the cache
  * fixed a case where the autoescaping does not work as expected
 
 * 1.24.1 (2016-05-30)

@@ -4,7 +4,6 @@ define('BASE_PATH', realpath(__DIR__ . '/../'));
 
 // Composer Autoloader
 $loader = require BASE_PATH . '/vendor/autoload.php';
-require BASE_PATH . '/api/config.php';
 
 use Directus\Console\Cli;
 

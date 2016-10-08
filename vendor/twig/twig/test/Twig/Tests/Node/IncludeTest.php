@@ -16,7 +16,7 @@ class Twig_Tests_Node_IncludeTest extends Twig_Test_NodeTestCase
         $expr = new Twig_Node_Expression_Constant('foo.twig', 1);
         $node = new Twig_Node_Include($expr, null, false, false, 1);
 
-        $this->assertNull($node->getNode('variables'));
+        $this->assertFalse($node->hasNode('variables'));
         $this->assertEquals($expr, $node->getNode('expr'));
         $this->assertFalse($node->getAttribute('only'));
 

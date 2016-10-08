@@ -115,7 +115,7 @@ class Twig_Tests_Cache_FilesystemTest extends PHPUnit_Framework_TestCase
         // Create root directory.
         @mkdir($this->directory, 0777, true);
         // Create read-only subdirectory.
-        @mkdir($this->directory.'/cache' , 0555);
+        @mkdir($this->directory.'/cache', 0555);
         $this->assertTrue(is_dir($this->directory.'/cache'));
 
         $this->cache->write($key, $content);

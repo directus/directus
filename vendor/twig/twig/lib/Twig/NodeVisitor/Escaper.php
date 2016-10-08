@@ -34,7 +34,7 @@ class Twig_NodeVisitor_Escaper extends Twig_BaseNodeVisitor
     protected function doEnterNode(Twig_Node $node, Twig_Environment $env)
     {
         if ($node instanceof Twig_Node_Module) {
-            if ($env->hasExtension('escaper') && $defaultStrategy = $env->getExtension('escaper')->getDefaultStrategy($node->getAttribute('filename'))) {
+            if ($env->hasExtension('Twig_Extension_Escaper') && $defaultStrategy = $env->getExtension('Twig_Extension_Escaper')->getDefaultStrategy($node->getAttribute('filename'))) {
                 $this->defaultStrategy = $defaultStrategy;
             }
             $this->safeVars = array();

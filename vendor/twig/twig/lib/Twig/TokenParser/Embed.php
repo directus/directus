@@ -22,18 +22,27 @@ class Twig_TokenParser_Embed extends Twig_TokenParser_Include
 
         list($variables, $only, $ignoreMissing) = $this->parseArguments();
 
+        $parentToken = $fakeParentToken = new Twig_Token(Twig_Token::STRING_TYPE, '__parent__', $token->getLine());
+        if ($parent instanceof Twig_Node_Expression_Constant) {
+            $parentToken = new Twig_Token(Twig_Token::STRING_TYPE, $parent->getAttribute('value'), $token->getLine());
+        } elseif ($parent instanceof Twig_Node_Expression_Name) {
+            $parentToken = new Twig_Token(Twig_Token::NAME_TYPE, $parent->getAttribute('name'), $token->getLine());
+        }
+
         // inject a fake parent to make the parent() function work
         $stream->injectTokens(array(
             new Twig_Token(Twig_Token::BLOCK_START_TYPE, '', $token->getLine()),
             new Twig_Token(Twig_Token::NAME_TYPE, 'extends', $token->getLine()),
-            new Twig_Token(Twig_Token::STRING_TYPE, '__parent__', $token->getLine()),
+            $parentToken,
             new Twig_Token(Twig_Token::BLOCK_END_TYPE, '', $token->getLine()),
         ));
 
         $module = $this->parser->parse($stream, array($this, 'decideBlockEnd'), true);
 
         // override the parent with the correct one
-        $module->setNode('parent', $parent);
+        if ($fakeParentToken === $parentToken) {
+            $module->setNode('parent', $parent);
+        }
 
         $this->parser->embedTemplate($module);
 

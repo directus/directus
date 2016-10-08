@@ -25,6 +25,13 @@ if (\Directus\Auth\Provider::loggedIn()) {
     exit;
 }
 
+// hotfix
+// see: https://github.com/directus/directus/issues/1268
+$errorMessage = null;
+if (isset($_SESSION['error_message'])) {
+    $errorMessage = $_SESSION['error_message'];
+    unset($_SESSION['error_message']);
+}
 // Get current commit hash
 $git = __DIR__ . '/.git';
 $cacheBuster = Directus\Util\Git::getCloneHash($git);
@@ -89,7 +96,7 @@ $cacheBuster = Directus\Util\Git::getCloneHash($git);
             <button type="submit" class="btn primary"><?= __t('sign_in'); ?></button>
         </p>
     </div>
-    <p class="error" style="display:none;"></p>
+    <p class="error" style="<?= ($errorMessage === null) ? 'display:none;': '';?>"><?= ($errorMessage !== null) ? '<i class="material-icons">warning</i>' . $errorMessage : '';?></p>
     <p class="message" style="display:none;"></p>
     <div class="directus-version" title="<?php echo $cacheBuster; ?>"><?= __t('version'); ?> <?php echo(DIRECTUS_VERSION) ?></div>
 </form>

@@ -515,4 +515,40 @@ From PHP, it's also possible to load a template stored in a string via
 
     Never use the ``Twig_Loader_String`` loader, which has severe limitations.
 
+Using Twig and AngularJS in the same Templates
+----------------------------------------------
+
+Mixing different template syntaxes in the same file is not a recommended
+practice as both AngularJS and Twig use the same delimiters in their syntax:
+``{{`` and ``}}``.
+
+Still, if you want to use AngularJS and Twig in the same template, there are
+two ways to make it work depending on the amount of AngularJS you need to
+include in your templates:
+
+* Escaping the AngularJS delimiters by wrapping AngularJS sections with the
+  ``{% verbatim %}`` tag or by escaping each delimiter via ``{{ '{{' }}`` and
+  ``{{ '}}' }}``;
+
+* Changing the delimiters of one of the template engines (depending on which
+  engine you introduced last):
+
+  * For AngularJS, change the interpolation tags using the
+    ``interpolateProvider`` service, for instance at the module initialization
+    time:
+
+    ```js
+    angular.module('myApp', []).config(function($interpolateProvider) {
+        $interpolateProvider.startSymbol('{[').endSymbol(']}');
+    });
+    ```
+
+  * For Twig, change the delimiters via the ``tag_variable`` Lexer option:
+
+    ```php
+    $env->setLexer(new Twig_Lexer($env, array(
+        'tag_variable' => array('{[', ']}'),
+    )));
+    ```
+
 .. _callback: http://www.php.net/manual/en/function.is-callable.php

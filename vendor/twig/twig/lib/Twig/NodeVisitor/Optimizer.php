@@ -56,7 +56,7 @@ class Twig_NodeVisitor_Optimizer extends Twig_BaseNodeVisitor
             $this->enterOptimizeFor($node, $env);
         }
 
-        if (PHP_VERSION_ID < 50400 && self::OPTIMIZE_VAR_ACCESS === (self::OPTIMIZE_VAR_ACCESS & $this->optimizers) && !$env->isStrictVariables() && !$env->hasExtension('sandbox')) {
+        if (PHP_VERSION_ID < 50400 && self::OPTIMIZE_VAR_ACCESS === (self::OPTIMIZE_VAR_ACCESS & $this->optimizers) && !$env->isStrictVariables() && !$env->hasExtension('Twig_Extension_Sandbox')) {
             if ($this->inABody) {
                 if (!$node instanceof Twig_Node_Expression) {
                     if (get_class($node) !== 'Twig_Node') {
@@ -90,7 +90,7 @@ class Twig_NodeVisitor_Optimizer extends Twig_BaseNodeVisitor
 
         $node = $this->optimizePrintNode($node, $env);
 
-        if (self::OPTIMIZE_VAR_ACCESS === (self::OPTIMIZE_VAR_ACCESS & $this->optimizers) && !$env->isStrictVariables() && !$env->hasExtension('sandbox')) {
+        if (self::OPTIMIZE_VAR_ACCESS === (self::OPTIMIZE_VAR_ACCESS & $this->optimizers) && !$env->isStrictVariables() && !$env->hasExtension('Twig_Extension_Sandbox')) {
             if ($node instanceof Twig_Node_Body) {
                 $this->inABody = false;
             } elseif ($this->inABody) {

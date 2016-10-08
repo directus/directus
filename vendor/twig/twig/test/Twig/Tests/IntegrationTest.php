@@ -141,6 +141,11 @@ class TwigTestExtension extends Twig_Extension
             new Twig_SimpleFilter('nl2br', array($this, 'nl2br'), array('pre_escape' => 'html', 'is_safe' => array('html'))),
             new Twig_SimpleFilter('escape_something', array($this, 'escape_something'), array('is_safe' => array('something'))),
             new Twig_SimpleFilter('preserves_safety', array($this, 'preserves_safety'), array('preserves_safety' => array('html'))),
+            new Twig_SimpleFilter('static_call_string', 'TwigTestExtension::staticCall'),
+            new Twig_SimpleFilter('static_call_array', array('TwigTestExtension', 'staticCall')),
+            new Twig_SimpleFilter('magic_call', array($this, 'magicCall')),
+            new Twig_SimpleFilter('magic_call_string', 'TwigTestExtension::magicStaticCall'),
+            new Twig_SimpleFilter('magic_call_array', array('TwigTestExtension', 'magicStaticCall')),
             new Twig_SimpleFilter('*_path', array($this, 'dynamic_path')),
             new Twig_SimpleFilter('*_foo_*_bar', array($this, 'dynamic_foo')),
         );
@@ -152,6 +157,8 @@ class TwigTestExtension extends Twig_Extension
             new Twig_SimpleFunction('§', array($this, '§Function')),
             new Twig_SimpleFunction('safe_br', array($this, 'br'), array('is_safe' => array('html'))),
             new Twig_SimpleFunction('unsafe_br', array($this, 'br')),
+            new Twig_SimpleFunction('static_call_string', 'TwigTestExtension::staticCall'),
+            new Twig_SimpleFunction('static_call_array', array('TwigTestExtension', 'staticCall')),
             new Twig_SimpleFunction('*_path', array($this, 'dynamic_path')),
             new Twig_SimpleFunction('*_foo_*_bar', array($this, 'dynamic_foo')),
         );
@@ -212,6 +219,11 @@ class TwigTestExtension extends Twig_Extension
         return strtoupper($value);
     }
 
+    public static function staticCall($value)
+    {
+        return "*$value*";
+    }
+
     public function br()
     {
         return '<br />';
@@ -222,8 +234,21 @@ class TwigTestExtension extends Twig_Extension
         return false !== strpos($value, ' ');
     }
 
-    public function getName()
+    public function __call($method, $arguments)
     {
-        return 'integration_test';
+        if ('magicCall' !== $method) {
+            throw new BadMethodCallException('Unexpected call to __call');
+        }
+
+        return 'magic_'.$arguments[0];
+    }
+
+    public static function __callStatic($method, $arguments)
+    {
+        if ('magicStaticCall' !== $method) {
+            throw new BadMethodCallException('Unexpected call to __callStatic');
+        }
+
+        return 'static_magic_'.$arguments[0];
     }
 }
