@@ -248,9 +248,22 @@ function getInbox()
 function getVersionNotification()
 {
     $message = null;
-    $data = check_version(isset($_SESSION['first_version_check']));
-    unset($_SESSION['first_version_check']);
+    $firstTimeVersionCheck = false;
+    if (isset($_SESSION['first_version_check'])) {
+        $firstTimeVersionCheck = true;
+        unset($_SESSION['first_version_check']);
+    }
 
+    // only notify the user every 30 day.
+    $data = check_version($firstTimeVersionCheck);
+    $session_key = 'version_last_check';
+    $lastCheckTime = isset($_SESSION[$session_key]) ? $_SESSION[$session_key] : false;
+
+    if ($lastCheckTime && ($lastCheckTime + 30 * DAY_IN_SECONDS) > gmdate('U')) {
+        return $message;
+    }
+
+    $_SESSION[$session_key] = gmdate('U');
     if ($data['outdated'] == true) {
         $message = [
             'title' => __t('version_outdated_title'),
