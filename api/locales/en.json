@@ -324,7 +324,6 @@
     "invalid_request_nonce": "Invalid request (nonce)",
     "no_such_extensions_found": "No such extension.",
     "unauthorized_nonce": "Unauthorized (nonce)",
-    "unauthorized_table_access_x": "Unauthorized access to table: %{table}",
     "extension_x_must_return_array_got_y_instead": "Extension %{extension_name} must return array, got %{type} instead",
     "incorrect_email_or_password": "Incorrect email or password",
     "missing_email_or_password": "Missing email or password",
