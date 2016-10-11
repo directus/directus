@@ -154,6 +154,10 @@ function(app, Backbone, Sortable, Notification) {
             that.drop();
           }
         });
+
+        if (options.parentView.sortable) {
+          options.parentView.enableSortable();
+        }
       }
     }
   });
