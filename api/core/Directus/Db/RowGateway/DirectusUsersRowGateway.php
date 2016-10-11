@@ -7,9 +7,8 @@ use Directus\Bootstrap;
 use Directus\Db\TableGateway\AclAwareTableGateway;
 use Directus\Util\DateUtils;
 
-class DirectusUsersRowGateway extends AclAwareRowGateway
+class DirectusUsersRowGateway extends BaseRowGateway
 {
-
     public function preSaveDataHook(array $rowData, $rowExistsInDatabase = false)
     {
         $log = Bootstrap::get('log');

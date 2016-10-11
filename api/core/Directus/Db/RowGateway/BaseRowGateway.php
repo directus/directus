@@ -2,19 +2,68 @@
 
 namespace Directus\Db\RowGateway;
 
+use Directus\Acl\Acl;
+use Directus\Acl\Exception\UnauthorizedTableAddException;
+use Directus\Acl\Exception\UnauthorizedTableBigDeleteException;
+use Directus\Acl\Exception\UnauthorizedTableBigEditException;
+use Directus\Acl\Exception\UnauthorizedTableDeleteException;
+use Directus\Acl\Exception\UnauthorizedTableEditException;
 use Directus\Bootstrap;
+use Directus\Db\SchemaManager;
 use Directus\Db\TableGateway\RelationalTableGateway;
 use Directus\Db\TableSchema;
 use Directus\Util\Formatting;
+use Zend\Db\Adapter\AdapterInterface;
+use Zend\Db\Adapter\Exception\InvalidQueryException;
 use Zend\Db\RowGateway\RowGateway;
+use Zend\Db\RowGateway\RowGatewayInterface;
+use Zend\Db\Sql\Sql;
 
 class BaseRowGateway extends RowGateway
 {
     /**
+     * ACL instance
+     *
+     * @var Acl
+     */
+    protected $acl;
+
+    /**
+     * Schema Manager Instance
+     *
+     * @var SchemaManager
+     */
+    protected $schema;
+
+    /**
+     * Constructor
+     *
+     * @param string $primaryKeyColumn
+     * @param string|\Zend\Db\Sql\TableIdentifier $table
+     * @param AdapterInterface|Sql $adapterOrSql
+     * @param Acl|null $acl
+     * @param SchemaManager|null $schema
+     *
+     * @throws \InvalidArgumentException
+     */
+    public function __construct($primaryKeyColumn, $table, $adapterOrSql, Acl $acl = null, $schema = null)
+    {
+        if ($acl !== null && !($acl instanceof Acl)) {
+            throw new \InvalidArgumentException('acl needs to be instance of \Directus\Acl\Acl');
+        }
+
+        $this->acl = $acl;
+
+        parent::__construct($primaryKeyColumn, $table, $adapterOrSql);
+    }
+
+    /**
      * Override this function to do table-specific record data filtration, pre-insert and update.
      * This method is called during #populate and #populateSkipAcl.
+     *
      * @param  array $rowData
      * @param  boolean $rowExistsInDatabase
+     *
      * @return array  Filtered $rowData.
      */
     public function preSaveDataHook(array $rowData, $rowExistsInDatabase = false)
@@ -24,27 +73,39 @@ class BaseRowGateway extends RowGateway
     }
 
     /**
-     * HELPER FUNCTIONS
-     */
-
-    /**
+     *
+     * @param string|array $primaryKeyColumn
      * @param $table
      * @param $adapter
-     * @param string $primaryKeyColumn
+     * @param Acl|null $acl
      *
      * @return BaseRowGateway
      */
-    public static function makeRowGatewayFromTableName($table, $adapter, $primaryKeyColumn = 'id')
-    {
-        // Underscore to camelcase table name to namespaced row gateway classname,
-        // e.g. directus_users => \Directus\Db\RowGateway\DirectusUsersRowGateway
-        $rowGatewayClassName = Formatting::underscoreToCamelCase($table) . 'RowGateway';
-        $rowGatewayClassName = __NAMESPACE__ . '\\' . $rowGatewayClassName;
-        if (class_exists($rowGatewayClassName))
-            return new $rowGatewayClassName($primaryKeyColumn, $table, $adapter);
-        return new self($primaryKeyColumn, $table, $adapter);
+     public static function makeRowGatewayFromTableName($primaryKeyColumn, $table, $adapter, $acl = null)
+     {
+
+         // =============================================================================
+         // @NOTE: Setting the column to 'id' by default
+         //        As it mostly will be the default column
+         //        Otherwise it will be set to whatever name or compose id is.
+         // =============================================================================
+
+         // Underscore to camelcase table name to namespaced row gateway classname,
+         // e.g. directus_users => \Directus\Db\RowGateway\DirectusUsersRowGateway
+         $rowGatewayClassName = Formatting::underscoreToCamelCase($table) . 'RowGateway';
+         $rowGatewayClassName = __NAMESPACE__ . '\\' . $rowGatewayClassName;
+         if (!class_exists($rowGatewayClassName)) {
+             $rowGatewayClassName = get_called_class();
+         }
+
+         return new $rowGatewayClassName($primaryKeyColumn, $table, $adapter, $acl);
     }
 
+    /**
+     * @param array $primaryKeyData
+     *
+     * @return string
+     */
     public static function stringifyPrimaryKeyForRecordDebugRepresentation(array $primaryKeyData)
     {
         if (null === $primaryKeyData) {
@@ -54,11 +115,13 @@ class BaseRowGateway extends RowGateway
         return 'primary key (' . implode(':', array_keys($primaryKeyData)) . ') "' . implode(':', $primaryKeyData) . '"';
     }
 
-    public function logger()
-    {
-        return Bootstrap::get('app')->getLog();
-    }
-
+    /**
+     * @param RelationalTableGateway $TableGateway
+     *
+     * @return array
+     *
+     * @throws \Directus\Db\Exception\RelationshipMetadataException
+     */
     public function toArrayWithImmediateRelationships(RelationalTableGateway $TableGateway)
     {
         if ($this->table !== $TableGateway->getTable()) {
@@ -81,7 +144,8 @@ class BaseRowGateway extends RowGateway
      *
      * @param  array $rowData
      * @param  bool $rowExistsInDatabase
-     * @return AclAwareRowGateway
+     *
+     * @return RowGatewayInterface
      */
     public function populate(array $rowData, $rowExistsInDatabase = false)
     {
@@ -100,5 +164,213 @@ class BaseRowGateway extends RowGateway
         //}
 
         return parent::populate($rowData, $rowExistsInDatabase);
+    }
+
+    /**
+     * ONLY USE THIS FOR INITIALIZING THE ROW OBJECT.
+     *
+     * This function does not enforce ACL write privileges.
+     * It shouldn't be used to fulfill data assignment on behalf of the user.
+     *
+     * @param  mixed $rowData Row key/value pairs.
+     * @param bool $rowExistsInDatabase
+     *
+     * @return RowGatewayInterface
+     */
+    public function populateSkipAcl(array $rowData, $rowExistsInDatabase = false)
+    {
+        return parent::populate($rowData, $rowExistsInDatabase);
+    }
+
+    /**
+     * ONLY USE THIS FOR INITIALIZING THE ROW OBJECT.
+     *
+     * This function does not enforce ACL write privileges.
+     * It shouldn't be used to fulfill data assignment on behalf of the user.
+     * @param  mixed $rowData Row key/value pairs.
+     *
+     * @return RowGatewayInterface
+     */
+    public function exchangeArray($rowData)
+    {
+        return $this->populateSkipAcl($rowData, true);
+    }
+
+    /**
+     * To array
+     *
+     * @return array
+     */
+    public function toArray()
+    {
+        $data = $this->data;
+
+        // Enforce field read blacklist
+        if ($this->acl) {
+            $data = $this->acl->censorFields($this->table, $data);
+        }
+
+        return $data;
+    }
+
+    public function save()
+    {
+        if (!$this->acl) {
+            return parent::save();
+        }
+
+        // =============================================================================
+        // ACL Enforcement
+        // -----------------------------------------------------------------------------
+        // Note: Field Write Blacklists are enforced at the object setter level
+        // BaseRowGateway::__set, BaseRowGateway::populate, BaseRowGateway::offsetSet)
+        // =============================================================================
+
+        // Enforce Privilege: Table Add
+        if (!$this->rowExistsInDatabase() && !$this->acl->hasTablePrivilege($this->table, 'add')) {
+            $aclErrorPrefix = $this->acl->getErrorMessagePrefix();
+            throw new UnauthorizedTableAddException($aclErrorPrefix . 'Table add access forbidden on table ' . $this->table);
+        }
+
+        // Enforce Privilege: "Little" Edit (I am the record CMS owner)
+        $cmsOwnerId = $this->acl->getRecordCmsOwnerId($this, $this->table);
+        $currentUserId = $this->acl->getUserId();
+        $canEdit = $this->acl->hasTablePrivilege($this->table, 'edit');
+        $canBigEdit = $this->acl->hasTablePrivilege($this->table, 'bigedit');
+
+        // Enforce Privilege: "Big" Edit (I am not the record CMS owner)
+        if ($cmsOwnerId !== $currentUserId && !$canBigEdit) {
+            $recordPk = self::stringifyPrimaryKeyForRecordDebugRepresentation($this->primaryKeyData);
+            $recordOwner = (false === $cmsOwnerId) ? 'no magic owner column' : 'the CMS owner #' . $cmsOwnerId;
+            $aclErrorPrefix = $this->acl->getErrorMessagePrefix();
+
+            throw new UnauthorizedTableBigEditException($aclErrorPrefix . 'Table bigedit access forbidden on `' . $this->table . '` table record with ' . $recordPk . ' and ' . $recordOwner . '.');
+        }
+
+        if (!$canEdit) {
+            $recordPk = self::stringifyPrimaryKeyForRecordDebugRepresentation($this->primaryKeyData);
+            $aclErrorPrefix = $this->acl->getErrorMessagePrefix();
+
+            throw new UnauthorizedTableEditException($aclErrorPrefix . 'Table edit access forbidden on `' . $this->table . '` table record with ' . $recordPk . ' owned by the authenticated CMS user (#' . $cmsOwnerId . ').');
+        }
+
+        try {
+            return parent::save();
+        } catch (InvalidQueryException $e) {
+            throw new \Exception('Error running save on this data: ' . print_r($this->data, true));
+        }
+    }
+
+    public function delete()
+    {
+        if (!$this->acl) {
+            return parent::delete();
+        }
+
+        // =============================================================================
+        // ACL Enforcement
+        // =============================================================================
+        $currentUserId = $this->acl->getUserId();
+        $cmsOwnerId = $this->acl->getRecordCmsOwnerId($this, $this->table);
+        $canDelete = $this->acl->hasTablePrivilege($this->table, 'delete');
+        $canBigDelete = $this->acl->hasTablePrivilege($this->table, 'bigdelete');
+
+        // =============================================================================
+        // Enforce Privilege: "Big" Delete (I am not the record CMS owner)
+        // =============================================================================
+        if ($cmsOwnerId !== $currentUserId && !$canBigDelete) {
+            $recordPk = self::stringifyPrimaryKeyForRecordDebugRepresentation($this->primaryKeyData);
+            $aclErrorPrefix = $this->acl->getErrorMessagePrefix();
+
+            throw new UnauthorizedTableDeleteException($aclErrorPrefix . 'Table harddelete access forbidden on `' . $this->table . '` table record with ' . $recordPk . ' owned by the authenticated CMS user (#' . $cmsOwnerId . ').');
+        }
+
+        // =============================================================================
+        // Enforce Privilege: "Little" Delete (I am the record CMS owner)
+        // =============================================================================
+        if (!$canDelete) {
+            $recordPk = self::stringifyPrimaryKeyForRecordDebugRepresentation($this->primaryKeyData);
+            $recordOwner = (false === $cmsOwnerId) ? 'no magic owner column' : 'the CMS owner #' . $cmsOwnerId;
+            $aclErrorPrefix = $this->acl->getErrorMessagePrefix();
+
+            throw new UnauthorizedTableBigDeleteException($aclErrorPrefix . 'Table bigharddelete access forbidden on `' . $this->table . '` table record with ' . $recordPk . ' and ' . $recordOwner . '.');
+        }
+
+        return parent::delete();
+    }
+
+    public function softDelete()
+    {
+        // @TODO: row soft delete
+    }
+
+    /**
+     * __get
+     *
+     * @param  string $name
+     * @return mixed
+     */
+    public function __get($name)
+    {
+        // Confirm user group has read privileges on field with name $name
+        if ($this->acl) {
+            $this->acl->enforceBlacklist($this->table, $name, ACL::FIELD_READ_BLACKLIST);
+        }
+
+        return parent::__get($name);
+    }
+
+    /**
+     * Offset get
+     *
+     * @param  string $offset
+     *
+     * @return mixed
+     */
+    public function offsetGet($offset)
+    {
+        // Confirm user group has read privileges on field with name $offset
+        if ($this->acl) {
+            $this->acl->enforceBlacklist($this->table, $offset, ACL::FIELD_READ_BLACKLIST);
+        }
+
+        return parent::offsetGet($offset);
+    }
+
+    /**
+     * Offset set
+     *
+     * NOTE: Protecting this method protects self#__set, which calls this method in turn.
+     *
+     * @param  string $offset
+     * @param  mixed $value
+     *
+     * @return RowGatewayInterface
+     */
+    public function offsetSet($offset, $value)
+    {
+        // Enforce field write blacklist
+        if ($this->acl) {
+            $this->acl->enforceBlacklist($this->table, $offset, Acl::FIELD_WRITE_BLACKLIST);
+        }
+
+        return parent::offsetSet($offset, $value);
+    }
+
+    /**
+     * Offset unset
+     *
+     * @param  string $offset
+     *
+     * @return RowGatewayInterface
+     */
+    public function offsetUnset($offset)
+    {
+        // Enforce field write blacklist
+        if ($this->acl) {
+            $this->acl->enforceBlacklist($this->table, $offset, Acl::FIELD_WRITE_BLACKLIST);
+        }
+
+        return parent::offsetUnset($offset);
     }
 }

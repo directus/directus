@@ -1,16 +1,13 @@
 <?php
 namespace Directus\Db\TableGateway;
 
-use Directus\Auth\Provider as AuthProvider;
 use Directus\Bootstrap;
 use Directus\Database\Object\Table;
 use Directus\Db\Exception;
-use Directus\Db\RowGateway\AclAwareRowGateway;
+use Directus\Db\RowGateway\BaseRowGateway;
 use Directus\Db\SchemaManager;
 use Directus\Db\TableSchema;
-use Directus\Files;
 use Directus\Util\DateUtils;
-use Zend\Db\RowGateway\AbstractRowGateway;
 use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Predicate;
 use Zend\Db\Sql\Predicate\PredicateInterface;
@@ -193,7 +190,7 @@ class RelationalTableGateway extends AclAwareTableGateway
                         }
                     }
                     // Save parent log entry
-                    $parentLogEntry = AclAwareRowGateway::makeRowGatewayFromTableName($this->acl, 'directus_activity', $this->adapter);
+                    $parentLogEntry = BaseRowGateway::makeRowGatewayFromTableName('id', 'directus_activity', $this->adapter, $this->acl);
                     $logData = [
                         'type' => DirectusActivityTableGateway::makeLogTypeFromTableName($this->table),
                         'table_name' => $tableName,
@@ -223,7 +220,7 @@ class RelationalTableGateway extends AclAwareTableGateway
         }
 
         // Yield record object
-        $recordGateway = new AclAwareRowGateway($this->acl, $TableGateway->primaryKeyFieldName, $tableName, $this->adapter);
+        $recordGateway = new BaseRowGateway($TableGateway->primaryKeyFieldName, $tableName, $this->adapter, $this->acl);
         $recordGateway->populate($fullRecordData, true);
 
         return $recordGateway;
@@ -1124,15 +1121,16 @@ class RelationalTableGateway extends AclAwareTableGateway
      * @param  Select $select
      * @return array
      */
-    public function selectWithImmediateRelationships(Select $select)
-    {
-        $resultSet = $this->selectWith($select);
-        $entriesWithRelationships = [];
-        foreach ($resultSet as $rowGateway) {
-            $entriesWithRelationships[] = $rowGateway->toArrayWithImmediateRelationships($this);
-        }
-        return $entriesWithRelationships;
-    }
+//    @NOTE: It's not used anywhere.
+//    public function selectWithImmediateRelationships(Select $select)
+//    {
+//        $resultSet = $this->selectWith($select);
+//        $entriesWithRelationships = [];
+//        foreach ($resultSet as $rowGateway) {
+//            $entriesWithRelationships[] = $rowGateway->toArrayWithImmediateRelationships($this);
+//        }
+//        return $entriesWithRelationships;
+//    }
 
     /**
      * Remove Directus-managed virtual/alias fields from the table schema array

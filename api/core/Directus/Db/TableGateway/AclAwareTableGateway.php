@@ -18,7 +18,7 @@ use Directus\Acl\Exception\UnauthorizedTableBigEditException;
 use Directus\Acl\Exception\UnauthorizedTableDeleteException;
 use Directus\Acl\Exception\UnauthorizedTableEditException;
 use Directus\Db\Exception\DuplicateEntryException;
-use Directus\Db\RowGateway\AclAwareRowGateway;
+use Directus\Db\RowGateway\BaseRowGateway;
 use Directus\Db\TableSchema;
 use Directus\Util\Formatting;
 use Zend\Db\Adapter\AdapterInterface;
@@ -61,11 +61,11 @@ class AclAwareTableGateway extends BaseTableGateway
      */
     public function __construct(Acl $acl, $table, AdapterInterface $adapter, $features = null, ResultSetInterface $resultSetPrototype = null, Sql $sql = null, $primaryKeyName = null)
     {
-        $this->acl = $acl;
-        $rowGatewayPrototype = new AclAwareRowGateway($acl, $this->primaryKeyFieldName, $table, $adapter, $sql);
+        $rowGatewayPrototype = new BaseRowGateway($this->primaryKeyFieldName, $table, $adapter, $this->acl);
         $rowGatewayFeature = new Feature\RowGatewayFeature($rowGatewayPrototype);
         $features = ($features) ? [$features] : [];
         array_push($features, $rowGatewayFeature);
+
         parent::__construct($table, $adapter, $features, $resultSetPrototype, $sql, $primaryKeyName);
     }
 
@@ -77,7 +77,7 @@ class AclAwareTableGateway extends BaseTableGateway
      * Underscore to camelcase table name to namespaced table gateway classname,
      * e.g. directus_users => \Directus\Db\TableGateway\DirectusUsersTableGateway
      */
-    public static function makeTableGatewayFromTableName($acl, $table, $adapter)
+    public static function makeTableGatewayFromTableName($table, $adapter, $acl)
     {
         // @TODO: similar method to the parent class
         $tableGatewayClassName = Formatting::underscoreToCamelCase($table) . 'TableGateway';
@@ -92,7 +92,8 @@ class AclAwareTableGateway extends BaseTableGateway
     {
         $table = is_null($table) ? $this->table : $table;
         $pk_field_name = is_null($pk_field_name) ? $this->primaryKeyFieldName : $pk_field_name;
-        $row = new AclAwareRowGateway($this->acl, $pk_field_name, $table, $this->adapter);
+        $row = new BaseRowGateway($pk_field_name, $table, $this->adapter, $this->acl);
+
         return $row;
     }
 
@@ -296,7 +297,7 @@ class AclAwareTableGateway extends BaseTableGateway
                 if (is_null($currentUserId) || count(array_diff($ownerIds, [$currentUserId]))) {
                     // $aclErrorPrefix = $this->acl->getErrorMessagePrefix();
                     // throw new UnauthorizedTableBigEditException($aclErrorPrefix . "Table bigedit access forbidden on $resultQty `$updateTable` table record(s) and " . count($ownerIds) . " CMS owner(s) (with ids " . implode(", ", $ownerIds) . ").");
-                    $groupsTableGateway = self::makeTableGatewayFromTableName($this->acl, 'directus_groups', $this->adapter);
+                    $groupsTableGateway = self::makeTableGatewayFromTableName('directus_groups', $this->adapter, $this->acl);
                     $group = $groupsTableGateway->find($this->acl->getGroupId());
                     throw new UnauthorizedTableBigEditException('[' . $group['name'] . '] permissions only allow you to [' . $permissionName . '] your own items.');
                 }
@@ -406,7 +407,7 @@ class AclAwareTableGateway extends BaseTableGateway
                 list($predicateResultQty, $predicateOwnerIds) = $this->acl->getCmsOwnerIdsByTableGatewayAndPredicate($this, $deleteState['where']);
                 if (!in_array($currentUserId, $predicateOwnerIds)) {
                     //   $exceptionMessage = "Table harddelete access forbidden on $predicateResultQty `$deleteTable` table records owned by the authenticated CMS user (#$currentUserId).";
-                    $groupsTableGateway = self::makeTableGatewayFromTableName($this->acl, 'directus_groups', $this->adapter);
+                    $groupsTableGateway = self::makeTableGatewayFromTableName('directus_groups', $this->adapter, $this->acl);
                     $group = $groupsTableGateway->find($this->acl->getGroupId());
                     $exceptionMessage = '[' . $group['name'] . '] permissions only allow you to [delete] your own items.';
                     //   $aclErrorPrefix = $this->acl->getErrorMessagePrefix();

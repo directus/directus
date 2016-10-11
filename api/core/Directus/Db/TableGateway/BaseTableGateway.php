@@ -89,14 +89,15 @@ class BaseTableGateway extends TableGateway
      * Underscore to camelcase table name to namespaced table gateway classname,
      * e.g. directus_users => \Directus\Db\TableGateway\DirectusUsersTableGateway
      */
-    public static function makeTableGatewayFromTableName($table, $adapter)
+    public static function makeTableGatewayFromTableName($table, $adapter, $acl = null)
     {
         $tableGatewayClassName = Formatting::underscoreToCamelCase($table) . 'TableGateway';
         $tableGatewayClassName = __NAMESPACE__ . '\\' . $tableGatewayClassName;
-        if (class_exists($tableGatewayClassName)) {
-            return new $tableGatewayClassName($adapter);
+        if (!class_exists($tableGatewayClassName)) {
+            $tableGatewayClassName = get_called_class();
         }
-        return new self($table, $adapter);
+
+        return new $tableGatewayClassName($adapter, $acl);
     }
 
     /**
@@ -105,8 +106,10 @@ class BaseTableGateway extends TableGateway
 
     /**
      * Find the identifying string to effectively represent a record in the activity log.
+     *
      * @param  array $schemaArray
-     * @param  array|AclAwareRowGateway $fullRecordData
+     * @param  array|BaseRowGateway $fullRecordData
+     *
      * @return string
      */
     public function findRecordIdentifier($schemaArray, $fullRecordData)

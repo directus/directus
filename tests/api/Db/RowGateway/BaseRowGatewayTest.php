@@ -1,6 +1,6 @@
 <?php
 
-class AclAwareRowGatewayTest extends PHPUnit_Framework_TestCase
+class BaseRowGatewayTest extends PHPUnit_Framework_TestCase
 {
     protected $data = [];
 
@@ -125,11 +125,11 @@ class AclAwareRowGatewayTest extends PHPUnit_Framework_TestCase
 
         $acl = new Directus\Acl\Acl();
         $adapter = get_mock_adapter($this);
-        $newRow = $row->makeRowGatewayFromTableName($acl, 'directus_users', $adapter);
+        $newRow = $row->makeRowGatewayFromTableName('id', 'directus_users', $adapter, $acl);
         $this->assertInstanceOf('\Directus\Db\RowGateway\DirectusUsersRowGateway', $newRow);
 
-        $newRow = $row->makeRowGatewayFromTableName($acl, 'directus_files', $adapter);
-        $this->assertInstanceOf('\Directus\Db\RowGateway\AclAwareRowGateway', $newRow);
+        $newRow = $row->makeRowGatewayFromTableName('id', 'directus_files', $adapter, $acl);
+        $this->assertInstanceOf('\Directus\Db\RowGateway\BaseRowGateway', $newRow);
     }
 
     public function testStringifyPrimaryKey()
@@ -163,7 +163,7 @@ class AclAwareRowGatewayTest extends PHPUnit_Framework_TestCase
     {
         $adapter = get_mock_adapter($this);
         $acl = new Directus\Acl\Acl($privileges);
-        $row = new \Directus\Db\RowGateway\AclAwareRowGateway($acl, 'id', $tableName, $adapter);
+        $row = new \Directus\Db\RowGateway\BaseRowGateway('id', $tableName, $adapter, $acl);
 
         $acl->setUserId(1);
         $acl->setGroupId(1);

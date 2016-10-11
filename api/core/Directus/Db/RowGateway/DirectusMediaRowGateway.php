@@ -4,9 +4,8 @@ namespace Directus\Db\RowGateway;
 
 use Directus\Auth\Provider as AuthProvider;
 
-class DirectusFilesRowGateway extends AclAwareRowGateway
+class DirectusFilesRowGateway extends BaseRowGateway
 {
-
     public function preSaveDataHook(array $rowData, $rowExistsInDatabase = false)
     {
         // New record?
