@@ -170,16 +170,7 @@ function(app, Backbone, __t, Notification) {
         this.render();
       },
       'click .sortableHeader': function(e) {
-        if(this.parentView.sortableWidget.options.sort)
-        {
-          this.$el.closest('table').addClass('disable-sorting');
-          this.parentView.sortableWidget.options.sort = false;
-          Notification.info(__t('table_sort_disabled'), '<i>'+__t('table_sort_disabled_message')+'</i>', {timeout: 3000});
-        } else {
-          this.$el.closest('table').removeClass('disable-sorting');
-          this.parentView.sortableWidget.options.sort = true;
-          Notification.info(__t('table_sort_enabled'), '<i>'+__t('table_sort_enabled_message')+'</i>', {timeout: 3000});
-        }
+        this.parentView.toggleSortable();
       },
       'click th:not(.sortableHeader)': function(e) {
         if(this.parentView.sortableWidget && this.parentView.sortableWidget.options.sort)
