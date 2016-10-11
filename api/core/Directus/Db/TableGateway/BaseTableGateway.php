@@ -104,6 +104,18 @@ class BaseTableGateway extends TableGateway
      */
 
     /**
+     * Make a new table gateway
+     *
+     * @param $tableName
+     *
+     * @return BaseTableGateway
+     */
+    public function makeTable($tableName)
+    {
+        return new self($tableName, $this->adapter);
+    }
+
+    /**
      * Find the identifying string to effectively represent a record in the activity log.
      * @param  array $schemaArray
      * @param  array|AclAwareRowGateway $fullRecordData
@@ -231,7 +243,7 @@ class BaseTableGateway extends TableGateway
         $columns = TableSchema::getAllNonAliasTableColumns($tableName);
         $recordData = SchemaManager::parseRecordValuesByType($recordData, $columns);
 
-        $TableGateway = new self($tableName, $this->adapter);
+        $TableGateway = $this->makeTable($tableName);
         $rowExists = isset($recordData[$TableGateway->primaryKeyFieldName]);
         if ($rowExists) {
             $Update = new Update($tableName);
