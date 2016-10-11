@@ -34,7 +34,7 @@ class BaseRowGateway extends RowGateway
      *
      * @return BaseRowGateway
      */
-    public static function makeRowGatewayFromTableName($table, $adapter, $primaryKeyColumn = 'id')
+    public static function makeRowGatewayFromTableNameSkipAcl($table, $adapter, $primaryKeyColumn = 'id')
     {
         // Underscore to camelcase table name to namespaced row gateway classname,
         // e.g. directus_users => \Directus\Db\RowGateway\DirectusUsersRowGateway
