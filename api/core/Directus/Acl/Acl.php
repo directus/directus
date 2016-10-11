@@ -12,7 +12,6 @@ namespace Directus\Acl;
 
 use Directus\Acl\Exception\UnauthorizedFieldReadException;
 use Directus\Acl\Exception\UnauthorizedFieldWriteException;
-use Directus\Bootstrap;
 use Directus\Db\TableGateway\AclAwareTableGateway;
 use Zend\Db\RowGateway\RowGateway;
 use Zend\Db\Sql\Predicate\PredicateSet;
@@ -22,6 +21,7 @@ use Zend\Db\Sql\Select;
  * ACL
  *
  * @author Daniel Bickett <daniel@rngr.org>
+ * @author Welling Guzmán <welling@rngr.org>
  */
 class Acl
 {
@@ -269,8 +269,10 @@ class Acl
      * Given table name $table and privilege constant $privilege, return boolean
      * value indicating whether the current user group has permission to perform
      * the specified table-level action on the specified table.
+     *
      * @param  string $table Table name
      * @param  string $privilege Privilege constant defined by \Directus\Acl\Acl
+     *
      * @return boolean
      */
     public function hasTablePrivilege($table, $privilege)
@@ -296,36 +298,45 @@ class Acl
         if (!array_key_exists($table, self::$cms_owner_columns_by_table)) {
             return false;
         }
+
         return self::$cms_owner_columns_by_table[$table];
     }
 
     /**
      * Given $record, yield the ID contained by that $table's CMS owner column,
      * if one exists. Otherwise return false.
-     * @param  Zend\Db\RowGateway\RowGateway|array $record
+     *
+     * @param  \Zend\Db\RowGateway\RowGateway|array $record
      * @param  string $table The name of the record's table.
+     *
      * @return int|false
      */
     public function getRecordCmsOwnerId($record, $table)
     {
         $isRowGateway = $record instanceof RowGateway || is_subclass_of($record, 'Zend\Db\RowGateway\RowGateway');
-        if (!($isRowGateway || is_array($record))) {
-            // TODO: get_class only works on object
+        if (!$isRowGateway && !is_array($record)) {
+            // @TODO: get_class only works on object
             // if $record is an array get_class will return false
-            throw new \InvalidArgumentException(__t('record_must_be_array_or_rowgateway_x_given', [
-                'type' => is_object($record) ? get_class($record) : gettype($record)
-            ]));
+            throw new \InvalidArgumentException(
+                sprintf('Record must be an array or a RowGateway. %s was given.',
+                    is_object($record) ? get_class($record) : gettype($record)
+                )
+            );
         }
+
         $ownerColumnName = $this->getCmsOwnerColumnByTable($table);
+
         if (false === $ownerColumnName) {
             return false;
         }
+
         if ($isRowGateway && !$record->offsetExists($ownerColumnName)) {
             return false;
         } elseif (is_array($record) && !array_key_exists($ownerColumnName, $record)) {
             return false;
         }
-        return (int)$record[$ownerColumnName];
+
+        return (int) $record[$ownerColumnName];
     }
 
     public function getCmsOwnerIdsByTableGatewayAndPredicate(AclAwareTableGateway $TableGateway, PredicateSet $predicate)
@@ -341,7 +352,7 @@ class Acl
         foreach ($results as $row) {
             $ownerIds[] = $row[$cmsOwnerColumn];
         }
+
         return [count($results), $ownerIds];
     }
-
 }
