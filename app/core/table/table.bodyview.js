@@ -115,10 +115,14 @@ function(app, Backbone, Sortable, Notification) {
         collection.get($(this).attr('data-id')).set({sort: i},{silent: true});
       });
 
-      this.collection.setOrder('sort','ASC',{silent: true});
       if (this.options.saveAfterDrop) {
         // collection.save({columns:['id','sort']});
-        collection.save();
+        var self = this;
+        collection.save(null, {wait: true, success: function() {
+          self.collection.setOrder('sort', 'ASC', {silent: false});
+        }});
+      } else {
+        this.collection.setOrder('sort','ASC',{silent: true});
       }
     },
 
