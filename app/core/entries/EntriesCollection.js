@@ -126,6 +126,7 @@ define(function(require, exports, module) {
       var originalURL = this.url;
       var collection = this;
       var method = options.patch ? 'patch' : 'update';
+      var success = options.success;
 
       // if there's not models set
       // get all the collection models
@@ -133,11 +134,40 @@ define(function(require, exports, module) {
         models = collection.models;
       }
 
+      var sync = function () {
+        collection.trigger('sync');
+      };
+
+      options.success = function(resp) {
+        if (options.wait) {
+          sync();
+        }
+
+        if (success) {
+          success(collection, resp, options);
+        }
+      };
+
       options.data = JSON.stringify({rows: models});
 
       this.url += '/bulk';
       var xhr = this.sync(method, this, options);
       this.url = originalURL;
+      // @removed we need to wait on success
+      // to trigger sync
+      // -----------------------------------
+      // This was removed due to a issue with sorting
+      // On listing page.
+      // It will save the sort correctly
+      // But it will render with old values
+      // but will stay as reference if something happen soon
+      // and reveal the reason why it was here.
+      // this.trigger('sync');
+      // waiting should do the trick :)
+
+      if (!options.wait) {
+        sync();
+      }
 
       return xhr;
     },
