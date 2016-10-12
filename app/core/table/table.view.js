@@ -174,7 +174,7 @@ function(app, _, Backbone, Notification, __t, ModelHelper, TableHead, TableBody,
         Notification.info(__t('table_sort_disabled'), '<i>'+__t('table_sort_disabled_message')+'</i>', {timeout: 3000});
       } else {
         // hotfix: do not enable sort when there multiple pages
-        if (this.collection.length > this.collection.rowsPerPage) {
+        if (this.collection.getTotalCount() > this.collection.rowsPerPage) {
           Notification.warning(__t('table_sort_disabled'), '<i>'+__t('table_sort_multiple_pages_message')+'</i>', {timeout: 6000});
           return;
         }
