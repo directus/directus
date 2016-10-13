@@ -552,7 +552,9 @@ require(["config", 'polyfills'], function() {
         var root = location.protocol + "//" + location.host + app.root;
 
         // Ensure the root is part of the anchor href, meaning it's relative.
-        if (href.prop.slice(0, root.length) === root && href.target !== '_BLANK') {
+        // @NOTE: We don't need to strictly check for "_blank".
+        //        it needs to be case insensitive.
+        if (href.prop.slice(0, root.length) === root && href.target != '_blank') {
           // Stop the default event to ensure the link will not cause a page
           // refresh.
           evt.preventDefault();
