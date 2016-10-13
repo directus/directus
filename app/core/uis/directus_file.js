@@ -89,7 +89,7 @@ define(['app', 'core/UIComponent', 'core/UIView'], function(app, UIComponent, UI
                       {{#if thumbUrl}} \
                          <a target="_BLANK" href="{{url}}"><img src="{{thumbUrl}}"></a> \
                       {{else}} \
-                        <div class="default-info">{{type}}</div> \
+                        <div class="default-info"><a target="_BLANK" href="{{url}}">{{type}}</a></div> \
                       {{/if}} \
                     {{/if}} \
                   </div> \
