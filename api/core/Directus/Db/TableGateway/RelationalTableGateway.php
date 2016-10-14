@@ -16,7 +16,7 @@ use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Where;
 use Zend\Db\TableGateway\TableGateway;
 
-class RelationalTableGateway extends AclAwareTableGateway
+class RelationalTableGateway extends BaseTableGateway
 {
     const ACTIVITY_ENTRY_MODE_DISABLED = 0;
     const ACTIVITY_ENTRY_MODE_PARENT = 1;
@@ -323,8 +323,6 @@ class RelationalTableGateway extends AclAwareTableGateway
      */
     public function addOrUpdateManyToOneRelationships($schema, $parentRow, &$childLogEntries = null, &$parentCollectionRelationshipsChanged = false)
     {
-        $log = $this->logger();
-
         // Create foreign row and update local column with the data id
         foreach ($schema as $column) {
             $colName = $column['id'];
@@ -387,8 +385,6 @@ class RelationalTableGateway extends AclAwareTableGateway
      */
     public function addOrUpdateToManyRelationships($schema, $parentRow, &$childLogEntries = null, &$parentCollectionRelationshipsChanged = false, $parentData = [])
     {
-        $log = $this->logger();
-
         // Create foreign row and update local column with the data id
         foreach ($schema as $column) {
             $colName = $column['id'];
@@ -662,10 +658,6 @@ class RelationalTableGateway extends AclAwareTableGateway
             $params['orderDirection'] = $params['sort_order'];
         }
         // end @todo
-
-        $logger = $this->logger();
-
-        $platform = $this->adapter->platform; // use for quoting
 
         // Get table column schema
         $schemaArray = TableSchema::getSchemaArray($this->table);

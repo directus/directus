@@ -4,18 +4,15 @@ namespace Directus\Db\RowGateway;
 
 use Directus\Auth\Provider as AuthProvider;
 use Directus\Bootstrap;
-use Directus\Db\TableGateway\AclAwareTableGateway;
+use Directus\Db\TableGateway\BaseTableGateway;
 use Directus\Util\DateUtils;
 
 class DirectusUsersRowGateway extends BaseRowGateway
 {
     public function preSaveDataHook(array $rowData, $rowExistsInDatabase = false)
     {
-        $log = Bootstrap::get('log');
-
         if (isset($rowData['id'])) {
-            $logger = Bootstrap::get('log');
-            $TableGateway = new AclAwareTableGateway($this->acl, $this->table, $this->sql->getAdapter());
+            $TableGateway = new BaseTableGateway($this->table, $this->sql->getAdapter(), $this->acl);
             $dbRecord = $TableGateway->find($rowData['id']);
             if (false === $dbRecord) {
                 // @todo is it better to throw an exception here?
@@ -26,9 +23,8 @@ class DirectusUsersRowGateway extends BaseRowGateway
         // User is updating themselves.
         // Corresponds to a ping indicating their last activity.
         // Updated their "last_access" value.
-        if (AuthProvider::loggedIn()) {
-            $currentUser = AuthProvider::getUserInfo();
-            if (isset($rowData['id']) && $rowData['id'] == $currentUser['id']) {
+        if ($this->acl) {
+            if (isset($rowData['id']) && $rowData['id'] == $this->acl->getUserId()) {
                 $rowData['last_access'] = DateUtils::now();
             }
         }

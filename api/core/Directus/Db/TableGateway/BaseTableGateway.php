@@ -2,7 +2,12 @@
 
 namespace Directus\Db\TableGateway;
 
+use Directus\Acl\Acl;
+use Directus\Acl\Exception\UnauthorizedTableBigDeleteException;
+use Directus\Acl\Exception\UnauthorizedTableBigEditException;
+use Directus\Acl\Exception\UnauthorizedTableDeleteException;
 use Directus\Bootstrap;
+use Directus\Db\Exception\DuplicateEntryException;
 use Directus\Db\Exception\SuppliedArrayAsColumnValue;
 use Directus\Db\RowGateway\BaseRowGateway;
 use Directus\Db\SchemaManager;
@@ -12,12 +17,16 @@ use Directus\Util\ArrayUtils;
 use Directus\Util\DateUtils;
 use Directus\Util\Formatting;
 use Zend\Db\Adapter\AdapterInterface;
+use Zend\Db\Adapter\Exception\InvalidQueryException;
 use Zend\Db\ResultSet\ResultSetInterface;
 use Zend\Db\Sql\SqlInterface;
 use Zend\Db\Sql\Ddl;
-use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Sql;
+use Zend\Db\Sql\Select;
+use Zend\Db\Sql\Delete;
+use Zend\Db\Sql\Insert;
 use Zend\Db\Sql\Update;
+use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\TableGateway\Feature;
 use Zend\Db\TableGateway\Feature\RowGatewayFeature;
 use Zend\Db\TableGateway\TableGateway;
@@ -35,50 +44,46 @@ class BaseTableGateway extends TableGateway
     protected static $emitter = null;
 
     /**
+     * Acl Instance
+     *
+     * @var Acl|null
+     */
+    protected $acl = null;
+
+    /**
      * Constructor
      *
      * @param string $table
      * @param AdapterInterface $adapter
+     * @param Acl|null $acl
      * @param Feature\AbstractFeature|Feature\FeatureSet|Feature\AbstractFeature[] $features
      * @param ResultSetInterface $resultSetPrototype
      * @param Sql $sql
+     * @param string $primaryKeyName
      *
      * @throws \InvalidArgumentException
      */
-    public function __construct($table, AdapterInterface $adapter, $features = null, ResultSetInterface $resultSetPrototype = null, Sql $sql = null, $primaryKeyName = null)
+    public function __construct($table, AdapterInterface $adapter, $acl = null, $features = null, ResultSetInterface $resultSetPrototype = null, Sql $sql = null, $primaryKeyName = null)
     {
-        if ($features !== null) {
-            if ($features instanceof Feature\AbstractFeature) {
-                $features = [$features];
-            }
-            if (is_array($features)) {
-                $this->featureSet = new Feature\FeatureSet($features);
-            } elseif ($features instanceof Feature\FeatureSet) {
-                $this->featureSet = $features;
-            } else {
-                throw new \InvalidArgumentException(
-                    'TableGateway expects $feature to be an instance of an AbstractFeature or a FeatureSet, or an array of AbstractFeatures'
-                );
-            }
-        } else {
-            $this->featureSet = new Feature\FeatureSet();
-        }
-
+        // @NOTE: temporary, do we need it here?
         if ($primaryKeyName !== null) {
             $this->primaryKeyFieldName = $primaryKeyName;
         } else {
-            $tablePrimaryKey = TableSchema::getTablePrimaryKey($table);
-            if ($tablePrimaryKey) {
-                $this->primaryKeyFieldName = $tablePrimaryKey;
-            }
+//            $tablePrimaryKey = TableSchema::getTablePrimaryKey($table);
+//            if ($tablePrimaryKey) {
+//                $this->primaryKeyFieldName = $tablePrimaryKey;
+//            }
         }
 
-        $rowGatewayPrototype = new BaseRowGateway($this->primaryKeyFieldName, $table, $adapter);
+        $this->acl = $acl;
+        // @NOTE: This will be substituted by a new Cache wrapper class
+        $this->memcache = new MemcacheProvider();
+        $rowGatewayPrototype = new BaseRowGateway($this->primaryKeyFieldName, $table, $adapter, $this->acl);
+
+        parent::__construct($table, $adapter, $features, $resultSetPrototype, $sql);
+
         $rowGatewayFeature = new RowGatewayFeature($rowGatewayPrototype);
         $this->featureSet->addFeature($rowGatewayFeature);
-        $this->memcache = new MemcacheProvider();
-
-        parent::__construct($table, $adapter, $this->featureSet, $resultSetPrototype, $sql);
     }
 
     /**
@@ -157,11 +162,20 @@ class BaseTableGateway extends TableGateway
         return $row;
     }
 
-    public function newRow($table = null, $pk_field_name = null)
+    /**
+     * Create a new row
+     *
+     * @param null $table
+     * @param null $primaryKeyColumn
+     *
+     * @return BaseRowGateway
+     */
+    public function newRow($table = null, $primaryKeyColumn = null)
     {
         $table = is_null($table) ? $this->table : $table;
-        $pk_field_name = is_null($pk_field_name) ? $this->primaryKeyFieldName : $pk_field_name;
-        $row = new BaseRowGateway($pk_field_name, $table, $this->adapter);
+        $primaryKeyColumn = is_null($primaryKeyColumn) ? $this->primaryKeyFieldName : $primaryKeyColumn;
+        $row = new BaseRowGateway($primaryKeyColumn, $table, $this->adapter, $this->acl);
+
         return $row;
     }
 
@@ -292,6 +306,10 @@ class BaseTableGateway extends TableGateway
             $tableName = $this->table;
         }
 
+        if ($this->acl) {
+            $this->acl->enforceAlter($tableName);
+        }
+
         if (!TableSchema::getTable($tableName)) {
             return false;
         }
@@ -339,6 +357,10 @@ class BaseTableGateway extends TableGateway
     {
         if ($tableName == null) {
             $tableName = $this->table;
+        }
+
+        if ($this->acl) {
+            $this->acl->enforceAlter($tableName);
         }
 
         if (!TableSchema::hasTableColumn($tableName, $columnName, true)) {
@@ -404,6 +426,7 @@ class BaseTableGateway extends TableGateway
         return $tableData['column_name'];
     }
 
+    // @TODO: TableGateway should not be handling table creation
     protected function addTableColumn($tableName, $columnData)
     {
         $column_name = $columnData['column_name'];
@@ -441,11 +464,6 @@ class BaseTableGateway extends TableGateway
         return $this->addOrUpdateRecordByArray($data, 'directus_columns');
     }
 
-    protected function logger()
-    {
-        return Bootstrap::get('app')->getLog();
-    }
-
     public function castFloatIfNumeric(&$value, $key)
     {
         if ($key != 'table_name') {
@@ -465,6 +483,170 @@ class BaseTableGateway extends TableGateway
         $sql = new Sql($this->adapter);
         $query = $sql->getSqlStringForSqlObject($query, $this->adapter->getPlatform());
         return $query;
+    }
+
+    /**
+     * @param Select $select
+     *
+     * @return ResultSet
+     *
+     * @throws \Directus\Acl\Exception\UnauthorizedFieldReadException
+     * @throws \Directus\Acl\Exception\UnauthorizedFieldWriteException
+     * @throws \Exception
+     */
+    protected function executeSelect(Select $select)
+    {
+        if ($this->acl) {
+            $this->enforceSelectPermission($select);
+        }
+
+        try {
+            $result = parent::executeSelect($select);
+            return $this->applyHook('table.select', [
+                $result,
+                $select->getRawState()
+            ]);
+        } catch (InvalidQueryException $e) {
+            if ('production' !== DIRECTUS_ENV) {
+                throw new \RuntimeException('This query failed: ' . $this->dumpSql($select), 0, $e);
+            }
+            // @todo send developer warning
+            throw $e;
+        }
+    }
+
+    /**
+     * @param Insert $insert
+     *
+     * @return mixed
+     *
+     * @throws \Directus\Db\Exception\DuplicateEntryException
+     * @throws \Directus\Acl\Exception\UnauthorizedTableAddException
+     * @throws \Directus\Acl\Exception\UnauthorizedFieldReadException
+     * @throws \Directus\Acl\Exception\UnauthorizedFieldWriteException
+     */
+    protected function executeInsert(Insert $insert)
+    {
+        if ($this->acl) {
+            $this->enforceInsertPermission($insert);
+        }
+
+        try {
+            $insertState = $insert->getRawState();
+            $insertTable = $this->getRawTableNameFromQueryStateTable($insertState['table']);
+            $insertData = $insertState['values'];
+            // Data to be inserted with the column name as assoc key.
+            $insertDataAssoc = array_combine($insertState['columns'], $insertData);
+
+            $this->runHook('table.insert:before', [$insertTable, $insertDataAssoc]);
+            $this->runHook('table.insert.' . $insertTable . ':before', [$insertDataAssoc]);
+
+            $result = parent::executeInsert($insert);
+            $insertTableGateway = new self($this->acl, $insertTable, $this->adapter);
+            $resultData = $insertTableGateway->find($this->getLastInsertValue());
+
+            $this->runHook('table.insert', [$insertTable, $resultData]);
+            $this->runHook('table.insert.' . $insertTable, [$resultData]);
+            $this->runHook('table.insert:after', [$insertTable, $resultData]);
+            $this->runHook('table.insert.' . $insertTable . ':after', [$resultData]);
+
+            return $result;
+        } catch (InvalidQueryException $e) {
+            // @todo send developer warning
+            // @TODO: This is not being call in BaseTableGateway
+            if (strpos(strtolower($e->getMessage()), 'duplicate entry') !== FALSE) {
+                throw new DuplicateEntryException($e->getMessage());
+            }
+
+            if ('production' !== DIRECTUS_ENV) {
+                throw new \RuntimeException('This query failed: ' . $this->dumpSql($insert), 0, $e);
+            }
+
+            throw $e;
+        }
+    }
+
+    /**
+     * @param Update $update
+     *
+     * @return mixed
+     *
+     * @throws \Directus\Db\Exception\DuplicateEntryException
+     * @throws \Directus\Acl\Exception\UnauthorizedTableBigEditException
+     * @throws \Directus\Acl\Exception\UnauthorizedTableEditException
+     * @throws \Directus\Acl\Exception\UnauthorizedFieldReadException
+     * @throws \Directus\Acl\Exception\UnauthorizedFieldWriteException
+     */
+    protected function executeUpdate(Update $update)
+    {
+        if ($this->acl) {
+            $this->enforceUpdatePermission($update);
+        }
+
+        $updateState = $update->getRawState();
+        $updateTable = $this->getRawTableNameFromQueryStateTable($updateState['table']);
+        $updateData = $updateState['set'];
+
+        try {
+            $this->runHook('table.update:before', [$updateTable, $updateData]);
+            $this->runHook('table.update.' . $updateTable . ':before', [$updateData]);
+            $result = parent::executeUpdate($update);
+            $this->runHook('table.update', [$updateTable, $updateData]);
+            $this->runHook('table.update:after', [$updateTable, $updateData]);
+            $this->runHook('table.update.' . $updateTable, [$updateData]);
+            $this->runHook('table.update.' . $updateTable . ':after', [$updateData]);
+
+            return $result;
+        } catch (InvalidQueryException $e) {
+            // @TODO: these lines are the same as the executeInsert,
+            // let's put it together
+            if (strpos(strtolower($e->getMessage()), 'duplicate entry') !== FALSE) {
+                throw new DuplicateEntryException($e->getMessage());
+            }
+
+            if ('production' !== DIRECTUS_ENV) {
+                throw new \RuntimeException('This query failed: ' . $this->dumpSql($update), 0, $e);
+            }
+
+            // @todo send developer warning
+            throw $e;
+        }
+    }
+
+    /**
+     * @param Delete $delete
+     *
+     * @return mixed
+     *
+     * @throws \RuntimeException
+     * @throws \Directus\Acl\Exception\UnauthorizedTableBigDeleteException
+     * @throws \Directus\Acl\Exception\UnauthorizedTableDeleteException
+     */
+    protected function executeDelete(Delete $delete)
+    {
+        if ($this->acl) {
+            $this->enforceDeletePermission($delete);
+        }
+
+        $deleteState = $delete->getRawState();
+        $deleteTable = $this->getRawTableNameFromQueryStateTable($deleteState['table']);
+
+        try {
+            $this->runHook('table.delete:before', [$deleteTable]);
+            $this->runHook('table.delete.' . $deleteTable . ':before');
+            $result = parent::executeDelete($delete);
+            $this->runHook('table.delete', [$deleteTable]);
+            $this->runHook('table.delete:after', [$deleteTable]);
+            $this->runHook('table.delete.' . $deleteTable);
+            $this->runHook('table.delete.' . $deleteTable . ':after');
+            return $result;
+        } catch (InvalidQueryException $e) {
+            if ('production' !== DIRECTUS_ENV) {
+                throw new \RuntimeException('This query failed: ' . $this->dumpSql($delete), 0, $e);
+            }
+            // @todo send developer warning
+            throw $e;
+        }
     }
 
     /**
@@ -492,10 +674,12 @@ class BaseTableGateway extends TableGateway
         if (is_string($table)) {
             return $table;
         }
+
         if (is_array($table)) {
             // The only value is the real table name (key is alias).
             return array_pop($table);
         }
+
         throw new \InvalidArgumentException('Unexpected parameter of type ' . get_class($table));
     }
 
@@ -550,16 +734,175 @@ class BaseTableGateway extends TableGateway
         return $records;
     }
 
-    protected function executeSelect(Select $select)
+    /**
+     * Enforce permission on Select
+     *
+     * @param $select
+     * @throws \Exception
+     */
+    protected function enforceSelectPermission($select)
     {
         $selectState = $select->getRawState();
-        $result = parent::executeSelect($select);
-        $result = $this->applyHook('table.select', [
-            $result,
-            $selectState
-        ]);
+        $table = $this->getRawTableNameFromQueryStateTable($selectState['table']);
 
-        return $result;
+        // @TODO: enforce view permission
+
+        // Enforce field read blacklist on Select's main table
+        try {
+            // @TODO: Enforce must return a list of columns without the blacklist
+            // when asterisk (*) is used
+            // and only throw and error when all the selected columns are blacklisted
+            $this->acl->enforceBlacklist($table, $selectState['columns'], Acl::FIELD_READ_BLACKLIST);
+        } catch (\Exception $e) {
+            if ($selectState['columns'][0] != '*') {
+                throw $e;
+            }
+
+            $selectState['columns'] = TableSchema::getAllNonAliasTableColumns($table);
+            $this->acl->enforceBlacklist($table, $selectState['columns'], Acl::FIELD_READ_BLACKLIST);
+        }
+
+        // Enforce field read blacklist on Select's join tables
+        foreach ($selectState['joins'] as $join) {
+            $joinTable = $this->getRawTableNameFromQueryStateTable($join['name']);
+            $this->acl->enforceBlacklist($joinTable, $join['columns'], Acl::FIELD_READ_BLACKLIST);
+        }
+    }
+
+    /**
+     * Enforce permission on Insert
+     *
+     * @param $insert
+     *
+     * @throws \Exception
+     */
+    public function enforceInsertPermission($insert)
+    {
+        $insertState = $insert->getRawState();
+        $insertTable = $this->getRawTableNameFromQueryStateTable($insertState['table']);
+
+        $this->acl->enforceAdd($insertTable);
+
+        // Enforce write field blacklist
+        $this->acl->enforceBlacklist($insertTable, $insertState['columns'], Acl::FIELD_WRITE_BLACKLIST);
+    }
+
+    /**
+     * Enforce permission on Update
+     *
+     * @param $update
+     *
+     * @throws \Exception
+     */
+    public function enforceUpdatePermission($update)
+    {
+        $currentUserId = $this->acl->getUserId();
+        $updateState = $update->getRawState();
+        $updateTable = $this->getRawTableNameFromQueryStateTable($updateState['table']);
+        $cmsOwnerColumn = $this->acl->getCmsOwnerColumnByTable($updateTable);
+
+        // check if it's NOT soft delete
+        $updateFields = $updateState['set'];
+
+        $permissionName = 'edit';
+        $hasStatusColumn = array_key_exists(STATUS_COLUMN_NAME, $updateFields) ? true : false;
+        if ($hasStatusColumn && $updateFields[STATUS_COLUMN_NAME] == STATUS_DELETED_NUM) {
+            $permissionName = 'delete';
+        }
+
+        if (!$this->acl->hasTablePrivilege($updateTable, 'big' . $permissionName)) {
+            // Parsing for the column name is unnecessary. Zend enforces raw column names.
+            /**
+             * Enforce Privilege: "Big" Edit
+             */
+            if (false === $cmsOwnerColumn) {
+                // All edits are "big" edits if there is no magic owner column.
+                $aclErrorPrefix = $this->acl->getErrorMessagePrefix();
+                throw new UnauthorizedTableBigEditException($aclErrorPrefix . 'The table `' . $updateTable . '` is missing the `user_create_column` within `directus_tables` (BigEdit Permission Forbidden)');
+            } else {
+                // Who are the owners of these rows?
+                list($resultQty, $ownerIds) = $this->acl->getCmsOwnerIdsByTableGatewayAndPredicate($this, $updateState['where']);
+                // Enforce
+                if (is_null($currentUserId) || count(array_diff($ownerIds, [$currentUserId]))) {
+                    // $aclErrorPrefix = $this->acl->getErrorMessagePrefix();
+                    // throw new UnauthorizedTableBigEditException($aclErrorPrefix . "Table bigedit access forbidden on $resultQty `$updateTable` table record(s) and " . count($ownerIds) . " CMS owner(s) (with ids " . implode(", ", $ownerIds) . ").");
+                    $groupsTableGateway = self::makeTableGatewayFromTableName('directus_groups', $this->adapter, $this->acl);
+                    $group = $groupsTableGateway->find($this->acl->getGroupId());
+                    throw new UnauthorizedTableBigEditException('[' . $group['name'] . '] permissions only allow you to [' . $permissionName . '] your own items.');
+                }
+            }
+        }
+
+        if (!$this->acl->hasTablePrivilege($updateTable, $permissionName)) {
+            /**
+             * Enforce Privilege: "Little" Edit (I am the record CMS owner)
+             */
+            if (false !== $cmsOwnerColumn) {
+                if (!isset($predicateResultQty)) {
+                    // Who are the owners of these rows?
+                    list($predicateResultQty, $predicateOwnerIds) = $this->acl->getCmsOwnerIdsByTableGatewayAndPredicate($this, $updateState['where']);
+                }
+
+                if (in_array($currentUserId, $predicateOwnerIds)) {
+                    $aclErrorPrefix = $this->acl->getErrorMessagePrefix();
+                    throw new UnauthorizedTableEditException($aclErrorPrefix . 'Table edit access forbidden on ' . $predicateResultQty . '`' . $updateTable . '` table records owned by the authenticated CMS user (#' . $currentUserId . '.');
+                }
+            }
+        }
+
+        // Enforce write field blacklist
+        $attemptOffsets = array_keys($updateState['set']);
+        $this->acl->enforceBlacklist($updateTable, $attemptOffsets, Acl::FIELD_WRITE_BLACKLIST);
+    }
+
+    /**
+     * Enforce permission on Delete
+     *
+     * @param $delete
+     *
+     * @throws UnauthorizedTableBigDeleteException
+     * @throws UnauthorizedTableDeleteException
+     */
+    public function enforceDeletePermission($delete)
+    {
+        $currentUserId = $this->acl->getUserId();
+        $deleteState = $delete->getRawState();
+        $deleteTable = $this->getRawTableNameFromQueryStateTable($deleteState['table']);
+        $cmsOwnerColumn = $this->acl->getCmsOwnerColumnByTable($deleteTable);
+        $canBigDelete = $this->acl->hasTablePrivilege($deleteTable, 'bigdelete');
+        $canDelete = $this->acl->hasTablePrivilege($deleteTable, 'delete');
+        $aclErrorPrefix = $this->acl->getErrorMessagePrefix();
+
+        // @todo: clean way
+        // @TODO: this doesn't need to be bigdelete
+        //        the user can only delete their own entry
+        if ($deleteTable === 'directus_bookmarks') {
+            $canBigDelete = true;
+        }
+
+        if (!$canBigDelete && !$canDelete) {
+            throw new UnauthorizedTableBigDeleteException($aclErrorPrefix . ' forbidden to hard delete on table `' . $deleteTable . '` because it has Status Column.');
+        }
+
+        // @TODO: Update conditions
+        // =============================================================================
+        // Cannot delete if there's no magic owner column and can't big delete
+        // All deletes are "big" deletes if there is no magic owner column.
+        // =============================================================================
+        if (false === $cmsOwnerColumn && !$canBigDelete) {
+            throw new UnauthorizedTableBigDeleteException($aclErrorPrefix . 'The table `' . $deleteTable . '` is missing the `user_create_column` within `directus_tables` (BigHardDelete Permission Forbidden)');
+        } else if (!$canBigDelete) {
+            // Who are the owners of these rows?
+            list($predicateResultQty, $predicateOwnerIds) = $this->acl->getCmsOwnerIdsByTableGatewayAndPredicate($this, $deleteState['where']);
+            if (!in_array($currentUserId, $predicateOwnerIds)) {
+                //   $exceptionMessage = "Table harddelete access forbidden on $predicateResultQty `$deleteTable` table records owned by the authenticated CMS user (#$currentUserId).";
+                $groupsTableGateway = self::makeTableGatewayFromTableName('directus_groups', $this->adapter, $this->acl);
+                $group = $groupsTableGateway->find($this->acl->getGroupId());
+                $exceptionMessage = '[' . $group['name'] . '] permissions only allow you to [delete] your own items.';
+                //   $aclErrorPrefix = $this->acl->getErrorMessagePrefix();
+                throw new  UnauthorizedTableDeleteException($exceptionMessage);
+            }
+        }
     }
 
     public static function setHookEmitter($emitter)

@@ -12,7 +12,7 @@ namespace Directus\Acl;
 
 use Directus\Acl\Exception\UnauthorizedFieldReadException;
 use Directus\Acl\Exception\UnauthorizedFieldWriteException;
-use Directus\Db\TableGateway\AclAwareTableGateway;
+use Directus\Db\TableGateway\BaseTableGateway;
 use Zend\Db\RowGateway\RowGateway;
 use Zend\Db\Sql\Predicate\PredicateSet;
 use Zend\Db\Sql\Select;
@@ -124,6 +124,46 @@ class Acl
         $aclErrorPrefix = '[Group #%s User #%s] ';
         $aclErrorPrefix = sprintf($aclErrorPrefix, $this->getGroupId(), $this->getUserId());
         return $aclErrorPrefix;
+    }
+
+    /**
+     * Can the user add record in the given table
+     *
+     * @param $tableName
+     *
+     * @return bool
+     */
+    public function canAdd($tableName)
+    {
+        return $this->hasTablePrivilege($tableName, 'add');
+    }
+
+    /**
+     * Can the user alter the given table
+     *
+     * @param $tableName
+     *
+     * @return bool
+     */
+    public function canAlter($tableName)
+    {
+        return $this->hasTablePrivilege($tableName, 'alter');
+    }
+
+    public function enforceAdd($tableName)
+    {
+        if (!$this->canAdd($tableName)) {
+            $aclErrorPrefix = $this->getErrorMessagePrefix();
+            throw new Exception\UnauthorizedTableAddException($aclErrorPrefix . 'Table add access forbidden on table ' . $insertTable);
+        }
+    }
+
+    public function enforceAlter($tableName)
+    {
+        if (!$this->canAlter($tableName)) {
+            $aclErrorPrefix = $this->getErrorMessagePrefix();
+            throw new Exception\UnauthorizedTableAddException($aclErrorPrefix . 'Table alter access forbidden on table ' . $tableName);
+        }
     }
 
     /**
@@ -339,7 +379,7 @@ class Acl
         return (int) $record[$ownerColumnName];
     }
 
-    public function getCmsOwnerIdsByTableGatewayAndPredicate(AclAwareTableGateway $TableGateway, PredicateSet $predicate)
+    public function getCmsOwnerIdsByTableGatewayAndPredicate(BaseTableGateway $TableGateway, PredicateSet $predicate)
     {
         $ownerIds = [];
         $table = $TableGateway->getTable();

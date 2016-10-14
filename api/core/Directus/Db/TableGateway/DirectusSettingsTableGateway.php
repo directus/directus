@@ -8,16 +8,15 @@ use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Sql;
 
-class DirectusSettingsTableGateway extends AclAwareTableGateway
+class DirectusSettingsTableGateway extends BaseTableGateway
 {
-
     public static $_tableName = 'directus_settings';
 
     private $_defaults = [];
 
-    public function __construct(Acl $acl, AdapterInterface $adapter)
+    public function __construct(AdapterInterface $adapter, Acl $acl)
     {
-        parent::__construct($acl, self::$_tableName, $adapter);
+        parent::__construct(self::$_tableName, $adapter, $acl);
 
         $this->_defaults['global'] = [
             'cms_user_auto_sign_out' => 60,

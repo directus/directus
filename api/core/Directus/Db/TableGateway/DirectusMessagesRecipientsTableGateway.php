@@ -9,14 +9,13 @@ use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Update;
 
-class DirectusMessagesRecipientsTableGateway extends AclAwareTableGateway
+class DirectusMessagesRecipientsTableGateway extends BaseTableGateway
 {
-
     public static $_tableName = 'directus_messages_recipients';
 
-    public function __construct(Acl $acl, AdapterInterface $adapter)
+    public function __construct(AdapterInterface $adapter, Acl $acl)
     {
-        parent::__construct($acl, self::$_tableName, $adapter);
+        parent::__construct(self::$_tableName, $adapter, $acl);
     }
 
     public function fetchMessageRecipients($messageIds = [])

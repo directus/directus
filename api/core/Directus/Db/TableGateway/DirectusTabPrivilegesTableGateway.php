@@ -6,14 +6,13 @@ use Directus\Acl\Acl;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Select;
 
-class DirectusTabPrivilegesTableGateway extends AclAwareTableGateway
+class DirectusTabPrivilegesTableGateway extends BaseTableGateway
 {
-
     public static $tableName = 'directus_tab_privileges';
 
-    public function __construct(Acl $acl, AdapterInterface $adapter)
+    public function __construct(AdapterInterface $adapter, Acl $acl)
     {
-        parent::__construct($acl, self::$tableName, $adapter);
+        parent::__construct(self::$tableName, $adapter, $acl);
     }
 
     public function fetchAllByGroup($groupId)

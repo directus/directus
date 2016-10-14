@@ -6,14 +6,13 @@ use Directus\Acl\Acl;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Select;
 
-class DirectusUiTableGateway extends AclAwareTableGateway
+class DirectusUiTableGateway extends BaseTableGateway
 {
-
     public static $_tableName = 'directus_ui';
 
-    public function __construct(Acl $acl, AdapterInterface $adapter)
+    public function __construct(AdapterInterface $adapter, Acl $acl)
     {
-        parent::__construct($acl, self::$_tableName, $adapter);
+        parent::__construct(self::$_tableName, $adapter, $acl);
     }
 
     /**
@@ -67,5 +66,4 @@ class DirectusUiTableGateway extends AclAwareTableGateway
         // );
         return $this->selectWith($select);
     }
-
 }

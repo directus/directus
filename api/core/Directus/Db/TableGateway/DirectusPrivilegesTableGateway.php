@@ -11,9 +11,8 @@ use Zend\Db\Sql\Insert;
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Update;
 
-class DirectusPrivilegesTableGateway extends AclAwareTableGateway
+class DirectusPrivilegesTableGateway extends BaseTableGateway
 {
-
     public static $_tableName = 'directus_privileges';
 
     // @todo: make this part of every table gateway
@@ -31,18 +30,20 @@ class DirectusPrivilegesTableGateway extends AclAwareTableGateway
         'status_id',
     ];
 
-    public function __construct(Acl $acl, AdapterInterface $adapter)
+    public function __construct(AdapterInterface $adapter, Acl $acl)
     {
-        parent::__construct($acl, self::$_tableName, $adapter);
+        parent::__construct(self::$_tableName, $adapter, $acl);
     }
 
     // @TODO: move it to another object.
     private function isCurrentUserAdmin()
     {
-        $currentUser = Auth::getUserRecord();
+        if (!$this->acl) {
+            return true;
+        }
 
         //Dont let non-admins have alter privilege
-        return ($currentUser['group'] == 1) ? true : false;
+        return ($this->acl->getGroupId() == 1) ? true : false;
     }
 
     private function verifyPrivilege($attributes)

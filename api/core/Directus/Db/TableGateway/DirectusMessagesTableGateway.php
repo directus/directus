@@ -10,14 +10,13 @@ use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Insert;
 use Zend\Db\Sql\Select;
 
-class DirectusMessagesTableGateway extends AclAwareTableGateway
+class DirectusMessagesTableGateway extends BaseTableGateway
 {
-
     public static $_tableName = 'directus_messages';
 
-    public function __construct(Acl $acl, AdapterInterface $adapter)
+    public function __construct(AdapterInterface $adapter, Acl $acl)
     {
-        parent::__construct($acl, self::$_tableName, $adapter);
+        parent::__construct(self::$_tableName, $adapter, $acl);
     }
 
     public function sendMessage($payload, $recipients, $from)
