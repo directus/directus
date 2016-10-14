@@ -134,7 +134,7 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
 
     serialize: function() {
       var tables;
-      var tableRelated
+      var tableRelated;
       var uis = _.clone(UIManager._getAllUIs());
       var data = {
         ui_types: [],
