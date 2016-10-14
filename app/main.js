@@ -554,7 +554,8 @@ require(["config", 'polyfills'], function() {
         // Ensure the root is part of the anchor href, meaning it's relative.
         // @NOTE: We don't need to strictly check for "_blank".
         //        it needs to be case insensitive.
-        if (href.prop.slice(0, root.length) === root && href.target != '_blank') {
+        var target = (href.target || '').toLowerCase();
+        if (href.prop.slice(0, root.length) === root && target !== '_blank') {
           // Stop the default event to ensure the link will not cause a page
           // refresh.
           evt.preventDefault();
