@@ -10,6 +10,9 @@ if (!defined('STATUS_COLUMN_NAME')) {
     define('STATUS_COLUMN_NAME', 'active');
 }
 
+// force a timezone
+date_default_timezone_set('America/New_York');
+
 /**
  * @param $testCase
  * @param $attributes - mock attributes
