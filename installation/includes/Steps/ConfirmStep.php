@@ -2,7 +2,7 @@
 
 namespace Directus\Installation\Steps;
 
-use Directus\Db\Connection;
+use Directus\Database\Connection;
 use Directus\Mail\Mail;
 use Directus\Util\Installation\InstallerUtils;
 

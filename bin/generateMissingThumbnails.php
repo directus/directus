@@ -1,8 +1,8 @@
 #!/usr/bin/php
 <?php
 ini_set('memory_limit', '-1');
-use Directus\Db\TableGateway\DirectusSettingsTableGateway;
-use Directus\Db\TableGateway\DirectusStorageAdaptersTableGateway;
+use Directus\Database\TableGateway\DirectusSettingsTableGateway;
+use Directus\Database\TableGateway\DirectusStorageAdaptersTableGateway;
 use Directus\Files\Thumbnail;
 use Zend\Db\TableGateway\TableGateway;
 

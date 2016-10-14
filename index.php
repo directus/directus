@@ -16,13 +16,13 @@ require 'api/globals.php';
 use Directus\Auth\Provider as AuthProvider;
 use Directus\Auth\RequestNonceProvider;
 use Directus\Bootstrap;
-use Directus\Db\TableGateway\DirectusBookmarksTableGateway;
-use Directus\Db\TableGateway\DirectusMessagesTableGateway;
-use Directus\Db\TableGateway\DirectusPrivilegesTableGateway;
-use Directus\Db\TableGateway\DirectusSettingsTableGateway;
-use Directus\Db\TableGateway\DirectusUsersTableGateway;
-use Directus\Db\TableGateway\RelationalTableGatewayWithConditions as TableGateway;
-use Directus\Db\TableSchema;
+use Directus\Database\TableGateway\DirectusBookmarksTableGateway;
+use Directus\Database\TableGateway\DirectusMessagesTableGateway;
+use Directus\Database\TableGateway\DirectusPrivilegesTableGateway;
+use Directus\Database\TableGateway\DirectusSettingsTableGateway;
+use Directus\Database\TableGateway\DirectusUsersTableGateway;
+use Directus\Database\TableGateway\RelationalTableGatewayWithConditions as TableGateway;
+use Directus\Database\TableSchema;
 
 $emitter = Bootstrap::get('hookEmitter');
 

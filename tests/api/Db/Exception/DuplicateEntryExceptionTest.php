@@ -7,7 +7,7 @@ class DuplicateEntryExceptionTest extends PHPUnit_Framework_TestCase
         $message = "Duplicate entry 'admin@local.dev' for key 'unique_email'";
         $expected = 'Duplicate value: admin@local.dev<br>(unique_email)';
 
-        $exception = new \Directus\Db\Exception\DuplicateEntryException($message);
+        $exception = new \Directus\Database\Exception\DuplicateEntryException($message);
 
         $this->assertSame($expected, $exception->getMessage());
     }

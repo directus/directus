@@ -12,7 +12,7 @@ namespace Directus\Acl;
 
 use Directus\Acl\Exception\UnauthorizedFieldReadException;
 use Directus\Acl\Exception\UnauthorizedFieldWriteException;
-use Directus\Db\TableGateway\BaseTableGateway;
+use Directus\Database\TableGateway\BaseTableGateway;
 use Zend\Db\RowGateway\RowGateway;
 use Zend\Db\Sql\Predicate\PredicateSet;
 use Zend\Db\Sql\Select;

@@ -3,8 +3,8 @@
 
 //Used to grab thumbs from temp and put to thumbs
 
-use Directus\Db\TableGateway\DirectusSettingsTableGateway;
-use Directus\Db\TableGateway\DirectusStorageAdaptersTableGateway;
+use Directus\Database\TableGateway\DirectusSettingsTableGateway;
+use Directus\Database\TableGateway\DirectusStorageAdaptersTableGateway;
 use Directus\Files\Thumbnail;
 use Zend\Db\TableGateway\TableGateway;
 

@@ -3,7 +3,7 @@
 namespace Directus\Files;
 
 use Directus\Bootstrap;
-use Directus\Db\TableGateway\DirectusSettingsTableGateway;
+use Directus\Database\TableGateway\DirectusSettingsTableGateway;
 use Directus\Hook\Hook;
 use Directus\Util\DateUtils;
 use Directus\Util\Formatting;

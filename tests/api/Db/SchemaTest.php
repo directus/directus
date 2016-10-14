@@ -1,6 +1,6 @@
 <?php
 
-use Directus\Db\SchemaManager as Schema;
+use Directus\Database\SchemaManager as Schema;
 
 class SchemaTest extends PHPUnit_Framework_TestCase
 {
@@ -19,7 +19,7 @@ class SchemaTest extends PHPUnit_Framework_TestCase
 
     public function testAdapter()
     {
-        $this->assertInstanceOf('\Directus\Db\Schemas\SchemaInterface', $this->schema->getSchema());
+        $this->assertInstanceOf('\Directus\Database\Schemas\SchemaInterface', $this->schema->getSchema());
     }
 
     public function testCoreTablesPrefix()

@@ -3,9 +3,9 @@
 namespace Directus\View;
 
 use Directus\Acl\Exception\AclException;
-use Directus\Db\Exception\CustomUiValidationError;
-use Directus\Db\Exception\DuplicateEntryException;
-use Directus\Db\Exception\RelationshipMetadataException;
+use Directus\Database\Exception\CustomUiValidationError;
+use Directus\Database\Exception\DuplicateEntryException;
+use Directus\Database\Exception\RelationshipMetadataException;
 
 class ExceptionView
 {
@@ -26,7 +26,7 @@ class ExceptionView
             $httpCode = 403;
             $data = ['message' => $exception->getMessage()];
         } /**
-         * Directus\Db\Exception\RelationshipMetadataException
+         * Directus\Database\Exception\RelationshipMetadataException
          */
         elseif ($exception instanceof RelationshipMetadataException) {
             $httpCode = 424;
@@ -34,7 +34,7 @@ class ExceptionView
         }
 
         /**
-         * Directus\Db\Exception\SuppliedArrayAsColumnValue
+         * Directus\Database\Exception\SuppliedArrayAsColumnValue
          */
         // elseif($exception instanceof SuppliedArrayAsColumnValue) {
         //     $httpCode = 422;
@@ -42,13 +42,13 @@ class ExceptionView
         // }
 
         /**
-         * Directus\Db\Exception\CustomUiValidationError
+         * Directus\Database\Exception\CustomUiValidationError
          */
         elseif ($exception instanceof CustomUiValidationError) {
             $httpCode = 422;
             $data = ['message' => $exception->getMessage()];
         } /**
-         * Directus\Db\Exception\DuplicateEntryException
+         * Directus\Database\Exception\DuplicateEntryException
          */
         elseif ($exception instanceof DuplicateEntryException) {
             $httpCode = 409;

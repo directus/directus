@@ -31,7 +31,7 @@ function get_mock_connection($testCase, $attributes = [])
     $mockDriver = get_mock_driver($testCase, $attributes);
 
     // setup mock connection adapter
-    $mockConnectionAdapter = $testCase->getMock('Directus\Db\Connection', null, [$mockDriver]);
+    $mockConnectionAdapter = $testCase->getMock('Directus\Database\Connection', null, [$mockDriver]);
 
     return $mockConnectionAdapter;
 }
@@ -78,13 +78,13 @@ function get_mysql_schema($testCase, $attributes = [])
 {
     $mockAdapter = get_mock_adapter($testCase, $attributes);
 
-    return new \Directus\Db\Schemas\MySQLSchema($mockAdapter);
+    return new \Directus\Database\Schemas\MySQLSchema($mockAdapter);
 }
 
 function get_mock_mysql_schema($testCase, $methods = [])
 {
     $mockAdapter = get_mock_adapter($testCase);
-    $mockSchema = $testCase->getMockBuilder('\Directus\Db\Schemas\MySQLSchema')
+    $mockSchema = $testCase->getMockBuilder('\Directus\Database\Schemas\MySQLSchema')
         ->setConstructorArgs([$mockAdapter])
         ->setMethods($methods)
         ->getMock();
