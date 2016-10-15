@@ -139,6 +139,18 @@ class Acl
     }
 
     /**
+     * Cam the user view the given table
+     *
+     * @param $tableName
+     *
+     * @return bool
+     */
+    public function canView($tableName)
+    {
+        return $this->hasTablePrivilege($tableName, 'view');
+    }
+
+    /**
      * Can the user alter the given table
      *
      * @param $tableName

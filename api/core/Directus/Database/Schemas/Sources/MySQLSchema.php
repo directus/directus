@@ -8,7 +8,7 @@
  * @license   GNU General Public License (v3) – <http://www.gnu.org/copyleft/gpl.html>
  */
 
-namespace Directus\Database\Schemas;
+namespace Directus\Database\Schemas\Sources;
 
 use Directus\Bootstrap;
 use Zend\Db\Sql\Expression;

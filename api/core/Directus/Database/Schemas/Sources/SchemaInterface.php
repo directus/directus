@@ -1,6 +1,6 @@
 <?php
 
-namespace Directus\Database\Schemas;
+namespace Directus\Database\Schemas\Sources;
 
 use Zend\Db\ResultSet\ResultSet;
 

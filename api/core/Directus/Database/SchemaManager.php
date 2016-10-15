@@ -13,7 +13,7 @@ namespace Directus\Database;
 use Directus\Bootstrap;
 use Directus\Database\Object\Column;
 use Directus\Database\Object\Table;
-use Directus\Database\Schemas\SchemaInterface;
+use Directus\Database\Schemas\Sources\SchemaInterface;
 use Directus\Util\ArrayUtils;
 use Directus\Database\Ddl\Column\Boolean;
 use Zend\Db\Sql\Ddl\Column\Integer;
@@ -33,7 +33,7 @@ class SchemaManager
     /**
      * Schema object instance
      *
-     * @var \Directus\Database\Schemas\SchemaInterface
+     * @var \Directus\Database\Schemas\Sources\SchemaInterface
      */
     protected $schema;
 
