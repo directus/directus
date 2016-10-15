@@ -513,7 +513,9 @@ class Bootstrap
             ]);
         });
 
-        $emitter->addFilter('table.insert:before', function($tableName, $data) {
+        $emitter->addFilter('table.insert:before', function($payload) {
+            $tableName = $payload->tableName;
+            $data = $payload->data;
             if ($tableName == 'directus_files') {
                 unset($data['data']);
                 $data['user'] = AuthProvider::getUserInfo('id');
@@ -523,7 +525,9 @@ class Bootstrap
         });
 
         // Add file url and thumb url
-        $emitter->addFilter('table.select', function($result, $selectState) {
+        $emitter->addFilter('table.select', function($payload) {
+            $result = $payload->result;
+            $selectState = $payload->selectState;
             if ($selectState['table'] == 'directus_files') {
                     $fileRows = $result->toArray();
                     $files = new \Directus\Files\Files();

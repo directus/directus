@@ -24,6 +24,22 @@ class TableSchema
      */
     protected static $schemaManager = null;
 
+    /**
+     * ACL Instance
+     *
+     * @var \Directus\Acl\Acl null
+     */
+    protected static $acl = null;
+
+    /**
+     * Connection instance
+     *
+     * @var \Directus\Database\Connection|null
+     */
+    protected static $connection = null;
+
+    protected static $config = [];
+
     public static $many_to_one_uis = ['many_to_one', 'single_files'];
 
     // These columns types are aliases for "associations". They don't have
@@ -75,6 +91,58 @@ class TableSchema
     public static function setSchemaManagerInstance($schemaManager)
     {
         static::$schemaManager = $schemaManager;
+    }
+
+    /**
+     * Get ACL Instance
+     *
+     * @return \Directus\Acl\Acl
+     */
+    public static function getAclInstance()
+    {
+        if (static::$acl === null) {
+            static::setAclInstance(Bootstrap::get('acl'));
+        }
+
+        return static::$acl;
+    }
+
+    /**
+     * Set ACL Instance
+     * @param $acl
+     */
+    public static function setAclInstance($acl)
+    {
+        static::$acl = $acl;
+    }
+
+    /**
+     * Get Connection Instance
+     *
+     * @return \Directus\Database\Connection
+     */
+    public static function getConnectionInstance()
+    {
+        if (static::$connection === null) {
+            static::setConnectionInstance(Bootstrap::get('zendDb'));
+        }
+
+        return static::$connection;
+    }
+
+    public static function setConnectionInstance($connection)
+    {
+        static::$connection = $connection;
+    }
+
+    public static function setConfig($config)
+    {
+        static::$config = $config;
+    }
+
+    public static function getStatusMap()
+    {
+        return isset(static::$config['statusMapping']) ? static::$config['statusMapping'] : null;
     }
 
     /**
@@ -240,7 +308,7 @@ class TableSchema
             return [];
         }
 
-        $schemaManager = Bootstrap::get('schemaManager');
+        $schemaManager = static::getSchemaManagerInstance();//Bootstrap::get('schemaManager');
         $result = $schemaManager->getColumnsName($table);
 
         $columns = [];
@@ -354,14 +422,12 @@ class TableSchema
 
     public static function canGroupViewTable($tableName)
     {
-        $acl = Bootstrap::get('acl');
-        $tablePrivilegeList = $acl->getTablePrivilegeList($tableName, $acl::TABLE_PERMISSIONS);
-
-        if (array_key_exists('allow_view', $tablePrivilegeList) && $tablePrivilegeList['allow_view'] > 0) {
+        $acl = static::getAclInstance();
+        if (!$acl) {
             return true;
         }
 
-        return false;
+        return $acl->canView($tableName);
     }
 
     public static function getTable($tbl_name)
@@ -413,7 +479,7 @@ class TableSchema
             return self::$_primaryKeys[$tableName];
         }
 
-        $schemaManager = Bootstrap::get('schemaManager');
+        $schemaManager = static::getSchemaManagerInstance();//Bootstrap::get('schemaManager');
 
         $columnName = $schemaManager->getPrimaryKey($tableName);
 

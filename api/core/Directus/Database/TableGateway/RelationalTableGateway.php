@@ -672,7 +672,6 @@ class RelationalTableGateway extends BaseTableGateway
         $hasActiveColumn = $schemaArray->hasStatusColumn();//$this->schemaHasActiveColumn($schemaArray);
 
         $params = $this->applyDefaultEntriesSelectParams($params);
-
         $sql = new Sql($this->adapter);
         $select = $sql->select()->from($this->table);
 
@@ -688,10 +687,11 @@ class RelationalTableGateway extends BaseTableGateway
         $select = $this->applyParamsToTableEntriesSelect($params, $select, $schemaArray, $hasActiveColumn);
 
         $currentUserId = null;
-        $currentUser = Bootstrap::get('auth')->getUserInfo();
-        $currentUserId = intval($currentUser['id']);
-
-        $cmsOwnerId = $this->acl->getCmsOwnerColumnByTable($this->table);
+        $cmsOwnerId = null;
+        if ($this->acl) {
+            $this->acl->getCmsOwnerColumnByTable($this->table);
+            $currentUserId = $this->acl->getUserId();
+        }
 
         //If we have user field and do not have big view privileges but have view then only show entries we created
         if ($cmsOwnerId && !$this->acl->hasTablePrivilege($this->table, 'bigview') && $this->acl->hasTablePrivilege($this->table, 'view')) {
@@ -1192,7 +1192,7 @@ class RelationalTableGateway extends BaseTableGateway
         $statement = $sql->prepareStatementForSqlObject($select);
         $results = $statement->execute();
         $stats = [];
-        $statusMap = Bootstrap::get('status');
+        $statusMap = TableSchema::getStatusMap();
         foreach ($results as $row) {
             if (isset($row[STATUS_COLUMN_NAME])) {
                 $statSlug = $statusMap[$row[STATUS_COLUMN_NAME]];

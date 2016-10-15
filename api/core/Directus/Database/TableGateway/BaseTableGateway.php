@@ -11,6 +11,7 @@ use Directus\Database\Exception\DuplicateEntryException;
 use Directus\Database\Exception\SuppliedArrayAsColumnValue;
 use Directus\Database\RowGateway\BaseRowGateway;
 use Directus\Database\SchemaManager;
+use Directus\Database\Schemas\Sources\MySQLSchema;
 use Directus\Database\TableSchema;
 use Directus\MemcacheProvider;
 use Directus\Util\ArrayUtils;
@@ -51,6 +52,13 @@ class BaseTableGateway extends TableGateway
     protected $acl = null;
 
     /**
+     * Schema Manager Instance
+     *
+     * @var SchemaManager|null
+     */
+    protected $schema = null;
+
+    /**
      * Constructor
      *
      * @param string $table
@@ -84,6 +92,9 @@ class BaseTableGateway extends TableGateway
 
         $rowGatewayFeature = new RowGatewayFeature($rowGatewayPrototype);
         $this->featureSet->addFeature($rowGatewayFeature);
+
+        // @TODO: Make this dynamic to support the different databases.
+        $this->schema = new SchemaManager(new MySQLSchema($this->adapter));
     }
 
     /**
@@ -258,7 +269,10 @@ class BaseTableGateway extends TableGateway
 
             $this->runHook('postUpdate', [$TableGateway, $recordData, $this->adapter, null]);
         } else {
-            $d = $this->applyHook('table.insert:before', [$tableName, $recordData]);
+            $payload = new \stdClass();
+            $payload->tableName = $tableName;
+            $payload->data = $recordData;
+            $d = $this->applyHook('table.insert:before', $payload);
             $TableGateway->insert($d);
             $recordData[$TableGateway->primaryKeyFieldName] = $TableGateway->getLastInsertValue();
 
@@ -502,10 +516,13 @@ class BaseTableGateway extends TableGateway
 
         try {
             $result = parent::executeSelect($select);
-            return $this->applyHook('table.select', [
-                $result,
-                $select->getRawState()
-            ]);
+            // @NOTE: filter data should be an object
+            $payload = new \stdClass();
+            $payload->result = $result;
+            $payload->selectState = $select->getRawState();
+            $payload = $this->applyHook('table.select', $payload);
+
+            return $payload->result;
         } catch (InvalidQueryException $e) {
             if ('production' !== DIRECTUS_ENV) {
                 throw new \RuntimeException('This query failed: ' . $this->dumpSql($select), 0, $e);
@@ -686,7 +703,7 @@ class BaseTableGateway extends TableGateway
     public function convertDates(array $records, array $schemaArray, $tableName = null)
     {
         $tableName = $tableName === null ? $this->table : $tableName;
-        if (!SchemaManager::isDirectusTable($tableName)) {
+        if (!$this->schema->isDirectusTable($tableName)) {
             return $records;
         }
 
@@ -702,8 +719,8 @@ class BaseTableGateway extends TableGateway
 
         foreach ($records as $index => $row) {
             foreach ($schemaArray as $column) {
-                if (in_array(strtolower($column['type']), ['timestamp', 'datetime'])) {
-                    $columnName = $column['id'];
+                if (in_array(strtolower($column->getType()), ['timestamp', 'datetime'])) {
+                    $columnName = $column->getId();
                     if (array_key_exists($columnName, $row)) {
                         $records[$index][$columnName] = DateUtils::convertToISOFormat($row[$columnName], 'UTC', get_user_timezone());
                     }
@@ -719,7 +736,7 @@ class BaseTableGateway extends TableGateway
         $tableName = $tableName === null ? $this->table : $tableName;
         $columns = TableSchema::getAllNonAliasTableColumns($tableName);
 
-        return SchemaManager::parseRecordValuesByType($records, $columns);
+        return $this->schema->castRecordValues($records, $columns);
     }
 
     protected function parseRecord($records, $tableName = null)
@@ -910,19 +927,19 @@ class BaseTableGateway extends TableGateway
         static::$emitter = $emitter;
     }
 
-    public function runHook($name, $data = null)
+    public function runHook($name, $args = null)
     {
         if (static::$emitter) {
-            static::$emitter->execute($name, $data);
+            static::$emitter->execute($name, $args);
         }
     }
 
-    public function applyHook($name, $data = null)
+    public function applyHook($name, $payload = null)
     {
-        if (static::$emitter) {
-            $data = static::$emitter->apply($name, $data);
+        if (static::$emitter && static::$emitter->hasFilterListeners($name)) {
+            $payload = static::$emitter->apply($name, $payload);
         }
 
-        return $data;
+        return $payload;
     }
 }
