@@ -47,11 +47,6 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
       }
     },
 
-    // afterRender gets called after the template is rendered
-    afterRender: function() {
-      if (this.options.settings.get("readonly") === "on") this.$("input").prop("readonly",true);
-    },
-
     // Called before template is rendered, serialize returns an object that gets used as data for template string
     serialize: function() {
       var length = this.maxCharLength;
@@ -69,7 +64,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
         maxLength: length,
         characters: length - value.toString().length,
         comment: this.options.schema.get('comment'),
-        readonly: ((this.options.settings && this.options.settings.get('readonly') === "1") || !this.options.canWrite),
+        readonly: ((this.options.settings && this.options.settings.get('readonly') === true) || !this.options.canWrite),
         placeholder: (this.options.settings) ? this.options.settings.get('placeholder_text') : ''
       };
     },
