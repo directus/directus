@@ -521,7 +521,8 @@ class Bootstrap
                 $data['user'] = AuthProvider::getUserInfo('id');
             }
 
-            return $data;
+            $payload->data = $data;
+            return $payload;
         });
 
         // Add file url and thumb url
@@ -578,7 +579,7 @@ class Bootstrap
                     $result->initialize($filesArrayObject->getIterator());
                 }
 
-            return $result;
+            return $payload;
         });
 
         return $emitter;
