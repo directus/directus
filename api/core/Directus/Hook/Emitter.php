@@ -15,7 +15,7 @@ namespace Directus\Hook;
  *
  * Commands can be added in order to take action when a event happens.
  *
- * @author Welling Guzmán <wellingguzman@gmail.com>
+ * @author Welling Guzmán <welling@rngr.org>
  */
 class Emitter
 {
@@ -150,6 +150,18 @@ class Emitter
     }
 
     /**
+     * Whether the hook action name given has listener or not
+     *
+     * @param $name
+     *
+     * @return bool
+     */
+    public function hasActionListeners($name)
+    {
+        return $this->getActionListeners($name) ? true : false;
+    }
+
+    /**
      * Get all the filters listeners
      *
      * @param $name
@@ -159,6 +171,18 @@ class Emitter
     public function getFilterListeners($name)
     {
         return $this->getListeners($this->filterListeners, $name);
+    }
+
+    /**
+     * Whether the hook filter name given has listener or not
+     *
+     * @param $name
+     *
+     * @return bool
+     */
+    public function hasFilterListeners($name)
+    {
+        return $this->getFilterListeners($name) ? true : false;
     }
 
     /**
