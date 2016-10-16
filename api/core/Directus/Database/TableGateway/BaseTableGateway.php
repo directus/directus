@@ -712,7 +712,7 @@ class BaseTableGateway extends TableGateway
         // NOTE: this code is duplicate @see: AbstractSchema::parseRecordValuesByType
         // ==========================================================================
         $singleRecord = false;
-        if (!is_numeric_keys_array($records)) {
+        if (!ArrayUtils::isNumericKeys($records)) {
             $records = [$records];
             $singleRecord = true;
         }

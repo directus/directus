@@ -3,6 +3,7 @@
 namespace Directus\Database\Schemas\Sources;
 
 use Directus\Database\Object\Column;
+use Directus\Util\ArrayUtils;
 
 abstract class AbstractSchema implements SchemaInterface
 {
@@ -52,7 +53,7 @@ abstract class AbstractSchema implements SchemaInterface
     {
         // hotfix: records sometimes are no set as an array of rows.
         $singleRecord = false;
-        if (!is_numeric_keys_array($records)) {
+        if (!ArrayUtils::isNumericKeys($records)) {
             $records = [$records];
             $singleRecord = true;
         }

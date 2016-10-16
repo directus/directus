@@ -182,4 +182,22 @@ class ArrayUtils
 
         return $missing;
     }
+
+    /**
+     * Checks whether the given array has only numeric keys
+     * 
+     * @param $array
+     *
+     * @return bool
+     */
+    public static function isNumericKeys($array)
+    {
+        foreach (array_keys($array) as $key) {
+            if (!is_numeric($key)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
 }

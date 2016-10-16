@@ -264,13 +264,7 @@ if (!function_exists('is_numeric_array')) {
 if (!function_exists('is_numeric_keys_array')) {
     function is_numeric_keys_array($array)
     {
-        foreach (array_keys($array) as $key) {
-            if (!is_numeric($key)) {
-                return false;
-            }
-        }
-
-        return true;
+        return \Directus\Util\ArrayUtils::isNumericKeys($array);
     }
 }
 
