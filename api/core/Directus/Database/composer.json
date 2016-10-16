@@ -15,7 +15,7 @@
   },
   "autoload": {
     "psr-4": {
-      "Directus\\Db\\": ""
+      "Directus\\Database\\": ""
     }
   }
 }
