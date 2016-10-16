@@ -85,7 +85,7 @@ class BaseTableGateway extends TableGateway
 
         $this->acl = $acl;
         // @NOTE: This will be substituted by a new Cache wrapper class
-        $this->memcache = new MemcacheProvider();
+        // $this->memcache = new MemcacheProvider();
         $rowGatewayPrototype = new BaseRowGateway($this->primaryKeyFieldName, $table, $adapter, $this->acl);
 
         parent::__construct($table, $adapter, $features, $resultSetPrototype, $sql);
