@@ -15,15 +15,38 @@ class ArrayUtils
      */
     public static function get($array, $key, $default = null)
     {
-        if (strpos($key, '.') !== FALSE) {
-            $array = static::dot($array);
-        }
-
-        if (array_key_exists($key, $array)) {
+        if (static::exists($array, $key)) {
             return $array[$key];
         }
 
+        if (strpos($key, '.') !== FALSE) {
+            $array = static::dot($array);
+            if (static::exists($array, $key)) {
+                return $array[$key];
+            }
+        }
+
         return $default;
+    }
+
+    public static function has($array, $key)
+    {
+        if (static::exists($array, $key)) {
+            return true;
+        }
+
+        if (strpos($key, '.') === FALSE) {
+            return false;
+        }
+
+        $array = static::dot($array);
+
+        return static::exists($array, $key);
+    }
+
+    public static function exists($array, $key)
+    {
+        return array_key_exists($key, $array);
     }
 
     /**

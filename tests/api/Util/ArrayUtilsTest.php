@@ -76,6 +76,26 @@ class ArrayUtilsTest extends PHPUnit_Framework_TestCase
         $this->assertArrayHasKey('user_country_name', $result);
     }
 
+    public function testDotKeys()
+    {
+        $array = [
+            'user' => [
+                'name' => 'John',
+                'country' => [
+                    'name' => 'yes'
+                ],
+                'email' => []
+            ]
+        ];
+
+        $this->assertTrue(ArrayUtils::has($array, 'user.email'));
+        $this->assertFalse(ArrayUtils::has($array, 'user.country.language'));
+        $this->assertSame('yes', ArrayUtils::get($array, 'user.country.name'));
+        $this->assertSame('John', ArrayUtils::get($array, 'user.name'));
+        $this->assertNull(ArrayUtils::get($array, 'user.language'));
+        $this->assertSame('English', ArrayUtils::get($array, 'user.language', 'English'));
+    }
+
     public function testMissing()
     {
         $array1 = ['one', 'two', 'three', 'five'];
