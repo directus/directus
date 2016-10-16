@@ -10,6 +10,7 @@
 
 namespace Directus\Collection;
 
+use Directus\Util\ArrayUtils;
 /**
  * Collection
  *
@@ -55,11 +56,7 @@ class Collection implements CollectionInterface
      */
     public function get($key, $default = null)
     {
-        if (array_key_exists($key, $this->items)) {
-            return $this->items[$key];
-        }
-
-        return $default;
+        return ArrayUtils::get($this->items, $key, $default);
     }
 
     /**
@@ -67,7 +64,7 @@ class Collection implements CollectionInterface
      */
     public function has($key)
     {
-        return array_key_exists($key, $this->items);
+        return ArrayUtils::has($this->items, $key);
     }
 
     /**
