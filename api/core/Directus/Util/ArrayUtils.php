@@ -185,7 +185,7 @@ class ArrayUtils
 
     /**
      * Checks whether the given array has only numeric keys
-     * 
+     *
      * @param $array
      *
      * @return bool
@@ -199,5 +199,29 @@ class ArrayUtils
         }
 
         return true;
+    }
+
+    /**
+     * Sets or updates the keys in the source array into the default array
+     *
+     * @param array $defaultArray
+     * @param array $sourceArray
+     *
+     * @return array
+     *
+     * @link http://php.net/manual/es/function.array-merge-recursive.php#92195
+     */
+    public static function defaults(array $defaultArray, array $sourceArray)
+    {
+        $newArray = $defaultArray;
+        foreach ($sourceArray as $key => $value) {
+            if (is_array($value) && array_key_exists($key, $defaultArray) && is_array($defaultArray[$key])) {
+                $newArray[$key] = static::defaults($newArray[$key], $value);
+            } else {
+                $newArray[$key] = $value;
+            }
+        }
+
+        return $newArray;
     }
 }

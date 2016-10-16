@@ -104,4 +104,36 @@ class ArrayUtilsTest extends PHPUnit_Framework_TestCase
 
         $this->assertTrue(in_array('four', $result));
     }
+
+    public function testDefaults()
+    {
+        $array1 = [
+            'database' => [
+                'hostname' => 'localhost',
+                'username' => 'root',
+                'driver' => 'mysql'
+            ],
+            'status_name' => 'active',
+        ];
+
+        $array2 = [
+            'database' => [
+                'hostname' => 'localhost',
+                'username' => 'root',
+                'password' => 'root',
+                'database' => 'directus'
+            ]
+        ];
+
+        $newArray = ArrayUtils::defaults($array1, $array2);
+        $this->assertTrue(ArrayUtils::has($newArray, 'database.database'));
+        $this->assertSame('mysql', ArrayUtils::get($newArray, 'database.driver'));
+
+        $newNewArray = ArrayUtils::defaults($newArray, [
+            'database' => [
+                'hostname' => '127.0.0.1'
+            ]
+        ]);
+        $this->assertSame('127.0.0.1', ArrayUtils::get($newNewArray, 'database.hostname'));
+    }
 }
