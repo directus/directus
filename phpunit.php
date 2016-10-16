@@ -81,13 +81,13 @@ function get_mysql_schema($testCase, $attributes = [])
 {
     $mockAdapter = get_mock_adapter($testCase, $attributes);
 
-    return new \Directus\Database\Schemas\MySQLSchema($mockAdapter);
+    return new \Directus\Database\Schemas\Sources\MySQLSchema($mockAdapter);
 }
 
 function get_mock_mysql_schema($testCase, $methods = [])
 {
     $mockAdapter = get_mock_adapter($testCase);
-    $mockSchema = $testCase->getMockBuilder('\Directus\Database\Schemas\MySQLSchema')
+    $mockSchema = $testCase->getMockBuilder('\Directus\Database\Schemas\Sources\MySQLSchema')
         ->setConstructorArgs([$mockAdapter])
         ->setMethods($methods)
         ->getMock();

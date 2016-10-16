@@ -19,7 +19,7 @@ class SchemaTest extends PHPUnit_Framework_TestCase
 
     public function testAdapter()
     {
-        $this->assertInstanceOf('\Directus\Database\Schemas\SchemaInterface', $this->schema->getSchema());
+        $this->assertInstanceOf('\Directus\Database\Schemas\Sources\SchemaInterface', $this->schema->getSchema());
     }
 
     public function testCoreTablesPrefix()
