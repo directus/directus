@@ -31,6 +31,11 @@ abstract class AbstractSchema implements SchemaInterface
         $this->adapter = $adapter;
     }
 
+    public function getConnection()
+    {
+        return $this->adapter;
+    }
+
     /**
      * Get the schema name
      *

@@ -10,6 +10,7 @@
 
 namespace Directus\Database\Object;
 
+use Directus\Util\Traits\ArrayPropertyAccess;
 use Directus\Util\Traits\ArraySetter;
 
 /**
@@ -17,9 +18,9 @@ use Directus\Util\Traits\ArraySetter;
  *
  * @author Welling Guzmán <welling@rngr.org>
  */
-class ColumnRelationship
+class ColumnRelationship implements \ArrayAccess
 {
-    use ArraySetter;
+    use ArraySetter, ArrayPropertyAccess;
 
     /**
      * @var string
@@ -47,6 +48,16 @@ class ColumnRelationship
     protected $junctionKeyLeft;
 
     /**
+     * @var array
+     */
+    protected $readable = [];
+
+    /**
+     * @var array
+     */
+    protected $writable = [];
+
+    /**
      * ColumnRelationship constructor.
      *
      * @param array $data
@@ -54,6 +65,14 @@ class ColumnRelationship
     public function __construct(array $data)
     {
         $this->setData($data);
+
+        $this->readable = $this->writable = [
+            'type',
+            'related_table',
+            'junction_table',
+            'junction_left_key',
+            'junction_right_key'
+        ];
     }
 
     /**

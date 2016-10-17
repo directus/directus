@@ -700,7 +700,7 @@ class BaseTableGateway extends TableGateway
         throw new \InvalidArgumentException('Unexpected parameter of type ' . get_class($table));
     }
 
-    public function convertDates(array $records, array $schemaArray, $tableName = null)
+    public function convertDates(array $records, $schemaArray, $tableName = null)
     {
         $tableName = $tableName === null ? $this->table : $tableName;
         if (!$this->schema->isDirectusTable($tableName)) {

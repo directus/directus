@@ -11,6 +11,7 @@
 namespace Directus\Database\Object;
 
 use Directus\Util\Traits\ArraySetter;
+use Directus\Util\Traits\ArrayPropertyAccess;
 
 /**
  * Column Object
@@ -20,9 +21,9 @@ use Directus\Util\Traits\ArraySetter;
  * @author Welling Guzmán <welling@rngr.org>
  */
 
-class Column
+class Column implements \ArrayAccess
 {
-    use ArraySetter;
+    use ArraySetter, ArrayPropertyAccess;
 
     /**
      * @var string
@@ -76,6 +77,11 @@ class Column
     /**
      * @var array
      */
+    protected $extraOptions = [];
+
+    /**
+     * @var array
+     */
     protected $options = [];
 
     /**
@@ -117,6 +123,16 @@ class Column
      */
     protected $comment;
 
+    /**
+     * @var array
+     */
+    protected $readable = [];
+
+    /**
+     * @var array
+     */
+    protected $writable = [];
+
     public function __construct($data)
     {
         if (!is_array($data)) {
@@ -124,6 +140,21 @@ class Column
         }
 
         $this->setData($data);
+
+        $this->readable = $this->writable = [
+            'id',
+            'name',
+            'type',
+            'default_value',
+            'nullable',
+            'options',
+            'required',
+            'ui',
+            'hidden_list',
+            'hidden_input',
+            'relationship',
+            'comment'
+        ];
     }
 
     /**
@@ -452,6 +483,16 @@ class Column
         return $this->ui;
     }
 
+    public function setUIOptions(array $options)
+    {
+        $this->options = $options;
+    }
+
+    public function getUIOptions()
+    {
+        return $this->options;
+    }
+
     /**
      * Set whether the column must be hidden in lists
      *
@@ -551,6 +592,11 @@ class Column
     public function getRelationship()
     {
         return $this->relationship;
+    }
+
+    public function hasRelationship()
+    {
+        return $this->relationship ? true : false;
     }
 
     /**

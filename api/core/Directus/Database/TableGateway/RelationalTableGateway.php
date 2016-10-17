@@ -739,6 +739,7 @@ class RelationalTableGateway extends BaseTableGateway
         $alias_fields = $this->filterSchemaAliasFields($schemaArray); // (fmrly $alias_schema)
 
         $this->toManyCallStack = [];
+
         $result = $this->loadToManyRelationships($result, $alias_fields);
 
         return $result;
@@ -783,18 +784,19 @@ class RelationalTableGateway extends BaseTableGateway
     {
         foreach ($aliasColumns as $alias) {
             $foreign_data = null;
+            $relationship = $alias->getRelationship();
 
-            if (array_key_exists('relationship', $alias) && $alias['relationship'] && TableSchema::canGroupViewTable($alias['relationship']['related_table'])) {
-                $relationship = $alias['relationship'];
-                switch ($relationship['type']) {
+            if ($relationship && TableSchema::canGroupViewTable($relationship->getRelatedTable())) {
+                switch ($relationship->getType()) {
                     case 'MANYTOMANY':
-                        $this->enforceColumnHasNonNullValues($alias['relationship'], ['related_table', 'junction_table', 'junction_key_left', 'junction_key_right'], $this->table);
-                        if (in_array($relationship['related_table'], $this->toManyCallStack)) {
+                        // @TODO: Column should verify/enforce it
+                        // $this->enforceColumnHasNonNullValues($alias['relationship'], ['related_table', 'junction_table', 'junction_key_left', 'junction_key_right'], $this->table);
+                        if (in_array($relationship->getRelatedTable(), $this->toManyCallStack)) {
                             return $entry;
                         }
-                        array_push($this->toManyCallStack, $relationship['related_table']);
-                        $foreign_data = $this->loadManyToManyRelationships($this->table, $alias['relationship']['related_table'],
-                            $alias['relationship']['junction_table'], $alias['relationship']['junction_key_left'], $alias['relationship']['junction_key_right'],
+                        array_push($this->toManyCallStack, $relationship->getRelatedTable());
+                        $foreign_data = $this->loadManyToManyRelationships($this->table, $relationship->getRelatedTable(),
+                            $relationship->getJunctionTable(), $relationship->getJunctionKeyLeft(), $relationship->getJunctionKeyRight(),
                             $entry[$this->primaryKeyFieldName]);
                         $noDuplicates = isset($alias['options']['no_duplicates']) ? $alias['options']['no_duplicates'] : 0;
                         // @todo: better way to handle this.
@@ -851,7 +853,9 @@ class RelationalTableGateway extends BaseTableGateway
             }
 
             if (!is_null($foreign_data)) {
-                $column = $alias['column_name'];
+                // @TODO: make column name alias of name
+                //$column = $alias['column_name'];
+                $column = $alias['name'];
                 $entry[$column] = $foreign_data;
             }
         }
@@ -900,18 +904,16 @@ class RelationalTableGateway extends BaseTableGateway
     public function loadManyToOneRelationships($schemaArray, $table_entries)
     {
         // Identify the ManyToOne columns
-        foreach ($schemaArray as $col) {
-
+        foreach ($schemaArray->getColumns() as $col) {
+            $relationship = $col->getRelationship();
             $isManyToOneColumn = (
-                array_key_exists('relationship', $col) &&
-                $col['relationship']['type'] == 'MANYTOONE'
+                $relationship &&
+                $relationship['type'] == 'MANYTOONE'
             );
 
             if ($isManyToOneColumn) {
-
                 $foreign_id_column = $col['id'];
-
-                if (array_key_exists('relationship', $col)) {
+                if ($relationship) {
                     $foreign_table_name = $col['relationship']['related_table'];
                 } else {
                     $message = 'Non single_file Many-to-One relationship lacks `related_table` value.';
@@ -947,7 +949,7 @@ class RelationalTableGateway extends BaseTableGateway
                 $columnNames = TableSchema::getAllNonAliasTableColumnNames($foreign_table_name);
                 $select->columns($columnNames);
 
-                $TableGateway = new RelationalTableGateway($this->acl, $foreign_table_name, $this->adapter);
+                $TableGateway = new RelationalTableGateway($foreign_table_name, $this->adapter, $this->acl);
                 $rowset = $TableGateway->selectWith($select);
                 $results = $rowset->toArray();
 
@@ -964,7 +966,7 @@ class RelationalTableGateway extends BaseTableGateway
                 $foreign_table = $this->loadManyToOneRelationships($schemaArray, $foreign_table);
 
                 // Convert dates into ISO 8601 Format
-                $foreign_table = $this->convertDates($foreign_table, $schemaArray);
+                $foreign_table = $this->convertDates($foreign_table, $schemaArray->getColumns());
 
                 // Replace foreign keys with foreign rows
                 foreach ($table_entries as &$parentRow) {
@@ -1031,14 +1033,14 @@ class RelationalTableGateway extends BaseTableGateway
         $columns = TableSchema::getAllNonAliasTableColumnNames($foreign_table);
         $select->columns($columns);
 
-        $ForeignTable = new RelationalTableGateway($this->acl, $foreign_table, $this->adapter);
+        $ForeignTable = new RelationalTableGateway($foreign_table, $this->adapter, $this->acl);
         $results = $ForeignTable->selectWith($select);
         $results = $results->toArray();
 
         $foreign_data = [];
         $columns = TableSchema::getAllNonAliasTableColumns($foreign_table);
         foreach ($results as $row) {
-            $row = $recordData = SchemaManager::parseRecordValuesByType($row, $columns);
+            $row = $recordData = $this->schema->castRecordValues($row, $columns);
 
             $junction_table_id = (int)$row[$junction_id_column_alias];
             unset($row[$junction_id_column_alias]);
@@ -1133,11 +1135,12 @@ class RelationalTableGateway extends BaseTableGateway
     public function filterSchemaAliasFields(&$schema)
     {
         $alias_fields = [];
-        foreach ($schema as $i => $col) {
+        $columns = $schema->getColumns();
+        foreach ($columns as $i => $col) {
             // Is it a "virtual"/alias column?
             if (TableSchema::isColumnAnAlias($col)) {
                 // Remove them from the standard schema
-                unset($schema[$i]);
+                unset($columns[$i]);
                 $alias_fields[] = $col;
             }
         }

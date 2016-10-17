@@ -19,6 +19,7 @@ use Directus\Database\Ddl\Column\Boolean;
 use Zend\Db\Sql\Ddl\Column\Integer;
 use Zend\Db\Sql\Ddl\Constraint\PrimaryKey;
 use Zend\Db\Sql\Ddl\CreateTable;
+use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Sql;
 
 /**
@@ -231,15 +232,103 @@ class SchemaManager
             $columnsResult = $this->schema->getColumns($tableName, $params);
             $columnsSchema = [];
             foreach($columnsResult as $column) {
-                $columnsSchema[] = new Column($column);
+                $columnObject = new Column($column);
+                if (isset($column['related_table'])) {
+                    $columnObject->setRelationship([
+                        'type' => ArrayUtils::get($column, 'relationship_type'),
+                        'related_table' => ArrayUtils::get($column, 'related_table'),
+                        'junction_table' => ArrayUtils::get($column, 'junction_table'),
+                        'junction_key_right' => ArrayUtils::get($column, 'junction_key_right'),
+                        'junction_key_left' => ArrayUtils::get($column, 'junction_key_left'),
+                    ]);
+                }
+                $columnsSchema[] = $columnObject;
             }
 
             $this->data['columns'][$tableName] = $columnsSchema;
         }
 
-        return $columnsSchema;
+        foreach($columnsSchema as $column) {
+            $column->setOptions($this->getColumnUIOptions($tableName, $column));
+        }
 
-        // return iterator_to_array($this->schema->getColumns($tableName, $params));
+        return $columnsSchema;
+    }
+
+    /**
+     * Get the Column UI options
+     *
+     * @param $tableName
+     * @param Column $column
+     *
+     * @return array
+     */
+    public function getColumnUIOptions($tableName, Column $column)
+    {
+        $columnOptionsKey = implode('.', ['options', $tableName, $column->getName()]);
+        $columnOptions = ArrayUtils::get($this->data, $columnOptionsKey, null);
+
+        if (!$columnOptions) {
+            $columnOptions = $this->getUIOptions($tableName, $column->getName(), $column->getUI());
+            if (!isset($this->data['options'][$tableName])) {
+                $this->data['options'][$tableName] = [];
+            }
+
+            $this->data['options'][$tableName][$column->getName()] = $columnOptions;
+        }
+
+        return $columnOptions;
+    }
+
+    public function getUIOptions($table, $column, $ui)
+    {
+        $result = [];
+        $item = [];
+        $zendDb = $this->schema->getConnection();
+        $select = new Select();
+        $select->columns([
+            'id' => 'ui_name',
+            'name',
+            'value'
+        ]);
+        $select->from('directus_ui');
+        $select->where([
+
+        ]);
+        $select->where([
+            'column_name' => $column,
+            'table_name' => $table,
+            'ui_name' => $ui
+        ]);
+        $select->order('ui_name');
+
+        $sql = new Sql($zendDb);
+        $statement = $sql->prepareStatementForSqlObject($select);
+        $rows = $statement->execute();
+
+        foreach ($rows as $row) {
+            //first case
+            if (!isset($ui)) {
+                $item['id'] = $ui = $row['id'];
+            }
+            //new ui = new item
+            if ($ui != $row['id']) {
+                array_push($result, $item);
+                $item = [];
+                $item['id'] = $ui = $row['id'];
+            }
+            $item[$row['name']] = $row['value'];
+        };
+
+        if (count($item) > 0) {
+            array_push($result, $item);
+        }
+
+        if (sizeof($result)) {
+            return $result[0];
+        }
+
+        return [];
     }
 
     public function getColumnsName($tableName)

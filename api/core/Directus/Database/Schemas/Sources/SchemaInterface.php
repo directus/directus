@@ -2,10 +2,15 @@
 
 namespace Directus\Database\Schemas\Sources;
 
+use Directus\Database\Connection;
 use Zend\Db\ResultSet\ResultSet;
 
 interface SchemaInterface
 {
+    /**
+     * @return Connection
+     */
+    public function getConnection();
     /**
      * Get the schema name
      *
