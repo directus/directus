@@ -10,6 +10,7 @@
 
 namespace Directus\Database\Object;
 
+use Directus\Util\Traits\ArrayPropertyAccess;
 use Directus\Util\Traits\ArraySetter;
 
 /**
@@ -19,9 +20,9 @@ use Directus\Util\Traits\ArraySetter;
  *
  * @author Welling Guzmán <welling@rngr.org>
  */
-class Table
+class Table implements \ArrayAccess
 {
-    use ArraySetter;
+    use ArraySetter, ArrayPropertyAccess;
 
     /**
      * Table Identification name
@@ -141,6 +142,16 @@ class Table
      * @var string
      */
     protected $filterColumnBlacklist;
+
+    /**
+     * @var array
+     */
+    protected $readable = ['*'];
+
+    /**
+     * @var array
+     */
+    protected $writable = ['*'];
 
     /**
      * Table constructor.
