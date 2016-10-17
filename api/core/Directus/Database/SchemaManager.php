@@ -249,7 +249,7 @@ class SchemaManager
         }
 
         foreach($columnsSchema as $column) {
-            $column->setOptions($this->getColumnUIOptions($tableName, $column));
+            $column->setUIOptions($this->getColumnUIOptions($tableName, $column));
         }
 
         return $columnsSchema;
