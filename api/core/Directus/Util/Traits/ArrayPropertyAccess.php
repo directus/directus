@@ -9,8 +9,8 @@ trait ArrayPropertyAccess
     protected function getPropertyFromArrayKey($key)
     {
         $readable = ['*'];
-        if (property_exists($this, 'readable')) {
-            $readable = $this->readable;
+        if (property_exists($this, 'readableProperty')) {
+            $readable = $this->readableProperty;
         }
         if (in_array($key, $readable) || in_array('*', $readable)) {
             return StringUtils::underscoreToCamelCase($key);

@@ -146,12 +146,12 @@ class Table implements \ArrayAccess
     /**
      * @var array
      */
-    protected $readable = ['*'];
+    protected $readableProperty = ['*'];
 
     /**
      * @var array
      */
-    protected $writable = ['*'];
+    protected $writableProperty = ['*'];
 
     /**
      * Table constructor.

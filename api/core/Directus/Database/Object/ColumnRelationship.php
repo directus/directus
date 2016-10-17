@@ -50,12 +50,12 @@ class ColumnRelationship implements \ArrayAccess
     /**
      * @var array
      */
-    protected $readable = [];
+    protected $readableProperty = [];
 
     /**
      * @var array
      */
-    protected $writable = [];
+    protected $writableProperty = [];
 
     /**
      * ColumnRelationship constructor.
@@ -66,7 +66,7 @@ class ColumnRelationship implements \ArrayAccess
     {
         $this->setData($data);
 
-        $this->readable = $this->writable = [
+        $this->readableProperty = $this->writableProperty = [
             'type',
             'related_table',
             'junction_table',

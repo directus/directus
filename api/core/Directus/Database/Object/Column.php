@@ -126,12 +126,12 @@ class Column implements \ArrayAccess
     /**
      * @var array
      */
-    protected $readable = [];
+    protected $readableProperty = [];
 
     /**
      * @var array
      */
-    protected $writable = [];
+    protected $writableProperty = [];
 
     public function __construct($data)
     {
@@ -141,7 +141,7 @@ class Column implements \ArrayAccess
 
         $this->setData($data);
 
-        $this->readable = $this->writable = [
+        $this->readableProperty = $this->writableProperty = [
             'id',
             'name',
             'type',
