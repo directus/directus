@@ -19,7 +19,6 @@ use Directus\Database\Ddl\Column\Boolean;
 use Zend\Db\Sql\Ddl\Column\Integer;
 use Zend\Db\Sql\Ddl\Constraint\PrimaryKey;
 use Zend\Db\Sql\Ddl\CreateTable;
-use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Sql;
 
 /**
@@ -119,14 +118,10 @@ class SchemaManager
             $tableData = $tableResult->current();
 
             // Create a table object based of the table schema data
-            $tableSchema = new Table(array_merge($tableData, [
+            $tableSchema = $this->createTableObjectFromArray(array_merge($tableData, [
                 'schema' => $this->schema->getSchemaName()
             ]));
-
-            // save the column into the data
-            // @NOTE: this is the early implmenetation of cache
-            // soon this will be change to cache
-            $this->data['tables'][$tableName] = $tableSchema;
+            $this->addTable($tableName, $tableSchema);
         }
 
         // Set table columns
@@ -189,7 +184,7 @@ class SchemaManager
         return $this->schema->someTableExists($tablesName);
     }
 
-    public function getTables($filter = [])
+    public function getTables(array $params = [])
     {
         // TODO: Filter should be outsite
         // $schema = Bootstrap::get('schema');
@@ -198,7 +193,21 @@ class SchemaManager
         // $ignoredTables = static::getDirectusTables(DirectusPreferencesTableGateway::$IGNORED_TABLES);
         // $blacklistedTable = $config['tableBlacklist'];
         // array_merge($ignoredTables, $blacklistedTable)
-        return $this->schema->getTables($filter);
+        $allTables = $this->schema->getTables();
+        $tables = [];
+        foreach($allTables as $tableData) {
+            // Create a table object based of the table schema data
+            $tableSchema = $this->createTableObjectFromArray(array_merge($tableData, [
+                'schema' => $this->schema->getSchemaName()
+            ]));
+            $this->addTable($tableSchema->getName(), $tableSchema);
+
+
+
+            $tables[] = $tableSchema;
+        }
+
+        return $tables;
     }
 
     public function getTablesName()
@@ -345,7 +354,7 @@ class SchemaManager
 
     public function getAllColumns()
     {
-        return iterator_to_array($this->schema->getAllColumns());
+        return $this->schema->getAllColumns();
     }
 
     public function getPrimaryKey($tableName)
@@ -435,5 +444,22 @@ class SchemaManager
         }
 
         return $templatesData;
+    }
+
+    public function createTableObjectFromArray($data)
+    {
+        return new Table($data);
+    }
+
+    protected function addTable($name, $schema)
+    {
+        // save the column into the data
+        // @NOTE: this is the early implementation of cache
+        // soon this will be change to cache
+        if (!isset($this->data['tables'])) {
+            $this->data['tables'] = [];
+        }
+
+        $this->data['tables'][$name] = $schema;
     }
 }

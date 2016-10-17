@@ -356,15 +356,24 @@ class TableSchema
     /**
      * Get all table names
      *
+     * @param array $params
+     *
+     * @return array
      */
-    public static function getTablenames($params = null)
+    public static function getTablenames(array $params = [])
     {
-        $result = SchemaManager::getTablesName();
+        $schema = static::getSchemaManagerInstance();
+        $result = $schema->getTablesName();
+        $includeSystemTables = ArrayUtils::get($params, 'include_system');
 
         $tables = [];
         foreach ($result as $tableName) {
+            if ($includeSystemTables !== true && $schema->isDirectusTable($tableName)) {
+                continue;
+            }
+
             if (self::canGroupViewTable($tableName)) {
-                $tables[] = $tableName;
+                $tables[] = ['name' => $tableName];
             }
         }
 
@@ -625,7 +634,7 @@ class TableSchema
         };
 
         $getSchemasFn = function () {
-            $tableSchemas = TableSchema::getTableSchemas();
+            $tableSchemas = TableSchema::getTablesSchema();
             $columnSchemas = TableSchema::getColumnSchemas();
             // Nest column schemas in table schemas
             foreach ($tableSchemas as &$table) {
@@ -657,16 +666,32 @@ class TableSchema
         return $schemas;
     }
 
-    public static function getTableSchemas()
+    /**
+     * Get all the tables schema
+     *
+     * @param array $params
+     *
+     * @return array
+     */
+    public static function getTablesSchema(array $params = [])
     {
-        $allTables = SchemaManager::getTables();
+        $schema = static::getSchemaManagerInstance();
+        $includeSystemTables = ArrayUtils::get($params, 'include_system', false);
+        $includeColumns = ArrayUtils::get($params, 'include_columns', false);
 
+        $allTables = $schema->getTables();
         $tables = [];
-        foreach ($allTables as $index => $row) {
-            // Only include tables w ACL privileges
-            if (self::canGroupViewTable($row['table_name'])) {
-                $tables[] = self::formatTableRow($row);
+        foreach ($allTables as $table) {
+            $tableName = $table->getName();
+            if ($includeSystemTables !== true && $schema->isDirectusTable($tableName)) {
+                continue;
             }
+            // Only include tables w ACL privileges
+            if (!self::canGroupViewTable($tableName)) {
+                continue;
+            }
+
+            $tables[] = $table;
         }
 
         return $tables;
