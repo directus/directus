@@ -87,7 +87,7 @@ class Column implements \ArrayAccess
     /**
      * @var string
      */
-    // protected $tableName;
+    protected $tableName;
 
     /**
      * @var bool
@@ -153,7 +153,8 @@ class Column implements \ArrayAccess
             'hidden_list',
             'hidden_input',
             'relationship',
-            'comment'
+            'comment',
+            'table_name'
         ];
     }
 
@@ -621,5 +622,25 @@ class Column implements \ArrayAccess
     public function getComment()
     {
         return $this->comment;
+    }
+
+    /**
+     * Set the table name the column belongs to
+     *
+     * @param $name
+     */
+    public function setTableName($name)
+    {
+        $this->tableName = $name;
+    }
+
+    /**
+     * Get the table name the column belongs to
+     *
+     * @return string
+     */
+    public function getTableName()
+    {
+        return $this->tableName;
     }
 }
