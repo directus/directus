@@ -27,7 +27,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
         }
       },
       'click span': function(e) {
-        var index = $('.tag').index($(e.target));
+        var index = this.$el.find('.tag').index($(e.target));
         this.tags.splice(index,1);
         this.render();
       },
