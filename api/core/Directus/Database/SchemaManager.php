@@ -19,6 +19,7 @@ use Directus\Database\Ddl\Column\Boolean;
 use Zend\Db\Sql\Ddl\Column\Integer;
 use Zend\Db\Sql\Ddl\Constraint\PrimaryKey;
 use Zend\Db\Sql\Ddl\CreateTable;
+use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Sql;
 
 /**
