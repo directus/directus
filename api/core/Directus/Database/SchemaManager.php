@@ -184,6 +184,13 @@ class SchemaManager
         return $this->schema->someTableExists($tablesName);
     }
 
+    /**
+     * Gets list of table
+     *
+     * @param array $params
+     *
+     * @return Table[]
+     */
     public function getTables(array $params = [])
     {
         // TODO: Filter should be outsite
@@ -194,17 +201,17 @@ class SchemaManager
         // $blacklistedTable = $config['tableBlacklist'];
         // array_merge($ignoredTables, $blacklistedTable)
         $allTables = $this->schema->getTables();
+
         $tables = [];
         foreach($allTables as $tableData) {
             // Create a table object based of the table schema data
             $tableSchema = $this->createTableObjectFromArray(array_merge($tableData, [
                 'schema' => $this->schema->getSchemaName()
             ]));
-            $this->addTable($tableSchema->getName(), $tableSchema);
+            $tableName = $tableSchema->getName();
+            $this->addTable($tableName, $tableSchema);
 
-
-
-            $tables[] = $tableSchema;
+            $tables[$tableName] = $tableSchema;
         }
 
         return $tables;
@@ -352,9 +359,41 @@ class SchemaManager
         return $columnNames;
     }
 
+    /**
+     * Get all the columns
+     *
+     * @return array
+     */
     public function getAllColumns()
     {
-        return $this->schema->getAllColumns();
+        $allColumns = $this->schema->getAllColumns();
+        $columns = [];
+
+        foreach($allColumns as $column) {
+            $columns[] = new Column($column);
+        }
+
+        return $columns;
+    }
+
+    /**
+     * Get a list of columns table grouped by table name
+     *
+     * @return array
+     */
+    public function getAllColumnsByTable()
+    {
+        $columns = [];
+        foreach($this->getAllColumns() as $column) {
+            $tableName = $column->getTableName();
+            if (!isset($columns[$tableName])) {
+                $columns[$tableName] = [];
+            }
+
+            $columns[$tableName][] = $column;
+        }
+
+        return $columns;
     }
 
     public function getPrimaryKey($tableName)

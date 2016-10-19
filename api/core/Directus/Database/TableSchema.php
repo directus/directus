@@ -680,6 +680,13 @@ class TableSchema
         $includeColumns = ArrayUtils::get($params, 'include_columns', false);
 
         $allTables = $schema->getTables();
+        if ($includeColumns === true) {
+            $columns = $schema->getAllColumnsByTable();
+            foreach($columns as $table => $column) {
+                $allTables[$table]->setColumns($column);
+            }
+        }
+
         $tables = [];
         foreach ($allTables as $table) {
             $tableName = $table->getName();
