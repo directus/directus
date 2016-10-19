@@ -9,6 +9,7 @@
 
 define([
   'app',
+  'underscore',
   'backbone',
   'core/directus',
   'core/BasePageView',
@@ -25,7 +26,7 @@ define([
   '../SettingsConfig'
 ],
 
-function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManager, Widgets, SchemaManager, Sortable, Notification, DoubleConfirmation, __t, SchemaHelper, SettingsConfig) {
+function(app, _, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManager, Widgets, SchemaManager, Sortable, Notification, DoubleConfirmation, __t, SchemaHelper, SettingsConfig) {
   "use strict";
 
   var SettingsTables = app.module();
@@ -521,7 +522,10 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
     destroyColumn: function(columnName) {
       var originalColumnModel = this.collection.get(columnName);
       var columnModel = originalColumnModel.clone();
-      columnModel.url = originalColumnModel.url;
+      // url can be a function or a string
+      // getting the result directly from the original model will prevent issue calling the function
+      // calling the url() on the cloned model will throw an error because it doesn't have a collection object
+      columnModel.url = _.result(originalColumnModel, 'url');
 
       if (!columnModel) {
         Notification.error('Error', 'Column '+columnName+' not found.');
