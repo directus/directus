@@ -704,7 +704,30 @@ class TableSchema
         return $tables;
     }
 
-    public static function getColumnSchemas()
+    public static function getColumnsSchema(array $params = [])
+    {
+        $schema = static::getSchemaManagerInstance();
+        $columns = [];
+        foreach($schema->getAllColumns() as $column) {
+            $tableName = $column->getTableName();
+            if ($schema->isDirectusTable($tableName)) {
+                continue;
+            }
+
+            // Only include tables w ACL privileges
+            if (!self::canGroupViewTable($tableName)) {
+                continue;
+            }
+
+            $columns[] = $column;
+        }
+
+        return $columns;
+    }
+
+    // @NOTE: Old getColumnSchema
+    // @TODO: Remember implement the ACL on the new one.
+    public static function getColumnSchemasOld()
     {
         $acl = Bootstrap::get('acl');
         $zendDb = Bootstrap::get('ZendDb');
