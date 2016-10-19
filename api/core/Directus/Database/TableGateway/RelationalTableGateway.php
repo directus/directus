@@ -929,7 +929,13 @@ class RelationalTableGateway extends BaseTableGateway
                 // Aggregate all foreign keys for this relationship (for each row, yield the specified foreign id)
                 $yield = function ($row) use ($foreign_id_column, $table_entries) {
                     if (array_key_exists($foreign_id_column, $row)) {
-                        return $row[$foreign_id_column];
+                        $value = $row[$foreign_id_column];
+                        if (is_array($value)) {
+                            // @TODO: Dynamic primary key
+                            $value = isset($value['id']) ? $value['id'] : 0;
+                        }
+
+                        return $value;
                     }
                 };
 
