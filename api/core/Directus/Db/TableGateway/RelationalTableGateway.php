@@ -143,7 +143,6 @@ class RelationalTableGateway extends AclAwareTableGateway
         $deltaRecordData = $recordIsNew ? [] : array_intersect_key((array)$parentRecordWithForeignKeys, (array)$fullRecordData);
 
         switch ($activityEntryMode) {
-
             // Activity logging is enabled, and I am a nested action
             case self::ACTIVITY_ENTRY_MODE_CHILD:
                 $logEntryAction = $recordIsNew ? DirectusActivityTableGateway::ACTION_ADD : DirectusActivityTableGateway::ACTION_UPDATE;
@@ -157,6 +156,7 @@ class RelationalTableGateway extends AclAwareTableGateway
                     'parent_table' => isset($parentData['table_name']) ? $parentData['table_name'] : null,
                     'data' => json_encode($fullRecordData),
                     'delta' => json_encode($deltaRecordData),
+                    'parent_changed' => (int)$parentRecordChanged,
                     'row_id' => $rowId,
                     'identifier' => $this->findRecordIdentifier($schemaArray, $fullRecordData),
                     'logged_ip' => isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '',
