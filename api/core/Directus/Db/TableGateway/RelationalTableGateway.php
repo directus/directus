@@ -8,6 +8,7 @@ use Directus\Db\RowGateway\AclAwareRowGateway;
 use Directus\Db\SchemaManager;
 use Directus\Db\TableSchema;
 use Directus\Files;
+use Directus\Util\ArrayUtils;
 use Directus\Util\DateUtils;
 use Zend\Db\RowGateway\AbstractRowGateway;
 use Zend\Db\Sql\Expression;
@@ -296,6 +297,12 @@ class RelationalTableGateway extends AclAwareTableGateway
                                 $recordData[$colName][$index]['data'] = $Files->saveEmbedData($row['data']);
                             } else {
                                 $recordData[$colName][$index]['data'] = $Files->saveData($row['data']['data'], $row['data']['name']);
+                                // @NOTE: this is duplicate code from the upload file endpoint
+                                //        to maintain the file title.
+                                $recordData[$colName][$index]['data'] = array_merge(
+                                    $recordData[$colName][$index]['data'],
+                                    ArrayUtils::omit($row['data'], ['data', 'name'])
+                                );
                             }
                         }
 
@@ -308,6 +315,9 @@ class RelationalTableGateway extends AclAwareTableGateway
                             $recordData[$colName] = $Files->saveEmbedData($foreignRow);
                         } else {
                             $recordData[$colName] = $Files->saveData($foreignRow['data'], $foreignRow['name']);
+                            // @NOTE: this is duplicate code from the upload file endpoint
+                            //        to maintain the file title.
+                            $recordData[$colName] = array_merge($recordData[$colName], ArrayUtils::omit($foreignRow, ['data', 'name']));
                         }
                     }
                     unset($recordData[$colName]['data']);
