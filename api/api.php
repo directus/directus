@@ -114,6 +114,7 @@ $authAndNonceRouteWhitelist = [
     'auth_reset_password',
     'auth_permissions',
     'debug_acl_poc',
+    'ping_server',
     'request_token',
 ];
 
