@@ -796,7 +796,7 @@ class RelationalTableGateway extends BaseTableGateway
                         $foreign_data = $this->loadManyToManyRelationships($this->table, $alias['relationship']['related_table'],
                             $alias['relationship']['junction_table'], $alias['relationship']['junction_key_left'], $alias['relationship']['junction_key_right'],
                             $entry[$this->primaryKeyFieldName],
-                            is_null($parentField) ? $alias['column_name'] : $parentField,
+                            is_null($parentField) ? $alias['name'] : $parentField,
                             $level);
                         $noDuplicates = isset($alias['options']['no_duplicates']) ? $alias['options']['no_duplicates'] : 0;
                         // @todo: better way to handle this.
@@ -851,7 +851,7 @@ class RelationalTableGateway extends BaseTableGateway
                             $alias['relationship']['related_table'],
                             $alias['relationship']['junction_key_right'],
                             $entry['id'],
-                            is_null($parentField) ? $alias['column_name'] : $parentField,
+                            is_null($parentField) ? $alias['name'] : $parentField,
                             $level
                         );
                         break;
