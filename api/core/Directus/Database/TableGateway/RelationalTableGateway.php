@@ -870,6 +870,10 @@ class RelationalTableGateway extends BaseTableGateway
      * @param string $table
      * @param string $column_name
      * @param string $column_equals
+     * @param string|null $parentField
+     * @param $level
+     *
+     * @return array|bool
      */
     public function loadOneToManyRelationships($table, $column_name, $column_equals, $parentField = null, $level = 0)
     {
