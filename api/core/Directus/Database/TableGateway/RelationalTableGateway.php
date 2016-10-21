@@ -711,6 +711,7 @@ class RelationalTableGateway extends BaseTableGateway
         $results = $this->parseRecord($results);
 
         // Eager-load related ManyToOne records
+        $this->toManyCallStack = [];
         $results = $this->loadManyToOneRelationships($schemaArray, $results);
 
         /**
@@ -737,8 +738,6 @@ class RelationalTableGateway extends BaseTableGateway
 
         // Separate alias fields from table schema array
         $alias_fields = $this->filterSchemaAliasFields($schemaArray); // (fmrly $alias_schema)
-
-        $this->toManyCallStack = [];
 
         $result = $this->loadToManyRelationships($result, $alias_fields);
 
@@ -776,11 +775,15 @@ class RelationalTableGateway extends BaseTableGateway
 
     /**
      * Populate alias/relational One-To-Many and Many-To-Many fields with their foreign data.
-     * @param  array $entry [description]
-     * @param  [type] $aliasColumns [description]
-     * @return [type]               [description]
+     *
+     * @param array $entry [description]
+     * @param array $aliasColumns [description]
+     * @param string|null $parentField
+     * @param int $level
+     *
+     * @return array
      */
-    public function loadToManyRelationships($entry, $aliasColumns)
+    public function loadToManyRelationships($entry, $aliasColumns, $parentField = null, $level = 0)
     {
         foreach ($aliasColumns as $alias) {
             $foreign_data = null;
@@ -789,19 +792,16 @@ class RelationalTableGateway extends BaseTableGateway
             if ($relationship && TableSchema::canGroupViewTable($relationship->getRelatedTable())) {
                 switch ($relationship->getType()) {
                     case 'MANYTOMANY':
-                        // @TODO: Column should verify/enforce it
-                        // $this->enforceColumnHasNonNullValues($alias['relationship'], ['related_table', 'junction_table', 'junction_key_left', 'junction_key_right'], $this->table);
-                        if (in_array($relationship->getRelatedTable(), $this->toManyCallStack)) {
-                            return $entry;
-                        }
-                        array_push($this->toManyCallStack, $relationship->getRelatedTable());
-                        $foreign_data = $this->loadManyToManyRelationships($this->table, $relationship->getRelatedTable(),
-                            $relationship->getJunctionTable(), $relationship->getJunctionKeyLeft(), $relationship->getJunctionKeyRight(),
-                            $entry[$this->primaryKeyFieldName]);
+                        $this->enforceColumnHasNonNullValues($alias['relationship'], ['related_table', 'junction_table', 'junction_key_left', 'junction_key_right'], $this->table);
+                        $foreign_data = $this->loadManyToManyRelationships($this->table, $alias['relationship']['related_table'],
+                            $alias['relationship']['junction_table'], $alias['relationship']['junction_key_left'], $alias['relationship']['junction_key_right'],
+                            $entry[$this->primaryKeyFieldName],
+                            is_null($parentField) ? $alias['column_name'] : $parentField,
+                            $level);
                         $noDuplicates = isset($alias['options']['no_duplicates']) ? $alias['options']['no_duplicates'] : 0;
                         // @todo: better way to handle this.
                         // @TODO: fetch uniques/non-duplicates entries
-                        if ($noDuplicates) {
+                        if (isset($foreign_data['rows']) && $noDuplicates) {
                             $uniquesID = [];
                             foreach ($foreign_data['rows'] as $index => $row) {
                                 if (!in_array($row['data']['id'], $uniquesID)) {
@@ -847,7 +847,13 @@ class RelationalTableGateway extends BaseTableGateway
                             return $entry;
                         }
                         array_push($this->toManyCallStack, $alias['relationship']['related_table']);
-                        $foreign_data = $this->loadOneToManyRelationships($alias['relationship']['related_table'], $alias['relationship']['junction_key_right'], $entry['id']);
+                        $foreign_data = $this->loadOneToManyRelationships(
+                            $alias['relationship']['related_table'],
+                            $alias['relationship']['junction_key_right'],
+                            $entry['id'],
+                            is_null($parentField) ? $alias['column_name'] : $parentField,
+                            $level
+                        );
                         break;
                 }
             }
@@ -869,10 +875,21 @@ class RelationalTableGateway extends BaseTableGateway
      * @param string $column_name
      * @param string $column_equals
      */
-    public function loadOneToManyRelationships($table, $column_name, $column_equals)
+    public function loadOneToManyRelationships($table, $column_name, $column_equals, $parentField = null, $level = 0)
     {
         if (!TableSchema::canGroupViewTable($table)) {
             return false;
+        }
+
+        // =============================================================================
+        // HOTFIX: prevent infinite circle loop
+        // =============================================================================
+        if ($parentField && $this->hasToManyCallStack($parentField, $table)) {
+            return $column_equals;
+        }
+
+        if ($parentField !== null) {
+            $this->addToManyCallStack($level, $parentField, $table);
         }
 
         // Run query
@@ -897,11 +914,17 @@ class RelationalTableGateway extends BaseTableGateway
      * Fetch related, foreign rows for a whole rowset's ManyToOne relationships.
      * (Given a table's schema and rows, iterate and replace all of its foreign
      * keys with the contents of these foreign rows.)
-     * @param  array $schema Table schema array
-     * @param  array $entries Table rows
-     * @return array          Revised table rows, now including foreign rows
+     *
+     * @param array $schemaArray Table schema array
+     * @param array $table_entries Table rows
+     * @param string|null $parentField
+     * @param int $level
+     *
+     * @return array Revised table rows, now including foreign rows
+     *
+     * @throws Exception\RelationshipMetadataException
      */
-    public function loadManyToOneRelationships($schemaArray, $table_entries)
+    public function loadManyToOneRelationships($schemaArray, $table_entries, $parentField = null, $level = 0)
     {
         // Identify the ManyToOne columns
         foreach ($schemaArray->getColumns() as $col) {
@@ -925,6 +948,19 @@ class RelationalTableGateway extends BaseTableGateway
                     }
                     throw new Exception\RelationshipMetadataException($message);
                 }
+
+                // =============================================================================
+                // HOTFIX: prevent infinite circle loop
+                // =============================================================================
+                if ($parentField && $this->hasToManyCallStack($parentField, $foreign_table_name)) {
+                    return $table_entries;
+                }
+
+                if ($parentField === null) {
+                    $parentField = $foreign_id_column;
+                }
+
+                $this->addToManyCallStack($level, $parentField, $foreign_table_name);
 
                 // Aggregate all foreign keys for this relationship (for each row, yield the specified foreign id)
                 $yield = function ($row) use ($foreign_id_column, $table_entries) {
@@ -969,7 +1005,7 @@ class RelationalTableGateway extends BaseTableGateway
                 $schemaArray = TableSchema::getSchemaArray($foreign_table_name);
 
                 // Eager-load related ManyToOne records
-                $foreign_table = $this->loadManyToOneRelationships($schemaArray, $foreign_table);
+                $foreign_table = $this->loadManyToOneRelationships($schemaArray, $foreign_table, $parentField, $level+1);
 
                 // Convert dates into ISO 8601 Format
                 $foreign_table = $this->convertDates($foreign_table, $schemaArray->getColumns());
@@ -993,20 +1029,35 @@ class RelationalTableGateway extends BaseTableGateway
 
     /**
      * Fetch related, foreign rows for one record's ManyToMany relationships.
+     *
      * @param  string $table_name
      * @param  string $foreign_table
      * @param  string $junction_table
      * @param  string $junction_key_left
      * @param  string $junction_key_right
      * @param  string $column_equals
+     * @param  string $parentField
+     * @param  int    $level
+     *
      * @return array                      Foreign rowset
      */
-    public function loadManyToManyRelationships($table_name, $foreign_table, $junction_table, $junction_key_left, $junction_key_right, $column_equals)
+    public function loadManyToManyRelationships($table_name, $foreign_table, $junction_table, $junction_key_left, $junction_key_right, $column_equals, $parentField = null, $level = 0)
     {
         $foreign_table_pk = TableSchema::getTablePrimaryKey($foreign_table);
         $foreign_join_column = $foreign_table . '.' . $foreign_table_pk;
         $junction_join_column = $junction_table . '.' . $junction_key_right;
         $junction_comparison_column = $junction_table . '.' . $junction_key_left;
+
+        // =============================================================================
+        // HOTFIX: prevent infinite circle loop
+        // =============================================================================
+        if ($parentField && $this->hasToManyCallStack($parentField, $foreign_table)) {
+            return $column_equals;
+        }
+
+        if ($parentField !== null) {
+            $this->addToManyCallStack($level, $parentField, $foreign_table);
+        }
 
         $junction_table_pk = TableSchema::getTablePrimaryKey($junction_table);
         $junction_id_column = $junction_table . '.' . $junction_table_pk;
@@ -1060,7 +1111,7 @@ class RelationalTableGateway extends BaseTableGateway
 
             $schemaArray = TableSchema::getSchemaArray($foreign_table);
             $alias_fields = $this->filterSchemaAliasFields($schemaArray); // (fmrly $alias_schema)
-            $row = $this->loadToManyRelationships($row, $alias_fields);
+            $row = $this->loadToManyRelationships($row, $alias_fields, $parentField, $level+1);
 
             $entry['data'] = $row;
 
@@ -1068,6 +1119,42 @@ class RelationalTableGateway extends BaseTableGateway
         }
 
         return ['rows' => $foreign_data];
+    }
+
+    protected function addToManyCallStack($level, $field, $table)
+    {
+        if (!is_array($this->toManyCallStack)) {
+            $this->toManyCallStack = [];
+        }
+
+        if (!isset($this->toManyCallStack[$field])) {
+            $this->toManyCallStack[$field] = [];
+        }
+
+        if (!isset($this->toManyCallStack[$field][$level])) {
+            $this->toManyCallStack[$field][$level] = [];
+        }
+
+        $this->toManyCallStack[$field][$level][] = $table;
+    }
+
+    protected function hasToManyCallStack($field, $table)
+    {
+        if (!is_array($this->toManyCallStack)) {
+            return false;
+        }
+
+        if (!array_key_exists($field, $this->toManyCallStack)) {
+            return false;
+        }
+
+        foreach($this->toManyCallStack[$field] as $level => $tablesCalled) {
+            if (in_array($table, $tablesCalled)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
