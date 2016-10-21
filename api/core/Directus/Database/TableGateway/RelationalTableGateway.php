@@ -843,10 +843,6 @@ class RelationalTableGateway extends BaseTableGateway
                         break;
                     case 'ONETOMANY':
                         $this->enforceColumnHasNonNullValues($alias['relationship'], ['related_table', 'junction_key_right'], $this->table);
-                        if (in_array($alias['relationship']['related_table'], $this->toManyCallStack)) {
-                            return $entry;
-                        }
-                        array_push($this->toManyCallStack, $alias['relationship']['related_table']);
                         $foreign_data = $this->loadOneToManyRelationships(
                             $alias['relationship']['related_table'],
                             $alias['relationship']['junction_key_right'],
