@@ -900,7 +900,7 @@ class RelationalTableGateway extends BaseTableGateway
         $columns = TableSchema::getAllNonAliasTableColumnNames($table);
         $select->columns($columns);
 
-        $TableGateway = new RelationalTableGateway($this->acl, $table, $this->adapter);
+        $TableGateway = new RelationalTableGateway($table, $this->adapter, $this->acl);
         $rowset = $TableGateway->selectWith($select);
         $results = $rowset->toArray();
 
