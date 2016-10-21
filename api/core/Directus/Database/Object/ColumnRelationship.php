@@ -70,8 +70,8 @@ class ColumnRelationship implements \ArrayAccess
             'type',
             'related_table',
             'junction_table',
-            'junction_left_key',
-            'junction_right_key'
+            'junction_key_left',
+            'junction_key_right'
         ];
     }
 
