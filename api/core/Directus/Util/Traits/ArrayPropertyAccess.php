@@ -16,7 +16,7 @@ trait ArrayPropertyAccess
             return StringUtils::underscoreToCamelCase($key);
         }
 
-        $format = 'Cannot access or does not exists key [%] in %s';
+        $format = 'Cannot access or does not exists key [%s] in %s';
         throw new \Exception(sprintf($format, $key, __CLASS__));
     }
 
