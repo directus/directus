@@ -28,7 +28,7 @@ class RelationalTableGateway extends BaseTableGateway
     {
         $TableGateway = $this;
         if ($tableName !== $this->table) {
-            $TableGateway = new RelationalTableGateway($this->acl, $tableName, $this->adapter);
+            $TableGateway = new RelationalTableGateway($tableName, $this->adapter, $this->acl);
         }
 
         $recordIsNew = !array_key_exists($TableGateway->primaryKeyFieldName, $recordData);
@@ -241,7 +241,7 @@ class RelationalTableGateway extends BaseTableGateway
             return false;
         }
 
-        $filesTableGateway = new RelationalTableGateway($this->acl, $tableName, $this->adapter);
+        $filesTableGateway = new RelationalTableGateway($tableName, $this->adapter, $this->acl);
         $primaryKeyFieldName = $filesTableGateway->primaryKeyFieldName;
 
         $params = [];
@@ -424,7 +424,7 @@ class RelationalTableGateway extends BaseTableGateway
 
                     /** One-to-Many */
                     case 'onetomany':
-                        $ForeignTable = new RelationalTableGateway($this->acl, $foreignTableName, $this->adapter);
+                        $ForeignTable = new RelationalTableGateway($foreignTableName, $this->adapter, $this->acl);
                         foreach ($foreignDataSet as &$foreignRecord) {
                             if (empty($foreignRecord)) {
                                 continue;
@@ -478,8 +478,8 @@ class RelationalTableGateway extends BaseTableGateway
                         $junctionTableName = $column['relationship']['junction_table'];
                         $junctionKeyLeft = $column['relationship']['junction_key_left'];
                         $junctionKeyRight = $column['relationship']['junction_key_right'];
-                        $JunctionTable = new RelationalTableGateway($this->acl, $junctionTableName, $this->adapter);
-                        $ForeignTable = new RelationalTableGateway($this->acl, $foreignTableName, $this->adapter);
+                        $JunctionTable = new RelationalTableGateway($junctionTableName, $this->adapter, $this->acl);
+                        $ForeignTable = new RelationalTableGateway($foreignTableName, $this->adapter, $this->acl);
                         foreach ($foreignDataSet as $junctionRow) {
                             /** This association is designated for removal */
                             if (isset($junctionRow[STATUS_COLUMN_NAME]) && $junctionRow[STATUS_COLUMN_NAME] == STATUS_DELETED_NUM) {
