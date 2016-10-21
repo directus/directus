@@ -125,9 +125,15 @@ class SchemaManager
             $this->addTable($tableName, $tableSchema);
         }
 
+        // =============================================================================
         // Set table columns
-        $tableColumns = $this->getColumns($tableName);
-        $tableSchema->setColumns($tableColumns);
+        // -----------------------------------------------------------------------------
+        // @TODO: Do not allow to add duplicate column names
+        // =============================================================================
+        if (empty($tableSchema->getColumns())) {
+            $tableColumns = $this->getColumns($tableName);
+            $tableSchema->setColumns($tableColumns);
+        }
 
         return $tableSchema;
     }
