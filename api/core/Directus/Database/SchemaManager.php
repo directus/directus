@@ -502,10 +502,6 @@ class SchemaManager
         // save the column into the data
         // @NOTE: this is the early implementation of cache
         // soon this will be change to cache
-        if (!isset($this->data['tables'])) {
-            $this->data['tables'] = [];
-        }
-
         $this->data['tables'][$name] = $schema;
     }
 }
