@@ -714,6 +714,14 @@ class RelationalTableGateway extends BaseTableGateway
         $this->toManyCallStack = [];
         $results = $this->loadManyToOneRelationships($schemaArray, $results);
 
+        // =============================================================================
+        // HOTFIX: Fetching X2M data and Infinite circle loop
+        // =============================================================================
+        foreach($results as $key => $result) {
+            $this->toManyCallStack = [];
+            $results[$key] = $this->loadToManyRelationships($result, $alias_fields);
+        }
+
         /**
          * Fetching a set of data
          */
@@ -735,11 +743,6 @@ class RelationalTableGateway extends BaseTableGateway
         }
 
         list($result) = $results;
-
-        // Separate alias fields from table schema array
-        $alias_fields = $this->filterSchemaAliasFields($schemaArray); // (fmrly $alias_schema)
-
-        $result = $this->loadToManyRelationships($result, $alias_fields);
 
         return $result;
     }
