@@ -280,6 +280,23 @@ class Table implements \ArrayAccess
     }
 
     /**
+     * Gets all the table alias columns
+     *
+     * @return array
+     */
+    public function getAliasColumns()
+    {
+        $aliasColumns = [];
+        foreach($this->getColumns() as $column) {
+            if ($column->isAlias()) {
+                $aliasColumns[] = $column;
+            }
+        }
+
+        return $aliasColumns;
+    }
+
+    /**
      * Table has an `status` column
      *
      * @return bool
@@ -335,7 +352,7 @@ class Table implements \ArrayAccess
      */
     public function getPrimaryColumn()
     {
-       return $this->primaryColumn;
+        return $this->primaryColumn;
     }
 
     /**

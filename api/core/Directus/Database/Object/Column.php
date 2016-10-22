@@ -25,6 +25,10 @@ class Column implements \ArrayAccess
 {
     use ArraySetter, ArrayPropertyAccess;
 
+    const ALIAS = 'ALIAS';
+    const ONE_TO_MANY = 'ONETOMANY';
+    const MANY_TO_MANY = 'MANYTOMANY';
+
     /**
      * @var string
      */
@@ -642,5 +646,29 @@ class Column implements \ArrayAccess
     public function getTableName()
     {
         return $this->tableName;
+    }
+
+    /**
+     * Checks whether the column is an alias
+     *
+     * @return bool
+     */
+    public function isAlias()
+    {
+        $isAliasType = false;
+        $isLegacyAliasType = in_array($this->getType(), [
+            static::ALIAS,
+            static::ONE_TO_MANY,
+            static::MANY_TO_MANY
+        ]);
+
+        if ($this->hasRelationship()) {
+            $isAliasType = in_array($this->getRelationship()->getType(), [
+                static::ONE_TO_MANY,
+                static::MANY_TO_MANY
+            ]);
+        }
+
+        return $isLegacyAliasType || $isAliasType;
     }
 }

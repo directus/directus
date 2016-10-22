@@ -717,7 +717,7 @@ class RelationalTableGateway extends BaseTableGateway
         // =============================================================================
         // HOTFIX: Fetching X2M data and Infinite circle loop
         // =============================================================================
-        $aliasColumns = $this->filterSchemaAliasFields($schemaArray);
+        $aliasColumns = $schemaArray->getAliasColumns();
         foreach($results as $key => $result) {
             $this->toManyCallStack = [];
             $results[$key] = $this->loadToManyRelationships($result, $aliasColumns);
@@ -1114,8 +1114,8 @@ class RelationalTableGateway extends BaseTableGateway
             }
 
             $schemaArray = TableSchema::getSchemaArray($foreign_table);
-            $alias_fields = $this->filterSchemaAliasFields($schemaArray); // (fmrly $alias_schema)
-            $row = $this->loadToManyRelationships($row, $alias_fields, $parentField, $level+1);
+            $aliasColumns = $schemaArray->getAliasColumns();
+            $row = $this->loadToManyRelationships($row, $aliasColumns, $parentField, $level+1);
 
             $entry['data'] = $row;
 
@@ -1222,28 +1222,6 @@ class RelationalTableGateway extends BaseTableGateway
 //        }
 //        return $entriesWithRelationships;
 //    }
-
-    /**
-     * Remove Directus-managed virtual/alias fields from the table schema array
-     * and return them as a separate array.
-     * @param  array $schema Table schema array.
-     * @return array         Alias fields
-     */
-    public function filterSchemaAliasFields(&$schema)
-    {
-        $alias_fields = [];
-        $columns = $schema->getColumns();
-        foreach ($columns as $i => $col) {
-            // Is it a "virtual"/alias column?
-            if (TableSchema::isColumnAnAlias($col)) {
-                // Remove them from the standard schema
-                unset($columns[$i]);
-                $alias_fields[] = $col;
-            }
-        }
-
-        return $alias_fields;
-    }
 
 //    /**
 //     * Does a table schema array contain an `status` column?

@@ -201,48 +201,6 @@ class TableSchema
         return false;
     }
 
-    /**
-     * Check whether or not a column is an Alias
-     *
-     * @param \Directus\Database\Object\Column $column
-     *
-     * @return bool
-     */
-    public static function isColumnAnAlias($column)
-    {
-        $isLegacyAliasType = static::isColumnTypeAnAlias($column->getType());
-        $isAliasType = false;
-
-        // if (isset($column['relationship'])) {
-        $relationship = $column->getRelationship();
-        if ($relationship) {
-            //$isAliasType = static::isColumnTypeAnAlias(ArrayUtils::get($relationship, 'type', null));
-            $isAliasType = static::isColumnTypeAnAlias($relationship->getType());
-        }
-
-        return $isLegacyAliasType || $isAliasType;
-    }
-
-    /**
-     * Check if the given type is an alias
-     *
-     * @param $columnType
-     *
-     * @return bool
-     */
-    public static function isColumnTypeAnAlias($columnType)
-    {
-        return in_array($columnType, static::$association_types);
-    }
-
-    /**
-     * @see isColumnAnAlias
-     */
-    public static function columnIsCollectionAssociation($column)
-    {
-        return static::isColumnAnAlias($column);
-    }
-
     public static function getAllNonAliasTableColumnNames($table)
     {
         $columnNames = [];
@@ -260,7 +218,7 @@ class TableSchema
 
     /**
      * @param $tableName
-     * @return \Directus\Database\Object\Column |bool
+     * @return \Directus\Database\Object\Column[] |bool
      */
     public static function getAllNonAliasTableColumns($tableName)
     {
@@ -271,11 +229,7 @@ class TableSchema
         }
 
         foreach ($schemaArray as $column) {
-            /*if (self::columnIsCollectionAssociation($column)) {
-                continue;
-            }
-            $columns[] = $column;*/
-            if (!static::isColumnAnAlias($column)) {
+            if (!$column->isAlias()) {
                 $columns[] = $column;
             }
         }
@@ -288,7 +242,7 @@ class TableSchema
         $columns = [];
         $schemaArray = self::loadSchema($table);
         foreach ($schemaArray as $column) {
-            if (!self::columnIsCollectionAssociation($column)) {
+            if (!$column->isAlias()) {
                 continue;
             }
 
@@ -541,7 +495,7 @@ class TableSchema
                 $row['is_nullable'] = 'YES';
             }
 
-            $anAlias = static::isColumnTypeAnAlias($row['type']);
+            $anAlias = $row->isAlias();
             $hasDefaultValue = isset($row['default_value']);
             if ($row['is_nullable'] === 'NO' && !$hasDefaultValue && !$anAlias) {
                 $row['required'] = true;
@@ -817,7 +771,7 @@ class TableSchema
         }
 
         $hasDefaultValue = isset($row['default_value']);
-        $anAlias = static::isColumnTypeAnAlias($row['type']);
+        $anAlias = $row->isAlias();
         if ($row['is_nullable'] === 'NO' && !$hasDefaultValue && !$anAlias) {
             $row['required'] = true;
         }

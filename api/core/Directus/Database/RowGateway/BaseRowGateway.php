@@ -130,7 +130,7 @@ class BaseRowGateway extends RowGateway
 
         $entry = $this->toArray();
         $schemaArray = TableSchema::getSchemaArray($this->table);
-        $aliasColumns = $TableGateway->filterSchemaAliasFields($schemaArray);
+        $aliasColumns = $schemaArray->getAliasColumns();
         // Many-to-One
         list($entry) = $TableGateway->loadManyToOneRelationships($schemaArray, [$entry]);
         // One-to-Many, Many-to-Many
