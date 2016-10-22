@@ -174,7 +174,7 @@ class Acl
     {
         if (!$this->canAlter($tableName)) {
             $aclErrorPrefix = $this->getErrorMessagePrefix();
-            throw new Exception\UnauthorizedTableAddException($aclErrorPrefix . 'Table alter access forbidden on table ' . $tableName);
+            throw new Exception\UnauthorizedTableAlterException($aclErrorPrefix . 'Table alter access forbidden on table ' . $tableName);
         }
     }
 
