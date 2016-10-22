@@ -139,6 +139,10 @@ class SchemaTest extends PHPUnit_Framework_TestCase
     public function testGetTables()
     {
         $adapter = get_mock_mysql_schema($this, ['getTables']);
+        $adapter->expects($this->once())
+                ->method('getTables')
+                ->will($this->returnValue([]));
+
         $schema = new Schema($adapter);
 
         $filter = ['blacklist' => 'files'];

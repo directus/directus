@@ -207,7 +207,7 @@ class SchemaManager
         // $ignoredTables = static::getDirectusTables(DirectusPreferencesTableGateway::$IGNORED_TABLES);
         // $blacklistedTable = $config['tableBlacklist'];
         // array_merge($ignoredTables, $blacklistedTable)
-        $allTables = $this->schema->getTables();
+        $allTables = $this->schema->getTables($params);
 
         $tables = [];
         foreach($allTables as $tableData) {

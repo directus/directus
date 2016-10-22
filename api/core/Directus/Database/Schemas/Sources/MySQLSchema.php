@@ -11,6 +11,7 @@
 namespace Directus\Database\Schemas\Sources;
 
 use Directus\Bootstrap;
+use Directus\Util\ArrayUtils;
 use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Predicate\In;
 use Zend\Db\Sql\Predicate\IsNotNull;
@@ -33,7 +34,7 @@ class MySQLSchema extends AbstractSchema
     /**
      * @inheritDoc
      */
-    public function getTables(array $filter = [])
+    public function getTables(array $params = [])
     {
         $select = new Select();
         $select->columns([
@@ -69,8 +70,9 @@ class MySQLSchema extends AbstractSchema
             'ST.TABLE_TYPE' => 'BASE TABLE'
         ];
 
-        if ($filter) {
-            $condition[] = new NotIn('ST.TABLE_NAME', $filter);
+        $blacklisted = ArrayUtils::get($params, 'blacklist', null);
+        if ($blacklisted) {
+            $condition[] = new NotIn('ST.TABLE_NAME', $blacklisted);
         }
 
         $select->where($condition);

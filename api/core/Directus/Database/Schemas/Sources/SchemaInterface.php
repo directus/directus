@@ -21,9 +21,11 @@ interface SchemaInterface
     /**
      * Get a list of all tables structures.
      *
+     * @param array $params
+     *
      * @return array
      */
-    public function getTables();
+    public function getTables(array $params = []);
 
     /**
      * Get a list of all tables names.
