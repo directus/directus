@@ -166,7 +166,7 @@ class Acl
     {
         if (!$this->canAdd($tableName)) {
             $aclErrorPrefix = $this->getErrorMessagePrefix();
-            throw new Exception\UnauthorizedTableAddException($aclErrorPrefix . 'Table add access forbidden on table ' . $insertTable);
+            throw new Exception\UnauthorizedTableAddException($aclErrorPrefix . 'Table add access forbidden on table ' . $tableName);
         }
     }
 
