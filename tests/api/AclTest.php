@@ -40,6 +40,20 @@ class AclTest extends PHPUnit_Framework_TestCase
                 'allow_add' => 1,
                 'allow_edit' => 1,
                 //'allow_delete' => 1,
+                'allow_alter' => 1
+            ],
+            'forbid' => [
+                'id' => 3,
+                'table_name' => 'test_table',
+                'group_id' => 1,
+                'read_field_blacklist' => null,
+                'write_field_blacklist' => null,
+                'nav_listed' => 1,
+                'status_id' => 0,
+                'allow_view' => 0,
+                'allow_add' => 0,
+                'allow_edit' => 0,
+                'allow_delete' => 0,
                 'allow_alter' => null
             ],
             '*' => [
@@ -203,6 +217,44 @@ class AclTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($this->acl->hasTablePrivilege('directus_files', 'bigedit'));
         $this->assertFalse($this->acl->hasTablePrivilege('test_table', 'bigedit'));
         $this->assertFalse($this->acl->hasTablePrivilege('test_table', 'delete'));
+    }
+
+    public function testHasPrivilegesHelper()
+    {
+        $this->assertFalse($this->acl->canAdd('forbid'));
+        $this->assertTrue($this->acl->canAdd('directus_files'));
+
+        $this->assertFalse($this->acl->canView('forbid'));
+        $this->assertTrue($this->acl->canView('directus_files'));
+
+        $this->assertFalse($this->acl->canAlter('forbid'));
+        $this->assertTrue($this->acl->canAlter('directus_files'));
+    }
+
+    public function testEnforceCanAlterPassed()
+    {
+        $this->acl->enforceAlter('directus_files');
+    }
+
+    public function testEnforceCanAddPassed()
+    {
+        $this->acl->enforceAdd('directus_files');
+    }
+
+    /**
+     * @expectedException \Directus\Acl\Exception\UnauthorizedTableAlterException
+     */
+    public function testEnforceCanAlter()
+    {
+        $this->acl->enforceAlter('forbid');
+    }
+
+    /**
+     * @expectedException \Directus\Acl\Exception\UnauthorizedTableAddException
+     */
+    public function testEnforceCanAdd()
+    {
+        $this->acl->enforceAdd('forbid');
     }
 
     public function testCensorFields()
