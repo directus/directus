@@ -198,9 +198,9 @@ class InstallModule extends ModuleBase
                      throw new CommandFailedException(__t('Error changing user password') . ': ' . $ex->getMessage());
                  }
             }
-        } catch (PDOException $e) {
+        } catch (\PDOException $e) {
             echo PHP_EOL . "PDO Excetion!!" . PHP_EOL;
-            echo PHP_EOL . PHP_EOL . __t('Module ') . $module . __t(' error: ') . $e->getMessage() . PHP_EOL . PHP_EOL;
+            echo PHP_EOL . PHP_EOL . __t('Module ') . $this->__module_name . __t(' error: ') . $e->getMessage() . PHP_EOL . PHP_EOL;
         }
     }
 }
