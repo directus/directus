@@ -5,6 +5,7 @@ namespace Directus\Database\TableGateway;
 use Directus\Database\Object\Table;
 use Directus\Database\Exception;
 use Directus\Database\TableSchema;
+use Directus\Util\ArrayUtils;
 use Zend\Db\Sql\Predicate;
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Where;
@@ -14,6 +15,7 @@ class RelationalTableGatewayWithConditions extends RelationalTableGateway
     public function applyParamsToTableEntriesSelect(array $params, Select $select, Table $schema, $hasActiveColumn = false)
     {
         $tableName = $this->getTable();
+        $this->processOrder($select, $params);
 
         if (isset($params['group_by'])) {
             $select->group($tableName . '.' . $params['group_by']);
@@ -36,12 +38,6 @@ class RelationalTableGatewayWithConditions extends RelationalTableGateway
             );
 
             $select->order('rsort.title', $params['orderDirection']);
-        } else if (is_array($params['order'])) {
-            $orders = [];
-            foreach($params['order'] as $orderBy => $orderDirection) {
-                $orders[] = sprintf('%s %s', $orderBy, $orderDirection);
-            }
-            $select->order($orders);
         } else {
             $select->order(implode(' ', [$params['orderBy'], $params['orderDirection']]));
         }
@@ -290,5 +286,30 @@ class RelationalTableGatewayWithConditions extends RelationalTableGateway
             $where->unnest;
         }
         return $select;
+    }
+
+    /**
+     * Process Select Order
+     *
+     * @param $select
+     * @param array $params
+     */
+    protected function processOrder(Select $select, array $params = [])
+    {
+        $orders = ArrayUtils::get($params, 'order', []);
+        if (ArrayUtils::has($params, 'orderBy')) {
+            $orders[] = [
+                $params['orderBy'] => ArrayUtils::get($params, 'orderDirection', 'ASC')
+            ];
+        }
+
+        $orders = [];
+        foreach($params['order'] as $orderBy => $orderDirection) {
+            $orders[] = sprintf('%s %s', $orderBy, $orderDirection);
+        }
+
+        if ($orders) {
+            $select->order($orders);
+        }
     }
 }

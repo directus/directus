@@ -547,8 +547,7 @@ class RelationalTableGateway extends BaseTableGateway
     }
 
     public static $defaultEntriesSelectParams = [
-        'orderBy' => 'id', // @todo validate $params['order*']
-        'orderDirection' => 'ASC',
+        'order' => ['sort' => 'ASC'],
         'fields' => '*',
         'perPage' => 500,
         'currentPage' => 0,
@@ -559,12 +558,6 @@ class RelationalTableGateway extends BaseTableGateway
 
     public function applyDefaultEntriesSelectParams(array $params)
     {
-        if ($this->primaryKeyFieldName != 'id') {
-            unset(self::$defaultEntriesSelectParams['id']);
-            self::$defaultEntriesSelectParams[$this->primaryKeyFieldName] = -1;
-            self::$defaultEntriesSelectParams['orderBy'] = $this->primaryKeyFieldName;
-        }
-
         if (isset($params['perPage']) && isset($params['current_page']))
             $params['currentPage'] = $params['current_page'] * $params['perPage'];
 
@@ -573,10 +566,12 @@ class RelationalTableGateway extends BaseTableGateway
 
         $params = array_merge(self::$defaultEntriesSelectParams, $params);
 
-        // Is there a sort column?
+        // Is not there a sort column?
         $tableColumns = array_flip(TableSchema::getTableColumns($this->table, null, true));
-        if (!array_key_exists('orderBy', $params) && array_key_exists('sort', $tableColumns)) {
-            $params['orderBy'] = 'sort';
+        if (!array_key_exists('sort', $tableColumns)) {
+            $params['order'] = [
+                $this->primaryKeyFieldName => 'ASC'
+            ];
         }
 
         array_walk($params, [$this, 'castFloatIfNumeric']);
