@@ -14,6 +14,7 @@ class RelationalTableGatewayWithConditions extends RelationalTableGateway
     public function applyParamsToTableEntriesSelect(array $params, Select $select, Table $schema, $hasActiveColumn = false)
     {
         $tableName = $this->getTable();
+        // @TODO: Query Builder Object
         $this->processOrder($select, $params);
         $this->processLimit($select, $params);
         $this->processOffset($select, $params);
@@ -355,6 +356,22 @@ class RelationalTableGatewayWithConditions extends RelationalTableGateway
                     // filter[column][in]=value1,value2
                     $this->processInExpression($select, $column, $value);
                     break;
+                case 'eq':
+                case '=':
+                    $this->processEqualExpression($select, $column, $value);
+                    break;
+                case 'lt':
+                    $this->processLessThan($select, $column, $value);
+                    break;
+                case 'lte':
+                    $this->processLessThanOrEqual($select, $column, $value);
+                    break;
+                case 'gt':
+                    $this->processGreaterThan($select, $column, $value);
+                    break;
+                case 'gte':
+                    $this->processGreaterThanOrEqual($select, $column, $value);
+                    break;
             }
         }
     }
@@ -373,5 +390,30 @@ class RelationalTableGatewayWithConditions extends RelationalTableGateway
         }
 
         $select->where->in($column, $value);
+    }
+
+    protected function processEqualExpression(Select $select, $column, $value)
+    {
+        $select->where->equalTo($column, $value);
+    }
+
+    protected function processLessThan(Select $select, $column, $value)
+    {
+        $select->where->lessThan($column, $value);
+    }
+
+    protected function processLessThanOrEqual(Select $select, $column, $value)
+    {
+        $select->where->lessThanOrEqualTo($column, $value);
+    }
+
+    protected function processGreaterThan(Select $select, $column, $value)
+    {
+        $select->where->greaterThan($column, $value);
+    }
+
+    protected function processGreaterThanOrEqual(Select $select, $column, $value)
+    {
+        $select->where->greaterThanOrEqualTo($column, $value);
     }
 }
