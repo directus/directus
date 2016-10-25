@@ -346,8 +346,8 @@ class RelationalTableGatewayWithConditions extends RelationalTableGateway
     protected function processConditions(Select $select, array $filters = [])
     {
         foreach($filters as $column => $condition) {
-            $operator = key($condition);
-            $value = current($condition);
+            $operator = is_array($condition) ? key($condition) : '=';
+            $value = is_array($condition) ? current($condition) : $condition;
             switch($operator) {
                 case 'in':
                     // Filter entries that match one of these values separated by comma
