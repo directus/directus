@@ -4,6 +4,7 @@ namespace Directus\Mail;
 
 use Clousure;
 use Directus\Bootstrap;
+use Directus\Util\ArrayUtils;
 use InvalidArgumentException;
 use Swift_Message;
 
@@ -57,6 +58,16 @@ class Mail
         // default mail from address
         $mailConfig = $config['mail'];
         $message->setFrom($mailConfig['from']);
+
+        $bcc = ArrayUtils::get($mailConfig, 'bcc', null);
+        if ($bcc !== null) {
+            $message->setBcc($bcc);
+        }
+
+        $cc =  ArrayUtils::get($mailConfig, 'cc', null);
+        if ($cc !== null) {
+            $message->setCc($cc);
+        }
 
         call_user_func($callback, $message);
 
