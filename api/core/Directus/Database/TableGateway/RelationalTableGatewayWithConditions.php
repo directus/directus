@@ -367,10 +367,6 @@ class RelationalTableGatewayWithConditions extends RelationalTableGateway
      */
     protected function processInExpression(Select $select, $column, $value)
     {
-        if (!is_array($value)) {
-            return;
-        }
-
         if (is_string($value)) {
             $value = explode(',', $value);
         }
