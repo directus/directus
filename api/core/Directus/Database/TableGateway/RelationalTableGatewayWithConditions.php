@@ -11,10 +11,8 @@ use Zend\Db\Sql\Where;
 
 class RelationalTableGatewayWithConditions extends RelationalTableGateway
 {
-
-    public function applyParamsToTableEntriesSelect(array $params, Select $select, /*array*/ Table $schema, $hasActiveColumn = false)
+    public function applyParamsToTableEntriesSelect(array $params, Select $select, Table $schema, $hasActiveColumn = false)
     {
-
         $tableName = $this->getTable();
 
         if (isset($params['group_by'])) {
@@ -38,6 +36,12 @@ class RelationalTableGatewayWithConditions extends RelationalTableGateway
             );
 
             $select->order('rsort.title', $params['orderDirection']);
+        } else if (is_array($params['order'])) {
+            $orders = [];
+            foreach($params['order'] as $orderBy => $orderDirection) {
+                $orders[] = sprintf('%s %s', $orderBy, $orderDirection);
+            }
+            $select->order($orders);
         } else {
             $select->order(implode(' ', [$params['orderBy'], $params['orderDirection']]));
         }
