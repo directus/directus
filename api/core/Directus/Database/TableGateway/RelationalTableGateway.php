@@ -30,8 +30,9 @@ class RelationalTableGateway extends BaseTableGateway
     protected $defaultEntriesSelectParams = [
         'order' => ['sort' => 'ASC'],
         'fields' => '*',
-        'perPage' => 500,
-        'currentPage' => 0,
+        'limit' => 500,
+        'offset' => 0,
+        'skip' => null,
         'id' => -1,
         'search' => null,
         'status' => null
@@ -561,9 +562,6 @@ class RelationalTableGateway extends BaseTableGateway
 
     public function applyDefaultEntriesSelectParams(array $params)
     {
-        if (isset($params['perPage']) && isset($params['current_page']))
-            $params['currentPage'] = $params['current_page'] * $params['perPage'];
-
         if (isset($params['fields']) && is_array($params['fields']))
             $params['fields'] = array_merge(['id'], $params['fields']);
 

@@ -16,36 +16,31 @@ class RelationalTableGatewayWithConditions extends RelationalTableGateway
     {
         $tableName = $this->getTable();
         $this->processOrder($select, $params);
+        $this->processLimit($select, $params);
+        $this->processOffset($select, $params);
 
         if (isset($params['group_by'])) {
             $select->group($tableName . '.' . $params['group_by']);
         }
 
         //If this is a relational order, than it is an array.
-        if (is_array($params['orderBy'])) {
-            $select->join(
-                ['jsort' => $params['orderBy']['junction_table']],
-                'jsort.' . $params['orderBy']['jkeyRight'] . ' = ' . $tableName . '.' . $this->primaryKeyFieldName,
-                [],
-                $select::JOIN_LEFT
-            );
-
-            $select->join(
-                ['rsort' => $params['orderBy']['related_table']],
-                'rsort.id = jsort.' . $params['orderBy']['jkeyLeft'],
-                [],
-                $select::JOIN_LEFT
-            );
-
-            $select->order('rsort.title', $params['orderDirection']);
-        } else {
-            $select->order(implode(' ', [$params['orderBy'], $params['orderDirection']]));
-        }
-
-        if (isset($params['perPage']) && isset($params['currentPage'])) {
-            $select->limit($params['perPage'])
-                ->offset($params['currentPage'] * $params['perPage']);
-        }
+//        if (is_array($params['orderBy'])) {
+//            $select->join(
+//                ['jsort' => $params['orderBy']['junction_table']],
+//                'jsort.' . $params['orderBy']['jkeyRight'] . ' = ' . $tableName . '.' . $this->primaryKeyFieldName,
+//                [],
+//                $select::JOIN_LEFT
+//            );
+//
+//            $select->join(
+//                ['rsort' => $params['orderBy']['related_table']],
+//                'rsort.id = jsort.' . $params['orderBy']['jkeyLeft'],
+//                [],
+//                $select::JOIN_LEFT
+//            );
+//
+//            $select->order('rsort.title', $params['orderDirection']);
+//        }
 
         // Are we sorting on a relationship?
         foreach ($schema as $column) {
@@ -311,5 +306,24 @@ class RelationalTableGatewayWithConditions extends RelationalTableGateway
         if ($orders) {
             $select->order($orders);
         }
+    }
+
+    protected function processLimit(Select $select, array $params = [])
+    {
+        $limit = ArrayUtils::get($params, 'limit', 200);
+        $select->limit($limit);
+    }
+
+    protected function processOffset(Select $select, array $params = [])
+    {
+        $limit = ArrayUtils::get($params, 'limit', 200);
+        $offset = $limit * ArrayUtils::get($params, 'offset', 0);
+        $skip = ArrayUtils::get($params, 'skip', null);
+
+        if ($skip !== null) {
+            $offset = $skip;
+        }
+
+        $select->offset($offset);
     }
 }
