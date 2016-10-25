@@ -18,6 +18,10 @@ class RelationalTableGatewayWithConditions extends RelationalTableGateway
         $this->processLimit($select, $params);
         $this->processOffset($select, $params);
 
+        if (ArrayUtils::has($params, 'filter')) {
+            $this->processConditions($select, $params['filter']);
+        }
+
         if (isset($params['group_by'])) {
             $select->group($tableName . '.' . $params['group_by']);
         }
@@ -95,15 +99,6 @@ class RelationalTableGatewayWithConditions extends RelationalTableGateway
 
             if (count($entriesIds) > 0) {
                 $select->where->in($this->primaryKeyFieldName, $entriesIds);
-            }
-        }
-
-        // Filter entries that match one of these values separated by comma
-        // in[field]=value1,value2
-        if (array_key_exists('in', $params) && is_array($params['in'])) {
-            foreach($params['in'] as $field => $values) {
-                $values = explode(',', $values);
-                $select->where->in($field, $values);
             }
         }
 
@@ -340,5 +335,46 @@ class RelationalTableGatewayWithConditions extends RelationalTableGateway
         if ($offset !== null) {
             $select->offset($offset);
         }
+    }
+
+    /**
+     * Process Select Conditions
+     *
+     * @param Select $select
+     * @param array $filters
+     */
+    protected function processConditions(Select $select, array $filters = [])
+    {
+        foreach($filters as $column => $condition) {
+            $operator = key($condition);
+            $value = current($condition);
+            switch($operator) {
+                case 'in':
+                    // Filter entries that match one of these values separated by comma
+                    // filter[column][in]=value1,value2
+                    $this->proccessInExpression($select, $column, $value);
+                    break;
+            }
+        }
+    }
+
+    /**
+     * Process Select In Conditions
+     *
+     * @param Select $select
+     * @param $column
+     * @param $value
+     */
+    protected function proccessInExpression(Select $select, $column, $value)
+    {
+        if (!is_array($value)) {
+            return;
+        }
+
+        if (is_string($value)) {
+            $value = explode(',', $value);
+        }
+
+        $select->where->in($column, $value);
     }
 }
