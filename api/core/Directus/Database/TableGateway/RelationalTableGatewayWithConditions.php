@@ -307,6 +307,12 @@ class RelationalTableGatewayWithConditions extends RelationalTableGateway
         }
     }
 
+    /**
+     * Process Select Limit
+     *
+     * @param Select $select
+     * @param array $params
+     */
     protected function processLimit(Select $select, array $params = [])
     {
         $limit = ArrayUtils::get($params, 'limit', null);
@@ -315,6 +321,12 @@ class RelationalTableGatewayWithConditions extends RelationalTableGateway
         }
     }
 
+    /**
+     * Process Select offset
+     *
+     * @param Select $select
+     * @param array $params
+     */
     protected function processOffset(Select $select, array $params = [])
     {
         $limit = ArrayUtils::get($params, 'limit', 200);
