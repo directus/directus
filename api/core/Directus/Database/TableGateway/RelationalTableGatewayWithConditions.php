@@ -352,7 +352,7 @@ class RelationalTableGatewayWithConditions extends RelationalTableGateway
                 case 'in':
                     // Filter entries that match one of these values separated by comma
                     // filter[column][in]=value1,value2
-                    $this->proccessInExpression($select, $column, $value);
+                    $this->processInExpression($select, $column, $value);
                     break;
             }
         }
@@ -365,7 +365,7 @@ class RelationalTableGatewayWithConditions extends RelationalTableGateway
      * @param $column
      * @param $value
      */
-    protected function proccessInExpression(Select $select, $column, $value)
+    protected function processInExpression(Select $select, $column, $value)
     {
         if (!is_array($value)) {
             return;
