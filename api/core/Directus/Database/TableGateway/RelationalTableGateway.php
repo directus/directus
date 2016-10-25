@@ -5,7 +5,6 @@ use Directus\Bootstrap;
 use Directus\Database\Object\Table;
 use Directus\Database\Exception;
 use Directus\Database\RowGateway\BaseRowGateway;
-use Directus\Database\SchemaManager;
 use Directus\Database\TableSchema;
 use Directus\Util\DateUtils;
 use Zend\Db\Sql\Expression;

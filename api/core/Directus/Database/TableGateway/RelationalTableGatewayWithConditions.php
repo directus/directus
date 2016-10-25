@@ -3,7 +3,6 @@
 namespace Directus\Database\TableGateway;
 
 use Directus\Database\Object\Table;
-use Directus\Database\Exception;
 use Directus\Database\TableSchema;
 use Directus\Util\ArrayUtils;
 use Zend\Db\Sql\Predicate;
