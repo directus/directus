@@ -319,6 +319,11 @@ class Builder
         return $this->limit;
     }
 
+    /**
+     * Build the Select Object
+     *
+     * @return \Zend\Db\Sql\Select
+     */
     public function buildSelect()
     {
         $select = $this->getSqlObject()->select($this->getFrom());
@@ -337,6 +342,8 @@ class Builder
         foreach($this->getWheres() as $condition) {
             $select->where($this->buildConditionExpression($condition));
         }
+
+        return $select;
     }
 
     public function get()
