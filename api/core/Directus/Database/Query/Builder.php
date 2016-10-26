@@ -368,9 +368,19 @@ class Builder
         return $select;
     }
 
+    /**
+     * Executes the query
+     *
+     * @return \Zend\Db\Adapter\Driver\ResultInterface
+     */
     public function get()
     {
+        $sql = $this->getSqlObject();
+        $select = $this->buildSelect();
 
+        $statement = $sql->prepareStatementForSqlObject($select);
+
+        return $statement->execute();
     }
 
     protected function buildOrders()
