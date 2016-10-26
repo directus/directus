@@ -2,7 +2,7 @@
 
 namespace Directus\Database\Query;
 
-use Directus\Database\Connection;
+use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Predicate\In;
 use Zend\Db\Sql\Predicate\Like;
 use Zend\Db\Sql\Predicate\NotIn;
@@ -13,7 +13,7 @@ use Zend\Db\Sql\Sql;
 class Builder
 {
     /**
-     * @var \Directus\Database\Connection
+     * @var AdapterInterface
      */
     protected $connection;
 
@@ -55,9 +55,9 @@ class Builder
     /**
      * Builder constructor.
      *
-     * @param Connection $connection
+     * @param AdapterInterface $connection
      */
-    public function __construct(Connection $connection)
+    public function __construct(AdapterInterface $connection)
     {
         $this->connection = $connection;
     }
@@ -440,7 +440,7 @@ class Builder
     /**
      * Gets the connection
      *
-     * @return Connection
+     * @return AdapterInterface
      */
     public function getConnection()
     {
