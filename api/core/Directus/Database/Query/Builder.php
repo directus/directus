@@ -361,7 +361,6 @@ class Builder
             $select->limit($this->getLimit());
         }
 
-        // Conditions
         foreach($this->getWheres() as $condition) {
             $select->where($this->buildConditionExpression($condition));
         }
