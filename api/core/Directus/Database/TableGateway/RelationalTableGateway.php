@@ -29,7 +29,7 @@ class RelationalTableGateway extends BaseTableGateway
      * @var array
      */
     protected $defaultEntriesSelectParams = [
-        'order' => ['sort' => 'ASC'],
+        'orders' => ['sort' => 'ASC'],
         'fields' => '*',
         'limit' => 500,
         'offset' => 0,
@@ -602,16 +602,6 @@ class RelationalTableGateway extends BaseTableGateway
      */
     public function getEntries($params = [])
     {
-        // @todo this is for backwards compatibility, make sure this doesn't happen and ditch the following 2 if-blocks
-        if (!array_key_exists('orderBy', $params) && array_key_exists('sort', $params)) {
-            $params['orderBy'] = $params['sort'];
-        }
-
-        if (!array_key_exists('orderDirection', $params) && array_key_exists('sort_order', $params)) {
-            $params['orderDirection'] = $params['sort_order'];
-        }
-        // end @todo
-
         // Get table column schema
         $schemaArray = TableSchema::getSchemaArray($this->table);
 
@@ -707,18 +697,10 @@ class RelationalTableGateway extends BaseTableGateway
      * Process Select Order
      *
      * @param Builder $query
-     * @param array $params
+     * @param array $orders
      */
-    protected function processOrders(Builder $query, array $params = [])
+    protected function processOrders(Builder $query, array $orders)
     {
-        $orders = ArrayUtils::get($params, 'orders', []);
-        // "order" will be replace it with "orderBy", if given
-        if (ArrayUtils::has($params, 'orderBy')) {
-            $orders[] = [
-                $params['orderBy'] => ArrayUtils::get($params, 'orderDirection', 'ASC')
-            ];
-        }
-
         foreach($orders as $orderBy => $orderDirection) {
             $query->orderBy($orderBy, $orderDirection);
         }
