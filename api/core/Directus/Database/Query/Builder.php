@@ -113,12 +113,13 @@ class Builder
      * @param $column
      * @param $operator
      * @param $value
+     * @param $not
      *
      * @return $this
      */
-    public function where($column, $operator, $value)
+    public function where($column, $operator, $value, $not = false)
     {
-        $this->wheres[] = compact('operator', 'column', 'value');
+        $this->wheres[] = compact('operator', 'column', 'value', 'not');
 
         return $this;
     }
@@ -134,9 +135,7 @@ class Builder
      */
     public function whereIn($column, array $values, $not = false)
     {
-        $operator = ($not === true ? 'n' : '') . 'in';
-
-        return $this->where($column, $operator, $values);
+        return $this->where($column, 'in', $values, $not);
     }
 
     /**
@@ -154,9 +153,7 @@ class Builder
 
     public function whereEqualTo($column, $value, $not = false)
     {
-        $operator = $not !== true ? '=' : '<>';
-
-        return $this->where($column, $operator, $value);
+        return $this->where($column, '=', $value, $not);
     }
 
     public function whereNotEqualTo($column, $value)
@@ -196,9 +193,7 @@ class Builder
 
     public function whereLike($column, $value, $not = false)
     {
-        $operator = ($not === true ? 'n' : '') . 'like';
-
-        return $this->where($column, $operator, $value);
+        return $this->where($column, 'like', $value, $not);
     }
 
     public function whereNotLike($column, $value)
@@ -208,9 +203,7 @@ class Builder
 
     public function whereLLike($column, $value, $not = false)
     {
-        $operator = ($not === true ? 'n' : '') . 'llike';
-
-        return $this->where($column, $operator, $value);
+        return $this->where($column, 'llike', $value, $not);
     }
 
     public function whereNotLLike($column, $value)
@@ -220,9 +213,7 @@ class Builder
 
     public function whereRLike($column, $value, $not = false)
     {
-        $operator = ($not === true ? 'n' : '') . 'rlike';
-
-        return $this->where($column, $operator, $value);
+        return $this->where($column, 'rlike', $value, $not);
     }
 
     public function whereNotRLike($column, $value)
@@ -409,7 +400,8 @@ class Builder
 
     protected function buildConditionExpression($condition)
     {
-        $operator = $condition['operator'];
+        $not = $condition['not'] === true;
+        $operator = ($not === true ? 'n' : '') . $condition['operator'];
         $column = $condition['column'];
         $value = $condition['value'];
 
