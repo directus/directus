@@ -62,19 +62,42 @@ class Builder
         $this->connection = $connection;
     }
 
+    /**
+     * Sets the columns list to be selected
+     *
+     * @param array $columns
+     *
+     * @return $this
+     */
     public function columns(array $columns)
     {
         $this->columns = $columns;
+
+        return $this;
     }
 
+    /**
+     * Gets the selected columns
+     *
+     * @return array
+     */
     public function getColumns()
     {
         return $this->columns;
     }
 
+    /**
+     * Sets the from table
+     *
+     * @param $from
+     *
+     * @return $this
+     */
     public function from($from)
     {
         $this->from = $from;
+
+        return $this;
     }
 
     public function getFrom()
