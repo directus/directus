@@ -3,6 +3,7 @@
 namespace Directus\Database\Query;
 
 use Zend\Db\Adapter\AdapterInterface;
+use Zend\Db\ResultSet\AbstractResultSet;
 use Zend\Db\Sql\Predicate\In;
 use Zend\Db\Sql\Predicate\Like;
 use Zend\Db\Sql\Predicate\NotIn;
@@ -371,7 +372,7 @@ class Builder
     /**
      * Executes the query
      *
-     * @return \Zend\Db\Adapter\Driver\ResultInterface
+     * @return AbstractResultSet
      */
     public function get()
     {
