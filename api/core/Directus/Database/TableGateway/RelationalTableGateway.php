@@ -24,6 +24,19 @@ class RelationalTableGateway extends BaseTableGateway
 
     protected $toManyCallStack = [];
 
+    /**
+     * @var array
+     */
+    protected $defaultEntriesSelectParams = [
+        'order' => ['sort' => 'ASC'],
+        'fields' => '*',
+        'perPage' => 500,
+        'currentPage' => 0,
+        'id' => -1,
+        'search' => null,
+        'status' => null
+    ];
+
     public function manageRecordUpdate($tableName, $recordData, $activityEntryMode = self::ACTIVITY_ENTRY_MODE_PARENT, &$childLogEntries = null, &$parentCollectionRelationshipsChanged = false, $parentData = [])
     {
         $TableGateway = $this;
@@ -546,16 +559,6 @@ class RelationalTableGateway extends BaseTableGateway
         return $parentRow;
     }
 
-    public static $defaultEntriesSelectParams = [
-        'order' => ['sort' => 'ASC'],
-        'fields' => '*',
-        'perPage' => 500,
-        'currentPage' => 0,
-        'id' => -1,
-        'search' => null,
-        'status' => null
-    ];
-
     public function applyDefaultEntriesSelectParams(array $params)
     {
         if (isset($params['perPage']) && isset($params['current_page']))
@@ -564,7 +567,7 @@ class RelationalTableGateway extends BaseTableGateway
         if (isset($params['fields']) && is_array($params['fields']))
             $params['fields'] = array_merge(['id'], $params['fields']);
 
-        $params = array_merge(self::$defaultEntriesSelectParams, $params);
+        $params = array_merge($this->defaultEntriesSelectParams, $params);
 
         // Is not there a sort column?
         $tableColumns = array_flip(TableSchema::getTableColumns($this->table, null, true));
