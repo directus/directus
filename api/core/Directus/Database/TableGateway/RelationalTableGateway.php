@@ -725,6 +725,28 @@ class RelationalTableGateway extends BaseTableGateway
     }
 
     /**
+     * Process Select Limit
+     *
+     * @param Builder $query
+     * @param int $limit
+     */
+    protected function processLimit(Builder $query, $limit)
+    {
+        $query->limit((int) $limit);
+    }
+
+    /**
+     * Process Select offset
+     *
+     * @param Builder $query
+     * @param int $offset
+     */
+    protected function processOffset(Builder $query, $offset)
+    {
+        $query->offset((int) $offset);
+    }
+
+    /**
      * Apply legacy params to support old api requests
      *
      * @param Builder $query
