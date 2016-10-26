@@ -266,6 +266,14 @@ class Builder
     }
 
     /**
+     * Clears the orders list
+     */
+    public function clearOrders()
+    {
+        $this->orders = [];
+    }
+
+    /**
      * Sets the number of records to skip
      *
      * @param $value

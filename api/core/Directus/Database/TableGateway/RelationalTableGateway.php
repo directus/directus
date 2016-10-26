@@ -4,8 +4,10 @@ namespace Directus\Database\TableGateway;
 use Directus\Bootstrap;
 use Directus\Database\Object\Table;
 use Directus\Database\Exception;
+use Directus\Database\Query\Builder;
 use Directus\Database\RowGateway\BaseRowGateway;
 use Directus\Database\TableSchema;
+use Directus\Util\ArrayUtils;
 use Directus\Util\DateUtils;
 use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Predicate;
@@ -579,63 +581,19 @@ class RelationalTableGateway extends BaseTableGateway
         return $params;
     }
 
-    public function applyParamsToTableEntriesSelect(array $params, Select $select, /*array*/ Table $schema, $hasActiveColumn = false)
+    public function applyParamsToTableEntriesSelect(array $params, Builder $builder, Table $schema, $hasActiveColumn = false)
     {
-        $select->order(implode(' ', [$params['orderBy'], $params['orderDirection']]));
-        if (isset($params['perPage']) && isset($params['currentPage'])) {
-            $select->limit($params['perPage'])
-                ->offset($params['currentPage'] * $params['perPage']);
-        }
-
-        // Note: be sure to explicitly check for null, because the value may be
-        // '0' or 0, which is meaningful.
-        if (null !== $params['status'] && $hasActiveColumn) {
-            $haystack = is_array($params['status'])
-                ? $params['status']
-                : explode(',', $params['status']);
-            $statusColumnName = implode($this->adapter->platform->getIdentifierSeparator(), [
-                $this->table,
-                STATUS_COLUMN_NAME
-            ]);
-            $select->where->in($statusColumnName, $haystack);
-        }
-
-        // Select only ids from the ids if provided
-        if (array_key_exists('ids', $params)) {
-            $entriesIds = array_filter(explode(',', $params['ids']), 'is_numeric');
-
-            if (count($entriesIds) > 0) {
-                $select->where->in($this->getTable() . '.' . $this->primaryKeyFieldName, $entriesIds);
+        // @TODO: Query Builder Object
+        foreach($params as $type => $argument) {
+            $method = 'process' . ucfirst($type);
+            if (method_exists($this, $method)) {
+                call_user_func_array([$this, $method], [$builder, $argument]);
             }
         }
 
-        // Where
-        if (isset($params[$this->primaryKeyFieldName]) && $params[$this->primaryKeyFieldName] != -1) {
-            $select
-                ->where
-                ->nest
-                ->expression('-1 = ?', $params[$this->primaryKeyFieldName])
-                ->or
-                ->equalTo($this->primaryKeyFieldName, $params[$this->primaryKeyFieldName])
-                ->unnest;
-        }
+        $this->applyLegacyParams($builder, $params);
 
-        if (isset($params['adv_search']) && !empty($params['adv_search'])) {
-            $select->where($params['adv_search']);
-        } else if (isset($params['search']) && !empty($params['search'])) {
-            $params['search'] = '%' . $params['search'] . '%';
-            $where = $select->where->nest;
-            foreach ($schema as $col) {
-                if ($col['type'] == 'VARCHAR' || $col['type'] == 'INT') {
-                    $columnName = $this->adapter->platform->quoteIdentifier($col['column_name']);
-                    $like = new Predicate\Expression('LOWER($columnName) LIKE ?', strtolower($params['search']));
-                    $where->addPredicate($like, Predicate\Predicate::OP_OR);
-                }
-            }
-            $where->unnest;
-        }
-
-        return $select;
+        return $builder;
     }
 
     /**
@@ -667,33 +625,35 @@ class RelationalTableGateway extends BaseTableGateway
         $hasActiveColumn = $schemaArray->hasStatusColumn();//$this->schemaHasActiveColumn($schemaArray);
 
         $params = $this->applyDefaultEntriesSelectParams($params);
-        $sql = new Sql($this->adapter);
-        $select = $sql->select()->from($this->table);
+        // @TODO: Create a new TableGateway Query Builder based on Query\Builder
+        $builder = new Builder($this->getAdapter());
+        $builder->from($this->getTable());
+        // $sql = new Sql($this->adapter);
+        // $select = $sql->select()->from($this->table);
 
-        // Only select the fields not on the currently authenticated user group's read field blacklist
-        $columnNames = TableSchema::getAllNonAliasTableColumnNames($this->table);
+        // @TODO: Only select the fields not on the currently authenticated user group's read field blacklist
+        $builder->columns(TableSchema::getAllNonAliasTableColumnNames($this->table));
+        //$columnNames = TableSchema::getAllNonAliasTableColumnNames($this->table);
 
-        $select->columns($columnNames);
+        // $select->columns($columnNames);
 
-        if (array_key_exists('related_table_filter', $params)) {
-            $select->where->equalTo($params['related_table_filter']['column'], $params['related_table_filter']['val']);
-        }
+        // if (array_key_exists('related_table_filter', $params)) {
+        //    $select->where->equalTo($params['related_table_filter']['column'], $params['related_table_filter']['val']);
+        // }
 
-        $select = $this->applyParamsToTableEntriesSelect($params, $select, $schemaArray, $hasActiveColumn);
+        // $select = $this->applyParamsToTableEntriesSelect($params, $select, $schemaArray, $hasActiveColumn);
+        $builder = $this->applyParamsToTableEntriesSelect($params, $builder, $schemaArray, $hasActiveColumn);
 
-        $currentUserId = null;
-        $cmsOwnerId = null;
-        if ($this->acl) {
-            $this->acl->getCmsOwnerColumnByTable($this->table);
-            $currentUserId = $this->acl->getUserId();
-        }
-
-        //If we have user field and do not have big view privileges but have view then only show entries we created
+        // If we have user field and do not have big view privileges but have view then only show entries we created
+        $cmsOwnerId = $this->acl ? $this->acl->getCmsOwnerColumnByTable($this->table) : null;
+        $currentUserId = $this->acl ? $this->acl->getUserId() : null;
         if ($cmsOwnerId && !$this->acl->hasTablePrivilege($this->table, 'bigview') && $this->acl->hasTablePrivilege($this->table, 'view')) {
-            $select->where->equalTo($cmsOwnerId, $currentUserId);
+            // $select->where->equalTo($cmsOwnerId, $currentUserId);
+            $builder->whereEqualTo($cmsOwnerId, $currentUserId);
         }
 
-        $results = $this->selectWith($select)->toArray();
+        // $results = $this->selectWith($select)->toArray();
+        $results = $builder->get()->toArray();
 
         // Note: ensure this is sufficient, in lieu of incrementing within
         // the foreach loop below.
@@ -741,6 +701,49 @@ class RelationalTableGateway extends BaseTableGateway
         list($result) = $results;
 
         return $result;
+    }
+
+    /**
+     * Process Select Order
+     *
+     * @param Builder $query
+     * @param array $params
+     */
+    protected function processOrders(Builder $query, array $params = [])
+    {
+        $orders = ArrayUtils::get($params, 'orders', []);
+        // "order" will be replace it with "orderBy", if given
+        if (ArrayUtils::has($params, 'orderBy')) {
+            $orders[] = [
+                $params['orderBy'] => ArrayUtils::get($params, 'orderDirection', 'ASC')
+            ];
+        }
+
+        foreach($orders as $orderBy => $orderDirection) {
+            $query->orderBy($orderBy, $orderDirection);
+        }
+    }
+
+    /**
+     * Apply legacy params to support old api requests
+     *
+     * @param Builder $query
+     * @param array $params
+     */
+    protected function applyLegacyParams(Builder $query, array $params = [])
+    {
+        // @TODO: Clear query orders
+        // "order" will be replace it with "orderBy", if presented
+        if (ArrayUtils::has($params, 'orderBy')) {
+            $query->clearOrders();
+            $query->orderBy($params['orderBy'], ArrayUtils::get($params, 'orderDirection', 'ASC'));
+        }
+
+        // sort, sort_order will replace "order" and "orderBy", if presented
+        if (ArrayUtils::has($params, 'sort')) {
+            $query->clearOrders();
+            $query->orderBy($params['sort'], ArrayUtils::get($params, 'sort_order', 'ASC'));
+        }
     }
 
     /**
