@@ -4,6 +4,7 @@ namespace Directus\Database\Query;
 
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\ResultSet\AbstractResultSet;
+use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\Sql\Predicate\In;
 use Zend\Db\Sql\Predicate\Like;
 use Zend\Db\Sql\Predicate\NotIn;
@@ -380,8 +381,12 @@ class Builder
         $select = $this->buildSelect();
 
         $statement = $sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
 
-        return $statement->execute();
+        $resultSet = new ResultSet($result);
+        $resultSet->initialize($result);
+
+        return $resultSet;
     }
 
     protected function buildOrders()
