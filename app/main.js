@@ -25,12 +25,11 @@ require(["config", 'polyfills'], function() {
     'core/ListViewManager',
     'core/idle',
     'tool-tips',
-    'utils',
     'contextual-date',
     'core/notification'
   ],
 
-  function(app, UIManager, Router, Backbone, alerts, __t, Tabs, Bookmarks, Messages, SchemaManager, SettingsCollection, ExtensionManager, EntriesManager, ListViewManager, Idle, ToolTip, Utils, ContextualDate, Notification) {
+  function(app, UIManager, Router, Backbone, alerts, __t, Tabs, Bookmarks, Messages, SchemaManager, SettingsCollection, ExtensionManager, EntriesManager, ListViewManager, Idle, ToolTip, ContextualDate, Notification) {
 
     "use strict";
 
@@ -567,7 +566,7 @@ require(["config", 'polyfills'], function() {
           // Remove the directus sub-path from the anchor href
           // Backbone.history already have app.root as root.
           var path = (href.attr || '/');
-          if (Utils.stringStartsWith(path, app.root)) {
+          if (path.startsWith(app.root)) {
             path = path.slice(app.root.length);
           }
 

@@ -121,13 +121,5 @@ define(function() {
     return value != false;
   };
 
-  Utils.stringEndsWith = function endsWith(str, suffix) {
-    return str.indexOf(suffix, str.length - suffix.length) !== -1;
-  };
-
-  Utils.stringStartsWith = function(str, prefix) {
-    return str.lastIndexOf(prefix, 0) === 0;
-  };
-
   return Utils;
 });
