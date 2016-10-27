@@ -11,7 +11,6 @@ use Directus\Util\ArrayUtils;
 use Directus\Util\DateUtils;
 use Directus\Util\StringUtils;
 use Zend\Db\Sql\Expression;
-use Zend\Db\Sql\Predicate;
 use Zend\Db\Sql\Predicate\PredicateInterface;
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Sql;
@@ -56,7 +55,6 @@ class RelationalTableGateway extends BaseTableGateway
         '>=' => ['operator' => 'greater_than_or_equal', 'not' => false],
 
         'null' => ['operator' => 'null'],
-        'exists' => ['operator' => 'exists'],
     ];
 
     public function manageRecordUpdate($tableName, $recordData, $activityEntryMode = self::ACTIVITY_ENTRY_MODE_PARENT, &$childLogEntries = null, &$parentCollectionRelationshipsChanged = false, $parentData = [])
