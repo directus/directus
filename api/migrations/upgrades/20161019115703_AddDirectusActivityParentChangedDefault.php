@@ -1,7 +1,7 @@
 <?php
 use Ruckusing\Migration\Base as Ruckusing_Migration_Base;
 
-class ChangeDirectusPrivilegesNavListedDefaultValue extends Ruckusing_Migration_Base
+class AddDirectusActivityParentChangedDefault extends Ruckusing_Migration_Base
 {
     public function up()
     {
