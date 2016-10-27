@@ -6,6 +6,8 @@ use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\ResultSet\AbstractResultSet;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\Sql\Predicate\In;
+use Zend\Db\Sql\Predicate\IsNotNull;
+use Zend\Db\Sql\Predicate\IsNull;
 use Zend\Db\Sql\Predicate\Like;
 use Zend\Db\Sql\Predicate\NotIn;
 use Zend\Db\Sql\Predicate\NotLike;
@@ -183,7 +185,7 @@ class Builder
 
     public function whereNull($column, $not = false)
     {
-        return $this->whereEqualTo($column, null, $not);
+        return $this->where($column, 'null', null, $not);
     }
 
     public function whereNotNull($column)
@@ -436,6 +438,12 @@ class Builder
             case 'nllike':
                 $value = "%$value";
                 $expression = new NotLike($column, $value);
+                break;
+            case 'null':
+                $expression = new IsNull($column);
+                break;
+            case 'nnull':
+                $expression = new IsNotNull($column);
                 break;
             default:
                 $expression = new Operator($column, $operator, $value);
