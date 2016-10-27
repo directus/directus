@@ -30,7 +30,7 @@ class RelationalTableGateway extends BaseTableGateway
      */
     protected $defaultEntriesSelectParams = [
         'orders' => ['sort' => 'ASC'],
-        'fields' => '*',
+        'columns' => '*',
         'limit' => 500,
         'offset' => 0,
         'skip' => null,
@@ -587,9 +587,6 @@ class RelationalTableGateway extends BaseTableGateway
         if (!array_key_exists('sort', $tableColumns)) {
             unset($defaultParams['orders']);
         }
-
-        if (isset($params['fields']) && is_array($params['fields']))
-            $params['fields'] = array_merge(['id'], $params['fields']);
 
         $params = array_merge($defaultParams, $params);
 
