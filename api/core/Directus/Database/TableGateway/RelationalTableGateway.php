@@ -9,6 +9,7 @@ use Directus\Database\RowGateway\BaseRowGateway;
 use Directus\Database\TableSchema;
 use Directus\Util\ArrayUtils;
 use Directus\Util\DateUtils;
+use Directus\Util\StringUtils;
 use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Predicate;
 use Zend\Db\Sql\Predicate\PredicateInterface;
@@ -37,6 +38,22 @@ class RelationalTableGateway extends BaseTableGateway
         'id' => -1,
         'search' => null,
         'status' => null
+    ];
+
+    protected $operatorShorthand = [
+        'eq' => ['operator' => 'equal_to', 'not' => false],
+        '='  => ['operator' => 'equal_to', 'not' => false],
+        'in' => ['operator' => 'in', 'not' => false],
+        'nin' => ['operator' => 'in', 'not' => true],
+        'lt' => ['operator' => 'less_than', 'not' => false],
+        'lte' => ['operator' => 'less_than_or_equal', 'not' => false],
+        'gt' => ['operator' => 'greater_than', 'not' => false],
+        'gte' => ['operator' => 'greater_than_or_equal', 'not' => false],
+
+        '<' => ['operator' => 'less_than', 'not' => false],
+        '<=' => ['operator' => 'less_than_or_equal', 'not' => false],
+        '>' => ['operator' => 'greater_than', 'not' => false],
+        '>=' => ['operator' => 'greater_than_or_equal', 'not' => false],
     ];
 
     public function manageRecordUpdate($tableName, $recordData, $activityEntryMode = self::ACTIVITY_ENTRY_MODE_PARENT, &$childLogEntries = null, &$parentCollectionRelationshipsChanged = false, $parentData = [])
@@ -691,6 +708,34 @@ class RelationalTableGateway extends BaseTableGateway
         list($result) = $results;
 
         return $result;
+    }
+
+    /**
+     * Process Select Filters (Where conditions)
+     *
+     * @param Builder $query
+     * @param array $filters
+     */
+    protected function processFilters(Builder $query, array $filters = [])
+    {
+        foreach($filters as $column => $condition) {
+            $operator = is_array($condition) ? key($condition) : '=';
+            $value = is_array($condition) ? current($condition) : $condition;
+            $not = false;
+
+            // Get information about the operator shorthand
+            if (ArrayUtils::has($this->operatorShorthand, $operator)) {
+                $operatorShorthand = $this->operatorShorthand[$operator];
+                $operator = ArrayUtils::get($operatorShorthand, 'operator', $operator);
+                $not = ArrayUtils::get($operatorShorthand, 'not', false);
+            }
+
+            $operator = StringUtils::underscoreToCamelCase(strtolower($operator), true);
+            $method = 'where' . ($not === true ? 'Not' : '') . $operator;
+            if (method_exists($query, $method)) {
+                call_user_func_array([$query, $method], [$column, $value]);
+            }
+        }
     }
 
     /**
