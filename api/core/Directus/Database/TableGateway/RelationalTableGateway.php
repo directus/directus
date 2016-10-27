@@ -581,18 +581,17 @@ class RelationalTableGateway extends BaseTableGateway
 
     public function applyDefaultEntriesSelectParams(array $params)
     {
-        if (isset($params['fields']) && is_array($params['fields']))
-            $params['fields'] = array_merge(['id'], $params['fields']);
-
-        $params = array_merge($this->defaultEntriesSelectParams, $params);
-
+        $defaultParams = $this->defaultEntriesSelectParams;
         // Is not there a sort column?
         $tableColumns = array_flip(TableSchema::getTableColumns($this->table, null, true));
         if (!array_key_exists('sort', $tableColumns)) {
-            $params['order'] = [
-                $this->primaryKeyFieldName => 'ASC'
-            ];
+            unset($defaultParams['orders']);
         }
+
+        if (isset($params['fields']) && is_array($params['fields']))
+            $params['fields'] = array_merge(['id'], $params['fields']);
+
+        $params = array_merge($defaultParams, $params);
 
         array_walk($params, [$this, 'castFloatIfNumeric']);
 
@@ -690,7 +689,7 @@ class RelationalTableGateway extends BaseTableGateway
          * Fetching a set of data
          */
 
-        if (-1 == $params[$this->primaryKeyFieldName]) {
+        if (!ArrayUtils::has($params, $this->primaryKeyFieldName)) {
             $set = [];
             if ($hasActiveColumn) {
                 $countActive = $this->countActive($hasActiveColumn);
@@ -793,6 +792,11 @@ class RelationalTableGateway extends BaseTableGateway
         if (ArrayUtils::has($params, 'sort')) {
             $query->clearOrders();
             $query->orderBy($params['sort'], ArrayUtils::get($params, 'sort_order', 'ASC'));
+        }
+
+        if (ArrayUtils::has($params, $this->primaryKeyFieldName)) {
+            $query->whereEqualTo($this->primaryKeyFieldName, $params[$this->primaryKeyFieldName]);
+            $query->limit(1);
         }
     }
 
