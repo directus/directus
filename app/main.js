@@ -25,11 +25,12 @@ require(["config", 'polyfills'], function() {
     'core/ListViewManager',
     'core/idle',
     'tool-tips',
+    'utils',
     'contextual-date',
     'core/notification'
   ],
 
-  function(app, UIManager, Router, Backbone, alerts, __t, Tabs, Bookmarks, Messages, SchemaManager, SettingsCollection, ExtensionManager, EntriesManager, ListViewManager, Idle, ToolTip, ContextualDate, Notification) {
+  function(app, UIManager, Router, Backbone, alerts, __t, Tabs, Bookmarks, Messages, SchemaManager, SettingsCollection, ExtensionManager, EntriesManager, ListViewManager, Idle, ToolTip, Utils, ContextualDate, Notification) {
 
     "use strict";
 
@@ -565,7 +566,10 @@ require(["config", 'polyfills'], function() {
 
           // Remove the directus sub-path from the anchor href
           // Backbone.history already have app.root as root.
-          var path = (href.attr || '').slice(app.root.length);
+          var path = (href.attr || '/');
+          if (Utils.stringStartsWith(path, app.root)) {
+            path = path.slice(app.root.length);
+          }
 
           // `Backbone.history.navigate` is sufficient for all Routers and will
           // trigger the correct events. The Router's internal `navigate` method
