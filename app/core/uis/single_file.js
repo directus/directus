@@ -175,13 +175,13 @@ define([
       'click #retriveUrlBtn': function(e) {
         var url = this.$el.find('#urlInput').val();
         var model = this.fileModel;
-        model.setLink(url);
+        model.setLink(url, this.options.settings.get('allowed_filetypes'));
       },
       'change input[type=file]': function(event) {
         var target = $(event.target);
         var file = target[0].files[0];
         var model = this.fileModel;
-        model.setFile(file);
+        model.setFile(file, this.options.settings.get('allowed_filetypes'));
       },
       'click button[data-action="computer"], .ui-thumbnail-dropzone, .single-image-thumbnail img': function(e) {
         this.$el.find('#fileAddInput').click();
@@ -200,7 +200,7 @@ define([
       }
 
       var model = this.fileModel;
-      model.setLink(url);
+      model.setLink(url, this.options.settings.get('allowed_filetypes'));
     },
 
     removeFile: function(e) {
@@ -218,16 +218,17 @@ define([
       collection.fetch();
 
       //please proxy this instead
-      var me = this;
+      var self = this;
 
       view.itemClicked = function(e) {
         var id = $(e.target).closest('tr').attr('data-id');
         model = collection.get(id);
-        if (!app.settings.isFileAllowed(model)) {
-          return false;
+
+        if (model.isFileAllowed(self.options.settings.get('allowed_filetypes'))) {
+          fileModel.clear({silent: true});
+          fileModel.set(_.clone(model.attributes));
         }
-        fileModel.clear({silent: true});
-        fileModel.set(_.clone(model.attributes));
+
         app.router.removeOverlayPage(this);
       };
     },
@@ -293,7 +294,7 @@ define([
         }
 
         var file = e.dataTransfer.files[0];
-        model.setFile(file);
+        model.setFile(file, this.options.settings.get('allowed_filetypes'));
         $dropzone.removeClass('dragover');
       }, this);
 

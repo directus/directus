@@ -5,10 +5,11 @@ define([
   'core/entries/EntriesModel',
   'core/notification',
   'core/t',
+  'utils',
   'helpers/file'
 ],
 
-function(app, _, Backbone, EntriesModel, Notification, __t, File) {
+function(app, _, Backbone, EntriesModel, Notification, __t, Utils, File) {
   var FilesModel = EntriesModel.extend({
 
     initialize: function() {
@@ -45,10 +46,8 @@ function(app, _, Backbone, EntriesModel, Notification, __t, File) {
       return name;
     },
 
-    setFile: function(file, fn) {
-      var model = this;
-
-      if (!app.settings.isFileAllowed(file)) {
+    setFile: function(file, allowedMimeTypes, fn) {
+      if (!this.isFileAllowed(file.type, allowedMimeTypes)) {
         return false;
       }
 
@@ -61,6 +60,7 @@ function(app, _, Backbone, EntriesModel, Notification, __t, File) {
         return false;
       }
 
+      var model = this;
       File.getDataFromInput(file, function(fileData, details, file) {
         File.isImage(fileData, function(isImage) {
           var modelData = {
@@ -100,10 +100,10 @@ function(app, _, Backbone, EntriesModel, Notification, __t, File) {
 
     // setData will try to get thumbnail from a base64
     // this is used by retrieve links
-    setData: function(item) {
+    setData: function(item, allowedMimeTypes) {
       var model = this;
 
-      if (!app.settings.isFileAllowed(item)) {
+      if (!this.isMimeTypeAllowed(item.type, allowedMimeTypes)) {
         return false;
       }
 
@@ -114,7 +114,7 @@ function(app, _, Backbone, EntriesModel, Notification, __t, File) {
       });
     },
 
-    setLink: function(url) {
+    setLink: function(url, allowedMimeTypes) {
       var model = this;
       app.sendLink(url, function(data) {
         var item = data[0];
@@ -122,10 +122,48 @@ function(app, _, Backbone, EntriesModel, Notification, __t, File) {
         // Unset the model ID so that a new file record is created
         // (and the old file record isn't replaced w/ this data)
         item.id = undefined;
-        item.user = self.userId;
+        item.user = model.userId;
 
-        model.setData(item);
+        model.setData(item, allowedMimeTypes);
       });
+    },
+
+    isFileAllowed: function(allowedMimeTypes) {
+      return this.isMimeTypeAllowed(this.get('type'), allowedMimeTypes);
+    },
+
+    isMimeTypeAllowed: function(fileType, allowedMimeTypes) {
+      // if there's not fileType but allowedMimeTypes provided
+      // by default the file is not allowed
+      var allowed = (!fileType && allowedMimeTypes) ? false : true;
+
+      if (fileType && allowedMimeTypes) {
+        var self = this;
+        allowed = allowedMimeTypes.split(',').some(function (allowedType) {
+          return self.isMimeType(fileType, allowedType);
+        });
+      }
+
+      // this should not be here
+      // but, we will let it slide for now.
+      if (!allowed) {
+        app.router.openModal({type: 'alert', text: 'This type of file is not allowed'});
+      }
+
+      return allowed;
+    },
+
+    isMimeType: function(mimeType, allowedMimeType) {
+      mimeType = mimeType || this.type;
+      if (!_.isString(mimeType)) {
+        return false;
+      }
+
+      if (allowedMimeType.endsWith('/*')) {
+        return allowedMimeType.split('/')[0] === mimeType.split('/')[0];
+      }
+
+      return allowedMimeType === mimeType;
     },
 
     constructor: function FilesModel(data, options) {
