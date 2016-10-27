@@ -563,11 +563,15 @@ require(["config", 'polyfills'], function() {
           // Don't follow empty links
           if (href.attr === '#') return;
 
+          // Remove the directus sub-path from the anchor href
+          // Backbone.history already have app.root as root.
+          var path = (href.attr || '').slice(app.root.length);
+
           // `Backbone.history.navigate` is sufficient for all Routers and will
           // trigger the correct events. The Router's internal `navigate` method
           // calls this anyways.  The fragment is sliced from the root.
 
-          Backbone.history.navigate(href.attr, true);
+          Backbone.history.navigate(path, true);
         }
       }).on('scroll', function(){
         // Fade in header shadow based on scroll position
