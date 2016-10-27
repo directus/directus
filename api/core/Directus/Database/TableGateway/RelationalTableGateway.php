@@ -34,7 +34,6 @@ class RelationalTableGateway extends BaseTableGateway
         'limit' => 500,
         'offset' => 0,
         'skip' => null,
-        'id' => -1,
         'search' => null,
         'status' => null
     ];
