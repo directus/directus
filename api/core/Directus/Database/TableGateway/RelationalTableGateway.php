@@ -54,6 +54,9 @@ class RelationalTableGateway extends BaseTableGateway
         '<=' => ['operator' => 'less_than_or_equal', 'not' => false],
         '>' => ['operator' => 'greater_than', 'not' => false],
         '>=' => ['operator' => 'greater_than_or_equal', 'not' => false],
+
+        'null' => ['operator' => 'null'],
+        'exists' => ['operator' => 'exists'],
     ];
 
     public function manageRecordUpdate($tableName, $recordData, $activityEntryMode = self::ACTIVITY_ENTRY_MODE_PARENT, &$childLogEntries = null, &$parentCollectionRelationshipsChanged = false, $parentData = [])
@@ -727,7 +730,7 @@ class RelationalTableGateway extends BaseTableGateway
             if (ArrayUtils::has($this->operatorShorthand, $operator)) {
                 $operatorShorthand = $this->operatorShorthand[$operator];
                 $operator = ArrayUtils::get($operatorShorthand, 'operator', $operator);
-                $not = ArrayUtils::get($operatorShorthand, 'not', false);
+                $not = ArrayUtils::get($operatorShorthand, 'not', !$value);
             }
 
             $operator = StringUtils::underscoreToCamelCase(strtolower($operator), true);
