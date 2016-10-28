@@ -802,6 +802,14 @@ class RelationalTableGateway extends BaseTableGateway
             $statuses = is_array($params['status']) ? $params['status'] : explode(',', $params['status']);
             $query->whereIn(STATUS_COLUMN_NAME, $statuses);
         }
+
+        // Select only ids from the ids if provided
+        if (ArrayUtils::has($params, 'ids')) {
+            $entriesIds = array_filter(explode(',', $params['ids']), 'is_numeric');
+            if (count($entriesIds) > 0) {
+                $query->whereIn($this->primaryKeyFieldName, $entriesIds);
+            }
+        }
     }
 
     /**
