@@ -41,6 +41,9 @@ class RelationalTableGateway extends BaseTableGateway
     protected $operatorShorthand = [
         'eq' => ['operator' => 'equal_to', 'not' => false],
         '='  => ['operator' => 'equal_to', 'not' => false],
+        'neq' => ['operator' => 'equal_to', 'not' => true],
+        '!='  => ['operator' => 'equal_to', 'not' => true],
+        '<>'  => ['operator' => 'equal_to', 'not' => true],
         'in' => ['operator' => 'in', 'not' => false],
         'nin' => ['operator' => 'in', 'not' => true],
         'lt' => ['operator' => 'less_than', 'not' => false],
