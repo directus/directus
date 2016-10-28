@@ -373,7 +373,7 @@ define([
       }
     },
     list: function(options) {
-      var model = options.model;
+      var model = options.value;
       //@TODO: Have this not be hardcoded
       if(!model.get('type') && model.get(options.schema.id) instanceof Backbone.Model) {
         model = model.get(options.schema.id);
