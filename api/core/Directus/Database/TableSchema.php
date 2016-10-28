@@ -159,6 +159,20 @@ class TableSchema
         return static::getSchemaManagerInstance()->getTableSchema($table, $params, $fromCache);
     }
 
+    /**
+     * Checks whether the given table has a status column
+     *
+     * @param $tableName
+     *
+     * @return bool
+     */
+    public static function hasStatusColumn($tableName)
+    {
+        $schema = static::getSchemaArray($tableName);
+
+        return $schema->hasStatusColumn();
+    }
+
     public static function getColumnSchemaArray($tableName, $columnName)
     {
         $tableColumnsSchema = static::getSchemaArray($tableName);

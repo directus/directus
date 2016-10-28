@@ -797,6 +797,11 @@ class RelationalTableGateway extends BaseTableGateway
             $query->whereEqualTo($this->primaryKeyFieldName, $params[$this->primaryKeyFieldName]);
             $query->limit(1);
         }
+
+        if (ArrayUtils::has($params, 'status') && TableSchema::hasStatusColumn($this->getTable())) {
+            $statuses = is_array($params['status']) ? $params['status'] : explode(',', $params['status']);
+            $query->whereIn(STATUS_COLUMN_NAME, $statuses);
+        }
     }
 
     /**
