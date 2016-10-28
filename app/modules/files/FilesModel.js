@@ -47,7 +47,7 @@ function(app, _, Backbone, EntriesModel, Notification, __t, Utils, File) {
     },
 
     setFile: function(file, allowedMimeTypes, fn) {
-      if (!this.isFileAllowed(file.type, allowedMimeTypes)) {
+      if (!this.isMimeTypeAllowed(file.type, allowedMimeTypes)) {
         return false;
       }
 
