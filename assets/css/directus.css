@@ -4185,8 +4185,6 @@ body.initial-load #sidebar {
           margin-left: 10px; }
           .header1 .tools.left .tool .action:first-child {
             margin-left: 0px; }
-        .header1 .tools.left .tool .change-visibility {
-          width: 110px; }
       .header1 .tools.left .tool-separator {
         float: left;
         margin-left: 20px;
@@ -4646,7 +4644,7 @@ body.initial-load #sidebar {
   text-align: center; }
   .login-box button[type="submit"] {
     float: right;
-    width: 150px;
+    min-width: 150px;
     font-size: 14px;
     background: #4ca6de;
     color: #ffffff; }
