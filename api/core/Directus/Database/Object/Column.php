@@ -599,6 +599,11 @@ class Column implements \ArrayAccess
         return $this->relationship;
     }
 
+    /**
+     * Checks whether the column has relationship
+     *
+     * @return bool
+     */
     public function hasRelationship()
     {
         return $this->relationship ? true : false;
