@@ -57,6 +57,11 @@ class Builder
     protected $limit = null;
 
     /**
+     * @var null|array
+     */
+    protected $groupBys = null;
+
+    /**
      * Builder constructor.
      *
      * @param AdapterInterface $connection
@@ -346,6 +351,26 @@ class Builder
     }
 
     /**
+     * Sets Group by columns
+     *
+     * @param array|string $columns
+     */
+    public function groupBy($columns)
+    {
+        if (!is_array($columns)) {
+            $columns = [$columns];
+        }
+
+        if ($this->groupBys === null) {
+            $this->groupBys = [];
+        }
+
+        foreach($columns as $column) {
+            $this->groupBys[] = $column;
+        }
+    }
+
+    /**
      * Build the Select Object
      *
      * @return \Zend\Db\Sql\Select
@@ -366,6 +391,10 @@ class Builder
 
         foreach($this->getWheres() as $condition) {
             $select->where($this->buildConditionExpression($condition));
+        }
+
+        if ($this->groupBys !== null) {
+            $select->group($this->groupBys);
         }
 
         return $select;
