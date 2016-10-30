@@ -814,6 +814,11 @@ class RelationalTableGateway extends BaseTableGateway
                 $query->whereIn($this->primaryKeyFieldName, $entriesIds);
             }
         }
+
+        if (ArrayUtils::has($params, 'perPage') && ArrayUtils::has($params, 'currentPage')) {
+            $query->limit($params['perPage']);
+            $query->offset($params['currentPage'] * $params['perPage']);
+        }
     }
 
     /**
