@@ -819,6 +819,10 @@ class RelationalTableGateway extends BaseTableGateway
             $query->limit($params['perPage']);
             $query->offset($params['currentPage'] * $params['perPage']);
         }
+
+        if (ArrayUtils::has($params, 'group_by')) {
+            $query->groupBy($params['group_by']);
+        }
     }
 
     /**
