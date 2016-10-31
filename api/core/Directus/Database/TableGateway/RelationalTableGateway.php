@@ -740,6 +740,11 @@ class RelationalTableGateway extends BaseTableGateway
             $relationshipType = $relationship->getType();
             if ($relationship) {
                 if ($relationshipType == 'MANYTOMANY') {
+                    if (is_string($value)) {
+                        $value = array_map(function($item) {
+                            return trim($item);
+                        }, explode(',', $value));
+                    }
                     $arguments = [
                         $this->primaryKeyFieldName,
                         $relationship->getJunctionTable(),
@@ -816,7 +821,9 @@ class RelationalTableGateway extends BaseTableGateway
         }
 
         if (ArrayUtils::has($params, 'status') && TableSchema::hasStatusColumn($this->getTable())) {
-            $statuses = is_array($params['status']) ? $params['status'] : explode(',', $params['status']);
+            $statuses = is_array($params['status']) ? $params['status'] : array_map(function($item) {
+                return trim($item);
+            }, explode(',', $params['status']));
             $query->whereIn(STATUS_COLUMN_NAME, $statuses);
         }
 
@@ -824,9 +831,10 @@ class RelationalTableGateway extends BaseTableGateway
             $query->where(key($params['adv_where']), '=', current($params['adv_where']));
         }
 
-        // Select only ids from the ids if provided
         if (ArrayUtils::has($params, 'ids')) {
-            $entriesIds = array_filter(explode(',', $params['ids']), 'is_numeric');
+            $entriesIds = array_map(function($item) {
+                return trim($item);
+            }, explode(',', $params['ids']));
             if (count($entriesIds) > 0) {
                 $query->whereIn($this->primaryKeyFieldName, $entriesIds);
             }
