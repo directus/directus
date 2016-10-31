@@ -178,7 +178,7 @@ class TableSchema
         $tableColumnsSchema = static::getSchemaArray($tableName);
         $column = null;
 
-        foreach ($tableColumnsSchema as $columnSchema) {
+        foreach ($tableColumnsSchema->getColumns() as $columnSchema) {
             if ($columnName === $columnSchema['id']) {
                 $column = $columnSchema;
                 break;
@@ -186,6 +186,41 @@ class TableSchema
         }
 
         return $column;
+    }
+
+    /**
+     * Gets tehe column relationship type
+     *
+     * @param $tableName
+     * @param $columnName
+     *
+     * @return null|string
+     */
+    public static function getColumnRelationshipType($tableName, $columnName)
+    {
+        $relationship = static::getColumnRelationship($tableName, $columnName);
+
+        $relationshipType = null;
+        if ($relationship) {
+            $relationshipType = $relationship->getType();
+        }
+
+        return $relationshipType;
+    }
+
+    /**
+     * Gets Column's relationship
+     *
+     * @param $tableName
+     * @param $columnName
+     *
+     * @return Object\ColumnRelationship|null
+     */
+    public static function getColumnRelationship($tableName, $columnName)
+    {
+        $column = static::getColumnSchemaArray($tableName, $columnName);
+
+        return $column->hasRelationship() ? $column->getRelationship() : null;
     }
 
     /**
