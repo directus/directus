@@ -2,9 +2,12 @@
 
 namespace Directus\Database\Query;
 
+use Directus\Database\Query\Relations\ManyToManyRelation;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\ResultSet\AbstractResultSet;
 use Zend\Db\ResultSet\ResultSet;
+use Zend\Db\Sql\Having;
+use Zend\Db\Sql\Predicate\Expression;
 use Zend\Db\Sql\Predicate\In;
 use Zend\Db\Sql\Predicate\IsNotNull;
 use Zend\Db\Sql\Predicate\IsNull;
@@ -62,6 +65,11 @@ class Builder
     protected $groupBys = null;
 
     /**
+     * @var null|array
+     */
+    protected $havings = null;
+
+    /**
      * Builder constructor.
      *
      * @param AdapterInterface $connection
@@ -109,6 +117,11 @@ class Builder
         return $this;
     }
 
+    /**
+     * Gets the from table value
+     *
+     * @return null|string
+     */
     public function getFrom()
     {
         return $this->from;
@@ -135,12 +148,12 @@ class Builder
      * Sets a "where in" condition
      *
      * @param $column
-     * @param array $values
+     * @param array|Builder $values
      * @param bool $not
      *
      * @return Builder
      */
-    public function whereIn($column, array $values, $not = false)
+    public function whereIn($column, $values, $not = false)
     {
         return $this->where($column, 'in', $values, $not);
     }
@@ -226,6 +239,18 @@ class Builder
     public function whereNotRLike($column, $value)
     {
         return $this->whereRLike($column, $value, true);
+    }
+
+    public function whereAll($column, $table, $columnLeft, $columnRight, $values)
+    {
+        $relation = new ManyToManyRelation($this, $table, $columnLeft, $columnRight);
+
+        $relation->columns([$columnLeft]);
+        $relation->whereIn($columnRight, $values);
+        $relation->groupBy($columnLeft);
+        $relation->having(new Expression('COUNT(*) = ?', count($values)));
+
+        return $this->whereIn($column, $relation);
     }
 
     /**
@@ -371,6 +396,32 @@ class Builder
     }
 
     /**
+     * Sets having
+     *
+     * @param $column
+     * @param $operator
+     * @param $value
+     *
+     * @return $this
+     */
+    public function having($column, $operator = null, $value = null)
+    {
+        $this->havings[] = compact('column', 'operator', 'value');
+
+        return $this;
+    }
+
+    /**
+     * Gets havings
+     *
+     * @return array|null
+     */
+    public function getHavings()
+    {
+        return $this->havings;
+    }
+
+    /**
      * Build the Select Object
      *
      * @return \Zend\Db\Sql\Select
@@ -397,6 +448,23 @@ class Builder
             $select->group($this->groupBys);
         }
 
+        if ($this->getHavings() !== null) {
+            foreach ($this->getHavings() as $having) {
+                if ($having['column'] instanceof Expression) {
+                    $expression = $having['column'];
+                    $callback = function(Having $having) use ($expression) {
+                        $having->addPredicate($expression);
+                    };
+                } else {
+                    $callback = function(Having $havingObject) use ($having) {
+                        $havingObject->addPredicate(new Operator($having['column'], $having['operator'], $having['value']));
+                    };
+                }
+
+                $select->having($callback);
+            }
+        }
+
         return $select;
     }
 
@@ -419,6 +487,19 @@ class Builder
         return $resultSet;
     }
 
+    /**
+     * Gets the query string
+     *
+     * @return string
+     */
+    public function getSql()
+    {
+        $sql = $this->getSqlObject();
+        $select = $this->buildSelect();
+
+        return $sql->getSqlStringForSqlObject($select, $this->connection->getPlatform());
+    }
+
     protected function buildOrders()
     {
         $orders = [];
@@ -435,6 +516,10 @@ class Builder
         $operator = ($not === true ? 'n' : '') . $condition['operator'];
         $column = $condition['column'];
         $value = $condition['value'];
+
+        if ($value instanceof Builder) {
+            $value = $value->buildSelect();
+        }
 
         switch($operator) {
             case 'in':

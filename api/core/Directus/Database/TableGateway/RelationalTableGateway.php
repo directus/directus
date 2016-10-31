@@ -731,9 +731,26 @@ class RelationalTableGateway extends BaseTableGateway
 
             $operator = StringUtils::underscoreToCamelCase(strtolower($operator), true);
             $method = 'where' . ($not === true ? 'Not' : '') . $operator;
-            if (method_exists($query, $method)) {
-                call_user_func_array([$query, $method], [$column, $value]);
+            if (!method_exists($query, $method)) {
+                continue;
             }
+
+            $arguments = [$column, $value];
+            $relationship = TableSchema::getColumnRelationship($this->getTable(), $column);
+            $relationshipType = $relationship->getType();
+            if ($relationship) {
+                if ($relationshipType == 'MANYTOMANY') {
+                    $arguments = [
+                        $this->primaryKeyFieldName,
+                        $relationship->getJunctionTable(),
+                        $relationship->getJunctionKeyLeft(),
+                        $relationship->getJunctionKeyRight(),
+                        $value
+                    ];
+                }
+            }
+
+            call_user_func_array([$query, $method], $arguments);
         }
     }
 
