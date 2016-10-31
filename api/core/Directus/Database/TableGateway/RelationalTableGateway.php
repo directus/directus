@@ -824,7 +824,11 @@ class RelationalTableGateway extends BaseTableGateway
             $statuses = is_array($params['status']) ? $params['status'] : array_map(function($item) {
                 return trim($item);
             }, explode(',', $params['status']));
-            $query->whereIn(STATUS_COLUMN_NAME, $statuses);
+
+            $statuses = array_filter($statuses);
+            if ($statuses) {
+                $query->whereIn(STATUS_COLUMN_NAME, $statuses);
+            }
         }
 
         if (ArrayUtils::has($params, 'adv_where') && is_array($params['adv_where'])) {
