@@ -35,7 +35,7 @@ class RelationalTableGateway extends BaseTableGateway
         'offset' => 0,
         'skip' => null,
         'search' => null,
-        'status' => null
+        'status' => STATUS_ACTIVE_NUM
     ];
 
     protected $operatorShorthand = [
