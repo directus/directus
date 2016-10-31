@@ -630,6 +630,11 @@ class RelationalTableGateway extends BaseTableGateway
         // Table has `status` column?
         $hasActiveColumn = $schemaArray->hasStatusColumn();//$this->schemaHasActiveColumn($schemaArray);
 
+        // when preview is passed was true, it means returns everything! active, draft and soft-delete.
+        if (ArrayUtils::has($params, 'preview') && ArrayUtils::get($params, 'preview', false) === true) {
+            $params['status'] = null;
+        }
+
         $params = $this->applyDefaultEntriesSelectParams($params);
         // @TODO: Create a new TableGateway Query Builder based on Query\Builder
         $builder = new Builder($this->getAdapter());
