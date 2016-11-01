@@ -257,6 +257,7 @@ class RelationalTableGateway extends BaseTableGateway
 
         // Yield record object
         $recordGateway = new BaseRowGateway($TableGateway->primaryKeyFieldName, $tableName, $this->adapter, $this->acl);
+        $fullRecordData = $this->schema->castRecordValues($fullRecordData, $schemaArray->getColumns());
         $recordGateway->populate($fullRecordData, true);
 
         return $recordGateway;
