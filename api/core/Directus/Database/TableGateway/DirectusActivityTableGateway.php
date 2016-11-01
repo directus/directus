@@ -13,7 +13,6 @@ use Zend\Db\Sql\Where;
 
 class DirectusActivityTableGateway extends RelationalTableGateway
 {
-
     // Populates directus_activity.type
     const TYPE_ENTRY = 'ENTRY';
     const TYPE_FILES = 'FILES';
@@ -45,20 +44,9 @@ class DirectusActivityTableGateway extends RelationalTableGateway
         }
     }
 
-    public function __construct(Acl $acl, AdapterInterface $adapter)
+    public function __construct(AdapterInterface $adapter, $acl)
     {
-        parent::__construct($acl, self::$_tableName, $adapter);
-
-        self::$defaultEntriesSelectParams = [
-            'orderBy' => 'id', // @todo validate $params['order*']
-            'orderDirection' => 'DESC',
-            'fields' => '*',
-            //'perPage' => null,
-            //'currentPage' => 0,
-            'id' => -1,
-            'search' => null,
-            'status' => null
-        ];
+        parent::__construct(self::$_tableName, $adapter, $acl);
     }
 
     public function fetchFeed($params = null)

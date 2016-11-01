@@ -286,20 +286,18 @@ class TableSchema
         return $columns;
     }
 
-    public static function getAllAliasTableColumns($table, $onlyNames = false)
+    public static function getAllAliasTableColumns($tableName, $onlyNames = false)
     {
         $columns = [];
-        $schemaArray = self::loadSchema($table);
+        $schemaArray = static::getSchemaManagerInstance()->getColumns($tableName);
+        if (false === $schemaArray) {
+            return false;
+        }
+
         foreach ($schemaArray as $column) {
             if (!$column->isAlias()) {
-                continue;
+                $columns[] = $onlyNames === true ? $column->getName() : $column;
             }
-
-            if ($onlyNames) {
-                $column = $column['column_name'];
-            }
-
-            $columns[] = $column;
         }
 
         return $columns;

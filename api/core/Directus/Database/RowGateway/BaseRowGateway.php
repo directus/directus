@@ -106,7 +106,7 @@ class BaseRowGateway extends RowGateway
      *
      * @return string
      */
-    public static function stringifyPrimaryKeyForRecordDebugRepresentation(array $primaryKeyData)
+    public static function stringifyPrimaryKeyForRecordDebugRepresentation($primaryKeyData)
     {
         if (null === $primaryKeyData) {
             return 'null primary key';

@@ -244,7 +244,7 @@ class RelationalTableGateway extends BaseTableGateway
                     $parentLogEntry->populate($logData, false);
                     $parentLogEntry->save();
                     // Update & insert nested activity entries
-                    $ActivityGateway = new DirectusActivityTableGateway($this->acl, $this->adapter);
+                    $ActivityGateway = new DirectusActivityTableGateway($this->adapter, $this->acl);
                     foreach ($nestedLogEntries as $entry) {
                         $entry['parent_id'] = $rowId;
                         // @todo ought to insert these in one batch

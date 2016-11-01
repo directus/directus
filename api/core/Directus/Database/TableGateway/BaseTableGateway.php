@@ -86,12 +86,19 @@ class BaseTableGateway extends TableGateway
         $this->acl = $acl;
         // @NOTE: This will be substituted by a new Cache wrapper class
         // $this->memcache = new MemcacheProvider();
+        if ($features === null) {
+            $features = new Feature\FeatureSet();
+        } else if ($features instanceof Feature\AbstractFeature) {
+            $features = [$features];
+        } else if (is_array($features)) {
+            $features = new Feature\FeatureSet($features);
+        }
+
         $rowGatewayPrototype = new BaseRowGateway($this->primaryKeyFieldName, $table, $adapter, $this->acl);
+        $rowGatewayFeature = new RowGatewayFeature($rowGatewayPrototype);
+        $features->addFeature($rowGatewayFeature);
 
         parent::__construct($table, $adapter, $features, $resultSetPrototype, $sql);
-
-        $rowGatewayFeature = new RowGatewayFeature($rowGatewayPrototype);
-        $this->featureSet->addFeature($rowGatewayFeature);
 
         // @TODO: Make this dynamic to support the different databases.
         $this->schema = new SchemaManager(new MySQLSchema($this->adapter));
@@ -224,12 +231,15 @@ class BaseTableGateway extends TableGateway
             $select->limit(1);
             $select->where->equalTo($field, $value);
         });
+
         $row = $rowset->current();
         // Supposing this "one" doesn't exist in the DB
         if (false === $row) {
             return false;
         }
+
         $row = $row->toArray();
+
         return $row;
     }
 
@@ -257,7 +267,7 @@ class BaseTableGateway extends TableGateway
         }
 
         $columns = TableSchema::getAllNonAliasTableColumns($tableName);
-        $recordData = SchemaManager::parseRecordValuesByType($recordData, $columns);
+        $recordData = $this->schema->castRecordValues($recordData, $columns);
 
         $TableGateway = new self($tableName, $this->adapter);
         $rowExists = isset($recordData[$TableGateway->primaryKeyFieldName]);
@@ -273,7 +283,7 @@ class BaseTableGateway extends TableGateway
             $payload->tableName = $tableName;
             $payload->data = $recordData;
             $d = $this->applyHook('table.insert:before', $payload);
-            $TableGateway->insert($d);
+            $TableGateway->insert($d->data);
             $recordData[$TableGateway->primaryKeyFieldName] = $TableGateway->getLastInsertValue();
 
             if ($tableName == 'directus_files') {
@@ -559,7 +569,7 @@ class BaseTableGateway extends TableGateway
             $this->runHook('table.insert.' . $insertTable . ':before', [$insertDataAssoc]);
 
             $result = parent::executeInsert($insert);
-            $insertTableGateway = new self($this->acl, $insertTable, $this->adapter);
+            $insertTableGateway = new self($insertTable, $this->adapter, $this->acl);
             $resultData = $insertTableGateway->find($this->getLastInsertValue());
 
             $this->runHook('table.insert', [$insertTable, $resultData]);
