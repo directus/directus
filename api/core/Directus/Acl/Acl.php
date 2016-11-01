@@ -166,7 +166,7 @@ class Acl
     {
         if (!$this->canAdd($tableName)) {
             $aclErrorPrefix = $this->getErrorMessagePrefix();
-            throw new Exception\UnauthorizedTableAddException($aclErrorPrefix . 'Table add access forbidden on table ' . $tableName);
+            throw new Exception\UnauthorizedTableAddException($aclErrorPrefix . 'Table add access forbidden on table ' . $insertTable);
         }
     }
 
@@ -174,7 +174,7 @@ class Acl
     {
         if (!$this->canAlter($tableName)) {
             $aclErrorPrefix = $this->getErrorMessagePrefix();
-            throw new Exception\UnauthorizedTableAlterException($aclErrorPrefix . 'Table alter access forbidden on table ' . $tableName);
+            throw new Exception\UnauthorizedTableAddException($aclErrorPrefix . 'Table alter access forbidden on table ' . $tableName);
         }
     }
 
@@ -246,6 +246,11 @@ class Acl
         }
         $privilegeList = self::$base_acl[$list];
         $groupHasTablePrivileges = array_key_exists($table, $this->groupPrivileges);
+        if (!$groupHasTablePrivileges && array_key_exists('*', $this->groupPrivileges)) {
+            $groupHasTablePrivileges = true;
+            $table = '*';
+        }
+
         // @TODO: remove permissions.
         if ($list === 'permissions') {
             $permissionFields = array_merge(self::$base_acl[self::TABLE_PERMISSIONS], [
@@ -257,6 +262,8 @@ class Acl
 
             if ($groupHasTablePrivileges) {
                 $privilegeList = array_intersect_key($this->groupPrivileges[$table], array_flip($permissionFields));
+            } else if (array_key_exists('*', $this->groupPrivileges)) {
+                return $this->getTablePrivilegeList('*', self::TABLE_PERMISSIONS);
             } else {
                 $privilegeList = [];
                 foreach ($permissionFields as $permission) {
