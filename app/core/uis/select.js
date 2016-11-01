@@ -43,7 +43,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'],function(app, UIComp
 
         item.value = value;
         item.key = key;
-        item.selected = (item.key === selectedValue);
+        item.selected = (item.key == selectedValue);
 
         return item;
       });
