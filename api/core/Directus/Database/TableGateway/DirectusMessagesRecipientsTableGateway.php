@@ -13,7 +13,7 @@ class DirectusMessagesRecipientsTableGateway extends BaseTableGateway
 {
     public static $_tableName = 'directus_messages_recipients';
 
-    public function __construct(AdapterInterface $adapter, Acl $acl)
+    public function __construct(AdapterInterface $adapter, $acl = null)
     {
         parent::__construct(self::$_tableName, $adapter, $acl);
     }
@@ -108,8 +108,9 @@ class DirectusMessagesRecipientsTableGateway extends BaseTableGateway
             $result = $this->selectWith($select)->toArray();
             return $result;
         };
-        $cacheKey = MemcacheProvider::getKeyDirectusMessagesNewerThan($maxId, $currentUser);
-        $result = $this->memcache->getOrCache($cacheKey, $fetchFn, 1800);
+        // $cacheKey = MemcacheProvider::getKeyDirectusMessagesNewerThan($maxId, $currentUser);
+        // $result = $this->memcache->getOrCache($cacheKey, $fetchFn, 1800);
+        $result = $fetchFn();
 
         $messageThreads = [];
 

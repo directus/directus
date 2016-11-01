@@ -208,9 +208,10 @@ class DirectusMessagesTableGateway extends BaseTableGateway
 
     public function fetchMessagesInboxWithHeaders($uid, $messageIds = null)
     {
-        $messagesRecipientsTableGateway = new DirectusMessagesRecipientsTableGateway($this->acl, $this->adapter);
+        $messagesRecipientsTableGateway = new DirectusMessagesRecipientsTableGateway($this->adapter, $this->acl);
         $result = $messagesRecipientsTableGateway->countMessages($uid);
         $result['rows'] = $this->fetchMessagesInbox($uid, $messageIds);
+
         return $result;
     }
 
