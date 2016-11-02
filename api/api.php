@@ -279,7 +279,11 @@ if (Auth::loggedIn()) {
 // @TODO: Use the Slim request instead of the global php $_GET
 $params = $app->request->get();
 // @TODO: Use the post method instead of parsing the body ourselves.
-$requestPayload = $app->request->post();
+if ($app->request->getContentType() === 'application/json') {
+    $requestPayload = json_decode($app->request->getBody(), true);
+} else {
+    $requestPayload = $app->request->post();
+}
 
 $endpoints = Bootstrap::getCustomEndpoints();
 foreach ($endpoints as $endpoint) {
