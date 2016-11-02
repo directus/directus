@@ -275,8 +275,11 @@ if (Auth::loggedIn()) {
  * Request Payload
  */
 
-$params = $_GET;
-$requestPayload = json_decode($app->request()->getBody(), true);
+// @TODO: Do not use PARAMS or PAYLOAD as global variable
+// @TODO: Use the Slim request instead of the global php $_GET
+$params = $app->request->get();
+// @TODO: Use the post method instead of parsing the body ourselves.
+$requestPayload = $app->request->post();
 
 $endpoints = Bootstrap::getCustomEndpoints();
 foreach ($endpoints as $endpoint) {
