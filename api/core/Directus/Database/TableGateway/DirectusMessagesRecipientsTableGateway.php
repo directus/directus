@@ -63,8 +63,9 @@ class DirectusMessagesRecipientsTableGateway extends BaseTableGateway
             $result = $this->selectWith($select)->toArray();
             return $result;
         };
-        $cacheKey = MemcacheProvider::getKeyDirectusCountMessages($uid);
-        $result = $this->memcache->getOrCache($cacheKey, $fetchFn, 1800);
+        //$cacheKey = MemcacheProvider::getKeyDirectusCountMessages($uid);
+        //$result = $this->memcache->getOrCache($cacheKey, $fetchFn, 1800);
+        $result = $fetchFn();
 
         $count = [
             'read' => 0,
