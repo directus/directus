@@ -11,6 +11,7 @@
 namespace Directus\Database\Schemas\Sources;
 
 use Directus\Bootstrap;
+use Directus\Database\Object\Column;
 use Directus\Util\ArrayUtils;
 use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Predicate\In;
@@ -112,7 +113,9 @@ class MySQLSchema extends AbstractSchema
      */
     public function hasTable($tableName)
     {
-        return $this->getTable($tableName) ? true : false;
+        $result = $this->getTable($tableName);
+
+        return $result->count() ? true : false;
     }
 
     /**
@@ -140,7 +143,7 @@ class MySQLSchema extends AbstractSchema
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
 
-        return $result->count();
+        return $result->count() ? true : false;
     }
 
     /**
@@ -234,6 +237,7 @@ class MySQLSchema extends AbstractSchema
         $where
             ->equalTo('C.TABLE_SCHEMA', $this->adapter->getCurrentSchema())
             ->equalTo('C.TABLE_NAME', $tableName)
+            // @note: what does did do?
             ->nest()
             ->addPredicate(new \Zend\Db\Sql\Predicate\Expression('"'. $columnName . '" = -1'))
             ->OR
@@ -298,10 +302,14 @@ class MySQLSchema extends AbstractSchema
         return $result;
     }
 
+    /**
+     * @inheritDoc
+     */
     public function getAllColumns()
     {
         $selectOne = new Select();
         $selectOne->columns([
+            'id' => 'COLUMN_NAME',
             'column_name' => 'COLUMN_NAME',
             'sort' => new Expression('IFNULL(sort, ORDINAL_POSITION)'),
             'type' => new Expression('UCASE(C.DATA_TYPE)'),
@@ -346,6 +354,7 @@ class MySQLSchema extends AbstractSchema
 
         $selectTwo = new Select();
         $selectTwo->columns([
+            'id' => 'column_name',
             'column_name',
             'sort',
             'type' => new Expression('UCASE(data_type)'),
@@ -430,6 +439,7 @@ class MySQLSchema extends AbstractSchema
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
 
+        // @TODO: Primary key can be more than one.
         $column = $result->current();
         if ($column) {
             $columnName = $column['column_name'];
@@ -449,9 +459,30 @@ class MySQLSchema extends AbstractSchema
     /**
      * @inheritDoc
      */
-    public function getUIOptions($tableName, $columnName)
+    public function getUIOptions(Column $column)
     {
-        // TODO: Implement getUIOptions() method.
+        $select = new Select();
+        $select->columns([
+            'id' => 'ui_name',
+            'name',
+            'value'
+        ]);
+
+        $select->from('directus_ui');
+
+        $select->where([
+            'column_name' => $column->getName(),
+            'table_name' => $column->getTableName(),
+            'ui_name' => $column->getUI()
+        ]);
+
+        $select->order('ui_name');
+
+        $sql = new Sql($this->getConnection());
+        $statement = $sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+
+        return $result;
     }
 
     /**

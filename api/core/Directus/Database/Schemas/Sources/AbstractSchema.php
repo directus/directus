@@ -67,7 +67,7 @@ abstract class AbstractSchema implements SchemaInterface
             foreach ($records as $index => $record) {
                 $col = $column->getId();
                 if (array_key_exists($col, $record)) {
-                    $records[$index][$col] = $this->parseType($record[$col], $column->getType());
+                    $records[$index][$col] = $this->castValue($record[$col], $column->getType());
                 }
             }
         }
@@ -88,5 +88,49 @@ abstract class AbstractSchema implements SchemaInterface
     public function parseRecordValuesByType(array $records, $columns)
     {
         return $this->castRecordValues($records, $columns);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getColumnDefaultUI($columnType)
+    {
+        switch ($columnType) {
+            case 'ALIAS':
+                return 'alias';
+            case 'MANYTOMANY':
+            case 'ONETOMANY':
+                return 'relational';
+            case 'TINYINT':
+                return 'checkbox';
+            case 'MEDIUMBLOB':
+            case 'BLOB':
+                return 'blob';
+            case 'TEXT':
+            case 'LONGTEXT':
+                return 'textarea';
+            case 'CHAR':
+            case 'VARCHAR':
+            case 'POINT':
+                return 'textinput';
+            case 'DATETIME':
+            case 'TIMESTAMP':
+                return 'datetime';
+            case 'DATE':
+                return 'date';
+            case 'TIME':
+                return 'time';
+            case 'YEAR':
+            case 'INT':
+            case 'BIGINT':
+            case 'SMALLINT':
+            case 'MEDIUMINT':
+            case 'FLOAT':
+            case 'DOUBLE':
+            case 'DECIMAL':
+                return 'numeric';
+        }
+
+        return 'textinput';
     }
 }
