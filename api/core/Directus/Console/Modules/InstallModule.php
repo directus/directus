@@ -130,7 +130,7 @@ class InstallModule extends ModuleBase
                     $data['directus_path'] = $value;
                     break;
                 case 'd':
-                    $directus_path = $value;
+                    $directus_path = $directus_path . $value;
                     break;
             }
         }
