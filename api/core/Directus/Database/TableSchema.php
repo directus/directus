@@ -4,6 +4,7 @@ namespace Directus\Database;
 
 use Directus\Auth\Provider as Auth;
 use Directus\Bootstrap;
+use Directus\Database\Object\Column;
 use Directus\Database\TableGateway\DirectusPreferencesTableGateway;
 use Directus\Database\TableGateway\DirectusUiTableGateway;
 use Directus\Database\TableGateway\RelationalTableGateway;
@@ -388,7 +389,7 @@ class TableSchema
     {
         $acl = Bootstrap::get('acl');
         $zendDb = Bootstrap::get('ZendDb');
-        $Preferences = new DirectusPreferencesTableGateway($acl, $zendDb);
+        $Preferences = new DirectusPreferencesTableGateway($zendDb, $acl);
         $getTablesFn = function () use ($Preferences, $zendDb) {
             $return = [];
             $schemaName = $zendDb->getCurrentSchema();
@@ -453,27 +454,27 @@ class TableSchema
             return false;
         }
 
-        $info = SchemaManager::getTable($tbl_name);
+        $info = static::getSchemaManagerInstance()->getTableSchema($tbl_name);
 
         if (!$info) {
             return false;
         }
 
         if ($info) {
-            $info['count'] = (int)$info['count'];
+            $info['row_count'] = (int)$info['row_count'];
             $info['date_created'] = DateUtils::convertToISOFormat($info['date_created'], 'UTC', get_user_timezone());
             $info['hidden'] = (boolean)$info['hidden'];
             $info['single'] = (boolean)$info['single'];
             $info['footer'] = (boolean)$info['footer'];
         }
 
-        $relationalTableGateway = new RelationalTableGateway($acl, $tbl_name, $zendDb);
-        $info = array_merge($info, $relationalTableGateway->countActiveOld());
+        $relationalTableGateway = new RelationalTableGateway($tbl_name, $zendDb, $acl);
+        $info = array_merge($info->toArray(), $relationalTableGateway->countActiveOld());
 
-        $info['columns'] = self::getSchemaArray($tbl_name);
-        $directusPreferencesTableGateway = new DirectusPreferencesTableGateway($acl, $zendDb);
-        $currentUser = Auth::getUserInfo();
-        $info['preferences'] = $directusPreferencesTableGateway->fetchByUserAndTable($currentUser['id'], $tbl_name);
+        //$info['columns'] = self::getSchemaArray($tbl_name);
+        $directusPreferencesTableGateway = new DirectusPreferencesTableGateway($zendDb, $acl);
+        $currentUserId = static::getAclInstance()->getUserId();
+        $info['preferences'] = $directusPreferencesTableGateway->fetchByUserAndTable($currentUserId, $tbl_name);
 
         return $info;
     }
@@ -626,24 +627,30 @@ class TableSchema
         $cacheKey = MemcacheProvider::getKeyDirectusGroupSchema($userGroupId, $versionHash);
         $acl = Bootstrap::get('acl');
         $ZendDb = Bootstrap::get('ZendDb');
-        $directusPreferencesTableGateway = new DirectusPreferencesTableGateway($acl, $ZendDb);
+        $auth = Bootstrap::get('auth');
+        $directusPreferencesTableGateway = new DirectusPreferencesTableGateway($ZendDb, $acl);
 
-        $getPreferencesFn = function () use ($directusPreferencesTableGateway) {
-            $currentUser = Auth::getUserInfo();
+        $getPreferencesFn = function () use ($directusPreferencesTableGateway, $auth) {
+            $currentUser = $auth->getUserInfo();
             $preferences = $directusPreferencesTableGateway->fetchAllByUser($currentUser['id']);
             return $preferences;
         };
 
         $getSchemasFn = function () {
             $tableSchemas = TableSchema::getTablesSchema();
-            $columnSchemas = TableSchema::getColumnSchemas();
+            $columnSchemas = TableSchema::getColumnsSchema();
             // Nest column schemas in table schemas
             foreach ($tableSchemas as &$table) {
+                $table = $table->toArray();
                 $tableName = $table['id'];
-                $table['columns'] = array_values($columnSchemas[$tableName]);
+                $table['columns'] = array_map(function(Column $column) {
+                    return $column->toArray();
+                }, array_values($columnSchemas[$tableName]));
+
                 foreach ($columnSchemas[$tableName] as $column) {
-                    if ($column['column_key'] == 'PRI') {
-                        $table['primary_column'] = $column['column_name'];
+                    // @TODO: there's can be more than one column
+                    if ($column->getColumnKey() == 'PRI') {
+                        $table['primary_column'] = $column->getName();
                         break;
                     }
                 }
@@ -656,7 +663,8 @@ class TableSchema
         };
 
         // 3 hr cache
-        $schemas = $directusPreferencesTableGateway->memcache->getOrCache($cacheKey, $getSchemasFn, 10800);
+        // $schemas = $directusPreferencesTableGateway->memcache->getOrCache($cacheKey, $getSchemasFn, 10800);
+        $schemas = $getSchemasFn();
 
         // Append preferences post cache
         $preferences = $getPreferencesFn();
@@ -720,7 +728,7 @@ class TableSchema
                 continue;
             }
 
-            $columns[] = $column;
+            $columns[$tableName][] = $column;
         }
 
         return $columns;
@@ -765,7 +773,7 @@ class TableSchema
         }
 
         // UI's
-        $directusUiTableGateway = new DirectusUiTableGateway($acl, $zendDb);
+        $directusUiTableGateway = new DirectusUiTableGateway($zendDb, $acl);
         $uis = $directusUiTableGateway->fetchExisting()->toArray();
 
         foreach ($uis as $ui) {

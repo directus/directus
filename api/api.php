@@ -887,6 +887,7 @@ $app->map("/$v/tables/:table/columns/?", function ($table_name) use ($ZendDb, $p
     }
 
     $response = TableSchema::getSchemaArray($table_name, $params);
+
     JsonView::render($response->getColumns());
 })->via('GET', 'POST');
 

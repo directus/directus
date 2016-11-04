@@ -10,7 +10,9 @@
 
 namespace Directus\Database\Object;
 
+use Directus\Collection\Arrayable;
 use Directus\Util\Traits\ArrayPropertyAccess;
+use Directus\Util\Traits\ArrayPropertyToArray;
 use Directus\Util\Traits\ArraySetter;
 
 /**
@@ -20,9 +22,9 @@ use Directus\Util\Traits\ArraySetter;
  *
  * @author Welling Guzmán <welling@rngr.org>
  */
-class Table implements \ArrayAccess
+class Table implements \ArrayAccess, Arrayable
 {
-    use ArraySetter, ArrayPropertyAccess;
+    use ArraySetter, ArrayPropertyAccess, ArrayPropertyToArray;
 
     /**
      * Table Identification name
@@ -108,6 +110,7 @@ class Table implements \ArrayAccess
      * @var string
      */
     protected $createdAt;
+    protected $dateCreated;
 
     /**
      * Table comment
@@ -277,6 +280,18 @@ class Table implements \ArrayAccess
     public function getColumns()
     {
         return $this->columns;
+    }
+
+    /**
+     * Get all columns data as array
+     *
+     * @return array
+     */
+    public function getColumnsArray()
+    {
+        return array_map(function(Column $column) {
+            return $column->toArray();
+        }, $this->getColumns());
     }
 
     /**
@@ -749,5 +764,18 @@ class Table implements \ArrayAccess
     public function getFilterColumnBlacklist()
     {
         return $this->filterColumnBlacklist;
+    }
+
+    public function toArray()
+    {
+        $array = $this->propertyArray();
+        $columns = [];
+        foreach($array['columns'] as $column) {
+            $columns[] = $column->toArray();
+        }
+
+        $array['columns'] = $columns;
+
+        return $array;
     }
 }

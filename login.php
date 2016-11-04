@@ -16,11 +16,12 @@ use Directus\Bootstrap;
 require "api/config.php";
 require "api/globals.php";
 
+$authentication = Bootstrap::get('auth');
 $emitter = Bootstrap::get('hookEmitter');
 $emitter->run('directus.login.start');
 
 // Temporary solution for disabling this page for logged in users.
-if (\Directus\Auth\Provider::loggedIn()) {
+if ($authentication->loggedIn()) {
     header('Location: ' . DIRECTUS_PATH);
     exit;
 }

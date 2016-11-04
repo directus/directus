@@ -10,6 +10,8 @@
 
 namespace Directus\Database\Object;
 
+use Directus\Collection\Arrayable;
+use Directus\Util\Traits\ArrayPropertyToArray;
 use Directus\Util\Traits\ArraySetter;
 use Directus\Util\Traits\ArrayPropertyAccess;
 
@@ -21,9 +23,9 @@ use Directus\Util\Traits\ArrayPropertyAccess;
  * @author Welling Guzmán <welling@rngr.org>
  */
 
-class Column implements \ArrayAccess
+class Column implements \ArrayAccess, Arrayable, \JsonSerializable
 {
-    use ArraySetter, ArrayPropertyAccess;
+    use ArraySetter, ArrayPropertyAccess, ArrayPropertyToArray;
 
     const ALIAS = 'ALIAS';
     const ONE_TO_MANY = 'ONETOMANY';
@@ -77,6 +79,11 @@ class Column implements \ArrayAccess
      * @var boolean
      */
     protected $nullable;
+
+    /**
+     * @var string
+     */
+    protected $columnKey;
 
     /**
      * @var array
@@ -151,6 +158,7 @@ class Column implements \ArrayAccess
             'type',
             'default_value',
             'nullable',
+            'column_key',
             'options',
             'required',
             'ui',
@@ -443,6 +451,50 @@ class Column implements \ArrayAccess
     }
 
     /**
+     * Sets the column key
+     *
+     * @param $key
+     *
+     * @return $this
+     */
+    public function setColumnKey($key)
+    {
+        $this->columnKey = $key;
+
+        return $this;
+    }
+
+    /**
+     * Gets the column key
+     *
+     * @return string
+     */
+    public function getColumnKey()
+    {
+        return $this->columnKey;
+    }
+
+    /**
+     * Checks whether is the column a primary key
+     *
+     * @return bool
+     */
+    public function isPrimary()
+    {
+        return strtoupper($this->columnKey) === 'PRI';
+    }
+
+    /**
+     * Checks whether is the column unique
+     *
+     * @return bool
+     */
+    public function isUnique()
+    {
+        return strtoupper($this->columnKey) === 'UNI';
+    }
+
+    /**
      * Set whether the column is required or not
      *
      * @param $required
@@ -675,5 +727,18 @@ class Column implements \ArrayAccess
         }
 
         return $isLegacyAliasType || $isAliasType;
+    }
+
+    public function toArray()
+    {
+        return $this->propertyArray();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    function jsonSerialize()
+    {
+        return $this->toArray();
     }
 }

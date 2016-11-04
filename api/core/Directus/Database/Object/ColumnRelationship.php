@@ -10,7 +10,9 @@
 
 namespace Directus\Database\Object;
 
+use Directus\Collection\Arrayable;
 use Directus\Util\Traits\ArrayPropertyAccess;
+use Directus\Util\Traits\ArrayPropertyToArray;
 use Directus\Util\Traits\ArraySetter;
 
 /**
@@ -18,9 +20,9 @@ use Directus\Util\Traits\ArraySetter;
  *
  * @author Welling Guzmán <welling@rngr.org>
  */
-class ColumnRelationship implements \ArrayAccess
+class ColumnRelationship implements \ArrayAccess, Arrayable
 {
-    use ArraySetter, ArrayPropertyAccess;
+    use ArraySetter, ArrayPropertyAccess, ArrayPropertyToArray;
 
     /**
      * @var string
@@ -193,5 +195,10 @@ class ColumnRelationship implements \ArrayAccess
     public function getJunctionKeyRight()
     {
         return $this->junctionKeyRight;
+    }
+
+    public function toArray()
+    {
+        return $this->propertyArray();
     }
 }

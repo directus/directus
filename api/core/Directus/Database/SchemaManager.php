@@ -25,18 +25,16 @@ use Zend\Db\Sql\Sql;
 /**
  * Schema Manager
  *
- * This class will replace TableSchema
- *
  * @author Welling Guzmán <welling@rngr.org>
  */
 class SchemaManager
 {
     /**
-     * Schema object instance
+     * Schema source instance
      *
      * @var \Directus\Database\Schemas\Sources\SchemaInterface
      */
-    protected $schema;
+    protected $source;
 
     /**
      * Schema data information
@@ -67,15 +65,16 @@ class SchemaManager
         'users'
     ];
 
-    public function __construct(SchemaInterface $schema)
+    public function __construct(SchemaInterface $source)
     {
-        $this->schema = $schema;
+        $this->source = $source;
     }
 
     /**
      * Create a new table
      *
      * @param string $name
+     *
      * @return void
      */
     public function createTable($name)
@@ -115,12 +114,12 @@ class SchemaManager
         $tableSchema = ArrayUtils::get($this->data, 'tables.' . $tableName, null);
         if (!$tableSchema) {
             // Get the table schema data from the source
-            $tableResult = $this->schema->getTable($tableName);
+            $tableResult = $this->source->getTable($tableName);
             $tableData = $tableResult->current();
 
             // Create a table object based of the table schema data
             $tableSchema = $this->createTableObjectFromArray(array_merge($tableData, [
-                'schema' => $this->schema->getSchemaName()
+                'schema' => $this->source->getSchemaName()
             ]));
             $this->addTable($tableName, $tableSchema);
         }
@@ -177,7 +176,7 @@ class SchemaManager
      */
     public function tableExists($tableName)
     {
-        return $this->schema->tableExists($tableName);
+        return $this->source->tableExists($tableName);
     }
 
     /**
@@ -188,7 +187,7 @@ class SchemaManager
      */
     public function someTableExists(array $tablesName)
     {
-        return $this->schema->someTableExists($tablesName);
+        return $this->source->someTableExists($tablesName);
     }
 
     /**
@@ -207,13 +206,13 @@ class SchemaManager
         // $ignoredTables = static::getDirectusTables(DirectusPreferencesTableGateway::$IGNORED_TABLES);
         // $blacklistedTable = $config['tableBlacklist'];
         // array_merge($ignoredTables, $blacklistedTable)
-        $allTables = $this->schema->getTables($params);
+        $allTables = $this->source->getTables($params);
 
         $tables = [];
         foreach($allTables as $tableData) {
             // Create a table object based of the table schema data
             $tableSchema = $this->createTableObjectFromArray(array_merge($tableData, [
-                'schema' => $this->schema->getSchemaName()
+                'schema' => $this->source->getSchemaName()
             ]));
             $tableName = $tableSchema->getName();
             $this->addTable($tableName, $tableSchema);
@@ -226,7 +225,7 @@ class SchemaManager
 
     public function getTablesName()
     {
-        $rows = $this->schema->getTablesName();
+        $rows = $this->source->getTablesName();
 
         $tables = [];
         foreach ($rows as $row) {
@@ -252,20 +251,10 @@ class SchemaManager
 
         $columnsSchema = ArrayUtils::get($this->data, 'columns.' . $tableName, null);
         if (!$columnsSchema) {
-            $columnsResult = $this->schema->getColumns($tableName, $params);
+            $columnsResult = $this->source->getColumns($tableName, $params);
             $columnsSchema = [];
             foreach($columnsResult as $column) {
-                $columnObject = new Column($column);
-                if (isset($column['related_table'])) {
-                    $columnObject->setRelationship([
-                        'type' => ArrayUtils::get($column, 'relationship_type'),
-                        'related_table' => ArrayUtils::get($column, 'related_table'),
-                        'junction_table' => ArrayUtils::get($column, 'junction_table'),
-                        'junction_key_right' => ArrayUtils::get($column, 'junction_key_right'),
-                        'junction_key_left' => ArrayUtils::get($column, 'junction_key_left'),
-                    ]);
-                }
-                $columnsSchema[] = $columnObject;
+                $columnsSchema[] = $this->createColumnObjectFromArray($column);
             }
 
             $this->data['columns'][$tableName] = $columnsSchema;
@@ -292,7 +281,7 @@ class SchemaManager
         $columnOptions = ArrayUtils::get($this->data, $columnOptionsKey, null);
 
         if (!$columnOptions) {
-            $columnOptions = $this->getUIOptions($tableName, $column->getName(), $column->getUI());
+            $columnOptions = $this->getUIOptions($column);
             if (!isset($this->data['options'][$tableName])) {
                 $this->data['options'][$tableName] = [];
             }
@@ -303,43 +292,25 @@ class SchemaManager
         return $columnOptions;
     }
 
-    public function getUIOptions($table, $column, $ui)
+    public function getUIOptions(Column $column)
     {
         $result = [];
         $item = [];
-        $zendDb = $this->schema->getConnection();
-        $select = new Select();
-        $select->columns([
-            'id' => 'ui_name',
-            'name',
-            'value'
-        ]);
-        $select->from('directus_ui');
-        $select->where([
-
-        ]);
-        $select->where([
-            'column_name' => $column,
-            'table_name' => $table,
-            'ui_name' => $ui
-        ]);
-        $select->order('ui_name');
-
-        $sql = new Sql($zendDb);
-        $statement = $sql->prepareStatementForSqlObject($select);
-        $rows = $statement->execute();
+        $rows = $this->source->getUIOptions($column);
 
         foreach ($rows as $row) {
-            //first case
+            // first case
             if (!isset($ui)) {
                 $item['id'] = $ui = $row['id'];
             }
-            //new ui = new item
+
+            // new ui = new item
             if ($ui != $row['id']) {
                 array_push($result, $item);
                 $item = [];
                 $item['id'] = $ui = $row['id'];
             }
+
             $item[$row['name']] = $row['value'];
         };
 
@@ -369,15 +340,15 @@ class SchemaManager
     /**
      * Get all the columns
      *
-     * @return array
+     * @return Column[]
      */
     public function getAllColumns()
     {
-        $allColumns = $this->schema->getAllColumns();
-        $columns = [];
+        $allColumns = $this->source->getAllColumns();
 
+        $columns = [];
         foreach($allColumns as $column) {
-            $columns[] = new Column($column);
+            $columns[] = $this->createColumnObjectFromArray($column);
         }
 
         return $columns;
@@ -405,12 +376,12 @@ class SchemaManager
 
     public function getPrimaryKey($tableName)
     {
-        return $this->schema->getPrimaryKey($tableName);
+        return $this->source->getPrimaryKey($tableName);
     }
 
     public function castRecordValues($records, $columns)
     {
-        return $this->schema->castRecordValues($records, $columns);
+        return $this->source->castRecordValues($records, $columns);
     }
 
     /**
@@ -449,7 +420,7 @@ class SchemaManager
      */
     public function getSchema()
     {
-        return $this->schema;
+        return $this->source;
     }
 
     /**
@@ -497,11 +468,36 @@ class SchemaManager
         return new Table($data);
     }
 
+    public function createColumnObjectFromArray($column)
+    {
+        if (!isset($column['ui'])) {
+            $column['ui'] = $this->getColumnDefaultUI($column['type']);
+        }
+
+        $columnObject = new Column($column);
+        if (isset($column['related_table'])) {
+            $columnObject->setRelationship([
+                'type' => ArrayUtils::get($column, 'relationship_type'),
+                'related_table' => ArrayUtils::get($column, 'related_table'),
+                'junction_table' => ArrayUtils::get($column, 'junction_table'),
+                'junction_key_right' => ArrayUtils::get($column, 'junction_key_right'),
+                'junction_key_left' => ArrayUtils::get($column, 'junction_key_left'),
+            ]);
+        }
+
+        return $columnObject;
+    }
+
     protected function addTable($name, $schema)
     {
         // save the column into the data
         // @NOTE: this is the early implementation of cache
         // soon this will be change to cache
         $this->data['tables'][$name] = $schema;
+    }
+
+    public function getColumnDefaultUI($type)
+    {
+        return $this->source->getColumnDefaultUI($type);
     }
 }

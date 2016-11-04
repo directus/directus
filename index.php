@@ -21,16 +21,17 @@ use Directus\Database\TableGateway\DirectusMessagesTableGateway;
 use Directus\Database\TableGateway\DirectusPrivilegesTableGateway;
 use Directus\Database\TableGateway\DirectusSettingsTableGateway;
 use Directus\Database\TableGateway\DirectusUsersTableGateway;
-use Directus\Database\TableGateway\RelationalTableGatewayWithConditions as TableGateway;
+use Directus\Database\TableGateway\RelationalTableGateway as TableGateway;
 use Directus\Database\TableSchema;
 
+$authentication = Bootstrap::get('auth');
 $emitter = Bootstrap::get('hookEmitter');
 
 $emitter->run('directus.index.start');
 
 // No access, forward to login page
 unset($_SESSION['_directus_login_redirect']);
-if (!AuthProvider::loggedIn()) {
+if (!$authentication->loggedIn()) {
     $request_uri = $_SERVER['REQUEST_URI'];
     if (strpos($request_uri, DIRECTUS_PATH) === 0) {
         $request_uri = substr($request_uri, strlen(DIRECTUS_PATH));
@@ -46,11 +47,12 @@ if (!AuthProvider::loggedIn()) {
 
 $acl = Bootstrap::get('acl');
 $ZendDb = Bootstrap::get('ZendDb');
-$authenticatedUser = AuthProvider::loggedIn() ? AuthProvider::getUserInfo() : [];
+$authenticatedUser = $authentication->loggedIn() ? $authentication->getUserInfo() : [];
 
 function getNonces()
 {
-    $requestNonceProvider = new RequestNonceProvider();
+    $session = new \Directus\Session\Session(new \Directus\Session\Storage\NativeSessionStorage());
+    $requestNonceProvider = new RequestNonceProvider($session);
     $nonces = array_merge($requestNonceProvider->getOptions(), [
         'pool' => $requestNonceProvider->getAllNonces()
     ]);
@@ -129,7 +131,7 @@ function parsePreferences($tableSchema)
 function getUsers()
 {
     global $ZendDb, $acl;
-    $tableGateway = new TableGateway($acl, 'directus_users', $ZendDb);
+    $tableGateway = new TableGateway('directus_users', $ZendDb, $acl);
     $users = $tableGateway->getEntries([
         'table_name' => 'directus_users',
         'perPage' => 1000,
@@ -172,7 +174,7 @@ function getCurrentUserInfo($users)
 function getBookmarks()
 {
     global $ZendDb, $acl, $authenticatedUser;
-    $bookmarks = new DirectusBookmarksTableGateway($acl, $ZendDb);
+    $bookmarks = new DirectusBookmarksTableGateway($ZendDb, $acl);
 
     return $bookmarks->fetchAllByUser($authenticatedUser['id']);
 }
@@ -180,7 +182,7 @@ function getBookmarks()
 function getGroups()
 {
     global $ZendDb, $acl;
-    $groups = new TableGateway($acl, 'directus_groups', $ZendDb);
+    $groups = new TableGateway('directus_groups', $ZendDb, $acl);
     // @todo: move to DirectusGroupsTableGateway
     $groupEntries = $groups->getEntries();
 
@@ -204,7 +206,7 @@ function getGroups()
 function getSettings()
 {
     global $ZendDb, $acl;
-    $settings = new DirectusSettingsTableGateway($acl, $ZendDb);
+    $settings = new DirectusSettingsTableGateway($ZendDb, $acl);
     $items = [];
     foreach ($settings->fetchAll() as $key => $value) {
         if ($key == 'global') {
@@ -221,7 +223,7 @@ function getSettings()
 function getActiveFiles()
 {
     global $ZendDb, $acl;
-    $tableGateway = new TableGateway($acl, 'directus_files', $ZendDb);
+    $tableGateway = new TableGateway('directus_files', $ZendDb, $acl);
 
     return $tableGateway->countActive();
 }
@@ -235,7 +237,7 @@ function getActiveFiles()
 function getInbox()
 {
     global $ZendDb, $acl, $authenticatedUser;
-    $tableGateway = new DirectusMessagesTableGateway($acl, $ZendDb);
+    $tableGateway = new DirectusMessagesTableGateway($ZendDb, $acl);
 
     return $tableGateway->fetchMessagesInboxWithHeaders($authenticatedUser['id']);
 }
@@ -334,7 +336,7 @@ function getExtensions($currentUserGroup)
 function getPrivileges($groupId)
 {
     global $ZendDb, $acl;
-    $tableGateway = new DirectusPrivilegesTableGateway($acl, $ZendDb);
+    $tableGateway = new DirectusPrivilegesTableGateway($ZendDb, $acl);
 
     return $tableGateway->fetchGroupPrivilegesRaw($groupId);
 }
@@ -406,7 +408,7 @@ $users = getUsers();
 // it should be log out
 // see: https://github.com/directus/directus/issues/1268
 if (!$users) {
-    AuthProvider::logout();
+    $authentication->logout();
     $_SESSION['error_message'] = 'Your user doesn\'t have permission to log in';
     header('Location: ' . DIRECTUS_PATH . 'login.php');
     exit;
