@@ -20,7 +20,7 @@ use Directus\Util\Traits\ArraySetter;
  *
  * @author Welling Guzmán <welling@rngr.org>
  */
-class ColumnRelationship implements \ArrayAccess, Arrayable
+class ColumnRelationship implements \ArrayAccess, Arrayable, \JsonSerializable
 {
     use ArraySetter, ArrayPropertyAccess, ArrayPropertyToArray;
 
@@ -197,8 +197,21 @@ class ColumnRelationship implements \ArrayAccess, Arrayable
         return $this->junctionKeyRight;
     }
 
+    /**
+     * Gets an Array representation
+     *
+     * @return array
+     */
     public function toArray()
     {
         return $this->propertyArray();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    function jsonSerialize()
+    {
+        return $this->toArray();
     }
 }

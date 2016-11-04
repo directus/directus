@@ -22,7 +22,7 @@ use Directus\Util\Traits\ArraySetter;
  *
  * @author Welling Guzmán <welling@rngr.org>
  */
-class Table implements \ArrayAccess, Arrayable
+class Table implements \ArrayAccess, Arrayable, \JsonSerializable
 {
     use ArraySetter, ArrayPropertyAccess, ArrayPropertyToArray;
 
@@ -784,5 +784,13 @@ class Table implements \ArrayAccess, Arrayable
         $array['columns'] = $columns;
 
         return $array;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    function jsonSerialize()
+    {
+        return $this->toArray();
     }
 }
