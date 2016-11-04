@@ -151,6 +151,14 @@ class Column implements \ArrayAccess, Arrayable, \JsonSerializable
      */
     protected $writableProperty = [];
 
+    /**
+     * @var array
+     */
+    protected $avoidSerializing = [
+        'writableProperty',
+        'readableProperty'
+    ];
+
     public function __construct($data)
     {
         if (!is_array($data)) {

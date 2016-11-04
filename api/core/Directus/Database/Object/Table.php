@@ -164,6 +164,14 @@ class Table implements \ArrayAccess, Arrayable, \JsonSerializable
     protected $writableProperty = ['*'];
 
     /**
+     * @var array
+     */
+    protected $avoidSerializing = [
+        'writableProperty',
+        'readableProperty'
+    ];
+
+    /**
      * Table constructor.
      *
      * @param string|array $data

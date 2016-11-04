@@ -621,16 +621,16 @@ class RelationalTableGateway extends BaseTableGateway
     public function getEntries($params = [])
     {
         // Get table column schema
-        $schemaArray = TableSchema::getSchemaArray($this->table);
+        $tableSchema = TableSchema::getTableSchema($this->table);
 
         // table only has one column
         // return an empty array
-        if ($schemaArray === false || count($schemaArray->getColumns()) <= 1) {
+        if ($tableSchema === false || count($tableSchema->getColumns()) <= 1) {
             return [];
         }
 
         // Table has `status` column?
-        $hasActiveColumn = $schemaArray->hasStatusColumn();//$this->schemaHasActiveColumn($schemaArray);
+        $hasActiveColumn = $tableSchema->hasStatusColumn();//$this->schemaHasActiveColumn($schemaArray);
 
         // when preview is passed was true, it means returns everything! active, draft and soft-delete.
         if (ArrayUtils::has($params, 'preview') && ArrayUtils::get($params, 'preview', false) === true) {
@@ -655,7 +655,7 @@ class RelationalTableGateway extends BaseTableGateway
         // }
 
         // $select = $this->applyParamsToTableEntriesSelect($params, $select, $schemaArray, $hasActiveColumn);
-        $builder = $this->applyParamsToTableEntriesSelect($params, $builder, $schemaArray, $hasActiveColumn);
+        $builder = $this->applyParamsToTableEntriesSelect($params, $builder, $tableSchema, $hasActiveColumn);
 
         // If we have user field and do not have big view privileges but have view then only show entries we created
         $cmsOwnerId = $this->acl ? $this->acl->getCmsOwnerColumnByTable($this->table) : null;
@@ -680,12 +680,12 @@ class RelationalTableGateway extends BaseTableGateway
 
         // Eager-load related ManyToOne records
         $this->toManyCallStack = [];
-        $results = $this->loadManyToOneRelationships($schemaArray, $results);
+        $results = $this->loadManyToOneRelationships($tableSchema, $results);
 
         // =============================================================================
         // HOTFIX: Fetching X2M data and Infinite circle loop
         // =============================================================================
-        $aliasColumns = $schemaArray->getAliasColumns();
+        $aliasColumns = $tableSchema->getAliasColumns();
         foreach($results as $key => $result) {
             $this->toManyCallStack = [];
             $results[$key] = $this->loadToManyRelationships($result, $aliasColumns);
@@ -1032,7 +1032,7 @@ class RelationalTableGateway extends BaseTableGateway
      * (Given a table's schema and rows, iterate and replace all of its foreign
      * keys with the contents of these foreign rows.)
      *
-     * @param array $schemaArray Table schema array
+     * @param Table $tableSchema Table schema array
      * @param array $table_entries Table rows
      * @param string|null $parentField
      * @param int $level
@@ -1041,10 +1041,10 @@ class RelationalTableGateway extends BaseTableGateway
      *
      * @throws Exception\RelationshipMetadataException
      */
-    public function loadManyToOneRelationships($schemaArray, $table_entries, $parentField = null, $level = 0)
+    public function loadManyToOneRelationships($tableSchema, $table_entries, $parentField = null, $level = 0)
     {
         // Identify the ManyToOne columns
-        foreach ($schemaArray->getColumns() as $col) {
+        foreach ($tableSchema->getColumns() as $col) {
             $relationship = $col->getRelationship();
             $isManyToOneColumn = (
                 $relationship &&
@@ -1119,13 +1119,13 @@ class RelationalTableGateway extends BaseTableGateway
                 }
 
                 // Get table column schema
-                $schemaArray = TableSchema::getSchemaArray($foreign_table_name);
+                $tableSchema = TableSchema::getTableSchema($foreign_table_name);
 
                 // Eager-load related ManyToOne records
-                $foreign_table = $this->loadManyToOneRelationships($schemaArray, $foreign_table, $parentField, $level+1);
+                $foreign_table = $this->loadManyToOneRelationships($tableSchema, $foreign_table, $parentField, $level+1);
 
                 // Convert dates into ISO 8601 Format
-                $foreign_table = $this->convertDates($foreign_table, $schemaArray->getColumns());
+                $foreign_table = $this->convertDates($foreign_table, $tableSchema->getColumns());
 
                 // Replace foreign keys with foreign rows
                 foreach ($table_entries as &$parentRow) {

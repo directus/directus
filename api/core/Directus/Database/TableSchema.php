@@ -147,9 +147,48 @@ class TableSchema
     }
 
     /**
+     * Gets table schema object
+     *
+     * @param $tableName
+     * @param array $params
+     * @param bool $fromCache
+     *
+     * @return Object\Table
+     */
+    public static function getTableSchema($tableName, array $params = [], $fromCache = false)
+    {
+        return static::getSchemaManagerInstance()->getTableSchema($tableName, $params, $fromCache);
+    }
+
+    /**
+     * Gets the table columns schema
+     *
+     * @param $tableName
+     * @param array $params
+     * @param bool $fromCache
+     *
+     * @return Object\Column[]
+     */
+    public static function getSchema($tableName, array $params = [], $fromCache = false)
+    {
+        $tableObject = static::getTableSchema($tableName, $params, $fromCache);
+
+        return $tableObject->getColumns();
+    }
+
+    /**
      * @todo  for ALTER requests, caching schemas can't be allowed
      */
-    public static function getSchemaArray($table, $params = null, $fromCache = true)
+    /**
+     * Gets the table columns schema as array
+     *
+     * @param $table
+     * @param array $params
+     * @param bool $fromCache
+     *
+     * @return array
+     */
+    public static function getSchemaArray($table, array $params = [], $fromCache = true)
     {
 //        if (!$fromCache || !array_key_exists($table, self::$_schemas)) {
 //            self::$_schemas[$table] = self::loadSchema($table, $params);
@@ -157,7 +196,19 @@ class TableSchema
 
 //        return self::$_schemas[$table];
 
-        return static::getSchemaManagerInstance()->getTableSchema($table, $params, $fromCache);
+        $columnsSchema = static::getSchema($table, $params, $fromCache);
+
+        // Only return this column if column_name is set as parameter
+        $onlyColumnName = ArrayUtils::get($params, 'column_name', null);
+        if ($onlyColumnName) {
+            foreach($columnsSchema as $key => $column) {
+                if ($column['name'] !== $onlyColumnName) {
+                    unset($columnsSchema[$key]);
+                }
+            }
+        }
+
+        return count($columnsSchema) == 1 ? reset($columnsSchema) : $columnsSchema;
     }
 
     /**
@@ -169,7 +220,7 @@ class TableSchema
      */
     public static function hasStatusColumn($tableName)
     {
-        $schema = static::getSchemaArray($tableName);
+        $schema = static::getTableSchema($tableName);
 
         return $schema->hasStatusColumn();
     }

@@ -31,14 +31,21 @@ class JsonView
     }
 
     /**
-     * @param  array $responseData The new API layer's response.
+     * @param  array|\JsonSerializable $responseData The new API layer's response.
      * @param  array $responseDataComparison The old API layer's response
      * @return null
      * @todo only format JSON for non-prod environments when DIRECTUS_ENV
      * is available
      */
-    public static function render(array $responseData, $responseDataComparison = null)
+    public static function render($responseData, $responseDataComparison = null)
     {
+        if (!is_array($responseData) && !$responseData instanceof \JsonSerializable) {
+            $message = sprintf('JsonView::render - ResponseData must be of the type array or JsonSerializable, %s given', [
+                gettype($responseData)
+            ]);
+            throw new \InvalidArgumentException($message);
+        }
+
         if (!is_null(self::$preDispatch)) {
             $preDispatch = self::$preDispatch;
             $responseData = $preDispatch($responseData);

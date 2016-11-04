@@ -888,7 +888,7 @@ $app->map("/$v/tables/:table/columns/?", function ($table_name) use ($ZendDb, $p
 
     $response = TableSchema::getSchemaArray($table_name, $params);
 
-    JsonView::render($response->getColumns());
+    JsonView::render($response);
 })->via('GET', 'POST');
 
 // GET or PUT one column
@@ -1093,8 +1093,8 @@ $app->map("/$v/files(/:id)/?", function ($id = null) use ($app, $ZendDb, $acl, $
  * PREFERENCES COLLECTION
  */
 
-$app->map("/$v/tables/:table/preferences/?", function ($table) use ($ZendDb, $acl, $params, $requestPayload, $app) {
-    $currentUser = Auth::getUserInfo();
+$app->map("/$v/tables/:table/preferences/?", function ($table) use ($ZendDb, $acl, $params, $requestPayload, $app, $authentication) {
+    $currentUser = $authentication->getUserInfo();
     $params['table_name'] = $table;
     $Preferences = new DirectusPreferencesTableGateway($ZendDb, $acl);
     $TableGateway = new TableGateway('directus_preferences', $ZendDb, $acl);

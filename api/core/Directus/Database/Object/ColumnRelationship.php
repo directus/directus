@@ -60,6 +60,14 @@ class ColumnRelationship implements \ArrayAccess, Arrayable, \JsonSerializable
     protected $writableProperty = [];
 
     /**
+     * @var array
+     */
+    protected $avoidSerializing = [
+        'writableProperty',
+        'readableProperty'
+    ];
+
+    /**
      * ColumnRelationship constructor.
      *
      * @param array $data
