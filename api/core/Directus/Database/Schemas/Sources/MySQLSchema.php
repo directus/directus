@@ -204,6 +204,7 @@ class MySQLSchema extends AbstractSchema
         $selectOne->quantifier($selectOne::QUANTIFIER_DISTINCT);
         $selectOne->columns([
             'id' => 'COLUMN_NAME',
+            'table_name' => 'TABLE_NAME',
             'column_name' => 'COLUMN_NAME',
             'type' => new Expression('UCASE(C.DATA_TYPE)'),
             'char_length' => 'CHARACTER_MAXIMUM_LENGTH',
@@ -253,6 +254,7 @@ class MySQLSchema extends AbstractSchema
         $selectTwo = new Select();
         $selectTwo->columns([
             'id' => 'column_name',
+            'table_name',
             'column_name',
             'type' => new Expression('UCASE(data_type)'),
             'char_length' => new Expression('NULL'),
@@ -310,6 +312,7 @@ class MySQLSchema extends AbstractSchema
         $selectOne = new Select();
         $selectOne->columns([
             'id' => 'COLUMN_NAME',
+            'table_name' => 'TABLE_NAME',
             'column_name' => 'COLUMN_NAME',
             'sort' => new Expression('IFNULL(sort, ORDINAL_POSITION)'),
             'type' => new Expression('UCASE(C.DATA_TYPE)'),
@@ -355,6 +358,7 @@ class MySQLSchema extends AbstractSchema
         $selectTwo = new Select();
         $selectTwo->columns([
             'id' => 'column_name',
+            'table_name',
             'column_name',
             'sort',
             'type' => new Expression('UCASE(data_type)'),
