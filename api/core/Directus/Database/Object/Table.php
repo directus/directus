@@ -41,6 +41,13 @@ class Table implements \ArrayAccess, Arrayable
     protected $name;
 
     /**
+     * Fallback to legacy property
+     *
+     * @var string
+     */
+    protected $table_name;
+
+    /**
      * @var Column[]
      */
     protected $columns;
@@ -207,7 +214,7 @@ class Table implements \ArrayAccess, Arrayable
             throw new \InvalidArgumentException('Table name must be a string. ' . gettype($name) . ' given instead');
         }
 
-        $this->name = $name;
+        $this->name = $this->table_name = $name;
 
         return $this;
     }

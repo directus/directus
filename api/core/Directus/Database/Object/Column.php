@@ -42,6 +42,13 @@ class Column implements \ArrayAccess, Arrayable, \JsonSerializable
     protected $name;
 
     /**
+     * Fallback to legacy property
+     *
+     * @var string
+     */
+    protected $column_name;
+
+    /**
      * @var string
      */
     protected $type = 'string';
@@ -203,7 +210,7 @@ class Column implements \ArrayAccess, Arrayable, \JsonSerializable
      */
     public function setName($name)
     {
-        $this->name = $name;
+        $this->name = $this->column_name = $name;
 
         return $this;
     }
