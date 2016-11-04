@@ -304,12 +304,13 @@ class Bootstrap
         $auth = self::get('auth');
         $db = self::get('ZendDb');
 
-        $DirectusTablesTableGateway = new DirectusTablesTableGateway($acl, $db);
+        $DirectusTablesTableGateway = new DirectusTablesTableGateway($db, $acl);
         $getTables = function () use ($DirectusTablesTableGateway) {
             return $DirectusTablesTableGateway->select()->toArray();
         };
 
-        $tableRecords = $DirectusTablesTableGateway->memcache->getOrCache(MemcacheProvider::getKeyDirectusTables(), $getTables, 1800);
+        // $tableRecords = $DirectusTablesTableGateway->memcache->getOrCache(MemcacheProvider::getKeyDirectusTables(), $getTables, 1800);
+        $tableRecords = $getTables();
 
         $magicOwnerColumnsByTable = [];
         foreach ($tableRecords as $tableRecord) {
@@ -321,14 +322,15 @@ class Bootstrap
 
         if ($auth->loggedIn()) {
             $currentUser = $auth->getUserInfo();
-            $Users = new DirectusUsersTableGateway($acl, $db);
+            $Users = new DirectusUsersTableGateway($db, $acl);
             $cacheFn = function () use ($currentUser, $Users) {
                 return $Users->find($currentUser['id']);
             };
             $cacheKey = MemcacheProvider::getKeyDirectusUserFind($currentUser['id']);
-            $currentUser = $Users->memcache->getOrCache($cacheKey, $cacheFn, 10800);
+            // $currentUser = $Users->memcache->getOrCache($cacheKey, $cacheFn, 10800);
+            $currentUser = $cacheFn();
             if ($currentUser) {
-                $privilegesTable = new DirectusPrivilegesTableGateway($acl, $db);
+                $privilegesTable = new DirectusPrivilegesTableGateway($db, $acl);
                 $acl->setGroupPrivileges($privilegesTable->getGroupPrivileges($currentUser['group']));
             }
         }
@@ -446,7 +448,7 @@ class Bootstrap
         $adapter = static::get('ZendDb');
 
         // Fetch files settings
-        $SettingsTable = new DirectusSettingsTableGateway($acl, $adapter);
+        $SettingsTable = new DirectusSettingsTableGateway($adapter, $acl);
         try {
             $settings = $SettingsTable->fetchCollection('files', [
                 'thumbnail_size', 'thumbnail_quality', 'thumbnail_crop_enabled'
@@ -498,7 +500,7 @@ class Bootstrap
         $emitter->addAction('table.insert.directus_groups', function ($data) {
             $acl = Bootstrap::get('acl');
             $zendDb = Bootstrap::get('zendDb');
-            $privilegesTable = new DirectusPrivilegesTableGateway($acl, $zendDb);
+            $privilegesTable = new DirectusPrivilegesTableGateway($zendDb, $acl);
 
             $privilegesTable->insertPrivilege([
                 'group_id' => $data['id'],

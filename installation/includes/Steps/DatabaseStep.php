@@ -4,7 +4,7 @@ namespace Directus\Installation\Steps;
 
 use Directus\Database\Connection;
 use Directus\Database\SchemaManager;
-use Directus\Database\Schemas\MySQLSchema;
+use Directus\Database\Schemas\Sources\MySQLSchema;
 use Directus\Util\Installation\InstallerUtils;
 
 class DatabaseStep extends AbstractStep

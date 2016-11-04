@@ -22,12 +22,12 @@ out('Running script with the following supported extensions: ' . implode(', ', $
 $db = \Directus\Bootstrap::get('ZendDb');
 $acl = \Directus\Bootstrap::get('acl');
 
-$Settings = new DirectusSettingsTableGateway($acl, $db);
+$Settings = new DirectusSettingsTableGateway($db, $acl);
 $filesSettings = $Settings->fetchCollection('media', [
     'thumbnail_size', 'thumbnail_quality', 'thumbnail_crop_enabled'
 ]);
 
-$StorageAdapters = new DirectusStorageAdaptersTableGateway($acl, $db);
+$StorageAdapters = new DirectusStorageAdaptersTableGateway($db, $acl);
 $storageAdaptersById = $StorageAdapters->fetchAllWithIdKeys();
 foreach ($storageAdaptersById as $id => $storageAdapter) {
     // @TODO: fix this, this class was removed time ago.

@@ -72,7 +72,9 @@ class DirectusPrivilegesTableGateway extends BaseTableGateway
             return (array)$this->fetchGroupPrivileges($groupId);
         };
 
-        return $this->memcache->getOrCache(MemcacheProvider::getKeyDirectusGroupPrivileges($groupId), $getPrivileges, 1800);
+        // return $this->memcache->getOrCache(MemcacheProvider::getKeyDirectusGroupPrivileges($groupId), $getPrivileges, 1800);
+
+        return $getPrivileges();
     }
 
     public function fetchGroupPrivileges($group_id)
