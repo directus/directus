@@ -14,6 +14,7 @@ use Directus\Database\TableGateway\DirectusPrivilegesTableGateway;
 use Directus\Database\TableGateway\DirectusSettingsTableGateway;
 use Directus\Database\TableGateway\DirectusTablesTableGateway;
 use Directus\Database\TableGateway\DirectusUsersTableGateway;
+use Directus\Database\TableSchema;
 use Directus\Embed\EmbedManager;
 use Directus\Filesystem\Filesystem;
 use Directus\Filesystem\FilesystemFactory;
@@ -139,6 +140,9 @@ class Bootstrap
         });
 
         BaseTableGateway::setHookEmitter($app->container->get('emitter'));
+
+        // @NOTE: Trying to separate the configuration from bootstrap, bit by bit.
+        TableSchema::setConfig(static::get('config'));
 
         return $app;
     }

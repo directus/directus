@@ -162,7 +162,7 @@ class DirectusMessagesTableGateway extends BaseTableGateway
             $ids[] = $item['id'];
         }
 
-        $directusMessagesTableGateway = new DirectusMessagesRecipientsTableGateway($this->acl, $this->adapter);
+        $directusMessagesTableGateway = new DirectusMessagesRecipientsTableGateway($this->adapter, $this->acl);
         $recipients = $directusMessagesTableGateway->fetchMessageRecipients($ids);
 
         foreach ($result as $item) {

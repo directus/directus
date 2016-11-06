@@ -68,7 +68,7 @@ class RelationalTableGateway extends BaseTableGateway
 
         $recordIsNew = !array_key_exists($TableGateway->primaryKeyFieldName, $recordData);
 
-        $schemaArray = TableSchema::getSchemaArray($tableName);
+        $tableSchema = TableSchema::getTableSchema($tableName);
 
         $currentUserId = $this->acl ? $this->acl->getUserId() : null;
         $currentUserGroupId = $this->acl ? $this->acl->getGroupId() : null;
@@ -110,7 +110,7 @@ class RelationalTableGateway extends BaseTableGateway
         }
 
         // Update and/or Add Many-to-One Associations
-        $parentRecordWithForeignKeys = $TableGateway->addOrUpdateManyToOneRelationships($schemaArray, $recordData, $nestedLogEntries, $nestedCollectionRelationshipsChanged);
+        $parentRecordWithForeignKeys = $TableGateway->addOrUpdateManyToOneRelationships($tableSchema, $recordData, $nestedLogEntries, $nestedCollectionRelationshipsChanged);
 
         // Merge the M21 foreign keys into the recordData array
         $recordData = array_merge($recordData, $parentRecordWithForeignKeys);
@@ -156,7 +156,7 @@ class RelationalTableGateway extends BaseTableGateway
             ];
         }
 
-        $draftRecord = $TableGateway->addOrUpdateToManyRelationships($schemaArray, $draftRecord, $nestedLogEntries, $nestedCollectionRelationshipsChanged, $parentData);
+        $draftRecord = $TableGateway->addOrUpdateToManyRelationships($tableSchema, $draftRecord, $nestedLogEntries, $nestedCollectionRelationshipsChanged, $parentData);
         $rowId = $draftRecord[$this->primaryKeyFieldName];
 
         $columnNames = TableSchema::getAllNonAliasTableColumnNames($tableName);
@@ -192,7 +192,7 @@ class RelationalTableGateway extends BaseTableGateway
                     'data' => json_encode($fullRecordData),
                     'delta' => json_encode($deltaRecordData),
                     'row_id' => $rowId,
-                    'identifier' => $this->findRecordIdentifier($schemaArray, $fullRecordData),
+                    'identifier' => $this->findRecordIdentifier($tableSchema, $fullRecordData),
                     'logged_ip' => isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '',
                     'user_agent' => isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : ''
                 ];
@@ -215,7 +215,7 @@ class RelationalTableGateway extends BaseTableGateway
                  * @todo  how should nested activity entries relate to the revision histories of foreign items?
                  * @todo  one day: treat children as parents if this top-level record was not modified.
                  */
-                $recordIdentifier = $this->findRecordIdentifier($schemaArray, $fullRecordData);
+                $recordIdentifier = $this->findRecordIdentifier($tableSchema, $fullRecordData);
                 // Produce log if something changed.
                 if ($parentRecordChanged || $nestedCollectionRelationshipsChanged) {
                     $logEntryAction = $recordIsNew ? DirectusActivityTableGateway::ACTION_ADD : DirectusActivityTableGateway::ACTION_UPDATE;
@@ -257,7 +257,7 @@ class RelationalTableGateway extends BaseTableGateway
 
         // Yield record object
         $recordGateway = new BaseRowGateway($TableGateway->primaryKeyFieldName, $tableName, $this->adapter, $this->acl);
-        $fullRecordData = $this->schema->castRecordValues($fullRecordData, $schemaArray->getColumns());
+        $fullRecordData = $this->schema->castRecordValues($fullRecordData, $tableSchema->getColumns());
         $recordGateway->populate($fullRecordData, true);
 
         return $recordGateway;
@@ -599,6 +599,14 @@ class RelationalTableGateway extends BaseTableGateway
         return $params;
     }
 
+    /**
+     * @param array $params
+     * @param Builder $builder
+     * @param Table $schema
+     * @param bool $hasActiveColumn
+     *
+     * @return Builder
+     */
     public function applyParamsToTableEntriesSelect(array $params, Builder $builder, Table $schema, $hasActiveColumn = false)
     {
         // @TODO: Query Builder Object
@@ -1125,7 +1133,7 @@ class RelationalTableGateway extends BaseTableGateway
                 $foreign_table = $this->loadManyToOneRelationships($tableSchema, $foreign_table, $parentField, $level+1);
 
                 // Convert dates into ISO 8601 Format
-                $foreign_table = $this->convertDates($foreign_table, $tableSchema->getColumns());
+                $foreign_table = $this->convertDates($foreign_table, $tableSchema);
 
                 // Replace foreign keys with foreign rows
                 foreach ($table_entries as &$parentRow) {

@@ -9,6 +9,7 @@ use Directus\Acl\Exception\UnauthorizedTableDeleteException;
 use Directus\Bootstrap;
 use Directus\Database\Exception\DuplicateEntryException;
 use Directus\Database\Exception\SuppliedArrayAsColumnValue;
+use Directus\Database\Object\Table;
 use Directus\Database\RowGateway\BaseRowGateway;
 use Directus\Database\SchemaManager;
 use Directus\Database\Schemas\Sources\MySQLSchema;
@@ -710,7 +711,16 @@ class BaseTableGateway extends TableGateway
         throw new \InvalidArgumentException('Unexpected parameter of type ' . get_class($table));
     }
 
-    public function convertDates(array $records, $schemaArray, $tableName = null)
+    /**
+     * Convert dates to ISO 8601 format
+     *
+     * @param array $records
+     * @param Table $tableSchema
+     * @param null $tableName
+     *
+     * @return array|mixed
+     */
+    public function convertDates(array $records, Table $tableSchema, $tableName = null)
     {
         $tableName = $tableName === null ? $this->table : $tableName;
         if (!$this->schema->isDirectusTable($tableName)) {
@@ -728,7 +738,7 @@ class BaseTableGateway extends TableGateway
         }
 
         foreach ($records as $index => $row) {
-            foreach ($schemaArray as $column) {
+            foreach ($tableSchema->getColumns() as $column) {
                 if (in_array(strtolower($column->getType()), ['timestamp', 'datetime'])) {
                     $columnName = $column->getId();
                     if (array_key_exists($columnName, $row)) {
@@ -754,8 +764,8 @@ class BaseTableGateway extends TableGateway
         if (is_array($records)) {
             $tableName = $tableName === null ? $this->table : $tableName;
             $records = $this->parseRecordValuesByType($records, $tableName);
-            $columns = TableSchema::getAllNonAliasTableColumns($tableName);
-            $records = $this->convertDates($records, $columns, $tableName);
+            $tableSchema = TableSchema::getTableSchema($tableName);
+            $records = $this->convertDates($records, $tableSchema, $tableName);
         }
 
         return $records;

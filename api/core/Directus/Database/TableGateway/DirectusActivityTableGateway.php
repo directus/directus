@@ -3,6 +3,7 @@
 namespace Directus\Database\TableGateway;
 
 use Directus\Acl\Acl;
+use Directus\Database\Query\Builder;
 use Directus\Database\TableSchema;
 use Directus\Util\DateUtils;
 use Zend\Db\Adapter\AdapterInterface;
@@ -51,19 +52,20 @@ class DirectusActivityTableGateway extends RelationalTableGateway
 
     public function fetchFeed($params = null)
     {
-        $sql = new Sql($this->adapter);
-        $select = $sql->select()->from($this->table);
-
-        $params['orderColumn'] = 'id';
-        $params['orderDirection'] = 'DESC';
-
-        $tableSchemaArray = TableSchema::getSchemaArray($this->table);
-        $hasActiveColumn = $this->schemaHasActiveColumn($tableSchemaArray);
+        $params['order'] = ['id' => 'DESC'];
         $params = $this->applyDefaultEntriesSelectParams($params);
 
+        $builder = new Builder($this->getAdapter());
+        $tableSchema = TableSchema::getTableSchema($this->table);
+        $hasActiveColumn = $tableSchema->hasStatusColumn();
+
         $columns = ['id', 'identifier', 'action', 'table_name', 'row_id', 'user', 'datetime', 'type', 'data'];
-        $select->columns($columns);
-        // ->order('id DESC');
+        $builder->columns($columns);
+        $builder->from($this->table);
+
+        $builder = $this->applyParamsToTableEntriesSelect($params, $builder, $tableSchema, $hasActiveColumn);
+
+        $select = $builder->buildSelect();
         $select
             ->where
             ->nest
@@ -72,13 +74,9 @@ class DirectusActivityTableGateway extends RelationalTableGateway
             ->equalTo('type', 'FILES')
             ->unnest;
 
-        $select = $this->applyParamsToTableEntriesSelect($params, $select, $tableSchemaArray, $hasActiveColumn);
-
-        //die($this->dumpSql($select));
-
         $rowset = $this->selectWith($select);
         $rowset = $rowset->toArray();
-        $rowset = $this->convertDates($rowset, $tableSchemaArray);
+        $rowset = $this->convertDates($rowset, $tableSchema);
 
         //        @TODO: Returns date in ISO 8601 Ex: 2016-06-06T17:18:20Z
         //        see: https://en.wikipedia.org/wiki/ISO_8601

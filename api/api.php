@@ -696,7 +696,6 @@ $app->map("/$v/privileges/:groupId/:privilegeId", function ($groupId, $privilege
  */
 
 $app->map("/$v/tables/:table/rows/?", function ($table) use ($acl, $ZendDb, $params, $requestPayload, $app) {
-    $currentUser = Auth::getUserInfo();
     $id = null;
     $params['table_name'] = $table;
     $TableGateway = new TableGateway($table, $ZendDb, $acl);
@@ -1514,8 +1513,8 @@ $app->get("/$v/messages/recipients/?", function () use ($params, $requestPayload
     JsonView::render($result);
 });
 
-$app->post("/$v/comments/?", function () use ($params, $requestPayload, $app, $acl, $ZendDb) {
-    $currentUser = Auth::getUserInfo();
+$app->post("/$v/comments/?", function () use ($params, $requestPayload, $app, $acl, $ZendDb, $authentication) {
+    $currentUser = $authentication->getUserInfo();
     $params['table_name'] = 'directus_messages';
     $TableGateway = new TableGateway('directus_messages', $ZendDb, $acl);
 
