@@ -480,7 +480,6 @@ function(app, _, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIMa
         case 'multiple_files':
           data['related_table'] = 'directus_files';
         case 'many_to_many':
-          data['junction_key_right'] = id;
           data['data_type'] = 'ALIAS';
           data['relationship_type'] = 'MANYTOMANY';
           break;
@@ -495,7 +494,6 @@ function(app, _, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIMa
         case 'one_to_many':
           data['data_type'] = 'ALIAS';
           data['relationship_type'] = 'ONETOMANY';
-          data['junction_key_right'] = id;
           break;
       }
 
