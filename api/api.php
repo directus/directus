@@ -33,7 +33,6 @@ define('API_PATH', dirname(__FILE__));
 define('BASE_PATH', dirname(API_PATH));
 
 use Directus\Acl\Exception\UnauthorizedTableAlterException;
-use Directus\Auth\Provider as Auth;
 use Directus\Auth\RequestNonceProvider;
 use Directus\Bootstrap;
 use Directus\Database\SchemaManager;
