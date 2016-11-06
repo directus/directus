@@ -166,9 +166,9 @@ class Provider
         return self::getUserByAuthentication($email, $password) !== false;
     }
 
-    public static function getUserByAuthentication($email, $password)
+    public function getUserByAuthentication($email, $password)
     {
-        self::prependSessionKey();
+        $this->prependSessionKey();
         $zendDb = Bootstrap::get('zendDb');
         $usersTable = new TableGateway('directus_users', $zendDb);
         $user = $usersTable->select(['email' => $email])->current();
