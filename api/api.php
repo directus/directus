@@ -111,7 +111,7 @@ $authAndNonceRouteWhitelist = [
     'auth_clear_session',
     'auth_nonces',
     'auth_reset_password',
-    'auth_permissions',
+    'auth_forgot_password',
     'debug_acl_poc',
     'request_token',
 ];
@@ -270,6 +270,8 @@ if ($authentication->loggedIn()) {
     $user = $authentication->getUserRecord();
     $acl->setUserId($user['id']);
     $acl->setGroupId($user['group']);
+    $privilegesTable = new DirectusPrivilegesTableGateway($ZendDb, $acl);
+    $acl->setGroupPrivileges($privilegesTable->getGroupPrivileges($user['group']));
 }
 
 /**
@@ -562,7 +564,7 @@ $app->post("/$v/auth/forgot-password/?", function () use ($app, $acl, $ZendDb) {
         'success' => $success
     ]);
 
-})->name('auth_permissions');
+})->name('auth_forgot_password');
 
 // debug helper
 $app->get("/$v/auth/permissions/?", function () use ($app, $acl) {
