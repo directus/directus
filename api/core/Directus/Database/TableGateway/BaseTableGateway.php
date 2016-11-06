@@ -131,18 +131,18 @@ class BaseTableGateway extends TableGateway
     /**
      * Find the identifying string to effectively represent a record in the activity log.
      *
-     * @param  array $schemaArray
+     * @param  Table $tableSchema
      * @param  array|BaseRowGateway $fullRecordData
      *
      * @return string
      */
-    public function findRecordIdentifier($schemaArray, $fullRecordData)
+    public function findRecordIdentifier($tableSchema, $fullRecordData)
     {
         // Decide on the correct column name
         $identifierColumnName = null;
-        $column = TableSchema::getFirstNonSystemColumn($schemaArray);
+        $column = $tableSchema->getFirstNonSystemColumn();
         if ($column) {
-            $identifierColumnName = $column['column_name'];
+            $identifierColumnName = $column->getName();
         }
 
         // Yield the column contents

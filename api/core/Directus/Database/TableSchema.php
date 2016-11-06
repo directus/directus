@@ -227,7 +227,7 @@ class TableSchema
 
     public static function getColumnSchemaArray($tableName, $columnName)
     {
-        $tableColumnsSchema = static::getSchemaArray($tableName);
+        $tableColumnsSchema = static::getTableSchema($tableName);
         $column = null;
 
         foreach ($tableColumnsSchema->getColumns() as $columnSchema) {
@@ -275,6 +275,7 @@ class TableSchema
         return $column->hasRelationship() ? $column->getRelationship() : null;
     }
 
+    // @NOTE: This was copy-paste to Column Object
     /**
      * Whether or not the column name is the name of a system column.
      *
@@ -287,19 +288,6 @@ class TableSchema
         $systemFields = ['id', 'sort', STATUS_COLUMN_NAME];
 
         return in_array($columnName, $systemFields);
-    }
-
-    public static function getFirstNonSystemColumn($schema)
-    {
-        foreach ($schema as $column) {
-            if (isset($column['system']) && false != $column['system']) {
-                continue;
-            }
-
-            return $column;
-        }
-
-        return false;
     }
 
     public static function getAllNonAliasTableColumnNames($table)

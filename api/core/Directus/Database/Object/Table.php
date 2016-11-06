@@ -327,6 +327,22 @@ class Table implements \ArrayAccess, Arrayable, \JsonSerializable
     }
 
     /**
+     * Gets the first column that is not part of the system
+     *
+     * @return Column|null
+     */
+    public function getFirstNonSystemColumn()
+    {
+        foreach($this->getColumns() as $column) {
+            if ($column->isSystem()) {
+                return $column;
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * Table has an `status` column
      *
      * @return bool

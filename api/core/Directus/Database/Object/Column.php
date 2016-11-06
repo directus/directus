@@ -744,6 +744,16 @@ class Column implements \ArrayAccess, Arrayable, \JsonSerializable
         return $isLegacyAliasType || $isAliasType;
     }
 
+    /**
+     * Checks whether the column is a system column
+     *
+     * @return bool
+     */
+    public function isSystem()
+    {
+        return in_array($this->getName(), ['id', 'sort', STATUS_COLUMN_NAME]);
+    }
+
     public function toArray()
     {
         return $this->propertyArray();
