@@ -194,7 +194,7 @@ class DirectusPrivilegesTableGateway extends BaseTableGateway
                 continue;
             }
 
-            if (array_key_exists($table, $privilegesHash)) {
+            if (array_key_exists($table['name'], $privilegesHash)) {
                 continue;
             }
 
