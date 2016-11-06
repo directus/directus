@@ -324,7 +324,7 @@ if (isset($_REQUEST['run_extension']) && $_REQUEST['run_extension']) {
  * (Collections arranged alphabetically)
  */
 
-$app->post("/$v/auth/request-token/?", function() use ($app, $ZendDb) {
+$app->post("/$v/auth/request-token/?", function() use ($app, $ZendDb, $authentication) {
     $response = [
         'success' => false,
         'message' => __t('incorrect_email_or_password'),
@@ -343,7 +343,7 @@ $app->post("/$v/auth/request-token/?", function() use ($app, $ZendDb) {
     }
 
     if ($email && $password) {
-        $user = Auth::getUserByAuthentication($email, $password);
+        $user = $authentication->getUserByAuthentication($email, $password);
 
         if ($user) {
             unset($response['message']);
@@ -481,7 +481,7 @@ $app->get("/$v/auth/clear-session/?", function () use ($app) {
 })->name('auth_clear_session');
 
 // debug helper
-$app->get("/$v/auth/reset-password/:token/?", function ($token) use ($app, $acl, $ZendDb) {
+$app->get("/$v/auth/reset-password/:token/?", function ($token) use ($app, $acl, $ZendDb, $authentication) {
     $DirectusUsersTableGateway = new DirectusUsersTableGateway($ZendDb, $acl);
     $user = $DirectusUsersTableGateway->findOneBy('reset_token', $token);
 
@@ -498,7 +498,7 @@ $app->get("/$v/auth/reset-password/:token/?", function ($token) use ($app, $acl,
     $set = [];
     // @NOTE: this is not being used for hashing the password anymore
     $set['salt'] = StringUtils::randomString();
-    $set['password'] = Auth::hashPassword($password, $set['salt']);
+    $set['password'] = $authentication->hashPassword($password, $set['salt']);
     $set['reset_token'] = '';
 
     // Skip ACL
@@ -573,7 +573,7 @@ $app->get("/$v/auth/permissions/?", function () use ($app, $acl) {
     JsonView::render(['groupPrivileges' => $groupPrivileges]);
 })->name('auth_permissions');
 
-$app->post("/$v/hash/?", function () use ($app) {
+$app->post("/$v/hash/?", function () use ($app, $authentication) {
     if (!(isset($_POST['password']) && !empty($_POST['password']))) {
         return JsonView::render([
             'success' => false,
@@ -581,7 +581,7 @@ $app->post("/$v/hash/?", function () use ($app) {
         ]);
     }
     $salt = isset($_POST['salt']) && !empty($_POST['salt']) ? $_POST['salt'] : '';
-    $hashedPassword = Auth::hashPassword($_POST['password'], $salt);
+    $hashedPassword = $authentication->hashPassword($_POST['password'], $salt);
     return JsonView::render([
         'success' => true,
         'password' => $hashedPassword
@@ -602,8 +602,8 @@ $app->post("/$v/random/?", function () use ($app) {
     ]);
 });
 
-$app->get("/$v/privileges/:groupId(/:tableName)/?", function ($groupId, $tableName = null) use ($acl, $ZendDb, $params, $requestPayload, $app) {
-    $currentUser = Auth::getUserRecord();
+$app->get("/$v/privileges/:groupId(/:tableName)/?", function ($groupId, $tableName = null) use ($acl, $ZendDb, $params, $requestPayload, $app, $authentication) {
+    $currentUser = $authentication->getUserRecord();
     $myGroupId = $currentUser['group'];
 
     if ($myGroupId != 1) {
@@ -661,8 +661,8 @@ $app->map("/$v/privileges/:groupId/?", function ($groupId) use ($acl, $ZendDb, $
     return JsonView::render($response);
 })->via('POST');
 
-$app->map("/$v/privileges/:groupId/:privilegeId", function ($groupId, $privilegeId) use ($acl, $ZendDb, $params, $requestPayload, $app) {
-    $currentUser = Auth::getUserRecord();
+$app->map("/$v/privileges/:groupId/:privilegeId", function ($groupId, $privilegeId) use ($acl, $ZendDb, $params, $requestPayload, $app, $authentication) {
+    $currentUser = $authentication->getUserRecord();
     $myGroupId = $currentUser['group'];
 
     if ($myGroupId != 1) {
@@ -1151,8 +1151,8 @@ $app->map("/$v/tables/:table/preferences/?", function ($table) use ($ZendDb, $ac
     JsonView::render($jsonResponse);
 })->via('GET', 'POST', 'PUT', 'DELETE');
 
-$app->get("/$v/preferences/:table", function ($table) use ($app, $ZendDb, $acl) {
-    $currentUser = Auth::getUserInfo();
+$app->get("/$v/preferences/:table", function ($table) use ($app, $ZendDb, $acl, $authentication) {
+    $currentUser = $authentication->getUserInfo();
     $params['table_name'] = $table;
     $Preferences = new DirectusPreferencesTableGateway($ZendDb, $acl);
     $jsonResponse = $Preferences->fetchSavedPreferencesByUserAndTable($currentUser['id'], $table);
@@ -1348,7 +1348,7 @@ $app->post("/$v/upload/?", function () use ($params, $requestPayload, $app, $acl
     JsonView::render($result);
 });
 
-$app->post("/$v/upload/link/?", function () use ($params, $requestPayload, $app, $acl, $ZendDb) {
+$app->post("/$v/upload/link/?", function () use ($params, $requestPayload, $app, $acl, $ZendDb, $authentication) {
     $Files = new \Directus\Files\Files();
     $result = [
         'message' => __t('invalid_unsupported_url'),
@@ -1362,7 +1362,7 @@ $app->post("/$v/upload/link/?", function () use ($params, $requestPayload, $app,
         $linkInfo = $Files->getLink($_POST['link']);
 
         if ($linkInfo) {
-            $currentUser = Auth::getUserInfo();
+            $currentUser = $authentication->getUserInfo();
             $app->response->setStatus(200);
             $fileData = array_merge($fileData, $linkInfo);
 
@@ -1411,8 +1411,8 @@ $app->get("/$v/messages/rows/?", function () use ($params, $requestPayload, $app
     JsonView::render($result);
 });
 
-$app->get("/$v/messages/rows/:id/?", function ($id) use ($params, $requestPayload, $app, $acl, $ZendDb) {
-    $currentUser = Auth::getUserInfo();
+$app->get("/$v/messages/rows/:id/?", function ($id) use ($params, $requestPayload, $app, $acl, $ZendDb, $authentication) {
+    $currentUser = $authentication->getUserInfo();
     $messagesTableGateway = new DirectusMessagesTableGateway($ZendDb, $acl);
     $message = $messagesTableGateway->fetchMessageWithRecipients($id, $currentUser['id']);
 
@@ -1424,8 +1424,8 @@ $app->get("/$v/messages/rows/:id/?", function ($id) use ($params, $requestPayloa
     JsonView::render($message);
 });
 
-$app->map("/$v/messages/rows/:id/?", function ($id) use ($params, $requestPayload, $app, $acl, $ZendDb) {
-    $currentUser = Auth::getUserInfo();
+$app->map("/$v/messages/rows/:id/?", function ($id) use ($params, $requestPayload, $app, $acl, $ZendDb, $authentication) {
+    $currentUser = $authentication->getUserInfo();
     $messagesTableGateway = new DirectusMessagesTableGateway($ZendDb, $acl);
     $messagesRecipientsTableGateway = new DirectusMessagesRecipientsTableGateway($ZendDb, $acl);
 
@@ -1444,8 +1444,8 @@ $app->map("/$v/messages/rows/:id/?", function ($id) use ($params, $requestPayloa
     JsonView::render($message);
 })->via('PATCH');
 
-$app->post("/$v/messages/rows/?", function () use ($params, $requestPayload, $app, $acl, $ZendDb) {
-    $currentUser = Auth::getUserInfo();
+$app->post("/$v/messages/rows/?", function () use ($params, $requestPayload, $app, $acl, $ZendDb, $authentication) {
+    $currentUser = $authentication->getUserInfo();
 
     // Unpack recipients
     $recipients = explode(',', $requestPayload['recipients']);
