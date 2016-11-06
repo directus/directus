@@ -6,7 +6,7 @@
 //  For all details and documentation:
 //  http://www.getdirectus.com
 
-define(['app', 'core/UIComponent', 'core/UIView', 'core/t'],function(app, UIComponent, UIView, __t) {
+define(['app', 'core/UIComponent', 'core/UIView', 'core/t', 'utils'],function(app, UIComponent, UIView, __t, Utils) {
 
   'use strict';
 
@@ -69,7 +69,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'],function(app, UIComp
     ],
     Input: Input,
     validate: function(value, options) {
-      if (options.schema.isRequired() && _.isEmpty(value)) {
+      if (options.schema.isRequired() && Utils.isEmpty(value)) {
         return __t('this_field_is_required');
       }
     },

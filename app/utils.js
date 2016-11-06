@@ -121,5 +121,9 @@ define(function() {
     return value != false;
   };
 
+  Utils.isEmpty = function(value) {
+    return value == null || value === '';
+  };
+
   return Utils;
 });
