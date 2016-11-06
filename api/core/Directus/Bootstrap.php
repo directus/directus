@@ -26,6 +26,7 @@ use Directus\Util\ArrayUtils;
 use Directus\View\Twig\DirectusTwigExtension;
 use Slim\Extras\Log\DateTimeFileWriter;
 use Slim\Extras\Views\Twig;
+use Slim\Http\Util;
 use Slim\Slim;
 
 /**
@@ -143,6 +144,15 @@ class Bootstrap
 
         // @NOTE: Trying to separate the configuration from bootstrap, bit by bit.
         TableSchema::setConfig(static::get('config'));
+
+        $request = $app->request();
+        // @NOTE: Slim request do not parse a json request body
+        //        We need to parse it ourselves
+        if ($request->getMediaType() == 'application/json') {
+            $env = $app->environment();
+            $jsonRequest = json_decode($request->getBody(), true);
+            $env['slim.request.form_hash'] = Util::stripSlashesIfMagicQuotes($jsonRequest);
+        }
 
         return $app;
     }

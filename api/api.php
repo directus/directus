@@ -277,8 +277,8 @@ if ($authentication->loggedIn()) {
  * Request Payload
  */
 
-$params = $_GET;
-$requestPayload = json_decode($app->request()->getBody(), true);
+$params = $app->request->get();
+$requestPayload = $app->request->post();
 
 $endpoints = Bootstrap::getCustomEndpoints();
 foreach ($endpoints as $endpoint) {
@@ -331,17 +331,8 @@ $app->post("/$v/auth/request-token/?", function() use ($app, $ZendDb, $authentic
         'message' => __t('incorrect_email_or_password'),
     ];
 
-    $request = $app->request();
-    // @NOTE: Slim request do not parse a json request body
-    //        We need to parse it ourselves
-    if ($request->getMediaType() == 'application/json') {
-        $jsonRequest = json_decode($request->getBody(), true);
-        $email = ArrayUtils::get($jsonRequest, 'email', false);
-        $password = ArrayUtils::get($jsonRequest, 'password', false);
-    } else {
-        $email = $request->post('email');
-        $password = $request->post('password');
-    }
+    $email = $app->request->post('email');
+    $password = $app->request->post('password');
 
     if ($email && $password) {
         $user = $authentication->getUserByAuthentication($email, $password);
