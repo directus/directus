@@ -36,23 +36,23 @@ class CreateDirectusGroupsTable extends Ruckusing_Migration_Base
         $t->column('restrict_to_ip_whitelist', 'text', [
             'null' => true,
         ]);
-        $t->column('directus_groups', 'nav_override', 'text');
-        $t->column('directus_groups', 'show_activity', 'tinyinteger', [
+        $t->column('nav_override', 'text');
+        $t->column('show_activity', 'tinyinteger', [
             'limit' => 1,
             'null' => false,
             'default' => 1
         ]);
-        $t->column('directus_groups', 'show_messages', 'tinyinteger', [
+        $t->column('show_messages', 'tinyinteger', [
             'limit' => 1,
             'null' => false,
             'default' => 1
         ]);
-        $t->column('directus_groups', 'show_users', 'tinyinteger', [
+        $t->column('show_users', 'tinyinteger', [
             'limit' => 1,
             'null' => false,
             'default' => 1
         ]);
-        $t->column('directus_groups', 'show_files', 'tinyinteger', [
+        $t->column('show_files', 'tinyinteger', [
             'limit' => 1,
             'null' => false,
             'default' => 1
