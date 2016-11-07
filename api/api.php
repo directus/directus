@@ -1203,7 +1203,6 @@ $app->get("/$v/tables/:table/rows/:id/revisions/?", function ($table, $id) use (
  */
 
 $app->map("/$v/settings(/:id)/?", function ($id = null) use ($acl, $ZendDb, $params, $requestPayload, $app) {
-
     $Settings = new DirectusSettingsTableGateway($acl, $ZendDb);
 
     switch ($app->request()->getMethod()) {
