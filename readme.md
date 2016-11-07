@@ -47,7 +47,7 @@ Think you discover a bug? First, read through our [Docs](https://github.com/dire
 
 
 ## Requirements ##
-NGINX or Apache Server, PHP 5.5+, MySQL 5.2+, pdo_mysql, mod_rewrite, curl, fileinfo, gd, and mcrypt.
+NGINX or Apache Server, PHP 5.5+, MySQL 5.2+, pdo_mysql, mysqli, mod_rewrite, curl, fileinfo, gd, and mcrypt.
 
 
 ## Versioning ##
