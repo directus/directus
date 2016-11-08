@@ -734,6 +734,16 @@ class RelationalTableGateway extends AclAwareTableGateway
         $this->toManyCallStack = [];
         $results = $this->loadManyToOneRelationships($schemaArray, $results);
 
+        // =============================================================================
+        // HOTFIX: Fetching X2M data and Infinite circle loop
+        // =============================================================================
+        // Separate alias fields from table schema array
+        $aliasColumns = $this->filterSchemaAliasFields($schemaArray); // (fmrly $alias_schema)
+        foreach($results as $key => $result) {
+            $this->toManyCallStack = [];
+            $results[$key] = $this->loadToManyRelationships($result, $aliasColumns);
+        }
+
         /**
          * Fetching a set of data
          */
@@ -755,11 +765,6 @@ class RelationalTableGateway extends AclAwareTableGateway
         }
 
         list($result) = $results;
-
-        // Separate alias fields from table schema array
-        $alias_fields = $this->filterSchemaAliasFields($schemaArray); // (fmrly $alias_schema)
-
-        $result = $this->loadToManyRelationships($result, $alias_fields);
 
         return $result;
     }
