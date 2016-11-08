@@ -10,7 +10,7 @@
   text-align: center;
   button[type="submit"] {
     float: right;
-    width: 150px;
+    min-width: 150px;
     font-size: 14px;
     background: $primaryColor;
     color: $white;

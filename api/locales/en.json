@@ -150,6 +150,7 @@
     "table_sort_enabled_message": "You can now sort items with drag-and-drop",
     "table_sort_disabled": "Sorting Disabled",
     "table_sort_disabled_message": "Drag-and-drop sorting is now disabled",
+    "table_sort_multiple_pages_message": "Directus Manual Sorting has been disabled on this page due to items spanning multiple pages",
 
     "item_history": "Item History",
     "leave_a_comment_placeholder": "Leave a comment...",

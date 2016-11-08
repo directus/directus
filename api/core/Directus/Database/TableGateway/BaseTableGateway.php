@@ -129,6 +129,18 @@ class BaseTableGateway extends TableGateway
      */
 
     /**
+     * Make a new table gateway
+     *
+     * @param $tableName
+     *
+     * @return BaseTableGateway
+     */
+    public function makeTable($tableName)
+    {
+        return new self($tableName, $this->adapter, $this->acl);
+    }
+
+    /**
      * Find the identifying string to effectively represent a record in the activity log.
      *
      * @param  Table $tableSchema
@@ -270,7 +282,7 @@ class BaseTableGateway extends TableGateway
         $columns = TableSchema::getAllNonAliasTableColumns($tableName);
         $recordData = $this->schema->castRecordValues($recordData, $columns);
 
-        $TableGateway = new self($tableName, $this->adapter);
+        $TableGateway = $this->makeTable($tableName);
         $rowExists = isset($recordData[$TableGateway->primaryKeyFieldName]);
         if ($rowExists) {
             $Update = new Update($tableName);
@@ -570,7 +582,7 @@ class BaseTableGateway extends TableGateway
             $this->runHook('table.insert.' . $insertTable . ':before', [$insertDataAssoc]);
 
             $result = parent::executeInsert($insert);
-            $insertTableGateway = new self($insertTable, $this->adapter, $this->acl);
+            $insertTableGateway = $this->makeTable($insertTable);
             $resultData = $insertTableGateway->find($this->getLastInsertValue());
 
             $this->runHook('table.insert', [$insertTable, $resultData]);

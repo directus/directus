@@ -552,7 +552,10 @@ require(["config", 'polyfills'], function() {
         var root = location.protocol + "//" + location.host + app.root;
 
         // Ensure the root is part of the anchor href, meaning it's relative.
-        if (href.prop.slice(0, root.length) === root && href.target !== '_BLANK') {
+        // @NOTE: We don't need to strictly check for "_blank".
+        //        it needs to be case insensitive.
+        var target = (href.target || '').toLowerCase();
+        if (href.prop.slice(0, root.length) === root && target !== '_blank') {
           // Stop the default event to ensure the link will not cause a page
           // refresh.
           evt.preventDefault();
@@ -560,11 +563,18 @@ require(["config", 'polyfills'], function() {
           // Don't follow empty links
           if (href.attr === '#') return;
 
+          // Remove the directus sub-path from the anchor href
+          // Backbone.history already have app.root as root.
+          var path = (href.attr || '/');
+          if (path.startsWith(app.root)) {
+            path = path.slice(app.root.length);
+          }
+
           // `Backbone.history.navigate` is sufficient for all Routers and will
           // trigger the correct events. The Router's internal `navigate` method
           // calls this anyways.  The fragment is sliced from the root.
 
-          Backbone.history.navigate(href.attr, true);
+          Backbone.history.navigate(path, true);
         }
       }).on('scroll', function(){
         // Fade in header shadow based on scroll position

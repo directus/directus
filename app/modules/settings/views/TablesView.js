@@ -9,6 +9,7 @@
 
 define([
   'app',
+  'underscore',
   'backbone',
   'core/directus',
   'core/BasePageView',
@@ -25,7 +26,7 @@ define([
   '../SettingsConfig'
 ],
 
-function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManager, Widgets, SchemaManager, Sortable, Notification, DoubleConfirmation, __t, SchemaHelper, SettingsConfig) {
+function(app, _, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManager, Widgets, SchemaManager, Sortable, Notification, DoubleConfirmation, __t, SchemaHelper, SettingsConfig) {
   "use strict";
 
   var SettingsTables = app.module();
@@ -134,7 +135,7 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
 
     serialize: function() {
       var tables;
-      var tableRelated
+      var tableRelated;
       var uis = _.clone(UIManager._getAllUIs());
       var data = {
         ui_types: [],
@@ -479,7 +480,6 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
         case 'multiple_files':
           data['related_table'] = 'directus_files';
         case 'many_to_many':
-          data['junction_key_right'] = id;
           data['data_type'] = 'ALIAS';
           data['relationship_type'] = 'MANYTOMANY';
           break;
@@ -494,7 +494,6 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
         case 'one_to_many':
           data['data_type'] = 'ALIAS';
           data['relationship_type'] = 'ONETOMANY';
-          data['junction_key_right'] = id;
           break;
       }
 
@@ -521,7 +520,10 @@ function(app, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManag
     destroyColumn: function(columnName) {
       var originalColumnModel = this.collection.get(columnName);
       var columnModel = originalColumnModel.clone();
-      columnModel.url = originalColumnModel.url;
+      // url can be a function or a string
+      // getting the result directly from the original model will prevent issue calling the function
+      // calling the url() on the cloned model will throw an error because it doesn't have a collection object
+      columnModel.url = _.result(originalColumnModel, 'url');
 
       if (!columnModel) {
         Notification.error('Error', 'Column '+columnName+' not found.');

@@ -4,40 +4,40 @@ namespace Directus\Files;
 
 class Thumbnail
 {
+    private static $imageFormatsSupported = [
+        'jpg',
+        'jpeg',
+        'gif',
+        'png',
+    ];
 
-    public static function generateThumbnail($localPath, $format, $thumbnailSize, $cropEnabled)
+    private static $nonImageFormatsSupported = [
+        'svg',
+        'pdf',
+        'psd',
+        'tif',
+        'tiff',
+    ];
+
+    public static function generateThumbnail($targetContent, $format, $thumbnailSize, $cropEnabled)
     {
-        switch ($format) {
-            case 'jpg':
-            case 'jpeg':
-                // $img = imagecreatefromjpeg($localPath);
-                $img = imagecreatefromstring($localPath);
-                break;
-            case 'gif':
-                // $img = imagecreatefromgif($localPath);
-                $img = imagecreatefromstring($localPath);
-                break;
-            case 'png':
-                // $img = imagecreatefrompng($localPath);
-                $img = imagecreatefromstring($localPath);
-                break;
-            case 'pdf':
-            case 'psd':
-            case 'tif':
-            case 'tiff':
-            case 'svg':
-                if (extension_loaded('imagick')) {
-                    $image = new \Imagick();
-                    $image->readImageBlob($localPath);
-                    $image->setIteratorIndex(0);
-                    $image->setImageFormat('jpeg');
-                    $img = $image->getImageBlob();
-                } else {
-                    return false;
-                }
-                break;
-            default:
-                return false;
+        if (in_array($format, static::$nonImageFormatsSupported)) {
+            $format = 'jpeg';
+            $targetContent = static::createImageFromNonImage($targetContent, $format);
+        }
+
+        if (!in_array($format, static::$imageFormatsSupported)) {
+            return false;
+        }
+
+        if (!$targetContent) {
+            return false;
+        }
+
+        $img = imagecreatefromstring($targetContent);
+
+        if ($img === false) {
+            return false;
         }
 
         $w = imagesx($img);
@@ -88,6 +88,28 @@ class Thumbnail
 
         imagedestroy($img);
         return $imgResized;
+    }
+
+    /**
+     * Create a image from a non image file content. (Ex. PDF, PSD or TIFF)
+     *
+     * @param $content
+     * @param string $format
+     *
+     * @return bool|string
+     */
+    public static function createImageFromNonImage($content, $format = 'jpeg')
+    {
+        if (!extension_loaded('imagick')) {
+            return false;
+        }
+
+        $image = new \Imagick();
+        $image->readImageBlob($content);
+        $image->setIteratorIndex(0);
+        $image->setImageFormat($format);
+
+        return $image->getImageBlob();
     }
 
     public static function writeImage($extension, $path, $img, $quality)

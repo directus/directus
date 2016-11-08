@@ -135,14 +135,6 @@ define(function(require, exports, module) {
       }
 
       var sync = function () {
-        _.each(models, function(model) {
-          if (!(model instanceof Backbone.Model)) {
-            model = collection.get(model);
-          }
-
-          model.trigger('sync', model, model.collection, options);
-        });
-
         collection.trigger('sync');
       };
 

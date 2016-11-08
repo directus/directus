@@ -177,7 +177,6 @@ class RelationalTableGateway extends BaseTableGateway
         $deltaRecordData = $recordIsNew ? [] : array_intersect_key((array)$parentRecordWithForeignKeys, (array)$fullRecordData);
 
         switch ($activityEntryMode) {
-
             // Activity logging is enabled, and I am a nested action
             case self::ACTIVITY_ENTRY_MODE_CHILD:
                 $logEntryAction = $recordIsNew ? DirectusActivityTableGateway::ACTION_ADD : DirectusActivityTableGateway::ACTION_UPDATE;
@@ -191,6 +190,7 @@ class RelationalTableGateway extends BaseTableGateway
                     'parent_table' => isset($parentData['table_name']) ? $parentData['table_name'] : null,
                     'data' => json_encode($fullRecordData),
                     'delta' => json_encode($deltaRecordData),
+                    'parent_changed' => (int)$parentRecordChanged,
                     'row_id' => $rowId,
                     'identifier' => $this->findRecordIdentifier($tableSchema, $fullRecordData),
                     'logged_ip' => isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '',
@@ -331,6 +331,12 @@ class RelationalTableGateway extends BaseTableGateway
                                 $recordData[$colName][$index]['data'] = $Files->saveEmbedData($row['data']);
                             } else {
                                 $recordData[$colName][$index]['data'] = $Files->saveData($row['data']['data'], $row['data']['name']);
+                                // @NOTE: this is duplicate code from the upload file endpoint
+                                //        to maintain the file title.
+                                $recordData[$colName][$index]['data'] = array_merge(
+                                    $recordData[$colName][$index]['data'],
+                                    ArrayUtils::omit($row['data'], ['data', 'name'])
+                                );
                             }
                         }
 
@@ -343,6 +349,9 @@ class RelationalTableGateway extends BaseTableGateway
                             $recordData[$colName] = $Files->saveEmbedData($foreignRow);
                         } else {
                             $recordData[$colName] = $Files->saveData($foreignRow['data'], $foreignRow['name']);
+                            // @NOTE: this is duplicate code from the upload file endpoint
+                            //        to maintain the file title.
+                            $recordData[$colName] = array_merge($recordData[$colName], ArrayUtils::omit($foreignRow, ['data', 'name']));
                         }
                     }
                     unset($recordData[$colName]['data']);
@@ -694,6 +703,16 @@ class RelationalTableGateway extends BaseTableGateway
         // HOTFIX: Fetching X2M data and Infinite circle loop
         // =============================================================================
         $aliasColumns = $tableSchema->getAliasColumns();
+        foreach($results as $key => $result) {
+            $this->toManyCallStack = [];
+            $results[$key] = $this->loadToManyRelationships($result, $aliasColumns);
+        }
+
+        // =============================================================================
+        // HOTFIX: Fetching X2M data and Infinite circle loop
+        // =============================================================================
+        // Separate alias fields from table schema array
+        $aliasColumns = $this->filterSchemaAliasFields($schemaArray); // (fmrly $alias_schema)
         foreach($results as $key => $result) {
             $this->toManyCallStack = [];
             $results[$key] = $this->loadToManyRelationships($result, $aliasColumns);
@@ -1081,11 +1100,7 @@ class RelationalTableGateway extends BaseTableGateway
                     return $table_entries;
                 }
 
-                if ($parentField === null) {
-                    $parentField = $foreign_id_column;
-                }
-
-                $this->addToManyCallStack($level, $parentField, $foreign_table_name);
+                $this->addToManyCallStack($level, is_null($parentField) ? $foreign_id_column : $parentField, $foreign_table_name);
 
                 // Aggregate all foreign keys for this relationship (for each row, yield the specified foreign id)
                 $yield = function ($row) use ($foreign_id_column, $table_entries) {

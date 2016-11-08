@@ -486,8 +486,9 @@ define(function(require, exports, module) {
     },
 
     settings: function(name) {
-      if (_.contains(this.navBlacklist,'settings'))
+      if (_.contains(this.navBlacklist, 'settings') || app.users.getCurrentUser().get('group').id !== 1) {
         return this.notFound();
+      }
 
       this.setTitle(app.settings.get('global').get('project_name') + ' | '+__t('settings'));
 
@@ -519,8 +520,9 @@ define(function(require, exports, module) {
     },
 
     settingsTable: function(tableName) {
-      if (_.contains(this.navBlacklist,'settings'))
+      if (_.contains(this.navBlacklist, 'settings') || app.users.getCurrentUser().get('group').id !== 1) {
         return this.notFound();
+      }
 
       this.setTitle(app.settings.get('global').get('project_name') + ' | Settings');
 
@@ -530,8 +532,9 @@ define(function(require, exports, module) {
     },
 
     settingsPermissions: function(groupId) {
-      if (_.contains(this.navBlacklist,'settings'))
+      if (_.contains(this.navBlacklist, 'settings') || app.users.getCurrentUser().get('group').id !== 1) {
         return this.notFound();
+      }
 
       this.setTitle(app.settings.get('global').get('project_name') + ' | Settings - Permissions');
       var collection = new Settings.GroupPermissions.Collection([], {url: app.API_URL + 'privileges/'+groupId});

@@ -279,7 +279,7 @@ define([
         _.each(e.dataTransfer.files, function(file) {
           // force a fileModel object
           var fileModel = new FilesModel({}, {collection:{}});
-          fileModel.setFile(file, function(item) {
+          fileModel.setFile(file, null, function(item) {
             item[app.statusMapping.status_name] = app.statusMapping.active_num;
             // Unset the model ID so that a new file record is created
             // (and the old file record isn't replaced w/ this data)

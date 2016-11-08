@@ -1,6 +1,9 @@
 define([
   "app",
+  'underscore',
   "backbone",
+  'core/notification',
+  'core/t',
   'helpers/model',
   "core/table/table.headview",
   "core/table/table.bodyview",
@@ -8,7 +11,7 @@ define([
   "plugins/jquery.flashrow"
 ],
 
-function(app, Backbone, ModelHelper, TableHead, TableBody, TableFooter) {
+function(app, _, Backbone, Notification, __t, ModelHelper, TableHead, TableBody, TableFooter) {
 
   "use strict";
 
@@ -26,6 +29,7 @@ function(app, Backbone, ModelHelper, TableHead, TableBody, TableFooter) {
         id: this.collection.table.id,
         selectable: this.options.selectable,
         sortable: this.options.sortable,
+        disabledSorting: !this.sortable,
         showEmptyMessage: (this.collection.length === 0 && !this.options.hideEmptyMessage)
       };
     },
@@ -164,6 +168,32 @@ function(app, Backbone, ModelHelper, TableHead, TableBody, TableFooter) {
       return columns;
     },
 
+    toggleSortable: function() {
+      if (this.sortableWidget.options.sort) {
+        this.disableSortable();
+        Notification.info(__t('table_sort_disabled'), '<i>'+__t('table_sort_disabled_message')+'</i>', {timeout: 3000});
+      } else {
+        // hotfix: do not enable sort when there multiple pages
+        if (this.collection.getTotalCount() > this.collection.rowsPerPage) {
+          Notification.warning(__t('table_sort_disabled'), '<i>'+__t('table_sort_multiple_pages_message')+'</i>', {timeout: 6000});
+          return;
+        }
+
+        this.enableSortable();
+        Notification.info(__t('table_sort_enabled'), '<i>'+__t('table_sort_enabled_message')+'</i>', {timeout: 3000});
+      }
+    },
+
+    enableSortable: function() {
+      this.$el.find('table').removeClass('disable-sorting');
+      this.sortable = this.sortableWidget.options.sort = true;
+    },
+
+    disableSortable: function() {
+      this.$el.find('table').addClass('disable-sorting');
+      this.sortable = this.sortableWidget.options.sort = false;
+    },
+
     initialize: function(options) {
       var collection = this.collection;
 
@@ -200,6 +230,18 @@ function(app, Backbone, ModelHelper, TableHead, TableBody, TableFooter) {
 
       if (this.options.selectable === undefined) {
         this.options.selectable = true;
+      }
+
+      // ==================================================================================
+      // Drag and drop sort
+      // ----------------------------------------------------------------------------------
+      // Let remember the sortable value of the table
+      // After the view is rendered this value gets set to false again
+      // Not being able to sort again until it's pressed.
+      // Or not letting the entries to be sort if the entries are bigger than perPage limit
+      // ==================================================================================
+      if (this.sortable === undefined) {
+        this.sortable = false;
       }
 
       this.saveAfterDrop = this.options.saveAfterDrop = (options.saveAfterDrop !== undefined) ?  options.saveAfterDrop : true;
