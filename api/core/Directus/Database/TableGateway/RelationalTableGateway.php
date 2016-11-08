@@ -876,6 +876,20 @@ class RelationalTableGateway extends BaseTableGateway
         if (ArrayUtils::has($params, 'group_by')) {
             $query->groupBy($params['group_by']);
         }
+
+        // Filter entries that match one of these values separated by comma
+        // in[field]=value1,value2
+        if (ArrayUtils::has($params, 'in') && is_array($params['in'])) {
+            foreach($params['in'] as $column => $values) {
+                $values = array_map(function($item) {
+                    return trim($item);
+                }, explode(',', $values));
+
+                if (count($values) > 0) {
+                    $query->whereIn($this->primaryKeyFieldName, $values);
+                }
+            }
+        }
     }
 
     /**
