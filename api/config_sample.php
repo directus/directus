@@ -14,6 +14,15 @@ define('API_VERSION', 1);
  */
 define('DIRECTUS_ENV', 'development');
 
+// Cors
+$customHeaders = [
+  ['Acces-Control-Allow-Headers', 'authorization, something, somethingElse'],
+  ['Acces-Control-Allow-Credentials', 'true']
+];
+
+define('CORS_ENABLED', true);
+define('CORS_ORIGIN', 'https://api.example.com');
+
 // MySQL Settings
 define('DB_TYPE', 'mysql');
 define('DB_HOST', 'localhost');
