@@ -224,7 +224,7 @@ define([
         var id = $(e.target).closest('tr').attr('data-id');
         model = collection.get(id);
 
-        if (model.isFileAllowed(self.options.settings.get('allowed_filetypes'))) {
+        if (model.isAllowed(self.options.settings.get('allowed_filetypes'))) {
           fileModel.clear({silent: true});
           fileModel.set(_.clone(model.attributes));
         }

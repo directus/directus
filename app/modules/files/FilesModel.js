@@ -46,8 +46,8 @@ function(app, _, Backbone, EntriesModel, Notification, __t, Utils, File) {
       return name;
     },
 
-    setFile: function(file, allowedMimeTypes, fn) {
-      if (!this.isMimeTypeAllowed(file.type, allowedMimeTypes)) {
+    setFile: function(file, allowedTypes, fn) {
+      if (!this.isFileAllowed(file, allowedTypes)) {
         return false;
       }
 
@@ -100,10 +100,10 @@ function(app, _, Backbone, EntriesModel, Notification, __t, Utils, File) {
 
     // setData will try to get thumbnail from a base64
     // this is used by retrieve links
-    setData: function(item, allowedMimeTypes) {
+    setData: function(item, allowedTypes) {
       var model = this;
 
-      if (!this.isMimeTypeAllowed(item.type, allowedMimeTypes)) {
+      if (!this.isFileAllowed(item, allowedTypes)) {
         return false;
       }
 
@@ -114,7 +114,7 @@ function(app, _, Backbone, EntriesModel, Notification, __t, Utils, File) {
       });
     },
 
-    setLink: function(url, allowedMimeTypes) {
+    setLink: function(url, allowedTypes) {
       var model = this;
       app.sendLink(url, function(data) {
         var item = data[0];
@@ -124,30 +124,40 @@ function(app, _, Backbone, EntriesModel, Notification, __t, Utils, File) {
         item.id = undefined;
         item.user = model.userId;
 
-        model.setData(item, allowedMimeTypes);
+        model.setData(item, allowedTypes);
       });
     },
 
-    isFileAllowed: function(allowedMimeTypes) {
-      return this.isMimeTypeAllowed(this.get('type'), allowedMimeTypes);
-    },
+    isFileAllowed: function(file, allowedTypes) {
+      var allowed = this.isTypeAllowed(file.type, allowedTypes);
 
-    isMimeTypeAllowed: function(fileType, allowedMimeTypes) {
-      // if there's not fileType but allowedMimeTypes provided
-      // by default the file is not allowed
-      var allowed = (!fileType && allowedMimeTypes) ? false : true;
-
-      if (fileType && allowedMimeTypes) {
-        var self = this;
-        allowed = allowedMimeTypes.split(',').some(function (allowedType) {
-          return self.isMimeType(fileType, allowedType);
-        });
+      if (!allowed && this.hasExtension(file.name)) {
+        allowed = this.isExtensionAllowed(file.name, allowedTypes);
       }
 
       // this should not be here
       // but, we will let it slide for now.
       if (!allowed) {
         app.router.openModal({type: 'alert', text: 'This type of file is not allowed'});
+      }
+
+      return allowed;
+    },
+
+    isAllowed: function(allowedTypes) {
+      return this.isFileAllowed(this.toJSON(), allowedTypes);
+    },
+
+    isTypeAllowed: function(fileType, allowedTypes) {
+      // if there's not fileType but allowedMimeTypes provided
+      // by default the file is not allowed
+      var allowed = (!fileType && allowedTypes) ? false : true;
+
+      if (fileType && allowedTypes) {
+        var self = this;
+        allowed = allowedTypes.split(',').some(function (allowedType) {
+          return self.isMimeType(fileType, allowedType) || self.isType(fileType, allowedType);
+        });
       }
 
       return allowed;
@@ -164,6 +174,37 @@ function(app, _, Backbone, EntriesModel, Notification, __t, Utils, File) {
       }
 
       return allowedMimeType === mimeType;
+    },
+
+    hasExtension: function(name) {
+      return (_.isString(name) && name.indexOf('.') >= 0);
+    },
+
+    getExtension: function(name) {
+      return this.hasExtension(name) ? name.split('.').pop() : null;
+    },
+
+    isExtensionAllowed: function(name, allowedTypes) {
+      return this.hasExtension(name) ? this.isType(this.getExtension(name), allowedTypes) : false;
+    },
+
+    getSubType: function(type) {
+      if (type.indexOf('/') >= 0) {
+        type  = type.split('/').pop();
+      }
+
+      return type;
+    },
+
+    isType: function(type, allowedType) {
+      if (!_.isString(allowedType)) {
+        return false;
+      }
+
+      allowedType = this.getSubType(allowedType);
+      type = this.getSubType(type);
+
+      return _.isString(type) && type.toLowerCase() === allowedType.toLowerCase();
     },
 
     constructor: function FilesModel(data, options) {
