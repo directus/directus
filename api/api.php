@@ -27,13 +27,13 @@ switch (DIRECTUS_ENV) {
 }
 
 if ( CORS_ENABLED ){
-  header('Acces-Control-Allow-Origin: '. CORS_ORIGIN);
-  if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
-    exit;
-  }
-
+  header('Access-Control-Allow-Origin: '. CORS_ORIGIN);
   foreach ($customHeaders as list($headerType, $headerValue)){
     header($headerType . ': ' . $headerValue);
+  }
+
+  if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
+    exit;
   }
 }
 

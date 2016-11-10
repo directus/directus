@@ -15,9 +15,10 @@ define('API_VERSION', 1);
 define('DIRECTUS_ENV', 'development');
 
 // Cors
+
 $customHeaders = [
-  ['Acces-Control-Allow-Headers', 'authorization, something, somethingElse'],
-  ['Acces-Control-Allow-Credentials', 'true']
+  ['Access-Control-Allow-Headers', 'authorization, something, somethingElse'],
+  ['Access-Control-Allow-Credentials', 'true']
 ];
 
 define('CORS_ENABLED', true);
