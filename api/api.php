@@ -1680,7 +1680,7 @@ $app->notFound(function () use ($app, $acl, $ZendDb) {
     $settings = $settingsTable->fetchCollection('global');
 
     $projectName = isset($settings['project_name']) ? $settings['project_name'] : 'Directus';
-    $projectLogoURL = DIRECTUS_PATH . '/assets/img/directus-logo-flat.svg';
+    $projectLogoURL = rtrim(DIRECTUS_PATH, '/') . '/assets/img/directus-logo-flat.svg';
     if (isset($settings['cms_thumbnail_url']) && $settings['cms_thumbnail_url']) {
         $projectLogoURL = $settings['cms_thumbnail_url'];
     }
