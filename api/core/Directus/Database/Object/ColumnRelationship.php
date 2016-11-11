@@ -24,6 +24,10 @@ class ColumnRelationship implements \ArrayAccess, Arrayable, \JsonSerializable
 {
     use ArraySetter, ArrayPropertyAccess, ArrayPropertyToArray;
 
+    const ONE_TO_MANY = 'ONETOMANY';
+    const MANY_TO_MANY = 'MANYTOMANY';
+    const MANY_TO_ONE = 'MANYTOONE';
+
     /**
      * @var string
      */
@@ -203,6 +207,36 @@ class ColumnRelationship implements \ArrayAccess, Arrayable, \JsonSerializable
     public function getJunctionKeyRight()
     {
         return $this->junctionKeyRight;
+    }
+
+    /**
+     * Checks whether the relatiopship is MANY TO ONE
+     *
+     * @return bool
+     */
+    public function isManyToOne()
+    {
+        return $this->getType() === static::MANY_TO_ONE;
+    }
+
+    /**
+     * Checks whether the relatiopship is MANY TO MANY
+     *
+     * @return bool
+     */
+    public function isManyToMany()
+    {
+        return $this->getType() === static::MANY_TO_MANY;
+    }
+
+    /**
+     * Checks whether the relatiopship is ONE TO MANY
+     *
+     * @return bool
+     */
+    public function isOneToMany()
+    {
+        return $this->getType() === static::ONE_TO_MANY;
     }
 
     /**

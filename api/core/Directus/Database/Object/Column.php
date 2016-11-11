@@ -28,8 +28,6 @@ class Column implements \ArrayAccess, Arrayable, \JsonSerializable
     use ArraySetter, ArrayPropertyAccess, ArrayPropertyToArray;
 
     const ALIAS = 'ALIAS';
-    const ONE_TO_MANY = 'ONETOMANY';
-    const MANY_TO_MANY = 'MANYTOMANY';
 
     /**
      * @var string
@@ -730,14 +728,14 @@ class Column implements \ArrayAccess, Arrayable, \JsonSerializable
         $isAliasType = false;
         $isLegacyAliasType = in_array($this->getType(), [
             static::ALIAS,
-            static::ONE_TO_MANY,
-            static::MANY_TO_MANY
+            ColumnRelationship::ONE_TO_MANY,
+            ColumnRelationship::MANY_TO_MANY
         ]);
 
         if ($this->hasRelationship()) {
             $isAliasType = in_array($this->getRelationship()->getType(), [
-                static::ONE_TO_MANY,
-                static::MANY_TO_MANY
+                ColumnRelationship::ONE_TO_MANY,
+                ColumnRelationship::MANY_TO_MANY
             ]);
         }
 
@@ -753,6 +751,37 @@ class Column implements \ArrayAccess, Arrayable, \JsonSerializable
     {
         return in_array($this->getName(), ['id', 'sort', STATUS_COLUMN_NAME]);
     }
+
+    /**
+     * Checks whether the relatiopship is MANY TO ONE
+     *
+     * @return bool
+     */
+    public function isManyToOne()
+    {
+        return $this->hasRelationship() ? $this->getRelationship()->isManyToOne() : false;
+    }
+
+    /**
+     * Checks whether the relatiopship is MANY TO MANY
+     *
+     * @return bool
+     */
+    public function isManyToMany()
+    {
+        return $this->hasRelationship() ? $this->getRelationship()->isManyToMany() : false;
+    }
+
+    /**
+     * Checks whether the relatiopship is ONE TO MANY
+     *
+     * @return bool
+     */
+    public function isOneToMany()
+    {
+        return $this->hasRelationship() ? $this->getRelationship()->isOneToMany() : false;
+    }
+
 
     public function toArray()
     {
