@@ -127,7 +127,7 @@
                 } ?></td>
         </tr>
         <tr>
-            <td class="item"><?= __t('Media Directory Writable'); ?> (/media)</td>
+            <td class="item"><?= __t('Media Directory Writable'); ?> (/storage/uploads)</td>
             <td class="result"><?php if (is_writable('../storage/uploads')) {
                     echo '<span class="label label-success">' . __t('Yes') . '</span>';
                 } else {
