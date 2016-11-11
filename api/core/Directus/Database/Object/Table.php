@@ -312,7 +312,7 @@ class Table implements \ArrayAccess, Arrayable, \JsonSerializable
     /**
      * Gets all the table alias columns
      *
-     * @return array
+     * @return Column[]
      */
     public function getAliasColumns()
     {
