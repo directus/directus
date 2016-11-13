@@ -26,6 +26,18 @@ switch (DIRECTUS_ENV) {
         break;
 }
 
+if ( CORS_ENABLED ){
+  header('Access-Control-Allow-Origin: '. CORS_ORIGIN);
+  foreach ($customHeaders as list($headerType, $headerValue)){
+    header($headerType . ': ' . $headerValue);
+  }
+
+  if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
+    exit;
+  }
+}
+
+
 $isHttps = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off';
 $url = ($isHttps ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'];
 define('HOST_URL', $url);
