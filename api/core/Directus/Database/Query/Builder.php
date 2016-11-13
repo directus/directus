@@ -40,6 +40,11 @@ class Builder
     protected $from;
 
     /**
+     * @var array|null
+     */
+    protected $joins;
+
+    /**
      * @var array
      */
     protected $wheres = [];
@@ -125,6 +130,18 @@ class Builder
     public function getFrom()
     {
         return $this->from;
+    }
+
+    public function join($table, $on, $columns = ['*'], $type = 'inner')
+    {
+        $this->joins[] = compact('table', 'on', 'columns', 'type');
+
+        return $this;
+    }
+
+    public function getJoins()
+    {
+        return $this->joins;
     }
 
     /**
@@ -431,6 +448,12 @@ class Builder
         $select = $this->getSqlObject()->select($this->getFrom());
         $select->columns($this->getColumns());
         $select->order($this->buildOrders());
+
+        if ($this->getJoins() !== null) {
+            foreach($this->getJoins() as $join) {
+                $select->join($join['table'], $join['on'], $join['columns'], $join['type']);
+            }
+        }
 
         if ($this->getOffset() !== null) {
             $select->offset($this->getOffset());
