@@ -1,6 +1,5 @@
 <?php
 return [
-
     // Unique session naming
     'session' => [
         'prefix' => 'directus6_'
@@ -42,12 +41,15 @@ return [
         ],
         'transport' => 'mail'
     ],
-    // 'SMTP' => array(
-    //   'host' => '',
-    //   'port' => 25,
-    //   'username' => '',
-    //   'password' => ''
-    // ),
+
+    'cors' => [
+        'enabled' => false,
+        'origin' => 'http://webapp.local:8888',
+        'headers' => [
+            ['Access-Control-Allow-Headers', 'Authorization, Content-Type, Access-Control-Allow-Origin'],
+            ['Access-Control-Allow-Credentials', 'false']
+        ]
+    ],
 
     // Use these hooks to extend the base Directus functionality
     'hooks' => [

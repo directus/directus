@@ -26,18 +26,6 @@ switch (DIRECTUS_ENV) {
         break;
 }
 
-if ( CORS_ENABLED ){
-  header('Access-Control-Allow-Origin: '. CORS_ORIGIN);
-  foreach ($customHeaders as list($headerType, $headerValue)){
-    header($headerType . ': ' . $headerValue);
-  }
-
-  if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
-    exit;
-  }
-}
-
-
 $isHttps = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off';
 $url = ($isHttps ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'];
 define('HOST_URL', $url);
@@ -97,6 +85,19 @@ if (array_key_exists('hooks', $config)) {
 if (array_key_exists('filters', $config)) {
     // set seconds parameter "true" to add as filters
     load_registered_hooks($config['filters'], true);
+}
+
+// @TODO: Move this into middleware
+$corsOptions = ArrayUtils::get($config, 'cors');
+if (ArrayUtils::get($corsOptions, 'enabled', false)) {
+    header('Access-Control-Allow-Origin: ' . ArrayUtils::get($corsOptions, 'origin', '*'));
+    foreach (ArrayUtils::get($corsOptions, 'headers', []) as list($headerType, $headerValue)) {
+        header($headerType . ': ' . $headerValue);
+    }
+
+    if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
+        exit;
+    }
 }
 
 /**

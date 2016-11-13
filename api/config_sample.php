@@ -14,16 +14,6 @@ define('API_VERSION', 1);
  */
 define('DIRECTUS_ENV', 'development');
 
-// Cors
-
-$customHeaders = [
-  ['Access-Control-Allow-Headers', 'authorization, something, somethingElse'],
-  ['Access-Control-Allow-Credentials', 'true']
-];
-
-define('CORS_ENABLED', true);
-define('CORS_ORIGIN', 'https://api.example.com');
-
 // MySQL Settings
 define('DB_TYPE', 'mysql');
 define('DB_HOST', 'localhost');
@@ -33,14 +23,12 @@ define('DB_USER', 'root');
 define('DB_PASSWORD', 'password');
 define('DB_PREFIX', '');
 
-
 define('DB_HOST_SLAVE', ''); //Leave undefined to fall back on master
 define('DB_USER_SLAVE', '');
 define('DB_PASSWORD_SLAVE', '');
 
 // Url path to Directus
 define('DIRECTUS_PATH', '/directus/');
-
 
 $host = 'www.example.com'; // (Make it work for CLI)
 if (isset($_SERVER['SERVER_NAME'])) {
