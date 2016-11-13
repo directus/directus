@@ -13,6 +13,15 @@ class StringUtilsTest extends PHPUnit_Framework_TestCase
         $this->assertFalse(StringUtils::contains('JavaScript, Java, PHP, C', ['C#', 'C++']));
     }
 
+    public function testHas()
+    {
+        $this->assertTrue(StringUtils::has('I am learning the abc', 'abc'));
+        $this->assertFalse(StringUtils::has('I am John', 'Jack'));
+
+        $this->assertTrue(StringUtils::has('JavaScript, Java, PHP, C', ['Java', 'C']));
+        $this->assertFalse(StringUtils::has('JavaScript, Java, PHP, C', ['C#', 'C++']));
+    }
+
     public function testStartsWith()
     {
         $string = 'john_mcclane';
