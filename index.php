@@ -136,13 +136,14 @@ function getUsers()
         'table_name' => 'directus_users',
         'perPage' => 1000,
         STATUS_COLUMN_NAME => STATUS_ACTIVE_NUM,
+        'depth' => 1,
         'columns_visible' => [STATUS_COLUMN_NAME, 'avatar', 'first_name', 'last_name', 'group', 'email', 'position', 'last_access']
     ]);
 
     // Lets get the gravatar if no avatar is set.
     // TODO: Add this on insert/update of any user.
     $usersRowsToUpdate = [];
-    foreach ($users['rows'] as $user) {
+    foreach ($users['data'] as $user) {
         $hasAvatar = array_key_exists('avatar', $user) ? $user['avatar'] : false;
         $hasEmail = array_key_exists('email', $user) ? $user['email'] : false;
         if (!$hasAvatar && $hasEmail) {
@@ -164,7 +165,7 @@ function getUsers()
 function getCurrentUserInfo($users)
 {
     global $authenticatedUser;
-    $data = array_filter($users['rows'], function ($item) use ($authenticatedUser) {
+    $data = array_filter($users['data'], function ($item) use ($authenticatedUser) {
         return ($item['id'] == $authenticatedUser['id']);
     });
 
@@ -186,7 +187,7 @@ function getGroups()
     // @todo: move to DirectusGroupsTableGateway
     $groupEntries = $groups->getEntries();
 
-    $groupEntries['rows'] = array_map(function ($row) {
+    $groupEntries['data'] = array_map(function ($row) {
         if (array_key_exists('nav_override', $row)) {
             if (!empty($row['nav_override'])) {
                 $row['nav_override'] = @json_decode($row['nav_override']);
@@ -198,7 +199,7 @@ function getGroups()
             }
         }
         return $row;
-    }, $groupEntries['rows']);
+    }, $groupEntries['data']);
 
     return $groupEntries;
 }
@@ -425,8 +426,8 @@ $tableSchema = TableSchema::getAllSchemas($currentUserInfo['group']['id'], $cach
 $groupId = $currentUserInfo['group']['id'];
 $groups = getGroups();
 $currentUserGroup = [];
-if (isset($groups['rows']) && count($groups['rows'] > 0)) {
-    foreach ($groups['rows'] as $group) {
+if (isset($groups['data']) && count($groups['data']) > 0) {
+    foreach ($groups['data'] as $group) {
         if ($group['id'] === $groupId) {
             $currentUserGroup = $group;
             break;
