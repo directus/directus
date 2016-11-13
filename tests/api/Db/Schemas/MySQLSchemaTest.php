@@ -27,35 +27,28 @@ class MySQLSchemaTest extends PHPUnit_Framework_TestCase
 
     public function testHasTable()
     {
-        $mockSchema = $this->getMockSchema(['getTable']);
+        // Table exists
+        $schema = $this->getSchema(['result_count' => 1]);
+        $this->assertTrue($schema->hasTable('users'));
 
-        $mockSchema->expects($this->at(0))
-                    ->method('getTable')
-                    ->with($this->equalTo('sales'))
-                    ->will($this->returnValue(false));
-
-        $mockSchema->expects($this->at(1))
-            ->method('getTable')
-            ->with($this->equalTo('users'))
-            ->will($this->returnValue(['table_name' => 'users']));
-
-        $this->assertFalse($mockSchema->hasTable('sales'));
-        $this->assertTrue($mockSchema->hasTable('users'));
+        // Table not exists
+        $schema = $this->getSchema(['result_count' => 0]);
+        $this->assertFalse($schema->hasTable('sales'));
     }
 
     public function testTableExists()
     {
-        $mockSchema = $this->getMockSchema(['getTable']);
+        $mockSchema = $this->getMockSchema(['hasTable']);
 
         $mockSchema->expects($this->at(0))
-            ->method('getTable')
+            ->method('hasTable')
             ->with($this->equalTo('sales'))
             ->will($this->returnValue(false));
 
         $mockSchema->expects($this->at(1))
-            ->method('getTable')
+            ->method('hasTable')
             ->with($this->equalTo('users'))
-            ->will($this->returnValue(['table_name' => 'users']));
+            ->will($this->returnValue(true));
 
         $this->assertFalse($mockSchema->tableExists('sales'));
         $this->assertTrue($mockSchema->tableExists('users'));
@@ -65,7 +58,7 @@ class MySQLSchemaTest extends PHPUnit_Framework_TestCase
     {
         $schema = $this->getSchema();
 
-        $this->assertInternalType('int', $schema->someTableExists(['users', 'sales']));
+        $this->assertInternalType('bool', $schema->someTableExists(['users', 'sales']));
     }
 
     public function testGetColumns()
