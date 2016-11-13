@@ -1,7 +1,6 @@
 <?php
 namespace Directus\Database\TableGateway;
 
-use Directus\Bootstrap;
 use Directus\Database\Object\Table;
 use Directus\Database\Exception;
 use Directus\Database\Query\Builder;
@@ -35,6 +34,7 @@ class RelationalTableGateway extends BaseTableGateway
         'offset' => 0,
         'skip' => null,
         'search' => null,
+        'depth' => 1,
         'status' => null
     ];
 
@@ -363,17 +363,17 @@ class RelationalTableGateway extends BaseTableGateway
     }
 
     /**
-     * @param array $schema The table schema array.
+     * @param Table $schema The table schema array.
      * @param array $parentRow The parent record being updated.
      * @return  array
      */
     public function addOrUpdateManyToOneRelationships($schema, $parentRow, &$childLogEntries = null, &$parentCollectionRelationshipsChanged = false)
     {
         // Create foreign row and update local column with the data id
-        foreach ($schema as $column) {
+        foreach ($schema->getColumns() as $column) {
             $colName = $column['id'];
 
-            if (!isset($column['relationship']) || !is_array($column['relationship'])) {
+            if (!$column->hasRelationship()) {
                 continue;
             }
 
@@ -399,10 +399,8 @@ class RelationalTableGateway extends BaseTableGateway
             $foreignDataSet = $parentRow[$colName];
 
             $colUiType = $column['ui'];
-
-            $isManyToOne = (array_key_exists('relationship', $column) &&
-                $column['relationship']['type'] == 'MANYTOONE'
-            );
+            // @TODO: create isManyToOne, etc helpers in Relationship and Column
+            $isManyToOne = $column->hasRelationship() && $column->getRelationship()->getType() === 'MANYTOONE';
 
             /** Many-to-One */
             if ($isManyToOne) {
@@ -425,17 +423,17 @@ class RelationalTableGateway extends BaseTableGateway
     }
 
     /**
-     * @param array $schema The table schema array.
+     * @param Table $schema The table schema array.
      * @param array $parentRow The parent record being updated.
      * @return  array
      */
     public function addOrUpdateToManyRelationships($schema, $parentRow, &$childLogEntries = null, &$parentCollectionRelationshipsChanged = false, $parentData = [])
     {
         // Create foreign row and update local column with the data id
-        foreach ($schema as $column) {
+        foreach ($schema->getColumns() as $column) {
             $colName = $column['id'];
 
-            if (!isset($column['relationship']) || !is_array($column['relationship'])) {
+            if (!$column->hasRelationship()) {
                 continue;
             }
 
@@ -476,9 +474,9 @@ class RelationalTableGateway extends BaseTableGateway
                                 continue;
                             }
 
-                            $foreignSchemaArray = TableSchema::getSchemaArray($ForeignTable->table);
-                            $hasActiveColumn = $this->schemaHasActiveColumn($foreignSchemaArray);
-                            $foreignColumn = TableSchema::getColumnSchemaArray($ForeignTable->table, $foreignJoinColumn);
+                            $foreignSchema = TableSchema::getTableSchema($ForeignTable->getTable());
+                            $hasActiveColumn = $foreignSchema->hasStatusColumn();
+                            $foreignColumn = TableSchema::getColumnSchemaArray($ForeignTable->getTable(), $foreignJoinColumn);
                             $hasPrimaryKey = isset($foreignRecord[$ForeignTable->primaryKeyFieldName]);
                             $canBeNull = $foreignColumn['is_nullable'] === 'YES';
 
@@ -637,6 +635,64 @@ class RelationalTableGateway extends BaseTableGateway
      */
     public function getEntries($params = [])
     {
+        $entries = $this->loadEntries($params);
+        // @NOTE: it should has another name
+        //        this evolved into something else
+        $entries = $this->loadMetadata($entries);
+
+        return $entries;
+    }
+
+    public function loadMetadata($entriesData)
+    {
+        return [
+            'meta' => $this->createMetadata($entriesData),
+            'data' => $entriesData
+        ];
+    }
+
+    public function createMetadata($entriesData)
+    {
+        $singleEntry = !ArrayUtils::isNumericKeys($entriesData);
+        $tableSchema = TableSchema::getTableSchema($this->table);
+        $metadata = [
+            'table' => $tableSchema->getTableName(),
+            'type' => $singleEntry ? 'entry' : 'collection'
+        ];
+
+        if (!$singleEntry) {
+            $metadata = array_merge($metadata, $this->createEntriesMetadata($entriesData, $tableSchema));
+        }
+
+        return $metadata;
+    }
+
+    /**
+     * Create entries metadata
+     *
+     * @param array $entries
+     * @param Table $tableSchema
+     * @return array
+     */
+    public function createEntriesMetadata($entries, Table $tableSchema)
+    {
+        $metadata = [
+            'table' => $tableSchema->getTableName(),
+            'total' => count($entries)
+        ];
+
+        if ($tableSchema->hasStatusColumn()) {
+            $statusCount = $this->countByStatus();
+            $metadata = array_merge($metadata, $statusCount);
+        } else {
+            $metadata['total_entries'] = $this->countTotal();
+        }
+
+        return $metadata;
+    }
+
+    public function loadEntries(array $params = [], \Closure $queryCallback = null)
+    {
         // Get table column schema
         $tableSchema = TableSchema::getTableSchema($this->table);
 
@@ -646,8 +702,7 @@ class RelationalTableGateway extends BaseTableGateway
             return [];
         }
 
-        // Table has `status` column?
-        $hasActiveColumn = $tableSchema->hasStatusColumn();//$this->schemaHasActiveColumn($schemaArray);
+        $hasActiveColumn = $tableSchema->hasStatusColumn();
 
         // when preview is passed was true, it means returns everything! active, draft and soft-delete.
         if (ArrayUtils::has($params, 'preview') && ArrayUtils::get($params, 'preview', false) === true) {
@@ -658,36 +713,23 @@ class RelationalTableGateway extends BaseTableGateway
         // @TODO: Create a new TableGateway Query Builder based on Query\Builder
         $builder = new Builder($this->getAdapter());
         $builder->from($this->getTable());
-        // $sql = new Sql($this->adapter);
-        // $select = $sql->select()->from($this->table);
 
         // @TODO: Only select the fields not on the currently authenticated user group's read field blacklist
         $builder->columns(TableSchema::getAllNonAliasTableColumnNames($this->table));
-        //$columnNames = TableSchema::getAllNonAliasTableColumnNames($this->table);
-
-        // $select->columns($columnNames);
-
-        // if (array_key_exists('related_table_filter', $params)) {
-        //    $select->where->equalTo($params['related_table_filter']['column'], $params['related_table_filter']['val']);
-        // }
-
-        // $select = $this->applyParamsToTableEntriesSelect($params, $select, $schemaArray, $hasActiveColumn);
         $builder = $this->applyParamsToTableEntriesSelect($params, $builder, $tableSchema, $hasActiveColumn);
 
         // If we have user field and do not have big view privileges but have view then only show entries we created
         $cmsOwnerId = $this->acl ? $this->acl->getCmsOwnerColumnByTable($this->table) : null;
         $currentUserId = $this->acl ? $this->acl->getUserId() : null;
         if ($cmsOwnerId && !$this->acl->hasTablePrivilege($this->table, 'bigview') && $this->acl->hasTablePrivilege($this->table, 'view')) {
-            // $select->where->equalTo($cmsOwnerId, $currentUserId);
             $builder->whereEqualTo($cmsOwnerId, $currentUserId);
         }
 
-        // $results = $this->selectWith($select)->toArray();
-        $results = $builder->get()->toArray();
+        if ($queryCallback !== null) {
+            $builder = $queryCallback($builder);
+        }
 
-        // Note: ensure this is sufficient, in lieu of incrementing within
-        // the foreach loop below.
-        $foundRows = count($results);
+        $results = $builder->get()->toArray();
 
         // ==========================================================================
         // Perform data casting based on the column types in our schema array
@@ -695,40 +737,36 @@ class RelationalTableGateway extends BaseTableGateway
         // ==========================================================================
         $results = $this->parseRecord($results);
 
-        // Eager-load related ManyToOne records
-        $this->toManyCallStack = [];
-        $results = $this->loadManyToOneRelationships($tableSchema, $results);
-
-        // =============================================================================
-        // HOTFIX: Fetching X2M data and Infinite circle loop
-        // =============================================================================
-        $aliasColumns = $tableSchema->getAliasColumns();
-        foreach($results as $key => $result) {
-            $this->toManyCallStack = [];
-            $results[$key] = $this->loadToManyRelationships($result, $aliasColumns);
+        $depth = ArrayUtils::get($params, 'depth', null);
+        if ($depth !== null) {
+            $results = $this->loadRelationalDataByDepth($results, (int)$depth);
         }
 
-        /**
-         * Fetching a set of data
-         */
-
-        if (!ArrayUtils::has($params, $this->primaryKeyFieldName)) {
-            $set = [];
-            if ($hasActiveColumn) {
-                $countActive = $this->countActive($hasActiveColumn);
-                $set = array_merge($set, $countActive);
-            } else {
-                $set['total'] = $this->countTotal();
-            }
-            $set['rows'] = $results;
-            return $set;
+        if (ArrayUtils::get($params, $this->primaryKeyFieldName)) {
+            $results = reset($results);
         }
 
-        if (!$results) {
-            return $results;
+        return $results;
+    }
+
+    /**
+     * Loads all relational data by depth level
+     *
+     * @param $result
+     * @param int $maxDepth
+     *
+     * @return array
+     */
+    protected function loadRelationalDataByDepth($result, $maxDepth = 0)
+    {
+        if ((int) $maxDepth <= 0) {
+            return $result;
         }
 
-        list($result) = $results;
+        $maxDepth--;
+        $result = $this->loadManyToOneRelationships($result, $maxDepth);
+        $result = $this->loadOneToManyRelationships($result, $maxDepth);
+        $result = $this->loadManyToManyRelationships($result, $maxDepth);
 
         return $result;
     }
@@ -761,8 +799,8 @@ class RelationalTableGateway extends BaseTableGateway
 
             $arguments = [$column, $value];
             $relationship = TableSchema::getColumnRelationship($this->getTable(), $column);
-            $relationshipType = $relationship->getType();
             if ($relationship) {
+                $relationshipType = $relationship->getType();
                 if ($relationshipType == 'MANYTOMANY') {
                     if (is_string($value)) {
                         $value = array_map(function($item) {
@@ -893,12 +931,6 @@ class RelationalTableGateway extends BaseTableGateway
     }
 
     /**
-     *
-     * Association Getter Functions
-     *
-     **/
-
-    /**
      * Throws error if column or relation is missing values
      * @param  array $column One schema column representation.
      * @param  array $requiredKeys Values requiring definition.
@@ -921,141 +953,208 @@ class RelationalTableGateway extends BaseTableGateway
         }
     }
 
-    /**
-     * Populate alias/relational One-To-Many and Many-To-Many fields with their foreign data.
-     *
-     * @param array $entry [description]
-     * @param array $aliasColumns [description]
-     * @param string|null $parentField
-     * @param int $level
-     *
-     * @return array
-     */
-    public function loadToManyRelationships($entry, $aliasColumns, $parentField = null, $level = 0)
+    public function loadOneToManyRelationships($entries, $depth = 0)
     {
-        foreach ($aliasColumns as $alias) {
-            $foreign_data = null;
-            $relationship = $alias->getRelationship();
+        $tableSchema = TableSchema::getTableSchema($this->getTable());
+        $aliasColumns = $tableSchema->getAliasColumns();
+        if (!$aliasColumns) {
+            return $entries;
+        }
 
-            if ($relationship && TableSchema::canGroupViewTable($relationship->getRelatedTable())) {
-                switch ($relationship->getType()) {
-                    case 'MANYTOMANY':
-                        $this->enforceColumnHasNonNullValues($alias['relationship'], ['related_table', 'junction_table', 'junction_key_left', 'junction_key_right'], $this->table);
-                        $foreign_data = $this->loadManyToManyRelationships($this->table, $alias['relationship']['related_table'],
-                            $alias['relationship']['junction_table'], $alias['relationship']['junction_key_left'], $alias['relationship']['junction_key_right'],
-                            $entry[$this->primaryKeyFieldName],
-                            is_null($parentField) ? $alias['name'] : $parentField,
-                            $level);
-                        $noDuplicates = isset($alias['options']['no_duplicates']) ? $alias['options']['no_duplicates'] : 0;
-                        // @todo: better way to handle this.
-                        // @TODO: fetch uniques/non-duplicates entries
-                        if (isset($foreign_data['rows']) && $noDuplicates) {
-                            $uniquesID = [];
-                            foreach ($foreign_data['rows'] as $index => $row) {
-                                if (!in_array($row['data']['id'], $uniquesID)) {
-                                    array_push($uniquesID, $row['data']['id']);
-                                } else {
-                                    unset($foreign_data['rows'][$index]);
-                                }
-                            }
-                            unset($uniquesID);
-                            // =========================================================
-                            // Reset keys
-                            // ---------------------------------------------------------
-                            // This prevent json output using numeric ids as key
-                            // Ex:
-                            // {
-                            //      rows: {
-                            //          "1": {
-                            //              data: {id: 1}
-                            //          },
-                            //          "3" {
-                            //              data: {id: 2}
-                            //          }
-                            //      }
-                            // }
-                            // Instead of:
-                            // {
-                            //      rows: [
-                            //          {
-                            //              data: {id: 1}
-                            //          },
-                            //          {
-                            //              data: {id: 2}
-                            //          }
-                            //      ]
-                            // }
-                            // =========================================================
-                            $foreign_data['rows'] = array_values($foreign_data['rows']);
+        foreach ($aliasColumns as $alias) {
+            if (!$alias->isOneToMany()) {
+                continue;
+            }
+
+            $relatedTableName = $alias->getRelationship()->getRelatedTable();
+            if (!TableSchema::canGroupViewTable($relatedTableName)) {
+                return false;
+            }
+
+            $primaryKey = $this->primaryKeyFieldName;
+            $callback = function($row) use ($primaryKey) {
+                return ArrayUtils::get($row, $primaryKey, null);
+            };
+
+            $ids = array_filter(array_map($callback, $entries));
+            if (empty($ids)) {
+                continue;
+            }
+
+            // Only select the fields not on the currently authenticated user group's read field blacklist
+            $columns = TableSchema::getAllNonAliasTableColumnNames($relatedTableName);
+            $relationalColumnName = $alias->getRelationship()->getJunctionKeyRight();
+            $tableGateway = new RelationalTableGateway($relatedTableName, $this->adapter, $this->acl);
+            $results = $tableGateway->loadEntries([
+                'columns' => $columns,
+                'filters' => [
+                    $relationalColumnName => ['in' => $ids]
+                ],
+                'depth' => $depth
+            ]);
+
+            $relatedEntries = [];
+            foreach ($results as $row) {
+                $relatedEntries[$row[$relationalColumnName]][] = $row;
+            }
+
+            // Replace foreign keys with foreign rows
+            $relationalColumnName = $alias->getName();
+            foreach ($entries as &$parentRow) {
+                $rows = ArrayUtils::get($relatedEntries, $parentRow[$primaryKey], []);
+                $parentRow[$relationalColumnName] = $tableGateway->loadMetadata($rows);
+            }
+        }
+
+        return $entries;
+    }
+
+    public function loadManyToManyRelationships($entries, $depth = 0)
+    {
+        $tableSchema = TableSchema::getTableSchema($this->getTable());
+        $aliasColumns = $tableSchema->getAliasColumns();
+        if (!$aliasColumns) {
+            return $entries;
+        }
+
+        foreach ($aliasColumns as $alias) {
+            if (!$alias->isManyToMany()) {
+                continue;
+            }
+
+            $relatedTableName = $alias->getRelationship()->getRelatedTable();
+            if (!TableSchema::canGroupViewTable($relatedTableName)) {
+                return false;
+            }
+
+            $primaryKey = $this->primaryKeyFieldName;
+            $callback = function($row) use ($primaryKey) {
+                return ArrayUtils::get($row, $primaryKey, null);
+            };
+
+            $ids = array_filter(array_map($callback, $entries));
+            if (empty($ids)) {
+                continue;
+            }
+
+            // Only select the fields not on the currently authenticated user group's read field blacklist
+            $relatedTableColumns = TableSchema::getAllNonAliasTableColumnNames($relatedTableName);
+            $junctionKeyRightColumn = $alias->getRelationship()->getJunctionKeyRight();
+            $junctionKeyLeftColumn = $alias->getRelationship()->getJunctionKeyLeft();
+            $junctionTableName = $alias->getRelationship()->getJunctionTable();
+
+            $relatedTableGateway = new RelationalTableGateway($relatedTableName, $this->adapter, $this->acl);
+            $relatedTablePrimaryKey = TableSchema::getTablePrimaryKey($relatedTableName);
+
+            $on = $this->getColumnIdentifier($junctionKeyRightColumn, $junctionTableName) . ' = ' . $this->getColumnIdentifier($relatedTablePrimaryKey, $relatedTableName);
+            $junctionColumns = TableSchema::getAllNonAliasTableColumnNames($junctionTableName);
+            if (in_array('sort', $junctionColumns)) {
+                $joinColumns[] = 'sort';
+            }
+
+            $joinColumns = [];
+            $joinColumnsPrefix = StringUtils::randomString() . '_';
+            foreach($junctionColumns as $junctionColumn) {
+                $joinColumns[$joinColumnsPrefix . $junctionColumn] = $junctionColumn;
+            }
+
+            $queryCallBack = function(Builder $query) use ($junctionTableName, $on, $joinColumns, $ids, $joinColumnsPrefix) {
+                $query->join($junctionTableName, $on, $joinColumns);
+                if (in_array('sort', $joinColumns)) {
+                    $query->orderBy($joinColumnsPrefix . 'sort', 'ASC');
+                }
+
+                return $query;
+            };
+
+            $results = $relatedTableGateway->loadEntries([
+                'columns' => $relatedTableColumns,
+                'filters' => [
+                    $junctionKeyRightColumn => ['in' => $ids]
+                ],
+                'depth' => $depth
+            ], $queryCallBack);
+
+            $relationalColumnName = $alias->getName();
+            $relatedEntries = [];
+            foreach ($results as $row) {
+                $relatedEntries[$row[$joinColumnsPrefix . $junctionKeyLeftColumn]][] = $row;
+            }
+
+            $uiOptions = $alias->getUIOptions();
+            $noDuplicates = (bool) ArrayUtils::get($uiOptions, 'no_duplicates', false);
+            if ($noDuplicates) {
+                foreach($relatedEntries as $key => $rows) {
+                    $uniquesID = [];
+                    foreach ($rows as $index => $row) {
+                        if (!in_array($row[$relatedTablePrimaryKey], $uniquesID)) {
+                            array_push($uniquesID, $row[$relatedTablePrimaryKey]);
+                        } else {
+                            unset($relatedEntries[$key][$index]);
                         }
-                        break;
-                    case 'ONETOMANY':
-                        $this->enforceColumnHasNonNullValues($alias['relationship'], ['related_table', 'junction_key_right'], $this->table);
-                        $foreign_data = $this->loadOneToManyRelationships(
-                            $alias['relationship']['related_table'],
-                            $alias['relationship']['junction_key_right'],
-                            $entry['id'],
-                            is_null($parentField) ? $alias['name'] : $parentField,
-                            $level
-                        );
-                        break;
+                    }
+                    //var_dump($entries[$key]);//[$index]
+                    unset($uniquesID);
+                    // =========================================================
+                    // Reset keys
+                    // ---------------------------------------------------------
+                    // This prevent json output using numeric ids as key
+                    // Ex:
+                    // {
+                    //      rows: {
+                    //          "1": {
+                    //              data: {id: 1}
+                    //          },
+                    //          "3" {
+                    //              data: {id: 2}
+                    //          }
+                    //      }
+                    // }
+                    // Instead of:
+                    // {
+                    //      rows: [
+                    //          {
+                    //              data: {id: 1}
+                    //          },
+                    //          {
+                    //              data: {id: 2}
+                    //          }
+                    //      ]
+                    // }
+                    // =========================================================
+                    $relatedEntries[$key] = array_values($relatedEntries[$key]);
                 }
             }
 
-            if (!is_null($foreign_data)) {
-                // @TODO: make column name alias of name
-                //$column = $alias['column_name'];
-                $column = $alias['name'];
-                $entry[$column] = $foreign_data;
+            // Replace foreign keys with foreign rows
+            foreach ($entries as &$parentRow) {
+                $data = ArrayUtils::get($relatedEntries, $parentRow[$primaryKey], []);
+                $row = array_map(function($row) use ($joinColumns) {
+                    return ArrayUtils::omit($row, array_keys($joinColumns));
+                }, $data);
+
+                $junctionData = array_map(function($row) use ($joinColumns, $joinColumnsPrefix) {
+                    $row = ArrayUtils::pick($row, array_keys($joinColumns));
+                    $newRow = [];
+                    foreach($row as $column => $value) {
+                        $newRow[substr($column, strlen($joinColumnsPrefix))] = $value;
+                    }
+
+                    return $newRow;
+                }, $data);
+
+                $junctionTableGateway = new RelationalTableGateway($junctionTableName, $this->getAdapter(), $this->acl);
+                $junctionData = $this->schema->castRecordValues($junctionData, TableSchema::getTableSchema($junctionTableName)->getColumns());
+                var_dump($junctionData);
+                $junctionData = $junctionTableGateway->loadMetadata($junctionData);
+
+                $row = $relatedTableGateway->loadMetadata($row);
+                $row['junction'] = $junctionData;
+                $parentRow[$relationalColumnName] = $row;
             }
         }
-        return $entry;
-    }
 
-    /**
-     * Fetch related, foreign rows for one record's OneToMany relationships.
-     *
-     * @param string $table
-     * @param string $column_name
-     * @param string $column_equals
-     * @param string|null $parentField
-     * @param $level
-     *
-     * @return array|bool
-     */
-    public function loadOneToManyRelationships($table, $column_name, $column_equals, $parentField = null, $level = 0)
-    {
-        if (!TableSchema::canGroupViewTable($table)) {
-            return false;
-        }
-
-        // =============================================================================
-        // HOTFIX: prevent infinite circle loop
-        // =============================================================================
-        if ($parentField && $this->hasToManyCallStack($parentField, $table)) {
-            return $column_equals;
-        }
-
-        if ($parentField !== null) {
-            $this->addToManyCallStack($level, $parentField, $table);
-        }
-
-        // Run query
-        $select = new Select($table);
-        $select->where->equalTo($column_name, $column_equals);
-
-        // Only select the fields not on the currently authenticated user group's read field blacklist
-        $columns = TableSchema::getAllNonAliasTableColumnNames($table);
-        $select->columns($columns);
-
-        $TableGateway = new RelationalTableGateway($table, $this->adapter, $this->acl);
-        $rowset = $TableGateway->selectWith($select);
-        $results = $rowset->toArray();
-
-        $schemaArray = TableSchema::getSchemaArray($table);
-        $results = $this->loadManyToOneRelationships($schemaArray, $results);
-
-        return ['rows' => $results];
+        return $entries;
     }
 
     /**
@@ -1063,242 +1162,92 @@ class RelationalTableGateway extends BaseTableGateway
      * (Given a table's schema and rows, iterate and replace all of its foreign
      * keys with the contents of these foreign rows.)
      *
-     * @param Table $tableSchema Table schema array
-     * @param array $table_entries Table rows
-     * @param string|null $parentField
-     * @param int $level
+     * @param array $entries Table rows
+     * @param int $depth
      *
      * @return array Revised table rows, now including foreign rows
      *
      * @throws Exception\RelationshipMetadataException
      */
-    public function loadManyToOneRelationships($tableSchema, $table_entries, $parentField = null, $level = 0)
+    public function loadManyToOneRelationships($entries, $depth = 0)
     {
+        $tableSchema = TableSchema::getTableSchema($this->getTable());
         // Identify the ManyToOne columns
-        foreach ($tableSchema->getColumns() as $col) {
-            $relationship = $col->getRelationship();
-            $isManyToOneColumn = (
-                $relationship &&
-                $relationship['type'] == 'MANYTOONE'
-            );
+        foreach ($tableSchema->getColumns() as $column) {
+            if (!$column->isManyToOne()) {
+                continue;
+            }
 
-            if ($isManyToOneColumn) {
-                $foreign_id_column = $col['id'];
-                if ($relationship) {
-                    $foreign_table_name = $col['relationship']['related_table'];
-                } else {
-                    $message = 'Non single_file Many-to-One relationship lacks `related_table` value.';
-                    if (array_key_exists('column_name', $col)) {
-                        $message .= ' Column: ' . $col['column_name'];
+            $relatedTable = $column->getRelationship()->getRelatedTable();
+            if (!$relatedTable) {
+                $message = 'Non single_file Many-to-One relationship lacks `related_table` value.';
+                if ($column->getName()) {
+                    $message .= ' Column: ' . $column->getName();
+                }
+
+                if ($column->getTableName()) {
+                    $message .= ' Table: ' . $column->getTableName();
+                }
+
+                throw new Exception\RelationshipMetadataException($message);
+            }
+
+            // Aggregate all foreign keys for this relationship (for each row, yield the specified foreign id)
+            $relationalColumnName = $column->getName();
+            $yield = function ($row) use ($relationalColumnName, $entries) {
+                if (array_key_exists($relationalColumnName, $row)) {
+                    $value = $row[$relationalColumnName];
+                    if (is_array($value)) {
+                        // @TODO: Dynamic primary key
+                        $value = isset($value['id']) ? $value['id'] : 0;
                     }
-                    if (array_key_exists('table_name', $col)) {
-                        $message .= ' Table: ' . $col['table_name'];
-                    }
-                    throw new Exception\RelationshipMetadataException($message);
+
+                    return $value;
                 }
+            };
 
-                // =============================================================================
-                // HOTFIX: prevent infinite circle loop
-                // =============================================================================
-                if ($parentField && $this->hasToManyCallStack($parentField, $foreign_table_name)) {
-                    return $table_entries;
-                }
+            $ids = array_filter(array_map($yield, $entries));
+            if (empty($ids)) {
+                continue;
+            }
 
-                $this->addToManyCallStack($level, is_null($parentField) ? $foreign_id_column : $parentField, $foreign_table_name);
+            if (!TableSchema::canGroupViewTable($relatedTable)) {
+                continue;
+            }
 
-                // Aggregate all foreign keys for this relationship (for each row, yield the specified foreign id)
-                $yield = function ($row) use ($foreign_id_column, $table_entries) {
-                    if (array_key_exists($foreign_id_column, $row)) {
-                        $value = $row[$foreign_id_column];
-                        if (is_array($value)) {
-                            // @TODO: Dynamic primary key
-                            $value = isset($value['id']) ? $value['id'] : 0;
-                        }
+            // Fetch the foreign data
+            $tableGateway = new RelationalTableGateway($relatedTable, $this->adapter, $this->acl);
+            $columnNames = TableSchema::getAllNonAliasTableColumnNames($relatedTable);
 
-                        return $value;
-                    }
-                };
+            $results = $tableGateway->loadEntries([
+                'columns' => $columnNames,
+                'filters' => [
+                    'id' => ['in' => $ids]
+                ],
+                'depth' => (int) $depth
+            ]);
 
-                $ids = array_map($yield, $table_entries);
-                if (empty($ids)) {
-                    continue;
-                }
+            $relatedEntries = [];
+            foreach ($results as $row) {
+                $relatedEntries[$row['id']] = $row;
+            }
 
-                if (!TableSchema::canGroupViewTable($foreign_table_name)) {
-                    continue;
-                }
-
-                // Fetch the foreign data
-                $select = new Select($foreign_table_name);
-                $select->where->in('id', $ids);
-
-                $columnNames = TableSchema::getAllNonAliasTableColumnNames($foreign_table_name);
-                $select->columns($columnNames);
-
-                $TableGateway = new RelationalTableGateway($foreign_table_name, $this->adapter, $this->acl);
-                $rowset = $TableGateway->selectWith($select);
-                $results = $rowset->toArray();
-
-                $foreign_table = [];
-                foreach ($results as $row) {
-                    $row = $this->parseRecord($row, $foreign_table_name);
-                    $foreign_table[$row['id']] = $row;
-                }
-
-                // Get table column schema
-                $tableSchema = TableSchema::getTableSchema($foreign_table_name);
-
-                // Eager-load related ManyToOne records
-                $foreign_table = $this->loadManyToOneRelationships($tableSchema, $foreign_table, $parentField, $level+1);
-
-                // Convert dates into ISO 8601 Format
-                $foreign_table = $this->convertDates($foreign_table, $tableSchema);
-
-                // Replace foreign keys with foreign rows
-                foreach ($table_entries as &$parentRow) {
-                    if (array_key_exists($foreign_id_column, $parentRow)) {
-                        $foreign_id = (int)$parentRow[$foreign_id_column];
-                        $parentRow[$foreign_id_column] = null;
-                        // "Did we retrieve the foreign row with this foreign ID in our recent query of the foreign table"?
-                        if (array_key_exists($foreign_id, $foreign_table)) {
-                            $parentRow[$foreign_id_column] = $foreign_table[$foreign_id];
-                        }
+            // Replace foreign keys with foreign rows
+            foreach ($entries as &$parentRow) {
+                if (array_key_exists($relationalColumnName, $parentRow)) {
+                    // @NOTE: Not always will be a integer
+                    $foreign_id = (int)$parentRow[$relationalColumnName];
+                    $parentRow[$relationalColumnName] = null;
+                    // "Did we retrieve the foreign row with this foreign ID in our recent query of the foreign table"?
+                    if (array_key_exists($foreign_id, $relatedEntries)) {
+                        $relatedEntries[$foreign_id] = $tableGateway->loadMetadata($relatedEntries[$foreign_id]);
+                        $parentRow[$relationalColumnName] = $relatedEntries[$foreign_id];
                     }
                 }
             }
         }
 
-        return $table_entries;
-    }
-
-    /**
-     * Fetch related, foreign rows for one record's ManyToMany relationships.
-     *
-     * @param  string $table_name
-     * @param  string $foreign_table
-     * @param  string $junction_table
-     * @param  string $junction_key_left
-     * @param  string $junction_key_right
-     * @param  string $column_equals
-     * @param  string $parentField
-     * @param  int    $level
-     *
-     * @return array                      Foreign rowset
-     */
-    public function loadManyToManyRelationships($table_name, $foreign_table, $junction_table, $junction_key_left, $junction_key_right, $column_equals, $parentField = null, $level = 0)
-    {
-        $foreign_table_pk = TableSchema::getTablePrimaryKey($foreign_table);
-        $foreign_join_column = $foreign_table . '.' . $foreign_table_pk;
-        $junction_join_column = $junction_table . '.' . $junction_key_right;
-        $junction_comparison_column = $junction_table . '.' . $junction_key_left;
-
-        // =============================================================================
-        // HOTFIX: prevent infinite circle loop
-        // =============================================================================
-        if ($parentField && $this->hasToManyCallStack($parentField, $foreign_table)) {
-            return $column_equals;
-        }
-
-        if ($parentField !== null) {
-            $this->addToManyCallStack($level, $parentField, $foreign_table);
-        }
-
-        $junction_table_pk = TableSchema::getTablePrimaryKey($junction_table);
-        $junction_id_column = $junction_table . '.' . $junction_table_pk;
-
-        // Less likely name collision:
-        $junction_id_column_alias = 'directus_junction_id_column_518d31856e131';
-        $junction_sort_column_alias = 'directus_junction_sort_column_518d318e3f0f5';
-
-        $junctionSelectColumns = [$junction_id_column_alias => $junction_table_pk];
-
-        $sql = new Sql($this->adapter);
-        $select = $sql->select();
-
-        // If the Junction Table has a Sort column, do eet.
-        // @todo is this the most efficient way?
-        // @hint TableSchema#getUniqueColumnName
-        $junctionColumns = TableSchema::getAllNonAliasTableColumnNames($junction_table);
-        if (in_array('sort', $junctionColumns)) {
-            $junctionSelectColumns[$junction_sort_column_alias] = 'sort';
-            $select->order($junction_sort_column_alias);
-        }
-
-        $select
-            ->from($foreign_table)
-            ->join($junction_table, $foreign_join_column . '=' . $junction_join_column, $junctionSelectColumns)
-            ->where([$junction_comparison_column => $column_equals])
-            ->order($junction_id_column . ' ASC');
-
-        // Only select the fields not on the currently authenticated user group's read field blacklist
-        $columns = TableSchema::getAllNonAliasTableColumnNames($foreign_table);
-        $select->columns($columns);
-
-        $ForeignTable = new RelationalTableGateway($foreign_table, $this->adapter, $this->acl);
-        $results = $ForeignTable->selectWith($select);
-        $results = $results->toArray();
-
-        $foreign_data = [];
-        $columns = TableSchema::getAllNonAliasTableColumns($foreign_table);
-        foreach ($results as $row) {
-            $row = $recordData = $this->schema->castRecordValues($row, $columns);
-
-            $junction_table_id = (int)$row[$junction_id_column_alias];
-            unset($row[$junction_id_column_alias]);
-
-            $entry = [$junction_table_pk => $junction_table_id];
-            if (in_array('sort', $junctionColumns)) {
-                // @TODO: check why is this a string instead of an integer.
-                $entry['sort'] = (int)$row[$junction_sort_column_alias];
-                unset($row[$junction_sort_column_alias]);
-            }
-
-            $schemaArray = TableSchema::getSchemaArray($foreign_table);
-            $aliasColumns = $schemaArray->getAliasColumns();
-            $row = $this->loadToManyRelationships($row, $aliasColumns, $parentField, $level+1);
-
-            $entry['data'] = $row;
-
-            $foreign_data[] = $entry;
-        }
-
-        return ['rows' => $foreign_data];
-    }
-
-    protected function addToManyCallStack($level, $field, $table)
-    {
-        if (!is_array($this->toManyCallStack)) {
-            $this->toManyCallStack = [];
-        }
-
-        if (!isset($this->toManyCallStack[$field])) {
-            $this->toManyCallStack[$field] = [];
-        }
-
-        if (!isset($this->toManyCallStack[$field][$level])) {
-            $this->toManyCallStack[$field][$level] = [];
-        }
-
-        $this->toManyCallStack[$field][$level][] = $table;
-    }
-
-    protected function hasToManyCallStack($field, $table)
-    {
-        if (!is_array($this->toManyCallStack)) {
-            return false;
-        }
-
-        if (!array_key_exists($field, $this->toManyCallStack)) {
-            return false;
-        }
-
-        foreach($this->toManyCallStack[$field] as $level => $tablesCalled) {
-            if (in_array($table, $tablesCalled)) {
-                return true;
-            }
-        }
-
-        return false;
+        return $entries;
     }
 
     /**
@@ -1341,45 +1290,10 @@ class RelationalTableGateway extends BaseTableGateway
     }
 
     /**
-     * Yield the result-set of a query as record arrays with immediate, foreign
-     * relationships populated, ex.
+     * Get the total entries count
      *
-     *   use Zend\Db\Sql\Select;
-     *   $select = new Select("instructors");
-     *   $InstructorsGateway = new TableGateway($acl, "instructors", $ZendDb);
-     *   $instructorsWithRelationships = $InstructorsGateway->selectWithImmediateRelationships($select);
+     * @param PredicateInterface|null $predicate
      *
-     * @param  Select $select
-     * @return array
-     */
-//    @NOTE: It's not used anywhere.
-//    public function selectWithImmediateRelationships(Select $select)
-//    {
-//        $resultSet = $this->selectWith($select);
-//        $entriesWithRelationships = [];
-//        foreach ($resultSet as $rowGateway) {
-//            $entriesWithRelationships[] = $rowGateway->toArrayWithImmediateRelationships($this);
-//        }
-//        return $entriesWithRelationships;
-//    }
-
-//    /**
-//     * Does a table schema array contain an `status` column?
-//     * @param  array $schema Table schema array.
-//     * @return boolean
-//     */
-//    public function schemaHasActiveColumn($schema)
-//    {
-//        foreach ($schema as $col) {
-//            if (STATUS_COLUMN_NAME == $col['column_name']) {
-//                return true;
-//            }
-//        }
-//        return false;
-//    }
-
-    /**
-     * Yield total number of rows on a table, irrespective of any status column.
      * @return int
      */
     public function countTotal(PredicateInterface $predicate = null)
@@ -1389,11 +1303,13 @@ class RelationalTableGateway extends BaseTableGateway
         if (!is_null($predicate)) {
             $select->where($predicate);
         }
+
         $sql = new Sql($this->adapter, $this->table);
         $statement = $sql->prepareStatementForSqlObject($select);
         $results = $statement->execute();
         $row = $results->current();
-        return (int)$row['total'];
+
+        return (int) $row['total'];
     }
 
     /**
@@ -1402,31 +1318,44 @@ class RelationalTableGateway extends BaseTableGateway
      */
     public function countActive()
     {
-        $select = new Select($this->table);
+        return $this->countByStatus();
+    }
+
+    public function countByStatus()
+    {
+        $tableSchema = TableSchema::getTableSchema($this->getTable());
+        if (!$tableSchema->hasStatusColumn()) {
+            return ['total_entries' => $this->countTotal()];
+        }
+
+        $select = new Select($this->getTable());
         $select
             ->columns([STATUS_COLUMN_NAME, 'quantity' => new Expression('COUNT(*)')])
             ->group(STATUS_COLUMN_NAME);
         $sql = new Sql($this->adapter, $this->table);
         $statement = $sql->prepareStatementForSqlObject($select);
         $results = $statement->execute();
-        $stats = [];
+
         $statusMap = TableSchema::getStatusMap();
         foreach ($results as $row) {
             if (isset($row[STATUS_COLUMN_NAME])) {
                 $statSlug = $statusMap[$row[STATUS_COLUMN_NAME]];
-                $stats[$statSlug['name']] = (int)$row['quantity'];
+                $stats[$statSlug['name']] = (int) $row['quantity'];
             }
         }
+
         $vals = [];
         foreach ($statusMap as $value) {
             array_push($vals, $value['name']);
         }
+
         $possibleValues = array_values($vals);
         $makeMeZero = array_diff($possibleValues, array_keys($stats));
         foreach ($makeMeZero as $unsetActiveColumn) {
             $stats[$unsetActiveColumn] = 0;
         }
-        $stats['total'] = array_sum($stats);
+
+        $stats['total_entries'] = array_sum($stats);
 
         return $stats;
     }

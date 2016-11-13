@@ -272,7 +272,7 @@ class TableSchema
     {
         $column = static::getColumnSchemaArray($tableName, $columnName);
 
-        return $column->hasRelationship() ? $column->getRelationship() : null;
+        return $column && $column->hasRelationship() ? $column->getRelationship() : null;
     }
 
     // @NOTE: This was copy-paste to Column Object

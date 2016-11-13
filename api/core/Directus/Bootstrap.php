@@ -520,11 +520,12 @@ class Bootstrap
         });
 
         $emitter->addFilter('table.insert:before', function($payload) {
+            $auth = Bootstrap::get('auth');
             $tableName = $payload->tableName;
             $data = $payload->data;
             if ($tableName == 'directus_files') {
                 unset($data['data']);
-                $data['user'] = AuthProvider::getUserInfo('id');
+                $data['user'] = $auth->getUserInfo('id');
             }
 
             $payload->data = $data;

@@ -45,6 +45,12 @@ class DirectusActivityTableGateway extends RelationalTableGateway
         }
     }
 
+    /**
+     * DirectusActivityTableGateway constructor.
+     *
+     * @param AdapterInterface $adapter
+     * @param AdapterInterface $acl
+     */
     public function __construct(AdapterInterface $adapter, $acl)
     {
         parent::__construct(self::$_tableName, $adapter, $acl);

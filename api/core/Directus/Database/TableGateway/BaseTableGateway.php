@@ -6,6 +6,7 @@ use Directus\Acl\Acl;
 use Directus\Acl\Exception\UnauthorizedTableBigDeleteException;
 use Directus\Acl\Exception\UnauthorizedTableBigEditException;
 use Directus\Acl\Exception\UnauthorizedTableDeleteException;
+use Directus\Acl\Exception\UnauthorizedTableEditException;
 use Directus\Bootstrap;
 use Directus\Database\Exception\DuplicateEntryException;
 use Directus\Database\Exception\SuppliedArrayAsColumnValue;
@@ -689,26 +690,6 @@ class BaseTableGateway extends TableGateway
         }
     }
 
-    /**
-     * Extract unescaped & unprefixed column names
-     * @param  array $columns Optionally escaped or table-prefixed column names, e.g. drawn from
-     * \Zend\Db\Sql\Insert|\Zend\Db\Sql\Update#getRawState
-     * @return array
-     */
-    protected function extractRawColumnNames($columns)
-    {
-        // @TODO: fix this method
-        $columnNames = [];
-        foreach ($insertState['columns'] as $column) {
-            $sansSpaces = preg_replace('/\s/', '', $column);
-            preg_match('/(\W?\w+\W?\.)?\W?([\*\w+])\W?/', $sansSpaces, $matches);
-            if (isset($matches[2])) {
-                $columnNames[] = $matches[2];
-            }
-        }
-        return $columnNames;
-    }
-
     protected function getRawTableNameFromQueryStateTable($table)
     {
         if (is_string($table)) {
@@ -763,6 +744,14 @@ class BaseTableGateway extends TableGateway
         return $singleRecord ? reset($records) : $records;
     }
 
+    /**
+     * Parse records value by its column type
+     *
+     * @param array $records
+     * @param null $tableName
+     *
+     * @return array
+     */
     protected function parseRecordValuesByType(array $records, $tableName = null)
     {
         $tableName = $tableName === null ? $this->table : $tableName;
@@ -771,7 +760,15 @@ class BaseTableGateway extends TableGateway
         return $this->schema->castRecordValues($records, $columns);
     }
 
-    protected function parseRecord($records, $tableName = null)
+    /**
+     * Parse Records values (including format date by ISO 8601) by its column type
+     *
+     * @param $records
+     * @param null $tableName
+     *
+     * @return array|mixed
+     */
+    public function parseRecord($records, $tableName = null)
     {
         if (is_array($records)) {
             $tableName = $tableName === null ? $this->table : $tableName;
@@ -786,10 +783,11 @@ class BaseTableGateway extends TableGateway
     /**
      * Enforce permission on Select
      *
-     * @param $select
+     * @param Select $select
+     *
      * @throws \Exception
      */
-    protected function enforceSelectPermission($select)
+    protected function enforceSelectPermission(Select $select)
     {
         $selectState = $select->getRawState();
         $table = $this->getRawTableNameFromQueryStateTable($selectState['table']);
@@ -821,11 +819,11 @@ class BaseTableGateway extends TableGateway
     /**
      * Enforce permission on Insert
      *
-     * @param $insert
+     * @param Insert $insert
      *
      * @throws \Exception
      */
-    public function enforceInsertPermission($insert)
+    public function enforceInsertPermission(Insert $insert)
     {
         $insertState = $insert->getRawState();
         $insertTable = $this->getRawTableNameFromQueryStateTable($insertState['table']);
@@ -839,11 +837,11 @@ class BaseTableGateway extends TableGateway
     /**
      * Enforce permission on Update
      *
-     * @param $update
+     * @param Update $update
      *
      * @throws \Exception
      */
-    public function enforceUpdatePermission($update)
+    public function enforceUpdatePermission(Update $update)
     {
         $currentUserId = $this->acl->getUserId();
         $updateState = $update->getRawState();
@@ -907,12 +905,12 @@ class BaseTableGateway extends TableGateway
     /**
      * Enforce permission on Delete
      *
-     * @param $delete
+     * @param Delete $delete
      *
      * @throws UnauthorizedTableBigDeleteException
      * @throws UnauthorizedTableDeleteException
      */
-    public function enforceDeletePermission($delete)
+    public function enforceDeletePermission(Delete $delete)
     {
         $currentUserId = $this->acl->getUserId();
         $deleteState = $delete->getRawState();
@@ -952,6 +950,28 @@ class BaseTableGateway extends TableGateway
                 throw new  UnauthorizedTableDeleteException($exceptionMessage);
             }
         }
+    }
+
+    /**
+     * Get the column identifier with the specific quote and table prefixed
+     *
+     * @param string $column
+     * @param string|null $table
+     *
+     * @return string
+     */
+    public function getColumnIdentifier($column, $table = null)
+    {
+        $platform = $this->getAdapter()->getPlatform();
+
+        $identifier = [];
+        if ($table !== null) {
+            $identifier[] = $table;
+        }
+
+        $identifier[] = $column;
+
+        return implode($platform->getIdentifierSeparator(), $identifier);
     }
 
     public static function setHookEmitter($emitter)
