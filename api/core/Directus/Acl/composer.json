@@ -11,7 +11,12 @@
   },
   "autoload": {
     "psr-4": {
-      "Directus\\Acl\\": ""
+      "Directus64\\Acl\\": ""
+    }
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-d64": "1.0.0-dev"
     }
   }
 }
