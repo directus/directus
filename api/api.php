@@ -95,7 +95,7 @@ if (ArrayUtils::get($corsOptions, 'enabled', false)) {
         header($headerType . ': ' . $headerValue);
     }
 
-    if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
+    if ($app->request()->isOptions()) {
         exit;
     }
 }
