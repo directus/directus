@@ -87,18 +87,7 @@ if (array_key_exists('filters', $config)) {
     load_registered_hooks($config['filters'], true);
 }
 
-// @TODO: Move this into middleware
-$corsOptions = ArrayUtils::get($config, 'cors');
-if (ArrayUtils::get($corsOptions, 'enabled', false)) {
-    header('Access-Control-Allow-Origin: ' . ArrayUtils::get($corsOptions, 'origin', '*'));
-    foreach (ArrayUtils::get($corsOptions, 'headers', []) as list($headerType, $headerValue)) {
-        header($headerType . ': ' . $headerValue);
-    }
-
-    if ($app->request()->isOptions()) {
-        exit;
-    }
-}
+$app->add(new \Directus\Slim\CorsMiddleware());
 
 /**
  * Catch user-related exceptions & produce client responses.
