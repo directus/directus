@@ -44,7 +44,7 @@ return [
 
     'cors' => [
         'enabled' => false,
-        'origin' => 'http://webapp.local:8888',
+        'origin' => '*',
         'headers' => [
             ['Access-Control-Allow-Headers', 'Authorization, Content-Type, Access-Control-Allow-Origin'],
             ['Access-Control-Allow-Credentials', 'false']
