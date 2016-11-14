@@ -17,5 +17,10 @@
     "psr-4": {
       "Directus\\Database\\": ""
     }
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-d64": "1.0.x-dev"
+    }
   }
 }
