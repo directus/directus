@@ -202,7 +202,7 @@ class DirectusPrivilegesTableGateway extends BaseTableGateway
                 continue;
             }
 
-            $item = ['table_name' => $table, 'group_id' => $groupId, 'status_id' => null];
+            $item = ['table_name' => $table['name'], 'group_id' => $groupId, 'status_id' => null];
 
             $privileges[] = $item;
         }
