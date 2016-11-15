@@ -8,11 +8,11 @@
  * @license   GNU General Public License (v3) – <http://www.gnu.org/copyleft/gpl.html>
  */
 
-namespace Directus\Auth;
+namespace Directus\Authentication;
 
 use Directus\Util\StringUtils;
 use Directus\Session\Session;
-use Directus\Auth\Exception\RequestNonceHasntBeenProcessed;
+use Directus\Authentication\Exception\RequestNonceHasntBeenProcessed;
 
 /**
  * Request Nonce Provider

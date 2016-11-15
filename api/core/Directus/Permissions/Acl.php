@@ -8,10 +8,10 @@
  * @license   GNU General Public License (v3) – <http://www.gnu.org/copyleft/gpl.html>
  */
 
-namespace Directus\Acl;
+namespace Directus\Permissions;
 
-use Directus\Acl\Exception\UnauthorizedFieldReadException;
-use Directus\Acl\Exception\UnauthorizedFieldWriteException;
+use Directus\Permissions\Exception\UnauthorizedFieldReadException;
+use Directus\Permissions\Exception\UnauthorizedFieldWriteException;
 use Directus\Database\TableGateway\BaseTableGateway;
 use Zend\Db\RowGateway\RowGateway;
 use Zend\Db\Sql\Predicate\PredicateSet;
@@ -182,7 +182,7 @@ class Acl
      * Confirm current user group has $blacklist privileges on fields in $offsets
      * NOTE: Acl#getTablePrivilegeList enforces that $blacklist is a correct value
      * @param  array|string $offsets One or more string table field names
-     * @param  integer $blacklist One of \Directus\Acl\Acl's blacklist constants
+     * @param  integer $blacklist One of \Directus\Permissions\Acl's blacklist constants
      * @throws  UnauthorizedFieldWriteException If the specified $offsets intersect with $table's field write blacklist
      * @throws  UnauthorizedFieldReadException If the specified $offsets intersect with $table's field read blacklist
      * @return  null
@@ -330,7 +330,7 @@ class Acl
      * the specified table-level action on the specified table.
      *
      * @param  string $table Table name
-     * @param  string $privilege Privilege constant defined by \Directus\Acl\Acl
+     * @param  string $privilege Privilege constant defined by \Directus\Permissions\Acl
      *
      * @return boolean
      */

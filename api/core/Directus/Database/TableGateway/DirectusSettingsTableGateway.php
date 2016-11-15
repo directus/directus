@@ -2,8 +2,8 @@
 
 namespace Directus\Database\TableGateway;
 
-use Directus\Acl\Acl;
-use Directus\Acl\Exception\UnauthorizedTableBigEditException;
+use Directus\Permissions\Acl;
+use Directus\Permissions\Exception\UnauthorizedTableBigEditException;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Select;

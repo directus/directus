@@ -10,7 +10,7 @@ class RequestNonceProviderTest extends PHPUnit_Framework_TestCase
     protected $nonceValue;
 
     /**
-     * @expectedException \Directus\Auth\Exception\RequestNonceHasntBeenProcessed
+     * @expectedException \Directus\Authentication\Exception\RequestNonceHasntBeenProcessed
      */
     public function testNewNonceException()
     {
@@ -31,7 +31,7 @@ class RequestNonceProviderTest extends PHPUnit_Framework_TestCase
     {
         $storage = new \Directus\Session\Storage\ArraySessionStorage();
         $session = new \Directus\Session\Session($storage);
-        $nonceProvider = new \Directus\Auth\RequestNonceProvider($session);
+        $nonceProvider = new \Directus\Authentication\RequestNonceProvider($session);
 
         $this->assertNotEmpty($nonceProvider->getAllNonces());
     }
@@ -82,6 +82,6 @@ class RequestNonceProviderTest extends PHPUnit_Framework_TestCase
             'nonce_pool_size' => 20
         ];
 
-        $this->nonceProvider = new \Directus\Auth\RequestNonceProvider($this->session, $options);
+        $this->nonceProvider = new \Directus\Authentication\RequestNonceProvider($this->session, $options);
     }
 }

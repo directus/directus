@@ -1,13 +1,13 @@
 <?php
 
-use Directus\Auth\Provider as Auth;
+use Directus\Authentication\Provider as Auth;
 
 class ProviderTest extends PHPUnit_Framework_TestCase
 {
     /**
      * Authentication provider
      *
-     * @var \Directus\Auth\Provider
+     * @var \Directus\Authentication\Provider
      */
     protected $provider;
 
@@ -91,7 +91,7 @@ class ProviderTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \Directus\Auth\Exception\UserAlreadyLoggedInException
+     * @expectedException \Directus\Authentication\Exception\UserAlreadyLoggedInException
      */
     public function testLoginSuccessfulTwice()
     {
@@ -141,7 +141,7 @@ class ProviderTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \Directus\Auth\Exception\UserIsntLoggedInException
+     * @expectedException \Directus\Authentication\Exception\UserIsntLoggedInException
      */
     public function testGetUserInfoException()
     {
@@ -188,7 +188,7 @@ class ProviderTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \Directus\Auth\Exception\UserIsntLoggedInException
+     * @expectedException \Directus\Authentication\Exception\UserIsntLoggedInException
      */
     public function testLogoutException()
     {

@@ -8,15 +8,13 @@
  * @license   GNU General Public License (v3) – <http://www.gnu.org/copyleft/gpl.html>
  */
 
-namespace Directus\Auth\Exception;
+namespace Directus\Permissions\Exception;
 
 /**
- * Request Nonce has not been processed
+ * Unauthorized write field
  *
- * @author Daniel Bickett
- * @author Welling Guzmán <wellingguzman@gmail.com>
+ * @author Daniel Bickett <daniel@rngr.org>
  */
-class RequestNonceHasntBeenProcessed extends \Exception
+class UnauthorizedFieldWriteException extends AclException
 {
-
 }

@@ -8,13 +8,13 @@
  * @license   GNU General Public License (v3) – <http://www.gnu.org/copyleft/gpl.html>
  */
 
-namespace Directus\Acl\Exception;
+namespace Directus\Permissions\Exception;
 
 /**
- * Unauthorized edit
+ * Unauthorized add table
  *
  * @author Daniel Bickett <daniel@rngr.org>
  */
-class UnauthorizedTableEditException extends AclException
+class UnauthorizedTableAddException extends AclException
 {
 }

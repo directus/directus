@@ -2,7 +2,7 @@
 
 namespace Directus\Database;
 
-use Directus\Auth\Provider as Auth;
+use Directus\Authentication\Provider as Auth;
 use Directus\Bootstrap;
 use Directus\Database\Object\Column;
 use Directus\Database\TableGateway\DirectusPreferencesTableGateway;
@@ -28,7 +28,7 @@ class TableSchema
     /**
      * ACL Instance
      *
-     * @var \Directus\Acl\Acl null
+     * @var \Directus\Permissions\Acl null
      */
     protected static $acl = null;
 
@@ -97,7 +97,7 @@ class TableSchema
     /**
      * Get ACL Instance
      *
-     * @return \Directus\Acl\Acl
+     * @return \Directus\Permissions\Acl
      */
     public static function getAclInstance()
     {

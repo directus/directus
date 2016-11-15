@@ -8,13 +8,13 @@
  * @license   GNU General Public License (v3) – <http://www.gnu.org/copyleft/gpl.html>
  */
 
-namespace Directus\Acl\Exception;
+namespace Directus\Permissions\Exception;
 
 /**
- * Unathorized alter table
+ * Unauthorized big delete
  *
  * @author Daniel Bickett <daniel@rngr.org>
  */
-class UnauthorizedTableAlterException extends AclException
+class UnauthorizedTableBigDeleteException extends AclException
 {
 }

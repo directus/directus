@@ -8,7 +8,7 @@
  * @license   GNU General Public License (v3) – <http://www.gnu.org/copyleft/gpl.html>
  */
 
-namespace Directus\Acl\Exception;
+namespace Directus\Permissions\Exception;
 
 /**
  * Unauthorized big edit

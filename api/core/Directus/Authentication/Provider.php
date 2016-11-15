@@ -8,10 +8,10 @@
  * @license   GNU General Public License (v3) – <http://www.gnu.org/copyleft/gpl.html>
  */
 
-namespace Directus\Auth;
+namespace Directus\Authentication;
 
-use Directus\Auth\Exception\UserAlreadyLoggedInException;
-use Directus\Auth\Exception\UserIsntLoggedInException;
+use Directus\Authentication\Exception\UserAlreadyLoggedInException;
+use Directus\Authentication\Exception\UserIsntLoggedInException;
 use Directus\Bootstrap;
 use Directus\Session\Session;
 use Directus\Util\ArrayUtils;
@@ -200,7 +200,7 @@ class Provider
      *
      * @return null
      *
-     * @throws  \Directus\Auth\Exception\UserIsntLoggedInException
+     * @throws  \Directus\Authentication\Exception\UserIsntLoggedInException
      */
     public function logout()
     {
@@ -252,7 +252,7 @@ class Provider
      *
      * @return mixed|array Authenticated user metadata.
      *
-     * @throws  \Directus\Auth\Exception\UserIsntLoggedInException
+     * @throws  \Directus\Authentication\Exception\UserIsntLoggedInException
      */
     public function getUserInfo($attribute = null)
     {
@@ -309,7 +309,7 @@ class Provider
      *
      * @return null
      *
-     * @throws  \Directus\Auth\Exception\UserAlreadyLoggedInException
+     * @throws  \Directus\Authentication\Exception\UserAlreadyLoggedInException
      */
     private function completeLogin($uid)
     {

@@ -8,15 +8,13 @@
  * @license   GNU General Public License (v3) – <http://www.gnu.org/copyleft/gpl.html>
  */
 
-namespace Directus\Auth\Exception;
+namespace Directus\Permissions\Exception;
 
 /**
- * User is not logged in
+ * ACL Exception
  *
- * @author Daniel Bickett
- * @author Welling Guzmán <wellingguzman@gmail.com>
+ * @author Daniel Bickett <daniel@rngr.org>
  */
-class UserIsntLoggedInException extends \Exception
+abstract class AclException extends \Exception
 {
-
 }

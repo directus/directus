@@ -2,8 +2,8 @@
 
 namespace Directus\Database\TableGateway;
 
-use Directus\Acl\Acl;
-use Directus\Auth\Provider as Auth;
+use Directus\Permissions\Acl;
+use Directus\Authentication\Provider as Auth;
 use Directus\Database\TableSchema;
 use Directus\MemcacheProvider;
 use Zend\Db\Adapter\AdapterInterface;

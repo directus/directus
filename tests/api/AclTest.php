@@ -1,11 +1,11 @@
 <?php
 
-use Directus\Acl\Acl;
+use Directus\Permissions\Acl;
 
 class AclTest extends PHPUnit_Framework_TestCase
 {
     /**
-     * @var \Directus\Acl\Acl null
+     * @var \Directus\Permissions\Acl null
      */
     protected $acl = null;
     protected $privileges = null;
@@ -99,7 +99,7 @@ class AclTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \Directus\Acl\Exception\UnauthorizedFieldReadException
+     * @expectedException \Directus\Permissions\Exception\UnauthorizedFieldReadException
      */
     public function testEnforceReadBlacklist()
     {
@@ -109,7 +109,7 @@ class AclTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \Directus\Acl\Exception\UnauthorizedFieldReadException
+     * @expectedException \Directus\Permissions\Exception\UnauthorizedFieldReadException
      */
     public function testEnforceReadBlacklist2()
     {
@@ -119,7 +119,7 @@ class AclTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \Directus\Acl\Exception\UnauthorizedFieldWriteException
+     * @expectedException \Directus\Permissions\Exception\UnauthorizedFieldWriteException
      */
     public function testEnforceWriteBlacklist()
     {
@@ -242,7 +242,7 @@ class AclTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \Directus\Acl\Exception\UnauthorizedTableAlterException
+     * @expectedException \Directus\Permissions\Exception\UnauthorizedTableAlterException
      */
     public function testEnforceCanAlter()
     {
@@ -250,7 +250,7 @@ class AclTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \Directus\Acl\Exception\UnauthorizedTableAddException
+     * @expectedException \Directus\Permissions\Exception\UnauthorizedTableAddException
      */
     public function testEnforceCanAdd()
     {

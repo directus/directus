@@ -8,13 +8,15 @@
  * @license   GNU General Public License (v3) – <http://www.gnu.org/copyleft/gpl.html>
  */
 
-namespace Directus\Acl\Exception;
+namespace Directus\Authentication\Exception;
 
 /**
- * Unauthorized read field
+ * User is already logged in
  *
- * @author Daniel Bickett <daniel@rngr.org>
+ * @author Daniel Bickett
+ * @author Welling Guzmán <wellingguzman@gmail.com>
  */
-class UnauthorizedFieldReadException extends AclException
+class UserAlreadyLoggedInException extends \Exception
 {
+
 }

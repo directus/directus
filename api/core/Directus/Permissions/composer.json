@@ -11,7 +11,7 @@
   },
   "autoload": {
     "psr-4": {
-      "Directus64\\Acl\\": ""
+      "Directus\\Permissions\\": ""
     }
   },
   "extra": {

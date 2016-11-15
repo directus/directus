@@ -12,13 +12,13 @@ class AclAwareTableGatewayTest extends PHPUnit_Framework_TestCase
                 ->getMock();
 
         $adapter = get_mock_adapter($this);
-        $acl = new Directus\Acl\Acl();
+        $acl = new Directus\Permissions\Acl();
         //$table = new \Directus\Database\TableGateway\AclAwareTableGateway($acl, 'users', $adapter);
     }
 
     protected function getAclMock()
     {
-        $mock = $this->getMockBuilder('\Directus\Acl\Acl')
+        $mock = $this->getMockBuilder('\Directus\Permissions\Acl')
             ->setConstructorArgs([])
             ->getMock();
 

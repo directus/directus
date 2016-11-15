@@ -2,7 +2,7 @@
 
 namespace Directus\Database\RowGateway;
 
-use Directus\Auth\Provider as AuthProvider;
+use Directus\Authentication\Provider as AuthProvider;
 
 class DirectusFilesRowGateway extends BaseRowGateway
 {

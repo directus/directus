@@ -2,7 +2,7 @@
 
 namespace Directus\Database\TableGateway;
 
-use Directus\Acl\Acl;
+use Directus\Permissions\Acl;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\Adapter\AdapterInterface;
 

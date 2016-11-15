@@ -2,11 +2,11 @@
 
 namespace Directus\Database\TableGateway;
 
-use Directus\Acl\Acl;
-use Directus\Acl\Exception\UnauthorizedTableBigDeleteException;
-use Directus\Acl\Exception\UnauthorizedTableBigEditException;
-use Directus\Acl\Exception\UnauthorizedTableDeleteException;
-use Directus\Acl\Exception\UnauthorizedTableEditException;
+use Directus\Permissions\Acl;
+use Directus\Permissions\Exception\UnauthorizedTableBigDeleteException;
+use Directus\Permissions\Exception\UnauthorizedTableBigEditException;
+use Directus\Permissions\Exception\UnauthorizedTableDeleteException;
+use Directus\Permissions\Exception\UnauthorizedTableEditException;
 use Directus\Bootstrap;
 use Directus\Database\Exception\DuplicateEntryException;
 use Directus\Database\Exception\SuppliedArrayAsColumnValue;
@@ -528,8 +528,8 @@ class BaseTableGateway extends TableGateway
      *
      * @return ResultSet
      *
-     * @throws \Directus\Acl\Exception\UnauthorizedFieldReadException
-     * @throws \Directus\Acl\Exception\UnauthorizedFieldWriteException
+     * @throws \Directus\Permissions\Exception\UnauthorizedFieldReadException
+     * @throws \Directus\Permissions\Exception\UnauthorizedFieldWriteException
      * @throws \Exception
      */
     protected function executeSelect(Select $select)
@@ -562,9 +562,9 @@ class BaseTableGateway extends TableGateway
      * @return mixed
      *
      * @throws \Directus\Database\Exception\DuplicateEntryException
-     * @throws \Directus\Acl\Exception\UnauthorizedTableAddException
-     * @throws \Directus\Acl\Exception\UnauthorizedFieldReadException
-     * @throws \Directus\Acl\Exception\UnauthorizedFieldWriteException
+     * @throws \Directus\Permissions\Exception\UnauthorizedTableAddException
+     * @throws \Directus\Permissions\Exception\UnauthorizedFieldReadException
+     * @throws \Directus\Permissions\Exception\UnauthorizedFieldWriteException
      */
     protected function executeInsert(Insert $insert)
     {
@@ -613,10 +613,10 @@ class BaseTableGateway extends TableGateway
      * @return mixed
      *
      * @throws \Directus\Database\Exception\DuplicateEntryException
-     * @throws \Directus\Acl\Exception\UnauthorizedTableBigEditException
-     * @throws \Directus\Acl\Exception\UnauthorizedTableEditException
-     * @throws \Directus\Acl\Exception\UnauthorizedFieldReadException
-     * @throws \Directus\Acl\Exception\UnauthorizedFieldWriteException
+     * @throws \Directus\Permissions\Exception\UnauthorizedTableBigEditException
+     * @throws \Directus\Permissions\Exception\UnauthorizedTableEditException
+     * @throws \Directus\Permissions\Exception\UnauthorizedFieldReadException
+     * @throws \Directus\Permissions\Exception\UnauthorizedFieldWriteException
      */
     protected function executeUpdate(Update $update)
     {
@@ -660,8 +660,8 @@ class BaseTableGateway extends TableGateway
      * @return mixed
      *
      * @throws \RuntimeException
-     * @throws \Directus\Acl\Exception\UnauthorizedTableBigDeleteException
-     * @throws \Directus\Acl\Exception\UnauthorizedTableDeleteException
+     * @throws \Directus\Permissions\Exception\UnauthorizedTableBigDeleteException
+     * @throws \Directus\Permissions\Exception\UnauthorizedTableDeleteException
      */
     protected function executeDelete(Delete $delete)
     {

@@ -2,7 +2,7 @@
 
 namespace Directus\Database\TableGateway;
 
-use Directus\Acl\Acl;
+use Directus\Permissions\Acl;
 use Directus\Database\Query\Builder;
 use Directus\Database\TableSchema;
 use Directus\Util\DateUtils;
@@ -49,7 +49,7 @@ class DirectusActivityTableGateway extends RelationalTableGateway
      * DirectusActivityTableGateway constructor.
      *
      * @param AdapterInterface $adapter
-     * @param AdapterInterface $acl
+     * @param Acl $acl
      */
     public function __construct(AdapterInterface $adapter, $acl)
     {

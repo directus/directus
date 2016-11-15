@@ -8,13 +8,15 @@
  * @license   GNU General Public License (v3) – <http://www.gnu.org/copyleft/gpl.html>
  */
 
-namespace Directus\Acl\Exception;
+namespace Directus\Authentication\Exception;
 
 /**
- * ACL Exception
+ * Request Nonce has not been processed
  *
- * @author Daniel Bickett <daniel@rngr.org>
+ * @author Daniel Bickett
+ * @author Welling Guzmán <wellingguzman@gmail.com>
  */
-abstract class AclException extends \Exception
+class RequestNonceHasntBeenProcessed extends \Exception
 {
+
 }

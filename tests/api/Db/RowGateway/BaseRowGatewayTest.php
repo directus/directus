@@ -74,7 +74,7 @@ class BaseRowGatewayTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException Directus\Acl\Exception\UnauthorizedFieldReadException
+     * @expectedException Directus\Permissions\Exception\UnauthorizedFieldReadException
      */
     public function testGetException()
     {
@@ -83,7 +83,7 @@ class BaseRowGatewayTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException Directus\Acl\Exception\UnauthorizedFieldReadException
+     * @expectedException Directus\Permissions\Exception\UnauthorizedFieldReadException
      */
     public function testOffsetGetException()
     {
@@ -92,7 +92,7 @@ class BaseRowGatewayTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException Directus\Acl\Exception\UnauthorizedFieldWriteException
+     * @expectedException Directus\Permissions\Exception\UnauthorizedFieldWriteException
      */
     public function testUnsetException()
     {
@@ -101,7 +101,7 @@ class BaseRowGatewayTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException Directus\Acl\Exception\UnauthorizedFieldWriteException
+     * @expectedException Directus\Permissions\Exception\UnauthorizedFieldWriteException
      */
     public function testSetException()
     {
@@ -123,7 +123,7 @@ class BaseRowGatewayTest extends PHPUnit_Framework_TestCase
     {
         $row = $this->getRow();
 
-        $acl = new Directus\Acl\Acl();
+        $acl = new Directus\Permissions\Acl();
         $adapter = get_mock_adapter($this);
         $newRow = $row->makeRowGatewayFromTableName('id', 'directus_users', $adapter, $acl);
         $this->assertInstanceOf('\Directus\Database\RowGateway\DirectusUsersRowGateway', $newRow);
@@ -162,7 +162,7 @@ class BaseRowGatewayTest extends PHPUnit_Framework_TestCase
     protected function getRow($tableName = 'users', $privileges = [])
     {
         $adapter = get_mock_adapter($this);
-        $acl = new Directus\Acl\Acl($privileges);
+        $acl = new Directus\Permissions\Acl($privileges);
         $row = new \Directus\Database\RowGateway\BaseRowGateway('id', $tableName, $adapter, $acl);
 
         $acl->setUserId(1);

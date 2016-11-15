@@ -2,12 +2,12 @@
 
 namespace Directus\Database\RowGateway;
 
-use Directus\Acl\Acl;
-use Directus\Acl\Exception\UnauthorizedTableAddException;
-use Directus\Acl\Exception\UnauthorizedTableBigDeleteException;
-use Directus\Acl\Exception\UnauthorizedTableBigEditException;
-use Directus\Acl\Exception\UnauthorizedTableDeleteException;
-use Directus\Acl\Exception\UnauthorizedTableEditException;
+use Directus\Permissions\Acl;
+use Directus\Permissions\Exception\UnauthorizedTableAddException;
+use Directus\Permissions\Exception\UnauthorizedTableBigDeleteException;
+use Directus\Permissions\Exception\UnauthorizedTableBigEditException;
+use Directus\Permissions\Exception\UnauthorizedTableDeleteException;
+use Directus\Permissions\Exception\UnauthorizedTableEditException;
 use Directus\Bootstrap;
 use Directus\Database\SchemaManager;
 use Directus\Database\TableGateway\RelationalTableGateway;
@@ -49,7 +49,7 @@ class BaseRowGateway extends RowGateway
     public function __construct($primaryKeyColumn, $table, $adapterOrSql, Acl $acl = null, $schema = null)
     {
         if ($acl !== null && !($acl instanceof Acl)) {
-            throw new \InvalidArgumentException('acl needs to be instance of \Directus\Acl\Acl');
+            throw new \InvalidArgumentException('acl needs to be instance of \Directus\Permissions\Acl');
         }
 
         $this->acl = $acl;
