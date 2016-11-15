@@ -20,7 +20,7 @@
   },
   "extra": {
     "branch-alias": {
-      "dev-d64": "1.0.x-dev"
+      "dev-d64": "0.9.x-dev"
     }
   }
 }
