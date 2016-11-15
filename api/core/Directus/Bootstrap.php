@@ -2,9 +2,9 @@
 
 namespace Directus;
 
-use Directus\Acl\Acl;
+use Directus\Permissions\Acl;
 use Directus\Application\Application;
-use Directus\Auth\Provider as AuthProvider;
+use Directus\Authentication\Provider as AuthProvider;
 use Directus\Database\Connection;
 use Directus\Database\SchemaManager;
 use Directus\Database\Schemas\Sources\MySQLSchema;
