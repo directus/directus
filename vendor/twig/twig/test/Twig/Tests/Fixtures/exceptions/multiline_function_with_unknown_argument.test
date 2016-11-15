@@ -1,9 +1,0 @@
---TEST--
-Exception for multiline function with unknown argument
---TEMPLATE--
-{{ include('foo',
-   with_context=True,
-   invalid=False
-) }}
---EXCEPTION--
-Twig_Error_Syntax: Unknown argument "invalid" for function "include(template, variables, with_context, ignore_missing, sandboxed)" in "index.twig" at line 4.

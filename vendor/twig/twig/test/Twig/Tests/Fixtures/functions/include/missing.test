@@ -1,8 +1,0 @@
---TEST--
-"include" function
---TEMPLATE--
-{{ include("foo.twig") }}
---DATA--
-return array();
---EXCEPTION--
-Twig_Error_Loader: Template "foo.twig" is not defined in "index.twig" at line 2.

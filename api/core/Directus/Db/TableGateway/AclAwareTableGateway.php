@@ -85,6 +85,18 @@ class AclAwareTableGateway extends BaseTableGateway
     }
 
     /**
+     * Make a new table gateway
+     *
+     * @param $tableName
+     *
+     * @return BaseTableGateway
+     */
+    public function makeTable($tableName)
+    {
+        return new self($this->acl, $tableName, $this->adapter);
+    }
+
+    /**
      * @param null $tableName
      *
      * @return bool

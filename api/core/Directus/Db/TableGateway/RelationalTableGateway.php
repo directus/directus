@@ -8,6 +8,7 @@ use Directus\Db\RowGateway\AclAwareRowGateway;
 use Directus\Db\SchemaManager;
 use Directus\Db\TableSchema;
 use Directus\Files;
+use Directus\Util\ArrayUtils;
 use Directus\Util\DateUtils;
 use Zend\Db\RowGateway\AbstractRowGateway;
 use Zend\Db\Sql\Expression;
@@ -143,7 +144,6 @@ class RelationalTableGateway extends AclAwareTableGateway
         $deltaRecordData = $recordIsNew ? [] : array_intersect_key((array)$parentRecordWithForeignKeys, (array)$fullRecordData);
 
         switch ($activityEntryMode) {
-
             // Activity logging is enabled, and I am a nested action
             case self::ACTIVITY_ENTRY_MODE_CHILD:
                 $logEntryAction = $recordIsNew ? DirectusActivityTableGateway::ACTION_ADD : DirectusActivityTableGateway::ACTION_UPDATE;
@@ -157,6 +157,7 @@ class RelationalTableGateway extends AclAwareTableGateway
                     'parent_table' => isset($parentData['table_name']) ? $parentData['table_name'] : null,
                     'data' => json_encode($fullRecordData),
                     'delta' => json_encode($deltaRecordData),
+                    'parent_changed' => (int)$parentRecordChanged,
                     'row_id' => $rowId,
                     'identifier' => $this->findRecordIdentifier($schemaArray, $fullRecordData),
                     'logged_ip' => isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '',
@@ -296,6 +297,12 @@ class RelationalTableGateway extends AclAwareTableGateway
                                 $recordData[$colName][$index]['data'] = $Files->saveEmbedData($row['data']);
                             } else {
                                 $recordData[$colName][$index]['data'] = $Files->saveData($row['data']['data'], $row['data']['name']);
+                                // @NOTE: this is duplicate code from the upload file endpoint
+                                //        to maintain the file title.
+                                $recordData[$colName][$index]['data'] = array_merge(
+                                    $recordData[$colName][$index]['data'],
+                                    ArrayUtils::omit($row['data'], ['data', 'name'])
+                                );
                             }
                         }
 
@@ -308,6 +315,9 @@ class RelationalTableGateway extends AclAwareTableGateway
                             $recordData[$colName] = $Files->saveEmbedData($foreignRow);
                         } else {
                             $recordData[$colName] = $Files->saveData($foreignRow['data'], $foreignRow['name']);
+                            // @NOTE: this is duplicate code from the upload file endpoint
+                            //        to maintain the file title.
+                            $recordData[$colName] = array_merge($recordData[$colName], ArrayUtils::omit($foreignRow, ['data', 'name']));
                         }
                     }
                     unset($recordData[$colName]['data']);
@@ -721,7 +731,18 @@ class RelationalTableGateway extends AclAwareTableGateway
         $results = $this->parseRecord($results);
 
         // Eager-load related ManyToOne records
+        $this->toManyCallStack = [];
         $results = $this->loadManyToOneRelationships($schemaArray, $results);
+
+        // =============================================================================
+        // HOTFIX: Fetching X2M data and Infinite circle loop
+        // =============================================================================
+        // Separate alias fields from table schema array
+        $aliasColumns = $this->filterSchemaAliasFields($schemaArray); // (fmrly $alias_schema)
+        foreach($results as $key => $result) {
+            $this->toManyCallStack = [];
+            $results[$key] = $this->loadToManyRelationships($result, $aliasColumns);
+        }
 
         /**
          * Fetching a set of data
@@ -744,12 +765,6 @@ class RelationalTableGateway extends AclAwareTableGateway
         }
 
         list($result) = $results;
-
-        // Separate alias fields from table schema array
-        $alias_fields = $this->filterSchemaAliasFields($schemaArray); // (fmrly $alias_schema)
-
-        $this->toManyCallStack = [];
-        $result = $this->loadToManyRelationships($result, $alias_fields);
 
         return $result;
     }
@@ -785,11 +800,15 @@ class RelationalTableGateway extends AclAwareTableGateway
 
     /**
      * Populate alias/relational One-To-Many and Many-To-Many fields with their foreign data.
-     * @param  array $entry [description]
-     * @param  [type] $aliasColumns [description]
-     * @return [type]               [description]
+     *
+     * @param array $entry [description]
+     * @param array $aliasColumns [description]
+     * @param string|null $parentField
+     * @param int $level
+     *
+     * @return array
      */
-    public function loadToManyRelationships($entry, $aliasColumns)
+    public function loadToManyRelationships($entry, $aliasColumns, $parentField = null, $level = 0)
     {
         foreach ($aliasColumns as $alias) {
             $foreign_data = null;
@@ -799,17 +818,15 @@ class RelationalTableGateway extends AclAwareTableGateway
                 switch ($relationship['type']) {
                     case 'MANYTOMANY':
                         $this->enforceColumnHasNonNullValues($alias['relationship'], ['related_table', 'junction_table', 'junction_key_left', 'junction_key_right'], $this->table);
-                        if (in_array($relationship['related_table'], $this->toManyCallStack)) {
-                            return $entry;
-                        }
-                        array_push($this->toManyCallStack, $relationship['related_table']);
                         $foreign_data = $this->loadManyToManyRelationships($this->table, $alias['relationship']['related_table'],
                             $alias['relationship']['junction_table'], $alias['relationship']['junction_key_left'], $alias['relationship']['junction_key_right'],
-                            $entry[$this->primaryKeyFieldName]);
+                            $entry[$this->primaryKeyFieldName],
+                            is_null($parentField) ? $alias['column_name'] : $parentField,
+                            $level);
                         $noDuplicates = isset($alias['options']['no_duplicates']) ? $alias['options']['no_duplicates'] : 0;
                         // @todo: better way to handle this.
                         // @TODO: fetch uniques/non-duplicates entries
-                        if ($noDuplicates) {
+                        if (isset($foreign_data['rows']) && $noDuplicates) {
                             $uniquesID = [];
                             foreach ($foreign_data['rows'] as $index => $row) {
                                 if (!in_array($row['data']['id'], $uniquesID)) {
@@ -855,7 +872,13 @@ class RelationalTableGateway extends AclAwareTableGateway
                             return $entry;
                         }
                         array_push($this->toManyCallStack, $alias['relationship']['related_table']);
-                        $foreign_data = $this->loadOneToManyRelationships($alias['relationship']['related_table'], $alias['relationship']['junction_key_right'], $entry['id']);
+                        $foreign_data = $this->loadOneToManyRelationships(
+                            $alias['relationship']['related_table'],
+                            $alias['relationship']['junction_key_right'],
+                            $entry['id'],
+                            is_null($parentField) ? $alias['column_name'] : $parentField,
+                            $level
+                        );
                         break;
                 }
             }
@@ -875,10 +898,21 @@ class RelationalTableGateway extends AclAwareTableGateway
      * @param string $column_name
      * @param string $column_equals
      */
-    public function loadOneToManyRelationships($table, $column_name, $column_equals)
+    public function loadOneToManyRelationships($table, $column_name, $column_equals, $parentField = null, $level = 0)
     {
         if (!TableSchema::canGroupViewTable($table)) {
             return false;
+        }
+
+        // =============================================================================
+        // HOTFIX: prevent infinite circle loop
+        // =============================================================================
+        if ($parentField && $this->hasToManyCallStack($parentField, $table)) {
+            return $column_equals;
+        }
+
+        if ($parentField !== null) {
+            $this->addToManyCallStack($level, $parentField, $table);
         }
 
         // Run query
@@ -903,11 +937,17 @@ class RelationalTableGateway extends AclAwareTableGateway
      * Fetch related, foreign rows for a whole rowset's ManyToOne relationships.
      * (Given a table's schema and rows, iterate and replace all of its foreign
      * keys with the contents of these foreign rows.)
-     * @param  array $schema Table schema array
-     * @param  array $entries Table rows
-     * @return array          Revised table rows, now including foreign rows
+     *
+     * @param array $schemaArray Table schema array
+     * @param array $table_entries Table rows
+     * @param string|null $parentField
+     * @param int $level
+     *
+     * @return array Revised table rows, now including foreign rows
+     *
+     * @throws Exception\RelationshipMetadataException
      */
-    public function loadManyToOneRelationships($schemaArray, $table_entries)
+    public function loadManyToOneRelationships($schemaArray, $table_entries, $parentField = null, $level = 0)
     {
         // Identify the ManyToOne columns
         foreach ($schemaArray as $col) {
@@ -933,6 +973,15 @@ class RelationalTableGateway extends AclAwareTableGateway
                     }
                     throw new Exception\RelationshipMetadataException($message);
                 }
+
+                // =============================================================================
+                // HOTFIX: prevent infinite circle loop
+                // =============================================================================
+                if ($parentField && $this->hasToManyCallStack($parentField, $foreign_table_name)) {
+                    return $table_entries;
+                }
+
+                $this->addToManyCallStack($level, is_null($parentField) ? $foreign_id_column : $parentField, $foreign_table_name);
 
                 // Aggregate all foreign keys for this relationship (for each row, yield the specified foreign id)
                 $yield = function ($row) use ($foreign_id_column, $table_entries) {
@@ -971,7 +1020,7 @@ class RelationalTableGateway extends AclAwareTableGateway
                 $schemaArray = TableSchema::getSchemaArray($foreign_table_name);
 
                 // Eager-load related ManyToOne records
-                $foreign_table = $this->loadManyToOneRelationships($schemaArray, $foreign_table);
+                $foreign_table = $this->loadManyToOneRelationships($schemaArray, $foreign_table, $parentField, $level+1);
 
                 // Convert dates into ISO 8601 Format
                 $foreign_table = $this->convertDates($foreign_table, $schemaArray);
@@ -995,20 +1044,35 @@ class RelationalTableGateway extends AclAwareTableGateway
 
     /**
      * Fetch related, foreign rows for one record's ManyToMany relationships.
+     *
      * @param  string $table_name
      * @param  string $foreign_table
      * @param  string $junction_table
      * @param  string $junction_key_left
      * @param  string $junction_key_right
      * @param  string $column_equals
+     * @param  string $parentField
+     * @param  int    $level
+     *
      * @return array                      Foreign rowset
      */
-    public function loadManyToManyRelationships($table_name, $foreign_table, $junction_table, $junction_key_left, $junction_key_right, $column_equals)
+    public function loadManyToManyRelationships($table_name, $foreign_table, $junction_table, $junction_key_left, $junction_key_right, $column_equals, $parentField = null, $level = 0)
     {
         $foreign_table_pk = TableSchema::getTablePrimaryKey($foreign_table);
         $foreign_join_column = $foreign_table . '.' . $foreign_table_pk;
         $junction_join_column = $junction_table . '.' . $junction_key_right;
         $junction_comparison_column = $junction_table . '.' . $junction_key_left;
+
+        // =============================================================================
+        // HOTFIX: prevent infinite circle loop
+        // =============================================================================
+        if ($parentField && $this->hasToManyCallStack($parentField, $foreign_table)) {
+            return $column_equals;
+        }
+
+        if ($parentField !== null) {
+            $this->addToManyCallStack($level, $parentField, $foreign_table);
+        }
 
         $junction_table_pk = TableSchema::getTablePrimaryKey($junction_table);
         $junction_id_column = $junction_table . '.' . $junction_table_pk;
@@ -1062,7 +1126,7 @@ class RelationalTableGateway extends AclAwareTableGateway
 
             $schemaArray = TableSchema::getSchemaArray($foreign_table);
             $alias_fields = $this->filterSchemaAliasFields($schemaArray); // (fmrly $alias_schema)
-            $row = $this->loadToManyRelationships($row, $alias_fields);
+            $row = $this->loadToManyRelationships($row, $alias_fields, $parentField, $level+1);
 
             $entry['data'] = $row;
 
@@ -1070,6 +1134,42 @@ class RelationalTableGateway extends AclAwareTableGateway
         }
 
         return ['rows' => $foreign_data];
+    }
+
+    protected function addToManyCallStack($level, $field, $table)
+    {
+        if (!is_array($this->toManyCallStack)) {
+            $this->toManyCallStack = [];
+        }
+
+        if (!isset($this->toManyCallStack[$field])) {
+            $this->toManyCallStack[$field] = [];
+        }
+
+        if (!isset($this->toManyCallStack[$field][$level])) {
+            $this->toManyCallStack[$field][$level] = [];
+        }
+
+        $this->toManyCallStack[$field][$level][] = $table;
+    }
+
+    protected function hasToManyCallStack($field, $table)
+    {
+        if (!is_array($this->toManyCallStack)) {
+            return false;
+        }
+
+        if (!array_key_exists($field, $this->toManyCallStack)) {
+            return false;
+        }
+
+        foreach($this->toManyCallStack[$field] as $level => $tablesCalled) {
+            if (in_array($table, $tablesCalled)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**

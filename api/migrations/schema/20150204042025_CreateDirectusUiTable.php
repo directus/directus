@@ -64,7 +64,7 @@ class CreateDirectusUiTable extends Ruckusing_Migration_Base
             'column_name' => 'avatar_file_id',
             'ui_name' => 'single_file',
             'name' => 'allowed_filetypes',
-            'value' => 'image/'
+            'value' => 'image/*'
         ]);
     }//up()
 

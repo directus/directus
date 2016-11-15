@@ -1,8 +1,0 @@
-// vim:ft=javascript
-
-ARG_ENABLE("twig", "Twig support", "no");
-
-if (PHP_TWIG != "no") {
-	AC_DEFINE('HAVE_TWIG', 1);
-	EXTENSION('twig', 'twig.c');
-}

@@ -133,6 +133,9 @@ class Bootstrap
             return Bootstrap::get('hookEmitter');
         });
 
+        $config = defined('BASE_PATH') ? Bootstrap::get('config') : [];
+        $app->container->set('config', $config);
+
         BaseTableGateway::setHookEmitter($app->container->get('emitter'));
 
         return $app;

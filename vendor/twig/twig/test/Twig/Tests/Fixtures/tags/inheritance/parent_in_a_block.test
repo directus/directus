@@ -1,8 +1,0 @@
---TEST--
-"extends" tag
---TEMPLATE--
-{% block content %}
-    {% extends "foo.twig" %}
-{% endblock %}
---EXCEPTION--
-Twig_Error_Syntax: Cannot extend from a block in "index.twig" at line 3.
