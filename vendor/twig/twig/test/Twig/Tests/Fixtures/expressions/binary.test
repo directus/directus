@@ -1,0 +1,46 @@
+--TEST--
+Twig supports binary operations (+, -, *, /, ~, %, and, or)
+--TEMPLATE--
+{{ 1 + 1 }}
+{{ 2 - 1 }}
+{{ 2 * 2 }}
+{{ 2 / 2 }}
+{{ 3 % 2 }}
+{{ 1 and 1 }}
+{{ 1 and 0 }}
+{{ 0 and 1 }}
+{{ 0 and 0 }}
+{{ 1 or 1 }}
+{{ 1 or 0 }}
+{{ 0 or 1 }}
+{{ 0 or 0 }}
+{{ 0 or 1 and 0 }}
+{{ 1 or 0 and 1 }}
+{{ "foo" ~ "bar" }}
+{{ foo ~ "bar" }}
+{{ "foo" ~ bar }}
+{{ foo ~ bar }}
+{{ 20 // 7 }}
+--DATA--
+return array('foo' => 'bar', 'bar' => 'foo')
+--EXPECT--
+2
+1
+4
+1
+1
+1
+
+
+
+1
+1
+1
+
+
+1
+foobar
+barbar
+foofoo
+barfoo
+2

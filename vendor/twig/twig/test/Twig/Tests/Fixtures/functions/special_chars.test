@@ -1,0 +1,8 @@
+--TEST--
+"§" custom function
+--TEMPLATE--
+{{ §('foo') }}
+--DATA--
+return array()
+--EXPECT--
+§foo§

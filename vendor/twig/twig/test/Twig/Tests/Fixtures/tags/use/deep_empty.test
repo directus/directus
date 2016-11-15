@@ -1,0 +1,10 @@
+--TEST--
+"use" tag
+--TEMPLATE--
+{% use "foo.twig" %}
+--TEMPLATE(foo.twig)--
+{% use "bar.twig" %}
+--TEMPLATE(bar.twig)--
+--DATA--
+return array()
+--EXPECT--

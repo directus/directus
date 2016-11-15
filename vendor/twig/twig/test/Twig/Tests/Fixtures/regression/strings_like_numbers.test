@@ -1,0 +1,8 @@
+--TEST--
+Twig does not confuse strings with integers in getAttribute()
+--TEMPLATE--
+{{ hash['2e2'] }}
+--DATA--
+return array('hash' => array('2e2' => 'works'))
+--EXPECT--
+works

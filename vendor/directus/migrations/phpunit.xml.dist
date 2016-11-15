@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<phpunit 
+  strict="false"
+  stopOnError="false"
+  stopOnFailure="false"
+  forceCoversAnnotation="false"
+  mapTestClassNameToCoveredClassName="false"
+  backupGlobals="false"
+  backupStaticAttributes="false"
+  colors="true"
+  convertErrorsToExceptions="true"
+  convertNoticesToExceptions="true"
+  convertWarningsToExceptions="true"
+  processIsolation="false"
+  bootstrap="./tests/bootstrap.php">
+  <testsuites>
+    <testsuite name="Ruckusing Migrations Test Suite">
+      <directory>./tests</directory>
+    </testsuite>
+  </testsuites>
+  <filter>
+        <blacklist>
+            <directory>./tests/unit</directory>
+        </blacklist>
+        <whitelist addUncoveredFilesFromWhitelist="true">
+            <directory suffix=".php">./lib</directory>
+        </whitelist>
+    </filter>
+</phpunit>

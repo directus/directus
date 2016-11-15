@@ -1,0 +1,11 @@
+--TEST--
+"autoescape" tag accepts an escaping strategy
+--TEMPLATE--
+{% autoescape true js %}{{ var }}{% endautoescape %}
+
+{% autoescape true html %}{{ var }}{% endautoescape %}
+--DATA--
+return array('var' => '<br />"')
+--EXPECT--
+\x3Cbr\x20\x2F\x3E\x22
+&lt;br /&gt;&quot;

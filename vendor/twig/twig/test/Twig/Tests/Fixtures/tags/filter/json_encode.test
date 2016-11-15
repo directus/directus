@@ -1,0 +1,8 @@
+--TEST--
+"filter" tag applies a filter on its children
+--TEMPLATE--
+{% filter json_encode|raw %}test{% endfilter %}
+--DATA--
+return array()
+--EXPECT--
+"test"

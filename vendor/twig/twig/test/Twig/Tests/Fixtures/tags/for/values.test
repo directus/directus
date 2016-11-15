@@ -1,0 +1,11 @@
+--TEST--
+"for" tag iterates over item values
+--TEMPLATE--
+{% for item in items %}
+  * {{ item }}
+{% endfor %}
+--DATA--
+return array('items' => array('a', 'b'))
+--EXPECT--
+  * a
+  * b

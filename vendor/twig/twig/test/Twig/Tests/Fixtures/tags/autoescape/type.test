@@ -1,0 +1,69 @@
+--TEST--
+escape types
+--TEMPLATE--
+
+1. autoescape 'html' |escape('js')
+
+{% autoescape 'html' %}
+<a onclick="alert(&quot;{{ msg|escape('js') }}&quot;)"></a>
+{% endautoescape %}
+
+2. autoescape 'html' |escape('js')
+
+{% autoescape 'html' %}
+<a onclick="alert(&quot;{{ msg|escape('js') }}&quot;)"></a>
+{% endautoescape %}
+
+3. autoescape 'js' |escape('js')
+
+{% autoescape 'js' %}
+<a onclick="alert(&quot;{{ msg|escape('js') }}&quot;)"></a>
+{% endautoescape %}
+
+4. no escape
+
+{% autoescape false %}
+<a onclick="alert(&quot;{{ msg }}&quot;)"></a>
+{% endautoescape %}
+
+5. |escape('js')|escape('html')
+
+{% autoescape false %}
+<a onclick="alert(&quot;{{ msg|escape('js')|escape('html') }}&quot;)"></a>
+{% endautoescape %}
+
+6. autoescape 'html' |escape('js')|escape('html')
+
+{% autoescape 'html' %}
+<a onclick="alert(&quot;{{ msg|escape('js')|escape('html') }}&quot;)"></a>
+{% endautoescape %}
+
+--DATA--
+return array('msg' => "<>\n'\"")
+--EXPECT--
+
+1. autoescape 'html' |escape('js')
+
+<a onclick="alert(&quot;\x3C\x3E\x0A\x27\x22&quot;)"></a>
+
+2. autoescape 'html' |escape('js')
+
+<a onclick="alert(&quot;\x3C\x3E\x0A\x27\x22&quot;)"></a>
+
+3. autoescape 'js' |escape('js')
+
+<a onclick="alert(&quot;\x3C\x3E\x0A\x27\x22&quot;)"></a>
+
+4. no escape
+
+<a onclick="alert(&quot;<>
+'"&quot;)"></a>
+
+5. |escape('js')|escape('html')
+
+<a onclick="alert(&quot;\x3C\x3E\x0A\x27\x22&quot;)"></a>
+
+6. autoescape 'html' |escape('js')|escape('html')
+
+<a onclick="alert(&quot;\x3C\x3E\x0A\x27\x22&quot;)"></a>
+

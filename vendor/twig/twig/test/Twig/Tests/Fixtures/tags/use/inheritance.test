@@ -1,0 +1,25 @@
+--TEST--
+"use" tag
+--TEMPLATE--
+{% use "parent.twig" %}
+
+{{ block('container') }}
+--TEMPLATE(parent.twig)--
+{% use "ancestor.twig" %}
+
+{% block sub_container %}
+    <div class="overridden_sub_container">overridden sub_container</div>
+{% endblock %}
+--TEMPLATE(ancestor.twig)--
+{% block container %}
+    <div class="container">{{ block('sub_container') }}</div>
+{% endblock %}
+
+{% block sub_container %}
+    <div class="sub_container">sub_container</div>
+{% endblock %}
+--DATA--
+return array()
+--EXPECT--
+<div class="container">    <div class="overridden_sub_container">overridden sub_container</div>
+</div>

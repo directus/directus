@@ -1,0 +1,11 @@
+--TEST--
+"for" tag can iterate over keys
+--TEMPLATE--
+{% for key in items|keys %}
+  * {{ key }}
+{% endfor %}
+--DATA--
+return array('items' => array('a', 'b'))
+--EXPECT--
+  * 0
+  * 1

@@ -1,0 +1,14 @@
+--TEST--
+"extends" tag
+--TEMPLATE--
+{% extends standalone ? foo : 'bar.twig' %}
+
+{% block content %}{{ parent() }}FOO{% endblock %}
+--TEMPLATE(foo.twig)--
+{% block content %}FOO{% endblock %}
+--TEMPLATE(bar.twig)--
+{% block content %}BAR{% endblock %}
+--DATA--
+return array('foo' => 'foo.twig', 'standalone' => true)
+--EXPECT--
+FOOFOO

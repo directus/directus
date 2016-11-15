@@ -1,0 +1,14 @@
+--TEST--
+"parent" tag
+--TEMPLATE--
+{% use 'foo.twig' %}
+
+{% block content %}
+    {{ parent() }}
+{% endblock %}
+--TEMPLATE(foo.twig)--
+{% block content %}BAR{% endblock %}
+--DATA--
+return array()
+--EXPECT--
+BAR
