@@ -1,8 +1,9 @@
 {
-  "name": "directus/acl",
-  "description": "Directus ACL Library",
+  "name": "directus/permissions",
+  "description": "Directus Permissions (ACL) Library",
   "keywords": [
     "directus",
+    "permissions",
     "acl"
   ],
   "license": "MIT",
