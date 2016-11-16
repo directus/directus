@@ -8,7 +8,6 @@
     "directus/migrations": "dev-master",
     "directus/acl": "0.9.*",
     "directus/database": "0.9.*",
-    "directus/utils": "0.9.*",
     "league/flysystem": "^1.0",
     "swiftmailer/swiftmailer": "^5.4"
   },
@@ -51,10 +50,6 @@
     {
       "type": "git",
       "url": "https://github.com/directus/directus-php-utils"
-    },
-    {
-      "type": "git",
-      "url": "https://github.com/wellingguzman/Slim-Extras"
     },
     {
       "type": "git",
