@@ -1,21 +1,21 @@
 {
   "name": "Directus",
   "version": "6.3.5",
-  "description": "",
+  "description": "API-driven content management framework for custom databases",
   "main": "gulpfile.js",
   "scripts": {
     "test": "./node_modules/karma/bin/karma start"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/RNGR/Directus.git"
+    "url": "https://github.com/directus/directus.git"
   },
-  "author": "RANGER",
+  "author": "RANGER Studio LLC",
   "bugs": {
-    "url": "https://github.com/RNGR/Directus/issues"
+    "url": "https://github.com/directus/directus/issues"
   },
   "private": true,
-  "homepage": "https://github.com/RNGR/Directus",
+  "homepage": "http://getdirectus.com",
   "devDependencies": {
     "gulp": "~3.8.10",
     "gulp-clean": "~0.3.1",
