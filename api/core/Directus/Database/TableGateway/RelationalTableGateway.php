@@ -1093,7 +1093,7 @@ class RelationalTableGateway extends BaseTableGateway
                             unset($relatedEntries[$key][$index]);
                         }
                     }
-                    //var_dump($entries[$key]);//[$index]
+
                     unset($uniquesID);
                     // =========================================================
                     // Reset keys
@@ -1145,7 +1145,6 @@ class RelationalTableGateway extends BaseTableGateway
 
                 $junctionTableGateway = new RelationalTableGateway($junctionTableName, $this->getAdapter(), $this->acl);
                 $junctionData = $this->schema->castRecordValues($junctionData, TableSchema::getTableSchema($junctionTableName)->getColumns());
-                var_dump($junctionData);
                 $junctionData = $junctionTableGateway->loadMetadata($junctionData);
 
                 $row = $relatedTableGateway->loadMetadata($row);
