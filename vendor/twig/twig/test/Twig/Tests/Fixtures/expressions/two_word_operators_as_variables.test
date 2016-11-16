@@ -1,8 +1,0 @@
---TEST--
-Twig does not allow to use two-word named operators as variable names
---TEMPLATE--
-{{ starts with }}
---DATA--
-return array()
---EXCEPTION--
-Twig_Error_Syntax: Unexpected token "operator" of value "starts with" in "index.twig" at line 2.

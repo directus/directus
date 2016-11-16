@@ -1,8 +1,0 @@
---TEST--
-"escape" filter does not escape with the html strategy when using the html_attr strategy
---TEMPLATE--
-{{ '<br />'|escape('html_attr') }}
---DATA--
-return array()
---EXPECT--
-&lt;br&#x20;&#x2F;&gt;

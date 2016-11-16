@@ -1,8 +1,0 @@
---TEST--
-Twig outputs 0 nodes correctly
---TEMPLATE--
-{{ foo }}0{{ foo }}
---DATA--
-return array('foo' => 'foo')
---EXPECT--
-foo0foo

@@ -1,8 +1,0 @@
---TEST--
-Twig supports grouping of expressions
---TEMPLATE--
-{{ (2 + 2) / 2 }}
---DATA--
-return array()
---EXPECT--
-2
