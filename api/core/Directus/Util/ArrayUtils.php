@@ -15,11 +15,38 @@ class ArrayUtils
      */
     public static function get($array, $key, $default = null)
     {
-        if (array_key_exists($key, $array)) {
+        if (static::exists($array, $key)) {
             return $array[$key];
         }
 
+        if (strpos($key, '.') !== FALSE) {
+            $array = static::dot($array);
+            if (static::exists($array, $key)) {
+                return $array[$key];
+            }
+        }
+
         return $default;
+    }
+
+    public static function has($array, $key)
+    {
+        if (static::exists($array, $key)) {
+            return true;
+        }
+
+        if (strpos($key, '.') === FALSE) {
+            return false;
+        }
+
+        $array = static::dot($array);
+
+        return static::exists($array, $key);
+    }
+
+    public static function exists($array, $key)
+    {
+        return array_key_exists($key, $array);
     }
 
     /**
@@ -154,5 +181,47 @@ class ArrayUtils
         }
 
         return $missing;
+    }
+
+    /**
+     * Checks whether the given array has only numeric keys
+     *
+     * @param $array
+     *
+     * @return bool
+     */
+    public static function isNumericKeys($array)
+    {
+        foreach (array_keys($array) as $key) {
+            if (!is_numeric($key)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Sets or updates the keys in the source array into the default array
+     *
+     * @param array $defaultArray
+     * @param array $sourceArray
+     *
+     * @return array
+     *
+     * @link http://php.net/manual/es/function.array-merge-recursive.php#92195
+     */
+    public static function defaults(array $defaultArray, array $sourceArray)
+    {
+        $newArray = $defaultArray;
+        foreach ($sourceArray as $key => $value) {
+            if (is_array($value) && array_key_exists($key, $defaultArray) && is_array($defaultArray[$key])) {
+                $newArray[$key] = static::defaults($newArray[$key], $value);
+            } else {
+                $newArray[$key] = $value;
+            }
+        }
+
+        return $newArray;
     }
 }
