@@ -8,7 +8,7 @@
   "license": "MIT",
   "require": {
     "php": ">=5.4.0",
-    "zendframework/zend-db": "dev-directus",
+    "zendframework/zend-db": "2.8.*",
     "directus/collection": "0.9.*"
   },
   "require-dev": {
@@ -20,16 +20,6 @@
     }
   },
   "minimum-stability": "dev",
-  "repositories": [
-    {
-      "type": "git",
-      "url": "https://github.com/wellingguzman/zend-db"
-    },
-    {
-      "type": "git",
-      "url": "https://github.com/directus/collection"
-    }
-  ],
   "extra": {
     "branch-alias": {
       "dev-d64": "0.9.x-dev"
