@@ -3,7 +3,9 @@
 namespace Directus;
 
 use Directus\Acl\Acl;
+use Directus\Application\Application;
 use Directus\Auth\Provider as AuthProvider;
+use Directus\Database\SchemaManager;
 use Directus\Db\Connection;
 use Directus\Db\Schemas\MySQLSchema;
 use Directus\Db\Schemas\SQLiteSchema;
@@ -20,14 +22,12 @@ use Directus\Language\LanguageManager;
 use Directus\View\Twig\DirectusTwigExtension;
 use Slim\Extras\Log\DateTimeFileWriter;
 use Slim\Extras\Views\Twig;
-use Slim\Slim;
 
 /**
  * NOTE: This class depends on the constants defined in config.php
  */
 class Bootstrap
 {
-
     public static $singletons = [];
 
     /**
@@ -107,7 +107,7 @@ class Bootstrap
 
     /**
      * Make Slim app.
-     * @return Slim
+     * @return Application
      */
     private static function app()
     {
@@ -116,7 +116,7 @@ class Bootstrap
             'path' => APPLICATION_PATH . '/api/logs'
         ];
 
-        $app = new Slim([
+        $app = new Application([
             'templates.path' => APPLICATION_PATH . '/api/views/',
             'mode' => DIRECTUS_ENV,
             'debug' => false,
@@ -298,6 +298,30 @@ class Bootstrap
         ////        $pdo = $db->getDriver()->getConnection()->getResource();
         ////        $pdo->setAttribute(\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, true);
         //        return $db;
+    }
+
+    private static function schemaManager()
+    {
+        return new SchemaManager(static::get('schemaAdapter'));
+    }
+
+    private static function schemaAdapter()
+    {
+        $adapter = self::get('ZendDb');
+        $databaseName = $adapter->getPlatform()->getName();
+
+        switch ($databaseName) {
+            case 'MySQL':
+                return new \Directus\Database\Schemas\Sources\MySQLSchema($adapter);
+            // case 'SQLServer':
+            //    return new SQLServerSchema($adapter);
+            // case 'SQLite':
+            //     return new \Directus\Database\Schemas\Sources\SQLiteSchema($adapter);
+            // case 'PostgreSQL':
+            //     return new PostgresSchema($adapter);
+        }
+
+        throw new \Exception('Unknown/Unsupported database: ' . $databaseName);
     }
 
     private static function schema()
