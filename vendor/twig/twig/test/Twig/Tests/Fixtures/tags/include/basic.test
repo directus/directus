@@ -1,0 +1,16 @@
+--TEST--
+"include" tag
+--TEMPLATE--
+FOO
+{% include "foo.twig" %}
+
+BAR
+--TEMPLATE(foo.twig)--
+FOOBAR
+--DATA--
+return array()
+--EXPECT--
+FOO
+
+FOOBAR
+BAR

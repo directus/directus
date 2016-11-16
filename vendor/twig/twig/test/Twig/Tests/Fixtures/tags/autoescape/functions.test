@@ -1,0 +1,83 @@
+--TEST--
+"autoescape" tag applies escaping after calling functions
+--TEMPLATE--
+
+autoescape false
+{% autoescape false %}
+
+safe_br
+{{ safe_br() }}
+
+unsafe_br
+{{ unsafe_br() }}
+
+{% endautoescape %}
+
+autoescape 'html'
+{% autoescape 'html' %}
+
+safe_br
+{{ safe_br() }}
+
+unsafe_br
+{{ unsafe_br() }}
+
+unsafe_br()|raw
+{{ (unsafe_br())|raw }}
+
+safe_br()|escape
+{{ (safe_br())|escape }}
+
+safe_br()|raw
+{{ (safe_br())|raw }}
+
+unsafe_br()|escape
+{{ (unsafe_br())|escape }}
+
+{% endautoescape %}
+
+autoescape js
+{% autoescape 'js' %}
+
+safe_br
+{{ safe_br() }}
+
+{% endautoescape %}
+--DATA--
+return array()
+--EXPECT--
+
+autoescape false
+
+safe_br
+<br />
+
+unsafe_br
+<br />
+
+
+autoescape 'html'
+
+safe_br
+<br />
+
+unsafe_br
+&lt;br /&gt;
+
+unsafe_br()|raw
+<br />
+
+safe_br()|escape
+&lt;br /&gt;
+
+safe_br()|raw
+<br />
+
+unsafe_br()|escape
+&lt;br /&gt;
+
+
+autoescape js
+
+safe_br
+\x3Cbr\x20\x2F\x3E

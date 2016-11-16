@@ -1,0 +1,18 @@
+--TEST--
+"reverse" filter
+--TEMPLATE--
+{{ [1, 2, 3, 4]|reverse|join('') }}
+{{ '1234évènement'|reverse }}
+{{ arr|reverse|join('') }}
+{{ {'a': 'c', 'b': 'a'}|reverse()|join(',') }}
+{{ {'a': 'c', 'b': 'a'}|reverse(preserveKeys=true)|join(glue=',') }}
+{{ {'a': 'c', 'b': 'a'}|reverse(preserve_keys=true)|join(glue=',') }}
+--DATA--
+return array('arr' => new ArrayObject(array(1, 2, 3, 4)))
+--EXPECT--
+4321
+tnemenèvé4321
+4321
+a,c
+a,c
+a,c

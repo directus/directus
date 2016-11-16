@@ -1,0 +1,10 @@
+--TEST--
+"extends" tag
+--TEMPLATE--
+{% extends "foo.twig" %}
+--TEMPLATE(foo.twig)--
+{% block content %}FOO{% endblock %}
+--DATA--
+return array()
+--EXPECT--
+FOO

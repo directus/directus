@@ -1,0 +1,15 @@
+--TEST--
+"block" tag
+--TEMPLATE--
+{% block content %}
+    CONTENT
+    {%- block subcontent -%}
+        SUBCONTENT
+    {%- endblock -%}
+    ENDCONTENT
+{% endblock %}
+--TEMPLATE(foo.twig)--
+--DATA--
+return array()
+--EXPECT--
+CONTENTSUBCONTENTENDCONTENT

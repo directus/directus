@@ -1,0 +1,22 @@
+--TEST--
+Twig supports literals
+--TEMPLATE--
+1 {{ true }}
+2 {{ TRUE }}
+3 {{ false }}
+4 {{ FALSE }}
+5 {{ none }}
+6 {{ NONE }}
+7 {{ null }}
+8 {{ NULL }}
+--DATA--
+return array()
+--EXPECT--
+1 1
+2 1
+3 
+4 
+5 
+6 
+7 
+8 

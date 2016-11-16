@@ -1,0 +1,10 @@
+--TEST--
+"set" tag block capture
+--TEMPLATE--
+{% set foo %}f<br />o<br />o{% endset %}
+
+{{ foo }}
+--DATA--
+return array()
+--EXPECT--
+f<br />o<br />o

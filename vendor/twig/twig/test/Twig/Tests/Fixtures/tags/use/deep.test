@@ -1,0 +1,22 @@
+--TEST--
+"use" tag
+--TEMPLATE--
+{% use "foo.twig" %}
+
+{{ block('content') }}
+{{ block('foo') }}
+{{ block('bar') }}
+--TEMPLATE(foo.twig)--
+{% use "bar.twig" %}
+
+{% block content 'foo' %}
+{% block foo 'foo' %}
+--TEMPLATE(bar.twig)--
+{% block content 'bar' %}
+{% block bar 'bar' %}
+--DATA--
+return array()
+--EXPECT--
+foo
+foo
+bar

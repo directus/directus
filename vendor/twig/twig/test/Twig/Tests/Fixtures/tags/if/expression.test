@@ -1,0 +1,22 @@
+--TEST--
+"if" takes an expression as a test
+--TEMPLATE--
+{% if a < 2 %}
+  A1
+{% elseif a > 10 %}
+  A2
+{% else %}
+  A3
+{% endif %}
+--DATA--
+return array('a' => 1)
+--EXPECT--
+  A1
+--DATA--
+return array('a' => 12)
+--EXPECT--
+  A2
+--DATA--
+return array('a' => 7)
+--EXPECT--
+  A3

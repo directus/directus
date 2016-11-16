@@ -1,0 +1,22 @@
+--TEST--
+"extends" tag
+--TEMPLATE--
+{% set foo = 1 %}
+{{ include('parent.twig') }}
+{{ include('parent.twig') }}
+{% set foo = 2 %}
+{{ include('parent.twig') }}
+--TEMPLATE(parent.twig)--
+{% extends foo~'_parent.twig' %}{% block content %}{{ parent() }} parent{% endblock %}
+--TEMPLATE(1_parent.twig)--
+{% block content %}1{% endblock %}
+--TEMPLATE(2_parent.twig)--
+{% block content %}2{% endblock %}
+--DATA--
+return array()
+--EXPECT--
+1 parent
+
+1 parent
+
+2 parent

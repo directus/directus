@@ -1,0 +1,11 @@
+--TEST--
+"for" tag can iterate over keys and values
+--TEMPLATE--
+{% for key, item in items %}
+  * {{ key }}/{{ item }}
+{% endfor %}
+--DATA--
+return array('items' => array('a', 'b'))
+--EXPECT--
+  * 0/a
+  * 1/b
