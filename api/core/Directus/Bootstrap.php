@@ -515,11 +515,11 @@ class Bootstrap
             foreach ($customProvidersFiles as $filename) {
                 $providers[] = '\\Directus\\Embed\\Provider\\' . basename($filename, '.php');
             }
+        }
 
-            foreach ($providers as $providerClass) {
-                $provider = new $providerClass($settings);
-                $embedManager->register($provider);
-            }
+        foreach ($providers as $providerClass) {
+            $provider = new $providerClass($settings);
+            $embedManager->register($provider);
         }
 
         return $embedManager;
