@@ -1072,7 +1072,7 @@ class RelationalTableGateway extends BaseTableGateway
             $results = $relatedTableGateway->loadEntries([
                 'columns' => $relatedTableColumns,
                 'filters' => [
-                    $junctionKeyRightColumn => ['in' => $ids]
+                    $junctionKeyLeftColumn => ['in' => $ids]
                 ],
                 'depth' => $depth
             ], $queryCallBack);
