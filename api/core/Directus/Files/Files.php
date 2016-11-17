@@ -396,7 +396,8 @@ class Files
         $targetFileName = $this->getConfig('root') . '/' . $imageName;
         $info = pathinfo($targetFileName);
 
-        if (in_array($info['extension'], ['jpg', 'jpeg', 'png', 'gif', 'tif', 'tiff', 'psd', 'pdf'])) {
+        // @TODO: Add method to check whether a file can generate a thumbnail
+        if (in_array(strtolower($info['extension']), ['jpg', 'jpeg', 'png', 'gif', 'tif', 'tiff', 'psd', 'pdf'])) {
             $targetContent = $this->filesystem->getAdapter()->read($imageName);
             $img = Thumbnail::generateThumbnail($targetContent, $info['extension'], $this->getSettings('thumbnail_size'), $this->getSettings('thumbnail_crop_enabled'));
             if ($img) {
