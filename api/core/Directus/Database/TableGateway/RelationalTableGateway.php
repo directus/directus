@@ -142,9 +142,9 @@ class RelationalTableGateway extends BaseTableGateway
         }
 
         // Restore X2M relationship / alias fields to the record representation & process these relationships.
-        $collectionColumns = TableSchema::getAllAliasTableColumns($tableName);
+        $collectionColumns = $tableSchema->getAliasColumns();
         foreach ($collectionColumns as $collectionColumn) {
-            $colName = $collectionColumn['id'];
+            $colName = $collectionColumn->getId();
             if (isset($recordData[$colName])) {
                 $draftRecord[$colName] = $recordData[$colName];
             }
