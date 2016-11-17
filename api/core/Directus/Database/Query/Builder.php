@@ -238,26 +238,6 @@ class Builder
         return $this->whereLike($column, $value, true);
     }
 
-    public function whereLLike($column, $value, $not = false)
-    {
-        return $this->where($column, 'llike', $value, $not);
-    }
-
-    public function whereNotLLike($column, $value)
-    {
-        return $this->whereLLike($column, $value, true);
-    }
-
-    public function whereRLike($column, $value, $not = false)
-    {
-        return $this->where($column, 'rlike', $value, $not);
-    }
-
-    public function whereNotRLike($column, $value)
-    {
-        return $this->whereRLike($column, $value, true);
-    }
-
     public function whereAll($column, $table, $columnLeft, $columnRight, $values)
     {
         $relation = new ManyToManyRelation($this, $table, $columnLeft, $columnRight);
@@ -556,29 +536,12 @@ class Builder
             case 'nin':
                 $expression = new NotIn($column, $value);
                 break;
-            // @TODO: Create a wrapper object to extend Like Expression
             case 'like':
                 $value = "%$value%";
                 $expression = new Like($column, $value);
                 break;
             case 'nlike':
                 $value = "%$value%";
-                $expression = new NotLike($column, $value);
-                break;
-            case 'rlike':
-                $value = "$value%";
-                $expression = new Like($column, $value);
-                break;
-            case 'nrlike':
-                $value = "$value%";
-                $expression = new NotLike($column, $value);
-                break;
-            case 'llike':
-                $value = "%$value";
-                $expression = new Like($column, $value);
-                break;
-            case 'nllike':
-                $value = "%$value";
                 $expression = new NotLike($column, $value);
                 break;
             case 'null':
