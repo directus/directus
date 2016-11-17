@@ -536,7 +536,12 @@ class Builder
     protected function buildConditionExpression($condition)
     {
         $not = $condition['not'] === true;
-        $operator = ($not === true ? 'n' : '') . $condition['operator'];
+        $notChar = '';
+        if ($not === true) {
+            $notChar = $condition['operator'] === '=' ? '!' : 'n';
+        }
+        $operator = $notChar . $condition['operator'];
+
         $column = $condition['column'];
         $value = $condition['value'];
 
