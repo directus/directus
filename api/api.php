@@ -248,6 +248,7 @@ $app->hook('slim.before.dispatch', function () use ($app, $requestNonceProvider,
 
     \Directus\Database\TableSchema::setAclInstance($permissions);
     \Directus\Database\TableSchema::setConfig(Bootstrap::get('config'));
+    \Directus\Database\TableGateway\BaseTableGateway::setHookEmitter($app->container->get('emitter'));
 
     $app->container->set('schemaManager', Bootstrap::get('schemaManager'));
 });
