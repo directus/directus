@@ -157,13 +157,18 @@ class Table extends Route
     public function names()
     {
         $params = $this->app->request()->get();
-        $tablesNames = TableSchema::getTablenames($params);
+        $tables = TableSchema::getTablenames($params);
 
-        $tables = array_map(function ($table) {
-            return ['table_name' => $table];
-        }, $tablesNames);
+        // @TODO: Add more directus_table information
+        $response = [
+            'meta' => [
+                'type' => 'collection',
+                'table' => 'directus_tables'
+            ],
+            'data' => $tables
+        ];
 
-        JsonView::render($tables);
+        JsonView::render($response);
     }
 
     // get a single table information
