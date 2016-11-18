@@ -64,6 +64,7 @@ class LanguageManager
             'en' => 'English',
             'es' => 'Español',
             'de' => 'Deutsch',
+            'it' => 'Italiano',
             'fr' => 'Français',
             'nl' => 'Nederlands',
             'zh-hans' => '中文（简体）'
