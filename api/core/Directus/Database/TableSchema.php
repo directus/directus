@@ -405,7 +405,7 @@ class TableSchema
     {
         $schema = static::getSchemaManagerInstance();
         $result = $schema->getTablesName();
-        $includeSystemTables = ArrayUtils::get($params, 'include_system');
+        $includeSystemTables = (bool) ArrayUtils::get($params, 'include_system');
 
         $tables = [];
         foreach ($result as $tableName) {
