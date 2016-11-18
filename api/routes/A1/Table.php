@@ -156,7 +156,8 @@ class Table extends Route
     // get all table names
     public function names()
     {
-        $tablesNames = TableSchema::getTablenames(false);
+        $params = $this->app->request()->get();
+        $tablesNames = TableSchema::getTablenames($params);
 
         $tables = array_map(function ($table) {
             return ['table_name' => $table];
