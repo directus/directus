@@ -32,8 +32,8 @@ define('HOST_URL', $url);
 define('API_PATH', dirname(__FILE__));
 define('BASE_PATH', dirname(API_PATH));
 
-use Directus\Acl\Exception\UnauthorizedTableAlterException;
-use Directus\Auth\RequestNonceProvider;
+use Directus\Permissions\Exception\UnauthorizedTableAlterException;
+use Directus\Authentication\RequestNonceProvider;
 use Directus\Bootstrap;
 use Directus\Database\SchemaManager;
 use Directus\Database\TableGateway\DirectusActivityTableGateway;
@@ -139,7 +139,7 @@ $authAndNonceRouteWhitelist = [
 $ZendDb = Bootstrap::get('ZendDb');
 
 /**
- * @var \Directus\Acl\Acl
+ * @var \Directus\Permissions\Acl
  */
 $acl = Bootstrap::get('acl');
 $authentication = Bootstrap::get('auth');
@@ -346,6 +346,7 @@ if (isset($_REQUEST['run_extension']) && $_REQUEST['run_extension']) {
     return JsonView::render($responseData);
 }
 
+
 $app->group('/1.1', function() use($app) {
     // =============================================================================
     // Authentication
@@ -473,7 +474,6 @@ $app->group('/1.1', function() use($app) {
     $app->get('/messages/recipients/?', '\Directus\API\Routes\A1\Messages:recipients');
     $app->post('/comments/?', '\Directus\API\Routes\A1\Messages:comments');
 
-
     // =============================================================================
     // DEBUG
     // =============================================================================
@@ -484,7 +484,6 @@ $app->group('/1.1', function() use($app) {
             ->name('auth_clear_session');
     }
 });
-
 
 /**
  * Slim Routes
@@ -744,7 +743,7 @@ $app->post("/$v/hash/?", function () use ($app, $authentication) {
         'success' => true,
         'password' => $hashedPassword
     ]);
-});
+})->name('utils_hash');
 
 $app->post("/$v/random/?", function () use ($app) {
     // default random string length
@@ -758,7 +757,7 @@ $app->post("/$v/random/?", function () use ($app) {
     return JsonView::render([
         'random' => $randomString
     ]);
-});
+})->name('utils_random');
 
 $app->get("/$v/privileges/:groupId(/:tableName)/?", function ($groupId, $tableName = null) use ($acl, $ZendDb, $params, $requestPayload, $app, $authentication) {
     $currentUser = $authentication->getUserRecord();
