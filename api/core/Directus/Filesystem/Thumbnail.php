@@ -1,6 +1,6 @@
 <?php
 
-namespace Directus\Files;
+namespace Directus\Filesystem;
 
 class Thumbnail
 {

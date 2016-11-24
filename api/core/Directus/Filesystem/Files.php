@@ -1,8 +1,7 @@
 <?php
 
-namespace Directus\Files;
+namespace Directus\Filesystem;
 
-use Directus\Filesystem\Filesystem;
 use Directus\Util\DateUtils;
 use Directus\Util\Formatting;
 
