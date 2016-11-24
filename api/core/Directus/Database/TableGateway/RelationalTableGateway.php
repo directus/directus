@@ -288,7 +288,7 @@ class RelationalTableGateway extends BaseTableGateway
         $params[$primaryKeyFieldName] = $recordData[$primaryKeyFieldName];
         $file = $filesTableGateway->getEntries($params);
 
-        $Files = Bootstrap::get('app')->container->get('files');
+        $Files = static::$container->get('files');
         $Files->delete($file);
 
         return true;
@@ -325,7 +325,7 @@ class RelationalTableGateway extends BaseTableGateway
             // @todo: rewrite this
             if ($foreignTableName === 'directus_files') {
                 // Update/Add foreign record
-                $Files = Bootstrap::get('app')->container->get('files');
+                $Files = static::$container->get('files');
                 if (count(array_filter($foreignRow, 'is_array')) == count($foreignRow)) {
                     $index = 0;
                     foreach ($foreignRow as $row) {

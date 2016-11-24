@@ -19,6 +19,7 @@ use Directus\MemcacheProvider;
 use Directus\Util\ArrayUtils;
 use Directus\Util\DateUtils;
 use Directus\Util\Formatting;
+use Slim\Helper\Set;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Adapter\Exception\InvalidQueryException;
 use Zend\Db\ResultSet\ResultSetInterface;
@@ -45,6 +46,11 @@ class BaseTableGateway extends TableGateway
      * @var \Directus\Hook\Emitter
      */
     protected static $emitter = null;
+
+    /**
+     * @var Set
+     */
+    protected static $container;
 
     /**
      * Acl Instance
@@ -301,7 +307,7 @@ class BaseTableGateway extends TableGateway
             $recordData[$TableGateway->primaryKeyFieldName] = $TableGateway->getLastInsertValue();
 
             if ($tableName == 'directus_files') {
-                $Files = new \Directus\Files\Files();
+                $Files = static::$container->get('files');
                 $ext = pathinfo($recordData['name'], PATHINFO_EXTENSION);
 
                 $thumbnailPath = 'thumbs/THUMB_' . $recordData['name'];
@@ -972,6 +978,16 @@ class BaseTableGateway extends TableGateway
         $identifier[] = $column;
 
         return implode($platform->getIdentifierSeparator(), $identifier);
+    }
+
+    /**
+     * Set application container
+     *
+     * @param Set $container
+     */
+    public static function setContainer(Set $container)
+    {
+        static::$container = $container;
     }
 
     public static function setHookEmitter($emitter)

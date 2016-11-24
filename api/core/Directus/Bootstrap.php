@@ -142,6 +142,7 @@ class Bootstrap
         $app->container->set('config', $config);
 
         BaseTableGateway::setHookEmitter($app->container->get('emitter'));
+        BaseTableGateway::setContainer($app->container);
 
         // @NOTE: Trying to separate the configuration from bootstrap, bit by bit.
         TableSchema::setConfig(static::get('config'));
