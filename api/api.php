@@ -93,7 +93,18 @@ $app->config('debug', false);
 $exceptionView = new ExceptionView();
 $exceptionHandler = function (\Exception $exception) use ($app, $exceptionView) {
     $app->emitter->run('application.error', [$exception]);
-    $exceptionView->exceptionHandler($app, $exception);
+    $config = $app->container->get('config');
+    if (ArrayUtils::get($config, 'app.debug', true)) {
+        $exceptionView->exceptionHandler($app, $exception);
+    } else {
+        $response = $app->response();
+        $response->header('Content-type', 'application/json');
+        JsonView::render([
+            'error' => [
+                'message' => $exception->getMessage()
+            ]
+        ]);
+    }
 };
 $app->error($exceptionHandler);
 // // Catch runtime erros etc. as well
@@ -237,13 +248,10 @@ $app->hook('slim.before.dispatch', function () use ($app, $requestNonceProvider,
         $response[$nonce_options['nonce_response_header']] = implode($newNonces, ',');
     }
 
-    $app->container->set('zenddb', $ZendDb);
-    $permissions = new \Directus\Permissions\Acl();
-
+    $permissions = $app->container->get('acl');
     $permissions->setUserId($acl->getUserId());
     $permissions->setGroupId($acl->getGroupId());
     $permissions->setGroupPrivileges($acl->getGroupPrivileges());
-    $app->container->set('acl', $permissions);
     $app->container->set('auth', new Auth());
 
     \Directus\Database\TableSchema::setAclInstance($permissions);
@@ -849,40 +857,28 @@ $app->map("/$v/privileges/:groupId/:privilegeId", function ($groupId, $privilege
  */
 
 $app->map("/$v/tables/:table/rows/?", function ($table) use ($acl, $ZendDb, $params, $requestPayload, $app) {
-    $currentUser = Auth::getUserInfo();
-    $id = null;
-    $params['table_name'] = $table;
-    $TableGateway = new TableGateway($acl, $table, $ZendDb);
+    $entriesService = new \Directus\Services\EntriesService($app);
+    $payload = $app->request()->post();
+    $params = $app->request()->get();
 
-    // any CREATE requests should md5 the email
-    if ('directus_users' === $table &&
-        in_array($app->request()->getMethod(), ['POST']) &&
-        array_key_exists('email', $requestPayload)
-    ) {
-        $avatar = DirectusUsersTableGateway::get_avatar($requestPayload['email']);
-        $requestPayload['avatar'] = $avatar;
-    }
+    // GET all table entries
+    $tableGateway = new TableGateway($acl, $table, $ZendDb);
 
     switch ($app->request()->getMethod()) {
-        // POST one new table entry
         case 'POST':
-            $activityLoggingEnabled = !(isset($_GET['skip_activity_log']) && (1 == $_GET['skip_activity_log']));
-            $activityMode = $activityLoggingEnabled ? TableGateway::ACTIVITY_ENTRY_MODE_PARENT : TableGateway::ACTIVITY_ENTRY_MODE_DISABLED;
-            $newRecord = $TableGateway->manageRecordUpdate($table, $requestPayload, $activityMode);
-            $params[$TableGateway->primaryKeyFieldName] = $newRecord[$TableGateway->primaryKeyFieldName];
+            $newRecord = $entriesService->createEntry($table, $payload, $params);
+            $params[$tableGateway->primaryKeyFieldName] = $newRecord[$tableGateway->primaryKeyFieldName];
             break;
-        // PUT a change set of table entries
         case 'PUT':
-            if (!is_numeric_array($requestPayload)) {
-                $params[$TableGateway->primaryKeyFieldName] = $requestPayload[$TableGateway->primaryKeyFieldName];
-                $requestPayload = [$requestPayload];
+            if (!is_numeric_array($payload)) {
+                $params[$tableGateway->primaryKeyFieldName] = $payload[$tableGateway->primaryKeyFieldName];
+                $payload = [$payload];
             }
-            $TableGateway->updateCollection($requestPayload);
+            $tableGateway->updateCollection($payload);
             break;
     }
-    // GET all table entries
-    $Table = new TableGateway($acl, $table, $ZendDb);
-    $entries = $Table->getEntries($params);
+
+    $entries = $tableGateway->getEntries($params);
     JsonView::render($entries);
 })->via('GET', 'POST', 'PUT');
 
@@ -1208,7 +1204,7 @@ $app->map("/$v/files(/:id)/?", function ($id = null) use ($app, $ZendDb, $acl, $
 
             // When the file is uploaded there's not a data key
             if (array_key_exists('data', $requestPayload)) {
-                $Files = new \Directus\Files\Files();
+                $Files = $app->container->get('files');
                 if (!array_key_exists('type', $requestPayload) || strpos($requestPayload['type'], 'embed/') === 0) {
                     $recordData = $Files->saveEmbedData($requestPayload);
                 } else {
@@ -1492,7 +1488,7 @@ $app->map("/$v/tables/:table/?", function ($table) use ($ZendDb, $acl, $params, 
 $app->post("/$v/upload/?", function () use ($params, $requestPayload, $app, $acl, $ZendDb) {
     // $Transfer = new Files\Transfer();
     // $Storage = new Files\Storage\Storage();
-    $Files = new Directus\Files\Files();
+    $Files = Bootstrap::get('app')->container->get('files');
     $result = [];
     foreach ($_FILES as $file) {
         $result[] = $Files->upload($file);
@@ -1501,7 +1497,7 @@ $app->post("/$v/upload/?", function () use ($params, $requestPayload, $app, $acl
 });
 
 $app->post("/$v/upload/link/?", function () use ($params, $requestPayload, $app, $acl, $ZendDb) {
-    $Files = new \Directus\Files\Files();
+    $Files = Bootstrap::get('app')->container->get('files');
     $result = [
         'message' => __t('invalid_unsupported_url'),
         'success' => false

@@ -19,6 +19,7 @@ use Directus\Filesystem\Filesystem;
 use Directus\Filesystem\FilesystemFactory;
 use Directus\Hook\Emitter;
 use Directus\Language\LanguageManager;
+use Directus\Providers\FilesServiceProvider;
 use Directus\View\Twig\DirectusTwigExtension;
 use Slim\Extras\Log\DateTimeFileWriter;
 use Slim\Extras\Views\Twig;
@@ -137,6 +138,20 @@ class Bootstrap
         $app->container->set('config', $config);
 
         BaseTableGateway::setHookEmitter($app->container->get('emitter'));
+
+        $app->register(new FilesServiceProvider());
+
+        $app->container->singleton('zenddb', function() {
+            return Bootstrap::get('ZendDb');
+        });
+
+        $app->container->singleton('filesystem', function() {
+            return Bootstrap::get('filesystem');
+        });
+
+        $app->container->singleton('acl', function() {
+            return new \Directus\Permissions\Acl();
+        });
 
         return $app;
     }
@@ -611,7 +626,8 @@ class Bootstrap
 
             if ($selectState['table'] == 'directus_files') {
                 $fileRows = $result->toArray();
-                $files = new \Directus\Files\Files();
+                $app = Bootstrap::get('app');
+                $files = $app->container->get('files');
                 foreach ($fileRows as &$row) {
                     $config = Bootstrap::get('config');
                     $fileURL = $config['filesystem']['root_url'];

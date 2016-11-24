@@ -2,55 +2,40 @@
 
 namespace Directus\API\Routes\A1;
 
+use Directus\Database\Exception\DuplicateEntryException;
 use Directus\Database\TableGateway\DirectusUsersTableGateway;
 use Directus\Application\Route;
 use Directus\Database\TableGateway\RelationalTableGateway as TableGateway;
+use Directus\Services\EntriesService;
 use Directus\View\JsonView;
 
 class Entries extends Route
 {
     public function rows($table)
     {
-        $app = $this->app;
-        $ZendDb = $app->container->get('zenddb');
-        $acl = $app->container->get('acl');
-        $requestPayload = $app->request()->post();
-        $params = $app->request()->get();
+        $entriesService = new EntriesService($this->app);
+        $payload = $this->app->request()->post();
+        $params = $this->app->request()->get();
+        $ZendDb = $this->app->container->get('zenddb');
+        $acl = $this->app->container->get('acl');
+        $tableGateway = new TableGateway($table, $ZendDb, $acl);
 
-        $id = null;
-        $params['table_name'] = $table;
-        $TableGateway = new TableGateway($table, $ZendDb, $acl);
-
-        // any CREATE requests should md5 the email
-        if ('directus_users' === $table &&
-            in_array($app->request()->getMethod(), ['POST']) &&
-            array_key_exists('email', $requestPayload)
-        ) {
-            $avatar = DirectusUsersTableGateway::get_avatar($requestPayload['email']);
-            $requestPayload['avatar'] = $avatar;
-        }
-
-        switch ($app->request()->getMethod()) {
-            // POST one new table entry
+        switch ($this->app->request()->getMethod()) {
             case 'POST':
-                $activityLoggingEnabled = !(isset($_GET['skip_activity_log']) && (1 == $_GET['skip_activity_log']));
-                $activityMode = $activityLoggingEnabled ? TableGateway::ACTIVITY_ENTRY_MODE_PARENT : TableGateway::ACTIVITY_ENTRY_MODE_DISABLED;
-                $newRecord = $TableGateway->manageRecordUpdate($table, $requestPayload, $activityMode);
-                $params[$TableGateway->primaryKeyFieldName] = $newRecord[$TableGateway->primaryKeyFieldName];
+                $newRecord = $entriesService->createEntry($table, $payload, $params);
+                $params[$tableGateway->primaryKeyFieldName] = $newRecord[$tableGateway->primaryKeyFieldName];
                 break;
-            // PUT a change set of table entries
             case 'PUT':
-                if (!is_numeric_array($requestPayload)) {
-                    $params[$TableGateway->primaryKeyFieldName] = $requestPayload[$TableGateway->primaryKeyFieldName];
-                    $requestPayload = [$requestPayload];
+                if (!is_numeric_array($payload)) {
+                    $params[$tableGateway->primaryKeyFieldName] = $payload[$tableGateway->primaryKeyFieldName];
+                    $payload = [$payload];
                 }
-                $TableGateway->updateCollection($requestPayload);
+                $tableGateway->updateCollection($payload);
                 break;
         }
 
         // GET all table entries
-        $Table = new TableGateway($table, $ZendDb, $acl);
-        $response = $Table->getEntries($params);
+        $response = $tableGateway->getEntries($params);
 
         JsonView::render($response);
     }

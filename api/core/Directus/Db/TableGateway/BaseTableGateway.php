@@ -258,7 +258,7 @@ class BaseTableGateway extends TableGateway
             $recordData[$TableGateway->primaryKeyFieldName] = $TableGateway->getLastInsertValue();
 
             if ($tableName == 'directus_files') {
-                $Files = new \Directus\Files\Files();
+                $Files = Bootstrap::get('app')->container->get('files');
                 $ext = pathinfo($recordData['name'], PATHINFO_EXTENSION);
 
                 $thumbnailPath = 'thumbs/THUMB_' . $recordData['name'];

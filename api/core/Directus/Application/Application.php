@@ -20,6 +20,21 @@ use Slim\Slim;
  */
 class Application extends Slim
 {
+    /**
+     * @var bool
+     */
+    protected $booted = false;
+
+    /**
+     * @var array
+     */
+    protected $providers = [];
+
+    /**
+     * Application constructor.
+     *
+     * @param array $userSettings
+     */
     public function __construct(array $userSettings)
     {
         parent::__construct($userSettings);
@@ -34,6 +49,42 @@ class Application extends Slim
         }
 
         $this->hook('slim.before.router', [$this, 'guessOutputFormat']);
+    }
+
+    /**
+     * Register a provider
+     *
+     * @param ServiceProviderInterface $provider
+     *
+     * @return $this
+     */
+    public function register(ServiceProviderInterface $provider)
+    {
+        $provider->register($this);
+
+        return $this;
+    }
+
+    public function run()
+    {
+        if (!$this->booted) {
+            $this->boot();
+        }
+
+        parent::run();
+    }
+
+    public function boot()
+    {
+        if ($this->booted) {
+            return;
+        }
+
+        foreach($this->providers as $provider) {
+            $provider->boot($this);
+        }
+
+        $this->booted = true;
     }
 
     /**

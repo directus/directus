@@ -7,7 +7,6 @@ use Directus\Db\Exception;
 use Directus\Db\RowGateway\AclAwareRowGateway;
 use Directus\Db\SchemaManager;
 use Directus\Db\TableSchema;
-use Directus\Files;
 use Directus\Util\ArrayUtils;
 use Directus\Util\DateUtils;
 use Zend\Db\RowGateway\AbstractRowGateway;
@@ -251,7 +250,7 @@ class RelationalTableGateway extends AclAwareTableGateway
         $params[$primaryKeyFieldName] = $recordData[$primaryKeyFieldName];
         $file = $filesTableGateway->getEntries($params);
 
-        $Files = new \Directus\Files\Files();
+        $Files = Bootstrap::get('app')->container->get('files');
         $Files->delete($file);
 
         return true;
@@ -288,7 +287,7 @@ class RelationalTableGateway extends AclAwareTableGateway
             // @todo: rewrite this
             if ($foreignTableName === 'directus_files') {
                 // Update/Add foreign record
-                $Files = new \Directus\Files\Files();
+                $Files = Bootstrap::get('app')->container->get('files');
                 if (count(array_filter($foreignRow, 'is_array')) == count($foreignRow)) {
                     $index = 0;
                     foreach ($foreignRow as $row) {
