@@ -2,17 +2,30 @@
 
 namespace Directus\Files;
 
-use Directus\Bootstrap;
-use Directus\Database\TableGateway\DirectusSettingsTableGateway;
-use Directus\Hook\Hook;
+use Directus\Filesystem\Filesystem;
 use Directus\Util\DateUtils;
 use Directus\Util\Formatting;
 
 class Files
 {
+    /**
+     * @var array
+     */
     private $config = [];
+
+    /**
+     * @var array
+     */
     private $filesSettings = [];
+
+    /**
+     * @var Filesystem
+     */
     private $filesystem = null;
+
+    /**
+     * @var array
+     */
     private $defaults = [
         'caption' => '',
         'tags' => '',
@@ -26,20 +39,12 @@ class Files
      */
     protected $emitter;
 
-    public function __construct()
+    public function __construct($filesystem, $config, $settings, $emitter)
     {
-        $acl = Bootstrap::get('acl');
-        $adapter = Bootstrap::get('ZendDb');
-        $this->filesystem = Bootstrap::get('filesystem');
-        $config = Bootstrap::get('config');
-        $this->config = $config['filesystem'] ?: [];
-        $this->emitter = Bootstrap::get('hookEmitter');
-
-        // Fetch files settings
-        $Settings = new DirectusSettingsTableGateway($acl, $adapter);
-        $this->filesSettings = $Settings->fetchCollection('files', [
-            'thumbnail_size', 'thumbnail_quality', 'thumbnail_crop_enabled'
-        ]);
+        $this->filesystem = $filesystem;
+        $this->config = $config;
+        $this->emitter = $emitter;
+        $this->filesSettings = $settings;
     }
 
     // @TODO: remove exists() and rename() method
@@ -396,7 +401,8 @@ class Files
         $targetFileName = $this->getConfig('root') . '/' . $imageName;
         $info = pathinfo($targetFileName);
 
-        if (in_array($info['extension'], ['jpg', 'jpeg', 'png', 'gif', 'tif', 'tiff', 'psd', 'pdf'])) {
+        // @TODO: Add method to check whether a file can generate a thumbnail
+        if (in_array(strtolower($info['extension']), ['jpg', 'jpeg', 'png', 'gif', 'tif', 'tiff', 'psd', 'pdf'])) {
             $targetContent = $this->filesystem->getAdapter()->read($imageName);
             $img = Thumbnail::generateThumbnail($targetContent, $info['extension'], $this->getSettings('thumbnail_size'), $this->getSettings('thumbnail_crop_enabled'));
             if ($img) {

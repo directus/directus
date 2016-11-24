@@ -82,7 +82,7 @@ define(function(require, exports, module) {
             "id":"avatar_file_id",
             "options":{
               "id":"single_file",
-              "allowed_filetypes":"image\/"
+              "allowed_filetypes":"image\/*"
             },
             "relationship":{
               "type":"MANYTOONE",
