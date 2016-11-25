@@ -732,7 +732,7 @@ class RelationalTableGateway extends BaseTableGateway
             $builder = $queryCallback($builder);
         }
 
-        $results = $builder->get()->toArray();
+        $results = $this->selectWith($builder->buildSelect())->toArray();
 
         // ==========================================================================
         // Perform data casting based on the column types in our schema array
