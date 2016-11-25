@@ -732,6 +732,8 @@ class RelationalTableGateway extends BaseTableGateway
             $builder = $queryCallback($builder);
         }
 
+        // Run the builder Select with this tablegateway
+        // to run all the hooks against the result
         $results = $this->selectWith($builder->buildSelect())->toArray();
 
         // ==========================================================================
