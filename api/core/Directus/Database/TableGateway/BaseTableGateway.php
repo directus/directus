@@ -48,7 +48,7 @@ class BaseTableGateway extends TableGateway
     protected static $emitter = null;
 
     /**
-     * @var Set
+     * @var object
      */
     protected static $container;
 
@@ -983,9 +983,9 @@ class BaseTableGateway extends TableGateway
     /**
      * Set application container
      *
-     * @param Set $container
+     * @param $container
      */
-    public static function setContainer(Set $container)
+    public static function setContainer($container)
     {
         static::$container = $container;
     }
