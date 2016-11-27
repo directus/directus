@@ -7,7 +7,8 @@
   ],
   "license": "MIT",
   "require": {
-    "php": ">=5.4.0"
+    "php": ">=5.4.0",
+    "league/flysystem": "^1.0"
   },
   "autoload": {
     "psr-4": {
