@@ -1233,7 +1233,7 @@ class RelationalTableGateway extends BaseTableGateway
 
             $relatedEntries = [];
             foreach ($results as $row) {
-                $relatedEntries[$row['id']] = $row;
+                $relatedEntries[$row['id']] = $tableGateway->loadMetadata($row);
             }
 
             // Replace foreign keys with foreign rows
@@ -1244,7 +1244,6 @@ class RelationalTableGateway extends BaseTableGateway
                     $parentRow[$relationalColumnName] = null;
                     // "Did we retrieve the foreign row with this foreign ID in our recent query of the foreign table"?
                     if (array_key_exists($foreign_id, $relatedEntries)) {
-                        $relatedEntries[$foreign_id] = $tableGateway->loadMetadata($relatedEntries[$foreign_id]);
                         $parentRow[$relationalColumnName] = $relatedEntries[$foreign_id];
                     }
                 }
