@@ -453,19 +453,17 @@ class BaseTableGateway extends TableGateway
         // Hard-coded
         $manytoones = ['single_file', 'many_to_one', 'many_to_one_typeahead', 'MANYTOONE'];
 
-        if (in_array($relationshipType, $directus_types)) {
-            //This is a 'virtual column'. Write to directus schema instead of MYSQL
-            $this->addVirtualColumn($tableName, $tableData);
-        } else {
+        if (!in_array($relationshipType, $directus_types)) {
             $this->addTableColumn($tableName, $tableData);
             // Temporary solutions to #481, #645
             if (array_key_exists('ui', $tableData) && in_array($tableData['ui'], $manytoones)) {
                 $tableData['relationship_type'] = 'MANYTOONE';
                 $tableData['junction_key_right'] = $tableData['column_name'];
             }
-
-            $this->addVirtualColumn($tableName, $tableData);
         }
+
+        //This is a 'virtual column'. Write to directus schema instead of MYSQL
+        $this->addVirtualColumn($tableName, $tableData);
 
         return $tableData['column_name'];
     }
