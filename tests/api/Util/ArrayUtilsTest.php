@@ -136,4 +136,24 @@ class ArrayUtilsTest extends PHPUnit_Framework_TestCase
         ]);
         $this->assertSame('127.0.0.1', ArrayUtils::get($newNewArray, 'database.hostname'));
     }
+
+    public function testRemove()
+    {
+        $array = [
+            'name' => 'John',
+            'age' => 11,
+            'password' => 'secret',
+            'salary' => '160',
+            'gender' => 'm',
+            'married' => true
+        ];
+
+        $this->assertTrue(ArrayUtils::has($array, 'married'));
+        ArrayUtils::remove($array, 'married');
+        $this->assertFalse(ArrayUtils::has($array, 'married'));
+
+        $this->assertTrue(ArrayUtils::contains($array, ['salary', 'gender', 'password']));
+        ArrayUtils::remove($array, ['salary', 'gender', 'password']);
+        $this->assertFalse(ArrayUtils::contains($array, ['salary', 'gender', 'password']));
+    }
 }

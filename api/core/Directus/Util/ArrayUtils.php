@@ -224,4 +224,15 @@ class ArrayUtils
 
         return $newArray;
     }
+
+    public static function remove(array &$array, $keys)
+    {
+        if (!is_array($keys)) {
+            $keys = [$keys];
+        }
+
+        foreach($keys as $key) {
+            unset($array[$key]);
+        }
+    }
 }
