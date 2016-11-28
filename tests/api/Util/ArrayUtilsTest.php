@@ -156,4 +156,18 @@ class ArrayUtilsTest extends PHPUnit_Framework_TestCase
         ArrayUtils::remove($array, ['salary', 'gender', 'password']);
         $this->assertFalse(ArrayUtils::contains($array, ['salary', 'gender', 'password']));
     }
+
+    public function testAliasKeys()
+    {
+        $data = ['table' => 'users', 'column' => 'email', 'type' => 'varchar', 'ui' => 'textinput'];
+        $expectedData = ['table_name' => 'users', 'column_name' => 'email', 'data_type' => 'varchar', 'ui' => 'textinput'];
+
+        $newData = ArrayUtils::aliasKeys($data, [
+            'table_name' => 'table',
+            'column_name' => 'column',
+            'data_type' => 'type'
+        ]);
+
+        $this->assertEquals($expectedData, $newData);
+    }
 }

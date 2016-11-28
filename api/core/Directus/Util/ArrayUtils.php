@@ -226,6 +226,28 @@ class ArrayUtils
     }
 
     /**
+     * Gets a new array changing some or all of the given array keys
+     *
+     * @param array $array
+     * @param array $aliases
+     *
+     * @return array
+     */
+    public static function aliasKeys(array $array, array $aliases)
+    {
+        $newArray = [];
+        foreach($array as $key => $value) {
+            if (in_array($key, $aliases)) {
+                $newArray[array_search($key, $aliases)] = $value;
+            } else {
+                $newArray[$key] = $value;
+            }
+        }
+
+        return $newArray;
+    }
+
+    /**
      * Removes one or more key from the given array
      *
      * @param array $array
