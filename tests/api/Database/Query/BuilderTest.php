@@ -76,15 +76,11 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
 
         $query->whereLike('field1', 'hola');
         $query->whereNotLike('field2', 'hello');
-        $query->whereLLike('field1', 'hola');
-        $query->whereNotLLike('field1', 'hello');
-        $query->whereRLike('field1', 'hola');
-        $query->whereNotRLike('field1', 'hello');
 
         $query->buildSelect();
 
         $wheres = $query->getWheres();
-        $this->assertCount(18, $wheres);
+        $this->assertCount(14, $wheres);
     }
 
     public function testFrom()
