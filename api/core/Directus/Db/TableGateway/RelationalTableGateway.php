@@ -981,7 +981,11 @@ class RelationalTableGateway extends AclAwareTableGateway
                     return $table_entries;
                 }
 
-                $this->addToManyCallStack($level, is_null($parentField) ? $foreign_id_column : $parentField, $foreign_table_name);
+                if (is_null($parentField)) {
+                    $parentField = $foreign_id_column;
+                }
+
+                $this->addToManyCallStack($level, $parentField, $foreign_table_name);
 
                 // Aggregate all foreign keys for this relationship (for each row, yield the specified foreign id)
                 $yield = function ($row) use ($foreign_id_column, $table_entries) {
