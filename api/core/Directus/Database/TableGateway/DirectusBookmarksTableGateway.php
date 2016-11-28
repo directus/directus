@@ -91,7 +91,7 @@ class DirectusBookmarksTableGateway extends BaseTableGateway
             $bookmarks = $bookmarks->toArray();
         }
 
-        return $bookmarks;
+        return $this->parseRecord($bookmarks);
     }
 
     public function fetchAllByUser($user_id)
