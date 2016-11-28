@@ -225,6 +225,12 @@ class ArrayUtils
         return $newArray;
     }
 
+    /**
+     * Removes one or more key from the given array
+     *
+     * @param array $array
+     * @param $keys
+     */
     public static function remove(array &$array, $keys)
     {
         if (!is_array($keys)) {
