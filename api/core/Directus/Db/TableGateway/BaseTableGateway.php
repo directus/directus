@@ -417,7 +417,7 @@ class BaseTableGateway extends TableGateway
     {
         $column_name = $columnData['column_name'];
         $data_type = $columnData['data_type'];
-        $comment = $columnData['comment'];
+        $comment = ArrayUtils::get($columnData, 'comment', '');
 
         if (array_key_exists('char_length', $columnData)) {
             $charLength = $columnData['char_length'];
