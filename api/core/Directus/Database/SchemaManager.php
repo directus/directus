@@ -90,7 +90,7 @@ class SchemaManager
         $statusColumn = new Boolean(STATUS_COLUMN_NAME, false, STATUS_DRAFT_NUM);
         $table->addColumn($statusColumn);
 
-        $connection = Bootstrap::get('ZendDb');
+        $connection = $this->source->getConnection();
         $sql = new Sql($connection);
 
         $connection->query(
