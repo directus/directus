@@ -182,7 +182,7 @@ class BaseTableGateway extends TableGateway
 
         $record = $this->findOneBy($pk_field_name, $id);
 
-        return $this->parseRecord($record);
+        return $record;
     }
 
     public function fetchAll($selectModifier = null)
@@ -549,7 +549,7 @@ class BaseTableGateway extends TableGateway
         return SchemaManager::parseRecordValuesByType($records, $columns);
     }
 
-    protected function parseRecord($records, $tableName = null)
+    public function parseRecord($records, $tableName = null)
     {
         if (is_array($records)) {
             $tableName = $tableName === null ? $this->table : $tableName;

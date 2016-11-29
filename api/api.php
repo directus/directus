@@ -1004,7 +1004,7 @@ $app->map("/$v/groups/?", function () use ($app, $ZendDb, $acl, $requestPayload)
         case 'POST':
             $newRecord = $GroupsTableGateway->manageRecordUpdate($tableName, $requestPayload);
             $newGroupId = $newRecord['id'];
-            $newGroup = $GroupsTableGateway->find($newGroupId);
+            $newGroup = $GroupsTableGateway->parseRecord($GroupsTableGateway->find($newGroupId));
             $outputData = $newGroup;
             break;
         case 'GET':
