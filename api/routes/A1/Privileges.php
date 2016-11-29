@@ -81,6 +81,10 @@ class Privileges extends Route
         $response = $privileges->insertPrivilege($requestPayload);
 
         return JsonView::render([
+            'meta' => [
+                'type' => 'entry',
+                'table' => 'directus_privileges'
+            ],
             'data' => $response
         ]);
     }
