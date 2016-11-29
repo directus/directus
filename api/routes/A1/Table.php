@@ -41,9 +41,9 @@ class Table extends Route
             $params['column_name'] = $tableGateway->addColumn($table_name, $requestPayload);
         }
 
-        $response = TableSchema::getSchemaArray($table_name, $params);
+        $response = TableSchema::getColumnSchema($table_name, $params['column_name']);
 
-        JsonView::render($response);
+        JsonView::render($response->toArray());
     }
 
     public function column($table, $column)
