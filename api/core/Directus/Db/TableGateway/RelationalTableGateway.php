@@ -37,7 +37,9 @@ class RelationalTableGateway extends AclAwareTableGateway
 
         $schemaArray = TableSchema::getSchemaArray($tableName);
 
-        $currentUser = AuthProvider::getUserRecord();
+        $acl = Bootstrap::get('acl');
+        $currentUserId = $acl->getUserId();
+        $currentGroupId = $acl->getGroupId();
 
         // Upload file if necessary
         $TableGateway->copyFiles($tableName, $recordData);
@@ -48,12 +50,12 @@ class RelationalTableGateway extends AclAwareTableGateway
         if ($recordIsNew && $tableName != 'directus_users') {
             $cmsOwnerColumnName = $this->acl->getCmsOwnerColumnByTable($tableName);
             if ($cmsOwnerColumnName) {
-                $recordData[$cmsOwnerColumnName] = $currentUser['id'];
+                $recordData[$cmsOwnerColumnName] = $currentUserId;
             }
         }
 
         //Dont let non-admins make admins
-        if ($tableName == 'directus_users' && $currentUser['group'] != 1) {
+        if ($tableName == 'directus_users' && $currentGroupId != 1) {
             if (isset($recordData['group']) && $recordData['group']['id'] == 1) {
                 unset($recordData['group']);
             }
@@ -150,7 +152,7 @@ class RelationalTableGateway extends AclAwareTableGateway
                     'type' => DirectusActivityTableGateway::makeLogTypeFromTableName($this->table),
                     'table_name' => $tableName,
                     'action' => $logEntryAction,
-                    'user' => $currentUser['id'],
+                    'user' => $currentUserId,
                     'datetime' => DateUtils::now(),
                     'parent_id' => isset($parentData['id']) ? $parentData['id'] : null,
                     'parent_table' => isset($parentData['table_name']) ? $parentData['table_name'] : null,
@@ -197,7 +199,7 @@ class RelationalTableGateway extends AclAwareTableGateway
                         'type' => DirectusActivityTableGateway::makeLogTypeFromTableName($this->table),
                         'table_name' => $tableName,
                         'action' => $logEntryAction,
-                        'user' => $currentUser['id'],
+                        'user' => $currentUserId,
                         'datetime' => DateUtils::now(),
                         'parent_id' => null,
                         'data' => json_encode($fullRecordData),
