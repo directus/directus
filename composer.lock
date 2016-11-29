@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "28325fa54bc734b8706e63b346c7d0c8",
+    "content-hash": "b2236fc4515ca8fe77eef3cee7b0ad77",
     "packages": [
         {
             "name": "directus/acl",
@@ -12,7 +12,7 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/directus/directus-acl",
-                "reference": "5c0484e03ca72ae23cf5bd27d2d661de81d02d4f"
+                "reference": "ede89b9221820c54e538780c73f82d5eb0dd2d3b"
             },
             "require": {
                 "php": ">=5.4.0"
@@ -31,12 +31,13 @@
             "license": [
                 "MIT"
             ],
-            "description": "Directus ACL Library",
+            "description": "Directus Permissions (ACL) Library",
             "keywords": [
                 "acl",
-                "directus"
+                "directus",
+                "permissions"
             ],
-            "time": "2016-11-15 00:58:10"
+            "time": "2016-11-16 19:14:18"
         },
         {
             "name": "directus/collection",
@@ -76,12 +77,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/directus/directus-database",
-                "reference": "b8657a25d693b0743d9e2f0af9d1425b71216830"
+                "reference": "3ab1a6874bfcfe85f75fc8073e2e70d3bf200690"
             },
             "require": {
                 "directus/collection": "0.9.*",
                 "php": ">=5.4.0",
-                "zendframework/zend-db": "dev-directus"
+                "zendframework/zend-db": "2.8.*"
             },
             "require-dev": {
                 "phpunit/phpunit": "~3.7.0"
@@ -105,7 +106,7 @@
                 "database",
                 "directus"
             ],
-            "time": "2016-11-15 02:23:54"
+            "time": "2016-11-29 07:41:51"
         },
         {
             "name": "directus/migrations",
@@ -160,50 +161,17 @@
             "time": "2016-07-28 18:37:42"
         },
         {
-            "name": "directus/utils",
-            "version": "dev-d64",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/directus/directus-php-utils",
-                "reference": "674731a6c47b3ee6fe0e6795b5a5f46fb4cee1ae"
-            },
-            "require": {
-                "php": ">=5.4.0"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-d64": "0.9.x-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Directus\\Util\\": ""
-                }
-            },
-            "license": [
-                "MIT"
-            ],
-            "description": "Directus Utils",
-            "keywords": [
-                "directus",
-                "helpers",
-                "utils"
-            ],
-            "time": "2016-11-15 03:24:17"
-        },
-        {
             "name": "league/flysystem",
             "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/flysystem.git",
-                "reference": "17d3c6a16bdc9cda328a90fc433593d0575c08a8"
+                "reference": "0165294685dc83e521a46e0df2ff6b8bd4df4369"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/17d3c6a16bdc9cda328a90fc433593d0575c08a8",
-                "reference": "17d3c6a16bdc9cda328a90fc433593d0575c08a8",
+                "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/0165294685dc83e521a46e0df2ff6b8bd4df4369",
+                "reference": "0165294685dc83e521a46e0df2ff6b8bd4df4369",
                 "shasum": ""
             },
             "require": {
@@ -273,7 +241,7 @@
                 "sftp",
                 "storage"
             ],
-            "time": "2016-11-02 08:24:08"
+            "time": "2016-11-23 11:39:43"
         },
         {
             "name": "slim/extras",
@@ -281,8 +249,14 @@
             "target-dir": "Slim/Extras",
             "source": {
                 "type": "git",
-                "url": "https://github.com/wellingguzman/Slim-Extras",
-                "reference": "e087c60dee9b933f8df5b4454230bba303152f91"
+                "url": "https://github.com/codeguy/Slim-Extras.git",
+                "reference": "5bceb3658f77a2b237f5b70ac02a0834fed871f9"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/codeguy/Slim-Extras/zipball/5bceb3658f77a2b237f5b70ac02a0834fed871f9",
+                "reference": "5bceb3658f77a2b237f5b70ac02a0834fed871f9",
+                "shasum": ""
             },
             "require": {
                 "php": ">=5.3.0",
@@ -295,18 +269,20 @@
                     "Slim\\Extras": "."
                 }
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
             "authors": [
                 {
+                    "name": "Andrew Smith",
+                    "email": "a.smith@silentworks.co.uk",
+                    "homepage": "http://www.silentworks.co.uk/"
+                },
+                {
                     "name": "Josh Lockhart",
                     "email": "info@joshlockhart.com",
                     "homepage": "http://www.joshlockhart.com/"
-                },
-                {
-                    "name": "Andrew Smith",
-                    "email": "a.smith@silentworks.co.uk"
                 }
             ],
             "description": "Extras package for the Slim Framework",
@@ -316,7 +292,7 @@
                 "middleware",
                 "templating"
             ],
-            "time": "2016-07-30 16:37:23"
+            "time": "2013-05-24 13:41:59"
         },
         {
             "name": "slim/slim",
@@ -368,12 +344,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/swiftmailer/swiftmailer.git",
-                "reference": "7bf15c78b489f72769c44edfbdb22a024f477324"
+                "reference": "12a6329c24d08fb97bcf10128365757f845dc140"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/swiftmailer/swiftmailer/zipball/7bf15c78b489f72769c44edfbdb22a024f477324",
-                "reference": "7bf15c78b489f72769c44edfbdb22a024f477324",
+                "url": "https://api.github.com/repos/swiftmailer/swiftmailer/zipball/12a6329c24d08fb97bcf10128365757f845dc140",
+                "reference": "12a6329c24d08fb97bcf10128365757f845dc140",
                 "shasum": ""
             },
             "require": {
@@ -413,7 +389,7 @@
                 "mail",
                 "mailer"
             ],
-            "time": "2016-11-13 15:37:50"
+            "time": "2016-11-24 01:01:52"
         },
         {
             "name": "twig/twig",
@@ -421,12 +397,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/twigphp/Twig.git",
-                "reference": "08bd6f15a5b411988d4146ab6e3b109fd632f63e"
+                "reference": "717365d089a2f5cc767d75084f9639811881f628"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twigphp/Twig/zipball/08bd6f15a5b411988d4146ab6e3b109fd632f63e",
-                "reference": "08bd6f15a5b411988d4146ab6e3b109fd632f63e",
+                "url": "https://api.github.com/repos/twigphp/Twig/zipball/717365d089a2f5cc767d75084f9639811881f628",
+                "reference": "717365d089a2f5cc767d75084f9639811881f628",
                 "shasum": ""
             },
             "require": {
@@ -434,12 +410,12 @@
             },
             "require-dev": {
                 "symfony/debug": "~2.7",
-                "symfony/phpunit-bridge": "~2.7"
+                "symfony/phpunit-bridge": "~3.2@dev"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.28-dev"
+                    "dev-master": "1.29-dev"
                 }
             },
             "autoload": {
@@ -474,38 +450,41 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2016-11-13 15:12:56"
+            "time": "2016-11-23 18:59:28"
         },
         {
             "name": "zendframework/zend-db",
-            "version": "dev-directus",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/wellingguzman/zend-db",
-                "reference": "500d52674ff4e92d970015eda74a3d1d3caea71d"
+                "reference": "ae46299099c724a96fd088ae05a0b64e3748a808"
             },
             "require": {
-                "php": ">=5.3.3",
-                "zendframework/zend-stdlib": "2.2.*@dev"
+                "php": "^5.5 || ^7.0",
+                "zendframework/zend-stdlib": "^2.7 || ^3.0"
             },
             "require-dev": {
                 "fabpot/php-cs-fixer": "1.7.*",
                 "phpunit/phpunit": "~4.0",
-                "satooshi/php-coveralls": "dev-master",
-                "zendframework/zend-eventmanager": "self.version",
-                "zendframework/zend-servicemanager": "self.version",
-                "zendframework/zend-stdlib": "self.version"
+                "zendframework/zend-eventmanager": "^2.6.2 || ^3.0",
+                "zendframework/zend-hydrator": "^1.1 || ^2.1",
+                "zendframework/zend-servicemanager": "^2.7.5 || ^3.0.3"
             },
             "suggest": {
                 "zendframework/zend-eventmanager": "Zend\\EventManager component",
-                "zendframework/zend-servicemanager": "Zend\\ServiceManager component",
-                "zendframework/zend-stdlib": "dev-directus"
+                "zendframework/zend-hydrator": "Zend\\Hydrator component for using HydratingResultSets",
+                "zendframework/zend-servicemanager": "Zend\\ServiceManager component"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.2-dev",
-                    "dev-develop": "2.3-dev"
+                    "dev-master": "2.8-dev",
+                    "dev-develop": "2.9-dev"
+                },
+                "zf": {
+                    "component": "Zend\\Db",
+                    "config-provider": "Zend\\Db\\ConfigProvider"
                 }
             },
             "autoload": {
@@ -527,45 +506,35 @@
                 "db",
                 "zf2"
             ],
-            "time": "2016-08-03 01:50:57"
+            "time": "2016-08-09 19:32:50"
         },
         {
             "name": "zendframework/zend-stdlib",
-            "version": "2.2.10",
+            "version": "dev-develop",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zendframework/zend-stdlib.git",
-                "reference": "b42d784bd142e916058a9d68eeafcc10ff63c12e"
+                "reference": "16818ed8ee2a92a503c43883dcb6263fe6283ee8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/zend-stdlib/zipball/b42d784bd142e916058a9d68eeafcc10ff63c12e",
-                "reference": "b42d784bd142e916058a9d68eeafcc10ff63c12e",
+                "url": "https://api.github.com/repos/zendframework/zend-stdlib/zipball/16818ed8ee2a92a503c43883dcb6263fe6283ee8",
+                "reference": "16818ed8ee2a92a503c43883dcb6263fe6283ee8",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.3.3"
+                "php": "^5.6 || ^7.0"
             },
             "require-dev": {
-                "fabpot/php-cs-fixer": "1.7.*",
+                "athletic/athletic": "~0.1",
                 "phpunit/phpunit": "~4.0",
-                "satooshi/php-coveralls": "dev-master",
-                "zendframework/zend-eventmanager": "self.version",
-                "zendframework/zend-filter": "self.version",
-                "zendframework/zend-serializer": "self.version",
-                "zendframework/zend-servicemanager": "self.version"
-            },
-            "suggest": {
-                "zendframework/zend-eventmanager": "To support aggregate hydrator usage",
-                "zendframework/zend-filter": "To support naming strategy hydrator usage",
-                "zendframework/zend-serializer": "Zend\\Serializer component",
-                "zendframework/zend-servicemanager": "To support hydrator plugin manager usage"
+                "squizlabs/php_codesniffer": "^2.6.2"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.2-dev",
-                    "dev-develop": "2.3-dev"
+                    "dev-master": "3.1-dev",
+                    "dev-develop": "3.2-dev"
                 }
             },
             "autoload": {
@@ -582,7 +551,7 @@
                 "stdlib",
                 "zf2"
             ],
-            "time": "2014-03-05 17:29:35"
+            "time": "2016-09-13 14:40:02"
         }
     ],
     "packages-dev": [
@@ -1013,7 +982,6 @@
     "minimum-stability": "dev",
     "stability-flags": {
         "slim/extras": 20,
-        "zendframework/zend-db": 20,
         "directus/migrations": 20
     },
     "prefer-stable": false,

@@ -4,7 +4,6 @@
     "slim/slim": "2.3.2",
     "slim/extras": "dev-develop",
     "twig/twig":  "1.*",
-    "zendframework/zend-db": "dev-directus",
     "directus/migrations": "dev-master",
     "directus/acl": "0.9.*",
     "directus/database": "0.9.*",
