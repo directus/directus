@@ -161,6 +161,20 @@ class TableSchema
     }
 
     /**
+     * Gets the column object
+     *
+     * @param $tableName
+     * @param $columnName
+     * @param bool $fromCache
+     *
+     * @return Object\Column
+     */
+    public static function getColumnSchema($tableName, $columnName, $fromCache = false)
+    {
+        return static::getSchemaManagerInstance()->getColumnSchema($tableName, $columnName, $fromCache);
+    }
+
+    /**
      * Gets the table columns schema
      *
      * @param $tableName
