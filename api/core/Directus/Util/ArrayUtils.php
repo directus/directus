@@ -108,7 +108,7 @@ class ArrayUtils
      *
      * @return bool
      */
-    public static function contains($array, $keys)
+    public static function contains(array $array, $keys)
     {
         if (!is_array($keys)) {
             $keys = [$keys];
@@ -121,6 +121,25 @@ class ArrayUtils
         }
 
         return true;
+    }
+
+    /**
+     * Checks whether the given array contain at least one of the given keys
+     *
+     * @param array $array
+     * @param array $keys
+     *
+     * @return bool
+     */
+    public static function containsSome(array $array, array $keys)
+    {
+        foreach($keys as $key) {
+            if (static::has($array, $key)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
