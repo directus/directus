@@ -137,6 +137,23 @@ class SchemaManager
         return $tableSchema;
     }
 
+    public function getColumnSchema($tableName, $columnName, $fromCache = false)
+    {
+        $columnSchema = ArrayUtils::get($this->data, 'columns.' . $tableName . '.' . $columnName, null);
+
+        if (!$columnSchema) {
+            // Get the column schema data from the source
+            $columnResult = $this->source->getColumns($tableName, ['column_name' => $columnName]);
+            $columnData = $columnResult->current();
+
+            // Create a column object based of the table schema data
+            $columnSchema = $this->createColumnObjectFromArray($columnData);
+            $this->addColumn($columnSchema);
+        }
+
+        return $columnSchema;
+    }
+
     /**
      * Add the core table prefix to to a table name.
      *
@@ -494,6 +511,13 @@ class SchemaManager
         // @NOTE: this is the early implementation of cache
         // soon this will be change to cache
         $this->data['tables'][$name] = $schema;
+    }
+
+    protected function addColumn(Column $column)
+    {
+        $tableName = $column->getTableName();
+        $columnName = $column->getName();
+        $this->data['columns'][$tableName][$columnName] = $column;
     }
 
     public function getColumnDefaultUI($type)
