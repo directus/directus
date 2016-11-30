@@ -11,7 +11,6 @@ Icon
 dist/*
 
 # Don't track composer phar/vendors
-composer.lock
 composer.phar
 vendor
 
