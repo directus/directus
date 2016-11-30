@@ -1285,7 +1285,7 @@ class RelationalTableGateway extends BaseTableGateway
      */
     public function updateCollection($entries)
     {
-        $entries = is_numeric_array($entries) ? $entries : [$entries];
+        $entries = ArrayUtils::isNumericKeys($entries) ? $entries : [$entries];
         foreach ($entries as $entry) {
             $entry = $this->manageRecordUpdate($this->table, $entry);
             $entry->save();
