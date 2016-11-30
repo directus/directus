@@ -41,10 +41,8 @@ function(app, Backbone, __t) {
     serialize: function() {
       var currentUser = app.users.getCurrentUser();
       var currentUserAvatar = currentUser.getAvatar();
-
       var currentUserId = app.users.getCurrentUser().get("id");
-
-      var showSettings = (app.users.getCurrentUser().get('group').id === 1)? true : false;
+      var showSettings = app.users.getCurrentUser().get('group').id === 1;
 
       return {avatar: currentUserAvatar, currentUserId: currentUserId, showSettings: showSettings};
     },

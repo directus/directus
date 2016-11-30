@@ -179,8 +179,10 @@ class BaseTableGateway extends TableGateway
         if ($pk_field_name == null) {
             $pk_field_name = $this->primaryKeyFieldName;
         }
+
         $record = $this->findOneBy($pk_field_name, $id);
-        return $record;
+
+        return $this->parseRecord($record);
     }
 
     public function fetchAll($selectModifier = null)
@@ -417,7 +419,7 @@ class BaseTableGateway extends TableGateway
     {
         $column_name = $columnData['column_name'];
         $data_type = $columnData['data_type'];
-        $comment = $columnData['comment'];
+        $comment = ArrayUtils::get($columnData, 'comment', '');
 
         if (array_key_exists('char_length', $columnData)) {
             $charLength = $columnData['char_length'];

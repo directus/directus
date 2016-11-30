@@ -133,6 +133,9 @@ class Bootstrap
             return Bootstrap::get('hookEmitter');
         });
 
+        $config = defined('BASE_PATH') ? Bootstrap::get('config') : [];
+        $app->container->set('config', $config);
+
         BaseTableGateway::setHookEmitter($app->container->get('emitter'));
 
         return $app;
@@ -507,8 +510,11 @@ class Bootstrap
             '*.php'
         ]);
 
-        foreach (glob($path) as $filename) {
-            $providers[] = '\\Directus\\Embed\\Provider\\' . basename($filename, '.php');
+        $customProvidersFiles = glob($path);
+        if ($customProvidersFiles) {
+            foreach ($customProvidersFiles as $filename) {
+                $providers[] = '\\Directus\\Embed\\Provider\\' . basename($filename, '.php');
+            }
         }
 
         foreach ($providers as $providerClass) {

@@ -87,6 +87,8 @@ if (array_key_exists('filters', $config)) {
     load_registered_hooks($config['filters'], true);
 }
 
+$app->add(new \Directus\Slim\CorsMiddleware());
+
 /**
  * Catch user-related exceptions & produce client responses.
  */
@@ -275,8 +277,15 @@ if (Auth::loggedIn()) {
  * Request Payload
  */
 
-$params = $_GET;
-$requestPayload = json_decode($app->request()->getBody(), true);
+// @TODO: Do not use PARAMS or PAYLOAD as global variable
+// @TODO: Use the Slim request instead of the global php $_GET
+$params = $app->request->get();
+// @TODO: Use the post method instead of parsing the body ourselves.
+if ($app->request->getContentType() === 'application/json') {
+    $requestPayload = json_decode($app->request->getBody(), true);
+} else {
+    $requestPayload = $app->request->post();
+}
 
 $endpoints = Bootstrap::getCustomEndpoints();
 foreach ($endpoints as $endpoint) {
@@ -1196,7 +1205,6 @@ $app->get("/$v/tables/:table/rows/:id/revisions/?", function ($table, $id) use (
  */
 
 $app->map("/$v/settings(/:id)/?", function ($id = null) use ($acl, $ZendDb, $params, $requestPayload, $app) {
-
     $Settings = new DirectusSettingsTableGateway($acl, $ZendDb);
 
     switch ($app->request()->getMethod()) {
@@ -1674,7 +1682,7 @@ $app->notFound(function () use ($app, $acl, $ZendDb) {
     $settings = $settingsTable->fetchCollection('global');
 
     $projectName = isset($settings['project_name']) ? $settings['project_name'] : 'Directus';
-    $projectLogoURL = '/assets/img/directus-logo-flat.svg';
+    $projectLogoURL = rtrim(DIRECTUS_PATH, '/') . '/assets/img/directus-logo-flat.svg';
     if (isset($settings['cms_thumbnail_url']) && $settings['cms_thumbnail_url']) {
         $projectLogoURL = $settings['cms_thumbnail_url'];
     }

@@ -121,5 +121,14 @@ define(function() {
     return value != false;
   };
 
+  Utils.isEmpty = function(value) {
+    return value == null || value === '';
+  };
+
+  Utils.clearElement = function(element) {
+    element.wrap('<form>').closest('form').get(0).reset();
+    element.unwrap();
+  };
+
   return Utils;
 });

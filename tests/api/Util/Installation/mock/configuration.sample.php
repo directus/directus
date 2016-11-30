@@ -7,7 +7,6 @@
  */
 
 return [
-
     'session' => [
         'prefix' => 'directus6_'
     ],
@@ -46,12 +45,15 @@ return [
         'transport' => 'mail',
         'from' => 'admin@directus.local'
     ],
-    // 'SMTP' => array(
-    //   'host' => '',
-    //   'port' => 25,
-    //   'username' => '',
-    //   'password' => ''
-    // ),
+
+    'cors' => [
+        'enabled' => false,
+        'origin' => '*',
+        'headers' => [
+            ['Access-Control-Allow-Headers', 'Authorization, Content-Type, Access-Control-Allow-Origin'],
+            ['Access-Control-Allow-Credentials', 'false']
+        ]
+    ],
 
     'hooks' => [
         'postInsert' => function ($TableGateway, $record, $db) {

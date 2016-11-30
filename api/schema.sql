@@ -319,7 +319,7 @@ CREATE TABLE `directus_ui` (
 
 INSERT INTO `directus_ui` (`table_name`, `column_name`, `ui_name`, `name`, `value`)
 VALUES
-  ('directus_users','avatar_file_id', 'single_file', 'allowed_filetypes', 'image/');
+  ('directus_users','avatar_file_id', 'single_file', 'allowed_filetypes', 'image/*');
 
 # Dump of table directus_users
 # ------------------------------------------------------------

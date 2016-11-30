@@ -21,12 +21,13 @@ define([
     'underscore',
     'backbone',
     'core/t',
+    'utils',
     'core/UIComponent',
     'core/UIView',
     'core/table/table.view',
     'core/overlays/overlays'
   ],
-  function(app, _, Backbone, __t, UIComponent, UIView, TableView, Overlays) {
+  function(app, _, Backbone, __t, Utils, UIComponent, UIView, TableView, Overlays) {
 
   'use strict';
 
@@ -181,7 +182,10 @@ define([
         var target = $(event.target);
         var file = target[0].files[0];
         var model = this.fileModel;
-        model.setFile(file, this.options.settings.get('allowed_filetypes'));
+        var allowed = model.setFile(file, this.options.settings.get('allowed_filetypes'));
+        if (allowed === false) {
+          Utils.clearElement(target);
+        }
       },
       'click button[data-action="computer"], .ui-thumbnail-dropzone, .single-image-thumbnail img': function(e) {
         this.$el.find('#fileAddInput').click();
@@ -224,7 +228,7 @@ define([
         var id = $(e.target).closest('tr').attr('data-id');
         model = collection.get(id);
 
-        if (model.isFileAllowed(self.options.settings.get('allowed_filetypes'))) {
+        if (model.isAllowed(self.options.settings.get('allowed_filetypes'))) {
           fileModel.clear({silent: true});
           fileModel.set(_.clone(model.attributes));
         }
