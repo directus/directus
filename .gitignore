@@ -11,6 +11,7 @@ Icon
 dist/*
 
 # Don't track composer phar/vendors
+composer.lock
 composer.phar
 vendor
 
@@ -33,3 +34,5 @@ customs/uis/*
 .sass-cache
 .gulp-scss-cache
 node_modules
+storage
+
