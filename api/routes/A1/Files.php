@@ -33,7 +33,7 @@ class Files extends Route
 
                 // When the file is uploaded there's not a data key
                 if (array_key_exists('data', $requestPayload)) {
-                    $Files = new \Directus\Files\Files();
+                    $Files = $app->container->get('files');
                     if (!array_key_exists('type', $requestPayload) || strpos($requestPayload['type'], 'embed/') === 0) {
                         $recordData = $Files->saveEmbedData($requestPayload);
                     } else {

@@ -138,6 +138,8 @@ class Bootstrap
         $app->container->set('config', $config);
 
         BaseTableGateway::setHookEmitter($app->container->get('emitter'));
+        \Directus\Database\TableGateway\BaseTableGateway::setContainer($app->container);
+        \Directus\Database\TableGateway\BaseTableGateway::setHookEmitter($app->container->get('emitter'));
 
         $app->register(new FilesServiceProvider());
 
