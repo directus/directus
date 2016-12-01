@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "b2236fc4515ca8fe77eef3cee7b0ad77",
+    "content-hash": "08e91869820d5d683aa0d2ac2c330723",
     "packages": [
         {
             "name": "directus/acl",
@@ -249,14 +249,8 @@
             "target-dir": "Slim/Extras",
             "source": {
                 "type": "git",
-                "url": "https://github.com/codeguy/Slim-Extras.git",
-                "reference": "5bceb3658f77a2b237f5b70ac02a0834fed871f9"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/codeguy/Slim-Extras/zipball/5bceb3658f77a2b237f5b70ac02a0834fed871f9",
-                "reference": "5bceb3658f77a2b237f5b70ac02a0834fed871f9",
-                "shasum": ""
+                "url": "https://github.com/WellingGuzman/Slim-Extras.git",
+                "reference": "e087c60dee9b933f8df5b4454230bba303152f91"
             },
             "require": {
                 "php": ">=5.3.0",
@@ -269,20 +263,18 @@
                     "Slim\\Extras": "."
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
             "authors": [
                 {
-                    "name": "Andrew Smith",
-                    "email": "a.smith@silentworks.co.uk",
-                    "homepage": "http://www.silentworks.co.uk/"
-                },
-                {
                     "name": "Josh Lockhart",
                     "email": "info@joshlockhart.com",
                     "homepage": "http://www.joshlockhart.com/"
+                },
+                {
+                    "name": "Andrew Smith",
+                    "email": "a.smith@silentworks.co.uk"
                 }
             ],
             "description": "Extras package for the Slim Framework",
@@ -292,7 +284,7 @@
                 "middleware",
                 "templating"
             ],
-            "time": "2013-05-24 13:41:59"
+            "time": "2016-07-30 16:37:23"
         },
         {
             "name": "slim/slim",
