@@ -481,7 +481,7 @@ class RelationalTableGateway extends BaseTableGateway
                             $hasActiveColumn = $foreignSchema->hasStatusColumn();
                             $foreignColumn = TableSchema::getColumnSchemaArray($ForeignTable->getTable(), $foreignJoinColumn);
                             $hasPrimaryKey = isset($foreignRecord[$ForeignTable->primaryKeyFieldName]);
-                            $canBeNull = $foreignColumn['is_nullable'] === 'YES';
+                            $canBeNull = $foreignColumn->isNullable();
 
                             if ($hasPrimaryKey && isset($foreignRecord[STATUS_COLUMN_NAME]) && $foreignRecord[STATUS_COLUMN_NAME] === STATUS_DELETED_NUM) {
                                 if (!$hasActiveColumn && !$canBeNull) {
