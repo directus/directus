@@ -366,16 +366,8 @@ $app->post("/$v/auth/request-token/?", function() use ($app, $ZendDb) {
 })->name('request_token');
 
 $app->post("/$v/auth/login/?", function () use ($app, $ZendDb, $acl, $requestNonceProvider) {
-
-    $response = [
-        'message' => __t('incorrect_email_or_password'),
-        'success' => false,
-        'all_nonces' => $requestNonceProvider->getAllNonces()
-    ];
-
     if (Auth::loggedIn()) {
-        $response['success'] = true;
-        return JsonView::render($response);
+        return JsonView::render(['success' => true]);
     }
 
     $req = $app->request();
@@ -385,7 +377,11 @@ $app->post("/$v/auth/login/?", function () use ($app, $ZendDb, $acl, $requestNon
     $user = $Users->findOneBy('email', $email);
 
     if (!$user) {
-        return JsonView::render($response);
+        return JsonView::render([
+            'message' => __t('incorrect_email_or_password'),
+            'success' => false,
+            'all_nonces' => $requestNonceProvider->getAllNonces()
+        ]);
     }
 
     // ------------------------------
@@ -409,7 +405,7 @@ $app->post("/$v/auth/login/?", function () use ($app, $ZendDb, $acl, $requestNon
     }
 
     // @todo: Login should fail on correct information when user is not active.
-    $response['success'] = Auth::login($user['id'], $user['password'], $user['salt'], $password);
+    $loginSuccessful = Auth::login($user['id'], $user['password'], $user['salt'], $password);
 
     // When the credentials are correct but the user is Inactive
     $userHasStatusColumn = array_key_exists(STATUS_COLUMN_NAME, $user);
@@ -418,17 +414,19 @@ $app->post("/$v/auth/login/?", function () use ($app, $ZendDb, $acl, $requestNon
         $isUserActive = true;
     }
 
-    if ($response['success'] && !$isUserActive) {
+    if ($loginSuccessful  && !$isUserActive) {
         Auth::logout();
-        $response['success'] = false;
-        $response['message'] = __t('login_error_user_is_not_active');
-        return JsonView::render($response);
+
+        return JsonView::render([
+            'success' => false,
+            'message' => __t('login_error_user_is_not_active')
+        ]);
     }
 
-    if ($response['success']) {
+    if ($loginSuccessful) {
         $app->emitter->run('directus.authenticated', [$app, $user]);
         $app->emitter->run('directus.authenticated.admin', [$app, $user]);
-        unset($response['message']);
+
         $response['last_page'] = json_decode($user['last_page']);
         $userSession = Auth::getUserInfo();
         $set = ['last_login' => DateUtils::now(), 'access_token' => $userSession['access_token']];
@@ -437,7 +435,10 @@ $app->post("/$v/auth/login/?", function () use ($app, $ZendDb, $acl, $requestNon
         $Activity = new DirectusActivityTableGateway($acl, $ZendDb);
         $Activity->recordLogin($user['id']);
     }
-    JsonView::render($response);
+    JsonView::render([
+        'success' => false,
+        'all_nonces' => $requestNonceProvider->getAllNonces()
+    ]);
 })->name('auth_login');
 
 $app->get("/$v/auth/logout(/:inactive)", function ($inactive = null) use ($app) {
