@@ -20,6 +20,7 @@ use Directus\Filesystem\FilesystemFactory;
 use Directus\Hook\Emitter;
 use Directus\Language\LanguageManager;
 use Directus\Providers\FilesServiceProvider;
+use Directus\Util\ArrayUtils;
 use Directus\View\Twig\DirectusTwigExtension;
 use Slim\Extras\Log\DateTimeFileWriter;
 use Slim\Extras\Views\Twig;
@@ -679,6 +680,33 @@ class Bootstrap
 
             return (func_num_args() == 2) ? $result : $payload;
         });
+
+        $emitter->addFilter('load.relational.onetomany', function($payload) {
+            $rows = $payload->data;
+            $column = $payload->column;
+
+            if ($column->getUi() !== 'translation') {
+                return $payload;
+            }
+
+            $options = $column->getUiOptions();
+            $code = ArrayUtils::get($options, 'languages_code_column', 'id');
+            $languageIdColumn = ArrayUtils::get($options, 'left_column_name');
+            $newData = [];
+            foreach($rows['data'] as $row) {
+                $index = $row[$languageIdColumn];
+                if (is_array($row[$languageIdColumn])) {
+                    $index = $row[$languageIdColumn]['data'][$code];
+                    $row[$languageIdColumn] = $index;
+                }
+
+                $newData[$index] = $row;
+            }
+
+            $payload->data['data'] = $newData;
+
+            return $payload;
+        }, $emitter::P_HIGH);
 
         return $emitter;
     }
