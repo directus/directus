@@ -64,7 +64,7 @@ class Table extends Route
 
             if ($success) {
                 $response['success'] = true;
-                $response['message'] = __t('column_x_was_removed');
+                $response['error']['message'] = __t('column_x_was_removed');
             }
 
             return JsonView::render($response);
@@ -118,8 +118,16 @@ class Table extends Route
         $response = TableSchema::getSchemaArray($table, $params);
         if (!$response) {
             $response = [
-                'message' => __t('unable_to_find_column_x', ['column' => $column]),
+                'error' => [
+                    'message' => __t('unable_to_find_column_x', ['column' => $column])
+                ],
                 'success' => false
+            ];
+        } else {
+            $response['data'] = $response;
+            $response['meta'] = [
+                'type' => 'collection',
+                'table' => 'directus_columns'
             ];
         }
 
@@ -184,13 +192,16 @@ class Table extends Route
             $success = $tableGateway->drop();
 
             $response = [
-                'message' => __t('unable_to_remove_table_x', ['table_name' => $table]),
+                'error' => [
+                    'message' => __t('unable_to_remove_table_x', ['table_name' => $table])
+                ],
                 'success' => false
             ];
 
             if ($success) {
+                unset($response['error']);
                 $response['success'] = true;
-                $response['message'] = __t('table_x_was_removed');
+                $response['data']['message'] = __t('table_x_was_removed');
             }
 
             return JsonView::render($response);
@@ -256,8 +267,18 @@ class Table extends Route
 
         if (!$response) {
             $response = [
-                'message' => __t('unable_to_find_table_x', ['table_name' => $table]),
+                'error' => [
+                    'message' => __t('unable_to_find_table_x', ['table_name' => $table])
+                ],
                 'success' => false
+            ];
+        } else {
+            $response = [
+                'meta' => [
+                    'type' => 'entry',
+                    'table' => 'directus_tables'
+                ],
+                'data' => $response
             ];
         }
         JsonView::render($response);
