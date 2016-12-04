@@ -1008,6 +1008,12 @@ class RelationalTableGateway extends BaseTableGateway
             foreach ($entries as &$parentRow) {
                 $rows = ArrayUtils::get($relatedEntries, $parentRow[$primaryKey], []);
                 $parentRow[$relationalColumnName] = $tableGateway->loadMetadata($rows);
+                $hookPayload = new \stdClass();
+                $hookPayload->data = $tableGateway->loadMetadata($rows);
+                $hookPayload->column = $alias;
+                $hookPayload = $this->applyHook('load.relational.onetomany', $hookPayload);
+
+                $parentRow[$relationalColumnName] = $hookPayload->data;
             }
         }
 
