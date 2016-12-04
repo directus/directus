@@ -33,7 +33,7 @@
 namespace Directus\Console\Common;
 
 
-use Directus\Auth\Provider;
+use Directus\Authentication\Provider;
 use Directus\Bootstrap;
 use Directus\Console\Common\Exception\PasswordChangeException;
 use Directus\Console\Common\Exception\UserUpdateException;
