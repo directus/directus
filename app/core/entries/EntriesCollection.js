@@ -72,33 +72,6 @@ define(function(require, exports, module) {
       return result;
     },
 
-    getTotalCount: function() {
-      var totalCount;
-      // Let's have the collection length
-      // to replace the table total when we add items
-      // because we are not updating this value
-      // we are just fetching it once
-      // @TODO: update this value on collection change
-      var collectionCount = this.length;
-
-      // There is no active column. Use total
-      if (!this.table.columns.get(app.statusMapping.status_name)) {
-        return Math.max(this.table.get('total'), collectionCount);
-      }
-
-      var visibleStates = this.getFilter('status').split(',');
-      totalCount = 0;
-
-      var that = this;
-      visibleStates.forEach(function(state) {
-        if(state in app.statusMapping.mapping && that.table.has(app.statusMapping.mapping[state].name)) {
-          totalCount += that.table.get(app.statusMapping.mapping[state].name);
-        }
-      });
-
-      return Math.max(totalCount, collectionCount);
-    },
-
     updateActiveCount: function(diff) {
       if(!this.table.has('active')) {
         return;
