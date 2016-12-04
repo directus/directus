@@ -6,6 +6,7 @@ use Directus\Acl\Acl;
 use Directus\Application\Application;
 use Directus\Auth\Provider as AuthProvider;
 use Directus\Database\SchemaManager;
+use Directus\Database\TableSchema;
 use Directus\Db\Connection;
 use Directus\Db\Schemas\MySQLSchema;
 use Directus\Db\Schemas\SQLiteSchema;
@@ -691,13 +692,28 @@ class Bootstrap
 
             $options = $column->getUiOptions();
             $code = ArrayUtils::get($options, 'languages_code_column', 'id');
+            $languagesTable = ArrayUtils::get($options, 'languages_table');
             $languageIdColumn = ArrayUtils::get($options, 'left_column_name');
+
+            if (!$languagesTable) {
+                throw new \Exception('Translations language table not defined for ' . $languageIdColumn);
+            }
+
+            $tableSchema = TableSchema::getTableSchema($languagesTable);
+            $primaryKeyColumn = 'id';
+            foreach($tableSchema->getColumns() as $column) {
+                if ($column->isPrimary()) {
+                    $primaryKeyColumn = $column->getName();
+                    break;
+                }
+            }
+
             $newData = [];
             foreach($rows['data'] as $row) {
                 $index = $row[$languageIdColumn];
                 if (is_array($row[$languageIdColumn])) {
                     $index = $row[$languageIdColumn]['data'][$code];
-                    $row[$languageIdColumn] = $index;
+                    $row[$languageIdColumn] = $row[$languageIdColumn]['data'][$primaryKeyColumn];
                 }
 
                 $newData[$index] = $row;
