@@ -255,6 +255,7 @@ $app->hook('slim.before.dispatch', function () use ($app, $requestNonceProvider,
     $app->container->set('auth', new Auth());
 
     \Directus\Database\TableSchema::setAclInstance($permissions);
+    \Directus\Database\TableSchema::setConnectionInstance($ZendDb);
     \Directus\Database\TableSchema::setConfig(Bootstrap::get('config'));
     \Directus\Database\TableGateway\BaseTableGateway::setHookEmitter($app->container->get('emitter'));
 
