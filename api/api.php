@@ -446,7 +446,7 @@ $app->post("/$v/auth/login/?", function () use ($app, $ZendDb, $acl, $requestNon
         }
     }
     JsonView::render([
-        'success' => false,
+        'success' => true,
         'all_nonces' => $requestNonceProvider->getAllNonces()
     ]);
 })->name('auth_login');
