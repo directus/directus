@@ -654,7 +654,7 @@ class RelationalTableGateway extends BaseTableGateway
      */
     public function getItems(array $params = [])
     {
-        $entries = $this->loadEntries($params);
+        $entries = $this->loadItems($params);
         // @NOTE: it should has another name
         //        this evolved into something else
         $entries = $this->loadMetadata($entries);
