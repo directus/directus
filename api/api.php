@@ -452,8 +452,10 @@ $app->group('/1.1', function() use($app) {
     // TABLES
     // =============================================================================
     $app->get('/tables/?', '\Directus\API\Routes\A1\Table:names');
+    $app->post('/tables/?', '\Directus\API\Routes\A1\Table:create')
+        ->name('table_create');
     // GET and PUT table details
-    $app->map("/tables/:table/?", '\Directus\API\Routes\A1\Table:info')
+    $app->map('/tables/:table/?', '\Directus\API\Routes\A1\Table:info')
         ->via('GET', 'PUT', 'DELETE')
         ->name('table_meta');
 

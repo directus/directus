@@ -4,6 +4,8 @@ namespace Directus\API\Routes\A1;
 
 use Directus\Acl\Exception\UnauthorizedTableAlterException;
 use Directus\Application\Route;
+use Directus\Bootstrap;
+use Directus\Database\TableGateway\DirectusPrivilegesTableGateway;
 use Directus\Database\TableGateway\DirectusUiTableGateway;
 use Directus\Database\TableGateway\RelationalTableGateway as TableGateway;
 use Directus\Database\TableSchema;
@@ -13,6 +15,58 @@ use Directus\View\JsonView;
 
 class Table extends Route
 {
+    public function create()
+    {
+        $app = $this->app;
+        $ZendDb = $app->container->get('zenddb');
+        $acl = $app->container->get('acl');
+        $requestPayload = $app->request()->post();
+
+        if ($acl->getGroupId() != 1) {
+            throw new \Exception(__t('permission_denied'));
+        }
+
+        $isTableNameAlphanumeric = preg_match("/[a-z0-9]+/i", $requestPayload['name']);
+        $zeroOrMoreUnderscoresDashes = preg_match("/[_-]*/i", $requestPayload['name']);
+
+        if (!($isTableNameAlphanumeric && $zeroOrMoreUnderscoresDashes)) {
+            $app->response->setStatus(400);
+            return JsonView::render(['message' => __t('invalid_table_name')]);
+        }
+
+        $schema = Bootstrap::get('schemaManager');
+        if ($schema->tableExists($requestPayload['name'])) {
+            return JsonView::render([
+                'success' => false,
+                'error' => [
+                    'message' => sprintf('table_%s_exists', $requestPayload['name'])
+                ]
+            ]);
+        }
+
+        $app->emitter->run('table.create:before', $requestPayload['name']);
+        // Through API:
+        // Remove spaces and symbols from table name
+        // And in lowercase
+        $requestPayload['name'] = SchemaUtils::cleanTableName($requestPayload['name']);
+        $schema->createTable($requestPayload['name']);
+        $app->emitter->run('table.create', $requestPayload['name']);
+        $app->emitter->run('table.create:after', $requestPayload['name']);
+
+        $privileges = new DirectusPrivilegesTableGateway($ZendDb, $acl);
+        $response = $privileges->insertPrivilege([
+            'nav_listed' => 1,
+            'status_id' => 0,
+            'allow_view' => 2,
+            'allow_add' => 1,
+            'allow_edit' => 2,
+            'allow_delete' => 2,
+            'allow_alter' => 1
+        ]);
+
+        return $this->info($requestPayload['name']);
+    }
+
     public function columns($table_name)
     {
         $app = $this->app;
@@ -274,6 +328,7 @@ class Table extends Route
             ];
         } else {
             $response = [
+                'success' => true,
                 'meta' => [
                     'type' => 'entry',
                     'table' => 'directus_tables'
