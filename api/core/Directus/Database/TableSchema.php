@@ -496,8 +496,8 @@ class TableSchema
 
     public static function getTable($tbl_name)
     {
-        $acl = Bootstrap::get('acl');
-        $zendDb = Bootstrap::get('ZendDb');
+        $acl = static::getAclInstance();
+        $zendDb = static::getConnectionInstance();
 
         // TODO: getTable should return an empty object
         // or and empty array instead of false
@@ -521,8 +521,8 @@ class TableSchema
             $info['footer'] = (boolean)$info['footer'];
         }
 
-        $relationalTableGateway = new RelationalTableGateway($tbl_name, $zendDb, $acl);
-        $info = array_merge($info->toArray(), $relationalTableGateway->countActiveOld());
+        // $relationalTableGateway = new RelationalTableGateway($tbl_name, $zendDb, $acl);
+        $info = $info->toArray(); //array_merge($info->toArray(), $relationalTableGateway->countActiveOld());
 
         //$info['columns'] = self::getSchemaArray($tbl_name);
         $directusPreferencesTableGateway = new DirectusPreferencesTableGateway($zendDb, $acl);
