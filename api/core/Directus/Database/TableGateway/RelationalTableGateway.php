@@ -638,6 +638,22 @@ class RelationalTableGateway extends BaseTableGateway
      */
     public function getEntries($params = [])
     {
+        if (!is_array($params)) {
+            $params = [];
+        }
+
+        return $this->getItems($params);
+    }
+
+    /**
+     * Get table items
+     *
+     * @param array $params
+     *
+     * @return array|mixed
+     */
+    public function getItems(array $params = [])
+    {
         $entries = $this->loadEntries($params);
         // @NOTE: it should has another name
         //        this evolved into something else
@@ -660,7 +676,7 @@ class RelationalTableGateway extends BaseTableGateway
         $tableSchema = TableSchema::getTableSchema($this->table);
         $metadata = [
             'table' => $tableSchema->getTableName(),
-            'type' => $singleEntry ? 'entry' : 'collection'
+            'type' => $singleEntry ? 'item' : 'collection'
         ];
 
         if (!$singleEntry) {
@@ -694,7 +710,15 @@ class RelationalTableGateway extends BaseTableGateway
         return $metadata;
     }
 
-    public function loadEntries(array $params = [], \Closure $queryCallback = null)
+    /**
+     * Load Table entries
+     *
+     * @param array $params
+     * @param \Closure|null $queryCallback
+     *
+     * @return mixed
+     */
+    public function loadItems(array $params = [], \Closure $queryCallback = null)
     {
         // Get table column schema
         $tableSchema = TableSchema::getTableSchema($this->table);
@@ -752,6 +776,21 @@ class RelationalTableGateway extends BaseTableGateway
         }
 
         return $results;
+    }
+
+    /**
+     * Load Table entries
+     *
+     * Alias of loadItems
+     *
+     * @param array $params
+     * @param \Closure|null $queryCallback
+     *
+     * @return mixed
+     */
+    public function loadEntries(array $params = [], \Closure $queryCallback = null)
+    {
+        return $this->loadEntries($params, $queryCallback);
     }
 
     /**
