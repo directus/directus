@@ -36,6 +36,14 @@ class Settings extends Route
                 'message' => __t('unable_to_find_setting_collection_x', ['collection' => $id]),
                 'success' => false
             ];
+        } else {
+            $response = [
+                'meta' => [
+                    'type' => 'item',
+                    'table' => 'directus_settings'
+                ],
+                'data' => $response
+            ];
         }
 
         JsonView::render($response);
