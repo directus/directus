@@ -31,7 +31,7 @@ class RelationalTableGateway extends BaseTableGateway
     protected $defaultEntriesSelectParams = [
         'orders' => ['sort' => 'ASC'],
         'columns' => '*',
-        'limit' => 500,
+        'limit' => 200,
         'offset' => 0,
         'skip' => null,
         'search' => null,
