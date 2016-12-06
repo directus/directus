@@ -790,7 +790,7 @@ class RelationalTableGateway extends BaseTableGateway
      */
     public function loadEntries(array $params = [], \Closure $queryCallback = null)
     {
-        return $this->loadEntries($params, $queryCallback);
+        return $this->loadItems($params, $queryCallback);
     }
 
     /**
