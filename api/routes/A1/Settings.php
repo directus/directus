@@ -26,6 +26,7 @@ class Settings extends Route
                 break;
         }
 
+        // @TODO: Only fetch one if collection is passed.
         $response = $Settings->fetchAll();
         if (!is_null($id)) {
             $response = array_key_exists($id, $response) ? $response[$id] : null;
@@ -44,6 +45,10 @@ class Settings extends Route
                 ],
                 'data' => $response
             ];
+
+            if (!is_null($id)) {
+                $response['meta']['settings_collection'] = $id;
+            }
         }
 
         JsonView::render($response);
