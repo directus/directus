@@ -100,7 +100,7 @@ class DirectusActivityTableGateway extends RelationalTableGateway
 
         return [
             'total' => $activityTotal,
-            'data' => $rowset
+            'data' => $this->parseRecord($rowset)
         ];
     }
 
