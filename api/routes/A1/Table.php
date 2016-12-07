@@ -109,16 +109,28 @@ class Table extends Route
         $acl = $app->container->get('acl');
         if ($app->request()->isDelete()) {
             $tableGateway = new TableGateway($table, $ZendDb, $acl);
-            $success = $tableGateway->dropColumn($column);
+            $hasColumn = TableSchema::hasTableColumn($table, $column);
+            $success = false;
+
+            if ($hasColumn) {
+                $success = $tableGateway->dropColumn($column);
+            }
 
             $response = [
-                'message' => __t('unable_to_remove_column_x', ['column_name' => $column]),
-                'success' => false
+                'meta' => [
+                    'table' => $tableGateway->getTable(),
+                    'column' => $column
+                ],
+                'success' => $success
             ];
 
-            if ($success) {
-                $response['success'] = true;
-                $response['error']['message'] = __t('column_x_was_removed');
+            // Success: __t('column_x_was_removed', ['column' => $column]),
+            // @TODO: implement successful messages
+            if ($hasColumn && !$success) {
+                $response['error']['message'] = __t('unable_to_remove_column_x', ['column' => $column]);
+            } else if (!$hasColumn) {
+                // @TODO: add translation
+                $response['error']['message'] = sprintf('column `%s` does not exists in table: `%s`', $column, $table);
             }
 
             return JsonView::render($response);
