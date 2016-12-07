@@ -434,8 +434,9 @@ $app->group('/1.1', function() use($app) {
     // =============================================================================
     // BOOKMARKS
     // =============================================================================
+    $app->get('/bookmarks/self/?', '\Directus\API\Routes\A1\Bookmarks:selfBookmarks');
     $app->map('/bookmarks(/:id)/?', '\Directus\API\Routes\A1\Bookmarks:bookmarks')
-        ->via('GET', 'POST', 'PUT', 'DELETE');
+        ->via('POST', 'PUT', 'DELETE');
 
     // =============================================================================
     // REVISIONS
