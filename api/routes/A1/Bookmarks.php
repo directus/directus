@@ -4,6 +4,7 @@ namespace Directus\API\Routes\A1;
 
 use Directus\Application\Route;
 use Directus\Database\TableGateway\DirectusBookmarksTableGateway;
+use Directus\Database\TableGateway\RelationalTableGateway;
 use Directus\View\JsonView;
 
 class Bookmarks extends Route
@@ -91,5 +92,16 @@ class Bookmarks extends Route
             ],
             'data' => $jsonResponse
         ]);
+    }
+
+    public function allBookmarks()
+    {
+        $app = $this->app;
+        $acl = $app->container->get('acl');
+        $ZendDb = $app->container->get('zenddb');
+        $tableGateway = new RelationalTableGateway('directus_bookmarks', $ZendDb, $acl);
+
+        $params = $app->request()->get();
+        return JsonView::render($tableGateway->getItems($params));
     }
 }
