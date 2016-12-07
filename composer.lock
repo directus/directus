@@ -73,11 +73,11 @@
         },
         {
             "name": "directus/database",
-            "version": "dev-d64",
+            "version": "dev-version/6.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/directus/directus-database",
-                "reference": "3ab1a6874bfcfe85f75fc8073e2e70d3bf200690"
+                "reference": "9f34861ddbcd4efaa7066c4fc5c03670bead0d3c"
             },
             "require": {
                 "directus/collection": "0.9.*",
@@ -90,7 +90,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-d64": "0.9.x-dev"
+                    "dev-version/6.4": "0.9.x-dev"
                 }
             },
             "autoload": {
@@ -106,7 +106,7 @@
                 "database",
                 "directus"
             ],
-            "time": "2016-11-29 07:41:51"
+            "time": "2016-12-06 04:19:56"
         },
         {
             "name": "directus/migrations",
@@ -336,12 +336,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/swiftmailer/swiftmailer.git",
-                "reference": "12a6329c24d08fb97bcf10128365757f845dc140"
+                "reference": "968cd5302dba8d60ddb64489069953fae2ff1a92"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/swiftmailer/swiftmailer/zipball/12a6329c24d08fb97bcf10128365757f845dc140",
-                "reference": "12a6329c24d08fb97bcf10128365757f845dc140",
+                "url": "https://api.github.com/repos/swiftmailer/swiftmailer/zipball/968cd5302dba8d60ddb64489069953fae2ff1a92",
+                "reference": "968cd5302dba8d60ddb64489069953fae2ff1a92",
                 "shasum": ""
             },
             "require": {
@@ -381,7 +381,7 @@
                 "mail",
                 "mailer"
             ],
-            "time": "2016-11-24 01:01:52"
+            "time": "2016-12-06 13:58:36"
         },
         {
             "name": "twig/twig",
@@ -389,12 +389,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/twigphp/Twig.git",
-                "reference": "717365d089a2f5cc767d75084f9639811881f628"
+                "reference": "8ad862b98e8c0ea509a04242c454c97e1265bd9a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twigphp/Twig/zipball/717365d089a2f5cc767d75084f9639811881f628",
-                "reference": "717365d089a2f5cc767d75084f9639811881f628",
+                "url": "https://api.github.com/repos/twigphp/Twig/zipball/8ad862b98e8c0ea509a04242c454c97e1265bd9a",
+                "reference": "8ad862b98e8c0ea509a04242c454c97e1265bd9a",
                 "shasum": ""
             },
             "require": {
@@ -442,7 +442,7 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2016-11-23 18:59:28"
+            "time": "2016-12-05 09:20:45"
         },
         {
             "name": "zendframework/zend-db",
