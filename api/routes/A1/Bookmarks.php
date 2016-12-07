@@ -94,6 +94,43 @@ class Bookmarks extends Route
         ]);
     }
 
+    // @NOTE: duplicate selfBookmarks
+    public function userBookmarks($currentUserId)
+    {
+        $app = $this->app;
+        $acl = $app->container->get('acl');
+        $ZendDb = $app->container->get('zenddb');
+        $requestPayload = $app->request()->post();
+
+        $bookmarks = new DirectusBookmarksTableGateway($ZendDb, $acl);
+        switch ($app->request()->getMethod()) {
+            case 'PUT':
+                $bookmarks->updateBookmark($requestPayload);
+                $id = $requestPayload['id'];
+                break;
+            case 'POST':
+                $requestPayload['user'] = $currentUserId;
+                $id = $bookmarks->insertBookmark($requestPayload);
+                break;
+            case 'DELETE':
+                $bookmark = $bookmarks->fetchByUserAndId($currentUserId, $id);
+                if ($bookmark) {
+                    echo $bookmarks->delete(['id' => $id]);
+                }
+                return;
+        }
+
+        $jsonResponse = $bookmarks->fetchByUserId($currentUserId);
+
+        return JsonView::render([
+            'meta' => [
+                'table' => 'directus_bookmarks',
+                'type' => 'collection'
+            ],
+            'data' => $jsonResponse
+        ]);
+    }
+
     public function allBookmarks()
     {
         $app = $this->app;
