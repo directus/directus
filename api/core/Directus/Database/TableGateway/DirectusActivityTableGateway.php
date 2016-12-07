@@ -60,14 +60,15 @@ class DirectusActivityTableGateway extends RelationalTableGateway
     {
         $params['order'] = ['id' => 'DESC'];
         $params = $this->applyDefaultEntriesSelectParams($params);
-
         $builder = new Builder($this->getAdapter());
-        $tableSchema = TableSchema::getTableSchema($this->table);
-        $hasActiveColumn = $tableSchema->hasStatusColumn();
+        $builder->from($this->getTable());
 
+        // @TODO: Only select the fields not on the currently authenticated user group's read field blacklist
         $columns = ['id', 'identifier', 'action', 'table_name', 'row_id', 'user', 'datetime', 'type', 'data'];
         $builder->columns($columns);
-        $builder->from($this->table);
+
+        $tableSchema = TableSchema::getTableSchema($this->table);
+        $hasActiveColumn = $tableSchema->hasStatusColumn();
 
         $builder = $this->applyParamsToTableEntriesSelect($params, $builder, $tableSchema, $hasActiveColumn);
 
@@ -99,7 +100,7 @@ class DirectusActivityTableGateway extends RelationalTableGateway
 
         return [
             'total' => $activityTotal,
-            'rows' => $rowset
+            'data' => $rowset
         ];
     }
 
