@@ -1385,6 +1385,7 @@ class RelationalTableGateway extends BaseTableGateway
         $results = $statement->execute();
 
         $statusMap = TableSchema::getStatusMap();
+        $stats = [];
         foreach ($results as $row) {
             if (isset($row[STATUS_COLUMN_NAME])) {
                 $statSlug = $statusMap[$row[STATUS_COLUMN_NAME]];
