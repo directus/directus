@@ -37,8 +37,14 @@ class Messages extends Route
 
         $messagesTableGateway = new DirectusMessagesTableGateway($ZendDb, $acl);
         $result = $messagesTableGateway->fetchMessagesInboxWithHeaders($currentUserId);
+        $meta = ArrayUtils::omit($result, 'rows');
+        $result['meta']['type'] = 'collection';
+        $result['meta']['table'] = 'directus_messages';
 
-        JsonView::render($result);
+        return JsonView::render([
+            'meta' => $meta,
+            'data' => ArrayUtils::get($result, 'rows', [])
+        ]);
     }
 
     public function row($id)
@@ -56,7 +62,13 @@ class Messages extends Route
             return JsonView::render(['message' => __t('message_not_found')]);
         }
 
-        JsonView::render($message);
+        JsonView::render([
+            'meta' => [
+                'table' => 'directus_messages',
+                'type' => 'item'
+            ],
+            'data' => $message
+        ]);
     }
 
     public function patchRow($id)
