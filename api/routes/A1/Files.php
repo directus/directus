@@ -68,7 +68,7 @@ class Files extends Route
 
     public function upload()
     {
-        $Files = new \Directus\Files\Files();
+        $Files = $this->app->container->get('files');
         $result = [];
         foreach ($_FILES as $file) {
             $result[] = $Files->upload($file);
@@ -81,7 +81,7 @@ class Files extends Route
     {
         $app = $this->app;
         $acl = $app->container->get('acl');
-        $Files = new \Directus\Files\Files();
+        $Files = $app->container->get('files');
         $link = $app->request()->post('link');
         $result = [
             'message' => __t('invalid_unsupported_url'),
