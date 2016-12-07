@@ -349,7 +349,7 @@ class TableSchema
         }
 
         foreach ($schemaArray as $column) {
-            if (!$column->isAlias()) {
+            if ($column->isAlias()) {
                 $columns[] = $onlyNames === true ? $column->getName() : $column;
             }
         }
