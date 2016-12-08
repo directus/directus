@@ -96,12 +96,8 @@ class DirectusActivityTableGateway extends RelationalTableGateway
             ->isNull('parent_id')
             ->OR
             ->equalTo('type', 'FILES');
-        $activityTotal = $this->countTotal($countTotalWhere);
 
-        return [
-            'total' => $activityTotal,
-            'data' => $this->parseRecord($rowset)
-        ];
+        return $this->loadMetadata($this->parseRecord($rowset));
     }
 
     public function fetchRevisions($row_id, $table_name)
