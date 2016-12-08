@@ -21,15 +21,14 @@ class Settings extends Route
             case 'POST':
             case 'PUT':
                 $data = $requestPayload;
-                unset($data['id']);
                 $Settings->setValues($id, $data);
                 break;
         }
 
-        // @TODO: Only fetch one if collection is passed.
-        $response = $Settings->fetchAll();
         if (!is_null($id)) {
-            $response = array_key_exists($id, $response) ? $response[$id] : null;
+            $response = $Settings->fetchCollection($id);
+        } else {
+            $response = $Settings->fetchAll();
         }
 
         if (!$response) {
