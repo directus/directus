@@ -77,7 +77,7 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/directus/directus-database",
-                "reference": "9f34861ddbcd4efaa7066c4fc5c03670bead0d3c"
+                "reference": "b734f6501a14c799fb5d9737626ca7ac5bd037b4"
             },
             "require": {
                 "directus/collection": "0.9.*",
@@ -106,7 +106,7 @@
                 "database",
                 "directus"
             ],
-            "time": "2016-12-06 04:19:56"
+            "time": "2016-12-08 18:41:01"
         },
         {
             "name": "directus/migrations",
@@ -389,12 +389,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/twigphp/Twig.git",
-                "reference": "8ad862b98e8c0ea509a04242c454c97e1265bd9a"
+                "reference": "e4125e6ef97f07a7c60816a0ed1578a5e1d85bc1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twigphp/Twig/zipball/8ad862b98e8c0ea509a04242c454c97e1265bd9a",
-                "reference": "8ad862b98e8c0ea509a04242c454c97e1265bd9a",
+                "url": "https://api.github.com/repos/twigphp/Twig/zipball/e4125e6ef97f07a7c60816a0ed1578a5e1d85bc1",
+                "reference": "e4125e6ef97f07a7c60816a0ed1578a5e1d85bc1",
                 "shasum": ""
             },
             "require": {
@@ -442,7 +442,7 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2016-12-05 09:20:45"
+            "time": "2016-12-08 10:31:05"
         },
         {
             "name": "zendframework/zend-db",
