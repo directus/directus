@@ -4,6 +4,7 @@ namespace Directus\Database\TableGateway;
 
 use Directus\Permissions\Acl;
 use Directus\Permissions\Exception\UnauthorizedTableBigEditException;
+use Directus\Util\ArrayUtils;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Select;
@@ -103,6 +104,7 @@ class DirectusSettingsTableGateway extends BaseTableGateway
             throw new UnauthorizedTableBigEditException($aclErrorPrefix . 'Not enough permission to add/update on table `' . $this->getTable() . '` (BigEdit Permission Forbidden)');
         }
 
+        $data = ArrayUtils::omit($data, 'id');
         foreach ($data as $key => $value) {
             $parameters[] = '(' .
                 $this->adapter->platform->quoteValue($collection) . ',' .
