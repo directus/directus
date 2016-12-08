@@ -18,7 +18,7 @@ class Activity extends Route
 
         $Activity = new DirectusActivityTableGateway($ZendDb, $acl);
         // @todo move this to backbone collection
-        if (!$params['filters']) {
+        if (!ArrayUtils::has($params, 'filters')) {
             $params['filters'] = [];
         }
 
@@ -27,13 +27,7 @@ class Activity extends Route
         }
 
         $data = $Activity->fetchFeed($params);
-        JsonView::render([
-            'meta' => [
-                'type' => 'collection',
-                'table' => 'directus_activity',
-                'total' => $data['total']
-            ],
-            'data' => ArrayUtils::get($data, 'data', [])
-        ]);
+
+        return JsonView::render($data);
     }
 }
