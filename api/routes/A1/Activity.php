@@ -22,10 +22,6 @@ class Activity extends Route
             $params['filters'] = [];
         }
 
-        if (!ArrayUtils::has($params, 'filters.datetime')) {
-            $params['filters']['datetime'] = ['>=' => DateUtils::daysAgo(30)];
-        }
-
         $data = $Activity->fetchFeed($params);
 
         return JsonView::render($data);
