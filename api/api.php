@@ -472,9 +472,11 @@ $app->group('/1.1', function() use($app) {
     // MESSAGES
     // =============================================================================
     $app->get('/messages/rows/?', '\Directus\API\Routes\A1\Messages:rows');
+    $app->get('/messages/user/:id/?', '\Directus\API\Routes\A1\Messages:rows');
     $app->get('/messages/self/?', '\Directus\API\Routes\A1\Messages:rows');
     $app->get('/messages/rows/:id/?', '\Directus\API\Routes\A1\Messages:row');
-    $app->get('/messages/:id/?', '\Directus\API\Routes\A1\Messages:row');
+    // @TODO: this will perform an actual "get message by id"
+    // $app->get('/messages/:id/?', '\Directus\API\Routes\A1\Messages:row');
     $app->map('/messages/rows/:id/?', '\Directus\API\Routes\A1\Messages:patchRow')
         ->via('PATCH');
     $app->post('/messages/rows/?', '\Directus\API\Routes\A1\Messages:postRows');

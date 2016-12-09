@@ -16,11 +16,11 @@ use Directus\View\JsonView;
 
 class Messages extends Route
 {
-    public function rows()
+    public function rows($userId = null)
     {
         $acl = $this->app->container->get('acl');
         $ZendDb = $this->app->container->get('zenddb');
-        $currentUserId = $acl->getUserId();
+        $currentUserId = $userId !== null ? $userId : $acl->getUserId();
 
         if (isset($_GET['max_id'])) {
             $messagesRecipientsTableGateway = new DirectusMessagesRecipientsTableGateway($ZendDb, $acl);
@@ -59,7 +59,12 @@ class Messages extends Route
 
         if (!isset($message)) {
             header('HTTP/1.0 404 Not Found');
-            return JsonView::render(['message' => __t('message_not_found')]);
+            return JsonView::render([
+                'success' => false,
+                'error' => [
+                    'message' => __t('message_not_found')
+                ]
+            ]);
         }
 
         JsonView::render([
