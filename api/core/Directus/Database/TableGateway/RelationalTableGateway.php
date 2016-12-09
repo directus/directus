@@ -61,7 +61,7 @@ class RelationalTableGateway extends BaseTableGateway
         '>' => ['operator' => 'greater_than', 'not' => false],
         '>=' => ['operator' => 'greater_than_or_equal', 'not' => false],
 
-        'null' => ['operator' => 'null'],
+        'nnull' => ['operator' => 'null', 'not' => true],
 
         'nempty' => ['operator' => 'empty', 'not' => true],
     ];
