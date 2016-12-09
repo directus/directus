@@ -64,6 +64,8 @@ class RelationalTableGateway extends BaseTableGateway
         'nnull' => ['operator' => 'null', 'not' => true],
 
         'nempty' => ['operator' => 'empty', 'not' => true],
+
+        'nbetween' => ['operator' => 'between', 'not' => true],
     ];
 
     public function manageRecordUpdate($tableName, $recordData, $activityEntryMode = self::ACTIVITY_ENTRY_MODE_PARENT, &$childLogEntries = null, &$parentCollectionRelationshipsChanged = false, $parentData = [])

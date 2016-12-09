@@ -8,11 +8,13 @@ use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\ResultSet\AbstractResultSet;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\Sql\Having;
+use Zend\Db\Sql\Predicate\Between;
 use Zend\Db\Sql\Predicate\Expression;
 use Zend\Db\Sql\Predicate\In;
 use Zend\Db\Sql\Predicate\IsNotNull;
 use Zend\Db\Sql\Predicate\IsNull;
 use Zend\Db\Sql\Predicate\Like;
+use Zend\Db\Sql\Predicate\NotBetween;
 use Zend\Db\Sql\Predicate\NotIn;
 use Zend\Db\Sql\Predicate\NotLike;
 use Zend\Db\Sql\Predicate\Operator;
@@ -245,6 +247,16 @@ class Builder
     public function whereNotIn($column, array $values)
     {
         return $this->whereIn($column, $values, true);
+    }
+
+    public function whereBetween($column, array $values, $not = false)
+    {
+        return $this->where($column, 'between', $values, $not);
+    }
+
+    public function whereNotBetween($column, array $values)
+    {
+        return $this->whereBetween($column, $values, true);
     }
 
     public function whereEqualTo($column, $value, $not = false)
@@ -620,6 +632,12 @@ class Builder
                 break;
             case 'nnull':
                 $expression = new IsNotNull($column);
+                break;
+            case 'between':
+                $expression = new Between($column, array_shift($value), array_pop($value));
+                break;
+            case 'nbetween':
+                $expression = new  NotBetween($column, array_shift($value), array_pop($value));
                 break;
             default:
                 $expression = new Operator($column, $operator, $value);
