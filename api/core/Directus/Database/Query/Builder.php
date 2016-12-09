@@ -3,6 +3,7 @@
 namespace Directus\Database\Query;
 
 use Directus\Database\Query\Relations\ManyToManyRelation;
+use Directus\Util\ArrayUtils;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\ResultSet\AbstractResultSet;
 use Zend\Db\ResultSet\ResultSet;
@@ -151,14 +152,72 @@ class Builder
      * @param $operator
      * @param $value
      * @param $not
+     * @param $logical
      *
      * @return $this
      */
-    public function where($column, $operator, $value, $not = false)
+    public function where($column, $operator = null, $value = null, $not = false, $logical = 'and')
     {
-        $this->wheres[] = compact('operator', 'column', 'value', 'not');
+        if ($column instanceof \Closure) {
+            return $this->nestWhere($column);
+        }
+
+        $type = 'basic';
+
+        $this->wheres[] = compact('type', 'operator', 'column', 'value', 'not', 'logical');
 
         return $this;
+    }
+
+    /**
+     * Creates a nested condition
+     *
+     * @param \Closure $callback
+     * @param string $logical
+     *
+     * @return $this
+     */
+    protected function nestWhere(\Closure $callback, $logical = 'and')
+    {
+        $query = $this->newQuery();
+        call_user_func($callback, $query);
+
+        if (count($query->getWheres())) {
+            $type = 'nest';
+            $this->wheres[] = compact('type', 'query', 'logical');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Create a condition where the given column is empty (NULL or empty string)
+     *
+     * @param $column
+     *
+     * @return Builder
+     */
+    public function whereEmpty($column)
+    {
+        return $this->nestWhere(function(Builder $query) use ($column) {
+            $query->whereNull($column);
+            $query->whereEqualTo($column, '');
+        }, 'or');
+    }
+
+    /**
+     * Create a condition where the given column is NOT empty (NULL or empty string)
+     *
+     * @param $column
+     *
+     * @return Builder
+     */
+    public function whereNotEmpty($column)
+    {
+        return $this->nestWhere(function(Builder $query) use ($column) {
+            $query->whereNotNull($column);
+            $query->whereNotEqualTo($column, '');
+        }, 'and');
     }
 
     /**
@@ -444,7 +503,19 @@ class Builder
         }
 
         foreach($this->getWheres() as $condition) {
-            $select->where($this->buildConditionExpression($condition));
+            if (ArrayUtils::get($condition, 'type') === 'nest') {
+                $query = ArrayUtils::get($condition, 'query');
+                $logical = strtoupper(ArrayUtils::get($condition, 'logical', 'and'));
+
+                $where = $select->where->nest();
+                // @NOTE: only allow one level nested
+                foreach($query->getWheres() as $nestCondition) {
+                    $where->addPredicate($this->buildConditionExpression($nestCondition), $logical);
+                }
+                $where->unnest();
+            } else {
+                $select->where($this->buildConditionExpression($condition));
+            }
         }
 
         if ($this->groupBys !== null) {
@@ -564,6 +635,16 @@ class Builder
         }
 
         return $this->sql;
+    }
+
+    /**
+     * Gets a new instance of the query builder
+     *
+     * @return \Directus\Database\Query\Builder
+     */
+    public function newQuery()
+    {
+        return new static($this->connection);
     }
 
     /**
