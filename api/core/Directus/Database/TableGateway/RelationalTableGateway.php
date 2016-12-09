@@ -53,6 +53,8 @@ class RelationalTableGateway extends BaseTableGateway
         'gte' => ['operator' => 'greater_than_or_equal', 'not' => false],
 
         'nlike' => ['operator' => 'like', 'not' => true],
+        'contains' => ['operator' => 'like'],
+        'ncontains' => ['operator' => 'like', 'not' => true],
 
         '<' => ['operator' => 'less_than', 'not' => false],
         '<=' => ['operator' => 'less_than_or_equal', 'not' => false],
