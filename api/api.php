@@ -483,6 +483,13 @@ $app->group('/1.1', function() use($app) {
     $app->get('/messages/recipients/?', '\Directus\API\Routes\A1\Messages:recipients');
     $app->post('/comments/?', '\Directus\API\Routes\A1\Messages:comments');
 
+    // =============================================================================
+    // USERS
+    // =============================================================================
+    $app->map('/users/?', '\Directus\API\Routes\A1\Users:all')
+        ->via('GET', 'POST', 'PUT');
+    $app->map('/users/:id/?', '\Directus\API\Routes\A1\Users:get')
+        ->via('DELETE', 'GET', 'PUT', 'PATCH');
 
     // =============================================================================
     // DEBUG
