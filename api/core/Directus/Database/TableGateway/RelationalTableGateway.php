@@ -29,7 +29,7 @@ class RelationalTableGateway extends BaseTableGateway
      * @var array
      */
     protected $defaultEntriesSelectParams = [
-        'orders' => ['sort' => 'ASC'],
+        'order' => ['sort' => 'ASC'],
         'columns' => '*',
         'limit' => 200,
         'offset' => 0,
@@ -605,7 +605,7 @@ class RelationalTableGateway extends BaseTableGateway
         // Is not there a sort column?
         $tableColumns = array_flip(TableSchema::getTableColumns($this->table, null, true));
         if (!array_key_exists('sort', $tableColumns)) {
-            unset($defaultParams['orders']);
+            unset($defaultParams['order']);
         }
 
         $params = array_merge($defaultParams, $params);
@@ -875,11 +875,11 @@ class RelationalTableGateway extends BaseTableGateway
      * Process Select Order
      *
      * @param Builder $query
-     * @param array $orders
+     * @param array $order
      */
-    protected function processOrders(Builder $query, array $orders)
+    protected function processOrder(Builder $query, array $order)
     {
-        foreach($orders as $orderBy => $orderDirection) {
+        foreach($order as $orderBy => $orderDirection) {
             $query->orderBy($orderBy, $orderDirection);
         }
     }
@@ -914,16 +914,16 @@ class RelationalTableGateway extends BaseTableGateway
      */
     protected function applyLegacyParams(Builder $query, array $params = [])
     {
-        // @TODO: Clear query orders
+        // @TODO: Clear query order
         // "order" will be replace it with "orderBy", if presented
         if (ArrayUtils::has($params, 'orderBy')) {
-            $query->clearOrders();
+            $query->clearOrder();
             $query->orderBy($params['orderBy'], ArrayUtils::get($params, 'orderDirection', 'ASC'));
         }
 
         // sort, sort_order will replace "order" and "orderBy", if presented
         if (ArrayUtils::has($params, 'sort')) {
-            $query->clearOrders();
+            $query->clearOrder();
             $query->orderBy($params['sort'], ArrayUtils::get($params, 'sort_order', 'ASC'));
         }
 

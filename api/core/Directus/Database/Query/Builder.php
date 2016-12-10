@@ -55,7 +55,7 @@ class Builder
     /**
      * @var array
      */
-    protected $orders = [];
+    protected $order = [];
 
     /**
      * @var null|int
@@ -341,7 +341,7 @@ class Builder
      */
     public function orderBy($column, $direction = 'ASC')
     {
-        $this->orders[(string) $column] = (string) $direction;
+        $this->order[(string) $column] = (string) $direction;
 
         return $this;
     }
@@ -351,17 +351,17 @@ class Builder
      *
      * @return array
      */
-    public function getOrders()
+    public function getOrder()
     {
-        return $this->orders;
+        return $this->order;
     }
 
     /**
-     * Clears the orders list
+     * Clears the order list
      */
-    public function clearOrders()
+    public function clearOrder()
     {
-        $this->orders = [];
+        $this->order = [];
     }
 
     /**
@@ -498,7 +498,7 @@ class Builder
     {
         $select = $this->getSqlObject()->select($this->getFrom());
         $select->columns($this->getColumns());
-        $select->order($this->buildOrders());
+        $select->order($this->buildOrder());
 
         if ($this->getJoins() !== null) {
             foreach($this->getJoins() as $join) {
@@ -586,14 +586,14 @@ class Builder
         return $sql->getSqlStringForSqlObject($select, $this->connection->getPlatform());
     }
 
-    protected function buildOrders()
+    protected function buildOrder()
     {
-        $orders = [];
-        foreach($this->getOrders() as $orderBy => $orderDirection) {
-            $orders[] = sprintf('%s %s', $orderBy, $orderDirection);
+        $order = [];
+        foreach($this->getOrder() as $orderBy => $orderDirection) {
+            $order[] = sprintf('%s %s', $orderBy, $orderDirection);
         }
 
-        return $orders;
+        return $order;
     }
 
     protected function buildConditionExpression($condition)

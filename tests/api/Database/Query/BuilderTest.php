@@ -11,15 +11,15 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
     public function testOrder()
     {
         $query = $this->createQueryBuilder();
-        $this->assertEmpty($query->getOrders());
+        $this->assertEmpty($query->getOrder());
 
         $query->orderBy('title');
-        $this->assertArrayHasKey('title', $query->getOrders());
+        $this->assertArrayHasKey('title', $query->getOrder());
 
         $query->orderBy('published_at', 'DESC');
-        $this->assertArrayHasKey('published_at', $query->getOrders());
+        $this->assertArrayHasKey('published_at', $query->getOrder());
 
-        $orders = $query->getOrders();
+        $orders = $query->getOrder();
         $this->assertCount(2, $orders);
 
         $this->assertSame('ASC', $orders['title']);
