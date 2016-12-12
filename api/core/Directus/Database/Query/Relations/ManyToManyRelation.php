@@ -3,7 +3,7 @@
 namespace Directus\Database\Query\Relations;
 
 use Directus\Database\Query\Builder;
-use Zend\Db\Sql\Expression;
+use Zend\Db\Sql\Predicate\Expression;
 
 class ManyToManyRelation extends Builder
 {
@@ -30,6 +30,15 @@ class ManyToManyRelation extends Builder
         $this->whereIn($this->columnRight, $values);
         $this->groupBy($this->columnLeft);
         $this->having(new Expression('COUNT(*) = ?', count($values)));
+
+        return $this;
+    }
+
+    public function has($count = 1)
+    {
+        $this->columns([$this->columnLeft]);
+        $this->groupBy($this->columnLeft);
+        $this->having(new Expression('COUNT(*) >= ?', (int) $count));
 
         return $this;
     }

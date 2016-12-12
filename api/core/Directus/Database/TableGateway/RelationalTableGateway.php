@@ -849,11 +849,13 @@ class RelationalTableGateway extends BaseTableGateway
 
             $arguments = [$column, $value];
             $relationship = TableSchema::getColumnRelationship($this->getTable(), $column);
-            if ($operator == 'all' && $relationship && in_array($relationship->getType(), ['ONETOMANY', 'MANYTOMANY'])) {
-                if (is_string($value)) {
+            if (in_array($operator, ['all', 'has']) && in_array($relationship->getType(), ['ONETOMANY', 'MANYTOMANY'])) {
+                if ($operator == 'all' && is_string($value)) {
                     $value = array_map(function ($item) {
                         return trim($item);
                     }, explode(',', $value));
+                } else if ($operator == 'has') {
+                    $value = (int) $value;
                 }
 
                 if ($relationship->getType() == 'ONETOMANY') {

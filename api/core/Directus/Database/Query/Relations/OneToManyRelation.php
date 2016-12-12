@@ -37,4 +37,15 @@ class OneToManyRelation extends Builder
 
         return $this;
     }
+
+    public function has($count = 1)
+    {
+        $this->columns([]);
+        $on = sprintf('%s.%s = %s.%s', $this->relatedTable, $this->column, $this->table, $this->columnRight);
+        $this->join($this->table, $on, [$this->columnRight], 'right');
+        $this->groupBy($this->columnRight);
+        $this->having(new Expression('COUNT(*) >= ?', (int) $count));
+
+        return $this;
+    }
 }

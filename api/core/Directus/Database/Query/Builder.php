@@ -323,6 +323,19 @@ class Builder
         return $this->whereIn($column, $relation);
     }
 
+    public function whereHas($column, $table, $columnLeft, $columnRight, $count = 1)
+    {
+        if ($columnLeft === null) {
+            $relation = new OneToManyRelation($this, $column, $table, $columnRight, $this->getFrom());
+        } else {
+            $relation = new ManyToManyRelation($this, $table, $columnLeft, $columnRight);
+        }
+
+        $relation->has($count);
+
+        return $this->whereIn($column, $relation);
+    }
+
     /**
      * Gets the query conditions
      *
