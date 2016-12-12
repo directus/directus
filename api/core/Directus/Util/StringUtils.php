@@ -177,6 +177,10 @@ class StringUtils
     public static function replacePlaceholder($string, $data = [], $placeHolderFormat = self::PLACEHOLDER_DOUBLE_MUSTACHE)
     {
         foreach ($data as $key => $value) {
+            if (is_bool($value)) {
+                $value = $value ? 'true' : 'false';
+            }
+
             $string = str_replace(sprintf($placeHolderFormat, $key), $value, $string);
         }
 
