@@ -3,6 +3,7 @@
 namespace Directus\Database\Query\Relations;
 
 use Directus\Database\Query\Builder;
+use Zend\Db\Sql\Expression;
 
 class ManyToManyRelation extends Builder
 {
@@ -13,7 +14,6 @@ class ManyToManyRelation extends Builder
 
     public function __construct(Builder $builder, $table, $columnLeft, $columnRight)
     {
-        // compact('table', 'columnLeft', 'operator', 'columnLeft', 'value'));
         parent::__construct($builder->getConnection());
 
         $this->parentBuilder = $builder;
@@ -22,5 +22,15 @@ class ManyToManyRelation extends Builder
         $this->columnRight = $columnRight;
 
         $this->from($table);
+    }
+
+    public function all(array $values)
+    {
+        $this->columns([$this->columnLeft]);
+        $this->whereIn($this->columnRight, $values);
+        $this->groupBy($this->columnLeft);
+        $this->having(new Expression('COUNT(*) = ?', count($values)));
+
+        return $this;
     }
 }

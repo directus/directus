@@ -841,22 +841,30 @@ class RelationalTableGateway extends BaseTableGateway
                 $not = ArrayUtils::get($operatorShorthand, 'not', !$value);
             }
 
-            $operator = StringUtils::underscoreToCamelCase(strtolower($operator), true);
-            $method = 'where' . ($not === true ? 'Not' : '') . $operator;
+            $operatorName = StringUtils::underscoreToCamelCase(strtolower($operator), true);
+            $method = 'where' . ($not === true ? 'Not' : '') . $operatorName;
             if (!method_exists($query, $method)) {
                 continue;
             }
 
             $arguments = [$column, $value];
             $relationship = TableSchema::getColumnRelationship($this->getTable(), $column);
-            if ($relationship) {
-                $relationshipType = $relationship->getType();
-                if ($relationshipType == 'MANYTOMANY') {
-                    if (is_string($value)) {
-                        $value = array_map(function($item) {
-                            return trim($item);
-                        }, explode(',', $value));
-                    }
+            if ($operator == 'all' && $relationship && in_array($relationship->getType(), ['ONETOMANY', 'MANYTOMANY'])) {
+                if (is_string($value)) {
+                    $value = array_map(function ($item) {
+                        return trim($item);
+                    }, explode(',', $value));
+                }
+
+                if ($relationship->getType() == 'ONETOMANY') {
+                    $arguments = [
+                        $this->primaryKeyFieldName,
+                        $relationship->getRelatedTable(),
+                        null,
+                        $relationship->getJunctionKeyRight(),
+                        $value
+                    ];
+                } else {
                     $arguments = [
                         $this->primaryKeyFieldName,
                         $relationship->getJunctionTable(),

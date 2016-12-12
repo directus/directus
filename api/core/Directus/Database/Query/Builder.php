@@ -3,6 +3,7 @@
 namespace Directus\Database\Query;
 
 use Directus\Database\Query\Relations\ManyToManyRelation;
+use Directus\Database\Query\Relations\OneToManyRelation;
 use Directus\Util\ArrayUtils;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\ResultSet\AbstractResultSet;
@@ -311,12 +312,13 @@ class Builder
 
     public function whereAll($column, $table, $columnLeft, $columnRight, $values)
     {
-        $relation = new ManyToManyRelation($this, $table, $columnLeft, $columnRight);
+        if ($columnLeft === null) {
+            $relation = new OneToManyRelation($this, $column, $table, $columnRight, $this->getFrom());
+        } else {
+            $relation = new ManyToManyRelation($this, $table, $columnLeft, $columnRight);
+        }
 
-        $relation->columns([$columnLeft]);
-        $relation->whereIn($columnRight, $values);
-        $relation->groupBy($columnLeft);
-        $relation->having(new Expression('COUNT(*) = ?', count($values)));
+        $relation->all($values);
 
         return $this->whereIn($column, $relation);
     }
