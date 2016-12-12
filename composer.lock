@@ -77,7 +77,7 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/directus/directus-database",
-                "reference": "4ea0fdbab41bb1c3175a0e2a2022671bd281edaf"
+                "reference": "b998f931f7ba9ee8dd46bb9cb901b928b46a3cf8"
             },
             "require": {
                 "directus/collection": "0.9.*",
@@ -106,7 +106,7 @@
                 "database",
                 "directus"
             ],
-            "time": "2016-12-12 03:02:10"
+            "time": "2016-12-12 07:26:53"
         },
         {
             "name": "directus/migrations",
