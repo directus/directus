@@ -40,10 +40,11 @@ function(app, _, Backbone, EntriesModel, Notification, __t, Utils, File) {
     },
 
     formatTitle: function(name) {
-      // @TODO: File could not have an extension
-      var extension = name.split('.').pop();
+      if (name.indexOf('.') >= 0) {
+        var extension = name.split('.').pop();
+        name = name.slice(0, name.indexOf('.' + extension));
+      }
 
-      name = name.slice(0, name.indexOf('.' + extension));
       name = name.replace(/[_-]/g, ' ');
 
       return name;
