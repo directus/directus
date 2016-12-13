@@ -43,7 +43,9 @@ class InstallerUtilsTest extends PHPUnit_Framework_TestCase
             'db_user' => 'root',
             'db_password' => 'password',
             'directus_path' => '/directus/',
-            'directus_email' => 'admin@directus.local'
+            'directus_email' => 'admin@directus.local',
+            'feedback_token' => 'token',
+            'feedback_login' => true
         ], __DIR__ . '/');
 
         $this->assertSame(sha1_file(__DIR__ . '/mock/config.sample.php'), sha1_file(__DIR__ . '/config.php'));

@@ -64,6 +64,11 @@ return [
         }
     ],
 
+    'feedback' => [
+        'token' => 'a-kind-of-unique-token',
+        'login' => true
+    ],
+
     // These tables will be excluded and won't be managed by Directus
     'tableBlacklist' => [],
 
