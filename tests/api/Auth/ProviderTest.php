@@ -17,6 +17,11 @@ class ProviderTest extends PHPUnit_Framework_TestCase
     protected $adapter;
 
     /**
+     * @var \Zend\Db\TableGateway\TableGateway
+     */
+    protected $table;
+
+    /**
      * @var \Directus\Session\Session;
      */
     protected $session;
@@ -32,8 +37,9 @@ class ProviderTest extends PHPUnit_Framework_TestCase
     {
         $this->adapter = get_mock_adapter($this);
         $this->session = get_array_session();
+        $this->table = new Zend\Db\TableGateway\TableGateway('directus_users', $this->adapter);
 
-        $this->provider = new Auth($this->adapter, $this->session, $this->prefix);
+        $this->provider = new Auth($this->table, $this->session, $this->prefix);
     }
 
     public function tearUp()
@@ -46,10 +52,9 @@ class ProviderTest extends PHPUnit_Framework_TestCase
      */
     public function testInvalidPrefix()
     {
-        $adapter = get_mock_adapter($this);
         $session = get_array_session();
 
-        $this->provider = new Auth($adapter, $session, 1);
+        $this->provider = new Auth($this->table, $session, 1);
     }
 
     public function testSessionKey()
@@ -88,6 +93,42 @@ class ProviderTest extends PHPUnit_Framework_TestCase
         $passwordHashed = $auth->hashPassword($password, $salt);
         $result = $auth->login(1, $passwordHashed, $salt, $password);
         $this->assertTrue($result);
+    }
+
+    public function testSuccessAuthenticationByUser()
+    {
+        $password = '123456';
+        $salt = 'salt';
+
+        $adapter = get_mock_adapter($this, ['result_data' => [
+            'password' => $this->provider->hashPassword($password, $salt)
+        ]]);
+
+        $table = new \Zend\Db\TableGateway\TableGateway('directus_users', $adapter);
+        $auth = new \Directus\Authentication\Provider($table, $this->session);
+
+        $user = $auth->getUserByAuthentication('email@mail.com', '123456');
+        $this->assertNotEquals($user, false);
+
+        $this->assertTrue($auth->verify('email@mail.com', '123456'));
+    }
+
+    public function testFailAuthenticationByUser()
+    {
+        $password = 'secret';
+        $salt = 'salt';
+
+        $adapter = get_mock_adapter($this, ['result_data' => [
+            'password' => $this->provider->hashPassword($password, $salt)
+        ]]);
+
+        $table = new \Zend\Db\TableGateway\TableGateway('directus_users', $adapter);
+        $auth = new \Directus\Authentication\Provider($table, $this->session);
+
+        $user = $auth->getUserByAuthentication('email@mail.com', '123456');
+        $this->assertFalse($user);
+
+        $this->assertFalse($auth->verify('email@mail.com', '123456'));
     }
 
     /**
@@ -145,9 +186,8 @@ class ProviderTest extends PHPUnit_Framework_TestCase
      */
     public function testGetUserInfoException()
     {
-        $adapter = get_mock_adapter($this);
         $session = get_array_session();
-        $provider = new Auth($adapter, $session, $this->prefix);
+        $provider = new Auth($this->table, $session, $this->prefix);
 
         $provider->getUserInfo();
     }
@@ -167,9 +207,10 @@ class ProviderTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($this->provider->loggedIn());
 
         $adapter = get_mock_adapter($this, ['result_count' => 1]);
+        $table = new \Zend\Db\TableGateway\TableGateway('directus_users', $adapter);
         $session = get_array_session();
 
-        $provider = new Auth($adapter, $session, $this->prefix);
+        $provider = new Auth($table, $session, $this->prefix);
 
         $session->set($this->prefix . $provider->getSessionKey(), [
             'id' => 1,
@@ -192,9 +233,8 @@ class ProviderTest extends PHPUnit_Framework_TestCase
      */
     public function testLogoutException()
     {
-        $adapter = get_mock_adapter($this);
         $session = get_array_session();
-        $provider = new Auth($adapter, $session, $this->prefix);
+        $provider = new Auth($this->table, $session, $this->prefix);
 
         $provider->logout();
     }

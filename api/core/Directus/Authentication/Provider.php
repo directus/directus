@@ -12,7 +12,6 @@ namespace Directus\Authentication;
 
 use Directus\Authentication\Exception\UserAlreadyLoggedInException;
 use Directus\Authentication\Exception\UserIsntLoggedInException;
-use Directus\Bootstrap;
 use Directus\Session\Session;
 use Directus\Util\ArrayUtils;
 use Directus\Util\StringUtils;
@@ -49,11 +48,11 @@ class Provider
     protected $SESSION_KEY = 'auth_user';
 
     /**
-     * Db Connection
+     * User TableGateway
      *
-     * @var Adapter
+     * @var TableGateway
      */
-    protected $dbConnection;
+    protected $table;
 
     /**
      * Session object
@@ -69,9 +68,9 @@ class Provider
      */
     protected $prefix;
 
-    public function __construct(Adapter $dbConnection, Session $session, $prefix = 'directus_')
+    public function __construct(TableGateway $table, Session $session, $prefix = 'directus_')
     {
-        $this->dbConnection = $dbConnection;
+        $this->table = $table;
         $this->session = $session;
         $this->prefix = $prefix;
 
@@ -144,10 +143,7 @@ class Provider
         $this->prependSessionKey();
         if ($this->needsReHashPassword($password, $salt, $passwordAttempt)) {
             $password = $this->hashPassword($passwordAttempt);
-            // TODO: Pass the user table instead
-            $zendDb = $this->dbConnection;
-            $usersTable = new TableGateway('directus_users', $zendDb);
-            $usersTable->update([
+            $this->table->update([
                 'password' => $password,
                 'access_token' => sha1($uid . StringUtils::random())
             ], ['id' => $uid]);
@@ -161,17 +157,15 @@ class Provider
         return false;
     }
 
-    public static function verify($email, $password)
+    public function verify($email, $password)
     {
-        return self::getUserByAuthentication($email, $password) !== false;
+        return $this->getUserByAuthentication($email, $password) !== false;
     }
 
     public function getUserByAuthentication($email, $password)
     {
         $this->prependSessionKey();
-        $zendDb = Bootstrap::get('zendDb');
-        $usersTable = new TableGateway('directus_users', $zendDb);
-        $user = $usersTable->select(['email' => $email])->current();
+        $user = $this->table->select(['email' => $email])->current();
         $correct = false;
 
         if ($user) {
@@ -227,12 +221,9 @@ class Provider
         }
 
         $this->authenticated = $isLoggedIn = false;
-        $ZendDb = $this->dbConnection;
         $session = $this->session->get($this->SESSION_KEY);
         if (is_array($session) && ArrayUtils::contains($session, ['id', 'access_token'])) {
-            $DirectusUsersTableGateway = new TableGateway('directus_users', $ZendDb);
-
-            $user = $DirectusUsersTableGateway->select([
+            $user = $this->table->select([
                 'id' => $session['id'],
                 'access_token' => $session['access_token']
             ]);
