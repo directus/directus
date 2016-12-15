@@ -255,7 +255,7 @@ $app->hook('slim.before.dispatch', function () use ($app, $requestNonceProvider,
     $permissions->setUserId($acl->getUserId());
     $permissions->setGroupId($acl->getGroupId());
     $permissions->setGroupPrivileges($acl->getGroupPrivileges());
-    $app->container->set('auth', new Auth());
+    $app->container->set('auth', Bootstrap::get('auth'));
 
     \Directus\Database\TableSchema::setAclInstance($permissions);
     \Directus\Database\TableSchema::setConfig(Bootstrap::get('config'));
