@@ -774,7 +774,7 @@ class RelationalTableGateway extends BaseTableGateway
 
         $depth = ArrayUtils::get($params, 'depth', null);
         if ($depth !== null) {
-            $results = $this->loadRelationalDataByDepth($results, (int)$depth);
+            $results = $this->loadRelationalDataByDepth($results, (int) $depth);
         }
 
         if (ArrayUtils::get($params, $this->primaryKeyFieldName)) {
@@ -1058,7 +1058,17 @@ class RelationalTableGateway extends BaseTableGateway
 
             $relatedEntries = [];
             foreach ($results as $row) {
-                $relatedEntries[$row[$relationalColumnName]][] = $row;
+                // Quick fix
+                // @NOTE: When fetching a column that also has another relational field
+                // the value is not a scalar value but an array with all the data associated to it.
+                // @TODO: Make this result a object so it can be easy to interact.
+                // $row->getId(); RowGateway perhaps?
+                $relationalColumnId = $row[$relationalColumnName];
+                if (is_array($relationalColumnId)) {
+                    $relationalColumnId = $relationalColumnId['data']['id'];
+                }
+
+                $relatedEntries[$relationalColumnId][] = $row;
             }
 
             // Replace foreign keys with foreign rows
