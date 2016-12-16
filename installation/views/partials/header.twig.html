@@ -1,0 +1,13 @@
+<div class="header">
+    <img src="{{ directus.root_path }}installation/assets/directus-logo.png">
+    <h1><?= __t($step->getTitle()); ?></h1>
+    <div class="breadcrumb">
+        <?php foreach ($steps as $index => $aStep): ?>
+            <?php if ($index > 0): ?>
+                <span class="separator">●</span>
+            <?php endif; ?>
+            <span class="<?= ($step->getName() === $aStep->getName()) ? 'current' : ''; ?>"><?= ($index); ?>
+                . <?= __t($aStep->getShortTitle()); ?></span>
+        <?php endforeach; ?>
+    </div>
+</div>
