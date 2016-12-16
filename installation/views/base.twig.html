@@ -12,9 +12,10 @@
 
             {% block content %}{% endblock %}
 
-            <button type="submit" class="button primary disabled"><?= __t('Continue'); ?></button>
-            <a href="{{ directus.root_path }}installation/index.php?step=<?= $current_step - 1; ?>"
-               class="no-button<?= ($current_step > 1) ? '' : ' hide' ?>"><?= __t('Go Back'); ?></a>
+            {# @todo: tranaslate 'Continue' and 'Go Back' text #}
+            <button type="submit" class="button primary disabled">{{ 'Continue' }}</button>
+            <a href="{{ directus.root_path }}installation/index.php?step={{ directus.current_step }}"
+               class="no-button{{ directus.current_step > 1 ? '' : ' hide' }}">{{ 'Go Back' }}</a>
         </form>
     </div>
 
