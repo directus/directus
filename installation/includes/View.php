@@ -28,14 +28,15 @@ class View
 
         $stepsData = new DataContainer($stepsData);
 
-        $output = static::getStepView($step, $state, ['state' => $state, 'step' => $step, 'data' => $stepsData]);
+        // We're ready to setup twig!
+        self::$view = static::setupTwigView($state);
 
-        $view_path = $state['settings']['views_path'];
-        echo static::getView($view_path . '/base.php', array_merge(
-                $state,
-                ['step' => $step, 'content' => $output]
-            )
-        );
+        // Render the step template with the data
+        echo static::getStepView($step, $state, [
+            'state' => $state,
+            'step' => $step,
+            'data' => $stepsData
+        ]);
 
         $step->getResponse()->clearAll();
     }
@@ -49,27 +50,27 @@ class View
      */
     public static function getStepView($step, $state, array $data = [])
     {
-        $view_path = $state['settings']['views_path'];
-        $data = array_merge($state, $data);
-        return static::getView(rtrim($view_path, '/') . '/' . $step->getViewName(), $data);
+        // @todo: Find a way so we can set data without a key
+        self::$view->set('directus', array_merge($state, $data));
+        return self::$view->render($step->getViewName());
     }
 
     /**
-     * Get the view rendered content
-     * @param  string $path view path
-     * @param  array $data Data to be injected in the views
-     * @return string       view output content
+     * Set up Twig extensions and template dirs
+     * @param  Array $state - Installation state array
+     * @return Object        Twig instance
      */
-    public static function getView($path, $data = [])
+    public static function setupTwigView($state)
     {
-        $render = function ($path, $data) {
-            extract($data);
-            include $path;
-        };
+        $view_path = $state['settings']['views_path'];
 
-        ob_start();
-        $render($path, $data);
+        // Add twig extensions
+        Twig::$twigExtensions = [
+            new DirectusTwigExtension()
+        ];
 
-        return ob_get_clean();
+        // Add installation view path to twig template dirs
+        Twig::$twigTemplateDirs = $view_path;
+        return new Twig();
     }
 }
