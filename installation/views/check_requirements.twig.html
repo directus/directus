@@ -1,4 +1,9 @@
+{% extends 'base.twig.html' %}
+
+{% block content %}
 <div class="container">
-    <?php include __DIR__ . '/partials/errors.php'; ?>
-    <p><?= __t('Refresh this page when the problems above are resolved.'); ?></p>
+    {% include 'partials/errors.twig.html' %}
+    {# @todo: Translate 'Refresh...' text #}
+    <p>{{ 'Refresh this page when the problems above are resolved.' }}</p>
 </div>
+{% endblock %}
