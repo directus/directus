@@ -2,10 +2,7 @@
 
     <div class="errors">
         {% for message in directus.step.getResponse.getErrors() %}
-
-            {# @todo: translate 'message' text #}
             <p>{{ message }}</p>
-
         {% endfor %}
     </div>
 

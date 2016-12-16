@@ -12,7 +12,6 @@
 
             {% block content %}{% endblock %}
 
-            {# @todo: tranaslate 'Continue' and 'Go Back' text #}
             <button type="submit" class="button primary disabled">{{ 'Continue' }}</button>
             <a href="{{ directus.root_path }}installation/index.php?step={{ directus.current_step }}"
                class="no-button{{ directus.current_step > 1 ? '' : ' hide' }}">{{ 'Go Back' }}</a>
