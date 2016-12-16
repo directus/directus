@@ -81,12 +81,12 @@ abstract class AbstractStep implements StepInterface
 
     public function getTitle()
     {
-        return $this->title;
+        return __t($this->title);
     }
 
     public function getShortTitle()
     {
-        return $this->shortTitle;
+        return __t($this->shortTitle);
     }
 
     public function getViewName()
