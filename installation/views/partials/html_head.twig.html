@@ -16,6 +16,6 @@
     <link rel="stylesheet"
           href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,300italic,400italic,500italic"
           type="text/css">
-    <link rel="stylesheet" href="{{ directus.root_path }}installation/assets/install.css?v=<?= date('Ymd', time()); ?>">
+    <link rel="stylesheet" href="{{ directus.root_path }}installation/assets/install.css?v={{ "now"|date('Ymd') }}">
 </head>
 {% endblock %}
