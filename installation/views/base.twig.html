@@ -8,7 +8,7 @@
     {% include 'partials/header.twig.html' %}
 
     <div class="container">
-        <form method="post" action="{{ directus.root_path }}installation/index.php?step={{ current_step }}">
+        <form method="post" action="{{ directus.root_path }}installation/index.php?step={{ directus.current_step }}">
 
             {% block content %}{% endblock %}
 
