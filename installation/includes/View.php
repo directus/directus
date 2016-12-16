@@ -2,8 +2,16 @@
 
 namespace Directus\Installation;
 
+use Directus\View\Twig\DirectusTwigExtension;
+use Slim\Extras\Views\Twig;
+
 class View
 {
+    /**
+     * @var We use this to save a twig instance
+     */
+    private static $view;
+
     /**
      * Display a step view
      * @param $step
