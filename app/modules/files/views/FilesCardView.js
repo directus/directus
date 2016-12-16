@@ -31,13 +31,13 @@ function(app, Backbone, Widgets, moment) {
     serialize: function() {
       var rows = this.collection.map(function(model) {
         var statusValue = model.get(app.statusMapping.status_name);
-
+        var title = model.get('title') || '';
         var data = {
           "id": model.get('id'),
           "inactive": (statusValue !== app.statusMapping.active_num),
           "cid": model.cid,
-          'title': model.get('title'),
-          'title_short': (model.get('title').length > 35)? model.get('title').substr(0,32) + "..." : model.get('title'),
+          'title': title,
+          'title_short': (title.length > 35)? title.substr(0,32) + "..." : title,
           'date_uploaded': moment(model.get('date_uploaded')).fromNow(),
           'size': model.get('size'),
           'type': (model.has('type')) ? model.get('type').split('/').pop() : '',

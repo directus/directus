@@ -114,5 +114,10 @@ class StringUtilsTest extends PHPUnit_Framework_TestCase
 
         $string = 'Took a flight from %{from_airport} to %{to_airport}';
         $this->assertEquals($expected, StringUtils::replacePlaceholder($string, $data, StringUtils::PLACEHOLDER_PERCENTAGE_MUSTACHE));
+
+        $string = 'Paid: {{true}},  overdue: {{false}}.';
+        $data = ['true' => true, 'false' => false];
+        $expected = 'Paid: true,  overdue: false.';
+        $this->assertEquals($expected, StringUtils::replacePlaceholder($string, $data, StringUtils::PLACEHOLDER_DOUBLE_MUSTACHE));
     }
 }

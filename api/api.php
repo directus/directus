@@ -610,6 +610,16 @@ $app->post("/$v/auth/login/?", function () use ($app, $ZendDb, $acl, $requestNon
         $updateResult = $Users->update($set, $where);
         $Activity = new DirectusActivityTableGateway($acl, $ZendDb);
         $Activity->recordLogin($user['id']);
+
+        // =============================================================================
+        // Sends a unique random token to help us understand approximately how many instances of Directus exist.
+        // This can be disabled in your config file.
+        // =============================================================================
+        $config = Bootstrap::get('config');
+        $feedbackConfig = ArrayUtils::get($config, 'feedback', []);
+        if (ArrayUtils::get($feedbackConfig, 'login', false)) {
+            feedback_login_ping(ArrayUtils::get($feedbackConfig, 'token', ''));
+        }
     }
     JsonView::render([
         'success' => true,

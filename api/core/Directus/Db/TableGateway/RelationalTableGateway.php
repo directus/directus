@@ -982,11 +982,7 @@ class RelationalTableGateway extends AclAwareTableGateway
                     return $table_entries;
                 }
 
-                if (is_null($parentField)) {
-                    $parentField = $foreign_id_column;
-                }
-
-                $this->addToManyCallStack($level, $parentField, $foreign_table_name);
+                $this->addToManyCallStack($level, !is_null($parentField) ? $parentField : $foreign_id_column, $foreign_table_name);
 
                 // Aggregate all foreign keys for this relationship (for each row, yield the specified foreign id)
                 $yield = function ($row) use ($foreign_id_column, $table_entries) {
@@ -1025,7 +1021,12 @@ class RelationalTableGateway extends AclAwareTableGateway
                 $schemaArray = TableSchema::getSchemaArray($foreign_table_name);
 
                 // Eager-load related ManyToOne records
-                $foreign_table = $this->loadManyToOneRelationships($schemaArray, $foreign_table, $parentField, $level+1);
+                $foreign_table = $this->loadManyToOneRelationships(
+                    $schemaArray,
+                    $foreign_table,
+                    !is_null($parentField) ? $parentField : $foreign_id_column,
+                    $level+1
+                );
 
                 // Convert dates into ISO 8601 Format
                 $foreign_table = $this->convertDates($foreign_table, $schemaArray);

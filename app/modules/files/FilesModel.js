@@ -40,9 +40,13 @@ function(app, _, Backbone, EntriesModel, Notification, __t, Utils, File) {
     },
 
     formatTitle: function(name) {
-      var extension = name.split('.').pop().toLowerCase();
-      var name = name.slice(0, name.indexOf('.' + extension));
+      if (name.indexOf('.') >= 0) {
+        var extension = name.split('.').pop();
+        name = name.slice(0, name.indexOf('.' + extension));
+      }
+
       name = name.replace(/[_-]/g, ' ');
+
       return name;
     },
 
