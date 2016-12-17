@@ -259,11 +259,19 @@ $app->hook('slim.after', function () use ($app) {
 
 $DirectusUsersTableGateway = new DirectusUsersTableGateway($acl, $ZendDb);
 Auth::setUserCacheRefreshProvider(function ($userId) use ($DirectusUsersTableGateway) {
+    static $users = [];
     $cacheFn = function () use ($userId, $DirectusUsersTableGateway) {
         return $DirectusUsersTableGateway->find($userId);
     };
+    if (isset($users[$userId])) {
+        return $users[$userId];
+    }
+
     $cacheKey = MemcacheProvider::getKeyDirectusUserFind($userId);
     $user = $DirectusUsersTableGateway->memcache->getOrCache($cacheKey, $cacheFn, 10800);
+
+    $users[$userId] = $user;
+
     return $user;
 });
 
