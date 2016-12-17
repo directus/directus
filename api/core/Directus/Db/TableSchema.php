@@ -220,7 +220,7 @@ class TableSchema
             return [];
         }
 
-        $result = SchemaManager::getColumnsNames($table);
+        $result = static::getColumnsName($table);
 
         $columns = [];
         $primaryKeyFieldName = self::getTablePrimaryKey($table);
@@ -242,6 +242,22 @@ class TableSchema
         }
 
         return $columns;
+    }
+
+    public static function getColumnsName($table)
+    {
+        if (static::$_schemas[$table]) {
+            $columns = static::$_schemas[$table];
+        } else {
+            $columns = SchemaManager::getColumnsNames($table);
+        }
+
+        $names = [];
+        foreach($columns as $column) {
+            $names[] = $column['column_name'];
+        }
+
+        return $names;
     }
 
     public static function hasTableColumn($table, $column, $includeAlias = false)
