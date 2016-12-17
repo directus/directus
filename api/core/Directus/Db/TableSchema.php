@@ -10,6 +10,7 @@ use Directus\Db\TableGateway\RelationalTableGateway;
 use Directus\MemcacheProvider;
 use Directus\Util\ArrayUtils;
 use Directus\Util\DateUtils;
+use Zend\Db\Sql\Predicate\In;
 use Zend\Db\Sql\Predicate\NotIn;
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Sql;
@@ -64,6 +65,7 @@ class TableSchema
     }
 
     protected static $_schemas = [];
+    protected static $_schemasOptions = [];
     protected static $_primaryKeys = [];
 
     /**
@@ -413,12 +415,25 @@ class TableSchema
      */
     protected static function loadSchema($tbl_name, $params = null)
     {
+        if (isset(static::$_schemas[$tbl_name])) {
+            return static::$_schemas[$tbl_name];
+        }
 
         // Omit columns which are on this table's read field blacklist for the group of
         // the currently authenticated user.
         $acl = Bootstrap::get('acl');
 
         $columns = SchemaManager::getColumns($tbl_name, $params);
+        $uisName = array_map(function($column) {
+            return $column['ui'];
+        }, $columns);
+
+        $uisName = array_filter($uisName);
+        $columnsOptions = [];
+        if ($uisName) {
+            $columnsOptions = static::getTableUIOptions($tbl_name, $uisName);
+        }
+
         if (!self::canGroupViewTable($tbl_name)) {
             // return [];
             return false;
@@ -472,8 +487,9 @@ class TableSchema
                 $row['hidden'] = true;
             }
 
-            if (array_key_exists('ui', $row)) {
-                $options = self::getUIOptions($tbl_name, $row['id'], $row['ui']);
+            if (array_key_exists('ui', $row) && array_key_exists($row['id'], $columnsOptions)) {
+                $options = $columnsOptions[$row['id']];
+                //self::getUIOptions($tbl_name, $row['id'], $row['ui']);
             }
 
             if (isset($options)) {
@@ -511,6 +527,8 @@ class TableSchema
         if (count($return) == 1) {
             $return = $return[0];
         }
+
+        static::$_schemas[$tbl_name] = $return;
 
         return $return;
     }
@@ -777,9 +795,15 @@ class TableSchema
      * @param $tbl_name
      * @param $col_name
      * @param $datatype_name
+     *
+     * @return array
      */
     public static function getUIOptions($tbl_name, $col_name, $datatype_name)
     {
+        if (isset(static::$_schemasOptions[$tbl_name][$col_name])) {
+            return static::$_schemasOptions[$tbl_name][$col_name];
+        }
+
         $result = [];
         $item = [];
         $zendDb = Bootstrap::get('zendDb');
@@ -823,10 +847,64 @@ class TableSchema
         }
 
         if (sizeof($result)) {
+            static::$_schemasOptions[$tbl_name][$col_name] = $result[0];
             return $result[0];
         }
 
         return [];
     }
 
+    /**
+     *  Get Table columns options
+     *
+     * @param string $tbl_name
+     * @param array $columnsUis
+     *
+     * @return array
+     */
+    public static function getTableUIOptions($tbl_name, array $columnsUis = [])
+    {
+        if (isset(static::$_schemasOptions[$tbl_name])) {
+            return static::$_schemasOptions[$tbl_name];
+        }
+
+        if (!$columnsUis) {
+            static::$_schemasOptions[$tbl_name] = [];
+            return [];
+        }
+
+        $zendDb = Bootstrap::get('zendDb');
+        $select = new Select();
+        $select->columns([
+            'id' => 'ui_name',
+            'column_name',
+            'name',
+            'value'
+        ]);
+        $select->from('directus_ui');
+        $select->where([
+            'table_name' => $tbl_name,
+            new In('ui_name', $columnsUis)
+        ]);
+        $select->order('ui_name');
+        $sql = new Sql($zendDb);
+        $query = $sql->getSqlStringForSqlObject($select, $zendDb->getPlatform());
+        //echo $query;
+        $sql = new Sql($zendDb);
+        $statement = $sql->prepareStatementForSqlObject($select);
+        $rows = $statement->execute();
+
+        $result = [];
+        foreach ($rows as $row) {
+            if (!isset($result[$row['column_name']])) {
+                $result[$row['column_name']] = [];
+            }
+
+            $result[$row['column_name']][$row['name']] = $row['value'];
+        };
+
+        static::$_schemasOptions[$tbl_name] = $result;
+
+        return $result;
+    }
 }
