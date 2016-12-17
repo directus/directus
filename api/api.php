@@ -60,10 +60,6 @@ use Directus\Util\StringUtils;
 use Directus\View\ExceptionView;
 use Directus\View\JsonView;
 
-// use Directus\Files;
-// use Directus\Files\Upload;
-// use Directus\Db\TableGateway\DirectusIPWhitelist;
-
 // API Version shortcut for routes:
 $v = API_VERSION;
 
@@ -97,7 +93,18 @@ $app->config('debug', false);
 $exceptionView = new ExceptionView();
 $exceptionHandler = function (\Exception $exception) use ($app, $exceptionView) {
     $app->emitter->run('application.error', [$exception]);
-    $exceptionView->exceptionHandler($app, $exception);
+    $config = $app->container->get('config');
+    if (ArrayUtils::get($config, 'app.debug', true)) {
+        $exceptionView->exceptionHandler($app, $exception);
+    } else {
+        $response = $app->response();
+        $response->header('Content-type', 'application/json');
+        JsonView::render([
+            'error' => [
+                'message' => $exception->getMessage()
+            ]
+        ]);
+    }
 };
 $app->error($exceptionHandler);
 // // Catch runtime erros etc. as well
@@ -125,12 +132,12 @@ $authAndNonceRouteWhitelist = [
  */
 
 /**
- * @var \Zend\Db\Adapter
+ * @var \Zend\Db\Adapter\Adapter
  */
 $ZendDb = Bootstrap::get('ZendDb');
 
 /**
- * @var \Directus\Acl
+ * @var \Directus\Acl\Acl
  */
 $acl = Bootstrap::get('acl');
 
@@ -240,6 +247,19 @@ $app->hook('slim.before.dispatch', function () use ($app, $requestNonceProvider,
         $nonce_options = $requestNonceProvider->getOptions();
         $response[$nonce_options['nonce_response_header']] = implode($newNonces, ',');
     }
+
+    $permissions = $app->container->get('acl');
+    $permissions->setUserId($acl->getUserId());
+    $permissions->setGroupId($acl->getGroupId());
+    $permissions->setGroupPrivileges($acl->getGroupPrivileges());
+    $app->container->set('auth', new Auth());
+
+    \Directus\Database\TableSchema::setAclInstance($permissions);
+    \Directus\Database\TableSchema::setConnectionInstance($ZendDb);
+    \Directus\Database\TableSchema::setConfig(Bootstrap::get('config'));
+    \Directus\Database\TableGateway\BaseTableGateway::setHookEmitter($app->container->get('emitter'));
+
+    $app->container->set('schemaManager', Bootstrap::get('schemaManager'));
 });
 
 $app->hook('slim.after', function () use ($app) {
@@ -334,6 +354,162 @@ if (isset($_REQUEST['run_extension']) && $_REQUEST['run_extension']) {
     }
     return JsonView::render($responseData);
 }
+
+$app->group('/1.1', function() use($app) {
+    // =============================================================================
+    // Authentication
+    // =============================================================================
+    $app->post('/auth/request-token/?', '\Directus\API\Routes\A1\Auth:requestToken')
+        ->name('request_token');
+    $app->post('/auth/login/?', '\Directus\API\Routes\A1\Auth:login')
+        ->name('auth_login');
+    $app->get('/auth/logout(:/inactive)/?', '\Directus\API\Routes\A1\Auth:logout')
+        ->name('auth_logout');
+    $app->get('/auth/reset-password/:token/?', '\Directus\API\Routes\A1\Auth:resetPassword')
+        ->name('auth_reset_password');
+    $app->post('/auth/forgot-password/?', '\Directus\API\Routes\A1\Auth:forgotPassword')
+        ->name('auth_forgot_password');
+    $app->get('/auth/permissions/?', '\Directus\API\Routes\A1\Auth:permissions')
+        ->name('auth_permissions');
+
+    // =============================================================================
+    // UTILS
+    // =============================================================================
+    $app->post('/hash/?', '\Directus\API\Routes\A1\Utils:hash')->name('utils_hash');
+    $app->post('/random/?', '\Directus\API\Routes\A1\Utils:randomString')->name('utils_random');
+
+    // =============================================================================
+    // Privileges
+    // =============================================================================
+    $app->get('/privileges/:groupId(/:tableName)/?', '\Directus\API\Routes\A1\Privileges:showPrivileges');
+    $app->post('/privileges/:groupId/?', '\Directus\API\Routes\A1\Privileges:createPrivileges');
+    $app->put('/privileges/:groupId/:privilegeId/?', '\Directus\API\Routes\A1\Privileges:updatePrivileges');
+
+    // =============================================================================
+    // ENTRIES COLLECTION
+    // =============================================================================
+    $app->map('/tables/:table/rows/?', '\Directus\API\Routes\A1\Entries:rows')
+        ->via('GET', 'POST', 'PUT');
+    $app->map('/tables/:table/rows/:id/?', '\Directus\API\Routes\A1\Entries:row')
+        ->via('DELETE', 'GET', 'PUT', 'PATCH');
+    $app->map('/tables/:table/rows/bulk/?', '\Directus\API\Routes\A1\Entries:rowsBulk')
+        ->via('POST', 'PATCH', 'PUT', 'DELETE');
+    $app->get('/tables/:table/typeahead/?', '\Directus\API\Routes\A1\Entries:typeAhead');
+
+    // =============================================================================
+    // ACTIVITY
+    // =============================================================================
+    $app->get('/activity/?', '\Directus\API\Routes\A1\Activity:activity');
+
+    // =============================================================================
+    // COLUMNS
+    // =============================================================================
+    // GET all table columns, or POST one new table column
+    $app->map('/tables/:table/columns/?', '\Directus\API\Routes\A1\Table:columns')
+        ->via('GET', 'POST');
+    // GET or PUT one column
+    $app->map('/tables/:table/columns/:column/?', '\Directus\API\Routes\A1\Table:column')
+        ->via('GET', 'PUT', 'DELETE');
+    $app->post('/tables/:table/columns/:column/?', '\Directus\API\Routes\A1\Table:postColumn');
+
+    // =============================================================================
+    // GROUPS
+    // =============================================================================
+    $app->map('/groups/?', '\Directus\API\Routes\A1\Groups:groups')
+        ->via('GET', 'POST');
+    $app->get('/groups/:id/?', '\Directus\API\Routes\A1\Groups:group');
+
+    // =============================================================================
+    // FILES
+    // =============================================================================
+    $app->map('/files(/:id)/?', '\Directus\API\Routes\A1\Files:files')
+        ->via('GET', 'PATCH', 'POST', 'PUT');
+
+    // =============================================================================
+    // UPLOAD
+    // =============================================================================
+    $app->post('/upload/?', '\Directus\API\Routes\A1\Files:upload');
+    $app->post('/upload/link/?', '\Directus\API\Routes\A1\Files:uploadLink');
+
+    // =============================================================================
+    // PREFERENCES
+    // =============================================================================
+    $app->map('/tables/:table/preferences/?', '\Directus\API\Routes\A1\Preferences:mapPreferences')
+        ->via('GET', 'POST', 'PUT', 'DELETE');
+
+    $app->get('/preferences/:table', '\Directus\API\Routes\A1\Preferences:getPreferences');
+
+    // =============================================================================
+    // BOOKMARKS
+    // =============================================================================
+    $app->get('/bookmarks/self/?', '\Directus\API\Routes\A1\Bookmarks:selfBookmarks');
+    $app->get('/bookmarks/user/:id?', '\Directus\API\Routes\A1\Bookmarks:userBookmarks');
+    $app->get('/bookmarks/?', '\Directus\API\Routes\A1\Bookmarks:allBookmarks');
+    $app->map('/bookmarks(/:id)/?', '\Directus\API\Routes\A1\Bookmarks:bookmarks')
+        ->via('POST', 'PUT', 'DELETE');
+
+    // =============================================================================
+    // REVISIONS
+    // =============================================================================
+    $app->get('/tables/:table/rows/:id/revisions/?', '\Directus\API\Routes\A1\Revisions:revisions');
+
+    // =============================================================================
+    // SETTINGS
+    // =============================================================================
+    $app->map('/settings(/:id)/?', '\Directus\API\Routes\A1\Settings:settings')
+        ->via('GET', 'POST', 'PUT');
+
+    // =============================================================================
+    // TABLES
+    // =============================================================================
+    $app->get('/tables/?', '\Directus\API\Routes\A1\Table:names');
+    $app->post('/tables/?', '\Directus\API\Routes\A1\Table:create')
+        ->name('table_create');
+    // GET and PUT table details
+    $app->map('/tables/:table/?', '\Directus\API\Routes\A1\Table:info')
+        ->via('GET', 'PUT', 'DELETE')
+        ->name('table_meta');
+
+    // =============================================================================
+    // COLUMN UI
+    // =============================================================================
+    $app->map('/tables/:table/columns/:column/:ui/?', '\Directus\API\Routes\A1\Table:columnUi')
+        ->via('GET', 'POST', 'PUT');
+
+    // =============================================================================
+    // MESSAGES
+    // =============================================================================
+    $app->get('/messages/rows/?', '\Directus\API\Routes\A1\Messages:rows');
+    $app->get('/messages/user/:id/?', '\Directus\API\Routes\A1\Messages:rows');
+    $app->get('/messages/self/?', '\Directus\API\Routes\A1\Messages:rows');
+    $app->get('/messages/rows/:id/?', '\Directus\API\Routes\A1\Messages:row');
+    // @TODO: this will perform an actual "get message by id"
+    // $app->get('/messages/:id/?', '\Directus\API\Routes\A1\Messages:row');
+    $app->map('/messages/rows/:id/?', '\Directus\API\Routes\A1\Messages:patchRow')
+        ->via('PATCH');
+    $app->post('/messages/rows/?', '\Directus\API\Routes\A1\Messages:postRows');
+    $app->get('/messages/recipients/?', '\Directus\API\Routes\A1\Messages:recipients');
+    $app->post('/comments/?', '\Directus\API\Routes\A1\Messages:comments');
+
+    // =============================================================================
+    // USERS
+    // =============================================================================
+    $app->map('/users/?', '\Directus\API\Routes\A1\Users:all')
+        ->via('GET', 'POST', 'PUT');
+    $app->map('/users/:id/?', '\Directus\API\Routes\A1\Users:get')
+        ->via('DELETE', 'GET', 'PUT', 'PATCH');
+
+    // =============================================================================
+    // DEBUG
+    // =============================================================================
+    if ('production' !== DIRECTUS_ENV) {
+        $app->get('/auth/session/?', '\Directus\API\Routes\A1\Auth:session')
+            ->name('auth_session');
+        $app->get('/auth/clear-session/?', '\Directus\API\Routes\A1\Auth:clearSession')
+            ->name('auth_clear_session');
+    }
+});
+
 
 /**
  * Slim Routes
@@ -717,40 +893,28 @@ $app->map("/$v/privileges/:groupId/:privilegeId", function ($groupId, $privilege
  */
 
 $app->map("/$v/tables/:table/rows/?", function ($table) use ($acl, $ZendDb, $params, $requestPayload, $app) {
-    $currentUser = Auth::getUserInfo();
-    $id = null;
-    $params['table_name'] = $table;
-    $TableGateway = new TableGateway($acl, $table, $ZendDb);
+    $entriesService = new \Directus\Services\EntriesService($app);
+    $payload = $app->request()->post();
+    $params = $app->request()->get();
 
-    // any CREATE requests should md5 the email
-    if ('directus_users' === $table &&
-        in_array($app->request()->getMethod(), ['POST']) &&
-        array_key_exists('email', $requestPayload)
-    ) {
-        $avatar = DirectusUsersTableGateway::get_avatar($requestPayload['email']);
-        $requestPayload['avatar'] = $avatar;
-    }
+    // GET all table entries
+    $tableGateway = new TableGateway($acl, $table, $ZendDb);
 
     switch ($app->request()->getMethod()) {
-        // POST one new table entry
         case 'POST':
-            $activityLoggingEnabled = !(isset($_GET['skip_activity_log']) && (1 == $_GET['skip_activity_log']));
-            $activityMode = $activityLoggingEnabled ? TableGateway::ACTIVITY_ENTRY_MODE_PARENT : TableGateway::ACTIVITY_ENTRY_MODE_DISABLED;
-            $newRecord = $TableGateway->manageRecordUpdate($table, $requestPayload, $activityMode);
-            $params[$TableGateway->primaryKeyFieldName] = $newRecord[$TableGateway->primaryKeyFieldName];
+            $newRecord = $entriesService->createEntry($table, $payload, $params);
+            $params[$tableGateway->primaryKeyFieldName] = $newRecord[$tableGateway->primaryKeyFieldName];
             break;
-        // PUT a change set of table entries
         case 'PUT':
-            if (!is_numeric_array($requestPayload)) {
-                $params[$TableGateway->primaryKeyFieldName] = $requestPayload[$TableGateway->primaryKeyFieldName];
-                $requestPayload = [$requestPayload];
+            if (!is_numeric_array($payload)) {
+                $params[$tableGateway->primaryKeyFieldName] = $payload[$tableGateway->primaryKeyFieldName];
+                $payload = [$payload];
             }
-            $TableGateway->updateCollection($requestPayload);
+            $tableGateway->updateCollection($payload);
             break;
     }
-    // GET all table entries
-    $Table = new TableGateway($acl, $table, $ZendDb);
-    $entries = $Table->getEntries($params);
+
+    $entries = $tableGateway->getEntries($params);
     JsonView::render($entries);
 })->via('GET', 'POST', 'PUT');
 
@@ -1076,7 +1240,7 @@ $app->map("/$v/files(/:id)/?", function ($id = null) use ($app, $ZendDb, $acl, $
 
             // When the file is uploaded there's not a data key
             if (array_key_exists('data', $requestPayload)) {
-                $Files = new \Directus\Files\Files();
+                $Files = $app->container->get('files');
                 if (!array_key_exists('type', $requestPayload) || strpos($requestPayload['type'], 'embed/') === 0) {
                     $recordData = $Files->saveEmbedData($requestPayload);
                 } else {
@@ -1360,7 +1524,7 @@ $app->map("/$v/tables/:table/?", function ($table) use ($ZendDb, $acl, $params, 
 $app->post("/$v/upload/?", function () use ($params, $requestPayload, $app, $acl, $ZendDb) {
     // $Transfer = new Files\Transfer();
     // $Storage = new Files\Storage\Storage();
-    $Files = new Directus\Files\Files();
+    $Files = Bootstrap::get('app')->container->get('files');
     $result = [];
     foreach ($_FILES as $file) {
         $result[] = $Files->upload($file);
@@ -1369,7 +1533,7 @@ $app->post("/$v/upload/?", function () use ($params, $requestPayload, $app, $acl
 });
 
 $app->post("/$v/upload/link/?", function () use ($params, $requestPayload, $app, $acl, $ZendDb) {
-    $Files = new \Directus\Files\Files();
+    $Files = Bootstrap::get('app')->container->get('files');
     $result = [
         'message' => __t('invalid_unsupported_url'),
         'success' => false

@@ -92,7 +92,7 @@ class DirectusBookmarksTableGateway extends AclAwareTableGateway
             $bookmarks = $bookmarks->toArray();
         }
 
-        return $bookmarks;
+        return $this->parseRecord($bookmarks);
     }
 
     public function fetchAllByUser($user_id)

@@ -4,15 +4,31 @@ namespace Directus\Files;
 
 use Directus\Bootstrap;
 use Directus\Db\TableGateway\DirectusSettingsTableGateway;
+use Directus\Filesystem\Filesystem;
 use Directus\Hook\Hook;
 use Directus\Util\DateUtils;
 use Directus\Util\Formatting;
 
 class Files
 {
+    /**
+     * @var array
+     */
     private $config = [];
+
+    /**
+     * @var array
+     */
     private $filesSettings = [];
+
+    /**
+     * @var Filesystem
+     */
     private $filesystem = null;
+
+    /**
+     * @var array
+     */
     private $defaults = [
         'caption' => '',
         'tags' => '',
@@ -26,20 +42,12 @@ class Files
      */
     protected $emitter;
 
-    public function __construct()
+    public function __construct($filesystem, $config, $settings, $emitter)
     {
-        $acl = Bootstrap::get('acl');
-        $adapter = Bootstrap::get('ZendDb');
-        $this->filesystem = Bootstrap::get('filesystem');
-        $config = Bootstrap::get('config');
-        $this->config = $config['filesystem'] ?: [];
-        $this->emitter = Bootstrap::get('hookEmitter');
-
-        // Fetch files settings
-        $Settings = new DirectusSettingsTableGateway($acl, $adapter);
-        $this->filesSettings = $Settings->fetchCollection('files', [
-            'thumbnail_size', 'thumbnail_quality', 'thumbnail_crop_enabled'
-        ]);
+        $this->filesystem = $filesystem;
+        $this->config = $config;
+        $this->emitter = $emitter;
+        $this->filesSettings = $settings;
     }
 
     // @TODO: remove exists() and rename() method

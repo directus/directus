@@ -28,6 +28,21 @@ class StringUtils
         return false;
     }
 
+    /**
+     * Check whether or not a given string contains a given substring.
+     *
+     * Alias of StringUtils::contains
+     *
+     * @param string $haystack
+     * @param string|array $needles
+     *
+     * @return bool
+     */
+    public static function has($haystack, $needles)
+    {
+        return static::contains($haystack, $needles);
+    }
+
     // Source: http://stackoverflow.com/a/10473026/1772076
     /**
      * Return whether or not a string start with a specific string
