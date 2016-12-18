@@ -146,6 +146,15 @@ interface SchemaInterface
     public function getUIOptions(Column $column);
 
     /**
+     * Get the UI options of the columns in the given table
+     *
+     * @param $tableName
+     *
+     * @return ResultSet
+     */
+    public function getTableUIOptions($tableName);
+
+    /**
      * Gets the given column UI name
      *
      * @param $column

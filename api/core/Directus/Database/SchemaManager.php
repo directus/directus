@@ -275,10 +275,12 @@ class SchemaManager
             }
 
             $this->data['columns'][$tableName] = $columnsSchema;
-        }
 
-        foreach($columnsSchema as $column) {
-            $column->setUIOptions($this->getColumnUIOptions($tableName, $column));
+            $columnsUIOptions = $this->getTableUIOptions($tableName);
+            foreach($columnsSchema as $column) {
+                $options = ArrayUtils::get($columnsUIOptions, $column->getName(), []);
+                $column->setUIOptions($options);
+            }
         }
 
         return $columnsSchema;
@@ -307,6 +309,22 @@ class SchemaManager
         }
 
         return $columnOptions;
+    }
+
+    public function getTableUIOptions($tableName)
+    {
+        $result = [];
+        $rows = $this->source->getTableUIOptions($tableName);
+
+        foreach ($rows as $row) {
+            if (!isset($result[$row['column_name']])) {
+                $result[$row['column_name']] = [];
+            }
+
+            $result[$row['column_name']][$row['name']] = $row['value'];
+        };
+
+        return $result;
     }
 
     public function getUIOptions(Column $column)
