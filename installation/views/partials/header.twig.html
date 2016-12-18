@@ -6,7 +6,7 @@
             {% if loop.index0 > 0 %}
                 <span class="separator">●</span>
             {% endif %}
-            <span class="{{ step.getName() == step.getName() ? 'current' : '' }}">{{ loop.index0 }}
+            <span class="{{ directus.step.getName() == step.getName() ? 'current' : '' }}">{{ loop.index0 }}
                 . {{ step.getShortTitle() }}</span>
         {% endfor %}
     </div>
