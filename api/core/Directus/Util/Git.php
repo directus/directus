@@ -19,12 +19,12 @@ class Git
                 $branchPath = $expectedGitDirectory . "/$branchPath";
                 return trim(file_get_contents($branchPath));
             }
-        } // Submodule
-        elseif (is_file($expectedGitDirectory)) {
-            $modulePath = explode('gitdir:', file_get_contents($expectedGitDirectory));
-            $modulePath = trim(array_pop($modulePath));
-            $modulePath = dirname($expectedGitDirectory) . "/$modulePath";
-            return self::getCloneHash($modulePath);
+        //} // Submodule
+//        elseif (is_file($expectedGitDirectory)) {
+//            $modulePath = explode('gitdir:', file_get_contents($expectedGitDirectory));
+//            $modulePath = trim(array_pop($modulePath));
+//            $modulePath = dirname($expectedGitDirectory) . "/$modulePath";
+//            return self::getCloneHash($modulePath);
         } else {
             //Always bust cache
             return session_id();
