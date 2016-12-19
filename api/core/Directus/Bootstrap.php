@@ -27,6 +27,7 @@ use Directus\Providers\FilesServiceProvider;
 use Directus\View\Twig\DirectusTwigExtension;
 use Slim\Extras\Log\DateTimeFileWriter;
 use Slim\Extras\Views\Twig;
+use Zend\Db\TableGateway\TableGateway;
 
 /**
  * NOTE: This class depends on the constants defined in config.php
@@ -655,7 +656,8 @@ class Bootstrap
         $session = self::get('session');
         $config = self::get('config');
         $prefix = ArrayUtils::get($config, 'session.prefix', 'directus_');
+        $table = new TableGateway('directus_users', $zendDb);
 
-        return new AuthProvider($zendDb, $session, $prefix);
+        return new AuthProvider($table, $session, $prefix);
     }
 }
