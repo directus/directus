@@ -184,9 +184,11 @@ class StringUtils
 
     /**
      * Replace a string placeholder with the given data.
+     *
      * @param $string
      * @param array $data
      * @param string $placeHolderFormat
+     *
      * @return string
      */
     public static function replacePlaceholder($string, $data = [], $placeHolderFormat = self::PLACEHOLDER_DOUBLE_MUSTACHE)
@@ -196,7 +198,9 @@ class StringUtils
                 $value = $value ? 'true' : 'false';
             }
 
-            $string = str_replace(sprintf($placeHolderFormat, $key), $value, $string);
+            if (is_scalar($value)) {
+                $string = str_replace(sprintf($placeHolderFormat, $key), $value, $string);
+            }
         }
 
         return $string;
