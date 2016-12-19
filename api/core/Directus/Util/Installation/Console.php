@@ -168,7 +168,8 @@ class Console
         $userTableGateway = new TableGateway('directus_users', $zendDb);
 
         $result = $userTableGateway->update([
-            'password' => \Directus\Auth\Provider::hashPassword($data['password']),
+            // @TODO: Provider doesn't has static methods anymore
+            'password' => \Directus\Authentication\Provider::hashPassword($data['password']),
             'access_token' => sha1($data['id'] . \Directus\Util\StringUtils::random())
         ], ['id' => $data['id']]);
 
