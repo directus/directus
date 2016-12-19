@@ -3,7 +3,7 @@
     <div class="warnings">
         <h3>Warnings:</h3>
         {% for message in directus.getResponse.getWarnings() %}
-            <p><em>{{ $message }}</em></p>
+            <p><em>{{ message }}</em></p>
         {% endfor %}
     </div>
 {% endif %}
