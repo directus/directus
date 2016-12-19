@@ -63,6 +63,8 @@ class Application extends Slim
     {
         $provider->register($this);
 
+        $this->providers[] = $provider;
+
         return $this;
     }
 
