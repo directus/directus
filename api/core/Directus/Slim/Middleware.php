@@ -2,7 +2,7 @@
 
 namespace Directus\Slim;
 
-use Directus\Auth\Provider as Auth;
+use Directus\Authentication\Provider as Auth;
 use Directus\View\JsonView;
 use Slim\Slim;
 
