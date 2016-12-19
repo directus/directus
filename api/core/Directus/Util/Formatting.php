@@ -46,7 +46,7 @@ class Formatting
      * @param string $raw_title Optional. Not used.
      * @param string $context Optional. The operation for which the string is sanitized.
      * @return string The sanitized title.
-     */
+     *
     public static function sanitize_title_with_dashes($title, $raw_title = '', $context = 'display')
     {
         $title = strip_tags($title);
@@ -104,7 +104,7 @@ class Formatting
      * http://wpseek.com/seems_utf8/
      * @param  string $str The string to be checked
      * @return bool      True if $str fits a UTF-8 model, false otherwise.
-     */
+     *
     public static function seems_utf8($str)
     {
         $length = strlen($str);
@@ -131,7 +131,7 @@ class Formatting
      * @param  string $utf8_string
      * @param  integer $length Max length of the string
      * @return string               String with Unicode encoded for URI.
-     */
+     *
     public static function utf8_uri_encode($utf8_string, $length = 0)
     {
         $unicode = '';
@@ -179,7 +179,7 @@ class Formatting
      * http://wpseek.com/remove_accents/
      * @param  string $string Text that might have accent characters
      * @return string         Filtered string with replaced "nice" characters.
-     */
+     *
     public static function remove_accents($string)
     {
         if (!preg_match('/[\x80-\xff]/', $string))
@@ -400,5 +400,5 @@ class Formatting
         }
 
         return $string;
-    }
+    }*/
 }
