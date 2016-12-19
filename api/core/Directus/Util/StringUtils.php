@@ -192,7 +192,9 @@ class StringUtils
     public static function replacePlaceholder($string, $data = [], $placeHolderFormat = self::PLACEHOLDER_DOUBLE_MUSTACHE)
     {
         foreach ($data as $key => $value) {
-            $string = str_replace(sprintf($placeHolderFormat, $key), $value, $string);
+            if (is_scalar($value)) {
+                $string = str_replace(sprintf($placeHolderFormat, $key), $value, $string);
+            }
         }
 
         return $string;
