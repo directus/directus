@@ -2,7 +2,7 @@
 
 namespace Directus\View;
 
-use Directus\Acl\Exception\AclException;
+use Directus\Permissions\Exception\AclException;
 use Directus\Database\Exception\CustomUiValidationError;
 use Directus\Database\Exception\DuplicateEntryException;
 use Directus\Database\Exception\RelationshipMetadataException;
@@ -20,9 +20,9 @@ class ExceptionView
         $data = [];
 
         /**
-         * Directus\Acl\Exception\AclException & subclasses
+         * Directus\Permissions\Exception\AclException & subclasses
          */
-        if ($exception instanceof AclException || is_subclass_of($exception, 'Directus\Acl\Exception\AclException')) {
+        if ($exception instanceof AclException || is_subclass_of($exception, 'Directus\Permissions\Exception\AclException')) {
             $httpCode = 403;
             $data = ['message' => $exception->getMessage()];
         } /**
@@ -55,7 +55,7 @@ class ExceptionView
             $data = ['message' => $exception->getMessage()];
         } // @todo log error nonetheless
         else {
-            $data = ['message' => __t('internal_server_error')];
+            $data = ['message' => 'Internal Server Error'];
             if ('production' !== DIRECTUS_ENV) {
                 $data = [
                     'code' => $exception->getCode(),
