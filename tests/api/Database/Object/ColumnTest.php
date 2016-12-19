@@ -2,9 +2,11 @@
 
 class ColumnTest extends PHPUnit_Framework_TestCase
 {
-    public function testColumn()
+    protected $columnData;
+
+    public function setUp()
     {
-        $columnData = [
+        $this->columnData = [
             'id' => 'related_projects',
             'column_name' => 'related_projects',
             'data_type' => 'ALIAS',
@@ -22,6 +24,11 @@ class ColumnTest extends PHPUnit_Framework_TestCase
             'sort' => 999,
             'comment' => 'Projects related to this project',
         ];
+    }
+
+    public function testColumn()
+    {
+        $columnData = $this->columnData;
 
         $column = new \Directus\Database\Object\Column($columnData);
 
@@ -86,5 +93,40 @@ class ColumnTest extends PHPUnit_Framework_TestCase
         $this->assertSame(999, $column->getSort());
         $column->setSort('abc');
         $this->assertSame(0, $column->getSort());
+    }
+
+    public function testArrayAccess()
+    {
+        $column = new \Directus\Database\Object\Column($this->columnData);
+
+        $this->assertTrue(isset($column['name']));
+        $this->assertSame($column['name'], 'related_projects');
+
+        $column['name'] = 'projects';
+        $this->assertSame('projects', $column['name']);
+
+        unset($column['name']);
+        $this->assertNull($column['name']);
+    }
+
+    /**
+     * @expectedException \Exception
+     */
+    public function testExceptionArrayAccess()
+    {
+        $column = new \Directus\Database\Object\Column($this->columnData);
+
+        $readable = $column['readableProperty'];
+    }
+
+    public function testPropertyToArray()
+    {
+        $column = new \Directus\Database\Object\Column($this->columnData);
+
+        $properties = $column->propertyArray();
+
+        $this->assertTrue(isset($properties['name']));
+        $this->assertSame($properties['name'], 'related_projects');
+        $this->assertFalse(isset($properties['readableProperty']));
     }
 }
