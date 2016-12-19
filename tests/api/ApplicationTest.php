@@ -21,11 +21,11 @@ class ApplicationTests extends PHPUnit_Framework_TestCase
     public function setUp()
     {
         \Slim\Environment::mock(array(
+            'SERVER_NAME' => 'getdirectus.com',
             'REQUEST_METHOD' => 'GET',
             'SCRIPT_NAME' => '/foo', //<-- Physical
             'PATH_INFO' => '/bar', //<-- Virtual
             'QUERY_STRING' => 'one=foo&two=bar',
-            'SERVER_NAME' => 'slimframework.com',
         ));
     }
 
@@ -105,5 +105,22 @@ class ApplicationTests extends PHPUnit_Framework_TestCase
         $app = new \Directus\Application\Application([]);
         $app->get('/bar', '\RouteMainClass:name');
         $app->call();
+    }
+
+    public function testOutputFormat()
+    {
+        \Slim\Environment::mock(array(
+            'SERVER_NAME' => 'getdirectus.com',
+            'REQUEST_METHOD' => 'GET',
+            'SCRIPT_NAME' => '/foo', //<-- Physical
+            'PATH_INFO' => '/bar.json', //<-- Virtual
+            'QUERY_STRING' => 'one=foo&two=bar',
+        ));
+
+        $app = new \Directus\Application\Application([]);
+        $callable = function() { echo "xyz"; };
+        $route = $app->get('/bar', $callable);
+        $app->call();
+        $this->assertEquals('xyz', $app->response()->body());
     }
 }
