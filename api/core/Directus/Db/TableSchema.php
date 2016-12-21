@@ -246,7 +246,7 @@ class TableSchema
 
     public static function getColumnsName($table)
     {
-        if (static::$_schemas[$table]) {
+        if (isset(static::$_schemas[$table])) {
             $columns = static::$_schemas[$table];
         } else {
             $columns = SchemaManager::getColumnsNames($table);
@@ -254,7 +254,7 @@ class TableSchema
 
         $names = [];
         foreach($columns as $column) {
-            $names[] = $column['column_name'];
+            $names[] = $column;
         }
 
         return $names;
