@@ -354,7 +354,7 @@
   display: block;
   // right: -2px;
   // top: 38px;
-  width: 200px;
+  // width: 200px;
   background-color: $extraLightGrey;
   color: $darkGrey;
   z-index: 1;
@@ -367,7 +367,7 @@
     border-right: none;
     border-left: none;
     border-bottom: 1px solid darken($lightGrey, 10%);
-    margin: 0 0 55px 0;
+    // margin: 0 0 55px 0;
     label {
       padding: 5px 0 5px 0;
       cursor: pointer;
@@ -377,13 +377,14 @@
     }
   }
   .btn-row {
-    position: absolute;
-    bottom: 15px;
-    left: 20px;
-    right: 20px;
+    // position: absolute;
+    // bottom: 15px;
+    // left: 20px;
+    // right: 20px;
     font-size: 12px;
+    padding: 20px 20px 15px;
     .btn {
-      float: left;
+      // float: left;
       background-color: $mediumGrey;
       // border-bottom: 2px solid #222222;
       &.btn-primary {

@@ -3013,7 +3013,6 @@ select,
   top: 181px;
   right: 50px;
   display: block;
-  width: 200px;
   background-color: #f4f4f4;
   color: #666666;
   z-index: 1;
@@ -3025,21 +3024,16 @@ select,
     border-top: none;
     border-right: none;
     border-left: none;
-    border-bottom: 1px solid lightgray;
-    margin: 0 0 55px 0; }
+    border-bottom: 1px solid lightgray; }
     .set-columns fieldset label {
       padding: 5px 0 5px 0;
       cursor: pointer; }
       .set-columns fieldset label:hover {
         color: #333333; }
   .set-columns .btn-row {
-    position: absolute;
-    bottom: 15px;
-    left: 20px;
-    right: 20px;
-    font-size: 12px; }
+    font-size: 12px;
+    padding: 20px 20px 15px; }
     .set-columns .btn-row .btn {
-      float: left;
       background-color: #aaaaaa; }
       .set-columns .btn-row .btn.btn-primary {
         background-color: #4ca6de;
