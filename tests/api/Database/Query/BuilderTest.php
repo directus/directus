@@ -108,6 +108,7 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
     protected function createQueryBuilder()
     {
         $connection = get_mock_connection($this);
+
         return new \Directus\Database\Query\Builder($connection);
     }
 }
