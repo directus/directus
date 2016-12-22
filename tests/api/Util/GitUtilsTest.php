@@ -2,11 +2,13 @@
 
 class GitUtilsTest extends PHPUnit_Framework_TestCase
 {
-    protected $gitPath = __DIR__ . '/git';
-    protected $gitPath2 = __DIR__ . '/git2';
+    protected $gitPath;
+    protected $gitPath2;
 
     public function setUp()
     {
+        $this->gitPath = __DIR__ . '/git';
+        $this->gitPath2 = $this->gitPath . '2';
         mkdir($this->gitPath);
         file_put_contents($this->gitPath . '/HEAD', 'ref: master');
         file_put_contents($this->gitPath . '/master', 'commit-hash');
