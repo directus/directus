@@ -6,8 +6,6 @@
     "twig/twig":  "1.*",
     "zendframework/zend-db": "dev-directus",
     "directus/migrations": "dev-master",
-    "directus/acl": "0.9.*",
-    "directus/database": "0.9.*",
     "league/flysystem": "^1.0",
     "swiftmailer/swiftmailer": "^5.4"
   },
@@ -33,23 +31,10 @@
       "api/core/functions.php"
     ]
   },
-  "minimum-stability": "dev",
   "repositories": [
     {
       "type": "git",
-      "url": "https://github.com/directus/directus-database"
-    },
-    {
-      "type": "git",
-      "url": "https://github.com/directus/directus-acl"
-    },
-    {
-      "type": "git",
-      "url": "https://github.com/directus/directus-collection"
-    },
-    {
-      "type": "git",
-      "url": "https://github.com/directus/directus-php-utils"
+      "url": "https://github.com/WellingGuzman/Slim-Extras.git"
     },
     {
       "type": "git",
