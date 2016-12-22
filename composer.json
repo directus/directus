@@ -5,8 +5,8 @@
     "slim/extras": "dev-develop",
     "twig/twig":  "1.*",
     "directus/migrations": "dev-master",
-    "directus/acl": "0.9.*",
-    "directus/database": "0.9.*",
+    "directus/acl": "0.9.*@dev",
+    "directus/database": "0.9.*@dev",
     "league/flysystem": "^1.0",
     "swiftmailer/swiftmailer": "^5.4"
   },
@@ -32,31 +32,10 @@
       "api/core/functions.php"
     ]
   },
-  "minimum-stability": "dev",
   "repositories": [
     {
       "type": "git",
-      "url": "https://github.com/directus/directus-database"
-    },
-    {
-      "type": "git",
-      "url": "https://github.com/directus/directus-acl"
-    },
-    {
-      "type": "git",
-      "url": "https://github.com/directus/directus-collection"
-    },
-    {
-      "type": "git",
-      "url": "https://github.com/directus/directus-php-utils"
-    },
-    {
-      "type": "git",
       "url": "https://github.com/WellingGuzman/Slim-Extras.git"
-    },
-    {
-      "type": "git",
-      "url": "https://github.com/wellingguzman/zend-db"
     }
   ]
 }
