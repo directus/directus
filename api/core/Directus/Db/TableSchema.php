@@ -262,7 +262,7 @@ class TableSchema
 
     public static function hasTableColumn($table, $column, $includeAlias = false)
     {
-        $columns = array_flip(self::getTableColumns($table, null, true));
+        $columns = self::getTableColumns($table, null, true);
         if ($includeAlias) {
             $columns = array_merge($columns, array_flip(self::getAllAliasTableColumns($table, true)));
         }
