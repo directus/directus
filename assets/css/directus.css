@@ -1430,6 +1430,9 @@ a {
 input, button {
   outline: none; }
 
+#trumbowyg-icons {
+  display: none; }
+
 .hidden {
   visibility: hidden; }
 
