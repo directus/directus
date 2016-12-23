@@ -3,23 +3,23 @@
 {% block content %}
     <div class="container">
         {% include 'partials/errors.twig.html' %}
-        <label for="directus_name">{{ 'Project Name' }}</label><input type="text" id="directus_name"
+        <label for="directus_name">{{ 'Project Name'|__t }}</label><input type="text" id="directus_name"
             name="directus_name"
-            placeholder="{{ 'eg: My Project Name' }}"
+            placeholder="{{ 'eg: My Project Name'|__t }}"
             value="{{ directus.step.getSafeData('directus_name') ? directus.step.getSafeData('directus_name') : '' }}"
             autofocus><br>
-        <label for="directus_path">{{ 'Project Path' }}</label><input type="text" id="directus_path"
+        <label for="directus_path">{{ 'Project Path'|__t }}</label><input type="text" id="directus_path"
             name="directus_path"
-            placeholder="{{ 'Path to Directus directory' }}"
+            placeholder="{{ 'Path to Directus directory'|__t }}"
             value="{{ directus.step.getSafeData('directus_path') ? directus.step.getSafeData('directus_path') : directus.root_path }}"><br>
-        <label for="directus_email">{{ 'Admin Email' }}</label><input type="email" id="directus_email"
+        <label for="directus_email">{{ 'Admin Email'|__t }}</label><input type="email" id="directus_email"
             name="directus_email"
-            placeholder="{{ 'eg: admin@example.com' }}"
+            placeholder="{{ 'eg: admin@example.com'|__t }}"
             value="{{ directus.step.getSafeData('directus_email') ? directus.step.getSafeData('directus_email') : '' }}"><br>
-        <label for="directus_password">{{ 'Admin Password' }}</label><input type="password" id="directus_password"
+        <label for="directus_password">{{ 'Admin Password'|__t }}</label><input type="password" id="directus_password"
             name="directus_password"
             value="{{ directus.step.getSafeData('directus_password') ? directus.step.getSafeData('directus_password') : '' }}"><br>
-        <label for="directus_password_confirm">{{ 'Confirm Admin Password' }}</label><input type="password"
+        <label for="directus_password_confirm">{{ 'Confirm Admin Password'|__t }}</label><input type="password"
             id="directus_password_confirm"
             name="directus_password_confirm"
             value="{{ directus.step.getSafeData('directus_password_confirm') ? directus.step.getSafeData('directus_password_confirm') : '' }}"><br>
