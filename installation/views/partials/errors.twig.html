@@ -2,7 +2,7 @@
 
     <div class="errors">
         {% for message in directus.step.getResponse.getErrors() %}
-            <p>{{ message }}</p>
+            <p>{{ message|__t }}</p>
         {% endfor %}
     </div>
 
