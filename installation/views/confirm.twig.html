@@ -4,154 +4,154 @@
 <div class="container step-3">
     {% include 'partials/warnings.twig.html' %}
     {% include 'partials/errors.twig.html' %}
-    <h3>Project Configuration</h3>
+    <h3>{{ 'Project Configuration'|__t }}</h3>
     <hr>
     <table>
         <tbody>
         <tr>
-            <td class="item">{{ 'Project Name' }}</td>
+            <td class="item">{{ 'Project Name'|__t }}</td>
             <td class="result">{{ directus.data.getSafe('directus_name') }}</td>
         </tr>
         <tr>
-            <td class="item">{{ 'Admin Email' }}</td>
+            <td class="item">{{ 'Admin Email'|__t }}</td>
             <td class="result"><span>{{ directus.data.getSafe('directus_email') }}</span>
             </td>
         </tr>
         <tr>
-            <td class="item">{{ 'Admin Password' }}</td>
+            <td class="item">{{ 'Admin Password'|__t }}</td>
             <td class="result">***</td>
         </tr>
         </tbody>
     </table>
 
-    <h3>{{ 'Database Configuration' }}</h3>
+    <h3>{{ 'Database Configuration'|__t }}</h3>
     <hr>
     <table>
         <tbody>
             {% if directus.data.getSafe('strict_mode_enabled') == true %}
             <tr id="strict_mode_enabled">
-                <td class="item">{{ 'Strict Mode Disabled' }} (<a
+                <td class="item">{{ 'Strict Mode Disabled'|__t }} (<a
                     href="http://getdirectus.com/docs/developer/installation"
-                    target="_blank"><u>{{ 'Learn More' }}</u></a>)
+                    target="_blank"><u>{{ 'Learn More'|__t }}</u></a>)
                 </td>
-                <td class="result"><span class="label label-important">{{ 'No' }}</span></td>
+                <td class="result"><span class="label label-important">{{ 'No'|__t }}</span></td>
             </tr>
             {% endif %}
         <tr>
-            <td class="item">{{ 'Database' }}</td>
+            <td class="item">{{ 'Database'|__t }}</td>
             <td class="result">{{ directus.data.getSafe('db_type') }}</td>
         </tr>
         <tr>
-            <td class="item">{{ 'Host Name' }}</td>
+            <td class="item">{{ 'Host Name'|__t }}</td>
             <td class="result">{{ directus.data.getSafe('db_host') }}</td>
         </tr>
         <tr>
-            <td class="item">{{ 'Port' }}</td>
+            <td class="item">{{ 'Port'|__t }}</td>
             <td class="result">{{ directus.data.getSafe('db_port') }}</td>
         </tr>
         <tr>
-            <td class="item">{{ 'Username' }}</td>
+            <td class="item">{{ 'Username'|__t }}</td>
             <td class="result"><span>{{ directus.data.getSafe('db_user') }}</span></td>
         </tr>
         <tr>
-            <td class="item">{{ 'Password' }}</td>
+            <td class="item">{{ 'Password'|__t }}</td>
             <td class="result">***</td>
         </tr>
         <tr>
-            <td class="item">{{ 'Database Name' }}</td>
+            <td class="item">{{ 'Database Name'|__t }}</td>
             <td class="result">{{ directus.data.getSafe('db_name') }}</td>
         </tr>
         <tr>
-            <td class="item">{{ 'Schema' }}</td>
+            <td class="item">{{ 'Schema'|__t }}</td>
             <td class="result">{{ directus.data.getSafe('db_schema') ? directus.data.getSafe('db_schema') : 'none' }}</td>
         </tr>
         </tbody>
     </table>
 
-    <h3>{{ 'Pre-Installation Check' }}</h3>
+    <h3>{{ 'Pre-Installation Check'|__t }}</h3>
     <hr>
     <table>
         <tbody>
         <tr>
-            <td class="item">{{ 'PHP Version' }} >= 5.5.0</td>
-            <td class="result"><span class="label label-success">{{ 'Yes' }}</span></td>
+            <td class="item">{{ 'PHP Version'|__t }} >= 5.5.0</td>
+            <td class="result"><span class="label label-success">{{ 'Yes'|__t }}</span></td>
         </tr>
         <tr>
-            <td class="item">{{ 'Database Support' }}</td>
-            <td class="result"><span class="label label-success">{{ 'Yes' }}</span></td>
+            <td class="item">{{ 'Database Support'|__t }}</td>
+            <td class="result"><span class="label label-success">{{ 'Yes'|__t }}</span></td>
         </tr>
         <tr>
-            <td class="item">{{ 'Composer Dependencies Installed' }} (../api/composer.json)</td>
+            <td class="item">{{ 'Composer Dependencies Installed'|__t }} (../api/composer.json)</td>
             <td class="result">{% if true %}{# <?php if (file_exists('../vendor/autoload.php')) { #}
-                    <span class="label label-success">{{ 'Yes' }}</span>
+                    <span class="label label-success">{{ 'Yes'|__t }}</span>
                 {% else %}
-                    <span class="label label-important">{{ 'No.' }}</span><a href="http://getdirectus.com/docs/developer/installation" target="_blank"> ?</a>
+                    <span class="label label-important">{{ 'No.'|__t }}</span><a href="http://getdirectus.com/docs/developer/installation" target="_blank"> ?</a>
                 {% endif %}</td>
         </tr>
         <tr>
-            <td class="item">{{ 'Migration Config' }}</td>
+            <td class="item">{{ 'Migration Config'|__t }}</td>
             <td class="result">{% if true %}{# <?php if (file_exists('../api/ruckusing.conf.php') && filesize('../api/ruckusing.conf.php') > 0) { #}
-                    <span class="label label-success">{{ 'Yes' }}</span>
+                    <span class="label label-success">{{ 'Yes'|__t }}</span>
                 {% else %}
-                    <span class="label label-important">{{ 'No' }}</span>
+                    <span class="label label-important">{{ 'No'|__t }}</span>
                 {% endif %}</td>
         </tr>
         <tr>
-            <td class="item">{{ 'GD Library Support' }}</td>
-            <td class="result"><span class="label label-success">{{ 'Yes' }}</span></td>
+            <td class="item">{{ 'GD Library Support'|__t }}</td>
+            <td class="result"><span class="label label-success">{{ 'Yes'|__t }}</span></td>
         </tr>
         <tr>
-            <td class="item">{{ 'Imagick PHP Extension (Optional)' }}</td>
+            <td class="item">{{ 'Imagick PHP Extension (Optional)'|__t }}</td>
             <td class="result">{% if true %}{# <?php if (extension_loaded('imagick')) { #}
-                    <span class="label label-success">{{ 'Yes' }}</span>
+                    <span class="label label-success">{{ 'Yes'|__t }}</span>
                 {% else %}
-                    <span class="label label-success">{{ 'No' }}</span>
+                    <span class="label label-success">{{ 'No'|__t }}</span>
                 {% endif %}</td>
         </tr>
         <tr>
-            <td style="padding-left: 30px;">{{ "Adds TIFF/PSD/PDF Thumbnail Support" }}</td>
+            <td style="padding-left: 30px;">{{ 'Adds TIFF/PSD/PDF Thumbnail Support'|__t }}</td>
         </tr>
         <tr>
-            <td class="item">{{ 'Mod_Rewrite Enabled' }} (<a href="http://getdirectus.com/docs/developer/faq"
-                                                                    target="_blank"><u>{{ "Learn More" }}</u></a>)
+            <td class="item">{{ 'Mod_Rewrite Enabled'|__t }} (<a href="http://getdirectus.com/docs/developer/faq"
+                                                                    target="_blank"><u>{{ 'Learn More'|__t }}</u></a>)
             </td>
             <td class="result">{% if true %}{# <?php if (ping_server()) { #}
-                    <span class="label label-success">{{ 'Yes' }}</span>
+                    <span class="label label-success">{{ 'Yes'|__t }}</span>
                 {% else %}
-                    <span class="label label-important">{{ 'No' }}</span>
+                    <span class="label label-important">{{ 'No'|__t }}</span>
                 {% endif %}</td>
         </tr>
         <tr>
-            <td class="item">{{ 'Logs Directory Writable' }} (../api/logs/)</td>
+            <td class="item">{{ 'Logs Directory Writable'|__t }} (../api/logs/)</td>
             <td class="result">{% if true %}{# <?php if (is_writable('../api/logs')) { #}
-                    <span class="label label-success">{{ 'Yes' }}</span>
+                    <span class="label label-success">{{ 'Yes'|__t }}</span>
                 {% else %}
-                    <span class="label label-important">{{ 'No' }}</span>
+                    <span class="label label-important">{{ 'No'|__t }}</span>
                 {% endif %}</td>
         </tr>
         <tr>
-            <td class="item">{{ 'Media Directory Writable' }} (/storage/uploads)</td>
+            <td class="item">{{ 'Media Directory Writable'|__t }} (/storage/uploads)</td>
             <td class="result">{% if true %}{# <?php if (is_writable('../storage/uploads')) { #}
-                    <span class="label label-success">{{ 'Yes' }}</span>
+                    <span class="label label-success">{{ 'Yes'|__t }}</span>
                 {% else %}
-                    <span class="label label-important">{{ 'No' }}</span>
+                    <span class="label label-important">{{ 'No'|__t }}</span>
                 {% endif %}</td>
         </tr>
         {% if false %}
         {# <?php if (!is_writable('../storage/uploads')): ?> #}
             <tr>
-                <td style="padding-left: 30px;padding-bottom: 10px;">{{ "The default upload directories are either missing or don't have write permission. You can add these directories/permissions on your server or update the directus_storage_adapters table with new paths." }}</td>
+                <td style="padding-left: 30px;padding-bottom: 10px;">{{ "The default upload directories are either missing or don't have write permission. You can add these directories/permissions on your server or update the directus_storage_adapters table with new paths."|__t }}</td>
             </tr>
         {% endif %}
         <tr>
-            <td class="item">{{ 'Config File Writable' }} (../api/config.php)</td>
+            <td class="item">{{ 'Config File Writable'|__t }} (../api/config.php)</td>
             <td class="result">{% if true %}{# <?php if (is_writable('../api')) { #}
                     {% set showConfig = false %}
                     {# $showConfig = false; #}
-                    <span class="label label-success">{{ 'Yes' }}</span>
+                    <span class="label label-success">{{ 'Yes'|__t }}</span>
                 {% else %}
                     {% set showConfig = true %}
-                    <span class="label label-important">{{ 'No' }}</span>
+                    <span class="label label-important">{{ 'No'|__t }}</span>
                 {% endif %}</td>
         </tr>
         </tbody>
@@ -161,10 +161,10 @@
     {# <?php if ($showConfig) { #}
         {% set configText = 'Directus\Util\Installation\InstallerUtils::createConfigFileContent(directus.data.get())' %}
         {# $configText = Directus\Util\Installation\InstallerUtils::createConfigFileContent($directus.data.get()); #}
-        <span class='config-paste label label-important'>{{ 'Manually copy the code below into' }} ../api/config.php</span><br><textarea readonly>{{ configText }}</textarea><span id='failSpan'><button id='retryButton' class='button no-t-margin'>{{ 'Check Config File' }}</button></span>
+        <span class='config-paste label label-important'>{{ 'Manually copy the code below into'|__t }} ../api/config.php</span><br><textarea readonly>{{ configText|__t }}</textarea><span id='failSpan'><button id='retryButton' class='button no-t-margin'>{{ 'Check Config File'|__t }}</button></span>
     {% endif %}
 
-    <h3>{{ 'Email This Summary?' }}</h3>
+    <h3>{{ 'Email This Summary?'|__t }}</h3>
     <hr>
     <table>
         <tbody>
