@@ -2,7 +2,6 @@
 
 namespace Directus;
 
-use Directus\Permissions\Acl;
 use Directus\Application\Application;
 use Directus\Authentication\Provider as AuthProvider;
 use Directus\Database\Connection;
@@ -20,10 +19,10 @@ use Directus\Filesystem\Filesystem;
 use Directus\Filesystem\FilesystemFactory;
 use Directus\Hook\Emitter;
 use Directus\Language\LanguageManager;
+use Directus\Providers\FilesServiceProvider;
 use Directus\Session\Session;
 use Directus\Session\Storage\NativeSessionStorage;
 use Directus\Util\ArrayUtils;
-use Directus\Providers\FilesServiceProvider;
 use Directus\View\Twig\DirectusTwigExtension;
 use Slim\Extras\Log\DateTimeFileWriter;
 use Slim\Extras\Views\Twig;

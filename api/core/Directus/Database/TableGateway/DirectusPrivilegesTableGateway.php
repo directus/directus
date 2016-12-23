@@ -2,10 +2,8 @@
 
 namespace Directus\Database\TableGateway;
 
-use Directus\Permissions\Acl;
-use Directus\Authentication\Provider as Auth;
 use Directus\Database\TableSchema;
-use Directus\MemcacheProvider;
+use Directus\Permissions\Acl;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Insert;
 use Zend\Db\Sql\Select;

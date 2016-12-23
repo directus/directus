@@ -2,8 +2,6 @@
 
 namespace Directus\Database\TableGateway;
 
-use Directus\Permissions\Acl;
-use Directus\MemcacheProvider;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Select;

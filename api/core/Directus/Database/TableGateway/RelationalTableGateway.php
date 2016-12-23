@@ -2,8 +2,8 @@
 
 namespace Directus\Database\TableGateway;
 
-use Directus\Database\Object\Table;
 use Directus\Database\Exception;
+use Directus\Database\Object\Table;
 use Directus\Database\Query\Builder;
 use Directus\Database\RowGateway\BaseRowGateway;
 use Directus\Database\TableSchema;

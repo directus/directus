@@ -15,7 +15,6 @@ use Directus\Authentication\Exception\UserIsntLoggedInException;
 use Directus\Session\Session;
 use Directus\Util\ArrayUtils;
 use Directus\Util\StringUtils;
-use Zend\Db\Adapter\Adapter;
 use Zend\Db\TableGateway\TableGateway;
 
 /**

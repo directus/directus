@@ -2,16 +2,15 @@
 
 namespace Directus\Database\RowGateway;
 
+use Directus\Database\SchemaManager;
+use Directus\Database\TableGateway\RelationalTableGateway;
+use Directus\Database\TableSchema;
 use Directus\Permissions\Acl;
 use Directus\Permissions\Exception\UnauthorizedTableAddException;
 use Directus\Permissions\Exception\UnauthorizedTableBigDeleteException;
 use Directus\Permissions\Exception\UnauthorizedTableBigEditException;
 use Directus\Permissions\Exception\UnauthorizedTableDeleteException;
 use Directus\Permissions\Exception\UnauthorizedTableEditException;
-use Directus\Bootstrap;
-use Directus\Database\SchemaManager;
-use Directus\Database\TableGateway\RelationalTableGateway;
-use Directus\Database\TableSchema;
 use Directus\Util\Formatting;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Adapter\Exception\InvalidQueryException;

@@ -2,8 +2,6 @@
 
 namespace Directus\Database\RowGateway;
 
-use Directus\Authentication\Provider as AuthProvider;
-use Directus\Bootstrap;
 use Directus\Database\TableGateway\BaseTableGateway;
 use Directus\Util\DateUtils;
 

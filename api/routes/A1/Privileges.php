@@ -2,9 +2,9 @@
 
 namespace Directus\API\Routes\A1;
 
+use Directus\Application\Route;
 use Directus\Bootstrap;
 use Directus\Database\TableGateway\DirectusPrivilegesTableGateway;
-use Directus\Application\Route;
 use Directus\Util\SchemaUtils;
 use Directus\View\JsonView;
 

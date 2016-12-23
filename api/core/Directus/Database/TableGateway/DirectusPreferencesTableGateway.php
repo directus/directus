@@ -2,9 +2,8 @@
 
 namespace Directus\Database\TableGateway;
 
-use Directus\Permissions\Acl;
-use Directus\Database\SchemaManager;
 use Directus\Database\TableSchema;
+use Directus\Permissions\Acl;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Insert;
 use Zend\Db\Sql\Predicate\NotIn;

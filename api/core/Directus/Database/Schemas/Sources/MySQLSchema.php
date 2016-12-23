@@ -10,7 +10,6 @@
 
 namespace Directus\Database\Schemas\Sources;
 
-use Directus\Bootstrap;
 use Directus\Database\Object\Column;
 use Directus\Util\ArrayUtils;
 use Zend\Db\Sql\Expression;

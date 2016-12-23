@@ -10,9 +10,9 @@
 
 namespace Directus\Permissions;
 
+use Directus\Database\TableGateway\BaseTableGateway;
 use Directus\Permissions\Exception\UnauthorizedFieldReadException;
 use Directus\Permissions\Exception\UnauthorizedFieldWriteException;
-use Directus\Database\TableGateway\BaseTableGateway;
 use Zend\Db\RowGateway\RowGateway;
 use Zend\Db\Sql\Predicate\PredicateSet;
 use Zend\Db\Sql\Select;

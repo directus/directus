@@ -2,9 +2,8 @@
 
 namespace Directus\API\Routes\A1;
 
-use Directus\Database\Exception\DuplicateEntryException;
-use Directus\Database\TableGateway\DirectusUsersTableGateway;
 use Directus\Application\Route;
+use Directus\Database\TableGateway\DirectusUsersTableGateway;
 use Directus\Database\TableGateway\RelationalTableGateway as TableGateway;
 use Directus\Services\EntriesService;
 use Directus\View\JsonView;

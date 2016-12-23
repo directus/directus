@@ -10,16 +10,14 @@
 
 namespace Directus\Database;
 
-use Directus\Bootstrap;
+use Directus\Database\Ddl\Column\Boolean;
 use Directus\Database\Object\Column;
 use Directus\Database\Object\Table;
 use Directus\Database\Schemas\Sources\SchemaInterface;
 use Directus\Util\ArrayUtils;
-use Directus\Database\Ddl\Column\Boolean;
 use Zend\Db\Sql\Ddl\Column\Integer;
 use Zend\Db\Sql\Ddl\Constraint\PrimaryKey;
 use Zend\Db\Sql\Ddl\CreateTable;
-use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Sql;
 
 /**

@@ -2,10 +2,10 @@
 
 namespace Directus\View;
 
-use Directus\Permissions\Exception\AclException;
 use Directus\Database\Exception\CustomUiValidationError;
 use Directus\Database\Exception\DuplicateEntryException;
 use Directus\Database\Exception\RelationshipMetadataException;
+use Directus\Permissions\Exception\AclException;
 
 class ExceptionView
 {

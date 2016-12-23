@@ -11,9 +11,9 @@
 namespace Directus\Database\Object;
 
 use Directus\Collection\Arrayable;
+use Directus\Util\Traits\ArrayPropertyAccess;
 use Directus\Util\Traits\ArrayPropertyToArray;
 use Directus\Util\Traits\ArraySetter;
-use Directus\Util\Traits\ArrayPropertyAccess;
 
 /**
  * Column Object

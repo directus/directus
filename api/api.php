@@ -32,7 +32,6 @@ define('HOST_URL', $url);
 define('API_PATH', dirname(__FILE__));
 define('BASE_PATH', dirname(API_PATH));
 
-use Directus\Permissions\Exception\UnauthorizedTableAlterException;
 use Directus\Authentication\RequestNonceProvider;
 use Directus\Bootstrap;
 use Directus\Database\SchemaManager;
@@ -51,6 +50,7 @@ use Directus\Database\TableSchema;
 use Directus\Exception\ExceptionHandler;
 use Directus\Mail\Mail;
 use Directus\MemcacheProvider;
+use Directus\Permissions\Exception\UnauthorizedTableAlterException;
 use Directus\Util\ArrayUtils;
 use Directus\Util\DateUtils;
 use Directus\Util\SchemaUtils;

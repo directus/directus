@@ -11,6 +11,7 @@
 namespace Directus\Collection;
 
 use Directus\Util\ArrayUtils;
+
 /**
  * Collection
  *

@@ -10,9 +10,9 @@
 
 namespace Directus\Authentication;
 
-use Directus\Util\StringUtils;
-use Directus\Session\Session;
 use Directus\Authentication\Exception\RequestNonceHasntBeenProcessed;
+use Directus\Session\Session;
+use Directus\Util\StringUtils;
 
 /**
  * Request Nonce Provider

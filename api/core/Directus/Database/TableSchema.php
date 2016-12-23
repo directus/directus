@@ -7,7 +7,6 @@ use Directus\Bootstrap;
 use Directus\Database\Object\Column;
 use Directus\Database\TableGateway\DirectusPreferencesTableGateway;
 use Directus\Database\TableGateway\DirectusUiTableGateway;
-use Directus\Database\TableGateway\RelationalTableGateway;
 use Directus\MemcacheProvider;
 use Directus\Util\ArrayUtils;
 use Directus\Util\DateUtils;
