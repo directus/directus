@@ -82,7 +82,7 @@
         </tr>
         <tr>
             <td class="item">{{ 'Composer Dependencies Installed'|__t }} (../api/composer.json)</td>
-            <td class="result">{% if true %}{# <?php if (file_exists('../vendor/autoload.php')) { #}
+            <td class="result">{% if file_exists('../vendor/autoload.php') %}
                     <span class="label label-success">{{ 'Yes'|__t }}</span>
                 {% else %}
                     <span class="label label-important">{{ 'No.'|__t }}</span><a href="http://getdirectus.com/docs/developer/installation" target="_blank"> ?</a>
@@ -90,7 +90,7 @@
         </tr>
         <tr>
             <td class="item">{{ 'Migration Config'|__t }}</td>
-            <td class="result">{% if true %}{# <?php if (file_exists('../api/ruckusing.conf.php') && filesize('../api/ruckusing.conf.php') > 0) { #}
+            <td class="result">{% if file_exists('../api/ruckusing.conf.php') and filesize('../api/ruckusing.conf.php') > 0 %}
                     <span class="label label-success">{{ 'Yes'|__t }}</span>
                 {% else %}
                     <span class="label label-important">{{ 'No'|__t }}</span>
@@ -102,7 +102,7 @@
         </tr>
         <tr>
             <td class="item">{{ 'Imagick PHP Extension (Optional)'|__t }}</td>
-            <td class="result">{% if true %}{# <?php if (extension_loaded('imagick')) { #}
+            <td class="result">{% if extension_loaded('imagick') %}
                     <span class="label label-success">{{ 'Yes'|__t }}</span>
                 {% else %}
                     <span class="label label-success">{{ 'No'|__t }}</span>
@@ -115,7 +115,7 @@
             <td class="item">{{ 'Mod_Rewrite Enabled'|__t }} (<a href="http://getdirectus.com/docs/developer/faq"
                                                                     target="_blank"><u>{{ 'Learn More'|__t }}</u></a>)
             </td>
-            <td class="result">{% if true %}{# <?php if (ping_server()) { #}
+            <td class="result">{% if ping_server() %}
                     <span class="label label-success">{{ 'Yes'|__t }}</span>
                 {% else %}
                     <span class="label label-important">{{ 'No'|__t }}</span>
@@ -123,7 +123,7 @@
         </tr>
         <tr>
             <td class="item">{{ 'Logs Directory Writable'|__t }} (../api/logs/)</td>
-            <td class="result">{% if true %}{# <?php if (is_writable('../api/logs')) { #}
+            <td class="result">{% if is_writable('../api/logs') %}
                     <span class="label label-success">{{ 'Yes'|__t }}</span>
                 {% else %}
                     <span class="label label-important">{{ 'No'|__t }}</span>
@@ -131,23 +131,21 @@
         </tr>
         <tr>
             <td class="item">{{ 'Media Directory Writable'|__t }} (/storage/uploads)</td>
-            <td class="result">{% if true %}{# <?php if (is_writable('../storage/uploads')) { #}
+            <td class="result">{% if is_writable('../storage/uploads') %}
                     <span class="label label-success">{{ 'Yes'|__t }}</span>
                 {% else %}
                     <span class="label label-important">{{ 'No'|__t }}</span>
                 {% endif %}</td>
         </tr>
-        {% if false %}
-        {# <?php if (!is_writable('../storage/uploads')): ?> #}
+        {% if not is_writable('../storage/uploads') %}
             <tr>
                 <td style="padding-left: 30px;padding-bottom: 10px;">{{ "The default upload directories are either missing or don't have write permission. You can add these directories/permissions on your server or update the directus_storage_adapters table with new paths."|__t }}</td>
             </tr>
         {% endif %}
         <tr>
             <td class="item">{{ 'Config File Writable'|__t }} (../api/config.php)</td>
-            <td class="result">{% if true %}{# <?php if (is_writable('../api')) { #}
+            <td class="result">{% if is_writable('../api') %}
                     {% set showConfig = false %}
-                    {# $showConfig = false; #}
                     <span class="label label-success">{{ 'Yes'|__t }}</span>
                 {% else %}
                     {% set showConfig = true %}
@@ -158,9 +156,8 @@
     </table>
 
     {% if showConfig %}
-    {# <?php if ($showConfig) { #}
-        {% set configText = 'Directus\Util\Installation\InstallerUtils::createConfigFileContent(directus.data.get())' %}
-        {# $configText = Directus\Util\Installation\InstallerUtils::createConfigFileContent($directus.data.get()); #}
+        {% set configContent = directus.data.get() %}
+        {% set configText = createConfigFileContent(configContent) %}
         <span class='config-paste label label-important'>{{ 'Manually copy the code below into'|__t }} ../api/config.php</span><br><textarea readonly>{{ configText|__t }}</textarea><span id='failSpan'><button id='retryButton' class='button no-t-margin'>{{ 'Check Config File'|__t }}</button></span>
     {% endif %}
 
