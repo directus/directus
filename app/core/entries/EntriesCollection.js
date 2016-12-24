@@ -19,7 +19,7 @@ define(function(require, exports, module) {
       if (options.changed) {
         result = _.filter(result, function(obj) { return !_.isEmpty(obj); });
       }
-      return result;
+      return options.insideRows === true ? {rows: result} : result;
     },
 
     getColumns: function() {
@@ -134,6 +134,15 @@ define(function(require, exports, module) {
         models = collection.models;
       }
 
+      if (method === 'patch') {
+        options.attrs = {rows: models.map(function(model) {
+          return model.toJSON({changed: true});
+        })};
+      } else {
+        // @note: to support the API expecting a all rows inside rows property.
+        options.insideRows = true;
+      }
+
       var sync = function () {
         collection.trigger('sync');
       };
@@ -147,8 +156,6 @@ define(function(require, exports, module) {
           success(collection, resp, options);
         }
       };
-
-      options.data = JSON.stringify({rows: models});
 
       this.url += '/bulk';
       var xhr = this.sync(method, this, options);

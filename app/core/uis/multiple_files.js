@@ -179,7 +179,11 @@ define([
     editModel: function(model) {
       var EditView = require("modules/tables/views/EditView");
       var columnName = this.columnSchema.relationship.get('junction_key_right');
-      var view = new EditView({model: model, hiddenFields: [columnName]});
+      var view = new EditView({
+        model: model,
+        hiddenFields: [columnName],
+        skipFetch: (model.isNew() || model.unsavedAttributes())
+      });
 
       view.headerOptions.route.isOverlay = true;
       view.headerOptions.route.breadcrumbs = [];
@@ -203,7 +207,7 @@ define([
 
       // Fetch first time to get the nested tables
       // Only fetch if it's not a new entry
-      if(!model.isNew()) {
+      if(!model.isNew() && !model.unsavedAttributes()) {
         model.fetch();
       }
     },
@@ -332,6 +336,10 @@ define([
       var relatedSchema = relatedCollection.structure;
       var junctionStructure = relatedCollection.junctionStructure;
       var sortable = false;
+
+      relatedCollection.each(function(model) {
+        return model.startTracking();
+      });
 
       if(junctionStructure.get('sort') !== undefined) {
         sortable = true;
