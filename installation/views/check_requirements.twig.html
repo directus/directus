@@ -1,0 +1,8 @@
+{% extends 'base.twig.html' %}
+
+{% block content %}
+<div class="container">
+    {% include 'partials/errors.twig.html' %}
+    <p>{{ 'Refresh this page when the problems above are resolved.'|__t }}</p>
+</div>
+{% endblock %}

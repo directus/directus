@@ -13,7 +13,7 @@ class ConfirmStep extends AbstractStep
     protected $name = 'confirm';
     protected $title = 'Confirm';
     protected $shortTitle = 'Confirm';
-    protected $viewName = 'confirm.php';
+    protected $viewName = 'confirm.twig.html';
     protected $fields = [
         [
             'name' => 'send_config_email',

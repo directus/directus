@@ -8,7 +8,7 @@ class ProjectStep extends AbstractStep
     protected $name = 'project';
     protected $title = 'Project Info';
     protected $shortTitle = 'Project';
-    protected $viewName = 'project.php';
+    protected $viewName = 'project.twig.html';
     protected $fields = [
         [
             'name' => 'directus_name',
