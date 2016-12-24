@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+
+    {% include 'partials/html_head.twig.html' %}
+
+<body>
+
+    {% include 'partials/header.twig.html' %}
+
+    <div class="container">
+        <form method="post" action="{{ directus.root_path }}installation/index.php?step={{ directus.current_step }}">
+
+            {% block content %}{% endblock %}
+
+            <button type="submit" class="button primary disabled">{{ 'Continue'|__t }}</button>
+            <a href="{{ directus.root_path }}installation/index.php?step={{ directus.current_step - 1 }}"
+               class="no-button{{ directus.current_step > 1 ? '' : ' hide' }}">{{ 'Go Back' }}</a>
+        </form>
+    </div>
+
+    {% include 'partials/footer.twig.html' %}
+
+</body>
+</html>
