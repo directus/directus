@@ -1,6 +1,10 @@
 {% extends 'base.twig.html' %}
 
 {% block content %}
+
+{% import 'macros/error_codes.twig.html' as code %}
+{% set code = code.getErrorCode(directus.step.getResponse.getErrors()) %}
+
 <div class="container">
     {% include 'partials/errors.twig.html' %}
     <label for="db_type">{{ 'Database Type'|__t }}</label>
