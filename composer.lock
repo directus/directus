@@ -4,16 +4,21 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "6913463f167ae017d43f2ac1f6d6b13c",
-    "content-hash": "08e91869820d5d683aa0d2ac2c330723",
+    "content-hash": "b3275b69739efbeb70ab0e498bb25ac1",
     "packages": [
         {
             "name": "directus/acl",
             "version": "dev-d64",
             "source": {
                 "type": "git",
-                "url": "https://github.com/directus/directus-acl",
+                "url": "https://github.com/directus/directus-permissions.git",
                 "reference": "ede89b9221820c54e538780c73f82d5eb0dd2d3b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/directus/directus-permissions/zipball/ede89b9221820c54e538780c73f82d5eb0dd2d3b",
+                "reference": "ede89b9221820c54e538780c73f82d5eb0dd2d3b",
+                "shasum": ""
             },
             "require": {
                 "php": ">=5.4.0"
@@ -29,6 +34,7 @@
                     "Directus\\Permissions\\": ""
                 }
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -42,11 +48,17 @@
         },
         {
             "name": "directus/collection",
-            "version": "dev-d64",
+            "version": "dev-version/6.4",
             "source": {
                 "type": "git",
-                "url": "https://github.com/directus/directus-collection",
-                "reference": "0f54b2dd89c939cae9138d4bc0acf9b07da9a18a"
+                "url": "https://github.com/directus/directus-collection.git",
+                "reference": "9211a9bb44a0d21eaecec897e7bfc146dbf05254"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/directus/directus-collection/zipball/9211a9bb44a0d21eaecec897e7bfc146dbf05254",
+                "reference": "9211a9bb44a0d21eaecec897e7bfc146dbf05254",
+                "shasum": ""
             },
             "require": {
                 "php": ">=5.4.0"
@@ -54,7 +66,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-d64": "0.9.x-dev"
+                    "dev-version/6.4": "0.9.x-dev"
                 }
             },
             "autoload": {
@@ -62,6 +74,7 @@
                     "Directus\\Collection\\": ""
                 }
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -70,18 +83,24 @@
                 "collection",
                 "directus"
             ],
-            "time": "2016-11-15 02:23:54"
+            "time": "2016-12-26 09:16:26"
         },
         {
             "name": "directus/database",
             "version": "dev-version/6.4",
             "source": {
                 "type": "git",
-                "url": "https://github.com/directus/directus-database",
-                "reference": "b0f0ea00e094e4d1cf6f5bf9576d37a61c537373"
+                "url": "https://github.com/directus/directus-database.git",
+                "reference": "10878bb333a9d0c8f23997e033cbde2fa523085f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/directus/directus-database/zipball/10878bb333a9d0c8f23997e033cbde2fa523085f",
+                "reference": "10878bb333a9d0c8f23997e033cbde2fa523085f",
+                "shasum": ""
             },
             "require": {
-                "directus/collection": "0.9.*",
+                "directus/collection": "0.9.*@dev",
                 "php": ">=5.4.0",
                 "zendframework/zend-db": "2.8.*"
             },
@@ -99,6 +118,7 @@
                     "Directus\\Database\\": ""
                 }
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -107,7 +127,7 @@
                 "database",
                 "directus"
             ],
-            "time": "2016-12-15 19:45:59"
+            "time": "2016-12-26 08:40:37"
         },
         {
             "name": "directus/migrations",
@@ -163,16 +183,16 @@
         },
         {
             "name": "league/flysystem",
-            "version": "1.0.32",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/flysystem.git",
-                "reference": "1b5c4a0031697f46e779a9d1b309c2e1b24daeab"
+                "reference": "0165294685dc83e521a46e0df2ff6b8bd4df4369"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/1b5c4a0031697f46e779a9d1b309c2e1b24daeab",
-                "reference": "1b5c4a0031697f46e779a9d1b309c2e1b24daeab",
+                "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/0165294685dc83e521a46e0df2ff6b8bd4df4369",
+                "reference": "0165294685dc83e521a46e0df2ff6b8bd4df4369",
                 "shasum": ""
             },
             "require": {
@@ -242,7 +262,7 @@
                 "sftp",
                 "storage"
             ],
-            "time": "2016-10-19 20:38:46"
+            "time": "2016-11-23 11:39:43"
         },
         {
             "name": "slim/extras",
@@ -250,7 +270,7 @@
             "target-dir": "Slim/Extras",
             "source": {
                 "type": "git",
-                "url": "https://github.com/wellingguzman/Slim-Extras",
+                "url": "https://github.com/WellingGuzman/Slim-Extras.git",
                 "reference": "e087c60dee9b933f8df5b4454230bba303152f91"
             },
             "require": {
@@ -329,20 +349,20 @@
                 "rest",
                 "router"
             ],
-            "time": "2013-09-29 19:46:31"
+            "time": "2013-09-29T19:46:31+00:00"
         },
         {
             "name": "swiftmailer/swiftmailer",
-            "version": "v5.4.4",
+            "version": "5.x-dev",
             "source": {
                 "type": "git",
                 "url": "https://github.com/swiftmailer/swiftmailer.git",
-                "reference": "545ce9136690cea74f98f86fbb9c92dd9ab1a756"
+                "reference": "3547577659c1a035093b70fce5ae393b3c94f44e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/swiftmailer/swiftmailer/zipball/545ce9136690cea74f98f86fbb9c92dd9ab1a756",
-                "reference": "545ce9136690cea74f98f86fbb9c92dd9ab1a756",
+                "url": "https://api.github.com/repos/swiftmailer/swiftmailer/zipball/3547577659c1a035093b70fce5ae393b3c94f44e",
+                "reference": "3547577659c1a035093b70fce5ae393b3c94f44e",
                 "shasum": ""
             },
             "require": {
@@ -382,20 +402,20 @@
                 "mail",
                 "mailer"
             ],
-            "time": "2016-11-24 01:01:23"
+            "time": "2016-12-20 05:27:43"
         },
         {
             "name": "twig/twig",
-            "version": "v1.28.2",
+            "version": "1.x-dev",
             "source": {
                 "type": "git",
                 "url": "https://github.com/twigphp/Twig.git",
-                "reference": "b22ce0eb070e41f7cba65d78fe216de29726459c"
+                "reference": "5268900793747985d5b33001a2d7e1663f75a028"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twigphp/Twig/zipball/b22ce0eb070e41f7cba65d78fe216de29726459c",
-                "reference": "b22ce0eb070e41f7cba65d78fe216de29726459c",
+                "url": "https://api.github.com/repos/twigphp/Twig/zipball/5268900793747985d5b33001a2d7e1663f75a028",
+                "reference": "5268900793747985d5b33001a2d7e1663f75a028",
                 "shasum": ""
             },
             "require": {
@@ -403,12 +423,12 @@
             },
             "require-dev": {
                 "symfony/debug": "~2.7",
-                "symfony/phpunit-bridge": "~3.2@dev"
+                "symfony/phpunit-bridge": "~3.2"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.28-dev"
+                    "dev-master": "1.30-dev"
                 }
             },
             "autoload": {
@@ -443,15 +463,21 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2016-11-23 18:41:40"
+            "time": "2016-12-26 07:10:59"
         },
         {
             "name": "zendframework/zend-db",
             "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "https://github.com/wellingguzman/zend-db",
+                "url": "https://github.com/zendframework/zend-db.git",
                 "reference": "ae46299099c724a96fd088ae05a0b64e3748a808"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/zendframework/zend-db/zipball/ae46299099c724a96fd088ae05a0b64e3748a808",
+                "reference": "ae46299099c724a96fd088ae05a0b64e3748a808",
+                "shasum": ""
             },
             "require": {
                 "php": "^5.5 || ^7.0",
@@ -485,15 +511,10 @@
                     "Zend\\Db\\": "src/"
                 }
             },
-            "autoload-dev": {
-                "psr-4": {
-                    "ZendTest\\Db\\": "test/"
-                }
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "BSD-3-Clause"
             ],
-            "description": " ",
             "homepage": "https://github.com/zendframework/zend-db",
             "keywords": [
                 "db",
@@ -544,7 +565,7 @@
                 "stdlib",
                 "zf2"
             ],
-            "time": "2016-04-12 21:19:36"
+            "time": "2016-04-12T21:19:36+00:00"
         }
     ],
     "packages-dev": [
@@ -607,7 +628,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2014-09-02 10:13:14"
+            "time": "2014-09-02T10:13:14+00:00"
         },
         {
             "name": "phpunit/php-file-iterator",
@@ -654,7 +675,7 @@
                 "filesystem",
                 "iterator"
             ],
-            "time": "2016-10-03 07:40:28"
+            "time": "2016-10-03T07:40:28+00:00"
         },
         {
             "name": "phpunit/php-text-template",
@@ -695,7 +716,7 @@
             "keywords": [
                 "template"
             ],
-            "time": "2015-06-21 13:50:34"
+            "time": "2015-06-21T13:50:34+00:00"
         },
         {
             "name": "phpunit/php-timer",
@@ -739,7 +760,7 @@
             "keywords": [
                 "timer"
             ],
-            "time": "2016-05-12 18:03:57"
+            "time": "2016-05-12T18:03:57+00:00"
         },
         {
             "name": "phpunit/php-token-stream",
@@ -789,11 +810,11 @@
             "keywords": [
                 "tokenizer"
             ],
-            "time": "2014-03-03 05:10:30"
+            "time": "2014-03-03T05:10:30+00:00"
         },
         {
             "name": "phpunit/phpunit",
-            "version": "3.7.38",
+            "version": "3.7.x-dev",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
@@ -862,7 +883,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2014-10-17 09:04:17"
+            "time": "2014-10-17T09:04:17+00:00"
         },
         {
             "name": "phpunit/phpunit-mock-objects",
@@ -919,7 +940,7 @@
                 "mock",
                 "xunit"
             ],
-            "time": "2014-02-16 12:43:56"
+            "time": "2014-02-16T12:43:56+00:00"
         },
         {
             "name": "symfony/yaml",
@@ -968,14 +989,16 @@
             ],
             "description": "Symfony Yaml Component",
             "homepage": "https://symfony.com",
-            "time": "2016-11-14 16:15:57"
+            "time": "2016-11-14T16:15:57+00:00"
         }
     ],
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
         "slim/extras": 20,
-        "directus/migrations": 20
+        "directus/migrations": 20,
+        "directus/acl": 20,
+        "directus/database": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,
