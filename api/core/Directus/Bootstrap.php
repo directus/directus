@@ -2,6 +2,7 @@
 
 namespace Directus;
 
+use Directus\Acl\Acl;
 use Directus\Application\Application;
 use Directus\Auth\Provider as AuthProvider;
 use Directus\Database\SchemaManager;
@@ -367,7 +368,7 @@ class Bootstrap
      */
     private static function acl()
     {
-        $acl = new acl;
+        $acl = new Acl();
         $db = self::get('ZendDb');
 
         $DirectusTablesTableGateway = new DirectusTablesTableGateway($acl, $db);
