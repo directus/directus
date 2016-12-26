@@ -106,9 +106,7 @@ class DirectusBookmarksTableGateway extends BaseTableGateway
         $select = new Select($this->getTable());
         $select->where->equalTo('user', $userId);
 
-        $bookmarks = $this
-            ->selectWith($select)
-            ->current();
+        $bookmarks = $this->selectWith($select);
 
         if ($bookmarks) {
             $bookmarks = $bookmarks->toArray();
