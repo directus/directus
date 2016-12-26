@@ -94,6 +94,29 @@ class DirectusBookmarksTableGateway extends BaseTableGateway
         return $bookmarks ? $this->parseRecord($bookmarks) : [];
     }
 
+    /**
+     * Gets all the bookmarks for the given user
+     *
+     * @param $userId
+     *
+     * @return array
+     */
+    public function fetchByUserId($userId)
+    {
+        $select = new Select($this->getTable());
+        $select->where->equalTo('user', $userId);
+
+        $bookmarks = $this
+            ->selectWith($select)
+            ->current();
+
+        if ($bookmarks) {
+            $bookmarks = $bookmarks->toArray();
+        }
+
+        return $this->parseRecord($bookmarks);
+    }
+
     public function fetchAllByUser($user_id)
     {
         $select = new Select($this->table);
