@@ -7,7 +7,6 @@ use Directus\Db\TableSchema;
 use Directus\Util\DateUtils;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Insert;
-use Zend\Db\Sql\Predicate;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Where;
 

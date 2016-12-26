@@ -36,7 +36,6 @@ use Directus\Acl\Exception\UnauthorizedTableAlterException;
 use Directus\Auth\Provider as Auth;
 use Directus\Auth\RequestNonceProvider;
 use Directus\Bootstrap;
-use Directus\Db;
 use Directus\Db\SchemaManager;
 use Directus\Db\TableGateway\DirectusActivityTableGateway;
 use Directus\Db\TableGateway\DirectusBookmarksTableGateway;

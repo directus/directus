@@ -9,7 +9,6 @@ use Directus\Db\SchemaManager;
 use Directus\Db\TableSchema;
 use Directus\Util\ArrayUtils;
 use Directus\Util\DateUtils;
-use Zend\Db\RowGateway\AbstractRowGateway;
 use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Predicate;
 use Zend\Db\Sql\Predicate\PredicateInterface;

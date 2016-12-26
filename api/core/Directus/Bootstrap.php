@@ -2,7 +2,6 @@
 
 namespace Directus;
 
-use Directus\Acl\Acl;
 use Directus\Application\Application;
 use Directus\Auth\Provider as AuthProvider;
 use Directus\Database\SchemaManager;

@@ -5,7 +5,6 @@ namespace Directus\API\Routes\A1;
 use Directus\Application\Route;
 use Directus\Database\TableGateway\DirectusActivityTableGateway;
 use Directus\Util\ArrayUtils;
-use Directus\Util\DateUtils;
 use Directus\View\JsonView;
 
 class Activity extends Route

@@ -3,7 +3,6 @@
 namespace Directus\Files;
 
 use Directus\Bootstrap;
-use Directus\Db\TableGateway\DirectusSettingsTableGateway;
 use Directus\Filesystem\Filesystem;
 use Directus\Hook\Hook;
 use Directus\Util\DateUtils;

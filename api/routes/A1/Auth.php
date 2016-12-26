@@ -2,11 +2,11 @@
 
 namespace Directus\API\Routes\A1;
 
+use Directus\Application\Route;
 use Directus\Database\TableGateway\DirectusActivityTableGateway;
 use Directus\Database\TableGateway\DirectusGroupsTableGateway;
 use Directus\Database\TableGateway\DirectusUsersTableGateway;
 use Directus\Mail\Mail;
-use Directus\Application\Route;
 use Directus\Services\AuthService;
 use Directus\Util\DateUtils;
 use Directus\Util\StringUtils;

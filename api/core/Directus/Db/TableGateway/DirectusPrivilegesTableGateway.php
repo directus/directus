@@ -3,7 +3,6 @@
 namespace Directus\Db\TableGateway;
 
 use Directus\Acl\Acl;
-use Directus\Auth\Provider as Auth;
 use Directus\Db\TableSchema;
 use Directus\MemcacheProvider;
 use Zend\Db\Adapter\AdapterInterface;

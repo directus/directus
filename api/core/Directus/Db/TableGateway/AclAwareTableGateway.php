@@ -3,26 +3,26 @@
 namespace Directus\Db\TableGateway;
 
 use Directus\Acl\Acl;
-use Directus\Auth\Provider as Auth;
 use Directus\Acl\Exception\UnauthorizedTableAddException;
 use Directus\Acl\Exception\UnauthorizedTableBigDeleteException;
 use Directus\Acl\Exception\UnauthorizedTableBigEditException;
 use Directus\Acl\Exception\UnauthorizedTableDeleteException;
 use Directus\Acl\Exception\UnauthorizedTableEditException;
+use Directus\Auth\Provider as Auth;
 use Directus\Db\Exception\DuplicateEntryException;
 use Directus\Db\RowGateway\AclAwareRowGateway;
 use Directus\Db\TableSchema;
 use Directus\Util\Formatting;
 use Zend\Db\Adapter\AdapterInterface;
-use Zend\Db\Sql\Select;
+use Zend\Db\Adapter\Exception\InvalidQueryException;
+use Zend\Db\ResultSet\ResultSet;
+use Zend\Db\ResultSet\ResultSetInterface;
 use Zend\Db\Sql\Delete;
 use Zend\Db\Sql\Insert;
-use Zend\Db\Sql\Update;
-use Zend\Db\ResultSet\ResultSet;
-use Zend\Db\TableGateway\Feature;
-use Zend\Db\ResultSet\ResultSetInterface;
+use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Sql;
-use Zend\Db\Adapter\Exception\InvalidQueryException;
+use Zend\Db\Sql\Update;
+use Zend\Db\TableGateway\Feature;
 
 class AclAwareTableGateway extends BaseTableGateway
 {

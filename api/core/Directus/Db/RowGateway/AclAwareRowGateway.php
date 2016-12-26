@@ -3,12 +3,12 @@
 namespace Directus\Db\RowGateway;
 
 use Directus\Acl\Acl;
-use Directus\Auth\Provider as Auth;
 use Directus\Acl\Exception\UnauthorizedTableAddException;
 use Directus\Acl\Exception\UnauthorizedTableBigDeleteException;
 use Directus\Acl\Exception\UnauthorizedTableBigEditException;
 use Directus\Acl\Exception\UnauthorizedTableDeleteException;
 use Directus\Acl\Exception\UnauthorizedTableEditException;
+use Directus\Auth\Provider as Auth;
 use Directus\Util\Formatting;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Adapter\Exception\InvalidQueryException;

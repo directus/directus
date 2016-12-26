@@ -2,7 +2,6 @@
 
 namespace Directus\Db\TableGateway;
 
-use Directus\Db\Exception;
 use Directus\Db\TableSchema;
 use Zend\Db\Sql\Predicate;
 use Zend\Db\Sql\Select;
