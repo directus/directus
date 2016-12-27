@@ -616,6 +616,7 @@ define(function(require, exports, module) {
         //this.extensions[item.id].bind('all', logRoute);
         this.extensions[item].on('route', function() {
           this.trigger('subroute',item);
+          this.trigger('route');
           this.trigger('route:'+item,item);
         }, this);
         //this.tabs.add({title: app.capitalize(item.id), id: item.id, extension: true});
