@@ -477,6 +477,7 @@ $templateVars = [
     'cssFilePath' => getCSSFilePath()
 ];
 
+// @TODO: Compile html
 $app = Bootstrap::get('app');
 $app->render('base.twig.html', $templateVars);
-//echo template(file_get_contents('main.html'), $templateVars);
+// echo template(file_get_contents('main.html'), $templateVars);
