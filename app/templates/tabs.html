@@ -1,26 +1,26 @@
-<ul>
-	<li class="{{#if active}}active{{/if}} has-image" title="{{t 'edit_user'}}">
-	    <a href="#users/{{currentUserId}}">
-	      <img src="{{avatar}}" alt>
-	      <i class="material-icons">edit</i>
-	    </a>
-	</li>
-	<li class="{{#if active}}active{{/if}} " title="{{t 'sign_out'}}">
-	    <a href="#logout">
-	      <i class="material-icons">power_settings_new</i>
-	    </a>
-	</li>
-	{{#if showSettings}}
-	<li class="{{#if active}}active{{/if}} border-left" title="{{t 'settings'}}">
- 		<a href="#settings">
- 			<i class="material-icons">settings</i>
- 		</a>
- 	</li>
- 	{{else}}
- 	<li class="border-left" title="{{t 'directus_user_guide'}}">
- 		<a href="http://getdirectus.com/" target="_blank">
-	 		<i class="material-icons">help_outline</i>
-	 	</a>
- 	</li>
-	{{/if}}
-</ul>
+<div class="system user-menu-toggle">
+    <img class="avatar" src="{{avatar}}">
+    <div class="user-name">{{userFirstAndLastName currentUserId}}</div>
+    <i class="material-icons user-more">more_vert</i>
+
+    <div class="user-menu">
+        <ul>
+            {{#if showSettings}}
+            <a href="{{rootUrl}}settings"><li><i class="material-icons">settings</i> {{t 'admin_settings'}}</li></a>
+            {{/if}}
+            <a href="http://docs.getdirectus.com" target="_blank"><li><i class="material-icons">help</i> Help &amp; Docs</li></a>
+            <li class="discover">
+                <input class="custom-checkbox" id="check-discover" type="checkbox" value="" />
+                <label for="check-discover"><span></span> Discover</label>
+            </li>
+            <hr>
+            <a href="{{rootUrl}}files"><li><i class="material-icons">photo_library</i> File Library</li></a>
+            <a href="{{rootUrl}}users"><li><i class="material-icons">group</i> User Directory</li></a>
+            <hr>
+            <a href="{{rootUrl}}messages"><li><i class="material-icons">inbox</i> Messages<div class="count">3</div></li></a>
+            <a href="#users/{{currentUserId}}"><li><i class="material-icons">person</i> Your Profile</li></a>
+            <a href="#logout" class="open-modal" data-modal="confirm"><li><i class="material-icons">exit_to_app</i> {{t 'sign_out'}}</li></a>
+        </ul>
+    </div>
+
+</div>

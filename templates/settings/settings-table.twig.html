@@ -1,0 +1,287 @@
+{% extends "base.twig.html" %}
+
+{% block bodyClass %}{% endblock %}
+
+{% block content %}
+
+<div class="fields">
+
+	<div class="field">
+		<div class="label">
+			Name
+			<div class="comment">Must be unique</div>
+		</div><!-- NEEDED TO AVOID EXTRA SPACE FROM TEXT
+	 --><div class="interface">
+			<input type="text" placeholder="eg Interns" value="table_name"> <span class="light-text margin-l-10">Displayed as: "Table Name"</span>
+			<div class="margin-t-10">
+				<input class="custom-checkbox" id="checkbox" type="checkbox" value="" checked />
+				<label for="checkbox"><span></span> Enable strict table naming</label>
+			</div>
+		</div>
+	</div>
+
+	<div class="field">
+		<div class="label">
+			Display Template
+			<div class="comment">This twig template determines how this table's items are displayed throughout the system</div>
+		</div><!-- NEEDED TO AVOID EXTRA SPACE FROM TEXT
+	 --><div class="interface">
+			<input type="text" placeholder="eg {{ '{{' }}first_name{{ '}}' }} {{ '{{' }}last_name{{ '}}' }}" value="">
+		</div>
+	</div>
+
+	<div class="field">
+		<div class="label">
+			Columns
+			<div class="comment">Create, delete, and reorder columns – then setup their relationships, interfaces, requirements, defaults, and comments.</div>
+		</div><!-- NEEDED TO AVOID EXTRA SPACE FROM TEXT
+	 --><div class="interface">
+			<div class="table-container">
+				<table class="lines cozy clickable">
+					<thead>
+						<tr>
+							<th scope="column" class="reorder"><i class="material-icons">import_export</i></th>
+							<th scope="column" class="required"><i class="material-icons">star</i></th>
+							<th scope="column" class="visible"><i class="material-icons">visibility</i></th>
+							<th scope="column">Column Name</th>
+							<th scope="column">User Interface</th>
+							<th scope="column">Relationship</th>
+							<th scope="column">Comment</th>
+							<th scope="column"></th>
+						</tr>
+					</thead>
+					<tbody class="drag-and-drop">
+
+						{% for i in 0..8 %}
+						<tr class="open-modal {% if i == 2 %}visibility-off{% endif %} {% if i == 5 %}required-on{% endif %}" data-modal="column"> <!-- Optional Classes: selected -->
+							<td class="reorder"><i class="material-icons reorder-handle">drag_handle</i></td>
+							<td class="required"><i class="material-icons">{% if i == 5 %}star{% else %}star_outline{% endif %}</i></td>
+							<td class="visible"><i class="material-icons">{% if i == 2 %}visibility_off{% else %}visibility{% endif %}</i></td>
+							<td>Column Name</td>
+							<td>Text Input</td>
+							<td class="relationship">{% if i == 5 %}<span class="type">Many-to-Many</span> (Projects){% else %}None{% endif %}</td>
+							<td class="comment">{% if i == 3 %}<span class="active">Choose all that apply</span>{% else %}Add comment...{% endif %}</td>
+							<td class="relational-remove">
+								<i class="material-icons">close</i>
+							</td>
+						</tr>
+						{% endfor %}
+
+					</tbody>
+				</table>
+			</div>
+			<div class="button-group">
+				<div class="button open-modal" data-modal="column"><i class="material-icons">add</i> Add New Column</div>
+				<!-- <div class="button"><i class="material-icons">playlist_add_check</i> Choose Existing</div> -->
+			</div>
+		</div>
+	</div>
+
+	<div class="field">
+		<div class="label">
+			Listing Views
+			<div class="comment">Enable new views for the Item Listing page</div>
+		</div><!-- NEEDED TO AVOID EXTRA SPACE FROM TEXT
+	 --><div class="interface offset-bottom"> <!-- Optional Classes: offset-bottom -->
+			<div class="checkbox-container"><input type="checkbox" name="fieldCheckbox" id="check_table" value="value" checked disabled><label for="check_table"> Table</label></div>
+			<div class="checkbox-container"><input type="checkbox" name="fieldCheckbox" id="check_tiles" value="value" checked><label for="check_tiles"> Tiles</label></div>
+			<div class="checkbox-container"><input type="checkbox" name="fieldCheckbox" id="check_map" value="value" checked><label for="check_map"> Map</label></div>
+			<div class="checkbox-container"><input type="checkbox" name="fieldCheckbox" id="check_calendar" value="value"><label for="check_calendar"> Calendar</label></div>
+			<div class="checkbox-container"><input type="checkbox" name="fieldCheckbox" id="check_custom" value="value"><label for="check_custom"> Custom</label></div>
+		</div>
+	</div>
+
+	<div class="field">
+		<div class="label">
+			Hide Table
+			<div class="comment">This hides the table globally throughout the system</div>
+		</div><!-- NEEDED TO AVOID EXTRA SPACE FROM TEXT
+	 --><div class="interface">
+			<input class="custom-checkbox" id="checkbox" type="checkbox" value="" checked />
+			<label for="checkbox"><span></span> <!-- Label here --></label>
+		</div>
+	</div>
+
+	<div class="field">
+		<div class="label">
+			Single Item
+			<div class="comment">Clicking the table directly edits the first item – skipping the item listing page. For example, an "About" table with only one record</div>
+		</div><!-- NEEDED TO AVOID EXTRA SPACE FROM TEXT
+	 --><div class="interface">
+			<input class="custom-checkbox" id="checkbox" type="checkbox" value="" checked />
+			<label for="checkbox"><span></span> <!-- Label here --></label>
+		</div>
+	</div>
+
+	<div class="field">
+		<div class="label">
+			Primary Key
+			<div class="comment">Typically `id`, you can set a different column here</div>
+		</div><!-- NEEDED TO AVOID EXTRA SPACE FROM TEXT
+	 --><div class="interface">
+			<div class="select-container">
+				<select name="type">
+					<option value="id">ID</option>
+					<option value="column">Column</option>
+					<option value="column">Column</option>
+					<option value="column">Column</option>
+					<option value="column">Column</option>
+					<option value="column">Column</option>
+				</select>
+				<i class="material-icons select-arrow">arrow_drop_down</i>
+			</div>
+		</div>
+	</div>
+
+	<div class="field">
+		<div class="label">
+			Sort Column
+			<div class="comment">Typically `sort`, you can set a different column here</div>
+		</div><!-- NEEDED TO AVOID EXTRA SPACE FROM TEXT
+	 --><div class="interface">
+			<div class="select-container">
+				<select name="type">
+					<option value="">None</option>
+					<option value="sort">Sort</option>
+					<option value="column">Column</option>
+					<option value="column">Column</option>
+					<option value="column">Column</option>
+					<option value="column">Column</option>
+					<option value="column">Column</option>
+				</select>
+				<i class="material-icons select-arrow">arrow_drop_down</i>
+			</div>
+		</div>
+	</div>
+
+	<div class="field">
+		<div class="label">
+			Status Column
+			<div class="comment">Typically `active`, you can set a different column here</div>
+		</div><!-- NEEDED TO AVOID EXTRA SPACE FROM TEXT
+	 --><div class="interface">
+			<div class="select-container">
+				<select name="type">
+					<option value="">None</option>
+					<option value="active">Active</option>
+					<option value="column">Column</option>
+					<option value="column">Column</option>
+					<option value="column">Column</option>
+					<option value="column">Column</option>
+					<option value="column">Column</option>
+				</select>
+				<i class="material-icons select-arrow">arrow_drop_down</i>
+			</div>
+		</div>
+	</div>
+
+	<div class="field">
+		<div class="label">
+			Status Mapping
+			<div class="comment">If you have chosen a status column above, these determine the options available</div>
+		</div><!-- NEEDED TO AVOID EXTRA SPACE FROM TEXT
+	 --><div class="interface">
+			<textarea placeholder="" style="max-height:440px;height:440px;">
+[
+	0: [
+		'name': 'Delete',
+		'color': '#C1272D',
+		'sort': 3,
+		'hidden': true,
+		'subdued': false
+	],
+	1: [
+		'name': 'Active',
+		'color': '#5B5B5B',
+		'sort': 1,
+		'hidden': false,
+		'subdued': false
+	],
+	2: [
+		'name': 'Draft',
+		'color': '#BBBBBB',
+		'sort': 2,
+		'hidden': false,
+		'subdued': true
+	]
+]
+			</textarea>
+
+		</div>
+	</div>
+
+	<div class="field">
+		<div class="label">
+			Accountability
+			<div class="comment">You can choose columns for tracking the date and Directus user who created or modified each item</div>
+		</div><!-- NEEDED TO AVOID EXTRA SPACE FROM TEXT
+	 --><div class="interface">
+	 		<div class="accountability margin-r-20">
+	 			Created By Column
+				<div class="select-container">
+					<select name="type">
+						<option value="">None</option>
+						<option value="created_by">Created By</option>
+						<option value="column">Column</option>
+						<option value="column">Column</option>
+						<option value="column">Column</option>
+						<option value="column">Column</option>
+						<option value="column">Column</option>
+					</select>
+					<i class="material-icons select-arrow">arrow_drop_down</i>
+				</div>
+			</div>
+
+			<div class="accountability margin-r-20">
+	 			Created On Column
+				<div class="select-container">
+					<select name="type">
+						<option value="">None</option>
+						<option value="created_on">Created On</option>
+						<option value="column">Column</option>
+						<option value="column">Column</option>
+						<option value="column">Column</option>
+						<option value="column">Column</option>
+						<option value="column">Column</option>
+					</select>
+					<i class="material-icons select-arrow">arrow_drop_down</i>
+				</div>
+			</div>
+
+			<div class="accountability margin-r-20">
+	 			Modified By Column
+				<div class="select-container">
+					<select name="type">
+						<option value="">None</option>
+						<option value="modified_by">Modified By</option>
+						<option value="column">Column</option>
+						<option value="column">Column</option>
+						<option value="column">Column</option>
+						<option value="column">Column</option>
+						<option value="column">Column</option>
+					</select>
+					<i class="material-icons select-arrow">arrow_drop_down</i>
+				</div>
+			</div>
+
+			<div class="accountability">
+	 			Modified On Column
+				<div class="select-container">
+					<select name="type">
+						<option value="">None</option>
+						<option value="modified_on">Modified On</option>
+						<option value="column">Column</option>
+						<option value="column">Column</option>
+						<option value="column">Column</option>
+						<option value="column">Column</option>
+						<option value="column">Column</option>
+					</select>
+					<i class="material-icons select-arrow">arrow_drop_down</i>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</div>
+
+{% endblock %}

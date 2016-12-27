@@ -1,0 +1,36 @@
+{% block content %}
+
+<div class="right-sidebar no-title">
+
+	<div class="scroll-y">
+
+		<div class="metadata">
+			<!-- <b>Server:</b> Active<br> -->
+			<div class="button"><i class="material-icons">storage</i> Server Info</div>
+			<div class="button"><i class="material-icons">warning</i> Error Logs</div>
+			<div class="button"><i class="material-icons">help</i> Docs &amp; Help</div>
+		</div>
+
+		<ul class="timeline">
+			{% for i in 0..14 %}
+			<li class="activity {% if loop.revindex == 12 %}current{% endif %}">
+				<div class="activity-full-toggle">
+					{% if loop.revindex == 12 %}Current{% else %}v6.5.{{loop.revindex}}{% endif %} <i class="material-icons more-activity">arrow_drop_down</i>
+					<div class="timeago">
+						<i class="material-icons">schedule</i> 3d
+					</div>
+				</div>
+				<div class="full-activity">
+					<b>Version:</b> 6.3.4<br>
+					<b>Date:</b> Nov 3, 2016<br>
+					<b>Changes:</b> 3<br>
+					<div class="button rollback">Changelog</div>
+				</div>
+			</li>
+			{% endfor %}
+		</ul>
+
+	</div>
+</div>
+
+{% endblock %}

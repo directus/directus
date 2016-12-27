@@ -119,14 +119,17 @@ class Bootstrap
             'path' => APPLICATION_PATH . '/api/logs'
         ];
 
+        $templatesPaths = [APPLICATION_PATH . '/api/views/', APPLICATION_PATH . '/templates/'];
         $app = new Application([
-            'templates.path' => APPLICATION_PATH . '/api/views/',
+            'templates.path' => $templatesPaths[0],
             'mode' => DIRECTUS_ENV,
             'debug' => false,
             'log.enable' => true,
             'log.writer' => new DateTimeFileWriter($loggerSettings),
             'view' => new Twig()
         ]);
+
+        Twig::$twigTemplateDirs = $templatesPaths;
 
         Twig::$twigExtensions = [
             new DirectusTwigExtension()

@@ -468,11 +468,15 @@ $data = [
 $templateVars = [
     'cacheBuster' => $cacheBuster,
     'data' => json_encode($data),
-    'path' => DIRECTUS_PATH,
+    // 'path' => DIRECTUS_PATH,
+    'rootUrl' => DIRECTUS_PATH,
+    'assetsRoot' => rtrim(DIRECTUS_PATH, '/') . '/assets/',
     'locale' => get_user_locale(),
     'dir' => 'ltr',
     'customFooterHTML' => getCusomFooterHTML(),
     'cssFilePath' => getCSSFilePath()
 ];
 
-echo template(file_get_contents('main.html'), $templateVars);
+$app = Bootstrap::get('app');
+$app->render('base.twig.html', $templateVars);
+//echo template(file_get_contents('main.html'), $templateVars);

@@ -96,7 +96,12 @@ function(app, Backbone) {
     },
 
     afterRender: function(view) {
-      this.$el.find('input[type="text"]').focus();
+      var $el = this.$el;
+
+      $el.find('.smoke').fadeIn(200, function() {
+        $el.find('.modal.confirm').addClass('active');
+        $el.find('input[type="text"]').focus();
+      });
     },
 
     initialize: function (options) {

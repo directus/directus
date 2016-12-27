@@ -48,13 +48,31 @@ function(app, Backbone, __t) {
     },
 
     events: {
-     'click a[href$="#logout"]': function(e) {
-        e.preventDefault();
+      'mouseenter .user-menu-toggle': 'openUserMenu',
+      'mouseleave .user-menu-toggle': 'closeUserMenu',
+      'click a[href$="#logout"]': function(event) {
+        event.preventDefault();
+
         app.router.openModal({type: 'confirm', text: __t('are_you_sure_you_want_to_sign_out'), callback: function() {
           window.location.href = app.API_URL + "auth/logout";
         }});
+
         return false;
       }
+    },
+
+    openUserMenu: function(event) {
+      clearTimeout(this.avatarMenuTimer);
+      this.$el.find('.user-menu').addClass('active');
+    },
+
+    closeUserMenu: function(event) {
+      clearTimeout(this.avatarMenuTimer);
+      var self = this;
+      this.avatarMenuTimer = setTimeout(function() {
+        clearTimeout(self.avatarMenuTimer);
+        self.$el.find('.user-menu').removeClass('active');
+      }, 500);
     },
 
     afterRender: function() {

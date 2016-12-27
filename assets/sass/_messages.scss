@@ -1,0 +1,297 @@
+//////////////////////////////////////////////////////////////////////////////
+// Messages
+
+.mention {
+	@include transition (all, 400ms, ease-in-out);
+	// @include border-radius (2px);
+	// background-color: lighten($primary, 45%);
+	// padding: 0 2px 0 2px;
+	color: $primary;
+	cursor: pointer;
+	&:hover {
+		color: darken($primary, 8%);
+	}
+}
+
+.message {
+	position: absolute;
+	top: 0;
+	left: 40%;
+	width: 60%;
+	height: 100%;
+	padding: 40px;
+	min-width: 500px;
+	overflow: auto;
+	.details {
+		.avatar {
+			@include box-shadow ();
+			@include border-radius (100px);
+			position: absolute;
+			top: 40px;
+			left: 40px;
+			width: 60px;
+			height: 60px;
+			overflow: hidden;
+			// background-color: $primary;
+			// border: 3px solid $primary;
+		}
+		.from {
+			position: absolute;
+			top: 60px;
+			left: 120px;
+			font-size: 16px;
+			font-weight: 500;
+		}
+		.timeago {
+			position: absolute;
+			top: 63px;
+			right: 40px;
+			font-size: 13px;
+			font-weight: 500;
+			color: $gray-3;
+		}
+		h1 {
+			margin-top: 100px;
+			margin-bottom: 4px;
+		}
+		.to {
+			color: $gray-3;
+			margin-bottom: 40px;
+			font-weight: 500;
+		}
+	}
+	.attachments {
+		margin-top: 20px;
+		margin-left: -20px;
+	}
+	.seen {
+		@include transition (all, 400ms, ease-in-out);
+		margin-top: 20px;
+		margin-bottom: -15px;
+		font-size: 11px;
+		color: $gray-2;
+		font-weight: 500;
+		cursor: pointer;
+		&:hover {
+			color: $gray-4;
+		}
+		.material-icons {
+			font-size: 16px;
+			vertical-align: middle;
+			margin-top: -2px;
+			margin-right: 4px;
+		}
+	}
+	.body {
+		max-width: 800px;
+		color: $gray-4;
+		font-size: 16px;
+		line-height: 30px;
+	}
+	.response {
+		position: relative;
+		margin-top: 40px;
+		border-top:	1px solid $gray-1;
+		padding-top: 80px;
+		.avatar {
+			top: 20px;
+			left: 0px;
+			width: 40px;
+			height: 40px;
+		}
+		.from {
+			top: 28px;
+			left: 60px;
+			font-size: 16px;
+		}
+		.timeago {
+			top: 23px;
+			right: 0px;
+		}
+	}
+	.reply {
+		margin-top: 40px;
+		border-top:	1px solid $gray-1;
+		margin-bottom: 20px;
+		min-height: 300px;
+		&.active {
+			textarea {
+				height: 180px;
+			}
+			.button {
+				opacity: 1;
+			}
+		}
+		textarea {
+			@include transition (all, 400ms, ease-in-out);
+			@include border-radius (2px);
+			margin-top: 40px;
+			display: block;
+			padding: 20px;
+			border: none;
+			resize: none;
+			width: 100%;
+			max-width: 800px;
+			height: 100px;
+			color: $gray-4;
+			font-size: 16px;
+			line-height: 30px;
+			background-color: lighten($gray-1, 3%);
+			&:focus {
+				@include box-shadow (0px, 0px, 0px, 0px, 0.0);
+			}
+		}
+		.button {
+			@include transition (all, 400ms, ease-in-out);
+			display: inline-block;
+			min-width: 200px;
+			margin-top: 20px;
+			opacity: 0;
+			&.subdued {
+				display: inline-block;
+				min-width: 40px;
+				width: 40px;
+				margin-left: 20px;
+				padding-left: 10px;
+			}
+		}
+	}
+	.resize-handle {
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		left: -6px;
+		width: 11px;
+		cursor: col-resize;
+	}
+}
+
+.message-listing {
+	border-right: 1px solid $gray-1;
+	min-width: 300px;
+	width: 40%;
+	height: 100%;
+	overflow: auto;
+	.message-preview {
+		@include transition (all, $timing-short, ease-in-out);
+		position: relative;
+		padding: 16px;
+		background-color: $white;
+		color: $gray-4;
+		line-height: 22px;
+		font-size: 14px;
+		padding: 20px;
+		border-bottom: 1px solid $gray-1;
+		cursor: pointer;
+		&.unread {
+			.unread-indicator {
+				margin-left: 0;
+				opacity: 1;
+			}
+			.byline {
+				.subject {
+					margin-left: 14px;
+				}
+			}
+		}
+		&.active {
+			.active-indicator {
+				width: 4px;
+				opacity: 1;
+			}
+			background-color: lighten($primary, 45%);
+		}
+		&:hover {
+			background-color: lighten($primary, 45%);
+		}
+		.active-indicator {
+			@include transition (all, 400ms, ease-in-out);
+			position: absolute;
+			top: 0;
+			bottom: 0;
+			left: 0;
+			width: 0px;
+			background-color: $primary;
+			opacity: 0;
+		}
+		.unread-indicator {
+			@include transition (all, 400ms, ease-in-out);
+			@include border-radius (10px);
+			// animation: pulsate 2s ease-out;
+			// animation-iteration-count: infinite;
+			position: absolute;
+			top: 27px;
+			left: 20;
+			width: 8px;
+			height: 8px;
+			background-color: $primary;
+			margin-left: -16px;
+			opacity: 0;
+		}
+		.timeago {
+			position: absolute;
+			right: 20px;
+			top: 20px;
+			text-align: right;
+			font-size: 12px;
+			font-weight: 500;
+			color: $gray-3;
+			.material-icons {
+				font-size: 14px;
+				vertical-align: middle;
+				margin-top: -2px;
+			}
+		}
+		.byline {
+			position: relative;
+			margin-bottom: 4px;
+			font-size: 13px;
+			font-weight: 500;
+			color: $gray-3;
+			width: 100%;
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			padding-right: 30px;
+			.subject {
+				@include transition (all, 400ms, ease-in-out);
+				color: $gray-6;
+				margin-right: 4px;
+				white-space: nowrap;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				.is-chat,
+				.has-attachment {
+					font-size: 16px;
+					color: $gray-3;
+					vertical-align: middle;
+					margin-top: -2px;
+				}
+			}
+			.recipients {
+				font-size: 12px;
+				white-space: nowrap;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				line-height: 14px;
+				margin-bottom: 4px;
+			}
+			.avatar {
+				display: none;
+				@include box-shadow ();
+				@include border-radius (40px);
+				position: absolute;
+				top: -30px;
+				left: 50%;
+				margin-left: -20px;
+				width: 40px;
+				height: 40px;
+				overflow: hidden;
+				border: 2px solid $white;
+				img {
+					width: 100%;
+				}
+			}
+		}
+	}
+}

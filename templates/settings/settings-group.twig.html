@@ -1,0 +1,258 @@
+{% extends "base.twig.html" %}
+
+{% block bodyClass %}{% endblock %}
+
+{% block content %}
+
+<div class="fields">
+
+	<div class="field">
+		<div class="label">
+			Name
+			<div class="comment">Must be unique</div>
+		</div><!-- NEEDED TO AVOID EXTRA SPACE FROM TEXT
+	 --><div class="interface">
+			<input type="text" placeholder="eg Interns" value="Administrator">
+		</div>
+	</div>
+
+	<div class="field">
+		<div class="label">
+			Description
+		</div><!-- NEEDED TO AVOID EXTRA SPACE FROM TEXT
+	 --><div class="interface">
+			<textarea></textarea>
+		</div>
+	</div>
+
+	<div class="field">
+		<div class="label">
+			IP Whitelist
+			<div class="comment">Restrict access to this CSV of IP addresses</div>
+		</div><!-- NEEDED TO AVOID EXTRA SPACE FROM TEXT
+	 --><div class="interface">
+			<textarea placeholder="eg: 000.000.000.000, 111.111.111.111"></textarea>
+		</div>
+	</div>
+
+	<div class="field">
+		<div class="label">
+			Allow Uploads
+		</div><!-- NEEDED TO AVOID EXTRA SPACE FROM TEXT
+	 --><div class="interface">
+			<input class="custom-checkbox" id="checkbox" type="checkbox" value="" checked />
+			<label for="checkbox"><span></span> <!-- Label here --></label>
+		</div>
+	</div>
+
+	<div class="field">
+		<div class="label">
+			Allow Messaging
+		</div><!-- NEEDED TO AVOID EXTRA SPACE FROM TEXT
+	 --><div class="interface">
+			<input class="custom-checkbox" id="checkbox" type="checkbox" value="" checked />
+			<label for="checkbox"><span></span> <!-- Label here --></label>
+		</div>
+	</div>
+
+	<div class="field">
+		<div class="label">
+			Allow Profile Editing
+		</div><!-- NEEDED TO AVOID EXTRA SPACE FROM TEXT
+	 --><div class="interface">
+			<input class="custom-checkbox" id="checkbox" type="checkbox" value="" checked />
+			<label for="checkbox"><span></span> <!-- Label here --></label>
+		</div>
+	</div>
+
+	<div class="field">
+		<div class="label">
+			Users
+		</div><!-- NEEDED TO AVOID EXTRA SPACE FROM TEXT
+	 --><div class="interface">
+		 	<div class="table-container max-height">
+				<table class="lines cozy clickable">
+					<thead>
+						<tr>
+							<th scope="column"></th>
+							<th scope="column">Name <i class="material-icons order-direction">arrow_downward</i></th>
+							<th scope="column">Email</th>
+							<th scope="column">Last Login</th>
+							<th scope="column"></th>
+							<th scope="column" class="right-sidebar-toggle"><i class="material-icons">more_horiz</i></th>
+						</tr>
+					</thead>
+					<tbody>
+
+						{% for i in 0..3 %}
+						<tr class="dynamic-link" data-dynamic-link="{{rootUrl}}tables/blog/1#title"> <!-- Optional Classes: selected -->
+							<td class="avatar"><img src="{{rootUrl}}assets/imgs/avatar.jpg"></td>
+							<td>Ben Haynes</td>
+							<td>ben@rngr.org</td>
+							<td>6 Minutes Ago</td>
+							<td class="status-badges">
+								{% if i == 5 %}<div class="status-badge" style="background-color:#eeeeee;">Online</div>{% endif %}
+							</td>
+							<td class="relational-remove">
+								<i class="material-icons">close</i>
+							</td>
+						</tr>
+						{% endfor %}
+
+					</tbody>
+				</table>
+			</div>
+			<div class="button-group">
+				<div class="button"><i class="material-icons">add</i> Add New</div>
+				<div class="button"><i class="material-icons">playlist_add_check</i> Choose Existing</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="field">
+		<div class="label">
+			Permissions
+		</div><!-- NEEDED TO AVOID EXTRA SPACE FROM TEXT
+	 --><div class="interface">
+		 	<div class="table-container">
+				<table class="lines cozy pad-first">
+					<thead>
+						<tr>
+							<th scope="column">Table</th>
+							<th scope="column"><!-- Workflow --></th>
+							<th scope="column">Status</th>
+							<th scope="column">View</th>
+							<th scope="column">Add</th>
+							<th scope="column">Edit</th>
+							<th scope="column">Delete</th>
+							<th scope="column">Column Read Blacklist</th>
+							<th scope="column">Column Write Blacklist</th>
+						</tr>
+					</thead>
+					<tbody>
+
+						{% for i in 0..8 %}
+						<tr> <!-- Optional Classes: selected -->
+							<td>Table Name</td>
+							<td class="permissions-workflow {% if i == 2 %}disabled{% endif %}">
+								<i class="material-icons">tune</i>
+							</td>
+							<td class="permissions-status">
+								<div class="global">
+									All
+								</div>
+								<div class="workflow">
+									<div class="state text-align">
+										Active
+									</div>
+									<div class="state text-align">
+										Draft
+									</div>
+								</div>
+							</td>
+							<td class="permissions-view">
+								<div class="global">
+									<input class="custom-checkbox permission-toggle {% if i == 5 %}partial{% endif %}" id="check_view_{{i}}" type="checkbox" value="" checked="checked" />
+									<label for="check_view_{{i}}"><span></span></label>
+								</div>
+								<div class="workflow">
+									<div class="state">
+										<input class="custom-checkbox permission-toggle" id="check_view_active_{{i}}" type="checkbox" value="" checked="checked" />
+										<label for="check_view_active_{{i}}"><span></span></label>
+									</div>
+									<div class="state">
+										<input class="custom-checkbox permission-toggle" id="check_view_draft_{{i}}" type="checkbox" value="" checked="checked" />
+										<label for="check_view_draft_{{i}}"><span></span></label>
+									</div>
+								</div>
+							</td>
+							<td class="permissions-add">
+								<div class="global">
+									<input class="custom-checkbox permission-toggle" id="check_add_{{i}}" type="checkbox" value="" checked="checked" />
+									<label for="check_add_{{i}}"><span></span></label>
+								</div>
+								<div class="workflow">
+									<div class="state">
+										<input class="custom-checkbox permission-toggle" id="check_add_active_{{i}}" type="checkbox" value="" checked="checked" />
+										<label for="check_add_active_{{i}}"><span></span></label>
+									</div>
+									<div class="state">
+										<input class="custom-checkbox permission-toggle" id="check_add_draft_{{i}}" type="checkbox" value="" checked="checked" />
+										<label for="check_add_draft_{{i}}"><span></span></label>
+									</div>
+								</div>
+							</td>
+							<td class="permissions-edit">
+								<div class="global">
+									<input class="custom-checkbox permission-toggle" id="check_edit_{{i}}" type="checkbox" value="" {% if i == 5 %}{% else %}checked="checked"{% endif %} />
+									<label for="check_edit_{{i}}"><span></span></label>
+								</div>
+								<div class="workflow">
+									<div class="state">
+										<input class="custom-checkbox permission-toggle" id="check_edit_active_{{i}}" type="checkbox" value="" checked="checked" />
+										<label for="check_edit_active_{{i}}"><span></span></label>
+									</div>
+									<div class="state">
+										<input class="custom-checkbox permission-toggle" id="check_edit_draft_{{i}}" type="checkbox" value="" checked="checked" />
+										<label for="check_edit_draft_{{i}}"><span></span></label>
+									</div>
+								</div>
+							</td>
+							<td class="permissions-delete">
+								<div class="global">
+									<input class="custom-checkbox permission-toggle" id="check_delete_{{i}}" type="checkbox" value="" checked="checked" />
+									<label for="check_delete_{{i}}"><span></span></label>
+								</div>
+								<div class="workflow">
+									<div class="state">
+										<input class="custom-checkbox permission-toggle" id="check_delete_active_{{i}}" type="checkbox" value="" checked="checked" />
+										<label for="check_delete_active_{{i}}"><span></span></label>
+									</div>
+									<div class="state">
+										<input class="custom-checkbox permission-toggle" id="check_delete_draft_{{i}}" type="checkbox" value="" checked="checked" />
+										<label for="check_delete_draft_{{i}}"><span></span></label>
+									</div>
+								</div>
+							</td>
+							<td class="permissions-blacklist">
+								<div class="global">
+									{% if i == 5 %}
+									<a href="#" class="choose-column-blacklist active">Owner, Publish Date</a>
+									{% else %}
+									<a href="#" class="choose-column-blacklist">Choose Columns</a>
+									{% endif %}
+								</div>
+								<div class="workflow">
+									<div class="state text-align">
+										<a href="#" class="choose-column-blacklist">Choose Columns</a>
+									</div>
+									<div class="state text-align">
+										<a href="#" class="choose-column-blacklist">Choose Columns</a>
+									</div>
+								</div>
+							</td>
+							<td class="permissions-blacklist">
+								<div class="global">
+									<a href="#" class="choose-column-blacklist">Choose Columns</a>
+								</div>
+								<div class="workflow">
+									<div class="state text-align">
+										<a href="#" class="choose-column-blacklist">Choose Columns</a>
+									</div>
+									<div class="state text-align">
+										<a href="#" class="choose-column-blacklist">Choose Columns</a>
+									</div>
+								</div>
+							</td>
+						</tr>
+						{% endfor %}
+
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+
+</div>
+
+{% endblock %}

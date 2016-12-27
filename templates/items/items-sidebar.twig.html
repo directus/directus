@@ -1,0 +1,127 @@
+{% block content %}
+
+<div class="right-sidebar">
+
+	<div class="sidebar-title">View Settings</div>
+	<i class="material-icons close">close</i>
+
+	<div class="scroll-y">
+
+		<div class="tiles">
+			<div class="tile table-view active" title="Table"><i class="material-icons">menu</i></div>
+			<div class="tile tile-view" title="Tiles"><i class="material-icons">apps</i></div>
+			<div class="tile map-view" title="Map"><i class="material-icons">map</i></div>
+			<div class="tile calendar-view" title="Calendar"><i class="material-icons">event</i></div>
+		</div>
+
+		<!-- Optional Dropdown for custom view templates -->
+		<!-- <div class="select-container">
+			<select name="type">
+				<option value="">Custom Template 1</option>
+				<option value="">Custom Template 2</option>
+				<option value="">Custom Template 3</option>
+			</select>
+			<i class="material-icons select-arrow">arrow_drop_down</i>
+		</div> -->
+
+		<hr>
+
+		<h3>Chart</h3>
+		<div class="select-container">
+			<select name="type" class="spacing-adjust">
+				<optgroup label="Y Axis (INT)">
+					<option value="">Views</option>
+					<option value="">Column</option>
+					<option value="">Column</option>
+				</optgroup>
+			</select>
+			<i class="material-icons select-arrow">arrow_drop_down</i>
+		</div>
+
+		<div class="select-container margin-t-10">
+			<select name="type" class="spacing-adjust">
+				<optgroup label="X Axis (DATE)">
+					<option value="">Date Published</option>
+					<option value="">Column</option>
+					<option value="">Column</option>
+				</optgroup>
+			</select>
+			<i class="material-icons select-arrow">arrow_drop_down</i>
+		</div>
+
+		<hr>
+
+		<h3>Spacing</h3>
+		<div class="select-container">
+			<select name="type" class="spacing-adjust">
+				<option value="cozy">Compact</option>
+				<option value="compact" selected>Cozy</option>
+				<option value="comfortable">Comfortable</option>
+			</select>
+			<i class="material-icons select-arrow">arrow_drop_down</i>
+		</div>
+
+		<hr>
+
+		<h3>Columns</h3>
+		<ul id="reorder-columns" class="menu reorder-columns">
+			<li title="ID" class="deselected">
+				<input class="custom-checkbox select-row" id="check-1" type="checkbox" value="" />
+				<label for="check-1"><span></span> ID</label>
+			</li>
+			<li title="Title">
+				<input class="custom-checkbox select-row" id="check-2" type="checkbox" value="" checked />
+				<label for="check-2"><span></span> Title</label>
+			</li>
+			<li title="Date Published">
+				<input class="custom-checkbox select-row" id="check-3" type="checkbox" value="" checked />
+				<label for="check-3"><span></span> Date Published</label>
+			</li>
+			<li title="Author" class="deselected">
+				<input class="custom-checkbox select-row" id="check-4" type="checkbox" value="" />
+				<label for="check-4"><span></span> Author</label>
+			</li>
+			<li title="Slideshow">
+				<input class="custom-checkbox select-row" id="check-5" type="checkbox" value="" checked />
+				<label for="check-5"><span></span> Slideshow</label>
+			</li>
+			<li title="Hero Image" class="deselected">
+				<input class="custom-checkbox select-row" id="check-6" type="checkbox" value="" />
+				<label for="check-6"><span></span> Hero Image</label>
+			</li>
+			<li title="Views">
+				<input class="custom-checkbox select-row" id="check-7" type="checkbox" value="" checked />
+				<label for="check-7"><span></span> Views</label>
+			</li>
+		</ul>
+
+		<hr>
+
+		<h3>System</h3>
+		<ul class="menu">
+			<li title="Last Edited On">
+				<input class="custom-checkbox select-row" id="check-8b" type="checkbox" value="" />
+				<label for="check-8b"><span></span> Item Numbers</label>
+			</li>
+			<li title="Last Edited On">
+				<input class="custom-checkbox select-row" id="check-8" type="checkbox" value="" />
+				<label for="check-8"><span></span> Last Edited On</label>
+			</li>
+			<li title="Show Comments">
+				<input class="custom-checkbox select-row" id="check-9" type="checkbox" value="" />
+				<label for="check-9"><span></span> Show Comments</label>
+			</li>
+			<li title="Revisions">
+				<input class="custom-checkbox select-row" id="check-10" type="checkbox" value="" />
+				<label for="check-10"><span></span> Revisions</label>
+			</li>
+			<li title="Show Footer">
+				<input class="custom-checkbox select-row" id="check-11" type="checkbox" value="" />
+				<label for="check-11" class="footer-open-toggle"><span></span> Show Footer</label>
+			</li>
+		</ul>
+	</div>
+
+</div>
+
+{% endblock %}

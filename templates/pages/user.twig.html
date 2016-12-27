@@ -1,0 +1,157 @@
+{% extends "base.twig.html" %}
+
+{% block bodyClass %}{% endblock %}
+
+{% block content %}
+
+<div class="fields">
+
+
+	<div class="field">
+		<div class="label">
+			Avatar
+		</div><!-- NEEDED TO AVOID EXTRA SPACE FROM TEXT
+	 --><div class="interface">
+			<div class="dropzone">
+				<i class="material-icons cloud">cloud_upload</i>
+				<div class="drag-and-drop">Drag &amp; Drop</div>
+				<div class="click-to-browse">Or Click to Browse</div>
+			</div>
+			<!-- <div class="button"><i class="material-icons">playlist_add_check</i> Choose Existing</div>
+			<div class="button"><i class="material-icons">insert_link</i> Import URL</div> -->
+		</div>
+	</div>
+
+	<div class="field">
+		<div class="label">
+			First Name
+		</div><!-- NEEDED TO AVOID EXTRA SPACE FROM TEXT
+	 --><div class="interface">
+			<input type="text" placeholder="" value="Benjamin">
+		</div>
+	</div>
+
+	<div class="field">
+		<div class="label">
+			Last Name
+		</div><!-- NEEDED TO AVOID EXTRA SPACE FROM TEXT
+	 --><div class="interface">
+			<input type="text" placeholder="" value="Haynes">
+		</div>
+	</div>
+
+	<div class="field">
+		<div class="label">
+			Email
+		</div><!-- NEEDED TO AVOID EXTRA SPACE FROM TEXT
+	 --><div class="interface">
+			<input type="text" placeholder="" value="ben@rngr.org">
+		</div>
+	</div>
+
+	<div class="field">
+		<div class="label">
+			Forward Messages
+		</div><!-- NEEDED TO AVOID EXTRA SPACE FROM TEXT
+	 --><div class="interface">
+			<input class="custom-checkbox" id="checkbox" type="checkbox" value="" checked />
+			<label for="checkbox"><span></span> <!-- Label here --></label>
+		</div>
+	</div>
+
+	<div class="field">
+		<div class="label">
+			Password
+		</div><!-- NEEDED TO AVOID EXTRA SPACE FROM TEXT
+	 --><div class="interface">
+			<input type="password" placeholder="" value="ben@rngr.org"><br>
+			<input type="password" placeholder="" value="ben@rngr.org">
+		</div>
+	</div>
+
+	<div class="field">
+		<div class="label">
+			Bio
+		</div><!-- NEEDED TO AVOID EXTRA SPACE FROM TEXT
+	 --><div class="interface">
+			<textarea>A blinding cursor pulses in the electric darkness like a heart coursing with phosphorous light, burning beneath the derma of black-neon glass.</textarea>
+		</div>
+	</div>
+
+	<div class="field">
+		<div class="label">
+			Address
+		</div><!-- NEEDED TO AVOID EXTRA SPACE FROM TEXT
+	 --><div class="interface">
+			<input type="text" placeholder="" value="149 Cleveland Road" style="min-width:200px;"> <input type="text" placeholder="" value="#3" style="min-width:40px;"><br>
+			<input type="text" placeholder="" value="New Haven" style="min-width:200px;"> <input type="text" placeholder="" value="CT" style="min-width:40px;"> <input type="text" placeholder="" value="06515" style="min-width:40px;">
+		</div>
+	</div>
+
+	{#
+	<!-- Tags -->
+	<div class="field">
+		<div class="label">
+			Tags
+		</div><!-- NEEDED TO AVOID EXTRA SPACE FROM TEXT
+	 --><div class="interface">
+			<input type="text" placeholder="Press enter or comma to add tags..." value="">
+			<div class="tag-container">
+				{% for i in 0..20 %}
+				<div class="tag">Tag {{i}}</div>
+				{% endfor %}
+			</div>
+		</div>
+	</div>
+
+	<div class="field">
+		<div class="label">
+			Map
+		</div><!-- NEEDED TO AVOID EXTRA SPACE FROM TEXT
+	 --><div class="interface">
+			<input id="map-search" class="map-search" type="text" placeholder="Find a location">
+			<div class="map"></div>
+			<div class="lat-long">Latitude: 40.720&nbsp;&nbsp;&nbsp;&nbsp;Longitude: -73.953</div> <div class="map-clear">Clear</div>
+		</div>
+	</div>
+	#}
+
+	<div class="field break-header">
+		<h3>Admin Only</h3>
+	</div>
+
+	<div class="field">
+		<div class="label">
+			Group
+			<div class="comment">Used by Select and M2O</div>
+		</div><!-- NEEDED TO AVOID EXTRA SPACE FROM TEXT
+	 --><div class="interface">
+			<div class="select-container">
+				<select name="type">
+					<option value="">Choose Column</option>
+					<option value="value">Option</option>
+					<option value="value">Option</option>
+					<option value="value">Option</option>
+					<option value="value">Option</option>
+					<option value="value">Option</option>
+					<option value="value">Option</option>
+				</select>
+				<i class="material-icons select-arrow">arrow_drop_down</i>
+			</div>
+		</div>
+	</div>
+
+	<div class="field">
+		<div class="label">
+			Token
+		</div><!-- NEEDED TO AVOID EXTRA SPACE FROM TEXT
+	 --><div class="interface">
+			<input type="text" placeholder="" value="Iv46181ckrlVFtkrdVL6a2uRy3D2N78O">
+		</div>
+	</div>
+
+</div>
+
+{% include 'items/item-sidebar.twig.html' %}
+
+{% endblock %}
