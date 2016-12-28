@@ -6,7 +6,7 @@
 <!-- Add a new item -->
 </div>
 {{else}}
-<table class="lines cozy clickable fixed-header pad-first"></table> <!-- charted <-- has a chart at the top -->
+<table class="lines cozy clickable fixed-header {{#unless isSortableOrSelectable}}pad-first{{/unless}}"></table> <!-- charted <-- has a chart at the top -->
 {{!--
 <div class="table-shadow">
     <div class="directus-toolbar"></div>

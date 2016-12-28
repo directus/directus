@@ -22,12 +22,15 @@ function(app, _, Backbone, Notification, __t, ModelHelper, TableHead, TableBody,
     TableBody: TableBody,
 
     serialize: function() {
+      var isSortableOrSelectable = this.options.selectable || this.options.sort;
+
       return {
         columns: this.options.columns,
         id: this.collection.table.id,
         selectable: this.options.selectable,
         sortable: this.options.sortable,
         disabledSorting: !this.sortable,
+        isSortableOrSelectable: isSortableOrSelectable,
         showEmptyMessage: (this.collection.length === 0 && !this.options.hideEmptyMessage)
       };
     },
