@@ -106,6 +106,14 @@ require([
     return status ? status.name : '';
   });
 
+  // Get the model status color
+  Handlebars.registerHelper('statusColor', function(model) {
+    var statusValue = model.get(app.statusMapping.status_name);
+    var status = app.statusMapping.mapping[statusValue] || {};
+
+    return status ? status.color : '#eeeeee';
+  });
+
   Handlebars.registerHelper('notPublishedClass', function(model) {
     if (model.get(app.statusMapping.status_name) == app.statusMapping.draft_num) {
       return 'not-published';
