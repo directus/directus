@@ -13,12 +13,10 @@ define([
 
 function(app, _, Backbone, Notification, __t, ModelHelper, TableHead, TableBody, TableFooter) {
 
-  "use strict";
+  'use strict';
 
   var TableView = Backbone.Layout.extend({
-
-    tagname: 'div',
-    attributes: {'class':'directus-table-container'},
+    tagName: 'div',
     template: 'tables/table',
 
     TableBody: TableBody,
@@ -230,6 +228,10 @@ function(app, _, Backbone, Notification, __t, ModelHelper, TableHead, TableBody,
 
       if (this.options.selectable === undefined) {
         this.options.selectable = true;
+      }
+
+      if (this.options.status === undefined) {
+        this.options.status = collection.hasColumn(app.statusMapping.status_name);
       }
 
       // ==================================================================================

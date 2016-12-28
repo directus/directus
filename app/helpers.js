@@ -98,6 +98,22 @@ require([
     }
   });
 
+  // Get the model status name
+  Handlebars.registerHelper('statusName', function(model) {
+    var statusValue = model.get(app.statusMapping.status_name);
+    var status = app.statusMapping.mapping[statusValue] || {};
+
+    return status ? status.name : '';
+  });
+
+  Handlebars.registerHelper('notPublishedClass', function(model) {
+    if (model.get(app.statusMapping.status_name) == app.statusMapping.draft_num) {
+      return 'not-published';
+    }
+
+    return '';
+  });
+
   // Should be combined with userShort below with param: "show_avatar" [true,false]
   Handlebars.registerHelper('userName', function(userId) {
     if (_.isNaN(userId)) return;

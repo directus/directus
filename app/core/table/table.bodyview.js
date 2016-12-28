@@ -1,19 +1,23 @@
 define([
   'app',
   'backbone',
+  'underscore',
   'sortable',
   'core/notification'
 ],
 
-function(app, Backbone, Sortable, Notification) {
+function(app, Backbone, _, Sortable, Notification) {
 
-  "use strict";
+  'use strict';
 
   var TableBodyView = Backbone.Layout.extend({
-
     tagName: 'tbody',
 
     template: 'tables/table-body',
+
+    attributes: {
+      class: 'drag-and-drop bulk-selectable'
+    },
 
     events: {
       'change td.check > input': 'select',
@@ -94,6 +98,7 @@ function(app, Backbone, Sortable, Notification) {
       var tableData = {
         columns: this.collection.getColumns(),
         rows: rows,
+        status: this.parentView.options.status,
         sortable: this.options.sort,
         selectable: this.options.selectable,
         deleteColumn: this.options.deleteColumn
@@ -130,6 +135,8 @@ function(app, Backbone, Sortable, Notification) {
       this.options.filters = this.options.filters || {};
       this.sort = this.options.structure.get('sort') || options.sort;
       this.collection.on('sort', this.render, this);
+      this.parentView = options.parentView;
+
       if (this.sort) {
         var container = this.$el[0];
         var that = this;

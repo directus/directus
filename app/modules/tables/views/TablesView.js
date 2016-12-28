@@ -23,7 +23,8 @@ function(app, Backbone, Directus, __t, BasePageView) {
         attributes: {
           'class': 'table-shadow'
         },
-        template: 'modules/tables/tables'
+        template: 'modules/tables/tables',
+        columns: ['table_name']
       }));
       BasePageView.prototype.beforeRender.call(this);
     }

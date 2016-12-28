@@ -432,7 +432,12 @@ if (isset($groups['rows']) && count($groups['rows'] > 0)) {
     }
 }
 
-$statusMapping = ['active_num' => STATUS_ACTIVE_NUM, 'deleted_num' => STATUS_DELETED_NUM, 'status_name' => STATUS_COLUMN_NAME];
+$statusMapping = [
+    'active_num' => STATUS_ACTIVE_NUM,
+    'deleted_num' => STATUS_DELETED_NUM,
+    'draft_num' => STATUS_DRAFT_NUM,
+    'status_name' => STATUS_COLUMN_NAME
+];
 $statusMapping['mapping'] = $config['statusMapping'];
 
 $data = [
