@@ -17,7 +17,7 @@ define(function(require, exports, module) {
     tagName: 'div',
     // Attributes applied to the base tag
     attributes: {
-      class: 'field'
+      class: 'interface-field'
     },
     name: null,
     columnSchema: null,
