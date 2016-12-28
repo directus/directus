@@ -1,9 +1,10 @@
 define([
-  "app",
-  "backbone",
-  "core/baseHeaderView"
+  'app',
+  'backbone',
+  'underscore',
+  'core/baseHeaderView'
 ],
-function(app, Backbone, BaseHeaderView) {
+function(app, Backbone, _, BaseHeaderView) {
 
   return Backbone.Layout.extend({
 
@@ -40,7 +41,7 @@ function(app, Backbone, BaseHeaderView) {
       this.headerOptions.rightSecondaryToolbar = this.rightSecondaryToolbar();
 
       this.headerView = new BaseHeaderView({headerOptions: this.headerOptions});
-      this.setView('#fixedHeader', this.headerView);
+      app.router.v.main.setView('#mainHeaderContent', this.headerView);
     },
 
     reRender: function() {
@@ -50,6 +51,9 @@ function(app, Backbone, BaseHeaderView) {
 
     beforeRender: function() {
       this.initToolbar();
+      // render the header manually
+      // this view is part of the main view and is not a child of this view
+      this.headerView.render();
     },
     fetchHolding: [],
     //Only fetch if we are not waiting on any widgets to get preference data

@@ -1,4 +1,4 @@
-<div class="header">
+<div id="mainHeader" class="header">
 		<a href="{{rootUrl}}" class="open-modal" data-modal="welcome-1">
 			<div class="logo help" data-help="Your Logo – at any point you can click this to visit your project.">
 				<img class="directus" src="{{assetsRoot}}imgs/directus-logo.svg">
@@ -6,6 +6,9 @@
 			</div>
 		</a>
 
+        <div id="mainHeaderContent"></div>
+
+        {#
 		<div class="breadcrumb help" data-help="This is the 'breadcrumb' which shows you where you are within the system.">
 			<i class="material-icons hamburger" title="Bookmark this page">menu</i>
 			{% if breadcrumb[0] %}<a class="crumb {% if breadcrumb|length == 1 %}active{% endif %}" href="{{rootUrl}}{{breadcrumbURL[0]}}">{{breadcrumb[0]}}</a>{% endif %}
@@ -250,4 +253,5 @@
 			</a>
 		</div>
 		{% endif %}
+        #}
 </div>

@@ -14,13 +14,11 @@ define([
 
 function(app, Backbone) {
 
-  "use strict";
+  'use strict';
 
   return Backbone.Layout.extend({
 
     template: 'header/header',
-
-    tagName: 'div',
 
     lastHeaderHeight: 0,
 
