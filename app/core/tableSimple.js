@@ -44,6 +44,7 @@ function(app, Backbone) {
       });
 
       rows = _.map(models, function(model) {
+        model.set('table_name', app.capitalize(model.get('table_name')));
         return {model: model, id: model.get('table_name')};
       });
 

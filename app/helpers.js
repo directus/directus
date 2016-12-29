@@ -242,11 +242,29 @@ require([
     return new Handlebars.SafeString(select);
   });
 
-  //Handlebars UI helper!
-  Handlebars.registerHelper("ui", function(model, attr, options) {
-    if (model.isNested) model = model.get('data');
-    var html = UIManager.getList(model, attr) || '';
+  // Handlebars UI helper!
+  function uiHelper(model, attr, options) {
+    var html;
+
+    if (model.isNested) {
+      model = model.get('data');
+    }
+
+    html = UIManager.getList(model, attr) || '';
+
     return new Handlebars.SafeString(html);
+  }
+
+  Handlebars.registerHelper('ui', uiHelper);
+
+  Handlebars.registerHelper('uiCapitalize', function(model, attr, options) {
+    var value = uiHelper(model, attr, options);
+
+    if (_.isString(value)) {
+      value = app.capitalize(value);
+    }
+
+    return value;
   });
 
 });

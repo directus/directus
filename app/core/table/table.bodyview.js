@@ -91,8 +91,9 @@ function(app, Backbone, _, Sortable, Notification) {
       rows = _.map(models, function(model) {
         var classes = _.map(rowIdentifiers, function(columnName) { return 'row-'+columnName+'-'+model.get(columnName); });
         var highlight = _.contains(highlightIds,model.id);
+        var statusDraft = model.get(app.statusMapping.status_name) === app.statusMapping.draft_num;
 
-        return {model: model, classes: classes, highlight: highlight};
+        return {model: model, classes: classes, highlight: highlight, statusDraft: statusDraft};
       });
 
       var tableData = {

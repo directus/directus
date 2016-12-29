@@ -26,7 +26,9 @@ $(function() {
 		} else {
 			$('body').toggleClass('right-sidebar-open');
 		}
-		setTimeout(tableColumnWidths, 250);
+		setTimeout(function() {
+		  tableColumnWidths($('.fixed-header'));
+    }, 250);
 	}
 	$('.right-sidebar-toggle, .right-sidebar .close').on("click", function(e) {
 		toggleRightSidebar();

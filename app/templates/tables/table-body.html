@@ -11,7 +11,7 @@
     {{/if}}
     {{#each ../columns}}<td>{{ui ../model this}}</td>{{/each}}
     <td class="status-badges">
-        {{#if ../status}}<div class="status-badge" style="background-color:{{statusColor model}};">{{statusName model}}</div>{{/if}}
+        {{#if statusDraft}}<div class="status-badge" style="background-color:#eeeeee;">{{statusName model}}</div>{{/if}}
     </td>
 </tr>
 {{/each}}

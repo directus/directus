@@ -9,10 +9,12 @@ function(app, Backbone, Widgets, moment) {
 
   var FilesCardView = Backbone.Layout.extend({
 
-    tagName: 'ul',
+    // <div class="file-listing" id="file-listing">
+    tagName: 'div',
 
     attributes: {
-      class: "cards row"
+      class: 'file-listing',
+      id: 'file-listing'
     },
 
     events: {
