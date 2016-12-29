@@ -16,7 +16,7 @@
             <a href="{{rootUrl}}files"><li><i class="material-icons">photo_library</i> File Library</li></a>
             <a href="{{rootUrl}}users"><li><i class="material-icons">group</i> User Directory</li></a>
             <hr>
-            <a href="{{rootUrl}}messages"><li><i class="material-icons">inbox</i> Messages<div class="count">3</div></li></a>
+            <a href="{{rootUrl}}messages"><li><i class="material-icons">inbox</i> Messages{{#if unreadMessagesCount}}<div class="count">{{unreadMessagesCount}}</div>{{/if}}</li></a>
             <a href="#users/{{currentUserId}}"><li><i class="material-icons">person</i> Your Profile</li></a>
             <a href="#logout" class="open-modal" data-modal="confirm"><li><i class="material-icons">exit_to_app</i> {{t 'sign_out'}}</li></a>
         </ul>

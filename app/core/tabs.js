@@ -8,14 +8,15 @@
 
 
 define([
-  "app",
-  "backbone",
+  'app',
+  'backbone',
+  'underscore',
   'core/t'
 ],
 
-function(app, Backbone, __t) {
+function(app, Backbone, _, __t) {
 
-  "use strict";
+  'use strict';
 
   var Tabs = {};
 
@@ -34,17 +35,18 @@ function(app, Backbone, __t) {
   });
 
   Tabs.View = Backbone.Layout.extend({
-    template: "tabs",
+    template: 'tabs',
 
-    tagName: "div",
+    tagName: 'div',
 
     serialize: function() {
-      var currentUser = app.users.getCurrentUser();
-      var currentUserAvatar = currentUser.getAvatar();
-      var currentUserId = app.users.getCurrentUser().get("id");
-      var showSettings = app.users.getCurrentUser().get('group').id === 1;
 
-      return {avatar: currentUserAvatar, currentUserId: currentUserId, showSettings: showSettings};
+      return {
+        avatar: app.users.getCurrentUser().getAvatar(),
+        currentUserId: app.users.getCurrentUser().get('id'),
+        showSettings: app.users.getCurrentUser().get('group').id === 1,
+        unreadMessagesCount: app.messages.unread
+      };
     },
 
     events: {
