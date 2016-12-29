@@ -2,14 +2,14 @@
     <thead>
     <tr>
         {{#columns}}
-        <th scope="col">{{this}}</th>
+        <th scope="col">{{{capitalize this}}}</th>
         {{/columns}}
     </tr>
     </thead>
     <tbody>
         {{#rows}}
         <tr data-id="{{id}}">
-            {{#each ../columns}}<td>{{ui ../model this}}</td>{{/each}}
+            {{#each ../columns}}<td>{{uiCapitalize ../model this}}</td>{{/each}}
         </tr>
         {{/rows}}
     </tbody>
