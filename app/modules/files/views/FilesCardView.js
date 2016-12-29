@@ -18,11 +18,8 @@ function(app, Backbone, Widgets, moment) {
     },
 
     events: {
-      'click li': function(e) {
-        var id = $(e.target).closest('li').attr('data-id');
-
-        var user = app.users.getCurrentUser();
-        var userGroup = user.get('group');
+      'click li': function(event) {
+        var id = $(event.currentTarget).data('id');
 
         app.router.go('#files', id);
       }
