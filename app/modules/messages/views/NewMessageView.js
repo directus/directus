@@ -19,8 +19,32 @@ function(app, Backbone, __t, Directus, BasePageView, Widgets, moment, Notificati
     },
 
     leftToolbar: function() {
+      var self = this;
       return  [
-        new Widgets.ButtonWidget({widgetOptions: {buttonId: "addBtn", iconClass: "send", buttonClass: "", buttonText: __t('send_message')}})
+        new Widgets.ButtonWidget({
+          widgetOptions: {
+            buttonId: "addBtn",
+            iconClass: "send",
+            buttonClass: "",
+            buttonText: __t('send_message')
+          },
+          onClick: function(event) {
+            var data = self.editView.data();
+
+            data.read = "1";
+            data.date_updated = moment().format("YYYY-MM-DD HH:mm:ss")
+
+            self.model.save(data, {success: function(model, res) {
+              if (res.warning) {
+                Notification.warning(null, res.warning, {timeout: 5000});
+              }
+
+              app.router.go('#messages');
+            }});
+
+            self.model.collection.add(self.model);
+          }
+        })
       ];
     },
     events: {
