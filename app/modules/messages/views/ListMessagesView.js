@@ -33,7 +33,8 @@ function(app, Backbone, __t, BasePageView, MessageView, Widgets, moment) {
     },
 
     state: {
-      currentMessage: null
+      currentMessage: null,
+      lastMessageId: null
     },
 
     serialize: function() {
@@ -104,7 +105,14 @@ function(app, Backbone, __t, BasePageView, MessageView, Widgets, moment) {
     },
 
     initialize: function() {
-      this.collection.on('sync', this.render, this);
+      // @TODO: Fix adding new messages
+      this.collection.on('sync', function() {
+        if (this.state.lastMessageId != this.collection.maxId) {
+          this.state.lastMessageId = this.collection.maxId;
+          this.render();
+        }
+      }, this);
+      this.state.lastMessageId = this.collection.maxId;
     }
 
   });
