@@ -2820,7 +2820,8 @@ body.help .discover-spotlight {
         font-weight: 500;
         float: left;
         cursor: pointer;
-        padding: 11px 11px 11px 0; }
+        padding: 11px 11px 11px 0;
+        background-color: transparent; }
         .smoke .modal .actions .cancel:hover {
           color: #F44336; }
     .smoke .modal .header-circle {
