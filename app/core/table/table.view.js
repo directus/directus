@@ -86,6 +86,8 @@ function(app, _, Backbone, Notification, __t, ModelHelper, TableHead, TableBody,
     },
 
     afterRender: function() {
+      tableColumnWidths(this.$el);
+
       var now = new Date().getTime();
       //console.log('rendered table ' + this.collection.table.id + ' in '+ (now-this.startRenderTime)+' ms');
 

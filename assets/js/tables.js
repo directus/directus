@@ -2,12 +2,13 @@
 // Table Header & Footer
 
 // Set widths for fixed header and footer cells
-function tableColumnWidths() {
-	$('.fixed-header tfoot tr td').each(function(index) {
+function tableColumnWidths($table) {
+	$table.find('tfoot tr td').each(function(index) {
 		var width = $('tbody tr td:eq('+index+')').innerWidth();
 		$(this).innerWidth(width);
 	});
-	$('.fixed-header thead tr th').each(function(index) {
+
+  $table.find('thead tr th').each(function(index) {
 		var width = $('tbody tr td:eq('+index+')').innerWidth();
 		$(this).innerWidth(width);
 	});
@@ -39,10 +40,10 @@ $(function() {
 	});
 
 	$(window).load(function() {
-		tableColumnWidths();
+		tableColumnWidths($('.fixed-header'));
 		headFootShadows();
 	}).resize(function() {
-		tableColumnWidths();
+		tableColumnWidths($('.fixed-header'));
 		headFootShadows();
 		// resizeMessages(false, true);
 	});
