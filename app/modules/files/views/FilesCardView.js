@@ -18,14 +18,14 @@ function(app, Backbone, Widgets, moment) {
     },
 
     events: {
-      'click li': function(event) {
+      'click .js-file': function(event) {
         var id = $(event.currentTarget).data('id');
 
         app.router.go('#files', id);
       }
     },
 
-    template: 'modules/files/filescardview',
+    template: 'modules/files/card-view',
 
     serialize: function() {
       var rows = this.collection.map(function(model) {
