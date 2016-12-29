@@ -319,7 +319,7 @@
     "logged_out_due_to_inactivity": "Logged out due to inactivity",
     "forgot_password": "Forgot Password",
     "placeholder_email_address": "Email Address",
-    "are_you_sure_you_want_to_sign_out": "Are you sure you want to sign out?",
+    "are_you_sure_you_want_to_sign_out": "Are you sure you want to log out?",
 
     "you_must_be_logged_in_to_access_the_api": "You must be logged in to access the API",
     "invalid_request_nonce": "Invalid request (nonce)",
