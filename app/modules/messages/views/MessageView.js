@@ -83,7 +83,7 @@ define([
 
         data.responses = _.sortBy(data.responses, function(response) {
           return new Date(response.datetime);
-        }).reverse();
+        });
 
         var title = data.message;
         var offset = 0;
