@@ -1,4 +1,16 @@
 {{#rows}}
+<div class="file dynamic-link" data-dynamic-link="{{rootUrl}}files/{{id}}" id="file_{{id}}" data-id="{{id}}" data-cid="{{cid}}">
+    {{{thumbnail}}} <!-- <img src=""> -->
+    <div class="type">{{uppercase type}}</div>
+    <div class="info">
+        <div class="name">{{title_short}}</div>
+        <div class="uploaded">{{date_uploaded}}</div> <!-- time ago -->
+        <i class="material-icons more">more_vert</i>
+    </div>
+</div>
+{{/rows}}
+{{!--
+{{#rows}}
 <li class="card card-shadow col-2 gutter-bottom {{#if inactive}}inactive{{/if}}" data-id="{{id}}" data-cid="{{cid}}">
   <div class="header-image">
     {{{thumbnail}}}
@@ -29,3 +41,4 @@
 <div style="display: none;" class="external-drop-indicator left"></div>
 <div style="display: none;" class="external-drop-indicator right"></div>
 <div style="display: none;" class="external-drop-indicator bottom"></div>
+--}}
