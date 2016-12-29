@@ -8,14 +8,15 @@
 
 
 define([
-  "app",
-  "backbone",
-  "core/EntriesManager",
+  'app',
+  'backbone',
+  'underscore',
+  'core/EntriesManager',
   'core/t',
   'core/notification',
 ],
 
-function(app, Backbone, EntriesManager, __t, Notification) {
+function(app, Backbone, _, EntriesManager, __t, Notification) {
 
   "use strict";
 
@@ -176,16 +177,16 @@ function(app, Backbone, EntriesManager, __t, Notification) {
         // @todo: bookmark.title to id or url.
         switch (bookmark.title) {
           case 'Activity':
-            skipSystemNav = currentUserGroup.get('show_activity') === 0 ? true : false;
+            skipSystemNav = currentUserGroup.get('show_activity') === 0;
             break;
           case 'Files':
-            skipSystemNav = currentUserGroup.get('show_files') === 0 ? true : false;
+            skipSystemNav = currentUserGroup.get('show_files') === 0;
             break;
           case 'Users':
-            skipSystemNav = currentUserGroup.get('show_users') === 0 ? true : false;
+            skipSystemNav = currentUserGroup.get('show_users') === 0;
             break;
           case 'Messages':
-            skipSystemNav = currentUserGroup.get('show_messages') === 0 ? true : false;
+            skipSystemNav = currentUserGroup.get('show_messages') === 0;
             break;
         }
 
@@ -210,9 +211,12 @@ function(app, Backbone, EntriesManager, __t, Notification) {
         });
       }
 
-      var data = {bookmarks: bookmarks, isCustomBookmarks: this.isCustomBookmarks};
+      var data = {
+        bookmarks: bookmarks,
+        isCustomBookmarks: this.isCustomBookmarks
+      };
 
-      if(Backbone.history.fragment === "tables") {
+      if(Backbone.history.fragment === 'tables') {
         data.tablesActive = true;
       }
 
