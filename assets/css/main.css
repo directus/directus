@@ -322,7 +322,11 @@ input[type="radio"].custom-checkbox + label span:before {
   height: 0;
   clear: both; }
 
-button,
+button {
+  border: none;
+  outline: none;
+  background-color: initial; }
+
 .button {
   -webkit-border-radius: 2px;
   -moz-border-radius: 2px;
@@ -348,31 +352,24 @@ button,
   border: none;
   outline: none;
   text-align: center; }
-  button:hover,
   .button:hover {
     background-color: #2383c4; }
-  button.outline,
   .button.outline {
     color: #3498DB;
     background-color: #FFFFFF;
     border: 2px #3498DB solid; }
-    button.outline:hover,
     .button.outline:hover {
       color: #999999;
       border-color: #999999; }
-  button.disabled,
   .button.disabled {
     background-color: #DDDDDD;
     color: #999999;
     cursor: not-allowed; }
-  button.subdued,
   .button.subdued {
     background-color: #EEEEEE;
     color: #999999; }
-    button.subdued:hover,
     .button.subdued:hover {
       color: #3498DB; }
-  button .material-icons,
   .button .material-icons {
     vertical-align: middle;
     margin-top: -5px;
@@ -2820,8 +2817,7 @@ body.help .discover-spotlight {
         font-weight: 500;
         float: left;
         cursor: pointer;
-        padding: 11px 11px 11px 0;
-        background-color: transparent; }
+        padding: 12px 12px 12px 0; }
         .smoke .modal .actions .cancel:hover {
           color: #F44336; }
     .smoke .modal .header-circle {
@@ -3660,7 +3656,7 @@ body.help .discover-spotlight {
     color: #999999;
     line-height: 22px;
     font-size: 14px;
-    padding: 20px;
+    padding: 20px 20px 20px 40px;
     border-bottom: 1px solid #EEEEEE;
     cursor: pointer; }
     .message-listing .message-preview.unread .unread-indicator {
@@ -3668,13 +3664,17 @@ body.help .discover-spotlight {
       opacity: 1; }
     .message-listing .message-preview.unread .byline .subject {
       margin-left: 14px; }
-    .message-listing .message-preview.active {
+    .message-listing .message-preview.selected, .message-listing .message-preview.active {
       background-color: #f7fbfe; }
-      .message-listing .message-preview.active .active-indicator {
+      .message-listing .message-preview.selected .active-indicator, .message-listing .message-preview.active .active-indicator {
         width: 4px;
         opacity: 1; }
     .message-listing .message-preview:hover {
       background-color: #f7fbfe; }
+    .message-listing .message-preview .message-select {
+      position: absolute;
+      top: 22px;
+      left: 8px; }
     .message-listing .message-preview .active-indicator {
       -webkit-transition: all 400ms ease-in-out 0ms;
       -moz-transition: all 400ms ease-in-out 0ms;
@@ -4452,7 +4452,10 @@ body.login {
             color: #3498DB; }
       body.login .login-panel .input input {
         padding-left: 30px;
-        font-size: 14px; }
+        font-size: 14px;
+        border-color: #DDDDDD; }
+        body.login .login-panel .input input:focus {
+          border-color: #FFFFFF; }
         body.login .login-panel .input input.password {
           padding-right: 30px; }
     body.login .login-panel button {

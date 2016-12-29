@@ -1,4 +1,10 @@
-button,
+//Reset button elements
+button {
+	border: none;
+	outline: none;
+	background-color: initial;
+}
+
 .button {
 	@include border-radius (2px);
 	@include transition (all, $timing-short, ease-in-out);

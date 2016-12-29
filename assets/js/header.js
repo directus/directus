@@ -47,4 +47,22 @@ $(function() {
 	});
 
 	//////////////////////////////////////////////////////////////////////////////
+	// Archive Messages
+
+	// $('.message-listing .select-row').change(function() {
+	// 	var selectCount = $('.message-listing .select-row:checked').length;
+
+	// 	$('.message-listing .select-row:not(:checked)').parents('.message-preview').removeClass('selected');
+	// 	$('.message-listing .select-row:checked').parents('.message-preview').addClass('selected');
+
+	// 	if(selectCount >= 1) {
+	// 		$('#archiveMessages').show();
+	// 		$('.filter').hide();
+	// 	} else {
+	// 		$('#archiveMessages').hide();
+	// 		$('.filter').show();
+	// 	}
+	// });
+
+	//////////////////////////////////////////////////////////////////////////////
 });

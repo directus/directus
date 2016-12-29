@@ -35,6 +35,7 @@ function(app, Backbone) {
 
       return data;
     },
+
     beforeRender: function() {
       var options = this.options.headerOptions;
 

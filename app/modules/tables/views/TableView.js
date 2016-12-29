@@ -28,7 +28,18 @@ function(app, Backbone, __t, BasePageView, ListViewManager, Widgets) {
 
       if (this.collection.structure.length > 1 && this.collection.hasPermission('add')) {
         if (!this.widgets.addWidget) {
-          this.widgets.addWidget = new Widgets.ButtonWidget({widgetOptions: {buttonId: "addBtn", iconClass: "add", buttonClass: "", buttonText: __t('new_item')}});
+          var tableView = this;
+          this.widgets.addWidget = new Widgets.ButtonWidget({
+            widgetOptions: {
+              buttonId: 'addBtn',
+              iconClass: 'add',
+              buttonClass: 'primary',
+              buttonText: __t('new_item')
+            },
+            onClick: function(event) {
+              app.router.go('#tables/' + tableView.collection.table.id + '/new');
+            }
+          });
         }
 
         widgets.push(this.widgets.addWidget);
@@ -88,9 +99,6 @@ function(app, Backbone, __t, BasePageView, ListViewManager, Widgets) {
     },
 
     events: {
-      'click #addBtn': function() {
-        app.router.go('#tables/'+this.collection.table.id+'/new');
-      },
       'click #bookmarkBtn': function() {
         var data = {
           title: this.collection.table.id,

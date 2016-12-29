@@ -1,22 +1,25 @@
 define([
   'app',
   'backbone',
+  'underscore',
   'handlebars'
 ],
-function(app, Backbone, Handlebars) {
+function(app, Backbone, _, Handlebars) {
 
-  "use strict";
+  'use strict';
 
   return Backbone.Layout.extend({
-    template: Handlebars.compile(' \
-      <button type="button" id="{{buttonId}}" class="tool-item btn btn-header {{buttonClass}}"> \
-        <i class="material-icons">{{iconClass}}</i> {{buttonText}} \
-      </button>'
-    ),
 
-    tagName: 'li',
+    template: 'core/widgets/button',
+
+    tagName: 'div',
+
     attributes: {
-      'class': 'tool input-and-button'
+      class: 'widget widget-button'
+    },
+
+    events: function() {
+      return this.getEvents();
     },
 
     serialize: function() {
@@ -26,6 +29,18 @@ function(app, Backbone, Handlebars) {
     afterRender: function() {
       if(this.options.widgetOptions && this.options.widgetOptions.active) {
         $(this.el).addClass('active');
+      }
+    },
+
+    getEvents: function() {
+      return this._events;
+    },
+
+    initialize: function(options) {
+      this._events = {};
+
+      if (_.isFunction(options.onClick)) {
+        this._events['click .js-action-button'] = options.onClick;
       }
     }
   });

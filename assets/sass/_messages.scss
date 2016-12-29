@@ -180,7 +180,7 @@
 		color: $gray-4;
 		line-height: 22px;
 		font-size: 14px;
-		padding: 20px;
+		padding: 20px 20px 20px 40px;
 		border-bottom: 1px solid $gray-1;
 		cursor: pointer;
 		&.unread {
@@ -194,6 +194,7 @@
 				}
 			}
 		}
+		&.selected,
 		&.active {
 			.active-indicator {
 				width: 4px;
@@ -203,6 +204,11 @@
 		}
 		&:hover {
 			background-color: lighten($primary, 45%);
+		}
+		.message-select {
+			position: absolute;
+			top: 22px;
+			left: 8px;
 		}
 		.active-indicator {
 			@include transition (all, 400ms, ease-in-out);

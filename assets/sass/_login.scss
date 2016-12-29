@@ -137,6 +137,10 @@ body.login {
 			input {
 				padding-left: 30px;
 				font-size: 14px;
+				border-color: $gray-2;
+				&:focus {
+					border-color: $white;
+				}
 				&.password {
 					padding-right: 30px;
 				}
