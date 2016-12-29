@@ -10,10 +10,11 @@ define([
   'modules/messages/views/ListMessagesView',
   'modules/messages/views/NewMessageView',
   'modules/messages/views/ReadMessageView',
+  'modules/messages/views/MessageView',
   'modules/messages/MessageCollection'
 ],
 
-function(app, ListMessagesView, NewMessageView, ReadMessageView, MessageCollection) {
+function(app, ListMessagesView, NewMessageView, ReadMessageView, MessageView, MessageCollection) {
 
   'use strict';
 
@@ -21,6 +22,7 @@ function(app, ListMessagesView, NewMessageView, ReadMessageView, MessageCollecti
 
   Messages.Views.New = NewMessageView;
   Messages.Views.Read = ReadMessageView;
+  Messages.Views.Content = ReadMessageView;
   Messages.Views.List = ListMessagesView;
   Messages.Collection = MessageCollection;
 

@@ -81,6 +81,10 @@ require([
     return moment(date).format(format);
   });
 
+  Handlebars.registerHelper('friendlyDateTime', function(date) {
+    return moment(date).format('dddd, MMM DD, h:mm A');
+  });
+
   Handlebars.registerHelper('avatarSmall', function(userId) {
     var user = app.users.get(userId);
     return '<img src="' + user.getAvatar() + '" style="margin-right:7px;" class="avatar">' + user.get('first_name');
@@ -159,6 +163,10 @@ require([
       }
     }
     return new Handlebars.SafeString('<img src="'+user.getAvatar()+'" class="avatar"/>' + app.capitalize(nickName," "));
+  });
+
+  Handlebars.registerHelper('userAvatarUrl', function(userId) {
+    return app.users.get(userId).getAvatar();
   });
 
   Handlebars.registerHelper('userAvatar', function(userId) {

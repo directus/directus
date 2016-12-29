@@ -3,11 +3,12 @@ define([
   'backbone',
   'core/t',
   'core/BasePageView',
+  'modules/messages/views/MessageView',
   'core/widgets/widgets',
   'moment'
 ],
 
-function(app, Backbone, __t, BasePageView, Widgets, moment) {
+function(app, Backbone, __t, BasePageView, MessageView, Widgets, moment) {
 
   var ListView = Backbone.Layout.extend({
 
@@ -20,31 +21,47 @@ function(app, Backbone, __t, BasePageView, Widgets, moment) {
     events: {
       'click .js-message': function(event) {
         var id = $(event.currentTarget).data('id');
-        app.router.go('#messages', id);
+        var messageModel = this.collection.get(id);
+        // app.router.go('#messages', id);
+        if (messageModel) {
+          this.state.currentMessage = messageModel;
+          this.displayMessage(id, true);
+        } else {
+          console.warn('message with id: ' + id + ' does not exists.');
+        }
       }
     },
 
+    state: {
+      currentMessage: null
+    },
+
     serialize: function() {
+      var self = this;
       var data = this.collection.map(function(model) {
         var data = model.toJSON();
         var momentDate = moment(data.date_updated);
+        var currentMessage = self.state.currentMessage;
+        var recipients;
+
         data.timestamp = parseInt(momentDate.format('X'), 10);
         data.niceDate = moment().diff(momentDate, 'days') > 1 ? momentDate.format('MMMM D') : momentDate.fromNow();
         data.read = model.getUnreadCount() === 0;
         data.responsesLength = data.responses.length;
         data.from = parseInt(data.from, 10);
+        data.selected = currentMessage ? (currentMessage.get('id') === data.id) : false;
 
-        if(data.recipients) {
-          var recipients = data.recipients.split(',');
+        if (data.recipients) {
+          recipients = data.recipients.split(',');
         } else {
-          var recipients = [];
+          recipients = [];
         }
 
         data.recipients = [];
         var extra = 0;
 
-        for(var i=0; i<recipients.length; i++) {
-          if(i > 2) {
+        for (var i=0; i<recipients.length; i++) {
+          if (i > 2) {
             extra = recipients.length - i;
             break;
           }
@@ -57,7 +74,7 @@ function(app, Backbone, __t, BasePageView, Widgets, moment) {
 
         data.recipients = data.recipients.join(", ");
 
-        if(extra) {
+        if (extra) {
           data.recipients += " (+"+extra+" more)";
         }
 
@@ -71,6 +88,19 @@ function(app, Backbone, __t, BasePageView, Widgets, moment) {
       });
 
       return {messages: data};
+    },
+
+    displayMessage: function(id, render) {
+      var messageView = new MessageView({
+        model: this.collection.get(id),
+        parentView: this
+      });
+
+      this.setView('#message-content', messageView);
+
+      if (render === true) {
+        messageView.render();
+      }
     },
 
     initialize: function() {
