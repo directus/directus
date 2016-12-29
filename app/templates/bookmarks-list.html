@@ -20,9 +20,9 @@
     </ul>
     {{/if}}
 
+    {{#if bookmarks.extension}}
     <hr>
 
-    {{#if bookmarks.extension}}
     <h3>{{t "extensions"}}</h3>
     <ul class="menu help" data-help="Extensions.">
         {{#bookmarks.extension}}
@@ -32,6 +32,8 @@
     {{/if}}
 
     {{#if bookmarks.search}}
+    <hr>
+
     <h3>{{t "bookmarks"}}</h3>
     <ul class="menu bookmarks help" data-help="You can create a bookmark of any page. Bookmarks save all your filters, sorting, and other options for quick and easy access.">
         {{#bookmarks.search}}
