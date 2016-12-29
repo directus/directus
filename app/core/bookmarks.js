@@ -18,7 +18,7 @@ define([
 
 function(app, Backbone, _, EntriesManager, __t, Notification) {
 
-  "use strict";
+  'use strict';
 
   var Bookmarks = {};
 
@@ -29,8 +29,9 @@ function(app, Backbone, _, EntriesManager, __t, Notification) {
     },
 
     comparator: function(a, b) {
-      if(a.get('title') < b.get('title')) return -1;
-      if(a.get('title') > b.get('title')) return 1;
+      if (a.get('title') < b.get('title')) return -1;
+      if (a.get('title') > b.get('title')) return 1;
+
       return 0;
     },
 
@@ -63,7 +64,7 @@ function(app, Backbone, _, EntriesManager, __t, Notification) {
 
     addNewBookmark: function(data) {
       data.user = data.user.toString();
-      if(this.findWhere(data) === undefined) {
+      if (this.findWhere(data) === undefined) {
         this.create(data);
       }
     },
@@ -82,20 +83,17 @@ function(app, Backbone, _, EntriesManager, __t, Notification) {
     },
 
     isBookmarked: function(title) {
-      if(this.findWhere({'title':title}) !== undefined) {
-        return true;
-      }
-      return false;
+      return this.findWhere({'title':title}) !== undefined;
     }
   });
 
   Bookmarks.View = Backbone.Layout.extend({
-    template: "bookmarks-list",
+    template: 'bookmarks-list',
 
-    tagName: "ul",
+    tagName: 'ul',
 
     attributes: {
-      class:"row"
+      class: 'row'
     },
 
     events: {
@@ -119,6 +117,7 @@ function(app, Backbone, _, EntriesManager, __t, Notification) {
 
     saveSnapshot: function() {
       var that = this;
+
       app.router.openModal({type: 'prompt', text: __t('what_would_you_like_to_name_this_bookmark'), callback: function(name ) {
         if(name === null || name === "") {
           Notification.error(__t('please_fill_in_a_valid_name'));
@@ -155,7 +154,8 @@ function(app, Backbone, _, EntriesManager, __t, Notification) {
         user: app.users.getCurrentUser().get("id"),
         section: 'search'
       };
-      if(!app.getBookmarks().isBookmarked(data.title)) {
+
+      if (!app.getBookmarks().isBookmarked(data.title)) {
         app.getBookmarks().addNewBookmark(data);
       }
     },
@@ -194,13 +194,14 @@ function(app, Backbone, _, EntriesManager, __t, Notification) {
           return false;
         }
 
-        if(bookmarks[bookmark.section]) {
+        if (bookmarks[bookmark.section]) {
           bookmarks[bookmark.section].push(bookmark);
-        } else if(isCustomBookmarks) {
-          if(!bookmarks[bookmark.section]) {
+        } else if (isCustomBookmarks) {
+          if (!bookmarks[bookmark.section]) {
             bookmarks[bookmark.section] = [];
             bookmarks[bookmark.section].isCustomBookmark = true;
           }
+
           bookmarks[bookmark.section].push(bookmark);
         }
       });
@@ -216,7 +217,7 @@ function(app, Backbone, _, EntriesManager, __t, Notification) {
         isCustomBookmarks: this.isCustomBookmarks
       };
 
-      if(Backbone.history.fragment === 'tables') {
+      if (Backbone.history.fragment === 'tables') {
         data.tablesActive = true;
       }
 
@@ -224,31 +225,31 @@ function(app, Backbone, _, EntriesManager, __t, Notification) {
     },
 
     initialize: function() {
-
+      var self = this;
       this.isCustomBookmarks = this.collection.isCustomBookmarks || false;
 
-      var that = this;
-      //For some reason need to do this and that....
+      // For some reason need to do this and that....
       this.collection.on('add', function() {
-        that.collection.setActive(Backbone.history.fragment);
-        that.collection.sort();
-        that.render();
+        self.collection.setActive(Backbone.history.fragment);
+        self.collection.sort();
+        self.render();
       });
 
       this.collection.on('remove', function() {
-        that.render();
+        self.render();
       });
 
       var messageModel = this.collection.where({url: 'messages'});
-      if(messageModel) {
+      if (messageModel) {
         messageModel = messageModel[0];
-        if(messageModel) {
+        if (messageModel) {
           messageModel.set({unread: app.messages.unread > 0}, {silent: true});
         }
       }
 
       app.messages.on('sync change add', function() {
         var messageModel = this.collection.where({url: 'messages'});
+
         if(!messageModel) {
           return;
         }
@@ -256,17 +257,16 @@ function(app, Backbone, _, EntriesManager, __t, Notification) {
         messageModel = messageModel[0];
         var unread = app.messages.where({read: '0'});
 
-        if(unread.length>0 && messageModel.get('unread') === false) {
+        if (unread.length>0 && messageModel.get('unread') === false) {
           messageModel.set({unread: true}, {silent: true});
           this.render();
-        } else if(unread.length===0 && messageModel.get('unread') === true) {
+        } else if (unread.length===0 && messageModel.get('unread') === true) {
           messageModel.set({unread: false}, {silent: true});
           this.render();
         }
       }, this);
 
       // @todo: make this global application events cleaner
-      var self = this;
       app.on('tables:preferences', function(widget, collection) {
         if (app.router.loadedPreference) {
           app.router.loadedPreference = undefined;
