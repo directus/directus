@@ -13,9 +13,13 @@ function(app, Backbone, __t, BasePageView, Widgets, moment) {
 
     template: 'modules/messages/messages-list',
 
+    attributes: {
+      class: 'message-listing resize-left'
+    },
+
     events: {
-      'click .message': function(e) {
-        var id = $(e.target).closest('.message').attr('data-id');
+      'click .js-message': function(event) {
+        var id = $(event.currentTarget).data('id');
         app.router.go('#messages', id);
       }
     },
@@ -84,19 +88,23 @@ function(app, Backbone, __t, BasePageView, Widgets, moment) {
     },
     leftToolbar: function() {
       return [
-        new Widgets.ButtonWidget({widgetOptions: {buttonId: "addBtn", iconClass: "add", buttonClass: "", buttonText: __t('new_message')}})
+        new Widgets.ButtonWidget({
+          widgetOptions: {
+            buttonId: 'addBtn',
+            iconClass: 'add',
+            buttonClass: 'primary',
+            buttonText: __t('message_compose')
+          },
+          onClick: function(event) {
+            app.router.go('#messages', 'new');
+          }
+        })
       ];
     },
     rightToolbar: function() {
       return [
         //new Widgets.SearchWidget()
       ];
-    },
-
-    events: {
-      'click #addBtn': function() {
-        app.router.go('#messages','new');
-      }
     },
 
     serialize: function() {

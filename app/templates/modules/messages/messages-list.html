@@ -1,3 +1,19 @@
+{{#each messages}}
+<div class="message-preview js-message {{#unless read}}unread{{/unless}}" data-id="{{id}}"> <!-- .active -->
+    <input class="custom-checkbox select-row" id="check{{id}}" type="checkbox" value="">
+    <label class="message-select" for="check{{id}}"><span></span></label>
+
+    <div class="active-indicator"></div>
+    <div class="unread-indicator"></div>
+    <div class="timeago">{{niceDate}}</div>
+    <div class="byline">
+        <div class="subject">{{subject}}{{# if attachment}}<i class="material-icons has-attachment">attachment</i>{{/if}}{{#if isChat }}<i class="material-icons is-chat">chat</i>{{/if}}</div>
+        <div class="recipients">Ben Haynes, Welling Guzman, and 3 others</div>
+    </div>
+    {{message}}
+</div>
+{{/each}}
+{{!--
 <ul class="general-container selectable">
   {{#each messages}}
   <li class="message {{#unless read}}unread{{/unless}}" data-id="{{id}}">
@@ -21,3 +37,4 @@
   <!-- Maybe send someone a message? -->
 </div>
 {{/unless}}
+--}}
