@@ -1026,7 +1026,16 @@ function(app, _, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIMa
 
     leftToolbar: function() {
       if(!this.widgets.addWidget) {
-        this.widgets.addWidget = new Widgets.ButtonWidget({widgetOptions: {buttonId: "addBtn", iconClass: "add", buttonClass: "", buttonText: __t('add')}});
+        var self = this;
+        this.widgets.addWidget = new Widgets.ButtonWidget({
+          widgetOptions: {
+            buttonId: 'addBtn',
+            iconClass: 'add',
+            buttonClass: 'primary',
+            buttonText: __t('add')
+          },
+          onClick: _.bind(self.addTableConfirmation, self)
+        });
       }
       return [this.widgets.addWidget];
     },
@@ -1036,12 +1045,9 @@ function(app, _, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIMa
       this.insertView('#page-content', new TablesUnRegistered({collection: this.collection}));
       BasePageView.prototype.beforeRender.call(this);
     },
+
     initialize: function() {
       this.widgets = {};
-    },
-
-    events: {
-      'click #addBtn': 'addTableConfirmation'
     },
 
     addTableConfirmation: function() {
