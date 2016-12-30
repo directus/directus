@@ -188,13 +188,15 @@ function(app, Backbone, __t, BasePageView, ListViewManager, Widgets) {
 
       this.collection.on('select', function() {
         var $checksChecked = $('.js-select-row:checked');
+        // @NOTE: Hotfix render on empty selection
+        var render = this.showDeleteButton && !($checksChecked.length >= 1);
 
         this.actionButtons = $checksChecked.length;
         this.batchEdit = $checksChecked.length > 1;
         this.showDeleteButton = $checksChecked.length >= 1;
         this.showBulkEditButton = $checksChecked.length > 1;
 
-        if (this.showDeleteButton || this.showBulkEditButton) {
+        if (render || this.showDeleteButton || this.showBulkEditButton) {
           this.reRender();
         }
 
