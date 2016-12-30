@@ -6,10 +6,11 @@ require([
   'moment'
 ], function(app, Handlebars, UIManager, __t, moment) {
 
-  "use strict";
+  'use strict';
 
-  Handlebars.registerHelper('imagesPath', function() {
-    return app.PATH + 'assets/img/';
+  // Get assets path
+  Handlebars.registerHelper('assetsPath', function() {
+    return app.PATH + 'assets';
   });
 
   Handlebars.registerHelper('t', function(key, options) {
@@ -275,4 +276,24 @@ require([
     return value;
   });
 
+  // include an partial
+  Handlebars.registerHelper('include', function (path, options) {
+    var partial = Handlebars.partials[path];
+    if (typeof partial !== 'function') {
+      partial = Handlebars.compile(partial);
+    }
+
+    return Handlebars.compile(partial())();
+  });
+
+  // template for empty listing
+  Handlebars.registerPartial('listingEmpty', function() {
+    return '<div class="no-items"> \
+      <div class="background-circle"> \
+      <img src="{{assetsPath}}/imgs/no-items.svg"> \
+      </div> \
+      <br> \
+      {{t "listing_items_not_found"}} \
+    </div>';
+  });
 });

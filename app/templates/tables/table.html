@@ -1,10 +1,7 @@
 <!--<form id="user-preferences">-->
 
 {{#if showEmptyMessage}}
-<div class="nothing-here secondary-info">
-<h1>{{t "listing_items_not_found"}}</h1>
-<!-- Add a new item -->
-</div>
+{{{include "listingEmpty"}}}
 {{else}}
 <table class="lines cozy clickable fixed-header {{#unless isSortableOrSelectable}}pad-first{{/unless}}"></table> <!-- charted <-- has a chart at the top -->
 {{!--

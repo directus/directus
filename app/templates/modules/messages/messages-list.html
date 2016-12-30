@@ -17,6 +17,9 @@
     <div class="resize-handle"></div>
     <div id="message-content"></div>
 </div>
+{{#unless}}
+{{{include "listingEmpty"}}}
+{{/unless}}
 {{!--
 <ul class="general-container selectable">
   {{#each messages}}

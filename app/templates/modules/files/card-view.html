@@ -9,6 +9,9 @@
     </div>
 </div>
 {{/rows}}
+{{#unless}}
+{{{include "listingEmpty"}}}
+{{/unless}}
 {{!--
 {{#rows}}
 <li class="card card-shadow col-2 gutter-bottom {{#if inactive}}inactive{{/if}}" data-id="{{id}}" data-cid="{{cid}}">
