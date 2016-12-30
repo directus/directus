@@ -62,6 +62,8 @@ define(function(require, exports, module) {
       'sort'
     ],
 
+    tagName: 'form',
+
     template: 'edit',
 
     beforeRender: function() {
