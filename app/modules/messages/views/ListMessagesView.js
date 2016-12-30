@@ -106,6 +106,8 @@ function(app, Backbone, __t, BasePageView, MessageView, Widgets, moment) {
 
     initialize: function() {
       // @TODO: Fix adding new messages
+      // Getting a new message will re-render everything
+      // clearing any message that it could be have writing.
       this.collection.on('sync', function() {
         if (this.state.lastMessageId != this.collection.maxId) {
           this.state.lastMessageId = this.collection.maxId;
