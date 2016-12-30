@@ -38,7 +38,7 @@ function(app, Backbone, Handlebars) {
         }
       },
       'click #batchEditBtn': function(e) {
-        var $checked = $('.select-row:checked');
+        var $checked = $('.js-select-row:checked');
         var ids = $checked.map(function() {
           return this.value;
         }).toArray().join();
@@ -53,7 +53,7 @@ function(app, Backbone, Handlebars) {
       var value = $(e.target).closest('li').attr('data-value');
       var collection = this.collection;
       var status = collection.getFilter('status');
-      var $checked = $('.select-row:checked');
+      var $checked = $('.js-select-row:checked');
       var models = [];
       var actionCollection = collection.clone();
 
@@ -122,7 +122,7 @@ function(app, Backbone, Handlebars) {
     beforeRender: function() {
       this.stopListening(this.collection, 'select');
       this.listenTo(this.collection, 'select', function() {
-        var batchEdit = $('.select-row:checked').length > 1;
+        var batchEdit = $('.js-select-row:checked').length > 1;
         if(this.options.widgetOptions.batchEdit !== batchEdit) {
           this.options.widgetOptions.batchEdit = batchEdit;
           this.render();

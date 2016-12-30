@@ -20,8 +20,8 @@ function(app, Backbone, _, Sortable, Notification) {
     },
 
     events: {
-      'change td.check > input': 'select',
-      'click td.check > input': function() {
+      'change td.js-check > input': 'select',
+      'click td.js-check > input': function() {
         this.collection.trigger('select');
       },
       'click .sort': function(e) {

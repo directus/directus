@@ -27,8 +27,9 @@ function(app, Backbone, __t, BasePageView, ListViewManager, Widgets) {
       ];
 
       if (this.collection.structure.length > 1 && this.collection.hasPermission('add')) {
+        var tableView = this;
+
         if (!this.widgets.addWidget) {
-          var tableView = this;
           this.widgets.addWidget = new Widgets.ButtonWidget({
             widgetOptions: {
               buttonId: 'addBtn',
@@ -43,6 +44,50 @@ function(app, Backbone, __t, BasePageView, ListViewManager, Widgets) {
         }
 
         widgets.push(this.widgets.addWidget);
+
+        if (this.showDeleteButton) {
+          if (!this.widgets.deleteWidget) {
+            // var tableView = this;
+            this.widgets.deleteWidget = new Widgets.ButtonWidget({
+              widgetOptions: {
+                buttonId: 'deleteBtn',
+                iconClass: 'close',
+                buttonClass: 'serious',
+                buttonText: __t('delete')
+              },
+              onClick: function(event) {
+                // app.router.go('#tables/' + tableView.collection.table.id + '/new');
+              }
+            });
+          }
+
+          widgets.push(this.widgets.deleteWidget);
+        }
+
+        if (this.showBulkEditButton) {
+          if (!this.widgets.bulkEditWidget) {
+            this.widgets.bulkEditWidget = new Widgets.ButtonWidget({
+              widgetOptions: {
+                buttonId: 'bulkEditBtn',
+                iconClass: 'edit',
+                buttonClass: 'important',
+                buttonText: __t('bulk_edit')
+              },
+              onClick: function(event) {
+                var $checked = tableView.table.$el.find('.js-select-row:checked');
+                var ids = $checked.map(function() {
+                  return this.value;
+                }).toArray().join();
+
+                var route = Backbone.history.fragment.split('/');
+                route.push(ids);
+                app.router.go(route);
+              }
+            });
+          }
+
+          widgets.push(this.widgets.bulkEditWidget);
+        }
       }
       return  widgets;
     },
@@ -142,32 +187,38 @@ function(app, Backbone, __t, BasePageView, ListViewManager, Widgets) {
       this.collection.options['sort'] = false;
 
       this.collection.on('select', function() {
+        var $checksChecked = $('.js-select-row:checked');
 
-        this.actionButtons = Boolean($('.select-row:checked').length);
-        this.batchEdit = $('.select-row:checked').length > 1;
+        this.actionButtons = $checksChecked.length;
+        this.batchEdit = $checksChecked.length > 1;
+        this.showDeleteButton = $checksChecked.length >= 1;
+        this.showBulkEditButton = $checksChecked.length > 1;
 
-        if(this.actionButtons || this.batchEdit) {
-          if(this.leftSecondaryCurrentState !== 'actions') {
-            this.leftSecondaryCurrentState = 'actions';
-            this.reRender();
-          }
+        if (this.showDeleteButton || this.showBulkEditButton) {
+          this.reRender();
         }
-        else {
-          if(this.leftSecondaryCurrentState !== 'default') {
-            this.leftSecondaryCurrentState = 'default';
-            this.reRender();
-          }
-        }
+
+        // if (this.actionButtons || this.batchEdit) {
+        //   if (this.leftSecondaryCurrentState !== 'actions') {
+        //     this.leftSecondaryCurrentState = 'actions';
+        //     this.reRender();
+        //   }
+        // } else if (this.leftSecondaryCurrentState !== 'default') {
+        //   this.leftSecondaryCurrentState = 'default';
+        //   this.reRender();
+        // }
       }, this);
 
       this.collection.on('sort', function() {
-        if(this.leftSecondaryCurrentState !== 'default') {
+        if (this.leftSecondaryCurrentState !== 'default') {
           this.leftSecondaryCurrentState = 'default';
           this.reRender();
         }
       }, this);
 
       this.isBookmarked = app.getBookmarks().isBookmarked(this.collection.table.id);
+      this.showDeleteButton = false;
+      this.showBulkEditButton = false;
     }
 
   });
