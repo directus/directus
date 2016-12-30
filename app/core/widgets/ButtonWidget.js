@@ -15,7 +15,7 @@ function(app, Backbone, _, Handlebars) {
     tagName: 'div',
 
     attributes: {
-      class: 'widget widget-button'
+      class: 'action widget widget-button'
     },
 
     events: function() {
