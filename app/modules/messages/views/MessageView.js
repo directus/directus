@@ -61,6 +61,10 @@ define([
       parentView: null,
 
       beforeRender: function() {
+        if (!this.parentView) {
+          return;
+        }
+
         var $messages = this.parentView.$el.find('.js-message');
 
         if ($messages) {
@@ -120,15 +124,13 @@ define([
       },
 
       initialize: function(options) {
-        //
-        this.model.on('change:read', function() {
-          this.model.markAsRead({save: true});
-          this.render();
-        }, this);
+        this.parentView = options.parentView;
+
+        if (!this.model.isRead()) {
+          this.parentView.$el.find('[data-id=' + this.model.get('id') + ']').removeClass('unread');
+        }
 
         this.model.markAsRead({save: true});
-
-        this.parentView = options.parentView;
       }
     });
   });

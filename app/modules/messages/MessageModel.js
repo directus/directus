@@ -9,7 +9,6 @@ function(app, Backbone, EntriesModel) {
 
     getUnreadCount: function() {
       var unread = this.get('read') === 1 ? 0 : 1;
-
       var unreadResponses = this.get('responses').reduce(function(memo, model){
         var unread = model.get('read') === 1 ? 0 : 1;
         return memo + unread;
@@ -18,12 +17,18 @@ function(app, Backbone, EntriesModel) {
       return unread + unreadResponses;
     },
 
+    // Whether the message was read
+    // by the authenticated user
+    isRead: function() {
+      return this.get('read') === 1;
+    },
+
     markAsRead: function(options) {
       options = options || {};
 
       var unreadCount = this.getUnreadCount();
 
-      // Do nothing if model is allready read
+      // Do nothing if model is already read
       if (unreadCount === 0) {
         return;
       }
@@ -35,7 +40,7 @@ function(app, Backbone, EntriesModel) {
         return this.save({read: 1}, {patch: true, silent: true});
       }
 
-      return this.set({read: "1"}, {silent: true});
+      return this.set({read: 1}, {silent: true});
     }
 
   });
