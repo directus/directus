@@ -17,7 +17,18 @@ function(app, _, Backbone, Notification, __t, ModelHelper, TableHead, TableBody,
 
   var TableView = Backbone.Layout.extend({
     tagName: 'div',
+
     template: 'tables/table',
+
+    events: {
+      'click tbody td:not(.js-check):not(.status):not(.sort)' : function(e) {
+        var id = $(e.target).closest('tr').attr('data-id');
+        if (this.options.navigate) {
+          this.collection.off();
+          this.navigate(id);
+        }
+      }
+    },
 
     TableBody: TableBody,
 
@@ -33,16 +44,6 @@ function(app, _, Backbone, Notification, __t, ModelHelper, TableHead, TableBody,
         isSortableOrSelectable: isSortableOrSelectable,
         showEmptyMessage: (this.collection.length === 0 && !this.options.hideEmptyMessage)
       };
-    },
-
-    events: {
-      'click tbody td:not(.check):not(.status):not(.sort)' : function(e) {
-        var id = $(e.target).closest('tr').attr('data-id');
-        if (this.options.navigate) {
-          this.collection.off();
-          this.navigate(id);
-        }
-      }
     },
 
     navigate: function(id) {
@@ -64,13 +65,15 @@ function(app, _, Backbone, Notification, __t, ModelHelper, TableHead, TableBody,
       if (this.tableHead) {
         options = this.options;
         options.parentView = this;
-        this.insertView('table', new TableHead(options));
+        this.tableHead = new TableHead(options);
+        this.insertView('table', this.tableHead);
       }
 
       if (this.collection.length > 0) {
         options = _.pick(this.options, 'collection', 'selectable', 'filters', 'preferences', 'structure', 'sort', 'deleteColumn', 'rowIdentifiers', 'saveAfterDrop', 'blacklist', 'highlight', 'columns');
         options.parentView = this;
-        this.insertView('table', new this.TableBody(options));
+        this.tableBody = new this.TableBody(options);
+        this.insertView('table', this.tableBody);
       }
 
       if (this.collection.length > 0 && this.options.footer !== false) {

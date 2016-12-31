@@ -1,13 +1,14 @@
 define([
   'app',
   'backbone',
+  'underscore',
   'core/t',
   'core/notification'
 ],
 
-function(app, Backbone, __t, Notification) {
+function(app, Backbone, _, __t, Notification) {
 
-  "use strict";
+  'use strict';
 
   var TableHeadView = Backbone.Layout.extend({
 
@@ -16,13 +17,14 @@ function(app, Backbone, __t, Notification) {
     tagName: 'thead',
 
     events: {
+      'click th.js-check > input': function(e) {
+        var checkAll = this.parentView.$el.find('#checkAll:checked').prop('checked') !== undefined;
 
-      'click th.check > input': function(e) {
-        $('td.check > input').prop('checked', $('#check-all:checked').prop('checked') !== undefined).trigger('changed');
+        this.parentView.tableBody.$el.find('td.js-check > input').prop('checked', checkAll).trigger('changed');
         this.collection.trigger('select');
       },
 
-      'click th:not(.check, .visible-columns-cell)': function(e) {
+      'click th:not(.js-check, .visible-columns-cell)': function(e) {
         var column = $(e.target).closest('th').attr('data-id'); // .closet() accounts for event return children (icon) elements instead
         var order = this.collection.getOrder();
         var order_sort = 'ASC';
