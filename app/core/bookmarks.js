@@ -115,50 +115,50 @@ function(app, Backbone, _, EntriesManager, __t, Notification) {
       }
     },
 
-    saveSnapshot: function() {
-      var that = this;
-
-      app.router.openModal({type: 'prompt', text: __t('what_would_you_like_to_name_this_bookmark'), callback: function(name ) {
-        if(name === null || name === "") {
-          Notification.error(__t('please_fill_in_a_valid_name'));
-          return;
-        }
-
-        var currentCollection = app.router.currentCollection;
-        if (typeof currentCollection !== 'undefined') {
-          //Save id so it can be reset after render
-          var defaultId = currentCollection.preferences.get('id');
-          that.listenToOnce(currentCollection.preferences, 'sync', function() {
-            if(defaultId) {
-              currentCollection.preferences.set({title:null, id: defaultId});
-            }
-          });
-
-          var schema = app.schemaManager.getFullSchema( currentCollection.table.id );
-          var preferences = schema.preferences;
-          preferences.unset('id');
-          // Unset Id so that it creates new Preference
-          preferences.set({title: name});
-          preferences.save();
-        }
-
-        that.pinSnapshot(name);
-      }});
-    },
-
-    pinSnapshot: function(title) {
-      var data = {
-        title: title,
-        url: Backbone.history.fragment + "/pref/" + encodeURIComponent(title),
-        icon_class: 'icon-search',
-        user: app.users.getCurrentUser().get("id"),
-        section: 'search'
-      };
-
-      if (!app.getBookmarks().isBookmarked(data.title)) {
-        app.getBookmarks().addNewBookmark(data);
-      }
-    },
+    // saveSnapshot: function() {
+    //   var that = this;
+    //
+    //   app.router.openModal({type: 'prompt', text: __t('what_would_you_like_to_name_this_bookmark'), callback: function(name ) {
+    //     if(name === null || name === "") {
+    //       Notification.error(__t('please_fill_in_a_valid_name'));
+    //       return;
+    //     }
+    //
+    //     var currentCollection = app.router.currentCollection;
+    //     if (typeof currentCollection !== 'undefined') {
+    //       //Save id so it can be reset after render
+    //       var defaultId = currentCollection.preferences.get('id');
+    //       that.listenToOnce(currentCollection.preferences, 'sync', function() {
+    //         if(defaultId) {
+    //           currentCollection.preferences.set({title:null, id: defaultId});
+    //         }
+    //       });
+    //
+    //       var schema = app.schemaManager.getFullSchema( currentCollection.table.id );
+    //       var preferences = schema.preferences;
+    //       preferences.unset('id');
+    //       // Unset Id so that it creates new Preference
+    //       preferences.set({title: name});
+    //       preferences.save();
+    //     }
+    //
+    //     that.pinSnapshot(name);
+    //   }});
+    // },
+    //
+    // pinSnapshot: function(title) {
+    //   var data = {
+    //     title: title,
+    //     url: Backbone.history.fragment + "/pref/" + encodeURIComponent(title),
+    //     icon_class: 'icon-search',
+    //     user: app.users.getCurrentUser().get("id"),
+    //     section: 'search'
+    //   };
+    //
+    //   if (!app.getBookmarks().isBookmarked(data.title)) {
+    //     app.getBookmarks().addNewBookmark(data);
+    //   }
+    // },
 
     serialize: function() {
       var bookmarks = {table:[],search:[],extension:[],other:[]};
