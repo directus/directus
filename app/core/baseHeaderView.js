@@ -11,7 +11,7 @@ define([
   'app',
   'backbone',
   'core/t',
-  'notification'
+  'core/notification'
 ],
 
 function(app, Backbone, __t, Notification) {
