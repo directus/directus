@@ -1,11 +1,12 @@
 define([
-  "app",
-  "backbone"
+  'app',
+  'backbone',
+  'underscore'
 ],
 
-function(app, Backbone) {
+function(app, Backbone, _) {
 
-  "use strict";
+  'use strict';
 
   var TableSimple = Backbone.Layout.extend({
 
@@ -20,7 +21,7 @@ function(app, Backbone) {
 
     flashItem: function(entryID, bodyScrollTop) {
       document.body.scrollTop = parseInt(bodyScrollTop, 10) || 0;
-      if(entryID) {
+      if (entryID) {
         this.$el.find('tr[data-id="' + entryID + '"]').flashRow();
       }
     },
@@ -44,8 +45,11 @@ function(app, Backbone) {
       });
 
       rows = _.map(models, function(model) {
+        var id = model.get('table_name');
+
         model.set('table_name', app.capitalize(model.get('table_name')));
-        return {model: model, id: model.get('table_name')};
+
+        return {model: model, id: id};
       });
 
       return {rows: rows, columns: columns};
