@@ -12,6 +12,7 @@ function(app, _, Backbone, Handlebars, PreferenceModel) {
   return Backbone.Layout.extend({
     // add bookmark button was moved to sidebar
     // if false is a way to keep it there unavailable just in case
+    /*
     template: Handlebars.compile('\
     {{#if hasActiveColumn}} \
     <div class="simple-select dark-grey-color simple-gray left" title="Choose which items are displayed"> \
@@ -27,10 +28,14 @@ function(app, _, Backbone, Handlebars, PreferenceModel) {
       <select id="template" style="display:none;width:auto;"><option id="templateOption"></option></select> \
     </div> \
     {{/if}}'),
+    */
+    template: 'core/widgets/visibility',
 
     tagName: 'div',
+
     attributes: {
-      'class': 'tool'
+      'class': 'select-container',
+      'id': 'bulkStatus'
     },
 
     events: {

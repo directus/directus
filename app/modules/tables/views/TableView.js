@@ -88,7 +88,14 @@ function(app, Backbone, __t, BasePageView, ListViewManager, Widgets) {
 
           widgets.push(this.widgets.bulkEditWidget);
         }
+
+        if(!this.widgets.visibilityWidget) {
+          this.widgets.visibilityWidget = new Widgets.VisibilityWidget({collection: this.collection, basePage: this});
+        }
+
+        widgets.push(this.widgets.visibilityWidget);
       }
+
       return  widgets;
     },
 
