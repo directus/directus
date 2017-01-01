@@ -106,10 +106,6 @@ function(app, Backbone, __t, BasePageView, ListViewManager, TableViewRightPane, 
           });
         }
 
-        if (this.state.rightPaneOpen === true) {
-          tableView.loadRightPane();
-        }
-
         widgets.push(this.widgets.infoWidget);
 
         if(!this.widgets.visibilityWidget) {

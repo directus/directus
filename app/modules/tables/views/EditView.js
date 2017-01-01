@@ -276,10 +276,6 @@ function(app, Backbone, Handlebars, __t, Directus, BasePageView, Widgets, Histor
         }
       });
 
-      if (this.state.rightPaneOpen === true) {
-        editView.loadRightPane();
-      }
-
       return [
         this.infoWidget,
         this.saveWidget

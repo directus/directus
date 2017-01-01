@@ -50,6 +50,10 @@ function(app, Backbone, _, BaseHeaderView, RightSidebarView) {
 
       this.rightSidebarView = new RightSidebarView();
       this.insertView(this.rightSidebarView);
+
+      if (this.state.rightPaneOpen === true) {
+        this.on('afterRender', this.loadRightPane);
+      }
     },
 
     openRightPane: function() {
@@ -61,8 +65,9 @@ function(app, Backbone, _, BaseHeaderView, RightSidebarView) {
       if (!this.rightPaneView) {
         var view = this.getRightPaneView();
         this.rightPaneView = new view({baseView: this.baseView || this});
-        this.setView('#rightSidebar', this.rightPaneView).render();
       }
+
+      this.setView('#rightSidebar', this.rightPaneView).render();
     },
 
     reRender: function() {
@@ -71,6 +76,7 @@ function(app, Backbone, _, BaseHeaderView, RightSidebarView) {
     },
 
     beforeRender: function() {
+      this.rightPaneView = null;
       this.initToolbar();
       // render the header manually
       // this view is part of the main view and is not a child of this view
