@@ -63,7 +63,12 @@ function(app, Backbone, _, BaseHeaderView, RightSidebarView) {
 
     loadRightPane: function() {
       if (!this.rightPaneView) {
-        var view = this.getRightPaneView();
+        var view = _.result(this, 'getRightPaneView');
+
+        if (!view) {
+          return;
+        }
+
         this.rightPaneView = new view({baseView: this.baseView || this});
       }
 
