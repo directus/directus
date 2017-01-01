@@ -4,8 +4,9 @@ define([
 ], function(app, Backbone) {
 
   return Backbone.Layout.extend({
-   initialize: function(options) {
-     this.baseView = options.baseView;
-   }
+    attributes: {
+      id: 'rightSidebar',
+      class: 'right-sidebar'
+    }
   });
 });

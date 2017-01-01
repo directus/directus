@@ -272,7 +272,7 @@ function(app, Backbone, Handlebars, __t, Directus, BasePageView, Widgets, Histor
         },
         onClick: function(event) {
           if (!editView.rightPaneView) {
-            editView.rightPaneView = new EditViewRightPane();
+            editView.rightPaneView = new EditViewRightPane({baseView: editView});
             editView.setView('#rightSidebar', editView.rightPaneView).render();
           }
 

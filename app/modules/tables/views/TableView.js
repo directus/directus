@@ -101,7 +101,7 @@ function(app, Backbone, __t, BasePageView, ListViewManager, TableViewRightPane, 
             },
             onClick: function (event) {
               if (!tableView.rightPaneView) {
-                tableView.rightPaneView = new TableViewRightPane();
+                tableView.rightPaneView = new TableViewRightPane({baseView: tableView});
                 tableView.setView('#rightSidebar', tableView.rightPaneView).render();
               }
 

@@ -2,9 +2,10 @@ define([
   'app',
   'backbone',
   'underscore',
-  'core/baseHeaderView'
+  'core/baseHeaderView',
+  'core/rightSidebarView'
 ],
-function(app, Backbone, _, BaseHeaderView) {
+function(app, Backbone, _, BaseHeaderView, RightSidebarView) {
 
   return Backbone.Layout.extend({
 
@@ -42,6 +43,9 @@ function(app, Backbone, _, BaseHeaderView) {
 
       this.headerView = new BaseHeaderView({headerOptions: this.headerOptions});
       app.router.v.main.setView('#mainHeaderContent', this.headerView);
+
+      this.rightSidebarView = new RightSidebarView();
+      this.insertView(this.rightSidebarView);
     },
 
     reRender: function() {
