@@ -100,14 +100,14 @@ function(app, Backbone, __t, BasePageView, ListViewManager, TableViewRightPane, 
               help: __t('right_pane_help')
             },
             onClick: function (event) {
-              if (!tableView.rightPaneView) {
-                tableView.rightPaneView = new TableViewRightPane({baseView: tableView});
-                tableView.setView('#rightSidebar', tableView.rightPaneView).render();
-              }
-
-              $('body').toggleClass('right-sidebar-open');
+              tableView.loadRightPane();
+              tableView.openRightPane();
             }
           });
+        }
+
+        if (this.state.rightPaneOpen === true) {
+          tableView.loadRightPane();
         }
 
         widgets.push(this.widgets.infoWidget);
@@ -120,6 +120,10 @@ function(app, Backbone, __t, BasePageView, ListViewManager, TableViewRightPane, 
       }
 
       return  widgets;
+    },
+
+    getRightPaneView: function() {
+      return TableViewRightPane;
     },
 
     rightToolbar: function() {

@@ -271,19 +271,23 @@ function(app, Backbone, Handlebars, __t, Directus, BasePageView, Widgets, Histor
           buttonText: __t('details')
         },
         onClick: function(event) {
-          if (!editView.rightPaneView) {
-            editView.rightPaneView = new EditViewRightPane({baseView: editView});
-            editView.setView('#rightSidebar', editView.rightPaneView).render();
-          }
-
-          $('body').toggleClass('right-sidebar-open');
+          editView.loadRightPane();
+          editView.openRightPane();
         }
       });
+
+      if (this.state.rightPaneOpen === true) {
+        editView.loadRightPane();
+      }
 
       return [
         this.infoWidget,
         this.saveWidget
       ];
+    },
+
+    getRightPaneView: function() {
+      return EditViewRightPane;
     },
 
     initialize: function(options) {

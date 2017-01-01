@@ -35,6 +35,10 @@ function(app, Backbone, _, BaseHeaderView, RightSidebarView) {
 
     },
 
+    state: {
+
+    },
+
     initToolbar: function() {
       this.headerOptions.leftToolbar = this.leftToolbar();
       this.headerOptions.rightToolbar = this.rightToolbar();
@@ -46,6 +50,19 @@ function(app, Backbone, _, BaseHeaderView, RightSidebarView) {
 
       this.rightSidebarView = new RightSidebarView();
       this.insertView(this.rightSidebarView);
+    },
+
+    openRightPane: function() {
+      this.state.rightPaneOpen = !this.state.rightPaneOpen;
+      $('body').toggleClass('right-sidebar-open');
+    },
+
+    loadRightPane: function() {
+      if (!this.rightPaneView) {
+        var view = this.getRightPaneView();
+        this.rightPaneView = new view({baseView: this.baseView || this});
+        this.setView('#rightSidebar', this.rightPaneView).render();
+      }
     },
 
     reRender: function() {
