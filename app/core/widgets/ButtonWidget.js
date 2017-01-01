@@ -23,11 +23,19 @@ function(app, Backbone, _, Handlebars) {
     },
 
     serialize: function() {
-      return this.options.widgetOptions;
+      var options = this.options.widgetOptions;
+
+      // @TODO: Add library that handle class uniqueness and spaces.
+      options.buttonClass += ' action js-action-button';
+      if (options.help) {
+        options.buttonClass += ' help';
+      }
+
+      return options;
     },
 
     afterRender: function() {
-      if(this.options.widgetOptions && this.options.widgetOptions.active) {
+      if (this.options.widgetOptions && this.options.widgetOptions.active) {
         $(this.el).addClass('active');
       }
     },

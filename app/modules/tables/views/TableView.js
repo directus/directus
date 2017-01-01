@@ -93,10 +93,11 @@ function(app, Backbone, __t, BasePageView, ListViewManager, RightPane, Widgets) 
         if (!this.widgets.infoWidget) {
           this.widgets.infoWidget = new Widgets.ButtonWidget({
             widgetOptions: {
-              buttonId: '',
+              // buttonId: '',
               iconClass: 'info',
               buttonClass: '',
-              buttonText: __t('options')
+              buttonText: __t('options'),
+              help: __t('right_pane_help')
             },
             onClick: function (event) {
               if (!tableView.rightPaneView) {
