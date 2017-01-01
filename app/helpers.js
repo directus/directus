@@ -1,7 +1,7 @@
 require([
-  "app",
-  "handlebars",
-  "core/UIManager",
+  'app',
+  'handlebars',
+  'core/UIManager',
   'core/t',
   'moment'
 ], function(app, Handlebars, UIManager, __t, moment) {
@@ -12,6 +12,14 @@ require([
   Handlebars.registerHelper('assetsPath', function() {
     return app.PATH + 'assets';
   });
+
+  // Get root path
+  function rootPath() {
+    return app.PATH;
+  }
+
+  Handlebars.registerHelper('rootPath', rootPath);
+  Handlebars.registerHelper('rootUrl', rootPath);
 
   Handlebars.registerHelper('t', function(key, options) {
     return __t(key, options.hash);

@@ -7,10 +7,11 @@ define([
   'core/BasePageView',
   'core/widgets/widgets',
   'modules/tables/views/HistoryView',
+  'modules/tables/views/EditViewRightPane',
   'modules/tables/views/TranslationView'
 ],
 
-function(app, Backbone, Handlebars, __t, Directus, BasePageView, Widgets, HistoryView, TranslationView) {
+function(app, Backbone, Handlebars, __t, Directus, BasePageView, Widgets, HistoryView, EditViewRightPane, TranslationView) {
 
   var EditView = Backbone.Layout.extend({
     template: Handlebars.compile('<div id="editFormEntry"></div><div id="translateFormEntry"></div><div id="historyFormEntry"></div>'),
@@ -258,9 +259,29 @@ function(app, Backbone, Handlebars, __t, Directus, BasePageView, Widgets, Histor
     },
 
     leftToolbar: function() {
+      var editView = this;
       this.saveWidget = new Widgets.SaveWidget({widgetOptions: {basicSave: this.headerOptions.basicSave, singlePage: this.single}});
       this.saveWidget.setSaved(false);
+
+      this.infoWidget = new Widgets.ButtonWidget({
+        widgetOptions: {
+          buttonId: '',
+          iconClass: 'info',
+          buttonClass: '',
+          buttonText: __t('details')
+        },
+        onClick: function(event) {
+          if (!editView.rightPaneView) {
+            editView.rightPaneView = new EditViewRightPane();
+            editView.setView('#rightSidebar', editView.rightPaneView).render();
+          }
+
+          $('body').toggleClass('right-sidebar-open');
+        }
+      });
+
       return [
+        this.infoWidget,
         this.saveWidget
       ];
     },

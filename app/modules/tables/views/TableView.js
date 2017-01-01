@@ -4,11 +4,11 @@ define([
   'core/t',
   'core/BasePageView',
   'core/ListViewManager',
-  'modules/tables/views/RightPane',
+  'modules/tables/views/TableViewRightPane',
   'core/widgets/widgets'
 ],
 
-function(app, Backbone, __t, BasePageView, ListViewManager, RightPane, Widgets) {
+function(app, Backbone, __t, BasePageView, ListViewManager, TableViewRightPane, Widgets) {
 
   return BasePageView.extend({
 
@@ -101,8 +101,8 @@ function(app, Backbone, __t, BasePageView, ListViewManager, RightPane, Widgets) 
             },
             onClick: function (event) {
               if (!tableView.rightPaneView) {
-                tableView.rightPaneView = new RightPane();
-                tableView.setView('.right-sidebar', tableView.rightPaneView).render();
+                tableView.rightPaneView = new TableViewRightPane();
+                tableView.setView('#rightSidebar', tableView.rightPaneView).render();
               }
 
               $('body').toggleClass('right-sidebar-open');
