@@ -4,10 +4,11 @@ define([
   'core/t',
   'core/BasePageView',
   'core/ListViewManager',
+  'modules/tables/views/RightPane',
   'core/widgets/widgets'
 ],
 
-function(app, Backbone, __t, BasePageView, ListViewManager, Widgets) {
+function(app, Backbone, __t, BasePageView, ListViewManager, RightPane, Widgets) {
 
   return BasePageView.extend({
 
@@ -88,6 +89,27 @@ function(app, Backbone, __t, BasePageView, ListViewManager, Widgets) {
 
           widgets.push(this.widgets.bulkEditWidget);
         }
+
+        if (!this.widgets.infoWidget) {
+          this.widgets.infoWidget = new Widgets.ButtonWidget({
+            widgetOptions: {
+              buttonId: '',
+              iconClass: 'info',
+              buttonClass: '',
+              buttonText: __t('options')
+            },
+            onClick: function (event) {
+              if (!tableView.rightPaneView) {
+                tableView.rightPaneView = new RightPane();
+                tableView.setView('.right-sidebar', tableView.rightPaneView).render();
+              }
+
+              $('body').toggleClass('right-sidebar-open');
+            }
+          });
+        }
+
+        widgets.push(this.widgets.infoWidget);
 
         if(!this.widgets.visibilityWidget) {
           this.widgets.visibilityWidget = new Widgets.VisibilityWidget({collection: this.collection, basePage: this});
