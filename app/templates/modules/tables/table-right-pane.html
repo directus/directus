@@ -22,6 +22,7 @@
 
     <hr>
 
+    {{!--
     <h3>Chart</h3>
     <div class="select-container">
         <select name="type" class="spacing-adjust">
@@ -46,6 +47,7 @@
     </div>
 
     <hr>
+    --}}
 
     <h3>Spacing</h3>
     <div class="select-container">
@@ -61,34 +63,12 @@
 
     <h3>Columns</h3>
     <ul id="reorder-columns" class="menu reorder-columns">
-        <li title="ID" class="deselected">
-            <input class="custom-checkbox select-row" id="check-1" type="checkbox" value="" />
-            <label for="check-1"><span></span> ID</label>
+        {{#columns}}
+        <li title="{{capitalize id}}" class="deselected">
+            <input class="custom-checkbox select-row" id="check-{{id}}" type="checkbox" value="" />
+            <label for="check-{{id}}"><span></span> {{capitalize id}}</label>
         </li>
-        <li title="Title">
-            <input class="custom-checkbox select-row" id="check-2" type="checkbox" value="" checked />
-            <label for="check-2"><span></span> Title</label>
-        </li>
-        <li title="Date Published">
-            <input class="custom-checkbox select-row" id="check-3" type="checkbox" value="" checked />
-            <label for="check-3"><span></span> Date Published</label>
-        </li>
-        <li title="Author" class="deselected">
-            <input class="custom-checkbox select-row" id="check-4" type="checkbox" value="" />
-            <label for="check-4"><span></span> Author</label>
-        </li>
-        <li title="Slideshow">
-            <input class="custom-checkbox select-row" id="check-5" type="checkbox" value="" checked />
-            <label for="check-5"><span></span> Slideshow</label>
-        </li>
-        <li title="Hero Image" class="deselected">
-            <input class="custom-checkbox select-row" id="check-6" type="checkbox" value="" />
-            <label for="check-6"><span></span> Hero Image</label>
-        </li>
-        <li title="Views">
-            <input class="custom-checkbox select-row" id="check-7" type="checkbox" value="" checked />
-            <label for="check-7"><span></span> Views</label>
-        </li>
+        {{/columns}}
     </ul>
 
     <hr>
