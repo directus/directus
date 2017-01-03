@@ -1,10 +1,9 @@
 define([
   'app',
   'backbone',
-  'underscore',
-  'handlebars'
+  'underscore'
 ],
-function(app, Backbone, _, Handlebars) {
+function(app, Backbone, _) {
 
   'use strict';
 
