@@ -10,9 +10,7 @@ define([
     template: 'modules/tables/edit-right-pane',
 
     serialize: function() {
-      var model = this.baseView.model;
-
-      return model ? model.toJSON() : {};
+      return this.model ? this.model.toJSON() : {};
     },
 
     beforeRender: function() {

@@ -6,9 +6,9 @@ define([
     template: 'modules/tables/table-right-pane',
 
     serialize: function() {
-      var model = this.baseView.collection;
-      var table = _.findStringKey(this.baseView, 'collection.table');
-      var data = model ? model.toJSON() : {};
+      var collection = this.collection;
+      var table = collection.table;
+      var data = collection ? collection.toJSON() : {};
 
       data.columns = table.columns ? table.columns.toJSON() : {};
 

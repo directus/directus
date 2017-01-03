@@ -69,7 +69,12 @@ function(app, Backbone, _, BaseHeaderView, RightSidebarView) {
           return;
         }
 
-        this.rightPaneView = new view({baseView: this.baseView || this});
+        var baseView = this.baseView || this;
+        this.rightPaneView = new view({
+          baseView: baseView,
+          collection: baseView.collection,
+          model: baseView.model
+        });
       }
 
       this.setView('#rightSidebar', this.rightPaneView).render();
