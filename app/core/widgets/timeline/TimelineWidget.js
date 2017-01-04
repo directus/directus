@@ -122,8 +122,13 @@ function(app, Backbone, $, _, __t, Directus, moment) {
     },
 
     serialize: function() {
+      // Note: This is only to give the revision a number
       var activityCount = this.activity.length;
-      var data = this.activity.map(function(model, index) {
+      var activities = _.sortBy(this.activity.models, function(item) {
+        return -item.id;
+      });
+
+      var data = activities.map(function(model, index) {
         var data = {
           revisionNumber: activityCount - index,
           table: model.get('table_name'),
