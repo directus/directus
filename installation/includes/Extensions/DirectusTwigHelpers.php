@@ -20,17 +20,6 @@ class DirectusTwigHelpers extends \Twig_Extension
     }
 
     /**
-     * @desc Register twig filter helpers
-     * @return {mixed}
-     */
-    public function getFilters()
-    {
-        return [
-            new \Twig_SimpleFilter('__t', '__t')
-        ];
-    }
-
-    /**
      * @desc Register twig function helpers
      * @return {mixed}
      */

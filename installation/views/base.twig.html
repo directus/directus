@@ -12,7 +12,7 @@
 
             {% block content %}{% endblock %}
 
-            <button type="submit" class="button primary disabled">{{ 'Continue'|__t }}</button>
+            <button type="submit" class="button primary disabled">{{ 'Continue'|t }}</button>
             <a href="{{ directus.root_path }}installation/index.php?step={{ directus.current_step - 1 }}"
                class="no-button{{ directus.current_step > 1 ? '' : ' hide' }}">{{ 'Go Back' }}</a>
         </form>
