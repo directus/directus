@@ -1,0 +1,41 @@
+<div class="toggles">
+    <i class="material-icons comments-toggle active">forum</i> <i class="material-icons activity-toggle active">restore</i>
+</div>
+
+<li class="comment create">
+    <textarea id="itemCommentText" placeholder="Write a comment..."></textarea>
+    <span id="tagInsert" class="mention-list"></span>
+</li>
+
+{{#activities}}
+{{#if isComment}}
+<li class="comment">
+    <div class="byline">
+        <div class="avatar"><img src="{{userAvatarUrl userId}}"></div>
+        <a href="#" class="open-modal hover-color" data-modal="profile">{{userFirstAndLastName userId}}</a>
+        <div class="timeago">
+            <i class="material-icons">schedule</i> {{timeAgo}}
+        </div>
+    </div>
+    {{{nl2br title}}}
+</li>
+{{else}}
+<li class="activity">
+    <div class="activity-full-toggle">
+        REVISON {{revisionNumber}} <i class="material-icons more-activity">arrow_drop_down</i>
+        <div class="timeago">
+            <i class="material-icons">schedule</i> {{timeAgo}}
+        </div>
+    </div>
+    <div class="full-activity">
+        <b>Action:</b> {{action}} <br> <!-- temp -->
+        <b>Author:</b> <a href="#" class="open-modal hover-color" data-modal="profile">{{userFirstAndLastName userId}}</a><br>
+        <b>Date:</b> {{datetime}}<br> <!-- Tue – Nov 3, 2016 @ 18:24:09 -->
+        <!-- <b>Changes:</b> 3<br> -->
+        <b>IP:</b> {{ip}}<br>
+        <!-- <b>Rollback:</b> <a href="#" class="rollback">Restore</a> -->
+        <!-- <div class="button rollback"><i class="material-icons">restore</i> Rollback</div> -->
+    </div>
+</li>
+{{/if}}
+{{/activities}}

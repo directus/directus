@@ -1,6 +1,7 @@
 define([
-  'core/RightPane'
-], function(RightPane) {
+  'core/RightPane',
+  'core/widgets/timeline/TimelineWidget'
+], function(RightPane, TimelineWidget) {
   return RightPane.extend({
 
     attributes: {
@@ -15,6 +16,8 @@ define([
 
     beforeRender: function() {
       this.baseView.rightSidebarView.$el.addClass('scroll-y wide no-title');
+
+      this.insertView(new TimelineWidget({model: this.model}));
     }
   });
 });
