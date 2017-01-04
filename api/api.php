@@ -590,6 +590,13 @@ $app->post("/$v/auth/login/?", function () use ($app, $ZendDb, $acl, $requestNon
     // @todo: Login should fail on correct information when user is not active.
     $loginSuccessful = Auth::login($user['id'], $user['password'], $user['salt'], $password);
 
+    if (!$loginSuccessful) {
+        return JsonView::render([
+            'message' => __t('incorrect_email_or_password'),
+            'success' => false
+        ]);
+    }
+
     // When the credentials are correct but the user is Inactive
     $userHasStatusColumn = array_key_exists(STATUS_COLUMN_NAME, $user);
     $isUserActive = false;
