@@ -15,7 +15,16 @@ class DirectusTwigExtension extends \Twig_Extension
     public function getFunctions()
     {
         return [
-            't' => new \Twig_Function_Method($this, 'translation')
+            't' => new \Twig_Function_Method($this, 'translation'),
+            'trans' => new \Twig_Function_Method($this, 'translation')
+        ];
+    }
+
+    public function getFilters()
+    {
+        return [
+            't' => new \Twig_Filter_Method($this, 'translation'),
+            'trans' => new \Twig_Filter_Method($this, 'translation')
         ];
     }
 
