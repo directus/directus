@@ -35,3 +35,4 @@ customs/uis/*
 node_modules
 storage
 
+/api/vendor
