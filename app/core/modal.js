@@ -46,6 +46,8 @@ function(app, Backbone) {
     },
 
     events: {
+      'click .js-close-modal': 'close',
+
       'click #cancel': function() {
         this.close();
       },
