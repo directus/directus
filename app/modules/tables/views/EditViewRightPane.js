@@ -1,7 +1,9 @@
 define([
   'core/RightPane',
-  'core/widgets/timeline/TimelineWidget'
-], function(RightPane, TimelineWidget) {
+  'core/widgets/timeline/TimelineWidget',
+  'core/widgets/MetadataWidget'
+], function(RightPane, TimelineWidget, MetadataWidget) {
+
   return RightPane.extend({
 
     attributes: {
@@ -17,6 +19,7 @@ define([
     beforeRender: function() {
       this.baseView.rightSidebarView.$el.addClass('scroll-y wide no-title');
 
+      this.insertView(new MetadataWidget({model: this.model}));
       this.insertView(new TimelineWidget({model: this.model}));
     }
   });
