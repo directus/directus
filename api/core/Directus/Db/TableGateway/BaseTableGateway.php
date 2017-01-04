@@ -210,12 +210,13 @@ class BaseTableGateway extends TableGateway
             $select->where->equalTo($field, $value);
         });
         $row = $rowset->current();
+
         // Supposing this "one" doesn't exist in the DB
-        if (false === $row) {
+        if (!$row) {
             return false;
         }
-        $row = $row->toArray();
-        return $row;
+
+        return $row->toArray();
     }
 
     public function findOneByArray(array $data)
