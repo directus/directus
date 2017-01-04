@@ -3,6 +3,7 @@
 namespace Directus\Installation;
 
 use Directus\Installation\Extensions\DirectusTwigHelpers;
+use Directus\View\Twig\DirectusTwigExtension;
 use Slim\Extras\Views\Twig;
 
 class View
@@ -66,6 +67,7 @@ class View
 
         // Add twig extensions
         Twig::$twigExtensions = [
+            new DirectusTwigExtension(),
             new DirectusTwigHelpers()
         ];
 

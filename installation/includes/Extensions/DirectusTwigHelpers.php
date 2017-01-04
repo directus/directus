@@ -16,7 +16,7 @@ class DirectusTwigHelpers extends \Twig_Extension
      */
     public function getName()
     {
-        return 'directus';
+        return 'directus_installation';
     }
 
     /**
