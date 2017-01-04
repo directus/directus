@@ -1,6 +1,7 @@
 define([
   'app',
   'backbone',
+  'underscore',
   'handlebars',
   'core/t',
   'core/directus',
@@ -11,7 +12,7 @@ define([
   'modules/tables/views/TranslationView'
 ],
 
-function(app, Backbone, Handlebars, __t, Directus, BasePageView, Widgets, HistoryView, EditViewRightPane, TranslationView) {
+function(app, Backbone, _, Handlebars, __t, Directus, BasePageView, Widgets, HistoryView, EditViewRightPane, TranslationView) {
 
   var EditView = Backbone.Layout.extend({
     template: Handlebars.compile('<div id="editFormEntry"></div><div id="translateFormEntry"></div><div id="historyFormEntry"></div>'),
@@ -71,7 +72,6 @@ function(app, Backbone, Handlebars, __t, Directus, BasePageView, Widgets, Histor
     events: {
       'change input, select, textarea': 'checkDiff',
       'keyup input, textarea': 'checkDiff',
-      'click .saved-success > #save': 'saveConfirm',
       'change #saveSelect': 'saveConfirm',
       'submit': function(e) {
         // prevent user submit the form using Enter key
@@ -260,7 +260,14 @@ function(app, Backbone, Handlebars, __t, Directus, BasePageView, Widgets, Histor
 
     leftToolbar: function() {
       var editView = this;
-      this.saveWidget = new Widgets.SaveWidget({widgetOptions: {basicSave: this.headerOptions.basicSave, singlePage: this.single}});
+      this.saveWidget = new Widgets.SaveWidget({
+        widgetOptions: {
+          basicSave: this.headerOptions.basicSave,
+          singlePage: this.single
+        },
+        onClick: _.bind(editView.saveConfirm, editView)
+      });
+
       this.saveWidget.setSaved(false);
 
       this.infoWidget = new Widgets.ButtonWidget({
@@ -277,8 +284,8 @@ function(app, Backbone, Handlebars, __t, Directus, BasePageView, Widgets, Histor
       });
 
       return [
-        this.infoWidget,
-        this.saveWidget
+        this.saveWidget,
+        this.infoWidget
       ];
     },
 
