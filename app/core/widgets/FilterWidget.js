@@ -1,11 +1,12 @@
 define([
   'app',
   'backbone',
+  'underscore',
   'handlebars'
 ],
-function(app, Backbone, Handlebars) {
+function(app, Backbone, _, Handlebars) {
 
-  "use strict";
+  'use strict';
 
   return Backbone.Layout.extend({
 
@@ -14,30 +15,35 @@ function(app, Backbone, Handlebars) {
     tagName: 'div',
 
     attributes: {
-      class: 'tool'
+      'class': 'filter help',
+      'data-help': 'The filter area is used to find specific items within large datasets.'
     },
 
     filterUIMappings: {
-      default: '<div class="filter-background"><input type="text" value="{{value}}" placeholder="{{t "widget_filter_value_placeholder"}}" name="keywords" maxlength="100" class="filter_ui"></div>',
-      date: '<div class="filter-background"><input type="date" value="{{value}}" class="date filter_ui" name="keywords" id="advKeywords"></div>',
-      checkbox: '<div class="filter-background"><input type="checkbox" {{#if value}}checked{{/if}} class="filter_ui" name="keywords" id="advKeywords"></div>'
+      default: '<input type="text" value="{{value}}" placeholder="{{t "widget_filter_value_placeholder"}}" name="keywords" maxlength="100" class="filter_ui">',
+      date: '<input type="date" value="{{value}}" class="date filter_ui" name="keywords" id="advKeywords">',
+      checkbox: '<input type="checkbox" {{#if value}}checked{{/if}} class="filter_ui" name="keywords" id="advKeywords">'
     },
 
     events: {
-      'click .removeFilterClass':function(e) {
-        var index = $(e.target).parent().index();
-        var title = $(e.target).parent().find('.filterColumnName').attr('data-filter-id');
+      'click .js-toggle': function(event) {
+        this.$el.toggleClass('filter-dropdown-open');
+      },
 
+      'click .js-remove':function(event) {
+        var index = $(event.target).parent().index();
         var value = this.options.filters[index].filterData.value;
         this.options.filters.splice(index, 1);
 
         this.updateFilters();
-        if(value) {
+        if (value) {
           this.collection.fetch();
         }
+
         this.saveFilterString();
         this.render();
       },
+
       'change .adv-search-col-id': function(e) {
         var selectedVal = $(e.target).val();
         if(selectedVal !== "") {
@@ -49,26 +55,29 @@ function(app, Backbone, Handlebars) {
       }
     },
 
-    processFilterChange: function(e) {
+    processFilterChange: function(event) {
+      var $element = $(event.target);
+      var $filter = $(event.target).parent();
       var type = 'like';
-      if($(e.target).prop('tagName') === 'SELECT') {
+      if ($(event.target).prop('tagName') === 'SELECT') {
         type = '=';
       }
+
       var data = {
-        id: this.mysql_real_escape_string($(e.target).closest('li').find('.filterColumnName').attr('data-filter-id')),
+        id: this.mysql_real_escape_string($filter.data('filter-id-master')),
         type: type,
-        value: this.mysql_real_escape_string($(e.target).val())
+        value: this.mysql_real_escape_string($element.val())
       };
 
-      if($(e.target).is(':checkbox')) {
-        if($(e.target).prop('checked')) {
+      if($element.is(':checkbox')) {
+        if($element.prop('checked')) {
           data.value = 1;
         } else {
           data.value = 0;
         }
       }
       this.selfChanged = true;
-      this.options.filters[$(e.target).closest('li').index()].filterData = data;
+      this.options.filters[$filter.index()].filterData = data;
       this.updateFilters();
       this.collection.fetch();
       this.saveFilterString();
@@ -106,10 +115,11 @@ function(app, Backbone, Handlebars) {
 
       data.columnName = selectedColumn;
 
-      if(this.collection.structure.get(selectedColumn).get('ui') === "many_to_one" || that.collection.structure.get(selectedColumn).get('ui') === "many_to_many" || that.collection.structure.get(selectedColumn).get('ui') === "one_to_many") {
+      if (this.collection.structure.get(selectedColumn).get('ui') === "many_to_one" || that.collection.structure.get(selectedColumn).get('ui') === "many_to_many" || that.collection.structure.get(selectedColumn).get('ui') === "one_to_many") {
         var columnModel = this.collection.structure.get(selectedColumn);
+        var filterType = columnModel.options.has('filter_type');
 
-        if(columnModel.options.has('filter_type') && columnModel.options.get('filter_type') === "dropdown") {
+        if (filterType && columnModel.options.get('filter_type') === 'dropdown') {
           //Get Related Column Collection
           data.columnModel = columnModel;
           data.relatedCollection = app.getEntries(columnModel.relationship.get('related_table'));
@@ -142,20 +152,25 @@ function(app, Backbone, Handlebars) {
 
     serialize: function() {
       var data = {};
+      var structure = this.collection.structure;
+
+      // data.statusColumn = structure.get(app.statusMapping.status_name);
       data.filters = this.options.filters;
-      data.tableColumns = this.collection.structure.pluck('id');
-      if(this.collection.table.get('filter_column_blacklist')) {
+      data.tableColumns = structure.pluck('id');
+      if (this.collection.table.get('filter_column_blacklist')) {
         data.tableColumns = _.difference(data.tableColumns, this.collection.table.get('filter_column_blacklist').split(','));
       }
+
       data.tableColumns.sort(function(a, b) {
         if(a < b) return -1;
         if(a > b) return 1;
         return 0;
       });
+
       var that = this;
       var i=0;
       _.each(this.options.filters, function(item) {
-        if(item.relatedCollection) {
+        if (item.relatedCollection) {
           data.filters[i].relatedEntries = [];
           if(item.columnModel.options.has('filter_column')) {
             var visibleColumn = item.columnModel.options.get('filter_column');

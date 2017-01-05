@@ -108,11 +108,17 @@ function(app, Backbone, __t, BasePageView, ListViewManager, TableViewRightPane, 
 
         widgets.push(this.widgets.infoWidget);
 
-        if(!this.widgets.visibilityWidget) {
+        if (!this.widgets.visibilityWidget) {
           this.widgets.visibilityWidget = new Widgets.VisibilityWidget({collection: this.collection, basePage: this});
         }
 
         widgets.push(this.widgets.visibilityWidget);
+
+        if (!this.widgets.filterWidget) {
+          this.widgets.filterWidget = new Widgets.FilterWidget({collection: this.collection, basePage: this});
+        }
+
+        widgets.push(this.widgets.filterWidget);
       }
 
       return  widgets;
