@@ -98,11 +98,11 @@ function(app, Backbone, _, EntriesManager, __t, Notification) {
 
     events: {
       'click #saveSnapshotBtn': 'saveSnapshot',
-      'click .remove-snapshot': function(e) {
-        e.stopPropagation();
-        e.preventDefault();
+      'click #remove_snapshot': function(event) {
+        event.stopPropagation();
+        event.preventDefault();
 
-        var bookmarkId = $(e.target).parents('.sidebar-subitem').data('id');
+        var bookmarkId = $(event.currentTarget).parents('li').data('id');
         var bookmark = this.collection.get(bookmarkId);
         if (bookmark) {
           var title = bookmark.get('title');
