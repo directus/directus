@@ -185,7 +185,7 @@ function(app, Backbone, _, Handlebars) {
 
       // data.statusColumn = structure.get(app.statusMapping.status_name);
       data.filters = this.options.filters;
-      data.tableColumns = structure.pluck('id');
+      data.tableColumns = _.difference(structure.pluck('id'), [app.statusMapping.status_name]);
       if (this.collection.table.get('filter_column_blacklist')) {
         data.tableColumns = _.difference(data.tableColumns, this.collection.table.get('filter_column_blacklist').split(','));
       }
