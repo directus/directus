@@ -217,9 +217,14 @@ function(app, Backbone, __t, BasePageView, ListViewManager, TableViewRightPane, 
       this.collection.options['sort'] = false;
 
       this.collection.on('select', function() {
-        var $checksChecked = $('.js-select-row:checked');
+        var $checks = this.table.$('.js-select-row');
+        var $checksChecked = this.table.$('.js-select-row:checked');
         // @NOTE: Hotfix render on empty selection
         var render = this.showDeleteButton && !($checksChecked.length >= 1);
+
+        if ($checksChecked.length != $checks.length) {
+          this.table.tableHead.$('#checkAll').prop('checked', false)
+        }
 
         this.actionButtons = $checksChecked.length;
         this.batchEdit = $checksChecked.length > 1;
