@@ -22,7 +22,17 @@ function(app, Backbone, DirectusModal, DirectusEdit, __t, Notification, BasePage
     },
     leftToolbar: function() {
       return [
-        new Widgets.ButtonWidget({widgetOptions: {buttonId: "addBtn", iconClass: "add", buttonClass: "", buttonText: __t('new_file')}})
+        new Widgets.ButtonWidget({
+          widgetOptions: {
+            buttonId: 'addBtn',
+            iconClass: 'cloud_upload',
+            buttonClass: 'primary',
+            buttonText: __t('new_file')
+          },
+          onClick: function(event) {
+            app.router.go('#files','new');
+          }
+        })
       ];
     },
     rightToolbar: function() {
@@ -53,9 +63,6 @@ function(app, Backbone, DirectusModal, DirectusEdit, __t, Notification, BasePage
     },
 
     events: {
-      'click #addBtn': function() {
-        app.router.go('#files','new');
-      },
       'click #gridBtn': function() {
         if(this.viewList) {
           this.viewList = false;
