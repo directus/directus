@@ -64,12 +64,13 @@
     <h3>Columns</h3>
     <ul id="reorder-columns" class="menu reorder-columns">
         {{#columns}}
-        <li title="{{capitalize id}}" class="deselected">
-            <input class="custom-checkbox select-row" id="check-{{id}}" type="checkbox" value="" />
+        <li title="{{capitalize id}}"{{#unless visible}} class="deselected"{{/unless}}>
+            <input class="custom-checkbox select-row" id="check-{{id}}" data-name="{{id}}" type="checkbox" value="" {{#if visible}}checked="checked"{{/if}}>
             <label for="check-{{id}}"><span></span> {{capitalize id}}</label>
         </li>
         {{/columns}}
     </ul>
+    <button id="save_columns" class="button">Save</button>
 
     <hr>
 
