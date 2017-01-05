@@ -18,7 +18,7 @@ function(app, Backbone, _, __t, Notification) {
 
     events: {
       'click input.js-select-all-row': function(event) {
-        var checkAll = this.parentView.$el.find('#checkAll:checked').prop('checked') !== undefined;
+        var checkAll = this.$('#checkAll:checked').prop('checked') !== undefined;
 
         this.parentView.tableBody.$el.find('input.js-select-row').prop('checked', checkAll).trigger('changed');
         this.collection.trigger('select');
