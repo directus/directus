@@ -30,6 +30,18 @@ function(app, Backbone, _, Handlebars) {
         this.$el.toggleClass('filter-dropdown-open');
       },
 
+      'click input.js-status-check': function(event) {
+        var $checksChecked = this.$el.find('input.js-status-check:checked');
+        var status = [];
+
+        $checksChecked.each(function(i, el) {
+          status.push($(el).val());
+        });
+
+        this.collection.setFilter({status: status.join(',')});
+        this.collection.fetch();
+      },
+
       'click .js-remove':function(event) {
         var index = $(event.target).parent().index();
         var value = this.options.filters[index].filterData.value;
@@ -153,6 +165,23 @@ function(app, Backbone, _, Handlebars) {
     serialize: function() {
       var data = {};
       var structure = this.collection.structure;
+      var statusSelected = (this.collection.getFilter('status') || '').split(',') || [1, 2];
+
+      statusSelected = _.map(statusSelected, function(value) {
+        return Number(value);
+      });
+
+      data.statusColumn = structure.get(app.statusMapping.status_name);
+      data.statuses = [];
+      _.each(app.statusMapping.mapping, function(status, key) {
+        if (key !== app.statusMapping.deleted_num) {
+          data.statuses.push({
+            name: status.name,
+            value: key,
+            selected: _.indexOf(statusSelected, key) >= 0
+          });
+        }
+      });
 
       // data.statusColumn = structure.get(app.statusMapping.status_name);
       data.filters = this.options.filters;

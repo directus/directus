@@ -3,25 +3,17 @@
 <!-- <i class="material-icons clear">close</i> --> <!-- Only on when there's active filters -->
 <i class="material-icons filter-dropdown-toggle js-toggle">arrow_drop_down</i>
 <div class="filter-dropdown">
-    {{!--
     {{#if statusColumn}}
     <h3>Status</h3>
+    {{#statuses}}
     <div class="status-toggle">
-        <input class="custom-checkbox select-row" id="check-status-1" type="checkbox" value="" checked />
-        <label for="check-status-1"><span></span> Active</label>
+        <input class="custom-checkbox select-row js-status-check" id="check-status-{{value}}" type="checkbox" value="{{value}}" {{#if selected}}checked{{/if}}>
+        <label for="check-status-{{value}}"><span></span> {{name}}</label>
     </div>
-    <div class="status-toggle">
-        <input class="custom-checkbox select-row" id="check-status-2" type="checkbox" value="" checked />
-        <label for="check-status-2"><span></span> Draft</label>
-    </div>
-    <!-- <div class="status-toggle">
-        <input class="custom-checkbox select-row" id="check-status-3" type="checkbox" value="" />
-        <label for="check-status-3"><span></span> Deleted</label>
-    </div> -->
+    {{/statuses}}
 
     <hr>
     {{/if}}
-    --}}
 
     <h3>Add New Filter</h3>
     <div class="select-container add-column-filter">
