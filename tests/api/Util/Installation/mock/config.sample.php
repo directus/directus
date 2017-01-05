@@ -46,10 +46,10 @@ if (!defined('ROOT_URL_WITH_SCHEME')) {
 // Absolute path to application
 define('APPLICATION_PATH', realpath(dirname(__FILE__) . '/..'));
 
-//Memcached Server, operates on default 11211 port.
+// Memcache Server, operates on default 11211 port.
 define('MEMCACHED_SERVER', '127.0.0.1');
 
-//Namespaced the memcached keys so branches/databases to not collide
+// Namespaced the memcache keys so branches/databases to not collide
 //options are prod, staging, testing, development
 define('MEMCACHED_ENV_NAMESPACE', 'staging');
 
