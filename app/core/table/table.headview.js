@@ -17,10 +17,10 @@ function(app, Backbone, _, __t, Notification) {
     tagName: 'thead',
 
     events: {
-      'click th.js-check > input': function(e) {
+      'click input.js-select-all-row': function(event) {
         var checkAll = this.parentView.$el.find('#checkAll:checked').prop('checked') !== undefined;
 
-        this.parentView.tableBody.$el.find('td.js-check > input').prop('checked', checkAll).trigger('changed');
+        this.parentView.tableBody.$el.find('input.js-select-row').prop('checked', checkAll).trigger('changed');
         this.collection.trigger('select');
       },
 
