@@ -163,7 +163,7 @@ function(app, Backbone, _, Handlebars) {
     },
 
     serialize: function() {
-      var data = {};
+      var data = {resultCount: this.collection.length};
       var structure = this.collection.structure;
       var statusSelected = (this.collection.getFilter('status') || '').split(',') || [1, 2];
 
@@ -436,12 +436,16 @@ function(app, Backbone, _, Handlebars) {
 
     initialize: function() {
       this.options.filters = [];
+
       this.listenTo(this.collection.preferences, 'change sync', function() {
         this.updateFiltersFromPreference();
       });
+
+      this.listenTo(this.collection, 'sync', this.render);
+
       this.basePage = this.options.basePage;
-      if(app.router.loadedPreference) {
-        if(this.basePage) {
+      if (app.router.loadedPreference) {
+        if (this.basePage) {
           this.basePage.addHolding(this.cid);
         }
       } else {
