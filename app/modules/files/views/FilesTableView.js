@@ -27,7 +27,7 @@ function(app, Backbone, DirectusModal, DirectusEdit, __t, Notification, BasePage
             buttonId: 'addBtn',
             iconClass: 'cloud_upload',
             buttonClass: 'primary',
-            buttonText: __t('new_file')
+            buttonText: __t('file_upload')
           },
           onClick: function(event) {
             app.router.go('#files','new');
