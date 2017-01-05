@@ -34,5 +34,3 @@ customs/uis/*
 .gulp-scss-cache
 node_modules
 storage
-
-/api/vendor
