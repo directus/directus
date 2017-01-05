@@ -16,6 +16,13 @@ function(app, Backbone, _) {
       class: 'action widget widget-button'
     },
 
+    _events: {
+      'click .more': function(event) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+    },
+
     events: function() {
       return this.getEvents();
     },
@@ -34,13 +41,19 @@ function(app, Backbone, _) {
     },
 
     initialize: function(options) {
-      this._events = {};
+      this._events = this._events || {};
+
       if (!options.widgetOptions) {
         this.options.widgetOptions = {isUpToDate: true};
       }
 
       if (_.isFunction(options.onClick)) {
         this._events['click #save_button.saved-success'] = options.onClick;
+        this._events['change #save_options'] = options.onClick;
+      }
+
+      if (_.isFunction(options.onChange)) {
+        this._events['change #save_options'] = options.onChange;
       }
     }
   });
