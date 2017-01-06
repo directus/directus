@@ -91,7 +91,7 @@ define(function(require, exports, module) {
     },
 
     saveAll: function(options) {
-      return this.save(this.toJSON(), options);
+      return this.save(this.models, options);
     },
 
     save: function(models, options) {
