@@ -24,8 +24,8 @@ function(app, Backbone, _, __t, Notification) {
         this.collection.trigger('select');
       },
 
-      'click th:not(.js-check, .visible-columns-cell)': function(e) {
-        var column = $(e.target).closest('th').attr('data-id'); // .closet() accounts for event return children (icon) elements instead
+      'click th:not(.js-check, .visible-columns-cell)': function(event) {
+        var column = $(event.currentTarget).data('id');
         var order = this.collection.getOrder();
         var order_sort = 'ASC';
         var isDefaultSorting = (order.sort === column && order.sort_order !== order_sort);
@@ -33,12 +33,13 @@ function(app, Backbone, _, __t, Notification) {
         var structure = this.collection.junctionStructure || this.collection.structure;
         var defaultSortColumn = structure.where({column_name: 'sort'}).length ? 'sort' : 'id';
 
-        if(column === 'sort' || isDefaultSorting) {
+        if (column === 'sort' || isDefaultSorting) {
           this.collection.setOrder(defaultSortColumn, order_sort);
+          tableColumnWidths(this.parentView.$el);
           return;
         }
 
-        if(column !== order.sort) {
+        if (column !== order.sort) {
           this.collection.setOrder(column, order_sort);
         } else {
           if(order.sort_order === order_sort) {
@@ -46,6 +47,8 @@ function(app, Backbone, _, __t, Notification) {
           }
           this.collection.setOrder(column, order_sort);
         }
+
+        tableColumnWidths(this.parentView.$el);
       },
 
       'click #set-visible-columns': function() {
