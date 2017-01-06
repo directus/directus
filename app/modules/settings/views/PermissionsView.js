@@ -16,7 +16,7 @@ define([
 
 function(app, Backbone, Widgets, __t, BasePageView) {
 
-  "use strict";
+  'use strict';
 
   var Groups =  Backbone.Layout.extend({
     template: 'modules/settings/settings-groups',
