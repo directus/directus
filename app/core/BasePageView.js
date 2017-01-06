@@ -11,6 +11,8 @@ function(app, Backbone, _, BaseHeaderView, RightSidebarView) {
 
     template: 'basePage',
 
+    el: '#content',
+
     chooseView: function(viewSet, viewName) {
       return _.isUndefined(viewName) ? viewSet : viewSet[viewName];
     },
