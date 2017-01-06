@@ -28,22 +28,33 @@ function(app, Backbone, Directus, BasePageView, Widgets, __t) {
     },
 
     leftToolbar: function() {
-      this.saveWidget = new Widgets.SaveWidget({widgetOptions: {basicSave: true}});
+      var self = this;
+      this.saveWidget = new Widgets.SaveWidget({
+        widgetOptions: {
+          basicSave: true
+        },
+        onClick: function(event) {
+          var data = self.editView.data();
+          var success = function() {
+            app.router.go('settings');
+          };
+
+          self.model.save(data, {success: success});
+        }
+      });
+
       this.saveWidget.setSaved(true);
+
       return [
         this.saveWidget
       ];
     },
 
     events: {
-      'click .saved-success': function() {
-        var data = this.editView.data();
-        var success = function() { app.router.go('settings'); };
-        this.model.save(data, {success: success});
-      },
       'change select': 'checkDiff',
       'keyup input, textarea': 'checkDiff'
     },
+
     checkDiff: function(e) {
       this.saveWidget.setSaved(false);
     },
