@@ -383,26 +383,35 @@ function(app, _, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIMa
     },
 
     leftToolbar: function() {
-      this.saveWidget = new Widgets.SaveWidget({widgetOptions: {basicSave: true}});
+      var self = this;
+      this.saveWidget = new Widgets.SaveWidget({
+        widgetOptions: {
+          basicSave: true
+        },
+        onClick: function(event) {
+          self.save();
+        }
+      });
+
       return [
         this.saveWidget
       ];
     },
 
     events: {
-      'click .saved-success': function() {
-        this.save();
-      },
       'click #removeOverlay': function() {
         app.router.removeOverlayPage(this);
       }
     },
+
     save: function() {
       console.log("Save");
     },
+
     afterRender: function() {
       this.setView('#page-content', this.table);
     },
+
     initialize: function(options) {
       this.table = new Directus.EditView({model: this.model, structure: this.options.schema});
     }
