@@ -27,7 +27,8 @@ define([
 ],
 
 function(app, _, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManager, Widgets, SchemaManager, Sortable, Notification, DoubleConfirmation, __t, SchemaHelper, SettingsConfig) {
-  "use strict";
+
+  'use strict';
 
   var SettingsTables = app.module();
 
@@ -36,24 +37,32 @@ function(app, _, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIMa
   var NewColumnOverlay = BasePageView.extend({
     headerOptions: {
       route: {
-
         title: __t('new_field'),
         isOverlay: true
       }
     },
 
     leftToolbar: function() {
+      var self = this;
+
       return  [
-        new Widgets.ButtonWidget({widgetOptions: {buttonId: "addBtn", iconClass: "check", buttonClass: "", buttonText: __t('save')}})
+        new Widgets.ButtonWidget({
+          widgetOptions: {
+            buttonId: 'addBtn',
+            iconClass: 'check',
+            buttonClass: 'primary',
+            buttonText: __t('save')
+          },
+          onClick: function(event) {
+            self.save();
+          }
+        })
       ];
     },
 
     events: {
       'click #removeOverlay': function() {
         app.router.removeOverlayPage(this);
-      },
-      'click #addBtn': function() {
-        this.save();
       }
     },
 
