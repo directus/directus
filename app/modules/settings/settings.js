@@ -45,15 +45,16 @@ function(app, Backbone, Directus, BasePageView, Tables, Global, About, Permissio
       },
     },
 
-    attributes: {
-      class: 'page settings-modules'
-    },
+    // attributes: {
+    //   class: 'page settings-modules'
+    // },
 
     initialize: function() {
       // @NOTE: merge attributes with parent?
       // this.$el.get(0).attributes
       // var attrs = _.extend({}, _.result(this, 'attributes'));
-      this.$el.attr(this.attributes);
+      // this.$el.attr(this.attributes);
+      $('#content').addClass('page settings-modules');
     },
 
     template: 'modules/settings/settings'
