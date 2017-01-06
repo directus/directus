@@ -5,7 +5,7 @@
     {{/if}}
     {{#if ../selectable}}
     <td class="status js-check">
-        <input class="custom-checkbox js-select-row" id="check{{ model.id }}" type="checkbox" value="">
+        <input class="custom-checkbox js-select-row" id="check{{ model.id }}" type="checkbox" value="{{../model.id}}">
         <label for="check{{ model.id }}"><span></span></label>
     </td>
     {{/if}}

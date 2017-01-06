@@ -108,11 +108,13 @@ function(app, Backbone, __t, BasePageView, ListViewManager, TableViewRightPane, 
 
         widgets.push(this.widgets.infoWidget);
 
-        if (!this.widgets.filterWidget) {
-          this.widgets.filterWidget = new Widgets.FilterWidget({collection: this.collection, basePage: this});
-        }
+        if (this.showDeleteButton) {
+          if (!this.widgets.selectionActionWidget) {
+            this.widgets.selectionActionWidget = new Widgets.SelectionActionWidget({collection: this.collection, basePage: this});
+          }
 
-        widgets.push(this.widgets.filterWidget);
+          widgets.push(this.widgets.selectionActionWidget);
+        }
       }
 
       return  widgets;
@@ -123,6 +125,18 @@ function(app, Backbone, __t, BasePageView, ListViewManager, TableViewRightPane, 
     },
 
     rightToolbar: function() {
+      var widgets = [];
+
+      if (!this.showDeleteButton) {
+        if (!this.widgets.filterWidget) {
+          this.widgets.filterWidget = new Widgets.FilterWidget({collection: this.collection, basePage: this});
+        }
+
+        widgets.push(this.widgets.filterWidget);
+      }
+
+      return widgets;
+
       return [
         new Widgets.PaginatorWidget({collection: this.collection})
       ];
@@ -133,16 +147,16 @@ function(app, Backbone, __t, BasePageView, ListViewManager, TableViewRightPane, 
 
       switch(this.leftSecondaryCurrentState) {
         case 'default':
-          // if(!this.widgets.visibilityWidget) {
-          //   this.widgets.visibilityWidget = new Widgets.VisibilityWidget({collection: this.collection, basePage: this});
-          // }
+          if(!this.widgets.visibilityWidget) {
+            this.widgets.visibilityWidget = new Widgets.VisibilityWidget({collection: this.collection, basePage: this});
+          }
 
           if(!this.widgets.filterWidget) {
             this.widgets.filterWidget = new Widgets.FilterWidget({collection: this.collection, basePage: this});
           }
 
           return [
-            // this.widgets.visibilityWidget,
+            this.widgets.visibilityWidget,
             this.widgets.filterWidget
           ];
         case 'actions':
