@@ -16,6 +16,22 @@
 
 <div class="settings-module">
     <div class="info">
+        <h1>{{t "files_and_thumbnails"}}</h1>
+        <div class="description">{{t "files_and_thumbnails_description"}}</div>
+        <a href="{{rootUrl}}#settings/files"><div class="button">Edit</div></a>
+    </div>
+    <div class="video">
+        <div class="aspect-ratio">
+            <video id="settingsGlobalVideo" width="320" height="240">
+                <source src="{{assetsPath}}/videos/directus.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+    </div>
+</div>
+
+<div class="settings-module">
+    <div class="info">
         <h1>{{t "tables_and_inputs"}}</h1>
         <div class="description">{{t "tables_and_inputs_description"}}</div>
         <a href="{{rootUrl}}#settings/tables"><div class="button">Manage</div></a>
