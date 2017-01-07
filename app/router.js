@@ -249,6 +249,12 @@ define(function(require, exports, module) {
       };
     },
 
+    removeTopOverlayPage: function() {
+      var view = this.v.main.getViews('#content').last()._wrapped;
+
+      return this.removeOverlayPage(view);
+    },
+
     removeOverlayPage: function(view) {
       view.remove(); //Remove Overlay Page
       var vieww = this.v.main.getViews('#content').last()._wrapped;

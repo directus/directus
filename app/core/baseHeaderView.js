@@ -29,7 +29,12 @@ function(app, Backbone, __t, Notification) {
     },
 
     events: {
+      'click #removeOverlay': 'closeOverlayPage',
       'click #saveSnapshotBtn': 'saveSnapshot'
+    },
+
+    closeOverlayPage: function() {
+      app.router.removeTopOverlayPage();
     },
 
     saveSnapshot: function() {

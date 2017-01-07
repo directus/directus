@@ -60,12 +60,6 @@ function(app, _, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIMa
       ];
     },
 
-    events: {
-      'click #removeOverlay': function() {
-        app.router.removeOverlayPage(this);
-      }
-    },
-
     save: function() {
       this.model.set({comment: ''});
       if(this.contentView.isValid()) {
@@ -396,12 +390,6 @@ function(app, _, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIMa
       return [
         this.saveWidget
       ];
-    },
-
-    events: {
-      'click #removeOverlay': function() {
-        app.router.removeOverlayPage(this);
-      }
     },
 
     save: function() {
