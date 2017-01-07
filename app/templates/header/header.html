@@ -1,3 +1,10 @@
+<a href="{{rootUrl}}" class="open-modal" data-modal="welcome-1">
+    <div class="logo help" data-help="Your Logo – at any point you can click this to visit your project.">
+        <img class="directus" src="{{assetsPath}}/imgs/directus-logo.svg">
+        <div class="fading-separator"></div>
+    </div>
+</a>
+
 <div class="breadcrumb help" data-help="This is the 'breadcrumb' which shows you where you are within the system.">
     {{#if route.isOverlay}}
     <i class="material-icons" id="removeOverlay">arrow_back</i>
@@ -20,45 +27,6 @@
     {% if breadcrumb[0] == 'Tables' and breadcrumb|length >= 2 %}<i class="material-icons bookmark {% if page == 'item' %}active{% endif %}" title="Bookmark this page">{% if page == 'item' %}bookmark{% else %}bookmark_border{% endif %}</i>{% endif %} <!-- Option: active (icon: bookmark) -->
     --}}
 </div>
+
 <div id="tools-right-insert"></div>
 <div class="actions" id="tools-left-insert"></div>
-{{!--
-<div class="header1">
-  <div id="header-shadow">&nbsp;</div>
-  <div class="primary-row row-plain">
-    <div class="responsive-nav-toggle">
-      <div class="hamburger-line line-1"></div>
-      <div class="hamburger-line line-2"></div>
-      <div class="hamburger-line line-3"></div>
-    </div>
-    <h1>
-      {{#if route}}
-        {{#if route.isOverlay}}
-          <i class="material-icons" id="removeOverlay">arrow_back</i>
-          <!-- i class="material-icons breadcrumb-delimiter">chevron_right</i> -->
-        {{else}}
-          {{#if route.lastBreadcrumbAnchor}}
-          <a class="navigation-back" href="{{route.lastBreadcrumbAnchor}}">
-            <i class="material-icons" id="removeOverlay">arrow_back</i>
-            <!-- i class="material-icons breadcrumb-delimiter">chevron_right</i> -->
-          </a>
-          {{/if}}
-          <span class="navigation-breadcrumb">
-          {{#each route.breadcrumbs}}
-              <a href="{{anchor}}" class="" >{{{capitalize title}}}</a>
-              <i class="material-icons breadcrumb-delimiter">chevron_right</i>
-          {{/each}}
-        </span>
-        {{/if}}
-        <span class="endnode">{{{capitalize route.title}}}</span>
-      {{/if}}
-    </h1>
-    <ul class="tools left" id="tools-left-insert"></ul>
-    <ul class="tools right" id="tools-right-insert"></ul>
-  </div>
-  <div class="secondary-row row-plain filter-options">
-    <div id="tools-secondary-left-insert" class="tools left"></div>
-    <div id="tools-secondary-right-insert" class="tools right"></div>
-  </div>
-</div>
---}}

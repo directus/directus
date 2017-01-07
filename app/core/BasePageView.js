@@ -42,13 +42,16 @@ function(app, Backbone, _, BaseHeaderView, RightSidebarView) {
     },
 
     initToolbar: function() {
+      var mainView = app.router.v.main;
+
       this.headerOptions.leftToolbar = this.leftToolbar();
       this.headerOptions.rightToolbar = this.rightToolbar();
       this.headerOptions.leftSecondaryToolbar = this.leftSecondaryToolbar();
       this.headerOptions.rightSecondaryToolbar = this.rightSecondaryToolbar();
+      this.headerView = mainView.getView('#header');
+      this.headerView.setPage(this);
 
-      this.headerView = new BaseHeaderView({headerOptions: this.headerOptions});
-      app.router.v.main.setView('#mainHeaderContent', this.headerView);
+      mainView.setView('#header', this.headerView);
 
       this.rightSidebarView = new RightSidebarView();
       this.insertView(this.rightSidebarView);
@@ -94,10 +97,12 @@ function(app, Backbone, _, BaseHeaderView, RightSidebarView) {
       // this view is part of the main view and is not a child of this view
       this.headerView.render();
     },
+
     fetchHolding: [],
-    //Only fetch if we are not waiting on any widgets to get preference data
+
+    // Only fetch if we are not waiting on any widgets to get preference data
     tryFetch: function() {
-      if(this.fetchHolding.length === 0) {
+      if (this.fetchHolding.length === 0) {
         var options = this.collection.options ? this.collection.options : {};
         this.collection.fetch(options);
       }
@@ -112,6 +117,5 @@ function(app, Backbone, _, BaseHeaderView, RightSidebarView) {
       this.fetchHolding.splice(this.fetchHolding.indexOf(cid), 1);
       this.tryFetch();
     }
-
   });
 });

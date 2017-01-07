@@ -22,11 +22,9 @@ function(app, Backbone, __t, Notification) {
 
     template: 'header/header',
 
-    lastHeaderHeight: 0,
+    el: '#header',
 
-    attributes: {
-      class: 'main-container'
-    },
+    lastHeaderHeight: 0,
 
     events: {
       'click #removeOverlay': 'closeOverlayPage',
@@ -83,48 +81,57 @@ function(app, Backbone, __t, Notification) {
     },
 
     serialize: function() {
-      var data = this.options.headerOptions;
+      if (!this.page) {
+        return {}
+      }
 
-      if(this.options.headerOptions.route.breadcrumbs && this.options.headerOptions.route.breadcrumbs.length > 1) {
-        data.route.lastBreadcrumbAnchor = this.options.headerOptions.route.breadcrumbs[this.options.headerOptions.route.breadcrumbs.length-1].anchor;
+      var data = this.page.headerOptions;
+
+      if (data.route.breadcrumbs && data.route.breadcrumbs.length > 1) {
+        data.route.lastBreadcrumbAnchor = data.route.breadcrumbs[data.route.breadcrumbs.length-1].anchor;
       }
 
       return data;
     },
 
     beforeRender: function() {
-      var options = this.options.headerOptions;
+      if (!this.page) {
+        return;
+      }
+
+      var options = this.page.headerOptions;
 
       var that = this;
-      if(options.leftToolbar) {
+      if (options.leftToolbar) {
         options.leftToolbar.forEach(function(widget) {
           that.insertView('#tools-left-insert', widget);
         });
       }
 
-      if(options.rightToolbar) {
+      if (options.rightToolbar) {
         options.rightToolbar.forEach(function(widget) {
           that.insertView('#tools-right-insert', widget);
         });
       }
 
-      if(options.leftSecondaryToolbar) {
+      if (options.leftSecondaryToolbar) {
         options.leftSecondaryToolbar.forEach(function(widget) {
           that.insertView('#tools-secondary-left-insert', widget);
         });
       }
 
-      if(options.rightSecondaryToolbar) {
+      if (options.rightSecondaryToolbar) {
         options.rightSecondaryToolbar.forEach(function(widget) {
           that.insertView('#tools-secondary-right-insert', widget);
         });
       }
     },
+
     afterRender: function() {
       //$(window).bind('resize.app', _.bind(this.setMarginToHeaderHeight, this));
 
       var secondaryToolbarWidgetCount = this.$el.find('#tools-secondary-left-insert').children().length + this.$el.find('#tools-secondary-right-insert').children().length;
-      if(secondaryToolbarWidgetCount > 0) {
+      if (secondaryToolbarWidgetCount > 0) {
         this.$el.parent().parent().addClass('has-toolbar');
       }
 
@@ -135,13 +142,17 @@ function(app, Backbone, __t, Notification) {
       $(window).unbind("resize.app");
     },
 
+    setPage: function(page) {
+      this.page = page;
+    },
+
     setMarginToHeaderHeight: function() {
       var $mainBody = $('#content .content-body'),
           startScrollTop = $mainBody.scrollTop(),
           newHeaderHeight = $('.header1').outerHeight(),
           headerHeightDifference = newHeaderHeight - this.lastHeaderHeight;
 
-      if(newHeaderHeight > 0){
+      if (newHeaderHeight > 0){
         $mainBody.css('margin-top', newHeaderHeight + 'px').scrollTop(startScrollTop + headerHeightDifference);
         this.lastHeaderHeight = newHeaderHeight;
       }

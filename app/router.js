@@ -16,6 +16,7 @@ define(function(require, exports, module) {
       Notification     = require('core/notification'),
       //Directus       = require('core/directus'),
       Tabs             = require('core/tabs'),
+      BaseHeaderView   = require('core/baseHeaderView'),
       Bookmarks        = require('core/bookmarks'),
       SchemaManager    = require('schema/SchemaManager'),
       EntriesManager   = require('core/EntriesManager'),
@@ -665,6 +666,7 @@ define(function(require, exports, module) {
       //holds references to view instances
       this.v = {};
       var nav = new Navbar({model: app.settings.get('global')});
+      var header = new BaseHeaderView();
 
       //var nav = new Navbar({model: app.settings.get('global'), collection: this.tabs});
       this.v.main = new Backbone.Layout({
@@ -672,7 +674,8 @@ define(function(require, exports, module) {
         el: "#main",
 
         views: {
-          '#sidebar': nav
+          '#sidebar': nav,
+          '#header': header
         }
 
       });
