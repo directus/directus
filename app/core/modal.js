@@ -5,8 +5,7 @@ define([
 
 function(app, Backbone) {
 
-  "use strict";
-
+  'use strict';
 
   var Modal = {};
 
@@ -46,22 +45,32 @@ function(app, Backbone) {
     },
 
     events: {
+      'click .modal-bg': function(event) {
+        event.stopPropagation();
+      },
+
+      'click .smoke': 'close',
+
       'click .js-close-modal': 'close',
 
       'click #cancel': function() {
         this.close();
       },
+
       'click #save': function() {
         this.save();
       },
+
       'click #noBtn': function() {
         this.close();
         this.options.callback('no');
       },
+
       'click #yesBtn': function() {
         this.close();
         this.options.callback('yes');
       },
+
       'click #okBtn': function() {
         this.close();
       }
