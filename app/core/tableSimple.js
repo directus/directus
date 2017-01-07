@@ -45,6 +45,9 @@ function(app, Backbone, _) {
       });
 
       rows = _.map(models, function(model) {
+        // Clone the model
+        // prevent the table name being override for future reference
+        model = model.clone();
         var id = model.get('table_name');
 
         model.set('table_name', app.capitalize(model.get('table_name')));
