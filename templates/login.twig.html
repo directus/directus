@@ -58,3 +58,103 @@
 <a href="http://getdirectus.com" class="directus" title="v6.4.0 – {{project_title}}">Powered by Directus</a>
 
 {% endblock %}
+
+{% block login_script %}
+{# make this a separate file #}
+<script type="text/javascript">
+    $(function () {
+        var $login_message = $('p.message');
+        var $login_error = $('.notification');
+
+        function message(message, error) {
+            error = error || false;
+            if (error) {
+                $login_error.html("<i class=\"material-icons\">warning</i>" + message);
+                $login_error.show();
+            } else {
+                $login_message.html("<i class=\"material-icons\">warning</i>" + message);
+                $login_message.show();
+            }
+        }
+
+        {% if inactive %}
+        message("{{'logged_out_due_to_inactivity'|trans}}", true);
+        {% endif %}
+
+        function clear_messages() {
+            $login_error.hide();
+            $login_message.hide();
+        }
+
+        $('#forgot-password').bind('click', function (e) {
+            e.preventDefault();
+            clear_messages();
+
+            var $form = $(this).closest('form'),
+                email = $.trim($form.find('input[name=email]').val());
+
+            if (email.length == 0) {
+                message("{{'enter_a_valid_email_address'|trans}}", true);
+                return false;
+            }
+
+            if (confirm("{{'are_you_sure_you_want_to_reset_your_password'|trans}}")) {
+                $.ajax('{{rootUrl}}api/{{apiVersion}}/auth/forgot-password', {
+                    data: {email: email},
+                    dataType: 'json',
+                    type: 'POST',
+                    success: function (data, textStatus, jqXHR) {
+                        if (!data.success) {
+                            var errorMessage = "{{'oops_an_error_occurred'|trans}}";
+                            if (data.message) {
+                                errorMessage = data.message;
+                            }
+                            message(errorMessage, true);
+                            return;
+                        }
+                        message("{{'reset_instructions_have_been_sent'|trans}}?>")
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        message("{{'server_error_occurred'|trans}}", true);
+                    }
+                });
+            }
+        });
+
+        $('form').bind('submit', function (e) {
+            e.preventDefault();
+            clear_messages();
+
+            var email = $.trim($(this).find('input[name=email]').val()),
+                password = $.trim($(this).find('input[name=password]').val());
+
+            if (email.length == 0 || password.length == 0) {
+                return message("{{'enter_your_email_and_password'|trans}}", true);
+            }
+
+            $.ajax('{{rootUrl}}api/{{apiVersion}}/auth/login', {
+                data: {email: email, password: password},
+                dataType: 'json',
+                type: 'POST',
+                success: function (data, textStatus, jqXHR) {
+                    var defaultPath = 'users';
+                    var redirectPath = '{{redirectPath}}';
+                    var lastPage = data.last_page;
+                    var lastPagePath = lastPage ? lastPage.path : '';
+                    var path = redirectPath || lastPagePath || defaultPath;
+
+                    if (!data.success) {
+                        message(data.message, true);
+                        return;
+                    }
+                    // $('.login-box').css('opacity', 0);
+                    window.location = "{{rootUrl}}" + path;
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    message("{{'server_error_occurred'|trans}}", true);
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}
