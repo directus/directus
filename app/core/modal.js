@@ -1,9 +1,10 @@
 define([
-  "app",
-  "backbone"
+  'app',
+  'backbone',
+  'underscore'
 ],
 
-function(app, Backbone) {
+function(app, Backbone, _) {
 
   'use strict';
 
@@ -78,10 +79,12 @@ function(app, Backbone) {
 
     onKeydown: function(e) {
       var key = e.keyCode || e.which;
-      //enter
+
+      // enter
       if (key === 13) {
         this.save();
       }
+
       // esc
       if (key === 27) {
         this.close();
@@ -94,8 +97,9 @@ function(app, Backbone) {
     },
 
     save: function() {
-      var val ='';
-      if(this.$el.find('input')) {
+      var val = '';
+
+      if (this.$el.find('input')) {
         val = this.$el.find('input').val();
       }
 
