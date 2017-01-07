@@ -8,9 +8,10 @@
 
 define(function(require, exports, module) {
 
-  "use strict";
+  'use strict';
 
   var app              = require('app'),
+      Backbone         = require('backbone'),
       _                = require('underscore'),
       Notification     = require('core/notification'),
       //Directus       = require('core/directus'),
@@ -256,8 +257,13 @@ define(function(require, exports, module) {
     },
 
     removeOverlayPage: function(view) {
+      if (view.headerView) {
+        view.headerView.remove();
+      }
+
       view.remove(); //Remove Overlay Page
       var vieww = this.v.main.getViews('#content').last()._wrapped;
+      vieww.headerView.render();
       vieww.$el.show();
 
       if(vieww.scrollTop !== undefined) {
