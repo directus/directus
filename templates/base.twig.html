@@ -45,21 +45,22 @@
 
 </head>
 <body dir="{{dir}}" class="{% block bodyClass %}{% endblock %}"><!-- Options: help -->
-<div id="main"> <!-- @NOTE: not part of the new design -->
+{# @NOTE: not part of the new design #}
+<div id="main">
 	{% if page == 'login' %}
 
-		<!-- Login -->
+		{# Login #}
 		{% block login %}{% endblock %}
 
 	{% else %}
-		<!-- Modals & Overlays -->
+		{# Modals & Overlays #}
 		{% include 'modals/base.twig.html' %}
 
-		<!-- Header & Sidebar -->
+		{# Header & Sidebar #}
 		{% include 'header.twig.html' %}
 		{% include 'sidebar.twig.html' %}
 
-		<!-- Page Content -->
+		{# Page Content #}
 		<div id="content" class="page"></div>
 	{% endif %}
 </div>
