@@ -644,9 +644,9 @@ define(function(require, exports, module) {
       var Navbar = Backbone.Layout.extend(
       {
 
-        template: "navbar",
+        template: 'navbar',
 
-        tagName: 'div',
+        el: '#sidebar',
 
         serialize: function() {
           return {
