@@ -44,7 +44,6 @@ define([
         .map(function(model) {
           var sort, isVisible;
           var index = _.indexOf(visibleColumns, model.id);
-          // var isVisible = _.contains(visibleColumns, model.id);
           var isForeign = _.contains(['MANYTOMANY', 'ONETOMANY'], model.getRelationshipType());
 
           isVisible = index >= 0;
