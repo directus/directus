@@ -53,8 +53,10 @@ function(app, Backbone, _, BaseHeaderView, RightSidebarView) {
 
       mainView.setView('#header', this.headerView);
 
-      this.rightSidebarView = new RightSidebarView();
-      this.insertView(this.rightSidebarView);
+      if (_.result(this, 'getRightPaneView')) {
+        this.rightSidebarView = new RightSidebarView();
+        this.insertView(this.rightSidebarView);
+      }
 
       if (this.state.rightPaneOpen === true) {
         this.on('afterRender', this.loadRightPane);
@@ -67,13 +69,13 @@ function(app, Backbone, _, BaseHeaderView, RightSidebarView) {
     },
 
     loadRightPane: function() {
+      var view = _.result(this, 'getRightPaneView');
+
+      if (!view) {
+        return;
+      }
+
       if (!this.rightPaneView) {
-        var view = _.result(this, 'getRightPaneView');
-
-        if (!view) {
-          return;
-        }
-
         var baseView = this.baseView || this;
         this.rightPaneView = new view({
           baseView: baseView,
