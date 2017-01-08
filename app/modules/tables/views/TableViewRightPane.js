@@ -42,17 +42,26 @@ define([
           return !model.get('system') && !model.get('hidden_list') && !model.get('hidden_input');
         })
         .map(function(model) {
-          var isVisible = _.contains(visibleColumns, model.id);
+          var sort, isVisible;
+          var index = _.indexOf(visibleColumns, model.id);
+          // var isVisible = _.contains(visibleColumns, model.id);
           var isForeign = _.contains(['MANYTOMANY', 'ONETOMANY'], model.getRelationshipType());
+
+          isVisible = index >= 0;
+          sort = index >= 0 ? index : 9999;
 
           return {
             id: model.id,
             name: model.get('column_name'),
+            sort: sort,
             visible: isVisible,
             disabled: isForeign,
             isForeign: isForeign
           };
         }, this)
+        .sortBy(function(column) {
+          return column.sort;
+        })
         .value();
 
       return data;
