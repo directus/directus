@@ -37,6 +37,9 @@
 ::-moz-selection {
   background: #e1f0fa; }
 
+input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0px 1000px white inset; }
+
 * {
   box-sizing: border-box;
   -webkit-font-smoothing: antialiased;
@@ -1310,6 +1313,10 @@ input[type="radio"].custom-checkbox {
 .max-width-800 {
   max-width: 800px; }
 
+.table-scroll-x {
+  width: 100%;
+  overflow: scroll; }
+
 table {
   -webkit-transition: width 200ms ease-in-out 0ms;
   -moz-transition: width 200ms ease-in-out 0ms;
@@ -1396,7 +1403,9 @@ table {
       -ms-transition: padding 200ms ease-in-out 0ms;
       transition: padding 200ms ease-in-out 0ms;
       min-width: 100px;
-      height: 40px; }
+      height: 40px;
+      padding-left: 4px;
+      padding-right: 4px; }
       table tbody tr td.reorder {
         white-space: nowrap;
         width: 30px;
@@ -1570,6 +1579,12 @@ table {
           color: #FFFFFF; }
           table tbody tr td.settings-tables-manage .add-table:hover {
             background-color: #217dbb; }
+      table tbody tr td.text-abrev {
+        white-space: nowrap;
+        max-width: 300px;
+        overflow-x: hidden;
+        text-overflow: ellipsis;
+        padding-right: 30px; }
       table tbody tr td .workflow {
         display: none; }
         table tbody tr td .workflow .state {
@@ -1581,6 +1596,18 @@ table {
         display: block;
         max-height: 40px;
         max-width: 40px; }
+      table tbody tr td .search-term {
+        -webkit-border-radius: 2px;
+        -moz-border-radius: 2px;
+        border-radius: 2px;
+        -moz-background-clip: padding;
+        -webkit-background-clip: padding-box;
+        background-clip: padding-box;
+        background-color: #e1f0fa;
+        padding: 3px 1px 3px 1px;
+        margin-left: -1px;
+        margin-right: -1px;
+        color: #258cd1; }
       table tbody tr td .photo-stack {
         height: 27px;
         min-width: 110px; }
@@ -1645,6 +1672,9 @@ table {
         cursor: pointer; }
         table tfoot tr td .choose-metric:hover {
           color: #3498DB; }
+  table.item-listing tbody tr td {
+    white-space: nowrap;
+    height: auto; }
   table.pad-first tfoot tr td:nth-child(1),
   table.pad-first thead tr th:nth-child(1),
   table.pad-first tbody tr td:nth-child(1) {
@@ -1657,18 +1687,18 @@ table {
       top: 64px;
       left: 200px;
       right: 0;
-      width: 100%;
       z-index: 2; }
-  table.charted {
-    margin-top: 40px; }
-    table.charted.fixed-header thead {
-      top: 320px; }
+  table.charted.fixed-header thead {
+    top: 320px; }
   table.compact tbody tr td {
-    padding: 0 4px; }
+    padding-top: 2px;
+    padding-bottom: 2px; }
   table.cozy tbody tr td {
-    padding: 6px 4px; }
+    padding-top: 6px;
+    padding-bottom: 6px; }
   table.comfortable tbody tr td {
-    padding: 12px 4px; }
+    padding-top: 12px;
+    padding-bottom: 12px; }
   table.striped tbody tr:nth-child(even) td {
     background-color: #fbfbfb; }
   table.lines tbody tr {
@@ -1682,7 +1712,7 @@ table {
   position: relative;
   height: 200px;
   background-color: #FFFFFF;
-  margin: 40px 20px 30px 20px;
+  margin: 40px 20px 0 20px;
   padding-bottom: 20px; }
   .items-chart .chart-title {
     -webkit-transition: all 200ms ease-in-out 0ms;
@@ -2013,8 +2043,6 @@ table {
         opacity: 0.6; }
       .header .actions .action:hover .material-icons.center {
         font-size: 30px; }
-      .header .actions .action:hover .material-icons.more {
-        opacity: 1; }
       .header .actions .action:hover .material-icons.decrease-size {
         font-size: 26px; }
       .header .actions .action:active .material-icons.center {
@@ -2026,6 +2054,36 @@ table {
         background-color: #F44336; }
       .header .actions .action.important {
         background-color: #FFC107; }
+      .header .actions .action .more {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 20px;
+        overflow: hidden; }
+        .header .actions .action .more .save-options {
+          -webkit-border-radius: 0px;
+          -moz-border-radius: 0px;
+          border-radius: 0px;
+          -moz-background-clip: padding;
+          -webkit-background-clip: padding-box;
+          background-clip: padding-box;
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          opacity: 0;
+          z-index: 2;
+          border: none;
+          cursor: pointer; }
+        .header .actions .action .more .material-icons {
+          top: 0;
+          transform: initial;
+          opacity: 0.2;
+          z-index: 1; }
+        .header .actions .action .more:hover .material-icons {
+          opacity: 1; }
       .header .actions .action .material-icons {
         -webkit-transition: all 200ms ease-in-out 0ms;
         -moz-transition: all 200ms ease-in-out 0ms;
@@ -2037,10 +2095,6 @@ table {
         left: 0;
         width: 100%;
         transform: translateY(-50%); }
-        .header .actions .action .material-icons.more {
-          top: 0;
-          transform: initial;
-          opacity: 0.2; }
         .header .actions .action .material-icons.decrease-size {
           font-size: 20px; }
       .header .actions .action .action-text {
@@ -2128,6 +2182,9 @@ table {
           color: #F44336; }
     .sidebar ul.menu.bookmarks li, .right-sidebar ul.menu.bookmarks li {
       padding: 5px 35px 5px 20px; }
+      .sidebar ul.menu.bookmarks li a, .right-sidebar ul.menu.bookmarks li a {
+        display: inline-block;
+        width: 100%; }
   .sidebar .system, .right-sidebar .system {
     -webkit-transition: all 200ms ease-in-out 0ms;
     -moz-transition: all 200ms ease-in-out 0ms;
@@ -2316,40 +2373,76 @@ table {
         width: 100%; }
     .right-sidebar .scroll-y hr {
       margin: 20px 20px 0px 20px; }
-    .right-sidebar .scroll-y .metadata {
-      margin: 30px 20px 20px 20px;
-      line-height: 22px;
-      padding-bottom: 40px;
-      border-bottom: 1px solid #DDDDDD;
-      font-size: 13px;
-      color: #666666; }
-      .right-sidebar .scroll-y .metadata .status {
+    .right-sidebar .scroll-y .status {
+      -webkit-transition: all 200ms ease-in-out 0ms;
+      -moz-transition: all 200ms ease-in-out 0ms;
+      -o-transition: all 200ms ease-in-out 0ms;
+      -ms-transition: all 200ms ease-in-out 0ms;
+      transition: all 200ms ease-in-out 0ms;
+      -webkit-border-radius: 2px;
+      -moz-border-radius: 2px;
+      border-radius: 2px;
+      -moz-background-clip: padding;
+      -webkit-background-clip: padding-box;
+      background-clip: padding-box;
+      position: relative;
+      background-color: #f8f8f8;
+      border: 1px solid #CCCCCC;
+      padding: 8px;
+      font-size: 14px;
+      text-transform: uppercase;
+      font-weight: 500;
+      margin: 20px;
+      cursor: pointer; }
+      .right-sidebar .scroll-y .status.expanded, .right-sidebar .scroll-y .status:hover {
+        border-color: #3498DB; }
+        .right-sidebar .scroll-y .status.expanded .arrow, .right-sidebar .scroll-y .status:hover .arrow {
+          color: #3498DB; }
+      .right-sidebar .scroll-y .status.expanded ul li {
+        opacity: 1;
+        height: 28px;
+        padding-left: 24px; }
+        .right-sidebar .scroll-y .status.expanded ul li.active .status-check {
+          opacity: 1;
+          color: #CCCCCC; }
+        .right-sidebar .scroll-y .status.expanded ul li:hover {
+          color: #3498DB; }
+          .right-sidebar .scroll-y .status.expanded ul li:hover .status-check {
+            opacity: 1;
+            color: #3498DB; }
+      .right-sidebar .scroll-y .status.expanded .arrow {
+        -moz-transform: rotate(-180deg);
+        -o-transform: rotate(-180deg);
+        -ms-transform: rotate(-180deg);
+        -webkit-transform: rotate(-180deg);
+        transform: rotate(-180deg); }
+      .right-sidebar .scroll-y .status ul li {
         -webkit-transition: all 200ms ease-in-out 0ms;
         -moz-transition: all 200ms ease-in-out 0ms;
         -o-transition: all 200ms ease-in-out 0ms;
         -ms-transition: all 200ms ease-in-out 0ms;
         transition: all 200ms ease-in-out 0ms;
-        -webkit-border-radius: 2px;
-        -moz-border-radius: 2px;
-        border-radius: 2px;
-        -moz-background-clip: padding;
-        -webkit-background-clip: padding-box;
-        background-clip: padding-box;
         position: relative;
-        background-color: #f8f8f8;
-        border: 1px solid #CCCCCC;
-        color: #3498DB;
-        padding: 10px;
-        font-size: 14px;
-        text-transform: uppercase;
-        font-weight: 500;
-        margin-bottom: 20px;
-        cursor: pointer; }
-        .right-sidebar .scroll-y .metadata .status:hover {
-          border-color: #3498DB; }
-          .right-sidebar .scroll-y .metadata .status:hover .material-icons {
-            color: #3498DB; }
-        .right-sidebar .scroll-y .metadata .status .color {
+        padding: 0;
+        opacity: 0;
+        height: 0;
+        overflow: hidden;
+        line-height: 28px; }
+        .right-sidebar .scroll-y .status ul li.active {
+          opacity: 1;
+          height: 28px; }
+        .right-sidebar .scroll-y .status ul li .status-check {
+          -webkit-transition: all 200ms ease-in-out 0ms;
+          -moz-transition: all 200ms ease-in-out 0ms;
+          -o-transition: all 200ms ease-in-out 0ms;
+          -ms-transition: all 200ms ease-in-out 0ms;
+          transition: all 200ms ease-in-out 0ms;
+          opacity: 0;
+          position: absolute;
+          top: 1px;
+          left: 0;
+          font-size: 22px; }
+        .right-sidebar .scroll-y .status ul li .color {
           -webkit-border-radius: 20px;
           -moz-border-radius: 20px;
           border-radius: 20px;
@@ -2362,16 +2455,24 @@ table {
           height: 10px;
           margin-left: 2px;
           margin-right: 6px; }
-        .right-sidebar .scroll-y .metadata .status .material-icons {
-          -webkit-transition: all 200ms ease-in-out 0ms;
-          -moz-transition: all 200ms ease-in-out 0ms;
-          -o-transition: all 200ms ease-in-out 0ms;
-          -ms-transition: all 200ms ease-in-out 0ms;
-          transition: all 200ms ease-in-out 0ms;
-          position: absolute;
-          top: 9px;
-          right: 10px;
-          color: #999999; }
+      .right-sidebar .scroll-y .status .arrow {
+        -webkit-transition: all 200ms ease-in-out 0ms;
+        -moz-transition: all 200ms ease-in-out 0ms;
+        -o-transition: all 200ms ease-in-out 0ms;
+        -ms-transition: all 200ms ease-in-out 0ms;
+        transition: all 200ms ease-in-out 0ms;
+        position: absolute;
+        top: 50%;
+        right: 10px;
+        margin-top: -12px;
+        color: #999999; }
+    .right-sidebar .scroll-y .metadata {
+      margin: 30px 20px 20px 20px;
+      line-height: 22px;
+      padding-bottom: 40px;
+      border-bottom: 1px solid #DDDDDD;
+      font-size: 13px;
+      color: #666666; }
       .right-sidebar .scroll-y .metadata .button {
         display: block;
         margin-top: 20px;
@@ -2434,17 +2535,13 @@ table {
             color: #999999;
             font-weight: 500;
             text-align: left;
-            padding: 12px 12px 8px 12px;
-            margin-top: 20px;
-            margin-bottom: 20px;
-            border: 1px solid #DDDDDD; }
+            padding: 12px 12px 8px 12px; }
             .right-sidebar .scroll-y ul.timeline li.activity:hover {
-              border-color: #3498DB;
               color: #3498DB; }
               .right-sidebar .scroll-y ul.timeline li.activity:hover .timeago {
                 color: #3498DB; }
             .right-sidebar .scroll-y ul.timeline li.activity.expanded {
-              border-color: #3498DB; }
+              border: 1px solid #3498DB; }
               .right-sidebar .scroll-y ul.timeline li.activity.expanded .full-activity {
                 height: 132px;
                 margin-top: 10px;
@@ -3188,7 +3285,8 @@ body.help .discover-spotlight {
   display: inline-block;
   width: 200px;
   margin: 20px;
-  background-color: #FFFFFF;
+  background-color: #EEEEEE;
+  text-align: center;
   cursor: pointer; }
   .attachments .folder:hover .info .more,
   .attachments .folder:hover .info .name,
@@ -3277,6 +3375,17 @@ body.help .discover-spotlight {
   .file-listing .file img {
     height: 200px;
     display: block; }
+  .attachments .folder .extension-fallback,
+  .attachments .file .extension-fallback,
+  .folder-listing .folder .extension-fallback,
+  .folder-listing .file .extension-fallback,
+  .file-listing .folder .extension-fallback,
+  .file-listing .file .extension-fallback {
+    height: 200px;
+    font-size: 28px;
+    color: #3498DB;
+    padding-top: 85px;
+    font-weight: 300; }
   .attachments .folder .type,
   .attachments .file .type,
   .folder-listing .folder .type,
@@ -3311,7 +3420,8 @@ body.help .discover-spotlight {
     position: relative;
     padding: 10px;
     width: 100%;
-    text-align: left; }
+    text-align: left;
+    background-color: #FFFFFF; }
     .attachments .folder .info .name,
     .attachments .file .info .name,
     .folder-listing .folder .info .name,
@@ -3840,6 +3950,37 @@ body.help .discover-spotlight {
     .fields .field.break-header h6 {
       max-width: 400px;
       margin: 10px auto 0; }
+    .fields .field.break-header.translation {
+      color: #CCCCCC;
+      font-size: 22px;
+      font-weight: 500; }
+      .fields .field.break-header.translation .translation-picker {
+        position: relative;
+        display: inline-block; }
+        .fields .field.break-header.translation .translation-picker .current-language {
+          color: #3498DB; }
+        .fields .field.break-header.translation .translation-picker .select-arrow {
+          background-color: inherit;
+          color: #3498DB;
+          margin-left: -10px;
+          vertical-align: middle;
+          margin-top: -4px; }
+        .fields .field.break-header.translation .translation-picker .select-container {
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          opacity: 0; }
+          .fields .field.break-header.translation .translation-picker .select-container select {
+            margin-left: 4px;
+            background-color: inherit;
+            border: none;
+            padding: 0 14px 0 0;
+            color: #3498DB;
+            cursor: pointer; }
+            .fields .field.break-header.translation .translation-picker .select-container select:focus {
+              box-shadow: none; }
   .fields .field .bulk-edit-label {
     display: none; }
   .fields .field .label {
@@ -3850,11 +3991,14 @@ body.help .discover-spotlight {
     padding-right: 20px;
     font-weight: 500;
     color: #666666; }
+    .fields .field .label .translation-note {
+      padding-top: 4px;
+      font-size: 12px;
+      color: #3498DB; }
     .fields .field .label .comment {
       padding-top: 4px;
       font-size: 12px;
       font-style: italic;
-      font-weight: 400;
       color: #999999; }
     .fields .field .label .required {
       font-size: 8px;
@@ -4453,7 +4597,8 @@ body.login {
       body.login .login-panel .input input {
         padding-left: 30px;
         font-size: 14px;
-        border-color: #DDDDDD; }
+        border-color: #DDDDDD;
+        background-color: #FFFFFF !important; }
         body.login .login-panel .input input:focus {
           border-color: #FFFFFF; }
         body.login .login-panel .input input.password {
