@@ -100,8 +100,7 @@ function(app, Backbone, __t, BasePageView, ListViewManager, TableViewRightPane, 
               help: __t('right_pane_help')
             },
             onClick: function (event) {
-              tableView.loadRightPane();
-              tableView.openRightPane();
+              tableView.toggleRightPane();
             }
           });
         }

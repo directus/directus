@@ -63,9 +63,10 @@ function(app, Backbone, _, BaseHeaderView, RightSidebarView) {
       }
     },
 
-    openRightPane: function() {
-      this.state.rightPaneOpen = !this.state.rightPaneOpen;
-      $('body').toggleClass('right-sidebar-open');
+    toggleRightPane: function() {
+      var pane = this.loadRightPane();
+
+      pane.toggle();
     },
 
     loadRightPane: function() {
@@ -84,7 +85,19 @@ function(app, Backbone, _, BaseHeaderView, RightSidebarView) {
         });
       }
 
-      this.setView('#rightSidebar', this.rightPaneView).render();
+      this.listenTo(this.rightPaneView, 'close', function() {
+        this.state.rightPaneOpen = false;
+      });
+
+      this.listenTo(this.rightPaneView, 'open', function() {
+        this.state.rightPaneOpen = true;
+      });
+
+      if (!this.rightPaneView.hasRendered) {
+        this.setView('#rightSidebar', this.rightPaneView).render();
+      }
+
+      return this.rightPaneView;
     },
 
     reRender: function() {

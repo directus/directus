@@ -1,14 +1,20 @@
 define([
+  'app',
   'core/RightPane',
   'underscore'
-], function(RightPane, _) {
+], function(app, RightPane, _) {
 
   return RightPane.extend({
+
+    state: {
+      open: false
+    },
 
     template: 'modules/tables/table-right-pane',
 
     events: {
-      'click #save_columns': 'updateVisibleColumns'
+      'click #save_columns': 'updateVisibleColumns',
+      'click .js-close': 'close'
     },
 
     updateVisibleColumns: function(event) {
@@ -28,6 +34,30 @@ define([
 
       collection.filters.columns_visible = columns;
       collection.fetch();
+    },
+
+    close: function() {
+      this.state.open = false;
+      $('body').removeClass('right-sidebar-open');
+      this.trigger('close');
+    },
+
+    open: function() {
+      this.state.open = true;
+      $('body').addClass('right-sidebar-open');
+      this.trigger('open');
+    },
+
+    isOpen: function() {
+      return this.state.open;
+    },
+
+    toggle: function() {
+      if (this.isOpen()) {
+        this.close();
+      } else {
+        this.open();
+      }
     },
 
     serialize: function() {
