@@ -81,7 +81,7 @@ class SchemaManager
 
         // Primary column
         $primaryColumn = new Integer('id');
-        $primaryColumn->setOption('autoincrement', '');
+        $primaryColumn->setOption('autoincrement', true);
         $table->addColumn($primaryColumn);
         $table->addConstraint(new PrimaryKey('id'));
         // Status column
