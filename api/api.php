@@ -910,7 +910,7 @@ $app->map("/$v/tables/:table/rows/?", function ($table) use ($acl, $ZendDb, $par
 
 
     // GET all table entries
-    $tableGateway = new TableGateway($acl, $table, $ZendDb);
+    $tableGateway = new TableGateway($table, $ZendDb, $acl);
 
     switch ($app->request()->getMethod()) {
         case 'POST':
