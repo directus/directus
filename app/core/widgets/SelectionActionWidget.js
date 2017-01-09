@@ -101,13 +101,9 @@ function(app, Backbone, Handlebars) {
       data.hasStatusColumn = hasStatusColumn;
       data.mapping = [];
       for (var key in mapping) {
-        // if there's not permission to delete, we skip delete
-        if (!canDelete && key === app.statusMapping.deleted_num) {
-          continue;
-        }
-
-        // if there's not status column we skip everything but delete
-        if (!hasStatusColumn && key !== app.statusMapping.deleted_num) {
+        // Skip delete
+        key = Number(key);
+        if (key === app.statusMapping.deleted_num) {
           continue;
         }
 

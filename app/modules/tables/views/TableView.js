@@ -100,8 +100,7 @@ function(app, Backbone, __t, BasePageView, ListViewManager, TableViewRightPane, 
               help: __t('right_pane_help')
             },
             onClick: function (event) {
-              tableView.loadRightPane();
-              tableView.openRightPane();
+              tableView.toggleRightPane();
             }
           });
         }
@@ -151,13 +150,8 @@ function(app, Backbone, __t, BasePageView, ListViewManager, TableViewRightPane, 
             this.widgets.visibilityWidget = new Widgets.VisibilityWidget({collection: this.collection, basePage: this});
           }
 
-          if(!this.widgets.filterWidget) {
-            this.widgets.filterWidget = new Widgets.FilterWidget({collection: this.collection, basePage: this});
-          }
-
           return [
-            this.widgets.visibilityWidget,
-            this.widgets.filterWidget
+            this.widgets.visibilityWidget
           ];
         case 'actions':
           if(!this.widgets.selectionActionWidget) {
