@@ -278,8 +278,7 @@ function(app, Backbone, _, Handlebars, __t, Directus, BasePageView, Widgets, His
           buttonText: __t('details')
         },
         onClick: function(event) {
-          editView.loadRightPane();
-          editView.openRightPane();
+          editView.toggleRightPane();
         }
       });
 
