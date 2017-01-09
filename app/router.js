@@ -680,8 +680,6 @@ define(function(require, exports, module) {
 
       //holds references to view instances
       this.v = {};
-      var nav = new Navbar({model: app.settings.get('global')});
-      var header = new BaseHeaderView();
 
       //var nav = new Navbar({model: app.settings.get('global'), collection: this.tabs});
       this.v.main = new Backbone.Layout({
@@ -690,8 +688,8 @@ define(function(require, exports, module) {
 
         views: {
           '#modal_container': new directus.Modal.Container(),
-          '#sidebar': nav,
-          '#header': header
+          '#sidebar': new Navbar({model: app.settings.get('global')}),
+          '#header': new BaseHeaderView()
         }
 
       });
