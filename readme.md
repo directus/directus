@@ -70,7 +70,7 @@ While Directus has been abstracted to allow for different database adapters in t
 
 ## Copyright, License, and Trademarks
 * Directus Core codebase released under the [GPLv3](http://www.gnu.org/copyleft/gpl.html).
-* Code and documentation copyright 2016 [RANGER Studio LLC](http://rngr.org/).
+* Example Code, Design Previews, Demonstration Apps, Custom Extensions, Custom UIs, and Documentation copyright 2017 [RANGER Studio LLC](http://rngr.org/).
 * RANGER Studio owns all Directus trademarks, service marks, and graphic logos on behalf of our project's community. The names of all Directus projects are trademarks of RANGER Studio.
 
 
