@@ -1,0 +1,235 @@
+//////////////////////////////////////////////////////////////////////////////
+// Page
+
+.preview-intro {
+	@include box-shadow ($x: 0px, $y: 1px, $blur: 4px, $spread: 0px, $opacity: 0.2);
+	@include border-radius ($radius: 4px);
+	position: fixed;
+	top: 20px;
+	left: 20px;
+	width: 300px;
+	padding: 20px 20px 22px 20px;
+	background-color: $serious;
+	color: $white;
+	z-index: 9999;
+	font-weight: 500;
+	line-height: 17px;
+	font-size: 14px;
+	.material-icons {
+		@include transition (all, $timing-short, ease-in-out);
+		position: absolute;
+		top: 8px;
+		right: 15px;
+		color: $white;
+		font-size: 18px;
+		cursor: pointer;
+		z-index: 999;
+		&:hover {
+			opacity: 1;
+		}
+	}
+	div {
+		font-size: 22px;
+		margin-bottom: 10px;
+		font-weight: 600;
+	}
+	hr {
+		border-color: $white;
+		margin: 15px 0 15px 0;
+		opacity: 0.5;
+	}
+	i {
+		@include transition (all, $timing-short, ease-in-out);
+		display: block;
+		margin-top: 10px;
+		opacity: 0.6;
+		img {
+			display: inline-block;
+			margin-top: 10px;
+			margin-left: 10px;
+			width: 16px;
+			margin-bottom: -1px;
+		}
+		&:hover {
+			opacity: 1;
+		}
+	}
+}
+
+body.login {
+	background-color: $gray-1;
+	.directus {
+		// We'd appreciate this remaining visible to users.
+		@include transition (all, $timing-short, ease-in-out);
+		position: absolute;
+		bottom: 10px;
+		left: 50%;
+		width: 200px;
+		margin-left: -100px;
+		padding: 10px;
+		text-align: center;
+		color: $gray-4;
+		font-weight: 500;
+		letter-spacing: 0.03em;
+		font-size: 9px;
+		text-transform: uppercase;
+		z-index: 2;
+		cursor: help;
+		&:hover {
+			color: $primary;
+		}
+	}
+	.notifications {
+		position: absolute;
+		bottom: 50px;
+		text-align: center;
+		width: 100%;
+		z-index: 2;
+		.notification {
+			@include border-radius (2px);
+			animation: pulsate-opacity 2s ease-out;
+			animation-iteration-count: infinite;
+			background-color: $white;
+			color: $gray-4;
+			display: inline-block;
+			padding: 10px 14px 8px 14px;
+			max-width: 400px;
+			&.serious {
+				color: $serious;
+			}
+			.material-icons {
+				vertical-align: middle;
+				margin-right: 10px;
+				margin-top: -2px;
+			}
+		}
+	}
+	.login-panel {
+		position: absolute;
+		left: 50%;
+		top: 50%;
+		width: 260px;
+		height: 260px;
+		margin-left: -130px;
+		margin-top: -150px;
+		z-index: 2;
+		.input {
+			position: relative;
+			margin-bottom: 20px;
+			.material-icons {
+				@include transition (all, $timing-short, ease-in-out);
+				position: absolute;
+				top: 12px;
+				left: 10px;
+				font-size: 16px;
+				color: $gray-2;
+				&.forgot {
+					cursor: pointer;
+					left: auto;
+					right: 10px;
+					top: 10px;
+					font-size: 20px;
+					&:hover {
+						color: $primary;
+					}
+				}
+			}
+			input {
+				padding-left: 30px;
+				font-size: 14px;
+				border-color: $gray-2;
+				&:focus {
+					border-color: $white;
+				}
+				&.password {
+					padding-right: 30px;
+				}
+			}
+		}
+		button {
+			width: 100%;
+		}
+		.hr-label {
+			position: relative;
+			margin-top: 20px;
+			margin-bottom: 20px;
+			hr {
+				position: absolute;
+				top: 0;
+				border-color: $gray-2;
+				width: 100px;
+				&:nth-child(1) {
+					left: 0;
+				}
+				&:nth-child(2) {
+					right: 0;
+				}
+			}
+			.label {
+				text-transform: uppercase;
+				color: $gray-2;
+				font-weight: 700;
+				font-size: 11px;
+				width: 100%;
+				text-align: center;
+			}
+		}
+		.alt-auth {
+			text-align: center;
+			.tile {
+				@include transition (all, $timing-short, ease-in-out);
+				@include border-radius (40px);
+				position: relative;
+				display: inline-block;
+				background-color: $gray-3;
+				color: $white;
+				width: 40px;
+				height: 40px;
+				padding: 8px;
+				text-align: center;
+				margin-right: 10px;
+				cursor: pointer;
+				&:hover {
+					background-color: $primary;
+				}
+				&:nth-child(4) {
+					margin-right: 0;
+				}
+				&.google img {
+					margin-top: 1px;
+					margin-left: 1px;
+				}
+				&.facebook img {
+					margin-top: 1px;
+					margin-left: 7px;
+				}
+				&.twitter img {
+					margin-top: 3px;
+					margin-left: 2px;
+				}
+				&.github img {
+					margin-top: 0;
+					margin-left: 0;
+				}
+				img {
+					display: block;
+				}
+			}
+		}
+	}
+	.glow {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		width: 500px;
+		height: 500px;
+		margin-top: -270px;
+		margin-left: -250px;
+		z-index: 1;
+		background-color: $gray-1;
+		background: -webkit-radial-gradient($white 0%, $gray-1 60%);
+		background: -o-radial-gradient($white 0%, $gray-1 60%);
+		background: -moz-radial-gradient($white 0%, $gray-1 60%);
+		background: radial-gradient($white 0%, $gray-1 60%);
+	}
+}

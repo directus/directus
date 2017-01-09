@@ -1,31 +1,53 @@
 define([
   'app',
   'backbone',
-  'handlebars'
+  'underscore'
 ],
-function(app, Backbone, Handlebars) {
+function(app, Backbone, _) {
 
-  "use strict";
+  'use strict';
 
   return Backbone.Layout.extend({
-    template: Handlebars.compile(' \
-      <button type="button" id="{{buttonId}}" class="tool-item btn btn-header {{buttonClass}}"> \
-        <i class="material-icons">{{iconClass}}</i> {{buttonText}} \
-      </button>'
-    ),
 
-    tagName: 'li',
+    template: 'core/widgets/button',
+
+    tagName: 'div',
+
     attributes: {
-      'class': 'tool input-and-button'
+      class: 'action widget widget-button'
+    },
+
+    events: function() {
+      return this.getEvents();
     },
 
     serialize: function() {
-      return this.options.widgetOptions;
+      var options = this.options.widgetOptions;
+
+      // @TODO: Add library that handle class uniqueness and spaces.
+      options.buttonClass += ' action js-action-button';
+      if (options.help) {
+        options.buttonClass += ' help';
+      }
+
+      return options;
     },
 
     afterRender: function() {
-      if(this.options.widgetOptions && this.options.widgetOptions.active) {
+      if (this.options.widgetOptions && this.options.widgetOptions.active) {
         $(this.el).addClass('active');
+      }
+    },
+
+    getEvents: function() {
+      return this._events;
+    },
+
+    initialize: function(options) {
+      this._events = {};
+
+      if (_.isFunction(options.onClick)) {
+        this._events['click .js-action-button'] = options.onClick;
       }
     }
   });

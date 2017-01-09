@@ -22,6 +22,7 @@
     "sign_out": "Sign Out",
     "directus_user_guide": "Directus User Guide",
     "settings": "Settings",
+    "admin_settings": "Admin Settings",
     "global": "Global",
     "global_settings": "Global Settings",
     "global_settings_description": "Personalize this instance of Directus to fit your organization’s needs. Change colors, add a company logo, set the auto logout time, etc",
@@ -141,6 +142,7 @@
     "widget_save_save_and_add": "Save And Add",
     "widget_save_save_as_copy": "Save As Copy",
     "widget_visibility_all_items": "All Items",
+    "widget_set_status": "Set Status",
     "widget_filter_add_filter": "Add Filter",
     "widget_filter_value_placeholder": "Filter...",
     "widget_pagination_count_no_items_found": "No Items Found",
@@ -319,7 +321,7 @@
     "logged_out_due_to_inactivity": "Logged out due to inactivity",
     "forgot_password": "Forgot Password",
     "placeholder_email_address": "Email Address",
-    "are_you_sure_you_want_to_sign_out": "Are you sure you want to sign out?",
+    "are_you_sure_you_want_to_sign_out": "Are you sure you want to log out?",
 
     "you_must_be_logged_in_to_access_the_api": "You must be logged in to access the API",
     "invalid_request_nonce": "Invalid request (nonce)",
@@ -408,6 +410,8 @@
 
     "version_outdated_title": "Directus Update Available",
     "version_outdated_text_x": "The latest stable release is v%{current_version}<br>You are currently running v%{installed_version}",
+
+    "right_pane_help": "Opens the item's detail sidebar",
 
     "ok": "OK",
     "cancel": "Cancel",

@@ -1,0 +1,74 @@
+//////////////////////////////////////////////////////////////////////////////
+// Settings
+
+.page.settings-modules {
+	background-color: lighten($gray-1, 3%); // #f5f5f5
+	padding: 0;
+	.settings-module {
+		@include transition (all, $timing-short, ease-in-out);
+		@include box-shadow ();
+		@include border-radius (2px);
+		position: relative;
+		margin: 40px;
+		background-color: $white;
+		min-height: 240px;
+		max-height: 300px;
+		overflow: hidden;
+		&:hover {
+			.video {
+				.aspect-ratio {
+					video {
+						opacity: 1;
+					}
+				}
+			}
+		}
+		.info {
+			@include border-radius-each (0, 0, 2px, 2px);
+			position: absolute;
+			top: 0;
+			left: 0;
+			bottom: 0;
+			width: 360px;
+			background-color: $gray-6;
+			color: $white;
+			padding: 30px;
+			h1 {
+				color: $white;
+			}
+			.description {
+				font-size: 14px;
+				color: $gray-3;
+				line-height: 19px;
+				margin-top: 10px;
+				margin-bottom: 40px;
+			}
+			.button {
+				width: 200px;
+			}
+		}
+		.video {
+			position: relative;
+			margin-left: 360px;
+			overflow: hidden;
+			.aspect-ratio {
+				padding-bottom: 40%; // 16:9 = 56.25%
+				width: 100%;
+				video {
+					@include transition (all, $timing-short, ease-in-out);
+					object-fit: cover;
+					position: absolute;
+					top: 0;
+					left: 0;
+					min-width: 100%;
+    				min-height: 100%;
+    				opacity: 0.6;
+    				overflow: hidden;
+    				&::-webkit-scrollbar {
+						display: none;
+					}
+				}
+			}
+		}
+	}
+}

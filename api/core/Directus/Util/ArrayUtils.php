@@ -178,7 +178,7 @@ class ArrayUtils
     }
 
     /**
-     * Get the missing values from a array in another array
+     * Gets the missing values from a array in another array
      *
      * @param array $from
      * @param array $target
@@ -187,15 +187,44 @@ class ArrayUtils
      */
     public static function missing(array $from, array $target)
     {
-        $missing = [];
+        return static::intersection($from, $target, true);
+    }
 
-        foreach($target as $value) {
-            if (!in_array($value, $from)) {
-                $missing[] = $value;
+    /**
+     * Gets the missing values from a array in another array
+     *
+     * Alias of ArrayUtils::missing
+     *
+     * @param array $from
+     * @param array $target
+     *
+     * @return array
+     */
+    public static function without(array $from, array $target)
+    {
+        return static::missing($from, $target);
+    }
+
+    /**
+     * Gets only the values that exists in both array
+     *
+     * @param array $arrayOne
+     * @param array $arrayTwo
+     * @param bool $without
+     *
+     * @return array
+     */
+    public static function intersection(array $arrayOne, array $arrayTwo, $without = false)
+    {
+        $values= [];
+
+        foreach($arrayTwo as $value) {
+            if (in_array($value, $arrayOne) === !$without) {
+                $values[] = $value;
             }
         }
 
-        return $missing;
+        return $values;
     }
 
     /**

@@ -22,6 +22,10 @@ class Privileges extends Route
 
         $privileges = new DirectusPrivilegesTableGateway($ZendDb, $acl);
         $response = [
+            'meta' => [
+                'type' => 'item',
+                'table' => 'directus_privileges'
+            ],
             'data' => $privileges->fetchPerTable($groupId, $tableName)
         ];
 
@@ -81,6 +85,10 @@ class Privileges extends Route
         $response = $privileges->insertPrivilege($requestPayload);
 
         return JsonView::render([
+            'meta' => [
+                'type' => 'entry',
+                'table' => 'directus_privileges'
+            ],
             'data' => $response
         ]);
     }

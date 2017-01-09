@@ -63,7 +63,7 @@ class DirectusActivityTableGateway extends RelationalTableGateway
         $builder->from($this->getTable());
 
         // @TODO: Only select the fields not on the currently authenticated user group's read field blacklist
-        $columns = ['id', 'identifier', 'action', 'table_name', 'row_id', 'user', 'datetime', 'type', 'data'];
+        $columns = ['id', 'identifier', 'action', 'table_name', 'row_id', 'user', 'datetime', 'type', 'data', 'logged_ip'];
         $builder->columns($columns);
 
         $tableSchema = TableSchema::getTableSchema($this->table);
@@ -72,6 +72,7 @@ class DirectusActivityTableGateway extends RelationalTableGateway
         $builder = $this->applyParamsToTableEntriesSelect($params, $builder, $tableSchema, $hasActiveColumn);
 
         $select = $builder->buildSelect();
+
         $select
             ->where
             ->nest

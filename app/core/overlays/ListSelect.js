@@ -59,9 +59,6 @@ define([
 
 
         events: {
-            'click #removeOverlay': function() {
-                app.router.removeOverlayPage(this);
-            },
             'click #addBtn': function() {
                 this.save();
             }

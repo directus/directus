@@ -9,35 +9,34 @@ function(app, Backbone, Widgets, moment) {
 
   var FilesCardView = Backbone.Layout.extend({
 
-    tagName: 'ul',
+    // <div class="file-listing" id="file-listing">
+    tagName: 'div',
 
     attributes: {
-      class: "cards row"
+      class: 'file-listing',
+      id: 'file-listing'
     },
 
     events: {
-      'click li': function(e) {
-        var id = $(e.target).closest('li').attr('data-id');
-
-        var user = app.users.getCurrentUser();
-        var userGroup = user.get('group');
+      'click .js-file': function(event) {
+        var id = $(event.currentTarget).data('id');
 
         app.router.go('#files', id);
       }
     },
 
-    template: 'modules/files/filescardview',
+    template: 'modules/files/card-view',
 
     serialize: function() {
       var rows = this.collection.map(function(model) {
         var statusValue = model.get(app.statusMapping.status_name);
-
+        var title = model.get('title') || '';
         var data = {
           "id": model.get('id'),
           "inactive": (statusValue !== app.statusMapping.active_num),
           "cid": model.cid,
-          'title': model.get('title'),
-          'title_short': (model.get('title').length > 35)? model.get('title').substr(0,32) + "..." : model.get('title'),
+          'title': title,
+          'title_short': (title.length > 35)? title.substr(0,32) + "..." : title,
           'date_uploaded': moment(model.get('date_uploaded')).fromNow(),
           'size': model.get('size'),
           'type': (model.has('type')) ? model.get('type').split('/').pop() : '',

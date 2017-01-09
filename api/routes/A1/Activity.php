@@ -4,7 +4,7 @@ namespace Directus\API\Routes\A1;
 
 use Directus\Application\Route;
 use Directus\Database\TableGateway\DirectusActivityTableGateway;
-use Directus\Util\DateUtils;
+use Directus\Util\ArrayUtils;
 use Directus\View\JsonView;
 
 class Activity extends Route
@@ -17,12 +17,12 @@ class Activity extends Route
 
         $Activity = new DirectusActivityTableGateway($ZendDb, $acl);
         // @todo move this to backbone collection
-        if (!$params['adv_search']) {
-            unset($params['perPage']);
-            $params['adv_search'] = 'datetime >= "' . DateUtils::daysAgo(30) . '"';
+        if (!ArrayUtils::has($params, 'filters')) {
+            $params['filters'] = [];
         }
-        $new_get = $Activity->fetchFeed($params);
-        $new_get['active'] = $new_get['total'];
-        JsonView::render($new_get);
+
+        $data = $Activity->fetchFeed($params);
+
+        return JsonView::render($data);
     }
 }

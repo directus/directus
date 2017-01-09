@@ -122,6 +122,8 @@ if (!function_exists('ping_server')) {
      */
     function ping_server()
     {
+        // @TODO: Fix error when the route exists but there's an error
+        // It will not return "pong" back
         $response = @file_get_contents(get_url('/api/1/ping'));
 
         return $response === 'pong';
@@ -914,5 +916,35 @@ if (!function_exists('check_version')) {
         }
 
         return $data;
+    }
+}
+
+if (!function_exists('feedback_login_ping')) {
+    /**
+     * Sends a unique random token to help us understand approximately how many instances of Directus exist.
+     * This can be disabled in your config file.
+     *
+     * @param string $key
+     */
+    function feedback_login_ping($key)
+    {
+        try {
+            get_json('https://directus.io/feedback/ping/' . (string) $key);
+        } catch (\Exception $e) {
+            // Do nothing
+        }
+    }
+}
+
+if (!function_exists('get_request_ip')) {
+    function get_request_ip()
+    {
+        if (isset($_SERVER['X_FORWARDED_FOR'])) {
+            return $_SERVER['X_FORWARDED_FOR'];
+        } elseif (isset($_SERVER['CLIENT_IP'])) {
+            return $_SERVER['CLIENT_IP'];
+        }
+
+        return $_SERVER['REMOTE_ADDR'];
     }
 }

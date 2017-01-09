@@ -11,15 +11,22 @@ define([
 
 function(app, Backbone, Handlebars, Directus, BasePageView, Widgets, __t, moment) {
 
-  "use strict";
+  'use strict';
 
   var BodyView = Backbone.Layout.extend({
 
-    tagName: 'span',
+    tagName: 'div',
+
+    attributes: {
+      class: 'user-listing'
+    },
+
+    template: 'modules/users/card-view',
 
     events: {
-      'click .header-image, .primary-info': function(e) {
-        var id = $(e.target).closest('li.card').attr('data-id');
+      // old selector: .header-image, .primary-info
+      'click .user': function(e) {
+        var id = $(e.target).closest('.user').data('id');
         var user = app.users.getCurrentUser();
         var userGroup = user.get('group');
 
@@ -32,6 +39,7 @@ function(app, Backbone, Handlebars, Directus, BasePageView, Widgets, __t, moment
       }
     },
 
+    /*
     template: Handlebars.compile(
       '{{#groups}}' +
       '<div class="section-header"><span class="big-label-text">{{title}}</div>' +
@@ -63,6 +71,7 @@ function(app, Backbone, Handlebars, Directus, BasePageView, Widgets, __t, moment
         '</div>' +
       '{{/unless}}'
     ),
+    */
 
     serialize: function() {
       var rows = this.collection.map(function(model) {
@@ -218,7 +227,14 @@ function(app, Backbone, Handlebars, Directus, BasePageView, Widgets, __t, moment
     leftToolbar: function() {
       if(app.users.getCurrentUser().get('group').id === 1) {
         return [
-          new Widgets.ButtonWidget({widgetOptions: {buttonId: "addBtn", iconClass: "add", buttonClass: "", buttonText: __t('new_user')}})
+          new Widgets.ButtonWidget({
+            widgetOptions: {
+              buttonId: 'addBtn',
+              iconClass: 'add',
+              buttonClass: 'primary',
+              buttonText: __t('new_user')
+            }
+          })
         ];
       }
       return [];

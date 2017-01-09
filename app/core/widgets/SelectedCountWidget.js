@@ -22,7 +22,7 @@ function(app, Backbone, Handlebars) {
     },
 
     updateCount: function() {
-      this.options.widgetOptions.count = $('.select-row:checked').length;
+      this.options.widgetOptions.count = $('.js-select-row:checked').length;
       this.render();
     },
 

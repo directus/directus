@@ -1,0 +1,27 @@
+{% extends "base.twig.html" %}
+
+{% block bodyClass %}{% endblock %}
+
+{% block content %}
+
+<div class="message-listing resize-left">
+	{% for i in 0..20 %}
+	<div class="message-preview {% if i < 3 %}unread{% endif %} {% if i == 3 %}active{% endif %}">
+		<div class="active-indicator"></div>
+		<div class="unread-indicator"></div>
+		<div class="timeago">3m</div>
+		<div class="byline">
+			<div class="subject">Welcome to Directus {% if i == 1 %}<i class="material-icons has-attachment">attachment</i>{% endif %}{% if i == 2 %}<i class="material-icons is-chat">chat</i>{% endif %}</div>
+			<div class="recipients">Ben Haynes, Welling Guzman, and 3 others</div>
+		</div>
+		You believe the year is 1997 when in fact it is much closer to 2197. I can't say for certain what year it is because we honestly do not know.
+	</div>
+	{% endfor %}
+</div><!--
+
+--><div class="message resize-right">
+	<div class="resize-handle"></div>
+	{% include 'pages/message.twig.html' %}
+</div>
+
+{% endblock %}

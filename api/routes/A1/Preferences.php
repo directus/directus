@@ -68,8 +68,18 @@ class Preferences extends Route
         if (!$jsonResponse) {
             $app->response()->setStatus(404);
             $jsonResponse = [
-                'message' => __t('unable_to_find_preferences'),
+                'error' => [
+                    'message' => __t('unable_to_find_preferences')
+                ],
                 'success' => false
+            ];
+        } else {
+            $jsonResponse = [
+                'meta' => [
+                    'type' => 'item',
+                    'table' => 'directus_preferences'
+                ],
+                'data' => $jsonResponse
             ];
         }
 

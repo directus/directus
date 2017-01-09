@@ -1,16 +1,25 @@
 require([
-  "app",
-  "handlebars",
-  "core/UIManager",
+  'app',
+  'handlebars',
+  'core/UIManager',
   'core/t',
   'moment'
 ], function(app, Handlebars, UIManager, __t, moment) {
 
-  "use strict";
+  'use strict';
 
-  Handlebars.registerHelper('imagesPath', function() {
-    return app.PATH + 'assets/img/';
+  // Get assets path
+  Handlebars.registerHelper('assetsPath', function() {
+    return app.PATH + 'assets';
   });
+
+  // Get root path
+  function rootPath() {
+    return app.PATH;
+  }
+
+  Handlebars.registerHelper('rootPath', rootPath);
+  Handlebars.registerHelper('rootUrl', rootPath);
 
   Handlebars.registerHelper('t', function(key, options) {
     return __t(key, options.hash);
@@ -81,6 +90,10 @@ require([
     return moment(date).format(format);
   });
 
+  Handlebars.registerHelper('friendlyDateTime', function(date) {
+    return moment(date).format('dddd, MMM DD, h:mm A');
+  });
+
   Handlebars.registerHelper('avatarSmall', function(userId) {
     var user = app.users.get(userId);
     return '<img src="' + user.getAvatar() + '" style="margin-right:7px;" class="avatar">' + user.get('first_name');
@@ -96,6 +109,30 @@ require([
       case 2:
         return 'inactive';
     }
+  });
+
+  // Get the model status name
+  Handlebars.registerHelper('statusName', function(model) {
+    var statusValue = model.get(app.statusMapping.status_name);
+    var status = app.statusMapping.mapping[statusValue] || {};
+
+    return status ? status.name : '';
+  });
+
+  // Get the model status color
+  Handlebars.registerHelper('statusColor', function(model) {
+    var statusValue = model.get(app.statusMapping.status_name);
+    var status = app.statusMapping.mapping[statusValue] || {};
+
+    return status ? status.color : '#eeeeee';
+  });
+
+  Handlebars.registerHelper('notPublishedClass', function(model) {
+    if (model.get(app.statusMapping.status_name) == app.statusMapping.draft_num) {
+      return 'not-published';
+    }
+
+    return '';
   });
 
   // Should be combined with userShort below with param: "show_avatar" [true,false]
@@ -135,6 +172,10 @@ require([
       }
     }
     return new Handlebars.SafeString('<img src="'+user.getAvatar()+'" class="avatar"/>' + app.capitalize(nickName," "));
+  });
+
+  Handlebars.registerHelper('userAvatarUrl', function(userId) {
+    return app.users.get(userId).getAvatar();
   });
 
   Handlebars.registerHelper('userAvatar', function(userId) {
@@ -218,11 +259,49 @@ require([
     return new Handlebars.SafeString(select);
   });
 
-  //Handlebars UI helper!
-  Handlebars.registerHelper("ui", function(model, attr, options) {
-    if (model.isNested) model = model.get('data');
-    var html = UIManager.getList(model, attr) || '';
+  // Handlebars UI helper!
+  function uiHelper(model, attr, options) {
+    var html;
+
+    if (model.isNested) {
+      model = model.get('data');
+    }
+
+    html = UIManager.getList(model, attr) || '';
+
     return new Handlebars.SafeString(html);
+  }
+
+  Handlebars.registerHelper('ui', uiHelper);
+
+  Handlebars.registerHelper('uiCapitalize', function(model, attr, options) {
+    var value = uiHelper(model, attr, options);
+
+    if (_.isString(value)) {
+      value = app.capitalize(value);
+    }
+
+    return value;
   });
 
+  // include an partial
+  Handlebars.registerHelper('include', function (path, options) {
+    var partial = Handlebars.partials[path];
+    if (typeof partial !== 'function') {
+      partial = Handlebars.compile(partial);
+    }
+
+    return Handlebars.compile(partial())();
+  });
+
+  // template for empty listing
+  Handlebars.registerPartial('listingEmpty', function() {
+    return '<div class="no-items"> \
+      <div class="background-circle"> \
+      <img src="{{assetsPath}}/imgs/no-items.svg"> \
+      </div> \
+      <br> \
+      {{t "listing_items_not_found"}} \
+    </div>';
+  });
 });

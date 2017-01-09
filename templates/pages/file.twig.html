@@ -1,0 +1,183 @@
+{% extends "base.twig.html" %}
+
+{% block bodyClass %}{% endblock %}
+
+{% block content %}
+
+<div class="fields stack-label"> <!-- Optional Class: bulk-edit, stack-label -->
+
+	<div class="field">
+		<div class="bulk-edit-label">
+			<div class="button"><i class="material-icons">edit</i> Bulk Edit: Text Input</div>
+		</div>
+		<div class="label">
+			Asset
+		</div><!-- NEEDED TO AVOID EXTRA SPACE FROM TEXT
+	 --><div class="interface">
+
+	 		<div class="asset open-modal" data-modal="file">
+	 			<img src="{{assetsRoot}}imgs/file-full.jpg">
+	 		</div>
+
+			<!-- <div class="dropzone">
+				<i class="material-icons cloud">cloud_upload</i>
+				<div class="drag-and-drop">Drag &amp; Drop</div>
+				<div class="click-to-browse">Or Click to Browse</div>
+			</div> -->
+			<!-- <div class="button"><i class="material-icons">playlist_add_check</i> Choose Existing</div>
+			<div class="button"><i class="material-icons">insert_link</i> Import URL</div> -->
+		</div>
+	</div>
+
+	<div class="field">
+		<div class="bulk-edit-label">
+			<div class="button"><i class="material-icons">edit</i> Bulk Edit: Text Input</div>
+		</div>
+		<div class="label">
+			Thumbnails
+		</div><!-- NEEDED TO AVOID EXTRA SPACE FROM TEXT
+	 --><div class="interface">
+	 		<div class="thumbnail system">
+	 			<div class="thumb">
+	 				<img src="{{assetsRoot}}imgs/file.png">
+	 				<div class="crop"><i class="material-icons">crop</i></div>
+	 			</div>
+	 			<b>Size:</b> 200 × 200<br>
+	 			<b>Quality:</b> 100%
+	 		</div>
+	 		<div class="thumbnail">
+	 			<div class="thumb">
+	 				<img src="{{assetsRoot}}imgs/file.png" style="width:100px;">
+	 				<div class="crop"><i class="material-icons">crop</i></div>
+	 			</div>
+	 			<b>Size:</b> 100 × 100<br>
+	 			<b>Quality:</b> 100%
+	 		</div>
+	 		<div class="thumbnail">
+	 			<div class="thumb">
+	 				<img src="{{assetsRoot}}imgs/file.png" style="width:40px;">
+	 				<div class="crop"><i class="material-icons">crop</i></div>
+	 			</div>
+	 			<b>Size:</b> 40 × 40<br>
+	 			<b>Quality:</b> 100%
+	 		</div>
+			<!-- <input class="custom-checkbox" id="checkbox" type="checkbox" value="" checked />
+			<label for="checkbox"><span></span> Crop</label> -->
+		</div>
+	</div>
+
+	<div class="field">
+		<div class="bulk-edit-label">
+			<div class="button"><i class="material-icons">edit</i> Bulk Edit: Text Input</div>
+		</div>
+		<div class="label">
+			Name <i class="material-icons required" title="Required">star</i>
+			<!-- <div class="comment"></div> -->
+		</div><!-- NEEDED TO AVOID EXTRA SPACE FROM TEXT
+	 --><div class="interface">
+			<input type="text" placeholder="" value="Val Gardena">
+		</div>
+	</div>
+
+	<div class="field">
+		<div class="bulk-edit-label">
+			<div class="button"><i class="material-icons">edit</i> Bulk Edit: Text Input</div>
+		</div>
+		<div class="label">
+			File Name
+			<div class="comment">This name must be unique for the storage location.</div>
+		</div><!-- NEEDED TO AVOID EXTRA SPACE FROM TEXT
+	 --><div class="interface">
+			<input type="text" placeholder="" value="1f491ec86258eee35f87bbd18c.jpg">
+		</div>
+	</div>
+
+	<div class="field">
+		<div class="bulk-edit-label">
+			<div class="button"><i class="material-icons">edit</i> Bulk Edit: Text Input</div>
+		</div>
+		<div class="label">
+			Description
+		</div><!-- NEEDED TO AVOID EXTRA SPACE FROM TEXT
+	 --><div class="interface">
+			<textarea>A blinding cursor pulses in the electric darkness like a heart coursing with phosphorous light, burning beneath the derma of black-neon glass.</textarea>
+		</div>
+	</div>
+
+	<div class="field">
+		<div class="bulk-edit-label">
+			<div class="button"><i class="material-icons">edit</i> Bulk Edit: Text Input</div>
+		</div>
+		<div class="label">
+			Tags
+		</div><!-- NEEDED TO AVOID EXTRA SPACE FROM TEXT
+	 --><div class="interface">
+			<input type="text" placeholder="Press enter or comma to add tags..." value="">
+			<div class="tag-container">
+				{% for i in 0..20 %}
+				<div class="tag">Tag {{i}}</div>
+				{% endfor %}
+			</div>
+		</div>
+	</div>
+
+	<div class="field">
+		<div class="bulk-edit-label">
+			<div class="button"><i class="material-icons">edit</i> Bulk Edit: Text Input</div>
+		</div>
+		<div class="label">
+			Location
+		</div><!-- NEEDED TO AVOID EXTRA SPACE FROM TEXT
+	 --><div class="interface">
+			<input id="map-search" class="map-search" type="text" placeholder="Find a location">
+			<div class="map"></div>
+			<div class="lat-long">Latitude: 40.720&nbsp;&nbsp;&nbsp;&nbsp;Longitude: -73.953</div> <div class="map-clear">Clear</div>
+		</div>
+	</div>
+
+	<div class="field">
+		<div class="bulk-edit-label">
+			<div class="button"><i class="material-icons">edit</i> Bulk Edit: Text Input</div>
+		</div>
+		<div class="label">
+			Asset Usage
+		</div><!-- NEEDED TO AVOID EXTRA SPACE FROM TEXT
+	 --><div class="interface">
+		 	<div class="table-container max-height">
+				<table class="lines cozy clickable pad-first">
+					<thead>
+						<tr>
+							<th scope="column">Table <i class="material-icons order-direction">arrow_downward</i></th>
+							<th scope="column">Item</th>
+							<th scope="column">Column</th>
+							<th scope="column"></th>
+							<th scope="column" class="right-sidebar-toggle"><i class="material-icons">more_horiz</i></th>
+						</tr>
+					</thead>
+					<tbody class="drag-and-drop">
+
+						{% for i in 0..8 %}
+						<tr class="dynamic-link {% if i == 5 %}not-published{% endif %}" data-dynamic-link="{{rootUrl}}tables/blog/1#title"> <!-- Optional Classes: selected -->
+							<td>Table ({{i}})</td>
+							<td>Formatted Title</td>
+							<td>Hero Image</td>
+							<td class="status-badges">
+								{% if i == 5 %}<div class="status-badge" style="background-color:#eeeeee;">Draft</div>{% endif %}
+							</td>
+							<td class="relational-remove">
+								<i class="material-icons">close</i>
+							</td>
+						</tr>
+						{% endfor %}
+
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+
+</div>
+
+{% include 'pages/file-sidebar.twig.html' %}
+
+{% endblock %}

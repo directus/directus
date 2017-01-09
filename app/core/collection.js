@@ -1,11 +1,12 @@
 define([
-  "app",
-  "backbone"
+  'app',
+  'backbone',
+  'underscore'
 ],
 
-function(app, Backbone) {
+function(app, Backbone, _) {
 
-  "use strict";
+  'use strict';
 
   var Collection = Backbone.Collection.extend({
 
@@ -13,16 +14,53 @@ function(app, Backbone) {
       this.filters = options.filters || {};
     },
 
-    getColumns: function() {
-      var cols = (this.length) ? _.keys(this.at(0).toJSON()) : [];
-      var result = this.filters.hasOwnProperty('columns_visible') ? _.intersection(cols, this.filters.columns_visible) : cols;
-      return result;
+    getColumns: function(columnsVisible) {
+      var columns = (this.length) ? _.keys(this.at(0).toJSON()) : [];
+
+      if (columnsVisible) {
+        columns = _.intersection(columns, columnsVisible);
+      } else if (this.filters.hasOwnProperty('columns_visible')) {
+        columns = _.intersection(columns, this.filters.columns_visible);
+      }
+
+      return columns;
     },
 
     getRows: function() {
       var cols = this.getColumns();
       var models = this.filterMulti({hidden: false});
       return _.map(models, function(model) { return _.pick(model.toJSON(), cols); });
+    },
+
+    getRowsModel: function() {
+      return this.filterMulti({hidden: false});
+    },
+
+    getTotalCount: function() {
+      var totalCount;
+      // Let's have the collection length
+      // to replace the table total when we add items
+      // because we are not updating this value
+      // we are just fetching it once
+      // @TODO: update this value on collection change
+      var collectionCount = this.length;
+
+      // There is no active column. Use total
+      if (!this.table.columns.get(app.statusMapping.status_name)) {
+        return Math.max(this.table.get('total'), collectionCount);
+      }
+
+      var visibleStates = (this.getFilter('status') || '').split(',');
+      totalCount = 0;
+
+      var that = this;
+      visibleStates.forEach(function(state) {
+        if(state in app.statusMapping.mapping && that.table.has(app.statusMapping.mapping[state].name)) {
+          totalCount += that.table.get(app.statusMapping.mapping[state].name);
+        }
+      });
+
+      return Math.max(totalCount, collectionCount);
     },
 
     getModels: function() {

@@ -34,6 +34,14 @@ class Groups extends Route
                 $outputData = $get_new;
         }
 
+        $outputData = [
+            'meta' => [
+                'type' => 'entry',
+                'table' => $GroupsTableGateway->getTable()
+            ],
+            'data' => $outputData
+        ];
+
         JsonView::render($outputData);
     }
 

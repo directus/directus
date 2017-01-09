@@ -21,14 +21,14 @@ class Settings extends Route
             case 'POST':
             case 'PUT':
                 $data = $requestPayload;
-                unset($data['id']);
                 $Settings->setValues($id, $data);
                 break;
         }
 
-        $response = $Settings->fetchAll();
         if (!is_null($id)) {
-            $response = array_key_exists($id, $response) ? $response[$id] : null;
+            $response = $Settings->fetchCollection($id);
+        } else {
+            $response = $Settings->fetchAll();
         }
 
         if (!$response) {
@@ -36,6 +36,18 @@ class Settings extends Route
                 'message' => __t('unable_to_find_setting_collection_x', ['collection' => $id]),
                 'success' => false
             ];
+        } else {
+            $response = [
+                'meta' => [
+                    'type' => 'item',
+                    'table' => 'directus_settings'
+                ],
+                'data' => $response
+            ];
+
+            if (!is_null($id)) {
+                $response['meta']['settings_collection'] = $id;
+            }
         }
 
         JsonView::render($response);

@@ -19,7 +19,7 @@ define(function(require, exports, module) {
       if (options.changed) {
         result = _.filter(result, function(obj) { return !_.isEmpty(obj); });
       }
-      return result;
+      return options.insideRows === true ? {rows: result} : result;
     },
 
     getColumns: function() {
@@ -72,33 +72,6 @@ define(function(require, exports, module) {
       return result;
     },
 
-    getTotalCount: function() {
-      var totalCount;
-      // Let's have the collection length
-      // to replace the table total when we add items
-      // because we are not updating this value
-      // we are just fetching it once
-      // @TODO: update this value on collection change
-      var collectionCount = this.length;
-
-      // There is no active column. Use total
-      if (!this.table.columns.get(app.statusMapping.status_name)) {
-        return Math.max(this.table.get('total'), collectionCount);
-      }
-
-      var visibleStates = this.getFilter('status').split(',');
-      totalCount = 0;
-
-      var that = this;
-      visibleStates.forEach(function(state) {
-        if(state in app.statusMapping.mapping && that.table.has(app.statusMapping.mapping[state].name)) {
-          totalCount += that.table.get(app.statusMapping.mapping[state].name);
-        }
-      });
-
-      return Math.max(totalCount, collectionCount);
-    },
-
     updateActiveCount: function(diff) {
       if(!this.table.has('active')) {
         return;
@@ -118,7 +91,7 @@ define(function(require, exports, module) {
     },
 
     saveAll: function(options) {
-      return this.save(this.toJSON(), options);
+      return this.save(this.models, options);
     },
 
     save: function(models, options) {
@@ -134,6 +107,15 @@ define(function(require, exports, module) {
         models = collection.models;
       }
 
+      if (method === 'patch') {
+        options.attrs = {rows: models.map(function(model) {
+          return model.toJSON({changed: true});
+        })};
+      } else {
+        // @note: to support the API expecting a all rows inside rows property.
+        options.insideRows = true;
+      }
+
       var sync = function () {
         collection.trigger('sync');
       };
@@ -147,8 +129,6 @@ define(function(require, exports, module) {
           success(collection, resp, options);
         }
       };
-
-      options.data = JSON.stringify({rows: models});
 
       this.url += '/bulk';
       var xhr = this.sync(method, this, options);

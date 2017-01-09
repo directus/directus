@@ -1,4 +1,5 @@
 <?php
+
 // If config file doesnt exist, go to install file
 if (!file_exists('api/config.php') || filesize('api/config.php') == 0) {
     header('Location: installation/index.php');
@@ -13,8 +14,8 @@ define('API_PATH', BASE_PATH . '/api');
 
 use Directus\Bootstrap;
 
-require "api/config.php";
-require "api/globals.php";
+require 'api/config.php';
+require 'api/globals.php';
 
 $authentication = Bootstrap::get('auth');
 $emitter = Bootstrap::get('hookEmitter');
@@ -37,6 +38,26 @@ if (isset($_SESSION['error_message'])) {
 $git = __DIR__ . '/.git';
 $cacheBuster = Directus\Util\Git::getCloneHash($git);
 
+$redirectPath = '';
+if (isset($_SESSION['_directus_login_redirect'])) {
+    $redirectPath = trim($_SESSION['_directus_login_redirect'], '/');
+}
+
+$templateVars = [
+    'page' => 'login',
+    'inactive' => isset($_GET['inactive']),
+    'redirectPath' => $redirectPath,
+    'errorMessage' => $errorMessage,
+    'cacheBuster' => $cacheBuster,
+    'apiVersion' => API_VERSION,
+    'rootUrl' => DIRECTUS_PATH,
+    'assetsRoot' => rtrim(DIRECTUS_PATH, '/') . '/assets/',
+    'subtitle' => 'Login'
+];
+
+$app = Bootstrap::get('app');
+$app->render('login.twig.html', $templateVars);
+exit;
 ?>
 <!doctype html>
 <html lang="en">

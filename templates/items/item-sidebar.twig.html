@@ -1,0 +1,174 @@
+{% block content %}
+
+<div class="right-sidebar wide sidebar-open no-title">
+
+	<!-- <div class="sidebar-title">Item Details</div>
+	<i class="material-icons close">close</i> -->
+
+	<div class="scroll-y">
+
+		<div class="metadata">
+			<div class="status">
+				<div class="color"></div>Active
+				<i class="material-icons">expand_more</i>
+			</div>
+
+			<b>ID:</b> 12<br>
+			<b>Created By:</b> <a href="#" class="open-modal hover-color" data-modal="profile">Ben Haynes</a><br>
+			<b>Created On:</b> Nov 19th, 2016 @ 5:35p<br>
+			<b>Last Modified By:</b> <a href="#" class="open-modal hover-color" data-modal="profile">Ben Haynes</a><br>
+			<b>Last Modified On:</b> Nov 19th, 2016 @ 5:35p<br>
+
+			<div class="button preview"><i class="material-icons">visibility</i> Preview Item</div>
+		</div>
+
+		<ul class="timeline">
+
+			<div class="toggles">
+				<i class="material-icons comments-toggle active">forum</i> <i class="material-icons activity-toggle active">restore</i>
+			</div>
+
+			<li class="comment create">
+				<textarea placeholder="Write a comment..."></textarea>
+			</li>
+			<li class="activity">
+				<div class="activity-full-toggle">
+					REVISON 5 <i class="material-icons more-activity">arrow_drop_down</i>
+					<div class="timeago">
+						<i class="material-icons">schedule</i> 3m
+					</div>
+				</div>
+				<div class="full-activity">
+					<b>Author:</b> <a href="#" class="open-modal hover-color" data-modal="profile">Ben Haynes</a><br>
+					<b>Date:</b> Tue – Nov 3, 2016 @ 18:24:09<br>
+					<b>Changes:</b> 3<br>
+					<b>IP:</b> 123.123.123.123<br>
+					<!-- <b>Rollback:</b> <a href="#" class="rollback">Restore</a> -->
+					<div class="button rollback"><i class="material-icons">restore</i> Rollback</div>
+				</div>
+			</li>
+			<li class="comment">
+				<div class="byline">
+					<div class="avatar"><img src="{{rootUrl}}assets/imgs/avatar.png"></div>
+					<a href="#" class="open-modal hover-color" data-modal="profile">Ben Haynes</a>
+					<div class="timeago">
+						<i class="material-icons">schedule</i> 3m
+					</div>
+				</div>
+				Thanks!
+			</li>
+			<li class="comment">
+				<div class="byline me">
+					<div class="avatar"><img src="{{rootUrl}}assets/imgs/avatar.png"></div>
+					<a href="#" class="open-modal hover-color" data-modal="profile">Welling Guzman</a>
+					<div class="timeago">
+						<i class="material-icons">schedule</i> 2h
+					</div>
+				</div>
+				Had to change the author, but it's good now!
+			</li>
+			<li class="activity">
+				<div class="activity-full-toggle">
+					REVISON 4 <i class="material-icons more-activity">arrow_drop_down</i>
+					<div class="timeago">
+						<i class="material-icons">schedule</i> 5h
+					</div>
+				</div>
+				<div class="full-activity">
+					<b>Author:</b> <a href="#" class="open-modal hover-color" data-modal="profile">Ben Haynes</a><br>
+					<b>Date:</b> Tue – Nov 3, 2016 @ 18:24:09<br>
+					<b>Changes:</b> 3<br>
+					<b>IP:</b> 123.123.123.123<br>
+					<!-- <b>Rollback:</b> <a href="#" class="rollback">Restore</a> -->
+					<div class="button rollback"><i class="material-icons">restore</i> Rollback</div>
+				</div>
+			</li>
+			<li class="activity">
+				<div class="activity-full-toggle">
+					REVISON 3 <i class="material-icons more-activity">arrow_drop_down</i>
+					<div class="timeago">
+						<i class="material-icons">schedule</i> 5h
+					</div>
+				</div>
+				<div class="full-activity">
+					<b>Author:</b> <a href="#" class="open-modal hover-color" data-modal="profile">Ben Haynes</a><br>
+					<b>Date:</b> Tue – Nov 3, 2016 @ 18:24:09<br>
+					<b>Changes:</b> 3<br>
+					<b>IP:</b> 123.123.123.123<br>
+					<!-- <b>Rollback:</b> <a href="#" class="rollback">Restore</a> -->
+					<div class="button rollback"><i class="material-icons">restore</i> Rollback</div>
+				</div>
+			</li>
+			<li class="activity">
+				<div class="activity-full-toggle">
+					REVISON 2 <i class="material-icons more-activity">arrow_drop_down</i>
+					<div class="timeago">
+						<i class="material-icons">schedule</i> 1d
+					</div>
+				</div>
+				<div class="full-activity">
+					<b>Author:</b> <a href="#" class="open-modal hover-color" data-modal="profile">Ben Haynes</a><br>
+					<b>Date:</b> Tue – Nov 3, 2016 @ 18:24:09<br>
+					<b>Changes:</b> 3<br>
+					<b>IP:</b> 123.123.123.123<br>
+					<!-- <b>Rollback:</b> <a href="#" class="rollback">Restore</a> -->
+					<div class="button rollback"><i class="material-icons">restore</i> Rollback</div>
+				</div>
+			</li>
+			<li class="comment">
+				<div class="byline">
+					<div class="avatar"><img src="{{rootUrl}}assets/imgs/avatar.png"></div>
+					<a href="#" class="open-modal hover-color" data-modal="profile">Ben Haynes</a>
+					<div class="timeago">
+						<i class="material-icons">schedule</i> 4d
+					</div>
+				</div>
+				Can someone please review this and let me know if it's ready to go?
+			</li>
+			<li class="comment">
+				<div class="byline">
+					<div class="avatar"><img src="{{rootUrl}}assets/imgs/avatar.png"></div>
+					<a href="#" class="open-modal hover-color" data-modal="profile">Ben Haynes</a>
+					<div class="timeago">
+						<i class="material-icons">schedule</i> 1w
+					</div>
+				</div>
+				OK – I've created a new post for the event. You believe the year is 1997 when in fact it is much closer to 2197. I can't say for certain what year it is because we honestly do not know.
+			</li>
+			<li class="activity">
+				<div class="activity-full-toggle">
+					REVISON 1 <i class="material-icons more-activity">arrow_drop_down</i>
+					<div class="timeago">
+						<i class="material-icons">schedule</i> 1d
+					</div>
+				</div>
+				<div class="full-activity">
+					<b>Author:</b> <a href="#" class="open-modal hover-color" data-modal="profile">Ben Haynes</a><br>
+					<b>Date:</b> Tue – Nov 3, 2016 @ 18:24:09<br>
+					<b>Changes:</b> 3<br>
+					<b>IP:</b> 123.123.123.123<br>
+					<!-- <b>Rollback:</b> <a href="#" class="rollback">Restore</a> -->
+					<div class="button rollback"><i class="material-icons">restore</i> Rollback</div>
+				</div>
+			</li>
+			<li class="activity">
+				<div class="activity-full-toggle">
+					CREATED <i class="material-icons more-activity">arrow_drop_down</i>
+					<div class="timeago">
+						<i class="material-icons">schedule</i> 3w
+					</div>
+				</div>
+				<div class="full-activity">
+					<b>Author:</b> <a href="#" class="open-modal hover-color" data-modal="profile">Ben Haynes</a><br>
+					<b>Date:</b> Tue – Nov 3, 2016 @ 18:24:09<br>
+					<b>Changes:</b> 3<br>
+					<b>IP:</b> 123.123.123.123<br>
+					<!-- <b>Rollback:</b> <a href="#" class="rollback">Restore</a> -->
+					<div class="button rollback"><i class="material-icons">restore</i> Rollback</div>
+				</div>
+			</li>
+		</ul>
+	</div>
+</div>
+
+{% endblock %}

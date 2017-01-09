@@ -1,11 +1,12 @@
 define([
-  "app",
-  "backbone"
+  'app',
+  'backbone',
+  'underscore'
 ],
 
-function(app, Backbone) {
+function(app, Backbone, _) {
 
-  "use strict";
+  'use strict';
 
   var TableSimple = Backbone.Layout.extend({
 
@@ -20,20 +21,20 @@ function(app, Backbone) {
 
     flashItem: function(entryID, bodyScrollTop) {
       document.body.scrollTop = parseInt(bodyScrollTop, 10) || 0;
-      if(entryID) {
+      if (entryID) {
         this.$el.find('tr[data-id="' + entryID + '"]').flashRow();
       }
     },
 
     serialize: function() {
-      var rows = this.collection.getRows();
-
-      var bookmarks = app.getBookmarks();
+      var columns = this.collection.getColumns((this.columns));
+      var models = this.collection.getRowsModel();
+      var rows;
 
       // Check permissions
       // @todo: filter this on the backend and get rid of this
-      rows = _.filter(rows, function(row) {
-        var privileges = app.schemaManager.getPrivileges(row.table_name);
+      models = _.filter(models, function(model) {
+        var privileges = app.schemaManager.getPrivileges(model.get('table_name'));
 
         if (typeof privileges === 'undefined' || privileges === null) {
           return false;
@@ -42,11 +43,24 @@ function(app, Backbone) {
         // only return tables with view permissions and not hidden
         return privileges.get('allow_view') > 0  && privileges.get('nav_listed') > 0;
       });
-      return {rows: rows, columns: this.collection.getColumns()};
+
+      rows = _.map(models, function(model) {
+        // Clone the model
+        // prevent the table name being override for future reference
+        model = model.clone();
+        var id = model.get('table_name');
+
+        model.set('table_name', app.capitalize(model.get('table_name')));
+
+        return {model: model, id: id};
+      });
+
+      return {rows: rows, columns: columns};
     },
 
-    initialize: function() {
+    initialize: function(options) {
       this.listenTo(app.router.v.main, 'flashItem', this.flashItem);
+      this.columns = options.columns || false;
     }
 
   });

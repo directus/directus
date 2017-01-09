@@ -1,22 +1,24 @@
 define([
   'app',
   'backbone',
+  'underscore',
   'handlebars',
   'core/t',
   'core/directus',
   'core/BasePageView',
   'core/widgets/widgets',
   'modules/tables/views/HistoryView',
+  'modules/tables/views/EditViewRightPane',
   'modules/tables/views/TranslationView'
 ],
 
-function(app, Backbone, Handlebars, __t, Directus, BasePageView, Widgets, HistoryView, TranslationView) {
+function(app, Backbone, _, Handlebars, __t, Directus, BasePageView, Widgets, HistoryView, EditViewRightPane, TranslationView) {
 
   var EditView = Backbone.Layout.extend({
     template: Handlebars.compile('<div id="editFormEntry"></div><div id="translateFormEntry"></div><div id="historyFormEntry"></div>'),
     afterRender: function() {
       this.insertView("#editFormEntry", this.editView);
-      this.insertView("#historyFormEntry", this.historyView);
+      // this.insertView("#historyFormEntry", this.historyView);
 
       if (this.translateViews.length) {
         _.each(this.translateViews, function(view) {
@@ -59,7 +61,7 @@ function(app, Backbone, Handlebars, __t, Directus, BasePageView, Widgets, Histor
       }, this);
 
       this.editView = new Directus.EditView(options);
-      this.historyView = new HistoryView(options);
+      // this.historyView = new HistoryView(options);
     },
     serialize: function() {
       return {};
@@ -70,7 +72,6 @@ function(app, Backbone, Handlebars, __t, Directus, BasePageView, Widgets, Histor
     events: {
       'change input, select, textarea': 'checkDiff',
       'keyup input, textarea': 'checkDiff',
-      'click .saved-success > #save': 'saveConfirm',
       'change #saveSelect': 'saveConfirm',
       'submit': function(e) {
         // prevent user submit the form using Enter key
@@ -258,11 +259,38 @@ function(app, Backbone, Handlebars, __t, Directus, BasePageView, Widgets, Histor
     },
 
     leftToolbar: function() {
-      this.saveWidget = new Widgets.SaveWidget({widgetOptions: {basicSave: this.headerOptions.basicSave, singlePage: this.single}});
+      var editView = this;
+      this.saveWidget = new Widgets.SaveWidget({
+        widgetOptions: {
+          basicSave: this.headerOptions.basicSave,
+          singlePage: this.single
+        },
+        onClick: _.bind(editView.saveConfirm, editView)
+      });
+
       this.saveWidget.setSaved(false);
+
+      this.infoWidget = new Widgets.ButtonWidget({
+        widgetOptions: {
+          buttonId: '',
+          iconClass: 'info',
+          buttonClass: '',
+          buttonText: __t('details')
+        },
+        onClick: function(event) {
+          editView.loadRightPane();
+          editView.openRightPane();
+        }
+      });
+
       return [
-        this.saveWidget
+        this.saveWidget,
+        this.infoWidget
       ];
+    },
+
+    getRightPaneView: function() {
+      return EditViewRightPane;
     },
 
     initialize: function(options) {

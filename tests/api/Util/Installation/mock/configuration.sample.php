@@ -67,6 +67,11 @@ return [
         }
     ],
 
+    'feedback' => [
+        'token' => 'token',
+        'login' => true
+    ],
+
     // These tables will not be loaded in the directus schema
     'tableBlacklist' => [],
 

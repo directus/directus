@@ -8,13 +8,16 @@
 
 define(function(require, exports, module) {
 
-  "use strict";
+  'use strict';
 
   var app              = require('app'),
+      directus         = require('directus'),
+      Backbone         = require('backbone'),
       _                = require('underscore'),
       Notification     = require('core/notification'),
       //Directus       = require('core/directus'),
       Tabs             = require('core/tabs'),
+      BaseHeaderView   = require('core/baseHeaderView'),
       Bookmarks        = require('core/bookmarks'),
       SchemaManager    = require('schema/SchemaManager'),
       EntriesManager   = require('core/EntriesManager'),
@@ -25,7 +28,6 @@ define(function(require, exports, module) {
       Files            = require('modules/files/files'),
       Users            = require('modules/users/users'),
       Messages         = require('modules/messages/messages'),
-      Modal            = require('core/modal'),
       __t              = require('core/t'),
       moment           = require('moment');
 
@@ -183,12 +185,27 @@ define(function(require, exports, module) {
     },
 
     openModal: function(options, callback) {
-      if(this.v.main.getViews('#modal-container')._wrapped.length >= 1) {
+      var containerView = this.v.main.getView('#modal_container');
+
+      if (!containerView || containerView.isOpen()) {
         return;
       }
 
-      var modalView = new Modal.Prompt(options);
-      this.v.main.insertView('#modal-container', modalView).render();
+      var view = new directus.Modal.Prompt(options);
+
+      containerView.show(view);
+    },
+
+    openUserModal: function(userId) {
+      var containerView = this.v.main.getView('#modal_container');
+
+      if (!containerView || containerView.isOpen()) {
+        return;
+      }
+
+      var view = new directus.Modal.User({model: app.users.get(userId)});
+
+      containerView.show(view);
     },
 
     overlayPage: function(view) {
@@ -249,9 +266,20 @@ define(function(require, exports, module) {
       };
     },
 
+    removeTopOverlayPage: function() {
+      var view = this.v.main.getViews('#content').last()._wrapped;
+
+      return this.removeOverlayPage(view);
+    },
+
     removeOverlayPage: function(view) {
+      if (view.headerView) {
+        view.headerView.remove();
+      }
+
       view.remove(); //Remove Overlay Page
       var vieww = this.v.main.getViews('#content').last()._wrapped;
+      vieww.headerView.render();
       vieww.$el.show();
 
       if(vieww.scrollTop !== undefined) {
@@ -616,6 +644,7 @@ define(function(require, exports, module) {
         //this.extensions[item.id].bind('all', logRoute);
         this.extensions[item].on('route', function() {
           this.trigger('subroute',item);
+          this.trigger('route');
           this.trigger('route:'+item,item);
         }, this);
         //this.tabs.add({title: app.capitalize(item.id), id: item.id, extension: true});
@@ -630,9 +659,9 @@ define(function(require, exports, module) {
       var Navbar = Backbone.Layout.extend(
       {
 
-        template: "navbar",
+        template: 'navbar',
 
-        tagName: 'div',
+        el: '#sidebar',
 
         serialize: function() {
           return {
@@ -651,7 +680,6 @@ define(function(require, exports, module) {
 
       //holds references to view instances
       this.v = {};
-      var nav = new Navbar({model: app.settings.get('global')});
 
       //var nav = new Navbar({model: app.settings.get('global'), collection: this.tabs});
       this.v.main = new Backbone.Layout({
@@ -659,7 +687,9 @@ define(function(require, exports, module) {
         el: "#main",
 
         views: {
-          '#sidebar': nav
+          '#modal_container': new directus.Modal.Container(),
+          '#sidebar': new Navbar({model: app.settings.get('global')}),
+          '#header': new BaseHeaderView()
         }
 
       });

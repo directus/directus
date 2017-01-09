@@ -149,8 +149,13 @@ class Entries extends Route
                 break;
             // DELETE a given table entry
             case 'DELETE':
-                echo $TableGateway->delete([$TableGateway->primaryKeyFieldName => $id]);
-                return;
+                $success =  $TableGateway->delete([$TableGateway->primaryKeyFieldName => $id]);
+                return JsonView::render([
+                    'meta' => [
+                        'table' => $table
+                    ],
+                    'success' => (bool) $success
+                ]);
         }
 
         $params[$TableGateway->primaryKeyFieldName] = $id;

@@ -1,13 +1,17 @@
 define([
-  "app",
-  "backbone",
-  "core/baseHeaderView"
+  'app',
+  'backbone',
+  'underscore',
+  'core/baseHeaderView',
+  'core/rightSidebarView'
 ],
-function(app, Backbone, BaseHeaderView) {
+function(app, Backbone, _, BaseHeaderView, RightSidebarView) {
 
   return Backbone.Layout.extend({
 
     template: 'basePage',
+
+    // el: '#content',
 
     chooseView: function(viewSet, viewName) {
       return _.isUndefined(viewName) ? viewSet : viewSet[viewName];
@@ -33,14 +37,54 @@ function(app, Backbone, BaseHeaderView) {
 
     },
 
+    state: {
+
+    },
+
     initToolbar: function() {
+      var mainView = app.router.v.main;
+
       this.headerOptions.leftToolbar = this.leftToolbar();
       this.headerOptions.rightToolbar = this.rightToolbar();
       this.headerOptions.leftSecondaryToolbar = this.leftSecondaryToolbar();
       this.headerOptions.rightSecondaryToolbar = this.rightSecondaryToolbar();
+      this.headerView = mainView.getView('#header');
+      this.headerView.setPage(this);
 
-      this.headerView = new BaseHeaderView({headerOptions: this.headerOptions});
-      this.setView('#fixedHeader', this.headerView);
+      mainView.setView('#header', this.headerView);
+
+      if (_.result(this, 'getRightPaneView')) {
+        this.rightSidebarView = new RightSidebarView();
+        this.insertView(this.rightSidebarView);
+      }
+
+      if (this.state.rightPaneOpen === true) {
+        this.on('afterRender', this.loadRightPane);
+      }
+    },
+
+    openRightPane: function() {
+      this.state.rightPaneOpen = !this.state.rightPaneOpen;
+      $('body').toggleClass('right-sidebar-open');
+    },
+
+    loadRightPane: function() {
+      var view = _.result(this, 'getRightPaneView');
+
+      if (!view) {
+        return;
+      }
+
+      if (!this.rightPaneView) {
+        var baseView = this.baseView || this;
+        this.rightPaneView = new view({
+          baseView: baseView,
+          collection: baseView.collection,
+          model: baseView.model
+        });
+      }
+
+      this.setView('#rightSidebar', this.rightPaneView).render();
     },
 
     reRender: function() {
@@ -49,12 +93,18 @@ function(app, Backbone, BaseHeaderView) {
     },
 
     beforeRender: function() {
+      this.rightPaneView = null;
       this.initToolbar();
+      // render the header manually
+      // this view is part of the main view and is not a child of this view
+      this.headerView.render();
     },
+
     fetchHolding: [],
-    //Only fetch if we are not waiting on any widgets to get preference data
+
+    // Only fetch if we are not waiting on any widgets to get preference data
     tryFetch: function() {
-      if(this.fetchHolding.length === 0) {
+      if (this.fetchHolding.length === 0) {
         var options = this.collection.options ? this.collection.options : {};
         this.collection.fetch(options);
       }
@@ -69,6 +119,5 @@ function(app, Backbone, BaseHeaderView) {
       this.fetchHolding.splice(this.fetchHolding.indexOf(cid), 1);
       this.tryFetch();
     }
-
   });
 });

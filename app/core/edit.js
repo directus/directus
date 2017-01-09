@@ -1,17 +1,19 @@
 define(function(require, exports, module) {
 
-  "use strict";
+  'use strict';
 
   var app = require('app');
+  var Backbone = require('backbone');
   var Handlebars = require('handlebars');
   var UIManager = require('./UIManager');
 
   var UIContainer = Backbone.Layout.extend({
 
-    tagName: 'li',
+    tagName: 'div',
 
     attributes: {
-      'class': 'batchcontainer'
+      //'class': 'batchcontainer'
+      class: 'field'
     },
 
     template: 'uicontainer',
@@ -56,14 +58,14 @@ define(function(require, exports, module) {
 
   var EditView = module.exports = Backbone.Layout.extend({
 
-    tagName: "form",
-
     hiddenFields: [
       'id',
       'sort'
     ],
 
-    template: Handlebars.compile("<ul class='fields'></ul>"),
+    tagName: 'form',
+
+    template: 'edit',
 
     beforeRender: function() {
       var views = {};
@@ -135,7 +137,7 @@ define(function(require, exports, module) {
             batchEdit: this.options.batchIds !== undefined,
             view: view
           });
-          uiContainer.insertView('.trow', view);
+          uiContainer.insertView('.interface', view);
           views[column.id] = uiContainer;
         } else {
           this.insertView('.fields',view);

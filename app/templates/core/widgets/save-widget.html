@@ -1,3 +1,23 @@
+<button id="save_button" class="action primary help{{#unless isUpToDate}} saved-success{{/unless}}" data-help="This button saves the current item. You can also click the 'three dots' at the top for more save options.">
+    <i class="material-icons center">check</i>
+    <div class="action-text">Save</div>
+    {{#unless basicSave}}
+    <div class="more">
+        <select id="save_options" class="save-options">
+            <optgroup label="More Options">
+                <option selected></option>
+                <option value="save-form-stay">{{t "widget_save_save_and_stay"}}</option>
+                {{#unless singlePage}}
+                <option value="save-form-add">{{t "widget_save_save_and_add"}}</option>
+                <option value="save-form-copy">{{t "widget_save_save_as_copy"}}</option>
+                {{/unless}}
+            </optgroup>
+        </select>
+        <i class="material-icons">more_horiz</i>
+    </div>
+    {{/unless}}
+</button>
+{{!--
 <span class="select-and-circle {{#unless isUpToDate}}saved-success{{/unless}}">
   <button type="button" id="save" class="tool-item btn btn-header" title="Save">
     <i class="material-icons">check</i> {{t "save_item"}}
@@ -22,3 +42,4 @@
     </label>
   {{/unless}}
 </span>
+--}}

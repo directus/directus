@@ -2,6 +2,7 @@
 
 namespace Directus\Filesystem;
 
+use Directus\Bootstrap;
 use Directus\Util\DateUtils;
 use Directus\Util\Formatting;
 
@@ -204,8 +205,10 @@ class Files
     public function saveData($fileData, $fileName)
     {
         if (strpos($fileData, 'data:') === 0) {
-            $fileData = base64_decode(explode(',', $fileData)[1]);
+            $fileData = explode(',', $fileData)[1];
         }
+
+        $fileData = base64_decode($fileData);
 
         // @TODO: merge with upload()
         $fileName = $this->getFileName($fileName);

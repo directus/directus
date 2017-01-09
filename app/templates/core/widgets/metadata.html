@@ -1,0 +1,14 @@
+<b>ID:</b> {{model.id}}<br>
+{{#if meta.createdBy}}
+<b>Created By:</b> <a href="#" class="open-modal hover-color" data-modal="profile">{{userFirstAndLastName meta.createdBy}}</a><br>
+{{/if}}
+{{#if meta.createdOn}}
+<b>Created On:</b> {{meta.createdOn}}<br>
+{{/if}}
+{{#if meta.updatedBy}}
+<b>Last Modified By:</b> <a href="#" class="open-modal hover-color" data-modal="profile">{{userFirstAndLastName meta.updatedBy}}</a><br>
+{{/if}}
+{{#if meta.updatedOn}}
+<b>Last Modified On:</b> {{meta.updatedOn}}<br>
+{{/if}}
+<!-- <div class="button preview"><i class="material-icons">visibility</i> Preview Item</div> -->

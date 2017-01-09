@@ -1,3 +1,55 @@
+<input class="general" type="text" placeholder="{{resultCount}} Filtered Results…">
+<i class="material-icons search">search</i>
+<!-- <i class="material-icons clear">close</i> --> <!-- Only on when there's active filters -->
+<i class="material-icons filter-dropdown-toggle js-toggle">arrow_drop_down</i>
+<div class="filter-dropdown">
+    {{#if statusColumn}}
+    <h3>Status</h3>
+    {{#statuses}}
+    <div class="status-toggle">
+        <input class="custom-checkbox select-row js-status-check" id="check-status-{{value}}" type="checkbox" value="{{value}}" {{#if selected}}checked{{/if}}>
+        <label for="check-status-{{value}}"><span></span> {{name}}</label>
+    </div>
+    {{/statuses}}
+
+    <hr>
+    {{/if}}
+
+    <h3>Add New Filter</h3>
+    <div class="select-container add-column-filter">
+        <select name="type" class="medium adv-search-col-id">
+            <option value="">{{t "widget_filter_add_filter"}}</option>
+            {{#tableColumns}}
+            <option value="{{this}}">{{capitalize this}}</option>
+            {{/tableColumns}}
+        </select>
+        <i class="material-icons select-arrow">arrow_drop_down</i>
+    </div>
+
+    <div class="filters">
+        {{#filters}}
+        <div class="column-filter js-column" data-filter-id-master="{{columnName}}">
+            <h3 data-filter-id="{{columnName}}">{{capitalize columnName}}</h3>
+            <!-- <input type="text" placeholder="" value="%test"> -->
+            {{#if relatedEntries}}
+            <span class="simple-select dark-grey-color">
+                <span class="icon icon-triangle-down"></span>
+                <select name="keywords" id="advKeywords" class="medium filter_ui">
+                  <option value="" disabled>Choose one</option>
+                {{#relatedEntries}}
+                  <option value="{{this.visible_column}}">{{{this.visible_column_template}}}</option>
+                {{/relatedEntries}}
+                </select>
+            </span>
+            {{else}}
+            {{{filter_ui}}}
+            {{/if}}
+            <i class="material-icons remove-filter js-remove">close</i>
+        </div>
+        {{/filters}}
+    </div>
+</div>
+{{!--
 <!-- <div class="secondary-row row-plain filter-options">  -->
   <div class="left">
   </div>
@@ -40,3 +92,4 @@
   </ul>
   <!-- <div class="vertical-center right pagination-number">501–1,000 of 3,508</div>  -->
 <!-- </div> -->
+--}}

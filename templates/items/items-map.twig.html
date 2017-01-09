@@ -1,0 +1,16 @@
+{% extends "base.twig.html" %}
+
+{% block bodyClass %}{% endblock %}
+
+{% block content %}
+
+<div class="map full-screen"></div>
+
+{% for i in 0..50 %}
+<div></div>
+{% endfor %}
+
+
+{% include 'items/items-sidebar.twig.html' %}
+
+{% endblock %}

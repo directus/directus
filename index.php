@@ -150,7 +150,7 @@ function getUsers()
             $avatar = DirectusUsersTableGateway::get_avatar($user['email']);
             if ($avatar) {
                 $user['avatar'] = $avatar;
-                array_push($usersRowsToUpdate, $user);
+                array_push($usersRowsToUpdate, ['id' => $user['id'], 'avatar' => $user['avatar']]);
             }
         }
     }
@@ -435,7 +435,12 @@ if (isset($groups['data']) && count($groups['data']) > 0) {
     }
 }
 
-$statusMapping = ['active_num' => STATUS_ACTIVE_NUM, 'deleted_num' => STATUS_DELETED_NUM, 'status_name' => STATUS_COLUMN_NAME];
+$statusMapping = [
+    'active_num' => STATUS_ACTIVE_NUM,
+    'deleted_num' => STATUS_DELETED_NUM,
+    'draft_num' => STATUS_DRAFT_NUM,
+    'status_name' => STATUS_COLUMN_NAME
+];
 $statusMapping['mapping'] = $config['statusMapping'];
 
 $data = [
@@ -471,11 +476,16 @@ $data = [
 $templateVars = [
     'cacheBuster' => $cacheBuster,
     'data' => json_encode($data),
-    'path' => DIRECTUS_PATH,
+    // 'path' => DIRECTUS_PATH,
+    'rootUrl' => DIRECTUS_PATH,
+    'assetsRoot' => rtrim(DIRECTUS_PATH, '/') . '/assets/',
     'locale' => get_user_locale(),
     'dir' => 'ltr',
     'customFooterHTML' => getCusomFooterHTML(),
     'cssFilePath' => getCSSFilePath()
 ];
 
-echo template(file_get_contents('main.html'), $templateVars);
+// @TODO: Compile html
+$app = Bootstrap::get('app');
+$app->render('base.twig.html', $templateVars);
+// echo template(file_get_contents('main.html'), $templateVars);

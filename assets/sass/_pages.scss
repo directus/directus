@@ -1,0 +1,15 @@
+//////////////////////////////////////////////////////////////////////////////
+// Page
+
+.page {
+	@include transition (all, $timing-short, ease-in-out);
+	position: absolute;
+	top: 64px;
+	left: 200px;
+	bottom: 0;
+	right: 0;
+	overflow: scroll;
+	&.define-edge {
+		border-left: 1px solid $gray-2;
+	}
+}

@@ -13,35 +13,37 @@ define([
 
 function(app, _, Backbone, Notification, __t, ModelHelper, TableHead, TableBody, TableFooter) {
 
-  "use strict";
+  'use strict';
 
   var TableView = Backbone.Layout.extend({
+    tagName: 'div',
 
-    tagname: 'div',
-    attributes: {'class':'directus-table-container'},
     template: 'tables/table',
 
-    TableBody: TableBody,
-
-    serialize: function() {
-      return {
-        columns: this.options.columns,
-        id: this.collection.table.id,
-        selectable: this.options.selectable,
-        sortable: this.options.sortable,
-        disabledSorting: !this.sortable,
-        showEmptyMessage: (this.collection.length === 0 && !this.options.hideEmptyMessage)
-      };
-    },
-
     events: {
-      'click tbody td:not(.check):not(.status):not(.sort)' : function(e) {
+      'click tbody td:not(.js-check):not(.status):not(.sort)' : function(e) {
         var id = $(e.target).closest('tr').attr('data-id');
         if (this.options.navigate) {
           this.collection.off();
           this.navigate(id);
         }
       }
+    },
+
+    TableBody: TableBody,
+
+    serialize: function() {
+      var isSortableOrSelectable = this.options.selectable || this.options.sort;
+
+      return {
+        columns: this.options.columns,
+        id: this.collection.table.id,
+        selectable: this.options.selectable,
+        sortable: this.options.sortable,
+        disabledSorting: !this.sortable,
+        isSortableOrSelectable: isSortableOrSelectable,
+        showEmptyMessage: (this.collection.length === 0 && !this.options.hideEmptyMessage)
+      };
     },
 
     navigate: function(id) {
@@ -63,13 +65,15 @@ function(app, _, Backbone, Notification, __t, ModelHelper, TableHead, TableBody,
       if (this.tableHead) {
         options = this.options;
         options.parentView = this;
-        this.insertView('table', new TableHead(options));
+        this.tableHead = new TableHead(options);
+        this.insertView('table', this.tableHead);
       }
 
       if (this.collection.length > 0) {
         options = _.pick(this.options, 'collection', 'selectable', 'filters', 'preferences', 'structure', 'sort', 'deleteColumn', 'rowIdentifiers', 'saveAfterDrop', 'blacklist', 'highlight', 'columns');
         options.parentView = this;
-        this.insertView('table', new this.TableBody(options));
+        this.tableBody = new this.TableBody(options);
+        this.insertView('table', this.tableBody);
       }
 
       if (this.collection.length > 0 && this.options.footer !== false) {
@@ -85,6 +89,8 @@ function(app, _, Backbone, Notification, __t, ModelHelper, TableHead, TableBody,
     },
 
     afterRender: function() {
+      tableColumnWidths(this.$el);
+
       var now = new Date().getTime();
       //console.log('rendered table ' + this.collection.table.id + ' in '+ (now-this.startRenderTime)+' ms');
 
@@ -230,6 +236,10 @@ function(app, _, Backbone, Notification, __t, ModelHelper, TableHead, TableBody,
 
       if (this.options.selectable === undefined) {
         this.options.selectable = true;
+      }
+
+      if (this.options.status === undefined) {
+        this.options.status = collection.hasColumn(app.statusMapping.status_name);
       }
 
       // ==================================================================================

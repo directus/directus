@@ -37,12 +37,6 @@ function(app, Backbone, Handlebars, BasePageView, Widgets, __t, TableModel) {
       }
     },
 
-    events: {
-      'click #removeOverlay': function() {
-        app.router.removeOverlayPage(this);
-      }
-    },
-
     afterRender: function() {
       this.setView('#page-content', this.contentView);
     },

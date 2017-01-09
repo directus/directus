@@ -82,7 +82,7 @@ var LayoutManager = Backbone.View.extend({
     // Return this intermediary promise.
     return def.promise();
   },
-      
+
   // This named function allows for significantly easier debugging.
   constructor: function Layout(options) {
     // Options may not always be passed to the constructor, this ensures it is
@@ -284,7 +284,9 @@ var LayoutManager = Backbone.View.extend({
       }
 
       // Ensure remove is called when swapping View's.
-      root.removeView(name);
+      if (root.getView(name) !== view) {
+        root.removeView(name);
+      }
 
       // Assign to main views object and return for chainability.
       return root.views[selector] = view;

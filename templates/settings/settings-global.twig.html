@@ -1,0 +1,127 @@
+{% extends "base.twig.html" %}
+
+{% block bodyClass %}{% endblock %}
+
+{% block content %}
+
+<div class="fields">
+
+	<div class="field">
+		<div class="label">
+			Project Name
+			<!-- <div class="comment">Should be unique</div> -->
+		</div><!-- NEEDED TO AVOID EXTRA SPACE FROM TEXT
+	 --><div class="interface">
+			<input type="text" placeholder="eg My Project" value="">
+		</div>
+	</div>
+
+	<div class="field">
+		<div class="label">
+			Project URL
+			<!-- <div class="comment">Should be unique</div> -->
+		</div><!-- NEEDED TO AVOID EXTRA SPACE FROM TEXT
+	 --><div class="interface">
+			<input type="text" placeholder="eg http://example.com" value="">
+		</div>
+	</div>
+
+	<div class="field">
+		<div class="label">
+			Project Logo
+			<div class="comment">This 200×80 image will be displayed in the top-left of the system</div>
+		</div><!-- NEEDED TO AVOID EXTRA SPACE FROM TEXT
+	 --><div class="interface">
+			<div class="dropzone">
+				<i class="material-icons cloud">cloud_upload</i>
+				<div class="drag-and-drop">Drag &amp; Drop</div>
+				<div class="click-to-browse">Or Click to Browse</div>
+			</div>
+			<!-- <div class="button"><i class="material-icons">playlist_add_check</i> Choose Existing</div>
+			<div class="button"><i class="material-icons">insert_link</i> Import URL</div> -->
+		</div>
+	</div>
+
+	<div class="field">
+		<div class="label">
+			Auto Logout
+			<div class="comment">Minutes of inactivity before signing out users</div>
+		</div><!-- NEEDED TO AVOID EXTRA SPACE FROM TEXT
+	 --><div class="interface">
+			<input type="text" placeholder="eg 10" value="60">
+		</div>
+	</div>
+
+	<div class="field">
+		<div class="label">
+			Items per Page
+			<div class="comment">Default number of items to return per page</div>
+		</div><!-- NEEDED TO AVOID EXTRA SPACE FROM TEXT
+	 --><div class="interface">
+			<input type="text" placeholder="eg 200" value="200">
+		</div>
+	</div>
+
+	<div class="field">
+		<div class="label">
+			Google API Key
+			<div class="comment">Required when using Map UI</div>
+		</div><!-- NEEDED TO AVOID EXTRA SPACE FROM TEXT
+	 --><div class="interface">
+			<input type="text" placeholder="" value="">
+		</div>
+	</div>
+
+	<div class="field break-header">
+		<h3>Files, Uploads, &amp; Thumbnails</h3>
+		<!-- <h6>This is a description for the following section. It is the only UI that extends beyond the parent interface container – and would be an edge-case.</h6> -->
+	</div>
+
+	<div class="field">
+		<div class="label">
+			File Naming
+			<div class="comment">The naming convention for all files uploaded through Directus</div>
+		</div><!-- NEEDED TO AVOID EXTRA SPACE FROM TEXT
+	 --><div class="interface">
+			<div class="select-container">
+				<select name="type">
+					<option value="value">Name (Readable)</option>
+					<option value="value">ID (Incremental)</option>
+					<option value="value">Hash (Obfuscated)</option>
+				</select>
+				<i class="material-icons select-arrow">arrow_drop_down</i>
+			</div>
+		</div>
+	</div>
+
+	<div class="field">
+		<div class="label">
+			Thumbnail Quality
+			<div class="comment">The quality of Directus internal thumbnails</div>
+		</div><!-- NEEDED TO AVOID EXTRA SPACE FROM TEXT
+	 --><div class="interface">
+			<input type="text" placeholder="eg 70" value="100">
+		</div>
+	</div>
+
+	<div class="field">
+		<div class="label">
+			Allow Thumbnail Cropping
+		</div><!-- NEEDED TO AVOID EXTRA SPACE FROM TEXT
+	 --><div class="interface">
+			<input class="custom-checkbox" id="checkbox" type="checkbox" value="" checked />
+			<label for="checkbox"><span></span> <!-- Label here --></label>
+		</div>
+	</div>
+
+	<div class="field">
+		<div class="label">
+			YouTube API Key
+			<div class="comment">Required when fetching YouTube video details</div>
+		</div><!-- NEEDED TO AVOID EXTRA SPACE FROM TEXT
+	 --><div class="interface">
+			<input type="text" placeholder="" value="">
+		</div>
+	</div>
+
+{% endblock %}

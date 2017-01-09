@@ -258,6 +258,7 @@ $app->hook('slim.before.dispatch', function () use ($app, $requestNonceProvider,
     $app->container->set('auth', Bootstrap::get('auth'));
 
     \Directus\Database\TableSchema::setAclInstance($permissions);
+    \Directus\Database\TableSchema::setConnectionInstance($ZendDb);
     \Directus\Database\TableSchema::setConfig(Bootstrap::get('config'));
     \Directus\Database\TableGateway\BaseTableGateway::setHookEmitter($app->container->get('emitter'));
 
@@ -281,13 +282,22 @@ $app->hook('slim.after', function () use ($app) {
 
 $DirectusUsersTableGateway = new DirectusUsersTableGateway($ZendDb, $acl);
 $authentication->setUserCacheRefreshProvider(function ($userId) use ($DirectusUsersTableGateway) {
+    static $users = [];
+
+    if (isset($users[$userId])) {
+        return $users[$userId];
+    }
+
     $cacheFn = function () use ($userId, $DirectusUsersTableGateway) {
         return $DirectusUsersTableGateway->find($userId);
     };
 
-    $cacheKey = MemcacheProvider::getKeyDirectusUserFind($userId);
+    // $cacheKey = MemcacheProvider::getKeyDirectusUserFind($userId);
     // $user = $DirectusUsersTableGateway->memcache->getOrCache($cacheKey, $cacheFn, 10800);
     $user = $cacheFn();
+
+    $users[$userId] = $user;
+
     return $user;
 });
 
@@ -434,8 +444,11 @@ $app->group('/1.1', function() use($app) {
     // =============================================================================
     // BOOKMARKS
     // =============================================================================
+    $app->get('/bookmarks/self/?', '\Directus\API\Routes\A1\Bookmarks:selfBookmarks');
+    $app->get('/bookmarks/user/:id?', '\Directus\API\Routes\A1\Bookmarks:userBookmarks');
+    $app->get('/bookmarks/?', '\Directus\API\Routes\A1\Bookmarks:allBookmarks');
     $app->map('/bookmarks(/:id)/?', '\Directus\API\Routes\A1\Bookmarks:bookmarks')
-        ->via('GET', 'POST', 'PUT', 'DELETE');
+        ->via('POST', 'PUT', 'DELETE');
 
     // =============================================================================
     // REVISIONS
@@ -452,8 +465,10 @@ $app->group('/1.1', function() use($app) {
     // TABLES
     // =============================================================================
     $app->get('/tables/?', '\Directus\API\Routes\A1\Table:names');
+    $app->post('/tables/?', '\Directus\API\Routes\A1\Table:create')
+        ->name('table_create');
     // GET and PUT table details
-    $app->map("/tables/:table/?", '\Directus\API\Routes\A1\Table:info')
+    $app->map('/tables/:table/?', '\Directus\API\Routes\A1\Table:info')
         ->via('GET', 'PUT', 'DELETE')
         ->name('table_meta');
 
@@ -467,12 +482,24 @@ $app->group('/1.1', function() use($app) {
     // MESSAGES
     // =============================================================================
     $app->get('/messages/rows/?', '\Directus\API\Routes\A1\Messages:rows');
+    $app->get('/messages/user/:id/?', '\Directus\API\Routes\A1\Messages:rows');
+    $app->get('/messages/self/?', '\Directus\API\Routes\A1\Messages:rows');
     $app->get('/messages/rows/:id/?', '\Directus\API\Routes\A1\Messages:row');
+    // @TODO: this will perform an actual "get message by id"
+    // $app->get('/messages/:id/?', '\Directus\API\Routes\A1\Messages:row');
     $app->map('/messages/rows/:id/?', '\Directus\API\Routes\A1\Messages:patchRow')
         ->via('PATCH');
     $app->post('/messages/rows/?', '\Directus\API\Routes\A1\Messages:postRows');
     $app->get('/messages/recipients/?', '\Directus\API\Routes\A1\Messages:recipients');
     $app->post('/comments/?', '\Directus\API\Routes\A1\Messages:comments');
+
+    // =============================================================================
+    // USERS
+    // =============================================================================
+    $app->map('/users/?', '\Directus\API\Routes\A1\Users:all')
+        ->via('GET', 'POST', 'PUT');
+    $app->map('/users/:id/?', '\Directus\API\Routes\A1\Users:get')
+        ->via('DELETE', 'GET', 'PUT', 'PATCH');
 
     // =============================================================================
     // DEBUG
@@ -534,7 +561,11 @@ $app->post("/$v/auth/login/?", function () use ($app, $ZendDb, $acl, $requestNon
     $user = $Users->findOneBy('email', $email);
 
     if (!$user) {
-        return JsonView::render($response);
+        return JsonView::render([
+            'message' => __t('incorrect_email_or_password'),
+            'success' => false,
+            'all_nonces' => $requestNonceProvider->getAllNonces()
+        ]);
     }
 
     // ------------------------------
@@ -560,6 +591,13 @@ $app->post("/$v/auth/login/?", function () use ($app, $ZendDb, $acl, $requestNon
     // @todo: Login should fail on correct information when user is not active.
     $response['success'] = $authentication->login($user['id'], $user['password'], $user['salt'], $password);
 
+    if (!$response['success']) {
+        return JsonView::render([
+            'message' => __t('incorrect_email_or_password'),
+            'success' => false
+        ]);
+    }
+
     // When the credentials are correct but the user is Inactive
     $userHasStatusColumn = array_key_exists(STATUS_COLUMN_NAME, $user);
     $isUserActive = false;
@@ -581,7 +619,7 @@ $app->post("/$v/auth/login/?", function () use ($app, $ZendDb, $acl, $requestNon
 
         $app->emitter->run('directus.authenticated', [$app, $user]);
         $app->emitter->run('directus.authenticated.admin', [$app, $user]);
-        unset($response['message']);
+
         $response['last_page'] = json_decode($user['last_page']);
         $userSession = $authentication->getUserInfo();
         $set = ['last_login' => DateUtils::now(), 'access_token' => $userSession['access_token']];
@@ -590,8 +628,21 @@ $app->post("/$v/auth/login/?", function () use ($app, $ZendDb, $acl, $requestNon
 
         $Activity = new DirectusActivityTableGateway($ZendDb, $acl);
         $Activity->recordLogin($user['id']);
+
+        // =============================================================================
+        // Sends a unique random token to help us understand approximately how many instances of Directus exist.
+        // This can be disabled in your config file.
+        // =============================================================================
+        $config = Bootstrap::get('config');
+        $feedbackConfig = ArrayUtils::get($config, 'feedback', []);
+        if (ArrayUtils::get($feedbackConfig, 'login', false)) {
+            feedback_login_ping(ArrayUtils::get($feedbackConfig, 'token', ''));
+        }
     }
-    JsonView::render($response);
+    JsonView::render([
+        'success' => true,
+        'all_nonces' => $requestNonceProvider->getAllNonces()
+    ]);
 })->name('auth_login');
 
 $app->get("/$v/auth/logout(/:inactive)", function ($inactive = null) use ($app, $authentication) {
@@ -1150,7 +1201,7 @@ $app->map("/$v/groups/?", function () use ($app, $ZendDb, $acl, $requestPayload,
         case 'POST':
             $newRecord = $GroupsTableGateway->manageRecordUpdate($tableName, $requestPayload);
             $newGroupId = $newRecord['id'];
-            $newGroup = $GroupsTableGateway->find($newGroupId);
+            $newGroup = $GroupsTableGateway->parseRecord($GroupsTableGateway->find($newGroupId));
             $outputData = $newGroup;
             break;
         case 'GET':

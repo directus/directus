@@ -4,6 +4,8 @@ namespace Directus\API\Routes\A1;
 
 use Directus\Acl\Exception\UnauthorizedTableAlterException;
 use Directus\Application\Route;
+use Directus\Bootstrap;
+use Directus\Database\TableGateway\DirectusPrivilegesTableGateway;
 use Directus\Database\TableGateway\DirectusUiTableGateway;
 use Directus\Database\TableGateway\RelationalTableGateway as TableGateway;
 use Directus\Database\TableSchema;
@@ -13,6 +15,58 @@ use Directus\View\JsonView;
 
 class Table extends Route
 {
+    public function create()
+    {
+        $app = $this->app;
+        $ZendDb = $app->container->get('zenddb');
+        $acl = $app->container->get('acl');
+        $requestPayload = $app->request()->post();
+
+        if ($acl->getGroupId() != 1) {
+            throw new \Exception(__t('permission_denied'));
+        }
+
+        $isTableNameAlphanumeric = preg_match("/[a-z0-9]+/i", $requestPayload['name']);
+        $zeroOrMoreUnderscoresDashes = preg_match("/[_-]*/i", $requestPayload['name']);
+
+        if (!($isTableNameAlphanumeric && $zeroOrMoreUnderscoresDashes)) {
+            $app->response->setStatus(400);
+            return JsonView::render(['message' => __t('invalid_table_name')]);
+        }
+
+        $schema = Bootstrap::get('schemaManager');
+        if ($schema->tableExists($requestPayload['name'])) {
+            return JsonView::render([
+                'success' => false,
+                'error' => [
+                    'message' => sprintf('table_%s_exists', $requestPayload['name'])
+                ]
+            ]);
+        }
+
+        $app->emitter->run('table.create:before', $requestPayload['name']);
+        // Through API:
+        // Remove spaces and symbols from table name
+        // And in lowercase
+        $requestPayload['name'] = SchemaUtils::cleanTableName($requestPayload['name']);
+        $schema->createTable($requestPayload['name']);
+        $app->emitter->run('table.create', $requestPayload['name']);
+        $app->emitter->run('table.create:after', $requestPayload['name']);
+
+        $privileges = new DirectusPrivilegesTableGateway($ZendDb, $acl);
+        $response = $privileges->insertPrivilege([
+            'nav_listed' => 1,
+            'status_id' => 0,
+            'allow_view' => 2,
+            'allow_add' => 1,
+            'allow_edit' => 2,
+            'allow_delete' => 2,
+            'allow_alter' => 1
+        ]);
+
+        return $this->info($requestPayload['name']);
+    }
+
     public function columns($table_name)
     {
         $app = $this->app;
@@ -41,9 +95,9 @@ class Table extends Route
             $params['column_name'] = $tableGateway->addColumn($table_name, $requestPayload);
         }
 
-        $response = TableSchema::getSchemaArray($table_name, $params);
+        $response = TableSchema::getColumnSchema($table_name, $params['column_name']);
 
-        JsonView::render($response);
+        JsonView::render($response->toArray());
     }
 
     public function column($table, $column)
@@ -55,16 +109,28 @@ class Table extends Route
         $acl = $app->container->get('acl');
         if ($app->request()->isDelete()) {
             $tableGateway = new TableGateway($table, $ZendDb, $acl);
-            $success = $tableGateway->dropColumn($column);
+            $hasColumn = TableSchema::hasTableColumn($table, $column);
+            $success = false;
+
+            if ($hasColumn) {
+                $success = $tableGateway->dropColumn($column);
+            }
 
             $response = [
-                'message' => __t('unable_to_remove_column_x', ['column_name' => $column]),
-                'success' => false
+                'meta' => [
+                    'table' => $tableGateway->getTable(),
+                    'column' => $column
+                ],
+                'success' => $success
             ];
 
-            if ($success) {
-                $response['success'] = true;
-                $response['message'] = __t('column_x_was_removed');
+            // Success: __t('column_x_was_removed', ['column' => $column]),
+            // @TODO: implement successful messages
+            if ($hasColumn && !$success) {
+                $response['error']['message'] = __t('unable_to_remove_column_x', ['column' => $column]);
+            } else if (!$hasColumn) {
+                // @TODO: add translation
+                $response['error']['message'] = sprintf('column `%s` does not exists in table: `%s`', $column, $table);
             }
 
             return JsonView::render($response);
@@ -118,8 +184,16 @@ class Table extends Route
         $response = TableSchema::getSchemaArray($table, $params);
         if (!$response) {
             $response = [
-                'message' => __t('unable_to_find_column_x', ['column' => $column]),
+                'error' => [
+                    'message' => __t('unable_to_find_column_x', ['column' => $column])
+                ],
                 'success' => false
+            ];
+        } else {
+            $response['data'] = $response;
+            $response['meta'] = [
+                'type' => 'collection',
+                'table' => 'directus_columns'
             ];
         }
 
@@ -184,13 +258,16 @@ class Table extends Route
             $success = $tableGateway->drop();
 
             $response = [
-                'message' => __t('unable_to_remove_table_x', ['table_name' => $table]),
+                'error' => [
+                    'message' => __t('unable_to_remove_table_x', ['table_name' => $table])
+                ],
                 'success' => false
             ];
 
             if ($success) {
+                unset($response['error']);
                 $response['success'] = true;
-                $response['message'] = __t('table_x_was_removed');
+                $response['data']['message'] = __t('table_x_was_removed');
             }
 
             return JsonView::render($response);
@@ -256,8 +333,19 @@ class Table extends Route
 
         if (!$response) {
             $response = [
-                'message' => __t('unable_to_find_table_x', ['table_name' => $table]),
+                'error' => [
+                    'message' => __t('unable_to_find_table_x', ['table_name' => $table])
+                ],
                 'success' => false
+            ];
+        } else {
+            $response = [
+                'success' => true,
+                'meta' => [
+                    'type' => 'entry',
+                    'table' => 'directus_tables'
+                ],
+                'data' => $response
             ];
         }
         JsonView::render($response);

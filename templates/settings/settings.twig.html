@@ -1,0 +1,57 @@
+{% extends "base.twig.html" %}
+
+{% block pageClass %}settings-modules{% endblock %}
+
+{% block content %}
+
+<div class="settings-module">
+	<div class="info">
+		<h1>Global Settings</h1>
+		<div class="description">Tailor this instance of Directus to fit your project’s needs – update thumbnail settings, auto-logout times, your logo, and more.</div>
+		<a href="{{rootUrl}}settings/global"><div class="button">Edit</div></a>
+	</div>
+	<div class="video">
+		<div class="aspect-ratio">
+			<video id="settingsGlobalVideo" width="320" height="240">
+				<source src="{{assetsRoot}}videos/directus.mp4" type="video/mp4">
+				Your browser does not support the video tag.
+			</video>
+		</div>
+	</div>
+</div>
+
+<div class="settings-module">
+	<div class="info">
+		<h1>Tables &amp; Columns</h1>
+		<div class="description">Change your database architecture by creating, editing, or deleting tables and columns. You can also adjust user-interfaces and their options.</div>
+		<a href="{{rootUrl}}settings/tables"><div class="button">Manage</div></a>
+	</div>
+	<div class="video">
+		<div class="aspect-ratio">
+			<video id="settingsGlobalVideo" width="320" height="240">
+				<source src="{{assetsRoot}}videos/directus.mp4" type="video/mp4">
+				Your browser does not support the video tag.
+			</video>
+		</div>
+	</div>
+</div>
+
+<div class="settings-module">
+	<div class="info">
+		<h1>Groups &amp; Permissions</h1>
+		<div class="description">Create and manage your user-groups. Adjust granular table, column, and status permissions to create simple or complex workflows.</div>
+		<a href="{{rootUrl}}settings/groups"><div class="button">Manage</div></a>
+	</div>
+	<div class="video">
+		<div class="aspect-ratio">
+			<video id="settingsGlobalVideo" width="320" height="240">
+				<source src="{{assetsRoot}}videos/directus.mp4" type="video/mp4">
+				Your browser does not support the video tag.
+			</video>
+		</div>
+	</div>
+</div>
+
+{% include 'settings/settings-sidebar.twig.html' %}
+
+{% endblock %}

@@ -1,23 +1,27 @@
 define([
   'app',
   'backbone',
+  'underscore',
   'sortable',
   'core/notification'
 ],
 
-function(app, Backbone, Sortable, Notification) {
+function(app, Backbone, _, Sortable, Notification) {
 
-  "use strict";
+  'use strict';
 
   var TableBodyView = Backbone.Layout.extend({
-
     tagName: 'tbody',
 
     template: 'tables/table-body',
 
+    attributes: {
+      class: 'drag-and-drop bulk-selectable'
+    },
+
     events: {
-      'change td.check > input': 'select',
-      'click td.check > input': function() {
+      'change td.js-check > input': 'select',
+      'click td.js-check > input': function() {
         this.collection.trigger('select');
       },
       'click .sort': function(e) {
@@ -87,13 +91,15 @@ function(app, Backbone, Sortable, Notification) {
       rows = _.map(models, function(model) {
         var classes = _.map(rowIdentifiers, function(columnName) { return 'row-'+columnName+'-'+model.get(columnName); });
         var highlight = _.contains(highlightIds,model.id);
+        var statusDraft = model.get(app.statusMapping.status_name) === app.statusMapping.draft_num;
 
-        return {model: model, classes: classes, highlight: highlight};
+        return {model: model, classes: classes, highlight: highlight, statusDraft: statusDraft};
       });
 
       var tableData = {
         columns: this.collection.getColumns(),
         rows: rows,
+        status: this.parentView.options.status,
         sortable: this.options.sort,
         selectable: this.options.selectable,
         deleteColumn: this.options.deleteColumn
@@ -118,7 +124,7 @@ function(app, Backbone, Sortable, Notification) {
       if (this.options.saveAfterDrop) {
         // collection.save({columns:['id','sort']});
         var self = this;
-        collection.save(null, {wait: true, success: function() {
+        collection.save(null, {wait: true, patch: true, success: function() {
           self.collection.setOrder('sort', 'ASC', {silent: false});
         }});
       } else {
@@ -130,6 +136,8 @@ function(app, Backbone, Sortable, Notification) {
       this.options.filters = this.options.filters || {};
       this.sort = this.options.structure.get('sort') || options.sort;
       this.collection.on('sort', this.render, this);
+      this.parentView = options.parentView;
+
       if (this.sort) {
         var container = this.$el[0];
         var that = this;

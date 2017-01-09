@@ -12,7 +12,7 @@ dist/*
 
 # Don't track composer phar/vendors
 composer.phar
-vendor
+/vendor
 
 # Ignore log files, but track the log README
 *.log
@@ -33,3 +33,4 @@ customs/uis/*
 .sass-cache
 .gulp-scss-cache
 node_modules
+storage

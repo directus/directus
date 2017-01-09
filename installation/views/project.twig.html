@@ -1,0 +1,27 @@
+{% extends 'base.twig.html' %}
+
+{% block content %}
+    <div class="container">
+        {% include 'partials/errors.twig.html' %}
+        <label for="directus_name">{{ 'Project Name'|t }}</label><input type="text" id="directus_name"
+            name="directus_name"
+            placeholder="{{ 'eg: My Project Name'|t }}"
+            value="{{ directus.step.getSafeData('directus_name') ? directus.step.getSafeData('directus_name') : '' }}"
+            autofocus><br>
+        <label for="directus_path">{{ 'Project Path'|t }}</label><input type="text" id="directus_path"
+            name="directus_path"
+            placeholder="{{ 'Path to Directus directory'|t }}"
+            value="{{ directus.step.getSafeData('directus_path') ? directus.step.getSafeData('directus_path') : directus.root_path }}"><br>
+        <label for="directus_email">{{ 'Admin Email'|t }}</label><input type="email" id="directus_email"
+            name="directus_email"
+            placeholder="{{ 'eg: admin@example.com'|t }}"
+            value="{{ directus.step.getSafeData('directus_email') ? directus.step.getSafeData('directus_email') : '' }}"><br>
+        <label for="directus_password">{{ 'Admin Password'|t }}</label><input type="password" id="directus_password"
+            name="directus_password"
+            value="{{ directus.step.getSafeData('directus_password') ? directus.step.getSafeData('directus_password') : '' }}"><br>
+        <label for="directus_password_confirm">{{ 'Confirm Admin Password'|t }}</label><input type="password"
+            id="directus_password_confirm"
+            name="directus_password_confirm"
+            value="{{ directus.step.getSafeData('directus_password_confirm') ? directus.step.getSafeData('directus_password_confirm') : '' }}"><br>
+    </div>
+{% endblock %}

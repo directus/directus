@@ -202,7 +202,7 @@ class RelationalTableGateway extends BaseTableGateway
                     'parent_changed' => (int)$parentRecordChanged,
                     'row_id' => $rowId,
                     'identifier' => $this->findRecordIdentifier($tableSchema, $fullRecordData),
-                    'logged_ip' => isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '',
+                    'logged_ip' => get_request_ip(),// isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '',
                     'user_agent' => isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : ''
                 ];
                 if ($recordIsNew) {
@@ -248,7 +248,7 @@ class RelationalTableGateway extends BaseTableGateway
                         'parent_changed' => (int)$parentRecordChanged,
                         'identifier' => $recordIdentifier,
                         'row_id' => $rowId,
-                        'logged_ip' => isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '',
+                        'logged_ip' => get_request_ip(),// isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '',
                         'user_agent' => isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : ''
                     ];
                     $parentLogEntry->populate($logData, false);

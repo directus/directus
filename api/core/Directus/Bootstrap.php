@@ -121,14 +121,17 @@ class Bootstrap
             'path' => APPLICATION_PATH . '/api/logs'
         ];
 
+        $templatesPaths = [APPLICATION_PATH . '/api/views/', APPLICATION_PATH . '/templates/'];
         $app = new Application([
-            'templates.path' => APPLICATION_PATH . '/api/views/',
+            'templates.path' => $templatesPaths[0],
             'mode' => DIRECTUS_ENV,
             'debug' => false,
             'log.enable' => true,
             'log.writer' => new DateTimeFileWriter($loggerSettings),
             'view' => new Twig()
         ]);
+
+        Twig::$twigTemplateDirs = $templatesPaths;
 
         Twig::$twigExtensions = [
             new DirectusTwigExtension()
@@ -339,7 +342,7 @@ class Bootstrap
      */
     private static function acl()
     {
-        $acl = new acl();
+        $acl = new Acl();
         $auth = self::get('auth');
         $db = self::get('ZendDb');
 
@@ -640,6 +643,48 @@ class Bootstrap
 
             return (func_num_args() == 2) ? $result : $payload;
         });
+
+        $emitter->addFilter('load.relational.onetomany', function($payload) {
+            $rows = $payload->data;
+            $column = $payload->column;
+
+            if ($column->getUi() !== 'translation') {
+                return $payload;
+            }
+
+            $options = $column->getUiOptions();
+            $code = ArrayUtils::get($options, 'languages_code_column', 'id');
+            $languagesTable = ArrayUtils::get($options, 'languages_table');
+            $languageIdColumn = ArrayUtils::get($options, 'left_column_name');
+
+            if (!$languagesTable) {
+                throw new \Exception('Translations language table not defined for ' . $languageIdColumn);
+            }
+
+            $tableSchema = TableSchema::getTableSchema($languagesTable);
+            $primaryKeyColumn = 'id';
+            foreach($tableSchema->getColumns() as $column) {
+                if ($column->isPrimary()) {
+                    $primaryKeyColumn = $column->getName();
+                    break;
+                }
+            }
+
+            $newData = [];
+            foreach($rows['data'] as $row) {
+                $index = $row[$languageIdColumn];
+                if (is_array($row[$languageIdColumn])) {
+                    $index = $row[$languageIdColumn]['data'][$code];
+                    $row[$languageIdColumn] = $row[$languageIdColumn]['data'][$primaryKeyColumn];
+                }
+
+                $newData[$index] = $row;
+            }
+
+            $payload->data['data'] = $newData;
+
+            return $payload;
+        }, $emitter::P_HIGH);
 
         return $emitter;
     }

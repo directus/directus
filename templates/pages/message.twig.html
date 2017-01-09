@@ -1,0 +1,67 @@
+{% block content %}
+
+<div class="details">
+	<img class="avatar" src="{{assetsRoot}}imgs/avatar.png">
+	<div class="from">Ben Haynes</div>
+	<div class="timeago">Sunday, Nov 22, 1:09 PM</div>
+	<h1>Welcome to Directus!</h1>
+	<div class="to">To: Administrators</div>
+</div>
+
+<div>
+	<div class="body">
+		Lorem ipsum <span class="mention" data-value"blog_13">Blog:13</span> dolor sit amet, consectetur adipiscing elit. Duis eget pretium neque. Vivamus neque erat, gravida et venenatis ut, commodo sed ex. Aliquam ornare orci ac nisl ultricies faucibus. Nulla lacinia pellentesque nisl at mattis. Praesent rhoncus ligula diam, vulputate aliquam purus sagittis non. Duis ut libero sem. Aenean aliquam neque a ipsum cursus pellentesque. Pellentesque eu sem convallis turpis convallis euismod. Donec a efficitur tellus. Aenean risus est, tincidunt ac dui eget, porta porta neque. Nam sit amet luctus orci. Proin consequat vitae nulla nec imperdiet. Morbi odio est, malesuada in ex ut, mattis malesuada ante.
+	</div>
+
+	<div class="seen">
+		<i class="material-icons">visibility</i> Ben Haynes, Welling Guzman, John Smith, and Meagan Campol
+	</div>
+</div>
+
+<div class="response">
+	<div class="details">
+		<img class="avatar" src="{{assetsRoot}}imgs/avatar.png">
+		<div class="from">Welling Guzman</div>
+		<div class="timeago">Sunday, Nov 22, 1:09 PM</div>
+	</div>
+	<div class="body">
+		Pellentesque eu sem convallis <span class="mention" data-value"ben_haynes_1">Ben Haynes</span> turpis convallis euismod. Donec a efficitur tellus. Aenean risus est, tincidunt ac dui eget, porta porta neque. Nam sit amet luctus orci. Proin consequat vitae nulla nec imperdiet. Morbi odio est, malesuada in ex ut.
+	</div>
+	<div class="attachments">
+		{% for i in 0..1 %}
+		<div class="file">
+			<img src="{{assetsRoot}}imgs/file.png">
+			<div class="type">PNG</div>
+			<div class="info">
+				<div class="name">The Mountains</div>
+				<div class="uploaded">2 Days Ago</div>
+				<i class="material-icons more">more_vert</i>
+			</div>
+		</div>
+		{% endfor %}
+	</div>
+	<div class="seen">
+		<i class="material-icons">visibility</i> Ben Haynes, Welling Guzman, and Meagan Campol
+	</div>
+</div>
+
+<div class="response">
+	<div class="details">
+		<img class="avatar" src="{{assetsRoot}}imgs/avatar.png">
+		<div class="from">Ben Haynes</div>
+		<div class="timeago">Sunday, Nov 22, 1:09 PM</div>
+	</div>
+	<div class="body">
+		Sem convallis turpis convallis euismod. Donec a efficitur tellus. Aenean risus est, tincidunt ac dui eget, porta porta neque. Nam sit amet luctus orci. Proin consequat vitae nulla nec imperdiet.
+	</div>
+	<div class="seen">
+		<i class="material-icons">visibility</i> Ben Haynes and Meagan Campol
+	</div>
+</div>
+
+<div class="reply">
+	<textarea placeholder="Write a reply..."></textarea>
+	<div class="button hidden">Send</div> <div class="button hidden subdued"><i class="material-icons">attachment</i></div>
+</div>
+
+{% endblock %}

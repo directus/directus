@@ -1,10 +1,12 @@
 define(function(require, exports, module) {
 
-  "use strict";
+  'use strict';
 
   // Load dependent Modules
   var Handlebars     = require('handlebars'),
-      typetools      = require("typetools");
+      Backbone       = require('backbone'),
+      _              = require('underscore'),
+      typetools      = require('typetools');
 
   // Globally load Handlebars helpers
   require('helpers');
@@ -279,6 +281,24 @@ define(function(require, exports, module) {
 
     }
   });
+
+  // source: http://stackoverflow.com/a/6491621
+  _.findStringKey = function(object, string) {
+    string = string.replace(/\[(\w+)\]/g, '.$1'); // convert indexes to properties
+    string = string.replace(/^\./, '');           // strip a leading dot
+    var a = string.split('.');
+
+    for (var i = 0, n = a.length; i < n; ++i) {
+      var k = a[i];
+      if (k in object) {
+        object = object[k];
+      } else {
+        return;
+      }
+    }
+
+    return object;
+  };
 
   window.app = app;
 

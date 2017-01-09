@@ -27,7 +27,8 @@ define([
 ],
 
 function(app, _, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManager, Widgets, SchemaManager, Sortable, Notification, DoubleConfirmation, __t, SchemaHelper, SettingsConfig) {
-  "use strict";
+
+  'use strict';
 
   var SettingsTables = app.module();
 
@@ -36,25 +37,27 @@ function(app, _, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIMa
   var NewColumnOverlay = BasePageView.extend({
     headerOptions: {
       route: {
-
         title: __t('new_field'),
         isOverlay: true
       }
     },
 
     leftToolbar: function() {
-      return  [
-        new Widgets.ButtonWidget({widgetOptions: {buttonId: "addBtn", iconClass: "check", buttonClass: "", buttonText: __t('save')}})
-      ];
-    },
+      var self = this;
 
-    events: {
-      'click #removeOverlay': function() {
-        app.router.removeOverlayPage(this);
-      },
-      'click #addBtn': function() {
-        this.save();
-      }
+      return  [
+        new Widgets.ButtonWidget({
+          widgetOptions: {
+            buttonId: 'addBtn',
+            iconClass: 'check',
+            buttonClass: 'primary',
+            buttonText: __t('save')
+          },
+          onClick: function(event) {
+            self.save();
+          }
+        })
+      ];
     },
 
     save: function() {
@@ -374,26 +377,29 @@ function(app, _, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIMa
     },
 
     leftToolbar: function() {
-      this.saveWidget = new Widgets.SaveWidget({widgetOptions: {basicSave: true}});
+      var self = this;
+      this.saveWidget = new Widgets.SaveWidget({
+        widgetOptions: {
+          basicSave: true
+        },
+        onClick: function(event) {
+          self.save();
+        }
+      });
+
       return [
         this.saveWidget
       ];
     },
 
-    events: {
-      'click .saved-success': function() {
-        this.save();
-      },
-      'click #removeOverlay': function() {
-        app.router.removeOverlayPage(this);
-      }
-    },
     save: function() {
       console.log("Save");
     },
+
     afterRender: function() {
       this.setView('#page-content', this.table);
     },
+
     initialize: function(options) {
       this.table = new Directus.EditView({model: this.model, structure: this.options.schema});
     }
@@ -1026,7 +1032,16 @@ function(app, _, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIMa
 
     leftToolbar: function() {
       if(!this.widgets.addWidget) {
-        this.widgets.addWidget = new Widgets.ButtonWidget({widgetOptions: {buttonId: "addBtn", iconClass: "add", buttonClass: "", buttonText: __t('add')}});
+        var self = this;
+        this.widgets.addWidget = new Widgets.ButtonWidget({
+          widgetOptions: {
+            buttonId: 'addBtn',
+            iconClass: 'add',
+            buttonClass: 'primary',
+            buttonText: __t('add')
+          },
+          onClick: _.bind(self.addTableConfirmation, self)
+        });
       }
       return [this.widgets.addWidget];
     },
@@ -1036,12 +1051,9 @@ function(app, _, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIMa
       this.insertView('#page-content', new TablesUnRegistered({collection: this.collection}));
       BasePageView.prototype.beforeRender.call(this);
     },
+
     initialize: function() {
       this.widgets = {};
-    },
-
-    events: {
-      'click #addBtn': 'addTableConfirmation'
     },
 
     addTableConfirmation: function() {
