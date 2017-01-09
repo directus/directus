@@ -11,6 +11,7 @@ define(function(require, exports, module) {
   'use strict';
 
   var app              = require('app'),
+      directus         = require('directus'),
       Backbone         = require('backbone'),
       _                = require('underscore'),
       Notification     = require('core/notification'),
@@ -27,7 +28,6 @@ define(function(require, exports, module) {
       Files            = require('modules/files/files'),
       Users            = require('modules/users/users'),
       Messages         = require('modules/messages/messages'),
-      Modal            = require('core/modal'),
       __t              = require('core/t'),
       moment           = require('moment');
 
@@ -185,12 +185,27 @@ define(function(require, exports, module) {
     },
 
     openModal: function(options, callback) {
-      if(this.v.main.getViews('#modal-container')._wrapped.length >= 1) {
+      var containerView = this.v.main.getView('#modal_container');
+
+      if (!containerView || containerView.isOpen()) {
         return;
       }
 
-      var modalView = new Modal.Prompt(options);
-      this.v.main.insertView('#modal-container', modalView).render();
+      var view = new directus.Modal.Prompt(options);
+
+      containerView.show(view);
+    },
+
+    openUserModal: function(userId) {
+      var containerView = this.v.main.getView('#modal_container');
+
+      if (!containerView || containerView.isOpen()) {
+        return;
+      }
+
+      var view = new directus.Modal.User({model: app.users.get(userId)});
+
+      containerView.show(view);
     },
 
     overlayPage: function(view) {
@@ -674,6 +689,7 @@ define(function(require, exports, module) {
         el: "#main",
 
         views: {
+          '#modal_container': new directus.Modal.Container(),
           '#sidebar': nav,
           '#header': header
         }

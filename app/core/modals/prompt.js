@@ -1,22 +1,14 @@
-define([
-  'app',
-  'backbone',
-  'underscore'
-],
-
-function(app, Backbone, _) {
+define(['core/Modal', 'underscore'], function(Modal, _) {
 
   'use strict';
 
-  var Modal = {};
+  return Modal.extend({
 
-  Modal.Prompt = Backbone.Layout.extend({
-
-    template: 'modal',
+    template: 'modal/prompt',
 
     attributes: {
       'id': 'modal',
-      'class': 'modal'
+      'class': 'modal confirm'
     },
 
     serialize: function() {
@@ -46,16 +38,16 @@ function(app, Backbone, _) {
     },
 
     events: {
-      'click .modal-bg': function(event) {
-        event.stopPropagation();
-      },
-
-      'click .smoke': 'close',
-
-      'click .js-close-modal': 'close',
+      // 'click .modal-bg': function(event) {
+      //   event.stopPropagation();
+      // },
+      //
+      // 'click .smoke': 'close',
+      //
+      // 'click .js-close-modal': 'close',
 
       'click #cancel': function() {
-        this.close();
+        this.closePrompt();
       },
 
       'click #save': function() {
@@ -63,37 +55,45 @@ function(app, Backbone, _) {
       },
 
       'click #noBtn': function() {
-        this.close();
+        this.closePrompt();
         this.options.callback('no');
       },
 
       'click #yesBtn': function() {
-        this.close();
+        this.closePrompt();
         this.options.callback('yes');
       },
 
       'click #okBtn': function() {
-        this.close();
+        this.closePrompt();
       }
     },
 
-    onKeydown: function(e) {
-      var key = e.keyCode || e.which;
+    // onKeydown: function(e) {
+    //   var key = e.keyCode || e.which;
+    //
+    //   // enter
+    //   if (key === 13) {
+    //     this.save();
+    //   }
+    //
+    //   // esc
+    //   if (key === 27) {
+    //     this.close();
+    //   }
+    // },
 
-      // enter
-      if (key === 13) {
-        this.save();
+    // close: function() {
+    //   $(document).off('keydown.modal');
+    //   this.remove();
+    // },
+
+    closePrompt: function() {
+      if (this.container) {
+        this.container.close();
+      } else {
+        Modal.prototype.close.apply(this, arguments);
       }
-
-      // esc
-      if (key === 27) {
-        this.close();
-      }
-    },
-
-    close: function() {
-      $(document).off('keydown.modal');
-      this.remove();
     },
 
     save: function() {
@@ -107,23 +107,15 @@ function(app, Backbone, _) {
         this.options.callback(val);
       }
 
-      this.close();
+      this.closePrompt();
     },
 
     afterRender: function(view) {
-      var $el = this.$el;
-
-      $el.find('.smoke').fadeIn(200, function() {
-        $el.find('.modal.confirm').addClass('active');
-        $el.find('input[type="text"]').focus();
-      });
+      this.$el.find('input[type="text"]').focus();
     },
 
     initialize: function (options) {
       this.options = options;
-      $(document).on('keydown.modal', _.bind(this.onKeydown, this));
     }
   });
-
-  return Modal;
 });

@@ -22,6 +22,8 @@ function(app, Backbone, $, _, __t, Directus, moment) {
     },
 
     events: {
+      'click .js-user': 'openUserModal',
+
       'click .activity-full-toggle': 'showActivityDetails',
 
       'keydown #itemCommentText': function(event) {
@@ -81,6 +83,13 @@ function(app, Backbone, $, _, __t, Directus, moment) {
           $('#tagInsert').empty();
         }
       },
+    },
+
+    openUserModal: function(event) {
+      var $target = $(event.currentTarget);
+      var userId = $target.data('user-id');
+
+      return app.router.openUserModal(userId);
     },
 
     showActivityDetails: function(event) {

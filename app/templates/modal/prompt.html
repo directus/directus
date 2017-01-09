@@ -1,29 +1,19 @@
-<div class="smoke">
-    <!-- Overlay close button -->
-    <div class="close js-close-modal">
-        <i class="material-icons">close</i>
-        ESC
+<div class="modal-bg">
+    <!-- <h1>Optional Title</h1> -->
+    <h5>{{message}}</h5>
+    {{#if isPrompt}}
+    {{#if showInput}}<input type="text">{{/if}}
+    <div class="actions">
+        <button id="save" type="button" class="button close-modal">{{t "ok"}}</button>
+        <button id="cancel" type="button" class="cancel close-modal">{{t "cancel"}}</button>
     </div>
-
-    <div class="modal confirm">
-        <div class="modal-bg">
-            <!-- <h1>Optional Title</h1> -->
-            <h5>{{message}}</h5>
-            {{#if isPrompt}}
-            {{#if showInput}}<input type="text">{{/if}}
-            <div class="actions">
-                <button id="save" type="button" class="button close-modal">{{t "ok"}}</button>
-                <button id="cancel" type="button" class="cancel close-modal">{{t "cancel"}}</button>
-            </div>
-            {{/if}}
-            <!-- @NOTE: Going to be removed
-            <div class="actions">
-                <div class="cancel close-modal">Cancel</div>
-                <a href="{{rootUrl}}"><div class="button close-modal">OK</div></a>
-            </div>
-            -->
-        </div>
+    {{/if}}
+    <!-- @NOTE: Going to be removed
+    <div class="actions">
+        <div class="cancel close-modal">Cancel</div>
+        <a href="{{rootUrl}}"><div class="button close-modal">OK</div></a>
     </div>
+    -->
 </div>
 <!-- LIST OF THE OTHER MODAL CONFIRM
 <div style="z-index:999" class="directus-alert-modal">

@@ -60,33 +60,33 @@ $(function() {
 	//////////////////////////////////////////////////////////////////////////////
 	// User Modals
 
-	$(document).keyup(function(e) {
-		if (e.keyCode == 27) { // escape key = 27
-			closeSmoke();
-		}
-	});
+	// $(document).keyup(function(e) {
+	// 	if (e.keyCode == 27) { // escape key = 27
+	// 		closeSmoke();
+	// 	}
+	// });
 
 	// Close overlays when clicking "outside"
-	$('.smoke').on("click", function(e) {
-		closeSmoke();
-	});
+	// $('.smoke').on("click", function(e) {
+	// 	closeSmoke();
+	// });
 
 	// Don't close when clicking inside the modal modal
-	$('.modal-bg').on("click", function(e) {
-		e.stopPropagation();
-	});
+	// $('.modal-bg').on("click", function(e) {
+	// 	e.stopPropagation();
+	// });
 
-	$('.modal .close-modal').on("click", function(e) {
-		closeSmoke();
-	});
+	// $('.modal .close-modal').on("click", function(e) {
+	// 	closeSmoke();
+	// });
 
-	function closeSmoke() {
-		$('.smoke .modal.active').removeClass('active').addClass('slide-down');
-		setTimeout(function(){
-			$('.smoke .slide-down').removeClass('slide-down');
-		}, 200);
-		$('.smoke').fadeOut(200);
-	}
+	// function closeSmoke() {
+	// 	$('.smoke .modal.active').removeClass('active').addClass('slide-down');
+	// 	setTimeout(function(){
+	// 		$('.smoke .slide-down').removeClass('slide-down');
+	// 	}, 200);
+	// 	$('.smoke').fadeOut(200);
+	// }
 
 	// Route overlay requests
 	var modal;
