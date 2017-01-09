@@ -38,14 +38,6 @@ define(['core/Modal', 'underscore'], function(Modal, _) {
     },
 
     events: {
-      // 'click .modal-bg': function(event) {
-      //   event.stopPropagation();
-      // },
-      //
-      // 'click .smoke': 'close',
-      //
-      // 'click .js-close-modal': 'close',
-
       'click #cancel': function() {
         this.closePrompt();
       },
@@ -68,25 +60,6 @@ define(['core/Modal', 'underscore'], function(Modal, _) {
         this.closePrompt();
       }
     },
-
-    // onKeydown: function(e) {
-    //   var key = e.keyCode || e.which;
-    //
-    //   // enter
-    //   if (key === 13) {
-    //     this.save();
-    //   }
-    //
-    //   // esc
-    //   if (key === 27) {
-    //     this.close();
-    //   }
-    // },
-
-    // close: function() {
-    //   $(document).off('keydown.modal');
-    //   this.remove();
-    // },
 
     closePrompt: function() {
       if (this.container) {
