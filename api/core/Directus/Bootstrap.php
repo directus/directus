@@ -19,6 +19,7 @@ use Directus\Filesystem\Filesystem;
 use Directus\Filesystem\FilesystemFactory;
 use Directus\Hook\Emitter;
 use Directus\Language\LanguageManager;
+use Directus\Permissions\Acl;
 use Directus\Providers\FilesServiceProvider;
 use Directus\Session\Session;
 use Directus\Session\Storage\NativeSessionStorage;
