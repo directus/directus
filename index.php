@@ -13,8 +13,7 @@ $loader = require 'vendor/autoload.php';
 require 'api/api.php';
 require 'api/globals.php';
 
-use Directus\Auth\Provider as AuthProvider;
-use Directus\Auth\RequestNonceProvider;
+use Directus\Authentication\RequestNonceProvider;
 use Directus\Bootstrap;
 use Directus\Database\TableGateway\DirectusBookmarksTableGateway;
 use Directus\Database\TableGateway\DirectusMessagesTableGateway;
