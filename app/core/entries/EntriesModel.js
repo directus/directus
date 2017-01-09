@@ -1,13 +1,14 @@
 define(function(require, exports, module) {
 
-  "use strict";
+  'use strict';
 
-  var app                     = require("app"),
-      Backbone                = require("backbone"),
+  var app                     = require('app'),
+      _                       = require('underscore'),
+      Backbone                = require('backbone'),
       ModelHelper             = require('helpers/model'),
-      EntriesJunctionCollection = require("core/entries/EntriesJunctionCollection"),
-      UIManager               = require("core/UIManager"),
-      SchemaManager           = require("schema/SchemaManager");
+      EntriesJunctionCollection = require('core/entries/EntriesJunctionCollection'),
+      UIManager               = require('core/UIManager'),
+      SchemaManager           = require('schema/SchemaManager');
 
   var nestedTypes = ['many_to_one', 'single_file'];
 
@@ -24,13 +25,10 @@ define(function(require, exports, module) {
     },
 
     parse: function(result) {
-
       this._lastFetchedResult = result;
-
-      result = this.parseRelational(result);
       //result = this.parseDate(result);
 
-      return result;
+      return this.parseRelational(result);
     },
 
     // The flatten option flattens many-one relationships so the id is returned
@@ -191,7 +189,7 @@ define(function(require, exports, module) {
             var collectionRelated = EntriesManager.getInstance(tableRelated);
             var ModelRelated = collectionRelated.model;
 
-            attributes[id] = new ModelRelated(data, {collection: collectionRelated});
+            attributes[id] = new ModelRelated(data.data, {collection: collectionRelated});
 
             break;
         }

@@ -422,7 +422,7 @@ $cacheBuster = Directus\Util\Git::getCloneHash($git);
 $tableSchema = TableSchema::getAllSchemas($currentUserInfo['group']['id'], $cacheBuster);
 
 // $tabPrivileges = getTabPrivileges(($currentUserInfo['group']['id']));
-$groupId = $currentUserInfo['group']['id'];
+$groupId = $currentUserInfo['group']['data']['id'];
 $groups = getGroups();
 $currentUserGroup = [];
 if (isset($groups['data']) && count($groups['data']) > 0) {

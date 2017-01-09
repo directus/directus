@@ -1,11 +1,12 @@
 define(function(require, exports, module) {
 
-  "use strict";
+  'use strict';
 
-  var Backbone = require("backbone"),
-      ModelHelper = require('helpers/model'),
-      Collection = require("core/collection"),
-      EntriesModel = require("core/entries/EntriesModel");
+  var Backbone      = require('backbone'),
+      _             = require('underscore'),
+      ModelHelper   = require('helpers/model'),
+      Collection    = require('core/collection'),
+      EntriesModel  = require("core/entries/EntriesModel");
 
   var EntriesCollection = module.exports = Collection.extend({
 
@@ -357,6 +358,10 @@ define(function(require, exports, module) {
     },
 
     parseHeaders: function(response) {
+      if (_.isEmpty(response)) {
+        return;
+      }
+
       if (response.total !== undefined) {
         this.table.set('total', response.total, {silent: true});
       }
@@ -369,12 +374,14 @@ define(function(require, exports, module) {
     },
 
     parse: function(response) {
-      if (_.isEmpty(response)) return;
+      if (_.isEmpty(response)) {
+        return;
+      }
 
       // Parse table headers
-      this.parseHeaders(response);
+      this.parseHeaders(response.meta);
 
-      return response.rows;
+      return response.data;
     },
 
     constructor: function EntriesCollection(data, options) {
