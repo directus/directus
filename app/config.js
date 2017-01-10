@@ -17,6 +17,7 @@ require.config({
     "noty":     "../assets/js/libs/noty",
     "noty_theme": "../assets/js/libs/noty_theme",
     "polyglot":   "../assets/js/libs/polyglot.min",
+    "dragula": "../assets/js/vendor/dragula.min",
 
     // JavaScript folders.
     "libs":       "../assets/js/libs",
@@ -58,6 +59,10 @@ require.config({
 
     "polyglot": {
       exports: 'Polyglot'
+    },
+
+    "dragula": {
+      exports: "Dragula"
     },
 
     "plugins/jquery.flashrow": ['jquery'],

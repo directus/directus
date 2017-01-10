@@ -40,7 +40,7 @@ $(function() {
 
 	//////////////////////////////////////////////////////////////////////////////
 	// Right Sidebar Columns
-
+  /*
 	dragula({
 		isContainer: function (el) {
 			return el.classList.contains('reorder-columns');
@@ -63,7 +63,7 @@ $(function() {
 		mirrorContainer: $('.reorder-columns')[0],    // set the element that gets mirror elements appended
 		ignoreInputTextSelection: true     // allows users to select input text, see details below
 	});
-
+  */
 	//////////////////////////////////////////////////////////////////////////////
 	// Activity Full
 

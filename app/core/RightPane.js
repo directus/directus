@@ -34,8 +34,10 @@ define([
       }
     },
 
-    initialize: function(options) {
+    constructor: function(options) {
       this.baseView = options.baseView;
+
+      Backbone.Layout.prototype.constructor.apply(this, arguments);
     }
   });
 });
