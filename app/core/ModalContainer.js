@@ -8,7 +8,7 @@ define(['app', 'backbone', 'underscore'], function(app, Backbone, _) {
         event.stopPropagation();
       },
 
-      'click :not(.smoke)': function() {
+      'click .modal': function() {
         this.close();
       },
 
