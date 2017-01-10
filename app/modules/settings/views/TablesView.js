@@ -778,7 +778,11 @@ function(app, _, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIMa
     template: 'modules/settings/settings-tables',
 
     addRowView: function(model, render) {
-      var view = this.insertView('tbody', new TablesRow({model: model}));
+      var view = this.insertView('tbody', new TablesRow({
+        model: model,
+        unregistered: !this.hasPrivilege(model)
+      }));
+
       if (render !== false) {
         view.render();
       }
@@ -828,7 +832,11 @@ function(app, _, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIMa
       //Filter out _directus tables
       if (model.id.substring(0,9) === 'directus_') return false;
 
-      //Filter out tables you don't have alter permissions on
+      return true;
+    },
+
+    hasPrivilege: function(model) {
+      // Filter out tables you don't have alter permissions on
       var privileges = app.schemaManager.getPrivileges(model.id);
 
       // filter out tables with empty privileges
@@ -917,39 +925,34 @@ function(app, _, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIMa
     },
 
     events: {
-      'click td span': function(e) {
-        e.stopImmediatePropagation();
-        var attr = $(e.target).closest('td').attr('data-attribute');
+      // 'click td span': function(e) {
+      //   e.stopImmediatePropagation();
+      //   var attr = $(e.target).closest('td').attr('data-attribute');
+      //
+      //   this.toggleTableAttribute(SchemaManager.getTable($(e.target).closest('tr').attr('data-id')), attr, $(e.target));
+      // },
+      'click .js-row': function(event) {
+        var tableName = $(event.currentTarget).data('id');
 
-        this.toggleTableAttribute(SchemaManager.getTable($(e.target).closest('tr').attr('data-id')), attr, $(e.target));
+        app.router.go(['settings', 'tables', tableName]);
       },
-      'click td': function(e) {
-        var tableName = $(e.target).closest('tr').attr('data-id');
-        app.router.go(['settings','tables',tableName]);
-      },
-      'click .add': function(event) {
+
+      'click .js-add-table': function(event) {
         event.stopPropagation();
 
         var $row = $(event.target).closest('tr');
-        var tableName = $row.attr('data-id');
-        var parentView = this.parentView;
-        var self = this;
+        var tableName = $row.data('id');
+
         app.schemaManager.addTable(tableName, function(tableModel) {
           app.router.bookmarks.addTable(tableModel);
-          // a new table has been added
-          // It wasn't actually added
-          // As it already exists on the collection
-          // this will trigger an event to add the table into the listing
-          self.model.collection.trigger('add', self.model);
-          if (parentView) {
-            parentView.render();
-          }
+          app.router.go(['settings', 'tables', tableName]);
         });
       },
-      'click .destroy': function(event) {
+
+      'click .js-remove-table': function(event) {
         event.stopPropagation();
 
-        var tableName = $(event.target).closest('tr').attr('data-id') || this.model.get('table_name');
+        var tableName = $(event.target).closest('tr').data('id') || this.model.get('table_name');
 
         DoubleConfirmation({
           value: tableName,
@@ -1048,7 +1051,7 @@ function(app, _, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIMa
 
     beforeRender: function() {
       this.setView('#page-content', new Tables({collection: this.collection}));
-      this.insertView('#page-content', new TablesUnRegistered({collection: this.collection}));
+      // this.insertView('#page-content', new TablesUnRegistered({collection: this.collection}));
       BasePageView.prototype.beforeRender.call(this);
     },
 
@@ -1096,6 +1099,9 @@ function(app, _, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIMa
         if (rawTableName !== tableName) {
           Notification.success(__t('this_table_was_saved_as_x', {table_name: tableName}));
         }
+
+        // @TODO: listen to a tables collection
+        // to add or remove table from sidebar
         app.router.bookmarks.addTable(tableModel);
       });
     },

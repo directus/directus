@@ -42,10 +42,19 @@ define(['app', 'backbone', 'underscore'], function(app, Backbone, _) {
       }, this));
     },
 
-    close: function() {
+    close: function(hard) {
       var modal = this.$('.modal.active');
+      var closeViews = _.bind(function() {
+        this.getViews().each(function(view) {
+          view.close();
+        });
+      }, this);
 
       $(document).off('keydown.modal');
+
+      if (hard === true) {
+        return closeViews();
+      }
 
       modal.removeClass('active').addClass('slide-down');
 
@@ -53,11 +62,7 @@ define(['app', 'backbone', 'underscore'], function(app, Backbone, _) {
         this.$('.slide-down').removeClass('slide-down');
       }, this), 200);
 
-      this.$el.fadeOut(200, _.bind(function() {
-        this.getViews().each(function(view) {
-          view.close();
-        });
-      }, this));
+      this.$el.fadeOut(200, closeViews);
     }
   });
 });

@@ -1,6 +1,7 @@
 define([
   'app',
   'backbone',
+  'underscore',
   'core/t',
   'core/notification'
 ],
@@ -8,6 +9,7 @@ define([
 function(
   app,
   Backbone,
+  _,
   __t,
   Notification
 ) {

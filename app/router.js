@@ -187,8 +187,12 @@ define(function(require, exports, module) {
     openModal: function(options, callback) {
       var containerView = this.v.main.getView('#modal_container');
 
-      if (!containerView || containerView.isOpen()) {
+      if (!containerView) {
         return;
+      }
+
+      if (containerView.isOpen()) {
+        containerView.close(true);
       }
 
       var view = new directus.Modal.Prompt(options);
