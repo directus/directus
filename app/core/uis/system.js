@@ -22,11 +22,13 @@ define(['app', 'underscore', 'core/UIComponent', 'core/UIView'], function(app, _
     <label for="check3"><span></span>Deleted</label> \
   <input type="hidden" name="{{name}}" value="{{#if value}}{{value}}{{/if}}">';*/
 
-  var template = '<div class="status-group" style="padding: 12px 0;"> \
+  /*var template = '<div class="status-group" style="padding: 12px 0;"> \
                   {{#mapping}} \
                     <label style="font-size:14px;margin-right:40px;display:inline-block;color:{{color}}" class="bold"><input style="display:inline-block;width:auto;margin-right:10px;" type="radio" {{#if ../readonly}}disabled{{/if}} name="{{../name}}" value="{{id}}" {{#if active}}checked{{/if}}>{{name}}</label> \
                   {{/mapping}} \
-                  </div>';
+                  </div>';*/
+
+  var template = '<input type="hidden" name="{{name}}" value="{{value}}">';
 
   var Input = UIView.extend({
     templateSource: template,
@@ -38,43 +40,11 @@ define(['app', 'underscore', 'core/UIComponent', 'core/UIView'], function(app, _
     },
 
     serialize: function() {
-      var data = {};
-
-      var mapping = app.statusMapping.mapping;
-      var value = Number(this.options.value);
-
-      data.mapping = [];
-
-      _.each(mapping, function(status, key) {
-        // Convert status id into number
-        key = Number(key);
-
-        // If new model, skip delete option
-        if (this.model.isNew() && key === app.statusMapping.deleted_num) {
-          return false;
-        }
-
-        var entry = status;
-        entry.id = key;
-        entry.active = key === value;
-
-        data.mapping.push(entry);
-      }, this);
-
-      data.mapping.sort(function(a, b) {
-        if(a.sort < b.sort) {
-          return -1;
-        }
-        if(a.sort > b.sort) {
-          return 1;
-        }
-        return 0;
-      });
-
-      data.name = this.options.name;
-      data.readonly = !this.options.canWrite;
-
-      return data;
+      return {
+        name: this.options.name,
+        value: Number(this.options.value),
+        readonly: !this.options.canWrite
+      };
     }
   });
 

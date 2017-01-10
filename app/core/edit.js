@@ -2,10 +2,11 @@ define(function(require, exports, module) {
 
   'use strict';
 
-  var app = require('app');
-  var Backbone = require('backbone');
-  var Handlebars = require('handlebars');
-  var UIManager = require('./UIManager');
+  var app         = require('app');
+  var _           = require('underscore');
+  var Backbone    = require('backbone');
+  var Handlebars  = require('handlebars');
+  var UIManager   = require('./UIManager');
 
   var UIContainer = Backbone.Layout.extend({
 
@@ -82,7 +83,7 @@ define(function(require, exports, module) {
           return false;
         }
 
-        //Skip magic owner column if we dont have bigedit
+        // Skip magic owner column if we dont have bigedit
         if (this.model.table && this.model.table.get('user_create_column') === column.id && !this.model.collection.hasPermission('bigedit')) {
           return;
         }
@@ -99,17 +100,17 @@ define(function(require, exports, module) {
             this.model.set(app.statusMapping.status_name, app.statusMapping.active_num);
           }
 
-          if(this.model.isNew()) {
+          if (this.model.isNew()) {
             var tableStatusColumn = this.model.structure.get(app.statusMapping.status_name);
-            if(tableStatusColumn && tableStatusColumn.get('default_value')) {
+            if (tableStatusColumn && tableStatusColumn.get('default_value')) {
               this.model.set(app.statusMapping.status_name, tableStatusColumn.get('default_value'));
             } else {
               this.model.set(app.statusMapping.status_name, app.statusMapping.active_num);
             }
           }
 
-          //Set this to be first field in edit table by modifiying groupings.
-          if(this.model.table && this.model.table.get('column_groupings')) {
+          // Set this to be first field in edit table by modifiying groupings.
+          if (this.model.table && this.model.table.get('column_groupings')) {
             var columnGrouping = this.model.table.get('column_groupings');
             this.model.table.set({'column_groupings': app.statusMapping.status_name + '^' + columnGrouping});
           }
@@ -118,6 +119,13 @@ define(function(require, exports, module) {
         var view = UIManager.getInputInstance(this.model, column.id, {structure: this.structure, inModal: this.inModal});
         if (this.model.addInput) {
           this.model.addInput(column.id, view);
+        }
+
+        //
+        if (app.statusMapping.status_name === column.id) {
+          this.model.on('change:' + app.statusMapping.status_name, function (model, value) {
+            view.$('input[name=' + app.statusMapping.status_name + ']').val(value);
+          });
         }
 
         // Display:none; hidden fields
@@ -183,6 +191,7 @@ define(function(require, exports, module) {
     constructor: function (options) {
       Backbone.Layout.__super__.constructor.call(this, options);
       this.$el.addClass('two-column-form');
+      this.hiddenFields.push(app.statusMapping.status_name);
     },
 
     // Focus on first input
