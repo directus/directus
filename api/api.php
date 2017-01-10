@@ -1052,8 +1052,9 @@ $app->get("/$v/activity/?", function () use ($params, $ZendDb, $acl) {
         unset($params['perPage']);
         $params['adv_search'] = 'datetime >= "' . DateUtils::daysAgo(30) . '"';
     }
+
     $new_get = $Activity->fetchFeed($params);
-    $new_get['active'] = $new_get['total'];
+
     JsonView::render($new_get);
 });
 
