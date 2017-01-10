@@ -63,6 +63,9 @@ class CreateDirectusPreferencesTable extends Ruckusing_Migration_Base
             'default' => 3
         ]);
         $t->column('search_string', 'text');
+        $t->column('spacing', 'string', [
+            'limit' => 32
+        ]);
 
         $t->finish();
 

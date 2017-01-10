@@ -288,8 +288,12 @@ function(app, Backbone, _, Handlebars, __t, Directus, BasePageView, Widgets, His
       ];
     },
 
-    getRightPaneView: function() {
+    rightPane: function() {
       return EditViewRightPane;
+    },
+
+    rightPaneOptions: function() {
+      return {};
     },
 
     initialize: function(options) {

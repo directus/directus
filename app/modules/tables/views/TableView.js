@@ -119,8 +119,12 @@ function(app, Backbone, __t, BasePageView, ListViewManager, TableViewRightPane, 
       return  widgets;
     },
 
-    getRightPaneView: function() {
+    rightPane: function() {
       return TableViewRightPane;
+    },
+
+    rightPaneOptions: function() {
+      return {};
     },
 
     rightToolbar: function() {

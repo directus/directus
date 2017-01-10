@@ -5,6 +5,7 @@ define(function(require, exports, module) {
   // Load dependent Modules
   var Handlebars     = require('handlebars'),
       Backbone       = require('backbone'),
+      config         = new Backbone.Model(require('core/config')),
       _              = require('underscore'),
       typetools      = require('typetools');
 
@@ -23,6 +24,8 @@ define(function(require, exports, module) {
   require('plugins/typeahead');
 
   var app = {
+
+    config: config,
 
     progressView: undefined,
 

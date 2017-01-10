@@ -51,10 +51,10 @@
 
     <h3>Spacing</h3>
     <div class="select-container">
-        <select name="type" class="spacing-adjust">
-            <option value="cozy">Compact</option>
-            <option value="compact" selected>Cozy</option>
-            <option value="comfortable">Comfortable</option>
+        <select name="type" class="spacing-adjust js-spacing-adjust">
+            {{#each spacings}}
+            <option value="{{name}}"{{#if selected}} selected{{/if}}>{{capitalize name}}</option>
+            {{/each}}
         </select>
         <i class="material-icons select-arrow">arrow_drop_down</i>
     </div>

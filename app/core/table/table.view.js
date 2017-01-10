@@ -20,6 +20,10 @@ function(app, _, Backbone, Notification, __t, ModelHelper, TableHead, TableBody,
 
     template: 'tables/table',
 
+    state: {
+      spacing: 'cozy'
+    },
+
     events: {
       'click tbody td:not(.js-check):not(.status):not(.sort)' : function(e) {
         var id = $(e.target).closest('tr').attr('data-id');
@@ -42,6 +46,7 @@ function(app, _, Backbone, Notification, __t, ModelHelper, TableHead, TableBody,
         sortable: this.options.sortable,
         disabledSorting: !this.sortable,
         isSortableOrSelectable: isSortableOrSelectable,
+        spacing: this.getSpacing(),
         showEmptyMessage: (this.collection.length === 0 && !this.options.hideEmptyMessage)
       };
     },
@@ -82,7 +87,9 @@ function(app, _, Backbone, Notification, __t, ModelHelper, TableHead, TableBody,
     },
 
     flashItemID: undefined,
+
     bodyScrollTop: undefined,
+
     flashItem: function(entryID, bodyScrollTop) {
       this.flashItemID = entryID;
       this.bodyScrollTop = parseInt(bodyScrollTop, 10) || 0;
@@ -200,6 +207,22 @@ function(app, _, Backbone, Notification, __t, ModelHelper, TableHead, TableBody,
       this.sortable = this.sortableWidget.options.sort = false;
     },
 
+    setSpacing: function(name) {
+      if (_.indexOf(app.config.get('spacings'), name) < 0) {
+        return;
+      }
+
+      var $table = this.$('table');
+      $table.removeClass(this.state.spacing);
+      this.state.spacing = name;
+      $table.addClass(this.state.spacing);
+      this.options.preferences.save({spacing: name}, {silent: true});
+    },
+
+    getSpacing: function () {
+      return this.state.spacing;
+    },
+
     initialize: function(options) {
       var collection = this.collection;
 
@@ -217,16 +240,16 @@ function(app, _, Backbone, Notification, __t, ModelHelper, TableHead, TableBody,
 
       this.listenTo(app.router.v.main, 'flashItem', this.flashItem);
 
-      this.options.preferences = this.options.preferences || this.collection.preferences;
-      this.options.structure = this.options.structure || this.collection.structure;
-      this.options.table = this.options.table || this.collection.table;
+      this.options.preferences = this.options.preferences || collection.preferences;
+      this.options.structure = this.options.structure || collection.structure;
+      this.options.table = this.options.table || collection.table;
       this.options.columns = this.getTableColumns();
 
       if (this.options.tableHead !== false) {
         this.tableHead = true;
       }
 
-      if(collection.length > 0) {
+      if (collection.length > 0) {
         this.tableHead = true;
       }
 
@@ -240,6 +263,10 @@ function(app, _, Backbone, Notification, __t, ModelHelper, TableHead, TableBody,
 
       if (this.options.status === undefined) {
         this.options.status = collection.hasColumn(app.statusMapping.status_name);
+      }
+
+      if (this.options.preferences) {
+        this.state.spacing = this.options.preferences.get('spacing') || 'cozy';
       }
 
       // ==================================================================================

@@ -10,7 +10,8 @@ define([
 
     events: {
       'click #save_columns': 'updateVisibleColumns',
-      'click .js-close': 'close'
+      'click .js-close': 'close',
+      'change .js-spacing-adjust': 'updateSpacing'
     },
 
     updateVisibleColumns: function(event) {
@@ -32,12 +33,26 @@ define([
       collection.fetch();
     },
 
+    updateSpacing: function(event) {
+      var spacing = $(event.currentTarget).val();
+
+      this.baseView.table.setSpacing(spacing);
+    },
+
     serialize: function() {
       var collection = this.collection;
       var structure = collection.structure;
       var preferences = collection.preferences;
       var data = collection ? collection.toJSON() : {};
       var visibleColumns = preferences.get('columns_visible').split(',');
+      var selectedSpacing = this.baseView.table.getSpacing();
+
+      data.spacings = _.map(app.config.get('spacings'), function(value) {
+        return {
+          name: value,
+          selected: value === selectedSpacing
+        }
+      });
 
       data.columns = structure.chain()
         .filter(function(model) {
