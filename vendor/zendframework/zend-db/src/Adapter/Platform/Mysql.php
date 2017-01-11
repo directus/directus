@@ -3,7 +3,7 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2016 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
@@ -14,11 +14,26 @@ use Zend\Db\Adapter\Driver\Mysqli;
 use Zend\Db\Adapter\Driver\Pdo;
 use Zend\Db\Adapter\Exception;
 
-class Mysql implements PlatformInterface
+class Mysql extends AbstractPlatform
 {
-    /** @var \mysqli|\PDO */
+    /**
+     * {@inheritDoc}
+     */
+    protected $quoteIdentifier = ['`', '`'];
+
+    /**
+     * {@inheritDoc}
+     */
+    protected $quoteIdentifierTo = '``';
+
+    /**
+     * @var \mysqli|\PDO
+     */
     protected $resource = null;
 
+    /**
+     * @param null|\Zend\Db\Adapter\Driver\Mysqli\Mysqli|\Zend\Db\Adapter\Driver\Pdo\Pdo|\mysqli|\PDO $driver
+     */
     public function __construct($driver = null)
     {
         if ($driver) {
@@ -27,9 +42,10 @@ class Mysql implements PlatformInterface
     }
 
     /**
-     * @param \Zend\Db\Adapter\Driver\Mysqli\Mysqli|\Zend\Db\Adapter\Driver\Pdo\Pdo||\mysqli|\PDO $driver
+     * @param \Zend\Db\Adapter\Driver\Mysqli\Mysqli|\Zend\Db\Adapter\Driver\Pdo\Pdo|\mysqli|\PDO $driver
      * @throws \Zend\Db\Adapter\Exception\InvalidArgumentException
-     * @return $this
+     *
+     * @return self
      */
     public function setDriver($driver)
     {
@@ -47,9 +63,7 @@ class Mysql implements PlatformInterface
     }
 
     /**
-     * Get name
-     *
-     * @return string
+     * {@inheritDoc}
      */
     public function getName()
     {
@@ -57,56 +71,15 @@ class Mysql implements PlatformInterface
     }
 
     /**
-     * Get quote identifier symbol
-     *
-     * @return string
-     */
-    public function getQuoteIdentifierSymbol()
-    {
-        return '`';
-    }
-
-    /**
-     * Quote identifier
-     *
-     * @param  string $identifier
-     * @return string
-     */
-    public function quoteIdentifier($identifier)
-    {
-        return '`' . str_replace('`', '``', $identifier) . '`';
-    }
-
-    /**
-     * Quote identifier chain
-     *
-     * @param string|string[] $identifierChain
-     * @return string
+     * {@inheritDoc}
      */
     public function quoteIdentifierChain($identifierChain)
     {
-        $identifierChain = str_replace('`', '``', $identifierChain);
-        if (is_array($identifierChain)) {
-            $identifierChain = implode('`.`', $identifierChain);
-        }
-        return '`' . $identifierChain . '`';
+        return '`' . implode('`.`', (array) str_replace('`', '``', $identifierChain)) . '`';
     }
 
     /**
-     * Get quote value symbol
-     *
-     * @return string
-     */
-    public function getQuoteValueSymbol()
-    {
-        return '\'';
-    }
-
-    /**
-     * Quote value
-     *
-     * @param  string $value
-     * @return string
+     * {@inheritDoc}
      */
     public function quoteValue($value)
     {
@@ -119,20 +92,11 @@ class Mysql implements PlatformInterface
         if ($this->resource instanceof \PDO) {
             return $this->resource->quote($value);
         }
-        trigger_error(
-            'Attempting to quote a value in ' . __CLASS__ . ' without extension/driver support '
-                . 'can introduce security vulnerabilities in a production environment.'
-        );
-        return '\'' . addcslashes($value, "\x00\n\r\\'\"\x1a") . '\'';
+        return parent::quoteValue($value);
     }
 
     /**
-     * Quote Trusted Value
-     *
-     * The ability to quote values without notices
-     *
-     * @param $value
-     * @return mixed
+     * {@inheritDoc}
      */
     public function quoteTrustedValue($value)
     {
@@ -145,70 +109,6 @@ class Mysql implements PlatformInterface
         if ($this->resource instanceof \PDO) {
             return $this->resource->quote($value);
         }
-        return '\'' . addcslashes($value, "\x00\n\r\\'\"\x1a") . '\'';
-    }
-
-    /**
-     * Quote value list
-     *
-     * @param string|string[] $valueList
-     * @return string
-     */
-    public function quoteValueList($valueList)
-    {
-        if (!is_array($valueList)) {
-            return $this->quoteValue($valueList);
-        }
-
-        $value = reset($valueList);
-        do {
-            $valueList[key($valueList)] = $this->quoteValue($value);
-        } while ($value = next($valueList));
-        return implode(', ', $valueList);
-    }
-
-    /**
-     * Get identifier separator
-     *
-     * @return string
-     */
-    public function getIdentifierSeparator()
-    {
-        return '.';
-    }
-
-    /**
-     * Quote identifier in fragment
-     *
-     * @param  string $identifier
-     * @param  array $safeWords
-     * @return string
-     */
-    public function quoteIdentifierInFragment($identifier, array $safeWords = array())
-    {
-        // regex taken from @link http://dev.mysql.com/doc/refman/5.0/en/identifiers.html
-        $parts = preg_split('#([^0-9,a-z,A-Z$_])#', $identifier, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
-        if ($safeWords) {
-            $safeWords = array_flip($safeWords);
-            $safeWords = array_change_key_case($safeWords, CASE_LOWER);
-        }
-        foreach ($parts as $i => $part) {
-            if ($safeWords && isset($safeWords[strtolower($part)])) {
-                continue;
-            }
-            switch ($part) {
-                case ' ':
-                case '.':
-                case '*':
-                case 'AS':
-                case 'As':
-                case 'aS':
-                case 'as':
-                    break;
-                default:
-                    $parts[$i] = '`' . str_replace('`', '``', $part) . '`';
-            }
-        }
-        return implode('', $parts);
+        return parent::quoteTrustedValue($value);
     }
 }

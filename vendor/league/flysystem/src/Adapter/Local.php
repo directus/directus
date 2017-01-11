@@ -68,6 +68,8 @@ class Local extends AbstractAdapter
      * @param int    $writeFlags
      * @param int    $linkHandling
      * @param array  $permissions
+     *
+     * @throws LogicException
      */
     public function __construct($root, $writeFlags = LOCK_EX, $linkHandling = self::DISALLOW_LINKS, array $permissions = [])
     {
@@ -413,7 +415,9 @@ class Local extends AbstractAdapter
      *
      * @param SplFileInfo $file
      *
-     * @return array
+     * @return array|void
+     *
+     * @throws NotSupportedException
      */
     protected function normalizeFileInfo(SplFileInfo $file)
     {

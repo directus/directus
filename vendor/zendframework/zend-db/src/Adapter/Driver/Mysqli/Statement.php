@@ -3,7 +3,7 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2016 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
@@ -16,7 +16,6 @@ use Zend\Db\Adapter\Profiler;
 
 class Statement implements StatementInterface, Profiler\ProfilerAwareInterface
 {
-
     /**
      * @var \mysqli
      */
@@ -220,7 +219,7 @@ class Statement implements StatementInterface, Profiler\ProfilerAwareInterface
     /**
      * Execute
      *
-     * @param  ParameterContainer|array $parameters
+     * @param null|array|ParameterContainer $parameters
      * @throws Exception\RuntimeException
      * @return mixed
      */
@@ -284,7 +283,7 @@ class Statement implements StatementInterface, Profiler\ProfilerAwareInterface
     {
         $parameters = $this->parameterContainer->getNamedArray();
         $type = '';
-        $args = array();
+        $args = [];
 
         foreach ($parameters as $name => &$value) {
             if ($this->parameterContainer->offsetHasErrata($name)) {
@@ -310,7 +309,7 @@ class Statement implements StatementInterface, Profiler\ProfilerAwareInterface
 
         if ($args) {
             array_unshift($args, $type);
-            call_user_func_array(array($this->resource, 'bind_param'), $args);
+            call_user_func_array([$this->resource, 'bind_param'], $args);
         }
     }
 }

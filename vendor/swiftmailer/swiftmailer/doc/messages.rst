@@ -1038,13 +1038,14 @@ priority will not change the way your email is sent -- it is purely an
 indicative setting for the recipient.
 
 The priority of a message is an indication to the recipient what significance
-it has. Swift Mailer allows you to set the priority by calling the ``setPriority`` method. This method takes an integer value between 1 and 5:
+it has. Swift Mailer allows you to set the priority by calling the
+``setPriority`` method. This method takes an integer value between 1 and 5:
 
-* Highest
-* High
-* Normal
-* Low
-* Lowest
+* `Swift_Mime_SimpleMessage::PRIORITY_HIGHEST`: 1
+* `Swift_Mime_SimpleMessage::PRIORITY_HIGH`: 2
+* `Swift_Mime_SimpleMessage::PRIORITY_NORMAL`: 3
+* `Swift_Mime_SimpleMessage::PRIORITY_LOW`: 4
+* `Swift_Mime_SimpleMessage::PRIORITY_LOWEST`: 5
 
 To set the message priority:
 
@@ -1055,3 +1056,6 @@ To set the message priority:
 
     // Indicate "High" priority
     $message->setPriority(2);
+
+    // Or use the constant to be more explicit
+    $message->setPriority(Swift_Mime_SimpleMessage::PRIORITY_HIGH);

@@ -3,7 +3,7 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2016 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
@@ -11,11 +11,6 @@ namespace Zend\Db\Sql\Ddl\Constraint;
 
 class ForeignKey extends AbstractConstraint
 {
-    /**
-     * @var string
-     */
-    protected $name;
-
     /**
      * @var string
      */
@@ -27,54 +22,50 @@ class ForeignKey extends AbstractConstraint
     protected $onUpdateRule = 'NO ACTION';
 
     /**
-     * @var string
+     * @var string[]
      */
-    protected $referenceColumn;
+    protected $referenceColumn = [];
 
     /**
      * @var string
      */
-    protected $referenceTable;
+    protected $referenceTable = '';
 
     /**
-     * @var string
+     * {@inheritDoc}
      */
-    protected $specification = 'CONSTRAINT %1$s FOREIGN KEY (%2$s) REFERENCES %3$s (%4$s) ON DELETE %5$s ON UPDATE %6$s';
+    protected $columnSpecification = 'FOREIGN KEY (%s) ';
 
     /**
-     * @param array|null|string $name
-     * @param string            $column
+     * @var string[]
+     */
+    protected $referenceSpecification = [
+        'REFERENCES %s ',
+        'ON DELETE %s ON UPDATE %s'
+    ];
+
+    /**
+     * @param null|string       $name
+     * @param null|string|array $columns
      * @param string            $referenceTable
-     * @param string            $referenceColumn
+     * @param null|string|array $referenceColumn
      * @param null|string       $onDeleteRule
      * @param null|string       $onUpdateRule
      */
-    public function __construct($name, $column, $referenceTable, $referenceColumn, $onDeleteRule = null, $onUpdateRule = null)
+    public function __construct($name, $columns, $referenceTable, $referenceColumn, $onDeleteRule = null, $onUpdateRule = null)
     {
         $this->setName($name);
-        $this->setColumns($column);
+        $this->setColumns($columns);
         $this->setReferenceTable($referenceTable);
         $this->setReferenceColumn($referenceColumn);
-        (!$onDeleteRule) ?: $this->setOnDeleteRule($onDeleteRule);
-        (!$onUpdateRule) ?: $this->setOnUpdateRule($onUpdateRule);
-    }
 
-    /**
-     * @param  string $name
-     * @return self
-     */
-    public function setName($name)
-    {
-        $this->name = $name;
-        return $this;
-    }
+        if ($onDeleteRule) {
+            $this->setOnDeleteRule($onDeleteRule);
+        }
 
-    /**
-     * @return string
-     */
-    public function getName()
-    {
-        return $this->name;
+        if ($onUpdateRule) {
+            $this->setOnUpdateRule($onUpdateRule);
+        }
     }
 
     /**
@@ -83,7 +74,7 @@ class ForeignKey extends AbstractConstraint
      */
     public function setReferenceTable($referenceTable)
     {
-        $this->referenceTable = $referenceTable;
+        $this->referenceTable = (string) $referenceTable;
         return $this;
     }
 
@@ -96,17 +87,18 @@ class ForeignKey extends AbstractConstraint
     }
 
     /**
-     * @param  string $referenceColumn
+     * @param  null|string|array $referenceColumn
      * @return self
      */
     public function setReferenceColumn($referenceColumn)
     {
-        $this->referenceColumn = $referenceColumn;
+        $this->referenceColumn = (array) $referenceColumn;
+
         return $this;
     }
 
     /**
-     * @return string
+     * @return array
      */
     public function getReferenceColumn()
     {
@@ -119,7 +111,8 @@ class ForeignKey extends AbstractConstraint
      */
     public function setOnDeleteRule($onDeleteRule)
     {
-        $this->onDeleteRule = $onDeleteRule;
+        $this->onDeleteRule = (string) $onDeleteRule;
+
         return $this;
     }
 
@@ -137,7 +130,8 @@ class ForeignKey extends AbstractConstraint
      */
     public function setOnUpdateRule($onUpdateRule)
     {
-        $this->onUpdateRule = $onUpdateRule;
+        $this->onUpdateRule = (string) $onUpdateRule;
+
         return $this;
     }
 
@@ -154,24 +148,31 @@ class ForeignKey extends AbstractConstraint
      */
     public function getExpressionData()
     {
-        return array(array(
-            $this->specification,
-            array(
-                $this->name,
-                $this->columns[0],
-                $this->referenceTable,
-                $this->referenceColumn,
-                $this->onDeleteRule,
-                $this->onUpdateRule,
-            ),
-            array(
-                self::TYPE_IDENTIFIER,
-                self::TYPE_IDENTIFIER,
-                self::TYPE_IDENTIFIER,
-                self::TYPE_IDENTIFIER,
-                self::TYPE_LITERAL,
-                self::TYPE_LITERAL,
-            ),
-        ));
+        $data         = parent::getExpressionData();
+        $colCount     = count($this->referenceColumn);
+        $newSpecTypes = [self::TYPE_IDENTIFIER];
+        $values       = [$this->referenceTable];
+
+        $data[0][0] .= $this->referenceSpecification[0];
+
+        if ($colCount) {
+            $values       = array_merge($values, $this->referenceColumn);
+            $newSpecParts = array_fill(0, $colCount, '%s');
+            $newSpecTypes = array_merge($newSpecTypes, array_fill(0, $colCount, self::TYPE_IDENTIFIER));
+
+            $data[0][0] .= sprintf('(%s) ', implode(', ', $newSpecParts));
+        }
+
+        $data[0][0] .= $this->referenceSpecification[1];
+
+        $values[]       = $this->onDeleteRule;
+        $values[]       = $this->onUpdateRule;
+        $newSpecTypes[] = self::TYPE_LITERAL;
+        $newSpecTypes[] = self::TYPE_LITERAL;
+
+        $data[0][1] = array_merge($data[0][1], $values);
+        $data[0][2] = array_merge($data[0][2], $newSpecTypes);
+
+        return $data;
     }
 }

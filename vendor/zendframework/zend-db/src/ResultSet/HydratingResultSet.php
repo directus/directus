@@ -3,15 +3,15 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2016 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
 namespace Zend\Db\ResultSet;
 
 use ArrayObject;
-use Zend\Stdlib\Hydrator\ArraySerializable;
-use Zend\Stdlib\Hydrator\HydratorInterface;
+use Zend\Hydrator\ArraySerializable;
+use Zend\Hydrator\HydratorInterface;
 
 class HydratingResultSet extends AbstractResultSet
 {
@@ -21,7 +21,7 @@ class HydratingResultSet extends AbstractResultSet
     protected $hydrator = null;
 
     /**
-     * @var null
+     * @var null|object
      */
     protected $objectPrototype = null;
 
@@ -53,6 +53,16 @@ class HydratingResultSet extends AbstractResultSet
         }
         $this->objectPrototype = $objectPrototype;
         return $this;
+    }
+
+    /**
+     * Get the row object prototype
+     *
+     * @return object
+     */
+    public function getObjectPrototype()
+    {
+        return $this->objectPrototype;
     }
 
     /**
@@ -107,7 +117,7 @@ class HydratingResultSet extends AbstractResultSet
      */
     public function toArray()
     {
-        $return = array();
+        $return = [];
         foreach ($this as $row) {
             $return[] = $this->getHydrator()->extract($row);
         }

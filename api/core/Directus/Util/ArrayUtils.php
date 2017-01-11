@@ -15,11 +15,38 @@ class ArrayUtils
      */
     public static function get($array, $key, $default = null)
     {
-        if (array_key_exists($key, $array)) {
+        if (static::exists($array, $key)) {
             return $array[$key];
         }
 
+        if (strpos($key, '.') !== FALSE) {
+            $array = static::dot($array);
+            if (static::exists($array, $key)) {
+                return $array[$key];
+            }
+        }
+
         return $default;
+    }
+
+    public static function has($array, $key)
+    {
+        if (static::exists($array, $key)) {
+            return true;
+        }
+
+        if (strpos($key, '.') === FALSE) {
+            return false;
+        }
+
+        $array = static::dot($array);
+
+        return static::exists($array, $key);
+    }
+
+    public static function exists($array, $key)
+    {
+        return array_key_exists($key, $array);
     }
 
     /**
@@ -136,7 +163,7 @@ class ArrayUtils
     }
 
     /**
-     * Get the missing values from a array in another array
+     * Gets the missing values from a array in another array
      *
      * @param array $from
      * @param array $target
@@ -145,14 +172,85 @@ class ArrayUtils
      */
     public static function missing(array $from, array $target)
     {
-        $missing = [];
+        return static::intersection($from, $target, true);
+    }
 
-        foreach($target as $value) {
-            if (!in_array($value, $from)) {
-                $missing[] = $value;
+    /**
+     * Gets the missing values from a array in another array
+     *
+     * Alias of ArrayUtils::missing
+     *
+     * @param array $from
+     * @param array $target
+     *
+     * @return array
+     */
+    public static function without(array $from, array $target)
+    {
+        return static::missing($from, $target);
+    }
+
+    /**
+     * Gets only the values that exists in both array
+     *
+     * @param array $arrayOne
+     * @param array $arrayTwo
+     * @param bool $without
+     *
+     * @return array
+     */
+    public static function intersection(array $arrayOne, array $arrayTwo, $without = false)
+    {
+        $values= [];
+
+        foreach($arrayTwo as $value) {
+            if (in_array($value, $arrayOne) === !$without) {
+                $values[] = $value;
             }
         }
 
-        return $missing;
+        return $values;
+    }
+
+    /**
+     * Checks whether the given array has only numeric keys
+     *
+     * @param $array
+     *
+     * @return bool
+     */
+    public static function isNumericKeys($array)
+    {
+        foreach (array_keys($array) as $key) {
+            if (!is_numeric($key)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Sets or updates the keys in the source array into the default array
+     *
+     * @param array $defaultArray
+     * @param array $sourceArray
+     *
+     * @return array
+     *
+     * @link http://php.net/manual/es/function.array-merge-recursive.php#92195
+     */
+    public static function defaults(array $defaultArray, array $sourceArray)
+    {
+        $newArray = $defaultArray;
+        foreach ($sourceArray as $key => $value) {
+            if (is_array($value) && array_key_exists($key, $defaultArray) && is_array($defaultArray[$key])) {
+                $newArray[$key] = static::defaults($newArray[$key], $value);
+            } else {
+                $newArray[$key] = $value;
+            }
+        }
+
+        return $newArray;
     }
 }

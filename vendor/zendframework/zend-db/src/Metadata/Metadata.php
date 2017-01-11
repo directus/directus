@@ -3,7 +3,7 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2016 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
@@ -11,15 +11,11 @@ namespace Zend\Db\Metadata;
 
 use Zend\Db\Adapter\Adapter;
 
+/**
+ * @deprecated Use Zend\Db\Metadata\Source\Factory::createSourceFromAdapter($adapter)
+ */
 class Metadata implements MetadataInterface
 {
-    /**
-     * Adapter
-     *
-     * @var Adapter
-     */
-    protected $adapter = null;
-
     /**
      * @var MetadataInterface
      */
@@ -32,40 +28,11 @@ class Metadata implements MetadataInterface
      */
     public function __construct(Adapter $adapter)
     {
-        $this->adapter = $adapter;
-        $this->source = $this->createSourceFromAdapter($adapter);
+        $this->source = Source\Factory::createSourceFromAdapter($adapter);
     }
 
     /**
-     * Create source from adapter
-     *
-     * @param  Adapter $adapter
-     * @return Source\AbstractSource
-     */
-    protected function createSourceFromAdapter(Adapter $adapter)
-    {
-        switch ($adapter->getPlatform()->getName()) {
-            case 'MySQL':
-                return new Source\MysqlMetadata($adapter);
-            case 'SQLServer':
-                return new Source\SqlServerMetadata($adapter);
-            case 'SQLite':
-                return new Source\SqliteMetadata($adapter);
-            case 'PostgreSQL':
-                return new Source\PostgresqlMetadata($adapter);
-        }
-
-        throw new \Exception('cannot create source from adapter');
-    }
-
-    // @todo methods
-
-    /**
-     * Get base tables and views
-     *
-     * @param string $schema
-     * @param bool   $includeViews
-     * @return Object\TableObject[]
+     * {@inheritdoc}
      */
     public function getTables($schema = null, $includeViews = false)
     {
@@ -73,10 +40,7 @@ class Metadata implements MetadataInterface
     }
 
     /**
-     * Get base tables and views
-     *
-     * @param string $schema
-     * @return Object\TableObject[]
+     * {@inheritdoc}
      */
     public function getViews($schema = null)
     {
@@ -84,10 +48,7 @@ class Metadata implements MetadataInterface
     }
 
     /**
-     * Get triggers
-     *
-     * @param  string $schema
-     * @return array
+     * {@inheritdoc}
      */
     public function getTriggers($schema = null)
     {
@@ -95,11 +56,7 @@ class Metadata implements MetadataInterface
     }
 
     /**
-     * Get constraints
-     *
-     * @param  string $table
-     * @param  string $schema
-     * @return array
+     * {@inheritdoc}
      */
     public function getConstraints($table, $schema = null)
     {
@@ -107,11 +64,7 @@ class Metadata implements MetadataInterface
     }
 
     /**
-     * Get columns
-     *
-     * @param  string $table
-     * @param  string $schema
-     * @return array
+     * {@inheritdoc}
      */
     public function getColumns($table, $schema = null)
     {
@@ -119,12 +72,7 @@ class Metadata implements MetadataInterface
     }
 
     /**
-     * Get constraint keys
-     *
-     * @param  string $constraint
-     * @param  string $table
-     * @param  string $schema
-     * @return array
+     * {@inheritdoc}
      */
     public function getConstraintKeys($constraint, $table, $schema = null)
     {
@@ -132,12 +80,7 @@ class Metadata implements MetadataInterface
     }
 
     /**
-     * Get constraints
-     *
-     * @param  string $constraintName
-     * @param  string $table
-     * @param  string $schema
-     * @return Object\ConstraintObject
+     * {@inheritdoc}
      */
     public function getConstraint($constraintName, $table, $schema = null)
     {
@@ -145,7 +88,7 @@ class Metadata implements MetadataInterface
     }
 
     /**
-     * Get schemas
+     * {@inheritdoc}
      */
     public function getSchemas()
     {
@@ -153,11 +96,7 @@ class Metadata implements MetadataInterface
     }
 
     /**
-     * Get table names
-     *
-     * @param  string $schema
-     * @param  bool   $includeViews
-     * @return array
+     * {@inheritdoc}
      */
     public function getTableNames($schema = null, $includeViews = false)
     {
@@ -165,11 +104,7 @@ class Metadata implements MetadataInterface
     }
 
     /**
-     * Get table
-     *
-     * @param  string $tableName
-     * @param  string $schema
-     * @return Object\TableObject
+     * {@inheritdoc}
      */
     public function getTable($tableName, $schema = null)
     {
@@ -177,22 +112,15 @@ class Metadata implements MetadataInterface
     }
 
     /**
-     * Get views names
-     *
-     * @param string $schema
-     * @return \Zend\Db\Metadata\Object\TableObject
+     * {@inheritdoc}
      */
     public function getViewNames($schema = null)
     {
-        return $this->source->getTable($schema);
+        return $this->source->getViewNames($schema);
     }
 
     /**
-     * Get view
-     *
-     * @param string $viewName
-     * @param string $schema
-     * @return \Zend\Db\Metadata\Object\TableObject
+     * {@inheritdoc}
      */
     public function getView($viewName, $schema = null)
     {
@@ -200,10 +128,7 @@ class Metadata implements MetadataInterface
     }
 
     /**
-     * Get trigger names
-     *
-     * @param string $schema
-     * @return array
+     * {@inheritdoc}
      */
     public function getTriggerNames($schema = null)
     {
@@ -211,11 +136,7 @@ class Metadata implements MetadataInterface
     }
 
     /**
-     * Get trigger
-     *
-     * @param string $triggerName
-     * @param string $schema
-     * @return \Zend\Db\Metadata\Object\TriggerObject
+     * {@inheritdoc}
      */
     public function getTrigger($triggerName, $schema = null)
     {
@@ -223,11 +144,7 @@ class Metadata implements MetadataInterface
     }
 
     /**
-     * Get column names
-     *
-     * @param string $table
-     * @param string $schema
-     * @return array
+     * {@inheritdoc}
      */
     public function getColumnNames($table, $schema = null)
     {
@@ -235,12 +152,7 @@ class Metadata implements MetadataInterface
     }
 
     /**
-     * Get column
-     *
-     * @param string $columnName
-     * @param string $table
-     * @param string $schema
-     * @return \Zend\Db\Metadata\Object\ColumnObject
+     * {@inheritdoc}
      */
     public function getColumn($columnName, $table, $schema = null)
     {

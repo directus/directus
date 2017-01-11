@@ -50,14 +50,18 @@ The template name can be any valid Twig expression:
     {% include some_var %}
     {% include ajax ? 'ajax.html' : 'not_ajax.html' %}
 
-And if the expression evaluates to a ``Twig_Template`` object, Twig will use it
-directly::
+And if the expression evaluates to a ``Twig_Template`` or a
+``Twig_TemplateWrapper`` instance, Twig will use it directly::
 
     // {% include template %}
 
+    // deprecated as of Twig 1.28
     $template = $twig->loadTemplate('some_template.twig');
 
-    $twig->loadTemplate('template.twig')->display(array('template' => $template));
+    // as of Twig 1.28
+    $template = $twig->load('some_template.twig');
+
+    $twig->display('template.twig', array('template' => $template));
 
 .. versionadded:: 1.2
     The ``ignore missing`` feature has been added in Twig 1.2.

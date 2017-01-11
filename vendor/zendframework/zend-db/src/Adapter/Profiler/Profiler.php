@@ -3,7 +3,7 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2016 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
@@ -17,7 +17,7 @@ class Profiler implements ProfilerInterface
     /**
      * @var array
      */
-    protected $profiles = array();
+    protected $profiles = [];
 
     /**
      * @var null
@@ -31,13 +31,13 @@ class Profiler implements ProfilerInterface
      */
     public function profilerStart($target)
     {
-        $profileInformation = array(
+        $profileInformation = [
             'sql' => '',
             'parameters' => null,
             'start' => microtime(true),
             'end' => null,
             'elapse' => null
-        );
+        ];
         if ($target instanceof StatementContainerInterface) {
             $profileInformation['sql'] = $target->getSql();
             $profileInformation['parameters'] = clone $target->getParameterContainer();

@@ -1,0 +1,23 @@
+{
+  "name": "directus/permissions",
+  "description": "Directus Permissions (ACL) Library",
+  "keywords": [
+    "directus",
+    "permissions",
+    "acl"
+  ],
+  "license": "MIT",
+  "require": {
+    "php": ">=5.4.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Directus\\Permissions\\": ""
+    }
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-d64": "0.9.x-dev"
+    }
+  }
+}

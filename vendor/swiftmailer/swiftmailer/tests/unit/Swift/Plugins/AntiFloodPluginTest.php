@@ -52,7 +52,7 @@ class Swift_Plugins_AntiFloodPluginTest extends \PHPUnit_Framework_TestCase
 
     public function testPluginCanSleepDuringRestart()
     {
-        $sleeper = $this->getMock('Swift_Plugins_Sleeper');
+        $sleeper = $this->getMockBuilder('Swift_Plugins_Sleeper')->getMock();
         $sleeper->expects($this->once())
                 ->method('sleep')
                 ->with(10);
@@ -75,7 +75,7 @@ class Swift_Plugins_AntiFloodPluginTest extends \PHPUnit_Framework_TestCase
 
     private function _createTransport()
     {
-        return $this->getMock('Swift_Transport');
+        return $this->getMockBuilder('Swift_Transport')->getMock();
     }
 
     private function _createSendEvent($transport)

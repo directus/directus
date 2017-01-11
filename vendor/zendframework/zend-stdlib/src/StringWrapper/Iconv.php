@@ -3,7 +3,7 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
@@ -19,7 +19,7 @@ class Iconv extends AbstractStringWrapper
      * @var string[]
      * @link http://www.gnu.org/software/libiconv/
      */
-    protected static $encodings = array(
+    protected static $encodings = [
         // European languages
         'ASCII',
         'ISO-8859-1',
@@ -195,7 +195,7 @@ class Iconv extends AbstractStringWrapper
         // Platform specifics
         'ATARIST',
         'RISCOS-LATIN1',
-    );
+    ];
 
     /**
      * Get a list of supported character encodings

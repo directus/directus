@@ -147,7 +147,7 @@ function getUsers()
             $avatar = DirectusUsersTableGateway::get_avatar($user['email']);
             if ($avatar) {
                 $user['avatar'] = $avatar;
-                array_push($usersRowsToUpdate, $user);
+                array_push($usersRowsToUpdate, ['id' => $user['id'], 'avatar' => $user['avatar']]);
             }
         }
     }

@@ -21,12 +21,12 @@ class Thumbnail
 
     public static function generateThumbnail($targetContent, $format, $thumbnailSize, $cropEnabled)
     {
-        if (in_array($format, static::$nonImageFormatsSupported)) {
+        if (in_array(strtolower($format), static::$nonImageFormatsSupported)) {
             $format = 'jpeg';
             $targetContent = static::createImageFromNonImage($targetContent, $format);
         }
 
-        if (!in_array($format, static::$imageFormatsSupported)) {
+        if (!in_array(strtolower($format), static::$imageFormatsSupported)) {
             return false;
         }
 
@@ -117,7 +117,7 @@ class Thumbnail
         ob_start();
         // force $path to be NULL to dump writeImage on the stream
         $path = NULL;
-        switch ($extension) {
+        switch (strtolower($extension)) {
             case 'jpg':
             case 'jpeg':
                 imagejpeg($img, $path, $quality);
@@ -137,5 +137,4 @@ class Thumbnail
         }
         return ob_get_clean();
     }
-
 }

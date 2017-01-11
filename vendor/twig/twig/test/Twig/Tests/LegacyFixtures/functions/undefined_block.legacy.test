@@ -1,0 +1,12 @@
+--TEST--
+"block" function with undefined block
+--TEMPLATE--
+{% extends "base.twig" %}
+{% block foo %}{{ parent() }}{{ block('unknown') }}{{ block('bar') }}{% endblock %}
+--TEMPLATE(base.twig)--
+{% block foo %}Foo{% endblock %}
+{% block bar %}Bar{% endblock %}
+--DATA--
+return array()
+--EXPECT--
+FooBarBar

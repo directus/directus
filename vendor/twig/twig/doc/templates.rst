@@ -424,10 +424,8 @@ everything by default.
 
 Twig supports both, automatic escaping is enabled by default.
 
-.. note::
-
-    Automatic escaping is only supported if the *escaper* extension has been
-    enabled (which is the default).
+The automatic escaping strategy can be configured via the
+:ref:`autoescape<environment_options>` option and defaults to ``html``.
 
 Working with Manual Escaping
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~

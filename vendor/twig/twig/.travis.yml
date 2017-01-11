@@ -14,11 +14,15 @@ php:
     - 5.5
     - 5.6
     - 7.0
+    - 7.1
     - hhvm
 
 env:
     - TWIG_EXT=no
     - TWIG_EXT=yes
+
+before_install:
+    - if [[ ! $TRAVIS_PHP_VERSION = hhvm* ]]; then phpenv config-rm xdebug.ini || echo "xdebug not available"; fi
 
 install:
     # Composer is not available on PHP 5.2
@@ -34,6 +38,7 @@ matrix:
     exclude:
         - php: hhvm
           env: TWIG_EXT=yes
-    allow_failures:
         - php: 7.0
+          env: TWIG_EXT=yes
+        - php: 7.1
           env: TWIG_EXT=yes

@@ -14,6 +14,7 @@
         <ini name="intl.default_locale" value="en"/>
         <ini name="intl.error_level" value="0"/>
         <ini name="memory_limit" value="-1"/>
+        <ini name="error_reporting" value="-1" />
     </php>
 
     <testsuites>
@@ -32,6 +33,7 @@
     </testsuites>
 
     <listeners>
-        <listener class="Mockery\Adapter\Phpunit\TestListener"/>
+        <listener class="Symfony\Bridge\PhpUnit\SymfonyTestsListener" />
+        <listener class="Mockery\Adapter\Phpunit\TestListener" />
     </listeners>
 </phpunit>

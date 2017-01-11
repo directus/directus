@@ -3,7 +3,7 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2016 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
@@ -39,26 +39,26 @@ class SqliteMetadata extends AbstractSource
 
         $p = $this->adapter->getPlatform();
 
-        $sql = 'SELECT "name", "type", "sql" FROM ' . $p->quoteIdentifierChain(array($schema, 'sqlite_master'))
+        $sql = 'SELECT "name", "type", "sql" FROM ' . $p->quoteIdentifierChain([$schema, 'sqlite_master'])
              . ' WHERE "type" IN (\'table\',\'view\') AND "name" NOT LIKE \'sqlite_%\'';
 
         $results = $this->adapter->query($sql, Adapter::QUERY_MODE_EXECUTE);
-        $tables = array();
+        $tables = [];
         foreach ($results->toArray() as $row) {
             if ('table' == $row['type']) {
-                $table = array(
+                $table = [
                     'table_type' => 'BASE TABLE',
                     'view_definition' => null, // VIEW only
                     'check_option' => null,    // VIEW only
                     'is_updatable' => null,    // VIEW only
-                );
+                ];
             } else {
-                $table = array(
+                $table = [
                     'table_type' => 'VIEW',
                     'view_definition' => null,
                     'check_option' => 'NONE',
                     'is_updatable' => false,
-                );
+                ];
 
                 // Parse out extra data
                 if (null !== ($data = $this->parseView($row['sql']))) {
@@ -78,15 +78,12 @@ class SqliteMetadata extends AbstractSource
         $this->prepareDataHierarchy('columns', $schema, $table);
         $this->prepareDataHierarchy('sqlite_columns', $schema, $table);
 
-        $p = $this->adapter->getPlatform();
-
-
         $results = $this->fetchPragma('table_info', $table, $schema);
 
-        $columns = array();
+        $columns = [];
 
         foreach ($results as $row) {
-            $columns[$row['name']] = array(
+            $columns[$row['name']] = [
                 // cid appears to be zero-based, ordinal position needs to be one-based
                 'ordinal_position'          => $row['cid'] + 1,
                 'column_default'            => $row['dflt_value'],
@@ -97,8 +94,8 @@ class SqliteMetadata extends AbstractSource
                 'numeric_precision'         => null,
                 'numeric_scale'             => null,
                 'numeric_unsigned'          => null,
-                'erratas'                   => array(),
-            );
+                'erratas'                   => [],
+            ];
             // TODO: populate character_ and numeric_values with correct info
         }
 
@@ -115,7 +112,7 @@ class SqliteMetadata extends AbstractSource
         $this->prepareDataHierarchy('constraints', $schema, $table);
 
         $this->loadColumnData($table, $schema);
-        $primaryKey = array();
+        $primaryKey = [];
 
         foreach ($this->data['sqlite_columns'][$schema][$table] as $col) {
             if ((bool) $col['pk']) {
@@ -126,18 +123,18 @@ class SqliteMetadata extends AbstractSource
         if (empty($primaryKey)) {
             $primaryKey = null;
         }
-        $constraints = array();
+        $constraints = [];
         $indexes = $this->fetchPragma('index_list', $table, $schema);
         foreach ($indexes as $index) {
             if (!((bool) $index['unique'])) {
                 continue;
             }
-            $constraint = array(
+            $constraint = [
                 'constraint_name' => $index['name'],
                 'constraint_type' => 'UNIQUE',
                 'table_name'      => $table,
-                'columns'         => array(),
-            );
+                'columns'         => [],
+            ];
 
             $info = $this->fetchPragma('index_info', $index['name'], $schema);
 
@@ -153,12 +150,12 @@ class SqliteMetadata extends AbstractSource
 
         if (null !== $primaryKey) {
             $constraintName = '_zf_' . $table . '_PRIMARY';
-            $constraints[$constraintName] = array(
+            $constraints[$constraintName] = [
                 'constraint_name'  => $constraintName,
                 'constraint_type'  => 'PRIMARY KEY',
                 'table_name'       => $table,
                 'columns' => $primaryKey,
-            );
+            ];
         }
 
         $foreignKeys = $this->fetchPragma('foreign_key_list', $table, $schema);
@@ -168,19 +165,19 @@ class SqliteMetadata extends AbstractSource
             if ($id !== $fk['id']) {
                 $id = $fk['id'];
                 $name = '_zf_' . $table . '_FOREIGN_KEY_' . ($id + 1);
-                $constraints[$name] = array(
+                $constraints[$name] = [
                     'constraint_name'  => $name,
                     'constraint_type'  => 'FOREIGN KEY',
                     'table_name'       => $table,
-                    'columns'          => array(),
+                    'columns'          => [],
                     'referenced_table_schema' => $schema,
                     'referenced_table_name'   => $fk['table'],
-                    'referenced_columns'      => array(),
+                    'referenced_columns'      => [],
                     // TODO: Verify match, on_update, and on_delete values conform to SQL Standard
                     'match_option'     => strtoupper($fk['match']),
                     'update_rule'      => strtoupper($fk['on_update']),
                     'delete_rule'      => strtoupper($fk['on_delete']),
-                );
+                ];
             }
             $constraints[$name]['columns'][] = $fk['from'];
             $constraints[$name]['referenced_columns'][] = $fk['to'];
@@ -200,13 +197,13 @@ class SqliteMetadata extends AbstractSource
         $p = $this->adapter->getPlatform();
 
         $sql = 'SELECT "name", "tbl_name", "sql" FROM '
-             . $p->quoteIdentifierChain(array($schema, 'sqlite_master'))
+             . $p->quoteIdentifierChain([$schema, 'sqlite_master'])
              . ' WHERE "type" = \'trigger\'';
 
         $results = $this->adapter->query($sql, Adapter::QUERY_MODE_EXECUTE);
-        $triggers = array();
+        $triggers = [];
         foreach ($results->toArray() as $row) {
-            $trigger = array(
+            $trigger = [
                 'trigger_name'               => $row['name'],
                 'event_manipulation'         => null, // in $row['sql']
                 'event_object_catalog'       => null,
@@ -222,7 +219,7 @@ class SqliteMetadata extends AbstractSource
                 'action_reference_old_row'   => 'OLD',
                 'action_reference_new_row'   => 'NEW',
                 'created'                    => null,
-            );
+            ];
 
             // Parse out extra data
             if (null !== ($data = $this->parseTrigger($row['sql']))) {
@@ -253,34 +250,32 @@ class SqliteMetadata extends AbstractSource
         if ($results instanceof ResultSetInterface) {
             return $results->toArray();
         }
-        return array();
+        return [];
     }
 
     protected function parseView($sql)
     {
         static $re = null;
         if (null === $re) {
-            $identifier = $this->getIdentifierRegularExpression();
-            $identifierList = $this->getIdentifierListRegularExpression();
             $identifierChain = $this->getIdentifierChainRegularExpression();
-            $re = $this->buildRegularExpression(array(
+            $re = $this->buildRegularExpression([
                 'CREATE',
-                array('TEMP|TEMPORARY'),
+                ['TEMP|TEMPORARY'],
                 'VIEW',
-                array('IF', 'NOT', 'EXISTS'),
+                ['IF', 'NOT', 'EXISTS'],
                 $identifierChain,
                 'AS',
                 '(?<view_definition>.+)',
-                array(';'),
-            ));
+                [';'],
+            ]);
         }
 
         if (!preg_match($re, $sql, $matches)) {
-            return null;
+            return;
         }
-        return array(
+        return [
             'view_definition' => $matches['view_definition'],
-        );
+        ];
     }
 
     protected function parseTrigger($sql)
@@ -290,30 +285,30 @@ class SqliteMetadata extends AbstractSource
             $identifier = $this->getIdentifierRegularExpression();
             $identifierList = $this->getIdentifierListRegularExpression();
             $identifierChain = $this->getIdentifierChainRegularExpression();
-            $re = $this->buildRegularExpression(array(
+            $re = $this->buildRegularExpression([
                 'CREATE',
-                array('TEMP|TEMPORARY'),
+                ['TEMP|TEMPORARY'],
                 'TRIGGER',
-                array('IF', 'NOT', 'EXISTS'),
+                ['IF', 'NOT', 'EXISTS'],
                 $identifierChain,
-                array('(?<action_timing>BEFORE|AFTER|INSTEAD\\s+OF)',),
+                ['(?<action_timing>BEFORE|AFTER|INSTEAD\\s+OF)', ],
                 '(?<event_manipulation>DELETE|INSERT|UPDATE)',
-                array('OF', '(?<column_usage>' . $identifierList . ')'),
+                ['OF', '(?<column_usage>' . $identifierList . ')'],
                 'ON',
                 '(?<event_object_table>' . $identifier . ')',
-                array('FOR', 'EACH', 'ROW'),
-                array('WHEN', '(?<action_condition>.+)'),
+                ['FOR', 'EACH', 'ROW'],
+                ['WHEN', '(?<action_condition>.+)'],
                 '(?<action_statement>BEGIN',
                 '.+',
                 'END)',
-                array(';'),
-            ));
+                [';'],
+            ]);
         }
 
         if (!preg_match($re, $sql, $matches)) {
-            return null;
+            return;
         }
-        $data = array();
+        $data = [];
 
         foreach ($matches as $key => $value) {
             if (is_string($key)) {
@@ -359,12 +354,12 @@ class SqliteMetadata extends AbstractSource
     {
         static $re = null;
         if (null === $re) {
-            $re = '(?:' . implode('|', array(
+            $re = '(?:' . implode('|', [
                 '"(?:[^"\\\\]++|\\\\.)*+"',
                 '`(?:[^`]++|``)*+`',
                 '\\[[^\\]]+\\]',
                 '[^\\s\\.]+',
-            )) . ')';
+            ]) . ')';
         }
 
         return $re;

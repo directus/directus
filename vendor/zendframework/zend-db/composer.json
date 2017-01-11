@@ -13,26 +13,31 @@
         }
     },
     "require": {
-        "php": ">=5.3.3",
-        "zendframework/zend-stdlib": "2.2.*@dev"
+        "php": "^5.5 || ^7.0",
+        "zendframework/zend-stdlib": "^2.7 || ^3.0"
     },
     "require-dev": {
-        "zendframework/zend-eventmanager": "self.version",
-        "zendframework/zend-servicemanager": "self.version",
-        "zendframework/zend-stdlib": "self.version",
+        "zendframework/zend-eventmanager": "^2.6.2 || ^3.0",
+        "zendframework/zend-hydrator": "^1.1 || ^2.1",
+        "zendframework/zend-servicemanager": "^2.7.5 || ^3.0.3",
         "fabpot/php-cs-fixer": "1.7.*",
-        "satooshi/php-coveralls": "dev-master",
         "phpunit/PHPUnit": "~4.0"
     },
     "suggest": {
         "zendframework/zend-eventmanager": "Zend\\EventManager component",
-        "zendframework/zend-servicemanager": "Zend\\ServiceManager component",
-        "zendframework/zend-stdlib": "self.version"
+        "zendframework/zend-hydrator": "Zend\\Hydrator component for using HydratingResultSets",
+        "zendframework/zend-servicemanager": "Zend\\ServiceManager component"
     },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
     "extra": {
         "branch-alias": {
-            "dev-master": "2.2-dev",
-            "dev-develop": "2.3-dev"
+            "dev-master": "2.8-dev",
+            "dev-develop": "2.9-dev"
+        },
+        "zf": {
+            "component": "Zend\\Db",
+            "config-provider": "Zend\\Db\\ConfigProvider"
         }
     },
     "autoload-dev": {

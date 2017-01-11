@@ -3,7 +3,7 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
@@ -37,11 +37,10 @@ class SplPriorityQueue extends \SplPriorityQueue implements Serializable
     public function insert($datum, $priority)
     {
         if (!is_array($priority)) {
-            $priority = array($priority, $this->serial--);
+            $priority = [$priority, $this->serial--];
         }
         parent::insert($datum, $priority);
     }
-
 
     /**
      * Serialize to an array
@@ -52,13 +51,12 @@ class SplPriorityQueue extends \SplPriorityQueue implements Serializable
      */
     public function toArray()
     {
-        $array = array();
+        $array = [];
         foreach (clone $this as $item) {
             $array[] = $item;
         }
         return $array;
     }
-
 
     /**
      * Serialize
@@ -70,7 +68,7 @@ class SplPriorityQueue extends \SplPriorityQueue implements Serializable
         $clone = clone $this;
         $clone->setExtractFlags(self::EXTR_BOTH);
 
-        $data = array();
+        $data = [];
         foreach ($clone as $item) {
             $data[] = $item;
         }

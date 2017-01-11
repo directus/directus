@@ -3,13 +3,15 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2016 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
 namespace Zend\Db\Sql\Predicate;
 
-class Between implements PredicateInterface
+use Zend\Db\Sql\AbstractExpression;
+
+class Between extends AbstractExpression implements PredicateInterface
 {
     protected $specification = '%1$s BETWEEN %2$s AND %3$s';
     protected $identifier    = null;
@@ -131,12 +133,15 @@ class Between implements PredicateInterface
      */
     public function getExpressionData()
     {
-        return array(
-            array(
+        list($values[], $types[]) = $this->normalizeArgument($this->identifier, self::TYPE_IDENTIFIER);
+        list($values[], $types[]) = $this->normalizeArgument($this->minValue,   self::TYPE_VALUE);
+        list($values[], $types[]) = $this->normalizeArgument($this->maxValue,   self::TYPE_VALUE);
+        return [
+            [
                 $this->getSpecification(),
-                array($this->identifier, $this->minValue, $this->maxValue),
-                array(self::TYPE_IDENTIFIER, self::TYPE_VALUE, self::TYPE_VALUE),
-            ),
-        );
+                $values,
+                $types,
+            ],
+        ];
     }
 }

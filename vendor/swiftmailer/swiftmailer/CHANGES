@@ -1,6 +1,27 @@
 Changelog
 =========
 
+5.4.6 (2017-XX-XX)
+------------------
+
+ * n/a
+
+
+5.4.5 (2016-12-29)
+------------------
+
+ * SECURITY FIX:  fixed CVE-2016-10074 by disallowing potentially unsafe shell characters
+
+   Prior to 5.4.5, the mail transport (Swift_Transport_MailTransport) was vulnerable to passing
+   arbitrary shell arguments if the "From", "ReturnPath" or "Sender" header came
+   from a non-trusted source, potentially allowing Remote Code Execution
+ * deprecated the mail transport
+
+5.4.4 (2016-11-23)
+------------------
+
+ * reverted escaping command-line args to mail (PHP mail() function already does it)
+
 5.4.3 (2016-07-08)
 ------------------
 
@@ -23,7 +44,7 @@ Changelog
  * added return-path header to the ignoredHeaders list of DKIMSigner
  * fixed crlf for subject using mail
  * fixed add soft line break only when necessary
- * fixed escaping command-line args to Sendmail
+ * fixed escaping command-line args to mail
 
 5.4.1 (2015-06-06)
 ------------------

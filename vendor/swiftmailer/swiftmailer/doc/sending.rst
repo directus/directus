@@ -10,7 +10,7 @@ create the Mailer, then you use the Mailer to send the message.
 To send a Message:
 
 * Create a Transport from one of the provided Transports --
-  ``Swift_SmtpTransport``, ``Swift_SendmailTransport``, ``Swift_MailTransport``
+  ``Swift_SmtpTransport``, ``Swift_SendmailTransport``
   or one of the aggregate Transports.
 
 * Create an instance of the ``Swift_Mailer`` class, using the Transport as
@@ -46,13 +46,10 @@ recipients are delivered to successfully then the value 5 will be returned.
       ;
 
     /*
-    You could alternatively use a different transport such as Sendmail or Mail:
+    You could alternatively use a different transport such as Sendmail:
 
     // Sendmail
     $transport = Swift_SendmailTransport::newInstance('/usr/sbin/sendmail -bs');
-
-    // Mail
-    $transport = Swift_MailTransport::newInstance();
     */
 
     // Create the Mailer using your created Transport
@@ -350,39 +347,6 @@ Serious drawbacks when using this Transport are:
 
 It's a last resort, and we say that with a passion!
 
-Using the Mail Transport
-^^^^^^^^^^^^^^^^^^^^^^^^
-
-To use the Mail Transport you simply need to call
-``Swift_MailTransport::newInstance()``. It's unlikely you'll need to configure
-the Transport.
-
-To use the Mail Transport:
-
-* Call ``Swift_MailTransport::newInstance()``.
-
-* Use the returned object to create the Mailer.
-
-Messages will be sent using the ``mail()`` function.
-
-.. note::
-
-    The ``mail()`` function can take a ``$additional_parameters`` parameter.
-    Swift Mailer sets this to "``-f%s``" by default, where the "``%s``" is
-    substituted with the address of the sender (via a ``sprintf()``) at send
-    time. You may override this default by passing an argument to
-    ``newInstance()``.
-
-    .. code-block:: php
-
-        require_once 'lib/swift_required.php';
-
-        // Create the Transport
-        $transport = Swift_MailTransport::newInstance();
-
-        // Create the Mailer using your created Transport
-        $mailer = Swift_Mailer::newInstance($transport);
-
 Available Methods for Sending Messages
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -414,7 +378,7 @@ To send a Message with ``send()``:
 
 * Create a Transport from one of the provided Transports --
   ``Swift_SmtpTransport``, ``Swift_SendmailTransport``,
-  ``Swift_MailTransport`` or one of the aggregate Transports.
+  or one of the aggregate Transports.
 
 * Create an instance of the ``Swift_Mailer`` class, using the Transport as
   it's constructor parameter.
@@ -474,7 +438,7 @@ own address shows up in the ``To:`` field, follow the following recipe:
 
 * Create a Transport from one of the provided Transports --
   ``Swift_SmtpTransport``, ``Swift_SendmailTransport``,
-  ``Swift_MailTransport`` or one of the aggregate Transports.
+  or one of the aggregate Transports.
 
 * Create an instance of the ``Swift_Mailer`` class, using the Transport as
   it's constructor parameter.

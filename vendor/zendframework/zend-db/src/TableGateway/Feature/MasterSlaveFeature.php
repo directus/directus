@@ -3,7 +3,7 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2016 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
@@ -14,7 +14,6 @@ use Zend\Db\Sql\Sql;
 
 class MasterSlaveFeature extends AbstractFeature
 {
-
     /**
      * @var AdapterInterface
      */
@@ -63,7 +62,7 @@ class MasterSlaveFeature extends AbstractFeature
     public function postInitialize()
     {
         $this->masterSql = $this->tableGateway->sql;
-        if ($this->slaveSql == null) {
+        if ($this->slaveSql === null) {
             $this->slaveSql = new Sql(
                 $this->slaveAdapter,
                 $this->tableGateway->sql->getTable(),
@@ -89,5 +88,4 @@ class MasterSlaveFeature extends AbstractFeature
     {
         $this->tableGateway->sql = $this->masterSql;
     }
-
 }

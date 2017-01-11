@@ -12,7 +12,7 @@
 {% block list %}<ul>{{ block('children') }}</ul>{% endblock %}
 {% block children %}{% set currentItem = item %}{% for item in currentItem %}{{ block('item') }}{% endfor %}{% set item = currentItem %}{% endblock %}
 {% block item %}<li>{% if item is not iterable %}{{ block('label') }}{% else %}{{ block('list') }}{% endif %}</li>{% endblock %}
-{% block label %}{{ item }}{{ block('unknown') }}{% endblock %}
+{% block label %}{{ item }}{% endblock %}
 --TEMPLATE(base.twig)--
 {{ block('list') }}
 --DATA--

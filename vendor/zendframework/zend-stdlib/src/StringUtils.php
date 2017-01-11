@@ -3,7 +3,7 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
@@ -19,7 +19,6 @@ use Zend\Stdlib\StringWrapper\StringWrapperInterface;
  */
 abstract class StringUtils
 {
-
     /**
      * Ordered list of registered string wrapper instances
      *
@@ -32,14 +31,14 @@ abstract class StringUtils
      *
      * @var string[]
      */
-    protected static $singleByteEncodings = array(
+    protected static $singleByteEncodings = [
         'ASCII', '7BIT', '8BIT',
         'ISO-8859-1', 'ISO-8859-2', 'ISO-8859-3', 'ISO-8859-4', 'ISO-8859-5',
         'ISO-8859-6', 'ISO-8859-7', 'ISO-8859-8', 'ISO-8859-9', 'ISO-8859-10',
         'ISO-8859-11', 'ISO-8859-13', 'ISO-8859-14', 'ISO-8859-15', 'ISO-8859-16',
         'CP-1251', 'CP-1252',
         // TODO
-    );
+    ];
 
     /**
      * Is PCRE compiled with Unicode support?
@@ -56,7 +55,7 @@ abstract class StringUtils
     public static function getRegisteredWrappers()
     {
         if (static::$wrapperRegistry === null) {
-            static::$wrapperRegistry = array();
+            static::$wrapperRegistry = [];
 
             if (extension_loaded('intl')) {
                 static::$wrapperRegistry[] = 'Zend\Stdlib\StringWrapper\Intl';

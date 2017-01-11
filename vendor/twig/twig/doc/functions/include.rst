@@ -37,14 +37,18 @@ You can disable access to the context by setting ``with_context`` to
     {# no variables will be accessible #}
     {{ include('template.html', with_context = false) }}
 
-And if the expression evaluates to a ``Twig_Template`` object, Twig will use it
-directly::
+And if the expression evaluates to a ``Twig_Template`` or a
+``Twig_TemplateWrapper`` instance, Twig will use it directly::
 
     // {{ include(template) }}
 
+    // deprecated as of Twig 1.28
     $template = $twig->loadTemplate('some_template.twig');
 
-    $twig->loadTemplate('template.twig')->display(array('template' => $template));
+    // as of Twig 1.28
+    $template = $twig->load('some_template.twig');
+
+    $twig->display('template.twig', array('template' => $template));
 
 When you set the ``ignore_missing`` flag, Twig will return an empty string if
 the template does not exist:

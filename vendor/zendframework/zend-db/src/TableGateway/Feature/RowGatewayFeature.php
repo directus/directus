@@ -3,7 +3,7 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2016 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
@@ -16,11 +16,10 @@ use Zend\Db\TableGateway\Exception;
 
 class RowGatewayFeature extends AbstractFeature
 {
-
     /**
      * @var array
      */
-    protected $constructorArguments = array();
+    protected $constructorArguments = [];
 
     /**
      * @param null $primaryKey
@@ -46,7 +45,7 @@ class RowGatewayFeature extends AbstractFeature
         if (isset($args[0])) {
             if (is_string($args[0])) {
                 $primaryKey = $args[0];
-                $rowGatewayPrototype = new RowGateway($primaryKey, $this->tableGateway->table, $this->tableGateway->adapter, $this->tableGateway->sql);
+                $rowGatewayPrototype = new RowGateway($primaryKey, $this->tableGateway->table, $this->tableGateway->adapter);
                 $resultSetPrototype->setArrayObjectPrototype($rowGatewayPrototype);
             } elseif ($args[0] instanceof RowGatewayInterface) {
                 $rowGatewayPrototype = $args[0];
@@ -61,7 +60,7 @@ class RowGatewayFeature extends AbstractFeature
                 );
             }
             $primaryKey = $metadata->sharedData['metadata']['primaryKey'];
-            $rowGatewayPrototype = new RowGateway($primaryKey, $this->tableGateway->table, $this->tableGateway->adapter, $this->tableGateway->sql);
+            $rowGatewayPrototype = new RowGateway($primaryKey, $this->tableGateway->table, $this->tableGateway->adapter);
             $resultSetPrototype->setArrayObjectPrototype($rowGatewayPrototype);
         }
     }

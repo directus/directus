@@ -3,24 +3,29 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2016 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
 namespace Zend\Db\Adapter\Platform;
 
-class Oracle implements PlatformInterface
-{
+use Zend\Db\Adapter\Driver\DriverInterface;
+use Zend\Db\Adapter\Driver\Oci8\Oci8;
+use Zend\Db\Adapter\Driver\Pdo\Pdo;
+use \Zend\Db\Adapter\Exception\InvalidArgumentException;
 
+class Oracle extends AbstractPlatform
+{
     /**
-     * @var bool
+     * @var null|Pdo|Oci8
      */
-    protected $quoteIdentifiers = true;
+    protected $resource = null;
 
     /**
      * @param array $options
+     * @param null|Oci8|Pdo $driver
      */
-    public function __construct($options = array())
+    public function __construct($options = [], $driver = null)
     {
         if (isset($options['quote_identifiers'])
             && ($options['quote_identifiers'] == false
@@ -28,12 +33,45 @@ class Oracle implements PlatformInterface
         ) {
             $this->quoteIdentifiers = false;
         }
+
+        if ($driver) {
+            $this->setDriver($driver);
+        }
     }
 
     /**
-     * Get name
-     *
-     * @return string
+     * @param Pdo|Oci8 $driver
+     * @throws InvalidArgumentException
+     * @return $this
+     */
+    public function setDriver($driver)
+    {
+        if ($driver instanceof Oci8
+            || ($driver instanceof Pdo && $driver->getDatabasePlatformName() == 'Oracle')
+            || ($driver instanceof Pdo && $driver->getDatabasePlatformName() == 'Sqlite')
+            || ($driver instanceof \oci8)
+            || ($driver instanceof PDO && $driver->getAttribute(PDO::ATTR_DRIVER_NAME) == 'oci')
+        ) {
+            $this->resource = $driver;
+            return $this;
+        }
+
+        throw new InvalidArgumentException(
+            '$driver must be a Oci8 or Oracle PDO Zend\Db\Adapter\Driver, '
+            . 'Oci8 instance, or Oci PDO instance'
+        );
+    }
+
+    /**
+     * @return null|Pdo|Oci8
+     */
+    public function getDriver()
+    {
+        return $this->resource;
+    }
+
+    /**
+     * {@inheritDoc}
      */
     public function getName()
     {
@@ -41,149 +79,51 @@ class Oracle implements PlatformInterface
     }
 
     /**
-     * Get quote identifier symbol
-     *
-     * @return string
-     */
-    public function getQuoteIdentifierSymbol()
-    {
-        return '"';
-    }
-
-    /**
-     * Quote identifier
-     *
-     * @param  string $identifier
-     * @return string
-     */
-    public function quoteIdentifier($identifier)
-    {
-        if ($this->quoteIdentifiers === false) {
-            return $identifier;
-        }
-        return '"' . str_replace('"', '\\' . '"', $identifier) . '"';
-    }
-
-    /**
-     * Quote identifier chain
-     *
-     * @param string|string[] $identifierChain
-     * @return string
+     * {@inheritDoc}
      */
     public function quoteIdentifierChain($identifierChain)
     {
         if ($this->quoteIdentifiers === false) {
-            return (is_array($identifierChain)) ? implode('.', $identifierChain) : $identifierChain;
+            return implode('.', (array) $identifierChain);
         }
-        $identifierChain = str_replace('"', '\\"', $identifierChain);
-        if (is_array($identifierChain)) {
-            $identifierChain = implode('"."', $identifierChain);
-        }
-        return '"' . $identifierChain . '"';
+
+        return '"' . implode('"."', (array) str_replace('"', '\\"', $identifierChain)) . '"';
     }
 
     /**
-     * Get quote value symbol
-     *
-     * @return string
-     */
-    public function getQuoteValueSymbol()
-    {
-        return '\'';
-    }
-
-    /**
-     * Quote value
-     *
-     * @param  string $value
-     * @return string
+     * {@inheritDoc}
      */
     public function quoteValue($value)
     {
+        if ($this->resource instanceof DriverInterface) {
+            $this->resource = $this->resource->getConnection()->getResource();
+        }
+
+        if ($this->resource) {
+            if ($this->resource instanceof PDO) {
+                return $this->resource->quote($value);
+            }
+
+            if (get_resource_type($this->resource) == 'oci8 connection'
+                || get_resource_type($this->resource) == 'oci8 persistent connection'
+            ) {
+                return "'" . addcslashes(str_replace("'", "''", $value), "\x00\n\r\"\x1a") . "'";
+            }
+        }
+
         trigger_error(
             'Attempting to quote a value in ' . __CLASS__ . ' without extension/driver support '
-                . 'can introduce security vulnerabilities in a production environment.'
+            . 'can introduce security vulnerabilities in a production environment.'
         );
-        return '\'' . addcslashes($value, "\x00\n\r\\'\"\x1a") . '\'';
+
+        return "'" . addcslashes(str_replace("'", "''", $value), "\x00\n\r\"\x1a") . "'";
     }
 
     /**
-     * Quote Trusted Value
-     *
-     * The ability to quote values without notices
-     *
-     * @param $value
-     * @return mixed
+     * {@inheritDoc}
      */
     public function quoteTrustedValue($value)
     {
-        return '\'' . addcslashes($value, "\x00\n\r\\'\"\x1a") . '\'';
+        return "'" . addcslashes(str_replace('\'', '\'\'', $value), "\x00\n\r\"\x1a") . "'";
     }
-
-    /**
-     * Quote value list
-     *
-     * @param string|string[] $valueList
-     * @return string
-     */
-    public function quoteValueList($valueList)
-    {
-        if (!is_array($valueList)) {
-            return $this->quoteValue($valueList);
-        }
-
-        $value = reset($valueList);
-        do {
-            $valueList[key($valueList)] = $this->quoteValue($value);
-        } while ($value = next($valueList));
-        return implode(', ', $valueList);
-    }
-
-    /**
-     * Get identifier separator
-     *
-     * @return string
-     */
-    public function getIdentifierSeparator()
-    {
-        return '.';
-    }
-
-    /**
-     * Quote identifier in fragment
-     *
-     * @param  string $identifier
-     * @param  array $safeWords
-     * @return string
-     */
-    public function quoteIdentifierInFragment($identifier, array $safeWords = array())
-    {
-        if ($this->quoteIdentifiers === false) {
-            return $identifier;
-        }
-        $parts = preg_split('#([\.\s\W])#', $identifier, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
-        if ($safeWords) {
-            $safeWords = array_flip($safeWords);
-            $safeWords = array_change_key_case($safeWords, CASE_LOWER);
-        }
-        foreach ($parts as $i => $part) {
-            if ($safeWords && isset($safeWords[strtolower($part)])) {
-                continue;
-            }
-            switch ($part) {
-                case ' ':
-                case '.':
-                case '*':
-                case 'AS':
-                case 'As':
-                case 'aS':
-                case 'as':
-                    break;
-                default:
-                    $parts[$i] = '"' . str_replace('"', '\\' . '"', $part) . '"';
-            }
-        }
-        return implode('', $parts);
-    }
-
 }

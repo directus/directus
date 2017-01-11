@@ -1,0 +1,16 @@
+docs_dir: doc/book
+site_dir: doc/html
+pages:
+    - index.md
+    - Reference:
+        - Adapters: adapter.md
+        - "Result Sets": result-set.md
+        - "SQL Abstraction": sql.md
+        - "DDL Abstraction": sql-ddl.md
+        - "Table Gateways": table-gateway.md
+        - "Row Gateways": row-gateway.md
+        - "RDBMS Metadata": metadata.md
+site_name: zend-db
+site_description: zend-db
+repo_url: 'https://github.com/zendframework/zend-db'
+copyright: 'Copyright (c) 2016 <a href="http://www.zend.com/">Zend Technologies USA Inc.</a>'

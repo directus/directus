@@ -97,6 +97,16 @@ $ ./vendor/bin/php-cs-fixer fix . -v --diff --config-file=.php_cs
 If you allow php-cs-fixer to fix CS issues, please re-run the tests to ensure
 they pass, and make sure you add and commit the changes after verification.
 
+## Benchmarks
+
+We provide benchmark tests for zend-stdlib under the directory [benchmark/](benchmark/),
+using.  [athletic](https://github.com/polyfractal/athletic).  You can execute
+the benchmarks running the following command:
+
+```bash
+$ ./vendor/bin/athletic -p benchmark
+```
+
 ## Recommended Workflow for Contributions
 
 Your first step is to establish a public repository from which we can
@@ -227,3 +237,8 @@ repository, we suggest doing some cleanup of these branches.
    ```console
    $ git push {username} :<branchname>
    ```
+
+
+## Conduct
+
+Please see our [CONDUCT.md](CONDUCT.md) to understand expected behavior when interacting with others in the project.

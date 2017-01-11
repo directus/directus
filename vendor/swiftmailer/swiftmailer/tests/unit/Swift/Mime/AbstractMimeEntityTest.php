@@ -969,7 +969,7 @@ abstract class Swift_Mime_AbstractMimeEntityTest extends \SwiftMailerTestCase
 
     protected function _createEncoder($name = 'quoted-printable', $stub = true)
     {
-        $encoder = $this->getMock('Swift_Mime_ContentEncoder');
+        $encoder = $this->getMockBuilder('Swift_Mime_ContentEncoder')->getMock();
         $encoder->expects($this->any())
                 ->method('getName')
                 ->will($this->returnValue($name));
@@ -1049,6 +1049,6 @@ abstract class Swift_Mime_AbstractMimeEntityTest extends \SwiftMailerTestCase
 
     protected function _createInputStream($stub = true)
     {
-        return $this->getMock('Swift_InputByteStream');
+        return $this->getMockBuilder('Swift_InputByteStream')->getMock();
     }
 }

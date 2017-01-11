@@ -3,7 +3,7 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2016 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
@@ -16,7 +16,6 @@ use Zend\Db\Adapter\Profiler;
 
 class Mysqli implements DriverInterface, Profiler\ProfilerAwareInterface
 {
-
     /**
      * @var Connection
      */
@@ -40,9 +39,9 @@ class Mysqli implements DriverInterface, Profiler\ProfilerAwareInterface
     /**
      * @var array
      */
-    protected $options = array(
+    protected $options = [
         'buffer_results' => false
-    );
+    ];
 
     /**
      * Constructor
@@ -52,7 +51,7 @@ class Mysqli implements DriverInterface, Profiler\ProfilerAwareInterface
      * @param null|Result $resultPrototype
      * @param array $options
      */
-    public function __construct($connection, Statement $statementPrototype = null, Result $resultPrototype = null, array $options = array())
+    public function __construct($connection, Statement $statementPrototype = null, Result $resultPrototype = null, array $options = [])
     {
         if (!$connection instanceof Connection) {
             $connection = new Connection($connection);
@@ -226,7 +225,7 @@ class Mysqli implements DriverInterface, Profiler\ProfilerAwareInterface
     /**
      * Get prepare type
      *
-     * @return array
+     * @return string
      */
     public function getPrepareType()
     {

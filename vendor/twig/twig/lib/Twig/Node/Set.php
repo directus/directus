@@ -3,7 +3,7 @@
 /*
  * This file is part of Twig.
  *
- * (c) 2010 Fabien Potencier
+ * (c) Fabien Potencier
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -14,7 +14,7 @@
  *
  * @author Fabien Potencier <fabien@symfony.com>
  */
-class Twig_Node_Set extends Twig_Node
+class Twig_Node_Set extends Twig_Node implements Twig_NodeCaptureInterface
 {
     public function __construct($capture, Twig_NodeInterface $names, Twig_NodeInterface $values, $lineno, $tag = null)
     {

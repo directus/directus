@@ -3,7 +3,7 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2016 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
@@ -17,21 +17,21 @@ use Zend\Db\Sql\TableIdentifier;
 
 class TableGateway extends AbstractTableGateway
 {
-
     /**
      * Constructor
      *
-     * @param string $table
-     * @param AdapterInterface $adapter
-     * @param Feature\AbstractFeature|Feature\FeatureSet|Feature\AbstractFeature[] $features
-     * @param ResultSetInterface $resultSetPrototype
-     * @param Sql $sql
+     * @param string|TableIdentifier|array                                              $table
+     * @param AdapterInterface                                                          $adapter
+     * @param Feature\AbstractFeature|Feature\FeatureSet|Feature\AbstractFeature[]|null $features
+     * @param ResultSetInterface|null                                                   $resultSetPrototype
+     * @param Sql|null                                                                  $sql
+     *
      * @throws Exception\InvalidArgumentException
      */
     public function __construct($table, AdapterInterface $adapter, $features = null, ResultSetInterface $resultSetPrototype = null, Sql $sql = null)
     {
         // table
-        if (!(is_string($table) || $table instanceof TableIdentifier)) {
+        if (!(is_string($table) || $table instanceof TableIdentifier || is_array($table))) {
             throw new Exception\InvalidArgumentException('Table name must be a string or an instance of Zend\Db\Sql\TableIdentifier');
         }
         $this->table = $table;
@@ -42,7 +42,7 @@ class TableGateway extends AbstractTableGateway
         // process features
         if ($features !== null) {
             if ($features instanceof Feature\AbstractFeature) {
-                $features = array($features);
+                $features = [$features];
             }
             if (is_array($features)) {
                 $this->featureSet = new Feature\FeatureSet($features);

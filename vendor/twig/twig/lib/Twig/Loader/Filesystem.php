@@ -3,7 +3,7 @@
 /*
  * This file is part of Twig.
  *
- * (c) 2009 Fabien Potencier
+ * (c) Fabien Potencier
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -26,8 +26,6 @@ class Twig_Loader_Filesystem implements Twig_LoaderInterface, Twig_ExistsLoaderI
     private $rootPath;
 
     /**
-     * Constructor.
-     *
      * @param string|array $paths    A path or an array of paths where to look for templates
      * @param string|null  $rootPath The root path common to all relative paths (null for getcwd())
      */
@@ -133,9 +131,6 @@ class Twig_Loader_Filesystem implements Twig_LoaderInterface, Twig_ExistsLoaderI
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getSource($name)
     {
         @trigger_error(sprintf('Calling "getSource" on "%s" is deprecated since 1.27. Use getSourceContext() instead.', get_class($this)), E_USER_DEPRECATED);
@@ -143,9 +138,6 @@ class Twig_Loader_Filesystem implements Twig_LoaderInterface, Twig_ExistsLoaderI
         return file_get_contents($this->findTemplate($name));
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getSourceContext($name)
     {
         $path = $this->findTemplate($name);
@@ -153,9 +145,6 @@ class Twig_Loader_Filesystem implements Twig_LoaderInterface, Twig_ExistsLoaderI
         return new Twig_Source(file_get_contents($path), $name, $path);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getCacheKey($name)
     {
         $path = $this->findTemplate($name);
@@ -167,9 +156,6 @@ class Twig_Loader_Filesystem implements Twig_LoaderInterface, Twig_ExistsLoaderI
         return $path;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function exists($name)
     {
         $name = $this->normalizeName($name);
@@ -187,9 +173,6 @@ class Twig_Loader_Filesystem implements Twig_LoaderInterface, Twig_ExistsLoaderI
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function isFresh($name, $time)
     {
         return filemtime($this->findTemplate($name)) <= $time;

@@ -3,64 +3,46 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2016 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
 namespace Zend\Db\Sql\Ddl\Column;
 
-class Float extends Column
+/**
+ * Stub class for backwards compatibility.
+ *
+ * Since PHP 7 adds "float" as a reserved keyword, we can no longer have a class
+ * named that and retain PHP 7 compatibility. The original class has been
+ * renamed to "Floating", and this class is now an extension of it. It raises an
+ * E_USER_DEPRECATED to warn users to migrate.
+ *
+ * @deprecated
+ */
+class Float extends Floating
 {
     /**
-     * @var int
+     * {@inheritDoc}
+     *
+     * Raises a deprecation notice.
      */
-    protected $decimal;
+    public function __construct(
+        $name,
+        $digits = null,
+        $decimal = null,
+        $nullable = false,
+        $default = null,
+        array $options = []
+    ) {
+        trigger_error(
+            sprintf(
+                'The class %s has been deprecated; please use %s\\Floating',
+                __CLASS__,
+                __NAMESPACE__
+            ),
+            E_USER_DEPRECATED
+        );
 
-    /**
-     * @var int
-     */
-    protected $digits;
-
-    /**
-     * @var string
-     */
-    protected $specification = '%s DECIMAL(%s) %s %s';
-
-    /**
-     * @param null|string $name
-     * @param int $digits
-     * @param int $decimal
-     */
-    public function __construct($name, $digits, $decimal)
-    {
-        $this->name    = $name;
-        $this->digits  = $digits;
-        $this->decimal = $decimal;
-    }
-
-    /**
-     * @return array
-     */
-    public function getExpressionData()
-    {
-        $spec   = $this->specification;
-        $params = array();
-
-        $types      = array(self::TYPE_IDENTIFIER, self::TYPE_LITERAL);
-        $params[]   = $this->name;
-        $params[]   = $this->digits;
-        $params[1] .= ', ' . $this->decimal;
-
-        $types[]  = self::TYPE_LITERAL;
-        $params[] = (!$this->isNullable) ? 'NOT NULL' : '';
-
-        $types[]  = ($this->default !== null) ? self::TYPE_VALUE : self::TYPE_LITERAL;
-        $params[] = ($this->default !== null) ? $this->default : '';
-
-        return array(array(
-            $spec,
-            $params,
-            $types,
-        ));
+        parent::__construct($name, $digits, $decimal, $nullable, $default, $options);
     }
 }

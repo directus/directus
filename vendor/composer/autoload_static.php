@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInitb1fbe44cf7f54d1c3124b862f84433b6
+class ComposerStaticInit8e931aadab8e412c6c5f036415d1b25c
 {
     public static $files = array (
         '2c102faa651ef8ea5874edb585946bce' => __DIR__ . '/..' . '/swiftmailer/swiftmailer/lib/swift_required.php',
@@ -23,8 +23,12 @@ class ComposerStaticInitb1fbe44cf7f54d1c3124b862f84433b6
         ),
         'D' => 
         array (
+            'Directus\\Permissions\\' => 21,
             'Directus\\Installation\\' => 22,
             'Directus\\Embed\\Provider\\' => 24,
+            'Directus\\Database\\' => 18,
+            'Directus\\Collection\\' => 20,
+            'Directus\\API\\Routes\\' => 20,
             'Directus\\' => 9,
         ),
     );
@@ -42,6 +46,10 @@ class ComposerStaticInitb1fbe44cf7f54d1c3124b862f84433b6
         array (
             0 => __DIR__ . '/..' . '/league/flysystem/src',
         ),
+        'Directus\\Permissions\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/directus/permissions',
+        ),
         'Directus\\Installation\\' => 
         array (
             0 => __DIR__ . '/../..' . '/installation/includes',
@@ -49,6 +57,18 @@ class ComposerStaticInitb1fbe44cf7f54d1c3124b862f84433b6
         'Directus\\Embed\\Provider\\' => 
         array (
             0 => __DIR__ . '/../..' . '/customs/embeds',
+        ),
+        'Directus\\Database\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/directus/database',
+        ),
+        'Directus\\Collection\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/directus/collection',
+        ),
+        'Directus\\API\\Routes\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/api/routes',
         ),
         'Directus\\' => 
         array (
@@ -95,9 +115,9 @@ class ComposerStaticInitb1fbe44cf7f54d1c3124b862f84433b6
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInitb1fbe44cf7f54d1c3124b862f84433b6::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInitb1fbe44cf7f54d1c3124b862f84433b6::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInitb1fbe44cf7f54d1c3124b862f84433b6::$prefixesPsr0;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit8e931aadab8e412c6c5f036415d1b25c::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit8e931aadab8e412c6c5f036415d1b25c::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit8e931aadab8e412c6c5f036415d1b25c::$prefixesPsr0;
 
         }, null, ClassLoader::class);
     }

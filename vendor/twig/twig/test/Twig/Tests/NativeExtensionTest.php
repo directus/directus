@@ -11,6 +11,9 @@
 
 class Twig_Tests_NativeExtensionTest extends PHPUnit_Framework_TestCase
 {
+    /**
+     * @requires PHP 5.3
+     */
     public function testGetProperties()
     {
         if (defined('HHVM_VERSION')) {

@@ -3,7 +3,7 @@
 /*
  * This file is part of Twig.
  *
- * (c) 2009 Fabien Potencier
+ * (c) Fabien Potencier
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -24,7 +24,7 @@ interface Twig_LexerInterface
      * @param string|Twig_Source $code The source code
      * @param string             $name A unique identifier for the source code
      *
-     * @return Twig_TokenStream A token stream instance
+     * @return Twig_TokenStream
      *
      * @throws Twig_Error_Syntax When the code is syntactically wrong
      */

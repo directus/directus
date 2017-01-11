@@ -3,8 +3,8 @@
 /*
  * This file is part of Twig.
  *
- * (c) 2010 Fabien Potencier
- * (c) 2010 Arnaud Le Blanc
+ * (c) Fabien Potencier
+ * (c) Arnaud Le Blanc
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -24,8 +24,6 @@ class Twig_TokenParserBroker implements Twig_TokenParserBrokerInterface
     protected $brokers = array();
 
     /**
-     * Constructor.
-     *
      * @param array|Traversable $parsers                 A Traversable of Twig_TokenParserInterface instances
      * @param array|Traversable $brokers                 A Traversable of Twig_TokenParserBrokerInterface instances
      * @param bool              $triggerDeprecationError
@@ -50,21 +48,11 @@ class Twig_TokenParserBroker implements Twig_TokenParserBrokerInterface
         }
     }
 
-    /**
-     * Adds a TokenParser.
-     *
-     * @param Twig_TokenParserInterface $parser A Twig_TokenParserInterface instance
-     */
     public function addTokenParser(Twig_TokenParserInterface $parser)
     {
         $this->parsers[$parser->getTag()] = $parser;
     }
 
-    /**
-     * Removes a TokenParser.
-     *
-     * @param Twig_TokenParserInterface $parser A Twig_TokenParserInterface instance
-     */
     public function removeTokenParser(Twig_TokenParserInterface $parser)
     {
         $name = $parser->getTag();
@@ -73,21 +61,11 @@ class Twig_TokenParserBroker implements Twig_TokenParserBrokerInterface
         }
     }
 
-    /**
-     * Adds a TokenParserBroker.
-     *
-     * @param Twig_TokenParserBroker $broker A Twig_TokenParserBroker instance
-     */
     public function addTokenParserBroker(Twig_TokenParserBroker $broker)
     {
         $this->brokers[] = $broker;
     }
 
-    /**
-     * Removes a TokenParserBroker.
-     *
-     * @param Twig_TokenParserBroker $broker A Twig_TokenParserBroker instance
-     */
     public function removeTokenParserBroker(Twig_TokenParserBroker $broker)
     {
         if (false !== $pos = array_search($broker, $this->brokers)) {

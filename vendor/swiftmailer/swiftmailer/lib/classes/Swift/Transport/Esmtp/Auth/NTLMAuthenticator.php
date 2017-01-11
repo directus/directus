@@ -46,7 +46,7 @@ class Swift_Transport_Esmtp_Auth_NTLMAuthenticator implements Swift_Transport_Es
         }
 
         if (!function_exists('bcmul')) {
-            throw new LogicException('The BCMatch functions must be enabled to use the NTLM authenticator.');
+            throw new LogicException('The BCMath functions must be enabled to use the NTLM authenticator.');
         }
 
         try {

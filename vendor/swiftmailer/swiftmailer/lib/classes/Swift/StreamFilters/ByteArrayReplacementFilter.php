@@ -124,6 +124,7 @@ class Swift_StreamFilters_ByteArrayReplacementFilter implements Swift_StreamFilt
 
         $newBuffer = array();
         $buf_size = count($buffer);
+        $last_size = 0;
         for ($i = 0; $i < $buf_size; ++$i) {
             $search_pos = $this->_tree;
             $last_found = PHP_INT_MAX;

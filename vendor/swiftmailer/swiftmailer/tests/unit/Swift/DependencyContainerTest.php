@@ -2,7 +2,8 @@
 
 class One
 {
-    public $arg1, $arg2;
+    public $arg1;
+    public $arg2;
     public function __construct($arg1 = null, $arg2 = null)
     {
         $this->arg1 = $arg1;

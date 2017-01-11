@@ -1,7 +1,6 @@
 <?php
 
-class Swift_Transport_EsmtpTransportTest
-    extends Swift_Transport_AbstractSmtpEventSupportTest
+class Swift_Transport_EsmtpTransportTest extends Swift_Transport_AbstractSmtpEventSupportTest
 {
     protected function _getTransport($buf, $dispatcher = null)
     {

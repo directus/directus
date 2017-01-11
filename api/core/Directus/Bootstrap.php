@@ -3,7 +3,10 @@
 namespace Directus;
 
 use Directus\Acl\Acl;
+use Directus\Application\Application;
 use Directus\Auth\Provider as AuthProvider;
+use Directus\Database\SchemaManager;
+use Directus\Database\TableSchema;
 use Directus\Db\Connection;
 use Directus\Db\Schemas\MySQLSchema;
 use Directus\Db\Schemas\SQLiteSchema;
@@ -17,17 +20,17 @@ use Directus\Filesystem\Filesystem;
 use Directus\Filesystem\FilesystemFactory;
 use Directus\Hook\Emitter;
 use Directus\Language\LanguageManager;
+use Directus\Providers\FilesServiceProvider;
+use Directus\Util\ArrayUtils;
 use Directus\View\Twig\DirectusTwigExtension;
 use Slim\Extras\Log\DateTimeFileWriter;
 use Slim\Extras\Views\Twig;
-use Slim\Slim;
 
 /**
  * NOTE: This class depends on the constants defined in config.php
  */
 class Bootstrap
 {
-
     public static $singletons = [];
 
     /**
@@ -107,7 +110,7 @@ class Bootstrap
 
     /**
      * Make Slim app.
-     * @return Slim
+     * @return Application
      */
     private static function app()
     {
@@ -116,7 +119,7 @@ class Bootstrap
             'path' => APPLICATION_PATH . '/api/logs'
         ];
 
-        $app = new Slim([
+        $app = new Application([
             'templates.path' => APPLICATION_PATH . '/api/views/',
             'mode' => DIRECTUS_ENV,
             'debug' => false,
@@ -137,6 +140,22 @@ class Bootstrap
         $app->container->set('config', $config);
 
         BaseTableGateway::setHookEmitter($app->container->get('emitter'));
+        \Directus\Database\TableGateway\BaseTableGateway::setContainer($app->container);
+        \Directus\Database\TableGateway\BaseTableGateway::setHookEmitter($app->container->get('emitter'));
+
+        $app->register(new FilesServiceProvider());
+
+        $app->container->singleton('zenddb', function() {
+            return Bootstrap::get('ZendDb');
+        });
+
+        $app->container->singleton('filesystem', function() {
+            return Bootstrap::get('filesystem');
+        });
+
+        $app->container->singleton('acl', function() {
+            return new \Directus\Permissions\Acl();
+        });
 
         return $app;
     }
@@ -300,6 +319,30 @@ class Bootstrap
         //        return $db;
     }
 
+    private static function schemaManager()
+    {
+        return new SchemaManager(static::get('schemaAdapter'));
+    }
+
+    private static function schemaAdapter()
+    {
+        $adapter = self::get('ZendDb');
+        $databaseName = $adapter->getPlatform()->getName();
+
+        switch ($databaseName) {
+            case 'MySQL':
+                return new \Directus\Database\Schemas\Sources\MySQLSchema($adapter);
+            // case 'SQLServer':
+            //    return new SQLServerSchema($adapter);
+            // case 'SQLite':
+            //     return new \Directus\Database\Schemas\Sources\SQLiteSchema($adapter);
+            // case 'PostgreSQL':
+            //     return new PostgresSchema($adapter);
+        }
+
+        throw new \Exception('Unknown/Unsupported database: ' . $databaseName);
+    }
+
     private static function schema()
     {
         $adapter = self::get('ZendDb');
@@ -325,7 +368,7 @@ class Bootstrap
      */
     private static function acl()
     {
-        $acl = new acl;
+        $acl = new Acl();
         $db = self::get('ZendDb');
 
         $DirectusTablesTableGateway = new DirectusTablesTableGateway($acl, $db);
@@ -510,8 +553,11 @@ class Bootstrap
             '*.php'
         ]);
 
-        foreach (glob($path) as $filename) {
-            $providers[] = '\\Directus\\Embed\\Provider\\' . basename($filename, '.php');
+        $customProvidersFiles = glob($path);
+        if ($customProvidersFiles) {
+            foreach ($customProvidersFiles as $filename) {
+                $providers[] = '\\Directus\\Embed\\Provider\\' . basename($filename, '.php');
+            }
         }
 
         foreach ($providers as $providerClass) {
@@ -554,69 +600,129 @@ class Bootstrap
             ]);
         });
 
-        $emitter->addFilter('table.insert:before', function($tableName, $data) {
+        $emitter->addFilter('table.insert:before', function($payload) {
+            // $tableName, $data
+            if (func_num_args() == 2) {
+                $tableName = func_get_arg(0);
+                $data = func_get_arg(1);
+            } else {
+                $tableName = $payload->tableName;
+                $data = $payload->data;
+            }
+
             if ($tableName == 'directus_files') {
                 unset($data['data']);
                 $data['user'] = AuthProvider::getUserInfo('id');
             }
 
-            return $data;
+            return func_num_args() == 2 ? $data : $payload;
         });
 
         // Add file url and thumb url
-        $emitter->addFilter('table.select', function($result, $selectState) {
+        $emitter->addFilter('table.select', function($payload) {
+            if (func_num_args() == 2) {
+                $result = func_get_arg(0);
+                $selectState = func_get_arg(1);
+            } else {
+                $selectState = $payload->selectState;
+                $result = $payload->result;
+            }
+
             if ($selectState['table'] == 'directus_files') {
-                    $fileRows = $result->toArray();
-                    $files = new \Directus\Files\Files();
-                    foreach ($fileRows as &$row) {
-                        $config = Bootstrap::get('config');
-                        $fileURL = $config['filesystem']['root_url'];
-                        $thumbnailURL = $config['filesystem']['root_thumb_url'];
-                        $thumbnailFilenameParts = explode('.', $row['name']);
-                        $thumbnailExtension = array_pop($thumbnailFilenameParts);
+                $fileRows = $result->toArray();
+                $app = Bootstrap::get('app');
+                $files = $app->container->get('files');
+                foreach ($fileRows as &$row) {
+                    $config = Bootstrap::get('config');
+                    $fileURL = $config['filesystem']['root_url'];
+                    $thumbnailURL = $config['filesystem']['root_thumb_url'];
+                    $thumbnailFilenameParts = explode('.', $row['name']);
+                    $thumbnailExtension = array_pop($thumbnailFilenameParts);
 
-                        $row['url'] = $fileURL . '/' . $row['name'];
-                        if (in_array($thumbnailExtension, ['tif', 'tiff', 'psd', 'pdf'])) {
-                            $thumbnailExtension = 'jpg';
-                        }
-
-                        $thumbnailFilename = $row['id'] . '.' . $thumbnailExtension;
-                        $row['thumbnail_url'] = $thumbnailURL . '/' . $thumbnailFilename;
-
-                        // filename-ext-100-100-true.jpg
-                        // @TODO: This should be another hook listener
-                        $row['thumbnail_url'] = null;
-                        $filename = implode('.', $thumbnailFilenameParts);
-                        if ($row['type'] == 'embed/vimeo') {
-                            $oldThumbnailFilename = $row['name'] . '-vimeo-220-124-true.jpg';
-                        } else {
-                            $oldThumbnailFilename = $filename . '-' . $thumbnailExtension . '-160-160-true.jpg';
-                        }
-
-                        // 314551321-vimeo-220-124-true.jpg
-                        // hotfix: there's not thumbnail for this file
-                        if ($files->exists('thumbs/' . $oldThumbnailFilename)) {
-                            $row['thumbnail_url'] = $thumbnailURL . '/' . $oldThumbnailFilename;
-                        }
-
-                        if ($files->exists('thumbs/' . $thumbnailFilename)) {
-                            $row['thumbnail_url'] = $thumbnailURL . '/' . $thumbnailFilename;
-                        }
-
-                        $embedManager = Bootstrap::get('embedManager');
-                        $provider = $embedManager->getByType($row['type']);
-                        $row['html'] = null;
-                        if ($provider) {
-                            $row['html'] = $provider->getCode($row);
-                        }
+                    $row['url'] = $fileURL . '/' . $row['name'];
+                    if (in_array($thumbnailExtension, ['tif', 'tiff', 'psd', 'pdf'])) {
+                        $thumbnailExtension = 'jpg';
                     }
 
-                    $filesArrayObject = new \ArrayObject($fileRows);
-                    $result->initialize($filesArrayObject->getIterator());
+                    $thumbnailFilename = $row['id'] . '.' . $thumbnailExtension;
+                    $row['thumbnail_url'] = $thumbnailURL . '/' . $thumbnailFilename;
+
+                    // filename-ext-100-100-true.jpg
+                    // @TODO: This should be another hook listener
+                    $row['thumbnail_url'] = null;
+                    $filename = implode('.', $thumbnailFilenameParts);
+                    if ($row['type'] == 'embed/vimeo') {
+                        $oldThumbnailFilename = $row['name'] . '-vimeo-220-124-true.jpg';
+                    } else {
+                        $oldThumbnailFilename = $filename . '-' . $thumbnailExtension . '-160-160-true.jpg';
+                    }
+
+                    // 314551321-vimeo-220-124-true.jpg
+                    // hotfix: there's not thumbnail for this file
+                    if ($files->exists('thumbs/' . $oldThumbnailFilename)) {
+                        $row['thumbnail_url'] = $thumbnailURL . '/' . $oldThumbnailFilename;
+                    }
+
+                    if ($files->exists('thumbs/' . $thumbnailFilename)) {
+                        $row['thumbnail_url'] = $thumbnailURL . '/' . $thumbnailFilename;
+                    }
+
+                    $embedManager = Bootstrap::get('embedManager');
+                    $provider = $embedManager->getByType($row['type']);
+                    $row['html'] = null;
+                    if ($provider) {
+                        $row['html'] = $provider->getCode($row);
+                    }
                 }
 
-            return $result;
+                $filesArrayObject = new \ArrayObject($fileRows);
+                $result->initialize($filesArrayObject->getIterator());
+            }
+
+            return (func_num_args() == 2) ? $result : $payload;
         });
+
+        $emitter->addFilter('load.relational.onetomany', function($payload) {
+            $rows = $payload->data;
+            $column = $payload->column;
+
+            if ($column->getUi() !== 'translation') {
+                return $payload;
+            }
+
+            $options = $column->getUiOptions();
+            $code = ArrayUtils::get($options, 'languages_code_column', 'id');
+            $languagesTable = ArrayUtils::get($options, 'languages_table');
+            $languageIdColumn = ArrayUtils::get($options, 'left_column_name');
+
+            if (!$languagesTable) {
+                throw new \Exception('Translations language table not defined for ' . $languageIdColumn);
+            }
+
+            $tableSchema = TableSchema::getTableSchema($languagesTable);
+            $primaryKeyColumn = 'id';
+            foreach($tableSchema->getColumns() as $column) {
+                if ($column->isPrimary()) {
+                    $primaryKeyColumn = $column->getName();
+                    break;
+                }
+            }
+
+            $newData = [];
+            foreach($rows['data'] as $row) {
+                $index = $row[$languageIdColumn];
+                if (is_array($row[$languageIdColumn])) {
+                    $index = $row[$languageIdColumn]['data'][$code];
+                    $row[$languageIdColumn] = $row[$languageIdColumn]['data'][$primaryKeyColumn];
+                }
+
+                $newData[$index] = $row;
+            }
+
+            $payload->data['data'] = $newData;
+
+            return $payload;
+        }, $emitter::P_HIGH);
 
         return $emitter;
     }

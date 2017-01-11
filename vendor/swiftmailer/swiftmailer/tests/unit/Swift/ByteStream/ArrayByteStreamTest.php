@@ -54,7 +54,8 @@ class Swift_ByteStream_ArrayByteStreamTest extends \PHPUnit_Framework_TestCase
     public function testResettingPointerAfterExhaustion()
     {
         $input = array('a', 'b', 'c');
-        $bs = $this->_createArrayStream($input); while (false !== $bs->read(1));
+        $bs = $this->_createArrayStream($input);
+        while (false !== $bs->read(1));
 
         $bs->setReadPointer(0);
         $this->assertEquals('a', $bs->read(1),
@@ -79,7 +80,7 @@ class Swift_ByteStream_ArrayByteStreamTest extends \PHPUnit_Framework_TestCase
         $bs = $this->_createArrayStream($input);
 
         $bs->setReadPointer(3);
-        $this->assertSame(false, $bs->read(1),
+        $this->assertFalse($bs->read(1),
             '%s: Stream should be at end and thus return false'
             );
     }
@@ -107,7 +108,7 @@ class Swift_ByteStream_ArrayByteStreamTest extends \PHPUnit_Framework_TestCase
 
         $bs->flushBuffers();
 
-        $this->assertSame(false, $bs->read(1),
+        $this->assertFalse($bs->read(1),
             '%s: Contents have been flushed so read() should return false'
             );
     }
@@ -127,8 +128,8 @@ class Swift_ByteStream_ArrayByteStreamTest extends \PHPUnit_Framework_TestCase
     public function testBindingOtherStreamsMirrorsWriteOperations()
     {
         $bs = $this->_createArrayStream('');
-        $is1 = $this->getMock('Swift_InputByteStream');
-        $is2 = $this->getMock('Swift_InputByteStream');
+        $is1 = $this->getMockBuilder('Swift_InputByteStream')->getMock();
+        $is2 = $this->getMockBuilder('Swift_InputByteStream')->getMock();
 
         $is1->expects($this->at(0))
             ->method('write')
@@ -153,8 +154,8 @@ class Swift_ByteStream_ArrayByteStreamTest extends \PHPUnit_Framework_TestCase
     public function testBindingOtherStreamsMirrorsFlushOperations()
     {
         $bs = $this->_createArrayStream('');
-        $is1 = $this->getMock('Swift_InputByteStream');
-        $is2 = $this->getMock('Swift_InputByteStream');
+        $is1 = $this->getMockBuilder('Swift_InputByteStream')->getMock();
+        $is2 = $this->getMockBuilder('Swift_InputByteStream')->getMock();
 
         $is1->expects($this->once())
             ->method('flushBuffers');
@@ -170,8 +171,8 @@ class Swift_ByteStream_ArrayByteStreamTest extends \PHPUnit_Framework_TestCase
     public function testUnbindingStreamPreventsFurtherWrites()
     {
         $bs = $this->_createArrayStream('');
-        $is1 = $this->getMock('Swift_InputByteStream');
-        $is2 = $this->getMock('Swift_InputByteStream');
+        $is1 = $this->getMockBuilder('Swift_InputByteStream')->getMock();
+        $is2 = $this->getMockBuilder('Swift_InputByteStream')->getMock();
 
         $is1->expects($this->at(0))
             ->method('write')

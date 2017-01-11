@@ -18,7 +18,8 @@
         "php": ">=5.3.3"
     },
     "require-dev": {
-        "mockery/mockery": "~0.9.1"
+        "mockery/mockery": "~0.9.1",
+        "symfony/phpunit-bridge": "~3.2"
     },
     "autoload": {
         "files": ["lib/swift_required.php"]

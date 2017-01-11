@@ -682,7 +682,7 @@ class Swift_Transport_LoadBalancedTransportTest extends \SwiftMailerTestCase
         $t1->shouldReceive('send')
            ->once()
            ->with($message, \Mockery::on(function (&$var) use (&$failures, $testCase) {
-                return $testCase->varsAreReferences($var, $failures);
+               return $testCase->varsAreReferences($var, $failures);
            }))
            ->andReturnUsing(function () use (&$connectionState) {
                if ($connectionState) {

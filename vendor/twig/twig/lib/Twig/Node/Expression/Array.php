@@ -3,7 +3,7 @@
 /*
  * This file is part of Twig.
  *
- * (c) 2009 Fabien Potencier
+ * (c) Fabien Potencier
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -43,7 +43,7 @@ class Twig_Node_Expression_Array extends Twig_Node_Expression
         foreach ($this->getKeyValuePairs() as $pair) {
             // we compare the string representation of the keys
             // to avoid comparing the line numbers which are not relevant here.
-            if ((string) $key == (string) $pair['key']) {
+            if ((string) $key === (string) $pair['key']) {
                 return true;
             }
         }

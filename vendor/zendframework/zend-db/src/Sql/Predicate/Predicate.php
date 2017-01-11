@@ -3,7 +3,7 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2016 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
@@ -57,12 +57,12 @@ class Predicate extends PredicateSet
      */
     public function unnest()
     {
-        if ($this->unnest == null) {
+        if ($this->unnest === null) {
             throw new RuntimeException('Not nested');
         }
-        $unnset       = $this->unnest;
+        $unnest       = $this->unnest;
         $this->unnest = null;
-        return $unnset;
+        return $unnest;
     }
 
     /**
@@ -242,7 +242,7 @@ class Predicate extends PredicateSet
      * @param $parameters
      * @return $this
      */
-    public function expression($expression, $parameters)
+    public function expression($expression, $parameters = null)
     {
         $this->addPredicate(
             new Expression($expression, $parameters),
@@ -322,7 +322,7 @@ class Predicate extends PredicateSet
     }
 
     /**
-     * Create "in" predicate
+     * Create "IN" predicate
      *
      * Utilizes In predicate
      *
@@ -334,6 +334,26 @@ class Predicate extends PredicateSet
     {
         $this->addPredicate(
             new In($identifier, $valueSet),
+            ($this->nextPredicateCombineOperator) ?: $this->defaultCombination
+        );
+        $this->nextPredicateCombineOperator = null;
+
+        return $this;
+    }
+
+    /**
+     * Create "NOT IN" predicate
+     *
+     * Utilizes NotIn predicate
+     *
+     * @param  string $identifier
+     * @param  array|\Zend\Db\Sql\Select $valueSet
+     * @return Predicate
+     */
+    public function notIn($identifier, $valueSet = null)
+    {
+        $this->addPredicate(
+            new NotIn($identifier, $valueSet),
             ($this->nextPredicateCombineOperator) ?: $this->defaultCombination
         );
         $this->nextPredicateCombineOperator = null;
@@ -356,6 +376,48 @@ class Predicate extends PredicateSet
         $this->addPredicate(
             new Between($identifier, $minValue, $maxValue),
             ($this->nextPredicateCombineOperator) ?: $this->defaultCombination
+        );
+        $this->nextPredicateCombineOperator = null;
+
+        return $this;
+    }
+
+    /**
+     * Create "NOT BETWEEN" predicate
+     *
+     * Utilizes NotBetween predicate
+     *
+     * @param  string $identifier
+     * @param  int|float|string $minValue
+     * @param  int|float|string $maxValue
+     * @return Predicate
+     */
+    public function notBetween($identifier, $minValue, $maxValue)
+    {
+        $this->addPredicate(
+            new NotBetween($identifier, $minValue, $maxValue),
+            ($this->nextPredicateCombineOperator) ?: $this->defaultCombination
+        );
+        $this->nextPredicateCombineOperator = null;
+
+        return $this;
+    }
+
+    /**
+     * Use given predicate directly
+     *
+     * Contrary to {@link addPredicate()} this method respects formerly set
+     * AND / OR combination operator, thus allowing generic predicates to be
+     * used fluently within where chains as any other concrete predicate.
+     *
+     * @param  PredicateInterface $predicate
+     * @return Predicate
+     */
+    public function predicate(PredicateInterface $predicate)
+    {
+        $this->addPredicate(
+            $predicate,
+            $this->nextPredicateCombineOperator ?: $this->defaultCombination
         );
         $this->nextPredicateCombineOperator = null;
 

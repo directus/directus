@@ -3,12 +3,13 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2016 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
 namespace Zend\Db\Adapter;
 
+use Interop\Container\ContainerInterface;
 use Zend\ServiceManager\AbstractFactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
@@ -27,14 +28,13 @@ class AdapterAbstractServiceFactory implements AbstractFactoryInterface
     /**
      * Can we create an adapter by the requested name?
      *
-     * @param  ServiceLocatorInterface $services
-     * @param  string $name
+     * @param  ContainerInterface $container
      * @param  string $requestedName
      * @return bool
      */
-    public function canCreateServiceWithName(ServiceLocatorInterface $services, $name, $requestedName)
+    public function canCreate(ContainerInterface $container, $requestedName)
     {
-        $config = $this->getConfig($services);
+        $config = $this->getConfig($container);
         if (empty($config)) {
             return false;
         }
@@ -42,54 +42,80 @@ class AdapterAbstractServiceFactory implements AbstractFactoryInterface
         return (
             isset($config[$requestedName])
             && is_array($config[$requestedName])
-            && !empty($config[$requestedName])
+            && ! empty($config[$requestedName])
         );
+    }
+
+    /**
+     * Determine if we can create a service with name (SM v2 compatibility)
+     *
+     * @param serviceLocator $serviceLocator
+     * @param string $name
+     * @param string $requestedName
+     * @return bool
+     */
+    public function canCreateServiceWithName(ServiceLocatorInterface $serviceLocator, $name, $requestedName)
+    {
+        return $this->canCreate($serviceLocator, $requestedName);
     }
 
     /**
      * Create a DB adapter
      *
-     * @param  ServiceLocatorInterface $services
-     * @param  string $name
+     * @param  ContainerInterface $container
      * @param  string $requestedName
+     * @param  array $options
      * @return Adapter
      */
-    public function createServiceWithName(ServiceLocatorInterface $services, $name, $requestedName)
+    public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
-        $config = $this->getConfig($services);
+        $config = $this->getConfig($container);
         return new Adapter($config[$requestedName]);
+    }
+
+    /**
+     * Create service with name
+     *
+     * @param ServiceLocatorInterface $serviceLocator
+     * @param string $name
+     * @param string $requestedName
+     * @return Adapter
+     */
+    public function createServiceWithName(ServiceLocatorInterface $serviceLocator, $name, $requestedName)
+    {
+        return $this($serviceLocator, $requestedName);
     }
 
     /**
      * Get db configuration, if any
      *
-     * @param  ServiceLocatorInterface $services
+     * @param  ContainerInterface $container
      * @return array
      */
-    protected function getConfig(ServiceLocatorInterface $services)
+    protected function getConfig(ContainerInterface $container)
     {
         if ($this->config !== null) {
             return $this->config;
         }
 
-        if (!$services->has('Config')) {
-            $this->config = array();
+        if (! $container->has('config')) {
+            $this->config = [];
             return $this->config;
         }
 
-        $config = $services->get('Config');
-        if (!isset($config['db'])
-            || !is_array($config['db'])
+        $config = $container->get('config');
+        if (! isset($config['db'])
+            || ! is_array($config['db'])
         ) {
-            $this->config = array();
+            $this->config = [];
             return $this->config;
         }
 
         $config = $config['db'];
-        if (!isset($config['adapters'])
-            || !is_array($config['adapters'])
+        if (! isset($config['adapters'])
+            || ! is_array($config['adapters'])
         ) {
-            $this->config = array();
+            $this->config = [];
             return $this->config;
         }
 

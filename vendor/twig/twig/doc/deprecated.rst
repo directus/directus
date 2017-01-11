@@ -181,7 +181,8 @@ Globals
   current ``Twig_Template`` instance is deprecated; most usages only need the
   current template name, which will continue to work in Twig 2.0. In Twig 2.0,
   ``_self`` returns the current template name instead of the current
-  ``Twig_Template`` instance.
+  ``Twig_Template`` instance. If you are using ``{{ _self.templateName }}``,
+  just replace it with ``{{ _self }}``.
 
 Miscellaneous
 -------------
@@ -208,3 +209,6 @@ Miscellaneous
 
 * As of Twig 1.27, ``Twig_Parser::addHandler()`` and
   ``Twig_Parser::addNodeVisitor()`` are deprecated and will be removed in 2.0.
+
+* As of Twig 1.29, some classes are marked as being final via the `@final`
+  annotation. Those classes will be marked as final in 2.0.

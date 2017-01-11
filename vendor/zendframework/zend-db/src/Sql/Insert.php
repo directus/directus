@@ -3,19 +3,17 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2016 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
 namespace Zend\Db\Sql;
 
-use Zend\Db\Adapter\AdapterInterface;
+use Zend\Db\Adapter\Driver\DriverInterface;
 use Zend\Db\Adapter\ParameterContainer;
 use Zend\Db\Adapter\Platform\PlatformInterface;
-use Zend\Db\Adapter\Platform\Sql92;
-use Zend\Db\Adapter\StatementContainerInterface;
 
-class Insert extends AbstractSql implements SqlInterface, PreparableSqlInterface
+class Insert extends AbstractPreparableSql
 {
     /**#@+
      * Constants
@@ -23,6 +21,7 @@ class Insert extends AbstractSql implements SqlInterface, PreparableSqlInterface
      * @const
      */
     const SPECIFICATION_INSERT = 'insert';
+    const SPECIFICATION_SELECT = 'select';
     const VALUES_MERGE = 'merge';
     const VALUES_SET   = 'set';
     /**#@-*/
@@ -30,20 +29,21 @@ class Insert extends AbstractSql implements SqlInterface, PreparableSqlInterface
     /**
      * @var array Specification array
      */
-    protected $specifications = array(
-        self::SPECIFICATION_INSERT => 'INSERT INTO %1$s (%2$s) VALUES (%3$s)'
-    );
+    protected $specifications = [
+        self::SPECIFICATION_INSERT => 'INSERT INTO %1$s (%2$s) VALUES (%3$s)',
+        self::SPECIFICATION_SELECT => 'INSERT INTO %1$s %2$s %3$s',
+    ];
 
     /**
      * @var string|TableIdentifier
      */
     protected $table            = null;
-    protected $columns          = array();
+    protected $columns          = [];
 
     /**
-     * @var array
+     * @var array|Select
      */
-    protected $values           = array();
+    protected $select           = null;
 
     /**
      * Constructor
@@ -58,7 +58,7 @@ class Insert extends AbstractSql implements SqlInterface, PreparableSqlInterface
     }
 
     /**
-     * Crete INTO clause
+     * Create INTO clause
      *
      * @param  string|TableIdentifier $table
      * @return Insert
@@ -77,163 +77,144 @@ class Insert extends AbstractSql implements SqlInterface, PreparableSqlInterface
      */
     public function columns(array $columns)
     {
-        $this->columns = $columns;
+        $this->columns = array_flip($columns);
         return $this;
     }
 
     /**
      * Specify values to insert
      *
-     * @param  array $values
+     * @param  array|Select $values
      * @param  string $flag one of VALUES_MERGE or VALUES_SET; defaults to VALUES_SET
      * @throws Exception\InvalidArgumentException
      * @return Insert
      */
-    public function values(array $values, $flag = self::VALUES_SET)
+    public function values($values, $flag = self::VALUES_SET)
     {
-        if (!is_array($values)) {
-            throw new Exception\InvalidArgumentException('values() expects an array of values');
+        if ($values instanceof Select) {
+            if ($flag == self::VALUES_MERGE) {
+                throw new Exception\InvalidArgumentException(
+                    'A Zend\Db\Sql\Select instance cannot be provided with the merge flag'
+                );
+            }
+            $this->select = $values;
+            return $this;
         }
 
-        // determine if this is assoc or a set of values
-        $keys = array_keys($values);
-        $firstKey = current($keys);
+        if (!is_array($values)) {
+            throw new Exception\InvalidArgumentException(
+                'values() expects an array of values or Zend\Db\Sql\Select instance'
+            );
+        }
+
+        if ($this->select && $flag == self::VALUES_MERGE) {
+            throw new Exception\InvalidArgumentException(
+                'An array of values cannot be provided with the merge flag when a Zend\Db\Sql\Select instance already exists as the value source'
+            );
+        }
 
         if ($flag == self::VALUES_SET) {
-            $this->columns = array();
-            $this->values = array();
-        }
-
-        if (is_string($firstKey)) {
-            foreach ($keys as $key) {
-                if (($index = array_search($key, $this->columns)) !== false) {
-                    $this->values[$index] = $values[$key];
-                } else {
-                    $this->columns[] = $key;
-                    $this->values[] = $values[$key];
-                }
+            $this->columns = $this->isAssocativeArray($values)
+                ? $values
+                : array_combine(array_keys($this->columns), array_values($values));
+        } else {
+            foreach ($values as $column => $value) {
+                $this->columns[$column] = $value;
             }
-        } elseif (is_int($firstKey)) {
-            // determine if count of columns should match count of values
-            $this->values = array_merge($this->values, array_values($values));
         }
-
         return $this;
     }
 
+
+    /**
+     * Simple test for an associative array
+     *
+     * @link http://stackoverflow.com/questions/173400/how-to-check-if-php-array-is-associative-or-sequential
+     * @param array $array
+     * @return bool
+     */
+    private function isAssocativeArray(array $array)
+    {
+        return array_keys($array) !== range(0, count($array) - 1);
+    }
+
+    /**
+     * Create INTO SELECT clause
+     *
+     * @param Select $select
+     * @return self
+     */
+    public function select(Select $select)
+    {
+        return $this->values($select);
+    }
+
+    /**
+     * Get raw state
+     *
+     * @param string $key
+     * @return mixed
+     */
     public function getRawState($key = null)
     {
-        $rawState = array(
+        $rawState = [
             'table' => $this->table,
-            'columns' => $this->columns,
-            'values' => $this->values
-        );
+            'columns' => array_keys($this->columns),
+            'values' => array_values($this->columns)
+        ];
         return (isset($key) && array_key_exists($key, $rawState)) ? $rawState[$key] : $rawState;
     }
 
-    /**
-     * Prepare statement
-     *
-     * @param  AdapterInterface $adapter
-     * @param  StatementContainerInterface $statementContainer
-     * @return void
-     */
-    public function prepareStatement(AdapterInterface $adapter, StatementContainerInterface $statementContainer)
+    protected function processInsert(PlatformInterface $platform, DriverInterface $driver = null, ParameterContainer $parameterContainer = null)
     {
-        $driver   = $adapter->getDriver();
-        $platform = $adapter->getPlatform();
-        $parameterContainer = $statementContainer->getParameterContainer();
-
-        if (!$parameterContainer instanceof ParameterContainer) {
-            $parameterContainer = new ParameterContainer();
-            $statementContainer->setParameterContainer($parameterContainer);
+        if ($this->select) {
+            return;
+        }
+        if (!$this->columns) {
+            throw new Exception\InvalidArgumentException('values or select should be present');
         }
 
-        $table = $this->table;
-        $schema = null;
+        $columns = [];
+        $values  = [];
 
-        // create quoted table name to use in insert processing
-        if ($table instanceof TableIdentifier) {
-            list($table, $schema) = $table->getTableAndSchema();
-        }
-
-        $table = $platform->quoteIdentifier($table);
-
-        if ($schema) {
-            $table = $platform->quoteIdentifier($schema) . $platform->getIdentifierSeparator() . $table;
-        }
-
-        $columns = array();
-        $values  = array();
-
-        foreach ($this->columns as $cIndex => $column) {
-            $columns[$cIndex] = $platform->quoteIdentifier($column);
-            if (isset($this->values[$cIndex]) && $this->values[$cIndex] instanceof Expression) {
-                $exprData = $this->processExpression($this->values[$cIndex], $platform, $driver);
-                $values[$cIndex] = $exprData->getSql();
-                $parameterContainer->merge($exprData->getParameterContainer());
+        foreach ($this->columns as $column => $value) {
+            $columns[] = $platform->quoteIdentifier($column);
+            if (is_scalar($value) && $parameterContainer) {
+                $values[] = $driver->formatParameterName($column);
+                $parameterContainer->offsetSet($column, $value);
             } else {
-                $column = self::VALUES_SET . $cIndex;
-                $values[$cIndex] = $driver->formatParameterName($column);
-                if (isset($this->values[$cIndex])) {
-                    $parameterContainer->offsetSet($column, $this->values[$cIndex]);
-                } else {
-                    $parameterContainer->offsetSet($column, null);
-                }
+                $values[] = $this->resolveColumnValue(
+                    $value,
+                    $platform,
+                    $driver,
+                    $parameterContainer
+                );
             }
         }
-
-        $sql = sprintf(
-            $this->specifications[self::SPECIFICATION_INSERT],
-            $table,
+        return sprintf(
+            $this->specifications[static::SPECIFICATION_INSERT],
+            $this->resolveTable($this->table, $platform, $driver, $parameterContainer),
             implode(', ', $columns),
             implode(', ', $values)
         );
-
-        $statementContainer->setSql($sql);
     }
 
-    /**
-     * Get SQL string for this statement
-     *
-     * @param  null|PlatformInterface $adapterPlatform Defaults to Sql92 if none provided
-     * @return string
-     */
-    public function getSqlString(PlatformInterface $adapterPlatform = null)
+    protected function processSelect(PlatformInterface $platform, DriverInterface $driver = null, ParameterContainer $parameterContainer = null)
     {
-        $adapterPlatform = ($adapterPlatform) ?: new Sql92;
-        $table = $this->table;
-        $schema = null;
-
-        // create quoted table name to use in insert processing
-        if ($table instanceof TableIdentifier) {
-            list($table, $schema) = $table->getTableAndSchema();
+        if (!$this->select) {
+            return;
         }
+        $selectSql = $this->processSubSelect($this->select, $platform, $driver, $parameterContainer);
 
-        $table = $adapterPlatform->quoteIdentifier($table);
-
-        if ($schema) {
-            $table = $adapterPlatform->quoteIdentifier($schema) . $adapterPlatform->getIdentifierSeparator() . $table;
-        }
-
-        $columns = array_map(array($adapterPlatform, 'quoteIdentifier'), $this->columns);
+        $columns = array_map([$platform, 'quoteIdentifier'], array_keys($this->columns));
         $columns = implode(', ', $columns);
 
-        $values = array();
-        foreach ($this->values as $value) {
-            if ($value instanceof Expression) {
-                $exprData = $this->processExpression($value, $adapterPlatform);
-                $values[] = $exprData->getSql();
-            } elseif ($value === null) {
-                $values[] = 'NULL';
-            } else {
-                $values[] = $adapterPlatform->quoteValue($value);
-            }
-        }
-
-        $values = implode(', ', $values);
-
-        return sprintf($this->specifications[self::SPECIFICATION_INSERT], $table, $columns, $values);
+        return sprintf(
+            $this->specifications[static::SPECIFICATION_SELECT],
+            $this->resolveTable($this->table, $platform, $driver, $parameterContainer),
+            $columns ? "($columns)" : "",
+            $selectSql
+        );
     }
 
     /**
@@ -247,8 +228,7 @@ class Insert extends AbstractSql implements SqlInterface, PreparableSqlInterface
      */
     public function __set($name, $value)
     {
-        $values = array($name => $value);
-        $this->values($values, self::VALUES_MERGE);
+        $this->columns[$name] = $value;
         return $this;
     }
 
@@ -263,12 +243,11 @@ class Insert extends AbstractSql implements SqlInterface, PreparableSqlInterface
      */
     public function __unset($name)
     {
-        if (($position = array_search($name, $this->columns)) === false) {
+        if (!array_key_exists($name, $this->columns)) {
             throw new Exception\InvalidArgumentException('The key ' . $name . ' was not found in this objects column list');
         }
 
-        unset($this->columns[$position]);
-        unset($this->values[$position]);
+        unset($this->columns[$name]);
     }
 
     /**
@@ -281,7 +260,7 @@ class Insert extends AbstractSql implements SqlInterface, PreparableSqlInterface
      */
     public function __isset($name)
     {
-        return in_array($name, $this->columns);
+        return array_key_exists($name, $this->columns);
     }
 
     /**
@@ -295,9 +274,9 @@ class Insert extends AbstractSql implements SqlInterface, PreparableSqlInterface
      */
     public function __get($name)
     {
-        if (($position = array_search($name, $this->columns)) === false) {
+        if (!array_key_exists($name, $this->columns)) {
             throw new Exception\InvalidArgumentException('The key ' . $name . ' was not found in this objects column list');
         }
-        return $this->values[$position];
+        return $this->columns[$name];
     }
 }

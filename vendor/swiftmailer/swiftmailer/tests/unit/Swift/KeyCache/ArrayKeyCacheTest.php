@@ -227,16 +227,16 @@ class Swift_KeyCache_ArrayKeyCacheTest extends \PHPUnit_Framework_TestCase
 
     private function _createKeyCacheInputStream()
     {
-        return $this->getMock('Swift_KeyCache_KeyCacheInputStream');
+        return $this->getMockBuilder('Swift_KeyCache_KeyCacheInputStream')->getMock();
     }
 
     private function _createOutputStream()
     {
-        return $this->getMock('Swift_OutputByteStream');
+        return $this->getMockBuilder('Swift_OutputByteStream')->getMock();
     }
 
     private function _createInputStream()
     {
-        return $this->getMock('Swift_InputByteStream');
+        return $this->getMockBuilder('Swift_InputByteStream')->getMock();
     }
 }

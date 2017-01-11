@@ -3,7 +3,7 @@
 /*
  * This file is part of Twig.
  *
- * (c) 2009 Fabien Potencier
+ * (c) Fabien Potencier
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -25,6 +25,8 @@
  *
  *  {% set foo %}Some content{% endset %}
  * </pre>
+ *
+ * @final
  */
 class Twig_TokenParser_Set extends Twig_TokenParser
 {
@@ -41,13 +43,13 @@ class Twig_TokenParser_Set extends Twig_TokenParser
             $stream->expect(Twig_Token::BLOCK_END_TYPE);
 
             if (count($names) !== count($values)) {
-                throw new Twig_Error_Syntax('When using set, you must have the same number of variables and assignments.', $stream->getCurrent()->getLine(), $stream->getSourceContext()->getName());
+                throw new Twig_Error_Syntax('When using set, you must have the same number of variables and assignments.', $stream->getCurrent()->getLine(), $stream->getSourceContext());
             }
         } else {
             $capture = true;
 
             if (count($names) > 1) {
-                throw new Twig_Error_Syntax('When using set with a block, you cannot have a multi-target.', $stream->getCurrent()->getLine(), $stream->getSourceContext()->getName());
+                throw new Twig_Error_Syntax('When using set with a block, you cannot have a multi-target.', $stream->getCurrent()->getLine(), $stream->getSourceContext());
             }
 
             $stream->expect(Twig_Token::BLOCK_END_TYPE);

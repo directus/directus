@@ -1,0 +1,13 @@
+<div class="header">
+    <img src="{{ directus.root_path }}installation/assets/directus-logo.png">
+    <h1>{{ directus.step.getTitle()|__t }}</h1>
+    <div class="breadcrumb">
+        {% for step in directus.steps %}
+            {% if loop.index0 > 0 %}
+                <span class="separator">●</span>
+            {% endif %}
+            <span class="{{ directus.step.getName() == step.getName() ? 'current' : '' }}">{{ loop.index0 }}
+                . {{ step.getShortTitle()|__t }}</span>
+        {% endfor %}
+    </div>
+</div>

@@ -3,15 +3,16 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2016 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
 namespace Zend\Db\Sql\Predicate;
 
 use Zend\Db\Sql\Exception;
+use Zend\Db\Sql\AbstractExpression;
 
-class Operator implements PredicateInterface
+class Operator extends AbstractExpression implements PredicateInterface
 {
     const OPERATOR_EQUAL_TO                  = '=';
     const OP_EQ                              = '=';
@@ -31,28 +32,55 @@ class Operator implements PredicateInterface
     const OPERATOR_GREATER_THAN_OR_EQUAL_TO  = '>=';
     const OP_GTE                             = '>=';
 
-    protected $allowedTypes  = array(
+    /**
+     * {@inheritDoc}
+     */
+    protected $allowedTypes  = [
         self::TYPE_IDENTIFIER,
         self::TYPE_VALUE,
-    );
+    ];
 
-    protected $left          = null;
-    protected $leftType      = self::TYPE_IDENTIFIER;
-    protected $operator      = self::OPERATOR_EQUAL_TO;
-    protected $right         = null;
-    protected $rightType     = self::TYPE_VALUE;
+    /**
+     * @var int|float|bool|string
+     */
+    protected $left;
+
+    /**
+     * @var int|float|bool|string
+     */
+    protected $right;
+
+    /**
+     * @var string
+     */
+    protected $leftType = self::TYPE_IDENTIFIER;
+
+    /**
+     * @var string
+     */
+    protected $rightType = self::TYPE_VALUE;
+
+    /**
+     * @var string
+     */
+    protected $operator = self::OPERATOR_EQUAL_TO;
 
     /**
      * Constructor
      *
-     * @param  int|float|bool|string $left
-     * @param  string $operator
-     * @param  int|float|bool|string $right
-     * @param  string $leftType TYPE_IDENTIFIER or TYPE_VALUE by default TYPE_IDENTIFIER {@see allowedTypes}
-     * @param  string $rightType TYPE_IDENTIFIER or TYPE_VALUE by default TYPE_VALUE {@see allowedTypes}
+     * @param int|float|bool|string $left
+     * @param string $operator
+     * @param int|float|bool|string $right
+     * @param string $leftType TYPE_IDENTIFIER or TYPE_VALUE by default TYPE_IDENTIFIER {@see allowedTypes}
+     * @param string $rightType TYPE_IDENTIFIER or TYPE_VALUE by default TYPE_VALUE {@see allowedTypes}
      */
-    public function __construct($left = null, $operator = self::OPERATOR_EQUAL_TO, $right = null, $leftType = self::TYPE_IDENTIFIER, $rightType = self::TYPE_VALUE)
-    {
+    public function __construct(
+        $left = null,
+        $operator = self::OPERATOR_EQUAL_TO,
+        $right = null,
+        $leftType = self::TYPE_IDENTIFIER,
+        $rightType = self::TYPE_VALUE
+    ) {
         if ($left !== null) {
             $this->setLeft($left);
         }
@@ -78,11 +106,18 @@ class Operator implements PredicateInterface
      * Set left side of operator
      *
      * @param  int|float|bool|string $left
+     *
      * @return Operator
      */
     public function setLeft($left)
     {
         $this->left = $left;
+
+        if (is_array($left)) {
+            $left = $this->normalizeArgument($left, $this->leftType);
+            $this->leftType = $left[1];
+        }
+
         return $this;
     }
 
@@ -100,8 +135,10 @@ class Operator implements PredicateInterface
      * Set parameter type for left side of operator
      *
      * @param  string $type TYPE_IDENTIFIER or TYPE_VALUE {@see allowedTypes}
-     * @throws Exception\InvalidArgumentException
+     *
      * @return Operator
+     *
+     * @throws Exception\InvalidArgumentException
      */
     public function setLeftType($type)
     {
@@ -113,7 +150,9 @@ class Operator implements PredicateInterface
                 __CLASS__ . '::TYPE_VALUE'
             ));
         }
+
         $this->leftType = $type;
+
         return $this;
     }
 
@@ -136,6 +175,7 @@ class Operator implements PredicateInterface
     public function setOperator($operator)
     {
         $this->operator = $operator;
+
         return $this;
     }
 
@@ -152,12 +192,19 @@ class Operator implements PredicateInterface
     /**
      * Set right side of operator
      *
-     * @param  int|float|bool|string $value
+     * @param  int|float|bool|string $right
+     *
      * @return Operator
      */
-    public function setRight($value)
+    public function setRight($right)
     {
-        $this->right = $value;
+        $this->right = $right;
+
+        if (is_array($right)) {
+            $right = $this->normalizeArgument($right, $this->rightType);
+            $this->rightType = $right[1];
+        }
+
         return $this;
     }
 
@@ -188,7 +235,9 @@ class Operator implements PredicateInterface
                 __CLASS__ . '::TYPE_VALUE'
             ));
         }
+
         $this->rightType = $type;
+
         return $this;
     }
 
@@ -209,10 +258,13 @@ class Operator implements PredicateInterface
      */
     public function getExpressionData()
     {
-        return array(array(
+        list($values[], $types[]) = $this->normalizeArgument($this->left, $this->leftType);
+        list($values[], $types[]) = $this->normalizeArgument($this->right, $this->rightType);
+
+        return [[
             '%s ' . $this->operator . ' %s',
-            array($this->left, $this->right),
-            array($this->leftType, $this->rightType)
-        ));
+            $values,
+            $types
+        ]];
     }
 }

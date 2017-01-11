@@ -3,7 +3,6 @@
 namespace Directus\Db\TableGateway;
 
 use Directus\Acl\Acl;
-use Directus\Auth\Provider as Auth;
 use Directus\Db\TableSchema;
 use Directus\MemcacheProvider;
 use Zend\Db\Adapter\AdapterInterface;
@@ -39,10 +38,8 @@ class DirectusPrivilegesTableGateway extends AclAwareTableGateway
     // @TODO: move it to another object.
     private function isCurrentUserAdmin()
     {
-        $currentUser = Auth::getUserRecord();
-
         //Dont let non-admins have alter privilege
-        return ($currentUser['group'] == 1) ? true : false;
+        return ($this->acl->getGroupId() == 1) ? true : false;
     }
 
     private function verifyPrivilege($attributes)

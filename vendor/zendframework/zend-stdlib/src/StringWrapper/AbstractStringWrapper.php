@@ -3,7 +3,7 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
@@ -66,7 +66,6 @@ abstract class AbstractStringWrapper implements StringWrapperInterface
                 'Wrapper doesn\'t support character encoding "' . $encoding . '"'
             );
         }
-
 
         if ($convertEncoding !== null) {
             $convertEncodingUpper = strtoupper($convertEncoding);
@@ -245,8 +244,6 @@ abstract class AbstractStringWrapper implements StringWrapperInterface
         $repeatCount = floor($lengthOfPadding / $padStringLength);
 
         if ($padType === STR_PAD_BOTH) {
-            $lastStringLeft  = '';
-            $lastStringRight = '';
             $repeatCountLeft = $repeatCountRight = ($repeatCount - $repeatCount % 2) / 2;
 
             $lastStringLength       = $lengthOfPadding - 2 * $repeatCountLeft * $padStringLength;

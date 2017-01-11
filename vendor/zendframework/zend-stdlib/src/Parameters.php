@@ -3,7 +3,7 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
@@ -24,7 +24,7 @@ class Parameters extends PhpArrayObject implements ParametersInterface
     public function __construct(array $values = null)
     {
         if (null === $values) {
-            $values = array();
+            $values = [];
         }
         parent::__construct($values, ArrayObject::ARRAY_AS_PROPS);
     }
@@ -48,7 +48,7 @@ class Parameters extends PhpArrayObject implements ParametersInterface
      */
     public function fromString($string)
     {
-        $array = array();
+        $array = [];
         parse_str($string, $array);
         $this->fromArray($array);
     }
@@ -83,10 +83,10 @@ class Parameters extends PhpArrayObject implements ParametersInterface
      */
     public function offsetGet($name)
     {
-        if (isset($this[$name])) {
+        if ($this->offsetExists($name)) {
             return parent::offsetGet($name);
         }
-        return null;
+        return;
     }
 
     /**
@@ -96,7 +96,7 @@ class Parameters extends PhpArrayObject implements ParametersInterface
      */
     public function get($name, $default = null)
     {
-        if (isset($this[$name])) {
+        if ($this->offsetExists($name)) {
             return parent::offsetGet($name);
         }
         return $default;

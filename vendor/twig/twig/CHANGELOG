@@ -1,3 +1,43 @@
+* 1.31.0 (2017-XX-XX)
+
+ * added Twig_NodeCaptureInterface for nodes that capture all output
+ * fixed marking the environment as initialized too early
+ * fixed C89 compat for the C extension
+
+* 1.30.0 (2016-12-23)
+
+ * added Twig_FactoryRuntimeLoader
+ * deprecated function/test/filter/tag overriding
+ * deprecated the "disable_c_ext" attribute on Twig_Node_Expression_GetAttr
+
+* 1.29.0 (2016-12-13)
+
+ * fixed sandbox being left enabled if an exception is thrown while rendering
+ * marked some classes as being final (via @final)
+ * made Twig_Error report real source path when possible
+ * added support for {{ _self }} to provide an upgrade path from 1.x to 2.0 (replaces {{ _self.templateName }})
+ * deprecated silent display of undefined blocks
+ * deprecated support for mbstring.func_overload != 0
+
+* 1.28.2 (2016-11-23)
+
+ * fixed precedence between getFoo() and isFoo() in Twig_Template::getAttribute()
+ * improved a deprecation message
+
+* 1.28.1 (2016-11-18)
+
+ * fixed block() function when used with a template argument
+
+* 1.28.0 (2016-11-17)
+
+ * added support for the PHP 7 null coalescing operator for the ?? Twig implementation
+ * exposed a way to access template data and methods in a portable way
+ * changed context access to use the PHP 7 null coalescing operator when available
+ * added the "with" tag
+ * added support for a custom template on the block() function
+ * added "is defined" support for block() and constant()
+ * optimized the way attributes are fetched
+
 * 1.27.0 (2016-10-25)
 
  * deprecated Twig_Parser::getEnvironment()

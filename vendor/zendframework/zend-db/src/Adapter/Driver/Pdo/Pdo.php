@@ -3,7 +3,7 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2016 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
@@ -41,7 +41,7 @@ class Pdo implements DriverInterface, DriverFeatureInterface, Profiler\ProfilerA
     /**
      * @var array
      */
-    protected $features = array();
+    protected $features = [];
 
     /**
      * @param array|Connection|\PDO $connection
@@ -189,7 +189,9 @@ class Pdo implements DriverInterface, DriverFeatureInterface, Profiler\ProfilerA
                     return 'Postgresql';
                 case 'oci':
                     return 'Oracle';
-
+                case 'dblib':
+                case 'sqlsrv':
+                    return 'SqlServer';
                 default:
                     return ucfirst($name);
             }
@@ -203,6 +205,9 @@ class Pdo implements DriverInterface, DriverFeatureInterface, Profiler\ProfilerA
                     return 'PostgreSQL';
                 case 'oci':
                     return 'Oracle';
+                case 'dblib':
+                case 'sqlsrv':
+                    return 'SQLServer';
                 default:
                     return ucfirst($name);
             }
@@ -278,7 +283,7 @@ class Pdo implements DriverInterface, DriverFeatureInterface, Profiler\ProfilerA
     }
 
     /**
-     * @return array
+     * @return string
      */
     public function getPrepareType()
     {
@@ -292,7 +297,7 @@ class Pdo implements DriverInterface, DriverFeatureInterface, Profiler\ProfilerA
      */
     public function formatParameterName($name, $type = null)
     {
-        if ($type == null && !is_numeric($name) || $type == self::PARAMETERIZATION_NAMED) {
+        if ($type === null && !is_numeric($name) || $type == self::PARAMETERIZATION_NAMED) {
             return ':' . $name;
         }
 

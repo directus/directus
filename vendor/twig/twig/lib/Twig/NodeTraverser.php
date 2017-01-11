@@ -3,7 +3,7 @@
 /*
  * This file is part of Twig.
  *
- * (c) 2009 Fabien Potencier
+ * (c) Fabien Potencier
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -14,6 +14,8 @@
  *
  * It visits all nodes and their children and calls the given visitor for each.
  *
+ * @final
+ *
  * @author Fabien Potencier <fabien@symfony.com>
  */
 class Twig_NodeTraverser
@@ -22,10 +24,8 @@ class Twig_NodeTraverser
     protected $visitors = array();
 
     /**
-     * Constructor.
-     *
-     * @param Twig_Environment            $env      A Twig_Environment instance
-     * @param Twig_NodeVisitorInterface[] $visitors An array of Twig_NodeVisitorInterface instances
+     * @param Twig_Environment            $env
+     * @param Twig_NodeVisitorInterface[] $visitors
      */
     public function __construct(Twig_Environment $env, array $visitors = array())
     {
@@ -35,11 +35,6 @@ class Twig_NodeTraverser
         }
     }
 
-    /**
-     * Adds a visitor.
-     *
-     * @param Twig_NodeVisitorInterface $visitor A Twig_NodeVisitorInterface instance
-     */
     public function addVisitor(Twig_NodeVisitorInterface $visitor)
     {
         if (!isset($this->visitors[$visitor->getPriority()])) {
@@ -51,8 +46,6 @@ class Twig_NodeTraverser
 
     /**
      * Traverses a node and calls the registered visitors.
-     *
-     * @param Twig_NodeInterface $node A Twig_NodeInterface instance
      *
      * @return Twig_NodeInterface
      */

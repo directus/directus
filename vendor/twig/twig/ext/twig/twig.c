@@ -31,6 +31,10 @@
 #define Z_ADDREF_P(pz)                (pz)->refcount++
 #endif
 
+#ifndef E_USER_DEPRECATED
+#define E_USER_DEPRECATED	(1<<14L)
+#endif
+
 #define FREE_DTOR(z) 	\
 	zval_dtor(z); 		\
 	efree(z);
@@ -987,6 +991,7 @@ PHP_FUNCTION(twig_template_get_attributes)
 		char *lcItem = TWIG_STRTOLOWER(item, item_len);
 		int   lcItem_length;
 		char *method = NULL;
+		char *methodForDeprecation = NULL;
 		char *tmp_method_name_get;
 		char *tmp_method_name_is;
 		zval *zmethod;
@@ -1000,6 +1005,8 @@ PHP_FUNCTION(twig_template_get_attributes)
 		sprintf(tmp_method_name_is, "is%s", lcItem);
 
 		tmp_methods = TWIG_GET_ARRAY_ELEMENT(tmp_class, "methods", strlen("methods") TSRMLS_CC);
+		methodForDeprecation = emalloc(item_len + 1);
+		sprintf(methodForDeprecation, "%s", item);
 
 		if (TWIG_GET_ARRAY_ELEMENT(tmp_methods, lcItem, lcItem_length TSRMLS_CC)) {
 			method = item;
@@ -1094,34 +1101,115 @@ PHP_FUNCTION(twig_template_get_attributes)
 		efree(tmp_method_name_get);
 		efree(tmp_method_name_is);
 		efree(lcItem);
-	}
 /*
-	// useful when calling a template method from a template
-	// this is not supported but unfortunately heavily used in the Symfony profiler
+	// @deprecated in 1.28
 	if ($object instanceof Twig_TemplateInterface) {
+		$self = $object->getTemplateName() === $this->getTemplateName();
+		$message = sprintf('Calling "%s" on template "%s" from template "%s" is deprecated since version 1.28 and won\'t be supported anymore in 2.0.', $item, $object->getTemplateName(), $this->getTemplateName());
+		if ('renderBlock' === $method || 'displayBlock' === $method) {
+			$message .= sprintf(' Use block("%s"%s) instead).', $arguments[0], $self ? '' : ', template');
+		} elseif ('hasBlock' === $method) {
+			$message .= sprintf(' Use "block("%s"%s) is defined" instead).', $arguments[0], $self ? '' : ', template');
+		} elseif ('render' === $method || 'display' === $method) {
+			$message .= sprintf(' Use include("%s") instead).', $object->getTemplateName());
+		}
+		@trigger_error($message, E_USER_DEPRECATED);
+
 		return $ret === '' ? '' : new Twig_Markup($ret, $this->env->getCharset());
 	}
 
 	return $ret;
 */
-	efree(item);
-	// ret can be null, if e.g. the called method throws an exception
-	if (ret) {
-		if (TWIG_INSTANCE_OF_USERLAND(object, "Twig_TemplateInterface" TSRMLS_CC)) {
-			if (Z_STRLEN_P(ret) != 0) {
-				zval *charset = TWIG_CALL_USER_FUNC_ARRAY(TWIG_PROPERTY_CHAR(template, "env" TSRMLS_CC), "getCharset", NULL TSRMLS_CC);
-				TWIG_NEW(return_value, "Twig_Markup", ret, charset TSRMLS_CC);
-				zval_ptr_dtor(&charset);
-				if (ret) {
-					zval_ptr_dtor(&ret);
+		efree(item);
+		// ret can be null, if e.g. the called method throws an exception
+		if (ret) {
+			if (TWIG_INSTANCE_OF_USERLAND(object, "Twig_TemplateInterface" TSRMLS_CC)) {
+				int self;
+				int old_error_reporting;
+				zval *object_filename;
+				zval *this_filename;
+				zval *filename_func;
+				char *deprecation_message_complement = NULL;
+				char *deprecation_message = NULL;
+
+				MAKE_STD_ZVAL(object_filename);
+				MAKE_STD_ZVAL(this_filename);
+				MAKE_STD_ZVAL(filename_func);
+
+				// Get templates names
+				ZVAL_STRINGL(filename_func, "getTemplateName", sizeof("getTemplateName")-1, 1);
+				call_user_function(EG(function_table), &object, filename_func, object_filename, 0, 0 TSRMLS_CC);
+				ZVAL_STRINGL(filename_func, "getTemplateName", sizeof("getTemplateName")-1, 1);
+				call_user_function(EG(function_table), &template, filename_func, this_filename, 0, 0 TSRMLS_CC);
+
+				self = (strcmp(Z_STRVAL_P(object_filename), Z_STRVAL_P(this_filename)) == 0);
+
+				if (strcmp(methodForDeprecation, "renderBlock") == 0 || strcmp(methodForDeprecation, "displayBlock") == 0) {
+					zval **arg0;
+					zend_hash_index_find(HASH_OF(arguments), 0, (void **) &arg0);
+					asprintf(
+						&deprecation_message_complement,
+						" Use block(\"%s\"%s) instead).",
+						Z_STRVAL_PP(arg0),
+						self ? "" : ", template"
+					);
+				} else if (strcmp(methodForDeprecation, "hasBlock") == 0) {
+					zval **arg0;
+					zend_hash_index_find(HASH_OF(arguments), 0, (void **) &arg0);
+					asprintf(
+						&deprecation_message_complement,
+						" Use \"block(\"%s\"%s) is defined\" instead).",
+						Z_STRVAL_PP(arg0),
+						self ? "" : ", template"
+					);
+				} else if (strcmp(methodForDeprecation, "render") == 0 || strcmp(methodForDeprecation, "display") == 0) {
+					asprintf(
+						&deprecation_message_complement,
+						" Use include(\"%s\") instead).",
+						Z_STRVAL_P(object_filename)
+					);
+				} else {
+					deprecation_message_complement = (char*)calloc(0, sizeof(char));
 				}
-				return;
+
+				asprintf(
+					&deprecation_message,
+					"Calling \"%s\" on template \"%s\" from template \"%s\" is deprecated since version 1.28 and won't be supported anymore in 2.0.%s",
+					methodForDeprecation,
+					Z_STRVAL_P(object_filename),
+					Z_STRVAL_P(this_filename),
+					deprecation_message_complement
+				);
+
+				old_error_reporting = EG(error_reporting);
+				EG(error_reporting) = 0;
+				zend_error(E_USER_DEPRECATED, "%s", deprecation_message);
+				EG(error_reporting) = old_error_reporting;
+
+				FREE_DTOR(filename_func)
+				FREE_DTOR(object_filename)
+				FREE_DTOR(this_filename)
+				free(deprecation_message);
+				free(deprecation_message_complement);
+
+				if (Z_STRLEN_P(ret) != 0) {
+					zval *charset = TWIG_CALL_USER_FUNC_ARRAY(TWIG_PROPERTY_CHAR(template, "env" TSRMLS_CC), "getCharset", NULL TSRMLS_CC);
+					TWIG_NEW(return_value, "Twig_Markup", ret, charset TSRMLS_CC);
+					zval_ptr_dtor(&charset);
+					if (ret) {
+						zval_ptr_dtor(&ret);
+					}
+					efree(methodForDeprecation);
+					return;
+				}
+			}
+
+			RETVAL_ZVAL(ret, 1, 0);
+			if (free_ret) {
+				zval_ptr_dtor(&ret);
 			}
 		}
 
-		RETVAL_ZVAL(ret, 1, 0);
-		if (free_ret) {
-			zval_ptr_dtor(&ret);
-		}
+		efree(methodForDeprecation);
 	}
 }

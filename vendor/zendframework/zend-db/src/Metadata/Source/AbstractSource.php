@@ -3,7 +3,7 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2016 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
@@ -33,7 +33,7 @@ abstract class AbstractSource implements MetadataInterface
      *
      * @var array
      */
-    protected $data = array();
+    protected $data = [];
 
     /**
      * Constructor
@@ -58,11 +58,7 @@ abstract class AbstractSource implements MetadataInterface
     }
 
     /**
-     * Get table names
-     *
-     * @param  string $schema
-     * @param  bool   $includeViews
-     * @return string[]
+     * {@inheritdoc}
      */
     public function getTableNames($schema = null, $includeViews = false)
     {
@@ -76,22 +72,17 @@ abstract class AbstractSource implements MetadataInterface
             return array_keys($this->data['table_names'][$schema]);
         }
 
-        $tableNames = array();
+        $tableNames = [];
         foreach ($this->data['table_names'][$schema] as $tableName => $data) {
             if ('BASE TABLE' == $data['table_type']) {
                 $tableNames[] = $tableName;
             }
         }
         return $tableNames;
-
     }
 
     /**
-     * Get tables
-     *
-     * @param  string $schema
-     * @param  bool   $includeViews
-     * @return Object\TableObject[]
+     * {@inheritdoc}
      */
     public function getTables($schema = null, $includeViews = false)
     {
@@ -99,7 +90,7 @@ abstract class AbstractSource implements MetadataInterface
             $schema = $this->defaultSchema;
         }
 
-        $tables = array();
+        $tables = [];
         foreach ($this->getTableNames($schema, $includeViews) as $tableName) {
             $tables[] = $this->getTable($tableName, $schema);
         }
@@ -107,11 +98,7 @@ abstract class AbstractSource implements MetadataInterface
     }
 
     /**
-     * Get table
-     *
-     * @param  string $tableName
-     * @param  string $schema
-     * @return Object\TableObject
+     * {@inheritdoc}
      */
     public function getTable($tableName, $schema = null)
     {
@@ -145,10 +132,7 @@ abstract class AbstractSource implements MetadataInterface
     }
 
     /**
-     * Get view names
-     *
-     * @param string $schema
-     * @return array
+     * {@inheritdoc}
      */
     public function getViewNames($schema = null)
     {
@@ -158,7 +142,7 @@ abstract class AbstractSource implements MetadataInterface
 
         $this->loadTableNameData($schema);
 
-        $viewNames = array();
+        $viewNames = [];
         foreach ($this->data['table_names'][$schema] as $tableName => $data) {
             if ('VIEW' == $data['table_type']) {
                 $viewNames[] = $tableName;
@@ -168,10 +152,7 @@ abstract class AbstractSource implements MetadataInterface
     }
 
     /**
-     * Get views
-     *
-     * @param string $schema
-     * @return array
+     * {@inheritdoc}
      */
     public function getViews($schema = null)
     {
@@ -179,7 +160,7 @@ abstract class AbstractSource implements MetadataInterface
             $schema = $this->defaultSchema;
         }
 
-        $views = array();
+        $views = [];
         foreach ($this->getViewNames($schema) as $tableName) {
             $views[] = $this->getTable($tableName, $schema);
         }
@@ -187,11 +168,7 @@ abstract class AbstractSource implements MetadataInterface
     }
 
     /**
-     * Get view
-     *
-     * @param string $viewName
-     * @param string $schema
-     * @return \Zend\Db\Metadata\Object\TableObject
+     * {@inheritdoc}
      */
     public function getView($viewName, $schema = null)
     {
@@ -209,11 +186,7 @@ abstract class AbstractSource implements MetadataInterface
     }
 
     /**
-     * Gt column names
-     *
-     * @param  string $table
-     * @param  string $schema
-     * @return array
+     * {@inheritdoc}
      */
     public function getColumnNames($table, $schema = null)
     {
@@ -231,11 +204,7 @@ abstract class AbstractSource implements MetadataInterface
     }
 
     /**
-     * Get columns
-     *
-     * @param  string $table
-     * @param  string $schema
-     * @return array
+     * {@inheritdoc}
      */
     public function getColumns($table, $schema = null)
     {
@@ -245,7 +214,7 @@ abstract class AbstractSource implements MetadataInterface
 
         $this->loadColumnData($table, $schema);
 
-        $columns = array();
+        $columns = [];
         foreach ($this->getColumnNames($table, $schema) as $columnName) {
             $columns[] = $this->getColumn($columnName, $table, $schema);
         }
@@ -253,12 +222,7 @@ abstract class AbstractSource implements MetadataInterface
     }
 
     /**
-     * Get column
-     *
-     * @param  string $columnName
-     * @param  string $table
-     * @param  string $schema
-     * @return Object\ColumnObject
+     * {@inheritdoc}
      */
     public function getColumn($columnName, $table, $schema = null)
     {
@@ -275,12 +239,12 @@ abstract class AbstractSource implements MetadataInterface
         $info = $this->data['columns'][$schema][$table][$columnName];
 
         $column = new Object\ColumnObject($columnName, $table, $schema);
-        $props = array(
+        $props = [
             'ordinal_position', 'column_default', 'is_nullable',
             'data_type', 'character_maximum_length', 'character_octet_length',
             'numeric_precision', 'numeric_scale', 'numeric_unsigned',
             'erratas'
-        );
+        ];
         foreach ($props as $prop) {
             if (isset($info[$prop])) {
                 $column->{'set' . str_replace('_', '', $prop)}($info[$prop]);
@@ -302,11 +266,7 @@ abstract class AbstractSource implements MetadataInterface
     }
 
     /**
-     * Get constraints
-     *
-     * @param  string $table
-     * @param  string $schema
-     * @return array
+     * {@inheritdoc}
      */
     public function getConstraints($table, $schema = null)
     {
@@ -316,7 +276,7 @@ abstract class AbstractSource implements MetadataInterface
 
         $this->loadConstraintData($table, $schema);
 
-        $constraints = array();
+        $constraints = [];
         foreach (array_keys($this->data['constraints'][$schema][$table]) as $constraintName) {
             $constraints[] = $this->getConstraint($constraintName, $table, $schema);
         }
@@ -325,12 +285,7 @@ abstract class AbstractSource implements MetadataInterface
     }
 
     /**
-     * Get constraint
-     *
-     * @param  string $constraintName
-     * @param  string $table
-     * @param  string $schema
-     * @return Object\ConstraintObject
+     * {@inheritdoc}
      */
     public function getConstraint($constraintName, $table, $schema = null)
     {
@@ -347,7 +302,7 @@ abstract class AbstractSource implements MetadataInterface
         $info = $this->data['constraints'][$schema][$table][$constraintName];
         $constraint = new Object\ConstraintObject($constraintName, $table, $schema);
 
-        foreach (array(
+        foreach ([
             'constraint_type'         => 'setType',
             'match_option'            => 'setMatchOption',
             'update_rule'             => 'setUpdateRule',
@@ -357,7 +312,7 @@ abstract class AbstractSource implements MetadataInterface
             'referenced_table_name'   => 'setReferencedTableName',
             'referenced_columns'      => 'setReferencedColumns',
             'check_clause'            => 'setCheckClause',
-        ) as $key => $setMethod) {
+        ] as $key => $setMethod) {
             if (isset($info[$key])) {
                 $constraint->{$setMethod}($info[$key]);
             }
@@ -367,12 +322,7 @@ abstract class AbstractSource implements MetadataInterface
     }
 
     /**
-     * Get constraint keys
-     *
-     * @param  string $constraint
-     * @param  string $table
-     * @param  string $schema
-     * @return array
+     * {@inheritdoc}
      */
     public function getConstraintKeys($constraint, $table, $schema = null)
     {
@@ -383,7 +333,7 @@ abstract class AbstractSource implements MetadataInterface
         $this->loadConstraintReferences($table, $schema);
 
         // organize references first
-        $references = array();
+        $references = [];
         foreach ($this->data['constraint_references'][$schema] as $refKeyInfo) {
             if ($refKeyInfo['constraint_name'] == $constraint) {
                 $references[$refKeyInfo['constraint_name']] = $refKeyInfo;
@@ -392,7 +342,7 @@ abstract class AbstractSource implements MetadataInterface
 
         $this->loadConstraintDataKeys($schema);
 
-        $keys = array();
+        $keys = [];
         foreach ($this->data['constraint_keys'][$schema] as $constraintKeyInfo) {
             if ($constraintKeyInfo['table_name'] == $table && $constraintKeyInfo['constraint_name'] === $constraint) {
                 $keys[] = $key = new Object\ConstraintKeyObject($constraintKeyInfo['column_name']);
@@ -412,10 +362,7 @@ abstract class AbstractSource implements MetadataInterface
     }
 
     /**
-     * Get trigger names
-     *
-     * @param string $schema
-     * @return array
+     * {@inheritdoc}
      */
     public function getTriggerNames($schema = null)
     {
@@ -429,10 +376,7 @@ abstract class AbstractSource implements MetadataInterface
     }
 
     /**
-     * Get triggers
-     *
-     * @param string $schema
-     * @return array
+     * {@inheritdoc}
      */
     public function getTriggers($schema = null)
     {
@@ -440,7 +384,7 @@ abstract class AbstractSource implements MetadataInterface
             $schema = $this->defaultSchema;
         }
 
-        $triggers = array();
+        $triggers = [];
         foreach ($this->getTriggerNames($schema) as $triggerName) {
             $triggers[] = $this->getTrigger($triggerName, $schema);
         }
@@ -448,11 +392,7 @@ abstract class AbstractSource implements MetadataInterface
     }
 
     /**
-     * Get trigger
-     *
-     * @param string $triggerName
-     * @param string $schema
-     * @return Object\TriggerObject
+     * {@inheritdoc}
      */
     public function getTrigger($triggerName, $schema = null)
     {
@@ -500,7 +440,7 @@ abstract class AbstractSource implements MetadataInterface
         $data = &$this->data;
         foreach (func_get_args() as $key) {
             if (!isset($data[$key])) {
-                $data[$key] = array();
+                $data[$key] = [];
             }
             $data = &$data[$key];
         }

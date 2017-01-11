@@ -10,13 +10,12 @@ use Directus\Db\TableSchema;
 use Directus\MemcacheProvider;
 use Directus\Util\ArrayUtils;
 use Directus\Util\DateUtils;
-use Directus\Util\Formatting;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\ResultSet\ResultSetInterface;
-use Zend\Db\Sql\SqlInterface;
 use Zend\Db\Sql\Ddl;
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Sql;
+use Zend\Db\Sql\SqlInterface;
 use Zend\Db\Sql\Update;
 use Zend\Db\TableGateway\Feature;
 use Zend\Db\TableGateway\Feature\RowGatewayFeature;
@@ -179,7 +178,9 @@ class BaseTableGateway extends TableGateway
         if ($pk_field_name == null) {
             $pk_field_name = $this->primaryKeyFieldName;
         }
+
         $record = $this->findOneBy($pk_field_name, $id);
+
         return $record;
     }
 
@@ -258,7 +259,7 @@ class BaseTableGateway extends TableGateway
             $recordData[$TableGateway->primaryKeyFieldName] = $TableGateway->getLastInsertValue();
 
             if ($tableName == 'directus_files') {
-                $Files = new \Directus\Files\Files();
+                $Files = Bootstrap::get('app')->container->get('files');
                 $ext = pathinfo($recordData['name'], PATHINFO_EXTENSION);
 
                 $thumbnailPath = 'thumbs/THUMB_' . $recordData['name'];
@@ -417,7 +418,7 @@ class BaseTableGateway extends TableGateway
     {
         $column_name = $columnData['column_name'];
         $data_type = $columnData['data_type'];
-        $comment = $columnData['comment'];
+        $comment = ArrayUtils::get($columnData, 'comment', '');
 
         if (array_key_exists('char_length', $columnData)) {
             $charLength = $columnData['char_length'];
@@ -547,7 +548,7 @@ class BaseTableGateway extends TableGateway
         return SchemaManager::parseRecordValuesByType($records, $columns);
     }
 
-    protected function parseRecord($records, $tableName = null)
+    public function parseRecord($records, $tableName = null)
     {
         if (is_array($records)) {
             $tableName = $tableName === null ? $this->table : $tableName;

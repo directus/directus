@@ -7,10 +7,8 @@ use Directus\Db\Exception;
 use Directus\Db\RowGateway\AclAwareRowGateway;
 use Directus\Db\SchemaManager;
 use Directus\Db\TableSchema;
-use Directus\Files;
 use Directus\Util\ArrayUtils;
 use Directus\Util\DateUtils;
-use Zend\Db\RowGateway\AbstractRowGateway;
 use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Predicate;
 use Zend\Db\Sql\Predicate\PredicateInterface;
@@ -38,7 +36,9 @@ class RelationalTableGateway extends AclAwareTableGateway
 
         $schemaArray = TableSchema::getSchemaArray($tableName);
 
-        $currentUser = AuthProvider::getUserRecord();
+        $acl = Bootstrap::get('acl');
+        $currentUserId = $acl->getUserId();
+        $currentGroupId = $acl->getGroupId();
 
         // Upload file if necessary
         $TableGateway->copyFiles($tableName, $recordData);
@@ -49,12 +49,12 @@ class RelationalTableGateway extends AclAwareTableGateway
         if ($recordIsNew && $tableName != 'directus_users') {
             $cmsOwnerColumnName = $this->acl->getCmsOwnerColumnByTable($tableName);
             if ($cmsOwnerColumnName) {
-                $recordData[$cmsOwnerColumnName] = $currentUser['id'];
+                $recordData[$cmsOwnerColumnName] = $currentUserId;
             }
         }
 
         //Dont let non-admins make admins
-        if ($tableName == 'directus_users' && $currentUser['group'] != 1) {
+        if ($tableName == 'directus_users' && $currentGroupId != 1) {
             if (isset($recordData['group']) && $recordData['group']['id'] == 1) {
                 unset($recordData['group']);
             }
@@ -151,7 +151,7 @@ class RelationalTableGateway extends AclAwareTableGateway
                     'type' => DirectusActivityTableGateway::makeLogTypeFromTableName($this->table),
                     'table_name' => $tableName,
                     'action' => $logEntryAction,
-                    'user' => $currentUser['id'],
+                    'user' => $currentUserId,
                     'datetime' => DateUtils::now(),
                     'parent_id' => isset($parentData['id']) ? $parentData['id'] : null,
                     'parent_table' => isset($parentData['table_name']) ? $parentData['table_name'] : null,
@@ -198,7 +198,7 @@ class RelationalTableGateway extends AclAwareTableGateway
                         'type' => DirectusActivityTableGateway::makeLogTypeFromTableName($this->table),
                         'table_name' => $tableName,
                         'action' => $logEntryAction,
-                        'user' => $currentUser['id'],
+                        'user' => $currentUserId,
                         'datetime' => DateUtils::now(),
                         'parent_id' => null,
                         'data' => json_encode($fullRecordData),
@@ -251,7 +251,7 @@ class RelationalTableGateway extends AclAwareTableGateway
         $params[$primaryKeyFieldName] = $recordData[$primaryKeyFieldName];
         $file = $filesTableGateway->getEntries($params);
 
-        $Files = new \Directus\Files\Files();
+        $Files = Bootstrap::get('app')->container->get('files');
         $Files->delete($file);
 
         return true;
@@ -288,7 +288,7 @@ class RelationalTableGateway extends AclAwareTableGateway
             // @todo: rewrite this
             if ($foreignTableName === 'directus_files') {
                 // Update/Add foreign record
-                $Files = new \Directus\Files\Files();
+                $Files = Bootstrap::get('app')->container->get('files');
                 if (count(array_filter($foreignRow, 'is_array')) == count($foreignRow)) {
                     $index = 0;
                     foreach ($foreignRow as $row) {
@@ -590,7 +590,7 @@ class RelationalTableGateway extends AclAwareTableGateway
         $params = array_merge(self::$defaultEntriesSelectParams, $params);
 
         // Is there a sort column?
-        $tableColumns = array_flip(TableSchema::getTableColumns($this->table, null, true));
+        $tableColumns = TableSchema::getTableColumns($this->table, null, true);
         if (!array_key_exists('orderBy', $params) && array_key_exists('sort', $tableColumns)) {
             $params['orderBy'] = 'sort';
         }
@@ -981,7 +981,7 @@ class RelationalTableGateway extends AclAwareTableGateway
                     return $table_entries;
                 }
 
-                $this->addToManyCallStack($level, is_null($parentField) ? $foreign_id_column : $parentField, $foreign_table_name);
+                $this->addToManyCallStack($level, !is_null($parentField) ? $parentField : $foreign_id_column, $foreign_table_name);
 
                 // Aggregate all foreign keys for this relationship (for each row, yield the specified foreign id)
                 $yield = function ($row) use ($foreign_id_column, $table_entries) {
@@ -1020,7 +1020,12 @@ class RelationalTableGateway extends AclAwareTableGateway
                 $schemaArray = TableSchema::getSchemaArray($foreign_table_name);
 
                 // Eager-load related ManyToOne records
-                $foreign_table = $this->loadManyToOneRelationships($schemaArray, $foreign_table, $parentField, $level+1);
+                $foreign_table = $this->loadManyToOneRelationships(
+                    $schemaArray,
+                    $foreign_table,
+                    !is_null($parentField) ? $parentField : $foreign_id_column,
+                    $level+1
+                );
 
                 // Convert dates into ISO 8601 Format
                 $foreign_table = $this->convertDates($foreign_table, $schemaArray);

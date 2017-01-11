@@ -9,7 +9,11 @@ return array(
     'Zend\\Stdlib\\' => array($vendorDir . '/zendframework/zend-stdlib/src'),
     'Zend\\Db\\' => array($vendorDir . '/zendframework/zend-db/src'),
     'League\\Flysystem\\' => array($vendorDir . '/league/flysystem/src'),
+    'Directus\\Permissions\\' => array($vendorDir . '/directus/permissions'),
     'Directus\\Installation\\' => array($baseDir . '/installation/includes'),
     'Directus\\Embed\\Provider\\' => array($baseDir . '/customs/embeds'),
+    'Directus\\Database\\' => array($vendorDir . '/directus/database'),
+    'Directus\\Collection\\' => array($vendorDir . '/directus/collection'),
+    'Directus\\API\\Routes\\' => array($baseDir . '/api/routes'),
     'Directus\\' => array($baseDir . '/api/core/Directus'),
 );

@@ -217,7 +217,9 @@ class Twig_Tests_EnvironmentTest extends PHPUnit_Framework_TestCase
             ->will($this->returnValue(0));
         $loader->expects($this->never())
             ->method('isFresh');
-        $cache->expects($this->never())
+        $cache->expects($this->once())
+            ->method('write');
+        $cache->expects($this->once())
             ->method('load');
 
         $twig->loadTemplate($templateName);
@@ -245,7 +247,7 @@ class Twig_Tests_EnvironmentTest extends PHPUnit_Framework_TestCase
         $loader->expects($this->once())
             ->method('isFresh')
             ->will($this->returnValue(true));
-        $cache->expects($this->once())
+        $cache->expects($this->atLeastOnce())
             ->method('load');
 
         $twig->loadTemplate($templateName);
@@ -271,7 +273,9 @@ class Twig_Tests_EnvironmentTest extends PHPUnit_Framework_TestCase
         $loader->expects($this->once())
             ->method('isFresh')
             ->will($this->returnValue(false));
-        $cache->expects($this->never())
+        $cache->expects($this->once())
+            ->method('write');
+        $cache->expects($this->once())
             ->method('load');
 
         $twig->loadTemplate($templateName);
@@ -359,13 +363,13 @@ class Twig_Tests_EnvironmentTest extends PHPUnit_Framework_TestCase
         $twig->addExtension(new Twig_Tests_EnvironmentTest_Extension_WithDeprecatedName());
         $twig->removeExtension('environment_test');
 
-        $this->assertFalse(array_key_exists('test', $twig->getTags()));
-        $this->assertFalse(array_key_exists('foo_filter', $twig->getFilters()));
-        $this->assertFalse(array_key_exists('foo_function', $twig->getFunctions()));
-        $this->assertFalse(array_key_exists('foo_test', $twig->getTests()));
-        $this->assertFalse(array_key_exists('foo_unary', $twig->getUnaryOperators()));
-        $this->assertFalse(array_key_exists('foo_binary', $twig->getBinaryOperators()));
-        $this->assertFalse(array_key_exists('foo_global', $twig->getGlobals()));
+        $this->assertArrayNotHasKey('test', $twig->getTags());
+        $this->assertArrayNotHasKey('foo_filter', $twig->getFilters());
+        $this->assertArrayNotHasKey('foo_function', $twig->getFunctions());
+        $this->assertArrayNotHasKey('foo_test', $twig->getTests());
+        $this->assertArrayNotHasKey('foo_unary', $twig->getUnaryOperators());
+        $this->assertArrayNotHasKey('foo_binary', $twig->getBinaryOperators());
+        $this->assertArrayNotHasKey('foo_global', $twig->getGlobals());
         $this->assertCount(2, $twig->getNodeVisitors());
     }
 
@@ -642,6 +646,7 @@ class Twig_Tests_EnvironmentTest_Runtime
     }
 }
 
+// to be removed in 2.0
 interface Twig_EnvironmentTestLoaderInterface extends Twig_LoaderInterface, Twig_SourceContextLoaderInterface
 {
 }

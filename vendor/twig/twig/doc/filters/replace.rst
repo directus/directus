@@ -14,6 +14,6 @@ The ``replace`` filter formats a given string by replacing the placeholders
 Arguments
 ---------
 
-* ``replace_pairs``: The placeholder values
+* ``from``: The placeholder values
 
 .. seealso:: :doc:`format<format>`

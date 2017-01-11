@@ -3,7 +3,7 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2016 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
@@ -70,7 +70,7 @@ class Adapter implements AdapterInterface, Profiler\ProfilerAwareInterface
     public function __construct($driver, Platform\PlatformInterface $platform = null, ResultSet\ResultSetInterface $queryResultPrototype = null, Profiler\ProfilerInterface $profiler = null)
     {
         // first argument can be an array of parameters
-        $parameters = array();
+        $parameters = [];
 
         if (is_array($driver)) {
             $parameters = $driver;
@@ -87,7 +87,7 @@ class Adapter implements AdapterInterface, Profiler\ProfilerAwareInterface
         $driver->checkEnvironment();
         $this->driver = $driver;
 
-        if ($platform == null) {
+        if ($platform === null) {
             $platform = $this->createPlatform($parameters);
         }
 
@@ -128,7 +128,7 @@ class Adapter implements AdapterInterface, Profiler\ProfilerAwareInterface
      */
     public function getDriver()
     {
-        if ($this->driver == null) {
+        if ($this->driver === null) {
             throw new Exception\RuntimeException('Driver has not been set or configured for this adapter.');
         }
         return $this->driver;
@@ -160,12 +160,13 @@ class Adapter implements AdapterInterface, Profiler\ProfilerAwareInterface
      *
      * @param string $sql
      * @param string|array|ParameterContainer $parametersOrQueryMode
+     * @param \Zend\Db\ResultSet\ResultSetInterface $resultPrototype
      * @throws Exception\InvalidArgumentException
      * @return Driver\StatementInterface|ResultSet\ResultSet
      */
-    public function query($sql, $parametersOrQueryMode = self::QUERY_MODE_PREPARE)
+    public function query($sql, $parametersOrQueryMode = self::QUERY_MODE_PREPARE, ResultSet\ResultSetInterface $resultPrototype = null)
     {
-        if (is_string($parametersOrQueryMode) && in_array($parametersOrQueryMode, array(self::QUERY_MODE_PREPARE, self::QUERY_MODE_EXECUTE))) {
+        if (is_string($parametersOrQueryMode) && in_array($parametersOrQueryMode, [self::QUERY_MODE_PREPARE, self::QUERY_MODE_EXECUTE])) {
             $mode = $parametersOrQueryMode;
             $parameters = null;
         } elseif (is_array($parametersOrQueryMode) || $parametersOrQueryMode instanceof ParameterContainer) {
@@ -190,7 +191,7 @@ class Adapter implements AdapterInterface, Profiler\ProfilerAwareInterface
         }
 
         if ($result instanceof Driver\ResultInterface && $result->isQueryResult()) {
-            $resultSet = clone $this->queryResultSetPrototype;
+            $resultSet = clone ($resultPrototype ?: $this->queryResultSetPrototype);
             $resultSet->initialize($result);
             return $resultSet;
         }
@@ -208,8 +209,8 @@ class Adapter implements AdapterInterface, Profiler\ProfilerAwareInterface
     public function createStatement($initialSql = null, $initialParameters = null)
     {
         $statement = $this->driver->createStatement($initialSql);
-        if ($initialParameters == null || !$initialParameters instanceof ParameterContainer && is_array($initialParameters)) {
-            $initialParameters = new ParameterContainer((is_array($initialParameters) ? $initialParameters : array()));
+        if ($initialParameters === null || !$initialParameters instanceof ParameterContainer && is_array($initialParameters)) {
+            $initialParameters = new ParameterContainer((is_array($initialParameters) ? $initialParameters : []));
         }
         $statement->setParameterContainer($initialParameters);
         return $statement;
@@ -217,7 +218,7 @@ class Adapter implements AdapterInterface, Profiler\ProfilerAwareInterface
 
     public function getHelpers(/* $functions */)
     {
-        $functions = array();
+        $functions = [];
         $platform = $this->platform;
         foreach (func_get_args() as $arg) {
             switch ($arg) {
@@ -247,7 +248,6 @@ class Adapter implements AdapterInterface, Profiler\ProfilerAwareInterface
             default:
                 throw new Exception\InvalidArgumentException('Invalid magic property on adapter');
         }
-
     }
 
     /**
@@ -270,7 +270,7 @@ class Adapter implements AdapterInterface, Profiler\ProfilerAwareInterface
             throw new Exception\InvalidArgumentException(__FUNCTION__ . ' expects a "driver" to be a string or instance of DriverInterface');
         }
 
-        $options = array();
+        $options = [];
         if (isset($parameters['options'])) {
             $options = (array) $parameters['options'];
             unset($parameters['options']);
@@ -308,10 +308,10 @@ class Adapter implements AdapterInterface, Profiler\ProfilerAwareInterface
     }
 
     /**
-     * @param Driver\DriverInterface $driver
+     * @param array $parameters
      * @return Platform\PlatformInterface
      */
-    protected function createPlatform($parameters)
+    protected function createPlatform(array $parameters)
     {
         if (isset($parameters['platform'])) {
             $platformName = $parameters['platform'];
@@ -322,7 +322,7 @@ class Adapter implements AdapterInterface, Profiler\ProfilerAwareInterface
         }
 
         // currently only supported by the IbmDb2 & Oracle concrete implementations
-        $options = (isset($parameters['platform_options'])) ? $parameters['platform_options'] : array();
+        $options = (isset($parameters['platform_options'])) ? $parameters['platform_options'] : [];
 
         switch ($platformName) {
             case 'Mysql':
@@ -333,8 +333,8 @@ class Adapter implements AdapterInterface, Profiler\ProfilerAwareInterface
                 // PDO is only supported driver for quoting values in this platform
                 return new Platform\SqlServer(($this->driver instanceof Driver\Pdo\Pdo) ? $this->driver : null);
             case 'Oracle':
-                // oracle does not accept a driver as an option, no driver specific quoting available
-                return new Platform\Oracle($options);
+                $driver = ($this->driver instanceof Driver\Oci8\Oci8 || $this->driver instanceof Driver\Pdo\Pdo) ? $this->driver : null;
+                return new Platform\Oracle($options, $driver);
             case 'Sqlite':
                 // PDO is only supported driver for quoting values in this platform
                 return new Platform\Sqlite(($this->driver instanceof Driver\Pdo\Pdo) ? $this->driver : null);
@@ -350,6 +350,12 @@ class Adapter implements AdapterInterface, Profiler\ProfilerAwareInterface
         }
     }
 
+    /**
+     *
+     * @param array $parameters
+     * @return Profiler\ProfilerInterface
+     * @throws Exception\InvalidArgumentException
+     */
     protected function createProfiler($parameters)
     {
         if ($parameters['profiler'] instanceof Profiler\ProfilerInterface) {

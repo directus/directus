@@ -3,7 +3,7 @@
 /*
  * This file is part of Twig.
  *
- * (c) 2015 Fabien Potencier
+ * (c) Fabien Potencier
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -56,7 +56,7 @@ class Twig_Node_CheckSecurity extends Twig_Node
             ->outdent()
             ->write("} catch (Twig_Sandbox_SecurityError \$e) {\n")
             ->indent()
-            ->write("\$e->setTemplateName(\$this->getTemplateName());\n\n")
+            ->write("\$e->setSourceContext(\$this->getSourceContext());\n\n")
             ->write("if (\$e instanceof Twig_Sandbox_SecurityNotAllowedTagError && isset(\$tags[\$e->getTagName()])) {\n")
             ->indent()
             ->write("\$e->setTemplateLine(\$tags[\$e->getTagName()]);\n")

@@ -1,7 +1,7 @@
 --TEST--
 "date" function
 --TEMPLATE--
-{{ date() == date('now') ? 'OK' : 'KO' }}
+{{ date().format('r') == date('now').format('r') ? 'OK' : 'KO' }}
 {{ date(date1) == date('2010-10-04 13:45') ? 'OK' : 'KO' }}
 {{ date(date2) == date('2010-10-04 13:45') ? 'OK' : 'KO' }}
 {{ date(date3) == date('2010-10-04 13:45') ? 'OK' : 'KO' }}

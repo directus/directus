@@ -55,6 +55,7 @@ trait PluggableTrait
      *
      * @param string $method
      * @param array  $arguments
+     * @param FilesystemInterface $filesystem
      *
      * @return mixed
      */

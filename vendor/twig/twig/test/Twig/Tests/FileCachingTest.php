@@ -44,7 +44,7 @@ class Twig_Tests_FileCachingTest extends PHPUnit_Framework_TestCase
         $this->env->loadTemplate($name);
         $cacheFileName = $this->env->getCacheFilename($name);
 
-        $this->assertTrue(file_exists($cacheFileName), 'Cache file does not exist.');
+        $this->assertFileExists($cacheFileName, 'Cache file does not exist.');
     }
 
     /**
@@ -56,8 +56,8 @@ class Twig_Tests_FileCachingTest extends PHPUnit_Framework_TestCase
         $this->env->loadTemplate($name);
         $cacheFileName = $this->env->getCacheFilename($name);
 
-        $this->assertTrue(file_exists($cacheFileName), 'Cache file does not exist.');
+        $this->assertFileExists($cacheFileName, 'Cache file does not exist.');
         $this->env->clearCacheFiles();
-        $this->assertFalse(file_exists($cacheFileName), 'Cache file was not cleared.');
+        $this->assertFileNotExists($cacheFileName, 'Cache file was not cleared.');
     }
 }

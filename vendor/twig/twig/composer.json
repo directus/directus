@@ -30,7 +30,7 @@
         "php": ">=5.2.7"
     },
     "require-dev": {
-        "symfony/phpunit-bridge": "~2.7",
+        "symfony/phpunit-bridge": "~3.2",
         "symfony/debug": "~2.7"
     },
     "autoload": {
@@ -40,7 +40,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "1.27-dev"
+            "dev-master": "1.31-dev"
         }
     }
 }

@@ -3,7 +3,7 @@
 /*
  * This file is part of Twig.
  *
- * (c) 2009 Fabien Potencier
+ * (c) Fabien Potencier
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -11,6 +11,8 @@
 
 /**
  * Represents a security policy which need to be enforced when sandbox mode is enabled.
+ *
+ * @final
  *
  * @author Fabien Potencier <fabien@symfony.com>
  */

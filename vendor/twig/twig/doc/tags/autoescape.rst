@@ -6,8 +6,6 @@ template to be escaped or not by using the ``autoescape`` tag:
 
 .. code-block:: jinja
 
-    {# The following syntax works as of Twig 1.8 -- see the note below for previous versions #}
-
     {% autoescape %}
         Everything will be automatically escaped in this block
         using the HTML strategy

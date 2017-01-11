@@ -3,7 +3,7 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2016 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
@@ -167,7 +167,7 @@ class Statement implements StatementInterface, Profiler\ProfilerAwareInterface
             throw new Exception\RuntimeException('This statement has been prepared already');
         }
 
-        if ($sql == null) {
+        if ($sql === null) {
             $sql = $this->sql;
         }
 
@@ -194,7 +194,7 @@ class Statement implements StatementInterface, Profiler\ProfilerAwareInterface
     /**
      * Execute
      *
-     * @param null $parameters
+     * @param null|array|ParameterContainer $parameters
      * @return Result
      */
     public function execute($parameters = null)

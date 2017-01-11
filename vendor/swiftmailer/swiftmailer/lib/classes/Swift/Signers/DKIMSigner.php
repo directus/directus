@@ -432,10 +432,10 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
     {
         // Init
         switch ($this->_hashAlgorithm) {
-            case 'rsa-sha256' :
+            case 'rsa-sha256':
                 $this->_bodyHashHandler = hash_init('sha256');
                 break;
-            case 'rsa-sha1' :
+            case 'rsa-sha1':
                 $this->_bodyHashHandler = hash_init('sha1');
                 break;
         }
@@ -567,14 +567,14 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
     protected function _addHeader($header, $is_sig = false)
     {
         switch ($this->_headerCanon) {
-            case 'relaxed' :
+            case 'relaxed':
                 // Prepare Header and cascade
                 $exploded = explode(':', $header, 2);
                 $name = strtolower(trim($exploded[0]));
                 $value = str_replace("\r\n", '', $exploded[1]);
                 $value = preg_replace("/[ \t][ \t]+/", ' ', $value);
                 $header = $name.':'.trim($value).($is_sig ? '' : "\r\n");
-            case 'simple' :
+            case 'simple':
                 // Nothing to do
         }
         $this->_addToHeaderHash($header);
@@ -600,10 +600,10 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
                 continue;
             }
             switch ($string[$i]) {
-                case "\r" :
+                case "\r":
                     $this->_bodyCanonLastChar = "\r";
                     break;
-                case "\n" :
+                case "\n":
                     if ($this->_bodyCanonLastChar == "\r") {
                         if ($method) {
                             $this->_bodyCanonSpace = false;
@@ -619,13 +619,13 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
                         // todo handle it but should never happen
                     }
                     break;
-                case ' ' :
-                case "\t" :
+                case ' ':
+                case "\t":
                     if ($method) {
                         $this->_bodyCanonSpace = true;
                         break;
                     }
-                default :
+                default:
                     if ($this->_bodyCanonEmptyCounter > 0) {
                         $canon .= str_repeat("\r\n", $this->_bodyCanonEmptyCounter);
                         $this->_bodyCanonEmptyCounter = 0;

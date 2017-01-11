@@ -168,9 +168,15 @@ class MySQLSchema extends AbstractSchema
         );
 
         $select->where([
-            'T.TABLE_NAME' => $tableName,
             'T.TABLE_SCHEMA' => $this->adapter->getCurrentSchema()
         ]);
+
+        // @hotfix: This solve the problem fetching a table with capital letter
+        $where = $select->where->nest();
+        $where->equalTo('T.TABLE_NAME', $tableName);
+        $where->OR;
+        $where->equalTo('T.TABLE_NAME', $tableName);
+        $where->unnest();
 
         $sql = new Sql($this->adapter);
         $statement = $sql->prepareStatementForSqlObject($select);

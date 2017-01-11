@@ -1,0 +1,14 @@
+{
+    "title": "Zend\\Stdlib",
+    "target": "html/",
+    "content": [
+        "book/zend.stdlib.hydrator.md",
+        "book/zend.stdlib.hydrator.filter.md",
+        "book/zend.stdlib.hydrator.strategy.md",
+        "book/zend.stdlib.hydrator.aggregate.md",
+        "book/zend.stdlib.hydrator.namingstrategy.compositenamingstrategy.md",
+        "book/zend.stdlib.hydrator.namingstrategy.identitynamingstrategy.md",
+        "book/zend.stdlib.hydrator.namingstrategy.mapnamingstrategy.md",
+        "book/zend.stdlib.hydrator.namingstrategy.underscorenamingstrategy.md"
+    ]
+}

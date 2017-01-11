@@ -3,7 +3,7 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2016 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
@@ -17,7 +17,6 @@ use Zend\Db\Adapter\Driver\Pdo;
  */
 class SqliteRowCounter extends AbstractFeature
 {
-
     /**
      * @return string
      */
@@ -35,7 +34,7 @@ class SqliteRowCounter extends AbstractFeature
         $countStmt = clone $statement;
         $sql = $statement->getSql();
         if ($sql == '' || stripos($sql, 'select') === false) {
-            return null;
+            return;
         }
         $countSql = 'SELECT COUNT(*) as "count" FROM (' . $sql . ')';
         $countStmt->prepare($countSql);
@@ -51,12 +50,12 @@ class SqliteRowCounter extends AbstractFeature
      */
     public function getCountForSql($sql)
     {
-        if (!stripos($sql, 'select')) {
-            return null;
+        if (stripos($sql, 'select') === false) {
+            return;
         }
         $countSql = 'SELECT COUNT(*) as count FROM (' . $sql . ')';
         /** @var $pdo \PDO */
-        $pdo = $this->pdoDriver->getConnection()->getResource();
+        $pdo = $this->driver->getConnection()->getResource();
         $result = $pdo->query($countSql);
         $countRow = $result->fetch(\PDO::FETCH_ASSOC);
         return $countRow['count'];
@@ -64,16 +63,14 @@ class SqliteRowCounter extends AbstractFeature
 
     /**
      * @param $context
-     * @return closure
+     * @return \Closure
      */
     public function getRowCountClosure($context)
     {
-        $sqliteRowCounter = $this;
-        return function () use ($sqliteRowCounter, $context) {
-            /** @var $sqliteRowCounter SqliteRowCounter */
+        return function () use ($context) {
             return ($context instanceof Pdo\Statement)
-                ? $sqliteRowCounter->getCountForStatement($context)
-                : $sqliteRowCounter->getCountForSql($context);
+                ? $this->getCountForStatement($context)
+                : $this->getCountForSql($context);
         };
     }
 }

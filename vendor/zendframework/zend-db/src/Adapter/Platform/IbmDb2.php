@@ -3,22 +3,14 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2016 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
 namespace Zend\Db\Adapter\Platform;
 
-class IbmDb2 implements PlatformInterface
+class IbmDb2 extends AbstractPlatform
 {
-
-    protected $quoteValueAllowed = false;
-
-    /**
-     * @var bool
-     */
-    protected $quoteIdentifiers = true;
-
     /**
      * @var string
      */
@@ -27,7 +19,7 @@ class IbmDb2 implements PlatformInterface
     /**
      * @param array $options
      */
-    public function __construct($options = array())
+    public function __construct($options = [])
     {
         if (isset($options['quote_identifiers'])
             && ($options['quote_identifiers'] == false
@@ -42,9 +34,7 @@ class IbmDb2 implements PlatformInterface
     }
 
     /**
-     * Get name
-     *
-     * @return string
+     * {@inheritDoc}
      */
     public function getName()
     {
@@ -52,34 +42,36 @@ class IbmDb2 implements PlatformInterface
     }
 
     /**
-     * Get quote indentifier symbol
-     *
-     * @return string
+     * {@inheritDoc}
      */
-    public function getQuoteIdentifierSymbol()
+    public function quoteIdentifierInFragment($identifier, array $safeWords = [])
     {
-        return '"';
-    }
-
-    /**
-     * Quote identifier
-     *
-     * @param  string $identifier
-     * @return string
-     */
-    public function quoteIdentifier($identifier)
-    {
-        if ($this->quoteIdentifiers === false) {
+        if (! $this->quoteIdentifiers) {
             return $identifier;
         }
-        return '"' . str_replace('"', '\\' . '"', $identifier) . '"';
+        $safeWordsInt = ['*' => true, ' ' => true, '.' => true, 'as' => true];
+        foreach ($safeWords as $sWord) {
+            $safeWordsInt[strtolower($sWord)] = true;
+        }
+        $parts = preg_split(
+            '/([^0-9,a-z,A-Z$#_:])/i',
+            $identifier,
+            -1,
+            PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY
+        );
+        $identifier = '';
+        foreach ($parts as $part) {
+            $identifier .= isset($safeWordsInt[strtolower($part)])
+                ? $part
+                : $this->quoteIdentifier[0]
+                    . str_replace($this->quoteIdentifier[0], $this->quoteIdentifierTo, $part)
+                    . $this->quoteIdentifier[1];
+        }
+        return $identifier;
     }
 
     /**
-     * Quote identifier chain
-     *
-     * @param string|string[] $identifierChain
-     * @return string
+     * {@inheritDoc}
      */
     public function quoteIdentifierChain($identifierChain)
     {
@@ -94,20 +86,7 @@ class IbmDb2 implements PlatformInterface
     }
 
     /**
-     * Get quote value symbol
-     *
-     * @return string
-     */
-    public function getQuoteValueSymbol()
-    {
-        return '\'';
-    }
-
-    /**
-     * Quote value
-     *
-     * @param  string $value
-     * @return string
+     * {@inheritDoc}
      */
     public function quoteValue($value)
     {
@@ -122,12 +101,7 @@ class IbmDb2 implements PlatformInterface
     }
 
     /**
-     * Quote Trusted Value
-     *
-     * The ability to quote values without notices
-     *
-     * @param $value
-     * @return mixed
+     * {@inheritDoc}
      */
     public function quoteTrustedValue($value)
     {
@@ -138,72 +112,10 @@ class IbmDb2 implements PlatformInterface
     }
 
     /**
-     * Quote value list
-     *
-     * @param string|string[] $valueList
-     * @return string
-     */
-    public function quoteValueList($valueList)
-    {
-        if (!is_array($valueList)) {
-            return $this->quoteValue($valueList);
-        }
-
-        $value = reset($valueList);
-        do {
-            $valueList[key($valueList)] = $this->quoteValue($value);
-        } while ($value = next($valueList));
-        return implode(', ', $valueList);
-    }
-
-    /**
-     * Get identifier separator
-     *
-     * @return string
+     * {@inheritDoc}
      */
     public function getIdentifierSeparator()
     {
         return $this->identifierSeparator;
     }
-
-    /**
-     * Quote identifier in fragment
-     *
-     * @param  string $identifier
-     * @param  array $safeWords
-     * @return string
-     */
-    public function quoteIdentifierInFragment($identifier, array $safeWords = array())
-    {
-        if ($this->quoteIdentifiers === false) {
-            return $identifier;
-        }
-        $parts = preg_split('#([\.\s\W])#', $identifier, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
-
-        if ($safeWords) {
-            $safeWords = array_flip($safeWords);
-            $safeWords = array_change_key_case($safeWords, CASE_LOWER);
-        }
-        foreach ($parts as $i => $part) {
-            if ($safeWords && isset($safeWords[strtolower($part)])) {
-                continue;
-            }
-
-            switch ($part) {
-                case ' ':
-                case '.':
-                case '*':
-                case 'AS':
-                case 'As':
-                case 'aS':
-                case 'as':
-                    break;
-                default:
-                    $parts[$i] = '"' . str_replace('"', '\\' . '"', $part) . '"';
-            }
-        }
-
-        return implode('', $parts);
-    }
-
 }

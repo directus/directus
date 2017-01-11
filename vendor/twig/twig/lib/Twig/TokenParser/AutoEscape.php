@@ -3,7 +3,7 @@
 /*
  * This file is part of Twig.
  *
- * (c) 2009 Fabien Potencier
+ * (c) Fabien Potencier
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -26,6 +26,8 @@
  *   using the js escaping strategy
  * {% endautoescape %}
  * </pre>
+ *
+ * @final
  */
 class Twig_TokenParser_AutoEscape extends Twig_TokenParser
 {
@@ -39,7 +41,7 @@ class Twig_TokenParser_AutoEscape extends Twig_TokenParser
         } else {
             $expr = $this->parser->getExpressionParser()->parseExpression();
             if (!$expr instanceof Twig_Node_Expression_Constant) {
-                throw new Twig_Error_Syntax('An escaping strategy must be a string or a bool.', $stream->getCurrent()->getLine(), $stream->getSourceContext()->getName());
+                throw new Twig_Error_Syntax('An escaping strategy must be a string or a bool.', $stream->getCurrent()->getLine(), $stream->getSourceContext());
             }
             $value = $expr->getAttribute('value');
 
@@ -53,7 +55,7 @@ class Twig_TokenParser_AutoEscape extends Twig_TokenParser
                 @trigger_error('Using the autoescape tag with "true" or "false" before the strategy name is deprecated since version 1.21.', E_USER_DEPRECATED);
 
                 if (false === $value) {
-                    throw new Twig_Error_Syntax('Unexpected escaping strategy as you set autoescaping to false.', $stream->getCurrent()->getLine(), $stream->getSourceContext()->getName());
+                    throw new Twig_Error_Syntax('Unexpected escaping strategy as you set autoescaping to false.', $stream->getCurrent()->getLine(), $stream->getSourceContext());
                 }
 
                 $value = $stream->next()->getValue();

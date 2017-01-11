@@ -5,8 +5,8 @@
 namespace Directus\Db;
 
 use Directus\Bootstrap;
-use Directus\Util\ArrayUtils;
 use Directus\Database\Ddl\Column\Boolean;
+use Directus\Util\ArrayUtils;
 use Zend\Db\Sql\Ddl\Column\Integer;
 use Zend\Db\Sql\Ddl\Constraint\PrimaryKey;
 use Zend\Db\Sql\Ddl\CreateTable;
@@ -48,7 +48,7 @@ class SchemaManager
 
         // Primary column
         $primaryColumn = new Integer('id');
-        $primaryColumn->setOption('autoincrement', '');
+        $primaryColumn->setOption('autoincrement', true);
         $table->addColumn($primaryColumn);
         $table->addConstraint(new PrimaryKey('id'));
         // Status column

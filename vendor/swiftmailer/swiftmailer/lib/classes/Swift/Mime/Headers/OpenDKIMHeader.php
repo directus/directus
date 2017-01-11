@@ -30,11 +30,7 @@ class Swift_Mime_Headers_OpenDKIMHeader implements Swift_Mime_Header
     private $_fieldName;
 
     /**
-     * Creates a new SimpleHeader with $name.
-     *
-     * @param string                   $name
-     * @param Swift_Mime_HeaderEncoder $encoder
-     * @param Swift_Mime_Grammar       $grammar
+     * @param string $name
      */
     public function __construct($name)
     {

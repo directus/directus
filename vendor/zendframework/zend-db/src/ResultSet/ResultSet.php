@@ -3,7 +3,7 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2016 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
@@ -21,10 +21,10 @@ class ResultSet extends AbstractResultSet
      *
      * @var array
      */
-    protected $allowedReturnTypes = array(
+    protected $allowedReturnTypes = [
         self::TYPE_ARRAYOBJECT,
         self::TYPE_ARRAY,
-    );
+    ];
 
     /**
      * @var ArrayObject
@@ -46,9 +46,9 @@ class ResultSet extends AbstractResultSet
      */
     public function __construct($returnType = self::TYPE_ARRAYOBJECT, $arrayObjectPrototype = null)
     {
-        $this->returnType = (in_array($returnType, array(self::TYPE_ARRAY, self::TYPE_ARRAYOBJECT))) ? $returnType : self::TYPE_ARRAYOBJECT;
+        $this->returnType = (in_array($returnType, [self::TYPE_ARRAY, self::TYPE_ARRAYOBJECT])) ? $returnType : self::TYPE_ARRAYOBJECT;
         if ($this->returnType === self::TYPE_ARRAYOBJECT) {
-            $this->setArrayObjectPrototype(($arrayObjectPrototype) ?: new ArrayObject(array(), ArrayObject::ARRAY_AS_PROPS));
+            $this->setArrayObjectPrototype(($arrayObjectPrototype) ?: new ArrayObject([], ArrayObject::ARRAY_AS_PROPS));
         }
     }
 

@@ -3,7 +3,7 @@
 /*
  * This file is part of Twig.
  *
- * (c) 2010 Fabien Potencier
+ * (c) Fabien Potencier
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -16,6 +16,8 @@
  *
  * You can configure which optimizations you want to activate via the
  * optimizer mode.
+ *
+ * @final
  *
  * @author Fabien Potencier <fabien@symfony.com>
  */
@@ -34,8 +36,6 @@ class Twig_NodeVisitor_Optimizer extends Twig_BaseNodeVisitor
     protected $inABody = false;
 
     /**
-     * Constructor.
-     *
      * @param int $optimizers The optimizer mode
      */
     public function __construct($optimizers = -1)
@@ -47,9 +47,6 @@ class Twig_NodeVisitor_Optimizer extends Twig_BaseNodeVisitor
         $this->optimizers = $optimizers;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function doEnterNode(Twig_Node $node, Twig_Environment $env)
     {
         if (self::OPTIMIZE_FOR === (self::OPTIMIZE_FOR & $this->optimizers)) {
@@ -73,9 +70,6 @@ class Twig_NodeVisitor_Optimizer extends Twig_BaseNodeVisitor
         return $node;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function doLeaveNode(Twig_Node $node, Twig_Environment $env)
     {
         $expression = $node instanceof Twig_Node_Expression;
@@ -127,9 +121,6 @@ class Twig_NodeVisitor_Optimizer extends Twig_BaseNodeVisitor
      *
      *   * "echo $this->render(Parent)Block()" with "$this->display(Parent)Block()"
      *
-     * @param Twig_NodeInterface $node A Node
-     * @param Twig_Environment   $env  The current Twig environment
-     *
      * @return Twig_NodeInterface
      */
     protected function optimizePrintNode(Twig_NodeInterface $node, Twig_Environment $env)
@@ -138,13 +129,14 @@ class Twig_NodeVisitor_Optimizer extends Twig_BaseNodeVisitor
             return $node;
         }
 
+        $exprNode = $node->getNode('expr');
         if (
-            $node->getNode('expr') instanceof Twig_Node_Expression_BlockReference ||
-            $node->getNode('expr') instanceof Twig_Node_Expression_Parent
+            $exprNode instanceof Twig_Node_Expression_BlockReference ||
+            $exprNode instanceof Twig_Node_Expression_Parent
         ) {
-            $node->getNode('expr')->setAttribute('output', true);
+            $exprNode->setAttribute('output', true);
 
-            return $node->getNode('expr');
+            return $exprNode;
         }
 
         return $node;
@@ -152,9 +144,6 @@ class Twig_NodeVisitor_Optimizer extends Twig_BaseNodeVisitor
 
     /**
      * Removes "raw" filters.
-     *
-     * @param Twig_NodeInterface $node A Node
-     * @param Twig_Environment   $env  The current Twig environment
      *
      * @return Twig_NodeInterface
      */
@@ -169,9 +158,6 @@ class Twig_NodeVisitor_Optimizer extends Twig_BaseNodeVisitor
 
     /**
      * Optimizes "for" tag by removing the "loop" variable creation whenever possible.
-     *
-     * @param Twig_NodeInterface $node A Node
-     * @param Twig_Environment   $env  The current Twig environment
      */
     protected function enterOptimizeFor(Twig_NodeInterface $node, Twig_Environment $env)
     {
@@ -236,9 +222,6 @@ class Twig_NodeVisitor_Optimizer extends Twig_BaseNodeVisitor
 
     /**
      * Optimizes "for" tag by removing the "loop" variable creation whenever possible.
-     *
-     * @param Twig_NodeInterface $node A Node
-     * @param Twig_Environment   $env  The current Twig environment
      */
     protected function leaveOptimizeFor(Twig_NodeInterface $node, Twig_Environment $env)
     {
@@ -261,9 +244,6 @@ class Twig_NodeVisitor_Optimizer extends Twig_BaseNodeVisitor
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getPriority()
     {
         return 255;

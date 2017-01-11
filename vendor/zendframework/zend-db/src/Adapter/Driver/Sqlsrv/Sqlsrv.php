@@ -3,7 +3,7 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2016 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
@@ -15,7 +15,6 @@ use Zend\Db\Adapter\Profiler;
 
 class Sqlsrv implements DriverInterface, Profiler\ProfilerAwareInterface
 {
-
     /**
      * @var Connection
      */
@@ -166,7 +165,7 @@ class Sqlsrv implements DriverInterface, Profiler\ProfilerAwareInterface
             $statement->initialize($this->connection->getResource());
             if (is_string($sqlOrResource)) {
                 $statement->setSql($sqlOrResource);
-            } elseif ($sqlOrResource != null) {
+            } elseif ($sqlOrResource !== null) {
                 throw new Exception\InvalidArgumentException('createStatement() only accepts an SQL string or a Sqlsrv resource');
             }
         }
@@ -185,7 +184,7 @@ class Sqlsrv implements DriverInterface, Profiler\ProfilerAwareInterface
     }
 
     /**
-     * @return array
+     * @return string
      */
     public function getPrepareType()
     {
