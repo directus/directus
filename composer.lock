@@ -4,48 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "b3275b69739efbeb70ab0e498bb25ac1",
+    "content-hash": "67f14cfafd2f57866daaabaecb9fb3f4",
     "packages": [
-        {
-            "name": "directus/acl",
-            "version": "dev-d64",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/directus/directus-permissions.git",
-                "reference": "ede89b9221820c54e538780c73f82d5eb0dd2d3b"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/directus/directus-permissions/zipball/ede89b9221820c54e538780c73f82d5eb0dd2d3b",
-                "reference": "ede89b9221820c54e538780c73f82d5eb0dd2d3b",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.4.0"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-d64": "0.9.x-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Directus\\Permissions\\": ""
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "description": "Directus Permissions (ACL) Library",
-            "keywords": [
-                "acl",
-                "directus",
-                "permissions"
-            ],
-            "time": "2016-11-16 19:14:18"
-        },
         {
             "name": "directus/collection",
             "version": "dev-version/6.4",
@@ -91,12 +51,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/directus/directus-database.git",
-                "reference": "10878bb333a9d0c8f23997e033cbde2fa523085f"
+                "reference": "9e6fd6131b8fc281d8ba47fe82fc2d4e334abaa6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/directus/directus-database/zipball/10878bb333a9d0c8f23997e033cbde2fa523085f",
-                "reference": "10878bb333a9d0c8f23997e033cbde2fa523085f",
+                "url": "https://api.github.com/repos/directus/directus-database/zipball/9e6fd6131b8fc281d8ba47fe82fc2d4e334abaa6",
+                "reference": "9e6fd6131b8fc281d8ba47fe82fc2d4e334abaa6",
                 "shasum": ""
             },
             "require": {
@@ -127,7 +87,7 @@
                 "database",
                 "directus"
             ],
-            "time": "2016-12-26 08:40:37"
+            "time": "2016-12-26 11:05:09"
         },
         {
             "name": "directus/migrations",
@@ -182,17 +142,57 @@
             "time": "2016-07-28 18:37:42"
         },
         {
+            "name": "directus/permissions",
+            "version": "dev-d64",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/directus/directus-permissions.git",
+                "reference": "ede89b9221820c54e538780c73f82d5eb0dd2d3b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/directus/directus-permissions/zipball/ede89b9221820c54e538780c73f82d5eb0dd2d3b",
+                "reference": "ede89b9221820c54e538780c73f82d5eb0dd2d3b",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-d64": "0.9.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Directus\\Permissions\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Directus Permissions (ACL) Library",
+            "keywords": [
+                "acl",
+                "directus",
+                "permissions"
+            ],
+            "time": "2016-11-16 19:14:18"
+        },
+        {
             "name": "league/flysystem",
             "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/flysystem.git",
-                "reference": "0165294685dc83e521a46e0df2ff6b8bd4df4369"
+                "reference": "30f702679a69af1d9b6bba5695db9407450696c4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/0165294685dc83e521a46e0df2ff6b8bd4df4369",
-                "reference": "0165294685dc83e521a46e0df2ff6b8bd4df4369",
+                "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/30f702679a69af1d9b6bba5695db9407450696c4",
+                "reference": "30f702679a69af1d9b6bba5695db9407450696c4",
                 "shasum": ""
             },
             "require": {
@@ -262,7 +262,7 @@
                 "sftp",
                 "storage"
             ],
-            "time": "2016-11-23 11:39:43"
+            "time": "2017-01-09 14:16:42"
         },
         {
             "name": "slim/extras",
@@ -357,19 +357,20 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/swiftmailer/swiftmailer.git",
-                "reference": "3547577659c1a035093b70fce5ae393b3c94f44e"
+                "reference": "e34123081ded3fbb4d8ccdff9ece3a4c8f6046b5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/swiftmailer/swiftmailer/zipball/3547577659c1a035093b70fce5ae393b3c94f44e",
-                "reference": "3547577659c1a035093b70fce5ae393b3c94f44e",
+                "url": "https://api.github.com/repos/swiftmailer/swiftmailer/zipball/e34123081ded3fbb4d8ccdff9ece3a4c8f6046b5",
+                "reference": "e34123081ded3fbb4d8ccdff9ece3a4c8f6046b5",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.3"
             },
             "require-dev": {
-                "mockery/mockery": "~0.9.1"
+                "mockery/mockery": "~0.9.1",
+                "symfony/phpunit-bridge": "~3.2"
             },
             "type": "library",
             "extra": {
@@ -402,7 +403,7 @@
                 "mail",
                 "mailer"
             ],
-            "time": "2016-12-20 05:27:43"
+            "time": "2016-12-29 10:10:06"
         },
         {
             "name": "twig/twig",
@@ -410,12 +411,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/twigphp/Twig.git",
-                "reference": "5268900793747985d5b33001a2d7e1663f75a028"
+                "reference": "4e1c232b67c577a97407133975d8caf2321efd30"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twigphp/Twig/zipball/5268900793747985d5b33001a2d7e1663f75a028",
-                "reference": "5268900793747985d5b33001a2d7e1663f75a028",
+                "url": "https://api.github.com/repos/twigphp/Twig/zipball/4e1c232b67c577a97407133975d8caf2321efd30",
+                "reference": "4e1c232b67c577a97407133975d8caf2321efd30",
                 "shasum": ""
             },
             "require": {
@@ -428,7 +429,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.30-dev"
+                    "dev-master": "1.31-dev"
                 }
             },
             "autoload": {
@@ -463,7 +464,7 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2016-12-26 07:10:59"
+            "time": "2017-01-10 22:14:10"
         },
         {
             "name": "zendframework/zend-db",
@@ -948,12 +949,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/yaml.git",
-                "reference": "befb26a3713c97af90d25dd12e75621ef14d91ff"
+                "reference": "dbe61fed9cd4a44c5b1d14e5e7b1a8640cfb2bf2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/yaml/zipball/befb26a3713c97af90d25dd12e75621ef14d91ff",
-                "reference": "befb26a3713c97af90d25dd12e75621ef14d91ff",
+                "url": "https://api.github.com/repos/symfony/yaml/zipball/dbe61fed9cd4a44c5b1d14e5e7b1a8640cfb2bf2",
+                "reference": "dbe61fed9cd4a44c5b1d14e5e7b1a8640cfb2bf2",
                 "shasum": ""
             },
             "require": {
@@ -989,7 +990,7 @@
             ],
             "description": "Symfony Yaml Component",
             "homepage": "https://symfony.com",
-            "time": "2016-11-14T16:15:57+00:00"
+            "time": "2017-01-03T13:49:52+00:00"
         }
     ],
     "aliases": [],
@@ -997,7 +998,7 @@
     "stability-flags": {
         "slim/extras": 20,
         "directus/migrations": 20,
-        "directus/acl": 20,
+        "directus/permissions": 20,
         "directus/database": 20
     },
     "prefer-stable": false,

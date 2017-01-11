@@ -5,7 +5,7 @@
     "slim/extras": "dev-develop",
     "twig/twig":  "1.*",
     "directus/migrations": "dev-master",
-    "directus/acl": "0.9.*@dev",
+    "directus/permissions": "0.9.*@dev",
     "directus/database": "0.9.*@dev",
     "league/flysystem": "^1.0",
     "swiftmailer/swiftmailer": "^5.4"
