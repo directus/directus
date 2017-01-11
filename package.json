@@ -1,6 +1,6 @@
 {
   "name": "Directus",
-  "version": "6.3.5",
+  "version": "6.3.6",
   "description": "API-driven content management framework for custom databases",
   "main": "gulpfile.js",
   "scripts": {
