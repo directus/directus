@@ -88,7 +88,7 @@ class Column implements \ArrayAccess, Arrayable, \JsonSerializable
     /**
      * @var string
      */
-    protected $columnKey;
+    protected $key;
 
     /**
      * @var array
@@ -470,9 +470,9 @@ class Column implements \ArrayAccess, Arrayable, \JsonSerializable
      *
      * @return $this
      */
-    public function setColumnKey($key)
+    public function setKey($key)
     {
-        $this->columnKey = $key;
+        $this->key = $key;
 
         return $this;
     }
@@ -482,9 +482,9 @@ class Column implements \ArrayAccess, Arrayable, \JsonSerializable
      *
      * @return string
      */
-    public function getColumnKey()
+    public function getKey()
     {
-        return $this->columnKey;
+        return $this->key;
     }
 
     /**
@@ -494,7 +494,7 @@ class Column implements \ArrayAccess, Arrayable, \JsonSerializable
      */
     public function isPrimary()
     {
-        return strtoupper($this->columnKey) === 'PRI';
+        return strtoupper($this->key) === 'PRI';
     }
 
     /**
@@ -504,7 +504,7 @@ class Column implements \ArrayAccess, Arrayable, \JsonSerializable
      */
     public function isUnique()
     {
-        return strtoupper($this->columnKey) === 'UNI';
+        return strtoupper($this->key) === 'UNI';
     }
 
     /**
