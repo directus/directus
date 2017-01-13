@@ -307,4 +307,33 @@ class ArrayUtils
             unset($array[$key]);
         }
     }
+
+    /**
+     * Split an csv string into array
+     *
+     * @param array|string $array
+     * @param string|bool $key
+     * @param bool $trim
+     *
+     * @return array
+     */
+    public static function csv($array, $key = null, $trim = true)
+    {
+        if (!is_string($array)) {
+            $data = static::get($array, $key);
+        } else {
+            $data = $array;
+            $trim =  !is_null($key) ? (bool) $key : true;
+        }
+
+        if (!is_array($data)) {
+            $data = explode(',', $data);
+        }
+
+        if ($trim) {
+            $data = array_map('trim', $data);
+        }
+
+        return array_filter($data);
+    }
 }

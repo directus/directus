@@ -198,4 +198,34 @@ class ArrayUtilsTest extends PHPUnit_Framework_TestCase
         $this->assertTrue(in_array('published_date', $result));
         $this->assertCount(2, $result);
     }
+
+    public function testCsv()
+    {
+        $csv = 'one, two, three,four';
+        $array = ['item' => $csv];
+
+        // trim string
+        $result = ArrayUtils::csv($array, 'item');
+        $this->assertInternalType('array', $result);
+        $this->assertCount(4, $result);
+        $this->assertSame('two', $result[1]);
+
+        // without trim
+        $result = ArrayUtils::csv($array, 'item', false);
+        $this->assertInternalType('array', $result);
+        $this->assertCount(4, $result);
+        $this->assertSame(' two', $result[1]);
+
+        // one parameter trim
+        $result = ArrayUtils::csv($csv);
+        $this->assertInternalType('array', $result);
+        $this->assertCount(4, $result);
+        $this->assertSame('two', $result[1]);
+
+        // one parameter without trim
+        $result = ArrayUtils::csv($csv, false);
+        $this->assertInternalType('array', $result);
+        $this->assertCount(4, $result);
+        $this->assertSame(' two', $result[1]);
+    }
 }
