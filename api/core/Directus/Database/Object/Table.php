@@ -308,6 +308,30 @@ class Table implements \ArrayAccess, Arrayable, \JsonSerializable
     }
 
     /**
+     * Get table primary keys
+     *
+     * @return array
+     */
+    public function getPrimaryKeys()
+    {
+        return array_filter($this->getColumns(), function(Column $column) {
+            return $column->isPrimary();
+        });
+    }
+
+    /**
+     * Get table primary keys name
+     *
+     * @return array
+     */
+    public function getPrimaryKeysName()
+    {
+        return array_map(function(Column $column) {
+            return $column->getName();
+        }, $this->getPrimaryKeys());
+    }
+
+    /**
      * Get all columns data as array
      *
      * @return array
