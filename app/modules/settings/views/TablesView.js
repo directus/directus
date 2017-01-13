@@ -515,8 +515,6 @@ function(app, _, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIMa
         model.relationship = undefined;
       }
 
-      this.collection.table.set({'primary_column':$('#table-settings').find('input[type=radio]:checked').attr('data-id')});
-
       data[attr] = value;
       model.set(data);
 
@@ -618,8 +616,6 @@ function(app, _, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIMa
 
     serialize: function() {
       var ui = UIManager.getAllSettings({returnObject: true});
-
-      var primaryColumn = this.collection.table.get('primary_column');
       var rows = this.collection.map(function(model) {
         var row = model.toJSON();
 
@@ -745,16 +741,6 @@ function(app, _, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIMa
       }).get();
 
       data = _.extend(data, $('#table-settings').serializeObject());
-
-      //Get Selected master
-      data.primary_column = $('#table-settings').find('input[type=radio]:checked').attr('data-id');
-
-      // Stop asking for primary column
-      // if(!data.primary_column) {
-      //   app.router.openModal({type: 'alert', text: 'Please choose a primary column:', callback: function(tableName) {
-      //   }});
-      //   return;
-      // }
 
       this.model.save(data, {success: function(){
         app.router.go('settings','tables');
