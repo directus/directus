@@ -153,7 +153,11 @@ class BaseTableGateway extends TableGateway
 
     public function getTableSchema()
     {
-        return TableSchema::getTableSchema($this->getTable());
+        if ($this->tableSchema === null) {
+            $this->tableSchema = TableSchema::getTableSchema($this->getTable());
+        }
+
+        return $this->tableSchema;
     }
 
     /**
