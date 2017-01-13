@@ -72,7 +72,7 @@ define(function(require, exports, module) {
 
         // Skip ID
         // if('id' === column.id) {
-        if (column.get('column_key') === 'PRI') {
+        if (column.get('key') === 'PRI') {
           return;
         }
 

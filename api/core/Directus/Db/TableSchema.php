@@ -576,7 +576,9 @@ class TableSchema
                 $tableName = $table['id'];
                 $table['columns'] = array_values($columnSchemas[$tableName]);
                 foreach ($columnSchemas[$tableName] as $column) {
-                    if ($column['column_key'] == 'PRI') {
+                    if ($column['key'] == 'PRI') {
+                        // @TODO: Turn this into the primary key columns
+                        // @NOTE: This column is being used as the identifier/master column.
                         $table['primary_column'] = $column['column_name'];
                         break;
                     }
