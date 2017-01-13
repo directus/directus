@@ -203,4 +203,27 @@ class StringUtils
 
         return $string;
     }
+
+    /**
+     * Split an csv string into array
+     *
+     * @param string $csv
+     * @param bool $trim
+     *
+     * @return array
+     */
+    public static function csv($csv, $trim = true)
+    {
+        if (!is_string($csv)) {
+            throw new \InvalidArgumentException('$cvs must be a string');
+        }
+
+        $array = explode(',', $csv);
+
+        if ($trim) {
+            $array = array_map('trim', $array);
+        }
+
+        return $array;
+    }
 }

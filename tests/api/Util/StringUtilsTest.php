@@ -129,4 +129,21 @@ class StringUtilsTest extends PHPUnit_Framework_TestCase
         $expected = 'Paid: true,  overdue: false.';
         $this->assertEquals($expected, StringUtils::replacePlaceholder($string, $data, StringUtils::PLACEHOLDER_DOUBLE_MUSTACHE));
     }
+
+    public function testCsv()
+    {
+        $csv = 'one, two, , three,four';
+
+        // trim string
+        $result = StringUtils::csv($csv);
+        $this->assertInternalType('array', $result);
+        $this->assertCount(5, $result);
+        $this->assertSame('two', $result[1]);
+
+        // without trim
+        $result = StringUtils::csv($csv, false);
+        $this->assertInternalType('array', $result);
+        $this->assertCount(5, $result);
+        $this->assertSame(' two', $result[1]);
+    }
 }
