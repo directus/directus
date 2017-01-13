@@ -737,10 +737,10 @@ class TableSchema
 
                 foreach ($columnSchemas[$tableName] as $column) {
                     // @TODO: there's can be more than one column
-                    if ($column->getColumnKey() == 'PRI') {
+                    if ($column->isPrimary()) {
                         // @TODO: Turn this into the primary key columns
                         // @NOTE: This column is being used as the identifier/master column.
-                        $table['primary_column'] = $column['column_name'];
+                        $table['primary_column'] = $column->getName();
                         break;
                     }
                 }
