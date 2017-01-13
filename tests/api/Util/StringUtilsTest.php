@@ -146,4 +146,12 @@ class StringUtilsTest extends PHPUnit_Framework_TestCase
         $this->assertCount(5, $result);
         $this->assertSame(' two', $result[1]);
     }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     */
+    public function testCsvException()
+    {
+        $result = StringUtils::csv(['one', 'two']);
+    }
 }
