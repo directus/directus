@@ -213,7 +213,7 @@ class DirectusPreferencesTableGateway extends BaseTableGateway
         $select->where->equalTo('user', $user_id)
             ->isNull('title');
 
-        $coreTables = $this->schema->getDirectusTables(static::$IGNORED_TABLES);
+        $coreTables = $this->schemaManager->getDirectusTables(static::$IGNORED_TABLES);
 
         $select->where->addPredicate(new NotIn('table_name', $coreTables));
         $metadata = new \Zend\Db\Metadata\Metadata($this->getAdapter());

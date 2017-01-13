@@ -266,7 +266,7 @@ class RelationalTableGateway extends BaseTableGateway
 
         // Yield record object
         $recordGateway = new BaseRowGateway($TableGateway->primaryKeyFieldName, $tableName, $this->adapter, $this->acl);
-        $fullRecordData = $this->schema->castRecordValues($fullRecordData, $tableSchema->getColumns());
+        $fullRecordData = $this->schemaManager->castRecordValues($fullRecordData, $tableSchema->getColumns());
         $recordGateway->populate($fullRecordData, true);
 
         return $recordGateway;
@@ -1269,7 +1269,7 @@ class RelationalTableGateway extends BaseTableGateway
                 }, $data);
 
                 $junctionTableGateway = new RelationalTableGateway($junctionTableName, $this->getAdapter(), $this->acl);
-                $junctionData = $this->schema->castRecordValues($junctionData, TableSchema::getTableSchema($junctionTableName)->getColumns());
+                $junctionData = $this->schemaManager->castRecordValues($junctionData, TableSchema::getTableSchema($junctionTableName)->getColumns());
                 $junctionData = $junctionTableGateway->loadMetadata($junctionData);
 
                 $row = $relatedTableGateway->loadMetadata($row);
