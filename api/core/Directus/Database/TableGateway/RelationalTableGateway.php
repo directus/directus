@@ -3,6 +3,7 @@
 namespace Directus\Database\TableGateway;
 
 use Directus\Database\Exception;
+use Directus\Database\Object\Column;
 use Directus\Database\Object\Table;
 use Directus\Database\Query\Builder;
 use Directus\Database\RowGateway\BaseRowGateway;
@@ -30,7 +31,6 @@ class RelationalTableGateway extends BaseTableGateway
      */
     protected $defaultEntriesSelectParams = [
         'order' => ['sort' => 'ASC'],
-        'columns' => '*',
         'limit' => 200,
         'offset' => 0,
         'skip' => null,
@@ -610,6 +610,26 @@ class RelationalTableGateway extends BaseTableGateway
 
         $params = array_merge($defaultParams, $params);
 
+        // convert csv columns into array
+        $columns = ArrayUtils::get($params, 'columns', []);
+        if (!is_array($columns)) {
+            $columns = StringUtils::csv($columns, true);
+        }
+
+        // filter all 'falsy' columns name
+        $columns = array_filter($columns);
+
+        // Stripe whitespaces
+        $columns = array_map('trim', $columns);
+
+        // Add columns to params if it's not empty.
+        // otherwise remove from params
+        if (!empty($columns)) {
+            $params['columns'] = $columns;
+        } else {
+            ArrayUtils::remove($params, 'columns');
+        }
+
         array_walk($params, [$this, 'castFloatIfNumeric']);
 
         return $params;
@@ -727,7 +747,7 @@ class RelationalTableGateway extends BaseTableGateway
     public function loadItems(array $params = [], \Closure $queryCallback = null)
     {
         // Get table column schema
-        $tableSchema = TableSchema::getTableSchema($this->table);
+        $tableSchema = $this->getTableSchema();
 
         // table only has one column
         // return an empty array
@@ -747,8 +767,12 @@ class RelationalTableGateway extends BaseTableGateway
         $builder = new Builder($this->getAdapter());
         $builder->from($this->getTable());
 
-        // @TODO: Only select the fields not on the currently authenticated user group's read field blacklist
-        $builder->columns(TableSchema::getAllNonAliasTableColumnNames($this->table));
+        $columns = $tableSchema->getNonAliasColumnsName();
+        if (ArrayUtils::has($params, 'columns')) {
+            $columns = array_unique(array_merge($tableSchema->getPrimaryKeysName(), $params['columns']));
+        }
+
+        $builder->columns($columns);
         $builder = $this->applyParamsToTableEntriesSelect($params, $builder, $tableSchema, $hasActiveColumn);
 
         // If we have user field and do not have big view privileges but have view then only show entries we created
@@ -774,7 +798,20 @@ class RelationalTableGateway extends BaseTableGateway
 
         $depth = ArrayUtils::get($params, 'depth', null);
         if ($depth !== null) {
-            $results = $this->loadRelationalDataByDepth($results, (int) $depth);
+            $results = $this->loadRelationalDataByDepth($results, (int) $depth, $columns);
+        }
+
+        // When the params column list doesn't include the primary key
+        // it's included because each row gateway expects the primary key
+        // after all the row gateway are created and initiated it only returns the chosen columns
+        if (ArrayUtils::has($params, 'columns')) {
+            $columns = ArrayUtils::get($params, 'columns');
+
+            if (!ArrayUtils::contains($columns, $tableSchema->getPrimaryKeysName())) {
+                $results = array_map(function ($entry) use ($columns) {
+                    return ArrayUtils::pick($entry, $columns);
+                }, $results);
+            }
         }
 
         if (ArrayUtils::get($params, $this->primaryKeyFieldName)) {
@@ -804,19 +841,22 @@ class RelationalTableGateway extends BaseTableGateway
      *
      * @param $result
      * @param int $maxDepth
+     * @param array|null $columns
      *
      * @return array
      */
-    protected function loadRelationalDataByDepth($result, $maxDepth = 0)
+    protected function loadRelationalDataByDepth($result, $maxDepth = 0, array $columns = null)
     {
         if ((int) $maxDepth <= 0) {
             return $result;
         }
 
+        $columns = $this->getTableSchema()->getColumns($columns);
+
         $maxDepth--;
-        $result = $this->loadManyToOneRelationships($result, $maxDepth);
-        $result = $this->loadOneToManyRelationships($result, $maxDepth);
-        $result = $this->loadManyToManyRelationships($result, $maxDepth);
+        $result = $this->loadManyToOneRelationships($result, $maxDepth, $columns);
+        $result = $this->loadOneToManyRelationships($result, $maxDepth, $columns);
+        $result = $this->loadManyToManyRelationships($result, $maxDepth, $columns);
 
         return $result;
     }
@@ -1016,16 +1056,19 @@ class RelationalTableGateway extends BaseTableGateway
         }
     }
 
-    public function loadOneToManyRelationships($entries, $depth = 0)
+    /**
+     * Load one to many relational data
+     *
+     * @param array $entries
+     * @param int $depth
+     * @param Column[] $columns
+     *
+     * @return bool|array
+     */
+    public function loadOneToManyRelationships($entries, $depth = 0, $columns)
     {
-        $tableSchema = TableSchema::getTableSchema($this->getTable());
-        $aliasColumns = $tableSchema->getAliasColumns();
-        if (!$aliasColumns) {
-            return $entries;
-        }
-
-        foreach ($aliasColumns as $alias) {
-            if (!$alias->isOneToMany()) {
+        foreach ($columns as $alias) {
+            if (!$alias->isAlias() || !$alias->isOneToMany()) {
                 continue;
             }
 
@@ -1088,16 +1131,19 @@ class RelationalTableGateway extends BaseTableGateway
         return $entries;
     }
 
-    public function loadManyToManyRelationships($entries, $depth = 0)
+    /**
+     * Load many to many relational data
+     *
+     * @param array $entries
+     * @param int $depth
+     * @param Column[] $columns
+     *
+     * @return bool|array
+     */
+    public function loadManyToManyRelationships($entries, $depth = 0, $columns)
     {
-        $tableSchema = TableSchema::getTableSchema($this->getTable());
-        $aliasColumns = $tableSchema->getAliasColumns();
-        if (!$aliasColumns) {
-            return $entries;
-        }
-
-        foreach ($aliasColumns as $alias) {
-            if (!$alias->isManyToMany()) {
+        foreach ($columns as $alias) {
+            if (!$alias->isAlias() || !$alias->isManyToMany()) {
                 continue;
             }
 
@@ -1242,16 +1288,17 @@ class RelationalTableGateway extends BaseTableGateway
      *
      * @param array $entries Table rows
      * @param int $depth
+     * @param Column[] $columns
      *
      * @return array Revised table rows, now including foreign rows
      *
      * @throws Exception\RelationshipMetadataException
      */
-    public function loadManyToOneRelationships($entries, $depth = 0)
+    public function loadManyToOneRelationships($entries, $depth = 0, $columns)
     {
         $tableSchema = TableSchema::getTableSchema($this->getTable());
         // Identify the ManyToOne columns
-        foreach ($tableSchema->getColumns() as $column) {
+        foreach ($columns as $column) {
             if (!$column->isManyToOne()) {
                 continue;
             }

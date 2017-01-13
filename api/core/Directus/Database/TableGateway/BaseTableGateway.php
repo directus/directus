@@ -61,7 +61,14 @@ class BaseTableGateway extends TableGateway
      *
      * @var SchemaManager|null
      */
-    protected $schema = null;
+    protected $schemaManager = null;
+
+    /**
+     * Table Schema Object
+     *
+     * @var Table|null
+     */
+    protected $tableSchema = null;
 
     /**
      * Constructor
@@ -106,7 +113,7 @@ class BaseTableGateway extends TableGateway
         parent::__construct($table, $adapter, $features, $resultSetPrototype, $sql);
 
         // @TODO: Make this dynamic to support the different databases.
-        $this->schema = new SchemaManager(new MySQLSchema($this->adapter));
+        $this->schemaManager = new SchemaManager(new MySQLSchema($this->adapter));
     }
 
     /**
@@ -142,6 +149,11 @@ class BaseTableGateway extends TableGateway
     public function makeTable($tableName)
     {
         return new self($tableName, $this->adapter, $this->acl);
+    }
+
+    public function getTableSchema()
+    {
+        return TableSchema::getTableSchema($this->getTable());
     }
 
     /**
@@ -284,7 +296,7 @@ class BaseTableGateway extends TableGateway
         }
 
         $columns = TableSchema::getAllNonAliasTableColumns($tableName);
-        $recordData = $this->schema->castRecordValues($recordData, $columns);
+        $recordData = $this->schemaManager->castRecordValues($recordData, $columns);
 
         $TableGateway = $this->makeTable($tableName);
         $rowExists = isset($recordData[$TableGateway->primaryKeyFieldName]);
@@ -717,7 +729,7 @@ class BaseTableGateway extends TableGateway
     public function convertDates(array $records, Table $tableSchema, $tableName = null)
     {
         $tableName = $tableName === null ? $this->table : $tableName;
-        if (!$this->schema->isDirectusTable($tableName)) {
+        if (!$this->schemaManager->isDirectusTable($tableName)) {
             return $records;
         }
 
@@ -758,7 +770,7 @@ class BaseTableGateway extends TableGateway
         $tableName = $tableName === null ? $this->table : $tableName;
         $columns = TableSchema::getAllNonAliasTableColumns($tableName);
 
-        return $this->schema->castRecordValues($records, $columns);
+        return $this->schemaManager->castRecordValues($records, $columns);
     }
 
     /**
