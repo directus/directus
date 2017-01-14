@@ -2,9 +2,10 @@ require([
   'app',
   'handlebars',
   'core/UIManager',
+  'helpers/file',
   'core/t',
   'moment'
-], function(app, Handlebars, UIManager, __t, moment) {
+], function(app, Handlebars, UIManager, FileHelper, __t, moment) {
 
   'use strict';
 
@@ -78,12 +79,11 @@ require([
   });
 
   Handlebars.registerHelper('contextualDate', function(date) {
-    if(date === undefined || date === null) {
-      //throw new Error('The date is not in a correct date format');
+    if (date === undefined || date === null) {
       return '-';
     }
-    //date = (date.substr(-1).toLowerCase() === 'z') ? date : date + 'z';
-    return new Handlebars.SafeString('<div class="contextual-date" title="'+ new Date(date) +'">' + moment(date).fromNow() + '</div>');
+
+    return moment(date).fromNow();
   });
 
   Handlebars.registerHelper('formatDate', function(date, format) {
@@ -92,6 +92,10 @@ require([
 
   Handlebars.registerHelper('friendlyDateTime', function(date) {
     return moment(date).format('dddd, MMM DD, h:mm A');
+  });
+
+  Handlebars.registerHelper('humanSize', function(bytes) {
+    return FileHelper.humanBytesInfo(bytes);
   });
 
   Handlebars.registerHelper('avatarSmall', function(userId) {
