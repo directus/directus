@@ -63,7 +63,7 @@ use Directus\View\JsonView;
 // use Directus\Database\TableGateway\DirectusIPWhitelist;
 
 // API Version shortcut for routes:
-$v = API_VERSION;
+$v = 1;//API_VERSION;
 
 /**
  * Slim App & Directus Providers
