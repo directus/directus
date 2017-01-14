@@ -94,8 +94,8 @@ require([
     return moment(date).format('dddd, MMM DD, h:mm A');
   });
 
-  Handlebars.registerHelper('humanSize', function(bytes) {
-    return FileHelper.humanBytesInfo(bytes);
+  Handlebars.registerHelper('readableBytesSize', function(bytes) {
+    return FileHelper.readableBytes(bytes);
   });
 
   Handlebars.registerHelper('avatarSmall', function(userId) {

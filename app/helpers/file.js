@@ -147,6 +147,12 @@ define(function() {
     return (data.length - 814) / 1.37;
   };
 
+  FileHelper.readableBytes = function(size, precision) {
+    var info = this.humanBytesInfo(size, precision);
+
+    return info.size + ' ' + info.unit;
+  };
+
   FileHelper.humanBytesInfo = function(size, precision) {
     precision = precision || 2;
     var i = 0;
