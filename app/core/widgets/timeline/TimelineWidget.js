@@ -234,15 +234,26 @@ function(app, Backbone, $, _, __t, Directus, moment) {
     },
 
     initialize: function(options) {
-      //Get Activity
+      // Get Activity
       this.model = options.model;
       this.activity = app.activity;
       this.comments = new Directus.EntriesCollection({}, {table: app.messages.table, structure: app.messages.structure});
 
-      if(!this.model.isNew()) {
-        this.activity.setFilter({adv_search: 'table_name = "' + this.model.collection.table.id + '" AND row_id = ' + this.model.get(this.model.idAttribute)});
+      if (!this.model.isNew()) {
+        var tableName = this.model.collection.table.id;
+        var rowId = this.model.id;
+        this.activity.setFilter({
+          filters: {
+            table_name: tableName,
+            row_id: rowId
+          }
+        });
         this.activity.fetch();
-        this.comments.setFilter({adv_where: 'comment_metadata = "' + this.model.collection.table.id + ":" + this.model.get(this.model.idAttribute) + '"'});
+        this.comments.setFilter({
+          filters: {
+            comment_metadata: tableName + ':' + rowId
+          }
+        });
         this.comments.fetch();
       }
 
