@@ -72,7 +72,7 @@ require(["config", 'polyfills'], function() {
     // Setup global variables
     app.root = options.path;
     app.DEFAULT_VALIDATION_MESSAGE = 'Invalid content...';
-    app.API_URL = options.path + 'api/1/';
+    app.API_URL = options.path + 'api/1.1/';
     app.RESOURCES_URL = '/resources/';
     app.PATH = options.path;
     app.authenticatedUserId = window.directusData.authenticatedUser;
