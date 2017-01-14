@@ -24,11 +24,13 @@ define(function(require, exports, module) {
       return this.inputs[attr];
     },
 
-    parse: function(result) {
+    parse: function(result, options) {
       this._lastFetchedResult = result;
       //result = this.parseDate(result);
 
-      return this.parseRelational(result);
+      // if collection exists in options it means this model is part of a collection
+      // Which means the actual model attributes are not inside `data` attribute
+      return this.parseRelational(options.collection ? result : result.data);
     },
 
     // The flatten option flattens many-one relationships so the id is returned
