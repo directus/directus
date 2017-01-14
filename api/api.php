@@ -1048,7 +1048,7 @@ $app->map("/$v/tables/:table/rows/:id/?", function ($table, $id) use ($ZendDb, $
 $app->get("/$v/activity/?", function () use ($params, $ZendDb, $acl) {
     $Activity = new DirectusActivityTableGateway($ZendDb, $acl);
     // @todo move this to backbone collection
-    if (!$params['adv_search']) {
+    if (!isset($params['adv_search']) || !$params['adv_search']) {
         unset($params['perPage']);
         $params['adv_search'] = 'datetime >= "' . DateUtils::daysAgo(30) . '"';
     }
