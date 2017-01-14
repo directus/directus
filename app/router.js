@@ -212,6 +212,18 @@ define(function(require, exports, module) {
       containerView.show(view);
     },
 
+    openFileModal: function(fileId) {
+      var containerView = this.v.main.getView('#modal_container');
+
+      if (!containerView || containerView.isOpen()) {
+        return;
+      }
+
+      var view = new directus.Modal.File({fileId: fileId});
+
+      containerView.show(view);
+    },
+
     overlayPage: function(view) {
       if(this.v.main.getViews('#content')._wrapped.length <= 1) {
         this.baseRouteSave = Backbone.history.fragment;
