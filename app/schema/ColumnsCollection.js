@@ -13,6 +13,10 @@ define(function(require, exports, module) {
       return row.get('sort');
     },
 
+    parse: function(result, options) {
+      return options.xhr ? result.data : result;
+    },
+
     getRelationalColumns: function() {
       return this.filter(function(column) {
         return column.hasRelated();
