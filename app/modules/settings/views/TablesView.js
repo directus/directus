@@ -763,6 +763,14 @@ function(app, _, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIMa
 
     template: 'modules/settings/settings-tables',
 
+    events: {
+      'click .js-row': function(event) {
+        var tableName = $(event.currentTarget).data('id');
+
+        app.router.go(['settings', 'tables', tableName]);
+      }
+    },
+
     addRowView: function(model, render) {
       var view = this.insertView('tbody', new TablesRow({
         model: model,
@@ -906,6 +914,7 @@ function(app, _, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIMa
 
     attributes: function() {
       return {
+        'class': 'js-row',
         'data-id': this.model.get('table_name')
       };
     },
@@ -917,11 +926,6 @@ function(app, _, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIMa
       //
       //   this.toggleTableAttribute(SchemaManager.getTable($(e.target).closest('tr').attr('data-id')), attr, $(e.target));
       // },
-      'click .js-row': function(event) {
-        var tableName = $(event.currentTarget).data('id');
-
-        app.router.go(['settings', 'tables', tableName]);
-      },
 
       'click .js-add-table': function(event) {
         event.stopPropagation();
