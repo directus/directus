@@ -2,7 +2,8 @@
 
 namespace Directus\API\Routes\A1;
 
-use Directus\Acl\Exception\UnauthorizedTableAlterException;
+use Directus\Database\Object\Column;
+use Directus\Permissions\Exception\UnauthorizedTableAlterException;
 use Directus\Application\Route;
 use Directus\Bootstrap;
 use Directus\Database\TableGateway\DirectusPrivilegesTableGateway;
@@ -67,7 +68,7 @@ class Table extends Route
         return $this->info($requestPayload['name']);
     }
 
-    public function columns($table_name)
+    public function columns($tableName)
     {
         $app = $this->app;
         $acl = $app->container->get('acl');
@@ -75,29 +76,37 @@ class Table extends Route
         $requestPayload = $app->request()->post();
         $params = $app->request()->get();
 
-        $params['table_name'] = $table_name;
+        // $params['table_name'] = $table_name;
         if ($app->request()->isPost()) {
             /**
              * @todo  check if a column by this name already exists
              * @todo  build this into the method when we shift its location to the new layer
              */
-            if (!$acl->hasTablePrivilege($table_name, 'alter')) {
+            if (!$acl->hasTablePrivilege($tableName, 'alter')) {
                 throw new UnauthorizedTableAlterException(__t('permission_table_alter_access_forbidden_on_table', [
-                    'table_name' => $table_name
+                    'table_name' => $tableName
                 ]));
             }
 
-            $tableGateway = new TableGateway($table_name, $ZendDb, $acl);
+            $tableGateway = new TableGateway($tableName, $ZendDb, $acl);
             // Through API:
             // Remove spaces and symbols from column name
             // And in lowercase
             $requestPayload['column_name'] = SchemaUtils::cleanColumnName($requestPayload['column_name']);
-            $params['column_name'] = $tableGateway->addColumn($table_name, $requestPayload);
+            $params['column_name'] = $tableGateway->addColumn($tableName, $requestPayload);
         }
 
-        $response = TableSchema::getColumnSchema($table_name, $params['column_name']);
+        // $response = TableSchema::getColumnSchema($table_name, $params['column_name']);
+        $response = TableSchema::getSchema($tableName, $params);
 
-        JsonView::render($response->toArray());
+        JsonView::render([
+            'meta' => [
+                'table' => 'directus_table'
+            ],
+            'data' => array_map(function(Column $column) {
+                return $column->toArray();
+            }, $response)
+        ]);
     }
 
     public function column($table, $column)
