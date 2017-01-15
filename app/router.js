@@ -448,18 +448,17 @@ define(function(require, exports, module) {
       if (_.contains(this.navBlacklist,'files'))
         return this.notFound();
 
-      if(pref) {
+      if (pref) {
         this.navigate("/files");
 
-        if(this.lastRoute === "files/" && this.loadedPreference === pref) {
+        if (this.lastRoute === "files/" && this.loadedPreference === pref) {
           return;
         }
 
         this.loadedPreference = pref;
       } else {
         //If no LoadedPref unset
-        if(this.loadedPreference && this.lastRoute.indexOf('files/pref/') === -1)
-        {
+        if (this.loadedPreference && this.lastRoute.indexOf('files/pref/') === -1) {
           this.loadedPreference = null;
         }
       }
@@ -541,10 +540,17 @@ define(function(require, exports, module) {
           this.v.main.setView('#content', new Settings.Tables({collection: SchemaManager.getTables()}));
           break;
         case 'global':
-          this.v.main.setView('#content', new Settings.Global({model: app.settings.get('global'), title: __t('global'), structure: SchemaManager.getColumns('settings', 'global')}));
+          var settings = EntriesManager.getInstance('directus_settings');
+
+          settings.add(app.settings.models);
+          this.v.main.setView('#content', new Settings.Global({
+            model: settings.getMerged(),
+            title: __t('global'),
+            structure: settings.structure
+          }));
           break;
         case 'files':
-          this.v.main.setView('#content', new Settings.Global({model: app.settings.get('files'), title: __t('files'), structure: SchemaManager.getColumns('settings', 'files')}));
+          this.navigateTo('/settings/global');
           break;
         case 'permissions':
           this.v.main.setView('#content', new Settings.Permissions({collection: app.groups}));

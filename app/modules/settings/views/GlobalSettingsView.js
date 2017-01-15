@@ -17,7 +17,7 @@ define([
 
 function(app, Backbone, Directus, BasePageView, Widgets, __t) {
 
-  "use strict";
+  'use strict';
 
   var Global = BasePageView.extend({
     headerOptions: {

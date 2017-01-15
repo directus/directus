@@ -1,10 +1,11 @@
 define([
     'app',
     'backbone',
+    'underscore',
     'helpers/file',
     'core/collection'
   ],
-  function (app, Backbone, FileHelper, Collection) {
+  function (app, Backbone, _, FileHelper, Collection) {
 
     'use strict';
 
@@ -15,6 +16,15 @@ define([
           return this.structure;
         }
       }),
+
+      getMerged: function() {
+        var data = {};
+        this.each(function(model) {
+          data = _.extend(data, model.toJSON());
+        });
+
+        return new this.model(data, {collection: this, structure: this.structure});
+      },
 
       isFileAllowed: function (file) {
         var allowed_types = this.get('allowed_filetypes') || '';
@@ -42,6 +52,10 @@ define([
         var maxBytes = this.get('global').get('max_file_size');
 
         return FileHelper.humanBytesInfo(maxBytes).unit;
+      },
+
+      initialize: function(models, options) {
+        this.structure = options.structure;
       },
 
       isMaxFileSizeExceeded: function(file) {

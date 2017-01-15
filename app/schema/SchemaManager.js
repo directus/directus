@@ -19,6 +19,7 @@ define(function(require, exports, module) {
     'directus_groups'    : require('./fixed/groups'),
     'directus_files'     : require('./fixed/files'),
     'directus_messages'  : require('./fixed/messages'),
+    'directus_settings'  : require('./fixed/settings'),
     'directus_users'     : require('./fixed/users')
   };
 
@@ -92,6 +93,7 @@ define(function(require, exports, module) {
         { schema: directusSchemas.directus_groups },
         { schema: directusSchemas.directus_files.getFiles() },
         { schema: directusSchemas.directus_messages },
+        { schema: directusSchemas.directus_settings },
         { schema: directusSchemas.directus_users.getUsers(app.locales, app.timezones) }
       ];
 
