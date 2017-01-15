@@ -725,8 +725,8 @@ class TableSchema
         };
 
         $getSchemasFn = function () {
-            $tableSchemas = TableSchema::getTablesSchema();
-            $columnSchemas = TableSchema::getColumnsSchema();
+            $tableSchemas = TableSchema::getTablesSchema(['include_system' => true]);
+            $columnSchemas = TableSchema::getColumnsSchema(['include_system' => true]);
             // Nest column schemas in table schemas
             foreach ($tableSchemas as &$table) {
                 $table = $table->toArray();
@@ -806,10 +806,12 @@ class TableSchema
     public static function getColumnsSchema(array $params = [])
     {
         $schema = static::getSchemaManagerInstance();
+        $includeSystemTables = ArrayUtils::get($params, 'include_system', false);
+
         $columns = [];
         foreach($schema->getAllColumns() as $column) {
             $tableName = $column->getTableName();
-            if ($schema->isDirectusTable($tableName)) {
+            if ($schema->isDirectusTable($tableName) && !$includeSystemTables) {
                 continue;
             }
 
