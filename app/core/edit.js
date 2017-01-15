@@ -37,12 +37,21 @@ define(function(require, exports, module) {
         id: this.model.id,
         comment: this.model.get('comment'),
         batchEdit: this.options.batchEdit,
+        hideLabel: _.result(this.view, 'hideLabel'),
         required: this.model.get('required'),
         // Let assume for now that all tables that start with directus_ are core tables
         // TODO: we should store all our core tables names
         isCoreTable: tableName ? tableName.indexOf('directus_') === 0 : false,
         table: tableName
       };
+    },
+
+    beforeRender: function() {
+      var fieldClass = _.result(this.view, 'fieldClass');
+
+      if (fieldClass) {
+        this.$el.addClass(fieldClass);
+      }
     },
 
     afterRender: function() {

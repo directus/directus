@@ -6,6 +6,7 @@ define(function(require, exports, module) {
   var defaultUis = ([
     require('core/uis/textinput'),
     require('core/uis/directus_columns'),
+    require('core/uis/divider'),
     require('core/uis/instructions'),
     require('core/uis/checkbox/checkbox'),
     require('core/uis/color'),

@@ -28,6 +28,11 @@ define(function(require, exports, module) {
       return this.columnSchema.get('required') === true;
     },
 
+    // Parent field view additional classes
+    fieldClass: function() {},
+
+    hideLabel: false,
+
    /**
     * Default constructor
     * @param options

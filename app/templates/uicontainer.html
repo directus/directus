@@ -3,11 +3,12 @@
     <div class="button"><i class="material-icons">edit</i> Bulk Edit: Text Input</div>
 </div>
 {{/if}}
+{{#unless hideLabel}}
 <div class="label">
     {{#if isCoreTable}}{{tCoreField id table=table}}{{else}}{{capitalize id}}{{/if}}
     {{#if required}}<i class="material-icons required" title="Required">star</i>{{/if}}
     {{#if comment}}<div class="comment">{{{comment}}}</div>{{/if}}
-</div><!-- NEEDED TO AVOID EXTRA SPACE FROM TEXT
+</div>{{/unless}}<!-- NEEDED TO AVOID EXTRA SPACE FROM TEXT
 	 --><div class="interface"></div>
 
 {{!--
