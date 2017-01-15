@@ -152,13 +152,13 @@ class TableSchema
      *
      * @param $tableName
      * @param array $params
-     * @param bool $fromCache
+     * @param bool $skipCache
      *
      * @return Object\Table
      */
-    public static function getTableSchema($tableName, array $params = [], $fromCache = false)
+    public static function getTableSchema($tableName, array $params = [], $skipCache = false)
     {
-        return static::getSchemaManagerInstance()->getTableSchema($tableName, $params, $fromCache);
+        return static::getSchemaManagerInstance()->getTableSchema($tableName, $params, $skipCache);
     }
 
     /**
@@ -166,13 +166,13 @@ class TableSchema
      *
      * @param string $tableName
      * @param array $params
-     * @param bool $fromCache
+     * @param bool $skipCache
      *
      * @return Column[]
      */
-    public static function getTableColumnsSchema($tableName, array $params = [], $fromCache = false)
+    public static function getTableColumnsSchema($tableName, array $params = [], $skipCache = false)
     {
-        $tableObject = static::getTableSchema($tableName, $params, $fromCache);
+        $tableObject = static::getTableSchema($tableName, $params, $skipCache);
 
         return $tableObject->getColumns();
     }
@@ -182,13 +182,13 @@ class TableSchema
      *
      * @param $tableName
      * @param $columnName
-     * @param bool $fromCache
+     * @param bool $skipCache
      *
      * @return Object\Column
      */
-    public static function getColumnSchema($tableName, $columnName, $fromCache = false)
+    public static function getColumnSchema($tableName, $columnName, $skipCache = false)
     {
-        return static::getSchemaManagerInstance()->getColumnSchema($tableName, $columnName, $fromCache);
+        return static::getSchemaManagerInstance()->getColumnSchema($tableName, $columnName, $skipCache);
     }
 
     /**
@@ -199,11 +199,11 @@ class TableSchema
      *
      * @param $table
      * @param array $params
-     * @param bool $fromCache
+     * @param bool $skipCache
      *
      * @return array
      */
-    public static function getSchemaArray($table, array $params = [], $fromCache = true)
+    public static function getSchemaArray($table, array $params = [], $skipCache = false)
     {
 //        if (!$fromCache || !array_key_exists($table, self::$_schemas)) {
 //            self::$_schemas[$table] = self::loadSchema($table, $params);
@@ -211,7 +211,7 @@ class TableSchema
 
 //        return self::$_schemas[$table];
 
-        $columnsSchema = static::getTableColumnsSchema($table, $params, $fromCache);
+        $columnsSchema = static::getTableColumnsSchema($table, $params, $skipCache);
 
         // Only return this column if column_name is set as parameter
         $onlyColumnName = ArrayUtils::get($params, 'column_name', null);
