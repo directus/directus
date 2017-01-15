@@ -97,7 +97,7 @@ class Table extends Route
         }
 
         // $response = TableSchema::getColumnSchema($table_name, $params['column_name']);
-        $response = TableSchema::getSchema($tableName, $params);
+        $response = TableSchema::getTableColumnsSchema($tableName, $params);
 
         JsonView::render([
             'meta' => [

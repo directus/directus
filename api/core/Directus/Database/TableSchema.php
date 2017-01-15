@@ -162,6 +162,22 @@ class TableSchema
     }
 
     /**
+     * Gets table columns schema
+     *
+     * @param string $tableName
+     * @param array $params
+     * @param bool $fromCache
+     *
+     * @return Column[]
+     */
+    public static function getTableColumnsSchema($tableName, array $params = [], $fromCache = false)
+    {
+        $tableObject = static::getTableSchema($tableName, $params, $fromCache);
+
+        return $tableObject->getColumns();
+    }
+
+    /**
      * Gets the column object
      *
      * @param $tableName
@@ -173,22 +189,6 @@ class TableSchema
     public static function getColumnSchema($tableName, $columnName, $fromCache = false)
     {
         return static::getSchemaManagerInstance()->getColumnSchema($tableName, $columnName, $fromCache);
-    }
-
-    /**
-     * Gets the table columns schema
-     *
-     * @param $tableName
-     * @param array $params
-     * @param bool $fromCache
-     *
-     * @return Object\Column[]
-     */
-    public static function getSchema($tableName, array $params = [], $fromCache = false)
-    {
-        $tableObject = static::getTableSchema($tableName, $params, $fromCache);
-
-        return $tableObject->getColumns();
     }
 
     /**
@@ -211,7 +211,7 @@ class TableSchema
 
 //        return self::$_schemas[$table];
 
-        $columnsSchema = static::getSchema($table, $params, $fromCache);
+        $columnsSchema = static::getTableColumnsSchema($table, $params, $fromCache);
 
         // Only return this column if column_name is set as parameter
         $onlyColumnName = ArrayUtils::get($params, 'column_name', null);
