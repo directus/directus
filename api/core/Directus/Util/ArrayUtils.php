@@ -230,11 +230,11 @@ class ArrayUtils
     /**
      * Checks whether the given array has only numeric keys
      *
-     * @param $array
+     * @param array $array
      *
      * @return bool
      */
-    public static function isNumericKeys($array)
+    public static function isNumericKeys(array $array)
     {
         foreach (array_keys($array) as $key) {
             if (!is_numeric($key)) {
