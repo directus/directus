@@ -14,6 +14,7 @@ define(function(require, exports, module) {
   var groupsInstance;
   var activityInstance;
   var settingsInstance;
+  var tablesInstance;
   var messagesInstance;
 
   var apiURL = '',
@@ -41,6 +42,12 @@ define(function(require, exports, module) {
           url: apiURL + 'settings'
         }, SchemaManager.getFullSchema('directus_settings')));
 
+      case 'directus_tables':
+        return new EntriesCollection([], _.extend({
+          rowsPerPage: rowsPerPage,
+          url: apiURL + 'tables/directus_tables/rows'
+        }, SchemaManager.getFullSchema('directus_tables')));
+
       case 'directus_groups':
         return new EntriesCollection([], _.extend({
           rowsPerPage: rowsPerPage,
@@ -65,6 +72,7 @@ define(function(require, exports, module) {
     filesInstance = getNewCoreInstance('directus_files');
     activityInstance = getNewCoreInstance('directus_activity');
     settingsInstance = getNewCoreInstance('directus_settings');
+    tablesInstance = getNewCoreInstance('directus_tables');
     groupsInstance = getNewCoreInstance('directus_groups');
   }
 
@@ -81,6 +89,9 @@ define(function(require, exports, module) {
 
       case 'directus_settings':
         return newCoreInstance ? getNewCoreInstance(tableName) : settingsInstance;
+
+      case 'directus_tables':
+        return newCoreInstance ? getNewCoreInstance(tableName) : tablesInstance;
 
       case 'directus_groups':
         return newCoreInstance ? getNewCoreInstance(tableName) : groupsInstance;

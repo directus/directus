@@ -748,14 +748,18 @@ function(app, _, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIMa
     },
 
     afterRender: function() {
-      this.setView('#page-content', this.columns);
-      this.collection.fetch();
+      // this.setView('#page-content', this.columns);
+      this.setView('#page-content', this.editView);
+      // this.collection.fetch();
+      this.model.fetch();
     },
 
     initialize: function() {
-      this.collection = this.model.columns;
-      this.columns = new Columns({collection: this.collection});
+      // this.collection = this.model.columns;
+      // this.columns = new Columns({collection: this.collection});
       this.headerOptions.route.title = this.model.id;
+
+      this.editView = new Directus.EditView({model: this.model, ui: this.options.ui});
     }
   });
 

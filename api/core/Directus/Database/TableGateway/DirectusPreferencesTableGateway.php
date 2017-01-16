@@ -10,7 +10,7 @@ use Zend\Db\Sql\Predicate\NotIn;
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Update;
 
-class DirectusPreferencesTableGateway extends BaseTableGateway
+class DirectusPreferencesTableGateway extends RelationalTableGateway
 {
     public static $_tableName = 'directus_preferences';
 

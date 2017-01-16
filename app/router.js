@@ -576,7 +576,19 @@ define(function(require, exports, module) {
 
       this.setTitle(app.settings.get('global').get('project_name') + ' | Settings');
 
-      this.v.main.setView('#content', new Settings.Table({model: SchemaManager.getTable(tableName)}));
+      var collection = EntriesManager.getInstance('directus_tables');
+      var model = collection.get(tableName); // SchemaManager.getTable(tableName)
+
+      if (model === undefined) {
+        var primaryColumn = collection.table.get('primary_column');
+        var modelData = {};
+        modelData[primaryColumn] = tableName;
+        model = new collection.model(modelData, {collection: collection, parse: true});
+        model.idAttribute = primaryColumn;
+        model.id = tableName;
+      }
+
+      this.v.main.setView('#content', new Settings.Table({model: model}));
 
       this.v.main.render();
     },

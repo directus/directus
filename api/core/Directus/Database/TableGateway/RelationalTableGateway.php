@@ -818,7 +818,7 @@ class RelationalTableGateway extends BaseTableGateway
             $results = reset($results);
         }
 
-        return $results;
+        return $results ? $results : [];
     }
 
     /**

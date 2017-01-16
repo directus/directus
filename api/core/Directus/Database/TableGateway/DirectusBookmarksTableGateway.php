@@ -8,7 +8,7 @@ use Zend\Db\Sql\Insert;
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Update;
 
-class DirectusBookmarksTableGateway extends BaseTableGateway
+class DirectusBookmarksTableGateway extends RelationalTableGateway
 {
     public static $_tableName = 'directus_bookmarks';
 

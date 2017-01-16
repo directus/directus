@@ -7,7 +7,7 @@ use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Update;
 
-class DirectusMessagesRecipientsTableGateway extends BaseTableGateway
+class DirectusMessagesRecipientsTableGateway extends RelationalTableGateway
 {
     public static $_tableName = 'directus_messages_recipients';
 

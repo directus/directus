@@ -1010,7 +1010,7 @@ $app->map("/$v/tables/:table/rows/:id/?", function ($table, $id) use ($ZendDb, $
         $requestPayload['avatar'] = $avatar;
     }
 
-    $TableGateway = new TableGateway($table, $ZendDb, $acl);
+    $TableGateway = TableGateway::makeTableGatewayFromTableName($table, $ZendDb, $acl);
     switch ($app->request()->getMethod()) {
         // PUT an updated table entry
         case 'PATCH':
@@ -1026,10 +1026,9 @@ $app->map("/$v/tables/:table/rows/:id/?", function ($table, $id) use ($ZendDb, $
             return;
     }
 
-    $params[$TableGateway->primaryKeyFieldName] = $id;
     // GET a table entry
-    $Table = new TableGateway($table, $ZendDb, $acl);
-    $response = $Table->getEntries($params);
+    $params[$TableGateway->primaryKeyFieldName] = $id;
+    $response = $TableGateway->getEntries($params);
     if (!$response) {
         $response = [
             'message' => __t('unable_to_find_record_in_x_with_id_x', ['table' => $table, 'id' => $id]),

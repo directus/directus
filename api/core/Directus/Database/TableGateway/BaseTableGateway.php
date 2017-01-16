@@ -17,6 +17,7 @@ use Directus\Permissions\Exception\UnauthorizedTableEditException;
 use Directus\Util\ArrayUtils;
 use Directus\Util\DateUtils;
 use Directus\Util\Formatting;
+use Zend\Db\Adapter\Adapter;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Adapter\Exception\InvalidQueryException;
 use Zend\Db\ResultSet\ResultSet;
@@ -121,8 +122,16 @@ class BaseTableGateway extends TableGateway
      */
 
     /**
+     * Creates a table gateway based on a table's name
+     *
      * Underscore to camelcase table name to namespaced table gateway classname,
      * e.g. directus_users => \Directus\Database\TableGateway\DirectusUsersTableGateway
+     *
+     * @param string $table
+     * @param Adapter $adapter
+     * @param null $acl
+     *
+     * @return BaseTableGateway
      */
     public static function makeTableGatewayFromTableName($table, $adapter, $acl = null)
     {

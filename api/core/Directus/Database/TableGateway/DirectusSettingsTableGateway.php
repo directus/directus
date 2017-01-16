@@ -10,7 +10,7 @@ use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Sql;
 
-class DirectusSettingsTableGateway extends BaseTableGateway
+class DirectusSettingsTableGateway extends RelationalTableGateway
 {
     public static $_tableName = 'directus_settings';
 

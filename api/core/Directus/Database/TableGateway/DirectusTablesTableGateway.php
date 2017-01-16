@@ -5,7 +5,7 @@ namespace Directus\Database\TableGateway;
 use Directus\Permissions\Acl;
 use Zend\Db\Adapter\AdapterInterface;
 
-class DirectusTablesTableGateway extends BaseTableGateway
+class DirectusTablesTableGateway extends RelationalTableGateway
 {
     public static $_tableName = 'directus_tables';
 
