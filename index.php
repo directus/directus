@@ -228,12 +228,6 @@ function getActiveFiles()
     return $tableGateway->countActive();
 }
 
-// function getTabPrivileges($groupId) {
-//     global $ZendDb, $acl;
-//     $tableGateway = new DirectusTabPrivilegesTableGateway($acl, $ZendDb);
-//     return $tableGateway->fetchAllByGroup($groupId);
-// }
-
 function getInbox()
 {
     global $ZendDb, $acl, $authenticatedUser;
@@ -421,7 +415,6 @@ $cacheBuster = Directus\Util\Git::getCloneHash($git);
 
 $tableSchema = TableSchema::getAllSchemas($currentUserInfo['group']['id'], $cacheBuster);
 
-// $tabPrivileges = getTabPrivileges(($currentUserInfo['group']['id']));
 $groupId = $currentUserInfo['group']['data']['id'];
 $groups = getGroups();
 $currentUserGroup = [];
@@ -455,7 +448,6 @@ $data = [
     'settings' => getSettings(),
     'active_files' => getActiveFiles(),
     'authenticatedUser' => $authenticatedUser,
-    // 'tab_privileges' => $tabPrivileges,
     'extensions' => getExtensions($currentUserGroup),
     'privileges' => getPrivileges($groupId),
     'ui' => getUI(),
