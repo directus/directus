@@ -469,7 +469,7 @@ $app->group('/1.1', function() use($app) {
         ->name('table_create');
     // GET and PUT table details
     $app->map('/tables/:table/?', '\Directus\API\Routes\A1\Table:info')
-        ->via('GET', 'PUT', 'DELETE')
+        ->via('GET', 'PATCH', 'PUT', 'DELETE')
         ->name('table_meta');
 
     // =============================================================================
