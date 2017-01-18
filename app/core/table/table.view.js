@@ -47,6 +47,7 @@ function(app, _, Backbone, Notification, __t, ModelHelper, TableHead, TableBody,
         disabledSorting: !this.sortable,
         isSortableOrSelectable: isSortableOrSelectable,
         spacing: this.getSpacing(),
+        fixedHead: this.options.fixedHead,
         showEmptyMessage: (this.collection.length === 0 && !this.options.hideEmptyMessage)
       };
     },
@@ -226,6 +227,10 @@ function(app, _, Backbone, Notification, __t, ModelHelper, TableHead, TableBody,
     initialize: function(options) {
       var collection = this.collection;
 
+      options = _.extend({
+        fixedHead: false
+      }, (options || {}));
+
       this.listenTo(collection, 'sync', function(model, resp, options) {
         options = options || {};
         if (options.silent) return;
@@ -244,6 +249,7 @@ function(app, _, Backbone, Notification, __t, ModelHelper, TableHead, TableBody,
       this.options.structure = this.options.structure || collection.structure;
       this.options.table = this.options.table || collection.table;
       this.options.columns = this.getTableColumns();
+      this.options.fixedHead = options.fixedHead;
 
       if (this.options.tableHead !== false) {
         this.tableHead = true;

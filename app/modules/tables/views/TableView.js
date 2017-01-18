@@ -220,7 +220,14 @@ function(app, Backbone, __t, BasePageView, ListViewManager, TableViewRightPane, 
     initialize: function() {
       this.widgets = {};
 
-      this.table = ListViewManager.getInstance({collection: this.collection, navigate: true, maxColumns: 8, toolbar: true});
+      this.table = ListViewManager.getInstance({
+        collection: this.collection,
+        navigate: true,
+        maxColumns: 8,
+        toolbar: true,
+        fixedHead: true
+      });
+
       this.headerOptions.route.title = this.collection.table.id;
       if(!this.collection.options) {
         this.collection.options = {};
