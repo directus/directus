@@ -137,11 +137,14 @@ class BaseTableGateway extends TableGateway
     {
         $tableGatewayClassName = Formatting::underscoreToCamelCase($table) . 'TableGateway';
         $tableGatewayClassName = __NAMESPACE__ . '\\' . $tableGatewayClassName;
-        if (!class_exists($tableGatewayClassName)) {
-            $tableGatewayClassName = get_called_class();
+
+        if (class_exists($tableGatewayClassName)) {
+            $instance = new $tableGatewayClassName($adapter, $acl);
+        } else {
+            $instance = new static($table, $adapter, $acl);
         }
 
-        return new $tableGatewayClassName($adapter, $acl);
+        return $instance;
     }
 
     /**
