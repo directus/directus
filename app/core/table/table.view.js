@@ -228,7 +228,8 @@ function(app, _, Backbone, Notification, __t, ModelHelper, TableHead, TableBody,
       var collection = this.collection;
 
       options = _.extend({
-        fixedHead: false
+        fixedHead: false,
+        showMoreButton: false
       }, (options || {}));
 
       this.listenTo(collection, 'sync', function(model, resp, options) {

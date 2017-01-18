@@ -1,6 +1,7 @@
 define([
   'app',
   'backbone',
+  'underscore',
   'core/t',
   'core/BasePageView',
   'core/ListViewManager',
@@ -8,7 +9,7 @@ define([
   'core/widgets/widgets'
 ],
 
-function(app, Backbone, __t, BasePageView, ListViewManager, TableViewRightPane, Widgets) {
+function(app, Backbone, _, __t, BasePageView, ListViewManager, TableViewRightPane, Widgets) {
 
   return BasePageView.extend({
 
@@ -225,11 +226,12 @@ function(app, Backbone, __t, BasePageView, ListViewManager, TableViewRightPane, 
         navigate: true,
         maxColumns: 8,
         toolbar: true,
-        fixedHead: true
+        fixedHead: true,
+        showMoreButton: !! _.result(this, 'rightPane')
       });
 
       this.headerOptions.route.title = this.collection.table.id;
-      if(!this.collection.options) {
+      if (!this.collection.options) {
         this.collection.options = {};
       }
 

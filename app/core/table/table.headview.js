@@ -212,6 +212,7 @@ function(app, Backbone, _, __t, Notification) {
         sortable: this.options.sort,
         columns: columns,
         deleteColumn: this.options.deleteColumn,
+        showMoreButton: this.options.showMoreButton,
         hideColumnPreferences: this.options.hideColumnPreferences
       };
     },
