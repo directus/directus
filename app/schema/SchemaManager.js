@@ -206,7 +206,10 @@ define(function(require, exports, module) {
         {
           add = ":" + preference.title;
         }
-        preferences[preference.table_name + add] = new PreferenceModel(preference, {url: this.apiURL + 'tables/' + encodeURIComponent(preference.table_name) + '/preferences'});
+        preferences[preference.table_name + add] = new PreferenceModel(preference, {
+          url: this.apiURL + 'tables/' + encodeURIComponent(preference.table_name) + '/preferences',
+          parse: true
+        });
       }, this);
     },
 
