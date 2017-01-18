@@ -12,13 +12,48 @@ define(function(require, exports, module) {
 
     "columns": [
       {
-        "id":"table_name",
-        "column_name":"table_name",
-        "ui":"textinput",
-        "type":"VARCHAR",
-        "system":true,
-        "hidden_list":false,
-        "hidden_input":false
+        "id": "table_name",
+        "column_name": "table_name",
+        "ui": "textinput",
+        "type": "VARCHAR",
+        "system": true,
+        "hidden_list": false,
+        "hidden_input": false,
+        "required": true,
+        "sort": 0,
+        "comment": ""
+      },
+      {
+        "id": "preview_url",
+        "column_name": "preview_url",
+        "ui": "textinput",
+        "type": "VARCHAR",
+        "length": 255,
+        "system": true,
+        "hidden_list": false,
+        "hidden_input": false,
+        "required": false,
+        "sort": 0,
+        "comment": ""
+      },
+      {
+        "id": "columns",
+        "column_name": "columns",
+        "type": "ALIAS",
+        "ui": "columns",
+        "relationship_type": "ONETOMANY",
+        "related_table": "directus_columns",
+        "junction_key_right": "table_name",
+        "default_value": null,
+        "required": false,
+        "system": false,
+        "hidden_list": false,
+        "hidden_input": false,
+        "sort": 2,
+        "options": {
+          "visible_columns": "column_name,ui,relationship_type,comment",
+          "add_button": 1
+        }
       },
       {
         "id":"hidden",
@@ -28,7 +63,8 @@ define(function(require, exports, module) {
         "default_value": false,
         "system":false,
         "hidden_list":false,
-        "hidden_input":false
+        "hidden_input":false,
+        "sort": 3
       },
       {
         "id":"single",
@@ -38,7 +74,8 @@ define(function(require, exports, module) {
         "default_value": false,
         "system":false,
         "hidden_list":false,
-        "hidden_input":false
+        "hidden_input":false,
+        "sort": 4
       },
       {
         "id":"default_status",
@@ -48,16 +85,59 @@ define(function(require, exports, module) {
         "default_value": 1,
         "system":false,
         "hidden_list":false,
-        "hidden_input":false
+        "hidden_input":false,
+        "sort": 5
       },
       {
-        "id":"footer",
-        "column_name":"footer",
-        "ui":"checkbox",
-        "type":"TINYINT",
-        "system":false,
-        "hidden_list":false,
-        "hidden_input":false
+        "id": "footer",
+        "column_name": "footer",
+        "ui": "checkbox",
+        "type": "TINYINT",
+        "system": false,
+        "hidden_list": false,
+        "hidden_input": false,
+        "sort": 6
+      },
+      {
+        "id": "primary_column",
+        "column_name": "primary_column",
+        "ui": "textinput",
+        "type": "VARCHAR",
+        "length": 255,
+        "system": true,
+        "hidden_list": false,
+        "hidden_input": false,
+        "default_value": "id",
+        "required": false,
+        "sort": 7,
+        "comment": ""
+      },
+      {
+        "id": "sort_column",
+        "column_name": "sort_column",
+        "ui": "textinput",
+        "type": "VARCHAR",
+        "length": 255,
+        "system": true,
+        "hidden_list": false,
+        "hidden_input": false,
+        "default_value": "sort",
+        "required": false,
+        "sort": 8,
+        "comment": ""
+      },
+      {
+        "id": "status_column",
+        "column_name": "status_column",
+        "ui": "textinput",
+        "type": "VARCHAR",
+        "length": 255,
+        "system": true,
+        "hidden_list": false,
+        "hidden_input": false,
+        "required": false,
+        "sort": 9,
+        "comment": ""
       }
     ]
   };

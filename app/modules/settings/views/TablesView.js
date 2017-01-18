@@ -12,6 +12,7 @@ define([
   'underscore',
   'backbone',
   'core/directus',
+  'modules/tables/views/EditView',
   'core/BasePageView',
   'schema/TableModel',
   'schema/ColumnModel',
@@ -26,7 +27,7 @@ define([
   '../SettingsConfig'
 ],
 
-function(app, _, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIManager, Widgets, SchemaManager, Sortable, Notification, DoubleConfirmation, __t, SchemaHelper, SettingsConfig) {
+function(app, _, Backbone, Directus, EditView, BasePageView, TableModel, ColumnModel, UIManager, Widgets, SchemaManager, Sortable, Notification, DoubleConfirmation, __t, SchemaHelper, SettingsConfig) {
 
   'use strict';
 
@@ -710,57 +711,89 @@ function(app, _, Backbone, Directus, BasePageView, TableModel, ColumnModel, UIMa
     }
   });
 
-  SettingsTables.Views.Table = BasePageView.extend({
-    headerOptions: {
-      route: {
-        title: 'Classes',
-        breadcrumbs: [{title: __t('settings'), anchor: '#settings'}, {title: __t('tables_and_inputs'), anchor: '#settings/tables'}]
-      }
+  SettingsTables.Views.Table = EditView.extend({//BasePageView.extend({
+    getHeaderOptions: function() {
+      var options = EditView.prototype.getHeaderOptions.apply(this, arguments);
+
+      return _.extend(options, {
+        route: {
+          breadcrumbs: [
+            {title: __t('settings'), anchor: '#settings'},
+            {title: __t('tables_and_inputs'), anchor: '#settings/tables'}
+          ]
+        },
+        basicSave: true
+      });
     },
+    // headerOptions: {
+    //   route: {
+    //     title: 'Classes',
+    //     breadcrumbs: [{title: __t('settings'), anchor: '#settings'}, {title: __t('tables_and_inputs'), anchor: '#settings/tables'}]
+    //   }
+    // },
+    //
+    // leftToolbar: function() {
+    //   var self = this;
+    //   this.saveWidget = new Widgets.SaveWidget({
+    //     widgetOptions: {
+    //       basicSave: true
+    //     },
+    //     onClick: function() {
+    //       self.editView.save();
+    //     }
+    //   });
+    //   var editView = this;
+    //   this.saveWidget = new Widgets.SaveWidget({
+    //     widgetOptions: {
+    //       basicSave: this.headerOptions.,
+    //       singlePage: this.single
+    //     },
+    //     onClick: _.bind(editView.saveConfirm, editView)
+    //   });
+    //
+    //   this.saveWidget.setSaved(false);
+    //   return [
+    //     this.saveWidget
+    //   ];
+    // },
+    //
+    // events: {
+    //   'change select,input': function(e) {
+    //     this.saveWidget.setSaved(false); //Temporarily Just Set it to save once something is changed.
+    //   },
+    //   'click .saved-success': 'saveColumns'
+    // },
+    //
+    // saveColumns: function(e) {
+    //   var data = {};
+    //
+    //   //Take care of the checkboxes
+    //   $('#table-settings').find('input[type=checkbox]:not(:checked)').each(function(){
+    //     data[this.name] = 0;
+    //   }).get();
+    //
+    //   data = _.extend(data, $('#table-settings').serializeObject());
+    //
+    //   this.model.save(data, {success: function(){
+    //     app.router.go('settings','tables');
+    //   }});
+    // },
 
-    leftToolbar: function() {
-      this.saveWidget = new Widgets.SaveWidget({widgetOptions: {basicSave: true}});
-      return [
-        this.saveWidget
-      ];
-    },
+    // afterRender: function() {
+    //   // this.setView('#page-content', this.columns);
+    //   //this.setView('#page-content', this.editView);
+    //   // this.collection.fetch();
+    //   this.model.fetch();
+    // },
 
-    events: {
-      'change select,input': function(e) {
-        this.saveWidget.setSaved(false); //Temporarily Just Set it to save once something is changed.
-      },
-      'click .saved-success': 'saveColumns'
-    },
-
-    saveColumns: function(e) {
-      var data = {};
-
-      //Take care of the checkboxes
-      $('#table-settings').find('input[type=checkbox]:not(:checked)').each(function(){
-        data[this.name] = 0;
-      }).get();
-
-      data = _.extend(data, $('#table-settings').serializeObject());
-
-      this.model.save(data, {success: function(){
-        app.router.go('settings','tables');
-      }});
-    },
-
-    afterRender: function() {
-      // this.setView('#page-content', this.columns);
-      this.setView('#page-content', this.editView);
-      // this.collection.fetch();
-      this.model.fetch();
-    },
-
-    initialize: function() {
+    // initialize: function() {
       // this.collection = this.model.columns;
       // this.columns = new Columns({collection: this.collection});
-      this.headerOptions.route.title = this.model.id;
+      // this.headerOptions.route.title = this.model.id;
 
-      this.editView = new Directus.EditView({model: this.model, ui: this.options.ui});
-    }
+      // this.editView = new Directus.EditView({model: this.model, ui: this.options.ui});
+      //this.editView = new EditView({model: this.model});
+    // }
   });
 
   var Tables = Backbone.Layout.extend({

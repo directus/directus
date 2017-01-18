@@ -543,6 +543,16 @@ class TableSchema
         // $relationalTableGateway = new RelationalTableGateway($tbl_name, $zendDb, $acl);
         $info = $info->toArray(); //array_merge($info->toArray(), $relationalTableGateway->countActiveOld());
 
+        if (isset($info['columns'])) {
+            // $columns = $info['columns'];
+            $info['columns'] = [
+                'meta' => [
+                    'table' => 'directus_columns',
+                    'type' => 'collection'
+                ],
+                'data' => $info['columns']
+            ];
+        }
         //$info['columns'] = self::getSchemaArray($tbl_name);
         $directusPreferencesTableGateway = new DirectusPreferencesTableGateway($zendDb, $acl);
         $currentUserId = static::getAclInstance()->getUserId();

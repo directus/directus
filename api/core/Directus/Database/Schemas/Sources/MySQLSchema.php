@@ -60,7 +60,10 @@ class MySQLSchema extends AbstractSchema
                 'list_view',
                 'column_groupings',
                 'filter_column_blacklist',
-                'primary_column'
+                'primary_column',
+                'sort_column',
+                'status_column',
+                'preview_url'
             ],
             $select::JOIN_LEFT
         );
@@ -175,7 +178,10 @@ class MySQLSchema extends AbstractSchema
                 'list_view',
                 'column_groupings',
                 'filter_column_blacklist',
-                'primary_column'
+                'primary_column',
+                'sort_column',
+                'status_column',
+                'preview_url'
             ],
             $select::JOIN_LEFT
         );

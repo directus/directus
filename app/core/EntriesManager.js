@@ -45,7 +45,7 @@ define(function(require, exports, module) {
       case 'directus_tables':
         return new EntriesCollection([], _.extend({
           rowsPerPage: rowsPerPage,
-          url: apiURL + 'tables/directus_tables/rows'
+          url: apiURL + 'tables'
         }, SchemaManager.getFullSchema('directus_tables')));
 
       case 'directus_groups':

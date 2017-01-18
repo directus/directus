@@ -285,15 +285,19 @@ class Table extends Route
         $TableGateway = new TableGateway('directus_tables', $ZendDb, $acl, null, null, null, 'table_name');
         $ColumnsTableGateway = new TableGateway('directus_columns', $ZendDb, $acl);
         /* PUT updates the table */
-        if ($app->request()->isPut()) {
+        if ($app->request()->isPut() || $app->request()->isPatch()) {
             $data = $requestPayload;
-            $table_settings = [
-                'table_name' => $data['table_name'],
-                'hidden' => (int)$data['hidden'],
-                'single' => (int)$data['single'],
-                'footer' => (int)$data['footer'],
-                'primary_column' => array_key_exists('primary_column', $data) ? $data['primary_column'] : ''
-            ];
+            if ($app->request()->isPut()) {
+                $table_settings = [
+                    'table_name' => $data['table_name'],
+                    'hidden' => (int)$data['hidden'],
+                    'single' => (int)$data['single'],
+                    'footer' => (int)$data['footer'],
+                    'primary_column' => array_key_exists('primary_column', $data) ? $data['primary_column'] : ''
+                ];
+            } else {
+                $table_settings = array_filter($data);
+            }
 
             //@TODO: Possibly pretty this up so not doing direct inserts/updates
             $set = $TableGateway->select(['table_name' => $table])->toArray();
@@ -306,34 +310,35 @@ class Table extends Route
             }
 
             $column_settings = [];
-            foreach ($data['columns'] as $col) {
-                $columnData = [
-                    'table_name' => $table,
-                    'column_name' => $col['column_name'],
-                    'ui' => $col['ui'],
-                    'hidden_input' => $col['hidden_input'] ? 1 : 0,
-                    'hidden_list' => $col['hidden_list'] ? 1 : 0,
-                    'required' => $col['required'] ? 1 : 0,
-                    'sort' => array_key_exists('sort', $col) ? $col['sort'] : 99999,
-                    'comment' => array_key_exists('comment', $col) ? $col['comment'] : ''
-                ];
+            if (isset($data['columns']) && is_array($data['columns'])) {
+                foreach ($data['columns'] as $col) {
+                    $columnData = [
+                        'table_name' => $table,
+                        'column_name' => $col['column_name'],
+                        'ui' => $col['ui'],
+                        'hidden_input' => $col['hidden_input'] ? 1 : 0,
+                        'hidden_list' => $col['hidden_list'] ? 1 : 0,
+                        'required' => $col['required'] ? 1 : 0,
+                        'sort' => array_key_exists('sort', $col) ? $col['sort'] : 99999,
+                        'comment' => array_key_exists('comment', $col) ? $col['comment'] : ''
+                    ];
 
-                // hotfix #1069 single_file UI not saving relational settings
-                $extraFields = ['data_type', 'relationship_type', 'related_table', 'junction_key_right'];
-                foreach ($extraFields as $field) {
-                    if (array_key_exists($field, $col)) {
-                        $columnData[$field] = $col[$field];
+                    // hotfix #1069 single_file UI not saving relational settings
+                    $extraFields = ['data_type', 'relationship_type', 'related_table', 'junction_key_right'];
+                    foreach ($extraFields as $field) {
+                        if (array_key_exists($field, $col)) {
+                            $columnData[$field] = $col[$field];
+                        }
                     }
-                }
 
-                $existing = $ColumnsTableGateway->select(['table_name' => $table, 'column_name' => $col['column_name']])->toArray();
-                if (count($existing) > 0) {
-                    $columnData['id'] = $existing[0]['id'];
-                }
+                    $existing = $ColumnsTableGateway->select(['table_name' => $table, 'column_name' => $col['column_name']])->toArray();
+                    if (count($existing) > 0) {
+                        $columnData['id'] = $existing[0]['id'];
+                    }
 
-                array_push($column_settings, $columnData);
+                    array_push($column_settings, $columnData);
+                }
             }
-
 
             $ColumnsTableGateway->updateCollection($column_settings);
         }

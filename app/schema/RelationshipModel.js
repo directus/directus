@@ -4,6 +4,12 @@ define(function(require, exports, module) {
 
   var Backbone = require('backbone');
 
-  module.exports = Backbone.Model.extend({});
+  module.exports = Backbone.Model.extend({
+    parse: function(data) {
+      data.type = data.relationship_type;
+
+      return data;
+    }
+  });
 
 });

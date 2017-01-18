@@ -16,6 +16,7 @@ define(function(require, exports, module) {
   // Static Schemas
   var directusSchemas = {
     'directus_activity'  : require('./fixed/activity'),
+    'directus_columns'    : require('./fixed/columns'),
     'directus_groups'    : require('./fixed/groups'),
     'directus_files'     : require('./fixed/files'),
     'directus_messages'  : require('./fixed/messages'),
@@ -91,6 +92,7 @@ define(function(require, exports, module) {
 
       var defaultTables = [
         { schema: directusSchemas.directus_activity },
+        { schema: directusSchemas.directus_columns },
         { schema: directusSchemas.directus_groups },
         { schema: directusSchemas.directus_files.getFiles() },
         { schema: directusSchemas.directus_messages },

@@ -11,6 +11,7 @@
 namespace Directus\Database\Object;
 
 use Directus\Collection\Arrayable;
+use Directus\Util\ArrayUtils;
 use Directus\Util\Traits\ArrayPropertyAccess;
 use Directus\Util\Traits\ArrayPropertyToArray;
 use Directus\Util\Traits\ArraySetter;
@@ -785,7 +786,17 @@ class Column implements \ArrayAccess, Arrayable, \JsonSerializable
 
     public function toArray()
     {
-        return $this->propertyArray();
+        $data = $this->propertyArray();
+
+        $relationship = $this->hasRelationship() ? $data['relationship'] : [];
+
+        $data['relationship_type'] = ArrayUtils::get($relationship, 'type', null);
+        $data['related_table'] = ArrayUtils::get($relationship, 'related_table', null);
+        $data['junction_table'] = ArrayUtils::get($relationship, 'junction_table', null);
+        $data['junction_key_right'] = ArrayUtils::get($relationship, 'junction_key_right', null);
+        $data['junction_key_left'] = ArrayUtils::get($relationship, 'junction_key_left', null);
+
+        return $data;
     }
 
     /**

@@ -84,11 +84,9 @@ define(function(require, exports, module) {
               "id":"single_file",
               "allowed_filetypes":"image\/*"
             },
-            "relationship":{
-              "type":"MANYTOONE",
-              "related_table":"directus_files",
-              "junction_key_right":"avatar_file_id"
-            }
+            "relationship_type": "MANYTOONE",
+            "related_table": "directus_files",
+            "junction_key_right": "avatar_file_id"
           },
           {
             "id":"avatar",
@@ -487,11 +485,9 @@ define(function(require, exports, module) {
               "allow_null": 0,
               "visible_column_template": "{{name}}"
             },
-            "relationship":{
-              "type":"MANYTOONE",
-              "related_table":"directus_groups",
-              "junction_key_right":"group_id"
-            }
+            "relationship_type":"MANYTOONE",
+            "related_table":"directus_groups",
+            "junction_key_right":"group_id"
           },
           {
             "id":"language",

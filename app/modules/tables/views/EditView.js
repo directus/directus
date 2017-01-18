@@ -303,16 +303,19 @@ function(app, Backbone, _, Handlebars, __t, Directus, BasePageView, Widgets, His
       this.single = this.model.collection.table.get('single');
       this.editView = new EditView(options);
       this.headerOptions.route.isOverlay = false;
-      this.headerOptions.basicSave = false;
       this.skipFetch = options.skipFetch;
       this.onSuccess = options.onSuccess;
 
+      if (_.isUndefined(this.headerOptions.basicSave)) {
+        this.headerOptions.basicSave = false;
+      }
+
       if (this.single) {
         this.headerOptions.route.title = 'Editing ' + this.model.collection.table.id;
-        this.headerOptions.route.breadcrumbs = [{ title: __t('tables'), anchor: '#tables'}];
+        this.headerOptions.route.breadcrumbs = this.headerOptions.route.breadcrumbs || [{ title: __t('tables'), anchor: '#tables'}];
       } else {
         this.headerOptions.route.title = this.model.get(this.model.idAttribute) ? __t('editing_item') : __t('creating_new_item');
-        this.headerOptions.route.breadcrumbs = [{ title: __t('tables'), anchor: '#tables'}, {title: this.model.collection.table.id, anchor: "#tables/" + this.model.collection.table.id}];
+        this.headerOptions.route.breadcrumbs = this.headerOptions.route.breadcrumbs|| [{ title: __t('tables'), anchor: '#tables'}, {title: this.model.collection.table.id, anchor: "#tables/" + this.model.collection.table.id}];
       }
     }
   });

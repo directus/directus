@@ -151,6 +151,11 @@ class Table implements \ArrayAccess, Arrayable, \JsonSerializable
     /**
      * @var string
      */
+    protected $preview_url;
+
+    /**
+     * @var string
+     */
     protected $filterColumnBlacklist;
 
     /**
@@ -457,13 +462,62 @@ class Table implements \ArrayAccess, Arrayable, \JsonSerializable
     /**
      * Get the table main column
      *
-     * Do not confuse it with primary key
+     * This column is now acting as the primary key
+     * But it can only be a simple primary key, it can be compound
      *
      * @return string
      */
     public function getPrimaryColumn()
     {
         return $this->primaryColumn;
+    }
+
+    /**
+     * Sets Table status column name
+     *
+     * @param $name
+     *
+     * @return Table
+     */
+    public function setStatusColumn($name)
+    {
+        $this->status_column = $name;
+
+        return $this;
+    }
+
+    /**
+     * Gets Table status column name
+     *
+     * @return string
+     */
+    public function getStatusColumn()
+    {
+        return $this->status_column;
+    }
+
+    /**
+     * Sets Table sort column name
+     *
+     * @param $name
+     *
+     * @return Table
+     */
+    public function setSortColumn($name)
+    {
+        $this->sort_column = $name;
+
+        return $this;
+    }
+
+    /**
+     * Gets Table sort column name
+     *
+     * @return string
+     */
+    public function getSortColumn()
+    {
+        return $this->sort_column;
     }
 
     /**
@@ -840,6 +894,30 @@ class Table implements \ArrayAccess, Arrayable, \JsonSerializable
     public function getColumnGroupings()
     {
         return $this->columnGroupings;
+    }
+
+    /**
+     * Sets Table Items preview url
+     *
+     * @param $url
+     *
+     * @return Table
+     */
+    public function setPreviewUrl($url)
+    {
+        $this->preview_url = $url;
+
+        return $this;
+    }
+
+    /**
+     * Gets Table Items preview url
+     *
+     * @return string
+     */
+    public function getPreviewUrl()
+    {
+        return $this->preview_url;
     }
 
     /**

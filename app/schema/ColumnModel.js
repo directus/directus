@@ -3,6 +3,8 @@ define(function(require, exports, module) {
   "use strict";
 
   var app = require('app'),
+      Backbone = require('backbone'),
+      _ = require('underscore'),
       UIModel = require('./UIModel'),
       RelationshipModel = require('./RelationshipModel');
 
@@ -38,8 +40,16 @@ define(function(require, exports, module) {
         this.options = new UIModel(options);
         this.options.parent = this;
 
-        if (result.relationship) {
-          this.relationship = new RelationshipModel(result.relationship);
+        if (result.relationship_type) {
+          var relationshipAttrs = _.pick(result, [
+            'relationship_type',
+            'related_table',
+            'junction_table',
+            'junction_key_right',
+            'junction_key_left'
+          ]);
+
+          this.relationship = new RelationshipModel(relationshipAttrs, {parse: true});
           this.relationship.parent = this;
         }
 

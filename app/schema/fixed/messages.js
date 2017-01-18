@@ -108,18 +108,14 @@ define(function(require, exports, module) {
         "system":false,
         "hidden_list":true,
         "hidden_input":true,
-        "related_table":"directus_messages",
-        "junction_key_right":"response_to",
+        "relationship_type": "ONETOMANY",
+        "related_table": "directus_messages",
+        "junction_key_right": "response_to",
         "required":false,
         "is_writable":true,
         "options":{
           "id":"one_to_many",
           "visible_columns":"subject"
-        },
-        "relationship": {
-          "type": "ONETOMANY",
-          "related_table": "directus_messages",
-          "junction_key_right": "response_to"
         }
       },
       {

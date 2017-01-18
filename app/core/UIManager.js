@@ -10,6 +10,7 @@ define(function(require, exports, module) {
     require('core/uis/instructions'),
     require('core/uis/checkbox/checkbox'),
     require('core/uis/color'),
+    require('core/uis/columns'),
     require('core/uis/numeric'),
     require('core/uis/slider'),
     require('core/uis/single_file'),
