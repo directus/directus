@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "67f14cfafd2f57866daaabaecb9fb3f4",
+    "content-hash": "96430a305585e9cb877b0bf86ff95ca0",
     "packages": [
         {
             "name": "directus/collection",
@@ -47,22 +47,22 @@
         },
         {
             "name": "directus/database",
-            "version": "dev-version/6.4",
+            "version": "0.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/directus/directus-database.git",
-                "reference": "9e6fd6131b8fc281d8ba47fe82fc2d4e334abaa6"
+                "reference": "a5c851c827a0606226c8493d708110c7ec28d230"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/directus/directus-database/zipball/9e6fd6131b8fc281d8ba47fe82fc2d4e334abaa6",
-                "reference": "9e6fd6131b8fc281d8ba47fe82fc2d4e334abaa6",
+                "url": "https://api.github.com/repos/directus/directus-database/zipball/a5c851c827a0606226c8493d708110c7ec28d230",
+                "reference": "a5c851c827a0606226c8493d708110c7ec28d230",
                 "shasum": ""
             },
             "require": {
                 "directus/collection": "0.9.*@dev",
                 "php": ">=5.4.0",
-                "zendframework/zend-db": "2.8.*"
+                "zendframework/zend-db": "dev-directus"
             },
             "require-dev": {
                 "phpunit/phpunit": "~3.7.0"
@@ -76,7 +76,10 @@
             "autoload": {
                 "psr-4": {
                     "Directus\\Database\\": ""
-                }
+                },
+                "files": [
+                    "functions.php"
+                ]
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
@@ -87,7 +90,7 @@
                 "database",
                 "directus"
             ],
-            "time": "2016-12-26 11:05:09"
+            "time": "2017-01-19T19:03:09+00:00"
         },
         {
             "name": "directus/migrations",
@@ -187,12 +190,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/flysystem.git",
-                "reference": "30f702679a69af1d9b6bba5695db9407450696c4"
+                "reference": "ca31a2db2f597c877840666b394e2e6a8a648ef8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/30f702679a69af1d9b6bba5695db9407450696c4",
-                "reference": "30f702679a69af1d9b6bba5695db9407450696c4",
+                "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/ca31a2db2f597c877840666b394e2e6a8a648ef8",
+                "reference": "ca31a2db2f597c877840666b394e2e6a8a648ef8",
                 "shasum": ""
             },
             "require": {
@@ -262,7 +265,7 @@
                 "sftp",
                 "storage"
             ],
-            "time": "2017-01-09 14:16:42"
+            "time": "2017-01-18 13:36:15"
         },
         {
             "name": "slim/extras",
@@ -411,12 +414,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/twigphp/Twig.git",
-                "reference": "4e1c232b67c577a97407133975d8caf2321efd30"
+                "reference": "a1c1f01eac45b68d6f17c3b499297b93e1a47321"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twigphp/Twig/zipball/4e1c232b67c577a97407133975d8caf2321efd30",
-                "reference": "4e1c232b67c577a97407133975d8caf2321efd30",
+                "url": "https://api.github.com/repos/twigphp/Twig/zipball/a1c1f01eac45b68d6f17c3b499297b93e1a47321",
+                "reference": "a1c1f01eac45b68d6f17c3b499297b93e1a47321",
                 "shasum": ""
             },
             "require": {
@@ -464,21 +467,15 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2017-01-10 22:14:10"
+            "time": "2017-01-19 14:55:10"
         },
         {
             "name": "zendframework/zend-db",
-            "version": "dev-master",
+            "version": "dev-directus",
             "source": {
                 "type": "git",
-                "url": "https://github.com/zendframework/zend-db.git",
-                "reference": "ae46299099c724a96fd088ae05a0b64e3748a808"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/zend-db/zipball/ae46299099c724a96fd088ae05a0b64e3748a808",
-                "reference": "ae46299099c724a96fd088ae05a0b64e3748a808",
-                "shasum": ""
+                "url": "https://github.com/wellingguzman/zend-db",
+                "reference": "2d24b58b6fa27712631ad3726c6039bdde39d262"
             },
             "require": {
                 "php": "^5.5 || ^7.0",
@@ -512,16 +509,21 @@
                     "Zend\\Db\\": "src/"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
+            "autoload-dev": {
+                "psr-4": {
+                    "ZendTest\\Db\\": "test/"
+                }
+            },
             "license": [
                 "BSD-3-Clause"
             ],
+            "description": " ",
             "homepage": "https://github.com/zendframework/zend-db",
             "keywords": [
                 "db",
                 "zf2"
             ],
-            "time": "2016-08-09 19:32:50"
+            "time": "2017-01-18 03:41:08"
         },
         {
             "name": "zendframework/zend-stdlib",
@@ -998,8 +1000,7 @@
     "stability-flags": {
         "slim/extras": 20,
         "directus/migrations": 20,
-        "directus/permissions": 20,
-        "directus/database": 20
+        "directus/permissions": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,
