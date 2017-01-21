@@ -55,6 +55,12 @@ define([
         'click #messages-show-recipients': function() {
           var $el = $('#messages-recipients');
           $el.toggle();
+        },
+
+        'click .js-user': function(event) {
+          var $target = $(event.currentTarget);
+
+          app.router.openUserModal($target.data('id'));
         }
       },
 

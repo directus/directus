@@ -1,11 +1,12 @@
 require([
   'app',
+  'underscore',
   'handlebars',
   'core/UIManager',
   'helpers/file',
   'core/t',
   'moment'
-], function(app, Handlebars, UIManager, FileHelper, __t, moment) {
+], function(app, _, Handlebars, UIManager, FileHelper, __t, moment) {
 
   'use strict';
 
@@ -208,7 +209,8 @@ require([
 
     var result = [];
     _.each(userIds, function(userId, index) {
-      var user = userFirstAndLastName(userId);
+      // TODO: Clean this?
+      var user = '<a href="#" class="js-user" data-id="' + userId + '">' + userFirstAndLastName(userId) + '</a>';
       var prefix = ', ';
 
       if (userIds.length && userIds.length === (index + 1)) {
@@ -220,7 +222,7 @@ require([
       result.push(prefix + user);
     });
 
-    return result.join('');
+    return new Handlebars.SafeString(result.join(''));
   });
 
   Handlebars.registerHelper('directusTable', function(data) {
