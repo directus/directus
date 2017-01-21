@@ -105,27 +105,6 @@ require(["config", 'polyfills'], function() {
         }
     });
 
-    // This needs elegance
-    var SettingsModel = Backbone.Model.extend({
-      getStructure: function () {
-        return this.structure;
-      },
-      get: function(attr) {
-        var original = Backbone.Model.prototype.get;
-        if (attr == 'global') {
-          return this;
-        }
-
-        return original.apply(this, arguments);
-      }
-    });
-
-    // app.settings = new SettingsCollection(options.settings, {parse: true});
-    // app.settings = new EntriesModel(options.settings, {
-    //   structure: SchemaManager.getColumns('tables', 'directus_settings')
-    // });
-    // app.settings.url = app.API_URL + 'settings';
-
     UIManager.setup();
     SchemaManager.setup({apiURL: app.API_URL});
 
@@ -138,34 +117,6 @@ require(["config", 'polyfills'], function() {
       ListViewManager.load(options.listViews)
 
     ).done(function() {
-
-      // var autoLogoutMinutes = parseInt(app.settings.get('cms_user_auto_sign_out') || 60, 10);
-      //
-      // var waitForForAvtivity = function() {
-      //   //console.log('minutes until automatic logout:', autoLogoutMinutes);
-      //
-      //   Idle.start({
-      //     timeout: function() {
-      //       Notification.warning(null, 'You\'ve been inactive for ' + autoLogoutMinutes + ' minutes. You will be automatically logged out in 10 seconds');
-      //
-      //       //Wait for another 10 seconds before kicking the user out
-      //       Idle.start({
-      //         timeout: function() {
-      //           app.logOut(true);
-      //         },
-      //         interrupt: waitForForAvtivity,
-      //         delay: 10000,
-      //         repeat: false
-      //       });
-      //
-      //     },
-      //     delay: autoLogoutMinutes * 60 * 1000,
-      //     repeat: true
-      //   });
-      //
-      // };
-      //
-      // waitForForAvtivity();
 
       // Register UI schemas
       SchemaManager.registerUISchemas(UIManager.getAllSettings());
@@ -195,13 +146,7 @@ require(["config", 'polyfills'], function() {
       app.files    = EntriesManager.getInstance('directus_files');
       app.activity = EntriesManager.getInstance('directus_activity');
       app.groups   = EntriesManager.getInstance('directus_groups');
-      app.settings = new EntriesModel(options.settings, {
-        structure: SchemaManager.getColumns('tables', 'directus_settings')
-      });
-      app.settings.url = app.API_URL + 'settings';
-      app.settings.isNew = function() {
-        return false;
-      };
+      app.settings = EntriesManager.getInstance('directus_settings');
 
       // Proxy to EntriesManager
       app.getEntries = function(tableName, options) { return EntriesManager.getInstance(tableName, options); };
@@ -233,6 +178,7 @@ require(["config", 'polyfills'], function() {
       app.groups.reset(options.groups, {parse: true});
       app.users.reset(options.users, {parse: true});
       app.files.reset(options.active_files, {parse: true});
+      app.settings.reset(options.settings, {parse: true});
       app.messages.reset(options.messages, {parse: true});
 
       app.messages.startPolling();

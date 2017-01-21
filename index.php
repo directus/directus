@@ -207,24 +207,17 @@ function getSettings()
 {
     global $ZendDb, $acl;
     $settingsTable = new DirectusSettingsTableGateway($ZendDb, $acl);
-    $settings = $settingsTable->fetchAll(false);
 
-    $settings[] = [
+    $settings = $settingsTable->getItems(['limit' => null]);
+
+    array_push($settings['data'], [
         'id' => 'max_file_size',
         'name' => 'max_file_size',
         'collection' => 'global',
         'value' => get_max_upload_size()
-    ];
+    ]);
 
-    $items = [];
-
-    foreach ($settings as $setting) {
-        // $setting['id'] = $setting['name'];
-        $items[$setting['name']] = $setting['value'];
-        // $items[] = $setting;
-    }
-
-    return $items;
+    return $settings;
 }
 
 function getActiveFiles()

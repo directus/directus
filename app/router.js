@@ -540,14 +540,10 @@ define(function(require, exports, module) {
           this.v.main.setView('#content', new Settings.Tables({collection: SchemaManager.getTables()}));
           break;
         case 'global':
-          var settings = EntriesManager.getInstance('directus_settings');
-
-          //settings.add(app.settings.models);
           this.v.main.setView('#content', new Settings.Global({
-            // model: settings.getMerged(),
-            model: app.settings,
+            model: app.settings.asModel(),
             title: __t('global'),
-            structure: SchemaManager.getColumns('tables', 'directus_settings')//.structure//settings.structure
+            structure: app.settings.structure
           }));
           break;
         case 'files':

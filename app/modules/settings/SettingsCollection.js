@@ -3,27 +3,27 @@ define([
     'backbone',
     'underscore',
     'helpers/file',
+    'core/entries/EntriesModel',
+    'core/entries/EntriesCollection',
     'core/collection'
   ],
-  function (app, Backbone, _, FileHelper, Collection) {
+  function (app, Backbone, _, FileHelper, EntriesModel, EntriesCollection, Collection) {
 
     'use strict';
 
-    var Settings = Collection.extend({
+    return EntriesCollection.extend({
 
-      model: Backbone.Model.extend({
-        getStructure: function () {
-          return this.structure;
-        }
-      }),
+      asModel: function() {
+        var settings = {};
 
-      getMerged: function() {
-        var data = {};
         this.each(function(model) {
-          data = _.extend(data, model.toJSON());
+          settings[model.get('name')] = model.get('value');
         });
 
-        return new this.model(data, {collection: this, structure: this.structure});
+        var model = this.at(0).clone();
+        model.set(settings);
+
+        return model;
       },
 
       get: function(attr) {
@@ -64,10 +64,6 @@ define([
         return FileHelper.humanBytesInfo(maxBytes).unit;
       },
 
-      initialize: function(models, options) {
-        this.structure = options.structure;
-      },
-
       isMaxFileSizeExceeded: function(file) {
         var fileSize = (file && file.size) ? file.size : 0;
         var maxFileSizeInBytes = this.get('global').get('max_file_size');
@@ -80,6 +76,4 @@ define([
         return exceeded;
       }
     });
-
-    return Settings;
   });
