@@ -1,6 +1,6 @@
 <div class="details">
-    <img class="avatar" src="{{userAvatarUrl from}}">
-    <div class="from">{{userFirstAndLastName from}}</div>
+    <a href="#" class="js-user" data-id="{{from}}"><img class="avatar" src="{{userAvatarUrl from}}" data-id="{{from}}"></a>
+    <div class="from"><a href="#" class="js-user" data-id="{{from}}">{{userFirstAndLastName from}}</a></div>
     <div class="timeago">{{friendlyDateTime datetime}}</div><!-- Sunday, Nov 22, 1:09 PM -->
     <h1>{{subject}}</h1>
     <div class="to">To: {{usersFirstAndLastName recipients}}</div>
