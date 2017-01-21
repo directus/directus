@@ -84,7 +84,12 @@ define([
       serialize: function() {
         var data = this.model.toJSON();
 
-        data.recipients = data.recipients.split(',');
+        data.recipients = _.filter(data.recipients.split(','), function(userId) {
+          userId = Number(userId);
+
+          // Remove the sender from the recipients list
+          return Number(userId) !== data.from;
+        });
         data.reads = data.reads.split(',');
         data.recipientsCount = data.recipients.length;
         data.collapseRecipients = data.recipients.length > this.maxRecipients;
