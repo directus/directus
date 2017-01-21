@@ -11,4 +11,7 @@
 {{#if meta.updatedOn}}
 <b>Last Modified On:</b> {{meta.updatedOn}}<br>
 {{/if}}
-<!-- <div class="button preview"><i class="material-icons">visibility</i> Preview Item</div> -->
+<br>
+{{#if previewUrl}}
+<a href="{{previewUrl}}" class="button preview" target="_blank"><i class="material-icons">visibility</i> {{t "preview_item"}}</a>
+{{/if}}

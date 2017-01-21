@@ -149,6 +149,7 @@
     "widget_filter_value_placeholder": "Filter...",
     "widget_pagination_count_no_items_found": "No Items Found",
     "listing_items_not_found": "Nothing to see here...",
+    "preview_url": "Preview Item",
 
     "table_sort_enabled": "Sorting Enabled",
     "table_sort_enabled_message": "You can now sort items with drag-and-drop",
