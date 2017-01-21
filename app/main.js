@@ -136,7 +136,7 @@ require(["config", 'polyfills'], function() {
 
       EntriesManager.setup({
         apiURL: app.API_URL,
-        rowsPerPage: parseInt(options.settings['rows_per_page'], 10)//app.settings.get('rows_per_page'), 10)
+        rowsPerPage: parseInt(options.config['rows_per_page'], 10)
       });
 
       ////////////////////////////////////////////////////////////////////////////////////

@@ -29,11 +29,27 @@ define([
       get: function(attr) {
         var original = Collection.prototype.get;
 
+        // if attr is global or files it's looking for a setting collection
+        // which will be deprecated, so return the collection itself
+        // so chaining operation will try to get a setting in a given collection
         if (attr == 'global' || attr == 'files') {
           return this;
         }
 
-        return original.apply(this, arguments);
+        // support the old collection
+        // if a string is given as attr it means it's looking for an setting name
+        var value;
+        if (!_.isNaN(Number(attr)) || attr instanceof Backbone.Model) {
+          value = original.apply(this, arguments);
+        } else {
+          var model = this.findWhere({name: attr});
+
+          if (model) {
+            value = model.get('value');
+          }
+        }
+
+        return value;
       },
 
       isFileAllowed: function (file) {

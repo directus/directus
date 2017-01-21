@@ -220,6 +220,19 @@ function getSettings()
     return $settings;
 }
 
+function getConfig($settings)
+{
+    $keys = ['rows_per_page'];
+    $configs = [];
+    foreach($settings['data'] as $setting) {
+        if (in_array($setting['name'], $keys)) {
+            $configs[$setting['name']] = $setting['value'];
+        }
+    }
+
+    return $configs;
+}
+
 function getActiveFiles()
 {
     global $ZendDb, $acl;
@@ -435,6 +448,9 @@ $statusMapping = [
 ];
 $statusMapping['mapping'] = $config['statusMapping'];
 
+$settings = getSettings();
+$configuration = getConfig($settings);
+
 $data = [
     'cacheBuster' => $cacheBuster,
     'nonces' => getNonces(),
@@ -445,7 +461,8 @@ $data = [
     'preferences' => parsePreferences($tableSchema), //ok
     'users' => $users,
     'groups' => $groups,
-    'settings' => getSettings(),
+    'settings' => $settings,
+    'config' => $configuration,
     'active_files' => getActiveFiles(),
     'authenticatedUser' => $authenticatedUser,
     'extensions' => getExtensions($currentUserGroup),
