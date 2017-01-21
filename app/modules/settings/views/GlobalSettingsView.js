@@ -40,11 +40,12 @@ function(app, Backbone, Directus, BasePageView, Widgets, __t) {
             app.router.go('settings');
           };
 
+          // @TODO: Only save when there's a change in the model
           model.save(model.diff(data), {success: success, patch: true});
         }
       });
 
-      this.saveWidget.setSaved(true);
+      this.saveWidget.disable();
 
       return [
         this.saveWidget
@@ -57,7 +58,7 @@ function(app, Backbone, Directus, BasePageView, Widgets, __t) {
     },
 
     checkDiff: function(e) {
-      this.saveWidget.setSaved(false);
+      this.saveWidget.enable()
     },
 
     beforeRender: function() {

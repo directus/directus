@@ -20,7 +20,8 @@ function(app, Backbone, Directus, BasePageView, Widgets) {
 
     leftToolbar: function() {
       this.saveWidget = new Widgets.SaveWidget({widgetOptions: {basicSave: true}});
-      this.saveWidget.setSaved(false);
+      this.saveWidget.disable();
+
       return [
         this.saveWidget
       ];

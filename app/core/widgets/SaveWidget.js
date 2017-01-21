@@ -16,6 +16,10 @@ function(app, Backbone, _) {
       class: 'action widget widget-button'
     },
 
+    state: {
+      enabled: true
+    },
+
     _events: {
       'click .more': function(event) {
         event.preventDefault();
@@ -32,12 +36,24 @@ function(app, Backbone, _) {
     },
 
     serialize: function() {
-      return this.options.widgetOptions;
+      var data = this.options.widgetOptions;
+
+      data.state = this.state;
+
+      return data;
     },
 
-    setSaved: function(isSaved) {
-      this.options.widgetOptions.isUpToDate = isSaved;
-      this.render();
+    setEnabled: function(enabled) {
+      this.state.enabled = enabled;
+      this.trigger('enabled:change', enabled);
+    },
+
+    enable: function() {
+      this.setEnabled(true);
+    },
+
+    disable: function() {
+      this.setEnabled(false);
     },
 
     initialize: function(options) {
@@ -48,13 +64,19 @@ function(app, Backbone, _) {
       }
 
       if (_.isFunction(options.onClick)) {
-        this._events['click #save_button.saved-success'] = options.onClick;
+        this._events['click #save_button'] = _.wrap(options.onClick, function(onClick, event) {
+          if (this.state.enabled) {
+            onClick(event);
+          }
+        });
         this._events['change #save_options'] = options.onClick;
       }
 
       if (_.isFunction(options.onChange)) {
         this._events['change #save_options'] = options.onChange;
       }
+
+      this.on('enabled:change', this.render);
     }
   });
 });

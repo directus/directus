@@ -97,7 +97,8 @@ function(app, Backbone, Directus, BasePageView, __t, Widgets) {
       }
 
       this.saveWidget = new Widgets.SaveWidget({widgetOptions: {basicSave: this.headerOptions.basicSave}});
-      this.saveWidget.setSaved(false);
+      this.saveWidget.enable();
+
       return [
         this.saveWidget
       ];
