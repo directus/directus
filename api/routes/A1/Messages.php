@@ -98,7 +98,12 @@ class Messages extends Route
 
         $messagesRecipientsTableGateway->markAsRead($ids, $currentUserId);
 
-        JsonView::render($message);
+        $response = [
+            'meta' => ['table' => 'directus_messages', 'type' => 'item'],
+            'data' => $message
+        ];
+
+        JsonView::render($response);
     }
 
     public function postRows()
@@ -158,7 +163,12 @@ class Messages extends Route
 
         $message = $messagesTableGateway->fetchMessageWithRecipients($id, $currentUserId);
 
-        JsonView::render($message);
+        $response = [
+            'meta' => ['table' => 'directus_messages', 'type' => 'item'],
+            'data' => $message
+        ];
+
+        JsonView::render($response);
     }
 
     public function recipients()
