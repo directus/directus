@@ -3823,19 +3823,20 @@ body.help .discover-spotlight {
     margin-top: 20px;
     margin-left: -20px; }
   .message .seen {
-    -webkit-transition: all 400ms ease-in-out 0ms;
-    -moz-transition: all 400ms ease-in-out 0ms;
-    -o-transition: all 400ms ease-in-out 0ms;
-    -ms-transition: all 400ms ease-in-out 0ms;
-    transition: all 400ms ease-in-out 0ms;
     margin-top: 20px;
     margin-bottom: -15px;
     font-size: 11px;
     color: #DDDDDD;
     font-weight: 500;
     cursor: pointer; }
-    .message .seen:hover {
-      color: #999999; }
+    .message .seen a {
+      -webkit-transition: all 400ms ease-in-out 0ms;
+      -moz-transition: all 400ms ease-in-out 0ms;
+      -o-transition: all 400ms ease-in-out 0ms;
+      -ms-transition: all 400ms ease-in-out 0ms;
+      transition: all 400ms ease-in-out 0ms; }
+      .message .seen a:hover {
+        color: #999999; }
     .message .seen .material-icons {
       font-size: 16px;
       vertical-align: middle;
@@ -4209,7 +4210,8 @@ body.help .discover-spotlight {
       display: inline-block; }
     .fields .field .interface input[type="checkbox"],
     .fields .field .interface input[type="radio"] {
-      min-width: auto; }
+      min-width: auto;
+      width: auto; }
     .fields .field .interface input[type="date"] {
       min-width: auto;
       width: 170px;
@@ -4218,6 +4220,7 @@ body.help .discover-spotlight {
       width: 170px;
       min-width: auto; }
     .fields .field .interface input[type="range"] {
+      padding: 0;
       min-width: 340px;
       -webkit-appearance: none;
       border: none;
@@ -4982,6 +4985,12 @@ body.login {
       margin-bottom: 4px;
       padding: 0;
       text-indent: 100px; } }
+@media only screen and (max-width: 1000px) {
+  .message {
+    left: 0px;
+    width: 100%;
+    min-width: 500px;
+    background-color: #FFFFFF; } }
 @media only screen and (max-width: 800px) {
   .header .logo {
     left: -200px; }
@@ -4989,6 +4998,12 @@ body.login {
     left: 10px; }
     .header .breadcrumb .hamburger {
       display: inline-block; }
+    .header .breadcrumb .separator {
+      display: none; }
+    .header .breadcrumb .crumb {
+      display: none; }
+      .header .breadcrumb .crumb.active {
+        display: inline; }
   .header .filter {
     width: 160px; }
   .header .fading-separator {
@@ -5025,9 +5040,107 @@ body.login {
     display: none; }
   body.right-sidebar-open .page,
   body.right-sidebar-open-wide .page {
-    right: 0; } }
+    right: 0; }
+
+  .user-listing {
+    padding: 15px; }
+    .user-listing .user {
+      width: 140px;
+      margin: 15px; }
+      .user-listing .user img {
+        height: 140px; }
+      .user-listing .user .group,
+      .user-listing .user .online {
+        top: 115px; }
+      .user-listing .user .info .more {
+        display: none; }
+
+  .attachments,
+  .folder-listing,
+  .file-listing {
+    padding: 15px; }
+    .attachments .folder .folder-icon,
+    .folder-listing .folder .folder-icon,
+    .file-listing .folder .folder-icon {
+      width: 140px;
+      height: 140px; }
+      .attachments .folder .folder-icon .material-icons,
+      .folder-listing .folder .folder-icon .material-icons,
+      .file-listing .folder .folder-icon .material-icons {
+        font-size: 100px;
+        margin-top: 20px; }
+    .attachments .folder,
+    .attachments .file,
+    .folder-listing .folder,
+    .folder-listing .file,
+    .file-listing .folder,
+    .file-listing .file {
+      width: 140px;
+      margin: 15px; }
+      .attachments .folder img,
+      .attachments .file img,
+      .folder-listing .folder img,
+      .folder-listing .file img,
+      .file-listing .folder img,
+      .file-listing .file img {
+        height: 140px; }
+      .attachments .folder .extension-fallback,
+      .attachments .file .extension-fallback,
+      .folder-listing .folder .extension-fallback,
+      .folder-listing .file .extension-fallback,
+      .file-listing .folder .extension-fallback,
+      .file-listing .file .extension-fallback {
+        height: 140px;
+        padding-top: 60px;
+        font-size: 24px; }
+      .attachments .folder .type,
+      .attachments .file .type,
+      .folder-listing .folder .type,
+      .folder-listing .file .type,
+      .file-listing .folder .type,
+      .file-listing .file .type {
+        top: 115px; }
+      .attachments .folder .info .more,
+      .attachments .file .info .more,
+      .folder-listing .folder .info .more,
+      .folder-listing .file .info .more,
+      .file-listing .folder .info .more,
+      .file-listing .file .info .more {
+        display: none; } }
 @media only screen and (max-width: 600px) {
   .header .filter {
     display: none; } }
+@media only screen and (max-width: 500px) {
+  .fields .field .interface input {
+    min-width: auto;
+    width: 100%; }
+  .fields .field .interface input[type="date"] {
+    margin-right: 0;
+    width: 100%;
+    margin-bottom: 10px; }
+  .fields .field .interface input[type="time"] {
+    width: 100%; }
+  .fields .field .interface input[type="range"] {
+    width: 75%;
+    margin-right: 4%;
+    min-width: auto; }
+  .fields .field .interface .slider-value {
+    width: 20%;
+    text-align: center; }
+  .fields .field .interface textarea {
+    min-width: 100%; }
+  .fields .field .interface select {
+    min-width: 100%; }
+  .fields .field .interface .char-count {
+    min-width: 100%; }
+    .fields .field .interface .char-count input {
+      padding-right: 40px; }
+    .fields .field .interface .char-count .char-remaining {
+      right: 13px;
+      text-align: right; }
+  .fields .field .interface .map-search {
+    width: 80%;
+    margin-left: 10%;
+    margin-right: 10%; } }
 
 /*# sourceMappingURL=main.css.map */
