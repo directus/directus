@@ -20,7 +20,7 @@ class DirectusMessagesRecipientsTableGateway extends RelationalTableGateway
     {
         $select = new Select($this->getTable());
         $select
-            ->columns(['id', 'message_id', 'recipient'])
+            ->columns(['id', 'message_id', 'recipient', 'read'])
             ->where->in('message_id', $messageIds);
 
         $records = $this->selectWith($select)->toArray();
@@ -28,10 +28,17 @@ class DirectusMessagesRecipientsTableGateway extends RelationalTableGateway
 
         foreach ($records as $record) {
             $messageId = $record['message_id'];
+            $recipient = $record['recipient'];
+            $read = (bool) $record['read'];
+
             if (!array_key_exists($messageId, $recipientMap)) {
                 $recipientMap[$messageId] = [];
             }
-            $recipientMap[$messageId][] = $record['recipient'];
+
+            $recipientMap[$messageId]['recipients'][] = $recipient;
+            if ($read) {
+                $recipientMap[$messageId]['reads'][] = $recipient;
+            }
         }
 
         return $recipientMap;

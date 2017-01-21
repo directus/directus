@@ -16,16 +16,16 @@ define([
         'click #messages-response-button': function() {
           var collection = this.model.get('responses');
           var Model = collection.model;
-          var myId = app.users.getCurrentUser().get('id');
 
-          if($('#messages-response').val() === "") {
+          if ($('#messages-response').val() === '') {
             return;
           }
 
           var recipients = _.map(this.model.get('recipients').split(','), function(id) {
             return '0_' + id;
           });
-          recipients.push('0_'+this.model.get('from'));
+
+          recipients.push('0_' + this.model.get('from'));
 
           var attrs = {
             'from': app.users.getCurrentUser().get('id'),
@@ -51,6 +51,7 @@ define([
           collection.add(model);
           this.render();
         },
+
         'click #messages-show-recipients': function() {
           var $el = $('#messages-recipients');
           $el.toggle();
@@ -78,9 +79,7 @@ define([
         var data = this.model.toJSON();
 
         data.recipients = data.recipients.split(',');
-        // data.recipientsUsers = _.map(data.recipients, function(id) {
-        //   return app.users.get(id);
-        // });
+        data.reads = data.reads.split(',');
         data.recipientsCount = data.recipients.length;
         data.collapseRecipients = data.recipients.length > this.maxRecipients;
         data.current_user = app.authenticatedUserId;
@@ -91,17 +90,17 @@ define([
 
         var title = data.message;
         var offset = 0;
-        while(true) {
-          if(title) {
+        while (true) {
+          if (title) {
             var atPos = title.indexOf('@[');
-            if(atPos !== -1) {
+            if (atPos !== -1) {
               var spacePos = title.substring(atPos).indexOf(' ');
-              if(spacePos !== -1) {
+              if (spacePos !== -1) {
                 var substring = title.substring(atPos + 2, spacePos + atPos);
                 var contains = /^[0-9]|_+$/.test(substring);
-                if(contains) {
+                if (contains) {
                   var bracketPos2 = title.indexOf(']');
-                  if(bracketPos2 !== -1) {
+                  if (bracketPos2 !== -1) {
                     var name = title.substring(spacePos + 1 + atPos, bracketPos2);
                     var newTitle = data.message;
                     data.message = newTitle.substring(0, atPos + offset) + "<span class=\"mention-tag\">" + name + "</span>";

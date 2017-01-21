@@ -194,9 +194,33 @@ require([
     return new Handlebars.SafeString('<img src="'+user.getAvatar()+'"  class="avatar"/><span class="avatar-name">'+user.get('first_name')+' '+user.get('last_name')+'</span>');
   });
 
-  Handlebars.registerHelper('userFirstAndLastName', function(userId) {
+  var userFirstAndLastName = function(userId) {
     var user = app.users.get(userId);
+
     return new Handlebars.SafeString(user.get('first_name')+' '+user.get('last_name'));
+  };
+  Handlebars.registerHelper('userFirstAndLastName', userFirstAndLastName);
+
+  Handlebars.registerHelper('usersFirstAndLastName', function(userIds) {
+    if (!_.isArray(userIds)) {
+      return;
+    }
+
+    var result = [];
+    _.each(userIds, function(userId, index) {
+      var user = userFirstAndLastName(userId);
+      var prefix = ', ';
+
+      if (userIds.length && userIds.length === (index + 1)) {
+        prefix = ' and ';
+      } else if (index === 0) {
+        prefix = '';
+      }
+
+      result.push(prefix + user);
+    });
+
+    return result.join('');
   });
 
   Handlebars.registerHelper('directusTable', function(data) {

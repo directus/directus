@@ -3,6 +3,7 @@
 namespace Directus\Database\TableGateway;
 
 use Directus\Permissions\Acl;
+use Directus\Util\ArrayUtils;
 use Directus\Util\DateUtils;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\Adapter\AdapterInterface;
@@ -140,6 +141,7 @@ class DirectusMessagesTableGateway extends RelationalTableGateway
             ->order('directus_messages.id DESC');
 
         $result = $this->selectWith($select)->toArray();
+
         $messageIds = [];
 
         foreach ($result as $message) {
@@ -166,8 +168,10 @@ class DirectusMessagesTableGateway extends RelationalTableGateway
         $recipients = $directusMessagesTableGateway->fetchMessageRecipients($ids);
 
         foreach ($result as $item) {
+            $recipientsData = $recipients[$item['id']];
             $item['responses'] = ['rows' => []];
-            $item['recipients'] = implode(',', $recipients[$item['id']]);
+            $item['recipients'] = implode(',', ArrayUtils::get($recipientsData, 'recipients', []));
+            $item['reads'] = implode(',', ArrayUtils::get($recipientsData, 'reads', []));
             $resultLookup[$item['id']] = $item;
         }
 

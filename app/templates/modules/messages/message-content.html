@@ -11,9 +11,11 @@
         {{message}}
     </div>
 
+    {{#if reads}}
     <div class="seen">
-        <i class="material-icons">visibility</i> Ben Haynes, Welling Guzman, John Smith, and Meagan Campol
+        <i class="material-icons">visibility</i> {{usersFirstAndLastName reads}}
     </div>
+    {{/if}}
 </div>
 
 {{#each responses}}
