@@ -11,6 +11,10 @@ function(app, Backbone, _, BaseHeaderView, RightSidebarView) {
 
     template: 'basePage',
 
+    attributes: {
+      class: 'page-container'
+    },
+
     // el: '#content',
 
     chooseView: function(viewSet, viewName) {
