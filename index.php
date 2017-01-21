@@ -206,16 +206,23 @@ function getGroups()
 function getSettings()
 {
     global $ZendDb, $acl;
-    $settings = new DirectusSettingsTableGateway($ZendDb, $acl);
-    $items = [];
-    foreach ($settings->fetchAll() as $key => $value) {
-        if ($key == 'global') {
-            $value['max_file_size'] = get_max_upload_size();
-        }
+    $settingsTable = new DirectusSettingsTableGateway($ZendDb, $acl);
+    $settings = $settingsTable->fetchAll(false);
 
-        $value['id'] = $key;
-        $items[] = $value;
-    };
+    $settings[] = [
+        'id' => 'max_file_size',
+        'name' => 'max_file_size',
+        'collection' => 'global',
+        'value' => get_max_upload_size()
+    ];
+
+    $items = [];
+
+    foreach ($settings as $setting) {
+        // $setting['id'] = $setting['name'];
+        $items[$setting['name']] = $setting['value'];
+        // $items[] = $setting;
+    }
 
     return $items;
 }

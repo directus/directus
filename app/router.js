@@ -533,7 +533,7 @@ define(function(require, exports, module) {
         return this.notFound();
       }
 
-      this.setTitle(app.settings.get('global').get('project_name') + ' | '+__t('settings'));
+      this.setTitle(app.settings.get('project_name') + ' | '+__t('settings'));
 
       switch(name) {
         case 'tables':
@@ -542,11 +542,12 @@ define(function(require, exports, module) {
         case 'global':
           var settings = EntriesManager.getInstance('directus_settings');
 
-          settings.add(app.settings.models);
+          //settings.add(app.settings.models);
           this.v.main.setView('#content', new Settings.Global({
-            model: settings.getMerged(),
+            // model: settings.getMerged(),
+            model: app.settings,
             title: __t('global'),
-            structure: settings.structure
+            structure: SchemaManager.getColumns('tables', 'directus_settings')//.structure//settings.structure
           }));
           break;
         case 'files':
@@ -722,7 +723,7 @@ define(function(require, exports, module) {
 
         views: {
           '#modal_container': new directus.Modal.Container(),
-          '#sidebar': new Navbar({model: app.settings.get('global')}),
+          '#sidebar': new Navbar({model: app.settings}),
           '#header': new BaseHeaderView()
         }
 

@@ -20,6 +20,7 @@ require(["config", 'polyfills'], function() {
     'modules/messages/messages',
     'schema/SchemaManager',
     'modules/settings/SettingsCollection',
+    'core/entries/EntriesModel',
     'core/ExtensionManager',
     'core/EntriesManager',
     'core/ListViewManager',
@@ -29,7 +30,7 @@ require(["config", 'polyfills'], function() {
     'core/notification'
   ],
 
-  function(app, UIManager, Router, Backbone, alerts, __t, Tabs, Bookmarks, Messages, SchemaManager, SettingsCollection, ExtensionManager, EntriesManager, ListViewManager, Idle, ToolTip, ContextualDate, Notification) {
+  function(app, UIManager, Router, Backbone, alerts, __t, Tabs, Bookmarks, Messages, SchemaManager, SettingsCollection, EntriesModel, ExtensionManager, EntriesManager, ListViewManager, Idle, ToolTip, ContextualDate, Notification) {
 
     "use strict";
 
@@ -105,8 +106,25 @@ require(["config", 'polyfills'], function() {
     });
 
     // This needs elegance
-    app.settings = new SettingsCollection(options.settings, {parse: true});
-    app.settings.url = app.API_URL + 'settings';
+    var SettingsModel = Backbone.Model.extend({
+      getStructure: function () {
+        return this.structure;
+      },
+      get: function(attr) {
+        var original = Backbone.Model.prototype.get;
+        if (attr == 'global') {
+          return this;
+        }
+
+        return original.apply(this, arguments);
+      }
+    });
+
+    // app.settings = new SettingsCollection(options.settings, {parse: true});
+    // app.settings = new EntriesModel(options.settings, {
+    //   structure: SchemaManager.getColumns('tables', 'directus_settings')
+    // });
+    // app.settings.url = app.API_URL + 'settings';
 
     UIManager.setup();
     SchemaManager.setup({apiURL: app.API_URL});
@@ -121,33 +139,33 @@ require(["config", 'polyfills'], function() {
 
     ).done(function() {
 
-      var autoLogoutMinutes = parseInt(app.settings.get('global').get('cms_user_auto_sign_out') || 60, 10);
-
-      var waitForForAvtivity = function() {
-        //console.log('minutes until automatic logout:', autoLogoutMinutes);
-
-        Idle.start({
-          timeout: function() {
-            Notification.warning(null, 'You\'ve been inactive for ' + autoLogoutMinutes + ' minutes. You will be automatically logged out in 10 seconds');
-
-            //Wait for another 10 seconds before kicking the user out
-            Idle.start({
-              timeout: function() {
-                app.logOut(true);
-              },
-              interrupt: waitForForAvtivity,
-              delay: 10000,
-              repeat: false
-            });
-
-          },
-          delay: autoLogoutMinutes * 60 * 1000,
-          repeat: true
-        });
-
-      };
-
-      waitForForAvtivity();
+      // var autoLogoutMinutes = parseInt(app.settings.get('cms_user_auto_sign_out') || 60, 10);
+      //
+      // var waitForForAvtivity = function() {
+      //   //console.log('minutes until automatic logout:', autoLogoutMinutes);
+      //
+      //   Idle.start({
+      //     timeout: function() {
+      //       Notification.warning(null, 'You\'ve been inactive for ' + autoLogoutMinutes + ' minutes. You will be automatically logged out in 10 seconds');
+      //
+      //       //Wait for another 10 seconds before kicking the user out
+      //       Idle.start({
+      //         timeout: function() {
+      //           app.logOut(true);
+      //         },
+      //         interrupt: waitForForAvtivity,
+      //         delay: 10000,
+      //         repeat: false
+      //       });
+      //
+      //     },
+      //     delay: autoLogoutMinutes * 60 * 1000,
+      //     repeat: true
+      //   });
+      //
+      // };
+      //
+      // waitForForAvtivity();
 
       // Register UI schemas
       SchemaManager.registerUISchemas(UIManager.getAllSettings());
@@ -167,7 +185,7 @@ require(["config", 'polyfills'], function() {
 
       EntriesManager.setup({
         apiURL: app.API_URL,
-        rowsPerPage: parseInt(app.settings.get('global').get('rows_per_page'), 10)
+        rowsPerPage: parseInt(options.settings['rows_per_page'], 10)//app.settings.get('rows_per_page'), 10)
       });
 
       ////////////////////////////////////////////////////////////////////////////////////
@@ -177,6 +195,13 @@ require(["config", 'polyfills'], function() {
       app.files    = EntriesManager.getInstance('directus_files');
       app.activity = EntriesManager.getInstance('directus_activity');
       app.groups   = EntriesManager.getInstance('directus_groups');
+      app.settings = new EntriesModel(options.settings, {
+        structure: SchemaManager.getColumns('tables', 'directus_settings')
+      });
+      app.settings.url = app.API_URL + 'settings';
+      app.settings.isNew = function() {
+        return false;
+      };
 
       // Proxy to EntriesManager
       app.getEntries = function(tableName, options) { return EntriesManager.getInstance(tableName, options); };
@@ -211,6 +236,34 @@ require(["config", 'polyfills'], function() {
       app.messages.reset(options.messages, {parse: true});
 
       app.messages.startPolling();
+
+      var autoLogoutMinutes = parseInt(app.settings.get('cms_user_auto_sign_out') || 60, 10);
+
+      var waitForForAvtivity = function() {
+        //console.log('minutes until automatic logout:', autoLogoutMinutes);
+
+        Idle.start({
+          timeout: function() {
+            Notification.warning(null, 'You\'ve been inactive for ' + autoLogoutMinutes + ' minutes. You will be automatically logged out in 10 seconds');
+
+            //Wait for another 10 seconds before kicking the user out
+            Idle.start({
+              timeout: function() {
+                app.logOut(true);
+              },
+              interrupt: waitForForAvtivity,
+              delay: 10000,
+              repeat: false
+            });
+
+          },
+          delay: autoLogoutMinutes * 60 * 1000,
+          repeat: true
+        });
+
+      };
+
+      waitForForAvtivity();
 
 
       ////////////////////////////////////////////////////////////////////////////////////

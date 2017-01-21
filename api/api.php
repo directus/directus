@@ -459,7 +459,7 @@ $app->group('/1.1', function() use($app) {
     // SETTINGS
     // =============================================================================
     $app->map('/settings(/:id)/?', '\Directus\API\Routes\A1\Settings:settings')
-        ->via('GET', 'POST', 'PUT');
+        ->via('GET', 'PATCH', 'POST', 'PUT');
 
     // =============================================================================
     // TABLES
@@ -1408,9 +1408,10 @@ $app->map("/$v/settings(/:id)/?", function ($id = null) use ($acl, $ZendDb, $par
     switch ($app->request()->getMethod()) {
         case 'POST':
         case 'PUT':
+        case 'PATCH':
             $data = $requestPayload;
             unset($data['id']);
-            $Settings->setValues($id, $data);
+            $Settings->setValues($data);
             break;
     }
 

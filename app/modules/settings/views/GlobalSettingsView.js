@@ -35,11 +35,12 @@ function(app, Backbone, Directus, BasePageView, Widgets, __t) {
         },
         onClick: function(event) {
           var data = self.editView.data();
+          var model = self.model;
           var success = function() {
             app.router.go('settings');
           };
 
-          self.model.save(data, {success: success});
+          model.save(model.diff(data), {success: success, patch: true});
         }
       });
 

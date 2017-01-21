@@ -26,6 +26,16 @@ define([
         return new this.model(data, {collection: this, structure: this.structure});
       },
 
+      get: function(attr) {
+        var original = Collection.prototype.get;
+
+        if (attr == 'global' || attr == 'files') {
+          return this;
+        }
+
+        return original.apply(this, arguments);
+      },
+
       isFileAllowed: function (file) {
         var allowed_types = this.get('allowed_filetypes') || '';
         var file_type = file.type || '';

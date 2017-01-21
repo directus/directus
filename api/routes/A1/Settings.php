@@ -20,8 +20,9 @@ class Settings extends Route
         switch ($app->request()->getMethod()) {
             case 'POST':
             case 'PUT':
+            case 'PATCH':
                 $data = $requestPayload;
-                $Settings->setValues($id, $data);
+                $Settings->setValues($data);
                 break;
         }
 

@@ -283,9 +283,10 @@ define(function(require, exports, module) {
     // edit = edit your own
     canEdit: function(attribute) {
       //@TODO: Actually Fix this Issue
-      if(!this.collection) {
-        return false;
+      if (!this.collection) {
+        return true;
       }
+
       var iAmTheOwner         = this.isMine(),
           privileges          = this.collection.privileges,
           bigeditPermission   = this.collection.hasPermission('bigedit'),
@@ -297,19 +298,19 @@ define(function(require, exports, module) {
     },
 
     getWriteFieldBlacklist: function() {
-      return this.collection.getWriteFieldBlacklist();
+      return this.collection ? this.collection.getWriteFieldBlacklist() : [];
     },
 
     getReadFieldBlacklist: function() {
-      return this.collection.getWriteFieldBlacklist();
+      return this.collection ? this.collection.getWriteFieldBlacklist() : [];
     },
 
     isWriteBlacklisted: function(attribute) {
-      return this.collection.isWriteBlacklisted(attribute);
+      return this.collection ? this.collection.isWriteBlacklisted(attribute) : false;
     },
 
     isReadBlacklisted: function(attribute) {
-      return this.collection.isReadBlacklisted(attribute);
+      return this.collection ? this.collection.isReadBlacklisted(attribute) : false;
     },
 
     canDelete: function() {
