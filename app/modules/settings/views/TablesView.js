@@ -725,6 +725,8 @@ function(app, _, Backbone, Directus, EditView, BasePageView, TableModel, ColumnM
         basicSave: true
       });
     },
+
+    rightPane: false
     // headerOptions: {
     //   route: {
     //     title: 'Classes',

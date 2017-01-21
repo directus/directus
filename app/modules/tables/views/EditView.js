@@ -258,7 +258,9 @@ function(app, Backbone, _, Handlebars, __t, Directus, BasePageView, Widgets, His
     },
 
     leftToolbar: function() {
+      var widgets = [];
       var editView = this;
+
       this.saveWidget = new Widgets.SaveWidget({
         widgetOptions: {
           basicSave: this.headerOptions.basicSave,
@@ -269,22 +271,25 @@ function(app, Backbone, _, Handlebars, __t, Directus, BasePageView, Widgets, His
 
       this.saveWidget.disable();
 
-      this.infoWidget = new Widgets.ButtonWidget({
-        widgetOptions: {
-          buttonId: '',
-          iconClass: 'info',
-          buttonClass: '',
-          buttonText: __t('details')
-        },
-        onClick: function(event) {
-          editView.toggleRightPane();
-        }
-      });
+      widgets.push(this.saveWidget);
 
-      return [
-        this.saveWidget,
-        this.infoWidget
-      ];
+      if (_.result(this, 'rightPane')) {
+        this.infoWidget = new Widgets.ButtonWidget({
+          widgetOptions: {
+            buttonId: '',
+            iconClass: 'info',
+            buttonClass: '',
+            buttonText: __t('details')
+          },
+          onClick: function (event) {
+            editView.toggleRightPane();
+          }
+        });
+
+        widgets.push(this.infoWidget);
+      }
+
+      return widgets;
     },
 
     rightPane: function() {

@@ -66,7 +66,9 @@ function(app, Backbone, _, BaseHeaderView, RightSidebarView) {
     toggleRightPane: function() {
       var pane = this.loadRightPane();
 
-      pane.toggle();
+      if (pane) {
+        pane.toggle();
+      }
     },
 
     loadRightPane: function() {
