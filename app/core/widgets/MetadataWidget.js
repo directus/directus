@@ -31,7 +31,9 @@ function(app, Backbone, _, Handlebars, moment) {
       var previewUrl = table ? table.get('preview_url') : null;
       var metadata = {};
 
-      previewUrl = Handlebars.compile(previewUrl)(model);
+      if (previewUrl) {
+        previewUrl = Handlebars.compile(previewUrl)(model);
+      }
 
       if (table && table.get('user_create_column')) {
         metadata.createdBy = this.model.get(table.get('user_create_column'));
