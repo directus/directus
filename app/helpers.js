@@ -213,7 +213,7 @@ require([
       var user = '<a href="#" class="js-user" data-id="' + userId + '">' + userFirstAndLastName(userId) + '</a>';
       var prefix = ', ';
 
-      if (userIds.length && userIds.length === (index + 1)) {
+      if (userIds.length > 1 && userIds.length === (index + 1)) {
         prefix = ' and ';
       } else if (index === 0) {
         prefix = '';
