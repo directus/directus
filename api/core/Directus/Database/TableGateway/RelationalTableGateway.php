@@ -630,6 +630,10 @@ class RelationalTableGateway extends BaseTableGateway
             ArrayUtils::remove($params, 'columns');
         }
 
+        if ($params['limit'] === null) {
+            ArrayUtils::remove($params, 'limit');
+        }
+
         array_walk($params, [$this, 'castFloatIfNumeric']);
 
         return $params;

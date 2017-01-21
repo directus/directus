@@ -521,7 +521,7 @@ class Builder
             }
         }
 
-        if ($this->getOffset() !== null) {
+        if ($this->getOffset() !== null && $this->getLimit() !== null) {
             $select->offset($this->getOffset());
         }
 
