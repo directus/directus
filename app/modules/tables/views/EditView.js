@@ -92,6 +92,7 @@ function(app, Backbone, _, Handlebars, __t, Directus, BasePageView, Widgets, His
     checkDiff: function(e) {
       var diff = this.model.diff(this.editView.data());
       delete diff.id;
+      this.saveWidget.enable();
     },
 
     deleteItem: function(e) {
