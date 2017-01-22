@@ -365,7 +365,7 @@ $app->group('/1.1', function() use($app) {
         ->name('request_token');
     $app->post('/auth/login/?', '\Directus\API\Routes\A1\Auth:login')
         ->name('auth_login');
-    $app->get('/auth/logout(:/inactive)/?', '\Directus\API\Routes\A1\Auth:logout')
+    $app->get('/auth/logout(:/inactive)', '\Directus\API\Routes\A1\Auth:logout')
         ->name('auth_logout');
     $app->get('/auth/reset-password/:token/?', '\Directus\API\Routes\A1\Auth:resetPassword')
         ->name('auth_reset_password');
