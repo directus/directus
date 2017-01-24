@@ -1,4 +1,4 @@
-define(['app', 'backbone', 'underscore'], function(app, Backbone, _) {
+define(['app', 'backbone', 'underscore', 'core/Modal'], function(app, Backbone, _, ModalView) {
 
   return Backbone.Layout.extend({
     el: '#modal_container',
@@ -48,6 +48,8 @@ define(['app', 'backbone', 'underscore'], function(app, Backbone, _) {
         this.getViews().each(function(view) {
           view.close();
         });
+
+        this.$('.slide-down').removeClass('slide-down');
       }, this);
 
       $(document).off('keydown.modal');
@@ -57,10 +59,6 @@ define(['app', 'backbone', 'underscore'], function(app, Backbone, _) {
       }
 
       modal.removeClass('active').addClass('slide-down');
-
-      setTimeout(_.bind(function(){
-        this.$('.slide-down').removeClass('slide-down');
-      }, this), 200);
 
       this.$el.fadeOut(200, closeViews);
     }
