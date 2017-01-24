@@ -97,15 +97,19 @@ class Table extends Route
         }
 
         // $response = TableSchema::getColumnSchema($table_name, $params['column_name']);
-        $response = TableSchema::getTableColumnsSchema($tableName, $params);
+        if ($app->request()->isPost()) {
+            $response = TableSchema::getColumnSchema($tableName, $requestPayload['column_name'], $params);
+        } else {
+            $response = array_map(function(Column $column) {
+                return $column->toArray();
+            }, TableSchema::getTableColumnsSchema($tableName, $params));
+        }
 
         JsonView::render([
             'meta' => [
                 'table' => 'directus_table'
             ],
-            'data' => array_map(function(Column $column) {
-                return $column->toArray();
-            }, $response)
+            'data' => $response
         ]);
     }
 
