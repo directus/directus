@@ -12,6 +12,7 @@ define([
   'backbone',
   'core/directus',
   'core/BasePageView',
+  'modules/settings/views/EditColumnView',
   'modules/settings/views/TablesView',
   'modules/settings/views/GlobalSettingsView',
   'modules/settings/views/AboutView',
@@ -21,7 +22,7 @@ define([
   'core/t',
 ],
 
-function(app, Backbone, Directus, BasePageView, Tables, Global, About, Permissions, System, GroupPermissions, __t) {
+function(app, Backbone, Directus, BasePageView, EditColumnView, Tables, Global, About, Permissions, System, GroupPermissions, __t) {
 
   "use strict";
 
@@ -32,6 +33,10 @@ function(app, Backbone, Directus, BasePageView, Tables, Global, About, Permissio
 
   Settings.Table = Tables.Views.Table;
   Settings.Tables = Tables.Views.List;
+
+  Settings.Columns = {
+    Edit: EditColumnView
+  };
 
   Settings.Permissions = Permissions;
   Settings.GroupPermissions = GroupPermissions;

@@ -201,31 +201,29 @@ define(function(require, exports, module) {
     },
 
     openUserModal: function(userId) {
-      var containerView = this.v.main.getView('#modal_container');
-
-      if (!containerView || containerView.isOpen()) {
-        return;
-      }
-
       var view = new directus.Modal.User({model: app.users.get(userId)});
 
-      containerView.show(view);
+      this.openViewInModal(view);
     },
 
     openFileModal: function(fileId) {
+      var view = new directus.Modal.File({fileId: fileId});
+
+      this.openViewInModal(view);
+    },
+
+    openViewInModal: function(view) {
       var containerView = this.v.main.getView('#modal_container');
 
       if (!containerView || containerView.isOpen()) {
         return;
       }
-
-      var view = new directus.Modal.File({fileId: fileId});
 
       containerView.show(view);
     },
 
     overlayPage: function(view) {
-      if(this.v.main.getViews('#content')._wrapped.length <= 1) {
+      if (this.v.main.getViews('#content')._wrapped.length <= 1) {
         this.baseRouteSave = Backbone.history.fragment;
         this.oldLoadUrlFunction = Backbone.History.prototype.loadUrl;
       }
@@ -237,10 +235,8 @@ define(function(require, exports, module) {
       });
 
       // @TODO: move this into a global collection
-      if (view.model) {
-        if (!view.model._trackingChanges) {
+      if (view.model && !view.model._trackingChanges) {
           view.model.startTracking();
-        }
       } else if (view.collection) {
         // TODO: make startTtracking part of Collection
         var cb = function(collection) {

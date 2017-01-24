@@ -13,7 +13,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/table/table.view', 'core
 
   var template = '<div class="related-table table-container"></div> \
                   <div class="button-group"> \
-                    <div class="button open-modal" data-modal="column">\
+                    <div class="button js-button">\
                       <i class="material-icons">add</i> Add New Column\
                     </div> \
                   </div>';
@@ -22,9 +22,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/table/table.view', 'core
     templateSource: template,
     events: {
       'click div.related-table > div td:not(.delete)': 'editRow',
-      'click button[data-action=add]': 'addRow',
-      'click button[data-action=insert]': 'insertRow',
-      'click td.delete': 'deleteRow'
+      'click .js-button': 'addRow'
     },
 
     editRow: function(e) {
@@ -32,134 +30,32 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/table/table.view', 'core
         return;
       }
 
-      var cid = $(e.target).closest('tr').attr('data-cid');
-      var model = this.relatedCollection.get(cid, true);
-      this.editModel(model);
-    },
+      var id = $(e.target).closest('tr').data('id');
+      var collection = app.schemaManager.getTable(this.model.id).columns;
+      var columnModel = collection.get(id, true);
+      var EditColumnView = require('modules/settings/views/EditColumnView');
+      var optionsModel = columnModel.options;
+      optionsModel.set({id: columnModel.get('ui')});
 
-    deleteRow: function(e) {
-      var cid = $(e.target).closest('tr').attr('data-cid');
-      var model = this.relatedCollection.get(cid);
-      var relatedColumnName = this.columnSchema.relationship.get('junction_key_right');
+      var schema = app.schemaManager.getColumns('ui', optionsModel.id);
+      optionsModel.structure = schema;
+      var view = new EditColumnView({
+        model: optionsModel,
+        schema: schema
+      });
 
-      if (model.isNew()) return this.relatedCollection.remove(model);
+      view.save = function() {
+        optionsModel.save(view.editView.data(), {success: function() {
+        }});
 
-      var attributes = {};
-      attributes[app.statusMapping.status_name] = app.statusMapping.deleted_num;
-      attributes[relatedColumnName] = null;
-      model.set(attributes);
+        view._close();
+      };
+
+      app.router.openViewInModal(view);
     },
 
     addRow: function() {
-      var collection = this.relatedCollection;
-      this.addModel(new collection.model({}, {collection: collection, parse: true, structure: collection.structure, table: collection.table, privileges: collection.privileges}));
-    },
-
-    editModel: function(model) {
-      var EditView = require("modules/tables/views/EditView");
-      var columnName = this.columnSchema.relationship.get('junction_key_right');
-      var view = new EditView({
-        model: model,
-        hiddenFields: [columnName],
-        skipFetch: (model.isNew() || model.unsavedAttributes())
-      });
-
-      view.headerOptions.route.isOverlay = true;
-      view.headerOptions.route.breadcrumbs = [];
-      view.headerOptions.basicSave = true;
-
-      view.events = {
-        'click .saved-success': function() {
-          this.save();
-        },
-        'click #removeOverlay': function() {
-          app.router.removeOverlayPage(this);
-        }
-      };
-
-      app.router.overlayPage(view);
-
-      view.save = function() {
-        model.set(model.diff(view.editView.data()));
-        app.router.removeOverlayPage(this);
-      };
-    },
-
-    addModel: function(model) {
-      var EditView = require("modules/tables/views/EditView");
-      var collection = this.relatedCollection;
-      var columnName = this.columnSchema.relationship.get('junction_key_right');
-      var id = this.model.id;
-      var view = new EditView({
-        model: model,
-        collectionAdd: true,
-        hiddenFields: [columnName],
-        parentField: {
-          name: columnName,
-          value: id
-        },
-        skipFetch: true
-      });
-
-      view.headerOptions.route.isOverlay = true;
-      view.headerOptions.route.breadcrumbs = [];
-      view.headerOptions.basicSave = true;
-
-      view.events = {
-        'click .saved-success': function() {
-          this.save();
-        },
-        'click #removeOverlay': function() {
-          app.router.removeOverlayPage(this);
-        }
-      };
-
-      app.router.overlayPage(view);
-
-      view.save = function() {
-        var data = view.editView.data();
-        data[columnName] = id;
-        model.set(data);
-
-        if (model.isValid()) {
-          app.router.removeOverlayPage(this);
-          collection.add(model, {nest: true});
-        }
-      };
-    },
-
-    insertRow: function() {
-      var me = this;
-      var columnName = this.columnSchema.relationship.get('junction_key_right');
-      var collection = app.getEntries(this.relatedCollection.table.id);
-      var view = new Overlays.ListSelect({collection: collection});
-
-      app.router.overlayPage(view);
-      view.save = function() {
-        _.each(view.table.selection(), function(id) {
-          var data = collection.get(id).toJSON();
-          if (me.columnSchema.options.get('only_unassigned') === true) {
-            var orphan = false;
-
-            collection.each(function(model) {
-              if (model.get(columnName) == null) {
-                orphan = true;
-              }
-            });
-
-            if (orphan) {
-              return false;
-            }
-          }
-
-          data[columnName] = me.model.get('id');
-          me.relatedCollection.add(data, {nest: true});
-        }, this);
-
-        app.router.removeOverlayPage(this);
-      };
-
-      collection.fetch();
+      alert('adding new column');
     },
 
     serialize: function() {
@@ -167,7 +63,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/table/table.view', 'core
         title: this.name,
         tableTitle: this.relatedCollection.table.get('table_name'),
         canEdit: this.canEdit,
-        showChooseButton: this.showChooseButton, //&& this.canEdit,
+        showChooseButton: this.showChooseButton,
         showAddButton: this.showAddButton && this.canEdit
       };
     },
@@ -193,13 +89,9 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/table/table.view', 'core
       var relatedCollection = columns.structure;
       var joinColumn = this.columnSchema.relationship.get('junction_key_right');
       var ids = relatedCollection.pluck('id');
-      // NOTE: This will a collection method in the next version
-      var hasUnsavedModels = _.some(relatedCollection.models, function(model) {
-        return model.unsavedAttributes();
-      });
 
-      if (!hasUnsavedModels && ids.length > 0) {
-        //Make sure column we are joining on is respected
+      if (ids.length > 0) {
+        // Make sure column we are joining on is respected
         var filters = columns.filters || {};
         if (filters.columns_visible.length === 0) {
           filters.columns_visible = relatedCollection.structure.at(0).get('id');
@@ -212,20 +104,13 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/table/table.view', 'core
           filters.perPage = this.columnSchema.options.get('result_limit');
         }
 
-        relatedCollection.fetch({includeFilters: false, data: filters, success: function(collection) {
-          _.each(collection.models, function(model) {
-            return model.startTracking();
-          });
-        }});
+        relatedCollection.fetch({includeFilters: false, data: filters});
       }
 
       this.showRemoveButton = this.columnSchema.options.get('remove_button') === true;
       this.showAddButton = this.columnSchema.options.get('add_button') === true;
       this.showChooseButton = this.columnSchema.options.get('choose_button') === true;
 
-      columns.each(function(model) {
-        model.set('ui', app.capitalize(model.get('ui')));
-      });
       this.nestedTableView = new TableView({
         collection: columns,
         selectable: false,
@@ -251,12 +136,12 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/table/table.view', 'core
       }
 
       this.listenTo(columns, 'add change', function() {
-        //Check if any rendered objects in collection to show or hide header
-        if (this.relatedCollection.filter(function(d){return d.get(app.statusMapping.status_name) !== app.statusMapping.deleted_num;}).length > 0) {
-          this.nestedTableView.tableHead = true;
-        } else {
-          this.nestedTableView.tableHead = false;
-        }
+        // Check if any rendered objects in collection to show or hide header
+        var filterCb = function(d) {
+          return d.get(app.statusMapping.status_name) !== app.statusMapping.deleted_num;
+        };
+
+        this.nestedTableView.tableHead = this.relatedCollection.filter(filterCb).length > 0;
         this.nestedTableView.render();
       }, this);
 

@@ -1142,10 +1142,10 @@ function(app, _, Backbone, Directus, EditView, BasePageView, TableModel, ColumnM
     var schema = app.schemaManager.getColumns('ui', model.id);
     model.structure = schema;
     var view = new EditColumn({model: model, schema: schema});
-    app.router.overlayPage(view);
+    app.router.openUserModal(view);
     view.save = function() {
       model.save(view.table.data(), {success: function() {
-        app.router.removeOverlayPage(view);
+        view.close();
       }});
     };
 
