@@ -13,6 +13,11 @@
     <td class="status-badges">
         {{#if statusDraft}}<div class="status-badge" style="background-color:#eeeeee;">{{statusName model}}</div>{{/if}}
     </td>
+    {{#if ../showRemoveButton}}
+    <td class="relational-remove">
+        <i class="material-icons js-remove">close</i>
+    </td>
+    {{/if}}
 </tr>
 {{/each}}
 

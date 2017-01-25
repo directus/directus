@@ -108,6 +108,7 @@ function(app, Backbone, _, Sortable, Notification) {
       var blacklist = this.options.blacklist;
 
       tableData.columns = _.difference(tableData.columns, blacklist);
+      tableData.showRemoveButton = this.parentView.options.showRemoveButton;
 
       return tableData;
     },

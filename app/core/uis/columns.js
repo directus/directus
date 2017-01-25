@@ -7,7 +7,7 @@
 //  http://www.getdirectus.com
 /*jshint multistr: true */
 
-define(['app', 'core/UIComponent', 'core/UIView', 'core/table/table.view', 'core/overlays/overlays', 'core/t'], function(app, UIComponent, UIView, TableView, Overlays, __t) {
+define(['app', 'underscore', 'core/UIComponent', 'core/UIView', 'core/table/table.view', 'core/overlays/overlays', 'core/notification', 'core/doubleConfirmation', 'core/t'], function(app, _, UIComponent, UIView, TableView, Overlays, Notification, DoubleConfirmation, __t) {
 
   'use strict';
 
@@ -22,6 +22,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/table/table.view', 'core
     templateSource: template,
     events: {
       'click div.related-table > div td:not(.delete)': 'editRow',
+      'click .js-remove': 'verifyDestroyColumn',
       'click .js-button': 'addRow'
     },
 
@@ -44,18 +45,88 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/table/table.view', 'core
         schema: schema
       });
 
-      view.save = function() {
-        optionsModel.save(view.editView.data(), {success: function() {
-        }});
-
-        view._close();
-      };
-
       app.router.openViewInModal(view);
     },
 
     addRow: function() {
-      alert('adding new column');
+      var NewColumnView = require('modules/settings/views/NewColumnView');
+      var ColumnModel = require('schema/ColumnModel');
+      var collection = app.schemaManager.getColumns('tables', this.model.id);
+
+      var model = new ColumnModel({'data_type':'ALIAS','ui':{}}, {collection: collection});
+      var view = new NewColumnView({
+        model: model,
+        collection: collection
+      });
+
+      var columns = this.model.get(this.name);
+      this.listenTo(model, 'sync', function(result) {
+        model.set(result);
+        columns.add(model);
+        collection.add(model);
+      });
+
+      app.router.openViewInModal(view);
+    },
+
+    destroyColumn: function(columnName) {
+      var collection = app.schemaManager.getColumns('tables', this.model.id);
+      var columns = this.model.get(this.name);
+      var originalColumnModel = collection.get(columnName);
+
+      if (!originalColumnModel) {
+        return;
+      }
+
+      var columnModel = originalColumnModel.clone();
+      // url can be a function or a string
+      // getting the result directly from the original model will prevent issue calling the function
+      // calling the url() on the cloned model will throw an error because it doesn't have a collection object
+      columnModel.url = _.result(originalColumnModel, 'url');
+
+      if (!columnModel) {
+        Notification.error('Error', 'Column '+columnName+' not found.');
+        return;
+      }
+
+      var self = this;
+      var onSuccess = function(model, response) {
+        if (!response.success) {
+          Notification.error('Column not removed', response.message);
+        } else {
+          self.collection.remove(originalColumnModel);
+          collection.remove(originalColumnModel);
+          columns.remove(originalColumnModel);
+          self.$el.find('[data-id=' + model.get('id') + ']').remove();
+          Notification.success('Column removed', '<b>' + columnName + '</b> was removed.');
+        }
+      };
+
+      var onError = function(model, resp, options) {
+        Notification.error('Column not removed', resp.responseJSON.message);
+      };
+
+      columnModel.destroy({success: onSuccess, error: onError, wait: true});
+    },
+
+    verifyDestroyColumn: function(event) {
+      event.stopPropagation();
+
+      var self = this;
+      var columnName = $(event.target).closest('tr').attr('data-id');
+      var destroyColumn = function() {
+        self.destroyColumn(columnName);
+      };
+
+      DoubleConfirmation({
+        value: columnName,
+        emptyValueMessage: __t('invalid_column'),
+
+        firstQuestion: __t('question_delete_this_column'),
+        secondQuestion: __t('question_delete_this_column_confirm', {column_name: columnName}),
+        notMatchMessage: __t('column_name_did_not_match'),
+        callback: destroyColumn
+      }, this);
     },
 
     serialize: function() {
@@ -122,6 +193,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/table/table.view', 'core
         hideEmptyMessage: true,
         tableHead: false,
         fixedHead: false,
+        showRemoveButton: true,
         filters: {
           booleanOperator: '&&',
           expressions: [
@@ -135,17 +207,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/table/table.view', 'core
         columns.setOrder('sort','ASC',{silent: true});
       }
 
-      this.listenTo(columns, 'add change', function() {
-        // Check if any rendered objects in collection to show or hide header
-        var filterCb = function(d) {
-          return d.get(app.statusMapping.status_name) !== app.statusMapping.deleted_num;
-        };
-
-        this.nestedTableView.tableHead = this.relatedCollection.filter(filterCb).length > 0;
-        this.nestedTableView.render();
-      }, this);
-
-      this.listenTo(columns, 'remove', function() {
+      this.listenTo(columns, 'add change remove', function() {
         this.nestedTableView.render();
       }, this);
 

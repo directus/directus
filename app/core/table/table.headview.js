@@ -213,6 +213,7 @@ function(app, Backbone, _, __t, Notification) {
         columns: columns,
         deleteColumn: this.options.deleteColumn,
         showMoreButton: this.options.showMoreButton,
+        showRemoveButton: this.parentView.options.showRemoveButton,
         hideColumnPreferences: this.options.hideColumnPreferences
       };
     },
