@@ -500,8 +500,8 @@ class BaseTableGateway extends TableGateway
         $data_type = $columnData['data_type'];
         $comment = ArrayUtils::get($columnData, 'comment', '');
 
-        if (array_key_exists('char_length', $columnData)) {
-            $charLength = $columnData['char_length'];
+        if (array_key_exists('length', $columnData)) {
+            $charLength = $columnData['length'];
             // SET and ENUM data type has its values in the char_length attribute
             // each value are separated by commas
             // it must be wrap into quotes
@@ -514,8 +514,13 @@ class BaseTableGateway extends TableGateway
             $data_type = $data_type . '(' . $charLength . ')';
         }
 
+        $default = '';
+        if (ArrayUtils::has($columnData, 'default_value')) {
+            $default = ' DEFAULT ' . ArrayUtils::get($columnData, 'default_value');
+        }
+
         // TODO: wrap this into an abstract DDL class
-        $sql = 'ALTER TABLE `' . $tableName . '` ADD COLUMN `' . $column_name . '` ' . $data_type . ' COMMENT "' . $comment . '"';
+        $sql = 'ALTER TABLE `' . $tableName . '` ADD COLUMN `' . $column_name . '` ' . $data_type . $default . ' COMMENT "' . $comment . '"';
 
         $this->adapter->query($sql)->execute();
     }
