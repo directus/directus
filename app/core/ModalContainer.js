@@ -42,6 +42,11 @@ define(['app', 'backbone', 'underscore', 'core/Modal'], function(app, Backbone, 
       }, this));
     },
 
+    save: function() {
+      var view = this.getViews().last().value();
+      view.save();
+    },
+
     close: function(hard) {
       var modal = this.$('.modal.active');
       var closeViews = _.bind(function() {
