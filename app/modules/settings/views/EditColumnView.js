@@ -27,6 +27,11 @@ define([
       this.container.close();
     },
 
+    save: function() {
+      this.model.save(this.editView.data());
+      this._close();
+    },
+
     beforeRender: function() {
       this.insertView('#form-columns-edit', this.editView);
     },
