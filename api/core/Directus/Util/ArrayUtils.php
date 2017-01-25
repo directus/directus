@@ -5,6 +5,29 @@ namespace Directus\Util;
 class ArrayUtils
 {
     /**
+     * Sets a value in the given array with the given key
+     *
+     * @param array $array
+     * @param string $key
+     * @param mixed $value
+     */
+    public static function set(array &$array, $key, $value)
+    {
+        $keys = explode('.', $key);
+
+        while(count($keys) > 1) {
+            $key = array_shift($keys);
+            if (!isset($array[$key])) {
+                $array[$key] = [];
+            }
+
+            $array = &$array[$key];
+        }
+
+        $array[array_shift($keys)] = $value;
+    }
+
+    /**
      * Get an item from an array
      *
      * @param  array $array

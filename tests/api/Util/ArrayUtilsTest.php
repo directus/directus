@@ -4,6 +4,17 @@ use Directus\Util\ArrayUtils;
 
 class ArrayUtilsTest extends PHPUnit_Framework_TestCase
 {
+    public function testSets()
+    {
+        $array = [];
+
+        ArrayUtils::set($array, 'name', 'john');
+        $this->assertSame('john', $array['name']);
+
+        ArrayUtils::set($array, 'country.name', 'Unknown');
+        $this->assertSame('Unknown', $array['country']['name']);
+    }
+
     public function testGetItem()
     {
         $item = ['name' => 'Jim', 'country' => ['name' => 'Germany', 'population' => '9']];
