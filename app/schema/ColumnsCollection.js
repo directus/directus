@@ -13,8 +13,8 @@ define(function(require, exports, module) {
       return row.get('sort');
     },
 
-    parse: function(result, options) {
-      return options.xhr ? result.data : result;
+    parse: function(result) {
+      return result.data ? result.data : result;
     },
 
     getRelationalColumns: function() {

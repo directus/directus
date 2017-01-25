@@ -11,6 +11,8 @@ define(function(require, exports, module) {
   module.exports = Backbone.Model.extend({
 
       parse: function(result) {
+        result = result.data ? result.data : result;
+
         var ui = result.ui;
         var tableName = '';
 
