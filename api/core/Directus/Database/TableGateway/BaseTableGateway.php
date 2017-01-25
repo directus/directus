@@ -515,7 +515,7 @@ class BaseTableGateway extends TableGateway
         }
 
         $default = '';
-        if (ArrayUtils::has($columnData, 'default_value')) {
+        if (ArrayUtils::get($columnData, 'default_value')) {
             $default = ' DEFAULT ' . ArrayUtils::get($columnData, 'default_value');
         }
 
