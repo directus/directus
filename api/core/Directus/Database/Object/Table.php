@@ -286,6 +286,12 @@ class Table implements \ArrayAccess, Arrayable, \JsonSerializable
                 throw new \InvalidArgumentException('Invalid column object. ' . gettype($column) . ' given instead');
             }
 
+            // @NOTE: This is a temporary solution
+            // to always set the primary column to the first primary key column
+            if (!$this->getPrimaryColumn() && $column->isPrimary()) {
+                $this->setPrimaryColumn($column->getName());
+            }
+
             $this->columns[] = $column;
         }
 
