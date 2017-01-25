@@ -476,6 +476,31 @@ class MySQLSchema extends AbstractSchema
     /**
      * @inheritDoc
      */
+    public function getAllUIOptions()
+    {
+        $select = new Select();
+        $select->columns([
+            'id' => 'ui_name',
+            'name',
+            'value',
+            'table_name',
+            'column_name'
+        ]);
+
+        $select->from('directus_ui');
+
+        $select->order('ui_name');
+
+        $sql = new Sql($this->getConnection());
+        $statement = $sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+
+        return $result;
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function getUIOptions(Column $column)
     {
         $select = new Select();

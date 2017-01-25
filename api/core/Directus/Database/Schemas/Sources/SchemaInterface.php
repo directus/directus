@@ -137,6 +137,13 @@ interface SchemaInterface
     public function getFullSchema();
 
     /**
+     * Gets all the UI options
+     *
+     * @return ResultSet
+     */
+    public function getAllUIOptions();
+
+    /**
      * Get the UI options of the given column
      *
      * @param Column $column

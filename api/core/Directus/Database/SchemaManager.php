@@ -318,17 +318,36 @@ class SchemaManager
         return $columnOptions;
     }
 
+    public function getAllUIOptions()
+    {
+        $result = [];
+        $rows = $this->source->getAllUIOptions();
+
+        foreach ($rows as $row) {
+            $key = implode('.', [
+                $row['table_name'],
+                $row['column_name'],
+                $row['name']
+            ]);
+
+            ArrayUtils::set($result, $key, $row['value']);
+        };
+
+        return $result;
+    }
+
     public function getTableUIOptions($tableName)
     {
         $result = [];
         $rows = $this->source->getTableUIOptions($tableName);
 
         foreach ($rows as $row) {
-            if (!isset($result[$row['column_name']])) {
-                $result[$row['column_name']] = [];
-            }
+            $key = implode('.', [
+                $row['column_name'],
+                $row['name']
+            ]);
 
-            $result[$row['column_name']][$row['name']] = $row['value'];
+            ArrayUtils::set($result, $key, $row['value']);
         };
 
         return $result;
@@ -387,10 +406,19 @@ class SchemaManager
     public function getAllColumns()
     {
         $allColumns = $this->source->getAllColumns();
+        $columnsUIOptions = $this->getAllUIOptions();
 
         $columns = [];
         foreach($allColumns as $column) {
-            $columns[] = $this->createColumnObjectFromArray($column);
+            $columnObject = $this->createColumnObjectFromArray($column);
+            $key = implode('.', [
+                $columnObject->getTableName(),
+                $columnObject->getName()
+            ]);
+            $options = ArrayUtils::get($columnsUIOptions, $key, []);
+            $columnObject->setUIOptions($options);
+
+            $columns[] = $columnObject;
         }
 
         return $columns;
