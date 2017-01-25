@@ -223,14 +223,15 @@ define(function(require, exports, module) {
     },
 
     overlayPage: function(view) {
-      if (this.v.main.getViews('#content')._wrapped.length <= 1) {
+      var views = this.v.main.getViews('#content');
+      if (views.value().length <= 1) {
         this.baseRouteSave = Backbone.history.fragment;
         this.oldLoadUrlFunction = Backbone.History.prototype.loadUrl;
       }
 
-      var lastView = this.v.main.getViews('#content').last()._wrapped;
+      var lastView = views.last().value();
       lastView.scrollTop = document.body.scrollTop;
-      this.v.main.getViews('#content').each(function(view) {
+      views.each(function(view) {
         view.$el.hide();
       });
 
@@ -279,7 +280,7 @@ define(function(require, exports, module) {
     },
 
     removeTopOverlayPage: function() {
-      var view = this.v.main.getViews('#content').last()._wrapped;
+      var view = this.v.main.getViews('#content').last().value();
 
       return this.removeOverlayPage(view);
     },
@@ -290,15 +291,15 @@ define(function(require, exports, module) {
       }
 
       view.remove(); //Remove Overlay Page
-      var vieww = this.v.main.getViews('#content').last()._wrapped;
+      var vieww = this.v.main.getViews('#content').last().value();
       vieww.headerView.render();
       vieww.$el.show();
 
-      if(vieww.scrollTop !== undefined) {
+      if (vieww.scrollTop !== undefined) {
         document.body.scrollTop = parseInt(vieww.scrollTop, 10);
       }
 
-      if(this.v.main.getViews('#content')._wrapped.length <= 1) {
+      if (this.v.main.getViews('#content').value().length <= 1) {
         Backbone.History.prototype.loadUrl = this.oldLoadUrlFunction;
         this.navigate(this.baseRouteSave);
         this.baseRouteSave = undefined;
