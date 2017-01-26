@@ -25,16 +25,35 @@ define(function(require, exports, module) {
         "comment": ""
       },
       {
+        "id": "display_template",
+        "column_name": "display_template",
+        "ui": "textinput",
+        "type": "VARCHAR",
+        "length": 255,
+        "system": false,
+        "hidden_list": false,
+        "hidden_input": false,
+        "required": false,
+        "sort": 1,
+        "options": {
+          "placeholder_text": "eg {{first_name}} {{last_name}}"
+        },
+        "comment": ""
+      },
+      {
         "id": "preview_url",
         "column_name": "preview_url",
         "ui": "textinput",
         "type": "VARCHAR",
         "length": 255,
-        "system": true,
+        "system": false,
         "hidden_list": false,
         "hidden_input": false,
         "required": false,
-        "sort": 0,
+        "sort": 2,
+        "options": {
+          "placeholder_text": "eg http://example.com/articles/{{slug}}"
+        },
         "comment": ""
       },
       {
