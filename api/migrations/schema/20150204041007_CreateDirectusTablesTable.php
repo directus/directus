@@ -29,12 +29,22 @@ class CreateDirectusTablesTable extends Ruckusing_Migration_Base
             'id' => false,
         ]);
 
-        //columns
+        // columns
         $t->column('table_name', 'string', [
             'limit' => 64,
             'null' => false,
             'default' => '',
             'primary_key' => true
+        ]);
+        $t->column('display_template', 'string', [
+            'limit' => 255,
+            'null' => true,
+            'default' => ''
+        ]);
+        $t->column('preview_url', 'string', [
+            'limit' => 255,
+            'null' => true,
+            'default' => ''
         ]);
         $t->column('hidden', 'tinyinteger', [
             'limit' => 1,
@@ -64,7 +74,15 @@ class CreateDirectusTablesTable extends Ruckusing_Migration_Base
             'default' => NULL
         ]);
         $t->column('primary_column', 'string', [
-            'limit' => 255,
+            'limit' => 64,
+            'default' => NULL
+        ]);
+        $t->column('sort_column', 'string', [
+            'limit' => 64,
+            'default' => NULL
+        ]);
+        $t->column('status_column', 'string', [
+            'limit' => 64,
             'default' => NULL
         ]);
         $t->column('user_create_column', 'string', [
