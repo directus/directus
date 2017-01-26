@@ -64,11 +64,6 @@ class Groups extends Route
             ];
         }
 
-        $columns = TableSchema::getAllNonAliasTableColumns($tableName);
-        $schemaManager = $this->app->container->get('schemaManager');
-        $response = $schemaManager->parseRecordValuesByType($response, $columns);
-        // $response = SchemaManager::parseRecordValuesByType($response, $columns);
-
         JsonView::render($response);
     }
 }

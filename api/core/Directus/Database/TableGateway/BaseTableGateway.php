@@ -247,8 +247,10 @@ class BaseTableGateway extends TableGateway
         if ($pk_field_name == null) {
             $pk_field_name = $this->primaryKeyFieldName;
         }
+
         $record = $this->findOneBy($pk_field_name, $id);
-        return $record;
+
+        return $this->parseRecordValuesByType($record);
     }
 
     public function fetchAll($selectModifier = null)
