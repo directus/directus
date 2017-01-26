@@ -411,7 +411,7 @@ $app->group('/1.1', function() use($app) {
         ->via('GET', 'POST');
     // GET or PUT one column
     $app->map('/tables/:table/columns/:column/?', '\Directus\API\Routes\A1\Table:column')
-        ->via('GET', 'PUT', 'DELETE');
+        ->via('GET', 'PUT', 'PATCH', 'DELETE');
     $app->post('/tables/:table/columns/:column/?', '\Directus\API\Routes\A1\Table:postColumn');
 
     // =============================================================================

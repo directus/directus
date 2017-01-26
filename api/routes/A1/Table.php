@@ -165,7 +165,8 @@ class Table extends Route
             }
         }
 
-        if ($app->request()->isPut()) {
+        if ($app->request()->isPut() || $app->request()->isPatch()) {
+
             $TableGateway = new TableGateway('directus_columns', $ZendDb, $acl);
             $columnData = $TableGateway->select([
                 'table_name' => $table,
@@ -174,20 +175,23 @@ class Table extends Route
 
             if ($columnData) {
                 $columnData = $columnData->toArray();
-                $requestPayload = ArrayUtils::pick($requestPayload, [
-                    'data_type',
-                    'ui',
-                    'hidden_input',
-                    'hidden_list',
-                    'required',
-                    'relationship_type',
-                    'related_table',
-                    'junction_table',
-                    'junction_key_left',
-                    'junction_key_right',
-                    'sort',
-                    'comment'
-                ]);
+
+                if ($app->request()->isPut()) {
+                    $requestPayload = ArrayUtils::pick($requestPayload, [
+                        'data_type',
+                        'ui',
+                        'hidden_input',
+                        'hidden_list',
+                        'required',
+                        'relationship_type',
+                        'related_table',
+                        'junction_table',
+                        'junction_key_left',
+                        'junction_key_right',
+                        'sort',
+                        'comment'
+                    ]);
+                }
 
                 $requestPayload['id'] = $columnData['id'];
                 $TableGateway->updateCollection($requestPayload);
@@ -203,10 +207,12 @@ class Table extends Route
                 'success' => false
             ];
         } else {
-            $response['data'] = $response;
-            $response['meta'] = [
-                'type' => 'collection',
-                'table' => 'directus_columns'
+            $response = [
+                'data' => $response,
+                'meta' => [
+                    'type' => 'collection',
+                    'table' => 'directus_columns'
+                ]
             ];
         }
 
