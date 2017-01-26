@@ -8,11 +8,7 @@ define([
   'core/t'
 ], function(app, _, Backbone, EditView, ModalView, SchemaHelper, __t) {
 
-  return ModalView.extend({
-
-    attributes: {
-      class: 'modal column'
-    },
+  return Backbone.Layout.extend({
 
     template: 'modal/columns-new',
 
@@ -71,17 +67,6 @@ define([
         this.model.set({junction_table: $(e.target).val()});
         this.render();
       },
-
-      'click .js-cancel': '_close',
-
-      'click .js-save': 'save'
-    },
-
-    _close: function() {
-      // change Modal.close to Modal._close
-      // change this._close to this.close
-      // closing the modal should close it from their container
-      this.container.close();
     },
 
     save: function() {
@@ -89,7 +74,6 @@ define([
       var options = {patch: false};
 
       this.listenTo(this.model, 'sync', function(model) {
-        console.log(model);
         this.model.collection.add(model);
       }, this);
 
@@ -102,7 +86,6 @@ define([
 
       if (data) {
         this.model.save(data, options);
-        this._close();
       }
     },
 
@@ -112,6 +95,7 @@ define([
       var tableRelated;
       var uis = _.clone(UIManager._getAllUIs());
       var data = {
+        isNew: this.model.isNew(),
         ui_types: [],
         data_types: [],
         column_name: this.model.get('column_name'),

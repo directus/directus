@@ -49,12 +49,12 @@ define(['app', 'underscore', 'core/UIComponent', 'core/UIView', 'core/table/tabl
     },
 
     addRow: function() {
-      var NewColumnView = require('modules/settings/views/NewColumnView');
+      var ColumnModalView = require('modules/settings/views/ColumnModalView');
       var ColumnModel = require('schema/ColumnModel');
       var collection = app.schemaManager.getColumns('tables', this.model.id);
 
       var model = new ColumnModel({'data_type':'ALIAS','ui':{}}, {collection: collection});
-      var view = new NewColumnView({
+      var view = new ColumnModalView({
         model: model,
         collection: collection
       });
