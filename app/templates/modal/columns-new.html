@@ -2,6 +2,7 @@
     <h1>Create New Column</h1> <!-- Editing Column -->
     <form>
         <div class="row">
+            {{#unless hideColumnName}}
             <div class="column-50">
                 <div class="label">
                     Name (Database)
@@ -17,6 +18,7 @@
                 <input class="custom-checkbox" id="checkbox" type="checkbox" value="" checked />
                 <label for="checkbox"><span></span> Enable strict column naming</label>
             </div> -->
+            {{/unless}}
             <div class="comment">
                 <div class="label">Comment</div>
                 <div class="validate-input"><input type="text" id="comment" name="comment" placeholder="Add a helpful note for users..." value="{{comment}}"></div>

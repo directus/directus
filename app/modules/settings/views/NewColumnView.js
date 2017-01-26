@@ -86,14 +86,24 @@ define([
 
     save: function() {
       var data = this.$('form').serializeObject();
+      var options = {patch: false};
 
       this.listenTo(this.model, 'sync', function(model) {
         console.log(model);
         this.model.collection.add(model);
       }, this);
 
-      this.model.save(data);
-      this._close();
+
+      if (!this.model.isNew()) {
+        data = this.model.unsavedAttributes();
+        options.patch = true;
+        this.model.stopTracking();
+      }
+
+      if (data) {
+        this.model.save(data, options);
+        this._close();
+      }
     },
 
     serialize: function() {
@@ -107,7 +117,7 @@ define([
         column_name: this.model.get('column_name'),
         comment: this.model.get('comment'),
         default_value: this.model.get('default_value'),
-        hideFieldName: this.hideFieldName
+        hideColumnName: this.hideColumnName
       };
 
       if (_.isFunction(this.uiFilter)) {
@@ -409,7 +419,11 @@ define([
         this.selectedDataType = this.selectedRelationshipType;
       }
       this.columnName = this.model.get('column_name') || undefined;
-      this.hideFieldName = (options.hiddenFields && options.hiddenFields.indexOf('field_name') >= 0);
+      this.hideColumnName = (options.hiddenFields && options.hiddenFields.indexOf('column_name') >= 0);
+
+      if (!this.model.isNew()) {
+        this.model.startTracking();
+      }
 
       this.render();
     }
