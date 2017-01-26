@@ -76,6 +76,18 @@ define(function(require, exports, module) {
         }
       },
       {
+        "id": "list_view",
+        "column_name": "list_view",
+        "ui": "textinput", // @TODO: multiple checkbox
+        "type": "VARCHAR",
+        "length": 200,
+        "default_value": "table",
+        "system": false,
+        "hidden_list": false,
+        "hidden_input": false,
+        "sort": 3
+      },
+      {
         "id":"hidden",
         "column_name":"hidden",
         "ui":"checkbox",
