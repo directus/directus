@@ -25,24 +25,14 @@ class Groups extends Route
             case 'POST':
                 $newRecord = $GroupsTableGateway->manageRecordUpdate($tableName, $requestPayload);
                 $newGroupId = $newRecord['id'];
-                $newGroup = $GroupsTableGateway->find($newGroupId);
-                $outputData = $newGroup;
+                $response = $GroupsTableGateway->getEntries(['id' => $newGroupId]);
                 break;
             case 'GET':
             default:
-                $get_new = $GroupsTableGateway->getEntries();
-                $outputData = $get_new;
+                $response = $GroupsTableGateway->getEntries();
         }
 
-        $outputData = [
-            'meta' => [
-                'type' => 'entry',
-                'table' => $GroupsTableGateway->getTable()
-            ],
-            'data' => $outputData
-        ];
-
-        JsonView::render($outputData);
+        JsonView::render($response);
     }
 
     public function group($id)
@@ -56,7 +46,7 @@ class Groups extends Route
         is_null($id) ? $id = 1 : null;
         $tableName = 'directus_groups';
         $Groups = new TableGateway($tableName, $ZendDb, $acl);
-        $response = $Groups->find($id);
+        $response = $Groups->getEntries(['id' => $id]);//$Groups->find($id);
         if (!$response) {
             $response = [
                 'message' => __t('unable_to_find_group_with_id_x', ['id' => $id]),
