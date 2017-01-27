@@ -38,6 +38,7 @@ if (!function_exists('uc_convert')) {
             'Php' => 'PHP',
             'Html' => 'HTML',
             'Js' => 'JS',
+            'Json' => 'JSON',
             'Css' => 'CSS',
             'Csv' => 'CSV',
             'Ios' => 'iOS',
