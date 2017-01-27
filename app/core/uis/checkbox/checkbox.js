@@ -59,7 +59,8 @@ define(['app', 'underscore', 'utils', 'core/UIComponent', 'core/UIView', 'core/t
     validate: function(value, options) {
       // If a checkbox is mandatory, it MUST be checked to save
       // similar to "agree to terms" functionality
-      if (options.view.isRequired() && value === 0) {
+      var required = options.view ? options.view.isRequired() : false;
+      if (required && value === 0) {
         return __t('this_field_is_required');
       }
     },
