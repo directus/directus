@@ -9,6 +9,7 @@ define(function(require, exports, module) {
   module.exports =  Backbone.Model.extend({
 
     parse: function(data) {
+      data = data.data ? data.data : data;
       if (this.columns === undefined) {
         this.columns = new ColumnsCollection(data.columns, {parse: true, url: this.url + '/columns'});
       } else {
