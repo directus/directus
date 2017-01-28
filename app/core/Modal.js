@@ -4,7 +4,7 @@ define(['app', 'backbone', 'underscore'], function(app, Backbone, _) {
 
   return Backbone.Layout.extend({
 
-    template: 'modal/modal',
+    template: 'modal/base',
 
     attributes: {
       'id': 'modal',
