@@ -802,6 +802,7 @@ class RelationalTableGateway extends BaseTableGateway
 
         $depth = ArrayUtils::get($params, 'depth', null);
         if ($depth !== null) {
+            $columns = ArrayUtils::has($params, 'columns') ? $columns : [];
             $results = $this->loadRelationalDataByDepth($results, (int) $depth, $columns);
         }
 
