@@ -72,6 +72,7 @@ define(['moment', 'core/t'], function(moment, __t) {
       'PHP',
       'HTML',
       'JS',
+      'JSON',
       'CSS',
       'SKU',
       'DateTime',
