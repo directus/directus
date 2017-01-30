@@ -1,0 +1,86 @@
+<table class="lines cozy pad-first" id="directus-grouppermissions">
+    <thead>
+    <tr>
+        <th scope="col">{{t "table"}}</th>
+        <th scope="col"><!-- {{t "fields"}} --></th>
+        <th scope="col">{{t "permission_status"}}</th>
+        <th scope="col">{{t "permissions_view"}}</th>
+        <th scope="col">{{t "permissions_add"}}</th>
+        <th scope="col">{{t "permissions_edit"}}</th>
+        <th scope="col">{{t "permissions_delete"}}</th>
+        <th scope="col">{{t "permissions_read_blacklist"}}</th>
+        <th scope="col">{{t "permissions_write_blacklist"}}</th>
+    </tr>
+    </thead>
+    <tbody>
+    {{#tables}}
+    <tr class="" data-table-name="{{table_name}}" data-id="{{id}}" data-cid="{{cid}}">
+        <td class="tableName"><div style="display:inline-block">{{title}}</div></td>
+        <td class="js-status-toggle permissions-workflow {{#unless hasStatusColumn}} disabled{{/unless}}" title="{{t 'permissions_field_level_permissions'}}">
+            <i class="material-icons vertical-middle js-edit-fields">tune</i>
+        </td>
+        <td class="permissions-status">
+            <div class="global">
+                <span class="js-status" data-value="{{currentStatus.value}}">{{currentStatus.name}}</span>
+            </div>
+            <div class="workflow">
+                {{#statuses}}
+                <div class="state text-align">
+                    <span class="js-status" data-value="{{value}}">{{name}}</span>
+                </div>
+                {{/statuses}}
+            </div>
+        </td>
+        {{#each permissions}}
+        <td class="permissions-{{name}}" data-name="{{name}}">
+            <div class="global">
+                <input class="custom-checkbox permission-toggle{{#if onlyMine}} partial{{/if}}" id="check_{{name}}_{{../table_name}}" type="checkbox" value="" {{#unless cannot}}checked="checked"{{/unless}}>
+                <label class="js-permission-toggle" for="check_{{name}}_{{../table_name}}">
+                    <span title="{{title}}"></span>
+                </label>
+            </div>
+        </td>
+        {{/each}}
+        <td class="permissions-blacklist">
+            <div class="global">
+                <a href="#" class="choose-column-blacklist js-read{{#if readBlacklist}} active{{/if}}">
+                    {{#if readBlacklist}}
+                    {{readBlacklist}}
+                    {{else}}
+                    Choose Columns
+                    {{/if}}
+                </a>
+            </div>
+            <div class="workflow">
+                <div class="state text-align">
+                    <a href="#" class="choose-column-blacklist">Choose Columns</a>
+                </div>
+                <div class="state text-align">
+                    <a href="#" class="choose-column-blacklist">Choose Columns</a>
+                </div>
+            </div>
+        </td>
+        <td class="permissions-blacklist">
+            <div class="global">
+                <a href="#" class="choose-column-blacklist js-write{{#if writeBlacklist}} active{{/if}}">
+                    {{#if writeBlacklist}}
+                    {{writeBlacklist}}
+                    {{else}}
+                    Choose Columns
+                    {{/if}}
+                </a>
+            </div>
+            <div class="workflow">
+                <div class="state text-align">
+                    <a href="#" class="choose-column-blacklist">Choose Columns</a>
+                </div>
+                <div class="state text-align">
+                    <a href="#" class="choose-column-blacklist">Choose Columns</a>
+                </div>
+            </div>
+        </td>
+    </tr>
+    {{/tables}}
+    <!--<tr class="add table-fields" data-table-group="demo-table1"></tr>-->
+    </tbody>
+</table>

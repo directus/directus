@@ -184,8 +184,7 @@ function getGroups()
     global $ZendDb, $acl;
     $groups = new TableGateway('directus_groups', $ZendDb, $acl);
     // @todo: move to DirectusGroupsTableGateway
-    $groupEntries = $groups->getEntries();
-
+    $groupEntries = $groups->getEntries(['depth' => 1]);
     $groupEntries['data'] = array_map(function ($row) {
         if (array_key_exists('nav_override', $row)) {
             if (!empty($row['nav_override'])) {

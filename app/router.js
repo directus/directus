@@ -571,7 +571,7 @@ define(function(require, exports, module) {
       this.setTitle(app.settings.get('global').get('project_name') + ' | Settings');
 
       var collection = EntriesManager.getInstance('directus_tables');
-      var model = collection.get(tableName); // SchemaManager.getTable(tableName)
+      var model = collection.get(tableName);
 
       if (model === undefined) {
         var primaryColumn = collection.table.get('primary_column');
@@ -593,8 +593,15 @@ define(function(require, exports, module) {
       }
 
       this.setTitle(app.settings.get('global').get('project_name') + ' | Settings - Permissions');
-      var collection = new Settings.GroupPermissions.Collection([], {url: app.API_URL + 'privileges/'+groupId});
-      this.v.main.setView('#content', new Settings.GroupPermissions.Page({collection: collection, title: app.groups.get(groupId).get('name')}));
+      var collection = EntriesManager.getInstance('directus_groups');
+      var model = collection.get(groupId);
+
+      this.v.main.setView('#content', new Settings.GroupPermissions.EditPage({
+        model: model,
+        collection: collection,
+        title: app.groups.get(groupId).get('name')
+      }));
+
       this.v.main.render();
     },
 

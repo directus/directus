@@ -41,7 +41,13 @@ function(app, Backbone, Widgets, __t, BasePageView) {
     },
 
     addRowView: function(model, render) {
-      var view = this.insertView('tbody', new GroupsRow({model: model}));
+      var view = this.insertView('tbody', new GroupsRow({
+        model: model,
+        attributes: {
+          'data-id': model.id
+        }
+      }));
+
       if (render !== false) {
         view.render();
       }
@@ -66,8 +72,8 @@ function(app, Backbone, Widgets, __t, BasePageView) {
     tagName: 'tr',
 
     events: {
-      'click td': function(e) {
-        var groupName = e.target.getAttribute('data-id');
+      'click': function(event) {
+        var groupName = $(event.currentTarget).data('id');
         // Don't bypass Admins until their permissions are always guaranteed
         // if(groupName === 1) {
         //   return;
@@ -88,11 +94,13 @@ function(app, Backbone, Widgets, __t, BasePageView) {
         breadcrumbs: [{title: 'Settings', anchor: '#settings'}]
       },
     },
+
     leftToolbar: function() {
       return  [
         new Widgets.ButtonWidget({widgetOptions: {buttonId: "addBtn", iconClass: "add", buttonClass: "", buttonText: __t('new_user_group')}})
       ];
     },
+
     events: {
       'click #addBtn': function() {
         var that = this;
@@ -110,10 +118,12 @@ function(app, Backbone, Widgets, __t, BasePageView) {
         }});
       }
     },
+
     beforeRender: function() {
       this.setView('#page-content', new Groups({collection: this.collection}));
       BasePageView.prototype.beforeRender.call(this);
     },
+
     afterRender: function() {
       // Don't bypass Admins until their permissions are always guaranteed
       // this.$el.find('td[data-id=1]').addClass('disabled');

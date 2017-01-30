@@ -21,6 +21,7 @@ define(function(require, exports, module) {
     require('core/uis/datetime/datetime'),
     require('core/uis/datetime/date'),
     require('core/uis/datetime/time'),
+    require('core/uis/permissions/interface'),
     require('core/uis/directus_user_activity'),
     require('core/uis/directus_user_avatar'),
     require('core/uis/directus_file_size'),

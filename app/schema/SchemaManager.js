@@ -1,8 +1,9 @@
 define(function(require, exports, module) {
 
-  "use strict";
+  'use strict';
 
   var app = require('app');
+  var _   = require('underscore');
 
   // Structures
   var ColumnModel        = require('./ColumnModel'),
@@ -20,6 +21,7 @@ define(function(require, exports, module) {
     'directus_groups'    : require('./fixed/groups'),
     'directus_files'     : require('./fixed/files'),
     'directus_messages'  : require('./fixed/messages'),
+    'directus_privileges'  : require('./fixed/privileges'),
     'directus_settings'  : require('./fixed/settings'),
     'directus_tables'    : require('./fixed/tables'),
     'directus_users'     : require('./fixed/users')
@@ -33,6 +35,12 @@ define(function(require, exports, module) {
     'global': require('./fixed/settings.global'),
     'files': require('./fixed/settings.files')
   };
+
+  /**
+   * @private
+   * Default Privileges
+   */
+  var defaultPrivileges = new Backbone.Model({}, {parse:true});
 
   /**
    * @private
@@ -96,6 +104,7 @@ define(function(require, exports, module) {
         { schema: directusSchemas.directus_groups },
         { schema: directusSchemas.directus_files.getFiles() },
         { schema: directusSchemas.directus_messages },
+        { schema: directusSchemas.directus_privileges },
         { schema: directusSchemas.directus_settings },
         { schema: directusSchemas.directus_tables },
         { schema: directusSchemas.directus_users.getUsers(app.locales, app.timezones) }
@@ -216,7 +225,12 @@ define(function(require, exports, module) {
     // Registers user priviliges
     registerPrivileges: function(data) {
       _.each(data, function(privilege) {
-        privileges[privilege.table_name] = new Backbone.Model(privilege, {parse:true});
+        if (!privileges[privilege.table_name]) {
+          privileges[privilege.table_name] = {};
+        }
+
+        var statusId = privilege.status_id == null ? 'all' : privilege.status_id;
+        privileges[privilege.table_name][statusId] = new Backbone.Model(privilege, {parse:true});
       }, this);
     },
 
@@ -259,8 +273,27 @@ define(function(require, exports, module) {
       return tableSchemas.tables;
     },
 
-    getPrivileges: function(tableName) {
-      return privileges[tableName];
+    getPrivileges: function(tableName, statusId) {
+      statusId = statusId == null ? 'all' : statusId;
+
+      return _.findStringKey(privileges, tableName + '.' + statusId);
+    },
+
+    getPrivilegesOrDefault: function(tableName, statusId) {
+      return this.getPrivileges(tableName, statusId) || defaultPrivileges.clone();
+    },
+
+    getDefaultPrivileges: function(table, statusId) {
+      if (!statusId) {
+        statusId = null;
+      }
+
+      var model = defaultPrivileges.clone();
+
+      model.set('status_id', statusId);
+      model.set('table_name', table);
+
+      return model;
     },
 
     getPreferences: function(tableName) {
@@ -282,11 +315,12 @@ define(function(require, exports, module) {
       if (!tableSchemas.tables.get(tableName)) {
         throw "Table `"+ tableName +"` does not exist";
       }
+
       return {
         table: tableSchemas.tables.get(tableName),
         structure: columnSchemas.tables[tableName],
         preferences: preferences[tableName],
-        privileges: privileges[tableName]
+        privileges: this.getPrivileges(tableName)
       };
     },
 
