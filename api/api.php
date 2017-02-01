@@ -49,7 +49,6 @@ use Directus\Database\TableGateway\RelationalTableGateway as TableGateway;
 use Directus\Database\TableSchema;
 use Directus\Exception\ExceptionHandler;
 use Directus\Mail\Mail;
-use Directus\MemcacheProvider;
 use Directus\Permissions\Exception\UnauthorizedTableAlterException;
 use Directus\Util\ArrayUtils;
 use Directus\Util\DateUtils;
@@ -58,12 +57,8 @@ use Directus\Util\StringUtils;
 use Directus\View\ExceptionView;
 use Directus\View\JsonView;
 
-// use Directus\Files;
-// use Directus\Files\Upload;
-// use Directus\Database\TableGateway\DirectusIPWhitelist;
-
 // API Version shortcut for routes:
-$v = 1;//API_VERSION;
+$v = 1;
 
 /**
  * Slim App & Directus Providers
