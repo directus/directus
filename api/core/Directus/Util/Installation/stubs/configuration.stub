@@ -69,7 +69,7 @@ return [
 
     'feedback' => [
         'token' => '{{feedback_token}}',
-        'login' => {{feedback_login}}
+        'login' => '{{feedback_login}}'
     ],
 
     // These tables will not be loaded in the directus schema
