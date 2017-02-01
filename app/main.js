@@ -107,6 +107,7 @@ require(["config", 'polyfills'], function() {
 
     UIManager.setup();
     SchemaManager.setup({apiURL: app.API_URL});
+    ListViewManager.setup();
 
     app.schemaManager = SchemaManager;
 

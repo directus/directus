@@ -91,6 +91,14 @@ function(app, Backbone, _, BaseHeaderView, RightSidebarView) {
         });
       }
 
+      // @TODO: Make this cleaner.
+      // This events are only available for table view mode
+      this.listenTo(this.rightPaneView, 'spacing:change', function(spacing) {
+        if (this.table.setSpacing) {
+          this.table.setSpacing(spacing);
+        }
+      });
+
       this.listenTo(this.rightPaneView, 'close', function() {
         this.state.rightPaneOpen = false;
       });
@@ -119,13 +127,16 @@ function(app, Backbone, _, BaseHeaderView, RightSidebarView) {
       this.headerView.render();
     },
 
+    getSpacing: function() {
+      return _.result(this.table, 'getSpacing');
+    },
+
     fetchHolding: [],
 
     // Only fetch if we are not waiting on any widgets to get preference data
     tryFetch: function() {
       if (this.fetchHolding.length === 0) {
-        var options = this.collection.options ? this.collection.options : {};
-        this.collection.fetch(options);
+        this.collection.fetch(this.collection.options || {});
       }
     },
 

@@ -1,9 +1,12 @@
 define(function(require, exports, module) {
 
-  "use strict";
+  'use strict';
 
   var TableView = require('core/table/table.view');
   var jQuery = require('jquery');
+  var defaultListViews = [
+    require('core/listings/calendar')
+  ];
 
   /**
    * @private
@@ -13,6 +16,10 @@ define(function(require, exports, module) {
 
   // Attach all methods to the UIManager prototype.
   module.exports = {
+
+    setup: function() {
+      this.register(defaultListViews);
+    },
 
     register: function(listViews) {
       _.each(listViews, function(view) {
@@ -34,17 +41,20 @@ define(function(require, exports, module) {
       return dfd;
     },
 
-    getInstance: function(options) {
-      var viewId = options.collection.table.get('list_view');
-      var View;
+    getView: function(viewId, options) {
+      var View = TableView;
 
       if (viewId != null && views.hasOwnProperty(viewId)) {
         View = views[viewId];
-      } else {
-        View = TableView;
       }
 
       return new View(options);
+    },
+
+    getInstance: function(options) {
+      var viewId = options.collection.table.get('list_view');
+
+      return this.getView(viewId, options)
     }
 
   };

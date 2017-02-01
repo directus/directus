@@ -36,8 +36,7 @@ define([
 
     updateSpacing: function(event) {
       var spacing = $(event.currentTarget).val();
-
-      this.baseView.table.setSpacing(spacing);
+      this.trigger('spacing:change', spacing);
     },
 
     serialize: function() {
@@ -46,7 +45,7 @@ define([
       var preferences = collection.preferences;
       var data = collection ? collection.toJSON() : {};
       var visibleColumns = preferences.get('columns_visible').split(',');
-      var selectedSpacing = this.baseView.table.getSpacing();
+      var selectedSpacing = this.baseView.getSpacing();
 
       data.spacings = _.map(app.config.get('spacings'), function(value) {
         return {
