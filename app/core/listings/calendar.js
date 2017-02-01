@@ -85,7 +85,6 @@ define(['app', 'backbone', 'moment'], function(app, Backbone, moment) {
         // fill the rest days
         var lastWeekDays = i = weeks[weekIndex].days.length;
         day = 1;
-        console.log(lastWeekDays);
         if (lastWeekDays < 7) {
           while(i < 7 ) {
             weeks[weekIndex].days.push({
