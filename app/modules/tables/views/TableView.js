@@ -221,7 +221,7 @@ function(app, Backbone, _, __t, BasePageView, ListViewManager, TableViewRightPan
         return this.state.views[viewId];
       }
 
-      return ListViewManager.getView(viewId, {
+      this.state.views[viewId] = ListViewManager.getView(viewId, {
         collection: this.collection,
         navigate: true,
         maxColumns: 8,
@@ -229,6 +229,8 @@ function(app, Backbone, _, __t, BasePageView, ListViewManager, TableViewRightPan
         fixedHead: true,
         showMoreButton: !! _.result(this, 'rightPane')
       });
+
+      return this.state.views[viewId];
     },
 
     beforeRender: function() {
