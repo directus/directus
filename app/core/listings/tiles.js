@@ -1,7 +1,8 @@
-define(['app', 'backbone', 'moment'], function(app, Backbone, moment) {
+define(['app', 'backbone'], function(app, Backbone) {
 
   return {
     id: 'tiles',
+
     View: Backbone.Layout.extend({
 
       template: 'core/listings/tiles',

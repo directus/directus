@@ -2,9 +2,8 @@ define([
   'app',
   'underscore',
   'backbone',
-  'moment',
   'async!https://maps.googleapis.com/maps/api/js?key=AIzaSyBmNpZfwjrxJ0zHEwYxgQ0_eKyfSexbZdQ&libraries=places'
-], function(app, _, Backbone, moment) {
+], function(app, _, Backbone) {
 
   return {
     id: 'map',
