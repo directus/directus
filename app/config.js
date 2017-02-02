@@ -18,6 +18,7 @@ require.config({
     "noty_theme": "../assets/js/libs/noty_theme",
     "polyglot":   "../assets/js/libs/polyglot.min",
     "dragula": "../assets/js/vendor/dragula.min",
+    "async": "../assets/js/plugins/async",
 
     // JavaScript folders.
     "libs":       "../assets/js/libs",
