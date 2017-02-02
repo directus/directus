@@ -6,6 +6,10 @@ define(['app', 'backbone', 'moment'], function(app, Backbone, moment) {
 
       template: 'core/listings/calendar',
 
+      attributes: {
+        class: "view-calendar js-listing-view abbrev-items clearfix"
+      },
+
       events: {
         'click .js-next': 'next',
         'click .js-prev': 'prev'
