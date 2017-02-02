@@ -6,7 +6,8 @@ define(function(require, exports, module) {
   var jQuery = require('jquery');
   var defaultListViews = [
     require('core/listings/calendar'),
-    require('core/listings/map')
+    require('core/listings/map'),
+    require('core/listings/tiles')
   ];
 
   /**
