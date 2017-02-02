@@ -771,12 +771,14 @@ class RelationalTableGateway extends BaseTableGateway
         $builder = new Builder($this->getAdapter());
         $builder->from($this->getTable());
 
-        $columns = $tableSchema->getNonAliasColumnsName();
         if (ArrayUtils::has($params, 'columns')) {
             $columns = array_unique(array_merge($tableSchema->getPrimaryKeysName(), $params['columns']));
+        } else {
+            $columns = $tableSchema->getColumnsName();
         }
 
-        $builder->columns($columns);
+        $nonAliasColumns = ArrayUtils::intersection($columns, $tableSchema->getNonAliasColumnsName());
+        $builder->columns($nonAliasColumns);
         $builder = $this->applyParamsToTableEntriesSelect($params, $builder, $tableSchema, $hasActiveColumn);
 
         // If we have user field and do not have big view privileges but have view then only show entries we created
@@ -803,7 +805,8 @@ class RelationalTableGateway extends BaseTableGateway
         $depth = ArrayUtils::get($params, 'depth', null);
         if ($depth !== null) {
             $columns = ArrayUtils::has($params, 'columns') ? $columns : [];
-            $results = $this->loadRelationalDataByDepth($results, (int) $depth, $columns);
+            $aliasColumns = ArrayUtils::intersection($columns, $tableSchema->getAliasColumnsName());
+            $results = $this->loadRelationalDataByDepth($results, (int) $depth, $aliasColumns);
         }
 
         // When the params column list doesn't include the primary key

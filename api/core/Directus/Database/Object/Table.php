@@ -379,9 +379,21 @@ class Table implements \ArrayAccess, Arrayable, \JsonSerializable
     }
 
     /**
+     * Gets all the columns name
+     *
+     * @return array
+     */
+    public function getColumnsName()
+    {
+        return array_map(function(Column $column) {
+            return $column->getName();
+        }, $this->getColumns());
+    }
+
+    /**
      * Gets all the alias columns name
      *
-     * @return Column[]
+     * @return array
      */
     public function getAliasColumnsName()
     {
@@ -393,7 +405,7 @@ class Table implements \ArrayAccess, Arrayable, \JsonSerializable
     /**
      * Gets all the non-alias columns name
      *
-     * @return Column[]
+     * @return array
      */
     public function getNonAliasColumnsName()
     {
