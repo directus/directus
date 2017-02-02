@@ -2,12 +2,13 @@ define(function(require, exports, module) {
 
   'use strict';
 
-  var TableView = require('core/table/table.view');
+  var _ = require('underscore');
   var jQuery = require('jquery');
   var defaultListViews = [
-    require('core/listings/calendar'),
+    require('core/listings/table'),
+    require('core/listings/tiles'),
     require('core/listings/map'),
-    require('core/listings/tiles')
+    require('core/listings/calendar')
   ];
 
   /**
@@ -25,7 +26,7 @@ define(function(require, exports, module) {
 
     register: function(listViews) {
       _.each(listViews, function(view) {
-        views[view.id] = view.View;
+        views[view.id] = view;
       },this);
     },
 
@@ -44,10 +45,10 @@ define(function(require, exports, module) {
     },
 
     getView: function(viewId, options) {
-      var View = TableView;
+      var View = views['table'].View;
 
       if (viewId != null && views.hasOwnProperty(viewId)) {
-        View = views[viewId];
+        View = views[viewId].View;
       }
 
       return new View(options);
@@ -57,8 +58,11 @@ define(function(require, exports, module) {
       var viewId = options.collection.table.get('list_view');
 
       return this.getView(viewId, options)
-    }
+    },
 
+    getViews: function() {
+      return views;
+    }
   };
 
 });

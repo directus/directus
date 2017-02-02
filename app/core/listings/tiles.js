@@ -3,6 +3,8 @@ define(['app', 'backbone'], function(app, Backbone) {
   return {
     id: 'tiles',
 
+    icon: 'apps',
+
     View: Backbone.Layout.extend({
 
       template: 'core/listings/tiles',

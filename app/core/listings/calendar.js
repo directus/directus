@@ -3,6 +3,8 @@ define(['app', 'backbone', 'moment'], function(app, Backbone, moment) {
   return {
     id: 'calendar',
 
+    icon: 'event',
+
     View: Backbone.Layout.extend({
 
       template: 'core/listings/calendar',

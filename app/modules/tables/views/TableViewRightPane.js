@@ -2,17 +2,31 @@ define([
   'app',
   'core/RightPane',
   'underscore',
+  'core/ListViewManager',
   'dragula'
-], function(app, RightPane, _, Dragula) {
+], function(app, RightPane, _, ListViewManager, Dragula) {
 
   return RightPane.extend({
 
     template: 'modules/tables/table-right-pane',
 
     events: {
+      'click .tiles .tile': 'changeView',
       'click .js-column': 'updateVisibleColumns',
       'click .js-close': 'close',
       'change .js-spacing-adjust': 'updateSpacing'
+    },
+
+    changeView: function(event) {
+      var viewId = $(event.currentTarget).data('view');
+
+      this.$('.tiles .tile.active').removeClass('active');
+      this.$('#' + viewId + '-view').addClass('active');
+
+      if (viewId !== this.state.viewId) {
+        this.state.viewId = viewId;
+        this.trigger('view:change', viewId);
+      }
     },
 
     updateVisibleColumns: function(event) {
@@ -80,10 +94,21 @@ define([
         })
         .value();
 
+      data.views = _.map(ListViewManager.getViews(), _.bind(function(view) {
+        var data = _.omit(view, 'View');
+        data.isActive = data.id === this.state.viewId;
+
+        return data;
+      }, this));
+
       return data;
     },
 
-    initialize: function() {
+    initialize: function(options) {
+      this.state = {
+        viewId: options.listView || this.collection.table.get('list_view') || 'table'
+      };
+
       var drag = Dragula({
         isContainer: function (el) {
           return el.classList.contains('reorder-columns');

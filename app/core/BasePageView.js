@@ -87,17 +87,12 @@ function(app, Backbone, _, BaseHeaderView, RightSidebarView) {
         this.rightPaneView = new view({
           baseView: baseView,
           collection: baseView.collection,
-          model: baseView.model
+          model: baseView.model,
+          listView: this.state ? this.state.viewId : null
         });
-      }
 
-      // @TODO: Make this cleaner.
-      // This events are only available for table view mode
-      this.listenTo(this.rightPaneView, 'spacing:change', function(spacing) {
-        if (this.table.setSpacing) {
-          this.table.setSpacing(spacing);
-        }
-      });
+        this.trigger('rightPane:load');
+      }
 
       this.listenTo(this.rightPaneView, 'close', function() {
         this.state.rightPaneOpen = false;

@@ -178,30 +178,25 @@ function(app, Backbone, _, __t, BasePageView, ListViewManager, TableViewRightPan
     },
 
     events: {
-      'click .tiles .tile': 'changeView',
       'click #bookmarkBtn': function() {
         var data = {
           title: this.collection.table.id,
           url: Backbone.history.fragment,
           icon_class: 'icon-star',
-          user: app.users.getCurrentUser().get("id"),
+          user: app.users.getCurrentUser().get('id'),
           section: 'table'
         };
-        if(!this.isBookmarked)
-        {
+
+        if (!this.isBookmarked) {
           app.getBookmarks().addNewBookmark(data);
         } else {
           app.getBookmarks().removeBookmark(data);
         }
+
         $('#bookmarkBtn').parent().toggleClass('active');
+
         this.isBookmarked = !this.isBookmarked;
       }
-    },
-
-    changeView: function(event) {
-      var viewId = $(event.currentTarget).data('view');
-
-      this.changeViewTo(viewId);
     },
 
     changeViewTo: function(viewId) {
@@ -295,8 +290,20 @@ function(app, Backbone, _, __t, BasePageView, ListViewManager, TableViewRightPan
       this.isBookmarked = app.getBookmarks().isBookmarked(this.collection.table.id);
       this.showDeleteButton = false;
       this.showBulkEditButton = false;
+
+      this.listenTo(this, 'rightPane:load', function() {
+        this.listenTo(this.rightPaneView, 'view:change', function(viewId) {
+          this.changeViewTo(viewId);
+        });
+
+        // @TODO: Make this cleaner.
+        // This events are only available for table view mode
+        this.listenTo(this.rightPaneView, 'spacing:change', function(spacing) {
+          if (this.table.setSpacing) {
+            this.table.setSpacing(spacing);
+          }
+        });
+      })
     }
-
   });
-
 });

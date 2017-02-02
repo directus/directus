@@ -8,6 +8,8 @@ define([
   return {
     id: 'map',
 
+    icon: 'map',
+
     View: Backbone.Layout.extend({
 
       template: 'core/listings/map',
