@@ -164,7 +164,8 @@ class Provider
     public function getUserByAuthentication($email, $password)
     {
         $this->prependSessionKey();
-        $user = $this->table->select(['email' => $email])->current();
+        $options = ['filter' => false];
+        $user = $this->table->select(['email' => $email], $options)->current();
         $correct = false;
 
         if ($user) {
