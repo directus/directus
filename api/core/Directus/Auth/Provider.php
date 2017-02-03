@@ -103,7 +103,11 @@ class Provider
         self::prependSessionKey();
         $zendDb = Bootstrap::get('zendDb');
         $usersTable = new TableGateway('directus_users', $zendDb);
-        $user = $usersTable->select(['email' => $email])->current();
+        // skip filtering
+        // allowing to select ALL columns
+        // by omitting the "private" users column
+        $options = ['filter' => false];
+        $user = $usersTable->select(['email' => $email], $options)->current();
         $correct = false;
 
         if ($user) {

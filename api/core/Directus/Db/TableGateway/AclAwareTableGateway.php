@@ -12,6 +12,7 @@ use Directus\Auth\Provider as Auth;
 use Directus\Db\Exception\DuplicateEntryException;
 use Directus\Db\RowGateway\AclAwareRowGateway;
 use Directus\Db\TableSchema;
+use Directus\Util\ArrayUtils;
 use Directus\Util\Formatting;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Adapter\Exception\InvalidQueryException;
@@ -176,7 +177,7 @@ class AclAwareTableGateway extends BaseTableGateway
         }
 
         try {
-            return parent::executeSelect($select);
+            return parent::executeSelect($select, ArrayUtils::get(func_get_args(), 1, []));
         } catch (InvalidQueryException $e) {
             if ('production' !== DIRECTUS_ENV) {
                 throw new \RuntimeException('This query failed: ' . $this->dumpSql($select), 0, $e);
