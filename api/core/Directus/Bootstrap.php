@@ -685,9 +685,9 @@ class Bootstrap
         $emitter->addFilter('table.directus_users.select', function($payload) {
             $result = $payload->result;
 
-            $fileRows = $result->toArray();
+            $rows = $result->toArray();
             $userId = AuthProvider::loggedIn() ? AuthProvider::getUserInfo('id') : null;
-            foreach ($fileRows as &$row) {
+            foreach ($rows as &$row) {
                 // Authenticated user can see their private info
                 if ($userId && $userId === $row['id']) {
                     continue;
@@ -706,8 +706,8 @@ class Bootstrap
                 ]);
             }
 
-            $filesArrayObject = new \ArrayObject($fileRows);
-            $result->initialize($filesArrayObject->getIterator());
+            $rowsArrayObject = new \ArrayObject($rows);
+            $result->initialize($rowsArrayObject->getIterator());
 
             return $payload;
         });
