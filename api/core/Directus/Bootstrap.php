@@ -645,6 +645,37 @@ class Bootstrap
             return (func_num_args() == 2) ? $result : $payload;
         });
 
+        $emitter->addFilter('table.directus_users.select', function($payload) {
+            $auth = Bootstrap::get('auth');
+            $result = $payload->result;
+
+            $rows = $result->toArray();
+            $userId = $auth->loggedIn() ? $auth->getUserInfo('id') : null;
+            foreach ($rows as &$row) {
+                // Authenticated user can see their private info
+                if ($userId && $userId === $row['id']) {
+                    continue;
+                }
+
+                $row = ArrayUtils::omit($row, [
+                    'password',
+                    'salt',
+                    'token',
+                    'access_token',
+                    'reset_token',
+                    'reset_expiration',
+                    'email_messages',
+                    'last_access',
+                    'last_page'
+                ]);
+            }
+
+            $rowsArrayObject = new \ArrayObject($rows);
+            $result->initialize($rowsArrayObject->getIterator());
+
+            return $payload;
+        });
+
         $emitter->addFilter('load.relational.onetomany', function($payload) {
             $rows = $payload->data;
             $column = $payload->column;

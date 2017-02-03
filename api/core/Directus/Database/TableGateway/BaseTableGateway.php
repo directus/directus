@@ -29,6 +29,7 @@ use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\SqlInterface;
 use Zend\Db\Sql\Update;
+use Zend\Db\Sql\Where;
 use Zend\Db\TableGateway\Feature;
 use Zend\Db\TableGateway\Feature\RowGatewayFeature;
 use Zend\Db\TableGateway\TableGateway;
@@ -560,6 +561,46 @@ class BaseTableGateway extends TableGateway
     }
 
     /**
+     * Select
+     *
+     * @param Where|\Closure|string|array $where
+     *
+     * @return ResultSetInterface
+     */
+    public function select($where = null)
+    {
+        if (!$this->isInitialized) {
+            $this->initialize();
+        }
+
+        $select = $this->sql->select();
+
+        if ($where instanceof \Closure) {
+            $where($select);
+        } elseif ($where !== null) {
+            $select->where($where);
+        }
+
+        return $this->selectWith($select, ArrayUtils::get(func_get_args(), 1, []));
+    }
+
+    /**
+     * @param Select $select
+     *
+     * @return null|ResultSetInterface
+     *
+     * @throws \RuntimeException
+     */
+    public function selectWith(Select $select)
+    {
+        if (!$this->isInitialized) {
+            $this->initialize();
+        }
+
+        return $this->executeSelect($select, ArrayUtils::get(func_get_args(), 1, []));
+    }
+
+    /**
      * @param Select $select
      *
      * @return ResultSet
@@ -576,13 +617,29 @@ class BaseTableGateway extends TableGateway
 
         try {
             $result = parent::executeSelect($select);
-            // @NOTE: filter data should be an object
-            $payload = new \stdClass();
-            $payload->result = $result;
-            $payload->selectState = $select->getRawState();
-            $payload = $this->applyHook('table.select', $payload);
 
-            return $payload->result;
+            // Select query options
+            $options = ArrayUtils::get(func_get_args(), 1, []);
+            if (!is_array($options)) {
+                $options = [];
+            }
+
+            if (ArrayUtils::get($options, 'filter', true) !== false) {
+                $selectState = $select->getRawState();
+                $selectTableName = $selectState['table'];
+
+                // @NOTE: filter data should be an object
+                $payload = new \stdClass();
+                $payload->result = $result;
+                $payload->selectState = $selectState;
+
+                $payload = $this->applyHook('table.select', $payload);
+                $payload = $this->applyHook('table.' . $selectTableName . '.select', $payload);
+
+                $result = $payload->result;
+            }
+
+            return $result;
         } catch (InvalidQueryException $e) {
             if ('production' !== DIRECTUS_ENV) {
                 throw new \RuntimeException('This query failed: ' . $this->dumpSql($select), 0, $e);
