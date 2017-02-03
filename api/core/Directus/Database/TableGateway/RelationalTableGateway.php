@@ -1211,7 +1211,7 @@ class RelationalTableGateway extends BaseTableGateway
             $relationalColumnName = $alias->getName();
             $relatedEntries = [];
             foreach ($results as $row) {
-                $relatedEntries[$row[$joinColumnsPrefix . $junctionKeyLeftColumn]][] = $row;
+                $relatedEntries[$row[$relatedTablePrimaryKey]][] = $row;
             }
 
             $uiOptions = $alias->getUIOptions();
