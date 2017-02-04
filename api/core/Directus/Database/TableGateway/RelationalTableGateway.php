@@ -804,20 +804,19 @@ class RelationalTableGateway extends BaseTableGateway
 
         $depth = ArrayUtils::get($params, 'depth', null);
         if ($depth !== null) {
-            $columns = ArrayUtils::has($params, 'columns') ? $columns : [];
+            // $columns = ArrayUtils::has($params, 'columns') ? $columns : [];
             $aliasColumns = ArrayUtils::intersection($columns, $tableSchema->getAliasColumnsName());
             $results = $this->loadRelationalDataByDepth($results, (int) $depth, $aliasColumns);
         }
 
         // When the params column list doesn't include the primary key
-        // it's included because each row gateway expects the primary key
+        // it should be included because each row gateway expects the primary key
         // after all the row gateway are created and initiated it only returns the chosen columns
         if (ArrayUtils::has($params, 'columns')) {
-            $columns = ArrayUtils::get($params, 'columns');
-
-            if (!ArrayUtils::contains($columns, $tableSchema->getPrimaryKeysName())) {
-                $results = array_map(function ($entry) use ($columns) {
-                    return ArrayUtils::pick($entry, $columns);
+            $primaryKeysName = $tableSchema->getPrimaryKeysName();
+            if (!ArrayUtils::contains(array_flip(ArrayUtils::get($params, 'columns')), $primaryKeysName)) {
+                $results = array_map(function ($entry) use ($primaryKeysName) {
+                    return ArrayUtils::omit($entry, $primaryKeysName);
                 }, $results);
             }
         }
@@ -1211,7 +1210,7 @@ class RelationalTableGateway extends BaseTableGateway
             $relationalColumnName = $alias->getName();
             $relatedEntries = [];
             foreach ($results as $row) {
-                $relatedEntries[$row[$relatedTablePrimaryKey]][] = $row;
+                $relatedEntries[$row[$joinColumnsPrefix . $junctionKeyLeftColumn]][] = $row;
             }
 
             $uiOptions = $alias->getUIOptions();
