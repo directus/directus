@@ -278,7 +278,7 @@ class BaseTableGateway extends TableGateway
         $rowset = $this->select(function (Select $select) use ($field, $value) {
             $select->limit(1);
             $select->where->equalTo($field, $value);
-        }, ['filter' => true]);
+        }, ['filter' => false]);
 
         $row = $rowset->current();
         // Supposing this "one" doesn't exist in the DB
