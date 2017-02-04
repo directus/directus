@@ -46,7 +46,8 @@ define(['app', 'backbone', 'moment'], function(app, Backbone, moment) {
         data.month = parseInt(moment(date).format('M'), 10);
         data.year = parseInt(moment(date).format('YYYY'), 10);
 
-        var dayOfTheWeek = parseInt(moment(date).format('d'), 10);
+        var startDate = moment([data.year, data.month - 1]).format();
+        var dayOfTheWeek = parseInt(moment(startDate).format('d'), 10);
         var daysInTheMonth = moment(date).daysInMonth();
         var daysInPreviousMonth = moment(date).add(-1, 'months').daysInMonth();
         var weeksInTheMonth = (daysInTheMonth/7)+1;
