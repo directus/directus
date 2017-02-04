@@ -67,7 +67,7 @@ class DirectusPrivilegesTableGateway extends RelationalTableGateway
     public function getGroupPrivileges($groupId)
     {
         $getPrivileges = function () use ($groupId) {
-            return (array)$this->fetchGroupPrivileges($groupId, null);
+            return (array) $this->fetchGroupPrivileges($groupId, null);
         };
 
         // return $this->memcache->getOrCache(MemcacheProvider::getKeyDirectusGroupPrivileges($groupId), $getPrivileges, 1800);
@@ -81,7 +81,11 @@ class DirectusPrivilegesTableGateway extends RelationalTableGateway
         $select->where->equalTo('group_id', $groupId);
 
         if ($statusId !== false) {
-            $select->where->equalTo('status_id', $statusId);
+            if ($statusId === null) {
+                $select->where->isNull('status_id');
+            } else {
+                $select->where->equalTo('status_id', $statusId);
+            }
         }
 
         $rowset = $this->selectWith($select);
