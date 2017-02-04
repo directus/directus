@@ -190,12 +190,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/flysystem.git",
-                "reference": "ca31a2db2f597c877840666b394e2e6a8a648ef8"
+                "reference": "469ad53c13ea19a0e54e3e5d70f61227ddcc0299"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/ca31a2db2f597c877840666b394e2e6a8a648ef8",
-                "reference": "ca31a2db2f597c877840666b394e2e6a8a648ef8",
+                "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/469ad53c13ea19a0e54e3e5d70f61227ddcc0299",
+                "reference": "469ad53c13ea19a0e54e3e5d70f61227ddcc0299",
                 "shasum": ""
             },
             "require": {
@@ -265,7 +265,7 @@
                 "sftp",
                 "storage"
             ],
-            "time": "2017-01-18 13:36:15"
+            "time": "2017-01-30 17:41:17"
         },
         {
             "name": "slim/extras",
@@ -475,7 +475,7 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/wellingguzman/zend-db",
-                "reference": "2d24b58b6fa27712631ad3726c6039bdde39d262"
+                "reference": "38cd41381462eaacff6dccc0ec0597962b2be1d8"
             },
             "require": {
                 "php": "^5.5 || ^7.0",
@@ -523,7 +523,7 @@
                 "db",
                 "zf2"
             ],
-            "time": "2017-01-18 03:41:08"
+            "time": "2017-01-20 19:34:42"
         },
         {
             "name": "zendframework/zend-stdlib",
@@ -951,12 +951,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/yaml.git",
-                "reference": "dbe61fed9cd4a44c5b1d14e5e7b1a8640cfb2bf2"
+                "reference": "322a8c2dfbca15ad6b1b27e182899f98ec0e0153"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/yaml/zipball/dbe61fed9cd4a44c5b1d14e5e7b1a8640cfb2bf2",
-                "reference": "dbe61fed9cd4a44c5b1d14e5e7b1a8640cfb2bf2",
+                "url": "https://api.github.com/repos/symfony/yaml/zipball/322a8c2dfbca15ad6b1b27e182899f98ec0e0153",
+                "reference": "322a8c2dfbca15ad6b1b27e182899f98ec0e0153",
                 "shasum": ""
             },
             "require": {
@@ -992,7 +992,7 @@
             ],
             "description": "Symfony Yaml Component",
             "homepage": "https://symfony.com",
-            "time": "2017-01-03T13:49:52+00:00"
+            "time": "2017-01-21T16:40:50+00:00"
         }
     ],
     "aliases": [],
