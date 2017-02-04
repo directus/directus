@@ -805,13 +805,13 @@ class RelationalTableGateway extends BaseTableGateway
         $depth = ArrayUtils::get($params, 'depth', null);
         if ($depth !== null) {
             $paramColumns = ArrayUtils::get($params, 'columns', []);
-            $aliasColumns = $tableSchema->getAliasColumnsName();
+            $relationalColumns = $tableSchema->getRelationalColumnsName();
 
             if ($paramColumns) {
-                $aliasColumns = ArrayUtils::intersection($paramColumns, $aliasColumns);
+                $relationalColumns = ArrayUtils::intersection($paramColumns, $relationalColumns);
             }
 
-            $results = $this->loadRelationalDataByDepth($results, (int) $depth, $aliasColumns);
+            $results = $this->loadRelationalDataByDepth($results, (int) $depth, $relationalColumns);
         }
 
         // When the params column list doesn't include the primary key
