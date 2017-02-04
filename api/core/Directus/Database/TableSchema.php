@@ -305,6 +305,32 @@ class TableSchema
         return in_array($columnName, $systemFields);
     }
 
+    /**
+     * @param $tableName
+     *
+     * @return \Directus\Database\Object\Column[] |bool
+     */
+    public static function getAllTableColumns($tableName)
+    {
+        return static::getSchemaManagerInstance()->getColumns($tableName);
+    }
+
+    /**
+     * @param $tableName
+     *
+     * @return array
+     */
+    public static function getAllTableColumnsName($tableName)
+    {
+        // @TODO: make all these methods name more standard
+        // TableColumnsName vs TableColumnNames
+        $columns = static::getAllTableColumns($tableName);
+
+        return array_map(function(Column $column) {
+            return $column->getName();
+        }, $columns);
+    }
+
     public static function getAllNonAliasTableColumnNames($table)
     {
         $columnNames = [];
