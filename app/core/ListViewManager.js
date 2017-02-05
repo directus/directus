@@ -50,10 +50,13 @@ define(function(require, exports, module) {
 
     getView: function(viewId, options) {
       var View = views['table'].View;
+      var defaultOptions = {id: viewId};
 
       if (viewId != null && views.hasOwnProperty(viewId)) {
         View = views[viewId].View;
       }
+
+      options = _.extend(defaultOptions, (options || {}));
 
       return new View(options);
     },

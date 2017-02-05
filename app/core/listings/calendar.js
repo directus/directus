@@ -1,4 +1,4 @@
-define(['app', 'underscore', 'backbone', 'moment', 'core/t'], function(app, _, Backbone, moment, __t) {
+define(['app', 'underscore', 'core/listings/baseView', 'moment', 'core/t'], function(app, _, BaseView, moment, __t) {
 
   var viewId = 'calendar';
 
@@ -9,7 +9,7 @@ define(['app', 'underscore', 'backbone', 'moment', 'core/t'], function(app, _, B
 
     dataTypes: ['DATETIME', 'DATE'],
 
-    View: Backbone.Layout.extend({
+    View: BaseView.extend({
 
       template: 'core/listings/calendar',
 
@@ -66,33 +66,6 @@ define(['app', 'underscore', 'backbone', 'moment', 'core/t'], function(app, _, B
             }
           }
         ]
-      },
-
-      getAllViewOptions: function(viewId) {
-        if (this.state && this.state.malformedOptions) {
-          return {};
-        }
-
-        var viewOptions = this.collection.preferences.get('list_view_options');
-        if (viewOptions) {
-          try {
-            viewOptions = JSON.parse(viewOptions);
-          } catch (err) {
-            viewOptions = {};
-            this.state.malformedOptions = true;
-            console.error(__t('calendar_has_malformed_options_json'));
-          }
-        }
-
-        if (viewId) {
-          viewOptions = viewOptions[viewId] || {};
-        }
-
-        return viewOptions;
-      },
-
-      getViewOptions: function() {
-        return this.getAllViewOptions(viewId);
       },
 
       serialize: function() {
@@ -301,10 +274,7 @@ define(['app', 'underscore', 'backbone', 'moment', 'core/t'], function(app, _, B
         this.collection.preferences.off('sync', this.render, this);
       },
 
-      initialize: function(options) {
-        this.baseView = options.baseView;
-        this.enable();
-
+      initialize: function() {
         // Right pane options changes
         if (this.baseView) {
           this.baseView.on('rightPane:input:change', function (name, value) {
@@ -312,11 +282,10 @@ define(['app', 'underscore', 'backbone', 'moment', 'core/t'], function(app, _, B
           }, this);
         }
 
-        this.state = {
-          malformedOptions: false,
+        this.state = _.extend(this.state, {
           currentDate: moment().format(),
           isUsingDateTime: this.isUsingDateTime()
-        };
+        })
       }
     })
   }
