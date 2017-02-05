@@ -44,6 +44,10 @@ define(function(require, exports, module) {
       return dfd;
     },
 
+    get: function(viewId) {
+      return views[viewId];
+    },
+
     getView: function(viewId, options) {
       var View = views['table'].View;
 

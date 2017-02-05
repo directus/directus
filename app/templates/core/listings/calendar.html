@@ -19,6 +19,16 @@
     {{#days}}
     <div class="day{{#if isEmpty}} blank{{/if}}{{#if isToday}} today{{/if}}">
         {{day}}
+        {{#if data}}
+        <div class="items">
+        {{#data}}
+            <div class="item{{#unless published}} not-published{{/unless}}" title="{{title}}">
+                {{#if time}}<span class="time">{{time}}</span>{{/if}}
+                {{title}}
+            </div>
+        {{/data}}
+        </div>
+        {{/if}}
     </div>
     {{/days}}
     {{/weeks}}

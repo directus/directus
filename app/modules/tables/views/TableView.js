@@ -222,6 +222,7 @@ function(app, Backbone, _, __t, BasePageView, ListViewManager, TableViewRightPan
         maxColumns: 8,
         toolbar: true,
         fixedHead: true,
+        baseView: this,
         showMoreButton: !! _.result(this, 'rightPane')
       });
 
@@ -294,6 +295,10 @@ function(app, Backbone, _, __t, BasePageView, ListViewManager, TableViewRightPan
       this.listenTo(this, 'rightPane:load', function() {
         this.listenTo(this.rightPaneView, 'view:change', function(viewId) {
           this.changeViewTo(viewId);
+        });
+
+        this.listenTo(this.rightPaneView, 'input:change', function(name, value) {
+          this.trigger('rightPane:input:change', name, value);
         });
 
         // @TODO: Make this cleaner.

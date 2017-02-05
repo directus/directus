@@ -60,6 +60,34 @@ define([
       this.trigger('spacing:change', spacing);
     },
 
+    beforeRender: function() {
+      var view = this.baseView.table;
+
+      if (!view.optionsStructure) {
+        return;
+      }
+
+      var options = _.result(view, 'getViewOptions');
+      var model = new Backbone.Model(options);
+      var structure = new Structure(_.result(view, 'optionsStructure'), {parse: true});
+
+      this.editView = new EditView({
+        model: model,
+        structure: structure,
+        events: {
+          'change input, select, textarea': _.bind(this.onInputChange, this)
+        }
+      });
+
+      this.insertView('.options', this.editView);
+    },
+
+    onInputChange: function(event) {
+      var element = $(event.currentTarget).get(0);
+
+      this.trigger('input:change', element.name, element.value);
+    },
+
     serialize: function() {
       var collection = this.collection;
       var structure = collection.structure;
@@ -107,6 +135,8 @@ define([
 
         return data;
       }, this));
+
+      data.viewId = this.state.viewId;
 
       return data;
     },
