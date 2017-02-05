@@ -757,6 +757,7 @@ class TableSchema
         $getPreferencesFn = function () use ($directusPreferencesTableGateway, $auth) {
             $currentUser = $auth->getUserInfo();
             $preferences = $directusPreferencesTableGateway->fetchAllByUser($currentUser['id']);
+
             return $preferences;
         };
 

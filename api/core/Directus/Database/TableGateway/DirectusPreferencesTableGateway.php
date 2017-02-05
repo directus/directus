@@ -208,7 +208,19 @@ class DirectusPreferencesTableGateway extends RelationalTableGateway
     public function fetchAllByUser($user_id, $assoc = false)
     {
         $select = new Select($this->table);
-        $select->columns(['id', 'user', 'table_name', 'columns_visible', 'sort', 'sort_order', 'status', 'title', 'search_string', 'spacing']);
+        $select->columns([
+            'id',
+            'user',
+            'table_name',
+            'columns_visible',
+            'sort',
+            'sort_order',
+            'status',
+            'title',
+            'search_string',
+            'list_view_options',
+            'spacing'
+        ]);
 
         $select->where->equalTo('user', $user_id)
             ->isNull('title');
