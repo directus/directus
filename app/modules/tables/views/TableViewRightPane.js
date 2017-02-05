@@ -152,7 +152,7 @@ define([
 
       view = ListViewManager.get(viewId);
 
-      return _.some(view.dataTypes, function(type) {
+      return !view.dataTypes || _.some(view.dataTypes, function(type) {
         var hasType = false;
         structure.each(function(column) {
           if (type.toLowerCase() == (column.get('type') || '').toLocaleLowerCase()) {
