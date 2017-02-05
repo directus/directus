@@ -280,12 +280,30 @@ define(['app', 'underscore', 'backbone', 'moment', 'core/t'], function(app, _, B
         return column.get('type') === 'DATETIME';
       },
 
-      initialize: function(options) {
-        var collection = this.collection;
-        this.baseView = options.baseView;
+      enable: function() {
+        if (this._enabled) {
+          return;
+        }
 
-        collection.on('sync', this.render, this);
-        collection.preferences.on('sync', this.render, this);
+        this._enabled = true;
+
+        this.collection.on('sync', this.render, this);
+        this.collection.preferences.on('sync', this.render, this);
+      },
+
+      disable: function() {
+        if (!this._enabled) {
+          return;
+        }
+
+        this._enabled = false;
+        this.collection.off('sync', this.render, this);
+        this.collection.preferences.off('sync', this.render, this);
+      },
+
+      initialize: function(options) {
+        this.baseView = options.baseView;
+        this.enable();
 
         // Right pane options changes
         if (this.baseView) {

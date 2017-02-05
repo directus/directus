@@ -204,8 +204,15 @@ function(app, Backbone, _, __t, BasePageView, ListViewManager, TableViewRightPan
         return;
       }
 
+      _.each(this.state.views, function(view) {
+          _.result(view, 'disable');
+      });
+
       this.state.viewId = viewId;
-      this.table = this.getCurrentView();
+      var newView = this.getCurrentView();
+      _.result(newView, 'enable');
+
+      this.table = newView;
       this.render();
     },
 
