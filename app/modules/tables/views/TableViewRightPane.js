@@ -1,10 +1,13 @@
 define([
   'app',
-  'core/RightPane',
   'underscore',
+  'backbone',
+  'core/edit',
+  'schema/ColumnsCollection',
+  'core/RightPane',
   'core/ListViewManager',
   'dragula'
-], function(app, RightPane, _, ListViewManager, Dragula) {
+], function(app, _, Backbone, EditView, Structure, RightPane, ListViewManager, Dragula) {
 
   return RightPane.extend({
 
@@ -19,6 +22,10 @@ define([
 
     changeView: function(event) {
       var viewId = $(event.currentTarget).data('view');
+
+      if (!this.supportsView(viewId, this.collection)) {
+        return;
+      }
 
       this.$('.tiles .tile.active').removeClass('active');
       this.$('#' + viewId + '-view').addClass('active');
@@ -102,6 +109,29 @@ define([
       }, this));
 
       return data;
+    },
+
+    supportsView: function(viewId, collection) {
+      collection = collection || this.collection;
+      var structure = collection.structure;
+      var view;
+
+      if (!collection || !structure) {
+        return false;
+      }
+
+      view = ListViewManager.get(viewId);
+
+      return _.some(view.dataTypes, function(type) {
+        var hasType = false;
+        structure.each(function(column) {
+          if (type.toLowerCase() == (column.get('type') || '').toLocaleLowerCase()) {
+            hasType = true;
+          }
+        });
+
+        return hasType;
+      });
     },
 
     initialize: function(options) {
