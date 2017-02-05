@@ -146,11 +146,6 @@ class Table implements \ArrayAccess, Arrayable, \JsonSerializable
     /**
      * @var string
      */
-    protected $listViewOptions;
-
-    /**
-     * @var string
-     */
     protected $columnGroupings;
 
     /**
@@ -921,26 +916,6 @@ class Table implements \ArrayAccess, Arrayable, \JsonSerializable
     public function getListView()
     {
         return $this->listView;
-    }
-
-    /**
-     * @param $listViewOptions
-     *
-     * @return string
-     */
-    public function setListViewOptions($listViewOptions)
-    {
-        $this->listViewOptions = $listViewOptions;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getListViewOptions()
-    {
-        return $this->listViewOptions;
     }
 
     /**
