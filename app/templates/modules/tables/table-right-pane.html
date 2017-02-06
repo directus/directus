@@ -52,18 +52,6 @@
     <hr>
     --}}
 
-    <h3>Spacing</h3>
-    <div class="select-container">
-        <select name="type" class="spacing-adjust js-spacing-adjust">
-            {{#each spacings}}
-            <option value="{{name}}"{{#if selected}} selected{{/if}}>{{capitalize name}}</option>
-            {{/each}}
-        </select>
-        <i class="material-icons select-arrow">arrow_drop_down</i>
-    </div>
-
-    <hr>
-
     <h3>Columns</h3>
     <ul id="reorder-columns" class="menu reorder-columns">
         {{#columns}}
