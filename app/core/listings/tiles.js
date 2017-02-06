@@ -13,6 +13,14 @@ define(['app', 'underscore', 'backbone', 'core/listings/baseView'], function(app
         class: 'view-tiles js-listing-view file-listing'
       },
 
+      events: {
+        'click .file': 'editItem'
+      },
+
+      editItem: function(event) {
+        var id = $(event.currentTarget).data('id');
+      },
+
       serialize: function() {
         var titleColumn = this.getTitleColumn();
         var subTitleColumn = this.getSubTitleColumn();
