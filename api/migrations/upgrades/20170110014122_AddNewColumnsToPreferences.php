@@ -6,12 +6,6 @@ class AddNewColumnsToPreferences extends Ruckusing_Migration_Base
 {
     public function up()
     {
-        if (!$this->has_column('directus_preferences', 'spacing')) {
-            $this->add_column('directus_preferences', 'spacing', 'string', [
-                'limit' => 32
-            ]);
-        }
-
         if (!$this->has_column('directus_preferences', 'list_view_options')) {
             $this->add_column('directus_preferences', 'list_view_options', 'text');
         }
@@ -19,10 +13,6 @@ class AddNewColumnsToPreferences extends Ruckusing_Migration_Base
 
     public function down()
     {
-        if ($this->has_column('directus_preferences', 'spacing')) {
-            $this->remove_column('directus_preferences', 'spacing');
-        }
-
         if ($this->has_column('directus_preferences', 'list_view_options')) {
             $this->remove_column('directus_preferences', 'list_view_options');
         }

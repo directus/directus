@@ -218,8 +218,7 @@ class DirectusPreferencesTableGateway extends RelationalTableGateway
             'status',
             'title',
             'search_string',
-            'list_view_options',
-            'spacing'
+            'list_view_options'
         ]);
 
         $select->where->equalTo('user', $user_id)
