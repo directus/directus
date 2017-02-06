@@ -252,11 +252,12 @@ define([
       updateDateRangeFilter: function(date) {
         var momentDate = moment(date || this.state.currentDate);
         var range = DateHelper.monthDateRange(momentDate, true);
+        var filters = {};
+        filters[this.getDateColumn().id] = {between: range.start + ',' + range.end};
+
         var options = {
           replaceOptions: {
-            filters: {
-              datetime: {between: range.start + ',' + range.end}
-            }
+            filters: filters
           }
         };
 
