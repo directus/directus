@@ -1,4 +1,4 @@
-define(['app', 'backbone'], function(app, Backbone) {
+define(['app', 'underscore', 'backbone', 'core/t'], function(app, _, Backbone, __t) {
   return Backbone.Layout.extend({
     optionsStructure: function() {},
 
@@ -29,9 +29,73 @@ define(['app', 'backbone'], function(app, Backbone) {
       return this.getAllViewOptions(this.id);
     },
 
-    enable: function() {},
+    enable: function() {
+      if (this._isEnabled) {
+        return;
+      }
 
-    disable: function() {},
+      this._isEnabled = true;
+
+      // Right pane options changes
+      if (this.baseView) {
+        this.baseView.on('rightPane:input:change', this.savePreferences, this);
+      }
+
+      this.onEnable();
+    },
+
+    onEnable: function() {},
+
+    disable: function() {
+      if (!this._isEnabled) {
+        return;
+      }
+
+      this._isEnabled = false;
+
+      // Right pane options changes
+      if (this.baseView) {
+        this.baseView.off('rightPane:input:change', this.savePreferences, this);
+      }
+
+      this.onDisable();
+    },
+
+    onDisable: function() {},
+
+    savePreferences: function(name, value) {
+      var attributes = {};
+      var viewOptions = this.getAllViewOptions();
+      var options;
+      var viewId = this.id;
+
+      // @TODO: create helper to create value using string key
+      // calendar.date_column
+      if (!viewOptions[viewId]) {
+        viewOptions[viewId] = {};
+      }
+
+      if (!viewOptions[viewId][name]) {
+        viewOptions[viewId][name] = {};
+      }
+
+      viewOptions[viewId][name] = value;
+
+      attributes['list_view_options'] = JSON.stringify(viewOptions);
+
+      var success = _.bind(function() {
+        this.state.malformedOptions = false
+      }, this);
+
+      options = {
+        wait: false,
+        silent: true,
+        success: success
+      };
+
+      this.collection.preferences.save(attributes, options);
+      this.trigger('preferences:updated');
+    },
 
     constructor: function(options) {
       this.baseView = options.baseView;

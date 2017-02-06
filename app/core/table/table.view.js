@@ -20,9 +20,7 @@ function(app, _, Backbone, Notification, __t, ModelHelper, TableHead, TableBody,
 
     template: 'tables/table',
 
-    state: {
-      spacing: 'cozy'
-    },
+    state: {},
 
     events: {
       'click tbody td:not(.js-check):not(.status):not(.sort)' : function(e) {
@@ -217,7 +215,7 @@ function(app, _, Backbone, Notification, __t, ModelHelper, TableHead, TableBody,
       $table.removeClass(this.state.spacing);
       this.state.spacing = name;
       $table.addClass(this.state.spacing);
-      this.options.preferences.save({spacing: name}, {silent: true});
+      // this.options.preferences.save({spacing: name}, {silent: true});
     },
 
     getSpacing: function () {
@@ -273,7 +271,20 @@ function(app, _, Backbone, Notification, __t, ModelHelper, TableHead, TableBody,
       }
 
       if (this.options.preferences) {
-        this.state.spacing = this.options.preferences.get('spacing') || 'cozy';
+        // @TODO: Duplicated
+        var viewOptions = this.collection.preferences.get('list_view_options');
+        if (viewOptions) {
+          try {
+            viewOptions = JSON.parse(viewOptions);
+            viewOptions = viewOptions ? viewOptions['table'] : {};
+          } catch (err) {
+            viewOptions = {};
+            this.state.malformedOptions = true;
+            console.error(__t('calendar_has_malformed_options_json'));
+          }
+        }
+
+        this.state.spacing = viewOptions['spacing'] || 'cozy';
       }
 
       // ==================================================================================

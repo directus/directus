@@ -215,73 +215,28 @@ define(['app', 'underscore', 'core/listings/baseView', 'moment', 'core/t'], func
         });
       },
 
-      savePreferences: function(name, value) {
-        var attributes = {};
-        var viewOptions = this.getAllViewOptions();
-        var options;
-
-        // @TODO: create helper to create value using string key
-        // calendar.date_column
-        if (!viewOptions[viewId]) {
-          viewOptions[viewId] = {};
-        }
-
-        if (!viewOptions[viewId][name]) {
-          viewOptions[viewId][name] = {};
-        }
-
-        viewOptions[viewId][name] = value;
-
-        attributes['list_view_options'] = JSON.stringify(viewOptions);
-
-        var success = _.bind(function() {
-          this.state.malformedOptions = false;
-          this.state.isUsingDateTime = this.isUsingDateTime();
-        }, this);
-
-        options = {
-          wait: false,
-          success: success
-        };
-
-        this.collection.preferences.save(attributes, options);
-      },
-
       isUsingDateTime: function() {
         var column = this.getDateColumn();
 
         return column.get('type') === 'DATETIME';
       },
 
-      enable: function() {
-        if (this._enabled) {
-          return;
-        }
-
-        this._enabled = true;
-
-        this.collection.on('sync', this.render, this);
-        this.collection.preferences.on('sync', this.render, this);
+      onPreferencesUpdated: function() {
+        this.state.isUsingDateTime = this.isUsingDateTime();
+        this.render();
       },
 
-      disable: function() {
-        if (!this._enabled) {
-          return;
-        }
+      onEnable: function() {
+        this.collection.on('sync', this.render, this);
+        this.collection.preferences.on('sync', this.onPreferencesUpdated, this);
+      },
 
-        this._enabled = false;
+      onDisable: function() {
         this.collection.off('sync', this.render, this);
-        this.collection.preferences.off('sync', this.render, this);
+        this.collection.preferences.off('sync', this.onPreferencesUpdated, this);
       },
 
       initialize: function() {
-        // Right pane options changes
-        if (this.baseView) {
-          this.baseView.on('rightPane:input:change', function (name, value) {
-            this.savePreferences(name, value);
-          }, this);
-        }
-
         this.state = _.extend(this.state, {
           currentDate: moment().format(),
           isUsingDateTime: this.isUsingDateTime()

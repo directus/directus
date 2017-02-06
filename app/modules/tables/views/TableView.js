@@ -205,12 +205,12 @@ function(app, Backbone, _, __t, BasePageView, ListViewManager, TableViewRightPan
       }
 
       _.each(this.state.views, function(view) {
-          _.result(view, 'disable');
+          view.disable();
       });
 
       this.state.viewId = viewId;
       var newView = this.getCurrentView();
-      _.result(newView, 'enable');
+      newView.enable();
 
       this.table = newView;
       this.render();
@@ -304,8 +304,11 @@ function(app, Backbone, _, __t, BasePageView, ListViewManager, TableViewRightPan
           this.changeViewTo(viewId);
         });
 
-        this.listenTo(this.rightPaneView, 'input:change', function(name, value) {
-          this.trigger('rightPane:input:change', name, value);
+        this.listenTo(this.rightPaneView, 'all', function() {
+          var args = Array.prototype.slice.call(arguments, 0);
+          args[0] = 'rightPane:' + args[0];
+
+          this.trigger.apply(this, args);
         });
 
         // @TODO: Make this cleaner.

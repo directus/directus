@@ -16,8 +16,7 @@ define([
     events: {
       'click .tiles .tile': 'changeView',
       'click .js-column': 'updateVisibleColumns',
-      'click .js-close': 'close',
-      'change .js-spacing-adjust': 'updateSpacing'
+      'click .js-close': 'close'
     },
 
     changeView: function(event) {
@@ -53,11 +52,6 @@ define([
 
       collection.filters.columns_visible = columns;
       collection.fetch();
-    },
-
-    updateSpacing: function(event) {
-      var spacing = $(event.currentTarget).val();
-      this.trigger('spacing:change', spacing);
     },
 
     beforeRender: function() {
