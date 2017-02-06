@@ -2,15 +2,16 @@ define([
   'app',
   'underscore',
   'backbone',
+  'core/listings/baseView',
   'async!https://maps.googleapis.com/maps/api/js?key=AIzaSyBmNpZfwjrxJ0zHEwYxgQ0_eKyfSexbZdQ&libraries=places'
-], function(app, _, Backbone) {
+], function(app, _, Backbone, BaseView) {
 
   return {
     id: 'map',
 
     icon: 'map',
 
-    View: Backbone.Layout.extend({
+    View: BaseView.extend({
 
       template: 'core/listings/map',
 
@@ -34,6 +35,16 @@ define([
           anchor: new google.maps.Point(7, 20),
           animation: google.maps.Animation.DROP
         };
+      },
+
+      createMarker: function(lat, lng, title) {
+        return new google.maps.Marker({
+          position: new google.maps.LatLng(lat, lng),
+          map: this.map,
+          draggable: false,
+          title: title || 'Select a Location',
+          icon: this.pinSymbol('#3498DB')
+        });
       },
 
       initMap: function() {
@@ -91,13 +102,7 @@ define([
 
         var mapElement = this.$('.map')[0];
         var map = this.map = new google.maps.Map(mapElement, mapOptions);
-        var marker = this.marker = new google.maps.Marker({
-          position: new google.maps.LatLng(40.720, -73.953),
-          map: map,
-          draggable: true,
-          title: 'Select a Location',
-          icon: this.pinSymbol('#3498DB')
-        });
+        var marker = this.marker = this.createMarker(40.720, -73.953);
 
         var input = this.input = this.$('#map-search')[0];
         map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
