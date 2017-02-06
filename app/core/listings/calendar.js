@@ -135,6 +135,7 @@ define([
           }
 
           weeks[weekIndex].days.push({
+            // @TODO: make sure is for this month and year
             data: this.getDayData(day),
             day: day,
             isToday: data.today.day === day && data.today.month === data.month,
