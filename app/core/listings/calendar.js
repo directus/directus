@@ -1,4 +1,11 @@
-define(['app', 'underscore', 'core/listings/baseView', 'moment', 'core/t'], function(app, _, BaseView, moment, __t) {
+define([
+  'app',
+  'underscore',
+  'core/listings/baseView',
+  'moment',
+  'core/t',
+  'helpers/date'
+], function(app, _, BaseView, moment, __t, DateHelper) {
 
   var viewId = 'calendar';
 
@@ -24,12 +31,18 @@ define(['app', 'underscore', 'core/listings/baseView', 'moment', 'core/t'], func
 
       prev: function() {
         this.state.currentDate = moment(this.state.currentDate).add(-1, 'months');
-        this.render();
+        this.updateCalendar();
       },
 
       next: function() {
         this.state.currentDate = moment(this.state.currentDate).add(1, 'months');
+        this.updateCalendar();
+      },
+
+      updateCalendar: function() {
+        this.updateDateRangeFilter();
         this.render();
+        this.collection.fetch(this.fetchOptions);
       },
 
       optionsStructure: function() {
@@ -236,11 +249,31 @@ define(['app', 'underscore', 'core/listings/baseView', 'moment', 'core/t'], func
         this.collection.preferences.off('sync', this.onPreferencesUpdated, this);
       },
 
+      updateDateRangeFilter: function(date) {
+        var momentDate = moment(date || this.state.currentDate);
+        var range = DateHelper.monthDateRange(momentDate, true);
+        var options = {
+          replaceOptions: {
+            filters: {
+              datetime: {between: range.start + ',' + range.end}
+            }
+          }
+        };
+
+        this.fetchOptions = _.extend(this.fetchOptions, options);
+        this.collection.options = _.extend(this.collection.options || {}, options);
+      },
+
       initialize: function() {
         this.state = _.extend(this.state, {
+          // @TODO: change this date to be a moment object
           currentDate: moment().format(),
           isUsingDateTime: this.isUsingDateTime()
-        })
+        });
+
+        this.fetchOptions = {};
+
+        this.updateDateRangeFilter(moment(this.state.currentDate));
       }
     })
   }
