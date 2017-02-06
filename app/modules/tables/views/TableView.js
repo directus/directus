@@ -310,14 +310,6 @@ function(app, Backbone, _, __t, BasePageView, ListViewManager, TableViewRightPan
 
           this.trigger.apply(this, args);
         });
-
-        // @TODO: Make this cleaner.
-        // This events are only available for table view mode
-        this.listenTo(this.rightPaneView, 'spacing:change', function(spacing) {
-          if (this.table.setSpacing) {
-            this.table.setSpacing(spacing);
-          }
-        });
       })
     }
   });
