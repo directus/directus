@@ -255,7 +255,7 @@ function(app, Backbone, _, __t, BasePageView, ListViewManager, TableViewRightPan
     initialize: function() {
       this.widgets = {};
       this.state = {
-        viewId: this.collection.table.get('list_view'),
+        viewId: this.collection.table.get('list_view') || 'table',
         views: {}
       };
 
