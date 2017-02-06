@@ -899,6 +899,12 @@ class RelationalTableGateway extends BaseTableGateway
                 continue;
             }
 
+            if ($operator === 'between') {
+                if (!is_array($value)) {
+                    $value = explode(',', $value);
+                }
+            }
+
             $arguments = [$column, $value];
             $relationship = TableSchema::getColumnRelationship($this->getTable(), $column);
             if (in_array($operator, ['all', 'has']) && in_array($relationship->getType(), ['ONETOMANY', 'MANYTOMANY'])) {
