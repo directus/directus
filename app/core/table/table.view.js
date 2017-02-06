@@ -284,7 +284,7 @@ function(app, _, Backbone, Notification, __t, ModelHelper, TableHead, TableBody,
           }
         }
 
-        this.state.spacing = viewOptions['spacing'] || 'cozy';
+        this.state.spacing = viewOptions ? (viewOptions['spacing'] || 'cozy') : 'cozy';
       }
 
       // ==================================================================================
