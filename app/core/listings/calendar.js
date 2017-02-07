@@ -262,7 +262,7 @@ define([
           }
         };
 
-        this.fetchOptions = _.extend(this.fetchOptions, options);
+        this.fetchOptions = _.extend(this.fetchOptions || {}, options);
         this.collection.options = _.extend(this.collection.options || {}, options);
       },
 
