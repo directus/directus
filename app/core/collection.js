@@ -239,7 +239,8 @@ function(app, Backbone, _) {
         _.extend(options.data, filters);
       }
 
-      this.trigger('fetch', this);
+      // @NOTE: Do we need it?
+      // this.trigger('fetch', this);
 
       return Backbone.Collection.prototype.fetch.call(this, options);
     }
