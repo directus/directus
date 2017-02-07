@@ -687,22 +687,22 @@ class RelationalTableGateway extends BaseTableGateway
         $entries = $this->loadItems($params);
         // @NOTE: it should has another name
         //        this evolved into something else
-        $entries = $this->loadMetadata($entries);
+        $entries = $this->loadMetadata($entries, ArrayUtils::has($params, 'id'));
 
         return $entries;
     }
 
-    public function loadMetadata($entriesData)
+    public function loadMetadata($entriesData, $single = false)
     {
         return [
-            'meta' => $this->createMetadata($entriesData),
+            'meta' => $this->createMetadata($entriesData, $single),
             'data' => $entriesData
         ];
     }
 
-    public function createMetadata($entriesData)
+    public function createMetadata($entriesData, $single)
     {
-        $singleEntry = !ArrayUtils::isNumericKeys($entriesData);
+        $singleEntry = $single || !ArrayUtils::isNumericKeys($entriesData);
         $tableSchema = TableSchema::getTableSchema($this->table);
         $metadata = [
             'table' => $tableSchema->getTableName(),
