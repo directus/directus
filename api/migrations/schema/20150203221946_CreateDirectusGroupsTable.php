@@ -65,6 +65,13 @@ class CreateDirectusGroupsTable extends Ruckusing_Migration_Base
             'description' => NULL,
             'restrict_to_ip_whitelist' => 0
         ]);
+
+        $this->insert('directus_groups', [
+            'id' => 2,
+            'name' => 'Public',
+            'description' => NULL,
+            'restrict_to_ip_whitelist' => 0
+        ]);
     }//up()
 
     public function down()
