@@ -389,7 +389,16 @@ define(['app', 'underscore', 'backbone', 'core/t', 'core/Modal'], function(app, 
 
     hasStatusColumn: function(table) {
       var columns = app.schemaManager.getColumns('tables', table);
-      var statusColumn = columns.table.get('status_column') || 'active';
+      var statusColumn;
+
+      // table without columns
+      // it means the user doesn't have permission to view them
+      // @TODO: Make a way to see the columns to admins
+      if (!columns) {
+        return false;
+      }
+
+      statusColumn = columns.table.get('status_column') || 'active';
 
       return columns.some(function(model) {
         return model.id === statusColumn;
