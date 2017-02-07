@@ -183,7 +183,7 @@ $app->hook('slim.before.dispatch', function () use ($app, $requestNonceProvider,
 
             $user = $user->toArray();
             $user = reset($user);
-        } else {
+        } else if (!$authentication->loggedIn()) {
             $directusGroupsTableGateway = new DirectusGroupsTableGateway($ZendDb, $acl);
             $publicGroup = $directusGroupsTableGateway->select(['name' => 'public'])->current();
 
