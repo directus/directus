@@ -23,6 +23,47 @@ define([
         this.initMap();
       },
 
+      optionsStructure: function() {
+        var options = {
+          location: {}
+        };
+
+        _.each(this.locationColumns(), function(column) {
+          options.location[column.id] = column.id;
+        });
+
+        return [
+          {
+            id: 'location_column',
+            type: 'String',
+            required: true,
+            ui: 'select',
+            options: {
+              options: options.location
+            }
+          }
+        ]
+      },
+
+      getLocationColumn: function() {
+        var viewOptions = this.getViewOptions();
+        var column;
+
+        if (viewOptions.location_column) {
+          column = this.collection.structure.get(viewOptions.location_column);
+        } else {
+          column = _.first(this.locationColumns())
+        }
+
+        return column;
+      },
+
+      locationColumns: function() {
+        return this.collection.structure.filter(function(model) {
+          return _.contains(['map'], model.get('ui'));
+        });
+      },
+
       pinSymbol: function (color) {
         return {
           path: 'M7,0 C3.13,0 0,3.13 0,7 C0,12.25 7,20 7,20 C7,20 14,12.25 14,7 C14,3.13 10.87,0 7,0 Z M7,9.5 C5.62,9.5 4.5,8.38 4.5,7 C4.5,5.62 5.62,4.5 7,4.5 C8.38,4.5 9.5,5.62 9.5,7 C9.5,8.38 8.38,9.5 7,9.5 Z',
@@ -104,6 +145,10 @@ define([
         var map = this.map = new google.maps.Map(mapElement, mapOptions);
         var marker = this.marker = this.createMarker(40.720, -73.953);
 
+        google.maps.event.addListenerOnce(map, 'idle', _.bind(function() {
+          this.updateMap();
+        }, this));
+
         var input = this.input = this.$('#map-search')[0];
         map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
 
@@ -149,19 +194,18 @@ define([
           disableDefaultUI: true
         });
 
-        google.maps.event.addDomListener(window, 'resize', function() {
+        google.maps.event.addDomListener(window, 'resize', _.bind(function() {
           var center = map.getCenter();
           google.maps.event.trigger(map, 'resize');
           map.setCenter(center);
-        });
+          this.updateMap();
+        }, this));
 
         this.state.loaded = true;
       },
 
-      changePlace: function(place) {
-        var marker = this.marker;
+      addMarker: function(marker, place) {
         var map = this.map;
-
         // infowindow.close();
         marker.setVisible(false);
 
@@ -191,16 +235,68 @@ define([
             (place.address_components[2] && place.address_components[2].short_name || '')
           ].join(' ');
         }
+      },
+
+      changePlace: function(place) {
+        var marker = this.marker;
+
+        this.addMarker(marker, place);
 
         $('.lat-long').html('Latitude: ' + place.geometry.location.lat().toFixed(3) + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Longitude: ' + place.geometry.location.lng().toFixed(3) + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(' + place.name + ')'); // address
 
       },
 
+      getMapBoundsLocation: function() {
+        var bounds = this.map.getBounds();
+
+        return {
+          ne: bounds.getNorthEast(),
+          sw: bounds.getSouthWest()
+        }
+      },
+
+      updateMap: function() {
+        this.updateLocationRangeFilter();
+      },
+
+      updateLocationRangeFilter: function() {
+        var range = this.getMapBoundsLocation();
+        var filters = {};
+        filters[this.getLocationColumn().id] = [
+          {between: range.sw.lat() + ',' + range.ne.lat()},
+          {between: range.sw.lng() + ',' + range.ne.lng()}
+        ];
+
+        var options = {
+          remove: false,
+          replaceOptions: {
+            filters: filters
+          }
+        };
+
+        this.fetchOptions = _.extend(this.fetchOptions || {}, options);
+        this.collection.options = _.extend(this.collection.options || {}, options);
+      },
+
       initialize: function() {
         this.state = {
           loaded: false,
-          search: null
-        }
+          search: null,
+          markers: []
+        };
+
+        this.listenTo(this.collection, 'sync', function() {
+          this.collection.each(_.bind(function(model) {
+            var marker;
+            var location = model.get(this.getLocationColumn().id);
+
+            if (location) {
+              location = location.split(',');
+              marker = this.createMarker(location[0], location[1]);
+              marker.setMap(this.map);
+            }
+          }, this));
+        });
       }
     })
   }
