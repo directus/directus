@@ -407,7 +407,7 @@ class Acl
         $select
             ->columns([$TableGateway->primaryKeyFieldName, $cmsOwnerColumn]);
         $select->where($predicate);
-        $results = $TableGateway->selectWith($select);
+        $results = $TableGateway->selectWith($select, ['filter' => false]);
         foreach ($results as $row) {
             $ownerIds[] = $row[$cmsOwnerColumn];
         }

@@ -570,7 +570,7 @@ class Bootstrap
                 $data = func_get_arg(1);
             } else {
                 $tableName = $payload->tableName;
-                $data = $payload->data;
+                $data = &$payload->data;
             }
 
             if ($tableName == 'directus_files') {
