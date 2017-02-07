@@ -11,6 +11,8 @@ define([
 
     icon: 'map',
 
+    // @TODO: Support UI Type
+
     View: BaseView.extend({
 
       template: 'core/listings/map',
