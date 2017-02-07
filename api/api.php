@@ -170,6 +170,7 @@ $app->hook('slim.before.dispatch', function () use ($app, $requestNonceProvider,
             }
         }
 
+        $user = null;
         if ($authToken) {
             // @TODO: Users without group shouldn't be allow to log in
             $DirectusUsersTableGateway = new \Zend\Db\TableGateway\TableGateway('directus_users', $ZendDb);
@@ -182,11 +183,24 @@ $app->hook('slim.before.dispatch', function () use ($app, $requestNonceProvider,
 
             $user = $user->toArray();
             $user = reset($user);
+        } else {
+            $directusGroupsTableGateway = new DirectusGroupsTableGateway($ZendDb, $acl);
+            $publicGroup = $directusGroupsTableGateway->select(['name' => 'public'])->current();
 
+            if ($publicGroup) {
+                $user = [
+                    'id' => null,
+                    'group' => $publicGroup['id']
+                ];
+            }
+        }
+
+        if ($user) {
             // ------------------------------
             // Check if group needs whitelist
             $groupId = $user['group'];
             $directusGroupsTableGateway = new DirectusGroupsTableGateway($ZendDb, $acl);
+
             if (!$directusGroupsTableGateway->acceptIP($groupId, $app->request->getIp())) {
                 $app->contentType('application/javascript');
                 $app->response->setStatus(401);
@@ -206,8 +220,10 @@ $app->hook('slim.before.dispatch', function () use ($app, $requestNonceProvider,
             $_SESSION = [];
 
             $authentication->setLoggedUser($user['id']);
-            $app->emitter->run('directus.authenticated', [$app, $user]);
-            $app->emitter->run('directus.authenticated.token', [$app, $user]);
+            if ($user['id']) {
+                $app->emitter->run('directus.authenticated', [$app, $user]);
+                $app->emitter->run('directus.authenticated.token', [$app, $user]);
+            }
 
             // Reload all user permissions
             // At this point ACL has run and loaded all permissions
