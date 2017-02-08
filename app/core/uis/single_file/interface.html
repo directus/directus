@@ -17,13 +17,13 @@
 {{else}}
 <div class="dropzone js-from-computer">
     <i class="material-icons cloud">cloud_upload</i>
-    <div class="drag-and-drop">Drag &amp; Drop</div>
-    <div class="click-to-browse">Or Click to Browse</div>
+    <div class="drag-and-drop">{{t "drag_and_drop"}}</div>
+    <div class="click-to-browse">{{t "or_browse"}}</div>
 </div>
 <input type="file" id="fileInput" style="display:none">
 {{/if}}
 <div class="button-group">
-    <div class="button js-from-system"><i class="material-icons">playlist_add_check</i> Choose Existing</div>
-    <div class="button js-button-url"><i class="material-icons">insert_link</i> Import URL</div>
-    <div class="button"><i class="material-icons">insert_link</i> Camera Capture</div>
+    <div class="button js-from-system"><i class="material-icons">playlist_add_check</i> {{t "directus_files"}}</div>
+    <div class="button js-button-url"><i class="material-icons">insert_link</i> {{t "url_import"}}</div>
+    <div class="button"><i class="material-icons">insert_link</i> {{t "camera_capture"}}</div>
 </div>

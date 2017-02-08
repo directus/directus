@@ -123,7 +123,7 @@ function (app, _, __t, Utils, UIView, TableView, Overlays) {
 
     afterRender: function () {
       var timer;
-      var $dropzone = this.$('.dropzone');//this.$el.find('.single-image-thumbnail');
+      var $dropzone = this.$('.dropzone');
       var model = this.fileModel;
 
       if (!$dropzone.length) {
