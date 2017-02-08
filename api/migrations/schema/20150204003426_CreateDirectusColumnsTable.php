@@ -59,9 +59,9 @@ class CreateDirectusColumnsTable extends Ruckusing_Migration_Base
             'limit' => 64,
             'default' => NULL
         ]);
-        $t->column('relationship_type', 'string', [
-            'limit' => 20,
-            'default' => NULL
+        $t->column('relationship_type', 'enum', [
+            'values' => ['MANYTOONE', 'MANYTOMANY', 'ONETOMANY'],
+            'default' => null
         ]);
         $t->column('related_table', 'string', [
             'limit' => 64,
