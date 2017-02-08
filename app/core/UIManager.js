@@ -13,7 +13,7 @@ define(function(require, exports, module) {
     require('core/uis/columns'),
     require('core/uis/numeric'),
     require('core/uis/slider'),
-    require('core/uis/single_file'),
+    require('core/uis/single_file/component'),
     require('core/uis/slug'),
     require('core/uis/textarea'),
     require('core/uis/directus_user'),
@@ -388,6 +388,7 @@ define(function(require, exports, module) {
           collection: collection,
           settings: schema.options,
           schema: schema,
+          // @TODO: Do we need this?
           tagName: 'td'
         });
       }
