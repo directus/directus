@@ -27,10 +27,10 @@ function (app, _, __t, Utils, UIView, TableView, Overlays) {
     events: {
       'click .js-from-computer': 'chooseFromComputer',
       'click .js-from-system': 'chooseFromSystem',
+      'click .js-from-url': 'chooseFromUrl',
       'click .js-remove': 'removeFile',
       'click .js-title': 'edit',
-      'change input[type=file]': 'onInputChange',
-      'click .js-button-url': 'chooseFromUrl'
+      'change input[type=file]': 'onInputChange'
     },
 
     chooseFromComputer: function() {
