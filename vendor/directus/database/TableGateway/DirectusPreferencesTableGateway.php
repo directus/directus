@@ -10,7 +10,7 @@ use Zend\Db\Sql\Predicate\NotIn;
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Update;
 
-class DirectusPreferencesTableGateway extends BaseTableGateway
+class DirectusPreferencesTableGateway extends RelationalTableGateway
 {
     public static $_tableName = 'directus_preferences';
 
@@ -208,12 +208,12 @@ class DirectusPreferencesTableGateway extends BaseTableGateway
     public function fetchAllByUser($user_id, $assoc = false)
     {
         $select = new Select($this->table);
-        $select->columns(['id', 'user', 'table_name', 'columns_visible', 'sort', 'sort_order', 'status', 'title', 'search_string']);
+        $select->columns(['id', 'user', 'table_name', 'columns_visible', 'sort', 'sort_order', 'status', 'title', 'search_string', 'spacing']);
 
         $select->where->equalTo('user', $user_id)
             ->isNull('title');
 
-        $coreTables = $this->schema->getDirectusTables(static::$IGNORED_TABLES);
+        $coreTables = $this->schemaManager->getDirectusTables(static::$IGNORED_TABLES);
 
         $select->where->addPredicate(new NotIn('table_name', $coreTables));
         $metadata = new \Zend\Db\Metadata\Metadata($this->getAdapter());

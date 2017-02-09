@@ -4,9 +4,10 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit8e931aadab8e412c6c5f036415d1b25c
+class ComposerStaticInit7a3d35a4d15bfb37b3b7384d6e48149a
 {
     public static $files = array (
+        '1625aab00bebe8f618cdad8a767de4f0' => __DIR__ . '/..' . '/directus/database/functions.php',
         '2c102faa651ef8ea5874edb585946bce' => __DIR__ . '/..' . '/swiftmailer/swiftmailer/lib/swift_required.php',
         '1d1d744f1bd36f7044f0f268edf1c6a2' => __DIR__ . '/../..' . '/api/core/functions.php',
     );
@@ -115,9 +116,9 @@ class ComposerStaticInit8e931aadab8e412c6c5f036415d1b25c
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit8e931aadab8e412c6c5f036415d1b25c::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit8e931aadab8e412c6c5f036415d1b25c::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInit8e931aadab8e412c6c5f036415d1b25c::$prefixesPsr0;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit7a3d35a4d15bfb37b3b7384d6e48149a::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit7a3d35a4d15bfb37b3b7384d6e48149a::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit7a3d35a4d15bfb37b3b7384d6e48149a::$prefixesPsr0;
 
         }, null, ClassLoader::class);
     }

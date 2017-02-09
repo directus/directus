@@ -176,12 +176,14 @@ class Insert extends AbstractPreparableSql
 
         $columns = [];
         $values  = [];
+        $cIndex = 0;
 
         foreach ($this->columns as $column => $value) {
             $columns[] = $platform->quoteIdentifier($column);
+            $parameterName = 'column' . $cIndex++;
             if (is_scalar($value) && $parameterContainer) {
-                $values[] = $driver->formatParameterName($column);
-                $parameterContainer->offsetSet($column, $value);
+                $values[] = $driver->formatParameterName($parameterName);
+                $parameterContainer->offsetSet($parameterName, $value);
             } else {
                 $values[] = $this->resolveColumnValue(
                     $value,

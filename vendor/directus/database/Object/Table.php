@@ -290,11 +290,45 @@ class Table implements \ArrayAccess, Arrayable, \JsonSerializable
     /**
      * Get table's columns
      *
+     * @param array $names
+     *
      * @return Column[]
      */
-    public function getColumns()
+    public function getColumns(array $names = [])
     {
-        return $this->columns;
+        $columns = $this->columns;
+
+        if ($names) {
+            $columns = array_filter($columns, function(Column $column) use ($names) {
+                return in_array($column->getName(), $names);
+            });
+        }
+
+        return $columns;
+    }
+
+    /**
+     * Get table primary keys
+     *
+     * @return array
+     */
+    public function getPrimaryKeys()
+    {
+        return array_filter($this->getColumns(), function(Column $column) {
+            return $column->isPrimary();
+        });
+    }
+
+    /**
+     * Get table primary keys name
+     *
+     * @return array
+     */
+    public function getPrimaryKeysName()
+    {
+        return array_map(function(Column $column) {
+            return $column->getName();
+        }, $this->getPrimaryKeys());
     }
 
     /**
@@ -310,20 +344,63 @@ class Table implements \ArrayAccess, Arrayable, \JsonSerializable
     }
 
     /**
-     * Gets all the table alias columns
+     * Gets all the alias columns
      *
      * @return Column[]
      */
     public function getAliasColumns()
     {
-        $aliasColumns = [];
-        foreach($this->getColumns() as $column) {
-            if ($column->isAlias()) {
-                $aliasColumns[] = $column;
-            }
-        }
+        return array_filter($this->getColumns(), function(Column $column) {
+            return $column->isAlias();
+        });
+    }
 
-        return $aliasColumns;
+    /**
+     * Gets all the non-alias columns
+     *
+     * @return Column[]
+     */
+    public function getNonAliasColumns()
+    {
+        return array_filter($this->getColumns(), function(Column $column) {
+            return !$column->isAlias();
+        });
+    }
+
+    /**
+     * Gets all the columns name
+     *
+     * @return array
+     */
+    public function getColumnsName()
+    {
+        return array_map(function(Column $column) {
+            return $column->getName();
+        }, $this->getColumns());
+    }
+
+    /**
+     * Gets all the alias columns name
+     *
+     * @return array
+     */
+    public function getAliasColumnsName()
+    {
+        return array_map(function(Column $column) {
+            return $column->getName();
+        }, $this->getAliasColumns());
+    }
+
+    /**
+     * Gets all the non-alias columns name
+     *
+     * @return array
+     */
+    public function getNonAliasColumnsName()
+    {
+        return array_map(function(Column $column) {
+            return $column->getName();
+        }, $this->getNonAliasColumns());
     }
 
     /**

@@ -493,16 +493,6 @@ class Local extends AbstractAdapter
     }
 
     /**
-     * @inheritdoc
-     */
-    public function applyPathPrefix($path)
-    {
-        $prefixedPath = parent::applyPathPrefix($path);
-
-        return str_replace('/', DIRECTORY_SEPARATOR, $prefixedPath);
-    }
-
-    /**
      * @param SplFileInfo $file
      *
      * @throws UnreadableFileException

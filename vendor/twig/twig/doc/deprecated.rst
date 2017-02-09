@@ -11,6 +11,13 @@ Deprecation Notices
 As of Twig 1.21, Twig generates deprecation notices when a template uses
 deprecated features. See :ref:`deprecation-notices` for more information.
 
+Macros
+------
+
+As of Twig 2.0, macros imported in a file are not available in child templates
+anymore (via an ``include`` call for instance). You need to import macros
+explicitly in each file where you are using them.
+
 Token Parsers
 -------------
 
@@ -198,6 +205,9 @@ Miscellaneous
 * As of Twig 1.x, ``Twig_Template::getEnvironment()`` and
   ``Twig_TemplateInterface::getEnvironment()`` are deprecated and will be
   removed in 2.0.
+
+* As of Twig 1.21, setting the environment option ``autoescape`` to ``true`` is
+  deprecated and will be removed in 2.0. Use ``"html"`` instead.
 
 * As of Twig 1.27, ``Twig_Error::getTemplateFile()`` and
   ``Twig_Error::setTemplateFile()`` are deprecated. Use

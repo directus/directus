@@ -132,7 +132,9 @@ class Emitter
     {
         $listeners = $this->getFilterListeners($name);
 
-        $data = $this->executeListeners($listeners, $data, self::TYPE_FILTER);
+        if ($listeners) {
+            $data = $this->executeListeners($listeners, $data, self::TYPE_FILTER);
+        }
 
         return $data;
     }

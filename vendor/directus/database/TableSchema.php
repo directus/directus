@@ -10,6 +10,7 @@ use Directus\Database\TableGateway\DirectusUiTableGateway;
 use Directus\MemcacheProvider;
 use Directus\Util\ArrayUtils;
 use Directus\Util\DateUtils;
+use Zend\Db\Sql\Predicate\In;
 use Zend\Db\Sql\Predicate\NotIn;
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Sql;
@@ -107,6 +108,7 @@ class TableSchema
         return static::$acl;
     }
 
+
     /**
      * Set ACL Instance
      * @param $acl
@@ -150,13 +152,29 @@ class TableSchema
      *
      * @param $tableName
      * @param array $params
-     * @param bool $fromCache
+     * @param bool $skipCache
      *
      * @return Object\Table
      */
-    public static function getTableSchema($tableName, array $params = [], $fromCache = false)
+    public static function getTableSchema($tableName, array $params = [], $skipCache = false)
     {
-        return static::getSchemaManagerInstance()->getTableSchema($tableName, $params, $fromCache);
+        return static::getSchemaManagerInstance()->getTableSchema($tableName, $params, $skipCache);
+    }
+
+    /**
+     * Gets table columns schema
+     *
+     * @param string $tableName
+     * @param array $params
+     * @param bool $skipCache
+     *
+     * @return Column[]
+     */
+    public static function getTableColumnsSchema($tableName, array $params = [], $skipCache = false)
+    {
+        $tableObject = static::getTableSchema($tableName, $params, $skipCache);
+
+        return $tableObject->getColumns();
     }
 
     /**
@@ -164,29 +182,13 @@ class TableSchema
      *
      * @param $tableName
      * @param $columnName
-     * @param bool $fromCache
+     * @param bool $skipCache
      *
      * @return Object\Column
      */
-    public static function getColumnSchema($tableName, $columnName, $fromCache = false)
+    public static function getColumnSchema($tableName, $columnName, $skipCache = false)
     {
-        return static::getSchemaManagerInstance()->getColumnSchema($tableName, $columnName, $fromCache);
-    }
-
-    /**
-     * Gets the table columns schema
-     *
-     * @param $tableName
-     * @param array $params
-     * @param bool $fromCache
-     *
-     * @return Object\Column[]
-     */
-    public static function getSchema($tableName, array $params = [], $fromCache = false)
-    {
-        $tableObject = static::getTableSchema($tableName, $params, $fromCache);
-
-        return $tableObject->getColumns();
+        return static::getSchemaManagerInstance()->getColumnSchema($tableName, $columnName, $skipCache);
     }
 
     /**
@@ -197,11 +199,11 @@ class TableSchema
      *
      * @param $table
      * @param array $params
-     * @param bool $fromCache
+     * @param bool $skipCache
      *
      * @return array
      */
-    public static function getSchemaArray($table, array $params = [], $fromCache = true)
+    public static function getSchemaArray($table, array $params = [], $skipCache = false)
     {
 //        if (!$fromCache || !array_key_exists($table, self::$_schemas)) {
 //            self::$_schemas[$table] = self::loadSchema($table, $params);
@@ -209,7 +211,7 @@ class TableSchema
 
 //        return self::$_schemas[$table];
 
-        $columnsSchema = static::getSchema($table, $params, $fromCache);
+        $columnsSchema = static::getTableColumnsSchema($table, $params, $skipCache);
 
         // Only return this column if column_name is set as parameter
         $onlyColumnName = ArrayUtils::get($params, 'column_name', null);
@@ -303,6 +305,32 @@ class TableSchema
         return in_array($columnName, $systemFields);
     }
 
+    /**
+     * @param $tableName
+     *
+     * @return \Directus\Database\Object\Column[] |bool
+     */
+    public static function getAllTableColumns($tableName)
+    {
+        return static::getSchemaManagerInstance()->getColumns($tableName);
+    }
+
+    /**
+     * @param $tableName
+     *
+     * @return array
+     */
+    public static function getAllTableColumnsName($tableName)
+    {
+        // @TODO: make all these methods name more standard
+        // TableColumnsName vs TableColumnNames
+        $columns = static::getAllTableColumns($tableName);
+
+        return array_map(function(Column $column) {
+            return $column->getName();
+        }, $columns);
+    }
+
     public static function getAllNonAliasTableColumnNames($table)
     {
         $columnNames = [];
@@ -385,6 +413,24 @@ class TableSchema
         }
 
         return $columns;
+    }
+
+    public static function getColumnsName($table)
+    {
+        if (isset(static::$_schemas[$table])) {
+            $columns = array_map(function($column) {
+                return $column['column_name'];
+            }, static::$_schemas[$table]);
+        } else {
+            $columns = SchemaManager::getColumnsNames($table);
+        }
+
+        $names = [];
+        foreach($columns as $column) {
+            $names[] = $column;
+        }
+
+        return $names;
     }
 
     public static function hasTableColumn($table, $column, $includeAlias = false)
@@ -567,6 +613,9 @@ class TableSchema
      */
     protected static function loadSchema($tbl_name, $params = null)
     {
+        if (isset(static::$_schemas[$tbl_name])) {
+            return static::$_schemas[$tbl_name];
+        }
 
         // Omit columns which are on this table's read field blacklist for the group of
         // the currently authenticated user.
@@ -574,6 +623,16 @@ class TableSchema
         $schemaManager = Bootstrap::get('schemaManager');
 
         $columns = $schemaManager->getColumns($tbl_name, $params);
+        $uisName = array_map(function($column) {
+            return $column['ui'];
+        }, $columns);
+
+        $uisName = array_filter($uisName);
+        $columnsOptions = [];
+        if ($uisName) {
+            $columnsOptions = static::getTableUIOptions($tbl_name, $uisName);
+        }
+
         if (!self::canGroupViewTable($tbl_name)) {
             // return [];
             return false;
@@ -627,8 +686,9 @@ class TableSchema
                 $row['hidden'] = true;
             }
 
-            if (array_key_exists('ui', $row)) {
-                $options = self::getUIOptions($tbl_name, $row['id'], $row['ui']);
+            if (array_key_exists('ui', $row) && array_key_exists($row['id'], $columnsOptions)) {
+                $options = $columnsOptions[$row['id']];
+                //self::getUIOptions($tbl_name, $row['id'], $row['ui']);
             }
 
             if (isset($options)) {
@@ -667,6 +727,8 @@ class TableSchema
             $return = $return[0];
         }
 
+        static::$_schemas[$tbl_name] = $return;
+
         return $return;
     }
 
@@ -689,8 +751,8 @@ class TableSchema
         };
 
         $getSchemasFn = function () {
-            $tableSchemas = TableSchema::getTablesSchema();
-            $columnSchemas = TableSchema::getColumnsSchema();
+            $tableSchemas = TableSchema::getTablesSchema(['include_system' => true]);
+            $columnSchemas = TableSchema::getColumnsSchema(['include_system' => true]);
             // Nest column schemas in table schemas
             foreach ($tableSchemas as &$table) {
                 $table = $table->toArray();
@@ -701,7 +763,9 @@ class TableSchema
 
                 foreach ($columnSchemas[$tableName] as $column) {
                     // @TODO: there's can be more than one column
-                    if ($column->getColumnKey() == 'PRI') {
+                    if ($column->isPrimary()) {
+                        // @TODO: Turn this into the primary key columns
+                        // @NOTE: This column is being used as the identifier/master column.
                         $table['primary_column'] = $column->getName();
                         break;
                     }
@@ -768,10 +832,12 @@ class TableSchema
     public static function getColumnsSchema(array $params = [])
     {
         $schema = static::getSchemaManagerInstance();
+        $includeSystemTables = ArrayUtils::get($params, 'include_system', false);
+
         $columns = [];
         foreach($schema->getAllColumns() as $column) {
             $tableName = $column->getTableName();
-            if ($schema->isDirectusTable($tableName)) {
+            if ($schema->isDirectusTable($tableName) && !$includeSystemTables) {
                 continue;
             }
 
@@ -985,9 +1051,15 @@ class TableSchema
      * @param $tbl_name
      * @param $col_name
      * @param $datatype_name
+     *
+     * @return array
      */
     public static function getUIOptions($tbl_name, $col_name, $datatype_name)
     {
+        if (isset(static::$_schemasOptions[$tbl_name][$col_name])) {
+            return static::$_schemasOptions[$tbl_name][$col_name];
+        }
+
         $result = [];
         $item = [];
         $zendDb = Bootstrap::get('zendDb');
@@ -1031,10 +1103,64 @@ class TableSchema
         }
 
         if (sizeof($result)) {
+            static::$_schemasOptions[$tbl_name][$col_name] = $result[0];
             return $result[0];
         }
 
         return [];
     }
 
+    /**
+     *  Get Table columns options
+     *
+     * @param string $tbl_name
+     * @param array $columnsUis
+     *
+     * @return array
+     */
+    public static function getTableUIOptions($tbl_name, array $columnsUis = [])
+    {
+        if (isset(static::$_schemasOptions[$tbl_name])) {
+            return static::$_schemasOptions[$tbl_name];
+        }
+
+        if (!$columnsUis) {
+            static::$_schemasOptions[$tbl_name] = [];
+            return [];
+        }
+
+        $zendDb = Bootstrap::get('zendDb');
+        $select = new Select();
+        $select->columns([
+            'id' => 'ui_name',
+            'column_name',
+            'name',
+            'value'
+        ]);
+        $select->from('directus_ui');
+        $select->where([
+            'table_name' => $tbl_name,
+            new In('ui_name', $columnsUis)
+        ]);
+        $select->order('ui_name');
+        $sql = new Sql($zendDb);
+        $query = $sql->getSqlStringForSqlObject($select, $zendDb->getPlatform());
+        //echo $query;
+        $sql = new Sql($zendDb);
+        $statement = $sql->prepareStatementForSqlObject($select);
+        $rows = $statement->execute();
+
+        $result = [];
+        foreach ($rows as $row) {
+            if (!isset($result[$row['column_name']])) {
+                $result[$row['column_name']] = [];
+            }
+
+            $result[$row['column_name']][$row['name']] = $row['value'];
+        };
+
+        static::$_schemasOptions[$tbl_name] = $result;
+
+        return $result;
+    }
 }

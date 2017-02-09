@@ -180,11 +180,14 @@ class Update extends AbstractPreparableSql
     protected function processSet(PlatformInterface $platform, DriverInterface $driver = null, ParameterContainer $parameterContainer = null)
     {
         $setSql = [];
+        $pIndex = 0;
+
         foreach ($this->set as $column => $value) {
             $prefix = $platform->quoteIdentifier($column) . ' = ';
             if (is_scalar($value) && $parameterContainer) {
-                $setSql[] = $prefix . $driver->formatParameterName($column);
-                $parameterContainer->offsetSet($column, $value);
+                $parameterName = 'set' . $pIndex++;
+                $setSql[] = $prefix . $driver->formatParameterName($parameterName);
+                $parameterContainer->offsetSet($parameterName, $value);
             } else {
                 $setSql[] = $prefix . $this->resolveColumnValue(
                     $value,

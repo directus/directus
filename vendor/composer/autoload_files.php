@@ -6,6 +6,7 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    '1625aab00bebe8f618cdad8a767de4f0' => $vendorDir . '/directus/database/functions.php',
     '2c102faa651ef8ea5874edb585946bce' => $vendorDir . '/swiftmailer/swiftmailer/lib/swift_required.php',
     '1d1d744f1bd36f7044f0f268edf1c6a2' => $baseDir . '/api/core/functions.php',
 );

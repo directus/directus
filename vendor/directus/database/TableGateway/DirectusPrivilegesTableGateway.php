@@ -9,7 +9,7 @@ use Zend\Db\Sql\Insert;
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Update;
 
-class DirectusPrivilegesTableGateway extends BaseTableGateway
+class DirectusPrivilegesTableGateway extends RelationalTableGateway
 {
     public static $_tableName = 'directus_privileges';
 

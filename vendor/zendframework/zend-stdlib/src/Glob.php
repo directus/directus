@@ -38,7 +38,7 @@ abstract class Glob
      */
     public static function glob($pattern, $flags = 0, $forceFallback = false)
     {
-        if (!defined('GLOB_BRACE') || $forceFallback) {
+        if (! defined('GLOB_BRACE') || $forceFallback) {
             return static::fallbackGlob($pattern, $flags);
         }
 
@@ -96,7 +96,7 @@ abstract class Glob
      */
     protected static function fallbackGlob($pattern, $flags)
     {
-        if (!$flags & self::GLOB_BRACE) {
+        if (! $flags & self::GLOB_BRACE) {
             return static::systemGlob($pattern, $flags);
         }
 
@@ -182,7 +182,7 @@ abstract class Glob
         $current = $begin;
 
         while ($current < $length) {
-            if (!$flags & self::GLOB_NOESCAPE && $pattern[$current] === '\\') {
+            if (! $flags & self::GLOB_NOESCAPE && $pattern[$current] === '\\') {
                 if (++$current === $length) {
                     break;
                 }

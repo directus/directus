@@ -10,7 +10,7 @@ use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Sql;
 
-class DirectusSettingsTableGateway extends BaseTableGateway
+class DirectusSettingsTableGateway extends RelationalTableGateway
 {
     public static $_tableName = 'directus_settings';
 
@@ -38,15 +38,22 @@ class DirectusSettingsTableGateway extends BaseTableGateway
         ];
     }
 
-    public function fetchAll($selectModifier = null)
+    public function fetchAll($groupByCollection = true)
     {
         $sql = new Sql($this->adapter);
         $select = $sql->select()->from($this->table);
-        $select->columns(['id', 'collection', 'name', 'value'])
+        $select
+            ->columns(['id', 'collection', 'name', 'value'])
             ->order('collection');
+
         // Fetch row
         $rowset = $this->selectWith($select);
         $rowset = $rowset->toArray();
+
+        if (!$groupByCollection) {
+            return $rowset;
+        }
+
         $result = [];
         foreach ($rowset as $row) {
             $collection = $row['collection'];

@@ -138,33 +138,33 @@
     },
     {
         "name": "zendframework/zend-stdlib",
-        "version": "3.0.1",
-        "version_normalized": "3.0.1.0",
+        "version": "dev-develop",
+        "version_normalized": "dev-develop",
         "source": {
             "type": "git",
             "url": "https://github.com/zendframework/zend-stdlib.git",
-            "reference": "8bafa58574204bdff03c275d1d618aaa601588ae"
+            "reference": "16818ed8ee2a92a503c43883dcb6263fe6283ee8"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/zendframework/zend-stdlib/zipball/8bafa58574204bdff03c275d1d618aaa601588ae",
-            "reference": "8bafa58574204bdff03c275d1d618aaa601588ae",
+            "url": "https://api.github.com/repos/zendframework/zend-stdlib/zipball/16818ed8ee2a92a503c43883dcb6263fe6283ee8",
+            "reference": "16818ed8ee2a92a503c43883dcb6263fe6283ee8",
             "shasum": ""
         },
         "require": {
-            "php": "^5.5 || ^7.0"
+            "php": "^5.6 || ^7.0"
         },
         "require-dev": {
             "athletic/athletic": "~0.1",
-            "fabpot/php-cs-fixer": "1.7.*",
-            "phpunit/phpunit": "~4.0"
+            "phpunit/phpunit": "~4.0",
+            "squizlabs/php_codesniffer": "^2.6.2"
         },
-        "time": "2016-04-12T21:19:36+00:00",
+        "time": "2016-09-13T14:40:02+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
-                "dev-master": "3.0-dev",
-                "dev-develop": "3.1-dev"
+                "dev-master": "3.1-dev",
+                "dev-develop": "3.2-dev"
             }
         },
         "installation-source": "dist",
@@ -185,18 +185,12 @@
     },
     {
         "name": "zendframework/zend-db",
-        "version": "dev-master",
-        "version_normalized": "9999999-dev",
+        "version": "dev-directus",
+        "version_normalized": "dev-directus",
         "source": {
             "type": "git",
-            "url": "https://github.com/zendframework/zend-db.git",
-            "reference": "ae46299099c724a96fd088ae05a0b64e3748a808"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/zendframework/zend-db/zipball/ae46299099c724a96fd088ae05a0b64e3748a808",
-            "reference": "ae46299099c724a96fd088ae05a0b64e3748a808",
-            "shasum": ""
+            "url": "https://github.com/wellingguzman/zend-db",
+            "reference": "38cd41381462eaacff6dccc0ec0597962b2be1d8"
         },
         "require": {
             "php": "^5.5 || ^7.0",
@@ -214,7 +208,7 @@
             "zendframework/zend-hydrator": "Zend\\Hydrator component for using HydratingResultSets",
             "zendframework/zend-servicemanager": "Zend\\ServiceManager component"
         },
-        "time": "2016-08-09T19:32:50+00:00",
+        "time": "2017-01-20T19:34:42+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -226,16 +220,21 @@
                 "config-provider": "Zend\\Db\\ConfigProvider"
             }
         },
-        "installation-source": "dist",
+        "installation-source": "source",
         "autoload": {
             "psr-4": {
                 "Zend\\Db\\": "src/"
             }
         },
-        "notification-url": "https://packagist.org/downloads/",
+        "autoload-dev": {
+            "psr-4": {
+                "ZendTest\\Db\\": "test/"
+            }
+        },
         "license": [
             "BSD-3-Clause"
         ],
+        "description": " ",
         "homepage": "https://github.com/zendframework/zend-db",
         "keywords": [
             "db",
@@ -244,28 +243,28 @@
     },
     {
         "name": "directus/database",
-        "version": "dev-version/6.4",
-        "version_normalized": "dev-version/6.4",
+        "version": "0.1.1",
+        "version_normalized": "0.1.1.0",
         "source": {
             "type": "git",
             "url": "https://github.com/directus/directus-database.git",
-            "reference": "9e6fd6131b8fc281d8ba47fe82fc2d4e334abaa6"
+            "reference": "8901471d751c221bca8b93b850ad8f67647c6360"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/directus/directus-database/zipball/9e6fd6131b8fc281d8ba47fe82fc2d4e334abaa6",
-            "reference": "9e6fd6131b8fc281d8ba47fe82fc2d4e334abaa6",
+            "url": "https://api.github.com/repos/directus/directus-database/zipball/8901471d751c221bca8b93b850ad8f67647c6360",
+            "reference": "8901471d751c221bca8b93b850ad8f67647c6360",
             "shasum": ""
         },
         "require": {
             "directus/collection": "0.9.*@dev",
             "php": ">=5.4.0",
-            "zendframework/zend-db": "2.8.*"
+            "zendframework/zend-db": "dev-directus"
         },
         "require-dev": {
             "phpunit/phpunit": "~3.7.0"
         },
-        "time": "2016-12-26T11:05:09+00:00",
+        "time": "2017-02-08T19:38:46+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -276,7 +275,10 @@
         "autoload": {
             "psr-4": {
                 "Directus\\Database\\": ""
-            }
+            },
+            "files": [
+                "functions.php"
+            ]
         },
         "notification-url": "https://packagist.org/downloads/",
         "license": [
@@ -386,12 +388,12 @@
         "source": {
             "type": "git",
             "url": "https://github.com/twigphp/Twig.git",
-            "reference": "4e1c232b67c577a97407133975d8caf2321efd30"
+            "reference": "d6715ac8c3a77ae6d0ebad9ff12511cc1b27f4a7"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/twigphp/Twig/zipball/4e1c232b67c577a97407133975d8caf2321efd30",
-            "reference": "4e1c232b67c577a97407133975d8caf2321efd30",
+            "url": "https://api.github.com/repos/twigphp/Twig/zipball/d6715ac8c3a77ae6d0ebad9ff12511cc1b27f4a7",
+            "reference": "d6715ac8c3a77ae6d0ebad9ff12511cc1b27f4a7",
             "shasum": ""
         },
         "require": {
@@ -401,7 +403,7 @@
             "symfony/debug": "~2.7",
             "symfony/phpunit-bridge": "~3.2"
         },
-        "time": "2017-01-10T22:14:10+00:00",
+        "time": "2017-02-03T21:34:15+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -449,12 +451,12 @@
         "source": {
             "type": "git",
             "url": "https://github.com/thephpleague/flysystem.git",
-            "reference": "30f702679a69af1d9b6bba5695db9407450696c4"
+            "reference": "dda7f3ab94158a002d9846a97dc18ebfb7acc062"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/30f702679a69af1d9b6bba5695db9407450696c4",
-            "reference": "30f702679a69af1d9b6bba5695db9407450696c4",
+            "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/dda7f3ab94158a002d9846a97dc18ebfb7acc062",
+            "reference": "dda7f3ab94158a002d9846a97dc18ebfb7acc062",
             "shasum": ""
         },
         "require": {
@@ -483,7 +485,7 @@
             "league/flysystem-webdav": "Allows you to use WebDAV storage",
             "league/flysystem-ziparchive": "Allows you to use ZipArchive adapter"
         },
-        "time": "2017-01-09T14:16:42+00:00",
+        "time": "2017-02-09T11:33:58+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {

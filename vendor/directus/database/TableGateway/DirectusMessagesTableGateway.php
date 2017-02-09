@@ -10,7 +10,7 @@ use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Insert;
 use Zend\Db\Sql\Select;
 
-class DirectusMessagesTableGateway extends BaseTableGateway
+class DirectusMessagesTableGateway extends RelationalTableGateway
 {
     public static $_tableName = 'directus_messages';
 

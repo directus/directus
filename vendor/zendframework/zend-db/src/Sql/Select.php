@@ -529,12 +529,14 @@ class Select extends AbstractPreparableSql
                 $parameterContainer,
                 (is_string($columnIndexOrAs) ? $columnIndexOrAs : 'column')
             );
+
             // process As portion
             if (is_string($columnIndexOrAs)) {
                 $columnAs = $platform->quoteIdentifier($columnIndexOrAs);
             } elseif (stripos($columnName, ' as ') === false) {
                 $columnAs = (is_string($column)) ? $platform->quoteIdentifier($column) : 'Expression' . $expr++;
             }
+
             $columns[] = (isset($columnAs)) ? [$columnName, $columnAs] : [$columnName];
         }
 

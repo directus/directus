@@ -184,9 +184,11 @@ class StringUtils
 
     /**
      * Replace a string placeholder with the given data.
+     *
      * @param $string
      * @param array $data
      * @param string $placeHolderFormat
+     *
      * @return string
      */
     public static function replacePlaceholder($string, $data = [], $placeHolderFormat = self::PLACEHOLDER_DOUBLE_MUSTACHE)
@@ -196,9 +198,34 @@ class StringUtils
                 $value = $value ? 'true' : 'false';
             }
 
-            $string = str_replace(sprintf($placeHolderFormat, $key), $value, $string);
+            if (is_scalar($value)) {
+                $string = str_replace(sprintf($placeHolderFormat, $key), $value, $string);
+            }
         }
 
         return $string;
+    }
+
+    /**
+     * Split an csv string into array
+     *
+     * @param string $csv
+     * @param bool $trim
+     *
+     * @return array
+     */
+    public static function csv($csv, $trim = true)
+    {
+        if (!is_string($csv)) {
+            throw new \InvalidArgumentException('$cvs must be a string');
+        }
+
+        $array = explode(',', $csv);
+
+        if ($trim) {
+            $array = array_map('trim', $array);
+        }
+
+        return $array;
     }
 }

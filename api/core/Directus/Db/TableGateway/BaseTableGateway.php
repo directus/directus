@@ -17,6 +17,7 @@ use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\SqlInterface;
 use Zend\Db\Sql\Update;
+use Zend\Db\Sql\Where;
 use Zend\Db\TableGateway\Feature;
 use Zend\Db\TableGateway\Feature\RowGatewayFeature;
 use Zend\Db\TableGateway\TableGateway;
@@ -208,14 +209,16 @@ class BaseTableGateway extends TableGateway
         $rowset = $this->select(function (Select $select) use ($field, $value) {
             $select->limit(1);
             $select->where->equalTo($field, $value);
-        });
+        }, ['filter' => false]);
+
         $row = $rowset->current();
+
         // Supposing this "one" doesn't exist in the DB
         if (false === $row) {
             return false;
         }
-        $row = $row->toArray();
-        return $row;
+
+        return $row->toArray();
     }
 
     public function findOneByArray(array $data)
@@ -560,14 +563,68 @@ class BaseTableGateway extends TableGateway
         return $records;
     }
 
+    /**
+     * Select
+     *
+     * @param Where|\Closure|string|array $where
+     *
+     * @return ResultSetInterface
+     */
+    public function select($where = null)
+    {
+        if (!$this->isInitialized) {
+            $this->initialize();
+        }
+
+        $select = $this->sql->select();
+
+        if ($where instanceof \Closure) {
+            $where($select);
+        } elseif ($where !== null) {
+            $select->where($where);
+        }
+
+        return $this->selectWith($select, ArrayUtils::get(func_get_args(), 1, []));
+    }
+
+    /**
+     * @param Select $select
+     *
+     * @return null|ResultSetInterface
+     *
+     * @throws \RuntimeException
+     */
+    public function selectWith(Select $select)
+    {
+        if (!$this->isInitialized) {
+            $this->initialize();
+        }
+
+        return $this->executeSelect($select, ArrayUtils::get(func_get_args(), 1, []));
+    }
+
     protected function executeSelect(Select $select)
     {
         $selectState = $select->getRawState();
         $result = parent::executeSelect($select);
-        $result = $this->applyHook('table.select', [
-            $result,
-            $selectState
-        ]);
+        $options = ArrayUtils::get(func_get_args(), 1, []);
+
+        if (!is_array($options)) {
+            $options = [];
+        }
+
+        if (ArrayUtils::get($options, 'filter', true) !== false) {
+            $payload = (object)[
+                'result' => $result,
+                'selectState' => $selectState,
+                'options' => $options
+            ];
+
+            $payload = $this->applyHook('table.select', $payload);
+            $payload = $this->applyHook('table.' . $selectState['table'] . '.select', $payload);
+
+            $result = $payload->result;
+        }
 
         return $result;
     }

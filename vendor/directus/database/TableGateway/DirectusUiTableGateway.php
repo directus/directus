@@ -6,7 +6,7 @@ use Directus\Permissions\Acl;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Select;
 
-class DirectusUiTableGateway extends BaseTableGateway
+class DirectusUiTableGateway extends RelationalTableGateway
 {
     public static $_tableName = 'directus_ui';
 

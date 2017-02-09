@@ -6,7 +6,7 @@ use Directus\Permissions\Acl;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\Adapter\AdapterInterface;
 
-class DirectusGroupsTableGateway extends BaseTableGateway
+class DirectusGroupsTableGateway extends RelationalTableGateway
 {
     public static $_tableName = 'directus_groups';
 
@@ -26,6 +26,10 @@ class DirectusGroupsTableGateway extends BaseTableGateway
 
     public function acceptIP($groupID, $ipAddress)
     {
+        if (!$groupID) {
+            return false;
+        }
+
         $group = $this->find($groupID);
         if (!$group) {
             return false;

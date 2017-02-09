@@ -39,11 +39,11 @@ abstract class ArrayUtils
      */
     public static function hasStringKeys($value, $allowEmpty = false)
     {
-        if (!is_array($value)) {
+        if (! is_array($value)) {
             return false;
         }
 
-        if (!$value) {
+        if (! $value) {
             return $allowEmpty;
         }
 
@@ -59,11 +59,11 @@ abstract class ArrayUtils
      */
     public static function hasIntegerKeys($value, $allowEmpty = false)
     {
-        if (!is_array($value)) {
+        if (! is_array($value)) {
             return false;
         }
 
-        if (!$value) {
+        if (! $value) {
             return $allowEmpty;
         }
 
@@ -86,11 +86,11 @@ abstract class ArrayUtils
      */
     public static function hasNumericKeys($value, $allowEmpty = false)
     {
-        if (!is_array($value)) {
+        if (! is_array($value)) {
             return false;
         }
 
-        if (!$value) {
+        if (! $value) {
             return $allowEmpty;
         }
 
@@ -119,11 +119,11 @@ abstract class ArrayUtils
      */
     public static function isList($value, $allowEmpty = false)
     {
-        if (!is_array($value)) {
+        if (! is_array($value)) {
             return false;
         }
 
-        if (!$value) {
+        if (! $value) {
             return $allowEmpty;
         }
 
@@ -161,11 +161,11 @@ abstract class ArrayUtils
      */
     public static function isHashTable($value, $allowEmpty = false)
     {
-        if (!is_array($value)) {
+        if (! is_array($value)) {
             return false;
         }
 
-        if (!$value) {
+        if (! $value) {
             return $allowEmpty;
         }
 
@@ -187,7 +187,7 @@ abstract class ArrayUtils
      */
     public static function inArray($needle, array $haystack, $strict = false)
     {
-        if (!$strict) {
+        if (! $strict) {
             if (is_int($needle) || is_float($needle)) {
                 $needle = (string) $needle;
             }
@@ -215,11 +215,11 @@ abstract class ArrayUtils
      */
     public static function iteratorToArray($iterator, $recursive = true)
     {
-        if (!is_array($iterator) && !$iterator instanceof Traversable) {
+        if (! is_array($iterator) && ! $iterator instanceof Traversable) {
             throw new Exception\InvalidArgumentException(__METHOD__ . ' expects an array or Traversable object');
         }
 
-        if (!$recursive) {
+        if (! $recursive) {
             if (is_array($iterator)) {
                 return $iterator;
             }
@@ -274,7 +274,7 @@ abstract class ArrayUtils
             } elseif (isset($a[$key]) || array_key_exists($key, $a)) {
                 if ($value instanceof MergeRemoveKey) {
                     unset($a[$key]);
-                } elseif (!$preserveNumericKeys && is_int($key)) {
+                } elseif (! $preserveNumericKeys && is_int($key)) {
                     $a[] = $value;
                 } elseif (is_array($value) && is_array($a[$key])) {
                     $a[$key] = static::merge($a[$key], $value, $preserveNumericKeys);
@@ -282,7 +282,7 @@ abstract class ArrayUtils
                     $a[$key] = $value;
                 }
             } else {
-                if (!$value instanceof MergeRemoveKey) {
+                if (! $value instanceof MergeRemoveKey) {
                     $a[$key] = $value;
                 }
             }

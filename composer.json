@@ -6,7 +6,7 @@
     "twig/twig":  "1.*",
     "directus/migrations": "dev-master",
     "directus/permissions": "0.9.*@dev",
-    "directus/database": "0.9.*@dev",
+    "directus/database": "~0.1.1",
     "league/flysystem": "^1.0",
     "swiftmailer/swiftmailer": "^5.4"
   },
@@ -37,6 +37,10 @@
     {
       "type": "git",
       "url": "https://github.com/WellingGuzman/Slim-Extras.git"
+    },
+    {
+      "type": "git",
+      "url": "https://github.com/wellingguzman/zend-db"
     }
   ]
 }

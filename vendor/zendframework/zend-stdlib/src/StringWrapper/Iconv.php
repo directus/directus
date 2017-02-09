@@ -214,7 +214,7 @@ class Iconv extends AbstractStringWrapper
      */
     public function __construct()
     {
-        if (!extension_loaded('iconv')) {
+        if (! extension_loaded('iconv')) {
             throw new Exception\ExtensionNotLoadedException(
                 'PHP extension "iconv" is required for this wrapper'
             );

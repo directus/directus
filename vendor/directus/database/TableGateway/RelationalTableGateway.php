@@ -3,6 +3,7 @@
 namespace Directus\Database\TableGateway;
 
 use Directus\Database\Exception;
+use Directus\Database\Object\Column;
 use Directus\Database\Object\Table;
 use Directus\Database\Query\Builder;
 use Directus\Database\RowGateway\BaseRowGateway;
@@ -30,7 +31,6 @@ class RelationalTableGateway extends BaseTableGateway
      */
     protected $defaultEntriesSelectParams = [
         'order' => ['sort' => 'ASC'],
-        'columns' => '*',
         'limit' => 200,
         'offset' => 0,
         'skip' => null,
@@ -202,7 +202,7 @@ class RelationalTableGateway extends BaseTableGateway
                     'parent_changed' => (int)$parentRecordChanged,
                     'row_id' => $rowId,
                     'identifier' => $this->findRecordIdentifier($tableSchema, $fullRecordData),
-                    'logged_ip' => isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '',
+                    'logged_ip' => get_request_ip(),// isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '',
                     'user_agent' => isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : ''
                 ];
                 if ($recordIsNew) {
@@ -248,7 +248,7 @@ class RelationalTableGateway extends BaseTableGateway
                         'parent_changed' => (int)$parentRecordChanged,
                         'identifier' => $recordIdentifier,
                         'row_id' => $rowId,
-                        'logged_ip' => isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '',
+                        'logged_ip' => get_request_ip(),// isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '',
                         'user_agent' => isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : ''
                     ];
                     $parentLogEntry->populate($logData, false);
@@ -266,7 +266,7 @@ class RelationalTableGateway extends BaseTableGateway
 
         // Yield record object
         $recordGateway = new BaseRowGateway($TableGateway->primaryKeyFieldName, $tableName, $this->adapter, $this->acl);
-        $fullRecordData = $this->schema->castRecordValues($fullRecordData, $tableSchema->getColumns());
+        $fullRecordData = $this->schemaManager->castRecordValues($fullRecordData, $tableSchema->getColumns());
         $recordGateway->populate($fullRecordData, true);
 
         return $recordGateway;
@@ -610,6 +610,26 @@ class RelationalTableGateway extends BaseTableGateway
 
         $params = array_merge($defaultParams, $params);
 
+        // convert csv columns into array
+        $columns = ArrayUtils::get($params, 'columns', []);
+        if (!is_array($columns)) {
+            $columns = StringUtils::csv($columns, true);
+        }
+
+        // filter all 'falsy' columns name
+        $columns = array_filter($columns);
+
+        // Stripe whitespaces
+        $columns = array_map('trim', $columns);
+
+        // Add columns to params if it's not empty.
+        // otherwise remove from params
+        if (!empty($columns)) {
+            $params['columns'] = $columns;
+        } else {
+            ArrayUtils::remove($params, 'columns');
+        }
+
         array_walk($params, [$this, 'castFloatIfNumeric']);
 
         return $params;
@@ -727,7 +747,7 @@ class RelationalTableGateway extends BaseTableGateway
     public function loadItems(array $params = [], \Closure $queryCallback = null)
     {
         // Get table column schema
-        $tableSchema = TableSchema::getTableSchema($this->table);
+        $tableSchema = $this->getTableSchema();
 
         // table only has one column
         // return an empty array
@@ -747,8 +767,14 @@ class RelationalTableGateway extends BaseTableGateway
         $builder = new Builder($this->getAdapter());
         $builder->from($this->getTable());
 
-        // @TODO: Only select the fields not on the currently authenticated user group's read field blacklist
-        $builder->columns(TableSchema::getAllNonAliasTableColumnNames($this->table));
+        if (ArrayUtils::has($params, 'columns')) {
+            $columns = array_unique(array_merge($tableSchema->getPrimaryKeysName(), $params['columns']));
+        } else {
+            $columns = $tableSchema->getColumnsName();
+        }
+
+        $nonAliasColumns = ArrayUtils::intersection($columns, $tableSchema->getNonAliasColumnsName());
+        $builder->columns($nonAliasColumns);
         $builder = $this->applyParamsToTableEntriesSelect($params, $builder, $tableSchema, $hasActiveColumn);
 
         // If we have user field and do not have big view privileges but have view then only show entries we created
@@ -774,14 +800,33 @@ class RelationalTableGateway extends BaseTableGateway
 
         $depth = ArrayUtils::get($params, 'depth', null);
         if ($depth !== null) {
-            $results = $this->loadRelationalDataByDepth($results, (int) $depth);
+            $paramColumns = ArrayUtils::get($params, 'columns', []);
+            $aliasColumns = $tableSchema->getAliasColumnsName();
+
+            if ($paramColumns) {
+                $aliasColumns = ArrayUtils::intersection($paramColumns, $aliasColumns);
+            }
+
+            $results = $this->loadRelationalDataByDepth($results, (int) $depth, $aliasColumns);
+        }
+
+        // When the params column list doesn't include the primary key
+        // it should be included because each row gateway expects the primary key
+        // after all the row gateway are created and initiated it only returns the chosen columns
+        if (ArrayUtils::has($params, 'columns')) {
+            $primaryKeysName = $tableSchema->getPrimaryKeysName();
+            if (!ArrayUtils::contains(array_flip(ArrayUtils::get($params, 'columns')), $primaryKeysName)) {
+                $results = array_map(function ($entry) use ($primaryKeysName) {
+                    return ArrayUtils::omit($entry, $primaryKeysName);
+                }, $results);
+            }
         }
 
         if (ArrayUtils::get($params, $this->primaryKeyFieldName)) {
             $results = reset($results);
         }
 
-        return $results;
+        return $results ? $results : [];
     }
 
     /**
@@ -804,19 +849,22 @@ class RelationalTableGateway extends BaseTableGateway
      *
      * @param $result
      * @param int $maxDepth
+     * @param array|null $columns
      *
      * @return array
      */
-    protected function loadRelationalDataByDepth($result, $maxDepth = 0)
+    protected function loadRelationalDataByDepth($result, $maxDepth = 0, array $columns = [])
     {
-        if ((int) $maxDepth <= 0) {
+        if ((int) $maxDepth <= 0 || !$columns) {
             return $result;
         }
 
+        $columns = $this->getTableSchema()->getColumns($columns);
+
         $maxDepth--;
-        $result = $this->loadManyToOneRelationships($result, $maxDepth);
-        $result = $this->loadOneToManyRelationships($result, $maxDepth);
-        $result = $this->loadManyToManyRelationships($result, $maxDepth);
+        $result = $this->loadManyToOneRelationships($result, $maxDepth, $columns);
+        $result = $this->loadOneToManyRelationships($result, $maxDepth, $columns);
+        $result = $this->loadManyToManyRelationships($result, $maxDepth, $columns);
 
         return $result;
     }
@@ -845,6 +893,10 @@ class RelationalTableGateway extends BaseTableGateway
             $method = 'where' . ($not === true ? 'Not' : '') . $operatorName;
             if (!method_exists($query, $method)) {
                 continue;
+            }
+
+            if ($operator === 'between' && !is_array($value)) {
+                $value = explode(',', $value);
             }
 
             $arguments = [$column, $value];
@@ -1016,16 +1068,19 @@ class RelationalTableGateway extends BaseTableGateway
         }
     }
 
-    public function loadOneToManyRelationships($entries, $depth = 0)
+    /**
+     * Load one to many relational data
+     *
+     * @param array $entries
+     * @param int $depth
+     * @param Column[] $columns
+     *
+     * @return bool|array
+     */
+    public function loadOneToManyRelationships($entries, $depth = 0, $columns)
     {
-        $tableSchema = TableSchema::getTableSchema($this->getTable());
-        $aliasColumns = $tableSchema->getAliasColumns();
-        if (!$aliasColumns) {
-            return $entries;
-        }
-
-        foreach ($aliasColumns as $alias) {
-            if (!$alias->isOneToMany()) {
+        foreach ($columns as $alias) {
+            if (!$alias->isAlias() || !$alias->isOneToMany()) {
                 continue;
             }
 
@@ -1088,16 +1143,19 @@ class RelationalTableGateway extends BaseTableGateway
         return $entries;
     }
 
-    public function loadManyToManyRelationships($entries, $depth = 0)
+    /**
+     * Load many to many relational data
+     *
+     * @param array $entries
+     * @param int $depth
+     * @param Column[] $columns
+     *
+     * @return bool|array
+     */
+    public function loadManyToManyRelationships($entries, $depth = 0, $columns)
     {
-        $tableSchema = TableSchema::getTableSchema($this->getTable());
-        $aliasColumns = $tableSchema->getAliasColumns();
-        if (!$aliasColumns) {
-            return $entries;
-        }
-
-        foreach ($aliasColumns as $alias) {
-            if (!$alias->isManyToMany()) {
+        foreach ($columns as $alias) {
+            if (!$alias->isAlias() || !$alias->isManyToMany()) {
                 continue;
             }
 
@@ -1117,7 +1175,7 @@ class RelationalTableGateway extends BaseTableGateway
             }
 
             // Only select the fields not on the currently authenticated user group's read field blacklist
-            $relatedTableColumns = TableSchema::getAllNonAliasTableColumnNames($relatedTableName);
+            $relatedTableColumns = TableSchema::getAllTableColumnsName($relatedTableName);
             $junctionKeyRightColumn = $alias->getRelationship()->getJunctionKeyRight();
             $junctionKeyLeftColumn = $alias->getRelationship()->getJunctionKeyLeft();
             $junctionTableName = $alias->getRelationship()->getJunctionTable();
@@ -1223,7 +1281,7 @@ class RelationalTableGateway extends BaseTableGateway
                 }, $data);
 
                 $junctionTableGateway = new RelationalTableGateway($junctionTableName, $this->getAdapter(), $this->acl);
-                $junctionData = $this->schema->castRecordValues($junctionData, TableSchema::getTableSchema($junctionTableName)->getColumns());
+                $junctionData = $this->schemaManager->castRecordValues($junctionData, TableSchema::getTableSchema($junctionTableName)->getColumns());
                 $junctionData = $junctionTableGateway->loadMetadata($junctionData);
 
                 $row = $relatedTableGateway->loadMetadata($row);
@@ -1242,16 +1300,17 @@ class RelationalTableGateway extends BaseTableGateway
      *
      * @param array $entries Table rows
      * @param int $depth
+     * @param Column[] $columns
      *
      * @return array Revised table rows, now including foreign rows
      *
      * @throws Exception\RelationshipMetadataException
      */
-    public function loadManyToOneRelationships($entries, $depth = 0)
+    public function loadManyToOneRelationships($entries, $depth = 0, $columns)
     {
         $tableSchema = TableSchema::getTableSchema($this->getTable());
         // Identify the ManyToOne columns
-        foreach ($tableSchema->getColumns() as $column) {
+        foreach ($columns as $column) {
             if (!$column->isManyToOne()) {
                 continue;
             }

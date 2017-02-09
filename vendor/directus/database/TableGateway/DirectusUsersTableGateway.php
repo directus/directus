@@ -7,7 +7,7 @@ use Zend\Db\Adapter\Adapter;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Select;
 
-class DirectusUsersTableGateway extends BaseTableGateway
+class DirectusUsersTableGateway extends RelationalTableGateway
 {
     const GRAVATAR_SIZE = 100;
 

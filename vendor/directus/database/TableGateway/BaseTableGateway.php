@@ -17,6 +17,7 @@ use Directus\Permissions\Exception\UnauthorizedTableEditException;
 use Directus\Util\ArrayUtils;
 use Directus\Util\DateUtils;
 use Directus\Util\Formatting;
+use Zend\Db\Adapter\Adapter;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Adapter\Exception\InvalidQueryException;
 use Zend\Db\ResultSet\ResultSet;
@@ -28,6 +29,7 @@ use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\SqlInterface;
 use Zend\Db\Sql\Update;
+use Zend\Db\Sql\Where;
 use Zend\Db\TableGateway\Feature;
 use Zend\Db\TableGateway\Feature\RowGatewayFeature;
 use Zend\Db\TableGateway\TableGateway;
@@ -61,7 +63,14 @@ class BaseTableGateway extends TableGateway
      *
      * @var SchemaManager|null
      */
-    protected $schema = null;
+    protected $schemaManager = null;
+
+    /**
+     * Table Schema Object
+     *
+     * @var Table|null
+     */
+    protected $tableSchema = null;
 
     /**
      * Constructor
@@ -106,7 +115,7 @@ class BaseTableGateway extends TableGateway
         parent::__construct($table, $adapter, $features, $resultSetPrototype, $sql);
 
         // @TODO: Make this dynamic to support the different databases.
-        $this->schema = new SchemaManager(new MySQLSchema($this->adapter));
+        $this->schemaManager = new SchemaManager(new MySQLSchema($this->adapter));
     }
 
     /**
@@ -114,18 +123,29 @@ class BaseTableGateway extends TableGateway
      */
 
     /**
+     * Creates a table gateway based on a table's name
+     *
      * Underscore to camelcase table name to namespaced table gateway classname,
      * e.g. directus_users => \Directus\Database\TableGateway\DirectusUsersTableGateway
+     *
+     * @param string $table
+     * @param Adapter $adapter
+     * @param null $acl
+     *
+     * @return BaseTableGateway
      */
     public static function makeTableGatewayFromTableName($table, $adapter, $acl = null)
     {
         $tableGatewayClassName = Formatting::underscoreToCamelCase($table) . 'TableGateway';
         $tableGatewayClassName = __NAMESPACE__ . '\\' . $tableGatewayClassName;
-        if (!class_exists($tableGatewayClassName)) {
-            $tableGatewayClassName = get_called_class();
+
+        if (class_exists($tableGatewayClassName)) {
+            $instance = new $tableGatewayClassName($adapter, $acl);
+        } else {
+            $instance = new static($table, $adapter, $acl);
         }
 
-        return new $tableGatewayClassName($adapter, $acl);
+        return $instance;
     }
 
     /**
@@ -142,6 +162,15 @@ class BaseTableGateway extends TableGateway
     public function makeTable($tableName)
     {
         return new self($tableName, $this->adapter, $this->acl);
+    }
+
+    public function getTableSchema()
+    {
+        if ($this->tableSchema === null) {
+            $this->tableSchema = TableSchema::getTableSchema($this->getTable());
+        }
+
+        return $this->tableSchema;
     }
 
     /**
@@ -247,7 +276,7 @@ class BaseTableGateway extends TableGateway
         $rowset = $this->select(function (Select $select) use ($field, $value) {
             $select->limit(1);
             $select->where->equalTo($field, $value);
-        });
+        }, ['filter' => true]);
 
         $row = $rowset->current();
         // Supposing this "one" doesn't exist in the DB
@@ -284,7 +313,7 @@ class BaseTableGateway extends TableGateway
         }
 
         $columns = TableSchema::getAllNonAliasTableColumns($tableName);
-        $recordData = $this->schema->castRecordValues($recordData, $columns);
+        $recordData = $this->schemaManager->castRecordValues($recordData, $columns);
 
         $TableGateway = $this->makeTable($tableName);
         $rowExists = isset($recordData[$TableGateway->primaryKeyFieldName]);
@@ -525,6 +554,46 @@ class BaseTableGateway extends TableGateway
     }
 
     /**
+     * Select
+     *
+     * @param Where|\Closure|string|array $where
+     *
+     * @return ResultSetInterface
+     */
+    public function select($where = null)
+    {
+        if (!$this->isInitialized) {
+            $this->initialize();
+        }
+
+        $select = $this->sql->select();
+
+        if ($where instanceof \Closure) {
+            $where($select);
+        } elseif ($where !== null) {
+            $select->where($where);
+        }
+
+        return $this->selectWith($select, ArrayUtils::get(func_get_args(), 1, []));
+    }
+
+    /**
+     * @param Select $select
+     *
+     * @return null|ResultSetInterface
+     *
+     * @throws \RuntimeException
+     */
+    public function selectWith(Select $select)
+    {
+        if (!$this->isInitialized) {
+            $this->initialize();
+        }
+
+        return $this->executeSelect($select, ArrayUtils::get(func_get_args(), 1, []));
+    }
+
+    /**
      * @param Select $select
      *
      * @return ResultSet
@@ -541,13 +610,29 @@ class BaseTableGateway extends TableGateway
 
         try {
             $result = parent::executeSelect($select);
-            // @NOTE: filter data should be an object
-            $payload = new \stdClass();
-            $payload->result = $result;
-            $payload->selectState = $select->getRawState();
-            $payload = $this->applyHook('table.select', $payload);
 
-            return $payload->result;
+            // Select query options
+            $options = ArrayUtils::get(func_get_args(), 1, []);
+            if (!is_array($options)) {
+                $options = [];
+            }
+
+            if (ArrayUtils::get($options, 'filter', true) !== false) {
+                $selectState = $select->getRawState();
+                $selectTableName = $selectState['table'];
+
+                // @NOTE: filter data should be an object
+                $payload = new \stdClass();
+                $payload->result = $result;
+                $payload->selectState = $selectState;
+
+                $payload = $this->applyHook('table.select', $payload);
+                $payload = $this->applyHook('table.' . $selectTableName . '.select', $payload);
+
+                $result = $payload->result;
+            }
+
+            return $result;
         } catch (InvalidQueryException $e) {
             if ('production' !== DIRECTUS_ENV) {
                 throw new \RuntimeException('This query failed: ' . $this->dumpSql($select), 0, $e);
@@ -717,7 +802,7 @@ class BaseTableGateway extends TableGateway
     public function convertDates(array $records, Table $tableSchema, $tableName = null)
     {
         $tableName = $tableName === null ? $this->table : $tableName;
-        if (!$this->schema->isDirectusTable($tableName)) {
+        if (!$this->schemaManager->isDirectusTable($tableName)) {
             return $records;
         }
 
@@ -758,7 +843,7 @@ class BaseTableGateway extends TableGateway
         $tableName = $tableName === null ? $this->table : $tableName;
         $columns = TableSchema::getAllNonAliasTableColumns($tableName);
 
-        return $this->schema->castRecordValues($records, $columns);
+        return $this->schemaManager->castRecordValues($records, $columns);
     }
 
     /**

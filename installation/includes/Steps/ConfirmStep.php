@@ -62,8 +62,6 @@ class ConfirmStep extends AbstractStep
 
         unset($stepsData['languages']);
         unset($_SESSION['install_locale']);
-        $stepsData['feedback_token'] = sha1(gmdate('U') . StringUtils::randomString(32));
-        $stepsData['feedback_login'] = true;
         InstallerUtils::createConfig($stepsData, BASE_PATH . '/api');
         InstallerUtils::createTables(BASE_PATH);
         InstallerUtils::addDefaultSettings($stepsData, BASE_PATH);

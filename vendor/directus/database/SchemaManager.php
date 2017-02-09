@@ -81,7 +81,7 @@ class SchemaManager
 
         // Primary column
         $primaryColumn = new Integer('id');
-        $primaryColumn->setOption('autoincrement', '');
+        $primaryColumn->setOption('autoincrement', true);
         $table->addColumn($primaryColumn);
         $table->addConstraint(new PrimaryKey('id'));
         // Status column
@@ -103,14 +103,14 @@ class SchemaManager
      *
      * @param string $tableName
      * @param array  $params
-     * @param bool   $fromCache
+     * @param bool   $skipCache
      *
      * @return \Directus\Database\Object\Table
      */
-    public function getTableSchema($tableName, $params = [], $fromCache = true)
+    public function getTableSchema($tableName, $params = [], $skipCache = false)
     {
         $tableSchema = ArrayUtils::get($this->data, 'tables.' . $tableName, null);
-        if (!$tableSchema) {
+        if (!$tableSchema || $skipCache) {
             // Get the table schema data from the source
             $tableResult = $this->source->getTable($tableName);
             $tableData = $tableResult->current();
@@ -135,11 +135,20 @@ class SchemaManager
         return $tableSchema;
     }
 
-    public function getColumnSchema($tableName, $columnName, $fromCache = false)
+    /**
+     * Gets column schema
+     *
+     * @param $tableName
+     * @param $columnName
+     * @param bool $skipCache
+     *
+     * @return Column
+     */
+    public function getColumnSchema($tableName, $columnName, $skipCache = false)
     {
         $columnSchema = ArrayUtils::get($this->data, 'columns.' . $tableName . '.' . $columnName, null);
 
-        if (!$columnSchema) {
+        if (!$columnSchema || $skipCache) {
             // Get the column schema data from the source
             $columnResult = $this->source->getColumns($tableName, ['column_name' => $columnName]);
             $columnData = $columnResult->current();
