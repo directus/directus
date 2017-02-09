@@ -63,6 +63,7 @@ class CreateDirectusUsersTable extends Ruckusing_Migration_Base
         ]);
         $t->column('email', 'string', [
             'limit' => 255,
+            'null' => false,
             'default' => ''
         ]);
         $t->column('password', 'string', [
