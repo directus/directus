@@ -25,6 +25,7 @@ use Directus\Providers\FilesServiceProvider;
 use Directus\Session\Session;
 use Directus\Session\Storage\NativeSessionStorage;
 use Directus\Util\ArrayUtils;
+use Directus\Util\StringUtils;
 use Directus\View\Twig\DirectusTwigExtension;
 use Slim\Extras\Log\DateTimeFileWriter;
 use Slim\Extras\Views\Twig;
@@ -676,6 +677,19 @@ class Bootstrap
 
             return $payload;
         });
+
+        $hashUserPassword = function($payload) {
+            $data = &$payload->data;
+            if (ArrayUtils::has($data, 'password')) {
+                $auth = Bootstrap::get('auth');
+                $data['salt'] = StringUtils::randomString();
+                $data['password'] = $auth->hashPassword($data['password'], $data['salt']);
+            }
+
+            return $payload;
+        };
+        $emitter->addFilter('table.insert.directus_users:before', $hashUserPassword);
+        $emitter->addFilter('table.update.directus_users:before', $hashUserPassword);
 
         $emitter->addFilter('load.relational.onetomany', function($payload) {
             $rows = $payload->data;
