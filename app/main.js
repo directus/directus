@@ -438,17 +438,17 @@ require(["config", 'polyfills'], function() {
         }
 
         var type, messageTitle, messageBody, details;
-        if(xhr.statusText === "abort") {
+        if (xhr.statusText === "abort") {
           return;
         }
 
-        if(xhr.responseJSON) {
-          messageBody = xhr.responseJSON.message;
+        if (xhr.responseJSON) {
+          messageBody = xhr.responseJSON.error;
         } else {
           messageBody = xhr.responseText;
         }
 
-        switch(xhr.status) {
+        switch (xhr.status) {
           case 404:
             messageTitle = __t('not_found');
             messageBody = __t('x_not_found', {what: 'URL'}) + '<br>' + settings.url;
