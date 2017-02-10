@@ -320,6 +320,15 @@ class BaseTableGateway extends TableGateway
         $TableGateway = $this->makeTable($tableName);
         $rowExists = isset($recordData[$TableGateway->primaryKeyFieldName]);
         if ($rowExists) {
+            $payload = new \stdClass();
+            $payload->tableName = $tableName;
+            $payload->data = $recordData;
+
+            $payload = $this->applyHook('table.update:before', $payload);
+            $payload = $this->applyHook('table.update.' . $tableName . ':before', $payload);
+
+            $recordData = $payload->data;
+
             $Update = new Update($tableName);
             $Update->set($recordData);
             $Update->where([$TableGateway->primaryKeyFieldName => $recordData[$TableGateway->primaryKeyFieldName]]);
@@ -722,6 +731,7 @@ class BaseTableGateway extends TableGateway
         $updateData = $updateState['set'];
 
         try {
+            // @TODO: Move hook filters here
             $this->runHook('table.update:before', [$updateTable, $updateData]);
             $this->runHook('table.update.' . $updateTable . ':before', [$updateData]);
             $result = parent::executeUpdate($update);
