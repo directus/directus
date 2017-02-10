@@ -79,7 +79,7 @@ define(function(require, exports, module) {
           return;
         }
 
-        var nullDisallowed = column.get('is_nullable') === 'NO';
+        var nullDisallowed = column.get('nullable') !== true;
         var ui = UIManager._getUI(column.get('ui'));
         var forceUIValidation = ui.forceUIValidation === true;
         var isNull = isNothing(value);
