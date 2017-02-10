@@ -39,6 +39,24 @@ define(function(require, exports, module) {
       this.noScroll = false;
     },
 
+    request: function(type, url, options) {
+      var params = {
+        type: type,
+        url: url
+      };
+
+      if (options.path !== true) {
+        // the parameter url by default is a path/endpoint of the Directus API
+        // if path is specified it means it's a full url being passed
+        // Also, making sure the path has not leading slash
+        // app.API_URL has a trailing slash
+        // @TODO: Remove the trailing slash of app.API_URL :)
+        params.url = app.API_URL + (params.url || '').replace(/^\//, '');
+      }
+
+      return Backbone.$.ajax(_.extend(params, options));
+    },
+
     //bInactive true if logged out because inactive
     logOut: function(bInactive) {
       //if binactive pass url parameter

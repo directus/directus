@@ -11,13 +11,20 @@ define(['app', 'backbone', 'underscore'], function(app, Backbone, _) {
       'class': 'modal'
     },
 
+    cropView: true,
+
     setContainer: function(container) {
       this.container = container;
     },
 
     close: function() {
-      var self = this;
-      self.remove();
+      this.$el.addClass('slide-down');
+      setTimeout(_.bind(function() {
+        if (this.container) {
+          this.container.close();
+          this.remove();
+        }
+      }, this), 200);
     },
 
     constructor: function() {

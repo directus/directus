@@ -158,6 +158,25 @@ class CreateDirectusUsersTable extends Ruckusing_Migration_Base
             'default' => 'America/New_York'
         ]);
 
+        $t->column('invite_token', 'string', [
+            'limit' => 255,
+            'default' => null
+        ]);
+
+        $t->column('invite_date', 'datetime', [
+            'default' => null
+        ]);
+
+        $t->column('invite_sender', 'integer', [
+            'unsigned' => true,
+            'default' => null
+        ]);
+
+        $t->column('invite_accepted', 'tinyinteger', [
+            'limit' => 1,
+            'default' => null
+        ]);
+
         $t->finish();
 
         $this->add_index('directus_users', 'email', [

@@ -90,7 +90,7 @@ define(function(require, exports, module) {
         "id": "users",
         "column_name": "users",
         "type": "ALIAS",
-        "ui": "one_to_many",
+        "ui": "directus_users",
         "relationship_type": "ONETOMANY",
         "related_table": "directus_users",
         "junction_key_right": "group",

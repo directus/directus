@@ -13,6 +13,7 @@ use Directus\Database\TableGateway\DirectusPrivilegesTableGateway;
 use Directus\Database\TableGateway\DirectusSettingsTableGateway;
 use Directus\Database\TableGateway\DirectusTablesTableGateway;
 use Directus\Database\TableGateway\DirectusUsersTableGateway;
+use Directus\Database\TableGateway\RelationalTableGateway;
 use Directus\Database\TableSchema;
 use Directus\Embed\EmbedManager;
 use Directus\Filesystem\Filesystem;
@@ -732,7 +733,7 @@ class Bootstrap
         $session = self::get('session');
         $config = self::get('config');
         $prefix = ArrayUtils::get($config, 'session.prefix', 'directus_');
-        $table = new TableGateway('directus_users', $zendDb);
+        $table = new RelationalTableGateway('directus_users', $zendDb);
 
         return new AuthProvider($table, $session, $prefix);
     }

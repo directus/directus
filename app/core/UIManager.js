@@ -34,6 +34,7 @@ define(function(require, exports, module) {
     require('core/uis/radiobuttons'),
     require('core/uis/many_to_many'),
     require('core/uis/one_to_many'),
+    require('core/uis/directus_users'),
     require('core/uis/wysiwyg'),
     require('core/uis/directus_messages_recipients'),
     require('core/uis/password'),

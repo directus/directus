@@ -420,6 +420,9 @@
 
     "right_pane_help": "Opens the item's detail sidebar",
 
+    "invitation": "Invitation",
+    "invitation_sent": "Invitation sent successfully",
+
     "ok": "OK",
     "cancel": "Cancel",
     "yes": "Yes",
