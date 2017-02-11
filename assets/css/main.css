@@ -31,6 +31,17 @@
     transform: rotate(0deg); }
   to {
     transform: rotate(360deg); } }
+@keyframes floating {
+  0% {
+    transform: translate(0%, 0%); }
+  25% {
+    transform: translate(5%, 15%); }
+  50% {
+    transform: translate(10%, 5%); }
+  75% {
+    transform: translate(0%, 15%); }
+  100% {
+    transform: translate(0%, 0%); } }
 ::selection {
   background: #e1f0fa; }
 
@@ -1971,7 +1982,7 @@ body.loading .header .logo {
   z-index: 10;
   text-align: right; }
   .header.settings {
-    background-color: #196090; }
+    background-color: #16527a; }
   .header .logo {
     position: absolute;
     top: 0;
@@ -4997,52 +5008,434 @@ body.help .discover-spotlight {
           background-color: #F44336;
           color: #FFFFFF; }
 
-.page.settings-modules {
-  padding: 0;
-  margin: 40px 20px;
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: space-around;
-  height: 360px; }
-  .page.settings-modules .settings-module {
+.page.settings-container {
+  background-color: #f6f6f6; }
+  .page.settings-container hr {
+    margin: 30px 40px; }
+  .page.settings-container .settings-modules {
+    padding: 0;
+    margin: 40px 20px 0 20px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-around; }
+    .page.settings-container .settings-modules .settings-module {
+      -webkit-transition: all 200ms ease-in-out 0ms;
+      -moz-transition: all 200ms ease-in-out 0ms;
+      -o-transition: all 200ms ease-in-out 0ms;
+      -ms-transition: all 200ms ease-in-out 0ms;
+      transition: all 200ms ease-in-out 0ms;
+      -webkit-box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.2);
+      -moz-box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.2);
+      box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.2);
+      -webkit-border-radius: 2px;
+      -moz-border-radius: 2px;
+      border-radius: 2px;
+      -moz-background-clip: padding;
+      -webkit-background-clip: padding-box;
+      background-clip: padding-box;
+      display: inline-block;
+      position: relative;
+      width: 30%;
+      background-color: #FFFFFF;
+      color: #333333;
+      overflow: hidden;
+      margin-bottom: 40px; }
+      .page.settings-container .settings-modules .settings-module .icon-header {
+        background-color: #FFFFFF;
+        padding-top: 20px;
+        padding-bottom: 0; }
+        .page.settings-container .settings-modules .settings-module .icon-header .material-icons {
+          color: #3498DB;
+          display: block;
+          text-align: center;
+          font-size: 72px; }
+      .page.settings-container .settings-modules .settings-module .description {
+        padding: 10px 30px 60px 30px;
+        font-size: 14px;
+        color: #999999;
+        line-height: 19px;
+        margin-top: 10px;
+        margin-bottom: 40px;
+        min-height: 200px; }
+        .page.settings-container .settings-modules .settings-module .description h1 {
+          line-height: 28px;
+          font-size: 26px;
+          color: #333333;
+          margin-bottom: 10px; }
+      .page.settings-container .settings-modules .settings-module .button {
+        position: absolute;
+        bottom: 30px;
+        left: 30px;
+        right: 30px; }
+  .page.settings-container .marketplace {
     -webkit-transition: all 200ms ease-in-out 0ms;
     -moz-transition: all 200ms ease-in-out 0ms;
     -o-transition: all 200ms ease-in-out 0ms;
     -ms-transition: all 200ms ease-in-out 0ms;
     transition: all 200ms ease-in-out 0ms;
+    -webkit-box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.2);
+    -moz-box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.2);
+    box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.2);
     -webkit-border-radius: 2px;
     -moz-border-radius: 2px;
     border-radius: 2px;
     -moz-background-clip: padding;
     -webkit-background-clip: padding-box;
     background-clip: padding-box;
-    display: inline-block;
     position: relative;
-    width: 30%;
-    background-color: #333333;
+    background-color: #3498DB;
     color: #FFFFFF;
-    padding: 30px 30px 60px 30px;
-    overflow: hidden; }
-    .page.settings-modules .settings-module .material-icons {
-      display: block;
-      text-align: center;
-      font-size: 72px;
-      margin-bottom: 20px;
-      opacity: 0.2; }
-    .page.settings-modules .settings-module h1 {
-      color: #FFFFFF; }
-    .page.settings-modules .settings-module .description {
-      font-size: 14px;
-      color: #CCCCCC;
-      line-height: 19px;
-      margin-top: 10px;
-      margin-bottom: 40px; }
-    .page.settings-modules .settings-module .button {
+    text-align: center;
+    margin: 70px 40px 120px 40px;
+    padding: 60px 30px 60px 30px;
+    cursor: pointer;
+    overflow: hidden;
+    font-size: 12px; }
+    .page.settings-container .marketplace h1 {
+      color: #FFFFFF;
+      font-size: 36px; }
+    .page.settings-container .marketplace .float {
       position: absolute;
-      bottom: 30px;
-      left: 30px;
-      right: 30px; }
+      opacity: 0.2;
+      animation-iteration-count: infinite;
+      animation-timing-function: ease-in-out;
+      animation-iteration-count: 1;
+      animation-fill-mode: forwards; }
+      .page.settings-container .marketplace .float.animate {
+        animation-name: floating; }
+      .page.settings-container .marketplace .float .material-icons {
+        font-size: inherit; }
+      .page.settings-container .marketplace .float.pos-1 {
+        top: 5%;
+        left: 8%;
+        font-size: 5.6em;
+        animation-duration: 5.2s; }
+        .page.settings-container .marketplace .float.pos-1 .material-icons {
+          -moz-transform: rotate(45deg);
+          -o-transform: rotate(45deg);
+          -ms-transform: rotate(45deg);
+          -webkit-transform: rotate(45deg);
+          transform: rotate(45deg); }
+      .page.settings-container .marketplace .float.pos-2 {
+        top: 8%;
+        left: 93%;
+        font-size: 4.2em;
+        animation-duration: 3.4s; }
+        .page.settings-container .marketplace .float.pos-2 .material-icons {
+          -moz-transform: rotate(12deg);
+          -o-transform: rotate(12deg);
+          -ms-transform: rotate(12deg);
+          -webkit-transform: rotate(12deg);
+          transform: rotate(12deg); }
+      .page.settings-container .marketplace .float.pos-3 {
+        top: 14%;
+        left: 34%;
+        font-size: 4.1em;
+        animation-duration: 3.5s; }
+        .page.settings-container .marketplace .float.pos-3 .material-icons {
+          -moz-transform: rotate(8deg);
+          -o-transform: rotate(8deg);
+          -ms-transform: rotate(8deg);
+          -webkit-transform: rotate(8deg);
+          transform: rotate(8deg); }
+      .page.settings-container .marketplace .float.pos-4 {
+        top: 73%;
+        left: 70%;
+        font-size: 3.6em;
+        animation-duration: 4.6s; }
+        .page.settings-container .marketplace .float.pos-4 .material-icons {
+          -moz-transform: rotate(0deg);
+          -o-transform: rotate(0deg);
+          -ms-transform: rotate(0deg);
+          -webkit-transform: rotate(0deg);
+          transform: rotate(0deg); }
+      .page.settings-container .marketplace .float.pos-5 {
+        top: 9%;
+        left: 42%;
+        font-size: 2.4em;
+        animation-duration: 4.7s; }
+        .page.settings-container .marketplace .float.pos-5 .material-icons {
+          -moz-transform: rotate(0deg);
+          -o-transform: rotate(0deg);
+          -ms-transform: rotate(0deg);
+          -webkit-transform: rotate(0deg);
+          transform: rotate(0deg); }
+      .page.settings-container .marketplace .float.pos-6 {
+        top: 24%;
+        left: 22%;
+        font-size: 3.3em;
+        animation-duration: 4.8s; }
+        .page.settings-container .marketplace .float.pos-6 .material-icons {
+          -moz-transform: rotate(-7deg);
+          -o-transform: rotate(-7deg);
+          -ms-transform: rotate(-7deg);
+          -webkit-transform: rotate(-7deg);
+          transform: rotate(-7deg); }
+      .page.settings-container .marketplace .float.pos-7 {
+        top: 45%;
+        left: 66%;
+        font-size: 2.0em;
+        animation-duration: 4.9s; }
+        .page.settings-container .marketplace .float.pos-7 .material-icons {
+          -moz-transform: rotate(0deg);
+          -o-transform: rotate(0deg);
+          -ms-transform: rotate(0deg);
+          -webkit-transform: rotate(0deg);
+          transform: rotate(0deg); }
+      .page.settings-container .marketplace .float.pos-8 {
+        top: 59%;
+        left: 14%;
+        font-size: 3.5em;
+        animation-duration: 3.0s; }
+        .page.settings-container .marketplace .float.pos-8 .material-icons {
+          -moz-transform: rotate(0deg);
+          -o-transform: rotate(0deg);
+          -ms-transform: rotate(0deg);
+          -webkit-transform: rotate(0deg);
+          transform: rotate(0deg); }
+      .page.settings-container .marketplace .float.pos-9 {
+        top: 55%;
+        left: 94%;
+        font-size: 8.0em;
+        animation-duration: 5.1s; }
+        .page.settings-container .marketplace .float.pos-9 .material-icons {
+          -moz-transform: rotate(-13deg);
+          -o-transform: rotate(-13deg);
+          -ms-transform: rotate(-13deg);
+          -webkit-transform: rotate(-13deg);
+          transform: rotate(-13deg); }
+      .page.settings-container .marketplace .float.pos-10 {
+        top: 14%;
+        left: 80%;
+        font-size: 3.1em;
+        animation-duration: 4.2s; }
+        .page.settings-container .marketplace .float.pos-10 .material-icons {
+          -moz-transform: rotate(0deg);
+          -o-transform: rotate(0deg);
+          -ms-transform: rotate(0deg);
+          -webkit-transform: rotate(0deg);
+          transform: rotate(0deg); }
+      .page.settings-container .marketplace .float.pos-11 {
+        top: 97%;
+        left: 40%;
+        font-size: 4.3em;
+        animation-duration: 3.3s; }
+        .page.settings-container .marketplace .float.pos-11 .material-icons {
+          -moz-transform: rotate(0deg);
+          -o-transform: rotate(0deg);
+          -ms-transform: rotate(0deg);
+          -webkit-transform: rotate(0deg);
+          transform: rotate(0deg); }
+      .page.settings-container .marketplace .float.pos-12 {
+        top: 38%;
+        left: 2%;
+        font-size: 2.8em;
+        animation-duration: 4.4s; }
+        .page.settings-container .marketplace .float.pos-12 .material-icons {
+          -moz-transform: rotate(6deg);
+          -o-transform: rotate(6deg);
+          -ms-transform: rotate(6deg);
+          -webkit-transform: rotate(6deg);
+          transform: rotate(6deg); }
+      .page.settings-container .marketplace .float.pos-13 {
+        top: 71%;
+        left: 54%;
+        font-size: 4.2em;
+        animation-duration: 3.5s; }
+        .page.settings-container .marketplace .float.pos-13 .material-icons {
+          -moz-transform: rotate(-2deg);
+          -o-transform: rotate(-2deg);
+          -ms-transform: rotate(-2deg);
+          -webkit-transform: rotate(-2deg);
+          transform: rotate(-2deg); }
+      .page.settings-container .marketplace .float.pos-14 {
+        top: -5%;
+        left: 70%;
+        font-size: 5.5em;
+        animation-duration: 3.6s; }
+        .page.settings-container .marketplace .float.pos-14 .material-icons {
+          -moz-transform: rotate(4deg);
+          -o-transform: rotate(4deg);
+          -ms-transform: rotate(4deg);
+          -webkit-transform: rotate(4deg);
+          transform: rotate(4deg); }
+      .page.settings-container .marketplace .float.pos-15 {
+        top: 13%;
+        left: 58%;
+        font-size: 3.9em;
+        animation-duration: 3.7s; }
+        .page.settings-container .marketplace .float.pos-15 .material-icons {
+          -moz-transform: rotate(6deg);
+          -o-transform: rotate(6deg);
+          -ms-transform: rotate(6deg);
+          -webkit-transform: rotate(6deg);
+          transform: rotate(6deg); }
+      .page.settings-container .marketplace .float.pos-16 {
+        top: 57%;
+        left: 28%;
+        font-size: 6.9em;
+        animation-duration: 5.8s; }
+        .page.settings-container .marketplace .float.pos-16 .material-icons {
+          -moz-transform: rotate(-4deg);
+          -o-transform: rotate(-4deg);
+          -ms-transform: rotate(-4deg);
+          -webkit-transform: rotate(-4deg);
+          transform: rotate(-4deg); }
+      .page.settings-container .marketplace .float.pos-17 {
+        top: 60%;
+        left: 44%;
+        font-size: 3.9em;
+        animation-duration: 4.9s; }
+        .page.settings-container .marketplace .float.pos-17 .material-icons {
+          -moz-transform: rotate(-13deg);
+          -o-transform: rotate(-13deg);
+          -ms-transform: rotate(-13deg);
+          -webkit-transform: rotate(-13deg);
+          transform: rotate(-13deg); }
+      .page.settings-container .marketplace .float.pos-18 {
+        top: 48%;
+        left: 76%;
+        font-size: 4.2em;
+        animation-duration: 3.0s; }
+        .page.settings-container .marketplace .float.pos-18 .material-icons {
+          -moz-transform: rotate(-4deg);
+          -o-transform: rotate(-4deg);
+          -ms-transform: rotate(-4deg);
+          -webkit-transform: rotate(-4deg);
+          transform: rotate(-4deg); }
+      .page.settings-container .marketplace .float.pos-19 {
+        top: 64%;
+        left: 89%;
+        font-size: 2.6em;
+        animation-duration: 4.1s; }
+        .page.settings-container .marketplace .float.pos-19 .material-icons {
+          -moz-transform: rotate(42deg);
+          -o-transform: rotate(42deg);
+          -ms-transform: rotate(42deg);
+          -webkit-transform: rotate(42deg);
+          transform: rotate(42deg); }
+      .page.settings-container .marketplace .float.pos-20 {
+        top: 60%;
+        left: 3%;
+        font-size: 7.1em;
+        animation-duration: 5.2s; }
+        .page.settings-container .marketplace .float.pos-20 .material-icons {
+          -moz-transform: rotate(0deg);
+          -o-transform: rotate(0deg);
+          -ms-transform: rotate(0deg);
+          -webkit-transform: rotate(0deg);
+          transform: rotate(0deg); }
+      .page.settings-container .marketplace .float.pos-21 {
+        top: 25%;
+        left: 87%;
+        font-size: 3.9em;
+        animation-duration: 4.3s; }
+        .page.settings-container .marketplace .float.pos-21 .material-icons {
+          -moz-transform: rotate(23deg);
+          -o-transform: rotate(23deg);
+          -ms-transform: rotate(23deg);
+          -webkit-transform: rotate(23deg);
+          transform: rotate(23deg); }
+      .page.settings-container .marketplace .float.pos-22 {
+        top: -23%;
+        left: -3%;
+        font-size: 7.8em;
+        animation-duration: 5.4s; }
+        .page.settings-container .marketplace .float.pos-22 .material-icons {
+          -moz-transform: rotate(0deg);
+          -o-transform: rotate(0deg);
+          -ms-transform: rotate(0deg);
+          -webkit-transform: rotate(0deg);
+          transform: rotate(0deg); }
+      .page.settings-container .marketplace .float.pos-23 {
+        top: 65%;
+        left: 81%;
+        font-size: 6.0em;
+        animation-duration: 5.5s; }
+        .page.settings-container .marketplace .float.pos-23 .material-icons {
+          -moz-transform: rotate(-3deg);
+          -o-transform: rotate(-3deg);
+          -ms-transform: rotate(-3deg);
+          -webkit-transform: rotate(-3deg);
+          transform: rotate(-3deg); }
+      .page.settings-container .marketplace .float.pos-24 {
+        top: 58%;
+        left: 61%;
+        font-size: 3.7em;
+        animation-duration: 3.6s; }
+        .page.settings-container .marketplace .float.pos-24 .material-icons {
+          -moz-transform: rotate(6deg);
+          -o-transform: rotate(6deg);
+          -ms-transform: rotate(6deg);
+          -webkit-transform: rotate(6deg);
+          transform: rotate(6deg); }
+      .page.settings-container .marketplace .float.pos-25 {
+        top: -5%;
+        left: 16%;
+        font-size: 4.0em;
+        animation-duration: 3.7s; }
+        .page.settings-container .marketplace .float.pos-25 .material-icons {
+          -moz-transform: rotate(-2deg);
+          -o-transform: rotate(-2deg);
+          -ms-transform: rotate(-2deg);
+          -webkit-transform: rotate(-2deg);
+          transform: rotate(-2deg); }
+      .page.settings-container .marketplace .float.pos-26 {
+        top: 1%;
+        left: 86%;
+        font-size: 2.8em;
+        animation-duration: 4.8s; }
+        .page.settings-container .marketplace .float.pos-26 .material-icons {
+          -moz-transform: rotate(-3deg);
+          -o-transform: rotate(-3deg);
+          -ms-transform: rotate(-3deg);
+          -webkit-transform: rotate(-3deg);
+          transform: rotate(-3deg); }
+      .page.settings-container .marketplace .float.pos-27 {
+        top: 70%;
+        left: 21%;
+        font-size: 2.9em;
+        animation-duration: 4.9s; }
+        .page.settings-container .marketplace .float.pos-27 .material-icons {
+          -moz-transform: rotate(-2deg);
+          -o-transform: rotate(-2deg);
+          -ms-transform: rotate(-2deg);
+          -webkit-transform: rotate(-2deg);
+          transform: rotate(-2deg); }
+      .page.settings-container .marketplace .float.pos-28 {
+        top: 3%;
+        left: 27%;
+        font-size: 3.4em;
+        animation-duration: 3.0s; }
+        .page.settings-container .marketplace .float.pos-28 .material-icons {
+          -moz-transform: rotate(3deg);
+          -o-transform: rotate(3deg);
+          -ms-transform: rotate(3deg);
+          -webkit-transform: rotate(3deg);
+          transform: rotate(3deg); }
+      .page.settings-container .marketplace .float.pos-29 {
+        top: -7%;
+        left: 48%;
+        font-size: 5.7em;
+        animation-duration: 5.1s; }
+        .page.settings-container .marketplace .float.pos-29 .material-icons {
+          -moz-transform: rotate(-10deg);
+          -o-transform: rotate(-10deg);
+          -ms-transform: rotate(-10deg);
+          -webkit-transform: rotate(-10deg);
+          transform: rotate(-10deg); }
+      .page.settings-container .marketplace .float.pos-30 {
+        top: 5%;
+        left: 64%;
+        font-size: 2.8em;
+        animation-duration: 4.2s; }
+        .page.settings-container .marketplace .float.pos-30 .material-icons {
+          -moz-transform: rotate(-3deg);
+          -o-transform: rotate(-3deg);
+          -ms-transform: rotate(-3deg);
+          -webkit-transform: rotate(-3deg);
+          transform: rotate(-3deg); }
 
 .preview-intro {
   -webkit-box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.2);
@@ -5292,9 +5685,6 @@ body.login {
         margin-bottom: 0; }
         .fields .field .interface .wysiwyg textarea {
           padding: 0; } }
-@media only screen and (max-width: 1400px) {
-  .page.settings-modules {
-    height: 380px; } }
 @media only screen and (max-width: 1200px) {
   body.right-sidebar-open .right-sidebar,
   body.right-sidebar-open-wide .right-sidebar {
@@ -5329,10 +5719,7 @@ body.login {
       margin-right: 4px;
       margin-bottom: 4px;
       padding: 0;
-      text-indent: 100px; }
-
-  .page.settings-modules {
-    height: 420px; } }
+      text-indent: 100px; } }
 @media only screen and (max-width: 1000px) {
   .message {
     left: 0px !important;
@@ -5422,7 +5809,7 @@ body.login {
       font-size: 60px;
       margin-top: -30px; }
 
-  .page.settings-modules {
+  .page.settings-container .settings-modules {
     display: block;
     flex-direction: inherit;
     flex-wrap: inherit;
@@ -5430,9 +5817,18 @@ body.login {
     height: auto;
     margin: 0 40px;
     padding-bottom: 40px; }
-    .page.settings-modules .settings-module {
+    .page.settings-container .settings-modules .settings-module {
       width: 100%;
-      margin-top: 40px; } }
+      margin-top: 40px;
+      margin-bottom: 0; }
+      .page.settings-container .settings-modules .settings-module .description {
+        padding-top: 20px; }
+      .page.settings-container .settings-modules .settings-module .icon-header {
+        display: none; }
+      .page.settings-container .settings-modules .settings-module .button {
+        width: 240px; }
+  .page.settings-container .marketplace {
+    font-size: 10px; } }
 @media only screen and (max-width: 800px) {
   .header .logo {
     left: -200px; }
@@ -5501,7 +5897,10 @@ body.login {
     display: none; }
 
   .smoke .modal.confirm .modal-bg {
-    min-width: 90%; } }
+    min-width: 90%; }
+
+  .page.settings-container .settings-modules .settings-module .button {
+    width: auto; } }
 @media only screen and (max-width: 500px) {
   .fields .field .interface input {
     min-width: auto;
