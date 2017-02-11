@@ -229,21 +229,19 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
     Input: Input,
     validate: function(value, options) {
       var $el = $('input[name="' + options.schema.id + '"]').parent();
-      var data = $el.data();
       var password = $el.find('input.password-primary').val(),
         confirm = $el.find('input.password-confirm').val();
 
-      if(!password && options.schema.get('required')) {
+      if (!password && options.schema.get('required')) {
         return __t('you_must_specify_a_password');
       }
 
-      if(password) {
-        if(password !== confirm) {
-          return __t('password_must_match');
-        }
-        if(!$el.data().isAPIHashed && !$el.data().wasAPIHashed) {
-          return __t('you_must_hash_your_password');
-        }
+      if (password && password !== confirm) {
+        return __t('password_must_match');
+        // @NOTE: Password UI won't be in charge to hash the plain text password
+        // if (!$el.data().isAPIHashed && !$el.data().wasAPIHashed) {
+        //   return __t('you_must_hash_your_password');
+        // }
       }
     },
     list: function(options) {

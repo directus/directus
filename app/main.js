@@ -51,6 +51,7 @@ require(["config", 'polyfills'], function() {
       extensions: [],
       messages: {},
       user_notifications: [],
+      showWelcomeWindow: false,
       me: { id: 7 },
       settings: {
         global: {},
@@ -84,6 +85,7 @@ require(["config", 'polyfills'], function() {
     app.timezone = options.timezone;
     app.timezones = options.timezones;
     app.user_notifications = options.user_notifications;
+    app.showWelcomeWindow = options.showWelcomeWindow;
 
     $.xhrPool = []; // array of uncompleted requests
     $.xhrPool.abortAll = function() { // our abort function

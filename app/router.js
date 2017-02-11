@@ -15,6 +15,7 @@ define(function(require, exports, module) {
       Backbone         = require('backbone'),
       _                = require('underscore'),
       Notification     = require('core/notification'),
+      WelcomeModal     = require('core/modals/welcome'),
       //Directus       = require('core/directus'),
       Tabs             = require('core/tabs'),
       BaseHeaderView   = require('core/baseHeaderView'),
@@ -131,7 +132,7 @@ define(function(require, exports, module) {
       this.v.main.trigger.apply(this.v.main, ['flashItem', itemID, scrollTop]);
 
       var mainSidebar = document.getElementById('mainSidebar');
-      if(mainSidebar) {
+      if (mainSidebar) {
         mainSidebar.scrollTop = this.scrollTop;
       }
 
@@ -144,6 +145,14 @@ define(function(require, exports, module) {
       });
 
       app.user_notifications = [];
+
+      if (app.showWelcomeWindow) {
+        this.openViewInModal(new WelcomeModal({
+          model: app.users.getCurrentUser()
+        }));
+
+        app.showWelcomeWindow = false;
+      }
     },
 
     go: function() {

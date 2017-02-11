@@ -30,18 +30,41 @@ $emitter->run('directus.index.start');
 
 // No access, forward to login page
 unset($_SESSION['_directus_login_redirect']);
+$showWelcomeWindow = false;
 if (!$authentication->loggedIn()) {
-    $request_uri = $_SERVER['REQUEST_URI'];
-    if (strpos($request_uri, DIRECTUS_PATH) === 0) {
-        $request_uri = substr($request_uri, strlen(DIRECTUS_PATH));
+    $invitationCode = $app->request()->get('invitation_code');
+    $authenticated = false;
+
+    if ($invitationCode) {
+        $authenticated = $authentication->authenticateWithInvitation($invitationCode);
     }
-    $redirect = htmlspecialchars(trim($request_uri, '/'), ENT_QUOTES, 'UTF-8');
-    if ($redirect) {
-        $_SESSION['_directus_login_redirect'] = $redirect;
-        $redirect = '?redirect=' . $redirect;
+
+    if (!$authenticated) {
+        $request_uri = $_SERVER['REQUEST_URI'];
+
+        if (strpos($request_uri, DIRECTUS_PATH) === 0) {
+            $request_uri = substr($request_uri, strlen(DIRECTUS_PATH));
+        }
+
+        $redirect = htmlspecialchars(trim($request_uri, '/'), ENT_QUOTES, 'UTF-8');
+        if ($redirect) {
+            $_SESSION['_directus_login_redirect'] = $redirect;
+            $redirect = '?redirect=' . $redirect;
+        }
+
+        header('Location: ' . DIRECTUS_PATH . 'login.php' . $redirect);
+        exit;
+    } else {
+        $showWelcomeWindow = true;
+        $invitationUser = $authentication->getUserRecord();
+
+        $privilegesTable = new DirectusPrivilegesTableGateway($ZendDb, $acl);
+        $privileges = $privilegesTable->getGroupPrivileges($invitationUser['group']);
+        $acl->setGroupPrivileges($privileges);
+        // @TODO: Adding an user should auto set its ID and GROUP
+        $acl->setUserId($invitationUser['id']);
+        $acl->setGroupId($invitationUser['group']);
     }
-    header('Location: ' . DIRECTUS_PATH . 'login.php' . $redirect);
-    die();
 }
 
 $acl = Bootstrap::get('acl');
@@ -477,6 +500,7 @@ $data = [
     'user_notifications' => getLoginNotification(),
     'bookmarks' => getBookmarks(),
     'extendedUserColumns' => getExtendedUserColumns($tableSchema),
+    'showWelcomeWindow' => $showWelcomeWindow,
     'statusMapping' => $statusMapping
 ];
 

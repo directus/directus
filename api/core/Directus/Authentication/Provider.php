@@ -14,6 +14,7 @@ use Directus\Authentication\Exception\UserAlreadyLoggedInException;
 use Directus\Authentication\Exception\UserIsntLoggedInException;
 use Directus\Session\Session;
 use Directus\Util\ArrayUtils;
+use Directus\Util\DateUtils;
 use Directus\Util\StringUtils;
 use Zend\Db\TableGateway\TableGateway;
 
@@ -76,6 +77,14 @@ class Provider
         if (!is_string($this->prefix) || empty($prefix)) {
             throw new \RuntimeException(__t('you_must_define_session_prefix_in_configuration'));
         }
+    }
+
+    /**
+     * @return TableGateway
+     */
+    public function getTableGateway()
+    {
+        return $this->table;
     }
 
     /**
@@ -176,6 +185,30 @@ class Provider
         return $correct ? $user : false;
     }
 
+    public function authenticateWithInvitation($invitationCode)
+    {
+        if ($this->authenticated != null) {
+            return $this->authenticated;
+        }
+
+        $user = $this->table->select([
+            'invite_token' => $invitationCode
+        ], ['filter' => false])->current();
+
+        if ($user) {
+            $this->completeLogin($user->id);
+
+            $userSession = $this->session->get($this->SESSION_KEY, $user);
+            $set = ['last_login' => DateUtils::now(), 'access_token' => $userSession['access_token']];
+            $where = ['id' => $user['id']];
+            $this->getTableGateway()->update($set, $where);
+
+            return true;
+        }
+
+        return false;
+    }
+
     /**
      * Force a user id to be the logged user
      *
@@ -226,7 +259,7 @@ class Provider
             $user = $this->table->select([
                 'id' => $session['id'],
                 'access_token' => $session['access_token']
-            ]);
+            ], ['filter' => false]);
 
             if ($user->count()) {
                 $this->authenticated = $isLoggedIn = true;
