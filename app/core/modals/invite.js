@@ -1,11 +1,12 @@
 define([
   'app',
+  'underscore',
   'backbone',
   'core/Modal',
   'schema/TableModel',
   'core/notification',
   'core/t'
-], function(app, Backbone, Modal, TableModel, Notification, __t) {
+], function(app, _, Backbone, Modal, TableModel, Notification, __t) {
 
   'use strict';
 
@@ -28,6 +29,8 @@ define([
     sendInvitation: function() {
       // @TODO: Make sure it's a valid email(s)
       var data = this.$('form').serializeObject();
+      // If something is returned
+      // then something went wrong
       if (this.model.validate(data)) {
         return;
       }
@@ -37,7 +40,7 @@ define([
           email: data.email
         }
       }).success(_.bind(function() {
-        this.close();
+        this.close(true);
         Notification.success(__t('invitation'), __t('invitation_sent'));
       }, this));
     },

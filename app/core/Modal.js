@@ -17,13 +17,14 @@ define(['app', 'backbone', 'underscore'], function(app, Backbone, _) {
       this.container = container;
     },
 
-    close: function() {
+    close: function(closeContainer) {
       this.$el.addClass('slide-down');
       setTimeout(_.bind(function() {
-        if (this.container) {
+        if (this.container && closeContainer === true) {
           this.container.close();
-          this.remove();
         }
+        this.$el.removeClass('slide-down');
+        this.remove();
       }, this), 200);
     },
 
