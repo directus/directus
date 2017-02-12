@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "96430a305585e9cb877b0bf86ff95ca0",
+    "content-hash": "5dd57c04a559d376e2beea2646555520",
     "packages": [
         {
             "name": "directus/collection",
@@ -47,16 +47,16 @@
         },
         {
             "name": "directus/database",
-            "version": "0.1.0",
+            "version": "0.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/directus/directus-database.git",
-                "reference": "a5c851c827a0606226c8493d708110c7ec28d230"
+                "reference": "8901471d751c221bca8b93b850ad8f67647c6360"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/directus/directus-database/zipball/a5c851c827a0606226c8493d708110c7ec28d230",
-                "reference": "a5c851c827a0606226c8493d708110c7ec28d230",
+                "url": "https://api.github.com/repos/directus/directus-database/zipball/8901471d751c221bca8b93b850ad8f67647c6360",
+                "reference": "8901471d751c221bca8b93b850ad8f67647c6360",
                 "shasum": ""
             },
             "require": {
@@ -90,7 +90,7 @@
                 "database",
                 "directus"
             ],
-            "time": "2017-01-19T19:03:09+00:00"
+            "time": "2017-02-08T19:38:46+00:00"
         },
         {
             "name": "directus/migrations",
@@ -190,12 +190,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/flysystem.git",
-                "reference": "469ad53c13ea19a0e54e3e5d70f61227ddcc0299"
+                "reference": "dda7f3ab94158a002d9846a97dc18ebfb7acc062"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/469ad53c13ea19a0e54e3e5d70f61227ddcc0299",
-                "reference": "469ad53c13ea19a0e54e3e5d70f61227ddcc0299",
+                "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/dda7f3ab94158a002d9846a97dc18ebfb7acc062",
+                "reference": "dda7f3ab94158a002d9846a97dc18ebfb7acc062",
                 "shasum": ""
             },
             "require": {
@@ -265,7 +265,7 @@
                 "sftp",
                 "storage"
             ],
-            "time": "2017-01-30 17:41:17"
+            "time": "2017-02-09 11:33:58"
         },
         {
             "name": "slim/extras",
@@ -414,12 +414,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/twigphp/Twig.git",
-                "reference": "a1c1f01eac45b68d6f17c3b499297b93e1a47321"
+                "reference": "d6715ac8c3a77ae6d0ebad9ff12511cc1b27f4a7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twigphp/Twig/zipball/a1c1f01eac45b68d6f17c3b499297b93e1a47321",
-                "reference": "a1c1f01eac45b68d6f17c3b499297b93e1a47321",
+                "url": "https://api.github.com/repos/twigphp/Twig/zipball/d6715ac8c3a77ae6d0ebad9ff12511cc1b27f4a7",
+                "reference": "d6715ac8c3a77ae6d0ebad9ff12511cc1b27f4a7",
                 "shasum": ""
             },
             "require": {
@@ -467,7 +467,7 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2017-01-19 14:55:10"
+            "time": "2017-02-03 21:34:15"
         },
         {
             "name": "zendframework/zend-db",

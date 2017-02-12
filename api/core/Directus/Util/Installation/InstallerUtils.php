@@ -25,13 +25,6 @@ class InstallerUtils
             throw new \InvalidArgumentException($message);
         }
 
-        $defaults = [
-            'feedback_token' => sha1(gmdate('U') . StringUtils::randomString(32)),
-            'feedback_login' => true
-        ];
-
-        $data = ArrayUtils::defaults($defaults, $data);
-
         static::createConfigFile($data, $path);
         static::createConfigurationFile($data, $path);
     }
@@ -78,6 +71,7 @@ class InstallerUtils
 
         $data = ArrayUtils::defaults([
             'default_language' => 'en',
+            'feedback_token' => sha1(gmdate('U') . StringUtils::randomString(32)),
             'feedback_login' => true
         ], $data);
 
