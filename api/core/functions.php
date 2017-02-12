@@ -143,6 +143,27 @@ if (!function_exists('is_ssl')) {
     }
 }
 
+if (!function_exists('get_directus_path')) {
+    /**
+     * Gets the Directus path (subdirectory based on the host)
+     *
+     * @return string
+     */
+    function get_directus_path()
+    {
+        if (!defined('DIRECTUS_PATH')) {
+            $basePath = realpath(__DIR__ . '/../..');
+            $position = (int) strpos($basePath, $_SERVER['DOCUMENT_ROOT']);
+            $length = strlen($_SERVER['DOCUMENT_ROOT']);
+            $path = substr($basePath, $position + $length);
+        } else {
+            $path = DIRECTUS_PATH;
+        }
+
+        return rtrim($path, '/') . '/';
+    }
+}
+
 if (!function_exists('get_url')) {
     /**
      * Get Directus URL
@@ -156,7 +177,8 @@ if (!function_exists('get_url')) {
     {
         $schema = is_ssl() ? 'https://' : 'http://';
         $host = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : $defaultHost;
-        $directusPath = defined('DIRECTUS_PATH') ? DIRECTUS_PATH : '/';
+        // hotfix: When DIRECTUS_PATH is not set yet (no config file)
+        $directusPath = defined('DIRECTUS_PATH') ? DIRECTUS_PATH : get_directus_path();
         $directusHost = rtrim($host . $directusPath, '/') . '/';
 
         return $schema . $directusHost . ltrim($path, '/');

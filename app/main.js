@@ -274,7 +274,7 @@ require(["config", 'polyfills'], function() {
         bookmarks.push(new Backbone.Model({
           icon_class: item.icon,
           title: item.title,
-          url: 'ext/' + encodeURIComponent(item.id),
+          url: item.path,
           section: 'extension'
         }));
       });

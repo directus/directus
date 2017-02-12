@@ -711,7 +711,7 @@ function(app, _, Backbone, Directus, EditView, BasePageView, TableModel, ColumnM
     }
   });
 
-  SettingsTables.Views.Table = EditView.extend({//BasePageView.extend({
+  SettingsTables.Views.Table = EditView.extend({
     getHeaderOptions: function() {
       var options = EditView.prototype.getHeaderOptions.apply(this, arguments);
 

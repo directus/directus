@@ -173,6 +173,9 @@ class Provider
     public function getUserByAuthentication($email, $password)
     {
         $this->prependSessionKey();
+        // skip filtering
+        // allowing to select ALL columns
+        // by omitting the "private" users column
         $options = ['filter' => false];
         $user = $this->table->select(['email' => $email], $options)->current();
         $correct = false;

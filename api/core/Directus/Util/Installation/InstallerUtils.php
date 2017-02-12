@@ -69,6 +69,12 @@ class InstallerUtils
             $data['default_language'] = 'en';
         }
 
+        $data = ArrayUtils::defaults([
+            'default_language' => 'en',
+            'feedback_token' => sha1(gmdate('U') . StringUtils::randomString(32)),
+            'feedback_login' => true
+        ], $data);
+
         $configurationStub = file_get_contents(__DIR__ . '/stubs/configuration.stub');
         $configurationStub = static::replacePlaceholderValues($configurationStub, $data);
 

@@ -76,7 +76,7 @@ class Table extends Route
         $requestPayload = $app->request()->post();
         $params = $app->request()->get();
 
-        // $params['table_name'] = $table_name;
+        $params['table_name'] = $tableName;
         if ($app->request()->isPost()) {
             /**
              * @todo  check if a column by this name already exists
@@ -94,23 +94,20 @@ class Table extends Route
             // And in lowercase
             $requestPayload['column_name'] = SchemaUtils::cleanColumnName($requestPayload['column_name']);
             $params['column_name'] = $tableGateway->addColumn($tableName, $requestPayload);
-        }
-
-        // $response = TableSchema::getColumnSchema($table_name, $params['column_name']);
-        if ($app->request()->isPost()) {
-            $response = TableSchema::getColumnSchema($tableName, $requestPayload['column_name'], $params);
+            $response = [
+                'meta' => ['type' => 'item', 'table' => 'directus_columns'],
+                'data' => TableSchema::getColumnSchema($tableName, $params['column_name'])->toArray()
+            ];
         } else {
-            $response = array_map(function(Column $column) {
-                return $column->toArray();
-            }, TableSchema::getTableColumnsSchema($tableName, $params));
+            $response = [
+                'meta' => ['type' => 'collection', 'table' => 'directus_columns'],
+                'data' => array_map(function(Column $column) {
+                    return $column->toArray();
+                }, TableSchema::getTableColumnsSchema($tableName))
+            ];
         }
 
-        JsonView::render([
-            'meta' => [
-                'table' => 'directus_table'
-            ],
-            'data' => $response
-        ]);
+        JsonView::render($response);
     }
 
     public function column($table, $column)

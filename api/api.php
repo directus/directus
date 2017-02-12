@@ -83,6 +83,36 @@ if (array_key_exists('filters', $config)) {
 $app->add(new \Directus\Slim\CorsMiddleware());
 
 /**
+ * Creates and /<version>/ping endpoint
+ *
+ * To verify the server is working
+ * But it's actually to check if mod_rewrite is working :)
+ *
+ * Only available when it's not in production
+ *
+ * @param \Slim\Slim $app
+ */
+$pong = function(\Slim\Slim $app) {
+    $request = $app->request();
+    $requestUri = trim($request->getResourceUri(), '/');
+    $parts = explode('/', $requestUri);
+    array_shift($parts);
+    $requestUri = implode('/', $parts);
+
+    if ($requestUri === 'ping') {
+        if (ob_get_level() !== 0) {
+            ob_clean();
+        }
+
+        echo 'pong';
+        exit;
+    }
+};
+if (DIRECTUS_ENV !== 'production') {
+    $pong($app);
+}
+
+/**
  * Catch user-related exceptions & produce client responses.
  */
 
@@ -140,12 +170,6 @@ $acl = Bootstrap::get('acl');
 $authentication = Bootstrap::get('auth');
 
 $app->emitter->run('application.boot', $app);
-
-/**
- * Creates and /<version>/ping endpoint
- */
-create_ping_route($app);
-
 $app->hook('slim.before.dispatch', function () use ($app, $requestNonceProvider, $authAndNonceRouteWhitelist, $ZendDb, $acl, $authentication) {
     // API/Server is about to initialize
     $app->emitter->run('application.init', $app);

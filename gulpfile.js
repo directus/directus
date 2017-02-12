@@ -265,6 +265,7 @@ gulp.task('move', function() {
     './api/logs/*',
     './api/locales/*.json',
     './api/migrations/**/*',
+    './api/routes/**/*',
     './api/views/**/*',
     // './api/vendor/**/*.*',
     './composer.json',
