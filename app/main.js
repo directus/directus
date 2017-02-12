@@ -38,6 +38,7 @@ require(["config", 'polyfills'], function() {
       locale: 'en',
       localesAvailable: [],
       timezone: 'America/New_York',
+      // @TODO: Make timezone an object with id and name
       timezones: [],
       path: '/directus/',
       page: '',

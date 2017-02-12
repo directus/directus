@@ -41,7 +41,9 @@ define(['app', 'backbone', 'underscore', 'core/Modal', 'core/t'], function(app, 
     },
 
     serialize: function() {
-      return this.model.toJSON();
+      return {
+        model: this.model.toJSON()
+      };
     }
   });
 
@@ -74,7 +76,29 @@ define(['app', 'backbone', 'underscore', 'core/Modal', 'core/t'], function(app, 
     },
 
     serialize: function() {
-      return this.model.toJSON();
+      var model = this.model.toJSON();
+      // @TODO: Add more locales (Ben list has some that's not available yet)
+      var timezones = _.map(app.timezones, function(name, key) {
+        return {
+          id: key,
+          name: name,
+          selected: key === model.timezone
+        }
+      });
+
+      var languages = _.map(app.locales, function(language) {
+        return {
+          id: language.code,
+          name: language.name,
+          selected: language.code === model.language
+        }
+      });
+
+      return {
+        model: model,
+        timezones: timezones,
+        languages: languages
+      };
     }
   });
 
