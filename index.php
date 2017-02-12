@@ -39,7 +39,18 @@ if (!$authentication->loggedIn()) {
         $authenticated = $authentication->authenticateWithInvitation($invitationCode);
     }
 
-    if (!$authenticated) {
+    if ($authenticated) {
+        $session->set('on_invitation', true);
+        $showWelcomeWindow = true;
+        $invitationUser = $authentication->getUserRecord();
+
+        $privilegesTable = new DirectusPrivilegesTableGateway($ZendDb, $acl);
+        $privileges = $privilegesTable->getGroupPrivileges($invitationUser['group']);
+        $acl->setGroupPrivileges($privileges);
+        // @TODO: Adding an user should auto set its ID and GROUP
+        $acl->setUserId($invitationUser['id']);
+        $acl->setGroupId($invitationUser['group']);
+    } else {
         $request_uri = $_SERVER['REQUEST_URI'];
 
         if (strpos($request_uri, DIRECTUS_PATH) === 0) {
@@ -54,16 +65,13 @@ if (!$authentication->loggedIn()) {
 
         header('Location: ' . DIRECTUS_PATH . 'login.php' . $redirect);
         exit;
-    } else {
-        $showWelcomeWindow = true;
-        $invitationUser = $authentication->getUserRecord();
+    }
+}
 
-        $privilegesTable = new DirectusPrivilegesTableGateway($ZendDb, $acl);
-        $privileges = $privilegesTable->getGroupPrivileges($invitationUser['group']);
-        $acl->setGroupPrivileges($privileges);
-        // @TODO: Adding an user should auto set its ID and GROUP
-        $acl->setUserId($invitationUser['id']);
-        $acl->setGroupId($invitationUser['group']);
+if (!$showWelcomeWindow) {
+    $authenticatedUser = $authentication->getUserRecord();
+    if ($authenticatedUser['invite_accepted'] != 1) {
+        $showWelcomeWindow = true;
     }
 }
 
