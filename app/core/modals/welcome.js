@@ -61,7 +61,12 @@ define(['app', 'backbone', 'underscore', 'core/Modal', 'core/t'], function(app, 
         return;
       }
 
+      if (!data.email_messages) {
+        data.email_messages = 0;
+      }
+
       newData[app.statusMapping.status_name] = app.statusMapping.active_num;
+      newData['invite_accepted'] = 1;
       newData = _.omit(_.extend(newData, data || {}), 'confirm_password');
 
       this.model.save(newData, {patch: true, validate: false});
