@@ -42,7 +42,7 @@
         --}}
     </div>
     <div class="seen">
-        <i class="material-icons">visibility</i> Ben Haynes, Welling Guzman, and Meagan Campol
+        {{#if reads}}<i class="material-icons">visibility</i> {{usersFirstAndLastName reads}}{{/if}}
     </div>
 </div>
 {{/each}}
