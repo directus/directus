@@ -10,6 +10,7 @@ require(["config", 'polyfills'], function() {
 
   require([
     'app',
+    'underscore',
     'core/UIManager',
     'router',
     'backbone',
@@ -30,7 +31,7 @@ require(["config", 'polyfills'], function() {
     'core/notification'
   ],
 
-  function(app, UIManager, Router, Backbone, alerts, __t, Tabs, Bookmarks, Messages, SchemaManager, SettingsCollection, EntriesModel, ExtensionManager, EntriesManager, ListViewManager, Idle, ToolTip, ContextualDate, Notification) {
+  function(app, _, UIManager, Router, Backbone, alerts, __t, Tabs, Bookmarks, Messages, SchemaManager, SettingsCollection, EntriesModel, ExtensionManager, EntriesManager, ListViewManager, Idle, ToolTip, ContextualDate, Notification) {
 
     "use strict";
 
@@ -164,8 +165,13 @@ require(["config", 'polyfills'], function() {
       });
 
       app.messages.on('sync', function(collection, object) {
-        if (object !== null && object.rows) {
-          object.rows.forEach(function(msg) {
+        if (object !== null && object.data) {
+          var messages = object.data;
+          if (!_.isArray(messages)) {
+            messages = [messages];
+          }
+
+          messages.forEach(function(msg) {
             var message_excerpt = (msg.message && msg.message.length > 50) ? msg.message.substr(0, 50) : msg.message;
             Notification.show('New Message — <i>' + msg.subject + '</i>', message_excerpt + '<br><br><i>View message</i>', {timeout: 5000,
               callback: {

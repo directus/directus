@@ -46,7 +46,7 @@ function(app, Backbone, EntriesCollection, MessageModel) {
         this.total = response.total;
       }
 
-      return response.rows;
+      return response.data;
     },
 
     // Restore fetch to default style

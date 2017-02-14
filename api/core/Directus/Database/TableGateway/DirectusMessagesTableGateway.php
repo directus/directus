@@ -169,7 +169,7 @@ class DirectusMessagesTableGateway extends RelationalTableGateway
 
         foreach ($result as $item) {
             $recipientsData = $recipients[$item['id']];
-            $item['responses'] = ['rows' => []];
+            $item['responses'] = ['data' => []];
             $item['recipients'] = implode(',', ArrayUtils::get($recipientsData, 'recipients', []));
             $item['reads'] = implode(',', ArrayUtils::get($recipientsData, 'reads', []));
             $resultLookup[$item['id']] = $item;
@@ -180,7 +180,7 @@ class DirectusMessagesTableGateway extends RelationalTableGateway
                 // Move it to resultLookup
                 unset($resultLookup[$item['id']]);
                 $item = $this->parseRecord($item);
-                $resultLookup[$item['response_to']]['responses']['rows'][] = $item;
+                $resultLookup[$item['response_to']]['responses']['data'][] = $item;
             }
         }
 
@@ -192,7 +192,7 @@ class DirectusMessagesTableGateway extends RelationalTableGateway
         // Add date_updated
         // Update read
         foreach ($result as &$message) {
-            $responses = $message['responses']['rows'];
+            $responses = $message['responses']['data'];
             /*foreach ($responses as $response) {
                 if($response['read'] == "0") {
                     $message['read'] = "0";
@@ -214,7 +214,7 @@ class DirectusMessagesTableGateway extends RelationalTableGateway
     {
         $messagesRecipientsTableGateway = new DirectusMessagesRecipientsTableGateway($this->adapter, $this->acl);
         $result = $messagesRecipientsTableGateway->countMessages($uid);
-        $result['rows'] = $this->fetchMessagesInbox($uid, $messageIds);
+        $result['data'] = $this->fetchMessagesInbox($uid, $messageIds);
 
         return $result;
     }

@@ -91,9 +91,9 @@ class Messages extends Route
         $ids = [$message['id']];
         $message['read'] = 1;
 
-        foreach ($message['responses']['rows'] as &$response) {
-            $ids[] = $response['id'];
-            $response['read'] = 1;
+        foreach ($message['responses']['data'] as &$responseItem) {
+            $ids[] = $responseItem['id'];
+            $responseItem['read'] = 1;
         }
 
         $messagesRecipientsTableGateway->markAsRead($ids, $currentUserId);
