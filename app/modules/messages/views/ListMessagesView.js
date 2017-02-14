@@ -96,6 +96,17 @@ function(app, Backbone, __t, BasePageView, MessageView, Widgets, moment) {
       return {messages: data};
     },
 
+    beforeRender: function() {
+      var currentMessage = this.state.currentMessage;
+      if (!currentMessage) {
+        return;
+      }
+
+      if (this.collection.get(currentMessage)) {
+        this.displayMessage(currentMessage);
+      }
+    },
+
     displayMessage: function(id, render) {
       var messageView = new MessageView({
         model: this.collection.get(id),
@@ -206,6 +217,7 @@ function(app, Backbone, __t, BasePageView, MessageView, Widgets, moment) {
         }
       }, this);
 
+      // @TODO: This will render the view losing all the text hasn't been sent yet
       this.collection.on('sync', this.render, this);
     }
   });
