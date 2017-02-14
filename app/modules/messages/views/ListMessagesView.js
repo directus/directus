@@ -217,8 +217,9 @@ function(app, Backbone, __t, BasePageView, MessageView, Widgets, moment) {
         }
       }, this);
 
-      // @TODO: This will render the view losing all the text that hasn't been sent yet
-      this.collection.on('sync', this.render, this);
+      // @TODO: Add new messages into the list without re rendering the existing messages
+      // to prevent the annoying render that deletes all the text that hasn't been sent yet
+      this.collection.on('remove', this.render, this);
     }
   });
 });
