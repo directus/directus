@@ -19,6 +19,7 @@ function(app, Backbone, __t, BasePageView, MessageView, Widgets, moment) {
     },
 
     events: {
+      'click .js-select-row': 'select',
       'click .js-message': function(event) {
         var id = $(event.currentTarget).data('id');
         var messageModel = this.collection.get(id);
@@ -30,6 +31,10 @@ function(app, Backbone, __t, BasePageView, MessageView, Widgets, moment) {
           console.warn('message with id: ' + id + ' does not exists.');
         }
       }
+    },
+
+    select: function() {
+      this.collection.trigger('select');
     },
 
     state: {
@@ -116,7 +121,6 @@ function(app, Backbone, __t, BasePageView, MessageView, Widgets, moment) {
       }, this);
       this.state.lastMessageId = this.collection.maxId;
     }
-
   });
 
   return BasePageView.extend({
@@ -126,8 +130,9 @@ function(app, Backbone, __t, BasePageView, MessageView, Widgets, moment) {
         title: __t('messages')
       }
     },
+
     leftToolbar: function() {
-      return [
+      var widgets = [
         new Widgets.ButtonWidget({
           widgetOptions: {
             buttonId: 'addBtn',
@@ -140,6 +145,35 @@ function(app, Backbone, __t, BasePageView, MessageView, Widgets, moment) {
           }
         })
       ];
+
+      if (this.showDeleteButton) {
+        widgets.push(new Widgets.ButtonWidget({
+          widgetOptions: {
+            buttonId: 'deleteBtn',
+            iconClass: 'close',
+            buttonClass: 'serious',
+            buttonText: __t('delete')
+          },
+          onClick: _.bind(function(event) {
+            // app.router.go('#tables/' + tableView.collection.table.id + '/new');
+            var $checksChecked = this.table.$('.js-select-row:checked');
+            var ids = [];
+            _.each($checksChecked, function(checkbox) {
+              ids.push($(checkbox).parent().data('id'));
+            });
+
+            var models = this.collection.filter(function(model) {
+              return _.contains(ids, model.id);
+            });
+
+            if (models) {
+              this.collection.destroy(models, {wait: true});
+            }
+          }, this)
+        }));
+      }
+
+      return widgets;
     },
     rightToolbar: function() {
       return [
@@ -155,9 +189,24 @@ function(app, Backbone, __t, BasePageView, MessageView, Widgets, moment) {
     },
 
     beforeRender: function() {
-      var view = new ListView({collection: this.collection});
+      var view = this.table = new ListView({collection: this.collection});
       this.setView('#page-content', view);
       BasePageView.prototype.beforeRender.call(this);
+    },
+
+    initialize: function() {
+      this.collection.on('select', function() {
+        var $checksChecked = this.table.$('.js-select-row:checked');
+        // @NOTE: Hotfix render on empty selection
+        var render = this.showDeleteButton && !($checksChecked.length >= 1);
+        this.showDeleteButton = $checksChecked.length >= 1;
+
+        if (render || this.showDeleteButton) {
+          this.reRender();
+        }
+      }, this);
+
+      this.collection.on('sync', this.render, this);
     }
   });
 });

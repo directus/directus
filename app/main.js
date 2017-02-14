@@ -157,7 +157,7 @@ require(["config", 'polyfills'], function() {
       app.getEntries = function(tableName, options) { return EntriesManager.getInstance(tableName, options); };
 
       app.messages = new Messages.Collection([], _.extend({
-        url: app.API_URL + 'messages/rows/'
+        url: app.API_URL + 'messages/rows'
       }, SchemaManager.getFullSchema('directus_messages')));
 
       app.messages.on('error:polling', function() {
@@ -165,7 +165,7 @@ require(["config", 'polyfills'], function() {
       });
 
       app.messages.on('sync', function(collection, object) {
-        if (object !== null && object.data) {
+        if (object != null && object.data) {
           var messages = object.data;
           if (!_.isArray(messages)) {
             messages = [messages];

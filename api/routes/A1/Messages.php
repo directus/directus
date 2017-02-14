@@ -47,6 +47,31 @@ class Messages extends Route
         ]);
     }
 
+    public function archiveMessages()
+    {
+        $acl = $this->app->container->get('acl');
+        $ZendDb = $this->app->container->get('zenddb');
+        $currentUserId = $acl->getUserId();
+
+        $request = $this->app->request();
+        $rows = $request->post('rows');
+        $responsesIds = [];
+
+        foreach($rows as $row) {
+            $responses = $row['responses'];
+            foreach($responses as $res) {
+                $responsesIds[] = $res['id'];
+            }
+        }
+
+        $messagesTableGateway = new DirectusMessagesRecipientsTableGateway($ZendDb, $acl);
+        $success = $messagesTableGateway->archiveMessages($currentUserId, $responsesIds);
+
+        return JsonView::render([
+            'success' => $success
+        ]);
+    }
+
     public function row($id)
     {
         $app = $this->app;

@@ -518,6 +518,7 @@ $app->group('/1.1', function() use($app) {
     // MESSAGES
     // =============================================================================
     $app->get('/messages/rows/?', '\Directus\API\Routes\A1\Messages:rows');
+    $app->delete('/messages/rows/bulk?', '\Directus\API\Routes\A1\Messages:archiveMessages');
     $app->get('/messages/user/:id/?', '\Directus\API\Routes\A1\Messages:rows');
     $app->get('/messages/self/?', '\Directus\API\Routes\A1\Messages:rows');
     $app->get('/messages/rows/:id/?', '\Directus\API\Routes\A1\Messages:row');

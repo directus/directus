@@ -41,7 +41,7 @@ define([
           var model = new Model(attrs, {
             collection: collection,
             parse: true,
-            url: app.API_URL + 'messages/rows/'
+            url: app.API_URL + 'messages/rows'
           });
 
           // @TODO: Get ID after create message
@@ -84,13 +84,13 @@ define([
       serialize: function() {
         var data = this.model.toJSON();
 
-        data.recipients = _.filter(data.recipients.split(','), function(userId) {
+        data.recipients = _.filter((data.recipients || '').split(','), function(userId) {
           userId = Number(userId);
 
           // Remove the sender from the recipients list
           return Number(userId) !== data.from;
         });
-        data.reads = data.reads.split(',');
+        data.reads = data.reads ? data.reads.split(',') : null;
         data.recipientsCount = data.recipients.length;
         data.collapseRecipients = data.recipients.length > this.maxRecipients;
         data.current_user = app.authenticatedUserId;
@@ -128,7 +128,9 @@ define([
           break;
         }
 
-        data.message = new Handlebars.SafeString(app.replaceAll('\n', '<br>', data.message));
+        if (data.message) {
+          data.message = new Handlebars.SafeString(app.replaceAll('\n', '<br>', data.message));
+        }
 
         return data;
       },

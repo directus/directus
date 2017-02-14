@@ -10,6 +10,7 @@ use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Insert;
 use Zend\Db\Sql\Select;
+use Zend\Db\Sql\Update;
 
 class DirectusMessagesTableGateway extends RelationalTableGateway
 {
@@ -66,7 +67,7 @@ class DirectusMessagesTableGateway extends RelationalTableGateway
         $select = new Select($this->getTable());
         $select
             ->columns(['id', 'from', 'subject', 'message', 'attachment', 'datetime', 'response_to'])
-            ->join('directus_messages_recipients', 'directus_messages.id = directus_messages_recipients.message_id', ['read'])
+            ->join('directus_messages_recipients', 'directus_messages.id = directus_messages_recipients.message_id', ['read', 'archived'])
             ->where
             ->equalTo('directus_messages_recipients.recipient', $uid)
             ->and
@@ -81,6 +82,14 @@ class DirectusMessagesTableGateway extends RelationalTableGateway
 
         foreach ($result as &$message) {
             $message = $this->parseRecordValuesByType($message, 'directus_messages_recipients');
+        }
+
+        // Remove archived messages
+        // TODO: Make this behavior done in the query
+        foreach($result as $key => $item) {
+            if ($item['archived'] === 1 && $item['response_to'] !== null) {
+                unset($result[$key]);
+            }
         }
 
         return $result;
@@ -185,8 +194,16 @@ class DirectusMessagesTableGateway extends RelationalTableGateway
         }
 
         $result = array_values($resultLookup);
-        foreach ($result as &$row) {
+        foreach ($result as $key => &$row) {
+            if (!$row['responses']['data']) {
+                 unset($result[$key]);
+                 continue;
+            }
+
             $row = $this->parseRecord($row);
+            if (ArrayUtils::get($row, 'archived', 0) === 1) {
+                $row = ArrayUtils::omit($row, ['message', 'attachment', 'reads']);
+            }
         }
 
         // Add date_updated

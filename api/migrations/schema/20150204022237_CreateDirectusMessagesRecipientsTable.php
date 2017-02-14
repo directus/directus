@@ -49,6 +49,12 @@ class CreateDirectusMessagesRecipientsTable extends Ruckusing_Migration_Base
             'default' => NULL
         ]);
 
+        $t->column('archived', 'tinyinteger', [
+            'limit' => 1,
+            'default' => 0,
+            'null' => true
+        ]);
+
         $t->finish();
     }//up()
 

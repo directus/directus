@@ -164,8 +164,9 @@ define(function(require, exports, module) {
       }
 
       options.data = JSON.stringify({rows: models});
+      options.contentType = 'application/json';
 
-      var destroy = function() {
+      var destroy = function(resp) {
         _.each(models, function(model) {
           if (!(model instanceof Backbone.Model)) {
             model = collection.get(model);
@@ -174,12 +175,12 @@ define(function(require, exports, module) {
           model.trigger('destroy', model, model.collection, options);
         });
 
-        collection.trigger('destroy sync');
+        collection.trigger('destroy sync', collection, resp, options);
       };
 
       options.success = function(resp) {
         if (options.wait) {
-          destroy();
+          destroy(resp);
         }
 
         if (success) {

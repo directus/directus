@@ -44,7 +44,7 @@ function(app, _, Backbone, Handlebars, moment, BasePageView) {
         var model = new Model(attrs, {
           collection: collection,
           parse: true,
-          url: app.API_URL + 'messages/rows/'
+          url: app.API_URL + 'messages/rows'
         });
 
         // @TODO: Get ID after create message
