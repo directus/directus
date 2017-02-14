@@ -58,7 +58,11 @@ function(app, _, Backbone, Notification, __t, ModelHelper, TableHead, TableBody,
 
     selection: function() {
       var selection = [];
-      $('td.check > input:checked').each(function() { selection.push(parseInt(this.value,10)); });
+
+      this.$('td .js-select-row:checked').each(function () {
+        selection.push(parseInt(this.value, 10));
+      });
+
       return selection;
     },
 
