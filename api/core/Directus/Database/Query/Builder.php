@@ -180,7 +180,7 @@ class Builder
      *
      * @return $this
      */
-    protected function nestWhere(\Closure $callback, $logical = 'and')
+    public function nestWhere(\Closure $callback, $logical = 'and')
     {
         $query = $this->newQuery();
         call_user_func($callback, $query);

@@ -1047,6 +1047,21 @@ class RelationalTableGateway extends BaseTableGateway
                 }
             }
         }
+
+        if (!ArrayUtils::has($params, 'q') && ArrayUtils::has($params, 'search')) {
+            $search = ArrayUtils::get($params, 'search', '');
+
+            if ($search) {
+                $columns = TableSchema::getAllNonAliasTableColumns($this->getTable());
+                $query->nestWhere(function (Builder $query) use ($columns, $search) {
+                    foreach ($columns as $column) {
+                        if ($column->getType() === 'VARCHAR' || $column->getType()) {
+                            $query->whereLike($column->getName(), $search);
+                        }
+                    }
+                }, 'or');
+            }
+        }
     }
 
     /**
