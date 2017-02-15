@@ -68,7 +68,7 @@ class Messages extends Route
         $success = $messagesTableGateway->archiveMessages($currentUserId, $responsesIds);
 
         return JsonView::render([
-            'success' => $success
+            'success' => (bool) $success
         ]);
     }
 
