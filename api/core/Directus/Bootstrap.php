@@ -674,7 +674,7 @@ class Bootstrap
                     $acl = Bootstrap::get('acl');
                     $table = new RelationalTableGateway('directus_files', $ZendDb, $acl);
                     $filesEntries = $table->loadItems([
-                        'filters' => ['id' => ['in' => $filesIds]]
+                        'in' => ['id' => $filesIds]
                     ]);
 
                     $entries = [];
