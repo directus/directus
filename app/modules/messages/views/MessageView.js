@@ -13,45 +13,6 @@ define([
       template: 'modules/messages/message-content',
 
       events: {
-        'click #messages-response-button': function() {
-          var collection = this.model.get('responses');
-          var Model = collection.model;
-
-          if ($('#messages-response').val() === '') {
-            return;
-          }
-
-          var recipients = _.map(this.model.get('recipients').split(','), function(id) {
-            return '0_' + id;
-          });
-
-          recipients.push('0_' + this.model.get('from'));
-
-          var attrs = {
-            'from': app.users.getCurrentUser().get('id'),
-            'subject': 'RE: ' + this.model.get('subject'),
-            'recipients': recipients.join(','),
-            // @TODO: Server must set this attribute
-            'datetime': moment().format("YYYY-MM-DD HH:mm:ss"),//new Date().toISOString(),
-            'response_to': this.model.id,
-            'message': $('#messages-response').val(),
-            'responses': []
-          };
-
-          var model = new Model(attrs, {
-            collection: collection,
-            parse: true,
-            url: app.API_URL + 'messages/rows'
-          });
-
-          // @TODO: Get ID after create message
-          // Create an API endpoint for new messages
-          // returning a JSON with the new message
-          model.save();
-          collection.add(model);
-          this.render();
-        },
-
         'click #messages-show-recipients': function() {
           var $el = $('#messages-recipients');
           $el.toggle();
@@ -95,6 +56,14 @@ define([
         data.collapseRecipients = data.recipients.length > this.maxRecipients;
         data.current_user = app.authenticatedUserId;
 
+        data.responses = _.map(data.responses, function(response) {
+          response.attachment = _.map(response.attachment.data, function(item) {
+            return item;
+          });
+
+          return response;
+        });
+
         data.responses = _.sortBy(data.responses, function(response) {
           return new Date(response.datetime);
         });
@@ -131,6 +100,9 @@ define([
         if (data.message) {
           data.message = new Handlebars.SafeString(app.replaceAll('\n', '<br>', data.message));
         }
+
+        data.newModel = this.model.clone();
+        data.newModel.clear();
 
         return data;
       },

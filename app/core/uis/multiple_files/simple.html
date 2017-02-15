@@ -1,0 +1,19 @@
+<div class="button subdued js-add"><i class="material-icons">attachment</i></div>
+<input type="hidden" name="{{name}}" value="{{value}}">
+<div class="attachments">
+    {{#rows}}
+    <div class="file">
+        {{#if html}}
+        {{{html}}}
+        {{else}}
+        <img src="{{thumbnail_url}}">
+        {{/if}}
+        <div class="type">{{type}}</div>
+        <div class="info">
+            <div class="name js-title">{{title}}</div>
+            <div class="uploaded">{{contextualDate date_uploaded}}</div>
+            <i class="material-icons remove js-remove">close</i>
+        </div>
+    </div>
+    {{/rows}}
+</div>

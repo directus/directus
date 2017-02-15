@@ -339,6 +339,12 @@ define(function(require, exports, module) {
       }
     },
 
+    getNewModelInstance: function(options) {
+      options = _.extend({collection: this}, options || {});
+
+      return new this.model({}, options);
+    },
+
     getNewInstance: function(options) {
       options = options || {};
 

@@ -240,7 +240,7 @@ define(function(require, exports, module) {
           optionsHiddenFields = options.hiddenFields || [];
 
       this.inModal = options.inModal || false;
-      this.structure = options.structure || this.model.getStructure();
+      this.structure = options.structure || this.model.getStructure() || this.structure;
 
       if (this.structure === undefined) {
         throw new Error('The edit view will not work without a valid model schema');

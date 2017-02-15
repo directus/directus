@@ -1,14 +1,16 @@
 define([
   'app',
+  'underscore',
   'backbone',
   'core/t',
   'core/BasePageView',
   'modules/messages/views/MessageView',
+  'modules/messages/views/MessageForm',
   'core/widgets/widgets',
   'moment'
 ],
 
-function(app, Backbone, __t, BasePageView, MessageView, Widgets, moment) {
+function(app, _, Backbone, __t, BasePageView, MessageView, MessageForm, Widgets, moment) {
 
   var ListView = Backbone.Layout.extend({
 
@@ -20,10 +22,50 @@ function(app, Backbone, __t, BasePageView, MessageView, Widgets, moment) {
 
     events: {
       'click .js-select-row': 'select',
+      'click .js-send': function() {
+        var messageModel = this.collection.get(this.state.currentMessage);
+        var collection = messageModel.get('responses');
+        // var Model = collection.model;
+        var editView = this.messageForm;
+        var data = editView.$el.serializeObject();
+        var errors = editView.model.validate(data);
+        var newModel = editView.model;
+
+        if (errors) {
+          newModel.trigger('invalid', newModel, errors);
+          return;
+        }
+
+        var recipients = _.map(messageModel.get('recipients').split(','), function(id) {
+          return '0_' + id;
+        });
+
+        recipients.push('0_' + messageModel.get('from'));
+
+        var attrs = _.extend({
+          'from': app.users.getCurrentUser().get('id'),
+          'subject': 'RE: ' + messageModel.get('subject'),
+          'recipients': recipients.join(','),
+          // @TODO: Server must set this attribute
+          'datetime': moment().format("YYYY-MM-DD HH:mm:ss"),
+          'response_to': messageModel.id,
+          'responses': []
+        }, data);
+
+        var success = function() {
+          collection.add(newModel);
+        };
+
+        // @TODO: Get ID after create message
+        // Create an API endpoint for new messages
+        // returning a JSON with the new message
+        newModel.save(attrs, {success: success});
+        this.render();
+      },
       'click .js-message': function(event) {
         var id = $(event.currentTarget).data('id');
         var messageModel = this.collection.get(id);
-        // app.router.go('#messages', id);
+
         if (messageModel) {
           this.state.currentMessage = messageModel;
           this.displayMessage(id, true);
@@ -40,6 +82,10 @@ function(app, Backbone, __t, BasePageView, MessageView, Widgets, moment) {
     state: {
       currentMessage: null,
       lastMessageId: null
+    },
+
+    dom: {
+      MESSAGE_VIEW: '#message'
     },
 
     serialize: function() {
@@ -107,20 +153,40 @@ function(app, Backbone, __t, BasePageView, MessageView, Widgets, moment) {
       }
     },
 
+    afterRender: function() {
+      if (this.state.currentMessage) {
+        this.$(this.dom.MESSAGE_VIEW).show();
+      }
+    },
+
     displayMessage: function(id, render) {
       var messageView = new MessageView({
         model: this.collection.get(id),
         parentView: this
       });
 
+      var model = this.collection.getNewModelInstance();
+      var structure = MessageForm.prototype.structure;
+      model.structure = structure;
+
+      var messageForm = this.messageForm = new MessageForm({
+        model: model,
+        collection: this.collection,
+        structure: structure
+      });
+
       this.setView('#message-content', messageView);
+      this.setView('#message-form', messageForm);
+      this.$(this.dom.MESSAGE_VIEW).show();
 
       if (render === true) {
         messageView.render();
+        messageForm.render();
       }
     },
 
     initialize: function() {
+      this.collection.on('add', this.render, this);
       // @TODO: Fix adding new messages
       // Getting a new message will re-render everything
       // clearing any message that it could be have writing.
@@ -130,6 +196,7 @@ function(app, Backbone, __t, BasePageView, MessageView, Widgets, moment) {
           this.render();
         }
       }, this);
+
       this.state.lastMessageId = this.collection.maxId;
     }
   });

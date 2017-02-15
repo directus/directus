@@ -29,6 +29,23 @@
         {{message}}
     </div>
     <div class="attachments">
+        {{#attachment}}
+        <div class="file">
+            {{#if html}}
+            {{{html}}}
+            {{else}}
+            <img src="{{thumbnail_url}}">
+            {{/if}}
+            <div class="type">{{type}}</div>
+            <div class="info">
+                <div class="name js-title">{{title}}</div>
+                <div class="uploaded">{{contextualDate date_uploaded}}</div>
+                <i class="material-icons remove js-remove">close</i>
+            </div>
+        </div>
+        {{/attachment}}
+    </div>
+    <div class="attachments">
         {{!--
         <div class="file">
             <img src="{{assetsRoot}}imgs/file.png">
@@ -46,9 +63,3 @@
     </div>
 </div>
 {{/each}}
-
-<div class="reply">
-    <textarea id="messages-response" placeholder="Write a reply..."></textarea>
-    <button id="messages-response-button" class="button hidden">Send <div class="button hidden subdued"><i class="material-icons">attachment</i></button>
-    <!-- <div class="button hidden">Send</div> <div class="button hidden subdued"><i class="material-icons">attachment</i></div> -->
-</div>

@@ -589,8 +589,59 @@ class Bootstrap
             return func_num_args() == 2 ? $data : $payload;
         });
 
+        $addFilesUrl = function($result) {
+            $fileRows = $result->toArray();
+            $app = Bootstrap::get('app');
+            $files = $app->container->get('files');
+            foreach ($fileRows as &$row) {
+                $config = Bootstrap::get('config');
+                $fileURL = $config['filesystem']['root_url'];
+                $thumbnailURL = $config['filesystem']['root_thumb_url'];
+                $thumbnailFilenameParts = explode('.', $row['name']);
+                $thumbnailExtension = array_pop($thumbnailFilenameParts);
+
+                $row['url'] = $fileURL . '/' . $row['name'];
+                if (in_array($thumbnailExtension, ['tif', 'tiff', 'psd', 'pdf'])) {
+                    $thumbnailExtension = 'jpg';
+                }
+
+                $thumbnailFilename = $row['id'] . '.' . $thumbnailExtension;
+                $row['thumbnail_url'] = $thumbnailURL . '/' . $thumbnailFilename;
+
+                // filename-ext-100-100-true.jpg
+                // @TODO: This should be another hook listener
+                $row['thumbnail_url'] = null;
+                $filename = implode('.', $thumbnailFilenameParts);
+                if ($row['type'] == 'embed/vimeo') {
+                    $oldThumbnailFilename = $row['name'] . '-vimeo-220-124-true.jpg';
+                } else {
+                    $oldThumbnailFilename = $filename . '-' . $thumbnailExtension . '-160-160-true.jpg';
+                }
+
+                // 314551321-vimeo-220-124-true.jpg
+                // hotfix: there's not thumbnail for this file
+                if ($files->exists('thumbs/' . $oldThumbnailFilename)) {
+                    $row['thumbnail_url'] = $thumbnailURL . '/' . $oldThumbnailFilename;
+                }
+
+                if ($files->exists('thumbs/' . $thumbnailFilename)) {
+                    $row['thumbnail_url'] = $thumbnailURL . '/' . $thumbnailFilename;
+                }
+
+                $embedManager = Bootstrap::get('embedManager');
+                $provider = $embedManager->getByType($row['type']);
+                $row['html'] = null;
+                if ($provider) {
+                    $row['html'] = $provider->getCode($row);
+                }
+            }
+
+            $filesArrayObject = new \ArrayObject($fileRows);
+            $result->initialize($filesArrayObject->getIterator());
+        };
+
         // Add file url and thumb url
-        $emitter->addFilter('table.select', function($payload) {
+        $emitter->addFilter('table.select', function($payload) use ($addFilesUrl) {
             if (func_num_args() == 2) {
                 $result = func_get_arg(0);
                 $selectState = func_get_arg(1);
@@ -600,54 +651,48 @@ class Bootstrap
             }
 
             if ($selectState['table'] == 'directus_files') {
-                $fileRows = $result->toArray();
-                $app = Bootstrap::get('app');
-                $files = $app->container->get('files');
-                foreach ($fileRows as &$row) {
-                    $config = Bootstrap::get('config');
-                    $fileURL = $config['filesystem']['root_url'];
-                    $thumbnailURL = $config['filesystem']['root_thumb_url'];
-                    $thumbnailFilenameParts = explode('.', $row['name']);
-                    $thumbnailExtension = array_pop($thumbnailFilenameParts);
-
-                    $row['url'] = $fileURL . '/' . $row['name'];
-                    if (in_array($thumbnailExtension, ['tif', 'tiff', 'psd', 'pdf'])) {
-                        $thumbnailExtension = 'jpg';
+                $result = $addFilesUrl($result);
+            } else if ($selectState['table'] === 'directus_messages') {
+                $rows = $result->toArray();
+                $filesIds = [];
+                foreach($rows as &$row) {
+                    if (!ArrayUtils::has($row, 'attachment')) {
+                        continue;
                     }
 
-                    $thumbnailFilename = $row['id'] . '.' . $thumbnailExtension;
-                    $row['thumbnail_url'] = $thumbnailURL . '/' . $thumbnailFilename;
-
-                    // filename-ext-100-100-true.jpg
-                    // @TODO: This should be another hook listener
-                    $row['thumbnail_url'] = null;
-                    $filename = implode('.', $thumbnailFilenameParts);
-                    if ($row['type'] == 'embed/vimeo') {
-                        $oldThumbnailFilename = $row['name'] . '-vimeo-220-124-true.jpg';
-                    } else {
-                        $oldThumbnailFilename = $filename . '-' . $thumbnailExtension . '-160-160-true.jpg';
-                    }
-
-                    // 314551321-vimeo-220-124-true.jpg
-                    // hotfix: there's not thumbnail for this file
-                    if ($files->exists('thumbs/' . $oldThumbnailFilename)) {
-                        $row['thumbnail_url'] = $thumbnailURL . '/' . $oldThumbnailFilename;
-                    }
-
-                    if ($files->exists('thumbs/' . $thumbnailFilename)) {
-                        $row['thumbnail_url'] = $thumbnailURL . '/' . $thumbnailFilename;
-                    }
-
-                    $embedManager = Bootstrap::get('embedManager');
-                    $provider = $embedManager->getByType($row['type']);
-                    $row['html'] = null;
-                    if ($provider) {
-                        $row['html'] = $provider->getCode($row);
+                    $ids = array_filter(StringUtils::csv((string) $row['attachment'], true));
+                    $row['attachment'] = ['data' => []];
+                    foreach($ids as  $id) {
+                        $row['attachment']['data'][$id] = [];
+                        $filesIds[] = $id;
                     }
                 }
 
-                $filesArrayObject = new \ArrayObject($fileRows);
-                $result->initialize($filesArrayObject->getIterator());
+                $filesIds = array_filter($filesIds);
+                if ($filesIds) {
+                    $ZendDb = Bootstrap::get('zenddb');
+                    $acl = Bootstrap::get('acl');
+                    $table = new RelationalTableGateway('directus_files', $ZendDb, $acl);
+                    $filesEntries = $table->loadItems([
+                        'filters' => ['id' => ['in' => $filesIds]]
+                    ]);
+
+                    $entries = [];
+                    foreach($filesEntries as $id => $entry) {
+                        $entries[$entry['id']] = $entry;
+                    }
+
+                    foreach($rows as &$row) {
+                        if (ArrayUtils::has($row, 'attachment') && $row['attachment']) {
+                            foreach($row['attachment']['data'] as $id => $attachment) {
+                                $row['attachment']['data'][$id] = $entries[$id];
+                            }
+                        }
+                    }
+                }
+
+                $rowsArrayObject = new \ArrayObject($rows);
+                $result->initialize($rowsArrayObject->getIterator());
             }
 
             return (func_num_args() == 2) ? $result : $payload;

@@ -49,6 +49,7 @@ define(function(require, exports, module) {
     require('core/uis/map'),
     require('core/uis/markdown'),
     require('core/uis/multiple_files'),
+    require('core/uis/multiple_files/csv/component'),
     require('core/uis/translation'),
     require('core/uis/template_chooser')
   ]);

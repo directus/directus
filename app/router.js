@@ -295,13 +295,14 @@ define(function(require, exports, module) {
     },
 
     removeOverlayPage: function(view) {
-      if (view.headerView) {
+      /*if (view.headerView) {
         view.headerView.remove();
-      }
+      }*/
 
       view.remove(); //Remove Overlay Page
       var vieww = this.v.main.getViews('#content').last().value();
-      vieww.headerView.render();
+      // vieww.headerView.render();
+      vieww.reRender();
       vieww.$el.show();
 
       if (vieww.scrollTop !== undefined) {
