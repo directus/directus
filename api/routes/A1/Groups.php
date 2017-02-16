@@ -16,6 +16,7 @@ class Groups extends Route
         $acl = $container->get('acl');
         $ZendDb = $container->get('zenddb');
         $requestPayload = $app->request()->post();
+        $params = $this->app->request()->get();
 
         // @TODO need PUT
         $tableName = 'directus_groups';
@@ -29,7 +30,7 @@ class Groups extends Route
                 break;
             case 'GET':
             default:
-                $response = $GroupsTableGateway->getEntries();
+                $response = $GroupsTableGateway->getEntries($params);
         }
 
         JsonView::render($response);
