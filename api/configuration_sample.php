@@ -64,6 +64,42 @@ return [
         }
     ],
 
+    'filters' => [
+        'response.directus_users.get' => function ($payload) {
+            /*
+            // assigned by reference to directly change the value on $payload->data
+            $data = &$payload->data;
+            $meta = $payload->meta;
+
+            // add a new attribute merging the first and last name
+            $formatOutput = function (&$row) {
+                $format = '%s %s';
+                $fname = \Directus\Util\ArrayUtils::get($row, 'first_name', '');
+                $lname = \Directus\Util\ArrayUtils::get($row, 'last_name', '');
+                $row['name'] = sprintf($format, $fname, $lname);
+            };
+
+            if ($meta['type'] === 'collection') {
+                // collection on API 1 are wrapped inside 'rows' attributes
+                $attributeName = $payload->apiVersion === 1 ? 'rows' : 'data';
+                $rows =  $data[$attributeName];
+
+                foreach ($rows as $key => $row) {
+                    $formatOutput($data[$attributeName][$key]);
+                }
+            } else {
+                // all content on API 1.1 are wrapped inside 'data'
+                if ($payload->apiVersion > 1) {
+                    $formatOutput($data['data']);
+                } else {
+                    $formatOutput($data);
+                }
+            }
+            */
+            return $payload;
+        }
+    ],
+
     'feedback' => [
         'token' => 'a-kind-of-unique-token',
         'login' => true
