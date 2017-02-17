@@ -122,9 +122,22 @@ class Application extends Slim
     protected function triggerFilter($name, $data, array $options = [])
     {
         $emitter = Bootstrap::get('hookEmitter');
+        $uriParts = explode('/', trim($this->request()->getResourceUri(), '/'));
+        $apiVersion = (float) array_shift($uriParts);
+
+        if ($apiVersion > 1) {
+            $meta = ArrayUtils::get($data, 'meta');
+        } else {
+            $meta = [
+                'type' => array_key_exists('rows', $data) ? 'collection' : 'item',
+                'table' => ArrayUtils::get($options, 'table')
+            ];
+        }
 
         $payload = (object) array_merge($options, [
+            'apiVersion' => $apiVersion,
             'data' => $data,
+            'meta' => $meta,
             'request' => [
                 'path' => $this->request()->getResourceUri(),
                 'method' => $this->request()->getMethod()
