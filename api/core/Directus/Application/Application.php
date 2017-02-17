@@ -101,7 +101,7 @@ class Application extends Slim
             $data = ArrayUtils::get(func_get_args(), 0);
             $options = ArrayUtils::get(func_get_args(), 1);
 
-            $data = $this->triggerFilter('response', $data, (array) $options);
+            $data = $this->triggerResponseFilter($data, (array) $options);
 
             // @TODO: Response will support xml
             $response->setBody(json_encode($data));
@@ -111,17 +111,31 @@ class Application extends Slim
     }
 
     /**
-     * Trigger Filter by name with Options as payload
+     * Trigger Filter by name with its payload
      *
      * @param $name
-     * @param $data
-     * @param $options
+     * @param $payload
      *
      * @return mixed
      */
-    protected function triggerFilter($name, $data, array $options = [])
+    protected function triggerFilter($name, $payload)
     {
         $emitter = Bootstrap::get('hookEmitter');
+        $payload = $emitter->apply($name, $payload);
+
+        return $payload;
+    }
+
+    /**
+     * Trigger a response filter
+     *
+     * @param $data
+     * @param array $options
+     *
+     * @return mixed
+     */
+    protected function triggerResponseFilter($data, array $options)
+    {
         $uriParts = explode('/', trim($this->request()->getResourceUri(), '/'));
         $apiVersion = (float) array_shift($uriParts);
 
@@ -144,7 +158,10 @@ class Application extends Slim
             ]
         ]);
 
-        $payload = $emitter->apply($name, $payload);
+        $payload = $this->triggerFilter('response', $payload);
+        if ($meta['table']) {
+            $payload = $this->triggerFilter('response.' . $meta['table'], $payload);
+        }
 
         return $payload->data;
     }
