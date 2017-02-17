@@ -10,6 +10,8 @@
 
 namespace Directus\Application;
 
+use Directus\Bootstrap;
+use Directus\Util\ArrayUtils;
 use Slim\Http\Util;
 use Slim\Slim;
 
@@ -38,6 +40,10 @@ class Application extends Slim
     public function __construct(array $userSettings)
     {
         parent::__construct($userSettings);
+
+        $this->container->singleton('response', function () {
+            return new BaseResponse();
+        });
 
         $request = $this->request();
         // @NOTE: Slim request do not parse a json request body
@@ -85,6 +91,49 @@ class Application extends Slim
         }
 
         $this->booted = true;
+    }
+
+    public function response()
+    {
+        $response = parent::response();
+
+        if (func_num_args() > 0) {
+            $data = ArrayUtils::get(func_get_args(), 0);
+            $options = ArrayUtils::get(func_get_args(), 1);
+
+            $data = $this->triggerFilter('response', $data, (array) $options);
+
+            // @TODO: Response will support xml
+            $response->setBody(json_encode($data));
+        }
+
+        return $response;
+    }
+
+    /**
+     * Trigger Filter by name with Options as payload
+     *
+     * @param $name
+     * @param $data
+     * @param $options
+     *
+     * @return mixed
+     */
+    protected function triggerFilter($name, $data, array $options = [])
+    {
+        $emitter = Bootstrap::get('hookEmitter');
+
+        $payload = (object) array_merge($options, [
+            'data' => $data,
+            'request' => [
+                'path' => $this->request()->getResourceUri(),
+                'method' => $this->request()->getMethod()
+            ]
+        ]);
+
+        $payload = $emitter->apply($name, $payload);
+
+        return $payload->data;
     }
 
     /**

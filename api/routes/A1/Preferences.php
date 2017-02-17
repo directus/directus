@@ -83,7 +83,7 @@ class Preferences extends Route
             ];
         }
 
-        JsonView::render($jsonResponse);
+        return $this->app->response($jsonResponse);
     }
 
     public function getPreferences($table)
@@ -97,6 +97,6 @@ class Preferences extends Route
         $Preferences = new DirectusPreferencesTableGateway($ZendDb, $acl);
         $jsonResponse = $Preferences->fetchSavedPreferencesByUserAndTable($currentUserId, $table);
 
-        JsonView::render($jsonResponse);
+        return $this->app->response($jsonResponse);
     }
 }

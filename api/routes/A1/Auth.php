@@ -40,7 +40,7 @@ class Auth extends Route
             }
         }
 
-        return JsonView::render($response);
+        return $this->app->response($response);
     }
 
     public function login()
@@ -59,7 +59,7 @@ class Auth extends Route
         if ($auth->loggedIn()) {
             $response['success'] = true;
             unset($response['error']);
-            return JsonView::render($response);
+            return $this->app->response($response);
         }
 
         $req = $app->request();
@@ -69,7 +69,7 @@ class Auth extends Route
         $user = $Users->findOneBy('email', $email);
 
         if (!$user) {
-            return JsonView::render($response);
+            return $this->app->response($response);
         }
 
         // ------------------------------
@@ -77,10 +77,10 @@ class Auth extends Route
         $groupId = $user['group'];
         $directusGroupsTableGateway = new DirectusGroupsTableGateway($ZendDb, $acl);
         if (!$directusGroupsTableGateway->acceptIP($groupId, $app->request->getIp())) {
-            return JsonView::render([
+            return $this->app->response([
                 'message' => 'Request not allowed from IP address',
-                'success' => false,
-                'all_nonces' => $requestNonceProvider->getAllNonces()
+                'success' => false
+                // 'all_nonces' => $requestNonceProvider->getAllNonces()
             ]);
         }
 
@@ -107,7 +107,7 @@ class Auth extends Route
             $response['success'] = false;
             $response['error']['message'] = __t('login_error_user_is_not_active');
 
-            return JsonView::render($response);
+            return $this->app->response($response);
         }
 
         if ($response['success']) {
@@ -128,7 +128,7 @@ class Auth extends Route
             $Activity->recordLogin($user['id']);
         }
 
-        JsonView::render($response);
+        return $this->app->response($response);
     }
 
     public function logout($inactive = null)
@@ -138,6 +138,7 @@ class Auth extends Route
         if ($auth->loggedIn()) {
             $auth->logout();
         }
+
         if ($inactive) {
             $app->redirect(DIRECTUS_PATH . 'login.php?inactive=1');
         } else {
@@ -186,7 +187,6 @@ class Auth extends Route
         });
 
         $app->halt(200, __t('password_reset_new_temporary_password_sent'));
-
     }
 
     public function forgotPassword()
@@ -198,7 +198,7 @@ class Auth extends Route
 
         $email = $app->request()->post('email');
         if (!isset($email)) {
-            return JsonView::render([
+            return $this->app->response([
                 'success' => false,
                 'error' => [
                     'message' => __t('password_forgot_invalid_email')
@@ -210,7 +210,7 @@ class Auth extends Route
         $user = $DirectusUsersTableGateway->findOneBy('email', $email);
 
         if (false === $user) {
-            return JsonView::render([
+            return $this->app->response([
                 'success' => false,
                 'error' => [
                     'message' => __t('password_forgot_no_account_found')
@@ -227,7 +227,7 @@ class Auth extends Route
         $affectedRows = $DirectusUsersTableGateway->update($set, ['id' => $user['id']]);
 
         if (1 !== $affectedRows) {
-            return JsonView::render([
+            return $this->app->response([
                 'success' => false
             ]);
         }
@@ -238,7 +238,7 @@ class Auth extends Route
             $message->setTo($user['email']);
         });
 
-        return JsonView::render([
+        return $this->app->response([
             'success' => true
         ]);
     }
@@ -247,14 +247,14 @@ class Auth extends Route
     {
         $acl = $this->app->container->get('acl');
 
-        JsonView::render([
+        return $this->app->response([
             'data' => $acl->getGroupPrivileges()
         ]);
     }
 
     public function session()
     {
-        JsonView::render($_SESSION);
+        return $this->app->response($_SESSION);
     }
 
     public function clearSession()
@@ -267,7 +267,8 @@ class Auth extends Route
                 $params['secure'], $params['httponly']
             );
         }
+
         session_destroy();
-        JsonView::render($_SESSION);
+        return $this->app->response($_SESSION);
     }
 }

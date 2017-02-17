@@ -50,6 +50,6 @@ class Settings extends Route
             }
         }
 
-        JsonView::render($response);
+        return $this->app->response($response);
     }
 }

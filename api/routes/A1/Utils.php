@@ -14,7 +14,7 @@ class Utils extends Route
 
         $password = $request->post('password');
         if (empty($password)) {
-            return JsonView::render([
+            return $this->app->response([
                 'success' => false,
                 'error' => [
                     'message' => __t('hash_must_provide_string')
@@ -26,7 +26,7 @@ class Utils extends Route
         $auth = $this->app->container->get('auth');
         $hashedPassword = $auth->hashPassword($password, $salt);
 
-        return JsonView::render([
+        return $this->app->response([
             'success' => true,
             'data' => [
                 'password' => $hashedPassword
@@ -42,7 +42,7 @@ class Utils extends Route
 
         $randomString = StringUtils::randomString($length);
 
-        return JsonView::render([
+        return $this->app->response([
             'success' => true,
             'data' => [
                 'random' => $randomString
