@@ -938,6 +938,59 @@ class RelationalTableGateway extends BaseTableGateway
     }
 
     /**
+     * Process Query search
+     *
+     * @param Builder $query
+     * @param $search
+     */
+    protected function processQ(Builder $query, $search)
+    {
+        $columns = TableSchema::getAllTableColumns($this->getTable());
+        $table = $this->getTable();
+
+        foreach ($columns as $column) {
+            if (!$column->isAlias()) {
+                $query->orWhereLike($column->getName(), $search);
+            }
+        }
+
+        $query->nestOrWhere(function (Builder $query) use ($columns, $search, $table) {
+            foreach ($columns as $column) {
+                if ($column->isManyToOne()) {
+                    $relationship = $column->getRelationship();
+                    $relatedTable = $relationship->getRelatedTable();
+                    $relatedTableColumns = TableSchema::getAllTableColumns($relatedTable);
+                    $query->whereRelational($column->getName(), $relatedTable, $this->primaryKeyFieldName, function (Builder $query) use ($column, $relatedTable, $relatedTableColumns, $search) {
+                        $query->nestOrWhere(function (Builder $query) use ($relatedTableColumns, $relatedTable, $search) {
+                            foreach ($relatedTableColumns as $column) {
+                                if (!$column->isAlias()) {
+                                    $query->orWhereLike($column->getName(), $search);
+                                }
+                            }
+                        });
+                    });
+                } else if ($column->isOneToMany()) {
+                    $relationship = $column->getRelationship();
+                    $relatedTable = $relationship->getRelatedTable();
+                    $relatedRightColumn = $relationship->getJunctionKeyRight();
+                    $relatedTableColumns = TableSchema::getAllTableColumns($relatedTable);
+
+                    $query->from($table);
+                    $query->whereRelational($this->primaryKeyFieldName, $relatedTable, null, $relatedRightColumn, function(Builder $query) use ($column, $relatedTable, $relatedTableColumns, $search) {
+                        foreach ($relatedTableColumns as $column) {
+                            if (!$column->isAlias()) {
+                                $query->orWhereLike($column->getName(), $search, false);
+                            }
+                        }
+                    });
+                } else if ($column->isManyToMany()) {
+                    // @TODO:
+                }
+            }
+        });
+    }
+
+    /**
      * Process Select Order
      *
      * @param Builder $query
