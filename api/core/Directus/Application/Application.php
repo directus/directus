@@ -158,9 +158,15 @@ class Application extends Slim
             ]
         ]);
 
+        $method = strtolower($this->request()->getMethod());
         $payload = $this->triggerFilter('response', $payload);
+        $payload = $this->triggerFilter('response.' . $method, $payload);
         if ($meta['table']) {
             $payload = $this->triggerFilter('response.' . $meta['table'], $payload);
+            $payload = $this->triggerFilter(sprintf('response.%s.%s',
+                $meta['table'],
+                $method
+            ), $payload);
         }
 
         return $payload->data;
