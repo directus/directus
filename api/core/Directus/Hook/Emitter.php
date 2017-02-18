@@ -197,6 +197,10 @@ class Emitter
      */
     protected function addListener($name, $listener, $priority = self::P_NORMAL, $type = self::TYPE_ACTION)
     {
+        if (is_string($listener) && class_exists($listener)) {
+            $listener = new $listener();
+        }
+
         $this->validateListener($listener);
 
         if ($type == self::TYPE_FILTER) {
