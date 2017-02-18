@@ -258,6 +258,7 @@ class BaseTableGateway extends TableGateway
             $this->runHook('postUpdate', [$TableGateway, $recordData, $this->adapter, null]);
         } else {
             $d = $this->applyHook('table.insert:before', [$tableName, $recordData]);
+            $d = $this->applyHook('table.insert.' . $tableName . '.:before', [$d]);
             $TableGateway->insert($d);
             $recordData[$TableGateway->primaryKeyFieldName] = $TableGateway->getLastInsertValue();
 
