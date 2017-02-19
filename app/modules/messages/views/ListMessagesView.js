@@ -228,14 +228,14 @@ function(app, _, Backbone, __t, BasePageView, MessageView, MessageForm, Widgets,
         widgets.push(new Widgets.ButtonWidget({
           widgetOptions: {
             buttonId: 'deleteBtn',
-            iconClass: 'close',
-            buttonClass: 'serious',
-            buttonText: __t('delete')
+            iconClass: 'archive',
+            buttonClass: '',
+            buttonText: __t('archive')
           },
           onClick: _.bind(function(event) {
-            // app.router.go('#tables/' + tableView.collection.table.id + '/new');
             var $checksChecked = this.table.$('.js-select-row:checked');
             var ids = [];
+
             _.each($checksChecked, function(checkbox) {
               ids.push($(checkbox).parent().data('id'));
             });
