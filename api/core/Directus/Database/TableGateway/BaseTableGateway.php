@@ -251,7 +251,7 @@ class BaseTableGateway extends TableGateway
 
         $record = $this->findOneBy($pk_field_name, $id);
 
-        return $this->parseRecordValuesByType($record);
+        return $record ? $this->parseRecordValuesByType($record) : null;
     }
 
     public function fetchAll($selectModifier = null)
@@ -282,13 +282,11 @@ class BaseTableGateway extends TableGateway
 
         $row = $rowset->current();
         // Supposing this "one" doesn't exist in the DB
-        if (false === $row) {
+        if (!$row) {
             return false;
         }
 
-        $row = $row->toArray();
-
-        return $row;
+        return $row->toArray();
     }
 
     public function findOneByArray(array $data)
