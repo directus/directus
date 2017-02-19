@@ -1091,9 +1091,11 @@ class RelationalTableGateway extends BaseTableGateway
         // in[field]=value1,value2
         if (ArrayUtils::has($params, 'in') && is_array($params['in'])) {
             foreach($params['in'] as $column => $values) {
-                $values = array_map(function($item) {
-                    return trim($item);
-                }, explode(',', $values));
+                if (! is_array($values)) {
+                    $values = array_map(function ($item) {
+                        return trim($item);
+                    }, explode(',', $values));
+                }
 
                 if (count($values) > 0) {
                     $query->whereIn($this->primaryKeyFieldName, $values);
