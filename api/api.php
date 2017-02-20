@@ -1035,12 +1035,14 @@ $app->map("/$v/tables/:table/rows/:id/?", function ($table, $id) use ($ZendDb, $
 $app->get("/$v/activity/?", function () use ($params, $ZendDb, $acl) {
     $Activity = new DirectusActivityTableGateway($acl, $ZendDb);
     // @todo move this to backbone collection
-    if (!$params['adv_search']) {
+    if (!ArrayUtils::has($params, 'adv_search')) {
         unset($params['perPage']);
         $params['adv_search'] = 'datetime >= "' . DateUtils::daysAgo(30) . '"';
     }
+
     $new_get = $Activity->fetchFeed($params);
     $new_get['active'] = $new_get['total'];
+
     JsonView::render($new_get);
 });
 
