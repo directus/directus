@@ -262,7 +262,9 @@ define([
       };
 
       // Fetch first time to get the nested tables
-      model.fetch();
+      if (!model.isNew()) {
+        model.fetch();
+      }
     },
 
     afterRender: function() {
