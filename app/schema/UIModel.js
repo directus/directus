@@ -5,7 +5,6 @@ define(function(require, exports, module) {
   var app = require('app');
   var _ = require('underscore');
   var Backbone = require('backbone');
-  var UIManager = require('core/UIManager');
 
   module.exports = Backbone.Model.extend({
 
@@ -19,11 +18,15 @@ define(function(require, exports, module) {
       return this.inputs[attr];
     },
 
+    parse: function(data) {
+      return data.data;
+    },
+
     url: function() {
       var column = this.parent;
       var columnSchema = this.parent.collection;
 
-      return this.parent.collection.url + '/' + this.parent.id + '/' + this.id;
+      return columnSchema.url + '/' + column.id + '/' + this.id;
     },
 
     // When the time is right, this part need serious reconsideration
@@ -64,6 +67,10 @@ define(function(require, exports, module) {
         if (key === 'id') {
           return;
         }
+
+        // UIModel is being define before UIManager
+        // @TODO: Fix this
+        var UIManager = require('core/UIManager');
 
         var nullDisallowed = column.get('is_nullable') === 'NO';
         var ui = UIManager._getUI(column.get('ui'));

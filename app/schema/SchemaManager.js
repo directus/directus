@@ -10,7 +10,6 @@ define(function(require, exports, module) {
       ColumnsCollection  = require('./ColumnsCollection'),
       TableModel         = require('./TableModel'),
       Backbone           = require('backbone'),
-      UIModel            = require('./UIModel'),
       DirectusCollection = require('core/collection'),
       PreferenceModel    = require('core/PreferenceModel');
 

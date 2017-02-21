@@ -6,7 +6,6 @@ use Directus\Authentication\Provider as Auth;
 use Directus\Bootstrap;
 use Directus\Database\Object\Column;
 use Directus\Database\TableGateway\DirectusPreferencesTableGateway;
-use Directus\Database\TableGateway\DirectusUiTableGateway;
 use Directus\MemcacheProvider;
 use Directus\Util\ArrayUtils;
 use Directus\Util\DateUtils;
@@ -861,67 +860,6 @@ class TableSchema
         }
 
         return $columns;
-    }
-
-    // @NOTE: Old getColumnSchema
-    // @TODO: Remember implement the ACL on the new one.
-    public static function getColumnSchemasOld()
-    {
-        $acl = Bootstrap::get('acl');
-        $zendDb = Bootstrap::get('ZendDb');
-        $result = SchemaManager::getAllColumns();
-
-        // Group columns by table name
-        $tables = [];
-        $tableName = null;
-
-        foreach ($result as $row) {
-            $tableName = $row['table_name'];
-            $columnName = $row['column_name'];
-
-            // Create nested array by table name
-            if (!array_key_exists($tableName, $tables)) {
-                $tables[$tableName] = [];
-            }
-
-            // @todo getTablePrivilegeList is called in excess,
-            // should just be called when $tableName changes
-            $readFieldBlacklist = $acl->getTablePrivilegeList($tableName, $acl::FIELD_READ_BLACKLIST);
-            $writeFieldBlacklist = $acl->getTablePrivilegeList($tableName, $acl::FIELD_WRITE_BLACKLIST);
-
-            // Indicate if the column is blacklisted for writing
-            $row['is_writable'] = !in_array($columnName, $writeFieldBlacklist);
-
-            // Don't include a column that is blacklisted for reading
-            if (in_array($columnName, $readFieldBlacklist)) {
-                continue;
-            }
-
-            $row = self::formatColumnRow($row);
-            $tables[$tableName][$columnName] = $row;
-        }
-
-        // UI's
-        $directusUiTableGateway = new DirectusUiTableGateway($zendDb, $acl);
-        $uis = $directusUiTableGateway->fetchExisting()->toArray();
-
-        foreach ($uis as $ui) {
-            $uiTableName = $ui['table_name'];
-            $uiColumnName = $ui['column_name'];
-
-            // Does the table for the UI settings still exist?
-            if (array_key_exists($uiTableName, $tables)) {
-                // Does the column for the UI settings still exist?
-                if (array_key_exists($uiColumnName, $tables[$uiTableName])) {
-                    $column = &$tables[$uiTableName][$uiColumnName];
-                    $column['options']['id'] = $ui['ui_name'];
-                    $column['options'][$ui['name']] = $ui['value'];
-                }
-            }
-
-        }
-
-        return $tables;
     }
 
     private static function formatTableRow($info)

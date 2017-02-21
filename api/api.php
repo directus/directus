@@ -43,7 +43,6 @@ use Directus\Database\TableGateway\DirectusMessagesTableGateway;
 use Directus\Database\TableGateway\DirectusPreferencesTableGateway;
 use Directus\Database\TableGateway\DirectusPrivilegesTableGateway;
 use Directus\Database\TableGateway\DirectusSettingsTableGateway;
-use Directus\Database\TableGateway\DirectusUiTableGateway;
 use Directus\Database\TableGateway\DirectusUsersTableGateway;
 use Directus\Database\TableGateway\RelationalTableGateway as TableGateway;
 use Directus\Database\TableSchema;
@@ -1907,25 +1906,38 @@ $app->post("/$v/comments/?", function () use ($params, $requestPayload, $app, $a
  */
 
 $app->map("/$v/tables/:table/columns/:column/:ui/?", function ($table, $column, $ui) use ($acl, $ZendDb, $params, $requestPayload, $app) {
-    $TableGateway = new TableGateway('directus_ui', $ZendDb, $acl);
+    $tableGateway = new TableGateway('directus_columns', $ZendDb, $acl);
     switch ($app->request()->getMethod()) {
         case 'PUT':
         case 'POST':
-            $keys = ['table_name' => $table, 'column_name' => $column, 'ui_name' => $ui];
-            $uis = to_name_value($requestPayload, $keys);
+            $payload = $app->request()->post();
 
-            $column_settings = [];
-            foreach ($uis as $col) {
-                $existing = $TableGateway->select(['table_name' => $table, 'column_name' => $column, 'ui_name' => $ui, 'name' => $col['name']])->toArray();
-                if (count($existing) > 0) {
-                    $col['id'] = $existing[0]['id'];
-                }
-                array_push($column_settings, $col);
+            $columnData = $tableGateway->select([
+                'table_name' => $payload['table'],
+                'column_name' => $payload['column']
+            ])->current();
+
+            if ($columnData) {
+                $columnData = $columnData->toArray();
+
+                $data = [
+                    'id' => $columnData['id'],
+                    'options' => json_encode($payload)
+                ];
+
+                $tableGateway->updateCollection($data);
             }
-            $TableGateway->updateCollection($column_settings);
     }
-    $UiOptions = new DirectusUiTableGateway($ZendDb, $acl);
-    $response = $UiOptions->fetchOptions($table, $column, $ui);
+
+    $select = $tableGateway->getSql()->select();
+    $select->columns(['id', 'options']);
+    $select->where([
+        'table_name' => $table,
+        'column_name' => $column
+    ]);
+
+    $response = $tableGateway->selectWith($select)->current();
+
     if (!$response) {
         $app->response()->setStatus(404);
         $response = [
@@ -1934,7 +1946,14 @@ $app->map("/$v/tables/:table/columns/:column/:ui/?", function ($table, $column, 
         ];
     }
 
-    return $app->response($response, ['table' => 'directus_ui']);
+    $data = $response->toArray();
+
+    $content = [
+        'meta' => ['table' => 'directus_columns', 'type' => 'item'],
+        'data' => json_decode($data['options'], true)
+    ];
+
+    return $app->response($content, ['table' => 'directus_columns']);
 })->via('GET', 'POST', 'PUT');
 
 $app->notFound(function () use ($app, $acl, $ZendDb) {

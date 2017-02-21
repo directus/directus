@@ -7,12 +7,10 @@ use Directus\Permissions\Exception\UnauthorizedTableAlterException;
 use Directus\Application\Route;
 use Directus\Bootstrap;
 use Directus\Database\TableGateway\DirectusPrivilegesTableGateway;
-use Directus\Database\TableGateway\DirectusUiTableGateway;
 use Directus\Database\TableGateway\RelationalTableGateway as TableGateway;
 use Directus\Database\TableSchema;
 use Directus\Util\ArrayUtils;
 use Directus\Util\SchemaUtils;
-use Directus\View\JsonView;
 
 class Table extends Route
 {
@@ -378,32 +376,51 @@ class Table extends Route
         $app = $this->app;
         $ZendDb = $app->container->get('zenddb');
         $acl = $app->container->get('acl');
-        $requestPayload = $app->request()->post();
-        $TableGateway = new TableGateway('directus_ui', $ZendDb, $acl);
+        $tableGateway = new TableGateway('directus_columns', $ZendDb, $acl);
 
         switch ($app->request()->getMethod()) {
             case 'PUT':
             case 'POST':
-                $keys = ['table_name' => $table, 'column_name' => $column, 'ui_name' => $ui];
-                $uis = to_name_value($requestPayload, $keys);
+            $payload = $app->request()->post();
 
-                $column_settings = [];
-                foreach ($uis as $col) {
-                    $existing = $TableGateway->select(['table_name' => $table, 'column_name' => $column, 'ui_name' => $ui, 'name' => $col['name']])->toArray();
-                    if (count($existing) > 0) {
-                        $col['id'] = $existing[0]['id'];
-                    }
-                    array_push($column_settings, $col);
-                }
-                $TableGateway->updateCollection($column_settings);
+            $columnData = $tableGateway->select([
+                'table_name' => $table,
+                'column_name' => $column
+            ])->current();
+
+            if ($columnData) {
+                $columnData = $columnData->toArray();
+
+                $data = [
+                    'id' => $columnData['id'],
+                    'options' => json_encode($payload)
+                ];
+
+                $tableGateway->updateCollection($data);
+            }
         }
-        $UiOptions = new DirectusUiTableGateway($ZendDb, $acl);
-        $response = $UiOptions->fetchOptions($table, $column, $ui);
+
+        $select = $tableGateway->getSql()->select();
+        $select->columns(['id', 'options']);
+        $select->where([
+            'table_name' => $table,
+            'column_name' => $column
+        ]);
+
+        $response = $tableGateway->selectWith($select)->current();
+
         if (!$response) {
             $app->response()->setStatus(404);
             $response = [
                 'message' => __t('unable_to_find_column_x_options_for_x', ['column' => $column, 'ui' => $ui]),
                 'success' => false
+            ];
+        } else {
+            $data = $response->toArray();
+
+            $response = [
+                'meta' => ['table' => 'directus_columns', 'type' => 'item'],
+                'data' => json_decode($data['options'], true)
             ];
         }
 

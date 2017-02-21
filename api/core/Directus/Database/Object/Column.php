@@ -580,12 +580,12 @@ class Column implements \ArrayAccess, Arrayable, \JsonSerializable
         return $this->ui;
     }
 
-    public function setUIOptions(array $options)
+    public function setOptions(array $options)
     {
         $this->options = $options;
     }
 
-    public function getUIOptions()
+    public function getOptions()
     {
         return $this->options;
     }
