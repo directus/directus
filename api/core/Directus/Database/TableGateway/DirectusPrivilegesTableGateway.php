@@ -120,8 +120,9 @@ class DirectusPrivilegesTableGateway extends RelationalTableGateway
         $attributes = $this->verifyPrivilege($attributes);
         // @todo: this should fallback on field default value
         if (!isset($attributes['status_id'])) {
-            $attributes['status_id'] = 0;
+            $attributes['status_id'] = NULL;
         }
+
         $attributes = $this->getFillableFields($attributes);
 
         $insert = new Insert($this->getTable());
