@@ -337,8 +337,9 @@ class BaseTableGateway extends TableGateway
             $payload = new \stdClass();
             $payload->tableName = $tableName;
             $payload->data = $recordData;
-            $d = $this->applyHook('table.insert:before', $payload);
-            $TableGateway->insert($d->data);
+            $payload = $this->applyHook('table.insert:before', $payload);
+            $payload = $this->applyHook('table.insert.' . $tableName . '.:before', $payload);
+            $TableGateway->insert($payload->data);
             $recordData[$TableGateway->primaryKeyFieldName] = $TableGateway->getLastInsertValue();
 
             if ($tableName == 'directus_files') {
@@ -684,7 +685,15 @@ class BaseTableGateway extends TableGateway
 
             $result = parent::executeInsert($insert);
             $insertTableGateway = $this->makeTable($insertTable);
-            $resultData = $insertTableGateway->find($this->getLastInsertValue());
+
+            // hotfix: directus_tables does not have auto generated value primary key
+            if ($this->getTable() === 'directus_tables') {
+                $generatedValue = ArrayUtils::get($insertDataAssoc, $this->primaryKeyFieldName, 'table_name');
+            } else {
+                $generatedValue = $this->getLastInsertValue();
+            }
+
+            $resultData = $insertTableGateway->find($generatedValue);
 
             $this->runHook('table.insert', [$insertTable, $resultData]);
             $this->runHook('table.insert.' . $insertTable, [$resultData]);

@@ -33,7 +33,7 @@ class Groups extends Route
                 $response = $GroupsTableGateway->getEntries($params);
         }
 
-        JsonView::render($response);
+        return $this->app->response($response);
     }
 
     public function group($id)
@@ -55,6 +55,11 @@ class Groups extends Route
             ];
         }
 
-        JsonView::render($response);
+        $columns = TableSchema::getAllNonAliasTableColumns($tableName);
+        $schemaManager = $this->app->container->get('schemaManager');
+        $response = $schemaManager->parseRecordValuesByType($response, $columns);
+        // $response = SchemaManager::parseRecordValuesByType($response, $columns);
+
+        return $this->app->response($response);
     }
 }

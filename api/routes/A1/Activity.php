@@ -23,6 +23,6 @@ class Activity extends Route
 
         $data = $Activity->fetchFeed($params);
 
-        return JsonView::render($data);
+        return $this->app->response($data);
     }
 }

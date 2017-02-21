@@ -36,7 +36,7 @@ class Entries extends Route
         // GET all table entries
         $response = $tableGateway->getEntries($params);
 
-        JsonView::render($response);
+        return $this->app->response($response);
     }
 
     public function rowsBulk($table)
@@ -72,7 +72,7 @@ class Entries extends Route
         }
 
         $entries = $TableGateway->getEntries($params);
-        JsonView::render($entries);
+        return $this->app->response($entries);
     }
 
     public function typeAhead($table, $query = null)
@@ -113,7 +113,8 @@ class Entries extends Route
             $val = implode(' ', $tokens);
             array_push($response, ['value' => $val, 'tokens' => $tokens, 'id' => $entry['id']]);
         }
-        JsonView::render($response);
+
+        return $this->app->response($response);
     }
 
     public function row($table, $id)
@@ -151,7 +152,7 @@ class Entries extends Route
             // DELETE a given table entry
             case 'DELETE':
                 $success =  $TableGateway->delete([$TableGateway->primaryKeyFieldName => $id]);
-                return JsonView::render([
+                return $this->app->response([
                     'meta' => [
                         'table' => $table
                     ],
@@ -169,6 +170,6 @@ class Entries extends Route
             ];
         }
 
-        JsonView::render($response);
+        return $this->app->response($response);
     }
 }

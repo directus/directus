@@ -28,10 +28,10 @@ class Messages extends Route
             if (sizeof($ids) > 0) {
                 $messagesTableGateway = new DirectusMessagesTableGateway($ZendDb, $acl);
                 $result = $messagesTableGateway->fetchMessagesInboxWithHeaders($currentUserId, $ids);
-                return JsonView::render($result);
+                return $this->app->response($result);
             } else {
                 $result = $messagesRecipientsTableGateway->countMessages($currentUserId);
-                return JsonView::render($result);
+                return $this->app->response($result);
             }
         }
 
@@ -41,7 +41,7 @@ class Messages extends Route
         $result['meta']['type'] = 'collection';
         $result['meta']['table'] = 'directus_messages';
 
-        return JsonView::render([
+        return $this->app->response([
             'meta' => $meta,
             'data' => ArrayUtils::get($result, 'data', [])
         ]);
@@ -84,7 +84,7 @@ class Messages extends Route
 
         if (!isset($message)) {
             header('HTTP/1.0 404 Not Found');
-            return JsonView::render([
+            return $this->app->response([
                 'success' => false,
                 'error' => [
                     'message' => __t('message_not_found')
@@ -92,7 +92,7 @@ class Messages extends Route
             ]);
         }
 
-        JsonView::render([
+        return $this->app->response([
             'meta' => [
                 'table' => 'directus_messages',
                 'type' => 'item'
@@ -128,7 +128,7 @@ class Messages extends Route
             'data' => $message
         ];
 
-        JsonView::render($response);
+        return $this->app->response($response);
     }
 
     public function postRows()
@@ -193,7 +193,7 @@ class Messages extends Route
             'data' => $message
         ];
 
-        JsonView::render($response);
+        return $this->app->response($response);
     }
 
     public function recipients()
@@ -212,7 +212,7 @@ class Messages extends Route
 
         $result = array_merge($groups, $users);
 
-        JsonView::render($result);
+        return $this->app->response($result);
     }
 
     public function comments()
@@ -303,6 +303,6 @@ class Messages extends Route
         // GET all table entries
         $entries = $TableGateway->getEntries($params);
 
-        JsonView::render($entries);
+        return $this->app->response($entries);
     }
 }

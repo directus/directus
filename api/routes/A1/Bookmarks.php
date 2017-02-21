@@ -39,7 +39,7 @@ class Bookmarks extends Route
                     ];
                 }
 
-                return JsonView::render($response);
+                return $this->app->response($response);
         }
 
         if (!is_null($id)) {
@@ -48,7 +48,7 @@ class Bookmarks extends Route
             $jsonResponse = $bookmarks->fetchByUserId($currentUserId);
         }
 
-        return JsonView::render([
+        return $this->app->response([
             'meta' => [
                 'table' => 'directus_bookmarks',
                 'type' => is_null($id) ? 'collection' : 'item'
@@ -85,7 +85,7 @@ class Bookmarks extends Route
 
         $jsonResponse = $bookmarks->fetchByUserId($currentUserId);
 
-        return JsonView::render([
+        return $this->app->response([
             'meta' => [
                 'table' => 'directus_bookmarks',
                 'type' => 'collection'
@@ -122,7 +122,7 @@ class Bookmarks extends Route
 
         $jsonResponse = $bookmarks->fetchByUserId($currentUserId);
 
-        return JsonView::render([
+        return $this->app->response([
             'meta' => [
                 'table' => 'directus_bookmarks',
                 'type' => 'collection'
@@ -139,6 +139,6 @@ class Bookmarks extends Route
         $tableGateway = new RelationalTableGateway('directus_bookmarks', $ZendDb, $acl);
 
         $params = $app->request()->get();
-        return JsonView::render($tableGateway->getItems($params));
+        return $this->app->response($tableGateway->getItems($params));
     }
 }
