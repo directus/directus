@@ -1292,7 +1292,7 @@ class RelationalTableGateway extends BaseTableGateway
                 $relatedEntries[$row[$joinColumnsPrefix . $junctionKeyLeftColumn]][] = $row;
             }
 
-            $uiOptions = $alias->getUIOptions();
+            $uiOptions = $alias->getOptions();
             $noDuplicates = (bool) ArrayUtils::get($uiOptions, 'no_duplicates', false);
             if ($noDuplicates) {
                 foreach($relatedEntries as $key => $rows) {

@@ -792,7 +792,7 @@ class Bootstrap
                 return $payload;
             }
 
-            $options = $column->getUiOptions();
+            $options = $column->getOptions();
             $code = ArrayUtils::get($options, 'languages_code_column', 'id');
             $languagesTable = ArrayUtils::get($options, 'languages_table');
             $languageIdColumn = ArrayUtils::get($options, 'left_column_name');
