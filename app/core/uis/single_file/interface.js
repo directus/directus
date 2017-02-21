@@ -107,7 +107,9 @@ function (app, _, __t, Utils, UIView, TableView, Overlays) {
       };
 
       // Fetch first time to get the nested tables
-      model.fetch();
+      if (!model.isNew()) {
+        model.fetch();
+      }
     },
 
     onInputChange: function() {
