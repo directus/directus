@@ -149,16 +149,18 @@ class Provider
     public function login($uid, $password, $salt, $passwordAttempt)
     {
         $this->prependSessionKey();
+        $attributes = [
+            'password' => $password
+        ];
+
         if ($this->needsReHashPassword($password, $salt, $passwordAttempt)) {
             $password = $this->hashPassword($passwordAttempt);
-            $this->table->update([
-                'password' => $password,
-                'access_token' => sha1($uid . StringUtils::random())
-            ], ['id' => $uid]);
+            $attributes['password'] = $password;
         }
 
         if (password_verify($passwordAttempt, $password)) {
-            $this->completeLogin($uid);
+            $this->completeLogin($uid, $attributes);
+
             return true;
         }
 
@@ -199,12 +201,9 @@ class Provider
         ], ['filter' => false])->current();
 
         if ($user) {
-            $this->completeLogin($user->id);
-
-            $userSession = $this->session->get($this->SESSION_KEY, $user);
-            $set = ['last_login' => DateUtils::now(), 'access_token' => $userSession['access_token']];
-            $where = ['id' => $user['id']];
-            $this->getTableGateway()->update($set, $where);
+            $this->completeLogin($user->id, [
+                'last_login' => DateUtils::now()
+            ]);
 
             return true;
         }
@@ -216,13 +215,15 @@ class Provider
      * Force a user id to be the logged user
      *
      * @param  int $uid The User account's ID.
+     * @param  bool $stateless whether or not to update the user token in db
      *
      * @return boolean
      */
-    public function setLoggedUser($uid)
+    public function setLoggedUser($uid, $stateless = false)
     {
         $this->authenticated = false;
-        $this->completeLogin($uid);
+
+        $this->completeLogin($uid, [], $stateless);
     }
 
     /**
@@ -333,20 +334,32 @@ class Provider
      * After a successful login attempt, registers the user in the session.
      *
      * @param  int $uid The User account's ID.
+     * @param  array $attributes to update
+     * @param  bool $stateless
      *
      * @return null
      *
      * @throws  \Directus\Authentication\Exception\UserAlreadyLoggedInException
      */
-    private function completeLogin($uid)
+    private function completeLogin($uid, $attributes = [], $stateless = false)
     {
         $this->prependSessionKey();
         if ($this->loggedIn()) {
             throw new UserAlreadyLoggedInException(__t('attempting_to_authenticate_a_user_when_a_user_is_already_authenticated'));
         }
 
-        $user = ['id' => $uid, 'access_token' => sha1($uid . StringUtils::randomString())];
-        $this->session->set($this->SESSION_KEY, $user);
+        $set = array_merge($attributes, [
+            'access_token' => sha1($uid . StringUtils::randomString())
+        ]);
+
+        if ($stateless !== true) {
+            $this->table->update($set, ['id' => $uid]);
+        }
+
+        $this->session->set($this->SESSION_KEY, array_merge($set, [
+            'id' => $uid,
+        ]));
+
         $this->authenticated = true;
     }
 

@@ -3,7 +3,11 @@
 namespace Directus;
 
 use Directus\Application\Application;
+use Directus\Authentication\FacebookProvider;
+use Directus\Authentication\GitHubProvider;
 use Directus\Authentication\Provider as AuthProvider;
+use Directus\Authentication\Social;
+use Directus\Authentication\TwitterProvider;
 use Directus\Database\Connection;
 use Directus\Database\SchemaManager;
 use Directus\Database\Schemas\Sources\MySQLSchema;
@@ -22,6 +26,7 @@ use Directus\Hook\Emitter;
 use Directus\Language\LanguageManager;
 use Directus\Permissions\Acl;
 use Directus\Providers\FilesServiceProvider;
+use Directus\Services\AuthService;
 use Directus\Session\Session;
 use Directus\Session\Storage\NativeSessionStorage;
 use Directus\Util\ArrayUtils;
@@ -29,7 +34,6 @@ use Directus\Util\StringUtils;
 use Directus\View\Twig\DirectusTwigExtension;
 use Slim\Extras\Log\DateTimeFileWriter;
 use Slim\Extras\Views\Twig;
-use Zend\Db\TableGateway\TableGateway;
 
 /**
  * NOTE: This class depends on the constants defined in config.php
@@ -144,8 +148,35 @@ class Bootstrap
             return Bootstrap::get('hookEmitter');
         });
 
+        $app->container->singleton('authService', function () use ($app) {
+            return new AuthService($app);
+        });
+
+        $app->container->singleton('session', function () {
+            return Bootstrap::get('session');
+        });
+
+        $app->container->singleton('auth', function () {
+            return Bootstrap::get('auth');
+        });
+
+        $app->container->singleton('socialAuth', function() {
+            return Bootstrap::get('socialAuth');
+        });
+
         $config = defined('BASE_PATH') ? Bootstrap::get('config') : [];
         $app->container->set('config', $config);
+
+        $authConfig = ArrayUtils::get($config, 'auth', []);
+        $socialAuth = $app->container->get('socialAuth');
+
+        $socialAuthServices = static::getSocialAuthServices();
+        foreach ($socialAuthServices as $name => $class) {
+            if (ArrayUtils::has($authConfig, $name)) {
+                $config = ArrayUtils::get($authConfig, $name);
+                $socialAuth->register(new $class($app, $config));
+            }
+        }
 
         BaseTableGateway::setHookEmitter($app->container->get('emitter'));
         BaseTableGateway::setContainer($app->container);
@@ -166,7 +197,18 @@ class Bootstrap
             return new \Directus\Permissions\Acl();
         });
 
+        $app->container->get('session')->start();
+
         return $app;
+    }
+
+    private static function getSocialAuthServices()
+    {
+        return [
+            'github' => GitHubProvider::class,
+            'facebook' => FacebookProvider::class,
+            'twitter' => TwitterProvider::class
+        ];
     }
 
     private static function config()
@@ -801,5 +843,10 @@ class Bootstrap
         $table = new RelationalTableGateway('directus_users', $zendDb);
 
         return new AuthProvider($table, $session, $prefix);
+    }
+
+    private static function socialAuth()
+    {
+        return new Social();
     }
 }

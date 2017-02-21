@@ -7,7 +7,11 @@
     "zendframework/zend-db": "dev-directus",
     "directus/migrations": "dev-master",
     "league/flysystem": "^1.0",
-    "swiftmailer/swiftmailer": "^5.4"
+    "swiftmailer/swiftmailer": "^5.4",
+    "league/oauth2-google": "^2.0",
+    "league/oauth2-github": "^2.0",
+    "league/oauth2-facebook": "^2.0",
+    "league/oauth1-client": "^1.7"
   },
   "require-dev": {
     "phpunit/phpunit": "~3.7.0"

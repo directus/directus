@@ -243,7 +243,7 @@ $app->hook('slim.before.dispatch', function () use ($app, $requestNonceProvider,
             // Reset SESSION values
             $_SESSION = [];
 
-            $authentication->setLoggedUser($user['id']);
+            $authentication->setLoggedUser($user['id'], true);
             if ($user['id']) {
                 $app->emitter->run('directus.authenticated', [$app, $user]);
                 $app->emitter->run('directus.authenticated.token', [$app, $user]);
