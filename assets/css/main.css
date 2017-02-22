@@ -5092,7 +5092,26 @@ body.help .discover-spotlight {
     cursor: pointer;
     overflow: hidden;
     font-size: 12px; }
+    .page.settings-container .marketplace:hover {
+      background-color: #217dbb; }
+      .page.settings-container .marketplace:hover h1 {
+        -moz-transform: scale(1.04);
+        -o-transform: scale(1.04);
+        -ms-transform: scale(1.04);
+        -webkit-transform: scale(1.04);
+        transform: scale(1.04); }
+    .page.settings-container .marketplace:active h1 {
+      -moz-transform: scale(0.96);
+      -o-transform: scale(0.96);
+      -ms-transform: scale(0.96);
+      -webkit-transform: scale(0.96);
+      transform: scale(0.96); }
     .page.settings-container .marketplace h1 {
+      -webkit-transition: all 200ms ease-in-out 0ms;
+      -moz-transition: all 200ms ease-in-out 0ms;
+      -o-transition: all 200ms ease-in-out 0ms;
+      -ms-transition: all 200ms ease-in-out 0ms;
+      transition: all 200ms ease-in-out 0ms;
       color: #FFFFFF;
       font-size: 36px; }
     .page.settings-container .marketplace .float {
