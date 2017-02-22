@@ -31,6 +31,10 @@ function(app, Backbone, EntriesModel, moment) {
       return app.PATH + 'assets/img/missing-directus-avatar.png';
     },
 
+    isOnline: function () {
+      return moment(this.get('last_access')).add('m', 5) > moment();
+    },
+
     updateLastRoute: function(route, history) {
       var currentPath = history.fragment;
       var queryString = history.location.search || '';
