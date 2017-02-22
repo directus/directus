@@ -7,15 +7,13 @@ define(['app', 'underscore', 'backbone', 'core/t'], function(app, _, Backbone, _
         return {};
       }
 
-      var viewOptions = this.collection.preferences.get('list_view_options');
-      if (viewOptions) {
-        try {
-          viewOptions = JSON.parse(viewOptions);
-        } catch (err) {
-          viewOptions = {};
-          this.state.malformedOptions = true;
-          console.error(__t('calendar_has_malformed_options_json'));
-        }
+      var viewOptions = {};
+      try {
+        viewOptions = JSON.parse(this.collection.preferences.get('list_view_options')) || {};
+      } catch (err) {
+        viewOptions = {};
+        this.state.malformedOptions = true;
+        console.error(__t('calendar_has_malformed_options_json'));
       }
 
       if (viewId) {
