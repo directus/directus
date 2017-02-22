@@ -12,10 +12,9 @@ define(['core/Modal', 'moment'], function(Modal, moment) {
 
     serialize: function() {
       var data = this.model.toJSON();
-      var lastAccess = this.model.get('last_access');
 
       data.online = this.model.isOnline();
-      data.lastSeen = moment(lastAccess).fromNow();
+      data.lastSeen = this.model.lastSeen();
 
       return data;
     }

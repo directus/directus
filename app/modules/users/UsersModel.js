@@ -35,6 +35,10 @@ function(app, Backbone, EntriesModel, moment) {
       return moment(this.get('last_access')).add('m', 5) > moment();
     },
 
+    lastSeen: function () {
+      return moment(this.get('last_access')).fromNow();
+    },
+
     updateLastRoute: function(route, history) {
       var currentPath = history.fragment;
       var queryString = history.location.search || '';
