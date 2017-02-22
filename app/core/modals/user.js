@@ -14,7 +14,7 @@ define(['core/Modal', 'moment'], function(Modal, moment) {
       var data = this.model.toJSON();
       var lastAccess = this.model.get('last_access');
 
-      data.online = moment(lastAccess).add('m', 5) > moment();
+      data.online = this.model.isOnline();
       data.lastSeen = moment(lastAccess).fromNow();
 
       return data;
