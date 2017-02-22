@@ -39,7 +39,7 @@ function(app, Backbone, EntriesModel, moment) {
         'route': route
       });
 
-      this.save({'last_page': lastPage, 'last_access': moment().utc().format('YYYY-MM-DD HH:mm')}, {
+      this.save({'last_page': lastPage, 'last_access': moment().utc().format('YYYY-MM-DD HH:mm:ss')}, {
         patch: true,
         global: false,
         silent: true,
