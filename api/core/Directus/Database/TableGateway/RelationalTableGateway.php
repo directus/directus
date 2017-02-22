@@ -1382,7 +1382,6 @@ class RelationalTableGateway extends BaseTableGateway
      */
     public function loadManyToOneRelationships($entries, $depth = 0, $columns)
     {
-        $tableSchema = TableSchema::getTableSchema($this->getTable());
         // Identify the ManyToOne columns
         foreach ($columns as $column) {
             if (!$column->isManyToOne()) {

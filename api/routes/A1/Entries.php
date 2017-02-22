@@ -3,6 +3,7 @@
 namespace Directus\API\Routes\A1;
 
 use Directus\Application\Route;
+use Directus\Database\TableGateway\DirectusActivityTableGateway;
 use Directus\Database\TableGateway\DirectusUsersTableGateway;
 use Directus\Database\TableGateway\RelationalTableGateway as TableGateway;
 use Directus\Services\EntriesService;
@@ -121,12 +122,10 @@ class Entries extends Route
     {
         $app = $this->app;
         $ZendDb = $app->container->get('zenddb');
-        $auth = $app->container->get('auth');
         $acl = $app->container->get('acl');
         $requestPayload = $app->request()->post();
         $params = $app->request()->get();
 
-        $currentUser = $auth->getUserInfo();
         $params['table_name'] = $table;
 
         // any UPDATE requests should md5 the email
@@ -169,6 +168,22 @@ class Entries extends Route
                 'success' => false
             ];
         }
+
+        return $this->app->response($response);
+    }
+
+    public function meta($table, $id)
+    {
+        $app = $this->app;
+        $dbConnection = $app->container->get('zenddb');
+        $acl = $app->container->get('acl');
+
+        $tableGateway = new DirectusActivityTableGateway($dbConnection, $acl);
+        $data = $tableGateway->getMetadata($table, $id);
+        $response = [
+            'meta' => ['table' => 'directus_activity', 'type' => 'item'],
+            'data' => $data
+        ];
 
         return $this->app->response($response);
     }

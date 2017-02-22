@@ -362,6 +362,10 @@
     "internal_server_error": "Error Interno de Servidor",
     "predispatch_callable_must_be_callable": "PreDispatch callable tiene que ser un callable",
 
+    "online": "En linea",
+    "created_by": "Creado Por",
+    "last_modified_by": "Última Modificación Por",
+
     "ok": "Aceptar",
     "cancel": "Cancelar",
     "yes": "Si",

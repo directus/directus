@@ -429,6 +429,7 @@ $app->group('/1.1', function() use($app) {
         ->via('GET', 'POST', 'PUT');
     $app->map('/tables/:table/rows/:id/?', '\Directus\API\Routes\A1\Entries:row')
         ->via('DELETE', 'GET', 'PUT', 'PATCH');
+    $app->get('/tables/:table/meta/:id/?', '\Directus\API\Routes\A1\Entries:meta');
     $app->map('/tables/:table/rows/bulk/?', '\Directus\API\Routes\A1\Entries:rowsBulk')
         ->via('POST', 'PATCH', 'PUT', 'DELETE');
     $app->get('/tables/:table/typeahead/?', '\Directus\API\Routes\A1\Entries:typeAhead');

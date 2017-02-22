@@ -420,6 +420,10 @@
 
     "right_pane_help": "Opens the item's detail sidebar",
 
+    "online": "Online",
+    "created_by": "Created By",
+    "last_modified_by": "Last Modified By",
+
     "invitation": "Invitation",
     "invitation_sent": "Invitation sent successfully",
 

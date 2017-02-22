@@ -312,8 +312,9 @@ class BaseTableGateway extends TableGateway
             }
         }
 
-        $columns = TableSchema::getAllNonAliasTableColumns($tableName);
-        $recordData = $this->schemaManager->castRecordValues($recordData, $columns);
+        // @TODO: Dow we need to parse before insert?
+        // Commented out because date are not saved correctly in GMT
+        // $recordData = $this->parseRecord($recordData);
 
         $TableGateway = $this->makeTable($tableName);
         $rowExists = isset($recordData[$TableGateway->primaryKeyFieldName]);
