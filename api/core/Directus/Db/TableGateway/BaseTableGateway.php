@@ -257,9 +257,10 @@ class BaseTableGateway extends TableGateway
 
             $this->runHook('postUpdate', [$TableGateway, $recordData, $this->adapter, null]);
         } else {
-            $d = $this->applyHook('table.insert:before', [$tableName, $recordData]);
-            $d = $this->applyHook('table.insert.' . $tableName . '.:before', [$d]);
-            $TableGateway->insert($d);
+            $recordData = $this->applyHook('table.insert:before', [$tableName, $recordData]);
+            // @TODO: All hook payload are going to be an object to prevent confusion
+            // $recordData = $this->applyHook('table.insert.' . $tableName . '.:before', [$recordData]);
+            $TableGateway->insert($recordData);
             $recordData[$TableGateway->primaryKeyFieldName] = $TableGateway->getLastInsertValue();
 
             if ($tableName == 'directus_files') {
