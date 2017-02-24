@@ -13,8 +13,10 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
   var Input = UIView.extend({
     initialize: function(options) {
       // If editing a new item, use the current user
-      if(options.model.isNew()){
-        options.value = app.authenticatedUserId;
+      if (options.model.isNew()) {
+        // @TODO: do we really need this object?
+        // Change to: app.users.getCurrentUser() (which is the authenticated user)
+        options.value = app.authenticatedUserId.id;
       }
 
       var user = app.users.get(options.value);
