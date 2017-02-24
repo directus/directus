@@ -43,9 +43,9 @@ $redirectToLogin = function () use ($app) {
         $redirect = '?redirect=' . $redirect;
     }
 
-    // header('Location: ' . DIRECTUS_PATH . 'login.php' . $redirect);
-    // exit;
-    $app->response()->redirect(DIRECTUS_PATH . 'login.php' . $redirect);
+    header('Location: ' . DIRECTUS_PATH . 'login.php' . $redirect);
+    exit;
+    // $app->response()->redirect(DIRECTUS_PATH . 'login.php' . $redirect);
 };
 
 $authentication = Bootstrap::get('auth');
