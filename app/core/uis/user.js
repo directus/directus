@@ -23,7 +23,8 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
 
       if(user) {
         var avatar = user.getAvatar();
-        this.$el.append('<img src="' + avatar + '" class="big-avatar"><span class="big-avatar-name">' + user.get('first_name') + ' ' + user.get('last_name') + '</span>');
+        //Added input with the value of the current user so that the field will save correctly.
+        this.$el.append('<img src="' + avatar + '" class="big-avatar"><span class="big-avatar-name">' + user.get('first_name') + ' ' + user.get('last_name') + '</span><input type="hidden" placeholder="" value="'+user.get('id')+'" name="'+options.name+'" id="'+options.name+'" readonly maxlength="11">');
       } else {
         this.$el.append('<span class="avatar-name medium-grey-color">'+__t('no_user')+'</span>');
       }
