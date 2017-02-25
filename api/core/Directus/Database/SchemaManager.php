@@ -439,6 +439,12 @@ class SchemaManager
         $options = json_decode(ArrayUtils::get($column, 'options', []), true);
         $column['options'] = $options ? $options : [];
 
+        $isSystemColumn = static::isSystemColumn($column['id']);
+        $column['system'] = (bool) $isSystemColumn;
+        if ($isSystemColumn) {
+            $column['hidden'] = true;
+        }
+
         $columnObject = new Column($column);
         if (isset($column['related_table'])) {
             $columnObject->setRelationship([
@@ -451,6 +457,20 @@ class SchemaManager
         }
 
         return $columnObject;
+    }
+
+    /**
+     * Checks whether the column name is a system column name
+     *
+     * @param $columnName
+     *
+     * @return bool
+     */
+    public function isSystemColumn($columnName)
+    {
+        $systemFields = ['id', 'sort', STATUS_COLUMN_NAME];
+
+        return in_array($columnName, $systemFields);
     }
 
     protected function addTable($name, $schema)

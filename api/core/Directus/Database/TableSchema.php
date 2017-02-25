@@ -299,9 +299,7 @@ class TableSchema
      */
     public static function isSystemColumn($columnName)
     {
-        $systemFields = ['id', 'sort', STATUS_COLUMN_NAME];
-
-        return in_array($columnName, $systemFields);
+        static::getSchemaManagerInstance()->isSystemColumn($columnName);
     }
 
     /**
