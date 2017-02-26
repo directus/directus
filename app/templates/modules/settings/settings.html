@@ -1,119 +1,34 @@
-<div class="settings-module">
-    <div class="info">
-        <h1>{{t "global_settings"}}</h1>
-        <div class="description">{{t "global_settings_description"}}</div>
+<div class="settings-modules">
+    <div class="settings-module">
+        <div class="icon-header">
+            <i class="material-icons">public</i>
+        </div>
+        <div class="description">
+            <h1>{{t "global_settings"}}</h1>
+            <p>{{t "global_settings_description"}}</p>
+        </div>
         <a href="{{rootUrl}}#settings/global"><div class="button">Edit</div></a>
     </div>
-    <div class="video">
-        <div class="aspect-ratio">
-            <video id="settingsGlobalVideo" width="320" height="240">
-                <source src="{{assetsPath}}/videos/directus.mp4" type="video/mp4">
-                Your browser does not support the video tag.
-            </video>
-        </div>
-    </div>
-</div>
 
-<div class="settings-module">
-    <div class="info">
-        <h1>{{t "tables_and_inputs"}}</h1>
-        <div class="description">{{t "tables_and_inputs_description"}}</div>
+    <div class="settings-module">
+        <div class="icon-header">
+            <i class="material-icons">settings</i>
+        </div>
+        <div class="description">
+            <h1>{{t "tables_and_inputs"}}</h1>
+            <p>{{t "tables_and_inputs_description"}}</p>
+        </div>
         <a href="{{rootUrl}}#settings/tables"><div class="button">Manage</div></a>
     </div>
-    <div class="video">
-        <div class="aspect-ratio">
-            <video id="settingsGlobalVideo" width="320" height="240">
-                <source src="{{assetsPath}}/videos/directus.mp4" type="video/mp4">
-                Your browser does not support the video tag.
-            </video>
-        </div>
-    </div>
-</div>
 
-<div class="settings-module">
-    <div class="info">
-        <h1>{{t "group_permissions"}}</h1>
-        <div class="description">{{t "group_permissions_description"}}</div>
+    <div class="settings-module">
+        <div class="icon-header">
+            <i class="material-icons">group</i>
+        </div>
+        <div class="description">
+            <h1>{{t "group_permissions"}}</h1>
+            <p>{{t "group_permissions_description"}}</p>
+        </div>
         <a href="{{rootUrl}}#settings/permissions"><div class="button">Manage</div></a>
     </div>
-    <div class="video">
-        <div class="aspect-ratio">
-            <video id="settingsGlobalVideo" width="320" height="240">
-                <source src="{{assetsPath}}/videos/directus.mp4" type="video/mp4">
-                Your browser does not support the video tag.
-            </video>
-        </div>
-    </div>
 </div>
-{{!--
-<!-- Header template -->
-<header id="fixedHeader">
-</header>
-
-<section class="main-container content-body font-secondary" id="page-content">
-    <ul class="feature-cards">
-        <a href="#settings/global">
-        <li class="feature-card gutter-bottom">
-            <div class="left-col">
-                <i class="material-icons">public</i>
-            </div>
-            <div class="right-col">
-                <h2>{{t "global_settings"}}</h2>
-                <p class="medium-grey-color">{{t "global_settings_description"}}</p>
-            </div>
-        </li></a>
-        <a href="#settings/files">
-        <li class="feature-card gutter-bottom">
-            <div class="left-col">
-                <i class="material-icons">photo_library</i>
-            </div>
-            <div class="right-col">
-                <h2>{{t "files_and_thumbnails"}}</h2>
-                <p class="medium-grey-color">{{t "files_and_thumbnails_description"}}</p>
-            </div>
-        </li></a>
-        <a href="#settings/tables">
-        <li class="feature-card gutter-bottom">
-            <div class="left-col">
-                <i class="material-icons">tune</i>
-            </div>
-            <div class="right-col">
-                <h2>{{t "tables_and_inputs"}}</h2>
-                <p class="medium-grey-color">{{t "tables_and_inputs_description"}}</p>
-            </div>
-        </li></a>
-        <a href="#settings/permissions">
-        <li class="feature-card gutter-bottom">
-            <div class="left-col">
-                <i class="material-icons">group</i>
-            </div>
-            <div class="right-col">
-                <h2>{{t "group_permissions"}}</h2>
-                <p class="medium-grey-color">{{t "group_permissions_description"}}</p>
-            </div>
-        </li></a>
-        <!--
-        <a href="#settings/system">
-        <li class="feature-card gutter-bottom">
-            <div class="left-col">
-                <span class="icon icon-search color"></span>
-            </div>
-            <div class="right-col">
-                <h2>System Details</h2>
-                <p>A quick way to get a birds eye view of your server and this Directus instance. Provides a built-in PHPINFO readout as well.</p>
-            </div>
-        </li></a>
-        <a href="#settings/about">
-        <li class="feature-card gutter-bottom">
-            <div class="left-col">
-                <span class="icon icon-rocket color"></span>
-            </div>
-            <div class="right-col">
-                <h2>About Directus</h2>
-                <p>Here you can see news and updates from Directus Core, as well as any new versions that have been released.</p>
-            </div>
-        </li></a>
-        -->
-    </ul>
-</section>
---}}

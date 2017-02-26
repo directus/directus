@@ -9,12 +9,13 @@
 
 define([
   'app',
+  'underscore',
   'backbone',
   'core/t',
   'core/notification'
 ],
 
-function(app, Backbone, __t, Notification) {
+function(app, _, Backbone, __t, Notification) {
 
   'use strict';
 
@@ -99,7 +100,11 @@ function(app, Backbone, __t, Notification) {
         return;
       }
 
-      var options = this.page.headerOptions;
+      // hotfix adding dedicated class for settings
+      var options = this.page.headerOptions || {};
+      var attributes = {};
+      attributes['class'] = _.result(options, 'className') || 'header';
+      this.$el.attr(attributes);
 
       var that = this;
       if (options.leftToolbar) {

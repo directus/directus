@@ -120,6 +120,12 @@ function(app, Backbone, _, BaseHeaderView, RightSidebarView) {
       // render the header manually
       // this view is part of the main view and is not a child of this view
       this.headerView.render();
+
+      // hotfix adding dedicated class for settings
+      var options = this.viewOptions || {};
+      var attributes = {};
+      attributes['class'] = _.result(options, 'className') || 'page';
+      $('#content').attr(attributes);
     },
 
     getSpacing: function() {
