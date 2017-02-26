@@ -3,15 +3,16 @@ define([
   'underscore',
   'backbone',
   'core/listings/baseView',
+  'core/t',
   'async!https://maps.googleapis.com/maps/api/js?key=AIzaSyBmNpZfwjrxJ0zHEwYxgQ0_eKyfSexbZdQ&libraries=places'
-], function(app, _, Backbone, BaseView) {
+], function(app, _, Backbone, BaseView, __t) {
 
   return {
     id: 'map',
 
     icon: 'map',
 
-    // @TODO: Support UI Type
+    uiNames: ['map'],
 
     View: BaseView.extend({
 
@@ -34,17 +35,19 @@ define([
           options.location[column.id] = column.id;
         });
 
-        return [
-          {
-            id: 'location_column',
-            type: 'String',
-            required: true,
-            ui: 'select',
-            options: {
-              options: options.location
+        return {
+          columns: [
+            {
+              id: 'location_column',
+              type: 'String',
+              required: true,
+              ui: 'select',
+              options: {
+                options: options.location
+              }
             }
-          }
-        ]
+          ]
+        }
       },
 
       getLocationColumn: function() {
@@ -264,6 +267,11 @@ define([
       updateLocationRangeFilter: function() {
         var range = this.getMapBoundsLocation();
         var filters = {};
+
+        if (!this.getLocationColumn()) {
+          return;
+        }
+
         filters[this.getLocationColumn().id] = [
           {between: range.sw.lat() + ',' + range.ne.lat()},
           {between: range.sw.lng() + ',' + range.ne.lng()}
@@ -288,6 +296,10 @@ define([
         };
 
         this.listenTo(this.collection, 'sync', function() {
+          if (!this.getLocationColumn()) {
+            return;
+          }
+
           this.collection.each(_.bind(function(model) {
             var marker;
             var location = model.get(this.getLocationColumn().id);

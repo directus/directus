@@ -23,8 +23,10 @@ define(['app', 'underscore', 'backbone', 'core/t'], function(app, _, Backbone, _
       return viewOptions;
     },
 
-    getViewOptions: function() {
-      return this.getAllViewOptions(this.id);
+    getViewOptions: function(attr) {
+      var options = this.getAllViewOptions(this.id);
+
+      return attr ? options[attr] : options;
     },
 
     enable: function() {

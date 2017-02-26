@@ -35,7 +35,7 @@ function(app, Backbone, _, __t, Notification) {
 
         if (column === 'sort' || isDefaultSorting) {
           this.collection.setOrder(defaultSortColumn, order_sort);
-          tableColumnWidths(this.parentView.$el);
+          this.parentView.fixWidths();
           return;
         }
 
@@ -48,7 +48,7 @@ function(app, Backbone, _, __t, Notification) {
           this.collection.setOrder(column, order_sort);
         }
 
-        tableColumnWidths(this.parentView.$el);
+        this.parentView.fixWidths();
       },
 
       'click #set-visible-columns': function() {

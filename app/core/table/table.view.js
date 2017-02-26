@@ -98,11 +98,21 @@ function(app, _, Backbone, Notification, __t, ModelHelper, TableHead, TableBody,
       this.bodyScrollTop = parseInt(bodyScrollTop, 10) || 0;
     },
 
-    afterRender: function() {
-      tableColumnWidths(this.$el);
+    fixWidths: function ($el) {
+      var $table = $el || this.$el;
+      $table.find('tfoot tr td').each(function(index) {
+        var width = $table.find('tbody tr td:eq('+index+')').innerWidth();
+        $(this).innerWidth(width);
+      });
 
-      var now = new Date().getTime();
-      //console.log('rendered table ' + this.collection.table.id + ' in '+ (now-this.startRenderTime)+' ms');
+      $table.find('thead tr th').each(function(index) {
+        var width = $table.find('tbody tr td:eq('+index+')').innerWidth();
+        $(this).innerWidth(width);
+      });
+    },
+
+    afterRender: function() {
+      this.fixWidths();
 
       if (this.bodyScrollTop) {
         document.body.scrollTop = this.bodyScrollTop;
@@ -315,7 +325,10 @@ function(app, _, Backbone, Notification, __t, ModelHelper, TableHead, TableBody,
       if (this.events) {
         this.events = _.defaults(this.events, TableView.prototype.events);
       }
+
       Backbone.Layout.__super__.constructor.call(this, options);
+
+      this.showChart = options.showChart === true;
     }
   });
 

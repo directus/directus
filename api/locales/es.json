@@ -366,6 +366,8 @@
     "created_by": "Creado Por",
     "last_modified_by": "Última Modificación Por",
 
+    "view_x_requires_y": "Vista '%{viewId}' necesita: %{types}",
+
     "ok": "Aceptar",
     "cancel": "Cancelar",
     "yes": "Si",

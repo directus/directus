@@ -1,13 +1,15 @@
 define([
   'app',
   'underscore',
+  'core/t',
+  'core/Notification',
   'backbone',
   'core/edit',
-  'schema/ColumnsCollection',
+  'schema/FakeTableModel',
   'core/RightPane',
   'core/ListViewManager',
   'dragula'
-], function(app, _, Backbone, EditView, Structure, RightPane, ListViewManager, Dragula) {
+], function(app, _, __t, Notification, Backbone, EditView, FakeTableModel, RightPane, ListViewManager, Dragula) {
 
   return RightPane.extend({
 
@@ -21,13 +23,17 @@ define([
 
     changeView: function(event) {
       var viewId = $(event.currentTarget).data('view');
+      var view = ListViewManager.get(viewId);
 
-      if (!this.supportsView(viewId, this.collection)) {
-        return;
+      if (!this.supportsView(viewId)) {
+        var types = view.dataTypes || [];
+        var uis = view.uiNames || [];
+
+        return Notification.warning(__t('view_x_requires_y', {
+          viewId: viewId,
+          types: types.concat(uis).join(',').toUpperCase()
+        }));
       }
-
-      this.$('.tiles .tile.active').removeClass('active');
-      this.$('#' + viewId + '-view').addClass('active');
 
       if (viewId !== this.state.viewId) {
         this.state.viewId = viewId;
@@ -63,23 +69,35 @@ define([
 
       var options = _.result(view, 'getViewOptions');
       var model = new Backbone.Model(options);
-      var structure = new Structure(_.result(view, 'optionsStructure'), {parse: true});
+      var table = new FakeTableModel(_.result(view, 'optionsStructure'), {parse: true});
 
       this.editView = new EditView({
         model: model,
-        structure: structure,
+        structure: table.columns,
         events: {
-          'change input, select, textarea': _.bind(this.onInputChange, this)
+          'change input[type=text], select, textarea': _.bind(this.onInputChange, this),
+          'change input[type=checkbox]': _.bind(this.onCheckboxChange, this)
         }
       });
 
       this.insertView('.options', this.editView);
     },
 
-    onInputChange: function(event) {
+    triggerChange: function (name, value) {
+      this.trigger('input:change', name, value);
+    },
+
+    onInputChange: function (event) {
       var element = $(event.currentTarget).get(0);
 
-      this.trigger('input:change', element.name, element.value);
+      this.triggerChange(element.name, element.value);
+    },
+
+    onCheckboxChange: function (event) {
+      var $checkbox = $(event.currentTarget);
+      var element = $checkbox.next('input[type=hidden]').get(0);
+
+      this.triggerChange(element.name, element.value);
     },
 
     serialize: function() {
@@ -135,21 +153,33 @@ define([
       return data;
     },
 
-    supportsView: function(viewId, collection) {
-      collection = collection || this.collection;
+    supportsView: function(viewId) {
+      var view = ListViewManager.get(viewId);
+      var supported = true;
+
+      if (view.dataTypes) {
+        supported = this.viewSupport(view.dataTypes, 'type');
+      }
+
+      if (view.uiNames) {
+        supported = this.viewSupport(view.uiNames, 'ui');
+      }
+
+      return  supported;
+    },
+
+    viewSupport: function (list, name) {
+      var collection = this.collection;
       var structure = collection.structure;
-      var view;
 
       if (!collection || !structure) {
         return false;
       }
 
-      view = ListViewManager.get(viewId);
-
-      return !view.dataTypes || _.some(view.dataTypes, function(type) {
+      return !list || _.some(list, function(type) {
         var hasType = false;
         structure.each(function(column) {
-          if (type.toLowerCase() == (column.get('type') || '').toLocaleLowerCase()) {
+          if (type.toLowerCase() == (column.get(name) || '').toLocaleLowerCase()) {
             hasType = true;
           }
         });
@@ -162,6 +192,11 @@ define([
       this.state = {
         viewId: options.listView || this.collection.table.get('list_view') || 'table'
       };
+
+      this.baseView.on('view:changed', function (viewId) {
+        this.$('.tiles .tile.active').removeClass('active');
+        this.$('#' + viewId + '-view').addClass('active');
+      }, this);
 
       var drag = Dragula({
         isContainer: function (el) {

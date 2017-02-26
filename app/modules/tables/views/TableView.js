@@ -143,11 +143,11 @@ function(app, Backbone, _, __t, BasePageView, ListViewManager, TableViewRightPan
       switch(this.leftSecondaryCurrentState) {
         case 'default':
           if(!this.widgets.visibilityWidget) {
-            this.widgets.visibilityWidget = new Widgets.VisibilityWidget({collection: this.collection, basePage: this});
+            // this.widgets.visibilityWidget = new Widgets.VisibilityWidget({collection: this.collection, basePage: this});
           }
 
           return [
-            this.widgets.visibilityWidget
+            // this.widgets.visibilityWidget
           ];
         case 'actions':
           if(!this.widgets.selectionActionWidget) {
@@ -212,6 +212,8 @@ function(app, Backbone, _, __t, BasePageView, ListViewManager, TableViewRightPan
       var newView = this.getCurrentView();
       newView.enable();
 
+      this.trigger('view:changed', viewId);
+
       this.table = newView;
       this.render();
     },
@@ -230,6 +232,7 @@ function(app, Backbone, _, __t, BasePageView, ListViewManager, TableViewRightPan
         toolbar: true,
         fixedHead: true,
         baseView: this,
+        showChart: true,
         showMoreButton: !! _.result(this, 'rightPane')
       });
 

@@ -427,6 +427,8 @@
     "invitation": "Invitation",
     "invitation_sent": "Invitation sent successfully",
 
+    "view_x_requires_y": "View '%{viewId}' requires: %{types}",
+
     "ok": "OK",
     "cancel": "Cancel",
     "yes": "Yes",

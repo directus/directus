@@ -28,5 +28,36 @@ define(function() {
     return { start: startDate, end: endDate };
   };
 
+  helper.range = function (from, to) {
+    var range = [];
+    from = moment(from);
+    to = moment(to);
+
+    var current = from.toDate();
+    while (current <= to.toDate()) {
+      range.push(moment(current));
+      current = new Date(current.setDate(current.getDate() + 1));
+    }
+
+    return range;
+  };
+
+  helper.rangeUntil = function (to, days) {
+    var from;
+
+    // remove one day to include `to` date
+    days = parseInt(days, 10) - 1;
+    to = moment(to);
+    from = moment().subtract(days, 'days');
+
+    return this.range(from, to);
+  };
+
+  helper.isToday = function (date) {
+    date = moment(date);
+
+    return moment().diff(date, 'days') == 0;
+  };
+
   return helper;
 });
