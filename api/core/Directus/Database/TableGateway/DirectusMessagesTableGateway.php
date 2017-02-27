@@ -37,7 +37,7 @@ class DirectusMessagesTableGateway extends RelationalTableGateway
                 'subject' => $payload['subject'],
                 'message' => $payload['message'],
                 'datetime' => DateUtils::now(),
-                'attachment' => $payload['attachment'],
+                'attachment' => ArrayUtils::get($payload, 'attachment'),
                 'response_to' => $payload['response_to']
             ]);
         $rows = $this->insertWith($insert);
