@@ -196,10 +196,10 @@ class DirectusMessagesTableGateway extends RelationalTableGateway
 
         $result = array_values($resultLookup);
         foreach ($result as $key => &$row) {
-            if (!$row['responses']['data']) {
-                 unset($result[$key]);
-                 continue;
-            }
+            // if (!$row['responses']['data']) {
+            //   unset($result[$key]);
+            //   continue;
+            // }
 
             $row = $this->parseRecord($row);
             if (ArrayUtils::get($row, 'archived', 0) === 1) {
