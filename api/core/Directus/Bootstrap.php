@@ -191,11 +191,17 @@ class Bootstrap
         switch ($mailConfig['transport']) {
             case 'smtp':
                 $transport = \Swift_SmtpTransport::newInstance($mailConfig['host'], $mailConfig['port']);
+
                 if (array_key_exists('username', $mailConfig)) {
                     $transport->setUsername($mailConfig['username']);
                 }
+
                 if (array_key_exists('password', $mailConfig)) {
                     $transport->setPassword($mailConfig['password']);
+                }
+
+                if (array_key_exists('encryption', $mailConfig)) {
+                    $transport->setEncryption($mailConfig['encryption']);
                 }
                 break;
             case 'sendmail':
