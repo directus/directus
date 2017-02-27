@@ -84,13 +84,17 @@ define([
       },
 
       createMarker: function(lat, lng, title) {
-        return new google.maps.Marker({
+        var marker = new google.maps.Marker({
           position: new google.maps.LatLng(lat, lng),
           map: this.map,
           draggable: false,
           title: title || 'Select a Location',
           icon: this.pinSymbol('#3498DB')
         });
+
+        this.state.markers.push(marker);
+
+        return marker;
       },
 
       initMap: function() {
@@ -242,6 +246,18 @@ define([
         }
       },
 
+      clearMarkers: function () {
+        var markers = this.state.markers;
+        for (var i = 0; i < markers.length; i++) {
+          markers[i].setMap(null);
+        }
+      },
+
+      deleteMarkers: function () {
+        this.clearMarkers();
+        this.state.markers = [];
+      },
+
       changePlace: function(place) {
         var marker = this.marker;
 
@@ -300,6 +316,7 @@ define([
             return;
           }
 
+          this.deleteMarkers();
           this.collection.each(_.bind(function(model) {
             var marker;
             var location = model.get(this.getLocationColumn().id);
