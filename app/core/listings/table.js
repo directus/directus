@@ -193,18 +193,235 @@ define([
         this.setSpacing(viewOptions.spacing);
       },
 
+      getCommentCollection: function () {
+        var Directus = require('core/directus');
+
+        if (!this.comments) {
+          this.comments = new Directus.EntriesCollection({}, {
+            table: app.messages.table,
+            structure: app.messages.structure
+          });
+        }
+
+        return this.comments;
+      },
+
+      getActivityCollection: function () {
+        if (!this.activity) {
+          this.activity = app.activity.clone().reset();
+        }
+
+        return this.activity;
+      },
+
+      getUpdatesCollection: function () {
+        if (!this.updates) {
+          this.updates = app.activity.clone().reset();
+        }
+
+        return this.updates;
+      },
+
+      updateSystemColumns: function () {
+        var changed = false;
+
+        if (this.showChart && this.getViewOptions('chart_enabled')) {
+          changed = true;
+        }
+
+        if (this.getViewOptions('item_numbers') != this.options.showItemNumbers) {
+          this.options.showItemNumbers = !this.options.showItemNumbers;
+          changed = true;
+        }
+
+        if (this.getViewOptions('show_footer') != this.options.showFooter) {
+          this.$('tfoot').toggleClass('footer-open');
+          this.options.showFooter = !this.options.showFooter;
+        }
+
+        this.fetchComments();
+        this.fetchRevisions();
+        this.fetchUpdates();
+
+        if (changed) {
+          this.render();
+        }
+      },
+
+      fetchComments: function () {
+        var showCommentsCount = this.getViewOptions('comments_count');
+
+        if (this.options.systemCollection.length <= 0) {
+          return
+        }
+
+        if (showCommentsCount) {
+          var commentsCollection = this.getCommentCollection();
+          commentsCollection.setFilter({
+            filters: {
+              comment_metadata: {like: this.collection.table.id + ':'}
+            }
+          });
+          commentsCollection.fetch().then(_.bind(function () {
+            var systemCollection = this.options.systemCollection;
+            var comments = [];
+            this.comments.each(function (model) {
+              var metadata = (model.get('comment_metadata') || '').split(':');
+
+              if (!comments[metadata[1]]) {
+                comments[metadata[1]] = {
+                  id: metadata[1],
+                  count: 0
+                };
+              }
+
+              comments[metadata[1]].count++;
+            });
+
+            _.each(comments, function (comment) {
+              var model = systemCollection.get(comment.id);
+              model.set('_comments', comment.count);
+            });
+            this.render();
+          }, this));
+        }
+      },
+
+      fetchRevisions: function () {
+        var showRevisionsCount;
+        var activityCollection;
+
+        if (this.options.systemCollection.length <= 0) {
+          return
+        }
+
+        showRevisionsCount = this.getViewOptions('revisions_count');
+        if (!showRevisionsCount) {
+          return;
+        }
+
+        activityCollection = this.getActivityCollection();
+        activityCollection.setFilter({
+          filters: {
+            table_name: this.collection.table.id
+          }
+        });
+
+        activityCollection.fetch().then(_.bind(function () {
+          var systemCollection = this.options.systemCollection;
+          var revisions = [];
+          this.activity.each(function (model) {
+            var rowId = model.get('row_id');
+
+            if (!revisions[rowId]) {
+              revisions[rowId] = {
+                id: rowId,
+                count: 0
+              };
+            }
+
+            revisions[rowId].count++;
+          });
+
+          _.each(revisions, function (revision) {
+            var model = systemCollection.get(revision.id);
+            model.set('_revisions', revision.count);
+          });
+          this.render();
+        }, this));
+      },
+
+      fetchUpdates: function () {
+        var showLastUpdate;
+        var collection;
+
+        if (this.options.systemCollection.length <= 0) {
+          return
+        }
+
+        showLastUpdate = this.getViewOptions('last_updated');
+        if (!showLastUpdate) {
+          return;
+        }
+
+        collection = this.getUpdatesCollection();
+
+        var lastUpdated = {};
+        lastUpdated[this.collection.table.id] = collection.map(function (model) {
+          return model.id;
+        });
+
+        collection.setFilter({
+          last_updated: lastUpdated
+        });
+
+        collection.fetch().then(_.bind(function () {
+          var systemCollection = this.options.systemCollection;
+          this.updates.each(function (model) {
+            var rowId = model.get('row_id');
+            var rowModel = systemCollection.get(rowId);
+
+            if (rowModel) {
+              rowModel.set('_last_updated', moment(model.get('datetime')).fromNow());
+            }
+          });
+
+          this.render();
+        }, this));
+      },
+
+      getTableColumns: function () {
+        var columns = TableView.prototype.getTableColumns.apply(this, arguments);
+        var prependColumns = this.getPrependColumns() || [];
+        var appendColumns = this.getAppendColumns() || [];
+
+        return prependColumns.concat(columns).concat(appendColumns);
+      },
+
+      getPrependColumns: function () {
+        return [];
+      },
+
+      getAppendColumns: function () {
+        var columns = [];
+
+        if (this.getViewOptions('comments_count')) {
+          columns.push('_comments');
+        }
+
+        if (this.getViewOptions('revisions_count')) {
+          columns.push('_revisions');
+        }
+
+        if (this.getViewOptions('last_updated')) {
+          columns.push('_last_updated');
+        }
+
+        return columns;
+      },
+
+      initialize: function () {
+        TableView.prototype.initialize.apply(this, arguments);
+
+        this.options.footer = true;
+        this.options.showFooter = this.getViewOptions('show_footer');
+        this.on('afterRender', function () {
+          if (this.options.showFooter) {
+            this.$('tfoot').addClass('footer-open');
+          }
+        }, this);
+      },
+
       constructor: function() {
         View.prototype.constructor.apply(this, arguments);
         BaseView.prototype.constructor.apply(this, arguments);
 
         this.showChart = this.supportsChart();
 
-        this.collection.preferences.on('sync', function () {
-          var changed = this.showChart && this.getViewOptions('chart_enabled');
-          if (changed) {
-            this.render();
-          }
-        }, this);
+        this.collection.preferences.on('sync', this.updateSystemColumns, this);
+        this.collection.on('sync', this.fetchComments, this);
+        this.collection.on('sync', this.fetchRevisions, this);
+        this.collection.on('sync', this.fetchUpdates, this);
       }
     })
   }

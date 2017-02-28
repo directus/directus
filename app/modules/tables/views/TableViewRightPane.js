@@ -18,6 +18,11 @@ define([
     events: {
       'click .tiles .tile': 'changeView',
       'click .js-column': 'updateVisibleColumns',
+      'click .js-item-numbers': 'toggleItemNumbers',
+      'click .js-last-updated': 'toggleLastUpdated',
+      'click .js-comments-count': 'toggleCommentsCount',
+      'click .js-revisions-count': 'toggleRevisionsCount',
+      'click .js-show-footer': 'toggleFooter',
       'click .js-close': 'close'
     },
 
@@ -58,6 +63,36 @@ define([
 
       collection.filters.columns_visible = columns;
       collection.fetch();
+    },
+
+    toggleItemNumbers: function (event) {
+      var checked = $(event.currentTarget).is(':checked');
+
+      this.baseView.trigger('rightPane:input:change', 'item_numbers', checked);
+    },
+
+    toggleLastUpdated: function (event) {
+      var checked = $(event.currentTarget).is(':checked');
+
+      this.baseView.trigger('rightPane:input:change', 'last_updated', checked);
+    },
+
+    toggleCommentsCount: function (event) {
+      var checked = $(event.currentTarget).is(':checked');
+
+      this.baseView.trigger('rightPane:input:change', 'comments_count', checked);
+    },
+
+    toggleRevisionsCount: function (event) {
+      var checked = $(event.currentTarget).is(':checked');
+
+      this.baseView.trigger('rightPane:input:change', 'revisions_count', checked);
+    },
+
+    toggleFooter: function (event) {
+      var checked = $(event.currentTarget).is(':checked');
+
+      this.baseView.trigger('rightPane:input:change', 'show_footer', checked);
     },
 
     beforeRender: function() {
@@ -107,6 +142,7 @@ define([
       var data = collection ? collection.toJSON() : {};
       var visibleColumns = preferences.get('columns_visible').split(',');
       var selectedSpacing = this.baseView.getSpacing();
+      var viewOptions = this.baseView.table.getViewOptions();
 
       data.spacings = _.map(app.config.get('spacings'), function(value) {
         return {
@@ -114,6 +150,8 @@ define([
           selected: value === selectedSpacing
         }
       });
+
+      data.viewOptions = viewOptions;
 
       data.columns = structure.chain()
         .filter(function(model) {

@@ -78,7 +78,7 @@ function(app, _, Backbone, Notification, __t, ModelHelper, TableHead, TableBody,
       }
 
       if (this.collection.length > 0) {
-        options = _.pick(this.options, 'collection', 'selectable', 'filters', 'preferences', 'structure', 'sort', 'deleteColumn', 'rowIdentifiers', 'saveAfterDrop', 'blacklist', 'highlight', 'columns');
+        options = _.pick(this.options, 'collection', 'systemCollection', 'selectable', 'filters', 'preferences', 'structure', 'sort', 'deleteColumn', 'rowIdentifiers', 'saveAfterDrop', 'blacklist', 'highlight', 'columns');
         options.parentView = this;
         this.tableBody = new this.TableBody(options);
         this.insertView('table', this.tableBody);
@@ -263,6 +263,7 @@ function(app, _, Backbone, Notification, __t, ModelHelper, TableHead, TableBody,
       this.options.table = this.options.table || collection.table;
       this.options.columns = this.getTableColumns();
       this.options.fixedHead = options.fixedHead;
+      this.options.showItemNumbers = options.showItemNumbers;
 
       if (this.options.tableHead !== false) {
         this.tableHead = true;
@@ -298,6 +299,7 @@ function(app, _, Backbone, Notification, __t, ModelHelper, TableHead, TableBody,
           }
         }
 
+        this.options.showItemNumbers = this.getViewOptions('item_numbers');
         this.state.spacing = viewOptions ? (viewOptions['spacing'] || 'cozy') : 'cozy';
       }
 
@@ -329,6 +331,11 @@ function(app, _, Backbone, Notification, __t, ModelHelper, TableHead, TableBody,
       Backbone.Layout.__super__.constructor.call(this, options);
 
       this.showChart = options.showChart === true;
+
+      this.options.systemCollection = this.collection.clone();
+      this.collection.on('sync', function (collection, resp) {
+        this.options.systemCollection.reset(resp, {parse: true});
+      }, this);
     }
   });
 

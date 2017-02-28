@@ -168,6 +168,47 @@ class DirectusActivityTableGateway extends RelationalTableGateway
         $this->insertWith($insert);
     }
 
+    /**
+     * Get the last update date from a list of row ids in the given table
+     *
+     * @param $table
+     * @param $ids
+     *
+     * @return array|null
+     */
+    public function getLastUpdated($table, $ids)
+    {
+        if (!is_array($ids)) {
+            $ids = [$ids];
+        }
+
+        $sql = new Sql($this->adapter);
+        $select = $sql->select($this->getTable());
+
+        $select->columns([
+            'action',
+            'user',
+            'datetime' => new Expression('MAX(datetime)')
+        ]);
+
+        $select->where([
+            'table_name' => $table,
+            'type' => 'ENTRY',
+            'action' => 'UPDATE',
+            new In('row_id', $ids)
+        ]);
+
+        $select->group([
+            'action',
+            'user'
+        ]);
+
+        $statement = $this->sql->prepareStatementForSqlObject($select);
+        $result = iterator_to_array($statement->execute());
+
+        return $this->parseRecord($result);
+    }
+
     public function getMetadata($table, $id)
     {
         $sql = new Sql($this->adapter);

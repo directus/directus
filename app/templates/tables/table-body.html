@@ -1,5 +1,8 @@
 {{#each rows}}
 <tr data-id="{{model.id}}" data-cid="{{model.cid}}" class="dynamic-link {{{notPublishedClass model}}}" data-dynamic-link="{{rootUrl}}tables/blog/1#title"> <!-- Optional Classes: selected -->
+    {{#if ../showItemNumbers}}
+    <td class="reorder">{{index}}</td>
+    {{/if}}
     {{#if ../sortable}}
     <td class="reorder"><i class="material-icons reorder-handle">drag_handle</i></td>
     {{/if}}

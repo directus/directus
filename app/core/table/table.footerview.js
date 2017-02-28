@@ -32,6 +32,7 @@ function(app, Backbone, UIHelper) {
       'click .footer-function li': function(e) {
         this.functions[$(e.target).closest('.footer-function').attr('data-column')] = $(e.target).text();
         this.render();
+        this.options.parentView.fixWidths();
       }
     },
 
@@ -54,14 +55,14 @@ function(app, Backbone, UIHelper) {
     serialize: function() {
       // get whitelisted columns first
       var blacklist = this.options.blacklist || [];
-      var columns = _.filter(this.collection.getColumns(), function(column) {
+      var columns = _.filter(this.options.parentView.getTableColumns(), function(column) {
         return ! _.contains(blacklist, column);
       });
 
       var hasANumericColumn = false;
       columns = _.map(columns, function(column) {
         var columnInfo = this.collection.structure.get(column);
-        var showFooter = columnInfo.options.get('footer') === true;
+        var showFooter = this.options.showFooter || columnInfo.options.get('footer') === true;
         var isANumericColumn = UIHelper.supportsNumeric(columnInfo.get('type'));
 
         if (isANumericColumn) {

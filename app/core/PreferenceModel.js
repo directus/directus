@@ -3,6 +3,8 @@ define(function(require, exports, module) {
   "use strict";
 
   var Backbone                = require("backbone");
+  var __t                     = require('core/t');
+  var $                       = require('jquery');
 
   var PreferenceModel = module.exports = Backbone.Model.extend({
       parse: function(data) {
@@ -15,7 +17,30 @@ define(function(require, exports, module) {
           data: $.param(options)
         };
         this.constructor.__super__.fetch.call(this, args);
+      },
+
+    getAllViewOptions: function(viewId) {
+      var viewOptions = {};
+
+      try {
+        viewOptions = JSON.parse(this.get('list_view_options')) || {};
+      } catch (err) {
+        viewOptions = {};
+        console.error(__t('calendar_has_malformed_options_json'));
       }
+
+      if (viewId) {
+        viewOptions = viewOptions[viewId] || {};
+      }
+
+      return viewOptions;
+    },
+
+    getViewOptions: function (viewId, attr) {
+      var options = this.getAllViewOptions(viewId);
+
+      return attr ? options[attr] : options;
+    }
   });
 
 });
