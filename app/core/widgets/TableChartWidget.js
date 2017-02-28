@@ -120,7 +120,6 @@ function(app, Backbone, _, __t, moment, DateHelper, Chart) {
       _.each(collectionData, function (data, i) {
         var itemDate = moment(data[dateColumn.id]);
         if (itemDate.isSame(date, 'd')) {
-          console.log(numericColumn);
           value += numericColumn ? parseFloat(data[numericColumn.id]) : 1;
         }
       });
