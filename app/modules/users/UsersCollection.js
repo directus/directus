@@ -20,7 +20,11 @@ function(app, Backbone, EntriesCollection, __t, UsersModel) {
     get: function(id) {
       var user = EntriesCollection.__super__.get.call(this, id);
       if (!_.isObject(id) && !user) {
-        user = new UsersModel({id: id, first_name: __t('a_missing_or_removed_user')});
+        user = new UsersModel({
+          id: id,
+          first_name: __t('a_missing_or_removed_user'),
+          last_name: ''
+        });
       }
 
       return user;
