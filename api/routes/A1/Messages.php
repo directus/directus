@@ -37,9 +37,10 @@ class Messages extends Route
 
         $messagesTableGateway = new DirectusMessagesTableGateway($ZendDb, $acl);
         $result = $messagesTableGateway->fetchMessagesInboxWithHeaders($currentUserId);
+
         $meta = ArrayUtils::omit($result, 'data');
-        $result['meta']['type'] = 'collection';
-        $result['meta']['table'] = 'directus_messages';
+        $meta['type'] = 'collection';
+        $meta['table'] = 'directus_messages';
 
         return $this->app->response([
             'meta' => $meta,
