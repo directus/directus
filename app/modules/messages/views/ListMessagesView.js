@@ -253,9 +253,13 @@ function(app, _, Backbone, __t, BasePageView, MessageView, MessageForm, Widgets,
 
       return widgets;
     },
+
     rightToolbar: function() {
       return [
-        //new Widgets.SearchWidget()
+        new Widgets.FilterWidget({
+          collection: this.collection,
+          basePage: this
+        })
       ];
     },
 
