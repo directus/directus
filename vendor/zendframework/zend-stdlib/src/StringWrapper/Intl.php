@@ -37,7 +37,7 @@ class Intl extends AbstractStringWrapper
      */
     public function __construct()
     {
-        if (! extension_loaded('intl')) {
+        if (!extension_loaded('intl')) {
             throw new Exception\ExtensionNotLoadedException(
                 'PHP extension "intl" is required for this wrapper'
             );

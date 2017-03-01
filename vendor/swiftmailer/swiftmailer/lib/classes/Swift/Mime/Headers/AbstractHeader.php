@@ -219,8 +219,6 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
         return $this->toString();
     }
 
-    // -- Points of extension
-
     /**
      * Set the name of this Header field.
      *
@@ -449,7 +447,7 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
      */
     protected function toTokens($string = null)
     {
-        if (is_null($string)) {
+        if (null === $string) {
             $string = $this->getFieldBody();
         }
 

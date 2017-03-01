@@ -266,7 +266,7 @@ class Swift_Mime_SimpleHeaderSet implements Swift_Mime_HeaderSet
     /**
      * Create a new instance of this HeaderSet.
      *
-     * @return Swift_Mime_HeaderSet
+     * @return self
      */
     public function newInstance()
     {

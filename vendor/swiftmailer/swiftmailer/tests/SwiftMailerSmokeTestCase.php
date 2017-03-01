@@ -7,7 +7,7 @@
  */
 class SwiftMailerSmokeTestCase extends SwiftMailerTestCase
 {
-    public function setUp()
+    protected function setUp()
     {
         if (!defined('SWIFT_SMOKE_TRANSPORT_TYPE')) {
             $this->markTestSkipped(

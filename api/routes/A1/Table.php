@@ -32,12 +32,12 @@ class Table extends Route
 
         if (!($isTableNameAlphanumeric && $zeroOrMoreUnderscoresDashes)) {
             $app->response->setStatus(400);
-            return JsonView::render(['message' => __t('invalid_table_name')]);
+            return $this->app->response(['message' => __t('invalid_table_name')]);
         }
 
         $schema = Bootstrap::get('schemaManager');
         if ($schema->tableExists($requestPayload['name'])) {
-            return JsonView::render([
+            return $this->app->response([
                 'success' => false,
                 'error' => [
                     'message' => sprintf('table_%s_exists', $requestPayload['name'])
@@ -107,7 +107,7 @@ class Table extends Route
             ];
         }
 
-        JsonView::render($response);
+        return $this->app->response($response);
     }
 
     public function column($table, $column)
@@ -143,7 +143,7 @@ class Table extends Route
                 $response['error']['message'] = sprintf('column `%s` does not exists in table: `%s`', $column, $table);
             }
 
-            return JsonView::render($response);
+            return $this->app->response($response);
         }
 
         $params['column_name'] = $column;
@@ -207,7 +207,7 @@ class Table extends Route
             ];
         }
 
-        JsonView::render($response);
+        return $this->app->response($response);
     }
 
     public function postColumn($table, $column)
@@ -234,7 +234,7 @@ class Table extends Route
         }
         $newRecord = $TableGateway->manageRecordUpdate('directus_columns', $data, TableGateway::ACTIVITY_ENTRY_MODE_DISABLED);
         $_POST['id'] = $newRecord['id'];
-        JsonView::render($_POST);
+        return $this->app->response($_POST);
     }
 
     // get all table names
@@ -252,7 +252,7 @@ class Table extends Route
             'data' => $tables
         ];
 
-        JsonView::render($response);
+        return $this->app->response($response);
     }
 
     // get a single table information
@@ -280,7 +280,7 @@ class Table extends Route
                 $response['data']['message'] = __t('table_x_was_removed');
             }
 
-            return JsonView::render($response);
+            return $this->app->response($response);
         }
 
         $TableGateway = new TableGateway('directus_tables', $ZendDb, $acl, null, null, null, 'table_name');
@@ -358,7 +358,8 @@ class Table extends Route
                 'data' => $response
             ];
         }
-        JsonView::render($response);
+
+        return $this->app->response($response);
     }
 
     public function columnUi($table, $column, $ui)
@@ -395,6 +396,6 @@ class Table extends Route
             ];
         }
 
-        JsonView::render($response);
+        return $this->app->response($response);
     }
 }

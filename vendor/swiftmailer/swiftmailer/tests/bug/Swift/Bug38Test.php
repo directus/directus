@@ -6,7 +6,7 @@ class Swift_Bug38Test extends \PHPUnit_Framework_TestCase
     private $_attFileName;
     private $_attFileType;
 
-    public function setUp()
+    protected function setUp()
     {
         $this->_attFileName = 'data.txt';
         $this->_attFileType = 'text/plain';
@@ -180,8 +180,6 @@ class Swift_Bug38Test extends \PHPUnit_Framework_TestCase
         $this->assertPatternInStream($pattern, $streamA);
         $this->assertPatternInStream($pattern, $streamB);
     }
-
-    // -- Helpers
 
     public function assertPatternInStream($pattern, $stream, $message = '%s')
     {

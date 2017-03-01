@@ -25,8 +25,6 @@ class Swift_Events_EventObjectTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($evt->bubbleCancelled());
     }
 
-    // -- Creation Methods
-
     private function _createEvent($source)
     {
         return new Swift_Events_EventObject($source);

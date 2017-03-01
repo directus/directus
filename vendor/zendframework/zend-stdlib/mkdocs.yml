@@ -2,8 +2,6 @@ docs_dir: doc/book
 site_dir: doc/html
 pages:
     - index.md
-    - Reference:
-      - "Console Helper": console-helper.md
     - Migration: migration.md
 site_name: zend-stdlib
 site_description: Zend\Stdlib

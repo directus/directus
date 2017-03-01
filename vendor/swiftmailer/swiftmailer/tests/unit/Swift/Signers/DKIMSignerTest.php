@@ -2,12 +2,10 @@
 
 class Swift_Signers_DKIMSignerTest extends \SwiftMailerTestCase
 {
-    public function setUp()
+    protected function setUp()
     {
-        if (version_compare(phpversion(), '5.4', '<') && !defined('OPENSSL_ALGO_SHA256')) {
-            $this->markTestSkipped(
-                'skipping because of https://bugs.php.net/bug.php?id=61421'
-             );
+        if (PHP_VERSION_ID < 50400 && !defined('OPENSSL_ALGO_SHA256')) {
+            $this->markTestSkipped('skipping because of https://bugs.php.net/bug.php?id=61421');
         }
     }
 
@@ -29,12 +27,13 @@ class Swift_Signers_DKIMSignerTest extends \SwiftMailerTestCase
         $signer->addSignature($headers);
     }
 
-    // Default Signing
-    public function testSigningDefaults()
+    // SHA1 Signing
+    public function testSigningSHA1()
     {
         $headerSet = $this->_createHeaderSet();
         $messageContent = 'Hello World';
         $signer = new Swift_Signers_DKIMSigner(file_get_contents(dirname(dirname(dirname(__DIR__))).'/_samples/dkim/dkim.test.priv'), 'dummy.nxdomain.be', 'dummySelector');
+        $signer->setHashAlgorithm('rsa-sha1');
         $signer->setSignatureTimestamp('1299879181');
         $altered = $signer->getAlteredHeaders();
         $this->assertEquals(array('DKIM-Signature'), $altered);
@@ -147,7 +146,6 @@ class Swift_Signers_DKIMSignerTest extends \SwiftMailerTestCase
         $this->assertEquals($sig->getValue(), 'v=1; a=rsa-sha256; bh=f+W+hu8dIhf2VAni89o8lF6WKTXi7nViA4RrMdpD5/U=; d=dummy.nxdomain.be; h=; i=@dummy.nxdomain.be; s=dummySelector; c=simple/relaxed; t=1299879181; b=M5eomH/zamyzix9kOes+6YLzQZxuJdBP4x3nP9zF2N26eMLG2/cBKbnNyqiOTDhJdYfWPbLIa 1CWnjST0j5p4CpeOkGYuiE+M4TWEZwhRmRWootlPO3Ii6XpbBJKFk1o9zviS7OmXblUUE4aqb yRSIMDhtLdCK5GlaCneFLN7RQ=');
     }
 
-    // -- Creation Methods
     private function _createHeaderSet()
     {
         $cache = new Swift_KeyCache_ArrayKeyCache(new Swift_KeyCache_SimpleKeyCacheInputStream());

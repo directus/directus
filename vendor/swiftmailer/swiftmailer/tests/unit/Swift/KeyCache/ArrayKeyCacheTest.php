@@ -218,8 +218,6 @@ class Swift_KeyCache_ArrayKeyCacheTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($cache->hasKey($this->_key1, 'bar'));
     }
 
-    // -- Creation methods
-
     private function _createCache($is)
     {
         return new Swift_KeyCache_ArrayKeyCache($is);

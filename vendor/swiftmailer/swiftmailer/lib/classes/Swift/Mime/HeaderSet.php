@@ -138,7 +138,7 @@ interface Swift_Mime_HeaderSet extends Swift_Mime_CharsetObserver
     /**
      * Create a new instance of this HeaderSet.
      *
-     * @return Swift_Mime_HeaderSet
+     * @return self
      */
     public function newInstance();
 

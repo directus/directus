@@ -6,7 +6,7 @@ class Swift_KeyCache_ArrayKeyCacheAcceptanceTest extends \PHPUnit_Framework_Test
     private $_key1 = 'key1';
     private $_key2 = 'key2';
 
-    public function setUp()
+    protected function setUp()
     {
         $this->_cache = new Swift_KeyCache_ArrayKeyCache(
             new Swift_KeyCache_SimpleKeyCacheInputStream()

@@ -4,7 +4,7 @@ require_once __DIR__.'/AbstractStreamBufferAcceptanceTest.php';
 
 class Swift_Transport_StreamBuffer_SslSocketAcceptanceTest extends Swift_Transport_StreamBuffer_AbstractStreamBufferAcceptanceTest
 {
-    public function setUp()
+    protected function setUp()
     {
         $streams = stream_get_transports();
         if (!in_array('ssl', $streams)) {

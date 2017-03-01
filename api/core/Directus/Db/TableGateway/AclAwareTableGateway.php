@@ -222,7 +222,15 @@ class AclAwareTableGateway extends BaseTableGateway
 
             $result = parent::executeInsert($insert);
             $insertTableGateway = new self($this->acl, $insertTable, $this->adapter);
-            $resultData = $insertTableGateway->find($this->getLastInsertValue());
+
+            // hotfix: directus_tables does not have auto generated value primary key
+            if ($this->getTable() === 'directus_tables') {
+                $generatedValue = ArrayUtils::get($insertDataAssoc, $this->primaryKeyFieldName, 'table_name');
+            } else {
+                $generatedValue = $this->getLastInsertValue();
+            }
+
+            $resultData = $insertTableGateway->find($generatedValue);
 
             $this->runHook('table.insert', [$insertTable, $resultData]);
             $this->runHook('table.insert.' . $insertTable, [$resultData]);

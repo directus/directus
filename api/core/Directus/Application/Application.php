@@ -10,6 +10,8 @@
 
 namespace Directus\Application;
 
+use Directus\Bootstrap;
+use Directus\Util\ArrayUtils;
 use Slim\Http\Util;
 use Slim\Slim;
 
@@ -38,6 +40,10 @@ class Application extends Slim
     public function __construct(array $userSettings)
     {
         parent::__construct($userSettings);
+
+        $this->container->singleton('response', function () {
+            return new BaseResponse();
+        });
 
         $request = $this->request();
         // @NOTE: Slim request do not parse a json request body
@@ -85,6 +91,85 @@ class Application extends Slim
         }
 
         $this->booted = true;
+    }
+
+    public function response()
+    {
+        $response = parent::response();
+
+        if (func_num_args() > 0) {
+            $data = ArrayUtils::get(func_get_args(), 0);
+            $options = ArrayUtils::get(func_get_args(), 1);
+
+            $data = $this->triggerResponseFilter($data, (array) $options);
+
+            // @TODO: Response will support xml
+            $response->setBody(json_encode($data));
+        }
+
+        return $response;
+    }
+
+    /**
+     * Trigger Filter by name with its payload
+     *
+     * @param $name
+     * @param $payload
+     *
+     * @return mixed
+     */
+    protected function triggerFilter($name, $payload)
+    {
+        $emitter = Bootstrap::get('hookEmitter');
+        $payload = $emitter->apply($name, $payload);
+
+        return $payload;
+    }
+
+    /**
+     * Trigger a response filter
+     *
+     * @param $data
+     * @param array $options
+     *
+     * @return mixed
+     */
+    protected function triggerResponseFilter($data, array $options)
+    {
+        $uriParts = explode('/', trim($this->request()->getResourceUri(), '/'));
+        $apiVersion = (float) array_shift($uriParts);
+
+        if ($apiVersion > 1) {
+            $meta = ArrayUtils::get($data, 'meta');
+        } else {
+            $meta = [
+                'type' => array_key_exists('rows', $data) ? 'collection' : 'item',
+                'table' => ArrayUtils::get($options, 'table')
+            ];
+        }
+
+        $payload = (object) array_merge($options, [
+            'apiVersion' => $apiVersion,
+            'data' => $data,
+            'meta' => $meta,
+            'request' => [
+                'path' => $this->request()->getResourceUri(),
+                'method' => $this->request()->getMethod()
+            ]
+        ]);
+
+        $method = strtolower($this->request()->getMethod());
+        $payload = $this->triggerFilter('response', $payload);
+        $payload = $this->triggerFilter('response.' . $method, $payload);
+        if ($meta['table']) {
+            $payload = $this->triggerFilter('response.' . $meta['table'], $payload);
+            $payload = $this->triggerFilter(sprintf('response.%s.%s',
+                $meta['table'],
+                $method
+            ), $payload);
+        }
+
+        return $payload->data;
     }
 
     /**

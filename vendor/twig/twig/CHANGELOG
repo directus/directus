@@ -1,6 +1,12 @@
-* 1.31.1 (2017-XX-XX)
+* 1.32.1 (2017-XX-XX)
 
  * n/a
+
+* 1.32.0 (2017-02-26)
+
+ * fixed deprecation notice in Twig_Util_DeprecationCollector
+ * added a PSR-11 compatible runtime loader
+ * added `side` argument to `trim` to allow left or right trimming only.
 
 * 1.31.0 (2017-01-11)
 

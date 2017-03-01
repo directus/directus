@@ -122,8 +122,6 @@ class Swift_StreamFilters_ByteArrayReplacementFilterTest extends \PHPUnit_Framew
             );
     }
 
-    // -- Creation methods
-
     private function _createFilter($search, $replace)
     {
         return new Swift_StreamFilters_ByteArrayReplacementFilter($search, $replace);

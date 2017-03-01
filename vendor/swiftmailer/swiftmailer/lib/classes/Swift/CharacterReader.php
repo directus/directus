@@ -48,8 +48,8 @@ interface Swift_CharacterReader
      * A value of zero means this is already a valid character.
      * A value of -1 means this cannot possibly be a valid character.
      *
-     * @param integer[] $bytes
-     * @param int       $size
+     * @param int[] $bytes
+     * @param int   $size
      *
      * @return int
      */

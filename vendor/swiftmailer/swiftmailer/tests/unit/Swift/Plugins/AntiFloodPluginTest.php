@@ -71,8 +71,6 @@ class Swift_Plugins_AntiFloodPluginTest extends \PHPUnit_Framework_TestCase
         }
     }
 
-    // -- Creation Methods
-
     private function _createTransport()
     {
         return $this->getMockBuilder('Swift_Transport')->getMock();

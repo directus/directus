@@ -9,7 +9,7 @@ class Swift_Signers_SMimeSignerTest extends \PHPUnit_Framework_TestCase
 
     protected $samplesDir;
 
-    public function setUp()
+    protected function setUp()
     {
         $this->replacementFactory = Swift_DependencyContainer::getInstance()
             ->lookup('transport.replacementfactory');

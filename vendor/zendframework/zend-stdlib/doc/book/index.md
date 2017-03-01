@@ -7,6 +7,7 @@
 class for different scopes like:
 
 - array utilities functions;
+- json serializable interfaces;
 - general messaging systems;
 - string wrappers;
 - etc.
@@ -14,4 +15,4 @@ class for different scopes like:
 ---
 
 - File issues at https://github.com/zendframework/zend-stdlib/issues
-- Documentation is at https://docs.zendframework.com/zend-stdlib/
+- Documentation is at http://framework.zend.com/manual/current/en/index.html#zend-stdlib

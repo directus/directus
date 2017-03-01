@@ -5,7 +5,7 @@
  */
 class Swift_Signers_OpenDKIMSignerTest extends \SwiftMailerTestCase
 {
-    public function setUp()
+    protected function setUp()
     {
         if (!extension_loaded('opendkim')) {
             $this->markTestSkipped(

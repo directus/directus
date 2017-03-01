@@ -19,6 +19,6 @@ class Revisions extends Route
         $Activity = new DirectusActivityTableGateway($ZendDb, $acl);
         $revisions = $Activity->fetchRevisions($id, $table);
 
-        JsonView::render($revisions);
+        return $this->app->response($revisions);
     }
 }

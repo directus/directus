@@ -335,8 +335,6 @@ class Swift_CharacterStream_ArrayCharacterStreamTest extends \SwiftMailerTestCas
         $this->assertFalse($stream->read(1));
     }
 
-    // -- Creation methods
-
     private function _getReader()
     {
         return $this->getMockery('Swift_CharacterReader');

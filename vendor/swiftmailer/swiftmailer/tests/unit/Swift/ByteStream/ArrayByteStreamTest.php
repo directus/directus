@@ -194,8 +194,6 @@ class Swift_ByteStream_ArrayByteStreamTest extends \PHPUnit_Framework_TestCase
         $bs->write('y');
     }
 
-    // -- Creation Methods
-
     private function _createArrayStream($input)
     {
         return new Swift_ByteStream_ArrayByteStream($input);

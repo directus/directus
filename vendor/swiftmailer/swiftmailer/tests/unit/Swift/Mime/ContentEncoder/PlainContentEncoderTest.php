@@ -154,8 +154,6 @@ class Swift_Mime_ContentEncoder_PlainContentEncoderTest extends \SwiftMailerTest
         $this->assertEquals($expected, $collection->content);
     }
 
-    // -- Private helpers
-
     private function _getEncoder($name, $canonical = false)
     {
         return new Swift_Mime_ContentEncoder_PlainContentEncoder($name, $canonical);

@@ -33,7 +33,7 @@ class Swift_Mailer
      *
      * @param Swift_Transport $transport
      *
-     * @return Swift_Mailer
+     * @return self
      */
     public static function newInstance(Swift_Transport $transport)
     {

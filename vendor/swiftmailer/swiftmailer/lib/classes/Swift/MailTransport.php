@@ -38,7 +38,7 @@ class Swift_MailTransport extends Swift_Transport_MailTransport
      *
      * @param string $extraParams To be passed to mail()
      *
-     * @return Swift_MailTransport
+     * @return self
      */
     public static function newInstance($extraParams = '-f%s')
     {

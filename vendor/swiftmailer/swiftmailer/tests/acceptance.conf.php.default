@@ -12,13 +12,6 @@
  You can fill out only the parts you know and leave the other bits.
  */
 
-
-/*
- Defines: The path to a writable directory (a temporary dir).
- Recommended: /tmp
- */
-define('SWIFT_TMP_DIR', '/tmp');
-
 /*
  Defines: The name and port of a SMTP server you can connect to.
  Recommended: smtp.gmail.com:25

@@ -18,8 +18,6 @@ class Swift_Events_TransportChangeEventTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($transport, $ref);
     }
 
-    // -- Creation Methods
-
     private function _createEvent(Swift_Transport $source)
     {
         return new Swift_Events_TransportChangeEvent($source);

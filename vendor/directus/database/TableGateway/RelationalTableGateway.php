@@ -683,22 +683,22 @@ class RelationalTableGateway extends BaseTableGateway
         $entries = $this->loadItems($params);
         // @NOTE: it should has another name
         //        this evolved into something else
-        $entries = $this->loadMetadata($entries);
+        $entries = $this->loadMetadata($entries, ArrayUtils::has($params, 'id'));
 
         return $entries;
     }
 
-    public function loadMetadata($entriesData)
+    public function loadMetadata($entriesData, $single = false)
     {
         return [
-            'meta' => $this->createMetadata($entriesData),
+            'meta' => $this->createMetadata($entriesData, $single),
             'data' => $entriesData
         ];
     }
 
-    public function createMetadata($entriesData)
+    public function createMetadata($entriesData, $single)
     {
-        $singleEntry = !ArrayUtils::isNumericKeys($entriesData);
+        $singleEntry = $single || !ArrayUtils::isNumericKeys($entriesData);
         $tableSchema = TableSchema::getTableSchema($this->table);
         $metadata = [
             'table' => $tableSchema->getTableName(),
@@ -801,13 +801,13 @@ class RelationalTableGateway extends BaseTableGateway
         $depth = ArrayUtils::get($params, 'depth', null);
         if ($depth !== null) {
             $paramColumns = ArrayUtils::get($params, 'columns', []);
-            $aliasColumns = $tableSchema->getAliasColumnsName();
+            $relationalColumns = $tableSchema->getRelationalColumnsName();
 
             if ($paramColumns) {
-                $aliasColumns = ArrayUtils::intersection($paramColumns, $aliasColumns);
+                $relationalColumns = ArrayUtils::intersection($paramColumns, $relationalColumns);
             }
 
-            $results = $this->loadRelationalDataByDepth($results, (int) $depth, $aliasColumns);
+            $results = $this->loadRelationalDataByDepth($results, (int) $depth, $relationalColumns);
         }
 
         // When the params column list doesn't include the primary key
@@ -934,6 +934,59 @@ class RelationalTableGateway extends BaseTableGateway
     }
 
     /**
+     * Process Query search
+     *
+     * @param Builder $query
+     * @param $search
+     */
+    protected function processQ(Builder $query, $search)
+    {
+        $columns = TableSchema::getAllTableColumns($this->getTable());
+        $table = $this->getTable();
+
+        foreach ($columns as $column) {
+            if (!$column->isAlias()) {
+                $query->orWhereLike($column->getName(), $search);
+            }
+        }
+
+        $query->nestOrWhere(function (Builder $query) use ($columns, $search, $table) {
+            foreach ($columns as $column) {
+                if ($column->isManyToOne()) {
+                    $relationship = $column->getRelationship();
+                    $relatedTable = $relationship->getRelatedTable();
+                    $relatedTableColumns = TableSchema::getAllTableColumns($relatedTable);
+                    $query->whereRelational($column->getName(), $relatedTable, $this->primaryKeyFieldName, function (Builder $query) use ($column, $relatedTable, $relatedTableColumns, $search) {
+                        $query->nestOrWhere(function (Builder $query) use ($relatedTableColumns, $relatedTable, $search) {
+                            foreach ($relatedTableColumns as $column) {
+                                if (!$column->isAlias()) {
+                                    $query->orWhereLike($column->getName(), $search);
+                                }
+                            }
+                        });
+                    });
+                } else if ($column->isOneToMany()) {
+                    $relationship = $column->getRelationship();
+                    $relatedTable = $relationship->getRelatedTable();
+                    $relatedRightColumn = $relationship->getJunctionKeyRight();
+                    $relatedTableColumns = TableSchema::getAllTableColumns($relatedTable);
+
+                    $query->from($table);
+                    $query->whereRelational($this->primaryKeyFieldName, $relatedTable, null, $relatedRightColumn, function(Builder $query) use ($column, $relatedTable, $relatedTableColumns, $search) {
+                        foreach ($relatedTableColumns as $column) {
+                            if (!$column->isAlias()) {
+                                $query->orWhereLike($column->getName(), $search, false);
+                            }
+                        }
+                    });
+                } else if ($column->isManyToMany()) {
+                    // @TODO:
+                }
+            }
+        });
+    }
+
+    /**
      * Process Select Order
      *
      * @param Builder $query
@@ -1034,13 +1087,30 @@ class RelationalTableGateway extends BaseTableGateway
         // in[field]=value1,value2
         if (ArrayUtils::has($params, 'in') && is_array($params['in'])) {
             foreach($params['in'] as $column => $values) {
-                $values = array_map(function($item) {
-                    return trim($item);
-                }, explode(',', $values));
+                if (! is_array($values)) {
+                    $values = array_map(function ($item) {
+                        return trim($item);
+                    }, explode(',', $values));
+                }
 
                 if (count($values) > 0) {
-                    $query->whereIn($this->primaryKeyFieldName, $values);
+                    $query->whereIn($column, $values);
                 }
+            }
+        }
+
+        if (!ArrayUtils::has($params, 'q') && ArrayUtils::has($params, 'search')) {
+            $search = ArrayUtils::get($params, 'search', '');
+
+            if ($search) {
+                $columns = TableSchema::getAllNonAliasTableColumns($this->getTable());
+                $query->nestWhere(function (Builder $query) use ($columns, $search) {
+                    foreach ($columns as $column) {
+                        if ($column->getType() === 'VARCHAR' || $column->getType()) {
+                            $query->whereLike($column->getName(), $search);
+                        }
+                    }
+                }, 'or');
             }
         }
     }

@@ -4,7 +4,7 @@ class Swift_Events_SimpleEventDispatcherTest extends \PHPUnit_Framework_TestCase
 {
     private $_dispatcher;
 
-    public function setUp()
+    protected function setUp()
     {
         $this->_dispatcher = new Swift_Events_SimpleEventDispatcher();
     }
@@ -14,7 +14,7 @@ class Swift_Events_SimpleEventDispatcherTest extends \PHPUnit_Framework_TestCase
         $transport = $this->getMockBuilder('Swift_Transport')->getMock();
         $message = $this->getMockBuilder('Swift_Mime_Message')->getMock();
         $evt = $this->_dispatcher->createSendEvent($transport, $message);
-        $this->assertInstanceof('Swift_Events_SendEvent', $evt);
+        $this->assertInstanceOf('Swift_Events_SendEvent', $evt);
         $this->assertSame($message, $evt->getMessage());
         $this->assertSame($transport, $evt->getTransport());
     }
@@ -23,7 +23,7 @@ class Swift_Events_SimpleEventDispatcherTest extends \PHPUnit_Framework_TestCase
     {
         $buf = $this->getMockBuilder('Swift_Transport')->getMock();
         $evt = $this->_dispatcher->createCommandEvent($buf, "FOO\r\n", array(250));
-        $this->assertInstanceof('Swift_Events_CommandEvent', $evt);
+        $this->assertInstanceOf('Swift_Events_CommandEvent', $evt);
         $this->assertSame($buf, $evt->getSource());
         $this->assertEquals("FOO\r\n", $evt->getCommand());
         $this->assertEquals(array(250), $evt->getSuccessCodes());
@@ -33,7 +33,7 @@ class Swift_Events_SimpleEventDispatcherTest extends \PHPUnit_Framework_TestCase
     {
         $buf = $this->getMockBuilder('Swift_Transport')->getMock();
         $evt = $this->_dispatcher->createResponseEvent($buf, "250 Ok\r\n", true);
-        $this->assertInstanceof('Swift_Events_ResponseEvent', $evt);
+        $this->assertInstanceOf('Swift_Events_ResponseEvent', $evt);
         $this->assertSame($buf, $evt->getSource());
         $this->assertEquals("250 Ok\r\n", $evt->getResponse());
         $this->assertTrue($evt->isValid());
@@ -43,7 +43,7 @@ class Swift_Events_SimpleEventDispatcherTest extends \PHPUnit_Framework_TestCase
     {
         $transport = $this->getMockBuilder('Swift_Transport')->getMock();
         $evt = $this->_dispatcher->createTransportChangeEvent($transport);
-        $this->assertInstanceof('Swift_Events_TransportChangeEvent', $evt);
+        $this->assertInstanceOf('Swift_Events_TransportChangeEvent', $evt);
         $this->assertSame($transport, $evt->getSource());
     }
 
@@ -52,7 +52,7 @@ class Swift_Events_SimpleEventDispatcherTest extends \PHPUnit_Framework_TestCase
         $transport = $this->getMockBuilder('Swift_Transport')->getMock();
         $ex = new Swift_TransportException('');
         $evt = $this->_dispatcher->createTransportExceptionEvent($transport, $ex);
-        $this->assertInstanceof('Swift_Events_TransportExceptionEvent', $evt);
+        $this->assertInstanceOf('Swift_Events_TransportExceptionEvent', $evt);
         $this->assertSame($transport, $evt->getSource());
         $this->assertSame($ex, $evt->getException());
     }

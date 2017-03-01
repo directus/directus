@@ -500,7 +500,7 @@ class Swift_Mime_SimpleHeaderSetTest extends \PHPUnit_Framework_TestCase
     {
         $set = $this->_createSet($this->_createFactory());
         $instance = $set->newInstance();
-        $this->assertInstanceof('Swift_Mime_HeaderSet', $instance);
+        $this->assertInstanceOf('Swift_Mime_HeaderSet', $instance);
     }
 
     public function testToStringJoinsHeadersTogether()
@@ -708,8 +708,6 @@ class Swift_Mime_SimpleHeaderSetTest extends \PHPUnit_Framework_TestCase
 
         $set->setCharset('utf-8');
     }
-
-    // -- Creation methods
 
     private function _createSet($factory)
     {

@@ -55,8 +55,6 @@ class Swift_Encoding
         return self::_lookup('mime.base64contentencoder');
     }
 
-    // -- Private Static Methods
-
     private static function _lookup($key)
     {
         return Swift_DependencyContainer::getInstance()->lookup($key);

@@ -35,7 +35,7 @@ class Swift_Transport_SpoolTransport implements Swift_Transport
      *
      * @param Swift_Spool $spool
      *
-     * @return Swift_Transport_SpoolTransport
+     * @return $this
      */
     public function setSpool(Swift_Spool $spool)
     {

@@ -41,7 +41,7 @@ class Privileges extends Route
 
         // @NOTE: error and success get inside data
         // @TODO: Fix response format
-        return JsonView::render([
+        return $this->app->response([
             $response
         ]);
     }
@@ -63,7 +63,7 @@ class Privileges extends Route
 
             if (!($isTableNameAlphanumeric && $zeroOrMoreUnderscoresDashes)) {
                 $app->response->setStatus(400);
-                return JsonView::render(['message' => __t('invalid_table_name')]);
+                return $this->app->response(['message' => __t('invalid_table_name')]);
             }
 
             unset($requestPayload['addTable']);
@@ -84,7 +84,7 @@ class Privileges extends Route
         $privileges = new DirectusPrivilegesTableGateway($ZendDb, $acl);
         $response = $privileges->insertPrivilege($requestPayload);
 
-        return JsonView::render([
+        return $this->app->response([
             'meta' => [
                 'type' => 'entry',
                 'table' => 'directus_privileges'
@@ -117,14 +117,14 @@ class Privileges extends Route
                     unset($requestPayload['id']);
                     $requestPayload['status_id'] = $requestPayload['activeState'];
                     $response = $privileges->insertPrivilege($requestPayload);
-                    return JsonView::render($response);
+                    return $this->app->response($response);
                 }
             }
         }
 
         $response = $privileges->updatePrivilege($requestPayload);
 
-        return JsonView::render([
+        return $this->app->response([
             'data' => $response
         ]);
     }

@@ -30,7 +30,7 @@ catches deprecation notices, and return them.
 .. tip::
 
     If your templates are not stored on the filesystem, use the ``collect()``
-    method instead which takes an ``Iterator``; the iterator must return
+    method instead. ``collect()`` takes a ``Traversable`` which must return
     template names as keys and template contents as values (as done by
     ``Twig_Util_TemplateDirIterator``).
 

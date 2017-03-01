@@ -344,6 +344,18 @@ class Table implements \ArrayAccess, Arrayable, \JsonSerializable
     }
 
     /**
+     * Gets all relational columns
+     *
+     * @return Column[]
+     */
+    public function getRelationalColumns()
+    {
+        return array_filter($this->getColumns(), function(Column $column) {
+            return $column->hasRelationship();
+        });
+    }
+
+    /**
      * Gets all the alias columns
      *
      * @return Column[]
@@ -377,6 +389,18 @@ class Table implements \ArrayAccess, Arrayable, \JsonSerializable
         return array_map(function(Column $column) {
             return $column->getName();
         }, $this->getColumns());
+    }
+
+    /**
+     * Gets all the relational columns name
+     *
+     * @return array
+     */
+    public function getRelationalColumnsName()
+    {
+        return array_map(function(Column $column) {
+            return $column->getName();
+        }, $this->getRelationalColumns());
     }
 
     /**

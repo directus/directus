@@ -43,8 +43,6 @@ class Swift_Mime_EmbeddedFileTest extends Swift_Mime_AttachmentTest
             );
     }
 
-    // -- Private helpers
-
     protected function _createAttachment($headers, $encoder, $cache, $mimeTypes = array())
     {
         return $this->_createEmbeddedFile($headers, $encoder, $cache, $mimeTypes);

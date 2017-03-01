@@ -36,7 +36,7 @@ class Swift_SendmailTransport extends Swift_Transport_SendmailTransport
      *
      * @param string $command
      *
-     * @return Swift_SendmailTransport
+     * @return self
      */
     public static function newInstance($command = '/usr/sbin/sendmail -bs')
     {

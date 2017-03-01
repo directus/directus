@@ -42,7 +42,7 @@ class Groups extends Route
             'data' => $outputData
         ];
 
-        JsonView::render($outputData);
+        return $this->app->response($outputData);
     }
 
     public function group($id)
@@ -69,6 +69,6 @@ class Groups extends Route
         $response = $schemaManager->parseRecordValuesByType($response, $columns);
         // $response = SchemaManager::parseRecordValuesByType($response, $columns);
 
-        JsonView::render($response);
+        return $this->app->response($response);
     }
 }

@@ -371,8 +371,6 @@ class Swift_Mime_Headers_ParameterizedHeaderTest extends \SwiftMailerTestCase
         $this->assertEquals('utf-8', $header->getParameter('charset'));
     }
 
-    // -- Private helper
-
     private function _getHeader($name, $encoder, $paramEncoder)
     {
         $header = new Swift_Mime_Headers_ParameterizedHeader($name, $encoder,

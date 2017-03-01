@@ -7,7 +7,7 @@ class Swift_Mime_EmbeddedFileAcceptanceTest extends \PHPUnit_Framework_TestCase
     private $_grammar;
     private $_headers;
 
-    public function setUp()
+    protected function setUp()
     {
         $this->_cache = new Swift_KeyCache_ArrayKeyCache(
             new Swift_KeyCache_SimpleKeyCacheInputStream()
@@ -121,8 +121,6 @@ class Swift_Mime_EmbeddedFileAcceptanceTest extends \PHPUnit_Framework_TestCase
             $file->toString()
             );
     }
-
-    // -- Private helpers
 
     protected function _createEmbeddedFile()
     {

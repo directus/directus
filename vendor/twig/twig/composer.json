@@ -31,7 +31,8 @@
     },
     "require-dev": {
         "symfony/phpunit-bridge": "~3.2",
-        "symfony/debug": "~2.7"
+        "symfony/debug": "~2.7",
+        "psr/container": "^1.0"
     },
     "autoload": {
         "psr-0" : {
@@ -40,7 +41,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "1.31-dev"
+            "dev-master": "1.32-dev"
         }
     }
 }

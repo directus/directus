@@ -163,7 +163,7 @@ class Twig_Extension_Core extends Twig_Extension
             new Twig_SimpleFilter('upper', 'strtoupper'),
             new Twig_SimpleFilter('lower', 'strtolower'),
             new Twig_SimpleFilter('striptags', 'strip_tags'),
-            new Twig_SimpleFilter('trim', 'trim'),
+            new Twig_SimpleFilter('trim', 'twig_trim_filter'),
             new Twig_SimpleFilter('nl2br', 'nl2br', array('pre_escape' => 'html', 'is_safe' => array('html'))),
 
             // array helpers
@@ -943,6 +943,31 @@ function twig_in_filter($value, $compare)
     }
 
     return false;
+}
+
+/**
+ * Returns a trimmed string.
+ *
+ * @return string
+ *
+ * @throws Twig_Error_Runtime When an invalid trimming side is used (not a string or not 'left', 'right', or 'both')
+ */
+function twig_trim_filter($string, $characterMask = null, $side = 'both')
+{
+    if (null === $characterMask) {
+        $characterMask = " \t\n\r\0\x0B";
+    }
+
+    switch ($side) {
+        case 'both':
+            return trim($string, $characterMask);
+        case 'left':
+            return ltrim($string, $characterMask);
+        case 'right':
+            return rtrim($string, $characterMask);
+        default:
+            throw new Twig_Error_Runtime('Trimming side must be "left", "right" or "both".');
+    }
 }
 
 /**

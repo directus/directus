@@ -491,8 +491,6 @@ class Swift_Mime_ContentEncoder_QpContentEncoderTest extends \SwiftMailerTestCas
             );
     }
 
-    // -- Creation Methods
-
     private function _createCharacterStream($stub = false)
     {
         return $this->getMockery('Swift_CharacterStream')->shouldIgnoreMissing();

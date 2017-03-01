@@ -4,7 +4,7 @@ class Swift_Mime_ContentEncoder_Base64ContentEncoderTest extends \SwiftMailerTes
 {
     private $_encoder;
 
-    public function setUp()
+    protected function setUp()
     {
         $this->_encoder = new Swift_Mime_ContentEncoder_Base64ContentEncoder();
     }

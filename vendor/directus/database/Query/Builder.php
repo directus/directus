@@ -3,6 +3,7 @@
 namespace Directus\Database\Query;
 
 use Directus\Database\Query\Relations\ManyToManyRelation;
+use Directus\Database\Query\Relations\ManyToOneRelation;
 use Directus\Database\Query\Relations\OneToManyRelation;
 use Directus\Util\ArrayUtils;
 use Zend\Db\Adapter\AdapterInterface;
@@ -162,7 +163,7 @@ class Builder
     public function where($column, $operator = null, $value = null, $not = false, $logical = 'and')
     {
         if ($column instanceof \Closure) {
-            return $this->nestWhere($column);
+            return $this->nestWhere($column, $logical);
         }
 
         $type = 'basic';
@@ -180,7 +181,7 @@ class Builder
      *
      * @return $this
      */
-    protected function nestWhere(\Closure $callback, $logical = 'and')
+    public function nestWhere(\Closure $callback, $logical = 'and')
     {
         $query = $this->newQuery();
         call_user_func($callback, $query);
@@ -191,6 +192,11 @@ class Builder
         }
 
         return $this;
+    }
+
+    public function nestOrWhere(\Closure $callback)
+    {
+        return $this->nestWhere($callback, 'or');
     }
 
     /**
@@ -260,9 +266,14 @@ class Builder
         return $this->whereBetween($column, $values, true);
     }
 
-    public function whereEqualTo($column, $value, $not = false)
+    public function whereEqualTo($column, $value, $not = false, $logical = 'and')
     {
-        return $this->where($column, '=', $value, $not);
+        return $this->where($column, '=', $value, $not, $logical);
+    }
+
+    public function orWhereEqualTo($column, $value, $not = false)
+    {
+        return $this->where($column, '=', $value, $not, 'or');
     }
 
     public function whereNotEqualTo($column, $value)
@@ -300,9 +311,14 @@ class Builder
         return $this->whereNull($column, true);
     }
 
-    public function whereLike($column, $value, $not = false)
+    public function whereLike($column, $value, $not = false, $logical = 'and')
     {
-        return $this->where($column, 'like', $value, $not);
+        return $this->where($column, 'like', $value, $not, $logical);
+    }
+
+    public function orWhereLike($column, $value, $not = false)
+    {
+        return $this->whereLike($column, $value, $not, 'or');
     }
 
     public function whereNotLike($column, $value)
@@ -325,13 +341,34 @@ class Builder
 
     public function whereHas($column, $table, $columnLeft, $columnRight, $count = 1)
     {
-        if ($columnLeft === null) {
+        if (is_null($columnLeft)) {
             $relation = new OneToManyRelation($this, $column, $table, $columnRight, $this->getFrom());
         } else {
             $relation = new ManyToManyRelation($this, $table, $columnLeft, $columnRight);
         }
 
         $relation->has($count);
+
+        return $this->whereIn($column, $relation);
+    }
+
+    public function whereRelational($column, $table, $columnLeft, $columnRight = null, \Closure $callback = null)
+    {
+        if (is_callable($columnRight)) {
+            // $column: Relational Column
+            // $table: Related table
+            // $columnRight: Related table that points to $column
+            $callback = $columnRight;
+            $columnRight = $columnLeft;
+            $columnLeft = null;
+            $relation = new ManyToOneRelation($this, $columnRight, $table);
+        } else if (is_null($columnLeft)) {
+            $relation = new OneToManyRelation($this, $column, $table, $columnRight, $this->getFrom());
+        } else {
+            $relation = new ManyToManyRelation($this, $table, $columnLeft, $columnRight);
+        }
+
+        call_user_func($callback, $relation);
 
         return $this->whereIn($column, $relation);
     }
@@ -530,18 +567,22 @@ class Builder
         }
 
         foreach($this->getWheres() as $condition) {
+            $logical = strtoupper(ArrayUtils::get($condition, 'logical', 'and'));
             if (ArrayUtils::get($condition, 'type') === 'nest') {
                 $query = ArrayUtils::get($condition, 'query');
-                $logical = strtoupper(ArrayUtils::get($condition, 'logical', 'and'));
+                if ($logical === 'OR') {
+                    $select->where->or;
+                }
 
                 $where = $select->where->nest();
                 // @NOTE: only allow one level nested
                 foreach($query->getWheres() as $nestCondition) {
                     $where->addPredicate($this->buildConditionExpression($nestCondition), $logical);
+                    $condition = null;
                 }
                 $where->unnest();
             } else {
-                $select->where($this->buildConditionExpression($condition));
+                $select->where($this->buildConditionExpression($condition), $logical);
             }
         }
 
@@ -613,7 +654,7 @@ class Builder
 
     protected function buildConditionExpression($condition)
     {
-        $not = $condition['not'] === true;
+        $not = ArrayUtils::get($condition, 'not', false) === true;
         $notChar = '';
         if ($not === true) {
             $notChar = $condition['operator'] === '=' ? '!' : 'n';
@@ -677,7 +718,7 @@ class Builder
      */
     public function newQuery()
     {
-        return new static($this->connection);
+        return new self($this->connection);
     }
 
     /**

@@ -26,8 +26,6 @@ class Swift_Transport_StreamBufferTest extends \PHPUnit_Framework_TestCase
         $buffer->setWriteTranslations(array('x' => 'y', 'a' => 'b'));
     }
 
-    // -- Creation methods
-
     private function _createBuffer($replacementFactory)
     {
         return new Swift_Transport_StreamBuffer($replacementFactory);

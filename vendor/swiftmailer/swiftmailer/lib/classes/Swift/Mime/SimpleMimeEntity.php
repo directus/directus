@@ -802,14 +802,14 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
         return $typePrefs[0] >= $typePrefs[1] ? 1 : -1;
     }
 
-    // -- Destructor
-
     /**
      * Empties it's own contents from the cache.
      */
     public function __destruct()
     {
-        $this->_cache->clearAll($this->_cacheKey);
+        if ($this->_cache instanceof Swift_KeyCache) {
+            $this->_cache->clearAll($this->_cacheKey);
+        }
     }
 
     /**

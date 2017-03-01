@@ -18,7 +18,7 @@ class Swift_Plugins_ImpersonatePlugin implements Swift_Events_SendListener
     /**
      * The sender to impersonate.
      *
-     * @var String
+     * @var string
      */
     private $_sender;
 

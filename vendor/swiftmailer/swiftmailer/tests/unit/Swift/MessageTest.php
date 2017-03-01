@@ -54,7 +54,6 @@ class Swift_MessageTest extends \PHPUnit_Framework_TestCase
         $this->assertNotEquals($id_1, $id_2, 'Message Ids are the same');
     }
 
-    // -- Private helpers
     protected function _recursiveObjectCloningCheck($obj1, $obj2, $obj1_clone)
     {
         $obj1_properties = (array) $obj1;

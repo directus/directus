@@ -23,14 +23,15 @@ class OneToManyRelation extends Builder
         $this->columnRight = $columnRight;
         $this->relatedTable = $relatedTable;
 
+        $this->columns([$this->column]);
         $this->from($relatedTable);
+        $on = sprintf('%s.%s = %s.%s', $this->relatedTable, $this->column, $this->table, $this->columnRight);
+        $this->join($this->table, $on, [$this->columnRight], 'right');
     }
 
     public function all(array $values)
     {
         $this->columns([]);
-        $on = sprintf('%s.%s = %s.%s', $this->relatedTable, $this->column, $this->table, $this->columnRight);
-        $this->join($this->table, $on, [$this->columnRight], 'right');
         $this->whereIn($this->table . '.' . $this->column, $values);
         $this->groupBy($this->columnRight);
         $this->having(new Expression('COUNT(*) = ?', count($values)));
@@ -41,10 +42,23 @@ class OneToManyRelation extends Builder
     public function has($count = 1)
     {
         $this->columns([]);
-        $on = sprintf('%s.%s = %s.%s', $this->relatedTable, $this->column, $this->table, $this->columnRight);
-        $this->join($this->table, $on, [$this->columnRight], 'right');
         $this->groupBy($this->columnRight);
         $this->having(new Expression('COUNT(*) >= ?', (int) $count));
+
+        return $this;
+    }
+
+    public function whereLike($column, $value, $not = false, $logical = 'and')
+    {
+        $this->columns([]);
+        parent::whereLike($this->table . '.' . $column, $value, $not, $logical);
+
+        return $this;
+    }
+
+    public function orWhereLike($column, $value, $not = false)
+    {
+        $this->whereLike($column, $value, $not, 'or');
 
         return $this;
     }

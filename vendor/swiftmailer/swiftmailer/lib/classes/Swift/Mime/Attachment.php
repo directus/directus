@@ -64,7 +64,7 @@ class Swift_Mime_Attachment extends Swift_Mime_SimpleMimeEntity
      *
      * @param string $disposition
      *
-     * @return Swift_Mime_Attachment
+     * @return $this
      */
     public function setDisposition($disposition)
     {
@@ -90,7 +90,7 @@ class Swift_Mime_Attachment extends Swift_Mime_SimpleMimeEntity
      *
      * @param string $filename
      *
-     * @return Swift_Mime_Attachment
+     * @return $this
      */
     public function setFilename($filename)
     {
@@ -115,7 +115,7 @@ class Swift_Mime_Attachment extends Swift_Mime_SimpleMimeEntity
      *
      * @param int $size
      *
-     * @return Swift_Mime_Attachment
+     * @return $this
      */
     public function setSize($size)
     {
@@ -130,7 +130,7 @@ class Swift_Mime_Attachment extends Swift_Mime_SimpleMimeEntity
      * @param Swift_FileStream $file
      * @param string           $contentType optional
      *
-     * @return Swift_Mime_Attachment
+     * @return $this
      */
     public function setFile(Swift_FileStream $file, $contentType = null)
     {
