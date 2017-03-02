@@ -100,6 +100,7 @@ function(app, _, Backbone, UIHelper) {
 
       return {
         columns: columns,
+        showItemNumbers: this.options.showItemNumbers,
         selectable: this.options.selectable,
         sortable: this.options.sort,
         hasANumericColumn: hasANumericColumn
