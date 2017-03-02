@@ -4,8 +4,8 @@ define([
   'backbone',
   'core/listings/baseView',
   'core/t',
-  'async!https://maps.googleapis.com/maps/api/js?key=AIzaSyBmNpZfwjrxJ0zHEwYxgQ0_eKyfSexbZdQ&libraries=places'
-], function(app, _, Backbone, BaseView, __t) {
+  'core/google'
+], function(app, _, Backbone, BaseView, __t, g) {
 
   return {
     id: 'map',
@@ -20,10 +20,6 @@ define([
 
       attributes: {
         class: 'view-map js-listing-view'
-      },
-
-      afterRender: function() {
-        this.initMap();
       },
 
       optionsStructure: function() {
@@ -304,6 +300,24 @@ define([
         this.collection.options = _.extend(this.collection.options || {}, options);
       },
 
+      updateMarkers: function () {
+        if (!this.getLocationColumn() || !this.map) {
+          return;
+        }
+
+        this.deleteMarkers();
+        this.collection.each(_.bind(function (model) {
+          var marker;
+          var location = model.get(this.getLocationColumn().id);
+
+          if (location) {
+            location = location.split(',');
+            marker = this.createMarker(location[0], location[1]);
+            marker.setMap(this.map);
+          }
+        }, this));
+      },
+
       initialize: function() {
         this.state = {
           loaded: false,
@@ -311,23 +325,31 @@ define([
           markers: []
         };
 
-        this.listenTo(this.collection, 'sync', function() {
-          if (!this.getLocationColumn()) {
-            return;
+        //Include the Google JSAPI for using Maps
+        var apiKey = app.settings.get('google_api_key');
+        var self = this;
+        // var g ;
+        g.load('maps', 3, {
+          other_params: 'sensor=false&libraries=places&key=' + apiKey,
+          callback: function () {
+            self.trigger('library:loaded');
           }
-
-          this.deleteMarkers();
-          this.collection.each(_.bind(function(model) {
-            var marker;
-            var location = model.get(this.getLocationColumn().id);
-
-            if (location) {
-              location = location.split(',');
-              marker = this.createMarker(location[0], location[1]);
-              marker.setMap(this.map);
-            }
-          }, this));
         });
+        // require(['https://www.google.com/jsapi'], function() {
+        //   // Load Maps API using provided key, and call initializeMap() when API is loaded
+        //   google.load('maps', '3', { other_params: 'sensor=false&libraries=places&key=' + apiKey, callback: function() {
+        //     self.trigger('library:loaded');
+        //   }});
+        // });
+
+        this.listenTo(this.collection, 'sync', function() {
+          this.updateMarkers();
+        });
+
+        this.once('library:loaded', function () {
+          this.initMap();
+          this.updateMarkers();
+        }, this);
       }
     })
   }
