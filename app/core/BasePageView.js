@@ -60,9 +60,23 @@ function(app, Backbone, _, BaseHeaderView, RightSidebarView) {
         this.insertView(this.rightSidebarView);
       }
 
-      if (this.state.rightPaneOpen === true) {
+      if (this.isRightPaneOpen()) {
         this.on('afterRender', this.loadRightPane);
+      } else {
+        this._ensurePaneIsClosed();
       }
+    },
+
+    isRightPaneOpen: function () {
+      // @TODO: set all this stage in the app level
+      var hasOpenClass = $('body').hasClass('right-sidebar-open');
+
+      return hasOpenClass || this.state.rightPaneOpen === true;
+    },
+
+    _ensurePaneIsClosed: function () {
+      $('body').removeClass('right-sidebar-open');
+      this.state.rightPaneOpen = false;
     },
 
     toggleRightPane: function() {
