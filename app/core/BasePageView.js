@@ -55,8 +55,6 @@ function(app, Backbone, _, BaseHeaderView, RightSidebarView) {
       this.headerView = mainView.getView('#header');
       this.headerView.setPage(this);
 
-      mainView.setView('#header', this.headerView);
-
       if (_.result(this, 'rightPane')) {
         this.rightSidebarView = new RightSidebarView(_.result(this, 'rightPaneOptions'));
         this.insertView(this.rightSidebarView);
