@@ -63,8 +63,14 @@ function(app, _, Backbone, UIHelper) {
 
       columns = _.map(columns, function (column) {
         var columnInfo = this.collection.structure.get(column);
-        var showFooter = this.options.showFooter || columnInfo.options.get('footer') === true;
-        var isANumericColumn = UIHelper.supportsNumeric(columnInfo.get('type'));
+        var showFooter, isANumericColumn;
+
+        if (!columnInfo) {
+          return {};
+        }
+
+        showFooter = this.options.showFooter || columnInfo.options.get('footer') === true;
+        isANumericColumn = UIHelper.supportsNumeric(columnInfo.get('type'));
 
         if (isANumericColumn) {
           hasANumericColumn = true;
