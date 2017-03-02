@@ -223,15 +223,8 @@ define([
       },
 
       updateSystemColumns: function () {
-        var changed = false;
-
-        if (this.showChart && this.getViewOptions('chart_enabled')) {
-          changed = true;
-        }
-
         if (this.getViewOptions('item_numbers') != this.options.showItemNumbers) {
           this.options.showItemNumbers = !this.options.showItemNumbers;
-          changed = true;
         }
 
         if (this.getViewOptions('show_footer') != this.options.showFooter) {
@@ -243,9 +236,7 @@ define([
         this.fetchRevisions();
         this.fetchUpdates();
 
-        if (changed) {
-          this.render();
-        }
+        this.render();
       },
 
       fetchComments: function () {
