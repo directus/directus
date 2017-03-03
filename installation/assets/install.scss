@@ -26,6 +26,24 @@ $important: #FFC107;
     border-radius: $radius;
 }
 
+@mixin border-radius-each ($topright: 0, $bottomright: 0, $bottomleft: 0, $topleft: 0) {
+    -webkit-border-top-right-radius: $topright;
+    -webkit-border-bottom-right-radius: $bottomright;
+    -webkit-border-bottom-left-radius: $bottomleft;
+    -webkit-border-top-left-radius: $topleft;
+    -moz-border-radius-topright: $topright;
+    -moz-border-radius-bottomright: $bottomright;
+    -moz-border-radius-bottomleft: $bottomleft;
+    -moz-border-radius-topleft: $topleft;
+    border-top-right-radius: $topright;
+    border-bottom-right-radius: $bottomright;
+    border-bottom-left-radius: $bottomleft;
+    border-top-left-radius: $topleft;
+    -moz-background-clip:    padding;
+    -webkit-background-clip: padding-box;
+    background-clip:         padding-box;
+}
+
 @mixin transition($prop: all, $time: 200ms, $ease: linear) {
     -webkit-transition: $prop $time $ease;
     -moz-transition: $prop $time $ease;
@@ -154,7 +172,7 @@ input[type=number] {
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
-    //-webkit-text-fill-color: $gray-5; // Controls autocomplete, needs to differ from actual entry
+    -webkit-text-fill-color: $gray-5; // Controls autocomplete, needs to differ from actual entry
     option {
         padding: 10px 12px;
     }
@@ -165,7 +183,7 @@ input[type=number] {
         border: 1px solid $serious !important;
     }
     &:-webkit-autofill {
-        -webkit-box-shadow: 0 0 0px 1000px #ffffff inset;
+        -webkit-box-shadow: 0 0 0px 1000px lighten($primary, 43%) inset;
         color: $gray-5 !important;
     }
     &::-webkit-outer-spin-button,
@@ -235,7 +253,7 @@ input[type=number] {
 // Structure
 
 .modal {
-    @include border-radius(2px);
+    @include border-radius-each ($topright: 2px, $bottomright: 2px, $bottomleft: 4px, $topleft: 4px);
     position: relative;
     background-color: $white;
     padding: 40px 60px 40px 300px;
@@ -246,6 +264,7 @@ input[type=number] {
     -moz-box-shadow: 0px 30px 60px 0px rgba(0,0,0,0.2);
     box-shadow: 0px 30px 60px 0px rgba(0,0,0,0.2);
     .header {
+        @include border-radius-each ($topright: 0, $bottomright: 0, $bottomleft: 2px, $topleft: 2px);
         position: absolute;
         top: 0;
         left: 0;
