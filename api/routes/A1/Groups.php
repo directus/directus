@@ -43,22 +43,15 @@ class Groups extends Route
         $ZendDb = $app->container->get('zenddb');
 
         // @TODO need POST and PUT
-        // Hardcoding ID temporarily
-        is_null($id) ? $id = 1 : null;
         $tableName = 'directus_groups';
         $Groups = new TableGateway($tableName, $ZendDb, $acl);
-        $response = $Groups->getEntries(['id' => $id]);//$Groups->find($id);
+        $response = $Groups->getEntries(['id' => $id]);
         if (!$response) {
             $response = [
                 'message' => __t('unable_to_find_group_with_id_x', ['id' => $id]),
                 'success' => false
             ];
         }
-
-        $columns = TableSchema::getAllNonAliasTableColumns($tableName);
-        $schemaManager = $this->app->container->get('schemaManager');
-        $response = $schemaManager->parseRecordValuesByType($response, $columns);
-        // $response = SchemaManager::parseRecordValuesByType($response, $columns);
 
         return $this->app->response($response);
     }
