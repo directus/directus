@@ -17,6 +17,7 @@
         </div>
         <button type="submit" class="button">Log In</button> <!-- Optional Class: disabled -->
     </form>
+    {% if authList %}
     <div class="hr-label">
         <hr>
         <hr>
@@ -27,6 +28,7 @@
         <div class="tile {{service}}"><a href="/auth/{{service}}"><img src="{{assetsRoot}}imgs/login-logo-{{service}}.svg"></a></div>
         {% endfor %}
     </div>
+    {% endif %}
 </div>
 
 <div class="glow"></div>
