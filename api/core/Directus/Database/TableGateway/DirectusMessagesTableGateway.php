@@ -116,6 +116,7 @@ class DirectusMessagesTableGateway extends RelationalTableGateway
             ]);
 
             $query->whereEqualTo('directus_messages_recipients.recipient', $uid);
+            $query->whereNotEqualTo('directus_messages_recipients.archived', 1);
 
             if ($messageId) {
                 if (! is_array($messageId)) {
@@ -162,7 +163,7 @@ class DirectusMessagesTableGateway extends RelationalTableGateway
         }
 
         foreach ($result as $item) {
-            if ($item['response_to'] != NULL) {
+            if ($item['response_to'] != null) {
                 // Move it to resultLookup
                 unset($resultLookup[$item['id']]);
                 $item = $this->parseRecord($item);
