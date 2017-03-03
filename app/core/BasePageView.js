@@ -55,16 +55,28 @@ function(app, Backbone, _, BaseHeaderView, RightSidebarView) {
       this.headerView = mainView.getView('#header');
       this.headerView.setPage(this);
 
-      mainView.setView('#header', this.headerView);
-
       if (_.result(this, 'rightPane')) {
         this.rightSidebarView = new RightSidebarView(_.result(this, 'rightPaneOptions'));
         this.insertView(this.rightSidebarView);
       }
 
-      if (this.state.rightPaneOpen === true) {
+      if (this.isRightPaneOpen()) {
         this.on('afterRender', this.loadRightPane);
+      } else {
+        this._ensurePaneIsClosed();
       }
+    },
+
+    isRightPaneOpen: function () {
+      // @TODO: set all this stage in the app level
+      var hasOpenClass = $('body').hasClass('right-sidebar-open');
+
+      return hasOpenClass || this.state.rightPaneOpen === true;
+    },
+
+    _ensurePaneIsClosed: function () {
+      $('body').removeClass('right-sidebar-open');
+      this.state.rightPaneOpen = false;
     },
 
     toggleRightPane: function() {
@@ -120,6 +132,12 @@ function(app, Backbone, _, BaseHeaderView, RightSidebarView) {
       // render the header manually
       // this view is part of the main view and is not a child of this view
       this.headerView.render();
+
+      // hotfix adding dedicated class for settings
+      var options = this.viewOptions || {};
+      var attributes = {};
+      attributes['class'] = _.result(options, 'className') || 'page';
+      $('#content').attr(attributes);
     },
 
     getSpacing: function() {

@@ -950,7 +950,7 @@ class RelationalTableGateway extends BaseTableGateway
 
         foreach ($columns as $column) {
             if (!$column->isAlias()) {
-                $query->orWhereLike($column->getName(), $search);
+                $query->orWhereLike($column->getTableName() . '.' . $column->getName(), $search);
             }
         }
 
@@ -964,7 +964,7 @@ class RelationalTableGateway extends BaseTableGateway
                         $query->nestOrWhere(function (Builder $query) use ($relatedTableColumns, $relatedTable, $search) {
                             foreach ($relatedTableColumns as $column) {
                                 if (!$column->isAlias()) {
-                                    $query->orWhereLike($column->getName(), $search);
+                                    $query->orWhereLike($column->getTableName() . '.' . $column->getName(), $search);
                                 }
                             }
                         });

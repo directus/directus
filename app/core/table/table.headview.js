@@ -35,7 +35,7 @@ function(app, Backbone, _, __t, Notification) {
 
         if (column === 'sort' || isDefaultSorting) {
           this.collection.setOrder(defaultSortColumn, order_sort);
-          tableColumnWidths(this.parentView.$el);
+          this.parentView.fixWidths();
           return;
         }
 
@@ -48,7 +48,7 @@ function(app, Backbone, _, __t, Notification) {
           this.collection.setOrder(column, order_sort);
         }
 
-        tableColumnWidths(this.parentView.$el);
+        this.parentView.fixWidths();
       },
 
       'click #set-visible-columns': function() {
@@ -198,7 +198,7 @@ function(app, Backbone, _, __t, Notification) {
       var blacklist = this.options.blacklist;
 
       // get whitelisted columns first
-      var columns = _.filter(this.collection.getColumns(), function(column) {
+      var columns = _.filter(this.parentView.getTableColumns(), function(column) {
         return ! _.contains(blacklist, column);
       });
 
@@ -211,6 +211,7 @@ function(app, Backbone, _, __t, Notification) {
         selectable: this.options.selectable,
         sortable: this.options.sort,
         columns: columns,
+        showItemNumbers: this.options.showItemNumbers,
         deleteColumn: this.options.deleteColumn,
         showMoreButton: this.options.showMoreButton,
         showRemoveButton: this.parentView.options.showRemoveButton,

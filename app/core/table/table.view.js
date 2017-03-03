@@ -78,7 +78,7 @@ function(app, _, Backbone, Notification, __t, ModelHelper, TableHead, TableBody,
       }
 
       if (this.collection.length > 0) {
-        options = _.pick(this.options, 'collection', 'selectable', 'filters', 'preferences', 'structure', 'sort', 'deleteColumn', 'rowIdentifiers', 'saveAfterDrop', 'blacklist', 'highlight', 'columns');
+        options = _.pick(this.options, 'collection', 'systemCollection', 'selectable', 'filters', 'preferences', 'structure', 'sort', 'deleteColumn', 'rowIdentifiers', 'saveAfterDrop', 'blacklist', 'highlight', 'columns');
         options.parentView = this;
         this.tableBody = new this.TableBody(options);
         this.insertView('table', this.tableBody);
@@ -98,11 +98,21 @@ function(app, _, Backbone, Notification, __t, ModelHelper, TableHead, TableBody,
       this.bodyScrollTop = parseInt(bodyScrollTop, 10) || 0;
     },
 
-    afterRender: function() {
-      tableColumnWidths(this.$el);
+    fixWidths: function ($el) {
+      var $table = $el || this.$el;
+      $table.find('tfoot tr td').each(function(index) {
+        var width = $table.find('tbody tr td:eq('+index+')').innerWidth();
+        $(this).innerWidth(width);
+      });
 
-      var now = new Date().getTime();
-      //console.log('rendered table ' + this.collection.table.id + ' in '+ (now-this.startRenderTime)+' ms');
+      $table.find('thead tr th').each(function(index) {
+        var width = $table.find('tbody tr td:eq('+index+')').innerWidth();
+        $(this).innerWidth(width);
+      });
+    },
+
+    afterRender: function() {
+      this.fixWidths();
 
       if (this.bodyScrollTop) {
         document.body.scrollTop = this.bodyScrollTop;
@@ -253,6 +263,7 @@ function(app, _, Backbone, Notification, __t, ModelHelper, TableHead, TableBody,
       this.options.table = this.options.table || collection.table;
       this.options.columns = this.getTableColumns();
       this.options.fixedHead = options.fixedHead;
+      this.options.showItemNumbers = options.showItemNumbers;
 
       if (this.options.tableHead !== false) {
         this.tableHead = true;
@@ -288,6 +299,7 @@ function(app, _, Backbone, Notification, __t, ModelHelper, TableHead, TableBody,
           }
         }
 
+        this.options.showItemNumbers = this.getViewOptions('item_numbers');
         this.state.spacing = viewOptions ? (viewOptions['spacing'] || 'cozy') : 'cozy';
       }
 
@@ -315,7 +327,15 @@ function(app, _, Backbone, Notification, __t, ModelHelper, TableHead, TableBody,
       if (this.events) {
         this.events = _.defaults(this.events, TableView.prototype.events);
       }
+
       Backbone.Layout.__super__.constructor.call(this, options);
+
+      this.showChart = options.showChart === true;
+
+      this.options.systemCollection = this.collection.clone();
+      this.collection.on('sync', function (collection, resp) {
+        this.options.systemCollection.reset(resp, {parse: true});
+      }, this);
     }
   });
 

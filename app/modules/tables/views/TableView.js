@@ -143,11 +143,11 @@ function(app, Backbone, _, __t, BasePageView, ListViewManager, TableViewRightPan
       switch(this.leftSecondaryCurrentState) {
         case 'default':
           if(!this.widgets.visibilityWidget) {
-            this.widgets.visibilityWidget = new Widgets.VisibilityWidget({collection: this.collection, basePage: this});
+            // this.widgets.visibilityWidget = new Widgets.VisibilityWidget({collection: this.collection, basePage: this});
           }
 
           return [
-            this.widgets.visibilityWidget
+            // this.widgets.visibilityWidget
           ];
         case 'actions':
           if(!this.widgets.selectionActionWidget) {
@@ -212,7 +212,11 @@ function(app, Backbone, _, __t, BasePageView, ListViewManager, TableViewRightPan
       var newView = this.getCurrentView();
       newView.enable();
 
+      this.trigger('view:changed', viewId);
+
       this.table = newView;
+      this.table.savePreferences('currentView', viewId, true);
+
       this.render();
     },
 
@@ -230,6 +234,7 @@ function(app, Backbone, _, __t, BasePageView, ListViewManager, TableViewRightPan
         toolbar: true,
         fixedHead: true,
         baseView: this,
+        showChart: true,
         showMoreButton: !! _.result(this, 'rightPane')
       });
 
@@ -252,10 +257,18 @@ function(app, Backbone, _, __t, BasePageView, ListViewManager, TableViewRightPan
       });
     },
 
+    getCurrentViewName: function () {
+      var collection = this.collection;
+      var table = collection.table;
+      var preferences = collection.preferences;
+
+      return preferences.getListViewOptions('currentView') || table.get('list_view') || 'table';
+    },
+
     initialize: function() {
       this.widgets = {};
       this.state = {
-        viewId: this.collection.table.get('list_view') || 'table',
+        viewId: this.getCurrentViewName(),
         views: {}
       };
 

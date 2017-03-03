@@ -23,8 +23,10 @@ define(['app', 'underscore', 'backbone', 'core/t'], function(app, _, Backbone, _
       return viewOptions;
     },
 
-    getViewOptions: function() {
-      return this.getAllViewOptions(this.id);
+    getViewOptions: function(attr) {
+      var options = this.getAllViewOptions(this.id);
+
+      return attr ? options[attr] : options;
     },
 
     enable: function() {
@@ -61,7 +63,7 @@ define(['app', 'underscore', 'backbone', 'core/t'], function(app, _, Backbone, _
 
     onDisable: function() {},
 
-    savePreferences: function(name, value) {
+    savePreferences: function(name, value, global) {
       var attributes = {};
       var viewOptions = this.getAllViewOptions();
       var options;
@@ -69,15 +71,19 @@ define(['app', 'underscore', 'backbone', 'core/t'], function(app, _, Backbone, _
 
       // @TODO: create helper to create value using string key
       // calendar.date_column
-      if (!viewOptions[viewId]) {
-        viewOptions[viewId] = {};
-      }
+      if (global !== true) {
+        if (!viewOptions[viewId]) {
+          viewOptions[viewId] = {};
+        }
 
-      if (!viewOptions[viewId][name]) {
-        viewOptions[viewId][name] = {};
-      }
+        if (!viewOptions[viewId][name]) {
+          viewOptions[viewId][name] = {};
+        }
 
-      viewOptions[viewId][name] = value;
+        viewOptions[viewId][name] = value;
+      } else {
+        viewOptions[name] = value;
+      }
 
       attributes['list_view_options'] = JSON.stringify(viewOptions);
 

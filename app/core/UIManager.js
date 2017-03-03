@@ -402,11 +402,8 @@ define(function(require, exports, module) {
         return 'UI:'+name;
       });
 
-      var UIArgs = [events.join(' '), UI].concat(args);
-      var AppArgs = [appEvents.join(' '), UI].concat(args);
-
-      UI.trigger.apply(UI, UIArgs);
-      app.trigger.apply(app, AppArgs);
+      UI.trigger.call(UI, events.join(' '), UI, options);
+      app.trigger.call(app, events.join(' '), UI, options);
     },
 
     constructEventNames: function(eventName, UI, options) {
@@ -417,10 +414,11 @@ define(function(require, exports, module) {
       ];
 
       if (structure.table && structure.table.id) {
+        var tableName = (structure.table.isFake ? 'fake:' : '') + structure.table.id;
         appendNames = appendNames.concat([
-          ':'+structure.table.id+':'+UI.id,
-          ':'+structure.table.id+':'+options.schema.id,
-          ':'+structure.table.id+':'+options.schema.id+':'+UI.id
+          ':'+tableName+':'+UI.id,
+          ':'+tableName+':'+options.schema.id,
+          ':'+tableName+':'+options.schema.id+':'+UI.id
         ]);
       }
 

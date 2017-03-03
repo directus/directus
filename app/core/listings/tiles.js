@@ -1,9 +1,11 @@
-define(['app', 'underscore', 'backbone', 'core/listings/baseView'], function(app, _, Backbone, BaseView) {
+define(['app', 'underscore', 'backbone', 'core/listings/baseView', 'core/t'], function(app, _, Backbone, BaseView, __t) {
 
   return {
     id: 'tiles',
 
     icon: 'apps',
+
+    uiNames: ['single_file'],
 
     View: BaseView.extend({
 
@@ -26,17 +28,21 @@ define(['app', 'underscore', 'backbone', 'core/listings/baseView'], function(app
         var subTitleColumn = this.getSubTitleColumn();
         var typeColumn = this.getTypeColumn();
         var fileColumn = this.getFileColumn();
-        var items = this.collection.map(function(model) {
-          var item = {};
+        var items = [];
 
-          item.id = model.get('id');
-          item.title = model.get(titleColumn.id);
-          item.subtitle = model.get(subTitleColumn.id);
-          item.type = model.get(typeColumn.id);
-          item.thumb = model.has(fileColumn.id) ? model.get(fileColumn.id).get('thumbnail_url') : null;
+        if (fileColumn) {
+          items = this.collection.map(function(model) {
+            var item = {};
 
-          return item;
-        });
+            item.id = model.get('id');
+            item.title = titleColumn ? model.get(titleColumn.id) : '';
+            item.subtitle = subTitleColumn ? model.get(subTitleColumn.id) : '';
+            item.type = typeColumn ? model.get(typeColumn.id) : '';
+            item.thumb = model.has(fileColumn.id) ? model.get(fileColumn.id).get('thumbnail_url') : null;
+
+            return item;
+          });
+        }
 
         return {
           items: items
@@ -61,44 +67,46 @@ define(['app', 'underscore', 'backbone', 'core/listings/baseView'], function(app
           options.file[column.id] = column.id;
         });
 
-        return [
-          {
-            id: 'title_column',
-            type: 'String',
-            required: true,
-            ui: 'select',
-            options: {
-              options: options.title
+        return {
+          columns: [
+            {
+              id: 'title_column',
+              type: 'String',
+              required: true,
+              ui: 'select',
+              options: {
+                options: options.title
+              }
+            },
+            {
+              id: 'subtitle_column',
+              type: 'String',
+              required: true,
+              ui: 'select',
+              options: {
+                options: options.subtitle
+              }
+            },
+            {
+              id: 'type_column',
+              type: 'String',
+              required: true,
+              ui: 'select',
+              options: {
+                options: options.type
+              }
+            },
+            {
+              id: 'file_column',
+              type: 'String',
+              required: true,
+              ui: 'select',
+              options: {
+                options: options.file
+              }
             }
-          },
-          {
-            id: 'subtitle_column',
-            type: 'String',
-            required: true,
-            ui: 'select',
-            options: {
-              options: options.subtitle
-            }
-          },
-          {
-            id: 'type_column',
-            type: 'String',
-            required: true,
-            ui: 'select',
-            options: {
-              options: options.type
-            }
-          },
-          {
-            id: 'file_column',
-            type: 'String',
-            required: true,
-            ui: 'select',
-            options: {
-              options: options.file
-            }
-          }
-        ]
+          ]
+        };
       },
 
       getTitleColumn: function() {

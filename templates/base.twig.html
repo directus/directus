@@ -66,19 +66,9 @@
 </div>
 
 	<!-- Javascript -->
-	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
     {% if page == 'login' %}
     {% block login_script %}{% endblock %}
     {% else %}
-	<script type="text/javascript" src="{{rootUrl}}assets/js/vendor/dragula.min.js"></script>
-	<script type="text/javascript" src="{{rootUrl}}assets/js/vendor/chart.min.js"></script>
-	<script type="text/javascript" src="{{rootUrl}}assets/js/global.js"></script>
-	<script type="text/javascript" src="{{rootUrl}}assets/js/header.js"></script>
-	<script type="text/javascript" src="{{rootUrl}}assets/js/interfaces.js"></script>
-	<script type="text/javascript" src="{{rootUrl}}assets/js/pages.js"></script>
-	<script type="text/javascript" src="{{rootUrl}}assets/js/settings.js"></script>
-	<script type="text/javascript" src="{{rootUrl}}assets/js/tables.js"></script>
-	<script type="text/javascript" src="{{rootUrl}}assets/js/sidebar.js"></script>
 	<script>
 		window.directusData = {{data|raw}};
 	</script>

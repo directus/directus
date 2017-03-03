@@ -54,18 +54,12 @@ function(app, Backbone, Directus, BasePageView, EditColumnView, ColumnOptionsVie
       route: {
         title: __t('settings')
       },
+      className: 'header settings'
     },
 
-    // attributes: {
-    //   class: 'page settings-modules'
-    // },
-
-    initialize: function() {
-      // @NOTE: merge attributes with parent?
-      // this.$el.get(0).attributes
-      // var attrs = _.extend({}, _.result(this, 'attributes'));
-      // this.$el.attr(this.attributes);
-      $('#content').addClass('page settings-modules');
+    // NOTE: temporary until we make the view wrap in #content
+    viewOptions: {
+      className: 'page settings-container'
     },
 
     template: 'modules/settings/settings'

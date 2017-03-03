@@ -1,12 +1,13 @@
 define([
   'app',
+  'underscore',
   'backbone',
   'helpers/ui'
 ],
 
-function(app, Backbone, UIHelper) {
+function(app, _, Backbone, UIHelper) {
 
-  "use strict";
+  'use strict';
 
   var TableFooterView = Backbone.Layout.extend({
     tagName: 'tfoot',
@@ -32,6 +33,7 @@ function(app, Backbone, UIHelper) {
       'click .footer-function li': function(e) {
         this.functions[$(e.target).closest('.footer-function').attr('data-column')] = $(e.target).text();
         this.render();
+        this.options.parentView.fixWidths();
       }
     },
 
@@ -52,17 +54,23 @@ function(app, Backbone, UIHelper) {
     },
 
     serialize: function() {
+      var hasANumericColumn = false;
       // get whitelisted columns first
       var blacklist = this.options.blacklist || [];
-      var columns = _.filter(this.collection.getColumns(), function(column) {
+      var columns = _.filter(this.options.parentView.getTableColumns(), function (column) {
         return ! _.contains(blacklist, column);
       });
 
-      var hasANumericColumn = false;
-      columns = _.map(columns, function(column) {
+      columns = _.map(columns, function (column) {
         var columnInfo = this.collection.structure.get(column);
-        var showFooter = columnInfo.options.get('footer') === true;
-        var isANumericColumn = UIHelper.supportsNumeric(columnInfo.get('type'));
+        var showFooter, isANumericColumn;
+
+        if (!columnInfo) {
+          return {};
+        }
+
+        showFooter = this.options.showFooter || columnInfo.options.get('footer') === true;
+        isANumericColumn = UIHelper.supportsNumeric(columnInfo.get('type'));
 
         if (isANumericColumn) {
           hasANumericColumn = true;
@@ -71,13 +79,20 @@ function(app, Backbone, UIHelper) {
         var col = {
           title: column,
           showFooter: isANumericColumn && showFooter,
+          functionsValues: [],
           selectedFunction: this.functions.hasOwnProperty(column) ? this.functions[column] : 'SUM'
         };
 
-        col.otherFunctions = _.without(['MIN', 'MAX', 'AVG', 'SUM'], col.selectedFunction);
-
         if (col.showFooter) {
-          col.value = this.calculate(this.collection.pluck(column), col.selectedFunction);
+          var functions = ['MIN', 'MAX', 'AVG', 'SUM'];
+          var self = this;
+          _.each(functions, function (name) {
+            col.functionsValues.push({
+              name: name,
+              selected: name === col.selectedFunction,
+              value: self.calculate(self.collection.pluck(column), name)
+            });
+          });
         }
 
         return col;
@@ -85,6 +100,7 @@ function(app, Backbone, UIHelper) {
 
       return {
         columns: columns,
+        showItemNumbers: this.options.showItemNumbers,
         selectable: this.options.selectable,
         sortable: this.options.sort,
         hasANumericColumn: hasANumericColumn

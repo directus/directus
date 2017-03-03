@@ -8,7 +8,7 @@ function(app, Backbone, _, Handlebars) {
 
   'use strict';
 
-  return Backbone.Layout.extend({
+  return Backbone.View.extend({
 
     template: 'core/widgets/filter-widget',
 

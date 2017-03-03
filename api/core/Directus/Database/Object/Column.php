@@ -112,6 +112,11 @@ class Column implements \ArrayAccess, Arrayable, \JsonSerializable
     protected $required = false;
 
     /**
+     * @var bool
+     */
+    protected $system = false;
+
+    /**
      * @var string
      */
     protected $ui;
@@ -180,7 +185,8 @@ class Column implements \ArrayAccess, Arrayable, \JsonSerializable
             'hidden_input',
             'relationship',
             'comment',
-            'table_name'
+            'table_name',
+            'system'
         ];
     }
 
@@ -770,13 +776,37 @@ class Column implements \ArrayAccess, Arrayable, \JsonSerializable
     }
 
     /**
+     * Set whether or not is a system column
+     *
+     * @param bool $system
+     *
+     * @return Column
+     */
+    public function setSystem($system)
+    {
+        $this->system = (bool) $system;
+
+        return $this;
+    }
+
+    /**
+     * Whether or not is a system column
+     *
+     * @return bool
+     */
+    public function getSystem()
+    {
+        return $this->system;
+    }
+
+    /**
      * Checks whether the column is a system column
      *
      * @return bool
      */
     public function isSystem()
     {
-        return in_array($this->getName(), ['id', 'sort', STATUS_COLUMN_NAME]);
+        return (bool) $this->getSystem();
     }
 
     /**

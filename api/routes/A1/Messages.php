@@ -21,6 +21,7 @@ class Messages extends Route
         $acl = $this->app->container->get('acl');
         $ZendDb = $this->app->container->get('zenddb');
         $currentUserId = $userId !== null ? $userId : $acl->getUserId();
+        $params = $this->app->request()->get();
 
         if (isset($_GET['max_id'])) {
             $messagesRecipientsTableGateway = new DirectusMessagesRecipientsTableGateway($ZendDb, $acl);
@@ -36,10 +37,11 @@ class Messages extends Route
         }
 
         $messagesTableGateway = new DirectusMessagesTableGateway($ZendDb, $acl);
-        $result = $messagesTableGateway->fetchMessagesInboxWithHeaders($currentUserId);
+        $result = $messagesTableGateway->fetchMessagesInboxWithHeaders($currentUserId, null, $params);
+
         $meta = ArrayUtils::omit($result, 'data');
-        $result['meta']['type'] = 'collection';
-        $result['meta']['table'] = 'directus_messages';
+        $meta['type'] = 'collection';
+        $meta['table'] = 'directus_messages';
 
         return $this->app->response([
             'meta' => $meta,

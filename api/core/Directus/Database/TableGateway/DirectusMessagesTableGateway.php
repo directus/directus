@@ -2,6 +2,7 @@
 
 namespace Directus\Database\TableGateway;
 
+use Directus\Database\Query\Builder;
 use Directus\Permissions\Acl;
 use Directus\Util\ArrayUtils;
 use Directus\Util\DateUtils;
@@ -37,7 +38,7 @@ class DirectusMessagesTableGateway extends RelationalTableGateway
                 'subject' => $payload['subject'],
                 'message' => $payload['message'],
                 'datetime' => DateUtils::now(),
-                'attachment' => $payload['attachment'],
+                'attachment' => ArrayUtils::get($payload, 'attachment'),
                 'response_to' => $payload['response_to']
             ]);
         $rows = $this->insertWith($insert);
@@ -104,67 +105,42 @@ class DirectusMessagesTableGateway extends RelationalTableGateway
         }
     }
 
-    public function fetchMessagesInbox($uid, $messageId = null)
+    public function fetchMessagesInbox($uid, $messageId = null, $params = [])
     {
-        $select = new Select($this->table);
-        $select
-            ->columns([
-                'message_id' => 'response_to',
-                'thread_length' => new Expression('COUNT(`directus_messages`.`id`)')
-            ])
-            ->join('directus_messages_recipients', 'directus_messages_recipients.message_id = directus_messages.id', [
-                'id',
-                'message_id',
-                'recipient',
-                'read',
-                'group'
-            ]);
-        $select
-            ->where->equalTo('recipient', $uid);
-
-        if (!empty($messageId)) {
-            if (gettype($messageId) == 'array') {
-                $select->where
-                    ->in('response_to', $messageId)
-                    ->or
-                    ->in('directus_messages.id', $messageId);
-            } else {
-                $select->where
-                    ->nest
-                    ->equalTo('response_to', $messageId)
-                    ->or
-                    ->equalTo('directus_messages.id', $messageId)
-                    ->unnest;
-            }
-        }
-
-        $select
-            ->group([
-                'directus_messages_recipients.id',
-                'directus_messages_recipients.message_id',
-                'directus_messages_recipients.recipient',
-                'directus_messages_recipients.read',
-                'directus_messages_recipients.group',
-                'response_to',
-                'directus_messages.id'
-            ])
-            ->order('directus_messages.id DESC');
-
-        $result = $this->selectWith($select)->toArray();
-
         $messageIds = [];
+        $params['columns'] = ArrayUtils::get($params, 'columns', 'id');
+        $table = $this;
+        $result = $this->loadItems($params, function (Builder $query) use ($uid, $table, $messageId) {
+            $query->join('directus_messages_recipients', 'directus_messages_recipients.message_id = directus_messages.id', [
+                'recipient'
+            ]);
+
+            $query->whereEqualTo('directus_messages_recipients.recipient', $uid);
+
+            if ($messageId) {
+                if (! is_array($messageId)) {
+                    $messageId = [$messageId];
+                }
+
+                $query->whereIn('directus_messages.id', $messageId);
+            }
+
+            return $query;
+        });
 
         foreach ($result as $message) {
-            $messageIds[] = $message['message_id'];
+            $messageIds[] = $message['id'];
         }
 
-        if (sizeof($messageIds) == 0) {
+        if (count($messageIds) === 0) {
             return [];
         };
 
         $result = $this->fetchMessageThreads($messageIds, $uid);
 
-        if (sizeof($result) == 0) return [];
+        if (count($result) === 0) {
+            return [];
+        }
 
         $resultLookup = [];
         $ids = [];
@@ -196,10 +172,10 @@ class DirectusMessagesTableGateway extends RelationalTableGateway
 
         $result = array_values($resultLookup);
         foreach ($result as $key => &$row) {
-            if (!$row['responses']['data']) {
-                 unset($result[$key]);
-                 continue;
-            }
+            // if (!$row['responses']['data']) {
+            //   unset($result[$key]);
+            //   continue;
+            // }
 
             $row = $this->parseRecord($row);
             if (ArrayUtils::get($row, 'archived', 0) === 1) {
@@ -228,11 +204,11 @@ class DirectusMessagesTableGateway extends RelationalTableGateway
         return $result;
     }
 
-    public function fetchMessagesInboxWithHeaders($uid, $messageIds = null)
+    public function fetchMessagesInboxWithHeaders($uid, $messageIds = null, $params = [])
     {
         $messagesRecipientsTableGateway = new DirectusMessagesRecipientsTableGateway($this->adapter, $this->acl);
         $result = $messagesRecipientsTableGateway->countMessages($uid);
-        $result['data'] = $this->fetchMessagesInbox($uid, $messageIds);
+        $result['data'] = $this->fetchMessagesInbox($uid, $messageIds, $params);
 
         return $result;
     }

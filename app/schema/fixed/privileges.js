@@ -106,6 +106,7 @@ define(function(require, exports, module) {
         "type": "VARCHAR",
         "length": 1000,
         "system": false,
+        "nullable": true,
         "hidden_list": false,
         "hidden_input": false,
         "sort": 20
@@ -117,6 +118,7 @@ define(function(require, exports, module) {
         "type": "VARCHAR",
         "length": 1000,
         "system": false,
+        "nullable": true,
         "hidden_list": false,
         "hidden_input": false,
         "sort": 20
@@ -139,6 +141,7 @@ define(function(require, exports, module) {
         "type": "TINYINT",
         "length": 1,
         "system": false,
+        "nullable": true,
         "hidden_list": false,
         "hidden_input": false,
         "sort": 40

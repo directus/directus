@@ -56,7 +56,7 @@ function(app, Backbone, _, Sortable, Notification) {
 
       //Filter active/inactive/deleted items
       statusState = _.map(statusColumns,Number);
-      models = this.collection.filter(function(model) {
+      models = this.options.systemCollection.filter(function(model) {
         if (model.has(app.statusMapping.status_name)) {
           return (_.indexOf(statusState, Number(model.get(app.statusMapping.status_name))) > -1);
         } else {
@@ -88,16 +88,17 @@ function(app, Backbone, _, Sortable, Notification) {
         });
       }
 
-      rows = _.map(models, function(model) {
+      rows = _.map(models, function(model, i) {
         var classes = _.map(rowIdentifiers, function(columnName) { return 'row-'+columnName+'-'+model.get(columnName); });
         var highlight = _.contains(highlightIds,model.id);
         var statusDraft = model.get(app.statusMapping.status_name) === app.statusMapping.draft_num;
 
-        return {model: model, classes: classes, highlight: highlight, statusDraft: statusDraft};
+        return {index: i+1, model: model, classes: classes, highlight: highlight, statusDraft: statusDraft};
       });
 
       var tableData = {
-        columns: this.collection.getColumns(),
+        columns: this.parentView.getTableColumns(),
+        showItemNumbers: this.parentView.options.showItemNumbers,
         rows: rows,
         status: this.parentView.options.status,
         sortable: this.options.sort,
