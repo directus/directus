@@ -15,6 +15,7 @@
     <h3>{{capitalize viewId}}</h3>
     <div class="options"></div>
 
+    {{#if isTableView}}
     <h3>Columns</h3>
     <ul id="reorder-columns" class="menu reorder-columns">
         {{#columns}}
@@ -50,4 +51,5 @@
             <label for="check-11" class="footer-open-toggle"><span></span> Show Footer</label>
         </li>
     </ul>
+    {{/if}}
 </div>

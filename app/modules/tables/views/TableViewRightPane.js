@@ -187,6 +187,7 @@ define([
       }, this));
 
       data.viewId = this.state.viewId;
+      data.isTableView = data.viewId === 'table';
 
       return data;
     },
