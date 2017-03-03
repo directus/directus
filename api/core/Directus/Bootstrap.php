@@ -654,7 +654,7 @@ class Bootstrap
                 // @TODO: This should be another hook listener
                 $row['thumbnail_url'] = null;
                 $filename = implode('.', $thumbnailFilenameParts);
-                if ($row['type'] == 'embed/vimeo') {
+                if (isset($row['type']) && $row['type'] == 'embed/vimeo') {
                     $oldThumbnailFilename = $row['name'] . '-vimeo-220-124-true.jpg';
                 } else {
                     $oldThumbnailFilename = $filename . '-' . $thumbnailExtension . '-160-160-true.jpg';
@@ -671,7 +671,7 @@ class Bootstrap
                 }
 
                 $embedManager = Bootstrap::get('embedManager');
-                $provider = $embedManager->getByType($row['type']);
+                $provider = isset($row['type']) ? $embedManager->getByType($row['type']) : null;
                 $row['html'] = null;
                 if ($provider) {
                     $row['html'] = $provider->getCode($row);
