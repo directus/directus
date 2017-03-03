@@ -83,7 +83,7 @@ $important: #FFC107;
 // Tags and Structure
 
 body {
-    background-color: darken($primary, 2%);
+    background-color: darken($primary, 4%);
     margin: 0;
     padding: 0;
     font-family: 'Roboto', sans-serif;
@@ -189,7 +189,7 @@ input[type=number] {
 }
 
 .buttons {
-    margin-top: 20px;
+    margin-top: 40px;
     .button {
         @include transition (all, 200ms, linear);
         @include border-radius;

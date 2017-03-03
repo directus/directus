@@ -32,7 +32,7 @@
     vertical-align: middle; }
 
 body {
-  background-color: #2b94d9;
+  background-color: #268fd5;
   margin: 0;
   padding: 0;
   font-family: 'Roboto', sans-serif;
@@ -162,7 +162,7 @@ input[type=number] {
   font-size: 29px; }
 
 .buttons {
-  margin-top: 20px; }
+  margin-top: 40px; }
   .buttons .button {
     -webkit-transition: all 200ms linear;
     -moz-transition: all 200ms linear;
