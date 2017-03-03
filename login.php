@@ -87,9 +87,7 @@ exit;
     <link rel="icon" type="image/png" sizes="96x96" href="<?= DIRECTUS_PATH ?>assets/img/icons/favicon-96x96.png">
     <link rel="icon" type="image/png" sizes="16x16" href="<?= DIRECTUS_PATH ?>assets/img/icons/favicon-16x16.png">
     <link rel="manifest" href="<?= DIRECTUS_PATH ?>assets/img/icons/manifest.json">
-    <link
-        href='//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800'
-        rel='stylesheet' type='text/css'>
+    <link href='//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
     <!-- build:css assets/css/directus.min.css -->
     <link rel="stylesheet" href="assets/css/directus.css">
     <!--/build -->
@@ -107,14 +105,11 @@ exit;
 <form action="<?= DIRECTUS_PATH ?>api/1/auth/login" method="post" class="login-box" autocomplete="off">
     <div class='login-panel'>
         <p class="">
-            <input type="email" name="email" placeholder="<?= __t('placeholder_email_address'); ?>" spellcheck="false"
-                   autocomplete="off" autocorrect="off" autocapitalize="off"/>
+            <input type="email" name="email" placeholder="<?= __t('placeholder_email_address'); ?>" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off"/>
         </p>
         <p class="">
-            <input type="password" name="password" placeholder="<?= __t('password_placeholder'); ?>" spellcheck="false"
-                   autocomplete="off" autocorrect="off" autocapitalize="off"/>
-            <span id="forgot-password" title="<?= __t('forgot_password'); ?>" class="btn btn-primary"><i
-                    class="material-icons">help</i></span>
+            <input type="password" name="password" placeholder="<?= __t('password_placeholder'); ?>" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off"/>
+            <span id="forgot-password" title="<?= __t('forgot_password'); ?>" class="btn btn-primary"><i class="material-icons">help</i></span>
         </p>
         <p class="clearfix no-margin">
             <button type="submit" class="btn primary"><?= __t('sign_in'); ?></button>

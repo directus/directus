@@ -4,32 +4,16 @@
 
 {% block login %}
 
-<!--
-<div class="preview-intro">
-	<i class="material-icons close-preview-intro">close</i>
-	<div>Community Preview</div>
-	<hr>
-	Click the <b>Log In</b> button to explore!<br>
-	<br>
-	This static design preview is a work-in-progress, updates will be made based on your feedback (bottom-right button).
-	<a href="https://twitter.com/directus" target="_blank">
-		<i>
-			Please help spread the word! <img src="{{assetsRoot}}imgs/login-logo-twitter.svg">
-		</i>
-	</a>
-</div>
--->
-
 <div class="login-panel">
     <form action="{{rootUrl}}api/1/auth/login" method="post" class="login-box" autocomplete="off">
         <div class="input">
             <i class="material-icons">person</i>
-            <input name="email" type="email" class="email" placeholder="Email">
+            <input name="email" type="email" class="email" placeholder="Email" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off">
         </div>
         <div class="input">
             <i class="material-icons">lock</i>
             <i class="material-icons forgot">help</i>
-            <input name="password" type="password" class="password" placeholder="Password">
+            <input name="password" type="password" class="password" placeholder="Password" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off">
         </div>
         <button type="submit" class="button">Log In</button> <!-- Optional Class: disabled -->
     </form>
