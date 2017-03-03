@@ -23,10 +23,9 @@
         <div class="label">or</div>
     </div>
     <div class="alt-auth">
-        <div class="tile google"><a href="/auth/google"><img src="{{assetsRoot}}imgs/login-logo-google.svg"></a></div>
-        <div class="tile facebook"><a href="/auth/facebook"><img src="{{assetsRoot}}imgs/login-logo-facebook.svg"></a></div>
-        <div class="tile twitter"><a href="/auth/twitter"><img src="{{assetsRoot}}imgs/login-logo-twitter.svg"></a></div>
-        <div class="tile github"><a href="/auth/github"><img src="{{assetsRoot}}imgs/login-logo-github.svg"></a></div>
+        {% for service in authList %}
+        <div class="tile {{service}}"><a href="/auth/{{service}}"><img src="{{assetsRoot}}imgs/login-logo-{{service}}.svg"></a></div>
+        {% endfor %}
     </div>
 </div>
 

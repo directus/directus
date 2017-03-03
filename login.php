@@ -43,6 +43,18 @@ if (isset($_SESSION['_directus_login_redirect'])) {
     $redirectPath = trim($_SESSION['_directus_login_redirect'], '/');
 }
 
+$authList = [];
+$config = Bootstrap::get('config');
+$authConfig = \Directus\Util\ArrayUtils::get($config, 'auth');
+if ($authConfig) {
+    $services = array_keys($authConfig);
+    foreach (\Directus\Authentication\Social::supported() as $service) {
+        if (in_array($service, $services)) {
+            $authList[] = $service;
+        }
+    }
+}
+
 $templateVars = [
     'page' => 'login',
     'inactive' => isset($_GET['inactive']),
@@ -52,6 +64,7 @@ $templateVars = [
     'apiVersion' => API_VERSION,
     'rootUrl' => DIRECTUS_PATH,
     'assetsRoot' => rtrim(DIRECTUS_PATH, '/') . '/assets/',
+    'authList' => $authList,
     'subtitle' => 'Login'
 ];
 
