@@ -9,6 +9,7 @@ use Directus\Database\TableGateway\DirectusPreferencesTableGateway;
 use Directus\MemcacheProvider;
 use Directus\Util\ArrayUtils;
 use Directus\Util\DateUtils;
+use Zend\Db\Sql\Ddl\Column\Varbinary;
 use Zend\Db\Sql\Predicate\In;
 use Zend\Db\Sql\Predicate\NotIn;
 use Zend\Db\Sql\Select;
@@ -173,7 +174,9 @@ class TableSchema
     {
         $tableObject = static::getTableSchema($tableName, $params, $skipCache);
 
-        return $tableObject->getColumns();
+        return array_values(array_filter($tableObject->getColumns(), function (Column $column) {
+            return static::canReadColumn($column->getTableName(), $column->getName());
+        }));
     }
 
     /**
@@ -187,7 +190,11 @@ class TableSchema
      */
     public static function getColumnSchema($tableName, $columnName, $skipCache = false)
     {
-        return static::getSchemaManagerInstance()->getColumnSchema($tableName, $columnName, $skipCache);
+        $column = static::getSchemaManagerInstance()->getColumnSchema($tableName, $columnName, $skipCache);
+
+        // @TODO: enforce permission
+
+        return $column;
     }
 
     /**
@@ -204,12 +211,6 @@ class TableSchema
      */
     public static function getSchemaArray($table, array $params = [], $skipCache = false)
     {
-//        if (!$fromCache || !array_key_exists($table, self::$_schemas)) {
-//            self::$_schemas[$table] = self::loadSchema($table, $params);
-//        }
-
-//        return self::$_schemas[$table];
-
         $columnsSchema = static::getTableColumnsSchema($table, $params, $skipCache);
 
         // Only return this column if column_name is set as parameter
@@ -237,21 +238,6 @@ class TableSchema
         $schema = static::getTableSchema($tableName);
 
         return $schema->hasStatusColumn();
-    }
-
-    public static function getColumnSchemaArray($tableName, $columnName)
-    {
-        $tableColumnsSchema = static::getTableSchema($tableName);
-        $column = null;
-
-        foreach ($tableColumnsSchema->getColumns() as $columnSchema) {
-            if ($columnName === $columnSchema['id']) {
-                $column = $columnSchema;
-                break;
-            }
-        }
-
-        return $column;
     }
 
     /**
@@ -284,7 +270,7 @@ class TableSchema
      */
     public static function getColumnRelationship($tableName, $columnName)
     {
-        $column = static::getColumnSchemaArray($tableName, $columnName);
+        $column = static::getColumnSchema($tableName, $columnName);
 
         return $column && $column->hasRelationship() ? $column->getRelationship() : null;
     }
@@ -350,7 +336,7 @@ class TableSchema
     public static function getAllNonAliasTableColumns($tableName)
     {
         $columns = [];
-        $schemaArray = static::getSchemaManagerInstance()->getColumns($tableName);//self::loadSchema($table);
+        $schemaArray = static::getSchemaManagerInstance()->getColumns($tableName);
         if (false === $schemaArray) {
             return false;
         }
@@ -526,17 +512,44 @@ class TableSchema
         return $tables;
     }
 
+    /**
+     * Has the authenticated user permission to view the given table
+     *
+     * @param $tableName
+     *
+     * @return bool
+     */
     public static function canGroupViewTable($tableName)
     {
         $acl = static::getAclInstance();
-        if (!$acl) {
+
+        if (! $acl) {
             return true;
         }
 
         return $acl->canView($tableName);
     }
 
-    public static function getTable($tbl_name)
+    /**
+     * Has the authenticated user permissions to read the given column
+     *
+     * @param $tableName
+     * @param $columnName
+     *
+     * @return bool
+     */
+    public static function canReadColumn($tableName, $columnName)
+    {
+        $acl = static::getAclInstance();
+
+        if (! $acl) {
+            return true;
+        }
+
+        return $acl->canReadColumn($tableName, $columnName);
+    }
+
+    public static function getTable($tableName)
     {
         $acl = static::getAclInstance();
         $zendDb = static::getConnectionInstance();
@@ -545,26 +558,20 @@ class TableSchema
         // or and empty array instead of false
         // in any given situation that the table
         // can be find or used.
-        if (!self::canGroupViewTable($tbl_name)) {
+        if (!self::canGroupViewTable($tableName)) {
             return false;
         }
 
-        $info = static::getSchemaManagerInstance()->getTableSchema($tbl_name);
+        $info = static::getSchemaManagerInstance()->getTableSchema($tableName);
 
         if (!$info) {
             return false;
         }
 
-        if ($info) {
-            $info['row_count'] = (int)$info['row_count'];
-            $info['date_created'] = DateUtils::convertToISOFormat($info['date_created'], 'UTC', get_user_timezone());
-            $info['hidden'] = (boolean)$info['hidden'];
-            $info['single'] = (boolean)$info['single'];
-            $info['footer'] = (boolean)$info['footer'];
-        }
-
-        // $relationalTableGateway = new RelationalTableGateway($tbl_name, $zendDb, $acl);
-        $info = $info->toArray(); //array_merge($info->toArray(), $relationalTableGateway->countActiveOld());
+        $info = $info->toArray();
+        $info['columns'] = array_values(array_filter($info['columns'], function ($column) {
+            return static::canReadColumn($column['table_name'], $column['name']);
+        }));
 
         if (isset($info['columns'])) {
             // $columns = $info['columns'];
@@ -576,10 +583,10 @@ class TableSchema
                 'data' => $info['columns']
             ];
         }
-        //$info['columns'] = self::getSchemaArray($tbl_name);
+
         $directusPreferencesTableGateway = new DirectusPreferencesTableGateway($zendDb, $acl);
         $currentUserId = static::getAclInstance()->getUserId();
-        $info['preferences'] = $directusPreferencesTableGateway->fetchByUserAndTable($currentUserId, $tbl_name);
+        $info['preferences'] = $directusPreferencesTableGateway->fetchByUserAndTable($currentUserId, $tableName);
 
         return $info;
     }
@@ -612,135 +619,6 @@ class TableSchema
 
         return $result;
     }
-
-    /**
-     * Get table structure
-     * @param $tbl_name
-     * @param $params
-     */
-    protected static function loadSchema($tbl_name, $params = null)
-    {
-        if (isset(static::$_schemas[$tbl_name])) {
-            return static::$_schemas[$tbl_name];
-        }
-
-        // Omit columns which are on this table's read field blacklist for the group of
-        // the currently authenticated user.
-        $acl = Bootstrap::get('acl');
-        $schemaManager = Bootstrap::get('schemaManager');
-
-        $columns = $schemaManager->getColumns($tbl_name, $params);
-        $uisName = array_map(function($column) {
-            return $column['ui'];
-        }, $columns);
-
-        $uisName = array_filter($uisName);
-        $columnsOptions = [];
-        if ($uisName) {
-            $columnsOptions = static::getTableUIOptions($tbl_name, $uisName);
-        }
-
-        if (!self::canGroupViewTable($tbl_name)) {
-            // return [];
-            return false;
-        }
-
-        $writeFieldBlacklist = $acl->getTablePrivilegeList($tbl_name, $acl::FIELD_WRITE_BLACKLIST);
-
-        $return = [];
-        foreach ($columns as $row) {
-            foreach ($row as $key => $value) {
-                if (is_null($value)) {
-                    unset ($row[$key]);
-                }
-            }
-
-            // Read method formatColumnRow
-            // @TODO: combine this method with AllSchema, kind of doing same thing
-            if (array_key_exists('type', $row) && $row['type'] == 'ALIAS') {
-                $row['is_nullable'] = 'YES';
-            }
-
-            $anAlias = $row->isAlias();
-            $hasDefaultValue = isset($row['default_value']);
-            if ($row['is_nullable'] === 'NO' && !$hasDefaultValue && !$anAlias) {
-                $row['required'] = true;
-            }
-
-            // Basic type casting. Should eventually be done with the schema
-            if ($hasDefaultValue) {
-                $row['default_value'] = $schemaManager->getSchema()->parseType($row['default_value'], $row['type']);
-            }
-
-            $row['required'] = (bool)$row['required'];
-            $row['system'] = (bool)static::isSystemColumn($row['id']);
-            $row['hidden_list'] = (bool)$row['hidden_list'];
-            $row['hidden_input'] = (bool)$row['hidden_input'];
-            $row['is_writable'] = !in_array($row['id'], $writeFieldBlacklist);
-
-            if (array_key_exists('sort', $row)) {
-                $row['sort'] = (int)$row['sort'];
-            }
-
-            // Default UI types.
-            if (!isset($row['ui'])) {
-                $row['ui'] = self::columnTypeToUIType($row['type']);
-            }
-
-            // Defualts as system columns
-            if (static::isSystemColumn($row['id'])) {
-                $row['system'] = true;
-                $row['hidden'] = true;
-            }
-
-            if (array_key_exists('ui', $row) && array_key_exists($row['id'], $columnsOptions)) {
-                $options = $columnsOptions[$row['id']];
-            }
-
-            if (isset($options)) {
-                $row['options'] = $options;
-            }
-
-            if (array_key_exists('related_table', $row)) {
-                $row['relationship'] = [];
-                $row['relationship']['type'] = ArrayUtils::get($row, 'relationship_type');
-                $row['relationship']['related_table'] = $row['related_table'];
-
-                unset($row['relationship_type']);
-                unset($row['related_table']);
-
-                if (array_key_exists('junction_key_left', $row)) {
-                    $row['relationship']['junction_key_left'] = $row['junction_key_left'];
-                    unset($row['junction_key_left']);
-                }
-
-                if (array_key_exists('junction_key_right', $row)) {
-                    $row['relationship']['junction_key_right'] = $row['junction_key_right'];
-                    unset($row['junction_key_right']);
-                }
-
-                if (array_key_exists('junction_table', $row)) {
-                    $row['relationship']['junction_table'] = $row['junction_table'];
-                    unset($row['junction_table']);
-                }
-
-            }
-
-            array_push($return, array_change_key_case($row, CASE_LOWER));
-        }
-
-        if (count($return) == 1) {
-            $return = $return[0];
-        }
-
-        static::$_schemas[$tbl_name] = $return;
-
-        return $return;
-    }
-
-    //
-    //---------------------------------------------------------------------------
-
 
     public static function getAllSchemas($userGroupId, $versionHash)
     {
@@ -844,12 +722,17 @@ class TableSchema
         $columns = [];
         foreach($schema->getAllColumns() as $column) {
             $tableName = $column->getTableName();
-            if ($schema->isDirectusTable($tableName) && !$includeSystemTables) {
+
+            if (! static::canReadColumn($tableName, $column->getName())) {
+                continue;
+            }
+
+            if ($schema->isDirectusTable($tableName) && ! $includeSystemTables) {
                 continue;
             }
 
             // Only include tables w ACL privileges
-            if (!self::canGroupViewTable($tableName)) {
+            if (! static::canGroupViewTable($tableName)) {
                 continue;
             }
 
@@ -865,90 +748,6 @@ class TableSchema
         $info['single'] = (boolean)$info['single'];
         $info['footer'] = (boolean)$info['footer'];
         return $info;
-    }
-
-    private static function formatColumnRow($row)
-    {
-        $columnName = $row['column_name'];
-
-        foreach ($row as $key => $value) {
-            if (is_null($value)) {
-                unset ($row[$key]);
-            }
-        }
-
-        unset($row['table_name']);
-
-        $row['id'] = $columnName;
-        $row['options'] = [];
-
-        // Many-to-Many type it actually can be null,
-        // it's based on a junction table, not a real column.
-        // Issue #612 https://github.com/RNGR/directus6/issues/612
-        if (array_key_exists('type', $row) && $row['type'] == 'ALIAS') {
-            $row['is_nullable'] = 'YES';
-        }
-
-        $hasDefaultValue = isset($row['default_value']);
-        $anAlias = $row->isAlias();
-        if ($row['is_nullable'] === 'NO' && !$hasDefaultValue && !$anAlias) {
-            $row['required'] = true;
-        }
-
-        // Basic type casting. Should eventually be done with the schema
-        if ($hasDefaultValue) {
-            $row['default_value'] = SchemaManager::parseType($row['default_value'], $row['type']);
-        }
-
-        $row['required'] = (bool)$row['required'];
-        $row['system'] = (bool)static::isSystemColumn($row['id']);
-        $row['hidden_list'] = (bool)$row['hidden_list'];
-        $row['hidden_input'] = (bool)$row['hidden_input'];
-
-
-        //$row['is_writable'] = !in_array($row['id'], $writeFieldBlacklist);
-
-        if (array_key_exists('sort', $row)) {
-            $row['sort'] = (int)$row['sort'];
-        }
-
-        // Default UI types.
-        if (!isset($row['ui'])) {
-            $row['ui'] = self::columnTypeToUIType($row['type']);
-        }
-
-        // Defualts as system columns
-        if (static::isSystemColumn($row['id'])) {
-            $row['system'] = true;
-            $row['hidden'] = true;
-        }
-
-        if (array_key_exists('related_table', $row)) {
-            $row['relationship'] = [];
-            $row['relationship']['type'] = ArrayUtils::get($row, 'relationship_type');
-            $row['relationship']['related_table'] = $row['related_table'];
-
-            unset($row['relationship_type']);
-            unset($row['related_table']);
-
-            if (array_key_exists('junction_key_left', $row)) {
-                $row['relationship']['junction_key_left'] = $row['junction_key_left'];
-                unset($row['junction_key_left']);
-            }
-
-            if (array_key_exists('junction_key_right', $row)) {
-                $row['relationship']['junction_key_right'] = $row['junction_key_right'];
-                unset($row['junction_key_right']);
-            }
-
-            if (array_key_exists('junction_table', $row)) {
-                $row['relationship']['junction_table'] = $row['junction_table'];
-                unset($row['junction_table']);
-            }
-
-        }
-
-        return $row;
     }
 
     public static function columnTypeToUIType($column_type)
