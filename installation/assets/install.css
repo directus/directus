@@ -61,9 +61,16 @@ hr {
   height: 1px; }
 
 label {
+  -webkit-transition: all 200ms linear;
+  -moz-transition: all 200ms linear;
+  -o-transition: all 200ms linear;
+  -ms-transition: all 200ms linear;
+  transition: all 200ms linear;
   font-size: 10px;
   font-weight: 700;
   text-transform: uppercase; }
+  label.highlight {
+    color: #3498DB; }
 
 input[type=checkbox] {
   margin: 0 10px 0 0;

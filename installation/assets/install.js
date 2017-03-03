@@ -77,6 +77,13 @@ $(window).ready(function () {
     }
   });
 
+  $('input, select').on("focus blur", function(e) {
+    $('label').removeClass('highlight');
+    if($(this).is(":focus")){
+      $(this).closest('label').addClass('highlight');
+    }
+  });
+
   var fetching = false;
   $('#retryButton').click(function (e) {
     e.preventDefault();

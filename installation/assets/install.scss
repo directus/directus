@@ -110,9 +110,13 @@ hr {
     height: 1px;
 }
 label {
+    @include transition (all, 200ms, linear);
     font-size: 10px;
     font-weight: 700;
     text-transform: uppercase;
+    &.highlight {
+        color: $primary;
+    }
 }
 input[type=checkbox] {
     margin: 0 10px 0 0;
