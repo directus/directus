@@ -256,6 +256,8 @@ input[type=number] {
       .modal .header .help-button .material-icons {
         margin-right: 10px;
         vertical-align: middle; }
+  .modal .container {
+    min-height: 260px; }
   .modal h3 {
     font-size: 13px;
     font-weight: 700;
@@ -290,7 +292,8 @@ input[type=number] {
     margin: 0; }
 
 .hide {
-  display: none; }
+  opacity: 0;
+  pointer-events: none; }
 
 .note {
   font-style: italic;

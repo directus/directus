@@ -294,6 +294,9 @@ input[type=number] {
             }
         }
     }
+    .container {
+        min-height: 260px;
+    }
     h3 {
         font-size: 13px;
         font-weight: 700;
@@ -342,7 +345,8 @@ input[type=number] {
 //////////////////////////////////////////////////////////////////////////////
 
 .hide {
-    display: none;
+    opacity: 0;
+    pointer-events: none;
 }
 
 .note {
