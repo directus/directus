@@ -110,6 +110,8 @@ define(['app', 'backbone', 'underscore', 'core/Modal', 'core/t'], function(app, 
 
     cropView: false,
 
+    closeOnBackground: false,
+
     serialize: function() {
       return this.model.toJSON();
     },
