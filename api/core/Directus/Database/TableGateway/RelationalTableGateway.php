@@ -485,7 +485,7 @@ class RelationalTableGateway extends BaseTableGateway
 
                             $foreignSchema = TableSchema::getTableSchema($ForeignTable->getTable());
                             $hasActiveColumn = $foreignSchema->hasStatusColumn();
-                            $foreignColumn = TableSchema::getColumnSchemaArray($ForeignTable->getTable(), $foreignJoinColumn);
+                            $foreignColumn = TableSchema::getColumnSchema($ForeignTable->getTable(), $foreignJoinColumn);
                             $hasPrimaryKey = isset($foreignRecord[$ForeignTable->primaryKeyFieldName]);
                             $canBeNull = $foreignColumn->isNullable();
 

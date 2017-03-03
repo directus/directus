@@ -23,9 +23,9 @@ function(app, Backbone, __t, Directus, BasePageView, Widgets, moment, Notificati
       return  [
         new Widgets.ButtonWidget({
           widgetOptions: {
-            buttonId: "addBtn",
-            iconClass: "send",
-            buttonClass: "",
+            buttonId: 'addBtn',
+            iconClass: 'send',
+            buttonClass: 'primary',
             buttonText: __t('send_message')
           },
           onClick: function(event) {

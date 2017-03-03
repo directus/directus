@@ -60,10 +60,7 @@ class Messages extends Route
         $responsesIds = [];
 
         foreach($rows as $row) {
-            $responses = $row['responses'];
-            foreach($responses as $res) {
-                $responsesIds[] = $res['id'];
-            }
+            $responsesIds[] = $row['id'];
         }
 
         $messagesTableGateway = new DirectusMessagesRecipientsTableGateway($ZendDb, $acl);

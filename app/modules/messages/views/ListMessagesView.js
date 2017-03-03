@@ -144,6 +144,13 @@ function(app, _, Backbone, __t, BasePageView, MessageView, MessageForm, Widgets,
 
     beforeRender: function() {
       var currentMessage = this.state.currentMessage;
+
+      if (this.collection.length) {
+        this.$el.removeClass('empty');
+      } else {
+        this.$el.addClass('empty');
+      }
+
       if (!currentMessage) {
         return;
       }

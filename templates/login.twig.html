@@ -8,34 +8,34 @@
     <form action="{{rootUrl}}api/1/auth/login" method="post" class="login-box" autocomplete="off">
         <div class="input">
             <i class="material-icons">person</i>
-            <input name="email" type="email" class="email" placeholder="Email" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off">
+            <input name="email" type="email" class="email" placeholder="Email">
         </div>
         <div class="input">
             <i class="material-icons">lock</i>
-            <i class="material-icons forgot">help</i>
-            <input name="password" type="password" class="password" placeholder="Password" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off">
+            <i id="forgot-password" class="material-icons forgot ">help</i>
+            <input name="password" type="password" class="password" placeholder="Password">
         </div>
         <button type="submit" class="button">Log In</button> <!-- Optional Class: disabled -->
     </form>
-	<div class="hr-label">
-		<hr>
-		<hr>
-		<div class="label">or</div>
-	</div>
-	<div class="alt-auth">
-		<div class="tile google"><a href="/auth/google"><img src="{{assetsRoot}}imgs/login-logo-google.svg"></a></div>
+    <div class="hr-label">
+        <hr>
+        <hr>
+        <div class="label">or</div>
+    </div>
+    <div class="alt-auth">
+        <div class="tile google"><a href="/auth/google"><img src="{{assetsRoot}}imgs/login-logo-google.svg"></a></div>
         <div class="tile facebook"><a href="/auth/facebook"><img src="{{assetsRoot}}imgs/login-logo-facebook.svg"></a></div>
         <div class="tile twitter"><a href="/auth/twitter"><img src="{{assetsRoot}}imgs/login-logo-twitter.svg"></a></div>
         <div class="tile github"><a href="/auth/github"><img src="{{assetsRoot}}imgs/login-logo-github.svg"></a></div>
-	</div>
+    </div>
 </div>
 
 <div class="glow"></div>
 
 <div class="notifications">
-	<div class="notification {% if errorMessage %}serious{% endif %}">
+    <div class="notification {% if errorMessage %}serious{% endif %}" style="display: none;">
         {% if errorMessage %}<i class="material-icons">warning</i> {{errorMessage}}{% endif %}
-	</div>
+    </div>
 </div>
 
 <!-- We'd appreciate this remaining visible to users. -->
@@ -48,18 +48,18 @@
 {# make this a separate file #}
 <script type="text/javascript">
     $(function () {
-        var $login_message = $('p.message');
-        var $login_error = $('.notification');
+        var $login_message = $('.notification');
 
         function message(message, error) {
             error = error || false;
             if (error) {
-                $login_error.html("<i class=\"material-icons\">warning</i>" + message);
-                $login_error.show();
+                $login_message.addClass('serious');
             } else {
-                $login_message.html("<i class=\"material-icons\">warning</i>" + message);
-                $login_message.show();
+                $login_message.removeClass('serious');
             }
+
+            $login_message.html("<i class=\"material-icons\">warning</i>" + message);
+            $login_message.show();
         }
 
         {% if inactive %}
@@ -67,7 +67,6 @@
         {% endif %}
 
         function clear_messages() {
-            $login_error.hide();
             $login_message.hide();
         }
 
@@ -97,7 +96,8 @@
                             message(errorMessage, true);
                             return;
                         }
-                        message("{{'reset_instructions_have_been_sent'|trans}}?>")
+
+                        message("{{'reset_instructions_have_been_sent'|trans}}")
                     },
                     error: function (jqXHR, textStatus, errorThrown) {
                         message("{{'server_error_occurred'|trans}}", true);
