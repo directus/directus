@@ -319,6 +319,16 @@ class Table implements \ArrayAccess, Arrayable, \JsonSerializable
     }
 
     /**
+     * @param $name
+     *
+     * @return Column
+     */
+    public function getColumn($name)
+    {
+        return array_shift($this->getColumns([$name]));
+    }
+
+    /**
      * Get table primary keys
      *
      * @return array
