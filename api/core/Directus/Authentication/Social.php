@@ -78,4 +78,31 @@ class Social
 
         return $this->providers[$key];
     }
+
+    /**
+     * Checks whether the given service name is supported
+     *
+     * @param $name
+     *
+     * @return bool
+     */
+    public static function isSupported($name)
+    {
+        return in_array($name, static::supported());
+    }
+
+    /**
+     * List of supported services
+     *
+     * @return array
+     */
+    public static function supported()
+    {
+        return [
+            'github',
+            'twitter',
+            'google',
+            'facebook'
+        ];
+    }
 }
