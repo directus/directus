@@ -403,6 +403,10 @@ define([
         }, this);
       },
 
+      onShowMore: function () {
+        this.trigger('toggleRightPane');
+      },
+
       constructor: function() {
         View.prototype.constructor.apply(this, arguments);
         BaseView.prototype.constructor.apply(this, arguments);
@@ -413,6 +417,7 @@ define([
         this.collection.on('sync', this.fetchComments, this);
         this.collection.on('sync', this.fetchRevisions, this);
         this.collection.on('sync', this.fetchUpdates, this);
+        this.listenTo(this, 'onShowMore', this.onShowMore);
       }
     })
   }

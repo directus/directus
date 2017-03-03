@@ -177,28 +177,6 @@ function(app, Backbone, _, __t, BasePageView, ListViewManager, TableViewRightPan
       return [];
     },
 
-    events: {
-      'click #bookmarkBtn': function() {
-        var data = {
-          title: this.collection.table.id,
-          url: Backbone.history.fragment,
-          icon_class: 'icon-star',
-          user: app.users.getCurrentUser().get('id'),
-          section: 'table'
-        };
-
-        if (!this.isBookmarked) {
-          app.getBookmarks().addNewBookmark(data);
-        } else {
-          app.getBookmarks().removeBookmark(data);
-        }
-
-        $('#bookmarkBtn').parent().toggleClass('active');
-
-        this.isBookmarked = !this.isBookmarked;
-      }
-    },
-
     changeViewTo: function(viewId) {
       if (this.state.viewId === viewId) {
         return;
@@ -237,6 +215,8 @@ function(app, Backbone, _, __t, BasePageView, ListViewManager, TableViewRightPan
         showChart: true,
         showMoreButton: !! _.result(this, 'rightPane')
       });
+
+      this.listenTo(this.state.views[viewId], 'toggleRightPane', this.toggleRightPane);
 
       return this.state.views[viewId];
     },

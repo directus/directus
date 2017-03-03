@@ -24,6 +24,8 @@ function(app, Backbone, _, __t, Notification) {
         this.collection.trigger('select');
       },
 
+      'click .js-more': 'showMore',
+
       'click th:not(.js-check, .visible-columns-cell)': function(event) {
         var column = $(event.currentTarget).data('id');
         var order = this.collection.getOrder();
@@ -185,6 +187,10 @@ function(app, Backbone, _, __t, Notification) {
           Notification.info(__t('table_sort_disabled'), '<i>'+__t('table_sort_disabled_message')+'</i>', {timeout: 3000});
         }
       }
+    },
+
+    showMore: function () {
+      this.parentView.trigger('onShowMore');
     },
 
     beforeRender: function() {
