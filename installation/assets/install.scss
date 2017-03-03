@@ -83,7 +83,7 @@ $important: #FFC107;
 // Tags and Structure
 
 body {
-    background-color: $primary;
+    background-color: darken($primary, 2%);
     margin: 0;
     padding: 0;
     font-family: 'Roboto', sans-serif;

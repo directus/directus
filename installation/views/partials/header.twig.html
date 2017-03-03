@@ -5,7 +5,7 @@
 
     <ul class="breadcrumb">
         {% for step in directus.steps %}
-            <li class="{{ directus.step.getName() == step.getName() ? 'current' : '' }}"><i class="material-icons">{{ directus.step.getName() == step.getName() ? 'brightness_1' : 'check_circle' }}</i>{{ step.getShortTitle()|t }}</li>
+            <li class="{{ directus.step.getName() == step.getName() ? 'current' : '' }}"><i class="material-icons">{{ directus.current_step > loop.index0 ? 'check_circle' : (directus.step.getName() == step.getName() ? 'adjust' : 'panorama_fish_eye') }}</i>{{ step.getShortTitle()|t }}</li>
         {% endfor %}
     </ul>
 
