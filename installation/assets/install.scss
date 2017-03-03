@@ -3,19 +3,24 @@
 //////////////////////////////////////////////////////////////////////////////
 // Variables
 
-$primary: #b26cee;
-$bad: #c1272d;
+$black:     #000000;
+$gray-7:    #222222;
+$gray-6:    #333333;
+$gray-5:    #666666;
+$gray-4:    #999999;
+$gray-3:    #CCCCCC;
+$gray-2:    #DDDDDD;
+$gray-1:    #EEEEEE;
+$white:     #FFFFFF;
 
-$lightGrey: #cccccc; // Light Grey
-$mediumGrey: #aaaaaa; // Medium Grey
-$darkGrey: #666666; // Dark Grey
-$extraDarkGrey: #333333; // Extra Dark Grey
-$black: #1a1a1a; // Directus Black
+$primary:   #3498DB;
+$serious:   #F44336;
+$important: #FFC107;
 
 //////////////////////////////////////////////////////////////////////////////
 // Mixins
 
-@mixin border-radius($radius: 3px) {
+@mixin border-radius($radius: 2px) {
     -webkit-border-radius: $radius;
     -moz-border-radius: $radius;
     border-radius: $radius;
@@ -78,50 +83,42 @@ $black: #1a1a1a; // Directus Black
 // Tags and Structure
 
 body {
-    background-color: #F4F4F4;
+    background-color: $primary;
     margin: 0;
     padding: 0;
     font-family: 'Roboto', sans-serif;
     -webkit-font-smoothing: antialiased !important;
-    font-size: 16px;
-    color: #bbbbbb;
-    font-weight: 500;
+    font-size: 10px;
+    color: $gray-3;
+    font-weight: 400;
 }
-
 a {
+    @include transition (all, 200ms, linear);
     color: inherit;
     text-decoration: none;
+    &.underline {
+        border-bottom: dotted 1px $primary;
+        &:hover {
+            color: $primary;
+        }
+    }
 }
-
-h1 {
-    font-weight: 400;
-    font-size: 24px;
-    margin: 10px 0 30px 0;
-    color: $darkGrey;
-}
-
 hr {
     border: 0;
-    color: #bbbbbb;
-    background-color: #bbbbbb;
+    color: $gray-3;
+    background-color: $gray-3;
     height: 1px;
 }
-
-form {
-    margin-bottom: 60px;
-}
-
 label {
-    font-size: 13px;
+    font-size: 10px;
+    font-weight: 700;
     text-transform: uppercase;
 }
-
 input[type=checkbox] {
     margin: 0 10px 0 0;
     top: -1px;
     position: relative;
 }
-
 textarea {
     width: 100%;
     min-height: 200px;
@@ -133,52 +130,6 @@ textarea {
     overflow-x: scroll;
     margin: 10px 0 10px 0;
 }
-
-.header {
-    background-color: #ffffff;
-    top: 0;
-    left: 0;
-    right: 0;
-    margin: 0;
-    text-align: center;
-    position: relative;
-    img {
-        margin-top: 40px;
-    }
-    .breadcrumb {
-        padding-bottom: 35px;
-        color: #bbbbbb;
-        font-size: 16px;
-        font-weight: 500;
-        .separator {
-            margin: -5px 20px 0 20px;
-            font-size: 10px;
-            color: #eeeeee;
-            vertical-align: middle;
-            display: inline-block;
-        }
-        .complete {
-            color: $darkGrey;
-        }
-        .current {
-            color: $primary;
-        }
-    }
-}
-
-.container {
-    width: 100%;
-    margin: 40px auto 10px;
-    max-width: 340px;
-    position: relative;
-    &.step-1 {
-        max-width: 650px;
-        color: $darkGrey;
-        letter-spacing: 0.6px;
-        line-height: 30px;
-    }
-}
-
 select,
 input[type=text],
 input[type=email],
@@ -191,7 +142,7 @@ input[type=number] {
     margin-top: 5px;
     margin-bottom: 20px;
     font-size: 16px;
-    color: $darkGrey;
+    color: $gray-5;
     border: #BBBBBB 1px solid;
     outline: none;
     background-color: #ffffff;
@@ -199,7 +150,7 @@ input[type=number] {
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
-    //-webkit-text-fill-color: $darkGrey; // Controls autocomplete, needs to differ from actual entry
+    //-webkit-text-fill-color: $gray-5; // Controls autocomplete, needs to differ from actual entry
     option {
         padding: 10px 12px;
     }
@@ -207,11 +158,11 @@ input[type=number] {
         border: 1px solid $primary;
     }
     &.bad {
-        border: 1px solid $bad !important;
+        border: 1px solid $serious !important;
     }
     &:-webkit-autofill {
         -webkit-box-shadow: 0 0 0px 1000px #ffffff inset;
-        color: $darkGrey !important;
+        color: $gray-5 !important;
     }
     &::-webkit-outer-spin-button,
     &::-webkit-inner-spin-button {
@@ -224,6 +175,10 @@ input[type=number] {
 
 .select-container {
     position: relative;
+    cursor: pointer;
+    select {
+        cursor: pointer;
+    }
 }
 
 .select-arrow {
@@ -233,55 +188,154 @@ input[type=number] {
     font-size: 29px;
 }
 
-.button {
-    @include border-radius;
-    @include transition (all, 200ms, linear);
-    width: 100%;
-    font-size: 15px;
-    outline: none;
-    display: block;
-    background-color: #4f4f4f;
-    border: none;
-    color: #ffffff;
-    cursor: pointer;
-    padding: 20px 15px 20px 15px;
-    margin: 40px 0 10px 0;
-    text-transform: uppercase;
-    letter-spacing: 0.02em;
-    font-weight: 600;
-    &:hover {
-        background-color: $mediumGrey;
-    }
-    &.no-t-margin {
-        margin-top: 0;
-    }
-    &.primary {
-        background-color: $primary;
+.buttons {
+    margin-top: 20px;
+    .button {
+        @include transition (all, 200ms, linear);
+        @include border-radius;
+        display: inline-block;
+        font-size: 14px;
+        text-transform: uppercase;
+        font-weight: 700;
+        outline: none;
+        background-color: $white;
+        border: 1px solid $primary;
+        color: $primary;
+        cursor: pointer;
+        height: 40px;
+        width: 160px;
         &:hover {
-            background-color: darken($primary, 5%);
+            background-color: rgba($primary, 0.1);
         }
-        &.disabled {
-            background-color: $lightGrey;
+        &.primary {
+            color: $white;
+            background-color: $primary;
             &:hover {
-                cursor: not-allowed;
+                background-color: darken($primary, 5%);
             }
+            &.disabled {
+                color: rgba($white, 0.5);
+                &:hover {
+                    cursor: not-allowed;
+                    background-color: $primary;
+                }
+            }
+        }
+        &.back-button {
+            margin-right: 17px;
         }
     }
 }
 
-.no-button {
-    width: 100%;
-    outline: none;
-    display: block;
-    background-color: transparent;
-    border: none;
-    color: $mediumGrey;
-    cursor: pointer;
-    margin: 10px 0 10px 0;
-    letter-spacing: 0.02em;
-    text-align: center;
-    text-transform: uppercase;
-    font-weight: 500;
+//////////////////////////////////////////////////////////////////////////////
+// Structure
+
+.modal {
+    @include border-radius(2px);
+    position: relative;
+    background-color: $white;
+    padding: 40px 60px 40px 300px;
+    margin: 100px auto 60px;
+    max-width: 340px;
+    min-height: 340px;
+    -webkit-box-shadow: 0px 30px 60px 0px rgba(0,0,0,0.2);
+    -moz-box-shadow: 0px 30px 60px 0px rgba(0,0,0,0.2);
+    box-shadow: 0px 30px 60px 0px rgba(0,0,0,0.2);
+    .header {
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        width: 140px;
+        background-color: $primary;
+        padding: 30px 50px 50px 50px;
+        img {
+            display: block;
+            margin: 0 auto 40px;
+            max-width: 100px;
+        }
+        ul {
+            padding: 0;
+            color: $white;
+            font-size: 14px;
+            font-weight: 700;
+            list-style: none;
+            li {
+                margin: 10px 0;
+                opacity: 0.5;
+                cursor: default;
+                .material-icons {
+                    margin-right: 10px;
+                    vertical-align: middle;
+                }
+                &.complete {
+                    //
+                }
+                &.current {
+                    opacity: 1;
+                }
+            }
+        }
+        .help-button {
+            @include transition (all, 200ms, linear);
+            position: absolute;
+            bottom: 50px;
+            left: 50px;
+            color: $white;
+            font-size: 14px;
+            font-weight: 700;
+            opacity: 0.5;
+            &:hover {
+                opacity: 1;
+            }
+            .material-icons {
+                margin-right: 10px;
+                vertical-align: middle;
+            }
+        }
+    }
+    h3 {
+        font-size: 13px;
+        font-weight: 700;
+        text-transform: uppercase;
+        color: $primary;
+        padding-bottom: 4px;
+        margin: 0 0 4px 0;
+        // border-bottom: 1px solid $gray-1;
+    }
+    table {
+        margin-bottom: 30px;
+        color: $gray-4;
+        font-size: 12px;
+        width: 100%;
+        border-spacing: 0;
+        tr:nth-child(odd) {
+            background-color: rgba($primary, 0.05);
+        }
+        td {
+            padding: 2px 2px;
+        }
+        .item {
+            font-weight: 500;
+            height: 22px;
+        }
+        .result {
+            text-align: right;
+        }
+        .second-line {
+            margin-top: 4px;
+            margin-bottom: 4px;
+            padding-left: 20px;
+            color: $gray-3;
+        }
+        .subdued {
+            color: $gray-3;
+            font-size: 11px;
+        }
+    }
+    input[type=checkbox] {
+        margin: 0;
+    }
 }
 
 // Classes
@@ -297,12 +351,12 @@ input[type=number] {
 }
 
 .label-important {
-    color: $bad;
+    color: $serious;
     font-weight: 500;
 }
 
 .label-success {
-    color: $mediumGrey;
+    color: $gray-4;
     font-weight: bold;
 }
 
@@ -319,38 +373,13 @@ input[type=number] {
     width: 30%;
 }
 
-.step-3 {
-    h3 {
-        font-size: 16px;
-        margin-bottom: 0px;
-        margin-top: 40px;
-        font-weight: 400;
-        color: $darkGrey;
-    }
-    table {
-        font-size: 12px;
-        width: 100%;
-        .item {
-            font-weight: 500;
-            //width: 200px;
-            height: 22px;
-        }
-        .result {
-            text-align: right;
-        }
-    }
-    input[type=checkbox] {
-        margin: 0;
-    }
-}
-
 .config-paste {
     font-size: 12px;
     padding-left: 30px;
 }
 
 .error-container {
-    background-color: $bad;
+    background-color: $serious;
     color: white;
     padding: 20px;
     margin: 0 0 20px 0;
@@ -361,9 +390,17 @@ input[type=number] {
 }
 
 .error {
-    border: 1px solid $bad !important;
+    border: 1px solid $serious !important;
 }
 
 .errors {
-    color: $bad;
+    font-size: 14px;
+    line-height: 18px;
+    margin-bottom: 20px;
+    p {
+        @include border-radius;
+        background-color: $serious;
+        color: $white;
+        padding: 10px;
+    }
 }

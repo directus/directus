@@ -5,7 +5,6 @@
     {% include 'partials/warnings.twig.html' %}
     {% include 'partials/errors.twig.html' %}
     <h3>{{ 'Project Configuration'|t }}</h3>
-    <hr>
     <table>
         <tbody>
         <tr>
@@ -25,14 +24,13 @@
     </table>
 
     <h3>{{ 'Database Configuration'|t }}</h3>
-    <hr>
     <table>
         <tbody>
             {% if directus.data.getSafe('strict_mode_enabled') == true %}
             <tr id="strict_mode_enabled">
                 <td class="item">{{ 'Strict Mode Disabled'|t }} (<a
                     href="http://getdirectus.com/docs/developer/installation"
-                    target="_blank"><u>{{ 'Learn More'|t }}</u></a>)
+                    target="_blank" class="underline">{{ 'Learn More'|t }}</a>)
                 </td>
                 <td class="result"><span class="label label-important">{{ 'No'|t }}</span></td>
             </tr>
@@ -69,7 +67,6 @@
     </table>
 
     <h3>{{ 'Pre-Installation Check'|t }}</h3>
-    <hr>
     <table>
         <tbody>
         <tr>
@@ -81,7 +78,7 @@
             <td class="result"><span class="label label-success">{{ 'Yes'|t }}</span></td>
         </tr>
         <tr>
-            <td class="item">{{ 'Composer Dependencies Installed'|t }} (../api/composer.json)</td>
+            <td class="item">{{ 'Composer Dependencies Installed'|t }} <span class="subdued">(../api/composer.json)</span></td>
             <td class="result">{% if file_exists('../vendor/autoload.php') %}
                     <span class="label label-success">{{ 'Yes'|t }}</span>
                 {% else %}
@@ -101,7 +98,7 @@
             <td class="result"><span class="label label-success">{{ 'Yes'|t }}</span></td>
         </tr>
         <tr>
-            <td class="item">{{ 'Imagick PHP Extension (Optional)'|t }}</td>
+            <td class="item">{{ 'Imagick PHP Extension (Optional)'|t }}<div class="second-line">{{ 'Adds TIFF/PSD/PDF Thumbnail Support'|t }}</div></td>
             <td class="result">{% if extension_loaded('imagick') %}
                     <span class="label label-success">{{ 'Yes'|t }}</span>
                 {% else %}
@@ -109,11 +106,8 @@
                 {% endif %}</td>
         </tr>
         <tr>
-            <td style="padding-left: 30px;">{{ 'Adds TIFF/PSD/PDF Thumbnail Support'|t }}</td>
-        </tr>
-        <tr>
             <td class="item">{{ 'Mod_Rewrite Enabled'|t }} (<a href="http://getdirectus.com/docs/developer/faq"
-                                                                    target="_blank"><u>{{ 'Learn More'|t }}</u></a>)
+                                                                    target="_blank" class="underline">{{ 'Learn More'|t }}</a>)
             </td>
             <td class="result">{% if ping_server() %}
                     <span class="label label-success">{{ 'Yes'|t }}</span>
@@ -122,7 +116,7 @@
                 {% endif %}</td>
         </tr>
         <tr>
-            <td class="item">{{ 'Logs Directory Writable'|t }} (../api/logs/)</td>
+            <td class="item">{{ 'Logs Directory Writable'|t }} <span class="subdued">(../api/logs/)</span></td>
             <td class="result">{% if is_writable('../api/logs') %}
                     <span class="label label-success">{{ 'Yes'|t }}</span>
                 {% else %}
@@ -130,20 +124,20 @@
                 {% endif %}</td>
         </tr>
         <tr>
-            <td class="item">{{ 'Media Directory Writable'|t }} (/storage/uploads)</td>
+            <td class="item">
+                {{ 'Media Directory Writable'|t }} <span class="subdued">(/storage/uploads)</span>
+                {% if not is_writable('../storage/uploads') %}
+                <div class="second-line">{{ "The default upload directories are either missing or don't have write permission. You can add these directories/permissions on your server or update the directus_storage_adapters table with new paths."|t }}</div>
+                {% endif %}
+            </td>
             <td class="result">{% if is_writable('../storage/uploads') %}
                     <span class="label label-success">{{ 'Yes'|t }}</span>
                 {% else %}
                     <span class="label label-important">{{ 'No'|t }}</span>
                 {% endif %}</td>
         </tr>
-        {% if not is_writable('../storage/uploads') %}
-            <tr>
-                <td style="padding-left: 30px;padding-bottom: 10px;">{{ "The default upload directories are either missing or don't have write permission. You can add these directories/permissions on your server or update the directus_storage_adapters table with new paths."|t }}</td>
-            </tr>
-        {% endif %}
         <tr>
-            <td class="item">{{ 'Config File Writable'|t }} (../api/config.php)</td>
+            <td class="item">{{ 'Config File Writable'|t }} <span class="subdued">(../api/config.php)</span></td>
             <td class="result">{% if is_writable('../api') %}
                     {% set showConfig = false %}
                     <span class="label label-success">{{ 'Yes'|t }}</span>
@@ -162,7 +156,6 @@
     {% endif %}
 
     <h3>{{ 'Email This Summary?'|t }}</h3>
-    <hr>
     <table>
         <tbody>
         <tr>

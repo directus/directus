@@ -64,10 +64,10 @@
     <label for="db_schema">{{ 'Initial Schema'|t }}</label>
     <div class="select-container">
         <select name="db_schema" id="db_schema">
-            <option value="">{{ 'None Clean Database'|__t }}</option>
+            <option value="">{{ 'None Clean Database'|t }}</option>
             {% for dbSchema in directus.step.getSafeData('db_schemas') %}
                 <option
-                    value="{{ dbSchema.id }}" {{ directus.step.getSafeData('db_schema') and directus.step.getSafeData('db_schema') == dbSchema.id ? 'selected' : '' }}>{{ dbSchema.name|__t }}</option>
+                    value="{{ dbSchema.id }}" {{ directus.step.getSafeData('db_schema') and directus.step.getSafeData('db_schema') == dbSchema.id ? 'selected' : '' }}>{{ dbSchema.name|t }}</option>
             {% endfor %}
         </select>
         <i class="material-icons select-arrow">arrow_drop_down</i>

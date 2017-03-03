@@ -1,13 +1,15 @@
 <div class="header">
-    <img src="{{ directus.root_path }}installation/assets/directus-logo.png">
-    <h1>{{ directus.step.getTitle()|t }}</h1>
-    <div class="breadcrumb">
+    <a href="https://getdirectus.com" target="_blank">
+        <img src="{{ directus.root_path }}installation/assets/directus-logo.svg">
+    </a>
+
+    <ul class="breadcrumb">
         {% for step in directus.steps %}
-            {% if loop.index0 > 0 %}
-                <span class="separator">●</span>
-            {% endif %}
-            <span class="{{ directus.step.getName() == step.getName() ? 'current' : '' }}">{{ loop.index0 }}
-                . {{ step.getShortTitle()|t }}</span>
+            <li class="{{ directus.step.getName() == step.getName() ? 'current' : '' }}"><i class="material-icons">{{ directus.step.getName() == step.getName() ? 'brightness_1' : 'check_circle' }}</i>{{ step.getShortTitle()|t }}</li>
         {% endfor %}
-    </div>
+    </ul>
+
+    <a href="https://docs.getdirectus.com" target="_blank" class="help-button">
+        <i class="material-icons">help</i>{{ 'Help'|t }}
+    </a>
 </div>
