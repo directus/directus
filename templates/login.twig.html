@@ -64,7 +64,7 @@
         }
 
         {% if inactive %}
-        message("{{'logged_out_due_to_inactivity'|trans}}", true);
+        message("{{'logged_out_due_to_inactivity'|trans}}", false);
         {% endif %}
 
         function clear_messages() {
