@@ -1614,6 +1614,8 @@ table {
           height: 30px; }
           table tbody tr td .workflow .state.text-align {
             line-height: 26px; }
+      table tbody tr td .no-value {
+        color: #CCCCCC; }
       table tbody tr td img {
         display: block;
         max-height: 40px;
