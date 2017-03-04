@@ -42,7 +42,7 @@ class GitHubProvider extends TwoSocialProvider
         $this->provider = new Github([
             'clientId'          => $this->config->get('client_id'),
             'clientSecret'      => $this->config->get('client_secret'),
-            'redirectUri'       => $this->config->get('redirect_url'),
+            'redirectUri'       => $this->getRedirectUrl($this->getName()),
         ]);
 
         return $this->provider;

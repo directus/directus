@@ -70,6 +70,13 @@ abstract class AbstractSocialProvider implements SocialProviderInterface
         return $this->token;
     }
 
+    public function getRedirectUrl($name)
+    {
+        $request = Application::getInstance()->request();
+
+        return rtrim($request->getUrl(), '/') . '/auth/' . $name . '/receive';
+    }
+
     /**
      * Creates the provider oAuth client
      *

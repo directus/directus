@@ -10,6 +10,7 @@
 
 namespace Directus\Authentication;
 
+use Directus\Application\Application;
 use League\OAuth2\Client\Provider\Google;
 
 /**
@@ -39,11 +40,13 @@ class GoogleProvider extends TwoSocialProvider
      */
     protected function createProvider()
     {
+        $request = Application::getInstance()->request();
+
         $this->provider = new Google([
             'clientId'          => $this->config->get('client_id'),
             'clientSecret'      => $this->config->get('client_secret'),
-            'redirectUri'       => $this->config->get('redirect_url'),
-            'hostedDomain'      => $this->config->get('hosted_domain'),
+            'redirectUri'       => $this->getRedirectUrl($this->getName()),
+            'hostedDomain'      => $request->getUrl(),
         ]);
 
         return $this->provider;
