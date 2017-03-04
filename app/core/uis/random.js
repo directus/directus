@@ -22,14 +22,14 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/notification', 'core/t']
 
     events: {
       'click .string-generate': function(e) {
-        var length = this.options.settings.get('string_length')
+        var length = this.options.settings.get('string_length');
 
         this.generateString(length);
       }
     },
 
     generateString: function(length) {
-      length = (length || 16);
+      length = (length || this.options.settings.get('string_length') || 32);
       var randomSuccess = _.bind(function(resp, textStatus, jqXHR) {
         if(!_.isEmpty(resp) && !_.isEmpty(resp.data.random)) {
           this.$el.find('input.password-primary').val(resp.data.random);
@@ -73,7 +73,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/notification', 'core/t']
     id: 'random',
     dataTypes: ['VARCHAR'],
     variables: [
-      {id: 'string_length', type: 'Number', default_value: 16, ui: 'numeric', char_length: 200},
+      {id: 'string_length', type: 'Number', default_value: 32, ui: 'numeric', char_length: 200},
       // Allow the user to input their own value
       {id: 'allow_any_value', type: 'Boolean', default_value: true, ui: 'checkbox'},
       {id: 'auto_generate',  type: 'Boolean', default_value: false, ui: 'checkbox'},
