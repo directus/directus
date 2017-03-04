@@ -2,296 +2,298 @@
 // Header
 
 .header {
-	@include box-shadow (0px, 2px, 6px, 0px, 0.25);
-	position: fixed;
-	top: 0;
-	left: 0;
-	right: 0;
-	width: 100%;
-	height: 64px;
-	background-color: $gray-7;
-	z-index: 10;
-	.logo {
-		position: absolute;
-		top: 0;
-		left: 0;
-		width: 200px;
-		height: 100%;
-		text-align: center;
-		// border-right: 1px solid $gray-5;
-		.directus {
-			@include transition (all, $timing-short, ease-in-out);
-			height: 40px;
-			margin-top: 13px;
-		}
-		.fading-separator {
-			position: absolute;
-			right: -1px;
-			top: 10px;
-			width: 1px;
-			height: 44px;
-			background: linear-gradient($gray-6 0%, $gray-5 15%, $gray-5 85%, $gray-6 100%) no-repeat 50% 75%;
-		}
-		&:hover {
-			.directus {
-				// margin-top: 18px;
-				// height: 44px;
-				opacity: 0.5;
-			}
-		}
-	}
-	.breadcrumb {
-		position: absolute;
-		top: 17px;
-		left: 220px;
-		color: $gray-4;
-		font-size: 24px;
-		font-weight: 300;
-		cursor: default;
-		.hamburger {
-			@include transition (color, $timing-short, ease-in-out);
-			display: none;
-			cursor: pointer;
-			padding: 5px;
-			vertical-align: middle;
-			margin: -4px 3px 0 0;
-			&:hover {
-				color: $white;
-			}
-		}
-		.crumb {
-			@include transition (color, $timing-short, ease-in-out);
-			&:hover,
-			&.active {
-				color: $white;
-			}
-		}
-		.separator {
-			color: $gray-5;
-			vertical-align: middle;
-		}
-		.bookmark {
-			@include transition (color, $timing-short, ease-in-out);
-			display: inline-block;
-			color: $gray-5;
-			cursor: pointer;
-			vertical-align: middle;
-			padding: 5px;
-			margin: -2px 0 0 3px;
-			&:hover {
-				color: $white;
-			}
-			&.active {
-				color: $primary;
-			}
-		}
-	}
-	#bulkStatus {
-		@include transition (color, $timing-short, ease-in-out);
-		display: none;
-		position: absolute;
-		top: 11px;
-		right: 192px;
-		&.bulkEdit {
-			right: 256px;
-		}
-		select {
-			border: none;
-		}
-	}
-	.filter {
-		position: absolute;
-		top: 11px;
-		right: 128px;
-		width: 300px;
-		text-align: right;
-		input.general {
-			width: 100%;
-			height: 40px;
-			padding-left: 40px;
-			padding-right: 50px;
-			z-index: 2;
-			border: none;
-		}
-		.search {
-			position: absolute;
-			top: 8px;
-			left: 8px;
-			color: $gray-3;
-		}
-		.clear {
-			@include transition (color, $timing-short, ease-in-out);
-			position: absolute;
-			top: 8px;
-			right: 24px;
-			cursor: pointer;
-			color: $gray-3;
-			&:hover {
-				color: $serious;
-			}
-		}
-		.filter-dropdown-toggle {
-			@include transition (all, $timing-short, ease-in-out);
-			position: absolute;
-			top: 8px;
-			right: 0;
-			cursor: pointer;
-			color: $gray-3;
-			&:hover {
-				color: $primary;
-			}
-		}
-		&.filter-dropdown-open {
-			input.general {
-				@include border-radius-each (2px, 0, 0, 2px);
-			}
-			.filter-dropdown-toggle {
-				@include rotate (-180);
-			}
-			.filter-dropdown {
-				display: block;
-			}
-		}
-		.filter-dropdown {
-			@include box-shadow (0px, 0px, 6px, 0px, 0.20);
-			display: none;
-			z-index: 1;
-			width: 100%;
-			text-align: left;
-			background-color: $white;
-			color: $gray-5;
-			padding: 20px;
-			border-top: 1px solid $gray-2;
-			h3 {
-				padding-bottom: 6px;
-			}
-			hr {
-				padding-top: 10px;
-				margin-bottom: 18px;
-			}
-			.status-toggle {
-				display: inline-block;
-				margin-right: 20px;
-				span {
-					display: inline-block;
-					vertical-align: middle;
-				}
-			}
-			.add-column-filter {
-				width: 100%;
-				select {
-					width: 100%;
-				}
-			}
-			.column-filter {
-				position: relative;
-				margin-top: 20px;
-				margin-right: 30px;
-				input.date-filter {
-					width: 110px;
-					margin-left: 6px;
-					&::-webkit-clear-button,
-					&::-webkit-inner-spin-button,
-					&::-webkit-calendar-picker-indicator {
-						display: none;
-						-webkit-appearance: none;
-					}
-				}
-				.date-filter select {
-					width: 110px;
-				}
-				.remove-filter {
-					@include transition (all, $timing-short, ease-in-out);
-					position: absolute;
-					top: 24px;
-					right: -35px;
-					cursor: pointer;
-					&:hover {
-						color: $serious;
-					}
-				}
-			}
-		}
-	}
-	.actions {
-		position: absolute;
-		top: 0;
-		right: 0;
-		// #archiveMessages,
-		#bulkDelete,
-		#bulkEdit {
-			display: none;
-		}
-		.action {
-			position: relative;
-			float: right;
-			width: 64px;
-			height: 64px;
-			text-align: center;
-			cursor: pointer;
-			color: $white;
-			&:hover {
-				.action-text {
-					bottom: 6px;
-					opacity: 0.6;
-				}
-				.material-icons {
-					&.center {
-						font-size: 30px;
-					}
-					&.more {
-						opacity: 1;
-					}
-					&.decrease-size {
-						font-size: 26px;
-					}
-				}
-			}
-			&:active {
-				.material-icons.center {
-					font-size: 18px;
-					opacity: 0.4;
-				}
-			}
-			&.primary {
-				background-color: $primary;
-			}
-			&.serious {
-				background-color: $serious;
-			}
-			&.important {
-				background-color: $important;
-			}
-			.material-icons {
-				@include transition (all, $timing-short, ease-in-out);
-				position: absolute;
-				top: 50%;
-				left: 0;
-				width: 100%;
-				transform: translateY(-50%);
-				&.more {
-					top: 0;
-					transform: initial;
-					opacity: 0.2;
-				}
-				&.decrease-size {
-					font-size: 20px;
-				}
-			}
-			.action-text {
-				@include transition (all, $timing-short, ease-in-out);
-				color: $white;
-				font-size: 10px;
-				text-transform: uppercase;
-				font-weight: 700;
-				position: absolute;
-				bottom: 2px;
-				width: 100%;
-				left: 0;
-				right: 0;
-				text-align: center;
-				opacity: 0;
-			}
-		}
-	}
+    @include box-shadow (0px, 2px, 6px, 0px, 0.25);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: 64px;
+    background-color: $gray-7;
+    z-index: 10;
+    .logo {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 200px;
+        height: 100%;
+        text-align: center;
+        // border-right: 1px solid $gray-5;
+        .directus {
+            @include transition (all, $timing-short, ease-in-out);
+            height: 40px;
+            margin-top: 13px;
+        }
+        .fading-separator {
+            position: absolute;
+            right: -1px;
+            top: 10px;
+            width: 1px;
+            height: 44px;
+            background: linear-gradient($gray-6 0%, $gray-5 15%, $gray-5 85%, $gray-6 100%) no-repeat 50% 75%;
+        }
+        &:hover {
+            .directus {
+                // margin-top: 18px;
+                // height: 44px;
+                opacity: 0.5;
+            }
+        }
+    }
+    .breadcrumb {
+        position: absolute;
+        top: 17px;
+        left: 220px;
+        color: $gray-4;
+        font-size: 24px;
+        font-weight: 300;
+        cursor: default;
+        .hamburger {
+            @include transition (color, $timing-short, ease-in-out);
+            display: none;
+            cursor: pointer;
+            padding: 5px;
+            vertical-align: middle;
+            margin: -4px 3px 0 0;
+            &:hover {
+                color: $white;
+            }
+        }
+        .crumb {
+            @include transition (color, $timing-short, ease-in-out);
+            &:hover,
+            &.active {
+                color: $white;
+            }
+        }
+        .separator {
+            color: $gray-5;
+            vertical-align: middle;
+        }
+        .bookmark {
+            @include transition (color, $timing-short, ease-in-out);
+            display: inline-block;
+            color: $gray-5;
+            cursor: pointer;
+            vertical-align: middle;
+            padding: 5px;
+            margin: -2px 0 0 3px;
+            &:hover {
+                color: $white;
+            }
+            &.active {
+                color: $primary;
+            }
+        }
+    }
+    #bulkStatus {
+        @include transition (color, $timing-short, ease-in-out);
+        display: none;
+        position: absolute;
+        top: 11px;
+        right: 192px;
+        &.bulkEdit {
+            right: 256px;
+        }
+        select {
+            border: none;
+        }
+    }
+    .tools-right {
+        .filter {
+            position: absolute;
+            top: 11px;
+            right: 128px;
+            width: 300px;
+            text-align: right;
+            input.general {
+                width: 100%;
+                height: 40px;
+                padding-left: 40px;
+                padding-right: 50px;
+                z-index: 2;
+                border: none;
+            }
+            .search {
+                position: absolute;
+                top: 8px;
+                left: 8px;
+                color: $gray-3;
+            }
+            .clear {
+                @include transition (color, $timing-short, ease-in-out);
+                position: absolute;
+                top: 8px;
+                right: 24px;
+                cursor: pointer;
+                color: $gray-3;
+                &:hover {
+                    color: $serious;
+                }
+            }
+            .filter-dropdown-toggle {
+                @include transition (all, $timing-short, ease-in-out);
+                position: absolute;
+                top: 8px;
+                right: 0;
+                cursor: pointer;
+                color: $gray-3;
+                &:hover {
+                    color: $primary;
+                }
+            }
+            &.filter-dropdown-open {
+                input.general {
+                    @include border-radius-each (2px, 0, 0, 2px);
+                }
+                .filter-dropdown-toggle {
+                    @include rotate (-180);
+                }
+                .filter-dropdown {
+                    display: block;
+                }
+            }
+            .filter-dropdown {
+                @include box-shadow (0px, 0px, 6px, 0px, 0.20);
+                display: none;
+                z-index: 1;
+                width: 100%;
+                text-align: left;
+                background-color: $white;
+                color: $gray-5;
+                padding: 20px;
+                border-top: 1px solid $gray-2;
+                h3 {
+                    padding-bottom: 6px;
+                }
+                hr {
+                    padding-top: 10px;
+                    margin-bottom: 18px;
+                }
+                .status-toggle {
+                    display: inline-block;
+                    margin-right: 20px;
+                    span {
+                        display: inline-block;
+                        vertical-align: middle;
+                    }
+                }
+                .add-column-filter {
+                    width: 100%;
+                    select {
+                        width: 100%;
+                    }
+                }
+                .column-filter {
+                    position: relative;
+                    margin-top: 20px;
+                    margin-right: 30px;
+                    input.date-filter {
+                        width: 110px;
+                        margin-left: 6px;
+                        &::-webkit-clear-button,
+                        &::-webkit-inner-spin-button,
+                        &::-webkit-calendar-picker-indicator {
+                            display: none;
+                            -webkit-appearance: none;
+                        }
+                    }
+                    .date-filter select {
+                        width: 110px;
+                    }
+                    .remove-filter {
+                        @include transition (all, $timing-short, ease-in-out);
+                        position: absolute;
+                        top: 24px;
+                        right: -35px;
+                        cursor: pointer;
+                        &:hover {
+                            color: $serious;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    .actions {
+        position: absolute;
+        top: 0;
+        right: 0;
+        // #archiveMessages,
+        #bulkDelete,
+        #bulkEdit {
+            display: none;
+        }
+        .action {
+            position: relative;
+            float: right;
+            width: 64px;
+            height: 64px;
+            text-align: center;
+            cursor: pointer;
+            color: $white;
+            &:hover {
+                .action-text {
+                    bottom: 6px;
+                    opacity: 0.6;
+                }
+                .material-icons {
+                    &.center {
+                        font-size: 30px;
+                    }
+                    &.more {
+                        opacity: 1;
+                    }
+                    &.decrease-size {
+                        font-size: 26px;
+                    }
+                }
+            }
+            &:active {
+                .material-icons.center {
+                    font-size: 18px;
+                    opacity: 0.4;
+                }
+            }
+            &.primary {
+                background-color: $primary;
+            }
+            &.serious {
+                background-color: $serious;
+            }
+            &.important {
+                background-color: $important;
+            }
+            .material-icons {
+                @include transition (all, $timing-short, ease-in-out);
+                position: absolute;
+                top: 50%;
+                left: 0;
+                width: 100%;
+                transform: translateY(-50%);
+                &.more {
+                    top: 0;
+                    transform: initial;
+                    opacity: 0.2;
+                }
+                &.decrease-size {
+                    font-size: 20px;
+                }
+            }
+            .action-text {
+                @include transition (all, $timing-short, ease-in-out);
+                color: $white;
+                font-size: 10px;
+                text-transform: uppercase;
+                font-weight: 700;
+                position: absolute;
+                bottom: 2px;
+                width: 100%;
+                left: 0;
+                right: 0;
+                text-align: center;
+                opacity: 0;
+            }
+        }
+    }
 }
