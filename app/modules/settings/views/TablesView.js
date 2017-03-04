@@ -951,9 +951,15 @@ function(app, _, Backbone, Directus, EditView, BasePageView, TableModel, ColumnM
 
     tagName: 'tr',
 
-    attributes: function() {
+    attributes: function () {
+      var classes = ['js-row'];
+
+      if (this.unregistedTable) {
+        classes.push('not-managed');
+      }
+
       return {
-        'class': 'js-row',
+        'class': classes.join(' '),
         'data-id': this.model.get('table_name')
       };
     },
@@ -1048,9 +1054,11 @@ function(app, _, Backbone, Directus, EditView, BasePageView, TableModel, ColumnM
       return data;
     },
 
-    initialize: function(options) {
+    constructor: function (options) {
       this.unregistedTable = options.unregistered === true;
       this.parentView = options.parent;
+
+      Backbone.Layout.prototype.constructor.apply(this, arguments);
     }
   });
 
