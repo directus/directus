@@ -9,11 +9,6 @@ function(app, Backbone, EntriesModel, moment) {
 
   return EntriesModel.extend({
 
-    defaults: {
-      first_name: '',
-      last_name: ''
-    },
-
     getAvatar: function() {
       var currentUserAvatar = this.get('avatar');
       if (this.get('avatar_file_id') && this.get('avatar_file_id').has('name')) {
