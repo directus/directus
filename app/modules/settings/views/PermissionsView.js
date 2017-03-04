@@ -44,6 +44,7 @@ function(app, Backbone, Widgets, __t, BasePageView) {
       var view = this.insertView('tbody', new GroupsRow({
         model: model,
         attributes: {
+          'class': model.get('name').toLowerCase() + '-group',
           'data-id': model.id
         }
       }));
