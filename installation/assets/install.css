@@ -31,6 +31,22 @@
   .material-icons.vertical-middle {
     vertical-align: middle; }
 
+::-webkit-input-placeholder {
+  /* Chrome/Opera/Safari */
+  color: #8bc4ea; }
+
+::-moz-placeholder {
+  /* Firefox 19+ */
+  color: #8bc4ea; }
+
+:-ms-input-placeholder {
+  /* IE 10+ */
+  color: #8bc4ea; }
+
+:-moz-placeholder {
+  /* Firefox 18- */
+  color: #8bc4ea; }
+
 body {
   background-color: #268fd5;
   margin: 0;
@@ -113,8 +129,7 @@ input[type=number] {
   box-sizing: border-box;
   -webkit-appearance: none;
   -moz-appearance: none;
-  appearance: none;
-  -webkit-text-fill-color: #666666; }
+  appearance: none; }
   select option,
   input[type=text] option,
   input[type=email] option,
@@ -139,7 +154,7 @@ input[type=number] {
   input[type=password]:-webkit-autofill,
   input[type=number]:-webkit-autofill {
     -webkit-box-shadow: 0 0 0px 1000px #eef7fc inset;
-    color: #666666 !important; }
+    color: #CCCCCC !important; }
   select::-webkit-outer-spin-button, select::-webkit-inner-spin-button,
   input[type=text]::-webkit-outer-spin-button,
   input[type=text]::-webkit-inner-spin-button,

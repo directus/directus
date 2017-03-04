@@ -100,6 +100,19 @@ $important: #FFC107;
 //////////////////////////////////////////////////////////////////////////////
 // Tags and Structure
 
+::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+  color: lighten($primary, 20%);
+}
+::-moz-placeholder { /* Firefox 19+ */
+  color: lighten($primary, 20%);
+}
+:-ms-input-placeholder { /* IE 10+ */
+  color: lighten($primary, 20%);
+}
+:-moz-placeholder { /* Firefox 18- */
+  color: lighten($primary, 20%);
+}
+
 body {
     background-color: darken($primary, 4%);
     margin: 0;
@@ -172,7 +185,7 @@ input[type=number] {
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
-    -webkit-text-fill-color: $gray-5; // Controls autocomplete, needs to differ from actual entry
+    // -webkit-text-fill-color: lighten($primary, 20%); // Controls placeholder and autocomplete, needs to differ from actual entry
     option {
         padding: 10px 12px;
     }
@@ -184,7 +197,7 @@ input[type=number] {
     }
     &:-webkit-autofill {
         -webkit-box-shadow: 0 0 0px 1000px lighten($primary, 43%) inset;
-        color: $gray-5 !important;
+        color: $gray-3 !important;
     }
     &::-webkit-outer-spin-button,
     &::-webkit-inner-spin-button {
