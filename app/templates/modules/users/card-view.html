@@ -6,11 +6,11 @@
     <div class="online">{{#if online}}Online{{/if}}</div>
     <div class="info">
         <div class="name">{{first_name}} {{last_name}}</div>
-        <div class="position">{{#if position}}{{position}}{{/if}}</div>
+        <div class="position">{{#if position}}{{position}}{{else}}--{{/if}}</div>
         <div class="extended hidden"><!-- Toggle for details -->
-            <div class="location"><i class="material-icons">place</i> {{#if location}}{{location}}{{/if}}</div>
-            <div class="phone"><i class="material-icons">local_phone</i> {{#if phone}}{{phone}}{{/if}}</div>
-            <div class="email"><i class="material-icons">email</i> {{#if email}}{{email}}{{/if}}</div>
+            <div class="location"><i class="material-icons">place</i> {{#if location}}{{location}}{{else}}--{{/if}}</div>
+            <div class="phone"><i class="material-icons">local_phone</i> {{#if phone}}{{phone}}{{else}}--{{/if}}</div>
+            <div class="email"><i class="material-icons">email</i> {{#if email}}{{email}}{{else}}--{{/if}}</div>
         </div>
         <i class="material-icons more">more_vert</i>
     </div>
