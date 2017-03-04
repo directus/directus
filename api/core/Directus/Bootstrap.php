@@ -5,6 +5,7 @@ namespace Directus;
 use Directus\Application\Application;
 use Directus\Authentication\FacebookProvider;
 use Directus\Authentication\GitHubProvider;
+use Directus\Authentication\GoogleProvider;
 use Directus\Authentication\Provider as AuthProvider;
 use Directus\Authentication\Social;
 use Directus\Authentication\TwitterProvider;
@@ -207,7 +208,8 @@ class Bootstrap
         return [
             'github' => GitHubProvider::class,
             'facebook' => FacebookProvider::class,
-            'twitter' => TwitterProvider::class
+            'twitter' => TwitterProvider::class,
+            'google' => GoogleProvider::class
         ];
     }
 
