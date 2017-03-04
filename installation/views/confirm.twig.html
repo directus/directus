@@ -154,17 +154,5 @@
         {% set configText = createConfigFileContent(configContent) %}
         <span class='config-paste label label-important'>{{ 'Manually copy the code below into'|t }} ../api/config.php</span><br><textarea readonly>{{ configText|t }}</textarea><span id='failSpan'><button id='retryButton' class='button no-t-margin'>{{ 'Check Config File'|t }}</button></span>
     {% endif %}
-
-    <!--
-    <h3>{{ 'Email This Summary?'|t }}</h3>
-    <table>
-        <tbody>
-        <tr>
-            <td class="item">{{ directus.data.getSafe('directus_email') }}</td>
-            <td class="result"><input type="checkbox" value="yes" name="send_config_email" checked></td>
-        </tr>
-        </tbody>
-    </table>
-    -->
 </div>
 {% endblock %}
