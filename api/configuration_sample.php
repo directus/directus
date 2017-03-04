@@ -25,6 +25,7 @@ return [
         //   'bucket' => 's3-bucket'
     ],
 
+    // Third-party authentication options
     'auth' => [
         // 'github' => [
         //     'client_id' => '',
