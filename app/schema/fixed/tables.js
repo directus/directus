@@ -5,8 +5,6 @@ define(function(require, exports, module) {
   module.exports = {
     "id": "directus_tables",
     "table_name": "directus_tables",
-    "hidden": true,
-    "single": false,
     "primary_column": "table_name",
     "url": "api/1.1/tables",
 
@@ -98,6 +96,8 @@ define(function(require, exports, module) {
         "type":"TINYINT",
         "default_value": false,
         "system":false,
+        "required": false,
+        "nullable": true,
         "hidden_list":false,
         "hidden_input":false,
         "sort": 3
@@ -109,6 +109,8 @@ define(function(require, exports, module) {
         "type":"TINYINT",
         "default_value": false,
         "system":false,
+        "required": false,
+        "nullable": true,
         "hidden_list":false,
         "hidden_input":false,
         "sort": 4
@@ -132,6 +134,8 @@ define(function(require, exports, module) {
         "ui": "checkbox",
         "type": "TINYINT",
         "system": false,
+        "required": false,
+        "nullable": true,
         "hidden_list": false,
         "hidden_input": false,
         "sort": 6
