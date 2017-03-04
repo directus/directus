@@ -89,7 +89,7 @@ class MySQLSchemaTest extends PHPUnit_Framework_TestCase
 
         $data = ['points' => '1'];
         $columns = [
-            ['id' => 'points', 'type' => 'int']
+            ['id' => 'points', 'name' => 'points', 'type' => 'int']
         ];
 
         foreach($columns as $key => $column) {
