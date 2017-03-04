@@ -34,6 +34,7 @@ define(function(require, exports, module) {
         "hidden_list": false,
         "hidden_input": false,
         "required": false,
+        "nullable": true,
         "sort": 1,
         "options": {
           "placeholder_text": "eg {{first_name}} {{last_name}}"
@@ -50,6 +51,7 @@ define(function(require, exports, module) {
         "hidden_list": false,
         "hidden_input": false,
         "required": false,
+        "nullable": true,
         "sort": 2,
         "options": {
           "placeholder_text": "eg http://example.com/articles/{{slug}}"
@@ -65,7 +67,7 @@ define(function(require, exports, module) {
         "related_table": "directus_columns",
         "junction_key_right": "table_name",
         "default_value": null,
-        "required": false,
+        "required": true,
         "system": false,
         "hidden_list": false,
         "hidden_input": false,
@@ -82,6 +84,8 @@ define(function(require, exports, module) {
         "type": "VARCHAR",
         "length": 200,
         "default_value": "table",
+        "required": false,
+        "nullable": true,
         "system": false,
         "hidden_list": false,
         "hidden_input": false,
@@ -115,6 +119,8 @@ define(function(require, exports, module) {
         "ui":"textinput",
         "type":"VARCHAR",
         "default_value": 1,
+        "required": false,
+        "nullable": true,
         "system":false,
         "hidden_list":false,
         "hidden_input":false,
@@ -155,6 +161,7 @@ define(function(require, exports, module) {
         "hidden_input": false,
         "default_value": "sort",
         "required": false,
+        "nullable": true,
         "sort": 8,
         "comment": ""
       },
@@ -168,6 +175,7 @@ define(function(require, exports, module) {
         "hidden_list": false,
         "hidden_input": false,
         "required": false,
+        "nullable": true,
         "sort": 9,
         "comment": ""
       },
@@ -181,6 +189,7 @@ define(function(require, exports, module) {
         "hidden_list": false,
         "hidden_input": false,
         "required": false,
+        "nullable": true,
         "sort": 10,
         "comment": ""
       },
@@ -194,6 +203,7 @@ define(function(require, exports, module) {
         "hidden_list": false,
         "hidden_input": false,
         "required": false,
+        "nullable": true,
         "sort": 11,
         "comment": ""
       },
@@ -207,6 +217,7 @@ define(function(require, exports, module) {
         "hidden_list": false,
         "hidden_input": false,
         "required": false,
+        "nullable": true,
         "sort": 12,
         "comment": ""
       },
@@ -220,6 +231,7 @@ define(function(require, exports, module) {
         "hidden_list": false,
         "hidden_input": false,
         "required": false,
+        "nullable": true,
         "sort": 13,
         "comment": ""
       }
