@@ -99,10 +99,10 @@ class Social
     public static function supported()
     {
         return [
-            'github',
-            'twitter',
             'google',
-            'facebook'
+            'facebook',
+            'twitter',
+            'github'
         ];
     }
 }
