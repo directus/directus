@@ -52,6 +52,10 @@ class InstallerUtils
      */
     protected static function createConfigFile($data, $path)
     {
+        $data = ArrayUtils::defaults([
+            'directus_path' => '/'
+        ], $data);
+
         $configStub = static::createConfigFileContent($data);
 
         $configPath = rtrim($path, '/') . '/config.php';

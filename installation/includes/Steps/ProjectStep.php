@@ -16,11 +16,6 @@ class ProjectStep extends AbstractStep
             'rules' => 'required'
         ],
         [
-            'name' => 'directus_path',
-            'label' => 'Project Path',
-            'rules' => 'required'
-        ],
-        [
             'name' => 'directus_email',
             'label' => 'Project Email',
             'rules' => 'required|email'

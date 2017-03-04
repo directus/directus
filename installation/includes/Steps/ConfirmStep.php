@@ -4,6 +4,7 @@ namespace Directus\Installation\Steps;
 
 use Directus\Database\Connection;
 use Directus\Mail\Mail;
+use Directus\Util\ArrayUtils;
 use Directus\Util\Installation\InstallerUtils;
 use Directus\Util\StringUtils;
 
@@ -54,6 +55,7 @@ class ConfirmStep extends AbstractStep
         }
 
         $stepsData = [];
+        $stepsData['directus_path'] = ArrayUtils::get($state, 'root_path', '/');
         foreach ($state['steps'] as $aStep) {
             if ($stepData = $aStep->getData()) {
                 $stepsData = array_merge($stepsData, $stepData);
