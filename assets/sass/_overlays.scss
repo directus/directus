@@ -360,6 +360,44 @@ body.help {
 				}
 			}
 		}
+		&.interface .modal-bg {
+			width: 600px;
+			text-align: left;
+			h1 {
+				margin-bottom: 20px;
+			}
+			.toggle-pane {
+				position: absolute;
+				top: 35px;
+				right: 30px;
+				color: $primary;
+				font-size: 16px;
+			}
+			.row {
+				position: relative;
+				font-size: 14px;
+				color: $gray-4;
+				border-top: 1px solid $gray-1;
+				.fields {
+					.field {
+						padding: 16px 0 20px 0;
+						&:last-child {
+							border-bottom: none;
+						}
+						.label {
+							display: block;
+							width: 100%;
+						}
+						.comment {
+							width: 100%;
+						}
+						.interface {
+							margin-top: 6px;
+						}
+					}
+				}
+			}
+		}
 		&.column .modal-bg {
 			width: 600px;
 			text-align: left;

@@ -50,6 +50,24 @@
 			font-weight: 500;
 			color: $gray-3;
 		}
+		input.subject {
+			@include transition (all, 400ms, ease-in-out);
+			@include border-radius (0);
+			margin-top: 100px;
+			margin-bottom: 20px;
+			border: none;
+			border-bottom: 1px solid $gray-3;
+			font-size: 30px;
+			font-weight: 300;
+			color: $gray-5;
+			padding: 10px 0 20px 0;
+			&:focus {
+				border-bottom: 1px solid $primary;
+				-webkit-box-shadow: 0px 0px 0px 0px transparent;
+				-moz-box-shadow: 0px 0px 0px 0px transparent;
+				box-shadow: 0px 0px 0px 0px transparent;
+			}
+		}
 		h1 {
 			margin-top: 100px;
 			margin-bottom: 4px;
@@ -65,15 +83,17 @@
 		margin-left: -20px;
 	}
 	.seen {
-		@include transition (all, 400ms, ease-in-out);
 		margin-top: 20px;
 		margin-bottom: -15px;
 		font-size: 11px;
 		color: $gray-2;
 		font-weight: 500;
 		cursor: pointer;
-		&:hover {
-			color: $gray-4;
+		a {
+			@include transition (all, 400ms, ease-in-out);
+			&:hover {
+				color: $gray-4;
+			}
 		}
 		.material-icons {
 			font-size: 16px;
@@ -87,6 +107,26 @@
 		color: $gray-4;
 		font-size: 16px;
 		line-height: 30px;
+		textarea {
+			border: 1px solid $gray-3;
+			min-height: 300px;
+		}
+	}
+	.button-group {
+		.button {
+			@include transition (all, 400ms, ease-in-out);
+			display: inline-block;
+			min-width: 200px;
+			margin-top: 20px;
+			// opacity: 0;
+			&.subdued {
+				display: inline-block;
+				min-width: 40px;
+				width: 40px;
+				margin-left: 20px;
+				padding-left: 10px;
+			}
+		}
 	}
 	.response {
 		position: relative;
@@ -172,6 +212,9 @@
 	width: 40%;
 	height: 100%;
 	overflow: auto;
+	&.empty {
+		width: 100%;
+	}
 	.message-preview {
 		@include transition (all, $timing-short, ease-in-out);
 		position: relative;

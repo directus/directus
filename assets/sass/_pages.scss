@@ -1,6 +1,23 @@
 //////////////////////////////////////////////////////////////////////////////
 // Page
 
+.error-page {
+	text-align: center;
+	padding: 100px 40px;
+	h1 {
+		color: $gray-6;
+		margin-bottom: 10px;
+	}
+	a {
+		@include transition (all, $timing-short, ease-in-out);
+		color: $primary;
+		cursor: pointer;
+		&:hover {
+			color: darken($primary, 20%);
+		}
+	}
+}
+
 .page {
 	@include transition (all, $timing-short, ease-in-out);
 	position: absolute;
@@ -11,12 +28,5 @@
 	overflow: scroll;
 	&.define-edge {
 		border-left: 1px solid $gray-2;
-	}
-	// Fixes for backbone dynamic element injection
-	.page-container {
-		height: 100%;
-		.main-container {
-			height: 100%;
-		}
 	}
 }

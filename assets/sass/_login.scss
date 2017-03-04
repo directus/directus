@@ -1,5 +1,5 @@
 //////////////////////////////////////////////////////////////////////////////
-// Page
+// Login
 
 .preview-intro {
 	@include box-shadow ($x: 0px, $y: 1px, $blur: 4px, $spread: 0px, $opacity: 0.2);
@@ -123,7 +123,9 @@ body.login {
 				left: 10px;
 				font-size: 16px;
 				color: $gray-2;
+				pointer-events: none;
 				&.forgot {
+					pointer-events: auto;
 					cursor: pointer;
 					left: auto;
 					right: 10px;
@@ -138,6 +140,7 @@ body.login {
 				padding-left: 30px;
 				font-size: 14px;
 				border-color: $gray-2;
+				background-color: $white !important;
 				&:focus {
 					border-color: $white;
 				}

@@ -106,3 +106,11 @@
 		transform: rotate(360deg);
 	}
 }
+
+@keyframes floating {
+	0% {transform: translate(0%,0%);}
+	25% {transform: translate(5%,15%);}
+	50% {transform: translate(10%,5%);}
+	75% {transform: translate(0%,15%);}
+	100% {transform: translate(0%,0%);}
+}

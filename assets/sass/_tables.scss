@@ -1,6 +1,11 @@
 //////////////////////////////////////////////////////////////////////////////
 // Tables
 
+.table-scroll-x {
+	width: 100%;
+	overflow: scroll;
+}
+
 table {
 	@include transition (width, $timing-short, ease-in-out);
 	width: 100%;
@@ -136,6 +141,8 @@ table {
 				@include transition (padding, $timing-short, ease-in-out);
 				min-width: 100px;
 				height: 40px;
+				padding-left: 4px;
+				padding-right: 4px;
 				&.reorder {
 					white-space: nowrap;
 					width: 30px;
@@ -318,6 +325,13 @@ table {
 						}
 					}
 				}
+				&.text-abrev {
+					white-space: nowrap;
+					max-width: 300px;
+					overflow-x: hidden;
+					text-overflow: ellipsis;
+					padding-right: 30px;
+				}
 				.workflow {
 					display: none;
 					.state {
@@ -332,6 +346,14 @@ table {
 					display: block;
 					max-height: 40px;
 					max-width: 40px;
+				}
+				.search-term {
+					@include border-radius (2px);
+					background-color: lighten($primary, 40%);
+					padding: 3px 1px 3px 1px;
+					margin-left: -1px;
+					margin-right: -1px;
+					color: darken($primary, 5%);
 				}
 				.photo-stack {
 					height: 27px;
@@ -378,16 +400,31 @@ table {
 				font-weight: 700;
 				text-transform: uppercase;
 				padding: 12px 4px;
-				.choose-metric {
-					font-size: 20px;
-					vertical-align: middle;
-					margin-top: -2px;
-					cursor: pointer;
-					&:hover {
-						color: $primary;
+				.choose-footer-metric {
+					margin-top: 3px;
+					select {
+						background-color: transparent;
+						border: none;
+						padding: 0 30px 0 0;
+						height: auto;
+						&:focus {
+							-webkit-box-shadow: none;
+							-moz-box-shadow: none;
+							box-shadow: none;
+						}
+					}
+					.select-arrow {
+						background-color: transparent;
+						top: -7px;
 					}
 				}
 			}
+		}
+	}
+	&.item-listing {
+		tbody tr td {
+			white-space: nowrap;
+			height: auto;
 		}
 	}
 	&.pad-first { // For tables that don't start with icons on the left
@@ -406,26 +443,28 @@ table {
 			top: 64px;
 			left: 200px;
 			right: 0;
-			width: 100%;
+			// width: 100%;
 			z-index: 2;
 		}
 	}
 	&.charted {
-		margin-top: 40px;
 		&.fixed-header {
 			thead {
-				top: 320px;
+				top: 304px;
 			}
 		}
 	}
 	&.compact tbody tr td {
-		padding: 0 4px;
+		padding-top: 2px;
+		padding-bottom: 2px;
 	}
 	&.cozy tbody tr td {
-		padding: 6px 4px;
+		padding-top: 6px;
+		padding-bottom: 6px;
 	}
 	&.comfortable tbody tr td {
-		padding: 12px 4px;
+		padding-top: 12px;
+		padding-bottom: 12px;
 	}
 	&.striped tbody tr:nth-child(even) td {
 		background-color: lighten($gray-1, 5%); // #fafafa
@@ -450,7 +489,7 @@ table {
 	position: relative;
 	height: 200px;
 	background-color: $white;
-	margin: 40px 20px 30px 20px;
+	margin: 40px 20px 0 20px;
 	padding-bottom: 20px;
 	.chart-title {
 		@include transition (all, $timing-short, ease-in-out);

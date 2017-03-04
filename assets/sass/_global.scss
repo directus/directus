@@ -7,6 +7,9 @@
 ::-moz-selection {
   background: lighten($primary, 40%);
 }
+input:-webkit-autofill {
+	-webkit-box-shadow: 0 0 0px 1000px white inset;
+}
 // ::-webkit-input-placeholder {
 //   font-weight: 500;
 // }
@@ -229,6 +232,16 @@ ul {
 }
 
 //////////////////////////////////////////////////////////////////////////////
+// Structure
+
+.page-container {
+	height: 100%;
+	.content-body {
+		height: 100%;
+	}
+}
+
+//////////////////////////////////////////////////////////////////////////////
 // Other
 
 .section-break {
@@ -249,6 +262,7 @@ ul {
 	display: inline-block;
 	vertical-align: top; // Fixes selects next to inputs not being aligned (could affect things elsewhere)
 	select {
+		height: 40px;
 		padding-right: 30px;
 		-webkit-appearance: none;
 		-moz-appearance: none;

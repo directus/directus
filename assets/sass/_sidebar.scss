@@ -11,6 +11,34 @@
 	padding-top: 64px;
 	background-color: $gray-1;
 	z-index: 9;
+	.loading-pane {
+		position: relative;
+		width: 100%;
+		height: 100%;
+		text-align: center;
+		background-color: $gray-1;
+		z-index: 2;
+		display: none;
+		&.active {
+			display: block;
+		}
+		.spinner {
+			position: relative;
+			display: inline-block;
+			top: 50%;
+			margin-top: -20px;
+			width: 40px;
+			height: 40px;
+			border: 3px solid $gray-2;
+			border-top: 3px solid $gray-4;
+			// border-left: 3px solid $gray-4;
+			// border-bottom: 3px solid $gray-4;
+			border-radius: 100%;
+
+			color: $gray-4;
+			animation: spin 1s infinite linear;
+		}
+	}
 	.scroll-y {
 		overflow-y: scroll;
 		position: absolute;
@@ -67,6 +95,10 @@
 		&.bookmarks {
 			li {
 				padding: 5px 35px 5px 20px; // To compensate for "delete" icon
+				a {
+					display: inline-block;
+					width: 100%;
+				}
 			}
 		}
 	}
@@ -111,6 +143,7 @@
 			color: #AAAAAA;
 		}
 		.user-menu {
+			@include box-shadow (0px, 0px, 6px, 0px, 0.20);
 			@include border-radius (2px);
 			position: absolute;
 			bottom: 10px;
@@ -119,9 +152,9 @@
 			background-color: $white;
 			color: $gray-5;
 			border: 1px solid #e3e3e3;
-			-webkit-box-shadow: 0px 0px 6px 0px rgba(0,0,0,0.20);
-			-moz-box-shadow: 0px 0px 6px 0px rgba(0,0,0,0.20);
-			box-shadow: 0px 0px 6px 0px rgba(0,0,0,0.20);
+			// -webkit-box-shadow: 0px 0px 6px 0px rgba(0,0,0,0.20);
+			// -moz-box-shadow: 0px 0px 6px 0px rgba(0,0,0,0.20);
+			// box-shadow: 0px 0px 6px 0px rgba(0,0,0,0.20);
 
 			visibility: hidden; // Off by default
 			opacity: 0;
@@ -210,10 +243,15 @@
 }
 
 .right-sidebar {
-	@extend .sidebar;
 	@include transition (right, $timing-short, ease-in-out);
-	left: auto;
+	position: fixed;
+	top: 0;
 	right: -200px;
+	width: 200px;
+	height: 100%;
+	padding-top: 64px;
+	background-color: $gray-1;
+	z-index: 9;
 	border-left: 1px solid $gray-1;
 	&.wide {
 		width: 360px;
@@ -243,8 +281,12 @@
 		}
 	}
 	.scroll-y {
+		overflow-y: scroll;
+		position: absolute;
 		top: 103px;
 		bottom: 0;
+		left: 0;
+		right: 0;
 		padding-bottom: 0;
 		border-top: 1px solid $gray-2;
 		.select-container {
@@ -257,49 +299,109 @@
 		hr {
 			margin: 20px 20px 0px 20px;
 		}
+		h3 {
+			padding: 20px 10px 5px 20px;
+		}
+		.status {
+			@include transition (all, $timing-short, ease-in-out);
+			@include border-radius (2px);
+			position: relative;
+			background-color: lighten($gray-1, 4%);
+			border: 1px solid $gray-3;
+			// color: $primary;
+			padding: 8px;
+			font-size: 14px;
+			text-transform: uppercase;
+			font-weight: 500;
+			margin: 20px;
+			cursor: pointer;
+			&.expanded,
+			&:hover {
+				border-color: $primary;
+				.arrow {
+					color: $primary;
+				}
+			}
+			&.disabled {
+				cursor: not-allowed;
+				border-color: $gray-3;
+				.arrow {
+					color: $gray-3;
+				}
+			}
+			&.expanded {
+				ul {
+					li {
+						opacity: 1;
+						height: 28px;
+						padding-left: 24px;
+						&.active {
+							.status-check {
+								opacity: 1;
+								color: $gray-3;
+							}
+						}
+						&:hover {
+							color: $primary;
+							.status-check {
+								opacity: 1;
+								color: $primary;
+							}
+						}
+					}
+				}
+				.arrow {
+					@include rotate (-180);
+				}
+			}
+			ul {
+				li {
+					@include transition (all, $timing-short, ease-in-out);
+					position: relative;
+					padding: 0;
+					opacity: 0;
+					height: 0;
+					overflow: hidden;
+					line-height: 28px;
+					&.active {
+						opacity: 1;
+						height: 28px;
+					}
+					.status-check {
+						@include transition (all, $timing-short, ease-in-out);
+						opacity: 0;
+						position: absolute;
+						top: 1px;
+						left: 0;
+						font-size: 22px;
+					}
+					.color {
+						@include border-radius (20px);
+						background-color: $primary;
+						display: inline-block;
+						width: 10px;
+						height: 10px;
+						margin-left: 2px;
+						margin-right: 6px;
+					}
+				}
+			}
+			.arrow {
+				@include transition (all, $timing-short, ease-in-out);
+				position: absolute;
+				top: 50%;
+				right: 10px;
+				margin-top: -12px;
+				color: $gray-4;
+			}
+		}
 		.metadata {
 			margin: 30px 20px 20px 20px;
 			line-height: 22px;
-			padding-bottom: 40px;
+			padding-bottom: 20px;
 			border-bottom: 1px solid $gray-2;
 			font-size: 13px;
 			color: $gray-5;
-			.status {
-				@include transition (all, $timing-short, ease-in-out);
-				@include border-radius (2px);
-				position: relative;
-				background-color: lighten($gray-1, 4%);
-				border: 1px solid $gray-3;
-				color: $primary;
-				padding: 10px;
-				font-size: 14px;
-				text-transform: uppercase;
-				font-weight: 500;
-				margin-bottom: 20px;
-				cursor: pointer;
-				&:hover {
-					border-color: $primary;
-					.material-icons {
-						color: $primary;
-					}
-				}
-				.color {
-					@include border-radius (20px);
-					background-color: $primary;
-					display: inline-block;
-					width: 10px;
-					height: 10px;
-					margin-left: 2px;
-					margin-right: 6px;
-				}
-				.material-icons {
-					@include transition (all, $timing-short, ease-in-out);
-					position: absolute;
-					top: 9px;
-					right: 10px;
-					color: $gray-4;
-				}
-			}
 			.button {
 				display: block;
 				margin-top: 20px;
@@ -308,10 +410,84 @@
 					margin-right: 2px;
 				}
 				&.preview {
+					margin-bottom: 20px;
 					.material-icons {
 						font-size: 20px;
 						margin-top: -3px;
 						margin-right: 5px;
+					}
+				}
+			}
+			.created-modified {
+				.directus-user {
+					@include transition (all, $timing-short, ease-in-out);
+					@include box-shadow ();
+					@include border-radius (4px);
+					display: inline-block;
+					position: relative;
+					font-size: 13px;
+					text-align: center;
+					line-height: 18px;
+					font-weight: 500;
+					color: $gray-5;
+					display: inline-block;
+					background-color: $white;
+					width: 46%;
+					padding: 40px 10px 20px 10px;
+					margin-bottom: 10px;
+					&:hover {
+						color: $primary;
+						.action {
+							background-color: $primary;
+						}
+						img {
+							border-color: $primary;
+						}
+					}
+					&:first-child {
+						margin-right: 7%;
+					}
+					.action {
+						@include transition (all, $timing-short, ease-in-out);
+						@include border-radius-each (4px, 0, 0, 4px);
+						background-color: $gray-2;
+						color: $white;
+						padding: 4px;
+						position: absolute;
+						top: 0;
+						left: 0;
+						right: 0;
+					}
+					img {
+						@include transition (all, $timing-short, ease-in-out);
+						@include border-radius (60px);
+						vertical-align: top;
+						width: 80px;
+						height: 80px;
+						border: 2px solid $gray-4;
+						display: inline-block;
+						margin-bottom: 12px;
+					}
+					.online {
+						@include transition (all, $timing-short, ease-in-out);
+						@include border-radius (2px);
+						display: inline-block;
+						position: absolute;
+						top: 110px;
+						left: 50%;
+						-webkit-transform: translateX(-50%);
+						-ms-transform: translateX(-50%);
+						transform: translateX(-50%);
+						padding: 2px 3px 2px 3px;
+						background-color: $primary;
+						color: $white;
+						font-size: 10px;
+						font-weight: 500;
+						text-transform: uppercase;
+						line-height: 11px;
+					}
+					.datetime {
+						color: $gray-4;
 					}
 				}
 			}
@@ -374,20 +550,20 @@
 						font-weight: 500;
 						text-align: left;
 						padding: 12px 12px 8px 12px;
-						margin-top: 20px;
-						margin-bottom: 20px;
+						// margin-top: 20px;
+						// margin-bottom: 20px;
+						// border: 1px solid $gray-2;
 
 						// background-color: $gray-2;
-						border: 1px solid $gray-2;
 						&:hover {
-							border-color: $primary;
+							// border-color: $primary;
 							color: $primary;
 							.timeago {
 								color: $primary;
 							}
 						}
 						&.expanded {
-							border-color: $primary;
+							border: 1px solid $primary;
 							.full-activity {
 								height: 132px;
 								margin-top: 10px;
