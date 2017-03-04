@@ -70,6 +70,13 @@ abstract class AbstractSocialProvider implements SocialProviderInterface
         return $this->token;
     }
 
+    /**
+     * Gets the redirect url for the given service name
+     *
+     * @param $name
+     *
+     * @return string
+     */
     public function getRedirectUrl($name)
     {
         $request = Application::getInstance()->request();
