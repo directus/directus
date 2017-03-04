@@ -141,6 +141,10 @@ input {
 		-moz-box-shadow: 0px 0px 0px 2px $primary;
 		box-shadow: 0px 0px 0px 2px $primary;
 	}
+	&:-webkit-autofill {
+        -webkit-box-shadow: 0 0 0px 1000px $white inset; // lighten($primary, 43%)
+        color: lighten($primary, 20%) !important;
+    }
 	&[readonly],
 	&:disabled {
 		border-color: $gray-1;
