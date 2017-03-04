@@ -3,6 +3,7 @@
 namespace Directus\API\Routes\A1;
 
 use Directus\Database\Object\Column;
+use Directus\Database\TableGateway\DirectusTablesTableGateway;
 use Directus\Permissions\Exception\UnauthorizedTableAlterException;
 use Directus\Application\Route;
 use Directus\Bootstrap;
@@ -287,7 +288,7 @@ class Table extends Route
             return $this->app->response($response);
         }
 
-        $TableGateway = new TableGateway('directus_tables', $ZendDb, $acl, null, null, null, 'table_name');
+        $TableGateway = new DirectusTablesTableGateway($ZendDb, $acl, null, null, null, 'table_name');
 
         /* PUT updates the table */
         if ($app->request()->isPut() || $app->request()->isPatch()) {
@@ -301,7 +302,7 @@ class Table extends Route
                     'primary_column' => array_key_exists('primary_column', $data) ? $data['primary_column'] : ''
                 ];
             } else {
-                $table_settings = ArrayUtils::omit(array_filter($data), 'columns');
+                $table_settings = ArrayUtils::omit($data, 'columns');
             }
 
             //@TODO: Possibly pretty this up so not doing direct inserts/updates
