@@ -34,7 +34,7 @@
 <div class="glow"></div>
 
 <div class="notifications">
-    <div class="notification {% if errorMessage %}serious{% endif %}" style="display: none;">
+    <div class="notification {% if errorMessage %}serious{% endif %}" {% if not errorMessage %}style="display: none;"{% endif %}>
         {% if errorMessage %}<i class="material-icons">warning</i> {{errorMessage}}{% endif %}
     </div>
 </div>
