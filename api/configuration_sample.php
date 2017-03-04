@@ -25,6 +25,26 @@ return [
         //   'bucket' => 's3-bucket'
     ],
 
+    'auth' => [
+        // 'github' => [
+        //     'client_id' => '',
+        //     'client_secret' => ''
+        // ],
+        // 'facebook' => [
+        //     'client_id'          => '',
+        //     'client_secret'      => '',
+        //     'graph_api_version'  => 'v2.8',
+        // ],
+        // 'google' => [
+        //     'client_id'       => '',
+        //     'client_secret'   => '',
+        // ],
+        // 'twitter' => [
+        //     'identifier'   => '',
+        //     'secret'       => ''
+        // ]
+    ],
+
     // HTTP Settings
     'HTTP' => [
         'forceHttps' => false,
