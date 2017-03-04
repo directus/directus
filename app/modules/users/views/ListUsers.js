@@ -52,7 +52,7 @@ function(app, Backbone, Handlebars, Directus, BasePageView, Widgets, __t, moment
           position: model.get('position'),
           location: model.get('location'),
           phone: model.get('phone'),
-          online: (moment(model.get('last_access')).add('m', 5) > moment()),
+          online: model.isOnline(),
           group_id: model.get('group').id,
           group_name: model.get('group').get('name'),
           inactive: false

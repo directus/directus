@@ -32,7 +32,14 @@ function(app, Backbone, EntriesModel, moment) {
     },
 
     isOnline: function () {
-      return moment(this.get('last_access')).add('m', 5) > moment();
+      var lastAccess = this.get('last_access');
+      var isOnline = false;
+
+      if (lastAccess) {
+        isOnline = moment(lastAccess).add('m', 5) > moment();
+      }
+
+      return isOnline;
     },
 
     lastSeen: function () {
