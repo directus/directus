@@ -587,12 +587,12 @@ table {
 	position: absolute;
 	top: 50%;
 	left: 50%;
-	width: 300px;
+	width: 350px;
 	height: 260px;
-	margin-left: -150px;
+	margin-left: -175px;
 	margin-top: -140px;
 	text-align: center;
-	font-size: 26px;
+	font-size: 36px;
 	font-weight: 300;
 	color: $gray-3;
 	.background-circle {
@@ -603,6 +603,7 @@ table {
 		padding: 50px;
 		background-color: $gray-1;
 		margin-bottom: 20px;
+		display: none;
 	}
 }
 
