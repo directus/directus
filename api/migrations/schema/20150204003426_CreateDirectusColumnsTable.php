@@ -101,6 +101,10 @@ class CreateDirectusColumnsTable extends Ruckusing_Migration_Base
             'limit' => 1024,
             'default' => NULL
         ]);
+        $t->column('options', 'text', [
+            'null' => true,
+            'default' => NULL
+        ]);
 
         $t->finish();
 
