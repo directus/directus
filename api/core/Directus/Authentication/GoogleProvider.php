@@ -34,6 +34,16 @@ class GoogleProvider extends TwoSocialProvider
     }
 
     /**
+     * @inheritdoc
+     */
+    public function getScopes()
+    {
+        return [
+            'email'
+        ];
+    }
+
+    /**
      * Creates the Google provider oAuth client
      *
      * @return Google

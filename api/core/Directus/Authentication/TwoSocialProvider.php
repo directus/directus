@@ -22,7 +22,11 @@ abstract class TwoSocialProvider extends AbstractSocialProvider
      */
     public function request()
     {
-        $authUrl = $this->provider->getAuthorizationUrl();
+        $options = [
+            'scope' => $this->getScopes()
+        ];
+
+        $authUrl = $this->provider->getAuthorizationUrl($options);
         $session = $this->app->container->get('session');
         $session->set('oauth2state', $this->provider->getState());
 
@@ -53,4 +57,11 @@ abstract class TwoSocialProvider extends AbstractSocialProvider
             'email' => $user->getEmail()
         ]);
     }
+
+    /**
+     * Get the list of scopes for the current service
+     *
+     * @return array
+     */
+    abstract public function getScopes();
 }

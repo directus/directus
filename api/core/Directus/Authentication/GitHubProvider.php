@@ -33,6 +33,16 @@ class GitHubProvider extends TwoSocialProvider
     }
 
     /**
+     * @inheritdoc
+     */
+    public function getScopes()
+    {
+        return [
+            'user:email'
+        ];
+    }
+
+    /**
      * Creates the GitHub provider oAuth client
      *
      * @return Github

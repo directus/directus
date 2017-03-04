@@ -33,6 +33,16 @@ class FacebookProvider extends TwoSocialProvider
     }
 
     /**
+     * @inheritdoc
+     */
+    public function getScopes()
+    {
+        return [
+            'email'
+        ];
+    }
+
+    /**
      * Creates the facebook provider oAuth client
      *
      * @return Facebook
