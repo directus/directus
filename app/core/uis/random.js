@@ -30,9 +30,9 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/notification', 'core/t']
 
     generateString: function(length) {
       length = (length || 16);
-      var randomSuccess = _.bind(function(data, textStatus, jqXHR) {
-        if(!_.isEmpty(data) && !_.isEmpty(data.random)) {
-          this.$el.find('input.password-primary').val(data.random);
+      var randomSuccess = _.bind(function(resp, textStatus, jqXHR) {
+        if(!_.isEmpty(resp) && !_.isEmpty(resp.data.random)) {
+          this.$el.find('input.password-primary').val(resp.data.random);
           this.$el.find('.generated').removeClass('hide');
         } else {
           Notification.error('Random', __t('error_generating_a_random_string'));
