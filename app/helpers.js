@@ -297,7 +297,7 @@ require([
       model = model.get('data');
     }
 
-    html = UIManager.getList(model, attr) || '';
+    html = UIManager.getList(model, attr) || '<span class="no-value">--</span>';
 
     return new Handlebars.SafeString(html);
   }
