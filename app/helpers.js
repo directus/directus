@@ -314,6 +314,14 @@ require([
     return value;
   });
 
+  Handlebars.registerHelper('ucase', function (string) {
+    return (string || '').toUpperCase();
+  });
+
+  Handlebars.registerHelper('lcase', function (string) {
+    return (string || '').toLowerCase();
+  });
+
   // include an partial
   Handlebars.registerHelper('include', function (path, options) {
     var partial = Handlebars.partials[path];
