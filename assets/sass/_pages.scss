@@ -12,4 +12,11 @@
 	&.define-edge {
 		border-left: 1px solid $gray-2;
 	}
+	// Fixes for backbone dynamic element injection
+	.page-container {
+		height: 100%;
+		.main-container {
+			height: 100%;
+		}
+	}
 }

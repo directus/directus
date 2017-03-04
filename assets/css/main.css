@@ -3125,12 +3125,15 @@ body.help .discover-spotlight {
   overflow: scroll; }
   .page.define-edge {
     border-left: 1px solid #DDDDDD; }
+  .page .page-container {
+    height: 100%; }
+    .page .page-container .main-container {
+      height: 100%; }
 
 .folder-listing,
 .file-listing {
   background-color: #f6f6f6;
   padding: 20px;
-  text-align: center;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
@@ -3353,7 +3356,7 @@ body.help .discover-spotlight {
 .user-listing {
   background-color: #f6f6f6;
   padding: 20px;
-  text-align: center; }
+  height: 100%; }
   .user-listing .user {
     -webkit-transition: all 200ms ease-in-out 0ms;
     -moz-transition: all 200ms ease-in-out 0ms;
