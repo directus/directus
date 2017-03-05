@@ -32,6 +32,46 @@ function(app, _, Backbone, Directus, EditView, BasePageView, TableModel, ColumnM
   'use strict';
 
   var SettingsTables = app.module();
+  var confirmDestroyTable = function (tableName, callback) {
+    DoubleConfirmation({
+      value: tableName,
+      emptyValueMessage: __t('invalid_table'),
+      firstQuestion: __t('question_delete_this_table'),
+      secondQuestion: __t('question_delete_this_table_confirm', {table_name: tableName}),
+      notMatchMessage: __t('table_name_did_not_match'),
+      callback: callback
+    }, this);
+  };
+
+  var destroyTable = function (model, callback) {
+    var options = {
+      wait: true
+    };
+
+    options.success = function(model, response) {
+      if (response.success === true) {
+        var tableName = model.get('table_name');
+        var bookmarks = app.router.bookmarks;
+
+        app.schemaManager.unregisterFullSchema(tableName);
+
+        var model = bookmarks.findWhere({title: app.capitalize(tableName), section: 'table'});
+        if (model) {
+          bookmarks.remove(model);
+        }
+
+        Notification.success('Table removed', '<b>'+tableName+'</b> was removed.', 3000);
+
+        if (callback) {
+          callback();
+        }
+      } else {
+        Notification.error(response.message);
+      }
+    };
+
+    model.destroy(options);
+  };
 
   // Handles new columns and aliases.
   // Rendered inside modal
@@ -726,76 +766,30 @@ function(app, _, Backbone, Directus, EditView, BasePageView, TableModel, ColumnM
       });
     },
 
+    leftToolbar: function () {
+      var widgets = EditView.prototype.leftToolbar.apply(this, arguments);
+      var self = this;
+
+      widgets.push(new Widgets.ButtonWidget({
+        widgetOptions: {
+          buttonId: 'removeBtn',
+          iconClass: 'close',
+          buttonClass: 'serious',
+          buttonText: __t('delete')
+        },
+        onClick: function(event) {
+          confirmDestroyTable(self.model.get('name'), function () {
+            destroyTable(self.model, function () {
+              app.router.go(['settings', 'tables']);
+            });
+          });
+        }
+      }));
+
+      return widgets;
+    },
+
     rightPane: false
-    // headerOptions: {
-    //   route: {
-    //     title: 'Classes',
-    //     breadcrumbs: [{title: __t('settings'), anchor: '#settings'}, {title: __t('tables_and_inputs'), anchor: '#settings/tables'}]
-    //   }
-    // },
-    //
-    // leftToolbar: function() {
-    //   var self = this;
-    //   this.saveWidget = new Widgets.SaveWidget({
-    //     widgetOptions: {
-    //       basicSave: true
-    //     },
-    //     onClick: function() {
-    //       self.editView.save();
-    //     }
-    //   });
-    //   var editView = this;
-    //   this.saveWidget = new Widgets.SaveWidget({
-    //     widgetOptions: {
-    //       basicSave: this.headerOptions.,
-    //       singlePage: this.single
-    //     },
-    //     onClick: _.bind(editView.saveConfirm, editView)
-    //   });
-    //
-    //   this.saveWidget.setSaved(false);
-    //   return [
-    //     this.saveWidget
-    //   ];
-    // },
-    //
-    // events: {
-    //   'change select,input': function(e) {
-    //     this.saveWidget.setSaved(false); //Temporarily Just Set it to save once something is changed.
-    //   },
-    //   'click .saved-success': 'saveColumns'
-    // },
-    //
-    // saveColumns: function(e) {
-    //   var data = {};
-    //
-    //   //Take care of the checkboxes
-    //   $('#table-settings').find('input[type=checkbox]:not(:checked)').each(function(){
-    //     data[this.name] = 0;
-    //   }).get();
-    //
-    //   data = _.extend(data, $('#table-settings').serializeObject());
-    //
-    //   this.model.save(data, {success: function(){
-    //     app.router.go('settings','tables');
-    //   }});
-    // },
-
-    // afterRender: function() {
-    //   // this.setView('#page-content', this.columns);
-    //   //this.setView('#page-content', this.editView);
-    //   // this.collection.fetch();
-    //   this.model.fetch();
-    // },
-
-    // initialize: function() {
-      // this.collection = this.model.columns;
-      // this.columns = new Columns({collection: this.collection});
-      // this.headerOptions.route.title = this.model.id;
-
-      // this.editView = new Directus.EditView({model: this.model, ui: this.options.ui});
-      //this.editView = new EditView({model: this.model});
-    // }
   });
 
   var Tables = Backbone.Layout.extend({
@@ -989,14 +983,7 @@ function(app, _, Backbone, Directus, EditView, BasePageView, TableModel, ColumnM
 
         var tableName = $(event.target).closest('tr').data('id') || this.model.get('table_name');
 
-        DoubleConfirmation({
-          value: tableName,
-          emptyValueMessage: __t('invalid_table'),
-          firstQuestion: __t('question_delete_this_table'),
-          secondQuestion: __t('question_delete_this_table_confirm', {table_name: tableName}),
-          notMatchMessage: __t('table_name_did_not_match'),
-          callback: this.destroyTable
-        }, this);
+        confirmDestroyTable(tableName, _.bind(this.destroyTable, this));
       }
     },
 
@@ -1021,30 +1008,7 @@ function(app, _, Backbone, Directus, EditView, BasePageView, TableModel, ColumnM
     },
 
     destroyTable: function() {
-      var options = {};
-      var self = this;
-
-      options.wait = true;
-      options.success = function(model, response) {
-        if (response.success === true) {
-          var tableName = model.get('table_name');
-          var bookmarks = app.router.bookmarks;
-
-          self.remove();
-          app.schemaManager.unregisterFullSchema(tableName);
-
-          var model = bookmarks.findWhere({title: app.capitalize(tableName), section: 'table'});
-          if (model) {
-              bookmarks.remove(model);
-          }
-
-          Notification.success('Table removed', '<b>'+tableName+'</b> was removed.', 3000);
-        } else {
-          Notification.error(response.message);
-        }
-      };
-
-      this.model.destroy(options);
+      destroyTable(this.model, _.bind(this.remove, this));
     },
 
     serialize: function() {
