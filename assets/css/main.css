@@ -271,11 +271,6 @@ ul {
   margin: 0;
   padding: 0; }
 
-.page-container {
-  height: 100%; }
-  .page-container .content-body {
-    height: 100%; }
-
 .section-break {
   width: 80%;
   text-align: center;
@@ -3683,10 +3678,6 @@ body.help .discover-spotlight {
   overflow: scroll; }
   .page.define-edge {
     border-left: 1px solid #DDDDDD; }
-  .page .page-container {
-    height: 100%; }
-    .page .page-container .main-container {
-      height: 100%; }
 
 .file-listing {
   height: 100%; }
