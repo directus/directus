@@ -856,10 +856,8 @@ function(app, _, Backbone, Directus, EditView, BasePageView, TableModel, ColumnM
     },
 
     isValidModel: function(model) {
-      //Filter out _directus tables
-      if (model.id.substring(0,9) === 'directus_') return false;
-
-      return true;
+      // Filter out _directus tables
+      return (model.id.substring(0,9) !== 'directus_');
     },
 
     hasPrivilege: function(model) {
