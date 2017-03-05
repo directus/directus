@@ -899,7 +899,8 @@ class RelationalTableGateway extends BaseTableGateway
                 continue;
             }
 
-            if ($operator === 'between' && !is_array($value)) {
+            $splitOperators = ['between', 'in'];
+            if (in_array($operator, $splitOperators) && !is_array($value)) {
                 $value = explode(',', $value);
             }
 
