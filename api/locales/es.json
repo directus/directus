@@ -30,6 +30,7 @@
     "tables_and_inputs_description": "Within Tables and Inputs you can make broad and granular adjustments to how Directus handles your specific data, visualizations, and inputs.",
     "group_permissions": "Permisos de Grupo",
     "group_permissions_description": "Manage user groups which control access to your data. Setup table and field level permission for each group.",
+    "groups_permissions_full_access": "Admins tienen acceso a todo la información.",
     "global_settings_project_name_placeholder": "Mi Proyecto",
     "global_settings_project_name_comment": "El nombre de tu proyecto",
     "global_settings_project_url_comment": "Haciendo click en el logo del proyecto te llevara a esta URL",

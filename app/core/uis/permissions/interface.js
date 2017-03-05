@@ -28,144 +28,10 @@ define([
       'click button[data-action=insert]': 'insertRow',
       'click td.delete': 'deleteRow'
     },
-/*
-    editRow: function(e) {
-      if (!this.canEdit) {
-        return;
-      }
 
-      var cid = $(e.target).closest('tr').attr('data-cid');
-      var model = this.relatedCollection.get(cid, true);
-      this.editModel(model);
-    },
-
-    deleteRow: function(e) {
-      var cid = $(e.target).closest('tr').attr('data-cid');
-      var model = this.relatedCollection.get(cid);
-      var relatedColumnName = this.columnSchema.relationship.get('junction_key_right');
-
-      if (model.isNew()) return this.relatedCollection.remove(model);
-
-      var attributes = {};
-      attributes[app.statusMapping.status_name] = app.statusMapping.deleted_num;
-      attributes[relatedColumnName] = null;
-      model.set(attributes);
-    },
-
-    addRow: function() {
-      var collection = this.relatedCollection;
-      this.addModel(new collection.model({}, {collection: collection, parse: true, structure: collection.structure, table: collection.table, privileges: collection.privileges}));
-    },
-
-    editModel: function(model) {
-      var EditView = require("modules/tables/views/EditView");
-      var columnName = this.columnSchema.relationship.get('junction_key_right');
-      var view = new EditView({
-        model: model,
-        hiddenFields: [columnName],
-        skipFetch: (model.isNew() || model.unsavedAttributes())
-      });
-
-      view.headerOptions.route.isOverlay = true;
-      view.headerOptions.route.breadcrumbs = [];
-      view.headerOptions.basicSave = true;
-
-      view.events = {
-        'click .saved-success': function() {
-          this.save();
-        },
-        'click #removeOverlay': function() {
-          app.router.removeOverlayPage(this);
-        }
-      };
-
-      app.router.overlayPage(view);
-
-      view.save = function() {
-        model.set(model.diff(view.editView.data()));
-        app.router.removeOverlayPage(this);
-      };
-    },
-
-    addModel: function(model) {
-      var EditView = require("modules/tables/views/EditView");
-      var collection = this.relatedCollection;
-      var columnName = this.columnSchema.relationship.get('junction_key_right');
-      var id = this.model.id;
-      var view = new EditView({
-        model: model,
-        collectionAdd: true,
-        hiddenFields: [columnName],
-        parentField: {
-          name: columnName,
-          value: id
-        },
-        skipFetch: true
-      });
-
-      view.headerOptions.route.isOverlay = true;
-      view.headerOptions.route.breadcrumbs = [];
-      view.headerOptions.basicSave = true;
-
-      view.events = {
-        'click .saved-success': function() {
-          this.save();
-        },
-        'click #removeOverlay': function() {
-          app.router.removeOverlayPage(this);
-        }
-      };
-
-      app.router.overlayPage(view);
-
-      view.save = function() {
-        var data = view.editView.data();
-        data[columnName] = id;
-        model.set(data);
-
-        if (model.isValid()) {
-          app.router.removeOverlayPage(this);
-          collection.add(model, {nest: true});
-        }
-      };
-    },
-
-    insertRow: function() {
-      var me = this;
-      var columnName = this.columnSchema.relationship.get('junction_key_right');
-      var collection = app.getEntries(this.relatedCollection.table.id);
-      var view = new Overlays.ListSelect({collection: collection});
-
-      app.router.overlayPage(view);
-      view.save = function() {
-        _.each(view.table.selection(), function(id) {
-          var data = collection.get(id).toJSON();
-          if (me.columnSchema.options.get('only_unassigned') === true) {
-            var orphan = false;
-
-            collection.each(function(model) {
-              if (model.get(columnName) == null) {
-                orphan = true;
-              }
-            });
-
-            if (orphan) {
-              return false;
-            }
-          }
-
-          data[columnName] = me.model.get('id');
-          me.relatedCollection.add(data, {nest: true});
-        }, this);
-
-        app.router.removeOverlayPage(this);
-      };
-
-      collection.fetch();
-    },
-*/
     serialize: function() {
       return {
+        isAdmin: this.model.id === 1,
         title: this.name,
         tableTitle: this.relatedCollection.table.get('table_name'),
         canEdit: this.canEdit,
@@ -175,7 +41,9 @@ define([
     },
 
     afterRender: function() {
-      this.setView('.table-container', this.nestedTableView).render();
+      if (this.model.id !== 1) {
+        this.setView('.table-container', this.nestedTableView).render();
+      }
     },
 
     initialize: function (options) {
