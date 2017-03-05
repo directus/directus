@@ -20,6 +20,11 @@ function(app, Backbone, DirectusModal, DirectusEdit, __t, Notification, BasePage
         title: __t('files')
       }
     },
+
+    attributes: {
+      class: 'page-container gray-bg'
+    },
+
     leftToolbar: function() {
       return [
         new Widgets.ButtonWidget({

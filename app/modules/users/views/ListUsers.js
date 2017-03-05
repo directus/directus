@@ -120,6 +120,11 @@ function(app, Backbone, Handlebars, Directus, BasePageView, Widgets, __t, moment
         title: __t('users'),
       }
     },
+
+    attributes: {
+      class: 'page-container gray-bg'
+    },
+
     leftToolbar: function() {
       if(app.users.getCurrentUser().get('group').id === 1) {
         return [

@@ -436,7 +436,7 @@ class SchemaManager
             $column['ui'] = $this->getColumnDefaultUI($column['type']);
         }
 
-        $options = json_decode(ArrayUtils::get($column, 'options', []), true);
+        $options = json_decode(ArrayUtils::get($column, 'options', ''), true);
         $column['options'] = $options ? $options : [];
 
         $isSystemColumn = static::isSystemColumn($column['id']);

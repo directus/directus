@@ -25,6 +25,7 @@ function(app, Backbone, Directus, BasePageView, Widgets, __t) {
         title: __t('settings'),
         breadcrumbs: [{ title: __t('settings'), anchor: '#settings'}]
       },
+      className: 'header settings'
     },
 
     leftToolbar: function() {
