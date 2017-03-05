@@ -3678,13 +3678,15 @@ body.help .discover-spotlight {
   overflow: scroll; }
   .page.define-edge {
     border-left: 1px solid #DDDDDD; }
+  .page .page-container.gray-bg {
+    height: 100%;
+    background-color: #f6f6f6; }
 
 .file-listing {
   height: 100%; }
 
 .folder-listing,
 .file-listing {
-  background-color: #f6f6f6;
   padding: 20px;
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -3934,7 +3936,6 @@ body.help .discover-spotlight {
       color: #999999; }
 
 .user-listing {
-  background-color: #f6f6f6;
   padding: 20px;
   min-height: 100%; }
   .user-listing .user {
