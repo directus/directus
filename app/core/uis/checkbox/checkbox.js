@@ -65,7 +65,7 @@ define(['app', 'underscore', 'utils', 'core/UIComponent', 'core/UIView', 'core/t
       }
     },
     list: function(options) {
-      var listTemplateSource = '<input type="checkbox" {{#if selected}}checked="true"{{/if}} disabled>';
+      var listTemplateSource = '<input type="checkbox" class="custom-checkbox" {{#if selected}}checked="true"{{/if}} disabled><label><span></span></label>';
 
       return this.compileView(listTemplateSource, {selected: parseInt(options.value, 10) === 1});
     }
