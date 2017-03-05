@@ -1390,7 +1390,7 @@ table {
       color: #CCCCCC; }
       table tbody tr.not-published td .photo-stack {
         opacity: 0.6; }
-    table tbody tr.admin-group, table tbody tr.public-group {
+    table tbody tr.administrator-group, table tbody tr.public-group {
       font-weight: 500; }
     table tbody tr.required-on td.required .material-icons {
       color: #3498DB; }
