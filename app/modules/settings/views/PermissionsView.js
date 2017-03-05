@@ -92,7 +92,7 @@ function(app, Backbone, Widgets, __t, BasePageView) {
     headerOptions: {
       route: {
         title: __t('group_permissions'),
-        breadcrumbs: [{title: 'Settings', anchor: '#settings'}]
+        breadcrumbs: [{title: __t('settings'), anchor: '#settings'}]
       },
       className: 'header settings'
     },
