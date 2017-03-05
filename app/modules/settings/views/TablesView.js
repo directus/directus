@@ -1068,6 +1068,7 @@ function(app, _, Backbone, Directus, EditView, BasePageView, TableModel, ColumnM
         title: __t('tables_and_inputs'),
         breadcrumbs: [{title: __t('settings'), anchor: '#settings'}]
       },
+      className: 'header settings'
     },
 
     leftToolbar: function() {

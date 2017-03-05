@@ -94,6 +94,7 @@ function(app, Backbone, Widgets, __t, BasePageView) {
         title: __t('group_permissions'),
         breadcrumbs: [{title: 'Settings', anchor: '#settings'}]
       },
+      className: 'header settings'
     },
 
     leftToolbar: function() {
