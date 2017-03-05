@@ -8,33 +8,19 @@
 
 define([
   'app',
+  'underscore',
   'backbone',
   'core/widgets/widgets',
   'core/t',
   'core/BasePageView'
 ],
 
-function(app, Backbone, Widgets, __t, BasePageView) {
+function(app, _, Backbone, Widgets, __t, BasePageView) {
 
   'use strict';
 
   var Groups =  Backbone.Layout.extend({
     template: 'modules/settings/settings-groups',
-
-    events: {
-      'click button[data-action=new-group]': 'newGroup'
-    },
-
-    newGroup: function(e) {
-      // @TODO either move this to permission or from permission to here
-      //
-      // console.log('@TODO: Create new group');
-      // var collection = this.collection;
-      // //@todo: link real col
-      // var model = new ColumnModel({'data_type':'ALIAS','ui':{}}, {collection: this.collection});
-      // var view = new NewColumnOverlay({model: model, collection: collection});
-      // app.router.overlayPage(view);
-    },
 
     serialize: function() {
       return {rows: this.collection.toJSON()};
@@ -63,7 +49,6 @@ function(app, Backbone, Widgets, __t, BasePageView) {
     initialize: function() {
       this.listenTo(this.collection, 'add', this.addRowView);
     }
-
   });
 
   var GroupsRow = Backbone.Layout.extend({
@@ -88,7 +73,7 @@ function(app, Backbone, Widgets, __t, BasePageView) {
     }
   });
 
-  var Permissions = BasePageView.extend({
+  return BasePageView.extend({
     headerOptions: {
       route: {
         title: __t('group_permissions'),
@@ -99,38 +84,37 @@ function(app, Backbone, Widgets, __t, BasePageView) {
 
     leftToolbar: function() {
       return  [
-        new Widgets.ButtonWidget({widgetOptions: {buttonId: "addBtn", iconClass: "add", buttonClass: "", buttonText: __t('new_user_group')}})
+        new Widgets.ButtonWidget({
+          widgetOptions: {
+            buttonId: 'addBtn',
+            iconClass: 'add',
+            buttonClass: 'primary',
+            buttonText: __t('new_user_group')
+          },
+          onClick: _.bind(this.createNewGroup, this)
+        })
       ];
     },
 
-    events: {
-      'click #addBtn': function() {
-        var that = this;
-        app.router.openModal({type: 'prompt', text: __t('what_would_you_like_to_name_this_group'), callback: function(groupName) {
-          if(groupName && !app.schemaManager.getPrivileges('directus_permission')) {
-            var model = new Backbone.Model();
-            model.url = app.API_URL + 'groups';
-            model.set({name: groupName});
-            model.save({}, {success: function(model) {
-              model.fetch({success: function(){
-                that.collection.add(model);
-              }});
+    createNewGroup: function () {
+      var self = this;
+      app.router.openModal({type: 'prompt', text: __t('what_would_you_like_to_name_this_group'), callback: function(groupName) {
+        if(groupName && !app.schemaManager.getPrivileges('directus_permission')) {
+          var model = new Backbone.Model();
+          model.url = app.API_URL + 'groups';
+          model.set({name: groupName});
+          model.save({}, {success: function(model) {
+            model.fetch({success: function(){
+              self.collection.add(model);
             }});
-          }
-        }});
-      }
+          }});
+        }
+      }});
     },
 
     beforeRender: function() {
       this.setView('#page-content', new Groups({collection: this.collection}));
       BasePageView.prototype.beforeRender.call(this);
     },
-
-    afterRender: function() {
-      // Don't bypass Admins until their permissions are always guaranteed
-      // this.$el.find('td[data-id=1]').addClass('disabled');
-    }
   });
-
-  return Permissions;
 });
