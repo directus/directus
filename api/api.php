@@ -457,6 +457,7 @@ $app->group('/1.1', function() use($app) {
     $app->map('/groups/?', '\Directus\API\Routes\A1\Groups:groups')
         ->via('GET', 'POST');
     $app->get('/groups/:id/?', '\Directus\API\Routes\A1\Groups:group');
+    $app->delete('/groups/:id/?', '\Directus\API\Routes\A1\Groups:deleteGroup');
 
     // =============================================================================
     // FILES

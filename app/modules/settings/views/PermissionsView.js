@@ -115,6 +115,6 @@ function(app, _, Backbone, Widgets, __t, BasePageView) {
     beforeRender: function() {
       this.setView('#page-content', new Groups({collection: this.collection}));
       BasePageView.prototype.beforeRender.call(this);
-    },
+    }
   });
 });

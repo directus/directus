@@ -60,7 +60,9 @@ function(app, _, Backbone, Directus, EditView, BasePageView, TableModel, ColumnM
           bookmarks.remove(model);
         }
 
-        Notification.success('Table removed', '<b>'+tableName+'</b> was removed.', 3000);
+        Notification.success(__t('table_removed'), __t('table_x_was_removed', {
+          table_name: tableName
+        }), 3000);
 
         if (callback) {
           callback();
@@ -582,7 +584,9 @@ function(app, _, Backbone, Directus, EditView, BasePageView, TableModel, ColumnM
         } else {
           self.collection.remove(originalColumnModel);
           self.$el.find('[data-id=' + model.get('id') + ']').remove();
-          Notification.success('Column removed', '<b>' + columnName + '</b> was removed.');
+          Notification.success(__t('column_removed'), __t('column_x_was_removed', {
+            column_name: columnName
+          }), 3000);
         }
       };
 

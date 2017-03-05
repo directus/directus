@@ -15,12 +15,50 @@ define([
   'modules/tables/views/EditView',
   'core/widgets/widgets',
   'core/t',
-  'schema/TableModel'
+  'core/notification',
+  'core/doubleConfirmation'
 ],
 
-function(app, Backbone, _, Handlebars, BasePageView, EditView, Widgets, __t, TableModel) {
+function(app, Backbone, _, Handlebars, BasePageView, EditView, Widgets, __t, Notification, DoubleConfirmation) {
 
   'use strict';
+
+  var confirmDestroyGroup = function (groupName, callback, context) {
+    context = context || this;
+
+    DoubleConfirmation({
+      value: groupName,
+      emptyValueMessage: __t('invalid_group'),
+      firstQuestion: __t('question_delete_this_group'),
+      secondQuestion: __t('question_delete_this_group_confirm', {group_name: groupName}),
+      notMatchMessage: __t('group_name_did_not_match'),
+      callback: callback
+    }, context);
+  };
+
+  var destroyGroup = function (model, callback) {
+    var options = {
+      wait: true
+    };
+
+    options.success = function(model, response) {
+      if (response.success === true) {
+        var groupName = model.get('name');
+
+        Notification.success(__t('group_removed'), __t('group_x_was_removed', {
+          group_name: groupName
+        }), 3000);
+
+        if (callback) {
+          callback();
+        }
+      } else {
+        Notification.error(response.error.message);
+      }
+    };
+
+    model.destroy(options);
+  };
 
   var GroupPermissions = {};
 
@@ -44,6 +82,29 @@ function(app, Backbone, _, Handlebars, BasePageView, EditView, Widgets, __t, Tab
         },
         basicSave: true
       });
+    },
+
+    leftToolbar: function () {
+      var widgets = EditView.prototype.leftToolbar.apply(this, arguments);
+      var self = this;
+
+      widgets.push(new Widgets.ButtonWidget({
+        widgetOptions: {
+          buttonId: 'removeBtn',
+          iconClass: 'close',
+          buttonClass: 'serious',
+          buttonText: __t('delete')
+        },
+        onClick: function(event) {
+          confirmDestroyGroup(self.model.get('name'), function () {
+            destroyGroup(self.model, function () {
+              app.router.go(['settings', 'groups']);
+            });
+          });
+        }
+      }));
+
+      return widgets;
     },
 
     rightPane: false
