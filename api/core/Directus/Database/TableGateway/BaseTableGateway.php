@@ -467,13 +467,6 @@ class BaseTableGateway extends TableGateway
             'column_name' => $columnName
         ]);
 
-        // Remove column from directus_ui
-        $uisTableGateway = new TableGateway('directus_ui', $this->adapter);
-        $uisTableGateway->delete([
-            'table_name' => $tableName,
-            'column_name' => $columnName
-        ]);
-
         return true;
     }
 

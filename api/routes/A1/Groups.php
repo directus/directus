@@ -3,6 +3,7 @@
 namespace Directus\API\Routes\A1;
 
 use Directus\Application\Route;
+use Directus\Database\TableGateway\DirectusGroupsTableGateway;
 use Directus\Database\TableGateway\RelationalTableGateway as TableGateway;
 use Directus\Database\TableSchema;
 use Directus\View\JsonView;
@@ -54,5 +55,25 @@ class Groups extends Route
         }
 
         return $this->app->response($response);
+    }
+
+    public function deleteGroup($id)
+    {
+        $app = $this->app;
+        $acl = $app->container->get('acl');
+        $dbConnection = $app->container->get('zenddb');
+
+        $tableGateway = new DirectusGroupsTableGateway($dbConnection, $acl);
+
+        $success = false;
+        if ($id != 1) {
+            $success = $tableGateway->delete(['id' => $id]);
+        } else {
+            $success = true;
+        }
+
+        return $app->response([
+            'success' => (bool) $success
+        ]);
     }
 }

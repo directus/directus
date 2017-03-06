@@ -60,6 +60,11 @@ class CreateDirectusGroupsTable extends Ruckusing_Migration_Base
         ]);
         $t->finish();
 
+        $this->add_index('directus_groups', 'name', [
+            'unique' => true,
+            'name' => 'directus_users_name_unique'
+        ]);
+
         $this->insert('directus_groups', [
             'id' => 1,
             'name' => 'Administrator',

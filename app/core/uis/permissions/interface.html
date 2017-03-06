@@ -1,3 +1,6 @@
+{{# if isAdmin }}
+{{t "groups_permissions_full_access"}}
+{{else}}
 <div id="table-container" class="table-container"></div>
 <div class="btn-row">
     {{#if showAddButton}}
@@ -7,3 +10,4 @@
     <button class="btn btn-primary" data-action="insert" type="button">{{t "choose_existing"}}</button>
     {{/if}}
 </div>
+{{/if}}

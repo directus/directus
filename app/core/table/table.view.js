@@ -1,17 +1,18 @@
 define([
-  "app",
+  'app',
   'underscore',
-  "backbone",
+  'backbone',
   'core/notification',
   'core/t',
+  'helpers/table',
   'helpers/model',
-  "core/table/table.headview",
-  "core/table/table.bodyview",
-  "core/table/table.footerview",
-  "plugins/jquery.flashrow"
+  'core/table/table.headview',
+  'core/table/table.bodyview',
+  'core/table/table.footerview',
+  'plugins/jquery.flashrow'
 ],
 
-function(app, _, Backbone, Notification, __t, ModelHelper, TableHead, TableBody, TableFooter) {
+function(app, _, Backbone, Notification, __t, TableHelpers, ModelHelper, TableHead, TableBody, TableFooter) {
 
   'use strict';
 
@@ -100,15 +101,7 @@ function(app, _, Backbone, Notification, __t, ModelHelper, TableHead, TableBody,
 
     fixWidths: function ($el) {
       var $table = $el || this.$el;
-      $table.find('tfoot tr td').each(function(index) {
-        var width = $table.find('tbody tr td:eq('+index+')').innerWidth();
-        $(this).innerWidth(width);
-      });
-
-      $table.find('thead tr th').each(function(index) {
-        var width = $table.find('tbody tr td:eq('+index+')').innerWidth();
-        $(this).innerWidth(width);
-      });
+      TableHelpers.fixWidths($table);
     },
 
     afterRender: function() {

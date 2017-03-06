@@ -67,7 +67,24 @@ class DirectusPrivilegesTableGateway extends RelationalTableGateway
     public function getGroupPrivileges($groupId)
     {
         $getPrivileges = function () use ($groupId) {
-            return (array) $this->fetchGroupPrivileges($groupId, null);
+            // @TODO: Add test
+            if ($groupId === 1) {
+                $privileges = [
+                    '*' => [
+                        'allow_view' => 2,
+                        'allow_add' => 1,
+                        'allow_edit' => 2,
+                        'allow_delete' => 2,
+                        'allow_alter' => 1,
+                        'read_field_blacklist' => [],
+                        'write_field_blacklist' => []
+                    ]
+                ];
+            } else {
+                $privileges = $this->fetchGroupPrivileges($groupId, null);
+            }
+
+            return (array) $privileges;
         };
 
         // return $this->memcache->getOrCache(MemcacheProvider::getKeyDirectusGroupPrivileges($groupId), $getPrivileges, 1800);
