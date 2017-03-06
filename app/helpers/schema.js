@@ -21,7 +21,7 @@ define(function() {
       var isSystem = model.get('system');
 
       if (excludeSystems) {
-        return hasType && isSystem;
+        return hasType && !isSystem;
       }
 
       return hasType;
