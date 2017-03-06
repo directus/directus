@@ -434,6 +434,11 @@
     "created_by": "Created By",
     "last_modified_by": "Last Modified By",
 
+    "created_by_column": "Created By Column",
+    "created_on_column": "Created On Column",
+    "modified_by_column": "Modified By Column",
+    "modified_on_column": "Modified On Column",
+
     "invitation": "Invitation",
     "invitation_sent": "Invitation sent successfully",
 
