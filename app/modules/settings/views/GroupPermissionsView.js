@@ -80,7 +80,8 @@ function(app, Backbone, _, Handlebars, BasePageView, EditView, Widgets, __t, Not
             {title: __t('group_permissions'), anchor: '#settings/permissions'}
           ]
         },
-        basicSave: true
+        basicSave: true,
+        className: 'header settings'
       });
     },
 

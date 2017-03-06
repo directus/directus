@@ -766,7 +766,8 @@ function(app, _, Backbone, Directus, EditView, BasePageView, TableModel, ColumnM
             {title: __t('tables_and_inputs'), anchor: '#settings/tables'}
           ]
         },
-        basicSave: true
+        basicSave: true,
+        className: 'header settings'
       });
     },
 
