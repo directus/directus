@@ -24,19 +24,20 @@ function(app, Backbone, Handlebars, Directus, BasePageView, Widgets, __t, moment
     template: 'modules/users/card-view',
 
     events: {
-      // old selector: .header-image, .primary-info
-      'click .user': function(e) {
-        var id = $(e.target).closest('.user').data('id');
-        var user = app.users.getCurrentUser();
-        var userGroup = user.get('group');
+      'click .user': 'showUser'
+    },
 
-        //@todo fix this so it respects ACL instead of being hardcoded
-        if (!(parseInt(id,10) === user.id || userGroup.id === 1)) {
-          return;
-        }
+    showUser: function (event) {
+      var id = $(event.currentTarget).data('id');
+      var user = app.users.getCurrentUser();
+      var userGroup = user.get('group');
 
-        app.router.go('#users', id);
-      }
+      // @TODO: fix this so it respects ACL instead of being hardcoded
+      // if (!(parseInt(id,10) === user.id || userGroup.id === 1)) {
+      //   return;
+      // }
+
+      app.router.openUserModal(id);
     },
 
     serialize: function() {
