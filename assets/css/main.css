@@ -4118,12 +4118,15 @@ body.help .discover-spotlight {
     font-size: 13px;
     font-weight: 500;
     color: #CCCCCC; }
+  .message .details h1 {
+    margin-top: 100px;
+    margin-bottom: 4px; }
   .message .details input.subject {
-    -webkit-transition: all 400ms ease-in-out 0ms;
-    -moz-transition: all 400ms ease-in-out 0ms;
-    -o-transition: all 400ms ease-in-out 0ms;
-    -ms-transition: all 400ms ease-in-out 0ms;
-    transition: all 400ms ease-in-out 0ms;
+    -webkit-transition: all 200ms ease-in-out 0ms;
+    -moz-transition: all 200ms ease-in-out 0ms;
+    -o-transition: all 200ms ease-in-out 0ms;
+    -ms-transition: all 200ms ease-in-out 0ms;
+    transition: all 200ms ease-in-out 0ms;
     -webkit-border-radius: 0;
     -moz-border-radius: 0;
     border-radius: 0;
@@ -4131,7 +4134,7 @@ body.help .discover-spotlight {
     -webkit-background-clip: padding-box;
     background-clip: padding-box;
     margin-top: 100px;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
     border: none;
     border-bottom: 1px solid #CCCCCC;
     font-size: 30px;
@@ -4143,13 +4146,38 @@ body.help .discover-spotlight {
       -webkit-box-shadow: 0px 0px 0px 0px transparent;
       -moz-box-shadow: 0px 0px 0px 0px transparent;
       box-shadow: 0px 0px 0px 0px transparent; }
-  .message .details h1 {
-    margin-top: 100px;
-    margin-bottom: 4px; }
+  .message .details input.recipients {
+    border: none;
+    padding: 0;
+    margin-bottom: 10px; }
+    .message .details input.recipients:focus {
+      -webkit-box-shadow: 0px 0px 0px 0px transparent;
+      -moz-box-shadow: 0px 0px 0px 0px transparent;
+      box-shadow: 0px 0px 0px 0px transparent; }
   .message .details .to {
     color: #CCCCCC;
     margin-bottom: 40px;
     font-weight: 500; }
+    .message .details .to span {
+      -webkit-transition: all 200ms ease-in-out 0ms;
+      -moz-transition: all 200ms ease-in-out 0ms;
+      -o-transition: all 200ms ease-in-out 0ms;
+      -ms-transition: all 200ms ease-in-out 0ms;
+      transition: all 200ms ease-in-out 0ms;
+      -webkit-border-radius: 2px;
+      -moz-border-radius: 2px;
+      border-radius: 2px;
+      -moz-background-clip: padding;
+      -webkit-background-clip: padding-box;
+      background-clip: padding-box;
+      background-color: #EEEEEE;
+      padding: 3px 6px;
+      color: #999999;
+      margin: 2px;
+      cursor: pointer; }
+      .message .details .to span:hover {
+        background-color: #F44336;
+        color: #FFFFFF; }
   .message .attachments {
     margin-top: 20px;
     margin-left: -20px; }
@@ -4179,7 +4207,6 @@ body.help .discover-spotlight {
     font-size: 16px;
     line-height: 30px; }
     .message .body textarea {
-      border: 1px solid #CCCCCC;
       min-height: 300px; }
   .message .button-group .button {
     -webkit-transition: all 400ms ease-in-out 0ms;
@@ -4194,7 +4221,7 @@ body.help .discover-spotlight {
       display: inline-block;
       min-width: 40px;
       width: 40px;
-      margin-left: 20px;
+      margin-left: 10px;
       padding-left: 10px; }
   .message .response {
     position: relative;
