@@ -811,7 +811,7 @@ function(app, _, Backbone, Directus, EditView, BasePageView, TableModel, ColumnM
     addRowView: function(model, render) {
       var view = this.insertView('tbody', new TablesRow({
         model: model,
-        unregistered: !this.hasPrivilege(model)
+        unregistered: ! app.schemaManager.hasPrivilege(model.id)
       }));
 
       if (render !== false) {
@@ -864,17 +864,6 @@ function(app, _, Backbone, Directus, EditView, BasePageView, TableModel, ColumnM
       return (model.id.substring(0,9) !== 'directus_');
     },
 
-    hasPrivilege: function(model) {
-      // Filter out tables you don't have alter permissions on
-      var privileges = app.schemaManager.getPrivileges(model.id);
-
-      // filter out tables with empty privileges
-      if (privileges === undefined) return false;
-
-      // only return tables with view permissions
-      return privileges.has('allow_view') && privileges.get('allow_view') > 0;
-    },
-
     flashItem: function(entryID, bodyScrollTop) {
       document.body.scrollTop = parseInt(bodyScrollTop, 10) || 0;
       app.on('load', function() {
@@ -885,6 +874,7 @@ function(app, _, Backbone, Directus, EditView, BasePageView, TableModel, ColumnM
     },
 
     beforeRender: function() {
+      this.collection.sort();
       this.collection.each(function(model) {
         if (!this.isValidModel(model)) {
           return false;

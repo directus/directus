@@ -48,6 +48,12 @@ define(function(require, exports, module) {
   var TableCollection = DirectusCollection.extend({
     model: TableModel,
 
+    comparator: function (model) {
+      var level = hasPrivilege(model.id) ? 0 : 1;
+
+      return level + ' ' + model.get('table_name');
+    },
+
     countVisible: function() {
       // Visible models only
       var models = this.filter(function(model) { return !model.get('hidden'); });
@@ -90,6 +96,23 @@ define(function(require, exports, module) {
    * Holds privileges
    */
   var privileges = {};
+
+  var getPrivileges = function (tableName, statusId) {
+    statusId = statusId == null ? 'all' : statusId;
+
+    return _.findStringKey(privileges, tableName + '.' + statusId);
+  };
+
+  var hasPrivilege = function (table) {
+    // Filter out tables you don't have alter permissions on
+    var privileges = getPrivileges(table);
+
+    // filter out tables with empty privileges
+    if (privileges === undefined) return false;
+
+    // only return tables with view permissions
+    return privileges.has('allow_view') && privileges.get('allow_view') > 0;
+  };
 
   module.exports = {
 
@@ -233,6 +256,10 @@ define(function(require, exports, module) {
       }, this);
     },
 
+    hasPrivilege: function (table) {
+      return hasPrivilege(table);
+    },
+
     getColumns: function(namespace, tableName) {
       return columnSchemas[namespace][tableName];
     },
@@ -273,9 +300,7 @@ define(function(require, exports, module) {
     },
 
     getPrivileges: function(tableName, statusId) {
-      statusId = statusId == null ? 'all' : statusId;
-
-      return _.findStringKey(privileges, tableName + '.' + statusId);
+      return getPrivileges(tableName, statusId);
     },
 
     getPrivilegesOrDefault: function(tableName, statusId) {
