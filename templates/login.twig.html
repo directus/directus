@@ -7,13 +7,13 @@
 <div class="login-panel">
 	<form action="{{rootUrl}}api/1/auth/login" method="post" class="login-box" autocomplete="off">
 		<div class="input">
-			<i class="material-icons">person</i>
-			<input name="email" type="email" class="email" placeholder="Email">
+			<i class="material-icons focus-color">person</i>
+			<input name="email" type="email" class="email" placeholder="Email" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
 		</div>
 		<div class="input">
-			<i class="material-icons">lock</i>
-			<i id="forgot-password" class="material-icons forgot ">help</i>
-			<input name="password" type="password" class="password" placeholder="Password">
+			<i class="material-icons focus-color">lock</i>
+			<i id="forgot-password" class="material-icons forgot" title="Password Reset">help</i>
+			<input name="password" type="password" class="password" placeholder="Password" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
 		</div>
 		<button type="submit" class="button">Log In</button> <!-- Optional Class: disabled -->
 	</form>
@@ -30,6 +30,8 @@
 	</div>
 	{% endif %}
 </div>
+
+<div class="processing"><div class="loading-container"><div class="loading-bar"></div></div></div>
 
 <div class="glow"></div>
 
@@ -70,6 +72,13 @@
 		function clear_messages() {
 			$login_message.hide();
 		}
+
+		$('.login-box input').bind('focus', function (e) {
+			$('.focus-color').removeClass('active');
+			$(this).siblings('.focus-color').addClass('active');
+		}).bind('blur', function (e) {
+			$('.focus-color').removeClass('active');
+		});
 
 		$('#forgot-password').bind('click', function (e) {
 			e.preventDefault();
@@ -118,6 +127,10 @@
 				return message("{{'enter_your_email_and_password'|trans}}", true);
 			}
 
+			// Disable form during processing
+			$('.processing').addClass('blocking').addClass('fading');
+			$('.processing .loading-bar').addClass('step-1');
+
 			$.ajax('{{rootUrl}}api/{{apiVersion}}/auth/login', {
 				data: {email: email, password: password},
 				dataType: 'json',
@@ -129,7 +142,11 @@
 					var lastPagePath = lastPage ? lastPage.path : '';
 					var path = redirectPath || lastPagePath || defaultPath;
 
+					$('.processing .loading-bar').removeClass('step-1').addClass('step-2');
+
 					if (!data.success) {
+						$('.processing').removeClass('blocking').removeClass('fading');
+						$('.processing .loading-bar').removeClass('step-1').removeClass('step-2');
 						message(data.message, true);
 						return;
 					}
@@ -137,6 +154,8 @@
 					window.location = "{{rootUrl}}" + path;
 				},
 				error: function (jqXHR, textStatus, errorThrown) {
+					$('.processing').removeClass('blocking').removeClass('fading');
+					$('.processing .loading-bar').removeClass('step-1').removeClass('step-2');
 					message("{{'server_error_occurred'|trans}}", true);
 				}
 			});

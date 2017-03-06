@@ -89,6 +89,11 @@
 	50% {opacity: 0.7;}
 	100% {opacity: 1;}
 }
+@keyframes pulsate-login {
+	0% {background-color: $primary;}
+	50% {background-color: darken($primary, 8%);}
+	100% {background-color: $primary;}
+}
 @keyframes pulsate-bg {
 	0% {background-color: lighten($primary, 25%);}
 	50% {background-color: lighten($primary, 35%);}

@@ -12,6 +12,13 @@
     opacity: 0.7; }
   100% {
     opacity: 1; } }
+@keyframes pulsate-login {
+  0% {
+    background-color: #3498DB; }
+  50% {
+    background-color: #2383c4; }
+  100% {
+    background-color: #3498DB; } }
 @keyframes pulsate-bg {
   0% {
     background-color: #a0cfee; }
@@ -168,10 +175,6 @@ input {
     -webkit-box-shadow: 0px 0px 0px 2px #3498DB;
     -moz-box-shadow: 0px 0px 0px 2px #3498DB;
     box-shadow: 0px 0px 0px 2px #3498DB; }
-  textarea:-webkit-autofill,
-  input:-webkit-autofill {
-    -webkit-box-shadow: 0 0 0px 1000px #FFFFFF inset;
-    color: #8bc4ea !important; }
   textarea[readonly], textarea:disabled,
   input[readonly],
   input:disabled {
@@ -3988,7 +3991,8 @@ body.help .discover-spotlight {
       border-top: 4px solid #3498DB;
       margin-top: -4px; }
     .user-listing .user img {
-      height: 200px; }
+      height: 200px;
+      border-bottom: 1px solid #EEEEEE; }
     .user-listing .user .group,
     .user-listing .user .online {
       -webkit-transition: all 200ms ease-in-out 0ms;
@@ -5723,68 +5727,6 @@ body.help .discover-spotlight {
         right: 30px;
         display: none; }
 
-.preview-intro {
-  -webkit-box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.2);
-  -moz-box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.2);
-  box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.2);
-  -webkit-border-radius: 4px;
-  -moz-border-radius: 4px;
-  border-radius: 4px;
-  -moz-background-clip: padding;
-  -webkit-background-clip: padding-box;
-  background-clip: padding-box;
-  position: fixed;
-  top: 20px;
-  left: 20px;
-  width: 300px;
-  padding: 20px 20px 22px 20px;
-  background-color: #F44336;
-  color: #FFFFFF;
-  z-index: 9999;
-  font-weight: 500;
-  line-height: 17px;
-  font-size: 14px; }
-  .preview-intro .material-icons {
-    -webkit-transition: all 200ms ease-in-out 0ms;
-    -moz-transition: all 200ms ease-in-out 0ms;
-    -o-transition: all 200ms ease-in-out 0ms;
-    -ms-transition: all 200ms ease-in-out 0ms;
-    transition: all 200ms ease-in-out 0ms;
-    position: absolute;
-    top: 8px;
-    right: 15px;
-    color: #FFFFFF;
-    font-size: 18px;
-    cursor: pointer;
-    z-index: 999; }
-    .preview-intro .material-icons:hover {
-      opacity: 1; }
-  .preview-intro div {
-    font-size: 22px;
-    margin-bottom: 10px;
-    font-weight: 600; }
-  .preview-intro hr {
-    border-color: #FFFFFF;
-    margin: 15px 0 15px 0;
-    opacity: 0.5; }
-  .preview-intro i {
-    -webkit-transition: all 200ms ease-in-out 0ms;
-    -moz-transition: all 200ms ease-in-out 0ms;
-    -o-transition: all 200ms ease-in-out 0ms;
-    -ms-transition: all 200ms ease-in-out 0ms;
-    transition: all 200ms ease-in-out 0ms;
-    display: block;
-    margin-top: 10px;
-    opacity: 0.6; }
-    .preview-intro i img {
-      display: inline-block;
-      margin-top: 10px;
-      margin-left: 10px;
-      width: 16px;
-      margin-bottom: -1px; }
-    .preview-intro i:hover {
-      opacity: 1; }
-
 body.login {
   background-color: #EEEEEE; }
   body.login .directus {
@@ -5805,7 +5747,7 @@ body.login {
     letter-spacing: 0.03em;
     font-size: 9px;
     text-transform: uppercase;
-    z-index: 2;
+    z-index: 4;
     cursor: help; }
     body.login .directus:hover {
       color: #3498DB; }
@@ -5814,7 +5756,7 @@ body.login {
     bottom: 50px;
     text-align: center;
     width: 100%;
-    z-index: 2; }
+    z-index: 4; }
     body.login .notifications .notification {
       -webkit-border-radius: 2px;
       -moz-border-radius: 2px;
@@ -5859,6 +5801,8 @@ body.login {
         font-size: 16px;
         color: #DDDDDD;
         pointer-events: none; }
+        body.login .login-panel .input .material-icons.focus-color.active {
+          color: #3498DB; }
         body.login .login-panel .input .material-icons.forgot {
           pointer-events: auto;
           cursor: pointer;
@@ -5872,7 +5816,8 @@ body.login {
         padding-left: 30px;
         font-size: 14px;
         border-color: #DDDDDD;
-        background-color: #FFFFFF !important; }
+        background-color: #FFFFFF !important;
+        outline: 10px solid transparent; }
         body.login .login-panel .input input:focus {
           border-color: #FFFFFF; }
         body.login .login-panel .input input.password {
@@ -5941,6 +5886,64 @@ body.login {
           margin-left: 0; }
         body.login .login-panel .alt-auth .tile img {
           display: block; }
+  body.login .processing {
+    -webkit-transition: all 200ms ease-in-out 0ms;
+    -moz-transition: all 200ms ease-in-out 0ms;
+    -o-transition: all 200ms ease-in-out 0ms;
+    -ms-transition: all 200ms ease-in-out 0ms;
+    transition: all 200ms ease-in-out 0ms;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(238, 238, 238, 0.75);
+    opacity: 0;
+    z-index: 0; }
+    body.login .processing.blocking {
+      z-index: 3; }
+    body.login .processing.fading {
+      opacity: 1; }
+    body.login .processing .loading-container {
+      -webkit-border-radius: 2px;
+      -moz-border-radius: 2px;
+      border-radius: 2px;
+      -moz-background-clip: padding;
+      -webkit-background-clip: padding-box;
+      background-clip: padding-box;
+      position: absolute;
+      bottom: 68px;
+      left: 50%;
+      width: 200px;
+      height: 4px;
+      margin-left: -100px;
+      background-color: #FFFFFF; }
+      body.login .processing .loading-container .loading-bar {
+        -webkit-transition: all 4000ms cubic-bezier(0.23, 1, 0.32, 1) 0ms;
+        -moz-transition: all 4000ms cubic-bezier(0.23, 1, 0.32, 1) 0ms;
+        -o-transition: all 4000ms cubic-bezier(0.23, 1, 0.32, 1) 0ms;
+        -ms-transition: all 4000ms cubic-bezier(0.23, 1, 0.32, 1) 0ms;
+        transition: all 4000ms cubic-bezier(0.23, 1, 0.32, 1) 0ms;
+        -webkit-border-radius: 2px;
+        -moz-border-radius: 2px;
+        border-radius: 2px;
+        -moz-background-clip: padding;
+        -webkit-background-clip: padding-box;
+        background-clip: padding-box;
+        animation: pulsate-login 1s ease-out;
+        animation-iteration-count: infinite;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        width: 0%;
+        background-color: #3498DB; }
+        body.login .processing .loading-container .loading-bar.step-1 {
+          width: 80%; }
+        body.login .processing .loading-container .loading-bar.step-2 {
+          width: 99%; }
+        body.login .processing .loading-container .loading-bar.error {
+          background-color: #F44336; }
   body.login .glow {
     position: absolute;
     top: 50%;
