@@ -216,6 +216,10 @@ function(app, _, Backbone, __t, BasePageView, MessageView, MessageForm, Widgets,
       }
     },
 
+    attributes: {
+      class: 'page-container messages'
+    },
+
     leftToolbar: function() {
       var widgets = [
         new Widgets.ButtonWidget({
