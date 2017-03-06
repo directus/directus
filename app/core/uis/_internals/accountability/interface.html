@@ -1,0 +1,51 @@
+<div class="accountability margin-r-20">
+	{{t "created_by_column"}}
+	<div class="select-container">
+		<select id="user_create_column" name="user_create_column">
+			<option value="">None</option>
+			{{#numericColumns}}
+			<option value="{{column_name}}">{{column_name}}</option>
+			{{/numericColumns}}
+		</select>
+		<i class="material-icons select-arrow">arrow_drop_down</i>
+	</div>
+</div>
+
+<div class="accountability margin-r-20">
+	{{t "created_on_column"}}
+	<div class="select-container">
+		<select id="user_update_column" name="user_update_column">
+			<option value="">None</option>
+			{{#dateColumns}}
+			<option value="{{column_name}}">{{column_name}}</option>
+			{{/dateColumns}}
+		</select>
+		<i class="material-icons select-arrow">arrow_drop_down</i>
+	</div>
+</div>
+
+<div class="accountability margin-r-20">
+	{{t "modified_by_column"}}
+	<div class="select-container">
+		<select id="date_create_column" name="date_create_column">
+			<option value="">None</option>
+			{{#numericColumns}}
+			<option value="{{column_name}}">{{column_name}}</option>
+			{{/numericColumns}}
+		</select>
+		<i class="material-icons select-arrow">arrow_drop_down</i>
+	</div>
+</div>
+
+<div class="accountability">
+	{{t "modified_on_column"}}
+	<div class="select-container">
+		<select id="date_update_column" name="date_update_column">
+			<option value="null">None</option>
+			{{#dateColumns}}
+			<option value="{{column_name}}">{{column_name}}</option>
+			{{/dateColumns}}
+		</select>
+		<i class="material-icons select-arrow">arrow_drop_down</i>
+	</div>
+</div>

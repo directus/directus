@@ -4,6 +4,8 @@ define(function(require, exports, module) {
 
   // Register Core UI's
   var defaultUis = ([
+    // Internals
+    require('core/uis/_internals/accountability/interface'),
     require('core/uis/textinput'),
     require('core/uis/directus_columns'),
     require('core/uis/divider'),

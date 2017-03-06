@@ -376,6 +376,11 @@
     "created_by": "Creado Por",
     "last_modified_by": "Última Modificación Por",
 
+    "created_by_column": "Columna Creado Por",
+    "created_on_column": "Columna Creado El",
+    "modified_by_column": "Columna Modificado Por",
+    "modified_on_column": "Columna Modificado El",
+
     "view_x_requires_y": "Vista '%{viewId}' necesita: %{types}",
 
     "ok": "Aceptar",

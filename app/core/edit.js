@@ -88,6 +88,12 @@ define(function(require, exports, module) {
           return;
         }
 
+        // This column interface won't be rendered
+        // or submitted
+        if (column.get('omit_input') === true) {
+          return;
+        }
+
         if (this.model.isReadBlacklisted && this.model.isReadBlacklisted(column.id)) {
           return false;
         }
