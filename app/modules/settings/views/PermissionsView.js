@@ -12,14 +12,15 @@ define([
   'backbone',
   'core/widgets/widgets',
   'core/t',
+  'helpers/table',
   'core/BasePageView'
 ],
 
-function(app, _, Backbone, Widgets, __t, BasePageView) {
+function(app, _, Backbone, Widgets, __t, TableHelpers, BasePageView) {
 
   'use strict';
 
-  var Groups =  Backbone.Layout.extend({
+  var Groups = Backbone.Layout.extend({
     template: 'modules/settings/settings-groups',
 
     serialize: function() {
@@ -44,6 +45,10 @@ function(app, _, Backbone, Widgets, __t, BasePageView) {
       this.collection.each(function(model){
         this.addRowView(model, false);
       }, this);
+    },
+
+    afterRender: function () {
+      TableHelpers.fixWidths(this.$el);
     },
 
     initialize: function() {
