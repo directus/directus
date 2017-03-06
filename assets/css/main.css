@@ -3684,6 +3684,10 @@ body.help .discover-spotlight {
   .page .page-container.gray-bg {
     height: 100%;
     background-color: #f6f6f6; }
+  .page .page-container.messages {
+    height: 100%; }
+    .page .page-container.messages .main-container {
+      height: 100%; }
 
 .file-listing {
   height: 100%; }
