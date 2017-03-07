@@ -48,7 +48,7 @@ define([
   });
 
   var Component = UIComponent.extend({
-    id: 'directus_columns',
+    id: 'directus_columns_picker',
 
     Input: Input
   });

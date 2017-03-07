@@ -143,7 +143,7 @@ define(function(require, exports, module) {
       {
         "id": "primary_column",
         "column_name": "primary_column",
-        "ui": "directus_columns",
+        "ui": "directus_columns_picker",
         "type": "VARCHAR",
         "length": 64,
         "system": true,
@@ -160,7 +160,7 @@ define(function(require, exports, module) {
       {
         "id": "sort_column",
         "column_name": "sort_column",
-        "ui": "directus_columns",
+        "ui": "directus_columns_picker",
         "type": "VARCHAR",
         "length": 64,
         "system": true,
@@ -178,7 +178,7 @@ define(function(require, exports, module) {
       {
         "id": "status_column",
         "column_name": "status_column",
-        "ui": "directus_columns",
+        "ui": "directus_columns_picker",
         "type": "VARCHAR",
         "length": 64,
         "system": true,
