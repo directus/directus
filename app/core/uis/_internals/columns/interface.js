@@ -216,7 +216,7 @@ define(['app', 'underscore', 'core/UIComponent', 'core/UIView', 'core/table/tabl
   });
 
   var Component = UIComponent.extend({
-    id: 'columns',
+    id: 'directus_columns',
     dataTypes: ['ONETOMANY'],
     variables: [
       {id: 'visible_columns', type: 'String', ui: 'textinput', char_length: 255, required: true},

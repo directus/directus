@@ -60,7 +60,7 @@ define(function(require, exports, module) {
         "id": "columns",
         "column_name": "columns",
         "type": "ALIAS",
-        "ui": "columns",
+        "ui": "directus_columns",
         "relationship_type": "ONETOMANY",
         "related_table": "directus_columns",
         "junction_key_right": "table_name",
