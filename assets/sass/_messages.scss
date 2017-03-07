@@ -98,6 +98,12 @@
 					background-color: $serious;
 					color: $white;
 				}
+				.material-icons {
+					font-size: 16px;
+					margin-right: 4px;
+					vertical-align: middle;
+					margin-top: -3px;
+				}
 			}
 		}
 	}
@@ -131,8 +137,8 @@
 		font-size: 16px;
 		line-height: 30px;
 		textarea {
-			// border: 1px solid $gray-3;
 			min-height: 300px;
+			font-size: 15px;
 		}
 	}
 	.button-group {
@@ -141,9 +147,10 @@
 			display: inline-block;
 			min-width: 200px;
 			margin-top: 20px;
-			// opacity: 0;
+			&.hidden {
+				display: none;
+			}
 			&.subdued {
-				display: inline-block;
 				min-width: 40px;
 				width: 40px;
 				margin-left: 10px;

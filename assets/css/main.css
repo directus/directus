@@ -4178,6 +4178,11 @@ body.help .discover-spotlight {
       .message .details .to span:hover {
         background-color: #F44336;
         color: #FFFFFF; }
+      .message .details .to span .material-icons {
+        font-size: 16px;
+        margin-right: 4px;
+        vertical-align: middle;
+        margin-top: -3px; }
   .message .attachments {
     margin-top: 20px;
     margin-left: -20px; }
@@ -4207,7 +4212,8 @@ body.help .discover-spotlight {
     font-size: 16px;
     line-height: 30px; }
     .message .body textarea {
-      min-height: 300px; }
+      min-height: 300px;
+      font-size: 15px; }
   .message .button-group .button {
     -webkit-transition: all 400ms ease-in-out 0ms;
     -moz-transition: all 400ms ease-in-out 0ms;
@@ -4217,8 +4223,9 @@ body.help .discover-spotlight {
     display: inline-block;
     min-width: 200px;
     margin-top: 20px; }
+    .message .button-group .button.hidden {
+      display: none; }
     .message .button-group .button.subdued {
-      display: inline-block;
       min-width: 40px;
       width: 40px;
       margin-left: 10px;
