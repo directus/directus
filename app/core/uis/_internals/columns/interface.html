@@ -20,7 +20,10 @@
 				<td class="visible js-visible"><i class="material-icons">visibility</i></td>
 				<td>{{capitalize column_name}}</td>
 				<td>{{capitalize ui}}</td>
-				<td class="relationship">{{capitalize relationship_type}}</td>
+				<td class="relationship">
+					<span class="type">{{capitalize relationship_type}}</span>
+					{{#if related_table}} ({{capitalize related_table}}){{/if}}
+				</td>
 				<td class="comment">{{comment}}</td>
 				<td class="relational-remove">
 					<i class="material-icons js-remove">close</i>
