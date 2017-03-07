@@ -174,7 +174,7 @@ define(['app', 'underscore', 'core/UIComponent', 'core/UIView', 'core/table/tabl
         var data = column.toJSON();
 
         if (!data.relationship_type) {
-          data.relationship_type = 'none';
+          data.relationship_type = __t('relationship_none');
         }
 
         if (!data.comment) {
