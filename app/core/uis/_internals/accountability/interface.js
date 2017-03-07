@@ -6,24 +6,58 @@ define(['app', 'core/UIComponent', 'core/UIView', 'helpers/schema'], function(ap
     template: '_internals/accountability/interface',
 
     serialize: function () {
+      var model = this.model;
       var structure = this.options.tableStructure;
-      var dateColumns, numericColumns;
+      var dateColumns, numericColumns,
+          dateCreateColumns = [], dateUpdateColumns = [],
+          userCreateColumns = [], userUpdateColumns = [];
 
-      dateColumns = SchemaHelper.dateColumns(structure.columns, true).map(function (column) {
-        return column.toJSON();
+      dateColumns = SchemaHelper.dateColumns(structure.columns, true);
+      numericColumns = SchemaHelper.numericColumns(structure.columns, true);
+
+      dateColumns.forEach(function (column) {
+        var createColumn, updateColumn;
+
+        createColumn = column.toJSON();
+        updateColumn = column.toJSON();
+        if (model.get('date_create_column') == column.get('column_name')) {
+          createColumn.isSelected = true;
+        }
+
+        if (model.get('date_update_column') == column.get('column_name')) {
+          updateColumn.isSelected = true;
+        }
+
+        dateCreateColumns.push(createColumn);
+        dateUpdateColumns.push(updateColumn);
       });
 
-      numericColumns = SchemaHelper.numericColumns(structure.columns, true).map(function (column) {
-        return column.toJSON();
+      numericColumns.forEach(function (column) {
+        var createColumn, updateColumn;
+
+        createColumn = column.toJSON();
+        updateColumn = column.toJSON();
+        if (model.get('user_create_column') == column.get('column_name')) {
+          createColumn.isSelected = true;
+        }
+
+        if (model.get('user_update_column') == column.get('column_name')) {
+          updateColumn.isSelected = true;
+        }
+
+        userCreateColumns.push(createColumn);
+        userUpdateColumns.push(updateColumn);
       });
 
       return {
-        dateColumns: dateColumns,
-        numericColumns: numericColumns
+        dateUpdateColumns: dateUpdateColumns,
+        dateCreateColumns: dateCreateColumns,
+        userUpdateColumns: userUpdateColumns,
+        userCreateColumns: userCreateColumns
       }
     },
 
-    initialize: function(options) {
+    initialize: function (options) {
       this.options.tableName = options.model.id;
       this.options.tableStructure = app.schemaManager.getTable(this.options.tableName);
     }

@@ -16,7 +16,7 @@ define(function() {
   var filterColumns = function (structure, type, excludeSystems) {
     excludeSystems = excludeSystems === true;
 
-    return structure.filter(function(model) {
+    return structure.filter(function (model) {
       var hasType = type.indexOf(model.get('type')) >= 0;
       var isSystem = model.get('system');
 
@@ -36,9 +36,16 @@ define(function() {
     return filterColumns(structure, numericTypes, excludeSystems);
   };
 
+  var primaryColumns = function (structure) {
+    return structure.filter(function (model) {
+      return model.get('key') === 'PRI';
+    });
+  };
+
   return {
     dateColumns: dateColumns,
     numericColumns: numericColumns,
+    primaryColumns: primaryColumns,
     cleanColumnName: cleanColumnName,
     cleanTableName: cleanIdentifier
   }

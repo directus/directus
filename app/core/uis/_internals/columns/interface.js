@@ -11,19 +11,16 @@ define(['app', 'underscore', 'core/UIComponent', 'core/UIView', 'core/table/tabl
 
   'use strict';
 
-  var template = '<div class="related-table table-container"></div> \
-                  <div class="button-group"> \
-                    <div class="button js-button">\
-                      <i class="material-icons">add</i> Add New Column\
-                    </div> \
-                  </div>';
-
   var Input = UIView.extend({
-    templateSource: template,
+
+    template: '_internals/columns/interface',
+
     events: {
       'click div.related-table > div td:not(.delete)': 'editRow',
       'click .js-remove': 'verifyDestroyColumn',
-      'click .js-button': 'addRow'
+      'click .js-button-add': 'addRow',
+      'click .js-required': 'toggleRequired',
+      'click .js-visible': 'toggleVisibility'
     },
 
     editRow: function(e) {
@@ -129,18 +126,66 @@ define(['app', 'underscore', 'core/UIComponent', 'core/UIView', 'core/table/tabl
       }, this);
     },
 
+    toggleAttr: function (id, attr) {
+      var column = this.columns.get(id);
+      var options, attrs;
+
+      if (column) {
+        attrs = {};
+        attrs[attr] = !column.get(attr);
+        options = {patch: true};
+
+        // hotfix:
+        column.url = function () {
+          return app.API_URL + 'tables/' + column.get('table_name') + '/columns/' + column.get('column_name');
+        };
+
+        var self = this;
+        options.success = function () {
+          self.render();
+        };
+
+        column.save(attrs, options);
+      }
+    },
+
+    // @TODO: Create Base model with an toggle method for boolean values
+    // model.toggle('required');
+    toggleRequired: function (event) {
+      var $row = $(event.currentTarget).closest('tr');
+
+      this.toggleAttr($row.data('id'), 'required');
+    },
+
+    toggleVisibility: function (event) {
+      var $row = $(event.currentTarget).closest('tr');
+
+      this.toggleAttr($row.data('id'), 'hidden_input');
+    },
+
     serialize: function() {
+      var columns = this.columns.map(function (column) {
+        var data = column.toJSON();
+
+        if (!data.relationship_type) {
+          data.relationship_type = 'none';
+        }
+
+        if (!data.comment) {
+          data.comment = __t('add_comment');
+        }
+
+        return data;
+      });
+
       return {
+        columns: columns,
         title: this.name,
         tableTitle: this.relatedCollection.table.get('table_name'),
         canEdit: this.canEdit,
         showChooseButton: this.showChooseButton,
         showAddButton: this.showAddButton && this.canEdit
       };
-    },
-
-    afterRender: function() {
-      this.setView('.related-table', this.nestedTableView).render();
     },
 
     initialize: function (options) {
@@ -171,52 +216,27 @@ define(['app', 'underscore', 'core/UIComponent', 'core/UIView', 'core/table/tabl
         //Pass this filter to select only where column = val
         filters.related_table_filter = {column: joinColumn, val: this.model.id};
 
-        if(this.columnSchema.options.get('result_limit') !== undefined) {
+        if (this.columnSchema.options.get('result_limit') !== undefined) {
           filters.perPage = this.columnSchema.options.get('result_limit');
         }
 
         relatedCollection.fetch({includeFilters: false, data: filters});
       }
 
-      this.showRemoveButton = this.columnSchema.options.get('remove_button') === true;
-      this.showAddButton = this.columnSchema.options.get('add_button') === true;
-      this.showChooseButton = this.columnSchema.options.get('choose_button') === true;
-
-      this.nestedTableView = new TableView({
-        collection: columns,
-        selectable: false,
-        sortable: false,
-        footer: false,
-        saveAfterDrop: true,
-        deleteColumn: this.canEdit && this.showRemoveButton,
-        hideColumnPreferences: true,
-        hideEmptyMessage: true,
-        tableHead: false,
-        fixedHead: false,
-        showRemoveButton: true,
-        filters: {
-          booleanOperator: '&&',
-          expressions: [
-            //@todo, make sure that this can also nest
-            {column: joinColumn, operator: '===', value: this.model.id}
-          ]
-        }
-      });
+      this.columns = columns;
 
       if (columns.structure.get('sort')) {
         columns.setOrder('sort','ASC',{silent: true});
       }
 
-      this.listenTo(columns, 'add change remove', function() {
-        this.nestedTableView.render();
-      }, this);
+      this.listenTo(columns, 'add change remove', this.render);
 
       this.relatedCollection = columns;
     }
   });
 
   var Component = UIComponent.extend({
-    id: 'columns',
+    id: 'directus_columns',
     dataTypes: ['ONETOMANY'],
     variables: [
       {id: 'visible_columns', type: 'String', ui: 'textinput', char_length: 255, required: true},

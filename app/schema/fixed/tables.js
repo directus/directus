@@ -60,7 +60,7 @@ define(function(require, exports, module) {
         "id": "columns",
         "column_name": "columns",
         "type": "ALIAS",
-        "ui": "columns",
+        "ui": "directus_columns",
         "relationship_type": "ONETOMANY",
         "related_table": "directus_columns",
         "junction_key_right": "table_name",
@@ -78,7 +78,7 @@ define(function(require, exports, module) {
       {
         "id": "list_view",
         "column_name": "list_view",
-        "ui": "textinput", // @TODO: multiple checkbox
+        "ui": "directus_views", // @TODO: multiple checkbox
         "type": "VARCHAR",
         "length": 200,
         "default_value": "table",
@@ -143,7 +143,7 @@ define(function(require, exports, module) {
       {
         "id": "primary_column",
         "column_name": "primary_column",
-        "ui": "textinput",
+        "ui": "directus_columns_picker",
         "type": "VARCHAR",
         "length": 64,
         "system": true,
@@ -152,12 +152,15 @@ define(function(require, exports, module) {
         "default_value": "id",
         "required": false,
         "sort": 7,
-        "comment": ""
+        "comment": "",
+        "options": {
+          "filter": "primary"
+        }
       },
       {
         "id": "sort_column",
         "column_name": "sort_column",
-        "ui": "textinput",
+        "ui": "directus_columns_picker",
         "type": "VARCHAR",
         "length": 64,
         "system": true,
@@ -167,12 +170,15 @@ define(function(require, exports, module) {
         "required": false,
         "nullable": true,
         "sort": 8,
-        "comment": ""
+        "comment": "",
+        "options": {
+          "filter": "number"
+        }
       },
       {
         "id": "status_column",
         "column_name": "status_column",
-        "ui": "textinput",
+        "ui": "directus_columns_picker",
         "type": "VARCHAR",
         "length": 64,
         "system": true,
@@ -181,7 +187,10 @@ define(function(require, exports, module) {
         "required": false,
         "nullable": true,
         "sort": 9,
-        "comment": ""
+        "comment": "",
+        "options": {
+          "filter": "number"
+        }
       },
       {
         "id": "directus_accountability",
