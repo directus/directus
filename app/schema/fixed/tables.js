@@ -152,7 +152,10 @@ define(function(require, exports, module) {
         "default_value": "id",
         "required": false,
         "sort": 7,
-        "comment": ""
+        "comment": "",
+        "options": {
+          "filter": "primary"
+        }
       },
       {
         "id": "sort_column",

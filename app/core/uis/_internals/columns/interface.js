@@ -11,12 +11,24 @@ define([
     // @TODO: Also make checkboxes available
     template: '_internals/columns/dropdown',
 
-    serialize: function () {
+    getColumns: function () {
       var columns = this.options.tableStructure.columns;
+      var filter = this.options.settings.get('filter');
 
-      if (this.options.settings.get('filter') === 'number') {
-        columns = SchemaHelper.numericColumns(columns);
+      switch (filter) {
+        case 'number':
+          columns = SchemaHelper.numericColumns(columns);
+          break;
+        case 'primary':
+          columns = SchemaHelper.primaryColumns(columns);
+          break;
       }
+
+      return columns;
+    },
+
+    serialize: function () {
+      var columns = this.getColumns();
 
       columns = columns.map(function (model) {
         return {
