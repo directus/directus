@@ -3,9 +3,9 @@
 	<div class="select-container">
 		<select id="user_create_column" name="user_create_column">
 			<option value="">None</option>
-			{{#numericColumns}}
-			<option value="{{column_name}}">{{column_name}}</option>
-			{{/numericColumns}}
+			{{#userCreateColumns}}
+			<option value="{{column_name}}"{{#if isSelected}} selected{{/if}}>{{column_name}}</option>
+			{{/userCreateColumns}}
 		</select>
 		<i class="material-icons select-arrow">arrow_drop_down</i>
 	</div>
@@ -16,9 +16,9 @@
 	<div class="select-container">
 		<select id="user_update_column" name="user_update_column">
 			<option value="">None</option>
-			{{#dateColumns}}
-			<option value="{{column_name}}">{{column_name}}</option>
-			{{/dateColumns}}
+			{{#userUpdateColumns}}
+			<option value="{{column_name}}"{{#if isSelected}} selected{{/if}}>{{column_name}}</option>
+			{{/userUpdateColumns}}
 		</select>
 		<i class="material-icons select-arrow">arrow_drop_down</i>
 	</div>
@@ -29,9 +29,9 @@
 	<div class="select-container">
 		<select id="date_create_column" name="date_create_column">
 			<option value="">None</option>
-			{{#numericColumns}}
-			<option value="{{column_name}}">{{column_name}}</option>
-			{{/numericColumns}}
+			{{#dateCreateColumns}}
+			<option value="{{column_name}}"{{#if isSelected}} selected{{/if}}>{{column_name}}</option>
+			{{/dateCreateColumns}}
 		</select>
 		<i class="material-icons select-arrow">arrow_drop_down</i>
 	</div>
@@ -42,9 +42,9 @@
 	<div class="select-container">
 		<select id="date_update_column" name="date_update_column">
 			<option value="null">None</option>
-			{{#dateColumns}}
-			<option value="{{column_name}}">{{column_name}}</option>
-			{{/dateColumns}}
+			{{#dateUpdateColumns}}
+			<option value="{{column_name}}"{{#if isSelected}} selected{{/if}}>{{column_name}}</option>
+			{{/dateUpdateColumns}}
 		</select>
 		<i class="material-icons select-arrow">arrow_drop_down</i>
 	</div>
