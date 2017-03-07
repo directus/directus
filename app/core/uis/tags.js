@@ -89,7 +89,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
           tags[i] = '<span class="tag">' + tags[i] + '</span>';
         }
 
-        return '<span class="tag-container">' + tags.join(' ') + '</span>';
+        return '<span class="tag-container"><div class="fade-out"></div>' + tags.join(' ') + '</span>';
       } else {
         return options.model.attributes.tags;
       }

@@ -1427,6 +1427,13 @@ table {
       height: 40px;
       padding-left: 4px;
       padding-right: 4px; }
+      table tbody tr td.static-numbers {
+        font-size: 10px;
+        color: #999999;
+        width: 30px;
+        padding-left: 10px;
+        min-width: 30px;
+        text-align: center; }
       table tbody tr td.reorder {
         white-space: nowrap;
         width: 30px;
@@ -1632,10 +1639,22 @@ table {
         margin-right: -1px;
         color: #258cd1; }
       table tbody tr td .tag-container {
+        position: relative;
         display: inline-block;
         max-width: 300px;
         white-space: nowrap;
         overflow: hidden; }
+        table tbody tr td .tag-container .fade-out {
+          position: absolute;
+          top: 0;
+          bottom: 0;
+          left: 260px;
+          width: 40px;
+          z-index: 2;
+          background: -moz-linear-gradient(left, rgba(255, 255, 255, 0) 0%, white 100%);
+          background: -webkit-linear-gradient(left, rgba(255, 255, 255, 0) 0%, white 100%);
+          background: linear-gradient(to right, rgba(255, 255, 255, 0) 0%, white 100%);
+          filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00ffffff', endColorstr='#ffffff',GradientType=1 ); }
         table tbody tr td .tag-container .tag {
           -webkit-transition: all 200ms ease-in-out 0ms;
           -moz-transition: all 200ms ease-in-out 0ms;
@@ -1651,6 +1670,7 @@ table {
           display: inline-block;
           padding: 4px 8px;
           margin-right: 2px;
+          margin-top: 4px;
           font-size: 10px;
           font-weight: 700;
           text-transform: uppercase;
@@ -1701,7 +1721,8 @@ table {
     height: 40px;
     background-color: #f6f6f6; }
     table tfoot.footer-open {
-      bottom: 0; }
+      bottom: 0;
+      z-index: 9; }
     table tfoot tr td {
       -webkit-transition: width 200ms ease-in-out 0ms;
       -moz-transition: width 200ms ease-in-out 0ms;
@@ -1742,7 +1763,7 @@ table {
       top: 64px;
       left: 200px;
       right: 0;
-      z-index: 2; }
+      z-index: 8; }
   table.charted.fixed-header thead {
     top: 304px; }
   table.compact tbody tr td {
