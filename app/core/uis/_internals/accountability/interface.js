@@ -18,7 +18,8 @@ define(['app', 'core/UIComponent', 'core/UIView', 'helpers/schema'], function(ap
       dateColumns.forEach(function (column) {
         var createColumn, updateColumn;
 
-        createColumn = updateColumn = column.toJSON();
+        createColumn = column.toJSON();
+        updateColumn = column.toJSON();
         if (model.get('date_create_column') == column.get('column_name')) {
           createColumn.isSelected = true;
         }
@@ -34,7 +35,8 @@ define(['app', 'core/UIComponent', 'core/UIView', 'helpers/schema'], function(ap
       numericColumns.forEach(function (column) {
         var createColumn, updateColumn;
 
-        createColumn = updateColumn = column.toJSON();
+        createColumn = column.toJSON();
+        updateColumn = column.toJSON();
         if (model.get('user_create_column') == column.get('column_name')) {
           createColumn.isSelected = true;
         }
