@@ -16,7 +16,7 @@ define(['app', 'underscore', 'core/UIComponent', 'core/UIView', 'core/table/tabl
     template: '_internals/columns/interface',
 
     events: {
-      'click div.related-table > div td:not(.delete)': 'editRow',
+      'click table td:not(.relational-remove)': 'editRow',
       'click .js-remove': 'verifyDestroyColumn',
       'click .js-button-add': 'addRow',
       'click .js-required': 'toggleRequired',
