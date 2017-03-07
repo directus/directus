@@ -12,6 +12,7 @@ use Directus\Database\TableGateway\RelationalTableGateway as TableGateway;
 use Directus\Database\TableSchema;
 use Directus\Util\ArrayUtils;
 use Directus\Util\SchemaUtils;
+use Zend\Db\Sql\Predicate\In;
 
 class Table extends Route
 {
@@ -74,6 +75,10 @@ class Table extends Route
         $ZendDb = $app->container->get('zenddb');
         $requestPayload = $app->request()->post();
         $params = $app->request()->get();
+
+        if ($app->request()->isPatch()) {
+            return $this->patchColumns($tableName, $requestPayload);
+        }
 
         $params['table_name'] = $tableName;
         if ($app->request()->isPost()) {
@@ -218,7 +223,7 @@ class Table extends Route
     public function postColumn($table, $column)
     {
         $container = $this->app->container;
-        $ZendDb = $container->get('ZendDb');
+        $ZendDb = $container->get('zenddb');
         $acl = $container->get('acl');
         $requestPayload = $this->app->request()->post();
         $TableGateway = new TableGateway('directus_columns', $ZendDb, $acl);
@@ -391,6 +396,45 @@ class Table extends Route
                 'data' => json_decode($data['options'], true)
             ];
         }
+
+        return $this->app->response($response);
+    }
+
+    protected function patchColumns($table, $payload)
+    {
+        $container = $this->app->container;
+        $ZendDb = $container->get('zenddb');
+        $acl = $container->get('acl');
+        $TableGateway = new TableGateway('directus_columns', $ZendDb, $acl);
+
+        $rows = array_key_exists('rows', $payload) ? $payload['rows'] : false;
+        if (!is_array($rows) || count($rows) <= 0) {
+            throw new \Exception(__t('rows_no_specified'));
+        }
+
+        $columnNames = [];
+        foreach ($rows as $row) {
+            $column = $row['id'];
+            $columnNames[] = $column;
+            unset($row['id']);
+            $TableGateway->update($row, [
+                'table_name' => $table,
+                'column_name' => $column
+            ]);
+        }
+
+        $rows = $TableGateway->select([
+           'table_name' => $table,
+            new In('column_name', $columnNames)
+        ]);
+
+        $response = [
+            'meta' => [
+                'table' => 'directus_columns',
+                'type' => 'collection'
+            ],
+            'data' => $rows->toArray()
+        ];
 
         return $this->app->response($response);
     }

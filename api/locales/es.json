@@ -332,6 +332,14 @@
     "rows_no_specified": "Filas no especificada",
     "row_without_primary_key_field": "Fila sin campo primario",
 
+    "add_new_column": "Agregar Nueva Columna",
+    "add_comment": "Agregar comentario...",
+    "column_name": "Nombre Columna",
+    "user_interface": "Interfaz de Usuario",
+    "relationship": "Relación",
+    "relationship_none": "Ninguna",
+    "comment": "Comentario",
+
     "unable_to_remove_column_x": "No se puedo eliminar la columna [%{column}]",
     "column_removed": "Columna eliminada",
     "column_x_was_removed": "Columna [%{column_name}] fue eliminada",
