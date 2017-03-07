@@ -7,6 +7,7 @@ define(function(require, exports, module) {
     // Internals
     require('core/uis/_internals/accountability/interface'),
     require('core/uis/_internals/columns/interface'),
+    require('core/uis/_internals/views/interface'),
     require('core/uis/textinput'),
     // require('core/uis/directus_columns'),
     require('core/uis/divider'),

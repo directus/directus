@@ -78,7 +78,7 @@ define(function(require, exports, module) {
       {
         "id": "list_view",
         "column_name": "list_view",
-        "ui": "textinput", // @TODO: multiple checkbox
+        "ui": "directus_views", // @TODO: multiple checkbox
         "type": "VARCHAR",
         "length": 200,
         "default_value": "table",

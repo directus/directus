@@ -1,0 +1,18 @@
+<!-- Optional Classes: offset-bottom -->
+<div class="checkbox-container">
+	<input class="js-view" type="checkbox" id="check_table" value="table" checked="checked" disabled="">
+	<label for="check_table"> {{tVarCapitalize "table"}}</label>
+</div>
+<div class="checkbox-container">
+	<input class="js-view" type="checkbox" id="check_tiles" value="tiles"{{#if tilesSelected}} checked="checked"{{/if}}>
+	<label for="check_tiles"> {{tVarCapitalize "tiles"}}</label>
+</div>
+<div class="checkbox-container">
+	<input class="js-view" type="checkbox" id="check_map" value="map"{{#if mapSelected}} checked="checked"{{/if}}>
+	<label for="check_map"> {{tVarCapitalize "map"}}</label>
+</div>
+<div class="checkbox-container">
+	<input class="js-view" type="checkbox" id="check_calendar" value="calendar"{{#if calendarSelected}} checked="checked"{{/if}}>
+	<label for="check_calendar"> {{tVarCapitalize "calendar"}}</label>
+</div>
+<input class="js-value" type="hidden" name="{{name}}" value="{{value}}">
