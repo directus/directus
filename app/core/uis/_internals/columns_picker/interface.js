@@ -9,7 +9,7 @@ define([
 
   var Input = UIView.extend({
     // @TODO: Also make checkboxes available
-    template: '_internals/columns/dropdown',
+    template: '_internals/columns_picker/dropdown',
 
     getColumns: function () {
       var columns = this.options.tableStructure.columns;
