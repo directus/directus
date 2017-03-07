@@ -6,8 +6,9 @@ define(function(require, exports, module) {
   var defaultUis = ([
     // Internals
     require('core/uis/_internals/accountability/interface'),
+    require('core/uis/_internals/columns/interface'),
     require('core/uis/textinput'),
-    require('core/uis/directus_columns'),
+    // require('core/uis/directus_columns'),
     require('core/uis/divider'),
     require('core/uis/instructions'),
     require('core/uis/checkbox/checkbox'),

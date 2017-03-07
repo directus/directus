@@ -57,7 +57,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'helpers/schema'], function(ap
       }
     },
 
-    initialize: function(options) {
+    initialize: function (options) {
       this.options.tableName = options.model.id;
       this.options.tableStructure = app.schemaManager.getTable(this.options.tableName);
     }
