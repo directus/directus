@@ -3332,6 +3332,11 @@ body.help .discover-spotlight {
         padding: 12px 12px 12px 0; }
         .smoke .modal .actions .cancel:hover {
           color: #F44336; }
+    .smoke .modal .button-group .button {
+      margin-top: 20px;
+      margin-right: 20px; }
+      .smoke .modal .button-group .button:last-child {
+        margin-right: 0; }
     .smoke .modal .header-circle {
       -webkit-box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.2);
       -moz-box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.2);
@@ -3378,6 +3383,43 @@ body.help .discover-spotlight {
         color: #333333; }
       .smoke .modal.confirm .modal-bg .actions {
         border-color: transparent; }
+    .smoke .modal.file-add .modal-bg {
+      width: 500px;
+      max-width: 90%;
+      text-align: left; }
+      .smoke .modal.file-add .modal-bg .dropzone {
+        -webkit-transition: all 200ms ease-in-out 0ms;
+        -moz-transition: all 200ms ease-in-out 0ms;
+        -o-transition: all 200ms ease-in-out 0ms;
+        -ms-transition: all 200ms ease-in-out 0ms;
+        transition: all 200ms ease-in-out 0ms;
+        -webkit-border-radius: 4px;
+        -moz-border-radius: 4px;
+        border-radius: 4px;
+        -moz-background-clip: padding;
+        -webkit-background-clip: padding-box;
+        background-clip: padding-box;
+        border: 1px dashed #999999;
+        padding: 30px;
+        width: 100%;
+        margin-top: 20px;
+        margin-bottom: 10px;
+        text-align: center;
+        color: #EEEEEE;
+        cursor: pointer;
+        text-transform: uppercase; }
+        .smoke .modal.file-add .modal-bg .dropzone .cloud {
+          font-size: 100px;
+          margin-top: -10px; }
+        .smoke .modal.file-add .modal-bg .dropzone .drag-and-drop {
+          font-size: 22px;
+          font-weight: 700; }
+        .smoke .modal.file-add .modal-bg .dropzone .click-to-browse {
+          margin-top: 2px;
+          font-size: 14px; }
+        .smoke .modal.file-add .modal-bg .dropzone:hover {
+          border-color: #3498DB;
+          color: #3498DB; }
     .smoke .modal.file .modal-bg {
       min-width: 500px;
       max-width: 90%; }
@@ -3479,7 +3521,7 @@ body.help .discover-spotlight {
           color: #DDDDDD; }
       .smoke .modal.profile .modal-bg .button {
         width: 100%;
-        margin-top: 25px; }
+        margin-top: 30px; }
     .smoke .modal.invite .modal-bg {
       width: 460px;
       text-align: left; }

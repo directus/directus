@@ -166,6 +166,15 @@ body.help {
 				}
 			}
 		}
+		.button-group {
+			.button {
+				margin-top: 20px;
+				margin-right: 20px;
+				&:last-child {
+					margin-right: 0;
+				}
+			}
+		}
 		.header-circle {
 			@include box-shadow ();
 			@include border-radius (100px);
@@ -216,6 +225,40 @@ body.help {
 			}
 			.actions {
 				border-color: transparent;
+			}
+		}
+		&.file-add .modal-bg {
+			width: 500px;
+			max-width: 90%;
+			text-align: left;
+			.dropzone {
+				@include transition (all, $timing-short, ease-in-out);
+				@include border-radius (4px);
+				border: 1px dashed $gray-4;
+				padding: 30px;
+				width: 100%;
+				margin-top: 20px;
+				margin-bottom: 10px;
+				text-align: center;
+				color: $gray-1;
+				cursor: pointer;
+				text-transform: uppercase;
+				.cloud {
+					font-size: 100px;
+					margin-top: -10px;
+				}
+				.drag-and-drop {
+					font-size: 22px;
+					font-weight: 700;
+				}
+				.click-to-browse {
+					margin-top: 2px;
+					font-size: 14px;
+				}
+				&:hover {
+					border-color: $primary;
+					color: $primary;
+				}
 			}
 		}
 		&.file .modal-bg {
@@ -326,7 +369,7 @@ body.help {
 			}
 			.button {
 				width: 100%;
-				margin-top: 25px;
+				margin-top: 30px;
 			}
 		}
 		&.invite .modal-bg {
