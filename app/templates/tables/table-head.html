@@ -3,7 +3,7 @@
     <th scope="col"></th>
     {{/if}}
     {{#if sortable}}
-    <th scope="col" class="reorder"><i class="material-icons">import_export</i></th>
+    <th scope="col" class="reorder js-sort"><i class="material-icons">import_export</i></th>
     {{/if}}
     {{#if selectable}}
     <th scope="col" class="status js-check">
@@ -26,23 +26,3 @@
     <th scope="col"></th>
     {{/if}}
 </tr>
-
-{{!--
-<tr>
-  {{#if sortable}}<th class="sort sortableHeader" data-id="sort"><!-- <span class="icon icon-shuffle"></span> --><i class="material-icons">swap_vert</i></th>{{/if}}
-  {{#if selectable}}
-    <th class="check check-box{{#if sortable}} with-sort{{/if}}">
-      <input class="custom-check" id="check-all" type="checkbox" />
-      <label for="check-all"><span></span></label>
-    </th>
-  {{/if}}
-  {{#columns}}
-    <th class="sortable-column" data-id="{{name}}">{{{capitalize name}}} {{#if orderBy}}{{#if desc}}▼{{else}}▲{{/if}}{{/if}}</th>
-  {{/columns}}
-  {{#if deleteColumn}}<th class="delete"></th>{{/if}}
-  <th class="visible-columns-cell">
-    {{#unless hideColumnPreferences}}<a href="#" id="set-visible-columns"><i class="material-icons">settings</i></a>{{/unless}}
-    <span id="visible_columns_entry"></span>
-  </th>
-</tr>
---}}

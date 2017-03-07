@@ -24,7 +24,7 @@ function(app, _, Backbone, Notification, __t, TableHelpers, ModelHelper, TableHe
     state: {},
 
     events: {
-      'click tbody td:not(.js-check):not(.status):not(.sort)' : function(e) {
+      'click tbody td:not(.js-check):not(.status):not(.js-sort)' : function(e) {
         var id = $(e.target).closest('tr').attr('data-id');
         if (this.options.navigate) {
           this.collection.off();

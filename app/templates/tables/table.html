@@ -1,26 +1,6 @@
-<!--<form id="user-preferences">-->
-
 {{#if showEmptyMessage}}
 {{{include "listingEmpty"}}}
 {{else}}
 {{#if showChart}}<div id="items-chart" class="items-chart"></div>{{/if}}
 <table class="lines {{spacing}} clickable item-listing{{#if fixedHead}} fixed-header{{/if}}{{#unless isSortableOrSelectable}} pad-first{{/unless}}"></table> <!-- charted <-- has a chart at the top -->
-{{!--
-<div class="table-shadow">
-    <div class="directus-toolbar"></div>
-    <table class="table table-striped directus-table hover-header {{#if disabledSorting}}disable-sorting{{/if}}" id="{{id}}">
-        <colgroup>
-        	<col class="col-status">
-        	{{#if sortable}}<col class="col-sort">{{/if}}
-        	{{#if selectable}}<col class="col-check">{{/if}}
-        	{{#columns}}
-        		<col class="col-{{this}}">
-        	{{/columns}}
-        </colgroup>
-    </table>
-</div>
---}}
 {{/if}}
-
-<!--</form>-->
-<!-- <div class="overlay"><h3>Just let go...</h3></div> -->

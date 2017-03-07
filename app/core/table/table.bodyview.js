@@ -24,7 +24,7 @@ function(app, Backbone, _, Sortable, Notification) {
       'click td.js-check > input': function() {
         this.collection.trigger('select');
       },
-      'click .sort': function(e) {
+      'click .js-sort': function(e) {
         e.cancelBubble = true;
         e.stopPropagation();
         e.preventDefault();
@@ -145,9 +145,9 @@ function(app, Backbone, _, Sortable, Notification) {
         var that = this;
         options.parentView.sortableWidget = new Sortable(container, {
           animation: 150, // ms, animation speed moving items when sorting, `0` — without animation
-          handle: ".sort", // Restricts sort start click/touch to the specified element
-          draggable: "tr", // Specifies which items inside the element should be sortable
-          ghostClass: "sortable-ghost",
+          handle: '.js-sort', // Restricts sort start click/touch to the specified element
+          draggable: 'tr', // Specifies which items inside the element should be sortable
+          ghostClass: 'sortable-ghost',
           sort: false,
           onStart: function (evt) {
             //var dragItem = jQuery(evt.item);

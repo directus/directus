@@ -176,12 +176,12 @@ function(app, Backbone, _, __t, Notification) {
 
         this.render();
       },
-      'click .sortableHeader': function(e) {
+
+      'click .js-sort': function () {
         this.parentView.toggleSortable();
       },
-      'click th:not(.sortableHeader)': function(e) {
-        if(this.parentView.sortableWidget && this.parentView.sortableWidget.options.sort)
-        {
+      'click th:not(.js-sort)': function () {
+        if (this.parentView.sortableWidget && this.parentView.sortableWidget.options.sort) {
           this.$el.closest('table').addClass('disable-sorting');
           this.parentView.sortableWidget.options.sort = false;
           Notification.info(__t('table_sort_disabled'), '<i>'+__t('table_sort_disabled_message')+'</i>', {timeout: 3000});
