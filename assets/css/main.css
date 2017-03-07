@@ -1373,7 +1373,8 @@ table {
         padding-right: 10px; }
       table thead tr th .order-direction {
         font-size: 12px;
-        vertical-align: bottom;
+        vertical-align: middle;
+        margin-top: -2px;
         color: #CCCCCC; }
       table thead tr th.visible .material-icons, table thead tr th.required .material-icons {
         font-size: 20px; }
@@ -1630,6 +1631,31 @@ table {
         margin-left: -1px;
         margin-right: -1px;
         color: #258cd1; }
+      table tbody tr td .tag-container {
+        display: inline-block;
+        max-width: 300px;
+        white-space: nowrap;
+        overflow: hidden; }
+        table tbody tr td .tag-container .tag {
+          -webkit-transition: all 200ms ease-in-out 0ms;
+          -moz-transition: all 200ms ease-in-out 0ms;
+          -o-transition: all 200ms ease-in-out 0ms;
+          -ms-transition: all 200ms ease-in-out 0ms;
+          transition: all 200ms ease-in-out 0ms;
+          -webkit-border-radius: 2px;
+          -moz-border-radius: 2px;
+          border-radius: 2px;
+          -moz-background-clip: padding;
+          -webkit-background-clip: padding-box;
+          background-clip: padding-box;
+          display: inline-block;
+          padding: 4px 8px;
+          margin-right: 2px;
+          font-size: 10px;
+          font-weight: 700;
+          text-transform: uppercase;
+          color: #999999;
+          background-color: #EEEEEE; }
       table tbody tr td .photo-stack {
         height: 27px;
         min-width: 110px; }
@@ -2672,6 +2698,20 @@ body.loading .header .logo {
       margin: 20px 20px 0px 20px; }
     .right-sidebar .scroll-y h3 {
       padding: 20px 10px 5px 20px; }
+    .right-sidebar .scroll-y .options .fields .field {
+      padding: 4px 20px; }
+      .right-sidebar .scroll-y .options .fields .field .label {
+        margin-bottom: 4px;
+        display: block;
+        width: 100%;
+        padding: 0; }
+      .right-sidebar .scroll-y .options .fields .field .interface {
+        display: block;
+        width: 100%; }
+        .right-sidebar .scroll-y .options .fields .field .interface select {
+          min-width: 160px; }
+        .right-sidebar .scroll-y .options .fields .field .interface .select-container {
+          margin-left: 0; }
     .right-sidebar .scroll-y .status {
       -webkit-transition: all 200ms ease-in-out 0ms;
       -moz-transition: all 200ms ease-in-out 0ms;

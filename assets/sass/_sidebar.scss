@@ -302,6 +302,29 @@
 		h3 {
 			padding: 20px 10px 5px 20px;
 		}
+		.options {
+			.fields {
+				.field {
+					padding: 4px 20px;
+					.label {
+						margin-bottom: 4px;
+						display: block;
+						width: 100%;
+						padding: 0;
+					}
+					.interface {
+						display: block;
+						width: 100%;
+						select {
+							min-width: 160px;
+						}
+						.select-container {
+							margin-left: 0;
+						}
+					}
+				}
+			}
+		}
 		.status {
 			@include transition (all, $timing-short, ease-in-out);
 			@include border-radius (2px);

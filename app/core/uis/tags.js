@@ -86,10 +86,10 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
 
       if(tags.length){
         for (var i = 0; i < tags.length; i++) {
-          tags[i] = '<span class="tag-static">' + tags[i] + '</span>';
+          tags[i] = '<span class="tag">' + tags[i] + '</span>';
         }
 
-        return tags.join(' ');
+        return '<span class="tag-container">' + tags.join(' ') + '</span>';
       } else {
         return options.model.attributes.tags;
       }

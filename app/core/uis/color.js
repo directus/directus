@@ -97,7 +97,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
       // Disables editing of the field while still letting users see the value
       {id: 'readonly', type: 'Boolean', default_value: false, ui: 'checkbox'},
       // Shows a color box representation on the Item Listing page
-      {id: 'show_color_on_list', type: 'Boolean', default_value: false, ui: 'checkbox'}
+      {id: 'show_color_on_list', type: 'Boolean', default_value: true, ui: 'checkbox'}
     ],
     Input: Input,
     validate: function(value, options) {
@@ -107,7 +107,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
       }
     },
     list: function(options) {
-      return (options.settings.get('show_color_on_list') === true) ? '<div style="background-color:'+options.value+'; height:20px; width:40px; border:1px solid #ffffff;-webkit-border-radius:3px;-moz-border-radius:3px;border-radius:3px;">&nbsp;</div>' : options.value;
+      return (options.settings.get('show_color_on_list') === true) ? '<div title="#'+options.value+'" style="background-color:#'+options.value+'; color:#ffffff; height:20px; width:20px; border:1px solid #ffffff;-webkit-border-radius:20px;-moz-border-radius:20px;border-radius:20px;">&nbsp;</div>' : options.value;
     }
   });
 

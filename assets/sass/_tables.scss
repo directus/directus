@@ -37,7 +37,8 @@ table {
 				}
 				.order-direction {
 					font-size: 12px;
-					vertical-align: bottom;
+					vertical-align: middle;
+					margin-top: -2px;
 					color: $gray-3;
 				}
 				&.visible,
@@ -357,6 +358,24 @@ table {
 					margin-left: -1px;
 					margin-right: -1px;
 					color: darken($primary, 5%);
+				}
+				.tag-container {
+					display: inline-block;
+					max-width: 300px;
+					white-space: nowrap;
+					overflow: hidden;
+					.tag {
+						@include transition (all, $timing-short, ease-in-out);
+						@include border-radius (2px);
+						display: inline-block;
+						padding: 4px 8px;
+						margin-right: 2px;
+						font-size: 10px;
+						font-weight: 700;
+						text-transform: uppercase;
+						color: $gray-4;
+						background-color: $gray-1;
+					}
 				}
 				.photo-stack {
 					height: 27px;
