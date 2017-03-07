@@ -446,6 +446,7 @@ $app->group('/1.1', function() use($app) {
     // GET all table columns, or POST one new table column
     $app->map('/tables/:table/columns/?', '\Directus\API\Routes\A1\Table:columns')
         ->via('GET', 'POST');
+    $app->patch('/tables/:table/columns/bulk/?', '\Directus\API\Routes\A1\Table:columns');
     // GET or PUT one column
     $app->map('/tables/:table/columns/:column/?', '\Directus\API\Routes\A1\Table:column')
         ->via('GET', 'PUT', 'PATCH', 'DELETE');

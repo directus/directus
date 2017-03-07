@@ -7,7 +7,7 @@
 //  http://www.getdirectus.com
 /*jshint multistr: true */
 
-define(['app', 'underscore', 'core/UIComponent', 'core/UIView', 'core/table/table.view', 'core/overlays/overlays', 'core/notification', 'core/doubleConfirmation', 'core/t'], function(app, _, UIComponent, UIView, TableView, Overlays, Notification, DoubleConfirmation, __t) {
+define(['app', 'underscore', 'core/UIComponent', 'core/UIView', 'core/table/table.view', 'core/overlays/overlays', 'core/notification', 'core/doubleConfirmation', 'core/t', 'sortable'], function(app, _, UIComponent, UIView, TableView, Overlays, Notification, DoubleConfirmation, __t, Sortable) {
 
   'use strict';
 
@@ -16,7 +16,7 @@ define(['app', 'underscore', 'core/UIComponent', 'core/UIView', 'core/table/tabl
     template: '_internals/columns/interface',
 
     events: {
-      'click table td:not(.relational-remove)': 'editRow',
+      'click table tr': 'editRow',
       'click .js-remove': 'verifyDestroyColumn',
       'click .js-button-add': 'addRow',
       'click .js-required': 'toggleRequired',
@@ -128,7 +128,7 @@ define(['app', 'underscore', 'core/UIComponent', 'core/UIView', 'core/table/tabl
 
     toggleAttr: function (id, attr) {
       var column = this.columns.get(id);
-      var options, attrs;
+      var options, attrs, originalUrl;
 
       if (column) {
         attrs = {};
@@ -136,12 +136,14 @@ define(['app', 'underscore', 'core/UIComponent', 'core/UIView', 'core/table/tabl
         options = {patch: true};
 
         // hotfix:
+        originalUrl = column.url;
         column.url = function () {
           return app.API_URL + 'tables/' + column.get('table_name') + '/columns/' + column.get('column_name');
         };
 
         var self = this;
         options.success = function () {
+          column.url = originalUrl;
           self.render();
         };
 
@@ -152,12 +154,16 @@ define(['app', 'underscore', 'core/UIComponent', 'core/UIView', 'core/table/tabl
     // @TODO: Create Base model with an toggle method for boolean values
     // model.toggle('required');
     toggleRequired: function (event) {
+      event.stopPropagation();
+
       var $row = $(event.currentTarget).closest('tr');
 
       this.toggleAttr($row.data('id'), 'required');
     },
 
     toggleVisibility: function (event) {
+      event.stopPropagation();
+
       var $row = $(event.currentTarget).closest('tr');
 
       this.toggleAttr($row.data('id'), 'hidden_input');
@@ -186,6 +192,56 @@ define(['app', 'underscore', 'core/UIComponent', 'core/UIView', 'core/table/tabl
         showChooseButton: this.showChooseButton,
         showAddButton: this.showAddButton && this.canEdit
       };
+    },
+
+    afterRender: function () {
+      this.enableSort();
+    },
+
+    drop: function () {
+      var collection = this.columns;
+
+      this.$('table tbody tr').each(function (i) {
+        // Use data-id instead of data-cid
+        // As collection models will be synced from the server its cid will be generated again
+        // But the dom element will be still pointing to the older cid
+        collection.get($(this).data('id')).set({sort: i}, {silent: true});
+      });
+
+      var self = this;
+      var originalUrl = collection.url;
+      var table = this.model.id;
+      collection.url = app.API_URL + 'tables/' + table + '/columns';
+
+      collection.save(null, {wait: true, patch: true, success: function () {
+        collection = originalUrl;
+        self.collection.setOrder('sort', 'ASC', {silent: false});
+      }});
+    },
+
+    enableSort: function () {
+      var container = this.$('table tbody').get(0);
+
+      this.sortable = new Sortable(container, {
+        animation: 150, // ms, animation speed moving items when sorting, `0` — without animation
+        handle: '.js-sort', // Restricts sort start click/touch to the specified element
+        draggable: 'tr', // Specifies which items inside the element should be sortable
+        ghostClass: 'sortable-ghost',
+        sort: true,
+        onStart: function () {
+          var tbody = $(container);
+
+          tbody.addClass('remove-hover-state');
+          tbody.removeClass('disable-transform');
+        },
+        onEnd: function () {
+          var tbody = $(container);
+
+          tbody.removeClass('remove-hover-state');
+          tbody.addClass('disable-transform');
+        },
+        onUpdate: _.bind(this.drop, this)
+      });
     },
 
     initialize: function (options) {
