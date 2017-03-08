@@ -13,7 +13,19 @@ define(function () {
     });
   };
 
+  var headerScroll = function ($el) {
+    var tableLeft = $el.scrollLeft();
+    var tableWidth = $el.children('table').width();
+    var containerWidth = $el.width();
+    var pageLeft = parseInt($('.page').css('left'), 10);
+    $el.find('thead').css({
+      'left': pageLeft - tableLeft,
+      'right': -((tableWidth - containerWidth) - tableLeft)
+    });
+  };
+
   return {
-    fixWidths: fixWidths
+    fixWidths: fixWidths,
+    headerScroll: headerScroll
   }
 });

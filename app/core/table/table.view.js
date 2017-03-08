@@ -104,8 +104,20 @@ function(app, _, Backbone, Notification, __t, TableHelpers, ModelHelper, TableHe
       TableHelpers.fixWidths($table);
     },
 
+    headerScroll: function ($el) {
+      var $table = $el || this.$el.find('.table-scroll-x');
+      TableHelpers.headerScroll($table);
+    },
+
     afterRender: function() {
       this.fixWidths();
+
+      var $el = this.$('.table-scroll-x');
+      var onScroll = _.bind(function () {
+        this.headerScroll($el);
+      }, this);
+
+      $el.on('scroll', onScroll);
 
       if (this.bodyScrollTop) {
         document.body.scrollTop = this.bodyScrollTop;
