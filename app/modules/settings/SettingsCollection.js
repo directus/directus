@@ -20,7 +20,7 @@ define([
           settings[model.get('name')] = model.get('value');
         });
 
-        var model = this.at(0).clone();
+        var model = new this.model();
         model.set(settings);
 
         return model;
