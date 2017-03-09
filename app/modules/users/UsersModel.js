@@ -26,6 +26,10 @@ function(app, Backbone, EntriesModel, moment) {
       return app.PATH + 'assets/img/missing-directus-avatar.png';
     },
 
+    isAdmin: function () {
+      return this.get('group').get('id') === 1;
+    },
+
     isOnline: function () {
       var lastAccess = this.get('last_access');
       var isOnline = false;
