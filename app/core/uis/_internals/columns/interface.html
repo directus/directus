@@ -19,12 +19,12 @@
 				<td class="required js-required"><i class="material-icons">star{{#unless required}}_outline{{/unless}}</i></td>
 				<td class="visible js-visible"><i class="material-icons">visibility</i></td>
 				<td>{{capitalize column_name}}</td>
-				<td>{{capitalize ui}}</td>
-				<td class="relationship">
+				<td class="js-cell" data-field="ui_type" data-section="column">{{capitalize ui}}</td>
+				<td class="relationship js-cell" data-section="column">
 					<span class="type">{{capitalize relationship_type}}</span>
 					{{#if related_table}} ({{capitalize related_table}}){{/if}}
 				</td>
-				<td class="comment">{{comment}}</td>
+				<td class="comment js-cell" data-field="comment" data-section="column">{{comment}}</td>
 				<td class="relational-remove">
 					<i class="material-icons js-remove">close</i>
 				</td>

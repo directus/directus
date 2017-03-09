@@ -18,29 +18,65 @@ define(['app', 'underscore', 'core/UIComponent', 'core/UIView', 'core/table/tabl
     events: {
       'click .js-sort-toggle': 'toggleSortable',
       'click .js-row': 'editRow',
+      'click .js-cell': 'editCell',
       'click .js-remove': 'verifyDestroyColumn',
       'click .js-button-add': 'addRow',
       'click .js-required': 'toggleRequired',
       'click .js-visible': 'toggleVisibility'
     },
 
-    editRow: function(e) {
+    editCell: function (event) {
+      event.stopPropagation();
+
+      var $cell = $(event.currentTarget);
+      var id = $cell.closest('.js-row').data('id');
+      var viewName = $cell.data('section');
+      var focusTo = $cell.data('field');
+
+      this.editRow(id, viewName, focusTo);
+    },
+
+    editRow: function(id, viewName, focusTo) {
       if (!this.canEdit) {
         return;
       }
 
-      var id = $(e.target).closest('tr').data('id');
+      if (id.currentTarget) {
+        id = $(id.currentTarget).data('id');
+      }
+
       var collection = app.schemaManager.getTable(this.model.id).columns;
       var columnModel = collection.get(id, true);
+
+      if (!columnModel) {
+        Notification.warning(__t('column_x_not_found', {
+          column_name: id
+        }));
+        return;
+      }
+
       var EditColumnView = require('modules/settings/views/EditColumnView');
       var optionsModel = columnModel.options;
       optionsModel.set({id: columnModel.get('ui')});
 
       var schema = app.schemaManager.getColumns('ui', optionsModel.id);
       optionsModel.structure = schema;
+
+      switch (viewName) {
+        case 'column':
+          viewName = EditColumnView.VIEW_COLUMN;
+          break;
+        default:
+        case 'interface':
+          viewName = EditColumnView.VIEW_INTERFACE;
+          break;
+      }
+console.log(viewName);
       var view = new EditColumnView({
         model: optionsModel,
-        schema: schema
+        schema: schema,
+        currentView: viewName || EditColumnView.VIEW_INTERFACE,
+        focusTo: focusTo
       });
 
       app.router.openViewInModal(view);
