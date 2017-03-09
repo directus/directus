@@ -129,7 +129,7 @@ class BaseTableGateway extends TableGateway
      * e.g. directus_users => \Directus\Database\TableGateway\DirectusUsersTableGateway
      *
      * @param string $table
-     * @param Adapter $adapter
+     * @param AdapterInterface $adapter
      * @param null $acl
      *
      * @return BaseTableGateway
@@ -149,19 +149,20 @@ class BaseTableGateway extends TableGateway
     }
 
     /**
-     * HELPER FUNCTIONS
-     */
-
-    /**
      * Make a new table gateway
      *
-     * @param $tableName
+     * @param string $tableName
+     * @param AdapterInterface $adapter
+     * @param Acl $acl
      *
      * @return BaseTableGateway
      */
-    public function makeTable($tableName)
+    public function makeTable($tableName, $adapter = null, $acl = null)
     {
-        return new self($tableName, $this->adapter, $this->acl);
+        $adapter = is_null($adapter) ? $this->adapter : $adapter;
+        $acl = is_null($acl) ? $this->acl : $acl;
+
+        return static::makeTableGatewayFromTableName($tableName, $adapter, $acl);
     }
 
     public function getTableSchema()
@@ -977,7 +978,7 @@ class BaseTableGateway extends TableGateway
                 if (is_null($currentUserId) || count(array_diff($ownerIds, [$currentUserId]))) {
                     // $aclErrorPrefix = $this->acl->getErrorMessagePrefix();
                     // throw new UnauthorizedTableBigEditException($aclErrorPrefix . "Table bigedit access forbidden on $resultQty `$updateTable` table record(s) and " . count($ownerIds) . " CMS owner(s) (with ids " . implode(", ", $ownerIds) . ").");
-                    $groupsTableGateway = self::makeTableGatewayFromTableName('directus_groups', $this->adapter, $this->acl);
+                    $groupsTableGateway = $this->makeTable('directus_groups');
                     $group = $groupsTableGateway->find($this->acl->getGroupId());
                     throw new UnauthorizedTableBigEditException('[' . $group['name'] . '] permissions only allow you to [' . $permissionName . '] your own items.');
                 }
@@ -1047,7 +1048,7 @@ class BaseTableGateway extends TableGateway
             list($predicateResultQty, $predicateOwnerIds) = $this->acl->getCmsOwnerIdsByTableGatewayAndPredicate($this, $deleteState['where']);
             if (!in_array($currentUserId, $predicateOwnerIds)) {
                 //   $exceptionMessage = "Table harddelete access forbidden on $predicateResultQty `$deleteTable` table records owned by the authenticated CMS user (#$currentUserId).";
-                $groupsTableGateway = self::makeTableGatewayFromTableName('directus_groups', $this->adapter, $this->acl);
+                $groupsTableGateway = $this->makeTable('directus_groups');
                 $group = $groupsTableGateway->find($this->acl->getGroupId());
                 $exceptionMessage = '[' . $group['name'] . '] permissions only allow you to [delete] your own items.';
                 //   $aclErrorPrefix = $this->acl->getErrorMessagePrefix();
