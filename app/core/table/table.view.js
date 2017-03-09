@@ -36,15 +36,12 @@ function(app, _, Backbone, Notification, __t, TableHelpers, ModelHelper, TableHe
     TableBody: TableBody,
 
     serialize: function() {
-      var isSortableOrSelectable = this.options.selectable || this.options.sort;
-
       return {
         columns: this.options.columns,
         id: this.collection.table.id,
         selectable: this.options.selectable,
         sortable: this.options.sortable,
         disabledSorting: !this.sortable,
-        isSortableOrSelectable: isSortableOrSelectable,
         spacing: this.getSpacing(),
         fixedHead: this.options.fixedHead,
         showEmptyMessage: (this.collection.length === 0 && !this.options.hideEmptyMessage)
