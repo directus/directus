@@ -1722,7 +1722,7 @@ table {
     background-color: #f6f6f6; }
     table tfoot.footer-open {
       bottom: 0;
-      z-index: 9; }
+      z-index: 4; }
     table tfoot tr td {
       -webkit-transition: width 200ms ease-in-out 0ms;
       -moz-transition: width 200ms ease-in-out 0ms;
@@ -1763,7 +1763,7 @@ table {
       top: 64px;
       left: 200px;
       right: 0;
-      z-index: 8; }
+      z-index: 4; }
   table.charted.fixed-header thead {
     top: 304px; }
   table.compact tbody tr td {
