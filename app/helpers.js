@@ -28,14 +28,18 @@ require([
   });
 
   Handlebars.registerHelper('tCoreField', function(key, options) {
+    var value = key;
+    var tableKey;
+
     if (options.hash.table) {
-      var tableKey = options.hash.table+'_'+key;
+      tableKey = options.hash.table + '_' + key;
+
       if (__t.polyglot.has(tableKey)) {
-        key = tableKey;
+        value = __t(tableKey, options.hash);
       }
     }
 
-    return app.capitalize(__t(key, options.hash));
+    return app.capitalize(value);
   });
 
   Handlebars.registerHelper('tVarCapitalize', function(key, options) {

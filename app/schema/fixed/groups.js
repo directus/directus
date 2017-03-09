@@ -2,6 +2,11 @@ define(function(require, exports, module) {
 
   'use strict';
 
+  var __t = require('core/t');
+  var transComments = function (key) {
+    return __t('directus_groups_' + key + '_comment');
+  };
+
   module.exports = {
 
     "id": "directus_groups",
@@ -29,7 +34,8 @@ define(function(require, exports, module) {
         "system": false,
         "hidden_list": false,
         "hidden_input": true, // @TODO: only on edit
-        "sort": 10
+        "sort": 10,
+        "comment": transComments('name')
       },
       {
         "id": "description",
@@ -40,7 +46,8 @@ define(function(require, exports, module) {
         "system": false,
         "hidden_list": false,
         "hidden_input": false,
-        "sort": 20
+        "sort": 20,
+        "comment": transComments('description')
       },
       {
         "id": "restrict_to_ip_whitelist",
@@ -51,7 +58,8 @@ define(function(require, exports, module) {
         "system": false,
         "hidden_list": false,
         "hidden_input": false,
-        "sort": 30
+        "sort": 30,
+        "comment": transComments('restrict_to_ip_whitelist')
       },
       {
         "id": "show_files",
@@ -103,7 +111,8 @@ define(function(require, exports, module) {
         "options": {
           "visible_columns": "avatar_file_id,first_name,email,last_login",
           "add_button": 1
-        }
+        },
+        "comment": transComments('users')
       },
       {
         "id": "permissions",
@@ -122,7 +131,8 @@ define(function(require, exports, module) {
         "options": {
           "visible_columns": "table_name",
           "add_button": 1
-        }
+        },
+        "comment": transComments('permissions')
       }
     ]
   };
