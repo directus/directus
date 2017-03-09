@@ -85,6 +85,9 @@ class CreateDirectusTablesTable extends Ruckusing_Migration_Base
             'limit' => 64,
             'default' => NULL
         ]);
+        $t->column('status_mapping', 'text', [
+            'default' => NULL
+        ]);
         $t->column('user_create_column', 'string', [
             'limit' => 64,
             'default' => NULL
