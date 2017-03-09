@@ -2,7 +2,7 @@
 	<table class="lines cozy clickable">
 		<thead>
 			<tr>
-				<th scope="col" class="reorder"><i class="material-icons">import_export</i></th>
+				<th scope="col" class="reorder js-sort-toggle"><i class="material-icons">import_export</i></th>
 				<th scope="col" class="required"><i class="material-icons">star</i></th>
 				<th scope="col" class="visible"><i class="material-icons">visibility</i></th>
 				<th scope="col">{{t "column_name"}}</th>
@@ -14,7 +14,7 @@
 		</thead>
 		<tbody class="drag-and-drop">
 			{{#columns}}
-			<tr data-id="{{id}}" class="open-modal{{#if required}} required-on{{/if}}{{#if hidden_input}} visibility-off{{/if}}" data-modal="interface"> <!-- Optional Classes: selected -->
+			<tr data-id="{{id}}" class="open-modal js-row{{#if required}} required-on{{/if}}{{#if hidden_input}} visibility-off{{/if}}" data-modal="interface"> <!-- Optional Classes: selected -->
 				<td class="reorder js-sort"><i class="material-icons reorder-handle">drag_handle</i></td>
 				<td class="required js-required"><i class="material-icons">star{{#unless required}}_outline{{/unless}}</i></td>
 				<td class="visible js-visible"><i class="material-icons">visibility</i></td>

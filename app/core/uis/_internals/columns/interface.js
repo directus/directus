@@ -16,7 +16,8 @@ define(['app', 'underscore', 'core/UIComponent', 'core/UIView', 'core/table/tabl
     template: '_internals/columns/interface',
 
     events: {
-      'click table tr': 'editRow',
+      'click .js-sort-toggle': 'toggleSortable',
+      'click .js-row': 'editRow',
       'click .js-remove': 'verifyDestroyColumn',
       'click .js-button-add': 'addRow',
       'click .js-required': 'toggleRequired',
@@ -198,6 +199,26 @@ define(['app', 'underscore', 'core/UIComponent', 'core/UIView', 'core/table/tabl
       this.enableSort();
     },
 
+    toggleSortable: function() {
+      if (this.sortable.options.sort) {
+        this.disableSortable();
+        Notification.info(__t('table_sort_disabled'), '<i>'+__t('table_sort_disabled_message')+'</i>', {timeout: 3000});
+      } else {
+        this.enableSortable();
+        Notification.info(__t('table_sort_enabled'), '<i>'+__t('table_sort_enabled_message')+'</i>', {timeout: 3000});
+      }
+    },
+
+    enableSortable: function() {
+      this.$('table').removeClass('disable-sorting');
+      this.sortable.options.sort = true;
+    },
+
+    disableSortable: function() {
+      this.$('table').addClass('disable-sorting');
+      this.sortable.options.sort = false;
+    },
+
     drop: function () {
       var collection = this.columns;
 
@@ -227,7 +248,7 @@ define(['app', 'underscore', 'core/UIComponent', 'core/UIView', 'core/table/tabl
         handle: '.js-sort', // Restricts sort start click/touch to the specified element
         draggable: 'tr', // Specifies which items inside the element should be sortable
         ghostClass: 'sortable-ghost',
-        sort: true,
+        sort: false,
         onStart: function () {
           var tbody = $(container);
 
