@@ -403,6 +403,7 @@ body.help {
 				}
 			}
 		}
+		&.column .modal-bg,
 		&.interface .modal-bg {
 			width: 600px;
 			text-align: left;
@@ -489,29 +490,26 @@ body.help {
 				.column-50 {
 					position: relative;
 					display: inline-block;
-					width: 50%;
-					padding-left: 15px;
+					width: 48%;
+					padding-left: 0;
+					padding-right: 0;
+					margin-right: 4%;
 					margin-bottom: 10px;
-					&:first-child {
-						padding-right: 15px;
-						padding-left: 0;
+					&:nth-of-type(2) {
+						margin-right: 0;
 					}
 				}
 				.column-33 {
 					position: relative;
 					display: inline-block;
-					width: 33.333%;
-					padding-left: 15px;
-					padding-right: 15px;
+					width: 30.6%;
+					padding-left: 0;
+					padding-right: 0;
+					margin-right: 4%;
 					margin-bottom: 10px;
 					vertical-align: top;
-					&:first-child {
-						padding-right: 15px;
-						padding-left: 0;
-					}
-					&:last-child {
-						padding-right: 0;
-						padding-left: 15px;
+					&:nth-of-type(3) {
+						margin-right: 0;
 					}
 					&.set-height {
 						// height: 30px;
@@ -529,7 +527,7 @@ body.help {
 					display: inline-block;
 					width: 66.666%;
 					padding-top: 4px;
-					padding-left: 30px;
+					padding-left: 0;
 					padding-right: 0;
 					margin-bottom: -55px;
 					font-size: 12px;
