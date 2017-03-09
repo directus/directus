@@ -24,6 +24,7 @@ define(['app', 'backbone', 'underscore'], function(app, Backbone, _) {
           this.container.close();
         }
         this.$el.removeClass('slide-down');
+        this.trigger('close');
         this.remove();
       }, this), 200);
     },

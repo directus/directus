@@ -8,7 +8,10 @@ define([
   'modules/settings/views/ColumnOptionsView'
 ], function(app, _, Backbone, EditView, ModalView, ColumnFormView, ColumnOptionsView) {
 
-  return ModalView.extend({
+  var VIEW_COLUMN = 'editColumnView';
+  var VIEW_INTERFACE = 'editOptionsView';
+
+  var View = ModalView.extend({
 
     attributes: {
       'id': 'modal',
@@ -38,17 +41,17 @@ define([
     },
 
     toggle: function() {
-      if (this.state.currentView === 'editOptionsView') {
-        this.state.currentView = 'editColumnView';
+      if (this.state.currentView === VIEW_INTERFACE) {
+        this.state.currentView = VIEW_COLUMN;
       } else {
-        this.state.currentView = 'editOptionsView';
+        this.state.currentView = VIEW_INTERFACE;
       }
 
       this.render();
     },
 
     getCurrentView: function() {
-      if (this.state.currentView === 'editColumnView') {
+      if (this.state.currentView === VIEW_COLUMN) {
         return this.getEditColumnView();
       } else {
         return this.getEditOptionsView();
@@ -56,9 +59,19 @@ define([
     },
 
     beforeRender: function() {
-      var modalClass = this.state.currentView === 'editColumnView' ? 'column' : 'interface';
+      var modalClass = this.state.currentView === VIEW_COLUMN ? 'column' : 'interface';
+      var view = this.getCurrentView();
+
+      if (this.options.focusTo) {
+        this.listenToOnce(view, 'afterRender', function () {
+          var selector = '[name=' + this.options.focusTo  + ']';
+          this.$(selector).focus();
+          this.options.focusTo = null;
+        });
+      }
+
       this.$el.removeClass('column interface').addClass(modalClass);
-      this.setView('.modal-bg', this.getCurrentView());
+      this.setView('.modal-bg', view);
     },
 
     getEditColumnView: function() {
@@ -90,10 +103,15 @@ define([
 
     initialize: function() {
       this.state = {
-        currentView: 'editOptionsView'
+        currentView: this.options.currentView || VIEW_INTERFACE
       };
 
       this.editOptionsView = this.getEditOptionsView();
     }
   });
+
+  View.VIEW_INTERFACE = VIEW_INTERFACE;
+  View.VIEW_COLUMN = VIEW_COLUMN;
+
+  return View;
 });

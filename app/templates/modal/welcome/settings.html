@@ -5,9 +5,9 @@
 <form>
     <h1>Your Settings</h1>
     <div class="validate-input">
-        <input type="password" name="password" placeholder="Password" value="" class="password-primary">
+        <input type="password" name="password" placeholder="Password" value="{{#if disablePassword}}*********{{/if}}" class="password-primary"{{#if disablePassword}} disabled{{/if}}>
         <i class="material-icons validate-check valid">check</i>
-        <input type="password" name="confirm_password" placeholder="Confirm Password" value="" class="password-confirm">
+        <input type="password" name="confirm_password" placeholder="Confirm Password" value="{{#if disablePassword}}*********{{/if}}" class="password-confirm"{{#if disablePassword}} disabled{{/if}}>
         <i class="material-icons validate-check">check</i>
     </div>
     <div class="select-container">

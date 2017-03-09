@@ -26,6 +26,10 @@ function(app, Backbone, EntriesModel, moment) {
       return app.PATH + 'assets/img/missing-directus-avatar.png';
     },
 
+    isAdmin: function () {
+      return this.get('group').get('id') === 1;
+    },
+
     isOnline: function () {
       var lastAccess = this.get('last_access');
       var isOnline = false;
@@ -38,7 +42,8 @@ function(app, Backbone, EntriesModel, moment) {
     },
 
     lastSeen: function () {
-      return moment(this.get('last_access')).fromNow();
+      // @TODO: Add translation or a standard way to say "Not Available" or similar
+      return this.get('last_access') ? moment(this.get('last_access')).fromNow() : 'N/A';
     },
 
     updateLastRoute: function(route, history) {

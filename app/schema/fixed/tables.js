@@ -2,6 +2,11 @@ define(function(require, exports, module) {
 
   'use strict';
 
+  var __t = require('core/t');
+  var transComments = function (key) {
+    return __t('directus_tables_' + key + '_comment');
+  };
+
   module.exports = {
     "id": "directus_tables",
     "table_name": "directus_tables",
@@ -20,7 +25,7 @@ define(function(require, exports, module) {
         "hidden_input": false,
         "required": true,
         "sort": 0,
-        "comment": ""
+        "comment": transComments('table_name')
       },
       {
         "id": "display_template",
@@ -35,9 +40,9 @@ define(function(require, exports, module) {
         "nullable": true,
         "sort": 1,
         "options": {
-          "placeholder_text": "eg {{first_name}} {{last_name}}"
+          "placeholder_text": __t('eg_x', {text: '{{first_name}} {{last_name}}'})
         },
-        "comment": ""
+        "comment": transComments('display_template')
       },
       {
         "id": "preview_url",
@@ -52,9 +57,9 @@ define(function(require, exports, module) {
         "nullable": true,
         "sort": 2,
         "options": {
-          "placeholder_text": "eg http://example.com/articles/{{slug}}"
+          "placeholder_text": __t('eg_x', {text: 'eg http://example.com/articles/{{slug}}'})
         },
-        "comment": ""
+        "comment": transComments('preview_url')
       },
       {
         "id": "columns",
@@ -73,7 +78,8 @@ define(function(require, exports, module) {
         "options": {
           "visible_columns": "column_name,ui,relationship_type,comment",
           "add_button": 1
-        }
+        },
+        "comment": transComments('columns')
       },
       {
         "id": "list_view",
@@ -87,7 +93,8 @@ define(function(require, exports, module) {
         "system": false,
         "hidden_list": false,
         "hidden_input": false,
-        "sort": 3
+        "sort": 3,
+        "comment": transComments('list_view')
       },
       {
         "id":"hidden",
@@ -100,7 +107,8 @@ define(function(require, exports, module) {
         "nullable": true,
         "hidden_list":false,
         "hidden_input":false,
-        "sort": 3
+        "sort": 3,
+        "comment": transComments('hidden')
       },
       {
         "id":"single",
@@ -113,7 +121,8 @@ define(function(require, exports, module) {
         "nullable": true,
         "hidden_list":false,
         "hidden_input":false,
-        "sort": 4
+        "sort": 4,
+        "comment": transComments('single')
       },
       {
         "id":"default_status",
@@ -126,7 +135,9 @@ define(function(require, exports, module) {
         "system":false,
         "hidden_list":false,
         "hidden_input":false,
-        "sort": 5
+        "omit_input": true,
+        "sort": 5,
+        "comment": transComments('default_status')
       },
       {
         "id": "footer",
@@ -138,7 +149,9 @@ define(function(require, exports, module) {
         "nullable": true,
         "hidden_list": false,
         "hidden_input": false,
-        "sort": 6
+        "omit_input": true,
+        "sort": 6,
+        "comment": transComments('footer')
       },
       {
         "id": "primary_column",
@@ -152,7 +165,7 @@ define(function(require, exports, module) {
         "default_value": "id",
         "required": false,
         "sort": 7,
-        "comment": "",
+        "comment": transComments('primary_key'),
         "options": {
           "filter": "primary"
         }
@@ -170,7 +183,7 @@ define(function(require, exports, module) {
         "required": false,
         "nullable": true,
         "sort": 8,
-        "comment": "",
+        "comment": transComments('sort_column'),
         "options": {
           "filter": "number"
         }
@@ -187,7 +200,22 @@ define(function(require, exports, module) {
         "required": false,
         "nullable": true,
         "sort": 9,
-        "comment": "",
+        "comment": transComments('status_column'),
+        "options": {
+          "filter": "number"
+        }
+      },
+      {
+        "id": "status_mapping",
+        "column_name": "status_mapping",
+        "ui": "textarea",
+        "type": "TEXT",
+        "hidden_list": false,
+        "hidden_input": false,
+        "required": false,
+        "nullable": true,
+        "sort": 10,
+        "comment": transComments('status_column'),
         "options": {
           "filter": "number"
         }
@@ -202,8 +230,8 @@ define(function(require, exports, module) {
         "hidden_input": false,
         "required": false,
         "nullable": true,
-        "sort": 10,
-        "comment": ""
+        "sort": 11,
+        "comment": __t('directus_accountability')
       },
       {
         "id": "user_create_column",
@@ -217,7 +245,7 @@ define(function(require, exports, module) {
         "omit_input": true,
         "required": false,
         "nullable": true,
-        "sort": 10,
+        "sort": 12,
         "comment": ""
       },
       {
@@ -232,7 +260,7 @@ define(function(require, exports, module) {
         "omit_input": true,
         "required": false,
         "nullable": true,
-        "sort": 11,
+        "sort": 13,
         "comment": ""
       },
       {
@@ -247,7 +275,7 @@ define(function(require, exports, module) {
         "omit_input": true,
         "required": false,
         "nullable": true,
-        "sort": 12,
+        "sort": 14,
         "comment": ""
       },
       {
@@ -262,7 +290,7 @@ define(function(require, exports, module) {
         "omit_input": true,
         "required": false,
         "nullable": true,
-        "sort": 13,
+        "sort": 15,
         "comment": ""
       }
     ]

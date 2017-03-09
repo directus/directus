@@ -16,30 +16,67 @@ define(['app', 'underscore', 'core/UIComponent', 'core/UIView', 'core/table/tabl
     template: '_internals/columns/interface',
 
     events: {
-      'click table tr': 'editRow',
+      'click .js-sort-toggle': 'toggleSortable',
+      'click .js-row': 'editRow',
+      'click .js-cell': 'editCell',
       'click .js-remove': 'verifyDestroyColumn',
       'click .js-button-add': 'addRow',
       'click .js-required': 'toggleRequired',
       'click .js-visible': 'toggleVisibility'
     },
 
-    editRow: function(e) {
+    editCell: function (event) {
+      event.stopPropagation();
+
+      var $cell = $(event.currentTarget);
+      var id = $cell.closest('.js-row').data('id');
+      var viewName = $cell.data('section');
+      var focusTo = $cell.data('field');
+
+      this.editRow(id, viewName, focusTo);
+    },
+
+    editRow: function(id, viewName, focusTo) {
       if (!this.canEdit) {
         return;
       }
 
-      var id = $(e.target).closest('tr').data('id');
+      if (id.currentTarget) {
+        id = $(id.currentTarget).data('id');
+      }
+
       var collection = app.schemaManager.getTable(this.model.id).columns;
       var columnModel = collection.get(id, true);
+
+      if (!columnModel) {
+        Notification.warning(__t('column_x_not_found', {
+          column_name: id
+        }));
+        return;
+      }
+
       var EditColumnView = require('modules/settings/views/EditColumnView');
       var optionsModel = columnModel.options;
       optionsModel.set({id: columnModel.get('ui')});
 
       var schema = app.schemaManager.getColumns('ui', optionsModel.id);
       optionsModel.structure = schema;
+
+      switch (viewName) {
+        case 'column':
+          viewName = EditColumnView.VIEW_COLUMN;
+          break;
+        default:
+        case 'interface':
+          viewName = EditColumnView.VIEW_INTERFACE;
+          break;
+      }
+console.log(viewName);
       var view = new EditColumnView({
         model: optionsModel,
-        schema: schema
+        schema: schema,
+        currentView: viewName || EditColumnView.VIEW_INTERFACE,
+        focusTo: focusTo
       });
 
       app.router.openViewInModal(view);
@@ -198,6 +235,26 @@ define(['app', 'underscore', 'core/UIComponent', 'core/UIView', 'core/table/tabl
       this.enableSort();
     },
 
+    toggleSortable: function() {
+      if (this.sortable.options.sort) {
+        this.disableSortable();
+        Notification.info(__t('table_sort_disabled'), '<i>'+__t('table_sort_disabled_message')+'</i>', {timeout: 3000});
+      } else {
+        this.enableSortable();
+        Notification.info(__t('table_sort_enabled'), '<i>'+__t('table_sort_enabled_message')+'</i>', {timeout: 3000});
+      }
+    },
+
+    enableSortable: function() {
+      this.$('table').removeClass('disable-sorting');
+      this.sortable.options.sort = true;
+    },
+
+    disableSortable: function() {
+      this.$('table').addClass('disable-sorting');
+      this.sortable.options.sort = false;
+    },
+
     drop: function () {
       var collection = this.columns;
 
@@ -227,7 +284,7 @@ define(['app', 'underscore', 'core/UIComponent', 'core/UIView', 'core/table/tabl
         handle: '.js-sort', // Restricts sort start click/touch to the specified element
         draggable: 'tr', // Specifies which items inside the element should be sortable
         ghostClass: 'sortable-ghost',
-        sort: true,
+        sort: false,
         onStart: function () {
           var tbody = $(container);
 

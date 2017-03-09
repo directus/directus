@@ -36,15 +36,12 @@ function(app, _, Backbone, Notification, __t, TableHelpers, ModelHelper, TableHe
     TableBody: TableBody,
 
     serialize: function() {
-      var isSortableOrSelectable = this.options.selectable || this.options.sort;
-
       return {
         columns: this.options.columns,
         id: this.collection.table.id,
         selectable: this.options.selectable,
         sortable: this.options.sortable,
         disabledSorting: !this.sortable,
-        isSortableOrSelectable: isSortableOrSelectable,
         spacing: this.getSpacing(),
         fixedHead: this.options.fixedHead,
         showEmptyMessage: (this.collection.length === 0 && !this.options.hideEmptyMessage)
@@ -104,8 +101,20 @@ function(app, _, Backbone, Notification, __t, TableHelpers, ModelHelper, TableHe
       TableHelpers.fixWidths($table);
     },
 
+    headerScroll: function ($el) {
+      var $table = $el || this.$el.find('.table-scroll-x');
+      TableHelpers.headerScroll($table);
+    },
+
     afterRender: function() {
       this.fixWidths();
+
+      var $el = this.$('.table-scroll-x');
+      var onScroll = _.bind(function () {
+        this.headerScroll($el);
+      }, this);
+
+      $el.on('scroll', onScroll);
 
       if (this.bodyScrollTop) {
         document.body.scrollTop = this.bodyScrollTop;

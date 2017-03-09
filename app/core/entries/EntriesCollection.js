@@ -117,13 +117,13 @@ define(function(require, exports, module) {
         options.insideRows = true;
       }
 
-      var sync = function () {
-        collection.trigger('sync');
+      var sync = function (resp) {
+        collection.trigger('sync', collection, resp, options);
       };
 
       options.success = function(resp) {
         if (options.wait) {
-          sync();
+          sync(resp);
         }
 
         if (success) {

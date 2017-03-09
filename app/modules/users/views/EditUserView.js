@@ -1,16 +1,16 @@
 define([
-  "app",
-  "backbone",
-  "core/directus",
+  'app',
+  'underscore',
+  'backbone',
+  'core/directus',
   'core/BasePageView',
   'core/t',
   'core/widgets/widgets'
 ],
 
-function(app, Backbone, Directus, BasePageView, __t, Widgets) {
+function(app, _, Backbone, Directus, BasePageView, __t, Widgets) {
 
-  "use strict";
-
+  'use strict';
 
   return BasePageView.extend({
 
@@ -19,11 +19,6 @@ function(app, Backbone, Directus, BasePageView, __t, Widgets) {
         title: __t('edit_user'),
         breadcrumbs: [{ title: __t('users'), anchor: '#users'}]
       }
-    },
-
-    events: {
-      'click .saved-success > #save': 'saveConfirm',
-      'change #saveSelect': 'saveConfirm'
     },
 
     saveConfirm: function(e) {
@@ -92,11 +87,18 @@ function(app, Backbone, Directus, BasePageView, __t, Widgets) {
       var collection = this.model.collection;
       var canAdd = this.model.isNew() && collection.canAdd();
       var canEdit = !this.model.isNew() && collection.canEdit();
+
       if (!canAdd && !canEdit) {
         return;
       }
 
-      this.saveWidget = new Widgets.SaveWidget({widgetOptions: {basicSave: this.headerOptions.basicSave}});
+      this.saveWidget = new Widgets.SaveWidget({
+        widgetOptions: {
+          basicSave: this.headerOptions.basicSave
+        },
+        onClick: _.bind(this.saveConfirm, this)
+      });
+
       this.saveWidget.enable();
 
       return [
@@ -104,8 +106,9 @@ function(app, Backbone, Directus, BasePageView, __t, Widgets) {
       ];
     },
 
-    afterRender: function() {
+    afterRender: function () {
       var editView = this.editView;
+
       this.setView('#page-content', editView);
       if (!this.model.isNew()) {
         this.model.fetch();
@@ -114,7 +117,7 @@ function(app, Backbone, Directus, BasePageView, __t, Widgets) {
       }
     },
 
-    initialize: function(options) {
+    initialize: function () {
       this.editView = new Directus.EditView({model: this.model});
       this.headerOptions.route.title = (this.model.id) ? this.model.get('first_name') + ' ' + this.model.get('last_name') : __t('new_user');
     }
