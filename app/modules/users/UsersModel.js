@@ -42,7 +42,8 @@ function(app, Backbone, EntriesModel, moment) {
     },
 
     lastSeen: function () {
-      return moment(this.get('last_access')).fromNow();
+      // @TODO: Add translation or a standard way to say "Not Available" or similar
+      return this.get('last_access') ? moment(this.get('last_access')).fromNow() : 'N/A';
     },
 
     updateLastRoute: function(route, history) {
