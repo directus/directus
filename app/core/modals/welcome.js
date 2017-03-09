@@ -56,7 +56,13 @@ define(['app', 'backbone', 'underscore', 'core/Modal', 'core/t'], function(app, 
 
     finish: function() {
       var data = this.$('form').serializeObject();
-      var errors = this.model.validate(data);
+      var errors;
+
+      if (this.model.get('password')) {
+        data = _.omit(data, 'password', 'confirm_password');
+      }
+
+      errors = this.model.validate(data);
 
       if (errors) {
         this.model.trigger('invalid', this.model, errors);
@@ -96,6 +102,7 @@ define(['app', 'backbone', 'underscore', 'core/Modal', 'core/t'], function(app, 
 
       return {
         model: model,
+        disablePassword: !!model.password,
         timezones: timezones,
         languages: languages
       };
