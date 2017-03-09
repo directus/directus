@@ -417,10 +417,13 @@ class Table extends Route
             $column = $row['id'];
             $columnNames[] = $column;
             unset($row['id']);
-            $TableGateway->update($row, [
-                'table_name' => $table,
-                'column_name' => $column
-            ]);
+
+            if ($row) {
+                $TableGateway->update($row, [
+                    'table_name' => $table,
+                    'column_name' => $column
+                ]);
+            }
         }
 
         $rows = $TableGateway->select([
