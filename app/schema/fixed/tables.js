@@ -57,7 +57,7 @@ define(function(require, exports, module) {
         "nullable": true,
         "sort": 2,
         "options": {
-          "placeholder_text": __t('eg_x', {text: 'eg http://example.com/articles/{{slug}}'})
+          "placeholder_text": __t('eg_x', {text: 'http://example.com/articles/{{slug}}'})
         },
         "comment": transComments('preview_url')
       },
