@@ -29,11 +29,12 @@ define(function(require, exports, module) {
       {
         "id": "name",
         "column_name": "name",
-        "ui": "numeric",
+        "ui": "textinput",
         "type": "VARCHAR",
+        "length": 64,
         "system": false,
         "hidden_list": false,
-        "hidden_input": true, // @TODO: only on edit
+        "hidden_input": false,
         "sort": 10,
         "comment": transComments('name')
       },

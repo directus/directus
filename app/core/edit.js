@@ -13,11 +13,10 @@ define(function(require, exports, module) {
     tagName: 'div',
 
     attributes: {
-      //'class': 'batchcontainer'
       class: 'field'
     },
 
-    template: 'uicontainer',
+    template: 'interface-container',
 
     events: {
       'click [name="batchedit"]': function() {
@@ -27,18 +26,18 @@ define(function(require, exports, module) {
 
     serialize: function() {
       // editing UIs settings does not have a specified table assigned to it.
-      var tableInfo = this.model.collection.table;
+      var tableInfo = this.column.collection.table;
       var tableName;
       if (tableInfo) {
         tableName = tableInfo.id
       }
 
       return {
-        id: this.model.id,
-        comment: this.model.get('comment'),
+        id: this.column.id,
+        comment: this.column.get('comment'),
         batchEdit: this.options.batchEdit,
         hideLabel: _.result(this.view, 'hideLabel'),
-        required: this.model.get('required'),
+        required: this.column.get('required'),
         // Let assume for now that all tables that start with directus_ are core tables
         // TODO: we should store all our core tables names
         isCoreTable: tableName ? tableName.indexOf('directus_') === 0 : false,
@@ -55,7 +54,7 @@ define(function(require, exports, module) {
     },
 
     afterRender: function() {
-      var obj = this.view || this.model;
+      var obj = this.view || this.column;
       if (obj.isRequired()) {
         this.$el.addClass('required');
       }
@@ -63,6 +62,7 @@ define(function(require, exports, module) {
 
     initialize: function(options) {
       this.view = options.view;
+      this.column = options.column;
     }
   });
 
@@ -84,7 +84,7 @@ define(function(require, exports, module) {
 
         // Skip ID
         // if('id' === column.id) {
-        if (column.get('key') === 'PRI') {
+        if (column.get('key') === 'PRI' && (column.get('omit_input') !== false && !this.model.isNew())) {
           return;
         }
 
@@ -131,7 +131,16 @@ define(function(require, exports, module) {
           }
         }
 
-        var view = UIManager.getInputInstance(this.model, column.id, {structure: this.structure, inModal: this.inModal});
+        var inputOptions = {
+          structure: this.structure,
+          inModal: this.inModal
+        };
+
+        if (column.get('key') === 'PRI') {
+          inputOptions.canWrite = false;
+        }
+
+        var view = UIManager.getInputInstance(this.model, column.id, inputOptions);
         if (this.model.addInput) {
           this.model.addInput(column.id, view);
         }
@@ -156,7 +165,8 @@ define(function(require, exports, module) {
 
         if (!isHidden) {
           var uiContainer = new UIContainer({
-            model: column,
+            model: this.model,
+            column: column,
             batchEdit: this.options.batchIds !== undefined,
             view: view
           });

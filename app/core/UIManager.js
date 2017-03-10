@@ -362,9 +362,11 @@ define(function(require, exports, module) {
       options.schema = options.structure.get(options.name);
       options.value = options.model.get(options.name);
       options.collection = options.collection || options.model.collection;
-      options.canWrite = typeof options.model.canEdit === 'function' ? options.model.canEdit(attr) : true;
       options.settings = options.schema.options;
 
+      if (options.canWrite === undefined) {
+        options.canWrite =  typeof options.model.canEdit === 'function' ? options.model.canEdit(attr) : true;
+      }
 
       var UI = this._getModelUI(model, attr, options.schema);
       if (UI.Input === undefined) {

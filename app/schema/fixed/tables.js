@@ -23,6 +23,7 @@ define(function(require, exports, module) {
         "system": true,
         "hidden_list": false,
         "hidden_input": false,
+        "omit_input": false,
         "required": true,
         "sort": 0,
         "comment": transComments('table_name')

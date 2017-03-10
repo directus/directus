@@ -292,9 +292,16 @@ define(function(require, exports, module) {
           bigeditPermission   = this.collection.hasPermission('bigedit'),
           editPermission      = this.collection.hasPermission('edit'),
           columnIsBlacklisted = !_.isEmpty(attribute) && this.collection.isWriteBlacklisted(attribute),
-          isNew               = !this.has('id');
+          isNew               = this.isNew();
 
-      return (isNew && !columnIsBlacklisted) || (!iAmTheOwner && bigeditPermission && !columnIsBlacklisted) || (iAmTheOwner && editPermission && !columnIsBlacklisted);
+      // Can't edit primary key
+      if (attribute === this.idAttribute) {
+        return false;
+      }
+
+      return (isNew && !columnIsBlacklisted)
+          || (!iAmTheOwner && bigeditPermission&& !columnIsBlacklisted)
+          || (iAmTheOwner && editPermission && !columnIsBlacklisted);
     },
 
     getWriteFieldBlacklist: function() {
