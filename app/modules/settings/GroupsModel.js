@@ -2,6 +2,10 @@ define(['core/entries/EntriesModel'], function(EntriesModel) {
 
   return EntriesModel.extend({
 
+    isPublic: function () {
+      return this.get('name').toLowerCase() === 'public';
+    },
+
     canEdit: function (attr) {
       var _canEdit = EntriesModel.prototype.canEdit;
 
@@ -10,6 +14,17 @@ define(['core/entries/EntriesModel'], function(EntriesModel) {
       }
 
       return _canEdit.apply(this, arguments);
+    },
+
+    isReadBlacklisted: function (attribute) {
+      var _isReadBlacklisted = EntriesModel.prototype.isReadBlacklisted;
+
+      // omit users interface from public groups editing page
+      if (this.isPublic() && attribute === 'users') {
+        return true;
+      }
+
+      return _isReadBlacklisted.apply(this, arguments);
     }
   });
 });

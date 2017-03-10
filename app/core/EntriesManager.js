@@ -5,6 +5,7 @@ define(function(require, exports, module) {
   var SchemaManager      = require('./../schema/SchemaManager'),
       EntriesCollection  = require('./entries/EntriesCollection'),
       UsersCollection    = require('modules/users/UsersCollection'),
+      GroupsCollection   = require('modules/settings/GroupsCollection'),
       SettingsCollection = require('modules/settings/SettingsCollection'),
       FilesCollection    = require('modules/files/FilesCollection');
 
@@ -49,7 +50,7 @@ define(function(require, exports, module) {
         }, SchemaManager.getFullSchema('directus_tables')));
 
       case 'directus_groups':
-        return new EntriesCollection([], _.extend({
+        return new GroupsCollection([], _.extend({
           rowsPerPage: rowsPerPage,
           url: apiURL + 'groups/'
         }, SchemaManager.getFullSchema('directus_groups')));
