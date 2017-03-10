@@ -325,11 +325,6 @@ function(app, _, Backbone, Notification, __t, TableHelpers, ModelHelper, TableHe
     },
 
     constructor: function (options) {
-      // Add events from child
-      if (this.events) {
-        this.events = _.defaults(this.events, TableView.prototype.events);
-      }
-
       Backbone.Layout.__super__.constructor.call(this, options);
 
       this.showChart = options.showChart === true;

@@ -409,7 +409,6 @@ define([
 
       constructor: function() {
         View.prototype.constructor.apply(this, arguments);
-        BaseView.prototype.constructor.apply(this, arguments);
 
         this.showChart = this.supportsChart();
 
