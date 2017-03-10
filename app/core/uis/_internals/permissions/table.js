@@ -78,7 +78,7 @@ define(['app', 'underscore', 'backbone', 'core/t', 'core/Modal'], function(app, 
   });
 
   return Backbone.Layout.extend({
-    prefix: 'app/core/uis/permissions/',
+    prefix: 'app/core/uis/_internals/permissions/',
 
     template: 'table',
 
