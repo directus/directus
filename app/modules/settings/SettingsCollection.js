@@ -20,10 +20,11 @@ define([
           settings[model.get('name')] = model.get('value');
         });
 
-        var model = new this.model();
-        model.set(settings);
-
-        return model;
+        return new this.model(settings, {
+          structure: this.structure,
+          privileges: this.privileges,
+          table: this.table
+        });
       },
 
       get: function(attr) {
