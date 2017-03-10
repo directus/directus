@@ -14,14 +14,16 @@ define([
   'core/UIView',
   'core/table/table.view',
   'core/overlays/overlays',
-  'core/uis/permissions/table',
+  'core/uis/_internals/permissions/table',
   'core/t'
 ], function(app, _, UIComponent, UIView, TableView, Overlays, PermissionsTableView, __t) {
 
   'use strict';
 
   var Input = UIView.extend({
-    template: 'permissions/interface',
+
+    template: '_internals/permissions/interface',
+
     events: {
       'click div.related-table > div td:not(.delete)': 'editRow',
       'click button[data-action=add]': 'addRow',
@@ -29,7 +31,7 @@ define([
       'click td.delete': 'deleteRow'
     },
 
-    serialize: function() {
+    serialize: function () {
       return {
         isAdmin: this.model.id === 1,
         title: this.name,
@@ -40,7 +42,7 @@ define([
       };
     },
 
-    afterRender: function() {
+    afterRender: function () {
       if (this.model.id !== 1) {
         this.setView('.table-container', this.nestedTableView).render();
       }
