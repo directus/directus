@@ -142,7 +142,8 @@ class BaseTableGateway extends TableGateway
         if (class_exists($tableGatewayClassName)) {
             $instance = new $tableGatewayClassName($adapter, $acl);
         } else {
-            $instance = new static($table, $adapter, $acl);
+            // @TODO: Move this to a separate factory class
+            $instance = new self($table, $adapter, $acl);
         }
 
         return $instance;
