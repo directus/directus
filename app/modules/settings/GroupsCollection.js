@@ -6,6 +6,16 @@ define([
   'use strict';
 
   return EntriesCollection.extend({
-    model: GroupsModel
+
+    model: GroupsModel,
+
+    fetch: function (options) {
+      var _fetch = EntriesCollection.prototype.fetch;
+
+      // Include users relational columns
+      options.data['depth'] = 3;
+
+      return _fetch.apply(this, [options]);
+    }
   });
 });

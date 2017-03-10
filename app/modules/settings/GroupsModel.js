@@ -25,6 +25,19 @@ define(['core/entries/EntriesModel'], function(EntriesModel) {
       }
 
       return _isReadBlacklisted.apply(this, arguments);
+    },
+
+    fetch: function (options) {
+      var _fetch = EntriesModel.prototype.fetch;
+
+      if (!options.data) {
+        options.data = {};
+      }
+
+      // Include users relational columns
+      options.data.depth = 3;
+
+      return _fetch.apply(this, [options]);
     }
   });
 });

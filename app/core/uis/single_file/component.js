@@ -42,6 +42,15 @@ define([
       }
     },
 
+    _avatarList: function (options) {
+      var model = options.model;
+      var table = options.collection.table.id;
+
+      if (table === 'directus_users') {
+        return model.get('avatar');
+      }
+    },
+
     // Interface representation on table listing
     list: function (options) {
       var model = options.value;
@@ -56,10 +65,10 @@ define([
       var subtype = (model.get('type')) ? model.get('type').split('/').pop() : '';
 
       var isImage = _.contains(['image', 'embed'], type) || _.contains(['pdf'], subtype);
-      var thumbUrl = isImage ? model.makeFileUrl(true) : app.PATH + 'assets/img/document.png';
+      var thumbUrl = isImage ? model.makeFileUrl(true) : (this._avatarList(options) || app.PATH + 'assets/img/document.png');
 
       return '<div class="media-thumb"><img src="' + thumbUrl + '" class="img ' + orientation + '"></div>';
-    },
+    }
 
     // Value that represent the interface
     // Ex: user id, instead of user image url
