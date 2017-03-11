@@ -247,12 +247,20 @@ define(function(require, exports, module) {
     // Registers user priviliges
     registerPrivileges: function(data) {
       _.each(data, function(privilege) {
+        var statusId = privilege.status_id == null ? 'all' : privilege.status_id;
+        var model;
+
         if (!privileges[privilege.table_name]) {
           privileges[privilege.table_name] = {};
         }
 
-        var statusId = privilege.status_id == null ? 'all' : privilege.status_id;
-        privileges[privilege.table_name][statusId] = new Backbone.Model(privilege, {parse:true});
+        if (!privileges[privilege.table_name][statusId]) {
+          privileges[privilege.table_name][statusId] = new Backbone.Model();
+        }
+
+        model = privileges[privilege.table_name][statusId];
+        // hotfix: parse data
+        model.set(privilege.data ? privilege.data : privilege);
       }, this);
     },
 
@@ -308,7 +316,8 @@ define(function(require, exports, module) {
     },
 
     getDefaultPrivileges: function(table, statusId) {
-      if (!statusId) {
+      // statusId can be 0, which translate to false as well
+      if (!statusId && statusId !== 0) {
         statusId = null;
       }
 

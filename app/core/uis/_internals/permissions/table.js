@@ -91,8 +91,8 @@ define(['app', 'underscore', 'backbone', 'core/t', 'core/Modal'], function(app, 
     },
 
     toggleStatusSelector: function(event) {
-      var $row = $(event.currentTarget).parent();
-      var id = $row.data('id');
+      var $row = $(event.currentTarget).closest('tr');
+      var id = $row.data('cid');
       var model = this.collection.get(id);
 
       if (!this.hasStatusColumn(model.get('table_name'))) {
@@ -106,11 +106,8 @@ define(['app', 'underscore', 'backbone', 'core/t', 'core/Modal'], function(app, 
       var $el = $(event.currentTarget);
       var value = $el.data('value');
       var $row = $el.closest('tr');
-      var tableName = $row.data('table-name');
-      var state = {
-        name: 'All',
-        value: null
-      };
+      var tableName = $row.data('table');
+      var state = this.getDefaultStatus();
 
       if (!this.state.tables[tableName]) {
         this.state.tables[tableName] = {};
@@ -137,17 +134,24 @@ define(['app', 'underscore', 'backbone', 'core/t', 'core/Modal'], function(app, 
       var permission = $toggle.closest('td').data('name');
       var permissionName = 'allow_' + permission;
       var $row = $toggle.closest('tr');
-      var model = this.collection.get($row.data('id'));
+      var tableName = $row.data('table');
+      var model = this.collection.get($row.data('cid'));
       var attributes = {};
       var currentPermissionValue;
-      var options = {patch: true, wait: false};
+      var status = this.state.tables[tableName];
+      var options;
 
       // @note: temporary empty privileges
       if (!model) {
         model = this.collection.at(0).clone();
         model.clear();
-        model.set(app.schemaManager.getDefaultPrivileges('articles', 1));
+        model.set(app.schemaManager.getDefaultPrivileges(tableName, status ? status.value : null));
       }
+
+      options = {
+        wait: true,
+        patch: !model.isNew()
+      };
 
       currentPermissionValue = model.get(permissionName);
       // attributes['status_id'] = this.selectedState === 'all' ? null : this.selectedState;
@@ -159,8 +163,10 @@ define(['app', 'underscore', 'backbone', 'core/t', 'core/Modal'], function(app, 
         attributes[permissionName] = 1;
       }
 
-      options.success = function(model) {
+      options.success = function(model, resp) {
         var tableName = model.get('table_name');
+        model.clear();
+        model.set(resp.data ? resp.data : resp);
         app.schemaManager.getOrFetchTable(tableName, function(tableModel) {
           app.schemaManager.registerPrivileges([model.toJSON()]);
           app.trigger('tables:change:permissions', tableModel, model);
@@ -259,132 +265,97 @@ define(['app', 'underscore', 'backbone', 'core/t', 'core/Modal'], function(app, 
       }, this);
     },
 
-    serialize: function() {
-      var collection = this.collection;
-      var that = this;
+    getTables: function () {
+      var tables = [];
 
-      // collection = collection.filter(function(model) {
-      //   if (that.selectedState !== 'all') {
-      //     var test = app.schemaManager.getColumns('tables', model.get('table_name'));
-      //     if(test) {
-      //       test = test.find(function(hat){return hat.id === app.statusMapping.status_name;});
-      //       if(test) {
-      //         return true;
-      //       }
-      //     }
-      //     return false;
-      //   }
-      //   return true;
-      // });
-      //
-      // var tableStatusMapping = {};
-      //
-      // collection.forEach(function(priv) {
-      //   if(!tableStatusMapping[priv.get('table_name')]) {
-      //     tableStatusMapping[priv.get('table_name')] = {count: 0};
-      //   }
-      //   if(priv.get('status_id')) {
-      //     tableStatusMapping[priv.get('table_name')][priv.get('status_id')] = priv;
-      //   } else {
-      //     tableStatusMapping[priv.get('table_name')][that.selectedState] = priv;
-      //   }
-      //
-      //   if(!tableStatusMapping[priv.get('table_name')][that.selectedState]) {
-      //     tableStatusMapping[priv.get('table_name')][that.selectedState] = priv;
-      //   }
-      //
-      //   tableStatusMapping[priv.get('table_name')].count++;
-      // });
-      //
-      // // Create data structure suitable for view
-      // collection = [];
-      //
-      // for (var prop in tableStatusMapping) {
-      //   collection.push(tableStatusMapping[prop][this.selectedState]);
-      // }
-
-      // if (this.selectedState !== 'all') {
-      //   collection.push({
-      //
-      //   })
-      // }
-
-      collection = collection.filter(_.bind(function(model) {
-        // take system tables out
-        // @TODO: use a list of actual core tables.
-        if (that.showCoreTables !== true && model.get('table_name').indexOf('directus_') === 0) {
+      app.schemaManager.getTables().forEach(function (table) {
+        if (this.showCoreTables !== true && table.id.indexOf('directus_') === 0) {
           return false;
         }
 
-        var selectedStatusId = null;
-        if (this.state.tables[model.get('table_name')]) {
-          selectedStatusId = this.state.tables[model.get('table_name')].value;
-        }
+        tables.push(table);
+      });
 
-        return (model.get('status_id') === selectedStatusId);
-      }, this));
+      return tables;
+    },
 
-      var tables = app.schemaManager.getTables();
-      tables.forEach(_.bind(function(table) {
-        if (that.showCoreTables !== true && table.id.indexOf('directus_') === 0) {
-          return false;
-        }
+    getTablePrivilege: function (table, status) {
+      // var privilege = app.schemaManager.getPrivileges(table, status);
+      var privilege = this.collection.findWhere({
+        table_name: table,
+        status_id: status
+      });
 
-        var attributes = {
-          table_name: table.id
-        };
+      if (!privilege) {
+        privilege = app.schemaManager.getDefaultPrivileges(table, status);
+        this.collection.add(privilege);
+      }
 
-        if (!this.state.tables[table.id]) {
-          return;
-        }
+      return privilege;
+    },
 
-        var selectedStatusId = this.state.tables[table.id].value;
-        var privileges = _.find(collection, function(model) {
-          return model.table_name === table.id;
+    parsePrivilege: function (privilege) {
+      var data = privilege.toJSON();
+
+      data.cid = privilege.cid;
+      data.title = app.capitalize(data.table_name, '_', true);
+      data.readBlacklist = data.read_field_blacklist || false;
+      data.writeBlacklist = data.write_field_blacklist || false;
+      // Default permissions
+      data.permissions = this.parsePermissions(privilege);
+
+      return data;
+    },
+
+    getDefaultStatus: function () {
+      return {
+        name: 'All',
+        value: null
+      };
+    },
+
+    getStatuses: function (currentStatusId) {
+      var statuses = [];
+
+      statuses.push(this.getDefaultStatus());
+      _.each(app.statusMapping.mapping, function(status, key) {
+        statuses.push({
+          name: status.name,
+          value: key
         });
+      });
 
-        if (!privileges) {
-          collection.push(app.schemaManager.getDefaultPrivileges(table.id, selectedStatusId));
-        }
-      }, this));
+      statuses = statuses.filter(function(status) {
+        return status.value != currentStatusId;
+      });
 
-      var tableData = [];
-      collection.forEach(_.bind(function(model) {
-        var data, statuses = [], defaultStatus;
+      return statuses;
+    },
 
-        data = model.toJSON();
-        data.cid = model.cid;
-        data.title = app.capitalize(data.table_name, '_', true);
-        data.readBlacklist = data.read_field_blacklist || false;
-        data.writeBlacklist = data.write_field_blacklist || false;
-        // Default permissions
-        data.permissions = that.parsePermissions(model);
+    getPermissionsList: function () {
+      var permissions = [];
+      var tables = this.getTables();
+
+      tables.forEach(_.bind(function (table) {
+        var currentTableStatus = this.state.tables[table.id] || this.getDefaultStatus();
+        var privilege = this.getTablePrivilege(table.id, currentTableStatus.value);
+        var data = this.parsePrivilege(privilege);
 
         // Has status column?
-        data.hasStatusColumn = this.hasStatusColumn(model.get('table_name'));
+        data.hasStatusColumn = this.hasStatusColumn(privilege.get('table_name'));
+        data.statuses = data.hasStatusColumn ? this.getStatuses(currentTableStatus) : [];
+        data.currentStatus = currentTableStatus;
 
-        defaultStatus = {
-          name: 'All',
-          value: null
-        };
-
-        statuses.push(defaultStatus);
-        _.each(app.statusMapping.mapping, function(status, key) {
-          statuses.push({
-            name: status.name,
-            value: key
-          });
-        });
-
-        data.currentStatus = this.state.tables[model.get('table_name')] || defaultStatus;
-        data.statuses = statuses.filter(function(status) {
-          return status.value != data.currentStatus.value;
-        });
-
-        tableData.push(data);
+        permissions.push(data);
       }, this));
 
-      return {tables: tableData};
+      return permissions;
+    },
+
+    serialize: function() {
+      return {
+        tables: this.getPermissionsList()
+      };
     },
 
     hasStatusColumn: function(table) {
@@ -406,13 +377,14 @@ define(['app', 'underscore', 'backbone', 'core/t', 'core/Modal'], function(app, 
     },
 
     initialize: function() {
-      this.selectedState = 'all';
       this.state = {
         default: 'all',
+        status: 'all',
         tables: {}
       };
+
       this.showCoreTables = false;
-      this.collection.on('change', this.render, this);
+      this.listenTo(app, 'tables:change:permissions', this.render);
     }
   });
 });

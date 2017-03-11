@@ -95,22 +95,7 @@ define([
       this.showChooseButton = this.columnSchema.options.get('choose_button') === true;
 
       this.nestedTableView = new PermissionsTableView({
-        collection: relatedCollection,
-        // selectable: false,
-        // sortable: false,
-        // footer: false,
-        // saveAfterDrop: true,
-        // deleteColumn: this.canEdit && this.showRemoveButton,
-        // hideColumnPreferences: true,
-        // hideEmptyMessage: true,
-        // tableHead: false,
-        // filters: {
-        //   booleanOperator: '&&',
-        //   expressions: [
-        //     //@todo, make sure that this can also nest
-        //     {column: joinColumn, operator: '===', value: this.model.id}
-        //   ]
-        // }
+        collection: relatedCollection
       });
 
       relatedCollection.setOrder('table_name', 'ASC', {silent: true});

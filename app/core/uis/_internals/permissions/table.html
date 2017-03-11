@@ -14,7 +14,7 @@
     </thead>
     <tbody>
     {{#tables}}
-    <tr class="" data-table-name="{{table_name}}" data-id="{{id}}" data-cid="{{cid}}">
+    <tr class="" data-table="{{table_name}}" data-id="{{id}}" data-cid="{{cid}}">
         <td class="tableName"><div style="display:inline-block">{{title}}</div></td>
         <td class="js-status-toggle permissions-workflow {{#unless hasStatusColumn}} disabled{{/unless}}" title="{{t 'permissions_field_level_permissions'}}">
             <i class="material-icons vertical-middle js-edit-fields">tune</i>
@@ -81,6 +81,5 @@
         </td>
     </tr>
     {{/tables}}
-    <!--<tr class="add table-fields" data-table-group="demo-table1"></tr>-->
     </tbody>
 </table>

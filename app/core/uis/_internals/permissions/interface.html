@@ -2,12 +2,4 @@
 {{t "groups_permissions_full_access"}}
 {{else}}
 <div id="table-container" class="table-container"></div>
-<div class="btn-row">
-    {{#if showAddButton}}
-    <button class="btn btn-primary" data-action="add" type="button">{{tVarCapitalize "add_new_x_item" table=tableTitle}}</button>
-    {{/if}}
-    {{#if showChooseButton}}
-    <button class="btn btn-primary" data-action="insert" type="button">{{t "choose_existing"}}</button>
-    {{/if}}
-</div>
 {{/if}}
