@@ -99,7 +99,11 @@ define([
           }, {parse: true});
         }
 
-        self.editView[key] = new Directus.EditView({model: model, structure: structure});
+        self.editView[key] = new Directus.EditView({
+          model: model,
+          structure: structure,
+          focusOnFirst: index === 0
+        });
       });
 
       this.headerOptions.route.title = this.options.title;

@@ -221,9 +221,11 @@ define(function(require, exports, module) {
 
     // Focus on first input
     afterRender: function() {
-      var $first = this.$el.find(':input:first:visible');
-      $first.focus();
-      $first.val($first.val());
+      if (this.options.focusOnFirst !== false) {
+        var $first = this.$el.find(':input:first:visible');
+        $first.focus();
+        $first.val($first.val());
+      }
 
       // If this is a nested collection (to-Many) "Add" modal, preset & hide the parent foreign key.
       if(this.options.collectionAdd && !_.isEmpty(this.options.parentField)) {
