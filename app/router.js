@@ -550,7 +550,7 @@ define(function(require, exports, module) {
           this.v.main.setView('#content', new Settings.Global({
             model: app.settings.asModel(),
             title: __t('global'),
-            structure: app.settings.structure
+            structure: app.schemaManager.getSettingsSchemas()
           }));
           break;
         case 'files':

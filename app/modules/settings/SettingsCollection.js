@@ -11,20 +11,77 @@ define([
 
     'use strict';
 
-    return EntriesCollection.extend({
+    return Collection.extend({
+
+      model: Backbone.Model.extend({
+        getStructure: function () {
+          return this.structure;
+        }
+      }),
+
+      parse: function (data, options) {
+        var resp = [];
+        data = data.data ? data.data : data;
+
+        if (options.grouped === true) {
+          _.each(data, function (attrs, collection) {
+            _.each(attrs, function (value, name) {
+              resp.push({
+                name: name,
+                value: value,
+                collection: collection
+              });
+            });
+          });
+
+          data = resp;
+        }
+
+        return data;
+      },
 
       asModel: function() {
         var settings = {};
+        var model;
 
         this.each(function(model) {
-          settings[model.get('name')] = model.get('value');
+          if (!settings[model.get('collection')]) {
+            settings[model.get('collection')] = {};
+          }
+
+          settings[model.get('collection')][model.get('name')] = model.get('value');
         });
 
-        return new this.model(settings, {
+        model = new this.model(settings, {
           structure: this.structure,
           privileges: this.privileges,
-          table: this.table
+          table: this.table,
+          url: this.url
         });
+
+        model.diff = function (data) {
+          var self = this;
+          var changedAttrs = {};
+
+          _.each(data, function (dataAttrs, collection) {
+            var collectionAttrs = self.get(collection);
+            var changed = {};
+
+            _.each(dataAttrs, function (value, attr) {
+              if (collectionAttrs[attr] != value && attr != 'max_file_size') {
+                changed[attr] = value;
+              }
+            });
+
+            if (_.keys(changed).length) {
+              changedAttrs[collection] = changed;
+            }
+          });
+
+          return changedAttrs;
+        };
+
+        return model;
       },
 
       get: function(attr) {

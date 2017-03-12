@@ -151,7 +151,10 @@ require(["config", 'polyfills'], function() {
       app.files    = EntriesManager.getInstance('directus_files');
       app.activity = EntriesManager.getInstance('directus_activity');
       app.groups   = EntriesManager.getInstance('directus_groups');
-      app.settings = EntriesManager.getInstance('directus_settings');
+
+      // This needs elegance
+      app.settings = new SettingsCollection(options.settings, {parse: true});
+      app.settings.url = app.API_URL + 'settings';
 
       // Proxy to EntriesManager
       app.getEntries = function(tableName, options) { return EntriesManager.getInstance(tableName, options); };
@@ -188,7 +191,6 @@ require(["config", 'polyfills'], function() {
       app.groups.reset(options.groups, {parse: true});
       app.users.reset(options.users, {parse: true});
       app.files.reset(options.active_files, {parse: true});
-      app.settings.reset(options.settings, {parse: true});
       app.messages.reset(options.messages, {parse: true});
 
       app.messages.startPolling();

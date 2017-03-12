@@ -6,7 +6,6 @@ define(function(require, exports, module) {
       EntriesCollection  = require('./entries/EntriesCollection'),
       UsersCollection    = require('modules/users/UsersCollection'),
       GroupsCollection   = require('modules/settings/GroupsCollection'),
-      SettingsCollection = require('modules/settings/SettingsCollection'),
       FilesCollection    = require('modules/files/FilesCollection');
 
   // Contains collections that should be persistent
@@ -14,7 +13,6 @@ define(function(require, exports, module) {
   var filesInstance;
   var groupsInstance;
   var activityInstance;
-  var settingsInstance;
   var tablesInstance;
   var messagesInstance;
 
@@ -36,12 +34,6 @@ define(function(require, exports, module) {
           url: apiURL + 'files',
           filters: {columns_visible: ['name','title','size', 'type', 'url', 'user','date_uploaded', 'storage_adapter', 'width', 'height']}
         }, SchemaManager.getFullSchema('directus_files')));
-
-      case 'directus_settings':
-        return new SettingsCollection([], _.extend({
-          rowsPerPage: rowsPerPage,
-          url: apiURL + 'settings'
-        }, SchemaManager.getFullSchema('directus_settings')));
 
       case 'directus_tables':
         return new EntriesCollection([], _.extend({
@@ -72,7 +64,6 @@ define(function(require, exports, module) {
     usersInstance = getNewCoreInstance('directus_users');
     filesInstance = getNewCoreInstance('directus_files');
     activityInstance = getNewCoreInstance('directus_activity');
-    settingsInstance = getNewCoreInstance('directus_settings');
     tablesInstance = getNewCoreInstance('directus_tables');
     groupsInstance = getNewCoreInstance('directus_groups');
   }
@@ -87,9 +78,6 @@ define(function(require, exports, module) {
 
       case 'directus_files':
         return newCoreInstance ? getNewCoreInstance(tableName) : filesInstance;
-
-      case 'directus_settings':
-        return newCoreInstance ? getNewCoreInstance(tableName) : settingsInstance;
 
       case 'directus_tables':
         return newCoreInstance ? getNewCoreInstance(tableName) : tablesInstance;

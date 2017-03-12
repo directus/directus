@@ -8,14 +8,13 @@
 
 define([
   'app',
+  'underscore',
   'backbone',
   'core/directus',
   'core/BasePageView',
   'core/widgets/widgets',
-  'core/t',
-],
-
-function(app, Backbone, Directus, BasePageView, Widgets, __t) {
+  'core/t'
+], function(app, _, Backbone, Directus, BasePageView, Widgets, __t) {
 
   'use strict';
 
@@ -35,14 +34,22 @@ function(app, Backbone, Directus, BasePageView, Widgets, __t) {
           basicSave: true
         },
         onClick: function(event) {
-          var data = self.editView.data();
+          var data = {};
+          _.each(self.editView, function (view, key) {
+            data[key] = view.data();
+          });
+
           var model = self.model;
-          var success = function() {
+          var success = function(model, resp) {
+            app.settings.reset(resp, {parse: true, grouped: true});
             app.router.go('settings');
           };
 
-          // @TODO: Only save when there's a change in the model
-          model.save(model.diff(data), {success: success, patch: true});
+          data = model.diff(data);
+
+          if (_.keys(data).length) {
+            model.save(data, {success: success, patch: true});
+          }
         }
       });
 
@@ -62,18 +69,42 @@ function(app, Backbone, Directus, BasePageView, Widgets, __t) {
       this.saveWidget.enable()
     },
 
-    beforeRender: function() {
-      this.setView('#page-content', this.editView);
-      BasePageView.prototype.beforeRender.call(this);
+    beforeRender: function () {
+      var self = this;
+
+      _.each(this.editView, function (view) {
+        self.insertView('#page-content', view);
+      });
     },
 
     initialize: function(options) {
-      this.editView = new Directus.EditView({model: this.model, structure: options.structure});
+      var self = this;
+      var index = -1;
+
+      this.editView = {};
+      _.each(this.model.attributes, function (attrs, key) {
+        var structure = options.structure[key];
+        var model = self.model.clone().clear();
+        model.set(self.model.get(key));
+
+        // add line break after the first group
+        if (++index > 0) {
+          structure.unshift({
+            id: 'divider',
+            ui: 'divider',
+            char_length: 255,
+            options: {
+              title: __t('directus_settings_' + key + '_divider_title')
+            }
+          }, {parse: true});
+        }
+
+        self.editView[key] = new Directus.EditView({model: model, structure: structure});
+      });
+
       this.headerOptions.route.title = this.options.title;
     }
-
   });
 
   return Global;
-
 });

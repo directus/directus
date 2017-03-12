@@ -21,7 +21,6 @@ define(function(require, exports, module) {
     'directus_files'     : require('./fixed/files'),
     'directus_messages'  : require('./fixed/messages'),
     'directus_privileges'  : require('./fixed/privileges'),
-    'directus_settings'  : require('./fixed/settings'),
     'directus_tables'    : require('./fixed/tables'),
     'directus_users'     : require('./fixed/users')
   };
@@ -30,10 +29,7 @@ define(function(require, exports, module) {
    * @private
    * Static Settings Schemas
    */
-  var settingsSchemas = {
-    'global': require('./fixed/settings.global'),
-    'files': require('./fixed/settings.files')
-  };
+  var settingsSchemas = require('./fixed/settings');
 
   /**
    * @private
@@ -127,7 +123,6 @@ define(function(require, exports, module) {
         { schema: directusSchemas.directus_files.getFiles() },
         { schema: directusSchemas.directus_messages },
         { schema: directusSchemas.directus_privileges },
-        { schema: directusSchemas.directus_settings },
         { schema: directusSchemas.directus_tables },
         { schema: directusSchemas.directus_users.getUsers(app.locales, app.timezones) }
       ];
@@ -180,7 +175,7 @@ define(function(require, exports, module) {
     registerSettingsSchemas: function(data) {
       var namespace = 'settings';
       _.each(data, function(settings) {
-        columnSchemas[namespace][settings.id] = new ColumnsCollection(settings.schema.structure, {parse: true});
+        columnSchemas[namespace][settings.id] = new ColumnsCollection(settings.schema.columns, {parse: true});
         // TODO: columns must have its table information
         columnSchemas[namespace][settings.id].table = {
           id: 'directus_settings'
@@ -270,6 +265,10 @@ define(function(require, exports, module) {
 
     getColumns: function(namespace, tableName) {
       return columnSchemas[namespace][tableName];
+    },
+
+    getSettingsSchemas: function () {
+      return columnSchemas['settings'];
     },
 
     getTable: function(tableName) {

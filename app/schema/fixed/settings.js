@@ -21,6 +21,15 @@ define(function(require, exports, module) {
     "url": "api/1.1/settings"
   };
 
+  var settingsFilesSchema = {
+    "id":"directus_settings",
+    "table_name":"directus_settings",
+    "hidden":true,
+    "single":false,
+    "count":0,
+    "url": "api/1.1/settings"
+  };
+
   settingsGlobalSchema.columns = [
     {
       id: 'project_name',
@@ -66,15 +75,10 @@ define(function(require, exports, module) {
         size: 'small'
       },
       comment: transComments('global_rows_per_page')
-    },
-    {
-      id: 'divider',
-      ui: 'divider',
-      char_length: 255,
-      options: {
-        title: trans('files_divider_title')
-      }
-    },
+    }
+  ];
+
+  settingsFilesSchema.columns = [
     {
       id: 'file_naming',
       ui: 'select',
@@ -94,5 +98,8 @@ define(function(require, exports, module) {
     {id: 'youtube_api_key', ui: 'textinput', char_length: 255, comment: __t('settings_files_youtube_api_key_comment')+'<br><a target="_blank" href="https://developers.google.com/youtube/v3/getting-started">'+__t('settings_files_youtube_api_key_get_key')+'</a>'}
   ];
 
-  module.exports = settingsGlobalSchema;
+  module.exports = {
+    global: settingsGlobalSchema,
+    files: settingsFilesSchema
+  };
 });
