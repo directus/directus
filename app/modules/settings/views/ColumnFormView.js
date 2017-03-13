@@ -32,10 +32,13 @@ define([
         this.render();
       },
 
-      'change input#columnName': function(e) {
-        this.columnName =  $(e.target).val();
-        this.model.set({column_name: this.columnName});
-      },
+      'change input#columnName': 'onInputNameChange',
+      'keypress input#columnName': 'onInputNameChange',
+      'focus input#columnName': 'onInputNameChange',
+      'textInput input#columnName': 'onInputNameChange',
+      'input input#columnName': 'onInputNameChange',
+
+      'change .js-strict-naming': 'onStrictNamingChange',
 
       'change input#comment': function(e) {
         this.comment =  $(e.target).val();
@@ -334,11 +337,24 @@ define([
       data.isAlias = this.isAlias;
       data.isRelational = data.MANYTOONE || data.MANYTOMANY || data.ONETOMANY || false;
 
+      data.isStrictNaming = this.options.strictNaming;
+      data.isValidName = this.isValidName();
+
       return data;
     },
 
     isValid: function() {
       return this.model.has('column_name');
+    },
+
+    isValidName: function () {
+      var isValid = this.isValid();
+
+      if (!this.options.strictNaming && !this.options.isColumnNameClean) {
+        isValid = false;
+      }
+
+      return isValid;
     },
 
     getRelatedTable: function() {
@@ -359,37 +375,60 @@ define([
       return relatedTable;
     },
 
-    afterRender: function() {
-      var $el = this.$el;
-      var $inputColumnName = $el.find('input#columnName');
-      var $strict = $el.find('#strictNaming');
-      var $valid = $el.find('#columnNameValid');
+    isCleanName: function(name, cleanName) {
+      return name && name === cleanName;
+    },
 
-      $strict.on('change', function() {
-        $valid.toggle();
-      });
+    onInputNameChange: function (event) {
+      var name = $(event.currentTarget).val();
 
-      $inputColumnName.on('change keypress paste focus textInput input', function() {
-        var strictNaming = $strict.is(':checked');
+      this.updateColumnNameWith(name)
+    },
 
-        if (!strictNaming) {
-          return;
-        }
+    updateColumnNameWith: function (name) {
+      var cleanName = SchemaHelper.cleanColumnName(name);
 
-        var rawColumnName = $(this).val();
-        var cleanColumnName = SchemaHelper.cleanColumnName(rawColumnName);
-        // var columnNameText = '';
+      this.columnName = this.options.strictNaming ? cleanName : name;
+      this.model.set({column_name: this.columnName});
 
-        if (cleanColumnName && rawColumnName !== cleanColumnName) {
-          // columnNameText = __t('this_column_will_be_saved_as_x', {column_name: cleanColumnName});
-          $valid.hide();
-        } else {
-          $valid.show();
-        }
+      this.options.isColumnNameClean = this.isCleanName(this.columnName, cleanName);
 
-        // $el.find('#cleanColumnName').text(columnNameText);
-        $el.find('#displayName').val(app.capitalize(cleanColumnName));
-      });
+      this.updateCleanColumnInput();
+      this.updateStrictNamingCheck(this.isValidName());
+    },
+
+    onStrictNamingChange: function () {
+      this.toggleStrictNamingCheck();
+    },
+
+    toggleStrictNamingCheck: function () {
+      // var $el = this.$('#columnNameValid');
+      var $input = this.$('input#columnName');
+
+      // toggle (hide/show) valid/check symbol
+      this.options.strictNaming = !this.options.strictNaming;
+      // $el.toggle();
+
+      this.updateColumnNameWith($input.val());
+      this.updateStrictNamingCheck(this.isValidName());
+    },
+
+    updateStrictNamingCheck: function (value) {
+      var $el = this.$('#columnNameValid');
+
+      if (value) {
+        $el.show();
+      } else {
+        $el.hide();
+      }
+    },
+
+    updateCleanColumnInput: function () {
+      this.$('#displayName').val(app.capitalize(this.columnName));
+    },
+
+    afterRender: function () {
+      this.updateCleanColumnInput();
     },
 
     initialize: function(options) {
@@ -404,6 +443,14 @@ define([
       }
       this.columnName = this.model.get('column_name') || undefined;
       this.hideColumnName = (options.hiddenFields && options.hiddenFields.indexOf('column_name') >= 0);
+
+      // Strict naming is true by default
+      this.options.strictNaming = true;
+      this.options.isColumnNameClean = false;
+      // If editing a column, we need to verify whether the column is "clean".
+      if (this.columnName) {
+        this.isCleanName(this.columnName, SchemaHelper.cleanColumnName(this.columnName));
+      }
 
       if (!this.model.isNew()) {
         this.model.startTracking();

@@ -96,7 +96,8 @@ class Table extends Route
             // Through API:
             // Remove spaces and symbols from column name
             // And in lowercase
-            $requestPayload['column_name'] = SchemaUtils::cleanColumnName($requestPayload['column_name']);
+            // We are allowing any column name the user wishes
+            // $requestPayload['column_name'] = SchemaUtils::cleanColumnName($requestPayload['column_name']);
             $params['column_name'] = $tableGateway->addColumn($tableName, $requestPayload);
             $response = [
                 'meta' => ['type' => 'item', 'table' => 'directus_columns'],
