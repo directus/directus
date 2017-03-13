@@ -6,7 +6,7 @@
 //  For all details and documentation:
 //  http://www.getdirectus.com
 
-define(['app', 'core/UIComponent', 'core/UIView', 'core/t', 'utils'],function(app, UIComponent, UIView, __t, Utils) {
+define(['app', 'underscore', 'core/UIComponent', 'core/UIView', 'core/t', 'utils'],function(app, _, UIComponent, UIView, __t, Utils) {
 
   'use strict';
 
@@ -14,6 +14,19 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t', 'utils'],function(ap
                     <select name="{{name}}" {{#if readonly}}disabled{{/if}}>{{#if allow_null}}<option value="">{{placeholder_text}}</option>{{/if}}{{#options}}<option value="{{key}}" {{#if selected}}selected{{/if}}>{{value}}</option>{{/options}}</select> \
                     <i class="material-icons select-arrow">arrow_drop_down</i> \
                   </div>';
+
+  var parseOptions = function (options) {
+    if (_.isString(options)) {
+      try {
+        options = $.parseJSON(options);
+      } catch (e) {
+        options = {};
+        console.error(e);
+      }
+    }
+
+    return options;
+  };
 
   var Input = UIView.extend({
     templateSource: template,
@@ -29,14 +42,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t', 'utils'],function(ap
         selectedValue = this.options.schema.get('default_value');
       }
 
-      if (_.isString(options)) {
-        try {
-          options = $.parseJSON(options);
-        } catch (e) {
-          options = {};
-          console.error(e);
-        }
-      }
+      options = parseOptions(options);
 
       options = _.map(options, function(value, key) {
         var item = {};
@@ -65,6 +71,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t', 'utils'],function(ap
     variables: [
       {id: 'options', default_value: '', ui: 'textarea', options:{'rows': 25, 'placeholder_text': "{\n    \"value1\":\"Option One\",\n    \"value2\":\"Option Two\",\n    \"value3\":\"Option Three\"\n}"}, comment: __t('select_options_comment')},
       {id: 'allow_null', type: 'Boolean', default_value: false, ui: 'checkbox'},
+      {id: 'show', type: 'String', default_value: 'value', ui: 'select', options: {options: {text: 'Text', value: 'Value'}}},
       {id: 'placeholder_text', type: 'String', default_value: '', ui: 'textinput', char_length: 255, required: false, comment: __t('select_placeholder_text')}
     ],
     Input: Input,
@@ -74,7 +81,15 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t', 'utils'],function(ap
       }
     },
     list: function(options) {
-      return _.isString(options.value) ? options.value.replace(/<(?:.|\n)*?>/gm, '').substr(0,100) : options.value;
+      var value = _.isString(options.value) ? options.value.replace(/<(?:.|\n)*?>/gm, '').substr(0,100) : options.value;
+
+      if (options.settings.get('show') === 'text') {
+        options = parseOptions(options.settings.get('options'));
+
+        value = options[value];
+      }
+
+      return value;
     }
   });
 
