@@ -15,6 +15,11 @@ define(['app', 'underscore', 'core/UIComponent', 'core/UIView', 'core/t', 'utils
                     <i class="material-icons select-arrow">arrow_drop_down</i> \
                   </div>';
 
+  var SHOW_SELECT_OPTIONS = {
+    text: __t('select_ui_show_options_text'),
+    value: __t('select_ui_show_options_value')
+  };
+
   var parseOptions = function (options) {
     if (_.isString(options)) {
       try {
@@ -71,7 +76,7 @@ define(['app', 'underscore', 'core/UIComponent', 'core/UIView', 'core/t', 'utils
     variables: [
       {id: 'options', default_value: '', ui: 'textarea', options:{'rows': 25, 'placeholder_text': "{\n    \"value1\":\"Option One\",\n    \"value2\":\"Option Two\",\n    \"value3\":\"Option Three\"\n}"}, comment: __t('select_options_comment')},
       {id: 'allow_null', type: 'Boolean', default_value: false, ui: 'checkbox'},
-      {id: 'show', type: 'String', default_value: 'value', ui: 'select', options: {options: {text: 'Text', value: 'Value'}}},
+      {id: 'show', type: 'String', default_value: 'value', ui: 'select', options: {options: SHOW_SELECT_OPTIONS}},
       {id: 'placeholder_text', type: 'String', default_value: '', ui: 'textinput', char_length: 255, required: false, comment: __t('select_placeholder_text')}
     ],
     Input: Input,
