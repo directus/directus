@@ -127,14 +127,9 @@ function(app, Backbone, Handlebars, __t, Directus, BasePageView, Widgets, Histor
     save: function(e) {
       this.editView.beforeSaveHook();
 
-      var action = 'save-form-leave';
-      if(e.target.options !== undefined) {
+      var action = this.single ? 'save-form-stay' : 'save-form-leave';
+      if (e.target.options !== undefined && !this.single) {
         action = $(e.target.options[e.target.selectedIndex]).val();
-      }
-
-      if(this.single && action !== 'save-form-stay' && action !== 'save-form-leave') {
-        console.error('This shouldn\'t be happening');
-        return;
       }
 
       var data = this.editView.data();
