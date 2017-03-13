@@ -6,9 +6,13 @@
 		<div class="column-50">
 			<div class="label">
 				Name (Database)
-				<input class="custom-checkbox" id="strictNaming" type="checkbox" value="" checked /><label for="strictNaming" class="strict-naming"><span></span> Strict Naming</label>
+				<input class="custom-checkbox js-strict-naming" id="strictNaming" type="checkbox" value="" {{#if isStrictNaming}}checked{{/if}}>
+				<label for="strictNaming" class="strict-naming"><span></span> Strict Naming</label>
 			</div>
-			<div class="validate-input"><input type="text" id="columnName" name="column_name" placeholder="" value="{{column_name}}"><i id="columnNameValid" class="material-icons validate-check valid">check</i></div>
+			<div class="validate-input">
+				<input type="text" id="columnName" name="column_name" placeholder="" value="{{column_name}}">
+				<i{{#unless isValidName}} style="display:none;"{{/unless}} id="columnNameValid" class="material-icons validate-check valid">check</i>
+			</div>
 		</div><!--
 		--><div class="column-50">
 			<div class="label">Name (Display)</div>
