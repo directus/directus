@@ -523,7 +523,8 @@ class BaseTableGateway extends TableGateway
 
         $default = '';
         if (ArrayUtils::get($columnData, 'default_value')) {
-            $default = ' DEFAULT ' . ArrayUtils::get($columnData, 'default_value');
+            $default = ArrayUtils::get($columnData, 'default_value');
+            $default = ' DEFAULT ' . (is_string($default) ? sprintf('"%s"', $default) : $default);
         }
 
         // TODO: wrap this into an abstract DDL class
