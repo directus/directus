@@ -7,6 +7,7 @@ use Directus\Db\Exception\SuppliedArrayAsColumnValue;
 use Directus\Db\RowGateway\BaseRowGateway;
 use Directus\Db\SchemaManager;
 use Directus\Db\TableSchema;
+use Directus\Files\Thumbnail;
 use Directus\MemcacheProvider;
 use Directus\Util\ArrayUtils;
 use Directus\Util\DateUtils;
@@ -266,6 +267,12 @@ class BaseTableGateway extends TableGateway
             if ($tableName == 'directus_files') {
                 $Files = Bootstrap::get('app')->container->get('files');
                 $ext = pathinfo($recordData['name'], PATHINFO_EXTENSION);
+
+                // hotfix: pdf thumbnails are being saved to its original extension
+                // file.pdf results into a thumbs/thumb.pdf instead of thumbs/thumb.jpeg
+                if (Thumbnail::isNonImageFormatSupported($ext)) {
+                    $ext = Thumbnail::defaultFormat();
+                }
 
                 $thumbnailPath = 'thumbs/THUMB_' . $recordData['name'];
                 if ($Files->exists($thumbnailPath)) {
