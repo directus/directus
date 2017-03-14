@@ -5,12 +5,11 @@ define([
   'core/t',
   'core/BasePageView',
   'modules/messages/views/MessageView',
+  'modules/messages/views/NewMessageView',
   'modules/messages/views/MessageForm',
   'core/widgets/widgets',
   'moment'
-],
-
-function(app, _, Backbone, __t, BasePageView, MessageView, MessageForm, Widgets, moment) {
+], function(app, _, Backbone, __t, BasePageView, MessageView, NewMessageView, MessageForm, Widgets, moment) {
 
   var ListView = Backbone.Layout.extend({
 
@@ -166,29 +165,33 @@ function(app, _, Backbone, __t, BasePageView, MessageView, MessageForm, Widgets,
       }
     },
 
+    displayNewMessage: function() {
+      var model = new app.messages.model({
+        from: app.users.getCurrentUser().id
+      }, {
+        collection: app.messages,
+        parse: true
+      });
+
+      var newMessageView = new NewMessageView({
+        parentView: this,
+        model: model
+      });
+
+      this.setView('#message-right-content', newMessageView);
+      newMessageView.render();
+    },
+
     displayMessage: function(id, render) {
       var messageView = new MessageView({
         model: this.collection.get(id),
         parentView: this
       });
 
-      var model = this.collection.getNewModelInstance();
-      var structure = MessageForm.prototype.structure;
-      model.structure = structure;
-
-      var messageForm = this.messageForm = new MessageForm({
-        model: model,
-        collection: this.collection,
-        structure: structure
-      });
-
-      this.setView('#message-content', messageView);
-      this.setView('#message-form', messageForm);
-      this.$(this.dom.MESSAGE_VIEW).show();
+      this.setView('#message-right-content', messageView);
 
       if (render === true) {
         messageView.render();
-        messageForm.render();
       }
     },
 
@@ -229,9 +232,9 @@ function(app, _, Backbone, __t, BasePageView, MessageView, MessageForm, Widgets,
             buttonClass: 'primary',
             buttonText: __t('message_compose')
           },
-          onClick: function(event) {
-            app.router.go('#messages', 'new');
-          }
+          onClick: _.bind(function () {
+            this.table.displayNewMessage();
+          }, this)
         })
       ];
 

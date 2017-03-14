@@ -13,13 +13,9 @@
 	{{message}}
 </div>
 {{/each}}
-<div class="message resize-right" id="message" style="display: none;">
+<div class="message resize-right" id="message">
 	<div class="resize-handle"></div>
-	<div id="message-content"></div>
-	<div id="message-new">
-		<form id="message-form"></form>
-		<div class="button js-send">Send Message</div>
-	</div>
+	<div id="message-right-content"></div>
 </div>
 {{#unless messages}}
 {{{include "listingEmpty"}}}

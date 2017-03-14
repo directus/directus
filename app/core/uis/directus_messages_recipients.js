@@ -7,12 +7,12 @@
 //  http://www.getdirectus.com
 /*jshint multistr: true */
 
-define(['app', 'handlebars', 'core/UIComponent', 'core/UIView'], function(app, Handlebars, UIComponent, UIView) {
+define(['app', 'handlebars', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, Handlebars, UIComponent, UIView, __t) {
 
   'use strict';
 
-  var template = '<input type="text" id="directus_messages_recipients-input" placeholder="{{t "directus_messages_recipients_placeholder"}}">\
-                 <div style="width:100%;max-width:700px;" id="directus_messages_recipients-recipients">{{#tags}}<span class="label tag recipient-tag">{{this}}</span>{{/tags}}</div>\
+  var template = '<input type="text" id="directus_messages_recipients-input" class="recipients" placeholder="{{t "directus_messages_recipients_placeholder"}}">\
+                  <div id="directus_messages_recipients-recipients" class="to">{{t "message_to"}} {{#tags}}{{this}}{{/tags}}</div></div> \
                  <input type="hidden" name="{{name}}" id="directus_messages_recipients-form">';
 
   var Input = UIView.extend({
@@ -44,18 +44,22 @@ define(['app', 'handlebars', 'core/UIComponent', 'core/UIView'], function(app, H
     },
 
     renderTags: function() {
-      var $el = this.$el.find('#directus_messages_recipients-recipients');
+      var $el = this.$('#directus_messages_recipients-recipients.to');
       var elArray = [];
 
-      this.$('#directus_messages_recipients-input').val("");
+      this.$('#directus_messages_recipients-input').val('');
 
       _.each(this.recipients, function(item) {
-        var fontWeight = item.type === 1 ? 'font-weight:bold;' : '';
-        elArray.push('<div class="message-recipient" data-id="'+item.id+'" style="' + fontWeight + '"><img src="' + item.avatar + '"><div class="recipient-name">' + item.name + '</div></div>');
+        // var fontWeight = item.type === 1 ? 'font-weight:bold;' : '';
+
+        var icon = item.id[0] == 1 ? '<i class="material-icons">group</i>': '';
+        // elArray.push('<div class="message-recipient" data-id="'+item.id+'" style="' + fontWeight + '"><img src="' + item.avatar + '"><div class="recipient-name">' + item.name + '</div></div>');
+        elArray.push('<span>' + icon + ' ' + item.name + '</span>');
       });
 
       this.$el.find('#directus_messages_recipients-form').val(_.keys(this.recipients));
-      $el.html(elArray.join(''));
+
+      $el.html(__t('message_to') + ' ' + elArray.join(''));
     },
 
     afterRender: function() {
