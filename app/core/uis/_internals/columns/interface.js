@@ -71,7 +71,7 @@ define(['app', 'underscore', 'core/UIComponent', 'core/UIView', 'core/table/tabl
           viewName = EditColumnView.VIEW_INTERFACE;
           break;
       }
-console.log(viewName);
+
       var view = new EditColumnView({
         model: optionsModel,
         schema: schema,
