@@ -156,6 +156,11 @@ class Table implements \ArrayAccess, Arrayable, \JsonSerializable
     /**
      * @var string
      */
+    protected $display_template;
+
+    /**
+     * @var string
+     */
     protected $filterColumnBlacklist;
 
     /**
@@ -970,6 +975,34 @@ class Table implements \ArrayAccess, Arrayable, \JsonSerializable
     public function getPreviewUrl()
     {
         return $this->preview_url;
+    }
+
+    /**
+     * Sets Table Items display template
+     *
+     * Representation value of the table items
+     *
+     * @param $template
+     *
+     * @return Table
+     */
+    public function setDisplayTemplate($template)
+    {
+        $this->display_template = $template;
+
+        return $this;
+    }
+
+    /**
+     * Gets Table Items display template
+     *
+     * Representation value of the table items
+     *
+     * @return string
+     */
+    public function getDisplayTemplate()
+    {
+        return $this->display_template;
     }
 
     /**
