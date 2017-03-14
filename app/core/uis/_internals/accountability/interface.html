@@ -16,9 +16,9 @@
 	<div class="select-container">
 		<select id="user_update_column" name="user_update_column">
 			<option value="">None</option>
-			{{#userUpdateColumns}}
+			{{#dateCreateColumns}}
 			<option value="{{column_name}}"{{#if isSelected}} selected{{/if}}>{{column_name}}</option>
-			{{/userUpdateColumns}}
+			{{/dateCreateColumns}}
 		</select>
 		<i class="material-icons select-arrow">arrow_drop_down</i>
 	</div>
@@ -29,9 +29,9 @@
 	<div class="select-container">
 		<select id="date_create_column" name="date_create_column">
 			<option value="">None</option>
-			{{#dateCreateColumns}}
+			{{#userUpdateColumns}}
 			<option value="{{column_name}}"{{#if isSelected}} selected{{/if}}>{{column_name}}</option>
-			{{/dateCreateColumns}}
+			{{/userUpdateColumns}}
 		</select>
 		<i class="material-icons select-arrow">arrow_drop_down</i>
 	</div>
