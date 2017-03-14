@@ -7,13 +7,13 @@ define(['app', 'core/UIComponent', 'core/UIView', 'helpers/schema'], function(ap
 
     serialize: function () {
       var model = this.model;
-      var structure = this.options.tableStructure;
+      var columns = this.options.tableColumns;
       var dateColumns, numericColumns,
           dateCreateColumns = [], dateUpdateColumns = [],
           userCreateColumns = [], userUpdateColumns = [];
 
-      dateColumns = SchemaHelper.dateColumns(structure.columns, true);
-      numericColumns = SchemaHelper.numericColumns(structure.columns, true);
+      dateColumns = SchemaHelper.dateColumns(columns, true);
+      numericColumns = SchemaHelper.numericColumns(columns, true);
 
       dateColumns.forEach(function (column) {
         var createColumn, updateColumn;
@@ -59,7 +59,8 @@ define(['app', 'core/UIComponent', 'core/UIView', 'helpers/schema'], function(ap
 
     initialize: function (options) {
       this.options.tableName = options.model.id;
-      this.options.tableStructure = app.schemaManager.getTable(this.options.tableName);
+      this.options.tableColumns = app.schemaManager.getColumns('tables', this.options.tableName);
+      this.listenTo(this.options.tableColumns, 'add remove', this.render);
     }
   });
 
