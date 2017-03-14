@@ -94,10 +94,8 @@ define(['app', 'underscore', 'core/UIComponent', 'core/UIView', 'core/table/tabl
       });
 
       var columns = this.model.get(this.name);
-      this.listenTo(model, 'sync', function(result) {
-        model.set(result);
+      this.listenTo(model, 'sync', function (model) {
         columns.add(model);
-        collection.add(model);
       });
 
       app.router.openViewInModal(view);
