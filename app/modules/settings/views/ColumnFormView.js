@@ -429,6 +429,7 @@ define([
 
     afterRender: function () {
       this.updateCleanColumnInput();
+      this.$('#columnName').focus();
     },
 
     initialize: function(options) {
