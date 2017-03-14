@@ -28,15 +28,22 @@ define([
     },
 
     serialize: function () {
+      var name = this.options.name;
       var columns = this.getColumns();
+      // primary, status and sort column are default to 'id', 'active' and 'sort'
+      // respectively, so if they are not set we check the table model information
+      var table = this.options.tableStructure;
+      var primaryColumn = this.model.get(name) || table.get(name);
 
       columns = columns.map(function (model) {
         return {
+          isSelected: primaryColumn === model.get('column_name'),
           name: model.get('column_name')
         };
       });
 
       return {
+        name: name,
         columns: columns
       }
     },

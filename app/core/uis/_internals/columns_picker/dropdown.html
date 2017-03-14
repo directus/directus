@@ -1,8 +1,8 @@
 <div class="select-container">
-	<select name="name">
+	<select name="{{name}}">
 		<option value="">None</option>
 		{{#columns}}
-		<option value="{{name}}">{{name}}</option>
+		<option value="{{name}}"{{#if isSelected}} selected{{/if}}>{{name}}</option>
 		{{/columns}}
 	</select>
 	<i class="material-icons select-arrow">arrow_drop_down</i>
