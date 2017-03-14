@@ -234,7 +234,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
       {id: 'showLatLng', type: 'Boolean', default_value: false, ui: 'checkbox', comment: __t('map_showLatLng_comment')}
     ],
     settings: [{
-      'collection': 'global',
+      collection: 'global',
       id: 'google_api_key',
       ui: 'textinput',
       char_length:200,
