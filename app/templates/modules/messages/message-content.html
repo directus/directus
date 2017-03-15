@@ -19,7 +19,7 @@
 
 	<div class="attachments">
 		{{#attachment}}
-		<div class="file">
+		<div class="file js-file" data-id="{{id}}">
 			{{#if html}}
 			{{{html}}}
 			{{else}}
@@ -47,7 +47,7 @@
     </div>
     <div class="attachments">
         {{#attachment}}
-        <div class="file">
+        <div class="file js-file" data-id="{{id}}">
             {{#if html}}
             {{{html}}}
             {{else}}

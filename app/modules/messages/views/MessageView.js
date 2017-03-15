@@ -21,6 +21,12 @@ define([
         var $target = $(event.currentTarget);
 
         app.router.openUserModal($target.data('id'));
+      },
+
+      'click .js-file': function(event) {
+        var $target = $(event.currentTarget);
+
+        app.router.openFileModal($target.data('id'));
       }
     },
 
