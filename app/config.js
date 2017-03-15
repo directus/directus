@@ -14,6 +14,7 @@ require.config({
     "sortable":  "../assets/js/libs/sortable",
     "marked":    "../assets/js/libs/marked.min",
     "moment":     "../assets/js/libs/moment.min",
+    "moment-tz": "../assets/js/libs/moment-timezone-with-data.min",
     "noty":     "../assets/js/libs/noty",
     "noty_theme": "../assets/js/libs/noty_theme",
     "polyglot":   "../assets/js/libs/polyglot.min",
@@ -72,6 +73,8 @@ require.config({
     },
 
     "plugins/jquery.flashrow": ['jquery'],
+
+    "moment-tz": ['moment'],
 
     "plugins/backbone.layoutmanager": ["backbone"],
     'plugins/backbone.trackit': ['backbone'],
