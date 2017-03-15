@@ -112,8 +112,8 @@ function (app, _, __t, Utils, UIView, TableView, Overlays) {
       }
     },
 
-    onInputChange: function() {
-      var target = $(event.target);
+    onInputChange: function (event) {
+      var target = $(event.currentTarget);
       var file = target[0].files[0];
       var model = this.fileModel;
       var allowed = model.setFile(file, this.options.settings.get('allowed_filetypes'));
