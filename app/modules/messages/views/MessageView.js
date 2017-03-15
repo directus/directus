@@ -12,22 +12,21 @@ define([
     template: 'modules/messages/message-content',
 
     events: {
-      'click #messages-show-recipients': function() {
-        var $el = $('#messages-recipients');
-        $el.toggle();
-      },
+      'click .js-user': 'onUserClick',
 
-      'click .js-user': function(event) {
-        var $target = $(event.currentTarget);
+      'click .js-file': 'onFileClick'
+    },
 
-        app.router.openUserModal($target.data('id'));
-      },
+    onUserClick: function (event) {
+      var $target = $(event.currentTarget);
 
-      'click .js-file': function(event) {
-        var $target = $(event.currentTarget);
+      app.router.openUserModal($target.data('id'));
+    },
 
-        app.router.openFileModal($target.data('id'));
-      }
+    onFileClick: function (event) {
+      var $target = $(event.currentTarget);
+
+      app.router.openFileModal($target.data('id'));
     },
 
     // Message List view
