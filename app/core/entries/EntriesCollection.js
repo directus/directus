@@ -3,6 +3,7 @@ define(function(require, exports, module) {
   'use strict';
 
   var Backbone      = require('backbone'),
+      app           = require('app'),
       _             = require('underscore'),
       ModelHelper   = require('helpers/model'),
       Collection    = require('core/collection'),

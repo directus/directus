@@ -296,6 +296,7 @@ define(function(require, exports, module) {
         global: false,
         async: false,
         success: function(contents) {
+          contents = contents ? contents.replace(/(\r\n|\n|\r|\t)/gm, '') : contents;
           done(JST[path] = Handlebars.compile(contents));
         }
       });
@@ -320,8 +321,6 @@ define(function(require, exports, module) {
 
     return object;
   };
-
-  window.app = app;
 
   // Mix Backbone.Events, modules, typetools, and layout management into the app object.
   app = _.extend(app, {
