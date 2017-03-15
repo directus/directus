@@ -38,7 +38,16 @@
     </div>
     <div class="row">
         <div class="label">Timezone</div>
-        {{timezone}}<br><span class="light">(+/-? from you)</span>
+        {{timezone}}<br>
+		<span class="light">
+			(
+			{{#if timeDiff}}
+			{{t "x_hours_from_you" hours=timeDiff}}
+			{{else}}
+			{{t "both_has_same_time"}}
+			{{/if}}
+			)
+		</span>
         <i class="material-icons">access_time</i>
     </div>
     <!-- <div class="row">

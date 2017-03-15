@@ -1,4 +1,4 @@
-define(['app', 'core/Modal'], function(app, Modal) {
+define(['app', 'core/Modal', 'moment-tz'], function(app, Modal, moment) {
 
   'use strict';
 
@@ -26,11 +26,12 @@ define(['app', 'core/Modal'], function(app, Modal) {
 
     serialize: function() {
       var data = this.model.toJSON();
+      var authenticatedUser = app.users.getCurrentUser();
 
       data.online = this.model.isOnline();
       data.lastSeen = this.model.lastSeen();
-      data.isAdmin = app.users.getCurrentUser().isAdmin();
-
+      data.isAdmin = authenticatedUser.isAdmin();
+      data.timeDiff = authenticatedUser.timezoneDifference(this.model);
       return data;
     }
   });

@@ -41,6 +41,13 @@ function(app, Backbone, EntriesModel, moment) {
       return isOnline;
     },
 
+    timezoneDifference: function (userModel) {
+      var d1 = moment().tz(this.get('timezone')).utcOffset();
+      var d2 = moment().tz(userModel.get('timezone')).utcOffset();
+
+      return (d2-d1) / 60;
+    },
+
     lastSeen: function () {
       // @TODO: Add translation or a standard way to say "Not Available" or similar
       return this.get('last_access') ? moment(this.get('last_access')).fromNow() : 'N/A';
