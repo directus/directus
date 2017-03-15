@@ -167,25 +167,25 @@ require(["config", 'polyfills'], function() {
         Notification.error('Directus can\'t reach the server', '<i>A new attempt will be made in 30 seconds</i>');
       });
 
-      app.messages.on('sync', function(collection, object) {
-        if (object != null && object.data) {
-          var messages = object.data;
-          if (!_.isArray(messages)) {
-            messages = [messages];
-          }
-
-          messages.forEach(function(msg) {
-            var message_excerpt = (msg.message && msg.message.length > 50) ? msg.message.substr(0, 50) : msg.message;
-            Notification.show('New Message — <i>' + msg.subject + '</i>', message_excerpt + '<br><br><i>View message</i>', {timeout: 5000,
-              callback: {
-                onCloseClick: function() {
-                  Backbone.history.navigate('/messages/' + msg.id, true);
-                }
-              }
-            });
-          });
-        }
-      });
+      // app.messages.on('sync', function(collection, object) {
+      //   if (object != null && object.data) {
+      //     var messages = object.data;
+      //     if (!_.isArray(messages)) {
+      //       messages = [messages];
+      //     }
+      //
+      //     messages.forEach(function(msg) {
+      //       var message_excerpt = (msg.message && msg.message.length > 50) ? msg.message.substr(0, 50) : msg.message;
+      //       Notification.show('New Message — <i>' + msg.subject + '</i>', message_excerpt + '<br><br><i>View message</i>', {timeout: 5000,
+      //         callback: {
+      //           onCloseClick: function() {
+      //             Backbone.history.navigate('/messages/' + msg.id, true);
+      //           }
+      //         }
+      //       });
+      //     });
+      //   }
+      // });
 
       // Bootstrap data
       app.groups.reset(options.groups, {parse: true});
@@ -193,7 +193,7 @@ require(["config", 'polyfills'], function() {
       app.files.reset(options.active_files, {parse: true});
       app.messages.reset(options.messages, {parse: true});
 
-      app.messages.startPolling();
+      // app.messages.startPolling();
 
       var autoLogoutMinutes = parseInt(app.settings.get('cms_user_auto_sign_out') || 60, 10);
 
