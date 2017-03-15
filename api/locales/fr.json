@@ -230,7 +230,7 @@
     "o2m_result_limit_comment": "Nombre maximal de résultats à rechercher",
     "add_new_x_item": "Ajouter élément à la table %{table}",
 
-    "directus_files": "Fichiers Directus",
+    "directus_files_choose": "Fichiers Directus",
     "file_upload": "Upload",
     "drag_and_drop": "Glisser-déposer",
     "file_here": "fichier ici",

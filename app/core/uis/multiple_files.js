@@ -91,7 +91,7 @@ define([
       <!-- <div class="related-table"></div> --> \
       <div class="multiple-image-actions"> \
         {{#if showAddButton}}<button class="btn btn-primary btn-small margin-right-small" data-action="add" type="button">{{t "file_upload"}}</button>{{/if}} \
-        {{#if showChooseButton}}<button class="btn btn-primary btn-small" data-action="choose" type="button">{{t "directus_files"}}</button>{{/if}} \
+        {{#if showChooseButton}}<button class="btn btn-primary btn-small" data-action="choose" type="button">{{t "directus_files_choose"}}</button>{{/if}} \
       </div>';
 
   var Input = UIView.extend({

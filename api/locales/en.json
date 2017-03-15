@@ -247,7 +247,7 @@
     "o2m_result_limit_comment": "Maximum number of results to fetch",
     "add_new_x_item": "Add New %{table} Item",
 
-    "directus_files": "Choose Existing",
+    "directus_files_choose": "Choose Existing",
     "file_upload": "Upload",
     "drag_and_drop": "Drag & drop",
     "or_browse": "Or Click to Browse",
