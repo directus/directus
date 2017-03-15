@@ -35,7 +35,7 @@ function(app, Backbone, EntriesModel, moment) {
       var isOnline = false;
 
       if (lastAccess) {
-        isOnline = moment(lastAccess).add('m', 5) > moment();
+        isOnline = moment(lastAccess).add(5, 'minutes') > moment();
       }
 
       return isOnline;
