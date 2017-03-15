@@ -705,14 +705,14 @@ class Bootstrap
             } else if ($selectState['table'] === 'directus_messages') {
                 $rows = $result->toArray();
                 $filesIds = [];
-                foreach($rows as &$row) {
+                foreach ($rows as &$row) {
                     if (!ArrayUtils::has($row, 'attachment')) {
                         continue;
                     }
 
                     $ids = array_filter(StringUtils::csv((string) $row['attachment'], true));
                     $row['attachment'] = ['data' => []];
-                    foreach($ids as  $id) {
+                    foreach ($ids as  $id) {
                         $row['attachment']['data'][$id] = [];
                         $filesIds[] = $id;
                     }
@@ -732,11 +732,13 @@ class Bootstrap
                         $entries[$entry['id']] = $entry;
                     }
 
-                    foreach($rows as &$row) {
+                    foreach ($rows as &$row) {
                         if (ArrayUtils::has($row, 'attachment') && $row['attachment']) {
-                            foreach($row['attachment']['data'] as $id => $attachment) {
+                            foreach ($row['attachment']['data'] as $id => $attachment) {
                                 $row['attachment']['data'][$id] = $entries[$id];
                             }
+
+                            $row['attachment']['data'] = array_values($row['attachment']['data']);
                         }
                     }
                 }

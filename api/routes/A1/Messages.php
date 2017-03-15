@@ -130,13 +130,17 @@ class Messages extends Route
         return $this->app->response($response);
     }
 
-    public function postRows()
+    public function postRows($responseTo = null)
     {
         $app = $this->app;
         $acl = $app->container->get('acl');
         $ZendDb = $app->container->get('zenddb');
         $currentUserId = $acl->getUserId();
         $requestPayload = $app->request()->post();
+
+        if ($responseTo !== null) {
+            $requestPayload['response_to'] = $responseTo;
+        }
 
         // Unpack recipients
         $recipients = explode(',', $requestPayload['recipients']);

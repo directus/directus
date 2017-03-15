@@ -529,6 +529,8 @@ $app->group('/1.1', function() use($app) {
     // $app->get('/messages/:id/?', '\Directus\API\Routes\A1\Messages:row');
     $app->map('/messages/rows/:id/?', '\Directus\API\Routes\A1\Messages:patchRow')
         ->via('PATCH');
+    // add response using this endpoint
+    $app->put('/messages/rows/:id/?', '\Directus\API\Routes\A1\Messages:postRows');
     $app->post('/messages/rows/?', '\Directus\API\Routes\A1\Messages:postRows');
     $app->get('/messages/recipients/?', '\Directus\API\Routes\A1\Messages:recipients');
     $app->post('/comments/?', '\Directus\API\Routes\A1\Messages:comments');

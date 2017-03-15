@@ -7,6 +7,18 @@ define([
 function(app, Backbone, EntriesModel) {
   return EntriesModel.extend({
 
+    parse: function (resp) {
+      var attrs = EntriesModel.prototype.parse.apply(this, arguments);
+
+      // attachment are received as an array of files
+      // stored in the data attribute
+      if (attrs.attachment && attrs.attachment.data) {
+        attrs.attachment = attrs.attachment.data;
+      }
+
+      return attrs;
+    },
+
     getUnreadCount: function() {
       var unread = this.get('read') === 1 ? 0 : 1;
       var unreadResponses = this.get('responses').reduce(function(memo, model){

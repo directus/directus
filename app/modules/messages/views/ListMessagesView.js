@@ -21,46 +21,6 @@ define([
 
     events: {
       'click .js-select-row': 'select',
-      'click .js-send': function() {
-        var messageModel = this.collection.get(this.state.currentMessage);
-        var collection = messageModel.get('responses');
-        // var Model = collection.model;
-        var editView = this.messageForm;
-        var data = editView.$el.serializeObject();
-        var errors = editView.model.validate(data);
-        var newModel = editView.model;
-
-        if (errors) {
-          newModel.trigger('invalid', newModel, errors);
-          return;
-        }
-
-        var recipients = _.map(messageModel.get('recipients').split(','), function(id) {
-          return '0_' + id;
-        });
-
-        recipients.push('0_' + messageModel.get('from'));
-
-        var attrs = _.extend({
-          'from': app.users.getCurrentUser().get('id'),
-          'subject': 'RE: ' + messageModel.get('subject'),
-          'recipients': recipients.join(','),
-          // @TODO: Server must set this attribute
-          'datetime': moment().format("YYYY-MM-DD HH:mm:ss"),
-          'response_to': messageModel.id,
-          'responses': []
-        }, data);
-
-        var success = function() {
-          collection.add(newModel);
-        };
-
-        // @TODO: Get ID after create message
-        // Create an API endpoint for new messages
-        // returning a JSON with the new message
-        newModel.save(attrs, {success: success});
-        this.render();
-      },
       'click .js-message': function(event) {
         var id = $(event.currentTarget).data('id');
         var messageModel = this.collection.get(id);
@@ -183,15 +143,28 @@ define([
     },
 
     displayMessage: function(id, render) {
+      var model = this.collection.get(id);
       var messageView = new MessageView({
-        model: this.collection.get(id),
+        model: model,
+        parentView: this
+      });
+      var newMessageView = new NewMessageView({
+        parentModel: model,
+        model: new app.messages.model({
+          from: app.users.getCurrentUser().id
+        }, {
+          collection: app.messages,
+          parse: true
+        }),
         parentView: this
       });
 
-      this.setView('#message-right-content', messageView);
+      this.insertView('#message-right-content', messageView);
+      this.insertView('#message-right-content', newMessageView);
 
       if (render === true) {
         messageView.render();
+        newMessageView.render();
       }
     },
 

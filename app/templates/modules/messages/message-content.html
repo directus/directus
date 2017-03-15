@@ -16,6 +16,23 @@
         <i class="material-icons">visibility</i> {{usersFirstAndLastName reads}}
     </div>
     {{/if}}
+
+	<div class="attachments">
+		{{#attachment}}
+		<div class="file">
+			{{#if html}}
+			{{{html}}}
+			{{else}}
+			<img src="{{thumbnail_url}}">
+			{{/if}}
+			<div class="type">{{type}}</div>
+			<div class="info">
+				<div class="name js-title">{{title}}</div>
+				<div class="uploaded">{{contextualDate date_uploaded}}</div>
+			</div>
+		</div>
+		{{/attachment}}
+	</div>
 </div>
 
 {{#each responses}}
@@ -40,7 +57,6 @@
             <div class="info">
                 <div class="name js-title">{{title}}</div>
                 <div class="uploaded">{{contextualDate date_uploaded}}</div>
-                <i class="material-icons remove js-remove">close</i>
             </div>
         </div>
         {{/attachment}}

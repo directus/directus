@@ -1,12 +1,16 @@
 <form>
+	{{#unless isResponse}}
 	<div class="details original">
 		<img class="avatar" src="{{userAvatarUrl user.id}}">
 		<div class="from">{{userFirstAndLastName user.id}}</div>
 		<input class="subject" name="subject" placeholder="{{t 'messages_subject_placeholder'}}" value="">
 		<!-- <input class="recipients" placeholder="{{t 'messages_add_recipients_placeholder'}}" value="">-->
 		<div class="recipients"></div>
-		{{{uiView view.model view.attr view.options view.parent}}}
+		{{#with view.recipients}}
+		{{{uiView model attr options parent}}}
+		{{/with}}
 	</div>
+	{{/unless}}
 
 	<div class="compose">
 		<div class="body">
@@ -14,7 +18,11 @@
 		</div>
 		<div class="button-group">
 			<div class="button hidden js-button-send">Send</div>
-			<div class="button hidden subdued"><i class="material-icons">attachment</i></div>
+			<!-- <div class="button hidden subdued js-button-upload"><i class="material-icons">attachment</i></div> -->
+			<div class="attachment button hidden subdued"></div>
+			{{#with view.attachments}}
+			{{{uiView model attr options parent}}}
+			{{/with}}
 		</div>
 	</div>
 </form>

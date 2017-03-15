@@ -54,6 +54,9 @@ define([
       data.recipientsCount = data.recipients.length;
       data.collapseRecipients = data.recipients.length > this.maxRecipients;
       data.current_user = app.authenticatedUserId;
+      data.attachment = _.map(data.attachment.data, function(item) {
+        return item;
+      });
 
       data.responses = _.map(data.responses, function(response) {
         response.attachment = _.map(response.attachment.data, function(item) {

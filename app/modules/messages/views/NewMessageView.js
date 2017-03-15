@@ -1,8 +1,9 @@
 define([
   'app',
+  'underscore',
   'backbone',
   'core/notification'
-], function (app, Backbone, Notification) {
+], function (app, _, Backbone, Notification) {
 
   return Backbone.Layout.extend({
 
@@ -32,6 +33,15 @@ define([
       event.preventDefault();
 
       var data = this.$('form').serializeObject();
+
+      if (this.options.parentModel) {
+        this.sendResponse(data);
+      } else {
+        this.sendNewMessage(data);
+      }
+    },
+
+    sendNewMessage: function (data) {
       var options = {};
 
       data.read = 1;
@@ -47,16 +57,59 @@ define([
       this.model.collection.add(this.model);
     },
 
+    sendResponse: function (data) {
+      var parentMessageModel = this.options.parentModel;
+      var newResponseModel = this.model;
+      var collection = parentMessageModel.get('responses');
+
+      var recipients = _.map(parentMessageModel.get('recipients').split(','), function(id) {
+        return '0_' + id;
+      });
+
+      recipients.push('0_' + newResponseModel.get('from'));
+
+      var attrs = _.extend({
+        'from': app.users.getCurrentUser().get('id'),
+        'subject': 'RE: ' + parentMessageModel.get('subject'),
+        'recipients': recipients.join(','),
+        'response_to': parentMessageModel.id,
+        'responses': []
+      }, data);
+
+      var success = function(model) {
+        collection.add(model);
+      };
+
+      // @TODO: Get ID after create message
+      // Create an API endpoint for new messages
+      // returning a JSON with the new message
+      newResponseModel.save(attrs, {success: success});
+      // this.render();
+    },
+
     serialize: function () {
      var user = app.users.getCurrentUser();
 
      return {
        model: this.model,
+       isResponse: this.options.parentModel,
        view: {
-         parent: this,
-         model: this.model,
-         attr: 'recipients',
-         options: {structure: this.model.structure}
+         recipients: {
+           parent: this,
+           model: this.model,
+           attr: 'recipients',
+           options: {
+             structure: this.model.structure
+           }
+         },
+         attachments: {
+           parent: this,
+           model: this.model,
+           attr: 'attachment',
+           options: {
+             structure: this.model.structure
+           }
+         }
        },
        user: user.toJSON()
      };

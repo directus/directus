@@ -1,7 +1,7 @@
 {{#each messages}}
 <div class="message-preview js-message {{#unless read}}unread{{/unless}}{{#if selected}}active{{/if}}" data-id="{{id}}"> <!-- .active -->
-	<input class="custom-checkbox js-select-row" id="check{{id}}" type="checkbox" value="">
-	<label class="message-select" for="check{{id}}"><span></span></label>
+	<input class="custom-checkbox js-select-row" id="message_check{{id}}" type="checkbox" value="">
+	<label class="message-select" for="message_check{{id}}"><span></span></label>
 
 	<div class="active-indicator"></div>
 	<div class="unread-indicator"></div>

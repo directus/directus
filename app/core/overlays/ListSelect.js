@@ -74,9 +74,10 @@ define([
       this.setView('#page-content', this.table);
     },
 
-    itemClicked: function (e) {
-      var $target = $(e.target);
-      var $checkbox = $target.closest('tr').find('td.check > input');
+    itemClicked: function (event) {
+      var $target = $(event.currentTarget);
+      var $checkbox = $target.find('input');
+      var $row = $target.closest('tr');
 
       if ($checkbox.prop('checked')) {
         $checkbox.prop('checked', false);
@@ -100,8 +101,8 @@ define([
       var that = this;
 
       this.table.events = {
-        'click tbody td': function (e) {
-          that.itemClicked(e);
+        'click td.js-check': function (event) {
+          that.itemClicked(event);
         }
       };
 
