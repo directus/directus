@@ -500,7 +500,8 @@
     "directus_groups_permissions": "Permissions",
     "directus_groups_permissions_comment": "Adjust the individual table, column, and workflow permissions for this group.",
 
-
+    "both_has_same_time": "Both has same time",
+    "x_hours_from_you": "%{hours} hours from you",
 
     "eg_x": "eg %{text}",
     "ok": "OK",

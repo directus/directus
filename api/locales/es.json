@@ -391,6 +391,9 @@
 
     "view_x_requires_y": "Vista '%{viewId}' necesita: %{types}",
 
+    "both_has_same_time": "Ambos tienen la misma hora",
+    "x_hours_from_you": "A %{hours} horas de usted",
+
     "ok": "Aceptar",
     "cancel": "Cancelar",
     "yes": "Si",
