@@ -98,6 +98,21 @@ define([
         return -item.timestamp;
       });
 
+      var hasAttachment = function (message) {
+        return message.attachment && message.attachment.length > 0;
+      };
+
+      _.each(data, function (message) {
+        message.hasAttachment = hasAttachment(message);
+        message.hasResponses = message.responses && message.responses.length > 0;
+
+        if (!message.hasAttachment) {
+          _.each(message.responses, function (response) {
+            message.hasAttachment = hasAttachment(response);
+          });
+        }
+      });
+
       return {messages: data};
     },
 
