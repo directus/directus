@@ -1,8 +1,9 @@
-define(['app', 'core/Modal', 'moment-tz'], function(app, Modal, moment) {
+define(['app', 'core/Modal'], function(app, Modal) {
 
   'use strict';
 
   return Modal.extend({
+
     template: 'modal/user',
 
     attributes: {
@@ -24,7 +25,7 @@ define(['app', 'core/Modal', 'moment-tz'], function(app, Modal, moment) {
       this.close(true);
     },
 
-    serialize: function() {
+    serialize: function () {
       var data = this.model.toJSON();
       var authenticatedUser = app.users.getCurrentUser();
 
@@ -32,6 +33,7 @@ define(['app', 'core/Modal', 'moment-tz'], function(app, Modal, moment) {
       data.lastSeen = this.model.lastSeen();
       data.isAdmin = authenticatedUser.isAdmin();
       data.timeDiff = authenticatedUser.timezoneDifference(this.model);
+
       return data;
     }
   });

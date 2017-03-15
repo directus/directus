@@ -2,7 +2,7 @@ define([
   'app',
   'backbone',
   'core/entries/EntriesModel',
-  'moment'
+  'moment-tz'
 ],
 
 function(app, Backbone, EntriesModel, moment) {
@@ -22,7 +22,7 @@ function(app, Backbone, EntriesModel, moment) {
       return currentUserAvatar;
     },
 
-    getDefaultAvatar: function() {
+    getDefaultAvatar: function () {
       return app.PATH + 'assets/img/missing-directus-avatar.png';
     },
 
@@ -53,7 +53,7 @@ function(app, Backbone, EntriesModel, moment) {
       return this.get('last_access') ? moment(this.get('last_access')).fromNow() : 'N/A';
     },
 
-    updateLastRoute: function(route, history) {
+    updateLastRoute: function (route, history) {
       var currentPath = history.fragment;
       var queryString = history.location.search || '';
       var lastPage = JSON.stringify({
