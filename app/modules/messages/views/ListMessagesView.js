@@ -258,12 +258,13 @@ define([
     },
 
     beforeRender: function() {
-      var view = this.table = new ListView({collection: this.collection});
+      var view = this.table;
       this.setView('#page-content', view);
       BasePageView.prototype.beforeRender.call(this);
     },
 
     initialize: function() {
+      this.table = new ListView({collection: this.collection});
       this.collection.on('select', function() {
         var $checksChecked = this.table.$('.js-select-row:checked');
         // @NOTE: Hotfix render on empty selection
@@ -277,7 +278,7 @@ define([
 
       // @TODO: Add new messages into the list without re rendering the existing messages
       // to prevent the annoying render that deletes all the text that hasn't been sent yet
-      this.collection.on('remove', this.render, this);
+      this.collection.on('add remove', this.render, this);
     }
   });
 });

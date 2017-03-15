@@ -43,6 +43,7 @@ define([
 
     serialize: function() {
       var data = this.model.toJSON();
+      var self = this;
 
       data.recipients = _.filter((data.recipients || '').split(','), function(userId) {
         userId = Number(userId);
@@ -54,14 +55,11 @@ define([
       data.recipientsCount = data.recipients.length;
       data.collapseRecipients = data.recipients.length > this.maxRecipients;
       data.current_user = app.authenticatedUserId;
-      data.attachment = _.map(data.attachment.data, function(item) {
-        return item;
-      });
+
+      data.attachment = this.parseAttachment(data.attachment);
 
       data.responses = _.map(data.responses, function(response) {
-        response.attachment = _.map(response.attachment.data, function(item) {
-          return item;
-        });
+        response.attachment = self.parseAttachment(response.attachment);
 
         return response;
       });
@@ -109,6 +107,14 @@ define([
       return data;
     },
 
+    parseAttachment: function (attachment) {
+      var attachments = attachment.data || attachment;
+
+      return _.map(attachments, function(item) {
+        return item;
+      });
+    },
+
     initialize: function(options) {
       this.parentView = options.parentView;
 
@@ -117,6 +123,11 @@ define([
       }
 
       this.model.markAsRead({save: true});
+
+      var responsesCollection = this.model.get('responses');
+      if (responsesCollection) {
+        this.listenTo(responsesCollection, 'add remove', this.render);
+      }
     }
   });
 });

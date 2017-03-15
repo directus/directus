@@ -101,7 +101,9 @@ class DirectusMessagesTableGateway extends RelationalTableGateway
     {
         $result = $this->fetchMessagesInbox($uid, $id);
         if (sizeof($result) > 0) {
-            return $result[0];
+            // hotfix: retrieve a single message
+            // when fetching a single message, the actual message object is deep nested
+            return $result[0]['responses']['data'][0];
         }
     }
 

@@ -75,15 +75,21 @@ define([
         'response_to': parentMessageModel.id,
         'responses': []
       }, data);
-
-      var success = function(model) {
+      var self = this;
+      var success = function (model) {
         collection.add(model);
+        // create a new model after one has been successfully sent
+        self.model = self.model.clone();
+        self.model.clear();
+        self.model.set('from', app.users.getCurrentUser().id);
+
+        self.render();
       };
 
       // @TODO: Get ID after create message
       // Create an API endpoint for new messages
       // returning a JSON with the new message
-      newResponseModel.save(attrs, {success: success});
+      newResponseModel.save(attrs, {wait: true, success: success});
       // this.render();
     },
 
