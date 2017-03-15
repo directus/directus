@@ -77,7 +77,6 @@ define([
     itemClicked: function (event) {
       var $target = $(event.currentTarget);
       var $checkbox = $target.find('input');
-      var $row = $target.closest('tr');
 
       if ($checkbox.prop('checked')) {
         $checkbox.prop('checked', false);
