@@ -7,7 +7,14 @@
 //  http://www.getdirectus.com
 /*jshint multistr: true */
 
-define(['app', 'handlebars', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, Handlebars, UIComponent, UIView, __t) {
+define([
+  'app',
+  'underscore',
+  'handlebars',
+  'core/UIComponent',
+  'core/UIView',
+  'core/t'
+], function(app, _, Handlebars, UIComponent, UIView, __t) {
 
   'use strict';
 
@@ -19,15 +26,17 @@ define(['app', 'handlebars', 'core/UIComponent', 'core/UIView', 'core/t'], funct
     templateSource: template,
 
     events: {
-      'click .message-recipient': function(e) {
-        var targetId = $(e.target).closest('.message-recipient').data('id');
+      'click .js-message-recipient': function (event) {
+        var targetId = $(event.currentTarget).data('id');
         delete this.recipients[targetId];
 
-        if(this.deletedDatums[targetId]) {
+        if (this.deletedDatums[targetId]) {
           this.datums.push(this.deletedDatums[targetId]);
           delete this.deletedDatums[targetId];
         }
 
+        this.searchEngine.clear();
+        this.searchEngine.add(this.datums);
         this.renderTags();
       }
     },
@@ -50,11 +59,9 @@ define(['app', 'handlebars', 'core/UIComponent', 'core/UIView', 'core/t'], funct
       this.$('#directus_messages_recipients-input').val('');
 
       _.each(this.recipients, function(item) {
-        // var fontWeight = item.type === 1 ? 'font-weight:bold;' : '';
-
         var icon = item.id[0] == 1 ? '<i class="material-icons">group</i>': '';
-        // elArray.push('<div class="message-recipient" data-id="'+item.id+'" style="' + fontWeight + '"><img src="' + item.avatar + '"><div class="recipient-name">' + item.name + '</div></div>');
-        elArray.push('<span>' + icon + ' ' + item.name + '</span>');
+
+        elArray.push('<span class="js-message-recipient" data-id="' + item.id + '">' + icon + ' ' + item.name + '</span>');
       });
 
       this.$el.find('#directus_messages_recipients-form').val(_.keys(this.recipients));
@@ -68,10 +75,7 @@ define(['app', 'handlebars', 'core/UIComponent', 'core/UIView', 'core/t'], funct
       var me = this;
 
       var users = app.users.filter(function(item) {
-        if(item.get('id') === app.authenticatedUserId.id) {
-          return false;
-        }
-        return true;
+        return item.get('id') !== app.authenticatedUserId.id;
       });
 
       users = users.map(function(item) {
