@@ -4,12 +4,11 @@ define([
   'backbone',
   'core/t',
   'core/BasePageView',
+  'modules/messages/views/MessageItemView',
   'modules/messages/views/MessageView',
   'modules/messages/views/NewMessageView',
-  'modules/messages/views/MessageForm',
-  'core/widgets/widgets',
-  'moment'
-], function(app, _, Backbone, __t, BasePageView, MessageView, NewMessageView, MessageForm, Widgets, moment) {
+  'core/widgets/widgets'
+], function(app, _, Backbone, __t, BasePageView, MessageItemView, MessageView, NewMessageView,  Widgets) {
 
   var ListView = Backbone.Layout.extend({
 
@@ -19,19 +18,21 @@ define([
       class: 'message-listing resize-left'
     },
 
-    events: {
-      'click .js-select-row': 'select',
-      'click .js-message': function(event) {
-        var id = $(event.currentTarget).data('id');
-        var messageModel = this.collection.get(id);
+    onItemClick: function (view) {
+      var id = view.model.id;
+      var messageModel = this.collection.get(id);
 
-        if (messageModel) {
-          this.state.currentMessage = messageModel;
-          this.displayMessage(id, true);
-        } else {
-          console.warn('message with id: ' + id + ' does not exists.');
-        }
+      if (messageModel) {
+        this.state.previousMessage = this.state.currentMessage;
+        this.state.currentMessage = messageModel;
+        this.displayMessage(id, true);
+      } else {
+        console.warn('message with id: ' + id + ' does not exists.');
       }
+    },
+
+    onItemSelect: function () {
+      this.select();
     },
 
     select: function() {
@@ -40,84 +41,52 @@ define([
 
     state: {
       currentMessage: null,
-      lastMessageId: null
+      previousMessage: null,
+      lastMessageId: null,
+      itemViews: {},
+      contentViews: {}
     },
 
     dom: {
       MESSAGE_VIEW: '#message'
     },
 
-    serialize: function() {
-      var self = this;
-      var data = this.collection.map(function(model) {
-        var data = model.toJSON();
-        var momentDate = moment(data.date_updated);
-        var currentMessage = self.state.currentMessage;
-        var recipients;
-
-        data.timestamp = parseInt(momentDate.format('X'), 10);
-        data.niceDate = moment().diff(momentDate, 'days') > 1 ? momentDate.format('MMMM D') : momentDate.fromNow();
-        data.read = model.getUnreadCount() === 0;
-        data.responsesLength = data.responses.length;
-        data.from = parseInt(data.from, 10);
-        data.selected = currentMessage ? (currentMessage.get('id') === data.id) : false;
-
-        if (data.recipients) {
-          recipients = data.recipients.split(',');
-        } else {
-          recipients = [];
-        }
-
-        data.recipients = [];
-        var extra = 0;
-
-        for (var i=0; i<recipients.length; i++) {
-          if (i > 2) {
-            extra = recipients.length - i;
-            break;
-          }
-
-          var user = app.users.get(recipients[i]);
-          if (user !== undefined) {
-            data.recipients.push(user.get('first_name'));
-          }
-        }
-
-        data.recipients = data.recipients.join(", ");
-
-        if (extra) {
-          data.recipients += " (+"+extra+" more)";
-        }
-
-        //console.log(_.map(data.responses, 'from'));
-        return data;
-      });
-
-      // Order the data by timestamp
-      data = _.sortBy(data, function(item) {
-        return -item.timestamp;
-      });
-
-      var hasAttachment = function (message) {
-        return message.attachment && message.attachment.length > 0;
+    serialize: function () {
+      return {
+        messageCount: this.collection.length
       };
+    },
 
-      _.each(data, function (message) {
-        message.hasAttachment = hasAttachment(message);
-        message.hasResponses = message.responses && message.responses.length > 0;
-
-        if (!message.hasAttachment) {
-          _.each(message.responses, function (response) {
-            message.hasAttachment = hasAttachment(response);
-          });
-        }
+    addItem: function (model, render) {
+      var itemView = new MessageItemView({
+        model: model,
+        parentView: this
       });
 
-      return {messages: data};
+      this.state.itemViews[model.id] = itemView;
+
+      this.listenTo(itemView, 'clicked', this.onItemClick);
+      this.listenTo(itemView, 'select', this.onItemSelect);
+
+      this.addItemView(itemView, render);
+    },
+
+    addItemView: function (view, render) {
+      this.insertView(view);
+
+      if (render === true) {
+        view.render();
+      }
+    },
+
+    addItems: function () {
+      this.collection.each(this.addItem, this);
     },
 
     beforeRender: function() {
       var currentMessage = this.state.currentMessage;
+
+      this.addItems();
 
       if (this.collection.length) {
         this.$el.removeClass('empty');
@@ -140,6 +109,45 @@ define([
       }
     },
 
+    getPreviousMessage: function () {
+      var previous = this.previousMessage;
+
+      return previous ? this.state.itemViews[previous.id] : null;
+    },
+
+    getCurrentMessage: function () {
+      var current = this.currentMessage;
+
+      return current ? this.state.itemViews[current.id] : null;
+    },
+
+    getContentViews: function (id) {
+      var model;
+
+      if (!this.state.contentViews[id]) {
+        model = this.collection.get(id);
+        this.state.contentViews[id] = {
+          model: model,
+          content: new MessageView({
+            model: model,
+            parentView: this
+          }),
+          form: new NewMessageView({
+            parentModel: model,
+            model: new app.messages.model({
+              from: app.users.getCurrentUser().id
+            }, {
+              collection: app.messages,
+              parse: true
+            }),
+            parentView: this
+          })
+        };
+      }
+
+      return this.state.contentViews[id];
+    },
+
     displayNewMessage: function() {
       var model = new app.messages.model({
         from: app.users.getCurrentUser().id
@@ -158,22 +166,25 @@ define([
     },
 
     displayMessage: function(id, render) {
-      var model = this.collection.get(id);
-      var messageView = new MessageView({
-        model: model,
-        parentView: this
-      });
-      var newMessageView = new NewMessageView({
-        parentModel: model,
-        model: new app.messages.model({
-          from: app.users.getCurrentUser().id
-        }, {
-          collection: app.messages,
-          parse: true
-        }),
-        parentView: this
-      });
+      var messageView;
+      var newMessageView;
+      var views;
+      var previous = this.getPreviousMessage();
+      var current = this.getCurrentMessage();
 
+      if (previous) {
+        previous.deselect();
+      }
+
+      if (current) {
+        current.select();
+      }
+
+      views = this.getContentViews(id);
+      messageView = views.content;
+      newMessageView = views.form;
+
+      this.removeView('#message-right-content');
       this.insertView('#message-right-content', messageView);
       this.insertView('#message-right-content', newMessageView);
 
@@ -183,17 +194,17 @@ define([
       }
     },
 
-    initialize: function() {
-      this.collection.on('add', this.render, this);
+    initialize: function () {
+      this.listenTo(this.collection, 'add remove', this.render);
       // @TODO: Fix adding new messages
       // Getting a new message will re-render everything
       // clearing any message that it could be have writing.
-      this.collection.on('sync', function() {
+      this.listenTo(this.collection, 'sync', function () {
         if (this.state.lastMessageId != this.collection.maxId) {
           this.state.lastMessageId = this.collection.maxId;
           this.render();
         }
-      }, this);
+      });
 
       this.state.lastMessageId = this.collection.maxId;
     }
@@ -293,7 +304,7 @@ define([
 
       // @TODO: Add new messages into the list without re rendering the existing messages
       // to prevent the annoying render that deletes all the text that hasn't been sent yet
-      this.collection.on('add remove', this.render, this);
+      this.listenTo(this.collection, 'add', this.table.addItem);
     }
   });
 });

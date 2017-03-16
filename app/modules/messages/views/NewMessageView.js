@@ -43,9 +43,12 @@ define([
 
     sendNewMessage: function (data) {
       var options = {};
+      var collection = this.model.collection;
 
       data.read = 1;
+      options.wait = true;
       options.success = function (model, resp) {
+        collection.add(model);
         // @NOTE: Do we need/use those warning message?
         if (resp.warning) {
           Notification.warning(null, resp.warning, {timeout: 5000});
@@ -53,8 +56,6 @@ define([
       };
 
       this.model.save(data, options);
-
-      this.model.collection.add(this.model);
     },
 
     sendResponse: function (data) {
