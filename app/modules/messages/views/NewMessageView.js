@@ -44,6 +44,14 @@ define([
     sendNewMessage: function (data) {
       var options = {};
       var collection = this.model.collection;
+      var model = this.model;
+      var errors;
+
+      errors = model.validate(data);
+      if (errors) {
+        this.model.trigger('invalid', this.model, errors);
+        return;
+      }
 
       data.read = 1;
       options.wait = true;
@@ -55,7 +63,7 @@ define([
         }
       };
 
-      this.model.save(data, options);
+      model.save(data, options);
     },
 
     sendResponse: function (data) {
