@@ -61,7 +61,8 @@ class Preferences extends Route
         $jsonResponse = $Preferences->fetchByUserAndTableAndTitle($currentUserId, $table, $title);
 
         if (!$jsonResponse) {
-            $app->response()->setStatus(404);
+            // @TODO: The app treat 404 as not found url, instead of not found resource
+            // $app->response()->setStatus(404);
             $jsonResponse = [
                 'error' => [
                     'message' => __t('unable_to_find_preferences')
