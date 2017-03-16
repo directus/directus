@@ -130,6 +130,7 @@
     "permissions_can_delete_their_items": "Puede eliminar sus propios registros: %{user_create_column}",
     "permissions_can_not_delete_items": "No puede eliminar registros",
     "new_user": "Nuevo Usuario",
+    "invite_user": "Invitar Usuario",
     "editing_item": "Editando Registro",
     "creating_new_item": "Creando nuevo Registro",
     "learn_more": "Leer mas",
