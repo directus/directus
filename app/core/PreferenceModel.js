@@ -11,12 +11,14 @@ define(function(require, exports, module) {
       return data.meta ? data.data : data;
     },
 
-    fetch: function(options) {
-      this.trigger('fetch', this);
+    fetch: function (options) {
+      // @NOTE: Do we need this?
+      // this.trigger('fetch', this);
       var args = {
         data: $.param(options)
       };
-      this.constructor.__super__.fetch.call(this, args);
+
+      return this.constructor.__super__.fetch.call(this, args);
     },
 
     getListViewOptions: function (attr) {
