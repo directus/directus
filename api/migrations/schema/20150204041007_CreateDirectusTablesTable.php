@@ -95,7 +95,7 @@ class CreateDirectusTablesTable extends Ruckusing_Migration_Base
             'list_view' => NULL,
             'column_groupings' => NULL,
             'primary_column' => NULL,
-            'user_create_column' => NULL,
+            'user_create_column' => 'recipient',
             'user_update_column' => NULL,
             'date_create_column' => NULL,
             'date_update_column' => NULL,
