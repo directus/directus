@@ -332,6 +332,9 @@ input[type="radio"].custom-checkbox + label span:before {
   input[type="radio"].custom-checkbox + label span.vertical-middle:before {
     vertical-align: middle; }
 
+.serious {
+  color: #F44336; }
+
 .light-text {
   color: #CCCCCC; }
 
