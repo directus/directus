@@ -316,7 +316,10 @@ define([
 
           _.each(revisions, function (revision) {
             var model = systemCollection.get(revision.id);
-            model.set('_revisions', revision.count);
+            // if the collection are filtered some models may not be present
+            if (model) {
+              model.set('_revisions', revision.count);
+            }
           });
           this.render();
         }, this));
