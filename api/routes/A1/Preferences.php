@@ -71,6 +71,7 @@ class Preferences extends Route
             ];
         } else {
             $jsonResponse = [
+                'success' => true,
                 'meta' => [
                     'type' => 'item',
                     'table' => 'directus_preferences'
