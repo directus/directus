@@ -207,6 +207,7 @@ define(function(require, exports, module) {
         table: this.table,
         structure: this.structure,
         privileges: this.privileges,
+        preferences: this.preferences,
         rowsPerPage: this.rowsPerPage
       };
 
