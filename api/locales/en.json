@@ -146,6 +146,7 @@
     "permissions_can_not_delete_items": "Can Not Delete Items",
     "show_directus_tables": "Show Directus Tables",
     "new_user": "New User",
+    "invite_user": "Invite User",
     "editing_item": "Editing Item",
     "creating_new_item": "Creating New Item",
     "learn_more": "Learn More",
