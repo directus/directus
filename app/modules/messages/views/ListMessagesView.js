@@ -304,7 +304,7 @@ define([
 
       // @TODO: Add new messages into the list without re rendering the existing messages
       // to prevent the annoying render that deletes all the text that hasn't been sent yet
-      this.listenTo(this.collection, 'add', this.table.addItem);
+      this.listenTo(this.collection, 'add', _.bind(this.table.addItem, this.table));
     }
   });
 });
