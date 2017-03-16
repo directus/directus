@@ -5,6 +5,7 @@ namespace Directus\API\Routes\A1;
 use Directus\Application\Route;
 use Directus\Database\TableGateway\DirectusPreferencesTableGateway;
 use Directus\Database\TableGateway\RelationalTableGateway as TableGateway;
+use Directus\Util\ArrayUtils;
 use Directus\View\JsonView;
 
 class Preferences extends Route
@@ -54,16 +55,10 @@ class Preferences extends Route
                 return;
         }
 
-        //If Title is set then return this version
-        if (isset($requestPayload['title'])) {
-            $params['newTitle'] = $requestPayload['title'];
-        }
-
-        if (isset($params['newTitle'])) {
-            $jsonResponse = $Preferences->fetchByUserAndTableAndTitle($currentUserId, $table, $params['newTitle']);
-        } else {
-            $jsonResponse = $Preferences->fetchByUserAndTableAndTitle($currentUserId, $table);
-        }
+        // If Title is set then return this version
+        // this is the bookmark title
+        $title = ArrayUtils::get($requestPayload, 'title') ?: ArrayUtils::get($params, 'title');
+        $jsonResponse = $Preferences->fetchByUserAndTableAndTitle($currentUserId, $table, $title);
 
         if (!$jsonResponse) {
             $app->response()->setStatus(404);

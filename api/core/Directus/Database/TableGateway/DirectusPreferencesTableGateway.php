@@ -126,7 +126,7 @@ class DirectusPreferencesTableGateway extends RelationalTableGateway
         return $data;
     }
 
-    public function fetchByUserAndTableAndTitle($user_id, $table, $name = null)
+    public function fetchByUserAndTableAndTitle($user_id, $table, $title = null)
     {
         $select = new Select($this->table);
         $select->limit(1);
@@ -135,12 +135,10 @@ class DirectusPreferencesTableGateway extends RelationalTableGateway
             ->equalTo('table_name', $table)
             ->equalTo('user', $user_id);
 
-        if ($name) {
-            $select->where
-                ->equalTo('title', $name);
+        if ($title) {
+            $select->where->equalTo('title', $title);
         } else {
-            $select->where
-                ->isNull('title');
+            $select->where->isNull('title');
         }
 
         $preferences = $this
