@@ -20,12 +20,7 @@ table {
 			th {
 				@include transition (width, $timing-short, ease-in-out);
 				padding: 8px 4px 6px 4px; // Optical vertical centering (no descenders in uppercase)
-				cursor: pointer;
 				height: 40px;
-				&:hover .order-direction,
-				&:hover {
-					color: $primary;
-				}
 				&.right-sidebar-toggle {
 					@include transition (color, $timing-short, ease-in-out);
 					white-space: nowrap;
@@ -463,6 +458,15 @@ table {
 						top: -7px;
 					}
 				}
+			}
+		}
+	}
+	&.header-sortable {
+		thead tr th {
+			cursor: pointer;
+			&:hover .order-direction,
+			&:hover {
+				color: $primary;
 			}
 		}
 	}
