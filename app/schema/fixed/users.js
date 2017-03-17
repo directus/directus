@@ -279,6 +279,24 @@ define(function(require, exports, module) {
             }
           },
           {
+            "id": "country",
+            "column_name": "country",
+            "type": "VARCHAR",
+            "char_length": "2",
+            "nullable": true,
+            "default_value": null,
+            "comment":"",
+            "sort":36,
+            "ui":"textinput",
+            "system":false,
+            "hidden_list":false,
+            "hidden_input":false,
+            "required":false,
+            "options": {
+              "size": "small"
+            }
+          },
+          {
             "id":"zip",
             "column_name":"zip",
             "type":"VARCHAR",
@@ -530,6 +548,34 @@ define(function(require, exports, module) {
                 result[key] = name;
               })
             }
+          },
+          {
+            "id": "invite_token",
+            "column_name": "invite_token",
+            "type": "VARCHAR",
+            "ui": "textinput",
+            "omit_input": true
+          },
+          {
+            "id": "invite_date",
+            "column_name": "invite_date",
+            "type": "DATETIME",
+            "ui": "datetime",
+            "omit_input": true
+          },
+          {
+            "id": "invite_sender",
+            "column_name": "invite_sender",
+            "type": "INT",
+            "ui": "numeric",
+            "omit_input": true
+          },
+          {
+            "id": "invite_accepted",
+            "column_name": "invite_accepted",
+            "type": "TINYINT",
+            "ui": "checkbox",
+            "omit_input": true
           }
         ]
       };
