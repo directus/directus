@@ -21,7 +21,7 @@ function(app, Backbone, _) {
     },
 
     _events: {
-      'click .more': function(event) {
+      'click .more': function (event) {
         event.preventDefault();
         event.stopPropagation();
       }
@@ -43,20 +43,20 @@ function(app, Backbone, _) {
       return data;
     },
 
-    setEnabled: function(enabled) {
+    setEnabled: function (enabled) {
       this.state.enabled = enabled;
       this.trigger('enabled:change', enabled);
     },
 
-    enable: function() {
+    enable: function () {
       this.setEnabled(true);
     },
 
-    disable: function() {
+    disable: function () {
       this.setEnabled(false);
     },
 
-    initialize: function(options) {
+    initialize: function (options) {
       this._events = this._events || {};
 
       if (!options.widgetOptions) {
@@ -76,7 +76,7 @@ function(app, Backbone, _) {
         this._events['change #save_options'] = options.onChange;
       }
 
-      this.on('enabled:change', this.render);
+      this.listenTo(this, 'enabled:change', this.render);
     }
   });
 });
