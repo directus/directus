@@ -60,6 +60,9 @@ define(function(require, exports, module) {
         "hidden_list": false,
         "hidden_input": false,
         "sort": 30,
+        "options": {
+          "placeholder_text": __t('eg_x', {text: '000.000.000.000, 111.111.111.111'})
+        },
         "comment": transComments('restrict_to_ip_whitelist')
       },
       {
