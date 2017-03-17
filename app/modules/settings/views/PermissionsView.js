@@ -63,18 +63,28 @@ function(app, _, Backbone, Widgets, __t, TableHelpers, BasePageView) {
     tagName: 'tr',
 
     events: {
-      'click': function(event) {
-        var groupName = $(event.currentTarget).data('id');
-        // Don't bypass Admins until their permissions are always guaranteed
-        // if(groupName === 1) {
-        //   return;
-        // }
-        app.router.go(['settings' ,'permissions', groupName]);
-      }
+      'click': 'onClick'
+    },
+
+    onClick: function (event) {
+      var groupName = $(event.currentTarget).data('id');
+      // Don't bypass Admins until their permissions are always guaranteed
+      // if(groupName === 1) {
+      //   return;
+      // }
+      app.router.go(['settings' ,'permissions', groupName]);
     },
 
     serialize: function() {
-      return this.model.toJSON();
+      var data = this.model.toJSON();
+
+      if (this.model.isPublic()) {
+        data.usersCount = 'n/a';
+      } else {
+        data.usersCount = data.users.length;
+      }
+
+      return data;
     }
   });
 
