@@ -119,6 +119,7 @@
     "permissions_read_blacklist": "Columna Leer Lista Negra",
     "permissions_write": "Escribir",
     "permissions_write_blacklist": "Columna EscribirLista Negra",
+    "permissions_choose_columns": "Elegir Columnas",
     "permissions_user_created_column_no_chosen": "ninguna columna elegida",
     "permissions_field_level_permissions": "Permisos a nivel de campos",
     "permissions_can_view_any_items": "Puede Ver Cualquier registro",
