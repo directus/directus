@@ -21,7 +21,7 @@ define([
   var Global = BasePageView.extend({
     headerOptions: {
       route: {
-        title: __t('settings'),
+        title: __t('global'),
         breadcrumbs: [{ title: __t('settings'), anchor: '#settings'}]
       },
       className: 'header settings'
@@ -75,6 +75,8 @@ define([
       _.each(this.editView, function (view) {
         self.insertView('#page-content', view);
       });
+
+      BasePageView.prototype.beforeRender.apply(this, arguments);
     },
 
     initialize: function(options) {
@@ -105,8 +107,6 @@ define([
           focusOnFirst: index === 0
         });
       });
-
-      this.headerOptions.route.title = this.options.title;
     }
   });
 
