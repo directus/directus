@@ -3,6 +3,7 @@ define(function(require, exports, module) {
   'use strict';
 
   var Backbone = require('backbone'),
+      app = require('app'),
       ColumnsCollection = require('./ColumnsCollection'),
       PreferenceModel = require('./../core/PreferenceModel');
 
