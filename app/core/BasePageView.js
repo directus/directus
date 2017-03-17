@@ -161,6 +161,12 @@ function(app, Backbone, _, BaseHeaderView, RightSidebarView) {
     removeHolding: function(cid) {
       this.fetchHolding.splice(this.fetchHolding.indexOf(cid), 1);
       this.tryFetch();
+    },
+
+    constructor: function () {
+      Backbone.Layout.prototype.constructor.apply(this, arguments);
+
+      this._ensurePaneIsClosed();
     }
   });
 });
