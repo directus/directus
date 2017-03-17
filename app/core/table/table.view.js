@@ -329,10 +329,12 @@ function(app, _, Backbone, Notification, __t, TableHelpers, ModelHelper, TableHe
 
       this.showChart = options.showChart === true;
 
-      this.options.systemCollection = this.collection.clone();
-      this.collection.on('sync', function (collection, resp) {
-        this.options.systemCollection.reset(resp, {parse: true});
-      }, this);
+      if (options.system === true) {
+        this.options.systemCollection = this.collection.clone();
+        this.listenTo(this.collection, 'sync', function (collection, resp) {
+          this.options.systemCollection.reset(resp, {parse: true});
+        });
+      }
     }
   });
 

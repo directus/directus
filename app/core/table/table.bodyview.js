@@ -51,12 +51,13 @@ function(app, Backbone, _, Sortable, Notification) {
       var rowIdentifiers, statusState, models, rows;
       var statusColumns = this.collection.getFilter('status') || '1,2';
       var highlightIds = this.options.highlight || [];
+      var collection = this.options.systemCollection || this.collection;
 
       rowIdentifiers = this.options.rowIdentifiers;
 
       //Filter active/inactive/deleted items
       statusState = _.map(statusColumns,Number);
-      models = this.options.systemCollection.filter(function(model) {
+      models = collection.filter(function(model) {
         if (model.has(app.statusMapping.status_name)) {
           return (_.indexOf(statusState, Number(model.get(app.statusMapping.status_name))) > -1);
         } else {
