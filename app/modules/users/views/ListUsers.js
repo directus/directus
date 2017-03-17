@@ -123,7 +123,7 @@ function(app, Backbone, Handlebars, Directus, BasePageView, Widgets, __t, moment
     },
 
     attributes: {
-      class: 'page-container gray-bg'
+      class: 'page-container'
     },
 
     leftToolbar: function() {

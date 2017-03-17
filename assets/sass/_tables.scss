@@ -47,6 +47,7 @@ table {
 	}
 	tbody {
 		color: $gray-5;
+		background-color: $white;
 		tr {
 			&.selected {
 				td {

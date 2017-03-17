@@ -22,7 +22,7 @@ function(app, Backbone, DirectusModal, DirectusEdit, __t, Notification, BasePage
     },
 
     attributes: {
-      class: 'page-container gray-bg'
+      class: 'page-container'
     },
 
     leftToolbar: function() {
