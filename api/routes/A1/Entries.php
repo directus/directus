@@ -7,7 +7,6 @@ use Directus\Database\TableGateway\DirectusActivityTableGateway;
 use Directus\Database\TableGateway\DirectusUsersTableGateway;
 use Directus\Database\TableGateway\RelationalTableGateway as TableGateway;
 use Directus\Services\EntriesService;
-use Directus\View\JsonView;
 
 class Entries extends Route
 {
@@ -52,23 +51,31 @@ class Entries extends Route
         }
 
         $TableGateway = new TableGateway($table, $ZendDb, $acl);
-        $primaryKeyFieldName = $TableGateway->primaryKeyFieldName;
-
-        $rowIds = [];
-        foreach ($rows as $row) {
-            if (!array_key_exists($primaryKeyFieldName, $row)) {
-                throw new \Exception(__t('row_without_primary_key_field'));
+        // hotfix add entries by bulk
+        if ($this->app->request()->isPost()) {
+            $entriesService = new EntriesService($this->app);
+            foreach($rows as $row) {
+                $entriesService->createEntry($table, $row, $params);
             }
-            array_push($rowIds, $row[$primaryKeyFieldName]);
-        }
-
-        $where = new \Zend\Db\Sql\Where;
-
-        if ($this->app->request()->isDelete()) {
-            $TableGateway->delete($where->in($primaryKeyFieldName, $rowIds));
         } else {
+            $primaryKeyFieldName = $TableGateway->primaryKeyFieldName;
+
+            $rowIds = [];
             foreach ($rows as $row) {
-                $TableGateway->updateCollection($row);
+                if (!array_key_exists($primaryKeyFieldName, $row)) {
+                    throw new \Exception(__t('row_without_primary_key_field'));
+                }
+                array_push($rowIds, $row[$primaryKeyFieldName]);
+            }
+
+            $where = new \Zend\Db\Sql\Where;
+
+            if ($this->app->request()->isDelete()) {
+                $TableGateway->delete($where->in($primaryKeyFieldName, $rowIds));
+            } else {
+                foreach ($rows as $row) {
+                    $TableGateway->updateCollection($row);
+                }
             }
         }
 
