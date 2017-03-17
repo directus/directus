@@ -802,10 +802,13 @@ function(app, _, Backbone, Directus, EditView, BasePageView, TableModel, ColumnM
     template: 'modules/settings/settings-tables',
 
     events: {
-      'click .js-row': function(event) {
+      'click .js-row': function (event) {
         var tableName = $(event.currentTarget).data('id');
 
-        app.router.go(['settings', 'tables', tableName]);
+        // only go to table details if it already has permissions set
+        if (app.schemaManager.hasPrivilege(tableName)) {
+          app.router.go(['settings', 'tables', tableName]);
+        }
       }
     },
 
@@ -959,7 +962,7 @@ function(app, _, Backbone, Directus, EditView, BasePageView, TableModel, ColumnM
       //   this.toggleTableAttribute(SchemaManager.getTable($(e.target).closest('tr').attr('data-id')), attr, $(e.target));
       // },
 
-      'click .js-add-table': function(event) {
+      'click .js-add-table': function (event) {
         event.stopPropagation();
 
         var $row = $(event.target).closest('tr');
@@ -971,7 +974,7 @@ function(app, _, Backbone, Directus, EditView, BasePageView, TableModel, ColumnM
         });
       },
 
-      'click .js-remove-table': function(event) {
+      'click .js-remove-table': function (event) {
         event.stopPropagation();
 
         var tableName = $(event.target).closest('tr').data('id') || this.model.get('table_name');
