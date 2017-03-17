@@ -4081,7 +4081,7 @@ body.help .discover-spotlight {
     background-color: #FFFFFF;
     cursor: pointer; }
     .user-listing .user:hover .group {
-      opacity: 0.6; }
+      opacity: 0.8; }
     .user-listing .user:hover .info .more,
     .user-listing .user:hover .info .name {
       color: #3498DB; }
