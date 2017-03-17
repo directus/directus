@@ -21,8 +21,11 @@
 				<td>{{capitalize column_name}}</td>
 				<td class="js-cell" data-field="ui_type" data-section="column">{{capitalize ui}}</td>
 				<td class="relationship js-cell" data-section="column">
-					<span class="type">{{capitalize relationship_type}}</span>
-					{{#if related_table}} ({{capitalize related_table}}){{/if}}
+					{{#if related_table}}
+					<span class="type">{{capitalize relationship_type}}</span> ({{capitalize related_table}})
+					{{else}}
+					None
+					{{/if}}
 				</td>
 				<td class="comment js-cell" data-field="comment" data-section="column">{{comment}}</td>
 				<td class="relational-remove">
