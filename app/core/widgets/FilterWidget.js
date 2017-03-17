@@ -27,11 +27,11 @@ function(app, Backbone, _, Handlebars) {
 
     events: {
       'keyup .js-search': 'search',
-      'click .js-toggle': function(event) {
+      'click .js-toggle': function (event) {
         this.$el.toggleClass('filter-dropdown-open');
       },
 
-      'click input.js-status-check': function(event) {
+      'click input.js-status-check': function (event) {
         var $checksChecked = this.$el.find('input.js-status-check:checked');
         var status = [];
 
@@ -68,14 +68,15 @@ function(app, Backbone, _, Handlebars) {
       }
     },
 
-    search: function(event) {
+    search: function (event) {
       if (event.which != 13) {
         return;
       }
 
       var $element = $(event.currentTarget);
+      var searchString = this.searchString = $element.val();
       var filterIndex = -1;
-      _.each(this.options.filters, function(item, index) {
+      _.each(this.options.filters, function (item, index) {
         if (item.filterData.id === 'q') {
           filterIndex = index;
         }
@@ -87,7 +88,7 @@ function(app, Backbone, _, Handlebars) {
         this.options.filters.push({
           filterData: {
             id: 'q',
-            value: $element.val()
+            value: searchString
           }
         });
       }
@@ -266,6 +267,8 @@ function(app, Backbone, _, Handlebars) {
 
         i++;
       });
+
+      data.searchString = this.searchString;
 
       return data;
     },
