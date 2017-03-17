@@ -143,7 +143,7 @@ class BaseTableGateway extends TableGateway
             $instance = new $tableGatewayClassName($adapter, $acl);
         } else {
             // @TODO: Move this to a separate factory class
-            $instance = new self($table, $adapter, $acl);
+            $instance = new static($table, $adapter, $acl);
         }
 
         return $instance;
