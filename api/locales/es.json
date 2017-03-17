@@ -344,6 +344,8 @@
     "relationship": "Relación",
     "relationship_none": "Ninguna",
     "comment": "Comentario",
+    "new_column_title": "Crear Nueva Columna",
+    "edit_column_title": "Editar Columna",
 
     "unable_to_remove_column_x": "No se puedo eliminar la columna [%{column}]",
     "column_removed": "Columna eliminada",

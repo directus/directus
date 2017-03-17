@@ -377,6 +377,8 @@
     "relationship": "Relationship",
     "relationship_none": "None",
     "comment": "Comment",
+    "new_column_title": "Create New Column",
+    "edit_column_title": "Editing Column",
     "this_column_will_be_saved_as_x": "This column will be saved as \"%{column_name}\"",
     "this_table_was_saved_as_x": "This table was saved as %{table_name}",
     "unable_to_find_column_x": "Unable to find the column [%{column}]",

@@ -1,5 +1,9 @@
-<h1>Create New Column</h1> <!-- Editing Column -->
-{{#unless isNew}}<a href="#" class="toggle-pane js-toggle-pane">Edit Options</a>{{/unless}}
+{{#if isNew}}
+<h1>{{t "new_column_title"}}</h1> <!-- Create New Column -->
+{{else}}
+<h1>{{t "edit_column_title"}}</h1> <!-- Column Options -->
+<a href="#" class="toggle-pane js-toggle-pane">Edit Options</a>
+{{/if}}
 <form>
 	<div class="row">
 		{{#unless hideColumnName}}
