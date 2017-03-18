@@ -411,7 +411,8 @@ define([
       },
 
       constructor: function (options) {
-        View.prototype.constructor.apply(this, arguments);
+        BaseView.prototype.constructor.apply(this, arguments);
+        TableView.prototype._configureTable.call(this, options);
 
         this.showChart = this.supportsChart();
 

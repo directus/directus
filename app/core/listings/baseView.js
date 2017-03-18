@@ -111,7 +111,7 @@ define(['app', 'underscore', 'backbone', 'core/t'], function(app, _, Backbone, _
 
       Backbone.Layout.prototype.constructor.apply(this, arguments);
 
-      this.enable();
+      // this.enable();
     }
   });
 });

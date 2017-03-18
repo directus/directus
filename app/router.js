@@ -386,7 +386,7 @@ define(function(require, exports, module) {
       this.setTitle(app.settings.get('global').get('project_name') + ' | ' + app.capitalize(tableName));
 
       this.v.main.setView('#content', new Table.Views.List({collection: collection}));
-      this.v.main.render();
+      // this.v.main.render();
     },
 
     entry: function(tableName, id) {

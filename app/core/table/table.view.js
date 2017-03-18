@@ -324,17 +324,18 @@ function(app, _, Backbone, Notification, __t, TableHelpers, ModelHelper, TableHe
       }
     },
 
+    _configureTable: function (options) {
+      this.showChart = options.showChart === true;
+      this.options.systemCollection = this.collection.clone();
+      this.listenTo(this.collection, 'sync', function (collection, resp) {
+        this.options.systemCollection.reset(resp, {parse: true});
+      });
+    },
+
     constructor: function (options) {
       Backbone.Layout.__super__.constructor.call(this, options);
 
-      this.showChart = options.showChart === true;
-
-      if (options.system === true) {
-        this.options.systemCollection = this.collection.clone();
-        this.listenTo(this.collection, 'sync', function (collection, resp) {
-          this.options.systemCollection.reset(resp, {parse: true});
-        });
-      }
+      this._configureTable(options);
     }
   });
 

@@ -240,7 +240,7 @@ function(app, Backbone, _, __t, Notification) {
         });
       }
 
-      this.collection.on('sort', this.render, this);
+      this.listenTo(this.collection, 'sort', this.render);
     }
 
   });

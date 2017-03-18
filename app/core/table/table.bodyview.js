@@ -51,7 +51,7 @@ function(app, Backbone, _, Sortable, Notification) {
       var rowIdentifiers, statusState, models, rows;
       var statusColumns = this.collection.getFilter('status') || '1,2';
       var highlightIds = this.options.highlight || [];
-      var collection = this.options.systemCollection || this.collection;
+      var collection = this.options.system === true ? this.options.systemCollection : this.collection;
 
       rowIdentifiers = this.options.rowIdentifiers;
 
@@ -138,7 +138,8 @@ function(app, Backbone, _, Sortable, Notification) {
     initialize: function(options) {
       this.options.filters = this.options.filters || {};
       this.sort = this.options.structure.get('sort') || options.sort;
-      this.collection.on('sort', this.render, this);
+
+      this.listenTo(this.collection, 'sort', this.render);
       this.parentView = options.parentView;
 
       if (this.sort) {

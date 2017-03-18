@@ -17,7 +17,7 @@ function(app, Backbone, _, __t, BasePageView, ListViewManager, TableViewRightPan
       route: {
         title: 'Table View',
         breadcrumbs: [{title: __t('tables'), anchor: '#tables'}]
-      },
+      }
     },
 
     leftToolbar: function() {
@@ -182,6 +182,10 @@ function(app, Backbone, _, __t, BasePageView, ListViewManager, TableViewRightPan
         return;
       }
 
+      this._ensureView(viewId, true);
+    },
+
+    _ensureView: function (viewId, triggerEvent) {
       _.each(this.state.views, function(view) {
           view.disable();
       });
@@ -190,7 +194,9 @@ function(app, Backbone, _, __t, BasePageView, ListViewManager, TableViewRightPan
       var newView = this.getCurrentView();
       newView.enable();
 
-      this.trigger('view:changed', viewId);
+      if (triggerEvent === true) {
+        this.trigger('view:changed', viewId);
+      }
 
       this.table = newView;
       this.table.savePreferences('currentView', viewId, true);
@@ -213,6 +219,7 @@ function(app, Backbone, _, __t, BasePageView, ListViewManager, TableViewRightPan
         fixedHead: true,
         baseView: this,
         showChart: true,
+        system: true,
         showMoreButton: !! _.result(this, 'rightPane')
       });
 
@@ -223,7 +230,7 @@ function(app, Backbone, _, __t, BasePageView, ListViewManager, TableViewRightPan
 
     beforeRender: function() {
       this.setView('#page-content', this.table);
-      this.tryFetch();
+      this.tryFetch({wait: true});
 
       BasePageView.prototype.beforeRender.apply(this, arguments);
     },
@@ -252,7 +259,8 @@ function(app, Backbone, _, __t, BasePageView, ListViewManager, TableViewRightPan
         views: {}
       };
 
-      this.table = this.getCurrentView();
+      this._ensureView(this.state.viewId);
+      // this.table = this.getCurrentView();
 
       this.headerOptions.route.title = this.collection.table.id;
       if (!this.collection.options) {
