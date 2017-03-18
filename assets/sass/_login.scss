@@ -188,6 +188,7 @@ body.login {
 			opacity: 1;
 		}
 		.loading-container {
+			@include box-shadow ($x: 0px, $y: 0px, $blur: 2px, $spread: 0px, $opacity: 0.05);
 			@include border-radius (2px);
 			position: absolute;
 			bottom: 68px;

@@ -249,6 +249,7 @@ ul {
 	background-color: rgba($gray-1, 1);
 	opacity: 0;
 	z-index: 0;
+	text-align: center;
 	&.blocking {
 		z-index: 999;
 	}
@@ -257,12 +258,15 @@ ul {
 	}
 	.loading-container {
 		@include border-radius (2px);
+		@include box-shadow ($x: 0px, $y: 0px, $blur: 2px, $spread: 0px, $opacity: 0.05);
 		position: absolute;
-		top: 50%;
+		top: 48%;
 		left: 50%;
-		width: 200px;
+		width: 50%;
+		max-width: 400px;
+		-webkit-transform: translate(-50%, -50%);
+		transform: translate(-50%, -50%);
 		height: 4px;
-		margin-left: -100px;
 		background-color: $white;
 		.loading-bar {
 			@include transition (all, $timing-long, cubic-bezier(0.23, 1, 0.32, 1));
@@ -288,10 +292,8 @@ ul {
 	}
 	.readout {
 		position: absolute;
-		top: 50%;
-		left: 50%;
-		width: 200px;
-		margin-left: -100px;
+		top: 48%;
+		width: 100%;
 		margin-top: 15px;
 		color: $gray-3;
 		text-align: center;
