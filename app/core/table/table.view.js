@@ -110,6 +110,7 @@ function(app, _, Backbone, Notification, __t, TableHelpers, ModelHelper, TableHe
       this.fixWidths();
 
       var $el = this.$('.table-scroll-x');
+      this.headerScroll($el);
       var onScroll = _.bind(function () {
         this.headerScroll($el);
       }, this);

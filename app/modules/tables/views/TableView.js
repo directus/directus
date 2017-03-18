@@ -11,6 +11,22 @@ define([
 
 function(app, Backbone, _, __t, BasePageView, ListViewManager, TableViewRightPane, Widgets) {
 
+  var headFootShadows = function ($el) {
+    var pageScrollTop = $el.scrollTop();
+    var scrollBottom = $el.find('table.fixed-header').height() - $el.height() - pageScrollTop + 64; // 64 is table padding
+    var headScroll = Math.max(Math.min(pageScrollTop, 100), 0) / 100;
+    $el.find('table.fixed-header thead').css({ boxShadow: '0px 2px 6px 0px rgba(200,200,200,'+headScroll+')' });
+    var footScroll = Math.max(Math.min(scrollBottom, 100), 0) / 100;
+    $el.find('table.fixed-header tfoot').css({ boxShadow: '0px -2px 6px 0px rgba(200,200,200,'+footScroll+')' });
+
+    // Position Sticky Header
+    if ($el.find('table.fixed-header').hasClass('charted')) {
+      var headerDelta = ($(window).width() <= 500)? 244 : 304;
+      var headerTop = Math.max(64, headerDelta - pageScrollTop); // 304 is tied to CSS/SASS (default top from charted)
+      $el.find('table.fixed-header thead').css('top', headerTop);
+    }
+  };
+
   return BasePageView.extend({
 
     headerOptions: {
@@ -242,6 +258,15 @@ function(app, Backbone, _, __t, BasePageView, ListViewManager, TableViewRightPan
           app.trigger('tables:preferences', this, this.collection);
         });
       });
+
+      var $el = $('#content');
+      $el.on('scroll', function () {
+        headFootShadows($el);
+      });
+
+      this.table.on('afterRender', function () {
+        headFootShadows($el);
+      });
     },
 
     getCurrentViewName: function () {
@@ -300,12 +325,12 @@ function(app, Backbone, _, __t, BasePageView, ListViewManager, TableViewRightPan
       this.showDeleteButton = false;
       this.showBulkEditButton = false;
 
-      this.listenTo(this, 'rightPane:load', function() {
-        this.listenTo(this.rightPaneView, 'view:change', function(viewId) {
+      this.listenTo(this, 'rightPane:load', function () {
+        this.listenTo(this.rightPaneView, 'view:change', function (viewId) {
           this.changeViewTo(viewId);
         });
 
-        this.listenTo(this.rightPaneView, 'all', function() {
+        this.listenTo(this.rightPaneView, 'all', function () {
           var args = Array.prototype.slice.call(arguments, 0);
           args[0] = 'rightPane:' + args[0];
 
