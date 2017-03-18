@@ -3883,6 +3883,16 @@ body.help .discover-spotlight {
   right: 0;
   overflow: scroll;
   background-color: #f6f6f6; }
+  .page.dragover::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: rgba(255, 255, 255, 0.4);
+    border: 10px solid rgba(52, 152, 219, 0.4);
+    z-index: 10; }
   .page.define-edge {
     border-left: 1px solid #DDDDDD; }
   .page .page-container.messages {
