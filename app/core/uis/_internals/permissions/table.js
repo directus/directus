@@ -272,7 +272,9 @@ define(['app', 'underscore', 'backbone', 'core/t', 'core/Modal'], function(app, 
       var showCoreTables = this.showCoreTables;
 
       app.schemaManager.getTables().forEach(function (table) {
-        if (showCoreTables !== true && table.id.indexOf('directus_') === 0) {
+        var hasPermissions = app.schemaManager.getPrivileges(table.id);
+
+        if (!hasPermissions || (showCoreTables !== true && table.id.indexOf('directus_') === 0)) {
           return false;
         }
 
