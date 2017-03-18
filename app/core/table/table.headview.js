@@ -177,10 +177,10 @@ function(app, Backbone, _, __t, Notification) {
         this.render();
       },
 
-      'click .js-sort': function () {
+      'click .js-sort-toggle': function () {
         this.parentView.toggleSortable();
       },
-      'click th:not(.js-sort)': function () {
+      'click th:not(.js-sort-toggle)': function () {
         if (this.parentView.sortableWidget && this.parentView.sortableWidget.options.sort) {
           this.$el.closest('table').addClass('disable-sorting');
           this.parentView.sortableWidget.options.sort = false;

@@ -245,11 +245,13 @@ define(['app', 'underscore', 'core/UIComponent', 'core/UIView', 'core/table/tabl
 
     enableSortable: function() {
       this.$('table').removeClass('disable-sorting');
+      this.$('.js-sort-toggle').addClass('active');
       this.sortable.options.sort = true;
     },
 
     disableSortable: function() {
       this.$('table').addClass('disable-sorting');
+      this.$('.js-sort-toggle').removeClass('active');
       this.sortable.options.sort = false;
     },
 
