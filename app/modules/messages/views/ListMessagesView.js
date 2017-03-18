@@ -10,6 +10,32 @@ define([
   'core/widgets/widgets'
 ], function(app, _, Backbone, __t, BasePageView, MessageItemView, MessageView, NewMessageView,  Widgets) {
 
+  var isResizing = false;
+  var lastDownX = 0;
+  var resizeMessages = function (event, $el, force) {
+    if (!isResizing && !force) {
+      return;
+    }
+
+    event.preventDefault();
+
+    var offsetLeft = (force)? parseInt($el.find('.resize-left').css('width'), 10) : event.clientX - $el.offset().left;
+    offsetLeft = Math.max(offsetLeft, parseInt($el.find('.resize-left').css('min-width'), 10));
+
+    var widthRight = $el.width() - offsetLeft;
+    if(widthRight <= parseInt($el.find('.resize-right').css('min-width'), 10)){
+      widthRight = parseInt($el.find('.resize-right').css('min-width'), 10);
+      offsetLeft = $el.width() - widthRight;
+    }
+
+    // Convert to percentages
+    var offsetLeftPercent = (offsetLeft / $el.width()) * 100;
+    var widthRightPercent = (widthRight / $el.width()) * 100;
+
+    $el.find('.resize-left').css('width', offsetLeftPercent+'%');
+    $el.find('.resize-right').css('left', offsetLeftPercent+'%').css('width', widthRightPercent+'%');
+  };
+
   var ListView = Backbone.Layout.extend({
 
     template: 'modules/messages/messages-list',
@@ -289,6 +315,29 @@ define([
       var view = this.table;
       this.setView('#page-content', view);
       BasePageView.prototype.beforeRender.call(this);
+    },
+
+    afterRender: function () {
+      this.$('.resize-handle').on('mousedown', function (event) {
+        event.preventDefault();
+        isResizing = true;
+        lastDownX = event.clientX;
+        console.log(1, lastDownX);
+      });
+
+      lastDownX = this.$('.resize-left').css('width');
+
+      var $el = this.$el;
+      $(document).on('mousemove.messages', function (event) {
+        resizeMessages(event, $el, false);
+      }).on('mouseup.messages', function (event) {
+        isResizing = false;
+      });
+    },
+
+    cleanup: function () {
+      $(document).off('mousemove.messages');
+      $(document).off('mouseup.messages');
     },
 
     initialize: function() {
