@@ -239,6 +239,17 @@ ul {
 //////////////////////////////////////////////////////////////////////////////
 // Other
 
+.noty_box {
+	.noty_message {
+		hr {
+			margin: 16px 0;
+			opacity: 0.5;
+		}
+		ul {
+			margin-left: 16px;
+		}
+	}
+}
 .loading {
 	@include transition (all, $timing-short, ease-in-out);
 	position: fixed;

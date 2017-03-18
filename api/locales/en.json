@@ -186,7 +186,7 @@
     "new_message": "New Message",
     "send_message": "Send",
     "message_to": "To",
-    "directus_messages_recipients_placeholder": "Type users or groups here...",
+    "directus_messages_recipients_placeholder": "Add recipients...",
     "messages_subject_placeholder": "Subject...",
     "messages_add_recipients_placeholder": "Add recipients...",
     "tags_placeholder": "Type tag then hit enter...",

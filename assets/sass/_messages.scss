@@ -84,7 +84,7 @@
 		.recipients {
 			.twitter-typeahead {
 				height: 40px;
-				margin-bottom: 10px;
+				margin-bottom: 4px;
 				width: 100%;
 				input.recipients {
 					border: none;
@@ -131,7 +131,7 @@
 		}
 		.to {
 			color: $gray-3;
-			margin-bottom: 40px;
+			margin-bottom: 30px;
 			font-weight: 500;
 			span {
 				@include transition (all, $timing-short, ease-in-out);
@@ -184,6 +184,7 @@
 		font-size: 16px;
 		line-height: 30px;
 		textarea {
+			// margin-top: 20px;
 			min-height: 300px;
 			font-size: 15px;
 		}

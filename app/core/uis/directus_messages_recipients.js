@@ -19,7 +19,7 @@ define([
   'use strict';
 
   var template = '<input type="text" id="directus_messages_recipients-input" class="recipients" placeholder="{{t "directus_messages_recipients_placeholder"}}">\
-                  <div id="directus_messages_recipients-recipients" class="to">{{t "message_to"}}: {{#tags}}{{this}}{{/tags}}</div></div> \
+                  <div id="directus_messages_recipients-recipients" class="to">{{#tags}}{{this}}{{/tags}}</div></div> \
                  <input type="hidden" name="{{name}}" id="directus_messages_recipients-form">';
 
   var Input = UIView.extend({
@@ -65,8 +65,8 @@ define([
       });
 
       this.$el.find('#directus_messages_recipients-form').val(_.keys(this.recipients));
-
-      $el.html(__t('message_to') + ': ' + elArray.join(''));
+      // __t('message_to') + ': ' +
+      $el.html(elArray.join(''));
     },
 
     afterRender: function() {
