@@ -4202,8 +4202,14 @@ body.help .discover-spotlight {
   height: 100%;
   padding: 40px;
   min-width: 500px;
-  overflow: auto; }
+  overflow: auto;
+  background-color: #FFFFFF; }
   .message .details .avatar {
+    -webkit-transition: all 200ms ease-in-out 0ms;
+    -moz-transition: all 200ms ease-in-out 0ms;
+    -o-transition: all 200ms ease-in-out 0ms;
+    -ms-transition: all 200ms ease-in-out 0ms;
+    transition: all 200ms ease-in-out 0ms;
     -webkit-box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.2);
     -moz-box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.2);
     box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.2);
@@ -4219,12 +4225,21 @@ body.help .discover-spotlight {
     width: 60px;
     height: 60px;
     overflow: hidden; }
+    .message .details .avatar:hover {
+      opacity: 0.8; }
   .message .details .from {
+    -webkit-transition: all 200ms ease-in-out 0ms;
+    -moz-transition: all 200ms ease-in-out 0ms;
+    -o-transition: all 200ms ease-in-out 0ms;
+    -ms-transition: all 200ms ease-in-out 0ms;
+    transition: all 200ms ease-in-out 0ms;
     position: absolute;
     top: 60px;
     left: 120px;
     font-size: 16px;
     font-weight: 500; }
+    .message .details .from:hover {
+      color: #3498DB; }
   .message .details .timeago {
     position: absolute;
     top: 63px;
@@ -4260,14 +4275,52 @@ body.help .discover-spotlight {
       -webkit-box-shadow: 0px 0px 0px 0px transparent;
       -moz-box-shadow: 0px 0px 0px 0px transparent;
       box-shadow: 0px 0px 0px 0px transparent; }
-  .message .details input.recipients {
-    border: none;
-    padding: 0;
-    margin-bottom: 10px; }
-    .message .details input.recipients:focus {
-      -webkit-box-shadow: 0px 0px 0px 0px transparent;
-      -moz-box-shadow: 0px 0px 0px 0px transparent;
-      box-shadow: 0px 0px 0px 0px transparent; }
+  .message .details .recipients .twitter-typeahead {
+    height: 40px;
+    margin-bottom: 10px;
+    width: 100%; }
+    .message .details .recipients .twitter-typeahead input.recipients {
+      border: none;
+      padding: 0;
+      margin-bottom: 10px; }
+      .message .details .recipients .twitter-typeahead input.recipients:focus {
+        -webkit-box-shadow: 0px 0px 0px 0px transparent;
+        -moz-box-shadow: 0px 0px 0px 0px transparent;
+        box-shadow: 0px 0px 0px 0px transparent; }
+    .message .details .recipients .twitter-typeahead .tt-hint {
+      color: #CCCCCC; }
+    .message .details .recipients .twitter-typeahead .tt-dropdown-menu {
+      -webkit-border-radius: 2px;
+      -moz-border-radius: 2px;
+      border-radius: 2px;
+      -moz-background-clip: padding;
+      -webkit-background-clip: padding-box;
+      background-clip: padding-box;
+      top: 20px;
+      padding: 3px 0;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      background-color: #FFFFFF;
+      min-width: 300px; }
+    .message .details .recipients .twitter-typeahead .tt-suggestions {
+      margin-right: 0 !important; }
+    .message .details .recipients .twitter-typeahead .tt-suggestion {
+      -webkit-transition: all 200ms ease-in-out 0ms;
+      -moz-transition: all 200ms ease-in-out 0ms;
+      -o-transition: all 200ms ease-in-out 0ms;
+      -ms-transition: all 200ms ease-in-out 0ms;
+      transition: all 200ms ease-in-out 0ms;
+      display: block;
+      padding: 0px 20px;
+      clear: both;
+      font-weight: normal;
+      white-space: nowrap;
+      font-size: 12px;
+      margin-right: 0 !important;
+      cursor: pointer; }
+      .message .details .recipients .twitter-typeahead .tt-suggestion:hover {
+        color: #3498DB; }
+    .message .details .recipients .twitter-typeahead .tt-is-under-cursor {
+      color: #3498DB; }
   .message .details .to {
     color: #CCCCCC;
     margin-bottom: 40px;
@@ -4353,11 +4406,17 @@ body.help .discover-spotlight {
       top: 20px;
       left: 0px;
       width: 40px;
-      height: 40px; }
+      height: 40px;
+      cursor: pointer; }
+      .message .response .avatar:hover {
+        opacity: 0.8; }
     .message .response .from {
       top: 28px;
       left: 60px;
-      font-size: 16px; }
+      font-size: 16px;
+      cursor: pointer; }
+      .message .response .from:hover {
+        color: #3498DB; }
     .message .response .timeago {
       top: 23px;
       right: 0px; }
@@ -4438,25 +4497,30 @@ body.help .discover-spotlight {
     transition: all 200ms ease-in-out 0ms;
     position: relative;
     padding: 16px;
-    background-color: #FFFFFF;
     color: #999999;
     line-height: 22px;
     font-size: 14px;
     padding: 20px 20px 20px 40px;
     border-bottom: 1px solid #EEEEEE;
-    cursor: pointer; }
-    .message-listing .message-preview.unread .unread-indicator {
-      margin-left: 0;
-      opacity: 1; }
-    .message-listing .message-preview.unread .byline .subject {
-      margin-left: 14px; }
+    cursor: pointer;
+    max-height: 150px;
+    overflow: hidden; }
+    .message-listing .message-preview.unread {
+      background-color: #FFFFFF; }
+      .message-listing .message-preview.unread .unread-indicator {
+        margin-left: 0;
+        opacity: 1; }
+      .message-listing .message-preview.unread .byline .subject {
+        margin-left: 14px; }
     .message-listing .message-preview.selected, .message-listing .message-preview.active {
-      background-color: #f7fbfe; }
+      background-color: #FFFFFF; }
       .message-listing .message-preview.selected .active-indicator, .message-listing .message-preview.active .active-indicator {
         width: 4px;
         opacity: 1; }
-    .message-listing .message-preview:hover {
-      background-color: #f7fbfe; }
+      .message-listing .message-preview.selected .byline .subject, .message-listing .message-preview.active .byline .subject {
+        color: #3498DB; }
+    .message-listing .message-preview:hover .byline .subject {
+      color: #3498DB; }
     .message-listing .message-preview .message-select {
       position: absolute;
       top: 22px;
@@ -4506,6 +4570,9 @@ body.help .discover-spotlight {
         font-size: 14px;
         vertical-align: middle;
         margin-top: -2px; }
+    .message-listing .message-preview .body {
+      max-height: 70px;
+      overflow: hidden; }
     .message-listing .message-preview .byline {
       position: relative;
       margin-bottom: 4px;
@@ -4533,7 +4600,8 @@ body.help .discover-spotlight {
           font-size: 16px;
           color: #CCCCCC;
           vertical-align: middle;
-          margin-top: -2px; }
+          margin-top: -2px;
+          margin-left: 4px; }
       .message-listing .message-preview .byline .recipients {
         font-size: 12px;
         white-space: nowrap;
