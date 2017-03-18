@@ -332,6 +332,10 @@
 			input[type="range"]:active + .slider-value {
 				color: $primary;
 			}
+			// Settings
+			.toggle-directus-tables {
+				margin-top: 10px;
+			}
 			.attachments {
 				&.multiple {
 					.dropzone {
