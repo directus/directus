@@ -163,9 +163,7 @@ function(app, Backbone, _, BaseHeaderView, RightSidebarView) {
       this.tryFetch();
     },
 
-    constructor: function () {
-      Backbone.Layout.prototype.constructor.apply(this, arguments);
-
+    cleanup: function () {
       this._ensurePaneIsClosed();
     }
   });
