@@ -205,6 +205,10 @@ function(app, Backbone, _, EntriesManager, __t, Notification) {
           return false;
         }
 
+        if (bookmark.section === 'search') {
+          bookmark.url = 'bookmark/' + encodeURIComponent(bookmark.title);
+        }
+
         if (bookmarks[bookmark.section]) {
           bookmarks[bookmark.section].push(bookmark);
         } else if (isCustomBookmarks) {

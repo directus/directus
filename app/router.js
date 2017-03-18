@@ -39,6 +39,7 @@ define(function(require, exports, module) {
       "tables(/pref/:pref)":                         "tables",
       "tables/:name(/pref/:pref)(/pref/:pref)":      "entries",
       "tables/:name/:id(/pref/:pref)":               "entry",
+      "bookmark/:title":                             "bookmark",
       "activity(/pref/:pref)":                       "activity",
       "files(/pref/:pref)(/pref/:pref)":             "files",
       "files/:id(/pref/:pref)":                      "filesItem",
@@ -332,7 +333,7 @@ define(function(require, exports, module) {
 
     entries: function(tableName, pref) {
       var privileges = SchemaManager.getPrivileges(tableName);
-      if (_.contains(this.navBlacklist,'tables') || (privileges && privileges.get('allow_view') === 0)) {
+      if (_.contains(this.navBlacklist, 'tables') || (privileges && privileges.get('allow_view') === 0)) {
         return this.notFound();
       }
 
@@ -442,6 +443,32 @@ define(function(require, exports, module) {
       view.render();
     },
 
+    bookmark: function (tableName, title) {
+      var collection = this.currentCollection = EntriesManager.getInstance(tableName).clone();
+      var originalPreferencesUrl = collection.preferences.url;
+      var self = this;
+
+      collection.preferences = collection.preferences.clone();
+      collection.preferences.url = originalPreferencesUrl;
+      collection.preferences.fetch({title: title})
+        .then(function (resp) {
+          var promise;
+
+          if (resp.success === false) {
+            promise = $.Deferred().reject(resp).promise()
+          } else {
+            promise = collection.fetch();
+          }
+
+          return promise;
+        }).done(function () {
+          self.entries(tableName);
+          self.currentCollection = undefined;
+        }).fail(function () {
+          self.notFound();
+        });
+    },
+
     activity: function() {
       if (_.contains(this.navBlacklist,'activity'))
         return this.notFound();
@@ -549,7 +576,6 @@ define(function(require, exports, module) {
         case 'global':
           this.v.main.setView('#content', new Settings.Global({
             model: app.settings.asModel(),
-            title: __t('global'),
             structure: app.schemaManager.getSettingsSchemas()
           }));
           break;
