@@ -6,7 +6,7 @@
 //  For all details and documentation:
 //  http://www.getdirectus.com
 
-define(['underscore', function (_) {
+define(['underscore'], function (_) {
 
   'use strict';
 
