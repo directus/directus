@@ -213,6 +213,24 @@ body.help {
 				cursor: pointer;
 			}
 		}
+		.fields {
+			.field {
+				padding: 16px 0 20px 0;
+				&:last-child {
+					border-bottom: none;
+				}
+				.label {
+					display: block;
+					width: 100%;
+				}
+				.comment {
+					width: 100%;
+				}
+				.interface {
+					margin-top: 6px;
+				}
+			}
+		}
 		&.confirm .modal-bg {
 			min-width: 500px;
 			h5 {
@@ -372,14 +390,14 @@ body.help {
 				margin-top: 30px;
 			}
 		}
-		&.invite .modal-bg {
+		&.invitation .modal-bg {
 			width: 460px;
 			text-align: left;
 			h1 {
 				margin-bottom: 5px;
 			}
 			h5 {
-				margin-bottom: 30px;
+				margin-bottom: 20px;
 				font-weight: 400;
 			}
 			.row {
@@ -402,6 +420,19 @@ body.help {
 					min-width: 200px;
 				}
 			}
+			.fields {
+				margin-bottom: 20px;
+				.field {
+					padding: 10px 0 20px 0;
+					border-bottom: none;
+					.label {
+						color: $primary;
+						margin-bottom: 4px;
+						font-size: 12px;
+						height: 16px;
+					}
+				}
+			}
 		}
 		&.column .modal-bg,
 		&.interface .modal-bg {
@@ -422,24 +453,6 @@ body.help {
 				font-size: 14px;
 				color: $gray-4;
 				border-top: 1px solid $gray-1;
-				.fields {
-					.field {
-						padding: 16px 0 20px 0;
-						&:last-child {
-							border-bottom: none;
-						}
-						.label {
-							display: block;
-							width: 100%;
-						}
-						.comment {
-							width: 100%;
-						}
-						.interface {
-							margin-top: 6px;
-						}
-					}
-				}
 			}
 		}
 		&.column .modal-bg {

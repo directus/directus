@@ -239,6 +239,64 @@ ul {
 //////////////////////////////////////////////////////////////////////////////
 // Other
 
+.loading {
+	@include transition (all, $timing-short, ease-in-out);
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: rgba($gray-1, 1);
+	opacity: 0;
+	z-index: 0;
+	&.blocking {
+		z-index: 999;
+	}
+	&.fading {
+		opacity: 1;
+	}
+	.loading-container {
+		@include border-radius (2px);
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		width: 200px;
+		height: 4px;
+		margin-left: -100px;
+		background-color: $white;
+		.loading-bar {
+			@include transition (all, $timing-long, cubic-bezier(0.23, 1, 0.32, 1));
+			@include border-radius (2px);
+			animation: pulsate-login 1s ease-out;
+			animation-iteration-count: infinite;
+			position: absolute;
+			top: 0;
+			bottom: 0;
+			left: 0;
+			width: 0%;
+			background-color: $primary;
+			&.step-1 {
+				width: 80%;
+			}
+			&.step-2 {
+				width: 99%;
+			}
+			&.error {
+				background-color: $serious;
+			}
+		}
+	}
+	.readout {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		width: 200px;
+		margin-left: -100px;
+		margin-top: 15px;
+		color: $gray-3;
+		text-align: center;
+	}
+}
 .section-break {
 	width: 80%;
 	text-align: center;

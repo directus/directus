@@ -48,6 +48,9 @@
 <body dir="{{dir}}" class="{% block bodyClass %}{% endblock %}"><!-- Options: help -->
 {# @NOTE: not part of the new design #}
 <div id="main">
+
+	<div class="loading blocking fading"><div class="loading-container"><div class="loading-bar step-1"></div></div><div class="readout">Loading</div></div>
+
 	{% if page == 'login' %}
 
 	{# Login #}

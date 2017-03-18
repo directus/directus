@@ -274,6 +274,74 @@ ul {
   margin: 0;
   padding: 0; }
 
+.loading {
+  -webkit-transition: all 200ms ease-in-out 0ms;
+  -moz-transition: all 200ms ease-in-out 0ms;
+  -o-transition: all 200ms ease-in-out 0ms;
+  -ms-transition: all 200ms ease-in-out 0ms;
+  transition: all 200ms ease-in-out 0ms;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #eeeeee;
+  opacity: 0;
+  z-index: 0; }
+  .loading.blocking {
+    z-index: 999; }
+  .loading.fading {
+    opacity: 1; }
+  .loading .loading-container {
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    border-radius: 2px;
+    -moz-background-clip: padding;
+    -webkit-background-clip: padding-box;
+    background-clip: padding-box;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 200px;
+    height: 4px;
+    margin-left: -100px;
+    background-color: #FFFFFF; }
+    .loading .loading-container .loading-bar {
+      -webkit-transition: all 4000ms cubic-bezier(0.23, 1, 0.32, 1) 0ms;
+      -moz-transition: all 4000ms cubic-bezier(0.23, 1, 0.32, 1) 0ms;
+      -o-transition: all 4000ms cubic-bezier(0.23, 1, 0.32, 1) 0ms;
+      -ms-transition: all 4000ms cubic-bezier(0.23, 1, 0.32, 1) 0ms;
+      transition: all 4000ms cubic-bezier(0.23, 1, 0.32, 1) 0ms;
+      -webkit-border-radius: 2px;
+      -moz-border-radius: 2px;
+      border-radius: 2px;
+      -moz-background-clip: padding;
+      -webkit-background-clip: padding-box;
+      background-clip: padding-box;
+      animation: pulsate-login 1s ease-out;
+      animation-iteration-count: infinite;
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      width: 0%;
+      background-color: #3498DB; }
+      .loading .loading-container .loading-bar.step-1 {
+        width: 80%; }
+      .loading .loading-container .loading-bar.step-2 {
+        width: 99%; }
+      .loading .loading-container .loading-bar.error {
+        background-color: #F44336; }
+  .loading .readout {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 200px;
+    margin-left: -100px;
+    margin-top: 15px;
+    color: #CCCCCC;
+    text-align: center; }
+
 .section-break {
   width: 80%;
   text-align: center;
@@ -3453,6 +3521,17 @@ body.help .discover-spotlight {
         color: #FFFFFF;
         opacity: 0;
         cursor: pointer; }
+    .smoke .modal .fields .field {
+      padding: 16px 0 20px 0; }
+      .smoke .modal .fields .field:last-child {
+        border-bottom: none; }
+      .smoke .modal .fields .field .label {
+        display: block;
+        width: 100%; }
+      .smoke .modal .fields .field .comment {
+        width: 100%; }
+      .smoke .modal .fields .field .interface {
+        margin-top: 6px; }
     .smoke .modal.confirm .modal-bg {
       min-width: 500px; }
       .smoke .modal.confirm .modal-bg h5 {
@@ -3603,30 +3682,40 @@ body.help .discover-spotlight {
       .smoke .modal.profile .modal-bg .button {
         width: 100%;
         margin-top: 30px; }
-    .smoke .modal.invite .modal-bg {
+    .smoke .modal.invitation .modal-bg {
       width: 460px;
       text-align: left; }
-      .smoke .modal.invite .modal-bg h1 {
+      .smoke .modal.invitation .modal-bg h1 {
         margin-bottom: 5px; }
-      .smoke .modal.invite .modal-bg h5 {
-        margin-bottom: 30px;
+      .smoke .modal.invitation .modal-bg h5 {
+        margin-bottom: 20px;
         font-weight: 400; }
-      .smoke .modal.invite .modal-bg .row {
+      .smoke .modal.invitation .modal-bg .row {
         position: relative;
         margin-bottom: 30px;
         font-size: 14px;
         color: #999999; }
-        .smoke .modal.invite .modal-bg .row .label {
+        .smoke .modal.invitation .modal-bg .row .label {
           color: #3498DB;
           font-size: 12px;
           height: 16px;
           font-weight: 500;
           margin-bottom: 4px; }
-        .smoke .modal.invite .modal-bg .row textarea {
+        .smoke .modal.invitation .modal-bg .row textarea {
           width: 100%;
           height: 140px; }
-        .smoke .modal.invite .modal-bg .row select {
+        .smoke .modal.invitation .modal-bg .row select {
           min-width: 200px; }
+      .smoke .modal.invitation .modal-bg .fields {
+        margin-bottom: 20px; }
+        .smoke .modal.invitation .modal-bg .fields .field {
+          padding: 10px 0 20px 0;
+          border-bottom: none; }
+          .smoke .modal.invitation .modal-bg .fields .field .label {
+            color: #3498DB;
+            margin-bottom: 4px;
+            font-size: 12px;
+            height: 16px; }
     .smoke .modal.column .modal-bg, .smoke .modal.interface .modal-bg {
       width: 600px;
       text-align: left; }
@@ -3643,17 +3732,6 @@ body.help .discover-spotlight {
         font-size: 14px;
         color: #999999;
         border-top: 1px solid #EEEEEE; }
-        .smoke .modal.column .modal-bg .row .fields .field, .smoke .modal.interface .modal-bg .row .fields .field {
-          padding: 16px 0 20px 0; }
-          .smoke .modal.column .modal-bg .row .fields .field:last-child, .smoke .modal.interface .modal-bg .row .fields .field:last-child {
-            border-bottom: none; }
-          .smoke .modal.column .modal-bg .row .fields .field .label, .smoke .modal.interface .modal-bg .row .fields .field .label {
-            display: block;
-            width: 100%; }
-          .smoke .modal.column .modal-bg .row .fields .field .comment, .smoke .modal.interface .modal-bg .row .fields .field .comment {
-            width: 100%; }
-          .smoke .modal.column .modal-bg .row .fields .field .interface, .smoke .modal.interface .modal-bg .row .fields .field .interface {
-            margin-top: 6px; }
     .smoke .modal.column .modal-bg {
       width: 600px;
       text-align: left; }
