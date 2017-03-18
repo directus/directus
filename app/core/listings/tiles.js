@@ -58,13 +58,13 @@ define(['app', 'underscore', 'backbone', 'core/listings/baseView', 'core/t'], fu
         };
 
         _.each(this.titleColumns(), function(column) {
-          options.title[column.id] = column.id;
-          options.subtitle[column.id] = column.id;
-          options.type[column.id] = column.id;
+          options.title[column.id] = app.capitalize(column.id);
+          options.subtitle[column.id] = app.capitalize(column.id);
+          options.type[column.id] = app.capitalize(column.id);
         });
 
         _.each(this.fileColumns(), function(column) {
-          options.file[column.id] = column.id;
+          options.file[column.id] = app.capitalize(column.id);
         });
 
         return {

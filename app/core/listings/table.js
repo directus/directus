@@ -71,11 +71,11 @@ define([
         });
 
         _.each(this.dateColumns(), function(column) {
-          options.dateColumns[column.id] = column.id;
+          options.dateColumns[column.id] = app.capitalize(column.id);
         });
 
         _.each(this.numericColumns(), function(column) {
-          options.numericColumns[column.id] = column.id;
+          options.numericColumns[column.id] = app.capitalize(column.id);
         });
 
         app.on('beforeCreateInput:fake:views_options_table:chart_enabled', _.bind(function (UI, options) {

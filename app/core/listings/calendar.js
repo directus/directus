@@ -52,11 +52,11 @@ define([
         };
 
         _.each(this.dateColumns(), function(column) {
-          options.datetime[column.id] = column.id;
+          options.datetime[column.id] = app.capitalize(column.id);
         });
 
         _.each(this.titleColumns(), function(column) {
-          options.title[column.id] = column.id;
+          options.title[column.id] = app.capitalize(column.id);
         });
 
         return [

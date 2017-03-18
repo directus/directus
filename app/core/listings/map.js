@@ -28,7 +28,7 @@ define([
         };
 
         _.each(this.locationColumns(), function(column) {
-          options.location[column.id] = column.id;
+          options.location[column.id] = app.capitalize(column.id);
         });
 
         return {
