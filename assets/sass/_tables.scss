@@ -145,7 +145,7 @@ table {
 			}
 			td {
 				@include transition (padding, $timing-short, ease-in-out);
-				min-width: 100px;
+				min-width: 30px;
 				height: 40px;
 				padding-left: 4px;
 				padding-right: 4px;

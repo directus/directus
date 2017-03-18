@@ -1512,7 +1512,7 @@ table {
       -o-transition: padding 200ms ease-in-out 0ms;
       -ms-transition: padding 200ms ease-in-out 0ms;
       transition: padding 200ms ease-in-out 0ms;
-      min-width: 100px;
+      min-width: 30px;
       height: 40px;
       padding-left: 4px;
       padding-right: 4px; }
@@ -3761,11 +3761,11 @@ body.help .discover-spotlight {
         padding-top: 20px; }
         .smoke .modal.column .modal-bg .row .relational-arrow-left {
           position: absolute;
-          right: -13px;
+          right: -23px;
           top: 9px; }
         .smoke .modal.column .modal-bg .row .relational-arrow-right {
           position: absolute;
-          left: -13px;
+          left: -23px;
           top: 9px; }
         .smoke .modal.column .modal-bg .row .strict-naming {
           position: absolute;
@@ -3808,9 +3808,9 @@ body.help .discover-spotlight {
         .smoke .modal.column .modal-bg .row .column-66 {
           position: relative;
           display: inline-block;
-          width: 66.666%;
+          width: 65%;
           padding-top: 4px;
-          padding-left: 0;
+          padding-left: 30px;
           padding-right: 0;
           margin-bottom: -55px;
           font-size: 12px;
