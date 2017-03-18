@@ -316,7 +316,7 @@ define([
 
           _.each(revisions, function (revision) {
             var model = systemCollection.get(revision.id);
-            // if the collection are filtered some models may not be present
+            // if the collection are filtered some models may not be
             if (model) {
               model.set('_revisions', revision.count);
             }
@@ -410,16 +410,18 @@ define([
         this.trigger('toggleRightPane');
       },
 
-      constructor: function() {
+      constructor: function (options) {
         View.prototype.constructor.apply(this, arguments);
 
         this.showChart = this.supportsChart();
 
-        this.collection.preferences.on('sync', this.updateSystemColumns, this);
-        this.collection.on('sync', this.fetchComments, this);
-        this.collection.on('sync', this.fetchRevisions, this);
-        this.collection.on('sync', this.fetchUpdates, this);
-        this.listenTo(this, 'onShowMore', this.onShowMore);
+        if (options.system === true) {
+          this.collection.preferences.on('sync', this.updateSystemColumns, this);
+          this.collection.on('sync', this.fetchComments, this);
+          this.collection.on('sync', this.fetchRevisions, this);
+          this.collection.on('sync', this.fetchUpdates, this);
+          this.listenTo(this, 'onShowMore', this.onShowMore);
+        }
       }
     })
   }
