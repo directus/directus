@@ -1361,7 +1361,8 @@ table {
       -ms-transition: width 200ms ease-in-out 0ms;
       transition: width 200ms ease-in-out 0ms;
       padding: 8px 4px 6px 4px;
-      height: 40px; }
+      height: 40px;
+      cursor: default; }
       table thead tr th.right-sidebar-toggle {
         -webkit-transition: color 200ms ease-in-out 0ms;
         -moz-transition: color 200ms ease-in-out 0ms;
@@ -1376,6 +1377,15 @@ table {
         vertical-align: middle;
         margin-top: -2px;
         color: #CCCCCC; }
+      table thead tr th.reorder {
+        -webkit-transition: color 200ms ease-in-out 0ms;
+        -moz-transition: color 200ms ease-in-out 0ms;
+        -o-transition: color 200ms ease-in-out 0ms;
+        -ms-transition: color 200ms ease-in-out 0ms;
+        transition: color 200ms ease-in-out 0ms;
+        cursor: pointer; }
+        table thead tr th.reorder.active, table thead tr th.reorder:hover {
+          color: #3498DB; }
       table thead tr th.visible .material-icons, table thead tr th.required .material-icons {
         font-size: 20px; }
   table tbody {

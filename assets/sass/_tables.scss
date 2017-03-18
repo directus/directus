@@ -21,6 +21,7 @@ table {
 				@include transition (width, $timing-short, ease-in-out);
 				padding: 8px 4px 6px 4px; // Optical vertical centering (no descenders in uppercase)
 				height: 40px;
+				cursor: default;
 				&.right-sidebar-toggle {
 					@include transition (color, $timing-short, ease-in-out);
 					white-space: nowrap;
@@ -35,6 +36,14 @@ table {
 					vertical-align: middle;
 					margin-top: -2px;
 					color: $gray-3;
+				}
+				&.reorder {
+					@include transition (color, $timing-short, ease-in-out);
+					cursor: pointer;
+					&.active,
+					&:hover {
+						color: $primary;
+					}
 				}
 				&.visible,
 				&.required {
