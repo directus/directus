@@ -191,9 +191,8 @@ class Messages extends Route
 
         $message = $messagesTableGateway->fetchMessageWithRecipients($id, $currentUserId);
 
-        if ($responseTo !== null) {
-            $message = array_shift(ArrayUtils::get($message, 'responses.data', []));
-        }
+        $messageData = ArrayUtils::get($message, 'responses.data', []);
+        $message = array_shift($messageData);
 
         $response = [
             'meta' => ['table' => 'directus_messages', 'type' => 'item'],
