@@ -1442,13 +1442,14 @@ table {
         font-size: 10px;
         color: #999999;
         width: 30px;
-        padding-left: 10px;
         min-width: 30px;
+        padding-right: 0;
         text-align: center; }
       table tbody tr td.reorder {
         white-space: nowrap;
         width: 30px;
-        min-width: auto; }
+        min-width: 30px;
+        padding-right: 0; }
         table tbody tr td.reorder .reorder-handle {
           -webkit-transition: color 200ms ease-in-out 0ms;
           -moz-transition: color 200ms ease-in-out 0ms;
@@ -1460,8 +1461,9 @@ table {
             color: #999999; }
       table tbody tr td.status {
         white-space: nowrap;
-        width: 40px;
-        min-width: auto; }
+        width: 30px;
+        min-width: 30px;
+        padding-right: 8px; }
       table tbody tr td.required {
         color: #CCCCCC;
         white-space: nowrap;
@@ -1770,6 +1772,10 @@ table {
   table.pad-first thead tr th:nth-child(1),
   table.pad-first tbody tr td:nth-child(1) {
     padding-left: 20px; }
+  table.pad-status tfoot tr td.status,
+  table.pad-status thead tr th.status,
+  table.pad-status tbody tr td.status {
+    padding-left: 15px; }
   table.fixed-header {
     margin-top: 40px;
     margin-bottom: 40px; }
@@ -2211,8 +2217,7 @@ body.loading .header .logo {
     position: relative;
     display: none;
     vertical-align: top;
-    margin-top: 11px;
-    margin-right: 10px; }
+    margin-top: 11px; }
     .header #bulkStatus select {
       border: none; }
   .header .tools-right {
@@ -4938,6 +4943,8 @@ body.help .discover-spotlight {
     .fields .field .interface input[type="range"]:focus + .slider-value,
     .fields .field .interface input[type="range"]:active + .slider-value {
       color: #3498DB; }
+    .fields .field .interface .toggle-directus-tables {
+      margin-top: 10px; }
     .fields .field .interface .attachments.multiple .dropzone {
       display: inline-block;
       width: 200px;

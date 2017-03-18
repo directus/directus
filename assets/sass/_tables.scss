@@ -153,14 +153,15 @@ table {
 					font-size: 10px;
 					color: $gray-4;
 					width: 30px;
-					padding-left: 10px;
 					min-width: 30px;
+					padding-right: 0;
 					text-align: center;
 				}
 				&.reorder {
 					white-space: nowrap;
 					width: 30px;
-					min-width: auto;
+					min-width: 30px;
+					padding-right: 0;
 					.reorder-handle {
 						@include transition (color, $timing-short, ease-in-out);
 						color: $gray-1;
@@ -171,8 +172,9 @@ table {
 				}
 				&.status {
 					white-space: nowrap;
-					width: 40px;
-					min-width: auto;
+					width: 30px;
+					min-width: 30px;
+					padding-right: 8px;
 				}
 				&.required {
 					color: $gray-3;
@@ -491,6 +493,13 @@ table {
 		thead tr th:nth-child(1),
 		tbody tr td:nth-child(1) {
 			padding-left: 20px;
+		}
+	}
+	&.pad-status { // More specific to account for "static numbers", etc
+		tfoot tr td.status,
+		thead tr th.status,
+		tbody tr td.status {
+			padding-left: 15px;
 		}
 	}
 	&.fixed-header {
