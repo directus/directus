@@ -123,6 +123,7 @@ define([
       }
 
       if (!currentMessage) {
+        this.displayNewMessage();
         return;
       }
 
