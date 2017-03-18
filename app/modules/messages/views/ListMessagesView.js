@@ -318,11 +318,20 @@ define([
     },
 
     afterRender: function () {
+      this.$('.resize-handle').on('mouseover', function (event) {
+        $('.resize-left').addClass('resize-hover');
+      });
+
+      this.$('.resize-handle').on('mouseout', function (event) {
+        $('.resize-left').removeClass('resize-hover');
+      });
+
       this.$('.resize-handle').on('mousedown', function (event) {
         event.preventDefault();
+        $('.resize-left').addClass('resize-active');
         isResizing = true;
         lastDownX = event.clientX;
-        console.log(1, lastDownX);
+        // console.log(1, lastDownX);
       });
 
       lastDownX = this.$('.resize-left').css('width');
@@ -331,6 +340,7 @@ define([
       $(document).on('mousemove.messages', function (event) {
         resizeMessages(event, $el, false);
       }).on('mouseup.messages', function (event) {
+        $('.resize-left').removeClass('resize-active');
         isResizing = false;
       });
     },

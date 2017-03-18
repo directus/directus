@@ -4482,11 +4482,20 @@ body.help .discover-spotlight {
     cursor: col-resize; }
 
 .message-listing {
+  -webkit-transition: border-color 200ms ease-in-out 0ms;
+  -moz-transition: border-color 200ms ease-in-out 0ms;
+  -o-transition: border-color 200ms ease-in-out 0ms;
+  -ms-transition: border-color 200ms ease-in-out 0ms;
+  transition: border-color 200ms ease-in-out 0ms;
   border-right: 1px solid #EEEEEE;
   min-width: 300px;
   width: 40%;
   height: 100%;
   overflow: auto; }
+  .message-listing.resize-hover {
+    border-color: #CCCCCC; }
+  .message-listing.resize-active {
+    border-color: #3498DB; }
   .message-listing.empty {
     width: 100%; }
   .message-listing .message-preview {

@@ -292,11 +292,18 @@
 }
 
 .message-listing {
+	@include transition (border-color, $timing-short, ease-in-out);
 	border-right: 1px solid $gray-1;
 	min-width: 300px;
 	width: 40%;
 	height: 100%;
 	overflow: auto;
+	&.resize-hover {
+		border-color: $gray-3;
+	}
+	&.resize-active {
+		border-color: $primary;
+	}
 	&.empty {
 		width: 100%;
 	}
