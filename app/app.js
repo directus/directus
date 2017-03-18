@@ -92,11 +92,6 @@ define(function(require, exports, module) {
     //    });
     //},
 
-    // http://stackoverflow.com/a/1830844
-    isNumber: function(n) {
-      return !isNaN(parseFloat(n)) && isFinite(n);
-    },
-
     evaluateExpression: function(a, operator, b) {
       switch (operator) {
         case '==':

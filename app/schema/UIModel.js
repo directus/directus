@@ -5,6 +5,7 @@ define(function(require, exports, module) {
   var app = require('app');
   var _ = require('underscore');
   var Backbone = require('backbone');
+  var Utils = require('utils');
 
   module.exports = Backbone.Model.extend({
 
@@ -48,10 +49,6 @@ define(function(require, exports, module) {
         return;
       }
 
-      var isNothing = function(value) {
-        return value === undefined || value === null || value === '' || (!app.isNumber(value) && !_.isDate(value) && _.isEmpty(value));
-      };
-
       // only validates attributes that are part of the schema
       attributes = _.pick(attributes, structure.pluck('id'));
       _.each(attributes, function(value, key, list) {
@@ -75,7 +72,7 @@ define(function(require, exports, module) {
         var nullDisallowed = column.get('is_nullable') === 'NO';
         var ui = UIManager._getUI(column.get('ui'));
         var forceUIValidation = ui.forceUIValidation === true;
-        var isNull = isNothing(value);
+        var isNull = Utils.isNothing(value);
         var uiSettings = UIManager.getSettings(column.get('ui'));
         var skipSerializationIfNull = uiSettings.skipSerializationIfNull;
         var mess = (!forceUIValidation && !skipSerializationIfNull && nullDisallowed && isNull) ?
