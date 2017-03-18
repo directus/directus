@@ -67,7 +67,7 @@ define([
         };
 
         _.each(app.config.get('spacings'), function(name) {
-          options.spacings[name] = name;
+          options.spacings[name] = app.capitalize(__t(name));
         });
 
         _.each(this.dateColumns(), function(column) {
