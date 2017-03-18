@@ -217,7 +217,11 @@ function(app, Backbone, _, __t, BasePageView, ListViewManager, TableViewRightPan
       this.table = newView;
       this.table.savePreferences('currentView', viewId, true);
 
-      this.render();
+      this.table.fetchData().done(_.bind(function () {
+        this.render();
+      }, this));
+
+      // this.render();
     },
 
     getCurrentView: function() {
@@ -246,7 +250,7 @@ function(app, Backbone, _, __t, BasePageView, ListViewManager, TableViewRightPan
 
     beforeRender: function() {
       this.setView('#page-content', this.table);
-      this.tryFetch({wait: true});
+      // this.tryFetch({wait: true});
 
       BasePageView.prototype.beforeRender.apply(this, arguments);
     },

@@ -30,19 +30,36 @@ define([
       },
 
       prev: function() {
+        var self = this;
         this.state.currentDate = moment(this.state.currentDate).add(-1, 'months');
-        this.updateCalendar();
+        this.updateCalendar().then(function () {
+          self.render();
+        });
       },
 
       next: function() {
+        var self = this;
         this.state.currentDate = moment(this.state.currentDate).add(1, 'months');
-        this.updateCalendar();
+        this.updateCalendar().then(function () {
+          self.render();
+        });
       },
 
       updateCalendar: function() {
         this.updateDateRangeFilter();
-        this.render();
-        this.collection.fetch(this.fetchOptions);
+
+        var xhr = this.collection.fetch(this.fetchOptions);
+        var self = this;
+
+        xhr.done(function () {
+          self.render();
+        });
+
+        return xhr;
+      },
+
+      fetchData: function () {
+        return this.updateCalendar();
       },
 
       optionsStructure: function() {
@@ -240,12 +257,16 @@ define([
         this.render();
       },
 
-      onEnable: function() {
+      onEnable: function () {
+        this.fetchOptions = {};
+      },
+
+      bindEvents: function() {
         this.collection.on('sync', this.render, this);
         this.collection.preferences.on('sync', this.onPreferencesUpdated, this);
       },
 
-      onDisable: function() {
+      unbindEvents: function() {
         this.collection.off('sync', this.render, this);
         this.collection.preferences.off('sync', this.onPreferencesUpdated, this);
       },
@@ -272,8 +293,6 @@ define([
           currentDate: moment().format(),
           isUsingDateTime: this.isUsingDateTime()
         });
-
-        this.fetchOptions = {};
 
         this.updateDateRangeFilter(moment(this.state.currentDate));
       }

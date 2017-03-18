@@ -59,6 +59,17 @@ define([
         return data;
       },
 
+      fetchData: function () {
+        var xhr = this.collection.fetch();
+        var self = this;
+
+        xhr.done(function () {
+          self.render();
+        });
+
+        return xhr;
+      },
+
       optionsStructure: function() {
         var options = {
           spacings: {},
@@ -178,14 +189,6 @@ define([
         var column = this.getDateColumn();
 
         return column.get('type') === 'DATETIME';
-      },
-
-      onEnable: function() {
-        this.on('preferences:updated', this.updateTableSpacing, this);
-      },
-
-      onDisable: function() {
-        this.off('preferences:updated', this.updateTableSpacing, this);
       },
 
       updateTableSpacing: function() {
@@ -410,19 +413,35 @@ define([
         this.trigger('toggleRightPane');
       },
 
-      constructor: function (options) {
-        BaseView.prototype.constructor.apply(this, arguments);
-        TableView.prototype._configureTable.call(this, options);
+      bindEvents: function () {
+        this.on('preferences:updated', this.updateTableSpacing, this);
 
-        this.showChart = this.supportsChart();
-
-        if (options.system === true) {
+        if (this.options.system === true) {
           this.collection.preferences.on('sync', this.updateSystemColumns, this);
           this.collection.on('sync', this.fetchComments, this);
           this.collection.on('sync', this.fetchRevisions, this);
           this.collection.on('sync', this.fetchUpdates, this);
           this.listenTo(this, 'onShowMore', this.onShowMore);
         }
+      },
+
+      unbindEvents: function () {
+        this.off('preferences:updated', this.updateTableSpacing, this);
+
+        if (this.options.system === true) {
+          this.collection.preferences.off('sync', this.updateSystemColumns, this);
+          this.collection.off('sync', this.fetchComments, this);
+          this.collection.off('sync', this.fetchRevisions, this);
+          this.collection.off('sync', this.fetchUpdates, this);
+          this.stopListening(this, 'onShowMore', this.onShowMore);
+        }
+      },
+
+      constructor: function (options) {
+        BaseView.prototype.constructor.apply(this, arguments);
+        TableView.prototype._configureTable.call(this, options);
+
+        this.showChart = this.supportsChart();
       }
     })
   }

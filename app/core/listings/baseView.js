@@ -41,10 +41,9 @@ define(['app', 'underscore', 'backbone', 'core/t'], function(app, _, Backbone, _
         this.baseView.on('rightPane:input:change', this.savePreferences, this);
       }
 
-      this.onEnable();
+      _.result(this, 'bindEvents');
+      _.result(this, 'onEnable');
     },
-
-    onEnable: function() {},
 
     disable: function() {
       if (!this._isEnabled) {
@@ -58,10 +57,9 @@ define(['app', 'underscore', 'backbone', 'core/t'], function(app, _, Backbone, _
         this.baseView.off('rightPane:input:change', this.savePreferences, this);
       }
 
-      this.onDisable();
+      _.result(this, 'unbindEvents');
+      _.result(this, 'onDisable');
     },
-
-    onDisable: function() {},
 
     savePreferences: function(name, value, global) {
       var attributes = {};
