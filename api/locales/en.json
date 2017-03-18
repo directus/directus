@@ -135,6 +135,7 @@
     "permissions_write": "Write",
     "permissions_write_blacklist": "Column Write Blacklist",
     "permissions_choose_columns": "Choose Columns",
+    "permissions_toggle_directus_tables": "Toggle Directus Tables",
     "permissions_user_created_column_no_chosen": "no column chosen",
     "permissions_field_level_permissions": "Field-Level Permissions",
     "permissions_can_view_any_items": "Can View Any Items",
