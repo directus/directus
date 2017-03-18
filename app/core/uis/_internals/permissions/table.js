@@ -4,42 +4,44 @@ define(['app', 'underscore', 'backbone', 'core/t', 'core/Modal'], function(app, 
     template: 'modules/settings/permissions-fields',
 
     events: {
-      'click .js-select-column': function(event) {
-        var $checkbox = $(event.currentTarget);
-        var $row = $checkbox.closest('tr');
-        var attr = this.name + '_field_blacklist';
-        var columnName = $row.data('column');
-        var blacklist = (this.model.get(attr)) ? this.model.get(attr).split(',') : [];
-        var changed = false;
+      'click .js-select-column': 'onSelectColumn'
+    },
 
-        // Remove or add to blacklist
-        if (!$checkbox.is(':checked')) {
-          if (!this.hasColumn(columnName)) {
-            blacklist.push(columnName);
-            changed = true;
-          }
-        } else {
-          if (this.hasColumn(columnName)) {
-            blacklist.splice(blacklist.indexOf(columnName), 1);
-            changed = true;
-          }
-        }
+    onSelectColumn: function(event) {
+      var $checkbox = $(event.currentTarget);
+      var $row = $checkbox.closest('tr');
+      var attr = this.name + '_field_blacklist';
+      var columnName = $row.data('column');
+      var blacklist = (this.model.get(attr)) ? this.model.get(attr).split(',') : [];
+      var changed = false;
 
-        if (changed) {
-          var attrs = {};
-          attrs[attr] = blacklist.join(',');
-          this.model.save(attrs, {patch: true});
+      // Remove or add to blacklist
+      if (!$checkbox.is(':checked')) {
+        if (!this.hasColumn(columnName)) {
+          blacklist.push(columnName);
+          changed = true;
         }
+      } else {
+        if (this.hasColumn(columnName)) {
+          blacklist.splice(blacklist.indexOf(columnName), 1);
+          changed = true;
+        }
+      }
+
+      if (changed) {
+        var attrs = {};
+        attrs[attr] = blacklist.join(',');
+        this.model.save(attrs, {patch: true});
       }
     },
 
-    hasColumn: function(name) {
+    hasColumn: function (name) {
       var blacklist = (this.model.get(this.name + '_field_blacklist') || '').split(',');
 
       return blacklist.indexOf(name) >= 0;
     },
 
-    serialize: function() {
+    serialize: function () {
       var data = {columns: []};
       var blacklist = (this.model.get(this.name + '_field_blacklist') || '').split(',');
 
@@ -61,18 +63,18 @@ define(['app', 'underscore', 'backbone', 'core/t', 'core/Modal'], function(app, 
       return data;
     },
 
-    initialize: function(options) {
+    initialize: function (options) {
       this.name = options.type;
       this.render();
     }
   });
 
   var EditFieldsModal = ModalView.extend({
-    beforeRender: function() {
+    beforeRender: function () {
       this.setView('.modal-bg', this.view);
     },
 
-    initialize: function(options) {
+    initialize: function (options) {
       this.view = new EditFields(options);
     }
   });
@@ -90,7 +92,7 @@ define(['app', 'underscore', 'backbone', 'core/t', 'core/Modal'], function(app, 
       'click .js-read.choose-column-blacklist': 'editReadFields'
     },
 
-    toggleStatusSelector: function(event) {
+    toggleStatusSelector: function (event) {
       var $row = $(event.currentTarget).closest('tr');
       var id = $row.data('cid');
       var model = this.collection.get(id);
@@ -102,7 +104,7 @@ define(['app', 'underscore', 'backbone', 'core/t', 'core/Modal'], function(app, 
       $row.toggleClass('workflow-enabled');
     },
 
-    changeStatus: function(event) {
+    changeStatus: function (event) {
       var $el = $(event.currentTarget);
       var value = $el.data('value');
       var $row = $el.closest('tr');
@@ -129,7 +131,7 @@ define(['app', 'underscore', 'backbone', 'core/t', 'core/Modal'], function(app, 
       this.render();
     },
 
-    togglePermission: function(event) {
+    togglePermission: function (event) {
       var $toggle = $(event.currentTarget);
       var permission = $toggle.closest('td').data('name');
       var permissionName = 'allow_' + permission;
@@ -176,24 +178,24 @@ define(['app', 'underscore', 'backbone', 'core/t', 'core/Modal'], function(app, 
       model.save(attributes, options);
     },
 
-    editReadFields: function(event) {
+    editReadFields: function (event) {
       var id = $(event.currentTarget).closest('tr').data('id');
       this.editFields('read', id);
     },
 
-    editWriteFields: function(event) {
+    editWriteFields: function (event) {
       var id = $(event.currentTarget).closest('tr').data('id');
       this.editFields('write', id);
     },
 
-    editFields: function(type, id) {
+    editFields: function (type, id) {
       var model = this.collection.get(id);
 
       // @TODO: link real col
       app.router.openViewInModal(new EditFieldsModal({type: type, model: model}));
     },
 
-    permissionTitle: function(model, name) {
+    permissionTitle: function (model, name) {
       var title, permission;
 
       permission = 'allow_' + name;
@@ -210,7 +212,7 @@ define(['app', 'underscore', 'backbone', 'core/t', 'core/Modal'], function(app, 
       return title;
     },
 
-    parsePermissions: function(model) {
+    parsePermissions: function (model) {
       var permissions = [
         // View
         {
@@ -258,7 +260,7 @@ define(['app', 'underscore', 'backbone', 'core/t', 'core/Modal'], function(app, 
         // },
       ];
 
-      return permissions.map(function(permission) {
+      return permissions.map(function (permission) {
         permission.title = this.permissionTitle(model, permission.name);
 
         return permission;
@@ -267,9 +269,10 @@ define(['app', 'underscore', 'backbone', 'core/t', 'core/Modal'], function(app, 
 
     getTables: function () {
       var tables = [];
+      var showCoreTables = this.showCoreTables;
 
       app.schemaManager.getTables().forEach(function (table) {
-        if (this.showCoreTables !== true && table.id.indexOf('directus_') === 0) {
+        if (showCoreTables !== true && table.id.indexOf('directus_') === 0) {
           return false;
         }
 
@@ -374,6 +377,13 @@ define(['app', 'underscore', 'backbone', 'core/t', 'core/Modal'], function(app, 
       return columns.some(function(model) {
         return model.id === statusColumn;
       });
+    },
+
+    toggleTables: function () {
+      this.showCoreTables = ! this.showCoreTables;
+      this.render();
+
+      return this.showCoreTables;
     },
 
     initialize: function() {

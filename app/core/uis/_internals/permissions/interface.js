@@ -25,14 +25,18 @@ define([
     template: '_internals/permissions/interface',
 
     events: {
-      'click div.related-table > div td:not(.delete)': 'editRow',
-      'click button[data-action=add]': 'addRow',
-      'click button[data-action=insert]': 'insertRow',
-      'click td.delete': 'deleteRow'
+      'click .js-toggle-directus-tables': 'onToggleTables'
+    },
+
+    onToggleTables: function (event) {
+      event.preventDefault();
+
+      this.showCoreTables = this.nestedTableView.toggleTables();
     },
 
     serialize: function () {
       return {
+        showCoreTables: this.showCoreTables,
         isAdmin: this.model.id === 1,
         title: this.name,
         tableTitle: this.relatedCollection.table.get('table_name'),
