@@ -80,7 +80,9 @@ define([
     },
 
     addItems: function () {
-      this.collection.each(this.addItem, this);
+      this.collection.each(function (model) {
+        this.addItem(model);
+      }, this);
     },
 
     beforeRender: function() {
@@ -199,12 +201,12 @@ define([
       // @TODO: Fix adding new messages
       // Getting a new message will re-render everything
       // clearing any message that it could be have writing.
-      this.listenTo(this.collection, 'sync', function () {
-        if (this.state.lastMessageId != this.collection.maxId) {
-          this.state.lastMessageId = this.collection.maxId;
-          this.render();
-        }
-      });
+      // this.listenTo(this.collection, 'sync', function () {
+      //   if (this.state.lastMessageId != this.collection.maxId) {
+      //     this.state.lastMessageId = this.collection.maxId;
+      //     this.render();
+      //   }
+      // });
 
       this.state.lastMessageId = this.collection.maxId;
     }
@@ -304,7 +306,7 @@ define([
 
       // @TODO: Add new messages into the list without re rendering the existing messages
       // to prevent the annoying render that deletes all the text that hasn't been sent yet
-      this.listenTo(this.collection, 'add', _.bind(this.table.addItem, this.table));
+      // this.listenTo(this.collection, 'add', _.bind(this.table.addItem, this.table));
     }
   });
 });
