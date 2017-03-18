@@ -3,7 +3,7 @@
     <div class="from"><a href="#" class="js-user" data-id="{{from}}">{{userFirstAndLastName from}}</a></div>
     <div class="timeago">{{friendlyDateTime datetime}}</div><!-- Sunday, Nov 22, 1:09 PM -->
     <h1>{{subject}}</h1>
-    <div class="to">To: {{usersFirstAndLastName recipients}}</div>
+    <div class="to">{{t "message_to"}}: {{usersFirstAndLastName recipients}}</div>
 </div>
 
 <div>
@@ -45,6 +45,11 @@
     <div class="body">
         {{message}}
     </div>
+	{{#if reads}}
+	<div class="seen">
+		<i class="material-icons">visibility</i> {{usersFirstAndLastName reads}}
+	</div>
+	{{/if}}
     <div class="attachments">
         {{#attachment}}
         <div class="file js-file" data-id="{{id}}">
@@ -60,9 +65,6 @@
             </div>
         </div>
         {{/attachment}}
-    </div>
-    <div class="seen">
-        {{#if reads}}<i class="material-icons">visibility</i> {{usersFirstAndLastName reads}}{{/if}}
     </div>
 </div>
 {{/each}}

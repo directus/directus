@@ -175,6 +175,19 @@ class Table extends Route
                 'column_name' => $column
             ])->current();
 
+            if (!$columnData) {
+                $columnObject = TableSchema::getColumnSchema($table, $column);
+                $data = ArrayUtils::pick($columnObject->toArray(), [
+                    'table_name',
+                    'column_name',
+                    'data_type',
+                    'ui',
+                    'sort',
+                    'comment'
+                ]);
+                $columnData = $TableGateway->manageRecordUpdate('directus_columns', $data, TableGateway::ACTIVITY_ENTRY_MODE_DISABLED);
+            }
+
             if ($columnData) {
                 $columnData = $columnData->toArray();
 
@@ -200,7 +213,7 @@ class Table extends Route
             }
         }
 
-        $response = TableSchema::getSchemaArray($table, $params);
+        $response = TableSchema::getColumnSchema($table, $column, true);
         if (!$response) {
             $response = [
                 'error' => [

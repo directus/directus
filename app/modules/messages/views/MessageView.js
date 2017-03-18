@@ -65,6 +65,7 @@ define([
 
       data.responses = _.map(data.responses, function(response) {
         response.attachment = self.parseAttachment(response.attachment);
+        response.reads = response.reads ? response.reads.split(',') : null;
 
         return response;
       });

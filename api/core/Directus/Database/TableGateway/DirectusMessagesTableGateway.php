@@ -164,9 +164,10 @@ class DirectusMessagesTableGateway extends RelationalTableGateway
         foreach ($result as $item) {
             if ($item['response_to'] != null) {
                 // Move it to resultLookup
+                $message = $resultLookup[$item['id']];
                 unset($resultLookup[$item['id']]);
-                $item = $this->parseRecord($item);
-                $resultLookup[$item['response_to']]['responses']['data'][] = $item;
+                $message = $this->parseRecord($message);
+                $resultLookup[$item['response_to']]['responses']['data'][] = $message;
             }
         }
 
