@@ -8,6 +8,7 @@ define(function(require, exports, module) {
       ModelHelper             = require('helpers/model'),
       EntriesJunctionCollection = require('core/entries/EntriesJunctionCollection'),
       UIManager               = require('core/UIManager'),
+      Utils                   = require('utils'),
       SchemaManager           = require('schema/SchemaManager');
 
   var nestedTypes = ['many_to_one', 'single_file'];
@@ -57,9 +58,6 @@ define(function(require, exports, module) {
     validate: function(attributes, options) {
       var errors = [];
       var structure = this.getStructure();
-      var isNothing = function(value) {
-        return value === undefined || value === null || value === '' || (!app.isNumber(value) && !_.isDate(value) && _.isEmpty(value));
-      };
 
       //only validates attributes that are part of the schema
       attributes = _.pick(attributes, structure.pluck('column_name'));
@@ -82,7 +80,7 @@ define(function(require, exports, module) {
         var nullDisallowed = column.get('nullable') !== true;
         var ui = UIManager._getUI(column.get('ui'));
         var forceUIValidation = ui.forceUIValidation === true;
-        var isNull = isNothing(value);
+        var isNull = Utils.isNothing(value);
 
         var uiSettings = UIManager.getSettings(column.get('ui'));
 
