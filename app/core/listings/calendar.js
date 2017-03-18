@@ -76,26 +76,29 @@ define([
           options.title[column.id] = app.capitalize(column.id);
         });
 
-        return [
-          {
-            id: 'date_column',
-            type: 'String',
-            required: true,
-            ui: 'select',
-            options: {
-              options: options.datetime
+        return {
+          id: 'views_options_calendar',
+          columns: [
+            {
+              id: 'date_column',
+              type: 'String',
+              required: true,
+              ui: 'select',
+              options: {
+                options: options.datetime
+              }
+            },
+            {
+              id: 'title_column',
+              type: 'String',
+              required: true,
+              ui: 'select',
+              options: {
+                options: options.title
+              }
             }
-          },
-          {
-            id: 'title_column',
-            type: 'String',
-            required: true,
-            ui: 'select',
-            options: {
-              options: options.title
-            }
-          }
-        ]
+          ]
+        }
       },
 
       serialize: function() {

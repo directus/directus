@@ -32,6 +32,7 @@ define([
         });
 
         return {
+          id: 'views_options_map',
           columns: [
             {
               id: 'location_column',
