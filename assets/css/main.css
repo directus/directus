@@ -1669,8 +1669,8 @@ table {
           -webkit-background-clip: padding-box;
           background-clip: padding-box;
           display: inline-block;
-          padding: 4px 8px;
-          margin-right: 2px;
+          padding: 4px;
+          margin-right: 1px;
           margin-top: 4px;
           font-size: 10px;
           font-weight: 700;

@@ -385,8 +385,8 @@ table {
 						@include transition (all, $timing-short, ease-in-out);
 						@include border-radius (2px);
 						display: inline-block;
-						padding: 4px 8px;
-						margin-right: 2px;
+						padding: 4px;
+						margin-right: 1px;
 						margin-top: 4px;
 						font-size: 10px;
 						font-weight: 700;
