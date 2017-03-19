@@ -7,7 +7,7 @@ define(function(require, exports, module) {
     require('core/uis/textinput'),
     require('core/uis/directus_columns'),
     require('core/uis/divider'),
-    require('core/uis/instructions'),
+    require('core/uis/instructions/instructions'),
     require('core/uis/checkbox/checkbox'),
     require('core/uis/color'),
     require('core/uis/columns'),
