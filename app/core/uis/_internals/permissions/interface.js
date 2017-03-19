@@ -28,15 +28,12 @@ define([
       'click .js-toggle-directus-tables': 'onToggleTables'
     },
 
-    onToggleTables: function (event) {
-      event.preventDefault();
-
+    onToggleTables: function () {
       this.showCoreTables = this.nestedTableView.toggleTables();
     },
 
     serialize: function () {
       return {
-        showCoreTables: this.showCoreTables,
         isAdmin: this.model.id === 1,
         title: this.name,
         tableTitle: this.relatedCollection.table.get('table_name'),
