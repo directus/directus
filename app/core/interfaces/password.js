@@ -18,9 +18,9 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
                  <input type="password" value="{{value}}" class="medium password-confirm" style="display:block;margin-bottom:10px;" placeholder="{{t "password_confirm_placeholder"}}" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off"/> \
                  {{/if}} \
                  <div style="display:block;"> \
-                 <button class="btn btn-primary margin-left password-generate" style="margin-right:10px;" type="button">{{t "generate_new"}}</button> \
-                 <button class="btn btn-primary margin-left password-toggle" style="display:none;" type="button">{{t "reveal_password"}}</button> \
-                 <span class="placard encrypted hide add-color margin-left-small bold">{{t "password_encrypted"}}</span> \
+                 <button class="button password-generate" style="margin-right:10px;" type="button">{{t "generate_new"}}</button> \
+                 <button class="button password-toggle" style="display:none;" type="button">{{t "reveal_password"}}</button> \
+                 <span class="encrypted hidden">{{t "password_encrypted"}}</span> \
                  </div> \
                  ';
 
@@ -58,7 +58,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
           this.$el.find('.password-toggle').show();
           this.$el.data('isAPIHashed', false);
           this.$el.data('wasAPIHashed', false);
-          this.$el.find('.encrypted').addClass('hide');
+          this.$el.find('.encrypted').addClass('hidden');
           this.$el.find('input.password-primary').val(pass);
           this.$el.find('input.password-confirm').val(pass);
           if($confirm.length) {
@@ -104,7 +104,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
               $(this).val($(this).data('oldVal'));
               that.$el.data('isAPIHashed', true);
               that.$el.data('wasAPIHashed', false);
-              that.$el.find('.encrypted').removeClass('hide');
+              that.$el.find('.encrypted').removeClass('hidden');
               if($confirm.length) {
                 $confirm.attr('disabled','disabled');
               }
@@ -121,7 +121,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
 
         var clearFields = _.bind(function() {
           this.$el.data('isAPIHashed', false);
-          this.$el.find('.encrypted').addClass('hide');
+          this.$el.find('.encrypted').addClass('hidden');
           $password.val('');
           this.currentPlainPassword = '';
           this.$el.find('.password-toggle').hide();
@@ -156,7 +156,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
               $confirm.val(data.password);
               $confirm.attr('disabled','disabled');
             }
-            this.$el.find('.encrypted').removeClass('hide');
+            this.$el.find('.encrypted').removeClass('hidden');
             this.$el.data('isAPIHashed', true);
             return;
           }
