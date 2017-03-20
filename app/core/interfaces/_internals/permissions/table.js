@@ -4,15 +4,28 @@ define(['app', 'underscore', 'backbone', 'core/t', 'core/Modal'], function(app, 
     template: 'modules/settings/permissions-fields',
 
     events: {
+      'click .label': 'onLabelClick',
       'click .js-select-column': 'onSelectColumn'
+    },
+
+    onLabelClick: function (event) {
+      var $el = $(event.currentTarget);
+      var $checkbox = this.$('#' + $el.data('for'));
+
+      $checkbox.click();
     },
 
     onSelectColumn: function(event) {
       var $checkbox = $(event.currentTarget);
       var $row = $checkbox.closest('tr');
+
+      this.toggleColumn($row.data('column'));
+    },
+
+    toggleColumn: function (columnName) {
       var attr = this.name + '_field_blacklist';
-      var columnName = $row.data('column');
       var blacklist = (this.model.get(attr)) ? this.model.get(attr).split(',') : [];
+      var $checkbox = this.$('#check_' + columnName);
       var changed = false;
 
       // Remove or add to blacklist
