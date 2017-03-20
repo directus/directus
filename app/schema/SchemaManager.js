@@ -7,9 +7,9 @@ define(function(require, exports, module) {
 
   // Structures
   var ColumnModel        = require('./ColumnModel'),
+      PrivilegeModel     = require('./PrivilegeModel'),
       ColumnsCollection  = require('./ColumnsCollection'),
       TableModel         = require('./TableModel'),
-      Backbone           = require('backbone'),
       DirectusCollection = require('core/collection'),
       PreferenceModel    = require('core/PreferenceModel');
 
@@ -35,7 +35,7 @@ define(function(require, exports, module) {
    * @private
    * Default Privileges
    */
-  var defaultPrivileges = new Backbone.Model({}, {parse:true});
+  var defaultPrivileges = new PrivilegeModel({}, {parse:true});
 
   /**
    * @private
@@ -184,8 +184,7 @@ define(function(require, exports, module) {
     },
 
     addTable: function(tableName, callback) {
-      var model = new Backbone.Model();
-      model.url = app.API_URL + 'privileges/1';
+      var model = new PrivilegeModel();
       // @todo: set default values in the server side
       model.set({
         group_id: 1,
@@ -250,7 +249,7 @@ define(function(require, exports, module) {
         }
 
         if (!privileges[privilege.table_name][statusId]) {
-          privileges[privilege.table_name][statusId] = new Backbone.Model();
+          privileges[privilege.table_name][statusId] = new PrivilegeModel();
         }
 
         model = privileges[privilege.table_name][statusId];

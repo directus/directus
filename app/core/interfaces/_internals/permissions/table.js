@@ -177,8 +177,6 @@ define(['app', 'underscore', 'backbone', 'core/t', 'core/Modal'], function(app, 
 
       options.success = function(model, resp) {
         var tableName = model.get('table_name');
-        model.clear();
-        model.set(resp.data ? resp.data : resp);
         app.schemaManager.getOrFetchTable(tableName, function(tableModel) {
           app.schemaManager.registerPrivileges([model.toJSON()]);
           app.trigger('tables:change:permissions', tableModel, model);
