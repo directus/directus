@@ -2468,6 +2468,8 @@ body.loading .header .logo {
       .header .actions .action.disabled {
         background-color: #666666;
         cursor: not-allowed; }
+        .header .actions .action.disabled.blank {
+          background-color: transparent; }
         .header .actions .action.disabled .material-icons.center {
           opacity: 0.3; }
       .header .actions .action .material-icons {

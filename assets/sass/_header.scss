@@ -396,6 +396,9 @@ body.loading {
 			&.disabled {
 				background-color: $gray-5;
 				cursor: not-allowed;
+				&.blank {
+					background-color: transparent;
+				}
 				.material-icons {
 					&.center {
 						opacity: 0.3;

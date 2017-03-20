@@ -107,7 +107,7 @@ function(app, Backbone, _, __t, BasePageView, ListViewManager, TableViewRightPan
             widgetOptions: {
               // buttonId: '',
               iconClass: 'info',
-              buttonClass: '',
+              buttonClass: 'blank',
               buttonText: __t('options'),
               help: __t('right_pane_help')
             },

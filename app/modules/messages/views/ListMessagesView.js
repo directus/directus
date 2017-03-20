@@ -270,7 +270,7 @@ define([
           widgetOptions: {
             buttonId: 'deleteBtn',
             iconClass: 'archive',
-            buttonClass: !this.showDeleteButton ? 'disabled' : '',
+            buttonClass: !this.showDeleteButton ? 'disabled blank' : 'blank',
             buttonText: __t('archive')
           },
           onClick: _.bind(function(event) {
