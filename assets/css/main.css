@@ -3896,7 +3896,8 @@ body.help .discover-spotlight {
   bottom: 0;
   right: 0;
   overflow: scroll;
-  background-color: #f6f6f6; }
+  background-color: #f6f6f6;
+  z-index: 8; }
   .page.dragover::after {
     content: "";
     position: absolute;
