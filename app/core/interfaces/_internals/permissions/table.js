@@ -304,13 +304,23 @@ define(['app', 'underscore', 'backbone', 'core/t', 'core/Modal'], function(app, 
       return privileges;
     },
 
+    formatBlacklist: function (list) {
+      list = list || '';
+
+      if (list) {
+        list = list.split(',').join(', ');
+      }
+
+      return list;
+    },
+
     parsePrivilege: function (privilege) {
       var data = privilege.toJSON();
 
       data.cid = privilege.cid;
       data.title = app.capitalize(data.table_name, '_', true);
-      data.readBlacklist = data.read_field_blacklist || false;
-      data.writeBlacklist = data.write_field_blacklist || false;
+      data.readBlacklist = this.formatBlacklist(data.read_field_blacklist);
+      data.writeBlacklist = this.formatBlacklist(data.write_field_blacklist);
       // Default permissions
       data.permissions = this.parsePermissions(privilege);
 
