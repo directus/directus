@@ -9,6 +9,8 @@ define([
 
     template: 'modules/messages/message-new',
 
+    tagName: 'form',
+
     events: {
       'keyup textarea': 'toggleButtons',
       'keydown textarea': 'toggleButtons',
@@ -45,7 +47,7 @@ define([
     sendMessage: function (event) {
       event.preventDefault();
 
-      var data = this.$('form').serializeObject();
+      var data = this.$el.serializeObject();
 
       if (this.options.parentModel) {
         this.sendResponse(data);
