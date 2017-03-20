@@ -39,12 +39,12 @@ define(['app', 'backbone', 'moment-tz'], function (app, Backbone, moment) {
 
     select: function () {
       this.selected = true;
-      this.$el.addClass('selected');
+      this.$el.addClass('active');
     },
 
     deselect: function () {
       this.selected = false;
-      this.$el.removeClass('selected');
+      this.$el.removeClass('active');
     },
 
     serialize: function () {
@@ -62,6 +62,8 @@ define(['app', 'backbone', 'moment-tz'], function (app, Backbone, moment) {
       data.responsesLength = data.responses.length;
       data.from = parseInt(data.from, 10);
       data.selected = currentMessage ? (currentMessage.get('id') === data.id) : false;
+      data.count = model.get('responses').length + 1;
+      data.showCounter = data.count > 1;
 
       if (data.recipients) {
         recipients = data.recipients.split(',');

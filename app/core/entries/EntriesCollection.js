@@ -190,12 +190,14 @@ define(function(require, exports, module) {
       };
 
       this.url += '/bulk';
-      this.sync('delete', this, options);
+      var xhr = this.sync('delete', this, options);
       this.url = originalURL;
 
       if (!options.wait) {
         destroy();
       }
+
+      return xhr;
     },
 
     destroyAll: function(options) {
