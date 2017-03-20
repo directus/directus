@@ -23,7 +23,7 @@ function(app, Backbone, EntriesModel, moment) {
     },
 
     getDefaultAvatar: function () {
-      return app.PATH + 'assets/img/missing-directus-avatar.png';
+      return app.PATH + 'assets/imgs/missing-user.svg';
     },
 
     isAdmin: function () {
