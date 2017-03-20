@@ -139,7 +139,7 @@
 				background-color: $gray-1;
 				padding: 3px 6px;
 				color: $gray-4;
-				margin: 2px;
+				margin-right: 4px;
 				cursor: pointer;
 				&:hover {
 					background-color: $serious;
@@ -183,11 +183,6 @@
 		color: $gray-4;
 		font-size: 16px;
 		line-height: 30px;
-		textarea {
-			// margin-top: 20px;
-			min-height: 300px;
-			font-size: 15px;
-		}
 	}
 	.button-group {
 		.button {
@@ -201,7 +196,7 @@
 			&.subdued {
 				min-width: 40px;
 				width: 40px;
-				margin-left: 10px;
+				margin-left: 20px;
 				padding-left: 10px;
 			}
 		}
@@ -235,6 +230,13 @@
 			right: 0px;
 		}
 	}
+	.compose {
+		textarea {
+			display: block;
+			min-height: 300px;
+			font-size: 15px;
+		}
+	}
 	.reply {
 		margin-top: 40px;
 		border-top:	1px solid $gray-1;
@@ -243,9 +245,6 @@
 		&.active {
 			textarea {
 				height: 180px;
-			}
-			.button {
-				opacity: 1;
 			}
 		}
 		textarea {
@@ -272,9 +271,7 @@
 			display: inline-block;
 			min-width: 200px;
 			margin-top: 20px;
-			opacity: 0;
 			&.subdued {
-				display: inline-block;
 				min-width: 40px;
 				width: 40px;
 				margin-left: 20px;

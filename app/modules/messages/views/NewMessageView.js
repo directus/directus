@@ -35,7 +35,7 @@ define([
 
     toggleButtons: function (event) {
       var $el = $(event.currentTarget);
-      var $group = this.$('.compose .button-group .button');
+      var $group = this.$('.compose .button-group .button, .reply .button-group .button');
 
       if ($el.val().trim().length > 0) {
         $group.removeClass('hidden');

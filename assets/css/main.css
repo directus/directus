@@ -4451,7 +4451,7 @@ body.help .discover-spotlight {
       background-color: #EEEEEE;
       padding: 3px 6px;
       color: #999999;
-      margin: 2px;
+      margin-right: 4px;
       cursor: pointer; }
       .message .details .to span:hover {
         background-color: #F44336;
@@ -4489,9 +4489,6 @@ body.help .discover-spotlight {
     color: #999999;
     font-size: 16px;
     line-height: 30px; }
-    .message .body textarea {
-      min-height: 300px;
-      font-size: 15px; }
   .message .button-group .button {
     -webkit-transition: all 400ms ease-in-out 0ms;
     -moz-transition: all 400ms ease-in-out 0ms;
@@ -4506,7 +4503,7 @@ body.help .discover-spotlight {
     .message .button-group .button.subdued {
       min-width: 40px;
       width: 40px;
-      margin-left: 10px;
+      margin-left: 20px;
       padding-left: 10px; }
   .message .response {
     position: relative;
@@ -4531,6 +4528,10 @@ body.help .discover-spotlight {
     .message .response .timeago {
       top: 23px;
       right: 0px; }
+  .message .compose textarea {
+    display: block;
+    min-height: 300px;
+    font-size: 15px; }
   .message .reply {
     margin-top: 40px;
     border-top: 1px solid #EEEEEE;
@@ -4538,8 +4539,6 @@ body.help .discover-spotlight {
     min-height: 300px; }
     .message .reply.active textarea {
       height: 180px; }
-    .message .reply.active .button {
-      opacity: 1; }
     .message .reply textarea {
       -webkit-transition: all 400ms ease-in-out 0ms;
       -moz-transition: all 400ms ease-in-out 0ms;
@@ -4576,10 +4575,8 @@ body.help .discover-spotlight {
       transition: all 400ms ease-in-out 0ms;
       display: inline-block;
       min-width: 200px;
-      margin-top: 20px;
-      opacity: 0; }
+      margin-top: 20px; }
       .message .reply .button.subdued {
-        display: inline-block;
         min-width: 40px;
         width: 40px;
         margin-left: 20px;
