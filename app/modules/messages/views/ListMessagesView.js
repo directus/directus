@@ -274,6 +274,10 @@ define([
             buttonText: __t('archive')
           },
           onClick: _.bind(function(event) {
+            if (!this.showDeleteButton) {
+              return;
+            }
+
             var $checksChecked = this.table.$('.js-select-row:checked');
             var ids = [];
 
