@@ -19,7 +19,8 @@ define([
     },
 
     events: {
-      'click #save': 'sendInvitation'
+      'click #save': 'sendInvitation',
+      'click .js-close-modal': 'close'
     },
 
     beforeRender: function() {
