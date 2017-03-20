@@ -36,6 +36,12 @@ define([
         return;
       }
 
+      // @TODO: Do a request if it's not found locally
+      if (app.users.get(data.email)) {
+        Notification.warning(__t('directus_users_email_already_exists'));
+        return;
+      }
+
       app.request('POST', '/users/invite', {
         data: {
           email: data.email

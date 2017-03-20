@@ -508,6 +508,8 @@
     "directus_groups_permissions": "Permissions",
     "directus_groups_permissions_comment": "Adjust the individual table, column, and workflow permissions for this group.",
 
+    "directus_users_email_already_exists": "User with this email already exists.",
+
     "same_time_as_you": "Same time as you",
     "x_hours_from_you": "%{hours} hours from you",
 
