@@ -367,8 +367,14 @@ ul {
 		vertical-align: middle;
 	}
 }
-.serious {
+.serious-text {
 	color: $serious;
+}
+.important-text {
+	color: $important;
+}
+.primary-text {
+	color: $primary;
 }
 .light-text {
 	color: $gray-3;

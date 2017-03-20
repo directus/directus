@@ -410,8 +410,14 @@ input[type="radio"].custom-checkbox + label span:before {
   input[type="radio"].custom-checkbox + label span.vertical-middle:before {
     vertical-align: middle; }
 
-.serious {
+.serious-text {
   color: #F44336; }
+
+.important-text {
+  color: #FFC107; }
+
+.primary-text {
+  color: #3498DB; }
 
 .light-text {
   color: #CCCCCC; }
@@ -5287,6 +5293,7 @@ body.help .discover-spotlight {
       -webkit-background-clip: padding-box;
       background-clip: padding-box;
       border: 1px dashed #999999;
+      background-color: #FFFFFF;
       padding: 30px;
       width: 400px;
       text-align: center;

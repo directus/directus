@@ -596,6 +596,7 @@
 				@include transition (all, $timing-short, ease-in-out);
 				@include border-radius (4px);
 				border: 1px dashed $gray-4;
+				background-color: $white;
 				padding: 30px;
 				width: 400px;
 				text-align: center;
