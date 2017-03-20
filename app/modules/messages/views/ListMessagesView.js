@@ -266,12 +266,11 @@ define([
         })
       ];
 
-      if (this.showDeleteButton) {
-        widgets.push(new Widgets.ButtonWidget({
+      widgets.push(new Widgets.ButtonWidget({
           widgetOptions: {
             buttonId: 'deleteBtn',
             iconClass: 'archive',
-            buttonClass: '',
+            buttonClass: !this.showDeleteButton ? 'disabled' : '',
             buttonText: __t('archive')
           },
           onClick: _.bind(function(event) {
@@ -291,7 +290,6 @@ define([
             }
           }, this)
         }));
-      }
 
       return widgets;
     },
