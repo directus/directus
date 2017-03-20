@@ -22,7 +22,7 @@
         {{#if data}}
         <div class="items">
         {{#data}}
-            <div class="item{{#unless published}} not-published{{/unless}}" title="{{title}}">
+            <div data-id="{{id}}" class="js-item item{{#unless published}} not-published{{/unless}}" title="{{title}}">
                 {{#if time}}<span class="time">{{time}}</span>{{/if}}
                 {{title}}
             </div>

@@ -99,6 +99,12 @@ define(['app', 'underscore', 'backbone', 'core/t'], function(app, _, Backbone, _
       this.trigger('preferences:updated');
     },
 
+    navigate: function (id) {
+      var route = Backbone.history.fragment.split('/');
+      route.push(id);
+      app.router.go(route);
+    },
+
     constructor: function(options) {
       this.baseView = options.baseView;
       this.id = options.id;
