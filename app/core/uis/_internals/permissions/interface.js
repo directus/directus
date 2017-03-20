@@ -61,47 +61,11 @@ define([
       }
 
       this.canEdit = !(options.inModal || false);
-
-      var relatedCollection = this.model.get(this.name);
-      var joinColumn = this.columnSchema.relationship.get('junction_key_right');
-      var ids = relatedCollection.pluck('id');
-      // NOTE: This will a collection method in the next version
-      var hasUnsavedModels = _.some(relatedCollection.models, function(model) {
-        return model.unsavedAttributes();
-      });
-
-      if (!hasUnsavedModels && ids.length > 0) {
-        //Make sure column we are joining on is respected
-        var filters = relatedCollection.filters;
-        if (filters.columns_visible.length === 0) {
-          filters.columns_visible = relatedCollection.structure.at(0).get('id');
-        }
-
-        //Pass this filter to select only where column = val
-        filters.related_table_filter = {column: joinColumn, val: this.model.id};
-
-        if(this.columnSchema.options.get('result_limit') !== undefined) {
-          filters.perPage = this.columnSchema.options.get('result_limit');
-        }
-
-        relatedCollection.fetch({includeFilters: false, data: filters, success: function(collection) {
-          _.each(collection.models, function(model) {
-            return model.startTracking();
-          });
-        }});
-      }
-
-      this.showRemoveButton = this.columnSchema.options.get('remove_button') === true;
-      this.showAddButton = this.columnSchema.options.get('add_button') === true;
-      this.showChooseButton = this.columnSchema.options.get('choose_button') === true;
-
+      this.relatedCollection = this.model.get(this.name);
       this.nestedTableView = new PermissionsTableView({
-        collection: relatedCollection
+        model: this.model,
+        collection: this.relatedCollection
       });
-
-      relatedCollection.setOrder('table_name', 'ASC', {silent: true});
-
-      this.relatedCollection = relatedCollection;
     }
   });
 

@@ -143,11 +143,8 @@ define(['app', 'underscore', 'backbone', 'core/t', 'core/Modal'], function(app, 
       var status = this.state.tables[tableName];
       var options;
 
-      // @note: temporary empty privileges
       if (!model) {
-        model = this.collection.at(0).clone();
-        model.clear();
-        model.set(app.schemaManager.getDefaultPrivileges(tableName, status ? status.value : null));
+        model = this.getTableDefaultPrivileges(tableName, status ? status.value : null);
       }
 
       options = {
@@ -179,12 +176,12 @@ define(['app', 'underscore', 'backbone', 'core/t', 'core/Modal'], function(app, 
     },
 
     editReadFields: function (event) {
-      var id = $(event.currentTarget).closest('tr').data('id');
+      var id = $(event.currentTarget).closest('tr').data('cid');
       this.editFields('read', id);
     },
 
     editWriteFields: function (event) {
-      var id = $(event.currentTarget).closest('tr').data('id');
+      var id = $(event.currentTarget).closest('tr').data('cid');
       this.editFields('write', id);
     },
 
@@ -284,7 +281,7 @@ define(['app', 'underscore', 'backbone', 'core/t', 'core/Modal'], function(app, 
       return tables;
     },
 
-    getTablePrivilege: function (table, status) {
+    getTablePrivileges: function (table, status) {
       // var privilege = app.schemaManager.getPrivileges(table, status);
       var privilege = this.collection.findWhere({
         table_name: table,
@@ -292,11 +289,19 @@ define(['app', 'underscore', 'backbone', 'core/t', 'core/Modal'], function(app, 
       });
 
       if (!privilege) {
-        privilege = app.schemaManager.getDefaultPrivileges(table, status);
+        privilege = this.getTableDefaultPrivileges(table, status);
         this.collection.add(privilege);
       }
 
       return privilege;
+    },
+
+    getTableDefaultPrivileges: function (tableName, statusId) {
+      var privileges = app.schemaManager.getDefaultPrivileges(tableName, statusId);
+
+      privileges.set('group_id', this.model.id);
+
+      return privileges;
     },
 
     parsePrivilege: function (privilege) {
@@ -343,7 +348,7 @@ define(['app', 'underscore', 'backbone', 'core/t', 'core/Modal'], function(app, 
 
       tables.forEach(_.bind(function (table) {
         var currentTableStatus = this.state.tables[table.id] || this.getDefaultStatus();
-        var privilege = this.getTablePrivilege(table.id, currentTableStatus.value);
+        var privilege = this.getTablePrivileges(table.id, currentTableStatus.value);
         var data = this.parsePrivilege(privilege);
 
         // Has status column?
@@ -397,6 +402,7 @@ define(['app', 'underscore', 'backbone', 'core/t', 'core/Modal'], function(app, 
 
       this.showCoreTables = false;
       this.listenTo(app, 'tables:change:permissions', this.render);
+      this.listenTo(this.collection, 'change', this.render);
     }
   });
 });
