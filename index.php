@@ -444,7 +444,7 @@ function getPrivileges($groupId)
 
 function getUI()
 {
-    return Bootstrap::get('uis');
+    return Bootstrap::get('interfaces');
 }
 
 function getListViews()

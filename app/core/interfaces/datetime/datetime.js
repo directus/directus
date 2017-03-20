@@ -16,7 +16,7 @@
 /*jshint multistr: true */
 
 
-define(['app', 'underscore', 'core/uis/datetime/date', 'moment'], function(app, _, UIDate, moment) {
+define(['app', 'underscore', 'core/interfaces/datetime/date', 'moment'], function(app, _, UIDate, moment) {
 
   'use strict';
 

@@ -14,7 +14,7 @@ define([
   'core/UIView',
   'core/table/table.view',
   'core/overlays/overlays',
-  'core/uis/_internals/permissions/table',
+  'core/interfaces/_internals/permissions/table',
   'core/t'
 ], function(app, _, UIComponent, UIView, TableView, Overlays, PermissionsTableView, __t) {
 

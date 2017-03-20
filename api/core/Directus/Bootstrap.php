@@ -478,14 +478,14 @@ class Bootstrap
     }
 
     /**
-     * Scan for uis.
+     * Scan for interfaces.
      * @return  array
      */
-    private static function uis()
+    private static function interfaces()
     {
         self::requireConstants('APPLICATION_PATH', __FUNCTION__);
         $uiBasePath = APPLICATION_PATH . '/customs';
-        $uiDirectory = $uiBasePath . '/uis';
+        $uiDirectory = $uiBasePath . '/interfaces';
         $uis = [];
 
         if (!file_exists($uiDirectory)) {
