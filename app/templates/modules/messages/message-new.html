@@ -11,7 +11,7 @@
 </div>
 {{/unless}}
 
-<div class="compose{{#if isResponse}} reply{{/if}}">
+<div class="{{#if isResponse}}reply{{else}}compose{{/if}}">
 	<div class="body">
 		<textarea name="message" placeholder="Write a message..."></textarea>
 	</div>
