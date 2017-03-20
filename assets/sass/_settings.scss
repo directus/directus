@@ -1,5 +1,33 @@
 //////////////////////////////////////////////////////////////////////////////
 // Settings
+.interface-field {
+	table {
+		tr {
+			&:hover {
+				.privilege-shortcuts {
+					opacity: 1;
+				}
+			}
+			.privilege-shortcuts {
+				@include transition (all, $timing-short, ease-in-out);
+				font-size: 11px;
+				font-weight: 500;
+				padding-left: 6px;
+				opacity: 0;
+				.all {
+					color: $primary;
+					padding-right: 2px;
+					cursor: pointer;
+				}
+				.none {
+					color: $serious;
+					padding-left: 2px;
+					cursor: pointer;
+				}
+			}
+		}
+	}
+}
 
 .page.settings-container {
 	hr {

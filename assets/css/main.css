@@ -5439,6 +5439,27 @@ body.help .discover-spotlight {
           background-color: #F44336;
           color: #FFFFFF; }
 
+.interface-field table tr:hover .privilege-shortcuts {
+  opacity: 1; }
+.interface-field table tr .privilege-shortcuts {
+  -webkit-transition: all 200ms ease-in-out 0ms;
+  -moz-transition: all 200ms ease-in-out 0ms;
+  -o-transition: all 200ms ease-in-out 0ms;
+  -ms-transition: all 200ms ease-in-out 0ms;
+  transition: all 200ms ease-in-out 0ms;
+  font-size: 11px;
+  font-weight: 500;
+  padding-left: 6px;
+  opacity: 0; }
+  .interface-field table tr .privilege-shortcuts .all {
+    color: #3498DB;
+    padding-right: 2px;
+    cursor: pointer; }
+  .interface-field table tr .privilege-shortcuts .none {
+    color: #F44336;
+    padding-left: 2px;
+    cursor: pointer; }
+
 .page.settings-container hr {
   margin: 30px 40px; }
 .page.settings-container .settings-modules {
