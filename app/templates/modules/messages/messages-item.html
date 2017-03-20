@@ -10,7 +10,8 @@
 		{{# if hasAttachment}}
 		<i class="material-icons has-attachment">attachment</i>
 		{{/if}}
-		{{#if hasResponses }}
+		{{#if isChat }}
+		{{!-- @TODO: when the current user has been mentioned in the thread --}}
 		<i class="material-icons is-chat">chat</i>
 		{{/if}}
 	</div>
