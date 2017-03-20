@@ -56,6 +56,11 @@ function(app, Backbone, _, BaseHeaderView, RightSidebarView) {
       this.headerView.setPage(this);
 
       if (_.result(this, 'rightPane')) {
+        // hotfix: adding this twice
+        if (this.rightSidebarView) {
+          this.rightSidebarView.remove();
+        }
+
         this.rightSidebarView = new RightSidebarView(_.result(this, 'rightPaneOptions'));
         this.insertView(this.rightSidebarView);
       }

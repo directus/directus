@@ -7,7 +7,7 @@
 //  http://www.getdirectus.com
 /*jshint multistr: true */
 
-define(['app', 'core/UIComponent', 'core/uis/one_to_many', 'core/table/table.view', 'core/overlays/overlays', 'core/t'], function(app, UIComponent, Onetomany, TableView, Overlays, __t) {
+define(['app', 'core/UIComponent', 'core/interfaces/one_to_many', 'core/table/table.view', 'core/overlays/overlays', 'core/t'], function(app, UIComponent, Onetomany, TableView, Overlays, __t) {
 
   'use strict';
 

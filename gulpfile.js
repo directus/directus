@@ -126,7 +126,7 @@ gulp.task('scripts:app', function() {
       // Extensions
       "extensions": '../customs/extensions',
       "listviews":  '../customs/listviews',
-      "uis":         '../customs/uis'
+      "uis":         '../customs/interfaces'
     },
 
     shim: {
@@ -299,7 +299,7 @@ gulp.task('move', function() {
   ];
 
   var dirsToKeep = [
-    './customs/uis/.gitignore',
+    './customs/interfaces/.gitignore',
     './customs/endpoints/.htaccess',
     './customs/extensions/.htaccess',
     './customs/extensions/.gitignore',

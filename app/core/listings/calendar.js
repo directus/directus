@@ -25,8 +25,15 @@ define([
       },
 
       events: {
+        'click .js-item': 'onItemClick',
         'click .js-next': 'next',
         'click .js-prev': 'prev'
+      },
+
+      onItemClick: function (event) {
+        var id = $(event.currentTarget).data('id');
+
+        this.navigate(id);
       },
 
       prev: function() {
@@ -227,7 +234,9 @@ define([
               title: titleColumn ? model.get(titleColumn.id) : '',
               time: isUsingDateTime ? moment(date).format('h:mm a') : null,
               fullDate: moment(date).format(),
-              published: published
+              published: published,
+              id: model.id,
+              model: model
             });
           }
         });

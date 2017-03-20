@@ -30,8 +30,21 @@ function(app, Backbone, EntriesCollection, __t, UsersModel) {
       return user;
     },
 
+    onAdd: function (model) {
+      // Add email to the lookup table
+      this._byId[model.get('email')] = model;
+    },
+
+    onRemove: function (model) {
+      // Remove email to the lookup table
+      delete this._byId[model.get('email')];
+    },
+
     initialize: function() {
       EntriesCollection.prototype.initialize.apply(this, arguments);
+
+      this.on('add', this.onAdd, this);
+      this.on('remove', this.onRemove, this);
     }
 
   });

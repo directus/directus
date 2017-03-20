@@ -56,7 +56,7 @@ define([
       var $el = this.$('#directus_messages_recipients-recipients.to');
       var elArray = [];
 
-      this.$('#directus_messages_recipients-input').val('');
+      this.$("#directus_messages_recipients-input").typeahead('val', '');
 
       _.each(this.recipients, function(item) {
         var icon = item.id[0] == 1 ? '<i class="material-icons">group</i>': '';

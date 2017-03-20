@@ -88,8 +88,8 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/table/table.view', 'core
       };
     },
 
-    addModel: function(model) {
-      var EditView = require("modules/tables/views/EditView");
+    addModel: function (model) {
+      var EditView = require('modules/tables/views/EditView');
       var collection = this.relatedCollection;
       var columnName = this.columnSchema.relationship.get('junction_key_right');
       var id = this.model.id;

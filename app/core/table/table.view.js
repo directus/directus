@@ -40,6 +40,7 @@ function(app, _, Backbone, Notification, __t, TableHelpers, ModelHelper, TableHe
         columns: this.options.columns,
         id: this.collection.table.id,
         selectable: this.options.selectable,
+        hasSortColumn: this.options.sort,
         sortable: this.options.sortable,
         disabledSorting: !this.sortable,
         spacing: this.getSpacing(),

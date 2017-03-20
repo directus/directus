@@ -190,9 +190,11 @@ class Messages extends Route
         }
 
         $message = $messagesTableGateway->fetchMessageWithRecipients($id, $currentUserId);
-
-        $messageData = ArrayUtils::get($message, 'responses.data', []);
-        $message = array_shift($messageData);
+        // hotfix: When the message is a response, it will be inside responses.data keys
+        if (ArrayUtils::get($requestPayload, 'response_to')) {
+            $messageData = ArrayUtils::get($message, 'responses.data', []);
+            $message = array_shift($messageData);
+        }
 
         $response = [
             'meta' => ['table' => 'directus_messages', 'type' => 'item'],

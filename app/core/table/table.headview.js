@@ -26,7 +26,7 @@ function(app, Backbone, _, __t, Notification) {
 
       'click .js-more': 'showMore',
 
-      'click th:not(.js-check, .visible-columns-cell)': function(event) {
+      'click th:not(.js-check, .js-sort-toggle, .visible-columns-cell)': function(event) {
         var column = $(event.currentTarget).data('id');
         var order = this.collection.getOrder();
         var order_sort = 'ASC';

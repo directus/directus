@@ -19,7 +19,8 @@ define([
     },
 
     events: {
-      'click #save': 'sendInvitation'
+      'click #save': 'sendInvitation',
+      'click .js-close-modal': 'close'
     },
 
     beforeRender: function() {
@@ -32,6 +33,12 @@ define([
       // If something is returned
       // then something went wrong
       if (this.model.validate(data)) {
+        return;
+      }
+
+      // @TODO: Do a request if it's not found locally
+      if (app.users.get(data.email)) {
+        Notification.warning(__t('directus_users_email_already_exists'));
         return;
       }
 

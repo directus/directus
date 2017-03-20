@@ -17,7 +17,7 @@
 			<tr data-id="{{id}}" class="open-modal js-row{{#if required}} required-on{{/if}}{{#if hidden_input}} visibility-off{{/if}}" data-modal="interface"> <!-- Optional Classes: selected -->
 				<td class="reorder js-sort"><i class="material-icons reorder-handle">drag_handle</i></td>
 				<td class="required js-required"><i class="material-icons">star{{#unless required}}_outline{{/unless}}</i></td>
-				<td class="visible js-visible"><i class="material-icons">visibility</i></td>
+				<td class="visible js-visible"><i class="material-icons">visibility{{#if hidden_input}}_off{{/if}}</i></td>
 				<td title="{{column_name}}">{{capitalize column_name}}</td>
 				<td class="js-cell" data-field="ui_type" data-section="column">{{capitalize ui}}</td>
 				<td class="relationship js-cell" data-section="column">
