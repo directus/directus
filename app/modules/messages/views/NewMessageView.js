@@ -15,7 +15,20 @@ define([
       'change textarea': 'toggleButtons',
       'focus textarea': 'toggleButtons',
       'blur textarea': 'toggleButtons',
+      'focus .reply textarea': 'activeReplyArea',
+      'blur .reply textarea': 'deActiveReplyArea',
       'click .js-button-send': 'sendMessage'
+    },
+
+    activeReplyArea: function (event) {
+      this.$('.reply').addClass('active');
+    },
+
+    deActiveReplyArea: function (event) {
+      var $el = $(event.currentTarget);
+      if (!$el.val().trim().length) {
+        this.$('.reply').removeClass('active');
+      }
     },
 
     toggleButtons: function (event) {
