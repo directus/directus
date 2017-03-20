@@ -4134,7 +4134,11 @@ body.help .discover-spotlight {
       -o-transition: all 200ms ease-in-out 0ms;
       -ms-transition: all 200ms ease-in-out 0ms;
       transition: all 200ms ease-in-out 0ms;
-      font-weight: 500; }
+      font-weight: 500;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-right: 20px; }
     .attachments .folder .info .uploaded,
     .attachments .file .info .uploaded,
     .folder-listing .folder .info .uploaded,

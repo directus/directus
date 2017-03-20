@@ -126,6 +126,10 @@
 			.name {
 				@include transition (all, $timing-short, ease-in-out);
 				font-weight: 500;
+				white-space: nowrap;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				margin-right: 20px;
 			}
 			.uploaded {
 				font-size: 12px;
