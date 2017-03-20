@@ -453,11 +453,7 @@ require(["config", 'polyfills'], function() {
           return;
         }
 
-        if (xhr.responseJSON) {
-          messageBody = xhr.responseJSON.error;
-        } else {
-          messageBody = xhr.responseText;
-        }
+        messageBody = xhr.responseJSON || xhr.responseText;
 
         switch (xhr.status) {
           case 404:
