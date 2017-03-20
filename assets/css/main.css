@@ -5439,9 +5439,9 @@ body.help .discover-spotlight {
           background-color: #F44336;
           color: #FFFFFF; }
 
-.interface-field table tr:hover .privilege-shortcuts {
+.interface-field table td:hover .privilege-shortcuts {
   opacity: 1; }
-.interface-field table tr .privilege-shortcuts {
+.interface-field table td .privilege-shortcuts {
   -webkit-transition: all 200ms ease-in-out 0ms;
   -moz-transition: all 200ms ease-in-out 0ms;
   -o-transition: all 200ms ease-in-out 0ms;
@@ -5451,11 +5451,11 @@ body.help .discover-spotlight {
   font-weight: 500;
   padding-left: 6px;
   opacity: 0; }
-  .interface-field table tr .privilege-shortcuts .all {
+  .interface-field table td .privilege-shortcuts .all {
     color: #3498DB;
     padding-right: 2px;
     cursor: pointer; }
-  .interface-field table tr .privilege-shortcuts .none {
+  .interface-field table td .privilege-shortcuts .none {
     color: #F44336;
     padding-left: 2px;
     cursor: pointer; }
