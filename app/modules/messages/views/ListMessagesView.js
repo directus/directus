@@ -194,6 +194,7 @@ define([
         model: model
       });
 
+      this.setCurrentMessage(model);
       this.options.parentView.disableArchiveButton();
 
       this.setView('#message-right-content', newMessageView);
