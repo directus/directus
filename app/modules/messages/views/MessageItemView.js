@@ -39,12 +39,12 @@ define(['app', 'backbone', 'moment-tz'], function (app, Backbone, moment) {
 
     select: function () {
       this.selected = true;
-      this.$el.addClass('selected');
+      this.$el.addClass('active');
     },
 
     deselect: function () {
       this.selected = false;
-      this.$el.removeClass('selected');
+      this.$el.removeClass('active');
     },
 
     serialize: function () {

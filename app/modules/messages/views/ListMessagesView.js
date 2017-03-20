@@ -44,13 +44,17 @@ define([
       class: 'message-listing resize-left'
     },
 
+    setCurrentMessage: function (message) {
+      this.state.previousMessage = this.state.currentMessage;
+      this.state.currentMessage = message;
+    },
+
     onItemClick: function (view) {
       var id = view.model.id;
       var messageModel = this.collection.get(id);
 
       if (messageModel) {
-        this.state.previousMessage = this.state.currentMessage;
-        this.state.currentMessage = messageModel;
+        this.setCurrentMessage(messageModel);
         this.displayMessage(id, true);
       } else {
         console.warn('message with id: ' + id + ' does not exists.');
@@ -139,13 +143,13 @@ define([
     },
 
     getPreviousMessage: function () {
-      var previous = this.previousMessage;
+      var previous = this.state.previousMessage;
 
       return previous ? this.state.itemViews[previous.id] : null;
     },
 
     getCurrentMessage: function () {
-      var current = this.currentMessage;
+      var current = this.state.currentMessage;
 
       return current ? this.state.itemViews[current.id] : null;
     },
@@ -190,6 +194,8 @@ define([
         model: model
       });
 
+      this.options.parentView.disableArchiveButton();
+
       this.setView('#message-right-content', newMessageView);
       newMessageView.render();
     },
@@ -209,6 +215,9 @@ define([
         current.select();
       }
 
+      // when display a message user should be allow to archive the current open message
+      this.options.parentView.enableArchiveButton();
+
       views = this.getContentViews(id);
       messageView = views.content;
       newMessageView = views.form;
@@ -221,6 +230,14 @@ define([
         messageView.render();
         newMessageView.render();
       }
+    },
+
+    deselectAll: function () {
+      _.each(this.state.itemViews, function (view) {
+        if (view) {
+          view.deselect();
+        }
+      });
     },
 
     initialize: function () {
@@ -261,39 +278,49 @@ define([
             buttonText: __t('message_compose')
           },
           onClick: _.bind(function () {
+            this.table.deselectAll();
             this.table.displayNewMessage();
           }, this)
         })
       ];
 
-      widgets.push(new Widgets.ButtonWidget({
-          widgetOptions: {
-            buttonId: 'deleteBtn',
-            iconClass: 'archive',
-            buttonClass: !this.showDeleteButton ? 'disabled blank' : 'blank',
-            buttonText: __t('archive')
-          },
-          onClick: _.bind(function(event) {
-            if (!this.showDeleteButton) {
-              return;
-            }
+      var messageView = this.table;
+      this.archiveButton = new Widgets.ButtonWidget({
+        widgetOptions: {
+          buttonId: 'deleteBtn',
+          iconClass: 'archive',
+          buttonClass: !this.showDeleteButton ? 'disabled blank' : 'blank',
+          buttonText: __t('archive')
+        },
+        onClick: _.bind(function (event) {
+          if (!this.showDeleteButton) {
+            return;
+          }
 
+          var ids = [];
+          if (this.table.state.currentMessage) {
+            ids.push(this.table.state.currentMessage.id);
+          } else {
             var $checksChecked = this.table.$('.js-select-row:checked');
-            var ids = [];
 
-            _.each($checksChecked, function(checkbox) {
+            _.each($checksChecked, function (checkbox) {
               ids.push($(checkbox).parent().data('id'));
             });
+          }
 
-            var models = this.collection.filter(function(model) {
-              return _.contains(ids, model.id);
+          var models = this.collection.filter(function (model) {
+            return _.contains(ids, model.id);
+          });
+
+          if (models) {
+            this.collection.destroy(models, {wait: true}).then(function () {
+              messageView.displayNewMessage();
             });
+          }
+        }, this)
+      });
 
-            if (models) {
-              this.collection.destroy(models, {wait: true});
-            }
-          }, this)
-        }));
+      widgets.push(this.archiveButton);
 
       return widgets;
     },
@@ -353,8 +380,22 @@ define([
       $(document).off('mouseup.messages');
     },
 
+    enableArchiveButton: function () {
+      this.showDeleteButton = true;
+      this.archiveButton.removeClass('disabled');
+    },
+
+    disableArchiveButton: function () {
+      this.showDeleteButton = false;
+      this.archiveButton.addClass('disabled');
+    },
+
     initialize: function() {
-      this.table = new ListView({collection: this.collection});
+      this.table = new ListView({
+        collection: this.collection,
+        parentView: this
+      });
+
       this.collection.on('select', function() {
         var $checksChecked = this.table.$('.js-select-row:checked');
         // @NOTE: Hotfix render on empty selection

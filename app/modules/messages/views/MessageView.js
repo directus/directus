@@ -36,14 +36,6 @@ define([
       if (!this.parentView) {
         return;
       }
-
-      var $messages = this.parentView.$el.find('.js-message');
-
-      if ($messages) {
-        $messages.removeClass('active');
-      }
-
-      this.parentView.$el.find('[data-id=' + this.model.get('id') + ']').addClass('active');
     },
 
     serialize: function() {
