@@ -102,6 +102,8 @@ define(['app', 'underscore', 'backbone', 'core/t', 'core/Modal'], function(app, 
       'click .js-status': 'changeStatus',
       'click .js-permission-toggle': 'togglePermission',
       'click .js-write.choose-column-blacklist': 'editWriteFields',
+      'click .js-add-full-permissions': 'addFullPermissions',
+      'click .js-remove-full-permissions': 'removeFullPermissions',
       'click .js-read.choose-column-blacklist': 'editReadFields'
     },
 
@@ -144,38 +146,20 @@ define(['app', 'underscore', 'backbone', 'core/t', 'core/Modal'], function(app, 
       this.render();
     },
 
-    togglePermission: function (event) {
-      var $toggle = $(event.currentTarget);
-      var permission = $toggle.closest('td').data('name');
-      var permissionName = 'allow_' + permission;
-      var $row = $toggle.closest('tr');
-      var tableName = $row.data('table');
-      var model = this.collection.get($row.data('cid'));
-      var attributes = {};
-      var currentPermissionValue;
-      var status = this.state.tables[tableName];
+    updateModel: function (id, attributes) {
+      var model = this.collection.get(id);
       var options;
 
       if (!model) {
-        model = this.getTableDefaultPrivileges(tableName, status ? status.value : null);
+        throw new Error('Permission model (' + id + ') not found.');
       }
 
       options = {
         wait: true,
-        patch: !model.isNew()
+        patch: true
       };
 
-      currentPermissionValue = model.get(permissionName);
-      // attributes['status_id'] = this.selectedState === 'all' ? null : this.selectedState;
-      if(currentPermissionValue > 1) {
-        attributes[permissionName] = 0;
-      } else if(currentPermissionValue == 1) {
-        attributes[permissionName] = 2;
-      } else {
-        attributes[permissionName] = 1;
-      }
-
-      options.success = function(model, resp) {
+      options.success = function(model) {
         var tableName = model.get('table_name');
         app.schemaManager.getOrFetchTable(tableName, function(tableModel) {
           app.schemaManager.registerPrivileges([model.toJSON()]);
@@ -184,6 +168,55 @@ define(['app', 'underscore', 'backbone', 'core/t', 'core/Modal'], function(app, 
       };
 
       model.save(attributes, options);
+    },
+
+    addFullPermissions: function (event) {
+      var $button = $(event.currentTarget);
+      var $row = $button.closest('tr');
+      var permissions = {
+        allow_add: 1,
+        allow_edit: 2,
+        allow_delete: 2,
+        allow_alter: 1,
+        allow_view: 2
+      };
+
+      this.updateModel($row.data('cid'), permissions)
+    },
+
+    removeFullPermissions: function (event) {
+      var $button = $(event.currentTarget);
+      var $row = $button.closest('tr');
+      var permissions = {
+        allow_add: 0,
+        allow_edit: 0,
+        allow_delete: 0,
+        allow_alter: 0,
+        allow_view: 0
+      };
+
+      this.updateModel($row.data('cid'), permissions);
+    },
+
+    togglePermission: function (event) {
+      var $toggle = $(event.currentTarget);
+      var permission = $toggle.closest('td').data('name');
+      var permissionName = 'allow_' + permission;
+      var $row = $toggle.closest('tr');
+      var model = this.collection.get($row.data('cid'));
+      var attributes = {};
+      var currentPermissionValue;
+
+      currentPermissionValue = model.get(permissionName);
+      if(currentPermissionValue > 1) {
+        attributes[permissionName] = 0;
+      } else if(currentPermissionValue == 1) {
+        attributes[permissionName] = 2;
+      } else {
+        attributes[permissionName] = 1;
+      }
+
+      this.updateModel($row.data('cid'), attributes);
     },
 
     editReadFields: function (event) {
