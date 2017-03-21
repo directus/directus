@@ -108,7 +108,6 @@ define([
               type: 'String',
               required: false,
               ui: 'select',
-              comment: 'INT',
               options: {
                 allow_null: true,
                 options: options.numericColumns
@@ -119,7 +118,6 @@ define([
               type: 'String',
               required: false,
               ui: 'select',
-              comment: 'DATE',
               options: {
                 options: options.dateColumns
               }
