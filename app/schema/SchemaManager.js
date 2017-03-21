@@ -184,9 +184,8 @@ define(function(require, exports, module) {
     },
 
     addTable: function(tableName, callback) {
-      var model = new PrivilegeModel();
       // @todo: set default values in the server side
-      model.set({
+      var model = new PrivilegeModel({
         group_id: 1,
         allow_add:1,
         allow_edit:2,
@@ -197,6 +196,9 @@ define(function(require, exports, module) {
         nav_listed: 1,
         addTable: true
       });
+      // hotfix: creating/adding a table is done by adding its privileges
+      // if addTable is set to true it creates the table
+      model.url = app.API_URL + 'privileges/1';
 
       var self = this;
       model.save({}, {success: function(permission) {
