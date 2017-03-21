@@ -227,23 +227,21 @@ function(app, Backbone, _, __t, BasePageView, ListViewManager, TableViewRightPan
     getCurrentView: function() {
       var viewId = this.state.viewId;
 
-      if (this.state.views[viewId]) {
-        return this.state.views[viewId];
+      if (!this.state.views[viewId]) {
+        this.state.views[viewId] = ListViewManager.getView(viewId, {
+          collection: this.collection,
+          navigate: true,
+          maxColumns: 8,
+          toolbar: true,
+          fixedHead: true,
+          baseView: this,
+          showChart: true,
+          system: true,
+          showMoreButton: !! _.result(this, 'rightPane')
+        });
+
+        this.listenTo(this.state.views[viewId], 'toggleRightPane', this.toggleRightPane);
       }
-
-      this.state.views[viewId] = ListViewManager.getView(viewId, {
-        collection: this.collection,
-        navigate: true,
-        maxColumns: 8,
-        toolbar: true,
-        fixedHead: true,
-        baseView: this,
-        showChart: true,
-        system: true,
-        showMoreButton: !! _.result(this, 'rightPane')
-      });
-
-      this.listenTo(this.state.views[viewId], 'toggleRightPane', this.toggleRightPane);
 
       return this.state.views[viewId];
     },

@@ -254,7 +254,8 @@ define([
               comment_metadata: {like: this.collection.table.id + ':'}
             }
           });
-          commentsCollection.fetch().then(_.bind(function () {
+
+          return commentsCollection.fetch().then(_.bind(function () {
             var systemCollection = this.options.systemCollection;
             var comments = [];
             this.comments.each(function (model) {
@@ -299,7 +300,7 @@ define([
           }
         });
 
-        activityCollection.fetch().then(_.bind(function () {
+        return activityCollection.fetch().then(_.bind(function () {
           var systemCollection = this.options.systemCollection;
           var revisions = [];
           this.activity.each(function (model) {
@@ -350,7 +351,7 @@ define([
           last_updated: lastUpdated
         });
 
-        collection.fetch().then(_.bind(function () {
+        return collection.fetch().then(_.bind(function () {
           var systemCollection = this.options.systemCollection;
           this.updates.each(function (model) {
             var rowId = model.get('row_id');
@@ -416,9 +417,7 @@ define([
 
         if (this.options.system === true) {
           this.collection.preferences.on('sync', this.updateSystemColumns, this);
-          this.collection.on('sync', this.fetchComments, this);
-          this.collection.on('sync', this.fetchRevisions, this);
-          this.collection.on('sync', this.fetchUpdates, this);
+          this.collection.on('sync', this.updateSystemColumns, this);
           this.listenTo(this, 'onShowMore', this.onShowMore);
         }
       },
@@ -428,9 +427,7 @@ define([
 
         if (this.options.system === true) {
           this.collection.preferences.off('sync', this.updateSystemColumns, this);
-          this.collection.off('sync', this.fetchComments, this);
-          this.collection.off('sync', this.fetchRevisions, this);
-          this.collection.off('sync', this.fetchUpdates, this);
+          this.collection.off('sync', this.updateSystemColumns, this);
           this.stopListening(this, 'onShowMore', this.onShowMore);
         }
       },
