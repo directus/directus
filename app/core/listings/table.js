@@ -34,8 +34,8 @@ define([
         if (force || !this.chartView) {
           this.chartView = new TableChartWidget({
             parentView: this,
-            dateColumn: this.getDateColumnName(),
-            numericColumn: this.getViewOptions('y_axis'),
+            dateColumn: this.getViewOptions('chart_x_axis') || this.getDateColumnName(),
+            numericColumn: this.getViewOptions('chart_y_axis'),
             collection: this.collection.clone().reset()
           });
 
@@ -104,7 +104,7 @@ define([
               default_value: false
             },
             {
-              id: 'y_axis',
+              id: 'chart_y_axis',
               type: 'String',
               required: false,
               ui: 'select',
@@ -114,7 +114,7 @@ define([
               }
             },
             {
-              id: 'x_axis',
+              id: 'chart_x_axis',
               type: 'String',
               required: false,
               ui: 'select',
