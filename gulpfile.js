@@ -321,7 +321,7 @@ gulp.task('move', function() {
 
 // Rerun the task when a file changes
 gulp.task('watch', function() {
-  gulp.watch('assets/scss/directus/**/*.scss', ['styles']);
+  gulp.watch('assets/sass/**/*.scss', ['styles']);
   gulp.watch('app/**/*.js', ['scripts:app', 'scripts:directus']);
   gulp.watch(vendorFiles, ['scripts:vendor', 'scripts:directus']);
   gulp.watch('assets/fonts/**/*.*', ['fonts']);
