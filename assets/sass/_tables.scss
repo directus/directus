@@ -557,8 +557,7 @@ table {
 	position: relative;
 	height: 200px;
 	background-color: $white;
-	margin: 40px 20px 0 20px;
-	padding-bottom: 20px;
+	padding: 40px 20px 20px 20px;
 	.chart-title {
 		@include transition (all, $timing-short, ease-in-out);
 		position: absolute;

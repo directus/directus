@@ -1893,8 +1893,7 @@ table {
   position: relative;
   height: 200px;
   background-color: #FFFFFF;
-  margin: 40px 20px 0 20px;
-  padding-bottom: 20px; }
+  padding: 40px 20px 20px 20px; }
   .items-chart .chart-title {
     -webkit-transition: all 200ms ease-in-out 0ms;
     -moz-transition: all 200ms ease-in-out 0ms;
