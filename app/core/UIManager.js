@@ -11,7 +11,7 @@ define(function(require, exports, module) {
     require('core/interfaces/_internals/permissions/interface'),
     require('core/interfaces/_internals/views/interface'),
     require('core/interfaces/textinput'),
-    require('core/interfaces/section_break'),
+    require('core/interfaces/section_break/section_break'),
     require('core/interfaces/checkbox/checkbox'),
     require('core/interfaces/color'),
     require('core/interfaces/numeric'),
