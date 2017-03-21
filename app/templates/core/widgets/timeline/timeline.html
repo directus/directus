@@ -13,7 +13,7 @@
     <div class="byline">
         <div class="avatar"><img src="{{userAvatarUrl userId}}"></div>
         <a href="#" class="open-modal hover-color js-user" data-user-id="{{userId}}" data-modal="profile">{{userFirstAndLastName userId}}</a>
-        <div class="timeago">
+        <div class="timeago" title="{{fullDateTime timestamp}}">
             <i class="material-icons">schedule</i> {{timeAgo}}
         </div>
     </div>
@@ -23,7 +23,7 @@
 <li class="activity">
     <div class="activity-full-toggle">
         REVISON {{revisionNumber}} <i class="material-icons more-activity">arrow_drop_down</i>
-        <div class="timeago">
+        <div class="timeago" title="{{fullDateTime timestamp}}">
             <i class="material-icons">schedule</i> {{timeAgo}}
         </div>
     </div>

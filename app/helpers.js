@@ -91,6 +91,10 @@ require([
     return moment(date).fromNow();
   });
 
+  Handlebars.registerHelper('fullDateTime', function (date) {
+    return moment(date).format('YYYY-MM-DD HH:mm:ss Z');
+  });
+
   Handlebars.registerHelper('formatDate', function(date, format) {
     return moment(date).format(format);
   });

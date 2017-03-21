@@ -14,7 +14,7 @@
 	</div>
 	<div class="row">
 		<div class="label">Last Seen</div>
-		{{lastSeen}}
+		<span title="{{#if last_access}}{{fullDateTime last_access}}{{/if}}">{{lastSeen}}</span>
 		<i class="material-icons">beenhere</i>
 	</div>
 	{{#if location}}

@@ -5,7 +5,7 @@
         {{#if meta.createdByIsOnline}}<div class="online">{{t "online"}}</div>{{/if}}
         <div>
             {{userFirstAndLastName meta.updatedBy}}
-            <div class="datetime" title="{{formatDate meta.createdOn dateFormat}}">{{contextualDate meta.createdOn}}</div>
+            <div class="datetime" title="{{fullDateTime meta.createdOn}}">{{contextualDate meta.createdOn}}</div>
         </div>
     </a>
     <a href="#" class="directus-user open-modal js-user" data-user-id="{{meta.updatedBy}}">
@@ -14,7 +14,7 @@
         {{#if meta.updatedByIsOnline}}<div class="online">{{t "online"}}</div>{{/if}}
         <div>
             {{userFirstAndLastName meta.updatedBy}}
-            <div class="datetime" title="{{formatDate meta.updatedOn dateFormat}}">{{contextualDate meta.updatedOn}}</div>
+            <div class="datetime" title="{{fullDateTime meta.updatedOn}}">{{contextualDate meta.updatedOn}}</div>
         </div>
     </a>
 </div>
