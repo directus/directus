@@ -130,7 +130,7 @@ define([
 
     onCheckboxChange: function (event) {
       var $checkbox = $(event.currentTarget);
-      var element = $checkbox.next('input[type=hidden]').get(0);
+      var element = $checkbox.siblings('input[type=hidden]').get(0);
 
       this.triggerChange(element.name, element.value);
     },
