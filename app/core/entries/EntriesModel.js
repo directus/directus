@@ -2,12 +2,13 @@ define(function(require, exports, module) {
 
   "use strict";
 
-  var app                     = require("app"),
-      Backbone                = require("backbone"),
+  var app                     = require('app'),
+      _                       = require('underscore'),
+      Backbone                = require('backbone'),
       ModelHelper             = require('helpers/model'),
-      EntriesJunctionCollection = require("core/entries/EntriesJunctionCollection"),
-      UIManager               = require("core/UIManager"),
-      SchemaManager           = require("schema/SchemaManager");
+      EntriesJunctionCollection = require('core/entries/EntriesJunctionCollection'),
+      UIManager               = require('core/UIManager'),
+      SchemaManager           = require('schema/SchemaManager');
 
   var nestedTypes = ['many_to_one', 'single_file'];
 
@@ -227,6 +228,7 @@ define(function(require, exports, module) {
 
       var isModel,
           isCollection,
+          self = this,
           attributes = this.attributes;
 
       if (method === 'patch' && options.includeRelationships) {
@@ -237,6 +239,9 @@ define(function(require, exports, module) {
         _.each(relationalColumns, function(column) {
             var key = column.id;
             var value = attributes[key];
+
+            // omit if the user has not permission to edit the field
+            if (!self.canEdit(key)) return;
 
             // Some one-manys are not nested objects and will not need any special treatment
             if (!_.isObject(value)) return;
