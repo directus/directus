@@ -1,8 +1,8 @@
 define(['app', 'underscore', 'backbone', 'core/t'], function(app, _, Backbone, __t) {
   return Backbone.Layout.extend({
-    optionsStructure: function() {},
+    optionsStructure: function () {},
 
-    getAllViewOptions: function(viewId) {
+    getAllViewOptions: function (viewId) {
       if (this.state && this.state.malformedOptions) {
         return {};
       }
@@ -23,13 +23,13 @@ define(['app', 'underscore', 'backbone', 'core/t'], function(app, _, Backbone, _
       return viewOptions;
     },
 
-    getViewOptions: function(attr) {
-      var options = this.getAllViewOptions(this.id);
+    getViewOptions: function (attr) {
+      var options = this.getAllViewOptions(this.options.id);
 
       return attr ? options[attr] : options;
     },
 
-    enable: function() {
+    enable: function () {
       if (this._isEnabled) {
         return;
       }
@@ -45,7 +45,7 @@ define(['app', 'underscore', 'backbone', 'core/t'], function(app, _, Backbone, _
       _.result(this, 'onEnable');
     },
 
-    disable: function() {
+    disable: function () {
       if (!this._isEnabled) {
         return;
       }
@@ -61,11 +61,11 @@ define(['app', 'underscore', 'backbone', 'core/t'], function(app, _, Backbone, _
       _.result(this, 'onDisable');
     },
 
-    savePreferences: function(name, value, global) {
+    savePreferences: function (name, value, global) {
       var attributes = {};
       var viewOptions = this.getAllViewOptions();
       var options;
-      var viewId = this.id;
+      var viewId = this.options.id;
 
       // @TODO: create helper to create value using string key
       // calendar.date_column
@@ -105,9 +105,8 @@ define(['app', 'underscore', 'backbone', 'core/t'], function(app, _, Backbone, _
       app.router.go(route);
     },
 
-    constructor: function(options) {
+    constructor: function (options) {
       this.baseView = options.baseView;
-      this.id = options.id;
 
       this.state = {
         malformedOptions: false
