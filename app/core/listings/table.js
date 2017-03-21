@@ -273,7 +273,10 @@ define([
 
             _.each(comments, function (comment) {
               var model = systemCollection.get(comment.id);
-              model.set('_comments', comment.count);
+              // if the collection are filtered some models may not be
+              if (model) {
+                model.set('_comments', comment.count);
+              }
             });
             this.render();
           }, this));
