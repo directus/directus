@@ -33,6 +33,8 @@ define(function(require, exports, module) {
         "single":false,
         "footer": 1,
         "count":0,
+        "user_create_column": "id",
+        "user_update_column": "id",
         statusName:0,
         "url": "api/1/tables/directus_users/",
         "columns": [
