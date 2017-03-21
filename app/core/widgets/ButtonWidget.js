@@ -21,6 +21,14 @@ function(app, Backbone, _) {
       return this.getEvents();
     },
 
+    addClass: function (classes) {
+      this.$('button').addClass(classes);
+    },
+
+    removeClass: function (classes) {
+      this.$('button').removeClass(classes);
+    },
+
     serialize: function() {
       var options = this.options.widgetOptions;
 

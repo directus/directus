@@ -1,6 +1,29 @@
 //////////////////////////////////////////////////////////////////////////////
 // Header
 
+body.loading {
+	.header {
+		.logo {
+			cursor: progress;
+			.directus {
+				opacity: 1;
+				// Show running asset
+			}
+			&.has-project-logo {
+				.directus {
+					opacity: 1;
+				}
+				.project-logo {
+					opacity: 0.1;
+				}
+				.project-swap {
+					opacity: 0;
+				}
+			}
+		}
+	}
+}
+
 .header {
 	@include box-shadow (0px, 2px, 6px, 0px, 0.25);
 	position: fixed;
@@ -11,6 +34,23 @@
 	height: 64px;
 	background-color: $gray-7;
 	z-index: 10;
+	text-align: right;
+	&.settings {
+		// background: $gray-7; /* Old browsers */
+		// background: -moz-linear-gradient(	30deg, 	darken($primary, 25%) 5%, $gray-7 50%); /* FF3.6-15 */
+		// background: -webkit-linear-gradient(30deg, 	darken($primary, 25%) 5%, $gray-7 50%); /* Chrome10-25,Safari5.1-6 */
+		// background: linear-gradient(		30deg, 	darken($primary, 25%) 5%, $gray-7 50%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+		// filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#16527a', endColorstr='#222222',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+		.breadcrumb {
+			// color: $important;
+			.crumb:nth-of-type(1) {
+				color: $important;
+				&:hover {
+					color: $white;
+				}
+			}
+		}
+	}
 	.logo {
 		position: absolute;
 		top: 0;
@@ -18,11 +58,76 @@
 		width: 200px;
 		height: 100%;
 		text-align: center;
-		// border-right: 1px solid $gray-5;
+		padding-top: 20px;
+		&:hover {
+			.directus {
+				opacity: 0.5;
+			}
+			.project-logo {
+				opacity: 0;
+			}
+			.project-swap {
+				opacity: 1;
+			}
+			.project-dropdown-arrow {
+				opacity: 0.8;
+			}
+			&.has-project-logo {
+				.directus {
+					opacity: 0.0;
+				}
+				.project-logo {
+					opacity: 0.1;
+				}
+				.project-swap {
+					opacity: 1;
+				}
+			}
+		}
+		&.has-project-logo {
+			.directus {
+				opacity: 0.0;
+			}
+		}
 		.directus {
 			@include transition (all, $timing-short, ease-in-out);
+			position: absolute;
+			top: 13px;
+			left: 50%;
+			margin-left: -33px;
 			height: 40px;
-			margin-top: 13px;
+		}
+		.project-logo {
+			@include transition (all, $timing-short, ease-in-out);
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 200px;
+		}
+		.project-name {
+			position: relative;
+			color: #ffffff;
+			font-weight: 500;
+			font-size: 18px;
+			display: none; // Not in use
+			.project-dropdown-arrow {
+				@include transition (all, $timing-short, ease-in-out);
+				position: absolute;
+				top: -2px;
+				right: -24px;
+				color: $white;
+				opacity: 0.2;
+			}
+		}
+		.project-swap {
+			@include transition (all, $timing-short, ease-in-out);
+			position: absolute;
+			top: 15px;
+			left: 50%;
+			font-size: 34px;
+			margin-left: -17px;
+			color: $white;
+			opacity: 0;
 		}
 		.fading-separator {
 			position: absolute;
@@ -30,25 +135,29 @@
 			top: 10px;
 			width: 1px;
 			height: 44px;
-			background: linear-gradient($gray-6 0%, $gray-5 15%, $gray-5 85%, $gray-6 100%) no-repeat 50% 75%;
-		}
-		&:hover {
-			.directus {
-				// margin-top: 18px;
-				// height: 44px;
-				opacity: 0.5;
-			}
+			background: linear-gradient(rgba($white, 0) 0%, rgba($white, 0.3) 15%, rgba($white, 0.3) 85%, rgba($white, 0) 100%) no-repeat 50% 75%;
 		}
 	}
 	.breadcrumb {
 		position: absolute;
 		top: 17px;
 		left: 220px;
-		color: $gray-4;
+		color: rgba($white, 0.5);
 		font-size: 24px;
 		font-weight: 300;
 		cursor: default;
 		.hamburger {
+			@include transition (color, $timing-short, ease-in-out);
+			display: none;
+			cursor: pointer;
+			padding: 5px;
+			vertical-align: middle;
+			margin: -4px 3px 0 0;
+			&:hover {
+				color: $white;
+			}
+		}
+		.arrow-back {
 			@include transition (color, $timing-short, ease-in-out);
 			display: none;
 			cursor: pointer;
@@ -67,13 +176,13 @@
 			}
 		}
 		.separator {
-			color: $gray-5;
+			color: rgba($white, 0.2);
 			vertical-align: middle;
 		}
 		.bookmark {
 			@include transition (color, $timing-short, ease-in-out);
 			display: inline-block;
-			color: $gray-5;
+			color: rgba($white, 0.2);
 			cursor: pointer;
 			vertical-align: middle;
 			padding: 5px;
@@ -88,136 +197,140 @@
 	}
 	#bulkStatus {
 		@include transition (color, $timing-short, ease-in-out);
+		position: relative;
 		display: none;
-		position: absolute;
-		top: 11px;
-		right: 192px;
-		&.bulkEdit {
-			right: 256px;
-		}
+		vertical-align: top;
+		margin-top: 11px;
 		select {
 			border: none;
 		}
 	}
-	.filter {
-		position: absolute;
-		top: 11px;
-		right: 128px;
-		width: 300px;
-		text-align: right;
-		input.general {
-			width: 100%;
-			height: 40px;
-			padding-left: 40px;
-			padding-right: 50px;
-			z-index: 2;
-			border: none;
-		}
-		.search {
-			position: absolute;
-			top: 8px;
-			left: 8px;
-			color: $gray-3;
-		}
-		.clear {
-			@include transition (color, $timing-short, ease-in-out);
-			position: absolute;
-			top: 8px;
-			right: 24px;
-			cursor: pointer;
-			color: $gray-3;
-			&:hover {
-				color: $serious;
+	.tools-right {
+		display: inline;
+		.filter {
+			position: relative;
+			display: inline-block;
+			vertical-align: top;
+			margin-top: 11px;
+			width: 300px;
+			text-align: right;
+			&.responsive-active {
+				display: inline-block;
 			}
-		}
-		.filter-dropdown-toggle {
-			@include transition (all, $timing-short, ease-in-out);
-			position: absolute;
-			top: 8px;
-			right: 0;
-			cursor: pointer;
-			color: $gray-3;
-			&:hover {
-				color: $primary;
-			}
-		}
-		&.filter-dropdown-open {
 			input.general {
-				@include border-radius-each (2px, 0, 0, 2px);
+				width: 100%;
+				height: 40px;
+				padding-left: 40px;
+				padding-right: 50px;
+				z-index: 2;
+				border: none;
+			}
+			.search {
+				position: absolute;
+				top: 8px;
+				left: 8px;
+				color: $gray-3;
+			}
+			.clear {
+				@include transition (color, $timing-short, ease-in-out);
+				position: absolute;
+				top: 8px;
+				right: 24px;
+				cursor: pointer;
+				color: $gray-3;
+				&:hover {
+					color: $serious;
+				}
 			}
 			.filter-dropdown-toggle {
-				@include rotate (-180);
+				@include transition (all, $timing-short, ease-in-out);
+				position: absolute;
+				top: 8px;
+				right: 0;
+				cursor: pointer;
+				color: $gray-3;
+				&:hover {
+					color: $primary;
+				}
+			}
+			&.filter-dropdown-open {
+				input.general {
+					@include border-radius-each (2px, 0, 0, 2px);
+				}
+				.filter-dropdown-toggle {
+					@include rotate (-180);
+				}
+				.filter-dropdown {
+					display: block;
+				}
 			}
 			.filter-dropdown {
-				display: block;
-			}
-		}
-		.filter-dropdown {
-			@include box-shadow (0px, 0px, 6px, 0px, 0.20);
-			display: none;
-			z-index: 1;
-			width: 100%;
-			text-align: left;
-			background-color: $white;
-			color: $gray-5;
-			padding: 20px;
-			border-top: 1px solid $gray-2;
-			h3 {
-				padding-bottom: 6px;
-			}
-			hr {
-				padding-top: 10px;
-				margin-bottom: 18px;
-			}
-			.status-toggle {
-				display: inline-block;
-				margin-right: 20px;
-				span {
-					display: inline-block;
-					vertical-align: middle;
-				}
-			}
-			.add-column-filter {
+				@include box-shadow (0px, 0px, 6px, 0px, 0.20);
+				display: none;
+				z-index: 1;
 				width: 100%;
-				select {
-					width: 100%;
+				text-align: left;
+				background-color: $white;
+				color: $gray-5;
+				padding: 20px;
+				border-top: 1px solid $gray-2;
+				h3 {
+					padding-bottom: 6px;
 				}
-			}
-			.column-filter {
-				position: relative;
-				margin-top: 20px;
-				margin-right: 30px;
-				input.date-filter {
-					width: 110px;
-					margin-left: 6px;
-					&::-webkit-clear-button,
-					&::-webkit-inner-spin-button,
-					&::-webkit-calendar-picker-indicator {
-						display: none;
-						-webkit-appearance: none;
+				hr {
+					padding-top: 10px;
+					margin-bottom: 18px;
+				}
+				.status-toggle {
+					display: inline-block;
+					margin-right: 20px;
+					span {
+						display: inline-block;
+						vertical-align: middle;
 					}
 				}
-				.date-filter select {
-					width: 110px;
+				.add-column-filter {
+					width: 100%;
+					select {
+						width: 100%;
+					}
 				}
-				.remove-filter {
-					@include transition (all, $timing-short, ease-in-out);
-					position: absolute;
-					top: 24px;
-					right: -35px;
-					cursor: pointer;
-					&:hover {
-						color: $serious;
+				.column-filter {
+					position: relative;
+					margin-top: 20px;
+					margin-right: 30px;
+					input.date-filter {
+						width: 110px;
+						margin-left: 6px;
+						&::-webkit-clear-button,
+						&::-webkit-inner-spin-button,
+						&::-webkit-calendar-picker-indicator {
+							display: none;
+							-webkit-appearance: none;
+						}
+					}
+					.date-filter select {
+						width: 110px;
+					}
+					.remove-filter {
+						@include transition (all, $timing-short, ease-in-out);
+						position: absolute;
+						top: 24px;
+						right: -35px;
+						cursor: pointer;
+						&:hover {
+							color: $serious;
+						}
 					}
 				}
 			}
 		}
 	}
 	.actions {
-		position: absolute;
-		top: 0;
-		right: 0;
+		position: relative;
+		display: inline-block;
 		// #archiveMessages,
+		.filter-toggle,
 		#bulkDelete,
 		#bulkEdit {
 			display: none;
@@ -237,13 +350,31 @@
 				}
 				.material-icons {
 					&.center {
-						font-size: 30px;
-					}
-					&.more {
-						opacity: 1;
+						// font-size: 30px; // Let's NOT grow the icons for now
 					}
 					&.decrease-size {
-						font-size: 26px;
+						// font-size: 26px; // Let's NOT grow the icons for now
+					}
+				}
+				&.disabled {
+					.action-text {
+						opacity: 0;
+					}
+					.material-icons {
+						&.center {
+							font-size: 24px;
+						}
+						&.decrease-size {
+							font-size: 20px;
+						}
+					}
+					.more:hover {
+						.save-options {
+							cursor: not-allowed;
+						}
+						.material-icons {
+							opacity: 0.2;
+						}
 					}
 				}
 			}
@@ -262,6 +393,18 @@
 			&.important {
 				background-color: $important;
 			}
+			&.disabled {
+				background-color: $gray-5;
+				cursor: not-allowed;
+				&.blank {
+					background-color: transparent;
+				}
+				.material-icons {
+					&.center {
+						opacity: 0.3;
+					}
+				}
+			}
 			.material-icons {
 				@include transition (all, $timing-short, ease-in-out);
 				position: absolute;
@@ -269,13 +412,39 @@
 				left: 0;
 				width: 100%;
 				transform: translateY(-50%);
-				&.more {
+				&.decrease-size {
+					font-size: 20px;
+				}
+			}
+			.more {
+				position: absolute;
+				top: 0;
+				left: 0;
+				right: 0;
+				height: 20px;
+				overflow: hidden;
+				.save-options {
+					@include border-radius (0px);
+					position: absolute;
+					top: 0;
+					left: 0;
+					right: 0;
+					bottom: 0;
+					opacity: 0;
+					z-index: 2;
+					border: none;
+					cursor: pointer;
+				}
+				.material-icons {
 					top: 0;
 					transform: initial;
 					opacity: 0.2;
+					z-index: 1;
 				}
-				&.decrease-size {
-					font-size: 20px;
+				&:hover {
+					.material-icons {
+						opacity: 1;
+					}
 				}
 			}
 			.action-text {

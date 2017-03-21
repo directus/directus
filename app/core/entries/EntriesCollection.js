@@ -3,6 +3,7 @@ define(function(require, exports, module) {
   'use strict';
 
   var Backbone      = require('backbone'),
+      app           = require('app'),
       _             = require('underscore'),
       ModelHelper   = require('helpers/model'),
       Collection    = require('core/collection'),
@@ -117,13 +118,13 @@ define(function(require, exports, module) {
         options.insideRows = true;
       }
 
-      var sync = function () {
-        collection.trigger('sync');
+      var sync = function (resp) {
+        collection.trigger('sync', collection, resp, options);
       };
 
       options.success = function(resp) {
         if (options.wait) {
-          sync();
+          sync(resp);
         }
 
         if (success) {
@@ -164,8 +165,9 @@ define(function(require, exports, module) {
       }
 
       options.data = JSON.stringify({rows: models});
+      options.contentType = 'application/json';
 
-      var destroy = function() {
+      var destroy = function(resp) {
         _.each(models, function(model) {
           if (!(model instanceof Backbone.Model)) {
             model = collection.get(model);
@@ -174,12 +176,12 @@ define(function(require, exports, module) {
           model.trigger('destroy', model, model.collection, options);
         });
 
-        collection.trigger('destroy sync');
+        collection.trigger('destroy sync', collection, resp, options);
       };
 
       options.success = function(resp) {
         if (options.wait) {
-          destroy();
+          destroy(resp);
         }
 
         if (success) {
@@ -188,12 +190,14 @@ define(function(require, exports, module) {
       };
 
       this.url += '/bulk';
-      this.sync('delete', this, options);
+      var xhr = this.sync('delete', this, options);
       this.url = originalURL;
 
       if (!options.wait) {
         destroy();
       }
+
+      return xhr;
     },
 
     destroyAll: function(options) {
@@ -205,6 +209,7 @@ define(function(require, exports, module) {
         table: this.table,
         structure: this.structure,
         privileges: this.privileges,
+        preferences: this.preferences,
         rowsPerPage: this.rowsPerPage
       };
 
@@ -336,6 +341,12 @@ define(function(require, exports, module) {
         this.preferences = options.preferences;
         this.preferences.on('change', function() { this.trigger('change'); }, this);
       }
+    },
+
+    getNewModelInstance: function(options) {
+      options = _.extend({collection: this}, options || {});
+
+      return new this.model({}, options);
     },
 
     getNewInstance: function(options) {

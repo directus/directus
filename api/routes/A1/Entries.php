@@ -3,10 +3,10 @@
 namespace Directus\API\Routes\A1;
 
 use Directus\Application\Route;
+use Directus\Database\TableGateway\DirectusActivityTableGateway;
 use Directus\Database\TableGateway\DirectusUsersTableGateway;
 use Directus\Database\TableGateway\RelationalTableGateway as TableGateway;
 use Directus\Services\EntriesService;
-use Directus\View\JsonView;
 
 class Entries extends Route
 {
@@ -36,7 +36,7 @@ class Entries extends Route
         // GET all table entries
         $response = $tableGateway->getEntries($params);
 
-        JsonView::render($response);
+        return $this->app->response($response);
     }
 
     public function rowsBulk($table)
@@ -51,28 +51,36 @@ class Entries extends Route
         }
 
         $TableGateway = new TableGateway($table, $ZendDb, $acl);
-        $primaryKeyFieldName = $TableGateway->primaryKeyFieldName;
-
-        $rowIds = [];
-        foreach ($rows as $row) {
-            if (!array_key_exists($primaryKeyFieldName, $row)) {
-                throw new \Exception(__t('row_without_primary_key_field'));
+        // hotfix add entries by bulk
+        if ($this->app->request()->isPost()) {
+            $entriesService = new EntriesService($this->app);
+            foreach($rows as $row) {
+                $entriesService->createEntry($table, $row, $params);
             }
-            array_push($rowIds, $row[$primaryKeyFieldName]);
-        }
-
-        $where = new \Zend\Db\Sql\Where;
-
-        if ($this->app->request()->isDelete()) {
-            $TableGateway->delete($where->in($primaryKeyFieldName, $rowIds));
         } else {
+            $primaryKeyFieldName = $TableGateway->primaryKeyFieldName;
+
+            $rowIds = [];
             foreach ($rows as $row) {
-                $TableGateway->updateCollection($row);
+                if (!array_key_exists($primaryKeyFieldName, $row)) {
+                    throw new \Exception(__t('row_without_primary_key_field'));
+                }
+                array_push($rowIds, $row[$primaryKeyFieldName]);
+            }
+
+            $where = new \Zend\Db\Sql\Where;
+
+            if ($this->app->request()->isDelete()) {
+                $TableGateway->delete($where->in($primaryKeyFieldName, $rowIds));
+            } else {
+                foreach ($rows as $row) {
+                    $TableGateway->updateCollection($row);
+                }
             }
         }
 
         $entries = $TableGateway->getEntries($params);
-        JsonView::render($entries);
+        return $this->app->response($entries);
     }
 
     public function typeAhead($table, $query = null)
@@ -113,19 +121,18 @@ class Entries extends Route
             $val = implode(' ', $tokens);
             array_push($response, ['value' => $val, 'tokens' => $tokens, 'id' => $entry['id']]);
         }
-        JsonView::render($response);
+
+        return $this->app->response($response);
     }
 
     public function row($table, $id)
     {
         $app = $this->app;
         $ZendDb = $app->container->get('zenddb');
-        $auth = $app->container->get('auth');
         $acl = $app->container->get('acl');
         $requestPayload = $app->request()->post();
         $params = $app->request()->get();
 
-        $currentUser = $auth->getUserInfo();
         $params['table_name'] = $table;
 
         // any UPDATE requests should md5 the email
@@ -151,7 +158,7 @@ class Entries extends Route
             // DELETE a given table entry
             case 'DELETE':
                 $success =  $TableGateway->delete([$TableGateway->primaryKeyFieldName => $id]);
-                return JsonView::render([
+                return $this->app->response([
                     'meta' => [
                         'table' => $table
                     ],
@@ -169,6 +176,22 @@ class Entries extends Route
             ];
         }
 
-        JsonView::render($response);
+        return $this->app->response($response);
+    }
+
+    public function meta($table, $id)
+    {
+        $app = $this->app;
+        $dbConnection = $app->container->get('zenddb');
+        $acl = $app->container->get('acl');
+
+        $tableGateway = new DirectusActivityTableGateway($dbConnection, $acl);
+        $data = $tableGateway->getMetadata($table, $id);
+        $response = [
+            'meta' => ['table' => 'directus_activity', 'type' => 'item'],
+            'data' => $data
+        ];
+
+        return $this->app->response($response);
     }
 }

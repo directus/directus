@@ -7,7 +7,7 @@
   ],
   "license": "MIT",
   "require": {
-    "php": ">=5.4.0",
+    "php": ">=5.5.0",
     "zendframework/zend-db": "dev-directus",
     "directus/collection": "0.9.*@dev"
   },

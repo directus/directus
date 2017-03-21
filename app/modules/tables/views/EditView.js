@@ -116,12 +116,26 @@ function(app, Backbone, _, Handlebars, __t, Directus, BasePageView, Widgets, His
       var data = this.editView.data();
       var that = this;
       if(data[app.statusMapping.status_name] && data[app.statusMapping.status_name] === app.statusMapping.deleted_num) {
-        app.router.openModal({type: 'confirm', text: 'Are you sure you want to delete this item?', callback: function() {
+        app.router.openModal({type: 'confirm', text: __t('confirm_delete_item'), callback: function () {
           that.save(e);
         }});
       } else {
         this.save(e);
       }
+    },
+
+    deleteConfirm: function () {
+      var self = this;
+      // @TODO: table has different status
+      var attributes = {};
+      attributes[app.statusMapping.status_name] = 0;
+      app.router.openModal({type: 'confirm', text: __t('confirm_delete_item'), callback: function () {
+        self.model.save(attributes).then(function () {
+          var route = Backbone.history.fragment.split('/');
+          route.pop();
+          app.router.go(route);
+        });
+      }});
     },
 
     save: function(e) {
@@ -272,6 +286,21 @@ function(app, Backbone, _, Handlebars, __t, Directus, BasePageView, Widgets, His
       this.saveWidget.disable();
 
       widgets.push(this.saveWidget);
+
+      // delete button
+      if (!this.model.isNew()) {
+        this.deleteWidget = new Widgets.ButtonWidget({
+          widgetOptions: {
+            buttonId: 'deleteBtn',
+            iconClass: 'close',
+            buttonClass: 'serious',
+            buttonText: __t('delete')
+          },
+          onClick: _.bind(editView.deleteConfirm, editView)
+        });
+
+        widgets.push(this.deleteWidget);
+      }
 
       if (_.result(this, 'rightPane')) {
         this.infoWidget = new Widgets.ButtonWidget({

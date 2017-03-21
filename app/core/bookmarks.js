@@ -23,14 +23,25 @@ function(app, Backbone, _, EntriesManager, __t, Notification) {
   var Bookmarks = {};
 
   Bookmarks.Collection = Backbone.Collection.extend({
-    initialize: function(models, options) {
+    constructor: function(models, options) {
       this.url = app.API_URL + 'bookmarks/';
+
       this.isCustomBookmarks = options.isCustomBookmarks || false;
+      if (!this.isCustomBookmarks) {
+        options.comparator = this._comparator;
+      }
+
+      Backbone.Collection.prototype.constructor.apply(this, [models, options]);
     },
 
-    comparator: function(a, b) {
-      if (a.get('title') < b.get('title')) return -1;
-      if (a.get('title') > b.get('title')) return 1;
+    _comparator: function(a, b) {
+      if (a.get('title') < b.get('title')) {
+        return -1;
+      }
+
+      if (a.get('title') > b.get('title')) {
+        return 1;
+      }
 
       return 0;
     },
@@ -192,6 +203,10 @@ function(app, Backbone, _, EntriesManager, __t, Notification) {
 
         if (skipSystemNav) {
           return false;
+        }
+
+        if (bookmark.section === 'search') {
+          bookmark.url = 'bookmark/' + encodeURIComponent(bookmark.title);
         }
 
         if (bookmarks[bookmark.section]) {

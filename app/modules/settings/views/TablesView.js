@@ -32,6 +32,48 @@ function(app, _, Backbone, Directus, EditView, BasePageView, TableModel, ColumnM
   'use strict';
 
   var SettingsTables = app.module();
+  var confirmDestroyTable = function (tableName, callback) {
+    DoubleConfirmation({
+      value: tableName,
+      emptyValueMessage: __t('invalid_table'),
+      firstQuestion: __t('question_delete_this_table'),
+      secondQuestion: __t('question_delete_this_table_confirm', {table_name: tableName}),
+      notMatchMessage: __t('table_name_did_not_match'),
+      callback: callback
+    }, this);
+  };
+
+  var destroyTable = function (model, callback) {
+    var options = {
+      wait: true
+    };
+
+    options.success = function(model, response) {
+      if (response.success === true) {
+        var tableName = model.get('table_name');
+        var bookmarks = app.router.bookmarks;
+
+        app.schemaManager.unregisterFullSchema(tableName);
+
+        var model = bookmarks.findWhere({title: app.capitalize(tableName), section: 'table'});
+        if (model) {
+          bookmarks.remove(model);
+        }
+
+        Notification.success(__t('table_removed'), __t('table_x_was_removed', {
+          table_name: tableName
+        }), 3000);
+
+        if (callback) {
+          callback();
+        }
+      } else {
+        Notification.error(response.message);
+      }
+    };
+
+    model.destroy(options);
+  };
 
   // Handles new columns and aliases.
   // Rendered inside modal
@@ -542,7 +584,9 @@ function(app, _, Backbone, Directus, EditView, BasePageView, TableModel, ColumnM
         } else {
           self.collection.remove(originalColumnModel);
           self.$el.find('[data-id=' + model.get('id') + ']').remove();
-          Notification.success('Column removed', '<b>' + columnName + '</b> was removed.');
+          Notification.success(__t('column_removed'), __t('column_x_was_removed', {
+            column_name: columnName
+          }), 3000);
         }
       };
 
@@ -711,7 +755,7 @@ function(app, _, Backbone, Directus, EditView, BasePageView, TableModel, ColumnM
     }
   });
 
-  SettingsTables.Views.Table = EditView.extend({//BasePageView.extend({
+  SettingsTables.Views.Table = EditView.extend({
     getHeaderOptions: function() {
       var options = EditView.prototype.getHeaderOptions.apply(this, arguments);
 
@@ -722,80 +766,35 @@ function(app, _, Backbone, Directus, EditView, BasePageView, TableModel, ColumnM
             {title: __t('tables_and_inputs'), anchor: '#settings/tables'}
           ]
         },
-        basicSave: true
+        basicSave: true,
+        className: 'header settings'
       });
     },
 
+    leftToolbar: function () {
+      var widgets = EditView.prototype.leftToolbar.apply(this, arguments);
+      var self = this;
+
+      widgets.push(new Widgets.ButtonWidget({
+        widgetOptions: {
+          buttonId: 'removeBtn',
+          iconClass: 'close',
+          buttonClass: 'serious',
+          buttonText: __t('delete')
+        },
+        onClick: function(event) {
+          confirmDestroyTable(self.model.get('name'), function () {
+            destroyTable(self.model, function () {
+              app.router.go(['settings', 'tables']);
+            });
+          });
+        }
+      }));
+
+      return widgets;
+    },
+
     rightPane: false
-    // headerOptions: {
-    //   route: {
-    //     title: 'Classes',
-    //     breadcrumbs: [{title: __t('settings'), anchor: '#settings'}, {title: __t('tables_and_inputs'), anchor: '#settings/tables'}]
-    //   }
-    // },
-    //
-    // leftToolbar: function() {
-    //   var self = this;
-    //   this.saveWidget = new Widgets.SaveWidget({
-    //     widgetOptions: {
-    //       basicSave: true
-    //     },
-    //     onClick: function() {
-    //       self.editView.save();
-    //     }
-    //   });
-    //   var editView = this;
-    //   this.saveWidget = new Widgets.SaveWidget({
-    //     widgetOptions: {
-    //       basicSave: this.headerOptions.,
-    //       singlePage: this.single
-    //     },
-    //     onClick: _.bind(editView.saveConfirm, editView)
-    //   });
-    //
-    //   this.saveWidget.setSaved(false);
-    //   return [
-    //     this.saveWidget
-    //   ];
-    // },
-    //
-    // events: {
-    //   'change select,input': function(e) {
-    //     this.saveWidget.setSaved(false); //Temporarily Just Set it to save once something is changed.
-    //   },
-    //   'click .saved-success': 'saveColumns'
-    // },
-    //
-    // saveColumns: function(e) {
-    //   var data = {};
-    //
-    //   //Take care of the checkboxes
-    //   $('#table-settings').find('input[type=checkbox]:not(:checked)').each(function(){
-    //     data[this.name] = 0;
-    //   }).get();
-    //
-    //   data = _.extend(data, $('#table-settings').serializeObject());
-    //
-    //   this.model.save(data, {success: function(){
-    //     app.router.go('settings','tables');
-    //   }});
-    // },
-
-    // afterRender: function() {
-    //   // this.setView('#page-content', this.columns);
-    //   //this.setView('#page-content', this.editView);
-    //   // this.collection.fetch();
-    //   this.model.fetch();
-    // },
-
-    // initialize: function() {
-      // this.collection = this.model.columns;
-      // this.columns = new Columns({collection: this.collection});
-      // this.headerOptions.route.title = this.model.id;
-
-      // this.editView = new Directus.EditView({model: this.model, ui: this.options.ui});
-      //this.editView = new EditView({model: this.model});
-    // }
   });
 
   var Tables = Backbone.Layout.extend({
@@ -803,17 +802,20 @@ function(app, _, Backbone, Directus, EditView, BasePageView, TableModel, ColumnM
     template: 'modules/settings/settings-tables',
 
     events: {
-      'click .js-row': function(event) {
+      'click .js-row': function (event) {
         var tableName = $(event.currentTarget).data('id');
 
-        app.router.go(['settings', 'tables', tableName]);
+        // only go to table details if it already has permissions set
+        if (app.schemaManager.hasPrivilege(tableName)) {
+          app.router.go(['settings', 'tables', tableName]);
+        }
       }
     },
 
     addRowView: function(model, render) {
       var view = this.insertView('tbody', new TablesRow({
         model: model,
-        unregistered: !this.hasPrivilege(model)
+        unregistered: ! app.schemaManager.hasPrivilege(model.id)
       }));
 
       if (render !== false) {
@@ -862,21 +864,8 @@ function(app, _, Backbone, Directus, EditView, BasePageView, TableModel, ColumnM
     },
 
     isValidModel: function(model) {
-      //Filter out _directus tables
-      if (model.id.substring(0,9) === 'directus_') return false;
-
-      return true;
-    },
-
-    hasPrivilege: function(model) {
-      // Filter out tables you don't have alter permissions on
-      var privileges = app.schemaManager.getPrivileges(model.id);
-
-      // filter out tables with empty privileges
-      if (privileges === undefined) return false;
-
-      // only return tables with view permissions
-      return privileges.has('allow_view') && privileges.get('allow_view') > 0;
+      // Filter out _directus tables
+      return (model.id.substring(0,9) !== 'directus_');
     },
 
     flashItem: function(entryID, bodyScrollTop) {
@@ -889,6 +878,7 @@ function(app, _, Backbone, Directus, EditView, BasePageView, TableModel, ColumnM
     },
 
     beforeRender: function() {
+      this.collection.sort();
       this.collection.each(function(model) {
         if (!this.isValidModel(model)) {
           return false;
@@ -951,9 +941,15 @@ function(app, _, Backbone, Directus, EditView, BasePageView, TableModel, ColumnM
 
     tagName: 'tr',
 
-    attributes: function() {
+    attributes: function () {
+      var classes = ['js-row'];
+
+      if (this.unregistedTable) {
+        classes.push('not-managed');
+      }
+
       return {
-        'class': 'js-row',
+        'class': classes.join(' '),
         'data-id': this.model.get('table_name')
       };
     },
@@ -966,7 +962,7 @@ function(app, _, Backbone, Directus, EditView, BasePageView, TableModel, ColumnM
       //   this.toggleTableAttribute(SchemaManager.getTable($(e.target).closest('tr').attr('data-id')), attr, $(e.target));
       // },
 
-      'click .js-add-table': function(event) {
+      'click .js-add-table': function (event) {
         event.stopPropagation();
 
         var $row = $(event.target).closest('tr');
@@ -978,19 +974,12 @@ function(app, _, Backbone, Directus, EditView, BasePageView, TableModel, ColumnM
         });
       },
 
-      'click .js-remove-table': function(event) {
+      'click .js-remove-table': function (event) {
         event.stopPropagation();
 
         var tableName = $(event.target).closest('tr').data('id') || this.model.get('table_name');
 
-        DoubleConfirmation({
-          value: tableName,
-          emptyValueMessage: __t('invalid_table'),
-          firstQuestion: __t('question_delete_this_table'),
-          secondQuestion: __t('question_delete_this_table_confirm', {table_name: tableName}),
-          notMatchMessage: __t('table_name_did_not_match'),
-          callback: this.destroyTable
-        }, this);
+        confirmDestroyTable(tableName, _.bind(this.destroyTable, this));
       }
     },
 
@@ -1015,30 +1004,7 @@ function(app, _, Backbone, Directus, EditView, BasePageView, TableModel, ColumnM
     },
 
     destroyTable: function() {
-      var options = {};
-      var self = this;
-
-      options.wait = true;
-      options.success = function(model, response) {
-        if (response.success === true) {
-          var tableName = model.get('table_name');
-          var bookmarks = app.router.bookmarks;
-
-          self.remove();
-          app.schemaManager.unregisterFullSchema(tableName);
-
-          var model = bookmarks.findWhere({title: app.capitalize(tableName), section: 'table'});
-          if (model) {
-              bookmarks.remove(model);
-          }
-
-          Notification.success('Table removed', '<b>'+tableName+'</b> was removed.', 3000);
-        } else {
-          Notification.error(response.message);
-        }
-      };
-
-      this.model.destroy(options);
+      destroyTable(this.model, _.bind(this.remove, this));
     },
 
     serialize: function() {
@@ -1048,9 +1014,11 @@ function(app, _, Backbone, Directus, EditView, BasePageView, TableModel, ColumnM
       return data;
     },
 
-    initialize: function(options) {
+    constructor: function (options) {
       this.unregistedTable = options.unregistered === true;
       this.parentView = options.parent;
+
+      Backbone.Layout.prototype.constructor.apply(this, arguments);
     }
   });
 
@@ -1060,6 +1028,7 @@ function(app, _, Backbone, Directus, EditView, BasePageView, TableModel, ColumnM
         title: __t('tables_and_inputs'),
         breadcrumbs: [{title: __t('settings'), anchor: '#settings'}]
       },
+      className: 'header settings'
     },
 
     leftToolbar: function() {

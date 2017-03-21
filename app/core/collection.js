@@ -219,23 +219,29 @@ function(app, Backbone, _) {
       options = options || {};
       options.data = options.data || {};
 
-      if (options.includeFilters === undefined) {
+      if (options.includeFilters === undefined || options.replaceOptions) {
         options.includeFilters = true;
       }
 
       if (options.includeFilters) {
-        var filters = this.getFilters();
-        if(filters && filters.columns_visible && !(filters.columns_visible.indexOf(filters.sort) !== -1) && this.structure.get(filters.sort)) {
+        var filters = options.replaceOptions || this.getFilters();
+
+        if (filters && filters.columns_visible && !(filters.columns_visible.indexOf(filters.sort) !== -1) && this.structure.get(filters.sort)) {
           // when there's only one visible column
           // it's an string so we need to convert it to an array
-          if(typeof filters.columns_visible === 'string') {
+          if (typeof filters.columns_visible === 'string') {
             filters.columns_visible = filters.columns_visible.split();
           }
+
           filters.columns_visible.push(filters.sort);
         }
+
         _.extend(options.data, filters);
       }
-      this.trigger('fetch', this);
+
+      // @NOTE: Do we need it?
+      // this.trigger('fetch', this);
+
       return Backbone.Collection.prototype.fetch.call(this, options);
     }
 

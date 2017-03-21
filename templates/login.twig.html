@@ -4,53 +4,40 @@
 
 {% block login %}
 
-<!--
-<div class="preview-intro">
-	<i class="material-icons close-preview-intro">close</i>
-	<div>Community Preview</div>
-	<hr>
-	Click the <b>Log In</b> button to explore!<br>
-	<br>
-	This static design preview is a work-in-progress, updates will be made based on your feedback (bottom-right button).
-	<a href="https://twitter.com/directus" target="_blank">
-		<i>
-			Please help spread the word! <img src="{{assetsRoot}}imgs/login-logo-twitter.svg">
-		</i>
-	</a>
-</div>
--->
-
 <div class="login-panel">
-    <form action="{{rootUrl}}api/1/auth/login" method="post" class="login-box" autocomplete="off">
-        <div class="input">
-            <i class="material-icons">person</i>
-            <input name="email" type="email" class="email" placeholder="Email">
-        </div>
-        <div class="input">
-            <i class="material-icons">lock</i>
-            <i class="material-icons forgot">help</i>
-            <input name="password" type="password" class="password" placeholder="Password">
-        </div>
-        <button type="submit" class="button">Log In</button> <!-- Optional Class: disabled -->
-    </form>
+	<form action="{{rootUrl}}api/1/auth/login" method="post" class="login-box" autocomplete="off">
+		<div class="input">
+			<i class="material-icons focus-color">person</i>
+			<input name="email" type="email" class="email" placeholder="Email" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+		</div>
+		<div class="input">
+			<i class="material-icons focus-color">lock</i>
+			<i id="forgot-password" class="material-icons forgot" title="Password Reset">help</i>
+			<input name="password" type="password" class="password" placeholder="Password" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+		</div>
+		<button type="submit" class="button">Log In</button> <!-- Optional Class: disabled -->
+	</form>
+	{% if authList %}
 	<div class="hr-label">
 		<hr>
 		<hr>
 		<div class="label">or</div>
 	</div>
 	<div class="alt-auth">
-		<div class="tile google"><img src="{{assetsRoot}}imgs/login-logo-google.svg"></div>
-		<div class="tile facebook"><img src="{{assetsRoot}}imgs/login-logo-facebook.svg"></div>
-		<div class="tile twitter"><img src="{{assetsRoot}}imgs/login-logo-twitter.svg"></div>
-		<div class="tile github"><img src="{{assetsRoot}}imgs/login-logo-github.svg"></div>
+		{% for service in authList %}
+		<div class="tile {{service}}"><a href="/auth/{{service}}"><img src="{{assetsRoot}}imgs/login-logo-{{service}}.svg"></a></div>
+		{% endfor %}
 	</div>
+	{% endif %}
 </div>
+
+<div class="processing"><div class="loading-container"><div class="loading-bar"></div></div></div>
 
 <div class="glow"></div>
 
 <div class="notifications">
-	<div class="notification {% if errorMessage %}serious{% endif %}">
-        {% if errorMessage %}<i class="material-icons">warning</i> {{errorMessage}}{% endif %}
+	<div class="notification {% if errorMessage %}serious{% endif %}" {% if not errorMessage %}style="display: none;"{% endif %}>
+		{% if errorMessage %}<i class="material-icons">warning</i> {{errorMessage}}{% endif %}
 	</div>
 </div>
 
@@ -60,101 +47,119 @@
 {% endblock %}
 
 {% block login_script %}
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
 {# make this a separate file #}
 <script type="text/javascript">
-    $(function () {
-        var $login_message = $('p.message');
-        var $login_error = $('.notification');
+	$(function () {
+		var $login_message = $('.notification');
 
-        function message(message, error) {
-            error = error || false;
-            if (error) {
-                $login_error.html("<i class=\"material-icons\">warning</i>" + message);
-                $login_error.show();
-            } else {
-                $login_message.html("<i class=\"material-icons\">warning</i>" + message);
-                $login_message.show();
-            }
-        }
+		function message(message, error) {
+			error = error || false;
+			if (error) {
+				$login_message.addClass('serious');
+			} else {
+				$login_message.removeClass('serious');
+			}
 
-        {% if inactive %}
-        message("{{'logged_out_due_to_inactivity'|trans}}", true);
-        {% endif %}
+			$login_message.html("<i class=\"material-icons\">warning</i>" + message);
+			$login_message.show();
+		}
 
-        function clear_messages() {
-            $login_error.hide();
-            $login_message.hide();
-        }
+		{% if inactive %}
+		message("{{'logged_out_due_to_inactivity'|trans}}", false);
+		{% endif %}
 
-        $('#forgot-password').bind('click', function (e) {
-            e.preventDefault();
-            clear_messages();
+		function clear_messages() {
+			$login_message.hide();
+		}
 
-            var $form = $(this).closest('form'),
-                email = $.trim($form.find('input[name=email]').val());
+		$('.login-box input').bind('focus', function (e) {
+			$('.focus-color').removeClass('active');
+			$(this).siblings('.focus-color').addClass('active');
+		}).bind('blur', function (e) {
+			$('.focus-color').removeClass('active');
+		});
 
-            if (email.length == 0) {
-                message("{{'enter_a_valid_email_address'|trans}}", true);
-                return false;
-            }
+		$('#forgot-password').bind('click', function (e) {
+			e.preventDefault();
+			clear_messages();
 
-            if (confirm("{{'are_you_sure_you_want_to_reset_your_password'|trans}}")) {
-                $.ajax('{{rootUrl}}api/{{apiVersion}}/auth/forgot-password', {
-                    data: {email: email},
-                    dataType: 'json',
-                    type: 'POST',
-                    success: function (data, textStatus, jqXHR) {
-                        if (!data.success) {
-                            var errorMessage = "{{'oops_an_error_occurred'|trans}}";
-                            if (data.message) {
-                                errorMessage = data.message;
-                            }
-                            message(errorMessage, true);
-                            return;
-                        }
-                        message("{{'reset_instructions_have_been_sent'|trans}}?>")
-                    },
-                    error: function (jqXHR, textStatus, errorThrown) {
-                        message("{{'server_error_occurred'|trans}}", true);
-                    }
-                });
-            }
-        });
+			var $form = $(this).closest('form'),
+				email = $.trim($form.find('input[name=email]').val());
 
-        $('form').bind('submit', function (e) {
-            e.preventDefault();
-            clear_messages();
+			if (email.length == 0) {
+				message("{{'enter_a_valid_email_address'|trans}}", true);
+				return false;
+			}
 
-            var email = $.trim($(this).find('input[name=email]').val()),
-                password = $.trim($(this).find('input[name=password]').val());
+			if (confirm("{{'are_you_sure_you_want_to_reset_your_password'|trans}}")) {
+				$.ajax('{{rootUrl}}api/{{apiVersion}}/auth/forgot-password', {
+					data: {email: email},
+					dataType: 'json',
+					type: 'POST',
+					success: function (data, textStatus, jqXHR) {
+						if (!data.success) {
+							var errorMessage = "{{'oops_an_error_occurred'|trans}}";
+							if (data.message) {
+								errorMessage = data.message;
+							}
+							message(errorMessage, true);
+							return;
+						}
 
-            if (email.length == 0 || password.length == 0) {
-                return message("{{'enter_your_email_and_password'|trans}}", true);
-            }
+						message("{{'reset_instructions_have_been_sent'|trans}}")
+					},
+					error: function (jqXHR, textStatus, errorThrown) {
+						message("{{'server_error_occurred'|trans}}", true);
+					}
+				});
+			}
+		});
 
-            $.ajax('{{rootUrl}}api/{{apiVersion}}/auth/login', {
-                data: {email: email, password: password},
-                dataType: 'json',
-                type: 'POST',
-                success: function (data, textStatus, jqXHR) {
-                    var defaultPath = 'users';
-                    var redirectPath = '{{redirectPath}}';
-                    var lastPage = data.last_page;
-                    var lastPagePath = lastPage ? lastPage.path : '';
-                    var path = redirectPath || lastPagePath || defaultPath;
+		$('form').bind('submit', function (e) {
+			e.preventDefault();
+			clear_messages();
 
-                    if (!data.success) {
-                        message(data.message, true);
-                        return;
-                    }
-                    // $('.login-box').css('opacity', 0);
-                    window.location = "{{rootUrl}}" + path;
-                },
-                error: function (jqXHR, textStatus, errorThrown) {
-                    message("{{'server_error_occurred'|trans}}", true);
-                }
-            });
-        });
-    });
+			var email = $.trim($(this).find('input[name=email]').val()),
+				password = $.trim($(this).find('input[name=password]').val());
+
+			if (email.length == 0 || password.length == 0) {
+				return message("{{'enter_your_email_and_password'|trans}}", true);
+			}
+
+			// Disable form during processing
+			$('.processing').addClass('blocking').addClass('fading');
+			$('.processing .loading-bar').addClass('step-1');
+
+			$.ajax('{{rootUrl}}api/{{apiVersion}}/auth/login', {
+				data: {email: email, password: password},
+				dataType: 'json',
+				type: 'POST',
+				success: function (data, textStatus, jqXHR) {
+					var defaultPath = 'users';
+					var redirectPath = '{{redirectPath}}';
+					var lastPage = data.last_page;
+					var lastPagePath = lastPage ? lastPage.path : '';
+					var path = redirectPath || lastPagePath || defaultPath;
+
+					$('.processing .loading-bar').removeClass('step-1').addClass('step-2');
+
+					if (!data.success) {
+						$('.processing').removeClass('blocking').removeClass('fading');
+						$('.processing .loading-bar').removeClass('step-1').removeClass('step-2');
+						message(data.message, true);
+						return;
+					}
+					// $('.login-box').css('opacity', 0);
+					window.location = "{{rootUrl}}" + path;
+				},
+				error: function (jqXHR, textStatus, errorThrown) {
+					$('.processing').removeClass('blocking').removeClass('fading');
+					$('.processing .loading-bar').removeClass('step-1').removeClass('step-2');
+					message("{{'server_error_occurred'|trans}}", true);
+				}
+			});
+		});
+	});
 </script>
 {% endblock %}

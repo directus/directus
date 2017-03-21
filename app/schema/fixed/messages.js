@@ -98,6 +98,13 @@ define(function(require, exports, module) {
         ]
       },
       {
+        "id": "attachment",
+        "column_name": "attachment",
+        "type": "VARCHAR",
+        "nullable": true,
+        "ui": "multiple_files_csv"
+      },
+      {
         "id":"responses",
         "column_name":"responses",
         "type":"ONETOMANY",

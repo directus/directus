@@ -112,6 +112,11 @@ class Column implements \ArrayAccess, Arrayable, \JsonSerializable
     protected $required = false;
 
     /**
+     * @var bool
+     */
+    protected $system = false;
+
+    /**
      * @var string
      */
     protected $ui;
@@ -180,7 +185,8 @@ class Column implements \ArrayAccess, Arrayable, \JsonSerializable
             'hidden_input',
             'relationship',
             'comment',
-            'table_name'
+            'table_name',
+            'system'
         ];
     }
 
@@ -443,6 +449,20 @@ class Column implements \ArrayAccess, Arrayable, \JsonSerializable
     }
 
     /**
+     * Set whether the column is nullable or not
+     *
+     * @see Column::setNullable
+     *
+     * @param $nullable
+     *
+     * @return Column
+     */
+    public function setIsNullable($nullable)
+    {
+        return $this->setNullable($nullable === 'YES');
+    }
+
+    /**
      * Get whether the column is nullable or not
      *
      * @return bool
@@ -450,6 +470,18 @@ class Column implements \ArrayAccess, Arrayable, \JsonSerializable
     public function getNullable()
     {
         return $this->nullable;
+    }
+
+    /**
+     * Get whether the column is nullable or not
+     *
+     * @see Column::getNullable
+     *
+     * @return bool
+     */
+    public function getIsNullable()
+    {
+        return $this->getNullable();
     }
 
     /**
@@ -554,12 +586,12 @@ class Column implements \ArrayAccess, Arrayable, \JsonSerializable
         return $this->ui;
     }
 
-    public function setUIOptions(array $options)
+    public function setOptions(array $options)
     {
         $this->options = $options;
     }
 
-    public function getUIOptions()
+    public function getOptions()
     {
         return $this->options;
     }
@@ -744,13 +776,37 @@ class Column implements \ArrayAccess, Arrayable, \JsonSerializable
     }
 
     /**
+     * Set whether or not is a system column
+     *
+     * @param bool $system
+     *
+     * @return Column
+     */
+    public function setSystem($system)
+    {
+        $this->system = (bool) $system;
+
+        return $this;
+    }
+
+    /**
+     * Whether or not is a system column
+     *
+     * @return bool
+     */
+    public function getSystem()
+    {
+        return $this->system;
+    }
+
+    /**
      * Checks whether the column is a system column
      *
      * @return bool
      */
     public function isSystem()
     {
-        return in_array($this->getName(), ['id', 'sort', STATUS_COLUMN_NAME]);
+        return (bool) $this->getSystem();
     }
 
     /**

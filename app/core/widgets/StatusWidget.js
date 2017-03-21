@@ -44,9 +44,12 @@ function(app, _, Backbone) {
       var currentStatus = this.model.get(attr);
 
       _.each(app.statusMapping.mapping, function(item, key) {
-        item.id = key;
-        item.selected = key === currentStatus;
-        status.push(item);
+        // Delete entry are performed on the header delete button
+        if (key !== app.statusMapping.deleted_num) {
+          item.id = key;
+          item.selected = key === currentStatus;
+          status.push(item);
+        }
       });
 
       status = _.sortBy(status, function(item) {

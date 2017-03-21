@@ -6,7 +6,7 @@
 //  For all details and documentation:
 //  http://www.getdirectus.com
 
-define(function() {
+define(['underscore'], function (_) {
 
   'use strict';
 
@@ -123,6 +123,13 @@ define(function() {
 
   Utils.isEmpty = function(value) {
     return value == null || value === '';
+  };
+
+  Utils.isNothing = function (value) {
+    return value === undefined
+        || value === null
+        || value === ''
+        || (!_.isNumber(value)  && !_.isDate(value) && _.isEmpty(value) && !_.isBoolean(value));
   };
 
   Utils.clearElement = function(element) {

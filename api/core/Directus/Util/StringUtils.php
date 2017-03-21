@@ -184,9 +184,11 @@ class StringUtils
 
     /**
      * Replace a string placeholder with the given data.
+     *
      * @param $string
      * @param array $data
      * @param string $placeHolderFormat
+     *
      * @return string
      */
     public static function replacePlaceholder($string, $data = [], $placeHolderFormat = self::PLACEHOLDER_DOUBLE_MUSTACHE)

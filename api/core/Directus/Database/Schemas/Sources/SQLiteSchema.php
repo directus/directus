@@ -415,14 +415,6 @@ class SQLiteSchema extends AbstractSchema
     /**
      * @inheritDoc
      */
-    public function getUIOptions($tableName, $columnName)
-    {
-        // TODO: Implement getUIOptions() method.
-    }
-
-    /**
-     * @inheritDoc
-     */
     public function getColumnUI($column)
     {
         // TODO: Implement getColumnUI() method.

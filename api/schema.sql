@@ -190,6 +190,7 @@ CREATE TABLE `directus_preferences` (
   `sort_order` varchar(5) DEFAULT 'asc',
   `status` varchar(5) DEFAULT '3',
   `search_string` text,
+  `list_view_options` text,
   PRIMARY KEY (`id`),
   UNIQUE KEY `user` (`user`,`table_name`,`title`),
   UNIQUE KEY `pref_title_constraint` (`user`,`table_name`,`title`)

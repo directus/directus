@@ -11,22 +11,33 @@ define([
 
 function(app, Backbone, _, __t, BasePageView, ListViewManager, TableViewRightPane, Widgets) {
 
+  var headFootShadows = function ($el) {
+    var pageScrollTop = $el.scrollTop();
+    var scrollBottom = $el.find('table.fixed-header').height() - $el.height() - pageScrollTop + 64; // 64 is table padding
+    var headScroll = Math.max(Math.min(pageScrollTop, 100), 0) / 100;
+    $el.find('table.fixed-header thead').css({ boxShadow: '0px 2px 6px 0px rgba(200,200,200,'+headScroll+')' });
+    var footScroll = Math.max(Math.min(scrollBottom, 100), 0) / 100;
+    $el.find('table.fixed-header tfoot').css({ boxShadow: '0px -2px 6px 0px rgba(200,200,200,'+footScroll+')' });
+
+    // Position Sticky Header
+    if ($el.find('table.fixed-header').hasClass('charted')) {
+      var headerDelta = ($(window).width() <= 500)? 244 : 304;
+      var headerTop = Math.max(64, headerDelta - pageScrollTop); // 304 is tied to CSS/SASS (default top from charted)
+      $el.find('table.fixed-header thead').css('top', headerTop);
+    }
+  };
+
   return BasePageView.extend({
 
     headerOptions: {
       route: {
         title: 'Table View',
         breadcrumbs: [{title: __t('tables'), anchor: '#tables'}]
-      },
+      }
     },
 
     leftToolbar: function() {
-      //if(!this.widgets.bookmarkWidget) {
-        //this.widgets.bookmarkWidget = new Widgets.ButtonWidget({widgetOptions: {active: this.isBookmarked, buttonId: 'bookmarkBtn', iconClass: 'icon-star'}});
-      //}
-      var widgets = [
-        //this.widgets.bookmarkWidget
-      ];
+      var widgets = this.widgets = [];
 
       if (this.collection.structure.length > 1 && this.collection.hasPermission('add')) {
         var tableView = this;
@@ -96,7 +107,7 @@ function(app, Backbone, _, __t, BasePageView, ListViewManager, TableViewRightPan
             widgetOptions: {
               // buttonId: '',
               iconClass: 'info',
-              buttonClass: '',
+              buttonClass: 'blank',
               buttonText: __t('options'),
               help: __t('right_pane_help')
             },
@@ -140,10 +151,6 @@ function(app, Backbone, _, __t, BasePageView, ListViewManager, TableViewRightPan
       }
 
       return widgets;
-
-      return [
-        new Widgets.PaginatorWidget({collection: this.collection})
-      ];
     },
 
     leftSecondaryToolbar: function() {
@@ -152,11 +159,11 @@ function(app, Backbone, _, __t, BasePageView, ListViewManager, TableViewRightPan
       switch(this.leftSecondaryCurrentState) {
         case 'default':
           if(!this.widgets.visibilityWidget) {
-            this.widgets.visibilityWidget = new Widgets.VisibilityWidget({collection: this.collection, basePage: this});
+            // this.widgets.visibilityWidget = new Widgets.VisibilityWidget({collection: this.collection, basePage: this});
           }
 
           return [
-            this.widgets.visibilityWidget
+            // this.widgets.visibilityWidget
           ];
         case 'actions':
           if(!this.widgets.selectionActionWidget) {
@@ -186,49 +193,103 @@ function(app, Backbone, _, __t, BasePageView, ListViewManager, TableViewRightPan
       return [];
     },
 
-    events: {
-      'click #bookmarkBtn': function() {
-        var data = {
-          title: this.collection.table.id,
-          url: Backbone.history.fragment,
-          icon_class: 'icon-star',
-          user: app.users.getCurrentUser().get("id"),
-          section: 'table'
-        };
-        if(!this.isBookmarked)
-        {
-          app.getBookmarks().addNewBookmark(data);
-        } else {
-          app.getBookmarks().removeBookmark(data);
-        }
-        $('#bookmarkBtn').parent().toggleClass('active');
-        this.isBookmarked = !this.isBookmarked;
+    changeViewTo: function(viewId) {
+      if (this.state.viewId === viewId) {
+        return;
       }
+
+      this._ensureView(viewId, true);
+    },
+
+    _ensureView: function (viewId, triggerEvent) {
+      _.each(this.state.views, function(view) {
+          view.disable();
+      });
+
+      this.state.viewId = viewId;
+      var newView = this.getCurrentView();
+      newView.enable();
+
+      if (triggerEvent === true) {
+        this.trigger('view:changed', viewId);
+      }
+
+      this.table = newView;
+      this.table.savePreferences('currentView', viewId, true);
+
+      this.table.fetchData().done(_.bind(function () {
+        this.render();
+      }, this));
+
+      // this.render();
+    },
+
+    getCurrentView: function() {
+      var viewId = this.state.viewId;
+
+      if (this.state.views[viewId]) {
+        return this.state.views[viewId];
+      }
+
+      this.state.views[viewId] = ListViewManager.getView(viewId, {
+        collection: this.collection,
+        navigate: true,
+        maxColumns: 8,
+        toolbar: true,
+        fixedHead: true,
+        baseView: this,
+        showChart: true,
+        system: true,
+        showMoreButton: !! _.result(this, 'rightPane')
+      });
+
+      this.listenTo(this.state.views[viewId], 'toggleRightPane', this.toggleRightPane);
+
+      return this.state.views[viewId];
+    },
+
+    beforeRender: function() {
+      this.setView('#page-content', this.table);
+      // this.tryFetch({wait: true});
+
+      BasePageView.prototype.beforeRender.apply(this, arguments);
     },
 
     afterRender: function() {
-      this.setView('#page-content', this.table);
-      this.tryFetch();
-
       // Listen to preferences sync after the first sync
       this.listenToOnce(this.collection.preferences, 'sync', function() {
         this.listenTo(this.collection.preferences, 'sync', function() {
           app.trigger('tables:preferences', this, this.collection);
         });
       });
+
+      var $el = $('#content');
+      $el.on('scroll', function () {
+        headFootShadows($el);
+      });
+
+      this.table.on('afterRender', function () {
+        headFootShadows($el);
+      });
+    },
+
+    getCurrentViewName: function () {
+      var collection = this.collection;
+      var table = collection.table;
+      var preferences = collection.preferences;
+
+      return preferences.getListViewOptions('currentView') || table.get('list_view') || 'table';
     },
 
     initialize: function() {
       this.widgets = {};
+      this.state = {
+        viewId: this.getCurrentViewName(),
+        views: {}
+      };
 
-      this.table = ListViewManager.getInstance({
-        collection: this.collection,
-        navigate: true,
-        maxColumns: 8,
-        toolbar: true,
-        fixedHead: true,
-        showMoreButton: !! _.result(this, 'rightPane')
-      });
+      this._ensureView(this.state.viewId);
+      // this.table = this.getCurrentView();
 
       this.headerOptions.route.title = this.collection.table.id;
       if (!this.collection.options) {
@@ -255,16 +316,6 @@ function(app, Backbone, _, __t, BasePageView, ListViewManager, TableViewRightPan
         if (render || this.showDeleteButton || this.showBulkEditButton) {
           this.reRender();
         }
-
-        // if (this.actionButtons || this.batchEdit) {
-        //   if (this.leftSecondaryCurrentState !== 'actions') {
-        //     this.leftSecondaryCurrentState = 'actions';
-        //     this.reRender();
-        //   }
-        // } else if (this.leftSecondaryCurrentState !== 'default') {
-        //   this.leftSecondaryCurrentState = 'default';
-        //   this.reRender();
-        // }
       }, this);
 
       this.collection.on('sort', function() {
@@ -277,8 +328,19 @@ function(app, Backbone, _, __t, BasePageView, ListViewManager, TableViewRightPan
       this.isBookmarked = app.getBookmarks().isBookmarked(this.collection.table.id);
       this.showDeleteButton = false;
       this.showBulkEditButton = false;
+
+      this.listenTo(this, 'rightPane:load', function () {
+        this.listenTo(this.rightPaneView, 'view:change', function (viewId) {
+          this.changeViewTo(viewId);
+        });
+
+        this.listenTo(this.rightPaneView, 'all', function () {
+          var args = Array.prototype.slice.call(arguments, 0);
+          args[0] = 'rightPane:' + args[0];
+
+          this.trigger.apply(this, args);
+        });
+      })
     }
-
   });
-
 });

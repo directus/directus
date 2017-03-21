@@ -22,8 +22,10 @@
 	padding: 40px;
 	min-width: 500px;
 	overflow: auto;
+	background-color: $white;
 	.details {
 		.avatar {
+			@include transition (all, $timing-short, ease-in-out);
 			@include box-shadow ();
 			@include border-radius (100px);
 			position: absolute;
@@ -32,15 +34,22 @@
 			width: 60px;
 			height: 60px;
 			overflow: hidden;
-			// background-color: $primary;
+			&:hover {
+				opacity: 0.8;
+			}
 			// border: 3px solid $primary;
+			// background-color: $primary;
 		}
 		.from {
+			@include transition (all, $timing-short, ease-in-out);
 			position: absolute;
 			top: 60px;
 			left: 120px;
 			font-size: 16px;
 			font-weight: 500;
+			&:hover {
+				color: $primary;
+			}
 		}
 		.timeago {
 			position: absolute;
@@ -54,10 +63,95 @@
 			margin-top: 100px;
 			margin-bottom: 4px;
 		}
+		input.subject {
+			@include transition (all, $timing-short, ease-in-out);
+			@include border-radius (0);
+			margin-top: 100px;
+			margin-bottom: 10px;
+			border: none;
+			border-bottom: 1px solid $gray-3;
+			font-size: 30px;
+			font-weight: 300;
+			color: $gray-5;
+			padding: 10px 0 20px 0;
+			&:focus {
+				border-bottom: 1px solid $primary;
+				-webkit-box-shadow: 0px 0px 0px 0px transparent;
+				-moz-box-shadow: 0px 0px 0px 0px transparent;
+				box-shadow: 0px 0px 0px 0px transparent;
+			}
+		}
+		.recipients {
+			.twitter-typeahead {
+				height: 40px;
+				margin-bottom: 4px;
+				width: 100%;
+				input.recipients {
+					border: none;
+					padding: 0;
+					margin-bottom: 10px;
+					&:focus {
+						-webkit-box-shadow: 0px 0px 0px 0px transparent;
+						-moz-box-shadow: 0px 0px 0px 0px transparent;
+						box-shadow: 0px 0px 0px 0px transparent;
+					}
+				}
+				.tt-hint {
+				    color: $gray-3;
+				}
+				.tt-dropdown-menu {
+					@include border-radius (2px);
+					top: 20px;
+					padding: 3px 0;
+					box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+					background-color: $white;
+					min-width: 300px;
+				}
+				.tt-suggestions {
+					margin-right: 0 !important;
+				}
+				.tt-suggestion {
+					@include transition (all, $timing-short, ease-in-out);
+					display: block;
+					padding: 0px 20px;
+					clear: both;
+					font-weight: normal;
+					white-space: nowrap;
+					font-size: 12px;
+					margin-right: 0 !important;
+					cursor: pointer;
+					&:hover {
+						color: $primary;
+					}
+				}
+				.tt-is-under-cursor {
+					color: $primary;
+				}
+			}
+		}
 		.to {
 			color: $gray-3;
-			margin-bottom: 40px;
+			margin-bottom: 30px;
 			font-weight: 500;
+			span {
+				@include transition (all, $timing-short, ease-in-out);
+				@include border-radius (2px);
+				background-color: $gray-1;
+				padding: 3px 6px;
+				color: $gray-4;
+				margin-right: 4px;
+				cursor: pointer;
+				&:hover {
+					background-color: $serious;
+					color: $white;
+				}
+				.material-icons {
+					font-size: 16px;
+					margin-right: 4px;
+					vertical-align: middle;
+					margin-top: -3px;
+				}
+			}
 		}
 	}
 	.attachments {
@@ -65,15 +159,17 @@
 		margin-left: -20px;
 	}
 	.seen {
-		@include transition (all, 400ms, ease-in-out);
 		margin-top: 20px;
 		margin-bottom: -15px;
 		font-size: 11px;
 		color: $gray-2;
 		font-weight: 500;
 		cursor: pointer;
-		&:hover {
-			color: $gray-4;
+		a {
+			@include transition (all, 400ms, ease-in-out);
+			&:hover {
+				color: $gray-4;
+			}
 		}
 		.material-icons {
 			font-size: 16px;
@@ -88,6 +184,23 @@
 		font-size: 16px;
 		line-height: 30px;
 	}
+	.button-group {
+		.button {
+			@include transition (all, 400ms, ease-in-out);
+			display: inline-block;
+			min-width: 200px;
+			margin-top: 20px;
+			&.hidden {
+				display: none;
+			}
+			&.subdued {
+				min-width: 40px;
+				width: 40px;
+				margin-left: 20px;
+				padding-left: 10px;
+			}
+		}
+	}
 	.response {
 		position: relative;
 		margin-top: 40px;
@@ -98,15 +211,30 @@
 			left: 0px;
 			width: 40px;
 			height: 40px;
+			cursor: pointer;
+			&:hover {
+				opacity: 0.8;
+			}
 		}
 		.from {
 			top: 28px;
 			left: 60px;
 			font-size: 16px;
+			cursor: pointer;
+			&:hover {
+				color: $primary;
+			}
 		}
 		.timeago {
 			top: 23px;
 			right: 0px;
+		}
+	}
+	.compose {
+		textarea {
+			display: block;
+			min-height: 300px;
+			font-size: 15px;
 		}
 	}
 	.reply {
@@ -117,9 +245,6 @@
 		&.active {
 			textarea {
 				height: 180px;
-			}
-			.button {
-				opacity: 1;
 			}
 		}
 		textarea {
@@ -146,9 +271,7 @@
 			display: inline-block;
 			min-width: 200px;
 			margin-top: 20px;
-			opacity: 0;
 			&.subdued {
-				display: inline-block;
 				min-width: 40px;
 				width: 40px;
 				margin-left: 20px;
@@ -167,23 +290,35 @@
 }
 
 .message-listing {
+	@include transition (border-color, $timing-short, ease-in-out);
 	border-right: 1px solid $gray-1;
 	min-width: 300px;
 	width: 40%;
 	height: 100%;
 	overflow: auto;
+	&.resize-hover {
+		border-color: $gray-3;
+	}
+	&.resize-active {
+		border-color: $primary;
+	}
+	&.empty {
+		width: 100%;
+	}
 	.message-preview {
 		@include transition (all, $timing-short, ease-in-out);
 		position: relative;
 		padding: 16px;
-		background-color: $white;
 		color: $gray-4;
 		line-height: 22px;
 		font-size: 14px;
 		padding: 20px 20px 20px 40px;
 		border-bottom: 1px solid $gray-1;
 		cursor: pointer;
+		max-height: 150px; // Not as good for flexible pane
+		overflow: hidden; // Not as good for flexible pane
 		&.unread {
+			background-color: $white;
 			.unread-indicator {
 				margin-left: 0;
 				opacity: 1;
@@ -200,10 +335,21 @@
 				width: 4px;
 				opacity: 1;
 			}
-			background-color: lighten($primary, 45%);
+			//background-color: lighten($primary, 45%);
+			background-color: $white;
+			.byline {
+				.subject {
+					color: $primary;
+				}
+			}
 		}
 		&:hover {
-			background-color: lighten($primary, 45%);
+			.byline {
+				.subject {
+					color: $primary;
+				}
+			}
+			// background-color: lighten($primary, 45%);
 		}
 		.message-select {
 			position: absolute;
@@ -248,6 +394,10 @@
 				margin-top: -2px;
 			}
 		}
+		.body {
+			max-height: 70px;
+			overflow: hidden;
+		}
 		.byline {
 			position: relative;
 			margin-bottom: 4px;
@@ -272,6 +422,7 @@
 					color: $gray-3;
 					vertical-align: middle;
 					margin-top: -2px;
+					margin-left: 4px;
 				}
 			}
 			.recipients {

@@ -55,16 +55,33 @@ function(app, Backbone, _, BaseHeaderView, RightSidebarView) {
       this.headerView = mainView.getView('#header');
       this.headerView.setPage(this);
 
-      mainView.setView('#header', this.headerView);
-
       if (_.result(this, 'rightPane')) {
+        // hotfix: adding this twice
+        if (this.rightSidebarView) {
+          this.rightSidebarView.remove();
+        }
+
         this.rightSidebarView = new RightSidebarView(_.result(this, 'rightPaneOptions'));
         this.insertView(this.rightSidebarView);
       }
 
-      if (this.state.rightPaneOpen === true) {
+      if (this.isRightPaneOpen()) {
         this.on('afterRender', this.loadRightPane);
+      } else {
+        this._ensurePaneIsClosed();
       }
+    },
+
+    isRightPaneOpen: function () {
+      // @TODO: set all this stage in the app level
+      var hasOpenClass = $('body').hasClass('right-sidebar-open');
+
+      return hasOpenClass || this.state.rightPaneOpen === true;
+    },
+
+    _ensurePaneIsClosed: function () {
+      $('body').removeClass('right-sidebar-open');
+      this.state.rightPaneOpen = false;
     },
 
     toggleRightPane: function() {
@@ -87,8 +104,11 @@ function(app, Backbone, _, BaseHeaderView, RightSidebarView) {
         this.rightPaneView = new view({
           baseView: baseView,
           collection: baseView.collection,
-          model: baseView.model
+          model: baseView.model,
+          listView: this.state ? this.state.viewId : null
         });
+
+        this.trigger('rightPane:load');
       }
 
       this.listenTo(this.rightPaneView, 'close', function() {
@@ -117,15 +137,24 @@ function(app, Backbone, _, BaseHeaderView, RightSidebarView) {
       // render the header manually
       // this view is part of the main view and is not a child of this view
       this.headerView.render();
+
+      // hotfix adding dedicated class for settings
+      var options = this.viewOptions || {};
+      var attributes = {};
+      attributes['class'] = _.result(options, 'className') || 'page';
+      $('#content').attr(attributes);
+    },
+
+    getSpacing: function() {
+      return _.result(this.table, 'getSpacing');
     },
 
     fetchHolding: [],
 
     // Only fetch if we are not waiting on any widgets to get preference data
-    tryFetch: function() {
+    tryFetch: function (options) {
       if (this.fetchHolding.length === 0) {
-        var options = this.collection.options ? this.collection.options : {};
-        this.collection.fetch(options);
+        this.collection.fetch(_.defaults(this.collection.options || {}, options));
       }
     },
 
@@ -137,6 +166,10 @@ function(app, Backbone, _, BaseHeaderView, RightSidebarView) {
     removeHolding: function(cid) {
       this.fetchHolding.splice(this.fetchHolding.indexOf(cid), 1);
       this.tryFetch();
+    },
+
+    cleanup: function () {
+      this._ensurePaneIsClosed();
     }
   });
 });

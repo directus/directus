@@ -9,7 +9,22 @@ function(app, Backbone, _, Handlebars, moment) {
 
   'use strict';
 
-  return Backbone.Layout.extend({
+  var MetadataModel = Backbone.Model.extend({
+    urlRoot: function () {
+      return app.API_URL + 'tables/' + this.table.id + '/meta/' + this.recordId
+    },
+
+    parse: function (data) {
+      return data.data;
+    },
+
+    initialize: function (attributes, options) {
+      this.recordId = options.recordId;
+      this.table = options.table;
+    }
+  });
+
+  var MetadataView = Backbone.Layout.extend({
 
     template: 'core/widgets/metadata',
 
@@ -20,38 +35,50 @@ function(app, Backbone, _, Handlebars, moment) {
     },
 
     events: function() {
-      return this.getEvents();
+      return _.extend(this.getEvents(), {
+        'click .js-user': 'openUserModal'
+      });
+    },
+
+    openUserModal: function (event) {
+      var $target = $(event.currentTarget);
+      var userId = $target.data('user-id');
+
+      return app.router.openUserModal(userId);
     },
 
     serialize: function() {
       var collection = this.model.collection;
       var table = collection ? collection.table : null;
       var model = this.model ? this.model.toJSON() : {};
+      // @TODO: Add Timezone
       var dateFormat = 'MMM Mo, YYYY @ H:mma';
       var previewUrl = table ? table.get('preview_url') : null;
-      var metadata = {};
+      var metadata = {
+        createdBy: this.model.get('created_by'),
+        createdByIsOnline: false,
+        createdOn: this.model.get('created_on'),
+        updatedBy: this.model.get('updated_by'),
+        updatedOn: this.model.get('updated_on'),
+        updatedByIsOnline: false
+      };
+
+      var createdByUser = metadata.createdBy ? app.users.get(metadata.createdBy) : null;
+      if (createdByUser) {
+        metadata.createdByIsOnline = createdByUser.isOnline();
+      }
+
+      var updatedByUser = metadata.updatedBy ? app.users.get(metadata.updatedBy) : null;
+      if (updatedByUser) {
+        metadata.updatedByIsOnline = updatedByUser.isOnline();
+      }
 
       if (previewUrl) {
         previewUrl = Handlebars.compile(previewUrl)(model);
       }
 
-      if (table && table.get('user_create_column')) {
-        metadata.createdBy = this.model.get(table.get('user_create_column'));
-      }
-
-      if (table && table.get('date_create_column')) {
-        metadata.createdOn = this.model.get(table.get('date_create_column'));
-      }
-
-      if (table && table.get('user_update_column')) {
-        metadata.updatedBy = moment(this.model.get(table.get('user_update_column')), dateFormat);
-      }
-
-      if (table && table.get('date_update_column')) {
-        metadata.updatedOn = moment(this.model.get(table.get('date_update_column')), dateFormat);
-      }
-
       return {
+        dateFormat: dateFormat,
         model: model,
         previewUrl: previewUrl,
         meta: metadata
@@ -74,6 +101,16 @@ function(app, Backbone, _, Handlebars, moment) {
       if (_.isFunction(options.onClick)) {
         this._events['click .js-action-button'] = options.onClick;
       }
+
+      this.listenTo(this.model, 'sync', this.render);
+      if (this.model.isNew()) {
+        this.model.fetch();
+      }
     }
   });
+
+  return {
+    View: MetadataView,
+    Model: MetadataModel
+  }
 });

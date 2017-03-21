@@ -1,51 +1,62 @@
 <div class="modal-bg">
-    <div class="header-circle">
-        <img class="avatar" src="{{userAvatarUrl id}}">
-    </div>
-    <h1>{{userFirstAndLastName id}}</h1>
-    <h5>{{position}}</h5>
-    {{#if online}}
-    <div class="online">Online</div>
-    {{/if}}
-    <div class="row">
-        <div class="label">Group</div>
-        {{group.name}}
-        <i class="material-icons">group</i>
-    </div>
-    <div class="row">
-        <div class="label">Last Seen</div>
-        {{lastSeen}}
-        <i class="material-icons">beenhere</i>
-    </div>
-    {{#if location}}
-    <div class="row">
-        <div class="label">Location</div>
-        {{location}}
-        <i class="material-icons">place</i>
-    </div>
-    {{/if}}
-    {{#if phone}}
-    <div class="row">
-        <div class="label">Phone</div>
-        {{phone}}
-        <i class="material-icons">local_phone</i>
-    </div>
-    {{/if}}
-    <div class="row">
-        <div class="label">Email</div>
-        {{email}}
-        <i class="material-icons">email</i>
-    </div>
-    <div class="row">
-        <div class="label">Timezone</div>
-        {{timezone}}<br><span class="light">(+/-? from you)</span>
-        <i class="material-icons">access_time</i>
-    </div>
-    <!-- <div class="row">
-        <div class="label">Address</div>
-        312 Humboldt Street, FL3<br>
-        Brooklyn, NY 11211
-        <i class="material-icons">location_city</i>
-    </div> -->
-    <!-- <div class="button">OK</div> -->
+	<div class="header-circle">
+		<img class="avatar" src="{{userAvatarUrl id}}">
+	</div>
+	<h1>{{userFirstAndLastName id}}</h1>
+	<h5>{{position}}</h5>
+	{{#if online}}
+	<div class="online">Online</div>
+	{{/if}}
+	<div class="row">
+		<div class="label">Group</div>
+		{{group.name}}
+		<i class="material-icons">group</i>
+	</div>
+	<div class="row">
+		<div class="label">Last Seen</div>
+		<span title="{{#if last_access}}{{fullDateTime last_access}}{{/if}}">{{lastSeen}}</span>
+		<i class="material-icons">beenhere</i>
+	</div>
+	{{#if location}}
+	<div class="row">
+		<div class="label">Location</div>
+		{{location}}
+		<i class="material-icons">place</i>
+	</div>
+	{{/if}}
+	{{#if phone}}
+	<div class="row">
+		<div class="label">Phone</div>
+		{{phone}}
+		<i class="material-icons">local_phone</i>
+	</div>
+	{{/if}}
+	<div class="row">
+		<div class="label">Email</div>
+		{{email}}
+		<i class="material-icons">email</i>
+	</div>
+	<div class="row">
+		<div class="label">Timezone</div>
+		{{timezone}}<br>
+		<span class="light">
+			(
+			{{#if timeDiff}}
+			{{t "x_hours_from_you" hours=timeDiff}}
+			{{else}}
+			{{t "same_time_as_you"}}
+			{{/if}}
+			)
+		</span>
+		<i class="material-icons">access_time</i>
+	</div>
+	<!-- <div class="row">
+		<div class="label">Address</div>
+		312 Humboldt Street, FL3<br>
+		Brooklyn, NY 11211
+		<i class="material-icons">location_city</i>
+	</div> -->
+	{{#if isAdmin}}
+	<div class="button js-edit-user" data-id="{{id}}">Edit User</div>
+	{{/if}}
 </div>

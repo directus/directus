@@ -81,8 +81,8 @@ class CreateDirectusPrivilegesTable extends Ruckusing_Migration_Base
         ]);
         $t->column('status_id', 'tinyinteger', [
             'limit' => 1,
-            'default' => 0,
-            'null' => false
+            'default' => NULL,
+            'null' => true
         ]);
 
         $t->finish();

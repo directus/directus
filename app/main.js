@@ -10,6 +10,7 @@ require(["config", 'polyfills'], function() {
 
   require([
     'app',
+    'underscore',
     'core/UIManager',
     'router',
     'backbone',
@@ -30,7 +31,7 @@ require(["config", 'polyfills'], function() {
     'core/notification'
   ],
 
-  function(app, UIManager, Router, Backbone, alerts, __t, Tabs, Bookmarks, Messages, SchemaManager, SettingsCollection, EntriesModel, ExtensionManager, EntriesManager, ListViewManager, Idle, ToolTip, ContextualDate, Notification) {
+  function(app, _, UIManager, Router, Backbone, alerts, __t, Tabs, Bookmarks, Messages, SchemaManager, SettingsCollection, EntriesModel, ExtensionManager, EntriesManager, ListViewManager, Idle, ToolTip, ContextualDate, Notification) {
 
     "use strict";
 
@@ -38,6 +39,7 @@ require(["config", 'polyfills'], function() {
       locale: 'en',
       localesAvailable: [],
       timezone: 'America/New_York',
+      // @TODO: Make timezone an object with id and name
       timezones: [],
       path: '/directus/',
       page: '',
@@ -51,6 +53,7 @@ require(["config", 'polyfills'], function() {
       extensions: [],
       messages: {},
       user_notifications: [],
+      showWelcomeWindow: false,
       me: { id: 7 },
       settings: {
         global: {},
@@ -84,6 +87,7 @@ require(["config", 'polyfills'], function() {
     app.timezone = options.timezone;
     app.timezones = options.timezones;
     app.user_notifications = options.user_notifications;
+    app.showWelcomeWindow = options.showWelcomeWindow;
 
     $.xhrPool = []; // array of uncompleted requests
     $.xhrPool.abortAll = function() { // our abort function
@@ -107,6 +111,7 @@ require(["config", 'polyfills'], function() {
 
     UIManager.setup();
     SchemaManager.setup({apiURL: app.API_URL});
+    ListViewManager.setup();
 
     app.schemaManager = SchemaManager;
 
@@ -146,42 +151,49 @@ require(["config", 'polyfills'], function() {
       app.files    = EntriesManager.getInstance('directus_files');
       app.activity = EntriesManager.getInstance('directus_activity');
       app.groups   = EntriesManager.getInstance('directus_groups');
-      app.settings = EntriesManager.getInstance('directus_settings');
+
+      // This needs elegance
+      app.settings = new SettingsCollection(options.settings, {parse: true});
+      app.settings.url = app.API_URL + 'settings';
 
       // Proxy to EntriesManager
       app.getEntries = function(tableName, options) { return EntriesManager.getInstance(tableName, options); };
 
       app.messages = new Messages.Collection([], _.extend({
-        url: app.API_URL + 'messages/rows/'
+        url: app.API_URL + 'messages/rows'
       }, SchemaManager.getFullSchema('directus_messages')));
 
       app.messages.on('error:polling', function() {
         Notification.error('Directus can\'t reach the server', '<i>A new attempt will be made in 30 seconds</i>');
       });
 
-      app.messages.on('sync', function(collection, object) {
-        if (object !== null && object.rows) {
-          object.rows.forEach(function(msg) {
-            var message_excerpt = (msg.message && msg.message.length > 50) ? msg.message.substr(0, 50) : msg.message;
-            Notification.show('New Message — <i>' + msg.subject + '</i>', message_excerpt + '<br><br><i>View message</i>', {timeout: 5000,
-              callback: {
-                onCloseClick: function() {
-                  Backbone.history.navigate('/messages/' + msg.id, true);
-                }
-              }
-            });
-          });
-        }
-      });
+      // app.messages.on('sync', function(collection, object) {
+      //   if (object != null && object.data) {
+      //     var messages = object.data;
+      //     if (!_.isArray(messages)) {
+      //       messages = [messages];
+      //     }
+      //
+      //     messages.forEach(function(msg) {
+      //       var message_excerpt = (msg.message && msg.message.length > 50) ? msg.message.substr(0, 50) : msg.message;
+      //       Notification.show('New Message — <i>' + msg.subject + '</i>', message_excerpt + '<br><br><i>View message</i>', {timeout: 5000,
+      //         callback: {
+      //           onCloseClick: function() {
+      //             Backbone.history.navigate('/messages/' + msg.id, true);
+      //           }
+      //         }
+      //       });
+      //     });
+      //   }
+      // });
 
       // Bootstrap data
       app.groups.reset(options.groups, {parse: true});
       app.users.reset(options.users, {parse: true});
       app.files.reset(options.active_files, {parse: true});
-      app.settings.reset(options.settings, {parse: true});
       app.messages.reset(options.messages, {parse: true});
 
-      app.messages.startPolling();
+      // app.messages.startPolling();
 
       var autoLogoutMinutes = parseInt(app.settings.get('cms_user_auto_sign_out') || 60, 10);
 
@@ -271,7 +283,7 @@ require(["config", 'polyfills'], function() {
         bookmarks.push(new Backbone.Model({
           icon_class: item.icon,
           title: item.title,
-          url: 'ext/' + encodeURIComponent(item.id),
+          url: item.path,
           section: 'extension'
         }));
       });
@@ -437,17 +449,13 @@ require(["config", 'polyfills'], function() {
         }
 
         var type, messageTitle, messageBody, details;
-        if(xhr.statusText === "abort") {
+        if (xhr.statusText === "abort") {
           return;
         }
 
-        if(xhr.responseJSON) {
-          messageBody = xhr.responseJSON.message;
-        } else {
-          messageBody = xhr.responseText;
-        }
+        messageBody = xhr.responseJSON || xhr.responseText;
 
-        switch(xhr.status) {
+        switch (xhr.status) {
           case 404:
             messageTitle = __t('not_found');
             messageBody = __t('x_not_found', {what: 'URL'}) + '<br>' + settings.url;

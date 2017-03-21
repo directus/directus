@@ -156,6 +156,11 @@ class Table implements \ArrayAccess, Arrayable, \JsonSerializable
     /**
      * @var string
      */
+    protected $display_template;
+
+    /**
+     * @var string
+     */
     protected $filterColumnBlacklist;
 
     /**
@@ -319,6 +324,16 @@ class Table implements \ArrayAccess, Arrayable, \JsonSerializable
     }
 
     /**
+     * @param $name
+     *
+     * @return Column
+     */
+    public function getColumn($name)
+    {
+        return array_shift($this->getColumns([$name]));
+    }
+
+    /**
      * Get table primary keys
      *
      * @return array
@@ -355,6 +370,18 @@ class Table implements \ArrayAccess, Arrayable, \JsonSerializable
     }
 
     /**
+     * Gets all relational columns
+     *
+     * @return Column[]
+     */
+    public function getRelationalColumns()
+    {
+        return array_filter($this->getColumns(), function(Column $column) {
+            return $column->hasRelationship();
+        });
+    }
+
+    /**
      * Gets all the alias columns
      *
      * @return Column[]
@@ -379,9 +406,33 @@ class Table implements \ArrayAccess, Arrayable, \JsonSerializable
     }
 
     /**
+     * Gets all the columns name
+     *
+     * @return array
+     */
+    public function getColumnsName()
+    {
+        return array_map(function(Column $column) {
+            return $column->getName();
+        }, $this->getColumns());
+    }
+
+    /**
+     * Gets all the relational columns name
+     *
+     * @return array
+     */
+    public function getRelationalColumnsName()
+    {
+        return array_map(function(Column $column) {
+            return $column->getName();
+        }, $this->getRelationalColumns());
+    }
+
+    /**
      * Gets all the alias columns name
      *
-     * @return Column[]
+     * @return array
      */
     public function getAliasColumnsName()
     {
@@ -393,7 +444,7 @@ class Table implements \ArrayAccess, Arrayable, \JsonSerializable
     /**
      * Gets all the non-alias columns name
      *
-     * @return Column[]
+     * @return array
      */
     public function getNonAliasColumnsName()
     {
@@ -924,6 +975,34 @@ class Table implements \ArrayAccess, Arrayable, \JsonSerializable
     public function getPreviewUrl()
     {
         return $this->preview_url;
+    }
+
+    /**
+     * Sets Table Items display template
+     *
+     * Representation value of the table items
+     *
+     * @param $template
+     *
+     * @return Table
+     */
+    public function setDisplayTemplate($template)
+    {
+        $this->display_template = $template;
+
+        return $this;
+    }
+
+    /**
+     * Gets Table Items display template
+     *
+     * Representation value of the table items
+     *
+     * @return string
+     */
+    public function getDisplayTemplate()
+    {
+        return $this->display_template;
     }
 
     /**

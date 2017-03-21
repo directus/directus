@@ -1,60 +1,5 @@
 //////////////////////////////////////////////////////////////////////////////
-// Page
-
-.preview-intro {
-	@include box-shadow ($x: 0px, $y: 1px, $blur: 4px, $spread: 0px, $opacity: 0.2);
-	@include border-radius ($radius: 4px);
-	position: fixed;
-	top: 20px;
-	left: 20px;
-	width: 300px;
-	padding: 20px 20px 22px 20px;
-	background-color: $serious;
-	color: $white;
-	z-index: 9999;
-	font-weight: 500;
-	line-height: 17px;
-	font-size: 14px;
-	.material-icons {
-		@include transition (all, $timing-short, ease-in-out);
-		position: absolute;
-		top: 8px;
-		right: 15px;
-		color: $white;
-		font-size: 18px;
-		cursor: pointer;
-		z-index: 999;
-		&:hover {
-			opacity: 1;
-		}
-	}
-	div {
-		font-size: 22px;
-		margin-bottom: 10px;
-		font-weight: 600;
-	}
-	hr {
-		border-color: $white;
-		margin: 15px 0 15px 0;
-		opacity: 0.5;
-	}
-	i {
-		@include transition (all, $timing-short, ease-in-out);
-		display: block;
-		margin-top: 10px;
-		opacity: 0.6;
-		img {
-			display: inline-block;
-			margin-top: 10px;
-			margin-left: 10px;
-			width: 16px;
-			margin-bottom: -1px;
-		}
-		&:hover {
-			opacity: 1;
-		}
-	}
-}
+// Login
 
 body.login {
 	background-color: $gray-1;
@@ -73,7 +18,7 @@ body.login {
 		letter-spacing: 0.03em;
 		font-size: 9px;
 		text-transform: uppercase;
-		z-index: 2;
+		z-index: 4;
 		cursor: help;
 		&:hover {
 			color: $primary;
@@ -84,7 +29,7 @@ body.login {
 		bottom: 50px;
 		text-align: center;
 		width: 100%;
-		z-index: 2;
+		z-index: 4;
 		.notification {
 			@include border-radius (2px);
 			animation: pulsate-opacity 2s ease-out;
@@ -123,7 +68,14 @@ body.login {
 				left: 10px;
 				font-size: 16px;
 				color: $gray-2;
+				pointer-events: none;
+				&.focus-color {
+					&.active {
+						color: $primary;
+					}
+				}
 				&.forgot {
+					pointer-events: auto;
 					cursor: pointer;
 					left: auto;
 					right: 10px;
@@ -138,6 +90,8 @@ body.login {
 				padding-left: 30px;
 				font-size: 14px;
 				border-color: $gray-2;
+				background-color: $white !important;
+				outline: 10px solid transparent;
 				&:focus {
 					border-color: $white;
 				}
@@ -213,6 +167,55 @@ body.login {
 				}
 				img {
 					display: block;
+				}
+			}
+		}
+	}
+	.processing {
+		@include transition (all, $timing-short, ease-in-out);
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background-color: rgba($gray-1, 0.75);
+		opacity: 0;
+		z-index: 0;
+		&.blocking {
+			z-index: 3;
+		}
+		&.fading {
+			opacity: 1;
+		}
+		.loading-container {
+			@include box-shadow ($x: 0px, $y: 0px, $blur: 2px, $spread: 0px, $opacity: 0.05);
+			@include border-radius (2px);
+			position: absolute;
+			bottom: 68px;
+			left: 50%;
+			width: 200px;
+			height: 4px;
+			margin-left: -100px;
+			background-color: $white;
+			.loading-bar {
+				@include transition (all, $timing-long, cubic-bezier(0.23, 1, 0.32, 1));
+				@include border-radius (2px);
+				animation: pulsate-login 1s ease-out;
+				animation-iteration-count: infinite;
+				position: absolute;
+				top: 0;
+				bottom: 0;
+				left: 0;
+				width: 0%;
+				background-color: $primary;
+				&.step-1 {
+					width: 80%;
+				}
+				&.step-2 {
+					width: 99%;
+				}
+				&.error {
+					background-color: $serious;
 				}
 			}
 		}

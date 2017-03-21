@@ -1,54 +1,72 @@
 <div class="details">
-    <a href="#" class="js-user" data-id="{{from}}"><img class="avatar" src="{{userAvatarUrl from}}" data-id="{{from}}"></a>
-    <div class="from"><a href="#" class="js-user" data-id="{{from}}">{{userFirstAndLastName from}}</a></div>
-    <div class="timeago">{{friendlyDateTime datetime}}</div><!-- Sunday, Nov 22, 1:09 PM -->
-    <h1>{{subject}}</h1>
-    <div class="to">To: {{usersFirstAndLastName recipients}}</div>
+	<a href="#" class="js-user" data-id="{{from}}"><img class="avatar" src="{{userAvatarUrl from}}" data-id="{{from}}"></a>
+	<div class="from"><a href="#" class="js-user" data-id="{{from}}">{{userFirstAndLastName from}}</a></div>
+	<div class="timeago">{{friendlyDateTime datetime}}</div><!-- Sunday, Nov 22, 1:09 PM -->
+	<h1>{{subject}}</h1>
+	<div class="to">{{t "message_to"}}: {{usersFirstAndLastName recipients}}</div>
 </div>
 
 <div>
-    <div class="body">
-        {{message}}
-    </div>
+	<div class="body">
+		{{message}}
+	</div>
 
-    {{#if reads}}
-    <div class="seen">
-        <i class="material-icons">visibility</i> {{usersFirstAndLastName reads}}
-    </div>
-    {{/if}}
+	<div class="attachments">
+		{{#attachment}}
+		<div class="file js-file" data-id="{{id}}">
+			{{#if html}}
+			{{{html}}}
+			{{else}}
+			<img src="{{thumbnail_url}}">
+			{{/if}}
+			<div class="type">{{type}}</div>
+			<div class="info">
+				<div class="name js-title">{{title}}</div>
+				<div class="uploaded" title="{{fullDateTime date_uploaded}}">{{contextualDate date_uploaded}}</div>
+			</div>
+		</div>
+		{{/attachment}}
+	</div>
+
+	{{#if reads}}
+	<div class="seen">
+		<i class="material-icons">visibility</i> {{usersFirstAndLastName reads}}
+	</div>
+	{{/if}}
 </div>
 
 {{#each responses}}
 <div class="response">
-    <div class="details">
-        <img class="avatar" src="{{userAvatarUrl from}}">
-        <div class="from">{{userFirstAndLastName from}}</div>
-        <div class="timeago">{{friendlyDateTime datetime}}</div>
-    </div>
-    <div class="body">
-        {{message}}
-    </div>
-    <div class="attachments">
-        {{!--
-        <div class="file">
-            <img src="{{assetsRoot}}imgs/file.png">
-            <div class="type">PNG</div>
-            <div class="info">
-                <div class="name">The Mountains</div>
-                <div class="uploaded">2 Days Ago</div>
-                <i class="material-icons more">more_vert</i>
-            </div>
-        </div>
-        --}}
-    </div>
-    <div class="seen">
-        <i class="material-icons">visibility</i> Ben Haynes, Welling Guzman, and Meagan Campol
-    </div>
+	<div class="details">
+		<img class="avatar js-user" data-id="{{from}}" src="{{userAvatarUrl from}}">
+		<div class="from js-user" data-id="{{from}}">{{userFirstAndLastName from}}</div>
+		<div class="timeago">{{friendlyDateTime datetime}}</div>
+	</div>
+	<div class="body">
+		{{message}}
+	</div>
+
+	<div class="attachments">
+		{{#attachment}}
+		<div class="file js-file" data-id="{{id}}">
+			{{#if html}}
+			{{{html}}}
+			{{else}}
+			<img src="{{thumbnail_url}}">
+			{{/if}}
+			<div class="type">{{type}}</div>
+			<div class="info">
+				<div class="name js-title">{{title}}</div>
+				<div class="uploaded" title="{{fullDateTime date_uploaded}}">{{contextualDate date_uploaded}}</div>
+			</div>
+		</div>
+		{{/attachment}}
+	</div>
+
+	{{#if reads}}
+	<div class="seen">
+		<i class="material-icons">visibility</i> {{usersFirstAndLastName reads}}
+	</div>
+	{{/if}}
 </div>
 {{/each}}
-
-<div class="reply">
-    <textarea id="messages-response" placeholder="Write a reply..."></textarea>
-    <button id="messages-response-button" class="button hidden">Send <div class="button hidden subdued"><i class="material-icons">attachment</i></button>
-    <!-- <div class="button hidden">Send</div> <div class="button hidden subdued"><i class="material-icons">attachment</i></div> -->
-</div>

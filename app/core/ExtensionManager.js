@@ -12,6 +12,7 @@ define(function(require, exports, module) {
 
     register: function(ext) {
       _.each(ext, function(extension) {
+        extension.path = 'ext/' + encodeURIComponent(extension.id);
         extensions[extension.id] = extension;
       },this);
     },

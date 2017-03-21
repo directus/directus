@@ -11,7 +11,7 @@ button {
 	background-color: $primary;
 	padding: 12px 20px;
 	display: inline-block;
-	font-size: 14px;
+	font-size: 13px;
 	line-height: 16px;
 	color: $white;
 	text-transform: uppercase;
@@ -47,8 +47,9 @@ button {
 	}
 	.material-icons {
 		vertical-align: middle;
-		margin-top: -5px;
+		margin-top: -4px;
 		margin-left: -2px; // Optical alignment
+		padding-right: 4px;
 	}
 }
 

@@ -1,4 +1,5 @@
 <?php
+
 use Ruckusing\Migration\Base as Ruckusing_Migration_Base;
 
 class AddNewColumnsToTables extends Ruckusing_Migration_Base

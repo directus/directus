@@ -4,6 +4,7 @@ namespace Directus\Database\TableGateway;
 
 use Directus\Permissions\Acl;
 use Zend\Db\Adapter\AdapterInterface;
+use Zend\Db\Sql\Ddl\Column\Varbinary;
 use Zend\Db\Sql\Insert;
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Update;
@@ -115,12 +116,10 @@ class DirectusBookmarksTableGateway extends RelationalTableGateway
         return $this->parseRecord($bookmarks);
     }
 
-    public function fetchAllByUser($user_id)
+    public function fetchAllByUser($userId)
     {
         $select = new Select($this->table);
-        $select
-            ->where
-            ->equalTo('user', $user_id);
+        $select->where->equalTo('user', $userId);
 
         $bookmarks = $this->selectWith($select)->toArray();
 
@@ -146,7 +145,7 @@ class DirectusBookmarksTableGateway extends RelationalTableGateway
 
         foreach ($defaultBookmarks as $defaultBookmark) {
             $data = [
-                'user' => $user_id
+                'user' => $userId
             ];
 
             $row = $this->createDefaultBookmark($defaultBookmark, $data);

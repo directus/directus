@@ -3,7 +3,12 @@
 namespace Directus;
 
 use Directus\Application\Application;
+use Directus\Authentication\FacebookProvider;
+use Directus\Authentication\GitHubProvider;
+use Directus\Authentication\GoogleProvider;
 use Directus\Authentication\Provider as AuthProvider;
+use Directus\Authentication\Social;
+use Directus\Authentication\TwitterProvider;
 use Directus\Database\Connection;
 use Directus\Database\SchemaManager;
 use Directus\Database\Schemas\Sources\MySQLSchema;
@@ -13,6 +18,7 @@ use Directus\Database\TableGateway\DirectusPrivilegesTableGateway;
 use Directus\Database\TableGateway\DirectusSettingsTableGateway;
 use Directus\Database\TableGateway\DirectusTablesTableGateway;
 use Directus\Database\TableGateway\DirectusUsersTableGateway;
+use Directus\Database\TableGateway\RelationalTableGateway;
 use Directus\Database\TableSchema;
 use Directus\Embed\EmbedManager;
 use Directus\Filesystem\Filesystem;
@@ -21,13 +27,14 @@ use Directus\Hook\Emitter;
 use Directus\Language\LanguageManager;
 use Directus\Permissions\Acl;
 use Directus\Providers\FilesServiceProvider;
+use Directus\Services\AuthService;
 use Directus\Session\Session;
 use Directus\Session\Storage\NativeSessionStorage;
 use Directus\Util\ArrayUtils;
+use Directus\Util\StringUtils;
 use Directus\View\Twig\DirectusTwigExtension;
 use Slim\Extras\Log\DateTimeFileWriter;
 use Slim\Extras\Views\Twig;
-use Zend\Db\TableGateway\TableGateway;
 
 /**
  * NOTE: This class depends on the constants defined in config.php
@@ -142,8 +149,35 @@ class Bootstrap
             return Bootstrap::get('hookEmitter');
         });
 
+        $app->container->singleton('authService', function () use ($app) {
+            return new AuthService($app);
+        });
+
+        $app->container->singleton('session', function () {
+            return Bootstrap::get('session');
+        });
+
+        $app->container->singleton('auth', function () {
+            return Bootstrap::get('auth');
+        });
+
+        $app->container->singleton('socialAuth', function() {
+            return Bootstrap::get('socialAuth');
+        });
+
         $config = defined('BASE_PATH') ? Bootstrap::get('config') : [];
         $app->container->set('config', $config);
+
+        $authConfig = ArrayUtils::get($config, 'auth', []);
+        $socialAuth = $app->container->get('socialAuth');
+
+        $socialAuthServices = static::getSocialAuthServices();
+        foreach ($socialAuthServices as $name => $class) {
+            if (ArrayUtils::has($authConfig, $name)) {
+                $config = ArrayUtils::get($authConfig, $name);
+                $socialAuth->register(new $class($app, $config));
+            }
+        }
 
         BaseTableGateway::setHookEmitter($app->container->get('emitter'));
         BaseTableGateway::setContainer($app->container);
@@ -164,13 +198,31 @@ class Bootstrap
             return new \Directus\Permissions\Acl();
         });
 
+        $app->container->get('session')->start();
+
         return $app;
+    }
+
+    private static function getSocialAuthServices()
+    {
+        return [
+            'github' => GitHubProvider::class,
+            'facebook' => FacebookProvider::class,
+            'twitter' => TwitterProvider::class,
+            'google' => GoogleProvider::class
+        ];
     }
 
     private static function config()
     {
-        self::requireConstants('BASE_PATH', __FUNCTION__);
-        $config = require APPLICATION_PATH . '/api/configuration.php';
+        $config = [];
+        if (defined('APPLICATION_PATH')) {
+            $configPath = APPLICATION_PATH . '/api/configuration.php';
+            if (file_exists($configPath)) {
+                $config = require $configPath;
+            }
+        }
+
         return $config;
     }
 
@@ -192,11 +244,17 @@ class Bootstrap
         switch ($mailConfig['transport']) {
             case 'smtp':
                 $transport = \Swift_SmtpTransport::newInstance($mailConfig['host'], $mailConfig['port']);
+
                 if (array_key_exists('username', $mailConfig)) {
                     $transport->setUsername($mailConfig['username']);
                 }
+
                 if (array_key_exists('password', $mailConfig)) {
                     $transport->setPassword($mailConfig['password']);
+                }
+
+                if (array_key_exists('encryption', $mailConfig)) {
+                    $transport->setEncryption($mailConfig['encryption']);
                 }
                 break;
             case 'sendmail':
@@ -420,14 +478,14 @@ class Bootstrap
     }
 
     /**
-     * Scan for uis.
+     * Scan for interfaces.
      * @return  array
      */
-    private static function uis()
+    private static function interfaces()
     {
         self::requireConstants('APPLICATION_PATH', __FUNCTION__);
         $uiBasePath = APPLICATION_PATH . '/customs';
-        $uiDirectory = $uiBasePath . '/uis';
+        $uiDirectory = $uiBasePath . '/interfaces';
         $uis = [];
 
         if (!file_exists($uiDirectory)) {
@@ -570,7 +628,7 @@ class Bootstrap
                 $data = func_get_arg(1);
             } else {
                 $tableName = $payload->tableName;
-                $data = $payload->data;
+                $data = &$payload->data;
             }
 
             if ($tableName == 'directus_files') {
@@ -581,8 +639,59 @@ class Bootstrap
             return func_num_args() == 2 ? $data : $payload;
         });
 
+        $addFilesUrl = function($result) {
+            $fileRows = $result->toArray();
+            $app = Bootstrap::get('app');
+            $files = $app->container->get('files');
+            foreach ($fileRows as &$row) {
+                $config = Bootstrap::get('config');
+                $fileURL = $config['filesystem']['root_url'];
+                $thumbnailURL = $config['filesystem']['root_thumb_url'];
+                $thumbnailFilenameParts = explode('.', $row['name']);
+                $thumbnailExtension = array_pop($thumbnailFilenameParts);
+
+                $row['url'] = $fileURL . '/' . $row['name'];
+                if (in_array($thumbnailExtension, ['tif', 'tiff', 'psd', 'pdf'])) {
+                    $thumbnailExtension = 'jpg';
+                }
+
+                $thumbnailFilename = $row['id'] . '.' . $thumbnailExtension;
+                $row['thumbnail_url'] = $thumbnailURL . '/' . $thumbnailFilename;
+
+                // filename-ext-100-100-true.jpg
+                // @TODO: This should be another hook listener
+                $row['thumbnail_url'] = null;
+                $filename = implode('.', $thumbnailFilenameParts);
+                if (isset($row['type']) && $row['type'] == 'embed/vimeo') {
+                    $oldThumbnailFilename = $row['name'] . '-vimeo-220-124-true.jpg';
+                } else {
+                    $oldThumbnailFilename = $filename . '-' . $thumbnailExtension . '-160-160-true.jpg';
+                }
+
+                // 314551321-vimeo-220-124-true.jpg
+                // hotfix: there's not thumbnail for this file
+                if ($files->exists('thumbs/' . $oldThumbnailFilename)) {
+                    $row['thumbnail_url'] = $thumbnailURL . '/' . $oldThumbnailFilename;
+                }
+
+                if ($files->exists('thumbs/' . $thumbnailFilename)) {
+                    $row['thumbnail_url'] = $thumbnailURL . '/' . $thumbnailFilename;
+                }
+
+                $embedManager = Bootstrap::get('embedManager');
+                $provider = isset($row['type']) ? $embedManager->getByType($row['type']) : null;
+                $row['html'] = null;
+                if ($provider) {
+                    $row['html'] = $provider->getCode($row);
+                }
+            }
+
+            $filesArrayObject = new \ArrayObject($fileRows);
+            $result->initialize($filesArrayObject->getIterator());
+        };
+
         // Add file url and thumb url
-        $emitter->addFilter('table.select', function($payload) {
+        $emitter->addFilter('table.select', function($payload) use ($addFilesUrl) {
             if (func_num_args() == 2) {
                 $result = func_get_arg(0);
                 $selectState = func_get_arg(1);
@@ -592,58 +701,98 @@ class Bootstrap
             }
 
             if ($selectState['table'] == 'directus_files') {
-                $fileRows = $result->toArray();
-                $app = Bootstrap::get('app');
-                $files = $app->container->get('files');
-                foreach ($fileRows as &$row) {
-                    $config = Bootstrap::get('config');
-                    $fileURL = $config['filesystem']['root_url'];
-                    $thumbnailURL = $config['filesystem']['root_thumb_url'];
-                    $thumbnailFilenameParts = explode('.', $row['name']);
-                    $thumbnailExtension = array_pop($thumbnailFilenameParts);
-
-                    $row['url'] = $fileURL . '/' . $row['name'];
-                    if (in_array($thumbnailExtension, ['tif', 'tiff', 'psd', 'pdf'])) {
-                        $thumbnailExtension = 'jpg';
+                $result = $addFilesUrl($result);
+            } else if ($selectState['table'] === 'directus_messages') {
+                $rows = $result->toArray();
+                $filesIds = [];
+                foreach ($rows as &$row) {
+                    if (!ArrayUtils::has($row, 'attachment')) {
+                        continue;
                     }
 
-                    $thumbnailFilename = $row['id'] . '.' . $thumbnailExtension;
-                    $row['thumbnail_url'] = $thumbnailURL . '/' . $thumbnailFilename;
-
-                    // filename-ext-100-100-true.jpg
-                    // @TODO: This should be another hook listener
-                    $row['thumbnail_url'] = null;
-                    $filename = implode('.', $thumbnailFilenameParts);
-                    if ($row['type'] == 'embed/vimeo') {
-                        $oldThumbnailFilename = $row['name'] . '-vimeo-220-124-true.jpg';
-                    } else {
-                        $oldThumbnailFilename = $filename . '-' . $thumbnailExtension . '-160-160-true.jpg';
-                    }
-
-                    // 314551321-vimeo-220-124-true.jpg
-                    // hotfix: there's not thumbnail for this file
-                    if ($files->exists('thumbs/' . $oldThumbnailFilename)) {
-                        $row['thumbnail_url'] = $thumbnailURL . '/' . $oldThumbnailFilename;
-                    }
-
-                    if ($files->exists('thumbs/' . $thumbnailFilename)) {
-                        $row['thumbnail_url'] = $thumbnailURL . '/' . $thumbnailFilename;
-                    }
-
-                    $embedManager = Bootstrap::get('embedManager');
-                    $provider = $embedManager->getByType($row['type']);
-                    $row['html'] = null;
-                    if ($provider) {
-                        $row['html'] = $provider->getCode($row);
+                    $ids = array_filter(StringUtils::csv((string) $row['attachment'], true));
+                    $row['attachment'] = ['data' => []];
+                    foreach ($ids as  $id) {
+                        $row['attachment']['data'][$id] = [];
+                        $filesIds[] = $id;
                     }
                 }
 
-                $filesArrayObject = new \ArrayObject($fileRows);
-                $result->initialize($filesArrayObject->getIterator());
+                $filesIds = array_filter($filesIds);
+                if ($filesIds) {
+                    $ZendDb = Bootstrap::get('zenddb');
+                    $acl = Bootstrap::get('acl');
+                    $table = new RelationalTableGateway('directus_files', $ZendDb, $acl);
+                    $filesEntries = $table->loadItems([
+                        'in' => ['id' => $filesIds]
+                    ]);
+
+                    $entries = [];
+                    foreach($filesEntries as $id => $entry) {
+                        $entries[$entry['id']] = $entry;
+                    }
+
+                    foreach ($rows as &$row) {
+                        if (ArrayUtils::has($row, 'attachment') && $row['attachment']) {
+                            foreach ($row['attachment']['data'] as $id => $attachment) {
+                                $row['attachment']['data'][$id] = $entries[$id];
+                            }
+
+                            $row['attachment']['data'] = array_values($row['attachment']['data']);
+                        }
+                    }
+                }
+
+                $rowsArrayObject = new \ArrayObject($rows);
+                $result->initialize($rowsArrayObject->getIterator());
             }
 
             return (func_num_args() == 2) ? $result : $payload;
         });
+
+        $emitter->addFilter('table.directus_users.select', function($payload) {
+            $auth = Bootstrap::get('auth');
+            $result = $payload->result;
+
+            $rows = $result->toArray();
+            $userId = $auth->loggedIn() ? $auth->getUserInfo('id') : null;
+            foreach ($rows as &$row) {
+                // Authenticated user can see their private info
+                if ($userId && $userId === $row['id']) {
+                    continue;
+                }
+
+                $row = ArrayUtils::omit($row, [
+                    'password',
+                    'salt',
+                    'token',
+                    'access_token',
+                    'reset_token',
+                    'reset_expiration',
+                    'email_messages',
+                    'last_access',
+                    'last_page'
+                ]);
+            }
+
+            $rowsArrayObject = new \ArrayObject($rows);
+            $result->initialize($rowsArrayObject->getIterator());
+
+            return $payload;
+        });
+
+        $hashUserPassword = function($payload) {
+            $data = &$payload->data;
+            if (ArrayUtils::has($data, 'password')) {
+                $auth = Bootstrap::get('auth');
+                $data['salt'] = StringUtils::randomString();
+                $data['password'] = $auth->hashPassword($data['password'], $data['salt']);
+            }
+
+            return $payload;
+        };
+        $emitter->addFilter('table.insert.directus_users:before', $hashUserPassword);
+        $emitter->addFilter('table.update.directus_users:before', $hashUserPassword);
 
         $emitter->addFilter('load.relational.onetomany', function($payload) {
             $rows = $payload->data;
@@ -653,7 +802,7 @@ class Bootstrap
                 return $payload;
             }
 
-            $options = $column->getUiOptions();
+            $options = $column->getOptions();
             $code = ArrayUtils::get($options, 'languages_code_column', 'id');
             $languagesTable = ArrayUtils::get($options, 'languages_table');
             $languageIdColumn = ArrayUtils::get($options, 'left_column_name');
@@ -701,8 +850,13 @@ class Bootstrap
         $session = self::get('session');
         $config = self::get('config');
         $prefix = ArrayUtils::get($config, 'session.prefix', 'directus_');
-        $table = new TableGateway('directus_users', $zendDb);
+        $table = new RelationalTableGateway('directus_users', $zendDb);
 
         return new AuthProvider($table, $session, $prefix);
+    }
+
+    private static function socialAuth()
+    {
+        return new Social();
     }
 }

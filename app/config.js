@@ -14,10 +14,13 @@ require.config({
     "sortable":  "../assets/js/libs/sortable",
     "marked":    "../assets/js/libs/marked.min",
     "moment":     "../assets/js/libs/moment.min",
+    "moment-tz": "../assets/js/libs/moment-timezone-with-data.min",
     "noty":     "../assets/js/libs/noty",
     "noty_theme": "../assets/js/libs/noty_theme",
     "polyglot":   "../assets/js/libs/polyglot.min",
     "dragula": "../assets/js/vendor/dragula.min",
+    "chart": "../assets/js/vendor/chart.min",
+    "async": "../assets/js/plugins/async",
 
     // JavaScript folders.
     "libs":       "../assets/js/libs",
@@ -27,7 +30,8 @@ require.config({
     // Extensions
     "extensions": '../customs/extensions',
     "listviews":  '../customs/listviews',
-    "uis":         '../customs/uis'
+    "interfaces":  '../customs/interfaces',
+    "uis":         '../customs/interfaces'
   },
 
   shim: {
@@ -65,7 +69,13 @@ require.config({
       exports: "Dragula"
     },
 
+    "chart": {
+      exports: "Chart"
+    },
+
     "plugins/jquery.flashrow": ['jquery'],
+
+    "moment-tz": ['moment'],
 
     "plugins/backbone.layoutmanager": ["backbone"],
     'plugins/backbone.trackit': ['backbone'],

@@ -1,18 +1,49 @@
 define([
   'app',
-  'core/RightPane',
   'underscore',
+  'core/t',
+  'core/Notification',
+  'backbone',
+  'core/edit',
+  'schema/FakeTableModel',
+  'core/RightPane',
+  'core/ListViewManager',
   'dragula'
-], function(app, RightPane, _, Dragula) {
+], function(app, _, __t, Notification, Backbone, EditView, FakeTableModel, RightPane, ListViewManager, Dragula) {
 
   return RightPane.extend({
 
     template: 'modules/tables/table-right-pane',
 
     events: {
+      'click .tiles .tile': 'changeView',
       'click .js-column': 'updateVisibleColumns',
-      'click .js-close': 'close',
-      'change .js-spacing-adjust': 'updateSpacing'
+      'click .js-item-numbers': 'toggleItemNumbers',
+      'click .js-last-updated': 'toggleLastUpdated',
+      'click .js-comments-count': 'toggleCommentsCount',
+      'click .js-revisions-count': 'toggleRevisionsCount',
+      'click .js-show-footer': 'toggleFooter',
+      'click .js-close': 'close'
+    },
+
+    changeView: function(event) {
+      var viewId = $(event.currentTarget).data('view');
+      var view = ListViewManager.get(viewId);
+
+      if (!this.supportsView(viewId)) {
+        var types = view.dataTypes || [];
+        var uis = view.uiNames || [];
+
+        return Notification.warning(__t('view_x_requires_y', {
+          viewId: viewId,
+          types: types.concat(uis).join(',').toUpperCase()
+        }));
+      }
+
+      if (viewId !== this.state.viewId) {
+        this.state.viewId = viewId;
+        this.trigger('view:change', viewId);
+      }
     },
 
     updateVisibleColumns: function(event) {
@@ -34,10 +65,74 @@ define([
       collection.fetch();
     },
 
-    updateSpacing: function(event) {
-      var spacing = $(event.currentTarget).val();
+    toggleItemNumbers: function (event) {
+      var checked = $(event.currentTarget).is(':checked');
 
-      this.baseView.table.setSpacing(spacing);
+      this.baseView.trigger('rightPane:input:change', 'item_numbers', checked);
+    },
+
+    toggleLastUpdated: function (event) {
+      var checked = $(event.currentTarget).is(':checked');
+
+      this.baseView.trigger('rightPane:input:change', 'last_updated', checked);
+    },
+
+    toggleCommentsCount: function (event) {
+      var checked = $(event.currentTarget).is(':checked');
+
+      this.baseView.trigger('rightPane:input:change', 'comments_count', checked);
+    },
+
+    toggleRevisionsCount: function (event) {
+      var checked = $(event.currentTarget).is(':checked');
+
+      this.baseView.trigger('rightPane:input:change', 'revisions_count', checked);
+    },
+
+    toggleFooter: function (event) {
+      var checked = $(event.currentTarget).is(':checked');
+
+      this.baseView.trigger('rightPane:input:change', 'show_footer', checked);
+    },
+
+    beforeRender: function() {
+      var view = this.baseView.table;
+
+      if (!view.optionsStructure) {
+        return;
+      }
+
+      var options = _.result(view, 'getViewOptions');
+      var model = new Backbone.Model(options);
+      var table = new FakeTableModel(_.result(view, 'optionsStructure'), {parse: true});
+
+      this.editView = new EditView({
+        model: model,
+        structure: table.columns,
+        events: {
+          'change input[type=text], select, textarea': _.bind(this.onInputChange, this),
+          'change input[type=checkbox]': _.bind(this.onCheckboxChange, this)
+        }
+      });
+
+      this.insertView('.options', this.editView);
+    },
+
+    triggerChange: function (name, value) {
+      this.trigger('input:change', name, value);
+    },
+
+    onInputChange: function (event) {
+      var element = $(event.currentTarget).get(0);
+
+      this.triggerChange(element.name, element.value);
+    },
+
+    onCheckboxChange: function (event) {
+      var $checkbox = $(event.currentTarget);
+      var element = $checkbox.siblings('input[type=hidden]').get(0);
+
+      this.triggerChange(element.name, element.value);
     },
 
     serialize: function() {
@@ -46,7 +141,8 @@ define([
       var preferences = collection.preferences;
       var data = collection ? collection.toJSON() : {};
       var visibleColumns = preferences.get('columns_visible').split(',');
-      var selectedSpacing = this.baseView.table.getSpacing();
+      var selectedSpacing = this.baseView.getSpacing();
+      var viewOptions = this.baseView.table.getViewOptions();
 
       data.spacings = _.map(app.config.get('spacings'), function(value) {
         return {
@@ -54,6 +150,8 @@ define([
           selected: value === selectedSpacing
         }
       });
+
+      data.viewOptions = viewOptions;
 
       data.columns = structure.chain()
         .filter(function(model) {
@@ -81,10 +179,64 @@ define([
         })
         .value();
 
+      data.views = _.map(ListViewManager.getViews(), _.bind(function(view) {
+        var data = _.omit(view, 'View');
+        data.isActive = data.id === this.state.viewId;
+
+        return data;
+      }, this));
+
+      data.viewId = this.state.viewId;
+      data.isTableView = data.viewId === 'table';
+
       return data;
     },
 
-    initialize: function() {
+    supportsView: function(viewId) {
+      var view = ListViewManager.get(viewId);
+      var supported = true;
+
+      if (view.dataTypes) {
+        supported = this.viewSupport(view.dataTypes, 'type');
+      }
+
+      if (view.uiNames) {
+        supported = this.viewSupport(view.uiNames, 'ui');
+      }
+
+      return  supported;
+    },
+
+    viewSupport: function (list, name) {
+      var collection = this.collection;
+      var structure = collection.structure;
+
+      if (!collection || !structure) {
+        return false;
+      }
+
+      return !list || _.some(list, function(type) {
+        var hasType = false;
+        structure.each(function(column) {
+          if (type.toLowerCase() == (column.get(name) || '').toLocaleLowerCase()) {
+            hasType = true;
+          }
+        });
+
+        return hasType;
+      });
+    },
+
+    initialize: function(options) {
+      this.state = {
+        viewId: options.listView || this.collection.table.get('list_view') || 'table'
+      };
+
+      this.baseView.on('view:changed', function (viewId) {
+        this.$('.tiles .tile.active').removeClass('active');
+        this.$('#' + viewId + '-view').addClass('active');
+      }, this);
+
       var drag = Dragula({
         isContainer: function (el) {
           return el.classList.contains('reorder-columns');

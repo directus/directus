@@ -1,9 +1,15 @@
 define(function(require, exports, module) {
 
-  "use strict";
+  'use strict';
 
-  var TableView = require('core/table/table.view');
+  var _ = require('underscore');
   var jQuery = require('jquery');
+  var defaultListViews = [
+    require('core/listings/table'),
+    require('core/listings/tiles'),
+    require('core/listings/map'),
+    require('core/listings/calendar')
+  ];
 
   /**
    * @private
@@ -14,9 +20,13 @@ define(function(require, exports, module) {
   // Attach all methods to the UIManager prototype.
   module.exports = {
 
+    setup: function() {
+      this.register(defaultListViews);
+    },
+
     register: function(listViews) {
       _.each(listViews, function(view) {
-        views[view.id] = view.View;
+        views[view.id] = view;
       },this);
     },
 
@@ -34,19 +44,33 @@ define(function(require, exports, module) {
       return dfd;
     },
 
-    getInstance: function(options) {
-      var viewId = options.collection.table.get('list_view');
-      var View;
+    get: function(viewId) {
+      return views[viewId];
+    },
+
+    getView: function(viewId, options) {
+      var View = views['table'].View;
+      var defaultOptions = {id: 'table'};
 
       if (viewId != null && views.hasOwnProperty(viewId)) {
-        View = views[viewId];
-      } else {
-        View = TableView;
+        View = views[viewId].View;
+        defaultOptions.id = viewId;
       }
 
-      return new View(options);
-    }
+      options = _.extend(defaultOptions, (options || {}));
 
+      return new View(options);
+    },
+
+    getInstance: function(options) {
+      var viewId = options.collection.table.get('list_view');
+
+      return this.getView(viewId, options)
+    },
+
+    getViews: function() {
+      return views;
+    }
   };
 
 });

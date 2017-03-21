@@ -3,13 +3,14 @@ define(function(require, exports, module) {
   'use strict';
 
   var Backbone = require('backbone');
+  var _ = require('underscore');
   var Handlebars = require('handlebars');
 
   require('plugins/backbone.layoutmanager');
 
   module.exports = Backbone.Layout.extend({
     // base template route
-    prefix: 'app/core/uis/',
+    prefix: 'app/core/interfaces/',
     // Handlebars template source
     templateSource: null,
     templateCompileOptions: {},
@@ -46,7 +47,7 @@ define(function(require, exports, module) {
     * @param options.settings   UI Settings
     */
     constructor: function UIView(options) {
-      var structure = options.model.getStructure() || options.model.structure || options.structure;
+      var structure = _.result(options.model, 'getStructure') || options.model.structure || options.structure;
       this.name = options.name;
       this.columnSchema = structure.get(this.name);
       this.settings = this.columnSchema.options;

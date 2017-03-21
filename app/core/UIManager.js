@@ -4,51 +4,56 @@ define(function(require, exports, module) {
 
   // Register Core UI's
   var defaultUis = ([
-    require('core/uis/textinput'),
-    require('core/uis/directus_columns'),
-    require('core/uis/divider'),
-    require('core/uis/instructions/instructions'),
-    require('core/uis/checkbox/checkbox'),
-    require('core/uis/color'),
-    require('core/uis/columns'),
-    require('core/uis/numeric'),
-    require('core/uis/slider'),
-    require('core/uis/single_file'),
-    require('core/uis/slug'),
-    require('core/uis/textarea'),
-    require('core/uis/directus_user'),
-    require('core/uis/directus_activity'),
-    require('core/uis/datetime/datetime'),
-    require('core/uis/datetime/date'),
-    require('core/uis/datetime/time'),
-    require('core/uis/directus_user_activity'),
-    require('core/uis/directus_user_avatar'),
-    require('core/uis/directus_file_size'),
-    require('core/uis/blob'),
-    require('core/uis/alias'),
-    require('core/uis/salt'),
-    require('core/uis/select'),
-    require('core/uis/tags'),
-    require('core/uis/many_to_one'),
-    require('core/uis/radiobuttons'),
-    require('core/uis/many_to_many'),
-    require('core/uis/one_to_many'),
-    require('core/uis/wysiwyg'),
-    require('core/uis/directus_messages_recipients'),
-    require('core/uis/password'),
-    require('core/uis/random'),
-    require('core/uis/many_to_one_typeahead'),
-    require('core/uis/enum'),
-    require('core/uis/multi_select'),
-    require('core/uis/system'),
-    require('core/uis/user'),
-    require('core/uis/directus_file'),
-    require('core/uis/directus_file_title'),
-    require('core/uis/map'),
-    require('core/uis/markdown'),
-    require('core/uis/multiple_files'),
-    require('core/uis/translation'),
-    require('core/uis/template_chooser')
+    // Internals
+    require('core/interfaces/_internals/accountability/interface'),
+    require('core/interfaces/_internals/columns_picker/interface'),
+    require('core/interfaces/_internals/columns/interface'),
+    require('core/interfaces/_internals/permissions/interface'),
+    require('core/interfaces/_internals/views/interface'),
+    require('core/interfaces/textinput'),
+    require('core/interfaces/section_break/section_break'),
+    require('core/interfaces/checkbox/checkbox'),
+    require('core/interfaces/color'),
+    require('core/interfaces/numeric'),
+    require('core/interfaces/slider'),
+    require('core/interfaces/single_file/component'),
+    require('core/interfaces/slug'),
+    require('core/interfaces/textarea'),
+    require('core/interfaces/directus_user'),
+    require('core/interfaces/directus_activity'),
+    require('core/interfaces/datetime/datetime'),
+    require('core/interfaces/datetime/date'),
+    require('core/interfaces/datetime/time'),
+    require('core/interfaces/directus_user_activity'),
+    require('core/interfaces/directus_user_avatar'),
+    require('core/interfaces/directus_file_size'),
+    require('core/interfaces/blob'),
+    require('core/interfaces/alias'),
+    require('core/interfaces/salt'),
+    require('core/interfaces/select'),
+    require('core/interfaces/tags'),
+    require('core/interfaces/many_to_one'),
+    require('core/interfaces/radiobuttons'),
+    require('core/interfaces/many_to_many'),
+    require('core/interfaces/one_to_many'),
+    require('core/interfaces/directus_users'),
+    require('core/interfaces/wysiwyg'),
+    require('core/interfaces/directus_messages_recipients'),
+    require('core/interfaces/password'),
+    require('core/interfaces/random'),
+    require('core/interfaces/many_to_one_typeahead'),
+    require('core/interfaces/enum'),
+    require('core/interfaces/multi_select'),
+    require('core/interfaces/system'),
+    require('core/interfaces/user'),
+    require('core/interfaces/directus_file'),
+    require('core/interfaces/directus_file_title'),
+    require('core/interfaces/map'),
+    require('core/interfaces/markdown'),
+    require('core/interfaces/multiple_files'),
+    require('core/interfaces/multiple_files/csv/component'),
+    require('core/interfaces/translation'),
+    require('core/interfaces/template_chooser')
   ]);
 
   var jQuery = require('jquery');
@@ -356,9 +361,11 @@ define(function(require, exports, module) {
       options.schema = options.structure.get(options.name);
       options.value = options.model.get(options.name);
       options.collection = options.collection || options.model.collection;
-      options.canWrite = typeof options.model.canEdit === 'function' ? options.model.canEdit(attr) : true;
       options.settings = options.schema.options;
 
+      if (options.canWrite === undefined) {
+        options.canWrite =  typeof options.model.canEdit === 'function' ? options.model.canEdit(attr) : true;
+      }
 
       var UI = this._getModelUI(model, attr, options.schema);
       if (UI.Input === undefined) {
@@ -387,6 +394,7 @@ define(function(require, exports, module) {
           collection: collection,
           settings: schema.options,
           schema: schema,
+          // @TODO: Do we need this?
           tagName: 'td'
         });
       }
@@ -398,11 +406,8 @@ define(function(require, exports, module) {
         return 'UI:'+name;
       });
 
-      var UIArgs = [events.join(' '), UI].concat(args);
-      var AppArgs = [appEvents.join(' '), UI].concat(args);
-
-      UI.trigger.apply(UI, UIArgs);
-      app.trigger.apply(app, AppArgs);
+      UI.trigger.call(UI, events.join(' '), UI, options);
+      app.trigger.call(app, events.join(' '), UI, options);
     },
 
     constructEventNames: function(eventName, UI, options) {
@@ -413,10 +418,11 @@ define(function(require, exports, module) {
       ];
 
       if (structure.table && structure.table.id) {
+        var tableName = (structure.table.isFake ? 'fake:' : '') + structure.table.id;
         appendNames = appendNames.concat([
-          ':'+structure.table.id+':'+UI.id,
-          ':'+structure.table.id+':'+options.schema.id,
-          ':'+structure.table.id+':'+options.schema.id+':'+UI.id
+          ':'+tableName+':'+UI.id,
+          ':'+tableName+':'+options.schema.id,
+          ':'+tableName+':'+options.schema.id+':'+UI.id
         ]);
       }
 

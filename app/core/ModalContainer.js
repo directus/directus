@@ -9,7 +9,17 @@ define(['app', 'backbone', 'underscore', 'core/Modal'], function(app, Backbone, 
       },
 
       'click .modal': function() {
-        this.close();
+        var canClose = true;
+
+        this.getViews().each(function (view) {
+          if (view.closeOnBackground === false) {
+            canClose = false;
+          }
+        });
+
+        if (canClose) {
+          this.close();
+        }
       },
 
       'click .js-close-modal': 'close'
@@ -49,8 +59,8 @@ define(['app', 'backbone', 'underscore', 'core/Modal'], function(app, Backbone, 
 
     close: function(hard) {
       var modal = this.$('.modal.active');
-      var closeViews = _.bind(function() {
-        this.getViews().each(function(view) {
+      var closeViews = _.bind(function () {
+        this.getViews().each(function (view) {
           view.close();
         });
 

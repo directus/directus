@@ -1,76 +1,148 @@
 define([
   'app',
+  'underscore',
   'backbone',
-  'core/t',
-  'core/directus',
-  'core/BasePageView',
-  'core/widgets/widgets',
-  'moment',
   'core/notification'
-],
-function(app, Backbone, __t, Directus, BasePageView, Widgets, moment, Notification) {
+], function (app, _, Backbone, Notification) {
 
-  return BasePageView.extend({
-    headerOptions: {
-      route: {
-        title: __t('message_compose'),
-        breadcrumbs: [{title: __t('messages'), anchor: '#messages'}]
-      }
-    },
+  return Backbone.Layout.extend({
 
-    leftToolbar: function() {
-      var self = this;
-      return  [
-        new Widgets.ButtonWidget({
-          widgetOptions: {
-            buttonId: "addBtn",
-            iconClass: "send",
-            buttonClass: "",
-            buttonText: __t('send_message')
-          },
-          onClick: function(event) {
-            var data = self.editView.data();
+    template: 'modules/messages/message-new',
 
-            data.read = "1";
-            data.date_updated = moment().format("YYYY-MM-DD HH:mm:ss")
+    tagName: 'form',
 
-            self.model.save(data, {success: function(model, res) {
-              if (res.warning) {
-                Notification.warning(null, res.warning, {timeout: 5000});
-              }
-
-              app.router.go('#messages');
-            }});
-
-            self.model.collection.add(self.model);
-          }
-        })
-      ];
-    },
     events: {
-      'click #addBtn': function(e) {
-        var data = this.editView.data();
+      'keyup textarea': 'toggleButtons',
+      'keydown textarea': 'toggleButtons',
+      'change textarea': 'toggleButtons',
+      'focus textarea': 'toggleButtons',
+      'blur textarea': 'toggleButtons',
+      'focus .reply textarea': 'activeReplyArea',
+      'blur .reply textarea': 'deActiveReplyArea',
+      'click .js-button-send': 'sendMessage'
+    },
 
-        data.read = "1";
-        data.date_updated = moment().format("YYYY-MM-DD HH:mm:ss")
+    activeReplyArea: function (event) {
+      this.$('.reply').addClass('active');
+    },
 
-        this.model.save(data, {success: function(model, res) {
-          if(res.warning) {
-            Notification.warning(null, res.warning, {timeout: 5000});
-          }
-
-          app.router.go('#messages');
-        }});
-
-        this.model.collection.add(this.model);
+    deActiveReplyArea: function (event) {
+      var $el = $(event.currentTarget);
+      if (!$el.val().trim().length) {
+        this.$('.reply').removeClass('active');
       }
     },
 
-    afterRender: function() {
-      this.editView = new Directus.EditView({model: this.model});
-      this.setView('#page-content', this.editView);
-      this.editView.render();
-    }
+    toggleButtons: function (event) {
+      var $el = $(event.currentTarget);
+      var $group = this.$('.compose .button-group .button, .reply .button-group .button');
 
+      if ($el.val().trim().length > 0) {
+        $group.removeClass('hidden');
+      } else {
+        $group.addClass('hidden');
+      }
+    },
+
+    sendMessage: function (event) {
+      event.preventDefault();
+
+      var data = this.$el.serializeObject();
+
+      if (this.options.parentModel) {
+        this.sendResponse(data);
+      } else {
+        this.sendNewMessage(data);
+      }
+    },
+
+    sendNewMessage: function (data) {
+      var options = {};
+      var collection = this.model.collection;
+      var model = this.model;
+      var errors;
+
+      errors = model.validate(data);
+      if (errors) {
+        this.model.trigger('invalid', this.model, errors);
+        return;
+      }
+
+      data.read = 1;
+      options.wait = true;
+      options.success = function (model, resp) {
+        collection.add(model);
+        // @NOTE: Do we need/use those warning message?
+        if (resp.warning) {
+          Notification.warning(null, resp.warning, {timeout: 5000});
+        }
+      };
+
+      model.save(data, options);
+    },
+
+    sendResponse: function (data) {
+      var parentMessageModel = this.options.parentModel;
+      var newResponseModel = this.model;
+      var collection = parentMessageModel.get('responses');
+
+      var recipients = _.map(parentMessageModel.get('recipients').split(','), function(id) {
+        return '0_' + id;
+      });
+
+      recipients.push('0_' + newResponseModel.get('from'));
+
+      var attrs = _.extend({
+        'from': app.users.getCurrentUser().get('id'),
+        'subject': 'RE: ' + parentMessageModel.get('subject'),
+        'recipients': recipients.join(','),
+        'response_to': parentMessageModel.id,
+        'responses': []
+      }, data);
+      var self = this;
+      var success = function (model) {
+        collection.add(model);
+        // create a new model after one has been successfully sent
+        self.model = self.model.clone();
+        self.model.clear();
+        self.model.set('from', app.users.getCurrentUser().id);
+
+        self.render();
+      };
+
+      // @TODO: Get ID after create message
+      // Create an API endpoint for new messages
+      // returning a JSON with the new message
+      newResponseModel.save(attrs, {wait: true, success: success});
+      // this.render();
+    },
+
+    serialize: function () {
+     var user = app.users.getCurrentUser();
+
+     return {
+       model: this.model,
+       isResponse: this.options.parentModel,
+       view: {
+         recipients: {
+           parent: this,
+           model: this.model,
+           attr: 'recipients',
+           options: {
+             structure: this.model.structure
+           }
+         },
+         attachments: {
+           parent: this,
+           model: this.model,
+           attr: 'attachment',
+           options: {
+             structure: this.model.structure
+           }
+         }
+       },
+       user: user.toJSON()
+     };
+    }
   });
 });

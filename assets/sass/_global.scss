@@ -7,6 +7,9 @@
 ::-moz-selection {
   background: lighten($primary, 40%);
 }
+input:-webkit-autofill {
+	-webkit-box-shadow: 0 0 0px 1000px white inset;
+}
 // ::-webkit-input-placeholder {
 //   font-weight: 500;
 // }
@@ -138,6 +141,11 @@ input {
 		-moz-box-shadow: 0px 0px 0px 2px $primary;
 		box-shadow: 0px 0px 0px 2px $primary;
 	}
+	// Causes lost focus borders on inputs
+	// &:-webkit-autofill {
+	// 	-webkit-box-shadow: 0 0 0px 1000px $white inset; // lighten($primary, 43%)
+	// 	color: lighten($primary, 20%) !important;
+	// }
 	&[readonly],
 	&:disabled {
 		border-color: $gray-1;
@@ -231,6 +239,77 @@ ul {
 //////////////////////////////////////////////////////////////////////////////
 // Other
 
+.noty_box {
+	.noty_message {
+		hr {
+			margin: 16px 0;
+			opacity: 0.5;
+		}
+		ul {
+			margin-left: 16px;
+		}
+	}
+}
+.loading {
+	@include transition (all, $timing-short, ease-in-out);
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: rgba($gray-1, 1);
+	opacity: 0;
+	z-index: 0;
+	text-align: center;
+	&.blocking {
+		z-index: 999;
+	}
+	&.fading {
+		opacity: 1;
+	}
+	.loading-container {
+		@include border-radius (2px);
+		@include box-shadow ($x: 0px, $y: 0px, $blur: 2px, $spread: 0px, $opacity: 0.05);
+		position: absolute;
+		top: 48%;
+		left: 50%;
+		width: 50%;
+		max-width: 400px;
+		-webkit-transform: translate(-50%, -50%);
+		transform: translate(-50%, -50%);
+		height: 4px;
+		background-color: $white;
+		.loading-bar {
+			@include transition (all, $timing-long, cubic-bezier(0.23, 1, 0.32, 1));
+			@include border-radius (2px);
+			animation: pulsate-login 1s ease-out;
+			animation-iteration-count: infinite;
+			position: absolute;
+			top: 0;
+			bottom: 0;
+			left: 0;
+			width: 0%;
+			background-color: $primary;
+			&.step-1 {
+				width: 80%;
+			}
+			&.step-2 {
+				width: 99%;
+			}
+			&.error {
+				background-color: $serious;
+			}
+		}
+	}
+	.readout {
+		position: absolute;
+		top: 48%;
+		width: 100%;
+		margin-top: 15px;
+		color: $gray-3;
+		text-align: center;
+	}
+}
 .section-break {
 	width: 80%;
 	text-align: center;
@@ -249,6 +328,7 @@ ul {
 	display: inline-block;
 	vertical-align: top; // Fixes selects next to inputs not being aligned (could affect things elsewhere)
 	select {
+		height: 40px;
 		padding-right: 30px;
 		-webkit-appearance: none;
 		-moz-appearance: none;
@@ -286,6 +366,15 @@ ul {
 	&.vertical-middle {
 		vertical-align: middle;
 	}
+}
+.serious-text {
+	color: $serious;
+}
+.important-text {
+	color: $important;
+}
+.primary-text {
+	color: $primary;
 }
 .light-text {
 	color: $gray-3;

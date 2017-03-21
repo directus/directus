@@ -1,5 +1,7 @@
 define([
   'app',
+  'underscore',
+  'moment',
   'backbone',
   'core/modal',
   'core/edit',
@@ -12,7 +14,7 @@ define([
   'modules/files/views/FilesCardView'
 ],
 
-function(app, Backbone, DirectusModal, DirectusEdit, __t, Notification, BasePageView, DirectusTable, Widgets, EditFilesView, FilesCardView) {
+function(app, _, moment, Backbone, DirectusModal, DirectusEdit, __t, Notification, BasePageView, DirectusTable, Widgets, EditFilesView, FilesCardView) {
 
   return BasePageView.extend({
     headerOptions: {
@@ -20,6 +22,11 @@ function(app, Backbone, DirectusModal, DirectusEdit, __t, Notification, BasePage
         title: __t('files')
       }
     },
+
+    attributes: {
+      class: 'page-container'
+    },
+
     leftToolbar: function() {
       return [
         new Widgets.ButtonWidget({
@@ -83,30 +90,25 @@ function(app, Backbone, DirectusModal, DirectusEdit, __t, Notification, BasePage
       }
     },
     afterRender: function() {
+      var self = this;
       this.setView('#page-content', this.table);
       this.collection.fetch();
-      if (window.File && window.FileList && window.FileReader) {
-        //this.initFileDrop();
-      }
 
-      var that = this;
-
-      this.dragoverListener = function(e) {
-        that.$el.find('.external-drop-indicator').show();;
-      }
+      this.dragoverListener = function (event) {
+        self.$('.external-drop-indicator').show();
+      };
 
       window.addEventListener('dragover', this.dragoverListener, false);
 
-      this.dragleaveListener = function() {
-        that.$el.find('.external-drop-indicator').hide();;
-      }
+      this.dragleaveListener = function () {
+        self.$('.external-drop-indicator').hide();
+      };
 
       window.addEventListener('dragleave', this.dragleaveListener, false);
 
-      this.dropListener = function(e) {
-        that.$el.find('.external-drop-indicator').fadeOut(500);
-        console.log('drop');
-        that.processDroppedImages(e)
+      this.dropListener = function (event) {
+        self.$('.external-drop-indicator').fadeOut(500);
+        self.processDroppedImages(event)
       };
 
       window.addEventListener('drop', this.dropListener, false);
@@ -121,25 +123,34 @@ function(app, Backbone, DirectusModal, DirectusEdit, __t, Notification, BasePage
         app.trigger('progress');
       });
     },
-    processDroppedImages: function(e) {
-      if(!this.uploadFiles) {
+    processDroppedImages: function (event) {
+      if (!this.uploadFiles) {
         this.uploadFiles = [];
       }
 
-      var that = this;
-      _.each(e.dataTransfer.files, function(file) {
-      var name = app.statusMapping.status_name;
-        var name = {title: file.name, size: file.size, type: file.type};
+      var self = this;
+      _.each(event.dataTransfer.files, function (file) {
+        var name = {
+          title: file.name,
+          size: file.size,
+          type: file.type
+        };
+
         name[app.statusMapping.status_name] = app.statusMapping.active_num;
+
         // All files should be sort by date
         // Setting a temporary date will make this uploading file first on the list.
-        name['date_uploaded'] = (new Date).toISOString();
-        var  model = new that.collection.model(name, {collection: that.collection, parse: true});
-        that.collection.add(model);
-        that.uploadFiles.push({model: model, fileInfo: file});
+        name['date_uploaded'] = moment().format();
+        var  model = new self.collection.model(name, {
+          collection: self.collection,
+          parse: true
+        });
+        self.collection.add(model);
+        self.uploadFiles.push({model: model, fileInfo: file});
       });
+
       this.collection.trigger('sync');
-      if(! this.uploadInProgress) {
+      if (! this.uploadInProgress) {
         this.uploadInProgress = true;
         this.uploadNextImage();
       }

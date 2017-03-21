@@ -2,65 +2,20 @@
 <i class="material-icons close js-close">close</i>
 
 <div class="scroll-y">
-
     <div class="tiles">
-        <div class="tile table-view active" title="Table"><i class="material-icons">menu</i></div>
-        <div class="tile tile-view" title="Tiles"><i class="material-icons">apps</i></div>
-        <div class="tile map-view" title="Map"><i class="material-icons">map</i></div>
-        <div class="tile calendar-view" title="Calendar"><i class="material-icons">event</i></div>
-    </div>
-
-    <!-- Optional Dropdown for custom view templates -->
-    <!-- <div class="select-container">
-        <select name="type">
-            <option value="">Custom Template 1</option>
-            <option value="">Custom Template 2</option>
-            <option value="">Custom Template 3</option>
-        </select>
-        <i class="material-icons select-arrow">arrow_drop_down</i>
-    </div> -->
-
-    <hr>
-
-    {{!--
-    <h3>Chart</h3>
-    <div class="select-container">
-        <select name="type" class="spacing-adjust">
-            <optgroup label="Y Axis (INT)">
-                <option value="">Views</option>
-                <option value="">Column</option>
-                <option value="">Column</option>
-            </optgroup>
-        </select>
-        <i class="material-icons select-arrow">arrow_drop_down</i>
-    </div>
-
-    <div class="select-container margin-t-10">
-        <select name="type" class="spacing-adjust">
-            <optgroup label="X Axis (DATE)">
-                <option value="">Date Published</option>
-                <option value="">Column</option>
-                <option value="">Column</option>
-            </optgroup>
-        </select>
-        <i class="material-icons select-arrow">arrow_drop_down</i>
-    </div>
-
-    <hr>
-    --}}
-
-    <h3>Spacing</h3>
-    <div class="select-container">
-        <select name="type" class="spacing-adjust js-spacing-adjust">
-            {{#each spacings}}
-            <option value="{{name}}"{{#if selected}} selected{{/if}}>{{capitalize name}}</option>
-            {{/each}}
-        </select>
-        <i class="material-icons select-arrow">arrow_drop_down</i>
+        {{#views}}
+        <div id="{{id}}-view" class="tile {{id}}-view {{#if isActive}} active{{/if}}" data-view="{{id}}" title="{{capitalize id}}">
+            <i class="material-icons">{{icon}}</i>
+        </div>
+        {{/views}}
     </div>
 
     <hr>
 
+    <h3>{{capitalize viewId}}</h3>
+    <div class="options"></div>
+
+    {{#if isTableView}}
     <h3>Columns</h3>
     <ul id="reorder-columns" class="menu reorder-columns">
         {{#columns}}
@@ -75,25 +30,26 @@
 
     <h3>System</h3>
     <ul class="menu">
-        <li title="Last Edited On">
-            <input class="custom-checkbox select-row" id="check-8b" type="checkbox" value="" />
-            <label for="check-8b"><span></span> Item Numbers</label>
+        <li title="Item Numbers">
+            <input class="custom-checkbox select-row js-item-numbers" id="check-item-numbers" type="checkbox" value="" {{#if viewOptions.item_numbers}}checked{{/if}}>
+            <label for="check-item-numbers"><span></span> Item Numbers</label>
         </li>
         <li title="Last Edited On">
-            <input class="custom-checkbox select-row" id="check-8" type="checkbox" value="" />
-            <label for="check-8"><span></span> Last Edited On</label>
+            <input class="custom-checkbox select-row js-last-updated" id="check-last-edited-on" type="checkbox" value="" {{#if viewOptions.last_updated}}checked{{/if}}>
+            <label for="check-last-edited-on"><span></span> Last Edited On</label>
         </li>
         <li title="Show Comments">
-            <input class="custom-checkbox select-row" id="check-9" type="checkbox" value="" />
-            <label for="check-9"><span></span> Show Comments</label>
+            <input class="custom-checkbox select-row js-comments-count" id="check-comments-count" type="checkbox" value="" {{#if viewOptions.comments_count}}checked{{/if}}>
+            <label for="check-comments-count"><span></span> Show Comments</label>
         </li>
         <li title="Revisions">
-            <input class="custom-checkbox select-row" id="check-10" type="checkbox" value="" />
+            <input class="custom-checkbox select-row js-revisions-count" id="check-10" type="checkbox" value="" {{#if viewOptions.revisions_count}}checked{{/if}}>
             <label for="check-10"><span></span> Revisions</label>
         </li>
         <li title="Show Footer">
-            <input class="custom-checkbox select-row" id="check-11" type="checkbox" value="" />
+            <input class="custom-checkbox select-row js-show-footer" id="check-11" type="checkbox" value="" {{#if viewOptions.show_footer}}checked{{/if}}>
             <label for="check-11" class="footer-open-toggle"><span></span> Show Footer</label>
         </li>
     </ul>
+    {{/if}}
 </div>

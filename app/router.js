@@ -15,6 +15,7 @@ define(function(require, exports, module) {
       Backbone         = require('backbone'),
       _                = require('underscore'),
       Notification     = require('core/notification'),
+      WelcomeModal     = require('core/modals/welcome'),
       //Directus       = require('core/directus'),
       Tabs             = require('core/tabs'),
       BaseHeaderView   = require('core/baseHeaderView'),
@@ -38,6 +39,7 @@ define(function(require, exports, module) {
       "tables(/pref/:pref)":                         "tables",
       "tables/:name(/pref/:pref)(/pref/:pref)":      "entries",
       "tables/:name/:id(/pref/:pref)":               "entry",
+      "bookmark/:title":                             "bookmark",
       "activity(/pref/:pref)":                       "activity",
       "files(/pref/:pref)(/pref/:pref)":             "files",
       "files/:id(/pref/:pref)":                      "filesItem",
@@ -131,7 +133,7 @@ define(function(require, exports, module) {
       this.v.main.trigger.apply(this.v.main, ['flashItem', itemID, scrollTop]);
 
       var mainSidebar = document.getElementById('mainSidebar');
-      if(mainSidebar) {
+      if (mainSidebar) {
         mainSidebar.scrollTop = this.scrollTop;
       }
 
@@ -144,6 +146,14 @@ define(function(require, exports, module) {
       });
 
       app.user_notifications = [];
+
+      if (app.showWelcomeWindow) {
+        this.openViewInModal(new WelcomeModal({
+          model: app.users.getCurrentUser()
+        }));
+
+        app.showWelcomeWindow = false;
+      }
     },
 
     go: function() {
@@ -286,13 +296,14 @@ define(function(require, exports, module) {
     },
 
     removeOverlayPage: function(view) {
-      if (view.headerView) {
+      /*if (view.headerView) {
         view.headerView.remove();
-      }
+      }*/
 
       view.remove(); //Remove Overlay Page
       var vieww = this.v.main.getViews('#content').last().value();
-      vieww.headerView.render();
+      // vieww.headerView.render();
+      vieww.reRender();
       vieww.$el.show();
 
       if (vieww.scrollTop !== undefined) {
@@ -322,7 +333,7 @@ define(function(require, exports, module) {
 
     entries: function(tableName, pref) {
       var privileges = SchemaManager.getPrivileges(tableName);
-      if (_.contains(this.navBlacklist,'tables') || (privileges && privileges.get('allow_view') === 0)) {
+      if (_.contains(this.navBlacklist, 'tables') || (privileges && privileges.get('allow_view') === 0)) {
         return this.notFound();
       }
 
@@ -375,7 +386,7 @@ define(function(require, exports, module) {
       this.setTitle(app.settings.get('global').get('project_name') + ' | ' + app.capitalize(tableName));
 
       this.v.main.setView('#content', new Table.Views.List({collection: collection}));
-      this.v.main.render();
+      // this.v.main.render();
     },
 
     entry: function(tableName, id) {
@@ -430,6 +441,32 @@ define(function(require, exports, module) {
 
       this.v.main.setView('#content', view);
       view.render();
+    },
+
+    bookmark: function (tableName, title) {
+      var collection = this.currentCollection = EntriesManager.getInstance(tableName).clone();
+      var originalPreferencesUrl = collection.preferences.url;
+      var self = this;
+
+      collection.preferences = collection.preferences.clone();
+      collection.preferences.url = originalPreferencesUrl;
+      collection.preferences.fetch({title: title})
+        .then(function (resp) {
+          var promise;
+
+          if (resp.success === false) {
+            promise = $.Deferred().reject(resp).promise()
+          } else {
+            promise = collection.fetch();
+          }
+
+          return promise;
+        }).done(function () {
+          self.entries(tableName);
+          self.currentCollection = undefined;
+        }).fail(function () {
+          self.notFound();
+        });
     },
 
     activity: function() {
@@ -539,8 +576,7 @@ define(function(require, exports, module) {
         case 'global':
           this.v.main.setView('#content', new Settings.Global({
             model: app.settings.asModel(),
-            title: __t('global'),
-            structure: app.settings.structure
+            structure: app.schemaManager.getSettingsSchemas()
           }));
           break;
         case 'files':
@@ -571,7 +607,7 @@ define(function(require, exports, module) {
       this.setTitle(app.settings.get('global').get('project_name') + ' | Settings');
 
       var collection = EntriesManager.getInstance('directus_tables');
-      var model = collection.get(tableName); // SchemaManager.getTable(tableName)
+      var model = collection.get(tableName);
 
       if (model === undefined) {
         var primaryColumn = collection.table.get('primary_column');
@@ -593,8 +629,15 @@ define(function(require, exports, module) {
       }
 
       this.setTitle(app.settings.get('global').get('project_name') + ' | Settings - Permissions');
-      var collection = new Settings.GroupPermissions.Collection([], {url: app.API_URL + 'privileges/'+groupId});
-      this.v.main.setView('#content', new Settings.GroupPermissions.Page({collection: collection, title: app.groups.get(groupId).get('name')}));
+      var collection = EntriesManager.getInstance('directus_groups');
+      var model = collection.get(groupId);
+
+      this.v.main.setView('#content', new Settings.GroupPermissions.EditPage({
+        model: model,
+        collection: collection,
+        title: app.groups.get(groupId).get('name')
+      }));
+
       this.v.main.render();
     },
 

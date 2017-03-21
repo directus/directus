@@ -63,6 +63,7 @@ class CreateDirectusUsersTable extends Ruckusing_Migration_Base
         ]);
         $t->column('email', 'string', [
             'limit' => 255,
+            'null' => false,
             'default' => ''
         ]);
         $t->column('password', 'string', [
@@ -142,6 +143,12 @@ class CreateDirectusUsersTable extends Ruckusing_Migration_Base
             'limit' => 2,
             'default' => NULL
         ]);
+
+        $t->column('country', 'string', [
+            'limit' => 2,
+            'default' => NULL
+        ]);
+
         $t->column('zip', 'string', [
             'limit' => 10,
             'default' => NULL
@@ -155,6 +162,25 @@ class CreateDirectusUsersTable extends Ruckusing_Migration_Base
         $t->column('timezone', 'string', [
             'limit' => 32,
             'default' => 'America/New_York'
+        ]);
+
+        $t->column('invite_token', 'string', [
+            'limit' => 255,
+            'default' => null
+        ]);
+
+        $t->column('invite_date', 'datetime', [
+            'default' => null
+        ]);
+
+        $t->column('invite_sender', 'integer', [
+            'unsigned' => true,
+            'default' => null
+        ]);
+
+        $t->column('invite_accepted', 'tinyinteger', [
+            'limit' => 1,
+            'default' => null
         ]);
 
         $t->finish();

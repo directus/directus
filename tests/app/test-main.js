@@ -47,7 +47,7 @@ require.config({
     // Extensions
     "extensions": '../customs/extensions',
     "listviews":  '../customs/listviews',
-    "uis":         '../customs/uis'
+    "uis":         '../customs/interfaces'
   },
 
   shim: {

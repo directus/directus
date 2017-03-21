@@ -1,14 +1,16 @@
 define(function(require, exports, module) {
 
-  "use strict";
+  'use strict';
 
   var Backbone = require('backbone'),
+      app = require('app'),
       ColumnsCollection = require('./ColumnsCollection'),
       PreferenceModel = require('./../core/PreferenceModel');
 
   module.exports =  Backbone.Model.extend({
 
     parse: function(data) {
+      data = data.data ? data.data : data;
       if (this.columns === undefined) {
         this.columns = new ColumnsCollection(data.columns, {parse: true, url: this.url + '/columns'});
       } else {

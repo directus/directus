@@ -13,3 +13,8 @@ indent_size = 2
 
 [*.md]
 trim_trailing_whitespace = false
+
+# Tabs
+[*.{scss,sass,css,html}]
+indent_style = tab
+indent_size = 4

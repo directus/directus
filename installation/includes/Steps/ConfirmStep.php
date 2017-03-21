@@ -4,6 +4,7 @@ namespace Directus\Installation\Steps;
 
 use Directus\Database\Connection;
 use Directus\Mail\Mail;
+use Directus\Util\ArrayUtils;
 use Directus\Util\Installation\InstallerUtils;
 use Directus\Util\StringUtils;
 
@@ -54,6 +55,7 @@ class ConfirmStep extends AbstractStep
         }
 
         $stepsData = [];
+        $stepsData['directus_path'] = ArrayUtils::get($state, 'root_path', '/');
         foreach ($state['steps'] as $aStep) {
             if ($stepData = $aStep->getData()) {
                 $stepsData = array_merge($stepsData, $stepData);
@@ -62,8 +64,6 @@ class ConfirmStep extends AbstractStep
 
         unset($stepsData['languages']);
         unset($_SESSION['install_locale']);
-        $stepsData['feedback_token'] = sha1(gmdate('U') . StringUtils::randomString(32));
-        $stepsData['feedback_login'] = true;
         InstallerUtils::createConfig($stepsData, BASE_PATH . '/api');
         InstallerUtils::createTables(BASE_PATH);
         InstallerUtils::addDefaultSettings($stepsData, BASE_PATH);
@@ -89,14 +89,12 @@ class ConfirmStep extends AbstractStep
             ]
         ];
 
-        if ($response->getData('send_config_email')) {
-            Mail::send('mail/new-install.twig.html', $data, function ($message) use ($data) {
-                $message->setSubject(__t('your_new_directus_instance_x', [
-                    'name' => $data['project']['name']
-                ]));
-                $message->setTo($data['user']['email']);
-            });
-        }
+        Mail::send('mail/new-install.twig.html', $data, function ($message) use ($data) {
+            $message->setSubject(__t('your_new_directus_instance_x', [
+                'name' => $data['project']['name']
+            ]));
+            $message->setTo($data['user']['email']);
+        });
 
         return $response;
     }

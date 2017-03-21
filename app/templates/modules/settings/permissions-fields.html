@@ -1,0 +1,26 @@
+<table class="lines cozy pad-first">
+    <thead>
+        <tr>
+            <th class="field-note">{{t "column"}}</th>
+            <th class="permissions">{{permission}}</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#columns}}
+        <tr class="" data-column="{{column_name}}">
+			<td data-value="{{name}}">
+				<!-- <span class="toggle-switch {{#if read}}on has-privilege{{/if}}"></span> -->
+				<input class="custom-checkbox js-select-column" id="check_{{column_name}}" type="checkbox" value="" {{#unless blacklisted}}checked{{/unless}}>
+				<label for="check_{{column_name}}"><span></span></label>
+			</td>
+			<td><span class="label" data-for="check_{{column_name}}">{{column_name}}</span></td>
+
+            <!--
+            <td data-value="write">
+                <span class="toggle-switch {{#if write}}on has-privilege{{/if}}"></span>
+            </td>
+            -->
+        </tr>
+        {{/columns}}
+    </tbody>
+</table>

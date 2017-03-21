@@ -132,7 +132,9 @@ class Emitter
     {
         $listeners = $this->getFilterListeners($name);
 
-        $data = $this->executeListeners($listeners, $data, self::TYPE_FILTER);
+        if ($listeners) {
+            $data = $this->executeListeners($listeners, $data, self::TYPE_FILTER);
+        }
 
         return $data;
     }
@@ -195,6 +197,10 @@ class Emitter
      */
     protected function addListener($name, $listener, $priority = self::P_NORMAL, $type = self::TYPE_ACTION)
     {
+        if (is_string($listener) && class_exists($listener)) {
+            $listener = new $listener();
+        }
+
         $this->validateListener($listener);
 
         if ($type == self::TYPE_FILTER) {

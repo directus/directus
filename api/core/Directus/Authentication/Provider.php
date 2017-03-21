@@ -14,6 +14,7 @@ use Directus\Authentication\Exception\UserAlreadyLoggedInException;
 use Directus\Authentication\Exception\UserIsntLoggedInException;
 use Directus\Session\Session;
 use Directus\Util\ArrayUtils;
+use Directus\Util\DateUtils;
 use Directus\Util\StringUtils;
 use Zend\Db\TableGateway\TableGateway;
 
@@ -79,6 +80,14 @@ class Provider
     }
 
     /**
+     * @return TableGateway
+     */
+    public function getTableGateway()
+    {
+        return $this->table;
+    }
+
+    /**
      * Change where authentication information is stored on the session array.
      *
      * @param string $key
@@ -140,16 +149,18 @@ class Provider
     public function login($uid, $password, $salt, $passwordAttempt)
     {
         $this->prependSessionKey();
+        $attributes = [
+            'password' => $password
+        ];
+
         if ($this->needsReHashPassword($password, $salt, $passwordAttempt)) {
             $password = $this->hashPassword($passwordAttempt);
-            $this->table->update([
-                'password' => $password,
-                'access_token' => sha1($uid . StringUtils::random())
-            ], ['id' => $uid]);
+            $attributes['password'] = $password;
         }
 
         if (password_verify($passwordAttempt, $password)) {
-            $this->completeLogin($uid);
+            $this->completeLogin($uid, $attributes);
+
             return true;
         }
 
@@ -164,7 +175,11 @@ class Provider
     public function getUserByAuthentication($email, $password)
     {
         $this->prependSessionKey();
-        $user = $this->table->select(['email' => $email])->current();
+        // skip filtering
+        // allowing to select ALL columns
+        // by omitting the "private" users column
+        $options = ['filter' => false];
+        $user = $this->table->select(['email' => $email], $options)->current();
         $correct = false;
 
         if ($user) {
@@ -175,17 +190,40 @@ class Provider
         return $correct ? $user : false;
     }
 
+    public function authenticateWithInvitation($invitationCode)
+    {
+        if ($this->authenticated != null) {
+            return $this->authenticated;
+        }
+
+        $user = $this->table->select([
+            'invite_token' => $invitationCode
+        ], ['filter' => false])->current();
+
+        if ($user) {
+            $this->completeLogin($user->id, [
+                'last_login' => DateUtils::now()
+            ]);
+
+            return true;
+        }
+
+        return false;
+    }
+
     /**
      * Force a user id to be the logged user
      *
      * @param  int $uid The User account's ID.
+     * @param  bool $stateless whether or not to update the user token in db
      *
      * @return boolean
      */
-    public function setLoggedUser($uid)
+    public function setLoggedUser($uid, $stateless = false)
     {
         $this->authenticated = false;
-        $this->completeLogin($uid);
+
+        $this->completeLogin($uid, [], $stateless);
     }
 
     /**
@@ -225,7 +263,7 @@ class Provider
             $user = $this->table->select([
                 'id' => $session['id'],
                 'access_token' => $session['access_token']
-            ]);
+            ], ['filter' => false]);
 
             if ($user->count()) {
                 $this->authenticated = $isLoggedIn = true;
@@ -296,20 +334,32 @@ class Provider
      * After a successful login attempt, registers the user in the session.
      *
      * @param  int $uid The User account's ID.
+     * @param  array $attributes to update
+     * @param  bool $stateless
      *
      * @return null
      *
      * @throws  \Directus\Authentication\Exception\UserAlreadyLoggedInException
      */
-    private function completeLogin($uid)
+    private function completeLogin($uid, $attributes = [], $stateless = false)
     {
         $this->prependSessionKey();
         if ($this->loggedIn()) {
             throw new UserAlreadyLoggedInException(__t('attempting_to_authenticate_a_user_when_a_user_is_already_authenticated'));
         }
 
-        $user = ['id' => $uid, 'access_token' => sha1($uid . StringUtils::randomString())];
-        $this->session->set($this->SESSION_KEY, $user);
+        $set = array_merge($attributes, [
+            'access_token' => sha1($uid . StringUtils::randomString())
+        ]);
+
+        if ($stateless !== true) {
+            $this->table->update($set, ['id' => $uid]);
+        }
+
+        $this->session->set($this->SESSION_KEY, array_merge($set, [
+            'id' => $uid,
+        ]));
+
         $this->authenticated = true;
     }
 

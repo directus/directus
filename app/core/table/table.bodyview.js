@@ -24,7 +24,7 @@ function(app, Backbone, _, Sortable, Notification) {
       'click td.js-check > input': function() {
         this.collection.trigger('select');
       },
-      'click .sort': function(e) {
+      'click .js-sort': function(e) {
         e.cancelBubble = true;
         e.stopPropagation();
         e.preventDefault();
@@ -51,12 +51,13 @@ function(app, Backbone, _, Sortable, Notification) {
       var rowIdentifiers, statusState, models, rows;
       var statusColumns = this.collection.getFilter('status') || '1,2';
       var highlightIds = this.options.highlight || [];
+      var collection = this.options.system === true ? this.options.systemCollection : this.collection;
 
       rowIdentifiers = this.options.rowIdentifiers;
 
       //Filter active/inactive/deleted items
       statusState = _.map(statusColumns,Number);
-      models = this.collection.filter(function(model) {
+      models = collection.filter(function(model) {
         if (model.has(app.statusMapping.status_name)) {
           return (_.indexOf(statusState, Number(model.get(app.statusMapping.status_name))) > -1);
         } else {
@@ -88,16 +89,17 @@ function(app, Backbone, _, Sortable, Notification) {
         });
       }
 
-      rows = _.map(models, function(model) {
+      rows = _.map(models, function(model, i) {
         var classes = _.map(rowIdentifiers, function(columnName) { return 'row-'+columnName+'-'+model.get(columnName); });
         var highlight = _.contains(highlightIds,model.id);
         var statusDraft = model.get(app.statusMapping.status_name) === app.statusMapping.draft_num;
 
-        return {model: model, classes: classes, highlight: highlight, statusDraft: statusDraft};
+        return {index: i+1, model: model, classes: classes, highlight: highlight, statusDraft: statusDraft};
       });
 
       var tableData = {
-        columns: this.collection.getColumns(),
+        columns: this.parentView.getTableColumns(),
+        showItemNumbers: this.parentView.options.showItemNumbers,
         rows: rows,
         status: this.parentView.options.status,
         sortable: this.options.sort,
@@ -136,7 +138,8 @@ function(app, Backbone, _, Sortable, Notification) {
     initialize: function(options) {
       this.options.filters = this.options.filters || {};
       this.sort = this.options.structure.get('sort') || options.sort;
-      this.collection.on('sort', this.render, this);
+
+      this.listenTo(this.collection, 'sort', this.render);
       this.parentView = options.parentView;
 
       if (this.sort) {
@@ -144,9 +147,9 @@ function(app, Backbone, _, Sortable, Notification) {
         var that = this;
         options.parentView.sortableWidget = new Sortable(container, {
           animation: 150, // ms, animation speed moving items when sorting, `0` — without animation
-          handle: ".sort", // Restricts sort start click/touch to the specified element
-          draggable: "tr", // Specifies which items inside the element should be sortable
-          ghostClass: "sortable-ghost",
+          handle: '.js-sort', // Restricts sort start click/touch to the specified element
+          draggable: 'tr', // Specifies which items inside the element should be sortable
+          ghostClass: 'sortable-ghost',
           sort: false,
           onStart: function (evt) {
             //var dragItem = jQuery(evt.item);

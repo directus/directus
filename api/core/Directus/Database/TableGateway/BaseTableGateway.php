@@ -29,6 +29,7 @@ use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\SqlInterface;
 use Zend\Db\Sql\Update;
+use Zend\Db\Sql\Where;
 use Zend\Db\TableGateway\Feature;
 use Zend\Db\TableGateway\Feature\RowGatewayFeature;
 use Zend\Db\TableGateway\TableGateway;
@@ -128,7 +129,7 @@ class BaseTableGateway extends TableGateway
      * e.g. directus_users => \Directus\Database\TableGateway\DirectusUsersTableGateway
      *
      * @param string $table
-     * @param Adapter $adapter
+     * @param AdapterInterface $adapter
      * @param null $acl
      *
      * @return BaseTableGateway
@@ -141,6 +142,7 @@ class BaseTableGateway extends TableGateway
         if (class_exists($tableGatewayClassName)) {
             $instance = new $tableGatewayClassName($adapter, $acl);
         } else {
+            // @TODO: Move this to a separate factory class
             $instance = new static($table, $adapter, $acl);
         }
 
@@ -148,19 +150,20 @@ class BaseTableGateway extends TableGateway
     }
 
     /**
-     * HELPER FUNCTIONS
-     */
-
-    /**
      * Make a new table gateway
      *
-     * @param $tableName
+     * @param string $tableName
+     * @param AdapterInterface $adapter
+     * @param Acl $acl
      *
      * @return BaseTableGateway
      */
-    public function makeTable($tableName)
+    public function makeTable($tableName, $adapter = null, $acl = null)
     {
-        return new self($tableName, $this->adapter, $this->acl);
+        $adapter = is_null($adapter) ? $this->adapter : $adapter;
+        $acl = is_null($acl) ? $this->acl : $acl;
+
+        return static::makeTableGatewayFromTableName($tableName, $adapter, $acl);
     }
 
     public function getTableSchema()
@@ -247,8 +250,10 @@ class BaseTableGateway extends TableGateway
         if ($pk_field_name == null) {
             $pk_field_name = $this->primaryKeyFieldName;
         }
+
         $record = $this->findOneBy($pk_field_name, $id);
-        return $record;
+
+        return $record ? $this->parseRecordValuesByType($record) : null;
     }
 
     public function fetchAll($selectModifier = null)
@@ -275,17 +280,15 @@ class BaseTableGateway extends TableGateway
         $rowset = $this->select(function (Select $select) use ($field, $value) {
             $select->limit(1);
             $select->where->equalTo($field, $value);
-        });
+        }, ['filter' => false]);
 
         $row = $rowset->current();
         // Supposing this "one" doesn't exist in the DB
-        if (false === $row) {
+        if (!$row) {
             return false;
         }
 
-        $row = $row->toArray();
-
-        return $row;
+        return $row->toArray();
     }
 
     public function findOneByArray(array $data)
@@ -294,11 +297,11 @@ class BaseTableGateway extends TableGateway
 
         $row = $rowset->current();
         // Supposing this "one" doesn't exist in the DB
-        if (false === $row) {
+        if (!$row) {
             return false;
         }
-        $row = $row->toArray();
-        return $row;
+
+        return $row->toArray();
     }
 
     public function addOrUpdateRecordByArray(array $recordData, $tableName = null)
@@ -311,12 +314,22 @@ class BaseTableGateway extends TableGateway
             }
         }
 
-        $columns = TableSchema::getAllNonAliasTableColumns($tableName);
-        $recordData = $this->schemaManager->castRecordValues($recordData, $columns);
+        // @TODO: Dow we need to parse before insert?
+        // Commented out because date are not saved correctly in GMT
+        // $recordData = $this->parseRecord($recordData);
 
         $TableGateway = $this->makeTable($tableName);
         $rowExists = isset($recordData[$TableGateway->primaryKeyFieldName]);
         if ($rowExists) {
+            $payload = new \stdClass();
+            $payload->tableName = $tableName;
+            $payload->data = $recordData;
+
+            $payload = $this->applyHook('table.update:before', $payload);
+            $payload = $this->applyHook('table.update.' . $tableName . ':before', $payload);
+
+            $recordData = $payload->data;
+
             $Update = new Update($tableName);
             $Update->set($recordData);
             $Update->where([$TableGateway->primaryKeyFieldName => $recordData[$TableGateway->primaryKeyFieldName]]);
@@ -327,8 +340,9 @@ class BaseTableGateway extends TableGateway
             $payload = new \stdClass();
             $payload->tableName = $tableName;
             $payload->data = $recordData;
-            $d = $this->applyHook('table.insert:before', $payload);
-            $TableGateway->insert($d->data);
+            $payload = $this->applyHook('table.insert:before', $payload);
+            $payload = $this->applyHook('table.insert.' . $tableName . '.:before', $payload);
+            $TableGateway->insert($payload->data);
             $recordData[$TableGateway->primaryKeyFieldName] = $TableGateway->getLastInsertValue();
 
             if ($tableName == 'directus_files') {
@@ -455,13 +469,6 @@ class BaseTableGateway extends TableGateway
             'column_name' => $columnName
         ]);
 
-        // Remove column from directus_ui
-        $uisTableGateway = new TableGateway('directus_ui', $this->adapter);
-        $uisTableGateway->delete([
-            'table_name' => $tableName,
-            'column_name' => $columnName
-        ]);
-
         return true;
     }
 
@@ -516,7 +523,8 @@ class BaseTableGateway extends TableGateway
 
         $default = '';
         if (ArrayUtils::get($columnData, 'default_value')) {
-            $default = ' DEFAULT ' . ArrayUtils::get($columnData, 'default_value');
+            $default = ArrayUtils::get($columnData, 'default_value');
+            $default = ' DEFAULT ' . (is_string($default) ? sprintf('"%s"', $default) : $default);
         }
 
         // TODO: wrap this into an abstract DDL class
@@ -558,6 +566,46 @@ class BaseTableGateway extends TableGateway
     }
 
     /**
+     * Select
+     *
+     * @param Where|\Closure|string|array $where
+     *
+     * @return ResultSetInterface
+     */
+    public function select($where = null)
+    {
+        if (!$this->isInitialized) {
+            $this->initialize();
+        }
+
+        $select = $this->sql->select();
+
+        if ($where instanceof \Closure) {
+            $where($select);
+        } elseif ($where !== null) {
+            $select->where($where);
+        }
+
+        return $this->selectWith($select, ArrayUtils::get(func_get_args(), 1, []));
+    }
+
+    /**
+     * @param Select $select
+     *
+     * @return null|ResultSetInterface
+     *
+     * @throws \RuntimeException
+     */
+    public function selectWith(Select $select)
+    {
+        if (!$this->isInitialized) {
+            $this->initialize();
+        }
+
+        return $this->executeSelect($select, ArrayUtils::get(func_get_args(), 1, []));
+    }
+
+    /**
      * @param Select $select
      *
      * @return ResultSet
@@ -574,13 +622,29 @@ class BaseTableGateway extends TableGateway
 
         try {
             $result = parent::executeSelect($select);
-            // @NOTE: filter data should be an object
-            $payload = new \stdClass();
-            $payload->result = $result;
-            $payload->selectState = $select->getRawState();
-            $payload = $this->applyHook('table.select', $payload);
 
-            return $payload->result;
+            // Select query options
+            $options = ArrayUtils::get(func_get_args(), 1, []);
+            if (!is_array($options)) {
+                $options = [];
+            }
+
+            if (ArrayUtils::get($options, 'filter', true) !== false) {
+                $selectState = $select->getRawState();
+                $selectTableName = $selectState['table'];
+
+                // @NOTE: filter data should be an object
+                $payload = new \stdClass();
+                $payload->result = $result;
+                $payload->selectState = $selectState;
+
+                $payload = $this->applyHook('table.select', $payload);
+                $payload = $this->applyHook('table.' . $selectTableName . '.select', $payload);
+
+                $result = $payload->result;
+            }
+
+            return $result;
         } catch (InvalidQueryException $e) {
             if ('production' !== DIRECTUS_ENV) {
                 throw new \RuntimeException('This query failed: ' . $this->dumpSql($select), 0, $e);
@@ -618,7 +682,15 @@ class BaseTableGateway extends TableGateway
 
             $result = parent::executeInsert($insert);
             $insertTableGateway = $this->makeTable($insertTable);
-            $resultData = $insertTableGateway->find($this->getLastInsertValue());
+
+            // hotfix: directus_tables does not have auto generated value primary key
+            if ($this->getTable() === 'directus_tables') {
+                $generatedValue = ArrayUtils::get($insertDataAssoc, $this->primaryKeyFieldName, 'table_name');
+            } else {
+                $generatedValue = $this->getLastInsertValue();
+            }
+
+            $resultData = $insertTableGateway->find($generatedValue);
 
             $this->runHook('table.insert', [$insertTable, $resultData]);
             $this->runHook('table.insert.' . $insertTable, [$resultData]);
@@ -663,6 +735,7 @@ class BaseTableGateway extends TableGateway
         $updateData = $updateState['set'];
 
         try {
+            // @TODO: Move hook filters here
             $this->runHook('table.update:before', [$updateTable, $updateData]);
             $this->runHook('table.update.' . $updateTable . ':before', [$updateData]);
             $result = parent::executeUpdate($update);
@@ -907,7 +980,7 @@ class BaseTableGateway extends TableGateway
                 if (is_null($currentUserId) || count(array_diff($ownerIds, [$currentUserId]))) {
                     // $aclErrorPrefix = $this->acl->getErrorMessagePrefix();
                     // throw new UnauthorizedTableBigEditException($aclErrorPrefix . "Table bigedit access forbidden on $resultQty `$updateTable` table record(s) and " . count($ownerIds) . " CMS owner(s) (with ids " . implode(", ", $ownerIds) . ").");
-                    $groupsTableGateway = self::makeTableGatewayFromTableName('directus_groups', $this->adapter, $this->acl);
+                    $groupsTableGateway = $this->makeTable('directus_groups');
                     $group = $groupsTableGateway->find($this->acl->getGroupId());
                     throw new UnauthorizedTableBigEditException('[' . $group['name'] . '] permissions only allow you to [' . $permissionName . '] your own items.');
                 }
@@ -977,7 +1050,7 @@ class BaseTableGateway extends TableGateway
             list($predicateResultQty, $predicateOwnerIds) = $this->acl->getCmsOwnerIdsByTableGatewayAndPredicate($this, $deleteState['where']);
             if (!in_array($currentUserId, $predicateOwnerIds)) {
                 //   $exceptionMessage = "Table harddelete access forbidden on $predicateResultQty `$deleteTable` table records owned by the authenticated CMS user (#$currentUserId).";
-                $groupsTableGateway = self::makeTableGatewayFromTableName('directus_groups', $this->adapter, $this->acl);
+                $groupsTableGateway = $this->makeTable('directus_groups');
                 $group = $groupsTableGateway->find($this->acl->getGroupId());
                 $exceptionMessage = '[' . $group['name'] . '] permissions only allow you to [delete] your own items.';
                 //   $aclErrorPrefix = $this->acl->getErrorMessagePrefix();

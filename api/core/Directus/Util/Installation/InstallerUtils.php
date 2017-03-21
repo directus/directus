@@ -52,6 +52,10 @@ class InstallerUtils
      */
     protected static function createConfigFile($data, $path)
     {
+        $data = ArrayUtils::defaults([
+            'directus_path' => '/'
+        ], $data);
+
         $configStub = static::createConfigFileContent($data);
 
         $configPath = rtrim($path, '/') . '/config.php';
@@ -68,6 +72,12 @@ class InstallerUtils
         if (!isset($data['default_language'])) {
             $data['default_language'] = 'en';
         }
+
+        $data = ArrayUtils::defaults([
+            'default_language' => 'en',
+            'feedback_token' => sha1(gmdate('U') . StringUtils::randomString(32)),
+            'feedback_login' => true
+        ], $data);
 
         $configurationStub = file_get_contents(__DIR__ . '/stubs/configuration.stub');
         $configurationStub = static::replacePlaceholderValues($configurationStub, $data);

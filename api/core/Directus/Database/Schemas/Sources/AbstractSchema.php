@@ -65,9 +65,9 @@ abstract class AbstractSchema implements SchemaInterface
 
         foreach ($columns as $column) {
             foreach ($records as $index => $record) {
-                $col = $column->getId();
-                if (array_key_exists($col, $record)) {
-                    $records[$index][$col] = $this->castValue($record[$col], $column->getType());
+                $columnName = $column->getName();
+                if (ArrayUtils::has($record, $columnName)) {
+                    $records[$index][$columnName] = $this->castValue($record[$columnName], $column->getType());
                 }
             }
         }

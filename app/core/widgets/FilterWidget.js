@@ -8,7 +8,7 @@ function(app, Backbone, _, Handlebars) {
 
   'use strict';
 
-  return Backbone.Layout.extend({
+  return Backbone.View.extend({
 
     template: 'core/widgets/filter-widget',
 
@@ -26,11 +26,12 @@ function(app, Backbone, _, Handlebars) {
     },
 
     events: {
-      'click .js-toggle': function(event) {
+      'keyup .js-search': 'search',
+      'click .js-toggle': function (event) {
         this.$el.toggleClass('filter-dropdown-open');
       },
 
-      'click input.js-status-check': function(event) {
+      'click input.js-status-check': function (event) {
         var $checksChecked = this.$el.find('input.js-status-check:checked');
         var status = [];
 
@@ -65,6 +66,35 @@ function(app, Backbone, _, Handlebars) {
       'change .filter_ui': function(e) {
         this.processFilterChange(e);
       }
+    },
+
+    search: function (event) {
+      if (event.which != 13) {
+        return;
+      }
+
+      var $element = $(event.currentTarget);
+      var searchString = this.searchString = $element.val();
+      var filterIndex = -1;
+      _.each(this.options.filters, function (item, index) {
+        if (item.filterData.id === 'q') {
+          filterIndex = index;
+        }
+      });
+
+      if (filterIndex >= 0) {
+        this.options.filters[filterIndex].filterData.value = $element.val();
+      } else {
+        this.options.filters.push({
+          filterData: {
+            id: 'q',
+            value: searchString
+          }
+        });
+      }
+
+      this.updateFilters();
+      this.collection.fetch();
     },
 
     processFilterChange: function(event) {
@@ -218,6 +248,11 @@ function(app, Backbone, _, Handlebars) {
             data.filters[i].relatedEntries.push({visible_column:model, visible_column_template: model});
           });
         } else {
+          // Global filters doesn't have a columnName property
+          // ex. ?q=word
+          if (!data.filters[i].columnName) {
+            return;
+          }
           var template = Handlebars.compile(that.getFilterDataType(data.filters[i].columnName));
           if(item.filterData) {
             //Used for Checkboxes since they return 0 string
@@ -233,6 +268,8 @@ function(app, Backbone, _, Handlebars) {
         i++;
       });
 
+      data.searchString = this.searchString;
+
       return data;
     },
 
@@ -240,6 +277,10 @@ function(app, Backbone, _, Handlebars) {
       $('.filter-ui').last().find('input').focus();
       var that = this;
       _.each(this.options.filters, function(item) {
+        if (!item.columnName) {
+          return;
+        }
+
         var columnModel = that.collection.structure.get(item.columnName);
 
         var table = columnModel.collection.table.id;
@@ -334,8 +375,21 @@ function(app, Backbone, _, Handlebars) {
         return item.filterData;
       });
 
-      this.collection.setFilter('adv_search', filters);
-      if(!bInit) {
+      // this.collection.setFilter('adv_search', filters);
+      var filtersParams = {};
+      var globalParams = {};
+      _.each(filters, function(filter) {
+        if (filter.type) {
+          filtersParams[filter.id] = {};
+          filtersParams[filter.id][filter.type] = filter.value;
+        } else {
+          globalParams[filter.id] = filter.value;
+        }
+      });
+
+      this.collection.setFilter('filters', filtersParams);
+      this.collection.setFilter(globalParams);
+      if (!bInit) {
         this.collection.setFilter('currentPage', 0);
       }
 
@@ -379,15 +433,25 @@ function(app, Backbone, _, Handlebars) {
       this.options.filters = [];
       var search = this.collection.preferences.get('search_string');
 
-      if(search !== null && search !== undefined) {
-        search = decodeURIComponent(search).replace('\\,', '%21').split(",");
+      if (search !== null && search !== undefined) {
+        search = decodeURIComponent(search).replace('\\,', '%21').split(',');
+
         var that = this;
-        search.forEach(function(filter) {
+        search.forEach(function (filter) {
+          var data = {};
           filter = filter.replace('\\:', '%20');
           filter = filter.split(':');
 
-          if(filter.length === 3) {
-            var data = {};
+          if (filter.length === 2) {
+            data = {};
+            data.filterData = {
+              id: filter[0].replace('%20',':'),
+              value: filter[1].replace('%20',':').replace('%21',',')
+            };
+
+            that.options.filters.push(data);
+          } else if (filter.length === 3) {
+            data = {};
             var selectedColumn = filter[0].replace('%20',':');
 
             data.columnName = selectedColumn;

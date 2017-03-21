@@ -63,7 +63,7 @@ class Files extends Route
             ];
         }
 
-        JsonView::render($response);
+        return $this->app->response($response);
     }
 
     public function upload()
@@ -74,7 +74,7 @@ class Files extends Route
             $result[] = $Files->upload($file);
         }
 
-        JsonView::render($result);
+        return $this->app->response($result);
     }
 
     public function uploadLink()
@@ -120,6 +120,6 @@ class Files extends Route
             }
         }
 
-        JsonView::render($result);
+        return $this->app->response($result);
     }
 }

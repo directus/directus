@@ -32,27 +32,22 @@ function(app, Backbone, Widgets, moment) {
         var statusValue = model.get(app.statusMapping.status_name);
         var title = model.get('title') || '';
         var data = {
-          "id": model.get('id'),
-          "inactive": (statusValue !== app.statusMapping.active_num),
-          "cid": model.cid,
-          'title': title,
-          'title_short': (title.length > 35)? title.substr(0,32) + "..." : title,
-          'date_uploaded': moment(model.get('date_uploaded')).fromNow(),
-          'size': model.get('size'),
-          'type': (model.has('type')) ? model.get('type').split('/').pop() : '',
-          'dimensions': model.get('width') + "×" + model.get('height')
+          id: model.get('id'),
+          inactive: (statusValue !== app.statusMapping.active_num),
+          cid: model.cid,
+          title: title,
+          title_short: (title.length > 35)? title.substr(0,32) + "..." : title,
+          date_uploaded: moment(model.get('date_uploaded')).fromNow(),
+          size: model.get('size'),
+          type: (model.has('type')) ? model.get('type').split('/').pop() : '',
+          dimensions: model.get('width') + "×" + model.get('height')
         };
 
         var type = model.get('type').substring(0, model.get('type').indexOf('/'));
         var subtype = model.get('type').split('/').pop();
 
-        // While loading
-        if (!data.id) {
-          data.thumbnail = '<div class="default-loading"><span class="icon icon-three-dots"></span></div>';
-        } else if ((type == 'image' || type === 'embed' || subtype === 'pdf') && model.makeFileUrl(true)) {
-          data.thumbnail = '<img src="'+model.makeFileUrl(true)+'">';
-        } else {
-          data.thumbnail = '<div class="default-info">' +data.type.toUpperCase()+'</div>';
+        if (data.id && (type == 'image' || type === 'embed' || subtype === 'pdf') && model.makeFileUrl(true)) {
+          data.thumbnailUrl = model.makeFileUrl(true);
         }
 
         if(!model.get('width') || !model.get('height')){

@@ -52,7 +52,7 @@ class ExceptionView
          */
         elseif ($exception instanceof DuplicateEntryException) {
             $httpCode = 409;
-            $data = ['message' => $exception->getMessage()];
+            $data = ['error' => ['message' => $exception->getMessage()]];
         } // @todo log error nonetheless
         else {
             $data = ['message' => 'Internal Server Error'];

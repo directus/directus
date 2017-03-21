@@ -1,15 +1,15 @@
 define(function(require, exports, module) {
 
-  "use strict";
+  'use strict';
 
   var app = require('app');
+  var _   = require('underscore');
 
   // Structures
   var ColumnModel        = require('./ColumnModel'),
+      PrivilegeModel     = require('./PrivilegeModel'),
       ColumnsCollection  = require('./ColumnsCollection'),
       TableModel         = require('./TableModel'),
-      Backbone           = require('backbone'),
-      UIModel            = require('./UIModel'),
       DirectusCollection = require('core/collection'),
       PreferenceModel    = require('core/PreferenceModel');
 
@@ -20,7 +20,7 @@ define(function(require, exports, module) {
     'directus_groups'    : require('./fixed/groups'),
     'directus_files'     : require('./fixed/files'),
     'directus_messages'  : require('./fixed/messages'),
-    'directus_settings'  : require('./fixed/settings'),
+    'directus_privileges'  : require('./fixed/privileges'),
     'directus_tables'    : require('./fixed/tables'),
     'directus_users'     : require('./fixed/users')
   };
@@ -29,10 +29,13 @@ define(function(require, exports, module) {
    * @private
    * Static Settings Schemas
    */
-  var settingsSchemas = {
-    'global': require('./fixed/settings.global'),
-    'files': require('./fixed/settings.files')
-  };
+  var settingsSchemas = require('./fixed/settings');
+
+  /**
+   * @private
+   * Default Privileges
+   */
+  var defaultPrivileges = new PrivilegeModel({}, {parse:true});
 
   /**
    * @private
@@ -40,6 +43,12 @@ define(function(require, exports, module) {
    */
   var TableCollection = DirectusCollection.extend({
     model: TableModel,
+
+    comparator: function (model) {
+      var level = hasPrivilege(model.id) ? 0 : 1;
+
+      return level + ' ' + model.get('table_name');
+    },
 
     countVisible: function() {
       // Visible models only
@@ -84,6 +93,23 @@ define(function(require, exports, module) {
    */
   var privileges = {};
 
+  var getPrivileges = function (tableName, statusId) {
+    statusId = statusId == null ? 'all' : statusId;
+
+    return _.findStringKey(privileges, tableName + '.' + statusId);
+  };
+
+  var hasPrivilege = function (table) {
+    // Filter out tables you don't have alter permissions on
+    var privileges = getPrivileges(table);
+
+    // filter out tables with empty privileges
+    if (privileges === undefined) return false;
+
+    // only return tables with view permissions
+    return privileges.has('allow_view') && privileges.get('allow_view') > 0;
+  };
+
   module.exports = {
 
     setup: function(options) {
@@ -96,7 +122,7 @@ define(function(require, exports, module) {
         { schema: directusSchemas.directus_groups },
         { schema: directusSchemas.directus_files.getFiles() },
         { schema: directusSchemas.directus_messages },
-        { schema: directusSchemas.directus_settings },
+        { schema: directusSchemas.directus_privileges },
         { schema: directusSchemas.directus_tables },
         { schema: directusSchemas.directus_users.getUsers(app.locales, app.timezones) }
       ];
@@ -149,7 +175,7 @@ define(function(require, exports, module) {
     registerSettingsSchemas: function(data) {
       var namespace = 'settings';
       _.each(data, function(settings) {
-        columnSchemas[namespace][settings.id] = new ColumnsCollection(settings.schema.structure, {parse: true});
+        columnSchemas[namespace][settings.id] = new ColumnsCollection(settings.schema.columns, {parse: true});
         // TODO: columns must have its table information
         columnSchemas[namespace][settings.id].table = {
           id: 'directus_settings'
@@ -158,10 +184,8 @@ define(function(require, exports, module) {
     },
 
     addTable: function(tableName, callback) {
-      var model = new Backbone.Model();
-      model.url = app.API_URL + 'privileges/1';
       // @todo: set default values in the server side
-      model.set({
+      var model = new PrivilegeModel({
         group_id: 1,
         allow_add:1,
         allow_edit:2,
@@ -172,6 +196,9 @@ define(function(require, exports, module) {
         nav_listed: 1,
         addTable: true
       });
+      // hotfix: creating/adding a table is done by adding its privileges
+      // if addTable is set to true it creates the table
+      model.url = app.API_URL + 'privileges/1';
 
       var self = this;
       model.save({}, {success: function(permission) {
@@ -216,12 +243,33 @@ define(function(require, exports, module) {
     // Registers user priviliges
     registerPrivileges: function(data) {
       _.each(data, function(privilege) {
-        privileges[privilege.table_name] = new Backbone.Model(privilege, {parse:true});
+        var statusId = privilege.status_id == null ? 'all' : privilege.status_id;
+        var model;
+
+        if (!privileges[privilege.table_name]) {
+          privileges[privilege.table_name] = {};
+        }
+
+        if (!privileges[privilege.table_name][statusId]) {
+          privileges[privilege.table_name][statusId] = new PrivilegeModel();
+        }
+
+        model = privileges[privilege.table_name][statusId];
+        // hotfix: parse data
+        model.set(privilege.data ? privilege.data : privilege);
       }, this);
+    },
+
+    hasPrivilege: function (table) {
+      return hasPrivilege(table);
     },
 
     getColumns: function(namespace, tableName) {
       return columnSchemas[namespace][tableName];
+    },
+
+    getSettingsSchemas: function () {
+      return columnSchemas['settings'];
     },
 
     getTable: function(tableName) {
@@ -259,8 +307,26 @@ define(function(require, exports, module) {
       return tableSchemas.tables;
     },
 
-    getPrivileges: function(tableName) {
-      return privileges[tableName];
+    getPrivileges: function(tableName, statusId) {
+      return getPrivileges(tableName, statusId);
+    },
+
+    getPrivilegesOrDefault: function(tableName, statusId) {
+      return this.getPrivileges(tableName, statusId) || defaultPrivileges.clone();
+    },
+
+    getDefaultPrivileges: function(table, statusId) {
+      // statusId can be 0, which translate to false as well
+      if (!statusId && statusId !== 0) {
+        statusId = null;
+      }
+
+      var model = defaultPrivileges.clone();
+
+      model.set('status_id', statusId);
+      model.set('table_name', table);
+
+      return model;
     },
 
     getPreferences: function(tableName) {
@@ -282,11 +348,12 @@ define(function(require, exports, module) {
       if (!tableSchemas.tables.get(tableName)) {
         throw "Table `"+ tableName +"` does not exist";
       }
+
       return {
         table: tableSchemas.tables.get(tableName),
         structure: columnSchemas.tables[tableName],
         preferences: preferences[tableName],
-        privileges: privileges[tableName]
+        privileges: this.getPrivileges(tableName)
       };
     },
 

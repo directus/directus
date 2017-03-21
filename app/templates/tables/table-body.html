@@ -1,23 +1,26 @@
 {{#each rows}}
-<tr data-id="{{model.id}}" data-cid="{{model.cid}}" class="dynamic-link {{{notPublishedClass model}}}" data-dynamic-link="{{rootUrl}}tables/blog/1#title"> <!-- Optional Classes: selected -->
-    {{#if ../sortable}}
-    <td class="reorder"><i class="material-icons reorder-handle">drag_handle</i></td>
-    {{/if}}
-    {{#if ../selectable}}
-    <td class="status js-check">
-        <input class="custom-checkbox js-select-row" id="check{{ model.id }}" type="checkbox" value="{{../model.id}}">
-        <label for="check{{ model.id }}"><span></span></label>
-    </td>
-    {{/if}}
-    {{#each ../columns}}<td>{{ui ../model this}}</td>{{/each}}
-    <td class="status-badges">
-        {{#if statusDraft}}<div class="status-badge" style="background-color:#eeeeee;">{{statusName model}}</div>{{/if}}
-    </td>
-    {{#if ../showRemoveButton}}
-    <td class="relational-remove">
-        <i class="material-icons js-remove">close</i>
-    </td>
-    {{/if}}
+<tr data-id="{{model.id}}" data-cid="{{model.cid}}" class="js-row {{{notPublishedClass model}}}"> <!-- Optional Classes: selected -->
+	{{#if ../showItemNumbers}}
+	<td class="static-numbers">{{index}}</td>
+	{{/if}}
+	{{#if ../sortable}}
+	<td class="reorder js-sort"><i class="material-icons reorder-handle">drag_handle</i></td>
+	{{/if}}
+	{{#if ../selectable}}
+	<td class="status js-check">
+		<input class="custom-checkbox js-select-row" id="check{{ model.id }}" type="checkbox" value="{{../model.id}}">
+		<label for="check{{ model.id }}"><span></span></label>
+	</td>
+	{{/if}}
+	{{#each ../columns}}<td>{{ui ../model this}}</td>{{/each}}
+	<td class="status-badges">
+		{{#if statusDraft}}<div class="status-badge" style="background-color:#eeeeee;">{{statusName model}}</div>{{/if}}
+	</td>
+	{{#if ../showRemoveButton}}
+	<td class="relational-remove">
+		<i class="material-icons js-remove">close</i>
+	</td>
+	{{/if}}
 </tr>
 {{/each}}
 
@@ -27,13 +30,13 @@
 		{{#if ../sortable}}<td class="sort"><i class="material-icons">drag_handle</i></td>{{/if}}
 		{{#if ../selectable}}
 		  <td class="check check-box{{#if ../../sortable}} with-sort{{/if}}">
-		    <input class="custom-check select-row" id="check{{ model.id }}" type="checkbox" value="{{model.id}}" />
-        	<label for="check{{ model.id }}"><span></span></label>
+			<input class="custom-check select-row" id="check{{ model.id }}" type="checkbox" value="{{model.id}}" />
+			<label for="check{{ model.id }}"><span></span></label>
 		  </td>
 		{{/if}}
 		{{#each ../columns}}<td>{{ui ../model this}}</td>{{/each}}
 		{{#if ../deleteColumn}}<td class="delete">✕</td>{{/if}}
-    	<td class="visible-columns-cell"></td>
+		<td class="visible-columns-cell"></td>
 	</tr>
 {{/each}}
 --}}

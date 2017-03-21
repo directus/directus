@@ -21,6 +21,7 @@ class Messages extends Route
         $acl = $this->app->container->get('acl');
         $ZendDb = $this->app->container->get('zenddb');
         $currentUserId = $userId !== null ? $userId : $acl->getUserId();
+        $params = $this->app->request()->get();
 
         if (isset($_GET['max_id'])) {
             $messagesRecipientsTableGateway = new DirectusMessagesRecipientsTableGateway($ZendDb, $acl);
@@ -28,22 +29,45 @@ class Messages extends Route
             if (sizeof($ids) > 0) {
                 $messagesTableGateway = new DirectusMessagesTableGateway($ZendDb, $acl);
                 $result = $messagesTableGateway->fetchMessagesInboxWithHeaders($currentUserId, $ids);
-                return JsonView::render($result);
+                return $this->app->response($result);
             } else {
                 $result = $messagesRecipientsTableGateway->countMessages($currentUserId);
-                return JsonView::render($result);
+                return $this->app->response($result);
             }
         }
 
         $messagesTableGateway = new DirectusMessagesTableGateway($ZendDb, $acl);
-        $result = $messagesTableGateway->fetchMessagesInboxWithHeaders($currentUserId);
-        $meta = ArrayUtils::omit($result, 'rows');
-        $result['meta']['type'] = 'collection';
-        $result['meta']['table'] = 'directus_messages';
+        $result = $messagesTableGateway->fetchMessagesInboxWithHeaders($currentUserId, null, $params);
+
+        $meta = ArrayUtils::omit($result, 'data');
+        $meta['type'] = 'collection';
+        $meta['table'] = 'directus_messages';
+
+        return $this->app->response([
+            'meta' => $meta,
+            'data' => ArrayUtils::get($result, 'data', [])
+        ]);
+    }
+
+    public function archiveMessages()
+    {
+        $acl = $this->app->container->get('acl');
+        $ZendDb = $this->app->container->get('zenddb');
+        $currentUserId = $acl->getUserId();
+
+        $request = $this->app->request();
+        $rows = $request->post('rows');
+        $responsesIds = [];
+
+        foreach($rows as $row) {
+            $responsesIds[] = $row['id'];
+        }
+
+        $messagesTableGateway = new DirectusMessagesRecipientsTableGateway($ZendDb, $acl);
+        $success = $messagesTableGateway->archiveMessages($currentUserId, $responsesIds);
 
         return JsonView::render([
-            'meta' => $meta,
-            'data' => ArrayUtils::get($result, 'rows', [])
+            'success' => (bool) $success
         ]);
     }
 
@@ -59,7 +83,7 @@ class Messages extends Route
 
         if (!isset($message)) {
             header('HTTP/1.0 404 Not Found');
-            return JsonView::render([
+            return $this->app->response([
                 'success' => false,
                 'error' => [
                     'message' => __t('message_not_found')
@@ -67,7 +91,7 @@ class Messages extends Route
             ]);
         }
 
-        JsonView::render([
+        return $this->app->response([
             'meta' => [
                 'table' => 'directus_messages',
                 'type' => 'item'
@@ -91,9 +115,9 @@ class Messages extends Route
         $ids = [$message['id']];
         $message['read'] = 1;
 
-        foreach ($message['responses']['rows'] as &$response) {
-            $ids[] = $response['id'];
-            $response['read'] = 1;
+        foreach ($message['responses']['data'] as &$responseItem) {
+            $ids[] = $responseItem['id'];
+            $responseItem['read'] = 1;
         }
 
         $messagesRecipientsTableGateway->markAsRead($ids, $currentUserId);
@@ -103,16 +127,20 @@ class Messages extends Route
             'data' => $message
         ];
 
-        JsonView::render($response);
+        return $this->app->response($response);
     }
 
-    public function postRows()
+    public function postRows($responseTo = null)
     {
         $app = $this->app;
         $acl = $app->container->get('acl');
         $ZendDb = $app->container->get('zenddb');
         $currentUserId = $acl->getUserId();
         $requestPayload = $app->request()->post();
+
+        if ($responseTo !== null) {
+            $requestPayload['response_to'] = $responseTo;
+        }
 
         // Unpack recipients
         $recipients = explode(',', $requestPayload['recipients']);
@@ -162,13 +190,18 @@ class Messages extends Route
         }
 
         $message = $messagesTableGateway->fetchMessageWithRecipients($id, $currentUserId);
+        // hotfix: When the message is a response, it will be inside responses.data keys
+        if (ArrayUtils::get($requestPayload, 'response_to')) {
+            $messageData = ArrayUtils::get($message, 'responses.data', []);
+            $message = array_shift($messageData);
+        }
 
         $response = [
             'meta' => ['table' => 'directus_messages', 'type' => 'item'],
             'data' => $message
         ];
 
-        JsonView::render($response);
+        return $this->app->response($response);
     }
 
     public function recipients()
@@ -187,7 +220,7 @@ class Messages extends Route
 
         $result = array_merge($groups, $users);
 
-        JsonView::render($result);
+        return $this->app->response($result);
     }
 
     public function comments()
@@ -278,6 +311,6 @@ class Messages extends Route
         // GET all table entries
         $entries = $TableGateway->getEntries($params);
 
-        JsonView::render($entries);
+        return $this->app->response($entries);
     }
 }

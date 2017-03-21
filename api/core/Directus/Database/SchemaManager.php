@@ -282,108 +282,9 @@ class SchemaManager
             }
 
             $this->data['columns'][$tableName] = $columnsSchema;
-
-            $columnsUIOptions = $this->getTableUIOptions($tableName);
-            foreach($columnsSchema as $column) {
-                $options = ArrayUtils::get($columnsUIOptions, $column->getName(), []);
-                $column->setUIOptions($options);
-            }
         }
 
         return $columnsSchema;
-    }
-
-    /**
-     * Get the Column UI options
-     *
-     * @param $tableName
-     * @param Column $column
-     *
-     * @return array
-     */
-    public function getColumnUIOptions($tableName, Column $column)
-    {
-        $columnOptionsKey = implode('.', ['options', $tableName, $column->getName()]);
-        $columnOptions = ArrayUtils::get($this->data, $columnOptionsKey, null);
-
-        if (!$columnOptions) {
-            $columnOptions = $this->getUIOptions($column);
-            if (!isset($this->data['options'][$tableName])) {
-                $this->data['options'][$tableName] = [];
-            }
-
-            $this->data['options'][$tableName][$column->getName()] = $columnOptions;
-        }
-
-        return $columnOptions;
-    }
-
-    public function getAllUIOptions()
-    {
-        $result = [];
-        $rows = $this->source->getAllUIOptions();
-
-        foreach ($rows as $row) {
-            $key = implode('.', [
-                $row['table_name'],
-                $row['column_name'],
-                $row['name']
-            ]);
-
-            ArrayUtils::set($result, $key, $row['value']);
-        };
-
-        return $result;
-    }
-
-    public function getTableUIOptions($tableName)
-    {
-        $result = [];
-        $rows = $this->source->getTableUIOptions($tableName);
-
-        foreach ($rows as $row) {
-            $key = implode('.', [
-                $row['column_name'],
-                $row['name']
-            ]);
-
-            ArrayUtils::set($result, $key, $row['value']);
-        };
-
-        return $result;
-    }
-
-    public function getUIOptions(Column $column)
-    {
-        $result = [];
-        $item = [];
-        $rows = $this->source->getUIOptions($column);
-
-        foreach ($rows as $row) {
-            // first case
-            if (!isset($ui)) {
-                $item['id'] = $ui = $row['id'];
-            }
-
-            // new ui = new item
-            if ($ui != $row['id']) {
-                array_push($result, $item);
-                $item = [];
-                $item['id'] = $ui = $row['id'];
-            }
-
-            $item[$row['name']] = $row['value'];
-        };
-
-        if (count($item) > 0) {
-            array_push($result, $item);
-        }
-
-        if (sizeof($result)) {
-            return $result[0];
-        }
-
-        return [];
     }
 
     public function getColumnsName($tableName)
@@ -406,19 +307,10 @@ class SchemaManager
     public function getAllColumns()
     {
         $allColumns = $this->source->getAllColumns();
-        $columnsUIOptions = $this->getAllUIOptions();
 
         $columns = [];
         foreach($allColumns as $column) {
-            $columnObject = $this->createColumnObjectFromArray($column);
-            $key = implode('.', [
-                $columnObject->getTableName(),
-                $columnObject->getName()
-            ]);
-            $options = ArrayUtils::get($columnsUIOptions, $key, []);
-            $columnObject->setUIOptions($options);
-
-            $columns[] = $columnObject;
+            $columns[] = $this->createColumnObjectFromArray($column);
         }
 
         return $columns;
@@ -544,6 +436,15 @@ class SchemaManager
             $column['ui'] = $this->getColumnDefaultUI($column['type']);
         }
 
+        $options = json_decode(ArrayUtils::get($column, 'options', ''), true);
+        $column['options'] = $options ? $options : [];
+
+        $isSystemColumn = static::isSystemColumn($column['id']);
+        $column['system'] = (bool) $isSystemColumn;
+        if ($isSystemColumn) {
+            $column['hidden'] = true;
+        }
+
         $columnObject = new Column($column);
         if (isset($column['related_table'])) {
             $columnObject->setRelationship([
@@ -556,6 +457,20 @@ class SchemaManager
         }
 
         return $columnObject;
+    }
+
+    /**
+     * Checks whether the column name is a system column name
+     *
+     * @param $columnName
+     *
+     * @return bool
+     */
+    public function isSystemColumn($columnName)
+    {
+        $systemFields = ['id', 'sort', STATUS_COLUMN_NAME];
+
+        return in_array($columnName, $systemFields);
     }
 
     protected function addTable($name, $schema)

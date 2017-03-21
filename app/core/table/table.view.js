@@ -1,17 +1,18 @@
 define([
-  "app",
+  'app',
   'underscore',
-  "backbone",
+  'backbone',
   'core/notification',
   'core/t',
+  'helpers/table',
   'helpers/model',
-  "core/table/table.headview",
-  "core/table/table.bodyview",
-  "core/table/table.footerview",
-  "plugins/jquery.flashrow"
+  'core/table/table.headview',
+  'core/table/table.bodyview',
+  'core/table/table.footerview',
+  'plugins/jquery.flashrow'
 ],
 
-function(app, _, Backbone, Notification, __t, ModelHelper, TableHead, TableBody, TableFooter) {
+function(app, _, Backbone, Notification, __t, TableHelpers, ModelHelper, TableHead, TableBody, TableFooter) {
 
   'use strict';
 
@@ -20,12 +21,10 @@ function(app, _, Backbone, Notification, __t, ModelHelper, TableHead, TableBody,
 
     template: 'tables/table',
 
-    state: {
-      spacing: 'cozy'
-    },
+    state: {},
 
     events: {
-      'click tbody td:not(.js-check):not(.status):not(.sort)' : function(e) {
+      'click tbody td:not(.js-check):not(.status):not(.js-sort)' : function(e) {
         var id = $(e.target).closest('tr').attr('data-id');
         if (this.options.navigate) {
           this.collection.off();
@@ -37,15 +36,13 @@ function(app, _, Backbone, Notification, __t, ModelHelper, TableHead, TableBody,
     TableBody: TableBody,
 
     serialize: function() {
-      var isSortableOrSelectable = this.options.selectable || this.options.sort;
-
       return {
         columns: this.options.columns,
         id: this.collection.table.id,
         selectable: this.options.selectable,
+        hasSortColumn: this.options.sort,
         sortable: this.options.sortable,
         disabledSorting: !this.sortable,
-        isSortableOrSelectable: isSortableOrSelectable,
         spacing: this.getSpacing(),
         fixedHead: this.options.fixedHead,
         showEmptyMessage: (this.collection.length === 0 && !this.options.hideEmptyMessage)
@@ -60,7 +57,11 @@ function(app, _, Backbone, Notification, __t, ModelHelper, TableHead, TableBody,
 
     selection: function() {
       var selection = [];
-      $('td.check > input:checked').each(function() { selection.push(parseInt(this.value,10)); });
+
+      this.$('td .js-select-row:checked').each(function () {
+        selection.push(parseInt(this.value, 10));
+      });
+
       return selection;
     },
 
@@ -76,7 +77,7 @@ function(app, _, Backbone, Notification, __t, ModelHelper, TableHead, TableBody,
       }
 
       if (this.collection.length > 0) {
-        options = _.pick(this.options, 'collection', 'selectable', 'filters', 'preferences', 'structure', 'sort', 'deleteColumn', 'rowIdentifiers', 'saveAfterDrop', 'blacklist', 'highlight', 'columns');
+        options = _.pick(this.options, 'collection', 'systemCollection', 'selectable', 'filters', 'preferences', 'structure', 'sort', 'deleteColumn', 'rowIdentifiers', 'saveAfterDrop', 'blacklist', 'highlight', 'columns');
         options.parentView = this;
         this.tableBody = new this.TableBody(options);
         this.insertView('table', this.tableBody);
@@ -96,11 +97,26 @@ function(app, _, Backbone, Notification, __t, ModelHelper, TableHead, TableBody,
       this.bodyScrollTop = parseInt(bodyScrollTop, 10) || 0;
     },
 
-    afterRender: function() {
-      tableColumnWidths(this.$el);
+    fixWidths: function ($el) {
+      var $table = $el || this.$el;
+      TableHelpers.fixWidths($table);
+    },
 
-      var now = new Date().getTime();
-      //console.log('rendered table ' + this.collection.table.id + ' in '+ (now-this.startRenderTime)+' ms');
+    headerScroll: function ($el) {
+      var $table = $el || this.$el.find('.table-scroll-x');
+      TableHelpers.headerScroll($table);
+    },
+
+    afterRender: function() {
+      this.fixWidths();
+
+      var $el = this.$('.table-scroll-x');
+      this.headerScroll($el);
+      var onScroll = _.bind(function () {
+        this.headerScroll($el);
+      }, this);
+
+      $el.on('scroll', onScroll);
 
       if (this.bodyScrollTop) {
         document.body.scrollTop = this.bodyScrollTop;
@@ -200,11 +216,13 @@ function(app, _, Backbone, Notification, __t, ModelHelper, TableHead, TableBody,
 
     enableSortable: function() {
       this.$el.find('table').removeClass('disable-sorting');
+      this.$('.js-sort-toggle').addClass('active');
       this.sortable = this.sortableWidget.options.sort = true;
     },
 
     disableSortable: function() {
       this.$el.find('table').addClass('disable-sorting');
+      this.$('.js-sort-toggle').removeClass('active');
       this.sortable = this.sortableWidget.options.sort = false;
     },
 
@@ -217,7 +235,7 @@ function(app, _, Backbone, Notification, __t, ModelHelper, TableHead, TableBody,
       $table.removeClass(this.state.spacing);
       this.state.spacing = name;
       $table.addClass(this.state.spacing);
-      this.options.preferences.save({spacing: name}, {silent: true});
+      // this.options.preferences.save({spacing: name}, {silent: true});
     },
 
     getSpacing: function () {
@@ -251,6 +269,7 @@ function(app, _, Backbone, Notification, __t, ModelHelper, TableHead, TableBody,
       this.options.table = this.options.table || collection.table;
       this.options.columns = this.getTableColumns();
       this.options.fixedHead = options.fixedHead;
+      this.options.showItemNumbers = options.showItemNumbers;
 
       if (this.options.tableHead !== false) {
         this.tableHead = true;
@@ -273,7 +292,21 @@ function(app, _, Backbone, Notification, __t, ModelHelper, TableHead, TableBody,
       }
 
       if (this.options.preferences) {
-        this.state.spacing = this.options.preferences.get('spacing') || 'cozy';
+        // @TODO: Duplicated
+        var viewOptions = this.collection.preferences.get('list_view_options');
+        if (viewOptions) {
+          try {
+            viewOptions = JSON.parse(viewOptions);
+            viewOptions = viewOptions ? viewOptions['table'] : {};
+          } catch (err) {
+            viewOptions = {};
+            this.state.malformedOptions = true;
+            console.error(__t('calendar_has_malformed_options_json'));
+          }
+        }
+
+        this.options.showItemNumbers = this.getViewOptions('item_numbers');
+        this.state.spacing = viewOptions ? (viewOptions['spacing'] || 'cozy') : 'cozy';
       }
 
       // ==================================================================================
@@ -295,12 +328,18 @@ function(app, _, Backbone, Notification, __t, ModelHelper, TableHead, TableBody,
       }
     },
 
+    _configureTable: function (options) {
+      this.showChart = options.showChart === true;
+      this.options.systemCollection = this.collection.clone();
+      this.listenTo(this.collection, 'sync', function (collection, resp) {
+        this.options.systemCollection.reset(resp, {parse: true});
+      });
+    },
+
     constructor: function (options) {
-      // Add events from child
-      if (this.events) {
-        this.events = _.defaults(this.events, TableView.prototype.events);
-      }
       Backbone.Layout.__super__.constructor.call(this, options);
+
+      this._configureTable(options);
     }
   });
 

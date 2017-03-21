@@ -2,6 +2,7 @@
 
 namespace Directus\Database\TableGateway;
 
+use Directus\Database\Query\Builder;
 use Directus\Permissions\Acl;
 use Directus\Util\ArrayUtils;
 use Directus\Util\DateUtils;
@@ -10,6 +11,7 @@ use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Insert;
 use Zend\Db\Sql\Select;
+use Zend\Db\Sql\Update;
 
 class DirectusMessagesTableGateway extends RelationalTableGateway
 {
@@ -36,6 +38,7 @@ class DirectusMessagesTableGateway extends RelationalTableGateway
                 'subject' => $payload['subject'],
                 'message' => $payload['message'],
                 'datetime' => DateUtils::now(),
+                'attachment' => ArrayUtils::get($payload, 'attachment'),
                 'response_to' => $payload['response_to']
             ]);
         $rows = $this->insertWith($insert);
@@ -66,7 +69,7 @@ class DirectusMessagesTableGateway extends RelationalTableGateway
         $select = new Select($this->getTable());
         $select
             ->columns(['id', 'from', 'subject', 'message', 'attachment', 'datetime', 'response_to'])
-            ->join('directus_messages_recipients', 'directus_messages.id = directus_messages_recipients.message_id', ['read'])
+            ->join('directus_messages_recipients', 'directus_messages.id = directus_messages_recipients.message_id', ['read', 'archived'])
             ->where
             ->equalTo('directus_messages_recipients.recipient', $uid)
             ->and
@@ -83,78 +86,61 @@ class DirectusMessagesTableGateway extends RelationalTableGateway
             $message = $this->parseRecordValuesByType($message, 'directus_messages_recipients');
         }
 
+        // Remove archived messages
+        // TODO: Make this behavior done in the query
+        foreach($result as $key => $item) {
+            if ($item['archived'] === 1 && $item['response_to'] !== null) {
+                unset($result[$key]);
+            }
+        }
+
         return $result;
     }
 
     public function fetchMessageWithRecipients($id, $uid)
     {
         $result = $this->fetchMessagesInbox($uid, $id);
-        if (sizeof($result) > 0) {
-            return $result[0];
-        }
+
+        return count($result) > 0 ? $result[0] : [];
     }
 
-    public function fetchMessagesInbox($uid, $messageId = null)
+    public function fetchMessagesInbox($uid, $messageId = null, $params = [])
     {
-        $select = new Select($this->table);
-        $select
-            ->columns([
-                'message_id' => 'response_to',
-                'thread_length' => new Expression('COUNT(`directus_messages`.`id`)')
-            ])
-            ->join('directus_messages_recipients', 'directus_messages_recipients.message_id = directus_messages.id', [
-                'id',
-                'message_id',
-                'recipient',
-                'read',
-                'group'
-            ]);
-        $select
-            ->where->equalTo('recipient', $uid);
-
-        if (!empty($messageId)) {
-            if (gettype($messageId) == 'array') {
-                $select->where
-                    ->in('response_to', $messageId)
-                    ->or
-                    ->in('directus_messages.id', $messageId);
-            } else {
-                $select->where
-                    ->nest
-                    ->equalTo('response_to', $messageId)
-                    ->or
-                    ->equalTo('directus_messages.id', $messageId)
-                    ->unnest;
-            }
-        }
-
-        $select
-            ->group([
-                'directus_messages_recipients.id',
-                'directus_messages_recipients.message_id',
-                'directus_messages_recipients.recipient',
-                'directus_messages_recipients.read',
-                'directus_messages_recipients.group',
-                'response_to',
-                'directus_messages.id'
-            ])
-            ->order('directus_messages.id DESC');
-
-        $result = $this->selectWith($select)->toArray();
-
         $messageIds = [];
+        $params['columns'] = ArrayUtils::get($params, 'columns', 'id');
+        $table = $this;
+        $result = $this->loadItems($params, function (Builder $query) use ($uid, $table, $messageId) {
+            $query->join('directus_messages_recipients', 'directus_messages_recipients.message_id = directus_messages.id', [
+                'recipient'
+            ]);
+
+            $query->whereEqualTo('directus_messages_recipients.recipient', $uid);
+            $query->whereNotEqualTo('directus_messages_recipients.archived', 1);
+
+            if ($messageId) {
+                if (! is_array($messageId)) {
+                    $messageId = [$messageId];
+                }
+
+                $query->whereIn('directus_messages.id', $messageId);
+            }
+
+            return $query;
+        });
 
         foreach ($result as $message) {
-            $messageIds[] = $message['message_id'];
+            $messageIds[] = $message['id'];
         }
 
-        if (sizeof($messageIds) == 0) {
+        if (count($messageIds) === 0) {
             return [];
         };
 
         $result = $this->fetchMessageThreads($messageIds, $uid);
 
-        if (sizeof($result) == 0) return [];
+        if (count($result) === 0) {
+            return [];
+        }
 
         $resultLookup = [];
         $ids = [];
@@ -169,30 +155,39 @@ class DirectusMessagesTableGateway extends RelationalTableGateway
 
         foreach ($result as $item) {
             $recipientsData = $recipients[$item['id']];
-            $item['responses'] = ['rows' => []];
+            $item['responses'] = ['data' => []];
             $item['recipients'] = implode(',', ArrayUtils::get($recipientsData, 'recipients', []));
             $item['reads'] = implode(',', ArrayUtils::get($recipientsData, 'reads', []));
             $resultLookup[$item['id']] = $item;
         }
 
         foreach ($result as $item) {
-            if ($item['response_to'] != NULL) {
+            if ($item['response_to'] != null) {
                 // Move it to resultLookup
+                $message = $resultLookup[$item['id']];
                 unset($resultLookup[$item['id']]);
-                $item = $this->parseRecord($item);
-                $resultLookup[$item['response_to']]['responses']['rows'][] = $item;
+                $message = $this->parseRecord($message);
+                $resultLookup[$item['response_to']]['responses']['data'][] = $message;
             }
         }
 
         $result = array_values($resultLookup);
-        foreach ($result as &$row) {
+        foreach ($result as $key => &$row) {
+            // if (!$row['responses']['data']) {
+            //   unset($result[$key]);
+            //   continue;
+            // }
+
             $row = $this->parseRecord($row);
+            if (ArrayUtils::get($row, 'archived', 0) === 1) {
+                $row = ArrayUtils::omit($row, ['message', 'attachment', 'reads']);
+            }
         }
 
         // Add date_updated
         // Update read
         foreach ($result as &$message) {
-            $responses = $message['responses']['rows'];
+            $responses = $message['responses']['data'];
             /*foreach ($responses as $response) {
                 if($response['read'] == "0") {
                     $message['read'] = "0";
@@ -210,11 +205,11 @@ class DirectusMessagesTableGateway extends RelationalTableGateway
         return $result;
     }
 
-    public function fetchMessagesInboxWithHeaders($uid, $messageIds = null)
+    public function fetchMessagesInboxWithHeaders($uid, $messageIds = null, $params = [])
     {
         $messagesRecipientsTableGateway = new DirectusMessagesRecipientsTableGateway($this->adapter, $this->acl);
         $result = $messagesRecipientsTableGateway->countMessages($uid);
-        $result['rows'] = $this->fetchMessagesInbox($uid, $messageIds);
+        $result['data'] = $this->fetchMessagesInbox($uid, $messageIds, $params);
 
         return $result;
     }

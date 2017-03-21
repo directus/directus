@@ -29,7 +29,7 @@ function(app, Backbone, Handlebars) {
     attributes: {
       class: 'select-container',
       id: 'bulkStatus',
-      style: 'display:block;'
+      style: 'display:inline-block;'
     },
 
     events: {

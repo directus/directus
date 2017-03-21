@@ -5,6 +5,7 @@ namespace Directus\API\Routes\A1;
 use Directus\Application\Route;
 use Directus\Database\TableGateway\DirectusPreferencesTableGateway;
 use Directus\Database\TableGateway\RelationalTableGateway as TableGateway;
+use Directus\Util\ArrayUtils;
 use Directus\View\JsonView;
 
 class Preferences extends Route
@@ -54,19 +55,14 @@ class Preferences extends Route
                 return;
         }
 
-        //If Title is set then return this version
-        if (isset($requestPayload['title'])) {
-            $params['newTitle'] = $requestPayload['title'];
-        }
-
-        if (isset($params['newTitle'])) {
-            $jsonResponse = $Preferences->fetchByUserAndTableAndTitle($currentUserId, $table, $params['newTitle']);
-        } else {
-            $jsonResponse = $Preferences->fetchByUserAndTableAndTitle($currentUserId, $table);
-        }
+        // If Title is set then return this version
+        // this is the bookmark title
+        $title = ArrayUtils::get($requestPayload, 'title') ?: ArrayUtils::get($params, 'title');
+        $jsonResponse = $Preferences->fetchByUserAndTableAndTitle($currentUserId, $table, $title);
 
         if (!$jsonResponse) {
-            $app->response()->setStatus(404);
+            // @TODO: The app treat 404 as not found url, instead of not found resource
+            // $app->response()->setStatus(404);
             $jsonResponse = [
                 'error' => [
                     'message' => __t('unable_to_find_preferences')
@@ -75,6 +71,7 @@ class Preferences extends Route
             ];
         } else {
             $jsonResponse = [
+                'success' => true,
                 'meta' => [
                     'type' => 'item',
                     'table' => 'directus_preferences'
@@ -83,7 +80,7 @@ class Preferences extends Route
             ];
         }
 
-        JsonView::render($jsonResponse);
+        return $this->app->response($jsonResponse);
     }
 
     public function getPreferences($table)
@@ -97,6 +94,6 @@ class Preferences extends Route
         $Preferences = new DirectusPreferencesTableGateway($ZendDb, $acl);
         $jsonResponse = $Preferences->fetchSavedPreferencesByUserAndTable($currentUserId, $table);
 
-        JsonView::render($jsonResponse);
+        return $this->app->response($jsonResponse);
     }
 }

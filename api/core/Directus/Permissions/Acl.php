@@ -179,6 +179,36 @@ class Acl
     }
 
     /**
+     * Checks whether the user can see the given column
+     *
+     * @param $tableName
+     * @param $columnName
+     *
+     * @return bool
+     */
+    public function canReadColumn($tableName, $columnName)
+    {
+        $readFieldBlacklist = $this->getTablePrivilegeList($tableName, static::FIELD_READ_BLACKLIST);
+
+        return !in_array($columnName, $readFieldBlacklist);
+    }
+
+    /**
+     * Checks whether the user can see the given column
+     *
+     * @param $tableName
+     * @param $columnName
+     *
+     * @return bool
+     */
+    public function canWriteColumn($tableName, $columnName)
+    {
+        $writeFieldBlacklist = $this->getTablePrivilegeList($tableName, static::FIELD_WRITE_BLACKLIST);
+
+        return !in_array($columnName, $writeFieldBlacklist);
+    }
+
+    /**
      * Confirm current user group has $blacklist privileges on fields in $offsets
      * NOTE: Acl#getTablePrivilegeList enforces that $blacklist is a correct value
      * @param  array|string $offsets One or more string table field names
@@ -407,7 +437,7 @@ class Acl
         $select
             ->columns([$TableGateway->primaryKeyFieldName, $cmsOwnerColumn]);
         $select->where($predicate);
-        $results = $TableGateway->selectWith($select);
+        $results = $TableGateway->selectWith($select, ['filter' => false]);
         foreach ($results as $row) {
             $ownerIds[] = $row[$cmsOwnerColumn];
         }

@@ -1,110 +1,111 @@
 define([
-    'app',
-    'backbone',
-    'core/BasePageView',
-    'core/ListViewManager',
-    'core/widgets/widgets'
-], function(app, Backbone, BasePageView, ListViewManager, Widgets) {
+  'app',
+  'backbone',
+  'core/t',
+  'core/BasePageView',
+  'core/ListViewManager',
+  'core/widgets/widgets'
+], function (app, Backbone, __t, BasePageView, ListViewManager, Widgets) {
 
-    return BasePageView.extend({
+  return BasePageView.extend({
+    headerOptions: {
+      route: {
+        title: 'Table View',
+        isOverlay: true
+      }
+    },
 
-        headerOptions: {
-            route: {
-                title: 'Table View',
-                isOverlay: true
-            }
-        },
+    leftToolbar: function () {
+      return [
+        new Widgets.ButtonWidget({
+          widgetOptions: {
+            buttonId: 'addBtn',
+            iconClass: 'check',
+            buttonClass: 'primary',
+            buttonText: __t('choose')
+          },
+          onClick: _.bind(function () {
+            this.save();
+          }, this)
+        })
+      ];
+    },
 
-        leftToolbar: function() {
-            return [
-                new Widgets.ButtonWidget({
-                    widgetOptions: {
-                        buttonId: "addBtn",
-                        iconClass: "check",
-                        buttonClass: "",
-                        buttonText: "Choose"
-                    }
-                })
-            ];
-        },
+    rightToolbar: function () {
+      return [
+        new Widgets.PaginatorWidget({
+          collection: this.collection
+        })
+      ];
+    },
 
-        rightToolbar: function() {
-            return [
-                new Widgets.PaginatorWidget({
-                    collection: this.collection
-                })
-            ];
-        },
+    leftSecondaryToolbar: function() {
+      return [
+        new Widgets.VisibilityWidget({
+          collection: this.collection,
+          basePage: this
+        }),
+        new Widgets.FilterWidget({
+          collection: this.collection,
+          basePage: this
+        })
+      ];
+    },
 
-        leftSecondaryToolbar: function() {
-            return [
-                new Widgets.VisibilityWidget({
-                    collection: this.collection,
-                    basePage: this
-                }),
-                new Widgets.FilterWidget({
-                    collection: this.collection,
-                    basePage: this
-                })
-            ];
-        },
+    rightSecondaryToolbar: function () {
+      return [
+        new Widgets.PaginationCountWidget({
+          collection: this.collection
+        })
+      ];
+    },
 
-        rightSecondaryToolbar: function() {
-            return [
-                new Widgets.PaginationCountWidget({
-                    collection: this.collection
-                })
-            ];
-        },
+    events: {
+      'click #addBtn': function () {
+        this.save();
+      }
+    },
 
+    save: function () {
+      console.log("Save");
+    },
 
-        events: {
-            'click #addBtn': function() {
-                this.save();
-            }
-        },
+    afterRender: function () {
+      this.setView('#page-content', this.table);
+    },
 
-        save: function() {
-            console.log("Save");
-        },
+    itemClicked: function (event) {
+      var $target = $(event.currentTarget);
+      var $checkbox = $target.find('input');
 
-        afterRender: function() {
-            this.setView('#page-content', this.table);
-        },
+      if ($checkbox.prop('checked')) {
+        $checkbox.prop('checked', false);
+      } else {
+        $checkbox.prop('checked', true);
+      }
+    },
 
-        itemClicked: function(e) {
-            var $target = $(e.target);
-            var $checkbox = $target.closest('tr').find('td.check > input');
+    initialize: function (options) {
 
-            if ($checkbox.prop('checked')) {
-                $checkbox.prop('checked', false);
-            } else {
-                $checkbox.prop('checked', true);
-            }
-        },
+      //Default to true
+      if (options.selectable === undefined) {
+        options.selectable = true;
+      }
 
-        initialize: function(options) {
+      this.table = ListViewManager.getInstance({
+        collection: this.collection,
+        selectable: options.selectable
+      });
 
-            //Default to true
-            if (options.selectable === undefined) {
-                options.selectable = true;
-            }
+      var that = this;
 
-            this.table = ListViewManager.getInstance({
-                collection: this.collection,
-                selectable: options.selectable
-            });
-
-            var that = this;
-
-            this.table.events = {
-                'click tbody td': function(e) {
-                    that.itemClicked(e);
-                }
-            };
-
-            this.headerOptions.route.title = this.collection.table.id;
+      this.table.events = {
+        'click td.js-check': function (event) {
+          that.itemClicked(event);
         }
-    });
+      };
 
+      this.headerOptions.route.title = this.collection.table.id;
+    }
+  });
 });

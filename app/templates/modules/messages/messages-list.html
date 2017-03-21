@@ -1,47 +1,7 @@
-{{#each messages}}
-<div class="message-preview js-message {{#unless read}}unread{{/unless}}{{#if selected}}active{{/if}}" data-id="{{id}}"> <!-- .active -->
-    <input class="custom-checkbox js-select-row" id="check{{id}}" type="checkbox" value="">
-    <label class="message-select" for="check{{id}}"><span></span></label>
-
-    <div class="active-indicator"></div>
-    <div class="unread-indicator"></div>
-    <div class="timeago">{{niceDate}}</div>
-    <div class="byline">
-        <div class="subject">{{subject}}{{# if attachment}}<i class="material-icons has-attachment">attachment</i>{{/if}}{{#if isChat }}<i class="material-icons is-chat">chat</i>{{/if}}</div>
-        <div class="recipients">{{recipients}}</div>
-    </div>
-    {{message}}
-</div>
-{{/each}}
 <div class="message resize-right" id="message">
-    <div class="resize-handle"></div>
-    <div id="message-content"></div>
+	<div class="resize-handle"></div>
+	<div id="message-right-content"></div>
 </div>
-{{#unless messages}}
+{{#unless messageCount}}
 {{{include "listingEmpty"}}}
 {{/unless}}
-{{!--
-<ul class="general-container selectable">
-  {{#each messages}}
-  <li class="message {{#unless read}}unread{{/unless}}" data-id="{{id}}">
-    <div class="check-box">
-      <input class="custom-check" id="check{{ id }}" type="checkbox" />
-      <label for="check{{ id }}"><span></span></label>
-    </div>
-    <div class="message-content">
-      <div class="title">{{subject}}{{#unless read}}<span class="unread-color pulsate"> ●</span>{{/unless}}</div>
-      <div class="users">{{t "message_to"}}: {{recipients}}</div>
-      <div class="subject">{{message}}</div>
-    </div>
-    <span class="general-datetime" title="{{date_updated}}">{{niceDate}}</span>
-  </li>
-  {{/each}}
-</ul>
-
-{{#unless messages}}
-<div class="nothing-here secondary-info">
-  <h1>{{t "listing_items_not_found"}}</h1>
-  <!-- Maybe send someone a message? -->
-</div>
-{{/unless}}
---}}

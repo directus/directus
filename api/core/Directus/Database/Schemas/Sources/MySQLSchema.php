@@ -63,6 +63,7 @@ class MySQLSchema extends AbstractSchema
                 'primary_column',
                 'sort_column',
                 'status_column',
+                'display_template',
                 'preview_url'
             ],
             $select::JOIN_LEFT
@@ -181,6 +182,7 @@ class MySQLSchema extends AbstractSchema
                 'primary_column',
                 'sort_column',
                 'status_column',
+                'display_template',
                 'preview_url'
             ],
             $select::JOIN_LEFT
@@ -242,6 +244,7 @@ class MySQLSchema extends AbstractSchema
                 'junction_key_left',
                 'junction_key_right',
                 'required' => new Expression('IFNULL(D.required, 0)'),
+                'options',
             ],
             $selectOne::JOIN_LEFT
         );
@@ -286,7 +289,8 @@ class MySQLSchema extends AbstractSchema
             'junction_table',
             'junction_key_left',
             'junction_key_right',
-            'required' => new Expression('IFNULL(required, 0)')
+            'required' => new Expression('IFNULL(required, 0)'),
+            'options',
         ]);
         $selectTwo->from('directus_columns');
         $where = new Where();
@@ -351,6 +355,7 @@ class MySQLSchema extends AbstractSchema
                 'junction_key_left',
                 'junction_key_right',
                 'required' => new Expression('IFNULL(D.required, 0)'),
+                'options',
             ],
             $selectOne::JOIN_LEFT
         );
@@ -390,6 +395,7 @@ class MySQLSchema extends AbstractSchema
             'junction_key_left',
             'junction_key_right',
             'required' => new Expression('IFNULL(required, 0)'),
+            'options',
             'table_name'
         ]);
         $selectTwo->from('directus_columns');
@@ -471,88 +477,6 @@ class MySQLSchema extends AbstractSchema
     public function getFullSchema()
     {
         // TODO: Implement getFullSchema() method.
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getAllUIOptions()
-    {
-        $select = new Select();
-        $select->columns([
-            'id' => 'ui_name',
-            'name',
-            'value',
-            'table_name',
-            'column_name'
-        ]);
-
-        $select->from('directus_ui');
-
-        $select->order('ui_name');
-
-        $sql = new Sql($this->getConnection());
-        $statement = $sql->prepareStatementForSqlObject($select);
-        $result = $statement->execute();
-
-        return $result;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getUIOptions(Column $column)
-    {
-        $select = new Select();
-        $select->columns([
-            'id' => 'ui_name',
-            'name',
-            'value'
-        ]);
-
-        $select->from('directus_ui');
-
-        $select->where([
-            'column_name' => $column->getName(),
-            'table_name' => $column->getTableName(),
-            'ui_name' => $column->getUI()
-        ]);
-
-        $select->order('ui_name');
-
-        $sql = new Sql($this->getConnection());
-        $statement = $sql->prepareStatementForSqlObject($select);
-        $result = $statement->execute();
-
-        return $result;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getTableUIOptions($tableName)
-    {
-        $select = new Select();
-        $select->columns([
-            'id' => 'ui_name',
-            'column_name',
-            'name',
-            'value'
-        ]);
-
-        $select->from('directus_ui');
-
-        $select->where([
-            'table_name' => $tableName
-        ]);
-
-        $select->order('ui_name');
-
-        $sql = new Sql($this->getConnection());
-        $statement = $sql->prepareStatementForSqlObject($select);
-        $result = $statement->execute();
-
-        return $result;
     }
 
     /**

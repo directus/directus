@@ -74,6 +74,10 @@ class NativeSessionStorage implements SessionStorageInterface
             return false;
         }
 
+        if (PHP_SESSION_ACTIVE === session_status()) {
+            throw new \RuntimeException('Session has already started');
+        }
+
         if (!session_start()) {
             throw new \RuntimeException('Session start failed');
         }
@@ -101,6 +105,10 @@ class NativeSessionStorage implements SessionStorageInterface
      */
     public function isStarted()
     {
+        if (PHP_SESSION_ACTIVE === session_status()) {
+            $this->started = true;
+        }
+
         return (bool) $this->started;
     }
 

@@ -1,8 +1,9 @@
-define(['core/Modal', 'moment'], function(Modal, moment) {
+define(['app', 'core/Modal'], function(app, Modal) {
 
   'use strict';
 
   return Modal.extend({
+
     template: 'modal/user',
 
     attributes: {
@@ -10,12 +11,28 @@ define(['core/Modal', 'moment'], function(Modal, moment) {
       'class': 'modal profile'
     },
 
-    serialize: function() {
-      var data = this.model.toJSON();
-      var lastAccess = this.model.get('last_access');
+    events: {
+      'click .js-edit-user': 'editUser'
+    },
 
-      data.online = moment(lastAccess).add('m', 5) > moment();
-      data.lastSeen = moment(lastAccess).fromNow();
+    editUser: function (event) {
+      var id = $(event.currentTarget).data('id');
+
+      this.listenToOnce(this, 'close', function () {
+        app.router.go(['users', id]);
+      });
+
+      this.close(true);
+    },
+
+    serialize: function () {
+      var data = this.model.toJSON();
+      var authenticatedUser = app.users.getCurrentUser();
+
+      data.online = this.model.isOnline();
+      data.lastSeen = this.model.lastSeen();
+      data.isAdmin = authenticatedUser.isAdmin();
+      data.timeDiff = authenticatedUser.timezoneDifference(this.model);
 
       return data;
     }

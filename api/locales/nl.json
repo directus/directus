@@ -229,7 +229,7 @@
     "o2m_result_limit_comment": "Maximum aantal resultaten om te tonen",
     "add_new_x_item": "Voeg Nieuw %{table} Item toe",
 
-    "directus_files": "Directus Bestanden",
+    "directus_files_choose": "Directus Bestanden",
     "file_upload": "Upload",
     "drag_and_drop": "Drag and drop",
     "file_here": "bestand hier",

@@ -19,7 +19,12 @@ define([
         this.insertView(new StatusWidget({model: this.model}));
       }
 
-      this.insertView(new MetadataWidget({model: this.model}));
+      this.insertView(new MetadataWidget.View({
+        model: new MetadataWidget.Model({}, {
+          table: this.model.table,
+          recordId: this.model.id
+        })
+      }));
       this.insertView(new TimelineWidget({model: this.model}));
     }
   });

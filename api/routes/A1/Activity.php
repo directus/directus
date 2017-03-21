@@ -21,8 +21,13 @@ class Activity extends Route
             $params['filters'] = [];
         }
 
-        $data = $Activity->fetchFeed($params);
+        // a way to get records last updated from activity
+        if (ArrayUtils::get($params, 'last_updated')) {
+            $data = $Activity->getLastUpdated(key($params['last_updated']), key($params['last_updated']));
+        } else {
+            $data = $Activity->fetchFeed($params);
+        }
 
-        return JsonView::render($data);
+        return $this->app->response($data);
     }
 }

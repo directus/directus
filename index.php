@@ -23,25 +23,120 @@ use Directus\Database\TableGateway\DirectusUsersTableGateway;
 use Directus\Database\TableGateway\RelationalTableGateway as TableGateway;
 use Directus\Database\TableSchema;
 
-$authentication = Bootstrap::get('auth');
-$emitter = Bootstrap::get('hookEmitter');
+// @TODO: Wrap all this into a routing "app"
+$app = Bootstrap::get('app');
+// do not call the api hooks
+$app->clearHooks();
 
-$emitter->run('directus.index.start');
+// hotfix: while this page still not part of the routing
+// Not found means, you have to continue with the this file statements
+$redirectToLogin = function () use ($app) {
+    $request_uri = $app->request()->getResourceUri();
 
-// No access, forward to login page
-unset($_SESSION['_directus_login_redirect']);
-if (!$authentication->loggedIn()) {
-    $request_uri = $_SERVER['REQUEST_URI'];
     if (strpos($request_uri, DIRECTUS_PATH) === 0) {
         $request_uri = substr($request_uri, strlen(DIRECTUS_PATH));
     }
+
     $redirect = htmlspecialchars(trim($request_uri, '/'), ENT_QUOTES, 'UTF-8');
     if ($redirect) {
         $_SESSION['_directus_login_redirect'] = $redirect;
         $redirect = '?redirect=' . $redirect;
     }
+
     header('Location: ' . DIRECTUS_PATH . 'login.php' . $redirect);
-    die();
+    exit;
+    // $app->response()->redirect(DIRECTUS_PATH . 'login.php' . $redirect);
+};
+
+$authentication = Bootstrap::get('auth');
+
+$emitter = Bootstrap::get('hookEmitter');
+$emitter->run('directus.index.start');
+
+$app->group('/auth', function() use ($app) {
+    $app->get('/:name', function($name) use ($app) {
+        $socialAuth = $app->container->get('socialAuth');
+        try {
+            $socialAuth->get($name)->request();
+        } catch (\Exception $e) {
+            $session = $app->container->get('session');
+            // @TODO: Implement/use a set flash
+            $session->set('error_message', $e->getMessage());
+            header('Location: /');
+        }
+        exit;
+    });
+    $app->get('/:name/receive', function($name) use ($app) {
+        $socialAuth = $app->container->get('socialAuth');
+        $authService = $app->container->get('authService');
+
+        try {
+            $user = $socialAuth->get($name)->handle();
+            if ($user instanceof \League\OAuth1\Client\Server\User) {
+                $email = $user->email;
+            } else {
+                $email = $user->getEmail();
+            }
+
+            $authService->authenticateUserWithEmail($email);
+
+            $directusPath = rtrim(DIRECTUS_PATH, '/');
+            // $app->response()->redirect($directusPath . ' /tables');
+            header('Location: ' . $directusPath . '/tables');
+            exit;
+        } catch (\Exception $e) {
+            $log = Bootstrap::get('log');
+            $log->error($e);
+
+            $session = $app->container->get('session');
+            // @TODO: Implement/use a set flash
+            $session->set('error_message', $e->getMessage());
+            // $app->response()->redirect('/');
+            header('Location: /');
+            exit;
+        }
+    });
+});
+
+// Only run the routing when requesting anything by root
+if (!$authentication->loggedIn() && $app->request()->getResourceUri() !== rtrim(DIRECTUS_PATH, '/') . '/') {
+    $app->notFound($redirectToLogin);
+    $app->run();
+}
+
+// No access, forward to login page
+unset($_SESSION['_directus_login_redirect']);
+$showWelcomeWindow = false;
+if (!$authentication->loggedIn()) {
+    $invitationCode = $app->request()->get('invitation_code');
+    $authenticated = false;
+
+    if ($invitationCode) {
+        $authenticated = $authentication->authenticateWithInvitation($invitationCode);
+    }
+
+    if ($authenticated) {
+        $session->set('on_invitation', true);
+        $showWelcomeWindow = true;
+        $invitationUser = $authentication->getUserRecord();
+
+        $privilegesTable = new DirectusPrivilegesTableGateway($ZendDb, $acl);
+        $privileges = $privilegesTable->getGroupPrivileges($invitationUser['group']);
+        $acl->setGroupPrivileges($privileges);
+        // @TODO: Adding an user should auto set its ID and GROUP
+        $acl->setUserId($invitationUser['id']);
+        $acl->setGroupId($invitationUser['group']);
+    } else {
+        $redirectToLogin();
+        exit;
+    }
+}
+
+if (!$showWelcomeWindow) {
+    $authenticatedUser = $authentication->getUserRecord();
+    if ($authenticatedUser['invite_accepted'] != 1) {
+        $showWelcomeWindow = true;
+    }
 }
 
 $acl = Bootstrap::get('acl');
@@ -184,8 +279,7 @@ function getGroups()
     global $ZendDb, $acl;
     $groups = new TableGateway('directus_groups', $ZendDb, $acl);
     // @todo: move to DirectusGroupsTableGateway
-    $groupEntries = $groups->getEntries();
-
+    $groupEntries = $groups->getEntries(['depth' => 1]);
     $groupEntries['data'] = array_map(function ($row) {
         if (array_key_exists('nav_override', $row)) {
             if (!empty($row['nav_override'])) {
@@ -350,7 +444,7 @@ function getPrivileges($groupId)
 
 function getUI()
 {
-    return Bootstrap::get('uis');
+    return Bootstrap::get('interfaces');
 }
 
 function getListViews()
@@ -478,6 +572,7 @@ $data = [
     'user_notifications' => getLoginNotification(),
     'bookmarks' => getBookmarks(),
     'extendedUserColumns' => getExtendedUserColumns($tableSchema),
+    'showWelcomeWindow' => $showWelcomeWindow,
     'statusMapping' => $statusMapping
 ];
 
@@ -494,6 +589,5 @@ $templateVars = [
 ];
 
 // @TODO: Compile html
-$app = Bootstrap::get('app');
 $app->render('base.twig.html', $templateVars);
 // echo template(file_get_contents('main.html'), $templateVars);

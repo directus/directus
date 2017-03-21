@@ -2,17 +2,12 @@ define([
   'app',
   'backbone',
   'core/entries/EntriesModel',
-  'moment'
+  'moment-tz'
 ],
 
 function(app, Backbone, EntriesModel, moment) {
 
   return EntriesModel.extend({
-
-    defaults: {
-      first_name: '',
-      last_name: ''
-    },
 
     getAvatar: function() {
       var currentUserAvatar = this.get('avatar');
@@ -27,11 +22,38 @@ function(app, Backbone, EntriesModel, moment) {
       return currentUserAvatar;
     },
 
-    getDefaultAvatar: function() {
-      return app.PATH + 'assets/img/missing-directus-avatar.png';
+    getDefaultAvatar: function () {
+      return app.PATH + 'assets/imgs/missing-user.svg';
     },
 
-    updateLastRoute: function(route, history) {
+    isAdmin: function () {
+      return this.get('group').get('id') === 1;
+    },
+
+    isOnline: function () {
+      var lastAccess = this.get('last_access');
+      var isOnline = false;
+
+      if (lastAccess) {
+        isOnline = moment(lastAccess).add(5, 'minutes') > moment();
+      }
+
+      return isOnline;
+    },
+
+    timezoneDifference: function (userModel) {
+      var d1 = moment().tz(this.get('timezone')).utcOffset();
+      var d2 = moment().tz(userModel.get('timezone')).utcOffset();
+
+      return (d2-d1) / 60;
+    },
+
+    lastSeen: function () {
+      // @TODO: Add translation or a standard way to say "Not Available" or similar
+      return this.get('last_access') ? moment(this.get('last_access')).fromNow() : 'N/A';
+    },
+
+    updateLastRoute: function (route, history) {
       var currentPath = history.fragment;
       var queryString = history.location.search || '';
       var lastPage = JSON.stringify({
@@ -39,7 +61,7 @@ function(app, Backbone, EntriesModel, moment) {
         'route': route
       });
 
-      this.save({'last_page': lastPage, 'last_access': moment().utc().format('YYYY-MM-DD HH:mm')}, {
+      this.save({'last_page': lastPage, 'last_access': moment().utc().format('YYYY-MM-DD HH:mm:ss')}, {
         patch: true,
         global: false,
         silent: true,

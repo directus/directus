@@ -67,7 +67,24 @@ class DirectusPrivilegesTableGateway extends RelationalTableGateway
     public function getGroupPrivileges($groupId)
     {
         $getPrivileges = function () use ($groupId) {
-            return (array)$this->fetchGroupPrivileges($groupId);
+            // @TODO: Add test
+            if ($groupId === 1) {
+                $privileges = [
+                    '*' => [
+                        'allow_view' => 2,
+                        'allow_add' => 1,
+                        'allow_edit' => 2,
+                        'allow_delete' => 2,
+                        'allow_alter' => 1,
+                        'read_field_blacklist' => [],
+                        'write_field_blacklist' => []
+                    ]
+                ];
+            } else {
+                $privileges = $this->fetchGroupPrivileges($groupId, null);
+            }
+
+            return (array) $privileges;
         };
 
         // return $this->memcache->getOrCache(MemcacheProvider::getKeyDirectusGroupPrivileges($groupId), $getPrivileges, 1800);
@@ -75,12 +92,22 @@ class DirectusPrivilegesTableGateway extends RelationalTableGateway
         return $getPrivileges();
     }
 
-    public function fetchGroupPrivileges($group_id)
+    public function fetchGroupPrivileges($groupId, $statusId = false)
     {
         $select = new Select($this->table);
-        $select->where->equalTo('group_id', $group_id);
+        $select->where->equalTo('group_id', $groupId);
+
+        if ($statusId !== false) {
+            if ($statusId === null) {
+                $select->where->isNull('status_id');
+            } else {
+                $select->where->equalTo('status_id', $statusId);
+            }
+        }
+
         $rowset = $this->selectWith($select);
         $rowset = $rowset->toArray();
+
         $privilegesByTable = [];
         foreach ($rowset as $row) {
             foreach ($row as $field => &$value) {
@@ -89,6 +116,7 @@ class DirectusPrivilegesTableGateway extends RelationalTableGateway
                 $privilegesByTable[$row['table_name']] = $row;
             }
         }
+
         return $privilegesByTable;
     }
 
@@ -109,8 +137,9 @@ class DirectusPrivilegesTableGateway extends RelationalTableGateway
         $attributes = $this->verifyPrivilege($attributes);
         // @todo: this should fallback on field default value
         if (!isset($attributes['status_id'])) {
-            $attributes['status_id'] = 0;
+            $attributes['status_id'] = NULL;
         }
+
         $attributes = $this->getFillableFields($attributes);
 
         $insert = new Insert($this->getTable());

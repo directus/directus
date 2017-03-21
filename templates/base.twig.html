@@ -1,17 +1,17 @@
 <!doctype html>
-<html lang="en">
+<html lang="{{locale}}">
 <head>
-	<meta charset="utf-8" />
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-	<meta name="viewport" content="width = device-width, initial-scale = 1, user-scalable = no" />
+	<meta charset="utf-8"/>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta name="viewport" content="width = device-width, initial-scale = 1, user-scalable = no"/>
 
 	<title>{{project_name}}{%if subtitle %} – {{subtitle}}{%endif%}</title>
 
 	{% block meta %}
-	<meta name="description" content="" />
-	<meta name="keywords" content="" />
-	<meta name="author" content="{{project_name}} – Developed by RANGER Studio LLC" />
-	<meta property="og:title" content="{{project_name}}" />
+	<meta name="description" content=""/>
+	<meta name="keywords" content=""/>
+	<meta name="author" content="{{project_name}} – Developed by RANGER Studio LLC"/>
+	<meta property="og:title" content="{{project_name}}"/>
 	{% endblock %}
 
 	<meta name="apple-mobile-web-app-title" content="Directus">
@@ -21,10 +21,10 @@
 	<meta name="apple-mobile-web-app-capable" content="yes">
 	<meta name="mobile-web-app-capable" content="yes">
 
-	<meta property="og:site_name" content="{{project_name}}" />
-	<meta property="og:url" content="{{fullUrl}}" />
-	<meta property="og:type" content="website" />
-	<meta property="og:image" content="{{baseUrl}}/assets/logo-large.jpg" />
+	<meta property="og:site_name" content="{{project_name}}"/>
+	<meta property="og:url" content="{{fullUrl}}"/>
+	<meta property="og:type" content="website"/>
+	<meta property="og:image" content="{{baseUrl}}/assets/logo-large.jpg"/>
 
 	<!--[if lt IE 9]>
 	<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -39,7 +39,8 @@
 
 	<link rel="stylesheet" href="{{rootUrl}}assets/css/vendor/normalize.css">
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700">
-	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,600,600i,700,700i&amp;subset=latin-ext">
+	<link rel="stylesheet"
+		  href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,600,600i,700,700i&amp;subset=latin-ext">
 	<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 	<link rel="stylesheet" href="{{rootUrl}}assets/css/main.css?v=1.0">
 
@@ -47,47 +48,40 @@
 <body dir="{{dir}}" class="{% block bodyClass %}{% endblock %}"><!-- Options: help -->
 {# @NOTE: not part of the new design #}
 <div id="main">
+
+	<!-- Readout: "Authenticating", "Loading Assets", "Loading Data", "Finishing up", etc -->
+	<div class="loading"><div class="loading-container"><div class="loading-bar step-1"></div></div><div class="readout">Authenticating</div></div> <!-- blocking fading -->
+
 	{% if page == 'login' %}
 
-		{# Login #}
-		{% block login %}{% endblock %}
+	{# Login #}
+	{% block login %}{% endblock %}
 
 	{% else %}
-		{# Modals & Overlays #}
-		{% include 'modals/base.twig.html' %}
+	{# Modals & Overlays #}
+	{% include 'modals/base.twig.html' %}
 
-		{# Header & Sidebar #}
-		{% include 'header.twig.html' %}
-		{% include 'sidebar.twig.html' %}
+	{# Header & Sidebar #}
+	{% include 'header.twig.html' %}
+	{% include 'sidebar.twig.html' %}
 
-		{# Page Content #}
-		<div id="content" class="page"></div>
+	{# Page Content #}
+	<div id="content" class="page"></div>
 	{% endif %}
 </div>
 
-	<!-- Javascript -->
-	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
-    {% if page == 'login' %}
-    {% block login_script %}{% endblock %}
-    {% else %}
-	<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBmNpZfwjrxJ0zHEwYxgQ0_eKyfSexbZdQ&libraries=places"></script>
-	<script type="text/javascript" src="{{rootUrl}}assets/js/vendor/dragula.min.js"></script>
-	<script type="text/javascript" src="{{rootUrl}}assets/js/vendor/chart.min.js"></script>
-	<script type="text/javascript" src="{{rootUrl}}assets/js/global.js"></script>
-	<script type="text/javascript" src="{{rootUrl}}assets/js/header.js"></script>
-	<script type="text/javascript" src="{{rootUrl}}assets/js/interfaces.js"></script>
-	<script type="text/javascript" src="{{rootUrl}}assets/js/pages.js"></script>
-	<script type="text/javascript" src="{{rootUrl}}assets/js/settings.js"></script>
-	<script type="text/javascript" src="{{rootUrl}}assets/js/tables.js"></script>
-	<script type="text/javascript" src="{{rootUrl}}assets/js/sidebar.js"></script>
-	<script>
-		window.directusData = {{data|raw}};
-	</script>
+<!-- Javascript -->
+{% if page == 'login' %}
+{% block login_script %}{% endblock %}
+{% else %}
+<script>
+	window.directusData = {{data | raw}};
+</script>
 
-	<!-- Application source. -->
-	<!--build:js {{path}}assets/js/directus.min.js?bust={{cacheBuster}}-->
-	<script data-main="{{rootUrl}}app/main" src="{{rootUrl}}assets/js/libs/require.js?bust={{cacheBuster}}"></script>
-	<!--/build -->
-    {% endif %}
+<!-- Application source. -->
+<!--build:js {{path}}assets/js/directus.min.js?bust={{cacheBuster}}-->
+<script data-main="{{rootUrl}}app/main" src="{{rootUrl}}assets/js/libs/require.js?bust={{cacheBuster}}"></script>
+<!--/build -->
+{% endif %}
 </body>
 </html>

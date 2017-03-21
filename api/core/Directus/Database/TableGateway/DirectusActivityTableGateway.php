@@ -5,9 +5,12 @@ namespace Directus\Database\TableGateway;
 use Directus\Database\Query\Builder;
 use Directus\Database\TableSchema;
 use Directus\Permissions\Acl;
+use Directus\Util\ArrayUtils;
 use Directus\Util\DateUtils;
 use Zend\Db\Adapter\AdapterInterface;
+use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Insert;
+use Zend\Db\Sql\Predicate\In;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Where;
 
@@ -163,5 +166,99 @@ class DirectusActivityTableGateway extends RelationalTableGateway
             ->values($logData);
 
         $this->insertWith($insert);
+    }
+
+    /**
+     * Get the last update date from a list of row ids in the given table
+     *
+     * @param $table
+     * @param $ids
+     *
+     * @return array|null
+     */
+    public function getLastUpdated($table, $ids)
+    {
+        if (!is_array($ids)) {
+            $ids = [$ids];
+        }
+
+        $sql = new Sql($this->adapter);
+        $select = $sql->select($this->getTable());
+
+        $select->columns([
+            'action',
+            'user',
+            'datetime' => new Expression('MAX(datetime)')
+        ]);
+
+        $select->where([
+            'table_name' => $table,
+            'type' => 'ENTRY',
+            'action' => 'UPDATE',
+            new In('row_id', $ids)
+        ]);
+
+        $select->group([
+            'action',
+            'user'
+        ]);
+
+        $statement = $this->sql->prepareStatementForSqlObject($select);
+        $result = iterator_to_array($statement->execute());
+
+        return $this->parseRecord($result);
+    }
+
+    public function getMetadata($table, $id)
+    {
+        $sql = new Sql($this->adapter);
+        $select = $sql->select($this->getTable());
+
+        $select->columns([
+            'action',
+            'user',
+            'datetime' => new Expression('MAX(datetime)')
+        ]);
+
+        $on = 'directus_users.id = directus_activity.user';
+        $select->join('directus_users', $on, ['last_access']);
+
+        $select->where([
+            'table_name' => $table,
+            'row_id' => $id,
+            'type' => 'ENTRY',
+            new In('action', ['ADD', 'UPDATE'])
+        ]);
+
+        $select->group([
+            'action',
+            'user'
+        ]);
+
+        $statement = $this->sql->prepareStatementForSqlObject($select);
+        $result = iterator_to_array($statement->execute());
+        $result = $this->parseRecord($result);
+
+        $data = [
+            'created_on' => null,
+            'created_by' => null,
+            'updated_on' => null,
+            'updated_by' => null
+        ];
+
+        foreach ($result as $row) {
+            switch (ArrayUtils::get($row, 'action')) {
+                case static::ACTION_ADD:
+                    $data['created_by'] = $row['user'];
+                    $data['created_on'] = $row['datetime'];
+                    break;
+                case static::ACTION_UPDATE:
+                    $data['updated_by'] = $row['user'];
+                    $data['updated_on'] = $row['datetime'];
+                    break;
+            }
+        }
+
+        return $data;
     }
 }

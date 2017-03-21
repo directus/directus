@@ -98,7 +98,7 @@ class DirectusSettingsTableGateway extends RelationalTableGateway
     }
 
     // Since ZF2 doesn't support “INSERT…ON DUPLICATE KEY UDPATE” we need some raw SQL
-    public function setValues($data)
+    public function setValues($data, $collection = null)
     {
         $canUserAdd = $this->acl->hasTablePrivilege($this->getTable(), 'add');
         $canUserEdit = $this->acl->hasTablePrivilege($this->getTable(), 'bigedit');
@@ -109,14 +109,33 @@ class DirectusSettingsTableGateway extends RelationalTableGateway
 
         $data = ArrayUtils::omit($data, 'id');
         foreach ($data as $key => $value) {
-            $parameters[] = '(' .
-                $this->adapter->platform->quoteValue($key) . ',' .
-                $this->adapter->platform->quoteValue($value) .
-                ')';
+            $parameter = [
+                $this->adapter->platform->quoteValue($key),
+                $this->adapter->platform->quoteValue($value)
+            ];
+
+            if (!is_null($collection)) {
+                $parameter[] = $this->adapter->platform->quoteValue($collection);
+            }
+
+            $parameters[] = '(' . implode(',', $parameter) . ')';
         }
 
-        $sql = 'INSERT INTO directus_settings (`name`, `value`) VALUES ' . implode(',', $parameters) . ' ' .
+        $columns = ['name', 'value'];
+        if (!is_null($collection)) {
+            $columns[] = 'collection';
+        }
+
+        $columns = '(' . implode(',', array_map(function ($name) {
+            return $this->getAdapter()->getPlatform()->quoteIdentifier($name);
+        }, $columns)) .  ')';
+
+        $sql = 'INSERT INTO directus_settings ' . $columns . ' VALUES ' . implode(',', $parameters) . ' ' .
             'ON DUPLICATE KEY UPDATE `name` = VALUES(name), `value` = VALUES(value)';
+
+        if (!is_null($collection)) {
+            $sql .= ', `collection` = VALUES(collection)';
+        }
 
         $query = $this->adapter->query($sql, Adapter::QUERY_MODE_EXECUTE);
 

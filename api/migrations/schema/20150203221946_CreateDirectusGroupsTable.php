@@ -35,6 +35,7 @@ class CreateDirectusGroupsTable extends Ruckusing_Migration_Base
         ]);
         $t->column('restrict_to_ip_whitelist', 'text', [
             'null' => true,
+            'default' => null,
         ]);
         $t->column('nav_override', 'text');
         $t->column('show_activity', 'tinyinteger', [
@@ -59,11 +60,21 @@ class CreateDirectusGroupsTable extends Ruckusing_Migration_Base
         ]);
         $t->finish();
 
+        $this->add_index('directus_groups', 'name', [
+            'unique' => true,
+            'name' => 'directus_users_name_unique'
+        ]);
+
         $this->insert('directus_groups', [
             'id' => 1,
             'name' => 'Administrator',
-            'description' => NULL,
-            'restrict_to_ip_whitelist' => 0
+            'description' => NULL
+        ]);
+
+        $this->insert('directus_groups', [
+            'id' => 2,
+            'name' => 'Public',
+            'description' => NULL
         ]);
     }//up()
 

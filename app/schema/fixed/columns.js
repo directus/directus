@@ -78,7 +78,9 @@ define(function(require, exports, module) {
         'default_value': false,
         'system':false,
         'hidden_list':false,
-        'hidden_input':false
+        'hidden_input':false,
+        'nullable': true,
+        'required': false
       },
       {
         'id':'hidden_list',
@@ -88,7 +90,9 @@ define(function(require, exports, module) {
         'default_value': false,
         'system':false,
         'hidden_list':false,
-        'hidden_input':false
+        'hidden_input':false,
+        'nullable': true,
+        'required': false
       },
       {
         'id': 'required',
@@ -97,7 +101,9 @@ define(function(require, exports, module) {
         'type':'TINYINT',
         'system':false,
         'hidden_list':false,
-        'hidden_input':false
+        'hidden_input':false,
+        'nullable': true,
+        'required': false
       },
       {
         'id': 'sort',

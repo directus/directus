@@ -28,14 +28,18 @@ require([
   });
 
   Handlebars.registerHelper('tCoreField', function(key, options) {
+    var value = key;
+    var tableKey;
+
     if (options.hash.table) {
-      var tableKey = options.hash.table+'_'+key;
+      tableKey = options.hash.table + '_' + key;
+
       if (__t.polyglot.has(tableKey)) {
-        key = tableKey;
+        value = __t(tableKey, options.hash);
       }
     }
 
-    return app.capitalize(__t(key, options.hash));
+    return app.capitalize(value);
   });
 
   Handlebars.registerHelper('tVarCapitalize', function(key, options) {
@@ -85,6 +89,10 @@ require([
     }
 
     return moment(date).fromNow();
+  });
+
+  Handlebars.registerHelper('fullDateTime', function (date) {
+    return moment(date).format('YYYY-MM-DD HH:mm:ss Z');
   });
 
   Handlebars.registerHelper('formatDate', function(date, format) {
@@ -297,12 +305,24 @@ require([
       model = model.get('data');
     }
 
-    html = UIManager.getList(model, attr) || '';
+    html = UIManager.getList(model, attr) || '<span class="no-value">--</span>';
 
     return new Handlebars.SafeString(html);
   }
 
   Handlebars.registerHelper('ui', uiHelper);
+
+  Handlebars.registerHelper('uiView', function (model, column, options, parent) {
+    var view = UIManager.getInputInstance(model, column, options);
+
+    if (model.addInput) {
+      model.addInput(column.id, view);
+    }
+
+    view.render();
+
+    parent.setView('.' + column, view);
+  });
 
   Handlebars.registerHelper('uiCapitalize', function(model, attr, options) {
     var value = uiHelper(model, attr, options);
@@ -312,6 +332,14 @@ require([
     }
 
     return value;
+  });
+
+  Handlebars.registerHelper('ucase', function (string) {
+    return (string || '').toUpperCase();
+  });
+
+  Handlebars.registerHelper('lcase', function (string) {
+    return (string || '').toLowerCase();
   });
 
   // include an partial

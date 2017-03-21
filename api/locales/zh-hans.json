@@ -216,7 +216,7 @@
     "o2m_result_limit_comment": "返回结果的最大数量",
     "add_new_x_item": "在 %{table} 添加新项目",
 
-    "directus_files": "Directus 文件",
+    "directus_files_choose": "Directus 文件",
     "file_upload": "上传",
     "drag_and_drop": "拖放",
     "file_here": "文件到这里",

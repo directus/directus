@@ -1,11 +1,10 @@
 define([
-  "app",
-  "backbone",
-  "core/entries/EntriesCollection",
-  "modules/messages/MessageModel"
-],
-
-function(app, Backbone, EntriesCollection, MessageModel) {
+  'app',
+  'backbone',
+  'moment',
+  'core/entries/EntriesCollection',
+  'modules/messages/MessageModel'
+], function(app, Backbone, moment, EntriesCollection, MessageModel) {
 
   return EntriesCollection.extend({
 
@@ -14,6 +13,11 @@ function(app, Backbone, EntriesCollection, MessageModel) {
     updateFrequency: 10000,
 
     filters: {columns_visible: ['from','subject','date_updated'], sort: 'date_updated', sort_order: 'DESC'},
+
+    comparator: function (modelA, modelB) {
+      // Order the data by timestamp
+      return -moment(modelA.get('date_updated')).diff(moment(modelB.get('date_updated')));
+    },
 
     updateMessages: function() {
       var that = this;
@@ -46,7 +50,7 @@ function(app, Backbone, EntriesCollection, MessageModel) {
         this.total = response.total;
       }
 
-      return response.rows;
+      return response.data;
     },
 
     // Restore fetch to default style

@@ -22,7 +22,13 @@ class Settings extends Route
             case 'PUT':
             case 'PATCH':
                 $data = $requestPayload;
-                $Settings->setValues($data);
+                if (!is_null($id)) {
+                    $Settings->setValues($data);
+                } else {
+                    foreach ($data as $collection => $values) {
+                        $Settings->setValues($values, $collection);
+                    }
+                }
                 break;
         }
 
@@ -51,6 +57,6 @@ class Settings extends Route
             }
         }
 
-        JsonView::render($response);
+        return $this->app->response($response);
     }
 }

@@ -231,7 +231,7 @@
     "o2m_result_limit_comment": "返回結果的最大數量",
     "add_new_x_item": "在%{table}增加新項目",
 
-    "directus_files": "Directus檔案",
+    "directus_files_choose": "Directus檔案",
     "file_upload": "上傳",
     "drag_and_drop": "拖放",
     "file_here": "檔案到這裡",

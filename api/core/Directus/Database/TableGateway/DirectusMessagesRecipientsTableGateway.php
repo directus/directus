@@ -127,4 +127,17 @@ class DirectusMessagesRecipientsTableGateway extends RelationalTableGateway
         return array_values(array_unique($messageThreads));
     }
 
+    public function archiveMessages($userId, $responsesIds)
+    {
+        $payload = ['archived' => 1];
+
+        $update = new Update($this->getTable());
+        $update->set($payload);
+        $update
+            ->where
+            ->equalTo('recipient', $userId)
+            ->in('message_id', $responsesIds);
+
+        return $this->updateWith($update);
+    }
 }

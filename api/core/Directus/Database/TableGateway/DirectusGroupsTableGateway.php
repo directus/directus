@@ -26,6 +26,10 @@ class DirectusGroupsTableGateway extends RelationalTableGateway
 
     public function acceptIP($groupID, $ipAddress)
     {
+        if (!$groupID) {
+            return false;
+        }
+
         $group = $this->find($groupID);
         if (!$group) {
             return false;
