@@ -1901,7 +1901,7 @@ table {
     -ms-transition: all 200ms ease-in-out 0ms;
     transition: all 200ms ease-in-out 0ms;
     position: absolute;
-    top: -27px;
+    top: 10px;
     left: 10px;
     right: 10px;
     font-size: 12px;

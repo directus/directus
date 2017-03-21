@@ -561,7 +561,7 @@ table {
 	.chart-title {
 		@include transition (all, $timing-short, ease-in-out);
 		position: absolute;
-		top: -27px;
+		top: 10px;
 		left: 10px;
 		right: 10px;
 		font-size: 12px;
