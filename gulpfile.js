@@ -53,13 +53,13 @@ function runSequence(commands, prefix) {
 // CSS - Gulp Task
 // --------------------
 gulp.task('styles', function() {
-  return gulp.src(['assets/scss/compile.scss'])
+  return gulp.src(['assets/sass/main.scss'])
     .pipe(sass())
-    .pipe(rename('directus.css'))
+    .pipe(rename('main.css'))
     .pipe(gulp.dest('dist/assets/css'))
     .pipe(gulp.dest('assets/css'))
     .pipe(size())
-    .pipe(rename('directus.min.css'))
+    .pipe(rename('main.min.css'))
     .pipe(mincss())
     .pipe(gulp.dest('dist/assets/css'))
     .pipe(size())
