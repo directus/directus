@@ -9,6 +9,9 @@ define([
   'core/listings/baseView'
 ], function(app, _, moment, __t, Backbone, TableView, TableChartWidget, BaseView) {
 
+  var CHART_Y_AXIS_NAME = 'chart_y_axis';
+  var CHART_X_AXIS_NAME = 'chart_x_axis';
+
   var View = BaseView.extend(TableView.prototype, {});
 
   return {
@@ -34,8 +37,8 @@ define([
         if (force || !this.chartView) {
           this.chartView = new TableChartWidget({
             parentView: this,
-            dateColumn: this.getViewOptions('chart_x_axis') || this.getDateColumnName(),
-            numericColumn: this.getViewOptions('chart_y_axis'),
+            dateColumn: this.getViewOptions(CHART_X_AXIS_NAME) || this.getDateColumnName(),
+            numericColumn: this.getViewOptions(CHART_Y_AXIS_NAME),
             collection: this.collection.clone().reset()
           });
 
@@ -104,7 +107,7 @@ define([
               default_value: false
             },
             {
-              id: 'chart_y_axis',
+              id: CHART_Y_AXIS_NAME,
               type: 'String',
               required: false,
               ui: 'select',
@@ -114,7 +117,7 @@ define([
               }
             },
             {
-              id: 'chart_x_axis',
+              id: CHART_X_AXIS_NAME,
               type: 'String',
               required: false,
               ui: 'select',
