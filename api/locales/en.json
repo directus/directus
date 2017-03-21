@@ -69,6 +69,7 @@
     "new_field": "New Field",
     "edit_field": "Edit Field",
     "edit_fields": "Edit Fields",
+    "bulk_edit_x_x": "Bulk Edit: %{name} (%{ui})",
     "field_name": "Field Name",
     "user_interface_ui": "User Interface (UI)",
     "data_type": "Data Type",

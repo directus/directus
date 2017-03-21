@@ -34,6 +34,8 @@ define(function(require, exports, module) {
 
       return {
         id: this.column.id,
+        uiName: app.capitalize(this.column.get('ui')),
+        name: app.capitalize(this.column.id),
         comment: this.column.get('comment'),
         batchEdit: this.options.batchEdit,
         hideLabel: _.result(this.view, 'hideLabel'),
@@ -79,6 +81,7 @@ define(function(require, exports, module) {
 
     beforeRender: function() {
       var views = {};
+      var isBatchEdit = this.options.isBatchEdit;
 
       this.structure.each(function(column) {
 
@@ -167,7 +170,7 @@ define(function(require, exports, module) {
           var uiContainer = new UIContainer({
             model: this.model,
             column: column,
-            batchEdit: this.options.batchIds !== undefined,
+            batchEdit: isBatchEdit,
             view: view
           });
           uiContainer.insertView('.interface', view);
@@ -217,10 +220,15 @@ define(function(require, exports, module) {
       Backbone.Layout.__super__.constructor.call(this, options);
       this.$el.addClass('two-column-form');
       this.hiddenFields.push(app.statusMapping.status_name);
+      this.options.isBatchEdit = this.options.batchIds !== undefined;
     },
 
     // Focus on first input
     afterRender: function() {
+      if (this.options.isBatchEdit) {
+        this.$('.fields').addClass('bulk-edit');
+      }
+
       if (this.options.focusOnFirst !== false) {
         var $first = this.$el.find(':input:first:visible');
         $first.focus();
