@@ -288,7 +288,7 @@ function(app, Backbone, _, Handlebars, __t, Directus, BasePageView, Widgets, His
       widgets.push(this.saveWidget);
 
       // delete button
-      if (!this.model.isNew()) {
+      if (!this.model.isNew() && !this.single) {
         this.deleteWidget = new Widgets.ButtonWidget({
           widgetOptions: {
             buttonId: 'deleteBtn',
