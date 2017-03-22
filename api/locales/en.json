@@ -452,6 +452,7 @@
     "version_outdated_text_x": "The latest stable release is v%{current_version}<br>You are currently running v%{installed_version}",
 
     "right_pane_help": "Opens the item's detail sidebar",
+    "x_view_options": "%{view} Options",
 
     "online": "Online",
     "created_by": "Created By",
