@@ -140,7 +140,7 @@ return [
         ],
         1 => [
             'name' => 'Active',
-            'color' => '#5B5B5B',
+            'color' => '#3498DB',
             'sort' => 1
         ],
         2 => [
