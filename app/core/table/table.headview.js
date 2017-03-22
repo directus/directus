@@ -21,33 +21,33 @@ function(app, Backbone, _, __t, Notification) {
         var checkAll = this.$('#checkAll:checked').prop('checked') !== undefined;
 
         this.parentView.tableBody.$el.find('input.js-select-row').prop('checked', checkAll).trigger('changed');
-        this.collection.trigger('select');
+        this.getCollection().trigger('select');
       },
 
       'click .js-more': 'showMore',
 
       'click th:not(.js-check, .js-sort-toggle, .visible-columns-cell)': function(event) {
+        var collection = this.getCollection();
         var column = $(event.currentTarget).data('id');
-        var order = this.collection.getOrder();
+        var order = collection.getOrder();
         var order_sort = 'ASC';
         var isDefaultSorting = (order.sort === column && order.sort_order !== order_sort);
-
-        var structure = this.collection.junctionStructure || this.collection.structure;
+        var structure = collection.junctionStructure || collection.structure;
         var defaultSortColumn = structure.where({column_name: 'sort'}).length ? 'sort' : 'id';
 
         if (column === 'sort' || isDefaultSorting) {
-          this.collection.setOrder(defaultSortColumn, order_sort);
+          collection.setOrder(defaultSortColumn, order_sort);
           this.parentView.fixWidths();
           return;
         }
 
         if (column !== order.sort) {
-          this.collection.setOrder(column, order_sort);
+          collection.setOrder(column, order_sort);
         } else {
           if(order.sort_order === order_sort) {
             order_sort = 'DESC';
           }
-          this.collection.setOrder(column, order_sort);
+          collection.setOrder(column, order_sort);
         }
 
         this.parentView.fixWidths();
@@ -63,12 +63,11 @@ function(app, Backbone, _, __t, Notification) {
           this.$el.closest('thead').addClass('force-hover');
         }
 
-        var structure = this.options.collection.structure;
-        var preferences = this.collection.preferences;
-        var collection = this.collection;
+        var collection = this.getCollection();
+        var structure = collection.structure;
+        var preferences = collection.preferences;
         var visibleColumns = preferences.get('columns_visible').split(',');
         var data = {};
-        var view, modal;
         var totalSelected = 0;
 
         data.columns = structure.chain()
@@ -200,7 +199,7 @@ function(app, Backbone, _, __t, Notification) {
     },
 
     serialize: function() {
-      var order = this.collection.getOrder();
+      var order = this.getCollection().getOrder();
       var blacklist = this.options.blacklist;
 
       // get whitelisted columns first
@@ -225,22 +224,27 @@ function(app, Backbone, _, __t, Notification) {
       };
     },
 
-    initialize: function(options) {
-      this.parentView = options.parentView;
+    getCollection: function () {
+      return this.options.system === true ? this.options.systemCollection : this.collection;
+    },
 
+    initialize: function (options) {
+      var collection = this.getCollection();
+
+      this.parentView = options.parentView;
       this.maxColumns = this.options.maxColumns || 8;
-      var that = this;
-      if(this.collection.preferences) {
-        this.collection.filters.columns_visible = [];
-        this.collection.preferences.get('columns_visible').split(',').forEach(function(column) {
+
+      if (collection.preferences) {
+        collection.filters.columns_visible = [];
+        collection.preferences.get('columns_visible').split(',').forEach(function(column) {
           //Only add columns that actually exist
-          if(that.collection.structure.get(column) !== undefined) {
-            that.collection.filters.columns_visible.push(column);
+          if (collection.structure.get(column) !== undefined) {
+            collection.filters.columns_visible.push(column);
           }
         });
       }
 
-      this.listenTo(this.collection, 'sort', this.render);
+      this.listenTo(this.getCollection(), 'sort', this.render);
     }
 
   });

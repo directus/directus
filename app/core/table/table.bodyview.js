@@ -139,7 +139,8 @@ function(app, Backbone, _, Sortable, Notification) {
       this.options.filters = this.options.filters || {};
       this.sort = this.options.structure.get('sort') || options.sort;
 
-      this.listenTo(this.collection, 'sort', this.render);
+      var collection = options.system == true ? this.options.systemCollection : this.collection;
+      this.listenTo(collection, 'sort', this.render);
       this.parentView = options.parentView;
 
       if (this.sort) {

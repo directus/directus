@@ -34,14 +34,12 @@ function(app, Backbone, _, __t, moment, DateHelper, Chart) {
       this.trigger('toggle');
     },
 
-    initialize: function () {
-      this.listenTo(this.collection, 'sync', this.render);
-      this.fetchChartData();
-    },
-
     fetchChartData: function () {
       if (!this.hasDateColumn() || this.collection.length || this.fetching === true) {
-        return;
+        var deferred = new $.Deferred();
+        deferred.resolve();
+
+        return deferred.promise();
       }
 
       this.fetching = true;
@@ -50,7 +48,7 @@ function(app, Backbone, _, __t, moment, DateHelper, Chart) {
         between: moment().subtract(29, 'days').format('YYYY-MM-DD') + ',' + moment().format('YYYY-MM-DD')
       };
 
-      this.collection.fetch({
+      return this.collection.fetch({
         replaceOptions: {
           filters: filters
         },

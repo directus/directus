@@ -29,8 +29,17 @@ define([
         View.prototype.afterRender.apply(this, arguments);
 
         if (this.showChart && this.getViewOptions('chart_enabled') == true) {
-          this.setView(this.dom.CHART, this.getChartView(true)).render();
+          this.addChart();
         }
+      },
+
+      addChart: function () {
+          var chartView = this.getChartView(true);
+
+          this.setView(this.dom.CHART, chartView);
+          chartView.fetchChartData().then(function () {
+            chartView.render();
+          });
       },
 
       getChartView: function (force) {
@@ -66,11 +75,11 @@ define([
         var xhr = this.collection.fetch();
         var self = this;
 
-        xhr.done(function () {
-          self.render();
+        return xhr.done(function () {
+          self.updateSystemColumns().then(function () {
+            self.render();
+          });
         });
-
-        return xhr;
       },
 
       optionsStructure: function() {
@@ -236,18 +245,29 @@ define([
           this.options.showFooter = !this.options.showFooter;
         }
 
-        this.fetchComments();
-        this.fetchRevisions();
-        this.fetchUpdates();
+        var self = this;
+        return this.fetchComments().then(function () {
+          return self.fetchRevisions();
+        }).then(function () {
+          return self.fetchUpdates();
+        });
+      },
 
-        this.render();
+      updateSystemColumnsAndRender: function () {
+        var self = this;
+        this.updateSystemColumns().then(function () {
+          self.render();
+        });
       },
 
       fetchComments: function () {
         var showCommentsCount = this.getViewOptions('comments_count');
 
         if (this.options.systemCollection.length <= 0) {
-          return
+          var deferred = new $.Deferred();
+          deferred.resolve();
+
+          return deferred.promise();
         }
 
         if (showCommentsCount) {
@@ -281,7 +301,6 @@ define([
                 model.set('_comments', comment.count);
               }
             });
-            this.render();
           }, this));
         }
       },
@@ -291,7 +310,10 @@ define([
         var activityCollection;
 
         if (this.options.systemCollection.length <= 0) {
-          return
+          var deferred = new $.Deferred();
+          deferred.resolve();
+
+          return deferred.promise();
         }
 
         showRevisionsCount = this.getViewOptions('revisions_count');
@@ -329,7 +351,6 @@ define([
               model.set('_revisions', revision.count);
             }
           });
-          this.render();
         }, this));
       },
 
@@ -338,7 +359,10 @@ define([
         var collection;
 
         if (this.options.systemCollection.length <= 0) {
-          return
+          var deferred = new $.Deferred();
+          deferred.resolve();
+
+          return deferred.promise();
         }
 
         showLastUpdate = this.getViewOptions('last_updated');
@@ -367,8 +391,6 @@ define([
               rowModel.set('_last_updated', moment(model.get('datetime')).fromNow());
             }
           });
-
-          this.render();
         }, this));
       },
 
@@ -422,8 +444,7 @@ define([
         this.on('preferences:updated', this.updateTableSpacing, this);
 
         if (this.options.system === true) {
-          this.collection.preferences.on('sync', this.updateSystemColumns, this);
-          this.collection.on('sync', this.updateSystemColumns, this);
+          this.collection.preferences.on('sync', this.updateSystemColumnsAndRender, this);
           this.listenTo(this, 'onShowMore', this.onShowMore);
         }
       },
@@ -432,8 +453,7 @@ define([
         this.off('preferences:updated', this.updateTableSpacing, this);
 
         if (this.options.system === true) {
-          this.collection.preferences.off('sync', this.updateSystemColumns, this);
-          this.collection.off('sync', this.updateSystemColumns, this);
+          this.collection.preferences.off('sync', this.updateSystemColumnsAndRender, this);
           this.stopListening(this, 'onShowMore', this.onShowMore);
         }
       },

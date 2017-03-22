@@ -208,7 +208,6 @@ function(app, Backbone, _, __t, BasePageView, ListViewManager, TableViewRightPan
 
       this.state.viewId = viewId;
       var newView = this.getCurrentView();
-      newView.enable();
 
       if (triggerEvent === true) {
         this.trigger('view:changed', viewId);
@@ -217,11 +216,11 @@ function(app, Backbone, _, __t, BasePageView, ListViewManager, TableViewRightPan
       this.table = newView;
       this.table.savePreferences('currentView', viewId, true);
 
-      this.table.fetchData().done(_.bind(function () {
-        this.render();
-      }, this));
-
-      // this.render();
+      var self = this;
+      this.table.fetchData().done(function () {
+        self.render();
+        newView.enable();
+      });
     },
 
     getCurrentView: function() {
@@ -312,13 +311,6 @@ function(app, Backbone, _, __t, BasePageView, ListViewManager, TableViewRightPan
         this.showBulkEditButton = $checksChecked.length > 1;
 
         if (render || this.showDeleteButton || this.showBulkEditButton) {
-          this.reRender();
-        }
-      }, this);
-
-      this.collection.on('sort', function() {
-        if (this.leftSecondaryCurrentState !== 'default') {
-          this.leftSecondaryCurrentState = 'default';
           this.reRender();
         }
       }, this);

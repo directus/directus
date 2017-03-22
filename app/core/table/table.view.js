@@ -254,7 +254,7 @@ function(app, _, Backbone, Notification, __t, TableHelpers, ModelHelper, TableHe
         options = options || {};
         if (options.silent) return;
         ModelHelper.setIdAttribute(model);
-        this.render();
+        // this.render();
       });
 
       this.listenTo(collection, 'visibility', function() {
