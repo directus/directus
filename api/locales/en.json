@@ -14,7 +14,7 @@
     "users": "Users",
     "group": "Group",
     "user": "User",
-    "a_missing_or_removed_user": "A missing or removed user",
+    "a_missing_or_removed_user": "Unknown User",
     "please_fill_in_a_valid_name": "Please Fill In a Valid Name",
     "visit_project": "Visit Project",
     "there_are_no_tables_you_have_permission_to_view": "There are no tables you have permission to view",
