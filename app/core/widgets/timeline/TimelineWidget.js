@@ -138,8 +138,18 @@ function(app, Backbone, $, _, __t, Directus, moment) {
       });
 
       var data = activities.map(function(model, index) {
+        var isCreated = model.get('action') === 'ADD';
+        var revisionNumber = activityCount - index;
+        var title;
+
+        if (isCreated) {
+          title = __t('directus_activity_action_create');
+        } else {
+          title = __t('directus_activity_revision_x', {number: revisionNumber})
+        }
+
         var data = {
-          revisionNumber: activityCount - index,
+          title: title,
           table: model.get('table_name'),
           datetime: moment(model.get('datetime')),
           timeAgo: moment(model.get('datetime')).fromNow(),
