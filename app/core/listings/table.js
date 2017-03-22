@@ -28,9 +28,24 @@ define([
       afterRender: function () {
         View.prototype.afterRender.apply(this, arguments);
 
-        if (this.showChart && this.getViewOptions('chart_enabled') == true) {
+        if (this.showChart && this.isChartEnabled()) {
           this.addChart();
         }
+      },
+
+      // chart is enabled if it has both x and y axis seleted
+      isChartEnabled: function () {
+        return !!this.getXAxis() && !!this.getYAxis();
+      },
+
+      // date column
+      getXAxis: function () {
+        return this.getViewOptions(CHART_X_AXIS_NAME) || this.getDateColumnName();
+      },
+
+      // numeric column
+      getYAxis: function () {
+        return this.getViewOptions(CHART_Y_AXIS_NAME);
       },
 
       addChart: function () {
@@ -46,8 +61,8 @@ define([
         if (force || !this.chartView) {
           this.chartView = new TableChartWidget({
             parentView: this,
-            dateColumn: this.getViewOptions(CHART_X_AXIS_NAME) || this.getDateColumnName(),
-            numericColumn: this.getViewOptions(CHART_Y_AXIS_NAME),
+            dateColumn: this.getXAxis(),
+            numericColumn: this.getYAxis(),
             collection: this.collection.clone().reset()
           });
 
@@ -63,7 +78,7 @@ define([
 
       serialize: function () {
         var data = View.prototype.serialize.apply(this, arguments);
-        var chartEnabled = this.showChart && this.getViewOptions('chart_enabled');
+        var chartEnabled = this.showChart && this.isChartEnabled();
 
         data.fixedHead = chartEnabled != true;
         data.showChart = chartEnabled == true;
@@ -101,20 +116,20 @@ define([
           options.numericColumns[column.id] = app.capitalize(column.id);
         });
 
-        app.on('beforeCreateInput:fake:views_options_table:chart_enabled', _.bind(function (UI, options) {
-          options.canWrite = this.supportsChart();
-        }, this));
+        // app.on('beforeCreateInput:fake:views_options_table:chart_enabled', _.bind(function (UI, options) {
+        //   options.canWrite = this.supportsChart();
+        // }, this));
 
         return {
           id: 'views_options_table',
           columns: [
-            {
-              id: 'chart_enabled',
-              type: 'Boolean',
-              required: false,
-              ui: 'checkbox',
-              default_value: false
-            },
+            // {
+            //   id: 'chart_enabled',
+            //   type: 'Boolean',
+            //   required: false,
+            //   ui: 'checkbox',
+            //   default_value: false
+            // },
             {
               id: CHART_Y_AXIS_NAME,
               type: 'String',
