@@ -457,6 +457,7 @@ $data = [
     'phrases' => get_phrases(get_user_locale()),
     'timezone' => get_user_timezone(),
     'timezones' => get_timezone_list(),
+    'countries' => get_country_list(),
     'listViews' => getListViews(),
     'messages' => getInbox(),
     'user_notifications' => getLoginNotification(),
