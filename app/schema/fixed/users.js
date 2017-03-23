@@ -452,7 +452,10 @@ define(function(require, exports, module) {
             "hidden_list":false,
             "hidden_input":true,
             "required":false,
-            "ui":"datetime"
+            "ui":"datetime",
+            "options": {
+              "contextual_date_in_listview": true
+            }
           },
           {
             "id":"last_page",
