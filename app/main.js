@@ -27,11 +27,12 @@ require(["config", 'polyfills'], function() {
     'core/ListViewManager',
     'core/idle',
     'tool-tips',
+    'ext/moment-timeago',
     'contextual-date',
     'core/notification'
   ],
 
-  function(app, _, UIManager, Router, Backbone, alerts, __t, Tabs, Bookmarks, Messages, SchemaManager, SettingsCollection, EntriesModel, ExtensionManager, EntriesManager, ListViewManager, Idle, ToolTip, ContextualDate, Notification) {
+  function(app, _, UIManager, Router, Backbone, alerts, __t, Tabs, Bookmarks, Messages, SchemaManager, SettingsCollection, EntriesModel, ExtensionManager, EntriesManager, ListViewManager, Idle, ToolTip, moment, ContextualDate, Notification) {
 
     "use strict";
 
@@ -41,6 +42,7 @@ require(["config", 'polyfills'], function() {
       timezone: 'America/New_York',
       // @TODO: Make timezone an object with id and name
       timezones: [],
+      countries: [],
       path: '/directus/',
       page: '',
       authenticatedUser: 7,
@@ -86,6 +88,7 @@ require(["config", 'polyfills'], function() {
     app.locales = options.localesAvailable;
     app.timezone = options.timezone;
     app.timezones = options.timezones;
+    app.countries = options.countries;
     app.user_notifications = options.user_notifications;
     app.showWelcomeWindow = options.showWelcomeWindow;
 

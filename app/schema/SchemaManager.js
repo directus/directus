@@ -124,7 +124,7 @@ define(function(require, exports, module) {
         { schema: directusSchemas.directus_messages },
         { schema: directusSchemas.directus_privileges },
         { schema: directusSchemas.directus_tables },
-        { schema: directusSchemas.directus_users.getUsers(app.locales, app.timezones) }
+        { schema: directusSchemas.directus_users.getUsers(app.locales, app.timezones, app.countries) }
       ];
 
       this.register('tables', defaultTables);
