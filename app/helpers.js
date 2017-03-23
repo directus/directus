@@ -198,9 +198,9 @@ require([
     return new Handlebars.SafeString('<img src="'+avatar+'" class="avatar" title="'+user.get('first_name')+' '+user.get('last_name')+'"/>');
   });
 
-  Handlebars.registerHelper('userFull', function(userId) {
+  Handlebars.registerHelper('userFull', function (userId) {
     var user = app.users.get(userId);
-    return new Handlebars.SafeString('<img src="'+user.getAvatar()+'"  class="avatar"/><span class="avatar-name">'+user.get('first_name')+' '+user.get('last_name')+'</span>');
+    return new Handlebars.SafeString('<img src="'+user.getAvatar()+'"  class="avatar"/><span class="name">'+user.get('first_name')+' '+user.get('last_name')+'</span>');
   });
 
   var userFirstAndLastName = function(userId) {
