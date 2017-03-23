@@ -1,8 +1,8 @@
-define(['schema/fixed/users'], function(schema) {
+define(['app', 'schema/fixed/users'], function(app, schema) {
   var users;
 
   beforeEach(function() {
-    defaultAppOptions(require('app'));
+    defaultAppOptions(app);
     users = schema.getUsers({en: "English"});
   });
 
@@ -37,6 +37,7 @@ define(['schema/fixed/users'], function(schema) {
         'city',
         'state',
         'zip',
+        'country',
         'email_messages',
         'password',
         'salt',
@@ -50,7 +51,11 @@ define(['schema/fixed/users'], function(schema) {
         'ip',
         'group',
         'language',
-        'timezone'
+        'timezone',
+        'invite_token',
+        'invite_sender',
+        'invite_date',
+        'invite_accepted'
       ];
 
       expect(columns.length).toBe(expectedColumns.length);
