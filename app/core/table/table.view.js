@@ -191,9 +191,9 @@ function(app, _, Backbone, Notification, __t, TableHelpers, ModelHelper, TableHe
 
       columns = _.filter(this.collection.getColumns(), function(col) {
         var columnModel = structure.get(col),
-            hiddenInput = (columnModel && columnModel.get('hidden_input') !== true);
+            hiddenList = (columnModel && columnModel.get('hidden_list') !== true);
 
-        return !_.contains(blacklist, col) && hiddenInput;
+        return !_.contains(blacklist, col) && hiddenList;
       });
 
       return columns;
