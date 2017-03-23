@@ -182,6 +182,7 @@ define([
       data.views = _.map(ListViewManager.getViews(), _.bind(function(view) {
         var data = _.omit(view, 'View');
         data.isActive = data.id === this.state.viewId;
+        data.isSupported = this.supportsView(data.id);
 
         return data;
       }, this));
