@@ -152,7 +152,7 @@ function(app, Backbone, $, _, __t, Directus, moment) {
           title: title,
           table: model.get('table_name'),
           datetime: moment(model.get('datetime')),
-          timeAgo: moment(model.get('datetime')).fromNow(),
+          timeAgo: moment(model.get('datetime')).timeAgo('small'),
           timestamp: model.get('datetime'),
           userId: model.get('user'),
           ip: model.get('logged_ip'),
@@ -185,7 +185,7 @@ function(app, Backbone, $, _, __t, Directus, moment) {
         var data = {
           table: 'Comment',
           timestamp: model.get('datetime'),
-          timeAgo: moment(model.get('datetime')).fromNow(),
+          timeAgo: moment(model.get('datetime')).timeAgo('small'),
           userId: model.get('from')
         };
 

@@ -83,12 +83,12 @@ require([
     return app.bytesToSize(bytes, 0);
   });
 
-  Handlebars.registerHelper('contextualDate', function(date) {
+  Handlebars.registerHelper('contextualDate', function (date, options) {
     if (date === undefined || date === null) {
       return '-';
     }
 
-    return moment(date).fromNow();
+    return moment(date).timeAgo(options.hash.type);
   });
 
   Handlebars.registerHelper('fullDateTime', function (date) {
