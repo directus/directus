@@ -365,6 +365,8 @@ table {
 					display: block;
 					max-height: 40px;
 					max-width: 40px;
+					margin-top: 4px;
+					margin-bottom: 4px;
 				}
 				.search-term {
 					@include border-radius (2px);
