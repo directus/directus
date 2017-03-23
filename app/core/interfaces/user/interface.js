@@ -11,11 +11,16 @@ define(['app', 'core/UIComponent', 'core/UIView'], function(app, UIComponent, UI
   'use strict';
 
   var Input = UIView.extend({
-    initialize: function(options) {
-      var user = app.users.get(options.value);
-      if(user) {
-        var avatar = user.getAvatar();
-        this.$el.append('<img src="' + avatar + '" class="avatar"><span class="avatar-name">' + user.get('first_name') + ' ' + user.get('last_name') + '</span>');
+    template: 'user/interface',
+
+    serialize: function () {
+      var user = app.users.get(this.options.value);
+      var name = user.get('first_name') + ' ' + user.get('last_name');
+
+      return {
+        name: name,
+        user: user,
+        avatarUrl: user.getAvatar()
       }
     }
   });
@@ -25,10 +30,11 @@ define(['app', 'core/UIComponent', 'core/UIView'], function(app, UIComponent, UI
     system: true,
     sortBy: ['first_name','last_name'],
     Input: Input,
-    list: function(options) {
+    list: function (options) {
       var html;
+      var userId = options.value || options.model.id;
 
-      switch(options.settings.get('format')) {
+      switch (options.settings.get('format')) {
         case 'full':
           html = '{{userFull user}}';
           break;
@@ -37,7 +43,11 @@ define(['app', 'core/UIComponent', 'core/UIView'], function(app, UIComponent, UI
           break;
       }
 
-      return this.compileView(html, {user: parseInt(options.value,10)});
+      html = '<div class="interface-user">' + html + '</div>';
+
+      return this.compileView(html, {
+        user: userId
+      });
     }
   });
 

@@ -103,14 +103,15 @@ define(function(require, exports, module) {
           },
           {
             "id":"name",
-            "column_name":"first_name",
+            "column_name":"name",
             "type":"ALIAS",
             "sort":3,
             "nullable": false,
             "ui":"directus_user",
             "system":false,
-            "hidden_list":true,
-            "hidden_input":true,
+            "omit_input": true,
+            "hidden_list": false,
+            "hidden_input": true,
             "required":false,
             "options": {
               "format": "full"

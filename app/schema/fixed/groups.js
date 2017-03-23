@@ -113,7 +113,7 @@ define(function(require, exports, module) {
         "hidden_input": false,
         "sort": 70,
         "options": {
-          "visible_columns": "avatar_file_id,first_name,last_name,email,last_login",
+          "visible_columns": "name,email,last_login",
           "add_button": 1
         },
         "comment": transComments('users')

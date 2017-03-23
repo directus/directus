@@ -20,7 +20,7 @@ define(function(require, exports, module) {
     require('core/interfaces/single_file/component'),
     require('core/interfaces/slug'),
     require('core/interfaces/textarea'),
-    require('core/interfaces/directus_user'),
+    require('core/interfaces/user/interface'),
     require('core/interfaces/directus_activity'),
     require('core/interfaces/datetime/datetime'),
     require('core/interfaces/datetime/date'),
