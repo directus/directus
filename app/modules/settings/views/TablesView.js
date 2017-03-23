@@ -771,27 +771,13 @@ function(app, _, Backbone, Directus, EditView, BasePageView, TableModel, ColumnM
       });
     },
 
-    leftToolbar: function () {
-      var widgets = EditView.prototype.leftToolbar.apply(this, arguments);
+    deleteConfirm: function () {
       var self = this;
-
-      widgets.push(new Widgets.ButtonWidget({
-        widgetOptions: {
-          buttonId: 'removeBtn',
-          iconClass: 'close',
-          buttonClass: 'serious',
-          buttonText: __t('delete')
-        },
-        onClick: function(event) {
-          confirmDestroyTable(self.model.get('name'), function () {
-            destroyTable(self.model, function () {
-              app.router.go(['settings', 'tables']);
-            });
-          });
-        }
-      }));
-
-      return widgets;
+      confirmDestroyTable(this.model.get('name'), function () {
+        destroyTable(self.model, function () {
+          app.router.go(['settings', 'tables']);
+        });
+      });
     },
 
     rightPane: false
