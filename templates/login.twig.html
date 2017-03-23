@@ -5,7 +5,7 @@
 {% block login %}
 
 <div class="login-panel">
-	<form action="{{rootUrl}}api/1/auth/login" method="post" class="login-box" autocomplete="off">
+	<form action="{{rootUrl}}api/1.1/auth/login" method="post" class="login-box" autocomplete="off">
 		<div class="input">
 			<i class="material-icons focus-color">person</i>
 			<input name="email" type="email" class="email" placeholder="Email" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
@@ -93,7 +93,7 @@
 			}
 
 			if (confirm("{{'are_you_sure_you_want_to_reset_your_password'|trans}}")) {
-				$.ajax('{{rootUrl}}api/{{apiVersion}}/auth/forgot-password', {
+				$.ajax('{{rootUrl}}api/1.1/auth/forgot-password', {
 					data: {email: email},
 					dataType: 'json',
 					type: 'POST',
@@ -131,7 +131,7 @@
 			$('.processing').addClass('blocking').addClass('fading');
 			$('.processing .loading-bar').addClass('step-1');
 
-			$.ajax('{{rootUrl}}api/{{apiVersion}}/auth/login', {
+			$.ajax('{{rootUrl}}api/1.1/auth/login', {
 				data: {email: email, password: password},
 				dataType: 'json',
 				type: 'POST',
@@ -150,6 +150,7 @@
 						message(data.message, true);
 						return;
 					}
+					debugger;
 					// $('.login-box').css('opacity', 0);
 					window.location = "{{rootUrl}}" + path;
 				},
