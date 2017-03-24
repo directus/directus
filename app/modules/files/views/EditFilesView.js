@@ -1,5 +1,6 @@
 define([
   'app',
+  'underscore',
   'backbone',
   'core/t',
   'core/directus',
@@ -7,15 +8,31 @@ define([
   'core/widgets/widgets'
 ],
 
-function(app, Backbone, __t, Directus, BasePageView, Widgets) {
+function(app, _, Backbone, __t, Directus, BasePageView, Widgets) {
 
   return BasePageView.extend({
+
     events: {
-      'click .saved-success > .tool-item, .saved-success > span > .simple-select': 'saveCheck',
-      'change #saveSelect': 'saveCheck'
+      'change input, select, textarea': 'checkDiff',
+      'keyup input, textarea': 'checkDiff'
     },
 
-    deleteItem: function(e) {
+    checkDiff: function () {
+      var diff = this.model.diff(this.editView.data());
+      delete diff.id;
+      this.saveWidget.enable();
+    },
+
+    deleteConfirm: function () {
+      var self = this;
+      var attributes = {};
+      attributes[app.statusMapping.status_name] = 0;
+      app.router.openModal({type: 'confirm', text: __t('confirm_delete_item'), callback: function () {
+        self.deleteItem();
+      }});
+    },
+
+    deleteItem: function () {
       var success = function() {
         var route = Backbone.history.fragment.split('/');
         route.pop();
@@ -33,7 +50,7 @@ function(app, Backbone, __t, Directus, BasePageView, Widgets) {
       }
     },
 
-    saveCheck: function(e) {
+    saveConfirm: function (e) {
       var data = this.editView.data();
       if(data[app.statusMapping.status_name] && data[app.statusMapping.status_name] === app.statusMapping.deleted_num) {
         var that = this;
@@ -45,7 +62,7 @@ function(app, Backbone, __t, Directus, BasePageView, Widgets) {
       }
     },
 
-    save: function(e) {
+    save: function (e) {
       var action = 'save-form-leave';
       if(e.target.options !== undefined) {
         action = $(e.target.options[e.target.selectedIndex]).val();
@@ -94,7 +111,7 @@ function(app, Backbone, __t, Directus, BasePageView, Widgets) {
       });
     },
 
-    afterRender: function() {
+    afterRender: function () {
       this.setView('#page-content', this.editView);
 
       //Fetch Model if Exists
@@ -116,13 +133,37 @@ function(app, Backbone, __t, Directus, BasePageView, Widgets) {
       }
     },
 
-    leftToolbar: function() {
-      this.saveWidget = new Widgets.SaveWidget();
+    leftToolbar: function () {
+      var widgets = [];
+      var editView = this;
+      this.saveWidget = new Widgets.SaveWidget({
+        widgetOptions: {
+          basicSave: this.headerOptions.basicSave,
+          singlePage: this.single
+        },
+        onClick: _.bind(editView.saveConfirm, editView)
+      });
+
+      widgets.push(this.saveWidget);
+
       this.saveWidget.disable();
 
-      return [
-        this.saveWidget
-      ];
+      // delete button
+      if (!this.model.isNew()) {
+        this.deleteWidget = new Widgets.ButtonWidget({
+          widgetOptions: {
+            buttonId: 'deleteBtn',
+            iconClass: 'close',
+            buttonClass: 'serious',
+            buttonText: __t('delete')
+          },
+          onClick: _.bind(editView.deleteConfirm, editView)
+        });
+
+        widgets.push(this.deleteWidget);
+      }
+
+      return widgets;
     },
 
     headerOptions: {
@@ -135,7 +176,7 @@ function(app, Backbone, __t, Directus, BasePageView, Widgets) {
     },
 
 
-    initialize: function(options) {
+    initialize: function () {
       this.editView = new Directus.EditView({model: this.model, ui: this.options.ui});
       this.headerOptions.route.title = this.model.get('id') ? __t('editing_file') : __t('uploading_new_file');
       this.collection = app.files;
