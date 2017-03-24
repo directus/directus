@@ -2,10 +2,9 @@ define([
   'app',
   'backbone',
   'underscore',
-  'handlebars',
-  'moment'
+  'handlebars'
 ],
-function(app, Backbone, _, Handlebars, moment) {
+function(app, Backbone, _, Handlebars) {
 
   'use strict';
 
@@ -34,7 +33,7 @@ function(app, Backbone, _, Handlebars, moment) {
       class: 'metadata'
     },
 
-    events: function() {
+    events: function () {
       return _.extend(this.getEvents(), {
         'click .js-user': 'openUserModal'
       });
@@ -47,10 +46,10 @@ function(app, Backbone, _, Handlebars, moment) {
       return app.router.openUserModal(userId);
     },
 
-    serialize: function() {
-      var collection = this.model.collection;
-      var table = collection ? collection.table : null;
+    serialize: function () {
       var model = this.model ? this.model.toJSON() : {};
+      var itemModel = this.options.itemModel ? this.options.itemModel.toJSON() : {};
+      var table = this.model.table ? this.model.table : null;
       // @TODO: Add Timezone
       var dateFormat = 'MMM Mo, YYYY @ H:mma';
       var previewUrl = table ? table.get('preview_url') : null;
@@ -74,7 +73,7 @@ function(app, Backbone, _, Handlebars, moment) {
       }
 
       if (previewUrl) {
-        previewUrl = Handlebars.compile(previewUrl)(model);
+        previewUrl = Handlebars.compile(previewUrl)(itemModel);
       }
 
       return {
@@ -85,17 +84,17 @@ function(app, Backbone, _, Handlebars, moment) {
       }
     },
 
-    afterRender: function() {
+    afterRender: function () {
       if (this.options.widgetOptions && this.options.widgetOptions.active) {
         $(this.el).addClass('active');
       }
     },
 
-    getEvents: function() {
+    getEvents: function () {
       return this._events;
     },
 
-    initialize: function(options) {
+    initialize: function (options) {
       this._events = {};
 
       if (_.isFunction(options.onClick)) {

@@ -23,7 +23,8 @@ define([
         model: new MetadataWidget.Model({}, {
           table: this.model.table,
           recordId: this.model.id
-        })
+        }),
+        itemModel: this.model
       }));
       this.insertView(new TimelineWidget({model: this.model}));
     }
