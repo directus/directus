@@ -1625,15 +1625,37 @@ table {
           -ms-transition: color 200ms ease-in-out 0ms;
           transition: color 200ms ease-in-out 0ms;
           font-size: 20px; }
+      table tbody tr td.user-interface {
+        -webkit-transition: color 200ms ease-in-out 0ms;
+        -moz-transition: color 200ms ease-in-out 0ms;
+        -o-transition: color 200ms ease-in-out 0ms;
+        -ms-transition: color 200ms ease-in-out 0ms;
+        transition: color 200ms ease-in-out 0ms; }
+        table tbody tr td.user-interface:hover {
+          color: #3498DB; }
       table tbody tr td.relationship {
+        -webkit-transition: color 200ms ease-in-out 0ms;
+        -moz-transition: color 200ms ease-in-out 0ms;
+        -o-transition: color 200ms ease-in-out 0ms;
+        -ms-transition: color 200ms ease-in-out 0ms;
+        transition: color 200ms ease-in-out 0ms;
         color: #CCCCCC; }
+        table tbody tr td.relationship:hover {
+          color: #3498DB; }
         table tbody tr td.relationship .type {
           color: #666666; }
       table tbody tr td.comment {
+        -webkit-transition: color 200ms ease-in-out 0ms;
+        -moz-transition: color 200ms ease-in-out 0ms;
+        -o-transition: color 200ms ease-in-out 0ms;
+        -ms-transition: color 200ms ease-in-out 0ms;
+        transition: color 200ms ease-in-out 0ms;
         color: #CCCCCC;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis; }
+        table tbody tr td.comment:hover {
+          color: #3498DB; }
         table tbody tr td.comment .active {
           color: #666666; }
       table tbody tr td.avatar {
@@ -3397,6 +3419,13 @@ body.loading .header .logo {
         color: #3498DB;
         border: none;
         border-left: 2px solid #3498DB; }
+        .right-sidebar .scroll-y .tiles .tile.disabled {
+          color: #CCCCCC;
+          background-color: #EEEEEE;
+          cursor: not-allowed; }
+          .right-sidebar .scroll-y .tiles .tile.disabled:hover, .right-sidebar .scroll-y .tiles .tile.disabled.active {
+            background-color: #EEEEEE;
+            color: #CCCCCC; }
         .right-sidebar .scroll-y .tiles .tile:first-child {
           border-left: none;
           width: 38px; }
