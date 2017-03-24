@@ -206,17 +206,31 @@ table {
 						font-size: 20px;
 					}
 				}
+				&.user-interface {
+					@include transition (color, $timing-short, ease-in-out);
+					&:hover {
+						color: $primary;
+					}
+				}
 				&.relationship {
+					@include transition (color, $timing-short, ease-in-out);
 					color: $gray-3;
+					&:hover {
+						color: $primary;
+					}
 					.type {
 						color: $gray-5;
 					}
 				}
 				&.comment {
+					@include transition (color, $timing-short, ease-in-out);
 					color: $gray-3;
 					white-space: nowrap;
 					overflow: hidden;
 					text-overflow: ellipsis;
+					&:hover {
+						color: $primary;
+					}
 					.active {
 						color: $gray-5;
 					}
