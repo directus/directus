@@ -4914,7 +4914,7 @@ body.help .discover-spotlight {
             cursor: pointer; }
             .fields .field.break-header.translation .translation-picker .select-container select:focus {
               box-shadow: none; }
-  .fields .field.bulk-edit .bulk-edit-label {
+  .fields .field.batch-edit .batch-edit-label {
     -webkit-transition: all 200ms ease-in-out 0ms;
     -moz-transition: all 200ms ease-in-out 0ms;
     -o-transition: all 200ms ease-in-out 0ms;
@@ -4933,15 +4933,21 @@ body.help .discover-spotlight {
     font-size: 15px;
     font-weight: 500;
     text-transform: uppercase;
-    cursor: pointer; }
-    .fields .field.bulk-edit .bulk-edit-label .button .material-icons {
-      font-size: 18px;
-      margin-right: 4px; }
-  .fields .field.bulk-edit:hover .bulk-edit-label {
+    cursor: not-allowed; }
+    .fields .field.batch-edit .batch-edit-label .button {
+      -webkit-box-shadow: 0 0 0 4px white;
+      -moz-box-shadow: 0 0 0 4px white;
+      box-shadow: 0 0 0 4px white; }
+      .fields .field.batch-edit .batch-edit-label .button .material-icons {
+        font-size: 18px;
+        margin-right: 4px; }
+  .fields .field.batch-edit .cancel-batch-edit {
+    opacity: 0; }
+  .fields .field.batch-edit:hover .batch-edit-label {
     color: #3498DB; }
-  .fields .field.bulk-edit:hover:after {
-    opacity: 0.8; }
-  .fields .field.bulk-edit:after {
+  .fields .field.batch-edit:hover:after {
+    opacity: 0.5; }
+  .fields .field.batch-edit:after {
     -webkit-transition: all 200ms ease-in-out 0ms;
     -moz-transition: all 200ms ease-in-out 0ms;
     -o-transition: all 200ms ease-in-out 0ms;
@@ -4956,9 +4962,9 @@ body.help .discover-spotlight {
     width: 100%;
     background-color: #FFFFFF;
     opacity: 0.95;
-    cursor: pointer;
+    cursor: not-allowed;
     z-index: 9; }
-  .fields .field .bulk-edit-label {
+  .fields .field .batch-edit-label {
     display: none; }
   .fields .field .label {
     white-space: normal;
@@ -4985,6 +4991,17 @@ body.help .discover-spotlight {
       margin-top: -8px;
       margin-left: -2px;
       cursor: default; }
+    .fields .field .label .cancel-batch-edit {
+      -webkit-transition: all 200ms ease-in-out 0ms;
+      -moz-transition: all 200ms ease-in-out 0ms;
+      -o-transition: all 200ms ease-in-out 0ms;
+      -ms-transition: all 200ms ease-in-out 0ms;
+      transition: all 200ms ease-in-out 0ms;
+      color: #F44336;
+      cursor: pointer;
+      font-size: 11px; }
+      .fields .field .label .cancel-batch-edit:hover {
+        color: #a21309; }
   .fields .field .interface {
     position: relative;
     white-space: normal;

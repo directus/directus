@@ -70,7 +70,7 @@
     "edit_field": "Edit Field",
     "edit_fields": "Edit Fields",
     "batch_edit": "Batch Edit",
-    "batch_edit_x_x": "Batch Edit: %{name} (%{ui})",
+    "batch_edit_x_x": "%{name}",
     "field_name": "Field Name",
     "user_interface_ui": "User Interface (UI)",
     "data_type": "Data Type",

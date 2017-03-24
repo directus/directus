@@ -64,8 +64,8 @@
 				}
 			}
 		}
-		&.bulk-edit {
-			.bulk-edit-label {
+		&.batch-edit {
+			.batch-edit-label {
 				@include transition (all, $timing-short, ease-in-out);
 				display: block;
 
@@ -81,20 +81,26 @@
 				font-size: 15px;
 				font-weight: 500;
 				text-transform: uppercase;
-				cursor: pointer;
+				cursor: not-allowed;
 				.button {
+					-webkit-box-shadow: 0 0 0 4px rgba($white,1);
+					-moz-box-shadow: 0 0 0 4px rgba($white,1);
+					box-shadow: 0 0 0 4px rgba($white,1);
 					.material-icons {
 						font-size: 18px;
 						margin-right: 4px;
 					}
 				}
 			}
+			.cancel-batch-edit {
+				opacity: 0;
+			}
 			&:hover {
-				.bulk-edit-label {
+				.batch-edit-label {
 					color: $primary;
 				}
 				&:after {
-					opacity: 0.8;
+					opacity: 0.5;
 				}
 			}
 			&:after {
@@ -108,11 +114,11 @@
 				width: 100%;
 				background-color: $white;
 				opacity: 0.95;
-				cursor: pointer;
+				cursor: not-allowed;
 				z-index: 9;
 			}
 		}
-		.bulk-edit-label {
+		.batch-edit-label {
 			display: none;
 		}
 		.label {
@@ -143,6 +149,15 @@
 				margin-top: -8px;
 				margin-left: -2px;
 				cursor: default;
+			}
+			.cancel-batch-edit {
+				@include transition (all, $timing-short, ease-in-out);
+				color: $serious;
+				cursor: pointer;
+				font-size: 11px;
+				&:hover {
+					color: darken($serious, 25%);
+				}
 			}
 		}
 		.interface {

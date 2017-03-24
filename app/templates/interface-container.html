@@ -8,6 +8,7 @@
 <div class="label">
     {{#if isCoreTable}}{{tCoreField id table=table}}{{else}}{{name}}{{/if}}
     {{#if required}}<i class="material-icons required" title="Required">star</i>{{/if}}
+    {{#if batchEdit}}<span class="cancel-batch-edit" title="Cancel batch edit for this column">Cancel</span>{{/if}}
     {{#if comment}}
 	<div class="comment">{{#if isCoreTable}}{{tCoreField comment table=table}}{{else}}{{comment}}{{/if}}</div>
 	{{/if}}
