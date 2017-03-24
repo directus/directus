@@ -390,9 +390,10 @@ define([
         collection = this.getUpdatesCollection();
 
         var lastUpdated = {};
-        lastUpdated[this.collection.table.id] = this.collection.map(function (model) {
+        var ids = this.collection.map(function (model) {
           return model.id;
         });
+        lastUpdated[this.collection.table.id] = ids.join(',');
 
         collection.setFilter({
           last_updated: lastUpdated
