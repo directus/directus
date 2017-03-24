@@ -89,6 +89,29 @@ body.loading {
 				opacity: 0.0;
 			}
 		}
+		.running {
+			@include transition (opacity, $timing-short, ease-in-out);
+			position: absolute;
+			top: 6px;
+			left: 50%;
+			width: 66px;
+			height: 58px;
+			margin-left: -33px;
+			background-image: url(../imgs/directus-logo-frames-small.svg);
+			background-repeat: no-repeat;
+            background-position: left center;
+            animation: logosprite .5s steps(15) infinite;
+            opacity: 0;
+			@keyframes logosprite {
+				100% { background-position: -990px; }
+			}
+			&.static {
+				-moz-animation-name: none;
+				-webkit-animation-name: none;
+				-ms-animation-name: none;
+				animation-name: none;
+			}
+		}
 		.directus {
 			@include transition (all, $timing-short, ease-in-out);
 			position: absolute;
