@@ -31,25 +31,38 @@ define(function(require, exports, module) {
     template: 'interface-container',
 
     events: {
-      'click .js-button-toggle': 'toggleBatchEdit',
-      'dblclick': 'toggleBatchEdit'
+      'click .js-button-accept': 'acceptBatchEdit',
+      'click .js-button-cancel': 'cancelBatchEdit'
     },
 
     state: {
       batchEnabled: false
     },
 
-    toggleBatchEdit: function (event) {
-      if (!this.options.batchEdit || (event.type == 'dblclick' && this.state.batchEnabled != true)) {
+    acceptBatchEdit: function () {
+      if (!this.state.batchEnabled) {
+        this.changeBatchEdit(true);
+      }
+    },
+
+    cancelBatchEdit: function () {
+      if (this.state.batchEnabled) {
+        this.changeBatchEdit(false);
+      }
+    },
+
+    changeBatchEdit: function (enabled) {
+      if (!this.options.batchEdit) {
         return;
       }
 
-      var $input = this.$('input[name=batch_edit_' + this.column.id + ']').first();
+      enabled = !!enabled;
 
+      var $input = this.$('input[name=batch_edit_' + this.column.id + ']').first();
       this.$el.toggleClass(this.dom.BATCH_EDIT);
 
-      $input.val(1 - parseInt($input.val(), 10));
-      this.state.batchEnabled = !this.state.batchEnabled;
+      $input.val(enabled ? 1 : 0);
+      this.state.batchEnabled = !!enabled;
     },
 
     serialize: function() {
