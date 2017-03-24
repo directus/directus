@@ -1,62 +1,62 @@
-<div class="table-shadow">
-    <table class="table table-striped directus-table" id="directus_columns">
-        <thead>
-        <tr>
-            <th class="sort"><i class="material-icons">reorder</i></th>
-            <th class="field-field">{{t "field"}}</th>
-            <th class="field-input_type">{{t "user_interface_ui"}}</th>
-            <th class="field-hidden-input" style="width:60px;">{{t "hidden_input"}}</th>
-            <th class="field-hidden-list" style="width:60px;">{{t "hidden_list"}}</th>
-            <th class="field-required" style="width:50px;">{{t "required"}}</th>
-            <th class="field-note">{{t "note"}}</th>
-            <th class="field-delete" style="width:50px">{{t "delete"}}</th>
-        </tr>
-        </thead>
-        <tbody>
-          {{#rows}}
-          <tr class="{{#if alias}}alias{{/if}}{{#if system}}system{{/if}}" data-id="{{id}}">
-            <td class="sort" title="{{t 'tables_change_input_order'}}">{{#unless system}}<i class="material-icons">drag_handle</i>{{/unless}}</td>
-            <td><span class="settings-column-name" title="{{id}} ({{this.type}})">{{{capitalize id}}}</span> {{#if relationship}}<span class="silver" title="{{relationshipTooltip}}">{{relationship}}</span>{{/if}}</td>
-            {{#if system}}
-              {{#if systemDetails}}
-                <td colspan="6"><em>{{{systemDetails}}}</em></td>
-              {{else}}
-                <td colspan="6"><em>{{t "system_column_details_default"}}</em></td>
-              {{/if}}
-            {{else}}
-            <td>
+<div>
+		<table class="table table-striped directus-table" id="directus_columns">
+				<thead>
+				<tr>
+						<th class="sort"><i class="material-icons">reorder</i></th>
+						<th class="field-field">{{t "field"}}</th>
+						<th class="field-input_type">{{t "user_interface_ui"}}</th>
+						<th class="field-hidden-input" style="width:60px;">{{t "hidden_input"}}</th>
+						<th class="field-hidden-list" style="width:60px;">{{t "hidden_list"}}</th>
+						<th class="field-required" style="width:50px;">{{t "required"}}</th>
+						<th class="field-note">{{t "note"}}</th>
+						<th class="field-delete" style="width:50px">{{t "delete"}}</th>
+				</tr>
+				</thead>
+				<tbody>
+					{{#rows}}
+					<tr class="{{#if alias}}alias{{/if}}{{#if system}}system{{/if}}" data-id="{{id}}">
+						<td class="sort" title="{{t 'tables_change_input_order'}}">{{#unless system}}<i class="material-icons">drag_handle</i>{{/unless}}</td>
+						<td><span class="settings-column-name" title="{{id}} ({{this.type}})">{{{capitalize id}}}</span> {{#if relationship}}<span class="silver" title="{{relationshipTooltip}}">{{relationship}}</span>{{/if}}</td>
+						{{#if system}}
+							{{#if systemDetails}}
+								<td colspan="6"><em>{{{systemDetails}}}</em></td>
+							{{else}}
+								<td colspan="6"><em>{{t "system_column_details_default"}}</em></td>
+							{{/if}}
+						{{else}}
+						<td>
 
-              <div class="select-container">
-                <select name="ui" id="ui" data-id="{{id}}" class="input-selector">
-                  <optgroup label="{{t 'choose_a_input_interface'}}">
-                    {{#types}}
-                    <option {{#if isActive}}selected{{/if}} value="{{id}}">{{{capitalize id}}}</option>
-                    {{/types}}
-                  </optgroup>
-                </select>
-                <i class="material-icons select-arrow">arrow_drop_down</i>
-              </div>
-              {{#if uiHasVariables}}
-                <i class="material-icons open-ui-options" data-action="ui" data-id="{{id}}" title="Edit Options">tune</i>
-                {{#unless valid}}<i class="material-icons" title="Problem with Options">warning</i>{{/unless}}
-              {{/if}}
-              {{#if uiHasRelationship}}
-                <i class="material-icons open-ui-options" data-action="relationship" data-id="{{id}}" title="Edit Relationship">swap_horiz</i> <!-- merge_type or device_hub or compare_arrows or swap_horiz-->
-              {{/if}}
-            </td>
-            <td>
-                <input type="checkbox" name="hidden_input" id="hidden_input" {{#if hidden_input}}checked{{/if}} value="1" data-id="{{id}}" title="{{t 'hidden_input'}}">
-            </td>
-            <td>
-                <input type="checkbox" name="hidden_list" id="hidden_list" {{#if hidden_list}}checked{{/if}} value="1" data-id="{{id}}" title="{{t 'hidden_list'}}">
-            </td>
-            <td><input type="checkbox" name="required" {{#if required}}checked{{/if}} value="1" data-id="{{id}}" {{#if requiredDisabled}}disabled="disabled"{{/if}} title="{{t 'allow_null' is_nullable=is_nullable}}"></td>
-            <td class="field-comment-container"><input type="text" value="{{comment}}" name="comment" data-id="{{id}}" class="table-input field-comment" placeholder="{{t 'placeholder_add_a_note'}}"></td>
-            <td title="Permanently Delete Field" class="delete-hover">{{#unless system}}<i class="destroy material-icons">close</i>{{/unless}}</td>
-            {{/if}}
-          </tr>
-          {{/rows}}
-        </tbody>
-    </table>
+							<div class="select-container">
+								<select name="ui" id="ui" data-id="{{id}}" class="input-selector">
+									<optgroup label="{{t 'choose_a_input_interface'}}">
+										{{#types}}
+										<option {{#if isActive}}selected{{/if}} value="{{id}}">{{{capitalize id}}}</option>
+										{{/types}}
+									</optgroup>
+								</select>
+								<i class="material-icons select-arrow">arrow_drop_down</i>
+							</div>
+							{{#if uiHasVariables}}
+								<i class="material-icons open-ui-options" data-action="ui" data-id="{{id}}" title="Edit Options">tune</i>
+								{{#unless valid}}<i class="material-icons" title="Problem with Options">warning</i>{{/unless}}
+							{{/if}}
+							{{#if uiHasRelationship}}
+								<i class="material-icons open-ui-options" data-action="relationship" data-id="{{id}}" title="Edit Relationship">swap_horiz</i> <!-- merge_type or device_hub or compare_arrows or swap_horiz-->
+							{{/if}}
+						</td>
+						<td>
+								<input type="checkbox" name="hidden_input" id="hidden_input" {{#if hidden_input}}checked{{/if}} value="1" data-id="{{id}}" title="{{t 'hidden_input'}}">
+						</td>
+						<td>
+								<input type="checkbox" name="hidden_list" id="hidden_list" {{#if hidden_list}}checked{{/if}} value="1" data-id="{{id}}" title="{{t 'hidden_list'}}">
+						</td>
+						<td><input type="checkbox" name="required" {{#if required}}checked{{/if}} value="1" data-id="{{id}}" {{#if requiredDisabled}}disabled="disabled"{{/if}} title="{{t 'allow_null' is_nullable=is_nullable}}"></td>
+						<td class="field-comment-container"><input type="text" value="{{comment}}" name="comment" data-id="{{id}}" class="table-input field-comment" placeholder="{{t 'placeholder_add_a_note'}}"></td>
+						<td title="Permanently Delete Field" class="delete-hover">{{#unless system}}<i class="destroy material-icons">close</i>{{/unless}}</td>
+						{{/if}}
+					</tr>
+					{{/rows}}
+				</tbody>
+		</table>
 </div>
 <button class="btn btn-link margin-top-standard" type="button" data-action="new-field">{{t "add_new_field"}}</button>

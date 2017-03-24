@@ -193,23 +193,23 @@ define(function(require, exports, module) {
             title = group.substring(0, group.indexOf(':'));
             group = group.substring(group.indexOf(':') + 1);
           }
-          var compileString = '<div class="section-header"><span class="big-label-text">' + title + '</span></div><div class="table-shadow"></div>';
-          that.insertView('.fields', new Backbone.Layout({attributes: {class:'gutter-bottom-big table-shadow', id:'grouping_' + i}, template: Handlebars.compile(compileString)}));
+          var compileString = '<div class="section-header"><span class="big-label-text">' + title + '</span></div><div class="grouping-view"></div>';
+          that.insertView('.fields', new Backbone.Layout({attributes: {class:'gutter-bottom-big', id:'grouping_' + i}, template: Handlebars.compile(compileString)}));
           group.split(',').forEach(function(subgroup) {
             if(views[subgroup] !== undefined) {
-              that.insertView('#grouping_' + i + ' div.table-shadow', views[subgroup]);
+              that.insertView('#grouping_' + i + ' div.grouping-view', views[subgroup]);
             }
           });
           i++;
         });
       } else {
         if(views[app.statusMapping.status_name]) {
-          this.insertView('.fields', new Backbone.Layout({attributes: {class:'gutter-bottom-big table-shadow', id:'grouping_0'}}));
+          this.insertView('.fields', new Backbone.Layout({attributes: {class:'gutter-bottom-big', id:'grouping_0'}}));
           this.insertView('#grouping_0', views[app.statusMapping.status_name]);
           delete views[app.statusMapping.status_name];
         }
 
-        this.insertView('.fields', new Backbone.Layout({attributes: {class:'gutter-bottom-big table-shadow', id:'grouping_1'}}));
+        this.insertView('.fields', new Backbone.Layout({attributes: {class:'gutter-bottom-big', id:'grouping_1'}}));
         for(var key in views) {
           that.insertView('#grouping_1', views[key]);
         }
