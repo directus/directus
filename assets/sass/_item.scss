@@ -2,56 +2,6 @@
 // Edit/Create Item & Core UIs
 
 .fields {
-	&.bulk-edit {
-		.field {
-			.bulk-edit-label {
-				@include transition (all, $timing-short, ease-in-out);
-				display: block;
-
-				z-index: 10;
-				position: absolute;
-				top: 50%;
-				left: 50%;
-				width: 400px;
-				margin-top: -22px;
-				margin-left: -200px;
-				text-align: center;
-				color: $gray-4;
-				font-size: 15px;
-				font-weight: 500;
-				text-transform: uppercase;
-				cursor: pointer;
-				.button {
-					.material-icons {
-						font-size: 18px;
-						margin-right: 4px;
-					}
-				}
-			}
-			&:hover {
-				.bulk-edit-label {
-					color: $primary;
-				}
-				&:after {
-					opacity: 0.8;
-				}
-			}
-			&:after {
-				@include transition (all, $timing-short, ease-in-out);
-				content: "";
-				position: absolute;
-				top: 0;
-				bottom: 0;
-				left: 0;
-				right: 0;
-				width: 100%;
-				background-color: $white;
-				opacity: 0.95;
-				cursor: pointer;
-				z-index: 9;
-			}
-		}
-	}
 	.field {
 		position: relative;
 		border-bottom: 1px solid $gray-1;
@@ -111,6 +61,54 @@
 						}
 					}
 				}
+			}
+		}
+		&.bulk-edit {
+			.bulk-edit-label {
+				@include transition (all, $timing-short, ease-in-out);
+				display: block;
+
+				z-index: 10;
+				position: absolute;
+				top: 50%;
+				left: 50%;
+				width: 400px;
+				margin-top: -22px;
+				margin-left: -200px;
+				text-align: center;
+				color: $gray-4;
+				font-size: 15px;
+				font-weight: 500;
+				text-transform: uppercase;
+				cursor: pointer;
+				.button {
+					.material-icons {
+						font-size: 18px;
+						margin-right: 4px;
+					}
+				}
+			}
+			&:hover {
+				.bulk-edit-label {
+					color: $primary;
+				}
+				&:after {
+					opacity: 0.8;
+				}
+			}
+			&:after {
+				@include transition (all, $timing-short, ease-in-out);
+				content: "";
+				position: absolute;
+				top: 0;
+				bottom: 0;
+				left: 0;
+				right: 0;
+				width: 100%;
+				background-color: $white;
+				opacity: 0.95;
+				cursor: pointer;
+				z-index: 9;
 			}
 		}
 		.bulk-edit-label {
