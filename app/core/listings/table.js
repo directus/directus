@@ -463,12 +463,14 @@ define([
         var self = this;
         TableHelpers.headFootShadows($el);
         if (TableHelpers.hitBottom($el)) {
-          this.$('.loading-more').show();
-          this.collection.fetchNext().then(function () {
-            self.$('.loading-more').hide();
-            // @TODO: should add one item at a time for performance
-            self.render();
-          });
+          if (this.collection.canFetchMore()) {
+            this.$('.loading-more').show();
+            this.collection.fetchNext().then(function () {
+              self.$('.loading-more').hide();
+              // @TODO: should add one item at a time for performance
+              self.render();
+            });
+          }
         }
       },
 

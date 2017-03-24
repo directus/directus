@@ -92,6 +92,10 @@ define(function(require, exports, module) {
       }
     },
 
+    canFetchMore: function () {
+      return this.getFilter('currentPage') + 1 < (this.getTotalCount() / this.getFilter('perPage'));
+    },
+
     fetchNext: function () {
       this.filters.currentPage++;
 
@@ -375,7 +379,7 @@ define(function(require, exports, module) {
       return new EntriesCollection([], entriesOptions);
     },
 
-    parseHeaders: function(response) {
+    parseHeaders: function (response) {
       if (_.isEmpty(response)) {
         return;
       }
@@ -383,12 +387,16 @@ define(function(require, exports, module) {
       if (response.total !== undefined) {
         this.table.set('total', response.total, {silent: true});
       }
-      var that = this;
-      app.statusMapping.mapping.forEach(function(status) {
-        if(response[status.name]) {
-          that.table.set(status.name, response[status.name], {silent: true});
+
+      if (response.total_entries) {
+        this.table.set('total_entries', response.total_entries, {silent: true});
+      }
+
+      app.statusMapping.mapping.forEach(function (status) {
+        if (response[status.name]) {
+          this.table.set(status.name, response[status.name], {silent: true});
         }
-      });
+      }, this);
     },
 
     parse: function(response) {
