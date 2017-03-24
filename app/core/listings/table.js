@@ -483,7 +483,7 @@ define([
       bindEvents: function () {
         this.on('preferences:updated', this.updateTableSpacing, this);
 
-        this.on('scroll', this.onScroll, this);
+        this.on('scroll', _.throttle(this.onScroll, 200), this);
         this.on('afterRender', this.onRender, this);
 
         if (this.options.system === true) {

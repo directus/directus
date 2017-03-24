@@ -93,13 +93,20 @@ define(function(require, exports, module) {
     },
 
     canFetchMore: function () {
-      return this.getFilter('currentPage') + 1 < (this.getTotalCount() / this.getFilter('perPage'));
+      return !this.fetching && this.getFilter('currentPage') + 1 < (this.getTotalCount() / this.getFilter('perPage'));
     },
 
     fetchNext: function () {
       this.filters.currentPage++;
+      this.fetching = true;
 
-      return this.fetch({remove: false});
+      var xhr = this.fetch({remove: false});
+
+      xhr.done(_.bind(function () {
+        this.fetching = false;
+      }, this));
+
+      return xhr;
     },
 
     saveAll: function(options) {
