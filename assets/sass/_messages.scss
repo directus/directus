@@ -416,6 +416,9 @@
 				white-space: nowrap;
 				overflow: hidden;
 				text-overflow: ellipsis;
+				.count {
+					opacity: 0.5;
+				}
 				.is-chat,
 				.has-attachment {
 					font-size: 16px;
