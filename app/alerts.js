@@ -31,20 +31,20 @@ define([
   });
 
   var showProgressNotification = function(message) {
-    $('a[href$="#activity"] span').removeClass('icon-bell').addClass('icon-cycle');
+    // $('a[href$="#activity"] span').removeClass('icon-bell').addClass('icon-cycle');
     app.activityInProgress = true;
-    $('#page-blocker').show();
-    $('.directus-logo').removeClass('static');
+    // $('#page-blocker').show();
+    $('#header').find('.logo').removeClass('static');
     //app.lockScreen();
   };
 
   var hideProgressNotification = function() {
-    $('a[href$="#activity"] span').addClass('icon-bell').removeClass('icon-cycle');
+    // $('a[href$="#activity"] span').addClass('icon-bell').removeClass('icon-cycle');
     app.activityInProgress = false;
-    $('#page-blocker').fadeOut(100);
+    // $('#page-blocker').fadeOut(100);
 
     // Stop animation after cycle completes
-    $(".directus-logo").one('animationiteration webkitAnimationIteration', function() {
+    $('#header').find('.logo').one('animationiteration webkitAnimationIteration', function() {
       $(this).addClass('static');
     });
     //app.unlockScreen();
