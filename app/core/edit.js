@@ -12,16 +12,44 @@ define(function(require, exports, module) {
 
     tagName: 'div',
 
-    attributes: {
-      class: 'field'
+    dom: {
+      BATCH_EDIT: 'batch-edit'
+    },
+
+    attributes: function () {
+      var classes = ['field'];
+
+      if (this.options.batchEdit) {
+        classes.push(this.dom.BATCH_EDIT);
+      }
+
+      return {
+        class: classes.join(' ')
+      };
     },
 
     template: 'interface-container',
 
     events: {
-      'click [name="batchedit"]': function() {
-        this.$('.fieldset-smoke').toggle();
+      'click .js-button-toggle': 'toggleBatchEdit',
+      'dblclick': 'toggleBatchEdit'
+    },
+
+    state: {
+      batchEnabled: false
+    },
+
+    toggleBatchEdit: function (event) {
+      if (!this.options.batchEdit || (event.type == 'dblclick' && this.state.batchEnabled != true)) {
+        return;
       }
+
+      var $input = this.$('input[name=batch_edit_' + this.column.id + ']').first();
+
+      this.$el.toggleClass(this.dom.BATCH_EDIT);
+
+      $input.val(1 - parseInt($input.val(), 10));
+      this.state.batchEnabled = !this.state.batchEnabled;
     },
 
     serialize: function() {
@@ -225,10 +253,6 @@ define(function(require, exports, module) {
 
     // Focus on first input
     afterRender: function() {
-      if (this.options.isBatchEdit) {
-        this.$('.fields').addClass('bulk-edit');
-      }
-
       if (this.options.focusOnFirst !== false) {
         var $first = this.$el.find(':input:first:visible');
         $first.focus();

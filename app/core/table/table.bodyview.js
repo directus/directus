@@ -16,7 +16,7 @@ function(app, Backbone, _, Sortable, Notification) {
     template: 'tables/table-body',
 
     attributes: {
-      class: 'drag-and-drop bulk-selectable'
+      class: 'drag-and-drop batch-selectable'
     },
 
     events: {

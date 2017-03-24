@@ -35,7 +35,7 @@ function(app, _, Backbone, Handlebars, PreferenceModel) {
 
     attributes: {
       'class': 'select-container',
-      'id': 'bulkStatus'
+      'id': 'batchStatus'
     },
 
     events: {

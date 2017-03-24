@@ -1,6 +1,7 @@
 {{#if batchEdit}}
-<div class="bulk-edit-label">
-    <div class="button"><i class="material-icons">edit</i> {{t "bulk_edit_x_x" name=name ui=uiName}}</div>
+<div class="batch-edit-label">
+    <div class="button js-button-toggle"><i class="material-icons">edit</i> {{t "batch_edit_x_x" name=name ui=uiName}}</div>
+	<input type="hidden" data-field="{{id}}" class="js-batch-edit" name="batch_edit_{{id}}" value="0">
 </div>
 {{/if}}
 {{#unless hideLabel}}

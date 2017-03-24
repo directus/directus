@@ -77,14 +77,14 @@ function(app, Backbone, _, __t, BasePageView, ListViewManager, TableViewRightPan
           widgets.push(this.widgets.deleteWidget);
         }
 
-        if (this.showBulkEditButton) {
-          if (!this.widgets.bulkEditWidget) {
-            this.widgets.bulkEditWidget = new Widgets.ButtonWidget({
+        if (this.showBatchEditButton) {
+          if (!this.widgets.batchEditWidget) {
+            this.widgets.batchEditWidget = new Widgets.ButtonWidget({
               widgetOptions: {
-                buttonId: 'bulkEditBtn',
+                buttonId: 'batchEditBtn',
                 iconClass: 'edit',
                 buttonClass: 'important',
-                buttonText: __t('bulk_edit')
+                buttonText: __t('batch_edit')
               },
               onClick: function(event) {
                 var $checked = tableView.table.$el.find('.js-select-row:checked');
@@ -99,7 +99,7 @@ function(app, Backbone, _, __t, BasePageView, ListViewManager, TableViewRightPan
             });
           }
 
-          widgets.push(this.widgets.bulkEditWidget);
+          widgets.push(this.widgets.batchEditWidget);
         }
 
         if (!this.widgets.infoWidget) {
@@ -308,16 +308,16 @@ function(app, Backbone, _, __t, BasePageView, ListViewManager, TableViewRightPan
         this.actionButtons = $checksChecked.length;
         this.batchEdit = $checksChecked.length > 1;
         this.showDeleteButton = $checksChecked.length >= 1;
-        this.showBulkEditButton = $checksChecked.length > 1;
+        this.showBatchEditButton = $checksChecked.length > 1;
 
-        if (render || this.showDeleteButton || this.showBulkEditButton) {
+        if (render || this.showDeleteButton || this.showBatchEditButton) {
           this.reRender();
         }
       }, this);
 
       this.isBookmarked = app.getBookmarks().isBookmarked(this.collection.table.id);
       this.showDeleteButton = false;
-      this.showBulkEditButton = false;
+      this.showBatchEditButton = false;
 
       this.listenTo(this, 'rightPane:load', function () {
         this.listenTo(this.rightPaneView, 'view:change', function (viewId) {
