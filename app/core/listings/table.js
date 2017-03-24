@@ -372,6 +372,7 @@ define([
       fetchUpdates: function () {
         var showLastUpdate;
         var collection;
+        var systemCollection = this.options.systemCollection;
 
         if (this.options.systemCollection.length <= 0) {
           var deferred = new $.Deferred();
@@ -388,7 +389,7 @@ define([
         collection = this.getUpdatesCollection();
 
         var lastUpdated = {};
-        lastUpdated[this.collection.table.id] = collection.map(function (model) {
+        lastUpdated[this.collection.table.id] = this.collection.map(function (model) {
           return model.id;
         });
 
@@ -396,9 +397,8 @@ define([
           last_updated: lastUpdated
         });
 
-        return collection.fetch().then(_.bind(function () {
-          var systemCollection = this.options.systemCollection;
-          this.updates.each(function (model) {
+        var onUpdatesDone = function () {
+          collection.each(function (model) {
             var rowId = model.get('row_id');
             var rowModel = systemCollection.get(rowId);
 
@@ -406,7 +406,9 @@ define([
               rowModel.set('_last_updated', moment(model.get('datetime')).fromNow());
             }
           });
-        }, this));
+        };
+
+        return collection.fetch().done(onUpdatesDone);
       },
 
       getTableColumns: function () {

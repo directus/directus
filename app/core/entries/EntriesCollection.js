@@ -210,6 +210,7 @@ define(function(require, exports, module) {
         structure: this.structure,
         privileges: this.privileges,
         preferences: this.preferences,
+        url: this.url,
         rowsPerPage: this.rowsPerPage
       };
 
