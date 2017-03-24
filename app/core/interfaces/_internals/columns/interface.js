@@ -7,7 +7,18 @@
 //  http://www.getdirectus.com
 /*jshint multistr: true */
 
-define(['app', 'underscore', 'core/UIComponent', 'core/UIView', 'core/table/table.view', 'core/overlays/overlays', 'core/notification', 'core/doubleConfirmation', 'core/t', 'sortable'], function(app, _, UIComponent, UIView, TableView, Overlays, Notification, DoubleConfirmation, __t, Sortable) {
+define([
+  'app',
+  'underscore',
+  'core/UIComponent',
+  'core/UIView',
+  'core/table/table.view',
+  'core/overlays/overlays',
+  'core/notification',
+  'core/doubleConfirmation',
+  'core/t',
+  'sortable'
+], function(app, _, UIComponent, UIView, TableView, Overlays, Notification, DoubleConfirmation, __t, Sortable) {
 
   'use strict';
 
@@ -180,9 +191,15 @@ define(['app', 'underscore', 'core/UIComponent', 'core/UIView', 'core/table/tabl
         options.success = function () {
           column.url = originalUrl;
           self.render();
+
+          var message = __t('column_x_' + attr + '_has_changed', {
+            column_name: column.get('column_name')
+          });
+
+          Notification.success(__t('saved'), message, {timeout: 3000});
         };
 
-        column.save(attrs, options);
+        return column.save(attrs, options);
       }
     },
 

@@ -393,6 +393,8 @@
     "column_x_not_found": "Column [%{column_name}] not found",
     "column_removed": "Column Removed",
     "column_x_was_removed": "Column [%{column_name}] was removed",
+    "column_x_hidden_input_has_changed": "Column [%{column_name}] hidden input has changed",
+    "column_x_required_has_changed": "Column [%{column_name}] required has changed",
     "unable_to_find_table_x": "Unable to find the table [%{table_name}]",
     "unable_to_remove_table_x": "Unable to remove the table [%{table_name}]",
     "table_removed": "Table Removed",
@@ -515,6 +517,8 @@
 
     "directus_users_email_already_exists": "User with this email already exists.",
 
+    "warning_changes_to_columns_save_immediately": "Warning: All changes to columns save immediately.",
+
     "same_time_as_you": "Same time as you",
     "x_hours_from_you": "%{hours} hours from you",
 
@@ -534,6 +538,7 @@
     "no": "No",
     "add": "Add",
     "save": "Save",
+    "saved": "Saved",
     "help": "Help",
     "submit": "Submit",
     "new_item": "New Item",
