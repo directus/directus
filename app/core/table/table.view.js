@@ -114,7 +114,6 @@ function(app, _, Backbone, Notification, __t, TableHelpers, ModelHelper, TableHe
       this.headerScroll($el);
       var onScroll = _.bind(function () {
         this.headerScroll($el);
-        TableHelpers.headFootShadows($el);
       }, this);
 
       $el.on('scroll', onScroll);
