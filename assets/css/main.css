@@ -1481,20 +1481,21 @@ table {
   transition: width 200ms ease-in-out 0ms;
   width: 100%; }
   table thead {
-    background-color: #f6f6f6;
+    background-color: #FFFFFF;
+    border-bottom: 1px solid #EEEEEE;
     color: #999999;
     font-size: 10px;
     font-weight: 700;
     text-transform: uppercase;
-    height: 40px; }
+    height: 50px; }
     table thead tr th {
       -webkit-transition: width 200ms ease-in-out 0ms;
       -moz-transition: width 200ms ease-in-out 0ms;
       -o-transition: width 200ms ease-in-out 0ms;
       -ms-transition: width 200ms ease-in-out 0ms;
       transition: width 200ms ease-in-out 0ms;
-      padding: 8px 4px 6px 4px;
-      height: 40px;
+      padding: 10px 4px 8px 4px;
+      height: 50px;
       cursor: default; }
       table thead tr th.right-sidebar-toggle {
         -webkit-transition: color 200ms ease-in-out 0ms;
@@ -1522,7 +1523,7 @@ table {
       table thead tr th.visible .material-icons, table thead tr th.required .material-icons {
         font-size: 20px; }
   table tbody {
-    color: #666666;
+    color: #333333;
     background-color: #FFFFFF; }
     table tbody tr.selected td {
       background-color: #f7fbfe; }
@@ -1934,7 +1935,7 @@ table {
   table.pad-status tbody tr td.status {
     padding-left: 15px; }
   table.fixed-header {
-    margin-top: 40px;
+    margin-top: 50px;
     margin-bottom: 40px; }
     table.fixed-header thead {
       position: fixed;
@@ -4973,7 +4974,7 @@ body.help .discover-spotlight {
     padding-top: 4px;
     padding-right: 20px;
     font-weight: 500;
-    color: #666666; }
+    color: #333333; }
     .fields .field .label .translation-note {
       padding-top: 4px;
       font-size: 12px;
