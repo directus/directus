@@ -186,6 +186,7 @@ class DirectusActivityTableGateway extends RelationalTableGateway
         $select = $sql->select($this->getTable());
 
         $select->columns([
+            'row_id',
             'action',
             'user',
             'datetime' => new Expression('MAX(datetime)')
@@ -199,6 +200,7 @@ class DirectusActivityTableGateway extends RelationalTableGateway
         ]);
 
         $select->group([
+            'row_id',
             'action',
             'user'
         ]);
@@ -206,7 +208,7 @@ class DirectusActivityTableGateway extends RelationalTableGateway
         $statement = $this->sql->prepareStatementForSqlObject($select);
         $result = iterator_to_array($statement->execute());
 
-        return $this->parseRecord($result);
+        return ['data' => $this->parseRecord($result)];
     }
 
     public function getMetadata($table, $id)
