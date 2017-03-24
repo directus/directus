@@ -247,12 +247,14 @@ define(['app', 'underscore', 'core/UIComponent', 'core/UIView', 'core/table/tabl
       this.$('table').removeClass('disable-sorting');
       this.$('.js-sort-toggle').addClass('active');
       this.sortable.options.sort = true;
+      this.sortable.options.disabled = false;
     },
 
     disableSortable: function() {
       this.$('table').addClass('disable-sorting');
       this.$('.js-sort-toggle').removeClass('active');
       this.sortable.options.sort = false;
+      this.sortable.options.disabled = true;
     },
 
     drop: function () {
@@ -285,6 +287,7 @@ define(['app', 'underscore', 'core/UIComponent', 'core/UIView', 'core/table/tabl
         draggable: 'tr', // Specifies which items inside the element should be sortable
         ghostClass: 'sortable-ghost',
         sort: false,
+        disabled: true,
         onStart: function () {
           var tbody = $(container);
 

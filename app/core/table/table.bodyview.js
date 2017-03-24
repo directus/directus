@@ -152,6 +152,7 @@ function(app, Backbone, _, Sortable, Notification) {
           draggable: 'tr', // Specifies which items inside the element should be sortable
           ghostClass: 'sortable-ghost',
           sort: false,
+          disabled: true,
           onStart: function (evt) {
             //var dragItem = jQuery(evt.item);
             var tbody = jQuery(container);

@@ -218,12 +218,14 @@ function(app, _, Backbone, Notification, __t, TableHelpers, ModelHelper, TableHe
       this.$el.find('table').removeClass('disable-sorting');
       this.$('.js-sort-toggle').addClass('active');
       this.sortable = this.sortableWidget.options.sort = true;
+      this.sortableWidget.options.disabled = false;
     },
 
     disableSortable: function() {
       this.$el.find('table').addClass('disable-sorting');
       this.$('.js-sort-toggle').removeClass('active');
       this.sortable = this.sortableWidget.options.sort = false;
+      this.sortableWidget.options.disabled = true;
     },
 
     setSpacing: function(name) {

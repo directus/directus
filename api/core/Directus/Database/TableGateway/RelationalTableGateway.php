@@ -304,7 +304,7 @@ class RelationalTableGateway extends BaseTableGateway
     /**
      * @param string $tableName
      * @param array $recordData
-     * 
+     *
      * @return bool
      */
     public function copyFiles($tableName, &$recordData)
