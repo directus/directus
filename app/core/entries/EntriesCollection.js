@@ -92,6 +92,12 @@ define(function(require, exports, module) {
       }
     },
 
+    fetchNext: function () {
+      this.filters.currentPage++;
+
+      return this.fetch({remove: false});
+    },
+
     saveAll: function(options) {
       return this.save(this.models, options);
     },

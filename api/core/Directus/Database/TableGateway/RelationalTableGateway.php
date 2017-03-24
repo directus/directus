@@ -1052,7 +1052,7 @@ class RelationalTableGateway extends BaseTableGateway
             $query->limit(1);
         }
 
-        if (ArrayUtils::has($params, 'status') && TableSchema::hasStatusColumn($this->getTable())) {
+        if (ArrayUtils::get($params, 'status') && TableSchema::hasStatusColumn($this->getTable())) {
             $statuses = $params['status'];
             if (!is_array($statuses)) {
                 $statuses = array_map(function($item) {

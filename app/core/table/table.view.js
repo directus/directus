@@ -331,8 +331,9 @@ function(app, _, Backbone, Notification, __t, TableHelpers, ModelHelper, TableHe
     _configureTable: function (options) {
       this.showChart = options.showChart === true;
       this.options.systemCollection = this.collection.clone();
-      this.listenTo(this.collection, 'sync', function (collection, resp) {
-        this.options.systemCollection.reset(resp, {parse: true});
+      this.listenTo(this.collection, 'sync', function (collection, resp, options) {
+        var method = options.reset ? 'reset' : 'set';
+        this.options.systemCollection[method](resp, options);
       });
     },
 

@@ -41,7 +41,12 @@ define(function () {
     }
   };
 
+  var hitBottom = function ($el) {
+    return $el.scrollTop() + $el.innerHeight() >= $el.get(0).scrollHeight;
+  };
+
   return {
+    hitBottom: hitBottom,
     fixWidths: fixWidths,
     headerScroll: headerScroll,
     headFootShadows: headFootShadows

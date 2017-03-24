@@ -246,12 +246,11 @@ function(app, Backbone, _, __t, BasePageView, ListViewManager, TableViewRightPan
       });
 
       var $el = $('#content');
+      var self = this;
+      // add throttle and debounce
       $el.on('scroll', function () {
-        TableHelpers.headFootShadows($el);
-      });
-
-      this.table.on('afterRender', function () {
-        TableHelpers.headFootShadows($el);
+        self.state.scrollPosition = $el.scrollTop;
+        self.table.trigger('scroll', $el);
       });
     },
 
@@ -267,6 +266,7 @@ function(app, Backbone, _, __t, BasePageView, ListViewManager, TableViewRightPan
       this.widgets = {};
       this.state = {
         viewId: this.getCurrentViewName(),
+        scrollPosition: 0,
         views: {}
       };
 

@@ -6,8 +6,9 @@ define([
   'backbone',
   'core/table/table.view',
   'core/widgets/TableChartWidget',
+  'helpers/table',
   'core/listings/baseView'
-], function(app, _, moment, __t, Backbone, TableView, TableChartWidget, BaseView) {
+], function(app, _, moment, __t, Backbone, TableView, TableChartWidget, TableHelpers, BaseView) {
 
   var CHART_Y_AXIS_NAME = 'chart_y_axis';
   var CHART_X_AXIS_NAME = 'chart_x_axis';
@@ -457,8 +458,31 @@ define([
         this.trigger('toggleRightPane');
       },
 
+      // $el - Base page
+      onScroll: function ($el) {
+        var self = this;
+        TableHelpers.headFootShadows($el);
+        if (TableHelpers.hitBottom($el)) {
+          this.$('.loading-more').show();
+          this.collection.fetchNext().then(function () {
+            self.$('.loading-more').hide();
+            // @TODO: should add one item at a time for performance
+            self.render();
+          });
+        }
+      },
+
+      onRender: function () {
+        // @TODO: store the content wrapper into a variable in the application object
+        TableHelpers.headFootShadows($('#content'));
+        this.$el.scrollTop(this.baseView.state.scrollPosition);
+      },
+
       bindEvents: function () {
         this.on('preferences:updated', this.updateTableSpacing, this);
+
+        this.on('scroll', this.onScroll, this);
+        this.on('afterRender', this.onRender, this);
 
         if (this.options.system === true) {
           this.collection.preferences.on('sync', this.updateSystemColumnsAndRender, this);
