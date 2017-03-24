@@ -9,6 +9,7 @@
 		white-space: nowrap;
 		&:last-child {
 			padding-bottom: 100px;
+			border-bottom: none;
 		}
 		&.break-header {
 			text-align: center;

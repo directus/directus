@@ -4836,7 +4836,8 @@ body.help .discover-spotlight {
   padding: 30px 30px 30px 20px;
   white-space: nowrap; }
   .fields .field:last-child {
-    padding-bottom: 100px; }
+    padding-bottom: 100px;
+    border-bottom: none; }
   .fields .field.break-header {
     text-align: center;
     background-color: #f6f6f6;
