@@ -147,7 +147,7 @@
 					if (!data.success) {
 						$('.processing').removeClass('blocking').removeClass('fading');
 						$('.processing .loading-bar').removeClass('step-1').removeClass('step-2');
-						message(data.message, true);
+						message(data.error.message, true);
 						return;
 					}
 
