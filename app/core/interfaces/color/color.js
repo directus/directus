@@ -59,19 +59,23 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
     template: 'color/input',
 
     events: {
-      // 'keypress input': function(event) {
-      //   if((event.which && event.which == 13) || (event.keyCode && event.keyCode == 13)) return false;
-      // },
-      // 'click .color-preview': function(event) {
-      //   // Remove value from input
-      //   this.$el.find('input').val('');
-      //
-      //   // Clear color preview
-      //   this.$el.find('.color-preview')[0].style.backgroundColor = 'transparent';
-      //
-      //   // Disable active button
-      //   this.$el.find('button').removeClass('active');
-      // },
+      // Disable enter button (would select first button after input == palette option)
+      'keypress input': function(event) {
+        if((event.which && event.which == 13) || (event.keyCode && event.keyCode == 13)) return false;
+      },
+
+
+      'click .color-preview': function(event) {
+        // Remove value from input
+        this.$el.find('input').val('');
+
+        // Clear color preview
+        this.$el.find('.color-preview')[0].style.backgroundColor = 'transparent';
+
+        // Disable active button
+        this.$el.find('button').removeClass('active');
+      },
+
       // 'input .color-text': function(event) {
       //   var color = event.target.value;
       //
@@ -143,6 +147,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
     variables: [
       // Disables editing of the field while still letting users see the value
       {id: 'readonly', type: 'Boolean', default_value: false, ui: 'checkbox'},
+      // TODO: Add 'only allow from palette' option
       {
         id: 'input',
         type: 'String',
