@@ -56,7 +56,10 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
       //   this.$el.find('input.color-text').removeClass("invalid");
       // }
       'click .color-select': function(event) {
-        this.$el.find('input').val(event.target.getAttribute('data-color'));
+        var color = event.target.getAttribute('data-color');
+        console.log(event.target.className);
+        if(event.target.className === 'material-icons') color = event.target.parentNode.getAttribute('data-color');
+        this.$el.find('input').val(color);
       }
     },
 
