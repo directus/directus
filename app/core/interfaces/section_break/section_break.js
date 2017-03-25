@@ -1,4 +1,4 @@
-//  Color core UI component
+//  Instructions core UI component
 //  Directus 6.0
 
 //  (c) RANGER
@@ -17,57 +17,51 @@
 /*jshint multistr: true */
 
 define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UIComponent, UIView, __t) {
-
   'use strict';
 
-  var template =  '<style type="text/css"> \
-                  .instructions-ui-content { \
-                    line-height: 20px; \
-                    max-width: 675px; \
-                  } \
-                  .instructions-ui-content h1 { \
-                    margin: 10px 0 10px 0; \
-                  } \
-                  </style> \
-                  <div class="instructions-ui-content">{{{instructions}}}</div>';
-
   var Input = UIView.extend({
-    templateSource: template,
-
-    events: {
-      // 'change .color-box': function(e) {
-      //   var color_str = e.target.value;
-      //   this.$el.find('input.color-text').val(color_str);
-      //   this.$el.find('span.invalid').html("");
-      //   this.$el.find('input.color-text').removeClass("invalid");
-      // }
-    },
-
-    afterRender: function() {
-      //
-    },
+    template: 'section_break/template',
+    fieldClass: function() { return this.options.settings.get('show_inline') ? false : 'break-header' },
+    hideLabel: true,
 
     serialize: function() {
       var value = this.options.value || '';
 
       return {
         value: value,
-        name: this.options.name,
-        comment: this.options.schema.get('comment'),
-        instructions: this.options.settings.get('instructions') || __t('instructions_please_have_your_admin_setup_this_field')
+        inline: this.options.settings.get('show_inline'),
+        title: this.options.settings.get('title') || '',
+        instructions: this.options.settings.get('instructions') || ''
       };
-    },
-
-    initialize: function() {
-      //
     }
   });
 
   var Component = UIComponent.extend({
-    id: 'instructions',
+    id: 'section_break',
     dataTypes: ['VARCHAR', 'TEXT'],
     variables: [
-      {id: 'instructions', type: 'String', default_value: '', ui: 'wysiwyg', options: {'h1':true,'ul':true,'ol':true }}
+      {
+        id: 'show_inline',
+        type: 'Boolean',
+        default_value: false,
+        ui: 'checkbox'
+      },
+      {
+        id: 'title',
+        type: 'String',
+        default_value: '',
+        ui: 'textinput'
+      },
+      {
+        id: 'instructions',
+        type: 'String',
+        default_value: '',
+        ui: 'wysiwyg',
+        options: {
+          'ul': true,
+          'ol': true
+        }
+      }
     ],
     Input: Input,
     list: function(options) {

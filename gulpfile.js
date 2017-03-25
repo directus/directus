@@ -53,13 +53,13 @@ function runSequence(commands, prefix) {
 // CSS - Gulp Task
 // --------------------
 gulp.task('styles', function() {
-  return gulp.src(['assets/scss/compile.scss'])
+  return gulp.src(['assets/sass/main.scss'])
     .pipe(sass())
-    .pipe(rename('directus.css'))
+    .pipe(rename('main.css'))
     .pipe(gulp.dest('dist/assets/css'))
     .pipe(gulp.dest('assets/css'))
     .pipe(size())
-    .pipe(rename('directus.min.css'))
+    .pipe(rename('main.min.css'))
     .pipe(mincss())
     .pipe(gulp.dest('dist/assets/css'))
     .pipe(size())
@@ -321,7 +321,7 @@ gulp.task('move', function() {
 
 // Rerun the task when a file changes
 gulp.task('watch', function() {
-  gulp.watch('assets/scss/directus/**/*.scss', ['styles']);
+  gulp.watch('assets/sass/**/*.scss', ['styles']);
   gulp.watch('app/**/*.js', ['scripts:app', 'scripts:directus']);
   gulp.watch(vendorFiles, ['scripts:vendor', 'scripts:directus']);
   gulp.watch('assets/fonts/**/*.*', ['fonts']);
