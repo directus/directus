@@ -34,6 +34,59 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
     '#ffffff'
   ];
 
+  /**
+   * Validates color
+   *   Supports transparent, css color names, hex values (3, 6 and 8), hsl(a) and rgb(a)
+   * @param  {String} color CSS color value
+   * @return {Boolean}
+   */
+  function isValidHex(color) {
+    if(!color || typeof color !== 'string') return false;
+
+    // Validate hex values
+    if(color.substring(0, 1) === '#') {
+      return validateHex(color);
+    }
+
+    // Validate rgb
+    if(color.substring(0, 3) === 'rgb' && color.substring(0, 4) !== 'rgba') {
+      return validateRGB(color);
+    }
+
+    // Validate rgba
+    if(color.substring(0, 4) === 'rgba') {
+
+    }
+
+    return validateTextColor(color);
+
+    return false;
+  }
+
+  function validateRGB(color) {
+    return /^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/.test(color);
+  }
+
+  function validateHex(color) {
+    if(color.length === 4 || color.length === 7 || color.length === 9) {
+      switch(color.length) {
+        case 4: return /^#[0-9A-F]{3}$/i.test(color);
+        case 7: return /^#[0-9A-F]{6}$/i.test(color);
+        case 9: return /^#[0-9A-F]{8}$/i.test(color);
+      }
+    } else {
+      return false;
+    }
+  }
+
+  function validateTextColor(color) {
+    var cssColorsArray = ['AliceBlue', 'AntiqueWhite', 'Aqua', 'Aquamarine', 'Azure', 'Beige', 'Bisque', 'Black', 'BlanchedAlmond', 'Blue', 'BlueViolet', 'Brown', 'BurlyWood', 'CadetBlue', 'Chartreuse', 'Chocolate', 'Coral', 'CornflowerBlue', 'Cornsilk', 'Crimson', 'Cyan', 'DarkBlue', 'DarkCyan', 'DarkGoldenRod', 'DarkGray', 'DarkGrey', 'DarkGreen', 'DarkKhaki', 'DarkMagenta', 'DarkOliveGreen', 'Darkorange', 'DarkOrchid', 'DarkRed', 'DarkSalmon', 'DarkSeaGreen', 'DarkSlateBlue', 'DarkSlateGray', 'DarkSlateGrey', 'DarkTurquoise', 'DarkViolet', 'DeepPink', 'DeepSkyBlue', 'DimGray', 'DimGrey', 'DodgerBlue', 'FireBrick', 'FloralWhite', 'ForestGreen', 'Fuchsia', 'Gainsboro', 'GhostWhite', 'Gold', 'GoldenRod', 'Gray', 'Grey', 'Green', 'GreenYellow', 'HoneyDew', 'HotPink', 'IndianRed', 'Indigo', 'Ivory', 'Khaki', 'Lavender', 'LavenderBlush', 'LawnGreen', 'LemonChiffon', 'LightBlue', 'LightCoral', 'LightCyan', 'LightGoldenRodYellow', 'LightGray', 'LightGrey', 'LightGreen', 'LightPink', 'LightSalmon', 'LightSeaGreen', 'LightSkyBlue', 'LightSlateGray', 'LightSlateGrey', 'LightSteelBlue', 'LightYellow', 'Lime', 'LimeGreen', 'Linen', 'Magenta', 'Maroon', 'MediumAquaMarine', 'MediumBlue', 'MediumOrchid', 'MediumPurple', 'MediumSeaGreen', 'MediumSlateBlue', 'MediumSpringGreen', 'MediumTurquoise', 'MediumVioletRed', 'MidnightBlue', 'MintCream', 'MistyRose', 'Moccasin', 'NavajoWhite', 'Navy', 'OldLace', 'Olive', 'OliveDrab', 'Orange', 'OrangeRed', 'Orchid', 'PaleGoldenRod', 'PaleGreen', 'PaleTurquoise', 'PaleVioletRed', 'PapayaWhip', 'PeachPuff', 'Peru', 'Pink', 'Plum', 'PowderBlue', 'Purple', 'Red', 'RosyBrown', 'RoyalBlue', 'SaddleBrown', 'Salmon', 'SandyBrown', 'SeaGreen', 'SeaShell', 'Sienna', 'Silver', 'SkyBlue', 'SlateBlue', 'SlateGray', 'SlateGrey', 'Snow', 'SpringGreen', 'SteelBlue', 'Tan', 'Teal', 'Thistle', 'Tomato', 'Turquoise', 'Violet', 'Wheat', 'White', 'WhiteSmoke', 'Yellow', 'YellowGreen'].map(value => value.toLowerCase());
+
+    if(color === 'transparent') return true;
+    if(cssColorsArray.indexOf(color.toLowerCase) !== -1) return true;
+    return false;
+  }
+
   var Input = UIView.extend({
     template: 'color/input',
 
