@@ -1,36 +1,19 @@
-<style type="text/css"> \
-	.position-offset {
-		position: relative;
-	}
-
-	input.color-box {
-		margin-left: 10px;
-		width: 42px;
-		height: 44px;
-		padding: 10px;
+<style type="text/css">
+	.interface-color button {
 		display: inline-block;
-		left: 0;
-		position: absolute;
-	}
-
-	input.color-text.invalid {
-		border-color: #EB2A49;
-	}
-
-	input.color-text.invalid:focus {
-		box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(235,42,73,.3);
-	}
-
-	span.invalid {
-		color: #EB2A49;
-		margin-left: 10px;
+		font-size: 0;
+		width: 2rem;
+		height: 2rem;
+		border-radius: 50%;
+		margin: .5rem;
+		vertical-align: middle;
 	}
 </style>
 
-<input type="text" class="color-text small" value="{{value}}" maxlength="7" placeholder="#3498db">
+<div class="interface-color">
+	<input type="text" class="color-text small" value="{{value}}" maxlength="7" placeholder="{{t "example_abbr"}} #3498db">
 
-<span class="position-offset">
-	<input type="color" class="color-box" value="{{value}}" name="{{name}}" id="{{name}}" placeholder="{{t "example_abbr"}}. #bbbbbb">
-</span>
-
-<span class="invalid"></span>
+	{{#each palette}}
+		<button data-color="{{this}}" style="background-color: {{this}};">{{this}}</button>
+	{{/each}}
+</div>

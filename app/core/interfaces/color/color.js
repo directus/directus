@@ -20,55 +20,41 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
 
   'use strict';
 
-  var template =  '<style type="text/css"> \
-                  .position-offset { \
-                    position: relative; \
-                  } \
-                  input.color-box { \
-                    margin-left: 10px; \
-                    width: 42px; \
-                    height: 44px; \
-                    padding: 10px; \
-                    display: inline-block; \
-                    left: 0; \
-                    position: absolute; \
-                  } \
-                  input.color-text.invalid { \
-                    border-color: #EB2A49; \
-                  } \
-                  input.color-text.invalid:focus { \
-                    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(235,42,73,.3); \
-                    -moz-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(235,42,73,.3); \
-                    box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(235,42,73,.3); \
-                  } \
-                  span.invalid { \
-                    color: #EB2A49; \
-                    margin-left: 10px; \
-                  } \
-                  </style> \
-                  <input type="text" class="color-text small" value="{{value}}" maxlength="7" placeholder="#bbbbbb"><span class="position-offset"><input type="color" class="color-box" value="{{value}}" name="{{name}}" id="{{name}}" placeholder="{{t "example_abbr"}}. #bbbbbb"></span> <span class="invalid"></span>';
+  var defaultPalette = [
+    '#f44336',
+    '#e91e63',
+    '#9c27b0',
+    '#3f51b5',
+    '#2196f3',
+    '#4caf50',
+    '#ffeb3b',
+    '#ff9800',
+    '#9e9e9e',
+    '#000000',
+    '#ffffff'
+  ];
 
   var Input = UIView.extend({
-    templateSource: template,
+    template: 'color/input',
 
     events: {
-      'change .color-text': function(e) {
-        var color_str = e.target.value;
-        if(color_str.match(/^#[a-f0-9]{6}$/i) !== null){
-          this.$el.find('input.color-box').val(color_str);
-          this.$el.find('span.invalid').html("");
-          this.$el.find('input.color-text').removeClass("invalid");
-        } else {
-          this.$el.find('span.invalid').html(__t('color_invalid_color')+" <i>"+__t('example_abbr')+". #bbbbbb</i>");
-          this.$el.find('input.color-text').addClass("invalid");
-        }
-      },
-      'change .color-box': function(e) {
-        var color_str = e.target.value;
-        this.$el.find('input.color-text').val(color_str);
-        this.$el.find('span.invalid').html("");
-        this.$el.find('input.color-text').removeClass("invalid");
-      }
+      // 'change .color-text': function(e) {
+      //   var color_str = e.target.value;
+      //   if(color_str.match(/^#[a-f0-9]{6}$/i) !== null){
+      //     this.$el.find('input.color-box').val(color_str);
+      //     this.$el.find('span.invalid').html("");
+      //     this.$el.find('input.color-text').removeClass("invalid");
+      //   } else {
+      //     this.$el.find('span.invalid').html(__t('color_invalid_color')+" <i>"+__t('example_abbr')+". #bbbbbb</i>");
+      //     this.$el.find('input.color-text').addClass("invalid");
+      //   }
+      // },
+      // 'change .color-box': function(e) {
+      //   var color_str = e.target.value;
+      //   this.$el.find('input.color-text').val(color_str);
+      //   this.$el.find('span.invalid').html("");
+      //   this.$el.find('input.color-text').removeClass("invalid");
+      // }
     },
 
     afterRender: function() {
@@ -81,7 +67,8 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
       return {
         value: value,
         name: this.options.name,
-        comment: this.options.schema.get('comment')
+        comment: this.options.schema.get('comment'),
+        palette: this.options.settings.get('palette').split(',')
       };
     },
 
@@ -97,7 +84,9 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
       // Disables editing of the field while still letting users see the value
       {id: 'readonly', type: 'Boolean', default_value: false, ui: 'checkbox'},
       // Shows a color box representation on the Item Listing page
-      {id: 'show_color_on_list', type: 'Boolean', default_value: true, ui: 'checkbox'}
+      {id: 'show_color_on_list', type: 'Boolean', default_value: true, ui: 'checkbox'},
+      // Allow palette CSV
+      {id: 'palette', type: 'VARCHAR', default_value: defaultPalette.join(), ui: 'textinput'}
     ],
     Input: Input,
     validate: function(value, options) {
