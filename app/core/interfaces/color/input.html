@@ -4,7 +4,7 @@
 		align-items: center;
 	}
 
-	.interface-color div:first-child {
+	.interface-color > div:first-child {
 		flex-shrink: 0;
 		position: relative;
 		width: 165px;
@@ -42,12 +42,12 @@
 		opacity: 1;
 	}
 
-	.interface-color div:last-child {
+	.interface-color > div:last-child {
 		align-items: center;
 		display: flex;
 	}
 
-	.interface-color button {
+	.interface-color .color-select {
 		font-size: 0;
 		width: 2.2rem;
 		height: 2.2rem;
@@ -59,7 +59,7 @@
 		align-items: center;
 	}
 
-	.interface-color button i {
+	.interface-color .color-select i {
 		width: 1.25em;
 		height: 1.25em;
 		color: #fff;
@@ -67,16 +67,16 @@
 		transition: opacity 200ms ease;
 	}
 
-	.interface-color button:hover i,
-	.interface-color button:focus i {
+	.interface-color .color-select:hover i,
+	.interface-color .color-select:focus i {
 		opacity: 0.5;
 	}
 
-	.interface-color button:focus {
+	.interface-color .color-select:focus {
     	box-shadow: 0px 0px 0px 2px #f5f4f5, 0px 0px 0px 4px #3498DB;
 	}
 
-	.interface-color button.active i {
+	.interface-color .color-select.active i {
 		opacity: 1;
 	}
 
@@ -84,12 +84,12 @@
 
 <div class="interface-color">
 	<div>
-		<input type="text" class="color-text small" value="{{value}}" placeholder="{{t "example_abbr"}}. #3498db">
+		<input type="text" class="color-text small" value="{{value}}" placeholder="{{t "example_abbr"}}. #3498db" pattern="[0-9a-fA-F]{3,8}">
 		<span class="color-preview"><i class="material-icons">close</i></span>
 	</div>
 	<div>
 	{{#each palette}}
-		<button class="color-select" data-color="{{this}}" style="background-color: {{this}};"><i class="material-icons">check</i></button>
+		<button tabindex="0" class="color-select" data-color="{{this}}" style="background-color: #{{this}};"><i class="material-icons">check</i></button>
 	{{/each}}
 	</div>
 </div>
