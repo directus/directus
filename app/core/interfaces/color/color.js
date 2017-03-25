@@ -70,7 +70,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
         this.$el.find('input').val('');
 
         // Clear color preview
-        this.$el.find('.color-preview')[0].style.backgroundColor = 'transparent';
+        this.$el.find('.color-preview')[0].style.backgroundColor = 'black';
 
         // Disable active button
         this.$el.find('button').removeClass('active');
