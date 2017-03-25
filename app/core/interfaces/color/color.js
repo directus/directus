@@ -143,10 +143,56 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
     variables: [
       // Disables editing of the field while still letting users see the value
       {id: 'readonly', type: 'Boolean', default_value: false, ui: 'checkbox'},
-      // Shows a color box representation on the Item Listing page
-      {id: 'show_color_on_list', type: 'Boolean', default_value: true, ui: 'checkbox'},
-      // Allow palette CSV
-      {id: 'palette', type: 'VARCHAR', default_value: defaultPalette.join(), ui: 'textinput'}
+      {
+        id: 'input',
+        type: 'String',
+        default_value: 'hex',
+        ui: 'select',
+        options: {
+          options: {
+            hex: 'Hex',
+            rgb: 'RGB',
+            hsl: 'HSL'
+          }
+        }
+      },
+      {
+        id: 'output',
+        type: 'String',
+        default_value: 'hex',
+        ui: 'select',
+        options: {
+          options: {
+            hex: 'Hex',
+            hexWithChar: 'Hex (with `#`)',
+            rgb: 'RGB',
+            hsl: 'HSL'
+          }
+        }
+      },
+      {
+        id: 'listing',
+        type: 'String',
+        default_value: 'swatch',
+        ui: 'select',
+        options: {
+          options: {
+            swatch: 'Color Swatch',
+            value: 'Value'
+          }
+        }
+      },
+      {
+        id: 'allow_alpha',
+        type: 'Boolean',
+        default_value: false,
+        ui: 'checkbox'
+      },
+      {
+        id: 'palette',
+        type: 'String',
+        ui: 'tags'
+      }
     ],
     Input: Input,
     validate: function(value, options) {
