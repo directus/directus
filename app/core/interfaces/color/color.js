@@ -38,23 +38,16 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
     template: 'color/input',
 
     events: {
-      // 'change .color-text': function(e) {
-      //   var color_str = e.target.value;
-      //   if(color_str.match(/^#[a-f0-9]{6}$/i) !== null){
-      //     this.$el.find('input.color-box').val(color_str);
-      //     this.$el.find('span.invalid').html("");
-      //     this.$el.find('input.color-text').removeClass("invalid");
-      //   } else {
-      //     this.$el.find('span.invalid').html(__t('color_invalid_color')+" <i>"+__t('example_abbr')+". #bbbbbb</i>");
-      //     this.$el.find('input.color-text').addClass("invalid");
-      //   }
-      // },
-      // 'change .color-box': function(e) {
-      //   var color_str = e.target.value;
-      //   this.$el.find('input.color-text').val(color_str);
-      //   this.$el.find('span.invalid').html("");
-      //   this.$el.find('input.color-text').removeClass("invalid");
-      // },
+      'click .color-preview': function(event) {
+        // Remove value from input
+        this.$el.find('input').val('');
+
+        // Clear color preview
+        this.$el.find('.color-preview')[0].style.backgroundColor = 'transparent';
+
+        // Disable active button
+        this.$el.find('button').removeClass('active');
+      },
       'input .color-text': function(event) {
         var color = event.target.value;
 
@@ -66,10 +59,14 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
         this.$el.find('.color-preview')[0].style.backgroundColor = color;
       },
       'click .color-select': function(event) {
+        // Active clicked on button
         var button = event.target.className === 'material-icons' ? event.target.parentNode : event.target;
         this.$el.find('input').val(button.getAttribute('data-color'));
         this.$el.find('button').removeClass('active');
         button.classList.add('active');
+
+        // Set preview color
+        this.$el.find('.color-preview')[0].style.backgroundColor = button.getAttribute('data-color');
       }
     },
 
