@@ -54,7 +54,12 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
       //   this.$el.find('input.color-text').val(color_str);
       //   this.$el.find('span.invalid').html("");
       //   this.$el.find('input.color-text').removeClass("invalid");
-      // }
+      // },
+      'input .color-text': function(event) {
+        var color = event.target.value;
+        this.$el.find('button').removeClass('active');
+        this.$el.find('button[data-color=' + color + ']').addClass('active');
+      },
       'click .color-select': function(event) {
         var button = event.target.className === 'material-icons' ? event.target.parentNode : event.target;
         this.$el.find('input').val(button.getAttribute('data-color'));
