@@ -93,6 +93,9 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
         if(!isValidHex(color) && color.length !== 0) {
           this.$el.find('.color-invalid')[0].innerHTML = __t('confirm_invalid_value');
         }
+      },
+      'blur .color-text': function(event) {
+        var color = event.target.value;
 
         if(this.options.schema.isRequired() && color.length === 0) {
           this.$el.find('.color-invalid')[0].innerHTML = __t('this_field_is_required');
