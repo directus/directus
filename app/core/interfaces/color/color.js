@@ -56,10 +56,10 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
       //   this.$el.find('input.color-text').removeClass("invalid");
       // }
       'click .color-select': function(event) {
-        var color = event.target.getAttribute('data-color');
-        console.log(event.target.className);
-        if(event.target.className === 'material-icons') color = event.target.parentNode.getAttribute('data-color');
-        this.$el.find('input').val(color);
+        var button = event.target.className === 'material-icons' ? event.target.parentNode : event.target;
+        this.$el.find('input').val(button.getAttribute('data-color'));
+        this.$el.find('button').removeClass('active');
+        button.classList.add('active');
       }
     },
 
@@ -96,7 +96,6 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
     ],
     Input: Input,
     validate: function(value, options) {
-      // This doesn't work since the input type="color" has a default color which is black: #000000
       if (options.schema.isRequired() && _.isEmpty(value)) {
         return __t('this_field_is_required');
       }
