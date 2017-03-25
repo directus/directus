@@ -80,7 +80,23 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
         this.$el.find('button[data-color="' + color + '"]').addClass('active');
 
         // Update preview color
-        this.$el.find('.color-preview')[0].style.backgroundColor = color;
+        this.$el.find('.color-preview')[0].style.backgroundColor = '#' + color;
+
+        // Set preview color to black when input field is empty
+        if(color.length === 0) this.$el.find('.color-preview')[0].style.backgroundColor = '#000';
+
+        this.$el.find('.color-invalid')[0].innerHTML = '';
+      },
+      'change .color-text': function(event) {
+        var color = event.target.value;
+
+        if(!isValidHex(color) && color.length !== 0) {
+          this.$el.find('.color-invalid')[0].innerHTML = __t('confirm_invalid_value');
+        }
+
+        if(this.options.schema.isRequired() && color.length === 0) {
+          this.$el.find('.color-invalid')[0].innerHTML = __t('this_field_is_required');
+        }
       },
       'click .color-select': function(event) {
         // Active clicked on button
@@ -90,7 +106,10 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
         button.classList.add('active');
 
         // Set preview color
-        this.$el.find('.color-preview')[0].style.backgroundColor = button.getAttribute('data-color');
+        this.$el.find('.color-preview')[0].style.backgroundColor = '#' + button.getAttribute('data-color');
+
+        // Remove invalid message
+        this.$el.find('.color-invalid')[0].innerHTML = '';
       }
     },
 
@@ -105,7 +124,8 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
         value: value,
         name: this.options.name,
         comment: this.options.schema.get('comment'),
-        palette: this.options.settings.get('palette').split(',')
+        palette: this.options.settings.get('palette').split(','),
+        readonly: this.options.settings.get('readonly')
       };
     },
 
