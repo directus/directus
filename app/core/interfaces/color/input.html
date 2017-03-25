@@ -1,19 +1,63 @@
 <style type="text/css">
-	.interface-color button {
+	.interface-color {
+		display: flex;
+		align-items: center;
+	}
+
+	.interface-color input {
+		flex-shrink: 0;
+		margin-right: 2em;
+		min-width: 4em !important;
+		max-width: 8em;
 		display: inline-block;
-		font-size: 0;
-		width: 2rem;
-		height: 2rem;
-		border-radius: 50%;
-		margin: .5rem;
 		vertical-align: middle;
 	}
+
+	.interface-color div {
+		align-items: center;
+		display: flex;
+	}
+
+	.interface-color button {
+		font-size: 0;
+		width: 2.2rem;
+		height: 2.2rem;
+		border-radius: 50%;
+		margin: .5rem;
+		position: relative;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+
+	.interface-color button i {
+		width: 1.25em;
+		height: 1.25em;
+		color: #fff;
+		opacity: 0;
+		transition: opacity 200ms ease;
+	}
+
+	.interface-color button:hover i,
+	.interface-color button:focus i {
+		opacity: 0.5;
+	}
+
+	.interface-color button:focus {
+    	box-shadow: 0px 0px 0px 2px #f5f4f5, 0px 0px 0px 4px #3498DB;
+	}
+
+	.interface-color button.active i {
+		opacity: 1;
+	}
+
 </style>
 
 <div class="interface-color">
 	<input type="text" class="color-text small" value="{{value}}" maxlength="7" placeholder="{{t "example_abbr"}} #3498db">
-
+	<div>
 	{{#each palette}}
-		<button class="color-select" data-color="{{this}}" style="background-color: {{this}};">{{this}}</button>
+		<button class="color-select" data-color="{{this}}" style="background-color: {{this}};"><i class="material-icons">check</i></button>
 	{{/each}}
+	</div>
 </div>
