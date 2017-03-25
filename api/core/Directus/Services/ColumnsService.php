@@ -138,7 +138,7 @@ class ColumnsService extends AbstractService
                 $columnName,
                 $columnObject->getLength(),
                 $columnObject->isNullable(),
-                $columnObject->getDataType()
+                $columnObject->getDefaultValue()
             );
 
             if (ArrayUtils::has($data, 'default_value')) {
@@ -148,10 +148,14 @@ class ColumnsService extends AbstractService
             // @TODO: add a list of supported types by databases
             if (ArrayUtils::has($data, 'data_type')) {
                 $newColumn->setType($data['data_type']);
+            } else {
+                $newColumn->setType($columnObject->getDataType());
             }
 
-            $length = ArrayUtils::get($data, 'length', $columnObject->getLength());
-            $newColumn->setLength($length);
+            if (ArrayUtils::has($data, 'length')) {
+                $length = ArrayUtils::get($data, 'length', 0);
+                $newColumn->setLength($length);
+            }
 
             $alterTable->changeColumn($columnName, $newColumn);
 
