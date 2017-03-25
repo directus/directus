@@ -146,11 +146,8 @@ class ColumnsService extends AbstractService
             }
 
             // @TODO: add a list of supported types by databases
-            if (ArrayUtils::has($data, 'data_type')) {
-                $newColumn->setType($data['data_type']);
-            } else {
-                $newColumn->setType($columnObject->getDataType());
-            }
+            $type = ArrayUtils::get($data, 'data_type', $columnObject->getDataType());
+            $newColumn->setType($type);
 
             if (ArrayUtils::has($data, 'length')) {
                 $length = ArrayUtils::get($data, 'length', 0);
