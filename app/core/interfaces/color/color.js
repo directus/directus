@@ -55,6 +55,9 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
       //   this.$el.find('span.invalid').html("");
       //   this.$el.find('input.color-text').removeClass("invalid");
       // }
+      'click .color-select': function(event) {
+        this.$el.find('input').val(event.target.getAttribute('data-color'));
+      }
     },
 
     afterRender: function() {
