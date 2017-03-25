@@ -57,8 +57,13 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
       // },
       'input .color-text': function(event) {
         var color = event.target.value;
+
+        // Activate button if color matches
         this.$el.find('button').removeClass('active');
-        this.$el.find('button[data-color=' + color + ']').addClass('active');
+        this.$el.find('button[data-color="' + color + '"]').addClass('active');
+
+        // Update preview color
+        this.$el.find('.color-preview')[0].style.backgroundColor = color;
       },
       'click .color-select': function(event) {
         var button = event.target.className === 'material-icons' ? event.target.parentNode : event.target;
