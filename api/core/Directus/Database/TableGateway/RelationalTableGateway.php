@@ -273,8 +273,9 @@ class RelationalTableGateway extends BaseTableGateway
     }
 
     /**
-     * @param string $table
+     * @param string $tableName
      * @param array $recordData
+     *
      * @return bool
      */
     public function deleteFiles($tableName, $recordData)
@@ -292,7 +293,7 @@ class RelationalTableGateway extends BaseTableGateway
 
         $params = [];
         $params[$primaryKeyFieldName] = $recordData[$primaryKeyFieldName];
-        $file = $filesTableGateway->getEntries($params);
+        $file = $filesTableGateway->loadItems($params);
 
         $Files = static::$container->get('files');
         $Files->delete($file);
@@ -301,8 +302,9 @@ class RelationalTableGateway extends BaseTableGateway
     }
 
     /**
-     * @param string $table
+     * @param string $tableName
      * @param array $recordData
+     *
      * @return bool
      */
     public function copyFiles($tableName, &$recordData)
@@ -1052,7 +1054,7 @@ class RelationalTableGateway extends BaseTableGateway
             $query->limit(1);
         }
 
-        if (ArrayUtils::has($params, 'status') && TableSchema::hasStatusColumn($this->getTable())) {
+        if (ArrayUtils::get($params, 'status') && TableSchema::hasStatusColumn($this->getTable())) {
             $statuses = $params['status'];
             if (!is_array($statuses)) {
                 $statuses = array_map(function($item) {

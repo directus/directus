@@ -19,7 +19,7 @@ define(function(require, exports, module) {
     require('core/interfaces/single_file/component'),
     require('core/interfaces/slug'),
     require('core/interfaces/textarea'),
-    require('core/interfaces/directus_user'),
+    require('core/interfaces/user/interface'),
     require('core/interfaces/directus_activity'),
     require('core/interfaces/datetime/datetime'),
     require('core/interfaces/datetime/date'),
@@ -268,7 +268,7 @@ define(function(require, exports, module) {
     // returns a string containing the table view
     getUIValue: function(section, model, attr, noDefault) {
       var section = _.contains(this.validSections, section) ? section : 'list';
-      var defaultValue = '<span class="secondary-info">--</span>';
+      var defaultValue = '<span class="no-value">--</span>';
       // Return true or false whether there's value or not (UI)
       // Instead of returning the default HTML
       // https://github.com/RNGR/Directus/issues/452

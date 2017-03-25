@@ -16,7 +16,7 @@ function(app, Backbone, _, Sortable, Notification) {
     template: 'tables/table-body',
 
     attributes: {
-      class: 'drag-and-drop bulk-selectable'
+      class: 'drag-and-drop batch-selectable'
     },
 
     events: {
@@ -139,7 +139,8 @@ function(app, Backbone, _, Sortable, Notification) {
       this.options.filters = this.options.filters || {};
       this.sort = this.options.structure.get('sort') || options.sort;
 
-      this.listenTo(this.collection, 'sort', this.render);
+      var collection = options.system == true ? this.options.systemCollection : this.collection;
+      this.listenTo(collection, 'sort', this.render);
       this.parentView = options.parentView;
 
       if (this.sort) {
@@ -151,6 +152,7 @@ function(app, Backbone, _, Sortable, Notification) {
           draggable: 'tr', // Specifies which items inside the element should be sortable
           ghostClass: 'sortable-ghost',
           sort: false,
+          disabled: true,
           onStart: function (evt) {
             //var dragItem = jQuery(evt.item);
             var tbody = jQuery(container);

@@ -6,7 +6,7 @@ class AddCountryColumnToUsers extends Ruckusing_Migration_Base
     public function up()
     {
         if (!$this->has_column('directus_users', 'country')) {
-            $this->add_column('directus_users', 'country', 'string', [
+            $this->add_column('directus_users', 'country', 'char', [
                 'limit' => 2,
                 'default' => null,
                 'after' => 'state'

@@ -779,6 +779,16 @@
 				color: $primary;
 				border: none;
 				border-left: 2px solid $primary;
+				&.disabled {
+					color: $gray-3;
+					background-color: $gray-1;
+					cursor: not-allowed;
+					&:hover,
+					&.active {
+						background-color: $gray-1;
+						color: $gray-3;
+					}
+				}
 				&:first-child {
 					border-left: none;
 					width: 38px;

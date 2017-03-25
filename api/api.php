@@ -688,10 +688,10 @@ $app->post("/$v/auth/login/?", function () use ($app, $ZendDb, $acl, $requestNon
         }
     }
 
-    return $app->response([
+    return $app->response(array_merge($response, [
         'success' => true,
         'all_nonces' => $requestNonceProvider->getAllNonces()
-    ]);
+    ]));
 })->name('auth_login');
 
 $app->get("/$v/auth/logout(/:inactive)", function ($inactive = null) use ($app, $authentication) {

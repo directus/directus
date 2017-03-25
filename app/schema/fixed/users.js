@@ -20,7 +20,7 @@ define(function(require, exports, module) {
   }
 
   module.exports = {
-    getUsers: function(locales, timezones) {
+    getUsers: function (locales, timezones, countries) {
       var statusName = app.statusMapping.status_name;
       var defaultTimezone = app.timezone;
       var defaultLocale = app.locale;
@@ -103,14 +103,15 @@ define(function(require, exports, module) {
           },
           {
             "id":"name",
-            "column_name":"first_name",
+            "column_name":"name",
             "type":"ALIAS",
             "sort":3,
             "nullable": false,
             "ui":"directus_user",
             "system":false,
-            "hidden_list":true,
-            "hidden_input":true,
+            "omit_input": true,
+            "hidden_list": false,
+            "hidden_input": true,
             "required":false,
             "options": {
               "format": "full"
@@ -287,13 +288,16 @@ define(function(require, exports, module) {
             "default_value": null,
             "comment":"",
             "sort":36,
-            "ui":"textinput",
+            "ui":"select",
             "system":false,
             "hidden_list":false,
             "hidden_input":false,
             "required":false,
             "options": {
-              "size": "small"
+              "allow_null": true,
+              "options": parseSelectOptions(countries, function(key, list, name, result) {
+                result[key] = name;
+              })
             }
           },
           {
@@ -449,7 +453,10 @@ define(function(require, exports, module) {
             "hidden_list":false,
             "hidden_input":true,
             "required":false,
-            "ui":"datetime"
+            "ui":"datetime",
+            "options": {
+              "contextual_date_in_listview": true
+            }
           },
           {
             "id":"last_page",
@@ -554,6 +561,7 @@ define(function(require, exports, module) {
             "column_name": "invite_token",
             "type": "VARCHAR",
             "ui": "textinput",
+            "nullable": true,
             "omit_input": true
           },
           {
@@ -561,6 +569,7 @@ define(function(require, exports, module) {
             "column_name": "invite_date",
             "type": "DATETIME",
             "ui": "datetime",
+            "nullable": true,
             "omit_input": true
           },
           {
@@ -568,6 +577,7 @@ define(function(require, exports, module) {
             "column_name": "invite_sender",
             "type": "INT",
             "ui": "numeric",
+            "nullable": true,
             "omit_input": true
           },
           {
@@ -575,6 +585,7 @@ define(function(require, exports, module) {
             "column_name": "invite_accepted",
             "type": "TINYINT",
             "ui": "checkbox",
+            "nullable": true,
             "omit_input": true
           }
         ]

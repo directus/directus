@@ -1,24 +1,24 @@
-<div class="table-shadow">
-    <table class="table table-striped directus-table not-responsive" id="directus-grouppermissions">
-    	<thead>
-    		<tr>
-    			<th class="field-note">{{t "column"}}</th>
-    			<th class="permissions">{{t "permissions_read"}}</th>
-    			<th class="permissions">{{t "permissions_write"}}</th>
-    		</tr>
-    	</thead>
-    	<tbody>
-        {{#columns}}
-        <tr class="" data-column-name="{{column_name}}">
-          <td>{{column_name}}</td>
-          <td data-value="read">
-            <span class="toggle-switch {{#if read}}on has-privilege{{/if}}"></span>
-          </td>
+<div>
+		<table class="table table-striped directus-table not-responsive" id="directus-grouppermissions">
+			<thead>
+				<tr>
+					<th class="field-note">{{t "column"}}</th>
+					<th class="permissions">{{t "permissions_read"}}</th>
+					<th class="permissions">{{t "permissions_write"}}</th>
+				</tr>
+			</thead>
+			<tbody>
+				{{#columns}}
+				<tr class="" data-column-name="{{column_name}}">
+					<td>{{column_name}}</td>
+					<td data-value="read">
+						<span class="toggle-switch {{#if read}}on has-privilege{{/if}}"></span>
+					</td>
 
-          <td data-value="write">
-            <span class="toggle-switch {{#if write}}on has-privilege{{/if}}"></span>
-          </td>
-        {{/columns}}
-    	</tbody>
-    </table>
+					<td data-value="write">
+						<span class="toggle-switch {{#if write}}on has-privilege{{/if}}"></span>
+					</td>
+				{{/columns}}
+			</tbody>
+		</table>
 </div>

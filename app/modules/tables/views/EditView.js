@@ -72,7 +72,6 @@ function(app, Backbone, _, Handlebars, __t, Directus, BasePageView, Widgets, His
     events: {
       'change input, select, textarea': 'checkDiff',
       'keyup input, textarea': 'checkDiff',
-      'change #saveSelect': 'saveConfirm',
       'submit': function(e) {
         // prevent user submit the form using Enter key
         // @todo handle this event to or as 'saveConfirm'
@@ -288,7 +287,7 @@ function(app, Backbone, _, Handlebars, __t, Directus, BasePageView, Widgets, His
       widgets.push(this.saveWidget);
 
       // delete button
-      if (!this.model.isNew()) {
+      if (!this.model.isNew() && !this.single) {
         this.deleteWidget = new Widgets.ButtonWidget({
           widgetOptions: {
             buttonId: 'deleteBtn',

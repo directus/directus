@@ -5,8 +5,9 @@ define([
   'core/edit',
   'core/Modal',
   'helpers/schema',
+  'core/notification',
   'core/t'
-], function(app, _, Backbone, EditView, ModalView, SchemaHelper, __t) {
+], function(app, _, Backbone, EditView, ModalView, SchemaHelper, Notification, __t) {
 
   return Backbone.Layout.extend({
 
@@ -88,7 +89,16 @@ define([
       }
 
       if (data) {
-        this.model.save(data, options);
+        var model = this.model;
+        model.save(data, options).then(function () {
+          var type = model.isNew() ? 'created' : 'updated';
+          var title = __t('column_' + type);
+          var message = __t('column_x_was_' + type, {
+            column_name: model.get('column_name')
+          });
+
+          Notification.success(title, message, {timeout: 3000});
+        });
       }
     },
 

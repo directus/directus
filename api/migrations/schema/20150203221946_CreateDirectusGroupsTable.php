@@ -68,13 +68,13 @@ class CreateDirectusGroupsTable extends Ruckusing_Migration_Base
         $this->insert('directus_groups', [
             'id' => 1,
             'name' => 'Administrator',
-            'description' => NULL
+            'description' => 'Admins have access to all managed data within the system by default'
         ]);
 
         $this->insert('directus_groups', [
             'id' => 2,
             'name' => 'Public',
-            'description' => NULL
+            'description' => 'This sets the data that is publically available through the API without a token'
         ]);
     }//up()
 

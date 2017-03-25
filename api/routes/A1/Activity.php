@@ -23,7 +23,10 @@ class Activity extends Route
 
         // a way to get records last updated from activity
         if (ArrayUtils::get($params, 'last_updated')) {
-            $data = $Activity->getLastUpdated(key($params['last_updated']), key($params['last_updated']));
+            $table = key($params['last_updated']);
+            $ids = ArrayUtils::get($params, 'last_updated.' . $table);
+            $arrayOfIds = $ids ? explode(',', $ids) : [];
+            $data = $Activity->getLastUpdated($table, $arrayOfIds);
         } else {
             $data = $Activity->fetchFeed($params);
         }

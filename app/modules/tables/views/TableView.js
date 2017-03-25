@@ -6,26 +6,11 @@ define([
   'core/BasePageView',
   'core/ListViewManager',
   'modules/tables/views/TableViewRightPane',
+  'helpers/table',
   'core/widgets/widgets'
 ],
 
-function(app, Backbone, _, __t, BasePageView, ListViewManager, TableViewRightPane, Widgets) {
-
-  var headFootShadows = function ($el) {
-    var pageScrollTop = $el.scrollTop();
-    var scrollBottom = $el.find('table.fixed-header').height() - $el.height() - pageScrollTop + 64; // 64 is table padding
-    var headScroll = Math.max(Math.min(pageScrollTop, 100), 0) / 100;
-    $el.find('table.fixed-header thead').css({ boxShadow: '0px 2px 6px 0px rgba(200,200,200,'+headScroll+')' });
-    var footScroll = Math.max(Math.min(scrollBottom, 100), 0) / 100;
-    $el.find('table.fixed-header tfoot').css({ boxShadow: '0px -2px 6px 0px rgba(200,200,200,'+footScroll+')' });
-
-    // Position Sticky Header
-    if ($el.find('table.fixed-header').hasClass('charted')) {
-      var headerDelta = ($(window).width() <= 500)? 244 : 304;
-      var headerTop = Math.max(64, headerDelta - pageScrollTop); // 304 is tied to CSS/SASS (default top from charted)
-      $el.find('table.fixed-header thead').css('top', headerTop);
-    }
-  };
+function(app, Backbone, _, __t, BasePageView, ListViewManager, TableViewRightPane, TableHelpers, Widgets) {
 
   return BasePageView.extend({
 
@@ -77,14 +62,14 @@ function(app, Backbone, _, __t, BasePageView, ListViewManager, TableViewRightPan
           widgets.push(this.widgets.deleteWidget);
         }
 
-        if (this.showBulkEditButton) {
-          if (!this.widgets.bulkEditWidget) {
-            this.widgets.bulkEditWidget = new Widgets.ButtonWidget({
+        if (this.showBatchEditButton) {
+          if (!this.widgets.batchEditWidget) {
+            this.widgets.batchEditWidget = new Widgets.ButtonWidget({
               widgetOptions: {
-                buttonId: 'bulkEditBtn',
+                buttonId: 'batchEditBtn',
                 iconClass: 'edit',
                 buttonClass: 'important',
-                buttonText: __t('bulk_edit')
+                buttonText: __t('batch_edit')
               },
               onClick: function(event) {
                 var $checked = tableView.table.$el.find('.js-select-row:checked');
@@ -99,7 +84,7 @@ function(app, Backbone, _, __t, BasePageView, ListViewManager, TableViewRightPan
             });
           }
 
-          widgets.push(this.widgets.bulkEditWidget);
+          widgets.push(this.widgets.batchEditWidget);
         }
 
         if (!this.widgets.infoWidget) {
@@ -208,7 +193,6 @@ function(app, Backbone, _, __t, BasePageView, ListViewManager, TableViewRightPan
 
       this.state.viewId = viewId;
       var newView = this.getCurrentView();
-      newView.enable();
 
       if (triggerEvent === true) {
         this.trigger('view:changed', viewId);
@@ -217,33 +201,31 @@ function(app, Backbone, _, __t, BasePageView, ListViewManager, TableViewRightPan
       this.table = newView;
       this.table.savePreferences('currentView', viewId, true);
 
-      this.table.fetchData().done(_.bind(function () {
-        this.render();
-      }, this));
-
-      // this.render();
+      var self = this;
+      this.table.fetchData().done(function () {
+        self.render();
+        newView.enable();
+      });
     },
 
     getCurrentView: function() {
       var viewId = this.state.viewId;
 
-      if (this.state.views[viewId]) {
-        return this.state.views[viewId];
+      if (!this.state.views[viewId]) {
+        this.state.views[viewId] = ListViewManager.getView(viewId, {
+          collection: this.collection,
+          navigate: true,
+          maxColumns: 8,
+          toolbar: true,
+          fixedHead: true,
+          baseView: this,
+          showChart: true,
+          system: true,
+          showMoreButton: !! _.result(this, 'rightPane')
+        });
+
+        this.listenTo(this.state.views[viewId], 'toggleRightPane', this.toggleRightPane);
       }
-
-      this.state.views[viewId] = ListViewManager.getView(viewId, {
-        collection: this.collection,
-        navigate: true,
-        maxColumns: 8,
-        toolbar: true,
-        fixedHead: true,
-        baseView: this,
-        showChart: true,
-        system: true,
-        showMoreButton: !! _.result(this, 'rightPane')
-      });
-
-      this.listenTo(this.state.views[viewId], 'toggleRightPane', this.toggleRightPane);
 
       return this.state.views[viewId];
     },
@@ -264,12 +246,11 @@ function(app, Backbone, _, __t, BasePageView, ListViewManager, TableViewRightPan
       });
 
       var $el = $('#content');
+      var self = this;
+      // add throttle and debounce
       $el.on('scroll', function () {
-        headFootShadows($el);
-      });
-
-      this.table.on('afterRender', function () {
-        headFootShadows($el);
+        self.state.scrollPosition = $el.scrollTop;
+        self.table.trigger('scroll', $el);
       });
     },
 
@@ -285,6 +266,7 @@ function(app, Backbone, _, __t, BasePageView, ListViewManager, TableViewRightPan
       this.widgets = {};
       this.state = {
         viewId: this.getCurrentViewName(),
+        scrollPosition: 0,
         views: {}
       };
 
@@ -311,23 +293,16 @@ function(app, Backbone, _, __t, BasePageView, ListViewManager, TableViewRightPan
         this.actionButtons = $checksChecked.length;
         this.batchEdit = $checksChecked.length > 1;
         this.showDeleteButton = $checksChecked.length >= 1;
-        this.showBulkEditButton = $checksChecked.length > 1;
+        this.showBatchEditButton = $checksChecked.length > 1;
 
-        if (render || this.showDeleteButton || this.showBulkEditButton) {
-          this.reRender();
-        }
-      }, this);
-
-      this.collection.on('sort', function() {
-        if (this.leftSecondaryCurrentState !== 'default') {
-          this.leftSecondaryCurrentState = 'default';
+        if (render || this.showDeleteButton || this.showBatchEditButton) {
           this.reRender();
         }
       }, this);
 
       this.isBookmarked = app.getBookmarks().isBookmarked(this.collection.table.id);
       this.showDeleteButton = false;
-      this.showBulkEditButton = false;
+      this.showBatchEditButton = false;
 
       this.listenTo(this, 'rightPane:load', function () {
         this.listenTo(this.rightPaneView, 'view:change', function (viewId) {

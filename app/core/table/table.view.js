@@ -77,7 +77,7 @@ function(app, _, Backbone, Notification, __t, TableHelpers, ModelHelper, TableHe
       }
 
       if (this.collection.length > 0) {
-        options = _.pick(this.options, 'collection', 'systemCollection', 'selectable', 'filters', 'preferences', 'structure', 'sort', 'deleteColumn', 'rowIdentifiers', 'saveAfterDrop', 'blacklist', 'highlight', 'columns');
+        options = _.pick(this.options, 'collection', 'systemCollection', 'system', 'selectable', 'filters', 'preferences', 'structure', 'sort', 'deleteColumn', 'rowIdentifiers', 'saveAfterDrop', 'blacklist', 'highlight', 'columns');
         options.parentView = this;
         this.tableBody = new this.TableBody(options);
         this.insertView('table', this.tableBody);
@@ -190,9 +190,9 @@ function(app, _, Backbone, Notification, __t, TableHelpers, ModelHelper, TableHe
 
       columns = _.filter(this.collection.getColumns(), function(col) {
         var columnModel = structure.get(col),
-            hiddenInput = (columnModel && columnModel.get('hidden_input') !== true);
+            hiddenList = (columnModel && columnModel.get('hidden_list') !== true);
 
-        return !_.contains(blacklist, col) && hiddenInput;
+        return !_.contains(blacklist, col) && hiddenList;
       });
 
       return columns;
@@ -218,12 +218,14 @@ function(app, _, Backbone, Notification, __t, TableHelpers, ModelHelper, TableHe
       this.$el.find('table').removeClass('disable-sorting');
       this.$('.js-sort-toggle').addClass('active');
       this.sortable = this.sortableWidget.options.sort = true;
+      this.sortableWidget.options.disabled = false;
     },
 
     disableSortable: function() {
       this.$el.find('table').addClass('disable-sorting');
       this.$('.js-sort-toggle').removeClass('active');
       this.sortable = this.sortableWidget.options.sort = false;
+      this.sortableWidget.options.disabled = true;
     },
 
     setSpacing: function(name) {
@@ -254,7 +256,7 @@ function(app, _, Backbone, Notification, __t, TableHelpers, ModelHelper, TableHe
         options = options || {};
         if (options.silent) return;
         ModelHelper.setIdAttribute(model);
-        this.render();
+        // this.render();
       });
 
       this.listenTo(collection, 'visibility', function() {
@@ -331,8 +333,9 @@ function(app, _, Backbone, Notification, __t, TableHelpers, ModelHelper, TableHe
     _configureTable: function (options) {
       this.showChart = options.showChart === true;
       this.options.systemCollection = this.collection.clone();
-      this.listenTo(this.collection, 'sync', function (collection, resp) {
-        this.options.systemCollection.reset(resp, {parse: true});
+      this.listenTo(this.collection, 'sync', function (collection, resp, options) {
+        var method = options.reset ? 'reset' : 'set';
+        this.options.systemCollection[method](resp, options);
       });
     },
 

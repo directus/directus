@@ -12,16 +12,57 @@ define(function(require, exports, module) {
 
     tagName: 'div',
 
-    attributes: {
-      class: 'field'
+    dom: {
+      BATCH_EDIT: 'batch-edit'
+    },
+
+    attributes: function () {
+      var classes = ['field'];
+
+      if (this.options.batchEdit) {
+        classes.push(this.dom.BATCH_EDIT);
+      }
+
+      return {
+        class: classes.join(' ')
+      };
     },
 
     template: 'interface-container',
 
     events: {
-      'click [name="batchedit"]': function() {
-        this.$('.fieldset-smoke').toggle();
+      'click .js-button-accept': 'acceptBatchEdit',
+      'click .js-button-cancel': 'cancelBatchEdit'
+    },
+
+    state: {
+      batchEnabled: false
+    },
+
+    acceptBatchEdit: function () {
+      if (!this.state.batchEnabled) {
+        this.changeBatchEdit(true);
       }
+    },
+
+    cancelBatchEdit: function () {
+      if (this.state.batchEnabled) {
+        this.changeBatchEdit(false);
+      }
+    },
+
+    changeBatchEdit: function (enabled) {
+      if (!this.options.batchEdit) {
+        return;
+      }
+
+      enabled = !!enabled;
+
+      var $input = this.$('input[name=batch_edit_' + this.column.id + ']').first();
+      this.$el.toggleClass(this.dom.BATCH_EDIT);
+
+      $input.val(enabled ? 1 : 0);
+      this.state.batchEnabled = !!enabled;
     },
 
     serialize: function() {
@@ -193,23 +234,23 @@ define(function(require, exports, module) {
             title = group.substring(0, group.indexOf(':'));
             group = group.substring(group.indexOf(':') + 1);
           }
-          var compileString = '<div class="section-header"><span class="big-label-text">' + title + '</span></div><div class="table-shadow"></div>';
-          that.insertView('.fields', new Backbone.Layout({attributes: {class:'gutter-bottom-big table-shadow', id:'grouping_' + i}, template: Handlebars.compile(compileString)}));
+          var compileString = '<div class="section-header"><span class="big-label-text">' + title + '</span></div><div class="grouping-view"></div>';
+          that.insertView('.fields', new Backbone.Layout({attributes: {class:'gutter-bottom-big', id:'grouping_' + i}, template: Handlebars.compile(compileString)}));
           group.split(',').forEach(function(subgroup) {
             if(views[subgroup] !== undefined) {
-              that.insertView('#grouping_' + i + ' div.table-shadow', views[subgroup]);
+              that.insertView('#grouping_' + i + ' div.grouping-view', views[subgroup]);
             }
           });
           i++;
         });
       } else {
         if(views[app.statusMapping.status_name]) {
-          this.insertView('.fields', new Backbone.Layout({attributes: {class:'gutter-bottom-big table-shadow', id:'grouping_0'}}));
+          this.insertView('.fields', new Backbone.Layout({attributes: {class:'gutter-bottom-big', id:'grouping_0'}}));
           this.insertView('#grouping_0', views[app.statusMapping.status_name]);
           delete views[app.statusMapping.status_name];
         }
 
-        this.insertView('.fields', new Backbone.Layout({attributes: {class:'gutter-bottom-big table-shadow', id:'grouping_1'}}));
+        this.insertView('.fields', new Backbone.Layout({attributes: {class:'gutter-bottom-big', id:'grouping_1'}}));
         for(var key in views) {
           that.insertView('#grouping_1', views[key]);
         }
@@ -225,10 +266,6 @@ define(function(require, exports, module) {
 
     // Focus on first input
     afterRender: function() {
-      if (this.options.isBatchEdit) {
-        this.$('.fields').addClass('bulk-edit');
-      }
-
       if (this.options.focusOnFirst !== false) {
         var $first = this.$el.find(':input:first:visible');
         $first.focus();

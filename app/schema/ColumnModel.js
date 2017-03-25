@@ -10,7 +10,7 @@ define(function(require, exports, module) {
 
   module.exports = Backbone.Model.extend({
 
-      parse: function(result) {
+      parse: function (result) {
         result = result.data ? result.data : result;
 
         var ui = result.ui;
@@ -23,7 +23,12 @@ define(function(require, exports, module) {
         // if the url was set explicit with an string
         // let's add the column name.
         if (!_.isFunction(this.url)) {
-          this.url += '/'+result.column_name;
+          if (this.oldUrl) {
+            this.url = this.oldUrl;
+          }
+
+          this.oldUrl = this.url;
+          this.url += '/' + result.column_name;
         }
 
         // Can this be done elsewhere so we can break the app dependency?

@@ -55,7 +55,54 @@
     transform: translate(0%, 15%); }
   100% {
     transform: translate(0%, 0%); } }
-
+@font-face {
+  font-family: 'Material Icons';
+  font-style: normal;
+  font-weight: 400;
+  src: url("../fonts/MaterialIcons-Regular.eot");
+  /* For IE6-8 */
+  src: local("Material Icons"), local("MaterialIcons-Regular"), url("../fonts/MaterialIcons-Regular.woff2") format("woff2"), url("../fonts/MaterialIcons-Regular.woff") format("woff"), url("../fonts/MaterialIcons-Regular.ttf") format("truetype"); }
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 400;
+  src: url("../fonts/Roboto-Regular.woff2") format("woff2"), url("../fonts/Roboto-Regular.woff") format("woff"), url("../fonts/Roboto-Regular.ttf") format("truetype"); }
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 300;
+  src: url("../fonts/Roboto-Light.woff2") format("woff2"), url("../fonts/Roboto-Light.woff") format("woff"), url("../fonts/Roboto-Light.ttf") format("truetype"); }
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 500;
+  src: url("../fonts/Roboto-Medium.woff2") format("woff2"), url("../fonts/Roboto-Medium.woff") format("woff"), url("../fonts/Roboto-Medium.ttf") format("truetype"); }
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 700;
+  src: url("../fonts/Roboto-Bold.woff2") format("woff2"), url("../fonts/Roboto-Bold.woff") format("woff"), url("../fonts/Roboto-Bold.ttf") format("truetype"); }
+.material-icons {
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  /* Preferred icon size */
+  display: inline-block;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+  /* Support for all WebKit browsers. */
+  -webkit-font-smoothing: antialiased;
+  /* Support for Safari and Chrome. */
+  text-rendering: optimizeLegibility;
+  /* Support for Firefox. */
+  -moz-osx-font-smoothing: grayscale;
+  /* Support for IE. */
+  font-feature-settings: 'liga'; }
 ::selection {
   background: #e1f0fa; }
 
@@ -1440,20 +1487,21 @@ table {
   transition: width 200ms ease-in-out 0ms;
   width: 100%; }
   table thead {
-    background-color: #f6f6f6;
+    background-color: #FFFFFF;
+    border-bottom: 1px solid #EEEEEE;
     color: #999999;
     font-size: 10px;
     font-weight: 700;
     text-transform: uppercase;
-    height: 40px; }
+    height: 50px; }
     table thead tr th {
       -webkit-transition: width 200ms ease-in-out 0ms;
       -moz-transition: width 200ms ease-in-out 0ms;
       -o-transition: width 200ms ease-in-out 0ms;
       -ms-transition: width 200ms ease-in-out 0ms;
       transition: width 200ms ease-in-out 0ms;
-      padding: 8px 4px 6px 4px;
-      height: 40px;
+      padding: 10px 4px 8px 4px;
+      height: 50px;
       cursor: default; }
       table thead tr th.right-sidebar-toggle {
         -webkit-transition: color 200ms ease-in-out 0ms;
@@ -1481,7 +1529,7 @@ table {
       table thead tr th.visible .material-icons, table thead tr th.required .material-icons {
         font-size: 20px; }
   table tbody {
-    color: #666666;
+    color: #333333;
     background-color: #FFFFFF; }
     table tbody tr.selected td {
       background-color: #f7fbfe; }
@@ -1584,15 +1632,37 @@ table {
           -ms-transition: color 200ms ease-in-out 0ms;
           transition: color 200ms ease-in-out 0ms;
           font-size: 20px; }
+      table tbody tr td.user-interface {
+        -webkit-transition: color 200ms ease-in-out 0ms;
+        -moz-transition: color 200ms ease-in-out 0ms;
+        -o-transition: color 200ms ease-in-out 0ms;
+        -ms-transition: color 200ms ease-in-out 0ms;
+        transition: color 200ms ease-in-out 0ms; }
+        table tbody tr td.user-interface:hover {
+          color: #3498DB; }
       table tbody tr td.relationship {
+        -webkit-transition: color 200ms ease-in-out 0ms;
+        -moz-transition: color 200ms ease-in-out 0ms;
+        -o-transition: color 200ms ease-in-out 0ms;
+        -ms-transition: color 200ms ease-in-out 0ms;
+        transition: color 200ms ease-in-out 0ms;
         color: #CCCCCC; }
+        table tbody tr td.relationship:hover {
+          color: #3498DB; }
         table tbody tr td.relationship .type {
           color: #666666; }
       table tbody tr td.comment {
+        -webkit-transition: color 200ms ease-in-out 0ms;
+        -moz-transition: color 200ms ease-in-out 0ms;
+        -o-transition: color 200ms ease-in-out 0ms;
+        -ms-transition: color 200ms ease-in-out 0ms;
+        transition: color 200ms ease-in-out 0ms;
         color: #CCCCCC;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis; }
+        table tbody tr td.comment:hover {
+          color: #3498DB; }
         table tbody tr td.comment .active {
           color: #666666; }
       table tbody tr td.avatar {
@@ -1730,7 +1800,9 @@ table {
       table tbody tr td img {
         display: block;
         max-height: 40px;
-        max-width: 40px; }
+        max-width: 40px;
+        margin-top: 4px;
+        margin-bottom: 4px; }
       table tbody tr td .search-term {
         -webkit-border-radius: 2px;
         -moz-border-radius: 2px;
@@ -1869,7 +1941,7 @@ table {
   table.pad-status tbody tr td.status {
     padding-left: 15px; }
   table.fixed-header {
-    margin-top: 40px;
+    margin-top: 50px;
     margin-bottom: 40px; }
     table.fixed-header thead {
       position: fixed;
@@ -1901,8 +1973,7 @@ table {
   position: relative;
   height: 200px;
   background-color: #FFFFFF;
-  margin: 40px 20px 0 20px;
-  padding-bottom: 20px; }
+  padding: 40px 20px 20px 20px; }
   .items-chart .chart-title {
     -webkit-transition: all 200ms ease-in-out 0ms;
     -moz-transition: all 200ms ease-in-out 0ms;
@@ -1910,7 +1981,7 @@ table {
     -ms-transition: all 200ms ease-in-out 0ms;
     transition: all 200ms ease-in-out 0ms;
     position: absolute;
-    top: -27px;
+    top: 10px;
     left: 10px;
     right: 10px;
     font-size: 12px;
@@ -2181,6 +2252,34 @@ body.loading .header .logo {
       opacity: 1; }
     .header .logo.has-project-logo .directus {
       opacity: 0.0; }
+    .header .logo.static .running {
+      opacity: 0;
+      -moz-animation-name: none;
+      -webkit-animation-name: none;
+      -ms-animation-name: none;
+      animation-name: none; }
+    .header .logo.static .directus {
+      opacity: 1; }
+    .header .logo .running {
+      -webkit-transition: opacity 200ms ease-in-out 0ms;
+      -moz-transition: opacity 200ms ease-in-out 0ms;
+      -o-transition: opacity 200ms ease-in-out 0ms;
+      -ms-transition: opacity 200ms ease-in-out 0ms;
+      transition: opacity 200ms ease-in-out 0ms;
+      position: absolute;
+      top: 8px;
+      left: 50%;
+      width: 66px;
+      height: 58px;
+      margin-left: -33px;
+      background-image: url(../imgs/directus-logo-frames-small.svg);
+      background-repeat: no-repeat;
+      background-position: left center;
+      animation: logosprite 0.5s steps(15) infinite;
+      opacity: 1; }
+@keyframes logosprite {
+  100% {
+    background-position: -990px; } }
     .header .logo .directus {
       -webkit-transition: all 200ms ease-in-out 0ms;
       -moz-transition: all 200ms ease-in-out 0ms;
@@ -2191,7 +2290,8 @@ body.loading .header .logo {
       top: 13px;
       left: 50%;
       margin-left: -33px;
-      height: 40px; }
+      height: 40px;
+      opacity: 0; }
     .header .logo .project-logo {
       -webkit-transition: all 200ms ease-in-out 0ms;
       -moz-transition: all 200ms ease-in-out 0ms;
@@ -3330,6 +3430,13 @@ body.loading .header .logo {
         color: #3498DB;
         border: none;
         border-left: 2px solid #3498DB; }
+        .right-sidebar .scroll-y .tiles .tile.disabled {
+          color: #CCCCCC;
+          background-color: #EEEEEE;
+          cursor: not-allowed; }
+          .right-sidebar .scroll-y .tiles .tile.disabled:hover, .right-sidebar .scroll-y .tiles .tile.disabled.active {
+            background-color: #EEEEEE;
+            color: #CCCCCC; }
         .right-sidebar .scroll-y .tiles .tile:first-child {
           border-left: none;
           width: 38px; }
@@ -4748,6 +4855,8 @@ body.help .discover-spotlight {
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis; }
+        .message-listing .message-preview .byline .subject .count {
+          opacity: 0.5; }
         .message-listing .message-preview .byline .subject .is-chat,
         .message-listing .message-preview .byline .subject .has-attachment {
           font-size: 16px;
@@ -4783,62 +4892,14 @@ body.help .discover-spotlight {
         border: 2px solid #FFFFFF; }
         .message-listing .message-preview .byline .avatar img {
           width: 100%; }
-
-.fields.bulk-edit .field .bulk-edit-label {
-  -webkit-transition: all 200ms ease-in-out 0ms;
-  -moz-transition: all 200ms ease-in-out 0ms;
-  -o-transition: all 200ms ease-in-out 0ms;
-  -ms-transition: all 200ms ease-in-out 0ms;
-  transition: all 200ms ease-in-out 0ms;
-  display: block;
-  z-index: 10;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 400px;
-  margin-top: -22px;
-  margin-left: -200px;
-  text-align: center;
-  color: #999999;
-  font-size: 15px;
-  font-weight: 500;
-  text-transform: uppercase;
-  cursor: pointer; }
-  .fields.bulk-edit .field .bulk-edit-label .button .material-icons {
-    font-size: 18px;
-    margin-right: 4px; }
-
-.fields.bulk-edit .field:hover .bulk-edit-label {
-  color: #3498DB; }
-
-.fields.bulk-edit .field:hover:after {
-  opacity: 0.8; }
-
-.fields.bulk-edit .field:after {
-  -webkit-transition: all 200ms ease-in-out 0ms;
-  -moz-transition: all 200ms ease-in-out 0ms;
-  -o-transition: all 200ms ease-in-out 0ms;
-  -ms-transition: all 200ms ease-in-out 0ms;
-  transition: all 200ms ease-in-out 0ms;
-  content: "";
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  width: 100%;
-  background-color: #FFFFFF;
-  opacity: 0.95;
-  cursor: pointer;
-  z-index: 9; }
-
 .fields .field {
   position: relative;
   border-bottom: 1px solid #EEEEEE;
   padding: 30px 30px 30px 20px;
   white-space: nowrap; }
   .fields .field:last-child {
-    padding-bottom: 100px; }
+    padding-bottom: 100px;
+    border-bottom: none; }
   .fields .field.break-header {
     text-align: center;
     background-color: #FFFFFF;
@@ -4882,7 +4943,57 @@ body.help .discover-spotlight {
             cursor: pointer; }
             .fields .field.break-header.translation .translation-picker .select-container select:focus {
               box-shadow: none; }
-  .fields .field .bulk-edit-label {
+  .fields .field.batch-edit .batch-edit-label {
+    -webkit-transition: all 200ms ease-in-out 0ms;
+    -moz-transition: all 200ms ease-in-out 0ms;
+    -o-transition: all 200ms ease-in-out 0ms;
+    -ms-transition: all 200ms ease-in-out 0ms;
+    transition: all 200ms ease-in-out 0ms;
+    display: block;
+    z-index: 10;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 400px;
+    margin-top: -22px;
+    margin-left: -200px;
+    text-align: center;
+    color: #999999;
+    font-size: 15px;
+    font-weight: 500;
+    text-transform: uppercase;
+    cursor: not-allowed; }
+    .fields .field.batch-edit .batch-edit-label .button {
+      -webkit-box-shadow: 0 0 0 4px white;
+      -moz-box-shadow: 0 0 0 4px white;
+      box-shadow: 0 0 0 4px white; }
+      .fields .field.batch-edit .batch-edit-label .button .material-icons {
+        font-size: 18px;
+        margin-right: 4px; }
+  .fields .field.batch-edit .cancel-batch-edit {
+    opacity: 0; }
+  .fields .field.batch-edit:hover .batch-edit-label {
+    color: #3498DB; }
+  .fields .field.batch-edit:hover:after {
+    opacity: 0.5; }
+  .fields .field.batch-edit:after {
+    -webkit-transition: all 200ms ease-in-out 0ms;
+    -moz-transition: all 200ms ease-in-out 0ms;
+    -o-transition: all 200ms ease-in-out 0ms;
+    -ms-transition: all 200ms ease-in-out 0ms;
+    transition: all 200ms ease-in-out 0ms;
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    background-color: #FFFFFF;
+    opacity: 0.95;
+    cursor: not-allowed;
+    z-index: 9; }
+  .fields .field .batch-edit-label {
     display: none; }
   .fields .field .label {
     white-space: normal;
@@ -4891,7 +5002,7 @@ body.help .discover-spotlight {
     padding-top: 4px;
     padding-right: 20px;
     font-weight: 500;
-    color: #666666; }
+    color: #333333; }
     .fields .field .label .translation-note {
       padding-top: 4px;
       font-size: 12px;
@@ -4909,6 +5020,17 @@ body.help .discover-spotlight {
       margin-top: -8px;
       margin-left: -2px;
       cursor: default; }
+    .fields .field .label .cancel-batch-edit {
+      -webkit-transition: all 200ms ease-in-out 0ms;
+      -moz-transition: all 200ms ease-in-out 0ms;
+      -o-transition: all 200ms ease-in-out 0ms;
+      -ms-transition: all 200ms ease-in-out 0ms;
+      transition: all 200ms ease-in-out 0ms;
+      color: #F44336;
+      cursor: pointer;
+      font-size: 11px; }
+      .fields .field .label .cancel-batch-edit:hover {
+        color: #a21309; }
   .fields .field .interface {
     position: relative;
     white-space: normal;

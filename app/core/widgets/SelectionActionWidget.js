@@ -28,7 +28,7 @@ function(app, Backbone, Handlebars) {
 
     attributes: {
       class: 'select-container',
-      id: 'bulkStatus',
+      id: 'batchStatus',
       style: 'display:inline-block;'
     },
 

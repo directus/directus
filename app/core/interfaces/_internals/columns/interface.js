@@ -7,7 +7,18 @@
 //  http://www.getdirectus.com
 /*jshint multistr: true */
 
-define(['app', 'underscore', 'core/UIComponent', 'core/UIView', 'core/table/table.view', 'core/overlays/overlays', 'core/notification', 'core/doubleConfirmation', 'core/t', 'sortable'], function(app, _, UIComponent, UIView, TableView, Overlays, Notification, DoubleConfirmation, __t, Sortable) {
+define([
+  'app',
+  'underscore',
+  'core/UIComponent',
+  'core/UIView',
+  'core/table/table.view',
+  'core/overlays/overlays',
+  'core/notification',
+  'core/doubleConfirmation',
+  'core/t',
+  'sortable'
+], function(app, _, UIComponent, UIView, TableView, Overlays, Notification, DoubleConfirmation, __t, Sortable) {
 
   'use strict';
 
@@ -180,9 +191,15 @@ define(['app', 'underscore', 'core/UIComponent', 'core/UIView', 'core/table/tabl
         options.success = function () {
           column.url = originalUrl;
           self.render();
+
+          var message = __t('column_x_' + attr + '_has_changed', {
+            column_name: column.get('column_name')
+          });
+
+          Notification.success(__t('saved'), message, {timeout: 3000});
         };
 
-        column.save(attrs, options);
+        return column.save(attrs, options);
       }
     },
 
@@ -247,12 +264,14 @@ define(['app', 'underscore', 'core/UIComponent', 'core/UIView', 'core/table/tabl
       this.$('table').removeClass('disable-sorting');
       this.$('.js-sort-toggle').addClass('active');
       this.sortable.options.sort = true;
+      this.sortable.options.disabled = false;
     },
 
     disableSortable: function() {
       this.$('table').addClass('disable-sorting');
       this.$('.js-sort-toggle').removeClass('active');
       this.sortable.options.sort = false;
+      this.sortable.options.disabled = true;
     },
 
     drop: function () {
@@ -285,6 +304,7 @@ define(['app', 'underscore', 'core/UIComponent', 'core/UIView', 'core/table/tabl
         draggable: 'tr', // Specifies which items inside the element should be sortable
         ghostClass: 'sortable-ghost',
         sort: false,
+        disabled: true,
         onStart: function () {
           var tbody = $(container);
 

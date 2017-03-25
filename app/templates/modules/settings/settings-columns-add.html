@@ -1,282 +1,282 @@
-<div class="table-shadow">
-    <ul class="fields">
-        {{#unless hideFieldName}}
-        <li class="batchcontainer required">
-            <div class="table">
-                <div class="trow">
-                    <div class="label">
-                        <label>
-                            {{t "field_name"}}
-                            <span class="note">{{t "columns_add_field_name_note"}}</span>
-                        </label>
-                    </div>
-                    <div class="field required">
-                        <input type="text" id="columnName" name="column_name" value="{{column_name}}" class="medium" placeholder="{{t 'columns_add_field_name_placeholder'}}"/>
-                        <span id="cleanColumnName" class="clean-column-name"></span>
-                    </div>
-                </div>
-            </div>
-        </li>
-        {{/unless}}
+<div>
+	<ul class="fields">
+		{{#unless hideFieldName}}
+		<li class="batchcontainer required">
+			<div class="table">
+				<div class="trow">
+					<div class="label">
+						<label>
+							{{t "field_name"}}
+							<span class="note">{{t "columns_add_field_name_note"}}</span>
+						</label>
+					</div>
+					<div class="field required">
+						<input type="text" id="columnName" name="column_name" value="{{column_name}}" class="medium" placeholder="{{t 'columns_add_field_name_placeholder'}}"/>
+						<span id="cleanColumnName" class="clean-column-name"></span>
+					</div>
+				</div>
+			</div>
+		</li>
+		{{/unless}}
 
-        <li class="batchcontainer required">
-            <div class="table">
-                <div class="trow">
-                    <div class="label">
-                        <label>
-                            {{t "user_interface_ui"}}
-                            <span class="note">{{t "columns_add_user_interface_ui_note"}}</span>
-                        </label>
-                    </div>
-                    <div class="field required">
-                        <div class="select-container">
-                            <select id="uiType" name="ui_type">
-                                {{#ui_types}}
-                                <option {{#if selected}}selected{{/if}} value="{{title}}">{{capitalize title}}</option>
-                                {{/ui_types}}
-                            </select>
-                            <i class="material-icons select-arrow">arrow_drop_down</i>
-                        <div>
-                    </div>
-                </div>
-            </div>
-        </li>
+		<li class="batchcontainer required">
+			<div class="table">
+				<div class="trow">
+					<div class="label">
+						<label>
+							{{t "user_interface_ui"}}
+							<span class="note">{{t "columns_add_user_interface_ui_note"}}</span>
+						</label>
+					</div>
+					<div class="field required">
+						<div class="select-container">
+							<select id="uiType" name="ui_type">
+								{{#ui_types}}
+								<option {{#if selected}}selected{{/if}} value="{{title}}">{{capitalize title}}</option>
+								{{/ui_types}}
+							</select>
+							<i class="material-icons select-arrow">arrow_drop_down</i>
+						<div>
+					</div>
+				</div>
+			</div>
+		</li>
 
-        <li class="batchcontainer required">
-            <div class="table">
-                <div class="trow">
-                    <div class="label">
-                        <label>
-                            {{t "data_type"}}
-                            <span class="note">{{t "columns_add_data_type_note"}}</span>
-                        </label>
-                    </div>
-                    <div class="field required">
-                        <div class="select-container">
-                            <select id="dataType" name="data_type">
-                                {{#data_types}}
-                                <option {{#if selected}}selected{{/if}}>{{#if value}}{{value}}{{else}}{{title}}{{/if}}</option>
-                                {{/data_types}}
-                            </select>
-                            <i class="material-icons select-arrow">arrow_drop_down</i>
-                        </div>
-                        {{#if isAlias}}
-                        <div class="field-note">
-                            <p><em>{{t "alias_column_description"}}</em></p>
-                            <p><strong>{{t "relationship_type"}}</strong> {{selectedRelationshipType}}</p>
-                        </div>
-                        {{/if}}
-                    </div>
-                </div>
-            </div>
-        </li>
+		<li class="batchcontainer required">
+			<div class="table">
+				<div class="trow">
+					<div class="label">
+						<label>
+							{{t "data_type"}}
+							<span class="note">{{t "columns_add_data_type_note"}}</span>
+						</label>
+					</div>
+					<div class="field required">
+						<div class="select-container">
+							<select id="dataType" name="data_type">
+								{{#data_types}}
+								<option {{#if selected}}selected{{/if}}>{{#if value}}{{value}}{{else}}{{title}}{{/if}}</option>
+								{{/data_types}}
+							</select>
+							<i class="material-icons select-arrow">arrow_drop_down</i>
+						</div>
+						{{#if isAlias}}
+						<div class="field-note">
+							<p><em>{{t "alias_column_description"}}</em></p>
+							<p><strong>{{t "relationship_type"}}</strong> {{selectedRelationshipType}}</p>
+						</div>
+						{{/if}}
+					</div>
+				</div>
+			</div>
+		</li>
 
-    {{#if SHOW_CHAR_LENGTH}}
-        <li class="batchcontainer required">
-            <div class="table">
-                <div class="trow">
-                    <div class="label">
-                        <label>
-                            {{t "length"}}
-                            <span class="note">{{t "columns_add_length_note"}}</span>
-                        </label>
-                    </div>
-                    <div class="field required">
-                        <input type="text" id="charLength" value="{{char_length}}" name="char_length" class="small">
-                    </div>
-                </div>
-            </div>
-        </li>
-    {{/if}}
+	{{#if SHOW_CHAR_LENGTH}}
+		<li class="batchcontainer required">
+			<div class="table">
+				<div class="trow">
+					<div class="label">
+						<label>
+							{{t "length"}}
+							<span class="note">{{t "columns_add_length_note"}}</span>
+						</label>
+					</div>
+					<div class="field required">
+						<input type="text" id="charLength" value="{{char_length}}" name="char_length" class="small">
+					</div>
+				</div>
+			</div>
+		</li>
+	{{/if}}
 
-    {{#if MANYTOONE}}
-        <li class="batchcontainer required">
-            <div class="table">
-                <div class="trow">
-                    <div class="label">
-                        <label>
-                            {{t "related_table"}}
-                            <span class="note">{{t "columns_add_related_table_note"}}</span>
-                        </label>
-                    </div>
-                    <div class="field required">
-                        <div class="select-container">
-                            <select name="related_table" id="related_table" {{#if disabledTableRelated}}disabled{{/if}}>
-                                {{#tables}}
-                                <option {{#if selected}}selected{{/if}}>{{this.id}}</option>
-                                {{/tables}}
-                            </select>
-                            <i class="material-icons select-arrow">arrow_drop_down</i>
-                        <div>
-                    </div>
-                </div>
-            </div>
-        </li>
-        <li class="batchcontainer required">
-            <div class="table">
-                <div class="trow">
-                    <div class="label">
-                        <label>
-                            {{t "right_column"}}
-                            <span class="note">{{t "columns_add_right_column_note"}}</span>
-                        </label>
-                    </div>
-                    <div class="field required">
-                        <div class="select-container">
-                            <select id="junction_key_right" name="junction_key_right" {{#if disabledJunctionKeyRight}}disabled{{/if}}>
-                                {{#columns_right}}
-                                <option {{#if selected}}selected{{/if}}>{{column_name}}</option>
-                                {{/columns_right}}
-                            </select>
-                            <i class="material-icons select-arrow">arrow_drop_down</i>
-                        <div>
-                    </div>
-                </div>
-            </div>
-        </li>
-    {{/if}}
+	{{#if MANYTOONE}}
+		<li class="batchcontainer required">
+			<div class="table">
+				<div class="trow">
+					<div class="label">
+						<label>
+							{{t "related_table"}}
+							<span class="note">{{t "columns_add_related_table_note"}}</span>
+						</label>
+					</div>
+					<div class="field required">
+						<div class="select-container">
+							<select name="related_table" id="related_table" {{#if disabledTableRelated}}disabled{{/if}}>
+								{{#tables}}
+								<option {{#if selected}}selected{{/if}}>{{this.id}}</option>
+								{{/tables}}
+							</select>
+							<i class="material-icons select-arrow">arrow_drop_down</i>
+						<div>
+					</div>
+				</div>
+			</div>
+		</li>
+		<li class="batchcontainer required">
+			<div class="table">
+				<div class="trow">
+					<div class="label">
+						<label>
+							{{t "right_column"}}
+							<span class="note">{{t "columns_add_right_column_note"}}</span>
+						</label>
+					</div>
+					<div class="field required">
+						<div class="select-container">
+							<select id="junction_key_right" name="junction_key_right" {{#if disabledJunctionKeyRight}}disabled{{/if}}>
+								{{#columns_right}}
+								<option {{#if selected}}selected{{/if}}>{{column_name}}</option>
+								{{/columns_right}}
+							</select>
+							<i class="material-icons select-arrow">arrow_drop_down</i>
+						<div>
+					</div>
+				</div>
+			</div>
+		</li>
+	{{/if}}
 
-    {{#if ONETOMANY}}
-        <li class="batchcontainer required">
-            <div class="table">
-                <div class="trow">
-                    <div class="label">
-                        <label>
-                            {{t "related_table"}}
-                            <span class="note">{{t "columns_add_related_table_note"}}</span>
-                        </label>
-                    </div>
-                    <div class="field required">
-                        <div class="select-container">
-                            <select name="related_table" id="related_table" {{#if disabledTableRelated}}disabled{{/if}}>
-                                {{#tables}}
-                                <option {{#if selected}}selected{{/if}}>{{this.id}}</option>
-                                {{/tables}}
-                            </select>
-                            <i class="material-icons select-arrow">arrow_drop_down</i>
-                        <div>
-                    </div>
-                </div>
-            </div>
-        </li>
+	{{#if ONETOMANY}}
+		<li class="batchcontainer required">
+			<div class="table">
+				<div class="trow">
+					<div class="label">
+						<label>
+							{{t "related_table"}}
+							<span class="note">{{t "columns_add_related_table_note"}}</span>
+						</label>
+					</div>
+					<div class="field required">
+						<div class="select-container">
+							<select name="related_table" id="related_table" {{#if disabledTableRelated}}disabled{{/if}}>
+								{{#tables}}
+								<option {{#if selected}}selected{{/if}}>{{this.id}}</option>
+								{{/tables}}
+							</select>
+							<i class="material-icons select-arrow">arrow_drop_down</i>
+						<div>
+					</div>
+				</div>
+			</div>
+		</li>
 
-        <li class="batchcontainer required">
-            <div class="table">
-                <div class="trow">
-                    <div class="label">
-                        <label>
-                            {{t "related_column"}}
-                            <span class="note">{{t "columns_add_related_column_note"}}</span>
-                        </label>
-                    </div>
-                    <div class="field required">
-                        <div class="select-container">
-                            <select id="junction_key_right" name="junction_key_right">
-                                {{#columns}}
-                                <option {{#if selected}}selected{{/if}}>{{column_name}}</option>
-                                {{/columns}}
-                            </select>
-                            <i class="material-icons select-arrow">arrow_drop_down</i>
-                        <div>
-                    </div>
-                </div>
-            </div>
-        </li>
-    {{/if}}
+		<li class="batchcontainer required">
+			<div class="table">
+				<div class="trow">
+					<div class="label">
+						<label>
+							{{t "related_column"}}
+							<span class="note">{{t "columns_add_related_column_note"}}</span>
+						</label>
+					</div>
+					<div class="field required">
+						<div class="select-container">
+							<select id="junction_key_right" name="junction_key_right">
+								{{#columns}}
+								<option {{#if selected}}selected{{/if}}>{{column_name}}</option>
+								{{/columns}}
+							</select>
+							<i class="material-icons select-arrow">arrow_drop_down</i>
+						<div>
+					</div>
+				</div>
+			</div>
+		</li>
+	{{/if}}
 
-    {{#if MANYTOMANY}}
-        <li class="batchcontainer required">
-            <div class="table">
-                <div class="trow">
-                    <div class="label">
-                        <label>
-                            {{t "related_table"}}
-                            <span class="note">{{t "columns_add_related_table_note"}}</span>
-                        </label>
-                    </div>
-                    <div class="field required">
-                        <div class="select-container">
-                            <select id="related_table" name="related_table" {{#if disabledTableRelated}}disabled{{/if}}>
-                                {{#tables}}
-                                <option {{#if selected}}selected{{/if}}>{{this.id}}</option>
-                                {{/tables}}
-                            </select>
-                            <i class="material-icons select-arrow">arrow_drop_down</i>
-                        <div>
-                    </div>
-                </div>
-            </div>
-        </li>
+	{{#if MANYTOMANY}}
+		<li class="batchcontainer required">
+			<div class="table">
+				<div class="trow">
+					<div class="label">
+						<label>
+							{{t "related_table"}}
+							<span class="note">{{t "columns_add_related_table_note"}}</span>
+						</label>
+					</div>
+					<div class="field required">
+						<div class="select-container">
+							<select id="related_table" name="related_table" {{#if disabledTableRelated}}disabled{{/if}}>
+								{{#tables}}
+								<option {{#if selected}}selected{{/if}}>{{this.id}}</option>
+								{{/tables}}
+							</select>
+							<i class="material-icons select-arrow">arrow_drop_down</i>
+						<div>
+					</div>
+				</div>
+			</div>
+		</li>
 
-        <li class="batchcontainer required">
-            <div class="table">
-                <div class="trow">
-                    <div class="label">
-                        <label>
-                            {{t "junction_table"}}
-                            <span class="note">{{t "columns_add_junction_table_note"}}</span>
-                        </label>
-                    </div>
-                    <div class="field required">
-                        <div class="select-container">
-                            <select id="table_junction" name="table_junction">
-                                {{#junctionTables}}
-                                <option {{#if selected}}selected{{/if}}>{{this.id}}</option>
-                                {{/junctionTables}}
-                            </select>
-                            <i class="material-icons select-arrow">arrow_drop_down</i>
-                        <div>
-                    </div>
-                </div>
-            </div>
-        </li>
+		<li class="batchcontainer required">
+			<div class="table">
+				<div class="trow">
+					<div class="label">
+						<label>
+							{{t "junction_table"}}
+							<span class="note">{{t "columns_add_junction_table_note"}}</span>
+						</label>
+					</div>
+					<div class="field required">
+						<div class="select-container">
+							<select id="table_junction" name="table_junction">
+								{{#junctionTables}}
+								<option {{#if selected}}selected{{/if}}>{{this.id}}</option>
+								{{/junctionTables}}
+							</select>
+							<i class="material-icons select-arrow">arrow_drop_down</i>
+						<div>
+					</div>
+				</div>
+			</div>
+		</li>
 
-        <li class="batchcontainer required">
-            <div class="table">
-                <div class="trow">
-                    <div class="label">
-                        <label>
-                            {{t "left_column"}}
-                            <span class="note">{{t "columns_add_left_column_note"}}</span>
-                        </label>
-                    </div>
-                    <div class="field required">
-                        <div class="select-container">
-                            <select id="junction_key_left" name="junction_key_left">
-                                {{#columns_left}}
-                                <option {{#if selected}}selected{{/if}}>{{column_name}}</option>
-                                {{/columns_left}}
-                            </select>
-                            <i class="material-icons select-arrow">arrow_drop_down</i>
-                        <div>
-                    </div>
-                </div>
-            </div>
-        </li>
+		<li class="batchcontainer required">
+			<div class="table">
+				<div class="trow">
+					<div class="label">
+						<label>
+							{{t "left_column"}}
+							<span class="note">{{t "columns_add_left_column_note"}}</span>
+						</label>
+					</div>
+					<div class="field required">
+						<div class="select-container">
+							<select id="junction_key_left" name="junction_key_left">
+								{{#columns_left}}
+								<option {{#if selected}}selected{{/if}}>{{column_name}}</option>
+								{{/columns_left}}
+							</select>
+							<i class="material-icons select-arrow">arrow_drop_down</i>
+						<div>
+					</div>
+				</div>
+			</div>
+		</li>
 
-        <li class="batchcontainer required">
-            <div class="table">
-                <div class="trow">
-                    <div class="label">
-                        <label>
-                            {{t "right_column"}}
-                            <span class="note">{{t "columns_add_right_column_note"}}</span>
-                        </label>
-                    </div>
-                    <div class="field required">
-                        <div class="select-container">
-                            <select id="junction_key_right" name="junction_key_right">
-                                {{#columns_right}}
-                                <option {{#if selected}}selected{{/if}}>{{column_name}}</option>
-                                {{/columns_right}}
-                            </select>
-                            <i class="material-icons select-arrow">arrow_drop_down</i>
-                        <div>
-                    </div>
-                </div>
-            </div>
-        </li>
-    {{/if}}
+		<li class="batchcontainer required">
+			<div class="table">
+				<div class="trow">
+					<div class="label">
+						<label>
+							{{t "right_column"}}
+							<span class="note">{{t "columns_add_right_column_note"}}</span>
+						</label>
+					</div>
+					<div class="field required">
+						<div class="select-container">
+							<select id="junction_key_right" name="junction_key_right">
+								{{#columns_right}}
+								<option {{#if selected}}selected{{/if}}>{{column_name}}</option>
+								{{/columns_right}}
+							</select>
+							<i class="material-icons select-arrow">arrow_drop_down</i>
+						<div>
+					</div>
+				</div>
+			</div>
+		</li>
+	{{/if}}
 
-    </ul>
+	</ul>
 </div>

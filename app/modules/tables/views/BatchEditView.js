@@ -1,12 +1,13 @@
 define([
   'app',
+  'underscore',
   'backbone',
   'core/directus',
   'core/BasePageView',
   'core/widgets/widgets'
 ],
 
-function(app, Backbone, Directus, BasePageView, Widgets) {
+function(app, _, Backbone, Directus, BasePageView, Widgets) {
 
   return BasePageView.extend({
 
@@ -19,7 +20,14 @@ function(app, Backbone, Directus, BasePageView, Widgets) {
     },
 
     leftToolbar: function() {
-      this.saveWidget = new Widgets.SaveWidget({widgetOptions: {basicSave: true}});
+      this.saveWidget = new Widgets.SaveWidget({
+        widgetOptions: {
+          basicSave: true
+        },
+        onClick: _.bind(function () {
+          this.saveConfirm()
+        }, this)
+      });
       this.saveWidget.disable();
 
       return [
@@ -28,7 +36,12 @@ function(app, Backbone, Directus, BasePageView, Widgets) {
     },
 
     events: {
-      'click .saved-success': 'saveConfirm'
+      'change input, select, textarea': 'checkDiff',
+      'keyup input, textarea': 'checkDiff'
+    },
+
+    checkDiff: function () {
+      this.saveWidget.enable();
     },
 
     saveConfirm: function() {
@@ -50,8 +63,12 @@ function(app, Backbone, Directus, BasePageView, Widgets) {
       var data = this.editView.data();
 
       // Get an attribute whitelist based on the checkboxes
-      var attrWhitelist = $("input[name='batchedit']:checked").map(function() {
-        return $(this).data('attr');
+      var filterEnabled = function () {
+        return $(this).val() == 1;
+      };
+
+      var attrWhitelist = $('input.js-batch-edit').filter(filterEnabled).map(function() {
+        return $(this).data('field');
       }).toArray();
 
       // Set data to model inorder to include relationships etc

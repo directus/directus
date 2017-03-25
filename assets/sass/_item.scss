@@ -2,56 +2,6 @@
 // Edit/Create Item & Core UIs
 
 .fields {
-	&.bulk-edit {
-		.field {
-			.bulk-edit-label {
-				@include transition (all, $timing-short, ease-in-out);
-				display: block;
-
-				z-index: 10;
-				position: absolute;
-				top: 50%;
-				left: 50%;
-				width: 400px;
-				margin-top: -22px;
-				margin-left: -200px;
-				text-align: center;
-				color: $gray-4;
-				font-size: 15px;
-				font-weight: 500;
-				text-transform: uppercase;
-				cursor: pointer;
-				.button {
-					.material-icons {
-						font-size: 18px;
-						margin-right: 4px;
-					}
-				}
-			}
-			&:hover {
-				.bulk-edit-label {
-					color: $primary;
-				}
-				&:after {
-					opacity: 0.8;
-				}
-			}
-			&:after {
-				@include transition (all, $timing-short, ease-in-out);
-				content: "";
-				position: absolute;
-				top: 0;
-				bottom: 0;
-				left: 0;
-				right: 0;
-				width: 100%;
-				background-color: $white;
-				opacity: 0.95;
-				cursor: pointer;
-				z-index: 9;
-			}
-		}
-	}
 	.field {
 		position: relative;
 		border-bottom: 1px solid $gray-1;
@@ -59,6 +9,7 @@
 		white-space: nowrap;
 		&:last-child {
 			padding-bottom: 100px;
+			border-bottom: none;
 		}
 		&.break-header {
 			text-align: center;
@@ -113,7 +64,61 @@
 				}
 			}
 		}
-		.bulk-edit-label {
+		&.batch-edit {
+			.batch-edit-label {
+				@include transition (all, $timing-short, ease-in-out);
+				display: block;
+
+				z-index: 10;
+				position: absolute;
+				top: 50%;
+				left: 50%;
+				width: 400px;
+				margin-top: -22px;
+				margin-left: -200px;
+				text-align: center;
+				color: $gray-4;
+				font-size: 15px;
+				font-weight: 500;
+				text-transform: uppercase;
+				cursor: not-allowed;
+				.button {
+					-webkit-box-shadow: 0 0 0 4px rgba($white,1);
+					-moz-box-shadow: 0 0 0 4px rgba($white,1);
+					box-shadow: 0 0 0 4px rgba($white,1);
+					.material-icons {
+						font-size: 18px;
+						margin-right: 4px;
+					}
+				}
+			}
+			.cancel-batch-edit {
+				opacity: 0;
+			}
+			&:hover {
+				.batch-edit-label {
+					color: $primary;
+				}
+				&:after {
+					opacity: 0.5;
+				}
+			}
+			&:after {
+				@include transition (all, $timing-short, ease-in-out);
+				content: "";
+				position: absolute;
+				top: 0;
+				bottom: 0;
+				left: 0;
+				right: 0;
+				width: 100%;
+				background-color: $white;
+				opacity: 0.95;
+				cursor: not-allowed;
+				z-index: 9;
+			}
+		}
+		.batch-edit-label {
 			display: none;
 		}
 		.label {
@@ -123,7 +128,7 @@
 			padding-top: 4px;
 			padding-right: 20px;
 			font-weight: 500;
-			color: $gray-5;
+			color: $gray-6;
 			.translation-note {
 				padding-top: 4px;
 				font-size: 12px;
@@ -144,6 +149,15 @@
 				margin-top: -8px;
 				margin-left: -2px;
 				cursor: default;
+			}
+			.cancel-batch-edit {
+				@include transition (all, $timing-short, ease-in-out);
+				color: $serious;
+				cursor: pointer;
+				font-size: 11px;
+				&:hover {
+					color: darken($serious, 25%);
+				}
 			}
 		}
 		.interface {

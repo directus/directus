@@ -2,7 +2,6 @@
 
 namespace Directus\Services;
 
-use Directus\Application\Application;
 use Directus\Database\TableGateway\DirectusPrivilegesTableGateway;
 use Directus\Database\TableGateway\DirectusUsersTableGateway;
 

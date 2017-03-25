@@ -144,7 +144,7 @@ class CreateDirectusUsersTable extends Ruckusing_Migration_Base
             'default' => NULL
         ]);
 
-        $t->column('country', 'string', [
+        $t->column('country', 'char', [
             'limit' => 2,
             'default' => NULL
         ]);

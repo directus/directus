@@ -14,7 +14,7 @@
     "users": "Users",
     "group": "Group",
     "user": "User",
-    "a_missing_or_removed_user": "A missing or removed user",
+    "a_missing_or_removed_user": "Unknown User",
     "please_fill_in_a_valid_name": "Please Fill In a Valid Name",
     "visit_project": "Visit Project",
     "there_are_no_tables_you_have_permission_to_view": "There are no tables you have permission to view",
@@ -69,7 +69,8 @@
     "new_field": "New Field",
     "edit_field": "Edit Field",
     "edit_fields": "Edit Fields",
-    "bulk_edit_x_x": "Bulk Edit: %{name} (%{ui})",
+    "batch_edit": "Batch Edit",
+    "batch_edit_x_x": "%{name}",
     "field_name": "Field Name",
     "user_interface_ui": "User Interface (UI)",
     "data_type": "Data Type",
@@ -204,6 +205,8 @@
     "directus_activity_a_ui_has_been_updated": "A UI has been updated",
     "directus_activity_entry": "Entry",
     "directus_activity_files_action": "has been %{action} %{preposition}",
+    "directus_activity_action_create": "Create",
+    "directus_activity_revision_x": "Revision %{number}",
 
     "action_added": "added",
     "action_updated": "updated",
@@ -390,6 +393,12 @@
     "column_x_not_found": "Column [%{column_name}] not found",
     "column_removed": "Column Removed",
     "column_x_was_removed": "Column [%{column_name}] was removed",
+    "column_updated": "Column Updated",
+    "column_x_was_updated": "Column [%{column_name}] was updated",
+    "column_created": "Column Created",
+    "column_x_was_created": "Column [%{column_name}] was created",
+    "column_x_hidden_input_has_changed": "Column [%{column_name}] hidden input has changed",
+    "column_x_required_has_changed": "Column [%{column_name}] required has changed",
     "unable_to_find_table_x": "Unable to find the table [%{table_name}]",
     "unable_to_remove_table_x": "Unable to remove the table [%{table_name}]",
     "table_removed": "Table Removed",
@@ -452,6 +461,7 @@
     "version_outdated_text_x": "The latest stable release is v%{current_version}<br>You are currently running v%{installed_version}",
 
     "right_pane_help": "Opens the item's detail sidebar",
+    "x_view_options": "%{view} Options",
 
     "online": "Online",
     "created_by": "Created By",
@@ -511,6 +521,8 @@
 
     "directus_users_email_already_exists": "User with this email already exists.",
 
+    "warning_changes_to_columns_save_immediately": "Warning: All changes to columns save immediately.",
+
     "same_time_as_you": "Same time as you",
     "x_hours_from_you": "%{hours} hours from you",
 
@@ -530,6 +542,7 @@
     "no": "No",
     "add": "Add",
     "save": "Save",
+    "saved": "Saved",
     "help": "Help",
     "submit": "Submit",
     "new_item": "New Item",

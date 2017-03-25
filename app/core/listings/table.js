@@ -6,8 +6,12 @@ define([
   'backbone',
   'core/table/table.view',
   'core/widgets/TableChartWidget',
+  'helpers/table',
   'core/listings/baseView'
-], function(app, _, moment, __t, Backbone, TableView, TableChartWidget, BaseView) {
+], function(app, _, moment, __t, Backbone, TableView, TableChartWidget, TableHelpers, BaseView) {
+
+  var CHART_Y_AXIS_NAME = 'chart_y_axis';
+  var CHART_X_AXIS_NAME = 'chart_x_axis';
 
   var View = BaseView.extend(TableView.prototype, {});
 
@@ -25,17 +29,41 @@ define([
       afterRender: function () {
         View.prototype.afterRender.apply(this, arguments);
 
-        if (this.showChart && this.getViewOptions('chart_enabled') == true) {
-          this.setView(this.dom.CHART, this.getChartView(true)).render();
+        if (this.showChart && this.isChartEnabled()) {
+          this.addChart();
         }
+      },
+
+      // chart is enabled if it has both x and y axis seleted
+      isChartEnabled: function () {
+        return !!this.getXAxis() && !!this.getYAxis();
+      },
+
+      // date column
+      getXAxis: function () {
+        return this.getViewOptions(CHART_X_AXIS_NAME) || this.getDateColumnName();
+      },
+
+      // numeric column
+      getYAxis: function () {
+        return this.getViewOptions(CHART_Y_AXIS_NAME);
+      },
+
+      addChart: function () {
+          var chartView = this.getChartView(true);
+
+          this.setView(this.dom.CHART, chartView);
+          chartView.fetchChartData().then(function () {
+            chartView.render();
+          });
       },
 
       getChartView: function (force) {
         if (force || !this.chartView) {
           this.chartView = new TableChartWidget({
             parentView: this,
-            dateColumn: this.getDateColumnName(),
-            numericColumn: this.getViewOptions('y_axis'),
+            dateColumn: this.getXAxis(),
+            numericColumn: this.getYAxis(),
             collection: this.collection.clone().reset()
           });
 
@@ -51,7 +79,7 @@ define([
 
       serialize: function () {
         var data = View.prototype.serialize.apply(this, arguments);
-        var chartEnabled = this.showChart && this.getViewOptions('chart_enabled');
+        var chartEnabled = this.showChart && this.isChartEnabled();
 
         data.fixedHead = chartEnabled != true;
         data.showChart = chartEnabled == true;
@@ -63,11 +91,11 @@ define([
         var xhr = this.collection.fetch();
         var self = this;
 
-        xhr.done(function () {
-          self.render();
+        return xhr.done(function () {
+          self.updateSystemColumns().then(function () {
+            self.render();
+          });
         });
-
-        return xhr;
       },
 
       optionsStructure: function() {
@@ -89,37 +117,35 @@ define([
           options.numericColumns[column.id] = app.capitalize(column.id);
         });
 
-        app.on('beforeCreateInput:fake:views_options_table:chart_enabled', _.bind(function (UI, options) {
-          options.canWrite = this.supportsChart();
-        }, this));
+        // app.on('beforeCreateInput:fake:views_options_table:chart_enabled', _.bind(function (UI, options) {
+        //   options.canWrite = this.supportsChart();
+        // }, this));
 
         return {
           id: 'views_options_table',
           columns: [
+            // {
+            //   id: 'chart_enabled',
+            //   type: 'Boolean',
+            //   required: false,
+            //   ui: 'checkbox',
+            //   default_value: false
+            // },
             {
-              id: 'chart_enabled',
-              type: 'Boolean',
-              required: false,
-              ui: 'checkbox',
-              default_value: false
-            },
-            {
-              id: 'y_axis',
+              id: CHART_Y_AXIS_NAME,
               type: 'String',
               required: false,
               ui: 'select',
-              comment: 'INT',
               options: {
                 allow_null: true,
                 options: options.numericColumns
               }
             },
             {
-              id: 'x_axis',
+              id: CHART_X_AXIS_NAME,
               type: 'String',
               required: false,
               ui: 'select',
-              comment: 'DATE',
               options: {
                 options: options.dateColumns
               }
@@ -235,18 +261,29 @@ define([
           this.options.showFooter = !this.options.showFooter;
         }
 
-        this.fetchComments();
-        this.fetchRevisions();
-        this.fetchUpdates();
+        var self = this;
+        return this.fetchComments().then(function () {
+          return self.fetchRevisions();
+        }).then(function () {
+          return self.fetchUpdates();
+        });
+      },
 
-        this.render();
+      updateSystemColumnsAndRender: function () {
+        var self = this;
+        this.updateSystemColumns().then(function () {
+          self.render();
+        });
       },
 
       fetchComments: function () {
         var showCommentsCount = this.getViewOptions('comments_count');
 
         if (this.options.systemCollection.length <= 0) {
-          return
+          var deferred = new $.Deferred();
+          deferred.resolve();
+
+          return deferred.promise();
         }
 
         if (showCommentsCount) {
@@ -256,7 +293,8 @@ define([
               comment_metadata: {like: this.collection.table.id + ':'}
             }
           });
-          commentsCollection.fetch().then(_.bind(function () {
+
+          return commentsCollection.fetch().then(_.bind(function () {
             var systemCollection = this.options.systemCollection;
             var comments = [];
             this.comments.each(function (model) {
@@ -274,9 +312,11 @@ define([
 
             _.each(comments, function (comment) {
               var model = systemCollection.get(comment.id);
-              model.set('_comments', comment.count);
+              // if the collection are filtered some models may not be
+              if (model) {
+                model.set('_comments', comment.count);
+              }
             });
-            this.render();
           }, this));
         }
       },
@@ -286,7 +326,10 @@ define([
         var activityCollection;
 
         if (this.options.systemCollection.length <= 0) {
-          return
+          var deferred = new $.Deferred();
+          deferred.resolve();
+
+          return deferred.promise();
         }
 
         showRevisionsCount = this.getViewOptions('revisions_count');
@@ -301,7 +344,7 @@ define([
           }
         });
 
-        activityCollection.fetch().then(_.bind(function () {
+        return activityCollection.fetch().then(_.bind(function () {
           var systemCollection = this.options.systemCollection;
           var revisions = [];
           this.activity.each(function (model) {
@@ -324,16 +367,19 @@ define([
               model.set('_revisions', revision.count);
             }
           });
-          this.render();
         }, this));
       },
 
       fetchUpdates: function () {
         var showLastUpdate;
         var collection;
+        var systemCollection = this.options.systemCollection;
 
         if (this.options.systemCollection.length <= 0) {
-          return
+          var deferred = new $.Deferred();
+          deferred.resolve();
+
+          return deferred.promise();
         }
 
         showLastUpdate = this.getViewOptions('last_updated');
@@ -344,17 +390,17 @@ define([
         collection = this.getUpdatesCollection();
 
         var lastUpdated = {};
-        lastUpdated[this.collection.table.id] = collection.map(function (model) {
+        var ids = this.collection.map(function (model) {
           return model.id;
         });
+        lastUpdated[this.collection.table.id] = ids.join(',');
 
         collection.setFilter({
           last_updated: lastUpdated
         });
 
-        collection.fetch().then(_.bind(function () {
-          var systemCollection = this.options.systemCollection;
-          this.updates.each(function (model) {
+        var onUpdatesDone = function () {
+          collection.each(function (model) {
             var rowId = model.get('row_id');
             var rowModel = systemCollection.get(rowId);
 
@@ -362,9 +408,9 @@ define([
               rowModel.set('_last_updated', moment(model.get('datetime')).fromNow());
             }
           });
+        };
 
-          this.render();
-        }, this));
+        return collection.fetch().done(onUpdatesDone);
       },
 
       getTableColumns: function () {
@@ -413,14 +459,36 @@ define([
         this.trigger('toggleRightPane');
       },
 
+      // $el - Base page
+      onScroll: function ($el) {
+        var self = this;
+        TableHelpers.headFootShadows($el);
+        if (TableHelpers.hitBottom($el)) {
+          if (this.collection.canFetchMore()) {
+            this.$('.loading-more').show();
+            this.collection.fetchNext().then(function () {
+              self.$('.loading-more').hide();
+              // @TODO: should add one item at a time for performance
+              self.render();
+            });
+          }
+        }
+      },
+
+      onRender: function () {
+        // @TODO: store the content wrapper into a variable in the application object
+        TableHelpers.headFootShadows($('#content'));
+        this.$el.scrollTop(this.baseView.state.scrollPosition);
+      },
+
       bindEvents: function () {
         this.on('preferences:updated', this.updateTableSpacing, this);
 
+        this.on('scroll', _.throttle(this.onScroll, 200), this);
+        this.on('afterRender', this.onRender, this);
+
         if (this.options.system === true) {
-          this.collection.preferences.on('sync', this.updateSystemColumns, this);
-          this.collection.on('sync', this.fetchComments, this);
-          this.collection.on('sync', this.fetchRevisions, this);
-          this.collection.on('sync', this.fetchUpdates, this);
+          this.collection.preferences.on('sync', this.updateSystemColumnsAndRender, this);
           this.listenTo(this, 'onShowMore', this.onShowMore);
         }
       },
@@ -429,10 +497,7 @@ define([
         this.off('preferences:updated', this.updateTableSpacing, this);
 
         if (this.options.system === true) {
-          this.collection.preferences.off('sync', this.updateSystemColumns, this);
-          this.collection.off('sync', this.fetchComments, this);
-          this.collection.off('sync', this.fetchRevisions, this);
-          this.collection.off('sync', this.fetchUpdates, this);
+          this.collection.preferences.off('sync', this.updateSystemColumnsAndRender, this);
           this.stopListening(this, 'onShowMore', this.onShowMore);
         }
       },
