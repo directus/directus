@@ -339,6 +339,28 @@ class Column implements \ArrayAccess, Arrayable, \JsonSerializable
     }
 
     /**
+     * Set the column length
+     *
+     * @param int $length
+     *
+     * @return Column
+     */
+    public function setCharLength($length)
+    {
+        return $this->setLength($length);
+    }
+
+    /**
+     * Get the column length
+     *
+     * @return int
+     */
+    public function getCharLength()
+    {
+        return $this->getLength();
+    }
+
+    /**
      * Set column precision
      *
      * @param int $precision

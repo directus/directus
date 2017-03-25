@@ -10,6 +10,7 @@ use Directus\Bootstrap;
 use Directus\Database\TableGateway\DirectusPrivilegesTableGateway;
 use Directus\Database\TableGateway\RelationalTableGateway as TableGateway;
 use Directus\Database\TableSchema;
+use Directus\Services\ColumnsService;
 use Directus\Util\ArrayUtils;
 use Directus\Util\SchemaUtils;
 use Zend\Db\Sql\Predicate\In;
@@ -168,49 +169,8 @@ class Table extends Route
         }
 
         if ($app->request()->isPut() || $app->request()->isPatch()) {
-
-            $TableGateway = new TableGateway('directus_columns', $ZendDb, $acl);
-            $columnData = $TableGateway->select([
-                'table_name' => $table,
-                'column_name' => $column
-            ])->current();
-
-            if (!$columnData) {
-                $columnObject = TableSchema::getColumnSchema($table, $column);
-                $data = ArrayUtils::pick($columnObject->toArray(), [
-                    'table_name',
-                    'column_name',
-                    'data_type',
-                    'ui',
-                    'sort',
-                    'comment'
-                ]);
-                $columnData = $TableGateway->manageRecordUpdate('directus_columns', $data, TableGateway::ACTIVITY_ENTRY_MODE_DISABLED);
-            }
-
-            if ($columnData) {
-                $columnData = $columnData->toArray();
-
-                if ($app->request()->isPut()) {
-                    $requestPayload = ArrayUtils::pick($requestPayload, [
-                        'data_type',
-                        'ui',
-                        'hidden_input',
-                        'hidden_list',
-                        'required',
-                        'relationship_type',
-                        'related_table',
-                        'junction_table',
-                        'junction_key_left',
-                        'junction_key_right',
-                        'sort',
-                        'comment'
-                    ]);
-                }
-
-                $requestPayload['id'] = $columnData['id'];
-                $TableGateway->updateCollection($requestPayload);
-            }
+            $columnsService = new ColumnsService($this->app);
+            $columnsService->update($table, $column, $requestPayload, $app->request()->isPatch());
         }
 
         $response = TableSchema::getColumnSchema($table, $column, true);
