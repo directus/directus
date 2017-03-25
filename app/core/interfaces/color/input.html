@@ -4,22 +4,27 @@
 		align-items: center;
 	}
 
-	.interface-color > div:first-child {
+	.interface-color .hex {
 		flex-shrink: 0;
 		position: relative;
-		width: 115px;
-		margin-right: 2em;
+		width: 82px;
+		margin-right: 1em;
+		display: flex;
+		align-items: center;
 	}
 
-	.interface-color input {
+	.interface-color .hex.alpha {
+		width: 98px;
+	}
+
+	.interface-color .hex > input {
 		width: 100% !important;
-		min-width: 110px !important;
-		margin-right: 2em;
+		min-width: 50px !important;
 		padding-left: 1.5em;
 		position: relative;
 	}
 
-	.interface-color > div:first-child::before {
+	.interface-color .hex::before {
 		content: '#';
 		position: absolute;
 		z-index: 5;
@@ -31,18 +36,34 @@
 		color: #666666;
 	}
 
+	.interface-color .rgb,
+	.interface-color .hsl {
+		display: flex;
+		align-items: flex-end;
+	}
+
+	.interface-color .rgb input,
+	.interface-color .hsl input {
+		width: 4em;
+		min-width: 50px !important;
+		margin-right: 1em;
+	}
+
 	.interface-color .color-preview {
-		width: 18px;
-		height: 18px;
+		width: 40px;
+		height: 40px;
 		display: block;
-		border-radius: 50%;
-		position: absolute;
-		top: 12px;
-		right: 12px;
-		padding: 2px;
+		border-radius: 2px;
+		border: 1px solid #c5c5c5;
+		box-shadow: inset 0 0 0 2px #f5f4f5;
 		cursor: pointer;
 		background-color: #000000;
 		transition: background-color 200ms ease;
+		margin-right: 1em;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		flex-shrink: 0;
 	}
 
 	.interface-color .color-preview i {
@@ -56,6 +77,7 @@
 		opacity: 1;
 	}
 
+/*
 	.interface-color .palette {
 		align-items: center;
 		display: flex;
@@ -92,7 +114,7 @@
 
 	.interface-color .color-select.active i {
 		opacity: 1;
-	}
+	}*/
 
 	.color-invalid {
 		color: #f77066;
@@ -104,16 +126,47 @@
 </style>
 
 <div class="interface-color">
-	<div>
-		<input type="text" class="color-text small" value="{{value}}" placeholder="000000" pattern="[0-9a-fA-F]{3,8}" {{#if readonly}} disabled {{/if}}>
+	{{#if hex}}
+	<div class="hex">
+		{{#unless alpha}}
+		<input type="text" class="color-text hex" value="{{value}}" placeholder="000000" pattern="[0-9a-fA-F]{3,6}" {{#if readonly}} disabled {{/if}}>
+		{{/unless}}
+		{{#if alpha}}
+		<input type="text" class="color-text hex alpha" value="{{value}}" placeholder="00000000" pattern="[0-9a-fA-F]{3,8}" {{#if readonly}} disabled {{/if}}>
+		{{/if}}
 		<span class="color-preview">{{#unless readonly}}<i class="material-icons">close</i>{{/unless}}</span>
 	</div>
-	{{#unless readonly}}
+	{{/if}}
+
+	{{#if rgb}}
+	<div class="rgb">
+		<label>Red: <input type="number" class="color-text rgb red" placeholder="0" min="0" max="255" step="1" /></label>
+		<label>Green: <input type="number" class="color-text rgb green" placeholder="0" min="0" max="255" step="1" /></label>
+		<label>Blue: <input type="number" class="color-text rgb blue" placeholder="0" min="0" max="255" step="1" /></label>
+		{{#if alpha}}
+		<label>Alpha: <input type="number" class="color-text rgb alpha" placeholder="0" min="0" max="1" step="0.01" /></label>
+		{{/if}}
+		<span class="color-preview">{{#unless readonly}}<i class="material-icons">close</i>{{/unless}}</span>
+	</div>
+	{{/if}}
+
+	{{#if hsl}}
+	<div class="rgb">
+		<label>Hue: <input type="number" class="color-text hsl hue" placeholder="0" min="0" max="360" step="1" /></label>
+		<label>Saturation: <input type="number" class="color-text hsl saturation" placeholder="0" min="0" max="100" step="1" /></label>
+		<label>Lightness: <input type="number" class="color-text hsl lightness" placeholder="0" min="0" max="100" step="1" /></label>
+		{{#if alpha}}
+		<label>Alpha: <input type="number" class="color-text hsl alpha" placeholder="0" min="0" max="1" step="0.01" /></label>
+		{{/if}}
+		<span class="color-preview">{{#unless readonly}}<i class="material-icons">close</i>{{/unless}}</span>
+	</div>
+	{{/if}}
+	<!-- {{#unless readonly}}
 	<div class="palette">
 	{{#each palette}}
 		<button tabindex="0" class="color-select" data-color="{{this}}" style="background-color: #{{this}};"><i class="material-icons">check</i></button>
 	{{/each}}
-	{{/unless}}
 	</div>
+	{{/unless}} -->
 </div>
 <div class="color-invalid"></div>

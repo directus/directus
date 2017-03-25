@@ -59,81 +59,81 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
     template: 'color/input',
 
     events: {
-      'keypress input': function(event) {
-        if((event.which && event.which == 13) || (event.keyCode && event.keyCode == 13)) return false;
-      },
-      'click .color-preview': function(event) {
-        // Remove value from input
-        this.$el.find('input').val('');
-
-        // Clear color preview
-        this.$el.find('.color-preview')[0].style.backgroundColor = 'transparent';
-
-        // Disable active button
-        this.$el.find('button').removeClass('active');
-      },
-      'input .color-text': function(event) {
-        var color = event.target.value;
-
-        // Activate button if color matches
-        this.$el.find('button').removeClass('active');
-        this.$el.find('button[data-color="' + color + '"]').addClass('active');
-
-        // Update preview color
-        this.$el.find('.color-preview')[0].style.backgroundColor = '#' + color;
-
-        // Set preview color to black when input field is empty
-        if(color.length === 0) this.$el.find('.color-preview')[0].style.backgroundColor = '#000';
-
-        this.$el.find('.color-invalid')[0].innerHTML = '';
-      },
-      'change .color-text': function(event) {
-        var color = event.target.value;
-
-        if(!isValidHex(color) && color.length !== 0) {
-          this.$el.find('.color-invalid')[0].innerHTML = __t('confirm_invalid_value');
-        }
-      },
-      'blur .color-text': function(event) {
-        var color = event.target.value;
-
-        if(this.options.schema.isRequired() && color.length === 0) {
-          this.$el.find('.color-invalid')[0].innerHTML = __t('this_field_is_required');
-        }
-      },
-      'click .color-select': function(event) {
-        // Active clicked on button
-        var button = event.target.className === 'material-icons' ? event.target.parentNode : event.target;
-        this.$el.find('input').val(button.getAttribute('data-color'));
-        this.$el.find('button').removeClass('active');
-        button.classList.add('active');
-
-        // Set preview color
-        this.$el.find('.color-preview')[0].style.backgroundColor = '#' + button.getAttribute('data-color');
-
-        // Remove invalid message
-        this.$el.find('.color-invalid')[0].innerHTML = '';
-      }
-    },
-
-    afterRender: function() {
+      // 'keypress input': function(event) {
+      //   if((event.which && event.which == 13) || (event.keyCode && event.keyCode == 13)) return false;
+      // },
+      // 'click .color-preview': function(event) {
+      //   // Remove value from input
+      //   this.$el.find('input').val('');
       //
+      //   // Clear color preview
+      //   this.$el.find('.color-preview')[0].style.backgroundColor = 'transparent';
+      //
+      //   // Disable active button
+      //   this.$el.find('button').removeClass('active');
+      // },
+      // 'input .color-text': function(event) {
+      //   var color = event.target.value;
+      //
+      //   // Activate button if color matches
+      //   this.$el.find('button').removeClass('active');
+      //   this.$el.find('button[data-color="' + color + '"]').addClass('active');
+      //
+      //   // Update preview color
+      //   this.$el.find('.color-preview')[0].style.backgroundColor = '#' + color;
+      //
+      //   // Set preview color to black when input field is empty
+      //   if(color.length === 0) this.$el.find('.color-preview')[0].style.backgroundColor = '#000';
+      //
+      //   this.$el.find('.color-invalid')[0].innerHTML = '';
+      // },
+      // 'change .color-text': function(event) {
+      //   var color = event.target.value;
+      //
+      //   if(!isValidHex(color) && color.length !== 0) {
+      //     this.$el.find('.color-invalid')[0].innerHTML = __t('confirm_invalid_value');
+      //   }
+      // },
+      // 'blur .color-text': function(event) {
+      //   var color = event.target.value;
+      //
+      //   if(this.options.schema.isRequired() && color.length === 0) {
+      //     this.$el.find('.color-invalid')[0].innerHTML = __t('this_field_is_required');
+      //   }
+      // },
+      // 'click .color-select': function(event) {
+      //   // Active clicked on button
+      //   var button = event.target.className === 'material-icons' ? event.target.parentNode : event.target;
+      //   this.$el.find('input').val(button.getAttribute('data-color'));
+      //   this.$el.find('button').removeClass('active');
+      //   button.classList.add('active');
+      //
+      //   // Set preview color
+      //   this.$el.find('.color-preview')[0].style.backgroundColor = '#' + button.getAttribute('data-color');
+      //
+      //   // Remove invalid message
+      //   this.$el.find('.color-invalid')[0].innerHTML = '';
+      // }
     },
 
     serialize: function() {
       var value = this.options.value || '';
+
+      var input = this.options.settings.get('input');
 
       return {
         value: value,
         name: this.options.name,
         comment: this.options.schema.get('comment'),
         palette: this.options.settings.get('palette').split(','),
-        readonly: this.options.settings.get('readonly')
+        readonly: this.options.settings.get('readonly'),
+        input: input,
+        output: this.options.settings.get('output'),
+        hex: input === 'hex',
+        rgb: input === 'rgb',
+        hsl: input === 'hsl',
+        alpha: this.options.settings.get('allow_alpha')
       };
-    },
-
-    initialize: function() {
-      //
     }
   });
 
