@@ -1,7 +1,10 @@
 <style type="text/css">
-	.interface-color.hex {
+	.interface-color {
 		display: flex;
-		align-items: center;
+	}
+
+	.interface-color.rgb, .interface-color.hsl {
+		margin-top: 2em;
 	}
 
 	.interface-color.hex > input {
@@ -29,12 +32,6 @@
 		color: #666666;
 	}
 
-	.interface-color.rgb,
-	.interface-color.hsl {
-		display: flex;
-		align-items: flex-end;
-	}
-
 	.interface-color.rgb input,
 	.interface-color.hsl input {
 		width: 4em;
@@ -43,22 +40,12 @@
 	}
 
 	.interface-color label {
-		display: flex;
-		flex-direction: column;
+		position: relative;
 	}
 
-	.interface-color .color-preview {
-		width: 30px;
-		height: 30px;
-		border-radius: 50%;
-		cursor: pointer;
-		background-color: #000000;
-		transition: background-color 200ms ease;
-		margin-right: 1em;
-		display: inline-flex;
-		justify-content: center;
-		align-items: center;
-		flex-shrink: 0;
+	.interface-color label span {
+		position: absolute;
+		top: -1.2em;
 	}
 
 	.interface-color .color-preview i {
@@ -72,14 +59,19 @@
 		opacity: 1;
 	}
 
-
 	.interface-color .palette {
 		align-items: center;
 		display: flex;
-		border-left: 1px solid black;
+		border-left: 1px solid #CCCCCC;
+		margin-left: 1em;
+		padding-left: 1em;
+		flex-wrap: wrap;
 	}
 
+	.interface-color .color-preview,
 	.interface-color .color-select {
+		flex-shrink: 0;
+		background-color: black;
 		font-size: 0;
 		width: 30px;
 		height: 30px;
@@ -89,6 +81,7 @@
 		display: flex;
 		justify-content: center;
 		align-items: center;
+		cursor: pointer;
 	}
 
 	.interface-color .color-select i {
@@ -133,22 +126,21 @@
 	{{/if}}
 
 	{{#if rgb}}
-	<label>Red: <input type="number" class="color-text red" placeholder="0" min="0" max="255" step="1" /></label>
-	<label>Green: <input type="number" class="color-text green" placeholder="0" min="0" max="255" step="1" /></label>
-	<label>Blue: <input type="number" class="color-text blue" placeholder="0" min="0" max="255" step="1" /></label>
+	<label><span>Red: </span><input type="number" class="color-text red" placeholder="0" min="0" max="255" step="1" /></label>
+	<label><span>Green: </span><input type="number" class="color-text green" placeholder="0" min="0" max="255" step="1" /></label>
+	<label><span>Blue: </span><input type="number" class="color-text blue" placeholder="0" min="0" max="255" step="1" /></label>
 	{{#if alpha}}
-	<label>Alpha: <input type="number" class="color-text alpha" placeholder="0" min="0" max="1" step="0.01" /></label>
+	<label><span>Alpha: </span><input type="number" class="color-text alpha" placeholder="0" min="0" max="1" step="0.01" /></label>
 	{{/if}}
 	<span class="color-preview">{{#unless readonly}}<i class="material-icons">close</i>{{/unless}}</span>
-	</div>
 	{{/if}}
 
 	{{#if hsl}}
-	<label>Hue: <input type="number" class="color-text hue" placeholder="0" min="0" max="360" step="1" /></label>
-	<label>Saturation: <input type="number" class="color-text saturation" placeholder="0" min="0" max="100" step="1" /></label>
-	<label>Lightness: <input type="number" class="color-text lightness" placeholder="0" min="0" max="100" step="1" /></label>
+	<label><span>Hue: </span><input type="number" class="color-text hue" placeholder="0" min="0" max="360" step="1" /></label>
+	<label><span>Saturation: </span><input type="number" class="color-text saturation" placeholder="0" min="0" max="100" step="1" /></label>
+	<label><span>Lightness: </span><input type="number" class="color-text lightness" placeholder="0" min="0" max="100" step="1" /></label>
 	{{#if alpha}}
-	<label>Alpha: <input type="number" class="color-text alpha" placeholder="0" min="0" max="1" step="0.01" /></label>
+	<label><span>Alpha: </span><input type="number" class="color-text alpha" placeholder="0" min="0" max="1" step="0.01" /></label>
 	{{/if}}
 	<span class="color-preview">{{#unless readonly}}<i class="material-icons">close</i>{{/unless}}</span>
 	{{/if}}

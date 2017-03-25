@@ -129,7 +129,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
         value: value,
         name: this.options.name,
         comment: this.options.schema.get('comment'),
-        palette: this.options.settings.get('palette').split(','),
+        palette: this.options.settings.get('palette').length ? this.options.settings.get('palette').split(',') : false,
         readonly: this.options.settings.get('readonly'),
         input: input,
         output: this.options.settings.get('output'),
