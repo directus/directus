@@ -4,16 +4,45 @@
 		align-items: center;
 	}
 
-	.interface-color input {
+	.interface-color div:first-child {
 		flex-shrink: 0;
+		position: relative;
+		width: 165px;
 		margin-right: 2em;
-		min-width: 4em !important;
-		max-width: 8em;
-		display: inline-block;
-		vertical-align: middle;
 	}
 
-	.interface-color div {
+	.interface-color input {
+		width: 100% !important;
+		min-width: 110px !important;
+		margin-right: 2em;
+	}
+
+	.interface-color .color-preview {
+		width: 18px;
+		height: 18px;
+		display: block;
+		border-radius: 50%;
+		position: absolute;
+		top: 12px;
+		right: 12px;
+		padding: 2px;
+		cursor: pointer;
+		background-color: #fff;
+		transition: background-color 200ms ease;
+	}
+
+	.interface-color .color-preview i {
+		font-size: 14px;
+		color: white;
+		opacity: 0;
+		transition: opacity 200ms ease;
+	}
+
+	.interface-color .color-preview:hover i {
+		opacity: 1;
+	}
+
+	.interface-color div:last-child {
 		align-items: center;
 		display: flex;
 	}
@@ -54,7 +83,10 @@
 </style>
 
 <div class="interface-color">
-	<input type="text" class="color-text small" value="{{value}}" maxlength="7" placeholder="{{t "example_abbr"}} #3498db">
+	<div>
+		<input type="text" class="color-text small" value="{{value}}" placeholder="{{t "example_abbr"}}. #3498db">
+		<span class="color-preview"><i class="material-icons">close</i></span>
+	</div>
 	<div>
 	{{#each palette}}
 		<button class="color-select" data-color="{{this}}" style="background-color: {{this}};"><i class="material-icons">check</i></button>
