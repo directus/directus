@@ -245,6 +245,37 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
         }
       },
 
+      'click .color-select': function(event) {
+          // Activate clicked on button
+          var button = event.target.className === 'material-icons' ? event.target.parentNode : event.target;
+          this.$el.find('button').removeClass('active');
+          button.classList.add('active');
+
+          // Fill input(s)
+          var type = this.options.settings.get('input');
+          var buttonValue = button.getAttribute('data-color');
+          switch(type) {
+            case 'hex':
+              this.$el.find('input').val(buttonValue);
+              break;
+            case 'rgb':
+              var rgba = convertHexToRGB(buttonValue);
+              this.$el.find('input.red').val(rgba.r);
+              this.$el.find('input.green').val(rgba.g);
+              this.$el.find('input.blue').val(rgba.b);
+              this.$el.find('input.alpha').val(rgba.a);
+              break;
+            case 'hsl':
+              var rgba = convertHexToRGB(buttonValue);
+              var hsla = convertRGBtoHSL(rgba.r, rgba.g, rgba.b, rgba.a);
+              this.$el.find('input.hue').val(hsla.h);
+              this.$el.find('input.saturation').val(hsla.s);
+              this.$el.find('input.lightness').val(hsla.l);
+              this.$el.find('input.alpha').val(hsla.a);
+              break;
+          }
+      },
+
       // 'blur .color-text': function(event) {
       //   var color = event.target.value;
       //
