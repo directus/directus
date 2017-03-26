@@ -124,7 +124,6 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
     rgba.r = parseInt(result[1], 16);
     rgba.g = parseInt(result[2], 16);
     rgba.b = parseInt(result[3], 16);
-    rgba.a = rgba.a || 1;
 
     return rgba;
   }
@@ -270,7 +269,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
     var outputValue = '';
     switch(output) {
       case 'hex':
-        outputValue = convertRGBtoHex(rgba);
+        outputValue = convertRGBtoHex(rgba.r, rgba.g, rgba.b, rgba.a);
         break;
       case 'rgb':
         outputValue = [rgba.r, rgba.g, rgba.b, rgba.a].join();
@@ -280,16 +279,14 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
         outputValue = [hsla.h, hsla.s, hsla.l, hsla.a].join();
     }
 
-    console.log(outputValue);
-
     view.$el.find('.value').val(outputValue);
   }
 
   function isValid(type, value) {
     switch(type) {
       case 'hex': return isValidHex(value);
-      case 'rgb': return isValidRGB(color.r, color.g, color.b, color.a);
-      case 'hsl': return isValidHSL(color.h, color.s, color.l, color.a);
+      case 'rgb': return isValidRGB(value.r, value.g, value.b, value.a);
+      case 'hsl': return isValidHSL(value.h, value.s, value.l, value.a);
       default: return false;
     }
   }
@@ -317,14 +314,15 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
       // Validate value on change
       'input .color-text': function(event) {
         var type = this.options.settings.get('input');
+        var color;
 
         switch(type) {
           case 'hex':
-            var color = event.target.value;
+            color = event.target.value;
             break;
 
           case 'rgb':
-            var color = {
+            color = {
               r: +this.$el.find('input.red').val(),
               g: +this.$el.find('input.green').val(),
               b: +this.$el.find('input.blue').val(),
@@ -333,7 +331,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
             break;
 
           case 'hsl':
-            var color = {
+            color = {
               h: +this.$el.find('input.hue').val(),
               s: +this.$el.find('input.saturation').val(),
               l: +this.$el.find('input.lightness').val(),
@@ -393,6 +391,15 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
     serialize: function() {
       var input = this.options.settings.get('input');
       var value = this.options.value || '';
+
+      switch(input) {
+        case 'hex':
+          value = this.options.value || '000000';
+          break;
+        case 'rgb':
+        case 'hsl':
+          value = this.options.value ? this.options.value.split(',') : [0, 0, 0, 1];
+      }
 
       return {
         value: value,

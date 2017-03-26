@@ -121,33 +121,33 @@
 </style>
 
 <div class="interface-color {{#if hex}}hex{{/if}}{{#if rgb}}rgb{{/if}}{{#if hsl}}hsl{{/if}}">
-	<input class="value" type="hidden" value="{{value}}" name="{{name}}" />
+	<input class="value" type="hidden" name="{{name}}" />
 	{{#if hex}}
 	{{#unless alpha}}
-	<input type="text" class="color-text" placeholder="000000" pattern="[0-9a-fA-F]{3,6}" {{#if readonly}} disabled {{/if}}>
+	<input type="text" class="color-text" placeholder="000000" pattern="[0-9a-fA-F]{3,6}" value="{{value}}" {{#if readonly}} disabled {{/if}}>
 	{{/unless}}
 	{{#if alpha}}
-	<input type="text" class="color-text alpha" placeholder="00000000" pattern="[0-9a-fA-F]{3,8}" {{#if readonly}} disabled {{/if}}>
+	<input type="text" class="color-text alpha" placeholder="00000000" pattern="[0-9a-fA-F]{3,8}" value="{{value}}" {{#if readonly}} disabled {{/if}}>
 	{{/if}}
 	<span class="color-preview">{{#unless readonly}}<i class="material-icons">close</i>{{/unless}}</span>
 	{{/if}}
 
 	{{#if rgb}}
-	<label><span>Red: </span><input type="number" class="color-text red" placeholder="0" min="0" max="255" step="1" /></label>
-	<label><span>Green: </span><input type="number" class="color-text green" placeholder="0" min="0" max="255" step="1" /></label>
-	<label><span>Blue: </span><input type="number" class="color-text blue" placeholder="0" min="0" max="255" step="1" /></label>
+	<label><span>Red: </span><input type="number" class="color-text red" placeholder="0" value="{{value.[0]}}" min="0" max="255" step="1" /></label>
+	<label><span>Green: </span><input type="number" class="color-text green" placeholder="0" value="{{value.[1]}}" min="0" max="255" step="1" /></label>
+	<label><span>Blue: </span><input type="number" class="color-text blue" placeholder="0" value="{{value.[2]}}" min="0" max="255" step="1" /></label>
 	{{#if alpha}}
-	<label><span>Alpha: </span><input type="number" class="color-text alpha" placeholder="0" min="0" max="1" step="0.01" /></label>
+	<label><span>Alpha: </span><input type="number" class="color-text alpha" placeholder="0" value="{{value.[3]}}" min="0" max="1" step="0.01" /></label>
 	{{/if}}
 	<span class="color-preview">{{#unless readonly}}<i class="material-icons">close</i>{{/unless}}</span>
 	{{/if}}
 
 	{{#if hsl}}
-	<label><span>Hue: </span><input type="number" class="color-text hue" placeholder="0" min="0" max="360" step="1" /></label>
-	<label><span>Saturation: </span><input type="number" class="color-text saturation" placeholder="0" min="0" max="100" step="1" /></label>
-	<label><span>Lightness: </span><input type="number" class="color-text lightness" placeholder="0" min="0" max="100" step="1" /></label>
+	<label><span>Hue: </span><input type="number" class="color-text hue" placeholder="0" value="{{value.[0]}}" min="0" max="360" step="1" /></label>
+	<label><span>Saturation: </span><input type="number" class="color-text saturation" placeholder="0" value="{{value.[1]}}" min="0" max="100" step="1" /></label>
+	<label><span>Lightness: </span><input type="number" class="color-text lightness" placeholder="0" value="{{value.[2]}}" min="0" max="100" step="1" /></label>
 	{{#if alpha}}
-	<label><span>Alpha: </span><input type="number" class="color-text alpha" placeholder="0" min="0" max="1" step="0.01" /></label>
+	<label><span>Alpha: </span><input type="number" class="color-text alpha" placeholder="0" value="{{value.[3]}}" min="0" max="1" step="0.01" /></label>
 	{{/if}}
 	<span class="color-preview">{{#unless readonly}}<i class="material-icons">close</i>{{/unless}}</span>
 	{{/if}}
