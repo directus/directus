@@ -142,6 +142,46 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
     return rgba;
   }
 
+  function convertRGBtoHSL(r, g, b, a) {
+    r = r / 255;
+    g = g / 255;
+    b = b / 255;
+
+    var max = Math.max(r, g, b);
+    var min = Math.min(r, g, b);
+
+    var hue;
+    var saturation;
+    var lightness = (max + min) / 2;
+
+    if(max === min) {
+      hue = saturation = 0;
+    } else {
+      var delta = max - min;
+      saturation = lightness > 0.5 ? delta / (2 - max - min) : delta / (max + min);
+      switch(max) {
+        case r:
+          hue = (g - b) / delta + (g < b ? 6 : 0);
+          break;
+        case g:
+          hue = (b - r) / delta + 2;
+          break;
+        case b:
+          hue = (r - g) / delta + 4;
+          break;
+      }
+
+      hue = hue / 6;
+    }
+
+    return {
+      h: convertRange(hue, { min: 0, max: 1 }, { min: 0, max: 360 }),
+      s: Math.round(saturation * 100),
+      l: Math.round(lightness * 100),
+      a: a
+    }
+  }
+
   function showInvalidMessage(view) {
     view.$el.find('.color-invalid')[0].innerHTML = __t('confirm_invalid_value');
   }
