@@ -249,6 +249,43 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
     view.$el.find('.color-preview')[0].style.boxShadow = 'inset 0 0 0 30px ' + color;
   }
 
+  function convertColor(value, from, to) {
+    var rgba;
+    var outputValue;
+
+    switch(from) {
+      case 'hex':
+        rgba = convertHexToRGB(value);
+        break;
+      case 'rgb':
+        var a = value.length === 4 ? value[3] : undefined;
+        rgba = { r: value[0], g: value[1], b: value[2], a: a };
+        break;
+      case 'hsl':
+        var a = value.length === 4 ? value[3] : undefined;
+        var hsla = { h: value[0], s: value[1], l: value[2], a: a };
+        rgba = convertHSLtoRGB(hsla.h, hsla.s, hsla.l, hsla.a);
+        break;
+    }
+
+    switch(to) {
+      case 'hex':
+        outputValue = convertRGBtoHex(rgba.r, rgba.g, rgba.b, rgba.a);
+        break;
+      case 'rgb':
+        outputValue = [rgba.r, rgba.g, rgba.b, rgba.a];
+        break;
+      case 'hsl':
+        var rgba = convertRGBtoHSL(rgba.r, rgba.g, rgba.b, rgba.a);
+        outputValue = [rgba.r, rgba.g, rgba.b, rgba.a];
+        break;
+    }
+
+    console.log(value, from, to, outputValue);
+
+    return outputValue;
+  }
+
   function setInputValue(view, type, value, output) {
     // Convert input to RGB
     var rgba;
@@ -390,15 +427,16 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
 
     serialize: function() {
       var input = this.options.settings.get('input');
-      var value = this.options.value || '';
+      var output = this.options.settings.get('output');
+      var value;
 
       switch(input) {
         case 'hex':
-          value = this.options.value || '000000';
+          value = convertColor(this.options.value || '000000', output, input);
           break;
         case 'rgb':
         case 'hsl':
-          value = this.options.value ? this.options.value.split(',') : [0, 0, 0, 1];
+          value = convertColor(this.options.value ? this.options.value.split(',') : [0, 0, 0, 1], output, input);
       }
 
       return {
