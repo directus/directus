@@ -295,7 +295,6 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
               this.$el.find('input.saturation').val(hsla.s);
               this.$el.find('input.lightness').val(hsla.l);
               this.$el.find('input.alpha').val(hsla.a);
-              console.log(type, hsla)
               setPreviewColor(this, type, hsla);
               break;
           }
