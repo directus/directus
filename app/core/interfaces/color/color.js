@@ -100,6 +100,48 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
     return false;
   }
 
+  /**
+  * Convert value from one range to another
+  * @param {Number} value value to convert
+  * @param {Object} oldRange min, max of values range
+  * @param {Object} newRange min, max of desired range
+  * @return {Number} value converted to other range
+  */
+  function convertRange(value, oldRange, newRange) {
+    return ((value - oldRange.min) * (newRange.max - newRange.min)) / (oldRange.max - oldRange.min) + newRange.min;
+  }
+
+  /**
+   * Converts hex value (without #) to rgb(a) object
+   * @param  {String} hex 3, 6 or 8 digit hex (without #)
+   * @return {Object} rgba values
+   */
+  function convertHexToRGB(hex) {
+    var fullHex = hex;
+    var rgba = {};
+
+    if(hex.length === 3) {
+      // Convert length === 3 to length === 6
+      var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+      fullHex = hex.replace(shorthandRegex, function(m, r, g, b) {
+        return r + r + g + g + b + b;
+      });
+    }
+
+    if(hex.length === 8) {
+      // Save alpha value to object and remove last two characters (alpha)
+      rgba.a = convertRange(parseInt(hex.substring(hex.length - 2), 16), { min: 0, max: 255 }, { min: 0, max: 1 });
+      fullHex = hex.substring(0, hex.length - 2);
+    }
+
+    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(fullHex);
+    rgba.r = parseInt(result[1], 16);
+    rgba.g = parseInt(result[2], 16);
+    rgba.b = parseInt(result[3], 16);
+
+    return rgba;
+  }
+
   function showInvalidMessage(view) {
     view.$el.find('.color-invalid')[0].innerHTML = __t('confirm_invalid_value');
   }
