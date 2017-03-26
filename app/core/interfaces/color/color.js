@@ -129,8 +129,24 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
     return rgba;
   }
 
+  function convertRGBtoHex(r, g, b, a) {
+    function toHex(c) {
+      var hex = c.toString(16);
+      return hex.length == 1 ? '0' + hex : hex;
+    }
+
+    var hexValue = toHex(r) + toHex(g) + toHex(b);
+
+    if(a !== undefined) {
+      a = Math.round(convertRange(a, { min: 0, max: 1 }, { min: 0, max: 255 }));
+      hexValue += toHex(a);
+    }
+
+    return hexValue;
+  }
+
   function convertRGBtoHSL(r, g, b, a) {
-    a = a || 1;
+    if(a === undefined) a = 1;
     r = r / 255;
     g = g / 255;
     b = b / 255;
@@ -170,6 +186,43 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
     }
   }
 
+  function convertHSLtoRGB(h, s, l, a) {
+    if(a === undefined) a = 1;
+    var r;
+    var g;
+    var b;
+
+    h = convertRange(h, { min: 0, max: 360 }, { min: 0, max: 1 });
+    s = s / 100;
+    l = l / 100;
+
+    if(s === 0) {
+      r = g = b = l;
+    } else {
+      function hueToRGB(p, q, t) {
+        if(t < 0) t += 1;
+        if(t > 1) t -= 1;
+        if(t < 1 / 6) return p + (q - p) * 6 * t;
+        if(t < 1 / 2) return q;
+        if(t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+        return p;
+      }
+
+      var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+      var p = 2 * l - q;
+      r = hueToRGB(p, q, h + 1 / 3);
+      g = hueToRGB(p, q, h);
+      b = hueToRGB(p, q, h - 1 / 3);
+    }
+
+    return {
+      r: Math.round(r * 255),
+      g: Math.round(g * 255),
+      b: Math.round(b * 255),
+      a: a
+    }
+  }
+
   function showInvalidMessage(view) {
     view.$el.find('.color-invalid')[0].innerHTML = __t('confirm_invalid_value');
     setPreviewColor(view, 'rgb', {r: 255, g: 255, b: 255, a: 0});
@@ -195,6 +248,50 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
     }
 
     view.$el.find('.color-preview')[0].style.boxShadow = 'inset 0 0 0 30px ' + color;
+  }
+
+  function setInputValue(view, type, value, output) {
+    // Convert input to RGB
+    var rgba;
+
+    switch(type) {
+      case 'hex':
+        rgba = convertHexToRGB(value);
+        break;
+      case 'rgb':
+        rgba = value;
+        break;
+      case 'hsl':
+        rgba = convertHSLtoRGB(value.h, value.s, value.l, value.a);
+        break;
+    }
+
+    // Convert RGB to desired output
+    var outputValue = '';
+    switch(output) {
+      case 'hex':
+        outputValue = convertRGBtoHex(rgba);
+        break;
+      case 'rgb':
+        outputValue = [rgba.r, rgba.g, rgba.b, rgba.a].join();
+        break;
+      case 'hsl':
+        var hsla = convertRGBtoHSL(rgba.r, rgba.g, rgba.b, rgba.a);
+        outputValue = [hsla.h, hsla.s, hsla.l, hsla.a].join();
+    }
+
+    console.log(outputValue);
+
+    view.$el.find('.value').val(outputValue);
+  }
+
+  function isValid(type, value) {
+    switch(type) {
+      case 'hex': return isValidHex(value);
+      case 'rgb': return isValidRGB(color.r, color.g, color.b, color.a);
+      case 'hsl': return isValidHSL(color.h, color.s, color.l, color.a);
+      default: return false;
+    }
   }
 
   var Input = UIView.extend({
@@ -224,31 +321,33 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
         switch(type) {
           case 'hex':
             var color = event.target.value;
-            setPreviewColor(this, type, color);
-            !isValidHex(color) && color.length !== 0 ? showInvalidMessage(this) : hideInvalidMessage(this);
             break;
 
           case 'rgb':
             var color = {
-              r: +this.$el.find('input.red').val() || 0,
-              g: +this.$el.find('input.green').val() || 0,
-              b: +this.$el.find('input.blue').val() || 0,
-              a: +this.$el.find('input.alpha').val() || 1
+              r: +this.$el.find('input.red').val(),
+              g: +this.$el.find('input.green').val(),
+              b: +this.$el.find('input.blue').val(),
+              a: +this.$el.find('input.alpha').val()
             }
-            setPreviewColor(this, type, color);
-            !isValidRGB(color.r, color.g, color.b, color.a) ? showInvalidMessage(this) : hideInvalidMessage(this);
             break;
 
           case 'hsl':
             var color = {
-              h: +this.$el.find('input.hue').val() || 0,
-              s: +this.$el.find('input.saturation').val() || 0,
-              l: +this.$el.find('input.lightness').val() || 0,
-              a: +this.$el.find('input.alpha').val() || 1
+              h: +this.$el.find('input.hue').val(),
+              s: +this.$el.find('input.saturation').val(),
+              l: +this.$el.find('input.lightness').val(),
+              a: +this.$el.find('input.alpha').val()
             }
-            setPreviewColor(this, type, color);
-            !isValidHSL(color.h, color.s, color.l, color.a) ? showInvalidMessage(this) : hideInvalidMessage(this);
             break;
+        }
+
+        if(isValid(type, color)) {
+          setPreviewColor(this, type, color);
+          setInputValue(this, type, color, this.options.settings.get('output'));
+          hideInvalidMessage(this);
+        } else {
+          showInvalidMessage(this)
         }
       },
 

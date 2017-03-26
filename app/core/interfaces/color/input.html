@@ -121,7 +121,7 @@
 </style>
 
 <div class="interface-color {{#if hex}}hex{{/if}}{{#if rgb}}rgb{{/if}}{{#if hsl}}hsl{{/if}}">
-	<input type="hidden" value="{{value}}" name="{{name}}" />
+	<input class="value" type="hidden" value="{{value}}" name="{{name}}" />
 	{{#if hex}}
 	{{#unless alpha}}
 	<input type="text" class="color-text" placeholder="000000" pattern="[0-9a-fA-F]{3,6}" {{#if readonly}} disabled {{/if}}>
