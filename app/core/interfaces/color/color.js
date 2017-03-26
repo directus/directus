@@ -55,6 +55,28 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
     return false;
   }
 
+  /**
+   * Validates RGB(a) value
+   * @param  {Number} r
+   * @param  {Number} g
+   * @param  {Number} b
+   * @param  {Number} [a=0]
+   * @return {Boolean}
+   */
+  function isValidRGB(r, g, b, a = 0) {
+    if(typeof r !== 'number' || typeof g !== 'number' || typeof b !== 'number' || typeof a !== 'number') return false;
+
+    var regex = /\b(1?[0-9]{1,2}|2[0-4][0-9]|25[0-5])\b/;
+    if(
+      regex.test(r) &&
+      regex.test(g) &&
+      regex.test(b) &&
+      a >= 0 && a <= 1
+    ) return true;
+
+    return false;
+  }
+
   var Input = UIView.extend({
     template: 'color/input',
 
@@ -63,7 +85,6 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
       'keypress input': function(event) {
         if((event.which && event.which == 13) || (event.keyCode && event.keyCode == 13)) return false;
       },
-
 
       'click .color-preview': function(event) {
         // Remove value from input
