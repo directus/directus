@@ -279,7 +279,7 @@ define([
       fetchComments: function () {
         var showCommentsCount = this.getViewOptions('comments_count');
 
-        if (this.options.systemCollection.length <= 0) {
+        if (!showCommentsCount || this.options.systemCollection.length <= 0) {
           var deferred = new $.Deferred();
           deferred.resolve();
 
