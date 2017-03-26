@@ -20,20 +20,6 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
 
   'use strict';
 
-  var defaultPalette = [
-    'f44336',
-    'e91e63',
-    '9c27b0',
-    '3f51b5',
-    '2196f3',
-    '4caf50',
-    'ffeb3b',
-    'ff9800',
-    '9e9e9e',
-    '000000',
-    'ffffff'
-  ];
-
   /**
    * Validates hex value
    * @param  {String} color hex color value
