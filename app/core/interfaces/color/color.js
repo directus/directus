@@ -63,7 +63,8 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
    * @param  {Number} [a=0]
    * @return {Boolean}
    */
-  function isValidRGB(r, g, b, a = 0) {
+  function isValidRGB(r, g, b, a) {
+    a = a || 0;
     if(typeof r !== 'number' || typeof g !== 'number' || typeof b !== 'number' || typeof a !== 'number') return false;
 
     var regex = /\b(1?[0-9]{1,2}|2[0-4][0-9]|25[0-5])\b/;
