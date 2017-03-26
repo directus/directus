@@ -78,6 +78,28 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
     return false;
   }
 
+  /**
+   * Validates HSL(a)
+   * @param  {Number} h
+   * @param  {Number} s
+   * @param  {Number} l
+   * @param  {Number} a
+   * @return {Boolean}
+   */
+  function isValidHSL(h, s, l, a) {
+    a = a || 0;
+    if(typeof h !== 'number' || typeof s !== 'number' || typeof l !== 'number' || typeof a !== 'number') return false;
+
+    if(
+      h >= 0 && h <= 360 &&
+      s >= 0 && s <= 100 &&
+      l >= 0 && l <= 100 &&
+      a >= 0 && a <= 1
+    ) return true;
+
+    return false;
+  }
+
   function showInvalidMessage(view) {
     view.$el.find('.color-invalid')[0].innerHTML = __t('confirm_invalid_value');
   }
@@ -124,6 +146,17 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
             }
 
             return !isValidRGB(color.r, color.g, color.b, color.a) ? showInvalidMessage(this) : hideInvalidMessage(this);
+          }
+
+          case 'hsl': {
+            var color = {
+              h: +this.$el.find('input.hue').val(),
+              s: +this.$el.find('input.saturation').val(),
+              l: +this.$el.find('input.lightness').val(),
+              a: +this.$el.find('input.alpha').val()
+            }
+
+            return !isValidHSL(color.h, color.s, color.l, color.a) ? showInvalidMessage(this) : hideInvalidMessage(this);
           }
         }
       },
