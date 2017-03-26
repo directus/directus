@@ -487,7 +487,8 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
         options: {
           options: {
             hex: 'Hex',
-            hexWithChar: 'Hex (with `#`)',
+            // TODO: support this:
+            // hexWithChar: 'Hex (with `#`)',
             rgb: 'RGB',
             hsl: 'HSL'
           }
