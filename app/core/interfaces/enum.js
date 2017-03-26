@@ -6,13 +6,12 @@
 //  For all details and documentation:
 //  http://www.getdirectus.com
 
-define(['app', 'core/UIComponent', 'core/UIView', 'core/t'],function(app, UIComponent, UIView, __t) {
+define(['app', 'core/UIComponent', 'core/UIView', 'core/t', 'select2'],function(app, UIComponent, UIView, __t) {
 
   'use strict';
 
   var template = '<div class="select-container"> \
                     <select name="{{name}}" {{#if readonly}}disabled{{/if}}><option value="">{{t "select_from_below"}}</option>{{#options}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{value}}</option>{{/options}}</select> \
-                    <i class="material-icons select-arrow">arrow_drop_down</i> \
                   </div>';
 
   var Input = UIView.extend({
@@ -40,6 +39,19 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'],function(app, UIComp
         readonly: !this.options.canWrite,
         options: enumArray
       };
+    },
+    initialize: function() {
+      var isMobile = navigator.userAgent.match(/(iP(hone|od|ad)|Android|IEMobile)/);
+      if (!isMobile) {
+        var self = this;
+        setTimeout(function () {
+          var options = {
+            placeholder: self.options.settings.get('placeholder_text'),
+            options.minimumResultsForSearch = Infinity;
+          };
+          self.$el.find("select").select2(options);
+        }, 0);
+      }
     }
   });
 

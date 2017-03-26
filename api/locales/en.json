@@ -286,6 +286,7 @@
 
     "select_options_comment": "Enter JSON key value pairs with the saved value and text displayed.",
     "select_placeholder_text": "Enter Placeholder Text",
+    "select_auto_search_limit_text": "Minimum number of value to display search",
 
     "one_file_only_please": "One file only please",
     "enter_the_url_to_a_file": "Enter the URL to a file:",

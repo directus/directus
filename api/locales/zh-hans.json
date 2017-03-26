@@ -241,6 +241,7 @@
 
     "select_options_comment": "输入 JSON 键值对：键为要保存的值，值为显示予前端的名称。",
     "select_placeholder_text": "输入占位文本",
+    "select_auto_search_limit_text": "Minimum number of value to display search",
 
     "one_file_only_please": "只能上传一个文件",
     "enter_the_url_to_a_file": "输入文件 URL：",
