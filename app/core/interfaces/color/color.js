@@ -186,10 +186,29 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
 
   function showInvalidMessage(view) {
     view.$el.find('.color-invalid')[0].innerHTML = __t('confirm_invalid_value');
+    setPreviewColor(view, 'rgb', {r: 255, g: 255, b: 255, a: 0});
   }
 
   function hideInvalidMessage(view) {
     view.$el.find('.color-invalid')[0].innerHTML = '';
+  }
+
+  function setPreviewColor(view, type, color) {
+    switch(type) {
+      case 'hex':
+        color = '#' + color;
+        break;
+      case 'rgb':
+        if(color.a === undefined) color.a = 1;
+        color = 'rgba(' + color.r + ', ' + color.g + ', ' + color.b + ', ' + color.a + ')';
+        break;
+      case 'hsl':
+        if(color.a === undefined) color.a = 1;
+        color = 'hsla(' + color.h + ', ' + color.s + '%, ' + color.l + '%, ' + color.a + ')';
+        break;
+    }
+
+    view.$el.find('.color-preview')[0].style.boxShadow = 'inset 0 0 0 30px ' + color;
   }
 
   var Input = UIView.extend({
@@ -213,35 +232,36 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
       },
 
       // Validate value on change
-      'change .color-text': function(event) {
+      'input .color-text': function(event) {
         var type = this.options.settings.get('input');
         switch(type) {
-          case 'hex': {
+          case 'hex':
             var color = event.target.value;
-            return !isValidHex(color) && color.length !== 0 ? showInvalidMessage(this) : hideInvalidMessage(this);
-          }
+            setPreviewColor(this, type, color);
+            !isValidHex(color) && color.length !== 0 ? showInvalidMessage(this) : hideInvalidMessage(this);
+            break;
 
-          case 'rgb': {
+          case 'rgb':
             var color = {
               r: +this.$el.find('input.red').val(),
               g: +this.$el.find('input.green').val(),
               b: +this.$el.find('input.blue').val(),
               a: +this.$el.find('input.alpha').val()
             }
+            setPreviewColor(this, type, color);
+            !isValidRGB(color.r, color.g, color.b, color.a) ? showInvalidMessage(this) : hideInvalidMessage(this);
+            break;
 
-            return !isValidRGB(color.r, color.g, color.b, color.a) ? showInvalidMessage(this) : hideInvalidMessage(this);
-          }
-
-          case 'hsl': {
+          case 'hsl':
             var color = {
               h: +this.$el.find('input.hue').val(),
               s: +this.$el.find('input.saturation').val(),
               l: +this.$el.find('input.lightness').val(),
               a: +this.$el.find('input.alpha').val()
             }
-
-            return !isValidHSL(color.h, color.s, color.l, color.a) ? showInvalidMessage(this) : hideInvalidMessage(this);
-          }
+            setPreviewColor(this, type, color);
+            !isValidHSL(color.h, color.s, color.l, color.a) ? showInvalidMessage(this) : hideInvalidMessage(this);
+            break;
         }
       },
 
@@ -257,6 +277,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
           switch(type) {
             case 'hex':
               this.$el.find('input').val(buttonValue);
+              setPreviewColor(this, type, buttonValue);
               break;
             case 'rgb':
               var rgba = convertHexToRGB(buttonValue);
@@ -264,6 +285,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
               this.$el.find('input.green').val(rgba.g);
               this.$el.find('input.blue').val(rgba.b);
               this.$el.find('input.alpha').val(rgba.a);
+              setPreviewColor(this, type, rgba);
               break;
             case 'hsl':
               var rgba = convertHexToRGB(buttonValue);
@@ -272,6 +294,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
               this.$el.find('input.saturation').val(hsla.s);
               this.$el.find('input.lightness').val(hsla.l);
               this.$el.find('input.alpha').val(hsla.a);
+              setPreviewColor(this, type, hsla);
               break;
           }
       },
