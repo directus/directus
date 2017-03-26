@@ -301,10 +301,13 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
       }
     },
 
-    serialize: function() {
-      var value = this.options.value || '';
+    afterRender: function() {
+      //
+    },
 
+    serialize: function() {
       var input = this.options.settings.get('input');
+      var value = this.options.value || '';
 
       return {
         value: value,
@@ -319,6 +322,10 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
         hsl: input === 'hsl',
         alpha: this.options.settings.get('allow_alpha')
       };
+    },
+
+    initialize: function() {
+      //
     }
   });
 
