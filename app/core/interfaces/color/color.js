@@ -138,11 +138,13 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
     rgba.r = parseInt(result[1], 16);
     rgba.g = parseInt(result[2], 16);
     rgba.b = parseInt(result[3], 16);
+    rgba.a = rgba.a || 1;
 
     return rgba;
   }
 
   function convertRGBtoHSL(r, g, b, a) {
+    a = a || 1;
     r = r / 255;
     g = g / 255;
     b = b / 255;
