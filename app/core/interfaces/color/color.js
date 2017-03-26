@@ -78,6 +78,14 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
     return false;
   }
 
+  function showInvalidMessage(view) {
+    view.$el.find('.color-invalid')[0].innerHTML = __t('confirm_invalid_value');
+  }
+
+  function hideInvalidMessage(view) {
+    view.$el.find('.color-invalid')[0].innerHTML = '';
+  }
+
   var Input = UIView.extend({
     template: 'color/input',
 
@@ -98,6 +106,36 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
         this.$el.find('button').removeClass('active');
       },
 
+      // Validate value on change
+      'change .color-text': function(event) {
+        var type = this.options.settings.get('input');
+        switch(type) {
+          case 'hex': {
+            var color = event.target.value;
+            return !isValidHex(color) && color.length !== 0 ? showInvalidMessage(this) : hideInvalidMessage(this);
+          }
+
+          case 'rgb': {
+            var color = {
+              r: +this.$el.find('input.red').val(),
+              g: +this.$el.find('input.green').val(),
+              b: +this.$el.find('input.blue').val(),
+              a: +this.$el.find('input.alpha').val()
+            }
+
+            return !isValidRGB(color.r, color.g, color.b, color.a) ? showInvalidMessage(this) : hideInvalidMessage(this);
+          }
+        }
+      },
+
+      // 'blur .color-text': function(event) {
+      //   var color = event.target.value;
+      //
+      //   if(this.options.schema.isRequired() && color.length === 0) {
+      //     this.$el.find('.color-invalid')[0].innerHTML = __t('this_field_is_required');
+      //   }
+      // },
+
       // 'input .color-text': function(event) {
       //   var color = event.target.value;
       //
@@ -112,20 +150,6 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
       //   if(color.length === 0) this.$el.find('.color-preview')[0].style.backgroundColor = '#000';
       //
       //   this.$el.find('.color-invalid')[0].innerHTML = '';
-      // },
-      // 'change .color-text': function(event) {
-      //   var color = event.target.value;
-      //
-      //   if(!isValidHex(color) && color.length !== 0) {
-      //     this.$el.find('.color-invalid')[0].innerHTML = __t('confirm_invalid_value');
-      //   }
-      // },
-      // 'blur .color-text': function(event) {
-      //   var color = event.target.value;
-      //
-      //   if(this.options.schema.isRequired() && color.length === 0) {
-      //     this.$el.find('.color-invalid')[0].innerHTML = __t('this_field_is_required');
-      //   }
       // },
       // 'click .color-select': function(event) {
       //   // Active clicked on button
