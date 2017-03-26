@@ -225,7 +225,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
         this.$el.find('input').val('');
 
         // Clear color preview
-        this.$el.find('.color-preview')[0].style.backgroundColor = 'black';
+        setPreviewColor(this, 'rgb', {r: 255, g: 255, b: 255, a: 0});
 
         // Disable active button
         this.$el.find('button').removeClass('active');
@@ -234,6 +234,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
       // Validate value on change
       'input .color-text': function(event) {
         var type = this.options.settings.get('input');
+
         switch(type) {
           case 'hex':
             var color = event.target.value;
@@ -243,10 +244,10 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
 
           case 'rgb':
             var color = {
-              r: +this.$el.find('input.red').val(),
-              g: +this.$el.find('input.green').val(),
-              b: +this.$el.find('input.blue').val(),
-              a: +this.$el.find('input.alpha').val()
+              r: +this.$el.find('input.red').val() || 0,
+              g: +this.$el.find('input.green').val() || 0,
+              b: +this.$el.find('input.blue').val() || 0,
+              a: +this.$el.find('input.alpha').val() || 1
             }
             setPreviewColor(this, type, color);
             !isValidRGB(color.r, color.g, color.b, color.a) ? showInvalidMessage(this) : hideInvalidMessage(this);
@@ -254,10 +255,10 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
 
           case 'hsl':
             var color = {
-              h: +this.$el.find('input.hue').val(),
-              s: +this.$el.find('input.saturation').val(),
-              l: +this.$el.find('input.lightness').val(),
-              a: +this.$el.find('input.alpha').val()
+              h: +this.$el.find('input.hue').val() || 0,
+              s: +this.$el.find('input.saturation').val() || 0,
+              l: +this.$el.find('input.lightness').val() || 0,
+              a: +this.$el.find('input.alpha').val() || 1
             }
             setPreviewColor(this, type, color);
             !isValidHSL(color.h, color.s, color.l, color.a) ? showInvalidMessage(this) : hideInvalidMessage(this);
@@ -294,47 +295,11 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
               this.$el.find('input.saturation').val(hsla.s);
               this.$el.find('input.lightness').val(hsla.l);
               this.$el.find('input.alpha').val(hsla.a);
+              console.log(type, hsla)
               setPreviewColor(this, type, hsla);
               break;
           }
-      },
-
-      // 'blur .color-text': function(event) {
-      //   var color = event.target.value;
-      //
-      //   if(this.options.schema.isRequired() && color.length === 0) {
-      //     this.$el.find('.color-invalid')[0].innerHTML = __t('this_field_is_required');
-      //   }
-      // },
-
-      // 'input .color-text': function(event) {
-      //   var color = event.target.value;
-      //
-      //   // Activate button if color matches
-      //   this.$el.find('button').removeClass('active');
-      //   this.$el.find('button[data-color="' + color + '"]').addClass('active');
-      //
-      //   // Update preview color
-      //   this.$el.find('.color-preview')[0].style.backgroundColor = '#' + color;
-      //
-      //   // Set preview color to black when input field is empty
-      //   if(color.length === 0) this.$el.find('.color-preview')[0].style.backgroundColor = '#000';
-      //
-      //   this.$el.find('.color-invalid')[0].innerHTML = '';
-      // },
-      // 'click .color-select': function(event) {
-      //   // Active clicked on button
-      //   var button = event.target.className === 'material-icons' ? event.target.parentNode : event.target;
-      //   this.$el.find('input').val(button.getAttribute('data-color'));
-      //   this.$el.find('button').removeClass('active');
-      //   button.classList.add('active');
-      //
-      //   // Set preview color
-      //   this.$el.find('.color-preview')[0].style.backgroundColor = '#' + button.getAttribute('data-color');
-      //
-      //   // Remove invalid message
-      //   this.$el.find('.color-invalid')[0].innerHTML = '';
-      // }
+      }
     },
 
     serialize: function() {
