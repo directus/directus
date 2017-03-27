@@ -46,9 +46,9 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t', 'select2'],function(
         var self = this;
         setTimeout(function () {
           var options = {
-            placeholder: self.options.settings.get('placeholder_text')
+            placeholder: self.options.settings.get('placeholder_text'),
+            minimumResultsForSearch: Infinity
           };
-          options[options.minimumResultsForSearch] = Infinity;
           self.$el.find("select").select2(options);
         }, 0);
       }
