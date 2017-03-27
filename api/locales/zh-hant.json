@@ -258,6 +258,7 @@
 
     "select_options_comment": "輸入JSON鍵值對：鍵為要儲存的值，值為顯示予前端的名稱。",
     "select_placeholder_text": "輸入佔位內文",
+    "select_auto_search_limit_text": "Minimum number of value to display search",
 
     "one_file_only_please": "只能上傳一個檔案",
     "enter_the_url_to_a_file": "輸入檔案URL：",

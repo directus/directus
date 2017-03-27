@@ -20,6 +20,7 @@ require.config({
     "polyglot":   "../assets/js/libs/polyglot.min",
     "dragula": "../assets/js/vendor/dragula.min",
     "chart": "../assets/js/vendor/chart.min",
+    "select2": "../assets/js/vendor/select2.min",
     "async": "../assets/js/plugins/async",
 
     // JavaScript folders.
@@ -71,6 +72,11 @@ require.config({
 
     "chart": {
       exports: "Chart"
+    },
+
+    "select2": {
+      deps: ["jquery"],
+      exports: "$.fn.select2"
     },
 
     "plugins/jquery.flashrow": ['jquery'],
