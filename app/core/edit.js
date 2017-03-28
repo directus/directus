@@ -122,7 +122,7 @@ define(function(require, exports, module) {
       var isBatchEdit = this.options.isBatchEdit;
       var model = this.model;
       var table = model.table;
-      var statusName = table ? table.getStatusColumn() : app.statusMapping.status_name;
+      var statusName = table ? table.getStatusColumnName() : app.statusMapping.status_name;
 
       this.structure.each(function(column) {
 
