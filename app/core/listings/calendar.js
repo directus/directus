@@ -227,7 +227,9 @@ define([
 
         this.collection.each(function(model) {
           var date = dateColumn ? model.get(dateColumn.id) : null;
-          var published = model.get(app.statusMapping.status_name) === app.statusMapping.active_num;
+          var table = model.table;
+          var statusColumnName = table ? table.getStatusColumnName() : app.statusMapping.status_name;
+          var published = model.get(statusColumnName) === app.statusMapping.active_num;
 
           if (date && parseInt(moment(date).format('D'), 10) === day) {
             data.push({
