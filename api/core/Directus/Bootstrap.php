@@ -168,6 +168,10 @@ class Bootstrap
         $config = defined('BASE_PATH') ? Bootstrap::get('config') : [];
         $app->container->set('config', $config);
 
+        $app->container->singleton('schemaManager', function () {
+            return Bootstrap::get('schemaManager');
+        });
+
         $authConfig = ArrayUtils::get($config, 'auth', []);
         $socialAuth = $app->container->get('socialAuth');
 

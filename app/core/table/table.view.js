@@ -246,6 +246,9 @@ function(app, _, Backbone, Notification, __t, TableHelpers, ModelHelper, TableHe
 
     initialize: function(options) {
       var collection = this.collection;
+      var table = collection.table;
+      var sortColumnName = table ? table.getSortColumnName() : 'id';
+      var statusColumnName = table ? table.getStatusColumnName() : app.statusMapping.status_name;
 
       options = _.extend({
         fixedHead: false,
@@ -254,9 +257,11 @@ function(app, _, Backbone, Notification, __t, TableHelpers, ModelHelper, TableHe
 
       this.listenTo(collection, 'sync', function(model, resp, options) {
         options = options || {};
-        if (options.silent) return;
-        ModelHelper.setIdAttribute(model);
-        // this.render();
+        if (options.silent) {
+          return;
+        }
+
+        this.render();
       });
 
       this.listenTo(collection, 'visibility', function() {
@@ -282,7 +287,7 @@ function(app, _, Backbone, Notification, __t, TableHelpers, ModelHelper, TableHe
       }
 
       if (this.options.sort === undefined) {
-        this.options.sort = collection.hasColumn('sort') && collection.hasPermission && collection.hasPermission('bigedit') && !collection.isWriteBlacklisted('sort');
+        this.options.sort = collection.hasColumn(sortColumnName) && collection.hasPermission && collection.hasPermission('bigedit') && !collection.isWriteBlacklisted(sortColumnName);
       }
 
       if (this.options.selectable === undefined) {
@@ -290,7 +295,7 @@ function(app, _, Backbone, Notification, __t, TableHelpers, ModelHelper, TableHe
       }
 
       if (this.options.status === undefined) {
-        this.options.status = collection.hasColumn(app.statusMapping.status_name);
+        this.options.status = collection.hasColumn(statusColumnName);
       }
 
       if (this.options.preferences) {
@@ -335,6 +340,7 @@ function(app, _, Backbone, Notification, __t, TableHelpers, ModelHelper, TableHe
       this.options.systemCollection = this.collection.clone();
       this.listenTo(this.collection, 'sync', function (collection, resp, options) {
         var method = options.reset ? 'reset' : 'set';
+        options.parse = true;
         this.options.systemCollection[method](resp, options);
       });
     },
@@ -347,5 +353,4 @@ function(app, _, Backbone, Notification, __t, TableHelpers, ModelHelper, TableHe
   });
 
   return TableView;
-
 });

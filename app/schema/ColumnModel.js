@@ -1,6 +1,6 @@
 define(function(require, exports, module) {
 
-  "use strict";
+  'use strict';
 
   var app = require('app'),
       Backbone = require('backbone'),
@@ -8,9 +8,11 @@ define(function(require, exports, module) {
       UIModel = require('./UIModel'),
       RelationshipModel = require('./RelationshipModel');
 
+  var columnOptions = ['table'];
+
   module.exports = Backbone.Model.extend({
 
-      parse: function (result) {
+    parse: function (result) {
         result = result.data ? result.data : result;
 
         var ui = result.ui;
@@ -70,41 +72,58 @@ define(function(require, exports, module) {
         return _.omit(result, 'options', 'relationship');
       },
 
-      getOptions: function() {
+    getOptions: function () {
         return this.options.get(this.attributes.ui);
       },
 
-      getRelated: function() {
+    getRelated: function () {
         return this.relationship.get('related_table');
       },
 
-      getTable: function() {
+    getTable: function () {
         return this.collection.table;
       },
 
-      getRelationshipType: function() {
+    getRelationshipType: function () {
         if (!this.hasRelated()) return;
         return this.relationship.get('type');
       },
 
-      hasRelated: function() {
+    hasRelated: function () {
         return this.relationship !== undefined;
       },
 
-      isNullable: function() {
+    isNullable: function () {
         return this.get('is_nullable') === 'YES';
       },
 
-      isRequired: function() {
-        return this.get('required') || !this.isNullable();
-      },
+    isRequired: function () {
+      return this.get('required') || !this.isNullable();
+    },
 
-      toJSON: function(options) {
-        if (options && options.columns) {
-          return _.pick(this.attributes, options.columns);
-        }
-        return _.clone(this.attributes);
+    isStatusColumn: function () {
+      return this.table.getStatusColumnName() === this.id;
+    },
+
+    isPrimaryColumn: function () {
+      return this.table.getPrimaryColumnName() === this.id;
+    },
+
+    isSortColumn: function () {
+      return this.table.getSortColumnName() === this.id;
+    },
+
+    toJSON: function (options) {
+      if (options && options.columns) {
+        return _.pick(this.attributes, options.columns);
       }
-  });
+      return _.clone(this.attributes);
+    },
 
+    constructor: function (attributes, options) {
+      Backbone.Model.prototype.constructor.apply(this, arguments);
+
+      _.extend(this, _.pick(options, columnOptions));
+    }
+  });
 });

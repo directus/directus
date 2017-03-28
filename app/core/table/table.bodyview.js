@@ -117,21 +117,27 @@ function(app, Backbone, _, Sortable, Notification) {
 
     drop: function() {
       var collection = this.collection;
-      this.$('tr').each(function(i) {
+      var table = collection.table;
+      var sortColumnName = table ? table.getSortColumnName() : 'id';
+
+      this.$('tr').each(function (i) {
         // Use data-id instead of data-cid
         // As collection models will be synced from the server its cid will be generated again
         // But the dom element will be still pointing to the older cid
-        collection.get($(this).attr('data-id')).set({sort: i},{silent: true});
+        var attributes = {};
+
+        attributes[sortColumnName] = i;
+        collection.get($(this).attr('data-id')).set(attributes, {silent: true});
       });
 
       if (this.options.saveAfterDrop) {
         // collection.save({columns:['id','sort']});
         var self = this;
         collection.save(null, {wait: true, patch: true, success: function() {
-          self.collection.setOrder('sort', 'ASC', {silent: false});
+          self.collection.setOrder(sortColumnName, 'ASC', {silent: false});
         }});
       } else {
-        this.collection.setOrder('sort','ASC',{silent: true});
+        this.collection.setOrder(sortColumnName, 'ASC',{silent: true});
       }
     },
 
@@ -181,5 +187,4 @@ function(app, Backbone, _, Sortable, Notification) {
   });
 
   return TableBodyView;
-
 });

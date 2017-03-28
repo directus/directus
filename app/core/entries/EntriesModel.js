@@ -17,15 +17,15 @@ define(function(require, exports, module) {
 
     inputs: {},
 
-    addInput: function(attr, input) {
+    addInput: function (attr, input) {
       this.inputs[attr] = input;
     },
 
-    getInput: function(attr) {
+    getInput: function (attr) {
       return this.inputs[attr];
     },
 
-    parse: function(result, options) {
+    parse: function (result, options) {
       this._lastFetchedResult = result;
       //result = this.parseDate(result);
 
@@ -36,7 +36,7 @@ define(function(require, exports, module) {
 
     // The flatten option flattens many-one relationships so the id is returned
     // instead of the object
-    get: function(attr, options) {
+    get: function (attr, options) {
       var uiType, value;
       options = options || {};
 
@@ -55,14 +55,14 @@ define(function(require, exports, module) {
 
     // @todo: Why is this one called so many times?
     // @note: Use HTML5 form validation when possible
-    validate: function(attributes, options) {
+    validate: function (attributes, options) {
       var errors = [];
       var structure = this.getStructure();
 
       //only validates attributes that are part of the schema
       attributes = _.pick(attributes, structure.pluck('column_name'));
 
-      _.each(attributes, function(value, key, list) {
+      _.each(attributes, function (value, key, list) {
         //Column
         var column = structure.get(key);
 
@@ -73,7 +73,7 @@ define(function(require, exports, module) {
         }
 
         // Don't validate ID
-        if (key === 'id') {
+        if (column.isPrimaryColumn()) {
           return;
         }
 
@@ -95,19 +95,22 @@ define(function(require, exports, module) {
         }
       }, this);
 
-      if (errors.length > 0) return errors;
+      if (errors.length > 0) {
+        return errors;
+      }
     },
 
-    rollBack: function() {
+    rollBack: function () {
       var data = this.parse(this._lastFetchedResult);
+
       return this.set(data);
     },
 
-    parseDate: function(attributes) {
+    parseDate: function (attributes) {
       if(!attributes) {
         return;
       }
-      _.each(this.getStructure().getColumnsByType('datetime'), function(column) {
+      _.each(this.getStructure().getColumnsByType('datetime'), function (column) {
         if (attributes[column.id] !== null) {
           attributes[column.id] = new Date(attributes[column.id]);
         }
@@ -116,14 +119,14 @@ define(function(require, exports, module) {
     },
 
     //@todo: this whole shebang should be cached in the collection
-    parseRelational: function(attributes) {
+    parseRelational: function (attributes) {
       var structure = this.getStructure();
       var relationalColumns = structure.getRelationalColumns();
-      var EntriesCollection = require("core/entries/EntriesCollection");
+      var EntriesCollection = require('core/entries/EntriesCollection');
 
-      var EntriesManager = require("core/EntriesManager");
+      var EntriesManager = require('core/EntriesManager');
 
-      _.each(relationalColumns, function(column) {
+      _.each(relationalColumns, function (column) {
         var id = column.id;
         var tableRelated = column.getRelated();
         var relationshipType = column.getRelationshipType();
@@ -202,7 +205,7 @@ define(function(require, exports, module) {
     },
 
     //@todo: This is maybe a hack. Can we make the patch better?
-    diff: function(key, val, options) {
+    diff: function (key, val, options) {
       var attrs, changedAttrs = {};
       if (typeof key === 'object') {
         attrs = key;
@@ -211,8 +214,10 @@ define(function(require, exports, module) {
         (attrs = {})[key] = val;
       }
 
-      _.each(attrs, function(val, key) {
-        if (this.get(key) !== val) changedAttrs[key] = val;
+      _.each(attrs, function (val, key) {
+        if (this.get(key) !== val) {
+          changedAttrs[key] = val;
+        }
       },this);
 
       //Always pass id
@@ -221,18 +226,14 @@ define(function(require, exports, module) {
       return changedAttrs;
     },
 
-    sync: function(method, model, options) {
-
-      var isModel,
-          isCollection,
-          attributes = this.attributes;
+    sync: function (method, model, options) {
+      var attributes = this.attributes;
 
       if (method === 'patch' && options.includeRelationships) {
-
         var relationalColumns = this.getStructure().getRelationalColumns();
         //var relationalAttributes = _.pick(this.attributes, relationalKeys);
 
-        _.each(relationalColumns, function(column) {
+        _.each(relationalColumns, function (column) {
             var key = column.id;
             var value = attributes[key];
 
@@ -263,7 +264,7 @@ define(function(require, exports, module) {
     },
 
     // returns true or false
-    isMine: function() {
+    isMine: function () {
       var myId = parseInt(app.users.getCurrentUser().id,10),
           magicOwnerColumn = (this.collection !== null) ? this.collection.table.get('user_create_column') : null,
           magicOwnerId = this.get(magicOwnerColumn);
@@ -279,14 +280,13 @@ define(function(require, exports, module) {
     // bigedit trumps write black list
     // bigedit = edit others
     // edit = edit your own
-    canEdit: function(attribute) {
+    canEdit: function (attribute) {
       //@TODO: Actually Fix this Issue
       if (!this.collection) {
         return true;
       }
 
       var iAmTheOwner         = this.isMine(),
-          privileges          = this.collection.privileges,
           bigeditPermission   = this.collection.hasPermission('bigedit'),
           editPermission      = this.collection.hasPermission('edit'),
           columnIsBlacklisted = !_.isEmpty(attribute) && this.collection.isWriteBlacklisted(attribute),
@@ -302,23 +302,23 @@ define(function(require, exports, module) {
           || (iAmTheOwner && editPermission && !columnIsBlacklisted);
     },
 
-    getWriteFieldBlacklist: function() {
+    getWriteFieldBlacklist: function () {
       return this.collection ? this.collection.getWriteFieldBlacklist() : [];
     },
 
-    getReadFieldBlacklist: function() {
+    getReadFieldBlacklist: function () {
       return this.collection ? this.collection.getWriteFieldBlacklist() : [];
     },
 
-    isWriteBlacklisted: function(attribute) {
+    isWriteBlacklisted: function (attribute) {
       return this.collection ? this.collection.isWriteBlacklisted(attribute) : false;
     },
 
-    isReadBlacklisted: function(attribute) {
+    isReadBlacklisted: function (attribute) {
       return this.collection ? this.collection.isReadBlacklisted(attribute) : false;
     },
 
-    canDelete: function() {
+    canDelete: function () {
       var iAmTheOwner = this.isMine(),
           canDelete = this.collection.hasPermission('delete'),
           canBigdelete = this.collection.hasPermission('bigdelete');
@@ -326,7 +326,7 @@ define(function(require, exports, module) {
       return (!iAmTheOwner && canBigdelete) || (iAmTheOwner && canDelete);
     },
 
-    toJSON: function(options, noNest) {
+    toJSON: function (options, noNest) {
       var attributes = _.clone(this.attributes),
           isModel,
           isCollection;
@@ -337,12 +337,12 @@ define(function(require, exports, module) {
         attributes = this.unsavedAttributes() || this.changed;
         // always include id
         if (this.id) {
-          attributes.id = this.id;
+          attributes[this.idAttribute] = this.id;
         }
       }
 
       // expand relations
-      _.each(this.attributes, function(value, key) {
+      _.each(this.attributes, function (value, key) {
         isModel = (value instanceof Backbone.Model);
         isCollection = (value instanceof Backbone.Collection);
 
@@ -365,11 +365,11 @@ define(function(require, exports, module) {
       return attributes;
     },
 
-    getStructure: function() {
+    getStructure: function () {
       return this.structure;
     },
 
-    getNewInstance: function(options) {
+    getNewInstance: function (options) {
       options = options || {};
 
       return new EntriesModel({}, _.extend({
@@ -380,22 +380,20 @@ define(function(require, exports, module) {
 
     },
 
-    getTable: function() {
+    getTable: function () {
       return this.table;
     },
 
-    initialize: function(data, options) {
+    initialize: function (data, options) {
       this.on('invalid', function(model, errors) {
         var details = _.map(errors, function(err) { return '<b>'+app.capitalize(err.attr)+':</b> '+err.message; }).join('</li><li>');
         var error_id = (this.id)? this.id : 'New';
         details = app.capitalize(this.getTable().id) + ' (' + error_id + ')' + '<hr><ul><li>' + details + '</li></ul>';
         app.trigger('alert:error', 'There seems to be a problem...', details);
       });
-
-      this.listenTo(this, 'sync', ModelHelper.setIdAttribute);
     },
 
-    clone: function() {
+    clone: function () {
       return new this.constructor(this.attributes, {
         collection: this.collection,
         table: this.table
@@ -403,7 +401,7 @@ define(function(require, exports, module) {
     },
 
     // we need to do this because initialize is called AFTER parse.
-    constructor: function EntriesModel(data, options) {
+    constructor: function EntriesModel (data, options) {
       // inherit structure and table from collection if it exists
       //@todo: it needs a fallback or throw an exception
       // when options (collection) is not defined.
@@ -412,9 +410,9 @@ define(function(require, exports, module) {
       this.table = options.collection ? options.collection.table : options.table;
       this.privileges = options.collection ? options.collection.privileges : options.privileges;
 
+      ModelHelper.setIdAttribute(this);
+
       EntriesModel.__super__.constructor.call(this, data, options);
     }
-
   });
-
 });

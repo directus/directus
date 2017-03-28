@@ -4,20 +4,23 @@ define(function(require, exports) {
 
   var Backbone = require('backbone');
 
-  var addPrimaryColumnToModel = function(model) {
+  var addPrimaryColumnToModel = function (model) {
+    var table;
+
     if (model.collection && model.collection.junctionStructure) {
       model = model.collection.junctionStructure;
     }
 
-    if (model.table && model.table.has('primary_column') && model.table.get('primary_column') !== 'id') {
-      model.idAttribute = model.table.get('primary_column');
-      model.id = model.get(model.idAttribute);
-      model.collection._byId[model.id] = model;
+    table = model.table;
+    if (table && table.hasPrimaryColumn() && table.getPrimaryColumnName() !== 'id') {
+      model.idAttribute = table.getPrimaryColumnName();
+      // model.id = model.get(model.idAttribute);
+      // model.collection._byId[model.id] = model;
     }
-  }
+  };
 
   return {
-    setIdAttribute: function(model) {
+    setIdAttribute: function (model) {
       if (!model) {
         return;
       }

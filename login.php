@@ -17,6 +17,7 @@ use Directus\Bootstrap;
 require 'api/config.php';
 require 'api/globals.php';
 
+$app = Bootstrap::get('app');
 $authentication = Bootstrap::get('auth');
 $emitter = Bootstrap::get('hookEmitter');
 $emitter->run('directus.login.start');
@@ -68,5 +69,4 @@ $templateVars = [
     'subtitle' => 'Login'
 ];
 
-$app = Bootstrap::get('app');
 $app->render('login.twig.html', $templateVars);
