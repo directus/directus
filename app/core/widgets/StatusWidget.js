@@ -33,14 +33,20 @@ function(app, _, Backbone) {
           var $status = $(event.currentTarget);
           $status.addClass('active');
 
-          this.model.set(app.statusMapping.status_name, $status.data('id'));
+          this.model.set(this.getStatusColumnName(), $status.data('id'));
         }
       }
     },
 
+    getStatusColumnName: function () {
+      var table = this.model.table;
+
+      return table ? table.getStatusColumnName() : app.statusMapping.status_name;
+    },
+
     serialize: function() {
       var status = [];
-      var attr = app.statusMapping.status_name;
+      var attr = this.getStatusColumnName();
       var currentStatus = this.model.get(attr);
 
       _.each(app.statusMapping.mapping, function(item, key) {

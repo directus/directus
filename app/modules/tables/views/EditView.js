@@ -222,7 +222,7 @@ function(app, Backbone, _, Handlebars, __t, Directus, BasePageView, Widgets, His
         }
       } else {
         // patch only the changed values
-        model.save(changedValues, {
+        model.save(_.extend(model.changedAttributes(), changedValues), {
           success: success,
           error: function(model, xhr, options) {
             console.error('err');
@@ -328,6 +328,10 @@ function(app, Backbone, _, Handlebars, __t, Directus, BasePageView, Widgets, His
       return {};
     },
 
+    cleanup: function () {
+      this.model.stopTracking();
+    },
+
     initialize: function(options) {
       options = _.defaults({}, options, {skipFetch: false});
       this.headerOptions = this.getHeaderOptions();
@@ -337,6 +341,11 @@ function(app, Backbone, _, Handlebars, __t, Directus, BasePageView, Widgets, His
       this.headerOptions.route.isOverlay = false;
       this.skipFetch = options.skipFetch;
       this.onSuccess = options.onSuccess;
+
+      this.model.startTracking();
+      this.listenTo(this.model, 'sync', function () {
+        this.model.restartTracking();
+      });
 
       if (_.isUndefined(this.headerOptions.basicSave)) {
         this.headerOptions.basicSave = false;
