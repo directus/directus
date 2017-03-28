@@ -92,7 +92,9 @@ function(app, Backbone, _, Sortable, Notification) {
       rows = _.map(models, function(model, i) {
         var classes = _.map(rowIdentifiers, function(columnName) { return 'row-'+columnName+'-'+model.get(columnName); });
         var highlight = _.contains(highlightIds,model.id);
-        var statusDraft = model.get(app.statusMapping.status_name) === app.statusMapping.draft_num;
+        var table = model.table;
+        var statusColumnName = table ? table.getStatusColumnName() : app.statusMapping.status_name;
+        var statusDraft = model.get(statusColumnName) === app.statusMapping.draft_num;
 
         return {index: i+1, model: model, classes: classes, highlight: highlight, statusDraft: statusDraft};
       });
