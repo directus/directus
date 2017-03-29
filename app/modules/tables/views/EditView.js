@@ -222,7 +222,7 @@ function(app, Backbone, _, Handlebars, __t, Directus, BasePageView, Widgets, His
         }
       } else {
         // patch only the changed values
-        model.save(_.extend(model.changedAttributes(), changedValues), {
+        model.save(model.unsavedAttributes(changedValues), {
           success: success,
           error: function(model, xhr, options) {
             console.error('err');
