@@ -33,7 +33,7 @@ define(function(require, exports, module) {
 
       data.status_column = data.status_column || app.statusMapping.status_name;
       data.primary_column = data.primary_column || 'id';
-      data.sort_column = data.sort_column || 'id';//'sort';
+      data.sort_column = data.sort_column || 'id';
 
       return _.omit(data, ['columns', 'preferences']);
     },
