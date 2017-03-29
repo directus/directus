@@ -208,9 +208,9 @@ function(app, Backbone, _, Handlebars, __t, Directus, BasePageView, Widgets, His
         console.log(model);
       }
 
-      var changedValues = model.diff(data);
+      var changedValues = model.unsavedAttributes(model.diff(data));
 
-      if(changedValues[app.statusMapping.status_name] && changedValues[app.statusMapping.status_name] === app.statusMapping.deleted_num ) {
+      if (changedValues[app.statusMapping.status_name] && changedValues[app.statusMapping.status_name] === app.statusMapping.deleted_num ) {
         var value = app.statusMapping.deleted_num;
         var options = {success: success, wait: true, patch: true, includeRelationships: true};
         try {
@@ -222,7 +222,7 @@ function(app, Backbone, _, Handlebars, __t, Directus, BasePageView, Widgets, His
         }
       } else {
         // patch only the changed values
-        model.save(model.unsavedAttributes(changedValues), {
+        model.save(changedValues, {
           success: success,
           error: function(model, xhr, options) {
             console.error('err');
