@@ -255,15 +255,6 @@ function(app, _, Backbone, Notification, __t, TableHelpers, ModelHelper, TableHe
         showMoreButton: false
       }, (options || {}));
 
-      this.listenTo(collection, 'sync', function(model, resp, options) {
-        options = options || {};
-        if (options.silent) {
-          return;
-        }
-
-        this.render();
-      });
-
       this.listenTo(collection, 'visibility', function() {
         this.options.columns = this.getTableColumns();
         this.render();
