@@ -330,11 +330,11 @@ ul {
   margin-left: 16px; }
 
 .loading {
-  -webkit-transition: all 200ms ease-in-out 0ms;
-  -moz-transition: all 200ms ease-in-out 0ms;
-  -o-transition: all 200ms ease-in-out 0ms;
-  -ms-transition: all 200ms ease-in-out 0ms;
-  transition: all 200ms ease-in-out 0ms;
+  -webkit-transition: opacity 200ms ease-in-out 0ms;
+  -moz-transition: opacity 200ms ease-in-out 0ms;
+  -o-transition: opacity 200ms ease-in-out 0ms;
+  -ms-transition: opacity 200ms ease-in-out 0ms;
+  transition: opacity 200ms ease-in-out 0ms;
   position: fixed;
   top: 0;
   left: 0;

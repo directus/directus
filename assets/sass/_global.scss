@@ -251,7 +251,7 @@ ul {
 	}
 }
 .loading {
-	@include transition (all, $timing-short, ease-in-out);
+	@include transition (opacity, $timing-short, ease-in-out);
 	position: fixed;
 	top: 0;
 	left: 0;
