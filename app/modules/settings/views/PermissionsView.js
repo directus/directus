@@ -13,10 +13,11 @@ define([
   'core/widgets/widgets',
   'core/t',
   'helpers/table',
+  'modules/settings/GroupsModel',
   'core/BasePageView'
 ],
 
-function(app, _, Backbone, Widgets, __t, TableHelpers, BasePageView) {
+function(app, _, Backbone, Widgets, __t, TableHelpers, GroupsModel, BasePageView) {
 
   'use strict';
 
@@ -114,15 +115,19 @@ function(app, _, Backbone, Widgets, __t, TableHelpers, BasePageView) {
     createNewGroup: function () {
       var self = this;
       app.router.openModal({type: 'prompt', text: __t('what_would_you_like_to_name_this_group'), callback: function(groupName) {
-        if(groupName && !app.schemaManager.getPrivileges('directus_permission')) {
-          var model = new Backbone.Model();
-          model.url = app.API_URL + 'groups';
-          model.set({name: groupName});
-          model.save({}, {success: function(model) {
-            model.fetch({success: function(){
+        if (groupName && !app.schemaManager.getPrivileges('directus_permission')) {
+          var model = new GroupsModel({name: groupName}, {
+            parse: true,
+            collection: self.collection
+          });
+
+          var options = {
+            success: function (model) {
               self.collection.add(model);
-            }});
-          }});
+            }
+          };
+
+          model.save({}, options);
         }
       }});
     },
