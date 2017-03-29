@@ -225,7 +225,7 @@ body.loading {
 			}
 		}
 	}
-	#bulkStatus {
+	#batchStatus {
 		@include transition (color, $timing-short, ease-in-out);
 		position: relative;
 		display: none;
@@ -359,12 +359,6 @@ body.loading {
 	.actions {
 		position: relative;
 		display: inline-block;
-		// #archiveMessages,
-		.filter-toggle,
-		#bulkDelete,
-		#bulkEdit {
-			display: none;
-		}
 		.action {
 			position: relative;
 			float: right;

@@ -2591,7 +2591,7 @@ body.loading .header .logo {
         color: #FFFFFF; }
       .header .breadcrumb .bookmark.active {
         color: #3498DB; }
-  .header #bulkStatus {
+  .header #batchStatus {
     -webkit-transition: color 200ms ease-in-out 0ms;
     -moz-transition: color 200ms ease-in-out 0ms;
     -o-transition: color 200ms ease-in-out 0ms;
@@ -2601,7 +2601,7 @@ body.loading .header .logo {
     display: none;
     vertical-align: top;
     margin-top: 11px; }
-    .header #bulkStatus select {
+    .header #batchStatus select {
       border: none; }
   .header .tools-right {
     display: inline; }
@@ -2730,10 +2730,6 @@ body.loading .header .logo {
   .header .actions {
     position: relative;
     display: inline-block; }
-    .header .actions .filter-toggle,
-    .header .actions #bulkDelete,
-    .header .actions #bulkEdit {
-      display: none; }
     .header .actions .action {
       position: relative;
       float: right;
