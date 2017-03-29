@@ -255,6 +255,10 @@ function(app, _, Backbone, Notification, __t, TableHelpers, ModelHelper, TableHe
         showMoreButton: false
       }, (options || {}));
 
+      if (options.system !== true) {
+        this.listenTo(collection, 'sync', this.render);
+      }
+
       this.listenTo(collection, 'visibility', function() {
         this.options.columns = this.getTableColumns();
         this.render();
