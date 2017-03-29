@@ -536,6 +536,9 @@
     "compact": "Compact",
     "comfortable": "Comfortable",
 
+    "error": "Error",
+    "invalid_preview_url_template": "Invalid preview URL template",
+
     "eg_x": "eg %{text}",
     "ok": "OK",
     "cancel": "Cancel",

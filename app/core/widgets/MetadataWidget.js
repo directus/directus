@@ -2,9 +2,10 @@ define([
   'app',
   'backbone',
   'underscore',
-  'handlebars'
+  'handlebars',
+  'core/t'
 ],
-function(app, Backbone, _, Handlebars) {
+function(app, Backbone, _, Handlebars, __t) {
 
   'use strict';
 
@@ -72,8 +73,14 @@ function(app, Backbone, _, Handlebars) {
         metadata.updatedByIsOnline = updatedByUser.isOnline();
       }
 
-      if (previewUrl) {
-        previewUrl = Handlebars.compile(previewUrl)(itemModel);
+      if (previewUrl && !this.invalidPreviewUrl) {
+        try {
+          previewUrl = Handlebars.compile(previewUrl)(itemModel);
+        } catch (e) {
+          this.invalidPreviewUrl = true;
+          app.trigger('alert:error', __t('error'), __t('invalid_preview_url_template'));
+          previewUrl = '';
+        }
       }
 
       return {
@@ -101,6 +108,7 @@ function(app, Backbone, _, Handlebars) {
         this._events['click .js-action-button'] = options.onClick;
       }
 
+      this.invalidPreviewUrl = false;
       this.listenTo(this.model, 'sync', this.render);
       if (this.model.isNew()) {
         this.model.fetch();
