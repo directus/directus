@@ -208,7 +208,7 @@ function(app, Backbone, _, Handlebars, __t, Directus, BasePageView, Widgets, His
         console.log(model);
       }
 
-      var changedValues = model.unsavedAttributes(model.diff(data));
+      var changedValues = _.extend(model.unsavedAttributes(), model.diff(data));
 
       if (changedValues[app.statusMapping.status_name] && changedValues[app.statusMapping.status_name] === app.statusMapping.deleted_num ) {
         var value = app.statusMapping.deleted_num;
