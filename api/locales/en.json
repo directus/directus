@@ -540,6 +540,8 @@
     "error": "Error",
     "invalid_preview_url_template": "Invalid preview URL template",
 
+    "unknown": "Unknown",
+
     "eg_x": "eg %{text}",
     "ok": "OK",
     "cancel": "Cancel",
