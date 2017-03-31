@@ -42,7 +42,7 @@ define(function () {
   };
 
   var hitBottom = function ($el) {
-    return $el.scrollTop() + $el.innerHeight() >= $el.get(0).scrollHeight - 200; // 200 = pixels from bottom to fetch
+    return $el.scrollTop() + $el.innerHeight() >= $el.get(0).scrollHeight - 500; // 500 = pixels from bottom to fetch
   };
 
   return {
