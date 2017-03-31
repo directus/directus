@@ -71,6 +71,11 @@ function(app, _, Backbone, Directus, BasePageView, __t, Widgets) {
         collection.add(model);
       }
 
+      // hotfix: if password is empty omit
+      if (!data.password) {
+        delete data.password;
+      }
+
       // patch only the changed values
       model.save(model.diff(data), {
         success: success,
