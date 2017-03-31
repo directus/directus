@@ -579,6 +579,7 @@ $data = [
 
 $templateVars = [
     'cacheBuster' => $cacheBuster,
+    'isAuthenticated' => $authentication->loggedIn() === true,
     'data' => json_encode($data),
     // 'path' => DIRECTUS_PATH,
     'rootUrl' => DIRECTUS_PATH,
