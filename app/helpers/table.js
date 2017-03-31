@@ -42,7 +42,7 @@ define(function () {
   };
 
   var hitBottom = function ($el) {
-    return $el.scrollTop() + $el.innerHeight() >= $el.get(0).scrollHeight;
+    return $el.scrollTop() + $el.innerHeight() >= $el.get(0).scrollHeight - 200; // 200 = pixels from bottom to fetch
   };
 
   return {
@@ -50,5 +50,5 @@ define(function () {
     fixWidths: fixWidths,
     headerScroll: headerScroll,
     headFootShadows: headFootShadows
-  }
+  };
 });
