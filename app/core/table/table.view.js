@@ -107,16 +107,29 @@ function(app, _, Backbone, Notification, __t, TableHelpers, ModelHelper, TableHe
       TableHelpers.headerScroll($table);
     },
 
-    afterRender: function() {
-      this.fixWidths();
-
+    bindTableEvents: function () {
       var $el = this.$('.table-scroll-x');
+
+      this.fixWidths();
       this.headerScroll($el);
+
       var onScroll = _.bind(function () {
         this.headerScroll($el);
       }, this);
 
-      $el.on('scroll', onScroll);
+      var onResize = _.bind(function () {
+        this.fixWidths();
+      }, this);
+
+      $el.off('scroll', _.throttle(onScroll, 300));
+      $el.on('scroll', _.throttle(onScroll, 300));
+
+      $(window).off('resize', _.debounce(onResize, 300));
+      $(window).on('resize', _.debounce(onResize, 300));
+    },
+
+    afterRender: function() {
+      this.bindTableEvents();
 
       if (this.bodyScrollTop) {
         document.body.scrollTop = this.bodyScrollTop;
