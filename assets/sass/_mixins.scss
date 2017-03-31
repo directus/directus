@@ -119,3 +119,11 @@
 	75% {transform: translate(0%,15%);}
 	100% {transform: translate(0%,0%);}
 }
+@keyframes progress-bar {
+	0% {width: 0%;}
+	20% {width: 80%;}
+	40% {width: 85%;}
+	60% {width: 88%;}
+	80% {width: 90%;}
+	100% {width: 92%;}
+}
