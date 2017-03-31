@@ -41,8 +41,6 @@ define([
   var hideProgressNotification = function () {
     app.activityInProgress = false;
 
-    $('.loading').removeClass('blocking fade');
-
     // Stop animation after cycle completes
     $('#header').find('.logo').one('animationiteration webkitAnimationIteration', function() {
       $(this).addClass('static');
@@ -51,9 +49,14 @@ define([
     //app.unlockScreen();
   };
 
+  var onAppLoaded = function () {
+    $('.loading').removeClass('blocking fade');
+  };
+
   // listen to alter events!
   app.on('progress', showProgressNotification);
   app.on('load', hideProgressNotification);
+  app.on('loaded', onAppLoaded);
 
   app.on('alert:error', function(title, details, showDetails, moreOptions) {
     Notification.error(title, details, moreOptions);
