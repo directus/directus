@@ -73,12 +73,16 @@ function(app, Backbone, _, Handlebars, __t) {
         metadata.updatedByIsOnline = updatedByUser.isOnline();
       }
 
-      if (previewUrl && !this.invalidPreviewUrl) {
+      if (previewUrl) {
         try {
           previewUrl = Handlebars.compile(previewUrl)(itemModel);
+          this.invalidPreviewUrl = false;
         } catch (e) {
+          if (this.invalidPreviewUrl) {
+            app.trigger('alert:error', __t('error'), __t('invalid_preview_url_template'));
+          }
+
           this.invalidPreviewUrl = true;
-          app.trigger('alert:error', __t('error'), __t('invalid_preview_url_template'));
           previewUrl = '';
         }
       }
