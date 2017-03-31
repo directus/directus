@@ -38,15 +38,16 @@ define([
     //app.lockScreen();
   };
 
-  var hideProgressNotification = function() {
-    // $('a[href$="#activity"] span').addClass('icon-bell').removeClass('icon-cycle');
+  var hideProgressNotification = function () {
     app.activityInProgress = false;
-    // $('#page-blocker').fadeOut(100);
+
+    $('.loading').removeClass('blocking fade');
 
     // Stop animation after cycle completes
     $('#header').find('.logo').one('animationiteration webkitAnimationIteration', function() {
       $(this).addClass('static');
     });
+
     //app.unlockScreen();
   };
 
