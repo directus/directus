@@ -2443,15 +2443,12 @@ body.loading .header .logo {
       opacity: 1; }
     .header .logo.has-project-logo .directus {
       opacity: 0.0; }
-    .header .logo.static .running {
-      opacity: 0;
+    .header .logo.static .directus {
       -moz-animation-name: none;
       -webkit-animation-name: none;
       -ms-animation-name: none;
       animation-name: none; }
-    .header .logo.static .directus {
-      opacity: 1; }
-    .header .logo .running {
+    .header .logo .directus {
       -webkit-transition: opacity 200ms ease-in-out 0ms;
       -moz-transition: opacity 200ms ease-in-out 0ms;
       -o-transition: opacity 200ms ease-in-out 0ms;
@@ -2471,18 +2468,6 @@ body.loading .header .logo {
 @keyframes logosprite {
   100% {
     background-position: -990px; } }
-    .header .logo .directus {
-      -webkit-transition: all 200ms ease-in-out 0ms;
-      -moz-transition: all 200ms ease-in-out 0ms;
-      -o-transition: all 200ms ease-in-out 0ms;
-      -ms-transition: all 200ms ease-in-out 0ms;
-      transition: all 200ms ease-in-out 0ms;
-      position: absolute;
-      top: 13px;
-      left: 50%;
-      margin-left: -33px;
-      height: 40px;
-      opacity: 0; }
     .header .logo .project-logo {
       -webkit-transition: all 200ms ease-in-out 0ms;
       -moz-transition: all 200ms ease-in-out 0ms;

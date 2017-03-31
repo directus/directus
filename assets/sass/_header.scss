@@ -90,18 +90,14 @@ body.loading {
 			}
 		}
 		&.static {
-			.running {
-				opacity: 0;
+			.directus {
 				-moz-animation-name: none;
 				-webkit-animation-name: none;
 				-ms-animation-name: none;
 				animation-name: none;
 			}
-			.directus {
-				opacity: 1;
-			}
 		}
-		.running {
+		.directus {
 			@include transition (opacity, $timing-short, ease-in-out);
 			position: absolute;
 			top: 8px;
@@ -118,15 +114,15 @@ body.loading {
 				100% { background-position: -990px; }
 			}
 		}
-		.directus {
-			@include transition (all, $timing-short, ease-in-out);
-			position: absolute;
-			top: 13px;
-			left: 50%;
-			margin-left: -33px;
-			height: 40px;
-			opacity: 0;
-		}
+		// .directus {
+		// 	@include transition (all, $timing-short, ease-in-out);
+		// 	position: absolute;
+		// 	top: 13px;
+		// 	left: 50%;
+		// 	margin-left: -33px;
+		// 	height: 40px;
+		// 	opacity: 0;
+		// }
 		.project-logo {
 			@include transition (all, $timing-short, ease-in-out);
 			position: absolute;
