@@ -125,6 +125,21 @@ function(app, Backbone, _, __t, moment, DateHelper, Chart) {
       return value;
     },
 
+    serialize: function () {
+      var data = {};
+      var numericColumn = this.getNumericColumn();
+      var dateColumn = this.getDateColumn();
+
+      if (numericColumn && dateColumn) {
+        data.chartTitle = __t('widget_table_chart_title_x_x', {
+          countColumnName: app.capitalize(numericColumn.get('column_name')),
+          dateColumnName: app.capitalize(dateColumn.get('column_name'))
+        });
+      }
+
+      return data;
+    },
+
     afterRender: function () {
       var pointRadius = 2,
           borderWidth = 2,

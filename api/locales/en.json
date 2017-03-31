@@ -165,6 +165,7 @@
     "widget_filter_add_filter": "Add Filter",
     "widget_filter_value_placeholder": "Filter...",
     "widget_pagination_count_no_items_found": "No Items Found",
+    "widget_table_chart_title_x_x": "%{countColumnName} by %{dateColumnName}",
     "listing_items_not_found": "Nothing to see here...",
     "preview_url": "Preview Item",
 
