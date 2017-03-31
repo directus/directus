@@ -84,6 +84,11 @@ class Table implements \ArrayAccess, Arrayable, \JsonSerializable
     protected $defaultStatus;
 
     /**
+     * @var string
+     */
+    protected $statusMapping;
+
+    /**
      * Table status column name
      *
      * @var string
@@ -699,6 +704,30 @@ class Table implements \ArrayAccess, Arrayable, \JsonSerializable
     public function getDefaultStatus()
     {
         return $this->defaultStatus;
+    }
+
+    /**
+     * Set the table customs status mapping
+     *
+     * @param $mapping
+     *
+     * @return Table
+     */
+    public function setStatusMapping($mapping)
+    {
+        $this->statusMapping = $mapping;
+
+        return $this;
+    }
+
+    /**
+     * Get the table custom status mapping
+     *
+     * @return string
+     */
+    public function getStatusMapping()
+    {
+        return $this->statusMapping;
     }
 
     /**

@@ -64,7 +64,8 @@ class MySQLSchema extends AbstractSchema
                 'sort_column',
                 'status_column',
                 'display_template',
-                'preview_url'
+                'preview_url',
+                'status_mapping'
             ],
             $select::JOIN_LEFT
         );
@@ -183,7 +184,8 @@ class MySQLSchema extends AbstractSchema
                 'sort_column',
                 'status_column',
                 'display_template',
-                'preview_url'
+                'preview_url',
+                'status_mapping'
             ],
             $select::JOIN_LEFT
         );
