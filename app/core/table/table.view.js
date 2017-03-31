@@ -119,6 +119,7 @@ function(app, _, Backbone, Notification, __t, TableHelpers, ModelHelper, TableHe
 
       var onResize = _.bind(function () {
         this.fixWidths();
+        this.headerScroll($el);
       }, this);
 
       $el.off('scroll', _.throttle(onScroll, 300));
