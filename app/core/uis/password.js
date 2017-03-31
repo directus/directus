@@ -227,13 +227,13 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
       {id: 'salt_field', type: 'String', default_value: 'salt', ui: 'textinput'}
     ],
     Input: Input,
-    validate: function(value, options) {
+    validate: function (value, options) {
       var $el = $('input[name="' + options.schema.id + '"]').parent();
       var data = $el.data();
       var password = $el.find('input.password-primary').val(),
         confirm = $el.find('input.password-confirm').val();
 
-      if(!password && options.schema.get('required')) {
+      if (options.model.isMine() && !password && options.schema.get('required')) {
         return __t('you_must_specify_a_password');
       }
 
