@@ -104,6 +104,73 @@ define([
 
     invitationPrompt: function() {
       app.router.openViewInModal(new InviteModal());
+    },
+
+    // @TODO: Hotfix: solve the problem of fetching new users
+    // when we already have it on the users collection
+    // but the new ones for some reason few are missing group information
+    initialize: function (options) {
+      // Make sure that the relationship type is correct
+      if (!this.columnSchema.relationship ||
+        'ONETOMANY' !== this.columnSchema.relationship.get('type')) {
+        throw __t('m2m_the_column_need_to_have_m2m_relationship', {
+          column: this.columnSchema.id,
+          type: 'ONETOMANY',
+          ui: interfaceId
+        });
+      }
+
+      this.canEdit = !(options.inModal || false);
+
+      var relatedCollection = this.model.get(this.name);
+      var joinColumn = this.columnSchema.relationship.get('junction_key_right');
+
+      _.each(relatedCollection.models, function(model) {
+        return model.startTracking();
+      });
+
+      this.showRemoveButton = this.columnSchema.options.get('remove_button') === true;
+      this.showAddButton = this.columnSchema.options.get('add_button') === true;
+      this.showChooseButton = this.columnSchema.options.get('choose_button') === true;
+
+      this.nestedTableView = new TableView({
+        collection: relatedCollection,
+        selectable: false,
+        sortable: false,
+        footer: false,
+        saveAfterDrop: true,
+        deleteColumn: this.canEdit && this.showRemoveButton,
+        hideColumnPreferences: true,
+        hideEmptyMessage: true,
+        tableHead: false,
+        filters: {
+          booleanOperator: '&&',
+          expressions: [
+            //@todo, make sure that this can also nest
+            {column: joinColumn, operator: '===', value: this.model.id}
+          ]
+        }
+      });
+
+      if (relatedCollection.structure.get('sort')) {
+        relatedCollection.setOrder('sort','ASC',{silent: true});
+      }
+
+      this.listenTo(relatedCollection, 'add change', function() {
+        //Check if any rendered objects in collection to show or hide header
+        if(this.relatedCollection.filter(function(d){return d.get(app.statusMapping.status_name) !== app.statusMapping.deleted_num;}).length > 0) {
+          this.nestedTableView.tableHead = true;
+        } else {
+          this.nestedTableView.tableHead = false;
+        }
+        this.nestedTableView.render();
+      }, this);
+
+      this.listenTo(relatedCollection, 'remove', function() {
+        this.nestedTableView.render();
+      }, this);
+
+      this.relatedCollection = relatedCollection;
     }
   });
 
