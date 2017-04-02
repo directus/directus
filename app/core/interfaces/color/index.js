@@ -16,75 +16,9 @@
 /*jshint multistr: true */
 
 
-define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UIComponent, UIView, __t) {
+define(['app', 'core/UIComponent', 'core/UIView', 'core/t', 'core/interfaces/color/color'], function(app, UIComponent, UIView, __t, Color) {
 
   'use strict';
-
-  /**
-   * Validates hex value
-   * @param  {String} color hex color value
-   * @return {Boolean}
-   */
-  function isValidHex(color) {
-    if(!color || typeof color !== 'string') return false;
-
-    // Validate hex values
-    if(color.substring(0, 1) === '#') color = color.substring(1);
-
-    switch(color.length) {
-      case 3: return /^[0-9A-F]{3}$/i.test(color);
-      case 6: return /^[0-9A-F]{6}$/i.test(color);
-      case 8: return /^[0-9A-F]{8}$/i.test(color);
-      default: return false;
-    }
-
-    return false;
-  }
-
-  /**
-   * Validates RGB(a) value
-   * @param  {Number} r
-   * @param  {Number} g
-   * @param  {Number} b
-   * @param  {Number} [a=0]
-   * @return {Boolean}
-   */
-  function isValidRGB(r, g, b, a) {
-    a = a || 0;
-    if(typeof r !== 'number' || typeof g !== 'number' || typeof b !== 'number' || typeof a !== 'number') return false;
-
-    var regex = /\b(1?[0-9]{1,2}|2[0-4][0-9]|25[0-5])\b/;
-    if(
-      regex.test(r) &&
-      regex.test(g) &&
-      regex.test(b) &&
-      a >= 0 && a <= 1
-    ) return true;
-
-    return false;
-  }
-
-  /**
-   * Validates HSL(a)
-   * @param  {Number} h
-   * @param  {Number} s
-   * @param  {Number} l
-   * @param  {Number} a
-   * @return {Boolean}
-   */
-  function isValidHSL(h, s, l, a) {
-    a = a || 0;
-    if(typeof h !== 'number' || typeof s !== 'number' || typeof l !== 'number' || typeof a !== 'number') return false;
-
-    if(
-      h >= 0 && h <= 360 &&
-      s >= 0 && s <= 100 &&
-      l >= 0 && l <= 100 &&
-      a >= 0 && a <= 1
-    ) return true;
-
-    return false;
-  }
 
   /**
   * Convert value from one range to another
