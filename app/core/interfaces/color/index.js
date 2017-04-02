@@ -150,10 +150,14 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t', 'core/interfaces/col
       var output = this.options.settings.get('output');
       var userPalette = this.options.settings.get('palette') || [];
 
-      var value = Color(this.options.value, output)[input];
+      var value = this.options.value;
+
+      if (output === 'rgb' || output === 'hsl') value = this.options.value.split(',').map(function(color) { return +color; });
+      var color = Color(value, output);
 
       return {
-        value: value,
+        value: color[input],
+        outputValue: color[output],
         name: this.options.name,
         comment: this.options.schema.get('comment'),
         palette: userPalette.length ? userPalette.split(',') : false,
@@ -163,7 +167,8 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t', 'core/interfaces/col
         hex: input === 'hex',
         rgb: input === 'rgb',
         hsl: input === 'hsl',
-        alpha: this.options.settings.get('allow_alpha')
+        alpha: this.options.settings.get('allow_alpha'),
+        preview: color.rgb.length === 4 ? 'rgba(' + color.rgb + ')' : 'rgb(' + color.rgb + ')'
       };
     },
 

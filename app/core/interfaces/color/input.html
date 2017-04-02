@@ -121,7 +121,7 @@
 </style>
 
 <div class="interface-color {{#if hex}}hex{{/if}}{{#if rgb}}rgb{{/if}}{{#if hsl}}hsl{{/if}}">
-	<input class="value" type="hidden" name="{{name}}" />
+	<input class="value" type="hidden" name="{{name}}" value={{outputValue}} />
 	{{#if hex}}
 	{{#unless alpha}}
 	<input type="text" class="color-text" placeholder="000000" pattern="[0-9a-fA-F]{3,6}" maxlength="6" value="{{value}}" {{#if readonly}} disabled {{/if}}>
@@ -129,7 +129,6 @@
 	{{#if alpha}}
 	<input type="text" class="color-text alpha" placeholder="00000000" pattern="[0-9a-fA-F]{3,8}" maxlength="8" value="{{value}}" {{#if readonly}} disabled {{/if}}>
 	{{/if}}
-	<span class="color-preview">{{#unless readonly}}<i class="material-icons">close</i>{{/unless}}</span>
 	{{/if}}
 
 	{{#if rgb}}
@@ -139,7 +138,6 @@
 	{{#if alpha}}
 	<label><span>Alpha: </span><input type="number" class="color-text alpha" placeholder="0" value="{{value.[3]}}" min="0" max="1" step="0.01" {{#if readonly}} disabled {{/if}} /></label>
 	{{/if}}
-	<span class="color-preview">{{#unless readonly}}<i class="material-icons">close</i>{{/unless}}</span>
 	{{/if}}
 
 	{{#if hsl}}
@@ -149,8 +147,10 @@
 	{{#if alpha}}
 	<label><span>Alpha: </span><input type="number" class="color-text alpha" placeholder="0" value="{{value.[3]}}" min="0" max="1" step="0.01" {{#if readonly}} disabled {{/if}} /></label>
 	{{/if}}
-	<span class="color-preview">{{#unless readonly}}<i class="material-icons">close</i>{{/unless}}</span>
 	{{/if}}
+
+	<span class="color-preview" style="box-shadow: inset 0 0 0 30px {{preview}}">{{#unless readonly}}<i class="material-icons">close</i>{{/unless}}</span>
+
 	{{#unless readonly}}
 	{{#if palette}}
 	<div class="palette">
