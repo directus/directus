@@ -20,110 +20,22 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t', 'core/interfaces/col
 
   'use strict';
 
+  function setPreviewColor(view, color, type) {
+    var rgb = Color(color, type).rgb.join();
+    view.$el.find('.color-preview')[0].style.boxShadow = 'inset 0 0 0 30px rgb(' + rgb + ')';
+  }
+
+  function setInputValue(view, color, input, output) {
+    view.$el.find('.value').val(Color(color, input)[output]);
+  }
+
   function showInvalidMessage(view) {
     view.$el.find('.color-invalid')[0].innerHTML = __t('confirm_invalid_value');
-    setPreviewColor(view, 'rgb', {r: 255, g: 255, b: 255, a: 0});
+    setPreviewColor(view, [0,0,0], 'rgb');
   }
 
   function hideInvalidMessage(view) {
     view.$el.find('.color-invalid')[0].innerHTML = '';
-  }
-
-  function setPreviewColor(view, type, color) {
-    switch(type) {
-      case 'hex':
-        color = '#' + color;
-        break;
-      case 'rgb':
-        if(color.a === undefined) color.a = 1;
-        color = 'rgba(' + color.r + ', ' + color.g + ', ' + color.b + ', ' + color.a + ')';
-        break;
-      case 'hsl':
-        if(color.a === undefined) color.a = 1;
-        color = 'hsla(' + color.h + ', ' + color.s + '%, ' + color.l + '%, ' + color.a + ')';
-        break;
-    }
-
-    view.$el.find('.color-preview')[0].style.boxShadow = 'inset 0 0 0 30px ' + color;
-  }
-
-  function convertColor(value, from, to) {
-    var rgba;
-    var outputValue;
-
-    switch(from) {
-      case 'hex':
-        rgba = convertHexToRGB(value);
-        break;
-      case 'rgb':
-        var a = value.length === 4 ? value[3] : undefined;
-        rgba = { r: value[0], g: value[1], b: value[2], a: a };
-        break;
-      case 'hsl':
-        var a = value.length === 4 ? value[3] : undefined;
-        var hsla = { h: value[0], s: value[1], l: value[2], a: a };
-        rgba = convertHSLtoRGB(hsla.h, hsla.s, hsla.l, hsla.a);
-        break;
-    }
-
-    switch(to) {
-      case 'hex':
-        outputValue = convertRGBtoHex(rgba.r, rgba.g, rgba.b, rgba.a);
-        break;
-      case 'rgb':
-        outputValue = [rgba.r, rgba.g, rgba.b, rgba.a];
-        break;
-      case 'hsl':
-        var rgba = convertRGBtoHSL(rgba.r, rgba.g, rgba.b, rgba.a);
-        outputValue = [rgba.r, rgba.g, rgba.b, rgba.a];
-        break;
-    }
-
-    console.log(value, from, to, outputValue);
-
-    return outputValue;
-  }
-
-  function setInputValue(view, type, value, output) {
-    // Convert input to RGB
-    var rgba;
-
-    switch(type) {
-      case 'hex':
-        rgba = convertHexToRGB(value);
-        break;
-      case 'rgb':
-        rgba = value;
-        break;
-      case 'hsl':
-        rgba = convertHSLtoRGB(value.h, value.s, value.l, value.a);
-        break;
-    }
-
-    // Convert RGB to desired output
-    var outputValue = '';
-    switch(output) {
-      case 'hex':
-        outputValue = convertRGBtoHex(rgba.r, rgba.g, rgba.b, rgba.a);
-        break;
-      case 'rgb':
-        outputValue = [rgba.r, rgba.g, rgba.b, rgba.a].join();
-        break;
-      case 'hsl':
-        var hsla = convertRGBtoHSL(rgba.r, rgba.g, rgba.b, rgba.a);
-        outputValue = [hsla.h, hsla.s, hsla.l, hsla.a].join();
-    }
-
-    view.$el.find('.value').val(outputValue);
-  }
-
-  function isValid(type, value) {
-    switch(type) {
-      case 'hex': return isValidHex(value);
-      case 'rgb': return isValidRGB(value.r, value.g, value.b, value.a);
-      case 'hsl': return isValidHSL(value.h, value.s, value.l, value.a);
-      default: return false;
-    }
   }
 
   var Input = UIView.extend({
@@ -139,8 +51,8 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t', 'core/interfaces/col
         // Remove value from input
         this.$el.find('input').val('');
 
-        // Clear color preview
-        setPreviewColor(this, 'rgb', {r: 255, g: 255, b: 255, a: 0});
+        // Reset color preview to black
+        setPreviewColor(this, [0,0,0], 'rgb');
 
         // Disable active button
         this.$el.find('button').removeClass('active');
@@ -157,27 +69,27 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t', 'core/interfaces/col
             break;
 
           case 'rgb':
-            color = {
-              r: +this.$el.find('input.red').val(),
-              g: +this.$el.find('input.green').val(),
-              b: +this.$el.find('input.blue').val(),
-              a: +this.$el.find('input.alpha').val()
-            }
+            color = [
+              +this.$el.find('input.red').val(),
+              +this.$el.find('input.green').val(),
+              +this.$el.find('input.blue').val(),
+              +this.$el.find('input.alpha').val()
+            ]
             break;
 
           case 'hsl':
-            color = {
-              h: +this.$el.find('input.hue').val(),
-              s: +this.$el.find('input.saturation').val(),
-              l: +this.$el.find('input.lightness').val(),
-              a: +this.$el.find('input.alpha').val()
-            }
+            color = [
+              +this.$el.find('input.hue').val(),
+              +this.$el.find('input.saturation').val(),
+              +this.$el.find('input.lightness').val(),
+              +this.$el.find('input.alpha').val()
+            ]
             break;
         }
 
-        if(isValid(type, color)) {
-          setPreviewColor(this, type, color);
-          setInputValue(this, type, color, this.options.settings.get('output'));
+        if (Color(color, type)) {
+          setPreviewColor(this, color, type);
+          setInputValue(this, color, type, this.options.settings.get('output'));
           hideInvalidMessage(this);
         } else {
           showInvalidMessage(this)
@@ -191,29 +103,30 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t', 'core/interfaces/col
           button.classList.add('active');
 
           // Fill input(s)
-          var type = this.options.settings.get('input');
+          var input = this.options.settings.get('input');
           var buttonValue = button.getAttribute('data-color');
-          switch(type) {
+          var color = Color(buttonValue, 'hex');
+
+          switch(input) {
             case 'hex':
               this.$el.find('input').val(buttonValue);
-              setPreviewColor(this, type, buttonValue);
+              setPreviewColor(this, buttonValue, input);
               break;
             case 'rgb':
-              var rgba = convertHexToRGB(buttonValue);
-              this.$el.find('input.red').val(rgba.r);
-              this.$el.find('input.green').val(rgba.g);
-              this.$el.find('input.blue').val(rgba.b);
-              this.$el.find('input.alpha').val(rgba.a);
-              setPreviewColor(this, type, rgba);
+              var rgba = color.rgb;
+              this.$el.find('input.red').val(rgba[0]);
+              this.$el.find('input.green').val(rgba[1]);
+              this.$el.find('input.blue').val(rgba[2]);
+              this.$el.find('input.alpha').val(rgba[3]);
+              setPreviewColor(this, rgba, input);
               break;
             case 'hsl':
-              var rgba = convertHexToRGB(buttonValue);
-              var hsla = convertRGBtoHSL(rgba.r, rgba.g, rgba.b, rgba.a);
-              this.$el.find('input.hue').val(hsla.h);
-              this.$el.find('input.saturation').val(hsla.s);
-              this.$el.find('input.lightness').val(hsla.l);
-              this.$el.find('input.alpha').val(hsla.a);
-              setPreviewColor(this, type, hsla);
+              var hsla = color.hsl;
+              this.$el.find('input.hue').val(hsla[0]);
+              this.$el.find('input.saturation').val(hsla[1]);
+              this.$el.find('input.lightness').val(hsla[2]);
+              this.$el.find('input.alpha').val(hsla[3]);
+              setPreviewColor(this, hsla, input);
               break;
           }
       }
@@ -226,15 +139,16 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t', 'core/interfaces/col
     serialize: function() {
       var input = this.options.settings.get('input');
       var output = this.options.settings.get('output');
+
       var value;
 
       switch(input) {
         case 'hex':
-          value = convertColor(this.options.value || '000000', output, input);
+          value = this.options.value || '000000';
           break;
         case 'rgb':
         case 'hsl':
-          value = convertColor(this.options.value ? this.options.value.split(',') : [0, 0, 0, 1], output, input);
+          value = this.options.value ? this.options.value.split(',') : [0, 0, 0, 1];
       }
 
       return {
