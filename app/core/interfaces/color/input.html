@@ -124,7 +124,7 @@
 </style>
 
 <div class="interface-color {{#if hex}}hex{{/if}}{{#if rgb}}rgb{{/if}}{{#if hsl}}hsl{{/if}} {{#if paletteOnly}}palette-only{{/if}}">
-	<input class="value" type="hidden" name="{{name}}" value={{outputValue}} />
+	<input class="value" type="hidden" name="{{name}}" {{#if value}}value={{outputValue}}{{/if}} />
 	{{#unless paletteOnly}}
 
 	{{#if hex}}
