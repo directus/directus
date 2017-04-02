@@ -150,14 +150,24 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t', 'core/interfaces/col
       var output = this.options.settings.get('output');
       var userPalette = this.options.settings.get('palette') || [];
 
-      var value = this.options.value;
+      var value = '';
+      var outputValue = '';
+      var preview = 'rgba(0, 0, 0, 0)';
 
-      if (output === 'rgb' || output === 'hsl') value = this.options.value.split(',').map(function(color) { return +color; });
-      var color = Color(value, output);
+      if (this.options.value) {
+        var rawValue = this.options.value;
+        if (output === 'rgb' || output === 'hsl') rawValue = this.options.value.split(',').map(function(color) { return +color; });
+        var color = Color(rawValue, output);
+
+        value = color[input];
+        outputValue = color[output];
+        preview = color.rgb.length === 4 ? 'rgba(' + color.rgb + ')' : 'rgb(' + color.rgb + ')';
+      }
 
       return {
-        value: color[input],
-        outputValue: color[output],
+        value: value,
+        outputValue: outputValue,
+        preview: preview,
         name: this.options.name,
         comment: this.options.schema.get('comment'),
         palette: userPalette.length ? userPalette.split(',') : false,
@@ -167,8 +177,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t', 'core/interfaces/col
         hex: input === 'hex',
         rgb: input === 'rgb',
         hsl: input === 'hsl',
-        alpha: this.options.settings.get('allow_alpha'),
-        preview: color.rgb.length === 4 ? 'rgba(' + color.rgb + ')' : 'rgb(' + color.rgb + ')'
+        alpha: this.options.settings.get('allow_alpha')
       };
     },
 
