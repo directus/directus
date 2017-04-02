@@ -20,48 +20,6 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t', 'core/interfaces/col
 
   'use strict';
 
-  /**
-  * Convert value from one range to another
-  * @param {Number} value value to convert
-  * @param {Object} oldRange min, max of values range
-  * @param {Object} newRange min, max of desired range
-  * @return {Number} value converted to other range
-  */
-  function convertRange(value, oldRange, newRange) {
-    return ((value - oldRange.min) * (newRange.max - newRange.min)) / (oldRange.max - oldRange.min) + newRange.min;
-  }
-
-  /**
-   * Converts hex value (without #) to rgb(a) object
-   * @param  {String} hex 3, 6 or 8 digit hex (without #)
-   * @return {Object} rgba values
-   */
-  function convertHexToRGB(hex) {
-    var fullHex = hex;
-    var rgba = {};
-
-    if(hex.length === 3) {
-      // Convert length === 3 to length === 6
-      var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
-      fullHex = hex.replace(shorthandRegex, function(m, r, g, b) {
-        return r + r + g + g + b + b;
-      });
-    }
-
-    if(hex.length === 8) {
-      // Save alpha value to object and remove last two characters (alpha)
-      rgba.a = convertRange(parseInt(hex.substring(hex.length - 2), 16), { min: 0, max: 255 }, { min: 0, max: 1 });
-      fullHex = hex.substring(0, hex.length - 2);
-    }
-
-    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(fullHex);
-    rgba.r = parseInt(result[1], 16);
-    rgba.g = parseInt(result[2], 16);
-    rgba.b = parseInt(result[3], 16);
-
-    return rgba;
-  }
-
   function convertRGBtoHex(r, g, b, a) {
     function toHex(c) {
       var hex = c.toString(16);
@@ -119,42 +77,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t', 'core/interfaces/col
     }
   }
 
-  function convertHSLtoRGB(h, s, l, a) {
-    if(a === undefined) a = 1;
-    var r;
-    var g;
-    var b;
 
-    h = convertRange(h, { min: 0, max: 360 }, { min: 0, max: 1 });
-    s = s / 100;
-    l = l / 100;
-
-    if(s === 0) {
-      r = g = b = l;
-    } else {
-      function hueToRGB(p, q, t) {
-        if(t < 0) t += 1;
-        if(t > 1) t -= 1;
-        if(t < 1 / 6) return p + (q - p) * 6 * t;
-        if(t < 1 / 2) return q;
-        if(t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
-        return p;
-      }
-
-      var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
-      var p = 2 * l - q;
-      r = hueToRGB(p, q, h + 1 / 3);
-      g = hueToRGB(p, q, h);
-      b = hueToRGB(p, q, h - 1 / 3);
-    }
-
-    return {
-      r: Math.round(r * 255),
-      g: Math.round(g * 255),
-      b: Math.round(b * 255),
-      a: a
-    }
-  }
 
   function showInvalidMessage(view) {
     view.$el.find('.color-invalid')[0].innerHTML = __t('confirm_invalid_value');

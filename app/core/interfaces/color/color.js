@@ -19,9 +19,12 @@ define([], function() {
       if (!isValid(color, type)) return false;
       return new me(arguments[0], arguments[1]);
     } else {
-      this.color = color;
+      this.color = convertToRgb(color, type);
     }
   }
+
+  // Validation functionality
+  // ---------------------------------------------------------------------------
 
   /**
    * Check if color is valid based on type
@@ -36,7 +39,7 @@ define([], function() {
         validate = isValidHex;
         break;
       case 'rgb':
-        validate = isValidRGB;
+        validate = isValidRgb;
         break;
       case 'hsl':
         validate = isValidHSL;
@@ -56,14 +59,12 @@ define([], function() {
     // Validate hex values
     if(color.substring(0, 1) === '#') color = color.substring(1);
 
-    switch(color.length) {
-      case 3: return /^[0-9A-F]{3}$/i.test(color);
-      case 6: return /^[0-9A-F]{6}$/i.test(color);
-      case 8: return /^[0-9A-F]{8}$/i.test(color);
-      default: return false;
-    }
+    return [3, 4, 6, 8].some(testColor);
 
-    return false;
+    function testColor(chars) {
+      var regex = new RegExp('^[0-9A-F]{' + chars + '}$', 'i');
+      return regex.test(color)
+    }
   }
 
   /**
@@ -71,7 +72,7 @@ define([], function() {
    * @param  {Array} [r, g, b, (a)]
    * @return {Boolean}
    */
-  function isValidRGB(color) {
+  function isValidRgb(color) {
     if (!Array.isArray(color)) return false;
     if (!color.every(isNumber)) return false;
 
@@ -109,6 +110,85 @@ define([], function() {
     return false;
   }
 
+  // Conversion functionality
+  // ---------------------------------------------------------------------------
+
+  function convertToRgb(color, type) {
+    if (type === 'rgb') return color;
+
+    if (type === 'hex') return convertHexToRgb(color);
+    if (type === 'hsl') return convertHslToRgb(color);
+  }
+
+  /**
+   * Converts hex value (without #) to rgb(a) object
+   * @param  {String} hex 3, 6 or 8 digit hex (without #)
+   * @return {Object} rgba values
+   */
+  function convertHexToRgb(hex) {
+    var rgba = [];
+    var alphaValue;
+
+    // Convert length === 3 to length === 6
+    if(hex.length === 3) {
+      var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+      hex = hex.replace(shorthandRegex, function(m, r, g, b) {
+        return r + r + g + g + b + b;
+      });
+    }
+
+    // Convert length === 4 to length === 8
+    if(hex.length === 4) {
+      var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])([a-f\d])$/i;
+      hex = hex.replace(shorthandRegex, function(m, r, g, b, a) {
+        return r + r + g + g + b + b + a + a;
+      });
+    }
+
+    // Save alpha value to object and remove last two characters (alpha)
+    if(hex.length === 8) {
+      alphaValue = convertRange(parseInt(hex.substring(hex.length - 2), 16), { min: 0, max: 255 }, { min: 0, max: 1 });
+      hex = hex.substring(0, hex.length - 2);
+    }
+
+    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    rgba[0] = parseInt(result[1], 16);
+    rgba[1] = parseInt(result[2], 16);
+    rgba[2] = parseInt(result[3], 16);
+
+    if (alphaValue) {
+      rgba[3] = alphaValue;
+    }
+    return rgba;
+  }
+
+  function convertHslToRgb(color) {
+    // Convert HSL ranges to [0-1]
+    h = convertRange(color[0], { min: 0, max: 360 }, { min: 0, max: 1 });
+    s = color[1] / 100;
+    l = color[2] / 100;
+
+    if(s === 0) {
+      r = g = b = l;
+    } else {
+      var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+      var p = 2 * l - q;
+      r = hueToRgb(p, q, h + 1 / 3);
+      g = hueToRgb(p, q, h);
+      b = hueToRgb(p, q, h - 1 / 3);
+    }
+
+    var output = [
+      Math.round(r * 255),
+      Math.round(g * 255),
+      Math.round(b * 255)
+    ];
+
+    if (color[3]) output.push(color[3]);
+
+    return output;
+  }
+
   /**
    * Checks if value is number
    * @param  {*} value
@@ -116,6 +196,29 @@ define([], function() {
    */
   function isNumber(value) {
     return typeof value === 'number';
+  }
+
+  /**
+  * Convert value from one range to another
+  * @param {Number} value value to convert
+  * @param {Object} oldRange min, max of values range
+  * @param {Object} newRange min, max of desired range
+  * @return {Number} value converted to other range
+  */
+  function convertRange(value, oldRange, newRange) {
+    return ((value - oldRange.min) * (newRange.max - newRange.min)) / (oldRange.max - oldRange.min) + newRange.min;
+  }
+
+  /**
+   * Convert Hue to RGB value
+   */
+  function hueToRgb(p, q, hue) {
+    if(hue < 0) hue += 1;
+    if(hue > 1) hue -= 1;
+    if(hue < 1 / 6) return p + (q - p) * 6 * hue;
+    if(hue < 1 / 2) return q;
+    if(hue < 2 / 3) return p + (q - p) * (2 / 3 - hue) * 6;
+    return p;
   }
 
   return Color;
