@@ -20,18 +20,18 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t', 'core/interfaces/col
 
   'use strict';
 
-  function setPreviewColor(view, color, type) {
-    var rgb = Color(color, type).rgb.join();
-    view.$el.find('.color-preview')[0].style.boxShadow = 'inset 0 0 0 30px rgb(' + rgb + ')';
+  function setPreviewColor(view, color) {
+    var rgbString = color.rgb.length === 4 ? 'rgba(' + color.rgb.join() + ')' : 'rgb(' + color.rgb.join() + ')';
+    view.$el.find('.color-preview')[0].style.boxShadow = 'inset 0 0 0 30px ' + rgbString;
   }
 
-  function setInputValue(view, color, input, output) {
-    view.$el.find('.value').val(Color(color, input)[output]);
+  function setInputValue(view, color, output) {
+    view.$el.find('.value').val(color[output]);
   }
 
   function showInvalidMessage(view) {
     view.$el.find('.color-invalid')[0].innerHTML = __t('confirm_invalid_value');
-    setPreviewColor(view, [0,0,0], 'rgb');
+    setPreviewColor(view, Color([0, 0, 0, 0], 'rgb'));
   }
 
   function hideInvalidMessage(view) {
@@ -52,7 +52,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t', 'core/interfaces/col
         this.$el.find('input').val('');
 
         // Reset color preview to black
-        setPreviewColor(this, [0,0,0], 'rgb');
+        setPreviewColor(this, Color([0,0,0], 'rgb'));
 
         // Disable active button
         this.$el.find('button').removeClass('active');
@@ -60,44 +60,44 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t', 'core/interfaces/col
 
       // Validate value on change
       'input .color-text': function(event) {
-        var type = this.options.settings.get('input');
+        var input = this.options.settings.get('input');
         var allowAlpha = this.options.settings.get('allow_alpha');
         var color;
-        var valid = true;
+        var alphaValid = true;
 
-        switch(type) {
+        switch(input) {
           case 'hex':
-            color = event.target.value;
-            if (!allowAlpha && color.length === 4) valid = false;
-            if (!allowAlpha && color.length === 8) valid = false;
+            color = Color(event.target.value, input);
+            if (!allowAlpha && color.length === 4) alphaValid = false;
+            if (!allowAlpha && color.length === 8) alphaValid = false;
             break;
 
           case 'rgb':
-            color = [
+            var values = [
               +this.$el.find('input.red').val(),
               +this.$el.find('input.green').val(),
-              +this.$el.find('input.blue').val(),
-              +this.$el.find('input.alpha').val()
+              +this.$el.find('input.blue').val()
             ];
-            if (!allowAlpha && color.length === 4) valid = false;
+            if (this.$el.find('input.alpha').val()) values.push(+this.$el.find('input.alpha').val());
+            color = Color(values, input);
+            if (!allowAlpha && color.length === 4) alphaValid = false;
             break;
 
           case 'hsl':
-            color = [
+            var values = [
               +this.$el.find('input.hue').val(),
               +this.$el.find('input.saturation').val(),
-              +this.$el.find('input.lightness').val(),
-              +this.$el.find('input.alpha').val()
+              +this.$el.find('input.lightness').val()
             ];
-            if (!allowAlpha && color.length === 4) valid = false;
+            if (this.$el.find('input.alpha').val()) values.push(+this.$el.find('input.alpha').val());
+            color = Color(values, input);
+            if (!allowAlpha && color.length === 4) alphaValid = false;
             break;
         }
 
-        valid = valid && Color(color, type);
-
-        if (valid) {
-          setPreviewColor(this, color, type);
-          setInputValue(this, color, type, this.options.settings.get('output'));
+        if (alphaValid && color) {
+          setPreviewColor(this, color);
+          setInputValue(this, color, this.options.settings.get('output'));
           hideInvalidMessage(this);
         } else {
           showInvalidMessage(this)
@@ -118,25 +118,27 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t', 'core/interfaces/col
           switch(input) {
             case 'hex':
               this.$el.find('input').val(buttonValue);
-              setPreviewColor(this, buttonValue, input);
               break;
             case 'rgb':
               var rgba = color.rgb;
+              if (rgba.length !== 4) rgba[3] = 1;
               this.$el.find('input.red').val(rgba[0]);
               this.$el.find('input.green').val(rgba[1]);
               this.$el.find('input.blue').val(rgba[2]);
               this.$el.find('input.alpha').val(rgba[3]);
-              setPreviewColor(this, rgba, input);
               break;
             case 'hsl':
               var hsla = color.hsl;
+              if (hsla.length !== 4) hsla[3] = 1;
               this.$el.find('input.hue').val(hsla[0]);
               this.$el.find('input.saturation').val(hsla[1]);
               this.$el.find('input.lightness').val(hsla[2]);
               this.$el.find('input.alpha').val(hsla[3]);
-              setPreviewColor(this, hsla, input);
               break;
           }
+
+          setPreviewColor(this, color);
+          setInputValue(this, color, this.options.settings.get('output'));
       }
     },
 
@@ -147,6 +149,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t', 'core/interfaces/col
     serialize: function() {
       var input = this.options.settings.get('input');
       var output = this.options.settings.get('output');
+      var userPalette = this.options.settings.get('palette') || [];
 
       var value;
 
@@ -163,7 +166,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t', 'core/interfaces/col
         value: value,
         name: this.options.name,
         comment: this.options.schema.get('comment'),
-        palette: this.options.settings.get('palette').length ? this.options.settings.get('palette').split(',') : false,
+        palette: userPalette.length ? userPalette.split(',') : false,
         readonly: this.options.settings.get('readonly'),
         input: input,
         output: this.options.settings.get('output'),
