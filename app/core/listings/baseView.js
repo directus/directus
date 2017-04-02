@@ -105,6 +105,12 @@ define(['app', 'underscore', 'backbone', 'core/t'], function(app, _, Backbone, _
       app.router.go(route);
     },
 
+    cleanup: function () {
+      if (this.unbindEvents) {
+        this.unbindEvents();
+      }
+    },
+
     constructor: function (options) {
       this.baseView = options.baseView;
 
