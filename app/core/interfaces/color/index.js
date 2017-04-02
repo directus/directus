@@ -16,12 +16,13 @@
 /*jshint multistr: true */
 
 define(['app', 'core/UIComponent', 'core/UIView', 'core/t', 'core/interfaces/color/color'], function(app, UIComponent, UIView, __t, Color) {
-
   'use strict';
 
   function setPreviewColor(view, color) {
-    var rgbString = color.rgb.length === 4 ? 'rgba(' + color.rgb.join() + ')' : 'rgb(' + color.rgb.join() + ')';
-    view.$el.find('.color-preview')[0].style.boxShadow = 'inset 0 0 0 30px ' + rgbString;
+    if (!view.options.settings.get('palette_only')) {
+      var rgbString = color.rgb.length === 4 ? 'rgba(' + color.rgb.join() + ')' : 'rgb(' + color.rgb.join() + ')';
+      view.$el.find('.color-preview')[0].style.boxShadow = 'inset 0 0 0 30px ' + rgbString;
+    }
   }
 
   function setInputValue(view, color, output) {
@@ -141,10 +142,6 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t', 'core/interfaces/col
       }
     },
 
-    afterRender: function() {
-      //
-    },
-
     serialize: function() {
       var input = this.options.settings.get('input');
       var output = this.options.settings.get('output');
@@ -177,12 +174,9 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t', 'core/interfaces/col
         hex: input === 'hex',
         rgb: input === 'rgb',
         hsl: input === 'hsl',
-        alpha: this.options.settings.get('allow_alpha')
+        alpha: this.options.settings.get('allow_alpha'),
+        paletteOnly: this.options.settings.get('palette_only')
       };
-    },
-
-    initialize: function() {
-      //
     }
   });
 
@@ -190,9 +184,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t', 'core/interfaces/col
     id: 'color',
     dataTypes: ['VARCHAR'],
     variables: [
-      // Disables editing of the field while still letting users see the value
       {id: 'readonly', type: 'Boolean', default_value: false, ui: 'checkbox'},
-      // TODO: Add 'only allow from palette' option
       {
         id: 'input',
         type: 'String',
@@ -214,8 +206,6 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t', 'core/interfaces/col
         options: {
           options: {
             hex: 'Hex',
-            // TODO: support this:
-            // hexWithChar: 'Hex (with `#`)',
             rgb: 'RGB',
             hsl: 'HSL'
           }
@@ -235,6 +225,12 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t', 'core/interfaces/col
       },
       {
         id: 'allow_alpha',
+        type: 'Boolean',
+        default_value: false,
+        ui: 'checkbox'
+      },
+      {
+        id: 'palette_only',
         type: 'Boolean',
         default_value: false,
         ui: 'checkbox'

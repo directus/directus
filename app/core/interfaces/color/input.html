@@ -20,7 +20,7 @@
 		min-width: 98px !important;
 	}
 
-	.interface-color.hex::before {
+	.interface-color.hex:not(.palette-only)::before {
 		content: '#';
 		position: absolute;
 		z-index: 5;
@@ -69,10 +69,13 @@
 	.interface-color .palette {
 		align-items: center;
 		display: flex;
+		flex-wrap: wrap;
+	}
+
+	.interface-color:not(.palette-only) .palette {
 		border-left: 1px solid #CCCCCC;
 		margin-left: 1em;
 		padding-left: 1em;
-		flex-wrap: wrap;
 	}
 
 	.interface-color .color-preview,
@@ -120,8 +123,10 @@
 
 </style>
 
-<div class="interface-color {{#if hex}}hex{{/if}}{{#if rgb}}rgb{{/if}}{{#if hsl}}hsl{{/if}}">
+<div class="interface-color {{#if hex}}hex{{/if}}{{#if rgb}}rgb{{/if}}{{#if hsl}}hsl{{/if}} {{#if paletteOnly}}palette-only{{/if}}">
 	<input class="value" type="hidden" name="{{name}}" value={{outputValue}} />
+	{{#unless paletteOnly}}
+
 	{{#if hex}}
 	{{#unless alpha}}
 	<input type="text" class="color-text" placeholder="000000" pattern="[0-9a-fA-F]{3,6}" maxlength="6" value="{{value}}" {{#if readonly}} disabled {{/if}}>
@@ -151,6 +156,7 @@
 
 	<span class="color-preview" style="box-shadow: inset 0 0 0 30px {{preview}}">{{#unless readonly}}<i class="material-icons">close</i>{{/unless}}</span>
 
+	{{/unless}}
 	{{#unless readonly}}
 	{{#if palette}}
 	<div class="palette">
