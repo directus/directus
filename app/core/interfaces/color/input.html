@@ -34,7 +34,7 @@
 
 	.interface-color.rgb input,
 	.interface-color.hsl input {
-		width: 4em;
+		width: 5.1rem !important;
 		min-width: 50px !important;
 		margin-right: 1em;
 	}
@@ -136,7 +136,7 @@
 	<label><span>Green: </span><input type="number" class="color-text green" placeholder="0" value="{{value.[1]}}" min="0" max="255" step="1" {{#if readonly}} disabled {{/if}} /></label>
 	<label><span>Blue: </span><input type="number" class="color-text blue" placeholder="0" value="{{value.[2]}}" min="0" max="255" step="1" {{#if readonly}} disabled {{/if}} /></label>
 	{{#if alpha}}
-	<label><span>Alpha: </span><input type="number" class="color-text alpha" placeholder="0" value="{{value.[3]}}" min="0" max="1" step="0.01" {{#if readonly}} disabled {{/if}} /></label>
+	<label><span>Alpha: </span><input type="number" class="color-text alpha" placeholder="0" value="{{value.[3]}}" min="0" max="1" {{#if readonly}} disabled {{/if}} /></label>
 	{{/if}}
 	{{/if}}
 
@@ -145,7 +145,7 @@
 	<label><span>Saturation: </span><input type="number" class="color-text saturation" placeholder="0" value="{{value.[1]}}" min="0" max="100" step="1" {{#if readonly}} disabled {{/if}} /></label>
 	<label><span>Lightness: </span><input type="number" class="color-text lightness" placeholder="0" value="{{value.[2]}}" min="0" max="100" step="1" {{#if readonly}} disabled {{/if}} /></label>
 	{{#if alpha}}
-	<label><span>Alpha: </span><input type="number" class="color-text alpha" placeholder="0" value="{{value.[3]}}" min="0" max="1" step="0.01" {{#if readonly}} disabled {{/if}} /></label>
+	<label><span>Alpha: </span><input type="number" class="color-text alpha" placeholder="0" value="{{value.[3]}}" min="0" max="1" {{#if readonly}} disabled {{/if}} /></label>
 	{{/if}}
 	{{/if}}
 
