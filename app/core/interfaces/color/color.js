@@ -1,5 +1,16 @@
 define([], function() {
 
+  /**
+   * Color object factory
+   * @param {String|Array} color
+   * @param {String} type hex | rgb | hsl
+   * @returns {Object|Boolean} Color object or false if invalid value
+   *
+   * Usage:
+   * Color('333', 'rgb'); // false
+   * Color('000', 'hex').toRGB(); // [0, 0, 0]
+   * Color([25, 70, 17], 'hsl').toHEX(); // 4A260D
+   */
   function Color(color, type) {
     var me = arguments.callee;
 
