@@ -15,7 +15,6 @@
 // options.name       String            Field name
 /*jshint multistr: true */
 
-
 define(['app', 'core/UIComponent', 'core/UIView', 'core/t', 'core/interfaces/color/color'], function(app, UIComponent, UIView, __t, Color) {
 
   'use strict';
@@ -151,16 +150,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t', 'core/interfaces/col
       var output = this.options.settings.get('output');
       var userPalette = this.options.settings.get('palette') || [];
 
-      var value;
-
-      switch(input) {
-        case 'hex':
-          value = this.options.value || '000000';
-          break;
-        case 'rgb':
-        case 'hsl':
-          value = this.options.value ? this.options.value.split(',') : [0, 0, 0, 1];
-      }
+      var value = Color(this.options.value, output)[input];
 
       return {
         value: value,
@@ -248,8 +238,25 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t', 'core/interfaces/col
       }
     },
     list: function(options) {
-      return 'listValue';
-      // return (options.settings.get('show_color_on_list') === true) ? '<div title="#'+options.value+'" style="background-color:#'+options.value+'; color:#ffffff; height:20px; width:20px; border:1px solid #ffffff;-webkit-border-radius:20px;-moz-border-radius:20px;border-radius:20px;">&nbsp;</div>' : options.value;
+      var value;
+
+      switch(options.settings.get('output')) {
+        case 'hex':
+          value = options.value || false;
+          break;
+        case 'rgb':
+        case 'hsl':
+          value = options.value ? options.value.split(',').map(function(color) { return +color; }) : false;
+      }
+
+      if (value) {
+        var color = Color(value, options.settings.get('output')).rgb;
+        var rgb = color.length === 4 ? 'rgba(' + color + ')' : 'rgb(' + color + ')';
+        var swatch = '<div style="width: 20px; height: 20px; border-radius: 50%; background-color: ' + rgb + '"></div>';
+        return options.settings.get('listing') === 'swatch' ? swatch : value;
+      } else {
+        return '';
+      }
     }
   });
 
