@@ -61,11 +61,15 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t', 'core/interfaces/col
       // Validate value on change
       'input .color-text': function(event) {
         var type = this.options.settings.get('input');
+        var allowAlpha = this.options.settings.get('allow_alpha');
         var color;
+        var valid = true;
 
         switch(type) {
           case 'hex':
             color = event.target.value;
+            if (!allowAlpha && color.length === 4) valid = false;
+            if (!allowAlpha && color.length === 8) valid = false;
             break;
 
           case 'rgb':
@@ -74,7 +78,8 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t', 'core/interfaces/col
               +this.$el.find('input.green').val(),
               +this.$el.find('input.blue').val(),
               +this.$el.find('input.alpha').val()
-            ]
+            ];
+            if (!allowAlpha && color.length === 4) valid = false;
             break;
 
           case 'hsl':
@@ -83,11 +88,14 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t', 'core/interfaces/col
               +this.$el.find('input.saturation').val(),
               +this.$el.find('input.lightness').val(),
               +this.$el.find('input.alpha').val()
-            ]
+            ];
+            if (!allowAlpha && color.length === 4) valid = false;
             break;
         }
 
-        if (Color(color, type)) {
+        valid = valid && Color(color, type);
+
+        if (valid) {
           setPreviewColor(this, color, type);
           setInputValue(this, color, type, this.options.settings.get('output'));
           hideInvalidMessage(this);
