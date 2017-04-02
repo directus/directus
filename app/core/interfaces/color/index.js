@@ -154,7 +154,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t', 'core/interfaces/col
       var outputValue = '';
       var preview = 'rgba(0, 0, 0, 0)';
 
-      if (this.options.value) {
+      if (this.options.value && this.options.value.length > 1) {
         var rawValue = this.options.value;
         if (output === 'rgb' || output === 'hsl') rawValue = this.options.value.split(',').map(function(color) { return +color; });
         var color = Color(rawValue, output);
