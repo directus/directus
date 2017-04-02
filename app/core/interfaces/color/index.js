@@ -20,65 +20,6 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t', 'core/interfaces/col
 
   'use strict';
 
-  function convertRGBtoHex(r, g, b, a) {
-    function toHex(c) {
-      var hex = c.toString(16);
-      return hex.length == 1 ? '0' + hex : hex;
-    }
-
-    var hexValue = toHex(r) + toHex(g) + toHex(b);
-
-    if(a !== undefined) {
-      a = Math.round(convertRange(a, { min: 0, max: 1 }, { min: 0, max: 255 }));
-      hexValue += toHex(a);
-    }
-
-    return hexValue;
-  }
-
-  function convertRGBtoHSL(r, g, b, a) {
-    if(a === undefined) a = 1;
-    r = r / 255;
-    g = g / 255;
-    b = b / 255;
-
-    var max = Math.max(r, g, b);
-    var min = Math.min(r, g, b);
-
-    var hue;
-    var saturation;
-    var lightness = (max + min) / 2;
-
-    if(max === min) {
-      hue = saturation = 0;
-    } else {
-      var delta = max - min;
-      saturation = lightness > 0.5 ? delta / (2 - max - min) : delta / (max + min);
-      switch(max) {
-        case r:
-          hue = (g - b) / delta + (g < b ? 6 : 0);
-          break;
-        case g:
-          hue = (b - r) / delta + 2;
-          break;
-        case b:
-          hue = (r - g) / delta + 4;
-          break;
-      }
-
-      hue = hue / 6;
-    }
-
-    return {
-      h: convertRange(hue, { min: 0, max: 1 }, { min: 0, max: 360 }),
-      s: Math.round(saturation * 100),
-      l: Math.round(lightness * 100),
-      a: a
-    }
-  }
-
-
-
   function showInvalidMessage(view) {
     view.$el.find('.color-invalid')[0].innerHTML = __t('confirm_invalid_value');
     setPreviewColor(view, 'rgb', {r: 255, g: 255, b: 255, a: 0});

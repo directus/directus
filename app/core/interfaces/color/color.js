@@ -19,7 +19,9 @@ define([], function() {
       if (!isValid(color, type)) return false;
       return new me(arguments[0], arguments[1]);
     } else {
-      this.color = convertToRgb(color, type);
+      this.rgb = convertToRgb(color, type);
+      this.hsl = convertRgbtoHsl(this.rgb);
+      this.hex = convertRgbtoHex(this.rgb);
     }
   }
 
@@ -113,6 +115,12 @@ define([], function() {
   // Conversion functionality
   // ---------------------------------------------------------------------------
 
+  /**
+   * Converts hex or hsl value to rgb
+   * @param  {Array|String} color
+   * @param  {String} type hex | hsl
+   * @return {Array} rgb color
+   */
   function convertToRgb(color, type) {
     if (type === 'rgb') return color;
 
@@ -162,6 +170,11 @@ define([], function() {
     return rgba;
   }
 
+  /**
+   * Convert HSL color to RGB
+   * @param  {Array} color
+   * @return {Array} RGB color
+   */
   function convertHslToRgb(color) {
     // Convert HSL ranges to [0-1]
     h = convertRange(color[0], { min: 0, max: 360 }, { min: 0, max: 1 });
@@ -188,6 +201,78 @@ define([], function() {
 
     return output;
   }
+
+  /**
+   * Converts RGB color to Hex representation
+   * @param  {Array} color [r, g, b, (a)]
+   * @return {String} hex color
+   */
+  function convertRgbtoHex(color) {
+    var hexValue = toHex(color[0]) + toHex(color[1]) + toHex(color[2]);
+
+    if(color[3] !== undefined) {
+      var a = Math.round(convertRange(color[3], { min: 0, max: 1 }, { min: 0, max: 255 }));
+      hexValue += toHex(a);
+    }
+
+    return hexValue;
+
+    function toHex(c) {
+      var hex = c.toString(16);
+      return hex.length == 1 ? '0' + hex : hex;
+    }
+  }
+
+  /**
+   * Converts RGB to HSL
+   * @param  {Array} color [r, g, b, (a)]
+   * @return {Array} color [h, s, l, (a)]
+   */
+  function convertRgbtoHsl(color) {
+    var r = color[0] / 255;
+    var g = color[1] / 255;
+    var b = color[2] / 255;
+
+    var max = Math.max(r, g, b);
+    var min = Math.min(r, g, b);
+
+    var hue;
+    var saturation;
+    var lightness = (max + min) / 2;
+
+    if(max === min) {
+      hue = saturation = 0;
+    } else {
+      var delta = max - min;
+      saturation = lightness > 0.5 ? delta / (2 - max - min) : delta / (max + min);
+      switch(max) {
+        case r:
+          hue = (g - b) / delta + (g < b ? 6 : 0);
+          break;
+        case g:
+          hue = (b - r) / delta + 2;
+          break;
+        case b:
+          hue = (r - g) / delta + 4;
+          break;
+      }
+
+      hue = hue / 6;
+    }
+
+    var output = [
+      Math.round(convertRange(hue, { min: 0, max: 1 }, { min: 0, max: 360 })),
+      Math.round(saturation * 100),
+      Math.round(lightness * 100),
+    ];
+
+    if (color[3]) output.push(color[3]);
+
+    return output;
+  }
+
+  // Utilities
+  // ---------------------------------------------------------------------------
 
   /**
    * Checks if value is number
