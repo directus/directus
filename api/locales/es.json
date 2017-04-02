@@ -251,6 +251,7 @@
 
     "select_options_comment": "Ingresa pares de llave valor JSON para representar las opciones.",
     "select_placeholder_text": "Ingresa Texto de Ejemplo",
+    "select_auto_search_limit_text": "Número mínimo de valor para mostrar la búsqueda",
 
     "one_file_only_please": "Un solo archivo por favor",
     "enter_the_url_to_a_file": "Ingresa la URL a un archivo:",

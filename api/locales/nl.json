@@ -256,6 +256,7 @@
 
     "select_options_comment": "Enter JSON key value pairs with the saved value and text displayed.",
     "select_placeholder_text": "Voer plaatsaanduiding tekst in",
+    "select_auto_search_limit_text": "Minimum number of value to display search",
 
     "one_file_only_please": "Maximaal 1 bestand per keer",
     "enter_the_url_to_a_file": "URL van bestand:",

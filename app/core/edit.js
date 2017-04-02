@@ -111,10 +111,7 @@ define(function(require, exports, module) {
 
   var EditView = module.exports = Backbone.Layout.extend({
 
-    hiddenFields: [
-      'id',
-      'sort'
-    ],
+    hiddenFields: [],
 
     tagName: 'form',
 
@@ -123,12 +120,15 @@ define(function(require, exports, module) {
     beforeRender: function() {
       var views = {};
       var isBatchEdit = this.options.isBatchEdit;
+      var model = this.model;
+      var table = model.table;
+      var statusName = table ? table.getStatusColumnName() : app.statusMapping.status_name;
 
       this.structure.each(function(column) {
 
         // Skip ID
         // if('id' === column.id) {
-        if (column.get('key') === 'PRI' && (column.get('omit_input') !== false && !this.model.isNew())) {
+        if (column.get('key') === 'PRI' && column.get('omit_input') !== false && !model.isNew()) {
           return;
         }
 
@@ -138,16 +138,16 @@ define(function(require, exports, module) {
           return;
         }
 
-        if (this.model.isReadBlacklisted && this.model.isReadBlacklisted(column.id)) {
+        if (model.isReadBlacklisted && model.isReadBlacklisted(column.id)) {
           return false;
         }
 
         // Skip magic owner column if we dont have bigedit
-        if (this.model.table && this.model.table.get('user_create_column') === column.id && !this.model.collection.hasPermission('bigedit')) {
+        if (table && table.get('user_create_column') === column.id && !model.collection.hasPermission('bigedit')) {
           return;
         }
 
-        if (app.statusMapping.status_name === column.id) {
+        if (column.isStatusColumn()) {
           var collection = this.model.collection;
           var canAdd = this.model.isNew() && collection.canAdd();
           var canEdit = !this.model.isNew() && collection.canEdit();
@@ -156,22 +156,22 @@ define(function(require, exports, module) {
           }
 
           if (this.options.collectionAdd) {
-            this.model.set(app.statusMapping.status_name, app.statusMapping.active_num);
+            this.model.set(statusName, app.statusMapping.active_num);
           }
 
-          if (this.model.isNew()) {
-            var tableStatusColumn = this.model.structure.get(app.statusMapping.status_name);
+          if (model.isNew()) {
+            var tableStatusColumn = model.structure.get(statusName);
             if (tableStatusColumn && tableStatusColumn.get('default_value')) {
-              this.model.set(app.statusMapping.status_name, tableStatusColumn.get('default_value'));
+              model.set(statusName, tableStatusColumn.get('default_value'));
             } else {
-              this.model.set(app.statusMapping.status_name, app.statusMapping.active_num);
+              model.set(statusName, app.statusMapping.active_num);
             }
           }
 
           // Set this to be first field in edit table by modifiying groupings.
-          if (this.model.table && this.model.table.get('column_groupings')) {
-            var columnGrouping = this.model.table.get('column_groupings');
-            this.model.table.set({'column_groupings': app.statusMapping.status_name + '^' + columnGrouping});
+          if (table && table.get('column_groupings')) {
+            var columnGrouping = table.get('column_groupings');
+            table.set({'column_groupings': statusName + '^' + columnGrouping});
           }
         }
 
@@ -184,15 +184,15 @@ define(function(require, exports, module) {
           inputOptions.canWrite = false;
         }
 
-        var view = UIManager.getInputInstance(this.model, column.id, inputOptions);
-        if (this.model.addInput) {
-          this.model.addInput(column.id, view);
+        var view = UIManager.getInputInstance(model, column.id, inputOptions);
+        if (model.addInput) {
+          model.addInput(column.id, view);
         }
 
         //
-        if (app.statusMapping.status_name === column.id) {
-          this.model.on('change:' + app.statusMapping.status_name, function (model, value) {
-            view.$('input[name=' + app.statusMapping.status_name + ']').val(value);
+        if (column.isStatusColumn()) {
+          model.on('change:' + statusName, function (model, value) {
+            view.$('input[name=' + statusName + ']').val(value);
           });
         }
 
@@ -209,7 +209,7 @@ define(function(require, exports, module) {
 
         if (!isHidden) {
           var uiContainer = new UIContainer({
-            model: this.model,
+            model: model,
             column: column,
             batchEdit: isBatchEdit,
             view: view
@@ -221,38 +221,38 @@ define(function(require, exports, module) {
         }
       }, this);
 
-      var that = this;
-      if(this.model.table && this.model.table.get('column_groupings')) {
+      var self = this;
+      if (table && table.get('column_groupings')) {
         // Does this honor user field permissions? Should switch to JSON with Settings interface
         // Format:
         // Section 1:title,key_image^Section 2:address,date_published
-        var grouping = this.model.table.get('column_groupings');
+        var grouping = table.get('column_groupings');
         var i = 1;
-        grouping.split('^').forEach(function(group) {
-          var title = "";
-          if(group.indexOf(':') !== -1) {
+        grouping.split('^').forEach(function (group) {
+          var title = '';
+          if (group.indexOf(':') !== -1) {
             title = group.substring(0, group.indexOf(':'));
             group = group.substring(group.indexOf(':') + 1);
           }
           var compileString = '<div class="section-header"><span class="big-label-text">' + title + '</span></div><div class="grouping-view"></div>';
-          that.insertView('.fields', new Backbone.Layout({attributes: {class:'gutter-bottom-big', id:'grouping_' + i}, template: Handlebars.compile(compileString)}));
+          self.insertView('.fields', new Backbone.Layout({attributes: {class:'gutter-bottom-big', id:'grouping_' + i}, template: Handlebars.compile(compileString)}));
           group.split(',').forEach(function(subgroup) {
-            if(views[subgroup] !== undefined) {
-              that.insertView('#grouping_' + i + ' div.grouping-view', views[subgroup]);
+            if (views[subgroup] !== undefined) {
+              self.insertView('#grouping_' + i + ' div.grouping-view', views[subgroup]);
             }
           });
           i++;
         });
       } else {
-        if(views[app.statusMapping.status_name]) {
+        if (views[statusName]) {
           this.insertView('.fields', new Backbone.Layout({attributes: {class:'gutter-bottom-big', id:'grouping_0'}}));
-          this.insertView('#grouping_0', views[app.statusMapping.status_name]);
-          delete views[app.statusMapping.status_name];
+          this.insertView('#grouping_0', views[statusName]);
+          delete views[statusName];
         }
 
         this.insertView('.fields', new Backbone.Layout({attributes: {class:'gutter-bottom-big', id:'grouping_1'}}));
-        for(var key in views) {
-          that.insertView('#grouping_1', views[key]);
+        for (var key in views) {
+          self.insertView('#grouping_1', views[key]);
         }
       }
     },
@@ -260,8 +260,33 @@ define(function(require, exports, module) {
     constructor: function (options) {
       Backbone.Layout.__super__.constructor.call(this, options);
       this.$el.addClass('two-column-form');
-      this.hiddenFields.push(app.statusMapping.status_name);
       this.options.isBatchEdit = this.options.batchIds !== undefined;
+    },
+
+    getHiddenSystemColumns: function () {
+      var columns = [];
+      // hide system columns
+      var table = this.model ? this.model.table : null;
+
+      if (table) {
+        var primaryColumnName = table.getPrimaryColumnName();
+        var sortColumnName = table.getSortColumnName();
+        var statusColumnName = table.getStatusColumnName();
+
+        if (table.columns.get(primaryColumnName).get('omit_input') !== false) {
+          columns.push(primaryColumnName);
+        }
+
+        if (primaryColumnName !== sortColumnName) {
+          columns.push(sortColumnName);
+        }
+
+        if (statusColumnName) {
+          columns.push(statusColumnName);
+        }
+      }
+
+      return columns;
     },
 
     // Focus on first input
@@ -314,6 +339,8 @@ define(function(require, exports, module) {
         .filter(function(column) { return column.get('hidden_input'); })
         .pluck('id')
         .value();
+
+      this.hiddenFields = this.getHiddenSystemColumns().concat(this.hiddenFields || []);
 
       this.hiddenFields = _.union(optionsHiddenFields, structureHiddenFields, this.hiddenFields);
       this.visibleFields = _.difference(this.structure.pluck('id'), this.hiddenFields);

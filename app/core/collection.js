@@ -108,21 +108,22 @@ function(app, Backbone, _) {
       return cmp;
     },
 
-    comparator: function(rowA, rowB) {
+    comparator: function (rowA, rowB) {
       var UIManager = require('core/UIManager');
-      var column = rowA.idAttribute || 'id';
+      var column = rowA.idAttribute;
+      var sortColumn = this.table ? this.table.getSortColumnName() : 'id';
       var valueA, valueB;
 
       if (this.getFilter('sort')) {
         column = this.getFilter('sort')
       } else if (this.hasColumn && this.hasColumn('sort')) {
-        column = 'sort';
-      } else if (this.junctionStructure && this.junctionStructure.get('sort')) {
-          column = 'sort';
+        column = sortColumn;
+      } else if (this.junctionStructure && this.junctionStructure.get(sortColumn)) {
+        column = sortColumn;
       }
 
       // @todo find a better way to check is a entriesjunctioncollection
-      if(rowA.collection.nestedCollection && ['sort', rowA.idAttribute || 'id'].indexOf(column) < 0) {
+      if(rowA.collection.nestedCollection && [sortColumn, rowA.idAttribute].indexOf(column) < 0) {
         rowA = rowA.get('data');
         rowB = rowB.get('data');
       }

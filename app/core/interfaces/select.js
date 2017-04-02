@@ -6,13 +6,12 @@
 //  For all details and documentation:
 //  http://www.getdirectus.com
 
-define(['app', 'core/UIComponent', 'core/UIView', 'core/t', 'utils'],function(app, UIComponent, UIView, __t, Utils) {
+define(['app', 'core/UIComponent', 'core/UIView', 'core/t', 'utils', 'select2'],function(app, UIComponent, UIView, __t, Utils) {
 
   'use strict';
 
   var template = '<div class="select-container" style="margin-top: 4px;margin-bottom: 6px;"> \
                     <select name="{{name}}" {{#if readonly}}disabled{{/if}}>{{#if allow_null}}<option value="">{{placeholder_text}}</option>{{/if}}{{#options}}<option value="{{key}}" {{#if selected}}selected{{/if}}>{{value}}</option>{{/options}}</select> \
-                    <i class="material-icons select-arrow">arrow_drop_down</i> \
                   </div>';
 
   var Input = UIView.extend({
@@ -54,8 +53,30 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t', 'utils'],function(ap
         comment: this.options.schema.get('comment'),
         readonly: !this.options.canWrite,
         allow_null: this.options.settings.get('allow_null') === true,
+        display_search: this.options.settings.get('display_search'),
+        auto_search_limit: this.options.settings.get('auto_search_limit'),
         placeholder_text: (this.options.settings.get('placeholder_text')) ?  this.options.settings.get('placeholder_text') : __t('select_from_below')
       };
+    },
+    initialize: function() {
+      var isMobile = navigator.userAgent.match(/(iP(hone|od|ad)|Android|IEMobile)/);
+      if (!isMobile) {
+        var self = this;
+        setTimeout(function () {
+          var options = {
+            placeholder: self.options.settings.get('placeholder_text')
+          };
+          if (self.options.settings.get('display_search') === 'auto') {
+            options.minimumResultsForSearch = self.options.settings.get('auto_search_limit') || 10;
+          } else if (self.options.settings.get('display_search') === 'never') {
+            options.minimumResultsForSearch = Infinity;
+          }
+          if (self.options.settings.get('allow_null')) {
+            options.allowClear = true;
+          }
+          self.$el.find("select").select2(options);
+        }, 0);
+      }
     }
   });
 
@@ -65,6 +86,8 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t', 'utils'],function(ap
     variables: [
       {id: 'options', default_value: '', ui: 'textarea', options:{'rows': 25, 'placeholder_text': "{\n    \"value1\":\"Option One\",\n    \"value2\":\"Option Two\",\n    \"value3\":\"Option Three\"\n}"}, comment: __t('select_options_comment')},
       {id: 'allow_null', type: 'Boolean', default_value: false, ui: 'checkbox'},
+      {id: 'display_search', type: 'String', default_value: 'auto', required: true, ui: 'select', options: {options: {'auto':__t('Auto'),'always':__t('Always'),'never':__t('Never')} }},
+      {id: 'auto_search_limit', type: 'Number', ui: 'numeric', char_length: 20, default_value: 10, comment: __t('select_auto_search_limit_text')},
       {id: 'placeholder_text', type: 'String', default_value: '', ui: 'textinput', char_length: 255, required: false, comment: __t('select_placeholder_text')}
     ],
     Input: Input,

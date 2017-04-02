@@ -233,6 +233,15 @@ define([
           data.comment = __t('add_comment');
         }
 
+        data.nullOrEmptyValue = false;
+        if (data.default_value === null) {
+          data.default_value = 'NULL';
+          data.nullOrEmptyValue = true;
+        } else if (data.default_value === '') {
+          data.default_value = 'Empty String'
+          data.nullOrEmptyValue = true;
+        }
+
         return data;
       });
 

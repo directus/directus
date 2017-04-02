@@ -4,6 +4,7 @@ define([
   'underscore',
   'handlebars',
   'core/t',
+  'core/notification',
   'core/directus',
   'core/BasePageView',
   'core/widgets/widgets',
@@ -12,7 +13,7 @@ define([
   'modules/tables/views/TranslationView'
 ],
 
-function(app, Backbone, _, Handlebars, __t, Directus, BasePageView, Widgets, HistoryView, EditViewRightPane, TranslationView) {
+function(app, Backbone, _, Handlebars, __t, Notification, Directus, BasePageView, Widgets, HistoryView, EditViewRightPane, TranslationView) {
 
   var EditView = Backbone.Layout.extend({
     template: Handlebars.compile('<div id="editFormEntry"></div><div id="translateFormEntry"></div><div id="historyFormEntry"></div>'),
@@ -168,11 +169,13 @@ function(app, Backbone, _, Handlebars, __t, Directus, BasePageView, Widgets, His
       if (action === 'save-form-stay') {
         success = function(model, response, options) {
           var route = Backbone.history.fragment.split('/');
-          if(!model.table.get('single')) {
+          if (!model.table.get('single')) {
             route.pop();
             route.push(model.get('id'));
             app.router.go(route);
           }
+
+          Notification.success(__t('item_has_been_saved'));
         };
       } else {
         var self = this;
@@ -208,9 +211,9 @@ function(app, Backbone, _, Handlebars, __t, Directus, BasePageView, Widgets, His
         console.log(model);
       }
 
-      var changedValues = model.diff(data);
+      var changedValues = _.extend(model.unsavedAttributes() || {}, model.diff(data));
 
-      if(changedValues[app.statusMapping.status_name] && changedValues[app.statusMapping.status_name] === app.statusMapping.deleted_num ) {
+      if (changedValues[app.statusMapping.status_name] && changedValues[app.statusMapping.status_name] === app.statusMapping.deleted_num ) {
         var value = app.statusMapping.deleted_num;
         var options = {success: success, wait: true, patch: true, includeRelationships: true};
         try {
@@ -328,6 +331,10 @@ function(app, Backbone, _, Handlebars, __t, Directus, BasePageView, Widgets, His
       return {};
     },
 
+    cleanup: function () {
+      this.model.stopTracking();
+    },
+
     initialize: function(options) {
       options = _.defaults({}, options, {skipFetch: false});
       this.headerOptions = this.getHeaderOptions();
@@ -337,6 +344,11 @@ function(app, Backbone, _, Handlebars, __t, Directus, BasePageView, Widgets, His
       this.headerOptions.route.isOverlay = false;
       this.skipFetch = options.skipFetch;
       this.onSuccess = options.onSuccess;
+
+      this.model.startTracking();
+      this.listenTo(this.model, 'sync', function () {
+        this.model.restartTracking();
+      });
 
       if (_.isUndefined(this.headerOptions.basicSave)) {
         this.headerOptions.basicSave = false;

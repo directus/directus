@@ -9,6 +9,7 @@
 				<th scope="col">{{t "column_name"}}</th>
 				<th scope="col">{{t "user_interface"}}</th>
 				<th scope="col">{{t "relationship"}}</th>
+				<th scope="col">{{t "default"}}</th>
 				<th scope="col">{{t "comment"}}</th>
 				<th scope="col"></th>
 			</tr>
@@ -27,6 +28,9 @@
 					{{else}}
 					None
 					{{/if}}
+				</td>
+				<td class="js-cell" data-field="default_value" data-section="column">
+					<span class="{{#if nullOrEmptyValue}}no-value{{/if}}">{{default_value}}</span>
 				</td>
 				<td class="comment js-cell" data-field="comment" data-section="column">{{comment}}</td>
 				<td class="relational-remove">

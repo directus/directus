@@ -53,6 +53,15 @@ class Column implements \ArrayAccess, Arrayable, \JsonSerializable
     protected $type = 'string';
 
     /**
+     * Complete data type
+     *
+     * Needed for ENUM and SET where their values are stored in here
+     *
+     * @var string
+     */
+    protected $columnType;
+
+    /**
      * @var int
      */
     protected $length;
@@ -336,6 +345,28 @@ class Column implements \ArrayAccess, Arrayable, \JsonSerializable
     public function getLength()
     {
         return $this->length;
+    }
+
+    /**
+     * Sets column type
+     *
+     * Ex: int(11), varchar(255), enum(1,2,3)
+     *
+     * @param $type
+     */
+    public function setColumnType($type)
+    {
+        $this->columnType = $type;
+    }
+
+    /**
+     * Gets column type
+     *
+     * @return string
+     */
+    public function getColumnType()
+    {
+        return $this->columnType;
     }
 
     /**

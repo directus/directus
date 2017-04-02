@@ -126,6 +126,8 @@ require(["config", 'polyfills'], function() {
 
     ).done(function() {
 
+      app.trigger('loaded');
+
       // Register UI schemas
       SchemaManager.registerUISchemas(UIManager.getAllSettings());
       SchemaManager.addSettings(UIManager.getDirectusSettings());

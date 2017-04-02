@@ -439,11 +439,11 @@ class SchemaManager
         $options = json_decode(ArrayUtils::get($column, 'options', ''), true);
         $column['options'] = $options ? $options : [];
 
-        $isSystemColumn = static::isSystemColumn($column['id']);
-        $column['system'] = (bool) $isSystemColumn;
-        if ($isSystemColumn) {
-            $column['hidden'] = true;
-        }
+        // $isSystemColumn = static::isSystemColumn($column['id']);
+        // $column['system'] = (bool) $isSystemColumn;
+        // if ($isSystemColumn) {
+        //     $column['hidden'] = true;
+        // }
 
         $columnObject = new Column($column);
         if (isset($column['related_table'])) {

@@ -475,6 +475,10 @@ define([
         }
       },
 
+      onRightPaneToggle: function () {
+        TableHelpers.fixWidths(this.$el);
+      },
+
       onRender: function () {
         // @TODO: store the content wrapper into a variable in the application object
         TableHelpers.headFootShadows($('#content'));
@@ -487,6 +491,8 @@ define([
         this.on('scroll', _.throttle(this.onScroll, 200), this);
         this.on('afterRender', this.onRender, this);
 
+        this.baseView.on('rightPane:toggle', this.onRightPaneToggle);
+
         if (this.options.system === true) {
           this.collection.preferences.on('sync', this.updateSystemColumnsAndRender, this);
           this.listenTo(this, 'onShowMore', this.onShowMore);
@@ -495,6 +501,11 @@ define([
 
       unbindEvents: function () {
         this.off('preferences:updated', this.updateTableSpacing, this);
+
+        this.off('scroll', _.throttle(this.onScroll, 200), this);
+        this.off('afterRender', this.onRender, this);
+
+        this.baseView.off('rightPane:toggle', this.onRightPaneToggle);
 
         if (this.options.system === true) {
           this.collection.preferences.off('sync', this.updateSystemColumnsAndRender, this);

@@ -373,29 +373,32 @@ class TableSchema
             return [];
         }
 
-        $schemaManager = static::getSchemaManagerInstance();//Bootstrap::get('schemaManager');
-        $result = $schemaManager->getColumnsName($table);
-
-        $columns = [];
-        $primaryKeyFieldName = self::getTablePrimaryKey($table);
-        if (!$primaryKeyFieldName) {
-            $primaryKeyFieldName = 'id';
-        }
-
-        $ignoreColumns = ($skipIgnore !== true) ? [$primaryKeyFieldName, STATUS_COLUMN_NAME, 'sort'] : [];
-        $i = 0;
-        foreach ($result as $columnName) {
-            if (!in_array($columnName, $ignoreColumns)) {
-                array_push($columns, $columnName);
+        $schemaManager = static::getSchemaManagerInstance();
+        $tableObject = $schemaManager->getTableSchema($table);
+        $columns = $tableObject->getColumns();
+        $columnsName = [];
+        $count = 0;
+        foreach ($columns as $column) {
+            if ($skipIgnore === false
+                && (
+                    $column->getName() === $tableObject->getStatusColumn()
+                    || $column->getName() === $tableObject->getSortColumn()
+                    || $column->getName() === $tableObject->getPrimaryColumn()
+                )
+            ) {
+                continue;
             }
 
-            $i++;
-            if ($i === $limit) {
+            // at least will return one
+            if ($limit && $count > $limit) {
                 break;
             }
+
+            $columnsName[] = $column->getName();
+            $count++;
         }
 
-        return $columns;
+        return $columnsName;
     }
 
     public static function getColumnsName($table)
@@ -416,6 +419,21 @@ class TableSchema
         return $names;
     }
 
+    /**
+     * Checks whether or not the given table has a sort column
+     *
+     * @param $table
+     * @param bool $includeAlias
+     *
+     * @return bool
+     */
+    public static function hasTableSortColumn($table, $includeAlias = false)
+    {
+        $column = static::getTableSortColumn($table);
+
+        return static::hasTableColumn($table, $column, $includeAlias);
+    }
+
     public static function hasTableColumn($table, $column, $includeAlias = false)
     {
         $columns = array_flip(self::getTableColumns($table, null, true));
@@ -428,6 +446,25 @@ class TableSchema
         }
 
         return false;
+    }
+
+    /**
+     * Gets the table sort column name
+     *
+     * @param $table
+     *
+     * @return string
+     */
+    public static function getTableSortColumn($table)
+    {
+        $tableObject = static::getTableSchema($table);
+
+        $sortColumnName = $tableObject->getSortColumn();
+        if (!$sortColumnName) {
+            $sortColumnName = $tableObject->getPrimaryColumn() ?: 'id';
+        }
+
+        return $sortColumnName;
     }
 
     public static function getUniqueColumnName($tbl_name)

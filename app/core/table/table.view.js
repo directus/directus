@@ -107,16 +107,30 @@ function(app, _, Backbone, Notification, __t, TableHelpers, ModelHelper, TableHe
       TableHelpers.headerScroll($table);
     },
 
-    afterRender: function() {
-      this.fixWidths();
-
+    bindTableEvents: function () {
       var $el = this.$('.table-scroll-x');
+
+      this.fixWidths();
       this.headerScroll($el);
+
       var onScroll = _.bind(function () {
         this.headerScroll($el);
       }, this);
 
-      $el.on('scroll', onScroll);
+      var onResize = _.bind(function () {
+        this.fixWidths();
+        this.headerScroll($el);
+      }, this);
+
+      $el.off('scroll', _.throttle(onScroll, 300));
+      $el.on('scroll', _.throttle(onScroll, 300));
+
+      $(window).off('resize', _.debounce(onResize, 300));
+      $(window).on('resize', _.debounce(onResize, 300));
+    },
+
+    afterRender: function() {
+      this.bindTableEvents();
 
       if (this.bodyScrollTop) {
         document.body.scrollTop = this.bodyScrollTop;
@@ -246,18 +260,18 @@ function(app, _, Backbone, Notification, __t, TableHelpers, ModelHelper, TableHe
 
     initialize: function(options) {
       var collection = this.collection;
+      var table = collection.table;
+      var sortColumnName = table ? table.getSortColumnName() : 'id';
+      var statusColumnName = table ? table.getStatusColumnName() : app.statusMapping.status_name;
 
       options = _.extend({
         fixedHead: false,
         showMoreButton: false
       }, (options || {}));
 
-      this.listenTo(collection, 'sync', function(model, resp, options) {
-        options = options || {};
-        if (options.silent) return;
-        ModelHelper.setIdAttribute(model);
-        // this.render();
-      });
+      if (options.system !== true) {
+        this.listenTo(collection, 'sync', this.render);
+      }
 
       this.listenTo(collection, 'visibility', function() {
         this.options.columns = this.getTableColumns();
@@ -282,7 +296,7 @@ function(app, _, Backbone, Notification, __t, TableHelpers, ModelHelper, TableHe
       }
 
       if (this.options.sort === undefined) {
-        this.options.sort = collection.hasColumn('sort') && collection.hasPermission && collection.hasPermission('bigedit') && !collection.isWriteBlacklisted('sort');
+        this.options.sort = collection.hasColumn(sortColumnName) && collection.hasPermission && collection.hasPermission('bigedit') && !collection.isWriteBlacklisted(sortColumnName);
       }
 
       if (this.options.selectable === undefined) {
@@ -290,7 +304,7 @@ function(app, _, Backbone, Notification, __t, TableHelpers, ModelHelper, TableHe
       }
 
       if (this.options.status === undefined) {
-        this.options.status = collection.hasColumn(app.statusMapping.status_name);
+        this.options.status = collection.hasColumn(statusColumnName);
       }
 
       if (this.options.preferences) {
@@ -335,6 +349,7 @@ function(app, _, Backbone, Notification, __t, TableHelpers, ModelHelper, TableHe
       this.options.systemCollection = this.collection.clone();
       this.listenTo(this.collection, 'sync', function (collection, resp, options) {
         var method = options.reset ? 'reset' : 'set';
+        options.parse = true;
         this.options.systemCollection[method](resp, options);
       });
     },
@@ -347,5 +362,4 @@ function(app, _, Backbone, Notification, __t, TableHelpers, ModelHelper, TableHe
   });
 
   return TableView;
-
 });

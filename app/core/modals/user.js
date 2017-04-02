@@ -28,11 +28,13 @@ define(['app', 'core/Modal'], function(app, Modal) {
     serialize: function () {
       var data = this.model.toJSON();
       var authenticatedUser = app.users.getCurrentUser();
+      var timeDiff = authenticatedUser.timezoneDifference(this.model);
 
       data.online = this.model.isOnline();
       data.lastSeen = this.model.lastSeen();
-      data.isAdmin = authenticatedUser.isAdmin();
-      data.timeDiff = authenticatedUser.timezoneDifference(this.model);
+      data.canEditUser = authenticatedUser.isAdmin() && this.model.id;
+      data.timeDiff = timeDiff;
+      data.validTimeDiff = timeDiff !== null;
 
       return data;
     }

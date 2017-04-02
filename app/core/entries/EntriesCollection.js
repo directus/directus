@@ -5,9 +5,8 @@ define(function(require, exports, module) {
   var Backbone      = require('backbone'),
       app           = require('app'),
       _             = require('underscore'),
-      ModelHelper   = require('helpers/model'),
       Collection    = require('core/collection'),
-      EntriesModel  = require("core/entries/EntriesModel");
+      EntriesModel  = require('core/entries/EntriesModel');
 
   var EntriesCollection = module.exports = Collection.extend({
 
@@ -30,7 +29,7 @@ define(function(require, exports, module) {
       var structure = this.structure;
 
       if (filters.columns_visible === undefined) {
-        columns = structure.pluck('id');
+        columns = structure.pluck(this.table.getPrimaryColumnName());
       } else {
         columns = filters.columns_visible;
         // @todo: ensure that this always be an array everywhere.
@@ -326,12 +325,10 @@ define(function(require, exports, module) {
       return _.contains(this.getReadFieldBlacklist(), attribute);
     },
 
-    initialize: function(models, options) {
+    initialize: function (models, options) {
       this.structure = options.structure;
       this.privileges = options.privileges;
       this.table = options.table;
-
-      this.listenTo(this, 'sync', ModelHelper.setIdAttribute);
 
       if (options.rowsPerPage) this.rowsPerPage = options.rowsPerPage;
       if (options.filters) this.filters = options.filters;
@@ -349,8 +346,9 @@ define(function(require, exports, module) {
 
       // do we got a sort column?
       // let sort it by that instead please
-      if(this.structure.get('sort')) {
-        this.filters['sort'] = 'sort';
+      var sortColumnName = this.table.getSortColumnName();
+      if (this.structure.get(sortColumnName)) {
+        this.filters['sort'] = sortColumnName;
       }
 
       this.filters['status'] = '1,2';
@@ -361,13 +359,13 @@ define(function(require, exports, module) {
       }
     },
 
-    getNewModelInstance: function(options) {
+    getNewModelInstance: function (options) {
       options = _.extend({collection: this}, options || {});
 
       return new this.model({}, options);
     },
 
-    getNewInstance: function(options) {
+    getNewInstance: function (options) {
       options = options || {};
 
       var entriesOptions = {
@@ -406,7 +404,7 @@ define(function(require, exports, module) {
       }, this);
     },
 
-    parse: function(response) {
+    parse: function (response) {
       if (_.isEmpty(response)) {
         return;
       }
@@ -417,10 +415,8 @@ define(function(require, exports, module) {
       return response.data;
     },
 
-    constructor: function EntriesCollection(data, options) {
+    constructor: function EntriesCollection (data, options) {
       EntriesCollection.__super__.constructor.call(this, data, options);
     }
-
   });
-
 });

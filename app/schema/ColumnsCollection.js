@@ -3,7 +3,10 @@ define(function(require, exports, module) {
   "use strict";
 
   var Backbone = require('backbone'),
+      _ = require('underscore'),
       ColumnModel = require('./ColumnModel');
+
+  var columnsOptions = ['table'];
 
   module.exports = Backbone.Collection.extend({
 
@@ -45,7 +48,10 @@ define(function(require, exports, module) {
       return Backbone.sync('update', this, options);
     },
 
-    initialize: function() {
+    constructor: function (models, options) {
+      Backbone.Collection.prototype.constructor.apply(this, arguments);
+
+      _.extend(this, _.pick(options, columnsOptions));
     }
 
   });

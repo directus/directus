@@ -13,9 +13,12 @@ define([
     },
 
     beforeRender: function() {
+      var table = this.model.table;
+      var statusColumnName = table ? table.getStatusColumnName() : app.statusMapping.status_name;
+
       this.baseView.rightSidebarView.$el.addClass('scroll-y wide no-title');
 
-      if (this.model.has(app.statusMapping.status_name)) {
+      if (this.model.has(statusColumnName)) {
         this.insertView(new StatusWidget({model: this.model}));
       }
 

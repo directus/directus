@@ -87,14 +87,17 @@ class BaseTableGateway extends TableGateway
      */
     public function __construct($table, AdapterInterface $adapter, $acl = null, $features = null, ResultSetInterface $resultSetPrototype = null, Sql $sql = null, $primaryKeyName = null)
     {
+        // Add table name reference here, so we can fetch the table schema object
+        $this->table = $table;
+
         // @NOTE: temporary, do we need it here?
         if ($primaryKeyName !== null) {
             $this->primaryKeyFieldName = $primaryKeyName;
         } else {
-//            $tablePrimaryKey = TableSchema::getTablePrimaryKey($table);
-//            if ($tablePrimaryKey) {
-//                $this->primaryKeyFieldName = $tablePrimaryKey;
-//            }
+            $tableObject = $this->getTableSchema();
+            if ($tableObject->getPrimaryColumn()) {
+                $this->primaryKeyFieldName = $tableObject->getPrimaryColumn();
+            }
         }
 
         $this->acl = $acl;
@@ -114,8 +117,7 @@ class BaseTableGateway extends TableGateway
 
         parent::__construct($table, $adapter, $features, $resultSetPrototype, $sql);
 
-        // @TODO: Make this dynamic to support the different databases.
-        $this->schemaManager = new SchemaManager(new MySQLSchema($this->adapter));
+        $this->schemaManager = static::$container->get('schemaManager');
     }
 
     /**

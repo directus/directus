@@ -125,8 +125,10 @@ require([
   });
 
   // Get the model status name
-  Handlebars.registerHelper('statusName', function(model) {
-    var statusValue = model.get(app.statusMapping.status_name);
+  Handlebars.registerHelper('statusName', function (model) {
+    var table = model.table;
+    var statusColumnName = table ? table.getStatusColumnName() : app.statusMapping.status_name;
+    var statusValue = model.get(statusColumnName);
     var status = app.statusMapping.mapping[statusValue] || {};
 
     return status ? status.name : '';
@@ -140,8 +142,11 @@ require([
     return status ? status.color : '#eeeeee';
   });
 
-  Handlebars.registerHelper('notPublishedClass', function(model) {
-    if (model.get(app.statusMapping.status_name) == app.statusMapping.draft_num) {
+  Handlebars.registerHelper('notPublishedClass', function (model) {
+    var table = model.table;
+    var statusColumnName = table ? table.getStatusColumnName() : app.statusMapping.status_name;
+
+    if (model.get(statusColumnName) == app.statusMapping.draft_num) {
       return 'not-published';
     }
 

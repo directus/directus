@@ -59,11 +59,13 @@ class DirectusPreferencesTableGateway extends RelationalTableGateway
                 }
             }
         }
+
         // Global default values
         $primaryKeyFieldName = TableSchema::getTablePrimaryKey($table);
         if ($primaryKeyFieldName) {
             self::$defaultPreferencesValues['sort'] = $primaryKeyFieldName;
         }
+
         foreach (self::$defaultPreferencesValues as $field => $defaultValue) {
             if (!isset($preferences[$field]) || ('0' !== $preferences[$field] && empty($preferences[$field]))) {
                 if (!isset($preferences[$field])) {
@@ -71,12 +73,13 @@ class DirectusPreferencesTableGateway extends RelationalTableGateway
                 }
             }
         }
+
         if (isset($preferences['sort'])) {
-            $sortColumn = $preferences['sort'];
-            if (!TableSchema::hasTableColumn($table, $sortColumn)) {
-                $preferences['sort'] = 'id';
+            if (!TableSchema::hasTableSortColumn($table)) {
+                $preferences['sort'] = TableSchema::getTableSortColumn($table);
             }
         }
+
         return $preferences;
     }
 
@@ -113,9 +116,11 @@ class DirectusPreferencesTableGateway extends RelationalTableGateway
             'table_name' => $table,
             'title' => $title
         ];
-        if (TableSchema::hasTableColumn($table, 'sort')) {
-            $data['sort'] = 'sort';
+
+        if (TableSchema::hasTableSortColumn($table)) {
+            $data['sort'] = TableSchema::getTableSortColumn($table);
         }
+
         $data = $this->applyDefaultPreferences($table, $data);
 
         $insert

@@ -163,12 +163,16 @@ table {
 					width: 30px;
 					min-width: 30px;
 					padding-right: 0;
+					-webkit-touch-callout: none;
+					-webkit-user-select: none;
+					-khtml-user-select: none;
+					-moz-user-select: none;
+					-ms-user-select: none;
+					user-select: none;
 					.reorder-handle {
 						@include transition (color, $timing-short, ease-in-out);
 						color: $gray-1;
-						&:hover {
-							color: $gray-4;
-						}
+						cursor: not-allowed;
 					}
 				}
 				&.status {
@@ -563,6 +567,23 @@ table {
 		}
 		&:hover td {
 			background-color: lighten($primary, 45%);
+		}
+	}
+	&.reorder-enabled {
+		tbody {
+			tr {
+				td {
+					&.reorder {
+						.reorder-handle {
+							color: $gray-2;
+							&:hover {
+								color: $gray-4;
+								cursor: row-resize;
+							}
+						}
+					}
+				}
+			}
 		}
 	}
 }

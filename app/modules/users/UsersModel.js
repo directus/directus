@@ -42,10 +42,14 @@ function(app, Backbone, EntriesModel, moment) {
     },
 
     timezoneDifference: function (userModel) {
-      var d1 = moment().tz(this.get('timezone')).utcOffset();
-      var d2 = moment().tz(userModel.get('timezone')).utcOffset();
+      var d1 = moment().tz(this.get('timezone'));
+      var d2 = moment().tz(userModel.get('timezone'));
 
-      return (d2-d1) / 60;
+      if (!d1 || !d2) {
+        return null;
+      }
+
+      return (d2.utcOffset() - d1.utcOffset()) / 60;
     },
 
     lastSeen: function () {

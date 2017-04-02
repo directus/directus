@@ -46,7 +46,7 @@
 <div id="main">
 
 	<!-- Readout: "Authenticating", "Loading Assets", "Loading Data", "Finishing up", etc -->
-	<div class="loading"><div class="loading-container"><div class="loading-bar step-1"></div></div><div class="readout">Authenticating</div></div> <!-- blocking fading -->
+	<div class="loading{% if isAuthenticated %} blocking fading{% endif %}"><div class="loading-container"><div class="loading-bar step-1"></div></div><div class="readout">Loading Data</div></div>
 
 	{% if page == 'login' %}
 

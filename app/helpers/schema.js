@@ -2,8 +2,9 @@ define(function() {
 
   'use strict';
 
+  // @TODO: Add an object that handle supported values by types
   var dateTypes = ['DATETIME', 'DATE'];
-  var numericTypes = ['INT'];
+  var numericTypes = ['INT', 'TINYINT', 'DOUBLE', 'FLOAT'];
 
   var cleanIdentifier = function (identifier) {
     return identifier.replace(/[^a-z0-9-_]+/ig, '_');

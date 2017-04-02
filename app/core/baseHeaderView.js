@@ -32,6 +32,9 @@ function(app, _, Backbone, __t, Notification) {
       'click #saveSnapshotBtn': 'saveSnapshot'
     },
 
+    // prevent the header to be removed after when rendered twice
+    keep: true,
+
     closeOverlayPage: function() {
       app.router.removeTopOverlayPage();
     },

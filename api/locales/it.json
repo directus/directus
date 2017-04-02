@@ -252,6 +252,7 @@
 
     "select_options_comment": "Inserisci coppie di valori chiave JSON contenenti il valore salvato e il testo visualizzato.",
     "select_placeholder_text": "Inserisci Testo Placeholder",
+    "select_auto_search_limit_text": "Valore minimo per mostrare di ricerca",
 
     "one_file_only_please": "Seleziona un solo file",
     "enter_the_url_to_a_file": "Inserisci URL del file:",

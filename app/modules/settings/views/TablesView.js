@@ -780,7 +780,21 @@ function(app, _, Backbone, Directus, EditView, BasePageView, TableModel, ColumnM
       });
     },
 
-    rightPane: false
+    rightPane: false,
+
+    syncTableInformation: function (model, resp) {
+      var table = app.schemaManager.getTable(model.get('table_name'));
+
+      // @todo: clean this into a factory or similar
+      table.set(resp, {parse: true});
+      table.columns.reset(resp.data.columns.toJSON(), {parse: true, table: table});
+      model.table = table;
+    },
+
+    initialize: function (options) {
+      options.onSuccess = this.syncTableInformation;
+      EditView.prototype.initialize.apply(this, arguments);
+    }
   });
 
   var Tables = Backbone.Layout.extend({

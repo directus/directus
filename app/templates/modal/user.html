@@ -38,6 +38,7 @@
 	</div>
 	<div class="row">
 		<div class="label">Timezone</div>
+		{{#if validTimeDiff}}
 		{{timezone}}<br>
 		<span class="light">
 			(
@@ -48,15 +49,12 @@
 			{{/if}}
 			)
 		</span>
+		{{else}}
+		<span class="light">{{t "unknown"}}</span>
+		{{/if}}
 		<i class="material-icons">access_time</i>
 	</div>
-	<!-- <div class="row">
-		<div class="label">Address</div>
-		312 Humboldt Street, FL3<br>
-		Brooklyn, NY 11211
-		<i class="material-icons">location_city</i>
-	</div> -->
-	{{#if isAdmin}}
+	{{#if canEditUser}}
 	<div class="button js-edit-user" data-id="{{id}}">Edit User</div>
 	{{/if}}
 </div>

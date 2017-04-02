@@ -11,6 +11,7 @@ define(function(require, exports, module) {
     "id": "directus_tables",
     "table_name": "directus_tables",
     "primary_column": "table_name",
+    "sort_column": "table_name",
     "url": "api/1.1/tables",
 
     "columns": [

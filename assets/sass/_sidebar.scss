@@ -781,11 +781,10 @@
 				border-left: 2px solid $primary;
 				&.disabled {
 					color: $gray-3;
-					background-color: $gray-1;
 					cursor: not-allowed;
 					&:hover,
 					&.active {
-						background-color: $gray-1;
+						background-color: $white;
 						color: $gray-3;
 					}
 				}
