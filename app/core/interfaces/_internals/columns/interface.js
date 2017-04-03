@@ -17,8 +17,9 @@ define([
   'core/notification',
   'core/doubleConfirmation',
   'core/t',
+  'schema/ColumnsCollection',
   'sortable'
-], function(app, _, UIComponent, UIView, TableView, Overlays, Notification, DoubleConfirmation, __t, Sortable) {
+], function(app, _, UIComponent, UIView, TableView, Overlays, Notification, DoubleConfirmation, __t, ColumnsCollection, Sortable) {
 
   'use strict';
 
@@ -56,7 +57,8 @@ define([
         id = $(id.currentTarget).data('id');
       }
 
-      var collection = app.schemaManager.getTable(this.model.id).columns;
+      var table = app.schemaManager.getTable(this.model.id);
+      var collection = table.columns;
       var columnModel = collection.get(id, true);
 
       if (!columnModel) {
@@ -343,32 +345,10 @@ define([
 
       this.canEdit = !(options.inModal || false);
 
-      var columns = this.model.get(this.name);
-      var relatedCollection = columns.structure;
-      var joinColumn = this.columnSchema.relationship.get('junction_key_right');
-      var ids = relatedCollection.pluck('id');
-
-      if (ids.length > 0) {
-        // Make sure column we are joining on is respected
-        var filters = columns.filters || {};
-        if (filters.columns_visible.length === 0) {
-          filters.columns_visible = relatedCollection.structure.at(0).get('id');
-        }
-
-        //Pass this filter to select only where column = val
-        filters.related_table_filter = {column: joinColumn, val: this.model.id};
-
-        if (this.columnSchema.options.get('result_limit') !== undefined) {
-          filters.perPage = this.columnSchema.options.get('result_limit');
-        }
-
-        relatedCollection.fetch({includeFilters: false, data: filters});
-      }
-
-      this.columns = columns;
+      var columns = this.columns = this.model.get(this.name);
 
       if (columns.structure.get('sort')) {
-        columns.setOrder('sort','ASC',{silent: true});
+        columns.setOrder('sort','ASC', {silent: true});
       }
 
       this.listenTo(columns, 'add change remove', this.render);
