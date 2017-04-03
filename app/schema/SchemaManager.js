@@ -10,6 +10,7 @@ define(function(require, exports, module) {
       PrivilegeModel     = require('./PrivilegeModel'),
       ColumnsCollection  = require('./ColumnsCollection'),
       TableModel         = require('./TableModel'),
+      FakeTableModel     = require('./FakeTableModel'),
       DirectusCollection = require('core/collection'),
       PreferenceModel    = require('core/PreferenceModel');
 
@@ -166,8 +167,17 @@ define(function(require, exports, module) {
     // used as forms in the table settings
     registerUISchemas: function(data) {
       var namespace = 'ui';
-      _.each(data, function(ui) {
-        columnSchemas[namespace][ui.id] = new ColumnsCollection(ui.variables, {parse: true});
+
+      _.each(data, function (ui) {
+        // Interfaces schema does not have a actual table
+        // we fake it to use their variables/settings as if they were columns
+        var table = new FakeTableModel();
+        var columns = new ColumnsCollection(ui.variables, {
+          parse: true,
+          table: table
+        });
+
+        table.columns = columnSchemas[namespace][ui.id] = columns;
       }, this);
     },
 
