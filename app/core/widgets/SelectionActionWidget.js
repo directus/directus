@@ -8,19 +8,6 @@ function(app, Backbone, Handlebars) {
   "use strict";
 
   return Backbone.Layout.extend({
-    /*
-    template: Handlebars.compile(' \
-      <ul class="tools left big-space"> \
-        {{#mapping}} \
-          <li class="tool rounded-button action actionBtn card-shadow" data-value="{{id}}" style="color:{{color}}">{{name}}</li> \
-        {{/mapping}} \
-        {{#if batchEdit}} \
-        <li class="tool-separator">&nbsp;</li> \
-        <li class="tool div-left rounded-button action card-shadow" id="batchEditBtn">Batch Edit</li> \
-        {{/if}} \
-      </ul> \
-    '),
-    */
 
     template: 'core/widgets/set-status',
 
@@ -79,9 +66,10 @@ function(app, Backbone, Handlebars) {
         models.push(model);
       });
 
-      var success = function() {
+      var success = function (model, resp, options) {
         collection.trigger('visibility');
         collection.trigger('select');
+        collection.trigger('sync', model, resp, options);
       };
 
       var options = {patch: true, validate: false, wait: true, success: success};
