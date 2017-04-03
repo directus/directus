@@ -33,7 +33,7 @@ define(function(require, exports, module) {
 
       data.status_column = data.status_column || app.statusMapping.status_name;
       data.primary_column = data.primary_column || 'id';
-      data.sort_column = data.sort_column || 'id';
+      data.sort_column = data.sort_column || 'sort';
 
       return _.omit(data, ['columns', 'preferences']);
     },
@@ -55,7 +55,7 @@ define(function(require, exports, module) {
 
     getSortColumn: function () {
       // set a default primary key, same as default sort and status
-      var name = this.get('sort_column') || this.getPrimaryColumnName();
+      var name = this.get('sort_column');
 
       return this.columns.get(name);
     },
@@ -65,7 +65,9 @@ define(function(require, exports, module) {
     },
 
     getSortColumnName: function () {
-      return this.getSortColumn().get('column_name');
+      var column = this.getSortColumn();
+
+      return column ? column.get('column_name') : null;
     },
 
     getPrimaryColumn: function () {

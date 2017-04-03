@@ -111,8 +111,12 @@ function(app, Backbone, _) {
     comparator: function (rowA, rowB) {
       var UIManager = require('core/UIManager');
       var column = rowA.idAttribute;
-      var sortColumn = this.table ? this.table.getSortColumnName() : 'id';
+      var sortColumn = this.table ? this.table.getSortColumnName() : null;
       var valueA, valueB;
+
+      if (!sortColumn) {
+        sortColumn = this.table ? this.table.getPrimaryColumnName() : 'id';
+      }
 
       if (this.getFilter('sort')) {
         column = this.getFilter('sort')

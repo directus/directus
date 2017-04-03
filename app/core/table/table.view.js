@@ -261,7 +261,7 @@ function(app, _, Backbone, Notification, __t, TableHelpers, ModelHelper, TableHe
     initialize: function(options) {
       var collection = this.collection;
       var table = collection.table;
-      var sortColumnName = table ? table.getSortColumnName() : 'id';
+      var sortColumnName = table ? table.getSortColumnName() : 'sort';
       var statusColumnName = table ? table.getStatusColumnName() : app.statusMapping.status_name;
 
       options = _.extend({

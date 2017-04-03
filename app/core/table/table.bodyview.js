@@ -120,7 +120,9 @@ function(app, Backbone, _, Sortable, Notification) {
     drop: function() {
       var collection = this.collection;
       var table = collection.table;
-      var sortColumnName = table ? table.getSortColumnName() : 'id';
+      // if we are dropping something it means we allowed sorting
+      // and the collection has a sort column
+      var sortColumnName = table ? table.getSortColumnName() : 'sort';
 
       this.$('tr').each(function (i) {
         // Use data-id instead of data-cid
