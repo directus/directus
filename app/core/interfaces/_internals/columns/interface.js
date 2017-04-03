@@ -272,14 +272,15 @@ define([
     },
 
     enableSortable: function() {
-      this.$('table').removeClass('disable-sorting');
+      // @TODO: This method is duplicated from the table view
+      this.$('table').removeClass('disable-sorting').addClass('reorder-enabled');
       this.$('.js-sort-toggle').addClass('active');
       this.sortable.options.sort = true;
       this.sortable.options.disabled = false;
     },
 
     disableSortable: function() {
-      this.$('table').addClass('disable-sorting');
+      this.$('table').addClass('disable-sorting').removeClass('reorder-enabled');
       this.$('.js-sort-toggle').removeClass('active');
       this.sortable.options.sort = false;
       this.sortable.options.disabled = true;
