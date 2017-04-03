@@ -71,9 +71,9 @@ function(app, Backbone, _, Handlebars, __t, Notification, Directus, BasePageView
 
   return BasePageView.extend({
     events: {
-      'change input, select, textarea': 'checkDiff',
+      'change select': 'checkDiff',
       'keyup input, textarea': 'checkDiff',
-      'submit': function(e) {
+      'submit': function (e) {
         // prevent user submit the form using Enter key
         // @todo handle this event to or as 'saveConfirm'
         e.preventDefault();
