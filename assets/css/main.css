@@ -69,26 +69,31 @@
   src: url("../fonts/MaterialIcons-Regular.eot");
   /* For IE6-8 */
   src: local("Material Icons"), local("MaterialIcons-Regular"), url("../fonts/MaterialIcons-Regular.woff2") format("woff2"), url("../fonts/MaterialIcons-Regular.woff") format("woff"), url("../fonts/MaterialIcons-Regular.ttf") format("truetype"); }
+
 @font-face {
   font-family: 'Roboto';
   font-style: normal;
   font-weight: 400;
   src: url("../fonts/Roboto-Regular.woff2") format("woff2"), url("../fonts/Roboto-Regular.woff") format("woff"), url("../fonts/Roboto-Regular.ttf") format("truetype"); }
+
 @font-face {
   font-family: 'Roboto';
   font-style: normal;
   font-weight: 300;
   src: url("../fonts/Roboto-Light.woff2") format("woff2"), url("../fonts/Roboto-Light.woff") format("woff"), url("../fonts/Roboto-Light.ttf") format("truetype"); }
+
 @font-face {
   font-family: 'Roboto';
   font-style: normal;
   font-weight: 500;
   src: url("../fonts/Roboto-Medium.woff2") format("woff2"), url("../fonts/Roboto-Medium.woff") format("woff"), url("../fonts/Roboto-Medium.ttf") format("truetype"); }
+
 @font-face {
   font-family: 'Roboto';
   font-style: normal;
   font-weight: 700;
   src: url("../fonts/Roboto-Bold.woff2") format("woff2"), url("../fonts/Roboto-Bold.woff") format("woff"), url("../fonts/Roboto-Bold.ttf") format("truetype"); }
+
 .material-icons {
   font-family: 'Material Icons';
   font-weight: normal;
@@ -2478,6 +2483,7 @@ body.loading .header .logo {
       background-position: left center;
       animation: logosprite 0.5s steps(15) infinite;
       opacity: 1; }
+
 @keyframes logosprite {
   100% {
     background-position: -990px; } }
