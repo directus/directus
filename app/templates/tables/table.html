@@ -3,7 +3,7 @@
 {{else}}
 {{#if showChart}}<div id="items-chart" class="items-chart"></div>{{/if}}
 <div class="table-scroll-x">
-	<table class="lines {{spacing}} clickable item-listing{{#if fixedHead}} fixed-header{{/if}}{{#unless sortable}} header-sortable reorder-enabled{{/unless}}{{#unless hasSortColumn}} pad-status{{/unless}}"></table> <!-- charted, pad-status -->
+	<table class="lines {{spacing}} clickable item-listing{{#if fixedHead}} fixed-header{{/if}}{{#unless sortable}} header-sortable{{/unless}}{{#unless disabledSorting}} reorder-enabled{{/unless}}{{#unless hasSortColumn}} pad-status{{/unless}}"></table> <!-- charted, pad-status -->
 </div>
 {{/if}}
 <div class="loading-more" style="display: none;">
