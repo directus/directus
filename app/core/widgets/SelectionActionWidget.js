@@ -69,15 +69,12 @@ function(app, Backbone, Handlebars) {
       var success = function (model, resp, options) {
         collection.trigger('visibility');
         collection.trigger('select');
+        options.remove = false;
         collection.trigger('sync', model, resp, options);
       };
 
       var options = {patch: true, validate: false, wait: true, success: success};
-      if (actionCollection.size() === 1) {
-        app.changeItemStatus(actionCollection.first(), value, options);
-      } else {
-        app.changeCollectionStatus(actionCollection, value, options);
-      }
+      app.changeCollectionStatus(actionCollection, value, options);
     },
 
     serialize: function() {
