@@ -39,11 +39,18 @@ function(app, Backbone, _, Sortable, Notification) {
 
     select: function(e) {
       var $target = $(e.target);
+      var $row = $target.closest('tr');
 
       if ($target.attr('checked') !== undefined) {
-        $target.closest('tr').addClass('selected');
+        this.selectedIds.push($row.data('id'));
+        $row.addClass('selected');
       } else {
-        $target.closest('tr').removeClass('selected');
+        var index = this.selectedIds.indexOf($row.data('id'));
+        if (index >= 0) {
+          this.selectedIds.splice(index, 1);
+        }
+
+        $row.removeClass('selected');
       }
     },
 
@@ -91,13 +98,21 @@ function(app, Backbone, _, Sortable, Notification) {
 
       rows = _.map(models, function(model, i) {
         var classes = _.map(rowIdentifiers, function(columnName) { return 'row-'+columnName+'-'+model.get(columnName); });
-        var highlight = _.contains(highlightIds,model.id);
+        var highlight = _.contains(highlightIds, model.id);
+        var selected = _.contains(this.selectedIds, model.id);
         var table = model.table;
         var statusColumnName = table ? table.getStatusColumnName() : app.statusMapping.status_name;
         var statusDraft = model.get(statusColumnName) === app.statusMapping.draft_num;
 
-        return {index: i+1, model: model, classes: classes, highlight: highlight, statusDraft: statusDraft};
-      });
+        return {
+          index: i+1,
+          model: model,
+          classes: classes,
+          highlight: highlight,
+          statusDraft: statusDraft,
+          selected: selected
+        };
+      }, this);
 
       var tableData = {
         columns: this.parentView.getTableColumns(),
@@ -148,6 +163,7 @@ function(app, Backbone, _, Sortable, Notification) {
     initialize: function(options) {
       this.options.filters = this.options.filters || {};
       this.sort = this.options.structure.get('sort') || options.sort;
+      this.selectedIds = [];
 
       var collection = options.system == true ? this.options.systemCollection : this.collection;
       this.listenTo(collection, 'sort', this.render);
