@@ -271,12 +271,11 @@ function(app, _, Backbone, Notification, __t, TableHelpers, ModelHelper, TableHe
 
       if (options.system !== true) {
         this.listenTo(collection, 'sync', this.render);
+        this.listenTo(collection, 'visibility', function() {
+          this.options.columns = this.getTableColumns();
+          this.render();
+        });
       }
-
-      this.listenTo(collection, 'visibility', function() {
-        this.options.columns = this.getTableColumns();
-        this.render();
-      });
 
       this.listenTo(app.router.v.main, 'flashItem', this.flashItem);
 
