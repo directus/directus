@@ -109,7 +109,15 @@ define(['app', 'underscore', 'backbone', 'core/t'], function(app, _, Backbone, _
       if (this.unbindEvents) {
         this.unbindEvents();
       }
+
+      if (_.isFunction(this.onCleanUp)) {
+        this.onCleanUp.apply(this);
+      }
     },
+
+    // before the view element ($el) is removed from the DOM
+    // after all the listeners has been stopped
+    onCleanUp: function () {},
 
     constructor: function (options) {
       this.baseView = options.baseView;
@@ -119,8 +127,6 @@ define(['app', 'underscore', 'backbone', 'core/t'], function(app, _, Backbone, _
       };
 
       Backbone.Layout.prototype.constructor.apply(this, arguments);
-
-      // this.enable();
     }
   });
 });

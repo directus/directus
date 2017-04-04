@@ -319,6 +319,36 @@ define([
         }, this));
       },
 
+      afterRender: function () {
+        if (!this.map) {
+          this.initMap();
+          this.updateMarkers();
+        }
+      },
+
+      fetchData: function () {
+        var deferred = new $.Deferred();
+        var apiKey = app.settings.get('google_api_key');
+        var keyString = '';
+
+        if (apiKey) {
+          keyString = '&key=' + apiKey;
+        }
+
+        g.load('maps', 3, {
+          other_params: 'sensor=false&libraries=places' + keyString,
+          callback: function () {
+            deferred.resolve();
+          }
+        });
+
+        return deferred.promise();
+      },
+
+      onCleanUp: function () {
+        this.map = null;
+      },
+
       initialize: function() {
         this.state = {
           loaded: false,
@@ -326,26 +356,7 @@ define([
           markers: []
         };
 
-        //Include the Google JSAPI for using Maps
-        var apiKey = app.settings.get('google_api_key');
-        var self = this;
-        // var g ;
-        g.load('maps', 3, {
-          other_params: 'sensor=false&libraries=places&key=' + apiKey,
-          callback: function () {
-            self.trigger('library:loaded');
-          }
-        });
-        // require(['https://www.google.com/jsapi'], function() {
-        //   // Load Maps API using provided key, and call initializeMap() when API is loaded
-        //   google.load('maps', '3', { other_params: 'sensor=false&libraries=places&key=' + apiKey, callback: function() {
-        //     self.trigger('library:loaded');
-        //   }});
-        // });
-
-        this.listenTo(this.collection, 'sync', function() {
-          this.updateMarkers();
-        });
+        this.listenTo(this.collection, 'sync', this.updateMarkers);
 
         this.once('library:loaded', function () {
           this.initMap();
