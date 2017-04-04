@@ -23,6 +23,26 @@ define(function(require, exports, module) {
       return options.insideRows === true ? {rows: result} : result;
     },
 
+    map: function () {
+      var args = Array.prototype.slice.call(arguments);
+      var models = this.models;
+
+      // hotfix: take public group out on mapping
+      // we use mapping to iterate over each items
+      // this way public user group can be omitted
+      // @TODO: create a group collection on fetch if the table is directus_groups
+      // allowing to create table-specific filtering
+      if (this.table && this.table.id === 'directus_groups') {
+        models = _.filter(this.models, function (model) {
+          return (model.get('name') || '').toLowerCase() != 'public';
+        });
+      }
+
+      args.unshift(models);
+
+      return _['map'].apply(_, args);
+    },
+
     getColumns: function() {
       var filters = this.getFilters();
       var columns = [];
