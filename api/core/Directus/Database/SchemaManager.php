@@ -72,21 +72,35 @@ class SchemaManager
      * Create a new table
      *
      * @param string $name
+     * @param array $columnsName
      *
      * @return void
      */
-    public function createTable($name)
+    public function createTable($name, $columnsName = [])
     {
         $table = new CreateTable($name);
+        if (!is_array($columnsName)) {
+            $columnsName = [$columnsName];
+        }
 
         // Primary column
         $primaryColumn = new Integer('id');
         $primaryColumn->setOption('autoincrement', true);
         $table->addColumn($primaryColumn);
         $table->addConstraint(new PrimaryKey('id'));
+
         // Status column
-        $statusColumn = new Boolean(STATUS_COLUMN_NAME, false, STATUS_DRAFT_NUM);
-        $table->addColumn($statusColumn);
+        if (in_array('status', $columnsName)) {
+            $statusColumn = new Boolean(STATUS_COLUMN_NAME, false, STATUS_DRAFT_NUM);
+            $table->addColumn($statusColumn);
+        }
+
+        // Sort column
+        if (in_array('sort', $columnsName)) {
+            $sortColumn = new Integer('sort');
+            $sortColumn->setOption('unsigned', true);
+            $table->addColumn($sortColumn);
+        }
 
         $connection = $this->source->getConnection();
         $sql = new Sql($connection);

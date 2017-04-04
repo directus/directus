@@ -193,7 +193,11 @@ define(function(require, exports, module) {
       }, this);
     },
 
-    addTable: function(tableName, callback) {
+    addTableWithSystemColumns: function (tableName, columnsName, fn) {
+      this.addTable(tableName, fn, columnsName);
+    },
+
+    addTable: function(tableName, callback, columnsName) {
       // @todo: set default values in the server side
       var model = new PrivilegeModel({
         group_id: 1,
@@ -204,7 +208,8 @@ define(function(require, exports, module) {
         allow_view:2,
         table_name: tableName,
         nav_listed: 1,
-        addTable: true
+        addTable: true,
+        columnsName: columnsName
       });
       // hotfix: creating/adding a table is done by adding its privileges
       // if addTable is set to true it creates the table

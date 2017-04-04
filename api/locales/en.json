@@ -388,6 +388,7 @@
     "edit_column_title": "Editing Column",
     "this_column_will_be_saved_as_x": "This column will be saved as \"%{column_name}\"",
     "this_table_was_saved_as_x": "This table was saved as %{table_name}",
+    "table_x_was_created": "Table [%{table_name}] was created",
     "unable_to_find_column_x": "Unable to find the column [%{column}]",
     "unable_to_find_column_x_options_for_x": "Unable to find the column [%{column}] UI options for [%{ui}]",
     "unable_to_remove_column_x": "Unable to remove the column [%{column}]",
