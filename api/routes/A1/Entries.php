@@ -46,41 +46,60 @@ class Entries extends Route
         $requestPayload = $this->app->request()->post();
         $params = $this->app->request()->get();
         $rows = array_key_exists('rows', $requestPayload) ? $requestPayload['rows'] : false;
+        $isDelete = $this->app->request()->isDelete();
+        $deleted = false;
+
         if (!is_array($rows) || count($rows) <= 0) {
             throw new \Exception(__t('rows_no_specified'));
         }
 
-        $TableGateway = new TableGateway($table, $ZendDb, $acl);
+        $rowIds = [];
+        $tableGateway = new TableGateway($table, $ZendDb, $acl);
+        $primaryKeyFieldName = $tableGateway->primaryKeyFieldName;
+
         // hotfix add entries by bulk
         if ($this->app->request()->isPost()) {
             $entriesService = new EntriesService($this->app);
             foreach($rows as $row) {
+                $rowIds[] = $row[$primaryKeyFieldName];
                 $entriesService->createEntry($table, $row, $params);
             }
         } else {
-            $primaryKeyFieldName = $TableGateway->primaryKeyFieldName;
-
-            $rowIds = [];
             foreach ($rows as $row) {
                 if (!array_key_exists($primaryKeyFieldName, $row)) {
                     throw new \Exception(__t('row_without_primary_key_field'));
                 }
+
                 array_push($rowIds, $row[$primaryKeyFieldName]);
             }
 
             $where = new \Zend\Db\Sql\Where;
 
-            if ($this->app->request()->isDelete()) {
-                $TableGateway->delete($where->in($primaryKeyFieldName, $rowIds));
+            if ($isDelete) {
+                $deleted = $tableGateway->delete($where->in($primaryKeyFieldName, $rowIds));
             } else {
                 foreach ($rows as $row) {
-                    $TableGateway->updateCollection($row);
+                    $tableGateway->updateCollection($row);
                 }
             }
         }
 
-        $entries = $TableGateway->getEntries($params);
-        return $this->app->response($entries);
+        $params['filters'] = [
+            $primaryKeyFieldName => ['in' => $rowIds]
+        ];
+
+        $entries = $tableGateway->getEntries($params);
+
+        if ($isDelete) {
+            $response = [
+                'meta' => ['table' => $tableGateway->getTable(), 'ids' => $rowIds],
+                'data' => ['success' => !! $deleted]
+            ];
+        } else {
+            $response = $entries;
+        }
+
+        return $this->app->response($response);
     }
 
     public function typeAhead($table, $query = null)
