@@ -2,14 +2,21 @@
 
 namespace Directus\View;
 
+use Directus\Application\Application;
 use Directus\Database\Exception\CustomUiValidationError;
 use Directus\Database\Exception\DuplicateEntryException;
 use Directus\Database\Exception\RelationshipMetadataException;
+use Directus\Exception\HttpException;
 use Directus\Permissions\Exception\AclException;
+use Directus\Util\ArrayUtils;
 
 class ExceptionView
 {
 
+    /**
+     * @param Application $app
+     * @param \Exception $exception
+     */
     public static function exceptionHandler($app, $exception)
     {
 
@@ -17,20 +24,27 @@ class ExceptionView
         $response->header('Content-type', 'application/json');
 
         $httpCode = 500;
-        $data = [];
+        $data = [
+            'success' => false
+        ];
+
+        // set default exception
+        ArrayUtils::set($data, 'error.message', $exception->getMessage());
 
         /**
          * Directus\Permissions\Exception\AclException & subclasses
          */
         if ($exception instanceof AclException || is_subclass_of($exception, 'Directus\Permissions\Exception\AclException')) {
             $httpCode = 403;
-            $data = ['message' => $exception->getMessage()];
         } /**
          * Directus\Database\Exception\RelationshipMetadataException
          */
         elseif ($exception instanceof RelationshipMetadataException) {
             $httpCode = 424;
-            $data = ['message' => $exception->getMessage()];
+        } elseif ($exception instanceof HttpException) {
+            if ($exception->getStatus()) {
+                $httpCode = $exception->getStatus();
+            }
         }
 
         /**
@@ -46,26 +60,22 @@ class ExceptionView
          */
         elseif ($exception instanceof CustomUiValidationError) {
             $httpCode = 422;
-            $data = ['message' => $exception->getMessage()];
         } /**
          * Directus\Database\Exception\DuplicateEntryException
          */
         elseif ($exception instanceof DuplicateEntryException) {
             $httpCode = 409;
-            $data = ['error' => ['message' => $exception->getMessage()]];
         } // @todo log error nonetheless
         else {
-            $data = ['message' => 'Internal Server Error'];
             if ('production' !== DIRECTUS_ENV) {
-                $data = [
+                $data = array_merge($data, [
                     'code' => $exception->getCode(),
                     'class' => get_class($exception),
-                    'message' => $exception->getMessage(),
                     'file' => $exception->getFile(),
                     'line' => $exception->getLine(),
                     'trace' => $exception->getTrace(),
                     'traceAsString' => $exception->getTraceAsString(),
-                ];
+                ]);
             }
         }
 

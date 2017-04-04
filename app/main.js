@@ -448,17 +448,41 @@ require(["config", 'polyfills'], function() {
       });
 
       // Capture sync errors...
-      $(document).ajaxError(function(e, xhr, settings) {
+      $(document).ajaxError(function (e, xhr, settings) {
         if (settings.errorPropagation === false) {
           return;
         }
 
-        var type, messageTitle, messageBody, details;
-        if (xhr.statusText === "abort") {
+        var type;
+        var isJSON;
+        var messageTitle;
+        var messageBody;
+        var error;
+        var details;
+
+        if (xhr.statusText === 'abort') {
           return;
         }
 
-        messageBody = xhr.responseJSON || xhr.responseText;
+        isJSON = !!xhr.responseJSON;
+        messageBody = isJSON ? xhr.responseJSON : xhr.responseText;
+        error = {
+          message: __t('unknown')
+        };
+
+        if (isJSON) {
+          error = messageBody.error;
+        }
+
+        if (!isJSON && _.isString(messageBody)) {
+          try {
+            messageBody = JSON.parse(messageBody);
+            error = messageBody.error;
+          } catch (e) {
+            // do nothing
+            messageBody = null;
+          }
+        }
 
         switch (xhr.status) {
           case 404:
@@ -466,9 +490,7 @@ require(["config", 'polyfills'], function() {
             messageBody = __t('x_not_found', {what: 'URL'}) + '<br>' + settings.url;
             break;
           case 403:
-            // var response = $.parseJSON(xhr.responseText);
             messageTitle = __t('restricted_access');
-            // messageBody = "You don't have permission to access this table. Please send this to IT:<br>\n\n" + xhr.responseText;
             details = true;
             break;
           case 413:
@@ -483,24 +505,11 @@ require(["config", 'polyfills'], function() {
             messageTitle = __t('server_error');
             details = encodeURIComponent(xhr.responseText);
 
-            if (_.isString(messageBody)) {
-              try {
-                messageBody = JSON.parse(messageBody);
-              } catch (e) {
-                // do nothing
-              }
-            }
-
-            if (messageBody.message) {
-              messageBody = messageBody.message;
-              details = false;
-            }
-
             // app.logErrorToServer(type, messageTitle, details);
             break;
         }
 
-        app.trigger('alert:error', messageTitle, messageBody, details)
+        app.trigger('alert:error', messageTitle, error.message, details)
       });
 
       // And js errors...
