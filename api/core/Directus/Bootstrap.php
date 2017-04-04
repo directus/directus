@@ -21,6 +21,7 @@ use Directus\Database\TableGateway\DirectusUsersTableGateway;
 use Directus\Database\TableGateway\RelationalTableGateway;
 use Directus\Database\TableSchema;
 use Directus\Embed\EmbedManager;
+use Directus\Exception\ForbiddenException;
 use Directus\Filesystem\Filesystem;
 use Directus\Filesystem\FilesystemFactory;
 use Directus\Hook\Emitter;
@@ -797,6 +798,37 @@ class Bootstrap
         };
         $emitter->addFilter('table.insert.directus_users:before', $hashUserPassword);
         $emitter->addFilter('table.update.directus_users:before', $hashUserPassword);
+
+        $preventUsePublicGroup = function ($payload) {
+            $data = $payload->data;
+
+            if (!ArrayUtils::has($data, 'group')) {
+                return $payload;
+            }
+
+            $groupId = ArrayUtils::get($data, 'group');
+            if (is_array($groupId)) {
+                $groupId = ArrayUtils::get($groupId, 'id');
+            }
+
+            if (!$groupId) {
+                return $payload;
+            }
+
+            $zendDb = static::get('zendDb');
+            $acl = static::get('acl');
+            $tableGateway = new Database\TableGateway\BaseTableGateway('directus_groups', $zendDb, $acl);
+
+            $row = $tableGateway->select(['id' => $groupId])->current();
+
+            if (strtolower($row->name) == 'public') {
+                throw new ForbiddenException(__t('exception_users_cannot_be_added_into_public_group'));
+            }
+
+            return $payload;
+        };
+        $emitter->addFilter('table.insert.directus_users:before', $preventUsePublicGroup);
+        $emitter->addFilter('table.update.directus_users:before', $preventUsePublicGroup);
 
         $emitter->addFilter('load.relational.onetomany', function($payload) {
             $rows = $payload->data;

@@ -459,6 +459,8 @@
     "not_found": "Not found",
     "x_not_found": "%{what} not found",
 
+    "exception_users_cannot_be_added_into_public_group": "Users can't be added into Public Group",
+
     "version_outdated_title": "Directus Update Available",
     "version_outdated_text_x": "The latest stable release is v%{current_version}<br>You are currently running v%{installed_version}",
 
