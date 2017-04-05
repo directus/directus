@@ -26,6 +26,10 @@ define([
         CHART: '#items-chart'
       },
 
+      defaultOptions: {
+        spacing: 'cozy'
+      },
+
       afterRender: function () {
         View.prototype.afterRender.apply(this, arguments);
 

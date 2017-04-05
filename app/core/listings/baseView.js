@@ -1,5 +1,9 @@
 define(['app', 'underscore', 'backbone', 'core/t'], function(app, _, Backbone, __t) {
   return Backbone.Layout.extend({
+
+    // default view options
+    defaultOptions: {},
+
     optionsStructure: function () {},
 
     getAllViewOptions: function (viewId) {
@@ -20,7 +24,7 @@ define(['app', 'underscore', 'backbone', 'core/t'], function(app, _, Backbone, _
         viewOptions = viewOptions[viewId] || {};
       }
 
-      return viewOptions;
+      return _.defaults(this.defaultOptions || {}, viewOptions);
     },
 
     getViewOptions: function (attr) {
