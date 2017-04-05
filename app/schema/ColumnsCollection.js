@@ -48,10 +48,19 @@ define(function(require, exports, module) {
       return Backbone.sync('update', this, options);
     },
 
+    bindEvents: function () {
+      this.on('add', this._onAdd, this);
+    },
+
+    _onAdd: function (model, collection) {
+      model.table = collection.table;
+    },
+
     constructor: function (models, options) {
       Backbone.Collection.prototype.constructor.apply(this, arguments);
 
       _.extend(this, _.pick(options, columnsOptions));
+      this.bindEvents();
     }
 
   });
