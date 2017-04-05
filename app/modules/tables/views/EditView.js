@@ -71,7 +71,7 @@ function(app, Backbone, _, Handlebars, __t, Notification, Directus, BasePageView
 
   return BasePageView.extend({
     events: {
-      'change select': 'checkDiff',
+      'change select, input[type=checkbox], input[type=radio]': 'checkDiff',
       'keyup input, textarea': 'checkDiff',
       'submit': function (e) {
         // prevent user submit the form using Enter key
