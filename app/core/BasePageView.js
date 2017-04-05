@@ -89,7 +89,9 @@ function(app, Backbone, _, BaseHeaderView, RightSidebarView) {
 
       if (pane) {
         pane.toggle();
-        this.trigger('rightPane:toggle', this);
+        setTimeout(_.bind(function () {
+          this.trigger('rightPane:toggle', this);
+        }, this), 200);
       }
     },
 

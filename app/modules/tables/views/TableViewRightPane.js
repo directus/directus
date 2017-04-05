@@ -23,7 +23,7 @@ define([
       'click .js-comments-count': 'toggleCommentsCount',
       'click .js-revisions-count': 'toggleRevisionsCount',
       'click .js-show-footer': 'toggleFooter',
-      'click .js-close': 'close'
+      'click .js-close': 'onClose'
     },
 
     changeView: function(event) {
@@ -93,6 +93,11 @@ define([
       var checked = $(event.currentTarget).is(':checked');
 
       this.baseView.trigger('rightPane:input:change', 'show_footer', checked);
+    },
+
+    onClose: function () {
+      this.close();
+      this.baseView.trigger('rightPane:toggle', this.baseView);
     },
 
     beforeRender: function() {
