@@ -187,7 +187,6 @@ class DirectusActivityTableGateway extends RelationalTableGateway
 
         $select->columns([
             'row_id',
-            'action',
             'user',
             'datetime' => new Expression('MAX(datetime)')
         ]);
@@ -195,15 +194,12 @@ class DirectusActivityTableGateway extends RelationalTableGateway
         $select->where([
             'table_name' => $table,
             'type' => 'ENTRY',
-            'action' => 'UPDATE',
+            new In('action', ['UPDATE', 'ADD']),
             new In('row_id', $ids)
         ]);
 
-        $select->group([
-            'row_id',
-            'action',
-            'user'
-        ]);
+        $select->group(['row_id', 'user']);
+        $select->order(['datetime' => 'DESC']);
 
         $statement = $this->sql->prepareStatementForSqlObject($select);
         $result = iterator_to_array($statement->execute());
