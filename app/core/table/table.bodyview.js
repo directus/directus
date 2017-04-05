@@ -24,15 +24,13 @@ function(app, Backbone, _, Sortable, Notification) {
       'click td.js-check > input': function() {
         this.collection.trigger('select');
       },
-      'click .js-sort': function(e) {
-        e.cancelBubble = true;
-        e.stopPropagation();
-        e.preventDefault();
-        return false;
+      'click .js-sort': function (event) {
+        event.stopPropagation();
+        event.preventDefault();
       },
-      'mousedown .sort': function(e) {
-        if($(e.target).closest('.disable-sorting').length > 0){
-          Notification.info('Sorting Disabled', '<i>Click the reordering icon to enable</i>', {timeout: 4000});
+      'mousedown .js-sort': function (event) {
+        if (!this.parentView.sortable) {
+          Notification.info('Sorting Disabled', '<i>Click the icon in the header above to enable sorting</i>', {timeout: 4000});
         }
       }
     },
