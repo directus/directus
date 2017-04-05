@@ -1874,7 +1874,7 @@ table {
         text-align: right;
         white-space: nowrap;
         width: 1px;
-        min-width: auto; }
+        min-width: 38px; }
         table tbody tr td.status-badges .status-badge {
           -webkit-border-radius: 2px;
           -moz-border-radius: 2px;
