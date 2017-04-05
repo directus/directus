@@ -97,7 +97,9 @@ define([
 
     onClose: function () {
       this.close();
-      this.baseView.trigger('rightPane:toggle', this.baseView);
+      setTimeout(_.bind(function () {
+        this.trigger('rightPane:toggle', this);
+      }, this.baseView), 200);
     },
 
     beforeRender: function() {
