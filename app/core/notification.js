@@ -1,4 +1,4 @@
-define(['app', 'backbone', 'utils', 'noty', 'noty_theme'], function(app, Backbone, Utils) {
+define(['app', 'underscore', 'backbone', 'utils', 'noty', 'noty_theme'], function (app, _, Backbone, Utils) {
   'use strict';
 
   var defaultOptions = {
@@ -10,13 +10,13 @@ define(['app', 'backbone', 'utils', 'noty', 'noty_theme'], function(app, Backbon
     // if options is a number
     // it means is the delay time (in milliseconds)
     // until the notification close
-    if (!isNaN(parseInt(options)) && isFinite(options)) {
+    if (_.isBoolean(options) || !isNaN(parseInt(options)) && isFinite(options)) {
       options = {
         timeout: options
       };
     }
 
-    options = _.extend(defaultOptions, options || (options = {}));
+    options = _.extend(defaultOptions, options || {});
 
     if (typeof type === 'string') {
       options.type = type.toLowerCase();
@@ -52,6 +52,10 @@ define(['app', 'backbone', 'utils', 'noty', 'noty_theme'], function(app, Backbon
 
   function showError(options) {
     var args = addTypeArgument(arguments, 'Error');
+
+    // all errors notification are sticky
+    args[3] = false;
+
     return createNotification.apply(this, args);
   }
 
