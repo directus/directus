@@ -56,7 +56,7 @@ function(app, Backbone, _, Sortable, Notification) {
       var rowIdentifiers, statusState, models, rows;
       var statusColumns = this.collection.getFilter('status') || '1,2';
       var highlightIds = this.options.highlight || [];
-      var collection = this.options.system === true ? this.options.systemCollection : this.collection;
+      var collection = this.parentView.getTableCollection();
 
       rowIdentifiers = this.options.rowIdentifiers;
 

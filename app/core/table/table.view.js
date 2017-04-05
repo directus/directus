@@ -212,6 +212,10 @@ function(app, _, Backbone, Notification, __t, TableHelpers, ModelHelper, TableHe
       return columns;
     },
 
+    getTableCollection: function () {
+      return this.options.system === true ? this.options.systemCollection : this.collection;
+    },
+
     toggleSortable: function() {
       if (this.sortableWidget.options.sort) {
         this.disableSortable();
@@ -276,6 +280,8 @@ function(app, _, Backbone, Notification, __t, TableHelpers, ModelHelper, TableHe
           this.render();
         });
       }
+
+      this.on('render', this.render);
 
       this.listenTo(app.router.v.main, 'flashItem', this.flashItem);
 
@@ -350,6 +356,9 @@ function(app, _, Backbone, Notification, __t, TableHelpers, ModelHelper, TableHe
         var method = options.reset ? 'reset' : 'set';
         options.parse = true;
         this.options.systemCollection[method](resp, options);
+
+        // force render the table again
+        this.trigger('render');
       });
     },
 
