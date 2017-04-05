@@ -121,6 +121,7 @@ define(function(require, exports, module) {
     },
 
     constructor: function (attributes, options) {
+      options = options || {};
       Backbone.Model.prototype.constructor.apply(this, arguments);
 
       _.extend(this, _.pick(options, columnOptions));
