@@ -37,7 +37,7 @@ function(app, Backbone, Widgets, moment) {
           cid: model.cid,
           title: title,
           title_short: (title.length > 35)? title.substr(0,32) + "..." : title,
-          date_uploaded: moment(model.get('date_uploaded')).fromNow(),
+          date_uploaded: model.get('date_uploaded'),
           size: model.get('size'),
           type: (model.has('type')) ? model.get('type').split('/').pop() : '',
           dimensions: model.get('width') + "×" + model.get('height')
