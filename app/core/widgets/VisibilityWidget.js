@@ -83,7 +83,7 @@ function(app, _, Backbone, Handlebars, PreferenceModel) {
       // sel.width( this.$el.find('#template').width() * 1.03 + 10 ); // +10 is for arrow on right
     },
     initialize: function() {
-      var table = this.collection.table.id;
+      var table = this.collection.table;
 
       this.basePage = this.options.basePage;
 

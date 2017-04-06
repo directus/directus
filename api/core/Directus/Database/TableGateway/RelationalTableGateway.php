@@ -1540,10 +1540,13 @@ class RelationalTableGateway extends BaseTableGateway
             return ['total_entries' => $this->countTotal()];
         }
 
+        $statusColumnName = $tableSchema->getStatusColumn() ?:  STATUS_COLUMN_NAME;
+
         $select = new Select($this->getTable());
         $select
-            ->columns([STATUS_COLUMN_NAME, 'quantity' => new Expression('COUNT(*)')])
-            ->group(STATUS_COLUMN_NAME);
+            ->columns([$statusColumnName, 'quantity' => new Expression('COUNT(*)')])
+            ->group($statusColumnName);
+
         $sql = new Sql($this->adapter, $this->table);
         $statement = $sql->prepareStatementForSqlObject($select);
         $results = $statement->execute();
@@ -1551,9 +1554,13 @@ class RelationalTableGateway extends BaseTableGateway
         $statusMap = TableSchema::getStatusMap($this->getTable());
         $stats = [];
         foreach ($results as $row) {
-            if (isset($row[STATUS_COLUMN_NAME])) {
-                $statSlug = $statusMap[$row[STATUS_COLUMN_NAME]];
-                $stats[$statSlug['name']] = (int) $row['quantity'];
+            if (isset($row[$statusColumnName])) {
+                foreach ($statusMap as $status) {
+                    if ($status['id'] == $row[$statusColumnName]) {
+                        $statSlug = $statusMap[$row[$statusColumnName]];
+                        $stats[$statSlug['name']] = (int) $row['quantity'];
+                    }
+                }
             }
         }
 

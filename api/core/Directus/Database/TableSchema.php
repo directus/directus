@@ -147,11 +147,18 @@ class TableSchema
         $tableObject = static::getTableSchema($tableName);
         $statusMapping = json_decode($tableObject->getStatusMapping(), true);
 
-        if ($statusMapping) {
-            return $statusMapping;
+        if (!$statusMapping) {
+            $statusMapping = isset(static::$config['statusMapping']) ? static::$config['statusMapping'] : null;
         }
 
-        return isset(static::$config['statusMapping']) ? static::$config['statusMapping'] : null;
+        if ($statusMapping) {
+            array_walk($statusMapping, function (&$status, $key) {
+                $status['id'] = $key;
+                return $status;
+            });
+        }
+
+        return $statusMapping;
     }
 
     /**
