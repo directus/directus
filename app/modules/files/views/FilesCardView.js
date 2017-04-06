@@ -28,12 +28,12 @@ function(app, Backbone, Widgets, moment) {
     template: 'modules/files/card-view',
 
     serialize: function() {
-      var rows = this.collection.map(function(model) {
-        var statusValue = model.get(app.statusMapping.status_name);
+      var rows = this.collection.map(function (model) {
+        var statusValue = model.getStatusColumnName();//model.get(app.statusMapping.status_name);
         var title = model.get('title') || '';
         var data = {
           id: model.get('id'),
-          inactive: (statusValue !== app.statusMapping.active_num),
+          inactive: (statusValue !== model.table.getStatusDefaultValue()), //app.statusMapping.active_num),
           cid: model.cid,
           title: title,
           title_short: (title.length > 35)? title.substr(0,32) + "..." : title,

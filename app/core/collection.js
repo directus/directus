@@ -1,10 +1,11 @@
 define([
   'app',
   'backbone',
+  'helpers/status',
   'underscore'
 ],
 
-function(app, Backbone, _) {
+function(app, Backbone, StatusHelper, _) {
 
   'use strict';
 
@@ -46,7 +47,8 @@ function(app, Backbone, _) {
       var collectionCount = this.length;
 
       // There is no active column. Use total
-      if (!this.table.columns.get(app.statusMapping.status_name)) {
+      // if (!this.table.columns.get(app.statusMapping.status_name)) {
+      if (!this.table.hasStatusColumn()) {
         return Math.max(this.table.get('total'), collectionCount);
       }
 
@@ -54,8 +56,9 @@ function(app, Backbone, _) {
       totalCount = 0;
 
       visibleStates.forEach(function (state) {
-        if (state in app.statusMapping.mapping && this.table.has(app.statusMapping.mapping[state].name)) {
-          totalCount += this.table.get(app.statusMapping.mapping[state].name);
+        var status = StatusHelper.getStatus(this.table.id, state);
+        if (status) {
+          totalCount += this.table.get(status.get('name'));
         }
       }, this);
 

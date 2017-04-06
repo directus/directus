@@ -14,7 +14,7 @@ define([
 
     beforeRender: function() {
       var table = this.model.table;
-      var statusColumnName = table ? table.getStatusColumnName() : app.statusMapping.status_name;
+      var statusColumnName = table ? table.getStatusColumnName() : app.statusMapping.get('*').get('status_name');
 
       this.baseView.rightSidebarView.$el.addClass('scroll-y wide no-title');
 

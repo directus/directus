@@ -21,28 +21,31 @@ function(app, _, Backbone, Directus, BasePageView, __t, Widgets) {
       }
     },
 
-    saveConfirm: function(e) {
-      var data = this.editView.data();
-      var that = this;
-      if(data[app.statusMapping.status_name] && data[app.statusMapping.status_name] === app.statusMapping.deleted_num) {
-        app.router.openModal({type: 'confirm', text: __t('confirm_delete_item'), callback: function() {
-          that.save(e);
-        }});
-      } else {
-        this.save(e);
-      }
+    saveConfirm: function (event) {
+      // var data = this.editView.data();
+      // var self = this;
+      // if (data[app.statusMapping.status_name] && data[app.statusMapping.status_name] === app.statusMapping.deleted_num) {
+      //   app.router.openModal({type: 'confirm', text: __t('confirm_delete_item'), callback: function() {
+      //     self.save(event);
+      //   }});
+      // } else {
+      //   this.save(event);
+      // }
+
+      this.save(event);
     },
 
-    save: function(e) {
+    save: function (event) {
       var action = 'save-form-leave';
-      if(e.target.options !== undefined) {
-        action = $(e.target.options[e.target.selectedIndex]).val();
-      }
       var data =  $('form').serializeObject();
       var model = this.model;
       var isNew = this.model.isNew();
       var collection = this.model.collection;
       var success;
+
+      if (event.target.options !== undefined) {
+        action = $(event.target.options[event.target.selectedIndex]).val();
+      }
 
       if (action === 'save-form-stay') {
         success = function(model, response, options) {

@@ -5,7 +5,7 @@ define(function(require, exports, module) {
   var app = require('app');
   module.exports = {
     getFiles: function() {
-      var statusName = app.statusMapping.status_name;
+      // var statusName = app.statusMapping.get('directus_files').get('status_name');
       return {
         "id":"directus_files",
         "table_name":"directus_files",
@@ -44,8 +44,8 @@ define(function(require, exports, module) {
             "hidden":true
           },
           {
-            "id": statusName,
-            "column_name":statusName,
+            "id": "active",
+            "column_name": "active",
             "type":"TINYINT",
             "is_nullable":"YES",
             "default_value":"1",

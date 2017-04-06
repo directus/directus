@@ -69,8 +69,7 @@ define(function(require, exports, module) {
    * @private
    * Holds all Sytem fields and mapped UI
    */
-  var system_fields = {
-  };
+  // var system_fields = {};
 
   var castType = function(type, value) {
     if (typeof value === 'undefined') {
@@ -93,7 +92,7 @@ define(function(require, exports, module) {
     setup: function() {
       //Register default UI's
       this.register(defaultUis);
-      system_fields[app.statusMapping.status_name] = {'ui':'system'};
+      // system_fields[app.statusMapping.status_name] = {'ui':'system'};
     },
 
     // Get reference to external UI file
@@ -123,9 +122,9 @@ define(function(require, exports, module) {
       }
       var uiId = schema.get('ui');
 
-      if(system_fields[attr] !== undefined) {
-        uiId = system_fields[attr].ui;
-      }
+      // if(system_fields[attr] !== undefined) {
+      //   uiId = system_fields[attr].ui;
+      // }
 
       var UI = this._getUI(uiId);
       this.parseDefaultValue(UI, model, schema.options);

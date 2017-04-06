@@ -192,33 +192,33 @@ define(function(require, exports, module) {
 
   // TODO: Move to a Directus backbone model
   // change status or delete item
-  app.changeItemStatus = function(model, value, options) {
-    var hasStatusColumn = model.has(app.statusMapping.status_name);
-    var goingToDelete = value == app.statusMapping.deleted_num;
+  // app.changeItemStatus = function(model, value, options) {
+  //   var hasStatusColumn = model.has(app.statusMapping.status_name);
+  //   var goingToDelete = value == app.statusMapping.deleted_num;
+  //
+  //   if (goingToDelete && !hasStatusColumn) {
+  //     // https://github.com/RNGR/Directus/issues/960
+  //     // Pass {wait: true} if you'd like to wait for the server to respond
+  //     // before removing the model from the collection.
+  //     model.destroy(options);
+  //   } else {
+  //     var attributes = {};
+  //     attributes[app.statusMapping.status_name] = value;
+  //     model.save(attributes, options);
+  //   }
+  // };
 
-    if (goingToDelete && !hasStatusColumn) {
-      // https://github.com/RNGR/Directus/issues/960
-      // Pass {wait: true} if you'd like to wait for the server to respond
-      // before removing the model from the collection.
-      model.destroy(options);
-    } else {
-      var attributes = {};
-      attributes[app.statusMapping.status_name] = value;
-      model.save(attributes, options);
-    }
-  };
-
-  app.changeCollectionStatus = function(collection, value, options) {
-    var model = collection.at(0);
-    var hasStatusColumn = model.has(app.statusMapping.status_name);
-    var goingToDelete = value == app.statusMapping.deleted_num;
-
-    if (goingToDelete && !hasStatusColumn) {
-      collection.destroyAll(options);
-    } else {
-      collection.saveAll(options);
-    }
-  };
+  // app.changeCollectionStatus = function(collection, value, options) {
+  //   var model = collection.at(0);
+  //   var hasStatusColumn = model.has(app.statusMapping.status_name);
+  //   var goingToDelete = value == app.statusMapping.deleted_num;
+  //
+  //   if (goingToDelete && !hasStatusColumn) {
+  //     collection.destroyAll(options);
+  //   } else {
+  //     collection.saveAll(options);
+  //   }
+  // };
 
   // check if string has this format "D, d M Y H:i:s"
   app.isStringADate = function(date) {

@@ -175,20 +175,21 @@ function(app, _, Backbone, Notification, __t, TableHelpers, ModelHelper, TableHe
 
       // Since data transfer is not supported by jquery...
       // XHR2, FormData
-      this.el.ondrop = _.bind(function(e) {
-        e.stopPropagation();
-        e.preventDefault();
+      this.el.ondrop = _.bind(function (event) {
+        event.stopPropagation();
+        event.preventDefault();
 
-        app.sendFiles(e.dataTransfer.files, function(data) {
-          _.each(data, function(item) {
+        app.sendFiles(event.dataTransfer.files, function (data) {
+          _.each(data, function (item) {
+            var table = app.schemaManager.getTable('directus_users');
             item.user = app.users.getCurrentUser().id;
-            item[app.statusMapping.status_name] = app.statusMapping.active_num;
+            item[table.getStatusColumnName()] = table.getStatusDefaultValue();
+            // item[app.statusMapping.status_name] = app.statusMapping.active_num;
 
             if (saveAfterDrop) {
               //@todo: update collection status count
               collection.create(item);
             } else {
-              console.log('ADD');
               collection.add(item, {nest: true, parse: true});
             }
           });
@@ -266,7 +267,7 @@ function(app, _, Backbone, Notification, __t, TableHelpers, ModelHelper, TableHe
       var collection = this.collection;
       var table = collection.table;
       var sortColumnName = table ? table.getSortColumnName() : 'sort';
-      var statusColumnName = table ? table.getStatusColumnName() : app.statusMapping.status_name;
+      var statusColumnName = table ? table.getStatusColumnName() : app.statusMapping.get('*').get('status_name');
 
       options = _.extend({
         fixedHead: false,

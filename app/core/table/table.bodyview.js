@@ -53,23 +53,23 @@ function(app, Backbone, _, Sortable, Notification) {
     },
 
     serialize: function() {
-      var rowIdentifiers, statusState, models, rows;
-      var statusColumns = this.collection.getFilter('status') || '1,2';
+      var rowIdentifiers, models, rows;
+      var table = this.collection.table;
+      var statusValues = this.collection.getFilter('status') || table.getStatusVisibleValues().join(',');
       var highlightIds = this.options.highlight || [];
       var collection = this.parentView.getTableCollection();
 
       rowIdentifiers = this.options.rowIdentifiers;
 
-      //Filter active/inactive/deleted items
-      statusState = _.map(statusColumns,Number);
-      models = collection.filter(function(model) {
-        if (model.has(app.statusMapping.status_name)) {
-          return (_.indexOf(statusState, Number(model.get(app.statusMapping.status_name))) > -1);
+      // Filter active/inactive/deleted items
+      statusValues = _.map(statusValues, Number);
+      models = collection.filter(function (model) {
+        if (model.has(model.table.getStatusColumnName())) {
+          return _.indexOf(statusValues, model.getStatusValue()) > -1;
         } else {
           return true;
         }
       });
-
 
       //Evaluate filter object
       var expressions = this.options.filters.expressions;
@@ -94,7 +94,7 @@ function(app, Backbone, _, Sortable, Notification) {
         });
       }
 
-      rows = _.map(models, function(model, i) {
+      rows = _.map(models, function (model, i) {
         var classes = _.map(rowIdentifiers, function(columnName) { return 'row-'+columnName+'-'+model.get(columnName); });
         var highlight = _.contains(highlightIds, model.id);
         var selected = _.contains(this.selectedIds, model.id);

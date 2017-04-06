@@ -1548,7 +1548,7 @@ class RelationalTableGateway extends BaseTableGateway
         $statement = $sql->prepareStatementForSqlObject($select);
         $results = $statement->execute();
 
-        $statusMap = TableSchema::getStatusMap();
+        $statusMap = TableSchema::getStatusMap($this->getTable());
         $stats = [];
         foreach ($results as $row) {
             if (isset($row[STATUS_COLUMN_NAME])) {

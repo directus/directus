@@ -94,6 +94,98 @@ define([
         return marker;
       },
 
+      mapInit: function () {
+        var mapOptions = {
+          zoom: 14,
+          center: new google.maps.LatLng(40.720, -73.953),
+          styles: [{"featureType":"administrative","elementType":"labels.text.fill","stylers":[{"color":"#444444"}]},{"featureType":"landscape","elementType":"all","stylers":[{"color":"#f2f2f2"}]},{"featureType":"poi","elementType":"all","stylers":[{"visibility":"off"}]},{"featureType":"poi","elementType":"labels.text","stylers":[{"visibility":"off"}]},{"featureType":"road","elementType":"all","stylers":[{"saturation":-100},{"lightness":45}]},{"featureType":"road.highway","elementType":"all","stylers":[{"visibility":"simplified"}]},{"featureType":"road.arterial","elementType":"labels.icon","stylers":[{"visibility":"off"}]},{"featureType":"transit","elementType":"all","stylers":[{"visibility":"off"}]},{"featureType":"water","elementType":"all","stylers":[{"color":"#dbdbdb"},{"visibility":"on"}]}]
+        };
+
+        var mapElement = $('.map')[0];
+        map = new google.maps.Map(mapElement, mapOptions);
+        var marker = new google.maps.Marker({
+          position: new google.maps.LatLng(40.720, -73.953),
+          map: map,
+          draggable: true,
+          title: 'Select a Location',
+          icon: this.pinSymbol("#3498DB")
+        });
+
+        var input = (document.getElementById('map-search'));
+        map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+
+        var autocomplete = new google.maps.places.Autocomplete(input);
+        autocomplete.bindTo('bounds', map);
+
+        // var infowindow = new google.maps.InfoWindow();
+
+        autocomplete.addListener('place_changed', function(event) {
+          // infowindow.close();
+          marker.setVisible(false);
+          var place = autocomplete.getPlace();
+          if (!place.geometry) {
+            // User entered the name of a Place that was not suggested and
+            // pressed the Enter key, or the Place Details request failed.
+            window.alert("Please select a result from the menu below.");
+            return;
+          }
+
+          // If the place has a geometry, then present it on a map.
+          if (place.geometry.viewport) {
+            map.fitBounds(place.geometry.viewport);
+          } else {
+            map.setCenter(place.geometry.location);
+            map.setZoom(17);
+          }
+
+          marker.setPosition(place.geometry.location);
+          marker.setVisible(true);
+
+          var address = '';
+          if (place.address_components) {
+            address = [
+              (place.address_components[0] && place.address_components[0].short_name || ''),
+              (place.address_components[1] && place.address_components[1].short_name || ''),
+              (place.address_components[2] && place.address_components[2].short_name || '')
+            ].join(' ');
+          }
+
+          $('.lat-long').html('Latitude: ' + place.geometry.location.lat().toFixed(3) + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Longitude: ' + place.geometry.location.lng().toFixed(3) + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(' + place.name + ')'); // address
+
+        });
+
+        //////////////////////////////////////////////////////////////////////////////
+
+        google.maps.event.addListener(marker, "dragstart", function (event) {
+          marker.setAnimation(3); // Raise
+          $('#map-search').val('');
+        });
+
+        google.maps.event.addListener(marker, "drag", function (event) {
+          $('.lat-long').html('Latitude: '+ event.latLng.lat().toFixed(3) +'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Longitude: '+ event.latLng.lng().toFixed(3));
+        });
+
+        google.maps.event.addListener(marker, "dragend", function (event) {
+          marker.setAnimation(4); // Bounce
+          $('.lat-long').html('Latitude: '+ event.latLng.lat().toFixed(3) +'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Longitude: '+ event.latLng.lng().toFixed(3));
+        });
+
+        map.setOptions({
+          draggable: true,
+          zoomControl: true,
+          scrollwheel: false,
+          disableDoubleClickZoom: true,
+          streetViewControl: false,
+          disableDefaultUI: true
+        });
+
+        google.maps.event.addDomListener(window, "resize", function() {
+          var center = map.getCenter();
+          google.maps.event.trigger(map, "resize");
+          map.setCenter(center);
+        });
+      },
+
       initMap: function() {
         var mapOptions = {
           zoom: 14,
@@ -152,7 +244,7 @@ define([
         var marker = this.marker = this.createMarker(40.720, -73.953);
 
         google.maps.event.addListenerOnce(map, 'idle', _.bind(function() {
-          this.updateMap();
+          // this.updateMap();
         }, this));
 
         var input = this.input = this.$('#map-search')[0];
@@ -163,10 +255,10 @@ define([
 
         // var infowindow = new google.maps.InfoWindow();
         autocomplete.addListener('place_changed', _.bind(function() {
-          var place = autocomplete.getPlace();
-          this.state.place = place;
-          this.state.search = this.input.value;
-          this.changePlace(place);
+          // var place = autocomplete.getPlace();
+          // this.state.place = place;
+          // this.state.search = this.input.value;
+          // this.changePlace(place);
         }, this));
 
         // set to last location
@@ -204,7 +296,7 @@ define([
           var center = map.getCenter();
           google.maps.event.trigger(map, 'resize');
           map.setCenter(center);
-          this.updateMap();
+          // this.updateMap();
         }, this));
 
         this.state.loaded = true;
@@ -358,10 +450,10 @@ define([
 
         this.listenTo(this.collection, 'sync', this.updateMarkers);
 
-        this.once('library:loaded', function () {
-          this.initMap();
-          this.updateMarkers();
-        }, this);
+        // this.once('library:loaded', function () {
+        //   this.initMap();
+        //   this.updateMarkers();
+        // }, this);
       }
     })
   }

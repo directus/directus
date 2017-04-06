@@ -25,6 +25,7 @@ require(["config", 'polyfills'], function() {
     'core/ExtensionManager',
     'core/EntriesManager',
     'core/ListViewManager',
+    'core/status/status-table-collection',
     'core/idle',
     'tool-tips',
     'ext/moment-timeago',
@@ -32,9 +33,9 @@ require(["config", 'polyfills'], function() {
     'core/notification'
   ],
 
-  function(app, _, UIManager, Router, Backbone, alerts, __t, Tabs, Bookmarks, Messages, SchemaManager, SettingsCollection, EntriesModel, ExtensionManager, EntriesManager, ListViewManager, Idle, ToolTip, moment, ContextualDate, Notification) {
+  function(app, _, UIManager, Router, Backbone, alerts, __t, Tabs, Bookmarks, Messages, SchemaManager, SettingsCollection, EntriesModel, ExtensionManager, EntriesManager, ListViewManager, StatusTableCollection, Idle, ToolTip, moment, ContextualDate, Notification) {
 
-    "use strict";
+    'use strict';
 
     var defaultOptions = {
       locale: 'en',
@@ -83,7 +84,7 @@ require(["config", 'polyfills'], function() {
     app.PATH = options.path;
     app.authenticatedUserId = window.directusData.authenticatedUser;
     app.storageAdapters = window.directusData.storage_adapters;
-    app.statusMapping = window.directusData.statusMapping;
+    app.statusMapping = new StatusTableCollection(window.directusData.statusMapping, {parse: true});
     app.locale = options.locale;
     app.locales = options.localesAvailable;
     app.timezone = options.timezone;

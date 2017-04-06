@@ -122,7 +122,7 @@ define(function(require, exports, module) {
       var isBatchEdit = this.options.isBatchEdit;
       var model = this.model;
       var table = model.table;
-      var statusName = table ? table.getStatusColumnName() : app.statusMapping.status_name;
+      var statusName = table ? table.getStatusColumnName() : app.statusMapping.get('*').get('status_name');
 
       this.structure.each(function(column) {
 
@@ -156,16 +156,21 @@ define(function(require, exports, module) {
           }
 
           if (this.options.collectionAdd) {
-            this.model.set(statusName, app.statusMapping.active_num);
+            this.model.set(statusName, app.statusMapping.get(table.id).get('default_value'));
           }
 
           if (model.isNew()) {
             var tableStatusColumn = model.structure.get(statusName);
-            if (tableStatusColumn && tableStatusColumn.get('default_value')) {
+
+            if (tableStatusColumn) {
               model.set(statusName, tableStatusColumn.get('default_value'));
-            } else {
-              model.set(statusName, app.statusMapping.active_num);
             }
+
+            // if (tableStatusColumn && tableStatusColumn.get('default_value')) {
+            //   model.set(statusName, tableStatusColumn.get('default_value'));
+            // } else {
+            //   model.set(statusName, app.statusMapping.active_num);
+            // }
           }
 
           // Set this to be first field in edit table by modifiying groupings.
@@ -190,11 +195,11 @@ define(function(require, exports, module) {
         }
 
         //
-        if (column.isStatusColumn()) {
-          model.on('change:' + statusName, function (model, value) {
-            view.$('input[name=' + statusName + ']').val(value);
-          });
-        }
+        // if (column.isStatusColumn()) {
+        //   model.on('change:' + statusName, function (model, value) {
+        //     view.$('input[name=' + statusName + ']').val(value);
+        //   });
+        // }
 
         // Display:none; hidden fields
         var isHidden = _.contains(this.hiddenFields, column.id);

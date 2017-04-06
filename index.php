@@ -534,13 +534,35 @@ if (isset($groups['data']) && count($groups['data']) > 0) {
     }
 }
 
+$allTables = parseTables($tableSchema);
+
+$mapping = [];
+foreach ($config['statusMapping'] as $key => $status) {
+    $status['id'] = $key;
+
+    $mapping[] = $status;
+}
+
 $statusMapping = [
-    'active_num' => STATUS_ACTIVE_NUM,
-    'deleted_num' => STATUS_DELETED_NUM,
-    'draft_num' => STATUS_DRAFT_NUM,
-    'status_name' => STATUS_COLUMN_NAME
+    '*' => [
+        'mapping' => $mapping,
+        'status_name' => STATUS_COLUMN_NAME,
+        'default_value' => STATUS_DRAFT_NUM,
+        'delete_value' => STATUS_DELETED_NUM
+    ]
 ];
-$statusMapping['mapping'] = $config['statusMapping'];
+
+foreach ($allTables as $table) {
+    $mapping = \Directus\Util\ArrayUtils::get($table, 'schema.status_mapping');
+    if ($mapping && ($mapping = json_decode($mapping, true))) {
+        $statusMapping[\Directus\Util\ArrayUtils::get($table, 'schema.table_name')] = [
+            'mapping' => $mapping,
+            'status_name' => STATUS_COLUMN_NAME,
+            'default_value' => STATUS_DRAFT_NUM,
+            'delete_value' => STATUS_DELETED_NUM
+        ];
+    }
+}
 
 $settings = getSettings();
 $configuration = getConfig($settings);
@@ -551,7 +573,7 @@ $data = [
     'storage_adapters' => getStorageAdapters(),
     'path' => DIRECTUS_PATH,
     'page' => '#tables',
-    'tables' => parseTables($tableSchema),
+    'tables' => $allTables,
     'preferences' => parsePreferences($tableSchema), //ok
     'users' => $users,
     'groups' => $groups,

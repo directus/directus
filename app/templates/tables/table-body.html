@@ -14,7 +14,7 @@
 	{{/if}}
 	{{#each ../columns}}<td>{{ui ../model this}}</td>{{/each}}
 	<td class="status-badges">
-		{{#if statusDraft}}<div class="status-badge" style="background-color:#eeeeee;">{{statusName model}}</div>{{/if}}
+		{{#ifShowStatusBadge model}}<div class="status-badge" style="background-color:{{statusBackgroundColor model}};color:{{statusTextColor model}};">{{statusName model}}</div>{{/ifShowStatusBadge}}
 	</td>
 	{{#if ../showRemoveButton}}
 	<td class="relational-remove">

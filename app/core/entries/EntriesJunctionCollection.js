@@ -87,8 +87,9 @@ define(function(require, exports, module) {
     getModels: function () {
       return this.filter(function (model) {
         var statusColumnName = this.table.getStatusColumnName();
+        var statusDeleteValue = this.table.getTableStatuses().getDeleteValue();
 
-        return !(model.has(statusColumnName) && model.get(statusColumnName) === app.statusMapping.deleted_num);
+        return !(model.has(statusColumnName) && model.get(statusColumnName) === statusDeleteValue);
       }, this);
     },
 

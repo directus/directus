@@ -227,9 +227,7 @@ define([
 
         this.collection.each(function(model) {
           var date = dateColumn ? model.get(dateColumn.id) : null;
-          var table = model.table;
-          var statusColumnName = table ? table.getStatusColumnName() : app.statusMapping.status_name;
-          var published = model.get(statusColumnName) === app.statusMapping.active_num;
+          var published = model.getStatus().get('subdued_in_listing') !== true;
 
           if (date && parseInt(moment(date).format('D'), 10) === day) {
             data.push({

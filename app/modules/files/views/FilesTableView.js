@@ -136,7 +136,9 @@ function(app, _, moment, Backbone, DirectusModal, DirectusEdit, __t, Notificatio
           type: file.type
         };
 
-        name[app.statusMapping.status_name] = app.statusMapping.active_num;
+        var statusColumnName = self.collection.getStatusColumnName();
+        // name[app.statusMapping.status_name] = app.statusMapping.active_num;
+        name[statusColumnName] = self.collection.table.getStatusDefaultValue();
 
         // All files should be sort by date
         // Setting a temporary date will make this uploading file first on the list.

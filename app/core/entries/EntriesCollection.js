@@ -2,11 +2,13 @@ define(function(require, exports, module) {
 
   'use strict';
 
-  var Backbone      = require('backbone'),
-      app           = require('app'),
-      _             = require('underscore'),
-      Collection    = require('core/collection'),
-      EntriesModel  = require('core/entries/EntriesModel');
+  var Backbone            = require('backbone'),
+      app                 = require('app'),
+      _                   = require('underscore'),
+      Collection          = require('core/collection'),
+      StatusMixin         = require('mixins/status'),
+      SaveCollectionMixin = require('mixins/save-collection'),
+      EntriesModel        = require('core/entries/EntriesModel');
 
   var EntriesCollection = module.exports = Collection.extend({
 
@@ -417,9 +419,9 @@ define(function(require, exports, module) {
         this.table.set('total_entries', response.total_entries, {silent: true});
       }
 
-      app.statusMapping.mapping.forEach(function (status) {
-        if (response[status.name]) {
-          this.table.set(status.name, response[status.name], {silent: true});
+      app.statusMapping.get(this.table.id).get('mapping').each(function (status) {
+        if (response[status.get('name')]) {
+          this.table.set(status.get('name'), response[status.get('name')], {silent: true});
         }
       }, this);
     },
@@ -435,8 +437,29 @@ define(function(require, exports, module) {
       return response.data;
     },
 
+    // // gets the table status information, otherwise global information will be used
+    // getTableStatuses: function () {
+    //   var table = this.getTable();
+    //   var tableName = table ? table.id : '*';
+    //
+    //   return app.statusMapping.get(tableName);
+    // },
+    //
+    // getTableStatusMapping: function () {
+    //   var tableStatus = this.getTableStatuses();
+    //
+    //   return tableStatus.get('mapping');
+    // },
+
+    getTable: function () {
+      return this.table;
+    },
+
     constructor: function EntriesCollection (data, options) {
       EntriesCollection.__super__.constructor.call(this, data, options);
     }
   });
+
+  _.extend(EntriesCollection.prototype, StatusMixin.Collection);
+  _.extend(EntriesCollection.prototype, SaveCollectionMixin);
 });

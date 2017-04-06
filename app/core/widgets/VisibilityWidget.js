@@ -10,25 +10,7 @@ function(app, _, Backbone, Handlebars, PreferenceModel) {
   "use strict";
 
   return Backbone.Layout.extend({
-    // add bookmark button was moved to sidebar
-    // if false is a way to keep it there unavailable just in case
-    /*
-    template: Handlebars.compile('\
-    {{#if hasActiveColumn}} \
-    <div class="simple-select dark-grey-color simple-gray left" title="Choose which items are displayed"> \
-      <span class="icon icon-triangle-down"></span> \
-      <select id="visibilitySelect" name="status" class="change-visibility"> \
-        <optgroup label="{{t "status"}}"> \
-          <option data-status value="{{allKeys}}">{{t "widget_visibility_all_items"}}</option> \
-          {{#mapping}} \
-            <option data-status value="{{id}}" {{#if isSelected}} selected {{/if}}>{{capitalize name}} {{t "status_items"}}</option> \
-          {{/mapping}} \
-        </optgroup> \
-      </select> \
-      <select id="template" style="display:none;width:auto;"><option id="templateOption"></option></select> \
-    </div> \
-    {{/if}}'),
-    */
+
     template: 'core/widgets/visibility',
 
     tagName: 'div',
@@ -39,12 +21,15 @@ function(app, _, Backbone, Handlebars, PreferenceModel) {
     },
 
     events: {
-      'change #visibilitySelect': function(e) {
-        var $target = $(e.target).find(":selected");
-        if($target.attr('data-status') !== undefined && $target.attr('data-status') !== false) {
-          var value = $(e.target).val();
+      'change #visibilitySelect': function (event) {
+        var $target = $(event.target).find(':selected');
+
+        if ($target.attr('data-status') !== undefined && $target.attr('data-status') !== false) {
+          var value = $(event.target).val();
           var name = {currentPage: 0};
+
           name['status'] = value;
+
           this.collection.setFilter(name);
 
           this.listenToOnce(this.collection.preferences, 'sync', function() {
@@ -62,36 +47,24 @@ function(app, _, Backbone, Handlebars, PreferenceModel) {
 
     serialize: function() {
       var data = {hasActiveColumn: this.options.hasActiveColumn, mapping: []};
-      var mapping = app.statusMapping.mapping;
+      var table = this.collection.table;
+      var mapping = app.statusMapping.get(table.id).get('mapping');
       var statusSelected = this.collection.getFilter('status');
 
       var keys = [];
-      _.each(mapping, function(value, key) {
-        // Convert status id to number
-        key = Number(key);
-
-        // Do not show option for deleted status
-        if (key !== app.statusMapping.deleted_num) {
-          data.mapping.push({
-            id: key,
-            name: mapping[key].name,
-            sort: mapping[key].sort,
-            isSelected: statusSelected === key
-          });
-          keys.push(key);
+      // @note: duplicate code, same as Selection Action Widget
+      mapping.each(function (status) {
+        // Skip if are globally hidden
+        if (status.get('hidden_globally') !== true) {
+          var item = status.toJSON();
+          item.isSelected = statusSelected == status.get('id');
+          data.mapping.push(status.toJSON());
+          keys.push(status.get('id'));
         }
       });
 
-      data.mapping.sort(function(a, b) {
-        if (a.sort < b.sort) {
-          return -1;
-        }
-
-        if (a.sort > b.sort) {
-          return 1;
-        }
-
-        return 0;
+      data.mapping.sort(function (a, b) {
+        return a.sort > b.sort;
       });
 
       data.allKeys = keys.join(',');
@@ -110,13 +83,14 @@ function(app, _, Backbone, Handlebars, PreferenceModel) {
       // sel.width( this.$el.find('#template').width() * 1.03 + 10 ); // +10 is for arrow on right
     },
     initialize: function() {
-      var activeTable = this.collection.table.id;
+      var table = this.collection.table.id;
 
       this.basePage = this.options.basePage;
 
       this.collection.on('sync', this.render, this);
 
-      if (this.collection.table.columns.get(app.statusMapping.status_name)) {
+      // if (this.collection.table.columns.get(app.statusMapping.status_name)) {
+      if (table.hasStatusColumn()) {
         this.options.hasActiveColumn = true;
       }
 

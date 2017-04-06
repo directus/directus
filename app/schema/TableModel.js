@@ -31,7 +31,7 @@ define(function(require, exports, module) {
         }
       }
 
-      data.status_column = data.status_column || app.statusMapping.status_name;
+      data.status_column = data.status_column || app.statusMapping.get(this.id).get('status_name');
       data.primary_column = data.primary_column || 'id';
       data.sort_column = data.sort_column || 'sort';
 
@@ -39,18 +39,38 @@ define(function(require, exports, module) {
     },
 
     getStatusColumn: function () {
-      var name = this.get('status_column') || app.statusMapping.status_name;
+      var name = this.get('status_column') || app.statusMapping.get(this.id).get('status_name');
 
       return this.columns.get(name);
+    },
+
+    getStatusColumnName: function () {
+      var column = this.getStatusColumn();
+      return column ? column.get('column_name') : null;
     },
 
     hasStatusColumn: function () {
       return this.getStatusColumn() != null;
     },
 
-    getStatusColumnName: function () {
-      var column = this.getStatusColumn();
-      return column ? column.get('column_name') : null;
+    getStatusDefaultValue: function () {
+      var statusColumn = this.getStatusColumn();
+      var defaultStatusValue = app.statusMapping.get(this.id).get('status_name');
+
+      return statusColumn.get('default_value') || defaultStatusValue;
+    },
+
+    getStatusVisibleValues: function () {
+      var mapping = this.getTableStatusMapping();
+      var values = [];
+
+      mapping.each(function (status) {
+        if (status.get('hidden_globally') !== false) {
+          values.push(status.get('id'));
+        }
+      });
+
+      return values;
     },
 
     getSortColumn: function () {

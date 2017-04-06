@@ -77,6 +77,8 @@ class Mail
             $message->setBody($viewContent, 'text/html');
         }
 
+        file_put_contents('email-' . time() . '.html', $message->getBody());
+
         $instance->sendMessage($message);
     }
 }

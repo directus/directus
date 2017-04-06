@@ -195,20 +195,25 @@ function(app, Backbone, _, Handlebars) {
     serialize: function() {
       var data = {resultCount: this.collection.length};
       var structure = this.collection.structure;
+      var table = this.collection.getTable();
+      var statusColumnName = table.getStatusColumnName();
       var statusSelected = (this.collection.getFilter('status') || '').split(',') || [1, 2];
 
       statusSelected = _.map(statusSelected, function(value) {
         return Number(value);
       });
 
-      data.statusColumn = structure.get(app.statusMapping.status_name);
+      data.statusColumn = structure.get(statusColumnName);
       data.statuses = [];
-      _.each(app.statusMapping.mapping, function(status, key) {
-        if (key !== app.statusMapping.deleted_num) {
+
+      this.collection.getTableStatusMapping().each(function (status) {
+        // var tableStatus = status.tableStatus;
+        if (status.get('hidden_globally') !== true) {
+        // if (key !== app.statusMapping.deleted_num) {
           data.statuses.push({
-            name: status.name,
-            value: key,
-            selected: _.indexOf(statusSelected, key) >= 0
+            name: status.get('name'),
+            value: status.get('id'),
+            selected: _.indexOf(statusSelected, status.get('id')) >= 0
           });
         }
       });

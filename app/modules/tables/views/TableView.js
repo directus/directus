@@ -53,8 +53,22 @@ function(app, Backbone, _, __t, BasePageView, ListViewManager, TableViewRightPan
                 buttonClass: 'serious',
                 buttonText: __t('delete')
               },
-              onClick: function(event) {
-                // app.router.go('#tables/' + tableView.collection.table.id + '/new');
+              onClick: function () {
+                app.router.openModal({type: 'confirm', text: __t('confirm_delete_item'), callback: function () {
+                  var $checked = $('.js-select-row:checked');
+                  var actionCollection = tableView.collection.clone();
+
+                  actionCollection.reset();
+                  $checked.each(function () {
+                    var model = tableView.collection.get(this.value);
+
+                    actionCollection.add(model);
+                  });
+
+                  if (actionCollection.length) {
+                    actionCollection.saveWithDeleteStatus();
+                  }
+                }});
               }
             });
           }

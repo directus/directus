@@ -95,42 +95,44 @@ function(app, Backbone, _, Handlebars, __t, Notification, Directus, BasePageView
       this.saveWidget.enable();
     },
 
-    deleteItem: function(e) {
-      var success = function() {
-        var route = Backbone.history.fragment.split('/');
-        route.pop();
-        app.router.go(route);
-      };
-      //@todo: who trigger this?
-      var options = {success: success, patch: true, wait: true, validate: false};
-      try {
-        app.changeItemStatus(model, value, options);
-      } catch(e) {
-        setTimeout(function() {
-          app.router.openModal({type: 'alert', text: e.message});
-        }, 0);
-      }
-    },
+    // deleteItem: function(e) {
+    //   var success = function() {
+    //     var route = Backbone.history.fragment.split('/');
+    //     route.pop();
+    //     app.router.go(route);
+    //   };
+    //   //@todo: who trigger this?
+    //   var options = {success: success, patch: true, wait: true, validate: false};
+    //   try {
+    //     app.changeItemStatus(model, value, options);
+    //   } catch(e) {
+    //     setTimeout(function() {
+    //       app.router.openModal({type: 'alert', text: e.message});
+    //     }, 0);
+    //   }
+    // },
 
-    saveConfirm: function(e) {
-      var data = this.editView.data();
-      var that = this;
-      if(data[app.statusMapping.status_name] && data[app.statusMapping.status_name] === app.statusMapping.deleted_num) {
-        app.router.openModal({type: 'confirm', text: __t('confirm_delete_item'), callback: function () {
-          that.save(e);
-        }});
-      } else {
-        this.save(e);
-      }
+    saveConfirm: function (event) {
+      // var data = this.editView.data();
+      // var that = this;
+      // if(data[app.statusMapping.status_name] && data[app.statusMapping.status_name] === app.statusMapping.deleted_num) {
+      //   app.router.openModal({type: 'confirm', text: __t('confirm_delete_item'), callback: function () {
+      //     that.save(e);
+      //   }});
+      // } else {
+      //   this.save(e);
+      // }
+
+      this.save(event);
     },
 
     deleteConfirm: function () {
       var self = this;
-      // @TODO: table has different status
-      var attributes = {};
-      attributes[app.statusMapping.status_name] = 0;
+
       app.router.openModal({type: 'confirm', text: __t('confirm_delete_item'), callback: function () {
-        self.model.save(attributes).then(function () {
+        var xhr = self.model.saveWithDeleteStatus();
+
+        xhr.then(function () {
           var route = Backbone.history.fragment.split('/');
           route.pop();
           app.router.go(route);
@@ -203,32 +205,32 @@ function(app, Backbone, _, Handlebars, __t, Notification, Directus, BasePageView
         };
       }
       if (action === 'save-form-copy') {
-        console.log('cloning...');
+        // console.log('cloning...');
         var clone = model.toJSON();
         delete clone.id;
         model = new collection.model(clone, {collection: collection, parse: true});
         collection.add(model);
-        console.log(model);
+        // console.log(model);
       }
 
       var changedValues = _.extend(model.unsavedAttributes() || {}, model.diff(data));
 
-      if (changedValues[app.statusMapping.status_name] && changedValues[app.statusMapping.status_name] === app.statusMapping.deleted_num ) {
-        var value = app.statusMapping.deleted_num;
-        var options = {success: success, wait: true, patch: true, includeRelationships: true};
-        try {
-          app.changeItemStatus(this.model, value, options);
-        } catch(e) {
-          setTimeout(function() {
-            app.router.openModal({type: 'alert', text: e.message});
-          }, 0);
-        }
-      } else {
+      // if (changedValues[app.statusMapping.status_name] && changedValues[app.statusMapping.status_name] === app.statusMapping.deleted_num ) {
+      //   var value = app.statusMapping.deleted_num;
+      //   var options = {success: success, wait: true, patch: true, includeRelationships: true};
+      //   try {
+      //     app.changeItemStatus(this.model, value, options);
+      //   } catch(e) {
+      //     setTimeout(function() {
+      //       app.router.openModal({type: 'alert', text: e.message});
+      //     }, 0);
+      //   }
+      // } else {
         // patch only the changed values
         model.save(changedValues, {
           success: success,
           error: function(model, xhr, options) {
-            console.error('err');
+            // console.error('err');
             //Duplicate entry, forced but works
             //@todo finds a better way to determine whether there's an duplicate error
             // and what's the column's name
@@ -244,8 +246,8 @@ function(app, Backbone, _, Handlebars, __t, Notification, Directus, BasePageView
           patch: true,
           includeRelationships: true
         });
-      }
-      this.$el.find('#saveSelect').val('');
+      // }
+      // this.$el.find('#saveSelect').val('');
     },
 
     afterRender: function() {

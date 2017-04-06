@@ -4,9 +4,10 @@ require([
   'handlebars',
   'core/UIManager',
   'helpers/file',
+  'helpers/status',
   'core/t',
   'moment'
-], function(app, _, Handlebars, UIManager, FileHelper, __t, moment) {
+], function(app, _, Handlebars, UIManager, FileHelper, StatusHelper, __t, moment) {
 
   'use strict';
 
@@ -112,45 +113,56 @@ require([
     return '<img src="' + user.getAvatar() + '" style="margin-right:7px;" class="avatar">' + user.get('first_name');
   });
 
-  Handlebars.registerHelper('activeMap', function(model) {
-    //@todo: how do we want to handle this stuff
-    switch (model.get(app.statusMapping.status_name)) {
-      case 0:
-        return 'deleted';
-      case 1:
-        return 'active';
-      case 2:
-        return 'inactive';
-    }
-  });
-
   // Get the model status name
   Handlebars.registerHelper('statusName', function (model) {
-    var table = model.table;
-    var statusColumnName = table ? table.getStatusColumnName() : app.statusMapping.status_name;
-    var statusValue = model.get(statusColumnName);
-    var status = app.statusMapping.mapping[statusValue] || {};
+    // var table = model.table;
+    // var statusColumnName = table ? table.getStatusColumnName() : app.statusMapping.status_name;
+    // var statusValue = model.get(statusColumnName);
+    // var status = app.statusMapping.mapping[statusValue] || {};
+    // status = app.statusMapping.
+    // var statuses = model.getTableStatuses();
+    // var statusValue = model.getStatusValue();// model.get(statuses.get('status_name'));
 
-    return status ? status.name : '';
+    //return statuses.get('mapping').get(statusValue).get('name');
+    return model.getStatusName();
+    // return status ? status.name : '';
+  });
+
+  Handlebars.registerHelper('statusBackgroundColor', function (model) {
+    // StatusHelper.getBackgroundColorByModel
+    return model.getStatusBackgroundColor();
+  });
+
+  Handlebars.registerHelper('statusTextColor', function (model) {
+    return model.getStatusTextColor() || '#999999';
   });
 
   // Get the model status color
-  Handlebars.registerHelper('statusColor', function(model) {
-    var statusValue = model.get(app.statusMapping.status_name);
-    var status = app.statusMapping.mapping[statusValue] || {};
+  Handlebars.registerHelper('statusColor', function (model) {
+    return model.getStatusBackgroundColor() || '#eeeeee';
+  });
 
-    return status ? status.color : '#eeeeee';
+  Handlebars.registerHelper('ifShowStatusBadge', function (model, options) {
+    var status = model ? model.getStatus() : null;
+    var canShowBadge = status ? status.get('show_listing_badge') : false;
+
+    if(!canShowBadge) {
+      return options.inverse(this);
+    } else {
+      return options.fn(this);
+    }
   });
 
   Handlebars.registerHelper('notPublishedClass', function (model) {
-    var table = model.table;
-    var statusColumnName = table ? table.getStatusColumnName() : app.statusMapping.status_name;
+    // var table = model.table;
+    // var statusColumnName = table ? table.getStatusColumnName() : app.statusMapping.status_name;
+    var status = model.getStatus();
+    var subdued = status ? status.get('subdued_in_listing') : false;
+    // if (model.get(statusColumnName) == app.statusMapping.draft_num) {
+    //   return 'not-published';
+    // }
 
-    if (model.get(statusColumnName) == app.statusMapping.draft_num) {
-      return 'not-published';
-    }
-
-    return '';
+    return subdued ? 'not-published' : '';
   });
 
   // Should be combined with userShort below with param: "show_avatar" [true,false]

@@ -60,9 +60,11 @@ function(app, Backbone, Handlebars, Directus, BasePageView, Widgets, __t, moment
         };
 
         // Put non-active users into the Inactive Group.
-        var hasStatusColumn = model.has(app.statusMapping.status_name);
-        var statusValue = model.get(app.statusMapping.status_name);
-        if (hasStatusColumn && statusValue !== app.statusMapping.active_num) {
+        var hasStatusColumn = model.table.hasStatusColumn();
+        var statusColumnName = model.table.getStatusColumnName();
+        var statusValue = model.get(statusColumnName);
+
+        if (hasStatusColumn && statusValue !== model.table.getStatusDefaultValue()) { //app.statusMapping.active_num
           data.group_id = 0;
           data.group_name = 'Inactive';
           data.inactive = true;

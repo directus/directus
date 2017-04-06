@@ -21,7 +21,7 @@ define(function(require, exports, module) {
 
   module.exports = {
     getUsers: function (locales, timezones, countries) {
-      var statusName = app.statusMapping.status_name;
+      // var statusName = app.statusMapping.get('directus_users').get('status_name');
       var defaultTimezone = app.timezone;
       var defaultLocale = app.locale;
 
@@ -33,7 +33,7 @@ define(function(require, exports, module) {
         "single":false,
         "footer": 1,
         "count":0,
-        statusName:0,
+        "active":0,
         "url": "api/1/tables/directus_users/",
         "columns": [
           {
@@ -51,8 +51,8 @@ define(function(require, exports, module) {
             "hidden":true
           },
           {
-            "id":statusName,
-            "column_name":statusName,
+            "id": "active",
+            "column_name": "active",
             "type":"TINYINT",
             "nullable": false,
             "default_value":"1",

@@ -9,6 +9,8 @@ define(function(require, exports, module) {
       EntriesJunctionCollection = require('core/entries/EntriesJunctionCollection'),
       UIManager               = require('core/UIManager'),
       Utils                   = require('utils'),
+      StatusMixin             = require('mixins/status'),
+      SaveItemMixin           = require('mixins/save-item'),
       SchemaManager           = require('schema/SchemaManager');
 
   var nestedTypes = ['many_to_one', 'single_file'];
@@ -384,6 +386,58 @@ define(function(require, exports, module) {
       return this.table;
     },
 
+    // // gets the table status information, otherwise global information will be used
+    // getTableStatuses: function () {
+    //   var table = this.getTable();
+    //   var tableName = table ? table.id : '*';
+    //
+    //   return app.statusMapping.get(tableName);
+    // },
+    //
+    // getTableStatusMapping: function () {
+    //   var tableStatus = this.getTableStatuses();
+    //
+    //   return tableStatus.get('mapping');
+    // },
+    //
+    // // gets model status information
+    // getStatus: function () {
+    //   var statuses = this.getTableStatuses();
+    //   var statusValue = this.getStatusValue();
+    //
+    //   return statuses.get('mapping').get(statusValue);
+    // },
+    //
+    // // gets this model status value
+    // getStatusValue: function () {
+    //   return this.get(this.getTableStatuses().get('status_name'));
+    // },
+    //
+    // // gets this model status name
+    // getStatusName: function () {
+    //   return this.getStatus().get('name');
+    // },
+    //
+    // // gets this item status background color
+    // getStatusBackgroundColor: function () {
+    //   // var statuses = this.getTableStatuses();
+    //   // var statusValue = this.getStatusValue();
+    //   // var status = statuses.get('mapping').get(statusValue);
+    //   var status = this.getStatus();
+    //
+    //   return status.get('background_color') || status.get('color');
+    // },
+    //
+    // // gets this item status text color
+    // getStatusTextColor: function () {
+    //   // var statuses = this.getTableStatuses();
+    //   // var statusValue = this.getStatusValue();
+    //   //
+    //   // return statuses.get('mapping').get(statusValue).get('text_color');
+    //
+    //   return this.getStatus().get('text_color');
+    // },
+
     initialize: function (data, options) {
       this.on('invalid', function(model, errors) {
         var details = _.map(errors, function(err) { return '<b>'+app.capitalize(err.attr)+':</b> '+err.message; }).join('</li><li>');
@@ -415,4 +469,7 @@ define(function(require, exports, module) {
       EntriesModel.__super__.constructor.call(this, data, options);
     }
   });
+
+  _.extend(EntriesModel.prototype, StatusMixin.Model);
+  _.extend(EntriesModel.prototype, SaveItemMixin);
 });
