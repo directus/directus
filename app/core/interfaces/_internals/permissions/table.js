@@ -131,11 +131,11 @@ define(['app', 'underscore', 'backbone', 'core/t', 'core/Modal'], function(app, 
       }
 
       if (value !== null) {
-        _.each(app.statusMapping.mapping, function (status, key) {
-          if (key === value) {
+        app.statusMapping.get(tableName).get('mapping').each(function (status) {
+          if (status.get('id') == value) {
             state = {
-              name: status.name,
-              value: key
+              name: status.get('name'),
+              value: status.get('id')
             };
           }
         });
@@ -378,14 +378,14 @@ define(['app', 'underscore', 'backbone', 'core/t', 'core/Modal'], function(app, 
       };
     },
 
-    getStatuses: function (currentStatusId) {
+    getStatuses: function (currentStatusId, tableName) {
       var statuses = [];
 
       statuses.push(this.getDefaultStatus());
-      _.each(app.statusMapping.mapping, function(status, key) {
+      app.statusMapping.get(tableName).get('mapping').each(function (status) {
         statuses.push({
-          name: status.name,
-          value: key
+          name: status.get('name'),
+          value: status.get('id')
         });
       });
 
@@ -407,7 +407,7 @@ define(['app', 'underscore', 'backbone', 'core/t', 'core/Modal'], function(app, 
 
         // Has status column?
         data.hasStatusColumn = this.hasStatusColumn(privilege.get('table_name'));
-        data.statuses = data.hasStatusColumn ? this.getStatuses(currentTableStatus) : [];
+        data.statuses = data.hasStatusColumn ? this.getStatuses(currentTableStatus, table.id) : [];
         data.currentStatus = currentTableStatus;
 
         permissions.push(data);
