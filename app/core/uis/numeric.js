@@ -83,9 +83,9 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
       }
     },
     list: function(options) {
-      var value = Number(options.value);
+      var value = options.value;
 
-      return _.isNumber(value) ? value.toLocaleString() : null;
+      return _.isNumber(value) ? Number(value).toLocaleString() : '<span class="silver">--</span>';
     }
   });
 
