@@ -234,6 +234,8 @@
     "o2m_result_limit_comment": "Maximum number of results to fetch",
     "add_new_x_item": "Add New %{table} Item",
 
+    "numeric_localized_comment": "Whether or not to localized the numeric value, eg: currency format",
+
     "directus_files": "Directus Files",
     "file_upload": "Upload",
     "drag_and_drop": "Drag and drop",
