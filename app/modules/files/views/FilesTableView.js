@@ -91,32 +91,38 @@ function(app, _, moment, Backbone, DirectusModal, DirectusEdit, __t, Notificatio
     },
     afterRender: function() {
       var self = this;
+      var dropzone = document.getElementById('content');
+
       this.setView('#page-content', this.table);
       this.collection.fetch();
 
       this.dragoverListener = function (event) {
-        self.$('.external-drop-indicator').show();
+        $(dropzone).addClass('dragover');
       };
 
-      window.addEventListener('dragover', this.dragoverListener, false);
+      this.dragleaveListener = function (event) {
+        if (event.target != dropzone) {
+          return;
+        }
 
-      this.dragleaveListener = function () {
-        self.$('.external-drop-indicator').hide();
+        $(dropzone).removeClass('dragover');
       };
-
-      window.addEventListener('dragleave', this.dragleaveListener, false);
 
       this.dropListener = function (event) {
-        self.$('.external-drop-indicator').fadeOut(500);
-        self.processDroppedImages(event)
+        $(dropzone).removeClass('dragover');
+        self.processDroppedImages(event);
       };
 
-      window.addEventListener('drop', this.dropListener, false);
+      dropzone.addEventListener('dragenter', this.dragoverListener, false);
+      dropzone.addEventListener('dragleave', this.dragleaveListener, false);
+      dropzone.addEventListener('drop', this.dropListener, false);
     },
-    remove: function() {
-      window.removeEventListener('drop', this.dropListener, false);
-      window.removeEventListener('dragleave', this.dragleaveListener, false);
-      window.removeEventListener('dragover', this.dragoverListener, false);
+    remove: function () {
+      var dropzone = document.getElementById('content');
+
+      dropzone.removeEventListener('drop', this.dropListener, false);
+      dropzone.removeEventListener('dragleave', this.dragleaveListener, false);
+      dropzone.removeEventListener('dragenter', this.dragoverListener, false);
 
       $(document).off('ajaxStart.directus');
       $(document).on('ajaxStart.directus', function() {
@@ -129,14 +135,14 @@ function(app, _, moment, Backbone, DirectusModal, DirectusEdit, __t, Notificatio
       }
 
       var self = this;
-      _.each(event.dataTransfer.files, function (file) {
+      _.each(event.dataTransfer.files, function (file)  {
         var name = {
           title: file.name,
           size: file.size,
           type: file.type
         };
 
-        var statusColumnName = self.collection.getStatusColumnName();
+        var statusColumnName = self.collection.table.getStatusColumnName();
         // name[app.statusMapping.status_name] = app.statusMapping.active_num;
         name[statusColumnName] = self.collection.table.getStatusDefaultValue();
 
