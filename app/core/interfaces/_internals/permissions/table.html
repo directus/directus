@@ -14,7 +14,7 @@
 	</thead>
 	<tbody>
 	{{#tables}}
-	<tr class="" data-table="{{table_name}}" data-id="{{id}}" data-cid="{{cid}}">
+	<tr class="js-permission{{#if openWorkflow}} workflow-enabled{{/if}}" data-table="{{table_name}}" data-id="{{id}}" data-cid="{{cid}}">
 		<td class="tableName"><div style="display:inline-block">{{title}}<span class="privilege-shortcuts"><a class="all js-add-full-permissions">All</a>/<a class="none js-remove-full-permissions">None</a></span></div></td>
 		<td class="js-status-toggle permissions-workflow {{#unless hasStatusColumn}} disabled{{/unless}}" title="{{t 'permissions_field_level_permissions'}}">
 			<i class="material-icons vertical-middle js-edit-fields">tune</i>
@@ -32,13 +32,23 @@
 			</div>
 		</td>
 		{{#each permissions}}
-		<td class="permissions-{{name}}" data-name="{{name}}">
+		<td class="permissions-{{name}} js-permission-name" data-name="{{name}}">
 			<div class="global">
 				<input class="custom-checkbox permission-toggle{{#if onlyMine}} partial{{/if}}" id="check_{{name}}_{{../table_name}}" type="checkbox" value="" {{#unless cannot}}checked="checked"{{/unless}}>
 				<label class="js-permission-toggle" for="check_{{name}}_{{../table_name}}">
 					<span title="{{title}}"></span>
 				</label>
 			</div>
+			{{#each statuses}}
+			<div class="workflow js-permission" data-table="{{table_name}}" data-id="{{id}}" data-cid="{{cid}}">
+				<div class="state js-permission-name" data-name="{{name}}">
+					<input class="custom-checkbox permission-toggle{{#if onlyMine}} partial{{/if}}" id="check_{{../name}}_{{statusId}}_{{../../table_name}}" type="checkbox" value="" {{#unless cannot}}checked="checked"{{/unless}}>
+					<label class="js-permission-toggle" for="check_{{../name}}_{{statusId}}_{{../../table_name}}">
+						<span title="{{title}}"></span>
+					</label>
+				</div>
+			</div>
+			{{/each}}
 		</td>
 		{{/each}}
 		<td class="permissions-blacklist">
@@ -52,12 +62,17 @@
 				</a>
 			</div>
 			<div class="workflow">
-				{{!-- {{#statuses}}
-				{{#allPermissions.read_blacklist}}
-				<div class="state text-align">
-					<a href="#" class="choose-column-blacklist">{{t "permissions_choose_columns"}}</a>
+				{{#each statusesReadBlacklist}}
+				<div class="state text-align js-permission" data-cid="{{cid}}">
+					<a href="#" class="choose-column-blacklist js-read{{#if list}} active{{/if}}">
+						{{#if list}}
+						{{list}}
+						{{else}}
+						{{t "permissions_choose_columns"}}
+						{{/if}}
+					</a>
 				</div>
-				{{/allPermissions.read_blacklist}}--}}
+				{{/each}}
 			</div>
 		</td>
 		<td class="permissions-blacklist">
@@ -71,12 +86,17 @@
 				</a>
 			</div>
 			<div class="workflow">
-				<div class="state text-align">
-					<a href="#" class="choose-column-blacklist">{{t "permissions_choose_columns"}}</a>
+				{{#each statusesWriteBlacklist}}
+				<div class="state text-align js-permission" data-cid="{{cid}}">
+					<a href="#" class="choose-column-blacklist js-write{{#if list}} active{{/if}}">
+						{{#if list}}
+						{{list}}
+						{{else}}
+						{{t "permissions_choose_columns"}}
+						{{/if}}
+					</a>
 				</div>
-				<div class="state text-align">
-					<a href="#" class="choose-column-blacklist">{{t "permissions_choose_columns"}}</a>
-				</div>
+				{{/each}}
 			</div>
 		</td>
 	</tr>

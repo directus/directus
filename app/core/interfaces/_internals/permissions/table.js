@@ -101,9 +101,9 @@ define(['app', 'underscore', 'backbone', 'core/t', 'core/Modal'], function(app, 
       'click .js-status-toggle': 'toggleStatusSelector',
       'click .js-status': 'changeStatus',
       'click .js-permission-toggle': 'togglePermission',
-      'click .js-write.choose-column-blacklist': 'editWriteFields',
       'click .js-add-full-permissions': 'addFullPermissions',
       'click .js-remove-full-permissions': 'removeFullPermissions',
+      'click .js-write.choose-column-blacklist': 'editWriteFields',
       'click .js-read.choose-column-blacklist': 'editReadFields'
     },
 
@@ -111,9 +111,19 @@ define(['app', 'underscore', 'backbone', 'core/t', 'core/Modal'], function(app, 
       var $row = $(event.currentTarget).closest('tr');
       var id = $row.data('cid');
       var model = this.collection.get(id);
+      var openWorkflow, tableName;
 
       if (!this.hasStatusColumn(model.get('table_name'))) {
         return;
+      }
+
+      tableName = $row.data('table');
+      openWorkflow = this.state.openWorkflow;
+      if (!_.contains(openWorkflow, tableName)) {
+        openWorkflow.push(tableName);
+      } else {
+        var index = _.indexOf(openWorkflow, tableName);
+        openWorkflow.slice(index, 1);
       }
 
       $row.toggleClass('workflow-enabled');
@@ -199,18 +209,20 @@ define(['app', 'underscore', 'backbone', 'core/t', 'core/Modal'], function(app, 
     },
 
     togglePermission: function (event) {
+      event.stopPropagation();
+
       var $toggle = $(event.currentTarget);
-      var permission = $toggle.closest('td').data('name');
+      var permission = $toggle.closest('.js-permission-name').data('name');
       var permissionName = 'allow_' + permission;
-      var $row = $toggle.closest('tr');
+      var $row = $toggle.closest('.js-permission');
       var model = this.collection.get($row.data('cid'));
       var attributes = {};
       var currentPermissionValue;
 
       currentPermissionValue = model.get(permissionName);
-      if(currentPermissionValue > 1) {
+      if (currentPermissionValue > 1) {
         attributes[permissionName] = 0;
-      } else if(currentPermissionValue == 1) {
+      } else if (currentPermissionValue == 1) {
         attributes[permissionName] = 2;
       } else {
         attributes[permissionName] = 1;
@@ -220,12 +232,12 @@ define(['app', 'underscore', 'backbone', 'core/t', 'core/Modal'], function(app, 
     },
 
     editReadFields: function (event) {
-      var id = $(event.currentTarget).closest('tr').data('cid');
+      var id = $(event.currentTarget).closest('.js-permission').data('cid');
       this.editFields('read', id);
     },
 
     editWriteFields: function (event) {
-      var id = $(event.currentTarget).closest('tr').data('cid');
+      var id = $(event.currentTarget).closest('.js-permission').data('cid');
       this.editFields('write', id);
     },
 
@@ -261,7 +273,7 @@ define(['app', 'underscore', 'backbone', 'core/t', 'core/Modal'], function(app, 
           view: model.has('allow_view') && model.get('allow_view') > 0,
           bigView: model.has('allow_view') && model.get('allow_view') === 2,
           onlyMine: model.has('allow_view') && model.get('allow_view') === 1,
-          cannot: function(model) {
+          cannot: function (model) {
             return !model.has('allow_view') || ! (model.get('allow_view') > 0)
           }(model)
         },
@@ -271,7 +283,7 @@ define(['app', 'underscore', 'backbone', 'core/t', 'core/Modal'], function(app, 
           title: this.permissionTitle(model),
           add: (model.has('allow_add') && model.get('allow_add') > 0),
           onlyMine: false, // You either can or cannot add items
-          cannot: function(model) {
+          cannot: function (model) {
             return !model.has('allow_add') || ! (model.get('allow_add') > 0)
           }(model)
         },
@@ -281,7 +293,7 @@ define(['app', 'underscore', 'backbone', 'core/t', 'core/Modal'], function(app, 
           edit: (model.has('allow_edit') && model.get('allow_edit') > 0),
           bigEdit: (model.has('allow_edit') && model.get('allow_edit') === 2),
           onlyMine: model.has('allow_edit') && model.get('allow_edit') === 1,
-          cannot: function(model) {
+          cannot: function (model) {
             return !model.has('allow_edit') || ! (model.get('allow_edit') > 0)
           }(model)
         },
@@ -291,7 +303,7 @@ define(['app', 'underscore', 'backbone', 'core/t', 'core/Modal'], function(app, 
           delete: (model.has('allow_delete') && model.get('allow_delete') > 0),
           bigDelete: (model.has('allow_delete') && model.get('allow_delete') === 2),
           onlyMine: model.has('allow_delete') && model.get('allow_delete') === 1,
-          cannot: function(model) {
+          cannot: function (model) {
             return !model.has('allow_delete') || ! (model.get('allow_delete') > 0)
           }(model)
         }
@@ -358,15 +370,63 @@ define(['app', 'underscore', 'backbone', 'core/t', 'core/Modal'], function(app, 
       return list;
     },
 
+    // Gets the table privilege information of the given permission
+    parsePrivilegePermission: function (tableName, permissionName, statusId) {
+      var privilege = this.getTablePrivileges(tableName, statusId);
+      var data = this.parsePermissions(privilege);
+
+      data = _.findWhere(data, {name: permissionName});
+      data.table_name = tableName;
+      data.id = privilege.id;
+      data.cid = privilege.cid;
+      data.statusId = statusId;
+
+      return data;
+    },
+
     parsePrivilege: function (privilege) {
       var data = privilege.toJSON();
+      var tableName = data.table_name;
 
       data.cid = privilege.cid;
       data.title = app.capitalize(data.table_name, '_', true);
       data.readBlacklist = this.formatBlacklist(data.read_field_blacklist);
       data.writeBlacklist = this.formatBlacklist(data.write_field_blacklist);
+      data.statusesReadBlacklist = [];
+      data.statusesWriteBlacklist = [];
+
+      // ----------------------------------------------------------------------------
+      // Add workflow blacklist
+      // ----------------------------------------------------------------------------
+      // Gets the default status blacklist
+      data.statusesReadBlacklist.push({list: data.readBlacklist});
+      data.statusesWriteBlacklist.push({list: data.writeBlacklist});
+
+      // Gets all over the statuses and get ech blacklist information
+      app.statusMapping.get(tableName).get('mapping').each(function (status) {
+        var privilege = this.getTablePrivileges(tableName, status.get('id'));
+        data.statusesReadBlacklist.push({
+          cid: privilege.cid,
+          list: this.formatBlacklist(privilege.get('read_field_blacklist'))
+        });
+        data.statusesWriteBlacklist.push({
+          cid: privilege.cid,
+          list: this.formatBlacklist(privilege.get('write_field_blacklist'))
+        });
+      }, this);
+
       // Default permissions
       data.permissions = this.parsePermissions(privilege);
+      _.each(data.permissions, function (permission) {
+        var statuses = [];
+
+        statuses.push(this.parsePrivilegePermission(tableName, permission.name, null));
+        app.statusMapping.get(tableName).get('mapping').each(function (status) {
+          statuses.push(this.parsePrivilegePermission(tableName, permission.name, status.get('id')));
+        }, this);
+
+        permission.statuses = statuses;
+      }, this);
 
       return data;
     },
@@ -409,6 +469,7 @@ define(['app', 'underscore', 'backbone', 'core/t', 'core/Modal'], function(app, 
         data.hasStatusColumn = this.hasStatusColumn(privilege.get('table_name'));
         data.statuses = data.hasStatusColumn ? this.getStatuses(currentTableStatus, table.id) : [];
         data.currentStatus = currentTableStatus;
+        data.openWorkflow = _.contains(this.state.openWorkflow, table.id);
 
         permissions.push(data);
       }, this));
@@ -451,6 +512,7 @@ define(['app', 'underscore', 'backbone', 'core/t', 'core/Modal'], function(app, 
       this.state = {
         default: 'all',
         status: 'all',
+        openWorkflow: [],
         tables: {}
       };
 
