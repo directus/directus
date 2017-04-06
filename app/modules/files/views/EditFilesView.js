@@ -23,44 +23,21 @@ function(app, _, Backbone, __t, Directus, BasePageView, Widgets) {
       this.saveWidget.enable();
     },
 
-    // deleteConfirm: function () {
-    //   var self = this;
-    //   var attributes = {};
-    //   attributes[app.statusMapping.status_name] = 0;
-    //   app.router.openModal({type: 'confirm', text: __t('confirm_delete_item'), callback: function () {
-    //     self.deleteItem();
-    //   }});
-    // },
-    //
-    // deleteItem: function () {
-    //   var success = function() {
-    //     var route = Backbone.history.fragment.split('/');
-    //     route.pop();
-    //     app.router.go(route);
-    //   };
-    //
-    //   var value = app.statusMapping.deleted_num;
-    //   var options = {success: success, patch: true, wait: true, validate: false};
-    //   try {
-    //     app.changeItemStatus(this.model, value, options);
-    //   } catch(e) {
-    //     setTimeout(function() {
-    //       app.router.openModal({type: 'alert', text: e.message});
-    //     }, 0);
-    //   }
-    // },
+    deleteConfirm: function () {
+      var self = this;
+
+      app.router.openModal({type: 'confirm', text: __t('confirm_delete_item'), callback: function () {
+        var xhr = self.model.saveWithDeleteStatus();
+
+        xhr.then(function () {
+          var route = Backbone.history.fragment.split('/');
+          route.pop();
+          app.router.go(route);
+        });
+      }});
+    },
 
     saveConfirm: function (event) {
-      // var data = this.editView.data();
-      // if(data[app.statusMapping.status_name] && data[app.statusMapping.status_name] === app.statusMapping.deleted_num) {
-      //   var that = this;
-      //   app.router.openModal({type: 'confirm', text: 'Are you sure? This item will be removed from the system!', callback: function() {
-      //     that.save(e);
-      //   }});
-      // } else {
-      //   this.save(e);
-      // }
-
       this.save(event);
     },
 
