@@ -399,11 +399,11 @@ define(['app', 'underscore', 'backbone', 'core/t', 'core/Modal'], function(app, 
       // Add workflow blacklist
       // ----------------------------------------------------------------------------
       // Gets the default status blacklist
-      data.statusesReadBlacklist.push({list: data.readBlacklist});
-      data.statusesWriteBlacklist.push({list: data.writeBlacklist});
+      // data.statusesReadBlacklist.push({list: data.readBlacklist});
+      // data.statusesWriteBlacklist.push({list: data.writeBlacklist});
 
       // Gets all over the statuses and get ech blacklist information
-      app.statusMapping.get(tableName).get('mapping').each(function (status) {
+      this.tableStatuses(tableName, function (status) {
         var privilege = this.getTablePrivileges(tableName, status.get('id'));
         data.statusesReadBlacklist.push({
           cid: privilege.cid,
@@ -413,22 +413,33 @@ define(['app', 'underscore', 'backbone', 'core/t', 'core/Modal'], function(app, 
           cid: privilege.cid,
           list: this.formatBlacklist(privilege.get('write_field_blacklist'))
         });
-      }, this);
+      });
 
       // Default permissions
       data.permissions = this.parsePermissions(privilege);
       _.each(data.permissions, function (permission) {
         var statuses = [];
 
-        statuses.push(this.parsePrivilegePermission(tableName, permission.name, null));
-        app.statusMapping.get(tableName).get('mapping').each(function (status) {
+        // statuses.push(this.parsePrivilegePermission(tableName, permission.name, null));
+        this.tableStatuses(tableName, function (status) {
           statuses.push(this.parsePrivilegePermission(tableName, permission.name, status.get('id')));
-        }, this);
+        });
 
         permission.statuses = statuses;
       }, this);
 
       return data;
+    },
+
+    // all statuses except the hard delete ones
+    tableStatuses: function (tableName, fn, context) {
+      context = context || this;
+
+      app.statusMapping.get(tableName).get('mapping').each(function (status) {
+        if (status.get('hard_delete') !== true) {
+          fn.apply(context, [status]);
+        }
+      }, context);
     },
 
     getDefaultStatus: function () {
@@ -441,8 +452,8 @@ define(['app', 'underscore', 'backbone', 'core/t', 'core/Modal'], function(app, 
     getStatuses: function (currentStatusId, tableName) {
       var statuses = [];
 
-      statuses.push(this.getDefaultStatus());
-      app.statusMapping.get(tableName).get('mapping').each(function (status) {
+      // statuses.push(this.getDefaultStatus());
+      this.tableStatuses(tableName, function (status) {
         statuses.push({
           name: status.get('name'),
           value: status.get('id')
