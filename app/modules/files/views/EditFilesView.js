@@ -13,7 +13,7 @@ function(app, _, Backbone, __t, Directus, BasePageView, Widgets) {
   return BasePageView.extend({
 
     events: {
-      'change input, select, textarea': 'checkDiff',
+      'change select, input[type=checkbox], input[type=radio]': 'checkDiff',
       'keyup input, textarea': 'checkDiff'
     },
 
