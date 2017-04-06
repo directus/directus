@@ -92,7 +92,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
 
   var Component = UIComponent.extend({
     id: 'textinput',
-    dataTypes: ['VARCHAR', 'DATE', 'TIME', 'ENUM'],
+    dataTypes: ['VARCHAR', 'CHAR', 'DATE', 'TIME', 'ENUM'],
     variables: [
       // Disables editing of the field while still letting users see the value (true = readonly)
       {id: 'readonly', type: 'Boolean', default_value: false, ui: 'checkbox'},
