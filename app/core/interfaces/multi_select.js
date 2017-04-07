@@ -13,8 +13,9 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
 
   var template = '{{#if cb_list}} \
                     {{#options}} \
-                            <input style="margin-top:1px;" name="{{key}}" type="checkbox" {{#if selected}}checked{{/if}}/> {{value}} \
-                    {{/options}}</select> \
+                            <input style="margin-top:1px;display: inline-block;" id="multi_select_{{name}}_{{key}}" name="{{key}}" type="checkbox" {{#if selected}}checked{{/if}}/>\
+                            <label for="multi_select_{{name}}_{{key}}">{{value}}</label> \
+                    {{/options}} \
                   {{else}} \
                     <select multiple> \
                         {{#options}} \

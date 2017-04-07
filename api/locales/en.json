@@ -222,6 +222,9 @@
     "size_medium": "Medium",
     "size_small": "Small",
 
+    "select_ui_show_options_value": "Value",
+    "select_ui_show_options_text": "Text",
+
     "directus_user_activity_never_logged_in": "Never logged in",
     "directus_user_activity_user_edit_form": "User edit form",
     "directus_user_activity_table_entry_action": "%{param} table entry %{action}",
@@ -259,6 +262,9 @@
     "add_new_x_item": "Add New %{table} Item",
 
     "directus_files_choose": "Choose Existing",
+    "numeric_localized_comment": "Whether or not to localized the numeric value, eg: currency format",
+
+    "directus_files": "Directus Files",
     "file_upload": "Upload",
     "drag_and_drop": "Drag & drop",
     "or_browse": "Or Click to Browse",
@@ -288,6 +294,8 @@
     "select_options_comment": "Enter JSON key value pairs with the saved value and text displayed.",
     "select_placeholder_text": "Enter Placeholder Text",
     "select_auto_search_limit_text": "Minimum number of value to display search",
+
+    "slug_only_on_creation_comment": "Whether or not to only update the slug field on creation",
 
     "one_file_only_please": "One file only please",
     "enter_the_url_to_a_file": "Enter the URL to a file:",

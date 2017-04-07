@@ -6,13 +6,31 @@
 //  For all details and documentation:
 //  http://www.getdirectus.com
 
-define(['app', 'core/UIComponent', 'core/UIView', 'core/t', 'utils', 'select2'],function(app, UIComponent, UIView, __t, Utils) {
+define(['app', 'underscore', 'core/UIComponent', 'core/UIView', 'core/t', 'utils', 'select2'],function(app, _, UIComponent, UIView, __t, Utils) {
 
   'use strict';
 
   var template = '<div class="select-container" style="margin-top: 4px;margin-bottom: 6px;"> \
                     <select name="{{name}}" {{#if readonly}}disabled{{/if}}>{{#if allow_null}}<option value="">{{placeholder_text}}</option>{{/if}}{{#options}}<option value="{{key}}" {{#if selected}}selected{{/if}}>{{value}}</option>{{/options}}</select> \
                   </div>';
+
+  var SHOW_SELECT_OPTIONS = {
+    text: __t('select_ui_show_options_text'),
+    value: __t('select_ui_show_options_value')
+  };
+
+  var parseOptions = function (options) {
+    if (_.isString(options)) {
+      try {
+        options = $.parseJSON(options);
+      } catch (e) {
+        options = {};
+        console.error(e);
+      }
+    }
+
+    return options;
+  };
 
   var Input = UIView.extend({
     templateSource: template,
@@ -28,14 +46,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t', 'utils', 'select2'],
         selectedValue = this.options.schema.get('default_value');
       }
 
-      if (_.isString(options)) {
-        try {
-          options = $.parseJSON(options);
-        } catch (e) {
-          options = {};
-          console.error(e);
-        }
-      }
+      options = parseOptions(options);
 
       options = _.map(options, function(value, key) {
         var item = {};
@@ -88,6 +99,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t', 'utils', 'select2'],
       {id: 'allow_null', type: 'Boolean', default_value: false, ui: 'checkbox'},
       {id: 'display_search', type: 'String', default_value: 'auto', required: true, ui: 'select', options: {options: {'auto':__t('Auto'),'always':__t('Always'),'never':__t('Never')} }},
       {id: 'auto_search_limit', type: 'Number', ui: 'numeric', char_length: 20, default_value: 10, comment: __t('select_auto_search_limit_text')},
+      {id: 'show', type: 'String', default_value: 'value', ui: 'select', options: {options: SHOW_SELECT_OPTIONS}},
       {id: 'placeholder_text', type: 'String', default_value: '', ui: 'textinput', char_length: 255, required: false, comment: __t('select_placeholder_text')}
     ],
     Input: Input,
@@ -97,7 +109,15 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t', 'utils', 'select2'],
       }
     },
     list: function(options) {
-      return _.isString(options.value) ? options.value.replace(/<(?:.|\n)*?>/gm, '').substr(0,100) : options.value;
+      var value = _.isString(options.value) ? options.value.replace(/<(?:.|\n)*?>/gm, '').substr(0,100) : options.value;
+
+      if (options.settings.get('show') === 'text') {
+        options = parseOptions(options.settings.get('options'));
+
+        value = options[value];
+      }
+
+      return value;
     }
   });
 

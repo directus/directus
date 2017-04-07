@@ -195,6 +195,9 @@
     "size_medium": "Mediano",
     "size_small": "Pequeño",
 
+    "select_ui_show_options_value": "Valor",
+    "select_ui_show_options_text": "Texto",
+
     "directus_user_activity_never_logged_in": "Nunca ha iniciado session",
     "directus_user_activity_user_edit_form": "User edit form",
     "directus_user_activity_table_entry_action": "%{param} table entry %{action}",

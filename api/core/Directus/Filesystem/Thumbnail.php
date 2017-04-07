@@ -4,6 +4,13 @@ namespace Directus\Filesystem;
 
 class Thumbnail
 {
+    /**
+     * Thumbnail default format
+     *
+     * @var string
+     */
+    private static $defaultFormat = 'jpeg';
+
     private static $imageFormatsSupported = [
         'jpg',
         'jpeg',
@@ -11,6 +18,11 @@ class Thumbnail
         'png',
     ];
 
+    /**
+     * List of non-image supported extension/formats
+     *
+     * @var array
+     */
     private static $nonImageFormatsSupported = [
         'svg',
         'pdf',
@@ -21,8 +33,8 @@ class Thumbnail
 
     public static function generateThumbnail($targetContent, $format, $thumbnailSize, $cropEnabled)
     {
-        if (in_array(strtolower($format), static::$nonImageFormatsSupported)) {
-            $format = 'jpeg';
+        if (static::isNonImageFormatSupported($format)) {
+            $format = static::defaultFormat();
             $targetContent = static::createImageFromNonImage($targetContent, $format);
         }
 
@@ -136,5 +148,27 @@ class Thumbnail
                 break;
         }
         return ob_get_clean();
+    }
+
+    /**
+     * Gets the default thumbnail format
+     *
+     * @return string
+     */
+    public static function defaultFormat()
+    {
+        return static::$defaultFormat;
+    }
+
+    /**
+     * If a given format/extension is a non-image supported to generate thumbnail
+     *
+     * @param $format
+     *
+     * @return bool
+     */
+    public static function isNonImageFormatSupported($format)
+    {
+        return in_array(strtolower($format), static::$nonImageFormatsSupported);
     }
 }

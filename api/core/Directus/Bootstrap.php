@@ -334,6 +334,8 @@ class Bootstrap
     private static function zenddb()
     {
         self::requireConstants(['DIRECTUS_ENV', 'DB_TYPE', 'DB_HOST', 'DB_PORT', 'DB_NAME', 'DB_USER', 'DB_PASSWORD'], __FUNCTION__);
+
+        $charset = defined('DB_CHARSET') ? DB_CHARSET : 'utf8';
         $dbConfig = [
             'driver' => 'Pdo_' . DB_TYPE,
             'host' => DB_HOST,
@@ -341,9 +343,9 @@ class Bootstrap
             'database' => DB_NAME,
             'username' => DB_USER,
             'password' => DB_PASSWORD,
-            'charset' => 'utf8',
+            'charset' => $charset,
             \PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true,
-            \PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'
+            \PDO::MYSQL_ATTR_INIT_COMMAND => sprintf('SET NAMES "%s"', $charset)
         ];
 
         try {
@@ -675,13 +677,7 @@ class Bootstrap
 
                 // 314551321-vimeo-220-124-true.jpg
                 // hotfix: there's not thumbnail for this file
-                if ($files->exists('thumbs/' . $oldThumbnailFilename)) {
-                    $row['thumbnail_url'] = $thumbnailURL . '/' . $oldThumbnailFilename;
-                }
-
-                if ($files->exists('thumbs/' . $thumbnailFilename)) {
-                    $row['thumbnail_url'] = $thumbnailURL . '/' . $thumbnailFilename;
-                }
+                $row['old_thumbnail_url'] = $thumbnailURL . '/' . $oldThumbnailFilename;
 
                 $embedManager = Bootstrap::get('embedManager');
                 $provider = isset($row['type']) ? $embedManager->getByType($row['type']) : null;

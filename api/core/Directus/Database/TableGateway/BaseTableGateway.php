@@ -9,6 +9,7 @@ use Directus\Database\RowGateway\BaseRowGateway;
 use Directus\Database\SchemaManager;
 use Directus\Database\Schemas\Sources\MySQLSchema;
 use Directus\Database\TableSchema;
+use Directus\Filesystem\Thumbnail;
 use Directus\Permissions\Acl;
 use Directus\Permissions\Exception\UnauthorizedTableBigDeleteException;
 use Directus\Permissions\Exception\UnauthorizedTableBigEditException;
@@ -343,13 +344,20 @@ class BaseTableGateway extends TableGateway
             $payload->tableName = $tableName;
             $payload->data = $recordData;
             $payload = $this->applyHook('table.insert:before', $payload);
-            $payload = $this->applyHook('table.insert.' . $tableName . '.:before', $payload);
+            // @TODO: All hook payload are going to be an object to prevent confusion
+            // $payload = $this->applyHook('table.insert.' . $tableName . '.:before', $payload);
             $TableGateway->insert($payload->data);
             $recordData[$TableGateway->primaryKeyFieldName] = $TableGateway->getLastInsertValue();
 
             if ($tableName == 'directus_files') {
                 $Files = static::$container->get('files');
                 $ext = pathinfo($recordData['name'], PATHINFO_EXTENSION);
+
+                // hotfix: pdf thumbnails are being saved to its original extension
+                // file.pdf results into a thumbs/thumb.pdf instead of thumbs/thumb.jpeg
+                if (Thumbnail::isNonImageFormatSupported($ext)) {
+                    $ext = Thumbnail::defaultFormat();
+                }
 
                 $thumbnailPath = 'thumbs/THUMB_' . $recordData['name'];
                 if ($Files->exists($thumbnailPath)) {
