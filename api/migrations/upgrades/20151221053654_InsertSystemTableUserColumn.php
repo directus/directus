@@ -18,7 +18,7 @@ class InsertSystemTableUserColumn extends Ruckusing_Migration_Base
                     'hidden' => 1,
                     'single' => 0,
                     'footer' => 0,
-                    'list_view' => NULL,
+                    'allowed_listing_views' => NULL,
                     'column_groupings' => NULL,
                     'primary_column' => NULL,
                     'user_create_column' => 'user',
