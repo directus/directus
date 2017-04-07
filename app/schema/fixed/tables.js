@@ -96,7 +96,7 @@ define(function(require, exports, module) {
         "hidden_list": false,
         "hidden_input": false,
         "sort": 3,
-        "comment": transComments('list_view')
+        "comment": transComments('list_views')
       },
       {
         "id":"hidden",
@@ -167,7 +167,7 @@ define(function(require, exports, module) {
         "default_value": "id",
         "required": false,
         "sort": 7,
-        "comment": transComments('primary_key'),
+        "comment": transComments('primary_column'),
         "options": {
           "filter": "primary"
         }
@@ -217,7 +217,7 @@ define(function(require, exports, module) {
         "required": false,
         "nullable": true,
         "sort": 10,
-        "comment": transComments('status_column'),
+        "comment": transComments('status_mapping'),
         "options": {
           "filter": "number"
         }
@@ -233,7 +233,7 @@ define(function(require, exports, module) {
         "required": false,
         "nullable": true,
         "sort": 11,
-        "comment": __t('directus_accountability')
+        "comment": transComments('accountability')
       },
       {
         "id": "user_create_column",
