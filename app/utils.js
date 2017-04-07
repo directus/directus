@@ -118,7 +118,7 @@ define(['underscore'], function (_) {
   };
 
   Utils.convertToBoolean = function(value) {
-    return value != false;
+    return value == null ? false : value != false;
   };
 
   Utils.isEmpty = function(value) {

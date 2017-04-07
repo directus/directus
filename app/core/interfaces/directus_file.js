@@ -7,7 +7,7 @@
 //  http://www.getdirectus.com
 /*jshint multistr: true */
 
-define(['app', 'core/UIComponent', 'core/UIView'], function(app, UIComponent, UIView) {
+define(['app', 'helpers/file', 'core/UIComponent', 'core/UIView'], function(app, FileHelper, UIComponent, UIView) {
 
   'use strict';
 
@@ -87,7 +87,7 @@ define(['app', 'core/UIComponent', 'core/UIView'], function(app, UIComponent, UI
                       {{{html}}} \
                     {{else}} \
                       {{#if thumbUrl}} \
-                         <a target="_BLANK" href="{{url}}"><img src="{{thumbUrl}}"></a> \
+                        <div class="default-info js-image"><a target="_BLANK" href="{{url}}"><div class="type">{{uppercase type}}</div><img src="{{thumbUrl}}"></a></div> \
                       {{else}} \
                         <div class="default-info"><a target="_BLANK" href="{{url}}">{{type}}</a></div> \
                       {{/if}} \
@@ -220,7 +220,6 @@ define(['app', 'core/UIComponent', 'core/UIView'], function(app, UIComponent, UI
       var timer;
       var $dropzone = this.$el.find('.ui-thumbnail');
       var model = this.model;
-      var self = this;
 
       $dropzone.on('dragover', function(e) {
         clearInterval(timer);
@@ -255,6 +254,8 @@ define(['app', 'core/UIComponent', 'core/UIView'], function(app, UIComponent, UI
         $dropzone.removeClass('dragover');
       };
 
+      // Show fallback image if file missing
+      FileHelper.hideOnImageError(this.$('.js-image img'));
     },
   });
 

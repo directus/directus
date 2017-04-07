@@ -2,10 +2,9 @@ define([
   'app',
   'backbone',
   'core/widgets/widgets',
+  'helpers/file',
   'moment'
-],
-
-function(app, Backbone, Widgets, moment) {
+], function(app, Backbone, Widgets, FileHelper, moment) {
 
   var FilesCardView = Backbone.Layout.extend({
 
@@ -70,10 +69,7 @@ function(app, Backbone, Widgets, moment) {
 
     afterRender: function() {
       // Show fallback image if file missing
-      $('.header-image > img', this.$el).error(function() {
-        $(this).off('error');
-        $(this).attr('src', app.root + 'assets/img/missing-image-placeholder.jpg');
-      });
+      FileHelper.hideOnImageError(this.$('.js-image img'));
     },
 
     initialize: function(options) {
