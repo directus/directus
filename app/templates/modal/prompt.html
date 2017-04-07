@@ -4,26 +4,26 @@
     {{#if isPrompt}}
     {{#if showInput}}<input type="text">{{/if}}
     <div class="actions">
-        <button id="save" type="button" class="button close-modal">{{t "ok"}}</button>
-        <button id="cancel" type="button" class="cancel close-modal">{{t "cancel"}}</button>
+        <button id="save" type="button" class="button">{{t "ok"}}</button>
+        <button id="cancel" type="button" class="cancel">{{t "cancel"}}</button>
     </div>
     {{/if}}
     {{#if isYesNoCancelConfirm}}
-    <div class="directus-alert-modal-buttons">
-        <button id="yesBtn" type="button" class="primary">{{t "yes"}}</button>
-        <button id="noBtn" type="button">{{t "no"}}</button>
-        <button id="cancel" type="button">{{t "cancel"}}</button>
+	<div class="actions">
+        <button id="yesBtn" type="button" class="button">{{t "yes"}}</button>
+        <button id="noBtn" type="button" class="button">{{t "no"}}</button>
+        <button id="cancel" type="button" class="cancel">{{t "cancel"}}</button>
     </div>
     {{/if}}
     {{#if isYesNoConfirm}}
-    <div class="directus-alert-modal-buttons">
-        <button id="yesBtn" type="button" class="primary">{{t "yes"}}</button>
-        <button id="noBtn" type="button">{{t "no"}}</button>
+	<div class="actions">
+        <button id="yesBtn" type="button" class="button">{{t "yes"}}</button>
+        <button id="noBtn" type="button" class="cancel">{{t "no"}}</button>
     </div>
     {{/if}}
     {{#if isAlert}}
-    <div class="directus-alert-modal-buttons">
-        <button id="okBtn" type="button" class="primary">{{t "ok"}}</button>
+	<div class="actions">
+        <button id="okBtn" type="button" class="button">{{t "ok"}}</button>
     </div>
     {{/if}}
     <!-- @NOTE: Going to be removed
