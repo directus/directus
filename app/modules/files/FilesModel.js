@@ -36,7 +36,7 @@ function(app, _, Backbone, EntriesModel, Notification, __t, Utils, File) {
 
       // TODO: avoid omitting url and html at some point
       // rewrite this so we omit these values when we really want it to be omitted.
-      return _.omit(atts, 'thumbnailData', 'url', 'file_url', 'file_thumb_url', 'thumbnail_url', 'html');
+      return _.omit(atts, 'thumbnailData', 'url', 'file_url', 'file_thumb_url', 'old_thumbnail_url', 'thumbnail_url', 'html');
     },
 
     formatTitle: function(name) {

@@ -22,12 +22,13 @@ define([
     'backbone',
     'core/t',
     'utils',
+    'helpers/file',
     'core/UIComponent',
     'core/UIView',
     'core/table/table.view',
     'core/overlays/overlays'
   ],
-  function(app, _, Backbone, __t, Utils, UIComponent, UIView, TableView, Overlays) {
+  function(app, _, Backbone, __t, Utils, FileHelper, UIComponent, UIView, TableView, Overlays) {
 
   'use strict';
 
@@ -138,7 +139,7 @@ define([
                       {{#if html}}\
                         {{{html}}}\
                       {{else}} \
-                        <a href="#" class="title"><img src="{{thumbUrl}}"></a> \
+                        <div class="default-info js-image"><a href="#" class="title"><img src="{{thumbUrl}}"></div></div></a> \
                       {{/if}} \
                     </div> \
                     <div class="ui-img-details single_file"> \
@@ -271,7 +272,6 @@ define([
       var timer;
       var $dropzone = this.$el.find('.single-image-thumbnail');
       var model = this.fileModel;
-      var self = this;
 
       $dropzone.on('dragover', function(e) {
         clearInterval(timer);
@@ -304,6 +304,10 @@ define([
         $dropzone.removeClass('dragover');
       }, this);
 
+      // Show fallback image if file missing
+      FileHelper.onImageError(this.$('.js-image img'), function (event, element) {
+        $(element).attr('src', app.PATH + 'assets/img/document.png');
+      });
     },
 
     serialize: function() {

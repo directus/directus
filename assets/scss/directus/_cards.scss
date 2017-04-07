@@ -38,6 +38,7 @@
         z-index: 2;
       }
       .default-info {
+        position: relative;
         border: solid 1px $lightGrey;
         border-bottom: 0px;
         font-size: 45px;
@@ -45,6 +46,12 @@
         height: 199px;
         line-height: 190px;
         text-align: center;
+
+        img {
+          position: absolute;
+          top: 0;
+          left: 0;
+        }
       }
       .default-loading {
         border: solid 1px $lightGrey;

@@ -2,10 +2,9 @@ define([
   'app',
   'backbone',
   'core/widgets/widgets',
+  'helpers/file',
   'moment'
-],
-
-function(app, Backbone, Widgets, moment) {
+], function(app, Backbone, Widgets, FileHelper, moment) {
 
   var FilesCardView = Backbone.Layout.extend({
 
@@ -51,7 +50,7 @@ function(app, Backbone, Widgets, moment) {
         if (!data.id) {
           data.thumbnail = '<div class="default-loading"><span class="icon icon-three-dots"></span></div>';
         } else if ((type == 'image' || type === 'embed' || subtype === 'pdf') && model.makeFileUrl(true)) {
-          data.thumbnail = '<img src="'+model.makeFileUrl(true)+'">';
+          data.thumbnail = '<div class="default-info js-image"><div class="type">' +data.type.toUpperCase()+'</div><img src="'+model.makeFileUrl(true)+'"></div>';
         } else {
           data.thumbnail = '<div class="default-info">' +data.type.toUpperCase()+'</div>';
         }
@@ -76,10 +75,7 @@ function(app, Backbone, Widgets, moment) {
 
     afterRender: function() {
       // Show fallback image if file missing
-      $('.header-image > img', this.$el).error(function() {
-        $(this).off('error');
-        $(this).attr('src', app.root + 'assets/img/missing-image-placeholder.jpg');
-      });
+      FileHelper.hideOnImageError(this.$('.js-image img'));
     },
 
     initialize: function(options) {

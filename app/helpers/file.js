@@ -1,4 +1,4 @@
-define(function() {
+define(['jquery'], function ($) {
 
   'use strict';
 
@@ -170,6 +170,18 @@ define(function() {
   function getUnit(index) {
     return ['B','KB','MB','GB','TB','PB','EB','ZB','YB'][index];
   }
+
+  FileHelper.onImageError = function (elements, fn) {
+    $(elements).one('error', function (event) {
+      fn.apply(event.target, [event, event.target]);
+    });
+  };
+
+  FileHelper.hideOnImageError = function (elements) {
+    this.onImageError(elements, function () {
+      $(this).hide();
+    });
+  };
 
   return FileHelper;
 });
