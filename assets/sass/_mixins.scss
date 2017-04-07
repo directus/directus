@@ -99,6 +99,11 @@
 	50% {background-color: lighten($primary, 35%);}
 	100% {background-color: lighten($primary, 25%);}
 }
+@keyframes dragover {
+	0% {border-color: lighten($primary, 30%);}
+	50% {border-color: $primary;}
+	100% {border-color: lighten($primary, 30%);}
+}
 @keyframes pulsate-text {
 	0% {color: $gray-4;}
 	50% {color: $gray-2;}

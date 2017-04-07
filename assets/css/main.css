@@ -26,6 +26,13 @@
     background-color: #cce5f6; }
   100% {
     background-color: #a0cfee; } }
+@keyframes dragover {
+  0% {
+    border-color: #b6daf2; }
+  50% {
+    border-color: #3498DB; }
+  100% {
+    border-color: #b6daf2; } }
 @keyframes pulsate-text {
   0% {
     color: #999999; }
@@ -4202,13 +4209,15 @@ body.help .discover-spotlight {
   .page.dragover::after {
     content: "";
     position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    background-color: rgba(255, 255, 255, 0.4);
-    border: 10px solid rgba(52, 152, 219, 0.4);
-    z-index: 10; }
+    top: 4px;
+    right: 4px;
+    bottom: 4px;
+    left: 4px;
+    background-color: rgba(255, 255, 255, 0.9);
+    border: 3px dashed #3498DB;
+    z-index: 10;
+    animation: dragover 2s ease-in-out;
+    animation-iteration-count: infinite; }
   .page.define-edge {
     border-left: 1px solid #DDDDDD; }
   .page .page-container.messages {

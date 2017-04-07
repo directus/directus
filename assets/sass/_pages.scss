@@ -32,13 +32,15 @@
 		&::after {
 			content: "";
 			position: absolute;
-			top: 0;
-			right: 0;
-			bottom: 0;
-			left: 0;
-			background-color: rgba($white, 0.4);
-			border: 10px solid rgba($primary, 0.4);
+			top: 4px;
+			right: 4px;
+			bottom: 4px;
+			left: 4px;
+			background-color: rgba($white, 0.9);
+			border: 3px dashed $primary;
 			z-index: 10;
+			animation: dragover 2s ease-in-out;
+			animation-iteration-count: infinite;
 		}
 	}
 	&.define-edge {
