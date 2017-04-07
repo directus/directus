@@ -31,7 +31,7 @@ define(function(require, exports, module) {
     require('core/interfaces/alias'),
     require('core/interfaces/salt'),
     require('core/interfaces/select'),
-    require('core/interfaces/tags'),
+    require('core/interfaces/tags/tags'),
     require('core/interfaces/many_to_one'),
     require('core/interfaces/radiobuttons'),
     require('core/interfaces/many_to_many'),

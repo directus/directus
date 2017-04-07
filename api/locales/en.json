@@ -192,7 +192,7 @@
     "directus_messages_recipients_placeholder": "Add recipients...",
     "messages_subject_placeholder": "Subject...",
     "messages_add_recipients_placeholder": "Add recipients...",
-    "tags_placeholder": "Type tag then hit enter...",
+    "tags_placeholder": "Press enter or comma to add tags...",
     "directus_files_paste_youtube_vimeo_url": "Or paste in a YouTube, Vimeo, or file URL",
     "directus_files_drop_or_choose_file": "Drop file here or click to choose",
     "directus_files_retrieve": "Retrieve",

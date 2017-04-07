@@ -7,16 +7,11 @@
 //  http://www.getdirectus.com
 /*jshint multistr: true */
 
-define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UIComponent, UIView, __t) {
-
+define(['app', 'underscore', 'utils', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, _, Utils, UIComponent, UIView, __t) {
   'use strict';
 
-  var template = '<input type="hidden" value="{{value}}" name="{{name}}" id="{{name}}"> \
-                 <input type="text" class="medium" id="tag-input" style="margin-right:10px;" placeholder="{{t "tags_placeholder"}}"><button class="btn btn-primary margin-left" type="button">{{t "add"}}</button> \
-                 <div style="width:84%;">{{#tags}}<span class="tag">{{this}}</span>{{/tags}}</div>';
-
   var Input = UIView.extend({
-    templateSource: template,
+    template: 'tags/input',
 
     events: {
       'keydown #tag-input': function(e) {
@@ -26,7 +21,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
           this.insertTag();
         }
       },
-      'click span': function(e) {
+      'click .tag': function(e) {
         var index = this.$el.find('.tag').index($(e.target));
         this.tags.splice(index,1);
         this.render();
@@ -72,8 +67,8 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
     id: 'tags',
     dataTypes: ['TEXT','VARCHAR','CHAR'],
     variables: [
-      // When on, all entered tags are converted to lowercase
-      {id: 'force_lowercase', type: 'Boolean', default_value: true, ui: 'checkbox'}
+      {id: 'force_lowercase', type: 'Boolean', default_value: true, ui: 'checkbox'} // When on, all entered tags are converted to lowercase
+      // TODO: Include spaces in CSV value
     ],
     Input: Input,
     validate: function(value, options) {

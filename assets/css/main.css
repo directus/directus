@@ -5778,8 +5778,8 @@ body.help .discover-spotlight {
         font-size: 10px;
         font-weight: 700;
         text-transform: uppercase;
-        color: #999999;
-        background-color: #EEEEEE;
+        color: #FFFFFF;
+        background-color: #999999;
         cursor: pointer; }
         .fields .field .interface .tag-container .tag:hover {
           background-color: #F44336;
