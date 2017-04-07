@@ -92,8 +92,8 @@ define([
         // add line break after the first group
         if (++index > 0) {
           structure.unshift({
-            id: 'divider',
-            ui: 'divider',
+            id: 'section_break',
+            ui: 'section_break',
             char_length: 255,
             options: {
               title: __t('directus_settings_' + key + '_divider_title')

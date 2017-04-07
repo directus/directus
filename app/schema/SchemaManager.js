@@ -184,12 +184,19 @@ define(function(require, exports, module) {
     // Registers static schemas for the global and files settings
     registerSettingsSchemas: function(data) {
       var namespace = 'settings';
-      _.each(data, function(settings) {
-        columnSchemas[namespace][settings.id] = new ColumnsCollection(settings.schema.columns, {parse: true});
+
+      _.each(data, function (settings) {
         // TODO: columns must have its table information
-        columnSchemas[namespace][settings.id].table = {
+        var fakeTable = new FakeTableModel({
           id: 'directus_settings'
-        };
+        });
+
+        var columns = new ColumnsCollection(settings.schema.columns, {
+          parse: true,
+          table: fakeTable
+        });
+
+        fakeTable.columns = columnSchemas[namespace][settings.id] = columns;
       }, this);
     },
 
