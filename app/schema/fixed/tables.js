@@ -84,8 +84,8 @@ define(function(require, exports, module) {
         "comment": transComments('columns')
       },
       {
-        "id": "list_view",
-        "column_name": "list_view",
+        "id": "allowed_listing_views",
+        "column_name": "allowed_listing_views",
         "ui": "directus_views", // @TODO: multiple checkbox
         "type": "VARCHAR",
         "length": 200,
@@ -96,7 +96,7 @@ define(function(require, exports, module) {
         "hidden_list": false,
         "hidden_input": false,
         "sort": 3,
-        "comment": transComments('list_views')
+        "comment": transComments('allowed_listing_views')
       },
       {
         "id":"hidden",

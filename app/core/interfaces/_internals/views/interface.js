@@ -1,8 +1,9 @@
 define([
   'app',
+  'underscore',
   'core/UIComponent',
   'core/UIView'
-], function(app, UIComponent, UIView) {
+], function(app, _, UIComponent, UIView) {
 
   'use strict';
 
@@ -16,7 +17,7 @@ define([
 
     updateViews: function (event) {
       var viewId = $(event.currentTarget).val();
-      var value = this.value;
+      var value = _.compact(this.value); // clears the empty values
       var index = value.indexOf(viewId);
       var csv = '';
 

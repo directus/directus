@@ -65,7 +65,7 @@ class CreateDirectusTablesTable extends Ruckusing_Migration_Base
             'limit' => 1,
             'default' => 0
         ]);
-        $t->column('list_view', 'string', [
+        $t->column('allowed_listing_views', 'string', [
             'limit' => 200,
             'default' => NULL
         ]);
@@ -113,7 +113,7 @@ class CreateDirectusTablesTable extends Ruckusing_Migration_Base
             'hidden' => 1,
             'single' => 0,
             'footer' => 0,
-            'list_view' => NULL,
+            'allowed_listing_views' => NULL,
             'column_groupings' => NULL,
             'primary_column' => NULL,
             'user_create_column' => 'recipient',
@@ -133,7 +133,7 @@ class CreateDirectusTablesTable extends Ruckusing_Migration_Base
                 'hidden' => 1,
                 'single' => 0,
                 'footer' => 0,
-                'list_view' => NULL,
+                'allowed_listing_views' => NULL,
                 'column_groupings' => NULL,
                 'primary_column' => NULL,
                 'user_create_column' => 'user',
@@ -148,7 +148,7 @@ class CreateDirectusTablesTable extends Ruckusing_Migration_Base
             'hidden' => 1,
             'single' => 0,
             'footer' => 0,
-            'list_view' => NULL,
+            'allowed_listing_views' => NULL,
             'column_groupings' => NULL,
             'primary_column' => NULL,
             'user_create_column' => 'id',

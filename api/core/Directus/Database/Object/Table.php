@@ -146,7 +146,7 @@ class Table implements \ArrayAccess, Arrayable, \JsonSerializable
     /**
      * @var string
      */
-    protected $listView;
+    protected $allowedListingViews;
 
     /**
      * @var string
@@ -943,23 +943,27 @@ class Table implements \ArrayAccess, Arrayable, \JsonSerializable
     }
 
     /**
-     * @param $listView
+     * Sets the allowed list views
+     *
+     * @param $views
      *
      * @return string
      */
-    public function setListView($listView)
+    public function setAllowedListingViews($views)
     {
-        $this->listView = $listView;
+        $this->allowedListingViews = $views;
 
         return $this;
     }
 
     /**
+     * Gets allowed listing views
+     *
      * @return string
      */
-    public function getListView()
+    public function getAllowedListingViews()
     {
-        return $this->listView;
+        return $this->allowedListingViews;
     }
 
     /**

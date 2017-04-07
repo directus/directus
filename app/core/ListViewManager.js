@@ -20,23 +20,23 @@ define(function(require, exports, module) {
   // Attach all methods to the UIManager prototype.
   module.exports = {
 
-    setup: function() {
+    setup: function () {
       this.register(defaultListViews);
     },
 
-    register: function(listViews) {
+    register: function (listViews) {
       _.each(listViews, function(view) {
         views[view.id] = view;
-      },this);
+      }, this);
     },
 
     // Loads an array of paths to UI's and registers them.
     // Returns a jQuery Deferred's Promise object
-    load: function(paths) {
+    load: function (paths) {
       var self = this;
       var dfd = new jQuery.Deferred();
 
-      require(paths, function() {
+      require(paths, function () {
         self.register(_.values(arguments));
         dfd.resolve();
       });
@@ -44,11 +44,11 @@ define(function(require, exports, module) {
       return dfd;
     },
 
-    get: function(viewId) {
+    get: function (viewId) {
       return views[viewId];
     },
 
-    getView: function(viewId, options) {
+    getView: function (viewId, options) {
       var View = views['table'].View;
       var defaultOptions = {id: 'table'};
 
@@ -62,8 +62,8 @@ define(function(require, exports, module) {
       return new View(options);
     },
 
-    getInstance: function(options) {
-      var viewId = options.collection.table.get('list_view');
+    getInstance: function (options) {
+      var viewId = options.collection.table.get('allowed_listing_views');
 
       return this.getView(viewId, options)
     },
