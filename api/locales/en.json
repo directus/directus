@@ -494,7 +494,7 @@
     "enable_strict_table_naming": "Enable strict table naming",
 
     "directus_tables_table_name": "Name",
-    "directus_tables_table_name_comment": "Must be unique",
+    "directus_tables_table_name_comment": "Can not (currently) be changed within the CMS",
     "directus_tables_display_template": "Display Template",
     "directus_tables_display_template_comment": "This twig template determines how this table's items are displayed throughout the system",
     "directus_tables_preview_url": "Preview URL",
