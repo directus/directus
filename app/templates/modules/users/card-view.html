@@ -1,7 +1,10 @@
 {{#groups}}
 {{#rows}}
 <div class="user {{#if online}}online{{/if}}" data-id="{{id}}" data-cid="{{cid}}"> <!-- .open-modal data-modal="profile" -->
-    {{{avatar}}}<!-- <img src="{{assetsRoot}}imgs/avatar.png"> -->
+	<div class="thumbnail js-image">
+		<div class="extension-fallback">{{assetsPath "/imgs/missing-user.svg"}}</div>
+		{{{avatar}}}
+	</div>
     <div class="group">{{../title}}</div>
     <div class="online">{{#if online}}Online{{/if}}</div>
     <div class="info">

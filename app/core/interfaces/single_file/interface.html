@@ -4,7 +4,12 @@
         {{#if html}}
         {{{html}}}
         {{else}}
-        <img src="{{thumbUrl}}">
+		<div class="thumbnail js-image">
+			<div class="extension-fallback">
+				<div class="type">{{model.type}}</div>
+			</div>
+			<img src="{{thumbUrl}}">
+		</div>
         {{/if}}
         <div class="type">{{model.type}}</div>
         <div class="info">
