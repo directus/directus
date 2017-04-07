@@ -30,40 +30,6 @@ define(function(require, exports, module) {
         "comment": transComments('table_name')
       },
       {
-        "id": "display_template",
-        "column_name": "display_template",
-        "ui": "textinput",
-        "type": "VARCHAR",
-        "length": 255,
-        "system": false,
-        "hidden_list": false,
-        "hidden_input": false,
-        "required": false,
-        "nullable": true,
-        "sort": 1,
-        "options": {
-          "placeholder_text": __t('eg_x', {text: '{{first_name}} {{last_name}}'})
-        },
-        "comment": transComments('display_template')
-      },
-      {
-        "id": "preview_url",
-        "column_name": "preview_url",
-        "ui": "textinput",
-        "type": "VARCHAR",
-        "length": 255,
-        "system": false,
-        "hidden_list": false,
-        "hidden_input": false,
-        "required": false,
-        "nullable": true,
-        "sort": 2,
-        "options": {
-          "placeholder_text": __t('eg_x', {text: 'http://example.com/articles/{{slug}}'})
-        },
-        "comment": transComments('preview_url')
-      },
-      {
         "id": "columns",
         "column_name": "columns",
         "type": "ALIAS",
@@ -76,84 +42,12 @@ define(function(require, exports, module) {
         "system": false,
         "hidden_list": false,
         "hidden_input": false,
-        "sort": 2,
+        "sort": 1,
         "options": {
           "visible_columns": "column_name,ui,relationship_type,comment",
           "add_button": 1
         },
         "comment": transComments('columns')
-      },
-      {
-        "id": "allowed_listing_views",
-        "column_name": "allowed_listing_views",
-        "ui": "directus_views", // @TODO: multiple checkbox
-        "type": "VARCHAR",
-        "length": 200,
-        "default_value": "table",
-        "required": false,
-        "nullable": true,
-        "system": false,
-        "hidden_list": false,
-        "hidden_input": false,
-        "sort": 3,
-        "comment": transComments('allowed_listing_views')
-      },
-      {
-        "id":"hidden",
-        "column_name":"hidden",
-        "ui":"checkbox",
-        "type":"TINYINT",
-        "default_value": false,
-        "system":false,
-        "required": false,
-        "nullable": true,
-        "hidden_list":false,
-        "hidden_input":false,
-        "sort": 3,
-        "comment": transComments('hidden')
-      },
-      {
-        "id":"single",
-        "column_name":"single",
-        "ui":"checkbox",
-        "type":"TINYINT",
-        "default_value": false,
-        "system":false,
-        "required": false,
-        "nullable": true,
-        "hidden_list":false,
-        "hidden_input":false,
-        "sort": 4,
-        "comment": transComments('single')
-      },
-      {
-        "id":"default_status",
-        "column_name":"default_status",
-        "ui":"textinput",
-        "type":"VARCHAR",
-        "default_value": 1,
-        "required": false,
-        "nullable": true,
-        "system":false,
-        "hidden_list":false,
-        "hidden_input":false,
-        "omit_input": true,
-        "sort": 5,
-        "comment": transComments('default_status')
-      },
-      {
-        "id": "footer",
-        "column_name": "footer",
-        "ui": "checkbox",
-        "type": "TINYINT",
-        "system": false,
-        "required": false,
-        "nullable": true,
-        "hidden_list": false,
-        "hidden_input": false,
-        "omit_input": true,
-        "sort": 6,
-        "comment": transComments('footer')
       },
       {
         "id": "primary_column",
@@ -165,8 +59,8 @@ define(function(require, exports, module) {
         "hidden_list": false,
         "hidden_input": false,
         "default_value": "id",
-        "required": false,
-        "sort": 7,
+        "required": true,
+        "sort": 2,
         "comment": transComments('primary_column'),
         "options": {
           "filter": "primary"
@@ -184,7 +78,7 @@ define(function(require, exports, module) {
         "default_value": "sort",
         "required": false,
         "nullable": true,
-        "sort": 8,
+        "sort": 3,
         "comment": transComments('sort_column'),
         "options": {
           "filter": "number"
@@ -201,11 +95,41 @@ define(function(require, exports, module) {
         "hidden_input": false,
         "required": false,
         "nullable": true,
-        "sort": 9,
+        "sort": 4,
         "comment": transComments('status_column'),
         "options": {
           "filter": "number"
         }
+      },
+      {
+        "id":"default_status",
+        "column_name":"default_status",
+        "ui":"textinput",
+        "type":"VARCHAR",
+        "default_value": 1,
+        "required": false,
+        "nullable": true,
+        "system":false,
+        "hidden_list":false,
+        "hidden_input":false,
+        "omit_input": true,
+        "sort": 5,
+        "comment": transComments('default_status')
+      },
+      {
+        "id": "delete_value",
+        "column_name": "delete_value",
+        "ui": "numeric",
+        "type": "TINYINT",
+        "default_value": 0,
+        "required": false,
+        "nullable": true,
+        "system": false,
+        "hidden_list": false,
+        "hidden_input": false,
+        "omit_input": true,
+        "sort": 6,
+        "comment": transComments('delete_value')
       },
       {
         "id": "status_mapping",
@@ -216,7 +140,7 @@ define(function(require, exports, module) {
         "hidden_input": false,
         "required": false,
         "nullable": true,
-        "sort": 10,
+        "sort": 7,
         "comment": transComments('status_mapping'),
         "options": {
           "filter": "number"
@@ -232,8 +156,99 @@ define(function(require, exports, module) {
         "hidden_input": false,
         "required": false,
         "nullable": true,
-        "sort": 11,
+        "sort": 8,
         "comment": transComments('accountability')
+      },
+      {
+        "id": "preview_url",
+        "column_name": "preview_url",
+        "ui": "textinput",
+        "type": "VARCHAR",
+        "length": 255,
+        "system": false,
+        "hidden_list": false,
+        "hidden_input": false,
+        "required": false,
+        "nullable": true,
+        "sort": 9,
+        "options": {
+          "placeholder_text": __t('eg_x', {text: 'http://example.com/articles/{{slug}}'})
+        },
+        "comment": transComments('preview_url')
+      },
+      {
+        "id": "display_template",
+        "column_name": "display_template",
+        "ui": "textinput",
+        "type": "VARCHAR",
+        "length": 255,
+        "system": false,
+        "hidden_list": false,
+        "hidden_input": false,
+        "required": false,
+        "nullable": true,
+        "sort": 10,
+        "options": {
+          "placeholder_text": __t('eg_x', {text: '{{first_name}} {{last_name}}'})
+        },
+        "comment": transComments('display_template')
+      },
+      {
+        "id":"hidden",
+        "column_name":"hidden",
+        "ui":"checkbox",
+        "type":"TINYINT",
+        "default_value": false,
+        "system":false,
+        "required": false,
+        "nullable": true,
+        "hidden_list":false,
+        "hidden_input":false,
+        "sort": 11,
+        "comment": transComments('hidden')
+      },
+      {
+        "id": "footer",
+        "column_name": "footer",
+        "ui": "checkbox",
+        "type": "TINYINT",
+        "system": false,
+        "required": false,
+        "nullable": true,
+        "hidden_list": false,
+        "hidden_input": false,
+        "omit_input": true,
+        "sort": 12,
+        "comment": transComments('footer')
+      },
+      {
+        "id":"single",
+        "column_name":"single",
+        "ui":"checkbox",
+        "type":"TINYINT",
+        "default_value": false,
+        "system":false,
+        "required": false,
+        "nullable": true,
+        "hidden_list":false,
+        "hidden_input":false,
+        "sort": 13,
+        "comment": transComments('single')
+      },
+      {
+        "id": "allowed_listing_views",
+        "column_name": "allowed_listing_views",
+        "ui": "directus_views", // @TODO: multiple checkbox
+        "type": "VARCHAR",
+        "length": 200,
+        "default_value": "table",
+        "required": false,
+        "nullable": true,
+        "system": false,
+        "hidden_list": false,
+        "hidden_input": false,
+        "sort": 14,
+        "comment": transComments('allowed_listing_views')
       },
       {
         "id": "user_create_column",
@@ -247,7 +262,7 @@ define(function(require, exports, module) {
         "omit_input": true,
         "required": false,
         "nullable": true,
-        "sort": 12,
+        "sort": 15,
         "comment": ""
       },
       {
@@ -262,7 +277,7 @@ define(function(require, exports, module) {
         "omit_input": true,
         "required": false,
         "nullable": true,
-        "sort": 13,
+        "sort": 16,
         "comment": ""
       },
       {
@@ -277,7 +292,7 @@ define(function(require, exports, module) {
         "omit_input": true,
         "required": false,
         "nullable": true,
-        "sort": 14,
+        "sort": 17,
         "comment": ""
       },
       {
@@ -292,7 +307,7 @@ define(function(require, exports, module) {
         "omit_input": true,
         "required": false,
         "nullable": true,
-        "sort": 15,
+        "sort": 18,
         "comment": ""
       }
     ]
