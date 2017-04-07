@@ -667,7 +667,6 @@ class Bootstrap
 
                 // filename-ext-100-100-true.jpg
                 // @TODO: This should be another hook listener
-                $row['thumbnail_url'] = null;
                 $filename = implode('.', $thumbnailFilenameParts);
                 if (isset($row['type']) && $row['type'] == 'embed/vimeo') {
                     $oldThumbnailFilename = $row['name'] . '-vimeo-220-124-true.jpg';

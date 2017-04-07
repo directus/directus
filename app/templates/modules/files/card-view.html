@@ -1,7 +1,10 @@
 {{#rows}}
 <div class="file js-file" id="file_{{id}}" data-id="{{id}}" data-cid="{{cid}}">
 	{{# if thumbnailUrl}}
-	<img src="{{thumbnailUrl}}">
+	<div class="thumbnail js-image">
+		<div class="extension-fallback">{{ucase type}}</div>
+		<img src="{{thumbnailUrl}}">
+	</div>
 	{{else}}
 	{{# if id}}
 	<div class="extension-fallback">{{ucase type}}</div>

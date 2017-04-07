@@ -87,7 +87,14 @@ define(['app', 'helpers/file', 'core/UIComponent', 'core/UIView'], function(app,
                       {{{html}}} \
                     {{else}} \
                       {{#if thumbUrl}} \
-                        <div class="default-info js-image"><a target="_BLANK" href="{{url}}"><div class="type">{{uppercase type}}</div><img src="{{thumbUrl}}"></a></div> \
+                        <div class="thumbnail js-image"> \
+                          <a target="_BLANK" href="{{url}}"> \
+                            <div class="extension-fallback"> \
+                              <div class="type">{{uppercase type}}</div> \
+                            </div> \
+                            <img src="{{thumbUrl}}"> \
+                          </a> \
+                        </div> \
                       {{else}} \
                         <div class="default-info"><a target="_BLANK" href="{{url}}">{{type}}</a></div> \
                       {{/if}} \
@@ -256,7 +263,7 @@ define(['app', 'helpers/file', 'core/UIComponent', 'core/UIView'], function(app,
 
       // Show fallback image if file missing
       FileHelper.hideOnImageError(this.$('.js-image img'));
-    },
+    }
   });
 
   var Component = UIComponent.extend({

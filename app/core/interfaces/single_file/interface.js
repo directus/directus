@@ -11,11 +11,12 @@ define([
   'underscore',
   'core/t',
   'utils',
+  'helpers/file',
   'core/UIView',
   'core/table/table.view',
   'core/overlays/overlays'
 ],
-function (app, _, __t, Utils, UIView, TableView, Overlays) {
+function (app, _, __t, Utils, FileHelper, UIView, TableView, Overlays) {
 
   'use strict';
 
@@ -162,6 +163,9 @@ function (app, _, __t, Utils, UIView, TableView, Overlays) {
         model.setFile(file, this.options.settings.get('allowed_filetypes'));
         $dropzone.removeClass('dragover');
       }, this);
+
+      // Show fallback image if file missing
+      FileHelper.hideOnImageError(this.$('.js-image img'));
     },
 
     serialize: function () {

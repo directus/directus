@@ -11,10 +11,11 @@ define([
   'app',
   'underscore',
   'backbone',
+  'helpers/file',
   'core/UIView',
   'core/overlays/overlays'
 ],
-function(app, _, Backbone, UIView, Overlays) {
+function(app, _, Backbone, FileHelper, UIView, Overlays) {
 
   'use strict';
 
@@ -200,6 +201,9 @@ function(app, _, Backbone, UIView, Overlays) {
 
         self.uploadFiles(event.dataTransfer.files);
       };
+
+      // Show fallback image if file missing
+      FileHelper.hideOnImageError(this.$('.js-image img'));
     },
 
     uploadFiles: function(files) {

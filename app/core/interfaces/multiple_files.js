@@ -8,20 +8,21 @@
 /*jshint multistr: true */
 
 define([
-    'app',
-    'underscore',
-    'backbone',
-    'handlebars',
-    'sortable',
-    'core/UIComponent',
-    'core/UIView',
-    'core/overlays/overlays',
-    'core/t',
-  ],
-  function(app, _, Backbone, Handlebars, Sortable, UIComponent, UIView, Overlays, __t) {
+  'app',
+  'underscore',
+  'backbone',
+  'helpers/file',
+  'handlebars',
+  'sortable',
+  'core/UIComponent',
+  'core/UIView',
+  'core/overlays/overlays',
+  'core/t'
+], function(app, _, Backbone, FileHelper, Handlebars, Sortable, UIComponent, UIView, Overlays, __t) {
 
   'use strict';
 
+  // TODO: Show fallback when images fails loading
   var template = '<style type="text/css"> \
         .ui-file-container:after { \
           clear: both; \
@@ -87,7 +88,7 @@ define([
           cursor: pointer; \
         } \
       </style> \
-      <div class="ui-file-container">{{#rows}}<span class="media-slideshow-item show-circle margin-right-small margin-bottom-small"><img data-file-cid="{{cid}}" data-file-id="{{id}}" src={{url}}>{{#if ../showRemoveButton}}<div class="remove-slideshow-item large-circle white-circle"><span class="icon icon-cross"></span></div>{{/if}}</span>{{/rows}}<div class="swap-method single-image-thumbnail empty ui-thumbnail-dropzone" data-action=add><span><i class="material-icons">collections</i>{{t "directus_files_drop_or_choose_file"}}</span></div></div> \
+      <div class="ui-file-container">{{#rows}}<span class="media-slideshow-item show-circle margin-right-small margin-bottom-small js-image"><img data-file-cid="{{cid}}" data-file-id="{{id}}" src={{url}}>{{#if ../showRemoveButton}}<div class="remove-slideshow-item large-circle white-circle"><span class="icon icon-cross"></span></div>{{/if}}</span>{{/rows}}<div class="swap-method single-image-thumbnail empty ui-thumbnail-dropzone" data-action=add><span><i class="material-icons">collections</i>{{t "directus_files_drop_or_choose_file"}}</span></div></div> \
       <!-- <div class="related-table"></div> --> \
       <div class="multiple-image-actions"> \
         {{#if showAddButton}}<button class="btn btn-primary btn-small margin-right-small" data-action="add" type="button">{{t "file_upload"}}</button>{{/if}} \
@@ -320,6 +321,8 @@ define([
         });
       }
 
+      // Show fallback image if file missing
+      FileHelper.hideOnImageError(this.$('.js-image img'));
     },
 
     initialize: function(options) {
