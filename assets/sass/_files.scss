@@ -95,7 +95,10 @@
 		}
 		img {
 			height: 200px;
-			display: block;
+			// display: block;
+			position: absolute;
+			top: 0;
+			left: 0;
 		}
 		.extension-fallback {
 			height: 200px;
@@ -134,6 +137,7 @@
 			.uploaded {
 				font-size: 12px;
 				font-weight: 500;
+				margin-top: 2px;
 				font-style: italic;
 				color: $gray-4;
 			}

@@ -4397,7 +4397,9 @@ body.help .discover-spotlight {
   .file-listing .folder img,
   .file-listing .file img {
     height: 200px;
-    display: block; }
+    position: absolute;
+    top: 0;
+    left: 0; }
   .attachments .folder .extension-fallback,
   .attachments .file .extension-fallback,
   .folder-listing .folder .extension-fallback,
@@ -4470,6 +4472,7 @@ body.help .discover-spotlight {
     .file-listing .file .info .uploaded {
       font-size: 12px;
       font-weight: 500;
+      margin-top: 2px;
       font-style: italic;
       color: #999999; }
     .attachments .folder .info .remove,
