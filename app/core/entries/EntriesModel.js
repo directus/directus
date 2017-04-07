@@ -240,7 +240,7 @@ define(function(require, exports, module) {
             var value = attributes[key];
 
             // omit if the user has not permission to edit the field
-            if (!self.canEdit(key)) return;
+            if (!this.canEdit(key)) return;
 
             // Some one-manys are not nested objects and will not need any special treatment
             if (!_.isObject(value)) return;
