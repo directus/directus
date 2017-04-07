@@ -617,24 +617,8 @@ define([
     },
 
     events: {
-      // 'click td span': function(e) {
-      //   e.stopImmediatePropagation();
-      //   var attr = $(e.target).closest('td').attr('data-attribute');
-      //
-      //   this.toggleTableAttribute(SchemaManager.getTable($(e.target).closest('tr').attr('data-id')), attr, $(e.target));
-      // },
 
-      'click .js-add-table': function (event) {
-        event.stopPropagation();
-
-        var $row = $(event.target).closest('tr');
-        var tableName = $row.data('id');
-
-        app.schemaManager.addTable(tableName, function(tableModel) {
-          app.router.bookmarks.addTable(tableModel);
-          app.router.go(['settings', 'tables', tableName]);
-        });
-      },
+      'click .js-add-table': 'confirmManageTable',
 
       'click .js-remove-table': function (event) {
         event.stopPropagation();
@@ -643,6 +627,24 @@ define([
 
         confirmDestroyTable(tableName, _.bind(this.destroyTable, this));
       }
+    },
+
+    confirmManageTable: function (event) {
+      event.stopPropagation();
+
+      var fn = function () {
+        var $row = $(event.target).closest('tr');
+        this.manageTable($row.data('id'));
+      };
+
+      app.router.openModal({type: 'confirm', text: __t('confirm_manage_table'), callback: _.bind(fn, this)});
+    },
+
+    manageTable: function (tableName) {
+      app.schemaManager.addTable(tableName, function(tableModel) {
+        app.router.bookmarks.addTable(tableModel);
+        app.router.go(['settings', 'tables', tableName]);
+      });
     },
 
     toggleTableAttribute: function(tableModel, attr, element) {
