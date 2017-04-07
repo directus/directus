@@ -62,7 +62,11 @@
 			border-left: 1px solid $gray-2;
 		}
 		.page {
-			right: 0;
+			.page-container {
+				.main-container {
+					margin-right: 200px;
+				}
+			}
 		}
 	}
 
@@ -294,7 +298,11 @@
 			right: 0;
 		}
 		.page {
-			right: 0;
+			.page-container {
+				.main-container {
+					margin-right: 200px;
+				}
+			}
 		}
 	}
 	.view-calendar { // Smaller calendar header

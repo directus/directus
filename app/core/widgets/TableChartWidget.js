@@ -171,6 +171,7 @@ function(app, Backbone, _, __t, moment, DateHelper, Chart) {
           }]
         },
         options: {
+          animation : false,
           defaultFontSize: 10,
           defaultFontFamily: 'Roboto',
           maintainAspectRatio: false,

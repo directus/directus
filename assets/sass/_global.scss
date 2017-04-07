@@ -52,12 +52,20 @@ html, body {
 	}
 	&.right-sidebar-open {
 		.page {
-			right: 200px;
+			.page-container {
+				.main-container {
+					margin-right: 200px;
+				}
+			}
 		}
 	}
 	&.right-sidebar-open-wide {
 		.page {
-			right: 360px;
+			.page-container {
+				.main-container {
+					margin-right: 360px;
+				}
+			}
 		}
 	}
 }

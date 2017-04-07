@@ -150,10 +150,10 @@ html, body {
     right: 0; }
   html.right-sidebar-open table .right-sidebar-toggle .material-icons, html.right-sidebar-open-wide table .right-sidebar-toggle .material-icons, body.right-sidebar-open table .right-sidebar-toggle .material-icons, body.right-sidebar-open-wide table .right-sidebar-toggle .material-icons {
     opacity: 0; }
-  html.right-sidebar-open .page, body.right-sidebar-open .page {
-    right: 200px; }
-  html.right-sidebar-open-wide .page, body.right-sidebar-open-wide .page {
-    right: 360px; }
+  html.right-sidebar-open .page .page-container .main-container, body.right-sidebar-open .page .page-container .main-container {
+    margin-right: 200px; }
+  html.right-sidebar-open-wide .page .page-container .main-container, body.right-sidebar-open-wide .page .page-container .main-container {
+    margin-right: 360px; }
 
 a {
   color: inherit;
@@ -6684,9 +6684,9 @@ body.login {
     -moz-box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.2);
     box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.2);
     border-left: 1px solid #DDDDDD; }
-  body.right-sidebar-open .page,
-  body.right-sidebar-open-wide .page {
-    right: 0; }
+  body.right-sidebar-open .page .page-container .main-container,
+  body.right-sidebar-open-wide .page .page-container .main-container {
+    margin-right: 200px; }
 
   .view-calendar .days .day.active .items {
     bottom: 5px;
@@ -6870,9 +6870,9 @@ body.login {
   body.right-sidebar-open .right-sidebar,
   body.right-sidebar-open-wide .right-sidebar {
     right: 0; }
-  body.right-sidebar-open .page,
-  body.right-sidebar-open-wide .page {
-    right: 0; }
+  body.right-sidebar-open .page .page-container .main-container,
+  body.right-sidebar-open-wide .page .page-container .main-container {
+    margin-right: 200px; }
 
   .view-calendar header {
     padding: 20px; }
