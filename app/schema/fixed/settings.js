@@ -65,7 +65,7 @@ define(function(require, exports, module) {
       options: {
         size: 'small'
       },
-      comment: __t('global_settings_cms_user_auto_sign_out_comment')
+      comment: transComments('global_cms_user_auto_sign_out')
     },
     {
       id: 'rows_per_page',
@@ -93,9 +93,9 @@ define(function(require, exports, module) {
       },
       comment: transComments('files_file_naming')
     },
-    {id: 'thumbnail_quality', ui: 'numeric', char_length: 255, options: {size: 'small', placeholder_text: "eg: 90"}, comment: __t('settings_files_thumbnail_quality_comment')},
-    {id: 'thumbnail_crop_enabled', ui: 'checkbox', comment: __t('settings_files_thumbnail_crop_enabled')},
-    {id: 'youtube_api_key', ui: 'textinput', char_length: 255, comment: __t('settings_files_youtube_api_key_comment')+'<br><a target="_blank" href="https://developers.google.com/youtube/v3/getting-started">'+__t('settings_files_youtube_api_key_get_key')+'</a>'}
+    {id: 'thumbnail_quality', ui: 'numeric', char_length: 255, options: {size: 'small', placeholder_text: "eg: 90"}, comment: __t('directus_settings_files_thumbnail_quality_comment')},
+    {id: 'thumbnail_crop_enabled', ui: 'checkbox', comment: __t('directus_settings_files_thumbnail_crop_enabled')},
+    {id: 'youtube_api_key', ui: 'textinput', char_length: 255, comment: __t('directus_settings_files_youtube_api_key_comment')+'<br><a target="_blank" href="https://developers.google.com/youtube/v3/getting-started">'+__t('directus_settings_files_youtube_api_key_get_key')+'</a>'}
   ];
 
   module.exports = {
