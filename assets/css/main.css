@@ -3823,12 +3823,14 @@ body.help .discover-spotlight {
       -webkit-background-clip: padding-box;
       background-clip: padding-box;
       position: relative;
-      background-color: #3498DB;
       width: 100px;
       height: 100px;
       margin: -80px auto 0px;
       overflow: hidden;
-      border: 3px solid #3498DB; }
+      border: 3px solid #3498DB;
+      background-color: #FFFFFF; }
+      .smoke .modal .header-circle.with-background {
+        background-color: #3498DB; }
       .smoke .modal .header-circle.editable:hover .avatar {
         opacity: 0.5; }
       .smoke .modal .header-circle.editable:hover .edit-avatar {
@@ -3992,6 +3994,12 @@ body.help .discover-spotlight {
         line-height: 18px;
         color: #999999;
         text-align: left; }
+        .smoke .modal.profile .modal-bg .row.info {
+          margin-top: 20px;
+          padding-top: 20px;
+          padding-bottom: 20px;
+          line-height: 22px;
+          text-align: center; }
         .smoke .modal.profile .modal-bg .row .label {
           color: #3498DB;
           font-size: 12px;

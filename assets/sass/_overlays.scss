@@ -179,12 +179,15 @@ body.help {
 			@include box-shadow ();
 			@include border-radius (100px);
 			position: relative;
-			background-color: $primary;
 			width: 100px;
 			height: 100px;
 			margin: -80px auto 0px;
 			overflow: hidden;
 			border: 3px solid $primary;
+			background-color: $white;
+			&.with-background {
+				background-color: $primary;
+			}
 			&.editable:hover {
 				.avatar {
 					opacity: 0.5;
@@ -368,6 +371,13 @@ body.help {
 				line-height: 18px;
 				color: $gray-4;
 				text-align: left;
+				&.info {
+					margin-top: 20px;
+					padding-top: 20px;
+					padding-bottom: 20px;
+					line-height: 22px;
+					text-align: center;
+				}
 				.label {
 					color: $primary;
 					font-size: 12px;
