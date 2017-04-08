@@ -118,7 +118,9 @@ class BaseTableGateway extends TableGateway
 
         parent::__construct($table, $adapter, $features, $resultSetPrototype, $sql);
 
-        $this->schemaManager = static::$container->get('schemaManager');
+        if (static::$container) {
+            $this->schemaManager = static::$container->get('schemaManager');
+        }
     }
 
     /**
@@ -349,7 +351,7 @@ class BaseTableGateway extends TableGateway
             $TableGateway->insert($payload->data);
             $recordData[$TableGateway->primaryKeyFieldName] = $TableGateway->getLastInsertValue();
 
-            if ($tableName == 'directus_files') {
+            if ($tableName == 'directus_files' && static::$container) {
                 $Files = static::$container->get('files');
                 $ext = pathinfo($recordData['name'], PATHINFO_EXTENSION);
 
