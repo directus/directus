@@ -275,18 +275,97 @@ ul {
 	&.fading {
 		opacity: 1;
 	}
+
+
+@mixin loader11(
+  $size: $loader-size,
+  $color: $loader-color,
+  $duration: $loader-animation-duration,
+  $gap: $loader-gap,
+  $align: null
+) {
+  width: $size;
+  height: $size;
+  border-radius: 50%;
+  box-shadow: 0 $size * 2 0 $color;
+  position: relative;
+  animation: loader11 $duration ease-in-out alternate infinite;
+  animation-delay: ($duration / 5) * 2;
+
+  &::after,
+  &::before {
+    content: '';
+    position: absolute;
+    width: $size;
+    height: $size;
+    border-radius: 50%;
+    box-shadow: 0 $size * 2 0 $color;
+    animation: loader11 $duration ease-in-out alternate infinite;
+  }
+
+  &::before {
+    left: -($size + $gap);
+    animation-delay: ($duration / 5) * 3;
+
+  }
+
+  &::after {
+    right: -($size + $gap);
+    animation-delay: ($duration / 5) * 1;
+  }
+
+  @if ($align == center) {
+    margin-left: auto;
+    margin-right: auto;
+  }
+  @if ($align == middle) {
+    top: 50%;
+    margin: -($size * 2 + $size / 2) auto 0;
+  } @else {
+    top: -$size * 2;
+  }
+  @keyframes loader11 {
+    0% {
+      box-shadow: 0 $size * 2 0 $color;
+    }
+
+    100% {
+      box-shadow: 0 $size 0 $color;
+    }
+  }
+}
+
 	.loading-container {
-		@include border-radius (2px);
-		@include box-shadow ($x: 0px, $y: 0px, $blur: 2px, $spread: 0px, $opacity: 0.05);
+		@include loader11($size: 10px, $color: $gray-4, $duration: 1s, $gap: 8px, $align: middle);
+		// @include border-radius (2px);
+		// @include box-shadow ($x: 0px, $y: 0px, $blur: 2px, $spread: 0px, $opacity: 0.05);
 		position: absolute;
 		top: 48%;
 		left: 50%;
-		width: 50%;
-		max-width: 400px;
+		// width: 50%;
+		// max-width: 400px;
 		-webkit-transform: translate(-50%, -50%);
 		transform: translate(-50%, -50%);
-		height: 4px;
-		background-color: $white;
+		// height: 4px;
+		// background-color: $white;
+		// &:before{
+		// 	display: block;
+		// 	position: absolute;
+		// 	content: "";
+		// 	left: -200px;
+		// 	width: 200px;
+		// 	height: 4px;
+		// 	background-color: $primary;
+		// 	animation: loading 2s linear infinite;
+		// }
+		// @keyframes loading {
+		// 	from {left: -200px; width: 30%;}
+		// 	50% {width: 30%;}
+		// 	70% {width: 70%;}
+		// 	80% { left: 50%;}
+		// 	95% {left: 120%;}
+		// 	to {left: 100%;}
+		// }
 		.loading-bar {
 			// @include transition (all, $timing-long, cubic-bezier(0.23, 1, 0.32, 1));
 			@include border-radius (2px);

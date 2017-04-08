@@ -369,24 +369,39 @@ ul {
   .loading.fading {
     opacity: 1; }
   .loading .loading-container {
-    -webkit-border-radius: 2px;
-    -moz-border-radius: 2px;
-    border-radius: 2px;
-    -moz-background-clip: padding;
-    -webkit-background-clip: padding-box;
-    background-clip: padding-box;
-    -webkit-box-shadow: 0px 0px 2px 0px rgba(0, 0, 0, 0.05);
-    -moz-box-shadow: 0px 0px 2px 0px rgba(0, 0, 0, 0.05);
-    box-shadow: 0px 0px 2px 0px rgba(0, 0, 0, 0.05);
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    box-shadow: 0 20px 0 #999999;
+    position: relative;
+    animation: loader11 1s ease-in-out alternate infinite;
+    animation-delay: 0.4s;
+    top: 50%;
+    margin: -25px auto 0;
     position: absolute;
     top: 48%;
     left: 50%;
-    width: 50%;
-    max-width: 400px;
     -webkit-transform: translate(-50%, -50%);
-    transform: translate(-50%, -50%);
-    height: 4px;
-    background-color: #FFFFFF; }
+    transform: translate(-50%, -50%); }
+    .loading .loading-container::after, .loading .loading-container::before {
+      content: '';
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      box-shadow: 0 20px 0 #999999;
+      animation: loader11 1s ease-in-out alternate infinite; }
+    .loading .loading-container::before {
+      left: -18px;
+      animation-delay: 0.6s; }
+    .loading .loading-container::after {
+      right: -18px;
+      animation-delay: 0.2s; }
+@keyframes loader11 {
+  0% {
+    box-shadow: 0 20px 0 #999999; }
+  100% {
+    box-shadow: 0 10px 0 #999999; } }
     .loading .loading-container .loading-bar {
       -webkit-border-radius: 2px;
       -moz-border-radius: 2px;
@@ -5250,7 +5265,8 @@ body.help .discover-spotlight {
     .fields .field .interface textarea {
       min-width: 400px;
       min-height: 140px;
-      line-height: 18px; }
+      line-height: 18px;
+      height: auto; }
     .fields .field .interface select {
       padding-right: 36px;
       min-width: 200px; }
