@@ -4,12 +4,13 @@ define([
   'handlebars',
   "core/directus",
   'core/BasePageView',
+  'helpers/file',
   'core/widgets/widgets',
   'core/t',
   'moment'
 ],
 
-function(app, Backbone, Handlebars, Directus, BasePageView, Widgets, __t, moment) {
+function(app, Backbone, Handlebars, Directus, BasePageView, FileHelper, Widgets, __t, moment) {
 
   'use strict';
 
@@ -105,6 +106,15 @@ function(app, Backbone, Handlebars, Directus, BasePageView, Widgets, __t, moment
       }
 
       return {groups: data};
+    },
+
+    afterRender: function () {
+      FileHelper.onImageError(this.$('.js-image img'), function () {
+        var $el = $(this);
+
+        $el.attr('data-src', $el.attr('src'));
+        $el.attr('src', app.PATH + 'assets/imgs/missing-user.svg');
+      });
     },
 
     initialize: function(options) {
