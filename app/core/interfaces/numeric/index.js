@@ -16,25 +16,12 @@ define([
 
   'use strict';
 
-  var template = '<input type="text" value="{{value}}" placeholder="{{placeholder}}" name="{{name}}" id="{{name}}" class="{{size}}" {{#if readonly}}readonly{{/if}}/>';
-
   var Input = UIView.extend({
-    templateSource: template,
-
-    events: {
-      'keyup input': 'checkChars',
-      'blur input': 'checkChars'
-    },
-
-    checkChars: function() {
-      var numeric = this.$el.find('input');
-      var value = numeric.val();
-      value = value.replace(/[^0-9-.]/ig, ""); // @TODO: regex needs to reflect datatype (no "." for INT, etc)
-      numeric.val(value);
-    },
+    template: 'numeric/input',
 
     serialize: function() {
       var value = '';
+
       if(!isNaN(this.options.value)) {
         value = this.options.value;
       }
@@ -46,18 +33,48 @@ define([
           value = this.options.schema.get('default_value');
       }
 
+      var attr = {};
+
+      switch(this.options.schema.get('type')) {
+        case 'TINYINT':
+          attr.step = 1;
+          attr.min = -128;
+          attr.max = 127;
+          break;
+        case 'SMALLINT':
+          attr.step = 1;
+          attr.min = -32768;
+          attr.max = 32767;
+          break;
+        case 'MEDIUMINT':
+          attr.step = 1;
+          attr.min = -8388608;
+          attr.max = 8388607;
+          break;
+        case 'INT':
+          attr.step = 1;
+          attr.min = -2147483648;
+          attr.max = 2147483647;
+          break;
+        case 'BIGINT':
+          attr.step = 1;
+          attr.min = -9223372036854775808;
+          attr.max = 9223372036854775807;
+          break;
+        case 'YEAR':
+          attr.step = 1;
+        break;
+      }
+
       return {
         value: value,
         name: this.options.name,
         size: this.options.settings.get('size'),
         placeholder: (this.options.settings) ? this.options.settings.get('placeholder_text') : '',
         comment: this.options.schema.get('comment'),
-        readonly: !this.options.canWrite
+        readonly: !this.options.canWrite,
+        attr: attr
       };
-    },
-
-    initialize: function() {
-      // this.hasDecimals = (['float', 'decimal', 'numeric'].indexOf(this.options.schema.get('type')) > -1);
     }
   });
 
@@ -68,25 +85,25 @@ define([
       'SMALLINT',
       'MEDIUMINT',
       'INT',
-      'NUMERIC',
       'FLOAT',
       'YEAR',
-      'VARCHAR',
-      'CHAR',
       'DOUBLE',
+      'VARCHAR',
       'BIGINT'
     ],
     variables: [
       {id: 'size', type: 'String', default_value: 'large', ui: 'select', options: {options: {'large':__t('size_large'),'medium':__t('size_medium'),'small':__t('size_small')} }},
-      {id: 'placeholder_text', type: 'String', default_value: '', ui: 'textinput', char_length:200},
-      {id: 'allow_null', type: 'Boolean', default_value: false, ui: 'checkbox'},
+      {id: 'placeholder_text', type: 'String', default_value: '', ui: 'textinput', char_length: 200},
       {id: 'localized', type: 'Boolean', default_value: true, ui: 'checkbox', comment: __t('numeric_localized_comment')}
     ],
     Input: Input,
     validate: function(value, options) {
-      // _.isEmpty (in the installed version) does not support INTs properly
       if (options.schema.isRequired() && value != 0 && !value) {
         return __t('this_field_is_required');
+      }
+
+      if (!options.view.$el.find('input')[0].checkValidity()) {
+        return __t('confirm_invalid_value');
       }
     },
     list: function (options) {
