@@ -56,6 +56,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
         size: this.options.settings.get('size'),
         value: value,
         name: this.options.name,
+        length: length,
         maxLength: length,
         characters: length - value.toString().length,
         comment: this.options.schema.get('comment'),
@@ -81,7 +82,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
     },
 
     initialize: function() {
-      this.maxCharLength = this.options.schema.get('char_length');
+      this.maxCharLength = this.options.schema.get('length');
     }
   });
 
