@@ -8,7 +8,6 @@
 
 define([
   'app',
-  'underscore',
   'core/UIComponent',
   'core/UIView',
   'core/t'
@@ -109,7 +108,7 @@ define([
     list: function (options) {
       var value = options.value;
 
-      if (_.isNumber(value)) {
+      if (!isNaN(Number(value))) {
         value = Number(value);
 
         if (options.settings.get('localized')) {
