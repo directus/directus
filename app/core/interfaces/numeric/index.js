@@ -32,40 +32,10 @@ define([
           value = this.options.schema.get('default_value');
       }
 
-      var attr = {};
+      var step = 1;
 
-      switch(this.options.schema.get('type')) {
-        case 'TINYINT':
-          attr.step = 1;
-          attr.min = -128;
-          attr.max = 127;
-          break;
-        case 'SMALLINT':
-          attr.step = 1;
-          attr.min = -32768;
-          attr.max = 32767;
-          break;
-        case 'MEDIUMINT':
-          attr.step = 1;
-          attr.min = -8388608;
-          attr.max = 8388607;
-          break;
-        case 'INT':
-          attr.step = 1;
-          attr.min = -2147483648;
-          attr.max = 2147483647;
-          break;
-        case 'BIGINT':
-          attr.step = 1;
-          attr.min = -9223372036854775808;
-          attr.max = 9223372036854775807;
-          break;
-        case 'YEAR':
-          attr.step = 1;
-        case 'FLOAT':
-        case 'VARCHAR':
-          attr.step = 'any';
-        break;
+      if (this.options.schema.get('type') === 'FLOAT' || this.options.schema.get('type') === 'VARCHAR') {
+        step = 'any';
       }
 
       return {
@@ -75,7 +45,7 @@ define([
         placeholder: (this.options.settings) ? this.options.settings.get('placeholder_text') : '',
         comment: this.options.schema.get('comment'),
         readonly: !this.options.canWrite,
-        attr: attr
+        step: step
       };
     }
   });
@@ -91,6 +61,7 @@ define([
       'YEAR',
       'DOUBLE',
       'VARCHAR',
+      'CHAR',
       'BIGINT'
     ],
     variables: [
