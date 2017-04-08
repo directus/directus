@@ -5,6 +5,15 @@ button {
 	background-color: initial;
 }
 
+a.text-button {
+	@include transition (all, $timing-short, ease-in-out);
+	color: $primary;
+	cursor: pointer;
+	&:hover {
+		background-color: darken($primary, 8%);
+	}
+}
+
 .button {
 	@include border-radius (2px);
 	@include transition (all, $timing-short, ease-in-out);

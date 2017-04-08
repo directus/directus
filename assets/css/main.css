@@ -495,6 +495,17 @@ button {
   outline: none;
   background-color: initial; }
 
+a.text-button {
+  -webkit-transition: all 200ms ease-in-out 0ms;
+  -moz-transition: all 200ms ease-in-out 0ms;
+  -o-transition: all 200ms ease-in-out 0ms;
+  -ms-transition: all 200ms ease-in-out 0ms;
+  transition: all 200ms ease-in-out 0ms;
+  color: #3498DB;
+  cursor: pointer; }
+  a.text-button:hover {
+    background-color: #2383c4; }
+
 .button {
   -webkit-border-radius: 2px;
   -moz-border-radius: 2px;
@@ -3862,7 +3873,8 @@ body.help .discover-spotlight {
       .smoke .modal .fields .field .interface {
         margin-top: 6px; }
     .smoke .modal.confirm .modal-bg {
-      min-width: 500px; }
+      min-width: 500px;
+      max-width: 600px; }
       .smoke .modal.confirm .modal-bg h5 {
         margin-bottom: 10px;
         font-style: normal;
