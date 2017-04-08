@@ -160,6 +160,7 @@ define(function(require, exports, module) {
         "sort": 7,
         "comment": transComments('status_mapping'),
         "options": {
+          "rows": 17,
           "placeholder_text": statusMappingPlaceholder,
           "filter": "number"
         }
