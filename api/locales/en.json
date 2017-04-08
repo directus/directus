@@ -517,7 +517,7 @@
     "directus_tables_status_column": "Status Column",
     "directus_tables_status_column_comment": "Typically `active`, you can set a different column here",
     "directus_tables_status_mapping": "Status Mapping",
-    "directus_tables_status_mapping_comment": "If you have chosen a status column above, these determine the options available",
+    "directus_tables_status_mapping_comment": "If you have chosen a status column above, these determine the options available. Add as many statuses as you'd like – each can have its own granular permissions set to define workflows",
     "directus_tables_accountability": "Accountability",
     "directus_tables_accountability_comment": "You can choose columns for tracking the date and Directus user who created or modified each item",
 
