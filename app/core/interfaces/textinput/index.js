@@ -19,13 +19,8 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
 
   'use strict';
 
-  // Template Used for this UI
-  var template = '<div class="char-count-container {{size}}"> \
-                    <input type="text" placeholder="{{placeholder}}" value="{{value}}" name="{{name}}" id="{{name}}" maxLength="{{maxLength}}" class="{{size}}" {{#if readonly}}readonly{{/if}}/> \
-                  {{#if length}}<span class="char-count hide">{{characters}}</span>{{/if}}</div>';
-
   var Input = UIView.extend({
-    templateSource: template,
+    template: 'textinput/input',
 
     // Event Declarations
     events: {
