@@ -79,7 +79,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
           return !chars.includes(String.fromCharCode(e.which));
         case ('wl') :
           chars = this.options.settings.get('validation_string').split('');
-          return !chars.includes(String.fromCharCode(e.which));
+          return chars.includes(String.fromCharCode(e.which));
       }
 
       return true;
