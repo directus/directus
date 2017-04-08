@@ -275,66 +275,6 @@ ul {
 	&.fading {
 		opacity: 1;
 	}
-
-
-@mixin loader11(
-  $size: $loader-size,
-  $color: $loader-color,
-  $duration: $loader-animation-duration,
-  $gap: $loader-gap,
-  $align: null
-) {
-  width: $size;
-  height: $size;
-  border-radius: 50%;
-  box-shadow: 0 $size * 2 0 $color;
-  position: relative;
-  animation: loader11 $duration ease-in-out alternate infinite;
-  animation-delay: ($duration / 5) * 2;
-
-  &::after,
-  &::before {
-    content: '';
-    position: absolute;
-    width: $size;
-    height: $size;
-    border-radius: 50%;
-    box-shadow: 0 $size * 2 0 $color;
-    animation: loader11 $duration ease-in-out alternate infinite;
-  }
-
-  &::before {
-    left: -($size + $gap);
-    animation-delay: ($duration / 5) * 3;
-
-  }
-
-  &::after {
-    right: -($size + $gap);
-    animation-delay: ($duration / 5) * 1;
-  }
-
-  @if ($align == center) {
-    margin-left: auto;
-    margin-right: auto;
-  }
-  @if ($align == middle) {
-    top: 50%;
-    margin: -($size * 2 + $size / 2) auto 0;
-  } @else {
-    top: -$size * 2;
-  }
-  @keyframes loader11 {
-    0% {
-      box-shadow: 0 $size * 2 0 $color;
-    }
-
-    100% {
-      box-shadow: 0 $size 0 $color;
-    }
-  }
-}
-
 	.loading-container {
 		@include loader11($size: 10px, $color: $gray-4, $duration: 1s, $gap: 8px, $align: middle);
 		// @include border-radius (2px);
@@ -371,9 +311,7 @@ ul {
 			@include border-radius (2px);
 			// animation: pulsate-login 1s ease-out;
 			// animation-iteration-count: infinite;
-
 			animation: 20s ease-out 0s 1 progress-bar forwards;
-
 			position: absolute;
 			top: 0;
 			bottom: 0;
