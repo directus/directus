@@ -116,7 +116,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
 
       if (_.isEmpty(value)) {
         if (options.schema.get('required') === true) {
-          return validationMessage;
+          return __t('this_field_is_required');
         }
 
         return;
