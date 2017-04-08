@@ -112,9 +112,14 @@ define(function(require, exports, module) {
     return getInstance(tableName, options);
   }
 
+  function updateRowsLimit(limit) {
+    rowsPerPage = Number(limit);
+  }
+
   module.exports.getInstance = getInstance;
   module.exports.getNewInstance = getNewInstance;
   module.exports.setup = setup;
+  module.exports.updateRowsLimit = updateRowsLimit;
 
   module.exports.FilesCollection = FilesCollection;
 
