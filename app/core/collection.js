@@ -89,6 +89,10 @@ function(app, Backbone, StatusHelper, _) {
       }, this);
     },
 
+    removeFilter: function (key) {
+      delete this.filters[key];
+    },
+
     // Proxies underscore's sortBy to reverse order
 
     sortBy: function() {

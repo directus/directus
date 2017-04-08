@@ -3,8 +3,7 @@ define([
   'backbone',
   'underscore',
   'handlebars'
-],
-function(app, Backbone, _, Handlebars) {
+], function(app, Backbone, _, Handlebars) {
 
   'use strict';
 
@@ -27,6 +26,9 @@ function(app, Backbone, _, Handlebars) {
 
     events: {
       'keyup .js-search': 'search',
+
+      'click .js-search-clear': 'clearSearch',
+
       'click .js-toggle': function (event) {
         this.$el.toggleClass('filter-dropdown-open');
       },
@@ -35,7 +37,7 @@ function(app, Backbone, _, Handlebars) {
         var $checksChecked = this.$el.find('input.js-status-check:checked');
         var status = [];
 
-        $checksChecked.each(function(i, el) {
+        $checksChecked.each(function (i, el) {
           status.push($(el).val());
         });
 
@@ -43,7 +45,7 @@ function(app, Backbone, _, Handlebars) {
         this.collection.fetch();
       },
 
-      'click .js-remove':function(event) {
+      'click .js-remove': function (event) {
         var index = $(event.target).parent().index();
         var value = this.options.filters[index].filterData.value;
         this.options.filters.splice(index, 1);
@@ -57,13 +59,14 @@ function(app, Backbone, _, Handlebars) {
         this.render();
       },
 
-      'change .adv-search-col-id': function(e) {
+      'change .adv-search-col-id': function (e) {
         var selectedVal = $(e.target).val();
         if(selectedVal !== "") {
           this.addNewFilter(selectedVal);
         }
       },
-      'change .filter_ui': function(e) {
+
+      'change .filter_ui': function (e) {
         this.processFilterChange(e);
       }
     },
@@ -91,6 +94,33 @@ function(app, Backbone, _, Handlebars) {
             value: searchString
           }
         });
+      }
+
+      this.updateFilters();
+      this.collection.fetch();
+    },
+
+    clearSearch: function () {
+      this.searchString = '';
+      this.$('.js-search').val(this.searchString);
+
+      var filterIndex = -1;
+      var key;
+      _.each(this.options.filters, function (item, index) {
+        if (item.filterData.id === 'q') {
+          key = item.filterData.id;
+          filterIndex = index;
+        }
+      });
+
+      if (filterIndex >= 0) {
+        this.options.filters.splice(filterIndex, 1);
+      }
+
+      // NOTE: search string is a global filter and it needs to be directly removed
+      // updateFilters(); only update current `filters` key or set new ones
+      if (key) {
+        this.collection.removeFilter(key);
       }
 
       this.updateFilters();
@@ -219,21 +249,18 @@ function(app, Backbone, _, Handlebars) {
       });
 
       // data.statusColumn = structure.get(app.statusMapping.status_name);
-      data.filters = this.options.filters;
+      data.filters = (this.options.filters || []).slice();
       data.tableColumns = _.difference(structure.pluck('id'), [app.statusMapping.status_name]);
       if (this.collection.table.get('filter_column_blacklist')) {
         data.tableColumns = _.difference(data.tableColumns, this.collection.table.get('filter_column_blacklist').split(','));
       }
 
-      data.tableColumns.sort(function(a, b) {
-        if(a < b) return -1;
-        if(a > b) return 1;
-        return 0;
+      data.tableColumns.sort(function (a, b) {
+        return a < b;
       });
 
       var that = this;
-      var i=0;
-      _.each(this.options.filters, function(item) {
+      _.each(this.options.filters, function (item, i) {
         if (item.relatedCollection) {
           data.filters[i].relatedEntries = [];
           if(item.columnModel.options.has('filter_column')) {
@@ -247,7 +274,7 @@ function(app, Backbone, _, Handlebars) {
           });
 
           data.filters[i].relatedEntries = _.sortBy(data.filters[i].relatedEntries, 'visible_column_template');
-        } else if(item.dropdownValues) {
+        } else if (item.dropdownValues) {
           data.filters[i].relatedEntries = [];
           _.each(item.dropdownValues, function(model) {
             data.filters[i].relatedEntries.push({visible_column:model, visible_column_template: model});
@@ -256,6 +283,7 @@ function(app, Backbone, _, Handlebars) {
           // Global filters doesn't have a columnName property
           // ex. ?q=word
           if (!data.filters[i].columnName) {
+            data.filters.splice(i, 1);
             return;
           }
           var template = Handlebars.compile(that.getFilterDataType(data.filters[i].columnName));
@@ -269,11 +297,10 @@ function(app, Backbone, _, Handlebars) {
             data.filters[i].filter_ui = template({});
           }
         }
-
-        i++;
       });
 
       data.searchString = this.searchString;
+      data.hasFilters = this.options.filters.length > 0;
 
       return data;
     },

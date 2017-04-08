@@ -1,6 +1,6 @@
 <input class="general js-search" type="text" value="{{searchString}}" placeholder="{{resultCount}} Filtered Results…">
 <i class="material-icons search">search</i>
-<!-- <i class="material-icons clear">close</i> --> <!-- Only on when there's active filters -->
+{{#if hasFilters}}<i class="material-icons clear js-search-clear">close</i>{{/if}}
 <i class="material-icons filter-dropdown-toggle js-toggle">arrow_drop_down</i>
 <div class="filter-dropdown">
     {{#if statusColumn}}
