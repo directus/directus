@@ -11,7 +11,7 @@ define([
   'core/UIComponent',
   'core/UIView',
   'core/t'
-], function(app, _, UIComponent, UIView, __t) {
+], function(app, UIComponent, UIView, __t) {
 
   'use strict';
 
@@ -62,6 +62,9 @@ define([
           break;
         case 'YEAR':
           attr.step = 1;
+        case 'FLOAT':
+        case 'VARCHAR':
+          attr.step = 'any';
         break;
       }
 
