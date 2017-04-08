@@ -249,7 +249,7 @@ class Table extends Route
 
         if ($app->request()->isDelete()) {
             $tableGateway = new TableGateway($table, $ZendDb, $acl);
-            $success = $tableGateway->drop();
+            $success = $tableGateway->stopManaging();
 
             $response = [
                 'error' => [

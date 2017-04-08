@@ -137,9 +137,14 @@ define(function(require, exports, module) {
 
     },
 
-    register: function(namespace, tables) {
-      _.each(tables, function(options) {
+    register: function (namespace, tables) {
+      if (!_.isArray(tables)) {
+        tables = [tables];
+      }
+
+      _.each(tables, function (options) {
         var tableName = options.schema.id;
+        var model;
 
         if (tableSchemas[namespace].get(tableName)) {
           console.warn('Warning: ' + tableName + ' already exists in the schema manager, the schema will be ignored');
@@ -149,14 +154,26 @@ define(function(require, exports, module) {
         // Set table schema
         options.schema.url = this.apiURL + 'tables/' + encodeURIComponent(tableName);
 
-        var model = new TableModel(options.schema, {parse: true, url: this.apiURL + 'tables/' + encodeURIComponent(tableName)});
-        //model.url = this.apiURL + 'tables/' + tableName;
-        //model.columns.url = this.apiURL + 'tables/' + tableName + '/columns';
+        model = this.createTableModel(tableName, options.schema);
 
         columnSchemas[namespace][tableName] = model.columns;
         tableSchemas[namespace].add(model);
-
       }, this);
+    },
+
+    registerTable: function (tables) {
+      return this.register('tables', tables);
+    },
+
+    // Create a table model from table schema data
+    createTableModel: function (tableName, schema) {
+      //model.url = this.apiURL + 'tables/' + tableName;
+      //model.columns.url = this.apiURL + 'tables/' + tableName + '/columns';
+
+      return new TableModel(schema, {
+        parse: true,
+        url: this.apiURL + 'tables/' + encodeURIComponent(tableName)
+      });
     },
 
     registerColumns: function(namespace, tableName, columns) {

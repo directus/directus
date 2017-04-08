@@ -47,27 +47,30 @@ define([
       wait: true
     };
 
-    options.success = function(model, response) {
-      if (response.success === true) {
-        var tableName = model.get('table_name');
-        var bookmarks = app.router.bookmarks;
-
-        app.schemaManager.unregisterFullSchema(tableName);
-
-        var model = bookmarks.findWhere({title: app.capitalize(tableName), section: 'table'});
-        if (model) {
-          bookmarks.remove(model);
-        }
-
-        Notification.success(__t('table_removed'), __t('table_x_was_removed', {
-          table_name: tableName
-        }), 3000);
-
-        if (callback) {
-          callback();
-        }
-      } else {
+    options.success = function (model, response) {
+      if (response.success !== true) {
         Notification.error(response.message);
+
+        return;
+      }
+
+      var tableName = model.get('table_name');
+      var bookmarks = app.router.bookmarks;
+
+      app.schemaManager.unregisterFullSchema(tableName);
+      app.schemaManager.registerTable({schema: model.toJSON()});
+
+      var bookmark = bookmarks.findWhere({title: app.capitalize(tableName), section: 'table'});
+      if (bookmark) {
+        bookmarks.remove(bookmark);
+      }
+
+      Notification.success(__t('table_removed'), __t('table_x_was_removed', {
+        table_name: tableName
+      }), 3000);
+
+      if (callback) {
+        callback();
       }
     };
 
@@ -620,13 +623,7 @@ define([
 
       'click .js-add-table': 'confirmManageTable',
 
-      'click .js-remove-table': function (event) {
-        event.stopPropagation();
-
-        var tableName = $(event.target).closest('tr').data('id') || this.model.get('table_name');
-
-        confirmDestroyTable(tableName, _.bind(this.destroyTable, this));
-      }
+      'click .js-remove-table': 'onRemoveTable'
     },
 
     confirmManageTable: function (event) {
@@ -645,6 +642,14 @@ define([
         app.router.bookmarks.addTable(tableModel);
         app.router.go(['settings', 'tables', tableName]);
       });
+    },
+
+    onRemoveTable: function (event) {
+      event.stopPropagation();
+
+      var tableName = $(event.target).closest('tr').data('id') || this.model.get('table_name');
+
+      confirmDestroyTable(tableName, _.bind(this.destroyTable, this));
     },
 
     toggleTableAttribute: function(tableModel, attr, element) {

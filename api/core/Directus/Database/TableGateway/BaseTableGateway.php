@@ -425,6 +425,24 @@ class BaseTableGateway extends TableGateway
         $this->runHook('table.drop', [$tableName]);
         $this->runHook('table.drop:after', [$tableName]);
 
+        $this->stopManaging();
+
+        return $dropped;
+    }
+
+    /**
+     * Stop managing a table by removing privileges, preferences and table information
+     *
+     * @param null $tableName
+     *
+     * @return bool
+     */
+    public function stopManaging($tableName = null)
+    {
+        if ($tableName == null) {
+            $tableName = $this->table;
+        }
+
         // remove table privileges
         if ($tableName != 'directus_privileges') {
             $privilegesTableGateway = new TableGateway('directus_privileges', $this->adapter);
@@ -443,7 +461,7 @@ class BaseTableGateway extends TableGateway
             'table_name' => $tableName
         ]);
 
-        return $dropped;
+        return true;
     }
 
     public function dropColumn($columnName, $tableName = null)
