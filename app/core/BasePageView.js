@@ -48,8 +48,8 @@ function(app, Backbone, _, BaseHeaderView, RightSidebarView) {
     initToolbar: function() {
       var mainView = app.router.v.main;
 
-      this.headerOptions.leftToolbar = this.leftToolbar();
       this.headerOptions.rightToolbar = this.rightToolbar();
+      this.headerOptions.leftToolbar = this.leftToolbar();
       this.headerOptions.leftSecondaryToolbar = this.leftSecondaryToolbar();
       this.headerOptions.rightSecondaryToolbar = this.rightSecondaryToolbar();
       this.headerView = mainView.getView('#header');

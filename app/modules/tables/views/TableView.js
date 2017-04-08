@@ -22,7 +22,7 @@ function(app, Backbone, _, __t, BasePageView, ListViewManager, TableViewRightPan
     },
 
     leftToolbar: function() {
-      var widgets = this.widgets = [];
+      var widgets = [];
 
       if (this.collection.structure.length > 1 && this.collection.hasPermission('add')) {
         var tableView = this;
@@ -124,6 +124,18 @@ function(app, Backbone, _, __t, BasePageView, ListViewManager, TableViewRightPan
           }
 
           widgets.push(this.widgets.selectionActionWidget);
+        }
+
+        if (this.widgets.filterWidget) {
+          this.widgets.filterButtonWidget = new Widgets.ButtonWidget({
+            widgetOptions: {
+              iconClass: 'filter_list',
+              buttonClass: 'center',
+              buttonText: __t('filter')
+            }
+          });
+
+          widgets.push(this.widgets.filterButtonWidget);
         }
       }
 
