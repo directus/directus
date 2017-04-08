@@ -48,7 +48,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
       var value = this.options.value || '';
 
       // Fill in default value if this column has a default value.
-      if ( !value && this.options.model.isNew() && this.options.schema.has('default_value')) {
+      if (!value && this.options.model.isNew() && this.options.schema.has('default_value')) {
           value = this.options.schema.get('default_value');
       }
 
@@ -66,7 +66,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
     // Validate String  Checks the passed in value against validation_string
     // @param e : keypress event object
     validateString: function(e) {
-      var validationMessage = this.options.settings.get('validation_message') || app.DEFAULT_VALIDATION_MESSAGE;
+      var validationMessage = this.options.settings.get('validation_message') || __t('confirm_invalid_value');
       var chars;
       switch(this.options.settings.get('validation_type')) {
         case ('bl') :
@@ -94,20 +94,20 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
       // Adjusts the max width of the input (Small, Medium, Large)
       {id: 'size', type: 'String', default_value: 'large', ui: 'select', options: {options: {'large':__t('size_large'),'medium':__t('size_medium'),'small':__t('size_small')} }},
       // Grayed out default placeholder text in the input when it's empty
-      {id: 'placeholder_text', type: 'String', default_value: '', ui: 'textinput', char_length:200},
+      {id: 'placeholder_text', type: 'String', default_value: '', ui: 'textinput', char_length: 200},
       // Chooses the type of validation used on this field
       // * Character Blacklist: Choose the specific characters **not** allowed in the input
       // * Character Whitelist: Choose the specific characters allowed in the input
       // * RegEx: Create a regular expression to validate the value. Useful for emails, phone number formatting, or almost anything
       {id: 'validation_type', type: 'String', ui: 'select', options: {options: {'bl':__t('character_blacklist'),'wl':__t('character_whitelist'),'rgx':__t('regex')} }, default_value:'rgx'},
       // Holds the CSV list of Whitelist/Blacklist characters or the RegEx value (based on the above option)
-      {id: 'validation_string', type: 'String', default_value: '', ui: 'textinput', char_length:200, comment: __t('textinput_validation_string_comment')},
+      {id: 'validation_string', type: 'String', default_value: '', ui: 'textinput', char_length: 200, comment: __t('textinput_validation_string_comment')},
       // A message that is shown to the user if the validation fails
-      {id: 'validation_message', type: 'String', default_value: '', ui: 'textinput', char_length:200}
+      {id: 'validation_message', type: 'String', default_value: '', ui: 'textinput', char_length: 200}
     ],
     Input: Input,
     validate: function(value, options) {
-      var validationMessage = options.settings.get('validation_message') || app.DEFAULT_VALIDATION_MESSAGE;
+      var validationMessage = options.settings.get('validation_message') || __t('confirm_invalid_value');
 
       if (_.isEmpty(value)) {
         if (options.schema.get('required') === true) {
