@@ -83,7 +83,7 @@ define([
 
       serialize: function () {
         var data = View.prototype.serialize.apply(this, arguments);
-        var chartEnabled = this.showChart && this.isChartEnabled();
+        var chartEnabled = false;// this.showChart && this.isChartEnabled();
 
         data.fixedHead = chartEnabled != true;
         data.showChart = chartEnabled == true;
@@ -113,13 +113,13 @@ define([
           options.spacings[name] = app.capitalize(__t(name));
         });
 
-        _.each(this.dateColumns(), function(column) {
-          options.dateColumns[column.id] = app.capitalize(column.id);
-        });
-
-        _.each(this.numericColumns(), function(column) {
-          options.numericColumns[column.id] = app.capitalize(column.id);
-        });
+        // _.each(this.dateColumns(), function(column) {
+        //   options.dateColumns[column.id] = app.capitalize(column.id);
+        // });
+        //
+        // _.each(this.numericColumns(), function(column) {
+        //   options.numericColumns[column.id] = app.capitalize(column.id);
+        // });
 
         // app.on('beforeCreateInput:fake:views_options_table:chart_enabled', _.bind(function (UI, options) {
         //   options.canWrite = this.supportsChart();
@@ -135,25 +135,25 @@ define([
             //   ui: 'checkbox',
             //   default_value: false
             // },
-            {
-              id: CHART_Y_AXIS_NAME,
-              type: 'String',
-              required: false,
-              ui: 'select',
-              options: {
-                allow_null: true,
-                options: options.numericColumns
-              }
-            },
-            {
-              id: CHART_X_AXIS_NAME,
-              type: 'String',
-              required: false,
-              ui: 'select',
-              options: {
-                options: options.dateColumns
-              }
-            },
+            // {
+            //   id: CHART_Y_AXIS_NAME,
+            //   type: 'String',
+            //   required: false,
+            //   ui: 'select',
+            //   options: {
+            //     allow_null: true,
+            //     options: options.numericColumns
+            //   }
+            // },
+            // {
+            //   id: CHART_X_AXIS_NAME,
+            //   type: 'String',
+            //   required: false,
+            //   ui: 'select',
+            //   options: {
+            //     options: options.dateColumns
+            //   }
+            // },
             {
               id: 'spacing',
               type: 'String',
