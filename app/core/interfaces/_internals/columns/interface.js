@@ -92,6 +92,8 @@ define([
         focusTo: focusTo
       });
 
+      this.listenTo(columnModel, 'change', this.onColumnChange);
+
       app.router.openViewInModal(view);
     },
 
@@ -106,12 +108,14 @@ define([
         collection: collection
       });
 
-      var columns = this.model.get(this.name);
-      this.listenTo(model, 'sync', function (model) {
-        columns.add(model);
-      });
+      this.listenTo(model, 'sync', this.onColumnChange);
 
       app.router.openViewInModal(view);
+    },
+
+    // when the column change or a new column is added into a table
+    onColumnChange: function (model) {
+      this.columns.add(model, {merge: true});
     },
 
     destroyColumn: function(columnName) {
@@ -223,7 +227,7 @@ define([
       this.toggleAttr($row.data('id'), 'hidden_input');
     },
 
-    serialize: function() {
+    serialize: function () {
       var columns = this.columns.map(function (column) {
         var data = column.toJSON();
 
