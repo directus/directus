@@ -173,6 +173,9 @@ function(app, Backbone, _, BaseHeaderView, RightSidebarView) {
 
     cleanup: function () {
       this._ensurePaneIsClosed();
+      // NOTE: a way to remove the cached collection
+      // when the page is changed we need to clean up the cache
+      this.currentCollection = undefined;
     }
   });
 });
