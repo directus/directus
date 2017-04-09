@@ -189,5 +189,17 @@ define(['jquery'], function ($) {
     });
   };
 
+  // show jpeg as jpg
+  FileHelper.friendlySubtype = function (type) {
+    type = (type || '').toLowerCase();
+
+    switch (type) {
+      case 'jpeg':
+        type = 'jpg';
+    }
+
+    return type;
+  };
+
   return FileHelper;
 });

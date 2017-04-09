@@ -38,12 +38,12 @@ define([
           title_short: (title.length > 35)? title.substr(0,32) + "..." : title,
           date_uploaded: model.get('date_uploaded'),
           size: model.get('size'),
-          type: (model.has('type')) ? model.get('type').split('/').pop() : '',
+          type: model.getSubType(true),
           dimensions: model.get('width') + "×" + model.get('height')
         };
 
         var type = model.get('type').substring(0, model.get('type').indexOf('/'));
-        var subtype = model.get('type').split('/').pop();
+        var subtype = model.getSubType(true);
 
         if (data.id && (type == 'image' || type === 'embed' || subtype === 'pdf') && model.makeFileUrl(true)) {
           data.thumbnailUrl = model.makeFileUrl(true);

@@ -186,7 +186,7 @@ function (app, _, __t, Utils, FileHelper, UIView, TableView, Overlays) {
       var isImage = _.contains(['image', 'embed'], type);
       var thumbUrl = isImage ? url : app.PATH + 'assets/img/document.png';
 
-      switch(data.type) {
+      switch (data.type) {
         case 'embed/youtube':
         case 'embed/vimeo':
           data.size = app.seconds_convert(data.size);
@@ -199,6 +199,8 @@ function (app, _, __t, Utils, FileHelper, UIView, TableView, Overlays) {
       if (html) {
         html = $(html).css({width: 280, height: 160}).prop('outerHTML');
       }
+
+      data.type = this.fileModel.getSubType(true);
 
       data = {
         isImage: isImage,

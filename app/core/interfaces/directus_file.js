@@ -151,7 +151,7 @@ define(['app', 'helpers/file', 'core/UIComponent', 'core/UIView'], function(app,
 
       if(model.has('type')) {
         var type = model.get('type').substring(0, model.get('type').indexOf('/'));
-        var subtype = model.get('type').split('/').pop();
+        var subtype = model.getSubType(true);
 
         //If we shouldnt show thumbnail, set thumbUrl to null
         if(type !== 'image' && type !== 'embed' && subtype !== 'pdf') {

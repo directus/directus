@@ -161,13 +161,14 @@ function(app, _, Backbone, EntriesModel, Notification, __t, Utils, File) {
     isTypeAllowed: function(fileType, allowedTypes) {
       // if there's not fileType but allowedMimeTypes provided
       // by default the file is not allowed
-      var allowed = (!fileType && allowedTypes) ? false : true;
+      var allowed = !(!fileType && allowedTypes);
 
       if (fileType && allowedTypes) {
-        var self = this;
         allowed = allowedTypes.split(',').some(function (allowedType) {
-          return self.isMimeType(fileType, allowedType) || self.isType(fileType, allowedType);
-        });
+          allowedType = allowedType.trim();
+
+          return this.isMimeType(fileType, allowedType) || this.isType(fileType, allowedType);
+        }, this);
       }
 
       return allowed;
@@ -198,12 +199,22 @@ function(app, _, Backbone, EntriesModel, Notification, __t, Utils, File) {
       return this.hasExtension(name) ? this.isType(this.getExtension(name), allowedTypes) : false;
     },
 
-    getSubType: function(type) {
-      if (type.indexOf('/') >= 0) {
-        type  = type.split('/').pop();
+    getSubType: function (friendly) {
+      var type, subtype;
+
+      // TODO: This model should only use its own subtype
+      if (_.isString(friendly)) {
+        type  = friendly;
+      } else {
+        type = this.get('type');
       }
 
-      return type;
+      subtype = (type || '').split('/').pop();
+      if (friendly === true) {
+        subtype = File.friendlySubtype(subtype);
+      }
+
+      return subtype;
     },
 
     isType: function(type, allowedType) {
