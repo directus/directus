@@ -33,6 +33,13 @@ define(['underscore', 'helpers/status'], function (_, StatusHelper) {
       return statuses.get('mapping').get(statusValue);
     },
 
+    // whether the records is "visible" or "fade out" in the listing
+    isSubduedInListing: function () {
+      var statuses = this.getStatus();
+
+      return statuses ? statuses.get('subdued_in_listing') === true : false;
+    },
+
     // gets this model status value
     getStatusValue: function () {
       var attr = this.table.get('status_column') || this.getTableStatuses().get('status_name');
