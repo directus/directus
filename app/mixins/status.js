@@ -4,6 +4,7 @@ define(['underscore', 'helpers/status'], function (_, StatusHelper) {
     _getTableName: function () {
       var table = this.getTable();
 
+      // if table is not defined global information will be used
       return table ? table.id : '*';
     }
   };
@@ -12,11 +13,7 @@ define(['underscore', 'helpers/status'], function (_, StatusHelper) {
 
     // gets the table status information
     getTableStatuses: function () {
-      var table = this.getTable();
-      // if table is not defined global information will be used
-      var tableName = table ? table.id : '*';
-
-      return StatusHelper.getTableStatuses(tableName);
+      return StatusHelper.getTableStatuses(this._getTableName());
     },
 
     getTableStatusMapping: function () {
@@ -52,6 +49,10 @@ define(['underscore', 'helpers/status'], function (_, StatusHelper) {
       return this.getStatus().get('name');
     },
 
+    getStatusVisible: function () {
+      return StatusHelper.getStatusVisible(this._getTableName());
+    },
+
     // gets this item status background color
     getStatusBackgroundColor: function () {
       // var statuses = this.getTableStatuses();
@@ -81,6 +82,10 @@ define(['underscore', 'helpers/status'], function (_, StatusHelper) {
 
     getTableStatusMapping: function () {
       return StatusHelper.getTableStatusesMapping(this._getTableName());
+    },
+
+    getStatusVisible: function () {
+      return StatusHelper.getStatusVisible(this._getTableName());
     },
 
     isHardDelete: function (statusValue) {

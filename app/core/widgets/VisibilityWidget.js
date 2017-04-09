@@ -47,20 +47,16 @@ function(app, _, Backbone, Handlebars, PreferenceModel) {
 
     serialize: function() {
       var data = {hasActiveColumn: this.options.hasActiveColumn, mapping: []};
-      var table = this.collection.table;
-      var mapping = app.statusMapping.get(table.id).get('mapping');
       var statusSelected = this.collection.getFilter('status');
-
       var keys = [];
+
       // @note: duplicate code, same as Selection Action Widget
-      mapping.each(function (status) {
-        // Skip if are globally hidden
-        if (status.get('hidden_globally') !== true) {
-          var item = status.toJSON();
-          item.isSelected = statusSelected == status.get('id');
-          data.mapping.push(status.toJSON());
-          keys.push(status.get('id'));
-        }
+      _.each(this.collection.getStatusVisible(), function (status) {
+        var item = status.toJSON();
+
+        item.isSelected = statusSelected == status.get('id');
+        data.mapping.push(status.toJSON());
+        keys.push(status.get('id'));
       });
 
       data.mapping.sort(function (a, b) {

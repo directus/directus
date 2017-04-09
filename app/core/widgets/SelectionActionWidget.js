@@ -1,7 +1,8 @@
 define([
   'app',
+  'underscore',
   'backbone'
-], function(app, Backbone) {
+], function(app, _, Backbone) {
 
   'use strict';
 
@@ -66,7 +67,8 @@ define([
     serialize: function() {
       var data = this.options.widgetOptions;
       var canDelete = this.collection.hasPermission('delete') || this.collection.hasPermission('bigdelete');
-      var table = this.collection.table;
+      var collection = this.collection;
+      var table = collection.table;
       var statusColumnName = table.getStatusColumnName();
       var hasStatusColumn = this.collection.table.columns.get(statusColumnName);
       var mapping = app.statusMapping.get(table.id).get('mapping');
@@ -75,11 +77,8 @@ define([
       data.mapping = [];
 
       // @note: duplicate code, same as Visibility Widget
-      mapping.each(function (status) {
-        // Skip if are globally hidden
-        if (status.get('hidden_globally') !== true) {
-          data.mapping.push(status.toJSON());
-        }
+      _.each(this.collection.getStatusVisible(), function (status) {
+        data.mapping.push(status.toJSON());
       });
 
       data.mapping.sort (function(a, b) {

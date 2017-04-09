@@ -236,16 +236,12 @@ define([
       data.statusColumn = structure.get(statusColumnName);
       data.statuses = [];
 
-      this.collection.getTableStatusMapping().each(function (status) {
-        // var tableStatus = status.tableStatus;
-        if (status.get('hidden_globally') !== true) {
-        // if (key !== app.statusMapping.deleted_num) {
-          data.statuses.push({
-            name: status.get('name'),
-            value: status.get('id'),
-            selected: _.indexOf(statusSelected, status.get('id')) >= 0
-          });
-        }
+      _.each(this.collection.getStatusVisible(), function (status) {
+        data.statuses.push({
+          name: status.get('name'),
+          value: status.get('id'),
+          selected: _.indexOf(statusSelected, status.get('id')) >= 0
+        });
       });
 
       // data.statusColumn = structure.get(app.statusMapping.status_name);
