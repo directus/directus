@@ -215,7 +215,7 @@ class BaseTableGateway extends TableGateway
         $row = $rowset->current();
 
         // Supposing this "one" doesn't exist in the DB
-        if (false === $row) {
+        if (!$row) {
             return false;
         }
 
