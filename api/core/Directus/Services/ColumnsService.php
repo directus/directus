@@ -142,7 +142,12 @@ class ColumnsService extends AbstractService
             );
 
             if (ArrayUtils::has($data, 'default_value')) {
-                $newColumn->setDefault($data['default_value']);
+                $value = $data['default_value'];
+                $type = $columnObject->getType();
+                $length = $columnObject->getLength();
+                $schemaManager = $this->getTableGateway()->getSchemaManager();
+                $defaultValue = $schemaManager->castDefaultValue($value, $type, $length);
+                $newColumn->setDefault($defaultValue);
             }
 
             // @TODO: add a list of supported types by databases
