@@ -29,7 +29,10 @@ define([
         }),
         itemModel: this.model
       }));
-      this.insertView(new TimelineWidget({model: this.model}));
+
+      if (!this.model.isNew()) {
+        this.insertView(new TimelineWidget({model: this.model}));
+      }
     }
   });
 });

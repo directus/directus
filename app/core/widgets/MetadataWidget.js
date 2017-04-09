@@ -88,6 +88,7 @@ function(app, Backbone, _, Handlebars, __t) {
       }
 
       return {
+        isNew: this.options.itemModel.isNew(),
         dateFormat: dateFormat,
         model: model,
         previewUrl: previewUrl,
