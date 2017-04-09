@@ -4,6 +4,7 @@ namespace Directus\Db\TableGateway;
 
 use Directus\Bootstrap;
 use Directus\Db\Exception\SuppliedArrayAsColumnValue;
+use Directus\Db\FactoryTableGateway;
 use Directus\Db\RowGateway\BaseRowGateway;
 use Directus\Db\SchemaManager;
 use Directus\Db\TableSchema;
@@ -87,34 +88,22 @@ class BaseTableGateway extends TableGateway
      */
 
     /**
-     * Underscore to camelcase table name to namespaced table gateway classname,
-     * e.g. directus_users => \Directus\Db\TableGateway\DirectusUsersTableGateway
+     * @param $tableName
+     *
+     * @deprecated
      */
-//    public static function makeTableGatewayFromTableName($acl, $table, $adapter)
-//    {
-//        $tableGatewayClassName = Formatting::underscoreToCamelCase($table) . 'TableGateway';
-//        $tableGatewayClassName = __NAMESPACE__ . '\\' . $tableGatewayClassName;
-//        if (class_exists($tableGatewayClassName)) {
-//            return new $tableGatewayClassName($adapter);
-//        }
-//        return new self($table, $adapter);
-//    }
+    public function makeTable($tableName)
+    {
+        $options = [
+            'adapter' => $this->getAdapter()
+        ];
+
+        FactoryTableGateway::create($tableName, $options, FactoryTableGateway::BASE);
+    }
 
     /**
      * HELPER FUNCTIONS
      */
-
-    /**
-     * Make a new table gateway
-     *
-     * @param $tableName
-     *
-     * @return BaseTableGateway
-     */
-    public function makeTable($tableName)
-    {
-        return new self($tableName, $this->adapter);
-    }
 
     /**
      * Find the identifying string to effectively represent a record in the activity log.
@@ -248,7 +237,10 @@ class BaseTableGateway extends TableGateway
         $columns = TableSchema::getAllNonAliasTableColumns($tableName);
         $recordData = SchemaManager::parseRecordValuesByType($recordData, $columns);
 
-        $TableGateway = $this->makeTable($tableName);
+        $TableGateway = FactoryTableGateway::create($tableName, [
+            'adapter' => $this->getAdapter()
+        ]);
+
         $rowExists = isset($recordData[$TableGateway->primaryKeyFieldName]);
         if ($rowExists) {
             $Update = new Update($tableName);
