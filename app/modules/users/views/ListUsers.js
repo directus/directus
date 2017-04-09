@@ -138,23 +138,41 @@ function(app, Backbone, Handlebars, Directus, BasePageView, FileHelper, Widgets,
       class: 'page-container'
     },
 
+    rightToolbar: function () {
+      return [
+        new Widgets.FilterWidget({
+          collection: this.collection,
+          basePage: this
+        })
+      ];
+    },
+
     leftToolbar: function() {
-      if(app.users.getCurrentUser().get('group').id === 1) {
-        return [
-          new Widgets.ButtonWidget({
-            widgetOptions: {
-              buttonId: 'addBtn',
-              iconClass: 'add',
-              buttonClass: 'primary',
-              buttonText: __t('new_user')
-            },
-            onClick: function () {
-              app.router.go('#users', 'new');
-            }
-          })
-        ];
+      var widgets = [];
+
+      if (app.users.getCurrentUser().get('group').id === 1) {
+        widgets.push(new Widgets.ButtonWidget({
+          widgetOptions: {
+            buttonId: 'addBtn',
+            iconClass: 'add',
+            buttonClass: 'primary',
+            buttonText: __t('new_user')
+          },
+          onClick: function () {
+            app.router.go('#users', 'new');
+          }
+        }));
       }
-      return [];
+
+      widgets.push(new Widgets.ButtonWidget({
+        widgetOptions: {
+          iconClass: 'filter_list',
+          buttonClass: 'center',
+          buttonText: __t('filter')
+        }
+      }));
+
+      return widgets;
     },
 
     leftSecondaryToolbar: function() {

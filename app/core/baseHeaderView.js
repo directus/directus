@@ -122,17 +122,18 @@ function(app, _, Backbone, __t, Notification) {
         });
       }
 
-      if (options.leftSecondaryToolbar) {
-        options.leftSecondaryToolbar.forEach(function(widget) {
-          that.insertView('#tools-secondary-left-insert', widget);
-        });
-      }
-
-      if (options.rightSecondaryToolbar) {
-        options.rightSecondaryToolbar.forEach(function(widget) {
-          that.insertView('#tools-secondary-right-insert', widget);
-        });
-      }
+      // TODO: secondary toolbars were deprecated
+      // if (options.leftSecondaryToolbar) {
+      //   options.leftSecondaryToolbar.forEach(function(widget) {
+      //     that.insertView('#tools-secondary-left-insert', widget);
+      //   });
+      // }
+      //
+      // if (options.rightSecondaryToolbar) {
+      //   options.rightSecondaryToolbar.forEach(function(widget) {
+      //     that.insertView('#tools-secondary-right-insert', widget);
+      //   });
+      // }
     },
 
     afterRender: function() {
