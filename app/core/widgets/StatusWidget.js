@@ -57,7 +57,8 @@ function(app, _, Backbone) {
         // if (key !== app.statusMapping.deleted_num) {
         //   item.id = key;
         //   item.selected = key === currentStatus;
-          item.selected = status.get('id') === currentStatus;
+          // NOTE: do not strictly compare as status can (will) be string
+          item.selected = status.get('id') == currentStatus;
           item.model = status;
           item.color = item.background_color || item.color;
           statuses.push(item);
