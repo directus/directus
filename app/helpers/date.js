@@ -4,7 +4,7 @@ define(function() {
   var helper = {};
 
   // source: http://stackoverflow.com/a/26131085
-  helper.monthDateRange = function(year, month, value) {
+  helper.monthDateRange = function (year, month, value) {
     if (moment.isMoment(year)) {
       var m = year;
 
@@ -20,8 +20,9 @@ define(function() {
     var endDate = moment(startDate).endOf('month');
 
     if (value === true) {
-      startDate = startDate.format('YYYY-MM-DD');
-      endDate = endDate.format('YYYY-MM-DD');
+      // NOTE: Add time so dates are inclusive
+      startDate = startDate.format('YYYY-MM-DD') + ' 00:00:00';
+      endDate = endDate.format('YYYY-MM-DD') + ' 23:59:59';
     }
 
     // make sure to call toDate() for plain JavaScript date type
