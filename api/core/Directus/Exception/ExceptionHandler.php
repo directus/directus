@@ -29,13 +29,18 @@ class ExceptionHandler
      */
     protected $emitter;
 
-    public function __construct()
+    public function __construct($emitter = null)
     {
         set_error_handler([$this, 'handleError']);
         set_exception_handler([$this, 'handleException']);
         register_shutdown_function([$this, 'handleShutdown']);
 
-        $this->emitter = Bootstrap::get('hookEmitter');
+        // TODO: Cut the dependency on hook emitter
+        if (!$emitter) {
+            $emitter = Bootstrap::get('hookEmitter');
+        }
+
+        $this->emitter = $emitter;
     }
 
     /**
