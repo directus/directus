@@ -53,6 +53,10 @@ define(['underscore', 'helpers/status'], function (_, StatusHelper) {
       return StatusHelper.getStatusVisible(this._getTableName());
     },
 
+    isDeleted: function () {
+      return StatusHelper.isDelete(this._getTableName(), this.getStatusValue());
+    },
+
     // gets this item status background color
     getStatusBackgroundColor: function () {
       // var statuses = this.getTableStatuses();

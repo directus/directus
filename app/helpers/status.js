@@ -36,9 +36,14 @@ define(['app', 'underscore'], function (app, _) {
       return statuses;
     },
 
+    isDelete: function (tableName, statusValue) {
+      var statuses = this.getTableStatuses(tableName);
+
+      return statuses.get('delete_value') == statusValue;
+    },
+
     isHardDelete: function (tableName, statusValue) {
       var statuses = this.getTableStatuses(tableName);
-      var isDeleteValue = statuses.get('delete_value') === statusValue;
       var isHardDeleteStatus = false;
 
       statuses.get('mapping').each(function (status) {
@@ -47,7 +52,7 @@ define(['app', 'underscore'], function (app, _) {
         }
       });
 
-      return isDeleteValue || isHardDeleteStatus;
+      return isHardDeleteStatus;
     },
 
     getStatusBackgroundColor: function (tableName, statusValue) {
