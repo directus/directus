@@ -495,7 +495,9 @@ define([
         this.on('scroll', _.throttle(this.onScroll, 200), this);
         this.on('afterRender', this.onRender, this);
 
-        this.baseView.on('rightPane:toggle', this.onRightPaneToggle);
+        if (this.baseView) {
+          this.baseView.on('rightPane:toggle', this.onRightPaneToggle);
+        }
 
         if (this.options.system === true) {
           this.collection.preferences.on('sync', this.updateSystemColumnsAndRender, this);
@@ -509,7 +511,9 @@ define([
         this.off('scroll', _.throttle(this.onScroll, 200), this);
         this.off('afterRender', this.onRender, this);
 
-        this.baseView.off('rightPane:toggle', this.onRightPaneToggle);
+        if (this.baseView) {
+          this.baseView.off('rightPane:toggle', this.onRightPaneToggle);
+        }
 
         if (this.options.system === true) {
           this.collection.preferences.off('sync', this.updateSystemColumnsAndRender, this);
