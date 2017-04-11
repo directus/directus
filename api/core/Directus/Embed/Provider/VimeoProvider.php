@@ -97,6 +97,6 @@ class VimeoProvider extends AbstractProvider
      */
     protected function getFormatTemplate()
     {
-        return '<iframe src="//player.vimeo.com/video/{{embed_id}}?title=0&amp;byline=0&amp;portrait=0&amp;color=7AC943" width="{{width}}" height="{{height}}" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';
+        return '<iframe src="//player.vimeo.com/video/{{embed_id}}?title=false&amp;byline=false&amp;portrait=false&amp;color=FFFFFF" width="{{width}}" height="{{height}}" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';
     }
 }

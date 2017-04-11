@@ -272,6 +272,13 @@
 				min-width: auto;
 				height: 40px;
 			}
+			.file-preview {
+				iframe {
+					width: 100%;
+					max-width: 100%;
+					max-height: 600px;
+				}
+			}
 			.directus-user {
 				position: relative;
 				font-size: 14px;

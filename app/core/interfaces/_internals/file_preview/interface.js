@@ -61,7 +61,7 @@ define(['app', 'helpers/file', 'core/UIComponent', 'core/UIView'], function(app,
         }
 
         if (model.get('html')) {
-          data.html = $(model.get('html')).css({width: 300, height: 200}).prop('outerHTML');
+          data.html = $(model.get('html')).prop('outerHTML'); // .css({width: auto, height: 200})
         }
       }
 
