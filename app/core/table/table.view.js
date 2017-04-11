@@ -103,12 +103,12 @@ function(app, _, Backbone, Notification, __t, TableHelpers, ModelHelper, TableHe
     },
 
     headerScroll: function ($el) {
-      var $table = $el || this.$el.find('.table-scroll-x');
+      var $table = $el || this.$el.find('.table-scroll');
       TableHelpers.headerScroll($table);
     },
 
     bindTableEvents: function () {
-      var $el = this.$('.table-scroll-x');
+      var $el = this.$('.table-scroll');
 
       this.fixWidths();
       this.headerScroll($el);

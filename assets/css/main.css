@@ -1703,8 +1703,9 @@ input[type="radio"].custom-checkbox {
 .max-width-800 {
   max-width: 800px; }
 
-.table-scroll-x {
+.table-scroll {
   width: 100%;
+  height: 100%;
   overflow: scroll; }
 
 table {
