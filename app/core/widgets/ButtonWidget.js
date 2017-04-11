@@ -13,8 +13,16 @@ function(app, Backbone, _) {
 
     tagName: 'div',
 
-    attributes: {
-      class: 'action widget widget-button'
+    attributes: function () {
+      var classes = ['action', 'widget', 'widget-button'];
+
+      if (this.widgetId) {
+        classes.push(this.widgetId);
+      }
+
+      return {
+        class: classes.join(' ')
+      }
     },
 
     events: function() {
