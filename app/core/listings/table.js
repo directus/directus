@@ -199,7 +199,7 @@ define([
         if (viewOptions.numeric_column) {
           column = this.collection.structure.get(viewOptions.numeric_column);
         } else {
-          column = _.first(this.numericColumns())
+          column = _.first(this.numericColumns());
         }
 
         return column;
