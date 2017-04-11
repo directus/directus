@@ -164,13 +164,7 @@ function(app, Backbone, Handlebars, Directus, BasePageView, FileHelper, Widgets,
         }));
       }
 
-      widgets.push(new Widgets.ButtonWidget({
-        widgetOptions: {
-          iconClass: 'filter_list',
-          buttonClass: 'center',
-          buttonText: __t('filter')
-        }
-      }));
+      widgets.push(new Widgets.FilterButtonWidget);
 
       return widgets;
     },

@@ -127,13 +127,7 @@ function(app, Backbone, _, __t, BasePageView, ListViewManager, TableViewRightPan
         }
 
         if (this.widgets.filterWidget) {
-          this.widgets.filterButtonWidget = new Widgets.ButtonWidget({
-            widgetOptions: {
-              iconClass: 'filter_list',
-              buttonClass: 'center',
-              buttonText: __t('filter')
-            }
-          });
+          this.widgets.filterButtonWidget = new Widgets.FilterButtonWidget();
 
           widgets.push(this.widgets.filterButtonWidget);
         }

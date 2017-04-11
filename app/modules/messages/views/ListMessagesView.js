@@ -327,6 +327,8 @@ define([
 
       widgets.push(this.archiveButton);
 
+      widgets.push(new Widgets.FilterButtonWidget());
+
       return widgets;
     },
 

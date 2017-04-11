@@ -40,13 +40,7 @@ function(app, _, moment, Backbone, DirectusModal, DirectusEdit, __t, Notificatio
             app.router.go('#files','new');
           }
         }),
-        new Widgets.ButtonWidget({
-          widgetOptions: {
-            iconClass: 'filter_list',
-            buttonClass: 'center',
-            buttonText: __t('filter')
-          }
-        })
+        new Widgets.FilterButtonWidget()
       ];
     },
 
