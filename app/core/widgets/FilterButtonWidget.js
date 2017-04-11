@@ -3,7 +3,12 @@ define(['underscore', 'core/widgets/ButtonWidget', 'core/t'], function (_, Butto
     widgetId: 'filter-toggle',
 
     constructor: function (options) {
-      ButtonWidget.prototype.constructor.apply(this, arguments);
+      options = options || {};
+      options.onClick = function (event) {
+        $('.filter').toggleClass('responsive-active filter-dropdown-open');
+      };
+
+      ButtonWidget.prototype.constructor.apply(this, [options]);
 
       options = _.extend((options || {}), {
         widgetOptions: {
