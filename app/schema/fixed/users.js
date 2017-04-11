@@ -145,7 +145,7 @@ define(function(require, exports, module) {
             "nullable": false,
             "default_value":"",
             "comment":"",
-            "sort":5,
+            "sort":4,
             "system":false,
             "hidden_list":false,
             "hidden_input":false,
@@ -163,7 +163,7 @@ define(function(require, exports, module) {
             "nullable": false,
             "default_value":"",
             "comment":"",
-            "sort":6,
+            "sort":5,
             "ui":"textinput",
             "system":false,
             "hidden_list":false,
@@ -174,167 +174,6 @@ define(function(require, exports, module) {
             }
           },
           {
-            "id":"position",
-            "column_name":"position",
-            "type":"VARCHAR",
-            "char_length":"255",
-            "nullable": true,
-            "default_value":"",
-            "comment":"",
-            "sort":30,
-            "ui":"textinput",
-            "system":false,
-            "hidden_list":false,
-            "hidden_input":false,
-            "required":false,
-            "options": {
-              "size": "medium"
-            }
-          },
-          {
-            "id":"phone",
-            "column_name":"phone",
-            "type":"VARCHAR",
-            "char_length":"255",
-            "nullable": true,
-            "default_value":"",
-            "comment":"",
-            "sort":31,
-            "ui":"textinput",
-            "system":false,
-            "hidden_list":false,
-            "hidden_input":false,
-            "required":false,
-            "options": {
-              "size": "medium"
-            }
-          },
-          {
-            "id":"location",
-            "column_name":"location",
-            "type":"VARCHAR",
-            "char_length":"255",
-            "nullable": true,
-            "default_value":"",
-            "comment":"",
-            "sort":32,
-            "ui":"textinput",
-            "system":false,
-            "hidden_list":false,
-            "hidden_input":false,
-            "required":false,
-            "options": {
-              "size": "medium"
-            }
-          },
-          {
-            "id":"address",
-            "column_name":"address",
-            "type":"VARCHAR",
-            "char_length":"255",
-            "nullable": true,
-            "default_value":"",
-            "comment":"",
-            "sort":33,
-            "ui":"textinput",
-            "system":false,
-            "hidden_list":false,
-            "hidden_input":false,
-            "required":false,
-            "options": {
-              "size": "medium"
-            }
-          },
-          {
-            "id":"city",
-            "column_name":"city",
-            "type":"VARCHAR",
-            "char_length":"255",
-            "nullable": true,
-            "default_value":"",
-            "comment":"",
-            "sort":34,
-            "ui":"textinput",
-            "system":false,
-            "hidden_list":false,
-            "hidden_input":false,
-            "required":false,
-            "options": {
-              "size": "medium"
-            }
-          },
-          {
-            "id":"state",
-            "column_name":"state",
-            "type":"VARCHAR",
-            "char_length":"2",
-            "nullable": true,
-            "default_value":"",
-            "comment":"",
-            "sort":35,
-            "ui":"textinput",
-            "system":false,
-            "hidden_list":false,
-            "hidden_input":false,
-            "required":false,
-            "options": {
-              "size": "small"
-            }
-          },
-          {
-            "id": "country",
-            "column_name": "country",
-            "type": "VARCHAR",
-            "char_length": "2",
-            "nullable": true,
-            "default_value": null,
-            "comment":"",
-            "sort":36,
-            "ui":"select",
-            "system":false,
-            "hidden_list":false,
-            "hidden_input":false,
-            "required":false,
-            "options": {
-              "allow_null": true,
-              "options": parseSelectOptions(countries, function(key, list, name, result) {
-                result[key] = name;
-              })
-            }
-          },
-          {
-            "id":"zip",
-            "column_name":"zip",
-            "type":"VARCHAR",
-            "char_length":"10",
-            "nullable": true,
-            "default_value":"",
-            "comment":"",
-            "sort":36,
-            "ui":"textinput",
-            "system":false,
-            "hidden_list":false,
-            "hidden_input":false,
-            "required":false,
-            "options": {
-              "size": "small"
-            }
-          },
-          {
-            "id":"email_messages",
-            "column_name":"email_messages",
-            "type":"TINYINT",
-            "nullable": true,
-            "default_value":"1",
-            "comment":"CMS messages will also be sent to email address above",
-            "sort":6,
-            "system":false,
-            "hidden_list":false,
-            "hidden_input":false,
-            "required":false,
-            "ui":"checkbox"
-          },
-          {
             "id":"password",
             "column_name":"password",
             "type":"VARCHAR",
@@ -342,7 +181,7 @@ define(function(require, exports, module) {
             "nullable": false,
             "default_value":"",
             "comment":"Passwords are encrypted, if forgotten they must be reset",
-            "sort":10,
+            "sort":6,
             "system":true,
             "hidden_list":true,
             "hidden_input":false,
@@ -360,135 +199,12 @@ define(function(require, exports, module) {
             "nullable": false,
             "default_value":"",
             "comment":"",
-            "sort":11,
+            "sort":7,
             "system":true,
             "hidden_list":true,
             "hidden_input":true,
             "required":true,
             "ui":"salt"
-          },
-          {
-            "id":"token",
-            "column_name":"token",
-            "type":"VARCHAR",
-            "char_length":"255",
-            "nullable": false,
-            "default_value":"",
-            "comment":"This is your user's API authentication token. Keep it safe!",
-            "sort":12,
-            "system":true,
-            "hidden_list":false,
-            "hidden_input":false,
-            "required":true,
-            "ui":"random",
-            "options": {
-              "auto_generate": 1,
-              "allow_any_value": 1
-            }
-          },
-          {
-            "id":"access_token",
-            "column_name":"access_token",
-            "type":"VARCHAR",
-            "char_length":"255",
-            "nullable": true,
-            "default_value":"",
-            "comment":"",
-            "sort":13,
-            "system":true,
-            "hidden_list":true,
-            "hidden_input":true,
-            "required":false,
-            "ui":"textinput"
-          },
-          {
-            "id":"reset_token",
-            "column_name":"reset_token",
-            "type":"VARCHAR",
-            "char_length":"255",
-            "nullable": true,
-            "default_value":"",
-            "comment":"",
-            "sort":14,
-            "system":true,
-            "hidden_list":false,
-            "hidden_input":true,
-            "required":false,
-            "ui":"textinput"
-          },
-          {
-            "id":"reset_expiration",
-            "column_name":"reset_expiration",
-            "type":"DATETIME",
-            "nullable": true,
-            "comment":"",
-            "sort":15,
-            "system":true,
-            "hidden_list":false,
-            "hidden_input":true,
-            "required":false,
-            "ui":"datetime"
-          },
-          {
-            "id":"last_access",
-            "column_name":"last_access",
-            "type":"DATETIME",
-            "nullable": true,
-            "default_value":"0000-00-00 00:00:00",
-            "comment":"",
-            "sort":20,
-            "system":false,
-            "hidden_list":false,
-            "hidden_input":true,
-            "required":false,
-            "ui":"datetime"
-          },
-          {
-            "id":"last_login",
-            "column_name":"last_login",
-            "type":"DATETIME",
-            "nullable": true,
-            "default_value":"0000-00-00 00:00:00",
-            "comment":"",
-            "sort":21,
-            "system":false,
-            "hidden_list":false,
-            "hidden_input":true,
-            "required":false,
-            "ui":"datetime",
-            "options": {
-              "contextual_date_in_listview": true
-            }
-          },
-          {
-            "id":"last_page",
-            "column_name":"last_page",
-            "type":"VARCHAR",
-            "char_length":"255",
-            "nullable": true,
-            "default_value":"",
-            "comment":"",
-            "sort":22,
-            "system":false,
-            "hidden_list":false,
-            "hidden_input":true,
-            "required":false,
-            "ui":"textinput"
-          },
-          {
-            "id":"ip",
-            "column_name":"ip",
-            "type":"VARCHAR",
-            "char_length":"50",
-            "nullable": true,
-            "default_value":"",
-            "comment":"",
-            "sort":23,
-            "system":true,
-            "hidden_list":false,
-            "hidden_input":true,
-            "required":false,
-            "ui":"textinput"
           },
           {
             "id":"group",
@@ -524,12 +240,12 @@ define(function(require, exports, module) {
             "nullable": true,
             "default_value": defaultLocale,
             "comment":"",
-            "sort":37,
+            "sort":9,
             "ui":"select",
             "system":false,
             "hidden_list":false,
             "hidden_input":false,
-            "required":false,
+            "required": true,
             "options": {
               "allow_null": false,
               "options": parseSelectOptions(locales, function(key, list, locale, result) {
@@ -545,18 +261,302 @@ define(function(require, exports, module) {
             "nullable": true,
             "default_value": defaultTimezone,
             "comment":"",
-            "sort":38,
+            "sort":10,
             "ui":"select",
             "system":false,
             "hidden_list":false,
             "hidden_input":false,
-            "required":false,
+            "required": true,
             "options": {
               "allow_null": false,
               "options": parseSelectOptions(timezones, function(key, list, name, result) {
                 result[key] = name;
               })
             }
+          },
+          {
+            "id":"position",
+            "column_name":"position",
+            "type":"VARCHAR",
+            "char_length":"255",
+            "nullable": true,
+            "default_value":"",
+            "comment":"",
+            "sort":11,
+            "ui":"textinput",
+            "system":false,
+            "hidden_list":false,
+            "hidden_input":false,
+            "required":false,
+            "options": {
+              "size": "medium"
+            }
+          },
+          {
+            "id":"phone",
+            "column_name":"phone",
+            "type":"VARCHAR",
+            "char_length":"255",
+            "nullable": true,
+            "default_value":"",
+            "comment":"",
+            "sort":12,
+            "ui":"textinput",
+            "system":false,
+            "hidden_list":false,
+            "hidden_input":false,
+            "required":false,
+            "options": {
+              "size": "medium"
+            }
+          },
+          {
+            "id":"location",
+            "column_name":"location",
+            "type":"VARCHAR",
+            "char_length":"255",
+            "nullable": true,
+            "default_value":"",
+            "comment":"",
+            "sort":13,
+            "ui":"textinput",
+            "system":false,
+            "hidden_list":false,
+            "hidden_input":false,
+            "required":false,
+            "options": {
+              "size": "medium"
+            }
+          },
+          {
+            "id":"address",
+            "column_name":"address",
+            "type":"VARCHAR",
+            "char_length":"255",
+            "nullable": true,
+            "default_value":"",
+            "comment":"",
+            "sort":14,
+            "ui":"textinput",
+            "system":false,
+            "hidden_list":false,
+            "hidden_input":false,
+            "required":false,
+            "options": {
+              "size": "medium"
+            }
+          },
+          {
+            "id":"city",
+            "column_name":"city",
+            "type":"VARCHAR",
+            "char_length":"255",
+            "nullable": true,
+            "default_value":"",
+            "comment":"",
+            "sort":15,
+            "ui":"textinput",
+            "system":false,
+            "hidden_list":false,
+            "hidden_input":false,
+            "required":false,
+            "options": {
+              "size": "medium"
+            }
+          },
+          {
+            "id":"state",
+            "column_name":"state",
+            "type":"VARCHAR",
+            "char_length":"2",
+            "nullable": true,
+            "default_value":"",
+            "comment":"",
+            "sort":16,
+            "ui":"textinput",
+            "system":false,
+            "hidden_list":false,
+            "hidden_input":false,
+            "required":false,
+            "options": {
+              "size": "small"
+            }
+          },
+          {
+            "id":"zip",
+            "column_name":"zip",
+            "type":"VARCHAR",
+            "char_length":"10",
+            "nullable": true,
+            "default_value":"",
+            "comment":"",
+            "sort":17,
+            "ui":"textinput",
+            "system":false,
+            "hidden_list":false,
+            "hidden_input":false,
+            "required":false,
+            "options": {
+              "size": "small"
+            }
+          },
+          {
+            "id": "country",
+            "column_name": "country",
+            "type": "VARCHAR",
+            "char_length": "2",
+            "nullable": true,
+            "default_value": null,
+            "comment":"",
+            "sort":18,
+            "ui":"select",
+            "system":false,
+            "hidden_list":false,
+            "hidden_input":false,
+            "required":false,
+            "options": {
+              "allow_null": true,
+              "options": parseSelectOptions(countries, function(key, list, name, result) {
+                result[key] = name;
+              })
+            }
+          },
+          {
+            "id":"email_messages",
+            "column_name":"email_messages",
+            "type":"TINYINT",
+            "nullable": true,
+            "default_value":"1",
+            "comment":"CMS messages will also be sent to email address above",
+            "sort":19,
+            "system":false,
+            "hidden_list":false,
+            "hidden_input":false,
+            "required":false,
+            "ui":"checkbox"
+          },
+          {
+            "id":"token",
+            "column_name":"token",
+            "type":"VARCHAR",
+            "char_length":"255",
+            "nullable": false,
+            "default_value":"",
+            "comment":"This is your user's API authentication token. Keep it safe!",
+            "sort":20,
+            "system":true,
+            "hidden_list":false,
+            "hidden_input":false,
+            "required":true,
+            "ui":"random",
+            "options": {
+              "auto_generate": 1,
+              "allow_any_value": 1
+            }
+          },
+          {
+            "id":"access_token",
+            "column_name":"access_token",
+            "type":"VARCHAR",
+            "char_length":"255",
+            "nullable": true,
+            "default_value":"",
+            "comment":"",
+            "sort":21,
+            "system":true,
+            "hidden_list":true,
+            "hidden_input":true,
+            "required":false,
+            "ui":"textinput"
+          },
+          {
+            "id":"reset_token",
+            "column_name":"reset_token",
+            "type":"VARCHAR",
+            "char_length":"255",
+            "nullable": true,
+            "default_value":"",
+            "comment":"",
+            "sort":22,
+            "system":true,
+            "hidden_list":false,
+            "hidden_input":true,
+            "required":false,
+            "ui":"textinput"
+          },
+          {
+            "id":"reset_expiration",
+            "column_name":"reset_expiration",
+            "type":"DATETIME",
+            "nullable": true,
+            "comment":"",
+            "sort":23,
+            "system":true,
+            "hidden_list":false,
+            "hidden_input":true,
+            "required":false,
+            "ui":"datetime"
+          },
+          {
+            "id":"last_access",
+            "column_name":"last_access",
+            "type":"DATETIME",
+            "nullable": true,
+            "default_value":"0000-00-00 00:00:00",
+            "comment":"",
+            "sort":24,
+            "system":false,
+            "hidden_list":false,
+            "hidden_input":true,
+            "required":false,
+            "ui":"datetime"
+          },
+          {
+            "id":"last_login",
+            "column_name":"last_login",
+            "type":"DATETIME",
+            "nullable": true,
+            "default_value":"0000-00-00 00:00:00",
+            "comment":"",
+            "sort":25,
+            "system":false,
+            "hidden_list":false,
+            "hidden_input":true,
+            "required":false,
+            "ui":"datetime",
+            "options": {
+              "contextual_date_in_listview": true
+            }
+          },
+          {
+            "id":"last_page",
+            "column_name":"last_page",
+            "type":"VARCHAR",
+            "char_length":"255",
+            "nullable": true,
+            "default_value":"",
+            "comment":"",
+            "sort":26,
+            "system":false,
+            "hidden_list":false,
+            "hidden_input":true,
+            "required":false,
+            "ui":"textinput"
+          },
+          {
+            "id":"ip",
+            "column_name":"ip",
+            "type":"VARCHAR",
+            "char_length":"50",
+            "nullable": true,
+            "default_value":"",
+            "comment":"",
+            "sort":27,
+            "system":true,
+            "hidden_list":false,
+            "hidden_input":true,
+            "required":false,
+            "ui":"textinput"
           },
           {
             "id": "invite_token",
