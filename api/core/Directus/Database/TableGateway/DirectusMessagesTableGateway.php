@@ -86,14 +86,6 @@ class DirectusMessagesTableGateway extends RelationalTableGateway
             $message = $this->parseRecordValuesByType($message, 'directus_messages_recipients');
         }
 
-        // Remove archived messages
-        // TODO: Make this behavior done in the query
-        foreach($result as $key => $item) {
-            if ($item['archived'] === 1 && $item['response_to'] !== null) {
-                unset($result[$key]);
-            }
-        }
-
         return $result;
     }
 
@@ -109,13 +101,26 @@ class DirectusMessagesTableGateway extends RelationalTableGateway
         $messageIds = [];
         $params['columns'] = ArrayUtils::get($params, 'columns', 'id');
         $table = $this;
-        $result = $this->loadItems($params, function (Builder $query) use ($uid, $table, $messageId) {
+        $result = $this->loadItems($params, function (Builder $query) use ($uid, $table, $messageId, $params) {
             $query->join('directus_messages_recipients', 'directus_messages_recipients.message_id = directus_messages.id', [
                 'recipient'
             ]);
 
             $query->whereEqualTo('directus_messages_recipients.recipient', $uid);
-            $query->whereNotEqualTo('directus_messages_recipients.archived', 1);
+
+            // ----------------------------------------------------------------------------
+            // NOTE: state are a fake way to call the "state" of a message
+            // 0 means in the inbox
+            // 1 means in the archive box
+            // ----------------------------------------------------------------------------
+            $defaultState = '0';
+            $states = ArrayUtils::get($params, 'states', $defaultState);
+            if (!$states) {
+                $states = $defaultState;
+            }
+
+            $states = explode(',', $states);
+            $query->whereIn('directus_messages_recipients.archived', $states);
 
             if ($messageId) {
                 if (! is_array($messageId)) {
@@ -173,27 +178,14 @@ class DirectusMessagesTableGateway extends RelationalTableGateway
 
         $result = array_values($resultLookup);
         foreach ($result as $key => &$row) {
-            // if (!$row['responses']['data']) {
-            //   unset($result[$key]);
-            //   continue;
-            // }
-
             $row = $this->parseRecord($row);
-            if (ArrayUtils::get($row, 'archived', 0) === 1) {
-                $row = ArrayUtils::omit($row, ['message', 'attachment', 'reads']);
-            }
         }
 
         // Add date_updated
         // Update read
         foreach ($result as &$message) {
             $responses = $message['responses']['data'];
-            /*foreach ($responses as $response) {
-                if($response['read'] == "0") {
-                    $message['read'] = "0";
-                    break;
-                }
-            }*/
+
             $lastResponse = (end($responses));
             if ($lastResponse) {
                 $message['date_updated'] = $lastResponse['datetime'];

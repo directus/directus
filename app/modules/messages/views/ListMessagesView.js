@@ -327,12 +327,54 @@ define([
     },
 
     rightToolbar: function() {
+      var filterProperties = this.filterProperties();
+
       return [
-        new Widgets.FilterWidget({
+        new Widgets.FilterWidget(_.extend(filterProperties, {
           collection: this.collection,
           basePage: this
-        })
+        }))
       ];
+    },
+
+    filterProperties: function () {
+      var collection = this.collection;
+
+      return {
+        onClickState: function ($checksChecked) {
+          var status = [];
+
+          $checksChecked.each(function (i, el) {
+            status.push($(el).val());
+          });
+
+          collection.setFilter({states: status.join(',')});
+          collection.fetch();
+        },
+
+        stateName: '',
+
+        states: function () {
+          if (!collection.getFilter('states')) {
+            collection.setFilter('states', '0');
+          }
+
+          var filteredStates = (collection.getFilter('states') || '').split(',');
+
+          return [
+            {
+              name: 'Inbox',
+              value: 0,
+              selected: _.contains(filteredStates, '0')
+            },
+            {
+              name: 'Archived',
+              value: 1,
+              selected: _.contains(filteredStates, '1')
+            }
+          ]
+        }
+      }
     },
 
     serialize: function() {

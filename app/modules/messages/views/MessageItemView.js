@@ -27,6 +27,10 @@ define(['app', 'backbone', 'moment-tz'], function (app, Backbone, moment) {
         classes.push('unread')
       }
 
+      if (this.model.get('archived') === 1) {
+        classes.push('archived');
+      }
+
       return {
         'class': classes.join(' '),
         'data-id': this.model.id
