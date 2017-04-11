@@ -2597,7 +2597,7 @@ body.loading .header .logo {
     font-size: 24px;
     font-weight: 300;
     cursor: default; }
-    .header .breadcrumb .hamburger {
+    .header .breadcrumb .veggieburger {
       -webkit-transition: color 200ms ease-in-out 0ms;
       -moz-transition: color 200ms ease-in-out 0ms;
       -o-transition: color 200ms ease-in-out 0ms;
@@ -2608,7 +2608,7 @@ body.loading .header .logo {
       padding: 5px;
       vertical-align: middle;
       margin: -4px 3px 0 0; }
-      .header .breadcrumb .hamburger:hover {
+      .header .breadcrumb .veggieburger:hover {
         color: #FFFFFF; }
     .header .breadcrumb .arrow-back {
       -webkit-transition: color 200ms ease-in-out 0ms;
@@ -6892,7 +6892,7 @@ body.login {
     left: -200px; }
   .header .breadcrumb {
     left: 10px; }
-    .header .breadcrumb .hamburger {
+    .header .breadcrumb .veggieburger {
       display: inline-block; }
     .header .breadcrumb .separator {
       display: none; }

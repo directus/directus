@@ -172,7 +172,7 @@ body.loading {
 		font-size: 24px;
 		font-weight: 300;
 		cursor: default;
-		.hamburger {
+		.veggieburger {
 			@include transition (color, $timing-short, ease-in-out);
 			display: none;
 			cursor: pointer;
