@@ -46,6 +46,8 @@ function(app, Backbone, _) {
         options.buttonClass += ' help';
       }
 
+      options.state = this.state;
+
       return options;
     },
 
@@ -59,12 +61,32 @@ function(app, Backbone, _) {
       return this._events;
     },
 
-    initialize: function(options) {
+    setEnabled: function (enabled) {
+      this.state.enabled = enabled;
+      this.trigger('enabled:change', enabled);
+    },
+
+    enable: function () {
+      this.setEnabled(true);
+    },
+
+    disable: function () {
+      this.setEnabled(false);
+    },
+
+    initialize: function (options) {
       this._events = {};
+      this.state = {};
+
+      options = _.defaults(options, {enable: true});
+
+      this.setEnabled(options.enable);
 
       if (_.isFunction(options.onClick)) {
         this._events['click .js-action-button'] = options.onClick;
       }
+
+      this.listenTo(this, 'enabled:change', this.render);
     }
   });
 });

@@ -102,14 +102,7 @@ function(app, Backbone, _, __t, BasePageView, ListViewManager, TableViewRightPan
         }
 
         if (!this.widgets.infoWidget) {
-          this.widgets.infoWidget = new Widgets.ButtonWidget({
-            widgetOptions: {
-              // buttonId: '',
-              iconClass: 'info',
-              buttonClass: 'blank',
-              buttonText: __t('options'),
-              help: __t('right_pane_help')
-            },
+          this.widgets.infoWidget = new Widgets.InfoButtonWidget({
             onClick: function (event) {
               tableView.toggleRightPane();
             }

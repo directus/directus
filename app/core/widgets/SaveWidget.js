@@ -7,6 +7,7 @@ function(app, Backbone, _) {
 
   'use strict';
 
+  // TODO: Make this widget extends from ButtonWidget
   return Backbone.Layout.extend({
     template: 'core/widgets/save-widget',
 
@@ -14,10 +15,6 @@ function(app, Backbone, _) {
 
     attributes: {
       class: 'action widget widget-button'
-    },
-
-    state: {
-      enabled: true
     },
 
     _events: {
@@ -58,6 +55,9 @@ function(app, Backbone, _) {
 
     initialize: function (options) {
       this._events = this._events || {};
+      this.state = {};
+
+      this.state.enabled = true;
 
       if (!options.widgetOptions) {
         this.options.widgetOptions = {isUpToDate: true};

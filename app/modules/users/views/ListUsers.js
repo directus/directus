@@ -164,6 +164,7 @@ function(app, Backbone, Handlebars, Directus, BasePageView, FileHelper, Widgets,
         }));
       }
 
+      widgets.push(new Widgets.InfoButtonWidget({enable: false}));
       widgets.push(new Widgets.FilterButtonWidget);
 
       return widgets;

@@ -302,13 +302,7 @@ function(app, Backbone, _, Handlebars, __t, Notification, Directus, BasePageView
       }
 
       if (_.result(this, 'rightPane')) {
-        this.infoWidget = new Widgets.ButtonWidget({
-          widgetOptions: {
-            buttonId: '',
-            iconClass: 'info',
-            buttonClass: '',
-            buttonText: __t('details')
-          },
+        this.infoWidget = new Widgets.InfoButtonWidget({
           onClick: function (event) {
             editView.toggleRightPane();
           }

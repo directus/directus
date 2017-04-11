@@ -1,4 +1,4 @@
-<button id="save_button" class="action primary help{{#unless state.enabled}} disabled{{/unless}}" data-help="This button saves the current item. You can also click the 'three dots' at the top for more save options.">
+<button id="save_button" class="action primary help{{#unless state.enabled}} disabled{{/unless}}"{{#unless state.enabled}} disabled{{/unless}} data-help="This button saves the current item. You can also click the 'three dots' at the top for more save options.">
     <i class="material-icons center">check</i>
     <div class="action-text">Save</div>
     {{#unless basicSave}}
