@@ -189,6 +189,8 @@
     "new_message": "New Message",
     "send_message": "Send",
     "message_to": "To",
+    "messages_state_inbox": "Inbox",
+    "messages_state_archive": "Archive",
     "directus_messages_recipients_placeholder": "Add recipients...",
     "messages_subject_placeholder": "Subject...",
     "messages_add_recipients_placeholder": "Add recipients...",

@@ -363,12 +363,12 @@ define([
 
           return [
             {
-              name: 'Inbox',
+              name: __t('messages_state_inbox'),
               value: 0,
               selected: _.contains(filteredStates, '0')
             },
             {
-              name: 'Archived',
+              name: __t('messages_state_archive'),
               value: 1,
               selected: _.contains(filteredStates, '1')
             }
