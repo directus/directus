@@ -121,8 +121,10 @@
 		display: none;
 	}
 	.header {
-		.filter {
-			display: none;
+		.tools-right {
+			.filter {
+				display: none;
+			}
 		}
 		.actions {
 			.filter-toggle {

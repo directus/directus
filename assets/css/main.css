@@ -2826,6 +2826,8 @@ body.loading .header .logo {
           background-color: transparent; }
         .header .actions .action.disabled .material-icons.center {
           opacity: 0.3; }
+      .header .actions .action.filter-toggle {
+        display: none; }
       .header .actions .action .material-icons {
         -webkit-transition: all 200ms ease-in-out 0ms;
         -moz-transition: all 200ms ease-in-out 0ms;
@@ -6786,7 +6788,7 @@ body.login {
   .resize-handle {
     display: none; }
 
-  .header .filter {
+  .header .tools-right .filter {
     display: none; }
   .header .actions .filter-toggle {
     display: inline-block; }

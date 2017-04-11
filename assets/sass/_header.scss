@@ -425,6 +425,9 @@ body.loading {
 					}
 				}
 			}
+			&.filter-toggle {
+				display: none;
+			}
 			.material-icons {
 				@include transition (all, $timing-short, ease-in-out);
 				position: absolute;
