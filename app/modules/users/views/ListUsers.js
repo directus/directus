@@ -65,7 +65,7 @@ function(app, Backbone, Handlebars, Directus, BasePageView, FileHelper, Widgets,
         var statusColumnName = model.table.getStatusColumnName();
         var statusValue = model.get(statusColumnName);
 
-        if (hasStatusColumn && statusValue !== model.table.getStatusDefaultValue()) { //app.statusMapping.active_num
+        if (hasStatusColumn && statusValue != model.table.getStatusDefaultValue()) {
           data.group_id = 0;
           data.group_name = 'Inactive';
           data.inactive = true;
@@ -82,7 +82,7 @@ function(app, Backbone, Handlebars, Directus, BasePageView, FileHelper, Widgets,
 
       var groupedData = [];
 
-      rows.forEach(function(group) {
+      rows.forEach(function (group) {
         if (!groupedData['group_' + group.group_id]) {
           groupedData['group_' + group.group_id] = {title: group.group_name, rows: []};
         }
