@@ -307,10 +307,18 @@
 				.field {
 					padding: 4px 20px;
 					.label {
-						margin-bottom: 4px;
+						margin-bottom: 0;
 						display: block;
 						width: 100%;
-						padding: 0;
+						padding: 20px 0 5px 0;
+						font-size: 10px;
+						font-weight: 700;
+						text-transform: uppercase;
+						color: $gray-4;
+						.required {
+							font-size: 6px;
+							display: none;
+						}
 					}
 					.interface {
 						display: block;

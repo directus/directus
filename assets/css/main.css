@@ -3186,10 +3186,17 @@ body.loading .header .logo {
     .right-sidebar .scroll-y .options .fields .field {
       padding: 4px 20px; }
       .right-sidebar .scroll-y .options .fields .field .label {
-        margin-bottom: 4px;
+        margin-bottom: 0;
         display: block;
         width: 100%;
-        padding: 0; }
+        padding: 20px 0 5px 0;
+        font-size: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+        color: #999999; }
+        .right-sidebar .scroll-y .options .fields .field .label .required {
+          font-size: 6px;
+          display: none; }
       .right-sidebar .scroll-y .options .fields .field .interface {
         display: block;
         width: 100%; }
@@ -6797,7 +6804,7 @@ body.login {
 
   .header .tools-right .filter {
     display: none; }
-  .header .actions .filter-toggle {
+  .header .actions .action.filter-toggle {
     display: inline-block; }
 
   .user-listing {
