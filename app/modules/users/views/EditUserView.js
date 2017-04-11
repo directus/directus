@@ -5,10 +5,9 @@ define([
   'core/directus',
   'core/BasePageView',
   'core/t',
+  'modules/tables/views/EditViewRightPane',
   'core/widgets/widgets'
-],
-
-function(app, _, Backbone, Directus, BasePageView, __t, Widgets) {
+], function(app, _, Backbone, Directus, BasePageView, __t, EditViewRightPane, Widgets) {
 
   'use strict';
 
@@ -85,6 +84,7 @@ function(app, _, Backbone, Directus, BasePageView, __t, Widgets) {
       var collection = this.model.collection;
       var canAdd = this.model.isNew() && collection.canAdd();
       var canEdit = !this.model.isNew() && collection.canEdit();
+      var editView = this;
 
       if (!canAdd && !canEdit) {
         return;
@@ -99,9 +99,20 @@ function(app, _, Backbone, Directus, BasePageView, __t, Widgets) {
 
       this.saveWidget.enable();
 
+      this.infoWidget = new Widgets.InfoButtonWidget({
+        onClick: function (event) {
+          editView.toggleRightPane();
+        }
+      });
+
       return [
-        this.saveWidget
+        this.saveWidget,
+        this.infoWidget
       ];
+    },
+
+    rightPane: function() {
+      return EditViewRightPane;
     },
 
     afterRender: function () {
