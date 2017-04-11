@@ -34,7 +34,7 @@
     "global_settings_project_name_placeholder": "Mijn Project",
     "global_settings_project_name_comment": "Naam van project",
     "global_settings_project_url_comment": "Klikken op het logo verwijst naar deze URL.",
-    "global_settings_cms_thumbnail_url_comment": "Voeg een afbeeldings-URL toe voor het logo (170x100)",
+    "global_settings_cms_thumbnail_url_comment": "Voeg een afbeeldings-URL toe voor het logo (200×64)",
     "global_settings_cms_user_auto_sign_out_comment": "Minuten voordat een gebruiker automatisch wordt uitgelogd",
     "global_settings_rows_per_page_comment": "Het aantal items dat per pagina wordt getoond",
     "maps_ui_global_settings_google_api_key": "Google API key voor Maps UI",

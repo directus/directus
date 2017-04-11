@@ -34,7 +34,7 @@
   "global_settings_project_name_placeholder": "Projektname",
   "global_settings_project_name_comment": "Der Name von Ihrem Projekt",
   "global_settings_project_url_comment": "Per Klick auf das Logo des Projekts werden Sie zu dieser URL geführt",
-  "global_settings_cms_thumbnail_url_comment": "Fügen Sie eine Bild URL für das Hauptlogo hinzu (170x100)",
+  "global_settings_cms_thumbnail_url_comment": "Fügen Sie eine Bild URL für das Hauptlogo hinzu (200×64)",
   "global_settings_cms_user_auto_sign_out_comment": "Minuten bis die Benutzer automatisch abgemeldet werden",
   "global_settings_rows_per_page_comment": "Die Anzahl Zeilen pro Auflistungsseite",
   "settings_files_file_naming_comment": "Die Dateisystem Namesvorgabe für Uploads",

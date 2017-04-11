@@ -33,7 +33,7 @@
     "global_settings_project_name_placeholder": "我的项目",
     "global_settings_project_name_comment": "你的项目名称",
     "global_settings_project_url_comment": "点击 logo 时将重定向至此链接",
-    "global_settings_cms_thumbnail_url_comment": "设置 logo 的图片链接 (170x100)",
+    "global_settings_cms_thumbnail_url_comment": "设置 logo 的图片链接 (200×64)",
     "global_settings_cms_user_auto_sign_out_comment": "用户在闲置时限过后将被自动退出",
     "global_settings_rows_per_page_comment": "单页列表可显示的最大行数",
     "settings_files_file_naming_comment": "所上传文件的命名规范",
