@@ -2318,7 +2318,8 @@ table {
     min-width: 300px; }
 
 .view-calendar {
-  min-height: 100%; }
+  min-height: 100%;
+  position: relative; }
   .view-calendar header {
     text-align: center;
     padding: 40px 20px 40px 20px; }
@@ -4289,6 +4290,11 @@ body.help .discover-spotlight {
       height: 100%; }
 
 .page-container, .main-container {
+  -webkit-transition: all 200ms ease-in-out 0ms;
+  -moz-transition: all 200ms ease-in-out 0ms;
+  -o-transition: all 200ms ease-in-out 0ms;
+  -ms-transition: all 200ms ease-in-out 0ms;
+  transition: all 200ms ease-in-out 0ms;
   height: 100%; }
 
 .file-listing {

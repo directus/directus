@@ -58,5 +58,6 @@
 }
 
 .page-container, .main-container {
+	@include transition (all, $timing-short, ease-in-out);
 	height: 100%;
 }
