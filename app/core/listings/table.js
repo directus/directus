@@ -26,6 +26,8 @@ define([
         CHART: '#items-chart'
       },
 
+      className: 'table-scroll',
+
       defaultOptions: {
         spacing: 'cozy'
       },
