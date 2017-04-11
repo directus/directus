@@ -1,11 +1,16 @@
 //////////////////////////////////////////////////////////////////////////////
 // Tags
 
+::-webkit-scrollbar { }
+::-webkit-scrollbar-track { }
+::-webkit-scrollbar-thumb {
+	// background-color: $primary;
+}
 ::selection {
-  background: lighten($primary, 40%);
+	background: lighten($primary, 40%);
 }
 ::-moz-selection {
-  background: lighten($primary, 40%);
+	background: lighten($primary, 40%);
 }
 input:-webkit-autofill {
 	-webkit-box-shadow: 0 0 0px 1000px white inset;
@@ -24,11 +29,11 @@ input:-webkit-autofill {
 // }
 * {
 	box-sizing: border-box;
-    -webkit-font-smoothing: antialiased;
-    text-rendering: optimizeLegibility;
+	-webkit-font-smoothing: antialiased;
+	text-rendering: optimizeLegibility;
 }
 *:focus {
-    outline: 0;
+	outline: 0;
 }
 html, body {
 	margin: 0;
