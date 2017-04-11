@@ -49,8 +49,7 @@
     "directus_settings_files_file_naming_file_hash": "File Hash (Obfuscate)",
     "directus_settings_files_thumbnail_quality_comment": "The quality percentage for Directus thumbnails",
     "directus_settings_files_thumbnail_crop_enabled": "Crop thumbnails to a square as needed",
-    "directus_settings_files_youtube_api_key_comment": "YouTube API key for retrieving embed info",
-    "directus_settings_files_youtube_api_key_get_key": "Get Key",
+    "directus_settings_files_youtube_api_key_comment": "YouTube API key for retrieving embed info\n%[https://developers.google.com/youtube/v3/getting-started](Get Key)",
 
     "table": "Table",
     "table_name": "Table Name",
@@ -476,7 +475,7 @@
     "exception_users_cannot_be_added_into_public_group": "Users can't be added into Public Group",
 
     "version_outdated_title": "Directus Update Available",
-    "version_outdated_text_x": "The latest stable release is v%{current_version}<br>You are currently running v%{installed_version}",
+    "version_outdated_text_x": "The latest stable release is v%{current_version}\nYou are currently running v%{installed_version}",
 
     "right_pane_help": "Opens the item's detail sidebar",
     "x_view_options": "%{view} Options",

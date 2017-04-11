@@ -40,7 +40,8 @@ require([
       }
     }
 
-    return app.capitalize(value);
+    // NOTE: value can also be a HandleBars safe string
+    return _.isString(value) ? app.capitalize(value) : value;
   });
 
   Handlebars.registerHelper('tVarCapitalize', function(key, options) {

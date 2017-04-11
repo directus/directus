@@ -1,4 +1,12 @@
-define(['app', 'underscore', 'backbone', 'utils', 'noty', 'noty_theme'], function (app, _, Backbone, Utils) {
+define([
+  'app',
+  'underscore',
+  'backbone',
+  'utils',
+  'helpers/string',
+  'noty',
+  'noty_theme'
+], function (app, _, Backbone, Utils, StringHelper) {
   'use strict';
 
   var defaultOptions = {
@@ -27,6 +35,7 @@ define(['app', 'underscore', 'backbone', 'utils', 'noty', 'noty_theme'], functio
       titleText += '<b>'+title+'</b><br>';
     }
 
+    details = StringHelper.parse(details);
     options.text = titleText+details;
 
     return noty(options);

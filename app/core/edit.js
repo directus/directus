@@ -4,6 +4,7 @@ define(function(require, exports, module) {
 
   var app         = require('app');
   var _           = require('underscore');
+  var StringHelper= require('helpers/string');
   var Backbone    = require('backbone');
   var Handlebars  = require('handlebars');
   var UIManager   = require('./UIManager');
@@ -68,7 +69,8 @@ define(function(require, exports, module) {
     serialize: function() {
       // editing UIs settings does not have a specified table assigned to it.
       var tableInfo = this.column.collection.table;
-      var tableName;
+      var tableName, comment;
+
       if (tableInfo) {
         tableName = tableInfo.id
       }
@@ -77,7 +79,7 @@ define(function(require, exports, module) {
         id: this.column.id,
         uiName: app.capitalize(this.column.get('ui')),
         name: app.capitalize(this.column.id),
-        comment: this.column.get('comment'),
+        comment: new Handlebars.SafeString(StringHelper.parse(this.column.get('comment'))),
         batchEdit: this.options.batchEdit,
         hideLabel: _.result(this.view, 'hideLabel'),
         required: this.column.get('required'),
