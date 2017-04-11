@@ -247,6 +247,10 @@ define([
       //   }
       // });
 
+      this.listenTo(this.collection, 'sync', function () {
+        this.state.currentMessage = null;
+      });
+
       this.state = {
         currentMessage: null,
         previousMessage: null,
