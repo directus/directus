@@ -69,13 +69,7 @@ define([
       this.collection.trigger('select');
     },
 
-    state: {
-      currentMessage: null,
-      previousMessage: null,
-      lastMessageId: null,
-      itemViews: {},
-      contentViews: {}
-    },
+    state: {},
 
     dom: {
       MESSAGE_VIEW: '#message'
@@ -253,7 +247,13 @@ define([
       //   }
       // });
 
-      this.state.lastMessageId = this.collection.maxId;
+      this.state = {
+        currentMessage: null,
+        previousMessage: null,
+        lastMessageId: this.collection.maxId,
+        itemViews: {},
+        contentViews: {}
+      };
     }
   });
 
