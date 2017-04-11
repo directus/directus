@@ -4618,6 +4618,7 @@ body.help .discover-spotlight {
       border-top: 4px solid #3498DB;
       margin-top: -4px; }
     .user-listing .user img {
+      width: 200px;
       height: 200px;
       border-bottom: 1px solid #EEEEEE; }
     .user-listing .user .group,
@@ -6813,6 +6814,7 @@ body.login {
       width: 140px;
       margin: 15px; }
       .user-listing .user img {
+        width: 140px;
         height: 140px; }
       .user-listing .user .group,
       .user-listing .user .online {
@@ -6965,7 +6967,7 @@ body.login {
   .view-calendar .days {
     top: 113px; } }
 @media only screen and (max-width: 600px) {
-  .header .filter {
+  .header .tools-right .filter {
     display: none; }
 
   .smoke .modal.confirm .modal-bg {
@@ -7008,7 +7010,7 @@ body.login {
   .fields .field .interface .dropzone {
     width: 100%; }
 
-  .header .filter {
+  .header .tools-right .filter {
     position: absolute;
     top: 64px;
     left: 0%;
@@ -7017,17 +7019,17 @@ body.login {
     margin-top: 0;
     text-align: right;
     background-color: #FFFFFF; }
-    .header .filter input.general {
+    .header .tools-right .filter input.general {
       font-size: 18px;
       padding-left: 50px;
       padding-right: 20px;
       padding-top: 10px;
       padding-bottom: 10px;
       height: 50px; }
-    .header .filter .search {
+    .header .tools-right .filter .search {
       left: 20px;
       top: 13px; }
-    .header .filter .filter-dropdown-toggle {
+    .header .tools-right .filter .filter-dropdown-toggle {
       display: none; }
 
   .items-chart {
