@@ -40,6 +40,7 @@ function(app, _, moment, Backbone, DirectusModal, DirectusEdit, __t, Notificatio
             app.router.go('#files','new');
           }
         }),
+        new Widgets.InfoButtonWidget({enable: false}),
         new Widgets.FilterButtonWidget()
       ];
     },
