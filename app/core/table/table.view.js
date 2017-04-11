@@ -122,8 +122,8 @@ function(app, _, Backbone, Notification, __t, TableHelpers, ModelHelper, TableHe
         this.headerScroll($el);
       }, this);
 
-      $el.off('scroll', _.throttle(onScroll, 0));
-      $el.on('scroll', _.throttle(onScroll, 0));
+      $el.off('scroll', onScroll);
+      $el.on('scroll', onScroll);
 
       $(window).off('resize', _.debounce(onResize, 300));
       $(window).on('resize', _.debounce(onResize, 300));
