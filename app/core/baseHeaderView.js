@@ -28,8 +28,13 @@ function(app, _, Backbone, __t, Notification) {
     lastHeaderHeight: 0,
 
     events: {
+      'click .veggieburger': 'toggleMenu',
       'click #removeOverlay': 'closeOverlayPage',
       'click #saveSnapshotBtn': 'saveSnapshot'
+    },
+
+    toggleMenu: function () {
+      $('body').toggleClass('sidebar-open');
     },
 
     // prevent the header to be removed after when rendered twice
