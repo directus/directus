@@ -71,9 +71,7 @@ function(app, Backbone, Handlebars, Directus, BasePageView, FileHelper, Widgets,
           data.inactive = true;
         }
 
-        var avatarSmall = model.getAvatar();
-
-        data.avatar = new Handlebars.SafeString('<img src="' + avatarSmall + '" style="width:200px;height:200px"/>');
+        data.avatarUrl = model.getAvatar();
 
         return data;
       });
