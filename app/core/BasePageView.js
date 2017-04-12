@@ -77,7 +77,6 @@ function(app, Backbone, _, BaseHeaderView, RightSidebarView) {
       var hasOpenClass = false;
       var pane = this.getRightPane();
       if (pane) {
-        // var hasOpenClass = $('body').hasClass(app.dom.RIGHT_PANE_OPEN);
         hasOpenClass = $('body').hasClass(pane.getOpenClassName());
       }
 
@@ -85,7 +84,6 @@ function(app, Backbone, _, BaseHeaderView, RightSidebarView) {
     },
 
     _ensurePaneIsClosed: function () {
-      // $('body').removeClass(app.dom.RIGHT_PANE_OPEN);
       var pane = this.getRightPane();
       if (pane) {
         $('body').removeClass(pane.getOpenClassName());
