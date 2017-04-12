@@ -17,7 +17,7 @@ define([
       var itemModel = this.options.itemModel ? this.options.itemModel.toJSON(true) : {};
       var table = this.model.table ? this.model.table : null;
       // @TODO: Add Timezone
-      var dateFormat = 'MMM Mo, YYYY @ H:mma';
+      var dateFormat = 'MMM Do, YYYY @ H:mma';
       var previewUrl = table ? table.get('preview_url') : null;
       var metadata = {
         createdBy: this.model.get('created_by'),
