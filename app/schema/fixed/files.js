@@ -17,8 +17,8 @@ define(function(require, exports, module) {
 
         "columns": [
           {
-            "id":"item",
-            "column_name":"item",
+            "id": "asset",
+            "column_name": "asset",
             "type":"ALIAS",
             "is_nullable":"NO",
             "comment":"",
