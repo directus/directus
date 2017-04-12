@@ -73,6 +73,11 @@ define([
       },
     },
 
+    // TODO: Add this as a option in all views
+    cleanup: function () {
+      this.model.resetAttributes();
+    },
+
     save: function() {
       var data = this.$('form').serializeObject();
       var options = {patch: false, wait: true, silent: false};

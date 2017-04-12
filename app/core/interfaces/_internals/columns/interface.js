@@ -92,7 +92,7 @@ define([
         focusTo: focusTo
       });
 
-      this.listenTo(columnModel, 'change', this.onColumnChange);
+      this.listenTo(columnModel, 'sync', this.onColumnChange);
 
       app.router.openViewInModal(view);
     },
