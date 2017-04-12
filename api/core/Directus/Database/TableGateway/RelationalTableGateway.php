@@ -331,7 +331,7 @@ class RelationalTableGateway extends BaseTableGateway
 
             $foreignTableName = $column['relationship']['related_table'];
             // @todo: rewrite this
-            if ($foreignTableName === 'directus_files') {
+            if ($foreignTableName === 'directus_files' && static::$container) {
                 // Update/Add foreign record
                 $Files = static::$container->get('files');
                 if (count(array_filter($foreignRow, 'is_array')) == count($foreignRow)) {

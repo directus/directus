@@ -103,12 +103,12 @@ function(app, _, Backbone, Notification, __t, TableHelpers, ModelHelper, TableHe
     },
 
     headerScroll: function ($el) {
-      var $table = $el || this.$el.find('.table-scroll-x');
+      var $table = $el || this.$el;
       TableHelpers.headerScroll($table);
     },
 
     bindTableEvents: function () {
-      var $el = this.$('.table-scroll-x');
+      var $el = this.$el;
 
       this.fixWidths();
       this.headerScroll($el);
@@ -122,8 +122,8 @@ function(app, _, Backbone, Notification, __t, TableHelpers, ModelHelper, TableHe
         this.headerScroll($el);
       }, this);
 
-      $el.off('scroll', _.throttle(onScroll, 300));
-      $el.on('scroll', _.throttle(onScroll, 300));
+      $el.off('scroll', onScroll);
+      $el.on('scroll', onScroll);
 
       $(window).off('resize', _.debounce(onResize, 300));
       $(window).on('resize', _.debounce(onResize, 300));

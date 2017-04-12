@@ -37,7 +37,7 @@
     "directus_settings_global_project_name_placeholder": "My Project",
     "directus_settings_global_project_name_comment": "The name of your project",
     "directus_settings_global_project_url_comment": "Clicking the project logo takes you to this URL",
-    "directus_settings_global_cms_thumbnail_url_comment": "Add a image URL for the main logo (170x100)",
+    "directus_settings_global_cms_thumbnail_url_comment": "Add a image URL for the main logo (200×64)",
     "directus_settings_global_cms_user_auto_sign_out_comment": "Minutes before users are automatically logged out",
     "directus_settings_global_rows_per_page_comment": "The number of items shown per listing page",
     "maps_ui_global_settings_google_api_key": "Google API key for Maps UI",
@@ -49,8 +49,7 @@
     "directus_settings_files_file_naming_file_hash": "File Hash (Obfuscate)",
     "directus_settings_files_thumbnail_quality_comment": "The quality percentage for Directus thumbnails",
     "directus_settings_files_thumbnail_crop_enabled": "Crop thumbnails to a square as needed",
-    "directus_settings_files_youtube_api_key_comment": "YouTube API key for retrieving embed info",
-    "directus_settings_files_youtube_api_key_get_key": "Get Key",
+    "directus_settings_files_youtube_api_key_comment": "YouTube API key for retrieving embed info\n%[https://developers.google.com/youtube/v3/getting-started](Get Key)",
 
     "table": "Table",
     "table_name": "Table Name",
@@ -189,6 +188,8 @@
     "new_message": "New Message",
     "send_message": "Send",
     "message_to": "To",
+    "messages_state_inbox": "Inbox",
+    "messages_state_archive": "Archive",
     "directus_messages_recipients_placeholder": "Add recipients...",
     "messages_subject_placeholder": "Subject...",
     "messages_add_recipients_placeholder": "Add recipients...",
@@ -474,14 +475,17 @@
     "exception_users_cannot_be_added_into_public_group": "Users can't be added into Public Group",
 
     "version_outdated_title": "Directus Update Available",
-    "version_outdated_text_x": "The latest stable release is v%{current_version}<br>You are currently running v%{installed_version}",
+    "version_outdated_text_x": "The latest stable release is v%{current_version}\nYou are currently running v%{installed_version}",
 
     "right_pane_help": "Opens the item's detail sidebar",
     "x_view_options": "%{view} Options",
 
     "online": "Online",
     "created_by": "Created By",
+    "uploaded_by": "Uploaded By",
+    "uploaded_on": "Uploaded On",
     "last_modified_by": "Last Modified By",
+    "last_modified_on": "Last Modified On",
 
     "created_by_column": "Created By Column",
     "created_on_column": "Created On Column",

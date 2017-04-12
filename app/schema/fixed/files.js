@@ -17,8 +17,8 @@ define(function(require, exports, module) {
 
         "columns": [
           {
-            "id":"item",
-            "column_name":"item",
+            "id": "asset",
+            "column_name": "asset",
             "type":"ALIAS",
             "is_nullable":"NO",
             "comment":"",
@@ -27,6 +27,7 @@ define(function(require, exports, module) {
             "system":false,
             "hidden_list":false,
             "hidden_input":false,
+            "hidden_label": true,
             "required":false
           },
           {

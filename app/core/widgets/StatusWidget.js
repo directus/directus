@@ -50,18 +50,14 @@ function(app, _, Backbone) {
       var currentStatus = this.model.get(attr);
       var model = this.model;
 
-      model.getTableStatusMapping().each(function (status) {
+      _.each(model.getStatusVisible(), function (status) {
         var item = status.toJSON();
-        // Delete entry are performed on the header delete button
-        if (status.get('hidden_globally') !== true) {
-        // if (key !== app.statusMapping.deleted_num) {
-        //   item.id = key;
-        //   item.selected = key === currentStatus;
-          item.selected = status.get('id') === currentStatus;
-          item.model = status;
-          item.color = item.background_color || item.color;
-          statuses.push(item);
-        }
+
+        // NOTE: do not strictly compare as status can (will) be string
+        item.selected = status.get('id') == currentStatus;
+        item.model = status;
+        item.color = item.background_color || item.color;
+        statuses.push(item);
       });
 
       statuses = _.sortBy(statuses, function(item) {

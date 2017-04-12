@@ -74,13 +74,13 @@ function(app, Backbone, _, BaseHeaderView, RightSidebarView) {
 
     isRightPaneOpen: function () {
       // @TODO: set all this stage in the app level
-      var hasOpenClass = $('body').hasClass('right-sidebar-open');
+      var hasOpenClass = $('body').hasClass(app.dom.RIGHT_PANE_OPEN);
 
       return hasOpenClass || this.state.rightPaneOpen === true;
     },
 
     _ensurePaneIsClosed: function () {
-      $('body').removeClass('right-sidebar-open');
+      $('body').removeClass(app.dom.RIGHT_PANE_OPEN);
       this.state.rightPaneOpen = false;
     },
 

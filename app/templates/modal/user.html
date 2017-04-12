@@ -15,7 +15,7 @@
 		</div>
 		<div class="row">
 			<div class="label">Last Seen</div>
-			<span title="{{#if last_access}}{{fullDateTime last_access}}{{/if}}">{{lastSeen}}</span>
+			<span title="{{#if last_access}}{{fullDateTime last_access}}{{/if}}">{{#if online}}Online Now{{else}}{{lastSeen}}{{/if}}</span>
 			<i class="material-icons">beenhere</i>
 		</div>
 		{{#if location}}
@@ -28,13 +28,13 @@
 		{{#if phone}}
 		<div class="row">
 			<div class="label">Phone</div>
-			{{phone}}
+			<a href="tel:{{phone}}" target="_blank">{{phone}}</a>
 			<i class="material-icons">local_phone</i>
 		</div>
 		{{/if}}
 		<div class="row">
 			<div class="label">Email</div>
-			{{email}}
+			<a href="mailto:{{email}}" target="_blank">{{email}}</a>
 			<i class="material-icons">email</i>
 		</div>
 		<div class="row">
@@ -60,7 +60,7 @@
 		{{/if}}
 	{{else}}
 		<div class="row info">
-			Perhaps this user was removed from the database directly or the associated action was performed outside of the CMS.
+			Perhaps this user was removed from the database or the associated action was performed outside of the CMS.
 		</div>
 	{{/if}}
 </div>

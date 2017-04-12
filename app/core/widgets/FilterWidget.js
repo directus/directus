@@ -45,6 +45,8 @@ define([
         this.collection.fetch();
       },
 
+      'click input.js-state-check': 'onClickState',
+
       'click .js-remove': function (event) {
         var index = $(event.target).parent().index();
         var value = this.options.filters[index].filterData.value;
@@ -222,6 +224,14 @@ define([
       this.render();
     },
 
+    onClickState: function (event) {
+      if (this.options.onClickState) {
+        var $checksChecked = this.$el.find('input.js-state-check:checked');
+
+        this.options.onClickState.apply(this, [$checksChecked, event]);
+      }
+    },
+
     serialize: function() {
       var data = {resultCount: this.collection.length};
       var structure = this.collection.structure;
@@ -236,16 +246,17 @@ define([
       data.statusColumn = structure.get(statusColumnName);
       data.statuses = [];
 
-      this.collection.getTableStatusMapping().each(function (status) {
-        // var tableStatus = status.tableStatus;
-        if (status.get('hidden_globally') !== true) {
-        // if (key !== app.statusMapping.deleted_num) {
-          data.statuses.push({
-            name: status.get('name'),
-            value: status.get('id'),
-            selected: _.indexOf(statusSelected, status.get('id')) >= 0
-          });
-        }
+      // NOTE: This is a hotfix to include radio button for messages filtering
+      // switching from inbox to archived messages
+      data.stateName = this.options.stateName;
+      data.states = this.options.states;
+
+      _.each(this.collection.getStatusVisible(), function (status) {
+        data.statuses.push({
+          name: status.get('name'),
+          value: status.get('id'),
+          selected: _.indexOf(statusSelected, status.get('id')) >= 0
+        });
       });
 
       // data.statusColumn = structure.get(app.statusMapping.status_name);

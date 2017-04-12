@@ -73,13 +73,15 @@ define([
       },
     },
 
+    // TODO: Add this as a option in all views
+    cleanup: function () {
+      this.model.resetAttributes();
+    },
+
     save: function() {
       var data = this.$('form').serializeObject();
-      var options = {patch: false};
-
-      this.listenTo(this.model, 'sync', function(model) {
-        this.model.collection.add(model);
-      }, this);
+      var options = {patch: false, wait: true, silent: false};
+      var isNew = this.model.isNew();
 
 
       if (!this.model.isNew()) {
@@ -88,17 +90,18 @@ define([
         this.model.stopTracking();
       }
 
-      if (data) {
-        var model = this.model;
-        model.save(data, options).then(function () {
-          var type = model.isNew() ? 'created' : 'updated';
-          var title = __t('column_' + type);
-          var message = __t('column_x_was_' + type, {
-            column_name: model.get('column_name')
-          });
-
-          Notification.success(title, message, {timeout: 3000});
+      options.success = function (model) {
+        var type = isNew ? 'created' : 'updated';
+        var title = __t('column_' + type);
+        var message = __t('column_x_was_' + type, {
+          column_name: model.get('column_name')
         });
+
+        Notification.success(title, message, {timeout: 3000});
+      };
+
+      if (data) {
+        this.model.save(data, options);
       }
     },
 

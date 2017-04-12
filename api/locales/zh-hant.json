@@ -34,7 +34,7 @@
     "global_settings_project_name_placeholder": "我的專案",
     "global_settings_project_name_comment": "你的專案名稱",
     "global_settings_project_url_comment": "點擊 logo 時將重定向至此連結",
-    "global_settings_cms_thumbnail_url_comment": "設定 logo 的圖片連結 (170x100) ",
+    "global_settings_cms_thumbnail_url_comment": "設定 logo 的圖片連結 (200×64) ",
     "global_settings_cms_user_auto_sign_out_comment": "使用者在閒置時限過後將被自動登出",
     "global_settings_rows_per_page_comment": "單頁列表可顯示的最大行數",
     "maps_ui_global_settings_google_api_key": "地圖介面的 Google API key",

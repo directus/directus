@@ -1,4 +1,4 @@
-define(['underscore', 'polyglot'], function(_, Polyglot) {
+define(['underscore', 'helpers/string', 'polyglot'], function(_, StringHelper, Polyglot) {
   var options = window.directusData;
   var locale = options.locale || 'en';
   var phrases = options.phrases;

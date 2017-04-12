@@ -15,6 +15,18 @@
     <hr>
     {{/if}}
 
+	{{#if states}}
+	<h3>{{stateName}}</h3>
+	{{#states}}
+	<div class="status-toggle">
+		<input class="custom-checkbox select-row js-state-check" id="check-state-{{value}}" type="checkbox" value="{{value}}" {{#if selected}}checked{{/if}}>
+		<label for="check-state-{{value}}"><span></span> {{name}}</label>
+	</div>
+	{{/states}}
+
+	<hr>
+	{{/if}}
+
     <h3>Add New Filter</h3>
     <div class="select-container add-column-filter">
         <select name="type" class="medium adv-search-col-id">

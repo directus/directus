@@ -1703,10 +1703,6 @@ input[type="radio"].custom-checkbox {
 .max-width-800 {
   max-width: 800px; }
 
-.table-scroll-x {
-  width: 100%;
-  overflow: scroll; }
-
 table {
   -webkit-transition: width 200ms ease-in-out 0ms;
   -moz-transition: width 200ms ease-in-out 0ms;
@@ -2318,7 +2314,8 @@ table {
     min-width: 300px; }
 
 .view-calendar {
-  min-height: 100%; }
+  min-height: 100%;
+  position: relative; }
   .view-calendar header {
     text-align: center;
     padding: 40px 20px 40px 20px; }
@@ -2382,13 +2379,18 @@ table {
       font-size: 20px;
       color: #666666;
       font-weight: 300;
-      padding: 10px; }
+      overflow: hidden; }
       .view-calendar .days .day.blank {
         background-color: #fbfbfb;
         color: #CCCCCC; }
+        .view-calendar .days .day.blank .number {
+          background-color: #fbfbfb; }
       .view-calendar .days .day.today {
-        color: #333333;
+        background-color: #eef7fc;
+        color: #3498DB;
         font-weight: 400; }
+        .view-calendar .days .day.today .number {
+          background-color: #eef7fc; }
       .view-calendar .days .day.active {
         -webkit-border-radius: 2px;
         -moz-border-radius: 2px;
@@ -2402,8 +2404,28 @@ table {
         font-weight: 400; }
         .view-calendar .days .day.active.today {
           color: #3498DB; }
+      .view-calendar .days .day .number {
+        -webkit-border-radius: 100%;
+        -moz-border-radius: 100%;
+        border-radius: 100%;
+        -moz-background-clip: padding;
+        -webkit-background-clip: padding-box;
+        background-clip: padding-box;
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        height: 34px;
+        width: 34px;
+        z-index: 2;
+        padding-top: 5px;
+        background-color: #FFFFFF;
+        text-align: center; }
       .view-calendar .days .day .items {
-        width: 100%; }
+        width: 100%;
+        height: 100%;
+        padding: 50px 10px 10px 10px;
+        overflow: scroll;
+        z-index: 1; }
         .view-calendar .days .day .items .item {
           -webkit-transition: all 200ms ease-in-out 0ms;
           -moz-transition: all 200ms ease-in-out 0ms;
@@ -2572,7 +2594,7 @@ body.loading .header .logo {
     font-size: 24px;
     font-weight: 300;
     cursor: default; }
-    .header .breadcrumb .hamburger {
+    .header .breadcrumb .veggieburger {
       -webkit-transition: color 200ms ease-in-out 0ms;
       -moz-transition: color 200ms ease-in-out 0ms;
       -o-transition: color 200ms ease-in-out 0ms;
@@ -2583,7 +2605,7 @@ body.loading .header .logo {
       padding: 5px;
       vertical-align: middle;
       margin: -4px 3px 0 0; }
-      .header .breadcrumb .hamburger:hover {
+      .header .breadcrumb .veggieburger:hover {
         color: #FFFFFF; }
     .header .breadcrumb .arrow-back {
       -webkit-transition: color 200ms ease-in-out 0ms;
@@ -2801,6 +2823,8 @@ body.loading .header .logo {
           background-color: transparent; }
         .header .actions .action.disabled .material-icons.center {
           opacity: 0.3; }
+      .header .actions .action.filter-toggle {
+        display: none; }
       .header .actions .action .material-icons {
         -webkit-transition: all 200ms ease-in-out 0ms;
         -moz-transition: all 200ms ease-in-out 0ms;
@@ -3157,10 +3181,17 @@ body.loading .header .logo {
     .right-sidebar .scroll-y .options .fields .field {
       padding: 4px 20px; }
       .right-sidebar .scroll-y .options .fields .field .label {
-        margin-bottom: 4px;
+        margin-bottom: 0;
         display: block;
         width: 100%;
-        padding: 0; }
+        padding: 8px 0 4px 0;
+        font-size: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+        color: #999999; }
+        .right-sidebar .scroll-y .options .fields .field .label .required {
+          font-size: 6px;
+          display: none; }
       .right-sidebar .scroll-y .options .fields .field .interface {
         display: block;
         width: 100%; }
@@ -4252,7 +4283,7 @@ body.help .discover-spotlight {
     background-color: rgba(255, 255, 255, 0.9);
     border: 3px dashed #3498DB;
     z-index: 10;
-    animation: dragover 2s ease-in-out;
+    animation: dragover 1s ease-in-out;
     animation-iteration-count: infinite; }
   .page.define-edge {
     border-left: 1px solid #DDDDDD; }
@@ -4261,7 +4292,21 @@ body.help .discover-spotlight {
     .page .page-container.messages .main-container {
       height: 100%; }
 
-.page-container, .main-container {
+.main-container {
+  -webkit-transition: all 200ms ease-in-out 0ms;
+  -moz-transition: all 200ms ease-in-out 0ms;
+  -o-transition: all 200ms ease-in-out 0ms;
+  -ms-transition: all 200ms ease-in-out 0ms;
+  transition: all 200ms ease-in-out 0ms;
+  height: 100%;
+  overflow: scroll; }
+
+.page-container {
+  -webkit-transition: all 200ms ease-in-out 0ms;
+  -moz-transition: all 200ms ease-in-out 0ms;
+  -o-transition: all 200ms ease-in-out 0ms;
+  -ms-transition: all 200ms ease-in-out 0ms;
+  transition: all 200ms ease-in-out 0ms;
   height: 100%; }
 
 .file-listing {
@@ -4577,6 +4622,7 @@ body.help .discover-spotlight {
       border-top: 4px solid #3498DB;
       margin-top: -4px; }
     .user-listing .user img {
+      width: 200px;
       height: 200px;
       border-bottom: 1px solid #EEEEEE; }
     .user-listing .user .group,
@@ -5338,6 +5384,18 @@ body.help .discover-spotlight {
       max-width: 100px;
       min-width: auto;
       height: 40px; }
+    .fields .field .interface .file-preview {
+      width: 100%; }
+      .fields .field .interface .file-preview img {
+        display: block;
+        height: auto;
+        max-width: 100%;
+        max-height: 600px;
+        object-fit: contain;
+        object-position: left; }
+      .fields .field .interface .file-preview iframe {
+        max-width: 100%;
+        max-height: 600px; }
     .fields .field .interface .directus-user {
       position: relative;
       font-size: 14px;
@@ -6761,9 +6819,9 @@ body.login {
   .resize-handle {
     display: none; }
 
-  .header .filter {
+  .header .tools-right .filter {
     display: none; }
-  .header .actions .filter-toggle {
+  .header .actions .action.filter-toggle {
     display: inline-block; }
 
   .user-listing {
@@ -6772,6 +6830,7 @@ body.login {
       width: 140px;
       margin: 15px; }
       .user-listing .user img {
+        width: 140px;
         height: 140px; }
       .user-listing .user .group,
       .user-listing .user .online {
@@ -6865,7 +6924,7 @@ body.login {
     left: -200px; }
   .header .breadcrumb {
     left: 10px; }
-    .header .breadcrumb .hamburger {
+    .header .breadcrumb .veggieburger {
       display: inline-block; }
     .header .breadcrumb .separator {
       display: none; }
@@ -6924,7 +6983,7 @@ body.login {
   .view-calendar .days {
     top: 113px; } }
 @media only screen and (max-width: 600px) {
-  .header .filter {
+  .header .tools-right .filter {
     display: none; }
 
   .smoke .modal.confirm .modal-bg {
@@ -6967,7 +7026,7 @@ body.login {
   .fields .field .interface .dropzone {
     width: 100%; }
 
-  .header .filter {
+  .header .tools-right .filter {
     position: absolute;
     top: 64px;
     left: 0%;
@@ -6976,17 +7035,17 @@ body.login {
     margin-top: 0;
     text-align: right;
     background-color: #FFFFFF; }
-    .header .filter input.general {
+    .header .tools-right .filter input.general {
       font-size: 18px;
       padding-left: 50px;
       padding-right: 20px;
       padding-top: 10px;
       padding-bottom: 10px;
       height: 50px; }
-    .header .filter .search {
+    .header .tools-right .filter .search {
       left: 20px;
       top: 13px; }
-    .header .filter .filter-dropdown-toggle {
+    .header .tools-right .filter .filter-dropdown-toggle {
       display: none; }
 
   .items-chart {

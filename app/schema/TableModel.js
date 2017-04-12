@@ -5,6 +5,7 @@ define(function(require, exports, module) {
   var Backbone = require('backbone'),
       app = require('app'),
       _ = require('underscore'),
+      StatusHelper = require('helpers/status'),
       ColumnsCollection = require('./ColumnsCollection'),
       PreferenceModel = require('./../core/PreferenceModel');
 
@@ -61,16 +62,11 @@ define(function(require, exports, module) {
     },
 
     getStatusVisibleValues: function () {
-      var mapping = this.getTableStatusMapping();
-      var values = [];
+      var statuses = StatusHelper.getStatusVisible(this.id);
 
-      mapping.each(function (status) {
-        if (status.get('hidden_globally') !== false) {
-          values.push(status.get('id'));
-        }
+      return statuses.map(function (status) {
+        return status.id;
       });
-
-      return values;
     },
 
     getSortColumn: function () {

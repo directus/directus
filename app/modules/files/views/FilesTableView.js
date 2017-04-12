@@ -39,15 +39,18 @@ function(app, _, moment, Backbone, DirectusModal, DirectusEdit, __t, Notificatio
           onClick: function(event) {
             app.router.go('#files','new');
           }
-        })
+        }),
+        new Widgets.InfoButtonWidget({enable: false}),
+        new Widgets.FilterButtonWidget()
       ];
     },
-    rightToolbar: function() {
+
+    rightToolbar: function () {
       return [
-        new Widgets.PaginatorWidget({collection: this.collection})
-        //new Widgets.SearchWidget(),
-        //new Widgets.ButtonWidget({widgetOptions: {active: this.viewList, buttonId: "listBtn", iconClass: "icon-list"}}),
-        //new Widgets.ButtonWidget({widgetOptions: {active: !this.viewList, buttonId: "gridBtn", iconClass: "icon-layout"}})
+        new Widgets.FilterWidget({
+          collection: this.collection,
+          basePage: this
+        })
       ];
     },
 
@@ -89,6 +92,7 @@ function(app, _, moment, Backbone, DirectusModal, DirectusEdit, __t, Notificatio
         }
       }
     },
+
     afterRender: function() {
       var self = this;
       var dropzone = document.getElementById('content');
@@ -117,6 +121,7 @@ function(app, _, moment, Backbone, DirectusModal, DirectusEdit, __t, Notificatio
       dropzone.addEventListener('dragleave', this.dragleaveListener, false);
       dropzone.addEventListener('drop', this.dropListener, false);
     },
+
     remove: function () {
       var dropzone = document.getElementById('content');
 
@@ -129,6 +134,7 @@ function(app, _, moment, Backbone, DirectusModal, DirectusEdit, __t, Notificatio
         app.trigger('progress');
       });
     },
+
     processDroppedImages: function (event) {
       if (!this.uploadFiles) {
         this.uploadFiles = [];
@@ -163,6 +169,7 @@ function(app, _, moment, Backbone, DirectusModal, DirectusEdit, __t, Notificatio
         this.uploadNextImage();
       }
     },
+
     uploadNextImage: function() {
       if (this.uploadFiles.length <= 0) {
         this.uploadInProgress = false;
@@ -230,6 +237,7 @@ function(app, _, moment, Backbone, DirectusModal, DirectusEdit, __t, Notificatio
         $('li[data-cid=' + fileInfo.model.cid + ']').find('.files-card-progress').width(((e.loaded / e.total) * 100) + "%");
       });
     },
+
     initialize: function() {
       this.viewList = false;
       this.table = new FilesCardView({collection:this.collection});

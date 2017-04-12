@@ -69,13 +69,7 @@ define([
       this.collection.trigger('select');
     },
 
-    state: {
-      currentMessage: null,
-      previousMessage: null,
-      lastMessageId: null,
-      itemViews: {},
-      contentViews: {}
-    },
+    state: {},
 
     dom: {
       MESSAGE_VIEW: '#message'
@@ -253,7 +247,17 @@ define([
       //   }
       // });
 
-      this.state.lastMessageId = this.collection.maxId;
+      this.listenTo(this.collection, 'sync', function () {
+        this.state.currentMessage = null;
+      });
+
+      this.state = {
+        currentMessage: null,
+        previousMessage: null,
+        lastMessageId: this.collection.maxId,
+        itemViews: {},
+        contentViews: {}
+      };
     }
   });
 
@@ -323,16 +327,60 @@ define([
 
       widgets.push(this.archiveButton);
 
+      widgets.push(new Widgets.FilterButtonWidget());
+
       return widgets;
     },
 
     rightToolbar: function() {
+      var filterProperties = this.filterProperties();
+
       return [
-        new Widgets.FilterWidget({
+        new Widgets.FilterWidget(_.extend(filterProperties, {
           collection: this.collection,
           basePage: this
-        })
+        }))
       ];
+    },
+
+    filterProperties: function () {
+      var collection = this.collection;
+
+      return {
+        onClickState: function ($checksChecked) {
+          var status = [];
+
+          $checksChecked.each(function (i, el) {
+            status.push($(el).val());
+          });
+
+          collection.setFilter({states: status.join(',')});
+          collection.fetch();
+        },
+
+        stateName: '',
+
+        states: function () {
+          if (!collection.getFilter('states')) {
+            collection.setFilter('states', '0');
+          }
+
+          var filteredStates = (collection.getFilter('states') || '').split(',');
+
+          return [
+            {
+              name: __t('messages_state_inbox'),
+              value: 0,
+              selected: _.contains(filteredStates, '0')
+            },
+            {
+              name: __t('messages_state_archive'),
+              value: 1,
+              selected: _.contains(filteredStates, '1')
+            }
+          ]
+        }
+      }
     },
 
     serialize: function() {

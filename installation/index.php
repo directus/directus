@@ -6,5 +6,5 @@ if (!defined('BASE_PATH')) {
 
 require __DIR__ . '/bootstrap.php';
 
-$directusPath = $directus_path = preg_replace('#/(installation/.*)#i', '', $_SERVER['REQUEST_URI']) . '/';
+$directusPath = $directus_path = get_directus_path();
 install_directus($directusPath);

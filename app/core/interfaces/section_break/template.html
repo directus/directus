@@ -13,6 +13,6 @@
 <div class="label">{{title}}</div>
 <div class="section_break-content">{{{instructions}}}</div>
 {{else}}
-<h3>{{title}}</h3>
-<h6>{{{instructions}}}</h6>
+{{#if title}}<h3>{{title}}</h3>{{/if}}
+{{#if instructions}}<h6>{{{instructions}}}</h6>{{/if}}
 {{/if}}

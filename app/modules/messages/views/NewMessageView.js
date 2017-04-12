@@ -99,6 +99,7 @@ define([
         'response_to': parentMessageModel.id,
         'responses': []
       }, data);
+
       var self = this;
       var success = function (model) {
         collection.add(model);
@@ -114,7 +115,6 @@ define([
       // Create an API endpoint for new messages
       // returning a JSON with the new message
       newResponseModel.save(attrs, {wait: true, success: success});
-      // this.render();
     },
 
     serialize: function () {

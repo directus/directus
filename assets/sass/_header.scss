@@ -172,7 +172,7 @@ body.loading {
 		font-size: 24px;
 		font-weight: 300;
 		cursor: default;
-		.hamburger {
+		.veggieburger {
 			@include transition (color, $timing-short, ease-in-out);
 			display: none;
 			cursor: pointer;
@@ -424,6 +424,9 @@ body.loading {
 						opacity: 0.3;
 					}
 				}
+			}
+			&.filter-toggle {
+				display: none;
 			}
 			.material-icons {
 				@include transition (all, $timing-short, ease-in-out);

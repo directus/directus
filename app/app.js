@@ -29,6 +29,11 @@ define(function(require, exports, module) {
 
     progressView: undefined,
 
+    dom: {
+      // this class is added to body when the right pane is open
+      RIGHT_PANE_OPEN: 'right-sidebar-open-wide'
+    },
+
     alertViews: [],
 
     lockScreen: function() {

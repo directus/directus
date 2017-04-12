@@ -1,4 +1,4 @@
-define(['app'], function (app) {
+define(['app', 'underscore'], function (app, _) {
 
   'use strict';
 
@@ -20,12 +20,30 @@ define(['app'], function (app) {
     },
 
     getStatusVisible: function (tableName) {
+      var mapping = this.getTableStatusesMapping(tableName);
+      var status = this.getTableStatuses(tableName);
+      var deleteValue = status ? status.get('delete_value') : undefined;
+      var statuses = [];
 
+      mapping.each(function (status) {
+        var isDelete = deleteValue == status.get('id');
+
+        if (status.get('hidden_globally') !== false && !isDelete) {
+          statuses.push(status);
+        }
+      });
+
+      return statuses;
+    },
+
+    isDelete: function (tableName, statusValue) {
+      var statuses = this.getTableStatuses(tableName);
+
+      return statuses.get('delete_value') == statusValue;
     },
 
     isHardDelete: function (tableName, statusValue) {
       var statuses = this.getTableStatuses(tableName);
-      var isDeleteValue = statuses.get('delete_value') === statusValue;
       var isHardDeleteStatus = false;
 
       statuses.get('mapping').each(function (status) {
@@ -34,7 +52,7 @@ define(['app'], function (app) {
         }
       });
 
-      return isDeleteValue || isHardDeleteStatus;
+      return isHardDeleteStatus;
     },
 
     getStatusBackgroundColor: function (tableName, statusValue) {

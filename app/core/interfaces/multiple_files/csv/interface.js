@@ -159,7 +159,7 @@ function(app, _, Backbone, FileHelper, UIView, Overlays) {
       var self = this;
 
       _.each(models, function(model) {
-        if(model.get(app.statusMapping.status_name) !== app.statusMapping.deleted_num) {
+        if (!model.isDeleted()) {
           var cid = model.cid;
           var url, data = model.toJSON(true);
 

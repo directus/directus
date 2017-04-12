@@ -60,42 +60,33 @@ class DirectusMessagesRecipientsTableGateway extends RelationalTableGateway
     {
         $fetchFn = function () use ($uid) {
             $select = new Select($this->table);
+
             $select
-                ->columns(['id', 'read', 'count' => new Expression('COUNT(`id`)'), 'max_id' => new Expression('MAX(`message_id`)')])
+                ->columns([
+                    'recipient',
+                    'read' => new Expression('SUM(IF(`read`=1,1,0))'),
+                    'total' => new Expression('COUNT(`id`)'),
+                    'max_id' => new Expression('MAX(`message_id`)')
+                ])
                 ->where->equalTo('recipient', $uid);
-            $select
-                ->group(['id', 'read']);
-            $result = $this->selectWith($select)->toArray();
+
+            $select->group(['recipient']);
+
+            $result = $this->selectWith($select)->current()->toArray();
+
+            // convert all elements into integer
+            foreach ($result as $key => $value) {
+                $result[$key] = (int) $value;
+            }
+
             return $result;
         };
-        //$cacheKey = MemcacheProvider::getKeyDirectusCountMessages($uid);
-        //$result = $this->memcache->getOrCache($cacheKey, $fetchFn, 1800);
+
         $result = $fetchFn();
 
-        $count = [
-            'read' => 0,
-            'unread' => 0,
-            'total' => 0,
-            'max_id' => 0
-        ];
+        $result['unread'] = $result['total'] - $result['read'];
 
-        foreach ($result as $item) {
-            if ((int)$item['max_id'] > $count['max_id']) {
-                $count['max_id'] = (int)$item['max_id'];
-            }
-            switch ($item['read']) {
-                case '1':
-                    $count['read'] = (int)$item['count'];
-                    break;
-                case '0':
-                    $count['unread'] = (int)$item['count'];
-                    break;
-            }
-        }
-
-        $count['total'] = $count['read'] + $count['unread'];
-
-        return $count;
+        return $result;
     }
 
     public function getMessagesNewerThan($maxId, $currentUser)

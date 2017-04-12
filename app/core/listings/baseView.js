@@ -24,7 +24,7 @@ define(['app', 'underscore', 'backbone', 'core/t'], function(app, _, Backbone, _
         viewOptions = viewOptions[viewId] || {};
       }
 
-      return _.defaults(this.defaultOptions || {}, viewOptions);
+      return _.extend(this.defaultOptions || {}, viewOptions);
     },
 
     getViewOptions: function (attr) {

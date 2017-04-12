@@ -34,7 +34,7 @@
     "global_settings_project_name_placeholder": "Mio Progetto",
     "global_settings_project_name_comment": "Nome del tuo progetto",
     "global_settings_project_url_comment": "URL di destinazione cliccando il logo del progetto",
-    "global_settings_cms_thumbnail_url_comment": "Aggiungi URL immagine per il logo principale (170x100)",
+    "global_settings_cms_thumbnail_url_comment": "Aggiungi URL immagine per il logo principale (200×64)",
     "global_settings_cms_user_auto_sign_out_comment": "Tempo dopo il quale gli utenti verranno automaticamente disconnessi (minuti)",
     "global_settings_rows_per_page_comment": "Numero di elementi mostrati per ciascuna pagina.",
     "maps_ui_global_settings_google_api_key": "Google API key per Maps",

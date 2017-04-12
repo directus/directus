@@ -11,6 +11,7 @@ use Directus\Permissions\Exception\UnauthorizedTableBigDeleteException;
 use Directus\Permissions\Exception\UnauthorizedTableBigEditException;
 use Directus\Permissions\Exception\UnauthorizedTableDeleteException;
 use Directus\Permissions\Exception\UnauthorizedTableEditException;
+use Directus\Util\ArrayUtils;
 use Directus\Util\Formatting;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Adapter\Exception\InvalidQueryException;
@@ -192,7 +193,11 @@ class BaseRowGateway extends RowGateway
      */
     public function exchangeArray($rowData)
     {
-        return $this->populateSkipAcl($rowData, true);
+        // NOTE: Something we made select where the primary key is not involved
+        // getting the read/unread/total from messages is an example
+        $exists = ArrayUtils::contains($rowData, $this->primaryKeyColumn);
+
+        return $this->populateSkipAcl($rowData, $exists);
     }
 
     /**

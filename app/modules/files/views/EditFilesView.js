@@ -5,10 +5,11 @@ define([
   'core/t',
   'core/directus',
   'core/BasePageView',
+  'modules/files/views/EditFilesViewRightPane',
   'core/widgets/widgets'
 ],
 
-function(app, _, Backbone, __t, Directus, BasePageView, Widgets) {
+function(app, _, Backbone, __t, Directus, BasePageView, RightPane, Widgets) {
 
   return BasePageView.extend({
 
@@ -142,6 +143,15 @@ function(app, _, Backbone, __t, Directus, BasePageView, Widgets) {
         widgets.push(this.deleteWidget);
       }
 
+      this.infoWidget = new Widgets.InfoButtonWidget({
+        enable: !this.model.isNew(),
+        onClick: function (event) {
+          editView.toggleRightPane();
+        }
+      });
+
+      widgets.push(this.infoWidget);
+
       return widgets;
     },
 
@@ -154,6 +164,9 @@ function(app, _, Backbone, __t, Directus, BasePageView, Widgets) {
       basicSave: false,
     },
 
+    rightPane: function() {
+      return RightPane;
+    },
 
     initialize: function () {
       this.editView = new Directus.EditView({model: this.model, ui: this.options.ui});

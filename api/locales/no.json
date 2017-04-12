@@ -34,7 +34,7 @@
     "global_settings_project_name_placeholder": "Mitt prosjekt",
     "global_settings_project_name_comment": "Navnet på ditt prosjekt",
     "global_settings_project_url_comment": "Klikk på prosjektlogoen tar deg til denne URL-en",
-    "global_settings_cms_thumbnail_url_comment": "Legg til en bilde-URL for hovedlogoen (170x100)",
+    "global_settings_cms_thumbnail_url_comment": "Legg til en bilde-URL for hovedlogoen (200×64)",
     "global_settings_cms_user_auto_sign_out_comment": "Minutter før brukerne automatisk logges ut",
     "global_settings_rows_per_page_comment": "Antall elementer som vises per listeside",
     "maps_ui_global_settings_google_api_key": "Google API-nøkkel til Maps UI",

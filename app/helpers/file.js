@@ -173,6 +173,12 @@ define(['jquery'], function ($) {
     }
   };
 
+  FileHelper.humanReadableSize = function (size, precision) {
+    var info = this.humanBytesInfo(size, precision);
+
+    return info.size + info.unit;
+  };
+
   function getUnit(index) {
     return ['B','KB','MB','GB','TB','PB','EB','ZB','YB'][index];
   }
@@ -187,6 +193,18 @@ define(['jquery'], function ($) {
     this.onImageError(elements, function () {
       $(this).hide();
     });
+  };
+
+  // show jpeg as jpg
+  FileHelper.friendlySubtype = function (type) {
+    type = (type || '').toLowerCase();
+
+    switch (type) {
+      case 'jpeg':
+        type = 'jpg';
+    }
+
+    return type;
   };
 
   return FileHelper;

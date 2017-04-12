@@ -102,14 +102,7 @@ function(app, Backbone, _, __t, BasePageView, ListViewManager, TableViewRightPan
         }
 
         if (!this.widgets.infoWidget) {
-          this.widgets.infoWidget = new Widgets.ButtonWidget({
-            widgetOptions: {
-              // buttonId: '',
-              iconClass: 'info',
-              buttonClass: 'blank',
-              buttonText: __t('options'),
-              help: __t('right_pane_help')
-            },
+          this.widgets.infoWidget = new Widgets.InfoButtonWidget({
             onClick: function (event) {
               tableView.toggleRightPane();
             }
@@ -127,13 +120,7 @@ function(app, Backbone, _, __t, BasePageView, ListViewManager, TableViewRightPan
         }
 
         if (this.widgets.filterWidget) {
-          this.widgets.filterButtonWidget = new Widgets.ButtonWidget({
-            widgetOptions: {
-              iconClass: 'filter_list',
-              buttonClass: 'center',
-              buttonText: __t('filter')
-            }
-          });
+          this.widgets.filterButtonWidget = new Widgets.FilterButtonWidget();
 
           widgets.push(this.widgets.filterButtonWidget);
         }
@@ -271,7 +258,7 @@ function(app, Backbone, _, __t, BasePageView, ListViewManager, TableViewRightPan
         });
       });
 
-      var $el = $('#content');
+      var $el = this.table.$el;
       var self = this;
       // add throttle and debounce
       $el.on('scroll', function () {

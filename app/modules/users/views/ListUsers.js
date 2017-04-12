@@ -65,15 +65,13 @@ function(app, Backbone, Handlebars, Directus, BasePageView, FileHelper, Widgets,
         var statusColumnName = model.table.getStatusColumnName();
         var statusValue = model.get(statusColumnName);
 
-        if (hasStatusColumn && statusValue !== model.table.getStatusDefaultValue()) { //app.statusMapping.active_num
+        if (hasStatusColumn && statusValue != model.table.getStatusDefaultValue()) {
           data.group_id = 0;
           data.group_name = 'Inactive';
           data.inactive = true;
         }
 
-        var avatarSmall = model.getAvatar();
-
-        data.avatar = new Handlebars.SafeString('<img src="' + avatarSmall + '" style="width:200px;height:200px"/>');
+        data.avatarUrl = model.getAvatar();
 
         return data;
       });
@@ -82,7 +80,7 @@ function(app, Backbone, Handlebars, Directus, BasePageView, FileHelper, Widgets,
 
       var groupedData = [];
 
-      rows.forEach(function(group) {
+      rows.forEach(function (group) {
         if (!groupedData['group_' + group.group_id]) {
           groupedData['group_' + group.group_id] = {title: group.group_name, rows: []};
         }
@@ -138,23 +136,36 @@ function(app, Backbone, Handlebars, Directus, BasePageView, FileHelper, Widgets,
       class: 'page-container'
     },
 
+    rightToolbar: function () {
+      return [
+        new Widgets.FilterWidget({
+          collection: this.collection,
+          basePage: this
+        })
+      ];
+    },
+
     leftToolbar: function() {
-      if(app.users.getCurrentUser().get('group').id === 1) {
-        return [
-          new Widgets.ButtonWidget({
-            widgetOptions: {
-              buttonId: 'addBtn',
-              iconClass: 'add',
-              buttonClass: 'primary',
-              buttonText: __t('new_user')
-            },
-            onClick: function () {
-              app.router.go('#users', 'new');
-            }
-          })
-        ];
+      var widgets = [];
+
+      if (app.users.getCurrentUser().get('group').id === 1) {
+        widgets.push(new Widgets.ButtonWidget({
+          widgetOptions: {
+            buttonId: 'addBtn',
+            iconClass: 'add',
+            buttonClass: 'primary',
+            buttonText: __t('new_user')
+          },
+          onClick: function () {
+            app.router.go('#users', 'new');
+          }
+        }));
       }
-      return [];
+
+      widgets.push(new Widgets.InfoButtonWidget({enable: false}));
+      widgets.push(new Widgets.FilterButtonWidget);
+
+      return widgets;
     },
 
     leftSecondaryToolbar: function() {

@@ -39,7 +39,7 @@
 			background-color: rgba($white, 0.9);
 			border: 3px dashed $primary;
 			z-index: 10;
-			animation: dragover 2s ease-in-out;
+			animation: dragover 1s ease-in-out;
 			animation-iteration-count: infinite;
 		}
 	}
@@ -57,6 +57,12 @@
 	}
 }
 
-.page-container, .main-container {
+.main-container {
+	@include transition (all, $timing-short, ease-in-out);
+	height: 100%;
+	overflow: scroll;
+}
+.page-container {
+	@include transition (all, $timing-short, ease-in-out);
 	height: 100%;
 }

@@ -133,9 +133,9 @@ $exceptionHandler = function (\Exception $exception) use ($app, $exceptionView) 
     }
 };
 $app->error($exceptionHandler);
-// // Catch runtime erros etc. as well
-// set_exception_handler($exceptionHandler);
-$exceptionHandler = new ExceptionHandler;
+
+// Catch all exception
+$exceptionHandler = new ExceptionHandler();
 
 // Routes which do not need protection by the authentication and the request
 // nonce enforcement.

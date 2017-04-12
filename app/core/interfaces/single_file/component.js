@@ -62,7 +62,7 @@ define([
 
       var orientation = (parseInt(model.get('width'), 10) > parseInt(model.get('height'), 10)) ? 'landscape' : 'portrait';
       var type = (model.get('type')) ? model.get('type').substring(0, model.get('type').indexOf('/')) : '';
-      var subtype = (model.get('type')) ? model.get('type').split('/').pop() : '';
+      var subtype = model.getSubType(true);
 
       var isImage = _.contains(['image', 'embed'], type) || _.contains(['pdf'], subtype);
       var thumbUrl = isImage ? model.makeFileUrl(true) : (this._avatarList(options) || app.PATH + 'assets/img/document.png');

@@ -28,8 +28,13 @@ function(app, _, Backbone, __t, Notification) {
     lastHeaderHeight: 0,
 
     events: {
+      'click .veggieburger': 'toggleMenu',
       'click #removeOverlay': 'closeOverlayPage',
       'click #saveSnapshotBtn': 'saveSnapshot'
+    },
+
+    toggleMenu: function () {
+      $('body').toggleClass('sidebar-open');
     },
 
     // prevent the header to be removed after when rendered twice
@@ -122,17 +127,18 @@ function(app, _, Backbone, __t, Notification) {
         });
       }
 
-      if (options.leftSecondaryToolbar) {
-        options.leftSecondaryToolbar.forEach(function(widget) {
-          that.insertView('#tools-secondary-left-insert', widget);
-        });
-      }
-
-      if (options.rightSecondaryToolbar) {
-        options.rightSecondaryToolbar.forEach(function(widget) {
-          that.insertView('#tools-secondary-right-insert', widget);
-        });
-      }
+      // TODO: secondary toolbars were deprecated
+      // if (options.leftSecondaryToolbar) {
+      //   options.leftSecondaryToolbar.forEach(function(widget) {
+      //     that.insertView('#tools-secondary-left-insert', widget);
+      //   });
+      // }
+      //
+      // if (options.rightSecondaryToolbar) {
+      //   options.rightSecondaryToolbar.forEach(function(widget) {
+      //     that.insertView('#tools-secondary-right-insert', widget);
+      //   });
+      // }
     },
 
     afterRender: function() {
@@ -155,7 +161,7 @@ function(app, _, Backbone, __t, Notification) {
     },
 
     setMarginToHeaderHeight: function() {
-      var $mainBody = $('#content .content-body'),
+      var $mainBody = $('#content .main-container'),
           startScrollTop = $mainBody.scrollTop(),
           newHeaderHeight = $('.header1').outerHeight(),
           headerHeightDifference = newHeaderHeight - this.lastHeaderHeight;

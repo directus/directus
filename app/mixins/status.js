@@ -4,6 +4,7 @@ define(['underscore', 'helpers/status'], function (_, StatusHelper) {
     _getTableName: function () {
       var table = this.getTable();
 
+      // if table is not defined global information will be used
       return table ? table.id : '*';
     }
   };
@@ -12,11 +13,7 @@ define(['underscore', 'helpers/status'], function (_, StatusHelper) {
 
     // gets the table status information
     getTableStatuses: function () {
-      var table = this.getTable();
-      // if table is not defined global information will be used
-      var tableName = table ? table.id : '*';
-
-      return StatusHelper.getTableStatuses(tableName);
+      return StatusHelper.getTableStatuses(this._getTableName());
     },
 
     getTableStatusMapping: function () {
@@ -33,6 +30,13 @@ define(['underscore', 'helpers/status'], function (_, StatusHelper) {
       return statuses.get('mapping').get(statusValue);
     },
 
+    // whether the records is "visible" or "fade out" in the listing
+    isSubduedInListing: function () {
+      var statuses = this.getStatus();
+
+      return statuses ? statuses.get('subdued_in_listing') === true : false;
+    },
+
     // gets this model status value
     getStatusValue: function () {
       var attr = this.table.get('status_column') || this.getTableStatuses().get('status_name');
@@ -43,6 +47,14 @@ define(['underscore', 'helpers/status'], function (_, StatusHelper) {
     // gets this model status name
     getStatusName: function () {
       return this.getStatus().get('name');
+    },
+
+    getStatusVisible: function () {
+      return StatusHelper.getStatusVisible(this._getTableName());
+    },
+
+    isDeleted: function () {
+      return StatusHelper.isDelete(this._getTableName(), this.getStatusValue());
     },
 
     // gets this item status background color
@@ -74,6 +86,10 @@ define(['underscore', 'helpers/status'], function (_, StatusHelper) {
 
     getTableStatusMapping: function () {
       return StatusHelper.getTableStatusesMapping(this._getTableName());
+    },
+
+    getStatusVisible: function () {
+      return StatusHelper.getStatusVisible(this._getTableName());
     },
 
     isHardDelete: function (statusValue) {

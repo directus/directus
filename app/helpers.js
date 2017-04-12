@@ -40,7 +40,8 @@ require([
       }
     }
 
-    return app.capitalize(value);
+    // NOTE: value can also be a HandleBars safe string
+    return _.isString(value) ? app.capitalize(value) : value;
   });
 
   Handlebars.registerHelper('tVarCapitalize', function(key, options) {
@@ -154,15 +155,7 @@ require([
   });
 
   Handlebars.registerHelper('notPublishedClass', function (model) {
-    // var table = model.table;
-    // var statusColumnName = table ? table.getStatusColumnName() : app.statusMapping.status_name;
-    var status = model.getStatus();
-    var subdued = status ? status.get('subdued_in_listing') : false;
-    // if (model.get(statusColumnName) == app.statusMapping.draft_num) {
-    //   return 'not-published';
-    // }
-
-    return subdued ? 'not-published' : '';
+    return model.isSubduedInListing() ? 'not-published' : '';
   });
 
   // Should be combined with userShort below with param: "show_avatar" [true,false]

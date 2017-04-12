@@ -361,6 +361,42 @@ class SchemaManager
     }
 
     /**
+     * Cast value against a database type
+     *
+     * NOTE: it only works with MySQL data types
+     *
+     * @param $value
+     * @param $type
+     * @param $length
+     *
+     * @return mixed
+     */
+    public function castValue($value, $type = null, $length = false)
+    {
+        return $this->source->castValue($value, $type, $length);
+    }
+
+    /**
+     * Cast default value
+     *
+     * @param $value
+     * @param $type
+     * @param $length
+     *
+     * @return mixed
+     */
+    public function castDefaultValue($value, $type, $length = null)
+    {
+        if (strtolower($value) === 'null') {
+            $value = null;
+        } else {
+            $value = $this->castValue($value, $type, $length);
+        }
+
+        return $value;
+    }
+
+    /**
      * Get all Directus core tables name
      *
      * @param array $filterNames

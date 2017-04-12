@@ -121,11 +121,13 @@
 		display: none;
 	}
 	.header {
-		.filter {
-			display: none;
+		.tools-right {
+			.filter {
+				display: none;
+			}
 		}
 		.actions {
-			.filter-toggle {
+			.action.filter-toggle {
 				display: inline-block;
 			}
 		}
@@ -137,6 +139,7 @@
 			width: 140px;
 			margin: 15px;
 			img {
+				width: 140px;
 				height: 140px;
 			}
 			.group,
@@ -235,7 +238,7 @@
 		}
 		.breadcrumb {
 			left: 10px;
-			.hamburger {
+			.veggieburger {
 				display: inline-block;
 			}
 			.separator {
@@ -328,8 +331,10 @@
 
 @media only screen and (max-width: 600px) {
 	.header {
-		.filter {
-			display: none;
+		.tools-right {
+			.filter {
+				display: none;
+			}
 		}
 	}
 	.smoke .modal.confirm .modal-bg {
@@ -401,29 +406,31 @@
 		}
 	}
 	.header {
-		.filter {
-			position: absolute;
-			top: 64px;
-			left: 0%;
-			right: 0%;
-			width: 100%;
-			margin-top: 0;
-			text-align: right;
-			background-color: $white;
-			input.general {
-				font-size: 18px;
-				padding-left: 50px;
-				padding-right: 20px;
-				padding-top: 10px;
-				padding-bottom: 10px;
-				height: 50px;
-			}
-			.search {
-				left: 20px;
-				top: 13px;
-			}
-			.filter-dropdown-toggle {
-				display: none;
+		.tools-right {
+			.filter {
+				position: absolute;
+				top: 64px;
+				left: 0%;
+				right: 0%;
+				width: 100%;
+				margin-top: 0;
+				text-align: right;
+				background-color: $white;
+				input.general {
+					font-size: 18px;
+					padding-left: 50px;
+					padding-right: 20px;
+					padding-top: 10px;
+					padding-bottom: 10px;
+					height: 50px;
+				}
+				.search {
+					left: 20px;
+					top: 13px;
+				}
+				.filter-dropdown-toggle {
+					display: none;
+				}
 			}
 		}
 	}
