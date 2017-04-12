@@ -36,3 +36,8 @@ AddType font/woff .woff
     RewriteRule (.*) index.php [L]
 
 </ifModule>
+
+<ifModule mod_php5.c>
+    # Fix $HTTP_RAW_POST_DATA deprecated warning
+    php_value always_populate_raw_post_data -1
+</ifModule>
