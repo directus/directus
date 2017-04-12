@@ -114,13 +114,13 @@ define([
     },
 
     // when the column change or a new column is added into a table
-    onColumnChange: function (model) {
+    onColumnChange: function (model, resp) {
       var columnsCollection = app.schemaManager.getColumns('tables', this.model.id);
 
       // add new column to the table collection (interface)
-      this.columns.add(model, {merge: true});
+      this.columns.add(resp, {parse: true, merge: true});
       // add the new column into the table columns schema
-      columnsCollection.add(model, {parse: true});
+      columnsCollection.add(model, {parse: true, merge: true});
     },
 
     destroyColumn: function(columnName) {
