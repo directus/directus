@@ -207,7 +207,7 @@
     "directus_activity_a_ui_has_been_updated": "A UI has been updated",
     "directus_activity_entry": "Entry",
     "directus_activity_files_action": "has been %{action} %{preposition}",
-    "directus_activity_action_create": "Create",
+    "directus_activity_action_create": "Created",
     "directus_activity_revision_x": "Revision %{number}",
 
     "action_added": "added",
