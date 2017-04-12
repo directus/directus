@@ -161,7 +161,7 @@ function(app, _, Backbone, __t, Notification) {
     },
 
     setMarginToHeaderHeight: function() {
-      var $mainBody = $('#content .content-body'),
+      var $mainBody = $('#content .main-container'),
           startScrollTop = $mainBody.scrollTop(),
           newHeaderHeight = $('.header1').outerHeight(),
           headerHeightDifference = newHeaderHeight - this.lastHeaderHeight;
