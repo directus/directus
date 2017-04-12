@@ -38,7 +38,7 @@ function(app, _, Backbone, EntriesModel, Notification, __t, Utils, File) {
       // TODO: avoid omitting url and html at some point
       // rewrite this so we omit these values when we really want it to be omitted.
       if (all !== true) {
-        atts = _.omit(atts, 'thumbnailData', 'url', 'file_url', 'file_thumb_url', 'old_thumbnail_url', 'thumbnail_url', 'html')
+        atts = _.omit(atts, 'thumbnailData', 'url', 'file_url', 'file_thumb_url', 'old_thumbnail_url', 'thumbnail_url', 'html', 'embed_url')
       }
 
       return atts;
@@ -197,6 +197,14 @@ function(app, _, Backbone, EntriesModel, Notification, __t, Utils, File) {
 
     isExtensionAllowed: function(name, allowedTypes) {
       return this.hasExtension(name) ? this.isType(this.getExtension(name), allowedTypes) : false;
+    },
+
+    isEmbed: function () {
+      return this.getMainType() === 'embed';
+    },
+
+    getMainType: function () {
+      return (this.get('type') || '').split('/').shift();
     },
 
     getSubType: function (friendly) {

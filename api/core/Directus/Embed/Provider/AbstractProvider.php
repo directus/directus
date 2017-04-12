@@ -77,6 +77,14 @@ abstract class AbstractProvider implements ProviderInterface
     }
 
     /**
+     * @inheritdoc
+     */
+    public function getUrl($data)
+    {
+        return StringUtils::replacePlaceholder($this->getFormatUrl(), $data);
+    }
+
+    /**
      * Get the HTML embed format template
      * @return mixed
      */

@@ -173,6 +173,12 @@ define(['jquery'], function ($) {
     }
   };
 
+  FileHelper.humanReadableSize = function (size, precision) {
+    var info = this.humanBytesInfo(size, precision);
+
+    return info.size + info.unit;
+  };
+
   function getUnit(index) {
     return ['B','KB','MB','GB','TB','PB','EB','ZB','YB'][index];
   }

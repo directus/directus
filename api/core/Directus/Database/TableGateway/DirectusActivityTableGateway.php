@@ -224,7 +224,7 @@ class DirectusActivityTableGateway extends RelationalTableGateway
         $select->where([
             'table_name' => $table,
             'row_id' => $id,
-            'type' => 'ENTRY',
+            'type' => $table === 'directus_files' ? static::TYPE_FILES : static::TYPE_FILES,
             new In('action', ['ADD', 'UPDATE'])
         ]);
 

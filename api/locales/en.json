@@ -482,7 +482,10 @@
 
     "online": "Online",
     "created_by": "Created By",
+    "uploaded_by": "Uploaded By",
+    "uploaded_on": "Uploaded On",
     "last_modified_by": "Last Modified By",
+    "last_modified_on": "Last Modified On",
 
     "created_by_column": "Created By Column",
     "created_on_column": "Created On Column",

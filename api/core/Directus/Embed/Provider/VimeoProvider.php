@@ -20,6 +20,14 @@ class VimeoProvider extends AbstractProvider
     }
 
     /**
+     * @inheritdoc
+     */
+    public function getFormatUrl()
+    {
+        return 'https://vimeo.com/{{embed_id}}';
+    }
+
+    /**
      * @inheritDoc
      */
     protected function parseURL($url)

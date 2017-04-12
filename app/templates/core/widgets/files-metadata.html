@@ -1,0 +1,19 @@
+<b>Status:</b> {{file.status}}<br>
+<b>ID:</b> {{file.id}}<br>
+<b>Type:</b> {{uppercase file.type}}<br>
+<b>{{#if file.isEmbed}}Duration{{else}}File Size{{/if}}:</b> {{file.size}}<br>
+<b>Dimensions:</b> {{file.width}}×{{file.height}}<br>
+{{!-- TODO: Add device information <br> --}}
+<b>Storage Adapter:</b> {{file.storage_adapter}}<br>
+<b>Path:</b> <a href="{{file.url}}" class="primary">{{file.url}}</a><br>
+{{!-- <b>Folder:</b> /Mountains<br> --}}
+<b>{{t "uploaded_by"}}:</b> {{userFirstAndLastName meta.createdBy}}<br>
+<b>{{t "uploaded_on"}}:</b> {{# if meta.createdOn}}{{formatDate meta.createdOn dateFormat}}{{else}}{{t "unknown"}}{{/if}}<br>
+<b>{{t "last_modified_by"}}:</b> {{userFirstAndLastName meta.updatedBy}}<br>
+<b>{{t "last_modified_on"}}:</b> {{# if meta.updatedOn}}{{formatDate meta.updatedOn dateFormat}}{{else}}{{t "unknown"}}{{/if}}<br>
+
+<a href="{{#if file.isEmbed}}{{file.embed_url}}{{else}}{{assetsRoot}}{{file.url}}{{/if}}" target="_blank">
+	<div class="button preview"><i class="material-icons">visibility</i> View Original</div>
+</a>
+
+<div class="button replace"><i class="material-icons">swap_vert</i> Replace File</div>

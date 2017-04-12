@@ -20,6 +20,14 @@ class YoutubeProvider extends AbstractProvider
     }
 
     /**
+     * @inheritdoc
+     */
+    public function getFormatUrl()
+    {
+        return 'https://www.youtube.com/watch?v={{embed_id}}';
+    }
+
+    /**
      * @inheritDoc
      */
     protected function parseURL($url)

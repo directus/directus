@@ -683,6 +683,7 @@ class Bootstrap
                 $row['html'] = null;
                 if ($provider) {
                     $row['html'] = $provider->getCode($row);
+                    $row['embed_url'] = $provider->getUrl($row);
                 }
             }
 
