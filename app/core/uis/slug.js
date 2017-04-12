@@ -71,7 +71,7 @@ define([
         return false;
       }
 
-      return !(settings.get('only_creation') === true && !this.model.isNew());
+      return !(settings.get('only_on_creation') === true && !this.model.isNew());
     },
 
     updateSlug: function (slug) {
