@@ -81,7 +81,7 @@ define(function(require, exports, module) {
         name: app.capitalize(this.column.id),
         comment: new Handlebars.SafeString(StringHelper.parse(this.column.get('comment'))),
         batchEdit: this.options.batchEdit,
-        hideLabel: _.result(this.view, 'hideLabel'),
+        hideLabel: _.result(this.view, 'hideLabel') || this.column.get('hidden_label'),
         required: this.column.get('required'),
         // Let assume for now that all tables that start with directus_ are core tables
         // TODO: we should store all our core tables names

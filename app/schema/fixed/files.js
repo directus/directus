@@ -27,6 +27,7 @@ define(function(require, exports, module) {
             "system":false,
             "hidden_list":false,
             "hidden_input":false,
+            "hidden_label": true,
             "required":false
           },
           {
