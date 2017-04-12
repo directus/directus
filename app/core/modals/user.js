@@ -33,7 +33,7 @@ define(['app', 'core/Modal'], function(app, Modal) {
       data.online = this.model.isOnline();
       data.lastSeen = this.model.lastSeen();
       data.canEditUser = authenticatedUser.isAdmin() && this.model.id;
-      data.timeDiff = timeDiff;
+      data.timeDiff = (timeDiff > 0)? "+" + timeDiff : timeDiff;
       data.validTimeDiff = timeDiff !== null;
 
       return data;
