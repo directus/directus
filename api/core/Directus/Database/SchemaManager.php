@@ -393,7 +393,7 @@ class SchemaManager
             $value = $this->castValue($value, $type, $length);
         }
 
-        return is_string($value) ? sprintf('"%s"', $value) : $value;
+        return $value;
     }
 
     /**

@@ -557,7 +557,7 @@ class BaseTableGateway extends TableGateway
             $length = ArrayUtils::get($columnData, 'length');
             $defaultValue = $this->schemaManager->castDefaultValue($value, $dataType, $length);
 
-            $default = ' DEFAULT ' . $defaultValue;
+            $default = ' DEFAULT ' . (is_string($defaultValue) ? sprintf('"%s"', $defaultValue) : $defaultValue);
         }
 
         // TODO: wrap this into an abstract DDL class
