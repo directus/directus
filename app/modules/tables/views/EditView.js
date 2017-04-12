@@ -95,34 +95,7 @@ function(app, Backbone, _, Handlebars, __t, Notification, Directus, BasePageView
       this.saveWidget.enable();
     },
 
-    // deleteItem: function(e) {
-    //   var success = function() {
-    //     var route = Backbone.history.fragment.split('/');
-    //     route.pop();
-    //     app.router.go(route);
-    //   };
-    //   //@todo: who trigger this?
-    //   var options = {success: success, patch: true, wait: true, validate: false};
-    //   try {
-    //     app.changeItemStatus(model, value, options);
-    //   } catch(e) {
-    //     setTimeout(function() {
-    //       app.router.openModal({type: 'alert', text: e.message});
-    //     }, 0);
-    //   }
-    // },
-
     saveConfirm: function (event) {
-      // var data = this.editView.data();
-      // var that = this;
-      // if(data[app.statusMapping.status_name] && data[app.statusMapping.status_name] === app.statusMapping.deleted_num) {
-      //   app.router.openModal({type: 'confirm', text: __t('confirm_delete_item'), callback: function () {
-      //     that.save(e);
-      //   }});
-      // } else {
-      //   this.save(e);
-      // }
-
       this.save(event);
     },
 
@@ -210,39 +183,26 @@ function(app, Backbone, _, Handlebars, __t, Notification, Directus, BasePageView
 
       var changedValues = _.extend(model.unsavedAttributes() || {}, model.diff(data));
 
-      // if (changedValues[app.statusMapping.status_name] && changedValues[app.statusMapping.status_name] === app.statusMapping.deleted_num ) {
-      //   var value = app.statusMapping.deleted_num;
-      //   var options = {success: success, wait: true, patch: true, includeRelationships: true};
-      //   try {
-      //     app.changeItemStatus(this.model, value, options);
-      //   } catch(e) {
-      //     setTimeout(function() {
-      //       app.router.openModal({type: 'alert', text: e.message});
-      //     }, 0);
-      //   }
-      // } else {
-        // patch only the changed values
-        model.save(changedValues, {
-          success: success,
-          error: function(model, xhr, options) {
-            // console.error('err');
-            //Duplicate entry, forced but works
-            //@todo finds a better way to determine whether there's an duplicate error
-            // and what's the column's name
-            var response = JSON.parse(xhr.responseText);
-            if (response.message.indexOf('Duplicate entry') !== -1) {
-              var columnName = response.message.split('for key')[1].trim();
-              columnName = columnName.substring(1, columnName.lastIndexOf("'"));
-              app.router.openModal({type: 'alert', text: 'This item was not saved because its "' + columnName + '" value is not unique.'});
-              return;
-            }
-          },
-          wait: true,
-          patch: true,
-          includeRelationships: true
-        });
-      // }
-      // this.$el.find('#saveSelect').val('');
+      // patch only the changed values
+      model.save(changedValues, {
+        success: success,
+        error: function(model, xhr, options) {
+          // console.error('err');
+          //Duplicate entry, forced but works
+          //@todo finds a better way to determine whether there's an duplicate error
+          // and what's the column's name
+          var response = JSON.parse(xhr.responseText);
+          if (response.message.indexOf('Duplicate entry') !== -1) {
+            var columnName = response.message.split('for key')[1].trim();
+            columnName = columnName.substring(1, columnName.lastIndexOf("'"));
+            app.router.openModal({type: 'alert', text: 'This item was not saved because its "' + columnName + '" value is not unique.'});
+            return;
+          }
+        },
+        wait: true,
+        patch: true,
+        includeRelationships: true
+      });
     },
 
     afterRender: function() {
@@ -323,6 +283,7 @@ function(app, Backbone, _, Handlebars, __t, Notification, Directus, BasePageView
     },
 
     cleanup: function () {
+      BasePageView.prototype.cleanup.apply(this, arguments);
       this.model.stopTracking();
     },
 
