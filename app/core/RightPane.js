@@ -12,13 +12,13 @@ define([
 
     close: function() {
       this.state.open = false;
-      $('body').removeClass('right-sidebar-open');
+      $('body').removeClass(app.dom.RIGHT_PANE_OPEN);
       this.trigger('close');
     },
 
     open: function() {
       this.state.open = true;
-      $('body').addClass('right-sidebar-open');
+      $('body').addClass(app.dom.RIGHT_PANE_OPEN);
       this.trigger('open');
     },
 
