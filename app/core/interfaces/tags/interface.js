@@ -7,10 +7,14 @@
 //  http://www.getdirectus.com
 /*jshint multistr: true */
 
-define(['app', 'underscore', 'utils', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, _, Utils, UIComponent, UIView, __t) {
+define([
+  'underscore',
+  'core/UIView',
+  'core/t'
+], function(_, UIView, __t) {
   'use strict';
 
-  var Input = UIView.extend({
+  return UIView.extend({
     template: 'tags/input',
 
     events: {
@@ -62,34 +66,4 @@ define(['app', 'underscore', 'utils', 'core/UIComponent', 'core/UIView', 'core/t
       this.tags = this.options.value ? this.options.value.split(',') : [];
     }
   });
-
-  var Component = UIComponent.extend({
-    id: 'tags',
-    dataTypes: ['TEXT','VARCHAR','CHAR'],
-    variables: [
-      {id: 'force_lowercase', type: 'Boolean', default_value: true, ui: 'checkbox'} // When on, all entered tags are converted to lowercase
-      // TODO: Include spaces in CSV value
-    ],
-    Input: Input,
-    validate: function(value, options) {
-      if (options.schema.isRequired() && _.isEmpty(value)) {
-        return __t('this_field_is_required');
-      }
-    },
-    list: function(options) {
-      var tags = options.model.attributes.tags ? options.model.attributes.tags.split(',') : [];
-
-      if(tags.length){
-        for (var i = 0; i < tags.length; i++) {
-          tags[i] = '<span class="tag">' + tags[i] + '</span>';
-        }
-
-        return '<span class="tag-container"><div class="fade-out"></div>' + tags.join(' ') + '</span>';
-      } else {
-        return options.model.attributes.tags;
-      }
-    }
-  });
-
-  return Component;
 });
