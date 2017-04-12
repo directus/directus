@@ -38,6 +38,7 @@ require(["config", 'polyfills'], function() {
       localesAvailable: [],
       timezone: 'America/New_York',
       timezones: [],
+      countries: [],
       path: '/directus/',
       page: '',
       authenticatedUser: 7,
@@ -82,6 +83,7 @@ require(["config", 'polyfills'], function() {
     app.locales = options.localesAvailable;
     app.timezone = options.timezone;
     app.timezones = options.timezones;
+    app.countries = options.countries;
     app.user_notifications = options.user_notifications;
 
     $.xhrPool = []; // array of uncompleted requests
