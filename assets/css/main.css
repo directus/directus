@@ -1703,11 +1703,6 @@ input[type="radio"].custom-checkbox {
 .max-width-800 {
   max-width: 800px; }
 
-.table-scroll {
-  width: 100%;
-  height: 100%;
-  overflow: scroll; }
-
 table {
   -webkit-transition: width 200ms ease-in-out 0ms;
   -moz-transition: width 200ms ease-in-out 0ms;
@@ -4297,7 +4292,16 @@ body.help .discover-spotlight {
     .page .page-container.messages .main-container {
       height: 100%; }
 
-.page-container, .main-container {
+.main-container {
+  -webkit-transition: all 200ms ease-in-out 0ms;
+  -moz-transition: all 200ms ease-in-out 0ms;
+  -o-transition: all 200ms ease-in-out 0ms;
+  -ms-transition: all 200ms ease-in-out 0ms;
+  transition: all 200ms ease-in-out 0ms;
+  height: 100%;
+  overflow: scroll; }
+
+.page-container {
   -webkit-transition: all 200ms ease-in-out 0ms;
   -moz-transition: all 200ms ease-in-out 0ms;
   -o-transition: all 200ms ease-in-out 0ms;

@@ -1,12 +1,6 @@
 //////////////////////////////////////////////////////////////////////////////
 // Tables
 
-.table-scroll {
-	width: 100%;
-	height: 100%;
-	overflow: scroll;
-}
-
 table {
 	@include transition (width, $timing-short, ease-in-out);
 	width: 100%;

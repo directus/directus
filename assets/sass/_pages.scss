@@ -57,7 +57,12 @@
 	}
 }
 
-.page-container, .main-container {
+.main-container {
+	@include transition (all, $timing-short, ease-in-out);
+	height: 100%;
+	overflow: scroll;
+}
+.page-container {
 	@include transition (all, $timing-short, ease-in-out);
 	height: 100%;
 }
