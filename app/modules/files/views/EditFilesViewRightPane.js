@@ -1,18 +1,18 @@
 define([
   'app',
-  'core/RightPane',
+  'core/RightPaneWide',
   'core/widgets/timeline/TimelineWidget',
   'core/widgets/FilesMetadataWidget',
   'core/widgets/StatusWidget'
-], function(app, RightPane, TimelineWidget, FilesMetadataWidget, StatusWidget) {
+], function(app, RightPaneWide, TimelineWidget, FilesMetadataWidget) {
 
-  return RightPane.extend({
+  return RightPaneWide.extend({
 
     attributes: {
       class: 'scroll-y wide no-title'
     },
 
-    beforeRender: function() {
+    beforeRender: function () {
       this.baseView.rightSidebarView.$el.addClass('scroll-y wide no-title');
 
       if (!this.model.isNew()) {
