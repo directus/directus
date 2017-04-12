@@ -21,7 +21,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t', 'core/interfaces/col
   function setPreviewColor(view, color) {
     if (!view.options.settings.get('palette_only')) {
       var rgbString = color.rgb.length === 4 ? 'rgba(' + color.rgb.join() + ')' : 'rgb(' + color.rgb.join() + ')';
-      view.$el.find('.color-preview')[0].style.boxShadow = 'inset 0 0 0 30px ' + rgbString;
+      view.$el.find('.color-preview')[0].style.boxShadow = 'inset 0 0 0 30px ' + rgbString + ', 1px 1px 2px 0px rgba(0,0,0,0.4)';
     }
   }
 
