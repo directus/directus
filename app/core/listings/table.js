@@ -478,6 +478,7 @@ define([
       // $el - Base page
       onScroll: function ($el) {
         var self = this;
+        this.fixWidths($el);
         TableHelpers.headFootShadows($el);
         if (TableHelpers.hitBottom($el)) {
           if (this.collection.canFetchMore()) {
@@ -492,12 +493,12 @@ define([
       },
 
       onRightPaneToggle: function () {
-        TableHelpers.fixWidths(this.$el);
+        TableHelpers.fixWidths($('#page-content'));
       },
 
       onRender: function () {
         // @TODO: store the content wrapper into a variable in the application object
-        TableHelpers.headFootShadows($('#content'));
+        TableHelpers.headFootShadows($('#page-content'));
         this.$el.scrollTop(this.baseView.state.scrollPosition);
       },
 
