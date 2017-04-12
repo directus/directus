@@ -76,10 +76,10 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
       switch(this.options.settings.get('validation_type')) {
         case ('bl') :
           chars = this.options.settings.get('validation_string').split('');
-          return !chars.includes(String.fromCharCode(e.which));
+          return chars.indexOf(String.fromCharCode(e.which)) === -1;
         case ('wl') :
           chars = this.options.settings.get('validation_string').split('');
-          return chars.includes(String.fromCharCode(e.which));
+          return chars.indexOf(String.fromCharCode(e.which)) !== -1;
       }
 
       return true;
