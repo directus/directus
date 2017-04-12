@@ -15,7 +15,7 @@ define(function(require, exports, module) {
     require('core/interfaces/section_break/section_break'),
     require('core/interfaces/checkbox/checkbox'),
     require('core/interfaces/color/index'),
-    require('core/interfaces/numeric/index'),
+    require('core/interfaces/numeric/component'),
     require('core/interfaces/slider'),
     require('core/interfaces/single_file/component'),
     require('core/interfaces/slug'),
