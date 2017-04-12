@@ -5,12 +5,12 @@
 <b>Dimensions:</b> {{file.width}}×{{file.height}}<br>
 {{!-- TODO: Add device information <br> --}}
 <b>Storage Adapter:</b> {{file.storage_adapter}}<br>
-<b>Path:</b> <a href="{{file.url}}" class="primary">{{file.url}}</a><br>
+<b>Path:</b> <a href="{{file.url}}" target="_blank" class="primary">{{file.url}}</a><br>
 {{!-- <b>Folder:</b> /Mountains<br> --}}
 <b>{{t "uploaded_by"}}:</b> {{userFirstAndLastName meta.createdBy}}<br>
 <b>{{t "uploaded_on"}}:</b> {{# if meta.createdOn}}{{formatDate meta.createdOn dateFormat}}{{else}}{{t "unknown"}}{{/if}}<br>
 <b>{{t "last_modified_by"}}:</b> {{userFirstAndLastName meta.updatedBy}}<br>
-<b>{{t "last_modified_on"}}:</b> {{# if meta.updatedOn}}{{formatDate meta.updatedOn dateFormat}}{{else}}{{t "unknown"}}{{/if}}<br>
+<b>{{t "last_modified_on"}}:</b> {{# if meta.updatedOn}}{{formatDate meta.updatedOn dateFormat}}{{else}}{{# if meta.createdOn}}{{formatDate meta.createdOn dateFormat}}{{else}}{{t "unknown"}}{{/if}}{{/if}}<br>
 
 <a href="{{#if file.isEmbed}}{{file.embed_url}}{{else}}{{assetsRoot}}{{file.url}}{{/if}}" target="_blank">
 	<div class="button preview"><i class="material-icons">visibility</i> View Original</div>
