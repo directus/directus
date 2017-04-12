@@ -144,6 +144,7 @@ function(app, _, Backbone, __t, Directus, BasePageView, RightPane, Widgets) {
       }
 
       this.infoWidget = new Widgets.InfoButtonWidget({
+        enable: !this.model.isNew(),
         onClick: function (event) {
           editView.toggleRightPane();
         }
