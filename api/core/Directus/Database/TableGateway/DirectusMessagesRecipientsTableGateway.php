@@ -72,7 +72,8 @@ class DirectusMessagesRecipientsTableGateway extends RelationalTableGateway
 
             $select->group(['recipient']);
 
-            $result = $this->selectWith($select)->current()->toArray();
+            $result = $this->selectWith($select)->current();
+            $result = $result ? $result->toArray() : [];
 
             // convert all elements into integer
             foreach ($result as $key => $value) {
