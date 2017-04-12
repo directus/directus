@@ -115,7 +115,12 @@ define([
 
     // when the column change or a new column is added into a table
     onColumnChange: function (model) {
+      var columnsCollection = app.schemaManager.getColumns('tables', this.model.id);
+
+      // add new column to the table collection (interface)
       this.columns.add(model, {merge: true});
+      // add the new column into the table columns schema
+      columnsCollection.add(model, {parse: true});
     },
 
     destroyColumn: function(columnName) {
