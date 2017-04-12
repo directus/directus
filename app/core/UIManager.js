@@ -19,7 +19,7 @@ define(function(require, exports, module) {
     require('core/interfaces/slider'),
     require('core/interfaces/single_file/component'),
     require('core/interfaces/slug'),
-    require('core/interfaces/textarea'),
+    require('core/interfaces/textarea/component'),
     require('core/interfaces/user/interface'),
     require('core/interfaces/directus_activity'),
     require('core/interfaces/datetime/datetime'),
