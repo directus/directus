@@ -258,7 +258,10 @@ function(app, Backbone, $, _, __t, Directus, moment) {
       if (!this.model.isNew()) {
         var tableName = this.model.collection.table.id;
         var rowId = this.model.id;
+        this.activity = app.activity.clone().reset();
+        this.activity.clearFilter();
         this.activity.setFilter({
+          limit: -1,
           filters: {
             table_name: tableName,
             row_id: rowId

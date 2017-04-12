@@ -244,6 +244,9 @@ define([
       getActivityCollection: function () {
         if (!this.activity) {
           this.activity = app.activity.clone().reset();
+          this.activity.clearFilter();
+          // NOTE: Fetch All entries
+          this.activity.setFilter('limit', -1);
         }
 
         return this.activity;
@@ -328,10 +331,11 @@ define([
       },
 
       fetchRevisions: function () {
+        var systemCollection = this.options.systemCollection;
         var showRevisionsCount;
         var activityCollection;
 
-        if (this.options.systemCollection.length <= 0) {
+        if (systemCollection.length <= 0) {
           var deferred = new $.Deferred();
           deferred.resolve();
 
@@ -346,13 +350,19 @@ define([
         activityCollection = this.getActivityCollection();
         activityCollection.setFilter({
           filters: {
-            table_name: this.collection.table.id
+            table_name: this.collection.table.id,
+            row_id: {
+              in: systemCollection.pluck(systemCollection.table.getPrimaryColumnName())
+            }
           }
         });
 
+        // TODO: Re-implement system columns
+        // The count values should be fetched from the server
+        // instead of fetching ALL entries to just count in here
         return activityCollection.fetch().then(_.bind(function () {
-          var systemCollection = this.options.systemCollection;
           var revisions = [];
+
           this.activity.each(function (model) {
             var rowId = model.get('row_id');
 
