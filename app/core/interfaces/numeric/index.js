@@ -34,7 +34,11 @@ define([
 
       var step = 1;
 
-      if (this.options.schema.get('type') === 'FLOAT' || this.options.schema.get('type') === 'VARCHAR') {
+      if (
+        this.options.schema.get('type') === 'FLOAT' ||
+        this.options.schema.get('type') === 'VARCHAR' ||
+        this.options.schema.get('type') === 'CHAR'
+      ) {
         step = 'any';
       }
 
