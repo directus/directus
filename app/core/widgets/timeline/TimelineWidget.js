@@ -145,7 +145,7 @@ function(app, Backbone, $, _, __t, Directus, moment) {
         if (isCreated) {
           title = __t('directus_activity_action_create');
         } else {
-          title = __t('directus_activity_revision_x', {number: revisionNumber})
+          title = __t('directus_activity_revision_x', {number: revisionNumber});
         }
 
         var data = {
