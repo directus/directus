@@ -4288,7 +4288,7 @@ body.help .discover-spotlight {
     background-color: rgba(255, 255, 255, 0.9);
     border: 3px dashed #3498DB;
     z-index: 10;
-    animation: dragover 2s ease-in-out;
+    animation: dragover 1s ease-in-out;
     animation-iteration-count: infinite; }
   .page.define-edge {
     border-left: 1px solid #DDDDDD; }
