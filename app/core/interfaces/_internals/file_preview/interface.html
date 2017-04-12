@@ -1,61 +1,3 @@
-<style type="text/css">
-div.ui-thumbnail.empty {
-	max-width: 276px;
-	width: 100%;
-	height: 140px;
-	background-color: #ffffff;
-	border: 2px dashed #dddddd;
-	padding: 9px;
-	font-size: 16px;
-	font-weight: 500;
-	line-height: 144px;
-}
-div.ui-thumbnail.empty.dragover,
-div.ui-thumbnail.empty:hover {
-	background-color: #fefefe;
-	border: 2px dashed #aaaaaa;
-	cursor: pointer;
-}
-div.ui-thumbnail img {
-	max-height: 600px;
-	max-width: 100%;
-}
-div.ui-img-details {
-	float: left;
-	position: relative;
-	width: 100%;
-	margin-top: 0;
-	margin-left: 0;
-	line-height: 18px;
-}
-div.ui-img-details a.title {
-	font-size: 18px;
-}
-div.ui-img-details div {
-	display: inline;
-}
-div.ui-img-details i {
-	font-weight: 400;
-	font-style: italic;
-	color: #ccc;
-}
-button.btn-right {
-	margin-top: 8px;
-	margin-right: 10px;
-}
-.url-import {
-	width: 100%;
-	margin-top: 10px;
-	margin-bottom: 4px;
-	display: inline-block;
-}
-.swap-method-btn {
-	display:block;
-	clear: both;
-	padding-top: 5px;
-	cursor: pointer;
-}
-</style>
 {{#if url}}
 <div class="file-preview">
 	{{#if html}}
@@ -63,7 +5,7 @@ button.btn-right {
 	{{else}}
 		{{#if thumbUrl}}
 			<a target="_blank" href="{{url}}">
-				<img src="{{url}}">
+				<img src="{{url}}" style="max-width:{{width}}px;max-height:{{height}}px;">
 				<!-- <div class="extension-fallback">
 					<div class="type">{{uppercase type}}</div>
 				</div> -->
