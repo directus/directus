@@ -36,17 +36,3 @@ AddType font/woff .woff
     RewriteRule (.*) index.php [L]
 
 </ifModule>
-
-<ifModule mod_php5.c>
-    # default is 64, so 64 + 72 (post_max_size value)
-    php_value memory_limit 136M
-
-    # default is 8, so 8 + 64 (upload_max_filesize value)
-    php_value post_max_size 72M
-
-    # default is 2
-    php_value upload_max_filesize 64M
-
-    # E_ALL | E_STRICT
-    php_value error_reporting 32767
-</ifModule>
