@@ -5380,6 +5380,7 @@ body.help .discover-spotlight {
       max-width: 100px;
       min-width: auto;
       height: 40px; }
+    .fields .field .interface .file-preview img,
     .fields .field .interface .file-preview iframe {
       width: 100%;
       max-width: 100%;
