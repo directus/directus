@@ -273,9 +273,16 @@
 				height: 40px;
 			}
 			.file-preview {
-				img,
+				width: 100%;
+				img {
+					display: block;
+					height: auto;
+					max-width: 100%;
+					max-height: 600px;
+					object-fit: contain;
+					object-position: left;
+				}
 				iframe {
-					width: 100%;
 					max-width: 100%;
 					max-height: 600px;
 				}
