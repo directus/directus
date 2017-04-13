@@ -13,7 +13,7 @@ define(function(require, exports, module) {
     require('core/interfaces/_internals/file_preview/interface'),
     require('core/interfaces/textinput/component'),
     require('core/interfaces/section_break/section_break'),
-    require('core/interfaces/checkbox/checkbox'),
+    require('core/interfaces/checkbox/component'),
     require('core/interfaces/color/index'),
     require('core/interfaces/numeric/index'),
     require('core/interfaces/slider'),
