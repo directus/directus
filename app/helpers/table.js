@@ -27,11 +27,17 @@ define(function () {
 
   var headFootShadows = function ($el) {
     var pageScrollTop = $el.scrollTop();
+    var pageScrollLeft = $el.scrollLeft();
     var scrollBottom = $el.find('table.fixed-header').height() - $el.height() - pageScrollTop + 64; // 64 is table padding
+
     var headScroll = Math.max(Math.min(pageScrollTop, 100), 0) / 100;
     $el.find('table.fixed-header thead').css({ boxShadow: '0px 2px 6px 0px rgba(200,200,200,'+headScroll+')' });
+
     var footScroll = Math.max(Math.min(scrollBottom, 100), 0) / 100;
     $el.find('table.fixed-header tfoot').css({ boxShadow: '0px -2px 6px 0px rgba(200,200,200,'+footScroll+')' });
+
+    var sidebarScroll = Math.max(Math.min(pageScrollLeft, 100), 0) / 100;
+    $('.sidebar').css({ boxShadow: '2px 0px 6px 0px rgba(200,200,200,'+sidebarScroll+')' });
 
     // Position Sticky Header
     if ($el.find('table.fixed-header').hasClass('charted')) {
