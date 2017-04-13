@@ -281,36 +281,46 @@ ul {
 		opacity: 1;
 	}
 	.loading-container {
-		@include loader11($size: 10px, $color: $gray-4, $duration: 1s, $gap: 8px, $align: middle);
-		// @include border-radius (2px);
-		// @include box-shadow ($x: 0px, $y: 0px, $blur: 2px, $spread: 0px, $opacity: 0.05);
+		@include box-shadow ($x: 0px, $y: 0px, $blur: 2px, $spread: 0px, $opacity: 0.05);
+		@include border-radius (2px);
+
 		position: absolute;
-		top: 48%;
+		bottom: 68px;
 		left: 50%;
+		width: 200px;
+		height: 4px;
+		margin-left: -100px;
+		background-color: $white;
+		overflow: hidden;
+
 		// width: 50%;
 		// max-width: 400px;
-		-webkit-transform: translate(-50%, -50%);
-		transform: translate(-50%, -50%);
-		// height: 4px;
-		// background-color: $white;
-		// &:before{
-		// 	display: block;
-		// 	position: absolute;
-		// 	content: "";
-		// 	left: -200px;
-		// 	width: 200px;
-		// 	height: 4px;
-		// 	background-color: $primary;
-		// 	animation: loading 2s linear infinite;
-		// }
-		// @keyframes loading {
-		// 	from {left: -200px; width: 30%;}
-		// 	50% {width: 30%;}
-		// 	70% {width: 70%;}
-		// 	80% { left: 50%;}
-		// 	95% {left: 120%;}
-		// 	to {left: 100%;}
-		// }
+		// -webkit-transform: translate(-50%, -50%);
+		// transform: translate(-50%, -50%);
+
+		&:before{
+			transform: translateZ(0);
+			-webkit-transform: translateZ(0);
+			-ms-transform: translateZ(0);
+			will-change: transform;
+
+			display: block;
+			position: absolute;
+			content: "";
+			left: -200px;
+			width: 200px;
+			height: 4px;
+			background-color: $primary;
+			animation: loading 2s linear infinite;
+		}
+		@keyframes loading {
+			from {left: -200px; width: 30%;}
+			50% {width: 30%;}
+			70% {width: 70%;}
+			80% { left: 50%;}
+			95% {left: 120%;}
+			to {left: 100%;}
+		}
 		.loading-bar {
 			// @include transition (all, $timing-long, cubic-bezier(0.23, 1, 0.32, 1));
 			@include border-radius (2px);
@@ -333,9 +343,8 @@ ul {
 	}
 	.readout {
 		position: absolute;
-		top: 48%;
+		bottom: 43px;
 		width: 100%;
-		margin-top: 15px;
 		color: $gray-3;
 		text-align: center;
 	}
