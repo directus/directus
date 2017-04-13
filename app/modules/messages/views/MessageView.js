@@ -3,8 +3,8 @@ define([
   'backbone',
   'underscore',
   'handlebars',
-  'moment'
-], function(app, Backbone, _, Handlebars) {
+  'helpers/file'
+], function(app, Backbone, _, Handlebars, FileHelper) {
   return Backbone.Layout.extend({
 
     maxRecipients: 10,
@@ -55,7 +55,7 @@ define([
 
       data.attachment = this.parseAttachment(data.attachment);
 
-      data.responses = _.map(data.responses, function(response) {
+      data.responses = _.map(data.responses, function (response) {
         response.attachment = self.parseAttachment(response.attachment);
         response.reads = response.reads ? response.reads.split(',') : null;
 
@@ -108,7 +108,9 @@ define([
     parseAttachment: function (attachment) {
       var attachments = attachment.data || attachment;
 
-      return _.map(attachments, function(item) {
+      return _.map(attachments, function (item) {
+        item.type = FileHelper.friendlySubtype(item.type);
+
         return item;
       });
     },
