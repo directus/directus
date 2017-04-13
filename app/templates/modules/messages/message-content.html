@@ -17,7 +17,10 @@
 			{{#if html}}
 			{{{html}}}
 			{{else}}
-			<img src="{{thumbnail_url}}">
+			<div class="thumbnail js-image">
+				<div class="extension-fallback">{{type}}</div>
+				<img src="{{thumbnail_url}}">
+			</div>
 			{{/if}}
 			<div class="type">{{type}}</div>
 			<div class="info">
@@ -52,7 +55,10 @@
 			{{#if html}}
 			{{{html}}}
 			{{else}}
-			<img src="{{thumbnail_url}}">
+			<div class="thumbnail js-image">
+				<div class="extension-fallback">{{type}}</div>
+				<img src="{{thumbnail_url}}">
+			</div>
 			{{/if}}
 			<div class="type">{{type}}</div>
 			<div class="info">
