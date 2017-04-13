@@ -130,22 +130,28 @@ function(app, Backbone, $, _, __t, Directus, moment) {
       model.save();
     },
 
+    isCreation: function (model) {
+      return model.get('action') === 'ADD';
+    },
+
     serialize: function() {
-      // Note: This is only to give the revision a number
-      var activityCount = this.activity.length;
       var activities = _.sortBy(this.activity.models, function(item) {
         return -item.id;
       });
 
-      var data = activities.map(function(model, index) {
-        var isCreated = model.get('action') === 'ADD';
-        var revisionNumber = activityCount - index;
+      // Note: This is only to give the revision a number
+      var revisionCount = activities.filter(function (model) {
+        return !this.isCreation(model);
+      }, this).length;
+
+      var data = activities.map(function (model, index) {
+        var isCreated = this.isCreation(model);
         var title;
 
         if (isCreated) {
           title = __t('directus_activity_action_create');
         } else {
-          title = __t('directus_activity_revision_x', {number: revisionNumber});
+          title = __t('directus_activity_revision_x', {number: revisionCount - index});
         }
 
         var data = {
@@ -159,7 +165,7 @@ function(app, Backbone, $, _, __t, Directus, moment) {
           action: model.get('action')
         };
 
-        switch(model.get('action')) {
+        switch (model.get('action')) {
           case 'DELETE':
             data.icon = 'delete';
             data.color = 'delete';
@@ -179,7 +185,7 @@ function(app, Backbone, $, _, __t, Directus, moment) {
         }
 
         return data;
-      });
+      }, this);
 
       var comments = this.comments.map(function(model) {
         var data = {
@@ -252,7 +258,10 @@ function(app, Backbone, $, _, __t, Directus, moment) {
       if (!this.model.isNew()) {
         var tableName = this.model.collection.table.id;
         var rowId = this.model.id;
+        this.activity = app.activity.clone().reset();
+        this.activity.clearFilter();
         this.activity.setFilter({
+          limit: -1,
           filters: {
             table_name: tableName,
             row_id: rowId

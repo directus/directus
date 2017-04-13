@@ -123,6 +123,7 @@ class Table extends Route
         $params = $app->request()->get();
         $ZendDb = $app->container->get('zenddb');
         $acl = $app->container->get('acl');
+
         if ($app->request()->isDelete()) {
             $tableGateway = new TableGateway($table, $ZendDb, $acl);
             $hasColumn = TableSchema::hasTableColumn($table, $column);
@@ -392,11 +393,25 @@ class Table extends Route
             $columnNames[] = $column;
             unset($row['id']);
 
+            $condition = [
+                'table_name' => $table,
+                'column_name' => $column
+            ];
+
             if ($row) {
-                $TableGateway->update($row, [
-                    'table_name' => $table,
-                    'column_name' => $column
-                ]);
+                // check if the column data exists in `directus_columns`
+                $columnInfo = $TableGateway->select($condition);
+                if ($columnInfo->count() === 0) {
+                    // add the column information into `directus_columns`
+                    $columnInfo = TableSchema::getColumnSchema($table, $column);
+                    $columnInfo = $columnInfo->toArray();
+                    $columnsName = TableSchema::getAllTableColumnsName('directus_columns');
+                    $columnInfo = ArrayUtils::pick($columnInfo, $columnsName);
+                    ArrayUtils::remove($columnInfo, 'options');
+                    $TableGateway->insert($columnInfo);
+                }
+
+                $TableGateway->update($row, $condition);
             }
         }
 

@@ -258,7 +258,7 @@ function(app, Backbone, _, __t, BasePageView, ListViewManager, TableViewRightPan
         });
       });
 
-      var $el = this.table.$el;
+      var $el = $('#page-content');
       var self = this;
       // add throttle and debounce
       $el.on('scroll', function () {

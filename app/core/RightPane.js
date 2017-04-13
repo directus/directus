@@ -6,27 +6,34 @@ define([
 
   return Backbone.Layout.extend({
 
-    state: {
-      open: false
+    state: {},
+
+    dom: {
+      SMALL: 'right-sidebar-open',
+      WIDE: 'right-sidebar-open-wide'
     },
 
-    close: function() {
+    getOpenClassName: function () {
+      return this.state.wide ? this.dom.WIDE : this.dom.SMALL;
+    },
+
+    close: function () {
       this.state.open = false;
-      $('body').removeClass(app.dom.RIGHT_PANE_OPEN);
+      $('body').removeClass(this.getOpenClassName());
       this.trigger('close');
     },
 
-    open: function() {
+    open: function () {
       this.state.open = true;
-      $('body').addClass(app.dom.RIGHT_PANE_OPEN);
+      $('body').addClass(this.getOpenClassName());
       this.trigger('open');
     },
 
-    isOpen: function() {
+    isOpen: function () {
       return this.state.open;
     },
 
-    toggle: function() {
+    toggle: function () {
       if (this.isOpen()) {
         this.close();
       } else {
@@ -34,8 +41,10 @@ define([
       }
     },
 
-    constructor: function(options) {
+    constructor: function (options) {
       this.baseView = options.baseView;
+      this.state.open = false;
+      this.state.wide = options.wide === true;
 
       Backbone.Layout.prototype.constructor.apply(this, arguments);
     }
