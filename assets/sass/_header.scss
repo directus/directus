@@ -110,6 +110,12 @@ body.loading {
             background-position: left center;
             animation: logosprite .5s steps(15) infinite;
             opacity: 1;
+
+            transform: translateZ(0);
+            -webkit-transform: translateZ(0);
+            -ms-transform: translateZ(0);
+            will-change: transform;
+
 			@keyframes logosprite {
 				100% { background-position: -990px; }
 			}
