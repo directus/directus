@@ -108,9 +108,9 @@ function(app, _, Backbone, Notification, __t, TableHelpers, ModelHelper, TableHe
     },
 
     bindTableEvents: function () {
-      var $el = this.$el;
+      var $el = $('#page-content');
 
-      this.fixWidths();
+      this.fixWidths($el);
       this.headerScroll($el);
 
       var onScroll = _.bind(function () {
@@ -118,7 +118,7 @@ function(app, _, Backbone, Notification, __t, TableHelpers, ModelHelper, TableHe
       }, this);
 
       var onResize = _.bind(function () {
-        this.fixWidths();
+        this.fixWidths($el);
         this.headerScroll($el);
       }, this);
 

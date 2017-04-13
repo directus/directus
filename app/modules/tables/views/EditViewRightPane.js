@@ -1,18 +1,18 @@
 define([
   'app',
-  'core/RightPane',
+  'core/RightPaneWide',
   'core/widgets/timeline/TimelineWidget',
   'core/widgets/MetadataWidget',
   'core/widgets/StatusWidget'
-], function(app, RightPane, TimelineWidget, MetadataWidget, StatusWidget) {
+], function(app, RightPaneWide, TimelineWidget, MetadataWidget, StatusWidget) {
 
-  return RightPane.extend({
+  return RightPaneWide.extend({
 
     attributes: {
       class: 'scroll-y wide no-title'
     },
 
-    beforeRender: function() {
+    beforeRender: function () {
       var table = this.model.table;
       var statusColumnName = table ? table.getStatusColumnName() : app.statusMapping.get('*').get('status_name');
 

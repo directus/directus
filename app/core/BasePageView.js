@@ -74,13 +74,21 @@ function(app, Backbone, _, BaseHeaderView, RightSidebarView) {
 
     isRightPaneOpen: function () {
       // @TODO: set all this stage in the app level
-      var hasOpenClass = $('body').hasClass(app.dom.RIGHT_PANE_OPEN);
+      var hasOpenClass = false;
+      var pane = this.getRightPane();
+      if (pane) {
+        hasOpenClass = $('body').hasClass(pane.getOpenClassName());
+      }
 
       return hasOpenClass || this.state.rightPaneOpen === true;
     },
 
     _ensurePaneIsClosed: function () {
-      $('body').removeClass(app.dom.RIGHT_PANE_OPEN);
+      var pane = this.getRightPane();
+      if (pane) {
+        $('body').removeClass(pane.getOpenClassName());
+      }
+
       this.state.rightPaneOpen = false;
     },
 
@@ -95,7 +103,11 @@ function(app, Backbone, _, BaseHeaderView, RightSidebarView) {
       }
     },
 
-    loadRightPane: function() {
+    _ensureRightPane: function () {
+      if (this.rightPaneView) {
+        return;
+      }
+
       var view = _.result(this, 'rightPane');
 
       if (!view) {
@@ -112,6 +124,18 @@ function(app, Backbone, _, BaseHeaderView, RightSidebarView) {
         });
 
         this.trigger('rightPane:load');
+      }
+    },
+
+    getRightPane: function () {
+      this._ensureRightPane();
+
+      return this.rightPaneView;
+    },
+
+    loadRightPane: function () {
+      if (!this.getRightPane()) {
+        return;
       }
 
       this.listenTo(this.rightPaneView, 'close', function() {

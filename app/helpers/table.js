@@ -15,7 +15,7 @@ define(function () {
 
   var headerScroll = function ($el) {
     var tableLeft = $el.scrollLeft();
-    var tableWidth = $el.children('table').width();
+    var tableWidth = $el.find('table').width();
     var containerWidth = $el.width();
     var pageLeft = parseInt($('#content').css('left'), 10);
 
