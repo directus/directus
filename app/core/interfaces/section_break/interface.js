@@ -16,11 +16,14 @@
 
 /*jshint multistr: true */
 
-define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UIComponent, UIView, __t) {
+define([
+  'core/UIView',
+  'core/t'
+], function(UIView, __t) {
   'use strict';
 
-  var Input = UIView.extend({
-    template: 'section_break/template',
+  return UIView.extend({
+    template: 'section_break/input',
     fieldClass: function() { return this.options.settings.get('show_inline') ? false : 'break-header' },
     hideLabel: true,
 
@@ -35,42 +38,4 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
       };
     }
   });
-
-  var Component = UIComponent.extend({
-    id: 'section_break',
-    dataTypes: ['VARCHAR', 'TEXT'],
-    variables: [
-      {
-        id: 'show_inline',
-        type: 'Boolean',
-        default_value: false,
-        ui: 'checkbox'
-      },
-      {
-        id: 'title',
-        type: 'String',
-        default_value: '',
-        ui: 'textinput'
-      },
-      {
-        id: 'instructions',
-        type: 'String',
-        default_value: '',
-        ui: 'wysiwyg',
-        options: {
-          'ul': true,
-          'ol': true
-        }
-      }
-    ],
-    Input: Input,
-    list: function(options) {
-      var instructions = options.settings.get('instructions') || '...';
-      var regex = /(<([^>]+)>)/ig;
-
-      return instructions.replace(regex, "");
-    }
-  });
-
-  return Component;
 });
