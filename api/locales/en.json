@@ -391,7 +391,7 @@
     "column_name": "Column Name",
     "user_interface": "User Interface",
     "relationship": "Relationship",
-    "relationship_none": "None",
+    "relationship_none": "N/A",
     "comment": "Comment",
     "new_column_title": "Create New Column",
     "edit_column_title": "Editing Column",

@@ -236,10 +236,6 @@ define([
       var columns = this.columns.map(function (column) {
         var data = column.toJSON();
 
-        if (!data.relationship_type) {
-          data.relationship_type = __t('relationship_none');
-        }
-
         if (!data.comment) {
           data.comment = __t('add_comment');
         }
