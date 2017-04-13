@@ -329,6 +329,13 @@
 				}
 			}
 		}
+		&.archived {
+			.byline {
+				.subject {
+					color: $gray-4;
+				}
+			}
+		}
 		&.selected,
 		&.active {
 			.active-indicator {

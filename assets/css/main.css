@@ -5032,6 +5032,8 @@ body.help .discover-spotlight {
         opacity: 1; }
       .message-listing .message-preview.unread .byline .subject {
         margin-left: 14px; }
+    .message-listing .message-preview.archived .byline .subject {
+      color: #999999; }
     .message-listing .message-preview.selected, .message-listing .message-preview.active {
       background-color: #FFFFFF; }
       .message-listing .message-preview.selected .active-indicator, .message-listing .message-preview.active .active-indicator {
