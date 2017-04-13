@@ -8,17 +8,10 @@
         <button id="cancel" type="button" class="cancel">{{t "cancel"}}</button>
     </div>
     {{/if}}
-    {{#if isYesNoCancelConfirm}}
-	<div class="actions">
-        <button id="yesBtn" type="button" class="button">{{t "yes"}}</button>
-        <button id="noBtn" type="button" class="button">{{t "no"}}</button>
-        <button id="cancel" type="button" class="cancel">{{t "cancel"}}</button>
-    </div>
-    {{/if}}
     {{#if isYesNoConfirm}}
 	<div class="actions">
         <button id="yesBtn" type="button" class="button">{{t "yes"}}</button>
-        <button id="noBtn" type="button" class="cancel">{{t "no"}}</button>
+        <button id="noBtn" type="button" class="cancel">{{t "cancel"}}</button>
     </div>
     {{/if}}
     {{#if isAlert}}

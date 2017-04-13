@@ -20,9 +20,6 @@ define(['core/Modal', 'underscore'], function(Modal, _) {
           data.isPrompt = true;
           data.showInput = true;
           break;
-        case 'yesnocancel':
-          data.isYesNoCancelConfirm = true;
-          break;
         case 'yesno':
           data.isYesNoConfirm = true;
           break;
