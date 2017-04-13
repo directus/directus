@@ -2,12 +2,13 @@ define([
   'app',
   'underscore',
   'backbone',
+  'core/UIManager',
   'core/edit',
   'core/Modal',
   'helpers/schema',
   'core/notification',
   'core/t'
-], function(app, _, Backbone, EditView, ModalView, SchemaHelper, Notification, __t) {
+], function(app, _, Backbone, UIManager, EditView, ModalView, SchemaHelper, Notification, __t) {
 
   return Backbone.Layout.extend({
 
@@ -23,13 +24,17 @@ define([
         var columnName = this.model.get('column_name');
         var columnComment = this.model.get('comment');
 
-        this.model.clear();
-        this.model.set({
-          column_name: columnName,
-          comment: columnComment
-        });
+        if (this.model.isNew()) {
+          this.model.clear();
+          this.model.set({
+            column_name: columnName,
+            comment: columnComment
+          });
+        }
+
         this.selectedUI = $(e.target).val();
         this.selectedDataType = null;
+
         this.render();
       },
 
@@ -445,9 +450,36 @@ define([
       this.$('#columnName').focus();
     },
 
+    _alternativeInterfaces: function () {
+      var uis = UIManager.getAllSettings({returnObject: true});
+      var model = this.model;
+      var row = model.toJSON();
+      var types = [];
+
+      // Gather a list of UI alternatives
+      _.each(uis, function (ui) {
+        var dataType = (model.isRelational()) ? model.getRelationshipType() : row.type;
+        if (row.ui === ui.id || (!ui.system && ui.dataTypes.indexOf(dataType) > -1)) {
+          types.push({id: ui.id, selected: (ui.id === row.ui)});
+        }
+      });
+
+      return types;
+    },
+
+    _alternativeInterfacesFilter: function (ui) {
+      if (this.model.isNew()) {
+        return true;
+      }
+
+      var types = this._alternativeInterfaces();
+
+      return !!_.findWhere(types, {id: ui.id});
+    },
+
     initialize: function(options) {
       options = options || {};
-      this.uiFilter = options.ui_filter || false;
+      this.uiFilter = options.ui_filter || this._alternativeInterfacesFilter || false;
       this.selectedUI = _.isString(this.model.get('ui')) ? this.model.get('ui') : undefined;
       this.selectedDataType = this.model.get('type') || undefined;
       this.selectedRelationshipType = this.model.get('relationship_type') || undefined;

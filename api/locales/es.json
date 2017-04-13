@@ -346,7 +346,7 @@
     "column_name": "Nombre Columna",
     "user_interface": "Interfaz de Usuario",
     "relationship": "Relación",
-    "relationship_none": "Ninguna",
+    "relationship_none": "N/A",
     "comment": "Comentario",
     "new_column_title": "Crear Nueva Columna",
     "edit_column_title": "Editar Columna",
