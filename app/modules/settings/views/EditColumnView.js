@@ -70,6 +70,15 @@ define([
         });
       }
 
+      if (this.options.scrollTo) {
+        this.listenToOnce(view, 'afterRender', function () {
+          var $el = view.$(this.options.scrollTo);
+          if ($el.length) {
+            this.$('.modal-bg').scrollTop($el.offset().top);
+          }
+        });
+      }
+
       this.$el.removeClass('column interface').addClass(modalClass);
       this.setView('.modal-bg', view);
     },

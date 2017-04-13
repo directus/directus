@@ -44,11 +44,18 @@ define([
       var id = $cell.closest('.js-row').data('id');
       var viewName = $cell.data('section');
       var focusTo = $cell.data('field');
+      var scrollTo = $cell.data('sub-section');
 
-      this.editRow(id, viewName, focusTo);
+      if (scrollTo) {
+        scrollTo = '#' + scrollTo;
+      }
+
+      if (!$cell.hasClass('js-cell-disable')) {
+        this.editRow(id, viewName, focusTo, scrollTo);
+      }
     },
 
-    editRow: function(id, viewName, focusTo) {
+    editRow: function(id, viewName, focusTo, scrollTo) {
       if (!this.canEdit) {
         return;
       }
@@ -89,6 +96,7 @@ define([
         model: optionsModel,
         schema: schema,
         currentView: viewName || EditColumnView.VIEW_INTERFACE,
+        scrollTo: scrollTo,
         focusTo: focusTo
       });
 
