@@ -82,11 +82,7 @@ define([
         this.editColumnView = new ColumnFormView({
           model: model,
           collection: collection,
-          hiddenFields: ['column_name'],
-          // Do not allow to select any other ui.
-          ui_filter: function(ui) {
-            return ui.id === model.get('ui');
-          }
+          hiddenFields: ['column_name']
         });
       }
 
