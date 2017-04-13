@@ -57,7 +57,24 @@ body.login {
 		height: 260px;
 		margin-left: -130px;
 		margin-top: -150px;
+		// There's an issue with this and TranslateY: If the login-panel ends up with an odd px height then things are blurry due to subpixel anti-aliasing
+		// -webkit-transform: translateY(-58%);
+		// -ms-transform: translateY(-58%);
+		// transform: translateY(-58%);
 		z-index: 2;
+		h1 {
+			padding-bottom: 5px;
+			color: $gray-5;
+			text-align: center;
+		}
+		p {
+			color: $gray-4;
+			font-size: 13px;
+			line-height: 20px;
+			padding-bottom: 15px;
+			letter-spacing: -0.2px;
+			text-align: center;
+		}
 		.input {
 			position: relative;
 			margin-bottom: 20px;
