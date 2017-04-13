@@ -254,7 +254,7 @@
 
     "radiobuttons_options_comment": "用半角逗號分隔",
 
-    "numeric_footer_comment": "Show a footer on the Item Listing page with useful info, such as: Min, Max, Avg, Sum",
+    "numeric_footer_comment": "Show a footer on the Item Listing with: Min, Max, Avg, Sum",
 
     "select_options_comment": "輸入JSON鍵值對：鍵為要儲存的值，值為顯示予前端的名稱。",
     "select_placeholder_text": "輸入佔位內文",

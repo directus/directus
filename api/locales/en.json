@@ -290,7 +290,7 @@
 
     "radiobuttons_options_comment": "Use a Comma Delimited list",
 
-    "numeric_footer_comment": "Show a footer on the Item Listing page with useful info, such as: Min, Max, Avg, Sum",
+    "numeric_footer_comment": "Show a footer on the Item Listing with: Min, Max, Avg, Sum",
 
     "select_options_comment": "Enter JSON key value pairs with the saved value and text displayed.",
     "select_placeholder_text": "Enter Placeholder Text",
