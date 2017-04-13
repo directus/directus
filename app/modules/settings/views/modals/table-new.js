@@ -15,7 +15,7 @@ define([
 
     attributes: {
       'id': 'modal',
-      'class': 'modal'
+      'class': 'modal table-create'
     },
 
     events: {
