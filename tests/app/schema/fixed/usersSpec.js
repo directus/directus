@@ -15,7 +15,7 @@ define(['app', 'schema/fixed/users'], function(app, schema) {
       expect(users.single).toBe(false);
       expect(users.footer).toBe(1);
       expect(users.count).toBe(0);
-      expect(users.statusName).toBe(0);
+      expect(users.active).toBe(0);
       expect(users.url).toBe('api/1/tables/directus_users/');
     });
 
