@@ -10,7 +10,9 @@
 	<div class="extension-fallback">{{ucase type}}</div>
 	{{else}}
 	{{!-- While loading --}}
-	<div class="default-loading"><span class="icon icon-three-dots"></span></div>
+	<div class="thumbnail js-image">
+		<div class="extension-fallback">{{t "uploading"}}</div>
+	</div>
 	{{/if}}
 	{{/if}}
     <div class="type">{{uppercase type}}</div>

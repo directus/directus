@@ -20,12 +20,24 @@
     </div>
 </div>
 {{else}}
+{{#if uploading}}
+<div class="attachments">
+	<div class="file">
+		<div class="thumbnail js-image">
+			<div class="extension-fallback">
+				<div class="type">{{t "uploading"}}</div>
+			</div>
+		</div>
+	</div>
+</div>
+{{else}}
 <div class="dropzone js-from-computer">
     <i class="material-icons cloud">cloud_upload</i>
     <div class="drag-and-drop">{{t "drag_and_drop"}}</div>
     <div class="click-to-browse">{{t "or_browse"}}</div>
 </div>
 <input type="file" id="fileInput" style="display:none">
+{{/if}}
 {{/if}}
 <div class="button-group">
     <div class="button js-from-system"><i class="material-icons">playlist_add_check</i> {{t "directus_files_choose"}}</div>

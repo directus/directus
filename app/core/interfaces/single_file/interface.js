@@ -117,7 +117,12 @@ function (app, _, __t, Utils, FileHelper, UIView, TableView, Overlays) {
       var target = $(event.currentTarget);
       var file = target[0].files[0];
       var model = this.fileModel;
-      var allowed = model.setFile(file, this.options.settings.get('allowed_filetypes'));
+      var allowed;
+
+      this.uploading = true;
+      this.render();
+
+      allowed = model.setFile(file, this.options.settings.get('allowed_filetypes'));
 
       if (allowed === false) {
         Utils.clearElement(target);
@@ -203,6 +208,7 @@ function (app, _, __t, Utils, FileHelper, UIView, TableView, Overlays) {
       data.type = this.fileModel.getSubType(true);
 
       data = {
+        uploading: this.uploading,
         isImage: isImage,
         name: this.options.name,
         url: url,
@@ -217,11 +223,16 @@ function (app, _, __t, Utils, FileHelper, UIView, TableView, Overlays) {
       return data;
     },
 
+    onModelChange: function () {
+      this.uploading = false;
+      this.render();
+    },
+
     initialize: function () {
+      this.uploading = false;
       this.userId = app.users.getCurrentUser().id;
       this.fileModel = this.options.value;
-      this.fileModel.on('change', this.render, this);
-      this.listenTo(this.fileModel, 'change', this.render);
+      this.listenTo(this.fileModel, 'change', this.onModelChange);
 
       if (this.collection) {
         this.listenTo(this.collection, 'reset', this.render);
