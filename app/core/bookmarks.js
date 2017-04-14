@@ -46,14 +46,18 @@ function(app, Backbone, _, EntriesManager, __t, Notification) {
       return 0;
     },
 
-    setActive: function(route) {
+    setActive: function (route) {
       var activeModel;
       var routeURL = route;
       var found = false;
 
-      _.each(this.models, function(model) {
+      this.each(function (model) {
         model.unset('active_bookmark', {silent: true});
-        if (routeURL == model.get('url') && !found) {
+        // NOTE: Checking if it's a editing page by pulling out the last parameter
+        var detailsUrl = (routeURL || '').split('/').slice(0, -1).join('/');
+        var urlMatched = routeURL == model.get('url') || detailsUrl == model.get('url');
+
+        if (urlMatched && !found) {
           activeModel = model;
           found = true;
         }
