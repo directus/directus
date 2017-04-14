@@ -476,6 +476,19 @@ define([
       this.options.filters = [];
       var search = this.collection.preferences.get('search_string');
 
+      if (this.collection.getFilter('q')) {
+        var searchString = this.collection.getFilter('q');
+        if (searchString) {
+          this.searchString = searchString;
+          this.options.filters.push({
+            filterData: {
+              id: 'q',
+              value: searchString
+            }
+          });
+        }
+      }
+
       if (search !== null && search !== undefined) {
         search = decodeURIComponent(search).replace('\\,', '%21').split(',');
 
