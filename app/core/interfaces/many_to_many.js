@@ -150,6 +150,7 @@ define(['app', 'core/UIComponent', 'core/interfaces/one_to_many', 'core/table/ta
       this.nestedTableView = new TableView({
         collection: relatedCollection,
         toolbar: false,
+        system: false,
         selectable: false,
         sortable: true,
         footer: false,

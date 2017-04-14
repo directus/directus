@@ -111,6 +111,22 @@ define(function(require, exports, module) {
       return this.structure.get(columnName) !== undefined;
     },
 
+    clone: function () {
+      var options = {
+        parse: true,
+        table: this.table,
+        structure: this.structure,
+        privileges: this.privileges,
+        preferences: this.preferences,
+        url: this.url,
+        rowsPerPage: this.rowsPerPage,
+        model: this.model,
+        comparator: this.comparator
+      };
+
+      return new this.constructor(this.models, options);
+    },
+
     initialize: function (models, options) {
       var EntriesCollection = require('core/entries/EntriesCollection');
 

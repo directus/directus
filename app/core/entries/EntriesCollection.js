@@ -244,6 +244,8 @@ define(function(require, exports, module) {
 
     clone: function() {
       var options = {
+        model: this.model,
+        comparator: this.comparator,
         table: this.table,
         structure: this.structure,
         privileges: this.privileges,
@@ -252,10 +254,7 @@ define(function(require, exports, module) {
         rowsPerPage: this.rowsPerPage
       };
 
-      return new this.constructor(this.models, _.extend(options, {
-        model: this.model,
-        comparator: this.comparator
-      }));
+      return new this.constructor(this.models, options);
     },
 
     setFilter: function(key, value, options) {
