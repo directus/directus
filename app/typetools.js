@@ -42,6 +42,11 @@ define(['moment', 'core/t'], function(moment, __t) {
         output = output.replace(new RegExp(" "+correctCase+"\\b", "gi"), " "+correctCase);
       });
 
+      // Replace all internals words
+      _.each(typetools.internalWordsMap, function (replace, search) {
+        output = output.replace(new RegExp('\\b' + search + '\\b', 'gi'), replace);
+      });
+
       return output;
     },
 
@@ -111,6 +116,12 @@ define(['moment', 'core/t'], function(moment, __t) {
       'ADD':    __t('preposition_to'),
       'DELETE': __t('preposition_from'),
       'UPDATE': __t('preposition_within')
+    },
+
+    internalWordsMap: {
+      'MANYTOONE': 'Many-to-One',
+      'ONETOMANY': 'One-to-Many',
+      'MANYTOMANY': 'Many-to-Many'
     },
 
     bytesToSize: function(bytes, precision) {
