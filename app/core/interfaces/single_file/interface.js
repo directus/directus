@@ -125,6 +125,8 @@ function (app, _, __t, Utils, FileHelper, UIView, TableView, Overlays) {
       allowed = model.setFile(file, this.options.settings.get('allowed_filetypes'));
 
       if (allowed === false) {
+        this.uploading = false;
+        this.render();
         Utils.clearElement(target);
       }
     },
