@@ -9,7 +9,9 @@ define([
 ], function(app, _, Backbone, EditView, ModalView, ColumnFormView, ColumnOptionsView) {
 
   var VIEW_COLUMN = 'editColumnView';
+  var VIEW_COLUMN_NAME = 'column';
   var VIEW_INTERFACE = 'editOptionsView';
+  var VIEW_INTERFACE_NAME = 'interface';
 
   var View = ModalView.extend({
 
@@ -21,7 +23,7 @@ define([
     template: 'modal/columns-edit',
 
     events: {
-      'click .js-toggle-pane': 'toggle',
+      'click .js-pane': 'toggle',
       'click .js-cancel': '_close',
       'click .js-save': 'save'
     },
@@ -40,11 +42,24 @@ define([
       this._close();
     },
 
-    toggle: function() {
-      if (this.state.currentView === VIEW_INTERFACE) {
-        this.state.currentView = VIEW_COLUMN;
-      } else {
-        this.state.currentView = VIEW_INTERFACE;
+    toggle: function (event) {
+      event.preventDefault();
+
+      var $toggle = $(event.currentTarget);
+      var viewName = $toggle.data('pane');
+
+      debugger;
+      if (viewName == this.state.currentView) {
+        return;
+      }
+
+      switch (viewName) {
+        case VIEW_COLUMN_NAME:
+          this.state.currentView = VIEW_COLUMN;
+          break;
+        case VIEW_INTERFACE_NAME:
+        default:
+          this.state.currentView = VIEW_INTERFACE;
       }
 
       this.render();
@@ -59,7 +74,7 @@ define([
     },
 
     beforeRender: function() {
-      var modalClass = this.state.currentView === VIEW_COLUMN ? 'column' : 'interface';
+      var modalClass = this.state.currentView === VIEW_COLUMN ? VIEW_COLUMN_NAME : VIEW_INTERFACE_NAME;
       var view = this.getCurrentView();
 
       if (this.options.focusTo) {
@@ -79,7 +94,7 @@ define([
         });
       }
 
-      this.$el.removeClass('column interface').addClass(modalClass);
+      this.$el.removeClass(VIEW_COLUMN_NAME).removeClass(VIEW_INTERFACE_NAME).addClass(modalClass);
       this.setView('.modal-bg', view);
     },
 

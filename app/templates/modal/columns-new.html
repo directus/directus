@@ -3,8 +3,8 @@
 <h1>{{t "new_column_title"}}</h1> <!-- Create New Column -->
 {{else}}
 <h1><!-- {{t "editing"}}:  --><span class="table-name">{{table_name}}.</span><span class="column-name">{{column_name}}</span></h1> <!-- {{t "edit_column_title"}} -->
-<a href="#" class="toggle-pane js-toggle-pane active">Column Setup</a>
-<a href="#" class="toggle-pane js-toggle-pane">Interface Options</a>
+<a href="#" class="toggle-pane js-pane active" data-pane="column">Column Setup</a>
+<a href="#" class="toggle-pane js-pane" data-pane="interface">Interface Options</a>
 {{/if}}
 
 	{{#unless hideColumnName}}
