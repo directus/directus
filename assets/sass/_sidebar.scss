@@ -215,9 +215,16 @@
 						}
 					}
 					&.system-settings {
-						color: $serious;
+						color: $important;
+						font-weight: 700;
+						&:hover {
+							color: darken($important, 8%);
+							.material-icons {
+								color: darken($important, 8%);
+							}
+						}
 						.material-icons {
-							color: $serious;
+							color: $important;
 						}
 					}
 					&.discover {

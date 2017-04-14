@@ -3161,9 +3161,14 @@ body.loading .header .logo {
             .sidebar .system .user-menu ul li:hover .material-icons {
               color: #3498DB; }
           .sidebar .system .user-menu ul li.system-settings {
-            color: #F44336; }
+            color: #FFC107;
+            font-weight: 700; }
+            .sidebar .system .user-menu ul li.system-settings:hover {
+              color: #dda600; }
+              .sidebar .system .user-menu ul li.system-settings:hover .material-icons {
+                color: #dda600; }
             .sidebar .system .user-menu ul li.system-settings .material-icons {
-              color: #F44336; }
+              color: #FFC107; }
           .sidebar .system .user-menu ul li.discover span {
             padding-right: 10px; }
           .sidebar .system .user-menu ul li .count {
