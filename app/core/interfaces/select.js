@@ -10,7 +10,7 @@ define(['app', 'underscore', 'core/UIComponent', 'core/UIView', 'core/t', 'utils
 
   'use strict';
 
-  var template = '<div class="select-container" style="margin-top: 4px;margin-bottom: 6px;"> \
+  var template = '<div class="select-container"> \
                     <select name="{{name}}" {{#if readonly}}disabled{{/if}}>{{#if allow_null}}<option value="">{{placeholder_text}}</option>{{/if}}{{#options}}<option value="{{key}}" {{#if selected}}selected{{/if}}>{{value}}</option>{{/options}}</select> \
                   </div>';
 
