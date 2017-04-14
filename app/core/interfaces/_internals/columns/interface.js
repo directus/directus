@@ -109,8 +109,7 @@ define([
       var ColumnModalView = require('modules/settings/views/ColumnModalView');
       var ColumnModel = require('schema/ColumnModel');
       var collection = app.schemaManager.getColumns('tables', this.model.id);
-
-      var model = new ColumnModel({'data_type':'ALIAS','ui':{}}, {collection: collection});
+      var model = new ColumnModel({'data_type':'ALIAS','ui':{}}, {collection: collection, table: collection.table});
       var view = new ColumnModalView({
         model: model,
         collection: collection
