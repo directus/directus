@@ -48,7 +48,6 @@ define([
       var $toggle = $(event.currentTarget);
       var viewName = $toggle.data('pane');
 
-      debugger;
       if (viewName == this.state.currentView) {
         return;
       }
