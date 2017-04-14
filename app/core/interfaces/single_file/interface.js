@@ -208,6 +208,7 @@ function (app, _, __t, Utils, FileHelper, UIView, TableView, Overlays) {
       }
 
       data.type = this.fileModel.getSubType(true);
+      data.cid = this.fileModel.cid;
 
       data = {
         uploading: this.uploading,
