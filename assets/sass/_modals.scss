@@ -223,14 +223,16 @@ body.help {
 					border-bottom: none;
 				}
 				.label {
-					display: block;
-					width: 100%;
+					color: $primary;
+					font-size: 12px;
+					font-weight: 500;
+					margin-bottom: 4px;
 				}
 				.comment {
 					width: 100%;
 				}
 				.interface {
-					margin-top: 6px;
+					margin-top: 0;
 				}
 			}
 		}

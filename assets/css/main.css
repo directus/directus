@@ -1902,7 +1902,7 @@ table {
         transition: color 200ms ease-in-out 0ms; }
         table tbody tr td.default-value:hover {
           color: #3498DB; }
-          table tbody tr td.default-value:hover span {
+          table tbody tr td.default-value:hover .no-value {
             color: #3498DB; }
       table tbody tr td.comment {
         -webkit-transition: color 200ms ease-in-out 0ms;
@@ -1910,14 +1910,13 @@ table {
         -o-transition: color 200ms ease-in-out 0ms;
         -ms-transition: color 200ms ease-in-out 0ms;
         transition: color 200ms ease-in-out 0ms;
-        color: #CCCCCC;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis; }
         table tbody tr td.comment:hover {
           color: #3498DB; }
-        table tbody tr td.comment .active {
-          color: #666666; }
+          table tbody tr td.comment:hover .no-value {
+            color: #3498DB; }
       table tbody tr td.avatar {
         white-space: nowrap;
         width: 60px;
@@ -3963,12 +3962,14 @@ body.help .discover-spotlight {
       .smoke .modal .fields .field:last-child {
         border-bottom: none; }
       .smoke .modal .fields .field .label {
-        display: block;
-        width: 100%; }
+        color: #3498DB;
+        font-size: 12px;
+        font-weight: 500;
+        margin-bottom: 4px; }
       .smoke .modal .fields .field .comment {
         width: 100%; }
       .smoke .modal .fields .field .interface {
-        margin-top: 6px; }
+        margin-top: 0; }
     .smoke .modal.confirm .modal-bg {
       min-width: 500px;
       max-width: 600px; }
