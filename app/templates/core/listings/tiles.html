@@ -1,6 +1,9 @@
 {{#items}}
 <div class="file" data-id="{{id}}">
-    <img src="{{thumb}}">
+	<div class="thumbnail">
+		<div class="extension-fallback">{{type}}</div>
+		<img src="{{thumb}}">
+	</div>
     <div class="type">{{type}}</div>
     <div class="info">
         <div class="name">{{title}}</div>
