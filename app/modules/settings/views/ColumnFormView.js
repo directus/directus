@@ -183,11 +183,14 @@ define([
         data.data_types.push(item);
       });
 
+      if (SchemaHelper.supportsLength(this.selectedDataType)) {
+        data.SHOW_LENGTH = true;
+      }
+
       // Check if the data type needs length
       // ENUM and SET doesn't actually needs a LENGTH,
       // but the "length" value is a list of string separate by comma
       if (['VARCHAR', 'CHAR', 'ENUM', 'SET'].indexOf(this.selectedDataType) > -1) {
-        data.SHOW_LENGTH = true;
         if (!this.model.get('length')) {
           var length = ['ENUM', 'SET'].indexOf(this.selectedDataType) > -1 ? '' : 100;
           this.model.set({length: length});
