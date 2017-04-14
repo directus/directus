@@ -32,7 +32,9 @@
 				<td class="default-value js-cell" data-field="default_value" data-section="column">
 					<span class="{{#if nullOrEmptyValue}}no-value{{/if}}">{{default_value}}</span>
 				</td>
-				<td class="comment js-cell" data-field="comment" data-section="column">{{comment}}</td>
+				<td class="comment js-cell" data-field="comment" data-section="column">
+					<span class="{{#if emptyComment}}no-value{{/if}}">{{comment}}</span>
+				</td>
 				<td class="relational-remove">
 					<i class="material-icons js-remove">close</i>
 				</td>

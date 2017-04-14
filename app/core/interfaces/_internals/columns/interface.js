@@ -244,8 +244,10 @@ define([
       var columns = this.columns.map(function (column) {
         var data = column.toJSON();
 
+        data.emptyComment = false;
         if (!data.comment) {
           data.comment = __t('add_comment');
+          data.emptyComment = true;
         }
 
         data.nullOrEmptyValue = false;
@@ -253,7 +255,7 @@ define([
           data.default_value = 'NULL';
           data.nullOrEmptyValue = true;
         } else if (data.default_value === '') {
-          data.default_value = 'Empty String'
+          data.default_value = 'Empty String';
           data.nullOrEmptyValue = true;
         }
 

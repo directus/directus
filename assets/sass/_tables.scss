@@ -235,22 +235,21 @@ table {
 					@include transition (color, $timing-short, ease-in-out);
 					&:hover {
 						color: $primary;
-						span {
+						.no-value {
 							color: $primary;
 						}
 					}
 				}
 				&.comment {
 					@include transition (color, $timing-short, ease-in-out);
-					color: $gray-3;
 					white-space: nowrap;
 					overflow: hidden;
 					text-overflow: ellipsis;
 					&:hover {
 						color: $primary;
-					}
-					.active {
-						color: $gray-5;
+						.no-value {
+							color: $primary;
+						}
 					}
 				}
 				&.avatar {
