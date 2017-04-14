@@ -3,7 +3,6 @@ define([
   'core/widgets/PaginationCountWidget',
   'core/widgets/ButtonWidget',
   'core/widgets/InfoButtonWidget',
-  'core/widgets/SearchWidget',
   'core/widgets/SaveWidget',
   'core/widgets/VisibilityWidget',
   'core/widgets/FilterWidget',
@@ -12,14 +11,13 @@ define([
   'core/widgets/SelectedCountWidget'
 ],
 
-function(PaginatorWidget, PaginationCountWidget, ButtonWidget, InfoButtonWidget, SearchWidget, SaveWidget, VisibilityWidget, FilterWidget, FilterButtonWidget, SelectionActionWidget, SelectedCountWidget) {
+function(PaginatorWidget, PaginationCountWidget, ButtonWidget, InfoButtonWidget, SaveWidget, VisibilityWidget, FilterWidget, FilterButtonWidget, SelectionActionWidget, SelectedCountWidget) {
 
   return {
     PaginatorWidget: PaginatorWidget,
     PaginationCountWidget: PaginationCountWidget,
     ButtonWidget: ButtonWidget,
     InfoButtonWidget: InfoButtonWidget,
-    SearchWidget: SearchWidget,
     SaveWidget: SaveWidget,
     VisibilityWidget: VisibilityWidget,
     FilterWidget: FilterWidget,
