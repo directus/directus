@@ -65,6 +65,8 @@ define(function(require, exports, module) {
         'column_name': 'relationship_type',
         'ui': 'textinput',
         'type': 'VARCHAR',
+        'required': false,
+        'nullable': true,
         'system': false,
         'hidden_list': false,
         'hidden_input': false,
@@ -122,6 +124,8 @@ define(function(require, exports, module) {
         'type': 'VARCHAR',
         'char_length': 255,
         'default_value': '',
+        'required': false,
+        'nullable': true,
         'system':false,
         'hidden_list':false,
         'hidden_input':false
