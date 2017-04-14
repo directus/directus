@@ -106,7 +106,8 @@ define(function(require, exports, module) {
         "hidden_input": false,
         "sort": 50,
         "options": {
-          "placeholder_text": __t('eg_x', {text: '000.000.000.000, 111.111.111.111'})
+          "placeholder_text": __t('eg_x', {text: '000.000.000.000, 111.111.111.111'}),
+          "rows": 3
         },
         "comment": transComments('restrict_to_ip_whitelist')
       },
