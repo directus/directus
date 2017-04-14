@@ -8,11 +8,10 @@ define([
 
   var FilesCardView = Backbone.Layout.extend({
 
-    // <div class="file-listing" id="file-listing">
     tagName: 'div',
 
     attributes: {
-      class: 'file-listing',
+      class: 'file-listing flex',
       id: 'file-listing'
     },
 

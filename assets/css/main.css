@@ -4427,9 +4427,6 @@ body.help .discover-spotlight {
   transition: all 200ms ease-in-out 0ms;
   height: 100%; }
 
-.file-listing {
-  height: 100%; }
-
 .folder-listing,
 .file-listing {
   padding: 20px;

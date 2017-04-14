@@ -18,7 +18,7 @@ define([
       template: 'core/listings/tiles',
 
       attributes: {
-        class: 'view-tiles js-listing-view file-listing'
+        class: 'view-tiles js-listing-view file-listing flex'
       },
 
       events: {
