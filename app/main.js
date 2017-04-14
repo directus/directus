@@ -350,17 +350,6 @@ require(["config", 'polyfills'], function() {
           status = xhr.status;
 
           existingErrorHandler(xhr, status, thrown);
-
-          switch(status) {
-            case 404:
-              app.router.notFound();
-              break;
-            case 401:
-              window.location = app.root;
-              break;
-            case 500:
-              break;
-          }
         };
 
         if (options.errorPropagation !== false) {
