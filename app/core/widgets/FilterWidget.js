@@ -27,7 +27,7 @@ define([
     events: {
       'keyup .js-search': 'search',
 
-      'click .js-search-clear': 'clearSearch',
+      'click .js-search-clear': 'clearFilters',
 
       'click .js-toggle': function (event) {
         this.$el.toggleClass('filter-dropdown-open');
@@ -102,7 +102,7 @@ define([
       this.collection.fetch();
     },
 
-    clearSearch: function () {
+    clearFilters: function () {
       this.searchString = '';
       this.$('.js-search').val(this.searchString);
 
@@ -125,6 +125,7 @@ define([
         this.collection.removeFilter(key);
       }
 
+      this.options.filters = [];
       this.updateFilters();
       this.collection.fetch();
     },
