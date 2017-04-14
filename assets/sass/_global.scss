@@ -15,18 +15,18 @@
 input:-webkit-autofill {
 	-webkit-box-shadow: 0 0 0px 1000px white inset;
 }
-// ::-webkit-input-placeholder {
-//   font-weight: 500;
-// }
-// ::-moz-placeholder {
-//   font-weight: 500;
-// }
-// :-ms-input-placeholder {
-//   font-weight: 500;
-// }
-// :-moz-placeholder {
-//   font-weight: 500;
-// }
+::-webkit-input-placeholder {
+	color: $gray-3;
+}
+::-moz-placeholder {
+	color: $gray-3;
+}
+:-ms-input-placeholder {
+	color: $gray-3;
+}
+:-moz-placeholder {
+	color: $gray-3;
+}
 * {
 	box-sizing: border-box;
 	-webkit-font-smoothing: antialiased;
