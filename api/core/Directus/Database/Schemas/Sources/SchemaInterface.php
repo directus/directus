@@ -166,6 +166,15 @@ interface SchemaInterface
     public function castValue($data, $type = null);
 
     /**
+     * Checks whether the given type is numeric type
+     *
+     * @param $type
+     *
+     * @return bool
+     */
+    public function isNumericType($type);
+
+    /**
      * Gets the column type default UI name
      *
      * @param $columnType

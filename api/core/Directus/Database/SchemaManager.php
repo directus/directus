@@ -377,6 +377,18 @@ class SchemaManager
     }
 
     /**
+     * Checks whether the given type is numeric type
+     *
+     * @param $type
+     *
+     * @return bool
+     */
+    public function isNumericType($type)
+    {
+        return $this->source->isNumericType($type);
+    }
+
+    /**
      * Cast default value
      *
      * @param $value

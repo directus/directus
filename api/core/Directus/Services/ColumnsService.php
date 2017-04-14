@@ -155,6 +155,9 @@ class ColumnsService extends AbstractService
                 $type = $columnObject->getType();
                 $length = $columnObject->getLength();
                 $schemaManager = $this->getTableGateway()->getSchemaManager();
+                if ($columnObject->isNullable() && empty($value)) {
+                    $value = null;
+                }
                 $defaultValue = $schemaManager->castDefaultValue($value, $type, $length);
                 $newColumn->setDefault($defaultValue);
             }

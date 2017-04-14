@@ -556,4 +556,28 @@ class MySQLSchema extends AbstractSchema
     {
         return $this->castValue($data, $type, $length);
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function isNumericType($type)
+    {
+        $type = strtolower($type);
+        $isNumeric = false;
+
+        switch ($type) {
+            case 'year':
+            case 'bigint':
+            case 'smallint':
+            case 'mediumint':
+            case 'int':
+            case 'long':
+            case 'tinyint':
+            case 'float':
+                $isNumeric = true;
+                break;
+        }
+
+        return $isNumeric;
+    }
 }
