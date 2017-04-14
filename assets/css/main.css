@@ -5388,6 +5388,7 @@ body.help .discover-spotlight {
     .fields .field .interface input {
       min-width: 400px; }
     .fields .field .interface textarea {
+      position: relative;
       min-width: 400px;
       min-height: 140px;
       line-height: 18px;

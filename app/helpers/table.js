@@ -26,23 +26,28 @@ define(function () {
   };
 
   var headFootShadows = function ($el) {
-    var pageScrollTop = $el.scrollTop();
-    var pageScrollLeft = $el.scrollLeft();
-    var scrollBottom = $el.find('table.fixed-header').height() - $el.height() - pageScrollTop + 64; // 64 is table padding
+    var tableWidth = $el.find('table').width();
+    var scrollTop = $el.scrollTop();
+    var scrollLeft = $el.scrollLeft();
+    var scrollBottom = $el.find('table.fixed-header').height() - $el.height() - scrollTop + 64; // 64 is table padding
+    var scrollRight = tableWidth - $el.width() - scrollLeft;
 
-    var headScroll = Math.max(Math.min(pageScrollTop, 100), 0) / 100;
+    var headScroll = Math.max(Math.min(scrollTop, 100), 0) / 100;
     $el.find('table.fixed-header thead').css({ boxShadow: '0px 2px 6px 0px rgba(200,200,200,'+headScroll+')' });
 
     var footScroll = Math.max(Math.min(scrollBottom, 100), 0) / 100;
     $el.find('table.fixed-header tfoot').css({ boxShadow: '0px -2px 6px 0px rgba(200,200,200,'+footScroll+')' });
 
-    var sidebarScroll = Math.max(Math.min(pageScrollLeft, 100), 0) / 100;
+    var sidebarScroll = Math.max(Math.min(scrollLeft, 100), 0) / 100;
     $('.sidebar').css({ boxShadow: '2px 0px 6px 0px rgba(200,200,200,'+sidebarScroll+')' });
+
+    var rightSidebarScroll = Math.max(Math.min(scrollRight, 100), 0) / 100;
+    $('.right-sidebar').css({ boxShadow: '-2px 0px 6px 0px rgba(200,200,200,'+rightSidebarScroll+')' });
 
     // Position Sticky Header
     if ($el.find('table.fixed-header').hasClass('charted')) {
       var headerDelta = ($(window).width() <= 500)? 244 : 304;
-      var headerTop = Math.max(64, headerDelta - pageScrollTop); // 304 is tied to CSS/SASS (default top from charted)
+      var headerTop = Math.max(64, headerDelta - scrollTop); // 304 is tied to CSS/SASS (default top from charted)
       $el.find('table.fixed-header thead').css('top', headerTop);
     }
   };
