@@ -1,10 +1,12 @@
+<form>
 {{#if isNew}}
 <h1>{{t "new_column_title"}}</h1> <!-- Create New Column -->
 {{else}}
-<h1>{{t "edit_column_title"}}</h1> <!-- Column Options -->
-<a href="#" class="toggle-pane js-toggle-pane">Edit Options</a>
+<h1><!-- {{t "editing"}}:  --><span class="table-name">{{table_name}}.</span><span class="column-name">{{column_name}}</span></h1> <!-- {{t "edit_column_title"}} -->
+<a href="#" class="toggle-pane js-toggle-pane active">Column Setup</a>
+<a href="#" class="toggle-pane js-toggle-pane">Interface Options</a>
 {{/if}}
-<form>
+
 	{{#unless hideColumnName}}
 	<div class="row">
 		<div class="column-50">

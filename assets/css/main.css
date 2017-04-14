@@ -4191,12 +4191,39 @@ body.help .discover-spotlight {
       text-align: left; }
       .smoke .modal.column .modal-bg h1, .smoke .modal.interface .modal-bg h1 {
         margin-bottom: 20px; }
+        .smoke .modal.column .modal-bg h1 .table-name, .smoke .modal.interface .modal-bg h1 .table-name {
+          color: #999999; }
+        .smoke .modal.column .modal-bg h1 .column-name, .smoke .modal.interface .modal-bg h1 .column-name {
+          color: #FFC107; }
       .smoke .modal.column .modal-bg .toggle-pane, .smoke .modal.interface .modal-bg .toggle-pane {
-        position: absolute;
-        top: 35px;
-        right: 30px;
-        color: #3498DB;
-        font-size: 16px; }
+        -webkit-transition: color 200ms ease-in-out 0ms;
+        -moz-transition: color 200ms ease-in-out 0ms;
+        -o-transition: color 200ms ease-in-out 0ms;
+        -ms-transition: color 200ms ease-in-out 0ms;
+        transition: color 200ms ease-in-out 0ms;
+        position: relative;
+        display: inline-block;
+        font-size: 16px;
+        border-top: #EEEEEE 1px solid;
+        border-right: #EEEEEE 1px solid;
+        border-left: #EEEEEE 1px solid;
+        padding: 8px 12px;
+        margin-right: 10px;
+        background-color: #FFFFFF;
+        color: #999999;
+        z-index: 2; }
+        .smoke .modal.column .modal-bg .toggle-pane:hover, .smoke .modal.interface .modal-bg .toggle-pane:hover {
+          color: #333333; }
+        .smoke .modal.column .modal-bg .toggle-pane.active, .smoke .modal.interface .modal-bg .toggle-pane.active {
+          color: #333333; }
+          .smoke .modal.column .modal-bg .toggle-pane.active:after, .smoke .modal.interface .modal-bg .toggle-pane.active:after {
+            content: "";
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background-color: #FFFFFF; }
       .smoke .modal.column .modal-bg .row, .smoke .modal.interface .modal-bg .row {
         position: relative;
         font-size: 14px;

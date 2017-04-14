@@ -475,13 +475,41 @@ body.help {
 			text-align: left;
 			h1 {
 				margin-bottom: 20px;
+				.table-name {
+					color: $gray-4;
+				}
+				.column-name {
+					color: $important;
+				}
 			}
 			.toggle-pane {
-				position: absolute;
-				top: 35px;
-				right: 30px;
-				color: $primary;
+				@include transition (color, $timing-short, ease-in-out);
+				position: relative;
+				display: inline-block;
 				font-size: 16px;
+				border-top: $gray-1 1px solid;
+				border-right: $gray-1 1px solid;
+				border-left: $gray-1 1px solid;
+				padding: 8px 12px;
+				margin-right: 10px;
+				background-color: $white;
+				color: $gray-4;
+				z-index: 2;
+				&:hover {
+					color: $gray-6;
+				}
+				&.active {
+					color: $gray-6;
+					&:after {
+						content: "";
+						position: absolute;
+						bottom: -1px;
+						left: 0;
+						right: 0;
+						height: 1px;
+						background-color: $white;
+					}
+				}
 			}
 			.row {
 				position: relative;
