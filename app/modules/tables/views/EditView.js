@@ -105,7 +105,7 @@ function(app, Backbone, _, Handlebars, __t, Notification, Directus, BasePageView
       app.router.openModal({type: 'confirm', text: __t('confirm_delete_item'), callback: function () {
         var xhr = self.model.saveWithDeleteStatus();
 
-        xhr.then(function () {
+        xhr.done(function () {
           var route = Backbone.history.fragment.split('/');
           route.pop();
           app.router.go(route);
@@ -247,7 +247,7 @@ function(app, Backbone, _, Handlebars, __t, Notification, Directus, BasePageView
       widgets.push(this.saveWidget);
 
       // delete button
-      if (!this.model.isNew() && !this.single) {
+      if (!this.model.isNew() && !this.single && this.model.canDelete()) {
         this.deleteWidget = new Widgets.ButtonWidget({
           widgetOptions: {
             buttonId: 'deleteBtn',

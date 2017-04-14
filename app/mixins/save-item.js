@@ -10,7 +10,7 @@ define(['app'], function (app) {
         attributes[statusColumnName] = status.getDeleteValue();
         xhr = this.save(attributes, {patch: true})
       } else {
-        xhr = this.destroy();
+        xhr = this.destroy({wait: true});
       }
 
       return xhr;

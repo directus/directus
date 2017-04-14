@@ -6,6 +6,10 @@ define(['core/entries/EntriesModel'], function(EntriesModel) {
       return this.get('name').toLowerCase() === 'public';
     },
 
+    isAdmin: function () {
+      return this.id === 1;
+    },
+
     canEdit: function (attr) {
       var _canEdit = EntriesModel.prototype.canEdit;
 
@@ -14,6 +18,10 @@ define(['core/entries/EntriesModel'], function(EntriesModel) {
       }
 
       return _canEdit.apply(this, arguments);
+    },
+
+    canDelete: function () {
+      return EntriesModel.prototype.canDelete.apply(this, arguments) && !this.isPublic() && !this.isAdmin();
     },
 
     isReadBlacklisted: function (attribute) {

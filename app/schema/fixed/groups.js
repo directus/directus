@@ -65,6 +65,7 @@ define(function(require, exports, module) {
         "system": false,
         "hidden_list": false,
         "hidden_input": false,
+        "nullable": true,
         "sort": 30,
         "options": {
           "visible_columns": "table_name",
@@ -85,6 +86,7 @@ define(function(require, exports, module) {
         "system": false,
         "hidden_list": false,
         "hidden_input": false,
+        "nullable": true,
         "sort": 40,
         "options": {
           "visible_columns": "name,email,last_login",

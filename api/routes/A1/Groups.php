@@ -6,6 +6,7 @@ use Directus\Application\Route;
 use Directus\Database\TableGateway\DirectusGroupsTableGateway;
 use Directus\Database\TableGateway\RelationalTableGateway as TableGateway;
 use Directus\Database\TableSchema;
+use Directus\Services\GroupsService;
 use Directus\Util\ArrayUtils;
 use Directus\View\JsonView;
 
@@ -95,20 +96,33 @@ class Groups extends Route
     public function deleteGroup($id)
     {
         $app = $this->app;
-        $acl = $app->container->get('acl');
-        $dbConnection = $app->container->get('zenddb');
+        $groupService = new GroupsService($app);
 
-        $tableGateway = new DirectusGroupsTableGateway($dbConnection, $acl);
+        $group = $groupService->find($id);
+        if (!$group) {
+            $app->response()->setStatus(404);
 
-        $success = false;
-        if ($id != 1) {
-            $success = $tableGateway->delete(['id' => $id]);
-        } else {
-            $success = true;
+            return $app->response([
+                'success' => false,
+                'error' => [
+                    'message' => sprintf('Group [%d] not found', $id)
+                ]
+            ]);
+        }
+
+        if (!$groupService->canDelete($id)) {
+            $app->response()->setStatus(403);
+
+            return $app->response([
+                'success' => false,
+                'error' => [
+                    'message' => sprintf('You are not allowed to delete group [%s]', $group->name)
+                ]
+            ]);
         }
 
         return $app->response([
-            'success' => (bool) $success
+            'success' => (bool) $groupService->getTableGateway()->delete(['id' => $id])
         ]);
     }
 }

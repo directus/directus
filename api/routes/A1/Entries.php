@@ -7,6 +7,7 @@ use Directus\Database\TableGateway\DirectusActivityTableGateway;
 use Directus\Database\TableGateway\DirectusUsersTableGateway;
 use Directus\Database\TableGateway\RelationalTableGateway as TableGateway;
 use Directus\Services\EntriesService;
+use Directus\Services\GroupsService;
 
 class Entries extends Route
 {
@@ -76,6 +77,22 @@ class Entries extends Route
             $where = new \Zend\Db\Sql\Where;
 
             if ($isDelete) {
+                if ($table === 'directus_groups') {
+                    $groupService = new GroupsService($this->app);
+                    foreach ($rowIds as $id) {
+                        $group = $groupService->find($id);
+                        if ($group && !$groupService->canDelete($id)) {
+                            $this->app->response()->setStatus(403);
+
+                            return $this->app->response([
+                                'success' => false,
+                                'error' => [
+                                    'message' => sprintf('You are not allowed to delete group [%s]', $group->name)
+                                ]
+                            ]);
+                        }
+                    }
+                }
                 $deleted = $tableGateway->delete($where->in($primaryKeyFieldName, $rowIds));
             } else {
                 foreach ($rows as $row) {
@@ -176,6 +193,20 @@ class Entries extends Route
                 break;
             // DELETE a given table entry
             case 'DELETE':
+                if ($table === 'directus_groups') {
+                    $groupService = new GroupsService($app);
+                    $group = $groupService->find($id);
+                    if ($group && !$groupService->canDelete($id)) {
+                        $app->response()->setStatus(403);
+
+                        return $app->response([
+                            'success' => false,
+                            'error' => [
+                                'message' => sprintf('You are not allowed to delete group [%s]', $group->name)
+                            ]
+                        ]);
+                    }
+                }
                 $success =  $TableGateway->delete([$TableGateway->primaryKeyFieldName => $id]);
                 return $this->app->response([
                     'meta' => [
