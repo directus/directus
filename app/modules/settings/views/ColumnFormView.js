@@ -184,10 +184,6 @@ define([
         data.data_types.push(item);
       });
 
-      if (SchemaHelper.supportsLength(this.selectedDataType)) {
-        data.SHOW_LENGTH = true;
-      }
-
       // Check if the data type needs length
       // ENUM and SET doesn't actually needs a LENGTH,
       // but the "length" value is a list of string separate by comma
@@ -202,6 +198,11 @@ define([
         if (this.model.has('length')) {
           this.model.unset('length', {silent: true});
         }
+      }
+
+      if (SchemaHelper.supportsLength(this.selectedDataType)) {
+        data.SHOW_LENGTH = true;
+        data.length = this.model.getLength();
       }
 
       if (['many_to_one', 'single_file', 'many_to_one_typeahead'].indexOf(this.selectedUI) > -1) {

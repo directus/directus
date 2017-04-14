@@ -120,6 +120,17 @@ define(function(require, exports, module) {
       return this.table.getSortColumnName() === this.id;
     },
 
+    getColumnTypeLength: function () {
+      var columnType = this.get('column_type') || '';
+      var match = columnType.match(/\((\d+)\)/);
+
+      return match ? match[1] : null;
+    },
+
+    getLength: function () {
+      return this.getColumnTypeLength() || this.get('length');
+    },
+
     toJSON: function (options) {
       if (options && options.columns) {
         return _.pick(this.attributes, options.columns);
