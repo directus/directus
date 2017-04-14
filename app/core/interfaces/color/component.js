@@ -3,7 +3,6 @@ define(['core/interfaces/color/interface', 'core/UIComponent', 'core/t', 'core/i
     id: 'color',
     dataTypes: ['VARCHAR'],
     variables: [
-      {id: 'readonly', type: 'Boolean', default_value: false, ui: 'checkbox'},
       {
         id: 'input',
         type: 'String',
@@ -43,10 +42,10 @@ define(['core/interfaces/color/interface', 'core/UIComponent', 'core/t', 'core/i
         }
       },
       {
-        id: 'allow_alpha',
-        type: 'Boolean',
-        default_value: false,
-        ui: 'checkbox'
+        id: 'palette',
+        type: 'String',
+        ui: 'tags',
+        comment: 'Add color options as hex values'
       },
       {
         id: 'palette_only',
@@ -55,10 +54,12 @@ define(['core/interfaces/color/interface', 'core/UIComponent', 'core/t', 'core/i
         ui: 'checkbox'
       },
       {
-        id: 'palette',
-        type: 'String',
-        ui: 'tags'
-      }
+        id: 'allow_alpha',
+        type: 'Boolean',
+        default_value: false,
+        ui: 'checkbox'
+      },
+      {id: 'readonly', type: 'Boolean', default_value: false, ui: 'checkbox'}
     ],
     Input: Input,
     validate: function(value, options) {
