@@ -3,8 +3,9 @@ define([
   'underscore',
   'backbone',
   'core/listings/baseView',
+  'helpers/file',
   'helpers/table'
-], function(app, _, Backbone, BaseView, TableHelpers) {
+], function(app, _, Backbone, BaseView, FileHelper, TableHelpers) {
 
   return {
     id: 'tiles',
@@ -210,6 +211,11 @@ define([
         this.collection.off('sync', this.render, this);
         this.collection.preferences.off('sync', this.render, this);
         this.off('scroll', _.throttle(this.onScroll, 200), this);
+      },
+
+      afterRender: function () {
+        // Show fallback image if file missing
+        FileHelper.hideOnImageError(this.$('.js-image img'));
       },
 
       initialize: function () {
