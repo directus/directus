@@ -207,6 +207,7 @@ define([
 
       if (['many_to_one', 'single_file', 'many_to_one_typeahead'].indexOf(this.selectedUI) > -1) {
         data.MANYTOONE = true;
+        data.selectedRelationshipType = 'MANYTOONE';
         tableRelated = this.getRelatedTable();//this.model.get('related_table');
         this.model.set({junction_key_right: this.columnName});
 
@@ -362,6 +363,7 @@ define([
 
       data.isStrictNaming = this.options.strictNaming;
       data.isValidName = this.isValidName();
+      data.selectedRelationshipType = this.selectedRelationshipType;
 
       return data;
     },
