@@ -26,12 +26,17 @@ function (app, _, __t, Utils, FileHelper, UIView, TableView, Overlays) {
     template: 'single_file/interface',
 
     events: {
+      'click .js-modal': 'openModal',
       'click .js-from-computer': 'chooseFromComputer',
       'click .js-from-system': 'chooseFromSystem',
       'click .js-from-url': 'chooseFromUrl',
       'click .js-remove': 'removeFile',
       'click .js-title': 'edit',
       'change input[type=file]': 'onInputChange'
+    },
+
+    openModal: function () {
+      app.router.openFileModal(this.fileModel.id);
     },
 
     chooseFromComputer: function() {
