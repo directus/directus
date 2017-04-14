@@ -19,6 +19,9 @@
         {{/if}}
     </th>
     {{/columns}}
+	<td class="status-badges">
+		{{#ifShowStatusBadge model}}<div class="status-badge" style="background-color:{{statusBackgroundColor model}};color:{{statusTextColor model}};">{{statusName model}}</div>{{/ifShowStatusBadge}}
+	</td>
     {{#if showMoreButton}}
     <th scope="col" class="right-sidebar-toggle js-more"><i class="material-icons">more_horiz</i></th>
     {{/if}}
