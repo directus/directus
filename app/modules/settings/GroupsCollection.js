@@ -12,6 +12,12 @@ define([
     fetch: function (options) {
       var _fetch = EntriesCollection.prototype.fetch;
 
+      options = options || {};
+
+      if (!options.data) {
+        options.data = {};
+      }
+
       // Include users relational columns
       options.data['depth'] = 3;
 
