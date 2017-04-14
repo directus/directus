@@ -47,7 +47,7 @@ define(['jquery'], function ($) {
         } else {
           fn(reader.result, imageDetails, inputFile);
         }
-      }
+      };
 
       reader.readAsDataURL(inputFile);
     });
