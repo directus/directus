@@ -127,6 +127,7 @@ define([
 
       this.options.filters = [];
       this.updateFilters();
+      this.saveFilterString();
       this.collection.fetch();
     },
 
