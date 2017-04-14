@@ -42,7 +42,8 @@ define(function(require, exports, module) {
     request: function(type, url, options) {
       var params = {
         type: type,
-        url: url
+        url: url,
+        dataType: options.dataType || 'json'
       };
 
       if (options.path !== true) {
@@ -50,8 +51,11 @@ define(function(require, exports, module) {
         // if path is specified it means it's a full url being passed
         // Also, making sure the path has not leading slash
         // app.API_URL has a trailing slash
-        // @TODO: Remove the trailing slash of app.API_URL :)
-        params.url = app.API_URL + (params.url || '').replace(/^\//, '');
+        // TODO: Remove the trailing slash of app.API_URL :)
+        params.url = (params.url || '');
+        if (!params.url.startsWith(app.API_URL)) {
+          params.url = app.API_URL + params.url.replace(/^\//, '');
+        }
       }
 
       return Backbone.$.ajax(_.extend(params, options));

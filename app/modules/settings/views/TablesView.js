@@ -31,21 +31,38 @@ define([
   'use strict';
 
   var SettingsTables = app.module();
-  var confirmDestroyTable = function (tableName, callback) {
+  var confirmDestroyTable = function (tableName, callback, options) {
+    var type;
+
+    if (_.isBoolean(options)) {
+      options = {
+        unmanage: options
+      }
+    }
+
+    options = options || {};
+    type = options.unmanage !== true ? 'delete' : 'unmanage';
+
     DoubleConfirmation({
       value: tableName,
       emptyValueMessage: __t('invalid_table'),
-      firstQuestion: __t('question_delete_this_table'),
+      firstQuestion: __t('question_' + type + '_this_table'),
       secondQuestion: __t('question_delete_this_table_confirm', {table_name: tableName}),
       notMatchMessage: __t('table_name_did_not_match'),
       callback: callback
     }, this);
   };
 
-  var destroyTable = function (model, callback) {
-    var options = {
-      wait: true
-    };
+  var unmanageTable = function (model, callback) {
+    destroyTable(model, callback, {unmanage: true});
+  };
+
+  var destroyTable = function (model, callback, options) {
+    options = options || {};
+
+    if (options.wait === undefined) {
+      options.wait = true;
+    }
 
     options.success = function (model, response) {
       if (response.success !== true) {
@@ -58,7 +75,10 @@ define([
       var bookmarks = app.router.bookmarks;
 
       app.schemaManager.unregisterFullSchema(tableName);
-      app.schemaManager.registerTable({schema: model.toJSON()});
+      if (options.unmanage === true) {
+        app.schemaManager.registerTable({schema: model.toJSON()});
+        model.trigger('sync', model, response, options);
+      }
 
       var bookmark = bookmarks.findWhere({title: app.capitalize(tableName), section: 'table'});
       if (bookmark) {
@@ -74,7 +94,17 @@ define([
       }
     };
 
-    model.destroy(options);
+    if (options.unmanage !== true) {
+      model.destroy(options);
+    } else {
+      var unmanageOptions = _.clone(options);
+
+      unmanageOptions.success = function (response) {
+        return options.success(model, response, options);
+      };
+
+      app.request('delete', _.result(model, 'url') + '/unmanage', unmanageOptions);
+    }
   };
 
   var EditColumn = BasePageView.extend({
@@ -278,18 +308,27 @@ define([
 
       'click .js-add-table': 'confirmManageTable',
 
-      'click .js-remove-table': 'onRemoveTable'
+      'click .js-unmanage-table': 'confirmUnManageTable'
     },
 
     confirmManageTable: function (event) {
       event.stopPropagation();
 
-      var fn = function () {
+      var cb = function () {
         var $row = $(event.target).closest('tr');
         this.manageTable($row.data('id'));
       };
 
-      app.router.openModal({type: 'confirm', text: __t('confirm_manage_table'), callback: _.bind(fn, this)});
+      app.router.openModal({type: 'confirm', text: __t('confirm_manage_table'), callback: _.bind(cb, this)});
+    },
+
+    confirmUnManageTable: function (event) {
+      event.stopPropagation();
+
+      var $row = $(event.target).closest('tr');
+      var tableName = $row.data('id');
+
+      confirmDestroyTable(tableName, _.bind(this.unManageTable, this), {unmanage: true});
     },
 
     manageTable: function (tableName) {
@@ -297,14 +336,6 @@ define([
         app.router.bookmarks.addTable(tableModel);
         app.router.go(['settings', 'tables', tableName]);
       });
-    },
-
-    onRemoveTable: function (event) {
-      event.stopPropagation();
-
-      var tableName = $(event.target).closest('tr').data('id') || this.model.get('table_name');
-
-      confirmDestroyTable(tableName, _.bind(this.destroyTable, this));
     },
 
     toggleTableAttribute: function(tableModel, attr, element) {
@@ -329,6 +360,10 @@ define([
 
     destroyTable: function() {
       destroyTable(this.model, _.bind(this.remove, this));
+    },
+
+    unManageTable: function () {
+      unmanageTable(this.model, _.bind(this.remove, this));
     },
 
     serialize: function() {

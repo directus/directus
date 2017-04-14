@@ -249,8 +249,9 @@ class Table extends Route
         $requestPayload = $app->request()->post();
 
         if ($app->request()->isDelete()) {
+            // NOTE: similar code to unmanage table in Table::stopManaging
             $tableGateway = new TableGateway($table, $ZendDb, $acl);
-            $success = $tableGateway->stopManaging();
+            $success = $tableGateway->drop();
 
             $response = [
                 'error' => [
@@ -314,6 +315,32 @@ class Table extends Route
                 ],
                 'data' => $response
             ];
+        }
+
+        return $this->app->response($response);
+    }
+
+    public function unmanage($table)
+    {
+        $app = $this->app;
+        $ZendDb = $app->container->get('zenddb');
+        $acl = $app->container->get('acl');
+
+        // NOTE: Similar code in delete table Table::info
+        $tableGateway = new TableGateway($table, $ZendDb, $acl);
+        $success = $tableGateway->stopManaging();
+
+        $response = [
+            'error' => [
+                'message' => __t('unable_to_remove_table_x', ['table_name' => $table])
+            ],
+            'success' => false
+        ];
+
+        if ($success) {
+            unset($response['error']);
+            $response['success'] = true;
+            $response['data']['message'] = __t('table_x_was_removed', ['table_name' => $table]);
         }
 
         return $this->app->response($response);
