@@ -224,7 +224,7 @@ class DirectusActivityTableGateway extends RelationalTableGateway
         $select->where([
             'table_name' => $table,
             'row_id' => $id,
-            'type' => $table === 'directus_files' ? static::TYPE_FILES : static::TYPE_FILES,
+            'type' => $table === 'directus_files' ? static::TYPE_FILES : static::TYPE_ENTRY,
             new In('action', ['ADD', 'UPDATE'])
         ]);
 
@@ -232,6 +232,8 @@ class DirectusActivityTableGateway extends RelationalTableGateway
             'action',
             'user'
         ]);
+
+        $select->limit(2);
 
         $statement = $this->sql->prepareStatementForSqlObject($select);
         $result = iterator_to_array($statement->execute());
@@ -255,6 +257,11 @@ class DirectusActivityTableGateway extends RelationalTableGateway
                     $data['updated_on'] = $row['datetime'];
                     break;
             }
+        }
+
+        if (!$data['updated_by'] && !$data['updated_on']) {
+            $data['updated_on'] = $data['created_on'];
+            $data['updated_by'] = $data['created_by'];
         }
 
         return $data;
