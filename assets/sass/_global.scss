@@ -134,6 +134,7 @@ textarea,
 input {
 	@include transition (all, $timing-short, ease-in-out);
 	@include border-radius (2px);
+	position: relative;
 	padding: 12px;
 	font-size: 13px;
 	font-weight: 400;
