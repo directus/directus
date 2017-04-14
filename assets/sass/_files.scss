@@ -1,10 +1,6 @@
 //////////////////////////////////////////////////////////////////////////////
 // Files
 
-// .file-listing {
-// 	height: 100%;
-// }
-
 .folder-listing,
 .file-listing {
 	padding: 20px;
@@ -145,8 +141,8 @@
 				text-overflow: ellipsis;
 				margin-right: 20px;
 			}
-			.remove,
-			.more {
+			.more,
+			.remove {
 				@include transition (all, $timing-short, ease-in-out);
 				position: absolute;
 				top: 12px;

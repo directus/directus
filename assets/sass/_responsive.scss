@@ -101,37 +101,6 @@
 			}
 		}
 	}
-	// .page.settings-container .settings-modules {
-	// 	height: 460px;
-	// }
-}
-
-//////////////////////////////////////////////////////////////////////////////
-// Responsive <1000px wide
-
-@media only screen and (max-width: 1000px) {
-	// Messages as overlay
-	.message {
-		left: 0px !important; // Uses important to override CSS values set directly in JS
-		width: 100% !important; // Uses important to override CSS values set directly in JS
-		min-width: 500px;
-		background-color: $white;
-	}
-	.resize-handle {
-		display: none;
-	}
-	.header {
-		.tools-right {
-			.filter {
-				display: none;
-			}
-		}
-		.actions {
-			.action.filter-toggle {
-				display: inline-block;
-			}
-		}
-	}
 	// Tiles
 	.user-listing {
 		padding: 15px;
@@ -186,6 +155,10 @@
 				.more {
 					display: none;
 				}
+				.name,
+				.uploaded {
+					margin-right: 0;
+				}
 			}
 		}
 	}
@@ -196,6 +169,37 @@
 		.cloud {
 			font-size: 60px;
 			margin-top: -30px;
+		}
+	}
+	// .page.settings-container .settings-modules {
+	// 	height: 460px;
+	// }
+}
+
+//////////////////////////////////////////////////////////////////////////////
+// Responsive <1000px wide
+
+@media only screen and (max-width: 1000px) {
+	// Messages as overlay
+	.message {
+		left: 0px !important; // Uses important to override CSS values set directly in JS
+		width: 100% !important; // Uses important to override CSS values set directly in JS
+		min-width: 500px;
+		background-color: $white;
+	}
+	.resize-handle {
+		display: none;
+	}
+	.header {
+		.tools-right {
+			.filter {
+				display: none;
+			}
+		}
+		.actions {
+			.action.filter-toggle {
+				display: inline-block;
+			}
 		}
 	}
 	.page.settings-container {

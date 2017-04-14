@@ -4666,18 +4666,18 @@ body.help .discover-spotlight {
       overflow: hidden;
       text-overflow: ellipsis;
       margin-right: 20px; }
-    .attachments .folder .info .remove,
     .attachments .folder .info .more,
-    .attachments .file .info .remove,
+    .attachments .folder .info .remove,
     .attachments .file .info .more,
-    .folder-listing .folder .info .remove,
+    .attachments .file .info .remove,
     .folder-listing .folder .info .more,
-    .folder-listing .file .info .remove,
+    .folder-listing .folder .info .remove,
     .folder-listing .file .info .more,
-    .file-listing .folder .info .remove,
+    .folder-listing .file .info .remove,
     .file-listing .folder .info .more,
-    .file-listing .file .info .remove,
-    .file-listing .file .info .more {
+    .file-listing .folder .info .remove,
+    .file-listing .file .info .more,
+    .file-listing .file .info .remove {
       -webkit-transition: all 200ms ease-in-out 0ms;
       -moz-transition: all 200ms ease-in-out 0ms;
       -o-transition: all 200ms ease-in-out 0ms;
@@ -6941,21 +6941,7 @@ body.login {
       margin-right: 4px;
       margin-bottom: 4px;
       padding: 0;
-      text-indent: 100px; } }
-@media only screen and (max-width: 1000px) {
-  .message {
-    left: 0px !important;
-    width: 100% !important;
-    min-width: 500px;
-    background-color: #FFFFFF; }
-
-  .resize-handle {
-    display: none; }
-
-  .header .tools-right .filter {
-    display: none; }
-  .header .actions .action.filter-toggle {
-    display: inline-block; }
+      text-indent: 100px; }
 
   .user-listing {
     padding: 15px; }
@@ -7023,6 +7009,19 @@ body.login {
       .file-listing .folder .info .more,
       .file-listing .file .info .more {
         display: none; }
+      .attachments .folder .info .name,
+      .attachments .folder .info .uploaded,
+      .attachments .file .info .name,
+      .attachments .file .info .uploaded,
+      .folder-listing .folder .info .name,
+      .folder-listing .folder .info .uploaded,
+      .folder-listing .file .info .name,
+      .folder-listing .file .info .uploaded,
+      .file-listing .folder .info .name,
+      .file-listing .folder .info .uploaded,
+      .file-listing .file .info .name,
+      .file-listing .file .info .uploaded {
+        margin-right: 0; }
 
   .fields .field .interface .attachments.multiple .dropzone {
     width: 140px;
@@ -7030,7 +7029,21 @@ body.login {
     margin: 15px; }
     .fields .field .interface .attachments.multiple .dropzone .cloud {
       font-size: 60px;
-      margin-top: -30px; }
+      margin-top: -30px; } }
+@media only screen and (max-width: 1000px) {
+  .message {
+    left: 0px !important;
+    width: 100% !important;
+    min-width: 500px;
+    background-color: #FFFFFF; }
+
+  .resize-handle {
+    display: none; }
+
+  .header .tools-right .filter {
+    display: none; }
+  .header .actions .action.filter-toggle {
+    display: inline-block; }
 
   .page.settings-container .settings-modules {
     display: block;
