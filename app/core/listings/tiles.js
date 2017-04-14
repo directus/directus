@@ -1,4 +1,10 @@
-define(['app', 'underscore', 'backbone', 'core/listings/baseView', 'core/t'], function(app, _, Backbone, BaseView, __t) {
+define([
+  'app',
+  'underscore',
+  'backbone',
+  'core/listings/baseView',
+  'helpers/table'
+], function(app, _, Backbone, BaseView, TableHelpers) {
 
   return {
     id: 'tiles',
@@ -21,6 +27,23 @@ define(['app', 'underscore', 'backbone', 'core/listings/baseView', 'core/t'], fu
 
       fetchData: function () {
         return this.collection.fetch();
+      },
+
+      // TODO: Add this method into base view so any child can inherit it
+      // or as a mixins so any object can use it.
+      onScroll: function ($el) {
+        var self = this;
+
+        if (TableHelpers.hitBottom($el)) {
+          if (this.collection.canFetchMore()) {
+            this.$('.loading-more').show();
+            this.collection.fetchNext().then(function () {
+              self.$('.loading-more').hide();
+              // @TODO: should add one item at a time for performance
+              self.render();
+            });
+          }
+        }
       },
 
       editItem: function (event) {
@@ -177,14 +200,16 @@ define(['app', 'underscore', 'backbone', 'core/listings/baseView', 'core/t'], fu
         });
       },
 
-      onEnable: function () {
+      bindEvents: function () {
         this.collection.on('sync', this.render, this);
         this.collection.preferences.on('sync', this.render, this);
+        this.on('scroll', _.throttle(this.onScroll, 200), this);
       },
 
-      onDisable: function () {
+      unbindEvents: function () {
         this.collection.off('sync', this.render, this);
         this.collection.preferences.off('sync', this.render, this);
+        this.off('scroll', _.throttle(this.onScroll, 200), this);
       },
 
       initialize: function () {
