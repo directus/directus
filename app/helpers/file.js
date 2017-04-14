@@ -195,9 +195,16 @@ define(['jquery'], function ($) {
     });
   };
 
+  FileHelper.getSubType = function (mimeType) {
+    return mimeType.split('/').pop();
+  };
+
   // show jpeg as jpg
   FileHelper.friendlySubtype = function (type) {
     type = (type || '').toLowerCase();
+
+    // if mime type is passed instead of a subtype
+    type = this.getSubType(type);
 
     switch (type) {
       case 'jpeg':

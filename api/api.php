@@ -511,6 +511,7 @@ $app->group('/1.1', function() use($app) {
     $app->map('/tables/:table/?', '\Directus\API\Routes\A1\Table:info')
         ->via('GET', 'PATCH', 'PUT', 'DELETE')
         ->name('table_meta');
+    $app->delete('/tables/:table/unmanage/?', '\Directus\API\Routes\A1\Table:unmanage');
 
     // =============================================================================
     // COLUMN UI
