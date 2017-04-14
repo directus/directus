@@ -217,11 +217,10 @@ table {
 				}
 				&.relationship {
 					@include transition (color, $timing-short, ease-in-out);
-					color: $gray-3;
 					&:hover {
 						color: $primary;
 					}
-					&.not-applicable {
+					&.not-allowed {
 						cursor: not-allowed;
 						&:hover {
 							color: $gray-3;

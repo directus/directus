@@ -127,6 +127,18 @@
 input:-webkit-autofill {
   -webkit-box-shadow: 0 0 0px 1000px white inset; }
 
+::-webkit-input-placeholder {
+  color: #CCCCCC; }
+
+::-moz-placeholder {
+  color: #CCCCCC; }
+
+:-ms-input-placeholder {
+  color: #CCCCCC; }
+
+:-moz-placeholder {
+  color: #CCCCCC; }
+
 * {
   box-sizing: border-box;
   -webkit-font-smoothing: antialiased;
@@ -1884,13 +1896,12 @@ table {
         -moz-transition: color 200ms ease-in-out 0ms;
         -o-transition: color 200ms ease-in-out 0ms;
         -ms-transition: color 200ms ease-in-out 0ms;
-        transition: color 200ms ease-in-out 0ms;
-        color: #CCCCCC; }
+        transition: color 200ms ease-in-out 0ms; }
         table tbody tr td.relationship:hover {
           color: #3498DB; }
-        table tbody tr td.relationship.not-applicable {
+        table tbody tr td.relationship.not-allowed {
           cursor: not-allowed; }
-          table tbody tr td.relationship.not-applicable:hover {
+          table tbody tr td.relationship.not-allowed:hover {
             color: #CCCCCC; }
         table tbody tr td.relationship .type {
           color: #666666; }

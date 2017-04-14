@@ -22,11 +22,11 @@
 				<td class="visible js-visible" title="Visible?"><i class="material-icons">visibility{{#if hidden_input}}_off{{/if}}</i></td>
 				<td title="{{column_name}}">{{capitalize column_name}}</td>
 				<td class="user-interface js-cell" data-field="ui_type" data-section="column">{{capitalize ui}}</td>
-				<td class="relationship js-cell {{#unless related_table}}js-cell-disable not-applicable{{/unless}}" data-section="column" data-sub-section="relationship">
+				<td class="relationship js-cell {{#unless related_table}}js-cell-disable not-allowed{{/unless}}" data-section="column" data-sub-section="relationship">
 					{{#if related_table}}
 					<span class="type">{{capitalize relationship_type}}</span> ({{capitalize related_table}})
 					{{else}}
-					{{t "relationship_none"}}
+					<span class="no-value">{{t "relationship_none"}}</span>
 					{{/if}}
 				</td>
 				<td class="default-value js-cell" data-field="default_value" data-section="column">
