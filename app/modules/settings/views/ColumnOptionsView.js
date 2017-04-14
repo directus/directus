@@ -16,6 +16,16 @@ define(['app', 'backbone', 'core/edit'], function(app, Backbone, EditView) {
       this.model.save(this.editView.data());
     },
 
+    serialize: function () {
+      var columnModel = this.model.parent;
+
+      return {
+        isNew: columnModel.isNew(),
+        table_name: columnModel.table.id,
+        column_name: columnModel.get('column_name')
+      }
+    },
+
     initialize: function() {
       this.editView = new EditView({
         model: this.model,
