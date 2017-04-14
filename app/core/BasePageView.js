@@ -83,7 +83,7 @@ function(app, Backbone, _, BaseHeaderView, RightSidebarView) {
     shouldRightPaneOpen: function () {
       var pane = this.getRightPane();
 
-      return $(window).width() >= 1200 && pane.isWide === true;
+      return $(window).width() >= 1200 && pane && pane.isWide === true;
     },
 
     isRightPaneOpen: function () {
