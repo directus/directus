@@ -5600,13 +5600,13 @@ body.help .discover-spotlight {
       vertical-align: top; }
     .fields .field .interface .attachments .file .info .remove:hover {
       color: #F44336; }
-    .fields .field .interface .thumbnail {
+    .fields .field .interface .thumbnail-sizes {
       display: inline-block;
       margin-right: 20px;
       margin-bottom: 20px;
       color: #999999;
       font-size: 12px; }
-      .fields .field .interface .thumbnail .thumb {
+      .fields .field .interface .thumbnail-sizes .thumb {
         position: relative;
         display: block;
         margin-bottom: 6px;
@@ -5615,9 +5615,9 @@ body.help .discover-spotlight {
         min-width: 100px;
         text-align: center;
         line-height: 0; }
-        .fields .field .interface .thumbnail .thumb:hover .crop {
+        .fields .field .interface .thumbnail-sizes .thumb:hover .crop {
           opacity: 1; }
-        .fields .field .interface .thumbnail .thumb .crop {
+        .fields .field .interface .thumbnail-sizes .thumb .crop {
           -webkit-transition: all 200ms ease-in-out 0ms;
           -moz-transition: all 200ms ease-in-out 0ms;
           -o-transition: all 200ms ease-in-out 0ms;
@@ -5637,7 +5637,7 @@ body.help .discover-spotlight {
           background-color: #FFFFFF;
           padding: 10px;
           opacity: 0; }
-          .fields .field .interface .thumbnail .thumb .crop .material-icons {
+          .fields .field .interface .thumbnail-sizes .thumb .crop .material-icons {
             color: #3498DB; }
     .fields .field .interface .template-string {
       position: relative; }
