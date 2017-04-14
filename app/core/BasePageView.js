@@ -71,7 +71,7 @@ function(app, Backbone, _, BaseHeaderView, RightSidebarView) {
         this.on('afterRender', function () {
           var pane = this.loadRightPane();
 
-          if (pane) {
+          if (pane && pane.canBeOpen()) {
             pane.open();
           }
         }, this);

@@ -41,6 +41,10 @@ define([
       }
     },
 
+    canBeOpen: function () {
+      return true;
+    },
+
     constructor: function (options) {
       this.baseView = options.baseView;
       this.state.open = false;
