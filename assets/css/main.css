@@ -4664,7 +4664,11 @@ body.help .discover-spotlight {
       font-weight: 500;
       margin-top: 2px;
       font-style: italic;
-      color: #999999; }
+      color: #999999;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-right: 20px; }
     .attachments .folder .info .remove,
     .attachments .folder .info .more,
     .attachments .file .info .remove,

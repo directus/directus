@@ -140,6 +140,10 @@
 				margin-top: 2px;
 				font-style: italic;
 				color: $gray-4;
+				white-space: nowrap;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				margin-right: 20px;
 			}
 			.remove,
 			.more {
