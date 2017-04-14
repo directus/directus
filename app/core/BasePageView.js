@@ -67,15 +67,28 @@ function(app, Backbone, _, BaseHeaderView, RightSidebarView) {
 
       if (this.isRightPaneOpen()) {
         this.on('afterRender', this.loadRightPane);
+      } else if (this.shouldRightPaneOpen()) {
+        this.on('afterRender', function () {
+          var pane = this.loadRightPane();
+
+          if (pane) {
+            pane.open();
+          }
+        }, this);
       } else {
         this._ensurePaneIsClosed();
       }
+    },
+
+    shouldRightPaneOpen: function () {
+      return $(window).width() >= 1200
     },
 
     isRightPaneOpen: function () {
       // @TODO: set all this stage in the app level
       var hasOpenClass = false;
       var pane = this.getRightPane();
+
       if (pane) {
         hasOpenClass = $('body').hasClass(pane.getOpenClassName());
       }
