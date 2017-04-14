@@ -119,7 +119,8 @@ define([
         isNew: this.model.isNew(),
         ui_types: [],
         data_types: [],
-        column_name: this.model.get('column_name') || 'This Column\'s Table',
+        table_name: this.model.table.id,
+        column_name: this.model.get('column_name'),
         comment: this.model.get('comment'),
         default_value: this.model.get('default_value'),
         hideColumnName: this.hideColumnName
