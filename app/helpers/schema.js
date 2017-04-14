@@ -4,7 +4,27 @@ define(function() {
 
   // @TODO: Add an object that handle supported values by types
   var dateTypes = ['DATETIME', 'DATE'];
-  var numericTypes = ['INT', 'TINYINT', 'DOUBLE', 'FLOAT'];
+  var numericTypes = [
+    'TINYINT',
+    'SMALLINT',
+    'MEDIUMINT',
+    'INT',
+    'FLOAT',
+    'YEAR',
+    'DOUBLE',
+    'VARCHAR',
+    'CHAR',
+    'BIGINT'
+  ];
+
+  var stringTypes = [
+    'VARCHAR',
+    'CHAR'
+  ];
+
+  var getNumericTypes = function () {
+    return numericTypes;
+  };
 
   var cleanIdentifier = function (identifier) {
     return identifier.replace(/[^a-z0-9-_]+/ig, '_');
@@ -43,11 +63,25 @@ define(function() {
     });
   };
 
+  var isStringType = function (type) {
+    return stringTypes.indexOf(type) >= 0;
+  };
+
+  var isNumericType = function (type) {
+    return numericTypes.indexOf(type) >= 0;
+  };
+
+  var supportsLength = function (type) {
+    return isStringType(type) || isNumericType(type) || ['ENUM', 'SET'].indexOf(type) >= 0;
+  };
+
   return {
+    getNumericTypes: getNumericTypes,
     dateColumns: dateColumns,
     numericColumns: numericColumns,
     primaryColumns: primaryColumns,
     cleanColumnName: cleanColumnName,
+    supportsLength: supportsLength,
     cleanTableName: cleanIdentifier
   }
 });
