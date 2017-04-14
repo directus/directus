@@ -86,7 +86,8 @@ table {
 			}
 			&.administrator-group,
 			&.public-group {
-				font-weight: 500;
+				// font-weight: 500;
+				color: $gray-4;
 			}
 			&.required-on {
 				td {
@@ -398,6 +399,7 @@ table {
 					max-width: 300px;
 					white-space: nowrap;
 					overflow: hidden;
+					margin-right: 10px;
 					.fade-out {
 						position: absolute;
 						top: 0;
@@ -422,6 +424,18 @@ table {
 						text-transform: uppercase;
 						color: $gray-4;
 						background-color: $gray-1;
+					}
+				}
+				.interface-user {
+					.avatar {
+						@include border-radius (2px);
+						display: inline-block;
+						vertical-align: middle;
+						margin-right: 10px;
+					}
+					.name {
+						vertical-align: middle;
+						font-weight: 500;
 					}
 				}
 				.photo-stack {
@@ -564,6 +578,13 @@ table {
 		}
 		&:hover td {
 			background-color: lighten($primary, 45%);
+			.tag-container {
+				.fade-out {
+					background: -moz-linear-gradient(left, rgba(255,255,255,0) 0%, lighten($primary, 45%) 100%);
+					background: -webkit-linear-gradient(left, rgba(255,255,255,0) 0%,lighten($primary, 45%) 100%);
+					background: linear-gradient(to right, rgba(255,255,255,0) 0%,lighten($primary, 45%) 100%);
+				}
+			}
 		}
 	}
 	&.reorder-enabled {

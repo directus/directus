@@ -1780,7 +1780,7 @@ table {
       table tbody tr.not-published td .photo-stack {
         opacity: 0.6; }
     table tbody tr.administrator-group, table tbody tr.public-group {
-      font-weight: 500; }
+      color: #999999; }
     table tbody tr.required-on td.required .material-icons {
       color: #3498DB; }
     table tbody tr.visibility-off td {
@@ -2059,7 +2059,8 @@ table {
         display: inline-block;
         max-width: 300px;
         white-space: nowrap;
-        overflow: hidden; }
+        overflow: hidden;
+        margin-right: 10px; }
         table tbody tr td .tag-container .fade-out {
           position: absolute;
           top: 0;
@@ -2092,6 +2093,19 @@ table {
           text-transform: uppercase;
           color: #999999;
           background-color: #EEEEEE; }
+      table tbody tr td .interface-user .avatar {
+        -webkit-border-radius: 2px;
+        -moz-border-radius: 2px;
+        border-radius: 2px;
+        -moz-background-clip: padding;
+        -webkit-background-clip: padding-box;
+        background-clip: padding-box;
+        display: inline-block;
+        vertical-align: middle;
+        margin-right: 10px; }
+      table tbody tr td .interface-user .name {
+        vertical-align: middle;
+        font-weight: 500; }
       table tbody tr td .photo-stack {
         height: 27px;
         min-width: 110px; }
@@ -2207,6 +2221,10 @@ table {
     cursor: pointer; }
   table.clickable tbody tr:hover td {
     background-color: #f7fbfe; }
+    table.clickable tbody tr:hover td .tag-container .fade-out {
+      background: -moz-linear-gradient(left, rgba(255, 255, 255, 0) 0%, #f7fbfe 100%);
+      background: -webkit-linear-gradient(left, rgba(255, 255, 255, 0) 0%, #f7fbfe 100%);
+      background: linear-gradient(to right, rgba(255, 255, 255, 0) 0%, #f7fbfe 100%); }
   table.reorder-enabled tbody tr td.reorder .reorder-handle {
     color: #DDDDDD; }
     table.reorder-enabled tbody tr td.reorder .reorder-handle:hover {
