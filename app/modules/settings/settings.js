@@ -66,8 +66,8 @@ function(app, Backbone, Directus, BasePageView, EditColumnView, ColumnOptionsVie
       // ----------------------------------------------------------------------------
       // Marketplace animation
       // ----------------------------------------------------------------------------
-
       var $marketplace = this.$('.marketplace');
+
       this.$('.float').on('animationend webkitAnimationEnd', function () {
         if ($marketplace.hasClass('hover')) {
           $(this).removeClass('animate').animate({'nothing':null}, 1, function () {
