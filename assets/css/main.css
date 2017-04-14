@@ -236,7 +236,6 @@ input {
   -moz-background-clip: padding;
   -webkit-background-clip: padding-box;
   background-clip: padding-box;
-  position: relative;
   padding: 12px;
   font-size: 13px;
   font-weight: 400;
@@ -5389,6 +5388,7 @@ body.help .discover-spotlight {
     .fields .field .interface input {
       min-width: 400px; }
     .fields .field .interface textarea {
+      position: relative;
       min-width: 400px;
       min-height: 140px;
       line-height: 18px;
