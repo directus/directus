@@ -90,6 +90,15 @@ class ColumnsService extends AbstractService
 
         if ($data) {
             $data['id'] = $columnData['id'];
+
+            // FIXME: hard coded
+            $relationshipType = ArrayUtils::get($data, 'relationship_type', null);
+            $manytoones = ['single_file', 'many_to_one', 'many_to_one_typeahead', 'MANYTOONE'];
+            if (!$relationshipType && array_key_exists('ui', $data) && in_array($data['ui'], $manytoones)) {
+                $data['relationship_type'] = 'MANYTOONE';
+                $data['junction_key_right'] = $columnName;
+            }
+
             $tableGateway->updateCollection($data);
         }
 
