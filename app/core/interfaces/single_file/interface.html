@@ -1,13 +1,11 @@
 {{#if url}}
 <div class="attachments">
-    <div class="file">
+    <div class="file js-file" id="file_{{model.id}}" data-id="{{model.id}}" data-cid="{{model.cid}}">
         {{#if html}}
         {{{html}}}
         {{else}}
 		<div class="thumbnail js-image">
-			<div class="extension-fallback">
-				<div class="type">{{model.type}}</div>
-			</div>
+			<div class="extension-fallback">{{model.type}}</div>
 			<img src="{{thumbUrl}}">
 		</div>
         {{/if}}
