@@ -507,6 +507,11 @@ class SchemaManager
         //     $column['hidden'] = true;
         // }
 
+        // NOTE: Alias column must are nullable
+        if (ArrayUtils::get($column, 'type') === 'ALIAS') {
+            $column['is_nullable'] = 'YES';
+        }
+
         $columnObject = new Column($column);
         if (isset($column['related_table'])) {
             $columnObject->setRelationship([
