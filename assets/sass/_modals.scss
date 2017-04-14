@@ -251,6 +251,28 @@ body.help {
 				border-color: transparent;
 			}
 		}
+		&.table-create .modal-bg {
+			h1 {
+				text-align: left;
+				margin-bottom: 20px;
+			}
+			.fields {
+				.field {
+					text-align: left;
+					border-top: 1px solid $gray-1;
+					border-bottom: none;
+					padding: 40px 0 40px 0;
+					.checkbox-container {
+						margin-bottom: 0;
+						margin-top: 20px;
+						input[type="checkbox"]:checked + label {
+							font-weight: normal;
+							color: $gray-6;
+						}
+					}
+				}
+			}
+		}
 		&.file-add .modal-bg {
 			width: 500px;
 			max-width: 90%;

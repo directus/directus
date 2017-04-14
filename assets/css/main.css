@@ -3993,6 +3993,20 @@ body.help .discover-spotlight {
         color: #333333; }
       .smoke .modal.confirm .modal-bg .actions {
         border-color: transparent; }
+    .smoke .modal.table-create .modal-bg h1 {
+      text-align: left;
+      margin-bottom: 20px; }
+    .smoke .modal.table-create .modal-bg .fields .field {
+      text-align: left;
+      border-top: 1px solid #EEEEEE;
+      border-bottom: none;
+      padding: 40px 0 40px 0; }
+      .smoke .modal.table-create .modal-bg .fields .field .checkbox-container {
+        margin-bottom: 0;
+        margin-top: 20px; }
+        .smoke .modal.table-create .modal-bg .fields .field .checkbox-container input[type="checkbox"]:checked + label {
+          font-weight: normal;
+          color: #333333; }
     .smoke .modal.file-add .modal-bg {
       width: 500px;
       max-width: 90%;
