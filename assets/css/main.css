@@ -3147,10 +3147,23 @@ body.loading .header .logo {
         padding: 10px 0;
         list-style: none; }
         .sidebar .system .user-menu ul li {
+          -webkit-transition: color 200ms ease-in-out 0ms;
+          -moz-transition: color 200ms ease-in-out 0ms;
+          -o-transition: color 200ms ease-in-out 0ms;
+          -ms-transition: color 200ms ease-in-out 0ms;
+          transition: color 200ms ease-in-out 0ms;
           color: #666666;
           opacity: 0;
           padding: 5px 15px 5px 15px;
           border-left: 0 solid transparent; }
+          .sidebar .system .user-menu ul li:hover {
+            color: #3498DB; }
+            .sidebar .system .user-menu ul li:hover .material-icons {
+              color: #3498DB; }
+          .sidebar .system .user-menu ul li.system-settings {
+            color: #F44336; }
+            .sidebar .system .user-menu ul li.system-settings .material-icons {
+              color: #F44336; }
           .sidebar .system .user-menu ul li.discover span {
             padding-right: 10px; }
           .sidebar .system .user-menu ul li .count {
@@ -3175,10 +3188,6 @@ body.loading .header .logo {
             vertical-align: middle;
             margin-right: 10px;
             margin-top: -2px; }
-          .sidebar .system .user-menu ul li:hover {
-            color: #3498DB; }
-            .sidebar .system .user-menu ul li:hover .material-icons {
-              color: #3498DB; }
         .sidebar .system .user-menu ul hr {
           margin: 10px 15px 10px 15px; }
 

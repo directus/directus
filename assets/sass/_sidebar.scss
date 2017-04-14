@@ -203,10 +203,23 @@
 				padding: 10px 0;
 				list-style: none;
 				li {
+					@include transition (color, $timing-short, ease-in-out);
 					color: $gray-5;
 					opacity: 0;
 					padding: 5px 15px 5px 15px;
 					border-left: 0 solid transparent;
+					&:hover {
+						color: $primary;
+						.material-icons {
+							color: $primary;
+						}
+					}
+					&.system-settings {
+						color: $serious;
+						.material-icons {
+							color: $serious;
+						}
+					}
 					&.discover {
 						span {
 							padding-right: 10px;
@@ -226,12 +239,6 @@
 						vertical-align: middle;
 						margin-right: 10px;
 						margin-top: -2px;
-					}
-					&:hover {
-						color: $primary;
-						.material-icons {
-							color: $primary;
-						}
 					}
 				}
 				hr {
