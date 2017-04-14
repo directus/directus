@@ -221,8 +221,23 @@ table {
 					&:hover {
 						color: $primary;
 					}
+					&.not-applicable {
+						cursor: not-allowed;
+						&:hover {
+							color: $gray-3;
+						}
+					}
 					.type {
 						color: $gray-5;
+					}
+				}
+				&.default-value {
+					@include transition (color, $timing-short, ease-in-out);
+					&:hover {
+						color: $primary;
+						span {
+							color: $primary;
+						}
 					}
 				}
 				&.comment {
@@ -376,6 +391,7 @@ table {
 					}
 				}
 				.no-value {
+					@include transition (color, $timing-short, ease-in-out);
 					color: $gray-3;
 				}
 				img {
