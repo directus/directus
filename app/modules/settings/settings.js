@@ -62,6 +62,32 @@ function(app, Backbone, Directus, BasePageView, EditColumnView, ColumnOptionsVie
       className: 'page settings-container'
     },
 
+    afterRender: function () {
+      // ----------------------------------------------------------------------------
+      // Marketplace animation
+      // ----------------------------------------------------------------------------
+
+      var $marketplace = this.$('.marketplace');
+      this.$('.float').on('animationend webkitAnimationEnd', function () {
+        if ($marketplace.hasClass('hover')) {
+          $(this).removeClass('animate').animate({'nothing':null}, 1, function () {
+            $(this).addClass('animate');
+          });
+        } else {
+          $(this).removeClass('animate');
+        }
+      });
+
+      $marketplace.mouseenter(function () {
+        $(this).find('.float').addClass('animate');
+        $(this).addClass('hover');
+      });
+
+      $('.marketplace').mouseleave(function () {
+        $(this).removeClass('hover');
+      });
+    },
+
     template: 'modules/settings/settings'
   });
 
