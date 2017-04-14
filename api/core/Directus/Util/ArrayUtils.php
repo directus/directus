@@ -315,6 +315,30 @@ class ArrayUtils
     }
 
     /**
+     * Pulls the last element from the given array
+     *
+     * @param array $array
+     *
+     * @return mixed
+     */
+    public static function pop(array &$array)
+    {
+        return array_pop($array);
+    }
+
+    /**
+     * Pulls the first element from the given array
+     *
+     * @param array $array
+     *
+     * @return mixed
+     */
+    public static function shift(array &$array)
+    {
+        return array_shift($array);
+    }
+
+    /**
      * Removes one or more key from the given array
      *
      * @param array $array
