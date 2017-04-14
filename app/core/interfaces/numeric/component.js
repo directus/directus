@@ -14,11 +14,13 @@ define([
     ],
     Input: Input,
     validate: function(value, options) {
+      var inputView = options.view;
+
       if (options.schema.isRequired() && value != 0 && !value) {
         return __t('this_field_is_required');
       }
 
-      if (!options.view.$el.find('input')[0].checkValidity()) {
+      if (inputView && !inputView.$el.find('input')[0].checkValidity()) {
         return __t('confirm_invalid_value');
       }
     },
