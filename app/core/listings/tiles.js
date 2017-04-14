@@ -19,11 +19,15 @@ define(['app', 'underscore', 'backbone', 'core/listings/baseView', 'core/t'], fu
         'click .file': 'editItem'
       },
 
-      editItem: function(event) {
+      fetchData: function () {
+        return this.collection.fetch();
+      },
+
+      editItem: function (event) {
         var id = $(event.currentTarget).data('id');
       },
 
-      serialize: function() {
+      serialize: function () {
         var titleColumn = this.getTitleColumn();
         var subTitleColumn = this.getSubTitleColumn();
         var typeColumn = this.getTypeColumn();
@@ -49,7 +53,7 @@ define(['app', 'underscore', 'backbone', 'core/listings/baseView', 'core/t'], fu
         };
       },
 
-      optionsStructure: function() {
+      optionsStructure: function () {
         var options = {
           title: {},
           subtitle: {},
@@ -109,7 +113,7 @@ define(['app', 'underscore', 'backbone', 'core/listings/baseView', 'core/t'], fu
         };
       },
 
-      getTitleColumn: function() {
+      getTitleColumn: function () {
         var viewOptions = this.getViewOptions();
         var column;
 
@@ -122,7 +126,7 @@ define(['app', 'underscore', 'backbone', 'core/listings/baseView', 'core/t'], fu
         return column;
       },
 
-      getSubTitleColumn: function() {
+      getSubTitleColumn: function () {
         var viewOptions = this.getViewOptions();
         var column;
 
@@ -135,7 +139,7 @@ define(['app', 'underscore', 'backbone', 'core/listings/baseView', 'core/t'], fu
         return column;
       },
 
-      getTypeColumn: function() {
+      getTypeColumn: function () {
         var viewOptions = this.getViewOptions();
         var column;
 
@@ -148,7 +152,7 @@ define(['app', 'underscore', 'backbone', 'core/listings/baseView', 'core/t'], fu
         return column;
       },
 
-      getFileColumn: function() {
+      getFileColumn: function () {
         var viewOptions = this.getViewOptions();
         var column;
 
@@ -161,29 +165,29 @@ define(['app', 'underscore', 'backbone', 'core/listings/baseView', 'core/t'], fu
         return column;
       },
 
-      titleColumns: function() {
+      titleColumns: function () {
         return this.collection.structure.filter(function(model) {
           return _.contains(['VARCHAR'], model.get('type'));
         });
       },
 
-      fileColumns: function() {
+      fileColumns: function () {
         return this.collection.structure.filter(function(model) {
           return _.contains(['single_file'], model.get('ui'));
         });
       },
 
-      onEnable: function() {
+      onEnable: function () {
         this.collection.on('sync', this.render, this);
         this.collection.preferences.on('sync', this.render, this);
       },
 
-      onDisable: function() {
+      onDisable: function () {
         this.collection.off('sync', this.render, this);
         this.collection.preferences.off('sync', this.render, this);
       },
 
-      initialize: function() {
+      initialize: function () {
         //
       }
     })
