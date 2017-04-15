@@ -16,11 +16,11 @@ define(['jquery'], function ($) {
       var img = new Image();
       img.onload = function() {
         fn(true, image);
-      }
+      };
 
       img.onerror = function() {
         fn(false, image);
-      }
+      };
 
       img.src = image;
     }
@@ -132,11 +132,11 @@ define(['jquery'], function ($) {
 
       var dataurl = canvas.toDataURL('image/jpg');
       fn(dataurl);
-    }
+    };
 
     img.onerror = function() {
       fn(null);
-    }
+    };
 
     img.src = image;
   };
@@ -170,7 +170,7 @@ define(['jquery'], function ($) {
     return {
       size: humanSize.toFixed(precision),
       unit: unit
-    }
+    };
   };
 
   FileHelper.humanReadableSize = function (size, precision) {
