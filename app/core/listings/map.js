@@ -73,7 +73,7 @@ define([
           fillOpacity: 1,
           strokeColor: color,
           strokeWeight: 1,
-          scale: 2,
+          scale: 1.2,
           origin: new google.maps.Point(0, 0),
           anchor: new google.maps.Point(7, 20),
           animation: google.maps.Animation.DROP
@@ -174,7 +174,7 @@ define([
           draggable: true,
           zoomControl: true,
           scrollwheel: false,
-          disableDoubleClickZoom: true,
+          disableDoubleClickZoom: false,
           streetViewControl: false,
           disableDefaultUI: true
         });
@@ -199,7 +199,7 @@ define([
             {
               'featureType': 'landscape',
               'elementType': 'all',
-              'stylers': [{'color':'#f2f2f2'}]
+              'stylers': [{'color':'#eeeeee'}]
             },
             {
               'featureType': 'poi',
@@ -214,8 +214,13 @@ define([
             {
               'featureType': 'road',
               'elementType': 'all',
-              'stylers': [{'saturation':-100},{'lightness':45}]
+              'stylers': [{'saturation':-100},{'lightness':10}]
             },
+            // {
+            //   'featureType': 'road.local',
+            //   'elementType': 'geometry',
+            //   'stylers': [{color: '#cccccc'}]
+            // },
             {
               'featureType': 'road.highway',
               'elementType': 'all',
@@ -234,7 +239,7 @@ define([
             {
               'featureType': 'water',
               'elementType': 'all',
-              'stylers': [{'color':'#dbdbdb'},{'visibility':'on'}]
+              'stylers': [{'color':'#9ACCED'},{'visibility':'on'}]
             }
           ]
         };
@@ -287,7 +292,7 @@ define([
           draggable: true,
           zoomControl: true,
           scrollwheel: false,
-          disableDoubleClickZoom: true,
+          disableDoubleClickZoom: false,
           streetViewControl: false,
           disableDefaultUI: true
         });
