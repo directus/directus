@@ -3871,6 +3871,11 @@ body.help .discover-spotlight {
     font-size: 10px;
     z-index: 103; }
     .smoke .close .material-icons {
+      -webkit-transition: color 200ms ease-in-out 0ms;
+      -moz-transition: color 200ms ease-in-out 0ms;
+      -o-transition: color 200ms ease-in-out 0ms;
+      -ms-transition: color 200ms ease-in-out 0ms;
+      transition: color 200ms ease-in-out 0ms;
       display: block;
       font-size: 36px;
       color: #666666; }
@@ -4072,7 +4077,6 @@ body.help .discover-spotlight {
       .smoke .modal.file .modal-bg .asset {
         width: 100%;
         height: 100%;
-        max-height: 600px;
         display: inline-block;
         text-align: center;
         background-color: #EEEEEE;
@@ -4081,6 +4085,12 @@ body.help .discover-spotlight {
         .smoke .modal.file .modal-bg .asset img {
           max-width: 100%;
           max-height: 100%; }
+        .smoke .modal.file .modal-bg .asset .image-preview {
+          height: 80vh;
+          width: 80vw;
+          background-repeat: no-repeat;
+          background-position: center center;
+          background-size: contain; }
       .smoke .modal.file .modal-bg .info {
         -webkit-transition: all 200ms ease-in-out 0ms;
         -moz-transition: all 200ms ease-in-out 0ms;
@@ -4103,17 +4113,23 @@ body.help .discover-spotlight {
           color: #CCCCCC;
           font-style: normal;
           margin-top: -3px; }
+      .smoke .modal.file .modal-bg .view,
       .smoke .modal.file .modal-bg .edit {
         position: absolute;
         bottom: 20px;
         right: 30px;
-        padding: 12px 7px 12px 9px;
+        padding: 12px 7px;
         background-color: #DDDDDD;
         color: #FFFFFF; }
+        .smoke .modal.file .modal-bg .view:hover,
         .smoke .modal.file .modal-bg .edit:hover {
           background-color: #3498DB; }
+        .smoke .modal.file .modal-bg .view .material-icons,
         .smoke .modal.file .modal-bg .edit .material-icons {
-          margin-left: 0; }
+          margin-left: 0;
+          margin-right: 0; }
+      .smoke .modal.file .modal-bg .view {
+        right: 80px; }
     .smoke .modal.profile .modal-bg {
       position: relative;
       width: 300px; }

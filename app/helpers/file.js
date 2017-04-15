@@ -154,7 +154,7 @@ define(['jquery'], function ($) {
   };
 
   FileHelper.humanBytesInfo = function(size, precision) {
-    precision = precision || 2;
+    precision = precision || 0;
     var i = 0;
     var humanSize;
     var unit;

@@ -91,6 +91,7 @@ body.help {
 		font-size: 10px;
 		z-index: 103;
 		.material-icons {
+			@include transition (color, $timing-short, ease-in-out);
 			display: block;
 			font-size: 36px;
 			color: $gray-5;
@@ -313,7 +314,7 @@ body.help {
 			.asset {
 				width: 100%;
 				height: 100%;
-				max-height: 600px;
+				// max-height: 600px;
 				display: inline-block;
 				text-align: center;
 				background-color: $gray-1;
@@ -322,6 +323,13 @@ body.help {
 				img {
 					max-width: 100%;
 					max-height: 100%;
+				}
+				.image-preview {
+					height: 80vh;
+					width: 80vw;
+					background-repeat: no-repeat;
+					background-position: center center;
+					background-size: contain;
 				}
 			}
 			.info {
@@ -345,11 +353,12 @@ body.help {
 					margin-top: -3px;
 				}
 			}
+			.view,
 			.edit {
 				position: absolute;
 				bottom: 20px;
 				right: 30px;
-				padding: 12px 7px 12px 9px;
+				padding: 12px 7px;
 				background-color: $gray-2;
 				color: $white;
 				&:hover {
@@ -357,7 +366,11 @@ body.help {
 				}
 				.material-icons {
 					margin-left: 0;
+					margin-right: 0;
 				}
+			}
+			.view {
+				right:80px;
 			}
 		}
 		&.profile .modal-bg {

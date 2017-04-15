@@ -106,7 +106,7 @@ require([
   });
 
   Handlebars.registerHelper('readableBytesSize', function(bytes) {
-    return FileHelper.readableBytes(bytes);
+    return FileHelper.readableBytes(bytes, 0);
   });
 
   Handlebars.registerHelper('avatarSmall', function(userId) {
