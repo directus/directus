@@ -2,7 +2,7 @@
 <b>ID:</b> {{file.id}}<br>
 <b>Type:</b> {{uppercase file.type}}<br>
 <b>{{#if file.isEmbed}}Duration{{else}}File Size{{/if}}:</b> {{file.size}}<br>
-{{#if file.width}}{{#if file.height}}<b>Dimensions:</b> {{file.width}}×{{file.height}}<br>{{/if}}{{/if}}
+{{#if file.width}}{{#if file.height}}<b>Dimensions:</b> {{number file.width}} × {{number file.height}}<br>{{/if}}{{/if}}
 {{!-- TODO: Add device information <br> --}}
 <b>Storage Adapter:</b> {{file.storage_adapter}}<br>
 <b>Path:</b> <a href="{{file.url}}" target="_blank" class="primary">{{file.url}}</a><br>
