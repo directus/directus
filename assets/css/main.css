@@ -3668,6 +3668,23 @@ body.loading .header .logo {
                 height: 54px; }
                 .right-sidebar .scroll-y ul.timeline li.comment.create textarea:focus {
                   height: 148px; }
+                  .right-sidebar .scroll-y ul.timeline li.comment.create textarea:focus + .comment-instructions {
+                    opacity: 1; }
+              .right-sidebar .scroll-y ul.timeline li.comment.create .comment-instructions {
+                -webkit-transition: all 200ms ease-in-out 0ms;
+                -moz-transition: all 200ms ease-in-out 0ms;
+                -o-transition: all 200ms ease-in-out 0ms;
+                -ms-transition: all 200ms ease-in-out 0ms;
+                transition: all 200ms ease-in-out 0ms;
+                position: absolute;
+                bottom: 16px;
+                right: 16px;
+                color: #DDDDDD;
+                font-size: 10px;
+                line-height: 13px;
+                text-transform: uppercase;
+                opacity: 0;
+                pointer-events: none; }
             .right-sidebar .scroll-y ul.timeline li.comment .byline {
               position: relative;
               font-weight: 500;
