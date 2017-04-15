@@ -22,6 +22,13 @@ define([
         class: 'view-map js-listing-view'
       },
 
+      navigate: function (id) {
+        var route = Backbone.history.fragment.split('/');
+
+        route.push(id);
+        app.router.go(route);
+      },
+
       optionsStructure: function() {
         var options = {
           location: {}
@@ -409,13 +416,18 @@ define([
 
         this.deleteMarkers();
         this.collection.each(_.bind(function (model) {
-          var marker;
+          var self = this;
           var location = model.get(this.getLocationColumn().id);
+          var marker;
 
           if (location) {
             location = location.split(',');
             marker = this.createMarker(location[0], location[1]);
             marker.setMap(this.map);
+
+            google.maps.event.addListener(marker, 'click', function () {
+              self.navigate(model.id);
+            });
           }
         }, this));
       },
