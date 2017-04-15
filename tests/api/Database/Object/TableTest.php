@@ -18,7 +18,6 @@ class TableTest extends PHPUnit_Framework_TestCase
             'date_create_column' => 'created_at',
             'date_update_column' => 'updated_at',
             'footer' => null,
-            'list_view' => null,
             'column_groupings' => null,
             'filter_column_blacklist' => null,
             'primary_column' => 'name'
