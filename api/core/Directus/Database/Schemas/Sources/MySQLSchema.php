@@ -407,7 +407,7 @@ class MySQLSchema extends AbstractSchema
         $selectTwo->where($where);
 
         $selectOne->combine($selectTwo, $selectOne::COMBINE_UNION, 'ALL');
-        $selectOne->order('table_name');
+        $selectOne->order('T.table_name');
 
         $sql = new Sql($this->adapter);
         $statement = $sql->prepareStatementForSqlObject($selectOne);
