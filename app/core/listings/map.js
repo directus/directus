@@ -244,7 +244,7 @@ define([
         var marker = this.marker = this.createMarker(40.720, -73.953);
 
         google.maps.event.addListenerOnce(map, 'idle', _.bind(function() {
-          // this.updateMap();
+          this.updateMap();
         }, this));
 
         var input = this.input = this.$('#map-search')[0];
@@ -255,10 +255,10 @@ define([
 
         // var infowindow = new google.maps.InfoWindow();
         autocomplete.addListener('place_changed', _.bind(function() {
-          // var place = autocomplete.getPlace();
-          // this.state.place = place;
-          // this.state.search = this.input.value;
-          // this.changePlace(place);
+          var place = autocomplete.getPlace();
+          this.state.place = place;
+          this.state.search = this.input.value;
+          this.changePlace(place);
         }, this));
 
         // set to last location
@@ -294,9 +294,10 @@ define([
 
         google.maps.event.addDomListener(window, 'resize', _.bind(function() {
           var center = map.getCenter();
+
           google.maps.event.trigger(map, 'resize');
           map.setCenter(center);
-          // this.updateMap();
+          this.updateMap();
         }, this));
 
         this.state.loaded = true;
@@ -367,6 +368,7 @@ define([
 
       updateMap: function() {
         this.updateLocationRangeFilter();
+        this.collection.fetch();
       },
 
       updateLocationRangeFilter: function() {
@@ -391,6 +393,8 @@ define([
 
         this.fetchOptions = _.extend(this.fetchOptions || {}, options);
         this.collection.options = _.extend(this.collection.options || {}, options);
+
+        return this.collection.fetch();
       },
 
       updateMarkers: function () {
@@ -414,7 +418,6 @@ define([
       afterRender: function () {
         if (!this.map) {
           this.initMap();
-          this.updateMarkers();
         }
       },
 
