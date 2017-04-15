@@ -589,5 +589,12 @@
     "status": "Status",
     "status_active": "Active",
     "status_delete": "Delete",
-    "status_draft": "Draft"
+    "status_draft": "Draft",
+
+    "loading": "Loading Data",
+    "help_and_docs": "Help & Docs",
+    "your_profile": "Your Profile",
+    "your_messages": "Messages",
+    "user_directory": "User Directory",
+    "file_library": "File Library"
 }

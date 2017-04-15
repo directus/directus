@@ -426,5 +426,13 @@
   "status": "Status",
   "status_active": "Aktiv",
   "status_delete": "Gelöscht",
-  "status_draft": "Entwurf"
+  "status_draft": "Entwurf",
+
+  "admin_settings": "Einstellungen",
+  "loading": "Lade Daten",
+  "help_and_docs": "Hilfe & Dokumentation",
+  "your_profile": "Dein Profil",
+  "your_messages": "Nachrichten",
+  "user_directory": "Benutzer",
+  "file_library": "Dateien"
 }
