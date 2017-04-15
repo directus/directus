@@ -49,7 +49,7 @@
     "directus_settings_files_file_naming_file_hash": "File Hash (Obfuscate)",
     "directus_settings_files_thumbnail_quality_comment": "The quality percentage for Directus thumbnails",
     "directus_settings_files_thumbnail_crop_enabled": "Crop thumbnails to a square as needed",
-    "directus_settings_files_youtube_api_key_comment": "YouTube API key for retrieving embed info\n%[https://developers.google.com/youtube/v3/getting-started](Get Key)",
+    "directus_settings_files_youtube_api_key_comment": "YouTube API key for retrieving embed info: %[https://developers.google.com/youtube/v3/getting-started](Get Key)",
 
     "table": "Table",
     "table_name": "Table Name",
@@ -509,7 +509,7 @@
     "directus_tables_preview_url": "Preview URL",
     "directus_tables_preview_url_comment": "A dynamic URL where this table's items can be previewed, use twig to access item variables",
     "directus_tables_columns": "Columns",
-    "directus_tables_columns_comment": "Create, delete, and reorder columns – then setup their relationships, interfaces, requirements, defaults, and comments.",
+    "directus_tables_columns_comment": "Create, delete, and reorder columns – then setup their relationships, interfaces, requirements, defaults, and comments",
     "directus_tables_allowed_listing_views": "Listing Views",
     "directus_tables_allowed_listing_views_comment": "Enable new views for the Item Listing page",
     "directus_tables_hidden": "Hide Table",
