@@ -51,6 +51,22 @@
 			color: $gray-6;
 			overflow: hidden;
 			margin-bottom: 40px;
+			&.disabled {
+				.icon-header {
+					.material-icons {
+						color: $gray-2;
+					}
+				}
+				.description {
+					color: $gray-2;
+					h1 {
+						color: $gray-4;
+					}
+				}
+				.button {
+					// background-color: $gray-3;
+				}
+			}
 			.icon-header {
 				background-color: $white;
 				padding-top: 20px;

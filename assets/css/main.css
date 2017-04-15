@@ -3160,15 +3160,6 @@ body.loading .header .logo {
             color: #3498DB; }
             .sidebar .system .user-menu ul li:hover .material-icons {
               color: #3498DB; }
-          .sidebar .system .user-menu ul li.system-settings {
-            color: #FFC107;
-            font-weight: 700; }
-            .sidebar .system .user-menu ul li.system-settings:hover {
-              color: #dda600; }
-              .sidebar .system .user-menu ul li.system-settings:hover .material-icons {
-                color: #dda600; }
-            .sidebar .system .user-menu ul li.system-settings .material-icons {
-              color: #FFC107; }
           .sidebar .system .user-menu ul li.discover span {
             padding-right: 10px; }
           .sidebar .system .user-menu ul li .count {
@@ -6044,6 +6035,12 @@ body.help .discover-spotlight {
     color: #333333;
     overflow: hidden;
     margin-bottom: 40px; }
+    .page.settings-container .settings-modules .settings-module.disabled .icon-header .material-icons {
+      color: #DDDDDD; }
+    .page.settings-container .settings-modules .settings-module.disabled .description {
+      color: #DDDDDD; }
+      .page.settings-container .settings-modules .settings-module.disabled .description h1 {
+        color: #999999; }
     .page.settings-container .settings-modules .settings-module .icon-header {
       background-color: #FFFFFF;
       padding-top: 20px;
