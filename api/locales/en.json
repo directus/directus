@@ -544,6 +544,7 @@
     "directus_users_email_already_exists": "User with this email already exists.",
 
     "warning_changes_to_columns_save_immediately": "Warning: All changes to columns save immediately.",
+    "warning_changes_to_permissions_save_immediately": "Warning: All changes to permissions save immediately.",
 
     "same_time_as_you": "Same time as you",
     "x_hours_from_you": "%{hours} hours from you",
