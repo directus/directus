@@ -1903,8 +1903,8 @@ table {
           cursor: not-allowed; }
           table tbody tr td.relationship.not-allowed:hover {
             color: #CCCCCC; }
-        table tbody tr td.relationship .type {
-          color: #666666; }
+        table tbody tr td.relationship .table-name {
+          color: #999999; }
       table tbody tr td.default-value {
         -webkit-transition: color 200ms ease-in-out 0ms;
         -moz-transition: color 200ms ease-in-out 0ms;

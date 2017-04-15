@@ -24,7 +24,7 @@
 				<td class="user-interface js-cell" data-field="ui_type" data-section="column">{{capitalize ui}}</td>
 				<td class="relationship js-cell {{#unless related_table}}js-cell-disable not-allowed{{/unless}}" data-section="column" data-sub-section="relationship">
 					{{#if related_table}}
-					<span class="type">{{capitalize relationship_type}}</span> ({{capitalize related_table}})
+					{{capitalize relationship_type}} <span class="table-name">({{capitalize related_table}})</span>
 					{{else}}
 					<span class="no-value">{{t "relationship_none"}}</span>
 					{{/if}}
