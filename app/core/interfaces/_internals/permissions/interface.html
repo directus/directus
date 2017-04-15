@@ -1,6 +1,7 @@
 {{# if isAdmin }}
 <span class="serious-text">{{t "groups_permissions_full_access"}}</span>
 {{else}}
+<p class="serious-text">{{t "warning_changes_to_permissions_save_immediately"}}</p>
 <div id="table-container" class="table-container"></div>
 <div class="toggle-directus-tables">
 	<input class="custom-checkbox js-toggle-directus-tables" id="checkbox" type="checkbox" value="1">
