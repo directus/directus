@@ -14,101 +14,37 @@ define([
   'helpers/file',
   'handlebars',
   'sortable',
+  'mixins/status',
+  'mixins/save-item',
   'core/UIComponent',
   'core/UIView',
   'core/overlays/overlays',
   'core/t'
-], function(app, _, Backbone, FileHelper, Handlebars, Sortable, UIComponent, UIView, Overlays, __t) {
+], function(app, _, Backbone, FileHelper, Handlebars, Sortable, StatusMixin, SaveItemMixin, UIComponent, UIView, Overlays, __t) {
 
   'use strict';
 
-  // TODO: Show fallback when images fails loading
-  var template = '<style type="text/css"> \
-        .ui-file-container:after { \
-          clear: both; \
-          content: ""; \
-          display: block; \
-          width: 100%; \
-        } \
-        .media-slideshow-item { \
-          cursor: {{#if sortable}}move{{else}}pointer{{/if}}; \
-          width: 160px; \
-          float: left; \
-          height: 160px; \
-          position: relative; \
-        } \
-        .media-slideshow-item img { \
-          width: 100%; \
-          height: 100%; \
-        } \
-        .remove-hover-state .show-circle:hover .white-circle { \
-          opacity: 0.0; \
-        } \
-        .multiple-image-actions { \
-          margin: 10px 0 0 0; \
-          display: block; \
-          font-size: 12px; \
-        } \
-        .multiple-image-actions span:hover { \
-          color: #333333; \
-          cursor: pointer; \
-        } \
-        div.single-image-thumbnail.empty { \
-          float: left; \
-          background-color: #ffffff; \
-          color: #ededed; \
-          text-align: center; \
-          cursor: pointer; \
-          width: 156px; \
-          height: 156px; \
-          background-color: #ffffff; \
-          border: 2px dashed #bbbbbb; \
-          font-size: 12px; \
-          font-weight: 600; \
-          line-height: 14px; \
-          color: #bbbbbb; \
-        } \
-        div.single-image-thumbnail.empty span { \
-          margin-top: 28px; \
-          text-align: center; \
-          display: inline-block; \
-          line-height: 18px; \
-          padding: 0 30px 0 30px; \
-        } \
-        div.single-image-thumbnail.empty span i.material-icons { \
-          display: block; \
-          font-size: 60px; \
-          width: auto; \
-          margin-bottom: 5px; \
-        } \
-        div.single-image-thumbnail.empty.dragover, \
-        div.single-image-thumbnail.empty:hover { \
-          background-color: #BBBBBB; \
-          color: #ffffff; \
-          cursor: pointer; \
-        } \
-      </style> \
-      <div class="ui-file-container">{{#rows}}<span class="media-slideshow-item show-circle margin-right-small margin-bottom-small js-image"><img data-file-cid="{{cid}}" data-file-id="{{id}}" src={{url}}>{{#if ../showRemoveButton}}<div class="remove-slideshow-item large-circle white-circle"><span class="icon icon-cross"></span></div>{{/if}}</span>{{/rows}}<div class="swap-method single-image-thumbnail empty ui-thumbnail-dropzone" data-action=add><span><i class="material-icons">collections</i>{{t "directus_files_drop_or_choose_file"}}</span></div></div> \
-      <!-- <div class="related-table"></div> --> \
-      <div class="multiple-image-actions"> \
-        {{#if showAddButton}}<button class="btn btn-primary btn-small margin-right-small" data-action="add" type="button">{{t "file_upload"}}</button>{{/if}} \
-        {{#if showChooseButton}}<button class="btn btn-primary btn-small" data-action="choose" type="button">{{t "directus_files_choose"}}</button>{{/if}} \
-      </div>';
-
   var Input = UIView.extend({
-    templateSource: template,
+    template: 'multiple_files',
 
     events: {
-      'click [data-action=add]': 'addItem',
-      'click [data-action=choose]': 'chooseItem',
-      'click .remove-slideshow-item': 'removeItem',
-      'click .media-slideshow-item > img': function(e) {
-        if (!this.canEdit) {
-          return;
-        }
-        var cid = $(e.target).attr('data-file-cid');
-        var model = this.relatedCollection.get(cid, true);
-        this.editModel(model);
+      'click .js-button': 'onClickButton',
+      'click .js-remove': 'removeItem',
+      'click .js-image': 'editItem'
+    },
+
+    onClickButton: function (event) {
+      var action = $(event.currentTarget).data('action');
+
+      event.preventDefault();
+
+      switch (action) {
+        case 'choose':
+          this.chooseItem();
+          break;
+        case 'add':
+          this.addItem();
+          break;
       }
     },
 
@@ -122,14 +58,16 @@ define([
     },
 
     removeItem: function(e) {
-      var target_cid = $(e.target).closest('.media-slideshow-item').find('img').attr('data-file-cid');
-      var model = this.relatedCollection.get(target_cid);
-
-      if (model.isNew()) return this.relatedCollection.remove(model);
-
+      var cid = $(e.target).closest('.js-file').data('cid');
+      var model = this.relatedCollection.get(cid);
       var name = {};
-      name[app.statusMapping.status_name] = app.statusMapping.deleted_num;
-      model.set(name);
+
+      if (model.isNew()) {
+        this.relatedCollection.remove(model);
+      } else {
+        name[model.table.getStatusColumnName()] = model.getTableStatuses().getDeleteValue();
+        model.set(name);
+      }
     },
 
     addModel: function(model) {
@@ -170,11 +108,23 @@ define([
           var data = _.clone(collection.get(id).attributes);
           me.relatedCollection.add(data, {parse: true, silent: true, nest: true});
         }, this);
+
         me.relatedCollection.trigger('add');
         app.router.removeOverlayPage(this);
       };
 
       collection.fetch();
+    },
+
+    editItem: function (event) {
+      var cid = $(event.currentTarget).data('cid');
+      var model = this.relatedCollection.get(cid, true);
+
+      if (!this.canEdit) {
+        return;
+      }
+
+      this.editModel(model);
     },
 
     editModel: function(model) {
@@ -216,35 +166,36 @@ define([
     drop: function() {
       var relatedCollection = this.model.get(this.name);
 
-      this.$('.media-slideshow-item img').each(function(i) {
-        relatedCollection.get($(this).attr('data-file-cid')).set({sort: i},{silent: true});
+      this.$('.js-file').each(function (i) {
+        relatedCollection.get($(this).data('cid')).set({sort: i}, {silent: true});
       });
 
-      // There is no "saveAfterDrop" now, but we could use this for instant saving
-      // if (this.options.saveAfterDrop) {
-      //   relatedCollection.save({columns:['id','sort']});
-      // }
-
-      relatedCollection.setOrder('sort','ASC',{silent: true});
+      relatedCollection.setOrder('sort', 'ASC', {silent: true});
     },
 
     serialize: function() {
       var models = this.relatedCollection.models;
       var rows = [];
       var that = this;
-      _.each(models, function(model) {
-        if(model.get(app.statusMapping.status_name) !== app.statusMapping.deleted_num) {
+
+      _.each(models, function (model) {
+        if (!model.isDeleted()) {
           var cid = model.cid;
-          var url;
+          var url, data;
 
-          model = new app.files.model(model.get('data').attributes, {collection: that.relatedCollection});
-          if (model.isNew()) {
-            url = model.get('thumbnailData') || model.get('url');
-          } else {
-            url = model.makeFileUrl(true)
-          }
+          model = new app.files.model(model.get('data').attributes, {
+            collection: that.relatedCollection
+          });
 
-          rows.push({id: model.id, url: url, cid:cid});
+          url = model.getThumbnailUrl();
+          data = model.toJSON();
+          data.size = model.isEmbed() ? app.seconds_convert(data.size) : FileHelper.humanReadableSize(data.size);
+          data.thumbnailUrl = url;
+          data.type = FileHelper.friendlySubtype(data.type);
+          data.cid = cid;
+          data.id = model.id;
+
+          rows.push(data);
         }
       });
 
@@ -264,10 +215,8 @@ define([
 
     afterRender: function() {
       var $dropzone = this.$el;
-      var model = this.fileModel;
       var self = this;
       var relatedCollection = this.model.get(this.name);
-      var relatedSchema = relatedCollection.structure;
       var junctionStructure = relatedCollection.junctionStructure;
 
       // Since data transfer is not supported by jquery...
@@ -284,27 +233,42 @@ define([
         _.each(e.dataTransfer.files, function(file) {
           // force a fileModel object
           var fileModel = new FilesModel({}, {collection:{}});
-          fileModel.setFile(file, null, function(item) {
-            item[app.statusMapping.status_name] = app.statusMapping.active_num;
+          fileModel.setFile(file, null, function (item) {
             // Unset the model ID so that a new file record is created
             // (and the old file record isn't replaced w/ this data)
             item.id = undefined;
             item.user = self.userId;
-            var model = new self.relatedCollection.nestedCollection.model(item, {collection: self.relatedCollection.nestedCollection, parse: true});
-            model = new Backbone.Model({data: model}, {collection:self.relatedCollection});
+            var model = new self.relatedCollection.nestedCollection.model(item, {
+              collection: self.relatedCollection.nestedCollection,
+              parse: true
+            });
+            // TODO: extend from a Directus Base Model
+            // with status mixins
+            model = new Backbone.Model({data: model}, {
+              collection: self.relatedCollection
+            });
+
+            model.table = self.relatedCollection.table;
+            model.getTable = function () {
+              return this.table;
+            };
+
+            _.extend(model, StatusMixin.Model);
+            _.extend(model, SaveItemMixin);
+
             self.relatedCollection.add(model);
           });
         });
       };
 
-      if(junctionStructure.get('sort') !== undefined) {
+      if (junctionStructure.get('sort') !== undefined) {
         // Drag and drop reordering
-        var container = this.$el.find('.ui-file-container')[0];
+        var container = this.$el.find('.attachments').get(0);
         var that = this;
         this.sort = new Sortable(container, {
           animation: 150, // ms, animation speed moving items when sorting, `0` — without animation
-          draggable: ".media-slideshow-item", // Specifies which items inside the element should be sortable
-          ghostClass: "sortable-file-ghost",
+          draggable: '.js-file', // Specifies which items inside the element should be sortable
+          ghostClass: 'sortable-file-ghost',
           onStart: function (evt) {
             //var dragItem = jQuery(evt.item);
             var jContainer = jQuery(container);

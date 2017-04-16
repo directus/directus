@@ -78,7 +78,7 @@ require([
   });
 
   Handlebars.registerHelper('uppercase', function(string) {
-    return string.toUpperCase();
+    return (string || '').toUpperCase();
   });
 
   Handlebars.registerHelper('bytesToSize', function(bytes) {

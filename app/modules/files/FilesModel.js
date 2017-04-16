@@ -6,10 +6,9 @@ define([
   'core/notification',
   'core/t',
   'utils',
+  'moment',
   'helpers/file'
-],
-
-function(app, _, Backbone, EntriesModel, Notification, __t, Utils, File) {
+], function(app, _, Backbone, EntriesModel, Notification, __t, Utils, moment, File) {
   var FilesModel = EntriesModel.extend({
 
     initialize: function() {
@@ -20,9 +19,21 @@ function(app, _, Backbone, EntriesModel, Notification, __t, Utils, File) {
       var url;
 
       if (thumbnail) {
-        url = this.get('thumbnail_url');
+        url = this.getThumbnailUrl();
       } else {
         url = this.get('url');
+      }
+
+      return url;
+    },
+
+    getThumbnailUrl: function () {
+      var url;
+
+      if (this.isNew()) {
+        url = this.get('thumbnailData') || this.get('url');
+      } else {
+        url = this.get('thumbnail_url');
       }
 
       return url;
