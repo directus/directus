@@ -793,14 +793,6 @@ class TableSchema
         return $columns;
     }
 
-    private static function formatTableRow($info)
-    {
-        $info['hidden'] = (boolean)$info['hidden'];
-        $info['single'] = (boolean)$info['single'];
-        $info['footer'] = (boolean)$info['footer'];
-        return $info;
-    }
-
     public static function columnTypeToUIType($column_type)
     {
         switch ($column_type) {
