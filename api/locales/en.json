@@ -609,5 +609,9 @@
     "server_details": "Server Details",
     "server_details_description": "See all of your server details in one place, including: compilation options, PHP extensions, environment details, and OS info.",
     "version_updates": "Version & Updates",
-    "version_updates_description": "A bird's eye view of previous, current, and available versions of the Directus framework. Coming Soon: Ability to auto-upgrade."
+    "version_updates_description": "A bird's eye view of previous, current, and available versions of the Directus framework. Coming Soon: Ability to auto-upgrade.",
+
+    "loaded_items": "Loaded Items",
+    "filtered_items": "Filtered Results",
+    "header_new_filter": "Add New Filter"
 }
