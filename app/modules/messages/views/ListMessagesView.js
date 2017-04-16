@@ -298,19 +298,19 @@ define([
           buttonText: __t('archive')
         },
         onClick: _.bind(function (event) {
+          var ids = [];
+          var $checksChecked = this.table.$('.js-select-row:checked');
+
           if (!this.showDeleteButton) {
             return;
           }
 
-          var ids = [];
-          if (this.table.state.currentMessage) {
-            ids.push(this.table.state.currentMessage.id);
-          } else {
-            var $checksChecked = this.table.$('.js-select-row:checked');
-
+          if ($checksChecked.length) {
             _.each($checksChecked, function (checkbox) {
               ids.push($(checkbox).parent().data('id'));
             });
+          } else if (this.table.state.currentMessage) {
+            ids.push(this.table.state.currentMessage.id);
           }
 
           var models = this.collection.filter(function (model) {
