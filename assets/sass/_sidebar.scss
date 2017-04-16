@@ -11,6 +11,11 @@
 	padding-top: 64px;
 	background-color: $gray-1;
 	z-index: 9;
+	&.shadowed {
+		-webkit-box-shadow: 2px 0px 6px 0px rgba(0,0,0,0.20);
+		-moz-box-shadow: 2px 0px 6px 0px rgba(0,0,0,0.20);
+		box-shadow: 2px 0px 6px 0px rgba(0,0,0,0.20);
+	}
 	.loading-pane {
 		position: relative;
 		width: 100%;
@@ -267,6 +272,11 @@
 	background-color: $gray-1;
 	z-index: 9;
 	border-left: 1px solid $gray-1;
+	&.shadowed {
+		-webkit-box-shadow: -2px 0px 6px 0px rgba(0,0,0,0.20);
+		-moz-box-shadow: -2px 0px 6px 0px rgba(0,0,0,0.20);
+		box-shadow: -2px 0px 6px 0px rgba(0,0,0,0.20);
+	}
 	&.wide {
 		width: 360px;
 		right: -360px;

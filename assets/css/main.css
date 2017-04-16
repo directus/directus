@@ -2961,6 +2961,10 @@ body.loading .header .logo {
   padding-top: 64px;
   background-color: #EEEEEE;
   z-index: 9; }
+  .sidebar.shadowed {
+    -webkit-box-shadow: 2px 0px 6px 0px rgba(0, 0, 0, 0.2);
+    -moz-box-shadow: 2px 0px 6px 0px rgba(0, 0, 0, 0.2);
+    box-shadow: 2px 0px 6px 0px rgba(0, 0, 0, 0.2); }
   .sidebar .loading-pane {
     position: relative;
     width: 100%;
@@ -3202,6 +3206,10 @@ body.loading .header .logo {
   background-color: #EEEEEE;
   z-index: 9;
   border-left: 1px solid #EEEEEE; }
+  .right-sidebar.shadowed {
+    -webkit-box-shadow: -2px 0px 6px 0px rgba(0, 0, 0, 0.2);
+    -moz-box-shadow: -2px 0px 6px 0px rgba(0, 0, 0, 0.2);
+    box-shadow: -2px 0px 6px 0px rgba(0, 0, 0, 0.2); }
   .right-sidebar.wide {
     width: 360px;
     right: -360px; }
