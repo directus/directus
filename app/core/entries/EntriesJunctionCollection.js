@@ -6,40 +6,55 @@ define(function(require, exports, module) {
       Backbone          = require('backbone'),
       _                 = require('underscore'),
       Collection        = require('core/collection'),
+      EntriesModel      = require('core/entries/EntriesModel'),
+      StatusMixin             = require('mixins/status'),
+      SaveItemMixin           = require('mixins/save-item'),
       EntriesManager    = require('core/EntriesManager');
 
   var junctionOptions = ['structure', 'table', 'preferences', 'filters', 'junctionStructure'];
+
+  var EntriesJunctionModel = Backbone.Model.extend({
+
+    isNested: true,
+
+    getTable: function () {
+      return this.table;
+    },
+
+    parse: function M(result) {
+      var EntriesModel = require('core/entries/EntriesModel');
+      var attributes = result.junction || {};
+
+      attributes.data = new EntriesModel(result.data, {collection: this.collection.nestedCollection});
+
+      this.structure = this.collection.junctionStructure;
+      this.table = this.structure.table;
+
+      return attributes;
+    },
+
+    // DRY this up please and move it to BB's prototype
+    toJSON: function (options) {
+      var attributes = _.clone(this.attributes);
+
+      attributes.data = this.get('data').toJSON(options);
+      if (_.isEmpty(attributes.data)) {
+        attributes.data.id = this.get('data').id;
+      }
+
+      return attributes;
+    }
+  });
+
+  _.extend(EntriesJunctionModel.prototype, StatusMixin.Model);
+  _.extend(EntriesJunctionModel.prototype, SaveItemMixin);
 
   //@todo: Try merging this with entries.collection.js
   var NestedCollection = module.exports = Collection.extend({
 
     isNested: true,
 
-    model: Backbone.Model.extend({
-
-      isNested: true,
-
-      parse: function (result) {
-        var EntriesModel = require('core/entries/EntriesModel');
-
-        result.data = new EntriesModel(result.data, {collection: this.collection.nestedCollection});
-        this.collection.nestedCollection.add(result.data);
-
-        return result;
-      },
-
-      //DRY this up please and move it to BB's protoype
-      toJSON: function (options) {
-        var attributes = _.clone(this.attributes);
-
-        attributes.data = this.get('data').toJSON(options);
-        if (_.isEmpty(attributes.data)) {
-          attributes.data.id = this.get('data').id;
-        }
-
-        return attributes;
-      }
-    }),
+    model: EntriesJunctionModel,
 
     trash: [],
 
@@ -71,14 +86,6 @@ define(function(require, exports, module) {
         if (!_.isArray(models)) {
           models = [models];
         }
-
-        models = _.map(models, function(model) {
-          var obj = {};
-
-          obj.data = model;
-
-          return obj;
-        });
       }
 
       return NestedCollection.__super__.add.apply(this, [models, options]);
@@ -97,8 +104,23 @@ define(function(require, exports, module) {
       return this.nestedCollection.getColumns();
     },
 
-    parse: function (response) {
-      return (response.rows === undefined) ? response : response.rows;
+    parse: function C(response) {
+      var junction = response.junction;
+      var data = response.data ? response.data : response;
+
+      response = [];
+
+      if (data) {
+        _.each(data, function (attributes, index) {
+          var _junction = (junction && junction.data ? junction.data : junction);
+          response.push({
+            junction: _junction ? _junction[index] : undefined,
+            data: attributes
+          })
+        });
+      }
+
+      return response;
     },
 
     reset: function (models, options) {
@@ -113,7 +135,6 @@ define(function(require, exports, module) {
 
     clone: function () {
       var options = {
-        parse: true,
         table: this.table,
         structure: this.structure,
         privileges: this.privileges,
@@ -139,7 +160,6 @@ define(function(require, exports, module) {
       } else {
         this.nestedCollection = new EntriesCollection({}, options);
       }
-
 
       this.nestedCollection.on('change', function() {
         this.trigger('change');

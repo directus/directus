@@ -40,8 +40,16 @@ define(['underscore', 'helpers/status'], function (_, StatusHelper) {
     // gets this model status value
     getStatusValue: function () {
       var attr = this.table.get('status_column') || this.getTableStatuses().get('status_name');
+      var value = this.get(attr);
+      var column;
 
-      return this.get(attr) || this.structure.get(attr).get('default_value');
+      if (value === undefined && this.structure) {
+        if (column = this.structure.get(attr)) {
+          value = column.get('default_value');
+        }
+      }
+
+      return value;
     },
 
     // gets this model status name

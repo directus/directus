@@ -35,7 +35,7 @@ define(function(require, exports, module) {
     require('core/interfaces/tags/component'),
     require('core/interfaces/many_to_one'),
     require('core/interfaces/radiobuttons'),
-    require('core/interfaces/many_to_many'),
+    require('core/interfaces/relational/m2m/component'),
     require('core/interfaces/one_to_many'),
     require('core/interfaces/directus_users'),
     require('core/interfaces/wysiwyg'),

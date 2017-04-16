@@ -167,7 +167,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/table/table.view', 'core
 
     serialize: function() {
       return {
-        title: this.name,
+        name: this.name,
         tableTitle: this.relatedCollection.table.get('table_name'),
         canEdit: this.canEdit,
         showChooseButton: this.showChooseButton, //&& this.canEdit,
@@ -176,7 +176,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/table/table.view', 'core
     },
 
     afterRender: function() {
-      this.setView('.related-table', this.nestedTableView).render();
+      this.setView('#related_table_' + this.name, this.nestedTableView).render();
     },
 
     initialize: function (options) {

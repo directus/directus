@@ -7,23 +7,41 @@
 //  http://www.getdirectus.com
 /*jshint multistr: true */
 
-define(['app', 'core/UIComponent', 'core/interfaces/one_to_many', 'core/table/table.view', 'core/overlays/overlays', 'core/t'], function(app, UIComponent, Onetomany, TableView, Overlays, __t) {
+define([
+  'app',
+  'core/interfaces/one_to_many',
+  'core/table/table.view',
+  'core/overlays/overlays',
+  'core/t'
+], function (app, Onetomany, TableView, Overlays, __t) {
 
   'use strict';
 
-  var Input = Onetomany.prototype.Input.extend({
+  return Onetomany.prototype.Input.extend({
 
     events: {
       'click div.related-table > div td:not(.delete)': 'editRow',
-      'click button[data-action=add]': 'addRow',
-      'click button[data-action=insert]': 'insertRow',
+      'click .js-button': 'onClickButton',
       'click td.delete': 'deleteRow'
     },
 
-    templateSource:
-      '<div class="related-table"></div>' +
-      '<div class="btn-row">{{#if showAddButton}}<button class="btn btn-primary margin-right-small" data-action="add" type="button">{{t "add_new"}}</button>{{/if}}' +
-      '{{#if showChooseButton}}<button class="btn btn-primary" data-action="insert" type="button">{{t "choose_existing"}}</button>{{/if}}</div>',
+    template: 'relational/m2m/interface',
+    templateSource: undefined,
+
+    onClickButton: function (event) {
+      var action = $(event.currentTarget).data('action');
+
+      event.preventDefault();
+
+      switch (action) {
+        case 'insert':
+          this.insertRow();
+          break;
+        case 'add':
+          this.addRow();
+          break;
+      }
+    },
 
     addRow: function() {
       this.addModel(new this.relatedCollection.nestedCollection.model({}, {collection: this.relatedCollection.nestedCollection, parse: true}));
@@ -104,11 +122,11 @@ define(['app', 'core/UIComponent', 'core/interfaces/one_to_many', 'core/table/ta
 
     initialize: function(options) {
       if (!this.columnSchema.relationship ||
-           'MANYTOMANY' !== this.columnSchema.relationship.get('type')) {
+        'MANYTOMANY' !== this.columnSchema.relationship.get('type')) {
         throw __t('m2m_the_column_need_to_have_m2m_relationship', {
           column: this.columnSchema.id,
           type: 'MANYTOMANY',
-          ui: Component.id
+          ui: 'many_to_many'
         });
       }
 
@@ -124,9 +142,9 @@ define(['app', 'core/UIComponent', 'core/interfaces/one_to_many', 'core/table/ta
       var ids = [];
 
       //Remove inactive items from collection
-      for(var i=0; i<relatedCollection.size(); i++) {
+      for (var i=0; i<relatedCollection.size(); i++) {
         var model = relatedCollection.at(i);
-        if(model.get('data').get(app.statusMapping.status_name) !== app.statusMapping.deleted_num) {
+        if (!model.get('data').isDeleted()) {
           ids.push(model.get('data').id);
         } else {
           relatedCollection.remove(model, {silent: true});
@@ -134,15 +152,17 @@ define(['app', 'core/UIComponent', 'core/interfaces/one_to_many', 'core/table/ta
         }
       }
 
-      if(ids.length > 0) {
-        relatedCollection.nestedCollection.setFilter({ids: ids.slice(0,relatedCollection.nestedCollection.filters.perPage).join(',')});
+      if (ids.length === 0) {
+        relatedCollection.nestedCollection.setFilter({
+          ids: ids.slice(0,relatedCollection.nestedCollection.filters.perPage).join(',')
+        });
         relatedCollection.nestedCollection.fetch();
       }
 
       var blacklist = [];
       var that = this;
-      relatedCollection.getColumns().forEach(function(column) {
-        if(that.columnSchema.options.get('visible_columns').split(',').indexOf(column) === -1) {
+      relatedCollection.getColumns().forEach(function (column) {
+        if (that.columnSchema.options.get('visible_columns').split(',').indexOf(column) === -1) {
           blacklist.push(column);
         }
       });
@@ -170,7 +190,10 @@ define(['app', 'core/UIComponent', 'core/interfaces/one_to_many', 'core/table/ta
       this.relatedCollection = relatedCollection;
       this.listenTo(relatedCollection, 'change add remove', function() {
         //Check if any rendered objects in collection to show or hide header
-        if(this.relatedCollection.filter(function(d){return d.get(app.statusMapping.status_name) !== app.statusMapping.deleted_num;}).length > 0) {
+        if (this.relatedCollection.filter(function (model) {
+            return !model.isDeleted();
+            //return d.get(app.statusMapping.status_name) !== app.statusMapping.deleted_num;
+          }).length > 0) {
           this.nestedTableView.tableHead = true;
         } else {
           this.nestedTableView.tableHead = false;
@@ -189,40 +212,4 @@ define(['app', 'core/UIComponent', 'core/interfaces/one_to_many', 'core/table/ta
       }
     }
   });
-
-  var Component = UIComponent.extend({
-    id: 'many_to_many',
-    dataTypes: ['MANYTOMANY'],
-    variables: [
-      {id: 'visible_columns', type: 'String', default_value: '', ui: 'textinput', char_length: 255, required: true},
-      {id: 'add_button', type: 'Boolean', default_value: true, ui: 'checkbox'},
-      {id: 'choose_button', type: 'Boolean', default_value: true, ui: 'checkbox'},
-      {id: 'remove_button', type: 'Boolean', default_value: true, ui: 'checkbox'},
-      {id: 'filter_type', type: 'String', default_value:'', ui: 'select', options: {options: {'dropdown':__t('dropdown'),'textinput':__t('text_input')} }},
-      {id: 'filter_column', type: 'String', default_value:'', ui: 'textinput', char_length: 255, comment: __t('m2m_filter_column_comment')},
-      {id: 'visible_column_template', type: 'String', default_value:'', ui: 'textinput', char_length: 255, comment: __t('m2m_visible_column_template_comment')},
-      {id: 'min_entries', type: 'Number', default_value: 0, ui: 'numeric', char_length: 11, comment: __t('m2m_min_entries_comment')},
-      {id: 'no_duplicates', type: 'Boolean', default_value: false, ui: 'checkbox', comment: __t('m2m_no_duplicates_comment')}
-    ],
-    Input: Input,
-    validate: function(value, options) {
-      var minEntries = parseInt(options.settings.get('min_entries'));
-
-      if(value.length < minEntries) {
-        return __t('this_field_requires_at_least_x_entries', {
-          count: minEntries
-        });
-      }
-
-      // @TODO: Does not currently consider newly deleted items
-      if (options.schema.isRequired() && value.length === 0) {
-        return __t('this_field_is_required');
-      }
-    },
-    list: function(options) {
-      return 'x';
-    }
-  });
-
-  return Component;
 });

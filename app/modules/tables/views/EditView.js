@@ -192,8 +192,9 @@ function(app, Backbone, _, Handlebars, __t, Notification, Directus, BasePageView
           //@todo finds a better way to determine whether there's an duplicate error
           // and what's the column's name
           var response = JSON.parse(xhr.responseText);
-          if (response.message.indexOf('Duplicate entry') !== -1) {
-            var columnName = response.message.split('for key')[1].trim();
+          var message = response.error.message;
+          if (message.indexOf('Duplicate entry') !== -1) {
+            var columnName = message.split('for key')[1].trim();
             columnName = columnName.substring(1, columnName.lastIndexOf("'"));
             app.router.openModal({type: 'alert', text: 'This item was not saved because its "' + columnName + '" value is not unique.'});
             return;
