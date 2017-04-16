@@ -270,17 +270,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/table/table.view', 'core
         relatedCollection.setOrder('sort','ASC',{silent: true});
       }
 
-      this.listenTo(relatedCollection, 'add change', function() {
-        //Check if any rendered objects in collection to show or hide header
-        if(this.relatedCollection.filter(function(d){return d.get(app.statusMapping.status_name) !== app.statusMapping.deleted_num;}).length > 0) {
-          this.nestedTableView.tableHead = true;
-        } else {
-          this.nestedTableView.tableHead = false;
-        }
-        this.nestedTableView.render();
-      }, this);
-
-      this.listenTo(relatedCollection, 'remove', function() {
+      this.listenTo(relatedCollection, 'add change remove', function() {
         this.nestedTableView.render();
       }, this);
 

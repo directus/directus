@@ -172,28 +172,13 @@ define([
       }
 
       this.relatedCollection = relatedCollection;
-      this.listenTo(relatedCollection, 'change add remove', function() {
-        //Check if any rendered objects in collection to show or hide header
-        if (this.relatedCollection.filter(function (model) {
-            return !model.isDeleted();
-            //return d.get(app.statusMapping.status_name) !== app.statusMapping.deleted_num;
-          }).length > 0) {
-          this.nestedTableView.tableHead = true;
-        } else {
-          this.nestedTableView.tableHead = false;
-        }
+      this.listenTo(relatedCollection, 'change add remove', function () {
         this.nestedTableView.render();
       }, this);
 
       this.listenTo(relatedCollection.nestedCollection, 'sync', function() {
         this.nestedTableView.render();
       }, this);
-
-      if(ids.length > 0) {
-        this.listenTo(relatedCollection.nestedCollection, 'sort', function() {
-          //this.relatedCollection.nestedCollection.fetch({includeFilters: false, data: {adv_where: 'id IN (' + ids.join(',') + ')'}, reset:true});
-        });
-      }
     }
   });
 });
