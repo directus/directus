@@ -4,7 +4,8 @@
   "description": "API-driven content management framework for custom databases",
   "main": "gulpfile.js",
   "scripts": {
-    "test": "./node_modules/karma/bin/karma start"
+    "test": "./node_modules/karma/bin/karma start",
+    "lint": "xo"
   },
   "repository": {
     "type": "git",
@@ -13,6 +14,15 @@
   "author": "RANGER Studio LLC",
   "bugs": {
     "url": "https://github.com/directus/directus/issues"
+  },
+  "xo": {
+    "envs": ["amd", "browser"],
+    "ignores": ["assets", "vendor"],
+    "space": true,
+    "esnext": false,
+    "rules": {
+      "import/no-amd": 0
+    }
   },
   "private": true,
   "homepage": "http://getdirectus.com",
@@ -39,6 +49,7 @@
     "merge-stream": "~0.1.7",
     "phantomjs": "~2.1.1",
     "requirejs": "~2.1.20",
-    "run-sequence": "~1.0.2"
+    "run-sequence": "~1.0.2",
+    "xo": "^0.18.1"
   }
 }
