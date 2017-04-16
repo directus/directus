@@ -53,7 +53,7 @@ define([
         }
       });
 
-      this.saveWidget.disable();
+      // this.saveWidget.disable();
 
       return [
         this.saveWidget

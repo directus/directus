@@ -243,7 +243,7 @@ function(app, Backbone, _, Handlebars, __t, Notification, Directus, BasePageView
         onClick: _.bind(editView.saveConfirm, editView)
       });
 
-      this.saveWidget.disable();
+      // this.saveWidget.disable();
 
       widgets.push(this.saveWidget);
 
