@@ -299,9 +299,9 @@ define([
           }, this);
 
           // current table primary column
-          data.columns_left = app.schemaManager.getColumns('tables', tableRelated).filter(function(model) {
-            return true;
-          }).map(function(model) {
+          data.columns_left = app.schemaManager.getColumns('tables', tableRelated).filter(function (model) {
+            return !model.isAlias();
+          }).map(function (model) {
             return {column_name: model.id, selected: (model.id === this.model.get('junction_key_left'))};
           }, this);
         } else {

@@ -183,7 +183,7 @@
 				<div class="select-container">
 					<select {{#if ONETOMANY}}id="junctionKeyRight" name="junction_key_right"{{/if}}>
 						{{#columns_left}}
-						<option {{#if selected}}selected{{/if}}>{{column_name}}</option>
+						<option {{#if selected}}selected{{/if}} value={{column_name}}>{{column_name}}</option>
 						{{/columns_left}}
 					</select>
 					<i class="material-icons select-arrow">arrow_drop_down</i>
