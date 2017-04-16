@@ -8,6 +8,7 @@ use Directus\Database\TableGateway\DirectusUsersTableGateway;
 use Directus\Database\TableGateway\RelationalTableGateway as TableGateway;
 use Directus\Services\EntriesService;
 use Directus\Services\GroupsService;
+use Directus\Util\ArrayUtils;
 
 class Entries extends Route
 {
@@ -133,6 +134,8 @@ class Entries extends Route
         }
 
         $columns = ($params['columns']) ? explode(',', $params['columns']) : [];
+        ArrayUtils::push($columns, $Table->primaryKeyFieldName);
+        $params['columns'] = implode(',', $columns);
         if (count($columns) > 0) {
             $params['group_by'] = $columns[0];
 
@@ -146,14 +149,14 @@ class Entries extends Route
             $entries = $Table->getEntries($params);
         }
 
-        $entries = $entries['rows'];
+        $entries = $entries['data'];
         $response = [];
         foreach ($entries as $entry) {
-            $val = '';
             $tokens = [];
             foreach ($columns as $col) {
                 array_push($tokens, $entry[$col]);
             }
+
             $val = implode(' ', $tokens);
             array_push($response, ['value' => $val, 'tokens' => $tokens, 'id' => $entry['id']]);
         }
