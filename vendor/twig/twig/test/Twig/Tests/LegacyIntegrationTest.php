@@ -26,7 +26,7 @@ class Twig_Tests_LegacyIntegrationTest extends Twig_Test_IntegrationTestCase
     public function getTests($name, $legacyTests = false)
     {
         if (!$legacyTests) {
-            return array(array('not', '-', '', array(), '', array()));
+            return array(array('', '', '', array(), '', array()));
         }
 
         return parent::getTests($name, true);

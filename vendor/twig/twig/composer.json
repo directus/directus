@@ -30,7 +30,7 @@
         "php": ">=5.2.7"
     },
     "require-dev": {
-        "symfony/phpunit-bridge": "~3.2",
+        "symfony/phpunit-bridge": "~3.3@dev",
         "symfony/debug": "~2.7",
         "psr/container": "^1.0"
     },
@@ -41,7 +41,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "1.32-dev"
+            "dev-master": "1.33-dev"
         }
     }
 }

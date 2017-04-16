@@ -62,7 +62,7 @@ class PriorityList implements Iterator, Countable
      */
     public function insert($name, $value, $priority = 0)
     {
-        if (!isset($this->items[$name])) {
+        if (! isset($this->items[$name])) {
             $this->count++;
         }
 
@@ -85,7 +85,7 @@ class PriorityList implements Iterator, Countable
      */
     public function setPriority($name, $priority)
     {
-        if (!isset($this->items[$name])) {
+        if (! isset($this->items[$name])) {
             throw new \Exception("item $name not found");
         }
 
@@ -131,7 +131,7 @@ class PriorityList implements Iterator, Countable
      */
     public function get($name)
     {
-        if (!isset($this->items[$name])) {
+        if (! isset($this->items[$name])) {
             return;
         }
 
@@ -145,7 +145,7 @@ class PriorityList implements Iterator, Countable
      */
     protected function sort()
     {
-        if (!$this->sorted) {
+        if (! $this->sorted) {
             uasort($this->items, [$this, 'compare']);
             $this->sorted = true;
         }
@@ -161,7 +161,7 @@ class PriorityList implements Iterator, Countable
     protected function compare(array $item1, array $item2)
     {
         return ($item1['priority'] === $item2['priority'])
-            ? ($item1['serial']   > $item2['serial']   ? -1 : 1) * $this->isLIFO
+            ? ($item1['serial'] > $item2['serial'] ? -1 : 1) * $this->isLIFO
             : ($item1['priority'] > $item2['priority'] ? -1 : 1);
     }
 

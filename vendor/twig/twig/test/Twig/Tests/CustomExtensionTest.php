@@ -17,7 +17,12 @@ class CustomExtensionTest extends PHPUnit_Framework_TestCase
      */
     public function testGetInvalidOperators(Twig_ExtensionInterface $extension, $expectedExceptionMessage)
     {
-        $this->setExpectedException('InvalidArgumentException', $expectedExceptionMessage);
+        if (method_exists($this, 'expectException')) {
+            $this->expectException('InvalidArgumentException');
+            $this->expectExceptionMessage($expectedExceptionMessage);
+        } else {
+            $this->setExpectedException('InvalidArgumentException', $expectedExceptionMessage);
+        }
 
         $env = new Twig_Environment($this->getMockBuilder('Twig_LoaderInterface')->getMock());
         $env->addExtension($extension);

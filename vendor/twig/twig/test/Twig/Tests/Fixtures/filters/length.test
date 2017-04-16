@@ -4,11 +4,22 @@
 {{ array|length }}
 {{ string|length }}
 {{ number|length }}
-{{ markup|length }}
+{{ to_string_able|length }}
+{{ countable|length }}
+{{ magic|length }}
 --DATA--
-return array('array' => array(1, 4), 'string' => 'foo', 'number' => 1000, 'markup' => new Twig_Markup('foo', 'UTF-8'))
+return array(
+    'array' => array(1, 4),
+    'string' => 'foo',
+    'number' => 1000,
+    'to_string_able' => new ToStringStub('foobar'),
+    'countable' => new CountableStub(42),       /* also asserts we do *not* call __toString() */
+    'magic' => new MagicCallStub(),             /* used to assert we do *not* call __call */
+);
 --EXPECT--
 2
 3
 4
-3
+6
+42
+1

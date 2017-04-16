@@ -572,10 +572,15 @@ abstract class AbstractFtpAdapter extends AbstractAdapter
      */
     public function getConnection()
     {
-        if ( ! $this->isConnected()) {
+        static $tries = 0;
+
+        if ( ! $this->isConnected() && $tries < 3) {
+            $tries++;
             $this->disconnect();
             $this->connect();
         }
+
+        $tries = 0;
 
         return $this->connection;
     }

@@ -36,7 +36,7 @@ class SplPriorityQueue extends \SplPriorityQueue implements Serializable
      */
     public function insert($datum, $priority)
     {
-        if (!is_array($priority)) {
+        if (! is_array($priority)) {
             $priority = [$priority, $this->serial--];
         }
         parent::insert($datum, $priority);

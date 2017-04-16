@@ -3559,6 +3559,7 @@ input[type="checkbox"].custom-check + label tbody.remove-hover-state .sort span:
         right: 18px;
         z-index: 2; }
       .cards .card .header-image .default-info {
+        position: relative;
         border: solid 1px #ececec;
         border-bottom: 0px;
         font-size: 45px;
@@ -3566,6 +3567,10 @@ input[type="checkbox"].custom-check + label tbody.remove-hover-state .sort span:
         height: 199px;
         line-height: 190px;
         text-align: center; }
+        .cards .card .header-image .default-info img {
+          position: absolute;
+          top: 0;
+          left: 0; }
       .cards .card .header-image .default-loading {
         border: solid 1px #ececec;
         border-bottom: 0px;

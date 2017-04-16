@@ -284,6 +284,10 @@ class Twig_Tests_ExpressionParserTest extends PHPUnit_Framework_TestCase
         $parser = new Twig_Parser($env);
 
         $parser->parse($env->tokenize(new Twig_Source($template, 'index')));
+
+        // add a dummy assertion here to satisfy PHPUnit, the only thing we want to test is that the code above
+        // can be executed without throwing any exceptions
+        $this->addToAssertionCount(1);
     }
 
     public function getMacroDefinitionSupportsConstantDefaultValues()
