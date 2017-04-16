@@ -22,12 +22,26 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/table/table.view', 'core
                   </div>';
 
   var Input = UIView.extend({
-    templateSource: template,
+    template: 'relational/table',
     events: {
       'click div.related-table > div td:not(.delete)': 'editRow',
-      'click button[data-action=add]': 'addRow',
-      'click button[data-action=insert]': 'insertRow',
+      'click .js-button': 'onClickButton',
       'click td.delete': 'deleteRow'
+    },
+
+    onClickButton: function (event) {
+      var action = $(event.currentTarget).data('action');
+
+      event.preventDefault();
+
+      switch (action) {
+        case 'insert':
+          this.insertRow();
+          break;
+        case 'add':
+          this.addRow();
+          break;
+      }
     },
 
     editRow: function(e) {

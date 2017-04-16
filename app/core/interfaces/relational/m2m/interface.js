@@ -25,23 +25,7 @@ define([
       'click td.delete': 'deleteRow'
     },
 
-    template: 'relational/m2m/interface',
-    templateSource: undefined,
-
-    onClickButton: function (event) {
-      var action = $(event.currentTarget).data('action');
-
-      event.preventDefault();
-
-      switch (action) {
-        case 'insert':
-          this.insertRow();
-          break;
-        case 'add':
-          this.addRow();
-          break;
-      }
-    },
+    template: 'relational/table',
 
     addRow: function() {
       this.addModel(new this.relatedCollection.nestedCollection.model({}, {collection: this.relatedCollection.nestedCollection, parse: true}));
