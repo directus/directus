@@ -1,9 +1,15 @@
-<div class="section-header">
-    <span class="big-label-text" title="{{t "translation_title"}}">{{t "translations_x" field=translateField}}</span>
-    <select id="activeLanguageSelect" class="section-dropdown">
-        {{#languages}}
-        <option {{#if active}}selected{{/if}} value="{{val}}">{{name}}</option>
-        {{/languages}}
-    </select>
+<div class="field break-header translation">
+	{{t "translation_title"}}:
+	<div class="translation-picker">
+		<span class="current-language">English</span>
+		<i class="material-icons select-arrow">arrow_drop_down</i>
+		<div class="select-container">
+			<select id="activeLanguageSelect" name="type">
+				{{#languages}}
+				<option {{#if active}}selected{{/if}} value="{{val}}">{{name}}</option>
+				{{/languages}}
+			</select>
+		</div>
+	</div>
 </div>
 <div id="translateEditFormEntry"></div>

@@ -826,47 +826,49 @@ class Bootstrap
         $emitter->addFilter('table.insert.directus_users:before', $preventUsePublicGroup);
         $emitter->addFilter('table.update.directus_users:before', $preventUsePublicGroup);
 
-        $emitter->addFilter('load.relational.onetomany', function($payload) {
-            $rows = $payload->data;
-            $column = $payload->column;
-
-            if ($column->getUi() !== 'translation') {
-                return $payload;
-            }
-
-            $options = $column->getOptions();
-            $code = ArrayUtils::get($options, 'languages_code_column', 'id');
-            $languagesTable = ArrayUtils::get($options, 'languages_table');
-            $languageIdColumn = ArrayUtils::get($options, 'left_column_name');
-
-            if (!$languagesTable) {
-                throw new \Exception('Translations language table not defined for ' . $languageIdColumn);
-            }
-
-            $tableSchema = TableSchema::getTableSchema($languagesTable);
-            $primaryKeyColumn = 'id';
-            foreach($tableSchema->getColumns() as $column) {
-                if ($column->isPrimary()) {
-                    $primaryKeyColumn = $column->getName();
-                    break;
-                }
-            }
-
-            $newData = [];
-            foreach($rows['data'] as $row) {
-                $index = $row[$languageIdColumn];
-                if (is_array($row[$languageIdColumn])) {
-                    $index = $row[$languageIdColumn]['data'][$code];
-                    $row[$languageIdColumn] = $row[$languageIdColumn]['data'][$primaryKeyColumn];
-                }
-
-                $newData[$index] = $row;
-            }
-
-            $payload->data['data'] = $newData;
-
-            return $payload;
-        }, $emitter::P_HIGH);
+        // NOTE: Adding the translation key into as array key, return a not valid array (json)
+        // so instead of creating each element as model, backbone thinks those are attributes of a model
+        // $emitter->addFilter('load.relational.onetomany', function($payload) {
+        //     $rows = $payload->data;
+        //     $column = $payload->column;
+        //
+        //     if ($column->getUi() !== 'translation') {
+        //         return $payload;
+        //     }
+        //
+        //     $options = $column->getOptions();
+        //     $code = ArrayUtils::get($options, 'languages_code_column', 'id');
+        //     $languagesTable = ArrayUtils::get($options, 'languages_table');
+        //     $languageIdColumn = ArrayUtils::get($options, 'left_column_name');
+        //
+        //     if (!$languagesTable) {
+        //         throw new \Exception('Translations language table not defined for ' . $languageIdColumn);
+        //     }
+        //
+        //     $tableSchema = TableSchema::getTableSchema($languagesTable);
+        //     $primaryKeyColumn = 'id';
+        //     foreach($tableSchema->getColumns() as $column) {
+        //         if ($column->isPrimary()) {
+        //             $primaryKeyColumn = $column->getName();
+        //             break;
+        //         }
+        //     }
+        //
+        //     $newData = [];
+        //     foreach($rows['data'] as $row) {
+        //         $index = $row[$languageIdColumn];
+        //         if (is_array($row[$languageIdColumn])) {
+        //             $index = $row[$languageIdColumn]['data'][$code];
+        //             $row[$languageIdColumn] = $row[$languageIdColumn]['data'][$primaryKeyColumn];
+        //         }
+        //
+        //         $newData[$index] = $row;
+        //     }
+        //
+        //     $payload->data['data'] = $newData;
+        //
+        //     return $payload;
+        // }, $emitter::P_HIGH);
 
         return $emitter;
     }
