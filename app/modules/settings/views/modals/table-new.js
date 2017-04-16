@@ -28,8 +28,10 @@ define([
 
     onSubmit: function (event) {
       event.preventDefault();
+    },
 
-      this.save();
+    afterRender: function () {
+      this.$('#table_name').focus();
     },
 
     _close: function () {
