@@ -201,8 +201,13 @@ define([
       }
 
       if (SchemaHelper.supportsLength(this.selectedDataType)) {
-        data.SHOW_LENGTH = true;
+        // TODO: Set a default length for each data type
+        if (SchemaHelper.isNumericType(this.selectedDataType) && !this.model.get('length')) {
+          this.model.set({length: 11});
+        }
+
         data.length = this.model.getLength();
+        data.SHOW_LENGTH = true;
       }
 
       if (['many_to_one', 'single_file', 'many_to_one_typeahead'].indexOf(this.selectedUI) > -1) {

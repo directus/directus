@@ -77,6 +77,7 @@ define(function() {
 
   return {
     getNumericTypes: getNumericTypes,
+    isNumericType: isNumericType,
     dateColumns: dateColumns,
     numericColumns: numericColumns,
     primaryColumns: primaryColumns,
