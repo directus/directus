@@ -19,9 +19,17 @@ define([
     },
 
     events: {
+      'submit': 'onSubmit',
+
       'click .js-cancel': '_close',
 
       'click .js-save': 'save'
+    },
+
+    onSubmit: function (event) {
+      event.preventDefault();
+
+      this.save();
     },
 
     _close: function () {
