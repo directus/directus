@@ -69,7 +69,14 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/table/table.view', 'core
 
     addRow: function() {
       var collection = this.relatedCollection;
-      this.addModel(new collection.model({}, {collection: collection, parse: true, structure: collection.structure, table: collection.table, privileges: collection.privileges}));
+
+      this.addModel(new collection.model({}, {
+        collection: collection,
+        parse: true,
+        structure: collection.structure,
+        table: collection.table,
+        privileges: collection.privileges
+      }));
     },
 
     editModel: function(model) {
@@ -107,6 +114,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/table/table.view', 'core
       var collection = this.relatedCollection;
       var columnName = this.columnSchema.relationship.get('junction_key_right');
       var id = this.model.id;
+
       var view = new EditView({
         model: model,
         collectionAdd: true,

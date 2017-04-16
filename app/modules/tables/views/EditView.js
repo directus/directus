@@ -45,7 +45,7 @@ function(app, Backbone, _, Handlebars, __t, Notification, Directus, BasePageView
       this.skipFetch = options.skipFetch;
       this.translateViews = [];
 
-      options.hiddenFields = [];
+      options.hiddenFields = options.hiddenFields || [];
       options.model.structure.each(function(model) {
         if (model.get('ui') === 'translation') {
           var translateId = model.id;
