@@ -7,7 +7,7 @@
 			<h1>{{t "global_settings"}}</h1>
 			<p>{{t "global_settings_description"}}</p>
 		</div>
-		<a href="{{rootUrl}}#settings/global"><div class="button">Edit</div></a>
+		<a href="{{rootUrl}}#settings/global"><div class="button">{{t 'settings_edit'}}</div></a>
 	</div>
 
 	<div class="settings-module">
@@ -18,7 +18,7 @@
 			<h1>{{t "tables_and_inputs"}}</h1>
 			<p>{{t "tables_and_inputs_description"}}</p>
 		</div>
-		<a href="{{rootUrl}}#settings/tables"><div class="button">Manage</div></a>
+		<a href="{{rootUrl}}#settings/tables"><div class="button">{{t 'settings_manage'}}</div></a>
 	</div>
 
 	<div class="settings-module">
@@ -29,7 +29,7 @@
 			<h1>{{t "group_permissions"}}</h1>
 			<p>{{t "group_permissions_description"}}</p>
 		</div>
-		<a href="{{rootUrl}}#settings/permissions"><div class="button">Manage</div></a>
+		<a href="{{rootUrl}}#settings/permissions"><div class="button">{{t 'settings_manage'}}</div></a>
 	</div>
 
 	<div class="settings-module disabled">
@@ -37,10 +37,10 @@
 			<i class="material-icons">warning</i>
 		</div>
 		<div class="description">
-			<h1>Activity Log</h1>
-			Review any activity and errors encountered by the Directus system. Some database and server errors may only be available in your server's logs.
+			<h1>{{t 'activity_log'}}</h1>
+			<p>{{t 'activity_log_description'}}</p>
 		</div>
-		<div class="button disabled">Coming Soon</div>
+		<div class="button disabled">{{t 'settings_view'}}</div>
 	</div>
 
 	<div class="settings-module disabled">
@@ -48,10 +48,10 @@
 			<i class="material-icons">storage</i>
 		</div>
 		<div class="description">
-			<h1>Server Details</h1>
-			See all of your server details in one place, including: compilation options, PHP extensions, environment details, and OS info.
+			<h1>{{t 'server_details'}}</h1>
+			<p>{{t 'server_details_description'}}</p>
 		</div>
-		<div class="button disabled">Coming Soon</div>
+		<div class="button disabled">{{t 'settings_view'}}</div>
 	</div>
 
 	<div class="settings-module disabled">
@@ -59,10 +59,10 @@
 			<i class="material-icons">update</i>
 		</div>
 		<div class="description">
-			<h1>Version &amp; Updates</h1>
-			A bird's eye view of previous, current, and available versions of the Directus framework. Coming Soon: Ability to auto-upgrade.
+			<h1>{{t 'version_updates'}}</h1>
+			<p>{{t 'version_updates_description'}}</p>
 		</div>
-		<div class="button disabled">Coming Soon</div>
+		<div class="button disabled">{{t 'settings_view'}}</div>
 	</div>
 </div>
 

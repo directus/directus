@@ -434,5 +434,20 @@
   "your_profile": "Dein Profil",
   "your_messages": "Nachrichten",
   "user_directory": "Benutzer",
-  "file_library": "Dateien"
+  "file_library": "Dateien",
+
+  "settings_edit": "Bearbeiten",
+  "settings_manage": "Verwalten",
+  "settings_view": "Ansehen",
+
+  "activity_log": "Activity Log",
+  "activity_log_description": "Review any activity and errors encountered by the Directus system. Some database and server errors may only be available in your server's logs.",
+  "server_details": "Server Details",
+  "server_details_description": "See all of your server details in one place, including: compilation options, PHP extensions, environment details, and OS info.",
+  "version_updates": "Version & Updates",
+  "version_updates_description": "A bird's eye view of previous, current, and available versions of the Directus framework. Coming Soon: Ability to auto-upgrade.",
+
+  "loaded_items": "gefundene Einträge",
+  "filtered_items": "gefilterte Einträge",
+  "header_new_filter": "Neuen Filter hinzufügen"
 }
