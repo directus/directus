@@ -187,7 +187,7 @@ body.help {
 			border: 3px solid $primary;
 			background-color: $white;
 			&.with-background {
-				background-color: $primary;
+				background-color: lighten($primary, 30%);
 			}
 			&.editable:hover {
 				.avatar {
@@ -659,6 +659,7 @@ body.help {
 			}
 			h5 {
 				margin: 0 0 30px;
+				font-weight: 400;
 			}
 			.select-container,
 			input {

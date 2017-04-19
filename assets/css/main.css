@@ -3984,7 +3984,7 @@ body.help .discover-spotlight {
       border: 3px solid #3498DB;
       background-color: #FFFFFF; }
       .smoke .modal .header-circle.with-background {
-        background-color: #3498DB; }
+        background-color: #b6daf2; }
       .smoke .modal .header-circle.editable:hover .avatar {
         opacity: 0.5; }
       .smoke .modal .header-circle.editable:hover .edit-avatar {
@@ -4374,7 +4374,8 @@ body.help .discover-spotlight {
       .smoke .modal.welcome-1 .modal-bg h1, .smoke .modal.welcome-2 .modal-bg h1, .smoke .modal.welcome-3 .modal-bg h1 {
         margin: 20px 0  20px; }
       .smoke .modal.welcome-1 .modal-bg h5, .smoke .modal.welcome-2 .modal-bg h5, .smoke .modal.welcome-3 .modal-bg h5 {
-        margin: 0 0 30px; }
+        margin: 0 0 30px;
+        font-weight: 400; }
       .smoke .modal.welcome-1 .modal-bg .select-container,
       .smoke .modal.welcome-1 .modal-bg input, .smoke .modal.welcome-2 .modal-bg .select-container,
       .smoke .modal.welcome-2 .modal-bg input, .smoke .modal.welcome-3 .modal-bg .select-container,
