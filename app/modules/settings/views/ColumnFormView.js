@@ -126,6 +126,8 @@ define([
         hideColumnName: this.hideColumnName
       };
 
+      this.isAlias = false;
+
       if (_.isFunction(this.uiFilter)) {
         _.each(uis, function(value, key) {
           if (this.uiFilter(value) !== true) {
@@ -212,7 +214,7 @@ define([
 
       if (['many_to_one', 'single_file', 'many_to_one_typeahead'].indexOf(this.selectedUI) > -1) {
         data.MANYTOONE = true;
-        data.selectedRelationshipType = 'MANYTOONE';
+        this.selectedRelationshipType = data.selectedRelationshipType = 'MANYTOONE';
         tableRelated = this.getRelatedTable();//this.model.get('related_table');
         this.model.set({junction_key_right: this.columnName});
 
@@ -354,7 +356,7 @@ define([
           this.model.set({junction_key_right: junctionKeyRight});
         }
 
-        this.model.set({relationship_type: this.selectedDataType});
+        this.model.set({relationship_type: this.selectedRelationshipType});
       }
 
       var dataType = this.selectedDataType;
