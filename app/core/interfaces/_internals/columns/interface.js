@@ -28,7 +28,6 @@ define([
     template: '_internals/columns/interface',
 
     events: {
-      'click .js-sort-toggle': 'toggleSortable',
       'click .js-row': 'editRow',
       'click .js-cell': 'editCell',
       'click .js-remove': 'verifyDestroyColumn',
@@ -275,31 +274,6 @@ define([
       this.enableSort();
     },
 
-    toggleSortable: function() {
-      if (this.sortable.options.sort) {
-        this.disableSortable();
-        Notification.info(__t('table_sort_disabled'), '<i>'+__t('table_sort_disabled_message')+'</i>', {timeout: 3000});
-      } else {
-        this.enableSortable();
-        Notification.info(__t('table_sort_enabled'), '<i>'+__t('table_sort_enabled_message')+'</i>', {timeout: 3000});
-      }
-    },
-
-    enableSortable: function() {
-      // @TODO: This method is duplicated from the table view
-      this.$('table').removeClass('disable-sorting').addClass('reorder-enabled');
-      this.$('.js-sort-toggle').addClass('active');
-      this.sortable.options.sort = true;
-      this.sortable.options.disabled = false;
-    },
-
-    disableSortable: function() {
-      this.$('table').addClass('disable-sorting').removeClass('reorder-enabled');
-      this.$('.js-sort-toggle').removeClass('active');
-      this.sortable.options.sort = false;
-      this.sortable.options.disabled = true;
-    },
-
     drop: function () {
       var collection = this.columns;
 
@@ -329,8 +303,8 @@ define([
         handle: '.js-sort', // Restricts sort start click/touch to the specified element
         draggable: 'tr', // Specifies which items inside the element should be sortable
         ghostClass: 'sortable-ghost',
-        sort: false,
-        disabled: true,
+        sort: true,
+        disabled: false,
         onStart: function () {
           var tbody = $(container);
 
