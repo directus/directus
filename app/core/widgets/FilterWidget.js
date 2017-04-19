@@ -2,8 +2,9 @@ define([
   'app',
   'backbone',
   'underscore',
+  'helpers/sort',
   'handlebars'
-], function(app, Backbone, _, Handlebars) {
+], function(app, Backbone, _, SortHelper, Handlebars) {
 
   'use strict';
 
@@ -268,9 +269,7 @@ define([
         data.tableColumns = _.difference(data.tableColumns, this.collection.table.get('filter_column_blacklist').split(','));
       }
 
-      data.tableColumns.sort(function (a, b) {
-        return a < b;
-      });
+      data.tableColumns.sort(SortHelper.arraySort);
 
       var that = this;
       _.each(this.options.filters, function (item, i) {
