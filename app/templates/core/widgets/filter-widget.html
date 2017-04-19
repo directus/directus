@@ -1,4 +1,4 @@
-<input class="general js-search" type="text" value="{{searchString}}" placeholder="{{resultCount}} {{#if hasFilters}}Filtered Results{{else}}Loaded Items{{/if}}…">
+<input class="general js-search" type="text" value="{{searchString}}" placeholder="{{resultCount}} {{#if hasFilters}}{{t 'filtered_items'}}{{else}}{{t 'loaded_items'}}{{/if}}…">
 <i class="material-icons search">search</i>
 {{#if hasFilters}}<i class="material-icons clear js-search-clear">close</i>{{/if}}
 <i class="material-icons filter-dropdown-toggle js-toggle">arrow_drop_down</i>
@@ -27,7 +27,7 @@
 	<hr>
 	{{/if}}
 
-		<h3>Add New Filter</h3>
+		<h3>{{t 'header_new_filter'}}</h3>
 		<div class="select-container add-column-filter">
 				<select name="type" class="medium adv-search-col-id">
 						<option value="">{{t "widget_filter_add_filter"}}</option>
