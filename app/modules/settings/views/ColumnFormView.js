@@ -457,6 +457,7 @@ define([
 
     updateCleanColumnInput: function () {
       this.$('#displayName').val(app.capitalize(this.columnName));
+      this.$('#columnName').val(this.columnName);
     },
 
     afterRender: function () {
