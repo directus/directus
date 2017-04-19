@@ -49,7 +49,7 @@ define(function(require, exports, module) {
     require('core/interfaces/user'),
     require('core/interfaces/directus_file_title'),
     require('core/interfaces/map'),
-    require('core/interfaces/markdown'),
+    require('core/interfaces/markdown/component'),
     require('core/interfaces/multiple_files'),
     require('core/interfaces/multiple_files/csv/component'),
     require('core/interfaces/translation'),
