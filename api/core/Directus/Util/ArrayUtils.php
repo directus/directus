@@ -315,6 +315,19 @@ class ArrayUtils
     }
 
     /**
+     * Pushes a new element at the end of the given array
+     *
+     * @param array $array
+     * @param $value
+     *
+     * @return int
+     */
+    public static function push(array &$array, $value)
+    {
+        return array_push($array, $value);
+    }
+
+    /**
      * Pulls the last element from the given array
      *
      * @param array $array

@@ -90,8 +90,11 @@ define(['app', 'backbone', 'handlebars', 'core/UIComponent', 'core/UIView', 'cor
       if(this.options.settings.get('visible_status_ids')) {
         active = this.options.settings.get('visible_status_ids');
       }
+
       var data = {'columns_visible[]': []};
-      data[app.statusMapping.status_name] = active;
+      if (value.table.hasStatusColumn()) {
+        data[value.table.getStatusColumnName()] = active;
+      }
 
       var columns_visible =[];
       if(this.options.settings.get('visible_column')) {

@@ -92,6 +92,10 @@ define(function(require, exports, module) {
       return this.relationship.get('type');
     },
 
+    isAlias: function () {
+      return (this.get('type') || '').toUpperCase() === 'ALIAS';
+    },
+
     isRelational: function () {
       return !!this.getRelationshipType();
     },

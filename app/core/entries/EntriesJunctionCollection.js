@@ -7,8 +7,8 @@ define(function(require, exports, module) {
       _                 = require('underscore'),
       Collection        = require('core/collection'),
       EntriesModel      = require('core/entries/EntriesModel'),
-      StatusMixin             = require('mixins/status'),
-      SaveItemMixin           = require('mixins/save-item'),
+      StatusMixin       = require('mixins/status'),
+      SaveItemMixin     = require('mixins/save-item'),
       EntriesManager    = require('core/EntriesManager');
 
   var junctionOptions = ['structure', 'table', 'preferences', 'filters', 'junctionStructure'];

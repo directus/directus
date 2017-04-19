@@ -126,7 +126,7 @@ function(app, _, Backbone, __t, Directus, BasePageView, RightPane, Widgets) {
 
       widgets.push(this.saveWidget);
 
-      this.saveWidget.disable();
+      // this.saveWidget.disable();
 
       // delete button
       if (!this.model.isNew()) {

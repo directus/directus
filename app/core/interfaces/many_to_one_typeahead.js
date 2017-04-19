@@ -124,6 +124,7 @@ define(['app', 'backbone', 'handlebars', 'core/UIComponent', 'core/UIView', 'uti
       var template = this.columnSchema.options.get('template');
       var self = this;
       var url = app.API_URL + 'tables/' + this.collection.table.id + '/typeahead/';
+      var model = this.model.get(this.name);
       var params = {};
 
       if(this.visibleColumn) {
@@ -134,7 +135,10 @@ define(['app', 'backbone', 'handlebars', 'core/UIComponent', 'core/UIView', 'uti
       if(this.options.settings.get('visible_status_ids')) {
         status = this.options.settings.get('visible_status_ids');
       }
-      params[app.statusMapping.status_name] = status;
+
+      if (model.table.hasStatusColumn()) {
+        params[model.table.getStatusColumnName()] = status;
+      }
 
       var urlParams = Utils.encodeQueryParams(params);
       if(urlParams) {

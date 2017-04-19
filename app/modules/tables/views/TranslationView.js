@@ -79,7 +79,9 @@ function(app, Backbone, Handlebars, Directus, EntriesManager) {
       this.translateModel = null;
 
       this.translateCollection.forEach(function(model) {
-        if(model.get(that.translateSettings.left_column_name) === that.activeLanguageId) {
+        // TODO: fix language id is returned as string
+        // avoid strict comparison
+        if(model.get(that.translateSettings.left_column_name) == that.activeLanguageId) {
           that.translateModel = model;
         }
       });

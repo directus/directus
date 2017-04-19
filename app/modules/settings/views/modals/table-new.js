@@ -19,9 +19,19 @@ define([
     },
 
     events: {
+      'submit': 'onSubmit',
+
       'click .js-cancel': '_close',
 
       'click .js-save': 'save'
+    },
+
+    onSubmit: function (event) {
+      event.preventDefault();
+    },
+
+    afterRender: function () {
+      this.$('#table_name').focus();
     },
 
     _close: function () {

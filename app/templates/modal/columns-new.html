@@ -124,7 +124,9 @@
 
 		<div>
 			<div class="column-33 set-height">
+				{{#if MANYTOMANY}}
 				<i class="material-icons relational-arrow-left">arrow_forward</i>
+				{{/if}}
 				<div class="select-container">
 					<select {{#if MANYTOONE}}id="junctionKeyRight" name="junction_key_right"{{/if}}{{#if disabledJunctionKeyRight}} disabled{{/if}}>
 					{{#columns_right}}
@@ -146,14 +148,19 @@
 				</div>
 			</div>
 			{{/if}}
+			{{#unless MANYTOMANY}}
 			<div class="column-33 set-height">
-			<div class="select-container hidden">
-				<select name="user-group" disabled>
-					<option value="value">ID</option>
-					<option value="value">Column</option>
-				</select>
-				<i class="material-icons select-arrow">arrow_drop_down</i>
+				<i class="material-icons relational-arrow-right">arrow_back</i>
+				<div class="select-container">
+					<select {{#if ONETOMANY}}id="junctionKeyRight" name="junction_key_right"{{/if}}>
+					{{#columns_left}}
+					<option {{#if selected}}selected{{/if}} value={{column_name}}>{{column_name}}</option>
+					{{/columns_left}}
+					</select>
+					<i class="material-icons select-arrow">arrow_drop_down</i>
+				</div>
 			</div>
+			{{/unless}}
 		</div>
 
 		<div>
@@ -177,18 +184,18 @@
 					<i class="material-icons select-arrow">arrow_drop_down</i>
 				</div>
 			</div>
-			{{/if}}
 			<div class="column-33 set-height">
 				<i class="material-icons relational-arrow-right">arrow_back</i>
 				<div class="select-container">
 					<select {{#if ONETOMANY}}id="junctionKeyRight" name="junction_key_right"{{/if}}>
 						{{#columns_left}}
-						<option {{#if selected}}selected{{/if}}>{{column_name}}</option>
+						<option {{#if selected}}selected{{/if}} value={{column_name}}>{{column_name}}</option>
 						{{/columns_left}}
 					</select>
 					<i class="material-icons select-arrow">arrow_drop_down</i>
 				</div>
 			</div>
+			{{/if}}
 		</div>
 
 	</div>

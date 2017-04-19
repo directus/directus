@@ -126,6 +126,8 @@ define([
         hideColumnName: this.hideColumnName
       };
 
+      this.isAlias = false;
+
       if (_.isFunction(this.uiFilter)) {
         _.each(uis, function(value, key) {
           if (this.uiFilter(value) !== true) {
@@ -201,13 +203,18 @@ define([
       }
 
       if (SchemaHelper.supportsLength(this.selectedDataType)) {
-        data.SHOW_LENGTH = true;
+        // TODO: Set a default length for each data type
+        if (SchemaHelper.isNumericType(this.selectedDataType) && !this.model.get('length')) {
+          this.model.set({length: 11});
+        }
+
         data.length = this.model.getLength();
+        data.SHOW_LENGTH = true;
       }
 
       if (['many_to_one', 'single_file', 'many_to_one_typeahead'].indexOf(this.selectedUI) > -1) {
         data.MANYTOONE = true;
-        data.selectedRelationshipType = 'MANYTOONE';
+        this.selectedRelationshipType = data.selectedRelationshipType = 'MANYTOONE';
         tableRelated = this.getRelatedTable();//this.model.get('related_table');
         this.model.set({junction_key_right: this.columnName});
 
@@ -299,9 +306,9 @@ define([
           }, this);
 
           // current table primary column
-          data.columns_left = app.schemaManager.getColumns('tables', tableRelated).filter(function(model) {
-            return true;
-          }).map(function(model) {
+          data.columns_left = app.schemaManager.getColumns('tables', tableRelated).filter(function (model) {
+            return !model.isAlias();
+          }).map(function (model) {
             return {column_name: model.id, selected: (model.id === this.model.get('junction_key_left'))};
           }, this);
         } else {
@@ -349,7 +356,7 @@ define([
           this.model.set({junction_key_right: junctionKeyRight});
         }
 
-        this.model.set({relationship_type: this.selectedDataType});
+        this.model.set({relationship_type: this.selectedRelationshipType});
       }
 
       var dataType = this.selectedDataType;
@@ -450,6 +457,7 @@ define([
 
     updateCleanColumnInput: function () {
       this.$('#displayName').val(app.capitalize(this.columnName));
+      this.$('#columnName').val(this.columnName);
     },
 
     afterRender: function () {
