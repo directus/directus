@@ -16,6 +16,7 @@ use Directus\Db\TableGateway\DirectusSettingsTableGateway;
 use Directus\Db\TableGateway\DirectusTablesTableGateway;
 use Directus\Db\TableGateway\DirectusUsersTableGateway;
 use Directus\Embed\EmbedManager;
+use Directus\Files\Thumbnail;
 use Directus\Filesystem\Filesystem;
 use Directus\Filesystem\FilesystemFactory;
 use Directus\Hook\Emitter;
@@ -654,8 +655,8 @@ class Bootstrap
                     $thumbnailExtension = array_pop($thumbnailFilenameParts);
 
                     $row['url'] = $fileURL . '/' . $row['name'];
-                    if (in_array($thumbnailExtension, ['tif', 'tiff', 'psd', 'pdf'])) {
-                        $thumbnailExtension = 'jpg';
+                    if (Thumbnail::isNonImageFormatSupported($thumbnailExtension)) {
+                        $thumbnailExtension = Thumbnail::defaultFormat();
                     }
 
                     $thumbnailFilename = $row['id'] . '.' . $thumbnailExtension;
