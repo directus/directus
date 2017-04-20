@@ -353,17 +353,17 @@ class BaseTableGateway extends TableGateway
 
             if ($tableName == 'directus_files' && static::$container) {
                 $Files = static::$container->get('files');
-                $ext = pathinfo($recordData['name'], PATHINFO_EXTENSION);
+                $ext = $thumbnailExt = pathinfo($recordData['name'], PATHINFO_EXTENSION);
 
                 // hotfix: pdf thumbnails are being saved to its original extension
                 // file.pdf results into a thumbs/thumb.pdf instead of thumbs/thumb.jpeg
-                if (Thumbnail::isNonImageFormatSupported($ext)) {
-                    $ext = Thumbnail::defaultFormat();
+                if (Thumbnail::isNonImageFormatSupported($thumbnailExt)) {
+                    $thumbnailExt = Thumbnail::defaultFormat();
                 }
 
                 $thumbnailPath = 'thumbs/THUMB_' . $recordData['name'];
                 if ($Files->exists($thumbnailPath)) {
-                    $Files->rename($thumbnailPath, 'thumbs/' . $recordData[$this->primaryKeyFieldName] . '.' . $ext);
+                    $Files->rename($thumbnailPath, 'thumbs/' . $recordData[$this->primaryKeyFieldName] . '.' . $thumbnailExt);
                 }
 
                 $updateArray = [];
