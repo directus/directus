@@ -62,7 +62,9 @@ define(['underscore', 'core/UIView', 'core/t', 'utils', 'select2'],function(_, U
         allow_null: this.options.settings.get('allow_null') === true,
         display_search: this.options.settings.get('display_search'),
         auto_search_limit: this.options.settings.get('auto_search_limit'),
-        placeholder_text: (this.options.settings.get('placeholder_text')) ?  this.options.settings.get('placeholder_text') : __t('select_from_below')
+        placeholder_text: (this.options.settings.get('placeholder_text')) ?  this.options.settings.get('placeholder_text') : __t('select_from_below'),
+        select_type: this.options.settings.get('input_type') === 'dropdown',
+        multiselect: this.options.settings.get('select_multiple') === true
       };
     },
     initialize: function() {
@@ -71,7 +73,8 @@ define(['underscore', 'core/UIView', 'core/t', 'utils', 'select2'],function(_, U
         var self = this;
         setTimeout(function () {
           var options = {
-            placeholder: self.options.settings.get('placeholder_text')
+            placeholder: self.options.settings.get('placeholder_text'),
+            multiple: self.options.settings.get('select_multiple')
           };
           if (self.options.settings.get('display_search') === 'auto') {
             options.minimumResultsForSearch = self.options.settings.get('auto_search_limit') || 10;
@@ -81,7 +84,7 @@ define(['underscore', 'core/UIView', 'core/t', 'utils', 'select2'],function(_, U
           if (self.options.settings.get('allow_null')) {
             options.allowClear = true;
           }
-          self.$el.find("select").select2(options);
+          self.$el.find('select').select2(options);
         }, 0);
       }
     }

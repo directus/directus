@@ -34,10 +34,12 @@ define(['core/interfaces/select/interface', 'underscore', 'core/UIComponent', 'c
     variables: [
       {id: 'options', default_value: '', ui: 'textarea', options:{'rows': 25, 'placeholder_text': "{\n    \"value1\":\"Option One\",\n    \"value2\":\"Option Two\",\n    \"value3\":\"Option Three\"\n}"}, comment: __t('select_options_comment')},
       {id: 'allow_null', type: 'Boolean', default_value: false, ui: 'checkbox'},
+      {id: 'select_multiple', type: 'Boolean', default_value: false, ui: 'checkbox'},
       {id: 'display_search', type: 'String', default_value: 'auto', required: true, ui: 'select', options: {options: {'auto':__t('Auto'),'always':__t('Always'),'never':__t('Never')} }},
       {id: 'auto_search_limit', type: 'Number', ui: 'numeric', char_length: 20, default_value: 10, comment: __t('select_auto_search_limit_text')},
-      {id: 'show', type: 'String', default_value: 'value', ui: 'select', options: {options: SHOW_SELECT_OPTIONS}},
-      {id: 'placeholder_text', type: 'String', default_value: '', ui: 'textinput', char_length: 255, required: false, comment: __t('select_placeholder_text')}
+      {id: 'list_value', type: 'String', default_value: 'value', ui: 'select', options: {options: SHOW_SELECT_OPTIONS}},
+      {id: 'placeholder_text', type: 'String', default_value: '', ui: 'textinput', char_length: 255, required: false, comment: __t('select_placeholder_text')},
+      {id: 'input_type', type: 'String', default_value: 'value', ui: 'select', default_value: 'dropdown', options: {options: {dropdown: 'Dropdown', radio: 'Radio Buttons / Checkboxes'}}}
     ],
     Input: Input,
     validate: function(value, options) {

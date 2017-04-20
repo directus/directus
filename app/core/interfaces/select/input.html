@@ -1,3 +1,9 @@
-<div class="select-container">
-	<select name="{{name}}" {{#if readonly}}disabled{{/if}}>{{#if allow_null}}<option value="">{{placeholder_text}}</option>{{/if}}{{#options}}<option value="{{key}}" {{#if selected}}selected{{/if}}>{{value}}</option>{{/options}}</select>
+<div class="select-interface">
+	{{#if select_type}}
+	<div {{#if multiselect}}multiple="multiple"{{/if}}>
+		<select name="{{name}}" {{#if readonly}}disabled{{/if}}>{{#if allow_null}}<option value="">{{placeholder_text}}</option>{{/if}}{{#options}}<option value="{{key}}" {{#if selected}}selected{{/if}}>{{value}}</option>{{/options}}</select>
+	</div>
+	{{else}}
+		<!-- Merge multi_select interface in here -->
+	{{/if}}
 </div>
