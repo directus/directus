@@ -18,7 +18,7 @@ define(['underscore', 'core/UIView', 'core/t', 'utils', 'select2'],function(_, U
   var parseOptions = function (options) {
     if (_.isString(options)) {
       try {
-        options = $.parseJSON(options);
+        options = JSON.parse(options);
       } catch (e) {
         options = {};
         console.error(e);

@@ -6,7 +6,7 @@
 //  For all details and documentation:
 //  http://www.getdirectus.com
 
-define(['underscore', 'core/UIComponent', 'core/t', 'utils', 'select2'], function(_, UIComponent, __t, Utils, select2) {
+define(['core/interfaces/select/interface', 'underscore', 'core/UIComponent', 'core/t', 'utils', 'select2'], function(Input, _, UIComponent, __t, Utils, select2) {
 
   'use strict';
 
@@ -46,7 +46,7 @@ define(['underscore', 'core/UIComponent', 'core/t', 'utils', 'select2'], functio
       }
     },
     list: function(options) {
-      var value = _.isString(options.value) ? options.value.replace(/<(?:.|\n)*?>/gm, '').substr(0,100) : options.value;
+      var value = _.isString(options.value) ? options.value.replace(/<(?:.|\n)*?>/gm, '').substr(0, 100) : options.value;
 
       if (options.settings.get('show') === 'text') {
         options = parseOptions(options.settings.get('options'));
