@@ -41,3 +41,9 @@ AddType font/woff .woff
     # Fix $HTTP_RAW_POST_DATA deprecated warning
     php_value always_populate_raw_post_data -1
 </ifModule>
+
+# Prevent PageSpeed module from rewriting the templates files
+# Avoiding it from breaking the template
+<IfModule pagespeed_module>
+    ModPagespeedDisallow "*/app/**/*.html"
+</IfModule>
