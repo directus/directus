@@ -24,6 +24,7 @@ use Directus\Embed\EmbedManager;
 use Directus\Exception\ForbiddenException;
 use Directus\Filesystem\Filesystem;
 use Directus\Filesystem\FilesystemFactory;
+use Directus\Filesystem\Thumbnail;
 use Directus\Hook\Emitter;
 use Directus\Language\LanguageManager;
 use Directus\Permissions\Acl;
@@ -649,7 +650,7 @@ class Bootstrap
         $addFilesUrl = function($result) {
             $fileRows = $result->toArray();
             $app = Bootstrap::get('app');
-            $files = $app->container->get('files');
+
             foreach ($fileRows as &$row) {
                 $config = Bootstrap::get('config');
                 $fileURL = $config['filesystem']['root_url'];
@@ -658,8 +659,8 @@ class Bootstrap
                 $thumbnailExtension = array_pop($thumbnailFilenameParts);
 
                 $row['url'] = $fileURL . '/' . $row['name'];
-                if (in_array($thumbnailExtension, ['tif', 'tiff', 'psd', 'pdf'])) {
-                    $thumbnailExtension = 'jpg';
+                if (Thumbnail::isNonImageFormatSupported($thumbnailExtension)) {
+                    $thumbnailExtension = Thumbnail::defaultFormat();
                 }
 
                 $thumbnailFilename = $row['id'] . '.' . $thumbnailExtension;

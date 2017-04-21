@@ -1,5 +1,4 @@
-define(function() {
-  var moment = require('moment');
+define(['moment'], function (moment) {
 
   var helper = {};
 
