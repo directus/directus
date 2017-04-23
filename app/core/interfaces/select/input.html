@@ -82,8 +82,25 @@
 
 <div class="select-interface">
 	{{#if select_type}}
-	<select {{#if multiselect}}multiple="multiple"{{/if}} name="{{name}}" {{#if readonly}}disabled{{/if}}>{{#if allow_null}}<option value="">{{placeholder_text}}</option>{{/if}}{{#options}}<option value="{{key}}" {{#if selected}}selected{{/if}}>{{value}}</option>{{/options}}</select>
+	<select {{#if multiselect}}multiple="multiple"{{/if}} name="{{name}}" {{#if readonly}}disabled{{/if}}>
+		{{#if allow_null}}
+		<option value="">{{placeholder_text}}</option>
+		{{/if}}
+		{{#options}}
+		<option value="{{key}}" {{#if selected}}selected{{/if}}>{{value}}</option>
+		{{/options}}
+	</select>
 	{{else}}
-		<!-- Merge multi_select interface in here -->
+		{{#if multiselect}}
+			{{#options}}
+			<input id="multi_select_{{name}}_{{key}}" name="{{key}}" type="checkbox" {{#if selected}}checked{{/if}}/>
+			<label for="multi_select_{{name}}_{{key}}">{{value}}</label>
+			<input type="hidden" name="{{name}}">
+			{{/options}}
+		{{else}}
+			{{#options}}
+			<label class="radiobuttons" for="radio-{{value}}"><input type="radio" name="{{../name}}" value="{{value}}" id="radio-{{value}}" {{#if selected}}checked{{/if}}>{{value}}</label>
+			{{/options}}
+		{{/if}}
 	{{/if}}
 </div>
