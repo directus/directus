@@ -74,7 +74,8 @@ define(['underscore', 'core/UIView', 'core/t', 'utils', 'select2'],function(_, U
         setTimeout(function () {
           var options = {
             placeholder: self.options.settings.get('placeholder_text'),
-            multiple: self.options.settings.get('select_multiple')
+            multiple: self.options.settings.get('select_multiple'),
+            width: '400px'
           };
           if (self.options.settings.get('display_search') === 'auto') {
             options.minimumResultsForSearch = self.options.settings.get('auto_search_limit') || 10;
