@@ -41,6 +41,10 @@ class Application extends Slim
     {
         parent::__construct($userSettings);
 
+        $this->container->singleton('environment', function () {
+            return Environment::getInstance();
+        });
+
         $this->container->singleton('response', function () {
             return new BaseResponse();
         });

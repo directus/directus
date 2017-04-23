@@ -1,8 +1,8 @@
 {
   "require": {
     "php": ">=5.5.0",
-    "slim/slim": "2.3.2",
-    "slim/extras": "dev-develop",
+    "slim/slim": "2.6.2",
+    "slim/extras": "dev-master",
     "twig/twig":  "1.*",
     "directus/migrations": "dev-master",
     "directus/permissions": "0.9.*@dev",
