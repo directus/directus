@@ -57,10 +57,12 @@ define([
       }
     },
 
-    removeItem: function(e) {
-      var cid = $(e.target).closest('.js-file').data('cid');
+    removeItem: function (event) {
+      var cid = $(event.target).closest('.js-file').data('cid');
       var model = this.relatedCollection.get(cid);
       var name = {};
+
+      event.stopPropagation();
 
       if (model.isNew()) {
         this.relatedCollection.remove(model);
