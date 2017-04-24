@@ -30,7 +30,7 @@ define([
     events: {
       'click .js-button': 'onClickButton',
       'click .js-remove': 'removeItem',
-      'click .js-image': 'editItem'
+      'click .js-file': 'editItem'
     },
 
     onClickButton: function (event) {
