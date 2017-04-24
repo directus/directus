@@ -773,8 +773,8 @@ class RelationalTableGateway extends BaseTableGateway
         $builder = new Builder($this->getAdapter());
         $builder->from($this->getTable());
 
-        if (ArrayUtils::has($params, 'columns')) {
-            $columns = array_unique(array_merge($tableSchema->getPrimaryKeysName(), $params['columns']));
+        if (ArrayUtils::has($params, 'columns') || ArrayUtils::has($params, 'columns_visible')) {
+            $columns = array_unique(array_merge($tableSchema->getPrimaryKeysName(), ArrayUtils::get($params, 'columns', []), ArrayUtils::get($params, 'columns_visible', [])));
         } else {
             $columns = $tableSchema->getColumnsName();
         }
@@ -806,7 +806,7 @@ class RelationalTableGateway extends BaseTableGateway
 
         $depth = ArrayUtils::get($params, 'depth', null);
         if ($depth !== null) {
-            $paramColumns = ArrayUtils::get($params, 'columns', []);
+            $paramColumns = array_merge(ArrayUtils::get($params, 'columns', []), ArrayUtils::get($params, 'columns_visible', []));
             $relationalColumns = $tableSchema->getRelationalColumnsName();
 
             if ($paramColumns) {
