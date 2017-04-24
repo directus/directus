@@ -30,7 +30,7 @@ define([
     events: {
       'click .js-button': 'onClickButton',
       'click .js-remove': 'removeItem',
-      'click .js-image': 'editItem'
+      'click .js-file': 'editItem'
     },
 
     onClickButton: function (event) {
@@ -117,7 +117,7 @@ define([
     },
 
     editItem: function (event) {
-      var cid = $(event.currentTarget).parent().data('cid');
+      var cid = $(event.currentTarget).data('cid');
       var model = this.relatedCollection.get(cid, true);
 
       if (!this.canEdit) {
