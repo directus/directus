@@ -105,7 +105,7 @@ function(app, _, Backbone, Widgets, __t, TableHelpers, GroupsModel, BasePageView
             buttonId: 'addBtn',
             iconClass: 'add',
             buttonClass: 'primary',
-            buttonText: __t('new_user_group')
+            buttonText: __t('add_new')
           },
           onClick: _.bind(this.createNewGroup, this)
         })
