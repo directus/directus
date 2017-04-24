@@ -12,7 +12,6 @@ var rjs       = require('gulp-requirejs');
 var prohtml   = require('gulp-processhtml');
 var deploy    = require('gulp-gh-pages');
 var merge     = require('merge-stream');
-var jscs      = require('gulp-jscs');
 var excludeGitignore = require('gulp-exclude-gitignore');
 
 
@@ -333,11 +332,6 @@ gulp.task('watch', function() {
 gulp.task('deploy', function() {
   return gulp.src(['./dist/**/*'], {dot: true})
         .pipe(deploy({branch: 'build', remoteUrl:'https://github.com/directus/directus'}));
-});
-
-gulp.task('jscs', function() {
-  return gulp.src('app/**/*.js')
-    .pipe(jscs());
 });
 
 // -------------------
