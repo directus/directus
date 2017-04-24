@@ -1883,6 +1883,13 @@ table {
           -ms-transition: color 200ms ease-in-out 0ms;
           transition: color 200ms ease-in-out 0ms;
           font-size: 20px; }
+      table tbody tr td.column-name .missing-options {
+        font-size: 20px;
+        vertical-align: middle;
+        line-height: 10px;
+        margin-left: 6px;
+        margin-top: -4px;
+        color: #FFC107; }
       table tbody tr td.user-interface {
         -webkit-transition: color 200ms ease-in-out 0ms;
         -moz-transition: color 200ms ease-in-out 0ms;
