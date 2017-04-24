@@ -210,6 +210,9 @@ table {
 					}
 				}
 				&.column-name {
+					&:hover {
+						color: $primary;
+					}
 					.missing-options {
 						font-size: 20px;
 						vertical-align: middle;
