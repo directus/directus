@@ -8,7 +8,7 @@
 <div class="breadcrumb help" data-help="This is the 'breadcrumb' which shows you where you are within the system.">
 	<i class="material-icons veggieburger">menu</i>
 	{{#if route.isOverlay}}
-	<i class="material-icons" id="removeOverlay">arrow_back</i>
+	<i class="material-icons arrow-back" id="removeOverlay">arrow_back</i>
 	{{/if}}
 	{{#each route.breadcrumbs}}
 	<a class="crumb" href="{{anchor}}">{{{capitalize title}}}</a>
