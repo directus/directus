@@ -1883,6 +1883,8 @@ table {
           -ms-transition: color 200ms ease-in-out 0ms;
           transition: color 200ms ease-in-out 0ms;
           font-size: 20px; }
+      table tbody tr td.column-name:hover {
+        color: #3498DB; }
       table tbody tr td.column-name .missing-options {
         font-size: 20px;
         vertical-align: middle;
@@ -2681,7 +2683,6 @@ body.loading .header .logo {
       -o-transition: color 200ms ease-in-out 0ms;
       -ms-transition: color 200ms ease-in-out 0ms;
       transition: color 200ms ease-in-out 0ms;
-      display: none;
       cursor: pointer;
       padding: 5px;
       vertical-align: middle;
@@ -4288,7 +4289,7 @@ body.help .discover-spotlight {
       .smoke .modal.column .modal-bg h1 {
         margin-bottom: 20px; }
       .smoke .modal.column .modal-bg h5 {
-        margin-bottom: 10px;
+        margin-bottom: 20px;
         margin-top: -10px; }
       .smoke .modal.column .modal-bg input {
         max-width: none; }
