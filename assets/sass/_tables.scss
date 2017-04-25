@@ -209,6 +209,19 @@ table {
 						font-size: 20px;
 					}
 				}
+				&.column-name {
+					&:hover {
+						color: $primary;
+					}
+					.missing-options {
+						font-size: 20px;
+						vertical-align: middle;
+						line-height: 10px;
+						margin-left: 6px;
+						margin-top: -4px;
+						color: $important;
+					}
+				}
 				&.user-interface {
 					@include transition (color, $timing-short, ease-in-out);
 					&:hover {

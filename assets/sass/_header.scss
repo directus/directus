@@ -191,7 +191,6 @@ body.loading {
 		}
 		.arrow-back {
 			@include transition (color, $timing-short, ease-in-out);
-			display: none;
 			cursor: pointer;
 			padding: 5px;
 			vertical-align: middle;
