@@ -793,43 +793,8 @@ class TableSchema
         return $columns;
     }
 
-    public static function columnTypeToUIType($column_type)
+    public static function columnTypeToUIType($type)
     {
-        switch ($column_type) {
-            case 'ALIAS':
-                return 'alias';
-            case 'MANYTOMANY':
-            case 'ONETOMANY':
-                return 'relational';
-            case 'TINYINT':
-                return 'checkbox';
-            case 'MEDIUMBLOB':
-            case 'BLOB':
-                return 'blob';
-            case 'TEXT':
-            case 'LONGTEXT':
-                return 'textarea';
-            case 'CHAR':
-            case 'VARCHAR':
-            case 'POINT':
-                return 'textinput';
-            case 'DATETIME':
-            case 'TIMESTAMP':
-                return 'datetime';
-            case 'DATE':
-                return 'date';
-            case 'TIME':
-                return 'time';
-            case 'YEAR':
-            case 'INT':
-            case 'BIGINT':
-            case 'SMALLINT':
-            case 'MEDIUMINT':
-            case 'FLOAT':
-            case 'DOUBLE':
-            case 'DECIMAL':
-                return 'numeric';
-        }
-        return 'textinput';
+        return static::getSchemaManagerInstance()->getColumnDefaultInterface($type);
     }
 }

@@ -11,6 +11,7 @@ use Directus\Database\TableGateway\DirectusPrivilegesTableGateway;
 use Directus\Database\TableGateway\RelationalTableGateway as TableGateway;
 use Directus\Database\TableSchema;
 use Directus\Services\ColumnsService;
+use Directus\Services\TablesService;
 use Directus\Util\ArrayUtils;
 use Directus\Util\SchemaUtils;
 use Zend\Db\Sql\Predicate\In;
@@ -46,17 +47,17 @@ class Table extends Route
             ]);
         }
 
-        $app->emitter->run('table.create:before', $requestPayload['name']);
+        $app->hookEmitter->run('table.create:before', $requestPayload['name']);
         // Through API:
         // Remove spaces and symbols from table name
         // And in lowercase
         $requestPayload['name'] = SchemaUtils::cleanTableName($requestPayload['name']);
         $schema->createTable($requestPayload['name']);
-        $app->emitter->run('table.create', $requestPayload['name']);
-        $app->emitter->run('table.create:after', $requestPayload['name']);
+        $app->hookEmitter->run('table.create', $requestPayload['name']);
+        $app->hookEmitter->run('table.create:after', $requestPayload['name']);
 
         $privileges = new DirectusPrivilegesTableGateway($ZendDb, $acl);
-        $response = $privileges->insertPrivilege([
+        $privileges->insertPrivilege([
             'nav_listed' => 1,
             'status_id' => 0,
             'allow_view' => 2,
@@ -93,13 +94,8 @@ class Table extends Route
                 ]));
             }
 
-            $tableGateway = new TableGateway($tableName, $ZendDb, $acl);
-            // Through API:
-            // Remove spaces and symbols from column name
-            // And in lowercase
-            // We are allowing any column name the user wishes
-            // $requestPayload['column_name'] = SchemaUtils::cleanColumnName($requestPayload['column_name']);
-            $params['column_name'] = $tableGateway->addColumn($tableName, $requestPayload);
+            $columnService = new ColumnsService($app);
+            $params['column_name'] = $columnService->addColumn($tableName, $requestPayload);
             $response = [
                 'meta' => ['type' => 'item', 'table' => 'directus_columns'],
                 'data' => TableSchema::getColumnSchema($tableName, $params['column_name'])->toArray()
@@ -203,13 +199,14 @@ class Table extends Route
         $requestPayload = $this->app->request()->post();
         $TableGateway = new TableGateway('directus_columns', $ZendDb, $acl);
         $data = $requestPayload;
+
         // @TODO: check whether this condition is still needed
         if (isset($data['type'])) {
             $data['data_type'] = $data['type'];
             $data['relationship_type'] = $data['type'];
             unset($data['type']);
         }
-        //$data['column_name'] = $data['junction_key_left'];
+
         $data['column_name'] = $column;
         $data['table_name'] = $table;
         $row = $TableGateway->findOneByArray(['table_name' => $table, 'column_name' => $column]);
@@ -217,9 +214,9 @@ class Table extends Route
         if ($row) {
             $data['id'] = $row['id'];
         }
+
         $newRecord = $TableGateway->manageRecordUpdate('directus_columns', $data, TableGateway::ACTIVITY_ENTRY_MODE_DISABLED);
-        $_POST['id'] = $newRecord['id'];
-        return $this->app->response($_POST);
+        return $this->app->response($newRecord);
     }
 
     // get all table names
@@ -250,8 +247,8 @@ class Table extends Route
 
         if ($app->request()->isDelete()) {
             // NOTE: similar code to unmanage table in Table::stopManaging
-            $tableGateway = new TableGateway($table, $ZendDb, $acl);
-            $success = $tableGateway->drop();
+            $tableService = new TablesService($app);
+            $success = $tableService->dropTable($table);
 
             $response = [
                 'error' => [

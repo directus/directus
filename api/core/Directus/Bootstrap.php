@@ -147,7 +147,7 @@ class Bootstrap
             new DirectusTwigExtension()
         ];
 
-        $app->container->singleton('emitter', function () {
+        $app->container->singleton('hookEmitter', function () {
             return Bootstrap::get('hookEmitter');
         });
 
@@ -185,7 +185,7 @@ class Bootstrap
             }
         }
 
-        BaseTableGateway::setHookEmitter($app->container->get('emitter'));
+        BaseTableGateway::setHookEmitter($app->container->get('hookEmitter'));
         BaseTableGateway::setContainer($app->container);
 
         // @NOTE: Trying to separate the configuration from bootstrap, bit by bit.

@@ -46,6 +46,7 @@ use Directus\Database\TableGateway\DirectusSettingsTableGateway;
 use Directus\Database\TableGateway\DirectusUsersTableGateway;
 use Directus\Database\TableGateway\RelationalTableGateway as TableGateway;
 use Directus\Database\TableSchema;
+use Directus\Services\TablesService;
 use Directus\Exception\ExceptionHandler;
 use Directus\Mail\Mail;
 use Directus\Permissions\Exception\UnauthorizedTableAlterException;
@@ -118,7 +119,7 @@ if (DIRECTUS_ENV !== 'production') {
 $app->config('debug', false);
 $exceptionView = new ExceptionView();
 $exceptionHandler = function (\Exception $exception) use ($app, $exceptionView) {
-    $app->emitter->run('application.error', [$exception]);
+    $app->hookEmitter->run('application.error', [$exception]);
     $config = $app->container->get('config');
     if (ArrayUtils::get($config, 'app.debug', true)) {
         $exceptionView->exceptionHandler($app, $exception);
@@ -168,10 +169,10 @@ $ZendDb = Bootstrap::get('ZendDb');
 $acl = Bootstrap::get('acl');
 $authentication = Bootstrap::get('auth');
 
-$app->emitter->run('application.boot', $app);
+$app->hookEmitter->run('application.boot', $app);
 $app->hook('slim.before.dispatch', function () use ($app, $requestNonceProvider, $authAndNonceRouteWhitelist, $ZendDb, $acl, $authentication) {
     // API/Server is about to initialize
-    $app->emitter->run('application.init', $app);
+    $app->hookEmitter->run('application.init', $app);
 
     /** Skip routes which don't require these protections */
     $routeName = $app->router()->getCurrentRoute()->getName();
@@ -243,8 +244,8 @@ $app->hook('slim.before.dispatch', function () use ($app, $requestNonceProvider,
 
             $authentication->setLoggedUser($user['id'], true);
             if ($user['id']) {
-                $app->emitter->run('directus.authenticated', [$app, $user]);
-                $app->emitter->run('directus.authenticated.token', [$app, $user]);
+                $app->hookEmitter->run('directus.authenticated', [$app, $user]);
+                $app->hookEmitter->run('directus.authenticated.token', [$app, $user]);
             }
 
             // Reload all user permissions
@@ -276,7 +277,7 @@ $app->hook('slim.before.dispatch', function () use ($app, $requestNonceProvider,
 
         // User is authenticated
         // And Directus is about to start
-        $app->emitter->run('directus.start', $app);
+        $app->hookEmitter->run('directus.start', $app);
 
         /** Include new request nonces in the response headers */
         $response = $app->response();
@@ -294,7 +295,7 @@ $app->hook('slim.before.dispatch', function () use ($app, $requestNonceProvider,
     \Directus\Database\TableSchema::setAclInstance($permissions);
     \Directus\Database\TableSchema::setConnectionInstance($ZendDb);
     \Directus\Database\TableSchema::setConfig(Bootstrap::get('config'));
-    \Directus\Database\TableGateway\BaseTableGateway::setHookEmitter($app->container->get('emitter'));
+    \Directus\Database\TableGateway\BaseTableGateway::setHookEmitter($app->container->get('hookEmitter'));
 
     $app->container->set('schemaManager', Bootstrap::get('schemaManager'));
 });
@@ -307,7 +308,7 @@ $app->hook('slim.after', function () use ($app) {
     }
 
     // API/Server is about to shutdown
-    $app->emitter->run('application.shutdown', $app);
+    $app->hookEmitter->run('application.shutdown', $app);
 });
 
 /**
@@ -667,8 +668,8 @@ $app->post("/$v/auth/login/?", function () use ($app, $ZendDb, $acl, $requestNon
         $acl->setUserId($user['id']);
         $acl->setGroupId($user['group']);
 
-        $app->emitter->run('directus.authenticated', [$app, $user]);
-        $app->emitter->run('directus.authenticated.admin', [$app, $user]);
+        $app->hookEmitter->run('directus.authenticated', [$app, $user]);
+        $app->hookEmitter->run('directus.authenticated.admin', [$app, $user]);
 
         $response['last_page'] = json_decode($user['last_page']);
         $userSession = $authentication->getUserInfo();
@@ -896,27 +897,17 @@ $app->map("/$v/privileges/:groupId/?", function ($groupId) use ($acl, $ZendDb, $
     }
 
     if (isset($requestPayload['addTable'])) {
-        $isTableNameAlphanumeric = preg_match("/[a-z0-9]+/i", $requestPayload['table_name']);
-        $zeroOrMoreUnderscoresDashes = preg_match("/[_-]*/i", $requestPayload['table_name']);
+        $tableService = new TablesService($app);
+        ArrayUtils::remove($requestPayload, 'addTable');
 
-        if (!($isTableNameAlphanumeric && $zeroOrMoreUnderscoresDashes)) {
+        if ($tableService->isValidName($requestPayload['table_name'])) {
             $app->response->setStatus(400);
             return $app->response(['message' => __t('invalid_table_name')], ['table' => 'directus_privileges']);
         }
 
-        unset($requestPayload['addTable']);
+        $tableService->createTable($requestPayload['table_name'], ArrayUtils::get($requestPayload, 'columnsName'));
 
-        $schema = Bootstrap::get('schemaManager');
-        if (!$schema->tableExists($requestPayload['table_name'])) {
-            $app->emitter->run('table.create:before', $requestPayload['table_name']);
-            // Through API:
-            // Remove spaces and symbols from table name
-            // And in lowercase
-            $requestPayload['table_name'] = SchemaUtils::cleanTableName($requestPayload['table_name']);
-            $schema->createTable($requestPayload['table_name']);
-            $app->emitter->run('table.create', $requestPayload['table_name']);
-            $app->emitter->run('table.create:after', $requestPayload['table_name']);
-        }
+        ArrayUtils::remove($requestPayload, 'columnsName');
     }
 
     $privileges = new DirectusPrivilegesTableGateway($ZendDb, $acl);

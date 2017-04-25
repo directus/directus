@@ -15,12 +15,12 @@ define([
     template: 'modal/columns-new',
 
     events: {
-      'change select#dataType': function(e) {
+      'change select#dataType': function (e) {
         this.selectedDataType = $(e.target).val();
         this.render();
       },
 
-      'change select#uiType': function(e) {
+      'change select#uiType': function (e) {
         var columnName = this.model.get('column_name');
         var columnComment = this.model.get('comment');
 
@@ -46,33 +46,33 @@ define([
 
       'change .js-strict-naming': 'onStrictNamingChange',
 
-      'change input#comment': function(e) {
+      'change input#comment': function (e) {
         this.comment =  $(e.target).val();
         this.model.set({comment: this.comment});
       },
 
-      'change input#length': function(e) {
+      'change input#length': function (e) {
         this.model.set({length: $(e.target).val()});
       },
 
-      'change input#defaultValue': function(e) {
+      'change input#defaultValue': function (e) {
         this.model.set({default_value: $(e.target).val()});
       },
 
-      'change select#relatedTable': function(e) {
+      'change select#relatedTable': function (e) {
         this.model.set({related_table: $(e.target).val()});
         this.render();
       },
 
-      'change #junctionKeyRight': function(e) {
+      'change #junctionKeyRight': function (e) {
         this.model.set({junction_key_right: $(e.target).val()});
       },
 
-      'change #junctionKeyLeft': function(e) {
+      'change #junctionKeyLeft': function (e) {
         this.model.set({junction_key_left: $(e.target).val()});
       },
 
-      'change #tableJunction': function(e) {
+      'change #tableJunction': function (e) {
         this.model.set({junction_table: $(e.target).val()});
         this.render();
       },
@@ -83,11 +83,10 @@ define([
       this.model.resetAttributes();
     },
 
-    save: function() {
+    save: function () {
       var data = this.$('form').serializeObject();
       var options = {patch: false, wait: true, silent: false};
       var isNew = this.model.isNew();
-
 
       if (!this.model.isNew()) {
         data = this.model.unsavedAttributes();
@@ -110,7 +109,7 @@ define([
       }
     },
 
-    serialize: function() {
+    serialize: function () {
       var UIManager = require('core/UIManager');
       var tables;
       var tableRelated;
@@ -375,7 +374,7 @@ define([
       return data;
     },
 
-    isValid: function() {
+    isValid: function () {
       return this.model.has('column_name');
     },
 
@@ -389,7 +388,7 @@ define([
       return isValid;
     },
 
-    getRelatedTable: function() {
+    getRelatedTable: function () {
       var relatedTable = this.model.get('related_table');
 
       if (relatedTable) {
@@ -407,7 +406,7 @@ define([
       return relatedTable;
     },
 
-    isCleanName: function(name, cleanName) {
+    isCleanName: function (name, cleanName) {
       return name && name === cleanName;
     },
 
@@ -492,7 +491,7 @@ define([
       return !!_.findWhere(types, {id: ui.id});
     },
 
-    initialize: function(options) {
+    initialize: function (options) {
       options = options || {};
       this.uiFilter = options.ui_filter || this._alternativeInterfacesFilter || false;
       this.selectedUI = _.isString(this.model.get('ui')) ? this.model.get('ui') : undefined;

@@ -111,6 +111,31 @@ class SchemaManager
         );
     }
 
+    /**
+     * Adds a primary key to the given column
+     *
+     * @param $table
+     * @param $column
+     *
+     * @return bool
+     */
+    public function addPrimaryKey($table, $column)
+    {
+        return $this->source->addPrimaryKey($table, $column);
+    }
+
+    /**
+     * Removes the primary key of the given column
+     *
+     * @param $table
+     * @param $column
+     *
+     * @return bool
+     */
+    public function dropPrimaryKey($table, $column)
+    {
+        return $this->source->dropPrimaryKey($table, $column);
+    }
 
     /**
      * Get the table schema information
@@ -495,7 +520,7 @@ class SchemaManager
     public function createColumnObjectFromArray($column)
     {
         if (!isset($column['ui'])) {
-            $column['ui'] = $this->getColumnDefaultUI($column['type']);
+            $column['ui'] = $this->getColumnDefaultInterface($column['type']);
         }
 
         $options = json_decode(ArrayUtils::get($column, 'options', ''), true);
@@ -555,8 +580,8 @@ class SchemaManager
         $this->data['columns'][$tableName][$columnName] = $column;
     }
 
-    public function getColumnDefaultUI($type)
+    public function getColumnDefaultInterface($type)
     {
-        return $this->source->getColumnDefaultUI($type);
+        return $this->source->getColumnDefaultInterface($type);
     }
 }

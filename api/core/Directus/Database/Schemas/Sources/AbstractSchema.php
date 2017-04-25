@@ -93,33 +93,44 @@ abstract class AbstractSchema implements SchemaInterface
     /**
      * @inheritdoc
      */
-    public function getColumnDefaultUI($columnType)
+    public function getColumnDefaultInterface($type)
     {
-        switch ($columnType) {
+        $interfaceName = 'textinput';
+
+        switch ($type) {
             case 'ALIAS':
-                return 'alias';
+                $interfaceName = 'alias';
+                break;
             case 'MANYTOMANY':
             case 'ONETOMANY':
-                return 'relational';
+                $interfaceName = 'relational';
+                break;
             case 'TINYINT':
-                return 'checkbox';
+                $interfaceName = 'checkbox';
+                break;
             case 'MEDIUMBLOB':
             case 'BLOB':
-                return 'blob';
+                $interfaceName = 'blob';
+                break;
             case 'TEXT':
             case 'LONGTEXT':
-                return 'textarea';
+                $interfaceName = 'textarea';
+                break;
             case 'CHAR':
             case 'VARCHAR':
             case 'POINT':
-                return 'textinput';
+                $interfaceName = 'textinput';
+                break;
             case 'DATETIME':
             case 'TIMESTAMP':
-                return 'datetime';
+                $interfaceName = 'datetime';
+                break;
             case 'DATE':
-                return 'date';
+                $interfaceName = 'date';
+                break;
             case 'TIME':
-                return 'time';
+                $interfaceName = 'time';
+                break;
             case 'YEAR':
             case 'INT':
             case 'BIGINT':
@@ -128,9 +139,10 @@ abstract class AbstractSchema implements SchemaInterface
             case 'FLOAT':
             case 'DOUBLE':
             case 'DECIMAL':
-                return 'numeric';
+                $interfaceName = 'numeric';
+                break;
         }
 
-        return 'textinput';
+        return $interfaceName;
     }
 }

@@ -146,6 +146,26 @@ interface SchemaInterface
     public function getColumnUI($column);
 
     /**
+     * Adds a primary key to the given column
+     *
+     * @param $table
+     * @param $column
+     *
+     * @return bool
+     */
+    public function addPrimaryKey($table, $column);
+
+    /**
+     * Removes the primary key from the given column
+     *
+     * @param $table
+     * @param $column
+     *
+     * @return bool
+     */
+    public function dropPrimaryKey($table, $column);
+
+    /**
      * Cast record values by the schema type
      *
      * @param array $records
@@ -175,11 +195,11 @@ interface SchemaInterface
     public function isNumericType($type);
 
     /**
-     * Gets the column type default UI name
+     * Gets the column type default interface name
      *
-     * @param $columnType
+     * @param $type - Column type
      *
      * @return string
      */
-    public function getColumnDefaultUI($columnType);
+    public function getColumnDefaultInterface($type);
 }

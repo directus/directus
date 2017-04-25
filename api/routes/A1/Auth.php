@@ -115,8 +115,8 @@ class Auth extends Route
             $acl->setUserId($user['id']);
             $acl->setGroupId($user['group']);
 
-            $app->emitter->run('directus.authenticated', [$app, $user]);
-            $app->emitter->run('directus.authenticated.admin', [$app, $user]);
+            $app->hookEmitter->run('directus.authenticated', [$app, $user]);
+            $app->hookEmitter->run('directus.authenticated.admin', [$app, $user]);
             unset($response['message']);
             $response['last_page'] = json_decode($user['last_page']);
             $userSession = $auth->getUserInfo();

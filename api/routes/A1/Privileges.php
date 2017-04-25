@@ -5,6 +5,7 @@ namespace Directus\API\Routes\A1;
 use Directus\Application\Route;
 use Directus\Bootstrap;
 use Directus\Database\TableGateway\DirectusPrivilegesTableGateway;
+use Directus\Services\TablesService;
 use Directus\Util\ArrayUtils;
 use Directus\Util\SchemaUtils;
 use Directus\View\JsonView;
@@ -67,21 +68,12 @@ class Privileges extends Route
                 return $this->app->response(['message' => __t('invalid_table_name')]);
             }
 
-            unset($requestPayload['addTable']);
+            ArrayUtils::remove($requestPayload, 'addTable');
 
-            $schema = Bootstrap::get('schemaManager');
-            if (!$schema->tableExists($requestPayload['table_name'])) {
-                $app->emitter->run('table.create:before', $requestPayload['table_name']);
-                // Through API:
-                // Remove spaces and symbols from table name
-                // And in lowercase
-                $requestPayload['table_name'] = SchemaUtils::cleanTableName($requestPayload['table_name']);
-                $columns = ArrayUtils::get($requestPayload, 'columnsName');
-                ArrayUtils::remove($requestPayload, 'columnsName');
-                $schema->createTable($requestPayload['table_name'], $columns);
-                $app->emitter->run('table.create', $requestPayload['table_name']);
-                $app->emitter->run('table.create:after', $requestPayload['table_name']);
-            }
+            $tableService = new TablesService($app);
+            $tableService->createTable($requestPayload['table_name'], ArrayUtils::get($requestPayload, 'columnsName'));
+
+            ArrayUtils::remove($requestPayload, 'columnsName');
         }
 
         $privileges = new DirectusPrivilegesTableGateway($ZendDb, $acl);

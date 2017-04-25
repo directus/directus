@@ -121,12 +121,28 @@ class Application extends Slim
      *
      * @return mixed
      */
-    protected function triggerFilter($name, $payload)
+    public function triggerFilter($name, $payload)
     {
-        $emitter = Bootstrap::get('hookEmitter');
-        $payload = $emitter->apply($name, $payload);
+        return $this->container->get('hookEmitter')->apply($name, $payload);
+    }
 
-        return $payload;
+    /**
+     * Trigger given action name
+     *
+     * @param $name
+     * @param $params
+     *
+     * @return void
+     */
+    public function triggerAction($name, $params = [])
+    {
+        if (!is_array($params)) {
+            $params = [$params];
+        }
+
+        array_unshift($params, $name);
+
+        call_user_func_array([$this->container->get('hookEmitter'), 'run'], $params);
     }
 
     /**

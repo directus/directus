@@ -1,16 +1,34 @@
 <?php
 
+/**
+ * Directus – <http://getdirectus.com>
+ *
+ * @link      The canonical repository – <https://github.com/directus/directus>
+ * @copyright Copyright 2006-2017 RANGER Studio, LLC – <http://rangerstudio.com>
+ * @license   GNU General Public License (v3) – <http://www.gnu.org/copyleft/gpl.html>
+ */
+
 namespace Directus\Services;
 
 use Directus\Database\Ddl\Column\Custom;
 use Directus\Database\TableGateway\RelationalTableGateway as TableGateway;
 use Directus\Database\TableSchema;
+use Directus\Database\Object\Column;
 use Directus\Util\ArrayUtils;
 use Zend\Db\Sql\Ddl\AlterTable;
+use Zend\Db\Sql\Ddl\Column\Integer;
+use Zend\Db\Sql\Ddl\Constraint\PrimaryKey;
 use Zend\Db\Sql\Sql;
 
+/**
+ * Column service
+ *
+ * @author Welling Guzmán <welling@rngr.org>
+ */
 class ColumnsService extends AbstractService
 {
+    const PRIMARY_KEY = 'primary_key';
+
     /**
      * @var TableGateway
      */
@@ -71,6 +89,16 @@ class ColumnsService extends AbstractService
         }
 
         $columnData = $columnData->toArray();
+
+        if (ArrayUtils::get($data, 'ui') === static::PRIMARY_KEY) {
+            $tableObject = $this->getSchemaManager()->getTableSchema($tableName);
+            if ($primaryColumn = $tableObject->getPrimaryColumn()) {
+                $this->removePrimaryKey($tableName, $primaryColumn);
+                $this->setDefaultInterface($tableName, $primaryColumn);
+            }
+
+            $this->setPrimaryColumn($tableName, $columnName);
+        }
 
         $this->ddlUpdate($tableName, $columnName, $data);
         $data = ArrayUtils::pick($data, [
@@ -136,7 +164,7 @@ class ColumnsService extends AbstractService
         return $this->tableGateway;
     }
 
-    public function ddlUpdate($tableName, $columnName, $data)
+    public function ddlUpdate($tableName, $columnName, $data, $options = [])
     {
         if (ArrayUtils::has($data, 'default_value') || ArrayUtils::has($data, 'data_type')) {
             $adapter = $this->getTableGateway()->getAdapter();
@@ -177,5 +205,99 @@ class ColumnsService extends AbstractService
             $query = $sql->getSqlStringForSqlObject($alterTable);
             $adapter->query($query)->execute();
         }
+    }
+
+    public function addColumn($table, $data)
+    {
+        $tableObject = $this->getSchemaManager()->getTableSchema($table);
+        $columnName = ArrayUtils::get($data, 'column_name');
+
+        if (!$tableObject) {
+            throw new \Exception(sprintf('table [%s] not found', $table));
+        }
+
+        $isPrimaryInterface = ArrayUtils::get($data, 'ui') === static::PRIMARY_KEY;
+        if ($isPrimaryInterface && $primaryColumn = $tableObject->getPrimaryColumn()) {
+            $this->removePrimaryKey($table, $primaryColumn);
+            $this->setDefaultInterface($table, $primaryColumn);
+        }
+
+        $result = $this->createColumn($table, $data);
+
+        // Primary column
+        if ($isPrimaryInterface) {
+            if (!$this->setPrimaryColumn($table, $columnName)) {
+                throw new \Exception('error creating the new column');
+            }
+        }
+
+        // $tableGateway = $this->createTableGateway($table);
+        // $tableGateway->addVirtualColumn($table, $data);
+
+        return $result;
+    }
+
+    /**
+     * Creates a new column in the given table
+     *
+     * @param $table
+     * @param $data
+     *
+     * @return string
+     */
+    public function createColumn($table, $data)
+    {
+        $tableGateway = $this->getTableGateway();
+
+        return $tableGateway->addColumn($table, $data);
+    }
+
+    /**
+     * Add primary key to the given column
+     *
+     * @param $table
+     * @param $column
+     *
+     * @return bool
+     */
+    public function setPrimaryColumn($table, $column)
+    {
+        return $this->getSchemaManager()->addPrimaryKey($table, $column);
+    }
+
+    /**
+     * Removes the primary key from the given column
+     *
+     * @param $table
+     * @param $column
+     *
+     * @return bool
+     */
+    public function removePrimaryKey($table, $column)
+    {
+        // update the column with a new column without auto_increment or keys
+        return $this->getSchemaManager()->dropPrimaryKey($table, $column);
+    }
+
+    /**
+     * Change the current table to the default interface
+     *
+     * @param $table
+     * @param $column
+     *
+     * @return int
+     */
+    public function setDefaultInterface($table, $column)
+    {
+        $columnsTableGateway = $this->createTableGateway('directus_columns');
+        $columnObject = $this->getSchemaManager()->getColumnSchema($table, $column);
+
+        return $columnsTableGateway->update([
+            'ui' => $this->getSchemaManager()->getColumnDefaultInterface($columnObject->getType()),
+            'options' => NULL
+        ], [
+            'table_name' => $table,
+            'column_name' => $column
+        ]);
     }
 }

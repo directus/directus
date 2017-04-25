@@ -11,6 +11,7 @@
 namespace Directus\Database\Schemas\Sources;
 
 use Directus\Database\Object\Column;
+use Directus\Exception\Exception;
 use Directus\Util\ArrayUtils;
 use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Predicate\In;
@@ -429,7 +430,7 @@ class MySQLSchema extends AbstractSchema
      */
     public function getColumn($tableName, $columnName)
     {
-        // TODO: Implement getColumn() method.
+        return $this->getColumns($tableName, ['column_name' => $columnName])->current();
     }
 
     /**
@@ -487,6 +488,70 @@ class MySQLSchema extends AbstractSchema
     public function getColumnUI($column)
     {
         // TODO: Implement getColumnUI() method.
+    }
+
+    /**
+     * Add primary key to an existing column
+     *
+     * @param $table
+     * @param $column
+     *
+     * @return \Zend\Db\Adapter\Driver\StatementInterface|\Zend\Db\ResultSet\ResultSet
+     *
+     * @throws Exception
+     */
+    public function addPrimaryKey($table, $column)
+    {
+        $columnData = $this->getColumn($table, $column);
+
+        if (!$columnData) {
+            // TODO: Better error message
+            throw new Exception('Missing column');
+        }
+
+        $dataType = ArrayUtils::get($columnData, 'type');
+
+        if (!$dataType) {
+            // TODO: Better error message
+            throw new Exception('Missing data type');
+        }
+
+        $queryFormat = 'ALTER TABLE `%s` ADD PRIMARY KEY(`%s`)';
+        // NOTE: Make this work with strings
+        if ($this->isNumericType($dataType)) {
+            $queryFormat .= ', MODIFY COLUMN `%s` %s AUTO_INCREMENT';
+        }
+
+        $query = sprintf($queryFormat, $table, $column, $column, $dataType);
+        $connection = $this->getConnection();
+
+        return $connection->query($query, $connection::QUERY_MODE_EXECUTE);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function dropPrimaryKey($table, $column)
+    {
+        $columnData = $this->getColumn($table, $column);
+
+        if (!$columnData) {
+            // TODO: Better message
+            throw new Exception('Missing column');
+        }
+
+        $dataType = ArrayUtils::get($columnData, 'type');
+
+        if (!$dataType) {
+            // TODO: Better message
+            throw new Exception('Missing data type');
+        }
+
+        $queryFormat = 'ALTER TABLE `%s` CHANGE COLUMN `%s` `%s` %s NOT NULL, DROP PRIMARY KEY';
+        $query = sprintf($queryFormat, $table, $column, $column, $dataType);
+        $connection = $this->getConnection();
+
+        return $connection->query($query, $connection::QUERY_MODE_EXECUTE);
     }
 
     /**
