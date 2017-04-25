@@ -6,22 +6,16 @@
 //  For all details and documentation:
 //  http://www.getdirectus.com
 
-define(['underscore', 'core/UIView', 'core/t', 'utils', 'select2'],function(_, UIView, __t, Utils, select2) {
-
+define(['underscore', 'core/UIView', 'core/t', 'select2'], function (_, UIView, __t, select2) {
   'use strict';
-
-  var SHOW_SELECT_OPTIONS = {
-    text: __t('select_ui_show_options_text'),
-    value: __t('select_ui_show_options_value')
-  };
 
   var parseOptions = function (options) {
     if (_.isString(options)) {
       try {
         options = JSON.parse(options);
-      } catch (e) {
+      } catch (err) {
         options = {};
-        console.error(e);
+        console.error(err);
       }
     }
 
@@ -31,11 +25,11 @@ define(['underscore', 'core/UIView', 'core/t', 'utils', 'select2'],function(_, U
   return UIView.extend({
     template: 'select/input',
 
-    serialize: function() {
+    serialize: function () {
       var selectedValue = this.options.value;
       var options = this.options.settings.get('options');
 
-      // if selectedValue is null
+      // If selectedValue is null
       // we use the schema default value
       // it should not be undefined.
       if (selectedValue === null) {
@@ -44,12 +38,12 @@ define(['underscore', 'core/UIView', 'core/t', 'utils', 'select2'],function(_, U
 
       options = parseOptions(options);
 
-      options = _.map(options, function(value, key) {
+      options = _.map(options, function (value, key) {
         var item = {};
 
         item.value = value;
         item.key = key;
-        item.selected = (item.key == selectedValue);
+        item.selected = (item.key === selectedValue);
 
         return item;
       });
@@ -62,12 +56,12 @@ define(['underscore', 'core/UIView', 'core/t', 'utils', 'select2'],function(_, U
         allow_null: this.options.settings.get('allow_null') === true,
         display_search: this.options.settings.get('display_search'),
         auto_search_limit: this.options.settings.get('auto_search_limit'),
-        placeholder_text: (this.options.settings.get('placeholder_text')) ?  this.options.settings.get('placeholder_text') : __t('select_from_below'),
+        placeholder_text: (this.options.settings.get('placeholder_text')) ? this.options.settings.get('placeholder_text') : __t('select_from_below'),
         select_type: this.options.settings.get('input_type') === 'dropdown',
         multiselect: this.options.settings.get('select_multiple') === true
       };
     },
-    initialize: function() {
+    initialize: function () {
       var isMobile = navigator.userAgent.match(/(iP(hone|od|ad)|Android|IEMobile)/);
       if (!isMobile) {
         var self = this;
