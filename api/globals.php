@@ -1,3 +1,3 @@
 <?php
 
-define('DIRECTUS_VERSION', '6.3.8');
+define('DIRECTUS_VERSION', '6.4.0-beta');
