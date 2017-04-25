@@ -65,7 +65,13 @@ class Environment extends \Slim\Environment
                 $requestUri = substr($requestUri, strlen($physicalPath));
             }
 
-            $instance['PATH_INFO'] = substr_replace($requestUri, '', strpos($requestUri, '?'));
+            // remove the query string from the request uri
+            $qsPosition = strpos($requestUri, '?');
+            if ($qsPosition !== FALSE) {
+                $requestUri = substr_replace($requestUri, '', strpos($requestUri, '?'));
+            }
+
+            $instance['PATH_INFO'] = $requestUri;
         }
 
         return $instance;
