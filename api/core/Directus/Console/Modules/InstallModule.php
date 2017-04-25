@@ -104,7 +104,7 @@ class InstallModule extends ModuleBase
         $data['db_password'] = 'directus';
         $data['directus_path'] = '/';
 
-        $directus_path = BASE_PATH . DIRECTORY_SEPARATOR;
+        $directusPath = BASE_PATH . '/';
 
         foreach ($args as $key => $value) {
             switch ($key) {
@@ -130,12 +130,17 @@ class InstallModule extends ModuleBase
                     $data['directus_path'] = $value;
                     break;
                 case 'd':
-                    $directus_path = $directus_path . $value;
+                    $directusPath = $directusPath . trim($value, '/');
                     break;
             }
         }
 
-        InstallerUtils::createConfig($data, $directus_path . 'api');
+        $apiPath = $directusPath . '/api';
+        if (!file_exists($apiPath)) {
+            throw new \Exception(sprintf('Path "%s" does not exists', $apiPath));
+        }
+
+        InstallerUtils::createConfig($data, $apiPath);
     }
 
     public function cmdDatabase($args, $extra)
