@@ -95,11 +95,11 @@
 			{{#options}}
 			<input id="multi_select_{{name}}_{{key}}" name="{{key}}" type="checkbox" {{#if selected}}checked{{/if}}/>
 			<label for="multi_select_{{name}}_{{key}}">{{value}}</label>
-			<input type="hidden" name="{{name}}">
+			<input type="hidden" name="{{../name}}">
 			{{/options}}
 		{{else}}
 			{{#options}}
-			<label class="radiobuttons" for="radio-{{value}}"><input type="radio" name="{{../name}}" value="{{value}}" id="radio-{{value}}" {{#if selected}}checked{{/if}}>{{value}}</label>
+			<label class="radiobuttons" for="radio-{{value}}"><input type="radio" name="{{../name}}" value="{{key}}" id="radio-{{key}}" {{#if selected}}checked{{/if}}>{{value}}</label>
 			{{/options}}
 		{{/if}}
 	{{/if}}
