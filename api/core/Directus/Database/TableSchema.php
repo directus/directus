@@ -293,13 +293,13 @@ class TableSchema
     /**
      * Whether or not the column name is the name of a system column.
      *
-     * @param $columnName
+     * @param $interfaceName
      *
      * @return bool
      */
-    public static function isSystemColumn($columnName)
+    public static function isSystemColumn($interfaceName)
     {
-        static::getSchemaManagerInstance()->isSystemColumn($columnName);
+        return static::getSchemaManagerInstance()->isSystemColumn($interfaceName);
     }
 
     /**
