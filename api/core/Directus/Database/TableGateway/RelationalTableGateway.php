@@ -624,6 +624,19 @@ class RelationalTableGateway extends BaseTableGateway
         // Stripe whitespaces
         $columns = array_map('trim', $columns);
 
+        // ----------------------------------------------------------------------------
+        // merge legacy visible columns param
+        // ----------------------------------------------------------------------------
+        // if both columns and columns_visible are passed columns are prioritized
+        // ----------------------------------------------------------------------------
+        $visibleColumns = ArrayUtils::get($params, 'columns_visible', []);
+        // columns_visible are expected to be an array
+        if (!is_array($visibleColumns)) {
+            $visibleColumns = [$visibleColumns];
+        }
+
+        $columns = array_merge($visibleColumns, $columns);
+
         // Add columns to params if it's not empty.
         // otherwise remove from params
         if (!empty($columns)) {
@@ -773,8 +786,8 @@ class RelationalTableGateway extends BaseTableGateway
         $builder = new Builder($this->getAdapter());
         $builder->from($this->getTable());
 
-        if (ArrayUtils::has($params, 'columns') || ArrayUtils::has($params, 'columns_visible')) {
-            $columns = array_unique(array_merge($tableSchema->getPrimaryKeysName(), ArrayUtils::get($params, 'columns', []), ArrayUtils::get($params, 'columns_visible', [])));
+        if (ArrayUtils::has($params, 'columns')) {
+            $columns = array_unique(array_merge($tableSchema->getPrimaryKeysName(), ArrayUtils::get($params, 'columns', [])));
         } else {
             $columns = $tableSchema->getColumnsName();
         }
@@ -806,7 +819,7 @@ class RelationalTableGateway extends BaseTableGateway
 
         $depth = ArrayUtils::get($params, 'depth', null);
         if ($depth !== null) {
-            $paramColumns = array_merge(ArrayUtils::get($params, 'columns', []), ArrayUtils::get($params, 'columns_visible', []));
+            $paramColumns = ArrayUtils::get($params, 'columns', []);
             $relationalColumns = $tableSchema->getRelationalColumnsName();
 
             if ($paramColumns) {
