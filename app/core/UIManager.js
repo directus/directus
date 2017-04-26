@@ -33,7 +33,7 @@ define(function(require, exports, module) {
     require('core/interfaces/directus_user_activity'),
     require('core/interfaces/directus_user_avatar'),
     require('core/interfaces/directus_file_size'),
-    require('core/interfaces/blob'),
+    require('core/interfaces/blob/component'),
     require('core/interfaces/alias'),
     require('core/interfaces/salt'),
     require('core/interfaces/select/component'),
