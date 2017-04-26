@@ -16,7 +16,7 @@ define(['core/UIView'], function (UIView) {
       }
 
       return {
-        value: this.options.value || '0',
+        value: this.options.value || 0,
         name: this.options.name,
         min: this.options.settings.get('minimum'),
         max: this.options.settings.get('maximum'),
