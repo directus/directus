@@ -67,7 +67,7 @@ class Environment extends \Slim\Environment
 
             // remove the query string from the request uri
             $qsPosition = strpos($requestUri, '?');
-            if ($qsPosition !== FALSE) {
+            if ($qsPosition !== false) {
                 $requestUri = substr_replace($requestUri, '', $qsPosition);
             }
 
