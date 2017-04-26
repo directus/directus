@@ -1,8 +1,9 @@
 define(function(require, exports, module) {
 
-  "use strict";
+  'use strict';
 
-  var Backbone = require('backbone'),
+  var Backbone    = require('backbone'),
+      _           = require('underscore'),
       ColumnModel = require('./ColumnModel');
 
   module.exports = Backbone.Collection.extend({
@@ -41,9 +42,15 @@ define(function(require, exports, module) {
       return Backbone.sync('update', this, options);
     },
 
-    initialize: function() {
+    getNonSystemColumns: function () {
+      return _.filter(this.models, function (model) {
+        return !model.isSystem();
+      });
+    },
+
+    constructor: function ColumnsCollection() {
+      Backbone.Collection.prototype.constructor.apply(this, arguments);
     }
 
   });
-
 });

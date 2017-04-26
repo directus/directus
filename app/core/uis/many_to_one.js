@@ -7,7 +7,15 @@
 //  http://www.getdirectus.com
 /*jshint multistr: true */
 
-define(['app', 'backbone', 'handlebars', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, Backbone, Handlebars, UIComponent, UIView, __t) {
+define([
+  'app',
+  'underscore',
+  'backbone',
+  'handlebars',
+  'core/UIComponent',
+  'core/UIView',
+  'core/t'
+], function (app, _, Backbone, Handlebars, UIComponent, UIView, __t) {
 
   'use strict';
 
@@ -32,13 +40,21 @@ define(['app', 'backbone', 'handlebars', 'core/UIComponent', 'core/UIView', 'cor
     templateSource: template,
 
     serialize: function() {
-      var optionTemplate = Handlebars.compile(this.options.settings.get('visible_column_template'));
+      var template = this.options.settings.get('visible_column_template');
+      var firstColumn = _.first(this.collection.structure.getNonSystemColumns());
+      var optionTemplate;
 
-      if(this.options.settings.get("readonly") === true) {
+      if (!template && firstColumn) {
+        template = '{{' + firstColumn.getName() + '}}';
+      }
+
+      optionTemplate = Handlebars.compile(template || '');
+
+      if (this.options.settings.get('readonly') === true) {
         this.canEdit = false;
       }
 
-      var data = this.collection.map(function(model) {
+      var data = this.collection.map(function (model) {
         var data = model.toJSON();
 
         var name = optionTemplate(data);
