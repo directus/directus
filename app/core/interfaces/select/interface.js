@@ -35,10 +35,14 @@ define(['underscore', 'core/UIView', 'core/t', 'select2'], function (_, UIView, 
       var values = this.$el.find('input[type=checkbox]:checked');
       var out = '';
 
-      for (var i = 0; i < values.length; i++) {
-        out += $(values[i]).attr('name') + this.options.settings.get('delimiter');
+      if (values.length > 0) {
+        for (var i = 0; i < values.length; i++) {
+          out += $(values[i]).attr('name') + this.options.settings.get('delimiter');
+        }
+
+        out = out.substr(0, out.length - 1);
       }
-      out = out.substr(0, out.length - 1);
+
       this.$el.find('input').val(out);
     },
 
@@ -46,8 +50,6 @@ define(['underscore', 'core/UIView', 'core/t', 'select2'], function (_, UIView, 
       var value = this.options.value || '';
       var values = value.split(this.options.settings.get('delimiter'));
       var options = this.options.settings.get('options');
-
-      console.log(this.options.name, this.options.value);
 
       options = parseOptions(options);
 
@@ -93,6 +95,7 @@ define(['underscore', 'core/UIView', 'core/t', 'select2'], function (_, UIView, 
           self.$el.find('select').select2(options);
         }, 0);
       }
+      this.updateCheckboxValue();
     }
   });
 });
