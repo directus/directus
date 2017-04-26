@@ -7,16 +7,25 @@
 		padding: 8px 12px;
 	}
 
+	.select-interface .select2-selection--single,
 	.select-interface .select2-selection--multiple {
 		border: 1px solid #ccc;
 		border-radius: 2px;
-		cursor: text;
 		color: #444;
 		background-color: #fff;
 		transition: box-shadow 200ms ease-in-out;
 	}
 
-	.select-interface .select2-container--focus .select2-selection--multiple {
+	.select-interface .select2-selection--single {
+		cursor: pointer;
+	}
+
+	.select-interface .select2-selection--multiple {
+		cursor: text;
+	}
+
+	.select-interface .select2-container--focus .select2-selection--multiple,
+	.select-interface .select2-container--focus .select2-selection--single {
 		box-shadow: 0px 0px 0px 2px #3498DB;
 	}
 
