@@ -50,7 +50,7 @@ define(['core/interfaces/select/interface', 'underscore', 'core/UIComponent', 'c
     list: function (options) {
       var value = _.isString(options.value) ? options.value.replace(/<(?:.|\n)*?>/gm, '').substr(0, 100) : options.value;
 
-      if (options.settings.get('show') === 'text') {
+      if (options.settings.get('list_value') === 'text') {
         options = parseOptions(options.settings.get('options'));
 
         value = options[value];
