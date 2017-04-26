@@ -231,7 +231,7 @@ function getUsers()
         'perPage' => 1000,
         STATUS_COLUMN_NAME => STATUS_ACTIVE_NUM,
         'depth' => 1,
-        'columns_visible' => ['id', STATUS_COLUMN_NAME, 'avatar', 'first_name', 'last_name', 'group', 'email', 'position', 'last_access']
+        // 'columns_visible' => ['id', STATUS_COLUMN_NAME, 'avatar', 'first_name', 'last_name', 'group', 'email', 'position', 'last_access']
     ]);
 
     // Lets get the gravatar if no avatar is set.
