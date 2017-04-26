@@ -78,6 +78,66 @@
 		padding: 4px 10px;
 		margin-right: 10px;
 	}
+
+	.select-interface input[type=checkbox],
+	.select-interface input[type=radio] {
+		position: absolute;
+		opacity: 0;
+		z-index: -1;
+	}
+
+	.select-interface label {
+		margin-right: 10px;
+	}
+
+	.select-interface label:hover {
+		cursor: pointer;
+	}
+
+	.select-interface input[type=checkbox]:checked + label,
+	.select-interface input[type=radio]:checked + label {
+		font-weight: 700;
+		color: #3498DB;
+	}
+
+	.select-interface label::before {
+		cursor: inherit;
+		color: #999;
+		font-family: 'Material Icons';
+		font-size: 24px;
+		vertical-align: -29%; /* centers checkbox vertically */
+		display: inline-block;
+		margin-right: 4px;
+		width: 1em;
+		height: 1em;
+		font-feature-settings: 'liga';
+		transition: color 200ms ease-in-out;
+	}
+
+	.select-interface input[type=checkbox]:checked + label::before,
+	.select-interface input[type=radio]:checked + label::before,
+	.select-interface input[type=checkbox]:hover + label::before,
+	.select-interface input[type=radio]:hover + label::before,
+	.select-interface input[type=checkbox]:focus + label::before,
+	.select-interface input[type=radio]:focus + label::before {
+		color: #3498DB;
+	}
+
+	.select-interface input[type=checkbox] + label::before {
+		content: 'check_box_outline_blank';
+	}
+
+	.select-interface input[type=checkbox]:checked + label::before {
+		content: 'check_box';
+	}
+
+	.select-interface input[type=radio] + label::before {
+		content: 'radio_button_unchecked';
+	}
+
+	.select-interface input[type=radio]:checked + label::before {
+		content: 'radio_button_checked';
+	}
 </style>
 
 <div class="select-interface">
@@ -99,7 +159,8 @@
 			<input type="hidden" name="{{name}}">
 		{{else}}
 			{{#options}}
-			<label class="radiobuttons" for="radio-{{value}}"><input type="radio" name="{{../name}}" value="{{key}}" id="radio-{{key}}" {{#if selected}}checked{{/if}}>{{value}}</label>
+			<input type="radio" name="{{../name}}" value="{{key}}" id="radio-{{key}}" {{#if selected}}checked{{/if}}>
+			<label class="radiobuttons" for="radio-{{key}}">{{value}}</label>
 			{{/options}}
 		{{/if}}
 	{{/if}}
