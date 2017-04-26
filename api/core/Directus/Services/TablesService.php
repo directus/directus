@@ -67,7 +67,7 @@ class TablesService extends AbstractService
         if (in_array('status', $columns)) {
             $tableGateway->insert([
                 'table_name' => $name,
-                'column_name' => 'status',
+                'column_name' => STATUS_COLUMN_NAME,
                 'data_type' => 'INT',
                 'ui' => 'status'
             ]);
