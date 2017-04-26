@@ -38,7 +38,8 @@ define(['core/interfaces/select/interface', 'underscore', 'core/UIComponent', 'c
       {id: 'auto_search_limit', type: 'Number', ui: 'numeric', char_length: 20, default_value: 10, comment: __t('select_auto_search_limit_text')},
       {id: 'list_value', type: 'String', default_value: 'value', ui: 'select', options: {options: SHOW_SELECT_OPTIONS}},
       {id: 'placeholder_text', type: 'String', default_value: '', ui: 'textinput', char_length: 255, required: false, comment: __t('select_placeholder_text')},
-      {id: 'input_type', type: 'String', default_value: 'value', ui: 'select', default_value: 'dropdown', options: {options: {dropdown: 'Dropdown', radio: 'Radio Buttons / Checkboxes'}}}
+      {id: 'input_type', type: 'String', default_value: 'value', ui: 'select', default_value: 'dropdown', options: {options: {dropdown: 'Dropdown', radio: 'Radio Buttons / Checkboxes'}}},
+      {id: 'delimiter', type: 'String', default_value: ',', ui: 'textinput', char_length: 1, required: true}
     ],
     Input: Input,
     validate: function (value, options) {
