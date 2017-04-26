@@ -25,26 +25,37 @@ define(['underscore', 'core/UIView', 'core/t', 'select2'], function (_, UIView, 
   return UIView.extend({
     template: 'select/input',
 
+    events: {
+      'change input[type=checkbox]': function () {
+        this.updateCheckboxValue();
+      }
+    },
+
+    updateCheckboxValue() {
+      var values = this.$el.find('input[type=checkbox]:checked');
+      var out = '';
+
+      for (var i = 0; i < values.length; i++) {
+        out += $(values[i]).attr('name') + this.options.settings.get('delimiter');
+      }
+      out = out.substr(0, out.length - 1);
+      this.$el.find('input').val(out);
+    },
+
     serialize: function () {
-      var selectedValue = this.options.value;
+      var value = this.options.value || '';
+      var values = value.split(this.options.settings.get('delimiter'));
       var options = this.options.settings.get('options');
 
-      // If selectedValue is null
-      // we use the schema default value
-      // it should not be undefined.
-      if (selectedValue === null) {
-        selectedValue = this.options.schema.get('default_value');
-      }
+      console.log(this.options.name, this.options.value);
 
       options = parseOptions(options);
 
       options = _.map(options, function (value, key) {
         var item = {};
-
         item.value = value;
         item.key = key;
-        item.selected = (item.key === selectedValue);
-
+        item.selected = ($.inArray(item.key, values) !== -1);
         return item;
       });
 
