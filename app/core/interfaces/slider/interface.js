@@ -5,7 +5,7 @@ define(['core/UIView'], function (UIView) {
     template: 'slider/input',
 
     events: {
-      'input .slider': function (e) {
+      'input input[type=range]': function (e) {
         var value = e.target.value;
         this.$el.find('span.slider-value').html(value);
       }
