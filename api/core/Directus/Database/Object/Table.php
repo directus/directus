@@ -11,6 +11,7 @@
 namespace Directus\Database\Object;
 
 use Directus\Collection\Arrayable;
+use Directus\Database\SchemaManager;
 use Directus\Util\Traits\ArrayPropertyAccess;
 use Directus\Util\Traits\ArrayPropertyToArray;
 use Directus\Util\Traits\ArraySetter;
@@ -75,6 +76,16 @@ class Table implements \ArrayAccess, Arrayable, \JsonSerializable
      * @var bool
      */
     protected $single = false;
+
+    /**
+     * @var string
+     */
+    protected $sortColumn = null;
+
+    /**
+     * @var string
+     */
+    protected $statusColumn = null;
 
     /**
      * The table record default status
@@ -300,6 +311,10 @@ class Table implements \ArrayAccess, Arrayable, \JsonSerializable
             // to always set the primary column to the first primary key column
             if (!$this->getPrimaryColumn() && $column->isPrimary()) {
                 $this->setPrimaryColumn($column->getName());
+            } else if (!$this->getSortColumn() && $column->getUI() === 'sort') {
+                $this->setSortColumn($column->getName());
+            } else if (!$this->getStatusColumn() && $column->getUI() === 'status') {
+                $this->setStatusColumn($column->getName());
             }
 
             $this->columns[] = $column;
@@ -335,7 +350,10 @@ class Table implements \ArrayAccess, Arrayable, \JsonSerializable
      */
     public function getColumn($name)
     {
-        return array_shift($this->getColumns([$name]));
+        $columns = $this->getColumns([$name]);
+
+        // get the first matched result
+        return array_shift($columns);
     }
 
     /**
@@ -481,7 +499,7 @@ class Table implements \ArrayAccess, Arrayable, \JsonSerializable
      */
     public function hasStatusColumn()
     {
-        return $this->hasColumn(STATUS_COLUMN_NAME);
+        return $this->getStatusColumn() ? true : false;
     }
 
     /**
@@ -543,7 +561,7 @@ class Table implements \ArrayAccess, Arrayable, \JsonSerializable
      */
     public function setStatusColumn($name)
     {
-        $this->status_column = $name;
+        $this->statusColumn = $name;
 
         return $this;
     }
@@ -555,7 +573,7 @@ class Table implements \ArrayAccess, Arrayable, \JsonSerializable
      */
     public function getStatusColumn()
     {
-        return $this->status_column;
+        return $this->statusColumn;
     }
 
     /**
@@ -567,7 +585,7 @@ class Table implements \ArrayAccess, Arrayable, \JsonSerializable
      */
     public function setSortColumn($name)
     {
-        $this->sort_column = $name;
+        $this->sortColumn = $name;
 
         return $this;
     }
@@ -579,7 +597,7 @@ class Table implements \ArrayAccess, Arrayable, \JsonSerializable
      */
     public function getSortColumn()
     {
-        return $this->sort_column;
+        return $this->sortColumn;
     }
 
     /**

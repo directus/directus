@@ -11,9 +11,12 @@
 namespace Directus\Services;
 
 use Directus\Database\Ddl\Column\Custom;
+use Directus\Database\Object\Table;
+use Directus\Database\SchemaManager;
 use Directus\Database\TableGateway\RelationalTableGateway as TableGateway;
 use Directus\Database\TableSchema;
 use Directus\Database\Object\Column;
+use Directus\Exception\Exception;
 use Directus\Util\ArrayUtils;
 use Zend\Db\Sql\Ddl\AlterTable;
 use Zend\Db\Sql\Ddl\Column\Integer;
@@ -28,6 +31,7 @@ use Zend\Db\Sql\Sql;
 class ColumnsService extends AbstractService
 {
     const PRIMARY_KEY = 'primary_key';
+    const SORT = 'sort';
 
     /**
      * @var TableGateway
@@ -90,15 +94,9 @@ class ColumnsService extends AbstractService
 
         $columnData = $columnData->toArray();
 
-        if (ArrayUtils::get($data, 'ui') === static::PRIMARY_KEY) {
-            $tableObject = $this->getSchemaManager()->getTableSchema($tableName);
-            if ($primaryColumn = $tableObject->getPrimaryColumn()) {
-                $this->removePrimaryKey($tableName, $primaryColumn);
-                $this->setDefaultInterface($tableName, $primaryColumn);
-            }
-
-            $this->setPrimaryColumn($tableName, $columnName);
-        }
+        // if the column is a system column
+        // set the current column to the default interface
+        $this->updateCurrentSystemInterfaces($tableName, ArrayUtils::get($data, 'ui'));
 
         $this->ddlUpdate($tableName, $columnName, $data);
         $data = ArrayUtils::pick($data, [
@@ -216,23 +214,19 @@ class ColumnsService extends AbstractService
             throw new \Exception(sprintf('table [%s] not found', $table));
         }
 
-        $isPrimaryInterface = ArrayUtils::get($data, 'ui') === static::PRIMARY_KEY;
-        if ($isPrimaryInterface && $primaryColumn = $tableObject->getPrimaryColumn()) {
-            $this->removePrimaryKey($table, $primaryColumn);
-            $this->setDefaultInterface($table, $primaryColumn);
-        }
+        // if the column is a system column
+        // set the current column to the default interface
+        $interfaceName = ArrayUtils::get($data, 'ui');
+        $this->updateCurrentSystemInterfaces($table, $interfaceName);
 
         $result = $this->createColumn($table, $data);
 
         // Primary column
-        if ($isPrimaryInterface) {
+        if ($interfaceName === SchemaManager::INTERFACE_PRIMARY_KEY) {
             if (!$this->setPrimaryColumn($table, $columnName)) {
                 throw new \Exception('error creating the new column');
             }
         }
-
-        // $tableGateway = $this->createTableGateway($table);
-        // $tableGateway->addVirtualColumn($table, $data);
 
         return $result;
     }
@@ -299,5 +293,35 @@ class ColumnsService extends AbstractService
             'table_name' => $table,
             'column_name' => $column
         ]);
+    }
+
+    /**
+     * Sets the column (data) to default interface
+     *
+     * @param $table
+     * @param $newInterfaceName
+     */
+    protected function updateCurrentSystemInterfaces($table, $newInterfaceName)
+    {
+        /** @var Table $tableObject */
+        $tableObject = $this->getSchemaManager()->getTableSchema($table);
+
+        if (!TableSchema::isSystemColumn($newInterfaceName)) {
+            return;
+        }
+
+        $callback = function ($column) use ($table, $newInterfaceName) {
+            if ($newInterfaceName === SchemaManager::INTERFACE_PRIMARY_KEY) {
+                $this->removePrimaryKey($table, $column);
+            }
+
+            $this->setDefaultInterface($table, $column);
+        };
+
+        foreach ($tableObject->getColumns() as $columnObject) {
+            if ($columnObject->getUI() === $newInterfaceName) {
+                $callback($columnObject->getName());
+            }
+        }
     }
 }

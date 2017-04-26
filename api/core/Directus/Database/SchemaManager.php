@@ -27,6 +27,12 @@ use Zend\Db\Sql\Sql;
  */
 class SchemaManager
 {
+    // Names of the system interfaces
+    // former system columns
+    const INTERFACE_PRIMARY_KEY = 'primary_key';
+    const INTERFACE_STATUS = 'status';
+    const INTERFACE_SORT = 'sort';
+
     /**
      * Schema source instance
      *
@@ -526,11 +532,11 @@ class SchemaManager
         $options = json_decode(ArrayUtils::get($column, 'options', ''), true);
         $column['options'] = $options ? $options : [];
 
-        // $isSystemColumn = static::isSystemColumn($column['id']);
-        // $column['system'] = (bool) $isSystemColumn;
-        // if ($isSystemColumn) {
-        //     $column['hidden'] = true;
-        // }
+        $isSystemColumn = $this->isSystemColumn($column['ui']);
+        $column['system'] = $isSystemColumn;
+        if ($isSystemColumn) {
+            $column['hidden_input'] = $column['hidden_list'] = true;
+        }
 
         // NOTE: Alias column must are nullable
         if (ArrayUtils::get($column, 'type') === 'ALIAS') {
@@ -552,17 +558,17 @@ class SchemaManager
     }
 
     /**
-     * Checks whether the column name is a system column name
+     * Checks whether the column UI is a system column
      *
-     * @param $columnName
+     * @param $columnUI
      *
      * @return bool
      */
-    public function isSystemColumn($columnName)
+    public function isSystemColumn($columnUI)
     {
-        $systemFields = ['id', 'sort', STATUS_COLUMN_NAME];
+        $systemFields = [static::INTERFACE_PRIMARY_KEY, static::INTERFACE_SORT, static::INTERFACE_STATUS];
 
-        return in_array($columnName, $systemFields);
+        return in_array($columnUI, $systemFields);
     }
 
     protected function addTable($name, $schema)
