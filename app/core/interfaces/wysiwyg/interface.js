@@ -59,7 +59,12 @@ define(['core/UIView', 'core/interfaces/wysiwyg/vendor/medium-editor.min'], func
     h4: 'h4', // Use default
     h5: 'h5', // Use default
     h6: 'h6', // Use default
-    removeFormat: 'removeFormat' // Use default
+    removeFormat: {
+      name: 'removeFormat',
+      aria: 'remove formatting',
+      action: 'removeFormat',
+      contentDefault: '<i class="material-icons">format_clear</i>'
+    }
   };
 
   return UIView.extend({
