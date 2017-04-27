@@ -6,7 +6,7 @@
 //  For all details and documentation:
 //  http://www.getdirectus.com
 
-define(['core/interfaces/blog/interface', 'core/UIComponent'], function (Input, UIComponent) {
+define(['core/interfaces/blob/interface', 'core/UIComponent'], function (Input, UIComponent) {
   'use strict';
 
   return UIComponent.extend({
