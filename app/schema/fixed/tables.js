@@ -6,23 +6,6 @@ define(function(require, exports, module) {
   var transComments = function (key) {
     return __t('directus_tables_' + key + '_comment');
   };
-  var statusMappingPlaceholder = JSON.stringify({
-    "0": {
-      "name": "Delete",
-      "color": "#C1272D",
-      "sort": 3
-    },
-    "1": {
-      "name": "Active",
-      "color": "#3498DB",
-      "sort": 1
-    },
-    "2": {
-      "name": "Draft",
-      "color": "#BBBBBB",
-      "sort": 2
-    }
-  }, null, 2);
 
   module.exports = {
     "id": "directus_tables",
@@ -161,7 +144,7 @@ define(function(require, exports, module) {
         "comment": transComments('status_mapping'),
         "options": {
           "rows": 17,
-          "placeholder_text": statusMappingPlaceholder,
+          "placeholder_text": '',
           "filter": "number"
         }
       },

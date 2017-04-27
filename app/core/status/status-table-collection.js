@@ -17,12 +17,14 @@ define(['backbone', 'underscore', './status-table-model'], function (Backbone, _
       return Backbone.Collection.prototype.get.apply(this, arguments);
     },
 
-    get: function (id) {
-      id = id || '*';
+    get: function (id, getDefault) {
+      if (getDefault === true) {
+        id = id || '*';
+      }
 
       var model = this._get(id);
 
-      if (id !== '*' && !model) {
+      if (getDefault && id !== '*' && !model) {
         model = this._get('*');
       }
 

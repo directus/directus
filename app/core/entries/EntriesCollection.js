@@ -418,7 +418,7 @@ define(function(require, exports, module) {
         this.table.set('total_entries', response.total_entries, {silent: true});
       }
 
-      app.statusMapping.get(this.table.id).get('mapping').each(function (status) {
+      app.statusMapping.get(this.table.id, true).get('mapping').each(function (status) {
         if (response[status.get('name')]) {
           this.table.set(status.get('name'), response[status.get('name')], {silent: true});
         }

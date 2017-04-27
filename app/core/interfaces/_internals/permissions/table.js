@@ -141,7 +141,7 @@ define(['app', 'underscore', 'backbone', 'core/t', 'core/Modal'], function(app, 
       }
 
       if (value !== null) {
-        app.statusMapping.get(tableName).get('mapping').each(function (status) {
+        app.statusMapping.get(tableName, true).get('mapping').each(function (status) {
           if (status.get('id') == value) {
             state = {
               name: status.get('name'),
@@ -435,7 +435,7 @@ define(['app', 'underscore', 'backbone', 'core/t', 'core/Modal'], function(app, 
     tableStatuses: function (tableName, fn, context) {
       context = context || this;
 
-      app.statusMapping.get(tableName).get('mapping').each(function (status) {
+      app.statusMapping.get(tableName, true).get('mapping').each(function (status) {
         if (status.get('hard_delete') !== true) {
           fn.apply(context, [status]);
         }

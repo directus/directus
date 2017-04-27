@@ -71,7 +71,7 @@ define([
       var table = collection.table;
       var statusColumnName = table.getStatusColumnName();
       var hasStatusColumn = this.collection.table.columns.get(statusColumnName);
-      var mapping = app.statusMapping.get(table.id).get('mapping');
+      var mapping = app.statusMapping.get(table.id, true).get('mapping');
 
       data.hasStatusColumn = hasStatusColumn;
       data.mapping = [];

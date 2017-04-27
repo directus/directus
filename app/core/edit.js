@@ -158,7 +158,7 @@ define(function(require, exports, module) {
           }
 
           if (this.options.collectionAdd) {
-            this.model.set(statusName, app.statusMapping.get(table.id).get('default_value'));
+            this.model.set(statusName, app.statusMapping.get(table.id, true).get('default_value'));
           }
 
           if (model.isNew()) {

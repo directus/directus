@@ -6,7 +6,7 @@ define(['app', 'underscore'], function (app, _) {
 
     // get all the table status information
     getTableStatuses: function (tableName) {
-      return app.statusMapping.get(tableName || '*');
+      return app.statusMapping.get(tableName || '*', true);
     },
 
     getTableStatusesMapping: function (tableName) {
@@ -28,7 +28,7 @@ define(['app', 'underscore'], function (app, _) {
       mapping.each(function (status) {
         var isDelete = deleteValue == status.get('id');
 
-        if (status.get('hidden_globally') !== false && !isDelete) {
+        if (status.get('hidden_globally') !== true && !isDelete) {
           statuses.push(status);
         }
       });

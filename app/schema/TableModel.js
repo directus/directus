@@ -32,7 +32,7 @@ define(function(require, exports, module) {
         }
       }
 
-      data.status_column = data.status_column || app.statusMapping.get(this.id).get('status_name');
+      data.status_column = data.status_column || app.statusMapping.get(data.id, true).get('status_name');
       data.primary_column = data.primary_column || 'id';
       data.sort_column = data.sort_column || 'sort';
 
@@ -40,7 +40,7 @@ define(function(require, exports, module) {
     },
 
     getStatusColumn: function () {
-      var name = this.get('status_column') || app.statusMapping.get(this.id).get('status_name');
+      var name = this.get('status_column') || app.statusMapping.get(this.id, true).get('status_name');
 
       return this.columns.get(name);
     },
@@ -56,7 +56,7 @@ define(function(require, exports, module) {
 
     getStatusDefaultValue: function () {
       var statusColumn = this.getStatusColumn();
-      var defaultStatusValue = app.statusMapping.get(this.id).get('status_name');
+      var defaultStatusValue = app.statusMapping.get(this.id, true).get('status_name');
 
       return statusColumn.get('default_value') || defaultStatusValue;
     },

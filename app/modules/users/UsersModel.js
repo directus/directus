@@ -74,7 +74,5 @@ function(app, Backbone, EntriesModel, moment) {
         url: this.url() + "?skip_activity_log=1"
       });
     }
-
   });
-
 });

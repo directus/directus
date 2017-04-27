@@ -553,7 +553,17 @@ $statusMapping = [
 ];
 
 foreach ($allTables as $table) {
-    $mapping = \Directus\Util\ArrayUtils::get($table, 'schema.status_mapping');
+    $tableName = \Directus\Util\ArrayUtils::get($table, 'schema.id');
+    $tableObject = TableSchema::getTableSchema($tableName);
+
+    /** @var \Directus\Database\Object\Column $statusColumn */
+    $statusColumn = $tableObject->getStatusColumn();
+    if (!$statusColumn) {
+        continue;
+    }
+
+    $statusColumn = $tableObject->getColumn($statusColumn);
+    $mapping = \Directus\Util\ArrayUtils::get($statusColumn->getOptions(), 'status_mapping');
     if ($mapping && ($mapping = json_decode($mapping, true))) {
         $statusMapping[\Directus\Util\ArrayUtils::get($table, 'schema.table_name')] = [
             'mapping' => $mapping,

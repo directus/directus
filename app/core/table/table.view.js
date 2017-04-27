@@ -263,11 +263,11 @@ function(app, _, Backbone, Notification, __t, TableHelpers, ModelHelper, TableHe
       return this.state.spacing;
     },
 
-    initialize: function(options) {
+    initialize: function (options) {
       var collection = this.collection;
       var table = collection.table;
       var sortColumnName = table ? table.getSortColumnName() : 'sort';
-      var statusColumnName = table ? table.getStatusColumnName() : app.statusMapping.get('*').get('status_name');
+      var statusColumnName = table ? table.getStatusColumnName() : app.statusMapping.get('*', true).get('status_name');
 
       options = _.extend({
         fixedHead: false,

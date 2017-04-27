@@ -44,7 +44,7 @@ function(app, _, Backbone) {
       return table.getStatusColumnName();
     },
 
-    serialize: function() {
+    serialize: function () {
       var statuses = [];
       var attr = this.getStatusColumnName();
       var currentStatus = this.model.get(attr);
