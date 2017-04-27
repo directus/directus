@@ -1,7 +1,7 @@
 define(['core/interfaces/wysiwyg/interface', 'core/UIComponent', 'core/t'], function (Input, UIComponent, __t) {
   return UIComponent.extend({
     id: 'wysiwyg',
-    dataTypes: ['VARCHAR', 'TEXT'],
+    dataTypes: ['VARCHAR', 'TEXT', 'MEDIUMTEXT', 'LONGTEXT'],
     Input: Input,
     validate: function (value, options) {
       if (options.view.isRequired() && !value) {
