@@ -1,4 +1,4 @@
-define(['core/UIView'], function (UIView) {
+define(['core/UIView', 'core/interfaces/wysiwyg/vendor/medium-editor.min'], function (UIView, MediumEditor) {
   return UIView.extend({
     template: 'wysiwyg/input',
     serialize: function () {
@@ -7,6 +7,9 @@ define(['core/UIView'], function (UIView) {
         value: value,
         name: this.options.name
       };
+    },
+    afterRender: function () {
+      var editor = new MediumEditor('#wysiwyg-interface_' + this.options.name);
     }
   });
 });
