@@ -9,8 +9,12 @@ define(['core/UIView', 'core/interfaces/wysiwyg/vendor/medium-editor.min'], func
       };
     },
     afterRender: function () {
-      var editor = new MediumEditor('#wysiwyg-interface_' + this.options.name);
+      console.log(this.options.settings.get('buttons').split(','));
+      var editor = new MediumEditor('#wysiwyg-interface_' + this.options.name, {
+        toolbar: {
+          buttons: this.options.settings.get('buttons').split(',')
+        }
+      });
     }
   });
 });
-
