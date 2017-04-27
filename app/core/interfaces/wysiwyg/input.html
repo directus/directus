@@ -98,6 +98,13 @@
 		width: 100%;
 		height: 100%;
 		padding: 10px 16px;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+
+	.medium-editor-toolbar .material-icons {
+		font-size: 20px;
 	}
 
 	.medium-editor-action:hover {
@@ -144,9 +151,10 @@
 	}
 
 	.medium-editor-toolbar-form input {
-		width: 100%;
+		width: 100% !important;
 		height: 100%;
 		border: none;
+		max-width: none;
 	}
 
 	.medium-editor-toolbar-form input:focus {
@@ -164,14 +172,42 @@
 		color: white;
 	}
 
-	.medium-editor-toolbar-form a:first-of-type {
-		right: 2.5em;
-		background-color: #3498db;
+	.medium-editor-toolbar-save {
+		right: 0;
 	}
 
-	.medium-editor-toolbar-form a:last-of-type {
-		right: 0;
+	.medium-editor-toolbar-close {
+		right: 2.5em;
+	}
+
+	.medium-editor-toolbar-save,
+	.medium-editor-toolbar-close {
+		position: relative;
+	}
+
+	.medium-editor-toolbar-save:after,
+	.medium-editor-toolbar-close:after {
+		display: block;
+		width: 100%;
+		height: 100%;
+		position: absolute;
+		top: 0;
+		left: 0;
+		font-family: 'Material Icons';
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		color: white;
+	}
+
+	.medium-editor-toolbar-save:after {
+		background-color: #3498db;
+		content: 'check';
+	}
+
+	.medium-editor-toolbar-close:after {
 		background-color: #f44336;
+		content: 'close';
 	}
 </style>
 <textarea id="wysiwyg-interface_{{name}}" name="{{name}}">{{value}}</textarea>
