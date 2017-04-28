@@ -47,7 +47,7 @@ class Environment extends \Slim\Environment
         // Also we remove the physical path out of the REQUEST_URI
         // ----------------------------------------------------------------------------
         if ($newInstance) {
-            $requestUri = $_SERVER['REQUEST_URI'];
+            $requestUri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
             $scriptName = $_SERVER['SCRIPT_NAME'];
 
             // Physical path
@@ -66,11 +66,6 @@ class Environment extends \Slim\Environment
             }
 
             // remove the query string from the request uri
-            $qsPosition = strpos($requestUri, '?');
-            if ($qsPosition !== false) {
-                $requestUri = substr_replace($requestUri, '', $qsPosition);
-            }
-
             $instance['PATH_INFO'] = $requestUri;
         }
 
