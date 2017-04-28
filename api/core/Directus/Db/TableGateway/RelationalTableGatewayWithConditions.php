@@ -3,6 +3,7 @@
 namespace Directus\Db\TableGateway;
 
 use Directus\Db\TableSchema;
+use Directus\Util\ArrayUtils;
 use Zend\Db\Sql\Predicate;
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Where;
@@ -184,7 +185,7 @@ class RelationalTableGatewayWithConditions extends RelationalTableGateway
                         $jkl = $target['relationship']['junction_key_left'];
                         $jkr = $target['relationship']['junction_key_right'];
 
-                        $keyleft = $params['table_name'] . '.id';
+                        $keyleft = ArrayUtils::get($params, 'table_name', $this->getTable()) . '.id';
                         $keyRight = $junctionTable . '.' . $jkl;
 
                         $jkeyleft = $junctionTable . '.' . $jkr;
@@ -214,7 +215,7 @@ class RelationalTableGatewayWithConditions extends RelationalTableGateway
                         if (isset($target['options']['filter_column'])) {
                             $targetCol = $target['options']['filter_column'];
                         } else {
-                            $targetCol = $target['options']['visible_column'];
+                            $targetCol = ArrayUtils::get($target, 'options.visible_column', '');
                         }
 
                         foreach ($relatedTableMetadata as $col) {
