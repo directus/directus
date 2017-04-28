@@ -104,7 +104,7 @@ class InstallModule extends ModuleBase
         $data['db_password'] = 'directus';
         $data['directus_path'] = '/';
 
-        $directusPath = BASE_PATH . '/';
+        $directusPath = BASE_PATH;
 
         foreach ($args as $key => $value) {
             switch ($key) {
@@ -127,15 +127,15 @@ class InstallModule extends ModuleBase
                     $data['db_password'] = $value;
                     break;
                 case 'r':
-                    $data['directus_path'] = $value;
+                    $directusPath = $value;
                     break;
                 case 'd':
-                    $directusPath = $directusPath . trim($value, '/');
+                    $data['directus_path'] = rtrim($value, '/') . '/';
                     break;
             }
         }
 
-        $apiPath = $directusPath . '/api';
+        $apiPath = rtrim($directusPath, '/') . '/api';
         if (!file_exists($apiPath)) {
             throw new \Exception(sprintf('Path "%s" does not exists', $apiPath));
         }
