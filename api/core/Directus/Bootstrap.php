@@ -6,7 +6,6 @@ use Directus\Acl\Acl;
 use Directus\Application\Application;
 use Directus\Auth\Provider as AuthProvider;
 use Directus\Database\SchemaManager;
-use Directus\Database\TableSchema;
 use Directus\Db\Connection;
 use Directus\Db\Schemas\MySQLSchema;
 use Directus\Db\Schemas\SQLiteSchema;
@@ -20,6 +19,7 @@ use Directus\Files\Thumbnail;
 use Directus\Filesystem\Filesystem;
 use Directus\Filesystem\FilesystemFactory;
 use Directus\Hook\Emitter;
+use Directus\Hook\Payload;
 use Directus\Language\LanguageManager;
 use Directus\Providers\FilesServiceProvider;
 use Directus\Util\ArrayUtils;
@@ -615,39 +615,22 @@ class Bootstrap
             ]);
         });
 
-        $emitter->addFilter('table.insert:before', function($payload) {
-            // $tableName, $data
-            if (func_num_args() == 2) {
-                $tableName = func_get_arg(0);
-                $data = func_get_arg(1);
-            } else {
-                $tableName = $payload->tableName;
-                $data = $payload->data;
+        $emitter->addFilter('table.insert:before', function (Payload $payload) {
+            if ($payload->attribute('tableName') === 'directus_files') {
+                $payload->remove('data');
+                $payload->set('user', AuthProvider::getUserInfo('id'));
             }
 
-            if ($tableName == 'directus_files') {
-                unset($data['data']);
-                $data['user'] = AuthProvider::getUserInfo('id');
-            }
-
-            return func_num_args() == 2 ? $data : $payload;
+            return $payload;
         });
 
         // Add file url and thumb url
-        $emitter->addFilter('table.select', function($payload) {
-            if (func_num_args() == 2) {
-                $result = func_get_arg(0);
-                $selectState = func_get_arg(1);
-            } else {
-                $selectState = $payload->selectState;
-                $result = $payload->result;
-            }
+        $emitter->addFilter('table.select', function (Payload $payload) {
+            $rows = $payload->getData();
+            $selectState = $payload->attribute('selectState');
 
             if ($selectState['table'] == 'directus_files') {
-                $fileRows = $result->toArray();
-                $app = Bootstrap::get('app');
-                $files = $app->container->get('files');
-                foreach ($fileRows as &$row) {
+                foreach ($rows as &$row) {
                     $config = Bootstrap::get('config');
                     $fileURL = $config['filesystem']['root_url'];
                     $thumbnailURL = $config['filesystem']['root_thumb_url'];
@@ -685,17 +668,15 @@ class Bootstrap
                     }
                 }
 
-                $filesArrayObject = new \ArrayObject($fileRows);
-                $result->initialize($filesArrayObject->getIterator());
+                $payload->replace($rows);
             }
 
-            return (func_num_args() == 2) ? $result : $payload;
+            return $payload;
         });
 
-        $emitter->addFilter('table.directus_users.select', function($payload) {
-            $result = $payload->result;
+        $emitter->addFilter('table.directus_users.select', function (Payload $payload) {
+            $rows = $payload->getData();
 
-            $rows = $result->toArray();
             $userId = AuthProvider::loggedIn() ? AuthProvider::getUserInfo('id') : null;
             foreach ($rows as &$row) {
                 // Authenticated user can see their private info
@@ -716,53 +697,53 @@ class Bootstrap
                 ]);
             }
 
-            $rowsArrayObject = new \ArrayObject($rows);
-            $result->initialize($rowsArrayObject->getIterator());
+
+            $payload->replace($rows);
 
             return $payload;
         });
 
-        $emitter->addFilter('load.relational.onetomany', function($payload) {
-            $rows = $payload->data;
-            $column = $payload->column;
-
-            if ($column->getUi() !== 'translation') {
-                return $payload;
-            }
-
-            $options = $column->getUiOptions();
-            $code = ArrayUtils::get($options, 'languages_code_column', 'id');
-            $languagesTable = ArrayUtils::get($options, 'languages_table');
-            $languageIdColumn = ArrayUtils::get($options, 'left_column_name');
-
-            if (!$languagesTable) {
-                throw new \Exception('Translations language table not defined for ' . $languageIdColumn);
-            }
-
-            $tableSchema = TableSchema::getTableSchema($languagesTable);
-            $primaryKeyColumn = 'id';
-            foreach($tableSchema->getColumns() as $column) {
-                if ($column->isPrimary()) {
-                    $primaryKeyColumn = $column->getName();
-                    break;
-                }
-            }
-
-            $newData = [];
-            foreach($rows['data'] as $row) {
-                $index = $row[$languageIdColumn];
-                if (is_array($row[$languageIdColumn])) {
-                    $index = $row[$languageIdColumn]['data'][$code];
-                    $row[$languageIdColumn] = $row[$languageIdColumn]['data'][$primaryKeyColumn];
-                }
-
-                $newData[$index] = $row;
-            }
-
-            $payload->data['data'] = $newData;
-
-            return $payload;
-        }, $emitter::P_HIGH);
+        // $emitter->addFilter('load.relational.onetomany', function($payload) {
+        //     $rows = $payload->data;
+        //     $column = $payload->column;
+        //
+        //     if ($column->getUi() !== 'translation') {
+        //         return $payload;
+        //     }
+        //
+        //     $options = $column->getUiOptions();
+        //     $code = ArrayUtils::get($options, 'languages_code_column', 'id');
+        //     $languagesTable = ArrayUtils::get($options, 'languages_table');
+        //     $languageIdColumn = ArrayUtils::get($options, 'left_column_name');
+        //
+        //     if (!$languagesTable) {
+        //         throw new \Exception('Translations language table not defined for ' . $languageIdColumn);
+        //     }
+        //
+        //     $tableSchema = TableSchema::getTableSchema($languagesTable);
+        //     $primaryKeyColumn = 'id';
+        //     foreach($tableSchema->getColumns() as $column) {
+        //         if ($column->isPrimary()) {
+        //             $primaryKeyColumn = $column->getName();
+        //             break;
+        //         }
+        //     }
+        //
+        //     $newData = [];
+        //     foreach($rows['data'] as $row) {
+        //         $index = $row[$languageIdColumn];
+        //         if (is_array($row[$languageIdColumn])) {
+        //             $index = $row[$languageIdColumn]['data'][$code];
+        //             $row[$languageIdColumn] = $row[$languageIdColumn]['data'][$primaryKeyColumn];
+        //         }
+        //
+        //         $newData[$index] = $row;
+        //     }
+        //
+        //     $payload->data['data'] = $newData;
+        //
+        //     return $payload;
+        // }, $emitter::P_HIGH);
 
         return $emitter;
     }

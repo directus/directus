@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "1bd4bc71f0477c7869a3d0fc9d532709",
+    "content-hash": "24eecfeef836d56e241708f9cd50c3cc",
     "packages": [
         {
             "name": "directus/collection",
@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/directus/directus-collection.git",
-                "reference": "9211a9bb44a0d21eaecec897e7bfc146dbf05254"
+                "reference": "8e53f6ca3d227e9bfc97df92e6a1362cba64d290"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/directus/directus-collection/zipball/9211a9bb44a0d21eaecec897e7bfc146dbf05254",
-                "reference": "9211a9bb44a0d21eaecec897e7bfc146dbf05254",
+                "url": "https://api.github.com/repos/directus/directus-collection/zipball/8e53f6ca3d227e9bfc97df92e6a1362cba64d290",
+                "reference": "8e53f6ca3d227e9bfc97df92e6a1362cba64d290",
                 "shasum": ""
             },
             "require": {
@@ -43,20 +43,20 @@
                 "collection",
                 "directus"
             ],
-            "time": "2016-12-26 09:16:26"
+            "time": "2017-04-30 00:36:48"
         },
         {
             "name": "directus/database",
-            "version": "0.1.3",
+            "version": "0.1.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/directus/directus-database.git",
-                "reference": "275d946308456d3009b46fa9746b34858406b736"
+                "reference": "f8fde4574e943c67a1a0d561ecc9c4729b8bfb84"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/directus/directus-database/zipball/275d946308456d3009b46fa9746b34858406b736",
-                "reference": "275d946308456d3009b46fa9746b34858406b736",
+                "url": "https://api.github.com/repos/directus/directus-database/zipball/f8fde4574e943c67a1a0d561ecc9c4729b8bfb84",
+                "reference": "f8fde4574e943c67a1a0d561ecc9c4729b8bfb84",
                 "shasum": ""
             },
             "require": {
@@ -90,7 +90,7 @@
                 "database",
                 "directus"
             ],
-            "time": "2017-03-01T22:06:32+00:00"
+            "time": "2017-04-30T02:29:06+00:00"
         },
         {
             "name": "directus/migrations",
@@ -189,12 +189,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/flysystem.git",
-                "reference": "4ba6e13f5116204b21c3afdf400ecf2b9eb1c482"
+                "reference": "3828f0b24e2c1918bb362d57a53205d6dc8fde61"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/4ba6e13f5116204b21c3afdf400ecf2b9eb1c482",
-                "reference": "4ba6e13f5116204b21c3afdf400ecf2b9eb1c482",
+                "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/3828f0b24e2c1918bb362d57a53205d6dc8fde61",
+                "reference": "3828f0b24e2c1918bb362d57a53205d6dc8fde61",
                 "shasum": ""
             },
             "require": {
@@ -264,7 +264,7 @@
                 "sftp",
                 "storage"
             ],
-            "time": "2017-04-22 18:59:19"
+            "time": "2017-04-28 10:15:08"
         },
         {
             "name": "slim/extras",
@@ -415,12 +415,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/twigphp/Twig.git",
-                "reference": "ef680be80ef9e4f785f3f51c86bfaca8d991e801"
+                "reference": "a083db55c242ed30451467c802633cddbad198ed"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twigphp/Twig/zipball/ef680be80ef9e4f785f3f51c86bfaca8d991e801",
-                "reference": "ef680be80ef9e4f785f3f51c86bfaca8d991e801",
+                "url": "https://api.github.com/repos/twigphp/Twig/zipball/a083db55c242ed30451467c802633cddbad198ed",
+                "reference": "a083db55c242ed30451467c802633cddbad198ed",
                 "shasum": ""
             },
             "require": {
@@ -469,7 +469,7 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2017-04-20 17:41:13"
+            "time": "2017-04-26 18:47:34"
         },
         {
             "name": "zendframework/zend-db",
@@ -529,31 +529,31 @@
         },
         {
             "name": "zendframework/zend-stdlib",
-            "version": "3.0.1",
+            "version": "dev-develop",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zendframework/zend-stdlib.git",
-                "reference": "8bafa58574204bdff03c275d1d618aaa601588ae"
+                "reference": "16818ed8ee2a92a503c43883dcb6263fe6283ee8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/zend-stdlib/zipball/8bafa58574204bdff03c275d1d618aaa601588ae",
-                "reference": "8bafa58574204bdff03c275d1d618aaa601588ae",
+                "url": "https://api.github.com/repos/zendframework/zend-stdlib/zipball/16818ed8ee2a92a503c43883dcb6263fe6283ee8",
+                "reference": "16818ed8ee2a92a503c43883dcb6263fe6283ee8",
                 "shasum": ""
             },
             "require": {
-                "php": "^5.5 || ^7.0"
+                "php": "^5.6 || ^7.0"
             },
             "require-dev": {
                 "athletic/athletic": "~0.1",
-                "fabpot/php-cs-fixer": "1.7.*",
-                "phpunit/phpunit": "~4.0"
+                "phpunit/phpunit": "~4.0",
+                "squizlabs/php_codesniffer": "^2.6.2"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "3.0-dev",
-                    "dev-develop": "3.1-dev"
+                    "dev-master": "3.1-dev",
+                    "dev-develop": "3.2-dev"
                 }
             },
             "autoload": {
@@ -570,7 +570,7 @@
                 "stdlib",
                 "zf2"
             ],
-            "time": "2016-04-12T21:19:36+00:00"
+            "time": "2016-09-13 14:40:02"
         }
     ],
     "packages-dev": [

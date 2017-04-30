@@ -9,12 +9,14 @@ use Directus\Db\RowGateway\BaseRowGateway;
 use Directus\Db\SchemaManager;
 use Directus\Db\TableSchema;
 use Directus\Files\Thumbnail;
+use Directus\Hook\Payload;
 use Directus\MemcacheProvider;
 use Directus\Util\ArrayUtils;
 use Directus\Util\DateUtils;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\ResultSet\ResultSetInterface;
 use Zend\Db\Sql\Ddl;
+use Zend\Db\Sql\Insert;
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\SqlInterface;
@@ -250,9 +252,9 @@ class BaseTableGateway extends TableGateway
 
             $this->runHook('postUpdate', [$TableGateway, $recordData, $this->adapter, null]);
         } else {
-            $recordData = $this->applyHook('table.insert:before', [$tableName, $recordData]);
-            // @TODO: All hook payload are going to be an object to prevent confusion
-            // $recordData = $this->applyHook('table.insert.' . $tableName . '.:before', [$recordData]);
+            $recordData = $this->applyHook('table.insert:before', $recordData, ['tableName' => $tableName]);
+            $recordData = $this->applyHook('table.insert.' . $tableName . ':before', $recordData);
+
             $TableGateway->insert($recordData);
             $recordData[$TableGateway->primaryKeyFieldName] = $TableGateway->getLastInsertValue();
 
@@ -616,16 +618,17 @@ class BaseTableGateway extends TableGateway
         }
 
         if (ArrayUtils::get($options, 'filter', true) !== false) {
-            $payload = (object)[
-                'result' => $result,
+            $attributes = [
                 'selectState' => $selectState,
                 'options' => $options
             ];
 
-            $payload = $this->applyHook('table.select', $payload);
-            $payload = $this->applyHook('table.' . $selectState['table'] . '.select', $payload);
+            $data = $result->toArray();
+            $data = $this->applyHook('table.select', $data, $attributes);
+            $data = $this->applyHook('table.' . $selectState['table'] . '.select', $data, $attributes);
 
-            $result = $payload->result;
+            $data = new \ArrayObject($data);
+            $result->initialize($data->getIterator());
         }
 
         return $result;
@@ -636,6 +639,12 @@ class BaseTableGateway extends TableGateway
         static::$emitter = $emitter;
     }
 
+    /**
+     * Execute all listeners to listening to the given hook name
+     *
+     * @param $name
+     * @param null $data
+     */
     public function runHook($name, $data = null)
     {
         if (static::$emitter) {
@@ -643,10 +652,41 @@ class BaseTableGateway extends TableGateway
         }
     }
 
-    public function applyHook($name, $data = null)
+    /**
+     * Apply hook against the given data to all listeners listening to the given hook name
+     *
+     * @param $name
+     * @param array|null $data
+     * @param array $attributes
+     *
+     * @return \ArrayObject|array|null
+     */
+    public function applyHook($name, array $data = null, array $attributes = [])
     {
-        if (static::$emitter) {
-            $data = static::$emitter->apply($name, $data);
+        // TODO: Ability to run multiple hook names
+        // $this->applyHook('hook1,hook2');
+        // $this->applyHook(['hook1', 'hook2']);
+        // ----------------------------------------------------------------------------
+        // TODO: Move this to a separate class to handle common events
+        // $this->applyNewRecord($table, $record);
+        if (static::$emitter && static::$emitter->hasFilterListeners($name)) {
+            $isResultSet = $data instanceof ResultSetInterface;
+            $resultSet = null;
+
+            if ($isResultSet) {
+                $resultSet = $data;
+                $data = $resultSet->toArray();
+            }
+
+            $payload = new Payload($data, $attributes);
+            $payload = static::$emitter->apply($name, $payload);
+            $data = $payload->getData();
+
+            if ($isResultSet && $resultSet) {
+                $data = new \ArrayObject($data);
+                $resultSet->initialize($data->getIterator());
+                $data = $resultSet;
+            }
         }
 
         return $data;

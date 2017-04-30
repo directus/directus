@@ -203,17 +203,23 @@ class AclAwareTableGateway extends BaseTableGateway
 
         try {
             // Data to be inserted with the column name as assoc key.
-            $insertDataAssoc = array_combine($insertState['columns'], $insertData);
+            $insertData = array_combine($insertState['columns'], $insertData);
+            $tableName = $this->getRawTableNameFromQueryStateTable($insertState['table']);
 
-            $this->runHook('table.insert:before', [$insertTable, $insertDataAssoc]);
-            $this->runHook('table.insert.' . $insertTable . ':before', [$insertDataAssoc]);
+            $insertData = $this->applyHook('table.insert:before', $insertData, [
+                'tableName' => $tableName
+            ]);
+
+            $insertData = $this->applyHook('table.insert.' . $tableName . ':before', $insertData);
+
+            $insert->values(array_values($insertData));
 
             $result = parent::executeInsert($insert);
             $insertTableGateway = new self($this->acl, $insertTable, $this->adapter);
 
             // hotfix: directus_tables does not have auto generated value primary key
             if ($this->getTable() === 'directus_tables') {
-                $generatedValue = ArrayUtils::get($insertDataAssoc, $this->primaryKeyFieldName, 'table_name');
+                $generatedValue = ArrayUtils::get($insertData, $this->primaryKeyFieldName, 'table_name');
             } else {
                 $generatedValue = $this->getLastInsertValue();
             }
@@ -322,8 +328,13 @@ class AclAwareTableGateway extends BaseTableGateway
         $this->acl->enforceBlacklist($updateTable, $attemptOffsets, Acl::FIELD_WRITE_BLACKLIST);
 
         try {
-            $this->runHook('table.update:before', [$updateTable, $updateData]);
-            $this->runHook('table.update.' . $updateTable . ':before', [$updateData]);
+            $updateData = $this->applyHook('table.update:before', $updateData, [
+                'tableName' => $updateTable
+            ]);
+            $updateData = $this->applyHook('table.update.' . $updateTable . ':before', $updateData);
+
+            $update->set($updateData);
+
             $result = parent::executeUpdate($update);
             $this->runHook('table.update', [$updateTable, $updateData]);
             $this->runHook('table.update:after', [$updateTable, $updateData]);
