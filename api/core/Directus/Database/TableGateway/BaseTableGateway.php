@@ -10,6 +10,7 @@ use Directus\Database\SchemaManager;
 use Directus\Database\Schemas\Sources\MySQLSchema;
 use Directus\Database\TableSchema;
 use Directus\Filesystem\Thumbnail;
+use Directus\Hook\Payload;
 use Directus\Permissions\Acl;
 use Directus\Permissions\Exception\UnauthorizedTableBigDeleteException;
 use Directus\Permissions\Exception\UnauthorizedTableBigEditException;
@@ -326,14 +327,11 @@ class BaseTableGateway extends TableGateway
         $TableGateway = $this->makeTable($tableName);
         $rowExists = isset($recordData[$TableGateway->primaryKeyFieldName]);
         if ($rowExists) {
-            $payload = new \stdClass();
-            $payload->tableName = $tableName;
-            $payload->data = $recordData;
+            $recordData = $this->applyHook('table.update:before', $recordData, [
+                'tableName' => $tableName
+            ]);
 
-            $payload = $this->applyHook('table.update:before', $payload);
-            $payload = $this->applyHook('table.update.' . $tableName . ':before', $payload);
-
-            $recordData = $payload->data;
+            $recordData = $this->applyHook('table.update.' . $tableName . ':before', $recordData);
 
             $Update = new Update($tableName);
             $Update->set($recordData);
@@ -342,13 +340,11 @@ class BaseTableGateway extends TableGateway
 
             $this->runHook('postUpdate', [$TableGateway, $recordData, $this->adapter, null]);
         } else {
-            $payload = new \stdClass();
-            $payload->tableName = $tableName;
-            $payload->data = $recordData;
-            $payload = $this->applyHook('table.insert:before', $payload);
-            // @TODO: All hook payload are going to be an object to prevent confusion
-            // $payload = $this->applyHook('table.insert.' . $tableName . '.:before', $payload);
-            $TableGateway->insert($payload->data);
+            $recordData = $this->applyHook('table.insert:before', $recordData, [
+                'tableName' => $tableName
+            ]);
+            $recordData = $this->applyHook('table.insert.' . $tableName . ':before', $recordData);
+            $TableGateway->insert($recordData);
             $recordData[$TableGateway->primaryKeyFieldName] = $TableGateway->getLastInsertValue();
 
             if ($tableName == 'directus_files' && static::$container) {
@@ -666,15 +662,11 @@ class BaseTableGateway extends TableGateway
                 $selectState = $select->getRawState();
                 $selectTableName = $selectState['table'];
 
-                // @NOTE: filter data should be an object
-                $payload = new \stdClass();
-                $payload->result = $result;
-                $payload->selectState = $selectState;
+                $result = $this->applyHook('table.select', $result, [
+                    'selectState' => $selectState
+                ]);
 
-                $payload = $this->applyHook('table.select', $payload);
-                $payload = $this->applyHook('table.' . $selectTableName . '.select', $payload);
-
-                $result = $payload->result;
+                $result = $this->applyHook('table.' . $selectTableName . '.select', $result);
             }
 
             return $result;
@@ -1146,12 +1138,43 @@ class BaseTableGateway extends TableGateway
         }
     }
 
-    public function applyHook($name, $payload = null)
+    /**
+     * Apply hook against the given data
+     *
+     * @param $name
+     * @param null $data
+     * @param array $attributes
+     *
+     * @return \ArrayObject|null
+     */
+    public function applyHook($name, $data = null, $attributes = [])
     {
+        // TODO: Ability to run multiple hook names
+        // $this->applyHook('hook1,hook2');
+        // $this->applyHook(['hook1', 'hook2']);
+        // ----------------------------------------------------------------------------
+        // TODO: Move this to a separate class to handle common events
+        // $this->applyNewRecord($table, $record);
         if (static::$emitter && static::$emitter->hasFilterListeners($name)) {
+            $isResultSet = $data instanceof ResultSetInterface;
+            $resultSet = null;
+
+            if ($isResultSet) {
+                $resultSet = $data;
+                $data = $resultSet->toArray();
+            }
+
+            $payload = new Payload($data, $attributes);
             $payload = static::$emitter->apply($name, $payload);
+            $data = $payload->getData();
+
+            if ($isResultSet && $resultSet) {
+                $data = new \ArrayObject($data);
+                $resultSet->initialize($data->getIterator());
+                $data = $resultSet;
+            }
         }
 
-        return $payload;
+        return $data;
     }
 }

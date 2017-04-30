@@ -26,6 +26,7 @@ use Directus\Filesystem\Filesystem;
 use Directus\Filesystem\FilesystemFactory;
 use Directus\Filesystem\Thumbnail;
 use Directus\Hook\Emitter;
+use Directus\Hook\Payload;
 use Directus\Language\LanguageManager;
 use Directus\Permissions\Acl;
 use Directus\Providers\FilesServiceProvider;
@@ -627,31 +628,18 @@ class Bootstrap
             ]);
         });
 
-        $emitter->addFilter('table.insert:before', function($payload) {
-            $auth = Bootstrap::get('auth');
-
-            // $tableName, $data
-            if (func_num_args() == 2) {
-                $tableName = func_get_arg(0);
-                $data = func_get_arg(1);
-            } else {
-                $tableName = $payload->tableName;
-                $data = &$payload->data;
+        $emitter->addFilter('table.insert:before', function (Payload $payload) {
+            if ($payload->attribute('tableName') === 'directus_files') {
+                $auth = Bootstrap::get('auth');
+                $payload->remove('data');
+                $payload->set('user', $auth->getUserInfo('id'));
             }
 
-            if ($tableName == 'directus_files') {
-                unset($data['data']);
-                $data['user'] = $auth->getUserInfo('id');
-            }
-
-            return func_num_args() == 2 ? $data : $payload;
+            return $payload;
         });
 
-        $addFilesUrl = function($result) {
-            $fileRows = $result->toArray();
-            $app = Bootstrap::get('app');
-
-            foreach ($fileRows as &$row) {
+        $addFilesUrl = function ($rows) {
+            foreach ($rows as &$row) {
                 $config = Bootstrap::get('config');
                 $fileURL = $config['filesystem']['root_url'];
                 $thumbnailURL = $config['filesystem']['root_thumb_url'];
@@ -688,24 +676,17 @@ class Bootstrap
                 }
             }
 
-            $filesArrayObject = new \ArrayObject($fileRows);
-            $result->initialize($filesArrayObject->getIterator());
+            return $rows;
         };
 
         // Add file url and thumb url
-        $emitter->addFilter('table.select', function($payload) use ($addFilesUrl) {
-            if (func_num_args() == 2) {
-                $result = func_get_arg(0);
-                $selectState = func_get_arg(1);
-            } else {
-                $selectState = $payload->selectState;
-                $result = $payload->result;
-            }
+        $emitter->addFilter('table.select', function (Payload $payload) use ($addFilesUrl) {
+            $selectState = $payload->attribute('selectState');
+            $rows = $payload->getData();
 
             if ($selectState['table'] == 'directus_files') {
-                $result = $addFilesUrl($result);
+                $rows = $addFilesUrl($rows);
             } else if ($selectState['table'] === 'directus_messages') {
-                $rows = $result->toArray();
                 $filesIds = [];
                 foreach ($rows as &$row) {
                     if (!ArrayUtils::has($row, 'attachment')) {
@@ -744,19 +725,17 @@ class Bootstrap
                         }
                     }
                 }
-
-                $rowsArrayObject = new \ArrayObject($rows);
-                $result->initialize($rowsArrayObject->getIterator());
             }
 
-            return (func_num_args() == 2) ? $result : $payload;
+            $payload->replace($rows);
+
+            return $payload;
         });
 
-        $emitter->addFilter('table.directus_users.select', function($payload) {
+        $emitter->addFilter('table.directus_users.select', function (Payload $payload) {
             $auth = Bootstrap::get('auth');
-            $result = $payload->result;
+            $rows = $payload->getData();
 
-            $rows = $result->toArray();
             $userId = $auth->loggedIn() ? $auth->getUserInfo('id') : null;
             foreach ($rows as &$row) {
                 // Authenticated user can see their private info
@@ -777,18 +756,16 @@ class Bootstrap
                 ]);
             }
 
-            $rowsArrayObject = new \ArrayObject($rows);
-            $result->initialize($rowsArrayObject->getIterator());
+            $payload->replace($rows);
 
             return $payload;
         });
 
-        $hashUserPassword = function($payload) {
-            $data = &$payload->data;
-            if (ArrayUtils::has($data, 'password')) {
+        $hashUserPassword = function (Payload $payload) {
+            if ($payload->has('password')) {
                 $auth = Bootstrap::get('auth');
-                $data['salt'] = StringUtils::randomString();
-                $data['password'] = $auth->hashPassword($data['password'], $data['salt']);
+                $payload['salt'] = StringUtils::randomString();
+                $payload['password'] = $auth->hashPassword($payload['password'], $payload['salt']);
             }
 
             return $payload;
@@ -796,8 +773,8 @@ class Bootstrap
         $emitter->addFilter('table.insert.directus_users:before', $hashUserPassword);
         $emitter->addFilter('table.update.directus_users:before', $hashUserPassword);
 
-        $preventUsePublicGroup = function ($payload) {
-            $data = $payload->data;
+        $preventUsePublicGroup = function (Payload $payload) {
+            $data = $payload->getData();
 
             if (!ArrayUtils::has($data, 'group')) {
                 return $payload;

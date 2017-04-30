@@ -97,6 +97,15 @@ class Collection implements CollectionInterface
     /**
      * @inheritDoc
      */
+    public function replace(array $items)
+    {
+        $this->clear();
+        $this->appendArray($items);
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function appendArray(array $items)
     {
         $this->items = array_merge($this->items, $items);

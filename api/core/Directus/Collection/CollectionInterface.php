@@ -70,6 +70,15 @@ interface CollectionInterface extends Arrayable, \Countable, \ArrayAccess
     public function clear();
 
     /**
+     * Replaces all current items with the given items
+     *
+     * @param array $items
+     *
+     * @return void
+     */
+    public function replace(array $items);
+
+    /**
      * Append an array into the collection items
      *
      * @param array $items
