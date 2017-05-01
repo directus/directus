@@ -34,7 +34,7 @@ define(function(require, exports, module) {
     require('core/interfaces/directus_user_avatar'),
     require('core/interfaces/directus_file_size'),
     require('core/interfaces/blob/component'),
-    require('core/interfaces/alias'),
+    require('core/interfaces/alias/component'),
     require('core/interfaces/salt'),
     require('core/interfaces/select/component'),
     require('core/interfaces/tags/component'),
