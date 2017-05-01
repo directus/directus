@@ -44,7 +44,7 @@ define(function(require, exports, module) {
     require('core/interfaces/directus_users'),
     require('core/interfaces/wysiwyg'),
     require('core/interfaces/directus_messages_recipients'),
-    require('core/interfaces/password'),
+    require('core/interfaces/password/component'),
     require('core/interfaces/random'),
     require('core/interfaces/many_to_one_typeahead'),
     require('core/interfaces/enum'),
