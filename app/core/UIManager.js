@@ -138,6 +138,11 @@ define(function(require, exports, module) {
       // }
 
       var UI = this._getUI(uiId);
+
+      if (!UI) {
+        throw 'Could not find Interface "' + uiId + '"';
+      }
+
       this.parseDefaultValue(UI, model, schema.options);
 
       return UI;
