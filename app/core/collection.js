@@ -240,6 +240,7 @@ function(app, Backbone, StatusHelper, _) {
 
       if (options.includeFilters) {
         var filters = options.replaceOptions || this.getFilters();
+        var primaryKey = this.table.getPrimaryColumnName();
 
         if (filters && filters.columns_visible && !(filters.columns_visible.indexOf(filters.sort) !== -1) && this.structure.get(filters.sort)) {
           // when there's only one visible column
@@ -249,6 +250,11 @@ function(app, Backbone, StatusHelper, _) {
           }
 
           filters.columns_visible.push(filters.sort);
+        }
+
+        // Make sure to include the primary key in visible columns list
+        if (primaryKey && filters.columns_visible && filters.columns_visible.indexOf(primaryKey) === -1) {
+          filters.columns_visible.push(primaryKey);
         }
 
         _.extend(options.data, filters);
