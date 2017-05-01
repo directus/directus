@@ -11,6 +11,7 @@
 namespace Directus\Database\Object;
 
 use Directus\Collection\Arrayable;
+use Directus\Database\SchemaManager;
 use Directus\Util\ArrayUtils;
 use Directus\Util\Traits\ArrayPropertyAccess;
 use Directus\Util\Traits\ArrayPropertyToArray;
@@ -863,7 +864,20 @@ class Column implements \ArrayAccess, Arrayable, \JsonSerializable
     }
 
     /**
-     * Checks whether the relatiopship is MANY TO ONE
+     * Checks whether this column is date system interface
+     *
+     * @return bool
+     */
+    public function isSystemDate()
+    {
+        return in_array($this->getUI(), [
+            SchemaManager::INTERFACE_DATE_CREATED,
+            SchemaManager::INTERFACE_DATE_MODIFIED
+        ]);
+    }
+
+    /**
+     * Checks whether the relationship is MANY TO ONE
      *
      * @return bool
      */

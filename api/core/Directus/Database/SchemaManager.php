@@ -32,6 +32,10 @@ class SchemaManager
     const INTERFACE_PRIMARY_KEY = 'primary_key';
     const INTERFACE_STATUS = 'status';
     const INTERFACE_SORT = 'sort';
+    const INTERFACE_DATE_CREATED = 'date_created';
+    const INTERFACE_DATE_MODIFIED = 'date_modified';
+    const INTERFACE_USER_CREATED = 'user_created';
+    const INTERFACE_USER_MODIFIED = 'user_modified';
 
     /**
      * Schema source instance
@@ -386,6 +390,13 @@ class SchemaManager
         return $this->source->getPrimaryKey($tableName);
     }
 
+    public function hasSystemDateColumn($tableName)
+    {
+        $tableObject = $this->getTableSchema($tableName);
+
+        return $tableObject->getDateCreateColumn() || $tableObject->getDateUpdateColumn();
+    }
+
     public function castRecordValues($records, $columns)
     {
         return $this->source->castRecordValues($records, $columns);
@@ -566,7 +577,15 @@ class SchemaManager
      */
     public function isSystemColumn($columnUI)
     {
-        $systemFields = [static::INTERFACE_PRIMARY_KEY, static::INTERFACE_SORT, static::INTERFACE_STATUS];
+        $systemFields = [
+            static::INTERFACE_PRIMARY_KEY,
+            static::INTERFACE_SORT,
+            static::INTERFACE_STATUS,
+            static::INTERFACE_DATE_CREATED,
+            static::INTERFACE_DATE_MODIFIED,
+            static::INTERFACE_USER_CREATED,
+            static::INTERFACE_USER_MODIFIED
+        ];
 
         return in_array($columnUI, $systemFields);
     }

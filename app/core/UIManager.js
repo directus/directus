@@ -3,16 +3,22 @@ define(function(require, exports, module) {
   'use strict';
 
   var internalInterfaces = ([
-    require('core/interfaces/_internals/accountability/interface'),
     require('core/interfaces/_internals/columns_picker/interface'),
     require('core/interfaces/_internals/columns/interface'),
     require('core/interfaces/_internals/file_preview/interface'),
     require('core/interfaces/_internals/permissions/interface'),
-    require('core/interfaces/_internals/primary_key/component'),
-    require('core/interfaces/_internals/sort/component'),
-    require('core/interfaces/_internals/status/component'),
     require('core/interfaces/_internals/views/interface')
   ]);
+
+  var systemInterfaces = [
+    require('core/interfaces/_system/primary_key/component'),
+    require('core/interfaces/_system/sort/component'),
+    require('core/interfaces/_system/status/component'),
+    require('core/interfaces/_system/accountability/date_created'),
+    require('core/interfaces/_system/accountability/date_modified'),
+    require('core/interfaces/_system/accountability/user_created'),
+    require('core/interfaces/_system/accountability/user_modified')
+  ];
 
   // Register Core UI's
   var defaultInterfaces = ([
@@ -95,6 +101,7 @@ define(function(require, exports, module) {
     setup: function() {
       //Register default UI's
       this.register(defaultInterfaces);
+      this.register(systemInterfaces);
       this.register(internalInterfaces);
       // system_fields[app.statusMapping.status_name] = {'ui':'system'};
     },

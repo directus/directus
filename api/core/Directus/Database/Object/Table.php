@@ -311,10 +311,18 @@ class Table implements \ArrayAccess, Arrayable, \JsonSerializable
             // to always set the primary column to the first primary key column
             if (!$this->getPrimaryColumn() && $column->isPrimary()) {
                 $this->setPrimaryColumn($column->getName());
-            } else if (!$this->getSortColumn() && $column->getUI() === 'sort') {
+            } else if (!$this->getSortColumn() && $column->getUI() === SchemaManager::INTERFACE_SORT) {
                 $this->setSortColumn($column->getName());
-            } else if (!$this->getStatusColumn() && $column->getUI() === 'status') {
+            } else if (!$this->getStatusColumn() && $column->getUI() === SchemaManager::INTERFACE_STATUS) {
                 $this->setStatusColumn($column->getName());
+            } else if (!$this->getDateCreateColumn() && $column->getUI() === SchemaManager::INTERFACE_DATE_CREATED) {
+                $this->setDateCreateColumn($column->getName());
+            } else if (!$this->getUserCreateColumn() && $column->getUI() === SchemaManager::INTERFACE_USER_CREATED) {
+                $this->setUserCreateColumn($column->getName());
+            } else if (!$this->getDateUpdateColumn() && $column->getUI() === SchemaManager::INTERFACE_DATE_MODIFIED) {
+                $this->setDateUpdateColumn($column->getName());
+            } else if (!$this->getUserUpdateColumn() && $column->getUI() === SchemaManager::INTERFACE_USER_MODIFIED) {
+                $this->setUserUpdateColumn($column->getName());
             }
 
             $this->columns[] = $column;

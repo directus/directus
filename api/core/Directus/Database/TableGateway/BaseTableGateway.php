@@ -848,7 +848,10 @@ class BaseTableGateway extends TableGateway
     public function convertDates(array $records, Table $tableSchema, $tableName = null)
     {
         $tableName = $tableName === null ? $this->table : $tableName;
-        if (!$this->schemaManager->isDirectusTable($tableName)) {
+        $isCustomTable = !$this->schemaManager->isDirectusTable($tableName);
+        $hasSystemDateColumn = $this->schemaManager->hasSystemDateColumn($tableName);
+
+        if (!$hasSystemDateColumn && $isCustomTable) {
             return $records;
         }
 
@@ -864,7 +867,14 @@ class BaseTableGateway extends TableGateway
 
         foreach ($records as $index => $row) {
             foreach ($tableSchema->getColumns() as $column) {
-                if (in_array(strtolower($column->getType()), ['timestamp', 'datetime'])) {
+                $canConvert = in_array(strtolower($column->getType()), ['timestamp', 'datetime']);
+                // Directus convert all dates to ISO to all datetime columns in the core tables
+                // and any columns using system date interfaces (date_created or date_modified)
+                if ($isCustomTable && !$column->isSystemDate()) {
+                    $canConvert = false;
+                }
+
+                if ($canConvert) {
                     $columnName = $column->getId();
                     if (array_key_exists($columnName, $row)) {
                         $records[$index][$columnName] = DateUtils::convertToISOFormat($row[$columnName], 'UTC', get_user_timezone());

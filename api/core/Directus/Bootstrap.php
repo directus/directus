@@ -34,6 +34,7 @@ use Directus\Services\AuthService;
 use Directus\Session\Session;
 use Directus\Session\Storage\NativeSessionStorage;
 use Directus\Util\ArrayUtils;
+use Directus\Util\DateUtils;
 use Directus\Util\StringUtils;
 use Directus\View\Twig\DirectusTwigExtension;
 use Slim\Extras\Log\DateTimeFileWriter;
@@ -627,6 +628,40 @@ class Bootstrap
                 'write_field_blacklist' => 'group,token'
             ]);
         });
+
+        $emitter->addFilter('table.insert:before', function (Payload $payload) {
+            $tableName = $payload->attribute('tableName');
+            $tableObject = TableSchema::getTableSchema($tableName);
+            /** @var Acl $acl */
+            $acl = Bootstrap::get('acl');
+
+            if ($dateCreated = $tableObject->getDateCreateColumn()) {
+                $payload[$dateCreated] = DateUtils::now();
+            }
+
+            if ($userCreated = $tableObject->getUserCreateColumn()) {
+                $payload[$userCreated] = $acl->getUserId();
+            }
+
+            return $payload;
+        }, Emitter::P_HIGH);
+
+        $emitter->addFilter('table.update:before', function (Payload $payload) {
+            $tableName = $payload->attribute('tableName');
+            $tableObject = TableSchema::getTableSchema($tableName);
+            /** @var Acl $acl */
+            $acl = Bootstrap::get('acl');
+
+            if ($dateModified = $tableObject->getDateUpdateColumn()) {
+                $payload[$dateModified] = DateUtils::now();
+            }
+
+            if ($userModified = $tableObject->getUserUpdateColumn()) {
+                $payload[$userModified] = $acl->getUserId();
+            }
+
+            return $payload;
+        }, Emitter::P_HIGH);
 
         $emitter->addFilter('table.insert:before', function (Payload $payload) {
             if ($payload->attribute('tableName') === 'directus_files') {
