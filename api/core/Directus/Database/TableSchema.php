@@ -5,6 +5,7 @@ namespace Directus\Database;
 use Directus\Authentication\Provider as Auth;
 use Directus\Bootstrap;
 use Directus\Database\Object\Column;
+use Directus\Database\Object\Table;
 use Directus\Database\TableGateway\DirectusPreferencesTableGateway;
 use Directus\MemcacheProvider;
 use Directus\Util\ArrayUtils;
@@ -687,25 +688,19 @@ class TableSchema
         };
 
         $getSchemasFn = function () {
+            /** @var Table[] $tableSchemas */
             $tableSchemas = TableSchema::getTablesSchema(['include_system' => true]);
             $columnSchemas = TableSchema::getColumnsSchema(['include_system' => true]);
             // Nest column schemas in table schemas
             foreach ($tableSchemas as &$table) {
+                $table->setColumns($columnSchemas[$table->getName()]);
+
                 $table = $table->toArray();
                 $tableName = $table['id'];
                 $table['columns'] = array_map(function(Column $column) {
                     return $column->toArray();
                 }, array_values($columnSchemas[$tableName]));
 
-                foreach ($columnSchemas[$tableName] as $column) {
-                    // @TODO: there's can be more than one column
-                    if ($column->isPrimary()) {
-                        // @TODO: Turn this into the primary key columns
-                        // @NOTE: This column is being used as the identifier/master column.
-                        $table['primary_column'] = $column->getName();
-                        break;
-                    }
-                }
                 $table = [
                     'schema' => $table,
                 ];

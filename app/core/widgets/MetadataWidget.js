@@ -48,18 +48,18 @@ function(app, Backbone, _, Handlebars, __t) {
     },
 
     serialize: function () {
-      var model = this.model ? this.model.toJSON() : {};
+      var model = this.model;
       var itemModel = this.options.itemModel ? this.options.itemModel.toJSON() : {};
       var table = this.model.table ? this.model.table : null;
       // @TODO: Add Timezone
       var dateFormat = 'MMM Mo, YYYY @ H:mma';
       var previewUrl = table ? table.get('preview_url') : null;
       var metadata = {
-        createdBy: this.model.get('created_by'),
+        createdBy: this.getCreatedBy(),
         createdByIsOnline: false,
-        createdOn: this.model.get('created_on'),
-        updatedBy: this.model.get('updated_by'),
-        updatedOn: this.model.get('updated_on'),
+        createdOn: this.getCreatedOn(),
+        updatedBy: this.getUpdatedBy(),
+        updatedOn: this.getUpdatedOn(),
         updatedByIsOnline: false
       };
 
@@ -90,10 +90,39 @@ function(app, Backbone, _, Handlebars, __t) {
       return {
         isNew: this.options.itemModel.isNew(),
         dateFormat: dateFormat,
-        model: model,
+        model: this.model ? this.model.toJSON() : {},
         previewUrl: previewUrl,
         meta: metadata
       }
+    },
+
+    getMetaData: function (meta, column) {
+      var model = this.model;
+      var itemModel = this.options.itemModel;
+      var table = model.table;
+      var data = model.get(meta);
+
+      if (table && itemModel.get(table.get(column))) {
+        data = itemModel.get(table.get(column));
+      }
+
+      return data;
+    },
+
+    getCreatedBy: function () {
+      return this.getMetaData('created_by', 'user_create_column');
+    },
+
+    getUpdatedBy: function () {
+      return this.getMetaData('updated_by', 'user_update_column');
+    },
+
+    getCreatedOn: function () {
+      return this.getMetaData('created_on', 'date_create_column');
+    },
+
+    getUpdatedOn: function () {
+      return this.getMetaData('updated_on', 'date_update_column');
     },
 
     afterRender: function () {
