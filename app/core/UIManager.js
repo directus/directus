@@ -4,6 +4,7 @@ define(function(require, exports, module) {
 
   var internalInterfaces = ([
     require('core/interfaces/_internals/accountability/interface'),
+    require('core/interfaces/_internals/activity/component'),
     require('core/interfaces/_internals/columns_picker/interface'),
     require('core/interfaces/_internals/columns/interface'),
     require('core/interfaces/_internals/file_preview/interface'),
@@ -26,7 +27,6 @@ define(function(require, exports, module) {
     require('core/interfaces/slug'),
     require('core/interfaces/textarea/component'),
     require('core/interfaces/user/interface'),
-    require('core/interfaces/directus_activity'),
     require('core/interfaces/datetime/datetime'),
     require('core/interfaces/datetime/date'),
     require('core/interfaces/datetime/time'),
