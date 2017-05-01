@@ -3,7 +3,7 @@ define(function(require, exports, module) {
   'use strict';
 
   var internalInterfaces = ([
-    require('core/interfaces/_internals/accountability/interface'),
+    require('core/interfaces/_system/accountability/interface'),
     require('core/interfaces/_internals/activity/component'),
     require('core/interfaces/_internals/columns_picker/interface'),
     require('core/interfaces/_internals/columns/interface'),
