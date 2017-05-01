@@ -6,15 +6,14 @@
 //  For all details and documentation:
 //  http://www.getdirectus.com
 
-define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UIComponent, UIView, __t) {
-
+define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function (app, UIComponent, UIView, __t) {
   'use strict';
 
-  var Component = UIComponent.extend({
+  return UIComponent.extend({
     id: 'directus_activity',
     system: true,
     Input: UIView,
-    list: function(options) {
+    list: function (options) {
       var model = options.model;
       var action = model.get('action');
       var table = model.get('table_name');
@@ -22,12 +21,13 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
       var returnStr;
 
       var identifier = model.get('identifier');
-      if(null === identifier)
-        identifier = __t('directus_activity_entry_')+" #" + model.get('row_id');
+      if (identifier === null) {
+        identifier = __t('directus_activity_entry_') + ' #' + model.get('row_id');
+      }
 
       switch (type) {
         case 'FILES':
-          returnStr = '<a href="#" data-action="files" data-id="'+model.get('row_id')+'">' + identifier + '</a> '+__t('directus_activity_action', {action: app.actionMap[action], preposition: app.prepositionMap[action]})+' <a href="#files">'+__t('files')+'</a>';
+          returnStr = '<a href="#" data-action="files" data-id="' + model.get('row_id') + '">' + identifier + '</a> ' + __t('directus_activity_action', {action: app.actionMap[action], preposition: app.prepositionMap[action]}) + ' <a href="#files">' + __t('files') + '</a>';
           break;
         case 'SETTINGS':
           returnStr = __t('directus_activity_this_settings_has_been_updated');
@@ -43,8 +43,8 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
             targetObjectPath = '#tables/' + table + '/' + model.get('row_id');
           }
           returnStr =
-            '<a href="' + targetObjectPath + '">' + identifier + ' </a>'+
-            __t('directus_activity_action', {action: app.actionMap[action], preposition: app.prepositionMap[action]})+
+            '<a href="' + targetObjectPath + '">' + identifier + ' </a>' +
+            __t('directus_activity_action', {action: app.actionMap[action], preposition: app.prepositionMap[action]}) +
             ' <a href="#tables/' + table + '">' + app.capitalize(table) + '</a>';
           break;
       }
@@ -52,6 +52,4 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
       return returnStr;
     }
   });
-
-  return Component;
 });
