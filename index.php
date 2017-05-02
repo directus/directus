@@ -565,6 +565,13 @@ foreach ($allTables as $table) {
     $statusColumn = $tableObject->getColumn($statusColumn);
     $mapping = \Directus\Util\ArrayUtils::get($statusColumn->getOptions(), 'status_mapping');
     if ($mapping && ($mapping = json_decode($mapping, true))) {
+        // Add the status index as 'id' if it doesn't exists
+        foreach ($mapping as $key => &$item) {
+            if (!array_key_exists('id', $item)) {
+                $item['id'] = $key;
+            }
+        }
+
         $statusMapping[\Directus\Util\ArrayUtils::get($table, 'schema.table_name')] = [
             'mapping' => $mapping,
             'status_name' => STATUS_COLUMN_NAME,
