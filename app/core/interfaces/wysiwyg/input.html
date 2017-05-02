@@ -1,0 +1,217 @@
+<style>
+	@keyframes medium-editor-pop-upwards {
+		0% {
+			opacity: 0;
+			transform: matrix(0.97, 0, 0, 1, 0, 12);
+		}
+		20% {
+			opacity: .7;
+			transform: matrix(0.99, 0, 0, 1, 0, 2);
+		}
+		40% {
+			opacity: 1;
+			transform: matrix(1, 0, 0, 1, 0, -1);
+		}
+		100% {
+			transform: matrix(1, 0, 0, 1, 0, 0);
+		}
+	}
+
+	.medium-editor-hidden {
+		display: none;
+	}
+
+	.medium-editor-element {
+		line-height: 24px;
+		max-width: 800px;
+		max-height: 1200px;
+		min-height: 400px;
+		padding-left: 1em;
+		border-left: 1px solid #bbb;
+	}
+
+	.medium-editor-element a {
+		color: #3498db;
+	}
+
+	.medium-editor-element img {
+		max-width: 100%;
+	}
+
+	.medium-editor-toolbar {
+		position: absolute;
+		left: 0;
+		top: 0;
+		visibility: hidden;
+		z-index: 150;
+		box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+		opacity: 0;
+	}
+
+	.medium-editor-toolbar-active {
+		opacity: 1;
+	}
+
+	.medium-editor-toolbar-active.medium-editor-stalker-toolbar {
+		animation: medium-editor-pop-upwards 160ms forwards linear;
+	}
+
+	.medium-toolbar-arrow-under:after, .medium-toolbar-arrow-over:before {
+		border-style: solid;
+		content: '';
+		display: block;
+		height: 0;
+		left: 50%;
+		margin-left: -8px;
+		position: absolute;
+		width: 0;
+	}
+
+	.medium-toolbar-arrow-under:after {
+		border-width: 6px 6px 0 6px;
+		border-color: #fff transparent transparent;
+		filter: drop-shadow(0 1px 3px rgba(0,0,0,0.12)) drop-shadow(0 1px 2px rgba(0,0,0,0.24));
+		z-index: -1;
+	}
+
+	.medium-toolbar-arrow-over:before {
+		border-width: 0 6px 6px 6px;
+		top: -8px;
+	}
+
+	.medium-editor-toolbar ul {
+		margin: 0;
+		display: flex !important; /* medium-editors adds display: block inline */
+		align-items: center;
+		background-color: #fff;
+		border-radius: 2px;
+		max-width: 360px;
+		flex-wrap: wrap;
+	}
+
+	.medium-editor-toolbar li {
+		list-style: none;
+		transition: all 200ms ease-in-out;
+		height: 100%;
+		flex-grow: 1;
+		flex-basis: 2em;
+		flex-shrink: 0;
+	}
+
+	.medium-editor-action {
+		width: 100%;
+		height: 100%;
+		padding: 10px 16px;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+
+	.medium-editor-toolbar .material-icons {
+		font-size: 20px;
+	}
+
+	.medium-editor-action:hover {
+		color: #3498db;
+	}
+
+	.medium-editor-button-active {
+		color: #fff;
+		background-color: #3498db;
+		transition: all 200ms ease-in-out;
+	}
+
+	.medium-editor-button-active:hover {
+		color: #fff;
+	}
+
+	.medium-editor-toolbar-active {
+		visibility: visible;
+	}
+
+	.medium-editor-sticky-toolbar {
+		position: fixed;
+		top: 1px;
+	}
+
+	.medium-editor-relative-toolbar {
+		position: relative;
+	}
+
+	.medium-editor-toolbar-form {
+		display: none;
+	}
+
+	.medium-editor-toolbar-form-active {
+		display: block;
+	}
+
+	.medium-editor-toolbar-form {
+		position: absolute;
+		left: 0;
+		top: 0;
+		width: 100%;
+		height: 100%;
+	}
+
+	.medium-editor-toolbar-form input {
+		width: 100% !important;
+		height: 100%;
+		border: none;
+		max-width: none;
+	}
+
+	.medium-editor-toolbar-form input:focus {
+		box-shadow: none;
+	}
+
+	.medium-editor-toolbar-form a {
+		width: 2.5em;
+		height: 100%;
+		position: absolute;
+		top: 0;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		color: white;
+	}
+
+	.medium-editor-toolbar-save {
+		right: 0;
+	}
+
+	.medium-editor-toolbar-close {
+		right: 2.5em;
+	}
+
+	.medium-editor-toolbar-save,
+	.medium-editor-toolbar-close {
+		position: relative;
+	}
+
+	.medium-editor-toolbar-save:after,
+	.medium-editor-toolbar-close:after {
+		display: block;
+		width: 100%;
+		height: 100%;
+		position: absolute;
+		top: 0;
+		left: 0;
+		font-family: 'Material Icons';
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		color: white;
+	}
+
+	.medium-editor-toolbar-save:after {
+		background-color: #3498db;
+		content: 'check';
+	}
+
+	.medium-editor-toolbar-close:after {
+		background-color: #f44336;
+		content: 'close';
+	}
+</style>
+<textarea id="wysiwyg-interface_{{name}}" name="{{name}}">{{value}}</textarea>
