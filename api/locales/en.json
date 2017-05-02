@@ -22,7 +22,6 @@
     "sign_out": "Sign Out",
     "directus_user_guide": "Directus User Guide",
     "settings": "Settings",
-    "admin_settings": "Admin Settings",
     "global": "Global",
     "global_settings": "Global Settings",
     "global_settings_description": "Personalize this instance of Directus to fit your organization’s needs. Change colors, add a company logo, set the auto logout time, etc",
