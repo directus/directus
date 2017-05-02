@@ -572,11 +572,16 @@ foreach ($allTables as $table) {
             }
         }
 
+        $deleteValue = \Directus\Util\ArrayUtils::get($statusColumn->getOptions(), 'delete_value');
+        if ($deleteValue === null) {
+            $deleteValue = STATUS_DELETED_NUM;
+        }
+
         $statusMapping[\Directus\Util\ArrayUtils::get($table, 'schema.table_name')] = [
             'mapping' => $mapping,
             'status_name' => STATUS_COLUMN_NAME,
             'default_value' => STATUS_DRAFT_NUM,
-            'delete_value' => STATUS_DELETED_NUM
+            'delete_value' => $deleteValue
         ];
     }
 }

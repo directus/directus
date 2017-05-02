@@ -10,10 +10,6 @@ define(['backbone', './status-mapping-collection'], function (Backbone, StatusMa
       return resp;
     },
 
-    getDefaultValue: function () {
-      return this.get('default_value');
-    },
-
     getDeleteValue: function () {
       return this.get('delete_value');
     }
