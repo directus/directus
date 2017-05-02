@@ -83,8 +83,9 @@ class User
     public function changePassword($email, $password)
     {
 
+        $auth = Bootstrap::get('auth');
         $salt = StringUtils::random();
-        $hash = Provider::hashPassword($password, $salt);
+        $hash = $auth->hashPassword($password, $salt);
         $user = $this->usersTableGateway->select(['email' => $email])->current();
 
         if (!$user) {
