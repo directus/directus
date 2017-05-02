@@ -37,6 +37,19 @@ define([
     id: 'status',
     dataTypes: ['TINYINT', 'SMALLINT', 'INT', 'BIGINT'],
     variables: [{
+      id: 'delete_value',
+      column_name: 'delete_value',
+      ui: 'numeric',
+      type: 'TINYINT',
+      default_value: 0,
+      required: false,
+      nullable: true,
+      system: false,
+      hidden_list: false,
+      hidden_input: false,
+      sort: 6,
+      comment: __t('directus_tables_delete_value_comment')
+    }, {
       id: 'status_mapping',
       column_name: 'status_mapping',
       ui: 'textarea',
@@ -49,7 +62,7 @@ define([
       options: {
         rows: 17,
         placeholder_text: statusMappingPlaceholder,
-        filter: "number"
+        filter: 'number'
       }
     }],
     Input: UIView
