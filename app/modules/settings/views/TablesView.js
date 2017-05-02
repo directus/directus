@@ -12,7 +12,7 @@ define([
   'underscore',
   'backbone',
   'core/directus',
-  'core/BasePageView',
+  'core/basePageView',
   'schema/TableModel',
   'schema/ColumnModel',
   'core/UIManager',

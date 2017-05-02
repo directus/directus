@@ -3,7 +3,7 @@ define([
   "backbone",
   'handlebars',
   "core/directus",
-  'core/BasePageView',
+  'core/basePageView',
   'core/widgets/widgets',
   'core/t',
   'moment'

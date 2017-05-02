@@ -1,7 +1,7 @@
 define([
     'app',
     'backbone',
-    'core/BasePageView',
+    'core/basePageView',
     'core/ListViewManager',
     'core/widgets/widgets'
 ], function(app, Backbone, BasePageView, ListViewManager, Widgets) {

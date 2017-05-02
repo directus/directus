@@ -11,7 +11,7 @@ define([
   'backbone',
   'core/widgets/widgets',
   'core/t',
-  'core/BasePageView'
+  'core/basePageView'
 ],
 
 function(app, Backbone, Widgets, __t, BasePageView) {

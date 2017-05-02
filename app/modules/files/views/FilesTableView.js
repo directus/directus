@@ -5,7 +5,7 @@ define([
   'core/edit',
   'core/t',
   'core/notification',
-  'core/BasePageView',
+  'core/basePageView',
   'core/table/table.view',
   'core/widgets/widgets',
   'modules/files/views/EditFilesView',

@@ -2,7 +2,7 @@ define([
   'app',
   'backbone',
   'core/t',
-  'core/BasePageView',
+  'core/basePageView',
   'core/widgets/widgets',
   'moment'
 ],

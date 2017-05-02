@@ -4,7 +4,7 @@ define([
   'backbone',
   'handlebars',
   'moment',
-  'core/BasePageView'
+  'core/basePageView'
 ],
 function(app, _, Backbone, Handlebars, moment, BasePageView) {
 
