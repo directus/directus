@@ -897,7 +897,9 @@ class BaseTableGateway extends TableGateway
     protected function parseRecordValuesByType(array $records, $tableName = null)
     {
         $tableName = $tableName === null ? $this->table : $tableName;
-        $columns = TableSchema::getAllNonAliasTableColumns($tableName);
+        // Get the columns directly from the source
+        // otherwise will keep in a circle loop loading Acl Instances
+        $columns = TableSchema::getSchemaManagerInstance()->getColumns($tableName);
 
         return $this->schemaManager->castRecordValues($records, $columns);
     }
