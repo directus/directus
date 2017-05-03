@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "24eecfeef836d56e241708f9cd50c3cc",
+    "content-hash": "399121808fd30bc391d59ed8e42d859c",
     "packages": [
         {
             "name": "directus/collection",
@@ -47,16 +47,16 @@
         },
         {
             "name": "directus/database",
-            "version": "0.1.4",
+            "version": "0.1.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/directus/directus-database.git",
-                "reference": "f8fde4574e943c67a1a0d561ecc9c4729b8bfb84"
+                "reference": "54ed0a1f846f3caf20b4f0787ffa404bd7b02cb5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/directus/directus-database/zipball/f8fde4574e943c67a1a0d561ecc9c4729b8bfb84",
-                "reference": "f8fde4574e943c67a1a0d561ecc9c4729b8bfb84",
+                "url": "https://api.github.com/repos/directus/directus-database/zipball/54ed0a1f846f3caf20b4f0787ffa404bd7b02cb5",
+                "reference": "54ed0a1f846f3caf20b4f0787ffa404bd7b02cb5",
                 "shasum": ""
             },
             "require": {
@@ -90,7 +90,7 @@
                 "database",
                 "directus"
             ],
-            "time": "2017-04-30T02:29:06+00:00"
+            "time": "2017-05-03T05:46:03+00:00"
         },
         {
             "name": "directus/migrations",
@@ -361,12 +361,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/swiftmailer/swiftmailer.git",
-                "reference": "160bb599e0a7525a252638cc5a8a0ebabe63ae00"
+                "reference": "cd4ffa87f4902527b1725587d368062c28eb98c2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/swiftmailer/swiftmailer/zipball/160bb599e0a7525a252638cc5a8a0ebabe63ae00",
-                "reference": "160bb599e0a7525a252638cc5a8a0ebabe63ae00",
+                "url": "https://api.github.com/repos/swiftmailer/swiftmailer/zipball/cd4ffa87f4902527b1725587d368062c28eb98c2",
+                "reference": "cd4ffa87f4902527b1725587d368062c28eb98c2",
                 "shasum": ""
             },
             "require": {
@@ -407,7 +407,7 @@
                 "mail",
                 "mailer"
             ],
-            "time": "2017-04-20 17:32:49"
+            "time": "2017-05-01 15:54:38"
         },
         {
             "name": "twig/twig",
@@ -958,12 +958,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/yaml.git",
-                "reference": "bb0983445c0f474fd39c8babb26da4a4c5c4050a"
+                "reference": "93ccdde79f4b079c7558da4656a3cb1c50c68e02"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/yaml/zipball/bb0983445c0f474fd39c8babb26da4a4c5c4050a",
-                "reference": "bb0983445c0f474fd39c8babb26da4a4c5c4050a",
+                "url": "https://api.github.com/repos/symfony/yaml/zipball/93ccdde79f4b079c7558da4656a3cb1c50c68e02",
+                "reference": "93ccdde79f4b079c7558da4656a3cb1c50c68e02",
                 "shasum": ""
             },
             "require": {
@@ -999,7 +999,7 @@
             ],
             "description": "Symfony Yaml Component",
             "homepage": "https://symfony.com",
-            "time": "2017-04-12T14:07:15+00:00"
+            "time": "2017-05-01T14:31:55+00:00"
         }
     ],
     "aliases": [],
