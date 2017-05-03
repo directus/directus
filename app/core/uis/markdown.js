@@ -6,7 +6,13 @@
 //  For all details and documentation:
 //  http://www.getdirectus.com
 
-define(['app', 'core/UIComponent', 'core/UIView', 'marked'],function(app, UIComponent, UIView, marked) {
+define([
+  'app',
+  'underscore',
+  'core/UIComponent',
+  'core/UIView',
+  'marked'
+],function (app, _, UIComponent, UIView, marked) {
 
   'use strict';
 
@@ -91,8 +97,14 @@ define(['app', 'core/UIComponent', 'core/UIView', 'marked'],function(app, UIComp
         return 'This field is required';
       }
     },
-    list: function(options) {
-      var raw_val = marked(options.value);
+    list: function (options) {
+      var value = options.value;
+
+      if (!_.isString(value)) {
+        value = '';
+      }
+
+      var raw_val = marked(value);
 
       return _.isString(raw_val) ? raw_val.replace(/<(?:.|\n)*?>/gm, '').substr(0,100) : '<span class="silver">--</span>';
     }
