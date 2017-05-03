@@ -74,7 +74,6 @@ class Auth extends Route
 
         // ------------------------------
         // Check if group needs whitelist
-        var_dump($user);
         $groupId = $user['group'];
         $directusGroupsTableGateway = new DirectusGroupsTableGateway($ZendDb, $acl);
         if (!$directusGroupsTableGateway->acceptIP($groupId, $app->request->getIp())) {
