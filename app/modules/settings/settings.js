@@ -11,7 +11,7 @@ define([
   'app',
   'backbone',
   'core/directus',
-  'core/BasePageView',
+  'core/basePageView',
   'modules/settings/views/TablesView',
   'modules/settings/views/GlobalSettingsView',
   'modules/settings/views/AboutView',

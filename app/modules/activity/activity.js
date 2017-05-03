@@ -5,7 +5,7 @@ define([
   'core/directus',
   'modules/activity/chart',
   "modules/files/files",
-  'core/BasePageView',
+  'core/basePageView',
   'moment'
 ],
 

@@ -3,7 +3,7 @@ define([
   'backbone',
   'core/directus',
   'core/t',
-  'core/BasePageView'
+  'core/basePageView'
 ],
 
 function(app, Backbone, Directus, __t, BasePageView) {

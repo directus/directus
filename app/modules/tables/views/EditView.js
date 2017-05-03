@@ -4,7 +4,7 @@ define([
   'handlebars',
   'core/t',
   'core/directus',
-  'core/BasePageView',
+  'core/basePageView',
   'core/widgets/widgets',
   'modules/tables/views/HistoryView',
   'modules/tables/views/TranslationView'

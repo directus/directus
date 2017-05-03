@@ -3,7 +3,7 @@ define([
   'backbone',
   'core/t',
   'core/directus',
-  'core/BasePageView',
+  'core/basePageView',
   'core/widgets/widgets',
   'moment',
   'core/notification'

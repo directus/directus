@@ -10,7 +10,7 @@ define([
   'app',
   'backbone',
   'handlebars',
-  'core/BasePageView',
+  'core/basePageView',
   'core/widgets/widgets',
   'core/t',
   'schema/TableModel'

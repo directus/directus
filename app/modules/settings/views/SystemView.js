@@ -9,7 +9,7 @@
 define([
   'app',
   'backbone',
-  'core/BasePageView'
+  'core/basePageView'
 ],
 
 function(app, Backbone, BasePageView) {

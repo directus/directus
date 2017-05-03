@@ -2,7 +2,7 @@ define([
   'app',
   'backbone',
   'core/directus',
-  'core/BasePageView',
+  'core/basePageView',
   'core/widgets/widgets'
 ],
 
