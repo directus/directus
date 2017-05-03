@@ -310,7 +310,14 @@ class TableSchema
      */
     public static function getAllTableColumns($tableName)
     {
-        return static::getSchemaManagerInstance()->getColumns($tableName);
+        $columns = static::getSchemaManagerInstance()->getColumns($tableName);
+
+        $acl = static::getAclInstance();
+        $readFieldBlacklist = $acl->getTablePrivilegeList($tableName, $acl::FIELD_READ_BLACKLIST);
+
+        return array_filter($columns, function (Column $column) use ($readFieldBlacklist) {
+            return !in_array($column->getName(), $readFieldBlacklist);
+        });
     }
 
     /**
@@ -345,30 +352,42 @@ class TableSchema
     }
 
     /**
-     * @param $tableName
-     * @return \Directus\Database\Object\Column[] |bool
+     * Gets the non alias columns from the given table name
+     *
+     * @param string $tableName
+     * @param bool $onlyNames
+     *
+     * @return \Directus\Database\Object\Column[]|bool
      */
-    public static function getAllNonAliasTableColumns($tableName)
+    public static function getAllNonAliasTableColumns($tableName, $onlyNames = false)
     {
         $columns = [];
-        $schemaArray = static::getSchemaManagerInstance()->getColumns($tableName);
+        $schemaArray = static::getAllTableColumns($tableName);
         if (false === $schemaArray) {
             return false;
         }
 
         foreach ($schemaArray as $column) {
             if (!$column->isAlias()) {
-                $columns[] = $column;
+                $columns[] = $onlyNames === true ? $column->getName() : $column;
             }
         }
 
         return $columns;
     }
 
+    /**
+     * Gets the alias columns from the given table name
+     *
+     * @param string $tableName
+     * @param bool $onlyNames
+     *
+     * @return \Directus\Database\Object\Column[]|bool
+     */
     public static function getAllAliasTableColumns($tableName, $onlyNames = false)
     {
         $columns = [];
-        $schemaArray = static::getSchemaManagerInstance()->getColumns($tableName);
+        $schemaArray = static::getAllTableColumns($tableName);
         if (false === $schemaArray) {
             return false;
         }
@@ -380,6 +399,30 @@ class TableSchema
         }
 
         return $columns;
+    }
+
+    /**
+     * Gets the non alias columns name from the given table name
+     *
+     * @param string $tableName
+     *
+     * @return \Directus\Database\Object\Column[]|bool
+     */
+    public static function getAllNonAliasTableColumnsName($tableName)
+    {
+        return static::getAllNonAliasTableColumns($tableName, true);
+    }
+
+    /**
+     * Gets the alias columns name from the given table name
+     *
+     * @param string $tableName
+     *
+     * @return \Directus\Database\Object\Column[]|bool
+     */
+    public static function getAllAliasTableColumnsName($tableName)
+    {
+        return static::getAllAliasTableColumns($tableName, true);
     }
 
     public static function getTableColumns($table, $limit = null, $skipIgnore = false)
