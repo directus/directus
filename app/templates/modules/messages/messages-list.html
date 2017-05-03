@@ -1,10 +1,12 @@
 <ul class="general-container selectable">
   {{#each messages}}
   <li class="message {{#unless read}}unread{{/unless}}" data-id="{{id}}">
+    {{!--
     <div class="check-box">
       <input class="custom-check" id="check{{ id }}" type="checkbox" />
       <label for="check{{ id }}"><span></span></label>
     </div>
+    --}}
     <div class="message-content">
       <div class="title">{{subject}}{{#unless read}}<span class="unread-color pulsate"> ●</span>{{/unless}}</div>
       <div class="users">{{t "message_to"}}: {{recipients}}</div>
