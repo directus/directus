@@ -74,13 +74,15 @@ class Auth extends Route
 
         // ------------------------------
         // Check if group needs whitelist
+        var_dump($user);
         $groupId = $user['group'];
         $directusGroupsTableGateway = new DirectusGroupsTableGateway($ZendDb, $acl);
         if (!$directusGroupsTableGateway->acceptIP($groupId, $app->request->getIp())) {
             return $this->app->response([
-                'message' => 'Request not allowed from IP address',
-                'success' => false
-                // 'all_nonces' => $requestNonceProvider->getAllNonces()
+                'success' => false,
+                'error' => [
+                    'message' => 'Request not allowed from IP address',
+                ]
             ]);
         }
 
