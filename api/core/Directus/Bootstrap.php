@@ -639,7 +639,9 @@ class Bootstrap
                 $payload[$dateCreated] = DateUtils::now();
             }
 
-            if ($userCreated = $tableObject->getUserCreateColumn()) {
+            // Directus Users created user are themselves (primary key)
+            // populating that field will be a duplicated primary key violation
+            if ($tableName !== 'directus_users' && $userCreated = $tableObject->getUserCreateColumn()) {
                 $payload[$userCreated] = $acl->getUserId();
             }
 
