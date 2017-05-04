@@ -259,10 +259,6 @@
 			color: #999;
 		}
 
-		&[aria-selected=true] {
-			background-color: #eee;
-		}
-
 		.select2-results__option {
 			padding-left: 1em;
 
@@ -295,11 +291,6 @@
 				}
 			}
 		}
-	}
-
-	.select2-results__option--highlighted[aria-selected] {
-		background-color: #3498DB;
-		color: white;
 	}
 
 	.select2-results__group {
