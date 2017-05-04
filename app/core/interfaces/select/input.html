@@ -148,6 +148,23 @@
 	.select-interface input[type=radio]:checked + label::before {
 		content: 'radio_button_checked';
 	}
+
+	.select2-container--default .select2-results__option--highlighted[aria-selected] {
+		background-color: #eee;
+	}
+
+	.select2-results__option[aria-selected=true] {
+		color: white;
+		background-color: #3498db;
+	}
+
+	.select2-results__option[aria-selected=true]::before {
+		content: 'check';
+		font-family: 'Material Icons';
+		display: inline-block;
+		margin-right: 5px;
+		vertical-align: -2px;
+	}
 </style>
 
 <div class="select-interface">
