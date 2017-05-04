@@ -1,29 +1,7 @@
-//  Text Input Core UI component
-//  Directus 6.0
-
-//  (c) RANGER
-//  Directus may be freely distributed under the GNU license.
-//  For all details and documentation:
-//  http://www.getdirectus.com
-/*jshint multistr: true */
-
-define([
-  'app',
-  'underscore',
-  'handlebars',
-  'core/UIComponent',
-  'core/UIView',
-  'core/t'
-], function(app, _, Handlebars, UIComponent, UIView, __t) {
-
+define(['app', 'underscore', 'handlebars', 'core/UIView'], function (app, _, Handlebars, UIView) {
   'use strict';
-
-  var template = '<input type="text" id="directus_messages_recipients-input" class="recipients" placeholder="{{t "directus_messages_recipients_placeholder"}}">\
-                  <div id="directus_messages_recipients-recipients" class="to">{{#tags}}{{this}}{{/tags}}</div></div> \
-                 <input type="hidden" name="{{name}}" id="directus_messages_recipients-form">';
-
-  var Input = UIView.extend({
-    templateSource: template,
+  return UIView.extend({
+    template: '_internals/messages_recipients/input',
 
     events: {
       'click .js-message-recipient': function (event) {
@@ -43,7 +21,7 @@ define([
 
     recipients: {},
 
-    serialize: function() {
+    serialize: function () {
       return {
         value: this.options.value,
         name: this.options.name,
@@ -52,14 +30,14 @@ define([
       };
     },
 
-    renderTags: function() {
+    renderTags: function () {
       var $el = this.$('#directus_messages_recipients-recipients.to');
       var elArray = [];
 
-      this.$("#directus_messages_recipients-input").typeahead('val', '');
+      this.$('#directus_messages_recipients-input').typeahead('val', '');
 
-      _.each(this.recipients, function(item) {
-        var icon = item.id[0] == 1 ? '<i class="material-icons">group</i>': '';
+      _.each(this.recipients, function (item) {
+        var icon = item.id[0] === 1 ? '<i class="material-icons">group</i>' : '';
 
         elArray.push('<span class="js-message-recipient" data-id="' + item.id + '">' + icon + ' ' + item.name + '</span>');
       });
@@ -69,16 +47,16 @@ define([
       $el.html(elArray.join(''));
     },
 
-    afterRender: function() {
+    afterRender: function () {
       var DIRECTUS_USERS = 0;
       var DIRECTUS_GROUPS = 1;
       var me = this;
 
-      var users = app.users.filter(function(item) {
+      var users = app.users.filter(function (item) {
         return item.get('id') !== app.authenticatedUserId.id;
       });
 
-      users = users.map(function(item) {
+      users = users.map(function (item) {
         return {
           id: item.id,
           uid: DIRECTUS_USERS + '_' + item.id,
@@ -88,7 +66,7 @@ define([
         };
       });
 
-      var groups = app.groups.map(function(item) {
+      var groups = app.groups.map(function (item) {
         return {
           id: item.id,
           uid: DIRECTUS_GROUPS + '_' + item.id,
@@ -104,26 +82,26 @@ define([
       var datums = [];
       this.deletedDatums = [];
 
-      _.each(usersAndGroups, function(item) {
+      _.each(usersAndGroups, function (item) {
         var uid = item.uid;
 
         datums.push({
           id: uid,
           name: item.name,
           avatar: item.avatar,
-          tokens: item.name.split(" ")
+          tokens: item.name.split(' ')
         });
 
         keywordsMap[uid] = item;
-        keywords.push(uid+': '+item.name);
-       });
+        keywords.push(uid + ': ' + item.name);
+      });
 
       this.datums = datums;
 
       var engine = new Bloodhound({
         name: 'recipients',
         local: datums,
-        datumTokenizer: function(d) {
+        datumTokenizer: function (d) {
           return Bloodhound.tokenizers.whitespace(d.name);
         },
         queryTokenizer: Bloodhound.tokenizers.whitespace
@@ -132,7 +110,7 @@ define([
       this.searchEngine = engine;
       engine.initialize();
 
-      this.$("#directus_messages_recipients-input").typeahead({
+      this.$('#directus_messages_recipients-input').typeahead({
         limit: 5,
         template: Handlebars.compile('<div><img src="{{avatar}}" class="avatar"><span class="recipient-name">{{name}}</span></div>')
       }, {
@@ -142,8 +120,8 @@ define([
 
       this.$('#directus_messages_recipients-input').on('typeahead:selected', function (object, datum) {
         me.recipients[datum.id] = datum;
-        me.datums = _.filter(me.datums, function(item) {
-          if(item === datum) {
+        me.datums = _.filter(me.datums, function (item) {
+          if (item === datum) {
             me.deletedDatums[item.id] = item;
             return false;
           }
@@ -155,18 +133,8 @@ define([
       });
     },
 
-    initialize: function() {
+    initialize: function () {
       this.recipients = {};
     }
   });
-
-  var Component = UIComponent.extend({
-    id: 'directus_messages_recipients',
-    Input: Input,
-    list: function(options) {
-      return ''
-    }
-  });
-
-  return Component;
 });
