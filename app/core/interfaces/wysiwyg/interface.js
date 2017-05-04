@@ -82,7 +82,8 @@ define(['core/UIView', 'core/interfaces/wysiwyg/vendor/medium-editor.min'], func
           buttons: this.options.settings.get('buttons').split(',').map(function (buttonName) {
             return buttonTypes[buttonName];
           })
-        }
+        },
+        anchorPreview: false
       });
     }
   });
