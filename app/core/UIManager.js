@@ -61,7 +61,7 @@ define(function(require, exports, module) {
     require('core/interfaces/markdown/component'),
     require('core/interfaces/multiple_files'),
     require('core/interfaces/multiple_files/csv/component'),
-    require('core/interfaces/translation'),
+    require('core/interfaces/translation/component'),
     require('core/interfaces/template_chooser')
   ]);
 
