@@ -26,8 +26,10 @@
 		max-width: 800px;
 		max-height: 1200px;
 		min-height: 400px;
-		padding-left: 1em;
-		border-left: 1px solid #bbb;
+		padding: 3em;
+		background-color: #fff;
+		border-radius: 2px;
+		overflow: scroll;
 	}
 
 	.medium-editor-element a {
@@ -36,6 +38,72 @@
 
 	.medium-editor-element img {
 		max-width: 100%;
+	}
+	.medium-editor-element h1 {
+		font-size: 30px;
+		line-height: 36px;
+		color: #222222;
+		padding-top: 1em;
+		padding-bottom: 10px;
+	}
+	.medium-editor-element h2 {
+		font-size: 22px;
+		line-height: 26px;
+		text-transform: none;
+		color: #222222;
+		padding-top: 30px;
+		padding-bottom: 4px;
+	}
+	.medium-editor-element h3 {
+		font-size: 17px;
+		line-height: 21px;
+		color: #222222;
+		padding-top: 20px;
+		padding-bottom: 4px;
+	}
+	.medium-editor-element h4 {
+		font-size: 16px;
+		line-height: 20px;
+		color: #999999;
+		padding-top: 10px;
+		padding-bottom: 4px;
+	}
+	.medium-editor-element h5 {
+		font-size: 14px;
+		line-height: 18px;
+		color: #999999;
+		padding-top: 10px;
+		padding-bottom: 4px;
+		font-style: italic;
+	}
+	.medium-editor-element h6 {
+		font-size: 12px;
+		line-height: 16px;
+		color: #999999;
+		padding-top: 10px;
+		padding-bottom: 4px;
+		text-transform: uppercase;
+		font-style: normal;
+		font-weight: 600;
+	}
+	.medium-editor-element pre {
+		margin-bottom: 20px;
+		margin-top: 20px;
+		background-color: #eee;
+		padding: 1em;
+	}
+	.medium-editor-element blockquote {
+		font-size: 16px;
+		line-height: 26px;
+		font-style: italic;
+		margin-left: 40px;
+		margin-top: 20px;
+		margin-bottom: 20px;
+		color: #999999;
+	}
+	.medium-editor-element ul,
+	.medium-editor-element ol {
+		padding-left: 40px;
 	}
 
 	.medium-editor-toolbar {
@@ -166,7 +234,7 @@
 	}
 
 	.medium-editor-toolbar-form a {
-		width: 2.5em;
+		width: 2em;
 		height: 100%;
 		position: absolute;
 		top: 0;
@@ -174,6 +242,7 @@
 		justify-content: center;
 		align-items: center;
 		color: white;
+		font-size: 1.5em;
 	}
 
 	.medium-editor-toolbar-save {
@@ -181,7 +250,7 @@
 	}
 
 	.medium-editor-toolbar-close {
-		right: 2.5em;
+		right: 2em;
 	}
 
 	.medium-editor-toolbar-save,
