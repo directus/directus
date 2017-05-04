@@ -6,6 +6,7 @@ define(['core/interfaces/wysiwyg/interface', 'core/UIComponent', 'core/t'], func
     variables: [
       {id: 'buttons', type: 'String', default_value: 'bold,italic,underline,anchor,h2,h3,quote', ui: 'select', options: {
         select_multiple: true,
+        input_type: 'radio',
         options: {
           bold: 'Bold',
           italic: 'Italic',
