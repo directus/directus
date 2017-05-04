@@ -632,7 +632,7 @@ class RelationalTableGateway extends BaseTableGateway
         $visibleColumns = ArrayUtils::get($params, 'columns_visible', []);
         // columns_visible are expected to be an array
         if (!is_array($visibleColumns)) {
-            $visibleColumns = [$visibleColumns];
+            $visibleColumns = StringUtils::csv($visibleColumns, true);
         }
 
         $columns = array_merge($visibleColumns, $columns);
