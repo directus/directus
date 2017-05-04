@@ -49,7 +49,7 @@ define(function(require, exports, module) {
     require('core/interfaces/tags/component'),
     require('core/interfaces/many_to_one'),
     require('core/interfaces/relational/m2m/component'),
-    require('core/interfaces/one_to_many'),
+    require('core/interfaces/one_to_many/component'),
     require('core/interfaces/directus_users'),
     require('core/interfaces/wysiwyg/component'),
     require('core/interfaces/password/component'),
