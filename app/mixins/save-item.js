@@ -2,15 +2,24 @@ define(['app'], function (app) {
   return {
     saveWithDeleteStatus: function () {
       var attributes = {};
-      var status = this.getTableStatuses();
+      var statuses = this.getTableStatuses();
       var statusColumnName = this.table.getStatusColumnName();
-      var xhr;
+      var status, options, xhr;
 
+      options = {wait: true};
+debugger;
       if (statusColumnName) {
-        attributes[statusColumnName] = status.getDeleteValue();
-        xhr = this.save(attributes, {patch: true, validate: false});
+        attributes[statusColumnName] = statuses.getDeleteValue();
+        status = statuses.get('mapping').get(attributes[statusColumnName]);
+
+        options.patch = true;
+        if (status.get('enforce_validation') !== true) {
+          options.validate = false;
+        }
+
+        xhr = this.save(attributes, options);
       } else {
-        xhr = this.destroy({wait: true});
+        xhr = this.destroy(options);
       }
 
       return xhr;

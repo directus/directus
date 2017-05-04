@@ -105,6 +105,12 @@ function(app, Backbone, _, Handlebars, __t, Notification, Directus, BasePageView
       app.router.openModal({type: 'confirm', text: __t('confirm_delete_item'), callback: function () {
         var xhr = self.model.saveWithDeleteStatus();
 
+        // when there's a failed validation
+        // the function returns false instead of a promise
+        if (!xhr) {
+          return;
+        }
+
         xhr.done(function () {
           var route = Backbone.history.fragment.split('/');
           route.pop();
