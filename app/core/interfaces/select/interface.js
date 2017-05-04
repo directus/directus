@@ -82,7 +82,7 @@ define(['underscore', 'core/UIView', 'core/t', 'select2'], function (_, UIView, 
           var options = {
             placeholder: self.options.settings.get('placeholder_text'),
             multiple: self.options.settings.get('select_multiple'),
-            width: '400px'
+            width: '100%'
           };
           if (self.options.settings.get('display_search') === 'auto') {
             options.minimumResultsForSearch = self.options.settings.get('auto_search_limit') || 10;
