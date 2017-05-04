@@ -11,7 +11,7 @@ class SchemaUtils
      */
     public static function cleanIdentifier($name)
     {
-        return preg_replace('/[^a-z0-9-_]+/i', '_', $name);
+        return preg_replace('/[^a-z0-9-_]+/i', '_', strtolower($name));
     }
 
     /**
