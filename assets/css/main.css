@@ -818,8 +818,6 @@ input[type="radio"].custom-checkbox {
   padding: 0; }
 .select2-container--default .select2-results__option[aria-disabled=true] {
   color: #999; }
-.select2-container--default .select2-results__option[aria-selected=true] {
-  background-color: #eee; }
 .select2-container--default .select2-results__option .select2-results__option {
   padding-left: 1em; }
   .select2-container--default .select2-results__option .select2-results__option .select2-results__group {
@@ -839,9 +837,6 @@ input[type="radio"].custom-checkbox {
           .select2-container--default .select2-results__option .select2-results__option .select2-results__option .select2-results__option .select2-results__option .select2-results__option .select2-results__option {
             margin-left: -5em;
             padding-left: 6em; }
-.select2-container--default .select2-results__option--highlighted[aria-selected] {
-  background-color: #3498DB;
-  color: white; }
 .select2-container--default .select2-results__group {
   cursor: default;
   display: block;
