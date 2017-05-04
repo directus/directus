@@ -54,7 +54,7 @@ define(function(require, exports, module) {
     require('core/interfaces/password/component'),
     require('core/interfaces/random'),
     require('core/interfaces/many_to_one_typeahead'),
-    require('core/interfaces/enum'),
+    require('core/interfaces/enum/component'),
     require('core/interfaces/user'),
     require('core/interfaces/map'),
     require('core/interfaces/markdown/component'),
