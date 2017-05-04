@@ -1,24 +1,3 @@
-//   @extraLightGrey: #f4f4f4; // Extra Light Gray – previously #fbfbfb
-//   @lightGrey: #ececec; // Light Grey
-//   @mediumGrey: #bbbbbb; // Medium Grey
-//   @darkGrey: #999999; // Dark Grey
-//   @extraDarkGrey: #333333; // Extra Dark Grey
-
-//   @fieldColor: lighten(@lightGrey, 2%);
-
-//   @tableRowHover: #fffddd;
-
-//   // Actions
-//   @addColor: #7ac943;
-//   @editColor: #3fa9f5;
-//   @deleteColor: #c1272d;
-//   @messageColor: #a63c96;
-//   @attachColor: #ff7bac;
-//   @loginColor: #5b5b5b;
-//   @errorColor: #fbb03b;
-//   @systemColor: #fdcd30;
-
-//   @openFont: 'Open Sans', sans-serif;
 $.noty.themes.directus = {
     name    : 'directus',
     helpers : {},
@@ -40,7 +19,7 @@ $.noty.themes.directus = {
         this.$bar.css({
             overflow    : 'hidden',
             margin      : '4px 0',
-            borderRadius: '4px',
+            borderRadius: '2px',
             width       : '60%',
             border      : '0px solid #fff'
         });
@@ -52,7 +31,7 @@ $.noty.themes.directus = {
             padding   : '20px',
             width     : 'auto',
             position  : 'relative',
-            borderRadius: '4px 4px 4px 4px'
+            borderRadius: '2px 2px 2px 2px'
         });
 
         this.$closeButton.css({
@@ -133,7 +112,7 @@ $.noty.themes.directus = {
                 this.$bar.css({
                     border   : 'none',
                     boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-                    borderRadius: '4px'
+                    borderRadius: '2px'
                 });
                 break;
         }
@@ -141,27 +120,27 @@ $.noty.themes.directus = {
         switch(this.options.type) {
             case 'alert':
             case 'notification':
-                this.$bar.css({backgroundColor: '#333333', color: '#FFF'});
+                this.$bar.css({backgroundColor: '#333333', color: '#FFFFFF'});
                 break;
             case 'warning':
-                this.$bar.css({backgroundColor: '#fbb03b', color: '#FFF'});
+                this.$bar.css({backgroundColor: '#FFC107', color: '#FFFFFF'}); // fbb03b
                 //this.$buttons.css({borderTop: '1px solid #FFC237'});
                 break;
             case 'error':
-                this.$bar.css({backgroundColor: '#c1272d', color: '#FFF'});
+                this.$bar.css({backgroundColor: '#F44336', color: '#FFFFFF'}); // c1272d
                 //this.$message.css({fontWeight: 'bold'});
                 //this.$buttons.css({borderTop: '1px solid darkred'});
                 break;
             case 'information':
-                this.$bar.css({backgroundColor: '#78C5E7', color: '#FFF'});
+                this.$bar.css({backgroundColor: '#FFFFFF', color: '#3498DB'});
                 //this.$buttons.css({borderTop: '1px solid #0B90C4'});
                 break;
             case 'success':
-                this.$bar.css({backgroundColor: '#7ac943', color: '#FFF'});
+                this.$bar.css({backgroundColor: '#3498DB', color: '#FFFFFF'});
                 //this.$buttons.css({borderTop: '1px solid #50C24E'});
                 break;
             default:
-                this.$bar.css({backgroundColor: '#FFF', color: '#444'});
+                this.$bar.css({backgroundColor: '#FFFFFF', color: '#333333'});
                 break;
         }
     },
