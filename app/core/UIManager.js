@@ -12,7 +12,7 @@ define(function(require, exports, module) {
     require('core/interfaces/_internals/file_size/component'),
     require('core/interfaces/_internals/permissions/interface'),
     require('core/interfaces/_internals/views/interface'),
-    require('core/interfaces/_internals/messages_recipients/component')
+    require('core/interfaces/_internals/user_activity/component')
   ]);
 
   var systemInterfaces = [
@@ -40,7 +40,6 @@ define(function(require, exports, module) {
     require('core/interfaces/datetime/datetime'),
     require('core/interfaces/datetime/date'),
     require('core/interfaces/datetime/time'),
-    require('core/interfaces/directus_user_activity'),
     require('core/interfaces/directus_user_avatar'),
     require('core/interfaces/blob/component'),
     require('core/interfaces/alias/component'),
