@@ -7,7 +7,7 @@ define(['app'], function (app) {
       var status, options, xhr;
 
       options = {wait: true};
-debugger;
+
       if (statusColumnName) {
         attributes[statusColumnName] = statuses.getDeleteValue();
         status = statuses.get('mapping').get(attributes[statusColumnName]);
