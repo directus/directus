@@ -11,7 +11,8 @@ define(function(require, exports, module) {
     require('core/interfaces/_internals/file_title/component'),
     require('core/interfaces/_internals/file_size/component'),
     require('core/interfaces/_internals/permissions/interface'),
-    require('core/interfaces/_internals/views/interface')
+    require('core/interfaces/_internals/views/interface'),
+    require('core/interfaces/_internals/user_avatar/component')
   ]);
 
   var systemInterfaces = [
