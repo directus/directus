@@ -43,7 +43,7 @@ define(function(require, exports, module) {
     require('core/interfaces/directus_user_avatar'),
     require('core/interfaces/blob/component'),
     require('core/interfaces/alias/component'),
-    require('core/interfaces/salt'),
+    require('core/interfaces/salt/component'),
     require('core/interfaces/select/component'),
     require('core/interfaces/tags/component'),
     require('core/interfaces/many_to_one'),
