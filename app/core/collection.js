@@ -256,11 +256,15 @@ function(app, Backbone, StatusHelper, _) {
 
         var columnsName = [primaryColumn, statusColumn, sortColumn];
         _.each(columnsName, function (column) {
+          if (this.isReadBlacklisted && this.isReadBlacklisted(column)) {
+            return false;
+          }
+
           // Make sure to include the system columns in visible columns list
           if (column && filters.columns_visible && filters.columns_visible.indexOf(column) === -1) {
             filters.columns_visible.push(column);
           }
-        });
+        }, this);
 
         _.extend(options.data, filters);
       }
