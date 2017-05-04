@@ -1,4 +1,8 @@
 <style>
+	.select2-container {
+		max-width: 400px;
+	}
+
 	.select-interface .select2-selection--multiple {
 		cursor: pointer;
 		display: block;
@@ -85,6 +89,7 @@
 		font-size: 10px;
 		font-weight: 700;
 		padding: 4px 10px;
+		margin: 4px 0;
 		margin-right: 10px;
 	}
 
@@ -146,6 +151,23 @@
 
 	.select-interface input[type=radio]:checked + label::before {
 		content: 'radio_button_checked';
+	}
+
+	.select2-results__option--highlighted[aria-selected] {
+		background-color: #eee;
+	}
+
+	.select2-results__option[aria-selected=true] {
+		color: white;
+		background-color: #3498db;
+	}
+
+	.select2-results__option[aria-selected=true]::before {
+		content: 'check';
+		font-family: 'Material Icons';
+		display: inline-block;
+		margin-right: 5px;
+		vertical-align: -2px;
 	}
 </style>
 
