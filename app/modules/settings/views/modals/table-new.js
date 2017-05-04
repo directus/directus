@@ -18,8 +18,22 @@ define([
       'class': 'modal table-create'
     },
 
+    state: {},
+
+    DOM: {
+      name: 'input#table_name'
+    },
+
     events: {
       'submit': 'onSubmit',
+
+      'change input#strictNaming': 'onChangeStrictNaming',
+
+      'change input#table_name': 'onChangeInputName',
+      'keypress input#table_name': 'onChangeInputName',
+      'focus input#table_name': 'onChangeInputName',
+      'textInput input#table_name': 'onChangeInputName',
+      'input input#table_name': 'onChangeInputName',
 
       'click .js-cancel': '_close',
 
@@ -30,8 +44,31 @@ define([
       event.preventDefault();
     },
 
+    onChangeStrictNaming: function (event) {
+      this.state.strictNaming = $(event.currentTarget).is(':checked');
+
+      if (this.state.strictNaming) {
+        this.updateNameWith(this.$(this.DOM.name).val());
+      }
+    },
+
+    onChangeInputName: function (event) {
+      var $input = $(event.currentTarget);
+      var name = $input.val();
+
+      this.updateNameWith(name);
+    },
+
+    updateNameWith: function (name) {
+      if (this.state.strictNaming) {
+        name = SchemaHelper.cleanTableName(name);
+      }
+
+      this.$(this.DOM.name).val(name);
+    },
+
     afterRender: function () {
-      this.$('#table_name').focus();
+      this.$(this.DOM.name).focus();
     },
 
     _close: function () {
@@ -90,6 +127,10 @@ define([
       });
 
       this._close();
+    },
+
+    initialize: function () {
+      this.state.strictNaming = true;
     }
   });
 });
