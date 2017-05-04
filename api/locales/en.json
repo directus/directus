@@ -154,6 +154,7 @@
     "new_user": "New User",
     "invite_user": "Invite User",
     "editing_item": "Editing Item",
+    "editing_x": "Editing %{name}",
     "creating_new_item": "Creating New Item",
     "learn_more": "Learn More",
     "widget_save_save_and_stay": "Save And Stay",
