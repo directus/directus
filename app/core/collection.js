@@ -266,7 +266,9 @@ function(app, Backbone, StatusHelper, _) {
           }
         }, this);
 
-        filters.columns_visible = filters.columns_visible.join(',');
+        if (filters.columns_visible) {
+          filters.columns_visible = (filters.columns_visible || '').join(',');
+        }
 
         _.extend(options.data, filters);
       }
