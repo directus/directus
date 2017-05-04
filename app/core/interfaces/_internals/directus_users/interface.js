@@ -7,13 +7,10 @@ define([
   'core/modals/invite',
   'core/interfaces/one_to_many'
 ], function (app, _, __t, Overlays, TableView, InviteModal, OneToMany) {
-
   'use strict';
-  var interfaceId = 'directus_users';
 
-  var Input = OneToMany.prototype.Input.extend({
-    templateSource: undefined,
-    template: 'directus_users',
+  return OneToMany.prototype.Input.extend({
+    template: '_internals/directus_users/input',
     events: {
       'click .js-create-user': 'createUser',
       'click .js-choose-user': 'chooseUser',
@@ -47,16 +44,16 @@ define([
       view.headerOptions.route.breadcrumbs = [];
       view.headerOptions.basicSave = true;
 
-      view.events['click .saved-success'] = function() {
+      view.events['click .saved-success'] = function () {
         this.save();
       };
-      view.events['click #removeOverlay'] = function() {
+      view.events['click #removeOverlay'] = function () {
         app.router.removeOverlayPage(this);
       };
 
       app.router.overlayPage(view);
 
-      view.save = function() {
+      view.save = function () {
         var data = view.editView.data();
         data[columnName] = id;
         model.set(data);
@@ -75,7 +72,7 @@ define([
       var view = new Overlays.ListSelect({collection: collection});
 
       app.router.overlayPage(view);
-      view.save = function() {
+      view.save = function () {
         _.each(view.table.selection(), function (id) {
           var user = self.relatedCollection.get(id);
           var data = {};
@@ -84,10 +81,10 @@ define([
             user = collection.get(id);
           }
 
-          // data[columnName] = self.model.get('id');
+          // Data[columnName] = self.model.get('id');
           var group;
           if (user) {
-            // data = user.toJSON();
+            // Data = user.toJSON();
             group = self.model.clone();
             group.unset('permissions');
             group.unset('users');
@@ -102,7 +99,7 @@ define([
       collection.fetch();
     },
 
-    invitationPrompt: function() {
+    invitationPrompt: function () {
       app.router.openViewInModal(new InviteModal());
     },
 
@@ -112,11 +109,11 @@ define([
     initialize: function (options) {
       // Make sure that the relationship type is correct
       if (!this.columnSchema.relationship ||
-        'ONETOMANY' !== this.columnSchema.relationship.get('type')) {
+        this.columnSchema.relationship.get('type') !== 'ONETOMANY') {
         throw __t('m2m_the_column_need_to_have_m2m_relationship', {
           column: this.columnSchema.id,
           type: 'ONETOMANY',
-          ui: interfaceId
+          ui: 'directus_users'
         });
       }
 
@@ -125,7 +122,7 @@ define([
       var relatedCollection = this.model.get(this.name);
       var joinColumn = this.columnSchema.relationship.get('junction_key_right');
 
-      _.each(relatedCollection.models, function(model) {
+      _.each(relatedCollection.models, function (model) {
         return model.startTracking();
       });
 
@@ -146,19 +143,21 @@ define([
         filters: {
           booleanOperator: '&&',
           expressions: [
-            //@todo, make sure that this can also nest
+            // @todo, make sure that this can also nest
             {column: joinColumn, operator: '===', value: this.model.id}
           ]
         }
       });
 
       if (relatedCollection.structure.get('sort')) {
-        relatedCollection.setOrder('sort','ASC',{silent: true});
+        relatedCollection.setOrder('sort', 'ASC', {silent: true});
       }
 
-      this.listenTo(relatedCollection, 'add change', function() {
-        //Check if any rendered objects in collection to show or hide header
-        if(this.relatedCollection.filter(function(d){return d.get(app.statusMapping.status_name) !== app.statusMapping.deleted_num;}).length > 0) {
+      this.listenTo(relatedCollection, 'add change', function () {
+        // Check if any rendered objects in collection to show or hide header
+        if (this.relatedCollection.filter(function (d) {
+          return d.get(app.statusMapping.status_name) !== app.statusMapping.deleted_num;
+        }).length > 0) {
           this.nestedTableView.tableHead = true;
         } else {
           this.nestedTableView.tableHead = false;
@@ -166,16 +165,11 @@ define([
         this.nestedTableView.render();
       }, this);
 
-      this.listenTo(relatedCollection, 'remove', function() {
+      this.listenTo(relatedCollection, 'remove', function () {
         this.nestedTableView.render();
       }, this);
 
       this.relatedCollection = relatedCollection;
     }
   });
-
-  return OneToMany.extend({
-    id: interfaceId,
-    Input: Input
-  })
 });
