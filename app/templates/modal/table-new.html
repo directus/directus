@@ -3,21 +3,21 @@
 	<form class="fields">
 		<div class="field">
 			<div class="interface">
-				<div class="interface-field">
-					<input class="custom-checkbox js-strict-naming" id="strictNaming" type="checkbox" value="" checked>
-					<label for="strictNaming" class="strict-naming"><span></span> Strict Naming</label>
-				</div>
 				<div class="interface-field required">
 					<input id="table_name" type="text" placeholder="{{t 'table_name'}}" value="" name="name" class="large" autofocus>
 				</div>
 				<div class="interface-field">
 					<div class="checkbox-container">
-						<input type="checkbox" id="check_status" value="status" name="columns" checked="checked">
-						<label for="check_status"> {{t "status"}}</label>
+						<input class="custom-checkbox js-strict-naming" id="strictNaming" type="checkbox" value="" checked>
+						<label for="strictNaming" class="strict-naming"><span></span> Strict Naming</label>
 					</div>
 					<div class="checkbox-container">
-						<input type="checkbox" id="check_sort" value="sort" name="columns" checked="checked">
-						<label for="check_sort"> {{t "sort"}}</label>
+						<input class="custom-checkbox" type="checkbox" id="check_status" value="status" name="columns" checked="checked">
+						<label for="check_status"><span></span> {{t "include"}} {{t "status"}}</label>
+					</div>
+					<div class="checkbox-container">
+						<input class="custom-checkbox" type="checkbox" id="check_sort" value="sort" name="columns" checked="checked">
+						<label for="check_sort"><span></span> {{t "include"}} {{t "sort"}}</label>
 					</div>
 				</div>
 			</div>

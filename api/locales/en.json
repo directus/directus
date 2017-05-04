@@ -387,7 +387,7 @@
     "row_without_primary_key_field": "Row without primary key field",
 
     "add_new_column": "Add New Column",
-    "create_table": "Create New Table",
+    "create_table": "create_table",
     "add_comment": "Add comment...",
     "column_name": "Column Name",
     "user_interface": "User Interface",
@@ -571,6 +571,7 @@
     "save": "Save",
     "saved": "Saved",
     "filter": "Filter",
+    "include": "Include",
     "item_has_been_saved": "Item has been saved",
     "help": "Help",
     "submit": "Submit",
