@@ -5,7 +5,7 @@ define([
   'core/overlays/overlays',
   'core/table/table.view',
   'core/modals/invite',
-  'core/interfaces/one_to_many'
+  'core/interfaces/one_to_many/component'
 ], function (app, _, __t, Overlays, TableView, InviteModal, OneToMany) {
   'use strict';
 

@@ -9,7 +9,7 @@
 
 define([
   'app',
-  'core/interfaces/one_to_many',
+  'core/interfaces/one_to_many/component',
   'core/table/table.view',
   'core/overlays/overlays',
   'core/t'
