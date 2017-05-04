@@ -370,6 +370,7 @@ define([
       data.isStrictNaming = this.options.strictNaming;
       data.isValidName = this.isValidName();
       data.selectedRelationshipType = this.selectedRelationshipType;
+      data.hasOptions = (uis[this.selectedUI].variables || []).length > 0;
 
       return data;
     },

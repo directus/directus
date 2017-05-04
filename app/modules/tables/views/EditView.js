@@ -314,7 +314,9 @@ function(app, Backbone, _, Handlebars, __t, Notification, Directus, BasePageView
       }
 
       if (this.single) {
-        this.headerOptions.route.title = 'Editing ' + this.model.collection.table.id;
+        this.headerOptions.route.title = __t('editing_x', {
+          name: app.capitalize(this.model.collection.table.id)
+        });
         this.headerOptions.route.breadcrumbs = this.headerOptions.route.breadcrumbs || [{ title: __t('tables'), anchor: '#tables'}];
       } else {
         this.headerOptions.route.title = this.model.get(this.model.idAttribute) ? __t('editing_item') : __t('creating_new_item');

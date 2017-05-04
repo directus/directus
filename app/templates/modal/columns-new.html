@@ -4,7 +4,7 @@
 {{else}}
 <h1><!-- {{t "editing"}}:  --><span class="table-name">{{table_name}}.</span><span class="column-name">{{column_name}}</span></h1> <!-- {{t "edit_column_title"}} -->
 <a href="#" class="toggle-pane js-pane active" data-pane="column">Column Setup</a>
-<a href="#" class="toggle-pane js-pane" data-pane="interface">Interface Options</a>
+{{#if hasOptions}}<a href="#" class="toggle-pane js-pane" data-pane="interface">Interface Options</a>{{/if}}
 {{/if}}
 
 	{{#unless hideColumnName}}
