@@ -45,7 +45,7 @@
 		}
 	}
 	.scroll-y {
-		overflow-y: scroll;
+		overflow-y: auto;
 		position: absolute;
 		top: 64px;
 		bottom: 60px;
@@ -305,7 +305,7 @@
 		}
 	}
 	.scroll-y {
-		overflow-y: scroll;
+		overflow-y: auto;
 		position: absolute;
 		top: 103px;
 		bottom: 0;
@@ -851,4 +851,3 @@
 		}
 	}
 }
-
