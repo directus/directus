@@ -119,7 +119,7 @@ define([
     },
 
     editItem: function (event) {
-      var cid = $(event.currentTarget).data('cid');
+      var cid = $(event.currentTarget).parent().data('cid');
       var model = this.relatedCollection.get(cid, true);
 
       if (!this.canEdit) {
