@@ -83,7 +83,6 @@ function(app, Backbone, _, Handlebars, __t, Notification, Directus, BasePageView
     getHeaderOptions: function() {
       return {
         route: {
-          title: 'Editing Item',
           isOverlay: false
         }
       };
@@ -319,8 +318,16 @@ function(app, Backbone, _, Handlebars, __t, Notification, Directus, BasePageView
         });
         this.headerOptions.route.breadcrumbs = this.headerOptions.route.breadcrumbs || [{ title: __t('tables'), anchor: '#tables'}];
       } else {
-        this.headerOptions.route.title = this.model.get(this.model.idAttribute) ? __t('editing_item') : __t('creating_new_item');
-        this.headerOptions.route.breadcrumbs = this.headerOptions.route.breadcrumbs|| [{ title: __t('tables'), anchor: '#tables'}, {title: this.model.collection.table.id, anchor: "#tables/" + this.model.collection.table.id}];
+        if (!this.headerOptions.route.title) {
+          this.headerOptions.route.title = this.model.isNew() ? __t('creating_new_item') : __t('editing_item');
+        }
+
+        if (!this.headerOptions.route.breadcrumbs) {
+          this.headerOptions.route.breadcrumbs = [{
+            title: __t('tables'),
+            anchor: '#tables'
+          }, {title: this.model.collection.table.id, anchor: "#tables/" + this.model.collection.table.id}];
+        }
       }
     }
   });

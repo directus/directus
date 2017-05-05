@@ -170,7 +170,7 @@ function(app, _, Backbone, __t, Directus, BasePageView, RightPane, Widgets) {
 
     initialize: function () {
       this.editView = new Directus.EditView({model: this.model, ui: this.options.ui});
-      this.headerOptions.route.title = this.model.get('id') ? __t('editing_file') : __t('uploading_new_file');
+      this.headerOptions.route.title = this.model.isNew() ? __t('uploading_new_file') : __t('editing_file');
       this.collection = app.files;
     }
   });

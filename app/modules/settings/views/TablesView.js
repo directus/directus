@@ -150,6 +150,7 @@ define([
 
       return _.extend(options, {
         route: {
+          title: this.model.id,
           breadcrumbs: [
             {title: __t('settings'), anchor: '#settings'},
             {title: __t('tables_and_inputs'), anchor: '#settings/tables'}
