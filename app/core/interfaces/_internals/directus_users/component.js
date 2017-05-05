@@ -1,6 +1,6 @@
 define([
   'core/interfaces/_internals/directus_users/interface',
-  'core/interfaces/one_to_many'
+  'core/interfaces/one_to_many/component'
 ], function (Input, OneToMany) {
   'use strict';
 
