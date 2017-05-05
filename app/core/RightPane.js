@@ -42,7 +42,7 @@ define([
     },
 
     canBeOpen: function () {
-      return true;
+      return !this.model.isNew();
     },
 
     constructor: function (options) {
