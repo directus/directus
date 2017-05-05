@@ -1,12 +1,4 @@
-//  Textarea Core UI component
-//  Directus 6.0
-
-//  (c) RANGER
-//  Directus may be freely distributed under the GNU license.
-//  For all details and documentation:
-//  http://www.getdirectus.com
-
-define(['core/interfaces/enum/interface', 'app', 'core/UIComponent', 'core/UIView', 'core/t', 'select2'], function (Input, app, UIComponent, UIView, __t) {
+define(['core/interfaces/enum/interface', 'core/UIComponent', 'core/t', 'select2'], function (Input, UIComponent, __t) {
   'use strict';
 
   return UIComponent.extend({
