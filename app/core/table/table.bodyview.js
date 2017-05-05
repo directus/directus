@@ -39,7 +39,7 @@ function(app, Backbone, _, Sortable, Notification) {
       var $target = $(e.target);
       var $row = $target.closest('tr');
 
-      if ($target.attr('checked') !== undefined) {
+      if ($target.is(':checked')) {
         this.selectedIds.push($row.data('id'));
         $row.addClass('selected');
       } else {
