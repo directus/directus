@@ -1,3 +1,6 @@
+{{#if isEmpty}}
+{{{include "listingEmpty"}}}
+{{else}}
 <table class="lines cozy clickable item-listing fixed-header pad-first">
 <thead>
     <tr>
@@ -10,3 +13,4 @@
 
 </tbody>
 </table>
+{{/if}}

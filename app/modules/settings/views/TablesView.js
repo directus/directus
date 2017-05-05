@@ -201,7 +201,7 @@ define([
       }
     },
 
-    addRowView: function(model, render) {
+    addRowView: function (model, render) {
       var view = this.insertView('tbody', new TablesRow({
         model: model,
         unregistered: ! app.schemaManager.hasPrivilege(model.id)
@@ -212,7 +212,7 @@ define([
       }
     },
 
-    getPrevTableId: function(tableIndex) {
+    getPrevTableId: function (tableIndex) {
       if (tableIndex < 0) {
         tableIndex = 0;
       } else if (tableIndex > this.collection.length) {
@@ -231,7 +231,7 @@ define([
       return model.id;
     },
 
-    moveRowView: function(model) {
+    moveRowView: function (model) {
       var currentModelIndex = this.collection.indexOf(model);
       var afterModelIndex = currentModelIndex-1;
       var tbody = this.$el.find('tbody');
@@ -252,12 +252,12 @@ define([
       }
     },
 
-    isValidModel: function(model) {
+    isValidModel: function (model) {
       // Filter out _directus tables
       return (model.id.substring(0,9) !== 'directus_');
     },
 
-    flashItem: function(entryID, bodyScrollTop) {
+    flashItem: function (entryID, bodyScrollTop) {
       document.body.scrollTop = parseInt(bodyScrollTop, 10) || 0;
       app.on('load', function() {
         if(entryID) {
@@ -266,9 +266,15 @@ define([
       }, this);
     },
 
-    beforeRender: function() {
+    serialize: function () {
+      return {
+        isEmpty: !this.hasUserTables()
+      }
+    },
+
+    beforeRender: function () {
       this.collection.sort();
-      this.collection.each(function(model) {
+      this.collection.each(function (model) {
         if (!this.isValidModel(model)) {
           return false;
         }
@@ -276,11 +282,26 @@ define([
       }, this);
     },
 
-    initialize: function() {
-      this.listenTo(this.collection, 'add', function(model) {
-        this.addRowView(model);
-        this.moveRowView(model);
+    hasUserTables: function () {
+      return this.collection.getUserTables().length > 0;
+    },
+
+    initialize: function () {
+      this.listenTo(this.collection, 'add', function (model) {
+        if (this.collection.getUserTables().length === 1) {
+          this.render();
+        } else {
+          this.addRowView(model);
+          this.moveRowView(model);
+        }
       });
+
+      this.listenTo(this.collection, 'remove', function () {
+        if (!this.hasUserTables()) {
+          this.render();
+        }
+      });
+
       this.listenTo(app.router.v.main, 'flashItem', this.flashItem);
     }
   });

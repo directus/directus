@@ -51,11 +51,21 @@ define(function(require, exports, module) {
       return level + ' ' + model.get('table_name');
     },
 
+    getUserTables: function () {
+      return _.filter(this.models, function (model) {
+        return (model.id || '').indexOf('directus_') !== 0;
+      });
+    },
+
     countVisible: function() {
       // Visible models only
       var models = this.filter(function(model) { return !model.get('hidden'); });
 
       return models.length;
+    },
+
+    constructor: function TableCollection() {
+      return DirectusCollection.prototype.constructor.apply(this, arguments);
     }
   });
 

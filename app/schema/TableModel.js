@@ -106,6 +106,10 @@ define(function(require, exports, module) {
       attrs.columns = this.columns.toJSON();
 
       return attrs;
+    },
+
+    constructor: function TableModel() {
+      return Backbone.Model.prototype.constructor.apply(this, arguments);
     }
   });
 });
