@@ -84,6 +84,14 @@ define(function(require, exports, module) {
       return this.collection.table;
     },
 
+    get: function (attr, skip) {
+      if (attr === 'length' && !this.isNew() && !skip && this.isEnumOrSet()) {
+        return this.getValues();
+      }
+
+      return Backbone.Model.prototype.get.apply(this, arguments);
+    },
+
     getRelationshipType: function () {
       if (!this.hasRelated()) {
         return;
@@ -133,6 +141,46 @@ define(function(require, exports, module) {
 
     getLength: function () {
       return this.getColumnTypeLength() || this.get('length');
+    },
+
+    isEnumOrSet: function () {
+      return this.isEnum() || this.isSet();
+    },
+
+    isEnum: function () {
+      return this.is(this.get('type'), 'ENUM')
+    },
+
+    isSet: function () {
+      return this.is(this.get('type'), 'SET');
+    },
+
+    is: function (value, type) {
+      type = (type || '').toLowerCase();
+      value = (value || '').toLowerCase();
+
+      return type === value;
+    },
+
+    // gets the value from ENUM/SET value list
+    getValues: function () {
+      if (!this.isEnumOrSet()) {
+        return;
+      }
+
+      var columnType = this.get('column_type') || '';
+      var values, size;
+
+      if (this.isSet()) {
+        size = 4;
+      } else if (this.isEnum()) {
+        size = 5;
+      }
+
+      values = columnType.substr(size, columnType.length-(size + 1)); //Remove enum() from string
+      values = values.replace(/'/g, '');
+
+      return values;
     },
 
     toJSON: function (options) {

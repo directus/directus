@@ -192,6 +192,7 @@ class ColumnsService extends AbstractService
             $type = ArrayUtils::get($data, 'data_type', $columnObject->getDataType());
             $newColumn->setType($type);
 
+            // FIXME: Allow SET/ENUM values
             if (ArrayUtils::has($data, 'length')) {
                 $length = ArrayUtils::get($data, 'length', 0);
                 $newColumn->setLength($length);
