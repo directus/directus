@@ -22,7 +22,7 @@ define('DB_USER', '{{db_user}}');
 define('DB_PASSWORD', '{{db_password}}');
 define('DB_PREFIX', '');
 define('DB_ENGINE', 'InnoDB');
-define('DB_CHARSET', 'utf8');
+define('DB_CHARSET', 'utf8mb4');
 
 define('DB_HOST_SLAVE', ''); //Leave undefined to fall back on master
 define('DB_USER_SLAVE', '');
