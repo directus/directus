@@ -150,7 +150,7 @@
 			{{/if}}
 			{{#unless MANYTOMANY}}
 			<div class="column-33 set-height">
-				<i class="material-icons relational-arrow-right">arrow_back</i>
+				<i class="material-icons relational-arrow-right">arrow_{{#if ONETOMANY}}forward{{else}}back{{/if}}</i>
 				<div class="select-container">
 					<select {{#if ONETOMANY}}id="junctionKeyRight" name="junction_key_right"{{/if}}>
 					{{#columns_left}}
