@@ -169,6 +169,21 @@
 		margin-right: 5px;
 		vertical-align: -2px;
 	}
+
+	.select-interface .gridlist {
+		list-style: none;
+		/* flex fallback */
+		display: flex;
+		flex-wrap: wrap;
+
+		display: grid;
+		grid-template-columns: repeat(4, 1fr);
+	}
+
+	.select-interface .gridlist > li label {
+		display: flex;
+		align-items: center;
+	}
 </style>
 
 <div class="select-interface">
@@ -183,16 +198,24 @@
 		</select>
 	{{else}}
 		{{#if multiselect}}
-			{{#options}}
-			<input id="multi_select_{{name}}_{{key}}" name="{{key}}" type="checkbox" {{#if selected}}checked{{/if}}/>
-			<label for="multi_select_{{name}}_{{key}}">{{value}}</label>
-			{{/options}}
-			<input type="hidden" name="{{name}}">
+		<ul class="gridlist">
+		{{#options}}
+			<li>
+				<input id="multi_select_{{name}}_{{key}}" name="{{key}}" type="checkbox" {{#if selected}}checked{{/if}}/>
+				<label for="multi_select_{{name}}_{{key}}">{{value}}</label>
+			</li>
+		{{/options}}
+		</ul>
+		<input type="hidden" name="{{name}}">
 		{{else}}
-			{{#options}}
+		<ul class="gridlist">
+		{{#options}}
+		<li>
 			<input type="radio" name="{{../name}}" value="{{key}}" id="radio-{{key}}" {{#if selected}}checked{{/if}}>
 			<label class="radiobuttons" for="radio-{{key}}">{{value}}</label>
-			{{/options}}
+		</li>
+		{{/options}}
+		</ul>
 		{{/if}}
 	{{/if}}
 </div>
