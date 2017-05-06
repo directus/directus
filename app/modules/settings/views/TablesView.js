@@ -24,9 +24,8 @@ define([
   'core/doubleConfirmation',
   'core/t',
   'helpers/schema',
-  './modals/table-new',
-  '../SettingsConfig'
-], function(app, _, Backbone, Directus, EditView, BasePageView, TableModel, ColumnModel, UIManager, Widgets, SchemaManager, Sortable, Notification, DoubleConfirmation, __t, SchemaHelper, TableNewModal, SettingsConfig) {
+  './modals/table-new'
+], function(app, _, Backbone, Directus, EditView, BasePageView, TableModel, ColumnModel, UIManager, Widgets, SchemaManager, Sortable, Notification, DoubleConfirmation, __t, SchemaHelper, TableNewModal) {
 
   'use strict';
 
