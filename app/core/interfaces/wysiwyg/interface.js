@@ -73,7 +73,8 @@ define(['core/UIView', 'core/interfaces/wysiwyg/vendor/medium-editor.min'], func
       var value = this.options.value || '';
       return {
         value: value,
-        name: this.options.name
+        name: this.options.name,
+        simple_editor: (this.options.settings && this.options.settings.get('simple_editor') === true),
       };
     },
     afterRender: function () {

@@ -33,6 +33,29 @@
 		letter-spacing: 0.2px;
 		overflow: scroll;
 	}
+	.medium-editor-element.simple-editor {
+		-webkit-transition: all 200ms ease-in-out 0ms;
+		-moz-transition: all 200ms ease-in-out 0ms;
+		-o-transition: all 200ms ease-in-out 0ms;
+		-ms-transition: all 200ms ease-in-out 0ms;
+		transition: all 200ms ease-in-out 0ms;
+		display: inline-block;
+		max-width: 400px;
+		min-width: 400px;
+		max-height: 600px;
+		min-height: 140px;
+		padding: 12px;
+		border: 1px solid #CCCCCC;
+		font-size: 14px;
+		line-height: 18px;
+	}
+	.medium-editor-element.simple-editor:focus {
+		border-color: #FFFFFF;
+		color: #333333;
+		-webkit-box-shadow: 0px 0px 0px 2px #3498DB;
+		-moz-box-shadow: 0px 0px 0px 2px #3498DB;
+		box-shadow: 0px 0px 0px 2px #3498DB;
+	}
 
 	.medium-editor-element a {
 		color: #3498db;
@@ -286,4 +309,4 @@
 		content: 'close';
 	}
 </style>
-<textarea id="wysiwyg-interface_{{name}}" name="{{name}}">{{value}}</textarea>
+<textarea id="wysiwyg-interface_{{name}}" name="{{name}}" {{#if simple_editor}}class="simple-editor"{{/if}}>{{value}}</textarea>

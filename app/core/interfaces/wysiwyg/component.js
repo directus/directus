@@ -27,7 +27,8 @@ define(['core/interfaces/wysiwyg/interface', 'core/UIComponent', 'core/t'], func
           h6: 'H6',
           removeFormat: 'Remove all formatting'
         }
-      }}
+      },},
+      {id: 'simple_editor', type: 'Boolean', default_value: false, ui: 'checkbox'},
     ],
     validate: function (value, options) {
       if (options.view.isRequired() && !value) {
