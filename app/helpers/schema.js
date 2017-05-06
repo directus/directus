@@ -1,4 +1,4 @@
-define(function() {
+define(['core/t'], function (__t) {
 
   'use strict';
 
@@ -75,7 +75,40 @@ define(function() {
     return isStringType(type) || isNumericType(type) || ['ENUM', 'SET'].indexOf(type) >= 0;
   };
 
+  var isSystem = function (uiId) {
+    var UIManager = require('core/UIManager');
+
+    // TODO: Compare against a column model
+    return UIManager.isSystem(uiId);
+  };
+
+  var getSystemDefaultComment = function (uiId) {
+    var comment = '';
+
+    uiId  = (uiId || '').toLowerCase();
+
+    if (!isSystem(uiId)) {
+      return comment;
+    }
+
+    switch (uiId) {
+      case 'primary_key':
+        comment = __t('system_primary_key_comment');
+        break;
+      case 'status':
+        comment = __t('system_status_comment');
+        break;
+      case 'sort':
+        comment = __t('system_sort_comment');
+        break;
+    }
+
+    return comment;
+  };
+
   return {
+    getSystemDefaultComment: getSystemDefaultComment,
+    isSystem: isSystem,
     getNumericTypes: getNumericTypes,
     isNumericType: isNumericType,
     dateColumns: dateColumns,

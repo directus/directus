@@ -17,6 +17,11 @@ define(function(require, exports, module) {
     require('core/interfaces/_internals/user_activity/component')
   ]);
 
+  /**
+   * @private
+   *
+   * Holds all system interfaces
+   */
   var systemInterfaces = [
     require('core/interfaces/_system/primary_key/component'),
     require('core/interfaces/_system/sort/component'),
@@ -73,12 +78,6 @@ define(function(require, exports, module) {
 
   var app = require('app');
 
-  /**
-   * @private
-   * Holds all Sytem fields and mapped UI
-   */
-  // var system_fields = {};
-
   var castType = function(type, value) {
     if (typeof value === 'undefined') {
       return value;
@@ -100,9 +99,8 @@ define(function(require, exports, module) {
     setup: function() {
       //Register default UI's
       this.register(defaultInterfaces);
-      this.register(systemInterfaces);
+      this.register(systemInterfaces, true);
       this.register(internalInterfaces);
-      // system_fields[app.statusMapping.status_name] = {'ui':'system'};
     },
 
     // Get reference to external UI file
@@ -132,10 +130,6 @@ define(function(require, exports, module) {
       }
       var uiId = schema.get('ui');
 
-      // if(system_fields[attr] !== undefined) {
-      //   uiId = system_fields[attr].ui;
-      // }
-
       var UI = this._getUI(uiId);
 
       if (!UI) {
@@ -148,7 +142,7 @@ define(function(require, exports, module) {
     },
 
     // Registers (@todo: one or) many UI's
-    register: function(uiArray) {
+    register: function(uiArray, system) {
       if (!_.isArray(uiArray)) {
         uiArray = [uiArray];
       }
@@ -157,10 +151,17 @@ define(function(require, exports, module) {
         try {
           var uiInstance = new ui();
           uis[uiInstance.id] = uiInstance;
+          uis[uiInstance.id].isSystem = system === true;
         } catch (ex) {
           console.warn(ex.message);
         }
       },this);
+    },
+
+    isSystem: function (uiId) {
+      var ui = uis[uiId];
+
+      return (ui && ui.isSystem);
     },
 
     // Get all the settings specified in the UI

@@ -10,6 +10,7 @@
 define([
   'app',
   'underscore',
+  'helpers/schema',
   'core/UIComponent',
   'core/UIView',
   'core/table/table.view',
@@ -19,7 +20,7 @@ define([
   'core/t',
   'schema/ColumnsCollection',
   'sortable'
-], function(app, _, UIComponent, UIView, TableView, Overlays, Notification, DoubleConfirmation, __t, ColumnsCollection, Sortable) {
+], function(app, _, SchemaHelper, UIComponent, UIView, TableView, Overlays, Notification, DoubleConfirmation, __t, ColumnsCollection, Sortable) {
 
   'use strict';
 
@@ -244,7 +245,12 @@ define([
 
         data.emptyComment = false;
         if (!data.comment) {
-          data.comment = __t('add_comment');
+          if (SchemaHelper.isSystem(data.ui)) {
+            data.comment = SchemaHelper.getSystemDefaultComment(data.ui);
+          } else {
+            data.comment = __t('add_comment');
+          }
+
           data.emptyComment = true;
         }
 
