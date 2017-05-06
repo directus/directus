@@ -27,19 +27,21 @@ function(app, Backbone, _, __t, BasePageView, ListViewManager, TableViewRightPan
       if (this.collection.structure.length > 1 && this.collection.hasPermission('add')) {
         var tableView = this;
 
-        if (!this.widgets.addWidget) {
-          this.widgets.addWidget = new Widgets.ButtonWidget({
-            widgetOptions: {
-              buttonId: 'addBtn',
-              iconClass: 'add',
-              buttonClass: 'primary',
-              buttonText: __t('new_item')
-            },
-            onClick: function(event) {
-              app.router.go('#tables/' + tableView.collection.table.id + '/new');
-            }
-          });
+        if (this.widgets.addWidget) {
+          this.widgets.addWidget.remove();
         }
+
+        this.widgets.addWidget = new Widgets.ButtonWidget({
+          widgetOptions: {
+            buttonId: 'addBtn',
+            iconClass: 'add',
+            buttonClass: 'primary',
+            buttonText: __t('new_item')
+          },
+          onClick: function(event) {
+            app.router.go('#tables/' + tableView.collection.table.id + '/new');
+          }
+        });
 
         widgets.push(this.widgets.addWidget);
 
@@ -101,13 +103,15 @@ function(app, Backbone, _, __t, BasePageView, ListViewManager, TableViewRightPan
           widgets.push(this.widgets.batchEditWidget);
         }
 
-        if (!this.widgets.infoWidget) {
-          this.widgets.infoWidget = new Widgets.InfoButtonWidget({
-            onClick: function (event) {
-              tableView.toggleRightPane();
-            }
-          });
+        if (this.widgets.infoWidget) {
+          this.widgets.infoWidget.remove();
         }
+
+        this.widgets.infoWidget = new Widgets.InfoButtonWidget({
+          onClick: function (event) {
+            tableView.toggleRightPane();
+          }
+        });
 
         widgets.push(this.widgets.infoWidget);
 
@@ -300,7 +304,7 @@ function(app, Backbone, _, __t, BasePageView, ListViewManager, TableViewRightPan
         var render = this.showDeleteButton && !($checksChecked.length >= 1);
 
         if ($checksChecked.length != $checks.length) {
-          this.table.tableHead.$('#checkAll').prop('checked', false)
+          this.table.tableHeadView.$('#checkAll').prop('checked', false)
         }
 
         this.actionButtons = $checksChecked.length;

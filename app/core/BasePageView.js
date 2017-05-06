@@ -45,20 +45,22 @@ function(app, Backbone, _, BaseHeaderView, RightSidebarView) {
 
     },
 
-    initToolbar: function() {
+    initToolbar: function () {
       var mainView = app.router.v.main;
-
       this.headerOptions.rightToolbar = this.rightToolbar();
       this.headerOptions.leftToolbar = this.leftToolbar();
       this.headerOptions.leftSecondaryToolbar = this.leftSecondaryToolbar();
       this.headerOptions.rightSecondaryToolbar = this.rightSecondaryToolbar();
       this.headerView = mainView.getView('#header');
       this.headerView.setPage(this);
+    },
 
+    initRightSidebar: function () {
       if (_.result(this, 'rightPane')) {
         // hotfix: adding this twice
         if (this.rightSidebarView) {
           this.rightSidebarView.remove();
+          //this.removeView('#rightSidebar');
         }
 
         this.rightSidebarView = new RightSidebarView(_.result(this, 'rightPaneOptions'));
@@ -176,6 +178,8 @@ function(app, Backbone, _, BaseHeaderView, RightSidebarView) {
     beforeRender: function() {
       this.rightPaneView = null;
       this.initToolbar();
+      this.initRightSidebar();
+
       // render the header manually
       // this view is part of the main view and is not a child of this view
       this.headerView.render();
