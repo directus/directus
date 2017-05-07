@@ -191,7 +191,7 @@ define(function(require, exports, module) {
               data = _.isObject(attributes[id]) ? attributes[id] : {id: attributes[id]};
             }
 
-            // only parse the value is not already a model
+            // Create a new model only when the value is not already a model
             if (!(attributes[id] instanceof Backbone.Model)) {
               var collectionRelated = EntriesManager.getInstance(tableRelated);
               var ModelRelated = collectionRelated.model;
