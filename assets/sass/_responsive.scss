@@ -201,6 +201,9 @@
 				display: inline-block;
 			}
 		}
+		.breadcrumb {
+			font-size: 22px;
+		}
 	}
 	.page.settings-container {
 		.settings-modules {
@@ -241,6 +244,7 @@
 			left: -200px;
 		}
 		.breadcrumb {
+			font-size: 20px;
 			left: 10px;
 			.veggieburger {
 				display: inline-block;
