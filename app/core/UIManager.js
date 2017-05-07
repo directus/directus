@@ -5,7 +5,6 @@ define(function(require, exports, module) {
   var _ = require('underscore');
 
   var interfaceGroup = function (name) {
-    debugger;
     return function (ui) {
       ui.groupLabel = name;
 
