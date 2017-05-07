@@ -78,9 +78,19 @@ define([
       var self = this;
       var $element = $(event.currentTarget);
       var searchString = this.searchString = $element.val();
+      var callSearch = function () {
+        self.search(searchString).done(function () {
+          // Focus the input after the search
+          var $input = self.$('#search-input');
+
+          $input.focus();
+          // add the value again to move the cursor at the end of the text
+          $input.val($input.val());
+        });
+      };
 
       if (event.which == 13) {
-        this.search(searchString);
+        callSearch();
 
         return;
       }
@@ -90,9 +100,7 @@ define([
         this.searchTimeOut = null;
       }
 
-      this.searchTimeOut = setTimeout(function () {
-        self.search(searchString);
-      }, 1000);
+      this.searchTimeOut = setTimeout(callSearch, 1000);
     },
 
     search: function (searchString) {
@@ -115,7 +123,8 @@ define([
       }
 
       this.updateFilters();
-      this.collection.fetch();
+
+      return this.collection.fetch();
     },
 
     clearFilters: function () {
