@@ -43,7 +43,7 @@ class CreateDirectusPreferencesTable extends Ruckusing_Migration_Base
             'default' => NULL
         ]);
         $t->column('title', 'string', [
-            'limit' => 255,
+            'limit' => 128,
             'default' => NULL
         ]);
         $t->column('columns_visible', 'string', [
