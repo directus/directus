@@ -153,7 +153,7 @@ LOCK TABLES `directus_groups` WRITE;
 INSERT INTO `directus_groups` (`id`, `name`, `description`, `restrict_to_ip_whitelist`, `nav_override`, `show_activity`, `show_messages`, `show_users`, `show_files`)
 VALUES
 	(1,'Administrator','Admins have access to all managed data within the system by default',NULL,NULL,1,1,1,1),
-	(2,'Public','This sets the data that is publically available through the API without a token',NULL,NULL,1,1,1,1);
+	(2,'Public','This sets the data that is publicly available through the API without a token',NULL,NULL,1,1,1,1);
 
 /*!40000 ALTER TABLE `directus_groups` ENABLE KEYS */;
 UNLOCK TABLES;

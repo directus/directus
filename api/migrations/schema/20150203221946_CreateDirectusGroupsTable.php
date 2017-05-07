@@ -74,7 +74,7 @@ class CreateDirectusGroupsTable extends Ruckusing_Migration_Base
         $this->insert('directus_groups', [
             'id' => 2,
             'name' => 'Public',
-            'description' => 'This sets the data that is publically available through the API without a token'
+            'description' => 'This sets the data that is publicly available through the API without a token'
         ]);
     }//up()
 
