@@ -355,6 +355,8 @@ ul {
   margin: 0;
   padding: 0; }
 
+.noty_box .noty_message .noty_text {
+  display: block; }
 .noty_box .noty_message hr {
   margin: 16px 0;
   opacity: 0.5; }
