@@ -196,7 +196,7 @@ class FunctionsTest extends PHPUnit_Framework_TestCase
     {
         $path = $this->path;
         $dirs = ['one', 'two', 'three'];
-        $subs = ['a', 'b', 'c'];
+        $subs = ['a', 'b', 'c', '_d', '_e'];
 
         // create the directory
         mkdir($path);
@@ -218,7 +218,7 @@ class FunctionsTest extends PHPUnit_Framework_TestCase
     {
         $path = $this->path;
         $dirs = ['one', 'two', 'three'];
-        $subs = ['a', 'b', 'c'];
+        $subs = ['a', 'b', 'c', '_d', '_e'];
 
         // remove the directories
         foreach ($dirs as $dir) {

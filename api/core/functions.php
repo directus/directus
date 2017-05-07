@@ -996,7 +996,11 @@ if (!function_exists('find_directories')) {
      */
     function find_directories($path)
     {
-        return glob(rtrim($path, '/') . '/*', GLOB_ONLYDIR);
+        return array_filter(glob(rtrim($path, '/') . '/*', GLOB_ONLYDIR), function ($path) {
+            $name = basename($path);
+
+            return $name[0] !== '_';
+        });
     }
 }
 
