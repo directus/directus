@@ -41,7 +41,7 @@ define(function(require, exports, module) {
     require('core/interfaces/numeric/component'),
     require('core/interfaces/slider/component'),
     require('core/interfaces/single_file/component'),
-    require('core/interfaces/slug'),
+    require('core/interfaces/slug/component'),
     require('core/interfaces/textarea/component'),
     require('core/interfaces/user/interface'),
     require('core/interfaces/datetime/datetime'),
