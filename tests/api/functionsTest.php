@@ -109,6 +109,17 @@ class FunctionsTest extends PHPUnit_Framework_TestCase
         $this->assertTrue(is_int(get_max_upload_size()));
     }
 
+    public function testFindDirectories()
+    {
+        $this->createTempDirs();
+
+        $directories = find_directories($this->path);
+
+        $this->assertSame(3, count($directories));
+
+        $this->removeTempDirs();
+    }
+
     public function testFindFiles()
     {
         $this->createTempFiles();
@@ -179,6 +190,55 @@ class FunctionsTest extends PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->path = __DIR__ . '/tmp';
+    }
+
+    protected function createTempDirs()
+    {
+        $path = $this->path;
+        $dirs = ['one', 'two', 'three'];
+        $subs = ['a', 'b', 'c'];
+
+        // create the directory
+        mkdir($path);
+        file_put_contents($path . '/ignore1', '');
+        file_put_contents($path . '/ignore2', '');
+
+        // create subdirectories
+        foreach ($dirs as $dir) {
+            $dir = $path . '/' . $dir;
+            mkdir($dir);
+
+            foreach ($subs as $sub) {
+                mkdir($dir . '/' . $sub);
+            }
+        }
+    }
+
+    protected function removeTempDirs()
+    {
+        $path = $this->path;
+        $dirs = ['one', 'two', 'three'];
+        $subs = ['a', 'b', 'c'];
+
+        // remove the directories
+        foreach ($dirs as $dir) {
+            $dir = $path . '/' . $dir;
+
+            // make sure to remove the subdirectory first
+            // rmdir only remove empty directories
+            foreach ($subs as $sub) {
+                rmdir($dir . '/' . $sub);
+            }
+
+            rmdir($dir);
+        }
+
+        // remove files
+        unlink($path . '/ignore1');
+        unlink($path . '/ignore2');
+
+        // remove main directory
+        rmdir($path);
     }
 
     protected function createTempFiles()

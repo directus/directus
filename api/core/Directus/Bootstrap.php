@@ -503,8 +503,13 @@ class Bootstrap
             return $uis;
         }
 
-        $filePaths = find_js_files($uiDirectory, true);
+        $filePaths = find_directories($uiDirectory);
         foreach ($filePaths as $path) {
+            $path .= '/component.js';
+            if (!file_exists($path)) {
+                continue;
+            }
+
             $uiPath = trim(substr($path, strlen($uiBasePath)), '/');
             $uis[] = substr($uiPath, 0, -3);
         }

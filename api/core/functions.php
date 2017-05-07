@@ -986,6 +986,20 @@ if (!function_exists('get_max_upload_size')) {
     }
 }
 
+if (!function_exists('find_directories')) {
+    /**
+     * Gets directories inside the given path
+     *
+     * @param $path
+     *
+     * @return array
+     */
+    function find_directories($path)
+    {
+        return glob(rtrim($path, '/') . '/*', GLOB_ONLYDIR);
+    }
+}
+
 if (!function_exists('find_files')) {
     /**
      * Find files inside $paths, directories and file name starting with "_" will be ignored.

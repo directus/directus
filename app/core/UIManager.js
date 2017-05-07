@@ -191,7 +191,7 @@ define(function(require, exports, module) {
     },
 
     // Registers (@todo: one or) many UI's
-    register: function(uiArray, system) {
+    register: function(uiArray) {
       if (!_.isArray(uiArray)) {
         uiArray = [uiArray];
       }
@@ -200,8 +200,8 @@ define(function(require, exports, module) {
         try {
           var uiInstance = new ui();
           uis[uiInstance.id] = uiInstance;
-          uis[uiInstance.id].isSystem = system === true;
-          uis[uiInstance.id].groupLabel = ui.groupLabel;
+          uis[uiInstance.id].groupLabel = ui.groupLabel || 'custom';
+          uis[uiInstance.id].isSystem = ui.groupLabel === 'system';
         } catch (ex) {
           console.warn(ex.message);
         }
