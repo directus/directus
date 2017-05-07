@@ -204,7 +204,7 @@ define(function(require, exports, module) {
             "hidden_list":true,
             "hidden_input":true,
             "required":true,
-            "ui":"salt"
+            "ui":"textinput"
           },
           {
             "id":"group",
