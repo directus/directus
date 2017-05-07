@@ -138,7 +138,7 @@ return [
             'name' => 'Deleted',
             'text_color' => '#FFFFFF',
             'background_color' => '#F44336',
-            'subdued_in_listing' => false,
+            'subdued_in_listing' => true,
             'show_listing_badge' => true,
             'hidden_globally' => true,
             'hard_delete' => false,
@@ -149,7 +149,7 @@ return [
             'text_color' => '#FFFFFF',
             'background_color' => '#3498DB',
             'subdued_in_listing' => false,
-            'show_listing_badge' => true,
+            'show_listing_badge' => false,
             'hidden_globally' => false,
             'hard_delete' => false,
             'sort' => 1
