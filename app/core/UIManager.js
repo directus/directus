@@ -6,7 +6,7 @@ define(function(require, exports, module) {
 
   var interfaceGroup = function (name) {
     return function (ui) {
-      ui.groupLabel = name;
+      ui.group = name;
 
       return ui;
     }
@@ -25,7 +25,7 @@ define(function(require, exports, module) {
     require('core/interfaces/_internals/views/interface'),
     require('core/interfaces/_internals/user_avatar/component'),
     require('core/interfaces/_internals/user_activity/component')
-  ].map(interfaceGroup('internals'));
+  ].map(interfaceGroup('internal'));
 
   /**
    * @private
@@ -151,11 +151,11 @@ define(function(require, exports, module) {
           return false;
         }
 
-        if (list[ui.groupLabel] === undefined) {
-          list[ui.groupLabel] = [];
+        if (list[ui.group] === undefined) {
+          list[ui.group] = [];
         }
 
-        list[ui.groupLabel].push(ui);
+        list[ui.group].push(ui);
       });
 
       _.each(list, function (group, name) {
@@ -200,8 +200,9 @@ define(function(require, exports, module) {
         try {
           var uiInstance = new ui();
           uis[uiInstance.id] = uiInstance;
-          uis[uiInstance.id].groupLabel = ui.groupLabel || 'custom';
-          uis[uiInstance.id].isSystem = ui.groupLabel === 'system';
+          uis[uiInstance.id].group = ui.group || 'custom';
+          uis[uiInstance.id].isSystem = ui.group === 'system';
+          uis[uiInstance.id].isInternal = ui.group === 'internal'
         } catch (ex) {
           console.warn(ex.message);
         }

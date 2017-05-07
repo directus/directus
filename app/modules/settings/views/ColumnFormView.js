@@ -136,7 +136,7 @@ define([
       }
 
       _.each(uis, function (ui, key) {
-        if (ui.isSystem) {
+        if (ui.isSystem || ui.isInternal) {
           return false;
         }
 
@@ -351,7 +351,9 @@ define([
       data.isValidName = this.isValidName();
       data.selectedRelationshipType = this.selectedRelationshipType;
       data.hasOptions = (uis[this.selectedUI].variables || []).length > 0;
+      console.log(this.selectedUI);
       data.interfaces = this.getInterfacesGrouped(data.ui_types, this.selectedUI);
+      console.log(data.interfaces);
 
       return data;
     },
@@ -361,9 +363,7 @@ define([
 
       _.each(interfaces, function (group, name) {
         _.each(group, function (ui, id) {
-          if (selectedUI === ui.id) {
-            interfaces[name][id].selected = true;
-          }
+          interfaces[name][id].selected = selectedUI === ui.id;
         });
       });
 
