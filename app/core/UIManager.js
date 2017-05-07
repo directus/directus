@@ -2,7 +2,18 @@ define(function(require, exports, module) {
 
   'use strict';
 
-  var internalInterfaces = ([
+  var _ = require('underscore');
+
+  var interfaceGroup = function (name) {
+    debugger;
+    return function (ui) {
+      ui.groupLabel = name;
+
+      return ui;
+    }
+  };
+
+  var internalInterfaces = [
     require('core/interfaces/_system/accountability/interface'),
     require('core/interfaces/_internals/activity/component'),
     require('core/interfaces/_internals/columns_picker/interface'),
@@ -15,7 +26,7 @@ define(function(require, exports, module) {
     require('core/interfaces/_internals/views/interface'),
     require('core/interfaces/_internals/user_avatar/component'),
     require('core/interfaces/_internals/user_activity/component')
-  ]);
+  ].map(interfaceGroup('internals'));
 
   /**
    * @private
@@ -30,43 +41,57 @@ define(function(require, exports, module) {
     require('core/interfaces/_system/accountability/date_modified'),
     require('core/interfaces/_system/accountability/user_created'),
     require('core/interfaces/_system/accountability/user_modified')
-  ];
+  ].map(interfaceGroup('system'));
 
-  // Register Core UI's
-  var defaultInterfaces = ([
+  var StringInterfaces = [
     require('core/interfaces/textinput/component'),
-    require('core/interfaces/section_break/component'),
-    require('core/interfaces/checkbox/component'),
+    require('core/interfaces/slug/component'),
+    require('core/interfaces/textarea/component'),
+    require('core/interfaces/blob/component'),
+    require('core/interfaces/select/component'),
+    require('core/interfaces/tags/component'),
+    require('core/interfaces/wysiwyg/component'),
+    require('core/interfaces/password/component'),
+    require('core/interfaces/enum/component'),
+    require('core/interfaces/map'),
+    require('core/interfaces/markdown/component')
+  ].map(interfaceGroup('string'));
+
+  var DateTimeInterfaces = [
+    require('core/interfaces/datetime/datetime'),
+    require('core/interfaces/datetime/date'),
+    require('core/interfaces/datetime/time')
+  ].map(interfaceGroup('datetime_and_time'));
+
+  var NumericInterfaces = [
     require('core/interfaces/color/component'),
     require('core/interfaces/numeric/component'),
     require('core/interfaces/slider/component'),
-    require('core/interfaces/single_file/component'),
-    require('core/interfaces/slug/component'),
-    require('core/interfaces/textarea/component'),
-    require('core/interfaces/user/interface'),
-    require('core/interfaces/datetime/datetime'),
-    require('core/interfaces/datetime/date'),
-    require('core/interfaces/datetime/time'),
-    require('core/interfaces/blob/component'),
-    require('core/interfaces/alias/component'),
-    require('core/interfaces/salt'),
-    require('core/interfaces/select/component'),
-    require('core/interfaces/tags/component'),
+    require('core/interfaces/checkbox/component')
+  ].map(interfaceGroup('numeric'));
+
+  var RelationalInterfaces = [
     require('core/interfaces/many_to_one'),
+    require('core/interfaces/many_to_one_typeahead'),
     require('core/interfaces/relational/m2m/component'),
     require('core/interfaces/one_to_many/component'),
-    require('core/interfaces/wysiwyg/component'),
-    require('core/interfaces/password/component'),
-    require('core/interfaces/many_to_one_typeahead'),
-    require('core/interfaces/enum/component'),
-    require('core/interfaces/user'),
-    require('core/interfaces/map'),
-    require('core/interfaces/markdown/component'),
+    require('core/interfaces/single_file/component'),
     require('core/interfaces/multiple_files'),
     require('core/interfaces/multiple_files/csv/component'),
-    require('core/interfaces/translation/component'),
+    require('core/interfaces/translation/component')
+  ].map(interfaceGroup('relational'));
+
+  var MiscInterfaces = [
+    require('core/interfaces/section_break/component'),
+    require('core/interfaces/alias/component'),
+    require('core/interfaces/user/interface'),
+    require('core/interfaces/user'),
     require('core/interfaces/template_chooser')
-  ]);
+  ].map(interfaceGroup('misc'));
+
+  // Register Core UI's
+  var defaultInterfaces = []
+    .concat(StringInterfaces, NumericInterfaces, DateTimeInterfaces, RelationalInterfaces, MiscInterfaces)
 
   var jQuery = require('jquery');
   /**
@@ -117,6 +142,32 @@ define(function(require, exports, module) {
       return uis;
     },
 
+    getAllUIsGrouped: function (ids) {
+      var list = {};
+      var allUIs = _.clone(uis);
+      var filter = ids && ids.length > 0;
+
+      _.each(allUIs, function (ui) {
+        if (filter && ids.indexOf(ui.id) < 0) {
+          return false;
+        }
+
+        if (list[ui.groupLabel] === undefined) {
+          list[ui.groupLabel] = [];
+        }
+
+        list[ui.groupLabel].push(ui);
+      });
+
+      _.each(list, function (group, name) {
+        list[name] = _.sortBy(group, function (ui) {
+          return ui.id;
+        });
+      });
+
+      return list;
+    },
+
     // Returns a reference to a UI based on a
     // model/attribute/schema combination
     _getModelUI: function(model, attr, schema) {
@@ -151,6 +202,7 @@ define(function(require, exports, module) {
           var uiInstance = new ui();
           uis[uiInstance.id] = uiInstance;
           uis[uiInstance.id].isSystem = system === true;
+          uis[uiInstance.id].groupLabel = ui.groupLabel;
         } catch (ex) {
           console.warn(ex.message);
         }

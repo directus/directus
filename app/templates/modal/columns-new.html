@@ -36,9 +36,13 @@
 			<div class="select-container">
 				<select id="uiType" name="ui_type">
 					<optgroup label="{{t 'choose_a_input_interface'}}">
-						{{#ui_types}}
-						<option {{#if selected}}selected{{/if}} value="{{title}}">{{capitalize title}}</option>
-						{{/ui_types}}
+						{{#each interfaces}}
+						<optgroup label="{{capitalize @key}}">
+							{{#each this}}
+							<option {{#if selected}}selected{{/if}} value="{{id}}">{{capitalize id}}</option>
+							{{/each}}
+						</optgroup>
+						{{/each}}
 					</optgroup>
 				</select>
 				<i class="material-icons select-arrow">arrow_drop_down</i>

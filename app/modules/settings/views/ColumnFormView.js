@@ -135,37 +135,17 @@ define([
         }, this);
       }
 
-      for (var key in uis) {
-        //If not system column
-        if( key.indexOf('directus_') < 0 ) {
-          if(!this.selectedUI) {
-            this.selectedUI = key;
-          }
-
-          var item = {title: key};
-
-          if(this.selectedUI === key) {
-            item.selected = true;
-          }
-
-          data.ui_types.push(item);
-        }
-      }
-
-      data.ui_types.sort(function(a, b) {
-        a = a.title.toLowerCase();
-        b = b.title.toLowerCase();
-
-        if (a < b) {
-          return -1;
+      _.each(uis, function (ui, key) {
+        if (ui.isSystem) {
+          return false;
         }
 
-        if (a > b) {
-          return 1;
+        if (!this.selectedUI) {
+          this.selectedUI = key;
         }
 
-        return 0;
-      });
+        data.ui_types.push(key);
+      }, this);
 
       var that = this;
       uis[this.selectedUI].dataTypes.forEach(function(dataType) {
@@ -371,8 +351,23 @@ define([
       data.isValidName = this.isValidName();
       data.selectedRelationshipType = this.selectedRelationshipType;
       data.hasOptions = (uis[this.selectedUI].variables || []).length > 0;
+      data.interfaces = this.getInterfacesGrouped(data.ui_types, this.selectedUI);
 
       return data;
+    },
+
+    getInterfacesGrouped: function (uis, selectedUI) {
+      var interfaces = UIManager.getAllUIsGrouped(uis);
+
+      _.each(interfaces, function (group, name) {
+        _.each(group, function (ui, id) {
+          if (selectedUI === ui.id) {
+            interfaces[name][id].selected = true;
+          }
+        });
+      });
+
+      return interfaces;
     },
 
     isValid: function () {
