@@ -351,9 +351,7 @@ define([
       data.isValidName = this.isValidName();
       data.selectedRelationshipType = this.selectedRelationshipType;
       data.hasOptions = (uis[this.selectedUI].variables || []).length > 0;
-      console.log(this.selectedUI);
       data.interfaces = this.getInterfacesGrouped(data.ui_types, this.selectedUI);
-      console.log(data.interfaces);
 
       return data;
     },
