@@ -1,4 +1,5 @@
 <?php
+
 return [
     // Unique session naming
     'session' => [
@@ -146,6 +147,8 @@ return [
         2 => [
             'name' => 'Draft',
             'color' => '#BBBBBB',
+            'subdued_in_listing' => true,
+            'show_listing_badge' => true,
             'sort' => 2
         ]
     ]
