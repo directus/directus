@@ -33,8 +33,8 @@ $app->clearHooks();
 $redirectToLogin = function () use ($app) {
     $request_uri = $app->request()->getResourceUri();
 
-    if (strpos($request_uri, DIRECTUS_PATH) === 0) {
-        $request_uri = substr($request_uri, strlen(DIRECTUS_PATH));
+    if (strpos($request_uri, get_directus_path()) === 0) {
+        $request_uri = substr($request_uri, strlen(get_directus_path()));
     }
 
     $redirect = htmlspecialchars(trim($request_uri, '/'), ENT_QUOTES, 'UTF-8');
@@ -43,7 +43,7 @@ $redirectToLogin = function () use ($app) {
         $redirect = '?redirect=' . $redirect;
     }
 
-    header('Location: ' . DIRECTUS_PATH . 'login.php' . $redirect);
+    header('Location: ' . get_directus_path('/login.php' . $redirect));
     exit;
     // $app->response()->redirect(DIRECTUS_PATH . 'login.php' . $redirect);
 };
@@ -80,9 +80,8 @@ $app->group('/auth', function() use ($app) {
 
             $authService->authenticateUserWithEmail($email);
 
-            $directusPath = rtrim(DIRECTUS_PATH, '/');
             // $app->response()->redirect($directusPath . ' /tables');
-            header('Location: ' . $directusPath . '/tables');
+            header('Location: ' . get_directus_path('/tables'));
             exit;
         } catch (\Exception $e) {
             $log = Bootstrap::get('log');
@@ -99,7 +98,7 @@ $app->group('/auth', function() use ($app) {
 });
 
 // Only run the routing when requesting anything by root
-if (!$authentication->loggedIn() && $app->request()->getResourceUri() !== rtrim(DIRECTUS_PATH, '/') . '/') {
+if (!$authentication->loggedIn() && $app->request()->getResourceUri() !== get_directus_path() . '/') {
     $app->notFound($redirectToLogin);
     $app->run();
 }
@@ -464,10 +463,10 @@ function getCusomFooterHTML()
 function getCSSFilePath()
 {
     if (file_exists('./assets/css/custom.css')) {
-        return DIRECTUS_PATH . 'assets/css/custom.css';
+        return get_directus_path('/assets/css/custom.css');
     }
 
-    return DIRECTUS_PATH . 'assets/css/directus.css';
+    return get_directus_path('/assets/css/directus.css');
 }
 
 function parseLocalesAvailable($localesAvailable)
@@ -511,7 +510,7 @@ $users = getUsers();
 if (!$users) {
     $authentication->logout();
     $_SESSION['error_message'] = 'Your user doesn\'t have permission to log in';
-    header('Location: ' . DIRECTUS_PATH . 'login.php');
+    header('Location: ' . get_directus_path('/login.php'));
     exit;
 }
 $currentUserInfo = getCurrentUserInfo($users);
@@ -593,7 +592,7 @@ $data = [
     'cacheBuster' => $cacheBuster,
     'nonces' => getNonces(),
     'storage_adapters' => getStorageAdapters(),
-    'path' => DIRECTUS_PATH,
+    'path' => get_directus_path(),
     'page' => '#tables',
     'tables' => $allTables,
     'preferences' => parsePreferences($tableSchema), //ok
@@ -626,8 +625,8 @@ $templateVars = [
     'isAuthenticated' => $authentication->loggedIn() === true,
     'data' => json_encode($data),
     // 'path' => DIRECTUS_PATH,
-    'rootUrl' => DIRECTUS_PATH,
-    'assetsRoot' => rtrim(DIRECTUS_PATH, '/') . '/assets/',
+    'rootUrl' => get_directus_path(),
+    'assetsRoot' => get_directus_path('/assets/'),
     'locale' => get_user_locale(),
     'dir' => 'ltr',
     'customFooterHTML' => getCusomFooterHTML(),

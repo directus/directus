@@ -141,9 +141,9 @@ class Auth extends Route
         }
 
         if ($inactive) {
-            $app->redirect(DIRECTUS_PATH . 'login.php?inactive=1');
+            $app->redirect(get_directus_path('/login.php?inactive=1'));
         } else {
-            $app->redirect(DIRECTUS_PATH . 'login.php');
+            $app->redirect(get_directus_path('/login.php'));
         }
     }
 

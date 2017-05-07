@@ -24,7 +24,7 @@ $emitter->run('directus.login.start');
 
 // Temporary solution for disabling this page for logged in users.
 if ($authentication->loggedIn()) {
-    header('Location: ' . DIRECTUS_PATH);
+    header('Location: ' . get_directus_path());
     exit;
 }
 
@@ -63,8 +63,8 @@ $templateVars = [
     'errorMessage' => $errorMessage,
     'cacheBuster' => $cacheBuster,
     'apiVersion' => API_VERSION,
-    'rootUrl' => DIRECTUS_PATH,
-    'assetsRoot' => rtrim(DIRECTUS_PATH, '/') . '/assets/',
+    'rootUrl' => get_directus_path(),
+    'assetsRoot' => get_directus_path('/assets/'),
     'authList' => $authList,
     'subtitle' => 'Login'
 ];

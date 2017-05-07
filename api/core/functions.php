@@ -147,9 +147,11 @@ if (!function_exists('get_directus_path')) {
     /**
      * Gets the Directus path (subdirectory based on the host)
      *
+     * @param string $subPath
+     *
      * @return string
      */
-    function get_directus_path()
+    function get_directus_path($subPath = '')
     {
         if (!defined('DIRECTUS_PATH')) {
             $basePath = realpath(__DIR__ . '/../..');
@@ -160,7 +162,7 @@ if (!function_exists('get_directus_path')) {
             $path = DIRECTUS_PATH;
         }
 
-        return rtrim($path, '/') . '/';
+        return '/' . trim($path, '/') . '/' . ltrim($subPath, '/');
     }
 }
 

@@ -702,9 +702,9 @@ $app->get("/$v/auth/logout(/:inactive)", function ($inactive = null) use ($app, 
         $authentication->logout();
     }
     if ($inactive) {
-        $app->redirect(DIRECTUS_PATH . 'login.php?inactive=1');
+        $app->redirect(get_directus_path('/login.php?inactive=1'));
     } else {
-        $app->redirect(DIRECTUS_PATH . 'login.php');
+        $app->redirect(get_directus_path('/login.php'));
     }
 })->name('auth_logout');
 
@@ -1962,7 +1962,7 @@ $app->notFound(function () use ($app, $acl, $ZendDb) {
     $settings = $settingsTable->fetchCollection('global');
 
     $projectName = isset($settings['project_name']) ? $settings['project_name'] : 'Directus';
-    $projectLogoURL = rtrim(DIRECTUS_PATH, '/') . '/assets/img/directus-logo-flat.svg';
+    $projectLogoURL = get_directus_path('/assets/img/directus-logo-flat.svg');
     if (isset($settings['cms_thumbnail_url']) && $settings['cms_thumbnail_url']) {
         $projectLogoURL = $settings['cms_thumbnail_url'];
     }
