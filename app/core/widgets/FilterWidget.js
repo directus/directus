@@ -80,7 +80,9 @@ define([
       var searchString = this.searchString = $element.val();
 
       if (event.which == 13) {
-        return self.search(searchString);
+        this.search(searchString);
+
+        return;
       }
 
       if (this.searchTimeOut) {
