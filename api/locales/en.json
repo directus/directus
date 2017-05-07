@@ -566,6 +566,8 @@
 
     "unknown": "Unknown",
 
+    "email_subject_your_new_directus_instance_x": "Your New Directus Instance %{name}",
+
     "eg_x": "eg %{text}",
     "ok": "OK",
     "cancel": "Cancel",

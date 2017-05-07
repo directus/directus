@@ -90,7 +90,7 @@ class ConfirmStep extends AbstractStep
         ];
 
         Mail::send('mail/new-install.twig.html', $data, function ($message) use ($data) {
-            $message->setSubject(__t('your_new_directus_instance_x', [
+            $message->setSubject(__t('email_subject_your_new_directus_instance_x', [
                 'name' => $data['project']['name']
             ]));
             $message->setTo($data['user']['email']);
