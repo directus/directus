@@ -215,7 +215,7 @@ define(['app', 'backbone', 'handlebars', 'core/UIComponent', 'core/UIView', 'uti
 
   var Component = UIComponent.extend({
     id: 'many_to_one_typeahead',
-    dataTypes: ['INT'],
+    dataTypes: ['INT', 'TINYINT', 'SMALLINT', 'MEDIUMINT', 'BIGINT'],
     variables: [
       {id: 'visible_column', type: 'String', default_value: '', ui: 'textinput', comment: __t('m2o_typeahead_visible_column_comment'), char_length: 64, required: true},
       {id: 'size', type: 'String', default_value: 'large', ui: 'select', options: {options: {'large':__t('size_large'),'medium':__t('size_medium'),'small':__t('size_small')} }, comment: __t('m2o_typeahead_size_comment')},

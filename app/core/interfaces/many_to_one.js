@@ -114,7 +114,7 @@ define(['app', 'backbone', 'handlebars', 'core/UIComponent', 'core/UIView', 'cor
 
   var Component = UIComponent.extend({
     id: 'many_to_one',
-    dataTypes: ['INT'],
+    dataTypes: ['INT', 'TINYINT', 'SMALLINT', 'MEDIUMINT', 'BIGINT'],
     variables: [
       {id: 'readonly', type: 'Boolean', default_value: false, ui: 'checkbox'},
       {id: 'visible_column', type: 'String', default_value: '', ui: 'textinput', char_length: 64, required: true, comment: __t('m2o_visible_column_comment')},
