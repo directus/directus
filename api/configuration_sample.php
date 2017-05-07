@@ -135,20 +135,33 @@ return [
     // By default, `active` is the status column's name
     'statusMapping' => [
         0 => [
-            'name' => 'Delete',
-            'color' => '#C1272D',
+            'name' => 'Deleted',
+            'text_color' => '#FFFFFF',
+            'background_color' => '#F44336',
+            'subdued_in_listing' => false,
+            'show_listing_badge' => true,
+            'hidden_globally' => true,
+            'hard_delete' => false,
             'sort' => 3
         ],
         1 => [
-            'name' => 'Active',
-            'color' => '#3498DB',
+            'name' => 'Published',
+            'text_color' => '#FFFFFF',
+            'background_color' => '#3498DB',
+            'subdued_in_listing' => false,
+            'show_listing_badge' => true,
+            'hidden_globally' => false,
+            'hard_delete' => false,
             'sort' => 1
         ],
         2 => [
             'name' => 'Draft',
-            'color' => '#BBBBBB',
+            'text_color' => '#999999',
+            'background_color' => '#EEEEEE',
             'subdued_in_listing' => true,
             'show_listing_badge' => true,
+            'hidden_globally' => false,
+            'hard_delete' => false,
             'sort' => 2
         ]
     ]
