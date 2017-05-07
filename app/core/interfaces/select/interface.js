@@ -31,7 +31,7 @@ define(['underscore', 'core/UIView', 'core/t', 'select2'], function (_, UIView, 
       }
     },
 
-    updateCheckboxValue() {
+    updateCheckboxValue: function () {
       var values = this.$el.find('input[type=checkbox]:checked');
       var out = '';
 
