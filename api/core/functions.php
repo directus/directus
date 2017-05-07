@@ -162,7 +162,10 @@ if (!function_exists('get_directus_path')) {
             $path = DIRECTUS_PATH;
         }
 
-        return '/' . trim($path, '/') . '/' . ltrim($subPath, '/');
+        $path = trim($path, '/');
+        $subPath = ltrim($subPath, '/');
+
+        return (empty($path) ? '/' : sprintf('/%s/', $path)) . $subPath;
     }
 }
 
