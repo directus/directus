@@ -57,7 +57,6 @@ define(function(require, exports, module) {
     require('core/interfaces/one_to_many/component'),
     require('core/interfaces/wysiwyg/component'),
     require('core/interfaces/password/component'),
-    require('core/interfaces/random'),
     require('core/interfaces/many_to_one_typeahead'),
     require('core/interfaces/enum/component'),
     require('core/interfaces/user'),
