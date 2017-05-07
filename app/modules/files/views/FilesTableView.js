@@ -3,7 +3,7 @@ define([
   'underscore',
   'moment',
   'backbone',
-  'core/modal',
+  'core/Modal',
   'core/edit',
   'core/t',
   'core/notification',

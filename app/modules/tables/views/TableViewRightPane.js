@@ -2,7 +2,7 @@ define([
   'app',
   'underscore',
   'core/t',
-  'core/Notification',
+  'core/notification',
   'backbone',
   'core/edit',
   'schema/FakeTableModel',
