@@ -191,10 +191,13 @@ define(function(require, exports, module) {
               data = _.isObject(attributes[id]) ? attributes[id] : {id: attributes[id]};
             }
 
-            var collectionRelated = EntriesManager.getInstance(tableRelated);
-            var ModelRelated = collectionRelated.model;
+            // only parse the value is not already a model
+            if (!(attributes[id] instanceof Backbone.Model)) {
+              var collectionRelated = EntriesManager.getInstance(tableRelated);
+              var ModelRelated = collectionRelated.model;
 
-            attributes[id] = new ModelRelated(data.data, {collection: collectionRelated});
+              attributes[id] = new ModelRelated(data.data, {collection: collectionRelated});
+            }
 
             break;
         }

@@ -55,11 +55,6 @@ define([
     list: function (options) {
       var model = options.value;
 
-      // @TODO: Have this not be hardcoded
-      if (!model.get('type') && model.get(options.schema.id) instanceof Backbone.Model) {
-        model = model.get(options.schema.id);
-      }
-
       var orientation = (parseInt(model.get('width'), 10) > parseInt(model.get('height'), 10)) ? 'landscape' : 'portrait';
       var type = (model.get('type')) ? model.get('type').substring(0, model.get('type').indexOf('/')) : '';
       var subtype = model.getSubType(true);
