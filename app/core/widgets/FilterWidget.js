@@ -92,7 +92,7 @@ define([
 
       this.searchTimeOut = setTimeout(function () {
         self.search(searchString);
-      }, 2000);
+      }, 1000);
     },
 
     search: function (searchString) {
