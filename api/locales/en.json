@@ -257,7 +257,7 @@
     "m2o_typeahead_clear": "Clear this related item",
     "m2o_typeahead_visible_column_comment": "A CSV of columns used when filtering this field",
     "m2o_typeahead_size_comment": "Determines the size/width of the search field",
-    "m2o_typeahead_template_comment": "A twig template for how items are displayed. eg: {{l_name}}, {{f_name}} – {{title}}",
+    "m2o_typeahead_template_comment": "A twig template for how items are displayed. eg: {{l_name}}, {{f_name}}",
     "m2o_typeahead_include_inactive_comment": "Include items with an inactive/draft status. Only applicable if the related table uses the status column",
 
     "map_mapHeight_comment": "Height in Pixels",
