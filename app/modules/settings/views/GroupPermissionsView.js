@@ -75,6 +75,7 @@ function(app, Backbone, _, Handlebars, BasePageView, EditView, Widgets, __t, Not
 
       return _.extend(options, {
         route: {
+          title: this.model.get('name'),
           breadcrumbs: [
             {title: __t('settings'), anchor: '#settings'},
             {title: __t('group_permissions'), anchor: '#settings/permissions'}
