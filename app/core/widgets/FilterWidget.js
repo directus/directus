@@ -26,7 +26,7 @@ define([
     },
 
     events: {
-      'keyup .js-search': 'search',
+      'keyup .js-search': 'onKeyUp',
 
       'click .js-search-clear': 'clearFilters',
 
@@ -74,13 +74,26 @@ define([
       }
     },
 
-    search: function (event) {
-      if (event.which != 13) {
-        return;
-      }
-
+    onKeyUp: function (event) {
+      var self = this;
       var $element = $(event.currentTarget);
       var searchString = this.searchString = $element.val();
+
+      if (event.which == 13) {
+        return self.search(searchString);
+      }
+
+      if (this.searchTimeOut) {
+        clearTimeout(this.searchTimeOut);
+        this.searchTimeOut = null;
+      }
+
+      this.searchTimeOut = setTimeout(function () {
+        self.search(searchString);
+      }, 2000);
+    },
+
+    search: function (searchString) {
       var filterIndex = -1;
       _.each(this.options.filters, function (item, index) {
         if (item.filterData.id === 'q') {
@@ -89,7 +102,7 @@ define([
       });
 
       if (filterIndex >= 0) {
-        this.options.filters[filterIndex].filterData.value = $element.val();
+        this.options.filters[filterIndex].filterData.value = searchString;
       } else {
         this.options.filters.push({
           filterData: {
