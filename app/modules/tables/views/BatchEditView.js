@@ -126,7 +126,5 @@ function(app, _, Backbone, Directus, BasePageView, Widgets) {
       this.editView = new Directus.EditView({model: this.model, batchIds: options.batchIds});
       this.headerOptions.route = {title: "Batch Editing " + this.batchIds.length + " Items", breadcrumbs:[{ title: 'Tables', anchor: '#tables'}, {title: this.model.collection.table.id, anchor: "#tables/" + this.model.collection.table.id}]};
     }
-
   });
-
 });

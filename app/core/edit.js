@@ -36,9 +36,7 @@ define(function(require, exports, module) {
       'click .js-button-cancel': 'cancelBatchEdit'
     },
 
-    state: {
-      batchEnabled: false
-    },
+    state: {},
 
     acceptBatchEdit: function () {
       if (!this.state.batchEnabled) {
@@ -105,9 +103,10 @@ define(function(require, exports, module) {
       }
     },
 
-    initialize: function(options) {
+    initialize: function (options) {
       this.view = options.view;
       this.column = options.column;
+      this.state.batchEnabled = false;
     }
   });
 
