@@ -283,6 +283,8 @@ define(function(require, exports, module) {
           add = ":" + preference.title;
         }
         preferences[preference.table_name + add] = new PreferenceModel(preference, {
+          // TODO: Move this into the preference model
+          // and do some back flip when the table is not defined yet
           url: this.apiURL + 'tables/' + encodeURIComponent(preference.table_name) + '/preferences',
           parse: true
         });
@@ -380,6 +382,14 @@ define(function(require, exports, module) {
 
     getPreferences: function(tableName) {
       return preferences[tableName];
+    },
+
+    getBookmarkPreferences: function (title) {
+      var preference = new PreferenceModel();
+
+      preference.url = this.apiURL + 'bookmarks/' + encodeURIComponent(title) + '/preferences';
+
+      return preference.fetch({});
     },
 
     updatePrivileges: function(tableName, attributes) {

@@ -23,6 +23,7 @@ define(function(require, exports, module) {
       SchemaManager    = require('schema/SchemaManager'),
       EntriesManager   = require('core/EntriesManager'),
       ExtensionManager = require('core/ExtensionManager'),
+      PreferenceModel  = require('core/PreferenceModel'),
       Activity         = require('modules/activity/activity'),
       Table            = require('modules/tables/table'),
       Settings         = require('modules/settings/settings'),
@@ -443,25 +444,15 @@ define(function(require, exports, module) {
       view.render();
     },
 
-    bookmark: function (tableName, title) {
-      var collection = this.currentCollection = EntriesManager.getInstance(tableName).clone();
-      var originalPreferencesUrl = collection.preferences.url;
+    bookmark: function (title) {
       var self = this;
 
-      collection.preferences = collection.preferences.clone();
-      collection.preferences.url = originalPreferencesUrl;
-      collection.preferences.fetch({title: title})
-        .then(function (resp) {
-          var promise;
+      SchemaManager.getBookmarkPreferences(title)
+        .done(function (data) {
+          var tableName = data.table_name;
 
-          if (resp.success === false) {
-            promise = $.Deferred().reject(resp).promise()
-          } else {
-            promise = collection.fetch();
-          }
-
-          return promise;
-        }).done(function () {
+          self.currentCollection = EntriesManager.getInstance(tableName).clone();
+          self.currentCollection.preferences = new PreferenceModel(data, {parse: true});
           self.entries(tableName);
           self.currentCollection = undefined;
         }).fail(function () {

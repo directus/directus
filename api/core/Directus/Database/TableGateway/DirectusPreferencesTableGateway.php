@@ -161,6 +161,29 @@ class DirectusPreferencesTableGateway extends RelationalTableGateway
         return $this->parseRecord($preferences);
     }
 
+    public function fetchByUserAndTitle($user_id, $title)
+    {
+        // TODO: Merge with fetchByUserAndTableAndTitle
+        $select = new Select($this->table);
+        $select->limit(1);
+        $select
+            ->where
+            ->equalTo('title', $title)
+            ->equalTo('user', $user_id);
+
+        $preferences = $this->selectWith($select)->current();
+
+        if ($preferences) {
+            $preferences = $preferences->toArray();
+        }
+
+        if ($preferences) {
+            $preferences = $this->constructPreferences($user_id, $preferences['table_name'], $preferences);
+        }
+
+        return $this->parseRecord($preferences);
+    }
+
     /*
      * Temporary while I figured out why the method above
      * doesn't not construct preferences on table without preferences.

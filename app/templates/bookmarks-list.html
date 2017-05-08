@@ -37,7 +37,7 @@
     <h3>{{t "bookmarks"}}</h3>
     <ul class="menu bookmarks help" data-help="You can create a bookmark of any page. Bookmarks save all your filters, sorting, and other options for quick and easy access.">
         {{#bookmarks.search}}
-        <li data-id="{{id}}" class="{{#if active_bookmark}}active{{/if}}" title="{{capitalize title}}">
+        <li data-cid="{{cid}}" class="{{#if active_bookmark}}active{{/if}}" title="{{capitalize title}}">
             <a href="{{url}}">{{capitalize title}} <i id="remove_snapshot" class="material-icons delete-bookmark" title="Delete Bookmark: {{capitalize title}}">highlight_off</i></a>
         </li>
         {{/bookmarks.search}}

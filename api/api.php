@@ -485,6 +485,7 @@ $app->group('/1.1', function() use($app) {
     // =============================================================================
     // BOOKMARKS
     // =============================================================================
+    $app->get('/bookmarks/:id/preferences', '\Directus\API\Routes\A1\Bookmarks:preferences');
     $app->get('/bookmarks/self/?', '\Directus\API\Routes\A1\Bookmarks:selfBookmarks');
     $app->get('/bookmarks/user/:id?', '\Directus\API\Routes\A1\Bookmarks:userBookmarks');
     $app->get('/bookmarks/?', '\Directus\API\Routes\A1\Bookmarks:allBookmarks');

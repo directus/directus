@@ -48,14 +48,13 @@ function(app, Backbone, _, EntriesManager, __t, Notification) {
 
     setActive: function (route) {
       var activeModel;
-      var routeURL = route;
+      var title = decodeURIComponent((route || '').split('/').pop());
       var found = false;
 
       this.each(function (model) {
+        var urlMatched = title == model.get('title');
+
         model.unset('active_bookmark', {silent: true});
-        // NOTE: Checking if it's a editing page by pulling out the last parameter
-        var detailsUrl = (routeURL || '').split('/').slice(0, -1).join('/');
-        var urlMatched = routeURL == model.get('url') || detailsUrl == model.get('url');
 
         if (urlMatched && !found) {
           activeModel = model;
@@ -97,8 +96,12 @@ function(app, Backbone, _, EntriesManager, __t, Notification) {
       }
     },
 
+    findByTitle: function (title) {
+      return this.findWhere({'title':title});
+    },
+
     isBookmarked: function(title) {
-      return this.findWhere({'title':title}) !== undefined;
+      return this.findByTitle(title) !== undefined;
     }
   });
 
@@ -112,68 +115,25 @@ function(app, Backbone, _, EntriesManager, __t, Notification) {
     },
 
     events: {
-      'click #saveSnapshotBtn': 'saveSnapshot',
-      'click #remove_snapshot': function(event) {
-        event.stopPropagation();
-        event.preventDefault();
-
-        var bookmarkId = $(event.currentTarget).parents('li').data('id');
-        var bookmark = this.collection.get(bookmarkId);
-        if (bookmark) {
-          var title = bookmark.get('title');
-          app.router.openModal({type: 'confirm', text: __t('delete_the_bookmark_x', {title: title}), callback: function() {
-            bookmark.destroy();
-          }});
-        }
-
-        return false;
-      }
+      'click #remove_snapshot': 'onRemoveSnapshot'
     },
 
-    // saveSnapshot: function() {
-    //   var that = this;
-    //
-    //   app.router.openModal({type: 'prompt', text: __t('what_would_you_like_to_name_this_bookmark'), callback: function(name ) {
-    //     if(name === null || name === "") {
-    //       Notification.error(__t('please_fill_in_a_valid_name'));
-    //       return;
-    //     }
-    //
-    //     var currentCollection = app.router.currentCollection;
-    //     if (typeof currentCollection !== 'undefined') {
-    //       //Save id so it can be reset after render
-    //       var defaultId = currentCollection.preferences.get('id');
-    //       that.listenToOnce(currentCollection.preferences, 'sync', function() {
-    //         if(defaultId) {
-    //           currentCollection.preferences.set({title:null, id: defaultId});
-    //         }
-    //       });
-    //
-    //       var schema = app.schemaManager.getFullSchema( currentCollection.table.id );
-    //       var preferences = schema.preferences;
-    //       preferences.unset('id');
-    //       // Unset Id so that it creates new Preference
-    //       preferences.set({title: name});
-    //       preferences.save();
-    //     }
-    //
-    //     that.pinSnapshot(name);
-    //   }});
-    // },
-    //
-    // pinSnapshot: function(title) {
-    //   var data = {
-    //     title: title,
-    //     url: Backbone.history.fragment + "/pref/" + encodeURIComponent(title),
-    //     icon_class: 'icon-search',
-    //     user: app.users.getCurrentUser().get("id"),
-    //     section: 'search'
-    //   };
-    //
-    //   if (!app.getBookmarks().isBookmarked(data.title)) {
-    //     app.getBookmarks().addNewBookmark(data);
-    //   }
-    // },
+    onRemoveSnapshot: function (event) {
+      event.stopPropagation();
+      event.preventDefault();
+
+      var bookmarkId = $(event.currentTarget).parents('li').data('cid');
+      var bookmark = this.collection.get(bookmarkId);
+
+      if (bookmark) {
+        var title = bookmark.get('title');
+        app.router.openModal({type: 'confirm', text: __t('delete_the_bookmark_x', {title: title}), callback: function() {
+          bookmark.destroy();
+        }});
+      }
+
+      return false;
+    },
 
     serialize: function() {
       var bookmarks = {table:[],search:[],extension:[],other:[]};
@@ -184,6 +144,8 @@ function(app, Backbone, _, EntriesManager, __t, Notification) {
         var currentUserGroup = app.users.getCurrentUser().get('group');
         // force | remove from activity from navigation
         if (bookmark.title === 'Activity') return false;
+
+        bookmark.cid = model.cid;
 
         // skip system nav to an user
         // if the user's group aren't allow to

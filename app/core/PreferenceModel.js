@@ -2,11 +2,17 @@ define(function(require, exports, module) {
 
   'use strict';
 
-  var Backbone  = require("backbone");
+  var app       = require('app');
+  var Backbone  = require('backbone');
   var __t       = require('core/t');
   var $         = require('jquery');
 
   var PreferenceModel = module.exports = Backbone.Model.extend({
+
+    url: function () {
+      return app.API_URL + 'tables/' + encodeURIComponent(this.get('table_name')) + '/preferences';
+    },
+
     parse: function(data) {
       return data.meta ? data.data : data;
     },
@@ -15,7 +21,7 @@ define(function(require, exports, module) {
       // @NOTE: Do we need this?
       // this.trigger('fetch', this);
       var args = {
-        data: $.param(options)
+        data: $.param((options || {}))
       };
 
       return this.constructor.__super__.fetch.call(this, args);

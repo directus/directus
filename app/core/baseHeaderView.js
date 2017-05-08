@@ -75,17 +75,15 @@ function(app, _, Backbone, __t, Notification) {
       }});
     },
 
-    pinSnapshot: function(title) {
-      var data = {
-        title: title,
-        url: Backbone.history.fragment + "/pref/" + encodeURIComponent(title),
-        icon_class: 'icon-search',
-        user: app.users.getCurrentUser().get("id"),
-        section: 'search'
-      };
-
-      if (!app.getBookmarks().isBookmarked(data.title)) {
-        app.getBookmarks().addNewBookmark(data);
+    pinSnapshot: function (title) {
+      if (!app.getBookmarks().isBookmarked(title)) {
+        app.getBookmarks().addNewBookmark({
+          title: title,
+          url: Backbone.history.fragment + '/pref/' + encodeURIComponent(title),
+          icon_class: 'icon-search',
+          user: app.users.getCurrentUser().get("id"),
+          section: 'search'
+        });
       }
     },
 

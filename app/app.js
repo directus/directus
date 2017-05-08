@@ -40,6 +40,8 @@ define(function(require, exports, module) {
     },
 
     request: function(type, url, options) {
+      options = options || {};
+
       var params = {
         type: type,
         url: url,
