@@ -7,7 +7,7 @@ class ChangeUsersEmailColumn extends Ruckusing_Migration_Base
     {
         if ($this->has_column('directus_users', 'email')) {
             $this->change_column('directus_users', 'email', 'string', [
-                'limit' => 255,
+                'limit' => 128,
                 'null' => false,
                 'default' => ''
             ]);

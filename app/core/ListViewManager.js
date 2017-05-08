@@ -63,9 +63,7 @@ define(function(require, exports, module) {
     },
 
     getInstance: function (options) {
-      var viewId = options.collection.table.get('allowed_listing_views');
-
-      return this.getView(viewId, options)
+      return this.getView('table', options)
     },
 
     getViews: function() {

@@ -126,21 +126,6 @@ define(function(require, exports, module) {
         "comment": transComments('single')
       },
       {
-        "id": "allowed_listing_views",
-        "column_name": "allowed_listing_views",
-        "ui": "directus_views", // @TODO: multiple checkbox
-        "type": "VARCHAR",
-        "length": 200,
-        "default_value": "table",
-        "required": false,
-        "nullable": true,
-        "system": false,
-        "hidden_list": false,
-        "hidden_input": false,
-        "sort": 14,
-        "comment": transComments('allowed_listing_views')
-      },
-      {
         "id": "user_create_column",
         "column_name": "user_create_column",
         "ui": "textinput",

@@ -237,7 +237,7 @@ define([
 
     initialize: function(options) {
       this.state = {
-        viewId: options.listView || this.collection.table.get('allowed_listing_views') || 'table'
+        viewId: options.listView || 'table'
       };
 
       this.baseView.on('view:changed', function (viewId) {

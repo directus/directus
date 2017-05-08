@@ -276,7 +276,7 @@ function(app, Backbone, _, __t, BasePageView, ListViewManager, TableViewRightPan
       var table = collection.table;
       var preferences = collection.preferences;
 
-      return preferences.getListViewOptions('currentView') || table.get('allowed_listing_views') || 'table';
+      return preferences.getListViewOptions('currentView') || 'table';
     },
 
     initialize: function() {

@@ -338,7 +338,6 @@ CREATE TABLE `directus_tables` (
   `single` tinyint(1) NOT NULL DEFAULT '0',
   `default_status` tinyint(1) NOT NULL DEFAULT '1',
   `footer` tinyint(1) DEFAULT '0',
-  `allowed_listing_views` varchar(200) DEFAULT NULL,
   `column_groupings` varchar(255) DEFAULT NULL,
   `primary_column` varchar(64) DEFAULT NULL,
   `sort_column` varchar(64) DEFAULT NULL,
@@ -355,13 +354,13 @@ CREATE TABLE `directus_tables` (
 LOCK TABLES `directus_tables` WRITE;
 /*!40000 ALTER TABLE `directus_tables` DISABLE KEYS */;
 
-INSERT INTO `directus_tables` (`table_name`, `display_template`, `preview_url`, `hidden`, `single`, `default_status`, `footer`, `allowed_listing_views`, `column_groupings`, `primary_column`, `sort_column`, `status_column`, `status_mapping`, `user_create_column`, `user_update_column`, `date_create_column`, `date_update_column`, `filter_column_blacklist`)
+INSERT INTO `directus_tables` (`table_name`, `display_template`, `preview_url`, `hidden`, `single`, `default_status`, `footer`, `column_groupings`, `primary_column`, `sort_column`, `status_column`, `status_mapping`, `user_create_column`, `user_update_column`, `date_create_column`, `date_update_column`, `filter_column_blacklist`)
 VALUES
-	('directus_bookmarks','','',1,0,1,0,NULL,NULL,NULL,NULL,NULL,NULL,'user',NULL,NULL,NULL,NULL),
-	('directus_files','','',1,0,1,0,NULL,NULL,NULL,NULL,NULL,NULL,'user',NULL,NULL,NULL,NULL),
-	('directus_messages_recipients','','',1,0,1,0,NULL,NULL,NULL,NULL,NULL,NULL,'recipient',NULL,NULL,NULL,NULL),
-	('directus_preferences','','',1,0,1,0,NULL,NULL,NULL,NULL,NULL,NULL,'user',NULL,NULL,NULL,NULL),
-	('directus_users','','',1,0,1,0,NULL,NULL,NULL,NULL,NULL,NULL,'id',NULL,NULL,NULL,NULL);
+	('directus_bookmarks','','',1,0,1,0,NULL,NULL,NULL,NULL,NULL,'user',NULL,NULL,NULL,NULL),
+	('directus_files','','',1,0,1,0,NULL,NULL,NULL,NULL,NULL,'user',NULL,NULL,NULL,NULL),
+	('directus_messages_recipients','','',1,0,1,0,NULL,NULL,NULL,NULL,NULL,'recipient',NULL,NULL,NULL,NULL),
+	('directus_preferences','','',1,0,1,0,NULL,NULL,NULL,NULL,NULL,'user',NULL,NULL,NULL,NULL),
+	('directus_users','','',1,0,1,0,NULL,NULL,NULL,NULL,NULL,'id',NULL,NULL,NULL,NULL);
 
 /*!40000 ALTER TABLE `directus_tables` ENABLE KEYS */;
 UNLOCK TABLES;
