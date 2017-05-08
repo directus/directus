@@ -128,6 +128,7 @@ function(app, Backbone, _, EntriesManager, __t, Notification) {
       if (bookmark) {
         var title = bookmark.get('title');
         app.router.openModal({type: 'confirm', text: __t('delete_the_bookmark_x', {title: title}), callback: function() {
+          // TODO: redirect to tables after remove a bookmark that's active
           bookmark.destroy();
         }});
       }
