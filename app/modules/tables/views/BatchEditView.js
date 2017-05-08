@@ -36,7 +36,7 @@ function(app, _, Backbone, Directus, BasePageView, Widgets) {
     },
 
     events: {
-      'change input, select, textarea': 'checkDiff',
+      'change select, input[type=checkbox], input[type=radio]': 'checkDiff',
       'keyup input, textarea': 'checkDiff'
     },
 
@@ -44,7 +44,7 @@ function(app, _, Backbone, Directus, BasePageView, Widgets) {
       this.saveWidget.enable();
     },
 
-    saveConfirm: function() {
+    saveConfirm: function () {
       var that = this,
           itemCount = this.batchIds.length;
 
@@ -53,7 +53,7 @@ function(app, _, Backbone, Directus, BasePageView, Widgets) {
       }});
     },
 
-    save: function() {
+    save: function () {
       var model = this.model,
           itemCount = this.batchIds.length,
           failRequestCount = 0,
@@ -116,12 +116,12 @@ function(app, _, Backbone, Directus, BasePageView, Widgets) {
       });
     },
 
-    afterRender: function() {
+    afterRender: function () {
       this.setView('#page-content', this.editView);
       this.editView.render();
     },
 
-    initialize: function(options) {
+    initialize: function (options) {
       this.batchIds = options.batchIds;
       this.editView = new Directus.EditView({model: this.model, batchIds: options.batchIds});
       this.headerOptions.route = {title: "Batch Editing " + this.batchIds.length + " Items", breadcrumbs:[{ title: 'Tables', anchor: '#tables'}, {title: this.model.collection.table.id, anchor: "#tables/" + this.model.collection.table.id}]};
