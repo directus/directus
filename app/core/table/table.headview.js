@@ -17,11 +17,23 @@ function(app, Backbone, _, __t, Notification) {
     tagName: 'thead',
 
     events: {
-      'click input.js-select-all-row': function(event) {
-        var checkAll = this.$('#checkAll:checked').prop('checked') !== undefined;
+      'click input.js-select-all-row': function () {
+        var checkAll = this.checkedAll = this.$('#checkAll:checked').prop('checked') !== undefined;
+        var bodyView = this.parentView.tableBodyView;
+        var $inputs = bodyView.$('input.js-select-row');
 
-        this.parentView.tableBodyView.$('input.js-select-row').prop('checked', checkAll).trigger('changed');
-        this.getCollection().trigger('select');
+        bodyView.selectedIds = [];
+        $inputs.prop('checked', checkAll).trigger('changed');
+
+        if (checkAll) {
+          $inputs.each(function () {
+            var $row = $(this).closest('tr');
+            // TODO: Put ID into the checkbox and avoid querying it everytime
+            bodyView.selectedIds.push($row.data('id'));
+          });
+        }
+
+        this.collection.trigger('select');
       },
 
       'click .js-more': 'showMore',
@@ -213,6 +225,7 @@ function(app, Backbone, _, __t, Notification) {
 
       return {
         status: this.parentView.options.status,
+        checkedAll: this.checkedAll,
         selectable: this.options.selectable,
         sortable: this.options.sort,
         columns: columns,
