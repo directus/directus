@@ -7,7 +7,7 @@
     {{/if}}
     {{#if selectable}}
     <th scope="col" class="status js-check">
-        <input class="custom-checkbox js-select-all-row" id="checkAll" type="checkbox" value="" />
+        <input class="custom-checkbox js-select-all-row" id="checkAll" type="checkbox" value="" {{#if checkedAll}} checked="checked"{{/if}}/>
         <label for="checkAll"><span></span></label>
     </th>
     {{/if}}
