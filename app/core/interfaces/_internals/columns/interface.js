@@ -11,7 +11,6 @@ define([
   'app',
   'underscore',
   'helpers/schema',
-  'core/UIComponent',
   'core/UIView',
   'core/table/table.view',
   'core/overlays/overlays',
@@ -20,11 +19,11 @@ define([
   'core/t',
   'schema/ColumnsCollection',
   'sortable'
-], function(app, _, SchemaHelper, UIComponent, UIView, TableView, Overlays, Notification, DoubleConfirmation, __t, ColumnsCollection, Sortable) {
+], function(app, _, SchemaHelper, UIView, TableView, Overlays, Notification, DoubleConfirmation, __t, ColumnsCollection, Sortable) {
 
   'use strict';
 
-  var Input = UIView.extend({
+  return UIView.extend({
 
     template: '_internals/columns/interface',
 
@@ -259,9 +258,12 @@ define([
           data.default_value = 'NULL';
           data.nullOrEmptyValue = true;
         } else if (data.default_value === '') {
+          // FIXME: Add translations
           data.default_value = 'Empty String';
           data.nullOrEmptyValue = true;
         }
+
+        data.isMissingRequiredOptions = SchemaHelper.isMissingRequiredOptions(column);
 
         return data;
       });
@@ -334,7 +336,7 @@ define([
         throw __t('m2m_the_column_need_to_have_m2m_relationship', {
           column: this.columnSchema.id,
           type: 'ONETOMANY',
-          ui: Component.id
+          ui: 'columns'
         });
       }
 
@@ -351,28 +353,4 @@ define([
       this.relatedCollection = columns;
     }
   });
-
-  var Component = UIComponent.extend({
-    id: 'directus_columns',
-    dataTypes: ['ONETOMANY'],
-    variables: [
-      {id: 'visible_columns', type: 'String', ui: 'textinput', char_length: 255, required: true},
-      {id: 'result_limit', type: 'Number', ui: 'numeric', char_length: 10, default_value: 100, comment: __t('o2m_result_limit_comment')},
-      {id: 'add_button', type: 'Boolean', ui: 'checkbox'},
-      {id: 'choose_button', type: 'Boolean', ui: 'checkbox', default_value: true},
-      {id: 'remove_button', type: 'Boolean', ui: 'checkbox'},
-      {id: 'only_unassigned', type: 'Boolean', ui: 'checkbox', default_value: false}
-    ],
-    Input: Input,
-    validate: function(collection, options) {
-      if (options.schema.isRequired() && collection.length === 0) {
-        return __t('this_field_is_required');
-      }
-    },
-    list: function() {
-      return 'x';
-    }
-  });
-
-  return Component;
 });

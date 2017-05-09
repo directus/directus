@@ -1,4 +1,6 @@
-define(['core/t'], function (__t) {
+define([
+  'core/t', 'underscore'
+], function (__t, _) {
 
   'use strict';
 
@@ -75,6 +77,23 @@ define(['core/t'], function (__t) {
     return isStringType(type) || isNumericType(type) || ['ENUM', 'SET'].indexOf(type) >= 0;
   };
 
+  var isMissingRequiredOptions = function (column) {
+    var UIManager = require('core/UIManager');
+    var uiOptionsName = UIManager.getRequiredOptions(column.get('ui'));
+    var columnOptions = column.get('options');
+    var missing = false;
+
+    _.each(uiOptionsName, function (optionName) {
+      var option = columnOptions[optionName];
+
+      if (!option || _.isEmpty(option)) {
+        missing = true;
+      }
+    });
+
+    return missing;
+  };
+
   var isSystem = function (uiId) {
     var UIManager = require('core/UIManager');
 
@@ -108,6 +127,7 @@ define(['core/t'], function (__t) {
 
   return {
     getSystemDefaultComment: getSystemDefaultComment,
+    isMissingRequiredOptions: isMissingRequiredOptions,
     isSystem: isSystem,
     getNumericTypes: getNumericTypes,
     isNumericType: isNumericType,

@@ -1,0 +1,28 @@
+define([
+  'core/t',
+  'core/UIComponent',
+  './interface'
+], function (__t, UIComponent, Input) {
+
+  return UIComponent.extend({
+    id: 'directus_columns',
+    dataTypes: ['ONETOMANY'],
+    variables: [
+      {id: 'visible_columns', type: 'String', ui: 'textinput', char_length: 255, required: true},
+      {id: 'result_limit', type: 'Number', ui: 'numeric', char_length: 10, default_value: 100, comment: __t('o2m_result_limit_comment')},
+      {id: 'add_button', type: 'Boolean', ui: 'checkbox'},
+      {id: 'choose_button', type: 'Boolean', ui: 'checkbox', default_value: true},
+      {id: 'remove_button', type: 'Boolean', ui: 'checkbox'},
+      {id: 'only_unassigned', type: 'Boolean', ui: 'checkbox', default_value: false}
+    ],
+    Input: Input,
+    validate: function(collection, options) {
+      if (options.schema.isRequired() && collection.length === 0) {
+        return __t('this_field_is_required');
+      }
+    },
+    list: function() {
+      return 'x';
+    }
+  });
+});

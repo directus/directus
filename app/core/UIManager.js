@@ -16,7 +16,7 @@ define(function(require, exports, module) {
     require('core/interfaces/_system/accountability/interface'),
     require('core/interfaces/_internals/activity/component'),
     require('core/interfaces/_internals/columns_picker/interface'),
-    require('core/interfaces/_internals/columns/interface'),
+    require('core/interfaces/_internals/columns/component'),
     require('core/interfaces/_internals/directus_users/component'),
     require('core/interfaces/_internals/file_preview/interface'),
     require('core/interfaces/_internals/file_title/component'),
@@ -386,6 +386,23 @@ define(function(require, exports, module) {
 
     getList: function(model, attr, noDefault) {
       return this.getUIValue('list', model, attr, noDefault);
+    },
+
+    getRequiredOptions: function (uiId) {
+      var UI = this._getUI(uiId);
+      var options = [];
+
+      if (!_.isArray(UI.variables) || UI.variables.length <= 0) {
+        return [];
+      }
+
+      _.each(UI.variables, function (option) {
+        if (option.required === true) {
+          options.push(option.id);
+        }
+      });
+
+      return options;
     },
 
     parseDefaultValue: function(UI, model, settings) {
