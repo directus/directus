@@ -335,7 +335,7 @@ define([
         (this.showDeleteButton && selectedIds.length === 0)
       ) {
         // change the state of checked all
-        this.table.tableHeadView.checkedAll = this.$('#checkAll:checked').prop('checked') !== undefined;
+        this.table.tableHeadView.checkedAll = false;
         this.table.tableHeadView.$('#checkAll').prop('checked', false)
       }
 
