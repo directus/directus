@@ -67,7 +67,7 @@ function(app, Backbone, _, EntriesManager, __t, Notification) {
         }
 
         // NOTE: Checking if it's a editing page by pulling out the last parameter
-        var detailsUrl = _.clone(routeParts).slice(0, -1).join('/');
+        var detailsUrl = routeParts.slice(0, -1).join('/');
         var urlMatched = false;
 
         if (this.isBookmarkActive(routeParts, model)) {
