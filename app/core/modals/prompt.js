@@ -59,6 +59,10 @@ define(['core/Modal', 'underscore'], function(Modal, _) {
     },
 
     closePrompt: function() {
+      if (_.isFunction(this.options.cancelCallback)) {
+        this.options.cancelCallback();
+      }
+
       if (this.container) {
         this.container.close();
       } else {

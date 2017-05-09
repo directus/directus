@@ -1,10 +1,11 @@
 define([
   'app',
+  'core/t',
   'backbone',
   'underscore',
   'helpers/sort',
   'handlebars'
-], function(app, Backbone, _, SortHelper, Handlebars) {
+], function(app, __t, Backbone, _, SortHelper, Handlebars) {
 
   'use strict';
 
@@ -35,6 +36,7 @@ define([
       },
 
       'click input.js-status-check': function (event) {
+        var collection = this.collection;
         var $checksChecked = this.$el.find('input.js-status-check:checked');
         var status = [];
 
@@ -42,8 +44,18 @@ define([
           status.push($(el).val());
         });
 
-        this.collection.setFilter({status: status.join(',')});
-        this.collection.fetch();
+        var fetch = function (save) {
+          collection.setFilter({status: status.join(',')}, {save: save});
+          collection.fetch();
+        };
+
+        this.confirmBookmarkAction()
+          .done(function () {
+            fetch(true);
+          })
+          .fail(function () {
+            fetch(false);
+          });
       },
 
       'click input.js-state-check': 'onClickState',
@@ -72,6 +84,29 @@ define([
       'change .filter_ui': function (e) {
         this.processFilterChange(e);
       }
+    },
+
+    confirmBookmarkAction: function () {
+      var deferred = new $.Deferred();
+      var onSuccess = function () {
+        deferred.resolve();
+      };
+      var onCancel = function () {
+        deferred.reject();
+      };
+
+      if (this.collection.preferences.get('title')) {
+        app.router.openModal({
+          type: 'confirm',
+          text: __t('widget_filter_confirm_bookmark_changes'),
+          callback: onSuccess,
+          cancelCallback: onCancel
+        });
+      } else {
+        deferred.resolve();
+      }
+
+      return deferred.promise();
     },
 
     onKeyUp: function (event) {
@@ -469,21 +504,38 @@ define([
       //this.render();
     },
 
-    saveFilterString: function() {
-      var string = [];
+    saveFilterString: function () {
+      var preferences = this.collection.preferences;
+      var options = this.options;
 
-      var filters = this.options.filters.map(function(item) {
-        return item.filterData;
-      });
+      var save = function (sync) {
+        var string = [];
+        var filters = options.filters.map(function (item) {
+          return item.filterData;
+        });
 
-      filters.forEach(function(search) {
-        if(search) {
-          string.push(search.id.replace(':','\\:') + ":" + search.type.replace(':','\\:') + ":" + String(search.value).replace(':','\\:').replace(',','\\,'));
+        filters.forEach(function (search) {
+          if (search) {
+            string.push(search.id.replace(':','\\:') + ":" + search.type.replace(':','\\:') + ":" + String(search.value).replace(':','\\:').replace(',','\\,'));
+          }
+        });
+
+        string = encodeURIComponent(string.join());
+        if (sync === false) {
+          preferences.set({search_string: string});
+        } else {
+          preferences.save({search_string: string});
         }
-      });
+      };
 
-      string = encodeURIComponent(string.join());
-      this.collection.preferences.save({search_string: string});
+
+      this.confirmBookmarkAction()
+        .done(function () {
+          save(true);
+        })
+        .fail(function () {
+          save(false);
+        });
     },
 
     setFilterRow: function(){

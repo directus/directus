@@ -257,13 +257,21 @@ define(function(require, exports, module) {
       return new this.constructor(this.models, options);
     },
 
-    setFilter: function(key, value, options) {
+    setFilter: function (key, value, options) {
       var attrs, preferencesHasChanged = false;
+
       if (key === null || typeof key === 'object') {
         attrs = key;
+        options = value;
       } else {
         (attrs = {})[key] = value;
       }
+
+      options = options || {};
+      if (options.save === undefined) {
+        options.save = true;
+      }
+
       _.each(attrs, function(value, key) {
         if (this.preferences && this.preferences.has(key)) {
           preferencesHasChanged = true;
@@ -273,7 +281,9 @@ define(function(require, exports, module) {
         }
       },this);
 
-      if (preferencesHasChanged) this.preferences.save();
+      if (options.save && preferencesHasChanged) {
+        this.preferences.save();
+      }
     },
 
     hasColumn: function(columnName) {
