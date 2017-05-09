@@ -28,6 +28,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'moment', 'helpers/ui', 'core/
     makeNow: function() {
       this.value = moment();
       this.render();
+      this.$('input.date, input.time').trigger('change');
     },
 
     getDate: function() {

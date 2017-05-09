@@ -36,7 +36,7 @@ function(app, _, Backbone, Directus, BasePageView, Widgets) {
     },
 
     events: {
-      'change select, input[type=checkbox], input[type=radio]': 'checkDiff',
+      'change select, input[type=checkbox], input[type=radio], input[type=date], input[type=time]': 'checkDiff',
       'keyup input, textarea': 'checkDiff'
     },
 
