@@ -21,9 +21,6 @@ function(app, Backbone, _, Sortable, Notification) {
 
     events: {
       'change td.js-check > input': 'select',
-      'click td.js-check > input': function() {
-        this.collection.trigger('select');
-      },
       'click .js-sort': function (event) {
         event.stopPropagation();
         event.preventDefault();
@@ -35,8 +32,8 @@ function(app, Backbone, _, Sortable, Notification) {
       }
     },
 
-    select: function(e) {
-      var $target = $(e.target);
+    select: function (event) {
+      var $target = $(event.currentTarget);
       var $row = $target.closest('tr');
 
       if ($target.is(':checked')) {
@@ -50,6 +47,8 @@ function(app, Backbone, _, Sortable, Notification) {
 
         $row.removeClass('selected');
       }
+
+      this.collection.trigger('select');
     },
 
     serialize: function() {

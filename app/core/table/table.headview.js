@@ -23,7 +23,7 @@ function(app, Backbone, _, __t, Notification) {
         var $inputs = bodyView.$('input.js-select-row');
 
         bodyView.selectedIds = [];
-        $inputs.prop('checked', checkAll).trigger('changed');
+        $inputs.prop('checked', checkAll);
 
         if (checkAll) {
           $inputs.each(function () {

@@ -8,9 +8,7 @@ define([
   'modules/tables/views/TableViewRightPane',
   'helpers/table',
   'core/widgets/widgets'
-],
-
-function(app, Backbone, _, __t, BasePageView, ListViewManager, TableViewRightPane, TableHelpers, Widgets) {
+], function(app, Backbone, _, __t, BasePageView, ListViewManager, TableViewRightPane, TableHelpers, Widgets) {
 
   return BasePageView.extend({
 
@@ -287,6 +285,71 @@ function(app, Backbone, _, __t, BasePageView, ListViewManager, TableViewRightPan
       return preferences.getListViewOptions('currentView') || 'table';
     },
 
+    onSelect: function () {
+      var collection = this.collection;
+      var table = collection.table;
+      var selectedIds = this.table.tableBodyView.selectedIds;
+      var collectionVisibleLength = 0;
+      // @NOTE: Hotfix render on empty selection
+      var render = false;
+      var statusValues;
+
+      // try removing hidden items from selected when the columns has status column
+      if (table.getStatusColumnName()) {
+        statusValues = collection.getFilter('status') || table.getStatusVisibleValues();
+        statusValues = _.compact((statusValues || '').split(','));
+
+        // count the visible items
+        collection.each(function (model) {
+          _.each(statusValues, function (value) {
+            if (value == model.getStatusValue()) {
+              collectionVisibleLength++;
+            }
+          });
+        });
+
+        // remove the invisible from selectedIds
+        _.each(selectedIds, function (id, i) {
+          var model = collection.get(id);
+          var hasVisibleStatus = false;
+
+          _.each(statusValues, function (value) {
+            if (value == model.getStatusValue()) {
+              hasVisibleStatus = true;
+            }
+          });
+
+          if (!hasVisibleStatus) {
+            // mark as null to remove later
+            // NOTE: remove the index change the size of the array
+            // which make the indexes not match anymore
+            selectedIds[i] = null;
+          }
+        });
+
+        this.table.tableBodyView.selectedIds = selectedIds = _.compact(selectedIds);
+      }
+
+      if (
+        selectedIds.length != collectionVisibleLength ||
+        (this.showDeleteButton && selectedIds.length === 0)
+      ) {
+        // change the state of checked all
+        this.table.tableHeadView.checkedAll = this.$('#checkAll:checked').prop('checked') !== undefined;
+        this.table.tableHeadView.$('#checkAll').prop('checked', false)
+      }
+
+      // if there was selection before and now it's none, let's render
+      render = this.showDeleteButton && selectedIds.length === 0;
+      this.batchEdit = selectedIds.length > 1;
+      this.showDeleteButton = selectedIds.length >= 1;
+      this.showBatchEditButton = selectedIds.length > 1;
+
+      if (render || this.showDeleteButton || this.showBatchEditButton) {
+        this.reRender();
+      }
+    },
+
     initialize: function() {
       this.widgets = {};
       this.state = {
@@ -305,25 +368,7 @@ function(app, Backbone, _, __t, BasePageView, ListViewManager, TableViewRightPan
 
       this.collection.options['sort'] = false;
 
-      this.collection.on('select', function() {
-        var $checks = this.table.$('.js-select-row');
-        var $checksChecked = this.table.$('.js-select-row:checked');
-        // @NOTE: Hotfix render on empty selection
-        var render = this.showDeleteButton && !($checksChecked.length >= 1);
-
-        if ($checksChecked.length != $checks.length) {
-          this.table.tableHeadView.$('#checkAll').prop('checked', false)
-        }
-
-        this.actionButtons = $checksChecked.length;
-        this.batchEdit = $checksChecked.length > 1;
-        this.showDeleteButton = $checksChecked.length >= 1;
-        this.showBatchEditButton = $checksChecked.length > 1;
-
-        if (render || this.showDeleteButton || this.showBatchEditButton) {
-          this.reRender();
-        }
-      }, this);
+      this.listenTo(this.collection, 'select', this.onSelect);
 
       this.isBookmarked = app.getBookmarks().isBookmarked(this.collection.table.id);
       this.showDeleteButton = false;
