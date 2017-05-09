@@ -205,12 +205,14 @@ define([
     },
 
     _ensureView: function (viewId, triggerEvent) {
-      _.each(this.state.views, function(view) {
+      _.each(this.state.views, function (view) {
           view.disable();
-      });
+        this.stopListening(view, 'toggleRightPane', this.toggleRightPane);
+      }, this);
 
       this.state.viewId = viewId;
       var newView = this.getCurrentView();
+      this.listenTo(newView, 'toggleRightPane', this.toggleRightPane);
 
       if (triggerEvent === true) {
         this.trigger('view:changed', viewId);
@@ -249,8 +251,6 @@ define([
           system: true,
           showMoreButton: !! _.result(this, 'rightPane')
         });
-
-        this.listenTo(this.state.views[viewId], 'toggleRightPane', this.toggleRightPane);
       }
 
       return this.state.views[viewId];
