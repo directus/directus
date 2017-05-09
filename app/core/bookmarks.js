@@ -46,21 +46,41 @@ function(app, Backbone, _, EntriesManager, __t, Notification) {
       return 0;
     },
 
+    isBookmarkActive: function (routeParts, model) {;
+      var parts = _.clone(routeParts || []);
+      var title = decodeURIComponent(parts.pop());
+      var section = parts.shift();
+
+      return section === 'bookmark' && title === model.get('title');
+    },
+
     setActive: function (route) {
       var activeModel;
-      var title = decodeURIComponent((route || '').split('/').pop());
+      var routeParts = (route || '').split('/');
       var found = false;
 
       this.each(function (model) {
-        var urlMatched = title == model.get('title');
-
         model.unset('active_bookmark', {silent: true});
+
+        if (found) {
+          return false;
+        }
+
+        // NOTE: Checking if it's a editing page by pulling out the last parameter
+        var detailsUrl = _.clone(routeParts).slice(0, -1).join('/');
+        var urlMatched = false;
+
+        if (this.isBookmarkActive(routeParts, model)) {
+          urlMatched = true;
+        } else if (route == model.get('url') || detailsUrl == model.get('url')) {
+          urlMatched = true;
+        }
 
         if (urlMatched && !found) {
           activeModel = model;
           found = true;
         }
-      });
+      }, this);
 
       if (activeModel) {
         activeModel.set({'active_bookmark': true});
