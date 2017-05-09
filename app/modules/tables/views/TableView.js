@@ -77,26 +77,29 @@ define([
         }
 
         if (this.showBatchEditButton) {
-          if (!this.widgets.batchEditWidget) {
-            this.widgets.batchEditWidget = new Widgets.ButtonWidget({
-              widgetOptions: {
-                buttonId: 'batchEditBtn',
-                iconClass: 'edit',
-                buttonClass: 'important',
-                buttonText: __t('batch_edit')
-              },
-              onClick: function(event) {
-                var $checked = tableView.table.$el.find('.js-select-row:checked');
-                var ids = $checked.map(function() {
-                  return this.value;
-                }).toArray().join();
-
-                var route = Backbone.history.fragment.split('/');
-                route.push(ids);
-                app.router.go(route);
-              }
-            });
+          if (this.widgets.batchEditWidget) {
+            this.widgets.batchEditWidget.remove();
           }
+
+          this.widgets.batchEditWidget = new Widgets.ButtonWidget({
+            widgetOptions: {
+              buttonId: 'batchEditBtn',
+              iconClass: 'edit',
+              buttonClass: 'important',
+              buttonText: __t('batch_edit')
+            },
+
+            onClick: function (event) {
+              var $checked = tableView.table.$el.find('.js-select-row:checked');
+              var ids = $checked.map(function() {
+                return this.value;
+              }).toArray().join();
+
+              var route = Backbone.history.fragment.split('/');
+              route.push(ids);
+              app.router.go(route);
+            }
+          });
 
           widgets.push(this.widgets.batchEditWidget);
         }
