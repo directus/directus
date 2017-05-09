@@ -24,9 +24,17 @@ function(app, _, Backbone, Notification, __t, TableHelpers, ModelHelper, TableHe
     state: {},
 
     events: {
-      'click tbody td:not(.js-check):not(.status):not(.js-sort)' : function(e) {
-        var id = $(e.target).closest('tr').attr('data-id');
-        if (this.options.navigate) {
+      // TODO: make those element to stop propagation to avoid this nesting
+      'click tbody td:not(.js-check):not(.status):not(.js-sort)' : function (event) {
+        var id = $(event.currentTarget).closest('tr').data('id');
+        if (!this.options.navigate) {
+          return;
+        }
+
+        // custom on click event handler
+        if (this.options.onItemClick) {
+          this.options.onItemClick(id);
+        } else {
           this.collection.off();
           this.navigate(id);
         }
@@ -49,8 +57,9 @@ function(app, _, Backbone, Notification, __t, TableHelpers, ModelHelper, TableHe
       };
     },
 
-    navigate: function(id) {
+    navigate: function (id) {
       var route = Backbone.history.fragment.split('/');
+
       route.push(id);
       app.router.go(route);
     },

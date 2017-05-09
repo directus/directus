@@ -227,11 +227,19 @@ function(app, Backbone, _, __t, BasePageView, ListViewManager, TableViewRightPan
 
     getCurrentView: function() {
       var viewId = this.state.viewId;
+      var tableName = this.collection.table.id;
+      // NOTE: when viewing a bookmark you are on a different path
+      // so appending the id after the path doesn't work
+      // forcing to always go to tables/<table>/<id> will solve the problem
+      var onClick = function (id) {
+        app.router.go(['tables', tableName, id]);
+      };
 
       if (!this.state.views[viewId]) {
         this.state.views[viewId] = ListViewManager.getView(viewId, {
           collection: this.collection,
           navigate: true,
+          onItemClick: onClick,
           maxColumns: 8,
           toolbar: true,
           fixedHead: true,
