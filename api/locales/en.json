@@ -546,6 +546,9 @@
 
     "warning_changes_to_columns_save_immediately": "Warning: All changes to columns save immediately.",
     "warning_changes_to_permissions_save_immediately": "Warning: All changes to permissions save immediately.",
+    "warning_missing_primary_key": "This table is missing a unique Primary Key column. Please add one now.",
+    "warning_missing_primary_key_title": "Missing Primary Key",
+    "warning_missing_interface_options_title": "Requires additional setup",
 
     "same_time_as_you": "Same time as you",
     "x_hours_from_you": "%{hours} hours from you",
