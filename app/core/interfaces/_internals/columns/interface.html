@@ -1,10 +1,10 @@
 <p class="serious-text">{{t "warning_changes_to_columns_save_immediately"}}</p>
-{{#unless hasPrimaryKey}}
+{{#if missingPrimaryKey}}
 <p class="serious-text">
 	<i class="material-icons missing-primary-key" title="{{t 'warning_missing_primary_key_title'}}">warning</i>
-	<strong>{{t "warning_missing_primary_key"}}</strong>
+	<strong>{{missingPrimaryKeyMessage}}</strong>
 </p>
-{{/unless}}
+{{/if}}
 <div class="table-container">
 	<table class="lines cozy clickable reorder-enabled">
 		<thead>

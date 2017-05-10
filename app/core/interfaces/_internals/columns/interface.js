@@ -240,12 +240,19 @@ define([
 
     serialize: function () {
       var hasPrimaryKey = false;
+      var hasPrimaryKeyInterface = false;
+      var missingPrimaryKey = false;
+      var missingPrimaryKeyMessage = '';
       var columns = this.columns.map(function (column) {
         var data = column.toJSON();
 
         // TODO: fallback primary key to primary key interface
         if (column.get('key') === 'PRI') {
           hasPrimaryKey = true;
+        }
+
+        if (column.get('ui') === 'primary_key') {
+          hasPrimaryKeyInterface = true;
         }
 
         data.emptyComment = false;
@@ -274,9 +281,20 @@ define([
         return data;
       });
 
+      missingPrimaryKey = !hasPrimaryKey || !hasPrimaryKeyInterface;
+      if (missingPrimaryKey) {
+        var key = 'warning_missing_primary_key';
+        if (!hasPrimaryKeyInterface) {
+          key += '_interface';
+        }
+
+        missingPrimaryKeyMessage = __t(key);
+      }
+
       return {
         columns: columns,
-        hasPrimaryKey: hasPrimaryKey,
+        missingPrimaryKey: missingPrimaryKey,
+        missingPrimaryKeyMessage: missingPrimaryKeyMessage,
         title: this.name,
         tableTitle: this.relatedCollection.table.get('table_name'),
         canEdit: this.canEdit,
