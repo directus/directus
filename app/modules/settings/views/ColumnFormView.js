@@ -367,7 +367,6 @@ define([
       var foundInternal = false;
 
       structure.each(function (column) {
-        console.log(column.get('ui'), ui.isSystem);
         if (column.get('ui') === ui.id && ui.isSystem) {
           foundInternal = true;
         }
