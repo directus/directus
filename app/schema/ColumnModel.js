@@ -190,7 +190,7 @@ define(function(require, exports, module) {
       return _.clone(this.attributes);
     },
 
-    constructor: function (attributes, options) {
+    constructor: function ColumnsModel(attributes, options) {
       options = options || {};
 
       Backbone.Model.prototype.constructor.apply(this, arguments);

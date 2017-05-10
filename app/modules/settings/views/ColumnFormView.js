@@ -136,7 +136,13 @@ define([
       }
 
       _.each(uis, function (ui, key) {
-        if (ui.isSystem || ui.isInternal) {
+        if (ui.isInternal) {
+          return false;
+        }
+
+        // omit system interface if the table already has one
+        // except if the select interface is one
+        if (key !== this.selectedUI && this.omitInterface(ui)) {
           return false;
         }
 
@@ -354,6 +360,20 @@ define([
       data.interfaces = this.getInterfacesGrouped(data.ui_types, this.selectedUI);
 
       return data;
+    },
+
+    omitInterface: function (ui) {
+      var structure = this.model.collection;
+      var foundInternal = false;
+
+      structure.each(function (column) {
+        console.log(column.get('ui'), ui.isSystem);
+        if (column.get('ui') === ui.id && ui.isSystem) {
+          foundInternal = true;
+        }
+      });
+
+      return foundInternal;
     },
 
     getInterfacesGrouped: function (uis, selectedUI) {
