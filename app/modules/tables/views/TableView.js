@@ -90,13 +90,15 @@ define([
             },
 
             onClick: function (event) {
+              var tableName = tableView.collection.table.id;
+              var route = ['tables', tableName];
               var $checked = tableView.table.$el.find('.js-select-row:checked');
               var ids = $checked.map(function() {
                 return this.value;
               }).toArray().join();
 
-              var route = Backbone.history.fragment.split('/');
               route.push(ids);
+
               app.router.go(route);
             }
           });
