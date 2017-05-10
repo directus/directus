@@ -10,13 +10,15 @@ return [
         'adapter' => 'local',
         // By default the media directory is located within the Directus root
         // To shift a outsite the Directus root directory use this instead:
-        // 'root' => realpath(BASE_PATH.'/../media'),
+        // 'root' => realpath(BASE_PATH . '/storage/uploads'),
         // Note: BASE_PATH constant does not end with a trailing slash
         'root' => BASE_PATH . '/storage/uploads',
-        // This is the url where all files/media will be pointing to
-        // All orignial files will exist at your-domain.com/media
+        // This is the url where all uploads will be pointing to
+        // All orignial files will exist at your-domain.com/storage/uploads
+        // If you need absolute links use this instead:
+        // 'root_url' => $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['SERVER_NAME'] . '/storage/uploads'
         'root_url' => '/storage/uploads',
-        // All thumbnails will exist at your-domain.com/media/thumbs
+        // All thumbnails will exist at your-domain.com/storage/uploads/thumbs
         'root_thumb_url' => '/storage/uploads/thumbs',
         //   'key'    => 's3-key',
         //   'secret' => 's3-key',
