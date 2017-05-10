@@ -36,6 +36,14 @@ define(['app', 'underscore'], function (app, _) {
       return statuses;
     },
 
+    getStatusVisibleValues: function (tableName) {
+      var statuses = this.getStatusVisible(tableName);
+
+      return statuses.map(function (status) {
+        return status.id;
+      });
+    },
+
     isDelete: function (tableName, statusValue) {
       var statuses = this.getTableStatuses(tableName);
 

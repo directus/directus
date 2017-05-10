@@ -61,15 +61,40 @@ define(['underscore', 'helpers/status'], function (_, StatusHelper) {
       return StatusHelper.getStatusVisible(this._getTableName());
     },
 
+    getStatusVisibleValues: function () {
+      return StatusHelper.getStatusVisibleValues(this._getTableName());
+    },
+
+    // has visible status
+    isVisible: function (checkPreferences) {
+      var visible = true;
+      var model = this;
+      var visibleStatus = this.getStatusVisibleValues();
+      var preferences = this.collection.preferences;
+
+      if (checkPreferences === true && preferences) {
+        // TODO: make all status id be number
+        visibleStatus = _.intersection(_.map(preferences.getStatuses(), Number), visibleStatus);
+      }
+
+      if (this.table.hasStatusColumn()) {
+        visible = false;
+        _.each(visibleStatus, function (value) {
+          if (model.getStatusValue() == value) {
+            visible = true;
+          }
+        });
+      }
+
+      return visible;
+    },
+
     isDeleted: function () {
       return StatusHelper.isDelete(this._getTableName(), this.getStatusValue());
     },
 
     // gets this item status background color
     getStatusBackgroundColor: function () {
-      // var statuses = this.getTableStatuses();
-      // var statusValue = this.getStatusValue();
-      // var status = statuses.get('mapping').get(statusValue);
       var status = this.getStatus();
 
       return status.get('background_color') || status.get('color');
@@ -77,11 +102,6 @@ define(['underscore', 'helpers/status'], function (_, StatusHelper) {
 
     // gets this item status text color
     getStatusTextColor: function () {
-      // var statuses = this.getTableStatuses();
-      // var statusValue = this.getStatusValue();
-      //
-      // return statuses.get('mapping').get(statusValue).get('text_color');
-
       return this.getStatus().get('text_color');
     }
   });
@@ -98,6 +118,22 @@ define(['underscore', 'helpers/status'], function (_, StatusHelper) {
 
     getStatusVisible: function () {
       return StatusHelper.getStatusVisible(this._getTableName());
+    },
+
+    getStatusVisibleValues: function () {
+      return StatusHelper.getStatusVisibleValues(this._getTableName());
+    },
+
+    visibleCount: function (checkPreferences) {
+      var count = 0;
+
+      this.each(function (model) {
+        if (model.isVisible(checkPreferences)) {
+          count++;
+        }
+      });
+
+      return count;
     },
 
     isHardDelete: function (statusValue) {

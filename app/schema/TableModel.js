@@ -62,11 +62,7 @@ define(function(require, exports, module) {
     },
 
     getStatusVisibleValues: function () {
-      var statuses = StatusHelper.getStatusVisible(this.id);
-
-      return statuses.map(function (status) {
-        return status.id;
-      });
+      return StatusHelper.getStatusVisibleValues(this.id);
     },
 
     getSortColumn: function () {

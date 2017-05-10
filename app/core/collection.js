@@ -222,6 +222,8 @@ function(app, Backbone, StatusHelper, _) {
         if (success !== undefined) {
           success();
         }
+
+        collection.trigger('sync', collection, resp, options);
       };
 
       // would be awesome if this is always how it werkz...

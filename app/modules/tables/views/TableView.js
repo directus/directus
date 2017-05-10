@@ -296,7 +296,7 @@ define([
       var selectedIds = this.table.tableBodyView.selectedIds;
       var collectionVisibleLength = 0;
       // @NOTE: Hotfix render on empty selection
-      var render = false;
+      var render;
       var statusValues;
 
       // try removing hidden items from selected when the columns has status column
