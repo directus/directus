@@ -42,6 +42,7 @@ define(['app', 'backbone', 'handlebars', 'core/UIComponent', 'core/UIView', 'cor
         var data = model.toJSON();
 
         var name = optionTemplate(data);
+        debugger;
         return {
           id: model.id,
           name: name,
@@ -86,24 +87,26 @@ define(['app', 'backbone', 'handlebars', 'core/UIComponent', 'core/UIView', 'cor
       this.canEdit = this.model.canEdit(this.name);
       this.collection = value.collection.getNewInstance({omit: ['preferences']});
 
-      var active = 1;
-      if(this.options.settings.get('visible_status_ids')) {
-        active = this.options.settings.get('visible_status_ids');
+      var status = 1;
+      if (this.options.settings.get('visible_status_ids')) {
+        status = this.options.settings.get('visible_status_ids');
       }
 
-      var data = {'columns_visible[]': []};
+      var data = {};
       if (value.table.hasStatusColumn()) {
-        data[value.table.getStatusColumnName()] = active;
+        data[value.table.getStatusColumnName()] = status;
       }
 
-      var columns_visible =[];
-      if(this.options.settings.get('visible_column')) {
-        columns_visible = this.options.settings.get('visible_column').split(',');
+      var visibleColumns = [];
+      if (this.options.settings.get('visible_column')) {
+        visibleColumns = this.options.settings.get('visible_column').split(',');
       }
 
-      columns_visible.forEach(function(column) {
-        data['columns_visible[]'].push(column);
-      });
+      if (value.table.hasPrimaryColumn() && visibleColumns.indexOf(value.table.getPrimaryColumnName()) < 0) {
+        visibleColumns.push(value.table.getPrimaryColumnName());
+      }
+
+      data['columns_visible'] = visibleColumns.join(',');
 
       // FILTER HERE!
       this.collection.fetch({includeFilters: false, data: data});
@@ -119,7 +122,7 @@ define(['app', 'backbone', 'handlebars', 'core/UIComponent', 'core/UIView', 'cor
       {id: 'readonly', type: 'Boolean', default_value: false, ui: 'checkbox'},
       {id: 'visible_column', type: 'String', default_value: '', ui: 'textinput', char_length: 64, required: true, comment: __t('m2o_visible_column_comment')},
       {id: 'visible_column_template', type: 'String', default_value:'', ui: 'textinput', char_length: 64, required: true, comment: __t('m2o_visible_column_template_comment')},
-      {id: 'visible_status_ids', type: 'String', ui: 'textinput', char_length: 64, required: true, default_value: '1', comment: __t('m2o_visible_status_ids_comment')},
+      {id: 'visible_status_ids', type: 'String', ui: 'textinput', char_length: 64, required: false, default_value: '1', comment: __t('m2o_visible_status_ids_comment')},
       {id: 'placeholder_text', type: 'String', default_value: '', ui: 'textinput', char_length: 255, required: false, comment: __t('m2o_placeholder_text_comment')},
       {id: 'allow_null', type: 'Boolean', default_value: false, ui: 'checkbox'},
       {id: 'filter_type', type: 'String', default_value: 'dropdown', required: true, ui: 'select', options: {options: {'dropdown':__t('dropdown'),'textinput':__t('text_input')} }},
