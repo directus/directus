@@ -1,5 +1,5 @@
 define([
-  'core/underscore',
+  'underscore',
   'core/UIView',
   'core/notification',
   'core/t'
