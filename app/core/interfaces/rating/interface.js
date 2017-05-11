@@ -7,7 +7,10 @@ define(['core/UIView'], function (UIView) {
       // This is needed because Handlebars doesn't have a for loop equivalent
       var scoresArray = [];
       for (var i = this.options.settings.get('max_score'); i > 0; i--) {
-        scoresArray.push(i);
+        scoresArray.push({
+          i: i,
+          checked: i === value
+        });
       }
 
       return {

@@ -34,7 +34,7 @@
 </style>
 <div class="interface-rating">
 {{#each amount}}
-	<input type="radio" name={{../name}} id="{{../name}}-score-{{.}}" />
-	<label for="{{../name}}-score-{{.}}">{{.}} stars</label>
+	<input type="radio" name={{../name}} id="{{../name}}-score-{{i}}" value="{{i}}" {{#if checked}}checked{{/if}}/>
+	<label for="{{../name}}-score-{{i}}">{{i}} stars</label>
 {{/each}}
 </div>
