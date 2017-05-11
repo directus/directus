@@ -143,6 +143,27 @@ define(function(require, exports, module) {
         "hidden_list": false,
         "hidden_input": false,
         "sort": 80
+      },
+      {
+        "id": "nav_override",
+        "column_name": "nav_override",
+        "type": "TEXT",
+        "ui": "textarea",
+        "system": false,
+        "hidden_list": false,
+        "hidden_input": false,
+        "sort": 90
+      },
+      {
+        "id": "nav_blacklist",
+        "column_name": "nav_blacklist",
+        "type": "VARCHAR",
+        "ui": "textinput",
+        "length": 500,
+        "system": false,
+        "hidden_list": false,
+        "hidden_input": false,
+        "sort": 100
       }
     ]
   };
