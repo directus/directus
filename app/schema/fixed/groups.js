@@ -152,6 +152,7 @@ define(function(require, exports, module) {
         "system": false,
         "hidden_list": false,
         "hidden_input": false,
+        "nullable": true,
         "sort": 90
       },
       {
@@ -163,6 +164,7 @@ define(function(require, exports, module) {
         "system": false,
         "hidden_list": false,
         "hidden_input": false,
+        "nullable": true,
         "sort": 100
       }
     ]
