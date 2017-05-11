@@ -42,7 +42,6 @@ define(['app', 'backbone', 'handlebars', 'core/UIComponent', 'core/UIView', 'cor
         var data = model.toJSON();
 
         var name = optionTemplate(data);
-        debugger;
         return {
           id: model.id,
           name: name,
