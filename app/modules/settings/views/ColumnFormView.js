@@ -358,6 +358,7 @@ define([
       data.selectedRelationshipType = this.selectedRelationshipType;
       data.hasOptions = (uis[this.selectedUI].variables || []).length > 0;
       data.interfaces = this.getInterfacesGrouped(data.ui_types, this.selectedUI);
+      data.showDefaultValue = !data.isAlias && !this.model.isPrimaryColumn();
 
       return data;
     },
