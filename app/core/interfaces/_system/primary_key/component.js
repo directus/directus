@@ -16,7 +16,7 @@ define([
 
   return UIComponent.extend({
     id: 'primary_key',
-    dataTypes: ['INT', 'BIGINT'],
+    dataTypes: ['TINYINT', 'SMALL', 'INT', 'BIGINT'],
     Input: UIView
   });
 });
