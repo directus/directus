@@ -956,19 +956,21 @@ class RelationalTableGateway extends BaseTableGateway
     /**
      * Process column joins
      *
-     * @param Builder $query            
-     * @param array $joins            
+     * @param Builder $query
+     * @param array $joins
      */
     protected function processJoins(Builder $query, array $joins = [])
     {
+        // TODO: Allow passing columns
+        // TODO: Prevent ambiguous column issues
         $columns = ['*'];
         foreach ($joins as $table => $params) {
-            if (! isset($params['type'])) {
+            if (!isset($params['type'])) {
                 $params['type'] = 'INNER';
             }
-            
-            $params['on'] = implode("=", $params['on']);
-            
+
+            $params['on'] = implode('=', $params['on']);
+
             $query->join($table, $params['on'], $columns, $params['type']);
         }
     }
