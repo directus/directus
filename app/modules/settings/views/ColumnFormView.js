@@ -105,8 +105,10 @@ define([
       };
 
       if (data) {
-        this.model.save(data, options);
+        return this.model.save(data, options);
       }
+
+      return true;
     },
 
     serialize: function () {

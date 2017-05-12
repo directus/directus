@@ -13,7 +13,7 @@ define(['app', 'backbone', 'core/edit'], function(app, Backbone, EditView) {
     },
 
     save: function() {
-      this.model.save(this.editView.data());
+      return this.model.save(this.editView.data());
     },
 
     serialize: function () {

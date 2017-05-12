@@ -29,8 +29,9 @@ define([
     },
 
     save: function() {
-      this.formView.save();
-      this._close();
+      if (this.formView.save()) {
+        this._close();
+      }
     },
 
     beforeRender: function() {
