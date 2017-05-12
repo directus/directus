@@ -954,6 +954,26 @@ class RelationalTableGateway extends BaseTableGateway
     }
 
     /**
+     * Process column joins
+     *
+     * @param Builder $query            
+     * @param array $joins            
+     */
+    protected function processJoins(Builder $query, array $joins = [])
+    {
+        $columns = ['*'];
+        foreach ($joins as $table => $params) {
+            if (! isset($params['type'])) {
+                $params['type'] = 'INNER';
+            }
+            
+            $params['on'] = implode("=", $params['on']);
+            
+            $query->join($table, $params['on'], $columns, $params['type']);
+        }
+    }
+
+    /**
      * Process Query search
      *
      * @param Builder $query
