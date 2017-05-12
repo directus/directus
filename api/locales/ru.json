@@ -153,34 +153,34 @@
 
     "listing_items_not_found": "Nothing to see here...",
 
-    "table_sort_enabled": "Sorting Enabled",
+    "table_sort_enabled": "Сортировка включена",
     "table_sort_enabled_message": "You can now sort items with drag-and-drop",
-    "table_sort_disabled": "Sorting Disabled",
+    "table_sort_disabled": "Сортировка отключена",
     "table_sort_disabled_message": "Drag-and-drop sorting is now disabled",
     "table_sort_multiple_pages_message": "Directus Manual Sorting has been disabled on this page due to items spanning multiple pages",
 
-    "item_history": "Item History",
+    "item_history": "История элемента",
     "leave_a_comment_placeholder": "Leave a comment...",
-    "deleted_this_item": "deleted this item",
+    "deleted_this_item": "Этот элемент удален",
     "edited_this_item": "edited this item",
     "created_this_item": "created this item",
 
-    "editing_file": "Editing File",
-    "uploading_new_file": "Uploading New File",
-    "edit_file": "Edit File",
+    "editing_file": "Редактирование файла",
+    "uploading_new_file": "Загрузка нового файла",
+    "edit_file": "Редактировать файл",
 
     "message_compose": "Compose",
-    "new_message": "New Message",
-    "send_message": "Send Message",
+    "new_message": "Новое сообщение",
+    "send_message": "Отправить сообщение",
     "message_to": "To",
     "directus_messages_recipients_placeholder": "Type users or groups here...",
     "tags_placeholder": "Type tag then hit enter...",
     "directus_files_paste_youtube_vimeo_url": "Or paste in a YouTube, Vimeo, or file URL",
     "directus_files_drop_or_choose_file": "Drop file here or click to choose",
-    "directus_files_retrieve": "Retrieve",
+    "directus_files_retrieve": "извлеч",
     "directus_files_swap_file": "Swap file",
 
-    "color_invalid_color": "Invalid color",
+    "color_invalid_color": "Недопустимый цвет",
 
     "date_now": "Now",
 
@@ -191,19 +191,19 @@
 
     "action_added": "added",
     "action_updated": "updated",
-    "action_deleted": "deleted",
-    "action_edit": "edit",
-    "action_create": "create",
+    "action_deleted": "удаленный",
+    "action_edit": "редактировать",
+    "action_create": "Создайте",
     "preposition_to": "to",
     "preposition_from": "from",
     "preposition_within": "within",
 
-    "size_large": "Large",
-    "size_medium": "Medium",
-    "size_small": "Small",
+    "size_large": "Большой",
+    "size_medium": "Средний",
+    "size_small": "Маленький",
 
-    "select_ui_show_options_value": "Value",
-    "select_ui_show_options_text": "Text",
+    "select_ui_show_options_value": "Значение",
+    "select_ui_show_options_text": "Текст",
 
     "directus_user_activity_never_logged_in": "Never logged in",
     "directus_user_activity_user_edit_form": "User edit form",
