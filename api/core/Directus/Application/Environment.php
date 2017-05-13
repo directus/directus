@@ -70,10 +70,11 @@ class Environment extends \Slim\Environment
         }
 
         // ----------------------------------------------------------------------------
-        // Fix missing PHP_USER_AUTH
+        // Fix missing PHP_USER_AUTH/AUTHORIZATION
         // ----------------------------------------------------------------------------
-        // Apache does not pass HTTP Basic authorization when running php in CGI Mode
-        // on .htaccess (api/.htaccess) we add a line where we can pass the authorization
+        // Apache does not pass HTTP Basic authorization nor authorization
+        // when running php in CGI Mode.
+        // inside api/.htaccess file there is a line where we can pass the authorization
         // into HTTP_AUTHORIZATION if a redirect has been made the values will be stored
         // in REDIRECT_HTTP_AUTHORIZATION instead
         // ----------------------------------------------------------------------------
