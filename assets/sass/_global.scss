@@ -409,6 +409,13 @@ ul {
 		vertical-align: middle;
 	}
 }
+.align-icon-text {
+	.material-icons {
+		vertical-align: middle;
+		margin-right: 4px;
+		margin-top: -4px;
+	}
+}
 .serious-text {
 	color: $serious;
 }

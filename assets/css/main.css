@@ -508,6 +508,11 @@ input[type="radio"].custom-checkbox + label span:before {
   input[type="radio"].custom-checkbox + label span.vertical-middle:before {
     vertical-align: middle; }
 
+.align-icon-text .material-icons {
+  vertical-align: middle;
+  margin-right: 4px;
+  margin-top: -4px; }
+
 .serious-text {
   color: #F44336; }
 
