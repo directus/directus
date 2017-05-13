@@ -12,7 +12,11 @@ define(['./interface', 'core/UIComponent', 'core/t', 'helpers/schema'], function
       }
     },
     list: function (options) {
-      return options.value;
+      var html = '';
+      for (var i = 0; i < options.value; i++) {
+        html += '<i style="color: #999;" class="material-icons">star</i>';
+      }
+      return html;
     }
   });
 });
