@@ -67,8 +67,7 @@ define(function(require, exports, module) {
     require('core/interfaces/color/component'),
     require('core/interfaces/numeric/component'),
     require('core/interfaces/slider/component'),
-    require('core/interfaces/checkbox/component'),
-    require('core/interfaces/rating/component')
+    require('core/interfaces/checkbox/component')
   ].map(interfaceGroup('numeric'));
 
   var RelationalInterfaces = [
