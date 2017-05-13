@@ -369,9 +369,8 @@
 
     "you_must_be_logged_in_to_access_the_api": "You must be logged in to access the API",
     "invalid_request_nonce": "Invalid request (nonce)",
-    "no_such_extensions_found": "No such extension.",
     "unauthorized_nonce": "Unauthorized (nonce)",
-    "extension_x_must_return_array_got_y_instead": "Extension %{extension_name} must return array, got %{type} instead",
+    "extension_x_not_found": "Extension %{name} not found",
     "incorrect_email_or_password": "Incorrect email or password",
     "missing_email_or_password": "Missing email or password",
     "login_error_user_is_not_active": "You do not have access to this system",

@@ -359,37 +359,22 @@ foreach ($endpoints as $endpoint) {
 /**
  * Extension Alias
  */
-if (isset($_REQUEST['run_extension']) && $_REQUEST['run_extension']) {
+$runExtensions = isset($_REQUEST['run_extension']) && $_REQUEST['run_extension'];
+if ($runExtensions) {
     // Validate extension name
     $extensionName = $_REQUEST['run_extension'];
     if (!Bootstrap::extensionExists($extensionName)) {
-        header('HTTP/1.0 404 Not Found');
-        return $app->response(['message' => __t('no_such_extensions')]);
-    }
-    // Validate request nonce
-    // NOTE: do no use nonce until it's well implemented
-    // OR in fact if it's actually necessary.
-    // nonce needs to be checked
-    // otherwise an error is thrown
-    if (!$requestNonceProvider->requestHasValidNonce()) {
-        //     if('development' !== DIRECTUS_ENV) {
-        //         header("HTTP/1.0 401 Unauthorized");
-        //         return JsonView::render(array('message' => __t('unauthorized_nonce')));
-        //     }
-    }
-    $extensionsDirectory = APPLICATION_PATH . '/customs/extensions';
-    $responseData = require "$extensionsDirectory/$extensionName/api.php";
-    $nonceOptions = $requestNonceProvider->getOptions();
-    $newNonces = $requestNonceProvider->getNewNoncesThisRequest();
-
-    if (!is_array($responseData)) {
-        throw new \RuntimeException(__t('extension_x_must_return_array_got_y_instead', [
-            'extension_name' => $extensionName,
-            'type' => gettype($responseData)
+        throw new \RuntimeException(__t('extension_x_not_found', [
+            'name' => $extensionName
         ]));
     }
 
-    return $app->response($responseData)->setHeader($nonceOptions['nonce_response_header'],  implode($newNonces, ','));
+    $extensionsDirectory = APPLICATION_PATH . '/customs/extensions';
+    $extensionEndpointsPath = "$extensionsDirectory/$extensionName/api.php";
+
+    $app->group(sprintf('/extensions/%s/?', $extensionName), function () use ($app, $extensionEndpointsPath) {
+        require $extensionEndpointsPath;
+    });
 }
 
 
@@ -1980,7 +1965,7 @@ $app->notFound(function () use ($app, $acl, $ZendDb) {
  * Run the Router
  */
 
-if (isset($_GET['run_api_router']) && $_GET['run_api_router']) {
+if ($runExtensions || (isset($_GET['run_api_router']) && $_GET['run_api_router'])) {
     // Run Slim
     $app->response()->header('Content-Type', 'application/json; charset=utf-8');
     $app->run();
