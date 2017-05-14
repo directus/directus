@@ -85,8 +85,7 @@ define(function(require, exports, module) {
     require('core/interfaces/section_break/component'),
     require('core/interfaces/alias/component'),
     require('core/interfaces/user/interface'),
-    require('core/interfaces/user'),
-    require('core/interfaces/template_chooser')
+    require('core/interfaces/user')
   ].map(interfaceGroup('misc'));
 
   // Register Core UI's
