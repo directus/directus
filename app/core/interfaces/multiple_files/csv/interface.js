@@ -22,7 +22,7 @@ function(app, _, Backbone, FileHelper, UIView, Overlays) {
   var EntriesManager = require('core/EntriesManager');
 
   return UIView.extend({
-    template: 'multiple_files/simple',
+    template: 'multiple_files/csv/simple',
 
     events: {
       'click .js-new': 'addItem',
