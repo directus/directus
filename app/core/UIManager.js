@@ -76,7 +76,7 @@ define(function(require, exports, module) {
     require('core/interfaces/relational/m2m/component'),
     require('core/interfaces/one_to_many/component'),
     require('core/interfaces/single_file/component'),
-    require('core/interfaces/multiple_files'),
+    require('core/interfaces/multiple_files/relational/component'),
     require('core/interfaces/multiple_files/csv/component'),
     require('core/interfaces/translation/component')
   ].map(interfaceGroup('relational'));
