@@ -1,6 +1,4 @@
 define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function (app, UIComponent, UIView, __t) {
-  'use strict';
-
   return UIComponent.extend({
     id: 'directus_activity',
     system: true,

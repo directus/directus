@@ -5,7 +5,7 @@
 //  Directus may be freely distributed under the GNU license.
 //  For all details and documentation:
 //  http://www.getdirectus.com
-/*jshint multistr: true */
+/* jshint multistr: true */
 
 define([
   'app',
@@ -16,8 +16,7 @@ define([
   'core/overlays/overlays',
   'core/interfaces/_internals/permissions/table',
   'core/t'
-], function(app, _, UIComponent, UIView, TableView, Overlays, PermissionsTableView, __t) {
-
+], function (app, _, UIComponent, UIView, TableView, Overlays, PermissionsTableView, __t) {
   'use strict';
 
   var Input = UIView.extend({
@@ -38,7 +37,7 @@ define([
         title: this.name,
         tableTitle: this.relatedCollection.table.get('table_name'),
         canEdit: this.canEdit,
-        showChooseButton: this.showChooseButton, //&& this.canEdit,
+        showChooseButton: this.showChooseButton, // && this.canEdit,
         showAddButton: this.showAddButton && this.canEdit
       };
     },
@@ -52,7 +51,7 @@ define([
     initialize: function (options) {
       // Make sure that the relationship type is correct
       if (!this.columnSchema.relationship ||
-        'ONETOMANY' !== this.columnSchema.relationship.get('type')) {
+        this.columnSchema.relationship.get('type') !== 'ONETOMANY') {
         throw __t('m2m_the_column_need_to_have_m2m_relationship', {
           column: this.columnSchema.id,
           type: 'ONETOMANY',
@@ -81,12 +80,12 @@ define([
       {id: 'only_unassigned', type: 'Boolean', ui: 'checkbox', default_value: false}
     ],
     Input: Input,
-    validate: function(collection, options) {
+    validate: function (collection, options) {
       if (options.schema.isRequired() && collection.length === 0) {
         return __t('this_field_is_required');
       }
     },
-    list: function() {
+    list: function () {
       return 'x';
     }
   });

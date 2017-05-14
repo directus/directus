@@ -7,8 +7,7 @@ define([
   'schema/ColumnsCollection',
   'sortable',
   'core/t'
-], function(app, SchemaHelper, UIView, Notification, DoubleConfirmation, ColumnsCollection, Sortable, __t) {
-
+], function (app, SchemaHelper, UIView, Notification, DoubleConfirmation, ColumnsCollection, Sortable, __t) {
   'use strict';
 
   return UIView.extend({
@@ -42,7 +41,7 @@ define([
       }
     },
 
-    editRow: function(id, viewName, focusTo, scrollTo) {
+    editRow: function (id, viewName, focusTo, scrollTo) {
       if (!this.canEdit) {
         return;
       }
@@ -92,11 +91,11 @@ define([
       app.router.openViewInModal(view);
     },
 
-    addRow: function() {
+    addRow: function () {
       var ColumnModalView = require('modules/settings/views/ColumnModalView');
       var ColumnModel = require('schema/ColumnModel');
       var collection = app.schemaManager.getColumns('tables', this.model.id);
-      var model = new ColumnModel({'data_type':'ALIAS','ui':{}}, {collection: collection, table: collection.table});
+      var model = new ColumnModel({data_type: 'ALIAS', ui: {}}, {collection: collection, table: collection.table});
       var view = new ColumnModalView({
         model: model,
         collection: collection
@@ -107,17 +106,17 @@ define([
       app.router.openViewInModal(view);
     },
 
-    // when the column change or a new column is added into a table
+    // When the column change or a new column is added into a table
     onColumnChange: function (model, resp) {
       var columnsCollection = app.schemaManager.getColumns('tables', this.model.id);
 
-      // add new column to the table collection (interface)
+      // Add new column to the table collection (interface)
       this.columns.add(resp, {parse: true, merge: true});
-      // add the new column into the table columns schema
+      // Add the new column into the table columns schema
       columnsCollection.add(model, {parse: true, merge: true});
     },
 
-    destroyColumn: function(columnName) {
+    destroyColumn: function (columnName) {
       var collection = app.schemaManager.getColumns('tables', this.model.id);
       var columns = this.model.get(this.name);
       var originalColumnModel = collection.get(columnName);
@@ -127,18 +126,18 @@ define([
       }
 
       var columnModel = originalColumnModel.clone();
-      // url can be a function or a string
+      // Url can be a function or a string
       // getting the result directly from the original model will prevent issue calling the function
       // calling the url() on the cloned model will throw an error because it doesn't have a collection object
       columnModel.url = _.result(originalColumnModel, 'url');
 
       if (!columnModel) {
-        Notification.error('Error', 'Column '+columnName+' not found.');
+        Notification.error('Error', 'Column ' + columnName + ' not found.');
         return;
       }
 
       var self = this;
-      var onSuccess = function(model, response) {
+      var onSuccess = function (model, response) {
         if (!response.success) {
           Notification.error('Column not removed', response.message);
         } else {
@@ -150,19 +149,19 @@ define([
         }
       };
 
-      var onError = function(model, resp, options) {
+      var onError = function (model, resp, options) {
         Notification.error('Column not removed', resp.responseJSON.message);
       };
 
       columnModel.destroy({success: onSuccess, error: onError, wait: true});
     },
 
-    verifyDestroyColumn: function(event) {
+    verifyDestroyColumn: function (event) {
       event.stopPropagation();
 
       var self = this;
       var columnName = $(event.target).closest('tr').attr('data-id');
-      var destroyColumn = function() {
+      var destroyColumn = function () {
         self.destroyColumn(columnName);
       };
 
@@ -186,7 +185,7 @@ define([
         attrs[attr] = !column.get(attr);
         options = {patch: true};
 
-        // hotfix:
+        // Hotfix:
         originalUrl = column.url;
         column.url = function () {
           return app.API_URL + 'tables/' + column.get('table_name') + '/columns/' + column.get('column_name');
@@ -320,7 +319,7 @@ define([
       var container = this.$('table tbody').get(0);
 
       this.sortable = new Sortable(container, {
-        animation: 150, // ms, animation speed moving items when sorting, `0` — without animation
+        animation: 150, // Ms, animation speed moving items when sorting, `0` — without animation
         handle: '.js-sort', // Restricts sort start click/touch to the specified element
         draggable: 'tr', // Specifies which items inside the element should be sortable
         ghostClass: 'sortable-ghost',
@@ -345,7 +344,7 @@ define([
     initialize: function (options) {
       // Make sure that the relationship type is correct
       if (!this.columnSchema.relationship ||
-        'ONETOMANY' !== this.columnSchema.relationship.get('type')) {
+        this.columnSchema.relationship.get('type') !== 'ONETOMANY') {
         throw __t('m2m_the_column_need_to_have_m2m_relationship', {
           column: this.columnSchema.id,
           type: 'ONETOMANY',
@@ -358,7 +357,7 @@ define([
       var columns = this.columns = this.model.get(this.name);
 
       if (columns.structure.get('sort')) {
-        columns.setOrder('sort','ASC', {silent: true});
+        columns.setOrder('sort', 'ASC', {silent: true});
       }
 
       this.listenTo(columns, 'add change remove', this.render);
