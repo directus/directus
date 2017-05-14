@@ -15,7 +15,7 @@ define(function(require, exports, module) {
   var internalInterfaces = [
     require('core/interfaces/_system/accountability/interface'),
     require('core/interfaces/_internals/activity/component'),
-    require('core/interfaces/_internals/columns_picker/interface'),
+    require('core/interfaces/_internals/columns_picker/component'),
     require('core/interfaces/_internals/columns/component'),
     require('core/interfaces/_internals/directus_users/component'),
     require('core/interfaces/_internals/file_preview/interface'),

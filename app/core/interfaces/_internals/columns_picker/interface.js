@@ -1,10 +1,5 @@
-define([
-  'app',
-  'core/UIComponent',
-  'core/UIView',
-  'helpers/schema'
-], function (app, UIComponent, UIView, SchemaHelper) {
-  var Input = UIView.extend({
+define(['app', 'core/UIView', 'helpers/schema'], function (app, UIView, SchemaHelper) {
+  return UIView.extend({
     // @TODO: Also make checkboxes available
     template: '_internals/columns_picker/dropdown',
 
@@ -50,12 +45,4 @@ define([
       this.options.tableStructure = app.schemaManager.getTable(this.options.tableName);
     }
   });
-
-  var Component = UIComponent.extend({
-    id: 'directus_columns_picker',
-
-    Input: Input
-  });
-
-  return Component;
 });
