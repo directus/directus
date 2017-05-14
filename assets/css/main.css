@@ -4025,7 +4025,9 @@ body.help .discover-spotlight {
       .smoke .modal .fields .field .comment {
         width: 100%; }
       .smoke .modal .fields .field .interface {
-        margin-top: 0; }
+        margin-top: 0;
+        display: block;
+        width: 100%; }
     .smoke .modal.confirm .modal-bg {
       min-width: 500px;
       max-width: 600px; }
