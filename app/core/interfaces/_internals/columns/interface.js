@@ -1,25 +1,13 @@
-//  Relational core UI component
-//  Directus 6.0
-
-//  (c) RANGER
-//  Directus may be freely distributed under the GNU license.
-//  For all details and documentation:
-//  http://www.getdirectus.com
-/*jshint multistr: true */
-
 define([
   'app',
-  'underscore',
   'helpers/schema',
   'core/UIView',
-  'core/table/table.view',
-  'core/overlays/overlays',
   'core/notification',
   'core/doubleConfirmation',
-  'core/t',
   'schema/ColumnsCollection',
-  'sortable'
-], function(app, _, SchemaHelper, UIView, TableView, Overlays, Notification, DoubleConfirmation, __t, ColumnsCollection, Sortable) {
+  'sortable',
+  'core/t'
+], function(app, SchemaHelper, UIView, Notification, DoubleConfirmation, ColumnsCollection, Sortable, __t) {
 
   'use strict';
 
