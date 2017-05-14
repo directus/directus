@@ -1,26 +1,5 @@
-//  Relational core UI component
-//  Directus 6.0
-
-//  (c) RANGER
-//  Directus may be freely distributed under the GNU license.
-//  For all details and documentation:
-//  http://www.getdirectus.com
-/* jshint multistr: true */
-
-define([
-  'app',
-  'underscore',
-  'core/UIComponent',
-  'core/UIView',
-  'core/table/table.view',
-  'core/overlays/overlays',
-  'core/interfaces/_internals/permissions/table',
-  'core/t'
-], function (app, _, UIComponent, UIView, TableView, Overlays, PermissionsTableView, __t) {
-  'use strict';
-
+define(['core/UIComponent', 'core/UIView', 'core/overlays/overlays', 'core/interfaces/_internals/permissions/table', 'core/t'], function (UIComponent, UIView, Overlays, PermissionsTableView, __t) {
   var Input = UIView.extend({
-
     template: '_internals/permissions/interface',
 
     events: {
