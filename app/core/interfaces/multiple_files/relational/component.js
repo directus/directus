@@ -1,18 +1,13 @@
 define([
-  'app',
-  'underscore',
-  'core/t',
+  './interface',
   'core/UIComponent',
-  './interface'
-],
-function (app, _, __t, UIComponent, Input) {
+  'core/t'
+], function (Input, UIComponent, __t) {
   'use strict';
 
   return UIComponent.extend({
-    id: 'multiple_files_csv',
-
-    dataTypes: ['TEXT', 'VARCHAR'],
-
+    id: 'multiple_files',
+    dataTypes: ['MANYTOMANY'],
     variables: [
       // Toggles an "Add" button for adding new files directly into the UI
       {id: 'add_button', type: 'Boolean', default_value: true, ui: 'checkbox'},
@@ -21,15 +16,12 @@ function (app, _, __t, UIComponent, Input) {
       // Toggles "Remove" buttons for each file that let's you delete the file
       {id: 'remove_button', type: 'Boolean', default_value: true, ui: 'checkbox'}
     ],
-
     Input: Input,
-
     validate: function (value, options) {
       if (options.schema.isRequired() && value.length === 0) {
         return __t('this_field_is_required');
       }
     },
-
     list: function () {
       return 'x';
     }
