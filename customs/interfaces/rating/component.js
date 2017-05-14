@@ -1,7 +1,7 @@
-define(['./interface', 'core/UIComponent', 'core/t', 'helpers/schema'], function (Input, UIComponent, __t, SchemaHelper) {
+define(['./interface', 'core/UIComponent', 'core/t'], function (Input, UIComponent, __t, SchemaHelper) {
   return UIComponent.extend({
     id: 'rating',
-    dataTypes: SchemaHelper.getNumericTypes(),
+    dataTypes: ['INT'],
     variables: [
       {id: 'max_score', default_value: 5, ui: 'numeric'}
     ],
