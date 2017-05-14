@@ -1,6 +1,4 @@
-define(['core/interfaces/_internals/user_avatar/interface', 'core/UIComponent'], function (Input, UIComponent) {
-  'use strict';
-
+define(['./interface', 'core/UIComponent'], function (Input, UIComponent) {
   return UIComponent.extend({
     id: 'directus_user_avatar',
     system: true,
