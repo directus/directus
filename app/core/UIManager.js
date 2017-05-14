@@ -72,7 +72,7 @@ define(function(require, exports, module) {
 
   var RelationalInterfaces = [
     require('core/interfaces/many_to_one'),
-    require('core/interfaces/many_to_one_typeahead'),
+    require('core/interfaces/many_to_one_typeahead/component'),
     require('core/interfaces/relational/m2m/component'),
     require('core/interfaces/one_to_many/component'),
     require('core/interfaces/single_file/component'),
