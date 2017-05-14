@@ -71,7 +71,7 @@ define(function(require, exports, module) {
   ].map(interfaceGroup('numeric'));
 
   var RelationalInterfaces = [
-    require('core/interfaces/many_to_one'),
+    require('core/interfaces/many_to_one/component'),
     require('core/interfaces/many_to_one_typeahead'),
     require('core/interfaces/relational/m2m/component'),
     require('core/interfaces/one_to_many/component'),
