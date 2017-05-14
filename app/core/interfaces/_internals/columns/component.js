@@ -1,8 +1,4 @@
-define([
-  'core/t',
-  'core/UIComponent',
-  './interface'
-], function (__t, UIComponent, Input) {
+define(['./interface', 'core/UIComponent', 'core/t'], function (Input, UIComponent, __t) {
 
   return UIComponent.extend({
     id: 'directus_columns',
