@@ -1,13 +1,5 @@
-define([
-  'app',
-  'underscore',
-  'core/UIComponent',
-  'core/UIView'
-], function (app, _, UIComponent, UIView) {
-  'use strict';
-
-  var Input = UIView.extend({
-
+define(['core/UIView'], function (UIView) {
+  return UIView.extend({
     template: '_internals/views/interface',
 
     events: {
@@ -43,16 +35,8 @@ define([
       };
     },
 
-    initialize: function (options) {
+    initialize: function () {
       this.value = (this.options.value || '').split(',');
     }
   });
-
-  var Component = UIComponent.extend({
-    id: 'directus_views',
-
-    Input: Input
-  });
-
-  return Component;
 });
