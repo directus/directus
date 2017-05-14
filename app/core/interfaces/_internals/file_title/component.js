@@ -1,6 +1,4 @@
-define(['core/interfaces/_internals/file_title/interface', 'core/UIComponent', 'core/t'], function (Input, UIComponent, __t) {
-  'use strict';
-
+define(['./interface', 'core/UIComponent', 'core/t'], function (Input, UIComponent, __t) {
   return UIComponent.extend({
     id: 'directus_file_title',
     system: true,
