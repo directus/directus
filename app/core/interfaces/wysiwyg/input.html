@@ -22,16 +22,26 @@
 	}
 
 	.medium-editor-element {
+		-webkit-transition: color 200ms ease-in-out 0ms;
+		-moz-transition: color 200ms ease-in-out 0ms;
+		-o-transition: color 200ms ease-in-out 0ms;
+		-ms-transition: color 200ms ease-in-out 0ms;
+		transition: color 200ms ease-in-out 0ms;
+		display: inline-block;
 		line-height: 24px;
 		max-width: 800px;
 		max-height: 1200px;
 		min-height: 400px;
 		padding: 3em;
 		background-color: #fff;
+		color: #666666;
 		border-radius: 2px;
 		font-size: 14px;
 		letter-spacing: 0.2px;
 		overflow: scroll;
+	}
+	.medium-editor-element:focus {
+		color: #333333;
 	}
 	.medium-editor-element.simple-editor {
 		-webkit-transition: all 200ms ease-in-out 0ms;
