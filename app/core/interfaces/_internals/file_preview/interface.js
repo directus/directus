@@ -1,24 +1,13 @@
-//  Files Core UI component
-//  Directus 6.0
-
-//  (c) RANGER
-//  Directus may be freely distributed under the GNU license.
-//  For all details and documentation:
-//  http://www.getdirectus.com
-/* jshint multistr: true */
-
-define(['app', 'helpers/file', 'core/UIComponent', 'core/UIView'], function (app, FileHelper, UIComponent, UIView) {
-  'use strict';
-
-  var Input = UIView.extend({
+define(['app', 'helpers/file', 'core/UIView'], function (app, FileHelper, UIView) {
+  return UIView.extend({
 
     template: '_internals/file_preview/interface',
 
     serialize: function () {
-      var data = {},
-        userId,
-        model = this.model,
-        authenticatedUser = app.users.getCurrentUser();
+      var data = {};
+      var userId;
+      var model = this.model;
+      var authenticatedUser = app.users.getCurrentUser();
 
       data = model.toJSON();
 
@@ -28,8 +17,6 @@ define(['app', 'helpers/file', 'core/UIComponent', 'core/UIView'], function (app
       } else {
         userId = model.get('user');
       }
-
-      var user = app.users.get(userId);
 
       data.link = undefined;
       data.thumbUrl = undefined;
@@ -81,7 +68,7 @@ define(['app', 'helpers/file', 'core/UIComponent', 'core/UIView'], function (app
           this.$el.find('#urlInput').focus();
         }
       },
-      'click #retriveUrlBtn': function (e) {
+      'click #retriveUrlBtn': function () {
         var url = this.$el.find('#urlInput').val();
         var model = this.model;
 
@@ -103,10 +90,10 @@ define(['app', 'helpers/file', 'core/UIComponent', 'core/UIView'], function (app
 
         model.setFile(file);
       },
-      'click .ui-thumbnail-dropzone': function (e) {
+      'click .ui-thumbnail-dropzone': function () {
         this.$el.find('#fileAddInput').click();
       },
-      'click button[data-action="swap"]': function (e) {
+      'click button[data-action="swap"]': function () {
         this.$el.find('.swap-container').toggle();
         this.$el.find('.ui-thumbnail.has-file').toggle();
         var swapText = this.$el.find('.ui-text-hover').html();
@@ -135,7 +122,7 @@ define(['app', 'helpers/file', 'core/UIComponent', 'core/UIView'], function (app
         $dropzone.addClass('dragover');
       });
 
-      $dropzone.on('dragleave', function (e) {
+      $dropzone.on('dragleave', function () {
         clearInterval(timer);
         timer = setInterval(function () {
           $dropzone.removeClass('dragover');
@@ -165,28 +152,4 @@ define(['app', 'helpers/file', 'core/UIComponent', 'core/UIView'], function (app
       FileHelper.hideOnImageError(this.$('.js-image img'));
     }
   });
-
-  var Component = UIComponent.extend({
-    id: 'directus_file',
-    system: true,
-    Input: Input,
-    list: function (options) {
-      var model = options.model;
-
-      // Force model To be a Files Model
-      var FileModel = require('modules/files/FilesModel');
-      if (!(model instanceof FileModel)) {
-        model = new FileModel(model.attributes, {collection: model.collection});
-      }
-
-      var orientation = (parseInt(model.get('width'), 10) > parseInt(model.get('height'), 10)) ? 'landscape' : 'portrait';
-      var url = model.makeFileUrl(true);
-      var isImage = _.contains(['image/jpeg', 'image/png', 'embed/youtube', 'embed/vimeo'], model.get('type'));
-      var thumbUrl = isImage ? url : app.PATH + 'assets/img/document.png';
-
-      return '<div class="media-thumb"><img src="' + thumbUrl + '" class="img ' + orientation + '"></div>';
-    }
-  });
-
-  return Component;
 });
