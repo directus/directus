@@ -248,11 +248,11 @@
 
     "column_misconfigured_in_directus_columns": "Column is misconfigured in directus_columns! : %{column}",
 
-    "m2o_visible_column_comment": "Enter Visible Column Name",
-    "m2o_visible_column_template_comment": "Enter Twig Template String",
-    "m2o_visible_status_ids_comment": "Enter the visible status ids",
-    "m2o_placeholder_text_comment": "Enter Placeholder Text",
-    "m2o_filter_column_comment": "Enter Column thats value is used for filter search",
+    "m2o_visible_column_comment": "Visible Column Name",
+    "m2o_visible_column_template_comment": "Twig Template String",
+    "m2o_visible_status_ids_comment": "A CSV of visible statuses (eg: '1,2' shows Published and Draft)",
+    "m2o_placeholder_text_comment": "Placeholder Text",
+    "m2o_filter_column_comment": "Column thats value is used for filter search",
 
     "m2o_typeahead_placeholder": "Search for an item...",
     "m2o_typeahead_clear": "Clear this related item",
