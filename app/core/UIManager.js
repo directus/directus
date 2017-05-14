@@ -15,14 +15,14 @@ define(function(require, exports, module) {
   var internalInterfaces = [
     require('core/interfaces/_system/accountability/interface'),
     require('core/interfaces/_internals/activity/component'),
-    require('core/interfaces/_internals/columns_picker/interface'),
+    require('core/interfaces/_internals/columns_picker/component'),
     require('core/interfaces/_internals/columns/component'),
     require('core/interfaces/_internals/directus_users/component'),
-    require('core/interfaces/_internals/file_preview/interface'),
+    require('core/interfaces/_internals/file_preview/component'),
     require('core/interfaces/_internals/file_title/component'),
     require('core/interfaces/_internals/file_size/component'),
-    require('core/interfaces/_internals/permissions/interface'),
-    require('core/interfaces/_internals/views/interface'),
+    require('core/interfaces/_internals/permissions/component'),
+    require('core/interfaces/_internals/views/component'),
     require('core/interfaces/_internals/user_avatar/component'),
     require('core/interfaces/_internals/user_activity/component')
   ].map(interfaceGroup('internal'));

@@ -1,6 +1,6 @@
 define(['./interface', 'core/UIComponent', 'core/t'], function (Input, UIComponent, __t) {
   return UIComponent.extend({
-    id: 'directus_columns',
+    id: 'directus_permissions',
     dataTypes: ['ONETOMANY'],
     variables: [
       {id: 'visible_columns', type: 'String', ui: 'textinput', char_length: 255, required: true},

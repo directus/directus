@@ -1,13 +1,5 @@
-define([
-  'app',
-  'core/UIComponent',
-  'core/UIView',
-  'helpers/schema'
-], function(app, UIComponent, UIView, SchemaHelper) {
-
-  'use strict';
-
-  var Input = UIView.extend({
+define(['app', 'core/UIView', 'helpers/schema'], function (app, UIView, SchemaHelper) {
+  return UIView.extend({
     // @TODO: Also make checkboxes available
     template: '_internals/columns_picker/dropdown',
 
@@ -30,7 +22,7 @@ define([
     serialize: function () {
       var name = this.options.name;
       var columns = this.getColumns();
-      // primary, status and sort column are default to 'id', 'active' and 'sort'
+      // Primary, status and sort column are default to 'id', 'active' and 'sort'
       // respectively, so if they are not set we check the table model information
       var table = this.options.tableStructure;
       var primaryColumn = this.model.get(name) || table.get(name);
@@ -45,7 +37,7 @@ define([
       return {
         name: name,
         columns: columns
-      }
+      };
     },
 
     initialize: function (options) {
@@ -53,12 +45,4 @@ define([
       this.options.tableStructure = app.schemaManager.getTable(this.options.tableName);
     }
   });
-
-  var Component = UIComponent.extend({
-    id: 'directus_columns_picker',
-
-    Input: Input
-  });
-
-  return Component;
 });

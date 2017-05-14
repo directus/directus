@@ -1,14 +1,11 @@
 define([
   'app',
-  'underscore',
-  'core/t',
   'core/overlays/overlays',
   'core/table/table.view',
   'core/modals/invite',
-  'core/interfaces/one_to_many/component'
-], function (app, _, __t, Overlays, TableView, InviteModal, OneToMany) {
-  'use strict';
-
+  'core/interfaces/one_to_many/component',
+  'core/t'
+], function (app, Overlays, TableView, InviteModal, OneToMany, __t) {
   return OneToMany.prototype.Input.extend({
     template: '_internals/directus_users/input',
     events: {
