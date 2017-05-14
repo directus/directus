@@ -53,7 +53,7 @@ define(function(require, exports, module) {
     require('core/interfaces/wysiwyg/component'),
     require('core/interfaces/password/component'),
     require('core/interfaces/enum/component'),
-    require('core/interfaces/map'),
+    require('core/interfaces/map/component'),
     require('core/interfaces/markdown/component')
   ].map(interfaceGroup('string'));
 
@@ -71,12 +71,12 @@ define(function(require, exports, module) {
   ].map(interfaceGroup('numeric'));
 
   var RelationalInterfaces = [
-    require('core/interfaces/many_to_one'),
     require('core/interfaces/many_to_one_typeahead/component'),
+    require('core/interfaces/many_to_one/component'),
     require('core/interfaces/relational/m2m/component'),
     require('core/interfaces/one_to_many/component'),
     require('core/interfaces/single_file/component'),
-    require('core/interfaces/multiple_files'),
+    require('core/interfaces/multiple_files/relational/component'),
     require('core/interfaces/multiple_files/csv/component'),
     require('core/interfaces/translation/component')
   ].map(interfaceGroup('relational'));

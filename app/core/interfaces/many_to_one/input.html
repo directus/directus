@@ -1,0 +1,11 @@
+<div class="select-container">
+	<select name="{{name}}" {{#unless canEdit}}disabled{{/unless}}>
+		{{#if allowNull}}
+		<option value="">{{placeholder_text}}</option>
+		{{/if}}
+		{{#data}}
+		<option value="{{id}}" {{#if selected}}selected{{/if}}>{{{name}}}</option>
+		{{/data}}
+	</select>
+	<i class="material-icons select-arrow">arrow_drop_down</i>
+</div>
