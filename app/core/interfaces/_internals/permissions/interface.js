@@ -1,6 +1,6 @@
 define(['core/UIComponent', 'core/UIView', 'core/overlays/overlays', 'core/interfaces/_internals/permissions/table', 'core/t'], function (UIComponent, UIView, Overlays, PermissionsTableView, __t) {
   var Input = UIView.extend({
-    template: '_internals/permissions/interface',
+    template: '_internals/permissions/input',
 
     events: {
       'click .js-toggle-directus-tables': 'onToggleTables'
