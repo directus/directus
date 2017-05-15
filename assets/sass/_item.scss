@@ -169,6 +169,15 @@
 			&.offset-bottom {
 				margin-bottom: -20px;
 			}
+			table {
+				tbody {
+					tr {
+						td {
+							height: 40px;
+						}
+					}
+				}
+			}
 			input,
 			textarea,
 			select {

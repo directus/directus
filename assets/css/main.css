@@ -5466,6 +5466,8 @@ body.help .discover-spotlight {
     vertical-align: top; }
     .fields .field .interface.offset-bottom {
       margin-bottom: -20px; }
+    .fields .field .interface table tbody tr td {
+      height: 40px; }
     .fields .field .interface input,
     .fields .field .interface textarea,
     .fields .field .interface select {
