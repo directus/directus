@@ -1,12 +1,3 @@
-//  Relational core UI component
-//  Directus 6.0
-
-//  (c) RANGER
-//  Directus may be freely distributed under the GNU license.
-//  For all details and documentation:
-//  http://www.getdirectus.com
-/*jshint multistr: true */
-
 define([
   'app',
   'underscore',
@@ -14,8 +5,7 @@ define([
   'core/UIComponent',
   './interface'
 ],
-function(app, _, __t, UIComponent, Input) {
-
+function (app, _, __t, UIComponent, Input) {
   'use strict';
 
   return UIComponent.extend({
@@ -29,18 +19,18 @@ function(app, _, __t, UIComponent, Input) {
       // Toggles a "Choose" button that opens a modal with all existing Directus files to choose from
       {id: 'choose_button', type: 'Boolean', default_value: true, ui: 'checkbox'},
       // Toggles "Remove" buttons for each file that let's you delete the file
-      {id: 'remove_button', type: 'Boolean', default_value: true, ui: 'checkbox'},
+      {id: 'remove_button', type: 'Boolean', default_value: true, ui: 'checkbox'}
     ],
 
     Input: Input,
 
-    validate: function(value, options) {
+    validate: function (value, options) {
       if (options.schema.isRequired() && value.length === 0) {
         return __t('this_field_is_required');
       }
     },
 
-    list: function() {
+    list: function () {
       return 'x';
     }
   });

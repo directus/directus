@@ -660,10 +660,14 @@ define(function(require, exports, module) {
       this.v.main.render();
     },
 
+    getBookmarkView: function () {
+      return this.v.main.getView('#sidebar').getView('#mainSidebar');
+    },
+
     onRoute: function(route, fragments) {
       // try to set the current active nav
       var currentPath = Backbone.history.fragment;
-      var bookmarksView = this.v.main.getView('#sidebar').getView('#mainSidebar');
+      var bookmarksView = this.getBookmarkView();
       bookmarksView.setActive(currentPath);
 
       this.lastRoute = currentPath;

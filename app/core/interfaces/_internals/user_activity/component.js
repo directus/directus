@@ -1,7 +1,5 @@
 define(['app', 'core/UIComponent', 'core/UIView', 'moment', 'core/t'], function (app, UIComponent, UIView, moment, __t) {
-  'use strict';
-
-  var Component = UIComponent.extend({
+  return UIComponent.extend({
     id: 'directus_user_activity',
     system: true,
     sortBy: 'last_login',
@@ -42,6 +40,4 @@ define(['app', 'core/UIComponent', 'core/UIView', 'moment', 'core/t'], function 
       return '<a href="#">' + __t('directus_user_activity_never_logged_in') + '</a>';
     }
   });
-
-  return Component;
 });

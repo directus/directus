@@ -53,7 +53,7 @@ function(app, _, Backbone, Notification, __t, TableHelpers, ModelHelper, TableHe
         disabledSorting: !this.sortable,
         spacing: this.getSpacing(),
         fixedHead: this.options.fixedHead,
-        showEmptyMessage: (this.collection.length === 0 && !this.options.hideEmptyMessage)
+        showEmptyMessage: (this.getTableCollection().visibleCount(true) === 0 && !this.options.hideEmptyMessage)
       };
     },
 

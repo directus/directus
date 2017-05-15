@@ -1,14 +1,5 @@
-define([
-  'app',
-  'underscore',
-  'core/UIComponent',
-  'core/UIView'
-], function(app, _, UIComponent, UIView) {
-
-  'use strict';
-
-  var Input = UIView.extend({
-
+define(['core/UIView'], function (UIView) {
+  return UIView.extend({
     template: '_internals/views/interface',
 
     events: {
@@ -17,7 +8,7 @@ define([
 
     updateViews: function (event) {
       var viewId = $(event.currentTarget).val();
-      var value = _.compact(this.value); // clears the empty values
+      var value = _.compact(this.value); // Clears the empty values
       var index = value.indexOf(viewId);
       var csv = '';
 
@@ -41,19 +32,11 @@ define([
         mapSelected: this.value.indexOf('map') >= 0,
         value: this.options.value,
         name: this.options.name
-      }
+      };
     },
 
-    initialize: function (options) {
+    initialize: function () {
       this.value = (this.options.value || '').split(',');
     }
   });
-
-  var Component = UIComponent.extend({
-    id: 'directus_views',
-
-    Input: Input
-  });
-
-  return Component;
 });

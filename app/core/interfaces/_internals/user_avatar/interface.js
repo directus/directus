@@ -1,6 +1,4 @@
 define(['app', 'core/UIView'], function (app, UIView) {
-  'use strict';
-
   return UIView.extend({
     tagName: 'fieldset',
     initialize: function (options) {

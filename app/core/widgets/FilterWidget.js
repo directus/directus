@@ -36,6 +36,7 @@ define([
       },
 
       'click input.js-status-check': function (event) {
+        var self = this;
         var collection = this.collection;
         var $checksChecked = this.$el.find('input.js-status-check:checked');
         var status = [];
@@ -45,8 +46,17 @@ define([
         });
 
         var fetch = function (save) {
-          collection.setFilter({status: status.join(',')}, {save: save});
-          collection.fetch();
+          var options = {};
+
+          if (save === false) {
+            options.success = function () {
+              self.redirect();
+            };
+          }
+
+          collection.setFilter({status: status.join(',')});
+
+          return collection.fetch(options);
         };
 
         this.confirmBookmarkAction()
@@ -87,11 +97,25 @@ define([
     },
 
     confirmBookmarkAction: function () {
+      var collection = this.collection;
+      var tableName = collection.table.id;
       var deferred = new $.Deferred();
+
       var onSuccess = function () {
         deferred.resolve();
       };
+
       var onCancel = function () {
+        var bookmarkPreferences = collection.preferences;
+        var tablePreferences = app.schemaManager.getPreferences(tableName);
+
+        tablePreferences.save(_.pick(bookmarkPreferences.toJSON(), 'search_string', 'status'), {
+          silent: true,
+          wait: false
+        });
+
+        collection.preferences = app.schemaManager.getPreferences(tableName);
+
         deferred.reject();
       };
 
@@ -505,11 +529,12 @@ define([
     },
 
     saveFilterString: function () {
-      var preferences = this.collection.preferences;
+      var self = this;
       var options = this.options;
 
-      var save = function (sync) {
+      var save = function (preferences, sync) {
         var string = [];
+        var method = 'save';
         var filters = options.filters.map(function (item) {
           return item.filterData;
         });
@@ -522,20 +547,27 @@ define([
 
         string = encodeURIComponent(string.join());
         if (sync === false) {
-          preferences.set({search_string: string});
-        } else {
-          preferences.save({search_string: string});
+          method = 'set';
         }
+
+        return preferences[method]({search_string: string});
       };
 
 
       this.confirmBookmarkAction()
-        .done(function () {
-          save(true);
+        .done(function (preferences) {
+          save(preferences, true);
         })
         .fail(function () {
-          save(false);
+          self.redirect();
         });
+    },
+
+    redirect: function () {
+      var tableName = this.collection.table.id;
+      var route = 'tables/' + tableName;
+      app.router.navigate(route, false);
+      app.router.getBookmarkView().setActive(route);
     },
 
     setFilterRow: function(){

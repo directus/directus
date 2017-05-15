@@ -27,6 +27,10 @@ define(function(require, exports, module) {
       return this.constructor.__super__.fetch.call(this, args);
     },
 
+    getStatuses: function () {
+      return this.get('status').split(',');
+    },
+
     getListViewOptions: function (attr) {
       var viewOptions = {};
 

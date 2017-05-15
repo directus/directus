@@ -1,9 +1,4 @@
-define([
-  'core/t',
-  'core/UIComponent',
-  './interface'
-], function (__t, UIComponent, Input) {
-
+define(['./interface', 'core/UIComponent', 'core/t'], function (Input, UIComponent, __t) {
   return UIComponent.extend({
     id: 'directus_columns',
     dataTypes: ['ONETOMANY'],
@@ -16,12 +11,12 @@ define([
       {id: 'only_unassigned', type: 'Boolean', ui: 'checkbox', default_value: false}
     ],
     Input: Input,
-    validate: function(collection, options) {
+    validate: function (collection, options) {
       if (options.schema.isRequired() && collection.length === 0) {
         return __t('this_field_is_required');
       }
     },
-    list: function() {
+    list: function () {
       return 'x';
     }
   });

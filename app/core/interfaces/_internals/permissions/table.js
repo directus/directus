@@ -1,5 +1,4 @@
-define(['app', 'underscore', 'backbone', 'core/t', 'core/Modal'], function(app, _, Backbone, __t, ModalView) {
-
+define(['app', 'underscore', 'backbone', 'core/t', 'core/Modal'], function (app, _, Backbone, __t, ModalView) {
   var EditFields = Backbone.Layout.extend({
     template: 'modules/settings/permissions-fields',
 
@@ -15,7 +14,7 @@ define(['app', 'underscore', 'backbone', 'core/t', 'core/Modal'], function(app, 
       $checkbox.click();
     },
 
-    onSelectColumn: function(event) {
+    onSelectColumn: function (event) {
       var $checkbox = $(event.currentTarget);
       var $row = $checkbox.closest('tr');
 
@@ -34,11 +33,9 @@ define(['app', 'underscore', 'backbone', 'core/t', 'core/Modal'], function(app, 
           blacklist.push(columnName);
           changed = true;
         }
-      } else {
-        if (this.hasColumn(columnName)) {
-          blacklist.splice(blacklist.indexOf(columnName), 1);
-          changed = true;
-        }
+      } else if (this.hasColumn(columnName)) {
+        blacklist.splice(blacklist.indexOf(columnName), 1);
+        changed = true;
       }
 
       if (changed) {
@@ -62,11 +59,11 @@ define(['app', 'underscore', 'backbone', 'core/t', 'core/Modal'], function(app, 
       data.name = this.name;
 
       data.columns = app.schemaManager.getColumns('tables', this.model.get('table_name'))
-        .filter(function(model) {
+        .filter(function (model) {
           // @TODO: custom primary key
           return model.id !== 'id';
         })
-        .map(function(model) {
+        .map(function (model) {
           return {
             column_name: model.id,
             blacklisted: blacklist.indexOf(model.id) >= 0
@@ -169,9 +166,9 @@ define(['app', 'underscore', 'backbone', 'core/t', 'core/Modal'], function(app, 
         patch: true
       };
 
-      options.success = function(model) {
+      options.success = function (model) {
         var tableName = model.get('table_name');
-        app.schemaManager.getOrFetchTable(tableName, function(tableModel) {
+        app.schemaManager.getOrFetchTable(tableName, function (tableModel) {
           app.schemaManager.registerPrivileges([model.toJSON()]);
           app.trigger('tables:change:permissions', tableModel, model);
         });
@@ -191,7 +188,7 @@ define(['app', 'underscore', 'backbone', 'core/t', 'core/Modal'], function(app, 
         allow_view: 2
       };
 
-      this.updateModel($row.data('cid'), permissions)
+      this.updateModel($row.data('cid'), permissions);
     },
 
     removeFullPermissions: function (event) {
@@ -273,9 +270,9 @@ define(['app', 'underscore', 'backbone', 'core/t', 'core/Modal'], function(app, 
           view: model.has('allow_view') && model.get('allow_view') > 0,
           bigView: model.has('allow_view') && model.get('allow_view') === 2,
           onlyMine: model.has('allow_view') && model.get('allow_view') === 1,
-          cannot: function (model) {
-            return !model.has('allow_view') || ! (model.get('allow_view') > 0)
-          }(model)
+          cannot: (function (model) {
+            return !model.has('allow_view') || !(model.get('allow_view') > 0);
+          })(model)
         },
         // Add
         {
@@ -283,9 +280,9 @@ define(['app', 'underscore', 'backbone', 'core/t', 'core/Modal'], function(app, 
           title: this.permissionTitle(model),
           add: (model.has('allow_add') && model.get('allow_add') > 0),
           onlyMine: false, // You either can or cannot add items
-          cannot: function (model) {
-            return !model.has('allow_add') || ! (model.get('allow_add') > 0)
-          }(model)
+          cannot: (function (model) {
+            return !model.has('allow_add') || !(model.get('allow_add') > 0);
+          })(model)
         },
         // Edit
         {
@@ -293,9 +290,9 @@ define(['app', 'underscore', 'backbone', 'core/t', 'core/Modal'], function(app, 
           edit: (model.has('allow_edit') && model.get('allow_edit') > 0),
           bigEdit: (model.has('allow_edit') && model.get('allow_edit') === 2),
           onlyMine: model.has('allow_edit') && model.get('allow_edit') === 1,
-          cannot: function (model) {
-            return !model.has('allow_edit') || ! (model.get('allow_edit') > 0)
-          }(model)
+          cannot: (function (model) {
+            return !model.has('allow_edit') || !(model.get('allow_edit') > 0);
+          })(model)
         },
         // Delete
         {
@@ -303,9 +300,9 @@ define(['app', 'underscore', 'backbone', 'core/t', 'core/Modal'], function(app, 
           delete: (model.has('allow_delete') && model.get('allow_delete') > 0),
           bigDelete: (model.has('allow_delete') && model.get('allow_delete') === 2),
           onlyMine: model.has('allow_delete') && model.get('allow_delete') === 1,
-          cannot: function (model) {
-            return !model.has('allow_delete') || ! (model.get('allow_delete') > 0)
-          }(model)
+          cannot: (function (model) {
+            return !model.has('allow_delete') || !(model.get('allow_delete') > 0);
+          })(model)
         }
         // Alter
         // {
@@ -338,7 +335,7 @@ define(['app', 'underscore', 'backbone', 'core/t', 'core/Modal'], function(app, 
     },
 
     getTablePrivileges: function (table, status) {
-      // var privilege = app.schemaManager.getPrivileges(table, status);
+      // Var privilege = app.schemaManager.getPrivileges(table, status);
       var privilege = this.collection.findWhere({
         table_name: table,
         status_id: status
@@ -420,7 +417,7 @@ define(['app', 'underscore', 'backbone', 'core/t', 'core/Modal'], function(app, 
       _.each(data.permissions, function (permission) {
         var statuses = [];
 
-        // statuses.push(this.parsePrivilegePermission(tableName, permission.name, null));
+        // Statuses.push(this.parsePrivilegePermission(tableName, permission.name, null));
         this.tableStatuses(tableName, function (status) {
           statuses.push(this.parsePrivilegePermission(tableName, permission.name, status.get('id')));
         });
@@ -431,7 +428,7 @@ define(['app', 'underscore', 'backbone', 'core/t', 'core/Modal'], function(app, 
       return data;
     },
 
-    // all statuses except the hard delete ones
+    // All statuses except the hard delete ones
     tableStatuses: function (tableName, fn, context) {
       context = context || this;
 
@@ -452,7 +449,7 @@ define(['app', 'underscore', 'backbone', 'core/t', 'core/Modal'], function(app, 
     getStatuses: function (currentStatusId, tableName) {
       var statuses = [];
 
-      // statuses.push(this.getDefaultStatus());
+      // Statuses.push(this.getDefaultStatus());
       this.tableStatuses(tableName, function (status) {
         statuses.push({
           name: status.get('name'),
@@ -460,7 +457,7 @@ define(['app', 'underscore', 'backbone', 'core/t', 'core/Modal'], function(app, 
         });
       });
 
-      statuses = statuses.filter(function(status) {
+      statuses = statuses.filter(function (status) {
         return status.value != currentStatusId;
       });
 
@@ -488,17 +485,17 @@ define(['app', 'underscore', 'backbone', 'core/t', 'core/Modal'], function(app, 
       return permissions;
     },
 
-    serialize: function() {
+    serialize: function () {
       return {
         tables: this.getPermissionsList()
       };
     },
 
-    hasStatusColumn: function(table) {
+    hasStatusColumn: function (table) {
       var columns = app.schemaManager.getColumns('tables', table);
       var statusColumn;
 
-      // table without columns
+      // Table without columns
       // it means the user doesn't have permission to view them
       // @TODO: Make a way to see the columns to admins
       if (!columns) {
@@ -507,19 +504,19 @@ define(['app', 'underscore', 'backbone', 'core/t', 'core/Modal'], function(app, 
 
       statusColumn = columns.table.get('status_column') || 'active';
 
-      return columns.some(function(model) {
+      return columns.some(function (model) {
         return model.id === statusColumn;
       });
     },
 
     toggleTables: function () {
-      this.showCoreTables = ! this.showCoreTables;
+      this.showCoreTables = !this.showCoreTables;
       this.render();
 
       return this.showCoreTables;
     },
 
-    initialize: function() {
+    initialize: function () {
       this.state = {
         default: 'all',
         status: 'all',

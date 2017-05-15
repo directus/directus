@@ -3,8 +3,13 @@ define(['core/interfaces/wysiwyg/interface', 'core/UIComponent', 'core/t'], func
     id: 'wysiwyg',
     dataTypes: ['VARCHAR', 'TEXT', 'MEDIUMTEXT', 'LONGTEXT'],
     Input: Input,
-    variables: [
-      {id: 'buttons', type: 'String', default_value: 'bold,italic,underline,anchor,h2,h3,quote', ui: 'select', options: {
+    variables: [{
+      id: 'buttons',
+      type: 'String',
+      default_value: 'bold,italic,underline,anchor,h2,h3,quote',
+      ui: 'select',
+      nullable: true,
+      options: {
         select_multiple: true,
         input_type: 'radio',
         options: {
@@ -27,9 +32,14 @@ define(['core/interfaces/wysiwyg/interface', 'core/UIComponent', 'core/t'], func
           h6: 'H6',
           removeFormat: 'Remove all formatting'
         }
-      },},
-      {id: 'simple_editor', type: 'Boolean', default_value: false, ui: 'checkbox'},
-    ],
+      }
+    },
+    {
+      id: 'simple_editor',
+      type: 'Boolean',
+      nullable: true,
+      default_value: false, ui: 'checkbox'
+    }],
     validate: function (value, options) {
       if (options.view.isRequired() && !value) {
         return __t('this_field_is_required');

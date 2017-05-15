@@ -248,11 +248,11 @@
 
     "column_misconfigured_in_directus_columns": "Column is misconfigured in directus_columns! : %{column}",
 
-    "m2o_visible_column_comment": "Enter Visible Column Name",
-    "m2o_visible_column_template_comment": "Enter Twig Template String",
-    "m2o_visible_status_ids_comment": "Enter the visible status ids",
-    "m2o_placeholder_text_comment": "Enter Placeholder Text",
-    "m2o_filter_column_comment": "Enter Column thats value is used for filter search",
+    "m2o_visible_column_comment": "Visible Column Name",
+    "m2o_visible_column_template_comment": "Twig Template String",
+    "m2o_visible_status_ids_comment": "A CSV of visible statuses (eg: '1,2' shows Published and Draft)",
+    "m2o_placeholder_text_comment": "Placeholder Text",
+    "m2o_filter_column_comment": "Column thats value is used for filter search",
 
     "m2o_typeahead_placeholder": "Search for an item...",
     "m2o_typeahead_clear": "Clear this related item",
@@ -369,9 +369,8 @@
 
     "you_must_be_logged_in_to_access_the_api": "You must be logged in to access the API",
     "invalid_request_nonce": "Invalid request (nonce)",
-    "no_such_extensions_found": "No such extension.",
     "unauthorized_nonce": "Unauthorized (nonce)",
-    "extension_x_must_return_array_got_y_instead": "Extension %{extension_name} must return array, got %{type} instead",
+    "extension_x_not_found": "Extension %{name} not found",
     "incorrect_email_or_password": "Incorrect email or password",
     "missing_email_or_password": "Missing email or password",
     "login_error_user_is_not_active": "You do not have access to this system",

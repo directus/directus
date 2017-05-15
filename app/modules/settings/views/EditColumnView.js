@@ -38,8 +38,9 @@ define([
     save: function() {
       var view = this.getCurrentView();
 
-      view.save();
-      this._close();
+      if (view.save()) {
+        this._close();
+      }
     },
 
     toggle: function (event) {

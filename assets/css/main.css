@@ -508,6 +508,11 @@ input[type="radio"].custom-checkbox + label span:before {
   input[type="radio"].custom-checkbox + label span.vertical-middle:before {
     vertical-align: middle; }
 
+.align-icon-text .material-icons {
+  vertical-align: middle;
+  margin-right: 4px;
+  margin-top: -4px; }
+
 .serious-text {
   color: #F44336; }
 
@@ -1820,7 +1825,7 @@ table {
       min-width: 100px;
       height: 40px;
       padding-left: 4px;
-      padding-right: 4px; }
+      padding-right: 14px; }
       table tbody tr td.static-numbers {
         font-size: 10px;
         color: #999999;
@@ -4020,7 +4025,9 @@ body.help .discover-spotlight {
       .smoke .modal .fields .field .comment {
         width: 100%; }
       .smoke .modal .fields .field .interface {
-        margin-top: 0; }
+        margin-top: 0;
+        display: block;
+        width: 100%; }
     .smoke .modal.confirm .modal-bg {
       min-width: 500px;
       max-width: 600px; }

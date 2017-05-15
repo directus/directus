@@ -25,6 +25,8 @@ define([
         var columnComment = this.model.get('comment');
 
         if (this.model.isNew()) {
+          this.selectedDataType = null;
+
           this.model.clear();
           this.model.set({
             column_name: columnName,
@@ -33,7 +35,6 @@ define([
         }
 
         this.selectedUI = $(e.target).val();
-        this.selectedDataType = null;
 
         this.render();
       },
@@ -105,8 +106,10 @@ define([
       };
 
       if (data) {
-        this.model.save(data, options);
+        return this.model.save(data, options);
       }
+
+      return true;
     },
 
     serialize: function () {
@@ -356,8 +359,13 @@ define([
       data.isStrictNaming = this.options.strictNaming;
       data.isValidName = this.isValidName();
       data.selectedRelationshipType = this.selectedRelationshipType;
-      data.hasOptions = (uis[this.selectedUI].variables || []).length > 0;
+
+      var uiChanged = !this.model.isNew() && this.selectedUI != this.model._originalAttrs['ui'];
+      var hasOptions = (uis[this.selectedUI].variables || []).length > 0;
+
+      data.showOptions = hasOptions && !uiChanged;
       data.interfaces = this.getInterfacesGrouped(data.ui_types, this.selectedUI);
+      data.showDefaultValue = !data.isAlias && !this.model.isPrimaryColumn();
 
       return data;
     },

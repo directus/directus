@@ -15,14 +15,14 @@ define(function(require, exports, module) {
   var internalInterfaces = [
     require('core/interfaces/_system/accountability/interface'),
     require('core/interfaces/_internals/activity/component'),
-    require('core/interfaces/_internals/columns_picker/interface'),
+    require('core/interfaces/_internals/columns_picker/component'),
     require('core/interfaces/_internals/columns/component'),
     require('core/interfaces/_internals/directus_users/component'),
-    require('core/interfaces/_internals/file_preview/interface'),
+    require('core/interfaces/_internals/file_preview/component'),
     require('core/interfaces/_internals/file_title/component'),
     require('core/interfaces/_internals/file_size/component'),
-    require('core/interfaces/_internals/permissions/interface'),
-    require('core/interfaces/_internals/views/interface'),
+    require('core/interfaces/_internals/permissions/component'),
+    require('core/interfaces/_internals/views/component'),
     require('core/interfaces/_internals/user_avatar/component'),
     require('core/interfaces/_internals/user_activity/component')
   ].map(interfaceGroup('internal'));
@@ -46,13 +46,14 @@ define(function(require, exports, module) {
     require('core/interfaces/textinput/component'),
     require('core/interfaces/slug/component'),
     require('core/interfaces/textarea/component'),
+    require('core/interfaces/random/component'),
     require('core/interfaces/blob/component'),
     require('core/interfaces/select/component'),
     require('core/interfaces/tags/component'),
     require('core/interfaces/wysiwyg/component'),
     require('core/interfaces/password/component'),
     require('core/interfaces/enum/component'),
-    require('core/interfaces/map'),
+    require('core/interfaces/map/component'),
     require('core/interfaces/markdown/component')
   ].map(interfaceGroup('string'));
 
@@ -70,12 +71,12 @@ define(function(require, exports, module) {
   ].map(interfaceGroup('numeric'));
 
   var RelationalInterfaces = [
-    require('core/interfaces/many_to_one'),
-    require('core/interfaces/many_to_one_typeahead'),
+    require('core/interfaces/many_to_one_typeahead/component'),
+    require('core/interfaces/many_to_one/component'),
     require('core/interfaces/relational/m2m/component'),
     require('core/interfaces/one_to_many/component'),
     require('core/interfaces/single_file/component'),
-    require('core/interfaces/multiple_files'),
+    require('core/interfaces/multiple_files/relational/component'),
     require('core/interfaces/multiple_files/csv/component'),
     require('core/interfaces/translation/component')
   ].map(interfaceGroup('relational'));
@@ -84,8 +85,7 @@ define(function(require, exports, module) {
     require('core/interfaces/section_break/component'),
     require('core/interfaces/alias/component'),
     require('core/interfaces/user/interface'),
-    require('core/interfaces/user'),
-    require('core/interfaces/template_chooser')
+    require('core/interfaces/user')
   ].map(interfaceGroup('misc'));
 
   // Register Core UI's

@@ -531,7 +531,7 @@ class BaseTableGateway extends TableGateway
     {
         $column_name = $columnData['column_name'];
         $dataType = $columnData['data_type'];
-        $comment = ArrayUtils::get($columnData, 'comment', '');
+        $comment = $this->getAdapter()->getPlatform()->quoteValue(ArrayUtils::get($columnData, 'comment', ''));
 
         if (array_key_exists('length', $columnData)) {
             $charLength = $columnData['length'];

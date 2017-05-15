@@ -1,6 +1,4 @@
 define(['core/UIView'], function (UIView) {
-  'use strict';
-
   return UIView.extend({
     template: '_internals/file_title/input',
 
