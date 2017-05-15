@@ -242,6 +242,13 @@ define([
           filters.perPage = this.columnSchema.options.get('result_limit');
         }
 
+        if (!filters.filters) {
+          filters.filters = {};
+        }
+
+        // only fetch related items
+        filters.filters[joinColumn] = this.model.id;
+
         // avoid fetching the relational value
         filters.depth = 1;
         relatedCollection.fetch({includeFilters: false, data: filters, success: function (collection) {
