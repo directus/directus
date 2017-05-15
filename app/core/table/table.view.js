@@ -330,6 +330,8 @@ function(app, _, Backbone, Notification, __t, TableHelpers, ModelHelper, TableHe
         this.options.status = collection.hasColumn(statusColumnName);
       }
 
+      this.state.spacing = 'cozy';
+
       if (this.options.preferences) {
         // @TODO: Duplicated
         var viewOptions = this.collection.preferences.get('list_view_options');
@@ -345,6 +347,10 @@ function(app, _, Backbone, Notification, __t, TableHelpers, ModelHelper, TableHe
         }
 
         this.options.showItemNumbers = this.getViewOptions('item_numbers');
+        if (viewOptions && viewOptions['spacing']) {
+          this.state.spacing = viewOptions['spacing']
+        }
+
         this.state.spacing = viewOptions ? (viewOptions['spacing'] || 'cozy') : 'cozy';
       }
 
