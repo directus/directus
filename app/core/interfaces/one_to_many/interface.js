@@ -12,7 +12,7 @@ define([
   return UIView.extend({
     template: 'relational/table',
     events: {
-      'click div.related-table > div td:not(.delete)': 'editRow',
+      'click div.related-table td:not(.relational-remove)': 'editRow',
       'click .js-button': 'onClickButton',
       'click .js-remove': 'deleteRow'
     },
