@@ -1,4 +1,4 @@
-define(['./interface', 'core/UIComponent', 'core/t'], function (Input, UIComponent, __t, SchemaHelper) {
+define(['./interface', 'core/UIComponent', 'core/t'], function (Input, UIComponent, __t) {
   return UIComponent.extend({
     id: 'rating',
     dataTypes: ['INT'],
