@@ -1,9 +1,10 @@
 define([
+  'app',
   'underscore',
   'core/UIView',
   'core/notification',
   'core/t'
-], function (_, UIView, Notification, __t) {
+], function (app, _, UIView, Notification, __t) {
 
   'use strict';
 
