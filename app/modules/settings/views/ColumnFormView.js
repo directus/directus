@@ -358,7 +358,11 @@ define([
       data.isStrictNaming = this.options.strictNaming;
       data.isValidName = this.isValidName();
       data.selectedRelationshipType = this.selectedRelationshipType;
-      data.hasOptions = (uis[this.selectedUI].variables || []).length > 0;
+
+      var uiChanged = !this.model.isNew() && this.selectedUI != this.model._originalAttrs['ui'];
+      var hasOptions = (uis[this.selectedUI].variables || []).length > 0;
+
+      data.showOptions = hasOptions && !uiChanged;
       data.interfaces = this.getInterfacesGrouped(data.ui_types, this.selectedUI);
       data.showDefaultValue = !data.isAlias && !this.model.isPrimaryColumn();
 
