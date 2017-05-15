@@ -961,7 +961,8 @@ class RelationalTableGateway extends BaseTableGateway
      */
     protected function processJoins(Builder $query, array $joins = [])
     {
-        $columns = [];
+        // @TODO allow passing columns
+        $columns = []; // leave as this and won't get any ambiguous columns
         foreach ($joins as $table => $params) {
             if (! isset($params['type'])) {
                 $params['type'] = 'INNER';
