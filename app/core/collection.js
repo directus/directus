@@ -250,7 +250,7 @@ function(app, Backbone, StatusHelper, _) {
           // when there's only one visible column
           // it's an string so we need to convert it to an array
           if (typeof filters.columns_visible === 'string') {
-            filters.columns_visible = filters.columns_visible.split();
+            filters.columns_visible = filters.columns_visible.split(',');
           }
 
           filters.columns_visible.push(filters.sort);

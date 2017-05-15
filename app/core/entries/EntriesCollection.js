@@ -56,7 +56,7 @@ define(function(require, exports, module) {
         columns = filters.columns_visible;
         // @todo: ensure that this always be an array everywhere.
         if (typeof columns === 'string') {
-          columns = columns.split();
+          columns = columns.split(',');
         }
       }
 

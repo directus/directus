@@ -1,4 +1,12 @@
-define(['core/interfaces/one_to_many/component', 'app', 'core/UIView', 'core/table/table.view', 'core/overlays/overlays', 'core/t'], function (Component, app, UIView, TableView, Overlays, __t) {
+define([
+  'core/interfaces/one_to_many/component',
+  'underscore',
+  'app',
+  'core/UIView',
+  'core/table/table.view',
+  'core/overlays/overlays',
+  'core/t'
+], function (Component, _, app, UIView, TableView, Overlays, __t) {
   'use strict';
 
   return UIView.extend({
@@ -184,7 +192,6 @@ define(['core/interfaces/one_to_many/component', 'app', 'core/UIView', 'core/tab
     },
 
     initialize: function (options) {
-      console.log(this);
       // Make sure that the relationship type is correct
       if (!this.columnSchema.relationship ||
            this.columnSchema.relationship.get('type') !== 'ONETOMANY') {
@@ -208,18 +215,40 @@ define(['core/interfaces/one_to_many/component', 'app', 'core/UIView', 'core/tab
       if (!hasUnsavedModels && ids.length > 0) {
         // Make sure column we are joining on is respected
         var filters = relatedCollection.filters;
-        if (filters.columns_visible.length === 0) {
-          filters.columns_visible = relatedCollection.structure.at(0).get('id');
+        var visibleColumns = filters.columns_visible;
+        var actualVisibleColumns = visibleColumns.slice(0);
+
+        if (visibleColumns.length === 0) {
+          visibleColumns = [relatedCollection.structure.at(0).get('id')];
+          actualVisibleColumns = visibleColumns;
+        }
+
+        // TODO: Create helper to add column only if missing avoiding duplicate
+        // when fetching relational data we need to make sure to fetch system columns
+        // and the related column
+        if (relatedCollection.table.hasPrimaryColumn() && visibleColumns.indexOf(relatedCollection.table.getPrimaryColumnName()) < 0) {
+          visibleColumns.push(relatedCollection.table.getPrimaryColumnName());
+        }
+
+        if (visibleColumns.indexOf(joinColumn) < 0) {
+          visibleColumns.push(joinColumn);
         }
 
         // Pass this filter to select only where column = val
         filters.related_table_filter = {column: joinColumn, val: this.model.id};
 
+        filters.columns_visible = visibleColumns.join(',');
         if (this.columnSchema.options.get('result_limit') !== undefined) {
           filters.perPage = this.columnSchema.options.get('result_limit');
         }
 
+        // avoid fetching the relational value
+        filters.depth = 1;
         relatedCollection.fetch({includeFilters: false, data: filters, success: function (collection) {
+          var filters = collection.filters;
+
+          filters.columns_visible = actualVisibleColumns;
+
           _.each(collection.models, function (model) {
             return model.startTracking();
           });
