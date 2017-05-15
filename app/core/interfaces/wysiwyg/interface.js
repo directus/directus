@@ -77,12 +77,21 @@ define(['core/UIView', 'core/interfaces/wysiwyg/vendor/medium-editor.min'], func
         simple_editor: (this.options.settings && this.options.settings.get('simple_editor') === true),
       };
     },
+    getButtons: function () {
+      var buttons = [];
+
+      if (this.options.settings.get('buttons')) {
+        buttons = this.options.settings.get('buttons').split(',').map(function (buttonName) {
+          return buttonTypes[buttonName];
+        });
+      }
+
+      return buttons;
+    },
     afterRender: function () {
       this.editor = new MediumEditor('#wysiwyg-interface_' + this.options.name, {
         toolbar: {
-          buttons: this.options.settings.get('buttons').split(',').map(function (buttonName) {
-            return buttonTypes[buttonName];
-          })
+          buttons: this.getButtons()
         },
         anchorPreview: false
       });
