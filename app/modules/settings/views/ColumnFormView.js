@@ -25,6 +25,8 @@ define([
         var columnComment = this.model.get('comment');
 
         if (this.model.isNew()) {
+          this.selectedDataType = null;
+
           this.model.clear();
           this.model.set({
             column_name: columnName,
@@ -33,7 +35,6 @@ define([
         }
 
         this.selectedUI = $(e.target).val();
-        this.selectedDataType = null;
 
         this.render();
       },
