@@ -41,10 +41,13 @@ define([
 
     leftSecondaryToolbar: function() {
       return [
-        new Widgets.VisibilityWidget({
-          collection: this.collection,
-          basePage: this
-        }),
+        // NOTE: remove visibility widget not in used
+        // also prevent from fetching the results a second time
+        // when it's being fetch from whoever calls it
+        // new Widgets.VisibilityWidget({
+        //   collection: this.collection,
+        //   basePage: this
+        // }),
         new Widgets.FilterWidget({
           collection: this.collection,
           basePage: this
