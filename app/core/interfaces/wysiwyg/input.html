@@ -192,14 +192,12 @@
 		border-radius: 2px;
 		max-width: 312px;
 		flex-wrap: wrap;
-		justify-content: space-around;
 	}
 
 	.medium-editor-toolbar li {
 		list-style: none;
 		transition: all 200ms ease-in-out;
 		flex-basis: 52px;
-		flex-grow: 1;
 		height: 52px;
 		flex-shrink: 0;
 	}
@@ -262,6 +260,7 @@
 
 	.medium-editor-toolbar-form input {
 		width: 100% !important;
+		min-width: initial !important;
 		height: 100%;
 		border: none;
 		max-width: none;
@@ -321,4 +320,5 @@
 		content: 'close';
 	}
 </style>
+<div style="position: absolute; width: 100%;" id="medium-editor-{{name}}"></div>
 <textarea id="wysiwyg-interface_{{name}}" name="{{name}}" {{#if simple_editor}}class="simple-editor"{{/if}}>{{value}}</textarea>

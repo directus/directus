@@ -93,7 +93,8 @@ define(['core/UIView', 'core/interfaces/wysiwyg/vendor/medium-editor.min'], func
         toolbar: {
           buttons: this.getButtons()
         },
-        anchorPreview: false
+        anchorPreview: false,
+        elementsContainer: document.getElementById('medium-editor-' + this.options.name)
       });
     },
     cleanup: function () {
