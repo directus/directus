@@ -14,7 +14,7 @@ define([
     events: {
       'click div.related-table > div td:not(.delete)': 'editRow',
       'click .js-button': 'onClickButton',
-      'click td.delete': 'deleteRow'
+      'click .js-remove': 'deleteRow'
     },
 
     onClickButton: function (event) {
@@ -265,7 +265,7 @@ define([
         sortable: false,
         footer: false,
         saveAfterDrop: true,
-        deleteColumn: this.canEdit && this.showRemoveButton,
+        showRemoveButton: this.canEdit && this.showRemoveButton,
         hideColumnPreferences: true,
         hideEmptyMessage: true,
         tableHead: false,
