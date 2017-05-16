@@ -53,10 +53,16 @@ define([
     },
 
     onChangeInputName: function (event) {
-      var $input = $(event.currentTarget);
+      var input = event.currentTarget;
+      var $input = $(input);
       var name = $input.val();
+      var start = input.selectionStart;
+      var end = input.selectionEnd;
+
 
       this.updateNameWith(name);
+
+      input.setSelectionRange(start, end);
     },
 
     updateNameWith: function (name) {

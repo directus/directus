@@ -432,9 +432,14 @@ define([
     },
 
     onInputNameChange: function (event) {
-      var name = $(event.currentTarget).val();
+      var input = event.currentTarget;
+      var name = $(input).val();
+      var start = input.selectionStart;
+      var end = input.selectionEnd;
 
-      this.updateColumnNameWith(name)
+      this.updateColumnNameWith(name);
+
+      input.setSelectionRange(start, end);
     },
 
     updateColumnNameWith: function (name) {
