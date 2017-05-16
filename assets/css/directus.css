@@ -4775,18 +4775,20 @@ body.initial-load #sidebar {
       .login-panel p #forgot-password:hover {
         color: #4ca6de; }
 
-  .message .message-content .title {
-    font-weight: 400;
-    font-size: 16px;
-    margin-bottom: 2px; }
-  .message .message-content .users {
-    font-weight: 400;
-    font-size: 14px;
-    margin-bottom: 4px; }
-  .message .message-content .subject {
-    color: #aaaaaa;
-    font-size: 14px;
-    font-weight: 400; }
+.message .message-content .title {
+  font-weight: 400;
+  font-size: 16px;
+  margin-bottom: 2px; }
+
+.message .message-content .users {
+  font-weight: 400;
+  font-size: 14px;
+  margin-bottom: 4px; }
+
+.message .message-content .subject {
+  color: #aaaaaa;
+  font-size: 14px;
+  font-weight: 400; }
 
 .message.unread {
   background-color: #ffffff;
