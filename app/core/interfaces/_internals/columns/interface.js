@@ -1,5 +1,6 @@
 define([
   'app',
+  'underscore',
   'helpers/schema',
   'core/UIView',
   'core/notification',
@@ -7,7 +8,7 @@ define([
   'schema/ColumnsCollection',
   'sortable',
   'core/t'
-], function (app, SchemaHelper, UIView, Notification, DoubleConfirmation, ColumnsCollection, Sortable, __t) {
+], function (app, _, SchemaHelper, UIView, Notification, DoubleConfirmation, ColumnsCollection, Sortable, __t) {
   'use strict';
 
   return UIView.extend({
@@ -87,6 +88,7 @@ define([
       });
 
       this.listenTo(columnModel, 'sync', this.onColumnChange);
+      this.listenTo(optionsModel, 'sync', this.onOptionsChange);
 
       app.router.openViewInModal(view);
     },
@@ -114,6 +116,11 @@ define([
       this.columns.add(resp, {parse: true, merge: true});
       // Add the new column into the table columns schema
       columnsCollection.add(model, {parse: true, merge: true});
+    },
+
+    // When the column change or a new column is added into a table
+    onOptionsChange: function (model) {
+      this.columns.get(model.parent.id).set('options', _.clone(model.attributes));
     },
 
     destroyColumn: function (columnName) {
