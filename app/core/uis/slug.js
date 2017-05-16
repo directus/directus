@@ -40,7 +40,9 @@ define([
     unbindEvents: function () {
       var mirroredField = this.getMirroredFieldName();
 
-      $('.fields #' + mirroredField).off('keyup', _.bind(this.onKeyUp, this));
+      if (this.canUpdateSlug()) {
+        $('.fields #' + mirroredField).off('keyup', _.bind(this.onKeyUp, this));
+      }
     },
 
     onKeyUp: function (event) {

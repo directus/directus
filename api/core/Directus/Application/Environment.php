@@ -69,7 +69,32 @@ class Environment extends \Slim\Environment
             $instance['PATH_INFO'] = $requestUri;
         }
 
+        // ----------------------------------------------------------------------------
+        // Fix missing PHP_USER_AUTH/AUTHORIZATION
+        // ----------------------------------------------------------------------------
+        // Apache does not pass HTTP Basic authorization nor authorization
+        // when running php in CGI Mode.
+        // inside api/.htaccess file there is a line where we can pass the authorization
+        // into HTTP_AUTHORIZATION if a redirect has been made the values will be stored
+        // in REDIRECT_HTTP_AUTHORIZATION instead
+        // ----------------------------------------------------------------------------
+        $httpAuth = null;
+        if (isset($_SERVER['HTTP_AUTHORIZATION'])) {
+            $httpAuth = $_SERVER['HTTP_AUTHORIZATION'];
+        } else if (isset($_SERVER['REDIRECT_HTTP_AUTHORIZATION'])) {
+            $httpAuth = $_SERVER['REDIRECT_HTTP_AUTHORIZATION'];
+            $instance['HTTP_AUTHORIZATION'] = $httpAuth;
+        }
+
+        if ($httpAuth && !isset($_SERVER['PHP_AUTH_USER']) && substr(strtolower($httpAuth), 0, 5) === 'basic') {
+            $parts = explode(':', base64_decode(substr($httpAuth, 6)));
+
+            if (count($parts) === 2) {
+                $instance['PHP_AUTH_USER'] = $parts[0];
+                $instance['PHP_AUTH_PW'] = $parts[1];
+            }
+        }
+
         return $instance;
     }
-
 }

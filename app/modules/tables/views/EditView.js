@@ -115,7 +115,8 @@ function(app, Backbone, Handlebars, __t, Directus, BasePageView, Widgets, Histor
     saveConfirm: function(e) {
       var data = this.editView.data();
       var that = this;
-      if(data[app.statusMapping.status_name] && data[app.statusMapping.status_name] === app.statusMapping.deleted_num) {
+
+      if (data[app.statusMapping.status_name] && data[app.statusMapping.status_name] == app.statusMapping.deleted_num) {
         app.router.openModal({type: 'confirm', text: 'Are you sure you want to delete this item?', callback: function() {
           that.save(e);
         }});
@@ -192,9 +193,9 @@ function(app, Backbone, Handlebars, __t, Directus, BasePageView, Widgets, Histor
 
       var changedValues = model.diff(data);
 
-      if(changedValues[app.statusMapping.status_name] && changedValues[app.statusMapping.status_name] === app.statusMapping.deleted_num ) {
+      if (changedValues[app.statusMapping.status_name] && changedValues[app.statusMapping.status_name] == app.statusMapping.deleted_num ) {
         var value = app.statusMapping.deleted_num;
-        var options = {success: success, wait: true, patch: true, includeRelationships: true};
+        var options = {success: success, wait: true, validate: false, patch: true, includeRelationships: true};
         try {
           app.changeItemStatus(this.model, value, options);
         } catch(e) {
