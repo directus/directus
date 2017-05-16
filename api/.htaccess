@@ -1,3 +1,5 @@
+# Comment this line if you are getting: "Option SymLinksIfOwnerMatch not allowed here" error
+# in Apache
 Options +SymLinksIfOwnerMatch
 
 <ifModule mod_rewrite.c>

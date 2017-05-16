@@ -28,7 +28,7 @@ define('DB_USER_SLAVE', '');
 define('DB_PASSWORD_SLAVE', '');
 
 // Url path to Directus
-define('DIRECTUS_PATH', '/directus/');
+define('DIRECTUS_PATH', '/');
 
 $host = 'www.example.com'; // (Make it work for CLI)
 if (isset($_SERVER['SERVER_NAME'])) {

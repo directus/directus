@@ -4775,8 +4775,6 @@ body.initial-load #sidebar {
       .login-panel p #forgot-password:hover {
         color: #4ca6de; }
 
-.message .message-content {
-  margin-left: 40px; }
   .message .message-content .title {
     font-weight: 400;
     font-size: 16px;
