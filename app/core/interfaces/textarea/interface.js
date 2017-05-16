@@ -15,6 +15,18 @@ define([
   return UIView.extend({
     template: 'textarea/input',
 
+    events: {
+      'keydown textarea': 'onKeyDown'
+    },
+
+    onKeyDown: function (event) {
+      var key = event.keyCode || event.which;
+
+      if (key == 13) {
+        event.stopPropagation();
+      }
+    },
+
     serialize: function() {
       return {
         value: this.options.value,
