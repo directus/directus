@@ -85,7 +85,9 @@ class DirectusMessagesRecipientsTableGateway extends RelationalTableGateway
 
         $result = $fetchFn();
 
-        $result['unread'] = $result['total'] - $result['read'];
+        if ($result) {
+            $result['unread'] = $result['total'] - $result['read'];
+        }
 
         return $result;
     }

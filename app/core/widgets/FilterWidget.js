@@ -136,8 +136,16 @@ define([
     onKeyUp: function (event) {
       var self = this;
       var $element = $(event.currentTarget);
-      var searchString = this.searchString = $element.val();
+      var searchString = $element.val();
+      var doSearch = this.searchString !== $element.val();
+
+      this.searchString = doSearch;
       var callSearch = function () {
+        // if the new search string is different than the current search string
+        if (doSearch) {
+          return;
+        }
+
         self.search(searchString).done(function () {
           // Focus the input after the search
           var $input = self.$('#search-input');
@@ -164,6 +172,7 @@ define([
 
     search: function (searchString) {
       var filterIndex = -1;
+
       _.each(this.options.filters, function (item, index) {
         if (item.filterData.id === 'q') {
           filterIndex = index;
@@ -531,8 +540,9 @@ define([
     saveFilterString: function () {
       var self = this;
       var options = this.options;
+      var preferences = this.collection.preferences;
 
-      var save = function (preferences, sync) {
+      var save = function (sync) {
         var string = [];
         var method = 'save';
         var filters = options.filters.map(function (item) {
@@ -555,8 +565,8 @@ define([
 
 
       this.confirmBookmarkAction()
-        .done(function (preferences) {
-          save(preferences, true);
+        .done(function () {
+          save(true);
         })
         .fail(function () {
           self.redirect();
