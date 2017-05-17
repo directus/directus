@@ -3,8 +3,9 @@ define([
   'backbone',
   'underscore',
   'core/Modal',
+  'core/t',
   'utils'
-], function(app, Backbone, _, Modal, Utils) {
+], function(app, Backbone, _, Modal, __t, Utils) {
 
   'use strict';
 
@@ -117,7 +118,7 @@ define([
       var data = this.$('form').serializeObject();
       var errors;
 
-      if (this.model.get('password')) {
+      if (this.model.get('password') && !data.password && !data.password) {
         data = _.omit(data, 'password', 'confirm_password');
       }
 
@@ -141,6 +142,7 @@ define([
 
     serialize: function () {
       var model = this.model.toJSON();
+      var passwordPlaceholderKey = 'welcome_password_placeholder';
       // @TODO: Add more locales (Ben list has some that's not available yet)
       var timezones = _.map(app.timezones, function(name, key) {
         return {
@@ -158,9 +160,13 @@ define([
         }
       });
 
+      if (model.password) {
+        passwordPlaceholderKey = 'welcome_existing_password_placeholder';
+      }
+
       return {
         model: model,
-        disablePassword: !!model.password,
+        password_placeholder: __t(passwordPlaceholderKey),
         timezones: timezones,
         languages: languages
       };
