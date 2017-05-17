@@ -136,7 +136,7 @@ define([
       newData['invite_accepted'] = 1;
       newData = _.omit(_.extend(newData, data || {}), 'confirm_password');
 
-      this.model.save(newData, {patch: true, validate: false});
+      this.model.save(newData, {patch: true, wait: true, validate: false});
       this.trigger('done');
     },
 
