@@ -88,7 +88,7 @@ function(app, Backbone, _, __t) {
 
     initialize: function () {
       this.collection.on('change', this.render, this);
-      app.users.getCurrentUser().on('change sync', this);
+      app.users.getCurrentUser().on('change sync', this.render, this);
     }
 
   });
