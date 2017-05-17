@@ -22,6 +22,7 @@ define(function(require, exports, module) {
     require('core/interfaces/_internals/file_title/component'),
     require('core/interfaces/_internals/file_size/component'),
     require('core/interfaces/_internals/permissions/component'),
+    require('core/interfaces/_internals/messages_recipients/component'),
     require('core/interfaces/_internals/views/component'),
     require('core/interfaces/_internals/user_avatar/component'),
     require('core/interfaces/_internals/user_activity/component')
