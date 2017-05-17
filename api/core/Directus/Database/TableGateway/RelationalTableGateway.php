@@ -974,6 +974,18 @@ class RelationalTableGateway extends BaseTableGateway
         }
     }
 
+
+    /**
+     * Process group-by
+     *
+     * @param Builder $query
+     * @param array $groupBy
+     */
+    protected function processGroups(Builder $query, array $columns = [])
+    {
+        $query->groupBy($columns);
+    }
+
     /**
      * Process Query search
      *
