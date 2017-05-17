@@ -162,6 +162,7 @@ body.help {
 				float: left;
 				cursor: pointer;
 				padding: 12px 12px 12px 0;
+				&:focus,
 				&:hover {
 					color: $serious;
 				}

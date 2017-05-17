@@ -575,6 +575,9 @@ a.text-button {
   border: none;
   outline: none;
   text-align: center; }
+  .button:focus {
+    box-shadow: 0 0 0 2px, 0 0 8px 4px rgba(52, 152, 219, 0.2);
+    background-color: #2383c4; }
   .button:hover {
     background-color: #2383c4; }
   .button.outline {
@@ -3969,7 +3972,7 @@ body.help .discover-spotlight {
         float: left;
         cursor: pointer;
         padding: 12px 12px 12px 0; }
-        .smoke .modal .actions .cancel:hover {
+        .smoke .modal .actions .cancel:focus, .smoke .modal .actions .cancel:hover {
           color: #F44336; }
     .smoke .modal .button-group .button {
       margin-top: 20px;
