@@ -5040,14 +5040,14 @@ body.help .discover-spotlight {
     margin-bottom: -15px;
     font-size: 11px;
     color: #DDDDDD;
-    font-weight: 500;
-    cursor: pointer; }
+    font-weight: 500; }
     .message .seen a {
       -webkit-transition: all 400ms ease-in-out 0ms;
       -moz-transition: all 400ms ease-in-out 0ms;
       -o-transition: all 400ms ease-in-out 0ms;
       -ms-transition: all 400ms ease-in-out 0ms;
-      transition: all 400ms ease-in-out 0ms; }
+      transition: all 400ms ease-in-out 0ms;
+      cursor: pointer; }
       .message .seen a:hover {
         color: #999999; }
     .message .seen .material-icons {
@@ -5159,14 +5159,23 @@ body.help .discover-spotlight {
     -ms-transition: all 400ms ease-in-out 0ms;
     transition: all 400ms ease-in-out 0ms;
     position: absolute;
-    top: 40px;
-    right: 40px;
-    color: #CCCCCC;
-    cursor: pointer; }
+    top: 14px;
+    left: 50%;
+    margin-left: -20px;
+    border-radius: 100px;
+    width: 40px;
+    height: 40px;
+    padding-top: 4px;
+    padding-left: 2px;
+    color: #FFFFFF;
+    cursor: pointer;
+    background-color: #EEEEEE;
+    text-align: center;
+    display: none; }
     .message .close-message .material-icons {
-      font-size: 36px; }
+      font-size: 32px; }
     .message .close-message:active, .message .close-message:focus, .message .close-message:hover {
-      color: #F44336; }
+      background-color: #3498DB; }
   .message .resize-handle {
     position: absolute;
     top: 0;
@@ -7112,6 +7121,8 @@ body.login {
     width: 100% !important;
     min-width: 500px;
     background-color: #FFFFFF; }
+    .message .close-message {
+      display: block; }
 
   .resize-handle {
     display: none; }

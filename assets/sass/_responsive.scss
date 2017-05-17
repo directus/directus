@@ -186,6 +186,9 @@
 		width: 100% !important; // Uses important to override CSS values set directly in JS
 		min-width: 500px;
 		background-color: $white;
+		.close-message {
+			display: block;
+		}
 	}
 	.resize-handle {
 		display: none;

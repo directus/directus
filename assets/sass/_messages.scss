@@ -165,9 +165,9 @@
 		font-size: 11px;
 		color: $gray-2;
 		font-weight: 500;
-		cursor: pointer;
 		a {
 			@include transition (all, 400ms, ease-in-out);
+			cursor: pointer;
 			&:hover {
 				color: $gray-4;
 			}
@@ -283,17 +283,26 @@
 	.close-message {
 		@include transition (all, 400ms, ease-in-out);
 		position: absolute;
-		top: 40px;
-		right: 40px;
-		color: $gray-3;
+		top: 14px;
+		left: 50%;
+		margin-left: -20px;
+		border-radius: 100px;
+		width: 40px;
+		height: 40px;
+		padding-top: 4px;
+		padding-left: 2px;
+		color: $white;
 		cursor: pointer;
+		background-color: $gray-1;
+		text-align: center;
+		display: none;
 		.material-icons {
-			font-size: 36px;
+			font-size: 32px;
 		}
 		&:active,
 		&:focus,
 		&:hover {
-			color: $serious;
+			background-color: $primary;
 		}
 	}
 	.resize-handle {
