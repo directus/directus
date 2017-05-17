@@ -1,6 +1,30 @@
-define(['app', 'backbone', 'underscore', 'core/Modal', 'core/t'], function(app, Backbone, _, Modal, __t) {
+define([
+  'app',
+  'backbone',
+  'underscore',
+  'core/Modal',
+  'utils'
+], function(app, Backbone, _, Modal, Utils) {
 
   'use strict';
+
+  var onInputChange = function (event) {
+    var element = event.currentTarget;
+    var $element = $(element);
+    var value = $element.val();
+    var currentValue = this.model.get(element.name);
+    var $check = $element.next('.validate-check');
+
+    if (!$check.length) {
+      return;
+    }
+
+    if (currentValue && !value) {
+      $check.removeClass('valid');
+    } else if (value) {
+      $check.addClass('valid');
+    }
+  };
 
   var newData = {};
 
@@ -24,23 +48,53 @@ define(['app', 'backbone', 'underscore', 'core/Modal', 'core/t'], function(app, 
     template: 'modal/welcome/profile',
 
     events: {
+      'input input': 'onInputChange',
+      'click .js-change-avatar': 'onChooseAvatar',
+      'change input[type=file]': 'onChangeAvatar',
       'click .js-next': 'next'
     },
 
-    next: function() {
+    onInputChange: function () {
+      onInputChange.apply(this, arguments);
+    },
+
+    onChooseAvatar: function () {
+      this.$('#welcome_profile_file').click();
+    },
+
+    onChangeAvatar: function (event) {
+      var target = $(event.currentTarget);
+      var file = target[0].files[0];
+      var model = this.model.get('avatar_file_id');
+
+      model.setFile(file, 'image/*', _.bind(function (attributes, allowed) {
+        if (!allowed) {
+          Utils.clearElement(target);
+        } else {
+          this.$('img.avatar').attr('src', attributes.thumbnailData);
+        }
+      }, this));
+    },
+
+    next: function () {
       var data = this.$('form').serializeObject();
       var errors = this.model.validate(data);
+      var fileModel = this.model.get('avatar_file_id');
 
       if (errors) {
         this.model.trigger('invalid', this.model, errors);
         return;
       }
 
+      if (fileModel && fileModel.changedAttributes()) {
+        data['avatar_file_id'] = fileModel.omitCustomAttrs(fileModel.changedAttributes());
+      }
+
       newData = _.extend(newData, data || {});
       this.trigger('done');
     },
 
-    serialize: function() {
+    serialize: function () {
       return {
         model: this.model.toJSON()
       };
@@ -51,10 +105,15 @@ define(['app', 'backbone', 'underscore', 'core/Modal', 'core/t'], function(app, 
     template: 'modal/welcome/settings',
 
     events: {
+      'input input': 'onInputChange',
       'click .js-finish': 'finish'
     },
 
-    finish: function() {
+    onInputChange: function () {
+      onInputChange.apply(this, arguments);
+    },
+
+    finish: function () {
       var data = this.$('form').serializeObject();
       var errors;
 
@@ -80,7 +139,7 @@ define(['app', 'backbone', 'underscore', 'core/Modal', 'core/t'], function(app, 
       this.trigger('done');
     },
 
-    serialize: function() {
+    serialize: function () {
       var model = this.model.toJSON();
       // @TODO: Add more locales (Ben list has some that's not available yet)
       var timezones = _.map(app.timezones, function(name, key) {
@@ -171,8 +230,15 @@ define(['app', 'backbone', 'underscore', 'core/Modal', 'core/t'], function(app, 
       this.state.step++;
     },
 
+    cleanup: function () {
+      this.fileModel.stopTracking();
+    },
+
     initialize: function() {
       var model = this.model;
+
+      this.fileModel = model.get('avatar_file_id');
+      this.fileModel.startTracking();
 
       this.state = {
         step: 0

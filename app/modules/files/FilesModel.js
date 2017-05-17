@@ -49,10 +49,14 @@ define([
       // TODO: avoid omitting url and html at some point
       // rewrite this so we omit these values when we really want it to be omitted.
       if (all !== true) {
-        atts = _.omit(atts, 'thumbnailData', 'url', 'file_url', 'file_thumb_url', 'old_thumbnail_url', 'thumbnail_url', 'html', 'embed_url')
+        atts = this.omitCustomAttrs(atts)
       }
 
       return atts;
+    },
+
+    omitCustomAttrs: function (attrs) {
+      return _.omit(attrs, 'thumbnailData', 'url', 'file_url', 'file_thumb_url', 'old_thumbnail_url', 'thumbnail_url', 'html', 'embed_url')
     },
 
     formatTitle: function(name) {
@@ -67,8 +71,12 @@ define([
     },
 
     setFile: function(file, allowedTypes, fn) {
+      var allowed = false;
+
       if (!this.isFileAllowed(file, allowedTypes)) {
-        return false;
+        fn(allowed);
+
+        return allowed;
       }
 
       if (app.settings.isMaxFileSizeExceeded(file)) {
@@ -77,10 +85,13 @@ define([
           unit: app.settings.getMaxFileSizeUnit()
         }));
 
-        return false;
+        fn(allowed);
+
+        return allowed;
       }
 
       var model = this;
+      allowed = true;
       File.getDataFromInput(file, function(fileData, details, file) {
         File.isImage(fileData, function(isImage) {
           var modelData = {
@@ -101,7 +112,7 @@ define([
                 height: details.height
               }));
               if (_.isFunction(fn)) {
-                fn(_.clone(model.attributes));
+                fn(_.clone(model.attributes), allowed);
               }
               model.trigger('sync');
             });
@@ -110,7 +121,7 @@ define([
               url: fileData
             }));
             if (_.isFunction(fn)) {
-              fn(_.clone(model.toJSON()));
+              fn(_.clone(model.toJSON()), allowed);
             }
             model.trigger('sync');
           }
