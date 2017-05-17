@@ -23,6 +23,7 @@
 	min-width: 500px;
 	overflow: auto;
 	background-color: $white;
+	z-index: 1;
 	.details {
 		.avatar {
 			@include transition (all, $timing-short, ease-in-out);
@@ -277,6 +278,22 @@
 				margin-left: 20px;
 				padding-left: 10px;
 			}
+		}
+	}
+	.close-message {
+		@include transition (all, 400ms, ease-in-out);
+		position: absolute;
+		top: 40px;
+		right: 40px;
+		color: $gray-3;
+		cursor: pointer;
+		.material-icons {
+			font-size: 36px;
+		}
+		&:active,
+		&:focus,
+		&:hover {
+			color: $serious;
 		}
 	}
 	.resize-handle {

@@ -4884,7 +4884,8 @@ body.help .discover-spotlight {
   padding: 40px;
   min-width: 500px;
   overflow: auto;
-  background-color: #FFFFFF; }
+  background-color: #FFFFFF;
+  z-index: 1; }
   .message .details .avatar {
     -webkit-transition: all 200ms ease-in-out 0ms;
     -moz-transition: all 200ms ease-in-out 0ms;
@@ -5151,6 +5152,21 @@ body.help .discover-spotlight {
         width: 40px;
         margin-left: 20px;
         padding-left: 10px; }
+  .message .close-message {
+    -webkit-transition: all 400ms ease-in-out 0ms;
+    -moz-transition: all 400ms ease-in-out 0ms;
+    -o-transition: all 400ms ease-in-out 0ms;
+    -ms-transition: all 400ms ease-in-out 0ms;
+    transition: all 400ms ease-in-out 0ms;
+    position: absolute;
+    top: 40px;
+    right: 40px;
+    color: #CCCCCC;
+    cursor: pointer; }
+    .message .close-message .material-icons {
+      font-size: 36px; }
+    .message .close-message:active, .message .close-message:focus, .message .close-message:hover {
+      color: #F44336; }
   .message .resize-handle {
     position: absolute;
     top: 0;
