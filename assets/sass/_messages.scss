@@ -304,6 +304,11 @@
 	}
 	&.empty {
 		width: 100%;
+		.no-items {
+			left: 5%;
+			width: 30%;
+			margin-left: 0px;
+		}
 	}
 	.message-preview {
 		@include transition (all, $timing-short, ease-in-out);

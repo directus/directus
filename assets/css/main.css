@@ -5173,6 +5173,10 @@ body.help .discover-spotlight {
     border-color: #3498DB; }
   .message-listing.empty {
     width: 100%; }
+    .message-listing.empty .no-items {
+      left: 5%;
+      width: 30%;
+      margin-left: 0px; }
   .message-listing .message-preview {
     -webkit-transition: all 200ms ease-in-out 0ms;
     -moz-transition: all 200ms ease-in-out 0ms;
