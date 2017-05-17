@@ -17,6 +17,12 @@ class LanguageTest extends PHPUnit_Framework_TestCase
         $language = new Language(['name' => 'Español']);
         $this->assertEquals('Español', $language->getName());
 
+        $language = new Language(['code' => 'ru']);
+        $this->assertEquals('ru', $language->getCode());
+
+        $language = new Language(['name' => 'Русский']);
+        $this->assertEquals('Русский', $language->getName());
+
         $languageAttr = ['code' => 'de', 'name' => 'Deutsch'];
         $language = new Language($languageAttr);
         $this->assertEquals($languageAttr['code'], $language->getCode());

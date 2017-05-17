@@ -40,6 +40,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
           if($confirm.length) {
             if(this.$el.data('wasAPIHashed') || this.$el.data('isAPIHashed')) {
               $confirm.val("");
+              this.hashedPassword = '';
               $confirm.removeAttr('disabled');
               this.$el.data('wasAPIHashed', false);
               this.$el.data('isAPIHashed', false);
@@ -55,6 +56,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
             pass += charset.charAt(Math.floor(Math.random() * n));
           }
           this.currentPlainPassword = pass;
+          this.hashedPassword = '';
           this.$el.find('.password-toggle').show();
           this.$el.data('isAPIHashed', false);
           this.$el.data('wasAPIHashed', false);
@@ -91,6 +93,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
         'blur input.password-primary' : function(e) {
           if(!_.isEmpty($.trim($(e.target).val()))) {
             this.currentPlainPassword = $(e.target).val();
+            this.hashedPassword = '';
             this.$el.find('.password-toggle').show();
             this.$el.data('wasAPIHashed', this.$el.data('isAPIHashed'));
             this.$el.data('isAPIHashed', false);
@@ -124,6 +127,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
           this.$el.find('.encrypted').addClass('hide');
           $password.val('');
           this.currentPlainPassword = '';
+          this.hashedPassword = '';
           this.$el.find('.password-toggle').hide();
           if($confirm.length) {
             $confirm.val('');
@@ -152,6 +156,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
         var hashSuccess = _.bind(function(data, textStatus, jqXHR) {
           if(!_.isEmpty(data) && !_.isEmpty(data.password)) {
             $password.val(data.password);
+            this.hashedPassword = data.password;
             if($confirm.length) {
               $confirm.val(data.password);
               $confirm.attr('disabled','disabled');
@@ -209,6 +214,8 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, UICom
     hidePass: function() {
       this.$el.find('input.password-primary').get(0).type = 'password';
       this.$el.find('input.password-confirm').get(0).type = 'password';
+      this.$el.find('input.password-primary').get(0).value = this.hashedPassword;
+      this.$el.find('input.password-confirm').get(0).value = this.hashedPassword;
       this.$el.find('.password-toggle').html(__t('reveal_password'));
     }
   });

@@ -68,6 +68,7 @@ class LanguageManager
             'fr' => 'Français',
             'nl' => 'Nederlands',
             'no' => 'Norsk',
+            'ru' => 'Русский',
             'zh-hans' => '中文（简体）',
             'zh-hant' => '中文（繁體）'
         ];
