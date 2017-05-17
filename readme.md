@@ -10,7 +10,7 @@ Directus
 Directus is a free and open-source database API and "headless" CMS. Unlike traditional CMS that encompass your entire project codebase, the decoupled approach of Directus offers an API and SDKs to connect your content to: websites, native apps, kiosks, IoT devices, or any other data-driven projects. Directus makes no assumptions about how you should architect your database – giving you complete freedom to optimize structure and performance for projects of any size or complexity. Built on top of the API is our feature-rich admin webapp (CMS) webapp dynamically maps to your database's schema, instantly providing your users/clients with an intuitive interface for managing content.
 
 [![Join the chat at https://slack.getdirectus.com](https://img.shields.io/badge/chat-on%20slack-C7205A.svg)](https://slack.getdirectus.com)
-[![Join the chat at https://gitter.im/directus/directus](https://badges.gitter.im/directus/directus.svg)](https://gitter.im/directus/directus?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+![BrowserStack Status](https://www.browserstack.com/automate/badge.svg?badge_key=<badge_key>)
 [![GitHub issues](https://img.shields.io/github/issues/directus/directus.svg)](https://github.com/directus/directus/issues)
 [![GitHub license](https://img.shields.io/badge/license-GPL-blue.svg)](https://raw.githubusercontent.com/directus/directus/master/license.md)
 [![StackShare](http://img.shields.io/badge/tech-stack-0690fa.svg?style=flat)](http://stackshare.io/ranger-studio-llc/directus)
