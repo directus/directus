@@ -116,12 +116,18 @@ function(app, _, Backbone, Notification, __t, TableHelpers, ModelHelper, TableHe
 
     fixWidths: function ($el) {
       var $table = $el || this.$el;
-      TableHelpers.fixWidths($table);
+
+      if (this.options.flex) {
+        TableHelpers.fixWidths($table);
+      }
     },
 
     headerScroll: function ($el) {
       var $table = $el || this.$el;
-      TableHelpers.headerScroll($table);
+
+      if (this.options.flex) {
+        TableHelpers.headerScroll($table);
+      }
     },
 
     bindTableEvents: function () {
