@@ -8,6 +8,7 @@ use Directus\Database\Object\Table;
 use Directus\Database\RowGateway\BaseRowGateway;
 use Directus\Database\SchemaManager;
 use Directus\Database\Schemas\Sources\MySQLSchema;
+use Directus\Database\TableGatewayFactory;
 use Directus\Database\TableSchema;
 use Directus\Filesystem\Thumbnail;
 use Directus\Hook\Payload;
@@ -142,17 +143,10 @@ class BaseTableGateway extends TableGateway
      */
     public static function makeTableGatewayFromTableName($table, $adapter, $acl = null)
     {
-        $tableGatewayClassName = Formatting::underscoreToCamelCase($table) . 'TableGateway';
-        $tableGatewayClassName = __NAMESPACE__ . '\\' . $tableGatewayClassName;
-
-        if (class_exists($tableGatewayClassName)) {
-            $instance = new $tableGatewayClassName($adapter, $acl);
-        } else {
-            // @TODO: Move this to a separate factory class
-            $instance = new static($table, $adapter, $acl);
-        }
-
-        return $instance;
+        return TableGatewayFactory::create($table, [
+            'adapter' => $adapter,
+            'acl' => $acl
+        ]);
     }
 
     /**
