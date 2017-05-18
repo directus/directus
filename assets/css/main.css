@@ -4419,6 +4419,19 @@ body.help .discover-spotlight {
       .smoke .modal.welcome-1 .modal-bg .button, .smoke .modal.welcome-2 .modal-bg .button, .smoke .modal.welcome-3 .modal-bg .button {
         width: 100%;
         margin-top: 10px; }
+      .smoke .modal.welcome-1 .modal-bg .go-back, .smoke .modal.welcome-2 .modal-bg .go-back, .smoke .modal.welcome-3 .modal-bg .go-back {
+        -webkit-transition: color 200ms ease-in-out 0ms;
+        -moz-transition: color 200ms ease-in-out 0ms;
+        -o-transition: color 200ms ease-in-out 0ms;
+        -ms-transition: color 200ms ease-in-out 0ms;
+        transition: color 200ms ease-in-out 0ms;
+        text-align: center;
+        color: #CCCCCC;
+        margin-top: 14px;
+        margin-bottom: -4px;
+        cursor: pointer; }
+        .smoke .modal.welcome-1 .modal-bg .go-back:hover, .smoke .modal.welcome-2 .modal-bg .go-back:hover, .smoke .modal.welcome-3 .modal-bg .go-back:hover {
+          color: #666666; }
 
 .error-page {
   text-align: center;
@@ -4918,7 +4931,8 @@ body.help .discover-spotlight {
     left: 40px;
     width: 60px;
     height: 60px;
-    overflow: hidden; }
+    overflow: hidden;
+    cursor: pointer; }
     .message .details .avatar:hover {
       opacity: 0.8; }
   .message .details .from {
@@ -4931,7 +4945,8 @@ body.help .discover-spotlight {
     top: 60px;
     left: 120px;
     font-size: 16px;
-    font-weight: 500; }
+    font-weight: 500;
+    cursor: pointer; }
     .message .details .from:hover {
       color: #3498DB; }
   .message .details .timeago {
@@ -5069,7 +5084,7 @@ body.help .discover-spotlight {
       margin-right: 4px; }
   .message .body {
     max-width: 800px;
-    color: #999999;
+    color: #666666;
     font-size: 16px;
     line-height: 30px; }
   .message .button-group .button {
@@ -5123,11 +5138,11 @@ body.help .discover-spotlight {
     .message .reply.active textarea {
       height: 180px; }
     .message .reply textarea {
-      -webkit-transition: all 400ms ease-in-out 0ms;
-      -moz-transition: all 400ms ease-in-out 0ms;
-      -o-transition: all 400ms ease-in-out 0ms;
-      -ms-transition: all 400ms ease-in-out 0ms;
-      transition: all 400ms ease-in-out 0ms;
+      -webkit-transition: all 200ms ease-in-out 0ms;
+      -moz-transition: all 200ms ease-in-out 0ms;
+      -o-transition: all 200ms ease-in-out 0ms;
+      -ms-transition: all 200ms ease-in-out 0ms;
+      transition: all 200ms ease-in-out 0ms;
       -webkit-border-radius: 2px;
       -moz-border-radius: 2px;
       border-radius: 2px;

@@ -35,6 +35,7 @@
 			width: 60px;
 			height: 60px;
 			overflow: hidden;
+			cursor: pointer;
 			&:hover {
 				opacity: 0.8;
 			}
@@ -48,6 +49,7 @@
 			left: 120px;
 			font-size: 16px;
 			font-weight: 500;
+			cursor: pointer;
 			&:hover {
 				color: $primary;
 			}
@@ -181,7 +183,7 @@
 	}
 	.body {
 		max-width: 800px;
-		color: $gray-4;
+		color: $gray-5;
 		font-size: 16px;
 		line-height: 30px;
 	}
@@ -249,7 +251,7 @@
 			}
 		}
 		textarea {
-			@include transition (all, 400ms, ease-in-out);
+			@include transition (all, 200ms, ease-in-out);
 			@include border-radius (2px);
 			margin-top: 40px;
 			display: block;
