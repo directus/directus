@@ -3815,6 +3815,8 @@ body.loading .header .logo {
     color: #CCCCCC; }
     .validate-input .validate-check.valid {
       color: #3498DB; }
+    .validate-input .validate-check.lower-check {
+      top: 67px; }
 
 .discover-container {
   position: absolute;
