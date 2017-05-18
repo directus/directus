@@ -126,6 +126,8 @@ define([
 
     events: {
       'input input': 'onInputChange',
+      'change select, checkbox': 'onInputChange',
+      'click .js-go-back': 'goBack',
       'click .js-finish': 'finish'
     },
 
@@ -133,6 +135,8 @@ define([
       var $element = $(event.currentTarget);
       var args = Array.prototype.slice.call(arguments);
       var self = this;
+
+      newData[$element.attr('name')] = $element.val();
 
       if ($element.attr('name') === 'confirm_password') {
         args.push(function (oldValue, newValue, validate) {
@@ -150,6 +154,10 @@ define([
       }
 
       onInputChange.apply(this, args);
+    },
+
+    goBack: function () {
+      this.trigger('back');
     },
 
     finish: function () {
@@ -180,13 +188,18 @@ define([
 
     serialize: function () {
       var model = this.model.toJSON();
+      // remove the current password
+      // if there's a password was a user entered password
+      delete model.password;
+
+      var data = _.extend(model, newData);
       var passwordPlaceholderKey = 'welcome_password_placeholder';
       // @TODO: Add more locales (Ben list has some that's not available yet)
       var timezones = _.map(app.timezones, function(name, key) {
         return {
           id: key,
           name: name,
-          selected: key === model.timezone
+          selected: key === data.timezone
         }
       });
 
@@ -194,7 +207,7 @@ define([
         return {
           id: language.code,
           name: language.name,
-          selected: language.code === model.language
+          selected: language.code === data.language
         }
       });
 
@@ -203,7 +216,9 @@ define([
       }
 
       return {
-        model: model,
+        data: data,
+        validPassword: !!data.password,
+        validConfirmPassword: data.password && data.password === data.confirm_password,
         password_placeholder: __t(passwordPlaceholderKey),
         timezones: timezones,
         languages: languages
@@ -234,6 +249,15 @@ define([
       }
 
       var view = _.result(step, 'view');
+
+      view.on('back', _.bind(function() {
+        this.close();
+        setTimeout(_.bind(function() {
+          this.$el.removeClass('active slide-down ' + step.id);
+          this.prev();
+          this.render();
+        }, this), 200);
+      }, this));
 
       view.on('done', _.bind(function() {
         this.close();
@@ -270,8 +294,12 @@ define([
       return step;
     },
 
-    next: function() {
+    next: function () {
       this.state.step++;
+    },
+
+    prev: function () {
+      this.state.step--;
     },
 
     cleanup: function () {
