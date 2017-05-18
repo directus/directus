@@ -683,6 +683,17 @@ body.help {
 				width: 100%;
 				margin-top: 10px;
 			}
+			.go-back {
+				@include transition (color, $timing-short, ease-in-out);
+				text-align: center;
+				color: $gray-3;
+				margin-top: 14px;
+				margin-bottom: -4px;
+				cursor: pointer;
+				&:hover {
+					color: $gray-5;
+				}
+			}
 		}
 	}
 }
