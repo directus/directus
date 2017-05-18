@@ -243,6 +243,7 @@ define([
     initialize: function() {
       var model = this.model;
 
+      this.options.saveOnEnter = false;
       this.fileModel = model.get('avatar_file_id');
       this.fileModel.startTracking();
 

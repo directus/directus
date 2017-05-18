@@ -29,7 +29,8 @@ define(['app', 'backbone', 'underscore', 'core/Modal'], function(app, Backbone, 
       var key = e.keyCode || e.which;
 
       // enter
-      if (key === 13) {
+      // avoid save on enter when saveOnEnter is true
+      if (this.options.saveOnEnter !== false && key === 13) {
         this.save();
       }
 
