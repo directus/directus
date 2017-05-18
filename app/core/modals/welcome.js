@@ -9,7 +9,7 @@ define([
 
   'use strict';
 
-  var onInputChange = function (event) {
+  var onInputChange = function (event, fn) {
     var element = event.currentTarget;
     var $element = $(element);
     var value = $element.val();
@@ -20,9 +20,28 @@ define([
       return;
     }
 
-    if (currentValue && !value) {
+    var validate = function (oldValue, newValue) {
+      var result = null;
+
+      if (oldValue && !newValue) {
+        result = false;
+      } else if (value) {
+        result = true;
+      }
+
+      return result;
+    };
+
+    var OK = null;
+    if (fn !== undefined) {
+      OK = fn(currentValue, value, validate);
+    } else {
+      OK = validate(currentValue, value);
+    }
+
+    if (OK === false) {
       $check.removeClass('valid');
-    } else if (value) {
+    } else if (OK === true) {
       $check.addClass('valid');
     }
   };
@@ -110,8 +129,27 @@ define([
       'click .js-finish': 'finish'
     },
 
-    onInputChange: function () {
-      onInputChange.apply(this, arguments);
+    onInputChange: function (event) {
+      var $element = $(event.currentTarget);
+      var args = Array.prototype.slice.call(arguments);
+      var self = this;
+
+      if ($element.attr('name') === 'confirm_password') {
+        args.push(function (oldValue, newValue, validate) {
+          // validate first against the default validation
+          var OK = validate(oldValue, newValue);
+          var passwordValue = self.$('input[name=password]').val();
+          var confirmValue = $element.val();
+
+          if (OK && (passwordValue !== confirmValue)) {
+            OK = false;
+          }
+
+          return OK;
+        });
+      }
+
+      onInputChange.apply(this, args);
     },
 
     finish: function () {
