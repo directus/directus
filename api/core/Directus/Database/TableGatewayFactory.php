@@ -26,7 +26,7 @@ class TableGatewayFactory
     /**
      * Create a new table gateway
      *
-     * e.g. directus_users => \Directus\Db\TableGateway\DirectusUsersTableGateway
+     * e.g. directus_users => \Directus\Database\TableGateway\DirectusUsersTableGateway
      *
      * @param $tableName
      * @param array $options
