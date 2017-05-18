@@ -217,6 +217,7 @@ define([
 
       return {
         data: data,
+        model: model,
         validPassword: !!data.password,
         validConfirmPassword: data.password && data.password === data.confirm_password,
         password_placeholder: __t(passwordPlaceholderKey),
@@ -235,6 +236,8 @@ define([
     cropView: false,
 
     closeOnBackground: false,
+    closeOnKey: false,
+    closeOnButton: false,
 
     serialize: function() {
       return this.model.toJSON();
@@ -255,7 +258,7 @@ define([
         setTimeout(_.bind(function() {
           this.$el.removeClass('active slide-down ' + step.id);
           this.prev();
-          this.render();
+          this.container.show(this);
         }, this), 200);
       }, this));
 
@@ -264,7 +267,7 @@ define([
         setTimeout(_.bind(function() {
           this.$el.removeClass('active slide-down ' + step.id);
           this.next();
-          this.render();
+          this.container.show(this);
         }, this), 200);
       }, this));
 

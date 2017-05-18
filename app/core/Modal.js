@@ -31,6 +31,7 @@ define(['app', 'backbone', 'underscore'], function(app, Backbone, _) {
 
     serialize: function () {
       return {
+        closeButton: this.closeButton !== false,
         cropView: this.cropView
       };
     },
