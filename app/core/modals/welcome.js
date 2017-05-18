@@ -9,7 +9,7 @@ define([
 
   'use strict';
 
-  var onInputChange = function (event) {
+  var onInputChange = function (event, fn) {
     var element = event.currentTarget;
     var $element = $(element);
     var value = $element.val();
@@ -20,9 +20,28 @@ define([
       return;
     }
 
-    if (currentValue && !value) {
+    var validate = function (oldValue, newValue) {
+      var result = null;
+
+      if (oldValue && !newValue) {
+        result = false;
+      } else if (value) {
+        result = true;
+      }
+
+      return result;
+    };
+
+    var OK = null;
+    if (fn !== undefined) {
+      OK = fn(currentValue, value, validate);
+    } else {
+      OK = validate(currentValue, value);
+    }
+
+    if (OK === false) {
       $check.removeClass('valid');
-    } else if (value) {
+    } else if (OK === true) {
       $check.addClass('valid');
     }
   };
@@ -107,11 +126,38 @@ define([
 
     events: {
       'input input': 'onInputChange',
+      'change select, checkbox': 'onInputChange',
+      'click .js-go-back': 'goBack',
       'click .js-finish': 'finish'
     },
 
-    onInputChange: function () {
-      onInputChange.apply(this, arguments);
+    onInputChange: function (event) {
+      var $element = $(event.currentTarget);
+      var args = Array.prototype.slice.call(arguments);
+      var self = this;
+
+      newData[$element.attr('name')] = $element.val();
+
+      if ($element.attr('name') === 'confirm_password') {
+        args.push(function (oldValue, newValue, validate) {
+          // validate first against the default validation
+          var OK = validate(oldValue, newValue);
+          var passwordValue = self.$('input[name=password]').val();
+          var confirmValue = $element.val();
+
+          if (OK && (passwordValue !== confirmValue)) {
+            OK = false;
+          }
+
+          return OK;
+        });
+      }
+
+      onInputChange.apply(this, args);
+    },
+
+    goBack: function () {
+      this.trigger('back');
     },
 
     finish: function () {
@@ -142,13 +188,18 @@ define([
 
     serialize: function () {
       var model = this.model.toJSON();
+      // remove the current password
+      // if there's a password was a user entered password
+      delete model.password;
+
+      var data = _.extend(model, newData);
       var passwordPlaceholderKey = 'welcome_password_placeholder';
       // @TODO: Add more locales (Ben list has some that's not available yet)
       var timezones = _.map(app.timezones, function(name, key) {
         return {
           id: key,
           name: name,
-          selected: key === model.timezone
+          selected: key === data.timezone
         }
       });
 
@@ -156,7 +207,7 @@ define([
         return {
           id: language.code,
           name: language.name,
-          selected: language.code === model.language
+          selected: language.code === data.language
         }
       });
 
@@ -165,7 +216,9 @@ define([
       }
 
       return {
-        model: model,
+        data: data,
+        validPassword: !!data.password,
+        validConfirmPassword: data.password && data.password === data.confirm_password,
         password_placeholder: __t(passwordPlaceholderKey),
         timezones: timezones,
         languages: languages
@@ -196,6 +249,15 @@ define([
       }
 
       var view = _.result(step, 'view');
+
+      view.on('back', _.bind(function() {
+        this.close();
+        setTimeout(_.bind(function() {
+          this.$el.removeClass('active slide-down ' + step.id);
+          this.prev();
+          this.render();
+        }, this), 200);
+      }, this));
 
       view.on('done', _.bind(function() {
         this.close();
@@ -232,8 +294,12 @@ define([
       return step;
     },
 
-    next: function() {
+    next: function () {
       this.state.step++;
+    },
+
+    prev: function () {
+      this.state.step--;
     },
 
     cleanup: function () {
