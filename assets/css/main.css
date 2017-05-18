@@ -3998,22 +3998,32 @@ body.help .discover-spotlight {
       background-color: #FFFFFF; }
       .smoke .modal .header-circle.with-background {
         background-color: #b6daf2; }
-      .smoke .modal .header-circle.editable:hover .avatar {
-        opacity: 0.5; }
-      .smoke .modal .header-circle.editable:hover .edit-avatar {
-        opacity: 1; }
+      .smoke .modal .header-circle.editable {
+        cursor: pointer; }
+        .smoke .modal .header-circle.editable:hover .avatar {
+          opacity: 0.2; }
+        .smoke .modal .header-circle.editable:hover .edit-avatar {
+          opacity: 1; }
       .smoke .modal .header-circle .directus {
         height: 40px;
         margin-top: 26px; }
       .smoke .modal .header-circle .avatar {
+        -webkit-transition: all 200ms ease-in-out 0ms;
+        -moz-transition: all 200ms ease-in-out 0ms;
+        -o-transition: all 200ms ease-in-out 0ms;
+        -ms-transition: all 200ms ease-in-out 0ms;
+        transition: all 200ms ease-in-out 0ms;
         width: 100%; }
-        .smoke .modal .header-circle .avatar.editable {
-          cursor: pointer; }
       .smoke .modal .header-circle .edit-avatar {
+        -webkit-transition: all 200ms ease-in-out 0ms;
+        -moz-transition: all 200ms ease-in-out 0ms;
+        -o-transition: all 200ms ease-in-out 0ms;
+        -ms-transition: all 200ms ease-in-out 0ms;
+        transition: all 200ms ease-in-out 0ms;
         position: absolute;
         top: 36px;
         left: 36px;
-        color: #FFFFFF;
+        color: #3498DB;
         opacity: 0;
         cursor: pointer; }
     .smoke .modal .fields .field {

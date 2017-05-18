@@ -190,12 +190,15 @@ body.help {
 			&.with-background {
 				background-color: lighten($primary, 30%);
 			}
-			&.editable:hover {
-				.avatar {
-					opacity: 0.5;
-				}
-				.edit-avatar {
-					opacity: 1;
+			&.editable {
+				cursor: pointer;
+				&:hover {
+					.avatar {
+						opacity: 0.2;
+					}
+					.edit-avatar {
+						opacity: 1;
+					}
 				}
 			}
 			.directus {
@@ -203,17 +206,15 @@ body.help {
 				margin-top: 26px;
 			}
 			.avatar {
-				// @include transition (all, $timing-short, ease-in-out); // Causes flicker
+				@include transition (all, $timing-short, ease-in-out); // Causes flicker
 				width: 100%;
-				&.editable {
-					cursor: pointer;
-				}
 			}
 			.edit-avatar {
+				@include transition (all, $timing-short, ease-in-out);
 				position: absolute;
 				top: 36px;
 				left: 36px;
-				color: $white;
+				color: $primary;
 				opacity: 0;
 				cursor: pointer;
 			}
