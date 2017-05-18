@@ -44,6 +44,21 @@ define([
       class: 'message-listing resize-left'
     },
 
+    events: {
+      'click .js-close-message': 'onCloseMessage'
+    },
+
+    onCloseMessage: function () {
+      var prev = this.getCurrentMessage();
+
+      if (prev) {
+        prev.deselect();
+      }
+
+      this.$(this.dom.MESSAGE_VIEW).removeClass(this.dom.SHOW_MESSAGE_CONTENT);
+      this.setCurrentMessage(null);
+    },
+
     setCurrentMessage: function (message) {
       this.state.previousMessage = this.state.currentMessage;
       this.state.currentMessage = message;
@@ -72,11 +87,14 @@ define([
     state: {},
 
     dom: {
+      SHOW_MESSAGE_CONTENT: 'show-responsive-message',
       MESSAGE_VIEW: '#message'
     },
 
     serialize: function () {
       return {
+        contentVisible: !!this.state.currentMessage,
+        visibleContentClass: this.dom.SHOW_MESSAGE_CONTENT,
         messageCount: this.collection.length
       };
     },
@@ -192,6 +210,8 @@ define([
       this.options.parentView.disableArchiveButton();
 
       this.setView('#message-right-content', newMessageView);
+      this.$(this.dom.MESSAGE_VIEW).addClass(this.dom.SHOW_MESSAGE_CONTENT);
+
       newMessageView.render();
     },
 
@@ -220,6 +240,8 @@ define([
       this.removeView('#message-right-content');
       this.insertView('#message-right-content', messageView);
       this.insertView('#message-right-content', newMessageView);
+
+      this.$(this.dom.MESSAGE_VIEW).addClass(this.dom.SHOW_MESSAGE_CONTENT);
 
       if (render === true) {
         messageView.render();

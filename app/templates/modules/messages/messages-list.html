@@ -1,5 +1,5 @@
-<div class="message resize-right" id="message">
-	<div class="close-message" title="Close Message"><i class="material-icons">arrow_forward</i></div>
+<div class="message resize-right{{#if contentVisible}} {{visibleContentClass}}{{/if}}" id="message">
+	<div class="close-message js-close-message" title="Close Message"><i class="material-icons">arrow_forward</i></div>
 	<div class="resize-handle"></div>
 	<div id="message-right-content"></div>
 </div>
