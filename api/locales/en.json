@@ -572,6 +572,8 @@
     "welcome_password_placeholder": "Password",
     "welcome_existing_password_placeholder": "Overwrite password here",
 
+    "navigation_go_back": "Go Back",
+
     "eg_x": "eg %{text}",
     "ok": "OK",
     "cancel": "Cancel",

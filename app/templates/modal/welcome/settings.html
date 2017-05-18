@@ -4,10 +4,10 @@
 <form>
     <h1>Your Settings</h1>
 	<div class="validate-input">
-		<input type="password" name="password" placeholder="{{password_placeholder}}" value="" class="password-primary"{{#if disablePassword}} disabled{{/if}}>
-		<i class="material-icons validate-check">check</i>
-		<input type="password" name="confirm_password" placeholder="Confirm Password" value="" class="password-confirm"{{#if disablePassword}} disabled{{/if}}>
-		<i class="material-icons validate-check lower-check">check</i>
+		<input type="password" name="password" placeholder="{{password_placeholder}}" value="{{data.password}}" class="password-primary"{{#if disablePassword}} disabled{{/if}}>
+		<i class="material-icons validate-check{{#if validPassword}} valid{{/if}}">check</i>
+		<input type="password" name="confirm_password" placeholder="Confirm Password" value="{{data.confirm_password}}" class="password-confirm"{{#if disablePassword}} disabled{{/if}}>
+		<i class="material-icons validate-check lower-check{{#if validConfirmPassword}} valid{{/if}}">check</i>
 	</div>
 	<div class="select-container">
 		<select name="language">
@@ -30,5 +30,5 @@
 	<label class="custom-checkbox-label" for="email_messages"><span></span> Email me my messages</label>
 
 	<div class="button close-modal js-finish">Finish</div>
-	<div class="go-back">Go Back</div>
+	<div class="go-back js-go-back">{{t "navigation_go_back"}}</div>
 </form>
