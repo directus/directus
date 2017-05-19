@@ -182,13 +182,21 @@
 @media only screen and (max-width: 1000px) {
 	// Messages as overlay
 	.message {
-		left: 0px !important; // Uses important to override CSS values set directly in JS
+		@include transition (all, $timing-short, ease-in-out);
+		left: 100% !important; // Uses important to override CSS values set directly in JS
 		width: 100% !important; // Uses important to override CSS values set directly in JS
 		min-width: 500px;
 		background-color: $white;
 		.close-message {
 			display: block;
 		}
+		&.show-responsive-message {
+			left: 0px !important; // Uses important to override CSS values set directly in JS
+			right: -100% !important; // Uses important to override CSS values set directly in JS
+		}
+	}
+	.message-listing {
+		width: 100%;
 	}
 	.resize-handle {
 		display: none;

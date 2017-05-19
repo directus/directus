@@ -7144,12 +7144,23 @@ body.login {
       margin-top: -30px; } }
 @media only screen and (max-width: 1000px) {
   .message {
-    left: 0px !important;
+    -webkit-transition: all 200ms ease-in-out 0ms;
+    -moz-transition: all 200ms ease-in-out 0ms;
+    -o-transition: all 200ms ease-in-out 0ms;
+    -ms-transition: all 200ms ease-in-out 0ms;
+    transition: all 200ms ease-in-out 0ms;
+    left: 100% !important;
     width: 100% !important;
     min-width: 500px;
     background-color: #FFFFFF; }
     .message .close-message {
       display: block; }
+    .message.show-responsive-message {
+      left: 0px !important;
+      right: -100% !important; }
+
+  .message-listing {
+    width: 100%; }
 
   .resize-handle {
     display: none; }
