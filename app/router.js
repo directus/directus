@@ -733,8 +733,13 @@ define(function(require, exports, module) {
           return {
             siteUrl: this.model.get('project_url'),
             messageCounter: app.messages.unread,
-            cms_thumbnail_url: this.model.get('cms_thumbnail_url')
+            cms_thumbnail_url: this.getProjectLogoUrl()
           };
+        },
+        getProjectLogoUrl: function () {
+          var file = this.model.get('cms_thumbnail_url');
+
+          return file ? file.url : null;
         },
         beforeRender: function() {
           this.insertView('#featureSidebar', tabs);
