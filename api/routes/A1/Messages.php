@@ -180,12 +180,7 @@ class Messages extends Route
             $user = $usersTableGateway->findOneBy('id', $recipient);
 
             if (isset($user) && $user['email_messages'] == 1) {
-                $data = ['message' => $requestPayload['message']];
-                $view = 'mail/notification.twig.html';
-                Mail::send($view, $data, function ($message) use ($user, $requestPayload) {
-                    $message->setSubject($requestPayload['subject']);
-                    $message->setTo($user['email']);
-                });
+                send_message_notification_email($user, $requestPayload);
             }
         }
 
@@ -294,12 +289,7 @@ class Messages extends Route
                 $user = $usersTableGateway->findOneBy('id', $recipient);
 
                 if (isset($user) && $user['email_messages'] == 1) {
-                    $data = ['message' => $requestPayload['message']];
-                    $view = 'mail/notification.twig.html';
-                    Mail::send($view, $data, function ($message) use ($user, $requestPayload) {
-                        $message->setSubject($requestPayload['subject']);
-                        $message->setTo($user['email']);
-                    });
+                    send_message_notification_email($user, $requestPayload);
                 }
             }
         }

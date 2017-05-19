@@ -32,7 +32,8 @@
       "Directus\\Embed\\Provider\\": "customs/embeds/"
     },
     "files": [
-      "api/core/functions.php"
+      "api/core/functions.php",
+      "api/core/helpers/mail.php"
     ]
   },
   "repositories": [

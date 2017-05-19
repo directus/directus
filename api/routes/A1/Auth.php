@@ -181,11 +181,7 @@ class Auth extends Route
             $app->halt(200, __t('password_reset_error'));
         }
 
-        $data = ['new_password' => $password];
-        Mail::send('mail/forgot-password.twig.html', $data, function ($message) use ($user) {
-            $message->setSubject(__t('password_reset_new_password_email_subject'));
-            $message->setTo($user['email']);
-        });
+        send_forgot_password_email($user, $password);
 
         $app->halt(200, __t('password_reset_new_temporary_password_sent'));
     }
@@ -233,11 +229,7 @@ class Auth extends Route
             ]);
         }
 
-        $data = ['reset_token' => $set['reset_token']];
-        Mail::send('mail/reset-password.twig.html', $data, function ($message) use ($user) {
-            $message->setSubject(__t('password_forgot_password_reset_email_subject'));
-            $message->setTo($user['email']);
-        });
+        send_reset_password_email($user, $set['reset_token']);
 
         return $this->app->response([
             'success' => true

@@ -66,11 +66,7 @@ class Users extends Route
 
         $response = [];
         if ($result) {
-            $data = ['token' => $token];
-            Mail::send('mail/user-invitation.twig.html', $data, function ($message) use ($email) {
-                $message->setSubject('Invitation');
-                $message->setTo($email);
-            });
+            send_user_invitation_email($email, $token);
         }
 
         return JsonView::render($response);

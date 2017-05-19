@@ -758,11 +758,7 @@ $app->get("/$v/auth/reset-password/:token/?", function ($token) use ($app, $acl,
         $app->halt(200, __t('password_reset_error'));
     }
 
-    $data = ['new_password' => $password];
-    Mail::send('mail/forgot-password.twig.html', $data, function ($message) use ($user) {
-        $message->setSubject(__t('password_reset_new_password_email_subject'));
-        $message->setTo($user['email']);
-    });
+    send_forgot_password_email($user, $password);
 
     $app->halt(200, __t('password_reset_new_temporary_password_sent'));
 
@@ -800,11 +796,7 @@ $app->post("/$v/auth/forgot-password/?", function () use ($app, $acl, $ZendDb) {
         ]);
     }
 
-    $data = ['reset_token' => $set['reset_token']];
-    Mail::send('mail/reset-password.twig.html', $data, function ($message) use ($user) {
-        $message->setSubject(__t('password_forgot_password_reset_email_subject'));
-        $message->setTo($user['email']);
-    });
+    send_reset_password_email($user, $set['reset_token']);
 
     $success = true;
     return $app->response([
@@ -1731,12 +1723,7 @@ $app->post("/$v/messages/rows/?", function () use ($params, $requestPayload, $ap
         $user = $usersTableGateway->findOneBy('id', $recipient);
 
         if (isset($user) && $user['email_messages'] == 1) {
-            $data = ['message' => $requestPayload['message']];
-            $view = 'mail/notification.twig.html';
-            Mail::send($view, $data, function ($message) use ($user, $requestPayload) {
-                $message->setSubject($requestPayload['subject']);
-                $message->setTo($user['email']);
-            });
+            send_message_notification_email($user, $requestPayload);
         }
     }
 
@@ -1822,12 +1809,7 @@ $app->post("/$v/comments/?", function () use ($params, $requestPayload, $app, $a
             $user = $usersTableGateway->findOneBy('id', $recipient);
 
             if (isset($user) && $user['email_messages'] == 1) {
-                $data = ['message' => $requestPayload['message']];
-                $view = 'mail/notification.twig.html';
-                Mail::send($view, $data, function ($message) use ($user, $requestPayload) {
-                    $message->setSubject($requestPayload['subject']);
-                    $message->setTo($user['email']);
-                });
+                send_message_notification_email($user, $requestPayload);
             }
         }
     }
