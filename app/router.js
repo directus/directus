@@ -724,23 +724,8 @@ define(function(require, exports, module) {
       //Top
       var Navbar = Backbone.Layout.extend(
       {
-
         template: 'navbar',
-
         el: '#sidebar',
-
-        serialize: function() {
-          return {
-            siteUrl: this.model.get('project_url'),
-            messageCounter: app.messages.unread,
-            cms_thumbnail_url: this.getProjectLogoUrl()
-          };
-        },
-        getProjectLogoUrl: function () {
-          var file = this.model.get('cms_thumbnail_url');
-
-          return file ? file.url : null;
-        },
         beforeRender: function() {
           this.insertView('#featureSidebar', tabs);
           this.insertView('#mainSidebar', bookmarks);

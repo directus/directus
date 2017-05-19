@@ -93,10 +93,13 @@ function(app, _, Backbone, __t, Notification) {
       }
 
       var data = this.page.headerOptions;
+      var logo = app.settings.get('global').get('cms_thumbnail_url');
 
       if (data.route.breadcrumbs && data.route.breadcrumbs.length > 1) {
         data.route.lastBreadcrumbAnchor = data.route.breadcrumbs[data.route.breadcrumbs.length-1].anchor;
       }
+
+      data.cms_thumbnail_url = logo ? logo.url : null;
 
       return data;
     },

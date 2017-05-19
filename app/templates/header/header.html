@@ -1,7 +1,10 @@
 <a href="{{rootUrl}}" class="open-modal" data-modal="welcome-1">
-	<div class="logo help static" data-help="Your Logo – at any point you can click this to visit your project.">
+	<div class="logo help static{{#if cms_thumbnail_url}} has-project-logo{{/if}}" data-help="Your Logo – at any point you can click this to visit your project.">
 		<div class="fading-separator"></div>
 		<div class="directus"></div>
+		{{#if cms_thumbnail_url}}
+		<img style="width:100%;" src="{{cms_thumbnail_url}}"></img>
+		{{/if}}
 	</div>
 </a>
 
