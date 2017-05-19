@@ -59,7 +59,23 @@ body.loading {
 		height: 100%;
 		text-align: center;
 		padding-top: 20px;
-		&:hover {
+		&.static {
+			&.has-project-logo {
+				.directus {
+					opacity: 0.0;
+				}
+				.project-logo {
+					opacity: 1.0;
+				}
+			}
+			.directus {
+				-moz-animation-name: none;
+				-webkit-animation-name: none;
+				-ms-animation-name: none;
+				animation-name: none;
+			}
+		}
+		&:hover { // Must come after "static" to cascade
 			.directus {
 				opacity: 0.5;
 			}
@@ -77,24 +93,11 @@ body.loading {
 					opacity: 0.0;
 				}
 				.project-logo {
-					opacity: 0.1;
+					opacity: 0.5; // Should be 0.1 when multi-instance is done
 				}
 				.project-swap {
 					opacity: 1;
 				}
-			}
-		}
-		&.has-project-logo {
-			.directus {
-				opacity: 0.0;
-			}
-		}
-		&.static {
-			.directus {
-				-moz-animation-name: none;
-				-webkit-animation-name: none;
-				-ms-animation-name: none;
-				animation-name: none;
 			}
 		}
 		.directus {
@@ -130,11 +133,12 @@ body.loading {
 		// 	opacity: 0;
 		// }
 		.project-logo {
-			@include transition (all, $timing-short, ease-in-out);
+			@include transition (opacity, $timing-short, ease-in-out);
 			position: absolute;
 			top: 0;
 			left: 0;
 			width: 200px;
+			opacity: 0.2;
 		}
 		.project-name {
 			position: relative;
