@@ -52,7 +52,7 @@ define([
       }
 
       var attributes = {};
-      attributes[app.statusMapping.status_name] = app.statusMapping.deleted_num;
+      attributes[model.table.getStatusColumnName()] = model.getTableStatuses().getDeleteValue();
       attributes[relatedColumnName] = null;
       model.set(attributes);
     },
@@ -152,23 +152,26 @@ define([
       app.router.overlayPage(view);
       view.save = function () {
         _.each(view.table.selection(), function (id) {
-          var data = collection.get(id).toJSON();
-          if (me.columnSchema.options.get('only_unassigned') === true) {
-            var orphan = false;
+          var existingModel = me.relatedCollection.get(id);
+          var model = collection.get(id);
+          var data = model.toJSON();
+          var reAdd = existingModel && existingModel.getStatusValue() === existingModel.getTableStatuses().getDeleteValue();
+          var onlyUnassigned = me.columnSchema.options.get('only_unassigned') === true;
 
-            collection.each(function (model) {
-              if (model.get(columnName) == null) {
-                orphan = true;
-              }
-            });
-
-            if (orphan) {
-              return false;
-            }
+          if (!reAdd && model.get(columnName, {flatten: true}) != null && onlyUnassigned) {
+            return
           }
 
-          data[columnName] = me.model.get('id');
-          me.relatedCollection.add(data, {nest: true});
+          if (existingModel && reAdd) {
+            var attributes = {};
+
+            attributes[existingModel.table.getStatusColumnName()] = Number(existingModel.table.getStatusDefaultValue());
+            attributes[columnName] = me.model.id;
+            existingModel.set(attributes);
+          } else {
+            data[columnName] = me.model.id;
+            me.relatedCollection.add(data, {nest: true});
+          }
         }, this);
 
         app.router.removeOverlayPage(this);
