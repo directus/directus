@@ -303,6 +303,14 @@ function getSettings()
 
     $settings = $settingsTable->getItems(['limit' => null]);
 
+    foreach ($settings['data'] as &$setting) {
+        if ($setting['name'] === 'cms_thumbnail_url') {
+            $filesTableGateway = new TableGateway('directus_files', $ZendDb, $acl);
+            $setting['value'] = $filesTableGateway->loadEntries(['id' => $setting['value']]);
+            break;
+        }
+    }
+
     array_push($settings['data'], [
         'id' => 'max_file_size',
         'name' => 'max_file_size',
