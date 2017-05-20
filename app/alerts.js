@@ -43,7 +43,7 @@ define([
 
     // Stop animation after cycle completes
     $('#header').find('.logo').one('animationiteration webkitAnimationIteration', function() {
-      console.log("Stopping logo gracefully...");
+      // console.log("Stopping logo gracefully...");
       $(this).addClass('static');
     });
 
