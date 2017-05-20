@@ -1,11 +1,12 @@
 define([
   'app',
+  'underscore',
   'core/overlays/overlays',
   'core/table/table.view',
   'core/modals/invite',
   'core/interfaces/one_to_many/component',
   'core/t'
-], function (app, Overlays, TableView, InviteModal, OneToMany, __t) {
+], function (app, _, Overlays, TableView, InviteModal, OneToMany, __t) {
   return OneToMany.prototype.Input.extend({
     template: '_internals/directus_users/input',
     events: {
@@ -150,22 +151,7 @@ define([
         relatedCollection.setOrder('sort', 'ASC', {silent: true});
       }
 
-      this.listenTo(relatedCollection, 'add change', function () {
-        // Check if any rendered objects in collection to show or hide header
-        if (this.relatedCollection.filter(function (d) {
-          return d.get(app.statusMapping.status_name) !== app.statusMapping.deleted_num;
-        }).length > 0) {
-          this.nestedTableView.tableHead = true;
-        } else {
-          this.nestedTableView.tableHead = false;
-        }
-        this.nestedTableView.render();
-      }, this);
-
-      this.listenTo(relatedCollection, 'remove', function () {
-        this.nestedTableView.render();
-      }, this);
-
+      this.listenTo(relatedCollection, 'add change remove', this.onCollectionChange);
       this.relatedCollection = relatedCollection;
     }
   });
