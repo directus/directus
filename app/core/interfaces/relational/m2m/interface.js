@@ -9,11 +9,12 @@
 
 define([
   'app',
+  'underscore',
   'core/interfaces/one_to_many/component',
   'core/table/table.view',
   'core/overlays/overlays',
   'core/t'
-], function (app, Onetomany, TableView, Overlays, __t) {
+], function (app, _, Onetomany, TableView, Overlays, __t) {
 
   'use strict';
 
@@ -172,13 +173,8 @@ define([
       }
 
       this.relatedCollection = relatedCollection;
-      this.listenTo(relatedCollection, 'change add remove', function () {
-        this.nestedTableView.render();
-      }, this);
-
-      this.listenTo(relatedCollection.nestedCollection, 'sync', function() {
-        this.nestedTableView.render();
-      }, this);
+      this.listenTo(relatedCollection, 'change add remove', this.onCollectionChange);
+      this.listenTo(relatedCollection.nestedCollection, 'sync', this.onCollectionChange);
     }
   });
 });

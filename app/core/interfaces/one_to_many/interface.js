@@ -194,6 +194,11 @@ define([
       this.setView('#related_table_' + this.name, this.nestedTableView).render();
     },
 
+    onCollectionChange: function () {
+      this.nestedTableView.tableHead = this.relatedCollection.visibleCount() > 0;
+      this.nestedTableView.render();
+    },
+
     initialize: function (options) {
       // Make sure that the relationship type is correct
       if (!this.columnSchema.relationship ||
@@ -292,9 +297,7 @@ define([
         relatedCollection.setOrder('sort', 'ASC', {silent: true});
       }
 
-      this.listenTo(relatedCollection, 'add change remove', function () {
-        this.nestedTableView.render();
-      }, this);
+      this.listenTo(relatedCollection, 'add change remove', this.onCollectionChange);
 
       this.relatedCollection = relatedCollection;
     }
