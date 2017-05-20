@@ -294,7 +294,11 @@ function(app, Backbone, _, Handlebars, __t, Notification, Directus, BasePageView
     },
 
     initialize: function(options) {
-      options = _.defaults({}, options, {skipFetch: false});
+      options = _.defaults({}, options, {
+        omittedFields: this.omittedFields,
+        skipFetch: false
+      });
+
       this.headerOptions = this.getHeaderOptions();
       this.isBatchEdit = options.batchIds !== undefined;
       this.single = this.model.collection.table.get('single');

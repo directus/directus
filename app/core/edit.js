@@ -126,16 +126,14 @@ define(function(require, exports, module) {
       var statusName = table ? table.getStatusColumnName() : app.statusMapping.get('*').get('status_name');
 
       this.structure.each(function(column) {
-
         // Skip ID
-        // if('id' === column.id) {
         if (column.get('key') === 'PRI' && column.get('omit_input') !== false && !model.isNew()) {
           return;
         }
 
         // This column interface won't be rendered
         // or submitted
-        if (column.get('omit_input') === true) {
+        if (this.omitInput(column)) {
           return;
         }
 
@@ -269,6 +267,13 @@ define(function(require, exports, module) {
       this.options.isBatchEdit = this.options.batchIds !== undefined;
     },
 
+    omitInput: function (column) {
+      var name = column.get('column_name');
+      var omit = column.get('omit_input') === true;
+
+      return omit || _.indexOf(_.result(this, 'omittedFields', []), name) >= 0;
+    },
+
     getHiddenSystemColumns: function () {
       var columns = [];
       // hide system columns
@@ -348,10 +353,9 @@ define(function(require, exports, module) {
         .value();
 
       this.hiddenFields = this.getHiddenSystemColumns().concat(this.hiddenFields || []);
-
       this.hiddenFields = _.union(optionsHiddenFields, structureHiddenFields, this.hiddenFields);
       this.visibleFields = _.difference(this.structure.pluck('id'), this.hiddenFields);
-
+      this.omittedFields = options.omittedFields;
 
       // @todo rewrite this!
       this.model.on('invalid', function(model, errors) {
@@ -373,5 +377,4 @@ define(function(require, exports, module) {
       }, this);
     }
   });
-
 });
