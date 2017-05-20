@@ -1683,7 +1683,7 @@ $app->map("/$v/messages/rows/:id/?", function ($id) use ($params, $requestPayloa
 })->via('PATCH');
 
 $app->post("/$v/messages/rows/?", function () use ($params, $requestPayload, $app, $acl, $ZendDb, $authentication) {
-    $currentUser = $authentication->getUserInfo();
+    $currentUserId = $authentication->getUserInfo('id');
 
     // Unpack recipients
     $recipients = explode(',', $requestPayload['recipients']);
@@ -1707,18 +1707,23 @@ $app->post("/$v/messages/rows/?", function () use ($params, $requestPayload, $ap
         }
     }
 
-    $userRecipients[] = $currentUser['id'];
+    $userRecipients[] = $currentUserId;
 
     $messagesTableGateway = new DirectusMessagesTableGateway($ZendDb, $acl);
-    $id = $messagesTableGateway->sendMessage($requestPayload, array_unique($userRecipients), $currentUser['id']);
+    $id = $messagesTableGateway->sendMessage($requestPayload, array_unique($userRecipients), $currentUserId);
 
     if ($id) {
         $Activity = new DirectusActivityTableGateway($ZendDb, $acl);
         $requestPayload['id'] = $id;
-        $Activity->recordMessage($requestPayload, $currentUser['id']);
+        $Activity->recordMessage($requestPayload, $currentUserId);
     }
 
     foreach ($userRecipients as $recipient) {
+        // Do not the send a notification to the sender
+        if ($recipient == $currentUserId) {
+            continue;
+        }
+
         $usersTableGateway = new DirectusUsersTableGateway($ZendDb, $acl);
         $user = $usersTableGateway->findOneBy('id', $recipient);
 
@@ -1727,7 +1732,7 @@ $app->post("/$v/messages/rows/?", function () use ($params, $requestPayload, $ap
         }
     }
 
-    $message = $messagesTableGateway->fetchMessageWithRecipients($id, $currentUser['id']);
+    $message = $messagesTableGateway->fetchMessageWithRecipients($id, $currentUserId);
 
     return $app->response($message, ['table' => 'directus_messages']);
 });
@@ -1747,7 +1752,7 @@ $app->get("/$v/messages/recipients/?", function () use ($params, $requestPayload
 });
 
 $app->post("/$v/comments/?", function () use ($params, $requestPayload, $app, $acl, $ZendDb, $authentication) {
-    $currentUser = $authentication->getUserInfo();
+    $currentUserId = $authentication->getUserInfo('id');
     $params['table_name'] = 'directus_messages';
     $TableGateway = new TableGateway('directus_messages', $ZendDb, $acl);
 
@@ -1777,7 +1782,7 @@ $app->post("/$v/comments/?", function () use ($params, $requestPayload, $app, $a
         }
 
         $messagesTableGateway = new DirectusMessagesTableGateway($ZendDb, $acl);
-        $id = $messagesTableGateway->sendMessage($requestPayload, array_unique($userRecipients), $currentUser['id']);
+        $id = $messagesTableGateway->sendMessage($requestPayload, array_unique($userRecipients), $currentUserId);
         $requestPayload['id'] = $params['id'] = $id;
 
         preg_match_all('/@\[.*?\]/', $requestPayload['message'], $results);
@@ -1805,6 +1810,11 @@ $app->post("/$v/comments/?", function () use ($params, $requestPayload, $app, $a
         }
 
         foreach ($userRecipients as $recipient) {
+            // Do not the send a notification to the sender
+            if ($recipient == $currentUserId) {
+                continue;
+            }
+
             $usersTableGateway = new DirectusUsersTableGateway($ZendDb, $acl);
             $user = $usersTableGateway->findOneBy('id', $recipient);
 

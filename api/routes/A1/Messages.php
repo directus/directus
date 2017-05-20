@@ -176,6 +176,11 @@ class Messages extends Route
         }
 
         foreach ($userRecipients as $recipient) {
+            // Do not the send a notification to the sender
+            if ($recipient == $currentUserId) {
+                continue;
+            }
+
             $usersTableGateway = new DirectusUsersTableGateway($ZendDb, $acl);
             $user = $usersTableGateway->findOneBy('id', $recipient);
 
@@ -285,6 +290,11 @@ class Messages extends Route
             }
 
             foreach ($userRecipients as $recipient) {
+                // Do not the send a notification to the sender
+                if ($recipient == $currentUserId) {
+                    continue;
+                }
+
                 $usersTableGateway = new DirectusUsersTableGateway($ZendDb, $acl);
                 $user = $usersTableGateway->findOneBy('id', $recipient);
 
