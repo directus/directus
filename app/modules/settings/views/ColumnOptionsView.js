@@ -8,9 +8,9 @@ define(['app', 'backbone', 'core/edit'], function(app, Backbone, EditView) {
     },
 
     // TODO: Add this as a option in all views
-    cleanup: function () {
-      this.model.resetAttributes();
-    },
+    // cleanup: function () {
+    //  this.model.resetAttributes();
+    // },
 
     save: function() {
       return this.model.save(this.editView.data());

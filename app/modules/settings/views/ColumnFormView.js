@@ -81,7 +81,9 @@ define([
 
     // TODO: Add this as a option in all views
     cleanup: function () {
-      this.model.resetAttributes();
+      if (this._isTracking) {
+        this.model.resetAttributes();
+      }
     },
 
     save: function () {
@@ -89,7 +91,7 @@ define([
       var options = {patch: false, wait: true, silent: false};
       var isNew = this.model.isNew();
 
-      if (!this.model.isNew()) {
+      if (!this.model.isNew() && this._isTracking) {
         data = this.model.unsavedAttributes();
         options.patch = true;
         this.model.stopTracking();
@@ -117,6 +119,7 @@ define([
       var tables;
       var tableRelated;
       var uis = _.clone(UIManager._getAllUIs());
+
       var data = {
         isNew: this.model.isNew(),
         ui_types: [],
@@ -177,27 +180,22 @@ define([
       // Check if the data type needs length
       // ENUM and SET doesn't actually needs a LENGTH,
       // but the "length" value is a list of string separate by comma
-      if (['VARCHAR', 'CHAR', 'ENUM', 'SET'].indexOf(this.selectedDataType) > -1) {
-        if (!this.model.get('length')) {
-          var length = ['ENUM', 'SET'].indexOf(this.selectedDataType) > -1 ? '' : 100;
-          this.model.set({length: length});
+      if (SchemaHelper.supportsLength(this.selectedDataType)) {
+        data.SHOW_LENGTH = true;
+
+        // TODO: Set a default length for each data type
+        if (SchemaHelper.isNumericType(this.selectedDataType) && !this.model.get('length')) {
+          this.model.set({length: 11});
+        } else if (SchemaHelper.isStringType(this.selectedDataType) && !this.model.get('length')) {
+          this.model.set({length: 100});
         }
+
         data.length = this.model.get('length');
       } else {
         delete data.length;
         if (this.model.has('length')) {
           this.model.unset('length', {silent: true});
         }
-      }
-
-      if (SchemaHelper.supportsLength(this.selectedDataType)) {
-        // TODO: Set a default length for each data type
-        if (SchemaHelper.isNumericType(this.selectedDataType) && !this.model.get('length')) {
-          this.model.set({length: 11});
-        }
-
-        data.length = this.model.getLength();
-        data.SHOW_LENGTH = true;
       }
 
       if (['many_to_one', 'single_file', 'many_to_one_typeahead'].indexOf(this.selectedUI) > -1) {
@@ -538,7 +536,9 @@ define([
         this.isCleanName(this.columnName, SchemaHelper.cleanColumnName(this.columnName));
       }
 
-      if (!this.model.isNew()) {
+      this._isTracking = false;
+      if (!this.model.isNew() && !this.model._trackingChanges) {
+        this._isTracking = true;
         this.model.startTracking();
       }
 

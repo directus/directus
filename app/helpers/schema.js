@@ -131,6 +131,7 @@ define([
     isSystem: isSystem,
     getNumericTypes: getNumericTypes,
     isNumericType: isNumericType,
+    isStringType: isStringType,
     dateColumns: dateColumns,
     numericColumns: numericColumns,
     primaryColumns: primaryColumns,

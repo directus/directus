@@ -23,9 +23,25 @@ define([
     template: 'modal/columns-edit',
 
     events: {
+      'change select, input, textarea': 'onInputChange',
+      'input input, textarea': 'onInputChange',
       'click .js-pane': 'toggle',
       'click .js-cancel': '_close',
       'click .js-save': 'save'
+    },
+
+    onInputChange: function (event) {
+      var $target = $(event.currentTarget);
+
+      this.update($target.attr('name'), $target.val());
+    },
+
+    update: function (name, value) {
+      var model = this.state.activeModel;
+
+      if (model) {
+        model.set(name, value);
+      }
     },
 
     _close: function() {
@@ -61,6 +77,8 @@ define([
         default:
           this.state.currentView = VIEW_INTERFACE;
       }
+
+      this.state.activeModel = this.getActiveViewModel();
 
       this.render();
     },
@@ -101,10 +119,9 @@ define([
     getEditColumnView: function() {
       if (!this.editColumnView) {
         var collection = app.schemaManager.getColumns('tables', this.model.parent.get('table_name'));
-        var model = collection.get(this.model.parent.id);
 
         this.editColumnView = new ColumnFormView({
-          model: model,
+          model: this.model.parent,
           collection: collection,
           hiddenFields: ['column_name']
         });
@@ -121,12 +138,36 @@ define([
       return this.editOptionsView;
     },
 
+    cleanup: function () {
+      this.model.parent.resetAttributes();
+      this.model.parent.stopTracking();
+      // TODO: clean options model
+    },
+
+    getActiveViewModel: function () {
+      var model;
+
+      switch (this.state.currentView) {
+        case VIEW_COLUMN_NAME:
+          model = this.model.parent;
+          break;
+        case VIEW_INTERFACE_NAME:
+        default:
+          model = this.model;
+      }
+
+      return model;
+    },
+
     initialize: function() {
       this.state = {
+        activeModel: null,
         currentView: this.options.currentView || VIEW_INTERFACE
       };
 
+      this.state.activeModel = this.getActiveViewModel();
       this.editOptionsView = this.getEditOptionsView();
+      this.model.parent.startTracking();
     }
   });
 
