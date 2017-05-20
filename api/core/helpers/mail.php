@@ -1,6 +1,7 @@
 <?php
 
 use Directus\Mail\Mail;
+use Directus\Util\ArrayUtils;
 
 if (!function_exists('send_email')) {
     /**
@@ -74,7 +75,7 @@ if (!function_exists('send_message_notification_email')) {
         $data = [
             'message' => $payload['message'],
             'sender' => $sender,
-            'message_id' => ($payload['response_to'])? $payload['response_to'] : $payload['id']
+            'message_id' => ArrayUtils::get($payload, 'response_to', $payload['id'])
         ];
         Mail::send('mail/notification.twig.html', $data, function (Swift_Message $message) use ($user, $payload) {
             $message->setSubject($payload['subject']);
