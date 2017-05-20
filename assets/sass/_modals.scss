@@ -134,6 +134,9 @@ body.help {
 				margin-top: 400px;
 			}
 		}
+		table {
+			text-align: left;
+		}
 		.modal-bg {
 			@include transition (all, $timing-short, ease-in-out);
 			@include box-shadow ();

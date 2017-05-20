@@ -3934,6 +3934,8 @@ body.help .discover-spotlight {
         margin-top: 0px; }
     .smoke .modal.slide-down .modal-bg {
       margin-top: 400px; }
+    .smoke .modal table {
+      text-align: left; }
     .smoke .modal .modal-bg {
       -webkit-transition: all 200ms ease-in-out 0ms;
       -moz-transition: all 200ms ease-in-out 0ms;
