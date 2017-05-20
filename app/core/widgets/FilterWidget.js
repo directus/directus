@@ -109,13 +109,8 @@ define([
         var bookmarkPreferences = collection.preferences;
         var tablePreferences = app.schemaManager.getPreferences(tableName);
 
-        tablePreferences.save(_.pick(bookmarkPreferences.toJSON(), 'search_string', 'status'), {
-          silent: true,
-          wait: false
-        });
-
-        collection.preferences = app.schemaManager.getPreferences(tableName);
-
+        tablePreferences.set(_.pick(bookmarkPreferences.toJSON(), 'search_string', 'status'));
+        collection.preferences = tablePreferences;
         deferred.reject();
       };
 
@@ -540,11 +535,11 @@ define([
     saveFilterString: function () {
       var self = this;
       var options = this.options;
-      var preferences = this.collection.preferences;
 
       var save = function (sync) {
         var string = [];
         var method = 'save';
+        var preferences = self.collection.preferences;
         var filters = options.filters.map(function (item) {
           return item.filterData;
         });
@@ -569,6 +564,7 @@ define([
           save(true);
         })
         .fail(function () {
+          save(false);
           self.redirect();
         });
     },
@@ -576,6 +572,12 @@ define([
     redirect: function () {
       var tableName = this.collection.table.id;
       var route = 'tables/' + tableName;
+
+      this.collection.preferences.save({}, {
+        silent: true,
+        wait: false
+      });
+
       app.router.navigate(route, false);
       app.router.getBookmarkView().setActive(route);
     },
