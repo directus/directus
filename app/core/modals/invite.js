@@ -37,7 +37,16 @@ define([
       }
 
       // @TODO: Do a request if it's not found locally
-      if (app.users.get(data.email)) {
+      var emails = data.email.split(',');
+      var usedEmails = [];
+      _.each(emails, function (email) {
+        if (app.users.get(email, false)) {
+          usedEmails.push(email);
+        }
+      });
+
+      // whether or not some of the emails in the invitation are used
+      if (usedEmails.length > 0) {
         Notification.warning(__t('directus_users_email_already_exists'));
         return;
       }

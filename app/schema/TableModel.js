@@ -93,7 +93,9 @@ define(function(require, exports, module) {
     },
 
     getPrimaryColumnName: function () {
-      return this.getPrimaryColumn().get('column_name');
+      var column = this.getPrimaryColumn();
+
+      return column ? column.get('column_name') : null;
     },
 
     toJSON: function (options) {

@@ -275,11 +275,12 @@ define(function(require, exports, module) {
       var table = this.model ? this.model.table : null;
 
       if (table) {
+        var primaryColumn = table.getPrimaryColumn();
         var primaryColumnName = table.getPrimaryColumnName();
         var sortColumnName = table.getSortColumnName();
         var statusColumnName = table.getStatusColumnName();
 
-        if (table.columns.get(primaryColumnName).get('omit_input') !== false) {
+        if (primaryColumn && primaryColumn.get('omit_input') !== false) {
           columns.push(primaryColumnName);
         }
 

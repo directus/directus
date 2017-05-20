@@ -34,15 +34,28 @@ class Users extends Route
     {
         $email = $this->app->request()->post('email');
 
+        $emails = explode(',', $email);
+        foreach ($emails as $email) {
+            $this->sendInvitationTo($email);
+        }
+
+        return $this->app->response([
+            'success' => true
+        ]);
+    }
+
+    protected function sendInvitationTo($email)
+    {
         if (!Validator::email($email)) {
+            // FIXME: incorrect method overwritten
             $this->app->response()->setStatus(400);
-            return JsonView::render([
+            return $this->app->response(([
                 'success' => false,
                 'error' => [
                     'code' => 'invalid_email',
                     'message' => 'invalid_email'
                 ]
-            ]);
+            ]));
         }
 
         // @TODO: Builder/Service to get table gateway
@@ -64,11 +77,8 @@ class Users extends Route
             'invite_accepted' => 0
         ]);
 
-        $response = [];
         if ($result) {
             send_user_invitation_email($email, $token);
         }
-
-        return JsonView::render($response);
     }
 }
