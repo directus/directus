@@ -3,6 +3,13 @@
 use Directus\Mail\Mail;
 
 if (!function_exists('send_email')) {
+    /**
+     * Sends a new email
+     *
+     * @param string $view
+     * @param array $data
+     * @param callable $callback
+     */
     function send_email($view, array $data, callable $callback)
     {
         Mail::send($view, $data, $callback);
@@ -10,6 +17,12 @@ if (!function_exists('send_email')) {
 }
 
 if (!function_exists('send_forgot_password_email')) {
+    /**
+     * Sends a new password email
+     *
+     * @param $user
+     * @param string $password
+     */
     function send_forgot_password_email($user, $password)
     {
         $data = ['new_password' => $password];
@@ -21,6 +34,12 @@ if (!function_exists('send_forgot_password_email')) {
 }
 
 if (!function_exists('send_reset_password_email')) {
+    /**
+     * Sends a new reset password email
+     *
+     * @param $user
+     * @param string $token
+     */
     function send_reset_password_email($user, $token)
     {
         $data = ['reset_token' => $token];
@@ -32,6 +51,12 @@ if (!function_exists('send_reset_password_email')) {
 }
 
 if (!function_exists('send_message_notification_email')) {
+    /**
+     * Sends a new message notification
+     *
+     * @param $user
+     * @param array $payload
+     */
     function send_message_notification_email($user, array $payload)
     {
         $data = ['message' => $payload['message']];
@@ -44,6 +69,11 @@ if (!function_exists('send_message_notification_email')) {
 
 
 if (!function_exists('send_new_install_email')) {
+    /**
+     * Sends a new installation email
+     *
+     * @param array $data
+     */
     function send_new_install_email(array $data)
     {
         Mail::send('mail/new-install.twig.html', $data, function (Swift_Message $message) use ($data) {
@@ -56,6 +86,12 @@ if (!function_exists('send_new_install_email')) {
 }
 
 if (!function_exists('send_user_invitation_email')) {
+    /**
+     * Sends a invitation email
+     *
+     * @param string $email
+     * @param string $token
+     */
     function send_user_invitation_email($email, $token)
     {
         $data = ['token' => $token];
