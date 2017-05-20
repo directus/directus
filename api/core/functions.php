@@ -1,6 +1,7 @@
 <?php
 
 require __DIR__ . '/constants.php';
+require __DIR__ . '/helpers/mail.php';
 
 if (!function_exists('uc_convert')) {
     /**
