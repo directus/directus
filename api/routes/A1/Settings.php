@@ -27,15 +27,23 @@ class Settings extends Route
                 $insertSettings = function ($values, $collection = null) use ($Settings, $app) {
                     $Files = $app->container->get('files');
                     foreach ($values as $key => $value) {
-                        if ($key === 'cms_thumbnail_url' && is_array($value) && isset($value['data'])) {
+                        $isLogo = $key === 'cms_thumbnail_url';
+                        if (!$isLogo || !is_array($value)) {
+                            continue;
+                        }
+
+                        if (isset($value['data'])) {
                             $data = ArrayUtils::get($value, 'data', '');
                             $name = ArrayUtils::get($value, 'name', 'unknown.jpg');
                             $fileData = $Files->saveData($data, $name);
                             $newRecord = $Settings->manageRecordUpdate('directus_files', $fileData, RelationalTableGateway::ACTIVITY_ENTRY_MODE_PARENT);
 
                             $values[$key] = $newRecord['id'];
-                            break;
+                        } else {
+                            $values[$key] = ArrayUtils::get($value, 'id');
                         }
+
+                        break;
                     }
 
                     $Settings->setValues($values, $collection);
