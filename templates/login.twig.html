@@ -102,8 +102,8 @@
 					success: function (data, textStatus, jqXHR) {
 						if (!data.success) {
 							var errorMessage = "{{'oops_an_error_occurred'|trans}}";
-							if (data.message) {
-								errorMessage = data.message;
+							if (data.error.message) {
+								errorMessage = data.error.message;
 							}
 							message(errorMessage, true);
 							return;
