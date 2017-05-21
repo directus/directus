@@ -659,7 +659,11 @@ $app->post("/$v/auth/login/?", function () use ($app, $ZendDb, $acl, $requestNon
 
         $response['last_page'] = json_decode($user['last_page']);
         $userSession = $authentication->getUserInfo();
-        $set = ['last_login' => DateUtils::now(), 'access_token' => $userSession['access_token']];
+        $set = [
+            'ip' => get_request_ip(),
+            'last_login' => DateUtils::now(),
+            'access_token' => $userSession['access_token']
+        ];
         $where = ['id' => $user['id']];
         $updateResult = $Users->update($set, $where);
 

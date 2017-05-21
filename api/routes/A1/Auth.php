@@ -121,7 +121,11 @@ class Auth extends Route
             unset($response['message']);
             $response['last_page'] = json_decode($user['last_page']);
             $userSession = $auth->getUserInfo();
-            $set = ['last_login' => DateUtils::now(), 'access_token' => $userSession['access_token']];
+            $set = [
+                'ip' => get_request_ip(),
+                'last_login' => DateUtils::now(),
+                'access_token' => $userSession['access_token']
+            ];
             $where = ['id' => $user['id']];
             $updateResult = $Users->update($set, $where);
 

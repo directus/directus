@@ -126,7 +126,7 @@ class DirectusActivityTableGateway extends RelationalTableGateway
             'user' => $userid,
             'datetime' => DateUtils::now(),
             'parent_id' => null,
-            'logged_ip' => isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '',
+            'logged_ip' => get_request_ip(),
             'user_agent' => isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : ''
         ];
 
