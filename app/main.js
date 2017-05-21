@@ -302,21 +302,19 @@ require(["config", 'polyfills'], function() {
       // Custom Bookmarks Nav
       var customBookmarks = [];
       if (currentUserGroup.get('nav_override') !== false) {
-        for (var section in currentUserGroup.get('nav_override')) {
-          var sectionItems = currentUserGroup.get('nav_override')[section]
-          // @todo: check this is not a string, but a valid object.
-          for(var item in sectionItems) {
-            var path = sectionItems[item].path || '';
+        _.each(currentUserGroup.get('nav_override'), function (sectionItems, section) {
+          _.each(sectionItems, function (item, title) {
+            var path = item.path || '';
             customBookmarks.push(new Backbone.Model({
               icon_class: item.icon,
-              title: item,
+              title: title,
               url: path,
               section: section
             }));
-          }
-        }
+          });
+        });
       } else {
-        console.error("The nav override JSON for this user group is malformed – the default nav will be used instead");
+        console.error('The nav override JSON for this user group is malformed – the default nav will be used instead');
       }
 
       var isCustomBookmarks = false;
