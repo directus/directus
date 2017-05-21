@@ -299,6 +299,10 @@ require(["config", 'polyfills'], function() {
       var currentUserGroup = app.groups.get(currentUserGroupId);
       var navBlacklist = (currentUserGroup.get('nav_blacklist') || '').split(',');
 
+      navBlacklist = navBlacklist.map(function (name) {
+        return name.trim().toLowerCase();
+      });
+
       // Custom Bookmarks Nav
       var customBookmarks = [];
       if (currentUserGroup.get('nav_override') !== false) {
@@ -325,7 +329,7 @@ require(["config", 'polyfills'], function() {
 
       // Filter out blacklisted bookmarks (case-sensitive)
       bookmarks = _.filter(bookmarks, function(bookmark) {
-        return !_.contains(navBlacklist, bookmark.attributes.title);
+        return !_.contains(navBlacklist, (bookmark.attributes.title || '').toLowerCase());
       });
 
       // Turn into collection
