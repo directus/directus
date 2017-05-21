@@ -10,7 +10,13 @@ function(app, Backbone, EntriesModel, moment) {
   return EntriesModel.extend({
 
     canEdit: function (attribute) {
-      if (!this.get('group').get('show_users')) {
+      var group = this.get('group');
+
+      if (!(group instanceof EntriesModel)) {
+        group = app.groups.get(group);
+      }
+
+      if (group && !group.get('show_users')) {
         return false;
       }
 
