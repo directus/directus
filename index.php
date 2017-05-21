@@ -282,16 +282,24 @@ function getGroups()
     // @todo: move to DirectusGroupsTableGateway
     $groupEntries = $groups->getEntries(['depth' => 1]);
     $groupEntries['data'] = array_map(function ($row) {
-        if (array_key_exists('nav_override', $row)) {
-            if (!empty($row['nav_override'])) {
-                $row['nav_override'] = @json_decode($row['nav_override']);
-                if (json_last_error() !== JSON_ERROR_NONE) {
-                    $row['nav_override'] = false;
-                }
-            } else {
-                $row['nav_override'] = NULL;
+        $navOverride = ArrayUtils::get($row, 'nav_override');
+        ArrayUtils::set($row, 'nav_override', null);
+
+        $navOverride = @json_decode($navOverride);
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            return $row;
+        }
+
+        $row['nav_override'] = [];
+        foreach ($navOverride as $category => $items) {
+            foreach ($items as $title => $path) {
+                $key = implode('.', ['nav_override', $category, $title]);
+                ArrayUtils::set($row, $key, [
+                    'path' => $path
+                ]);
             }
         }
+
         return $row;
     }, $groupEntries['data']);
 

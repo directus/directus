@@ -541,6 +541,7 @@
     "directus_groups_users_comment": "View, edit, add, and delete users from this group",
     "directus_groups_permissions": "Permissions",
     "directus_groups_permissions_comment": "Adjust the table, column, and workflow permissions for this group",
+    "directus_groups_nav_override_comment": "JSON to override the primary navigation, see the placeholder example",
 
     "directus_users_email_already_exists": "User with this email already exists.",
 

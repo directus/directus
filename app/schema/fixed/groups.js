@@ -153,6 +153,7 @@ define(function(require, exports, module) {
         "hidden_list": false,
         "hidden_input": false,
         "nullable": true,
+        "comment": transComments('nav_override'),
         "sort": 90
       },
       {
