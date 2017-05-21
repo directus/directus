@@ -1,4 +1,11 @@
-define(['app', 'underscore', 'backbone', 'core/t', 'core/Modal'], function (app, _, Backbone, __t, ModalView) {
+define([
+  'app',
+  'underscore',
+  'backbone',
+  'core/t',
+  'core/Modal'
+], function (app, _, Backbone, __t, ModalView) {
+
   var EditFields = Backbone.Layout.extend({
     template: 'modules/settings/permissions-fields',
 
@@ -114,15 +121,8 @@ define(['app', 'underscore', 'backbone', 'core/t', 'core/Modal'], function (app,
         return;
       }
 
-      tableName = $row.data('table');
-      openWorkflow = this.state.openWorkflow;
-      if (!_.contains(openWorkflow, tableName)) {
-        openWorkflow.push(tableName);
-      } else {
-        var index = _.indexOf(openWorkflow, tableName);
-        openWorkflow.slice(index, 1);
-      }
-
+      this.state.workflowEnabled = !this.state.workflowEnabled;
+      this.toggleWorkflow($row.data('table'));
       $row.toggleClass('workflow-enabled');
     },
 
@@ -132,6 +132,10 @@ define(['app', 'underscore', 'backbone', 'core/t', 'core/Modal'], function (app,
       var $row = $el.closest('tr');
       var tableName = $row.data('table');
       var state = this.getDefaultStatus();
+
+      if (!this.isWorkflowOpen(tableName)) {
+        return;
+      }
 
       if (!this.state.tables[tableName]) {
         this.state.tables[tableName] = {};
@@ -149,8 +153,33 @@ define(['app', 'underscore', 'backbone', 'core/t', 'core/Modal'], function (app,
       }
 
       this.state.tables[tableName] = state;
-      $row.toggleClass('workflow-enabled');
+      this.closeWorkflow(tableName);
+      $row.removeClass('workflow-enabled');
       this.render();
+    },
+
+    isWorkflowOpen: function (tableName) {
+      return _.contains(this.state.openWorkflow, tableName);
+    },
+
+    openWorkflow: function (tableName) {
+      this.state.openWorkflow.push(tableName);
+    },
+
+    closeWorkflow: function (tableName) {
+      var index = _.indexOf(this.state.openWorkflow, tableName);
+
+      if (index >= 0) {
+        this.state.openWorkflow.splice(index, 1);
+      }
+    },
+
+    toggleWorkflow: function (tableName) {
+      if (!this.isWorkflowOpen(tableName)) {
+        this.openWorkflow(tableName);
+      } else {
+        this.closeWorkflow(tableName);
+      }
     },
 
     updateModel: function (id, attributes) {
