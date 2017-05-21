@@ -79,13 +79,10 @@ function(app, Backbone, EntriesModel, moment) {
         'route': route
       });
 
-      this.save({'last_page': lastPage, 'last_access': moment().utc().format('YYYY-MM-DD HH:mm:ss')}, {
-        patch: true,
-        global: false,
-        silent: true,
-        wait: true,
-        validate: false,
-        url: this.url() + "?skip_activity_log=1"
+      app.request('POST', '/users/tracking/page', {
+        data: {
+          last_page: lastPage
+        }
       });
     }
   });
