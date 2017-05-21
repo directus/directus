@@ -9,6 +9,14 @@ function(app, Backbone, EntriesModel, moment) {
 
   return EntriesModel.extend({
 
+    canEdit: function (attribute) {
+      if (!this.get('group').get('show_users')) {
+        return false;
+      }
+
+      return EntriesModel.prototype.canEdit.apply(this, arguments);
+    },
+
     getAvatar: function() {
       var currentUserAvatar = this.get('avatar');
       if (this.get('avatar_file_id') && this.get('avatar_file_id').has('name')) {

@@ -550,6 +550,7 @@
     "warning_missing_primary_key_interface": "This table is missing a unique Primary Key Interface. Please add one now.",
     "warning_missing_primary_key_title": "Missing Primary Key",
     "warning_missing_interface_options_title": "Requires additional setup",
+    "warning_cannot_send_invites": "You can't send invites for groups that don't allow Profile Editing",
 
     "same_time_as_you": "Same time as you",
     "x_hours_from_you": "%{hours} hours from you",

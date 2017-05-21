@@ -101,6 +101,14 @@ define([
       app.router.openViewInModal(new InviteModal());
     },
 
+    serialize: function () {
+      var data = OneToMany.prototype.Input.prototype.serialize.apply(this, arguments);
+
+      data.canInvite = this.model.get('show_users');
+
+      return data;
+    },
+
     // @TODO: Hotfix: solve the problem of fetching new users
     // when we already have it on the users collection
     // but the new ones for some reason few are missing group information

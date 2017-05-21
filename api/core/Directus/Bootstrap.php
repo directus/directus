@@ -21,6 +21,7 @@ use Directus\Database\TableGateway\DirectusUsersTableGateway;
 use Directus\Database\TableGateway\RelationalTableGateway;
 use Directus\Database\TableSchema;
 use Directus\Embed\EmbedManager;
+use Directus\Exception\Exception;
 use Directus\Exception\ForbiddenException;
 use Directus\Filesystem\Filesystem;
 use Directus\Filesystem\FilesystemFactory;
@@ -813,6 +814,29 @@ class Bootstrap
 
             return $payload;
         };
+
+        $emitter->addFilter('table.update.directus_users:before', function (Payload $payload) {
+            $acl = Bootstrap::get('acl');
+            $currentUserId = $acl->getUserId();
+
+            if ($currentUserId != $payload->get('id')) {
+                return $payload;
+            }
+
+            $adapter = Bootstrap::get('zendDb');
+            $userTable = new BaseTableGateway('directus_users', $adapter);
+            $groupTable = new BaseTableGateway('directus_groups', $adapter);
+
+            $user = $userTable->find($payload->get('id'));
+            $group = $groupTable->find($user['group']);
+
+            if (!$group || !ArrayUtils::get($group, 'show_users')) {
+                throw new Exception('you are not allowed to update your user information');
+            }
+
+            return $payload;
+        });
+
         $emitter->addFilter('table.insert.directus_users:before', $hashUserPassword);
         $emitter->addFilter('table.update.directus_users:before', $hashUserPassword);
 

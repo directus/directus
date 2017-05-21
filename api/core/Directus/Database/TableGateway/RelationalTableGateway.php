@@ -624,6 +624,11 @@ class RelationalTableGateway extends BaseTableGateway
         // Stripe whitespaces
         $columns = array_map('trim', $columns);
 
+        // Pick non-forbidden columns
+        if (empty($columns)) {
+            $columns = TableSchema::getAllTableColumnsName($this->getTable());
+        }
+
         // ----------------------------------------------------------------------------
         // merge legacy visible columns param
         // ----------------------------------------------------------------------------

@@ -94,10 +94,13 @@ define([
         widgetOptions: {
           basicSave: this.headerOptions.basicSave
         },
+        enabled: false,
         onClick: _.bind(this.saveConfirm, this)
       });
 
-      this.saveWidget.enable();
+      if (this.model.canEdit()) {
+        this.saveWidget.enable();
+      }
 
       this.infoWidget = new Widgets.InfoButtonWidget({
         onClick: function (event) {

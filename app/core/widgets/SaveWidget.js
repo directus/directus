@@ -57,7 +57,7 @@ function(app, Backbone, _) {
       this._events = this._events || {};
       this.state = {};
 
-      this.state.enabled = true;
+      this.state.enabled = options.enabled === undefined ? true : options.enabled;
 
       if (!options.widgetOptions) {
         this.options.widgetOptions = {isUpToDate: true};

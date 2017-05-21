@@ -13,6 +13,7 @@ $loader = require 'vendor/autoload.php';
 require 'api/api.php';
 require 'api/globals.php';
 
+use Directus\Util\ArrayUtils;
 use Directus\Authentication\RequestNonceProvider;
 use Directus\Bootstrap;
 use Directus\Database\TableGateway\DirectusBookmarksTableGateway;
@@ -230,6 +231,7 @@ function getUsers()
         'perPage' => 1000,
         STATUS_COLUMN_NAME => STATUS_ACTIVE_NUM,
         'depth' => 1,
+        columns => TableSchema::getAllTableColumnsName('directus_users')
         // 'columns_visible' => ['id', STATUS_COLUMN_NAME, 'avatar', 'first_name', 'last_name', 'group', 'email', 'position', 'last_access']
     ]);
 
@@ -522,6 +524,11 @@ if (!$users) {
     exit;
 }
 $currentUserInfo = getCurrentUserInfo($users);
+
+// hide welcome modal when the group has not permission to edit user information
+if ($showWelcomeWindow === true && !ArrayUtils::get($currentUserInfo, 'group.show_files')) {
+    $showWelcomeWindow = false;
+}
 
 // Cache buster
 $git = __DIR__ . '/.git';
