@@ -4692,7 +4692,8 @@ body.help .discover-spotlight {
     height: 200px;
     position: absolute;
     top: 0;
-    left: 0; }
+    left: 0;
+    background-color: #EEEEEE; }
   .attachments .folder .extension-fallback,
   .attachments .file .extension-fallback,
   .folder-listing .folder .extension-fallback,
