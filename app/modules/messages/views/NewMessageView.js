@@ -123,6 +123,7 @@ define([
      return {
        model: this.model,
        isResponse: this.options.parentModel,
+       canSendMessages: app.users.getCurrentUser().canSendMessages(),
        view: {
          recipients: {
            parent: this,

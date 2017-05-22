@@ -1,3 +1,4 @@
+{{#if canSendMessages}}
 {{#unless isResponse}}
 <div class="details original">
 	<img class="avatar" src="{{userAvatarUrl user.id}}">
@@ -24,3 +25,4 @@
 		{{/with}}
 	</div>
 </div>
+{{/if}}
