@@ -51,7 +51,7 @@
 		{{#if isAlias}}
 		<div class="column-66">
 			<i class="material-icons">warning</i>
-			<div class="bold">This UI creates an ALIAS, not an actual column</div>
+			<div class="bold">This interface creates an ALIAS, not an actual column</div>
 			The alias allows you to interact with the relational data
 		</div>
 		{{/if}}
@@ -154,7 +154,7 @@
 			{{/if}}
 			{{#unless MANYTOMANY}}
 			<div class="column-33 set-height">
-				<i class="material-icons relational-arrow-right">arrow_{{#if ONETOMANY}}forward{{else}}back{{/if}}</i>
+				<i class="material-icons relational-arrow-right" title="Shows where the key is stored">arrow_{{#if ONETOMANY}}forward{{else}}back{{/if}}</i>
 				<div class="select-container">
 					<select {{#if ONETOMANY}}id="junctionKeyRight" name="junction_key_right"{{/if}}>
 					{{#columns_left}}
