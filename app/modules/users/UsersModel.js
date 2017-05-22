@@ -10,6 +10,11 @@ function(app, Backbone, EntriesModel, moment) {
   return EntriesModel.extend({
 
     canEdit: function (attribute) {
+      // hotfix: admin can edit user
+      if (app.users.getCurrentUser().isAdmin()) {
+        return true;
+      }
+
       var group = this.getGroup();
 
       if (group && !group.get('show_users')) {
