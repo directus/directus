@@ -902,8 +902,8 @@ class RelationalTableGateway extends BaseTableGateway
     protected function processFilters(Builder $query, array $filters = [])
     {
         foreach($filters as $column => $condition) {
-			$logical = null;
-			if (is_array($condition) && isset($condition['logical'])) {
+            $logical = null;
+            if (is_array($condition) && isset($condition['logical'])) {
                 $logical = $condition['logical'];
                 unset($condition['logical']);
             }
@@ -930,8 +930,8 @@ class RelationalTableGateway extends BaseTableGateway
             }
 
             $arguments = [$column, $value];
-			if (isset($logical)) {
-				$arguments[] = null;
+            if (isset($logical)) {
+                $arguments[] = null;
                 $arguments[] = $logical;
             }
             $relationship = TableSchema::getColumnRelationship($this->getTable(), $column);
@@ -993,7 +993,7 @@ class RelationalTableGateway extends BaseTableGateway
      * Process group-by
      *
      * @param Builder $query
-     * @param array $groupBy
+     * @param array $columns
      */
     protected function processGroups(Builder $query, array $columns = [])
     {
