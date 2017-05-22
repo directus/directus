@@ -295,18 +295,23 @@ define([
       class: 'page-container messages'
     },
 
-    leftToolbar: function() {
+    leftToolbar: function () {
+      var canSendMessages = app.users.getCurrentUser().canSendMessages();
       var widgets = [
+        // TODO: Add option to disable button widget
+        // same as SaveButtonWidget
         new Widgets.ButtonWidget({
           widgetOptions: {
             buttonId: 'addBtn',
             iconClass: 'add',
-            buttonClass: app.users.getCurrentUser().canSendMessages() ? 'primary' : 'disabled',
+            buttonClass: canSendMessages ? 'primary' : 'disabled',
             buttonText: __t('message_compose')
           },
           onClick: _.bind(function () {
-            this.table.deselectAll();
-            this.table.displayNewMessage();
+            if (canSendMessages) {
+              this.table.deselectAll();
+              this.table.displayNewMessage();
+            }
           }, this)
         })
       ];
