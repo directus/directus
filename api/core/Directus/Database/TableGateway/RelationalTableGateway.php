@@ -902,6 +902,11 @@ class RelationalTableGateway extends BaseTableGateway
     protected function processFilters(Builder $query, array $filters = [])
     {
         foreach($filters as $column => $condition) {
+			$logical = null;
+			if (is_array($condition) && isset($condition['logical'])) {
+                $logical = $condition['logical'];
+                unset($condition['logical']);
+            }
             $operator = is_array($condition) ? key($condition) : '=';
             $value = is_array($condition) ? current($condition) : $condition;
             $not = false;
@@ -925,6 +930,10 @@ class RelationalTableGateway extends BaseTableGateway
             }
 
             $arguments = [$column, $value];
+			if (isset($logical)) {
+				$arguments[] = null;
+                $arguments[] = $logical;
+            }
             $relationship = TableSchema::getColumnRelationship($this->getTable(), $column);
             if (in_array($operator, ['all', 'has']) && in_array($relationship->getType(), ['ONETOMANY', 'MANYTOMANY'])) {
                 if ($operator == 'all' && is_string($value)) {
