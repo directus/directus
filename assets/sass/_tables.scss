@@ -272,6 +272,9 @@ table {
 				&.bold {
 					font-weight: 500;
 				}
+				&.system-table {
+					color: $gray-4;
+				}
 				&.status-badges {
 					text-align: right;
 					white-space: nowrap;

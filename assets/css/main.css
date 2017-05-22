@@ -442,7 +442,7 @@ ul {
       width: 0%;
       background-color: #3498DB; }
       .loading .loading-container .loading-bar.error {
-        background-color: #F44336; }
+        background-color: #E53935; }
   .loading .readout {
     position: absolute;
     bottom: 43px;
@@ -514,10 +514,10 @@ input[type="radio"].custom-checkbox + label span:before {
   margin-top: -4px; }
 
 .serious-text {
-  color: #F44336; }
+  color: #E53935; }
 
 .important-text {
-  color: #FFC107; }
+  color: #FF9800; }
 
 .primary-text {
   color: #3498DB; }
@@ -651,13 +651,13 @@ input[type="radio"].custom-checkbox {
   .custom-checkbox input[type="radio"].permission-toggle + label span,
   input[type="checkbox"].custom-checkbox.permission-toggle + label span,
   input[type="radio"].custom-checkbox.permission-toggle + label span {
-    color: #F44336; }
+    color: #E53935; }
   .custom-checkbox input[type="checkbox"].permission-toggle.partial:checked + label span:before,
   .custom-checkbox input[type="radio"].permission-toggle.partial:checked + label span:before,
   input[type="checkbox"].custom-checkbox.permission-toggle.partial:checked + label span:before,
   input[type="radio"].custom-checkbox.permission-toggle.partial:checked + label span:before {
     content: "indeterminate_check_box";
-    color: #FFC107; }
+    color: #FF9800; }
 
 .select2-container {
   box-sizing: border-box;
@@ -1803,9 +1803,9 @@ table {
     table tbody tr.visibility-off td {
       color: #CCCCCC; }
       table tbody tr.visibility-off td.visible:hover .material-icons {
-        color: #FFC107; }
+        color: #FF9800; }
       table tbody tr.visibility-off td.visible .material-icons {
-        color: #FFC107; }
+        color: #FF9800; }
       table tbody tr.visibility-off td.required:hover .material-icons {
         color: #EEEEEE; }
       table tbody tr.visibility-off td.required .material-icons {
@@ -1896,7 +1896,7 @@ table {
         line-height: 10px;
         margin-left: 6px;
         margin-top: -4px;
-        color: #FFC107; }
+        color: #FF9800; }
       table tbody tr td.user-interface {
         -webkit-transition: color 200ms ease-in-out 0ms;
         -moz-transition: color 200ms ease-in-out 0ms;
@@ -1948,6 +1948,8 @@ table {
         min-width: auto; }
       table tbody tr td.bold {
         font-weight: 500; }
+      table tbody tr td.system-table {
+        color: #999999; }
       table tbody tr td.status-badges {
         text-align: right;
         white-space: nowrap;
@@ -2019,7 +2021,7 @@ table {
         table tbody tr td.permissions-blacklist .choose-column-blacklist:hover {
           color: #666666; }
         table tbody tr td.permissions-blacklist .choose-column-blacklist.active {
-          color: #F44336; }
+          color: #E53935; }
       table tbody tr td.settings-tables-name {
         width: auto;
         min-width: 200px; }
@@ -2052,7 +2054,7 @@ table {
           text-transform: uppercase; }
           table tbody tr td.settings-tables-manage .add-table:hover,
           table tbody tr td.settings-tables-manage .remove-table:hover {
-            background-color: #F44336;
+            background-color: #E53935;
             color: #FFFFFF; }
         table tbody tr td.settings-tables-manage .add-table {
           background-color: #3498DB;
@@ -2558,7 +2560,7 @@ body.loading .header .logo {
   z-index: 10;
   text-align: right; }
   .header.settings .breadcrumb .crumb:nth-of-type(1) {
-    color: #FFC107; }
+    color: #FF9800; }
     .header.settings .breadcrumb .crumb:nth-of-type(1):hover {
       color: #FFFFFF; }
   .header .logo {
@@ -2771,7 +2773,7 @@ body.loading .header .logo {
         cursor: pointer;
         color: #CCCCCC; }
         .header .tools-right .filter .clear:hover {
-          color: #F44336; }
+          color: #E53935; }
       .header .tools-right .filter .filter-dropdown-toggle {
         -webkit-transition: all 200ms ease-in-out 0ms;
         -moz-transition: all 200ms ease-in-out 0ms;
@@ -2859,7 +2861,7 @@ body.loading .header .logo {
             right: -35px;
             cursor: pointer; }
             .header .tools-right .filter .filter-dropdown .column-filter .remove-filter:hover {
-              color: #F44336; }
+              color: #E53935; }
   .header .actions {
     position: relative;
     display: inline-block; }
@@ -2890,9 +2892,9 @@ body.loading .header .logo {
       .header .actions .action.primary {
         background-color: #3498DB; }
       .header .actions .action.serious {
-        background-color: #F44336; }
+        background-color: #E53935; }
       .header .actions .action.important {
-        background-color: #FFC107; }
+        background-color: #FF9800; }
       .header .actions .action.disabled {
         background-color: #666666;
         cursor: not-allowed; }
@@ -3053,7 +3055,7 @@ body.loading .header .logo {
         font-size: 18px;
         color: #666666; }
         .sidebar ul.menu li .delete-bookmark:hover {
-          color: #F44336; }
+          color: #E53935; }
     .sidebar ul.menu.bookmarks li {
       padding: 5px 35px 5px 20px; }
       .sidebar ul.menu.bookmarks li a {
@@ -3077,6 +3079,9 @@ body.loading .header .logo {
       background-color: #3498DB; }
       .sidebar .system:hover .user-more {
         color: #FFFFFF; }
+      .sidebar .system:hover .count {
+        background-color: #FFFFFF;
+        color: #3498DB; }
     .sidebar .system .avatar {
       -webkit-border-radius: 40px;
       -moz-border-radius: 40px;
@@ -3098,10 +3103,25 @@ body.loading .header .logo {
       transition: all 200ms ease-in-out 0ms;
       color: #FFFFFF;
       font-weight: 500;
-      padding-right: 14px;
+      padding-right: 24px;
       text-overflow: ellipsis;
       white-space: nowrap;
       overflow: hidden; }
+    .sidebar .system .count {
+      -webkit-border-radius: 2px;
+      -moz-border-radius: 2px;
+      border-radius: 2px;
+      -moz-background-clip: padding;
+      -webkit-background-clip: padding-box;
+      background-clip: padding-box;
+      position: absolute;
+      top: 20px;
+      right: 12px;
+      z-index: 2;
+      background-color: #3498DB;
+      color: #FFFFFF;
+      font-weight: 700;
+      padding: 2px 6px; }
     .sidebar .system .user-more {
       position: absolute;
       top: 18px;
@@ -3180,9 +3200,17 @@ body.loading .header .logo {
             color: #3498DB; }
             .sidebar .system .user-menu ul li:hover .material-icons {
               color: #3498DB; }
+          .sidebar .system .user-menu ul li.system-settings {
+            color: #FF9800; }
+            .sidebar .system .user-menu ul li.system-settings:hover {
+              color: #d68000; }
+              .sidebar .system .user-menu ul li.system-settings:hover .material-icons {
+                color: #d68000; }
+            .sidebar .system .user-menu ul li.system-settings .material-icons {
+              color: #FF9800; }
           .sidebar .system .user-menu ul li.discover span {
             padding-right: 10px; }
-          .sidebar .system .user-menu ul li .count {
+          .sidebar .system .user-menu ul li .count-menu {
             -webkit-border-radius: 2px;
             -moz-border-radius: 2px;
             border-radius: 2px;
@@ -3249,7 +3277,7 @@ body.loading .header .logo {
     cursor: pointer;
     z-index: 1; }
     .right-sidebar .close:hover {
-      color: #F44336; }
+      color: #E53935; }
   .right-sidebar .scroll-y {
     overflow-y: auto;
     position: absolute;
@@ -3906,7 +3934,7 @@ body.help .discover-spotlight {
       font-size: 36px;
       color: #666666; }
     .smoke .close:hover .material-icons {
-      color: #F44336; }
+      color: #E53935; }
   .smoke .modal {
     -webkit-transition: all 200ms ease-in-out 0ms;
     -moz-transition: all 200ms ease-in-out 0ms;
@@ -3980,7 +4008,7 @@ body.help .discover-spotlight {
         cursor: pointer;
         padding: 12px 12px 12px 0; }
         .smoke .modal .actions .cancel:focus, .smoke .modal .actions .cancel:hover {
-          color: #F44336; }
+          color: #E53935; }
     .smoke .modal .button-group .button {
       margin-top: 20px;
       margin-right: 20px; }
@@ -4272,7 +4300,7 @@ body.help .discover-spotlight {
         .smoke .modal.column .modal-bg h1 .table-name, .smoke .modal.interface .modal-bg h1 .table-name {
           color: #999999; }
         .smoke .modal.column .modal-bg h1 .column-name, .smoke .modal.interface .modal-bg h1 .column-name {
-          color: #FFC107; }
+          color: #FF9800; }
       .smoke .modal.column .modal-bg .toggle-pane, .smoke .modal.interface .modal-bg .toggle-pane {
         -webkit-transition: color 200ms ease-in-out 0ms;
         -moz-transition: color 200ms ease-in-out 0ms;
@@ -5057,7 +5085,7 @@ body.help .discover-spotlight {
       margin-right: 4px;
       cursor: pointer; }
       .message .details .to span:hover {
-        background-color: #F44336;
+        background-color: #E53935;
         color: #FFFFFF; }
       .message .details .to span .material-icons {
         font-size: 16px;
@@ -5517,11 +5545,11 @@ body.help .discover-spotlight {
       -o-transition: all 200ms ease-in-out 0ms;
       -ms-transition: all 200ms ease-in-out 0ms;
       transition: all 200ms ease-in-out 0ms;
-      color: #F44336;
+      color: #E53935;
       cursor: pointer;
       font-size: 11px; }
       .fields .field .label .cancel-batch-edit:hover {
-        color: #a21309; }
+        color: #891412; }
   .fields .field .interface {
     position: relative;
     white-space: normal;
@@ -5725,7 +5753,7 @@ body.help .discover-spotlight {
       padding: 50px 20px;
       vertical-align: top; }
     .fields .field .interface .attachments .file .info .remove:hover {
-      color: #F44336; }
+      color: #E53935; }
     .fields .field .interface .thumbnail-sizes {
       display: inline-block;
       margin-right: 20px;
@@ -5798,14 +5826,14 @@ body.help .discover-spotlight {
           background-color: rgba(52, 152, 219, 0.3);
           padding: 2px 0; }
           .fields .field .interface .template-string .highlights .highlight.invalid {
-            background-color: rgba(244, 67, 54, 0.3); }
+            background-color: rgba(229, 57, 53, 0.3); }
       .fields .field .interface .template-string .description {
         margin-top: 10px;
         color: #CCCCCC;
         font-size: 12px;
         font-style: italic; }
         .fields .field .interface .template-string .description.invalid {
-          color: #f77066; }
+          color: #eb6562; }
     .fields .field .interface .table-container {
       -webkit-border-radius: 2px;
       -moz-border-radius: 2px;
@@ -5831,7 +5859,7 @@ body.help .discover-spotlight {
         color: #666666;
         text-align: center; }
         .fields .field .interface .table-container table tbody tr td.relational-remove:hover {
-          color: #F44336; }
+          color: #E53935; }
     .fields .field .interface .asset {
       width: 100%;
       max-height: 600px;
@@ -6101,7 +6129,7 @@ body.help .discover-spotlight {
         background-color: #999999;
         cursor: pointer; }
         .fields .field .interface .tag-container .tag:hover {
-          background-color: #F44336;
+          background-color: #E53935;
           color: #FFFFFF; }
 
 .interface-field table td:hover .privilege-shortcuts {
@@ -6121,7 +6149,7 @@ body.help .discover-spotlight {
     padding-right: 2px;
     cursor: pointer; }
   .interface-field table td .privilege-shortcuts .none {
-    color: #F44336;
+    color: #E53935;
     padding-left: 2px;
     cursor: pointer; }
 
@@ -6671,7 +6699,7 @@ body.help .discover-spotlight {
         text-transform: uppercase; }
         .page.marketplace-container table tbody tr td.settings-addon-status .install-addon:hover,
         .page.marketplace-container table tbody tr td.settings-addon-status .remove-addon:hover {
-          background-color: #F44336;
+          background-color: #E53935;
           color: #FFFFFF; }
       .page.marketplace-container table tbody tr td.settings-addon-status .install-addon {
         background-color: #3498DB;
@@ -6806,7 +6834,7 @@ body.login {
       padding: 10px 14px 8px 14px;
       max-width: 400px; }
       body.login .notifications .notification.serious {
-        color: #F44336; }
+        color: #E53935; }
       body.login .notifications .notification .material-icons {
         vertical-align: middle;
         margin-right: 10px;
@@ -6991,7 +7019,7 @@ body.login {
         body.login .processing .loading-container .loading-bar.step-2 {
           width: 99%; }
         body.login .processing .loading-container .loading-bar.error {
-          background-color: #F44336; }
+          background-color: #E53935; }
   body.login .glow {
     position: absolute;
     top: 50%;
