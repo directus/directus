@@ -207,6 +207,7 @@ define([
     },
 
     addFullPermissions: function (event) {
+      var self = this;
       var $button = $(event.currentTarget);
       var $row = $button.closest('tr');
       var permissions = {
@@ -218,9 +219,19 @@ define([
       };
 
       this.updateModel($row.data('cid'), permissions);
+
+      // TODO: Create a API to handle multiple status
+      if (this.isWorkflowOpen($row.data('table'))) {
+        $row.find('.workflow.js-permission').each(function () {
+          var $el = $(this);
+
+          self.updateModel($el.data('cid'), permissions);
+        });
+      }
     },
 
     removeFullPermissions: function (event) {
+      var self = this;
       var $button = $(event.currentTarget);
       var $row = $button.closest('tr');
       var permissions = {
@@ -230,6 +241,15 @@ define([
         allow_alter: 0,
         allow_view: 0
       };
+
+      // TODO: Create a API to handle multiple status
+      if (this.isWorkflowOpen($row.data('table'))) {
+        $row.find('.workflow.js-permission').each(function () {
+          var $el = $(this);
+
+          self.updateModel($el.data('cid'), permissions);
+        });
+      }
 
       this.updateModel($row.data('cid'), permissions);
     },
