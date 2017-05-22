@@ -415,6 +415,9 @@ table {
 					margin-top: 4px;
 					margin-bottom: 4px;
 				}
+				input[type=checkbox][disabled]{
+					//
+				}
 				.search-term {
 					@include border-radius (2px);
 					background-color: lighten($primary, 40%);

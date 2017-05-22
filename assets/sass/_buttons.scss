@@ -103,6 +103,20 @@ input[type="radio"].custom-checkbox {
 			}
 		}
 	}
+	&:checked:disabled,
+	&:disabled {
+		+label {
+			span {
+				&:before {
+					cursor: inherit;
+					color: $gray-3;
+					&:hover {
+						color: $gray-3;
+					}
+				}
+			}
+		}
+	}
 	&.permission-toggle {
 		+label {
 			span {

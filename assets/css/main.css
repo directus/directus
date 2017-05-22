@@ -647,6 +647,23 @@ input[type="radio"].custom-checkbox {
   input[type="checkbox"].custom-checkbox:checked + label span:hover,
   input[type="radio"].custom-checkbox:checked + label span:hover {
     color: #333333; }
+  .custom-checkbox input[type="checkbox"]:checked:disabled + label span:before, .custom-checkbox input[type="checkbox"]:disabled + label span:before,
+  .custom-checkbox input[type="radio"]:checked:disabled + label span:before,
+  .custom-checkbox input[type="radio"]:disabled + label span:before,
+  input[type="checkbox"].custom-checkbox:checked:disabled + label span:before,
+  input[type="checkbox"].custom-checkbox:disabled + label span:before,
+  input[type="radio"].custom-checkbox:checked:disabled + label span:before,
+  input[type="radio"].custom-checkbox:disabled + label span:before {
+    cursor: inherit;
+    color: #CCCCCC; }
+    .custom-checkbox input[type="checkbox"]:checked:disabled + label span:before:hover, .custom-checkbox input[type="checkbox"]:disabled + label span:before:hover,
+    .custom-checkbox input[type="radio"]:checked:disabled + label span:before:hover,
+    .custom-checkbox input[type="radio"]:disabled + label span:before:hover,
+    input[type="checkbox"].custom-checkbox:checked:disabled + label span:before:hover,
+    input[type="checkbox"].custom-checkbox:disabled + label span:before:hover,
+    input[type="radio"].custom-checkbox:checked:disabled + label span:before:hover,
+    input[type="radio"].custom-checkbox:disabled + label span:before:hover {
+      color: #CCCCCC; }
   .custom-checkbox input[type="checkbox"].permission-toggle + label span,
   .custom-checkbox input[type="radio"].permission-toggle + label span,
   input[type="checkbox"].custom-checkbox.permission-toggle + label span,
