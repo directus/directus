@@ -1,6 +1,7 @@
 <div class="system user-menu-toggle">
 	<img class="avatar" src="{{avatar}}">
 	<div class="user-name">{{userFirstAndLastName currentUserId}}</div>
+	{{#if unreadMessagesCount}}<div class="count">{{unreadMessagesCount}}</div>{{/if}}
 	<i class="material-icons user-more">more_vert</i>
 
 	<div class="user-menu">
@@ -16,7 +17,7 @@
 			<a href="{{rootUrl}}files"><li><i class="material-icons">photo_library</i> {{t 'file_library'}}</li></a>
 			<a href="{{rootUrl}}users"><li><i class="material-icons">group</i> {{t 'user_directory'}}</li></a>
 			<hr>
-			<a href="{{rootUrl}}messages"><li><i class="material-icons">inbox</i> {{t 'your_messages'}}{{#if unreadMessagesCount}}<div class="count">{{unreadMessagesCount}}</div>{{/if}}</li></a>
+			<a href="{{rootUrl}}messages"><li><i class="material-icons">inbox</i> {{t 'your_messages'}}{{#if unreadMessagesCount}}<div class="count-menu">{{unreadMessagesCount}}</div>{{/if}}</li></a>
 			<a href="#users/{{currentUserId}}"><li><i class="material-icons">person</i> {{t 'your_profile'}}</li></a>
 			<a href="#logout" class="open-modal" data-modal="confirm"><li><i class="material-icons">exit_to_app</i> {{t 'sign_out'}}</li></a>
 		</ul>
