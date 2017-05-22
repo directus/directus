@@ -166,6 +166,7 @@ require(["config", 'polyfills'], function() {
 
       // Extend user schema with extra fields
       SchemaManager.getColumns('tables', 'directus_users').add(options.extendedUserColumns, {parse: true});
+      SchemaManager.getColumns('tables', 'directus_files').add(options.extendedFilesColumns, {parse: true});
 
       EntriesManager.setup({
         apiURL: app.API_URL,
