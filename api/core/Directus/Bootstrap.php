@@ -823,6 +823,8 @@ class Bootstrap
                 return $payload;
             }
 
+            // ----------------------------------------------------------------------------
+            // TODO: Add enforce method to ACL
             $adapter = Bootstrap::get('zendDb');
             $userTable = new BaseTableGateway('directus_users', $adapter);
             $groupTable = new BaseTableGateway('directus_groups', $adapter);
@@ -831,12 +833,12 @@ class Bootstrap
             $group = $groupTable->find($user['group']);
 
             if (!$group || !ArrayUtils::get($group, 'show_users')) {
-                throw new Exception('you are not allowed to update your user information');
+                throw new ForbiddenException('you are not allowed to update your user information');
             }
+            // ----------------------------------------------------------------------------
 
             return $payload;
         });
-
         $emitter->addFilter('table.insert.directus_users:before', $hashUserPassword);
         $emitter->addFilter('table.update.directus_users:before', $hashUserPassword);
 

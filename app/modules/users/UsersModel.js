@@ -10,17 +10,34 @@ function(app, Backbone, EntriesModel, moment) {
   return EntriesModel.extend({
 
     canEdit: function (attribute) {
-      var group = this.get('group');
-
-      if (!(group instanceof EntriesModel)) {
-        group = app.groups.get(group);
+      // hotfix: admin can edit user
+      if (app.users.getCurrentUser().isAdmin()) {
+        return true;
       }
+
+      var group = this.getGroup();
 
       if (group && !group.get('show_users')) {
         return false;
       }
 
       return EntriesModel.prototype.canEdit.apply(this, arguments);
+    },
+
+    canSendMessages: function () {
+      var group = this.getGroup();
+
+      return group && group.get('show_messages');
+    },
+
+    getGroup: function () {
+      var group = this.get('group');
+
+      if (!(group instanceof EntriesModel)) {
+        group = app.groups.get(group);
+      }
+
+      return group;
     },
 
     getAvatar: function() {

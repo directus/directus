@@ -301,7 +301,7 @@ define([
           widgetOptions: {
             buttonId: 'addBtn',
             iconClass: 'add',
-            buttonClass: 'primary',
+            buttonClass: app.users.getCurrentUser().canSendMessages() ? 'primary' : 'disabled',
             buttonText: __t('message_compose')
           },
           onClick: _.bind(function () {

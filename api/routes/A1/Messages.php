@@ -2,14 +2,16 @@
 
 namespace Directus\API\Routes\A1;
 
+use Directus\Application\Application;
 use Directus\Application\Route;
+use Directus\Database\TableGateway\BaseTableGateway;
 use Directus\Database\TableGateway\DirectusActivityTableGateway;
 use Directus\Database\TableGateway\DirectusGroupsTableGateway;
 use Directus\Database\TableGateway\DirectusMessagesRecipientsTableGateway;
 use Directus\Database\TableGateway\DirectusMessagesTableGateway;
 use Directus\Database\TableGateway\DirectusUsersTableGateway;
 use Directus\Database\TableGateway\RelationalTableGateway as TableGateway;
-use Directus\Mail\Mail;
+use Directus\Exception\ForbiddenException;
 use Directus\Util\ArrayUtils;
 use Directus\Util\DateUtils;
 use Directus\View\JsonView;
@@ -102,6 +104,8 @@ class Messages extends Route
 
     public function patchRow($id)
     {
+        $this->enforceAddMessages();
+
         $app = $this->app;
         $acl = $app->container->get('acl');
         $ZendDb = $app->container->get('zenddb');
@@ -132,6 +136,8 @@ class Messages extends Route
 
     public function postRows($responseTo = null)
     {
+        $this->enforceAddMessages();
+
         $app = $this->app;
         $acl = $app->container->get('acl');
         $ZendDb = $app->container->get('zenddb');
@@ -225,6 +231,8 @@ class Messages extends Route
 
     public function comments()
     {
+        $this->enforceAddMessages();
+
         $app = $this->app;
         $acl = $app->container->get('acl');
         $ZendDb = $app->container->get('zenddb');
@@ -312,5 +320,17 @@ class Messages extends Route
         $entries = $TableGateway->getEntries($params);
 
         return $this->app->response($entries);
+    }
+
+    private function enforceAddMessages()
+    {
+        $dbConnection = $this->app->container->get('zenddb');
+        $acl = $this->app->container->get('acl');
+        $groupTable = new BaseTableGateway('directus_groups', $dbConnection);
+        $group = $groupTable->find($acl->getGroupId());
+
+        if (!$group || !ArrayUtils::get($group, 'show_messages')) {
+            throw new ForbiddenException('You are not allowed to send messages');
+        }
     }
 }
