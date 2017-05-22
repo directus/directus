@@ -103,7 +103,6 @@ define([
 
     events: {
       'click .js-status-toggle': 'toggleStatusSelector',
-      'click .js-status': 'changeStatus',
       'click .js-permission-toggle': 'togglePermission',
       'click .js-add-full-permissions': 'addFullPermissions',
       'click .js-remove-full-permissions': 'removeFullPermissions',
@@ -124,38 +123,6 @@ define([
       this.state.workflowEnabled = !this.state.workflowEnabled;
       this.toggleWorkflow($row.data('table'));
       $row.toggleClass('workflow-enabled');
-    },
-
-    changeStatus: function (event) {
-      var $el = $(event.currentTarget);
-      var value = $el.data('value');
-      var $row = $el.closest('tr');
-      var tableName = $row.data('table');
-      var state = this.getDefaultStatus();
-
-      if (!this.isWorkflowOpen(tableName)) {
-        return;
-      }
-
-      if (!this.state.tables[tableName]) {
-        this.state.tables[tableName] = {};
-      }
-
-      if (value !== null) {
-        app.statusMapping.get(tableName, true).get('mapping').each(function (status) {
-          if (status.get('id') == value) {
-            state = {
-              name: status.get('name'),
-              value: status.get('id')
-            };
-          }
-        });
-      }
-
-      this.state.tables[tableName] = state;
-      this.closeWorkflow(tableName);
-      $row.removeClass('workflow-enabled');
-      this.render();
     },
 
     isWorkflowOpen: function (tableName) {
