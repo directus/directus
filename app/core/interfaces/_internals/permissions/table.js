@@ -494,6 +494,7 @@ define([
         data.statuses = data.hasStatusColumn ? this.getStatuses(currentTableStatus, table.id) : [];
         data.currentStatus = currentTableStatus;
         data.openWorkflow = _.contains(this.state.openWorkflow, table.id);
+        data.isSystemTable = table.id.startsWith('directus_');
 
         permissions.push(data);
       }, this));

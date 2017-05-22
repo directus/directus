@@ -15,7 +15,7 @@
 	<tbody>
 	{{#tables}}
 	<tr class="js-permission{{#if openWorkflow}} workflow-enabled{{/if}}" data-table="{{table_name}}" data-id="{{id}}" data-cid="{{cid}}">
-		<td class="tableName"><div style="display:inline-block">{{title}}<span class="privilege-shortcuts"><a class="all js-add-full-permissions">All</a>/<a class="none js-remove-full-permissions">None</a></span></div></td>
+		<td class="tableName{{#if isSystemTable}} system-table{{/if}}"><div style="display:inline-block">{{title}}<span class="privilege-shortcuts"><a class="all js-add-full-permissions">All</a>/<a class="none js-remove-full-permissions">None</a></span></div></td>
 		<td class="js-status-toggle permissions-workflow {{#unless hasStatusColumn}} disabled{{/unless}}" title="{{t 'permissions_field_level_permissions'}}">
 			<i class="material-icons vertical-middle js-edit-fields">tune</i>
 		</td>
