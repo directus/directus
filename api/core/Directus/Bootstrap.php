@@ -873,6 +873,34 @@ class Bootstrap
         $emitter->addFilter('table.insert.directus_users:before', $preventUsePublicGroup);
         $emitter->addFilter('table.update.directus_users:before', $preventUsePublicGroup);
 
+        $beforeSavingFiles = function ($payload) {
+            $acl = Bootstrap::get('acl');
+            $currentUserId = $acl->getUserId();
+
+            // ----------------------------------------------------------------------------
+            // TODO: Add enforce method to ACL
+            $adapter = Bootstrap::get('zendDb');
+            $userTable = new BaseTableGateway('directus_users', $adapter);
+            $groupTable = new BaseTableGateway('directus_groups', $adapter);
+
+            $user = $userTable->find($currentUserId);
+            $group = $groupTable->find($user['group']);
+
+            if (!$group || !ArrayUtils::get($group, 'show_files')) {
+                throw new ForbiddenException('you are not allowed to upload, edit or delete files');
+            }
+            // ----------------------------------------------------------------------------
+
+            return $payload;
+        };
+
+        $emitter->addAction('files.saving', $beforeSavingFiles);
+        $emitter->addAction('files.thumbnail.saving', $beforeSavingFiles);
+        // TODO: Make insert actions and filters
+        $emitter->addFilter('table.insert.directus_files:before', $beforeSavingFiles);
+        $emitter->addFilter('table.update.directus_files:before', $beforeSavingFiles);
+        $emitter->addFilter('table.delete.directus_files:before', $beforeSavingFiles);
+
         // NOTE: Adding the translation key into as array key, return a not valid array (json)
         // so instead of creating each element as model, backbone thinks those are attributes of a model
         // $emitter->addFilter('load.relational.onetomany', function($payload) {

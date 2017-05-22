@@ -494,11 +494,16 @@ define(function(require, exports, module) {
     },
 
     filesItem: function(id) {
+      var isNewFile = id === 'new';
       var model;
+
+      if (isNewFile && !app.users.getCurrentUser().canUploadFiles()) {
+        return this.notFound();
+      }
 
       this.setTitle(app.settings.get('global').get('project_name') + ' | File');
 
-      if (id === "new") {
+      if (isNewFile) {
         model = new app.files.model({}, {collection: app.files});
       } else {
         model = app.files.get(id);
