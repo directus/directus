@@ -2,92 +2,92 @@ require.config({
 
   urlArgs: 'bust=' + window.directusData.cacheBuster,
 
-  //deps: ["main"],
+  // Deps: ["main"],
 
   paths: {
 
     // Libraries.
-    "jquery":     "../assets/js/libs/jquery",
-    "underscore": "../assets/js/libs/underscore",
-    "backbone":   "../assets/js/libs/backbone",
-    "handlebars": "../assets/js/libs/handlebars",
-    "sortable":  "../assets/js/libs/sortable",
-    "marked":    "../assets/js/libs/marked.min",
-    "moment":     "../assets/js/libs/moment.min",
-    "moment-tz": "../assets/js/libs/moment-timezone-with-data.min",
-    "noty":     "../assets/js/libs/noty",
-    "noty_theme": "../assets/js/libs/noty_theme",
-    "polyglot":   "../assets/js/libs/polyglot.min",
-    "dragula": "../assets/js/vendor/dragula.min",
-    "chart": "../assets/js/vendor/chart.min",
-    "select2": "../assets/js/vendor/select2.min",
-    "async": "../assets/js/plugins/async",
+    jquery: '../assets/js/libs/jquery',
+    underscore: '../assets/js/libs/underscore',
+    backbone: '../assets/js/libs/backbone',
+    handlebars: '../assets/js/libs/handlebars',
+    sortable: '../assets/js/libs/sortable',
+    marked: '../assets/js/libs/marked.min',
+    moment: '../assets/js/libs/moment.min',
+    'moment-tz': '../assets/js/libs/moment-timezone-with-data.min',
+    noty: '../assets/js/libs/noty',
+    noty_theme: '../assets/js/libs/noty_theme',
+    polyglot: '../assets/js/libs/polyglot.min',
+    dragula: '../assets/js/vendor/dragula.min',
+    chart: '../assets/js/vendor/chart.min',
+    select2: '../assets/js/vendor/select2.min',
+    async: '../assets/js/plugins/async',
 
     // JavaScript folders.
-    "libs":       "../assets/js/libs",
-    "plugins":    "../assets/js/plugins",
-    "vendor":     "../assets/vendor",
+    libs: '../assets/js/libs',
+    plugins: '../assets/js/plugins',
+    vendor: '../assets/vendor',
 
     // Extensions
-    "extensions": '../customs/extensions',
-    "listviews":  '../customs/listviews',
-    "interfaces":  '../customs/interfaces',
-    "uis":         '../customs/interfaces'
+    extensions: '../customs/extensions',
+    listviews: '../customs/listviews',
+    interfaces: '../customs/interfaces',
+    uis: '../customs/interfaces'
   },
 
   shim: {
 
-    "backbone": {
-      deps: ["underscore", "jquery"],
-      exports: "Backbone"
+    backbone: {
+      deps: ['underscore', 'jquery'],
+      exports: 'Backbone'
     },
 
-    "handlebars": {
-      exports: "Handlebars"
+    handlebars: {
+      exports: 'Handlebars'
     },
 
-    "underscore": {
+    underscore: {
       exports: '_'
     },
 
-    "noty": {
-      deps: ["jquery"]
+    noty: {
+      deps: ['jquery']
     },
 
-    "noty_theme": {
-      deps: ["jquery", "noty"]
+    noty_theme: {
+      deps: ['jquery', 'noty']
     },
 
-    "marked": {
+    marked: {
       exports: 'marked'
     },
 
-    "polyglot": {
+    polyglot: {
       exports: 'Polyglot'
     },
 
-    "dragula": {
-      exports: "Dragula"
+    dragula: {
+      exports: 'Dragula'
     },
 
-    "chart": {
-      exports: "Chart"
+    chart: {
+      exports: 'Chart'
     },
 
-    "select2": {
-      deps: ["jquery"],
-      exports: "$.fn.select2"
+    select2: {
+      deps: ['jquery'],
+      exports: '$.fn.select2'
     },
 
-    "plugins/jquery.flashrow": ['jquery'],
+    'plugins/jquery.flashrow': ['jquery'],
 
-    "moment-tz": ['moment'],
+    'moment-tz': ['moment'],
 
-    "plugins/backbone.layoutmanager": ["backbone"],
+    'plugins/backbone.layoutmanager': ['backbone'],
     'plugins/backbone.trackit': ['backbone'],
-    "plugins/bootstrap-dropdown": ["jquery"],
-    "plugins/typeahead": ["jquery"],
-    "plugins/bootstrap-tooltip": ["jquery"]
+    'plugins/bootstrap-dropdown': ['jquery'],
+    'plugins/typeahead': ['jquery'],
+    'plugins/bootstrap-tooltip': ['jquery']
   }
 
 });
