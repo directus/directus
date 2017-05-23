@@ -1,6 +1,6 @@
-define(['core/UIView', 'tinymce'], function (UIView, tinymce) {
+define(['core/UIView', 'tinyMCE'], function (UIView, tinyMCE) {
   return UIView.extend({
-    template: 'wysiwyg-full/input',
+    template: 'wysiwyg_full/input',
     serialize: function () {
       var value = this.options.value || '';
       return {
@@ -9,7 +9,7 @@ define(['core/UIView', 'tinymce'], function (UIView, tinymce) {
       };
     },
     afterRender: function () {
-      this.editor = tinymce.init({
+      this.editor = tinyMCE.init({
         selector: '#wysiwyg_' + this.options.name
       });
     }
