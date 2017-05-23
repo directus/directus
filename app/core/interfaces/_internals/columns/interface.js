@@ -395,7 +395,7 @@ define([
         column.set('options', parseOptions(column, column.get('options') || {}));
 
         return column;
-      }, this);
+      });
 
       if (columns.structure.get('sort')) {
         columns.setOrder('sort', 'ASC', {silent: true});
