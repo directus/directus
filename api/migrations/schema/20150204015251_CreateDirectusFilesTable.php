@@ -9,7 +9,7 @@ CREATE TABLE `directus_files` (
   `title` varchar(255) DEFAULT '',
   `location` varchar(200) DEFAULT NULL,
   `caption` text,
-  `type` varchar(50) DEFAULT '',
+  `type` varchar(100) DEFAULT '',
   `charset` varchar(50) DEFAULT '',
   `tags` varchar(255) DEFAULT '',
   `width` int(5) DEFAULT '0',
@@ -59,7 +59,7 @@ class CreateDirectusFilesTable extends Ruckusing_Migration_Base
         ]);
         $t->column('caption', 'text');
         $t->column('type', 'string', [
-            'limit' => 50,
+            'limit' => 100,
             'default' => ''
         ]);
         $t->column('charset', 'string', [
