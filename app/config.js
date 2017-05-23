@@ -22,6 +22,7 @@ require.config({
     chart: '../assets/js/vendor/chart.min',
     select2: '../assets/js/vendor/select2.min',
     async: '../assets/js/plugins/async',
+    tinyMCE: '../assets/js/vendor/tinymce/tinymce.min',
 
     // JavaScript folders.
     libs: '../assets/js/libs',
@@ -77,6 +78,14 @@ require.config({
     select2: {
       deps: ['jquery'],
       exports: '$.fn.select2'
+    },
+
+    tinyMCE: {
+      exports: 'tinyMCE',
+      init: function () {
+          this.tinyMCE.DOM.events.domLoaded = true;
+          return this.tinyMCE;
+      }
     },
 
     'plugins/jquery.flashrow': ['jquery'],
