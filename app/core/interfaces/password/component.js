@@ -33,7 +33,7 @@ define(['core/interfaces/password/interface', 'underscore', 'core/UIComponent', 
     },
 
     list: function (options) {
-      return (options.value) ? options.value.toString().substr(0, 20).replace(/./g, '•') : '';
+      return (options.value) ? '••••••••••' : '';
     }
   });
 });
