@@ -377,7 +377,20 @@ define([
 
       this.canEdit = !(options.inModal || false);
 
+      // TODO: Parse the result on fetch
       var columns = this.columns = this.model.get(this.name);
+      // NOTE: parsing the options of each column into UIModel object
+      columns.map(function (column) {
+        var options = column.get('options') || {};
+
+        options.id = column.get('ui');
+        options = new UIModel(options);
+        options.parent = column;
+
+        column.set('options', options);
+
+        return column;
+      });
 
       if (columns.structure.get('sort')) {
         columns.setOrder('sort', 'ASC', {silent: true});
