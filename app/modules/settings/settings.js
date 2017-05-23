@@ -12,10 +12,9 @@ define([
   'backbone',
   'core/directus',
   'core/BasePageView',
-  'modules/settings/views/EditColumnView',
-  'modules/settings/views/ColumnOptionsView',
-  'modules/settings/views/ColumnFormView',
-  'modules/settings/views/ColumnModalView',
+  'modules/settings/views/modals/columns/column',
+  'modules/settings/views/modals/columns/options',
+  'modules/settings/views/modals/columns/info',
   'modules/settings/views/TablesView',
   'modules/settings/views/GlobalSettingsView',
   'modules/settings/views/AboutView',
@@ -25,7 +24,7 @@ define([
   'core/t',
 ],
 
-function(app, Backbone, Directus, BasePageView, EditColumnView, ColumnOptionsView, ColumnFormView, ColumnModalView, Tables, Global, About, Permissions, System, GroupPermissions, __t) {
+function(app, Backbone, Directus, BasePageView, ColumnView, ColumnOptionsView, ColumnInfoView, Tables, Global, About, Permissions, System, GroupPermissions, __t) {
 
   'use strict';
 
@@ -38,10 +37,9 @@ function(app, Backbone, Directus, BasePageView, EditColumnView, ColumnOptionsVie
   Settings.Tables = Tables.Views.List;
 
   Settings.Columns = {
-    Edit: EditColumnView,
+    View: ColumnView,
     Options: ColumnOptionsView,
-    Modal: ColumnModalView,
-    Form: ColumnFormView
+    Info: ColumnInfoView
   };
 
   Settings.Permissions = Permissions;

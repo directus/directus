@@ -2,16 +2,16 @@ define([
   'app',
   'underscore',
   'backbone',
+  'handlebars',
+  'helpers/schema',
   'core/edit',
   'core/Modal',
-  'modules/settings/views/ColumnFormView',
-  'modules/settings/views/ColumnOptionsView'
-], function(app, _, Backbone, EditView, ModalView, ColumnFormView, ColumnOptionsView) {
+  'modules/settings/views/modals/columns/info',
+  'modules/settings/views/modals/columns/options'
+], function(app, _, Backbone, Handlebars, SchemaHelper, EditView, ModalView, ColumnInfoView, ColumnOptionsView) {
 
-  var VIEW_COLUMN = 'editColumnView';
-  var VIEW_COLUMN_NAME = 'column';
-  var VIEW_INTERFACE = 'editOptionsView';
-  var VIEW_INTERFACE_NAME = 'interface';
+  var VIEW_COLUMN_ID = 'column';
+  var VIEW_INTERFACE_ID = 'interface';
 
   var View = ModalView.extend({
 
@@ -20,7 +20,7 @@ define([
       'class': 'modal'
     },
 
-    template: 'modal/columns-edit',
+    template: Handlebars.compile('<div class="modal-bg crop"></div>'),
 
     events: {
       'change select, input, textarea': 'onInputChange',
@@ -53,46 +53,49 @@ define([
 
     save: function() {
       var view = this.getCurrentView();
+      var columnModel = this.model.parent;
+      var isOptionsView;
 
       if (view.save()) {
-        this._close();
+        isOptionsView = this.state.currentView === VIEW_INTERFACE_ID;
+
+        if (!isOptionsView && SchemaHelper.isMissingRequiredOptions(columnModel)) {
+          this.changeTo(VIEW_INTERFACE_ID);
+        } else {
+          this._close();
+        }
       }
     },
 
     toggle: function (event) {
+      var $toggle = $(event.currentTarget);
+
       event.preventDefault();
 
-      var $toggle = $(event.currentTarget);
-      var viewName = $toggle.data('pane');
+      this.changeTo($toggle.data('pane'));
+    },
 
+    changeTo: function (viewName) {
       if (viewName == this.state.currentView) {
         return;
       }
 
-      switch (viewName) {
-        case VIEW_COLUMN_NAME:
-          this.state.currentView = VIEW_COLUMN;
-          break;
-        case VIEW_INTERFACE_NAME:
-        default:
-          this.state.currentView = VIEW_INTERFACE;
-      }
-
+      this.state.currentView = viewName;
       this.state.activeModel = this.getActiveViewModel();
 
       this.render();
     },
 
     getCurrentView: function() {
-      if (this.state.currentView === VIEW_COLUMN) {
-        return this.getEditColumnView();
+      if (this.state.currentView === VIEW_COLUMN_ID) {
+        return this.getColumnView();
       } else {
-        return this.getEditOptionsView();
+        return this.getOptionsView();
       }
     },
 
     beforeRender: function() {
-      var modalClass = this.state.currentView === VIEW_COLUMN ? VIEW_COLUMN_NAME : VIEW_INTERFACE_NAME;
+      var modalClass = this.state.currentView;
       var view = this.getCurrentView();
 
       if (this.options.focusTo) {
@@ -112,30 +115,30 @@ define([
         });
       }
 
-      this.$el.removeClass(VIEW_COLUMN_NAME).removeClass(VIEW_INTERFACE_NAME).addClass(modalClass);
+      this.$el.removeClass(VIEW_COLUMN_ID).removeClass(VIEW_INTERFACE_ID).addClass(modalClass);
       this.setView('.modal-bg', view);
     },
 
-    getEditColumnView: function() {
-      if (!this.editColumnView) {
+    getColumnView: function () {
+      if (!this.columnView) {
         var collection = app.schemaManager.getColumns('tables', this.model.parent.get('table_name'));
 
-        this.editColumnView = new ColumnFormView({
+        this.columnView = new ColumnInfoView({
           model: this.model.parent,
           collection: collection,
-          hiddenFields: ['column_name']
+          hiddenFields: !this.model.parent.isNew() ? ['column_name'] : []
         });
       }
 
-      return this.editColumnView;
+      return this.columnView;
     },
 
-    getEditOptionsView: function() {
-      if (!this.editOptionsView) {
-        this.editOptionsView = new ColumnOptionsView(this.options);
+    getOptionsView: function () {
+      if (!this.optionsView) {
+        this.optionsView = new ColumnOptionsView(this.options);
       }
 
-      return this.editOptionsView;
+      return this.optionsView;
     },
 
     cleanup: function () {
@@ -148,10 +151,10 @@ define([
       var model;
 
       switch (this.state.currentView) {
-        case VIEW_COLUMN_NAME:
+        case VIEW_COLUMN_ID:
           model = this.model.parent;
           break;
-        case VIEW_INTERFACE_NAME:
+        case VIEW_INTERFACE_ID:
         default:
           model = this.model;
       }
@@ -162,17 +165,17 @@ define([
     initialize: function() {
       this.state = {
         activeModel: null,
-        currentView: this.options.currentView || VIEW_INTERFACE
+        currentView: this.options.currentView || VIEW_COLUMN_ID
       };
 
       this.state.activeModel = this.getActiveViewModel();
-      this.editOptionsView = this.getEditOptionsView();
+      this.optionsView = this.getOptionsView();
       this.model.parent.startTracking();
     }
   });
 
-  View.VIEW_INTERFACE = VIEW_INTERFACE;
-  View.VIEW_COLUMN = VIEW_COLUMN;
+  View.VIEW_INTERFACE_ID = VIEW_INTERFACE_ID;
+  View.VIEW_COLUMN_ID = VIEW_COLUMN_ID;
 
   return View;
 });

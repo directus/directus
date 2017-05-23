@@ -12,7 +12,7 @@ define([
 
   return Backbone.Layout.extend({
 
-    template: 'modal/columns-new',
+    template: 'modal/columns/info',
 
     events: {
       'change select#dataType': function (e) {
@@ -361,7 +361,7 @@ define([
       var uiChanged = !this.model.isNew() && this.selectedUI != this.model._originalAttrs['ui'];
       var hasOptions = (uis[this.selectedUI].variables || []).length > 0;
 
-      data.showOptions = hasOptions && !uiChanged;
+      data.showOptions = !this.model.isNew() && hasOptions && !uiChanged;
       data.interfaces = this.getInterfacesGrouped(data.ui_types, this.selectedUI);
       data.showDefaultValue = !data.isAlias && !this.model.isPrimaryColumn();
 
