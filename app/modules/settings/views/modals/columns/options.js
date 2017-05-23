@@ -1,7 +1,7 @@
 define(['app', 'backbone', 'core/edit'], function(app, Backbone, EditView) {
 
   return Backbone.Layout.extend({
-    template: 'modal/columns-options-edit',
+    template: 'modal/columns/options',
 
     beforeRender: function() {
       this.insertView('#form-columns-options', this.editView);

@@ -28,16 +28,19 @@ function(app, _, moment, Backbone, DirectusModal, DirectusEdit, __t, Notificatio
     },
 
     leftToolbar: function() {
+      var canUploadFiles = app.users.getCurrentUser().canUploadFiles();
       return [
         new Widgets.ButtonWidget({
           widgetOptions: {
             buttonId: 'addBtn',
             iconClass: 'cloud_upload',
-            buttonClass: 'primary',
+            buttonClass: canUploadFiles ? 'primary' : 'disabled',
             buttonText: __t('file_upload')
           },
           onClick: function(event) {
-            app.router.go('#files','new');
+            if (canUploadFiles) {
+              app.router.go('#files', 'new');
+            }
           }
         }),
         new Widgets.InfoButtonWidget({enable: false}),

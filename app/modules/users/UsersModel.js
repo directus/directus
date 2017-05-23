@@ -30,6 +30,12 @@ function(app, Backbone, EntriesModel, moment) {
       return group && group.get('show_messages');
     },
 
+    canUploadFiles: function () {
+      var group = this.getGroup();
+
+      return group && group.get('show_files');
+    },
+
     getGroup: function () {
       var group = this.get('group');
 

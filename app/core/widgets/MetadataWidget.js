@@ -147,6 +147,8 @@ function(app, Backbone, _, Handlebars, __t) {
       if (this.model.isNew()) {
         this.model.fetch();
       }
+
+      this.listenTo(this.options.itemModel, 'sync', this.render);
     }
   });
 

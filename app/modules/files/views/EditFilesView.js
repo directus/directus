@@ -27,6 +27,10 @@ function(app, _, Backbone, __t, Directus, BasePageView, RightPane, Widgets) {
     deleteConfirm: function () {
       var self = this;
 
+      if (!app.users.getCurrentUser().canUploadFiles()) {
+        return;
+      }
+
       app.router.openModal({type: 'confirm', text: __t('confirm_delete_item'), callback: function () {
         var xhr = self.model.saveWithDeleteStatus();
 
@@ -39,6 +43,10 @@ function(app, _, Backbone, __t, Directus, BasePageView, RightPane, Widgets) {
     },
 
     saveConfirm: function (event) {
+      if (!app.users.getCurrentUser().canUploadFiles()) {
+        return;
+      }
+
       this.save(event);
     },
 
@@ -114,6 +122,7 @@ function(app, _, Backbone, __t, Directus, BasePageView, RightPane, Widgets) {
     },
 
     leftToolbar: function () {
+      var canUploadFiles = app.users.getCurrentUser().canUploadFiles();
       var widgets = [];
       var editView = this;
       this.saveWidget = new Widgets.SaveWidget({
@@ -121,12 +130,15 @@ function(app, _, Backbone, __t, Directus, BasePageView, RightPane, Widgets) {
           basicSave: this.headerOptions.basicSave,
           singlePage: this.single
         },
+        enabled: false,
         onClick: _.bind(editView.saveConfirm, editView)
       });
 
       widgets.push(this.saveWidget);
 
-      // this.saveWidget.disable();
+      if (canUploadFiles) {
+        this.saveWidget.enable();
+      }
 
       // delete button
       if (!this.model.isNew()) {
@@ -134,7 +146,7 @@ function(app, _, Backbone, __t, Directus, BasePageView, RightPane, Widgets) {
           widgetOptions: {
             buttonId: 'deleteBtn',
             iconClass: 'close',
-            buttonClass: 'serious',
+            buttonClass: canUploadFiles ? 'serious' : 'disabled',
             buttonText: __t('delete')
           },
           onClick: _.bind(editView.deleteConfirm, editView)

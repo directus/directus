@@ -84,7 +84,7 @@ define([
     var missing = false;
 
     _.each(uiOptionsName, function (optionName) {
-      var option = columnOptions[optionName];
+      var option = columnOptions.get(optionName);
 
       if (!option || _.isEmpty(option)) {
         missing = true;

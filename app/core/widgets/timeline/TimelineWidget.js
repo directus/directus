@@ -248,7 +248,13 @@ function(app, Backbone, $, _, __t, Directus, moment) {
       var additionalCount = data.length - 5;
 
 
-      return $.extend(this.options.widgetOptions, {activities: data, preview: preview, additionalCount: additionalCount, current_user: app.authenticatedUserId});
+      return $.extend(this.options.widgetOptions, {
+        activities: data,
+        preview: preview,
+        additionalCount: additionalCount,
+        current_user: app.authenticatedUserId,
+        canComment: app.users.getCurrentUser().canSendMessages()
+      });
     },
 
     initialize: function(options) {

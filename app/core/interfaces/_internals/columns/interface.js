@@ -6,10 +6,19 @@ define([
   'core/notification',
   'core/doubleConfirmation',
   'schema/ColumnsCollection',
+  'schema/UIModel',
   'sortable',
   'core/t'
-], function (app, _, SchemaHelper, UIView, Notification, DoubleConfirmation, ColumnsCollection, Sortable, __t) {
+], function (app, _, SchemaHelper, UIView, Notification, DoubleConfirmation, ColumnsCollection, UIModel, Sortable, __t) {
   'use strict';
+
+  var parseOptions = function (column, options) {
+    options.id = column.get('ui');
+    options = new UIModel(options);
+    options.parent = column;
+
+    return options;
+  };
 
   return UIView.extend({
 
@@ -62,7 +71,7 @@ define([
         return;
       }
 
-      var EditColumnView = require('modules/settings/views/EditColumnView');
+      var ColumnView = require('modules/settings/views/modals/columns/column');
       var optionsModel = columnModel.options;
       optionsModel.set({id: columnModel.get('ui')});
 
@@ -71,18 +80,18 @@ define([
 
       switch (viewName) {
         case 'column':
-          viewName = EditColumnView.VIEW_COLUMN;
+          viewName = ColumnView.VIEW_COLUMN_ID;
           break;
         default:
         case 'interface':
-          viewName = EditColumnView.VIEW_INTERFACE;
+          viewName = ColumnView.VIEW_INTERFACE_ID;
           break;
       }
 
-      var view = new EditColumnView({
+      var view = new ColumnView({
         model: optionsModel,
         schema: schema,
-        currentView: viewName || EditColumnView.VIEW_INTERFACE,
+        currentView: viewName || ColumnView.VIEW_COLUMN_ID,
         scrollTo: scrollTo,
         focusTo: focusTo
       });
@@ -93,17 +102,32 @@ define([
       app.router.openViewInModal(view);
     },
 
+    // TODO: Optimize this method, is almost identical to editRow
     addRow: function () {
-      var ColumnModalView = require('modules/settings/views/ColumnModalView');
       var ColumnModel = require('schema/ColumnModel');
       var collection = app.schemaManager.getColumns('tables', this.model.id);
-      var model = new ColumnModel({data_type: 'ALIAS', ui: {}}, {collection: collection, table: collection.table});
-      var view = new ColumnModalView({
-        model: model,
-        collection: collection
+      var model = new ColumnModel({
+        data_type: 'VARCHAR',
+        options: new UIModel({id: 'textinput'}),
+        ui: 'textinput'
+      }, {
+        collection: collection,
+        table: collection.table
+      });
+
+      var optionsModel = model.get('options');
+      optionsModel.parent = model;
+
+      var schema = app.schemaManager.getColumns('ui', 'textinput');
+      var ColumnView = require('modules/settings/views/modals/columns/column');
+      var view = new ColumnView({
+        model: optionsModel,
+        schema: schema,
+        currentView: ColumnView.VIEW_COLUMN_ID
       });
 
       this.listenTo(model, 'sync', this.onColumnChange);
+      this.listenTo(optionsModel, 'sync', this.onOptionsChange);
 
       app.router.openViewInModal(view);
     },
@@ -120,7 +144,10 @@ define([
 
     // When the column change or a new column is added into a table
     onOptionsChange: function (model) {
-      this.columns.get(model.parent.id).set('options', _.clone(model.attributes));
+      var column = this.columns.get(model.parent.id);
+      var options = parseOptions(column, _.clone(model.attributes));
+
+      column.set('options', options);
     },
 
     destroyColumn: function (columnName) {
@@ -361,7 +388,14 @@ define([
 
       this.canEdit = !(options.inModal || false);
 
+      // TODO: Parse the result on fetch
       var columns = this.columns = this.model.get(this.name);
+      // NOTE: parsing the options of each column into UIModel object
+      columns.map(function (column) {
+        column.set('options', parseOptions(column, column.get('options') || {}));
+
+        return column;
+      });
 
       if (columns.structure.get('sort')) {
         columns.setOrder('sort', 'ASC', {silent: true});
