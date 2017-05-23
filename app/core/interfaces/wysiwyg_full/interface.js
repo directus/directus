@@ -1,4 +1,4 @@
-define(['core/UIView', './vendor/tinymce.min'], function (UIView) {
+define(['core/UIView', 'tinymce'], function (UIView, tinymce) {
   return UIView.extend({
     template: 'wysiwyg-full/input',
     serialize: function () {
