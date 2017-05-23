@@ -12,6 +12,14 @@ define([
 ], function (app, _, SchemaHelper, UIView, Notification, DoubleConfirmation, ColumnsCollection, UIModel, Sortable, __t) {
   'use strict';
 
+  var parseOptions = function (column, options) {
+    options.id = column.get('ui');
+    options = new UIModel(options);
+    options.parent = column;
+
+    return options;
+  };
+
   return UIView.extend({
 
     template: '_internals/columns/interface',
@@ -136,7 +144,10 @@ define([
 
     // When the column change or a new column is added into a table
     onOptionsChange: function (model) {
-      this.columns.get(model.parent.id).set('options', _.clone(model.attributes));
+      var column = this.columns.get(model.parent.id);
+      var options = parseOptions(column, _.clone(model.attributes));
+
+      column.set('options', options);
     },
 
     destroyColumn: function (columnName) {
@@ -381,16 +392,10 @@ define([
       var columns = this.columns = this.model.get(this.name);
       // NOTE: parsing the options of each column into UIModel object
       columns.map(function (column) {
-        var options = column.get('options') || {};
-
-        options.id = column.get('ui');
-        options = new UIModel(options);
-        options.parent = column;
-
-        column.set('options', options);
+        column.set('options', parseOptions(column, column.get('options') || {}));
 
         return column;
-      });
+      }, this);
 
       if (columns.structure.get('sort')) {
         columns.setOrder('sort', 'ASC', {silent: true});
