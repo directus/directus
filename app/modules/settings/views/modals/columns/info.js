@@ -496,12 +496,12 @@ define([
     _alternativeInterfaces: function () {
       var uis = UIManager.getAllSettings({returnObject: true});
       var model = this.model;
+      var dataType = model.isAlias() ? model.getRelationshipType() : model.get('type');
       var row = model.toJSON();
       var types = [];
 
       // Gather a list of UI alternatives
       _.each(uis, function (ui) {
-        var dataType = (model.isRelational()) ? model.getRelationshipType() : row.type;
         if (row.ui === ui.id || (!ui.system && ui.dataTypes.indexOf(dataType) > -1)) {
           types.push({id: ui.id, selected: (ui.id === row.ui)});
         }
