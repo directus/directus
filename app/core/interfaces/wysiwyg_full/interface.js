@@ -78,13 +78,15 @@ define(['core/UIView', 'tinyMCE', 'Utils'], function (UIView, tinyMCE, Utils) {
         });
       }
 
+      var toolbar = settings.get('toolbar');
+
       this.editor = tinyMCE.init({
         plugins: 'table',
         selector: '#wysiwyg_' + this.options.name,
         branding: false,
         elementpath: elementpath,
         menubar: false,
-        toolbar: 'undo redo | styleselect | table',
+        toolbar: (styleFormats.length > 0 ? 'styleselect | ' : '') + toolbar,
         style_formats: styleFormats,
         setup: function (editor) {
           var saveEditorContents = Utils.debounce(function () {
