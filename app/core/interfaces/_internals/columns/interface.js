@@ -72,7 +72,7 @@ define([
       }
 
       var ColumnView = require('modules/settings/views/modals/columns/column');
-      var optionsModel = columnModel.options;
+      var optionsModel = columnModel.get('options');
       optionsModel.set({id: columnModel.get('ui')});
 
       var schema = app.schemaManager.getColumns('ui', optionsModel.id);
@@ -144,10 +144,19 @@ define([
 
     // When the column change or a new column is added into a table
     onOptionsChange: function (model) {
+      var table = app.schemaManager.getTable(this.model.id);
       var column = this.columns.get(model.parent.id);
-      var options = parseOptions(column, _.clone(model.attributes));
+      var options = _.clone(model.attributes);
+      var optionsModel = parseOptions(column, options);
 
-      column.set('options', options);
+      // update interface collection
+      column = this.columns.get(model.parent.id);
+      column.set('options', optionsModel);
+
+      // update main schema data
+      column = table.columns.get(model.parent.id);
+      column.options.clear();
+      column.options.set(options);
     },
 
     destroyColumn: function (columnName) {

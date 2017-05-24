@@ -134,6 +134,24 @@ define([
     },
 
     getOptionsView: function () {
+      if (this.model.parent.get('ui') !== this.model.id) {
+        var columnModel = this.model.parent;
+        var newInterfaceId = columnModel.get('ui');
+        var schema = app.schemaManager.getColumns('ui', newInterfaceId);
+
+        columnModel.set('options', this.model);
+
+        this.model.clear();
+        this.model.set('id', this.model.parent.get('ui'));
+        this.model.structure.reset(schema.models, {
+          silent: true,
+          parse: true
+        });
+
+        this.optionsView.remove();
+        this.optionsView = null;
+      }
+
       if (!this.optionsView) {
         this.optionsView = new ColumnOptionsView(this.options);
       }
