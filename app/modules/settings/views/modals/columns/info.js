@@ -20,21 +20,26 @@ define([
         this.render();
       },
 
-      'change select#uiType': function (e) {
+      'change select#uiType': function (event) {
+        var selectedUI = $(event.currentTarget).val();
         var columnName = this.model.get('column_name');
         var columnComment = this.model.get('comment');
 
         if (this.model.isNew()) {
           this.selectedDataType = null;
 
+          var options = this.model.get('options');
+          options.set('id', selectedUI);
+
           this.model.clear();
           this.model.set({
             column_name: columnName,
-            comment: columnComment
+            comment: columnComment,
+            options: options
           });
         }
 
-        this.selectedUI = $(e.target).val();
+        this.selectedUI = selectedUI;
 
         this.render();
       },

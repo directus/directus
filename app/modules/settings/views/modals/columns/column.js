@@ -134,7 +134,9 @@ define([
     },
 
     getOptionsView: function () {
-      if (this.model.parent.get('ui') !== this.model.id) {
+      // if is a new column or the column change interface
+      // create a new options view based on the new interface options
+      if (this.model.parent.isNew() || this.model.parent.get('ui') !== this.model.id) {
         var columnModel = this.model.parent;
         var newInterfaceId = columnModel.get('ui');
         var schema = app.schemaManager.getColumns('ui', newInterfaceId);
@@ -143,13 +145,20 @@ define([
 
         this.model.clear();
         this.model.set('id', this.model.parent.get('ui'));
-        this.model.structure.reset(schema.models, {
-          silent: true,
-          parse: true
-        });
 
-        this.optionsView.remove();
-        this.optionsView = null;
+        if (!this.model.structure) {
+          this.model.structure = schema;
+        } else {
+          this.model.structure.reset(schema.models, {
+            silent: true,
+            parse: true
+          });
+        }
+
+        if (this.optionsView) {
+          this.optionsView.remove();
+          this.optionsView = null;
+        }
       }
 
       if (!this.optionsView) {
@@ -186,6 +195,7 @@ define([
         currentView: this.options.currentView || VIEW_COLUMN_ID
       };
 
+      // TODO: Use the column model as main model instead of column options
       this.state.activeModel = this.getActiveViewModel();
       this.optionsView = this.getOptionsView();
       this.model.parent.startTracking();
