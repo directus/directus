@@ -496,7 +496,7 @@ define([
     _alternativeInterfaces: function () {
       var uis = UIManager.getAllSettings({returnObject: true});
       var model = this.model;
-      var dataType = model.isAlias() ? model.getRelationshipType() : model.get('type');
+      var dataType = model.isAlias() && model.isRelational() ? model.getRelationshipType() : model.get('type');
       var row = model.toJSON();
       var types = [];
 
