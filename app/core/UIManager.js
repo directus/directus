@@ -443,9 +443,9 @@ define(function(require, exports, module) {
       options.name = attr;
       options.structure = options.structure || options.model.getStructure();
       options.schema = options.structure.get(options.name);
-      options.value = options.model.get(options.name);
-      options.collection = options.collection || options.model.collection;
       options.settings = options.schema.options;
+      options.value = options.model.get(options.name) || options.schema.get('default_value');
+      options.collection = options.collection || options.model.collection;
 
       if (options.canWrite === undefined) {
         options.canWrite =  typeof options.model.canEdit === 'function' ? options.model.canEdit(attr) : true;
