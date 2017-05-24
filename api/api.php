@@ -989,8 +989,6 @@ $app->get("/$v/tables/:table/typeahead/?", function ($table, $query = null) use 
 
     $columns = ($params['columns']) ? explode(',', $params['columns']) : [];
     if (count($columns) > 0) {
-        $params['group_by'] = $columns[0];
-
         if (isset($params['q'])) {
             $params['adv_where'] = "`{$columns[0]}` like '%{$params['q']}%'";
             $params['perPage'] = 50;
