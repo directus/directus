@@ -87,6 +87,7 @@ return [
     ],
 
     'filters' => [
+        // 'table.insert.products:before' => \Directus\Customs\Hooks\BeforeInsertProducts::class,
         'response.directus_users.get' => function ($payload) {
             /*
             // assigned by reference to directly change the value on $payload->data
