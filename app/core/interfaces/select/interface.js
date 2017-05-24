@@ -71,7 +71,8 @@ define(['underscore', 'core/UIView', 'core/t', 'select2'], function (_, UIView, 
         auto_search_limit: this.options.settings.get('auto_search_limit'),
         placeholder_text: (this.options.settings.get('placeholder_text')) ? this.options.settings.get('placeholder_text') : __t('select_from_below'),
         select_type: this.options.settings.get('input_type') === 'dropdown',
-        multiselect: this.options.settings.get('select_multiple') === true
+        multiselect: this.options.settings.get('select_multiple') === true,
+        value: value
       };
     },
     initialize: function () {
