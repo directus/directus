@@ -74,7 +74,7 @@ define(['./interface', 'core/UIComponent', 'core/t'], function (Input, UICompone
         id: 'toolbar',
         ui: 'textinput',
         default_value: 'undo redo | bold italic | table',
-        instructions: 'Space separated list of <a href="https://www.tinymce.com/docs/configure/editor-appearance/#toolbar" target="_blank" rel="noopener">toolbar controls</a>'
+        comment: 'Space separated list of <a href="https://www.tinymce.com/docs/configure/editor-appearance/#toolbar" target="_blank" rel="noopener">toolbar controls</a>'
       }
     ],
     validate: function (value, options) {
