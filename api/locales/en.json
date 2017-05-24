@@ -411,6 +411,7 @@
     "unable_to_remove_column_x": "Unable to remove the column [%{column}]",
     "column_not_found": "Column not found",
     "column_x_not_found": "Column \"%{column_name}\" not found",
+    "column_x_exists": "Column \"%{column_name}\" already exists in the table",
     "column_removed": "Column Removed",
     "column_x_was_removed": "Column \"%{column_name}\" was removed",
     "column_updated": "Column Updated",

@@ -95,6 +95,14 @@ define([
       var data = this.$('form').serializeObject();
       var options = {patch: false, wait: true, silent: false};
       var isNew = this.model.isNew();
+      var columns = this.model.table.columns;
+
+      if (isNew && columns.get(data.column_name)) {
+        Notification.warning(__t('column_x_exists', {
+          column_name: data.column_name
+        }));
+        return;
+      }
 
       if (!this.model.isNew() && this._isTracking) {
         data = this.model.unsavedAttributes();
