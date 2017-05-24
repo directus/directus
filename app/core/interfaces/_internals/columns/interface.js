@@ -106,7 +106,9 @@ define([
     addRow: function () {
       var ColumnModel = require('schema/ColumnModel');
       var collection = app.schemaManager.getColumns('tables', this.model.id);
+      // TODO: Add model/view required options mechanism
       var model = new ColumnModel({
+        table_name: collection.table.id,
         data_type: 'VARCHAR',
         options: new UIModel({id: 'textinput'}),
         ui: 'textinput'
