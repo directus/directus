@@ -67,11 +67,7 @@ define(function(require, exports, module) {
     serialize: function() {
       // editing UIs settings does not have a specified table assigned to it.
       var tableInfo = this.column.collection.table;
-      var tableName, comment;
-
-      if (tableInfo) {
-        tableName = tableInfo.id
-      }
+      var tableName = tableInfo ? tableInfo.id : undefined;
 
       return {
         id: this.column.id,
