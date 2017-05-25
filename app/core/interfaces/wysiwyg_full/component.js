@@ -97,10 +97,7 @@ define(['./interface', 'core/UIComponent', 'core/t'], function (Input, UICompone
             code: 'Inline Code',
             fullscreen: 'Fullscreen',
             insertdatetime: 'Time and Date',
-            media: 'Insert Media',
-            flipv: 'Flip Image Vertically',
-            fliph: 'Flip Image Horizontally',
-            editimage: 'Open image option dialog'
+            media: 'Insert Media'
           }
         }
       },
