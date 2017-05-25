@@ -100,8 +100,6 @@ define(['core/UIView', 'tinyMCE', 'Utils'], function (UIView, tinyMCE, Utils) {
 
       toolbar += settings.get('custom_toolbar_options');
 
-      console.log(toolbar);
-
       this.editor = tinyMCE.init({
         plugins: 'table hr lists link image print pagebreak code insertdatetime media',
         selector: '#wysiwyg_' + this.options.name,
