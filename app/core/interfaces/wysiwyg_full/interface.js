@@ -17,8 +17,6 @@ define(['core/UIView', 'tinyMCE', 'Utils'], function (UIView, tinyMCE, Utils) {
 
       var elementpath = Boolean(Number(settings.get('show_element_path')));
 
-      var toolbar = '';
-
       // Format menu (styleselect) options
       var styleFormats = [];
 
@@ -80,6 +78,8 @@ define(['core/UIView', 'tinyMCE', 'Utils'], function (UIView, tinyMCE, Utils) {
         });
       }
 
+      var toolbar = (styleFormats.length > 0 ? 'styleselect | ' : '');
+
       var toolbarOptions = settings.get('toolbar_options').split(',');
 
       if (toolbarOptions.length > 0) {
@@ -108,7 +108,7 @@ define(['core/UIView', 'tinyMCE', 'Utils'], function (UIView, tinyMCE, Utils) {
         branding: false,
         elementpath: elementpath,
         menubar: false,
-        toolbar: (styleFormats.length > 0 ? 'styleselect | ' : '') + toolbar,
+        toolbar: toolbar,
         style_formats: styleFormats,
         setup: function (editor) {
           var saveEditorContents = Utils.debounce(function () {
