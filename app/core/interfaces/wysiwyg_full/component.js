@@ -70,11 +70,14 @@ define(['./interface', 'core/UIComponent', 'core/t'], function (Input, UICompone
           }
         }
       },
+      {id: 'show_inline_options_in_toolbar', ui: 'checkbox', default_value: true},
       {
-        id: 'toolbar',
+        id: 'custom_toolbar_options',
         ui: 'textinput',
-        default_value: 'undo redo | bold italic | table',
-        comment: 'Space separated list of <a href="https://www.tinymce.com/docs/configure/editor-appearance/#toolbar" target="_blank" rel="noopener">toolbar controls</a>'
+        options: {
+          placeholder: 'undo redo | table'
+        },
+        comment: 'Space separated list of <a href="https://www.tinymce.com/docs/configure/editor-appearance/#toolbar" target="_blank" rel="noopener">TinyMCE toolbar controls</a>'
       }
     ],
     validate: function (value, options) {

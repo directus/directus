@@ -17,6 +17,8 @@ define(['core/UIView', 'tinyMCE', 'Utils'], function (UIView, tinyMCE, Utils) {
 
       var elementpath = Boolean(Number(settings.get('show_element_path')));
 
+      var toolbar = '';
+
       // Format menu (styleselect) options
       var styleFormats = [];
 
@@ -37,6 +39,11 @@ define(['core/UIView', 'tinyMCE', 'Utils'], function (UIView, tinyMCE, Utils) {
       var inline = settings.get('inline').split(',');
 
       if (inline.length > 0) {
+        if (settings.get('show_inline_options_in_toolbar')) {
+          toolbar += inline.reduce(function (str, option) {
+            return str += ' ' + option;
+          });
+        }
         styleFormats.push({
           title: 'Inline',
           items: inline.map(function (option) {
@@ -78,7 +85,9 @@ define(['core/UIView', 'tinyMCE', 'Utils'], function (UIView, tinyMCE, Utils) {
         });
       }
 
-      var toolbar = settings.get('toolbar');
+      toolbar += settings.get('custom_toolbar_options');
+
+      console.log(toolbar);
 
       this.editor = tinyMCE.init({
         plugins: 'table',
