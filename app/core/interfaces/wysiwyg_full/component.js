@@ -70,10 +70,44 @@ define(['./interface', 'core/UIComponent', 'core/t'], function (Input, UICompone
           }
         }
       },
-      {id: 'show_inline_options_in_toolbar', ui: 'checkbox', default_value: true},
+      {
+        id: 'toolbar_options',
+        ui: 'select',
+        default_value: 'inline,table,undo,redo,subscript,superscript,bullist,numlist,link,unlink,image,media',
+        options: {
+          select_multiple: true,
+          input_type: 'radio',
+          options: {
+            inline: 'Inline Options',
+            alignment: 'Alignment Options',
+            table: 'Tables',
+            undo: 'Undo',
+            redo: 'Redo',
+            removeformat: 'Remove Format',
+            subscript: 'Subscript',
+            superscript: 'Superscript',
+            hr: 'Horizontal Rule (<hr>)',
+            bullist: 'Unordered List',
+            numlist: 'Ordered List',
+            link: 'Link',
+            unlink: 'Unlink',
+            openlink: 'Open Link',
+            image: 'Image',
+            pagebreak: 'Page Break',
+            code: 'Inline Code',
+            fullscreen: 'Fullscreen',
+            insertdatetime: 'Time and Date',
+            media: 'Insert Media',
+            flipv: 'Flip Image Vertically',
+            fliph: 'Flip Image Horizontally',
+            editimage: 'Open image option dialog'
+          }
+        }
+      },
       {
         id: 'custom_toolbar_options',
         ui: 'textinput',
+        default_value: '',
         options: {
           placeholder: 'undo redo | table'
         },

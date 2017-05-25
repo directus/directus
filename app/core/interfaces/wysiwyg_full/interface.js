@@ -39,11 +39,6 @@ define(['core/UIView', 'tinyMCE', 'Utils'], function (UIView, tinyMCE, Utils) {
       var inline = settings.get('inline').split(',');
 
       if (inline.length > 0) {
-        if (settings.get('show_inline_options_in_toolbar')) {
-          toolbar += inline.reduce(function (str, option) {
-            return str += ' ' + option;
-          });
-        }
         styleFormats.push({
           title: 'Inline',
           items: inline.map(function (option) {
@@ -85,12 +80,30 @@ define(['core/UIView', 'tinyMCE', 'Utils'], function (UIView, tinyMCE, Utils) {
         });
       }
 
+      var toolbarOptions = settings.get('toolbar_options').split(',');
+
+      if (toolbarOptions.length > 0) {
+        toolbar += toolbarOptions.reduce(function (str, option) {
+          if (str === 'inline') {
+            return str = inline.reduce(function (inlineStr, option) {
+              return inlineStr += ' ' + option;
+            });
+          } else if (option === 'alignment') {
+            return str += alignment.reduce(function (alignmentStr, option) {
+              return alignmentStr += ' ' + option;
+            });
+          } else {
+            return str += ' ' + option;
+          }
+        });
+      }
+
       toolbar += settings.get('custom_toolbar_options');
 
       console.log(toolbar);
 
       this.editor = tinyMCE.init({
-        plugins: 'table',
+        plugins: 'table hr lists link image print pagebreak code fullscreen insertdatetime media imagetools',
         selector: '#wysiwyg_' + this.options.name,
         branding: false,
         elementpath: elementpath,
