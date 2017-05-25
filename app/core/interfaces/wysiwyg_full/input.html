@@ -1,6 +1,32 @@
 <style>
+	/* These styles override the base styles found in /assets/js/vendor/tinymce/skins/directus */
 	.mce-btn-group .mce-btn {
 		float: left;
+		border: none;
+	}
+
+	/* formats button */
+	.mce-widget.mce-btn.mce-menubtn.mce-active button {
+		color: white;
+	}
+
+	.mce-btn.mce-active,
+	.mce-btn.mce-active:hover {
+		color: white;
+		background-color: #3498db;
+		border-color: white;
+	}
+
+	.mce-btn.mce-active i {
+		color: white;
+	}
+
+	.mce-flow-layout-item {
+		margin-top: 0;
+	}
+
+	.mce-toolbar-grp {
+		padding: 0;
 	}
 </style>
 <textarea name="{{name}}" id="wysiwyg_{{name}}">{{value}}</textarea>
