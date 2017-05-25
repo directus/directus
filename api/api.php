@@ -174,6 +174,8 @@ $app->hook('slim.before.dispatch', function () use ($app, $requestNonceProvider,
     // API/Server is about to initialize
     $app->hookEmitter->run('application.init', $app);
 
+    // TODO: Move this process to a middleware
+
     /** Skip routes which don't require these protections */
     $routeName = $app->router()->getCurrentRoute()->getName();
     if (!in_array($routeName, $authAndNonceRouteWhitelist)) {
@@ -210,8 +212,10 @@ $app->hook('slim.before.dispatch', function () use ($app, $requestNonceProvider,
         } else if (!$authentication->loggedIn()) {
             $directusGroupsTableGateway = new DirectusGroupsTableGateway($ZendDb, $acl);
             $publicGroup = $directusGroupsTableGateway->select(['name' => 'public'])->current();
+            $uri = trim($app->request()->getResourceUri(), '/');
+            $uriParts = explode('/', $uri);
 
-            if ($publicGroup) {
+            if (ArrayUtils::get($uriParts, 0) === '1.1' && $publicGroup) {
                 $user = [
                     'id' => null,
                     'group' => $publicGroup['id']
