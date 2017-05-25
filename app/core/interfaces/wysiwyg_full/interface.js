@@ -103,9 +103,10 @@ define(['core/UIView', 'tinyMCE', 'Utils'], function (UIView, tinyMCE, Utils) {
       console.log(toolbar);
 
       this.editor = tinyMCE.init({
-        plugins: 'table hr lists link image print pagebreak code fullscreen insertdatetime media',
+        plugins: 'table hr lists link image print pagebreak code insertdatetime media',
         selector: '#wysiwyg_' + this.options.name,
         branding: false,
+        skin: 'directus',
         elementpath: elementpath,
         menubar: false,
         toolbar: toolbar,

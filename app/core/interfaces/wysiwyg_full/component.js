@@ -95,7 +95,6 @@ define(['./interface', 'core/UIComponent', 'core/t'], function (Input, UICompone
             image: 'Image',
             pagebreak: 'Page Break',
             code: 'Inline Code',
-            fullscreen: 'Fullscreen',
             insertdatetime: 'Time and Date',
             media: 'Insert Media'
           }
