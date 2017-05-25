@@ -13,6 +13,8 @@ class DirectusPrivilegesTableGateway extends RelationalTableGateway
 {
     public static $_tableName = 'directus_privileges';
 
+    public $primaryKeyFieldName = 'id';
+
     // @todo: make this part of every table gateway
     private $fillable = [
         'allow_view',

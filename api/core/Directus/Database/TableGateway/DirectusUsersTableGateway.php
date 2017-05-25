@@ -13,6 +13,8 @@ class DirectusUsersTableGateway extends RelationalTableGateway
 
     public static $_tableName = 'directus_users';
 
+    public $primaryKeyFieldName = 'id';
+
     public function __construct(AdapterInterface $adapter, Acl $acl)
     {
         parent::__construct(self::$_tableName, $adapter, $acl);

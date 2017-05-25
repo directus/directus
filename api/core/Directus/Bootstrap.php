@@ -40,6 +40,7 @@ use Directus\Util\StringUtils;
 use Directus\View\Twig\DirectusTwigExtension;
 use Slim\Extras\Log\DateTimeFileWriter;
 use Slim\Extras\Views\Twig;
+use Zend\Db\TableGateway\TableGateway;
 
 /**
  * NOTE: This class depends on the constants defined in config.php
@@ -959,7 +960,7 @@ class Bootstrap
         $session = self::get('session');
         $config = self::get('config');
         $prefix = ArrayUtils::get($config, 'session.prefix', 'directus_');
-        $table = new RelationalTableGateway('directus_users', $zendDb);
+        $table = new TableGateway('directus_users', $zendDb);
 
         return new AuthProvider($table, $session, $prefix);
     }

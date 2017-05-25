@@ -14,6 +14,8 @@ class DirectusPreferencesTableGateway extends RelationalTableGateway
 {
     public static $_tableName = 'directus_preferences';
 
+    public $primaryKeyFieldName = 'id';
+
     /**
      * List of table that does not need preferences.
      *

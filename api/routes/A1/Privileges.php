@@ -5,6 +5,7 @@ namespace Directus\API\Routes\A1;
 use Directus\Application\Route;
 use Directus\Bootstrap;
 use Directus\Database\TableGateway\DirectusPrivilegesTableGateway;
+use Directus\Exception\ForbiddenException;
 use Directus\Services\TablesService;
 use Directus\Util\ArrayUtils;
 use Directus\Util\SchemaUtils;
@@ -19,7 +20,7 @@ class Privileges extends Route
         $acl = $app->container->get('acl');
 
         if ($acl->getGroupId() != 1) {
-            throw new \Exception(__t('permission_denied'));
+            throw new ForbiddenException(__t('permission_denied'));
         }
 
         $privileges = new DirectusPrivilegesTableGateway($ZendDb, $acl);
@@ -56,7 +57,7 @@ class Privileges extends Route
         $requestPayload = $app->request()->post();
 
         if ($acl->getGroupId() != 1) {
-            throw new \Exception(__t('permission_denied'));
+            throw new ForbiddenException(__t('permission_denied'));
         }
 
         if (isset($requestPayload['addTable'])) {
@@ -97,7 +98,7 @@ class Privileges extends Route
 
         $requestPayload['id'] = $privilegeId;
         if ($acl->getGroupId() != 1) {
-            throw new \Exception(__t('permission_denied'));
+            throw new ForbiddenException(__t('permission_denied'));
         }
 
         $privileges = new DirectusPrivilegesTableGateway($ZendDb, $acl);

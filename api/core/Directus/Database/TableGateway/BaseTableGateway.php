@@ -39,7 +39,8 @@ use Zend\Db\TableGateway\TableGateway;
 
 class BaseTableGateway extends TableGateway
 {
-    public $primaryKeyFieldName = 'id';
+    public $primaryKeyFieldName = null;
+
     public $memcache;
 
     /**
@@ -94,12 +95,14 @@ class BaseTableGateway extends TableGateway
         $this->table = $table;
 
         // @NOTE: temporary, do we need it here?
-        if ($primaryKeyName !== null) {
-            $this->primaryKeyFieldName = $primaryKeyName;
-        } else {
-            $tableObject = $this->getTableSchema();
-            if ($tableObject->getPrimaryColumn()) {
-                $this->primaryKeyFieldName = $tableObject->getPrimaryColumn();
+        if ($this->primaryKeyFieldName === null) {
+            if ($primaryKeyName !== null) {
+                $this->primaryKeyFieldName = $primaryKeyName;
+            } else {
+                $tableObject = $this->getTableSchema();
+                if ($tableObject->getPrimaryColumn()) {
+                    $this->primaryKeyFieldName = $tableObject->getPrimaryColumn();
+                }
             }
         }
 

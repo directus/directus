@@ -14,6 +14,8 @@ class DirectusSettingsTableGateway extends RelationalTableGateway
 {
     public static $_tableName = 'directus_settings';
 
+    public $primaryKeyFieldName = 'id';
+
     private $_defaults = [];
 
     public function __construct(AdapterInterface $adapter, Acl $acl)

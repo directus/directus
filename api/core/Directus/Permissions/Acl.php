@@ -297,7 +297,7 @@ class Acl
             } else {
                 $privilegeList = [];
                 foreach ($permissionFields as $permission) {
-                    $privilegeList[$permission] = 1;
+                    $privilegeList[$permission] = 0;
                 }
             }
 

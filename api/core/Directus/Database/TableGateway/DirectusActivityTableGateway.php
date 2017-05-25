@@ -32,6 +32,8 @@ class DirectusActivityTableGateway extends RelationalTableGateway
 
     public static $_tableName = 'directus_activity';
 
+    public $primaryKeyFieldName = 'id';
+
     public static function makeLogTypeFromTableName($table)
     {
         switch ($table) {
