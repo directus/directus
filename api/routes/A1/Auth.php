@@ -11,6 +11,7 @@ use Directus\Services\AuthService;
 use Directus\Util\DateUtils;
 use Directus\Util\StringUtils;
 use Directus\View\JsonView;
+use Zend\Db\TableGateway\TableGateway;
 
 class Auth extends Route
 {
@@ -65,7 +66,7 @@ class Auth extends Route
         $req = $app->request();
         $email = $req->post('email');
         $password = $req->post('password');
-        $Users = new DirectusUsersTableGateway($ZendDb, $acl);
+        $Users = new DirectusUsersTableGateway($ZendDb, null);
         $user = $Users->findOneBy('email', $email);
 
         if (!$user) {
@@ -75,7 +76,7 @@ class Auth extends Route
         // ------------------------------
         // Check if group needs whitelist
         $groupId = $user['group'];
-        $directusGroupsTableGateway = new DirectusGroupsTableGateway($ZendDb, $acl);
+        $directusGroupsTableGateway = new DirectusGroupsTableGateway($ZendDb, null);
         if (!$directusGroupsTableGateway->acceptIP($groupId, $app->request->getIp())) {
             return $this->app->response([
                 'success' => false,
@@ -129,7 +130,7 @@ class Auth extends Route
             $where = ['id' => $user['id']];
             $updateResult = $Users->update($set, $where);
 
-            $Activity = new DirectusActivityTableGateway($ZendDb, $acl);
+            $Activity = new DirectusActivityTableGateway($ZendDb, null);
             $Activity->recordLogin($user['id']);
         }
 
@@ -156,9 +157,8 @@ class Auth extends Route
         $app = $this->app;
         $auth = $app->container->get('auth');
         $ZendDb = $app->container->get('zenddb');
-        $acl = $app->container->get('acl');
 
-        $DirectusUsersTableGateway = new DirectusUsersTableGateway($ZendDb, $acl);
+        $DirectusUsersTableGateway = new DirectusUsersTableGateway($ZendDb, null);
         $user = $DirectusUsersTableGateway->findOneBy('reset_token', $token);
 
         if (!$user) {
@@ -193,9 +193,7 @@ class Auth extends Route
     public function forgotPassword()
     {
         $app = $this->app;
-        $auth = $app->container->get('auth');
         $ZendDb = $app->container->get('zenddb');
-        $acl = $app->container->get('acl');
 
         $email = $app->request()->post('email');
         if (!isset($email)) {
@@ -207,7 +205,7 @@ class Auth extends Route
             ]);
         }
 
-        $DirectusUsersTableGateway = new DirectusUsersTableGateway($ZendDb, $acl);
+        $DirectusUsersTableGateway = new DirectusUsersTableGateway($ZendDb, null);
         $user = $DirectusUsersTableGateway->findOneBy('email', $email);
 
         if (false === $user) {
