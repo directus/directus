@@ -1,4 +1,4 @@
-define(function(require, exports, module) {
+define(function (require, exports, module) {
 
   'use strict';
 
@@ -31,15 +31,15 @@ define(function(require, exports, module) {
 
     alertViews: [],
 
-    lockScreen: function() {
+    lockScreen: function () {
       this.noScroll = true;
     },
 
-    unlockScreen: function() {
+    unlockScreen: function () {
       this.noScroll = false;
     },
 
-    request: function(type, url, options) {
+    request: function (type, url, options) {
       options = options || {};
 
       var params = {
@@ -64,7 +64,7 @@ define(function(require, exports, module) {
     },
 
     //bInactive true if logged out because inactive
-    logOut: function(bInactive) {
+    logOut: function (bInactive) {
       //if binactive pass url parameter
       if(bInactive) {
         window.location.href = app.API_URL + "auth/logout/inactive";
@@ -73,7 +73,7 @@ define(function(require, exports, module) {
       }
     },
 
-    //  @TODO: remove this
+    //  TODO: implement this into a new logger
     //logErrorToServer: function(type, message, details) {
     //  var user = app.users.getCurrentUser(), email = 'n/a';
     //
@@ -98,7 +98,7 @@ define(function(require, exports, module) {
     //    });
     //},
 
-    evaluateExpression: function(a, operator, b) {
+    evaluateExpression: function (a, operator, b) {
       switch (operator) {
         case '==':
           return (a == b);
@@ -107,20 +107,20 @@ define(function(require, exports, module) {
       }
     },
 
-    getCurrentGroup: function() {
+    getCurrentGroup: function () {
       var user = app.users.getCurrentUser();
       return user.get('group');
     },
 
-    getBookmarks: function() {
+    getBookmarks: function () {
       return app.bookmarks;
     },
 
-    deepClone: function(data) {
+    deepClone: function (data) {
       return JSON.parse(JSON.stringify(data));
     },
 
-    affix: function() {
+    affix: function () {
       var sidebarOffset = $('#sidebar').offset();
       var navbarHeight = $('.navbar').height();
       var stickyHeight = parseInt(sidebarOffset.top,10) - parseInt(navbarHeight,10) - 20;
@@ -141,7 +141,7 @@ define(function(require, exports, module) {
 
   };
 
-  app.sendFiles = function(files, callback, progressCallback) {
+  app.sendFiles = function (files, callback, progressCallback) {
     var formData = new FormData();
 
     var success = function(responseData) {
@@ -163,22 +163,22 @@ define(function(require, exports, module) {
       contentType: false,
       processData: false,
       success: success,
-      error: function() {
+      error: function () {
         app.trigger('alert','upload failed', arguments);
         callback.apply(this, []);
       },
-      xhr: function() {  // custom xhr
+      xhr: function () {  // custom xhr
         var myXhr = $.ajaxSettings.xhr();
         if(myXhr.upload && progressCallback){ // check if upload property exists
           myXhr.upload.addEventListener('progress',progressCallback, false); // for handling the progress of the upload
         }
         return myXhr;
-      },
+      }
     });
   };
 
-  app.sendLink = function(link, callback) {
-    var success = function(responseData) {
+  app.sendLink = function (link, callback) {
+    var success = function (responseData) {
       callback.apply(this, [responseData]);
     };
 
@@ -189,30 +189,29 @@ define(function(require, exports, module) {
         'link': link
       },
       success: success,
-      error: function(err1, err2, err3) {
+      error: function (err1, err2, err3) {
         app.trigger('alert','upload failed', arguments);
-        //console.log('ERRRRRROOOORRR!!', err1, err2, err3);
       }
     });
   };
 
   // check if string has this format "D, d M Y H:i:s"
-  app.isStringADate = function(date) {
-    return (typeof date === "string") ? !!date.match(/^([a-zA-Z]{3})\, ([0-9]{2}) ([a-zA-Z]{3}) ([0-9]{4}) ([0-9]{2}):([0-9]{2}):([0-9]{2})$/) : false;
+  app.isStringADate = function (date) {
+    return (typeof date === 'string') ? !!date.match(/^([a-zA-Z]{3})\, ([0-9]{2}) ([a-zA-Z]{3}) ([0-9]{4}) ([0-9]{2}):([0-9]{2}):([0-9]{2})$/) : false;
   };
 
   // Agnus Croll:
   // http://javascriptweblog.wordpress.com/2011/08/08/fixing-the-javascript-typeof-operator/
-  Object.toType = function(obj) {
+  Object.toType = function (obj) {
     return ({}).toString.call(obj).match(/\s([a-z|A-Z]+)/)[1].toLowerCase();
   };
 
 
   //Give forms the ability to serialize to objects
-  $.fn.serializeObject = function() {
+  $.fn.serializeObject = function () {
     var o = {};
     var a = this.serializeArray();
-    $.each(a, function() {
+    $.each(a, function () {
         if (o[this.name] !== undefined) {
             if (!o[this.name].push) {
                 o[this.name] = [o[this.name]];
@@ -234,10 +233,10 @@ define(function(require, exports, module) {
     // Allow LayoutManager to augment Backbone.View.prototype.
     manage: true,
 
-    prefix: "app/templates/",
+    prefix: 'app/templates/',
 
 
-    fetchTemplate: function(path) {
+    fetchTemplate: function (path) {
       // Concatenate the file extension.
 
       // If template is not a path but instead Handlebars.Compile
@@ -245,7 +244,7 @@ define(function(require, exports, module) {
         return path;
       }
 
-      path = path + ".html";
+      path = path + '.html';
 
       // If cached, use the compiled template.
       if (JST[path]) {
@@ -265,8 +264,9 @@ define(function(require, exports, module) {
       $.ajax({
         url: app.root + path,
         global: false,
+        // FIXME: make all calls async
         async: false,
-        success: function(contents) {
+        success: function (contents) {
           contents = contents ? contents.replace(/(\r\n|\n|\r|\t)/gm, '') : contents;
           done(JST[path] = Handlebars.compile(contents));
         }
@@ -276,7 +276,7 @@ define(function(require, exports, module) {
   });
 
   // source: http://stackoverflow.com/a/6491621
-  _.findStringKey = function(object, string) {
+  _.findStringKey = function (object, string) {
     string = string.replace(/\[(\w+)\]/g, '.$1'); // convert indexes to properties
     string = string.replace(/^\./, '');           // strip a leading dot
     var a = string.split('.');
@@ -296,15 +296,15 @@ define(function(require, exports, module) {
   // Mix Backbone.Events, modules, typetools, and layout management into the app object.
   app = _.extend(app, {
     // Create a custom object with a nested Views object.
-    module: function(additionalProps) {
+    module: function (additionalProps) {
       return _.extend({ Views: {} }, additionalProps);
     },
 
     // Helper for using layouts.
-    useLayout: function(options) {
+    useLayout: function (options) {
       // Create a new Layout with options.
       var layout = new Backbone.Layout(_.extend({
-        el: "body"
+        el: 'body'
       }, options));
 
       // Cache the refererence.
@@ -315,5 +315,4 @@ define(function(require, exports, module) {
   }, Backbone.Events, typetools);
 
   module.exports = app;
-
 });

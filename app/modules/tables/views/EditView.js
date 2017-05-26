@@ -8,18 +8,16 @@ define([
   'core/directus',
   'core/BasePageView',
   'core/widgets/widgets',
-  'modules/tables/views/HistoryView',
   'modules/tables/views/EditViewRightPane',
   'modules/tables/views/TranslationView'
 ],
 
-function(app, Backbone, _, Handlebars, __t, Notification, Directus, BasePageView, Widgets, HistoryView, EditViewRightPane, TranslationView) {
+function(app, Backbone, _, Handlebars, __t, Notification, Directus, BasePageView, Widgets, EditViewRightPane, TranslationView) {
 
   var EditView = Backbone.Layout.extend({
-    template: Handlebars.compile('<div id="editFormEntry"></div><div id="translateFormEntry"></div><div id="historyFormEntry"></div>'),
+    template: Handlebars.compile('<div id="editFormEntry"></div><div id="translateFormEntry">'),
     afterRender: function() {
       this.insertView("#editFormEntry", this.editView);
-      // this.insertView("#historyFormEntry", this.historyView);
 
       if (this.translateViews.length) {
         _.each(this.translateViews, function(view) {
@@ -62,7 +60,6 @@ function(app, Backbone, _, Handlebars, __t, Notification, Directus, BasePageView
       }, this);
 
       this.editView = new Directus.EditView(options);
-      // this.historyView = new HistoryView(options);
     },
     serialize: function() {
       return {};

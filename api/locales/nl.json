@@ -321,9 +321,7 @@
     "are_you_sure_you_want_to_sign_out": "Weet je zeker dat je uit wilt loggen?",
 
     "you_must_be_logged_in_to_access_the_api": "Je moet ingelogd zijn voor toegang tot de API",
-    "invalid_request_nonce": "Ongeldige request (nonce)",
     "no_such_extensions_found": "Extensie bestaat niet.",
-    "unauthorized_nonce": "Geen toegang (nonce)",
     "extension_x_must_return_array_got_y_instead": "Extensie %{extension_name} moet een array teruggeven, kreeg een %{type}",
     "incorrect_email_or_password": "Ongeldig emailadres of wachtwoord",
     "missing_email_or_password": "Emailadres of wachtwoord mist",

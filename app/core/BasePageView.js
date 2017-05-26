@@ -2,14 +2,16 @@ define([
   'app',
   'backbone',
   'underscore',
+  'handlebars',
   'core/baseHeaderView',
   'core/rightSidebarView'
-],
-function(app, Backbone, _, BaseHeaderView, RightSidebarView) {
+], function (app, Backbone, _, Handlebars, BaseHeaderView, RightSidebarView) {
+
+  'use strict';
 
   return Backbone.Layout.extend({
 
-    template: 'basePage',
+    template: Handlebars.compile('<section class="main-container" id="page-content"></section>'),
 
     attributes: {
       class: 'page-container'
@@ -17,23 +19,23 @@ function(app, Backbone, _, BaseHeaderView, RightSidebarView) {
 
     // el: '#content',
 
-    chooseView: function(viewSet, viewName) {
+    chooseView: function (viewSet, viewName) {
       return _.isUndefined(viewName) ? viewSet : viewSet[viewName];
     },
 
-    leftToolbar: function() {
+    leftToolbar: function () {
       return [];
     },
 
-    rightToolbar: function() {
+    rightToolbar: function () {
       return [];
     },
 
-    leftSecondaryToolbar: function() {
+    leftSecondaryToolbar: function () {
       return [];
     },
 
-    rightSecondaryToolbar: function() {
+    rightSecondaryToolbar: function () {
       return [];
     },
 
@@ -109,7 +111,7 @@ function(app, Backbone, _, BaseHeaderView, RightSidebarView) {
       this.state.rightPaneOpen = false;
     },
 
-    toggleRightPane: function() {
+    toggleRightPane: function () {
       var pane = this.loadRightPane();
 
       if (pane) {
@@ -170,12 +172,12 @@ function(app, Backbone, _, BaseHeaderView, RightSidebarView) {
       return this.rightPaneView;
     },
 
-    reRender: function() {
+    reRender: function () {
       this.initToolbar();
       this.headerView.render();
     },
 
-    beforeRender: function() {
+    beforeRender: function () {
       this.rightPaneView = null;
       this.initToolbar();
       this.initRightSidebar();
@@ -191,7 +193,7 @@ function(app, Backbone, _, BaseHeaderView, RightSidebarView) {
       $('#content').attr(attributes);
     },
 
-    getSpacing: function() {
+    getSpacing: function () {
       return _.result(this.table, 'getSpacing');
     },
 
@@ -204,12 +206,12 @@ function(app, Backbone, _, BaseHeaderView, RightSidebarView) {
       }
     },
 
-    addHolding: function(cid) {
+    addHolding: function (cid) {
       this.fetchHolding.push(cid);
     },
 
     //Remove a cid from holding and try fetch
-    removeHolding: function(cid) {
+    removeHolding: function (cid) {
       this.fetchHolding.splice(this.fetchHolding.indexOf(cid), 1);
       this.tryFetch();
     },

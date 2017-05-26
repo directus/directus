@@ -88,6 +88,7 @@ require.config({
       }
     },
 
+    // TODO: Re-implement flash row, nice and clean
     'plugins/jquery.flashrow': ['jquery'],
 
     'moment-tz': ['moment'],

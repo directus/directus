@@ -6,8 +6,7 @@
 //  Directus may be freely distributed under the GNU license.
 //  For all details and documentation:
 //  http://www.getdirectus.com
-require(["config", 'polyfills'], function() {
-
+require(['config', 'polyfills'], function () {
   require([
     'app',
     'underscore',
@@ -27,13 +26,10 @@ require(["config", 'polyfills'], function() {
     'core/ListViewManager',
     'core/status/status-table-collection',
     'core/idle',
-    'tool-tips',
     'ext/moment-timeago',
     'contextual-date',
     'core/notification'
-  ],
-
-  function(app, _, UIManager, Router, Backbone, alerts, __t, Tabs, Bookmarks, Messages, SchemaManager, SettingsCollection, EntriesModel, ExtensionManager, EntriesManager, ListViewManager, StatusTableCollection, Idle, ToolTip, moment, ContextualDate, Notification) {
+  ], function (app, _, UIManager, Router, Backbone, alerts, __t, Tabs, Bookmarks, Messages, SchemaManager, SettingsCollection, EntriesModel, ExtensionManager, EntriesManager, ListViewManager, StatusTableCollection, Idle, moment, ContextualDate, Notification) {
 
     'use strict';
 
@@ -57,21 +53,15 @@ require(["config", 'polyfills'], function() {
       messages: {},
       user_notifications: [],
       showWelcomeWindow: false,
-      me: { id: 7 },
+      // TODO: Change this to a model (alias to a new account/user object)
+      me: { id: null },
       settings: {
         global: {},
         files: {}
       },
       storage_adapters: {},
-      // tab_privileges: {},
       preferences: [],
-      tables: [],
-      nonces: {
-        pool: [],
-        nonce_pool_size: 10,
-        nonce_request_header: "X-Directus-Request-Nonce",
-        nonce_response_header: "X-Directus-New-Request-Nonces"
-      }
+      tables: []
     };
 
     var options = _.defaults(window.directusData, defaultOptions);
@@ -94,18 +84,18 @@ require(["config", 'polyfills'], function() {
     app.showWelcomeWindow = options.showWelcomeWindow;
 
     $.xhrPool = []; // array of uncompleted requests
-    $.xhrPool.abortAll = function() { // our abort function
-        $(this).each(function(idx, jqXHR) {
+    $.xhrPool.abortAll = function () { // our abort function
+        $(this).each(function (idx, jqXHR) {
             jqXHR.abort();
         });
         $.xhrPool.length = 0;
     };
 
     $.ajaxSetup({
-        beforeSend: function(jqXHR) { // before jQuery send the request we will push it to our array
+        beforeSend: function (jqXHR) { // before jQuery send the request we will push it to our array
             $.xhrPool.push(jqXHR);
         },
-        complete: function(jqXHR) { // when some of the requests completed it will splice from the array
+        complete: function (jqXHR) { // when some of the requests completed it will splice from the array
             var index = $.xhrPool.indexOf(jqXHR);
             if (index > -1) {
                 $.xhrPool.splice(index, 1);
@@ -125,7 +115,7 @@ require(["config", 'polyfills'], function() {
       ExtensionManager.load(options.extensions),
       ListViewManager.load(options.listViews)
 
-    ).done(function() {
+    ).done(function () {
 
       app.trigger('loaded');
 
@@ -143,7 +133,10 @@ require(["config", 'polyfills'], function() {
       SchemaManager.registerPrivileges(options.privileges);
 
       // Extend user schema with extra fields
-      SchemaManager.getColumns('tables', 'directus_users').add(options.extendedUserColumns, {parse: true});
+      SchemaManager.getColumns('tables', 'directus_users').add(
+        options.extendedUserColumns,
+        {parse: true}
+      );
 
       EntriesManager.setup({
         apiURL: app.API_URL,
@@ -163,13 +156,15 @@ require(["config", 'polyfills'], function() {
       app.settings.url = app.API_URL + 'settings';
 
       // Proxy to EntriesManager
-      app.getEntries = function(tableName, options) { return EntriesManager.getInstance(tableName, options); };
+      app.getEntries = function (tableName, options) {
+        return EntriesManager.getInstance(tableName, options);
+      };
 
       app.messages = new Messages.Collection([], _.extend({
         url: app.API_URL + 'messages/rows'
       }, SchemaManager.getFullSchema('directus_messages')));
 
-      app.messages.on('error:polling', function() {
+      app.messages.on('error:polling', function () {
         Notification.error('Directus can\'t reach the server', '<i>A new attempt will be made in 30 seconds</i>');
       });
 
@@ -203,19 +198,18 @@ require(["config", 'polyfills'], function() {
 
       var autoLogoutMinutes = parseInt(app.settings.get('cms_user_auto_sign_out') || 60, 10);
 
-      var waitForForAvtivity = function() {
-        //console.log('minutes until automatic logout:', autoLogoutMinutes);
-
+      var waitForForActivity = function() {
+        // console.log('minutes until automatic logout:', autoLogoutMinutes);
         Idle.start({
-          timeout: function() {
+          timeout: function () {
             Notification.warning(null, 'You\'ve been inactive for ' + autoLogoutMinutes + ' minutes. You will be automatically logged out in 10 seconds');
 
             //Wait for another 10 seconds before kicking the user out
             Idle.start({
-              timeout: function() {
+              timeout: function () {
                 app.logOut(true);
               },
-              interrupt: waitForForAvtivity,
+              interrupt: waitForForActivity,
               delay: 10000,
               repeat: false
             });
@@ -227,17 +221,16 @@ require(["config", 'polyfills'], function() {
 
       };
 
-      waitForForAvtivity();
-
+      waitForForActivity();
 
       ////////////////////////////////////////////////////////////////////////////////////
       // Bind Progress Functions To App
 
-      app.showProgressNotification = function(message) {
+      app.showProgressNotification = function (message) {
         alerts.showProgressNotification(message);
       };
 
-      app.hideProgressNotification = function() {
+      app.hideProgressNotification = function () {
         alerts.hideProgressNotification();
       };
 
@@ -248,11 +241,11 @@ require(["config", 'polyfills'], function() {
       // Default directus tabs
 
       var tabs = [
-        {id: "users/" + app.users.getCurrentUser().get("id"), icon_class: "icon-pencil", avatar: ''},
-        {id: "logout", icon_class: "icon-power-button"}
+        {id: 'users/' + app.users.getCurrentUser().get('id'), icon_class: 'icon-pencil', avatar: ''},
+        {id: 'logout', icon_class: 'icon-power-button'}
       ];
 
-      if(app.users.getCurrentUser().get('group').id === 1) {
+      if (app.users.getCurrentUser().get('group').id === 1) {
         tabs.unshift();
       }
 
@@ -261,11 +254,11 @@ require(["config", 'polyfills'], function() {
       ////////////////////////////////////////////////////////////////////////////////////
       var bookmarks = [];
 
-      options.tables.forEach(function(table) {
+      options.tables.forEach(function (table) {
         table = table.schema;
-        if(SchemaManager.getPrivileges(table.table_name)) {
+        if (SchemaManager.getPrivileges(table.table_name)) {
         var privileges = SchemaManager.getPrivileges(table.table_name);
-        if(privileges.get('allow_view') > 0 && !table.hidden && privileges.get('nav_listed') > 0) {
+        if (privileges.get('allow_view') > 0 && !table.hidden && privileges.get('nav_listed') > 0) {
             bookmarks.push(new Backbone.Model({
               icon_class: '',
               title: app.capitalize(table.table_name),
@@ -277,14 +270,14 @@ require(["config", 'polyfills'], function() {
       });
 
       var bookmarksData = window.directusData.bookmarks;
-      _.each(bookmarksData, function(bookmark) {
+      _.each(bookmarksData, function (bookmark) {
         bookmarks.push(new Backbone.Model(bookmark));
       });
 
       var extensions = ExtensionManager.getIds();
 
       // Add extensions to bookmarks
-      _.each(extensions, function(item) {
+      _.each(extensions, function (item) {
         item = ExtensionManager.getInfo(item);
         bookmarks.push(new Backbone.Model({
           icon_class: item.icon,
@@ -322,32 +315,33 @@ require(["config", 'polyfills'], function() {
       }
 
       var isCustomBookmarks = false;
-      if(customBookmarks.length) {
+      if (customBookmarks.length) {
         isCustomBookmarks = true;
         bookmarks = bookmarks.concat(customBookmarks);
       }
 
       // Filter out blacklisted bookmarks (case-sensitive)
-      bookmarks = _.filter(bookmarks, function(bookmark) {
+      bookmarks = _.filter(bookmarks, function (bookmark) {
         return !_.contains(navBlacklist, (bookmark.attributes.title || '').toLowerCase());
       });
 
       // Turn into collection
       tabs = new Tabs.Collection(tabs);
 
-      app.bookmarks = new Bookmarks.Collection(bookmarks, {isCustomBookmarks: isCustomBookmarks});
+      app.bookmarks = new Bookmarks.Collection(bookmarks, {
+        isCustomBookmarks: isCustomBookmarks
+      });
 
       //////////////////////////////////////////////////////////////////////////////
       //Override backbone sync for custom error handling
       var sync = Backbone.sync;
-
-      Backbone.sync = function(method, model, options) {
-
+      Backbone.sync = function (method, model, options) {
         var existingErrorHandler = function(){};
-        if(undefined !== options.error)
+        if (undefined !== options.error) {
           existingErrorHandler = options.error;
+        }
 
-        var errorCodeHandler = function(xhr, status, thrown) {
+        var errorCodeHandler = function (xhr, status, thrown) {
           //@todo: note that status is getting overwritten. don't!
           status = xhr.status;
 
@@ -362,46 +356,46 @@ require(["config", 'polyfills'], function() {
       };
 
       // Toggle responsive navigation
-      $(document).on("click", ".responsive-nav-toggle", function(e) {
+      $(document).on('click', '.responsive-nav-toggle', function (event) {
         $('#main').toggleClass('sidebar-active');
         $('.invisible-blocker').toggleClass('sidebar-active');
       });
 
       // Close sidebar when clicking
-      $(document).on("click", "#sidebar", function(e) {
+      $(document).on('click', '#sidebar', function (event) {
         $('#main').removeClass('sidebar-active');
         $('.invisible-blocker').removeClass('sidebar-active');
       });
 
       // Cancel default file drop
-      $(document).on('drop dragover', function(e) {
-        e.preventDefault();
+      $(document).on('drop dragover', function (event) {
+        event.preventDefault();
       });
 
-      $(document).on('mousewheel DOMMouseScroll', function(e) {
+      $(document).on('mousewheel DOMMouseScroll', function (event) {
         if (app.noScroll && event.target.nodeName !== 'TEXTAREA') {
-          e.preventDefault();
+          event.preventDefault();
         }
       });
 
-      //Cancel default CMD + S;
-      $(window).keydown(_.bind(function(e) {
-        if (e.keyCode === 83 && e.metaKey) {
-          e.preventDefault();
+      // Cancel default CMD + S;
+      $(window).keydown(_.bind(function (event) {
+        if (event.keyCode === 83 && event.metaKey) {
+          event.preventDefault();
         }
       }, this));
 
-      //@todo: move these event handlers to alerts.js
-      $(document).on('ajaxStart.directus', function(e) {
+      // TODO: move these event handlers to alerts.js
+      $(document).on('ajaxStart.directus', function (event) {
         app.trigger('progress');
       });
 
-      $(document).on('ajaxStop.directus', function(e) {
+      $(document).on('ajaxStop.directus', function (event) {
         app.trigger('load');
       });
 
       // Capture sync errors...
-      $(document).ajaxError(function (e, xhr, settings) {
+      $(document).ajaxError(function (event, xhr, settings) {
         if (settings.errorPropagation === false) {
           return;
         }
@@ -466,47 +460,18 @@ require(["config", 'polyfills'], function() {
       });
 
       // And js errors...
-      window.onerror = function(message, file, line) {
+      window.onerror = function (message, file, line) {
         var type = 'JS';
         var details = 'Error: ' + message + '\nFile: ' + file + '\n Line:' + line;
         // app.logErrorToServer(type, 'Error', details);
         app.trigger('alert:error', 'Error', details);
       };
 
-      /**
-       * Add nonce to API requests using custom request header
-       *
-       * @todo  modularize this logic
-       */
-      var nonces = window.directusData.nonces,
-          nonce;
-
-      $(document).ajaxSend(function(event, jqXHR, settings) {
-        var isApiRequest = settings.url.substr(0, app.API_URL.length) === app.API_URL;
-        if(isApiRequest) {
-          nonce = nonces.pool.unshift();
-          jqXHR.setRequestHeader(nonces.nonce_request_header, nonce);
-          // console.log('Using a nonce. New pool size: ' + nonces.pool.length);
-        }
+      app.router = new Router({
+        extensions: extensions,
+        tabs: tabs,
+        navPrivileges: app.users.getCurrentUser().get('group')
       });
-
-      /**
-       * Pull in new nonces from response headers
-       */
-
-      $(document).ajaxSuccess(function(event, xhr, settings) {
-        var new_nonces = xhr.getResponseHeader(nonces.nonce_response_header);
-        if(new_nonces) {
-          new_nonces = new_nonces.split(',');
-          // console.log('Got ' + new_nonces.length + ' new nonces:', new_nonces);
-          // console.log('Old nonce pool size: ' + nonces.pool.length);
-          nonces.pool.push.apply(nonces.pool, new_nonces);
-          // console.log('New nonce pool size: ' + nonces.pool.length);
-        }
-      });
-
-
-      app.router = new Router({extensions: extensions, tabs: tabs, navPrivileges: app.users.getCurrentUser().get('group')});
 
       // Trigger the initial route and enable HTML5 History API support, set the
       // root folder to '/' by default.  Change in app.js.
@@ -515,7 +480,7 @@ require(["config", 'polyfills'], function() {
       // All navigation that is relative should be passed through the navigate
       // method, to be processed by the router. If the link has a `data-bypass`
       // attribute, bypass the delegation completely.
-      $(document).on("click", "a[href]:not([data-bypass])", function(evt) {
+      $(document).on('click', 'a[href]:not([data-bypass])', function (event) {
         // Get the absolute anchor href.
         var href = {
           prop: $(this).prop('href'),
@@ -532,7 +497,7 @@ require(["config", 'polyfills'], function() {
         if (href.prop.slice(0, root.length) === root && target !== '_blank') {
           // Stop the default event to ensure the link will not cause a page
           // refresh.
-          evt.preventDefault();
+          event.preventDefault();
 
           // Don't follow empty links
           if (href.attr === '#') return;
@@ -547,26 +512,13 @@ require(["config", 'polyfills'], function() {
           // `Backbone.history.navigate` is sufficient for all Routers and will
           // trigger the correct events. The Router's internal `navigate` method
           // calls this anyways.  The fragment is sliced from the root.
-
           Backbone.history.navigate(path, true);
         }
       }).on('scroll', function(){
         // Fade in header shadow based on scroll position
         var windowScroll = Math.max(Math.min($(window).scrollTop(), 100), 0) / 100;
-        $('#header-shadow').css({ opacity: windowScroll });
+        $('#header-shadow').css({opacity: windowScroll});
       });
-
-      var toolTip = new ToolTip();
-      toolTip.render();
-
-      $(document).on('click', '.toggle-help-text', function(event) {
-        var text = $(this).data('help-text');
-        if (text) {
-          app.router.openModal({type: 'alert', text: text});
-        }
-      });
-
     });
-
   });
 });

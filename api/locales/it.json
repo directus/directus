@@ -317,9 +317,7 @@
     "are_you_sure_you_want_to_sign_out": "Sei sicuro di voler disconnetterti?",
 
     "you_must_be_logged_in_to_access_the_api": "Devi essere connesso per avere accesso alle API",
-    "invalid_request_nonce": "Richiesta non valida (nonce)",
     "no_such_extensions_found": "Estensione non esistente.",
-    "unauthorized_nonce": "Non autorizzato (nonce)",
     "extension_x_must_return_array_got_y_instead": "Estensione %{extension_name} deve restituire un array, tipo restituito: %{type}",
     "incorrect_email_or_password": "Email o password non corretti",
     "missing_email_or_password": "Email o password mancanti",

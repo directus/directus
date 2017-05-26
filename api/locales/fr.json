@@ -322,9 +322,7 @@
     "are_you_sure_you_want_to_sign_out": "Voulez-vous vraiment vos déconnecter?",
 
     "you_must_be_logged_in_to_access_the_api": "Vous devez être connecté pour avoir accès à l'API",
-    "invalid_request_nonce": "Demande non valide (nonce)",
     "no_such_extensions_found": "Aucune extension à ce nom.",
-    "unauthorized_nonce": "Non autorisé (nonce)",
     "extension_x_must_return_array_got_y_instead": "L'extension %{extension_name} doit retourner un array, mais %{type} reçu",
     "incorrect_email_or_password": "Email ou mot de passe non valide",
     "missing_email_or_password": "Email ou mot de passe manquant",

@@ -6,7 +6,7 @@
 //  For all details and documentation:
 //  http://www.getdirectus.com
 
-define(function(require, exports, module) {
+define(function (require, exports, module) {
 
   'use strict';
 
@@ -34,34 +34,33 @@ define(function(require, exports, module) {
       moment           = require('moment');
 
   var Router = Backbone.Router.extend({
-
     routes: {
-      "":                                            "tables",
-      "tables(/pref/:pref)":                         "tables",
-      "tables/:name(/pref/:pref)(/pref/:pref)":      "entries",
-      "tables/:name/:id(/pref/:pref)":               "entry",
-      "bookmark/:title":                             "bookmark",
-      "activity(/pref/:pref)":                       "activity",
-      "files(/pref/:pref)(/pref/:pref)":             "files",
-      "files/:id(/pref/:pref)":                      "filesItem",
-      "users(/pref/:pref)(/pref/:pref)":             "users",
-      "users/:id(/pref/:pref)":                      "user",
-      "settings(/pref/:pref)":                       "settings",
-      "settings/:name(/pref/:pref)":                 "settings",
-      "settings/tables/:table(/pref/:pref)":         "settingsTable",
-      "settings/permissions/:groupId(/pref/:pref)":  "settingsPermissions",
-      "messages(/pref/:pref)":                       "messages",
-      "messages/new(/pref/:pref)":                   "newMessage",
-      "messages/:id(/pref/:pref)":                   "message",
-      '*notFound':                                   "notFound"
+      '':                                            'tables',
+      'tables(/pref/:pref)':                         'tables',
+      'tables/:name(/pref/:pref)(/pref/:pref)':      'entries',
+      'tables/:name/:id(/pref/:pref)':               'entry',
+      'bookmark/:title':                             'bookmark',
+      'activity(/pref/:pref)':                       'activity',
+      'files(/pref/:pref)(/pref/:pref)':             'files',
+      'files/:id(/pref/:pref)':                      'filesItem',
+      'users(/pref/:pref)(/pref/:pref)':             'users',
+      'users/:id(/pref/:pref)':                      'user',
+      'settings(/pref/:pref)':                       'settings',
+      'settings/:name(/pref/:pref)':                 'settings',
+      'settings/tables/:table(/pref/:pref)':         'settingsTable',
+      'settings/permissions/:groupId(/pref/:pref)':  'settingsPermissions',
+      'messages(/pref/:pref)':                       'messages',
+      'messages/new(/pref/:pref)':                   'newMessage',
+      'messages/:id(/pref/:pref)':                   'message',
+      '*notFound':                                   'notFound'
     },
 
-    route: function(route, name, callback) {
+    route: function (route, name, callback) {
       var router = this;
       var args = _.toArray(arguments);
       if (!callback) callback = this[name];
 
-      var cb = function() {
+      var cb = function () {
         if (_.isFunction(this.before)) this.before.apply(router, args);
         callback.apply(router, arguments);
         if (_.isFunction(this.after)) this.after.apply(router, args);
@@ -69,18 +68,18 @@ define(function(require, exports, module) {
       return Backbone.Router.prototype.route.call(this, route, name, cb);
     },
 
-    navigateTo: function(route, alertMessage) {
+    navigateTo: function (route, alertMessage) {
       this.showAlertNextRoute(alertMessage);
       this.navigate(route, {trigger: true});
     },
 
-    getRouteParameters: function(route, fragment) {
+    getRouteParameters: function (route, fragment) {
       var r = this._routeToRegExp(route);
       var args = this._extractParameters(r, fragment);
       return args;
     },
     // @todo: refactoring
-    before: function(route, name) {
+    before: function (route, name) {
       var fragment = Backbone.history.fragment;
       if(fragment) {
         var routeHistoryBase = fragment;
@@ -121,12 +120,14 @@ define(function(require, exports, module) {
       }
     },
 
-    after: function(route, name) {
+    after: function (route, name) {
       var currentRoute = this.routeHistory.routes[this.routeHistory.last];
       var itemID, scrollTop = 0;
       if(currentRoute && currentRoute.path === Backbone.history.fragment) {
         if(currentRoute.toRoute) {
-          itemID = _.last(_.filter(currentRoute.toRoute.args, function(v){ return v !== null}));
+          itemID = _.last(_.filter(currentRoute.toRoute.args, function (v) {
+            return v !== null
+          }));
         }
         scrollTop = currentRoute.scrollTop;
       }
@@ -138,7 +139,7 @@ define(function(require, exports, module) {
         mainSidebar.scrollTop = this.scrollTop;
       }
 
-      _.each(app.user_notifications, function(notification) {
+      _.each(app.user_notifications, function (notification) {
         var title = notification.title;
         var text = notification.text;
         var type = notification.type || 'Information';
@@ -157,23 +158,23 @@ define(function(require, exports, module) {
       }
     },
 
-    go: function() {
+    go: function () {
       var array = _.isArray(arguments[0]) ? arguments[0] : _.toArray(arguments);
-      return this.navigate(array.join("/"), true);
+      return this.navigate(array.join('/'), true);
     },
 
-    setTitle: function(title) {
+    setTitle: function (title) {
       document.title = title;
     },
 
-    showAlert: function(message, type) {
+    showAlert: function (message, type) {
       if (!this.alert) {
         this.alert = new Backbone.Layout({template: 'alert', serialize: {message: message, type: type}});
         this.v.messages.insertView(this.alert).render();
       }
     },
 
-    showAlertNextRoute: function(message) {
+    showAlertNextRoute: function (message) {
       if (!_.isString(message)) {
         return;
       }
@@ -184,18 +185,18 @@ define(function(require, exports, module) {
       };
     },
 
-    hideAlert: function() {
+    hideAlert: function () {
       if (this.alert) {
         this.alert.remove();
         this.alert = undefined;
       }
     },
 
-    notFound: function() {
+    notFound: function () {
       this.navigateTo('/tables', 'You don\'t have permission to view that page or it doesn\'t exist');
     },
 
-    openModal: function(options, callback) {
+    openModal: function (options, callback) {
       var containerView = this.v.main.getView('#modal_container');
 
       if (!containerView) {
@@ -211,19 +212,19 @@ define(function(require, exports, module) {
       containerView.show(view);
     },
 
-    openUserModal: function(userId) {
+    openUserModal: function (userId) {
       var view = new directus.Modal.User({model: app.users.get(userId)});
 
       this.openViewInModal(view);
     },
 
-    openFileModal: function(fileId) {
+    openFileModal: function (fileId) {
       var view = new directus.Modal.File({fileId: fileId});
 
       this.openViewInModal(view);
     },
 
-    openViewInModal: function(view) {
+    openViewInModal: function (view) {
       var containerView = this.v.main.getView('#modal_container');
 
       if (!containerView || containerView.isOpen()) {
@@ -233,7 +234,7 @@ define(function(require, exports, module) {
       containerView.show(view);
     },
 
-    overlayPage: function(view) {
+    overlayPage: function (view) {
       var views = this.v.main.getViews('#content');
       if (views.value().length <= 1) {
         this.baseRouteSave = Backbone.history.fragment;
@@ -242,7 +243,7 @@ define(function(require, exports, module) {
 
       var lastView = views.last().value();
       lastView.scrollTop = document.body.scrollTop;
-      views.each(function(view) {
+      views.each(function (view) {
         view.$el.hide();
       });
 
@@ -251,8 +252,8 @@ define(function(require, exports, module) {
           view.model.startTracking();
       } else if (view.collection) {
         // TODO: make startTtracking part of Collection
-        var cb = function(collection) {
-          collection.each(function(model) {
+        var cb = function (collection) {
+          collection.each(function (model) {
             if (!model._trackingChanges) {
               model.startTracking();
             }
@@ -267,7 +268,7 @@ define(function(require, exports, module) {
         if (view.model) {
           return !view.model.unsavedAttributes();
         } else if (view.collection) {
-          return _.some(view.collection.models, function(model) {
+          return _.some(view.collection.models, function (model) {
             return !model.unsavedAttributes();
           });
         }
@@ -278,8 +279,8 @@ define(function(require, exports, module) {
       this.v.main.insertView('#content', view).render();
 
       var that=this;
-      Backbone.History.prototype.loadUrl = function() {
-        if (hasUnsavedAttributes() || (that.baseRouteSave === this.getFragment() || window.confirm("All Unsaved changes will be lost, Are you sure you want to leave?"))) {
+      Backbone.History.prototype.loadUrl = function () {
+        if (hasUnsavedAttributes() || (that.baseRouteSave === this.getFragment() || window.confirm('All Unsaved changes will be lost, Are you sure you want to leave?'))) {
           Backbone.History.prototype.loadUrl = that.oldLoadUrlFunction;
           return that.oldLoadUrlFunction.apply(this, arguments);
         } else {
@@ -290,13 +291,13 @@ define(function(require, exports, module) {
       };
     },
 
-    removeTopOverlayPage: function() {
+    removeTopOverlayPage: function () {
       var view = this.v.main.getViews('#content').last().value();
 
       return this.removeOverlayPage(view);
     },
 
-    removeOverlayPage: function(view) {
+    removeOverlayPage: function (view) {
       /*if (view.headerView) {
         view.headerView.remove();
       }*/
@@ -318,11 +319,11 @@ define(function(require, exports, module) {
       }
     },
 
-    setPage: function(View, options) {
+    setPage: function (View, options) {
       this.v.main.setView('#content', new View(options)).render();
     },
 
-    tables: function() {
+    tables: function () {
       if (_.contains(this.navBlacklist,'tables'))
         return this.notFound();
 
@@ -332,7 +333,7 @@ define(function(require, exports, module) {
       this.v.main.render();
     },
 
-    entries: function(tableName, pref) {
+    entries: function (tableName, pref) {
       var privileges = SchemaManager.getPrivileges(tableName);
       if (_.contains(this.navBlacklist, 'tables') || (privileges && privileges.get('allow_view') === 0)) {
         return this.notFound();
@@ -358,10 +359,10 @@ define(function(require, exports, module) {
           this.entry(tableName, collection.models[0].get('id'));
         } else {
           // Fetch collection so we know the ID of the "single" row
-          collection.once('sync', _.bind(function(collection, xhr, status){
+          collection.once('sync', _.bind(function (collection, xhr, status){
             if(0 === collection.length) {
               // Add new form
-              this.router.entry(tableName, "new");
+              this.router.entry(tableName, 'new');
             } else {
               // Edit first model
               var model = collection.models[0];
@@ -390,7 +391,7 @@ define(function(require, exports, module) {
       // this.v.main.render();
     },
 
-    entry: function(tableName, id) {
+    entry: function (tableName, id) {
       if (_.contains(this.navBlacklist,'tables'))
         return this.notFound();
 
@@ -418,7 +419,7 @@ define(function(require, exports, module) {
         return;
       }
 
-      if (id === "new" || isBatchEdit) {
+      if (id === 'new' || isBatchEdit) {
         // Passing parse:true will setup relations
         model = new collection.model({}, {collection: collection, parse: true});
 
@@ -460,7 +461,7 @@ define(function(require, exports, module) {
         });
     },
 
-    activity: function() {
+    activity: function () {
       if (_.contains(this.navBlacklist,'activity'))
         return this.notFound();
 
@@ -469,14 +470,14 @@ define(function(require, exports, module) {
       this.v.main.render();
     },
 
-    files: function(pref) {
+    files: function (pref) {
       if (_.contains(this.navBlacklist,'files'))
         return this.notFound();
 
       if (pref) {
-        this.navigate("/files");
+        this.navigate('/files');
 
-        if (this.lastRoute === "files/" && this.loadedPreference === pref) {
+        if (this.lastRoute === 'files/' && this.loadedPreference === pref) {
           return;
         }
 
@@ -493,7 +494,7 @@ define(function(require, exports, module) {
       this.v.main.render();
     },
 
-    filesItem: function(id) {
+    filesItem: function (id) {
       var isNewFile = id === 'new';
       var model;
 
@@ -516,11 +517,11 @@ define(function(require, exports, module) {
       this.v.main.render();
     },
 
-    users: function(pref) {
+    users: function (pref) {
       if(pref) {
-        this.navigate("/users");
+        this.navigate('/users');
 
-        if(this.lastRoute === "users/" && this.loadedPreference === pref) {
+        if(this.lastRoute === 'users/' && this.loadedPreference === pref) {
           return;
         }
 
@@ -538,7 +539,7 @@ define(function(require, exports, module) {
       this.v.main.render();
     },
 
-    user: function(id) {
+    user: function (id) {
       var user = app.users.getCurrentUser();
       var userGroup = user.get('group');
 
@@ -549,7 +550,7 @@ define(function(require, exports, module) {
       var model;
       this.setTitle(app.settings.get('global').get('project_name') + ' | Users');
 
-      if (id === "new") {
+      if (id === 'new') {
         model = new app.users.model({}, {collection: app.users, parse:true});
       } else {
         model = app.users.get(id);
@@ -558,7 +559,7 @@ define(function(require, exports, module) {
       this.v.main.render();
     },
 
-    settings: function(name) {
+    settings: function (name) {
       if (_.contains(this.navBlacklist, 'settings') || app.users.getCurrentUser().get('group').id !== 1) {
         return this.notFound();
       }
@@ -595,7 +596,7 @@ define(function(require, exports, module) {
       this.v.main.render();
     },
 
-    settingsTable: function(tableName) {
+    settingsTable: function (tableName) {
       if (_.contains(this.navBlacklist, 'settings') || app.users.getCurrentUser().get('group').id !== 1) {
         return this.notFound();
       }
@@ -619,7 +620,7 @@ define(function(require, exports, module) {
       this.v.main.render();
     },
 
-    settingsPermissions: function(groupId) {
+    settingsPermissions: function (groupId) {
       if (_.contains(this.navBlacklist, 'settings') || app.users.getCurrentUser().get('group').id !== 1) {
         return this.notFound();
       }
@@ -637,13 +638,13 @@ define(function(require, exports, module) {
       this.v.main.render();
     },
 
-    messages: function(name) {
+    messages: function (name) {
       this.setTitle(app.settings.get('global').get('project_name') + ' | Messages')
       this.v.main.setView('#content', new Messages.Views.List({collection: app.messages}));
       this.v.main.render();
     },
 
-    message: function(id) {
+    message: function (id) {
       var model = app.messages.get(id);
       this.setTitle(app.settings.get('global').get('project_name') + ' | Message');
 
@@ -656,7 +657,7 @@ define(function(require, exports, module) {
       this.v.main.render();
     },
 
-    newMessage: function() {
+    newMessage: function () {
       this.setTitle(app.settings.get('global').get('project_name') + ' | Compose');
 
       var model = new app.messages.model({from: app.users.getCurrentUser().id}, {collection: app.messages, parse: true});
@@ -669,7 +670,7 @@ define(function(require, exports, module) {
       return this.v.main.getView('#sidebar').getView('#mainSidebar');
     },
 
-    onRoute: function(route, fragments) {
+    onRoute: function (route, fragments) {
       // try to set the current active nav
       var currentPath = Backbone.history.fragment;
       var bookmarksView = this.getBookmarkView();
@@ -692,7 +693,7 @@ define(function(require, exports, module) {
       }
     },
 
-    initialize: function(options) {
+    initialize: function (options) {
       this.navBlacklist = (options.navPrivileges.get('nav_blacklist') || '').split(',');
       // @todo: Allow a queue of pending alerts, maybe?
       this.pendingAlert = {};
@@ -703,7 +704,7 @@ define(function(require, exports, module) {
       this.bookmarks = app.getBookmarks();
       this.extensions = {};
 
-      _.each(options.extensions, function(item) {
+      _.each(options.extensions, function (item) {
         try {
           if (typeof item !== 'undefined') {
             this.extensions[item] = ExtensionManager.getInstance(item);
@@ -712,26 +713,25 @@ define(function(require, exports, module) {
           console.error('failed to load:', e.stack);
           return;
         }
-        //this.extensions[item.id].bind('all', logRoute);
-        this.extensions[item].on('route', function() {
+        // this.extensions[item.id].bind('all', logRoute);
+        this.extensions[item].on('route', function () {
           this.trigger('subroute',item);
           this.trigger('route');
           this.trigger('route:'+item,item);
         }, this);
-        //this.tabs.add({title: app.capitalize(item.id), id: item.id, extension: true});
+        // this.tabs.add({title: app.capitalize(item.id), id: item.id, extension: true});
       }, this);
 
-      var user = app.users.getCurrentUser();
       var tabs = new Tabs.View({collection: this.tabs});
-
       var bookmarks = new Bookmarks.View({collection: this.bookmarks});
 
       //Top
-      var Navbar = Backbone.Layout.extend(
-      {
+      var Navbar = Backbone.Layout.extend({
         template: 'navbar',
+
         el: '#sidebar',
-        beforeRender: function() {
+
+        beforeRender: function () {
           this.insertView('#featureSidebar', tabs);
           this.insertView('#mainSidebar', bookmarks);
         },
@@ -739,27 +739,29 @@ define(function(require, exports, module) {
         keep: true
       });
 
-      //holds references to view instances
+      // Holds references to view instances
       this.v = {};
 
-      //var nav = new Navbar({model: app.settings.get('global'), collection: this.tabs});
       this.v.main = new Backbone.Layout({
 
-        el: "#main",
+        el: '#main',
 
         views: {
           '#modal_container': new directus.Modal.Container(),
           '#sidebar': new Navbar({model: app.settings}),
           '#header': new BaseHeaderView()
         }
-
       });
 
       this.v.messages = new Backbone.Layout({
-        el: "#messages"
+        el: '#messages'
       });
 
-      this.routeHistory = {stack: [], base: '', routes: []};
+      this.routeHistory = {
+        stack: [],
+        base: '',
+        routes: []
+      };
       this.bind('route', this.onRoute, this);
 
       this.v.main.render();

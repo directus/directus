@@ -11,10 +11,8 @@ $loader = require 'vendor/autoload.php';
 
 // Non-autoloaded components
 require 'api/api.php';
-require 'api/globals.php';
 
 use Directus\Util\ArrayUtils;
-use Directus\Authentication\RequestNonceProvider;
 use Directus\Bootstrap;
 use Directus\Database\TableGateway\DirectusBookmarksTableGateway;
 use Directus\Database\TableGateway\DirectusMessagesTableGateway;
@@ -142,19 +140,6 @@ if (!$showWelcomeWindow) {
 $acl = Bootstrap::get('acl');
 $ZendDb = Bootstrap::get('ZendDb');
 $authenticatedUser = $authentication->loggedIn() ? $authentication->getUserInfo() : [];
-
-function getNonces()
-{
-    $session = new \Directus\Session\Session(new \Directus\Session\Storage\NativeSessionStorage());
-    $requestNonceProvider = new RequestNonceProvider($session);
-    $nonces = array_merge($requestNonceProvider->getOptions(), [
-        'pool' => $requestNonceProvider->getAllNonces()
-    ]);
-
-    return $nonces;
-}
-
-;
 
 function getStorageAdapters()
 {
@@ -367,6 +352,8 @@ function getInbox()
  */
 function getVersionNotification()
 {
+    $app = \Directus\Application\Application::getInstance();
+
     $message = null;
     $firstTimeVersionCheck = false;
     if (isset($_SESSION['first_version_check'])) {
@@ -388,7 +375,7 @@ function getVersionNotification()
         $message = [
             'title' => __t('version_outdated_title'),
             'text' => __t('version_outdated_text_x', [
-                'installed_version' => DIRECTUS_VERSION,
+                'installed_version' => $app->getVersion(),
                 'current_version' => $data['current_version']
             ])
         ];
@@ -613,7 +600,6 @@ $configuration = getConfig($settings);
 
 $data = [
     'cacheBuster' => $cacheBuster,
-    'nonces' => getNonces(),
     'storage_adapters' => getStorageAdapters(),
     'path' => get_directus_path(),
     'page' => '#tables',

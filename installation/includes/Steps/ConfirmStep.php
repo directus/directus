@@ -2,6 +2,7 @@
 
 namespace Directus\Installation\Steps;
 
+use Directus\Application\Application;
 use Directus\Database\Connection;
 use Directus\Mail\Mail;
 use Directus\Util\ArrayUtils;
@@ -78,7 +79,7 @@ class ConfirmStep extends AbstractStep
             ],
             'project' => [
                 'name' => $stepsData['directus_name'],
-                'version' => DIRECTUS_VERSION,
+                'version' => Application::DIRECTUS_VERSION,
                 'url' => get_url()
             ],
             'database' => [
