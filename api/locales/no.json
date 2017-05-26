@@ -322,9 +322,7 @@
     "are_you_sure_you_want_to_sign_out": "Er du sikker på at du vil logge ut?",
 
     "you_must_be_logged_in_to_access_the_api": "Du må være logget inn for å få tilgang til API-et",
-    "invalid_request_nonce": "Ugyldig forespørsel (nonce)",
     "no_such_extensions_found": "Utvidelse finnes ikke.",
-    "unauthorized_nonce": "Uautorisert (nonce)",
     "extension_x_must_return_array_got_y_instead": "Utvidelsen %{extension_name} må gjengi matrise, fikk %{type} istedenfor",
     "incorrect_email_or_password": "Feil e-post eller passord",
     "missing_email_or_password": "Manglende e-post eller passord",

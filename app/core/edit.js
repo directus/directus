@@ -64,7 +64,7 @@ define(function(require, exports, module) {
       this.state.batchEnabled = !!enabled;
     },
 
-    serialize: function() {
+    serialize: function () {
       // editing UIs settings does not have a specified table assigned to it.
       var tableInfo = this.column.collection.table;
       var tableName = tableInfo ? tableInfo.id : undefined;
@@ -84,7 +84,7 @@ define(function(require, exports, module) {
       };
     },
 
-    beforeRender: function() {
+    beforeRender: function () {
       var fieldClass = _.result(this.view, 'fieldClass');
 
       if (fieldClass) {
@@ -92,7 +92,7 @@ define(function(require, exports, module) {
       }
     },
 
-    afterRender: function() {
+    afterRender: function () {
       var obj = this.view || this.column;
       if (obj.isRequired()) {
         this.$el.addClass('required');
@@ -106,13 +106,14 @@ define(function(require, exports, module) {
     }
   });
 
-  var EditView = module.exports = Backbone.Layout.extend({
+  // EditView
+  module.exports = Backbone.Layout.extend({
 
     hiddenFields: [],
 
     tagName: 'form',
 
-    template: 'edit',
+    template: Handlebars.compile('<div class="fields"></div>'),
 
     beforeRender: function() {
       var views = {};

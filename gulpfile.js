@@ -272,7 +272,6 @@ gulp.task('move', function() {
     './api/api.php',
     './api/config_sample.php',
     './api/configuration_sample.php',
-    './api/globals.php',
     './api/ruckusing.conf.php',
     './api/schema.sql',
     // for login.php

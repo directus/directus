@@ -306,9 +306,7 @@
     "are_you_sure_you_want_to_sign_out": "你确定要退出吗？",
 
     "you_must_be_logged_in_to_access_the_api": "访问 API 需先登录",
-    "invalid_request_nonce": "无效请求（nonce）",
     "no_such_extensions_found": "找不到扩展",
-    "unauthorized_nonce": "未授权（nonce）",
     "extension_x_must_return_array_got_y_instead": "扩展 %{extension_name} 必须返回 array；实际返回 %{type}",
     "incorrect_email_or_password": "邮箱地址或密码不正确",
     "missing_email_or_password": "邮箱地址或密码未输入",

@@ -16,7 +16,6 @@ defined('DIRECTUS_ENV')
 || define('DIRECTUS_ENV', (getenv('DIRECTUS_ENV') ? getenv('DIRECTUS_ENV') : 'production'));
 
 switch (DIRECTUS_ENV) {
-    case 'development_enforce_nonce':
     case 'development':
     case 'staging':
         break;
@@ -32,7 +31,6 @@ define('HOST_URL', $url);
 define('API_PATH', dirname(__FILE__));
 define('BASE_PATH', dirname(API_PATH));
 
-use Directus\Authentication\RequestNonceProvider;
 use Directus\Bootstrap;
 use Directus\Database\SchemaManager;
 use Directus\Database\TableGateway\DirectusActivityTableGateway;
@@ -65,7 +63,6 @@ $v = 1;
  */
 
 $app = Bootstrap::get('app');
-$requestNonceProvider = new RequestNonceProvider(Bootstrap::get('session'));
 
 /**
  * Load Registered Hooks
@@ -139,14 +136,12 @@ $app->error($exceptionHandler);
 $exceptionHandler = new ExceptionHandler();
 
 // Routes which do not need protection by the authentication and the request
-// nonce enforcement.
 // @TODO: Move this to a middleware
-$authAndNonceRouteWhitelist = [
+$authRouteWhitelist = [
     'auth_login',
     'auth_logout',
     'auth_session',
     'auth_clear_session',
-    'auth_nonces',
     'auth_reset_password',
     'auth_forgot_password',
     'debug_acl_poc',
@@ -170,7 +165,7 @@ $acl = Bootstrap::get('acl');
 $authentication = Bootstrap::get('auth');
 
 $app->hookEmitter->run('application.boot', $app);
-$app->hook('slim.before.dispatch', function () use ($app, $requestNonceProvider, $authAndNonceRouteWhitelist, $ZendDb, $acl, $authentication) {
+$app->hook('slim.before.dispatch', function () use ($app, $authRouteWhitelist, $ZendDb, $acl, $authentication) {
     // API/Server is about to initialize
     $app->hookEmitter->run('application.init', $app);
 
@@ -178,7 +173,7 @@ $app->hook('slim.before.dispatch', function () use ($app, $requestNonceProvider,
 
     /** Skip routes which don't require these protections */
     $routeName = $app->router()->getCurrentRoute()->getName();
-    if (!in_array($routeName, $authAndNonceRouteWhitelist)) {
+    if (!in_array($routeName, $authRouteWhitelist)) {
         $headers = $app->request()->headers();
         $authToken = false;
         if ($app->request()->get('access_token')) {
@@ -268,26 +263,9 @@ $app->hook('slim.before.dispatch', function () use ($app, $requestNonceProvider,
             $app->halt(401, __t('you_must_be_logged_in_to_access_the_api'));
         }
 
-        /** Enforce required request nonces. */
-        // NOTE: do no use nonce until it's well implemented
-        // OR in fact if it's actually necessary.
-        // nonce needs to be checked
-        // otherwise an error is thrown
-        if (!$requestNonceProvider->requestHasValidNonce() && !$authToken) {
-            //     if('development' !== DIRECTUS_ENV) {
-            //         $app->halt(401, __t('invalid_request_nonce'));
-            //     }
-        }
-
         // User is authenticated
         // And Directus is about to start
         $app->hookEmitter->run('directus.start', $app);
-
-        /** Include new request nonces in the response headers */
-        $response = $app->response();
-        $newNonces = $requestNonceProvider->getNewNoncesThisRequest();
-        $nonce_options = $requestNonceProvider->getOptions();
-        $response[$nonce_options['nonce_response_header']] = implode($newNonces, ',');
     }
 
     $permissions = $app->container->get('acl');
@@ -583,12 +561,11 @@ $app->post("/$v/auth/request-token/?", function() use ($app, $ZendDb, $authentic
     return $app->response($response);
 })->name('request_token');
 
-$app->post("/$v/auth/login/?", function () use ($app, $ZendDb, $acl, $requestNonceProvider, $authentication) {
+$app->post("/$v/auth/login/?", function () use ($app, $ZendDb, $acl, $authentication) {
 
     $response = [
         'message' => __t('incorrect_email_or_password'),
-        'success' => false,
-        'all_nonces' => $requestNonceProvider->getAllNonces()
+        'success' => false
     ];
 
     if ($authentication->loggedIn()) {
@@ -605,8 +582,7 @@ $app->post("/$v/auth/login/?", function () use ($app, $ZendDb, $acl, $requestNon
     if (!$user) {
         return $app->response([
             'message' => __t('incorrect_email_or_password'),
-            'success' => false,
-            'all_nonces' => $requestNonceProvider->getAllNonces()
+            'success' => false
         ]);
     }
 
@@ -617,8 +593,7 @@ $app->post("/$v/auth/login/?", function () use ($app, $ZendDb, $acl, $requestNon
     if (!$directusGroupsTableGateway->acceptIP($groupId, $app->request->getIp())) {
         return $app->response([
             'message' => 'Request not allowed from IP address',
-            'success' => false,
-            'all_nonces' => $requestNonceProvider->getAllNonces()
+            'success' => false
         ]);
     }
 
@@ -691,8 +666,7 @@ $app->post("/$v/auth/login/?", function () use ($app, $ZendDb, $acl, $requestNon
     }
 
     return $app->response(array_merge($response, [
-        'success' => true,
-        'all_nonces' => $requestNonceProvider->getAllNonces()
+        'success' => true
     ]));
 })->name('auth_login');
 
@@ -706,12 +680,6 @@ $app->get("/$v/auth/logout(/:inactive)", function ($inactive = null) use ($app, 
         $app->redirect(get_directus_path('/login.php'));
     }
 })->name('auth_logout');
-
-$app->get("/$v/auth/nonces/?", function () use ($app, $requestNonceProvider) {
-    return $app->response([
-        'nonces' => $requestNonceProvider->getAllNonces()
-    ]);
-})->name('auth_nonces');
 
 // debug helper
 $app->get("/$v/auth/session/?", function () use ($app) {

@@ -14,14 +14,16 @@ define(['underscore'], function (_) {
 
   Utils.encodeQueryParams = function (data) {
     var params = [];
-    for (var k in data) {
-      params.push(encodeURIComponent(k) + '=' + encodeURIComponent(data[k]));
-    }
+
+    _.each(data, function (value, key) {
+      params.push(encodeURIComponent(key) + '=' + encodeURIComponent(value));
+    });
+
     return params.join('&');
   };
 
   // Source: https://github.com/petkaantonov/bluebird/wiki/Optimization-killers#3-managing-arguments
-  Utils.argumentsToArray = function(argObject) {
+  Utils.argumentsToArray = function (argObject) {
     var args = new Array(argObject.length);
 
     for (var i = 0; i < args.length; i++) {
@@ -37,8 +39,9 @@ define(['underscore'], function (_) {
    * @param {string} url
    * @return {Element} location
    */
-  Utils.convertURLToLocation = function(url) {
+  Utils.convertURLToLocation = function (url) {
     var location = document.createElement('a');
+
     location.href = url;
 
     return location;
@@ -47,24 +50,24 @@ define(['underscore'], function (_) {
   /**
    * Get Location (Anchor) Element or convert url to one.
    *
-   * @param {string/location} url
+   * @param {string/Location} url
    * @return {Element} new url
    */
-  Utils.getLocation = function(url) {
+  Utils.getLocation = function (url) {
     return url.href ? url : this.convertURLToLocation(url);
   };
 
   /**
    * Get array of params in a url
    *
-   * @param {string}/{location} url
+   * @param {string/Location} url
    * @return {Array} new url
    */
-  Utils.getParams = function(url) {
+  Utils.getParams = function (url) {
     var location = this.getLocation(url);
     var querystring = location.search;
-
     var params = [];
+
     if (querystring && querystring.indexOf('?') === 0) {
       params = querystring.substr(1).split('&');
     }
@@ -75,12 +78,13 @@ define(['underscore'], function (_) {
   /**
    * Add a param to an url query string
    *
-   * @param {string}/{location} url
+   * @param {string/Location} url
    * @param {string} key - Param key
    * @param {string} value - New param value
    * @param {boolean} [encodeKey=true] - Whether to encode the param key.
    * @param {boolean} [encodeValue=true] - Whether to encode the param value.
-   * @return {string} new url
+   *
+   * @return {String} new url
    */
   Utils.addParam = function(url, key, value, encodeKey, encodeValue) {
     var location = this.getLocation(url);
@@ -117,11 +121,11 @@ define(['underscore'], function (_) {
     return location.href;
   };
 
-  Utils.convertToBoolean = function(value) {
+  Utils.convertToBoolean = function (value) {
     return value == null ? false : value != false;
   };
 
-  Utils.isEmpty = function(value) {
+  Utils.isEmpty = function (value) {
     return value == null || value === '';
   };
 
@@ -132,7 +136,7 @@ define(['underscore'], function (_) {
         || (!_.isNumber(value)  && !_.isDate(value) && _.isEmpty(value) && !_.isBoolean(value));
   };
 
-  Utils.clearElement = function(element) {
+  Utils.clearElement = function (element) {
     element.wrap('<form>').closest('form').get(0).reset();
     element.unwrap();
   };

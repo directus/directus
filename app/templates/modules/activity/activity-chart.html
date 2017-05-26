@@ -1,20 +1,20 @@
 <div class="activity-chart">
-  <div class="chart-key">180</div>
-  <table class="bars">
-    <tr>
-      {{#each activities}}
-        <td data-sum="{{total}}">
-          <div class="bar-date">{{title}}</div>
-          <div class="bgfiller"></div>
-          <div class="bar bgpurple" data-type="files" data-total="{{files}}" title="{{files}} Files Uploaded on {{title}}"></div>
-          <div class="bar bgyellow" data-type="system" data-total="{{system}}" title="{{system}} System Changes on {{title}}"></div>
-          <div class="bar bgred" data-type="deleted" data-total="{{deletes}}" title="{{deletes}} Items Deleted on {{title}}"></div>
-          <div class="bar bgblue" data-type="edited" data-total="{{edits}}" title="{{edits}} Items Edited on {{title}}"></div>
-          <div class="bar bggreen" data-type="added" data-total="{{adds}}" title="{{adds}} Items Added on {{title}}"></div>
-        </td>
-      {{/each}}
-    </tr>
-  </table>
+	<div class="chart-key">180</div>
+	<table class="bars">
+		<tr>
+			{{#each activities}}
+			<td data-sum="{{total}}">
+				<div class="bar-date">{{title}}</div>
+				<div class="bgfiller"></div>
+				<div class="bar bgpurple" data-type="files" data-total="{{files}}" title="{{files}} Files Uploaded on {{title}}"></div>
+				<div class="bar bgyellow" data-type="system" data-total="{{system}}" title="{{system}} System Changes on {{title}}"></div>
+				<div class="bar bgred" data-type="deleted" data-total="{{deletes}}" title="{{deletes}} Items Deleted on {{title}}"></div>
+				<div class="bar bgblue" data-type="edited" data-total="{{edits}}" title="{{edits}} Items Edited on {{title}}"></div>
+				<div class="bar bggreen" data-type="added" data-total="{{adds}}" title="{{adds}} Items Added on {{title}}"></div>
+			</td>
+			{{/each}}
+		</tr>
+	</table>
 </div>
 <div class="activity-totals">
   <div class="center">

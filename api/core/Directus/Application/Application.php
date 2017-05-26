@@ -23,6 +23,13 @@ use Slim\Slim;
 class Application extends Slim
 {
     /**
+     * Directus version
+     *
+     * @var string
+     */
+    const DIRECTUS_VERSION = '6.4.0-beta.2';
+
+    /**
      * @var bool
      */
     protected $booted = false;
@@ -63,6 +70,18 @@ class Application extends Slim
     }
 
     /**
+     * Gets an application instance with the given name
+     *
+     * @param string $name
+     *
+     * @return null|Application
+     */
+    public static function getInstance($name = 'default')
+    {
+        return isset(static::$apps[$name]) ? static::$apps[$name] : null;
+    }
+
+    /**
      * Register a provider
      *
      * @param ServiceProviderInterface $provider
@@ -98,6 +117,16 @@ class Application extends Slim
         }
 
         $this->booted = true;
+    }
+
+    /**
+     * Get the Directus Version
+     *
+     * @return string
+     */
+    public function getVersion()
+    {
+        return static::DIRECTUS_VERSION;
     }
 
     public function response()

@@ -1,36 +1,38 @@
 //@todo: Make vanilla-js (not a require module) and move to vendor folder
-define(['moment', 'core/t'], function(moment, __t) {
+define(['moment', 'underscore', 'core/t'], function (moment, _, __t) {
 
-  "use strict";
+  'use strict';
 
   var typetools = {
 
-    numberWithCommas: function(x) {
+    numberWithCommas: function (x) {
       return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     },
 
-    capitalize: function(string, seperator, keepDirectus) {
+    capitalize: function (string, separator, keepDirectus) {
       var idIndex;
 
       if (!string) return '';
 
-      if (seperator === undefined) {
-        seperator = "_";
+      if (separator === undefined) {
+        separator = '_';
       }
 
-      var directusIndex = string.indexOf("directus_");
+      var directusIndex = string.indexOf('directus_');
 
       if (directusIndex === 0 && !keepDirectus) {
         string = string.substring(9);
       }
 
-      idIndex = string.lastIndexOf("_id");
+      idIndex = string.lastIndexOf('_id');
 
       if (string.length > 2 && string.length - idIndex === 3) {
         string = string.substring(0, idIndex);
       }
 
-      var output = _.map(string.split(seperator), function(word) { return word.charAt(0).toUpperCase() + word.slice(1); }).join(' ');
+      var output = _.map(string.split(separator), function (word) {
+        return word.charAt(0).toUpperCase() + word.slice(1);
+      }).join(' ');
 
       // Replace all custom capitalization here
       _.each(typetools.caseSpecial, function(correctCase) {
@@ -38,8 +40,8 @@ define(['moment', 'core/t'], function(moment, __t) {
       });
 
       // Make all prepositions and conjunctions lowercase, except for the first word
-      _.each(typetools.caseLower, function(correctCase) {
-        output = output.replace(new RegExp(" "+correctCase+"\\b", "gi"), " "+correctCase);
+      _.each(typetools.caseLower, function (correctCase) {
+        output = output.replace(new RegExp(' '+correctCase + '\\b', 'gi'), ' ' + correctCase);
       });
 
       // Replace all internals words
@@ -125,42 +127,51 @@ define(['moment', 'core/t'], function(moment, __t) {
       'MANYTOMANY': 'Many-to-Many'
     },
 
-    bytesToSize: function(bytes, precision) {
-        var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
-        var posttxt = 0;
-        bytes = parseInt(bytes,10);
-        if (bytes === 0) return 'n/a';
-        while( bytes >= 1024 ) {
-            posttxt++;
-            bytes = bytes / 1024;
-        }
-        return bytes.toFixed(precision) + " " + sizes[posttxt];
-      },
+    bytesToSize: function (bytes, precision) {
+      var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+      var posttxt = 0;
+
+      bytes = parseInt(bytes, 10);
+
+      if (bytes === 0) {
+        return 'n/a';
+      }
+
+      while (bytes >= 1024) {
+        posttxt++;
+        bytes = bytes / 1024;
+      }
+
+      return bytes.toFixed(precision) + ' ' + sizes[posttxt];
+    },
 
     seconds_convert: function (s) {
       var m = Math.floor(s/60); //Get remaining minutes
+
       s = s%60;
       s = (s < 10) ? '0' + s : s;
+
       return m+":"+s; //zero padding on minutes and seconds
     },
 
-    contextualDate: function(value) {
+    contextualDate: function (value) {
       if (value === undefined) {
         return '';
       }
-      //@todo: convert value to correct timezone
+
+      // TODO: convert value to correct timezone
       value = (value.substr(-1).toLowerCase() === 'z') ? value : value + 'z';
+
       return moment(value).fromNow();
     },
 
-    dateYYYYMMDD: function(date) {
-        return date.toISOString().slice(0,10);
+    dateYYYYMMDD: function (date) {
+      return date.toISOString().slice(0,10);
     },
 
-    replaceAll: function(find, replace, str) {
+    replaceAll: function (find, replace, str) {
       return str.replace(new RegExp(find, 'g'), replace);
     }
-
   };
 
   return typetools;

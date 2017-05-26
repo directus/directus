@@ -323,9 +323,7 @@
     "are_you_sure_you_want_to_sign_out": "你確定要登出嗎？",
 
     "you_must_be_logged_in_to_access_the_api": "訪問API需先登入",
-    "invalid_request_nonce": "無效請求（nonce）",
     "no_such_extensions_found": "找不到擴展",
-    "unauthorized_nonce": "未授權（nonce）",
     "extension_x_must_return_array_got_y_instead": "擴展%{extension_name}必須返回array；實際返回%{type} ",
     "incorrect_email_or_password": "郵箱地址或密碼不正確",
     "missing_email_or_password": "郵箱地址或密碼未輸入",

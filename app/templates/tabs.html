@@ -3,7 +3,6 @@
 	<div class="user-name">{{userFirstAndLastName currentUserId}}</div>
 	{{#if unreadMessagesCount}}<div class="count">{{unreadMessagesCount}}</div>{{/if}}
 	<i class="material-icons user-more">more_vert</i>
-
 	<div class="user-menu">
 		<ul>
 			{{#if showSettings}}
@@ -22,5 +21,4 @@
 			<a href="#logout" class="open-modal" data-modal="confirm"><li><i class="material-icons">exit_to_app</i> {{t 'sign_out'}}</li></a>
 		</ul>
 	</div>
-
 </div>

@@ -79,6 +79,7 @@ require.config({
       exports: "$.fn.select2"
     },
 
+    // TODO: Re-implement flash row, nice and clean
     "plugins/jquery.flashrow": ['jquery'],
 
     "moment-tz": ['moment'],

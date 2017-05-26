@@ -7,12 +7,12 @@ require([
   'helpers/status',
   'core/t',
   'moment'
-], function(app, _, Handlebars, UIManager, FileHelper, StatusHelper, __t, moment) {
+], function (app, _, Handlebars, UIManager, FileHelper, StatusHelper, __t, moment) {
 
   'use strict';
 
   // Get assets path
-  Handlebars.registerHelper('assetsPath', function() {
+  Handlebars.registerHelper('assetsPath', function () {
     return app.PATH + 'assets';
   });
 
@@ -24,11 +24,11 @@ require([
   Handlebars.registerHelper('rootPath', rootPath);
   Handlebars.registerHelper('rootUrl', rootPath);
 
-  Handlebars.registerHelper('t', function(key, options) {
+  Handlebars.registerHelper('t', function (key, options) {
     return __t(key, options.hash);
   });
 
-  Handlebars.registerHelper('tCoreField', function(key, options) {
+  Handlebars.registerHelper('tCoreField', function (key, options) {
     var value = key;
     var tableKey;
 
@@ -44,7 +44,7 @@ require([
     return _.isString(value) ? app.capitalize(value) : value;
   });
 
-  Handlebars.registerHelper('tVarCapitalize', function(key, options) {
+  Handlebars.registerHelper('tVarCapitalize', function (key, options) {
     for (var index in options.hash) {
       if (!options.hash.hasOwnProperty(index)) {
         continue;
@@ -57,31 +57,31 @@ require([
   });
 
   //Raw handlebars data, helpful with data types
-  Handlebars.registerHelper('raw', function(data) {
+  Handlebars.registerHelper('raw', function (data) {
     return data && new Handlebars.SafeString(data);
   });
 
-  Handlebars.registerHelper('number', function(number) {
+  Handlebars.registerHelper('number', function (number) {
     return number === undefined ? '' : number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   });
 
-  Handlebars.registerHelper('resource', function(name) {
+  Handlebars.registerHelper('resource', function (name) {
     return app.RESOURCES_URL + name;
   });
 
-  Handlebars.registerHelper('capitalize', function(string) {
+  Handlebars.registerHelper('capitalize', function (string) {
     return app.capitalize(string);
   });
 
-  Handlebars.registerHelper('nl2br', function(string) {
+  Handlebars.registerHelper('nl2br', function (string) {
     return (string + '').replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1' + '<br>' + '$2');
   });
 
-  Handlebars.registerHelper('uppercase', function(string) {
+  Handlebars.registerHelper('uppercase', function (string) {
     return (string || '').toUpperCase();
   });
 
-  Handlebars.registerHelper('bytesToSize', function(bytes) {
+  Handlebars.registerHelper('bytesToSize', function (bytes) {
     return app.bytesToSize(bytes, 0);
   });
 
@@ -97,19 +97,19 @@ require([
     return moment(date).format('YYYY-MM-DD HH:mm:ss Z');
   });
 
-  Handlebars.registerHelper('formatDate', function(date, format) {
+  Handlebars.registerHelper('formatDate', function (date, format) {
     return moment(date).format(format);
   });
 
-  Handlebars.registerHelper('friendlyDateTime', function(date) {
+  Handlebars.registerHelper('friendlyDateTime', function (date) {
     return moment(date).format('dddd, MMM DD, h:mm A');
   });
 
-  Handlebars.registerHelper('readableBytesSize', function(bytes) {
+  Handlebars.registerHelper('readableBytesSize', function (bytes) {
     return FileHelper.readableBytes(bytes, 0);
   });
 
-  Handlebars.registerHelper('avatarSmall', function(userId) {
+  Handlebars.registerHelper('avatarSmall', function (userId) {
     var user = app.users.get(userId);
     return '<img src="' + user.getAvatar() + '" style="margin-right:7px;" class="avatar">' + user.get('first_name');
   });
@@ -159,18 +159,18 @@ require([
   });
 
   // Should be combined with userShort below with param: "show_avatar" [true,false]
-  Handlebars.registerHelper('userName', function(userId) {
+  Handlebars.registerHelper('userName', function (userId) {
     if (_.isNaN(userId)) return;
     var user = app.users.get(userId);
     var firstName = user.get('first_name').toLowerCase();
     var lastNameFirstCharacter = user.get('last_name').toLowerCase().charAt(0);
     var nickName = firstName;
-    var hit = app.users.find(function(model) {
+    var hit = app.users.find(function (model) {
       return model.get('first_name').toLowerCase() === firstName && model.id !== userId;
     });
     if (hit !== undefined) {
       nickName = firstName + ' ' + lastNameFirstCharacter + '.';
-      hit = app.users.find(function(model) { return model.get('first_name').toLowerCase() === firstName && model.get('last_name').toLowerCase().charAt(0) === lastNameFirstCharacter && model.id !== userId; });
+      hit = app.users.find(function (model) { return model.get('first_name').toLowerCase() === firstName && model.get('last_name').toLowerCase().charAt(0) === lastNameFirstCharacter && model.id !== userId; });
       if (hit !== undefined) {
         nickName = firstName + ' ' + user.get('last_name');
       }
@@ -178,7 +178,7 @@ require([
     return new Handlebars.SafeString(app.capitalize(nickName," "));
   });
 
-  Handlebars.registerHelper('userShort', function(userId) {
+  Handlebars.registerHelper('userShort', function (userId) {
     if (_.isNaN(userId)) return;
     var user = app.users.get(userId);
     var firstName = user.get('first_name').toLowerCase();
@@ -197,11 +197,11 @@ require([
     return new Handlebars.SafeString('<img src="'+user.getAvatar()+'" class="avatar"/>' + app.capitalize(nickName," "));
   });
 
-  Handlebars.registerHelper('userAvatarUrl', function(userId) {
+  Handlebars.registerHelper('userAvatarUrl', function (userId) {
     return app.users.get(userId).getAvatar();
   });
 
-  Handlebars.registerHelper('userAvatar', function(userId) {
+  Handlebars.registerHelper('userAvatar', function (userId) {
     var user = app.users.get(userId);
     var avatar = user.getAvatar();
 
@@ -213,14 +213,14 @@ require([
     return new Handlebars.SafeString('<img src="'+user.getAvatar()+'"  class="avatar"/><span class="name">'+user.get('first_name')+' '+user.get('last_name')+'</span>');
   });
 
-  var userFirstAndLastName = function(userId) {
+  var userFirstAndLastName = function (userId) {
     var user = app.users.get(userId);
 
     return new Handlebars.SafeString(user.get('first_name')+' '+user.get('last_name'));
   };
   Handlebars.registerHelper('userFirstAndLastName', userFirstAndLastName);
 
-  Handlebars.registerHelper('usersFirstAndLastName', function(userIds) {
+  Handlebars.registerHelper('usersFirstAndLastName', function (userIds) {
     if (!_.isArray(userIds)) {
       return;
     }
@@ -243,7 +243,7 @@ require([
     return new Handlebars.SafeString(result.join(''));
   });
 
-  Handlebars.registerHelper('directusTable', function(data) {
+  Handlebars.registerHelper('directusTable', function (data) {
 
     if (data === undefined || !data.length) return;
 
@@ -253,7 +253,7 @@ require([
 
     var tHead = '<thead><tr>' + headersTH.join('') + '</tr></thead>';
 
-    var tableRows = _.map(data, function(row) {
+    var tableRows = _.map(data, function (row) {
       //wrap values in td
       var values = _.values(row);
       var tds = _.map(values, function(value) { return '<td>' + value + '</td>'; });
@@ -267,20 +267,20 @@ require([
     return new Handlebars.SafeString(table);
   });
 
-  Handlebars.registerHelper('directusTable', function(data) {
+  Handlebars.registerHelper('directusTable', function (data) {
 
     if (data === undefined || !data.length) return;
 
     var headers = _.keys(data[0]);
 
-    var headersTH = _.map(headers, function(header) { return '<th>' + app.capitalize(header, '_') + '</th>'; });
+    var headersTH = _.map(headers, function (header) { return '<th>' + app.capitalize(header, '_') + '</th>'; });
 
     var tHead = '<thead><tr>' + headersTH.join('') + '</tr></thead>';
 
-    var tableRows = _.map(data, function(row) {
+    var tableRows = _.map(data, function (row) {
       //wrap values in td
       var values = _.values(row);
-      var tds = _.map(values, function(value) { return '<td>' + value + '</td>'; });
+      var tds = _.map(values, function (value) { return '<td>' + value + '</td>'; });
       return '<tr>' + tds.join('') + '</tr>';
     });
 
@@ -291,13 +291,13 @@ require([
     return new Handlebars.SafeString(table);
   });
 
-  Handlebars.registerHelper('directusSelect', function(data) {
+  Handlebars.registerHelper('directusSelect', function (data) {
     if (data === undefined) return;
 
     var name = data.name;
     data = data.options;
 
-    var options = _.map(data, function(item) {
+    var options = _.map(data, function (item) {
       var selected = item.selected ? 'selected' : '';
       return '<option value="' + item.name + '" ' + selected + '>' + item.title + '</option>';
     });
@@ -334,7 +334,7 @@ require([
     parent.setView('.' + column, view);
   });
 
-  Handlebars.registerHelper('uiCapitalize', function(model, attr, options) {
+  Handlebars.registerHelper('uiCapitalize', function (model, attr, options) {
     var value = uiHelper(model, attr, options);
 
     if (_.isString(value)) {
@@ -363,7 +363,7 @@ require([
   });
 
   // template for empty listing
-  Handlebars.registerPartial('listingEmpty', function() {
+  Handlebars.registerPartial('listingEmpty', function () {
     return '<div class="no-items"> \
       <div class="background-circle"> \
       <img src="{{assetsPath}}/imgs/no-items.svg"> \

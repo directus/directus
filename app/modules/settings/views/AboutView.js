@@ -14,14 +14,14 @@ define([
 
 function(app, Backbone, BasePageView) {
 
-  "use strict";
+  'use strict';
 
   var About = BasePageView.extend({
     headerOptions: {
       route: {
         title: 'About',
         breadcrumbs: [{title: 'Settings', anchor: '#settings'}]
-      },
+      }
     },
     afterRender: function() {
       var view = new Backbone.Layout({template: 'modules/settings/settings-about'});
