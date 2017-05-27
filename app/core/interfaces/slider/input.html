@@ -7,6 +7,7 @@
 
 	span.slider-value {
 		margin-left: 10px;
+		width: auto !important;
 	}
 </style>
-<input type="range" value="{{value}}" name="{{name}}" id="{{name}}" min="{{min}}" max="{{max}}" step="{{step}}"><span class="slider-value">{{value}}</span>
+<input type="range" value="{{value}}" name="{{name}}" id="{{name}}" min="{{min}}" max="{{max}}" step="{{step}}"><span class="slider-value">{{value}} {{unit}}</span>
