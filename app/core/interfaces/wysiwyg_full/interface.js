@@ -110,7 +110,7 @@ define(['core/UIView', 'tinyMCE', 'Utils'], function (UIView, tinyMCE, Utils) {
         toolbar: toolbar,
         style_formats: styleFormats,
         setup: function (editor) {
-          var saveEditorContents = Utils.debounce(function () {
+          var saveEditorContents = _.debounce(function () {
             editor.save();
           }, 500);
 
