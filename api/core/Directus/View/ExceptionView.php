@@ -87,8 +87,13 @@ class ExceptionView
                     'class' => get_class($exception),
                     'file' => $exception->getFile(),
                     'line' => $exception->getLine(),
-                    'trace' => $exception->getTrace(),
-                    'traceAsString' => $exception->getTraceAsString(),
+                    // Do not output the trace
+                    // it can be so long or complex
+                    // that json_encode fails
+                    // 'trace' => $exception->getTrace(),
+                    // maybe as string, but let's get rid of them, for the best
+                    // and look at the logs instead
+                    // 'traceAsString' => $exception->getTraceAsString(),
                 ]);
             }
         }

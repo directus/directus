@@ -46,7 +46,6 @@ use Directus\Database\TableGateway\RelationalTableGateway as TableGateway;
 use Directus\Database\TableSchema;
 use Directus\Services\TablesService;
 use Directus\Exception\ExceptionHandler;
-use Directus\Mail\Mail;
 use Directus\Permissions\Exception\UnauthorizedTableAlterException;
 use Directus\Util\ArrayUtils;
 use Directus\Util\DateUtils;

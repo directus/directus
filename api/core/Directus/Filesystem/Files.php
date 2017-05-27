@@ -3,6 +3,8 @@
 namespace Directus\Filesystem;
 
 use Directus\Bootstrap;
+use Directus\Exception\Exception;
+use Directus\Filesystem\Exception\ForbiddenException;
 use Directus\Util\DateUtils;
 use Directus\Util\Formatting;
 
@@ -48,7 +50,7 @@ class Files
     }
 
     // @TODO: remove exists() and rename() method
-    // and move it to Directus\Filesystem Wraper
+    // and move it to Directus\Filesystem Wrapper
     public function exists($path)
     {
         return $this->filesystem->getAdapter()->has($path);
@@ -215,7 +217,7 @@ class Files
         $filePath = $this->getConfig('root') . '/' . $fileName;
 
         $this->emitter->run('files.saving', ['name' => $fileName, 'size' => strlen($fileData)]);
-        $this->filesystem->getAdapter()->write($fileName, $fileData);
+        $this->write($fileName, $fileData);
         $this->emitter->run('files.saving:after', ['name' => $fileName, 'size' => strlen($fileData)]);
 
         $this->createThumbnails($fileName);
@@ -411,9 +413,32 @@ class Files
                 $thumbnailTempName = 'thumbs/THUMB_' . $imageName;
                 $thumbImg = Thumbnail::writeImage($info['extension'], $thumbnailTempName, $img, $this->getSettings('thumbnail_quality'));
                 $this->emitter->run('files.thumbnail.saving', ['name' => $imageName, 'size' => strlen($thumbImg)]);
-                $this->filesystem->getAdapter()->write($thumbnailTempName, $thumbImg);
+                $this->write($thumbnailTempName, $thumbImg);
                 $this->emitter->run('files.thumbnail.saving:after', ['name' => $imageName, 'size' => strlen($thumbImg)]);
             }
+        }
+    }
+
+    /**
+     * Writes the given data in the given location
+     *
+     * @param $location
+     * @param $data
+     *
+     * @throws \RuntimeException
+     */
+    public function write($location, $data)
+    {
+        $throwException = function () use ($location) {
+            throw new ForbiddenException(sprintf('No permission to write: %s', $location));
+        };
+
+        try {
+            if (!$this->filesystem->getAdapter()->write($location, $data)) {
+                $throwException();
+            }
+        } catch (\Exception $e) {
+            $throwException();
         }
     }
 
@@ -423,7 +448,7 @@ class Files
      * @param string $filePath
      * @param string $targetName
      *
-     * @return Array file info
+     * @return array file info
      */
     private function processUpload($filePath, $targetName)
     {
@@ -439,7 +464,7 @@ class Files
         $data = file_get_contents($filePath);
 
         $this->emitter->run('files.saving', ['name' => $targetName, 'size' => strlen($data)]);
-        $this->filesystem->getAdapter()->write($targetName, $data);
+        $this->write($targetName, $data);
         $this->emitter->run('files.saving:after', ['name' => $targetName, 'size' => strlen($data)]);
 
         $fileData['name'] = basename($finalPath);
