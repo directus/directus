@@ -13,6 +13,7 @@ namespace Directus\Permissions;
 use Directus\Database\TableGateway\BaseTableGateway;
 use Directus\Permissions\Exception\UnauthorizedFieldReadException;
 use Directus\Permissions\Exception\UnauthorizedFieldWriteException;
+use Directus\Util\ArrayUtils;
 use Zend\Db\RowGateway\RowGateway;
 use Zend\Db\Sql\Predicate\PredicateSet;
 use Zend\Db\Sql\Select;
@@ -64,8 +65,25 @@ class Acl
         'directus_files' => ['user']
     ];
 
+    /**
+     * Group privileges grouped by table name
+     *
+     * @var array
+     */
     protected $groupPrivileges;
+
+    /**
+     * Authenticated user id
+     *
+     * @var int|null
+     */
     protected $userId = null;
+
+    /**
+     * Authenticated user group  id
+     *
+     * @var int|null
+     */
     protected $groupId = null;
 
     public function __construct(array $groupPrivileges = [])
@@ -73,32 +91,82 @@ class Acl
         $this->setGroupPrivileges($groupPrivileges);
     }
 
+    /**
+     * Sets the authenticated user id
+     *
+     * @param $userId
+     */
     public function setUserId($userId)
     {
         $this->userId = $userId;
     }
 
+    /**
+     * Sets the authenticated group id
+     *
+     * @param $groupId
+     */
     public function setGroupId($groupId)
     {
         $this->groupId = $groupId;
     }
 
+    /**
+     * Gets the authenticated user id
+     *
+     * @return int|null
+     */
     public function getUserId()
     {
         return $this->userId;
     }
 
+    /**
+     * Gets the authenticated group id
+     *
+     * @return int|null
+     */
     public function getGroupId()
     {
         return $this->groupId;
     }
 
+    /**
+     * Sets the group tables privileges
+     *
+     * @param array $groupPrivileges
+     *
+     * @return $this
+     */
     public function setGroupPrivileges(array $groupPrivileges)
     {
-        $this->groupPrivileges = $groupPrivileges;
+        $fixedPrivileges = $this->getFixedGroupPrivileges();
+        $this->groupPrivileges = ArrayUtils::defaults($groupPrivileges, $fixedPrivileges);
+
         return $this;
     }
 
+    /**
+     * Gets the fixed group privileges
+     *
+     * @return array
+     */
+    public function getFixedGroupPrivileges()
+    {
+        return [
+            'directus_preferences' => [
+                'allow_add' => 1,
+                'allow_view' => 1,
+                'allow_edit' => 1
+            ]
+        ];
+    }
+
+    /**
+     * Gets the group tables privileges
+     *
+     * @return array
+     */
     public function getGroupPrivileges()
     {
         return $this->groupPrivileges;
@@ -305,13 +373,13 @@ class Acl
         }
 
         if ($groupHasTablePrivileges) {
-            if (!isset($this->groupPrivileges[$table][$list]) || !is_array($this->groupPrivileges[$table][$list])) {
+            $privilegeList = ArrayUtils::get($this->groupPrivileges, $table . '.' . $list, []);
+            if (!is_array($privilegeList)) {
                 throw new \RuntimeException(__t('expected_permission_list_x_for_table_y_to_be_set_and_type_array', [
                     'list' => $list,
                     'table' => $table
                 ]));
             }
-            $privilegeList = $this->groupPrivileges[$table][$list];
         } else {
             $groupHasFallbackTablePrivileges = array_key_exists('*', $this->groupPrivileges);
             if ($groupHasFallbackTablePrivileges) {
