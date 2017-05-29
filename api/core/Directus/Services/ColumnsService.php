@@ -168,12 +168,29 @@ class ColumnsService extends AbstractService
             $adapter = $this->getTableGateway()->getAdapter();
             $columnObject = $this->getColumnObject($tableName, $columnName);
 
+            $options = [
+                'comment' => $columnObject->getComment()
+            ];
+
+            if ($columnObject->hasAutoIncrement()) {
+                $options['autoincrement'] = true;
+            }
+
+            if ($columnObject->isUnsigned()) {
+                $options['unsigned'] = true;
+            }
+
+            if ($columnObject->hasZeroFill()) {
+                $options['zerofill'] = true;
+            }
+
             $alterTable = new AlterTable($tableName);
             $newColumn = new Custom(
                 $columnName,
                 $columnObject->getLength(),
                 $columnObject->isNullable(),
-                $columnObject->getDefaultValue()
+                $columnObject->getDefaultValue(),
+                $options
             );
 
             if (ArrayUtils::has($data, 'default_value')) {
