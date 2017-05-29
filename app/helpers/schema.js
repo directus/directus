@@ -14,8 +14,6 @@ define([
     'FLOAT',
     'YEAR',
     'DOUBLE',
-    'VARCHAR',
-    'CHAR',
     'BIGINT'
   ];
 
@@ -24,8 +22,8 @@ define([
     'CHAR'
   ];
 
-  var getNumericTypes = function () {
-    return numericTypes;
+  var getNumericInterfaceTypes = function () {
+    return numericTypes.concat(stringTypes);
   };
 
   var cleanIdentifier = function (identifier) {
@@ -129,7 +127,7 @@ define([
     getSystemDefaultComment: getSystemDefaultComment,
     isMissingRequiredOptions: isMissingRequiredOptions,
     isSystem: isSystem,
-    getNumericTypes: getNumericTypes,
+    getNumericInterfaceTypes: getNumericInterfaceTypes,
     isNumericType: isNumericType,
     isStringType: isStringType,
     dateColumns: dateColumns,

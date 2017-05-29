@@ -83,6 +83,10 @@ define(function(require, exports, module) {
       return this.collection.table;
     },
 
+    getType: function () {
+      return this.get('type');
+    },
+
     get: function (attr, skip) {
       if (attr === 'length' && !this.isNew() && !skip && this.isEnumOrSet()) {
         return this.getValues();
