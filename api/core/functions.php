@@ -1158,7 +1158,6 @@ if (!function_exists('get_gravatar')) {
     }
 }
 
-
 if (!function_exists('get_contents')) {
     /**
      * Get content from an URL

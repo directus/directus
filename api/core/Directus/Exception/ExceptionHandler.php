@@ -84,11 +84,17 @@ class ExceptionHandler
     public function handleShutdown()
     {
         if (!is_null($error = error_get_last()) && $this->isFatal($error['type'])) {
+            // clean buffer
+            ob_end_clean();
+
             $e = new ErrorException(
                 $error['message'], $error['type'], 0, $error['file'], $error['line']
             );
 
             $this->emitter->run('application.error', $e);
+            $app = Bootstrap::get('app');
+            $exceptionView = new ExceptionView();
+            $exceptionView->exceptionHandler($app, $e);
         }
     }
 
