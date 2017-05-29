@@ -7,7 +7,7 @@ define(['core/UIView'], function (UIView) {
     events: {
       'input input[type=range]': function (e) {
         var value = e.target.value;
-        this.$el.find('span.slider-value').html(value);
+        this.$el.find('span.slider-value').html(value + ' ' + this.options.settings.get('unit'));
       }
     },
     serialize: function () {
@@ -21,7 +21,8 @@ define(['core/UIView'], function (UIView) {
         min: this.options.settings.get('minimum'),
         max: this.options.settings.get('maximum'),
         step: this.options.settings.get('step'),
-        comment: this.options.schema.get('comment')
+        comment: this.options.schema.get('comment'),
+        unit: this.options.settings.get('unit')
       };
     }
   });
