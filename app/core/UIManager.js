@@ -52,6 +52,7 @@ define(function(require, exports, module) {
     require('core/interfaces/select/component'),
     require('core/interfaces/tags/component'),
     require('core/interfaces/wysiwyg/component'),
+    require('core/interfaces/wysiwyg_full/component'),
     require('core/interfaces/password/component'),
     require('core/interfaces/enum/component'),
     require('core/interfaces/map/component'),
