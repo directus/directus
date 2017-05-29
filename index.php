@@ -194,6 +194,41 @@ function getExtendedUserColumns($tableSchema)
 
 }
 
+function getExtendedFilesColumns($tableSchema)
+{
+    // TODO: Create an object that stores all system tables columns
+    $filesColumns = [
+        'id',
+        'active',
+        'name',
+        'title',
+        'location',
+        'caption',
+        'type',
+        'charset',
+        'tags',
+        'width',
+        'height',
+        'size',
+        'embed_id',
+        'user',
+        'date_uploaded',
+        'storage_adapter'
+    ];
+
+    $schema = array_filter($tableSchema, function ($table) {
+        return $table['schema']['id'] === 'directus_files';
+    });
+
+    $schema = reset($schema);
+
+    $columns = array_filter($schema['schema']['columns'], function ($column) use ($filesColumns) {
+        return !in_array($column['id'], $filesColumns);
+    });
+
+    return array_values($columns);
+}
+
 function parsePreferences($tableSchema)
 {
     $preferences = [];
@@ -625,6 +660,7 @@ $data = [
     'user_notifications' => getLoginNotification(),
     'bookmarks' => getBookmarks(),
     'extendedUserColumns' => getExtendedUserColumns($tableSchema),
+    'extendedFilesColumns' => getExtendedFilesColumns($tableSchema),
     'showWelcomeWindow' => $showWelcomeWindow,
     'statusMapping' => $statusMapping
 ];

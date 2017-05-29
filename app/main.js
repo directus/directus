@@ -138,6 +138,12 @@ require(['config', 'polyfills'], function () {
         {parse: true}
       );
 
+      // Extend files schema with extra fields
+      SchemaManager.getColumns('tables', 'directus_files').add(
+        options.extendedFilesColumns,
+        {parse: true}
+      );
+
       EntriesManager.setup({
         apiURL: app.API_URL,
         rowsPerPage: parseInt(options.config['rows_per_page'], 10)
