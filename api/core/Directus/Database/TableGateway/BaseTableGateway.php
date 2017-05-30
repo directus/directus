@@ -438,19 +438,25 @@ class BaseTableGateway extends TableGateway
             $tableName = $this->table;
         }
 
-        // remove table privileges
+        // Remove table privileges
         if ($tableName != 'directus_privileges') {
             $privilegesTableGateway = new TableGateway('directus_privileges', $this->adapter);
             $privilegesTableGateway->delete(['table_name' => $tableName]);
         }
 
-        // remove column from directus_tables
+        // Remove columns from directus_columns
+        $columnsTableGateway = new TableGateway('directus_columns', $this->adapter);
+        $columnsTableGateway->delete([
+            'table_name' => $tableName
+        ]);
+
+        // Remove table from directus_tables
         $tablesTableGateway = new TableGateway('directus_tables', $this->adapter);
         $tablesTableGateway->delete([
             'table_name' => $tableName
         ]);
 
-        // remove column from directus_preferences
+        // Remove table from directus_preferences
         $preferencesTableGateway = new TableGateway('directus_preferences', $this->adapter);
         $preferencesTableGateway->delete([
             'table_name' => $tableName
