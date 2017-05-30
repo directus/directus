@@ -10,6 +10,7 @@
 
 namespace Directus\Services;
 
+use Directus\Database\TableSchema;
 use Directus\Util\SchemaUtils;
 
 /**
@@ -24,7 +25,7 @@ class TablesService extends AbstractService
         $schema = $this->getSchemaManager();
 
         if ($schema->tableExists($name)) {
-            return -1;
+            return false;
         }
 
         $tableGateway = $this->createTableGateway('directus_columns');
@@ -72,6 +73,8 @@ class TablesService extends AbstractService
                 'ui' => 'status'
             ]);
         }
+
+        return true;
     }
 
     /**
@@ -106,5 +109,17 @@ class TablesService extends AbstractService
         $zeroOrMoreUnderscoresDashes = preg_match("/[_-]*/i", $name);
 
         return $isTableNameAlphanumeric && $zeroOrMoreUnderscoresDashes;
+    }
+
+    /**
+     * Gets the table object representation
+     *
+     * @param $tableName
+     *
+     * @return \Directus\Database\Object\Table
+     */
+    public function getTableObject($tableName)
+    {
+        return TableSchema::getTableSchema($tableName);
     }
 }

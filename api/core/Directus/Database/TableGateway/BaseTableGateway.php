@@ -426,7 +426,7 @@ class BaseTableGateway extends TableGateway
     }
 
     /**
-     * Stop managing a table by removing privileges, preferences and table information
+     * Stop managing a table by removing privileges, preferences columns and table information
      *
      * @param null $tableName
      *

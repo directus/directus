@@ -353,13 +353,15 @@ define([
     },
 
     manageTable: function (tableName) {
+      // TODO: Change this process to an dedicated add table method
+      // similar to unmanage table
       app.schemaManager.addTable(tableName, function(tableModel) {
         app.router.bookmarks.addTable(tableModel);
         app.router.go(['settings', 'tables', tableName]);
       });
     },
 
-    toggleTableAttribute: function(tableModel, attr, element) {
+    toggleTableAttribute: function (tableModel, attr, element) {
       var data = {};
 
       data[attr] = !tableModel.get(attr);
