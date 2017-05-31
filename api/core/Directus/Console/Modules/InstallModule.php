@@ -132,6 +132,9 @@ class InstallModule extends ModuleBase
                 case 'd':
                     $data['directus_path'] = rtrim($value, '/') . '/';
                     break;
+                case 'e':
+                    $data['directus_email'] = $value;
+                    break;
             }
         }
 
