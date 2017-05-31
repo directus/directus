@@ -32,7 +32,7 @@ define([
         this.$el.find('.char-count').removeClass('hide');
       },
       // Update character counter when input changes
-      'input input': 'updateMaxLength',
+      'input input': 'onChangeInput',
       // Validate keypress against validation_string
       'keypress input': 'validateString',
       // Hide character counter when input loses focus
@@ -41,10 +41,18 @@ define([
       }
     },
 
+    onChangeInput: function (event) {
+      var $input = $(event.currentTarget);
+
+      this.model.set(this.options.name, $input.val());
+
+      this.updateMaxLength($input.val().length);
+    },
+
     // Update the character counter with the remaining characters available
-    updateMaxLength: function(e) {
+    updateMaxLength: function (length) {
       if (this.maxCharLength) {
-        var charsLeft = this.maxCharLength - e.target.value.length;
+        var charsLeft = this.maxCharLength - length;
         this.$el.find('.char-count').html(charsLeft);
       }
     },

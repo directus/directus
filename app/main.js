@@ -213,7 +213,7 @@ require(['config', 'polyfills'], function () {
             //Wait for another 10 seconds before kicking the user out
             Idle.start({
               timeout: function () {
-                app.logOut(true);
+                app.logOut(true, true);
               },
               interrupt: waitForForActivity,
               delay: 10000,

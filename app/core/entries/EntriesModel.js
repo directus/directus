@@ -479,6 +479,44 @@ define(function(require, exports, module) {
       });
     },
 
+    // original start/stop tracking
+    _startTracking: Backbone.Model.prototype.startTracking,
+    _stopTracking: Backbone.Model.prototype.stopTracking,
+
+    _onTrackingSync: function () {
+      this.restartTracking();
+    },
+
+    isTracking: function () {
+      return this._trackingChanges;
+    },
+
+    startTracking: function () {
+      this._startTracking();
+      this.enablePrompt();
+      this.on('sync', this._onTrackingSync, this);
+    },
+
+    stopTracking: function () {
+      this._stopTracking();
+      this.resetAttributes();
+      this.disablePrompt();
+      this.off('sync', this._onTrackingSync, this);
+    },
+
+    enablePrompt: function () {
+      this.setPrompt(true);
+    },
+
+    disablePrompt: function () {
+      this.setPrompt(false);
+    },
+
+    setPrompt: function (enabled) {
+      this._unsavedConfig.unloadRouterPrompt = enabled;
+      this._unsavedConfig.unloadWindowPrompt = enabled;
+    },
+
     // we need to do this because initialize is called AFTER parse.
     constructor: function EntriesModel (data, options) {
       // inherit structure and table from collection if it exists

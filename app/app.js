@@ -19,6 +19,10 @@ define(function (require, exports, module) {
   // Track Model changes
   require('plugins/backbone.trackit');
 
+  // Load Backbone Model Stick it plugin
+  // Sync changes between views and model
+  require('plugins/backbone.stickit');
+
   // Globally load Bootstrap plugins
   require('plugins/bootstrap-dropdown');
   require('plugins/typeahead');
@@ -63,14 +67,20 @@ define(function (require, exports, module) {
       return Backbone.$.ajax(_.extend(params, options));
     },
 
-    //bInactive true if logged out because inactive
-    logOut: function (bInactive) {
-      //if binactive pass url parameter
-      if(bInactive) {
-        window.location.href = app.API_URL + "auth/logout/inactive";
-      } else {
-        window.location.href = app.API_URL + "auth/logout";
+    // bInactive true if logged out because inactive
+    logOut: function (bInactive, force) {
+      var url = app.API_URL + 'auth/logout';
+
+      // if bInactive pass url parameter
+      if (bInactive) {
+        url += '/inactive';
       }
+
+      if (force) {
+        window.onbeforeunload = null;
+      }
+
+      window.location.href = url;
     },
 
     //  TODO: implement this into a new logger

@@ -6,15 +6,22 @@ define(['core/UIView'], function (UIView) {
       'focus input': function () {
         this.$el.find('.char-count').removeClass('hide');
       },
-      'input input': 'updateMaxLength',
+      'input input': 'onChangeInput',
       'blur input': function () {
         this.$el.find('.char-count').addClass('hide');
       }
     },
 
-    updateMaxLength: function (e) {
-      var length = this.options.schema.get('char_length') - e.target.value.length;
-      this.$el.find('.char-count').html(length);
+    onChangeInput: function (event) {
+      var $input = $(event.currentTarget);
+
+      this.model.set(this.options.name, $input.val());
+
+      this.updateMaxLength($input.val().length);
+    },
+
+    updateMaxLength: function (length) {
+      this.$el.find('.char-count').html(this.options.schema.get('char_length') - length);
     },
 
     serialize: function () {

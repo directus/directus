@@ -14,21 +14,34 @@ define([
 
 function(app, Backbone, _, Handlebars, __t, Notification, Directus, BasePageView, Widgets, EditViewRightPane, TranslationView) {
 
+  'use strict';
+
   var EditView = Backbone.Layout.extend({
     template: Handlebars.compile('<div id="editFormEntry"></div><div id="translateFormEntry">'),
-    afterRender: function() {
-      this.insertView("#editFormEntry", this.editView);
+
+    afterRender: function () {
+      this.insertView('#editFormEntry', this.editView);
 
       if (this.translateViews.length) {
         _.each(this.translateViews, function(view) {
-          this.insertView("#translateFormEntry", view);
+          this.insertView('#translateFormEntry', view);
         }, this);
       }
+
+      var self = this;
+      this.editView.on('afterRender', function () {
+        self.stickit();
+      });
 
       if (this.skipFetch || this.model.isNew()) {
         this.editView.render();
       }
     },
+
+    cleanup: function () {
+      this.unstickit();
+    },
+
     beforeSaveHook: function() {
       if (this.translateViews.length) {
         _.each(this.translateViews, function(view) {
@@ -36,10 +49,12 @@ function(app, Backbone, _, Handlebars, __t, Notification, Directus, BasePageView
         }, this);
       }
     },
-    data: function() {
+
+    data: function () {
       return this.editView.data();
     },
-    initialize: function(options) {
+
+    initialize: function (options) {
       this.skipFetch = options.skipFetch;
       this.translateViews = [];
 
@@ -61,34 +76,26 @@ function(app, Backbone, _, Handlebars, __t, Notification, Directus, BasePageView
 
       this.editView = new Directus.EditView(options);
     },
-    serialize: function() {
+    serialize: function () {
       return {};
     }
   });
 
   return BasePageView.extend({
     events: {
-      'change select, input[type=checkbox], input[type=radio], input[type=date], input[type=time]': 'checkDiff',
-      'keyup input, textarea': 'checkDiff',
-      'submit': function (e) {
+      'submit': function (event) {
         // prevent user submit the form using Enter key
-        // @todo handle this event to or as 'saveConfirm'
-        e.preventDefault();
+        // TODO: handle this event to or as 'saveConfirm'
+        event.preventDefault();
       }
     },
 
-    getHeaderOptions: function() {
+    getHeaderOptions: function () {
       return {
         route: {
           isOverlay: false
         }
       };
-    },
-
-    checkDiff: function(e) {
-      var diff = this.model.diff(this.editView.data());
-      delete diff.id;
-      this.saveWidget.enable();
     },
 
     saveConfirm: function (event) {
@@ -115,12 +122,12 @@ function(app, Backbone, _, Handlebars, __t, Notification, Directus, BasePageView
       }});
     },
 
-    save: function(e) {
+    save: function (event) {
       this.editView.beforeSaveHook();
 
       var action = this.single ? 'save-form-stay' : 'save-form-leave';
-      if (e.target.options !== undefined && !this.single) {
-        action = $(e.target.options[e.target.selectedIndex]).val();
+      if (event.target.options !== undefined && !this.single) {
+        action = $(event.target.options[event.target.selectedIndex]).val();
       }
 
       var data = this.editView.data();
@@ -130,13 +137,13 @@ function(app, Backbone, _, Handlebars, __t, Notification, Directus, BasePageView
       var collection = this.model.collection;
       var success;
 
-      for(var key in data) {
-        if(model.structure.get(key).options && model.structure.get(key).options.get('allow_null') === '1') {
-          if(data[key] === '') {
-            data[key] = null;
-          }
+      model.structure.each(function (column) {
+        var options = column.options;
+
+        if (options && options.get('allow_null') === true && data[column.id] === '') {
+          data[column.id] = null;
         }
-      }
+      });
 
       if (action === 'save-form-stay') {
         success = function(model, response, options) {
@@ -144,6 +151,7 @@ function(app, Backbone, _, Handlebars, __t, Notification, Directus, BasePageView
           if (!model.table.get('single')) {
             route.pop();
             route.push(model.get('id'));
+            self.model.disablePrompt();
             app.router.go(route);
           }
 
@@ -165,11 +173,12 @@ function(app, Backbone, _, Handlebars, __t, Notification, Directus, BasePageView
             self.onSuccess(model, response, options);
           }
 
-          // @TODO: check if this view is a overlay then close the overlay
+          // TODO: check if this view is a overlay then close the overlay
           //        instead redirecting to the listing page
           // -------------------------------------------------------------
           // if it's an overlay view do not go to any route
           if (!self.headerOptions.route.isOverlay) {
+            self.model.disablePrompt();
             app.router.go(route);
           }
         };
@@ -180,13 +189,16 @@ function(app, Backbone, _, Handlebars, __t, Notification, Directus, BasePageView
         delete clone.id;
         model = new collection.model(clone, {collection: collection, parse: true});
         collection.add(model);
-        // console.log(model);
       }
 
-      var changedValues = _.extend(model.unsavedAttributes() || {}, model.diff(data));
+      if (!model.unsavedAttributes()) {
+        Notification.warning('Nothing changed, nothing saved');
+
+        return;
+      }
 
       // patch only the changed values
-      model.save(changedValues, {
+      model.save(model.unsavedAttributes(), {
         success: success,
         error: function(model, xhr, options) {
           // console.error('err');
@@ -208,7 +220,7 @@ function(app, Backbone, _, Handlebars, __t, Notification, Directus, BasePageView
       });
     },
 
-    afterRender: function() {
+    afterRender: function () {
       this.setView('#page-content', this.editView);
 
       //Fetch Model if Exists
@@ -233,7 +245,7 @@ function(app, Backbone, _, Handlebars, __t, Notification, Directus, BasePageView
       this.editView.render();
     },
 
-    leftToolbar: function() {
+    leftToolbar: function () {
       var widgets = [];
       var editView = this;
 
@@ -245,7 +257,10 @@ function(app, Backbone, _, Handlebars, __t, Notification, Directus, BasePageView
         onClick: _.bind(editView.saveConfirm, editView)
       });
 
-      // this.saveWidget.disable();
+      this.saveWidget.disable();
+      this.model.on('unsavedChanges', function(hasChanges, unsavedAttrs, model) {
+        editView.saveWidget.setEnabled(hasChanges);
+      });
 
       widgets.push(this.saveWidget);
 
@@ -277,11 +292,11 @@ function(app, Backbone, _, Handlebars, __t, Notification, Directus, BasePageView
       return widgets;
     },
 
-    rightPane: function() {
+    rightPane: function () {
       return EditViewRightPane;
     },
 
-    rightPaneOptions: function() {
+    rightPaneOptions: function () {
       return {};
     },
 
@@ -290,7 +305,7 @@ function(app, Backbone, _, Handlebars, __t, Notification, Directus, BasePageView
       this.model.stopTracking();
     },
 
-    initialize: function(options) {
+    initialize: function (options) {
       options = _.defaults({}, options, {
         omittedFields: this.omittedFields,
         skipFetch: false
@@ -305,9 +320,6 @@ function(app, Backbone, _, Handlebars, __t, Notification, Directus, BasePageView
       this.onSuccess = options.onSuccess;
 
       this.model.startTracking();
-      this.listenTo(this.model, 'sync', function () {
-        this.model.restartTracking();
-      });
 
       if (_.isUndefined(this.headerOptions.basicSave)) {
         this.headerOptions.basicSave = false;

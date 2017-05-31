@@ -95,6 +95,7 @@ require.config({
 
     'plugins/backbone.layoutmanager': ['backbone'],
     'plugins/backbone.trackit': ['backbone'],
+    'plugins/backbone.stickit': ['backbone'],
     'plugins/bootstrap-dropdown': ['jquery'],
     'plugins/typeahead': ['jquery'],
     'plugins/bootstrap-tooltip': ['jquery']
