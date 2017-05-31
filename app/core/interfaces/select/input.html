@@ -202,18 +202,18 @@
 		<ul class="gridlist">
 		{{#options}}
 			<li>
-				<input id="multi_select_{{name}}_{{key}}" name="{{key}}" type="checkbox" {{#if selected}}checked{{/if}}/>
-				<label for="multi_select_{{name}}_{{key}}">{{value}}</label>
+				<input id="multi_select_{{../name}}_{{key}}" name="{{../name}}_{{key}}" type="checkbox" {{#if selected}}checked{{/if}}/>
+				<label for="multi_select_{{../name}}_{{key}}">{{value}}</label>
 			</li>
 		{{/options}}
 		</ul>
-		<input type="hidden" name="{{name}}" value="{{value}}">
+		<input type="hidden" name="{{name}}_{{key}}" value="{{value}}">
 		{{else}}
 		<ul class="gridlist">
 		{{#options}}
 		<li>
-			<input type="radio" name="{{../name}}" value="{{key}}" id="radio-{{key}}" {{#if selected}}checked{{/if}}>
-			<label class="radiobuttons" for="radio-{{key}}">{{value}}</label>
+			<input type="radio" name="{{../name}}_{{key}}" value="{{key}}" id="radio-{{../name}}-{{key}}" {{#if selected}}checked{{/if}}>
+			<label class="radiobuttons" for="radio-{{../name}}-{{key}}">{{value}}</label>
 		</li>
 		{{/options}}
 		</ul>
