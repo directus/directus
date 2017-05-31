@@ -183,10 +183,16 @@ class Files
 
         list($width, $height) = getimagesizefromstring($content);
 
+        $size = isset($urlHeaders['Content-Length']) ? $urlHeaders['Content-Length'] : 0;
+        // NOTE: for some reason the size is an array like this [0, actualSize]
+        if (is_array($size)) {
+            $size = array_pop($size);
+        }
+
         $data = 'data:' . $urlHeaders['Content-Type'] . ';base64,' . base64_encode($content);
         $info['title'] = $urlInfo['filename'];
         $info['name'] = $urlInfo['basename'];
-        $info['size'] = isset($urlHeaders['Content-Length']) ? $urlHeaders['Content-Length'] : 0;
+        $info['size'] = $size;
         $info['type'] = $urlHeaders['Content-Type'];
         $info['width'] = $width;
         $info['height'] = $height;
