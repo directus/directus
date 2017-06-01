@@ -902,6 +902,9 @@ class RelationalTableGateway extends BaseTableGateway
     protected function processFilters(Builder $query, array $filters = [])
     {
         foreach($filters as $column => $condition) {
+            // TODO: Add a simplified option for logical
+            // adding an "or_" prefix
+            // filters[column][eq]=Value1&filters[column][or_eq]=Value2
             $logical = null;
             if (is_array($condition) && isset($condition['logical'])) {
                 $logical = $condition['logical'];
