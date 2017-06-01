@@ -235,7 +235,7 @@ class RelationalTableGateway extends BaseTableGateway
                         }
                     }
                     // Save parent log entry
-                    $parentLogEntry = BaseRowGateway::makeRowGatewayFromTableName('id', 'directus_activity', $this->adapter, $this->acl);
+                    $parentLogEntry = BaseRowGateway::makeRowGatewayFromTableName('id', 'directus_activity', $this->adapter);
                     $logData = [
                         'type' => DirectusActivityTableGateway::makeLogTypeFromTableName($this->table),
                         'table_name' => $tableName,
@@ -254,7 +254,7 @@ class RelationalTableGateway extends BaseTableGateway
                     $parentLogEntry->populate($logData, false);
                     $parentLogEntry->save();
                     // Update & insert nested activity entries
-                    $ActivityGateway = new DirectusActivityTableGateway($this->adapter, $this->acl);
+                    $ActivityGateway = new DirectusActivityTableGateway($this->adapter);
                     foreach ($nestedLogEntries as $entry) {
                         $entry['parent_id'] = $rowId;
                         // @todo ought to insert these in one batch
@@ -723,7 +723,7 @@ class RelationalTableGateway extends BaseTableGateway
     public function createMetadata($entriesData, $single)
     {
         $singleEntry = $single || !ArrayUtils::isNumericKeys($entriesData);
-        $tableSchema = TableSchema::getTableSchema($this->table);
+        $tableSchema = $this->getTableSchema($this->table);
         $metadata = [
             'table' => $tableSchema->getTableName(),
             'type' => $singleEntry ? 'item' : 'collection'
@@ -1225,8 +1225,8 @@ class RelationalTableGateway extends BaseTableGateway
             }
 
             $relatedTableName = $alias->getRelationship()->getRelatedTable();
-            if (!TableSchema::canGroupViewTable($relatedTableName)) {
-                return false;
+            if ($this->acl && !TableSchema::canGroupViewTable($relatedTableName)) {
+                continue;
             }
 
             $primaryKey = $this->primaryKeyFieldName;
@@ -1300,8 +1300,8 @@ class RelationalTableGateway extends BaseTableGateway
             }
 
             $relatedTableName = $alias->getRelationship()->getRelatedTable();
-            if (!TableSchema::canGroupViewTable($relatedTableName)) {
-                return false;
+            if ($this->acl && !TableSchema::canGroupViewTable($relatedTableName)) {
+                continue;
             }
 
             $primaryKey = $this->primaryKeyFieldName;
@@ -1487,7 +1487,7 @@ class RelationalTableGateway extends BaseTableGateway
                 continue;
             }
 
-            if (!TableSchema::canGroupViewTable($relatedTable)) {
+            if ($this->acl && !TableSchema::canGroupViewTable($relatedTable)) {
                 continue;
             }
 

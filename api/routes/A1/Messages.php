@@ -176,7 +176,7 @@ class Messages extends Route
         $id = $messagesTableGateway->sendMessage($requestPayload, array_unique($userRecipients), $currentUserId);
 
         if ($id) {
-            $Activity = new DirectusActivityTableGateway($ZendDb, $acl);
+            $Activity = new DirectusActivityTableGateway($ZendDb);
             $requestPayload['id'] = $id;
             $Activity->recordMessage($requestPayload, $currentUserId);
         }

@@ -26,6 +26,7 @@ function(app, Backbone, EntriesModel, moment) {
 
     canSendMessages: function () {
       var group = this.getGroup();
+      // TODO: Add whether or not has permission to insert in messages table
 
       return group && group.get('show_messages');
     },

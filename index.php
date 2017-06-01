@@ -245,15 +245,26 @@ function parsePreferences($tableSchema)
 function getUsers()
 {
     global $ZendDb, $acl;
-    $tableGateway = new TableGateway('directus_users', $ZendDb, $acl);
-    $users = $tableGateway->getEntries([
+
+    $aclParam = $acl;
+    $params = [
         'table_name' => 'directus_users',
         'perPage' => 1000,
         STATUS_COLUMN_NAME => STATUS_ACTIVE_NUM,
         'depth' => 1,
-        columns => TableSchema::getAllTableColumnsName('directus_users')
+        'columns' => TableSchema::getAllTableColumnsName('directus_users')
         // 'columns_visible' => ['id', STATUS_COLUMN_NAME, 'avatar', 'first_name', 'last_name', 'group', 'email', 'position', 'last_access']
-    ]);
+    ];
+
+    if (!$acl->canView('directus_users')) {
+        $aclParam = null;
+        $params['filters'] = [
+            'id' => ['in' => $acl->getUserId()]
+        ];
+    }
+
+    $tableGateway = new TableGateway('directus_users', $ZendDb, $aclParam);
+    $users = $tableGateway->getEntries($params);
 
     // Lets get the gravatar if no avatar is set.
     // TODO: Add this on insert/update of any user.
@@ -298,9 +309,21 @@ function getBookmarks()
 function getGroups()
 {
     global $ZendDb, $acl;
-    $groups = new TableGateway('directus_groups', $ZendDb, $acl);
+
+    $aclParam = $acl;
+    $params = ['depth' => 1];
+
+    if (!$acl->canView('directus_groups')) {
+        $aclParam = null;
+        $params['filters'] = [
+            'id' => ['in' => $acl->getGroupId()]
+        ];
+    }
+
+    $groups = new TableGateway('directus_groups', $ZendDb, $aclParam);
     // @todo: move to DirectusGroupsTableGateway
-    $groupEntries = $groups->getEntries(['depth' => 1]);
+    $groupEntries = $groups->getEntries($params);
+
     $groupEntries['data'] = array_map(function ($row) {
         $navOverride = ArrayUtils::get($row, 'nav_override');
         ArrayUtils::set($row, 'nav_override', null);
@@ -328,14 +351,15 @@ function getGroups()
 
 function getSettings()
 {
-    global $ZendDb, $acl;
-    $settingsTable = new DirectusSettingsTableGateway($ZendDb, $acl);
+    global $ZendDb;
+
+    $settingsTable = new DirectusSettingsTableGateway($ZendDb, null);
 
     $settings = $settingsTable->getItems(['limit' => null]);
 
     foreach ($settings['data'] as &$setting) {
         if ($setting['name'] === 'cms_thumbnail_url') {
-            $filesTableGateway = new TableGateway('directus_files', $ZendDb, $acl);
+            $filesTableGateway = new TableGateway('directus_files', $ZendDb, null);
             $setting['value'] = $filesTableGateway->loadEntries(['id' => $setting['value']]);
             break;
         }
@@ -364,20 +388,19 @@ function getConfig($settings)
     return $configs;
 }
 
-function getActiveFiles()
-{
-    global $ZendDb, $acl;
-    $tableGateway = new TableGateway('directus_files', $ZendDb, $acl);
-
-    return $tableGateway->countActive();
-}
-
 function getInbox()
 {
     global $ZendDb, $acl, $authenticatedUser;
-    $tableGateway = new DirectusMessagesTableGateway($ZendDb, $acl);
 
-    return $tableGateway->fetchMessagesInboxWithHeaders($authenticatedUser['id']);
+    $messages = [];
+
+    if ($acl->canView('directus_messages') && $acl->canView('directus_messages_recipients')) {
+        $tableGateway = new DirectusMessagesTableGateway($ZendDb, $acl);
+
+        $messages = $tableGateway->fetchMessagesInboxWithHeaders($authenticatedUser['id']);
+    }
+
+    return $messages;
 }
 
 /**
@@ -475,8 +498,9 @@ function getExtensions($currentUserGroup)
 
 function getPrivileges($groupId)
 {
-    global $ZendDb, $acl;
-    $tableGateway = new DirectusPrivilegesTableGateway($ZendDb, $acl);
+    global $ZendDb;
+
+    $tableGateway = new DirectusPrivilegesTableGateway($ZendDb, null);
 
     return $tableGateway->fetchGroupPrivilegesRaw($groupId);
 }
@@ -644,7 +668,6 @@ $data = [
     'groups' => $groups,
     'settings' => $settings,
     'config' => $configuration,
-    'active_files' => getActiveFiles(),
     'authenticatedUser' => $authenticatedUser,
     'extensions' => getExtensions($currentUserGroup),
     'privileges' => getPrivileges($groupId),

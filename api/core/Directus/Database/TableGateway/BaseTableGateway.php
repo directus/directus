@@ -93,6 +93,7 @@ class BaseTableGateway extends TableGateway
     {
         // Add table name reference here, so we can fetch the table schema object
         $this->table = $table;
+        $this->acl = $acl;
 
         // @NOTE: temporary, do we need it here?
         if ($this->primaryKeyFieldName === null) {
@@ -106,7 +107,6 @@ class BaseTableGateway extends TableGateway
             }
         }
 
-        $this->acl = $acl;
         // @NOTE: This will be substituted by a new Cache wrapper class
         // $this->memcache = new MemcacheProvider();
         if ($features === null) {
@@ -169,13 +169,24 @@ class BaseTableGateway extends TableGateway
         return static::makeTableGatewayFromTableName($tableName, $adapter, $acl);
     }
 
-    public function getTableSchema()
+    public function getTableSchema($tableName = null)
     {
-        if ($this->tableSchema === null) {
-            $this->tableSchema = TableSchema::getTableSchema($this->getTable());
+        if ($this->tableSchema !== null && ($tableName === null || $tableName === $this->getTable())) {
+            return $this->tableSchema;
         }
 
-        return $this->tableSchema;
+        if ($tableName === null) {
+            $tableName = $this->getTable();
+        }
+
+        $skipAcl = $this->acl === null;
+        $tableSchema = TableSchema::getTableSchema($tableName, [], false, $skipAcl);
+
+        if ($tableName === $this->getTable()) {
+            $this->tableSchema = $tableSchema;
+        }
+
+        return $tableSchema;
     }
 
     /**
@@ -920,7 +931,7 @@ class BaseTableGateway extends TableGateway
         if (is_array($records)) {
             $tableName = $tableName === null ? $this->table : $tableName;
             $records = $this->parseRecordValuesByType($records, $tableName);
-            $tableSchema = TableSchema::getTableSchema($tableName);
+            $tableSchema = $this->getTableSchema($tableName);
             $records = $this->convertDates($records, $tableSchema, $tableName);
         }
 

@@ -166,14 +166,15 @@ class TableSchema
      * @param $tableName
      * @param array $params
      * @param bool $skipCache
+     * @param bool $skipAcl
      *
      * @throws ForbiddenException
      *
      * @return Object\Table
      */
-    public static function getTableSchema($tableName, array $params = [], $skipCache = false)
+    public static function getTableSchema($tableName, array $params = [], $skipCache = false, $skipAcl = false)
     {
-        if (!static::getAclInstance()->canView($tableName)) {
+        if (!$skipAcl && !static::getAclInstance()->canView($tableName)) {
             throw new ForbiddenException('Permission denied');
         }
 

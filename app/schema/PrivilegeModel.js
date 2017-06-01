@@ -15,6 +15,14 @@ define(['app', 'backbone'] ,function(app, Backbone) {
 
     parse: function(result) {
       return result.data ? result.data : result;
+    },
+
+    can: function (permission) {
+      if (permission.indexOf('allow_') !== 0) {
+        permission = 'allow_' + permission;
+      }
+
+      return this.get(permission) > 0;
     }
   });
 

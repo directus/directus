@@ -133,16 +133,20 @@ require(['config', 'polyfills'], function () {
       SchemaManager.registerPrivileges(options.privileges);
 
       // Extend user schema with extra fields
-      SchemaManager.getColumns('tables', 'directus_users').add(
-        options.extendedUserColumns,
-        {parse: true}
-      );
+      if (options.extendedUserColumns) {
+        SchemaManager.getColumns('tables', 'directus_users').add(
+          options.extendedUserColumns,
+          {parse: true}
+        );
+      }
 
       // Extend files schema with extra fields
-      SchemaManager.getColumns('tables', 'directus_files').add(
-        options.extendedFilesColumns,
-        {parse: true}
-      );
+      if (options.extendedFilesColumns) {
+        SchemaManager.getColumns('tables', 'directus_files').add(
+          options.extendedFilesColumns,
+          {parse: true}
+        );
+      }
 
       EntriesManager.setup({
         apiURL: app.API_URL,
@@ -197,7 +201,6 @@ require(['config', 'polyfills'], function () {
       // Bootstrap data
       app.groups.reset(options.groups, {parse: true});
       app.users.reset(options.users, {parse: true});
-      app.files.reset(options.active_files, {parse: true});
       app.messages.reset(options.messages, {parse: true});
 
       // app.messages.startPolling();
