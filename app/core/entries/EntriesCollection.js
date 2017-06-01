@@ -381,7 +381,7 @@ define(function(require, exports, module) {
       }
 
       this.filters['status'] = '1,2';
-debugger;
+
       if (!options.preferences) {
         options.preferences = new PreferenceModel();
       }
