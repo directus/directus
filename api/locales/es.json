@@ -318,9 +318,7 @@
     "are_you_sure_you_want_to_sign_out": "Estas seguro que quieres cerrar session?",
 
     "you_must_be_logged_in_to_access_the_api": "Tienes que iniciar session para acceder al API",
-    "invalid_request_nonce": "Solicitud Invalida (nonce)",
     "no_such_extensions_found": "Extension no encontrada",
-    "unauthorized_nonce": "No autorizado (nonce)",
     "extension_x_must_return_array_got_y_instead": "Extension %{extension_name} tiene que retornar un Array, %{type} fue recibido",
     "incorrect_email_or_password": "Correo o contraseña incorrecta",
     "missing_email_or_password": "Falta correo o contraseña",

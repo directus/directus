@@ -116,16 +116,24 @@ function(app, _, Backbone, Notification, __t, TableHelpers, ModelHelper, TableHe
 
     fixWidths: function ($el) {
       var $table = $el || this.$el;
-      TableHelpers.fixWidths($table);
+
+      if (this.options.flex) {
+        TableHelpers.fixWidths($table);
+      }
     },
 
     headerScroll: function ($el) {
       var $table = $el || this.$el;
-      TableHelpers.headerScroll($table);
+
+      if (this.options.flex) {
+        TableHelpers.headerScroll($table);
+      }
     },
 
     bindTableEvents: function () {
-      var $el = $('#page-content');
+      // TODO: #page-content is an id that's duplicated by any overlay view
+      // NOTE: fetch the last overlay container by its class to fix their view widths
+      var $el = $('#content').find('.main-container').last();
 
       this.fixWidths($el);
       this.headerScroll($el);

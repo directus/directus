@@ -21,6 +21,7 @@ use Directus\Database\TableGateway\DirectusUsersTableGateway;
 use Directus\Database\TableGateway\RelationalTableGateway;
 use Directus\Database\TableSchema;
 use Directus\Embed\EmbedManager;
+use Directus\Exception\Exception;
 use Directus\Exception\ForbiddenException;
 use Directus\Filesystem\Filesystem;
 use Directus\Filesystem\FilesystemFactory;
@@ -39,6 +40,7 @@ use Directus\Util\StringUtils;
 use Directus\View\Twig\DirectusTwigExtension;
 use Slim\Extras\Log\DateTimeFileWriter;
 use Slim\Extras\Views\Twig;
+use Zend\Db\TableGateway\TableGateway;
 
 /**
  * NOTE: This class depends on the constants defined in config.php
@@ -813,6 +815,31 @@ class Bootstrap
 
             return $payload;
         };
+
+        $emitter->addFilter('table.update.directus_users:before', function (Payload $payload) {
+            $acl = Bootstrap::get('acl');
+            $currentUserId = $acl->getUserId();
+
+            if ($currentUserId != $payload->get('id')) {
+                return $payload;
+            }
+
+            // ----------------------------------------------------------------------------
+            // TODO: Add enforce method to ACL
+            $adapter = Bootstrap::get('zendDb');
+            $userTable = new BaseTableGateway('directus_users', $adapter);
+            $groupTable = new BaseTableGateway('directus_groups', $adapter);
+
+            $user = $userTable->find($payload->get('id'));
+            $group = $groupTable->find($user['group']);
+
+            if (!$group || !ArrayUtils::get($group, 'show_users')) {
+                throw new ForbiddenException('you are not allowed to update your user information');
+            }
+            // ----------------------------------------------------------------------------
+
+            return $payload;
+        });
         $emitter->addFilter('table.insert.directus_users:before', $hashUserPassword);
         $emitter->addFilter('table.update.directus_users:before', $hashUserPassword);
 
@@ -846,6 +873,34 @@ class Bootstrap
         };
         $emitter->addFilter('table.insert.directus_users:before', $preventUsePublicGroup);
         $emitter->addFilter('table.update.directus_users:before', $preventUsePublicGroup);
+
+        $beforeSavingFiles = function ($payload) {
+            $acl = Bootstrap::get('acl');
+            $currentUserId = $acl->getUserId();
+
+            // ----------------------------------------------------------------------------
+            // TODO: Add enforce method to ACL
+            $adapter = Bootstrap::get('zendDb');
+            $userTable = new BaseTableGateway('directus_users', $adapter);
+            $groupTable = new BaseTableGateway('directus_groups', $adapter);
+
+            $user = $userTable->find($currentUserId);
+            $group = $groupTable->find($user['group']);
+
+            if (!$group || !ArrayUtils::get($group, 'show_files')) {
+                throw new ForbiddenException('you are not allowed to upload, edit or delete files');
+            }
+            // ----------------------------------------------------------------------------
+
+            return $payload;
+        };
+
+        $emitter->addAction('files.saving', $beforeSavingFiles);
+        $emitter->addAction('files.thumbnail.saving', $beforeSavingFiles);
+        // TODO: Make insert actions and filters
+        $emitter->addFilter('table.insert.directus_files:before', $beforeSavingFiles);
+        $emitter->addFilter('table.update.directus_files:before', $beforeSavingFiles);
+        $emitter->addFilter('table.delete.directus_files:before', $beforeSavingFiles);
 
         // NOTE: Adding the translation key into as array key, return a not valid array (json)
         // so instead of creating each element as model, backbone thinks those are attributes of a model
@@ -905,7 +960,7 @@ class Bootstrap
         $session = self::get('session');
         $config = self::get('config');
         $prefix = ArrayUtils::get($config, 'session.prefix', 'directus_');
-        $table = new RelationalTableGateway('directus_users', $zendDb);
+        $table = new TableGateway('directus_users', $zendDb);
 
         return new AuthProvider($table, $session, $prefix);
     }

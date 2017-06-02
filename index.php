@@ -11,9 +11,8 @@ $loader = require 'vendor/autoload.php';
 
 // Non-autoloaded components
 require 'api/api.php';
-require 'api/globals.php';
 
-use Directus\Authentication\RequestNonceProvider;
+use Directus\Util\ArrayUtils;
 use Directus\Bootstrap;
 use Directus\Database\TableGateway\DirectusBookmarksTableGateway;
 use Directus\Database\TableGateway\DirectusMessagesTableGateway;
@@ -142,19 +141,6 @@ $acl = Bootstrap::get('acl');
 $ZendDb = Bootstrap::get('ZendDb');
 $authenticatedUser = $authentication->loggedIn() ? $authentication->getUserInfo() : [];
 
-function getNonces()
-{
-    $session = new \Directus\Session\Session(new \Directus\Session\Storage\NativeSessionStorage());
-    $requestNonceProvider = new RequestNonceProvider($session);
-    $nonces = array_merge($requestNonceProvider->getOptions(), [
-        'pool' => $requestNonceProvider->getAllNonces()
-    ]);
-
-    return $nonces;
-}
-
-;
-
 function getStorageAdapters()
 {
     $config = Bootstrap::get('config');
@@ -208,6 +194,41 @@ function getExtendedUserColumns($tableSchema)
 
 }
 
+function getExtendedFilesColumns($tableSchema)
+{
+    // TODO: Create an object that stores all system tables columns
+    $filesColumns = [
+        'id',
+        'active',
+        'name',
+        'title',
+        'location',
+        'caption',
+        'type',
+        'charset',
+        'tags',
+        'width',
+        'height',
+        'size',
+        'embed_id',
+        'user',
+        'date_uploaded',
+        'storage_adapter'
+    ];
+
+    $schema = array_filter($tableSchema, function ($table) {
+        return $table['schema']['id'] === 'directus_files';
+    });
+
+    $schema = reset($schema);
+
+    $columns = array_filter($schema['schema']['columns'], function ($column) use ($filesColumns) {
+        return !in_array($column['id'], $filesColumns);
+    });
+
+    return array_values($columns);
+}
+
 function parsePreferences($tableSchema)
 {
     $preferences = [];
@@ -224,14 +245,26 @@ function parsePreferences($tableSchema)
 function getUsers()
 {
     global $ZendDb, $acl;
-    $tableGateway = new TableGateway('directus_users', $ZendDb, $acl);
-    $users = $tableGateway->getEntries([
+
+    $aclParam = $acl;
+    $params = [
         'table_name' => 'directus_users',
         'perPage' => 1000,
         STATUS_COLUMN_NAME => STATUS_ACTIVE_NUM,
         'depth' => 1,
+        'columns' => TableSchema::getAllTableColumnsName('directus_users')
         // 'columns_visible' => ['id', STATUS_COLUMN_NAME, 'avatar', 'first_name', 'last_name', 'group', 'email', 'position', 'last_access']
-    ]);
+    ];
+
+    if (!$acl->canView('directus_users')) {
+        $aclParam = null;
+        $params['filters'] = [
+            'id' => ['in' => $acl->getUserId()]
+        ];
+    }
+
+    $tableGateway = new TableGateway('directus_users', $ZendDb, $aclParam);
+    $users = $tableGateway->getEntries($params);
 
     // Lets get the gravatar if no avatar is set.
     // TODO: Add this on insert/update of any user.
@@ -276,20 +309,40 @@ function getBookmarks()
 function getGroups()
 {
     global $ZendDb, $acl;
-    $groups = new TableGateway('directus_groups', $ZendDb, $acl);
+
+    $aclParam = $acl;
+    $params = ['depth' => 1];
+
+    if (!$acl->canView('directus_groups')) {
+        $aclParam = null;
+        $params['filters'] = [
+            'id' => ['in' => $acl->getGroupId()]
+        ];
+    }
+
+    $groups = new TableGateway('directus_groups', $ZendDb, $aclParam);
     // @todo: move to DirectusGroupsTableGateway
-    $groupEntries = $groups->getEntries(['depth' => 1]);
+    $groupEntries = $groups->getEntries($params);
+
     $groupEntries['data'] = array_map(function ($row) {
-        if (array_key_exists('nav_override', $row)) {
-            if (!empty($row['nav_override'])) {
-                $row['nav_override'] = @json_decode($row['nav_override']);
-                if (json_last_error() !== JSON_ERROR_NONE) {
-                    $row['nav_override'] = false;
-                }
-            } else {
-                $row['nav_override'] = NULL;
+        $navOverride = ArrayUtils::get($row, 'nav_override');
+        ArrayUtils::set($row, 'nav_override', null);
+
+        $navOverride = @json_decode($navOverride);
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            return $row;
+        }
+
+        $row['nav_override'] = [];
+        foreach ($navOverride as $category => $items) {
+            foreach ($items as $title => $path) {
+                $key = implode('.', ['nav_override', $category, $title]);
+                ArrayUtils::set($row, $key, [
+                    'path' => $path
+                ]);
             }
         }
+
         return $row;
     }, $groupEntries['data']);
 
@@ -298,10 +351,19 @@ function getGroups()
 
 function getSettings()
 {
-    global $ZendDb, $acl;
-    $settingsTable = new DirectusSettingsTableGateway($ZendDb, $acl);
+    global $ZendDb;
+
+    $settingsTable = new DirectusSettingsTableGateway($ZendDb, null);
 
     $settings = $settingsTable->getItems(['limit' => null]);
+
+    foreach ($settings['data'] as &$setting) {
+        if ($setting['name'] === 'cms_thumbnail_url') {
+            $filesTableGateway = new TableGateway('directus_files', $ZendDb, null);
+            $setting['value'] = $filesTableGateway->loadEntries(['id' => $setting['value']]);
+            break;
+        }
+    }
 
     array_push($settings['data'], [
         'id' => 'max_file_size',
@@ -326,20 +388,19 @@ function getConfig($settings)
     return $configs;
 }
 
-function getActiveFiles()
-{
-    global $ZendDb, $acl;
-    $tableGateway = new TableGateway('directus_files', $ZendDb, $acl);
-
-    return $tableGateway->countActive();
-}
-
 function getInbox()
 {
     global $ZendDb, $acl, $authenticatedUser;
-    $tableGateway = new DirectusMessagesTableGateway($ZendDb, $acl);
 
-    return $tableGateway->fetchMessagesInboxWithHeaders($authenticatedUser['id']);
+    $messages = [];
+
+    if ($acl->canView('directus_messages') && $acl->canView('directus_messages_recipients')) {
+        $tableGateway = new DirectusMessagesTableGateway($ZendDb, $acl);
+
+        $messages = $tableGateway->fetchMessagesInboxWithHeaders($authenticatedUser['id']);
+    }
+
+    return $messages;
 }
 
 /**
@@ -349,6 +410,8 @@ function getInbox()
  */
 function getVersionNotification()
 {
+    $app = \Directus\Application\Application::getInstance();
+
     $message = null;
     $firstTimeVersionCheck = false;
     if (isset($_SESSION['first_version_check'])) {
@@ -370,7 +433,7 @@ function getVersionNotification()
         $message = [
             'title' => __t('version_outdated_title'),
             'text' => __t('version_outdated_text_x', [
-                'installed_version' => DIRECTUS_VERSION,
+                'installed_version' => $app->getVersion(),
                 'current_version' => $data['current_version']
             ])
         ];
@@ -435,8 +498,9 @@ function getExtensions($currentUserGroup)
 
 function getPrivileges($groupId)
 {
-    global $ZendDb, $acl;
-    $tableGateway = new DirectusPrivilegesTableGateway($ZendDb, $acl);
+    global $ZendDb;
+
+    $tableGateway = new DirectusPrivilegesTableGateway($ZendDb, null);
 
     return $tableGateway->fetchGroupPrivilegesRaw($groupId);
 }
@@ -515,6 +579,11 @@ if (!$users) {
 }
 $currentUserInfo = getCurrentUserInfo($users);
 
+// hide welcome modal when the group has not permission to edit user information
+if ($showWelcomeWindow === true && !ArrayUtils::get($currentUserInfo, 'group.show_files')) {
+    $showWelcomeWindow = false;
+}
+
 // Cache buster
 $git = __DIR__ . '/.git';
 $cacheBuster = Directus\Util\Git::getCloneHash($git);
@@ -590,7 +659,6 @@ $configuration = getConfig($settings);
 
 $data = [
     'cacheBuster' => $cacheBuster,
-    'nonces' => getNonces(),
     'storage_adapters' => getStorageAdapters(),
     'path' => get_directus_path(),
     'page' => '#tables',
@@ -600,7 +668,6 @@ $data = [
     'groups' => $groups,
     'settings' => $settings,
     'config' => $configuration,
-    'active_files' => getActiveFiles(),
     'authenticatedUser' => $authenticatedUser,
     'extensions' => getExtensions($currentUserGroup),
     'privileges' => getPrivileges($groupId),
@@ -616,6 +683,7 @@ $data = [
     'user_notifications' => getLoginNotification(),
     'bookmarks' => getBookmarks(),
     'extendedUserColumns' => getExtendedUserColumns($tableSchema),
+    'extendedFilesColumns' => getExtendedFilesColumns($tableSchema),
     'showWelcomeWindow' => $showWelcomeWindow,
     'statusMapping' => $statusMapping
 ];

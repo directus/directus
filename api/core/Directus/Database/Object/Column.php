@@ -57,6 +57,7 @@ class Column implements \ArrayAccess, Arrayable, \JsonSerializable
      * Complete data type
      *
      * Needed for ENUM and SET where their values are stored in here
+     * also unsigned and zerofill
      *
      * @var string
      */
@@ -100,6 +101,11 @@ class Column implements \ArrayAccess, Arrayable, \JsonSerializable
      * @var string
      */
     protected $key;
+
+    /**
+     * @var string
+     */
+    protected $extra;
 
     /**
      * @var array
@@ -189,6 +195,7 @@ class Column implements \ArrayAccess, Arrayable, \JsonSerializable
             'nullable',
             'column_key',
             'options',
+            'extra',
             'required',
             'ui',
             'hidden_list',
@@ -368,6 +375,30 @@ class Column implements \ArrayAccess, Arrayable, \JsonSerializable
     public function getColumnType()
     {
         return $this->columnType;
+    }
+
+    /**
+     * Whether the columns only accepts unsigned values
+     *
+     * @return bool
+     */
+    public function isUnsigned()
+    {
+        $type = $this->getColumnType();
+
+        return strpos($type, 'unsigned') !== false;
+    }
+
+    /**
+     * Whether the columns has zero fill attribute
+     *
+     * @return bool
+     */
+    public function hasZeroFill()
+    {
+        $type = $this->getColumnType();
+
+        return strpos($type, 'zerofill') !== false;
     }
 
     /**
@@ -572,6 +603,40 @@ class Column implements \ArrayAccess, Arrayable, \JsonSerializable
     public function getKey()
     {
         return $this->key;
+    }
+
+    /**
+     * Sets the column extra
+     *
+     * @param $extra
+     *
+     * @return $this
+     */
+    public function setExtra($extra)
+    {
+        $this->extra = $extra;
+
+        return $this;
+    }
+
+    /**
+     * Gets the column extra
+     *
+     * @return string
+     */
+    public function getExtra()
+    {
+        return $this->extra;
+    }
+
+    /**
+     * Gets whether or not the column has auto increment
+     *
+     * @return bool
+     */
+    public function hasAutoIncrement()
+    {
+        return strtolower($this->getExtra() ?: '') === 'auto_increment';
     }
 
     /**

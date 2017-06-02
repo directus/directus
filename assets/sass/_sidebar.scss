@@ -122,6 +122,10 @@
 			.user-more {
 				color: $white;
 			}
+			.count {
+				background-color: $white;
+				color: $primary;
+			}
 		}
 		.avatar {
 			@include border-radius (40px);
@@ -136,10 +140,21 @@
 			@include transition (all, $timing-short, ease-in-out);
 			color: $white;
 			font-weight: 500;
-			padding-right: 14px;
+			padding-right: 24px;
 			text-overflow: ellipsis;
 			white-space: nowrap;
 			overflow: hidden;
+		}
+		.count {
+			@include border-radius (2px);
+			position: absolute;
+			top: 20px;
+			right: 12px;
+			z-index: 2;
+			background-color: $primary;
+			color: $white;
+			font-weight: 700;
+			padding: 2px 6px;
 		}
 		.user-more {
 			position: absolute;
@@ -219,25 +234,25 @@
 							color: $primary;
 						}
 					}
-					// &.system-settings {
-					// 	color: $important;
-					// 	font-weight: 700;
-					// 	&:hover {
-					// 		color: darken($important, 8%);
-					// 		.material-icons {
-					// 			color: darken($important, 8%);
-					// 		}
-					// 	}
-					// 	.material-icons {
-					// 		color: $important;
-					// 	}
-					// }
+					&.system-settings {
+						color: $important;
+						// font-weight: 700;
+						&:hover {
+							color: darken($important, 8%);
+							.material-icons {
+								color: darken($important, 8%);
+							}
+						}
+						.material-icons {
+							color: $important;
+						}
+					}
 					&.discover {
 						span {
 							padding-right: 10px;
 						}
 					}
-					.count {
+					.count-menu {
 						@include border-radius (2px);
 						float: right;
 						background-color: $primary;

@@ -7,11 +7,9 @@ use Directus\Bootstrap;
 use Directus\Database\Object\Column;
 use Directus\Database\Object\Table;
 use Directus\Database\TableGateway\DirectusPreferencesTableGateway;
+use Directus\Exception\ForbiddenException;
 use Directus\MemcacheProvider;
 use Directus\Util\ArrayUtils;
-use Directus\Util\DateUtils;
-use Zend\Db\Sql\Ddl\Column\Varbinary;
-use Zend\Db\Sql\Predicate\In;
 use Zend\Db\Sql\Predicate\NotIn;
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Sql;
@@ -168,11 +166,18 @@ class TableSchema
      * @param $tableName
      * @param array $params
      * @param bool $skipCache
+     * @param bool $skipAcl
+     *
+     * @throws ForbiddenException
      *
      * @return Object\Table
      */
-    public static function getTableSchema($tableName, array $params = [], $skipCache = false)
+    public static function getTableSchema($tableName, array $params = [], $skipCache = false, $skipAcl = false)
     {
+        if (!$skipAcl && !static::getAclInstance()->canView($tableName)) {
+            throw new ForbiddenException('Permission denied');
+        }
+
         return static::getSchemaManagerInstance()->getTableSchema($tableName, $params, $skipCache);
     }
 

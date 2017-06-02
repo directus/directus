@@ -11,6 +11,7 @@
 namespace Directus\Database;
 
 use Directus\Database\Ddl\Column\Boolean;
+use Directus\Database\Exception\TableNotFoundException;
 use Directus\Database\Object\Column;
 use Directus\Database\Object\Table;
 use Directus\Database\Schemas\Sources\SchemaInterface;
@@ -154,6 +155,8 @@ class SchemaManager
      * @param array  $params
      * @param bool   $skipCache
      *
+     * @throws TableNotFoundException
+     *
      * @return \Directus\Database\Object\Table
      */
     public function getTableSchema($tableName, $params = [], $skipCache = false)
@@ -163,6 +166,10 @@ class SchemaManager
             // Get the table schema data from the source
             $tableResult = $this->source->getTable($tableName);
             $tableData = $tableResult->current();
+
+            if (!$tableData) {
+                throw new TableNotFoundException($tableName);
+            }
 
             // Create a table object based of the table schema data
             $tableSchema = $this->createTableObjectFromArray(array_merge($tableData, [

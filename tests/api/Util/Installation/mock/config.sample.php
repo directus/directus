@@ -6,10 +6,9 @@ define('API_VERSION', 1);
 /**
  * DIRECTUS_ENV - Possible values:
  *
- *   'production' => error suppression, nonce protection
- *   'development' => no error suppression, no nonce protection (allows manual viewing of API output)
- *   'staging' => no error suppression, no nonce protection (allows manual viewing of API output)
- *   'development_enforce_nonce' => no error suppression, nonce protection
+ *   'production' => error suppression
+ *   'development' => no error suppression
+ *   'staging' => no error suppression
  */
 define('DIRECTUS_ENV', 'development');
 

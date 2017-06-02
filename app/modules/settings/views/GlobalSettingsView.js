@@ -33,10 +33,10 @@ define([
         widgetOptions: {
           basicSave: true
         },
-        onClick: function(event) {
+        onClick: function (event) {
           var data = {};
           _.each(self.editView, function (view, key) {
-            data[key] = view.data();
+            data[key] = _.extend((view.model.unsavedAttributes() || {}), view.data());
           });
 
           var model = self.model;
@@ -79,6 +79,12 @@ define([
       BasePageView.prototype.beforeRender.apply(this, arguments);
     },
 
+    cleanup: function () {
+      _.each(this.editView, function (view) {
+        view.model.stopTracking();
+      });
+    },
+
     initialize: function(options) {
       var self = this;
       var index = -1;
@@ -88,6 +94,7 @@ define([
         var structure = options.structure[key];
         var model = self.model.clone().clear();
         model.set(self.model.get(key));
+        model.startTracking();
 
         // add line break after the first group
         if (++index > 0) {

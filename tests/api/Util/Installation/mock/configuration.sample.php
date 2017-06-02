@@ -67,6 +67,10 @@ return [
         }
     ],
 
+    'filters' => [
+        // 'table.insert.products:before' => \Directus\Customs\Hooks\BeforeInsertProducts::class
+    ],
+
     'feedback' => [
         'token' => 'token',
         'login' => true

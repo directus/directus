@@ -533,6 +533,9 @@ define([
       },
 
       constructor: function (options) {
+        // make listing table "flexible"
+        // flexible header and scrollable
+        options.flex = true;
         BaseView.prototype.constructor.apply(this, arguments);
         TableView.prototype._configureTable.call(this, options);
 

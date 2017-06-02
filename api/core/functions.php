@@ -1,6 +1,7 @@
 <?php
 
 require __DIR__ . '/constants.php';
+require __DIR__ . '/helpers/mail.php';
 
 if (!function_exists('uc_convert')) {
     /**
@@ -1157,7 +1158,6 @@ if (!function_exists('get_gravatar')) {
     }
 }
 
-
 if (!function_exists('get_contents')) {
     /**
      * Get content from an URL
@@ -1217,6 +1217,8 @@ if (!function_exists('check_version')) {
             'outdated' => false,
         ];
 
+        $version = \Directus\Application\Application::DIRECTUS_VERSION;
+
         // =============================================================================
         // Getting the latest version, silently skip it if the server is no responsive.
         // =============================================================================
@@ -1226,7 +1228,7 @@ if (!function_exists('check_version')) {
             if ($responseData && isset($responseData['success']) && $responseData['success'] == true) {
                 $versionData = $responseData['data'];
                 $data = array_merge($data, $versionData);
-                $data['outdated'] = version_compare(DIRECTUS_VERSION, $versionData['current_version'], '<');
+                $data['outdated'] = version_compare($version, $versionData['current_version'], '<');
             }
         } catch (\Exception $e) {
             // Do nothing

@@ -10,7 +10,9 @@ class DirectusGroupsTableGateway extends RelationalTableGateway
 {
     public static $_tableName = 'directus_groups';
 
-    public function __construct(AdapterInterface $adapter, Acl $acl)
+    public $primaryKeyFieldName = 'id';
+
+    public function __construct(AdapterInterface $adapter, Acl $acl = null)
     {
         parent::__construct(self::$_tableName, $adapter, $acl);
     }

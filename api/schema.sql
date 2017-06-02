@@ -42,7 +42,7 @@ CREATE TABLE `directus_activity` (
   `logged_ip` varchar(20) DEFAULT NULL,
   `user_agent` varchar(256) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Contains history of revisions';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Contains history of revisions';
 
 # Dump of table directus_bookmarks
 # ------------------------------------------------------------
@@ -58,7 +58,7 @@ CREATE TABLE `directus_bookmarks` (
   `active` tinyint(1) DEFAULT NULL,
   `section` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 # Dump of table directus_columns
@@ -85,7 +85,7 @@ CREATE TABLE `directus_columns` (
   `options` text,
   PRIMARY KEY (`id`),
   UNIQUE KEY `table-column` (`table_name`,`column_name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 LOCK TABLES `directus_columns` WRITE;
 /*!40000 ALTER TABLE `directus_columns` DISABLE KEYS */;
@@ -124,7 +124,7 @@ CREATE TABLE `directus_files` (
   `date_uploaded` datetime DEFAULT NULL,
   `storage_adapter` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Directus Files Storage';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Directus Files Storage';
 
 
 
@@ -145,7 +145,7 @@ CREATE TABLE `directus_groups` (
   `show_files` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`),
   UNIQUE KEY `directus_users_name_unique` (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 LOCK TABLES `directus_groups` WRITE;
 /*!40000 ALTER TABLE `directus_groups` DISABLE KEYS */;
@@ -174,7 +174,7 @@ CREATE TABLE `directus_messages` (
   `response_to` int unsigned DEFAULT NULL,
   `comment_metadata` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 
@@ -191,7 +191,7 @@ CREATE TABLE `directus_messages_recipients` (
   `group` int unsigned DEFAULT NULL,
   `archived` tinyint(1) DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 
@@ -214,7 +214,7 @@ CREATE TABLE `directus_preferences` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `user` (`user`,`table_name`,`title`),
   UNIQUE KEY `pref_title_constraint` (`user`,`table_name`,`title`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 # Dump of table directus_privileges
 # ------------------------------------------------------------
@@ -235,7 +235,7 @@ CREATE TABLE `directus_privileges` (
   `nav_listed` tinyint(1) NOT NULL DEFAULT '1',
   `status_id` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 LOCK TABLES `directus_privileges` WRITE;
 /*!40000 ALTER TABLE `directus_privileges` DISABLE KEYS */;
@@ -267,7 +267,7 @@ DROP TABLE IF EXISTS `directus_schema_migrations`;
 CREATE TABLE `directus_schema_migrations` (
   `version` varchar(255) DEFAULT NULL,
   UNIQUE KEY `idx_directus_schema_migrations_version` (`version`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 LOCK TABLES `directus_schema_migrations` WRITE;
 /*!40000 ALTER TABLE `directus_schema_migrations` DISABLE KEYS */;
@@ -303,7 +303,7 @@ CREATE TABLE `directus_settings` (
   `value` varchar(250) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `Unique Collection and Name` (`collection`,`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 LOCK TABLES `directus_settings` WRITE;
 /*!40000 ALTER TABLE `directus_settings` DISABLE KEYS */;
@@ -349,7 +349,7 @@ CREATE TABLE `directus_tables` (
   `date_update_column` varchar(64) DEFAULT NULL,
   `filter_column_blacklist` text,
   PRIMARY KEY (`table_name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 LOCK TABLES `directus_tables` WRITE;
 /*!40000 ALTER TABLE `directus_tables` DISABLE KEYS */;
@@ -408,7 +408,7 @@ CREATE TABLE `directus_users` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `directus_users_email_unique` (`email`),
   UNIQUE KEY `directus_users_token_unique` (`token`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 LOCK TABLES `directus_users` WRITE;
 /*!40000 ALTER TABLE `directus_users` DISABLE KEYS */;

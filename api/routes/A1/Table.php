@@ -321,11 +321,11 @@ class Table extends Route
     public function unmanage($table)
     {
         $app = $this->app;
-        $ZendDb = $app->container->get('zenddb');
+        $dbConnection = $app->container->get('zenddb');
         $acl = $app->container->get('acl');
 
         // NOTE: Similar code in delete table Table::info
-        $tableGateway = new TableGateway($table, $ZendDb, $acl);
+        $tableGateway = new TableGateway($table, $dbConnection, $acl);
         $success = $tableGateway->stopManaging();
 
         $response = [

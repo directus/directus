@@ -1,4 +1,6 @@
 define(function(require, exports, module) {
+  'use strict';
+
   var Directus = {};
 
   Directus.Modal = {
@@ -7,6 +9,8 @@ define(function(require, exports, module) {
     File: require('core/modals/file'),
     Prompt: require('core/modals/prompt')
   };
+
+  Directus.Logger = require('core/logger');
 
   module.exports = Directus;
 });

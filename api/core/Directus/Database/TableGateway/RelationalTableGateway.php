@@ -235,7 +235,7 @@ class RelationalTableGateway extends BaseTableGateway
                         }
                     }
                     // Save parent log entry
-                    $parentLogEntry = BaseRowGateway::makeRowGatewayFromTableName('id', 'directus_activity', $this->adapter, $this->acl);
+                    $parentLogEntry = BaseRowGateway::makeRowGatewayFromTableName('id', 'directus_activity', $this->adapter);
                     $logData = [
                         'type' => DirectusActivityTableGateway::makeLogTypeFromTableName($this->table),
                         'table_name' => $tableName,
@@ -254,7 +254,7 @@ class RelationalTableGateway extends BaseTableGateway
                     $parentLogEntry->populate($logData, false);
                     $parentLogEntry->save();
                     // Update & insert nested activity entries
-                    $ActivityGateway = new DirectusActivityTableGateway($this->adapter, $this->acl);
+                    $ActivityGateway = new DirectusActivityTableGateway($this->adapter);
                     foreach ($nestedLogEntries as $entry) {
                         $entry['parent_id'] = $rowId;
                         // @todo ought to insert these in one batch
@@ -624,6 +624,11 @@ class RelationalTableGateway extends BaseTableGateway
         // Stripe whitespaces
         $columns = array_map('trim', $columns);
 
+        // Pick non-forbidden columns
+        if (empty($columns)) {
+            $columns = TableSchema::getAllTableColumnsName($this->getTable());
+        }
+
         // ----------------------------------------------------------------------------
         // merge legacy visible columns param
         // ----------------------------------------------------------------------------
@@ -718,7 +723,7 @@ class RelationalTableGateway extends BaseTableGateway
     public function createMetadata($entriesData, $single)
     {
         $singleEntry = $single || !ArrayUtils::isNumericKeys($entriesData);
-        $tableSchema = TableSchema::getTableSchema($this->table);
+        $tableSchema = $this->getTableSchema($this->table);
         $metadata = [
             'table' => $tableSchema->getTableName(),
             'type' => $singleEntry ? 'item' : 'collection'
@@ -899,6 +904,11 @@ class RelationalTableGateway extends BaseTableGateway
         foreach($filters as $column => $condition) {
 			$logical = null;
 			if (is_array($condition) && isset($condition['logical'])) {
+            // TODO: Add a simplified option for logical
+            // adding an "or_" prefix
+            // filters[column][eq]=Value1&filters[column][or_eq]=Value2
+            $logical = null;
+            if (is_array($condition) && isset($condition['logical'])) {
                 $logical = $condition['logical'];
                 unset($condition['logical']);
             }
@@ -925,6 +935,7 @@ class RelationalTableGateway extends BaseTableGateway
             }
 
             $arguments = [$column, $value];
+
 			if (isset($logical)) {
 				$arguments[] = null;
                 $arguments[] = $logical;
@@ -1002,6 +1013,18 @@ class RelationalTableGateway extends BaseTableGateway
      *
      * @param Builder $query
      * @param array $groupBy
+     */
+    protected function processGroups(Builder $query, array $columns = [])
+    {
+        $query->groupBy($columns);
+    }
+
+
+    /**
+     * Process group-by
+     *
+     * @param Builder $query
+     * @param array $columns
      */
     protected function processGroups(Builder $query, array $columns = [])
     {
@@ -1149,9 +1172,9 @@ class RelationalTableGateway extends BaseTableGateway
             }
         }
 
-        if (ArrayUtils::has($params, 'perPage') && ArrayUtils::has($params, 'currentPage')) {
+        if (ArrayUtils::has($params, 'perPage')) {
             $query->limit($params['perPage']);
-            $query->offset($params['currentPage'] * $params['perPage']);
+            $query->offset(ArrayUtils::get($params, 'currentPage', 0) * $params['perPage']);
         }
 
         if (ArrayUtils::has($params, 'group_by')) {
@@ -1230,8 +1253,8 @@ class RelationalTableGateway extends BaseTableGateway
             }
 
             $relatedTableName = $alias->getRelationship()->getRelatedTable();
-            if (!TableSchema::canGroupViewTable($relatedTableName)) {
-                return false;
+            if ($this->acl && !TableSchema::canGroupViewTable($relatedTableName)) {
+                continue;
             }
 
             $primaryKey = $this->primaryKeyFieldName;
@@ -1239,7 +1262,7 @@ class RelationalTableGateway extends BaseTableGateway
                 return ArrayUtils::get($row, $primaryKey, null);
             };
 
-            $ids = array_filter(array_map($callback, $entries));
+            $ids = array_unique(array_filter(array_map($callback, $entries)));
             if (empty($ids)) {
                 continue;
             }
@@ -1305,8 +1328,8 @@ class RelationalTableGateway extends BaseTableGateway
             }
 
             $relatedTableName = $alias->getRelationship()->getRelatedTable();
-            if (!TableSchema::canGroupViewTable($relatedTableName)) {
-                return false;
+            if ($this->acl && !TableSchema::canGroupViewTable($relatedTableName)) {
+                continue;
             }
 
             $primaryKey = $this->primaryKeyFieldName;
@@ -1314,7 +1337,7 @@ class RelationalTableGateway extends BaseTableGateway
                 return ArrayUtils::get($row, $primaryKey, null);
             };
 
-            $ids = array_filter(array_map($callback, $entries));
+            $ids = array_unique(array_filter(array_map($callback, $entries)));
             if (empty($ids)) {
                 continue;
             }
@@ -1473,44 +1496,45 @@ class RelationalTableGateway extends BaseTableGateway
                 throw new Exception\RelationshipMetadataException($message);
             }
 
+            $tableGateway = new RelationalTableGateway($relatedTable, $this->adapter, $this->acl);
+            $primaryKeyName = $tableGateway->primaryKeyFieldName;
+
             // Aggregate all foreign keys for this relationship (for each row, yield the specified foreign id)
             $relationalColumnName = $column->getName();
-            $yield = function ($row) use ($relationalColumnName, $entries) {
+            $yield = function ($row) use ($relationalColumnName, $entries, $primaryKeyName) {
                 if (array_key_exists($relationalColumnName, $row)) {
                     $value = $row[$relationalColumnName];
                     if (is_array($value)) {
-                        // @TODO: Dynamic primary key
-                        $value = isset($value['id']) ? $value['id'] : 0;
+                        $value = isset($value[$primaryKeyName]) ? $value[$primaryKeyName] : 0;
                     }
 
                     return $value;
                 }
             };
 
-            $ids = array_filter(array_map($yield, $entries));
+            $ids = array_unique(array_filter(array_map($yield, $entries)));
             if (empty($ids)) {
                 continue;
             }
 
-            if (!TableSchema::canGroupViewTable($relatedTable)) {
+            if ($this->acl && !TableSchema::canGroupViewTable($relatedTable)) {
                 continue;
             }
 
             // Fetch the foreign data
-            $tableGateway = new RelationalTableGateway($relatedTable, $this->adapter, $this->acl);
             $columnNames = TableSchema::getAllNonAliasTableColumnNames($relatedTable);
 
             $results = $tableGateway->loadEntries([
                 'columns' => $columnNames,
                 'filters' => [
-                    'id' => ['in' => $ids]
+                    $primaryKeyName=> ['in' => $ids]
                 ],
                 'depth' => (int) $depth
             ]);
 
             $relatedEntries = [];
             foreach ($results as $row) {
-                $relatedEntries[$row['id']] = $tableGateway->loadMetadata($row);
+                $relatedEntries[$row[$primaryKeyName]] = $tableGateway->loadMetadata($row);
             }
 
             // Replace foreign keys with foreign rows

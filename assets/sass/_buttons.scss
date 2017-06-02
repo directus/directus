@@ -30,6 +30,10 @@ a.text-button {
 	border: none;
 	outline: none;
 	text-align: center;
+	&:focus {
+		box-shadow: 0 0 0 2px, 0 0 8px 4px rgba($primary, 0.2);
+		background-color: darken($primary, 8%);
+	}
 	&:hover {
 		background-color: darken($primary, 8%);
 	}
@@ -95,6 +99,20 @@ input[type="radio"].custom-checkbox {
 				}
 				&:hover {
 					color: $gray-6;
+				}
+			}
+		}
+	}
+	&:checked:disabled,
+	&:disabled {
+		+label {
+			span {
+				&:before {
+					cursor: inherit;
+					color: $gray-3;
+					&:hover {
+						color: $gray-3;
+					}
 				}
 			}
 		}

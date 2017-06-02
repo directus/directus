@@ -136,7 +136,7 @@ function(app, Backbone, $, _, __t, Directus, moment) {
       return model.get('action') === 'ADD';
     },
 
-    serialize: function() {
+    serialize: function () {
       var activities = _.sortBy(this.activity.models, function(item) {
         return -item.id;
       });
@@ -189,7 +189,11 @@ function(app, Backbone, $, _, __t, Directus, moment) {
         return data;
       }, this);
 
-      var comments = this.comments.map(function(model) {
+      var comments = this.comments.map(function (model) {
+        if (_.isEmpty(model.attributes)) {
+          return {};
+        }
+
         var data = {
           table: 'Comment',
           timestamp: model.get('datetime'),
@@ -201,6 +205,11 @@ function(app, Backbone, $, _, __t, Directus, moment) {
         data.title = model.get('message');
 
         return data;
+      });
+
+      // FIXME: The comments collection has an empty model
+      comments = _.filter(comments, function (comment) {
+        return !_.isEmpty(comment);
       });
 
       data = data.concat(comments);
@@ -246,36 +255,70 @@ function(app, Backbone, $, _, __t, Directus, moment) {
 
       var preview = data.length > 5;
       var additionalCount = data.length - 5;
+      var canSendMessages = app.users.getCurrentUser().canSendMessages();
+      var privileges = app.schemaManager.getPrivileges('directus_messages');
+      var canAddMessages = privileges && privileges.can('add');
 
-
-      return $.extend(this.options.widgetOptions, {activities: data, preview: preview, additionalCount: additionalCount, current_user: app.authenticatedUserId});
+      return $.extend(this.options.widgetOptions, {
+        activities: data,
+        preview: preview,
+        additionalCount: additionalCount,
+        current_user: app.authenticatedUserId,
+        canComment: canSendMessages && canAddMessages
+      });
     },
 
-    initialize: function(options) {
+    fetchActivities: function () {
+      var collection = this.model.collection;
+      var tableName = collection.table.id;
+      var rowId = this.model.id;
+
+      var privileges = app.schemaManager.getPrivileges('directus_activity');
+      if (!privileges || !privileges.can('view')) {
+        return;
+      }
+
+      this.activity = app.activity.clone().reset();
+      this.activity.clearFilter();
+      this.activity.setFilter({
+        limit: -1,
+        filters: {
+          table_name: tableName,
+          row_id: rowId
+        }
+      });
+
+      this.activity.fetch();
+    },
+
+    fetchComments: function () {
+      var collection = this.model.collection;
+      var tableName = collection.table.id;
+      var rowId = this.model.id;
+
+      var privileges = app.schemaManager.getPrivileges('directus_messages');
+      if (!privileges || !privileges.can('view')) {
+        return;
+      }
+
+      this.comments.setFilter({
+        filters: {
+          comment_metadata: tableName + ':' + rowId
+        }
+      });
+
+      this.comments.fetch();
+    },
+
+    initialize: function (options) {
       // Get Activity
       this.model = options.model;
       this.activity = app.activity;
       this.comments = new Directus.EntriesCollection({}, {table: app.messages.table, structure: app.messages.structure});
 
       if (!this.model.isNew()) {
-        var tableName = this.model.collection.table.id;
-        var rowId = this.model.id;
-        this.activity = app.activity.clone().reset();
-        this.activity.clearFilter();
-        this.activity.setFilter({
-          limit: -1,
-          filters: {
-            table_name: tableName,
-            row_id: rowId
-          }
-        });
-        this.activity.fetch();
-        this.comments.setFilter({
-          filters: {
-            comment_metadata: tableName + ':' + rowId
-          }
-        });
-        this.comments.fetch();
+        this.fetchActivities();
+        this.fetchComments();
       }
 
       var otherFetched = false;

@@ -11,6 +11,8 @@ class DirectusMessagesRecipientsTableGateway extends RelationalTableGateway
 {
     public static $_tableName = 'directus_messages_recipients';
 
+    public $primaryKeyFieldName = 'id';
+
     public function __construct(AdapterInterface $adapter, $acl = null)
     {
         parent::__construct(self::$_tableName, $adapter, $acl);
@@ -85,7 +87,9 @@ class DirectusMessagesRecipientsTableGateway extends RelationalTableGateway
 
         $result = $fetchFn();
 
-        $result['unread'] = $result['total'] - $result['read'];
+        if ($result) {
+            $result['unread'] = $result['total'] - $result['read'];
+        }
 
         return $result;
     }

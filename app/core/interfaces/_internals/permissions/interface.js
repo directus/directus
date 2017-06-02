@@ -1,4 +1,9 @@
-define(['core/UIView', 'core/overlays/overlays', 'core/interfaces/_internals/permissions/table', 'core/t'], function (UIView, Overlays, PermissionsTableView, __t) {
+define([
+  'core/UIView',
+  'core/overlays/overlays',
+  './table',
+  'core/t'
+], function (UIView, Overlays, PermissionsTableView, __t) {
   return UIView.extend({
     template: '_internals/permissions/input',
 

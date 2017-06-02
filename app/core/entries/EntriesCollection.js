@@ -8,6 +8,7 @@ define(function(require, exports, module) {
       Collection          = require('core/collection'),
       StatusMixin         = require('mixins/status'),
       SaveCollectionMixin = require('mixins/save-collection'),
+      PreferenceModel     = require('core/PreferenceModel'),
       EntriesModel        = require('core/entries/EntriesModel');
 
   var EntriesCollection = module.exports = Collection.extend({
@@ -315,13 +316,10 @@ define(function(require, exports, module) {
       return fieldBlacklist;
     },
 
-    can: function(permission) {
+    can: function (permission) {
       var privileges = this.privileges;
-      if (permission.indexOf('allow_') !== 0) {
-        permission = 'allow_' + permission;
-      }
 
-      return (privileges && this.privileges.get(permission) > 0);
+      return privileges ? privileges.can(permission) : false;
     },
 
     canView: function() {
@@ -384,10 +382,14 @@ define(function(require, exports, module) {
 
       this.filters['status'] = '1,2';
 
-      if (options.preferences) {
-        this.preferences = options.preferences;
-        this.preferences.on('change', function() { this.trigger('change'); }, this);
+      if (!options.preferences) {
+        options.preferences = new PreferenceModel();
       }
+
+      this.preferences = options.preferences;
+      this.preferences.on('change', function () {
+        this.trigger('change');
+      }, this);
     },
 
     getNewModelInstance: function (options) {

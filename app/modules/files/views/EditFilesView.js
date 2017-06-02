@@ -4,28 +4,26 @@ define([
   'backbone',
   'core/t',
   'core/directus',
+  'core/notification',
   'core/BasePageView',
   'modules/files/views/EditFilesViewRightPane',
   'core/widgets/widgets'
 ],
 
-function(app, _, Backbone, __t, Directus, BasePageView, RightPane, Widgets) {
+function(app, _, Backbone, __t, Directus, Notification, BasePageView, RightPane, Widgets) {
 
+  'use strict';
+
+  // TODO: Extend this view from EditView
+  // EditFilesView is a lot similar to EditView
   return BasePageView.extend({
-
-    events: {
-      'change select, input[type=checkbox], input[type=radio]': 'checkDiff',
-      'keyup input, textarea': 'checkDiff'
-    },
-
-    checkDiff: function () {
-      var diff = this.model.diff(this.editView.data());
-      delete diff.id;
-      this.saveWidget.enable();
-    },
 
     deleteConfirm: function () {
       var self = this;
+
+      if (!app.users.getCurrentUser().canUploadFiles()) {
+        return;
+      }
 
       app.router.openModal({type: 'confirm', text: __t('confirm_delete_item'), callback: function () {
         var xhr = self.model.saveWithDeleteStatus();
@@ -39,15 +37,20 @@ function(app, _, Backbone, __t, Directus, BasePageView, RightPane, Widgets) {
     },
 
     saveConfirm: function (event) {
+      if (!app.users.getCurrentUser().canUploadFiles()) {
+        return;
+      }
+
       this.save(event);
     },
 
-    save: function (e) {
+    save: function (event) {
+      var self = this;
       var action = 'save-form-leave';
-      if(e.target.options !== undefined) {
-        action = $(e.target.options[e.target.selectedIndex]).val();
+      if (event.target.options !== undefined) {
+        action = $(event.target.options[event.target.selectedIndex]).val();
       }
-      var data = this.editView.data();
+
       var model = this.model;
       var isNew = this.model.isNew();
       var collection = this.model.collection;
@@ -56,34 +59,45 @@ function(app, _, Backbone, __t, Directus, BasePageView, RightPane, Widgets) {
       if (action === 'save-form-stay') {
         success = function(model, response, options) {
           var route = Backbone.history.fragment.split('/');
+
           route.pop();
           route.push(model.get('id'));
+          self.model.disablePrompt();
           app.router.go(route);
         };
       } else {
         success = function(model, response, options) {
           var route = Backbone.history.fragment.split('/');
+
           route.pop();
+
           if (action === 'save-form-add') {
             // Trick the router to refresh this page when we are dealing with new items
             if (isNew) app.router.navigate("#", {trigger: false, replace: true});
             route.push('new');
           }
+
+          self.model.disablePrompt();
           app.router.go(route);
         };
       }
 
       if (action === 'save-form-copy') {
-        console.log('cloning...');
         var clone = model.toJSON();
+
         delete clone.id;
         model = new collection.model(clone, {collection: collection, parse: true});
         collection.add(model);
-        console.log(model);
+      }
+
+      if (!model.unsavedAttributes()) {
+        Notification.warning('Nothing changed, nothing saved');
+
+        return;
       }
 
       // patch only the changed values
-      model.save(model.diff(data), {
+      model.save(model.unsavedAttributes(), {
         success: success,
         wait: true,
         patch: true,
@@ -92,6 +106,8 @@ function(app, _, Backbone, __t, Directus, BasePageView, RightPane, Widgets) {
     },
 
     afterRender: function () {
+      var self = this;
+
       this.setView('#page-content', this.editView);
 
       //Fetch Model if Exists
@@ -100,10 +116,11 @@ function(app, _, Backbone, __t, Directus, BasePageView, RightPane, Widgets) {
           dontTrackChanges: true,
           error: function(model, XMLHttpRequest) {
             //If Cant Find Model Then Open New Entry Page
-            if(404 === XMLHttpRequest.status) {
+            if (404 === XMLHttpRequest.status) {
               var route = Backbone.history.fragment.split('/');
               route.pop();
               route.push('new');
+              self.model.disablePrompt();
               app.router.go(route);
             }
           }
@@ -114,19 +131,26 @@ function(app, _, Backbone, __t, Directus, BasePageView, RightPane, Widgets) {
     },
 
     leftToolbar: function () {
+      var canUploadFiles = app.users.getCurrentUser().canUploadFiles();
       var widgets = [];
       var editView = this;
+
       this.saveWidget = new Widgets.SaveWidget({
         widgetOptions: {
           basicSave: this.headerOptions.basicSave,
           singlePage: this.single
         },
+        enabled: false,
         onClick: _.bind(editView.saveConfirm, editView)
       });
 
       widgets.push(this.saveWidget);
 
-      // this.saveWidget.disable();
+      if (canUploadFiles) {
+        this.model.on('unsavedChanges', function(hasChanges, unsavedAttrs, model) {
+          editView.saveWidget.setEnabled(hasChanges);
+        });
+      }
 
       // delete button
       if (!this.model.isNew()) {
@@ -134,7 +158,7 @@ function(app, _, Backbone, __t, Directus, BasePageView, RightPane, Widgets) {
           widgetOptions: {
             buttonId: 'deleteBtn',
             iconClass: 'close',
-            buttonClass: 'serious',
+            buttonClass: canUploadFiles ? 'serious' : 'disabled',
             buttonText: __t('delete')
           },
           onClick: _.bind(editView.deleteConfirm, editView)
@@ -168,10 +192,15 @@ function(app, _, Backbone, __t, Directus, BasePageView, RightPane, Widgets) {
       return RightPane;
     },
 
+    cleanup: function () {
+      this.model.stopTracking();
+    },
+
     initialize: function () {
       this.editView = new Directus.EditView({model: this.model, ui: this.options.ui});
       this.headerOptions.route.title = this.model.isNew() ? __t('uploading_new_file') : __t('editing_file');
       this.collection = app.files;
+      this.model.startTracking();
     }
   });
 });

@@ -53,7 +53,10 @@ function (app, _, __t, Utils, FileHelper, UIView, TableView, Overlays) {
       });
     },
 
-    removeFile: function () {
+    removeFile: function (event) {
+      // stop the event from bubbling and open the modal window
+      event.stopPropagation();
+
       this.fileModel.clear();
       this.fileModel.set({id: null});
     },
@@ -71,6 +74,7 @@ function (app, _, __t, Utils, FileHelper, UIView, TableView, Overlays) {
       var collection = app.files;
       var model;
       var fileModel = this.fileModel;
+
       var view = new Overlays.ListSelect({collection: collection, selectable: true});
       app.router.overlayPage(view);
 
@@ -196,6 +200,7 @@ function (app, _, __t, Utils, FileHelper, UIView, TableView, Overlays) {
       var data = this.fileModel.toJSON();
       var type = this.fileModel.has('type') ? this.fileModel.get('type').substring(0, this.fileModel.get('type').indexOf('/')) : '';
       var isImage = _.contains(['image', 'embed'], type);
+      // TODO: Fix this path
       var thumbUrl = isImage ? url : app.PATH + 'assets/img/document.png';
 
       switch (data.type) {
@@ -237,8 +242,15 @@ function (app, _, __t, Utils, FileHelper, UIView, TableView, Overlays) {
     },
 
     initialize: function () {
+      var FilesModel = require('modules/files/FilesModel');
+
       this.uploading = false;
       this.userId = app.users.getCurrentUser().id;
+      if (!(this.options.value instanceof FilesModel)) {
+        this.options.value = new FilesModel(this.options.value || {});
+        this.options.model.set(this.options.name, this.options.value);
+      }
+
       this.fileModel = this.options.value;
       this.listenTo(this.fileModel, 'change', this.onModelChange);
 

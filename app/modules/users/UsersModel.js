@@ -9,6 +9,44 @@ function(app, Backbone, EntriesModel, moment) {
 
   return EntriesModel.extend({
 
+    canEdit: function (attribute) {
+      // hotfix: admin can edit user
+      if (app.users.getCurrentUser().isAdmin()) {
+        return true;
+      }
+
+      var group = this.getGroup();
+
+      if (group && !group.get('show_users')) {
+        return false;
+      }
+
+      return EntriesModel.prototype.canEdit.apply(this, arguments);
+    },
+
+    canSendMessages: function () {
+      var group = this.getGroup();
+      // TODO: Add whether or not has permission to insert in messages table
+
+      return group && group.get('show_messages');
+    },
+
+    canUploadFiles: function () {
+      var group = this.getGroup();
+
+      return group && group.get('show_files');
+    },
+
+    getGroup: function () {
+      var group = this.get('group');
+
+      if (!(group instanceof EntriesModel)) {
+        group = app.groups.get(group);
+      }
+
+      return group;
+    },
+
     getAvatar: function() {
       var currentUserAvatar = this.get('avatar');
       if (this.get('avatar_file_id') && this.get('avatar_file_id').has('name')) {
@@ -65,13 +103,10 @@ function(app, Backbone, EntriesModel, moment) {
         'route': route
       });
 
-      this.save({'last_page': lastPage, 'last_access': moment().utc().format('YYYY-MM-DD HH:mm:ss')}, {
-        patch: true,
-        global: false,
-        silent: true,
-        wait: true,
-        validate: false,
-        url: this.url() + "?skip_activity_log=1"
+      app.request('POST', '/users/tracking/page', {
+        data: {
+          last_page: lastPage
+        }
       });
     }
   });

@@ -64,14 +64,10 @@ define(function(require, exports, module) {
       this.state.batchEnabled = !!enabled;
     },
 
-    serialize: function() {
+    serialize: function () {
       // editing UIs settings does not have a specified table assigned to it.
       var tableInfo = this.column.collection.table;
-      var tableName, comment;
-
-      if (tableInfo) {
-        tableName = tableInfo.id
-      }
+      var tableName = tableInfo ? tableInfo.id : undefined;
 
       return {
         id: this.column.id,
@@ -88,7 +84,7 @@ define(function(require, exports, module) {
       };
     },
 
-    beforeRender: function() {
+    beforeRender: function () {
       var fieldClass = _.result(this.view, 'fieldClass');
 
       if (fieldClass) {
@@ -96,7 +92,7 @@ define(function(require, exports, module) {
       }
     },
 
-    afterRender: function() {
+    afterRender: function () {
       var obj = this.view || this.column;
       if (obj.isRequired()) {
         this.$el.addClass('required');
@@ -110,13 +106,14 @@ define(function(require, exports, module) {
     }
   });
 
-  var EditView = module.exports = Backbone.Layout.extend({
+  // EditView
+  module.exports = Backbone.Layout.extend({
 
     hiddenFields: [],
 
     tagName: 'form',
 
-    template: 'edit',
+    template: Handlebars.compile('<div class="fields"></div>'),
 
     beforeRender: function() {
       var views = {};
@@ -126,16 +123,14 @@ define(function(require, exports, module) {
       var statusName = table ? table.getStatusColumnName() : app.statusMapping.get('*').get('status_name');
 
       this.structure.each(function(column) {
-
         // Skip ID
-        // if('id' === column.id) {
         if (column.get('key') === 'PRI' && column.get('omit_input') !== false && !model.isNew()) {
           return;
         }
 
         // This column interface won't be rendered
         // or submitted
-        if (column.get('omit_input') === true) {
+        if (this.omitInput(column)) {
           return;
         }
 
@@ -269,17 +264,25 @@ define(function(require, exports, module) {
       this.options.isBatchEdit = this.options.batchIds !== undefined;
     },
 
+    omitInput: function (column) {
+      var name = column.get('column_name');
+      var omit = column.get('omit_input') === true;
+
+      return omit || _.indexOf(_.result(this, 'omittedFields', []), name) >= 0;
+    },
+
     getHiddenSystemColumns: function () {
       var columns = [];
       // hide system columns
       var table = this.model ? this.model.table : null;
 
       if (table) {
+        var primaryColumn = table.getPrimaryColumn();
         var primaryColumnName = table.getPrimaryColumnName();
         var sortColumnName = table.getSortColumnName();
         var statusColumnName = table.getStatusColumnName();
 
-        if (table.columns.get(primaryColumnName).get('omit_input') !== false) {
+        if (primaryColumn && primaryColumn.get('omit_input') !== false) {
           columns.push(primaryColumnName);
         }
 
@@ -347,10 +350,9 @@ define(function(require, exports, module) {
         .value();
 
       this.hiddenFields = this.getHiddenSystemColumns().concat(this.hiddenFields || []);
-
       this.hiddenFields = _.union(optionsHiddenFields, structureHiddenFields, this.hiddenFields);
       this.visibleFields = _.difference(this.structure.pluck('id'), this.hiddenFields);
-
+      this.omittedFields = options.omittedFields;
 
       // @todo rewrite this!
       this.model.on('invalid', function(model, errors) {
@@ -372,5 +374,4 @@ define(function(require, exports, module) {
       }, this);
     }
   });
-
 });

@@ -9,6 +9,7 @@ define(function(require, exports, module) {
       EntriesModel      = require('core/entries/EntriesModel'),
       StatusMixin       = require('mixins/status'),
       SaveItemMixin     = require('mixins/save-item'),
+      SaveCollectionMixin = require('mixins/save-collection'),
       EntriesManager    = require('core/EntriesManager');
 
   var junctionOptions = ['structure', 'table', 'preferences', 'filters', 'junctionStructure'];
@@ -170,4 +171,7 @@ define(function(require, exports, module) {
       NestedCollection.__super__.constructor.call(this, data, options);
     }
   });
+
+  _.extend(NestedCollection.prototype, StatusMixin.Collection);
+  _.extend(NestedCollection.prototype, SaveCollectionMixin);
 });

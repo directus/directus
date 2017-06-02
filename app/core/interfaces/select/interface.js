@@ -32,7 +32,7 @@ define(['underscore', 'core/UIView', 'core/t', 'select2'], function (_, UIView, 
     },
 
     updateCheckboxValue: function () {
-      var values = this.$el.find('input[type=checkbox]:checked');
+      var values = this.$('input[type=checkbox]:checked');
       var out = '';
 
       if (values.length > 0) {
@@ -43,7 +43,7 @@ define(['underscore', 'core/UIView', 'core/t', 'select2'], function (_, UIView, 
         out = out.substr(0, out.length - 1);
       }
 
-      this.$el.find('input').val(out);
+      this.$('input').val(out);
     },
 
     serialize: function () {
@@ -71,30 +71,38 @@ define(['underscore', 'core/UIView', 'core/t', 'select2'], function (_, UIView, 
         auto_search_limit: this.options.settings.get('auto_search_limit'),
         placeholder_text: (this.options.settings.get('placeholder_text')) ? this.options.settings.get('placeholder_text') : __t('select_from_below'),
         select_type: this.options.settings.get('input_type') === 'dropdown',
-        multiselect: this.options.settings.get('select_multiple') === true
+        multiselect: this.options.settings.get('select_multiple') === true,
+        value: value
       };
     },
+
     initialize: function () {
       var isMobile = navigator.userAgent.match(/(iP(hone|od|ad)|Android|IEMobile)/);
+
       if (!isMobile) {
         var self = this;
+
         setTimeout(function () {
           var options = {
             placeholder: self.options.settings.get('placeholder_text'),
             multiple: self.options.settings.get('select_multiple'),
             width: '100%'
           };
+
           if (self.options.settings.get('display_search') === 'auto') {
             options.minimumResultsForSearch = self.options.settings.get('auto_search_limit') || 10;
           } else if (self.options.settings.get('display_search') === 'never') {
             options.minimumResultsForSearch = Infinity;
           }
+
           if (self.options.settings.get('allow_null')) {
             options.allowClear = true;
           }
+
           self.$el.find('select').select2(options);
         }, 0);
       }
+
       this.updateCheckboxValue();
     }
   });

@@ -272,6 +272,9 @@ table {
 				&.bold {
 					font-weight: 500;
 				}
+				&.system-table {
+					color: $gray-4;
+				}
 				&.status-badges {
 					text-align: right;
 					white-space: nowrap;
@@ -411,6 +414,9 @@ table {
 					max-width: 40px;
 					margin-top: 4px;
 					margin-bottom: 4px;
+				}
+				input[type=checkbox][disabled]{
+					//
 				}
 				.search-term {
 					@include border-radius (2px);

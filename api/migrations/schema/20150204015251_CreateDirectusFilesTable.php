@@ -59,7 +59,7 @@ class CreateDirectusFilesTable extends Ruckusing_Migration_Base
         ]);
         $t->column('caption', 'text');
         $t->column('type', 'string', [
-            'limit' => 100,
+            'limit' => 255,
             'default' => ''
         ]);
         $t->column('charset', 'string', [

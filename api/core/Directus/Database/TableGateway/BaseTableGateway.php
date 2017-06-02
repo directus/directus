@@ -8,6 +8,7 @@ use Directus\Database\Object\Table;
 use Directus\Database\RowGateway\BaseRowGateway;
 use Directus\Database\SchemaManager;
 use Directus\Database\Schemas\Sources\MySQLSchema;
+use Directus\Database\TableGatewayFactory;
 use Directus\Database\TableSchema;
 use Directus\Filesystem\Thumbnail;
 use Directus\Hook\Payload;
@@ -38,7 +39,8 @@ use Zend\Db\TableGateway\TableGateway;
 
 class BaseTableGateway extends TableGateway
 {
-    public $primaryKeyFieldName = 'id';
+    public $primaryKeyFieldName = null;
+
     public $memcache;
 
     /**
@@ -91,18 +93,20 @@ class BaseTableGateway extends TableGateway
     {
         // Add table name reference here, so we can fetch the table schema object
         $this->table = $table;
+        $this->acl = $acl;
 
         // @NOTE: temporary, do we need it here?
-        if ($primaryKeyName !== null) {
-            $this->primaryKeyFieldName = $primaryKeyName;
-        } else {
-            $tableObject = $this->getTableSchema();
-            if ($tableObject->getPrimaryColumn()) {
-                $this->primaryKeyFieldName = $tableObject->getPrimaryColumn();
+        if ($this->primaryKeyFieldName === null) {
+            if ($primaryKeyName !== null) {
+                $this->primaryKeyFieldName = $primaryKeyName;
+            } else {
+                $tableObject = $this->getTableSchema();
+                if ($tableObject->getPrimaryColumn()) {
+                    $this->primaryKeyFieldName = $tableObject->getPrimaryColumn();
+                }
             }
         }
 
-        $this->acl = $acl;
         // @NOTE: This will be substituted by a new Cache wrapper class
         // $this->memcache = new MemcacheProvider();
         if ($features === null) {
@@ -142,17 +146,10 @@ class BaseTableGateway extends TableGateway
      */
     public static function makeTableGatewayFromTableName($table, $adapter, $acl = null)
     {
-        $tableGatewayClassName = Formatting::underscoreToCamelCase($table) . 'TableGateway';
-        $tableGatewayClassName = __NAMESPACE__ . '\\' . $tableGatewayClassName;
-
-        if (class_exists($tableGatewayClassName)) {
-            $instance = new $tableGatewayClassName($adapter, $acl);
-        } else {
-            // @TODO: Move this to a separate factory class
-            $instance = new static($table, $adapter, $acl);
-        }
-
-        return $instance;
+        return TableGatewayFactory::create($table, [
+            'adapter' => $adapter,
+            'acl' => $acl
+        ]);
     }
 
     /**
@@ -172,13 +169,24 @@ class BaseTableGateway extends TableGateway
         return static::makeTableGatewayFromTableName($tableName, $adapter, $acl);
     }
 
-    public function getTableSchema()
+    public function getTableSchema($tableName = null)
     {
-        if ($this->tableSchema === null) {
-            $this->tableSchema = TableSchema::getTableSchema($this->getTable());
+        if ($this->tableSchema !== null && ($tableName === null || $tableName === $this->getTable())) {
+            return $this->tableSchema;
         }
 
-        return $this->tableSchema;
+        if ($tableName === null) {
+            $tableName = $this->getTable();
+        }
+
+        $skipAcl = $this->acl === null;
+        $tableSchema = TableSchema::getTableSchema($tableName, [], false, $skipAcl);
+
+        if ($tableName === $this->getTable()) {
+            $this->tableSchema = $tableSchema;
+        }
+
+        return $tableSchema;
     }
 
     /**
@@ -429,7 +437,7 @@ class BaseTableGateway extends TableGateway
     }
 
     /**
-     * Stop managing a table by removing privileges, preferences and table information
+     * Stop managing a table by removing privileges, preferences columns and table information
      *
      * @param null $tableName
      *
@@ -441,19 +449,25 @@ class BaseTableGateway extends TableGateway
             $tableName = $this->table;
         }
 
-        // remove table privileges
+        // Remove table privileges
         if ($tableName != 'directus_privileges') {
             $privilegesTableGateway = new TableGateway('directus_privileges', $this->adapter);
             $privilegesTableGateway->delete(['table_name' => $tableName]);
         }
 
-        // remove column from directus_tables
+        // Remove columns from directus_columns
+        $columnsTableGateway = new TableGateway('directus_columns', $this->adapter);
+        $columnsTableGateway->delete([
+            'table_name' => $tableName
+        ]);
+
+        // Remove table from directus_tables
         $tablesTableGateway = new TableGateway('directus_tables', $this->adapter);
         $tablesTableGateway->delete([
             'table_name' => $tableName
         ]);
 
-        // remove column from directus_preferences
+        // Remove table from directus_preferences
         $preferencesTableGateway = new TableGateway('directus_preferences', $this->adapter);
         $preferencesTableGateway->delete([
             'table_name' => $tableName
@@ -917,7 +931,7 @@ class BaseTableGateway extends TableGateway
         if (is_array($records)) {
             $tableName = $tableName === null ? $this->table : $tableName;
             $records = $this->parseRecordValuesByType($records, $tableName);
-            $tableSchema = TableSchema::getTableSchema($tableName);
+            $tableSchema = $this->getTableSchema($tableName);
             $records = $this->convertDates($records, $tableSchema, $tableName);
         }
 

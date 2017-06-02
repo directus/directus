@@ -3,12 +3,13 @@ define([
   'backbone',
   'underscore',
   'core/Modal',
+  'core/t',
   'utils'
-], function(app, Backbone, _, Modal, Utils) {
+], function(app, Backbone, _, Modal, __t, Utils) {
 
   'use strict';
 
-  var onInputChange = function (event) {
+  var onInputChange = function (event, fn) {
     var element = event.currentTarget;
     var $element = $(element);
     var value = $element.val();
@@ -19,9 +20,28 @@ define([
       return;
     }
 
-    if (currentValue && !value) {
+    var validate = function (oldValue, newValue) {
+      var result = null;
+
+      if (oldValue && !newValue) {
+        result = false;
+      } else if (value) {
+        result = true;
+      }
+
+      return result;
+    };
+
+    var OK = null;
+    if (fn !== undefined) {
+      OK = fn(currentValue, value, validate);
+    } else {
+      OK = validate(currentValue, value);
+    }
+
+    if (OK === false) {
       $check.removeClass('valid');
-    } else if (value) {
+    } else if (OK === true) {
       $check.addClass('valid');
     }
   };
@@ -106,18 +126,45 @@ define([
 
     events: {
       'input input': 'onInputChange',
+      'change select, checkbox': 'onInputChange',
+      'click .js-go-back': 'goBack',
       'click .js-finish': 'finish'
     },
 
-    onInputChange: function () {
-      onInputChange.apply(this, arguments);
+    onInputChange: function (event) {
+      var $element = $(event.currentTarget);
+      var args = Array.prototype.slice.call(arguments);
+      var self = this;
+
+      newData[$element.attr('name')] = $element.val();
+
+      if ($element.attr('name') === 'confirm_password') {
+        args.push(function (oldValue, newValue, validate) {
+          // validate first against the default validation
+          var OK = validate(oldValue, newValue);
+          var passwordValue = self.$('input[name=password]').val();
+          var confirmValue = $element.val();
+
+          if (OK && (passwordValue !== confirmValue)) {
+            OK = false;
+          }
+
+          return OK;
+        });
+      }
+
+      onInputChange.apply(this, args);
+    },
+
+    goBack: function () {
+      this.trigger('back');
     },
 
     finish: function () {
       var data = this.$('form').serializeObject();
       var errors;
 
-      if (this.model.get('password')) {
+      if (this.model.get('password') && !data.password && !data.password) {
         data = _.omit(data, 'password', 'confirm_password');
       }
 
@@ -135,18 +182,24 @@ define([
       newData['invite_accepted'] = 1;
       newData = _.omit(_.extend(newData, data || {}), 'confirm_password');
 
-      this.model.save(newData, {patch: true, validate: false});
+      this.model.save(newData, {patch: true, wait: true, validate: false});
       this.trigger('done');
     },
 
     serialize: function () {
       var model = this.model.toJSON();
+      // remove the current password
+      // if there's a password was a user entered password
+      delete model.password;
+
+      var data = _.extend(model, newData);
+      var passwordPlaceholderKey = 'welcome_password_placeholder';
       // @TODO: Add more locales (Ben list has some that's not available yet)
       var timezones = _.map(app.timezones, function(name, key) {
         return {
           id: key,
           name: name,
-          selected: key === model.timezone
+          selected: key === data.timezone
         }
       });
 
@@ -154,13 +207,20 @@ define([
         return {
           id: language.code,
           name: language.name,
-          selected: language.code === model.language
+          selected: language.code === data.language
         }
       });
 
+      if (model.password) {
+        passwordPlaceholderKey = 'welcome_existing_password_placeholder';
+      }
+
       return {
+        data: data,
         model: model,
-        disablePassword: !!model.password,
+        validPassword: !!data.password,
+        validConfirmPassword: data.password && data.password === data.confirm_password,
+        password_placeholder: __t(passwordPlaceholderKey),
         timezones: timezones,
         languages: languages
       };
@@ -176,6 +236,8 @@ define([
     cropView: false,
 
     closeOnBackground: false,
+    closeOnKey: false,
+    closeOnButton: false,
 
     serialize: function() {
       return this.model.toJSON();
@@ -191,12 +253,21 @@ define([
 
       var view = _.result(step, 'view');
 
+      view.on('back', _.bind(function() {
+        this.close();
+        setTimeout(_.bind(function() {
+          this.$el.removeClass('active slide-down ' + step.id);
+          this.prev();
+          this.container.show(this);
+        }, this), 200);
+      }, this));
+
       view.on('done', _.bind(function() {
         this.close();
         setTimeout(_.bind(function() {
           this.$el.removeClass('active slide-down ' + step.id);
           this.next();
-          this.render();
+          this.container.show(this);
         }, this), 200);
       }, this));
 
@@ -226,8 +297,12 @@ define([
       return step;
     },
 
-    next: function() {
+    next: function () {
       this.state.step++;
+    },
+
+    prev: function () {
+      this.state.step--;
     },
 
     cleanup: function () {
@@ -237,6 +312,7 @@ define([
     initialize: function() {
       var model = this.model;
 
+      this.options.saveOnEnter = false;
       this.fileModel = model.get('avatar_file_id');
       this.fileModel.startTracking();
 

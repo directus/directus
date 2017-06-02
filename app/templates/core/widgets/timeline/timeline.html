@@ -2,11 +2,13 @@
 	<i class="material-icons comments-toggle active">forum</i> <i class="material-icons activity-toggle active">restore</i>
 </div>
 
+{{#if canComment}}
 <li class="comment create">
 	<textarea id="itemCommentText" placeholder="Write a comment..."></textarea>
 	<div class="comment-instructions">Press ENTER to submit</div>
 	<span id="tagInsert" class="mention-list"></span>
 </li>
+{{/if}}
 
 {{#activities}}
 {{#if isComment}}

@@ -15,7 +15,6 @@ define('API_PATH', BASE_PATH . '/api');
 use Directus\Bootstrap;
 
 require 'api/config.php';
-require 'api/globals.php';
 
 $app = Bootstrap::get('app');
 $authentication = Bootstrap::get('auth');
@@ -38,6 +37,7 @@ if (isset($_SESSION['error_message'])) {
 // Get current commit hash
 $git = __DIR__ . '/.git';
 $cacheBuster = Directus\Util\Git::getCloneHash($git);
+$buildNumber = \Directus\Util\Git::getGitHash($git) ?: 'Downloaded';
 
 $redirectPath = '';
 if (isset($_SESSION['_directus_login_redirect'])) {
@@ -59,6 +59,8 @@ if ($authConfig) {
 $templateVars = [
     'page' => 'login',
     'inactive' => isset($_GET['inactive']),
+    'version' => $app->getVersion(),
+    'buildNumber' => $buildNumber,
     'redirectPath' => $redirectPath,
     'errorMessage' => $errorMessage,
     'cacheBuster' => $cacheBuster,

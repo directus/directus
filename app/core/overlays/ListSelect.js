@@ -96,6 +96,7 @@ define([
       }
 
       this.table = ListViewManager.getInstance({
+        flex: true,
         collection: this.collection,
         selectable: options.selectable
       });

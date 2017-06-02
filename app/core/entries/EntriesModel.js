@@ -11,9 +11,8 @@ define(function(require, exports, module) {
       Utils                   = require('utils'),
       StatusMixin             = require('mixins/status'),
       SaveItemMixin           = require('mixins/save-item'),
+      SchemaHelper            = require('helpers/schema'),
       SchemaManager           = require('schema/SchemaManager');
-
-  var nestedTypes = ['many_to_one', 'single_file'];
 
   var EntriesModel = module.exports = Backbone.Model.extend({
 
@@ -39,17 +38,28 @@ define(function(require, exports, module) {
     // The flatten option flattens many-one relationships so the id is returned
     // instead of the object
     get: function (attr, options) {
-      var uiType, value;
+      var value, column;
+
       options = options || {};
 
       value = Backbone.Model.prototype.get.call(this, attr);
 
+      if (this.getStructure()) {
+        column = this.getStructure().get(attr);
+      }
+
       if (options.flatten) {
-        uiType = this.getStructure().get(attr).get('ui');
-        var relationshipType = this.getStructure().get(attr).getRelationshipType();
+        var relationshipType = column.getRelationshipType();
+
         if ('MANYTOONE' === relationshipType && _.isObject(value) ) {
           value = value.get('id');
+
+          if (value != null) {
+            value = Number(value);
+          }
         }
+      } else if (column && !column.isRelational() && SchemaHelper.isNumericType(column.getType()) && value != null) {
+        value = Number(value);
       }
 
       return value;
@@ -211,7 +221,7 @@ define(function(require, exports, module) {
 
     //@todo: This is maybe a hack. Can we make the patch better?
     diff: function (key, val, options) {
-      var attrs, changedAttrs = {};
+      var attrs, column, changedAttrs = {};
       if (typeof key === 'object') {
         attrs = key;
         options = val;
@@ -220,7 +230,16 @@ define(function(require, exports, module) {
       }
 
       _.each(attrs, function (val, key) {
-        if (this.get(key) !== val) {
+        // TODO: Add clean the get method to parse the value data type
+        if (this.getStructure()) {
+          column = this.getStructure().get(key);
+
+          if (SchemaHelper.isNumericType(column.getType())) {
+            val = Number(val);
+          }
+        }
+
+        if (this.get(key, {flatten: true}) !== val) {
           changedAttrs[key] = val;
         }
       },this);
@@ -458,6 +477,44 @@ define(function(require, exports, module) {
         collection: this.collection,
         table: this.table
       });
+    },
+
+    // original start/stop tracking
+    _startTracking: Backbone.Model.prototype.startTracking,
+    _stopTracking: Backbone.Model.prototype.stopTracking,
+
+    _onTrackingSync: function () {
+      this.restartTracking();
+    },
+
+    isTracking: function () {
+      return this._trackingChanges;
+    },
+
+    startTracking: function () {
+      this._startTracking();
+      this.enablePrompt();
+      this.on('sync', this._onTrackingSync, this);
+    },
+
+    stopTracking: function () {
+      this._stopTracking();
+      this.resetAttributes();
+      this.disablePrompt();
+      this.off('sync', this._onTrackingSync, this);
+    },
+
+    enablePrompt: function () {
+      this.setPrompt(true);
+    },
+
+    disablePrompt: function () {
+      this.setPrompt(false);
+    },
+
+    setPrompt: function (enabled) {
+      this._unsavedConfig.unloadRouterPrompt = enabled;
+      this._unsavedConfig.unloadWindowPrompt = enabled;
     },
 
     // we need to do this because initialize is called AFTER parse.

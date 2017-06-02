@@ -51,11 +51,14 @@ define(function(require, exports, module) {
     },
     {
       id: 'cms_thumbnail_url',
-      ui: 'textinput',
-      char_length: 255,
+      ui: 'single_file',
       options: {
-        placeholder_text: "http://"
+        id: 'single_file',
+        'allowed_filetypes': 'image\/*'
       },
+      'relationship_type': 'MANYTOONE',
+      'related_table': 'directus_files',
+      'junction_key_right': 'cms_thumbnail_url',
       comment: transComments('global_cms_thumbnail_url')
     },
     {

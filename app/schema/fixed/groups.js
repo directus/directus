@@ -153,6 +153,15 @@ define(function(require, exports, module) {
         "hidden_list": false,
         "hidden_input": false,
         "nullable": true,
+        "comment": transComments('nav_override'),
+        "options": {
+          placeholder_text: JSON.stringify({
+            "Category": {
+              "Title 1": "/link-1",
+              "Title 2": "/link-2"
+            }
+          }, null, 2)
+        },
         "sort": 90
       },
       {
@@ -165,6 +174,7 @@ define(function(require, exports, module) {
         "hidden_list": false,
         "hidden_input": false,
         "nullable": true,
+        "comment": transComments('nav_blacklist'),
         "sort": 100
       }
     ]

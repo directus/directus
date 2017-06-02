@@ -9,6 +9,13 @@ define(function(require, exports, module) {
 
   var PreferenceModel = module.exports = Backbone.Model.extend({
 
+    // TODO: Remove all .get('columns_visible').split(',')
+    // ADD getVisibleColumns() and returns an array
+    defaults: {
+      columns_visible: '',
+      status: ''
+    },
+
     url: function () {
       return app.API_URL + 'tables/' + encodeURIComponent(this.get('table_name')) + '/preferences';
     },

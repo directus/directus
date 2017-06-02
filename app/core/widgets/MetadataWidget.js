@@ -144,9 +144,13 @@ function(app, Backbone, _, Handlebars, __t) {
 
       this.invalidPreviewUrl = false;
       this.listenTo(this.model, 'sync', this.render);
-      if (this.model.isNew()) {
+
+      var privileges = app.schemaManager.getPrivileges('directus_activity');
+      if (this.model.isNew() && privileges && privileges.can('view')) {
         this.model.fetch();
       }
+
+      this.listenTo(this.options.itemModel, 'sync', this.render);
     }
   });
 

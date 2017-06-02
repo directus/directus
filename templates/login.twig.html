@@ -44,7 +44,7 @@
 </div>
 
 <!-- We'd appreciate this remaining visible to users. -->
-<a href="http://getdirectus.com" class="directus" title="v6.4.0 – {{project_title}}">Powered by Directus</a>
+<a href="http://getdirectus.com" class="directus" title="{{version}} – {{buildNumber}}">Powered by Directus</a>
 
 {% endblock %}
 
@@ -102,8 +102,8 @@
 					success: function (data, textStatus, jqXHR) {
 						if (!data.success) {
 							var errorMessage = "{{'oops_an_error_occurred'|trans}}";
-							if (data.message) {
-								errorMessage = data.message;
+							if (data.error.message) {
+								errorMessage = data.error.message;
 							}
 							message(errorMessage, true);
 							return;

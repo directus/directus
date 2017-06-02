@@ -1,3 +1,5 @@
+{% extends "mail/base.twig.html" %}
+{% block content %}
 <p>{{ t('Your new Instance of Directus is ready to go! You can access it using the following credentials:') }}</p>
 
 <p>{{ project.url }}</p>
@@ -19,5 +21,5 @@
     <b>Database Name:</b> {{ database.name }}
 </p>
 
-{{ t('Love,') }}
-{{ t('The Directus Team') }}
+<p>{{ t('Love,') }}<br>Directus</p>
+{% endblock %}

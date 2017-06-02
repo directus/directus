@@ -32,6 +32,8 @@ class DirectusActivityTableGateway extends RelationalTableGateway
 
     public static $_tableName = 'directus_activity';
 
+    public $primaryKeyFieldName = 'id';
+
     public static function makeLogTypeFromTableName($table)
     {
         switch ($table) {
@@ -53,7 +55,7 @@ class DirectusActivityTableGateway extends RelationalTableGateway
      * @param AdapterInterface $adapter
      * @param Acl $acl
      */
-    public function __construct(AdapterInterface $adapter, $acl)
+    public function __construct(AdapterInterface $adapter, $acl = null)
     {
         parent::__construct(self::$_tableName, $adapter, $acl);
     }
@@ -126,7 +128,7 @@ class DirectusActivityTableGateway extends RelationalTableGateway
             'user' => $userid,
             'datetime' => DateUtils::now(),
             'parent_id' => null,
-            'logged_ip' => isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '',
+            'logged_ip' => get_request_ip(),
             'user_agent' => isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : ''
         ];
 

@@ -22,6 +22,7 @@ define(function(require, exports, module) {
     require('core/interfaces/_internals/file_title/component'),
     require('core/interfaces/_internals/file_size/component'),
     require('core/interfaces/_internals/permissions/component'),
+    require('core/interfaces/_internals/messages_recipients/component'),
     require('core/interfaces/_internals/views/component'),
     require('core/interfaces/_internals/user_avatar/component'),
     require('core/interfaces/_internals/user_activity/component')
@@ -51,6 +52,7 @@ define(function(require, exports, module) {
     require('core/interfaces/select/component'),
     require('core/interfaces/tags/component'),
     require('core/interfaces/wysiwyg/component'),
+    require('core/interfaces/wysiwyg_full/component'),
     require('core/interfaces/password/component'),
     require('core/interfaces/enum/component'),
     require('core/interfaces/map/component'),
@@ -442,9 +444,9 @@ define(function(require, exports, module) {
       options.name = attr;
       options.structure = options.structure || options.model.getStructure();
       options.schema = options.structure.get(options.name);
-      options.value = options.model.get(options.name);
-      options.collection = options.collection || options.model.collection;
       options.settings = options.schema.options;
+      options.value = options.model.get(options.name) || options.schema.get('default_value');
+      options.collection = options.collection || options.model.collection;
 
       if (options.canWrite === undefined) {
         options.canWrite =  typeof options.model.canEdit === 'function' ? options.model.canEdit(attr) : true;

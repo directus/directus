@@ -23,6 +23,7 @@
 	min-width: 500px;
 	overflow: auto;
 	background-color: $white;
+	z-index: 1;
 	.details {
 		.avatar {
 			@include transition (all, $timing-short, ease-in-out);
@@ -34,6 +35,7 @@
 			width: 60px;
 			height: 60px;
 			overflow: hidden;
+			cursor: pointer;
 			&:hover {
 				opacity: 0.8;
 			}
@@ -47,6 +49,7 @@
 			left: 120px;
 			font-size: 16px;
 			font-weight: 500;
+			cursor: pointer;
 			&:hover {
 				color: $primary;
 			}
@@ -164,9 +167,9 @@
 		font-size: 11px;
 		color: $gray-2;
 		font-weight: 500;
-		cursor: pointer;
 		a {
 			@include transition (all, 400ms, ease-in-out);
+			cursor: pointer;
 			&:hover {
 				color: $gray-4;
 			}
@@ -180,7 +183,7 @@
 	}
 	.body {
 		max-width: 800px;
-		color: $gray-4;
+		color: $gray-5;
 		font-size: 16px;
 		line-height: 30px;
 	}
@@ -248,7 +251,7 @@
 			}
 		}
 		textarea {
-			@include transition (all, 400ms, ease-in-out);
+			@include transition (all, 200ms, ease-in-out);
 			@include border-radius (2px);
 			margin-top: 40px;
 			display: block;
@@ -279,6 +282,31 @@
 			}
 		}
 	}
+	.close-message {
+		@include transition (all, 400ms, ease-in-out);
+		position: absolute;
+		top: 14px;
+		left: 50%;
+		margin-left: -20px;
+		border-radius: 100px;
+		width: 40px;
+		height: 40px;
+		padding-top: 4px;
+		padding-left: 2px;
+		color: $white;
+		cursor: pointer;
+		background-color: $gray-1;
+		text-align: center;
+		display: none;
+		.material-icons {
+			font-size: 32px;
+		}
+		&:active,
+		&:focus,
+		&:hover {
+			background-color: $primary;
+		}
+	}
 	.resize-handle {
 		position: absolute;
 		top: 0;
@@ -304,6 +332,11 @@
 	}
 	&.empty {
 		width: 100%;
+		.no-items {
+			left: 5%;
+			width: 30%;
+			margin-left: 0px;
+		}
 	}
 	.message-preview {
 		@include transition (all, $timing-short, ease-in-out);

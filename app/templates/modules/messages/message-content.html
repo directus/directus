@@ -1,7 +1,8 @@
 <div class="details">
 	<a href="#" class="js-user" data-id="{{from}}"><img class="avatar" src="{{userAvatarUrl from}}" data-id="{{from}}"></a>
 	<div class="from"><a href="#" class="js-user" data-id="{{from}}">{{userFirstAndLastName from}}</a></div>
-	<div class="timeago">{{friendlyDateTime datetime}}</div><!-- Sunday, Nov 22, 1:09 PM -->
+	<!-- <div class="timeago">{{friendlyDateTime datetime}}</div> -->
+	<div class="timeago" title="{{fullDateTime datetime}}">{{contextualDate datetime type="long"}}</div>
 	<h1>{{subject}}</h1>
 	<div class="to">{{t "message_to"}}: {{usersFirstAndLastName recipients}}</div>
 </div>
@@ -43,7 +44,8 @@
 	<div class="details">
 		<img class="avatar js-user" data-id="{{from}}" src="{{userAvatarUrl from}}">
 		<div class="from js-user" data-id="{{from}}">{{userFirstAndLastName from}}</div>
-		<div class="timeago">{{friendlyDateTime datetime}}</div>
+		<div class="timeago" title="{{fullDateTime datetime}}">{{contextualDate datetime type="long"}}</div>
+		<!-- <div class="timeago">{{friendlyDateTime datetime}}</div> -->
 	</div>
 	<div class="body">
 		{{message}}

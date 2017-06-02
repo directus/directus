@@ -4,13 +4,16 @@ define([
   'backbone',
   'core/directus',
   'core/BasePageView',
+  'core/notification',
   'core/t',
   'modules/tables/views/EditViewRightPane',
   'core/widgets/widgets'
-], function(app, _, Backbone, Directus, BasePageView, __t, EditViewRightPane, Widgets) {
+], function(app, _, Backbone, Directus, BasePageView, Notification, __t, EditViewRightPane, Widgets) {
 
   'use strict';
 
+  // TODO: Extend this view from EditView
+  // EditUserView is a lot similar to EditView
   return BasePageView.extend({
 
     headerOptions: {
@@ -25,8 +28,8 @@ define([
     },
 
     save: function (event) {
+      var self = this;
       var action = 'save-form-leave';
-      var data =  $('form').serializeObject();
       var model = this.model;
       var isNew = this.model.isNew();
       var collection = this.model.collection;
@@ -41,6 +44,7 @@ define([
           var route = Backbone.history.fragment.split('/');
           route.pop();
           route.push(model.get('id'));
+          self.model.disablePrompt();
           app.router.go(route);
         };
       } else {
@@ -52,6 +56,7 @@ define([
             if (isNew) app.router.navigate("#", {trigger: false, replace: true});
             route.push('new');
           }
+          self.model.disablePrompt();
           app.router.go(route);
         };
       }
@@ -63,13 +68,14 @@ define([
         collection.add(model);
       }
 
-      // hotfix: if password is empty omit
-      if (!data.password) {
-        delete data.password;
+      if (!model.unsavedAttributes()) {
+        Notification.warning('Nothing changed, nothing saved');
+
+        return;
       }
 
       // patch only the changed values
-      model.save(model.diff(data), {
+      model.save(model.unsavedAttributes(), {
         success: success,
         error: function(model, xhr, options) {
           console.error('err');
@@ -94,10 +100,15 @@ define([
         widgetOptions: {
           basicSave: this.headerOptions.basicSave
         },
+        enabled: false,
         onClick: _.bind(this.saveConfirm, this)
       });
 
-      this.saveWidget.enable();
+      if (this.model.canEdit()) {
+        this.model.on('unsavedChanges', function(hasChanges, unsavedAttrs, model) {
+          editView.saveWidget.setEnabled(hasChanges);
+        });
+      }
 
       this.infoWidget = new Widgets.InfoButtonWidget({
         onClick: function (event) {
@@ -126,9 +137,15 @@ define([
       }
     },
 
+    cleanup: function () {
+      this.model.stopTracking();
+    },
+
     initialize: function () {
       this.editView = new Directus.EditView({model: this.model});
       this.headerOptions.route.title = (this.model.id) ? this.model.get('first_name') + ' ' + this.model.get('last_name') : __t('new_user');
+
+      this.model.startTracking();
     }
   });
 });

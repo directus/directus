@@ -109,13 +109,8 @@ define([
         var bookmarkPreferences = collection.preferences;
         var tablePreferences = app.schemaManager.getPreferences(tableName);
 
-        tablePreferences.save(_.pick(bookmarkPreferences.toJSON(), 'search_string', 'status'), {
-          silent: true,
-          wait: false
-        });
-
-        collection.preferences = app.schemaManager.getPreferences(tableName);
-
+        tablePreferences.set(_.pick(bookmarkPreferences.toJSON(), 'search_string', 'status'));
+        collection.preferences = tablePreferences;
         deferred.reject();
       };
 
@@ -136,8 +131,16 @@ define([
     onKeyUp: function (event) {
       var self = this;
       var $element = $(event.currentTarget);
-      var searchString = this.searchString = $element.val();
+      var searchString = $element.val();
+      var doSearch = this.searchString !== $element.val();
+
+      this.searchString = doSearch;
       var callSearch = function () {
+        // if the new search string is different than the current search string
+        if (doSearch) {
+          return;
+        }
+
         self.search(searchString).done(function () {
           // Focus the input after the search
           var $input = self.$('#search-input');
@@ -164,6 +167,7 @@ define([
 
     search: function (searchString) {
       var filterIndex = -1;
+
       _.each(this.options.filters, function (item, index) {
         if (item.filterData.id === 'q') {
           filterIndex = index;
@@ -532,9 +536,10 @@ define([
       var self = this;
       var options = this.options;
 
-      var save = function (preferences, sync) {
+      var save = function (sync) {
         var string = [];
         var method = 'save';
+        var preferences = self.collection.preferences;
         var filters = options.filters.map(function (item) {
           return item.filterData;
         });
@@ -555,10 +560,11 @@ define([
 
 
       this.confirmBookmarkAction()
-        .done(function (preferences) {
-          save(preferences, true);
+        .done(function () {
+          save(true);
         })
         .fail(function () {
+          save(false);
           self.redirect();
         });
     },
@@ -566,6 +572,12 @@ define([
     redirect: function () {
       var tableName = this.collection.table.id;
       var route = 'tables/' + tableName;
+
+      this.collection.preferences.save({}, {
+        silent: true,
+        wait: false
+      });
+
       app.router.navigate(route, false);
       app.router.getBookmarkView().setActive(route);
     },

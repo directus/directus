@@ -442,7 +442,7 @@ ul {
       width: 0%;
       background-color: #3498DB; }
       .loading .loading-container .loading-bar.error {
-        background-color: #F44336; }
+        background-color: #E53935; }
   .loading .readout {
     position: absolute;
     bottom: 43px;
@@ -514,10 +514,10 @@ input[type="radio"].custom-checkbox + label span:before {
   margin-top: -4px; }
 
 .serious-text {
-  color: #F44336; }
+  color: #E53935; }
 
 .important-text {
-  color: #FFC107; }
+  color: #FF9800; }
 
 .primary-text {
   color: #3498DB; }
@@ -575,6 +575,9 @@ a.text-button {
   border: none;
   outline: none;
   text-align: center; }
+  .button:focus {
+    box-shadow: 0 0 0 2px, 0 0 8px 4px rgba(52, 152, 219, 0.2);
+    background-color: #2383c4; }
   .button:hover {
     background-color: #2383c4; }
   .button.outline {
@@ -644,17 +647,34 @@ input[type="radio"].custom-checkbox {
   input[type="checkbox"].custom-checkbox:checked + label span:hover,
   input[type="radio"].custom-checkbox:checked + label span:hover {
     color: #333333; }
+  .custom-checkbox input[type="checkbox"]:checked:disabled + label span:before, .custom-checkbox input[type="checkbox"]:disabled + label span:before,
+  .custom-checkbox input[type="radio"]:checked:disabled + label span:before,
+  .custom-checkbox input[type="radio"]:disabled + label span:before,
+  input[type="checkbox"].custom-checkbox:checked:disabled + label span:before,
+  input[type="checkbox"].custom-checkbox:disabled + label span:before,
+  input[type="radio"].custom-checkbox:checked:disabled + label span:before,
+  input[type="radio"].custom-checkbox:disabled + label span:before {
+    cursor: inherit;
+    color: #CCCCCC; }
+    .custom-checkbox input[type="checkbox"]:checked:disabled + label span:before:hover, .custom-checkbox input[type="checkbox"]:disabled + label span:before:hover,
+    .custom-checkbox input[type="radio"]:checked:disabled + label span:before:hover,
+    .custom-checkbox input[type="radio"]:disabled + label span:before:hover,
+    input[type="checkbox"].custom-checkbox:checked:disabled + label span:before:hover,
+    input[type="checkbox"].custom-checkbox:disabled + label span:before:hover,
+    input[type="radio"].custom-checkbox:checked:disabled + label span:before:hover,
+    input[type="radio"].custom-checkbox:disabled + label span:before:hover {
+      color: #CCCCCC; }
   .custom-checkbox input[type="checkbox"].permission-toggle + label span,
   .custom-checkbox input[type="radio"].permission-toggle + label span,
   input[type="checkbox"].custom-checkbox.permission-toggle + label span,
   input[type="radio"].custom-checkbox.permission-toggle + label span {
-    color: #F44336; }
+    color: #E53935; }
   .custom-checkbox input[type="checkbox"].permission-toggle.partial:checked + label span:before,
   .custom-checkbox input[type="radio"].permission-toggle.partial:checked + label span:before,
   input[type="checkbox"].custom-checkbox.permission-toggle.partial:checked + label span:before,
   input[type="radio"].custom-checkbox.permission-toggle.partial:checked + label span:before {
     content: "indeterminate_check_box";
-    color: #FFC107; }
+    color: #FF9800; }
 
 .select2-container {
   box-sizing: border-box;
@@ -1800,9 +1820,9 @@ table {
     table tbody tr.visibility-off td {
       color: #CCCCCC; }
       table tbody tr.visibility-off td.visible:hover .material-icons {
-        color: #FFC107; }
+        color: #FF9800; }
       table tbody tr.visibility-off td.visible .material-icons {
-        color: #FFC107; }
+        color: #FF9800; }
       table tbody tr.visibility-off td.required:hover .material-icons {
         color: #EEEEEE; }
       table tbody tr.visibility-off td.required .material-icons {
@@ -1893,7 +1913,7 @@ table {
         line-height: 10px;
         margin-left: 6px;
         margin-top: -4px;
-        color: #FFC107; }
+        color: #FF9800; }
       table tbody tr td.user-interface {
         -webkit-transition: color 200ms ease-in-out 0ms;
         -moz-transition: color 200ms ease-in-out 0ms;
@@ -1945,6 +1965,8 @@ table {
         min-width: auto; }
       table tbody tr td.bold {
         font-weight: 500; }
+      table tbody tr td.system-table {
+        color: #999999; }
       table tbody tr td.status-badges {
         text-align: right;
         white-space: nowrap;
@@ -2016,7 +2038,7 @@ table {
         table tbody tr td.permissions-blacklist .choose-column-blacklist:hover {
           color: #666666; }
         table tbody tr td.permissions-blacklist .choose-column-blacklist.active {
-          color: #F44336; }
+          color: #E53935; }
       table tbody tr td.settings-tables-name {
         width: auto;
         min-width: 200px; }
@@ -2049,7 +2071,7 @@ table {
           text-transform: uppercase; }
           table tbody tr td.settings-tables-manage .add-table:hover,
           table tbody tr td.settings-tables-manage .remove-table:hover {
-            background-color: #F44336;
+            background-color: #E53935;
             color: #FFFFFF; }
         table tbody tr td.settings-tables-manage .add-table {
           background-color: #3498DB;
@@ -2555,7 +2577,7 @@ body.loading .header .logo {
   z-index: 10;
   text-align: right; }
   .header.settings .breadcrumb .crumb:nth-of-type(1) {
-    color: #FFC107; }
+    color: #FF9800; }
     .header.settings .breadcrumb .crumb:nth-of-type(1):hover {
       color: #FFFFFF; }
   .header .logo {
@@ -2566,6 +2588,15 @@ body.loading .header .logo {
     height: 100%;
     text-align: center;
     padding-top: 20px; }
+    .header .logo.static.has-project-logo .directus {
+      opacity: 0.0; }
+    .header .logo.static.has-project-logo .project-logo {
+      opacity: 1.0; }
+    .header .logo.static .directus {
+      -moz-animation-name: none;
+      -webkit-animation-name: none;
+      -ms-animation-name: none;
+      animation-name: none; }
     .header .logo:hover .directus {
       opacity: 0.5; }
     .header .logo:hover .project-logo {
@@ -2577,16 +2608,9 @@ body.loading .header .logo {
     .header .logo:hover.has-project-logo .directus {
       opacity: 0.0; }
     .header .logo:hover.has-project-logo .project-logo {
-      opacity: 0.1; }
+      opacity: 0.5; }
     .header .logo:hover.has-project-logo .project-swap {
       opacity: 1; }
-    .header .logo.has-project-logo .directus {
-      opacity: 0.0; }
-    .header .logo.static .directus {
-      -moz-animation-name: none;
-      -webkit-animation-name: none;
-      -ms-animation-name: none;
-      animation-name: none; }
     .header .logo .directus {
       -webkit-transition: opacity 200ms ease-in-out 0ms;
       -moz-transition: opacity 200ms ease-in-out 0ms;
@@ -2612,15 +2636,16 @@ body.loading .header .logo {
   100% {
     background-position: -990px; } }
     .header .logo .project-logo {
-      -webkit-transition: all 200ms ease-in-out 0ms;
-      -moz-transition: all 200ms ease-in-out 0ms;
-      -o-transition: all 200ms ease-in-out 0ms;
-      -ms-transition: all 200ms ease-in-out 0ms;
-      transition: all 200ms ease-in-out 0ms;
+      -webkit-transition: opacity 200ms ease-in-out 0ms;
+      -moz-transition: opacity 200ms ease-in-out 0ms;
+      -o-transition: opacity 200ms ease-in-out 0ms;
+      -ms-transition: opacity 200ms ease-in-out 0ms;
+      transition: opacity 200ms ease-in-out 0ms;
       position: absolute;
       top: 0;
       left: 0;
-      width: 200px; }
+      width: 200px;
+      opacity: 0.2; }
     .header .logo .project-name {
       position: relative;
       color: #ffffff;
@@ -2765,7 +2790,7 @@ body.loading .header .logo {
         cursor: pointer;
         color: #CCCCCC; }
         .header .tools-right .filter .clear:hover {
-          color: #F44336; }
+          color: #E53935; }
       .header .tools-right .filter .filter-dropdown-toggle {
         -webkit-transition: all 200ms ease-in-out 0ms;
         -moz-transition: all 200ms ease-in-out 0ms;
@@ -2853,7 +2878,7 @@ body.loading .header .logo {
             right: -35px;
             cursor: pointer; }
             .header .tools-right .filter .filter-dropdown .column-filter .remove-filter:hover {
-              color: #F44336; }
+              color: #E53935; }
   .header .actions {
     position: relative;
     display: inline-block; }
@@ -2884,9 +2909,9 @@ body.loading .header .logo {
       .header .actions .action.primary {
         background-color: #3498DB; }
       .header .actions .action.serious {
-        background-color: #F44336; }
+        background-color: #E53935; }
       .header .actions .action.important {
-        background-color: #FFC107; }
+        background-color: #FF9800; }
       .header .actions .action.disabled {
         background-color: #666666;
         cursor: not-allowed; }
@@ -3047,7 +3072,7 @@ body.loading .header .logo {
         font-size: 18px;
         color: #666666; }
         .sidebar ul.menu li .delete-bookmark:hover {
-          color: #F44336; }
+          color: #E53935; }
     .sidebar ul.menu.bookmarks li {
       padding: 5px 35px 5px 20px; }
       .sidebar ul.menu.bookmarks li a {
@@ -3071,6 +3096,9 @@ body.loading .header .logo {
       background-color: #3498DB; }
       .sidebar .system:hover .user-more {
         color: #FFFFFF; }
+      .sidebar .system:hover .count {
+        background-color: #FFFFFF;
+        color: #3498DB; }
     .sidebar .system .avatar {
       -webkit-border-radius: 40px;
       -moz-border-radius: 40px;
@@ -3092,10 +3120,25 @@ body.loading .header .logo {
       transition: all 200ms ease-in-out 0ms;
       color: #FFFFFF;
       font-weight: 500;
-      padding-right: 14px;
+      padding-right: 24px;
       text-overflow: ellipsis;
       white-space: nowrap;
       overflow: hidden; }
+    .sidebar .system .count {
+      -webkit-border-radius: 2px;
+      -moz-border-radius: 2px;
+      border-radius: 2px;
+      -moz-background-clip: padding;
+      -webkit-background-clip: padding-box;
+      background-clip: padding-box;
+      position: absolute;
+      top: 20px;
+      right: 12px;
+      z-index: 2;
+      background-color: #3498DB;
+      color: #FFFFFF;
+      font-weight: 700;
+      padding: 2px 6px; }
     .sidebar .system .user-more {
       position: absolute;
       top: 18px;
@@ -3174,9 +3217,17 @@ body.loading .header .logo {
             color: #3498DB; }
             .sidebar .system .user-menu ul li:hover .material-icons {
               color: #3498DB; }
+          .sidebar .system .user-menu ul li.system-settings {
+            color: #FF9800; }
+            .sidebar .system .user-menu ul li.system-settings:hover {
+              color: #d68000; }
+              .sidebar .system .user-menu ul li.system-settings:hover .material-icons {
+                color: #d68000; }
+            .sidebar .system .user-menu ul li.system-settings .material-icons {
+              color: #FF9800; }
           .sidebar .system .user-menu ul li.discover span {
             padding-right: 10px; }
-          .sidebar .system .user-menu ul li .count {
+          .sidebar .system .user-menu ul li .count-menu {
             -webkit-border-radius: 2px;
             -moz-border-radius: 2px;
             border-radius: 2px;
@@ -3243,7 +3294,7 @@ body.loading .header .logo {
     cursor: pointer;
     z-index: 1; }
     .right-sidebar .close:hover {
-      color: #F44336; }
+      color: #E53935; }
   .right-sidebar .scroll-y {
     overflow-y: auto;
     position: absolute;
@@ -3812,6 +3863,8 @@ body.loading .header .logo {
     color: #CCCCCC; }
     .validate-input .validate-check.valid {
       color: #3498DB; }
+    .validate-input .validate-check.lower-check {
+      top: 67px; }
 
 .discover-container {
   position: absolute;
@@ -3898,7 +3951,7 @@ body.help .discover-spotlight {
       font-size: 36px;
       color: #666666; }
     .smoke .close:hover .material-icons {
-      color: #F44336; }
+      color: #E53935; }
   .smoke .modal {
     -webkit-transition: all 200ms ease-in-out 0ms;
     -moz-transition: all 200ms ease-in-out 0ms;
@@ -3926,6 +3979,8 @@ body.help .discover-spotlight {
         margin-top: 0px; }
     .smoke .modal.slide-down .modal-bg {
       margin-top: 400px; }
+    .smoke .modal table {
+      text-align: left; }
     .smoke .modal .modal-bg {
       -webkit-transition: all 200ms ease-in-out 0ms;
       -moz-transition: all 200ms ease-in-out 0ms;
@@ -3969,8 +4024,8 @@ body.help .discover-spotlight {
         float: left;
         cursor: pointer;
         padding: 12px 12px 12px 0; }
-        .smoke .modal .actions .cancel:hover {
-          color: #F44336; }
+        .smoke .modal .actions .cancel:focus, .smoke .modal .actions .cancel:hover {
+          color: #E53935; }
     .smoke .modal .button-group .button {
       margin-top: 20px;
       margin-right: 20px; }
@@ -3995,22 +4050,32 @@ body.help .discover-spotlight {
       background-color: #FFFFFF; }
       .smoke .modal .header-circle.with-background {
         background-color: #b6daf2; }
-      .smoke .modal .header-circle.editable:hover .avatar {
-        opacity: 0.5; }
-      .smoke .modal .header-circle.editable:hover .edit-avatar {
-        opacity: 1; }
+      .smoke .modal .header-circle.editable {
+        cursor: pointer; }
+        .smoke .modal .header-circle.editable:hover .avatar {
+          opacity: 0.2; }
+        .smoke .modal .header-circle.editable:hover .edit-avatar {
+          opacity: 1; }
       .smoke .modal .header-circle .directus {
         height: 40px;
         margin-top: 26px; }
       .smoke .modal .header-circle .avatar {
+        -webkit-transition: all 200ms ease-in-out 0ms;
+        -moz-transition: all 200ms ease-in-out 0ms;
+        -o-transition: all 200ms ease-in-out 0ms;
+        -ms-transition: all 200ms ease-in-out 0ms;
+        transition: all 200ms ease-in-out 0ms;
         width: 100%; }
-        .smoke .modal .header-circle .avatar.editable {
-          cursor: pointer; }
       .smoke .modal .header-circle .edit-avatar {
+        -webkit-transition: all 200ms ease-in-out 0ms;
+        -moz-transition: all 200ms ease-in-out 0ms;
+        -o-transition: all 200ms ease-in-out 0ms;
+        -ms-transition: all 200ms ease-in-out 0ms;
+        transition: all 200ms ease-in-out 0ms;
         position: absolute;
         top: 36px;
         left: 36px;
-        color: #FFFFFF;
+        color: #3498DB;
         opacity: 0;
         cursor: pointer; }
     .smoke .modal .fields .field {
@@ -4252,7 +4317,7 @@ body.help .discover-spotlight {
         .smoke .modal.column .modal-bg h1 .table-name, .smoke .modal.interface .modal-bg h1 .table-name {
           color: #999999; }
         .smoke .modal.column .modal-bg h1 .column-name, .smoke .modal.interface .modal-bg h1 .column-name {
-          color: #FFC107; }
+          color: #FF9800; }
       .smoke .modal.column .modal-bg .toggle-pane, .smoke .modal.interface .modal-bg .toggle-pane {
         -webkit-transition: color 200ms ease-in-out 0ms;
         -moz-transition: color 200ms ease-in-out 0ms;
@@ -4404,6 +4469,19 @@ body.help .discover-spotlight {
       .smoke .modal.welcome-1 .modal-bg .button, .smoke .modal.welcome-2 .modal-bg .button, .smoke .modal.welcome-3 .modal-bg .button {
         width: 100%;
         margin-top: 10px; }
+      .smoke .modal.welcome-1 .modal-bg .go-back, .smoke .modal.welcome-2 .modal-bg .go-back, .smoke .modal.welcome-3 .modal-bg .go-back {
+        -webkit-transition: color 200ms ease-in-out 0ms;
+        -moz-transition: color 200ms ease-in-out 0ms;
+        -o-transition: color 200ms ease-in-out 0ms;
+        -ms-transition: color 200ms ease-in-out 0ms;
+        transition: color 200ms ease-in-out 0ms;
+        text-align: center;
+        color: #CCCCCC;
+        margin-top: 14px;
+        margin-bottom: -4px;
+        cursor: pointer; }
+        .smoke .modal.welcome-1 .modal-bg .go-back:hover, .smoke .modal.welcome-2 .modal-bg .go-back:hover, .smoke .modal.welcome-3 .modal-bg .go-back:hover {
+          color: #666666; }
 
 .error-page {
   text-align: center;
@@ -4631,7 +4709,8 @@ body.help .discover-spotlight {
     height: 200px;
     position: absolute;
     top: 0;
-    left: 0; }
+    left: 0;
+    background-color: #EEEEEE; }
   .attachments .folder .extension-fallback,
   .attachments .file .extension-fallback,
   .folder-listing .folder .extension-fallback,
@@ -4881,7 +4960,8 @@ body.help .discover-spotlight {
   padding: 40px;
   min-width: 500px;
   overflow: auto;
-  background-color: #FFFFFF; }
+  background-color: #FFFFFF;
+  z-index: 1; }
   .message .details .avatar {
     -webkit-transition: all 200ms ease-in-out 0ms;
     -moz-transition: all 200ms ease-in-out 0ms;
@@ -4902,7 +4982,8 @@ body.help .discover-spotlight {
     left: 40px;
     width: 60px;
     height: 60px;
-    overflow: hidden; }
+    overflow: hidden;
+    cursor: pointer; }
     .message .details .avatar:hover {
       opacity: 0.8; }
   .message .details .from {
@@ -4915,7 +4996,8 @@ body.help .discover-spotlight {
     top: 60px;
     left: 120px;
     font-size: 16px;
-    font-weight: 500; }
+    font-weight: 500;
+    cursor: pointer; }
     .message .details .from:hover {
       color: #3498DB; }
   .message .details .timeago {
@@ -5021,7 +5103,7 @@ body.help .discover-spotlight {
       margin-right: 4px;
       cursor: pointer; }
       .message .details .to span:hover {
-        background-color: #F44336;
+        background-color: #E53935;
         color: #FFFFFF; }
       .message .details .to span .material-icons {
         font-size: 16px;
@@ -5036,14 +5118,14 @@ body.help .discover-spotlight {
     margin-bottom: -15px;
     font-size: 11px;
     color: #DDDDDD;
-    font-weight: 500;
-    cursor: pointer; }
+    font-weight: 500; }
     .message .seen a {
       -webkit-transition: all 400ms ease-in-out 0ms;
       -moz-transition: all 400ms ease-in-out 0ms;
       -o-transition: all 400ms ease-in-out 0ms;
       -ms-transition: all 400ms ease-in-out 0ms;
-      transition: all 400ms ease-in-out 0ms; }
+      transition: all 400ms ease-in-out 0ms;
+      cursor: pointer; }
       .message .seen a:hover {
         color: #999999; }
     .message .seen .material-icons {
@@ -5053,7 +5135,7 @@ body.help .discover-spotlight {
       margin-right: 4px; }
   .message .body {
     max-width: 800px;
-    color: #999999;
+    color: #666666;
     font-size: 16px;
     line-height: 30px; }
   .message .button-group .button {
@@ -5107,11 +5189,11 @@ body.help .discover-spotlight {
     .message .reply.active textarea {
       height: 180px; }
     .message .reply textarea {
-      -webkit-transition: all 400ms ease-in-out 0ms;
-      -moz-transition: all 400ms ease-in-out 0ms;
-      -o-transition: all 400ms ease-in-out 0ms;
-      -ms-transition: all 400ms ease-in-out 0ms;
-      transition: all 400ms ease-in-out 0ms;
+      -webkit-transition: all 200ms ease-in-out 0ms;
+      -moz-transition: all 200ms ease-in-out 0ms;
+      -o-transition: all 200ms ease-in-out 0ms;
+      -ms-transition: all 200ms ease-in-out 0ms;
+      transition: all 200ms ease-in-out 0ms;
       -webkit-border-radius: 2px;
       -moz-border-radius: 2px;
       border-radius: 2px;
@@ -5148,6 +5230,30 @@ body.help .discover-spotlight {
         width: 40px;
         margin-left: 20px;
         padding-left: 10px; }
+  .message .close-message {
+    -webkit-transition: all 400ms ease-in-out 0ms;
+    -moz-transition: all 400ms ease-in-out 0ms;
+    -o-transition: all 400ms ease-in-out 0ms;
+    -ms-transition: all 400ms ease-in-out 0ms;
+    transition: all 400ms ease-in-out 0ms;
+    position: absolute;
+    top: 14px;
+    left: 50%;
+    margin-left: -20px;
+    border-radius: 100px;
+    width: 40px;
+    height: 40px;
+    padding-top: 4px;
+    padding-left: 2px;
+    color: #FFFFFF;
+    cursor: pointer;
+    background-color: #EEEEEE;
+    text-align: center;
+    display: none; }
+    .message .close-message .material-icons {
+      font-size: 32px; }
+    .message .close-message:active, .message .close-message:focus, .message .close-message:hover {
+      background-color: #3498DB; }
   .message .resize-handle {
     position: absolute;
     top: 0;
@@ -5173,6 +5279,10 @@ body.help .discover-spotlight {
     border-color: #3498DB; }
   .message-listing.empty {
     width: 100%; }
+    .message-listing.empty .no-items {
+      left: 5%;
+      width: 30%;
+      margin-left: 0px; }
   .message-listing .message-preview {
     -webkit-transition: all 200ms ease-in-out 0ms;
     -moz-transition: all 200ms ease-in-out 0ms;
@@ -5453,11 +5563,11 @@ body.help .discover-spotlight {
       -o-transition: all 200ms ease-in-out 0ms;
       -ms-transition: all 200ms ease-in-out 0ms;
       transition: all 200ms ease-in-out 0ms;
-      color: #F44336;
+      color: #E53935;
       cursor: pointer;
       font-size: 11px; }
       .fields .field .label .cancel-batch-edit:hover {
-        color: #a21309; }
+        color: #891412; }
   .fields .field .interface {
     position: relative;
     white-space: normal;
@@ -5661,7 +5771,7 @@ body.help .discover-spotlight {
       padding: 50px 20px;
       vertical-align: top; }
     .fields .field .interface .attachments .file .info .remove:hover {
-      color: #F44336; }
+      color: #E53935; }
     .fields .field .interface .thumbnail-sizes {
       display: inline-block;
       margin-right: 20px;
@@ -5734,14 +5844,14 @@ body.help .discover-spotlight {
           background-color: rgba(52, 152, 219, 0.3);
           padding: 2px 0; }
           .fields .field .interface .template-string .highlights .highlight.invalid {
-            background-color: rgba(244, 67, 54, 0.3); }
+            background-color: rgba(229, 57, 53, 0.3); }
       .fields .field .interface .template-string .description {
         margin-top: 10px;
         color: #CCCCCC;
         font-size: 12px;
         font-style: italic; }
         .fields .field .interface .template-string .description.invalid {
-          color: #f77066; }
+          color: #eb6562; }
     .fields .field .interface .table-container {
       -webkit-border-radius: 2px;
       -moz-border-radius: 2px;
@@ -5767,7 +5877,7 @@ body.help .discover-spotlight {
         color: #666666;
         text-align: center; }
         .fields .field .interface .table-container table tbody tr td.relational-remove:hover {
-          color: #F44336; }
+          color: #E53935; }
     .fields .field .interface .asset {
       width: 100%;
       max-height: 600px;
@@ -6037,7 +6147,7 @@ body.help .discover-spotlight {
         background-color: #999999;
         cursor: pointer; }
         .fields .field .interface .tag-container .tag:hover {
-          background-color: #F44336;
+          background-color: #E53935;
           color: #FFFFFF; }
 
 .interface-field table td:hover .privilege-shortcuts {
@@ -6057,7 +6167,7 @@ body.help .discover-spotlight {
     padding-right: 2px;
     cursor: pointer; }
   .interface-field table td .privilege-shortcuts .none {
-    color: #F44336;
+    color: #E53935;
     padding-left: 2px;
     cursor: pointer; }
 
@@ -6607,7 +6717,7 @@ body.help .discover-spotlight {
         text-transform: uppercase; }
         .page.marketplace-container table tbody tr td.settings-addon-status .install-addon:hover,
         .page.marketplace-container table tbody tr td.settings-addon-status .remove-addon:hover {
-          background-color: #F44336;
+          background-color: #E53935;
           color: #FFFFFF; }
       .page.marketplace-container table tbody tr td.settings-addon-status .install-addon {
         background-color: #3498DB;
@@ -6742,7 +6852,7 @@ body.login {
       padding: 10px 14px 8px 14px;
       max-width: 400px; }
       body.login .notifications .notification.serious {
-        color: #F44336; }
+        color: #E53935; }
       body.login .notifications .notification .material-icons {
         vertical-align: middle;
         margin-right: 10px;
@@ -6927,7 +7037,7 @@ body.login {
         body.login .processing .loading-container .loading-bar.step-2 {
           width: 99%; }
         body.login .processing .loading-container .loading-bar.error {
-          background-color: #F44336; }
+          background-color: #E53935; }
   body.login .glow {
     position: absolute;
     top: 50%;
@@ -7085,10 +7195,23 @@ body.login {
       margin-top: -30px; } }
 @media only screen and (max-width: 1000px) {
   .message {
-    left: 0px !important;
+    -webkit-transition: all 200ms ease-in-out 0ms;
+    -moz-transition: all 200ms ease-in-out 0ms;
+    -o-transition: all 200ms ease-in-out 0ms;
+    -ms-transition: all 200ms ease-in-out 0ms;
+    transition: all 200ms ease-in-out 0ms;
+    left: 100% !important;
     width: 100% !important;
     min-width: 500px;
     background-color: #FFFFFF; }
+    .message .close-message {
+      display: block; }
+    .message.show-responsive-message {
+      left: 0px !important;
+      right: -100% !important; }
+
+  .message-listing {
+    width: 100%; }
 
   .resize-handle {
     display: none; }

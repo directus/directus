@@ -64,7 +64,7 @@ function(app, Backbone, _, Sortable, Notification) {
       statusValues = _.map(statusValues, Number);
       models = collection.filter(function (model) {
         if (model.has(model.table.getStatusColumnName())) {
-          return _.indexOf(statusValues, model.getStatusValue()) > -1;
+          return _.indexOf(statusValues, Number(model.getStatusValue())) > -1;
         } else {
           return true;
         }

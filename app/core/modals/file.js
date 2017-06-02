@@ -11,13 +11,12 @@ define(['app', 'core/Modal'], function(app, Modal) {
     },
 
     serialize: function() {
-      if (!this.model) {
-        return;
+      var data = {};
+
+      if (this.model) {
+        data = this.model.toJSON();
+        data.url = this.model.makeFileUrl(false);
       }
-
-      var data = this.model.toJSON();
-
-      data.url = this.model.makeFileUrl(false);
 
       return data;
     },

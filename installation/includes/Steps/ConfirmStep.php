@@ -2,6 +2,7 @@
 
 namespace Directus\Installation\Steps;
 
+use Directus\Application\Application;
 use Directus\Database\Connection;
 use Directus\Mail\Mail;
 use Directus\Util\ArrayUtils;
@@ -78,7 +79,7 @@ class ConfirmStep extends AbstractStep
             ],
             'project' => [
                 'name' => $stepsData['directus_name'],
-                'version' => DIRECTUS_VERSION,
+                'version' => Application::DIRECTUS_VERSION,
                 'url' => get_url()
             ],
             'database' => [
@@ -89,12 +90,7 @@ class ConfirmStep extends AbstractStep
             ]
         ];
 
-        Mail::send('mail/new-install.twig.html', $data, function ($message) use ($data) {
-            $message->setSubject(__t('email_subject_your_new_directus_instance_x', [
-                'name' => $data['project']['name']
-            ]));
-            $message->setTo($data['user']['email']);
-        });
+        send_new_install_email($data);
 
         return $response;
     }

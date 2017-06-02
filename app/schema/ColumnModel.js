@@ -1,5 +1,4 @@
 define(function(require, exports, module) {
-
   'use strict';
 
   var app = require('app'),
@@ -46,7 +45,7 @@ define(function(require, exports, module) {
       // initialize UI
       var options = result.options || {};
       options.id = result.ui;
-      this.options = new UIModel(options);
+      this.options = result.options = new UIModel(options);
       this.options.parent = this;
 
       if (result.relationship_type) {
@@ -69,7 +68,7 @@ define(function(require, exports, module) {
       result.required = result.required === true;
       result.is_nullable = result.is_nullable ? result.is_nullable : 'YES';
 
-      return _.omit(result, 'options', 'relationship');
+      return _.omit(result, 'relationship');
     },
 
     getOptions: function () {
@@ -82,6 +81,10 @@ define(function(require, exports, module) {
 
     getTable: function () {
       return this.collection.table;
+    },
+
+    getType: function () {
+      return this.get('type');
     },
 
     get: function (attr, skip) {

@@ -9,13 +9,12 @@ define([
   'moment',
   'helpers/file'
 ], function(app, _, Backbone, EntriesModel, Notification, __t, Utils, moment, File) {
+
+  'use strict';
+
   var FilesModel = EntriesModel.extend({
 
-    initialize: function() {
-      EntriesModel.prototype.initialize.apply(this, arguments);
-    },
-
-    makeFileUrl: function(thumbnail) {
+    makeFileUrl: function (thumbnail) {
       var url;
 
       if (thumbnail) {
@@ -39,7 +38,7 @@ define([
       return url;
     },
 
-    toJSON: function(all) {
+    toJSON: function (all) {
       var atts = FilesModel.__super__.toJSON.call(this);
 
       if (!atts) {
@@ -59,7 +58,7 @@ define([
       return _.omit(attrs, 'thumbnailData', 'url', 'file_url', 'file_thumb_url', 'old_thumbnail_url', 'thumbnail_url', 'html', 'embed_url')
     },
 
-    formatTitle: function(name) {
+    formatTitle: function (name) {
       if (name.indexOf('.') >= 0) {
         var extension = name.split('.').pop();
         name = name.slice(0, name.indexOf('.' + extension));
@@ -70,7 +69,7 @@ define([
       return name;
     },
 
-    setFile: function(file, allowedTypes, fn) {
+    setFile: function (file, allowedTypes, fn) {
       var allowed = false;
 
       if (!this.isFileAllowed(file, allowedTypes)) {
@@ -131,7 +130,7 @@ define([
 
     // setData will try to get thumbnail from a base64
     // this is used by retrieve links
-    setData: function(item, allowedTypes) {
+    setData: function (item, allowedTypes) {
       var model = this;
 
       if (!this.isFileAllowed(item, allowedTypes)) {
@@ -145,7 +144,7 @@ define([
       });
     },
 
-    setLink: function(url, allowedTypes) {
+    setLink: function (url, allowedTypes) {
       var model = this;
       app.sendLink(url, function(data) {
         var item = data[0];
@@ -160,7 +159,7 @@ define([
       });
     },
 
-    isFileAllowed: function(file, allowedTypes) {
+    isFileAllowed: function (file, allowedTypes) {
       var allowed = this.isTypeAllowed(file.type, allowedTypes);
 
       if (!allowed && this.hasExtension(file.name)) {
@@ -176,11 +175,11 @@ define([
       return allowed;
     },
 
-    isAllowed: function(allowedTypes) {
+    isAllowed: function (allowedTypes) {
       return this.isFileAllowed(this.toJSON(), allowedTypes);
     },
 
-    isTypeAllowed: function(fileType, allowedTypes) {
+    isTypeAllowed: function (fileType, allowedTypes) {
       // if there's not fileType but allowedMimeTypes provided
       // by default the file is not allowed
       var allowed = !(!fileType && allowedTypes);
@@ -196,7 +195,7 @@ define([
       return allowed;
     },
 
-    isMimeType: function(mimeType, allowedMimeType) {
+    isMimeType: function (mimeType, allowedMimeType) {
       mimeType = mimeType || this.type;
       if (!_.isString(mimeType)) {
         return false;
@@ -209,15 +208,15 @@ define([
       return allowedMimeType === mimeType;
     },
 
-    hasExtension: function(name) {
+    hasExtension: function (name) {
       return (_.isString(name) && name.indexOf('.') >= 0);
     },
 
-    getExtension: function(name) {
+    getExtension: function (name) {
       return this.hasExtension(name) ? name.split('.').pop() : null;
     },
 
-    isExtensionAllowed: function(name, allowedTypes) {
+    isExtensionAllowed: function (name, allowedTypes) {
       return this.hasExtension(name) ? this.isType(this.getExtension(name), allowedTypes) : false;
     },
 
@@ -247,7 +246,7 @@ define([
       return subtype;
     },
 
-    isType: function(type, allowedType) {
+    isType: function (type, allowedType) {
       if (!_.isString(allowedType)) {
         return false;
       }
@@ -261,9 +260,7 @@ define([
     constructor: function FilesModel(data, options) {
       FilesModel.__super__.constructor.call(this, data, options);
     }
-
   });
 
   return FilesModel;
-
 });

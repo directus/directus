@@ -51,12 +51,6 @@ define([
       }
 
       return response.data;
-    },
-
-    // Restore fetch to default style
-    fetch: function(options) {
-      this.trigger('fetch', this);
-      EntriesCollection.prototype.fetch.call(this, options);
     }
   });
 });

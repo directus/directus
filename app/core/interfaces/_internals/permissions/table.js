@@ -1,4 +1,11 @@
-define(['app', 'underscore', 'backbone', 'core/t', 'core/Modal'], function (app, _, Backbone, __t, ModalView) {
+define([
+  'app',
+  'underscore',
+  'backbone',
+  'core/t',
+  'core/Modal'
+], function (app, _, Backbone, __t, ModalView) {
+
   var EditFields = Backbone.Layout.extend({
     template: 'modules/settings/permissions-fields',
 
@@ -96,7 +103,6 @@ define(['app', 'underscore', 'backbone', 'core/t', 'core/Modal'], function (app,
 
     events: {
       'click .js-status-toggle': 'toggleStatusSelector',
-      'click .js-status': 'changeStatus',
       'click .js-permission-toggle': 'togglePermission',
       'click .js-add-full-permissions': 'addFullPermissions',
       'click .js-remove-full-permissions': 'removeFullPermissions',
@@ -114,43 +120,33 @@ define(['app', 'underscore', 'backbone', 'core/t', 'core/Modal'], function (app,
         return;
       }
 
-      tableName = $row.data('table');
-      openWorkflow = this.state.openWorkflow;
-      if (!_.contains(openWorkflow, tableName)) {
-        openWorkflow.push(tableName);
-      } else {
-        var index = _.indexOf(openWorkflow, tableName);
-        openWorkflow.slice(index, 1);
-      }
-
+      this.state.workflowEnabled = !this.state.workflowEnabled;
+      this.toggleWorkflow($row.data('table'));
       $row.toggleClass('workflow-enabled');
     },
 
-    changeStatus: function (event) {
-      var $el = $(event.currentTarget);
-      var value = $el.data('value');
-      var $row = $el.closest('tr');
-      var tableName = $row.data('table');
-      var state = this.getDefaultStatus();
+    isWorkflowOpen: function (tableName) {
+      return _.contains(this.state.openWorkflow, tableName);
+    },
 
-      if (!this.state.tables[tableName]) {
-        this.state.tables[tableName] = {};
+    openWorkflow: function (tableName) {
+      this.state.openWorkflow.push(tableName);
+    },
+
+    closeWorkflow: function (tableName) {
+      var index = _.indexOf(this.state.openWorkflow, tableName);
+
+      if (index >= 0) {
+        this.state.openWorkflow.splice(index, 1);
       }
+    },
 
-      if (value !== null) {
-        app.statusMapping.get(tableName, true).get('mapping').each(function (status) {
-          if (status.get('id') == value) {
-            state = {
-              name: status.get('name'),
-              value: status.get('id')
-            };
-          }
-        });
+    toggleWorkflow: function (tableName) {
+      if (!this.isWorkflowOpen(tableName)) {
+        this.openWorkflow(tableName);
+      } else {
+        this.closeWorkflow(tableName);
       }
-
-      this.state.tables[tableName] = state;
-      $row.toggleClass('workflow-enabled');
-      this.render();
     },
 
     updateModel: function (id, attributes) {
@@ -178,6 +174,7 @@ define(['app', 'underscore', 'backbone', 'core/t', 'core/Modal'], function (app,
     },
 
     addFullPermissions: function (event) {
+      var self = this;
       var $button = $(event.currentTarget);
       var $row = $button.closest('tr');
       var permissions = {
@@ -189,9 +186,19 @@ define(['app', 'underscore', 'backbone', 'core/t', 'core/Modal'], function (app,
       };
 
       this.updateModel($row.data('cid'), permissions);
+
+      // TODO: Create a API to handle multiple status
+      if (this.isWorkflowOpen($row.data('table'))) {
+        $row.find('.workflow.js-permission').each(function () {
+          var $el = $(this);
+
+          self.updateModel($el.data('cid'), permissions);
+        });
+      }
     },
 
     removeFullPermissions: function (event) {
+      var self = this;
       var $button = $(event.currentTarget);
       var $row = $button.closest('tr');
       var permissions = {
@@ -201,6 +208,15 @@ define(['app', 'underscore', 'backbone', 'core/t', 'core/Modal'], function (app,
         allow_alter: 0,
         allow_view: 0
       };
+
+      // TODO: Create a API to handle multiple status
+      if (this.isWorkflowOpen($row.data('table'))) {
+        $row.find('.workflow.js-permission').each(function () {
+          var $el = $(this);
+
+          self.updateModel($el.data('cid'), permissions);
+        });
+      }
 
       this.updateModel($row.data('cid'), permissions);
     },
@@ -478,6 +494,7 @@ define(['app', 'underscore', 'backbone', 'core/t', 'core/Modal'], function (app,
         data.statuses = data.hasStatusColumn ? this.getStatuses(currentTableStatus, table.id) : [];
         data.currentStatus = currentTableStatus;
         data.openWorkflow = _.contains(this.state.openWorkflow, table.id);
+        data.isSystemTable = table.id.startsWith('directus_');
 
         permissions.push(data);
       }, this));

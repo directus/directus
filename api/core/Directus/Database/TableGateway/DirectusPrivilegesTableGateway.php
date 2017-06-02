@@ -13,6 +13,8 @@ class DirectusPrivilegesTableGateway extends RelationalTableGateway
 {
     public static $_tableName = 'directus_privileges';
 
+    public $primaryKeyFieldName = 'id';
+
     // @todo: make this part of every table gateway
     private $fillable = [
         'allow_view',
@@ -28,7 +30,7 @@ class DirectusPrivilegesTableGateway extends RelationalTableGateway
         'status_id',
     ];
 
-    public function __construct(AdapterInterface $adapter, Acl $acl)
+    public function __construct(AdapterInterface $adapter, Acl $acl = null)
     {
         parent::__construct(self::$_tableName, $adapter, $acl);
     }

@@ -14,8 +14,6 @@ define([
     'FLOAT',
     'YEAR',
     'DOUBLE',
-    'VARCHAR',
-    'CHAR',
     'BIGINT'
   ];
 
@@ -24,8 +22,8 @@ define([
     'CHAR'
   ];
 
-  var getNumericTypes = function () {
-    return numericTypes;
+  var getNumericInterfaceTypes = function () {
+    return numericTypes.concat(stringTypes);
   };
 
   var cleanIdentifier = function (identifier) {
@@ -84,7 +82,7 @@ define([
     var missing = false;
 
     _.each(uiOptionsName, function (optionName) {
-      var option = columnOptions[optionName];
+      var option = columnOptions.get(optionName);
 
       if (!option || _.isEmpty(option)) {
         missing = true;
@@ -129,8 +127,9 @@ define([
     getSystemDefaultComment: getSystemDefaultComment,
     isMissingRequiredOptions: isMissingRequiredOptions,
     isSystem: isSystem,
-    getNumericTypes: getNumericTypes,
+    getNumericInterfaceTypes: getNumericInterfaceTypes,
     isNumericType: isNumericType,
+    isStringType: isStringType,
     dateColumns: dateColumns,
     numericColumns: numericColumns,
     primaryColumns: primaryColumns,

@@ -16,7 +16,6 @@ defined('DIRECTUS_ENV')
 || define('DIRECTUS_ENV', (getenv('DIRECTUS_ENV') ? getenv('DIRECTUS_ENV') : 'production'));
 
 switch (DIRECTUS_ENV) {
-    case 'development_enforce_nonce':
     case 'development':
     case 'staging':
         break;
@@ -32,7 +31,6 @@ define('HOST_URL', $url);
 define('API_PATH', dirname(__FILE__));
 define('BASE_PATH', dirname(API_PATH));
 
-use Directus\Authentication\RequestNonceProvider;
 use Directus\Bootstrap;
 use Directus\Database\SchemaManager;
 use Directus\Database\TableGateway\DirectusActivityTableGateway;
@@ -48,7 +46,6 @@ use Directus\Database\TableGateway\RelationalTableGateway as TableGateway;
 use Directus\Database\TableSchema;
 use Directus\Services\TablesService;
 use Directus\Exception\ExceptionHandler;
-use Directus\Mail\Mail;
 use Directus\Permissions\Exception\UnauthorizedTableAlterException;
 use Directus\Util\ArrayUtils;
 use Directus\Util\DateUtils;
@@ -65,7 +62,6 @@ $v = 1;
  */
 
 $app = Bootstrap::get('app');
-$requestNonceProvider = new RequestNonceProvider(Bootstrap::get('session'));
 
 /**
  * Load Registered Hooks
@@ -139,14 +135,12 @@ $app->error($exceptionHandler);
 $exceptionHandler = new ExceptionHandler();
 
 // Routes which do not need protection by the authentication and the request
-// nonce enforcement.
 // @TODO: Move this to a middleware
-$authAndNonceRouteWhitelist = [
+$authRouteWhitelist = [
     'auth_login',
     'auth_logout',
     'auth_session',
     'auth_clear_session',
-    'auth_nonces',
     'auth_reset_password',
     'auth_forgot_password',
     'debug_acl_poc',
@@ -170,13 +164,15 @@ $acl = Bootstrap::get('acl');
 $authentication = Bootstrap::get('auth');
 
 $app->hookEmitter->run('application.boot', $app);
-$app->hook('slim.before.dispatch', function () use ($app, $requestNonceProvider, $authAndNonceRouteWhitelist, $ZendDb, $acl, $authentication) {
+$app->hook('slim.before.dispatch', function () use ($app, $authRouteWhitelist, $ZendDb, $acl, $authentication) {
     // API/Server is about to initialize
     $app->hookEmitter->run('application.init', $app);
 
+    // TODO: Move this process to a middleware
+
     /** Skip routes which don't require these protections */
     $routeName = $app->router()->getCurrentRoute()->getName();
-    if (!in_array($routeName, $authAndNonceRouteWhitelist)) {
+    if (!in_array($routeName, $authRouteWhitelist)) {
         $headers = $app->request()->headers();
         $authToken = false;
         if ($app->request()->get('access_token')) {
@@ -210,8 +206,10 @@ $app->hook('slim.before.dispatch', function () use ($app, $requestNonceProvider,
         } else if (!$authentication->loggedIn()) {
             $directusGroupsTableGateway = new DirectusGroupsTableGateway($ZendDb, $acl);
             $publicGroup = $directusGroupsTableGateway->select(['name' => 'public'])->current();
+            $uri = trim($app->request()->getResourceUri(), '/');
+            $uriParts = explode('/', $uri);
 
-            if ($publicGroup) {
+            if (ArrayUtils::get($uriParts, 0) === '1.1' && $publicGroup) {
                 $user = [
                     'id' => null,
                     'group' => $publicGroup['id']
@@ -264,26 +262,9 @@ $app->hook('slim.before.dispatch', function () use ($app, $requestNonceProvider,
             $app->halt(401, __t('you_must_be_logged_in_to_access_the_api'));
         }
 
-        /** Enforce required request nonces. */
-        // NOTE: do no use nonce until it's well implemented
-        // OR in fact if it's actually necessary.
-        // nonce needs to be checked
-        // otherwise an error is thrown
-        if (!$requestNonceProvider->requestHasValidNonce() && !$authToken) {
-            //     if('development' !== DIRECTUS_ENV) {
-            //         $app->halt(401, __t('invalid_request_nonce'));
-            //     }
-        }
-
         // User is authenticated
         // And Directus is about to start
         $app->hookEmitter->run('directus.start', $app);
-
-        /** Include new request nonces in the response headers */
-        $response = $app->response();
-        $newNonces = $requestNonceProvider->getNewNoncesThisRequest();
-        $nonce_options = $requestNonceProvider->getOptions();
-        $response[$nonce_options['nonce_response_header']] = implode($newNonces, ',');
     }
 
     $permissions = $app->container->get('acl');
@@ -535,6 +516,11 @@ $app->group('/1.1', function() use($app) {
     $app->post('/users/invite/?', '\Directus\API\Routes\A1\Users:invite');
 
     // =============================================================================
+    // USERS TRACKING
+    // =============================================================================
+    $app->post('/users/tracking/page', '\Directus\API\Routes\A1\Tracking:page');
+
+    // =============================================================================
     // DEBUG
     // =============================================================================
     if ('production' !== DIRECTUS_ENV) {
@@ -574,12 +560,11 @@ $app->post("/$v/auth/request-token/?", function() use ($app, $ZendDb, $authentic
     return $app->response($response);
 })->name('request_token');
 
-$app->post("/$v/auth/login/?", function () use ($app, $ZendDb, $acl, $requestNonceProvider, $authentication) {
+$app->post("/$v/auth/login/?", function () use ($app, $ZendDb, $acl, $authentication) {
 
     $response = [
         'message' => __t('incorrect_email_or_password'),
-        'success' => false,
-        'all_nonces' => $requestNonceProvider->getAllNonces()
+        'success' => false
     ];
 
     if ($authentication->loggedIn()) {
@@ -596,8 +581,7 @@ $app->post("/$v/auth/login/?", function () use ($app, $ZendDb, $acl, $requestNon
     if (!$user) {
         return $app->response([
             'message' => __t('incorrect_email_or_password'),
-            'success' => false,
-            'all_nonces' => $requestNonceProvider->getAllNonces()
+            'success' => false
         ]);
     }
 
@@ -608,8 +592,7 @@ $app->post("/$v/auth/login/?", function () use ($app, $ZendDb, $acl, $requestNon
     if (!$directusGroupsTableGateway->acceptIP($groupId, $app->request->getIp())) {
         return $app->response([
             'message' => 'Request not allowed from IP address',
-            'success' => false,
-            'all_nonces' => $requestNonceProvider->getAllNonces()
+            'success' => false
         ]);
     }
 
@@ -659,7 +642,11 @@ $app->post("/$v/auth/login/?", function () use ($app, $ZendDb, $acl, $requestNon
 
         $response['last_page'] = json_decode($user['last_page']);
         $userSession = $authentication->getUserInfo();
-        $set = ['last_login' => DateUtils::now(), 'access_token' => $userSession['access_token']];
+        $set = [
+            'ip' => get_request_ip(),
+            'last_login' => DateUtils::now(),
+            'access_token' => $userSession['access_token']
+        ];
         $where = ['id' => $user['id']];
         $updateResult = $Users->update($set, $where);
 
@@ -678,8 +665,7 @@ $app->post("/$v/auth/login/?", function () use ($app, $ZendDb, $acl, $requestNon
     }
 
     return $app->response(array_merge($response, [
-        'success' => true,
-        'all_nonces' => $requestNonceProvider->getAllNonces()
+        'success' => true
     ]));
 })->name('auth_login');
 
@@ -693,12 +679,6 @@ $app->get("/$v/auth/logout(/:inactive)", function ($inactive = null) use ($app, 
         $app->redirect(get_directus_path('/login.php'));
     }
 })->name('auth_logout');
-
-$app->get("/$v/auth/nonces/?", function () use ($app, $requestNonceProvider) {
-    return $app->response([
-        'nonces' => $requestNonceProvider->getAllNonces()
-    ]);
-})->name('auth_nonces');
 
 // debug helper
 $app->get("/$v/auth/session/?", function () use ($app) {
@@ -758,11 +738,7 @@ $app->get("/$v/auth/reset-password/:token/?", function ($token) use ($app, $acl,
         $app->halt(200, __t('password_reset_error'));
     }
 
-    $data = ['new_password' => $password];
-    Mail::send('mail/forgot-password.twig.html', $data, function ($message) use ($user) {
-        $message->setSubject(__t('password_reset_new_password_email_subject'));
-        $message->setTo($user['email']);
-    });
+    send_forgot_password_email($user, $password);
 
     $app->halt(200, __t('password_reset_new_temporary_password_sent'));
 
@@ -800,11 +776,7 @@ $app->post("/$v/auth/forgot-password/?", function () use ($app, $acl, $ZendDb) {
         ]);
     }
 
-    $data = ['reset_token' => $set['reset_token']];
-    Mail::send('mail/reset-password.twig.html', $data, function ($message) use ($user) {
-        $message->setSubject(__t('password_forgot_password_reset_email_subject'));
-        $message->setTo($user['email']);
-    });
+    send_reset_password_email($user, $set['reset_token']);
 
     $success = true;
     return $app->response([
@@ -1691,7 +1663,7 @@ $app->map("/$v/messages/rows/:id/?", function ($id) use ($params, $requestPayloa
 })->via('PATCH');
 
 $app->post("/$v/messages/rows/?", function () use ($params, $requestPayload, $app, $acl, $ZendDb, $authentication) {
-    $currentUser = $authentication->getUserInfo();
+    $currentUserId = $authentication->getUserInfo('id');
 
     // Unpack recipients
     $recipients = explode(',', $requestPayload['recipients']);
@@ -1715,32 +1687,32 @@ $app->post("/$v/messages/rows/?", function () use ($params, $requestPayload, $ap
         }
     }
 
-    $userRecipients[] = $currentUser['id'];
+    $userRecipients[] = $currentUserId;
 
     $messagesTableGateway = new DirectusMessagesTableGateway($ZendDb, $acl);
-    $id = $messagesTableGateway->sendMessage($requestPayload, array_unique($userRecipients), $currentUser['id']);
+    $id = $messagesTableGateway->sendMessage($requestPayload, array_unique($userRecipients), $currentUserId);
 
     if ($id) {
         $Activity = new DirectusActivityTableGateway($ZendDb, $acl);
         $requestPayload['id'] = $id;
-        $Activity->recordMessage($requestPayload, $currentUser['id']);
+        $Activity->recordMessage($requestPayload, $currentUserId);
     }
 
     foreach ($userRecipients as $recipient) {
+        // Do not the send a notification to the sender
+        if ($recipient == $currentUserId) {
+            continue;
+        }
+
         $usersTableGateway = new DirectusUsersTableGateway($ZendDb, $acl);
         $user = $usersTableGateway->findOneBy('id', $recipient);
 
         if (isset($user) && $user['email_messages'] == 1) {
-            $data = ['message' => $requestPayload['message']];
-            $view = 'mail/notification.twig.html';
-            Mail::send($view, $data, function ($message) use ($user, $requestPayload) {
-                $message->setSubject($requestPayload['subject']);
-                $message->setTo($user['email']);
-            });
+            send_message_notification_email($user, $requestPayload);
         }
     }
 
-    $message = $messagesTableGateway->fetchMessageWithRecipients($id, $currentUser['id']);
+    $message = $messagesTableGateway->fetchMessageWithRecipients($id, $currentUserId);
 
     return $app->response($message, ['table' => 'directus_messages']);
 });
@@ -1760,7 +1732,7 @@ $app->get("/$v/messages/recipients/?", function () use ($params, $requestPayload
 });
 
 $app->post("/$v/comments/?", function () use ($params, $requestPayload, $app, $acl, $ZendDb, $authentication) {
-    $currentUser = $authentication->getUserInfo();
+    $currentUserId = $authentication->getUserInfo('id');
     $params['table_name'] = 'directus_messages';
     $TableGateway = new TableGateway('directus_messages', $ZendDb, $acl);
 
@@ -1790,7 +1762,7 @@ $app->post("/$v/comments/?", function () use ($params, $requestPayload, $app, $a
         }
 
         $messagesTableGateway = new DirectusMessagesTableGateway($ZendDb, $acl);
-        $id = $messagesTableGateway->sendMessage($requestPayload, array_unique($userRecipients), $currentUser['id']);
+        $id = $messagesTableGateway->sendMessage($requestPayload, array_unique($userRecipients), $currentUserId);
         $requestPayload['id'] = $params['id'] = $id;
 
         preg_match_all('/@\[.*?\]/', $requestPayload['message'], $results);
@@ -1818,16 +1790,16 @@ $app->post("/$v/comments/?", function () use ($params, $requestPayload, $app, $a
         }
 
         foreach ($userRecipients as $recipient) {
+            // Do not the send a notification to the sender
+            if ($recipient == $currentUserId) {
+                continue;
+            }
+
             $usersTableGateway = new DirectusUsersTableGateway($ZendDb, $acl);
             $user = $usersTableGateway->findOneBy('id', $recipient);
 
             if (isset($user) && $user['email_messages'] == 1) {
-                $data = ['message' => $requestPayload['message']];
-                $view = 'mail/notification.twig.html';
-                Mail::send($view, $data, function ($message) use ($user, $requestPayload) {
-                    $message->setSubject($requestPayload['subject']);
-                    $message->setTo($user['email']);
-                });
+                send_message_notification_email($user, $requestPayload);
             }
         }
     }
