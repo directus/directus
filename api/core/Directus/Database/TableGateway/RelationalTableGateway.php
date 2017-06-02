@@ -902,6 +902,8 @@ class RelationalTableGateway extends BaseTableGateway
     protected function processFilters(Builder $query, array $filters = [])
     {
         foreach($filters as $column => $condition) {
+			$logical = null;
+			if (is_array($condition) && isset($condition['logical'])) {
             // TODO: Add a simplified option for logical
             // adding an "or_" prefix
             // filters[column][eq]=Value1&filters[column][or_eq]=Value2
@@ -933,8 +935,9 @@ class RelationalTableGateway extends BaseTableGateway
             }
 
             $arguments = [$column, $value];
-            if (isset($logical)) {
-                $arguments[] = null;
+
+			if (isset($logical)) {
+				$arguments[] = null;
                 $arguments[] = $logical;
             }
             $relationship = TableSchema::getColumnRelationship($this->getTable(), $column);
@@ -981,14 +984,39 @@ class RelationalTableGateway extends BaseTableGateway
         // @TODO allow passing columns
         $columns = []; // leave as this and won't get any ambiguous columns
         foreach ($joins as $table => $params) {
-            if (!isset($params['type'])) {
-                $params['type'] = 'INNER';
+            if (isset($params['on'])) {
+                // simple joins style
+                // 'table' => ['on' => ['col1', 'col2'] ]
+                if (!isset($params['type'])) {
+                    $params['type'] = 'INNER';
+                }
+    
+                $params['on'] = implode('=', $params['on']);
+    
+                $query->join($table, $params['on'], $columns, $params['type']);
+            } else {
+                // many join style
+                // 'table' => [ ['on' => ['col1', 'col2'] ] ]
+                foreach ($params as $method => $options) {
+                    if (! isset($options['type'])) {
+                        $options['type'] = 'INNER';
+                    }
+                    $query->join($table, $options['on'], $columns, $options['type']);
+                }
             }
-
-            $params['on'] = implode('=', $params['on']);
-
-            $query->join($table, $params['on'], $columns, $params['type']);
         }
+    }
+
+
+    /**
+     * Process group-by
+     *
+     * @param Builder $query
+     * @param array $groupBy
+     */
+    protected function processGroups(Builder $query, array $columns = [])
+    {
+        $query->groupBy($columns);
     }
 
 
