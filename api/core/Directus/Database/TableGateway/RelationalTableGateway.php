@@ -604,6 +604,13 @@ class RelationalTableGateway extends BaseTableGateway
     public function applyDefaultEntriesSelectParams(array $params)
     {
         $defaultParams = $this->defaultEntriesSelectParams;
+        $rowsPerPage = $this->getSettings('global.rows_per_page');
+
+        // set rows limit from db settings
+        if ($rowsPerPage) {
+            $defaultParams['limit'] = $rowsPerPage;
+        }
+
         // Is not there a sort column?
         $tableColumns = array_flip(TableSchema::getTableColumns($this->table, null, true));
         if (!array_key_exists('sort', $tableColumns)) {

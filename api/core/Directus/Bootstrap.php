@@ -236,6 +236,19 @@ class Bootstrap
         return $config;
     }
 
+    private static function settings()
+    {
+        $DirectusSettingsTableGateway = new \Zend\Db\TableGateway\TableGateway('directus_settings', Bootstrap::get('zendDb'));
+        $rowSet = $DirectusSettingsTableGateway->select();
+
+        $settings = [];
+        foreach ($rowSet as $setting) {
+            $settings[$setting['collection']][$setting['name']] = $setting['value'];
+        }
+
+        return $settings;
+    }
+
     private static function status()
     {
         $config = self::get('config');

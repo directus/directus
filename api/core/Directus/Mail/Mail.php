@@ -43,15 +43,7 @@ class Mail
             throw new InvalidArgumentException(__t('mail_configuration_no_defined'));
         }
 
-        $DirectusSettingsTableGateway = new \Zend\Db\TableGateway\TableGateway('directus_settings', Bootstrap::get('zendDb'));
-        $rowSet = $DirectusSettingsTableGateway->select();
-
-        $settings = [];
-        foreach ($rowSet as $setting) {
-            $settings[$setting['collection']][$setting['name']] = $setting['value'];
-        }
-
-        $instance = new static($mailer, $settings);
+        $instance = new static($mailer, Bootstrap::get('settings'));
 
         $message = Swift_Message::newInstance();
 

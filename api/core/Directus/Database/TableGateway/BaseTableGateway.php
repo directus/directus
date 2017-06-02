@@ -2,6 +2,7 @@
 
 namespace Directus\Database\TableGateway;
 
+use Directus\Bootstrap;
 use Directus\Database\Exception\DuplicateEntryException;
 use Directus\Database\Exception\SuppliedArrayAsColumnValue;
 use Directus\Database\Object\Table;
@@ -1202,5 +1203,19 @@ class BaseTableGateway extends TableGateway
         }
 
         return $data;
+    }
+
+    /**
+     * Gets Directus settings (from DB)
+     *
+     * @param null $key
+     *
+     * @return mixed
+     */
+    public function getSettings($key = null)
+    {
+        $settings = Bootstrap::get('settings');
+
+        return $key !== null ? ArrayUtils::get($settings, $key) : $settings;
     }
 }
