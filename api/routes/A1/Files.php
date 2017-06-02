@@ -84,7 +84,9 @@ class Files extends Route
         $Files = $app->container->get('files');
         $link = $app->request()->post('link');
         $result = [
-            'message' => __t('invalid_unsupported_url'),
+            'error' => [
+                'message' => __t('invalid_unsupported_url')
+            ],
             'success' => false
         ];
 
