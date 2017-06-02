@@ -902,8 +902,7 @@ class RelationalTableGateway extends BaseTableGateway
     protected function processFilters(Builder $query, array $filters = [])
     {
         foreach($filters as $column => $condition) {
-			$logical = null;
-			if (is_array($condition) && isset($condition['logical'])) {
+            $logical = null;
             // TODO: Add a simplified option for logical
             // adding an "or_" prefix
             // filters[column][eq]=Value1&filters[column][or_eq]=Value2
@@ -936,10 +935,11 @@ class RelationalTableGateway extends BaseTableGateway
 
             $arguments = [$column, $value];
 
-			if (isset($logical)) {
-				$arguments[] = null;
+            if (isset($logical)) {
+                $arguments[] = null;
                 $arguments[] = $logical;
             }
+
             $relationship = TableSchema::getColumnRelationship($this->getTable(), $column);
             if (in_array($operator, ['all', 'has']) && in_array($relationship->getType(), ['ONETOMANY', 'MANYTOMANY'])) {
                 if ($operator == 'all' && is_string($value)) {
@@ -990,9 +990,9 @@ class RelationalTableGateway extends BaseTableGateway
                 if (!isset($params['type'])) {
                     $params['type'] = 'INNER';
                 }
-    
+
                 $params['on'] = implode('=', $params['on']);
-    
+
                 $query->join($table, $params['on'], $columns, $params['type']);
             } else {
                 // many join style
@@ -1006,19 +1006,6 @@ class RelationalTableGateway extends BaseTableGateway
             }
         }
     }
-
-
-    /**
-     * Process group-by
-     *
-     * @param Builder $query
-     * @param array $groupBy
-     */
-    protected function processGroups(Builder $query, array $columns = [])
-    {
-        $query->groupBy($columns);
-    }
-
 
     /**
      * Process group-by
