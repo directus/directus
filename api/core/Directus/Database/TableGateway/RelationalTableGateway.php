@@ -984,6 +984,8 @@ class RelationalTableGateway extends BaseTableGateway
         // @TODO allow passing columns
         $columns = []; // leave as this and won't get any ambiguous columns
         foreach ($joins as $table => $params) {
+            // TODO: Reduce this into a simpler instructions
+            // by simpler it means remove the duplicate join() line
             if (isset($params['on'])) {
                 // simple joins style
                 // 'table' => ['on' => ['col1', 'col2'] ]
