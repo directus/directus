@@ -69,6 +69,11 @@ class AclTest extends PHPUnit_Framework_TestCase
                 'allow_edit' => 2,
                 'allow_delete' => 2,
                 'allow_alter' => null
+            ],
+            'directus_preferences' => [
+                'allow_add' => 1,
+                'allow_view' => 1,
+                'allow_edit' => 1
             ]
         ];
 
@@ -88,7 +93,9 @@ class AclTest extends PHPUnit_Framework_TestCase
         $this->assertArrayNotHasKey('directus_users', $privileges);
 
         $acl->setGroupPrivileges([]);
-        $this->assertTrue(empty($acl->getGroupPrivileges()));
+        $this->assertTrue(!empty($acl->getGroupPrivileges()));
+        $this->assertTrue(!empty($acl->getGroupPrivileges()));
+        $this->assertCount(1, $acl->getGroupPrivileges());
 
         $acl->setGroupPrivileges($this->privileges);
         $privileges = $acl->getGroupPrivileges();
