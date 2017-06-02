@@ -973,13 +973,26 @@ class RelationalTableGateway extends BaseTableGateway
         // @TODO allow passing columns
         $columns = []; // leave as this and won't get any ambiguous columns
         foreach ($joins as $table => $params) {
-            if (!isset($params['type'])) {
-                $params['type'] = 'INNER';
+            if (isset($params['on'])) {
+                // simple joins style
+                // 'table' => ['on' => ['col1', 'col2'] ]
+                if (!isset($params['type'])) {
+                    $params['type'] = 'INNER';
+                }
+    
+                $params['on'] = implode('=', $params['on']);
+    
+                $query->join($table, $params['on'], $columns, $params['type']);
+            } else {
+                // many join style
+                // 'table' => [ ['on' => ['col1', 'col2'] ] ]
+                foreach ($params as $method => $options) {
+                    if (! isset($options['type'])) {
+                        $options['type'] = 'INNER';
+                    }
+                    $query->join($table, $options['on'], $columns, $options['type']);
+                }
             }
-
-            $params['on'] = implode('=', $params['on']);
-
-            $query->join($table, $params['on'], $columns, $params['type']);
         }
     }
 
