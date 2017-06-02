@@ -1234,7 +1234,7 @@ class RelationalTableGateway extends BaseTableGateway
                 return ArrayUtils::get($row, $primaryKey, null);
             };
 
-            $ids = array_filter(array_map($callback, $entries));
+            $ids = array_unique(array_filter(array_map($callback, $entries)));
             if (empty($ids)) {
                 continue;
             }
@@ -1309,7 +1309,7 @@ class RelationalTableGateway extends BaseTableGateway
                 return ArrayUtils::get($row, $primaryKey, null);
             };
 
-            $ids = array_filter(array_map($callback, $entries));
+            $ids = array_unique(array_filter(array_map($callback, $entries)));
             if (empty($ids)) {
                 continue;
             }
