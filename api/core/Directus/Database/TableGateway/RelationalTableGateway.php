@@ -1468,21 +1468,23 @@ class RelationalTableGateway extends BaseTableGateway
                 throw new Exception\RelationshipMetadataException($message);
             }
 
+            $tableGateway = new RelationalTableGateway($relatedTable, $this->adapter, $this->acl);
+            $primaryKeyName = $tableGateway->primaryKeyFieldName;
+
             // Aggregate all foreign keys for this relationship (for each row, yield the specified foreign id)
             $relationalColumnName = $column->getName();
-            $yield = function ($row) use ($relationalColumnName, $entries) {
+            $yield = function ($row) use ($relationalColumnName, $entries, $primaryKeyName) {
                 if (array_key_exists($relationalColumnName, $row)) {
                     $value = $row[$relationalColumnName];
                     if (is_array($value)) {
-                        // @TODO: Dynamic primary key
-                        $value = isset($value['id']) ? $value['id'] : 0;
+                        $value = isset($value[$primaryKeyName]) ? $value[$primaryKeyName] : 0;
                     }
 
                     return $value;
                 }
             };
 
-            $ids = array_filter(array_map($yield, $entries));
+            $ids = array_unique(array_filter(array_map($yield, $entries)));
             if (empty($ids)) {
                 continue;
             }
@@ -1492,20 +1494,19 @@ class RelationalTableGateway extends BaseTableGateway
             }
 
             // Fetch the foreign data
-            $tableGateway = new RelationalTableGateway($relatedTable, $this->adapter, $this->acl);
             $columnNames = TableSchema::getAllNonAliasTableColumnNames($relatedTable);
 
             $results = $tableGateway->loadEntries([
                 'columns' => $columnNames,
                 'filters' => [
-                    'id' => ['in' => $ids]
+                    $primaryKeyName=> ['in' => $ids]
                 ],
                 'depth' => (int) $depth
             ]);
 
             $relatedEntries = [];
             foreach ($results as $row) {
-                $relatedEntries[$row['id']] = $tableGateway->loadMetadata($row);
+                $relatedEntries[$row[$primaryKeyName]] = $tableGateway->loadMetadata($row);
             }
 
             // Replace foreign keys with foreign rows

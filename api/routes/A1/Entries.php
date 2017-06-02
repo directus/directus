@@ -158,7 +158,11 @@ class Entries extends Route
             }
 
             $val = implode(' ', $tokens);
-            array_push($response, ['value' => $val, 'tokens' => $tokens, 'id' => $entry['id']]);
+            array_push($response, [
+                'value' => $val,
+                'tokens' => $tokens,
+                'id' => $entry[$Table->primaryKeyFieldName]
+            ]);
         }
 
         return $this->app->response($response);
