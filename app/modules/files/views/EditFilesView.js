@@ -132,8 +132,8 @@ function(app, _, Backbone, __t, Directus, Notification, BasePageView, RightPane,
 
     leftToolbar: function () {
       var canUploadFiles = app.users.getCurrentUser().canUploadFiles();
-      var canAdd = this.collection.canAdd();
-      var canEdit = this.collection.canEdit();
+      var canAdd = this.model.collection.canAdd();
+      var canEdit = this.model.collection.canEdit();
       var widgets = [];
       var isNew = this.model.isNew();
       var editView = this;

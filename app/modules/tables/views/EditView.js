@@ -248,7 +248,7 @@ function(app, Backbone, _, Handlebars, __t, Notification, Directus, BasePageView
     leftToolbar: function () {
       var widgets = [];
       var isNew = this.model.isNew();
-      var canAdd = this.collection.canAdd();
+      var canAdd = this.model.collection.canAdd();
       var editView = this;
 
       this.saveWidget = new Widgets.SaveWidget({
