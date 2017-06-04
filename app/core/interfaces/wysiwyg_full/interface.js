@@ -1,26 +1,38 @@
-define(['core/UIView', 'tinyMCE', 'Utils'], function (UIView, tinyMCE, Utils) {
+define([
+  'underscore',
+  'core/UIView',
+  'tinyMCE'
+], function (_, UIView, tinyMCE) {
+
+  'use strict';
+
   return UIView.extend({
     template: 'wysiwyg_full/input',
+
     serialize: function () {
       var value = this.options.value || '';
+
       return {
         value: value,
         name: this.options.name
       };
     },
+
     afterRender: function () {
+      var self = this;
+      var settings = this.options.settings;
+      var elementpath = Boolean(Number(settings.get('show_element_path')));
+      var styleFormats = []; // Format menu (styleselect) options
+      var headings = settings.get('headings').split(',');
+      var inline = settings.get('inline').split(',');
+      var blocks = settings.get('blocks').split(',');
+      var alignment = settings.get('alignment').split(',');
+      var toolbarOptions = settings.get('toolbar_options').split(',');
+      var toolbar;
+
       function capitalizeFirstLetter(string) {
         return string.charAt(0).toUpperCase() + string.slice(1);
       }
-
-      var settings = this.options.settings;
-
-      var elementpath = Boolean(Number(settings.get('show_element_path')));
-
-      // Format menu (styleselect) options
-      var styleFormats = [];
-
-      var headings = settings.get('headings').split(',');
 
       if (headings.length > 0) {
         styleFormats.push({
@@ -33,8 +45,6 @@ define(['core/UIView', 'tinyMCE', 'Utils'], function (UIView, tinyMCE, Utils) {
           })
         });
       }
-
-      var inline = settings.get('inline').split(',');
 
       if (inline.length > 0) {
         styleFormats.push({
@@ -49,8 +59,6 @@ define(['core/UIView', 'tinyMCE', 'Utils'], function (UIView, tinyMCE, Utils) {
         });
       }
 
-      var blocks = settings.get('blocks').split(',');
-
       if (blocks.length > 0) {
         styleFormats.push({
           title: 'Blocks',
@@ -62,8 +70,6 @@ define(['core/UIView', 'tinyMCE', 'Utils'], function (UIView, tinyMCE, Utils) {
           })
         });
       }
-
-      var alignment = settings.get('alignment').split(',');
 
       if (alignment.length > 0) {
         styleFormats.push({
@@ -78,9 +84,7 @@ define(['core/UIView', 'tinyMCE', 'Utils'], function (UIView, tinyMCE, Utils) {
         });
       }
 
-      var toolbar = (styleFormats.length > 0 ? 'styleselect | ' : '');
-
-      var toolbarOptions = settings.get('toolbar_options').split(',');
+      toolbar = (styleFormats.length > 0 ? 'styleselect | ' : '');
 
       if (toolbarOptions.length > 0) {
         toolbar += toolbarOptions.reduce(function (str, option) {
@@ -111,6 +115,7 @@ define(['core/UIView', 'tinyMCE', 'Utils'], function (UIView, tinyMCE, Utils) {
         style_formats: styleFormats,
         setup: function (editor) {
           var saveEditorContents = _.debounce(function () {
+            self.model.set(self.name, editor.getContent());
             editor.save();
           }, 500);
 
@@ -125,6 +130,7 @@ define(['core/UIView', 'tinyMCE', 'Utils'], function (UIView, tinyMCE, Utils) {
         }
       });
     },
+
     cleanup: function () {
       // Remove tinyMCE
       tinyMCE.remove();

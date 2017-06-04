@@ -1,4 +1,7 @@
 define(['core/UIView', 'core/interfaces/wysiwyg/vendor/medium-editor.min'], function (UIView, MediumEditor) {
+
+  'use strict';
+
   var buttonTypes = {
     bold: {
       name: 'bold',
@@ -69,14 +72,17 @@ define(['core/UIView', 'core/interfaces/wysiwyg/vendor/medium-editor.min'], func
 
   return UIView.extend({
     template: 'wysiwyg/input',
+
     serialize: function () {
       var value = this.options.value || '';
+
       return {
         value: value,
-        name: this.options.name,
+        name: this.name,
         simple_editor: (this.options.settings && this.options.settings.get('simple_editor') === true),
       };
     },
+
     getButtons: function () {
       var buttons = [];
 
@@ -88,15 +94,23 @@ define(['core/UIView', 'core/interfaces/wysiwyg/vendor/medium-editor.min'], func
 
       return buttons;
     },
+
     afterRender: function () {
-      this.editor = new MediumEditor('#wysiwyg-interface_' + this.options.name, {
+      var self = this;
+
+      this.editor = new MediumEditor('#wysiwyg-interface_' + this.name, {
         toolbar: {
           buttons: this.getButtons()
         },
         anchorPreview: false,
-        elementsContainer: document.getElementById('medium-editor-' + this.options.name)
+        elementsContainer: document.getElementById('medium-editor-' + this.name)
+      });
+
+      this.editor.subscribe('editableInput', function (event, editable) {
+        self.model.set(self.name, editable.innerHTML);
       });
     },
+
     cleanup: function () {
       if (this.editor) {
         this.editor.destroy();
