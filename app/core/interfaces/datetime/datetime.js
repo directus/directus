@@ -30,7 +30,7 @@ define(['app', 'underscore', 'core/interfaces/datetime/date', 'moment'], functio
 
   var ParentInput = UIDate.prototype.Input;
   var Input = ParentInput.extend({
-    getDate: function() {
+    getDate: function () {
       var date = Input.__super__.getDate.apply(this, arguments);
 
       date.value += ' ' + this.$('input[type=time]').val();
@@ -40,15 +40,15 @@ define(['app', 'underscore', 'core/interfaces/datetime/date', 'moment'], functio
 
       return date;
     },
-    getDateFormat: function() {
+    getDateFormat: function () {
       return dateFormat;
     },
-    getTimeFormat: function() {
+    getTimeFormat: function () {
       var includeSeconds = this.options.settings.get('include_seconds') === true;
 
       return includeSeconds ? timeFormat : timeFormat.replace(':ss', '');
     },
-    serialize: function() {
+    serialize: function () {
       var data = ParentInput.prototype.serialize.apply(this, arguments);
       var date = this.value;
       var format = dateFormat + ' ' + timeFormat;
@@ -76,7 +76,7 @@ define(['app', 'underscore', 'core/interfaces/datetime/date', 'moment'], functio
     dataTypes: ['DATETIME', 'TIMESTAMP'],
     variables: variables,
     Input: Input,
-    getFormat: function(options) {
+    getFormat: function (options) {
       return options.settings.get('format');
     }
   });

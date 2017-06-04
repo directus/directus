@@ -19,38 +19,40 @@ define(['app', 'core/UIComponent', 'core/UIView', 'moment', 'helpers/ui', 'core/
       'click .now':         'makeNow'
     },
 
-    supportsTime: function(type) {
+    supportsTime: function (type) {
       type = type || this.columnSchema.get('type');
 
       return UIHelper.supportsTime(type);
     },
 
-    makeNow: function() {
+    makeNow: function () {
       this.value = moment();
       this.render();
       this.$('input.date, input.time').trigger('change');
     },
 
-    getDate: function() {
+    getDate: function () {
       return {
         value: this.$('input[type=date]').val(),
         format: 'YYYY-MM-DD'
       }
     },
 
-    updateValue: function() {
+    updateValue: function () {
       var date = this.getDate();
-      var val = date.value;
+      var value = date.value;
       var format = date.format;
+      var newValue = '';
 
-      if (moment(val).isValid()) {
-        this.$('#'+this.name).val(moment(val).format(format));
-      } else {
-        this.$('#'+this.name).val('');
+      if (moment(value).isValid()) {
+        newValue = moment(value).format(format);
       }
+
+      this.$('#' + this.name).val(newValue);
+      this.model.set(this.name, newValue);
     },
 
-    serialize: function() {
+    serialize: function () {
       var settings = this.options.settings;
       if (settings.get('auto-populate_when_hidden_and_null') === true && !this.value.isValid()) {
         this.value = moment();
@@ -70,7 +72,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'moment', 'helpers/ui', 'core/
       };
     },
 
-    initialize: function() {
+    initialize: function () {
       var value = this.model.get(this.name);
       if(undefined === value) {
         this.value = moment('0000-00-00');
@@ -90,7 +92,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'moment', 'helpers/ui', 'core/
       {id: 'auto-populate_when_hidden_and_null', type: 'Boolean', ui: 'checkbox', default_value: true}
     ],
     Input: Input,
-    validate: function(value, options) {
+    validate: function (value, options) {
       if (options.schema.isRequired() && _.isEmpty(value)) {
         return __t('this_field_is_required');
       }
@@ -102,7 +104,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'moment', 'helpers/ui', 'core/
 
       return 'Not a valid date';
     },
-    list: function(options) {
+    list: function (options) {
       var value = options.value;
       var format = this.getFormat(options);
 
@@ -118,12 +120,12 @@ define(['app', 'core/UIComponent', 'core/UIView', 'moment', 'helpers/ui', 'core/
 
       return value;
     },
-    getFormat: function(options) {
+    getFormat: function (options) {
       var format = options.settings.get('format');
 
       return removeTimeFromFormat(format);
     },
-    sort: function(options) {
+    sort: function (options) {
       return options.value;
     }
   });

@@ -53,17 +53,20 @@ define(['app', 'moment', 'core/UIComponent', 'core/UIView', 'core/t'], function(
       'click .now': 'makeNow'
     },
 
-    makeNow: function(e) {
+    makeNow: function (event) {
       var timeFormat = 'HH:mm';
-      if (this.options.settings.get('include_seconds') == 1) {
+
+      if (this.options.settings.get('include_seconds') === true) {
         timeFormat += ':ss';
       }
 
       this.value = moment().format(timeFormat);
+      this.updateValue();
+
       this.render();
     },
 
-    getTime: function() {
+    getTime: function () {
 
       var format = 'HH:mm';
 
@@ -77,19 +80,20 @@ define(['app', 'moment', 'core/UIComponent', 'core/UIView', 'core/t'], function(
       }
     },
 
-    updateValue: function() {
+    updateValue: function () {
       var time = this.getTime();
-      var val = time.value;
+      var value = time.value;
       var format = time.format;
 
-      if (moment(val, format).isValid()) {
-        this.$('#'+this.name).val(val);
-      } else {
-        this.$('#'+this.name).val('');
+      if (!moment(value, format).isValid()) {
+        value = '';
       }
+
+      this.$('#'+this.name).val(value);
+      this.model.set(this.name, value);
     },
 
-    serialize: function() {
+    serialize: function () {
       var date = getTimeData(this.value, this.options);
       var settings = this.options.settings;
       var timeValue;
@@ -115,7 +119,7 @@ define(['app', 'moment', 'core/UIComponent', 'core/UIView', 'core/t'], function(
       };
     },
 
-    initialize: function() {
+    initialize: function () {
       this.value = this.options.value;
     }
   });
@@ -129,13 +133,14 @@ define(['app', 'moment', 'core/UIComponent', 'core/UIView', 'core/t'], function(
       {id: 'include_seconds', type: 'Boolean', default_value: false, ui: 'checkbox'}
     ],
     Input: Input,
-    validate: function(value, options) {
+    validate: function (value, options) {
       if (options.schema.isRequired() && _.isEmpty(value)) {
         return __t('this_field_is_required');
       }
     },
-    list: function(options) {
+    list: function (options) {
       var data = getTimeData(options);
+
       if (!data) {
         return '-';
       }
