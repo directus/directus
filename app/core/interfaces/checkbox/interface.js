@@ -14,19 +14,20 @@ define(['underscore', 'utils', 'core/UIView', 'core/t'], function(_, Utils, UIVi
     template: 'checkbox/input',
 
     events: {
-      'change input[type=checkbox]': function(e) {
-        var val = (this.$el.find('input[type=checkbox]:checked').val() === undefined) ? 0 : 1;
-        this.$el.find('input[type=hidden]').val(val);
+      'change input[type=checkbox]': function (event) {
+        var value = (this.$el.find('input[type=checkbox]:checked').val() === undefined) ? 0 : 1;
+        this.$('input[type=hidden]').val(value);
+        this.model.set(this.name, value);
       }
     },
 
-    isRequired: function() {
+    isRequired: function () {
       var settings = this.options.settings;
 
       return settings.get('mandatory') === true;
     },
 
-    serialize: function() {
+    serialize: function () {
       var value = this.options.value;
 
       // Get default value if there is one...

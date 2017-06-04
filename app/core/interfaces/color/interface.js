@@ -26,7 +26,8 @@ define(['core/UIView', 'core/t', 'core/interfaces/color/lib/color'], function(UI
   }
 
   function setInputValue(view, color, output) {
-    view.$el.find('.value').val(color[output]);
+    view.$('.value').val(color[output]);
+    view.model.set(view.name, color[output]);
   }
 
   function showInvalidMessage(view) {
@@ -38,18 +39,21 @@ define(['core/UIView', 'core/t', 'core/interfaces/color/lib/color'], function(UI
     view.$el.find('.color-invalid')[0].innerHTML = '';
   }
 
-  var Input = UIView.extend({
+  return UIView.extend({
     template: 'color/input',
 
     events: {
       // Disable enter button (would select first button after input == palette option)
-      'keypress input': function(event) {
-        if((event.which && event.which == 13) || (event.keyCode && event.keyCode == 13)) return false;
+      'keypress input': function (event) {
+        if ((event.which && event.which == 13) || (event.keyCode && event.keyCode == 13)) {
+          return false;
+        }
       },
 
-      'click .color-preview': function(event) {
+      'click .color-preview': function (event) {
         // Remove value from input
-        this.$el.find('input').val('');
+        this.$('input').val('');
+        this.model.set(this.name, '');
 
         // Reset color preview to black
         setPreviewColor(this, Color([0,0,0], 'rgb'));
@@ -65,7 +69,7 @@ define(['core/UIView', 'core/t', 'core/interfaces/color/lib/color'], function(UI
         var color;
         var alphaValid = true;
 
-        switch(input) {
+        switch (input) {
           case 'hex':
             color = Color(event.target.value, input);
             if (!allowAlpha && color.length === 4) alphaValid = false;
@@ -78,9 +82,16 @@ define(['core/UIView', 'core/t', 'core/interfaces/color/lib/color'], function(UI
               +this.$el.find('input.green').val(),
               +this.$el.find('input.blue').val()
             ];
-            if (this.$el.find('input.alpha').val()) values.push(+this.$el.find('input.alpha').val());
+
+            if (this.$el.find('input.alpha').val()) {
+              values.push(+this.$el.find('input.alpha').val());
+            }
+
             color = Color(values, input);
-            if (!allowAlpha && color.length === 4) alphaValid = false;
+            if (!allowAlpha && color.length === 4) {
+              alphaValid = false;
+            }
+
             break;
 
           case 'hsl':
@@ -89,9 +100,15 @@ define(['core/UIView', 'core/t', 'core/interfaces/color/lib/color'], function(UI
               +this.$el.find('input.saturation').val(),
               +this.$el.find('input.lightness').val()
             ];
-            if (this.$el.find('input.alpha').val()) values.push(+this.$el.find('input.alpha').val());
+            if (this.$el.find('input.alpha').val()) {
+              values.push(+this.$el.find('input.alpha').val());
+            }
+
             color = Color(values, input);
-            if (!allowAlpha && color.length === 4) alphaValid = false;
+            if (!allowAlpha && color.length === 4) {
+              alphaValid = false;
+            }
+
             break;
         }
 
@@ -115,25 +132,36 @@ define(['core/UIView', 'core/t', 'core/interfaces/color/lib/color'], function(UI
           var buttonValue = button.getAttribute('data-color');
           var color = Color(buttonValue, 'hex');
 
-          switch(input) {
+          switch (input) {
             case 'hex':
               this.$el.find('input').val(buttonValue);
+
               break;
             case 'rgb':
               var rgba = color.rgb;
-              if (rgba.length !== 4) rgba[3] = 1;
+
+              if (rgba.length !== 4) {
+                rgba[3] = 1;
+              }
+
               this.$el.find('input.red').val(rgba[0]);
               this.$el.find('input.green').val(rgba[1]);
               this.$el.find('input.blue').val(rgba[2]);
               this.$el.find('input.alpha').val(rgba[3]);
+
               break;
             case 'hsl':
               var hsla = color.hsl;
-              if (hsla.length !== 4) hsla[3] = 1;
-              this.$el.find('input.hue').val(hsla[0]);
-              this.$el.find('input.saturation').val(hsla[1]);
-              this.$el.find('input.lightness').val(hsla[2]);
-              this.$el.find('input.alpha').val(hsla[3]);
+
+              if (hsla.length !== 4) {
+                hsla[3] = 1;
+              }
+
+              this.$('input.hue').val(hsla[0]);
+              this.$('input.saturation').val(hsla[1]);
+              this.$('input.lightness').val(hsla[2]);
+              this.$('input.alpha').val(hsla[3]);
+
               break;
           }
 
@@ -179,6 +207,4 @@ define(['core/UIView', 'core/t', 'core/interfaces/color/lib/color'], function(UI
       };
     }
   });
-
-  return Input;
 });

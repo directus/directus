@@ -5,11 +5,16 @@ define(['core/UIView'], function (UIView) {
     template: 'slider/input',
 
     events: {
-      'input input[type=range]': function (e) {
-        var value = e.target.value;
-        this.$el.find('span.slider-value').html(value + ' ' + this.options.settings.get('unit'));
-      }
+      'input input[type=range]': 'onInputChange'
     },
+
+    onInputChange: function (event) {
+      var value = event.target.value;
+
+      this.$('span.slider-value').html(value + ' ' + this.options.settings.get('unit'));
+      this.model.set(this.name, value);
+    },
+
     serialize: function () {
       if (this.options.model.isNew() && this.options.schema.has('default_value')) {
         this.options.value = this.options.schema.get('default_value');

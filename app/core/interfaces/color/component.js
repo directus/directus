@@ -1,5 +1,14 @@
-define(['core/interfaces/color/interface', 'core/UIComponent', 'core/t', 'core/interfaces/color/lib/color'], function(Input, UIComponent, __t, Color) {
-  var Component = UIComponent.extend({
+define([
+  'underscore',
+  'core/interfaces/color/interface',
+  'core/UIComponent',
+  'core/t',
+  'core/interfaces/color/lib/color'
+], function (_, Input, UIComponent, __t, Color) {
+
+  'use strict';
+
+  return UIComponent.extend({
     id: 'color',
     dataTypes: ['VARCHAR'],
     variables: [
@@ -62,21 +71,25 @@ define(['core/interfaces/color/interface', 'core/UIComponent', 'core/t', 'core/i
       {id: 'readonly', type: 'Boolean', default_value: false, ui: 'checkbox'}
     ],
     Input: Input,
-    validate: function(value, options) {
+    validate: function (value, options) {
       if (options.schema.isRequired() && _.isEmpty(value)) {
         return __t('this_field_is_required');
       }
     },
-    list: function(options) {
+    list: function (options) {
       var value;
 
-      switch(options.settings.get('output')) {
+      switch (options.settings.get('output')) {
         case 'hex':
           value = options.value || false;
           break;
         case 'rgb':
         case 'hsl':
-          value = options.value ? options.value.split(',').map(function(color) { return +color; }) : false;
+          value = options.value
+            ? options.value.split(',').map(function (color) {
+              return +color;
+            })
+            : false;
       }
 
       if (value) {
@@ -89,6 +102,4 @@ define(['core/interfaces/color/interface', 'core/UIComponent', 'core/t', 'core/i
       }
     }
   });
-
-  return Component;
 });
