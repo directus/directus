@@ -132,7 +132,10 @@ function(app, _, Backbone, __t, Directus, Notification, BasePageView, RightPane,
 
     leftToolbar: function () {
       var canUploadFiles = app.users.getCurrentUser().canUploadFiles();
+      var canAdd = this.collection.canAdd();
+      var canEdit = this.collection.canEdit();
       var widgets = [];
+      var isNew = this.model.isNew();
       var editView = this;
 
       this.saveWidget = new Widgets.SaveWidget({
@@ -140,14 +143,14 @@ function(app, _, Backbone, __t, Directus, Notification, BasePageView, RightPane,
           basicSave: this.headerOptions.basicSave,
           singlePage: this.single
         },
-        enabled: false,
+        enabled: isNew && canAdd && canUploadFiles,
         onClick: _.bind(editView.saveConfirm, editView)
       });
 
       widgets.push(this.saveWidget);
 
-      if (canUploadFiles) {
-        this.model.on('unsavedChanges', function(hasChanges, unsavedAttrs, model) {
+      if (canUploadFiles && canEdit && !isNew) {
+        this.model.on('unsavedChanges', function (hasChanges, unsavedAttrs, model) {
           editView.saveWidget.setEnabled(hasChanges);
         });
       }

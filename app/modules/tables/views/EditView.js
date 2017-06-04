@@ -247,6 +247,8 @@ function(app, Backbone, _, Handlebars, __t, Notification, Directus, BasePageView
 
     leftToolbar: function () {
       var widgets = [];
+      var isNew = this.model.isNew();
+      var canAdd = this.collection.canAdd();
       var editView = this;
 
       this.saveWidget = new Widgets.SaveWidget({
@@ -254,13 +256,15 @@ function(app, Backbone, _, Handlebars, __t, Notification, Directus, BasePageView
           basicSave: this.headerOptions.basicSave,
           singlePage: this.single
         },
+        enabled: isNew && canAdd,
         onClick: _.bind(editView.saveConfirm, editView)
       });
 
-      this.saveWidget.disable();
-      this.model.on('unsavedChanges', function(hasChanges, unsavedAttrs, model) {
-        editView.saveWidget.setEnabled(hasChanges);
-      });
+      if (canAdd && !isNew) {
+        this.model.on('unsavedChanges', function (hasChanges, unsavedAttrs, model) {
+          editView.saveWidget.setEnabled(hasChanges);
+        });
+      }
 
       widgets.push(this.saveWidget);
 

@@ -107,6 +107,8 @@ define(['underscore', 'core/UIView', 'core/t', 'core/notification'], function (_
         Notification.warning(__t('password_do_not_match'));
         return false;
       }
+
+      this.model.set(this.name, primaryPass);
     },
 
     initialize: function () {

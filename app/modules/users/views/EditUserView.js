@@ -88,8 +88,9 @@ define([
 
     leftToolbar: function() {
       var collection = this.model.collection;
-      var canAdd = this.model.isNew() && collection.canAdd();
-      var canEdit = !this.model.isNew() && collection.canEdit();
+      var isNew = this.model.isNew();
+      var canAdd = isNew && collection.canAdd();
+      var canEdit = !isNew && collection.canEdit();
       var editView = this;
 
       if (!canAdd && !canEdit) {
@@ -100,12 +101,12 @@ define([
         widgetOptions: {
           basicSave: this.headerOptions.basicSave
         },
-        enabled: false,
+        enabled: isNew && this.model.canEdit(),
         onClick: _.bind(this.saveConfirm, this)
       });
 
-      if (this.model.canEdit()) {
-        this.model.on('unsavedChanges', function(hasChanges, unsavedAttrs, model) {
+      if (this.model.canEdit() && !isNew) {
+        this.model.on('unsavedChanges', function (hasChanges, unsavedAttrs, model) {
           editView.saveWidget.setEnabled(hasChanges);
         });
       }

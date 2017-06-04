@@ -35,6 +35,10 @@ define(function(require, exports, module) {
       return this.parseRelational(options.collection ? result : result.data);
     },
 
+    setId: function (id) {
+      this.set(this.idAttribute, id);
+    },
+
     // The flatten option flattens many-one relationships so the id is returned
     // instead of the object
     get: function (attr, options) {
@@ -209,6 +213,8 @@ define(function(require, exports, module) {
               attributes[id] = new ModelRelated(data.data, {collection: collectionRelated});
             }
 
+            attributes[id].parentAttribute = id;
+
             break;
         }
 
@@ -292,12 +298,12 @@ define(function(require, exports, module) {
 
     // returns true or false
     isMine: function () {
-      var myId = parseInt(app.users.getCurrentUser().id,10),
+      var myId = app.users.getCurrentUser().id,
           magicOwnerColumn = (this.collection !== null) ? this.collection.table.get('user_create_column') : null,
           magicOwnerId = this.get(magicOwnerColumn);
 
-      //If magecownerid is model, grab the id instead
-      if(magicOwnerId instanceof Backbone.Model) {
+      // If magecownerid is model, grab the id instead
+      if (magicOwnerId instanceof Backbone.Model) {
         magicOwnerId = magicOwnerId.get('id');
       }
 
@@ -483,6 +489,36 @@ define(function(require, exports, module) {
     _startTracking: Backbone.Model.prototype.startTracking,
     _stopTracking: Backbone.Model.prototype.stopTracking,
 
+    _triggerUnsavedChanges: function () {
+      Backbone.Model.prototype._triggerUnsavedChanges.apply(this, arguments);
+
+      var parent = this.parent;
+      var parentOriginalValue;
+
+      if (parent) {
+        parentOriginalValue = parent._originalAttrs[this.parentAttribute];
+        if (_.isEmpty(this._unsavedChanges) || _.isEqual(parentOriginalValue, this._unsavedChanges)) {
+          delete parent._unsavedChanges[this.parentAttribute];
+        } else {
+          parent._unsavedChanges[this.parentAttribute] = this._unsavedChanges;
+        }
+
+        parent._triggerUnsavedChanges();
+      }
+    },
+
+    _resetTracking: function () {
+      Backbone.Model.prototype._resetTracking.apply(this, arguments);
+
+      _.map(this._originalAttrs, function (value) {
+        if (value instanceof Backbone.Model) {
+          value = value.toJSON();
+        }
+
+        return value;
+      }, this);
+    },
+
     _onTrackingSync: function () {
       this.restartTracking();
     },
@@ -493,14 +529,28 @@ define(function(require, exports, module) {
 
     startTracking: function () {
       this._startTracking();
+
+      _.each(this.attributes, function (value) {
+        if (value instanceof EntriesModel) {
+          value.startTracking();
+        }
+      });
+
       this.enablePrompt();
       this.on('sync', this._onTrackingSync, this);
     },
 
     stopTracking: function () {
-      this._stopTracking();
-      this.resetAttributes();
       this.disablePrompt();
+      this._stopTracking();
+
+      _.each(this.attributes, function (value) {
+        if (value instanceof EntriesModel) {
+          value.stopTracking();
+        }
+      });
+
+      this.resetAttributes();
       this.off('sync', this._onTrackingSync, this);
     },
 
@@ -518,11 +568,12 @@ define(function(require, exports, module) {
     },
 
     // we need to do this because initialize is called AFTER parse.
-    constructor: function EntriesModel (data, options) {
+    constructor: function EntriesModel(data, options) {
       // inherit structure and table from collection if it exists
       //@todo: it needs a fallback or throw an exception
       // when options (collection) is not defined.
       options || (options = {});
+
       this.structure = options.collection ? options.collection.structure : options.structure;
       this.table = options.collection ? options.collection.table : options.table;
       this.privileges = options.collection ? options.collection.privileges : options.privileges;

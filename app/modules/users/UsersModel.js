@@ -108,6 +108,14 @@ function(app, Backbone, EntriesModel, moment) {
           last_page: lastPage
         }
       });
+    },
+
+    isMe: function () {
+      return this.isMine();
+    },
+
+    constructor: function UsersModel() {
+      EntriesModel.prototype.constructor.apply(this, arguments);
     }
   });
 });

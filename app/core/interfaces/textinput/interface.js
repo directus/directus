@@ -44,7 +44,7 @@ define([
     onChangeInput: function (event) {
       var $input = $(event.currentTarget);
 
-      this.model.set(this.options.name, $input.val());
+      this.model.set(this.name, $input.val());
 
       this.updateMaxLength($input.val().length);
     },

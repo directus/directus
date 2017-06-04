@@ -93,13 +93,13 @@ define(['app', 'handlebars', 'core/UIView', 'utils'], function (app, Handlebars,
         var selectedId = parseInt(datum.id, 10);
 
         model.clear();
-        model.set({id: selectedId});
+        model.setId(selectedId);
         model.fetch({success: function () {
           self.updateSelectedValue();
           self.render();
           // Clear after fetch
           model.clear();
-          model.set({id: selectedId});
+          model.setId(selectedId);
         }});
       });
     },

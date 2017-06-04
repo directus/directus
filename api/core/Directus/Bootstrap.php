@@ -791,27 +791,38 @@ class Bootstrap
         });
 
         $emitter->addFilter('table.directus_users.select', function (Payload $payload) {
+            $acl = Bootstrap::get('acl');
             $auth = Bootstrap::get('auth');
             $rows = $payload->getData();
 
-            $userId = $auth->loggedIn() ? $auth->getUserInfo('id') : null;
-            foreach ($rows as &$row) {
-                // Authenticated user can see their private info
-                if ($userId && $userId === $row['id']) {
-                    continue;
-                }
+            $userId = null;
+            $groupId = null;
+            if ($auth->loggedIn()) {
+                $userId = $acl->getUserId();
+                $groupId = $acl->getGroupId();
+            }
 
-                $row = ArrayUtils::omit($row, [
+            foreach ($rows as &$row) {
+                $omit = [
                     'password',
                     'salt',
-                    'token',
-                    'access_token',
-                    'reset_token',
-                    'reset_expiration',
-                    'email_messages',
-                    'last_access',
-                    'last_page'
-                ]);
+                ];
+
+                // Authenticated user can see their private info
+                // Admin can see all users private info
+                if ($groupId !== 1 && $userId !== $row['id']) {
+                    $omit = array_merge($omit, [
+                        'token',
+                        'access_token',
+                        'reset_token',
+                        'reset_expiration',
+                        'email_messages',
+                        'last_access',
+                        'last_page'
+                    ]);
+                }
+
+                $row = ArrayUtils::omit($row, $omit);
             }
 
             $payload->replace($rows);

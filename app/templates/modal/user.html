@@ -10,7 +10,7 @@
 		{{/if}}
 		<div class="row">
 			<div class="label">Group</div>
-			{{group.name}}
+			{{#if group.name}}{{group.name}}{{else}}{{t "unknown"}}{{/if}}
 			<i class="material-icons">group</i>
 		</div>
 		<div class="row">

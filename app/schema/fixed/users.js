@@ -248,7 +248,7 @@ define(function(require, exports, module) {
             "required": true,
             "options": {
               "allow_null": false,
-              "options": parseSelectOptions(locales, function(key, list, locale, result) {
+              "options": parseSelectOptions(locales, function (key, list, locale, result) {
                 result[locale.code] = locale.name;
               })
             }
@@ -450,8 +450,8 @@ define(function(require, exports, module) {
             "required":true,
             "ui":"random",
             "options": {
-              "auto_generate": 1,
-              "allow_any_value": 1
+              "auto_generate": false,
+              "allow_any_value": true
             }
           },
           {

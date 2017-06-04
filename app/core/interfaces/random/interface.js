@@ -12,19 +12,31 @@ define([
     template: 'random/interface',
 
     events: {
-      'click .string-generate': function(e) {
+      'input input': 'onInputChange',
+      'click .string-generate': function (event) {
         var length = this.options.settings.get('string_length');
 
         this.generateString(length);
       }
     },
 
-    generateString: function(length) {
+    onInputChange: function (event) {
+      var $target = $(event.currentTarget);
+
+      this.model.set(this.name, $target.val());
+    },
+
+    generateString: function (length) {
       length = (length || this.options.settings.get('string_length') || 32);
-      var randomSuccess = _.bind(function(resp, textStatus, jqXHR) {
+
+      var randomSuccess = _.bind(function (resp, textStatus, jqXHR) {
+        var randomString;
+
         if(!_.isEmpty(resp) && !_.isEmpty(resp.data.random)) {
-          this.$el.find('input.password-primary').val(resp.data.random);
-          this.$el.find('.generated').removeClass('hide');
+          randomString = resp.data.random;
+          this.$('input.password-primary').val(randomString);
+          this.$('.generated').removeClass('hide');
+          this.model.set(this.name, randomString);
         } else {
           Notification.error('Random', __t('error_generating_a_random_string'));
         }
@@ -32,28 +44,28 @@ define([
 
       // TODO: Generate random string locally
       $.ajax({
-        type: "POST",
+        type: 'POST',
         url: app.API_URL + 'random/',
         data: {length: length},
         success: randomSuccess,
         dataType: 'json',
-        error: function(data, textStatus, jqXHR) {
+        error: function (data, textStatus, jqXHR) {
           Notification.error('Random', __t('error_generating_a_random_string'));
         }
       });
     },
 
-    initialize: function() {
+    initialize: function () {
       if (!this.options.value && this.options.settings.get('auto_generate') === true) {
         this.generateString();
       }
     },
 
-    serialize: function() {
+    serialize: function () {
       return {
         name: this.options.name,
         value: this.options.value,
-        readonly: this.options.settings.get('allow_any_value') !== true,
+        readonly: !this.options.canWrite || this.options.settings.get('allow_any_value') !== true,
         comment: this.options.schema.get('comment'),
         placeholder: this.options.settings.get('placeholder_text')
       };

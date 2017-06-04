@@ -26,14 +26,16 @@ define(['app', 'core/Modal'], function(app, Modal) {
     },
 
     serialize: function () {
-      var data = this.model.toJSON();
+      var model = this.model;
+      var data = model.toJSON();
       var authenticatedUser = app.users.getCurrentUser();
-      var timeDiff = authenticatedUser.timezoneDifference(this.model);
+      var timeDiff = authenticatedUser.timezoneDifference(model);
+      var canEdit = (model.isMe() && model.canEdit()) || authenticatedUser.isAdmin() && model.id;
 
-      data.online = this.model.isOnline();
-      data.lastSeen = this.model.lastSeen();
-      data.canEditUser = authenticatedUser.isAdmin() && this.model.id;
-      data.timeDiff = (timeDiff > 0)? "+" + timeDiff : timeDiff;
+      data.online = model.isOnline();
+      data.lastSeen = model.lastSeen();
+      data.canEditUser = canEdit;
+      data.timeDiff = (timeDiff > 0) ? '+' + timeDiff : timeDiff;
       data.validTimeDiff = timeDiff !== null;
 
       return data;

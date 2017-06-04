@@ -155,20 +155,6 @@ define(function(require, exports, module) {
             this.model.set(statusName, app.statusMapping.get(table.id, true).get('default_value'));
           }
 
-          if (model.isNew()) {
-            var tableStatusColumn = model.structure.get(statusName);
-
-            if (tableStatusColumn) {
-              model.set(statusName, tableStatusColumn.get('default_value'));
-            }
-
-            // if (tableStatusColumn && tableStatusColumn.get('default_value')) {
-            //   model.set(statusName, tableStatusColumn.get('default_value'));
-            // } else {
-            //   model.set(statusName, app.statusMapping.active_num);
-            // }
-          }
-
           // Set this to be first field in edit table by modifiying groupings.
           if (table && table.get('column_groupings')) {
             var columnGrouping = table.get('column_groupings');
@@ -189,13 +175,6 @@ define(function(require, exports, module) {
         if (model.addInput) {
           model.addInput(column.id, view);
         }
-
-        //
-        // if (column.isStatusColumn()) {
-        //   model.on('change:' + statusName, function (model, value) {
-        //     view.$('input[name=' + statusName + ']').val(value);
-        //   });
-        // }
 
         // Display:none; hidden fields
         var isHidden = _.contains(this.hiddenFields, column.id);

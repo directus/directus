@@ -130,17 +130,25 @@ define([
 
     // setData will try to get thumbnail from a base64
     // this is used by retrieve links
-    setData: function (item, allowedTypes) {
+    setData: function (item, allowedTypes, fn) {
       var model = this;
 
-      if (!this.isFileAllowed(item, allowedTypes)) {
+      if (_.isFunction(allowedTypes)) {
+        fn = allowedTypes;
+        allowedTypes = null;
+      }
+
+      if (allowedTypes && !this.isFileAllowed(item, allowedTypes)) {
         return false;
       }
 
       File.resizeFromData(item.data, 200, 200, function(thumbnailData) {
         item.thumbnailData = thumbnailData;
         model.set(item);
-        model.trigger('sync');
+
+        if (_.isFunction(fn)) {
+          fn();
+        }
       });
     },
 

@@ -1,13 +1,22 @@
-define(['handlebars', 'core/UIView', 'core/t'], function (Handlebars, UIView, __t) {
+define([
+  'underscore',
+  'handlebars',
+  'core/UIView',
+  'core/t'
+], function (_, Handlebars, UIView, __t) {
   'use strict';
 
   return UIView.extend({
     events: {
-      'change select': function (e) {
+      'change select': function (event) {
         var model = this.model.get(this.name);
-        var selectedId = parseInt($(e.target).find(':selected').val(), 10);
+        var attributesName = _.keys(model.attributes);
+        var $target = $(event.currentTarget);
+        var selectedId = parseInt($target.find(':selected').val(), 10);
+        var attributes = this.collection.get(selectedId).toJSON();
+
         model.clear();
-        model.set({id: selectedId});
+        model.set(_.pick(attributes, attributesName));
       }
     },
 
@@ -55,16 +64,16 @@ define(['handlebars', 'core/UIView', 'core/t'], function (Handlebars, UIView, __
     },
 
     initialize: function () {
-      var relatedTable;
-      // @TODO display warning on UI & gracefully fail if the next value is undefined
-      if (this.columnSchema.relationship) {
-        relatedTable = this.columnSchema.relationship.get('related_table');
-      } else {
+      // TODO display warning on UI & gracefully fail if the next value is undefined
+      if (!this.columnSchema.relationship) {
         console.error(__t('column_misconfigured_in_directus_columns', {
           column: this.name
         }));
       }
+
       var value = this.model.get(this.name);
+      value.startTracking();
+
       this.canEdit = this.model.canEdit(this.name);
       this.collection = value.collection.getNewInstance({omit: ['preferences']});
 

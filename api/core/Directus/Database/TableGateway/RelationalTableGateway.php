@@ -1479,6 +1479,27 @@ class RelationalTableGateway extends BaseTableGateway
             }
 
             $relatedTable = $column->getRelationship()->getRelatedTable();
+
+            // if user doesn't have permission to view the related table
+            // fill the data with only the id, which the user has permission to
+            if ($this->acl && !TableSchema::canGroupViewTable($relatedTable)) {
+                $tableGateway = new RelationalTableGateway($relatedTable, $this->adapter, null);
+                $primaryKeyName = $tableGateway->primaryKeyFieldName;
+
+                foreach ($entries as $i => $entry) {
+                    $entries[$i][$column->getName()] = [
+                        'data' => [
+                            $primaryKeyName => $entry[$column->getName()]
+                        ]
+                    ];
+                }
+
+                continue;
+            }
+
+            $tableGateway = new RelationalTableGateway($relatedTable, $this->adapter, $this->acl);
+            $primaryKeyName = $tableGateway->primaryKeyFieldName;
+
             if (!$relatedTable) {
                 $message = 'Non single_file Many-to-One relationship lacks `related_table` value.';
                 if ($column->getName()) {
@@ -1491,9 +1512,6 @@ class RelationalTableGateway extends BaseTableGateway
 
                 throw new Exception\RelationshipMetadataException($message);
             }
-
-            $tableGateway = new RelationalTableGateway($relatedTable, $this->adapter, $this->acl);
-            $primaryKeyName = $tableGateway->primaryKeyFieldName;
 
             // Aggregate all foreign keys for this relationship (for each row, yield the specified foreign id)
             $relationalColumnName = $column->getName();
@@ -1510,10 +1528,6 @@ class RelationalTableGateway extends BaseTableGateway
 
             $ids = array_unique(array_filter(array_map($yield, $entries)));
             if (empty($ids)) {
-                continue;
-            }
-
-            if ($this->acl && !TableSchema::canGroupViewTable($relatedTable)) {
                 continue;
             }
 

@@ -15,8 +15,7 @@ define([
   'core/UIView',
   'core/table/table.view',
   'core/overlays/overlays'
-],
-function (app, _, __t, Utils, FileHelper, UIView, TableView, Overlays) {
+], function (app, _, __t, Utils, FileHelper, UIView, TableView, Overlays) {
 
   'use strict';
 
@@ -243,15 +242,21 @@ function (app, _, __t, Utils, FileHelper, UIView, TableView, Overlays) {
 
     initialize: function () {
       var FilesModel = require('modules/files/FilesModel');
+      var parentModel = this.options.model;
 
       this.uploading = false;
       this.userId = app.users.getCurrentUser().id;
       if (!(this.options.value instanceof FilesModel)) {
         this.options.value = new FilesModel(this.options.value || {});
-        this.options.model.set(this.options.name, this.options.value);
+        parentModel.set(this.name, this.options.value);
       }
 
       this.fileModel = this.options.value;
+
+      if (parentModel.isTracking() && !this.fileModel.isTracking()) {
+        this.fileModel.startTracking();
+      }
+
       this.listenTo(this.fileModel, 'change', this.onModelChange);
 
       if (this.collection) {

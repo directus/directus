@@ -16,7 +16,8 @@ define([
     template: 'textarea/input',
 
     events: {
-      'keydown textarea': 'onKeyDown'
+      'keydown textarea': 'onKeyDown',
+      'input textarea': 'onChange'
     },
 
     onKeyDown: function (event) {
@@ -25,6 +26,12 @@ define([
       if (key == 13) {
         event.stopPropagation();
       }
+    },
+
+    onChange: function (event) {
+      var target = event.currentTarget;
+
+      this.model.set(this.name, target.value);
     },
 
     serialize: function() {

@@ -3,21 +3,65 @@ define(['app', 'helpers/file', 'core/UIView'], function (app, FileHelper, UIView
 
     template: '_internals/file_preview/interface',
 
-    serialize: function () {
-      var data = {};
-      var userId;
-      var model = this.model;
-      var authenticatedUser = app.users.getCurrentUser();
+    events: {
+      'click a[data-action=toggle-form]': function () {
+        // $('.upload-form').toggleClass('hide');
+      },
+      'click li[data-action=swap]': function () {
+        // This.$el.find('#swap-file').toggleClass('hide');
+      },
+      'click .swap-method-btn': function () {
+        this.$el.find('.swap-method').toggleClass('hide');
 
-      data = model.toJSON();
+        if (this.$el.find('#urlInput').is(':visible')) {
+          this.$el.find('#urlInput').focus();
+        }
+      },
+      'click #retriveUrlBtn': function () {
+        var self = this;
+        var url = this.$('#urlInput').val();
+        var model = this.model;
 
-      if (!model.has('id')) {
-        userId = authenticatedUser.id;
-        data.isNew = true;
-      } else {
-        userId = model.get('user');
+        app.sendLink(url, function (data) {
+          var item = data[0];
+
+          item[app.statusMapping.status_name] = app.statusMapping.active_num;
+          // Unset the model ID so that a new file record is created
+          // (and the old file record isn't replaced w/ this data)
+          item.id = undefined;
+          item.user = self.userId;
+
+          model.setData(item, function () {
+            self.render();
+          });
+        });
+      },
+      'change input[type=file]': function (event) {
+        var file = $(event.target)[0].files[0];
+        var model = this.model;
+        var self = this;
+
+        model.setFile(file, function () {
+          self.render();
+        });
+      },
+      'click .ui-thumbnail-dropzone': function () {
+        this.$('#fileAddInput').click();
+      },
+      'click button[data-action="swap"]': function () {
+        this.$el.find('.swap-container').toggle();
+        this.$el.find('.ui-thumbnail.has-file').toggle();
+        var swapText = this.$el.find('.ui-text-hover').html();
+        var newSwapText = (swapText === 'Swap file') ? 'Cancel' : 'Swap file';
+        this.$el.find('.ui-text-hover').html(newSwapText);
       }
+    },
 
+    serialize: function () {
+      var model = this.model;
+      var data = model.toJSON();
+
+      data.isNew = model.isNew();
       data.link = undefined;
       data.thumbUrl = undefined;
 
@@ -52,62 +96,6 @@ define(['app', 'helpers/file', 'core/UIView'], function (app, FileHelper, UIView
       }
 
       return data;
-    },
-
-    events: {
-      'click a[data-action=toggle-form]': function () {
-        // $('.upload-form').toggleClass('hide');
-      },
-      'click li[data-action=swap]': function () {
-        // This.$el.find('#swap-file').toggleClass('hide');
-      },
-      'click .swap-method-btn': function () {
-        this.$el.find('.swap-method').toggleClass('hide');
-
-        if (this.$el.find('#urlInput').is(':visible')) {
-          this.$el.find('#urlInput').focus();
-        }
-      },
-      'click #retriveUrlBtn': function () {
-        var url = this.$el.find('#urlInput').val();
-        var model = this.model;
-
-        app.sendLink(url, function (data) {
-          var item = data[0];
-
-          item[app.statusMapping.status_name] = app.statusMapping.active_num;
-          // Unset the model ID so that a new file record is created
-          // (and the old file record isn't replaced w/ this data)
-          item.id = undefined;
-          item.user = self.userId;
-
-          model.setData(item);
-        });
-      },
-      'change input[type=file]': function (e) {
-        var file = $(e.target)[0].files[0];
-        var model = this.model;
-
-        model.setFile(file);
-      },
-      'click .ui-thumbnail-dropzone': function () {
-        this.$el.find('#fileAddInput').click();
-      },
-      'click button[data-action="swap"]': function () {
-        this.$el.find('.swap-container').toggle();
-        this.$el.find('.ui-thumbnail.has-file').toggle();
-        var swapText = this.$el.find('.ui-text-hover').html();
-        var newSwapText = (swapText === 'Swap file') ? 'Cancel' : 'Swap file';
-        this.$el.find('.ui-text-hover').html(newSwapText);
-      }
-    },
-
-    initialize: function () {
-      var FilesModel = require('modules/files/FilesModel');
-      if (!(this.model instanceof FilesModel)) {
-        this.model = new FilesModel(this.model.attributes, {collection: this.collection});
-      }
-      this.listenTo(this.model, 'change', this.render);
     },
 
     afterRender: function () {
@@ -150,6 +138,16 @@ define(['app', 'helpers/file', 'core/UIView'], function (app, FileHelper, UIView
 
       // Show fallback image if file missing
       FileHelper.hideOnImageError(this.$('.js-image img'));
+    },
+
+    initialize: function () {
+      var FilesModel = require('modules/files/FilesModel');
+
+      if (!(this.model instanceof FilesModel)) {
+        this.model = new FilesModel(this.model.attributes, {collection: this.collection});
+      }
+
+      // this.listenTo(this.model, 'change', this.render);
     }
   });
 });

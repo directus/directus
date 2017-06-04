@@ -26,9 +26,24 @@ define(['underscore', 'core/UIView', 'core/t', 'select2'], function (_, UIView, 
     template: 'select/input',
 
     events: {
-      'change input[type=checkbox]': function () {
-        this.updateCheckboxValue();
-      }
+      'change select': 'onChangeSelect',
+      'change input[type=radio]': 'onChangeRadio',
+      'change input[type=checkbox]': 'updateCheckboxValue'
+    },
+
+    onChangeSelect: function (event) {
+      var $select = $(event.currentTarget);
+      var values = [];
+
+      $select.find('option:selected').each(function () {
+        values.push(this.value);
+      });
+
+      this.model.set(this.name, values.join(this.options.settings.get('delimiter')));
+    },
+
+    onChangeRadio: function (event) {
+      this.model.set(this.name, event.currentTarget.value);
     },
 
     updateCheckboxValue: function () {
@@ -44,6 +59,7 @@ define(['underscore', 'core/UIView', 'core/t', 'select2'], function (_, UIView, 
       }
 
       this.$('input').val(out);
+      this.model.set(this.name, out);
     },
 
     serialize: function () {
@@ -102,8 +118,6 @@ define(['underscore', 'core/UIView', 'core/t', 'select2'], function (_, UIView, 
           self.$el.find('select').select2(options);
         }, 0);
       }
-
-      this.updateCheckboxValue();
     }
   });
 });
