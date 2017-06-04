@@ -1,10 +1,19 @@
-define(['core/UIView'], function (UIView) {
+define(['underscore', 'core/UIView'], function (_, UIView) {
+
+  'use strict';
+
   return UIView.extend({
     template: 'slug/input',
+
     events: {
-      'change input': function () {
-        this.$el.find('.char-count').show();
-      }
+      'input input': 'onInputChange'
+    },
+
+    onInputChange: function (event) {
+      var target = event.currentTarget;
+
+      this.$('.char-count').show();
+      this.model.set(this.name, target.value);
     },
 
     bindEvents: function () {
@@ -69,6 +78,7 @@ define(['core/UIView'], function (UIView) {
         .replace(/-+/g, '-'); // Collapse dashes
 
       $slugInput.val(slug);
+      this.model.set(this.name, slug);
     },
 
     afterRender: function () {
