@@ -300,8 +300,9 @@ function getCurrentUserInfo($users)
 
 function getBookmarks()
 {
-    global $ZendDb, $acl, $authenticatedUser;
-    $bookmarks = new DirectusBookmarksTableGateway($ZendDb, $acl);
+    global $ZendDb, $authenticatedUser;
+
+    $bookmarks = new DirectusBookmarksTableGateway($ZendDb, null);
 
     return $bookmarks->fetchAllByUser($authenticatedUser['id']);
 }
