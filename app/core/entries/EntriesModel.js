@@ -563,8 +563,11 @@ define(function(require, exports, module) {
     },
 
     setPrompt: function (enabled) {
-      this._unsavedConfig.unloadRouterPrompt = enabled;
-      this._unsavedConfig.unloadWindowPrompt = enabled;
+      // TODO: Remove this condition when we completely implement tracking on all interfaces
+      if (this.isTracking()) {
+        this._unsavedConfig.unloadRouterPrompt = enabled;
+        this._unsavedConfig.unloadWindowPrompt = enabled;
+      }
     },
 
     // we need to do this because initialize is called AFTER parse.
