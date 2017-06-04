@@ -220,6 +220,7 @@ class Files
         $this->write($fileName, $fileData);
         $this->emitter->run('files.saving:after', ['name' => $fileName, 'size' => strlen($fileData)]);
 
+        unset($fileData);
         $this->createThumbnails($fileName);
 
         $fileData = $this->getFileInfo($fileName);

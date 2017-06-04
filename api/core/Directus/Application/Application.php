@@ -57,14 +57,10 @@ class Application extends Slim
             return new BaseResponse();
         });
 
-        $request = $this->request();
-        // @NOTE: Slim request do not parse a json request body
-        //        We need to parse it ourselves
-        if ($request->getMediaType() == 'application/json') {
-            $env = $this->environment();
-            $jsonRequest = json_decode($request->getBody(), true);
-            $env['slim.request.form_hash'] = Util::stripSlashesIfMagicQuotes($jsonRequest);
-        }
+        // Default request
+        $this->container->singleton('request', function ($c) {
+            return new BaseRequest($c['environment']);
+        });
 
         $this->hook('slim.before.router', [$this, 'guessOutputFormat']);
     }
