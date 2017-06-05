@@ -23,14 +23,15 @@ class Table extends Route
         $app = $this->app;
         $ZendDb = $app->container->get('zenddb');
         $acl = $app->container->get('acl');
-        $requestPayload = $app->request()->post();
+        // $requestPayload = $app->request()->post();
+        $tableName = $app->request()->post('name');
 
         if ($acl->getGroupId() != 1) {
             throw new \Exception(__t('permission_denied'));
         }
 
-        $isTableNameAlphanumeric = preg_match("/[a-z0-9]+/i", $requestPayload['name']);
-        $zeroOrMoreUnderscoresDashes = preg_match("/[_-]*/i", $requestPayload['name']);
+        $isTableNameAlphanumeric = preg_match('/[a-z0-9]+/i', $tableName);
+        $zeroOrMoreUnderscoresDashes = preg_match('/[_-]*/i', $tableName);
 
         if (!($isTableNameAlphanumeric && $zeroOrMoreUnderscoresDashes)) {
             $app->response->setStatus(400);
@@ -38,26 +39,27 @@ class Table extends Route
         }
 
         $schema = Bootstrap::get('schemaManager');
-        if ($schema->tableExists($requestPayload['name'])) {
+        if ($schema->tableExists($tableName)) {
             return $this->app->response([
                 'success' => false,
                 'error' => [
-                    'message' => sprintf('table_%s_exists', $requestPayload['name'])
+                    'message' => sprintf('table_%s_exists', $tableName)
                 ]
             ]);
         }
 
-        $app->hookEmitter->run('table.create:before', $requestPayload['name']);
+        $app->hookEmitter->run('table.create:before', $tableName);
+
         // Through API:
         // Remove spaces and symbols from table name
         // And in lowercase
-        $requestPayload['name'] = SchemaUtils::cleanTableName($requestPayload['name']);
-        $schema->createTable($requestPayload['name']);
-        $app->hookEmitter->run('table.create', $requestPayload['name']);
-        $app->hookEmitter->run('table.create:after', $requestPayload['name']);
+        $tableName = SchemaUtils::cleanTableName($tableName);
+        $schema->createTable($tableName);
+        $app->hookEmitter->run('table.create', $tableName);
+        $app->hookEmitter->run('table.create:after', $tableName);
 
-        $privileges = new DirectusPrivilegesTableGateway($ZendDb, $acl);
-        $privileges->insertPrivilege([
+        $privilegesTableGateway = new DirectusPrivilegesTableGateway($ZendDb, $acl);
+        $privileges = [
             'nav_listed' => 1,
             'status_id' => 0,
             'allow_view' => 2,
@@ -65,9 +67,12 @@ class Table extends Route
             'allow_edit' => 2,
             'allow_delete' => 2,
             'allow_alter' => 1
-        ]);
+        ];
 
-        return $this->info($requestPayload['name']);
+        $privilegesTableGateway->insertPrivilege($privileges);
+        $acl->setTablePrivileges($tableName, $privileges);
+
+        return $this->info($tableName);
     }
 
     public function columns($tableName)
@@ -267,7 +272,7 @@ class Table extends Route
             return $this->app->response($response);
         }
 
-        $TableGateway = new DirectusTablesTableGateway($ZendDb, $acl, null, null, null, 'table_name');
+        $TableGateway = new DirectusTablesTableGateway($ZendDb, $acl);
 
         /* PUT updates the table */
         if ($app->request()->isPut() || $app->request()->isPatch()) {

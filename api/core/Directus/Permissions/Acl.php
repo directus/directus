@@ -146,6 +146,11 @@ class Acl
         return $this;
     }
 
+    public function setTablePrivileges($tableName, array $privileges)
+    {
+        $this->groupPrivileges[$tableName] = $privileges;
+    }
+
     /**
      * Gets the fixed group privileges
      *
