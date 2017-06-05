@@ -19,7 +19,8 @@ class Bookmarks extends Route
 
         $currentUserId = $acl->getUserId();
         $bookmarks = new DirectusBookmarksTableGateway($ZendDb, $acl);
-        $preferences = new DirectusPreferencesTableGateway($ZendDb, $acl);
+        $preferences = new DirectusPreferencesTableGateway($ZendDb, null);
+
         switch ($app->request()->getMethod()) {
             case 'PUT':
                 $bookmarks->updateBookmark($requestPayload);
@@ -34,12 +35,13 @@ class Bookmarks extends Route
                 $response = [];
 
                 if ($bookmark) {
+                    $response['success'] = (bool) $bookmarks->delete(['id' => $id]);
+
                     // delete the preferences
                     $preferences->delete([
                         'user' => $currentUserId,
                         'title' => $bookmark['title']
                     ]);
-                    $response['success'] = (bool) $bookmarks->delete(['id' => $id]);
                 } else {
                     $response['success'] = false;
                     $response['error'] = [
