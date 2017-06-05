@@ -278,7 +278,7 @@ define(function (require, exports, module) {
 
       this.v.main.insertView('#content', view).render();
 
-      var that=this;
+      var that = this;
       Backbone.History.prototype.loadUrl = function () {
         if (hasUnsavedAttributes() || (that.baseRouteSave === this.getFragment() || window.confirm('All Unsaved changes will be lost, Are you sure you want to leave?'))) {
           Backbone.History.prototype.loadUrl = that.oldLoadUrlFunction;
@@ -314,7 +314,7 @@ define(function (require, exports, module) {
 
       if (this.v.main.getViews('#content').value().length <= 1) {
         Backbone.History.prototype.loadUrl = this.oldLoadUrlFunction;
-        this.navigate(this.baseRouteSave);
+        // this.navigate(this.baseRouteSave);
         this.baseRouteSave = undefined;
       }
     },

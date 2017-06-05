@@ -106,9 +106,10 @@ define([
       });
 
       if (this.model.canEdit() && !isNew) {
-        this.model.on('unsavedChanges', function (hasChanges, unsavedAttrs, model) {
-          editView.saveWidget.setEnabled(hasChanges);
-        });
+        editView.saveWidget.setEnabled(true);
+        // this.model.on('unsavedChanges', function (hasChanges, unsavedAttrs, model) {
+        //   editView.saveWidget.setEnabled(hasChanges);
+        // });
       }
 
       this.infoWidget = new Widgets.InfoButtonWidget({

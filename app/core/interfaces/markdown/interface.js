@@ -19,28 +19,35 @@ define([
     events: {
       'keyup': 'renderMarkdown',
       'change textarea.md-editor': 'renderMarkdown',
-      'click button[data-action="md-preview"]': function (e) {
+      'click button[data-action="md-preview"]': function (event) {
         this.$('.md-editor').hide();
         this.$('.md-editor-preview').show();
         this.$('.btn').removeClass('active');
-        e.currentTarget.className += ' active';
+
+        event.currentTarget.className += ' active';
       },
-      'click button[data-action="md-edit"]': function (e) {
+      'click button[data-action="md-edit"]': function (event) {
         this.$('.md-editor-preview').hide();
         this.$('.md-editor').show();
         this.$('.btn').removeClass('active');
-        e.currentTarget.className += ' active';
+
+        event.currentTarget.className += ' active';
       }
     },
 
-    renderMarkdown: function() {
+    renderMarkdown: function () {
       var value = this.$('.md-editor').val();
+      var newValue = '';
+
       if (value) {
-        this.$('.md-editor-preview').html(marked(value));
+        newValue = marked(value);
       }
+
+      this.model.set(this.name, newValue);
+      this.$('.md-editor-preview').html(newValue);
     },
 
-    initialize: function() {
+    initialize: function () {
       marked.setOptions({
         gfm: this.options.settings.get('github_flavored_markdown'),
         tables: this.options.settings.get('tables'),
@@ -49,10 +56,10 @@ define([
       });
     },
 
-    serialize: function() {
+    serialize: function () {
       return {
         rawValue: this.options.value,
-        value: (this.options.value) ? marked(this.options.value):'',
+        value: this.options.value ? marked(this.options.value) : '',
         name: this.options.name,
         rows: this.options.settings.get('rows'),
         comment: this.options.schema.get('comment'),

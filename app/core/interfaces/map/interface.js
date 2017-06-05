@@ -1,4 +1,10 @@
-define(['./interface', 'app', 'core/UIView', 'core/t'], function (Input, app, UIView, __t) {
+define([
+  './interface',
+  'app',
+  'core/UIView',
+  'core/t'
+], function (Input, app, UIView) {
+
   'use strict';
 
   return UIView.extend({
@@ -13,6 +19,7 @@ define(['./interface', 'app', 'core/UIView', 'core/t'], function (Input, app, UI
       // If we have a value (Representing lat and long), set center to that value
       if (this.options.value) {
         var array = this.options.value.split(',');
+
         if (array) {
           var lng = array.pop();
           var lat = array.pop();
@@ -26,6 +33,7 @@ define(['./interface', 'app', 'core/UIView', 'core/t'], function (Input, app, UI
         center: center,
         zoom: 12
       };
+
       var map = new google.maps.Map(this.$el.find('#map-canvas').get(0), mapOptions);
 
       if (navigator.geolocation && !this.options.value) {
@@ -73,17 +81,19 @@ define(['./interface', 'app', 'core/UIView', 'core/t'], function (Input, app, UI
       }
 
       // On click, update value with click location
-      google.maps.event.addListener(map, 'click', function (e) {
+      google.maps.event.addListener(map, 'click', function (event) {
         if (that.marker) {
-          that.marker.setPosition(e.latLng);
+          that.marker.setPosition(event.latLng);
         } else {
           that.marker = new google.maps.Marker({
-            position: e.latLng,
+            position: event.latLng,
             map: map
           });
         }
-        var latlngVal = e.latLng.lat() + ',' + e.latLng.lng();
+
+        var latlngVal = event.latLng.lat() + ',' + event.latLng.lng();
         that.$el.find('input').val(latlngVal);
+        that.model.set(that.name, latlngVal);
 
         var apiKey = that.getApiKey();
         // Query Geocode api to get street info about specified latlong

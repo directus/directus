@@ -495,8 +495,9 @@ define(function(require, exports, module) {
       var parent = this.parent;
       var parentOriginalValue;
 
-      if (parent) {
+      if (parent && this.parentAttribute) {
         parentOriginalValue = parent._originalAttrs[this.parentAttribute];
+
         if (_.isEmpty(this._unsavedChanges) || _.isEqual(parentOriginalValue, this._unsavedChanges)) {
           delete parent._unsavedChanges[this.parentAttribute];
         } else {
@@ -525,6 +526,10 @@ define(function(require, exports, module) {
 
     isTracking: function () {
       return this._trackingChanges;
+    },
+
+    hasChanges: function () {
+      return !_.isEmpty(this._unsavedChanges);
     },
 
     startTracking: function () {

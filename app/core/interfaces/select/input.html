@@ -202,12 +202,12 @@
 		<ul class="gridlist">
 		{{#options}}
 			<li>
-				<input id="multi_select_{{../name}}_{{key}}" name="{{../name}}_{{key}}" type="checkbox" {{#if selected}}checked{{/if}}/>
+				<input id="multi_select_{{../name}}_{{key}}" name="{{../name}}_{{key}}" value="{{key}}" type="checkbox" {{#if selected}}checked{{/if}}/>
 				<label for="multi_select_{{../name}}_{{key}}">{{value}}</label>
 			</li>
 		{{/options}}
 		</ul>
-		<input type="hidden" name="{{name}}_{{key}}" value="{{value}}">
+		<input type="hidden" name="{{name}}_{{key}}" value="{{key}}">
 		{{else}}
 		<ul class="gridlist">
 		{{#options}}

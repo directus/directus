@@ -52,7 +52,7 @@ define(['underscore', 'core/UIView', 'core/t', 'select2'], function (_, UIView, 
 
       if (values.length > 0) {
         for (var i = 0; i < values.length; i++) {
-          out += $(values[i]).attr('name') + this.options.settings.get('delimiter');
+          out += values[i].value + this.options.settings.get('delimiter');
         }
 
         out = out.substr(0, out.length - 1);

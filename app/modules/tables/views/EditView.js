@@ -261,9 +261,11 @@ function(app, Backbone, _, Handlebars, __t, Notification, Directus, BasePageView
       });
 
       if (canAdd && !isNew) {
-        this.model.on('unsavedChanges', function (hasChanges, unsavedAttrs, model) {
-          editView.saveWidget.setEnabled(hasChanges);
-        });
+        // NOTE: Set enable to true until we implement X2M
+        editView.saveWidget.setEnabled(true);// this.model.hasChanges());
+        // this.model.on('unsavedChanges', function (hasChanges, unsavedAttrs, model) {
+        //   editView.saveWidget.setEnabled(hasChanges);
+        // });
       }
 
       widgets.push(this.saveWidget);
