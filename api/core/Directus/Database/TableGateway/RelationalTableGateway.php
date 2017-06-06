@@ -2,6 +2,7 @@
 
 namespace Directus\Database\TableGateway;
 
+use Directus\Bootstrap;
 use Directus\Database\Exception;
 use Directus\Database\Object\Column;
 use Directus\Database\Object\Table;
@@ -620,6 +621,11 @@ class RelationalTableGateway extends BaseTableGateway
             unset($defaultParams['order']);
         }
 
+        if (!ArrayUtils::has($params, 'status')) {
+            $config = Bootstrap::get('config');
+            $defaultParams['status'] = $config->getPublishedStatuses();
+        }
+
         $params = array_merge($defaultParams, $params);
 
         // convert csv columns into array
@@ -1154,7 +1160,7 @@ class RelationalTableGateway extends BaseTableGateway
 
             $statuses = array_filter($statuses);
             if ($statuses) {
-                $query->whereIn(STATUS_COLUMN_NAME, $statuses);
+                $query->whereIn(TableSchema::getStatusColumn($this->getTable()), $statuses);
             }
         }
 

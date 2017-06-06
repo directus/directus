@@ -143,6 +143,7 @@ return [
             'show_listing_badge' => true,
             'hidden_globally' => true,
             'hard_delete' => false,
+            'published' => false,
             'sort' => 3
         ],
         1 => [
@@ -153,6 +154,7 @@ return [
             'show_listing_badge' => false,
             'hidden_globally' => false,
             'hard_delete' => false,
+            'published' => true,
             'sort' => 1
         ],
         2 => [
@@ -163,6 +165,7 @@ return [
             'show_listing_badge' => true,
             'hidden_globally' => false,
             'hard_delete' => false,
+            'published' => false,
             'sort' => 2
         ]
     ]

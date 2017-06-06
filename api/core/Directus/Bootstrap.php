@@ -233,7 +233,7 @@ class Bootstrap
             }
         }
 
-        return $config;
+        return new Config\Config($config);
     }
 
     private static function settings()
