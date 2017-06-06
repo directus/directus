@@ -1150,7 +1150,7 @@ class RelationalTableGateway extends BaseTableGateway
             $query->limit(1);
         }
 
-        $skipAcl = $this->acl !== null;
+        $skipAcl = $this->acl === null;
         if (ArrayUtils::get($params, 'status') && TableSchema::hasStatusColumn($this->getTable(), $skipAcl)) {
             $statuses = $params['status'];
             if (!is_array($statuses)) {
