@@ -2,8 +2,8 @@ define(['app', 'underscore'], function (app, _) {
   return {
     saveWithStatus: function (statusValue, options) {
       var attributes = {};
-      var isHardDelete = this.isHardDelete(statusValue);
       var statusColumnName = this.getTable().getStatusColumnName();
+      var isHardDelete = !statusColumnName || this.isHardDelete(statusValue);
 
       options = options || {};
 
@@ -26,10 +26,10 @@ define(['app', 'underscore'], function (app, _) {
       }
     },
 
-    saveWithDeleteStatus: function () {
+    saveWithDeleteStatus: function (options) {
       var deleteValue = this.getTableStatuses().getDeleteValue();
 
-      return this.saveWithStatus(deleteValue);
+      return this.saveWithStatus(deleteValue, options);
     }
   }
 });

@@ -56,17 +56,32 @@ define([
               onClick: function () {
                 app.router.openModal({type: 'confirm', text: __t('confirm_delete_item'), callback: function () {
                   var $checked = $('.js-select-row:checked');
-                  var actionCollection = tableView.collection.clone();
+                  var collection = tableView.collection;
+                  var actionCollection = collection.clone();
+                  var options = {}, ids = [];
 
                   actionCollection.reset();
                   $checked.each(function () {
                     var model = tableView.collection.get(this.value);
 
                     actionCollection.add(model);
+                    ids.push(model.id);
                   });
 
                   if (actionCollection.length) {
-                    actionCollection.saveWithDeleteStatus();
+                    options.success = function (model, resp, options) {
+                      collection.remove(ids);
+                      collection.trigger('visibility');
+                      collection.trigger('select');
+                      options.remove = true;
+                      // on delete we get empty result
+                      // let's use the actual collection models
+                      // after remove the removed ids
+                      resp = {data: collection.toJSON()};
+                      collection.trigger('sync', collection, resp, options);
+                    };
+
+                    actionCollection.saveWithDeleteStatus(options);
                   }
                 }});
               }
@@ -318,13 +333,15 @@ define([
           var model = collection.get(id);
           var hasVisibleStatus = false;
 
-          _.each(statusValues, function (value) {
-            if (value == model.getStatusValue()) {
-              hasVisibleStatus = true;
-            }
-          });
+          if (model) {
+            _.each(statusValues, function (value) {
+              if (value == model.getStatusValue()) {
+                hasVisibleStatus = true;
+              }
+            });
+          }
 
-          if (!hasVisibleStatus) {
+          if (!model || !hasVisibleStatus) {
             // mark as null to remove later
             // NOTE: remove the index change the size of the array
             // which make the indexes not match anymore
