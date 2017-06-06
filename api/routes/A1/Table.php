@@ -277,6 +277,8 @@ class Table extends Route
         /* PUT updates the table */
         if ($app->request()->isPut() || $app->request()->isPatch()) {
             $data = $requestPayload;
+            $data['table_name'] = $table;
+
             if ($app->request()->isPut()) {
                 $table_settings = [
                     'table_name' => $data['table_name'],
