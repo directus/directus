@@ -162,10 +162,10 @@ function parseTables($tableSchema)
     foreach ($tableSchema as $table) {
         $tableName = $table['schema']['id'];
 
-        //remove preferences
+        // Remove preferences
         unset($table['preferences']);
 
-        //skip directus tables
+        // Skip directus tables
         if ('directus_' === substr($tableName, 0, 9) && 'directus_messages_recipients' !== $tableName) {
             continue;
         }
@@ -250,7 +250,6 @@ function getUsers()
     $params = [
         'table_name' => 'directus_users',
         'perPage' => 1000,
-        STATUS_COLUMN_NAME => STATUS_ACTIVE_NUM,
         'depth' => 1,
         'columns' => TableSchema::getAllTableColumnsName('directus_users')
         // 'columns_visible' => ['id', STATUS_COLUMN_NAME, 'avatar', 'first_name', 'last_name', 'group', 'email', 'position', 'last_access']
