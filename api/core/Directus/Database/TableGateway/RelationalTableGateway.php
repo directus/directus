@@ -30,7 +30,6 @@ class RelationalTableGateway extends BaseTableGateway
      * @var array
      */
     protected $defaultEntriesSelectParams = [
-        'order' => ['sort' => 'ASC'],
         'limit' => 200,
         'offset' => 0,
         'skip' => null,
@@ -611,9 +610,13 @@ class RelationalTableGateway extends BaseTableGateway
             $defaultParams['limit'] = $rowsPerPage;
         }
 
+        if ($this->primaryKeyFieldName) {
+            $defaultParams['order'] = [$this->primaryKeyFieldName => 'ASC'];
+        }
+
         // Is not there a sort column?
         $tableColumns = array_flip(TableSchema::getTableColumns($this->table, null, true));
-        if (!array_key_exists('sort', $tableColumns)) {
+        if (!$this->primaryKeyFieldName || !array_key_exists($this->primaryKeyFieldName, $tableColumns)) {
             unset($defaultParams['order']);
         }
 
