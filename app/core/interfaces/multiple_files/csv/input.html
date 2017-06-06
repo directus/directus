@@ -2,13 +2,13 @@
 <input type="hidden" name="{{name}}" value="{{value}}">
 <div class="attachments">
 	{{#rows}}
-	<div class="file">
+	<div class="file js-file" id="{{name}}_file_{{id}}" data-id="{{id}}" data-cid="{{cid}}">
 		{{#if html}}
 		{{{html}}}
 		{{else}}
 		<div class="thumbnail js-image">
 			<div class="extension-fallback">{{model.type}}</div>
-			<img src="{{thumbnail_url}}">
+			<img src="{{url}}">
 		</div>
 		{{/if}}
 		<div class="type">{{type}}</div>

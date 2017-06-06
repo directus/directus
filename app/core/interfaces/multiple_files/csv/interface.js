@@ -5,8 +5,7 @@ define([
   'helpers/file',
   'core/UIView',
   'core/overlays/overlays'
-],
-function (app, _, Backbone, FileHelper, UIView, Overlays) {
+], function (app, _, Backbone, FileHelper, UIView, Overlays) {
   'use strict';
 
   var EntriesManager = require('core/EntriesManager');
@@ -17,15 +16,8 @@ function (app, _, Backbone, FileHelper, UIView, Overlays) {
     events: {
       'click .js-new': 'addItem',
       'click .js-add': 'chooseItem',
-      'click .remove-slideshow-item': 'removeItem',
-      'click .media-slideshow-item > img': function (event) {
-        if (!this.canEdit) {
-          return;
-        }
-        var cid = $(event.target).attr('data-file-cid');
-        var model = this.relatedCollection.get(cid, true);
-        this.editModel(model);
-      }
+      'click .js-remove': 'removeItem',
+      'click .js-file': 'editItem'
     },
 
     addItem: function () {
@@ -37,9 +29,24 @@ function (app, _, Backbone, FileHelper, UIView, Overlays) {
       }
     },
 
+    editItem: function (event) {
+      // NOTE: Do nothing, until we find a way to update/create files using csv
+
+      // if (!this.canEdit) {
+      //   return;
+      // }
+
+      // var cid = $(event.currentTarget).data('cid');
+      // var model = this.relatedCollection.get(cid, true);
+      //
+      // this.editModel(model);
+    },
+
     removeItem: function (event) {
-      var target_cid = $(event.target).closest('.media-slideshow-item').find('img').attr('data-file-cid');
-      var model = this.relatedCollection.get(target_cid);
+      event.stopPropagation();
+
+      var cid = $(event.target).closest('.js-file').data('cid');
+      var model = this.relatedCollection.get(cid);
 
       this.relatedCollection.remove(model);
     },
@@ -151,16 +158,16 @@ function (app, _, Backbone, FileHelper, UIView, Overlays) {
       _.each(models, function (model) {
         if (!model.isDeleted()) {
           var cid = model.cid;
-          var url,
-            data = model.toJSON(true);
+          var url, data = model.toJSON();
 
           model = new app.files.model(model.attributes, {collection: self.relatedCollection});
-          if (model.isNew()) {
-            url = model.get('thumbnailData') || model.get('url');
-          } else {
-            url = model.makeFileUrl(true);
-          }
 
+          url = model.getThumbnailUrl();
+          data.size = model.isEmbed() ? app.seconds_convert(data.size) : FileHelper.humanReadableSize(data.size);
+          data.thumbnailUrl = url;
+          data.type = FileHelper.friendlySubtype(data.type);
+          data.cid = cid;
+          data.id = model.id;
           data.url = url;
           data.cid = cid;
 
@@ -259,13 +266,16 @@ function (app, _, Backbone, FileHelper, UIView, Overlays) {
       }
 
       this.listenTo(this.relatedCollection, 'add remove', function () {
-        this.$input = this.$el.find('input');
+        var ids = this.relatedCollection.pluck('id').join(',');
+        this.value = ',' + ids + ',';
+
+        this.$input = this.$('input');
+
         if (this.$input) {
-          var ids = this.relatedCollection.pluck('id').join(',');
-          this.value = ',' + ids + ',';
           this.$input.val(this.value);
         }
 
+        this.model.set(this.name, this.value);
         this.render();
       }, this);
     }
