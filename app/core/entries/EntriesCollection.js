@@ -51,8 +51,8 @@ define(function(require, exports, module) {
       var columns = [];
       var structure = this.structure;
 
-      if (filters.columns_visible === undefined) {
-        columns = structure.pluck(this.table.getPrimaryColumnName());
+      if (_.isEmpty(filters.columns_visible)) {
+        columns = structure.pluck('id');
       } else {
         columns = filters.columns_visible;
         // @todo: ensure that this always be an array everywhere.
@@ -61,12 +61,13 @@ define(function(require, exports, module) {
         }
       }
 
-      columns = columns.filter(function(column) {
+      columns = columns.filter(function (column) {
         return structure.get(column) && !structure.get(column).get('hidden_list');
       });
 
-      if (this.preferences) {
-        columns = _.intersection(columns, this.preferences.get('columns_visible').split(','));
+      var visibleColumns = this.preferences.get('columns_visible');
+      if (!_.isEmpty(visibleColumns)) {
+        columns = _.intersection(columns, visibleColumns.split(','));
       }
 
       return columns;

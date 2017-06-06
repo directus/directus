@@ -144,14 +144,6 @@ define([
         relatedCollection.nestedCollection.fetch();
       }
 
-      var blacklist = [];
-      var that = this;
-      relatedCollection.getColumns().forEach(function (column) {
-        if (that.columnSchema.options.get('visible_columns').split(',').indexOf(column) === -1) {
-          blacklist.push(column);
-        }
-      });
-
       this.nestedTableView = new TableView({
         collection: relatedCollection,
         toolbar: false,
@@ -165,10 +157,10 @@ define([
         hideEmptyMessage: true,
         hideColumnPreferences: true,
         sort: junctionStructure.get('sort') !== undefined,
-        blacklist: blacklist
+        blacklist: this.getBlacklistedColumnsName()
       });
 
-      if(junctionStructure.get('sort') !== undefined) {
+      if (junctionStructure.get('sort') !== undefined) {
         relatedCollection.setOrder('sort','ASC');
       }
 

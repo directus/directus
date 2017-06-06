@@ -7,8 +7,12 @@ define([
   'core/interfaces/one_to_many/component',
   'core/t'
 ], function (app, _, Overlays, TableView, InviteModal, OneToMany, __t) {
+
+  'use strict';
+
   return OneToMany.prototype.Input.extend({
     template: '_internals/directus_users/input',
+
     events: {
       'click .js-create-user': 'createUser',
       'click .js-choose-user': 'chooseUser',
@@ -146,6 +150,7 @@ define([
         hideColumnPreferences: true,
         hideEmptyMessage: true,
         tableHead: false,
+        blacklist: this.getBlacklistedColumnsName(),
         filters: {
           booleanOperator: '&&',
           expressions: [

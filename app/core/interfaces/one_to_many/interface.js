@@ -199,6 +199,20 @@ define([
       this.nestedTableView.render();
     },
 
+    getBlacklistedColumnsName: function () {
+      var blacklist = [];
+      var relatedCollection = this.model.get(this.name);
+      var columns = relatedCollection.structure.pluck('id');
+
+      columns.forEach(function (column) {
+        if (this.columnSchema.options.get('visible_columns').split(',').indexOf(column) === -1) {
+          blacklist.push(column);
+        }
+      }, this);
+
+      return blacklist;
+    },
+
     initialize: function (options) {
       // Make sure that the relationship type is correct
       if (!this.columnSchema.relationship ||
@@ -284,6 +298,7 @@ define([
         hideColumnPreferences: true,
         hideEmptyMessage: true,
         tableHead: false,
+        blacklist: this.getBlacklistedColumnsName(),
         filters: {
           booleanOperator: '&&',
           expressions: [
