@@ -261,6 +261,20 @@ class TableSchema
     }
 
     /**
+     * Checks whether the given table has a status column
+     *
+     * @param $tableName
+     *
+     * @return bool
+     */
+    public static function getStatusColumn($tableName)
+    {
+        $schema = static::getTableSchema($tableName);
+
+        return $schema->getStatusColumn();
+    }
+
+    /**
      * Gets tehe column relationship type
      *
      * @param $tableName
