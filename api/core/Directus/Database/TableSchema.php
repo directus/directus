@@ -250,12 +250,13 @@ class TableSchema
      * Checks whether the given table has a status column
      *
      * @param $tableName
+     * @param $skipAcl
      *
      * @return bool
      */
-    public static function hasStatusColumn($tableName)
+    public static function hasStatusColumn($tableName,  $skipAcl = false)
     {
-        $schema = static::getTableSchema($tableName);
+        $schema = static::getTableSchema($tableName, [], false, $skipAcl);
 
         return $schema->hasStatusColumn();
     }
@@ -264,12 +265,13 @@ class TableSchema
      * Checks whether the given table has a status column
      *
      * @param $tableName
+     * @param $skipAcl
      *
      * @return bool
      */
-    public static function getStatusColumn($tableName)
+    public static function getStatusColumn($tableName,  $skipAcl = false)
     {
-        $schema = static::getTableSchema($tableName);
+        $schema = static::getTableSchema($tableName, [], false, $skipAcl);
 
         return $schema->getStatusColumn();
     }
