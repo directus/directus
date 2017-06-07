@@ -140,13 +140,19 @@ define([
           return;
         }
 
-        self.search(searchString).done(function () {
-          // Focus the input after the search
-          var $input = self.$('#search-input');
+        var $input = self.$('#search-input');
+        var input = $input.get(0);
+        var selectionStart = input.selectionStart;
+        var selectionEnd = input.selectionEnd;
 
+        self.search(searchString).done(function () {
+          $input = self.$('#search-input');
+          input = $input.get(0);
+
+          // Focus the input after the search
           $input.focus();
-          // add the value again to move the cursor at the end of the text
-          $input.val($input.val());
+          // Keep previous selection range;
+          input.setSelectionRange(selectionStart, selectionEnd);
         });
       };
 
