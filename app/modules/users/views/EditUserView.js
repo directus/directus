@@ -118,8 +118,18 @@ function(app, Backbone, Directus, BasePageView, __t, Widgets) {
       }
     },
 
-    initialize: function(options) {
-      this.editView = new Directus.EditView({model: this.model});
+    initialize: function (options) {
+      var hiddenFields = [];
+
+      if (!app.users.getCurrentUser().isAdmin()) {
+        hiddenFields.push('token');
+      }
+
+      this.editView = new Directus.EditView({
+        model: this.model,
+        hiddenFields: hiddenFields
+      });
+
       this.headerOptions.route.title = (this.model.id) ? this.model.get('first_name') + ' ' + this.model.get('last_name') : __t('new_user');
     }
   });

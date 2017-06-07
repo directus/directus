@@ -7,7 +7,15 @@
 //  http://www.getdirectus.com
 /*jshint multistr: true */
 
-define(['app', 'core/UIComponent', 'core/UIView', 'core/notification', 'core/t'], function(app, UIComponent, UIView, Notification, __t) {
+define([
+  'app',
+  'jquery',
+  'underscore',
+  'core/UIComponent',
+  'core/UIView',
+  'core/notification',
+  'core/t'
+], function (app, $, _, UIComponent, UIView, Notification, __t) {
 
   'use strict';
 
@@ -21,16 +29,16 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/notification', 'core/t']
     templateSource: template,
 
     events: {
-      'click .string-generate': function(e) {
+      'click .string-generate': function (event) {
         var length = this.options.settings.get('string_length')
 
         this.generateString(length);
       }
     },
 
-    generateString: function(length) {
+    generateString: function (length) {
       length = (length || 16);
-      var randomSuccess = _.bind(function(data, textStatus, jqXHR) {
+      var randomSuccess = _.bind(function (data, textStatus, jqXHR) {
         if(!_.isEmpty(data) && !_.isEmpty(data.random)) {
           this.$el.find('input.password-primary').val(data.random);
           this.$el.find('.generated').removeClass('hide');
@@ -40,25 +48,28 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/notification', 'core/t']
       }, this);
 
       // TODO: Generate random string locally
+      // unless we implement different server generation token script
       $.ajax({
-        type: "POST",
+        type: 'POST',
         url: app.API_URL + 'random/',
         data: {length: length},
         success: randomSuccess,
         dataType: 'json',
-        error: function(data, textStatus, jqXHR) {
+        error: function (data, textStatus, jqXHR) {
           Notification.error('Random', __t('error_generating_a_random_string'));
         }
       });
     },
 
-    initialize: function() {
+    initialize: function () {
       if (!this.options.value && this.options.settings.get('auto_generate') === true) {
-        this.generateString();
+        var length = this.options.settings.get('string_length') || 16;
+
+        this.generateString(length);
       }
     },
 
-    serialize: function() {
+    serialize: function () {
       return {
         name: this.options.name,
         value: this.options.value,
@@ -81,7 +92,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/notification', 'core/t']
       {id: 'placeholder_text', type: 'String', default_value: '', ui: 'textinput', char_length: 200},
     ],
     Input: Input,
-    validate: function(value, options) {
+    validate: function (value, options) {
       var $el = $('input[name="' + options.schema.id + '"]').parent();
       var data = $el.data();
       var randomString = $el.find('input.password-primary').val();
@@ -90,7 +101,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/notification', 'core/t']
         return 'This field is required ['+options.schema.id+'].';
       }
     },
-    list: function(options) {
+    list: function (options) {
       return (options.value) ? options.value.toString().replace(/<(?:.|\n)*?>/gm, '').substr(0,100) : '';
     }
   });

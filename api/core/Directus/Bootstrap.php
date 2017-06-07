@@ -675,26 +675,31 @@ class Bootstrap
         });
 
         $emitter->addFilter('table.directus_users.select', function (Payload $payload) {
+            $acl = static::get('acl');
             $rows = $payload->getData();
+
 
             $userId = AuthProvider::loggedIn() ? AuthProvider::getUserInfo('id') : null;
             foreach ($rows as &$row) {
-                // Authenticated user can see their private info
-                if ($userId && $userId === $row['id']) {
-                    continue;
-                }
-
-                $row = ArrayUtils::omit($row, [
+                $omit = [
                     'password',
                     'salt',
-                    'token',
-                    'access_token',
-                    'reset_token',
-                    'reset_expiration',
-                    'email_messages',
-                    'last_access',
-                    'last_page'
-                ]);
+                ];
+
+                // Authenticated user can see their private info
+                if ($acl->getGroupId() != 1 && $userId && $userId !== $row['id']) {
+                    $omit = array_merge($omit, [
+                        'token',
+                        'access_token',
+                        'reset_token',
+                        'reset_expiration',
+                        'email_messages',
+                        'last_access',
+                        'last_page'
+                    ]);
+                }
+
+                $row = ArrayUtils::omit($row, $omit);
             }
 
 

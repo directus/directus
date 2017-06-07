@@ -20,7 +20,7 @@ define(function(require, exports, module) {
   }
 
   module.exports = {
-    getUsers: function(locales, timezones) {
+    getUsers: function (locales, timezones) {
       var statusName = app.statusMapping.status_name;
       var defaultTimezone = app.timezone;
       var defaultLocale = app.locale;
@@ -362,6 +362,7 @@ define(function(require, exports, module) {
             "required":true,
             "ui":"random",
             "options": {
+              "string_length": 32,
               "auto_generate": 1,
               "allow_any_value": 1
             }

@@ -9,6 +9,12 @@ function(app, Backbone, EntriesModel, moment) {
 
   return EntriesModel.extend({
 
+    isAdmin: function () {
+      var group = this.get('group');
+
+      return group.id === 1;
+    },
+
     getAvatar: function() {
       var currentUserAvatar = this.get('avatar');
       if (this.get('avatar_file_id') && this.get('avatar_file_id').has('name')) {
