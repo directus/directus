@@ -1161,7 +1161,13 @@ class RelationalTableGateway extends BaseTableGateway
 
             $statuses = array_filter($statuses);
             if ($statuses) {
-                $query->whereIn(TableSchema::getStatusColumn($this->getTable()), $statuses);
+                // TODO: Add a way to add this without duplication to all main queries
+                $statusColumn = sprintf('%s%s%s',
+                    $this->getTable(),
+                    $this->getAdapter()->getPlatform()->getIdentifierSeparator(),
+                    TableSchema::getStatusColumn($this->getTable())
+                );
+                $query->whereIn($statusColumn, $statuses);
             }
         }
 
