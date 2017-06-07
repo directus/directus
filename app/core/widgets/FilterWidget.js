@@ -5,7 +5,7 @@ define([
   'underscore',
   'helpers/sort',
   'handlebars'
-], function(app, __t, Backbone, _, SortHelper, Handlebars) {
+], function (app, __t, Backbone, _, SortHelper, Handlebars) {
 
   'use strict';
 
@@ -132,9 +132,8 @@ define([
       var self = this;
       var $element = $(event.currentTarget);
       var searchString = $element.val();
-      var doSearch = this.searchString !== $element.val();
+      var doSearch = this.searchString !== searchString;
 
-      this.searchString = $element.val();
       var callSearch = function () {
         // if the new search string is different than the current search string
         if (!doSearch) {
@@ -152,21 +151,28 @@ define([
       };
 
       if (event.which == 13) {
+        this.clearSearchTimeout();
         callSearch();
 
         return;
       }
 
-      if (this.searchTimeOut) {
-        clearTimeout(this.searchTimeOut);
-        this.searchTimeOut = null;
-      }
+      this.clearSearchTimeout();
 
       this.searchTimeOut = setTimeout(callSearch, 1000);
     },
 
+    clearSearchTimeout: function () {
+      if (this.searchTimeOut) {
+        clearTimeout(this.searchTimeOut);
+        this.searchTimeOut = null;
+      }
+    },
+
     search: function (searchString) {
       var filterIndex = -1;
+
+      this.searchString = searchString;
 
       _.each(this.options.filters, function (item, index) {
         if (item.filterData.id === 'q') {
@@ -186,6 +192,7 @@ define([
       }
 
       this.updateFilters();
+      this.saveFilterString();
 
       return this.collection.fetch();
     },
@@ -548,8 +555,14 @@ define([
         });
 
         filters.forEach(function (search) {
-          if (search) {
+          if (!search) {
+            return false;
+          }
+
+          if (search.type) {
             string.push(search.id.replace(':','\\:') + ":" + search.type.replace(':','\\:') + ":" + String(search.value).replace(':','\\:').replace(',','\\,'));
+          } else {
+            string.push(search.id.replace(':','\\:') + ":" + String(search.value).replace(':','\\:').replace(',','\\,'));
           }
         });
 
