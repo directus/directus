@@ -137,7 +137,7 @@ define([
       this.searchString = doSearch;
       var callSearch = function () {
         // if the new search string is different than the current search string
-        if (doSearch) {
+        if (!doSearch) {
           return;
         }
 
