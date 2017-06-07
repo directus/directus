@@ -355,13 +355,27 @@ define(function(require, exports, module) {
       return _.contains(this.getReadFieldBlacklist(), attribute);
     },
 
+    updateFiltersFromPreferences: function () {
+      if (this.preferences) {
+        this.filters = _.extend(this.filters, this.preferences.getFilters());
+      }
+    },
+
     initialize: function (models, options) {
       this.structure = options.structure;
       this.privileges = options.privileges;
+      this.preferences = options.preferences;
       this.table = options.table;
+      this.filters = options.filters || {};
 
-      if (options.rowsPerPage) this.rowsPerPage = options.rowsPerPage;
-      if (options.filters) this.filters = options.filters;
+      if (options.rowsPerPage) {
+        this.rowsPerPage = options.rowsPerPage;
+      }
+
+      if (this.preferences) {
+        this.updateFiltersFromPreferences();
+        this.listenTo(this.preferences, 'sync', this.updateFiltersFromPreferences);
+      }
 
       this.url = options.url || this.table.get('url') + '/rows';
 

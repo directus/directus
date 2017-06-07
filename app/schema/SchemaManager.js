@@ -274,13 +274,14 @@ define(function(require, exports, module) {
     },
 
     // Registers user preferences for tables (sort, visible columns etc)
-    registerPreferences: function(data) {
-      _.each(data, function(preference) {
-        var add = "";
-        if(preference.title !== null)
-        {
-          add = ":" + preference.title;
+    registerPreferences: function (data) {
+      _.each(data, function (preference) {
+        var add = '';
+
+        if(preference.title !== null) {
+          add = ':' + preference.title;
         }
+
         preferences[preference.table_name + add] = new PreferenceModel(preference, {
           // TODO: Move this into the preference model
           // and do some back flip when the table is not defined yet

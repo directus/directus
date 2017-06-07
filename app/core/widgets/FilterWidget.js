@@ -134,7 +134,7 @@ define([
       var searchString = $element.val();
       var doSearch = this.searchString !== $element.val();
 
-      this.searchString = doSearch;
+      this.searchString = $element.val();
       var callSearch = function () {
         // if the new search string is different than the current search string
         if (!doSearch) {
@@ -382,7 +382,9 @@ define([
           // Global filters doesn't have a columnName property
           // ex. ?q=word
           if (!data.filters[i].columnName) {
-            data.filters.splice(i, 1);
+            // mark as null to delete later
+            // prevent reindexing of filters array
+            data.filters[i] = null;
             return;
           }
           var template = Handlebars.compile(that.getFilterDataType(data.filters[i].columnName));
@@ -398,6 +400,7 @@ define([
         }
       });
 
+      data.filters = _.compact(data.filters);
       data.searchString = this.searchString;
       data.hasFilters = this.options.filters.length > 0;
 
@@ -524,7 +527,7 @@ define([
         this.collection.setFilter('currentPage', 0);
       }
 
-      if(app.router.loadedPreference) {
+      if (app.router.loadedPreference) {
         if(this.basePage) {
           this.basePage.removeHolding(this.cid);
         }
@@ -670,6 +673,7 @@ define([
           }
         });
       }
+
       this.updateFilters(true);
       //this.collection.fetch();
       this.render();
