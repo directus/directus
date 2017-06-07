@@ -339,6 +339,8 @@ class MySQLSchema extends AbstractSchema
             'key' => 'COLUMN_KEY',
             'extra' => 'EXTRA',
             'char_length' => 'CHARACTER_MAXIMUM_LENGTH',
+            'precision' => 'NUMERIC_PRECISION',
+            'scale' => 'NUMERIC_SCALE',
             'is_nullable' => 'IS_NULLABLE',
             'default_value' => 'COLUMN_DEFAULT',
             'comment' => new Expression('IFNULL(comment, COLUMN_COMMENT)'),
@@ -387,6 +389,8 @@ class MySQLSchema extends AbstractSchema
             'key' => new Expression('NULL'),
             'extra' => new Expression('NULL'),
             'char_length' => new Expression('NULL'),
+            'precision' => new Expression('NULL'),
+            'scale' => new Expression('NULL'),
             'is_nullable' => new Expression('"NO"'),
             'default_value' => new Expression('NULL'),
             'comment',
@@ -627,24 +631,60 @@ class MySQLSchema extends AbstractSchema
     /**
      * @inheritdoc
      */
+    public function getDecimalTypes()
+    {
+        return [
+            'double',
+            'decimal',
+            'float'
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getIntegerTypes()
+    {
+        return [
+            'year',
+            'bigint',
+            'smallint',
+            'mediumint',
+            'int',
+            'long',
+            'tinyint'
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getNumericTypes()
+    {
+        return array_merge($this->getDecimalTypes(), $this->getIntegerTypes());
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function isDecimalType($type)
+    {
+        return $this->isType($type, $this->getDecimalTypes());
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function isIntegerType($type)
+    {
+        return $this->isType($type, $this->getIntegerTypes());
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function isNumericType($type)
     {
-        $type = strtolower($type);
-        $isNumeric = false;
-
-        switch ($type) {
-            case 'year':
-            case 'bigint':
-            case 'smallint':
-            case 'mediumint':
-            case 'int':
-            case 'long':
-            case 'tinyint':
-            case 'float':
-                $isNumeric = true;
-                break;
-        }
-
-        return $isNumeric;
+        return in_array(strtolower($type), $this->getNumericTypes());
     }
 }

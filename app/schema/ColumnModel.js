@@ -18,7 +18,7 @@ define(function(require, exports, module) {
       var tableName = '';
 
       if (_.isEmpty(ui)) {
-        throw new Error("Column '"+ result.id + "' in table '" + tableName + "' does not have a UI");
+        throw new Error('Column "' + result.id + '" in table "' + tableName + '" does not have a UI');
       }
 
       // if the url was set explicit with an string
@@ -137,7 +137,8 @@ define(function(require, exports, module) {
 
     getColumnTypeLength: function () {
       var columnType = this.get('column_type') || '';
-      var match = columnType.match(/\((\d+)\)/);
+      var pattern = /\((\d+(,(\d+))?)\)/;
+      var match = columnType.match(pattern);
 
       return match ? match[1] : null;
     },

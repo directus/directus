@@ -166,7 +166,10 @@ class ColumnsService extends AbstractService
     {
         if (ArrayUtils::has($data, 'default_value') || ArrayUtils::has($data, 'data_type')) {
             $adapter = $this->getTableGateway()->getAdapter();
+            $schemaManager = TableSchema::getSchemaManagerInstance();
             $columnObject = $this->getColumnObject($tableName, $columnName);
+            $newColumn = new Custom($columnName);
+            $alterTable = new AlterTable($tableName);
 
             $options = [
                 'comment' => $columnObject->getComment()
@@ -184,26 +187,51 @@ class ColumnsService extends AbstractService
                 $options['zerofill'] = true;
             }
 
-            $alterTable = new AlterTable($tableName);
-            $newColumn = new Custom(
-                $columnName,
-                $columnObject->getLength(),
-                $columnObject->isNullable(),
-                $columnObject->getDefaultValue(),
-                $options
-            );
+            $newColumn->setOptions($options);
 
+            // TODO: Avoid using get length to get the char length
+            // instead it will return the char length or the numeric length
+            // depending of the column data type
+
+            if (ArrayUtils::has($data, 'length')) {
+                $length = ArrayUtils::get($data, 'length');
+                // hotfix: parse the length to integer
+                $dataType = ArrayUtils::get($data, 'data_type', $columnObject->getType());
+                if ($schemaManager->isIntegerType($dataType)) {
+                    $newColumn->setLength((int) $length);
+                } else if ($schemaManager->isDecimalType($dataType)) {
+                    $lengthParts = explode(',', $length);
+                    $newColumn->setDigits(array_shift($lengthParts));
+                    $newColumn->setDecimal(array_pop($lengthParts));
+                } else {
+                    $newColumn->setLength($length);
+                }
+            } else {
+                if ($columnObject->getPrecision()) {
+                    $newColumn->setDigits($columnObject->getPrecision());
+                    $newColumn->setDecimal($columnObject->getScale());
+                } else {
+                    $newColumn->setLength($columnObject->getLength());
+                }
+            }
+
+            $newColumn->setNullable($columnObject->isNullable());
+
+            $defaultValue = $columnObject->getDefaultValue();
             if (ArrayUtils::has($data, 'default_value')) {
                 $value = $data['default_value'];
                 $type = $columnObject->getType();
                 $length = $columnObject->getLength();
                 $schemaManager = $this->getTableGateway()->getSchemaManager();
+
                 if ($columnObject->isNullable() && empty($value)) {
                     $value = null;
                 }
+
                 $defaultValue = $schemaManager->castDefaultValue($value, $type, $length);
-                $newColumn->setDefault($defaultValue);
             }
+
+            $newColumn->setDefault($defaultValue);
 
             // @TODO: add a list of supported types by databases
             $type = ArrayUtils::get($data, 'data_type', $columnObject->getDataType());

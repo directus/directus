@@ -145,4 +145,12 @@ abstract class AbstractSchema implements SchemaInterface
 
         return $interfaceName;
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function isType($type, array $list)
+    {
+        return in_array(strtolower($type), $list);
+    }
 }

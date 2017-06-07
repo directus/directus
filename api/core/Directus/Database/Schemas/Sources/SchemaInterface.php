@@ -186,15 +186,6 @@ interface SchemaInterface
     public function castValue($data, $type = null);
 
     /**
-     * Checks whether the given type is numeric type
-     *
-     * @param $type
-     *
-     * @return bool
-     */
-    public function isNumericType($type);
-
-    /**
      * Gets the column type default interface name
      *
      * @param $type - Column type
@@ -202,4 +193,62 @@ interface SchemaInterface
      * @return string
      */
     public function getColumnDefaultInterface($type);
+
+    /**
+     * Checks if the given type exists in the list
+     *
+     * @param $type
+     * @param array $list
+     *
+     * @return bool
+     */
+    public function isType($type, array $list);
+
+    /**
+     * Gets Integer data types
+     *
+     * @return array
+     */
+    public function getIntegerTypes();
+
+    /**
+     * Checks whether the given type is integer type
+     *
+     * @param $type
+     *
+     * @return bool
+     */
+    public function isIntegerType($type);
+
+    /**
+     * Gets Decimal data types
+     *
+     * @return array
+     */
+    public function getDecimalTypes();
+
+    /**
+     * Checks whether the given type is decimal type
+     *
+     * @param $type
+     *
+     * @return bool
+     */
+    public function isDecimalType($type);
+
+    /**
+     * Gets Numeric data types
+     *
+     * @return mixed
+     */
+    public function getNumericTypes();
+
+    /**
+     * Checks whether the given type is numeric type
+     *
+     * @param $type
+     *
+     * @return bool
+     */
+    public function isNumericType($type);
 }

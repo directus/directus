@@ -438,6 +438,30 @@ class SchemaManager
     }
 
     /**
+     * Checks whether the given type is integer type
+     *
+     * @param $type
+     *
+     * @return bool
+     */
+    public function isIntegerType($type)
+    {
+        return $this->source->isIntegerType($type);
+    }
+
+    /**
+     * Checks whether the given type is decimal type
+     *
+     * @param $type
+     *
+     * @return bool
+     */
+    public function isDecimalType($type)
+    {
+        return $this->source->isDecimalType($type);
+    }
+
+    /**
      * Cast default value
      *
      * @param $value

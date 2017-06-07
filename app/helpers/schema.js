@@ -6,16 +6,20 @@ define([
 
   // @TODO: Add an object that handle supported values by types
   var dateTypes = ['DATETIME', 'DATE'];
+  var decimalTypes = [
+    'FLOAT',
+    'DOUBLE',
+    'DECIMAL',
+    'NUMERIC'
+  ];
   var numericTypes = [
     'TINYINT',
     'SMALLINT',
     'MEDIUMINT',
     'INT',
-    'FLOAT',
     'YEAR',
-    'DOUBLE',
     'BIGINT'
-  ];
+  ].concat(decimalTypes);
 
   var stringTypes = [
     'VARCHAR',
@@ -69,6 +73,10 @@ define([
 
   var isNumericType = function (type) {
     return numericTypes.indexOf(type) >= 0;
+  };
+
+  var isDecimalType = function (type) {
+    return decimalTypes.indexOf(type) >= 0;
   };
 
   var supportsLength = function (type) {
@@ -129,6 +137,7 @@ define([
     isSystem: isSystem,
     getNumericInterfaceTypes: getNumericInterfaceTypes,
     isNumericType: isNumericType,
+    isDecimalType: isDecimalType,
     isStringType: isStringType,
     dateColumns: dateColumns,
     numericColumns: numericColumns,

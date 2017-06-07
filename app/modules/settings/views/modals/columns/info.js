@@ -197,13 +197,14 @@ define([
         data.SHOW_LENGTH = true;
 
         // TODO: Set a default length for each data type
-        if (SchemaHelper.isNumericType(this.selectedDataType) && !this.model.get('length')) {
-          this.model.set({length: 11});
-        } else if (SchemaHelper.isStringType(this.selectedDataType) && !this.model.get('length')) {
+        var changeLength = this.model.isNew() || !this.model.get('length');
+        if (SchemaHelper.isNumericType(this.selectedDataType) && changeLength) {
+          this.model.set({length: SchemaHelper.isDecimalType(this.selectedDataType) ? '10,2' : 11});
+        } else if (SchemaHelper.isStringType(this.selectedDataType) && changeLength) {
           this.model.set({length: 100});
         }
 
-        data.length = this.model.get('length');
+        data.length = this.model.getLength();
       } else {
         delete data.length;
         if (this.model.has('length')) {
