@@ -933,8 +933,20 @@ $app->map("/$v/tables/:table/rows/?", function ($table) use ($acl, $ZendDb, $par
 
     switch ($app->request()->getMethod()) {
         case 'POST':
-            $newRecord = $entriesService->createEntry($table, $payload, $params);
-            $params[$tableGateway->primaryKeyFieldName] = $newRecord[$tableGateway->primaryKeyFieldName];
+            if ($table == 'directus_users') {
+                $columnData = $tableGateway->findOneBy('email', $payload['email']);
+                if (count($columnData) > 0) {
+
+                    $payload['id'] = $columnData['id'];
+                    $tableGateway->updateCollection($payload);
+                } else {
+                    $newRecord = $entriesService->createEntry($table, $payload, $params);
+                    $params[$tableGateway->primaryKeyFieldName] = $newRecord[$tableGateway->primaryKeyFieldName];
+                }
+            } else {
+                $newRecord = $entriesService->createEntry($table, $payload, $params);
+                $params[$tableGateway->primaryKeyFieldName] = $newRecord[$tableGateway->primaryKeyFieldName];
+            }
             break;
         case 'PUT':
             if (!is_numeric_array($payload)) {
