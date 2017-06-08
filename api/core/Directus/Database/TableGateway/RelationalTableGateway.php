@@ -1047,7 +1047,7 @@ class RelationalTableGateway extends BaseTableGateway
         $columns = TableSchema::getAllTableColumns($this->getTable());
         $table = $this->getTable();
 
-        $query->nestOrWhere(function (Builder $query) use ($columns, $search, $table) {
+        $query->nestWhere(function (Builder $query) use ($columns, $search, $table) {
             foreach ($columns as $column) {
                 if (!$column->isAlias()) {
                     $columnName = $statusColumn = sprintf('%s%s%s',
@@ -1061,7 +1061,7 @@ class RelationalTableGateway extends BaseTableGateway
             }
         });
 
-        $query->nestOrWhere(function (Builder $query) use ($columns, $search, $table) {
+        $query->nestWhere(function (Builder $query) use ($columns, $search, $table) {
             foreach ($columns as $column) {
                 if ($column->isManyToOne()) {
                     $relationship = $column->getRelationship();

@@ -577,7 +577,13 @@ class Builder
                 $where = $select->where->nest();
                 // @NOTE: only allow one level nested
                 foreach($query->getWheres() as $nestCondition) {
-                    $where->addPredicate($this->buildConditionExpression($nestCondition), $logical);
+                    if (ArrayUtils::get($nestCondition, 'logical') == 'or') {
+                        $whereLogical = $where::OP_OR;
+                    } else {
+                        $whereLogical = $where::OP_AND;
+                    }
+
+                    $where->addPredicate($this->buildConditionExpression($nestCondition), $whereLogical);
                     $condition = null;
                 }
                 $where->unnest();
