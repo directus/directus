@@ -1,26 +1,39 @@
 define([
+  'backbone',
   'underscore',
   'handlebars',
   'core/UIView',
   'core/t'
-], function (_, Handlebars, UIView, __t) {
+], function (Backbone, _, Handlebars, UIView, __t) {
   'use strict';
 
   return UIView.extend({
+
+    template: 'many_to_one/input',
+
     events: {
       'change select': function (event) {
         var model = this.model.get(this.name);
-        var attributesName = _.keys(model.attributes);
         var $target = $(event.currentTarget);
         var selectedId = parseInt($target.find(':selected').val(), 10);
         var attributes = this.collection.get(selectedId).toJSON();
+        var primaryColumn = this.columnSchema.table.get('primary_column') || 'id';
+        var attributesName;
 
+        // TODO: Set proper model based on table name
+        // ex: GroupsModel for directus_groups
+        if (!(model instanceof Backbone.Model)) {
+          model = new Backbone.Model();
+          model.set(primaryColumn, selectedId);
+        }
+
+        attributesName = _.keys(model.attributes);
         model.clear();
         model.set(_.pick(attributes, attributesName));
+
+        this.model.set(this.name, model);
       }
     },
-
-    template: 'many_to_one/input',
 
     serialize: function () {
       var optionTemplate = Handlebars.compile(this.options.settings.get('visible_column_template'));
