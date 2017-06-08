@@ -73,6 +73,19 @@ define([
       'click .js-remove': function (event) {
         var index = $(event.target).parent().index();
         var value = this.options.filters[index].filterData.value;
+        var hasSearch = false;
+
+        _.each(this.options.filters, function (filter) {
+          var filterData = filter.filterData;
+          if (filterData && filterData.id === 'q' && !filterData.type) {
+            hasSearch = true;
+          }
+        });
+
+        if (hasSearch) {
+          index++;
+        }
+
         this.options.filters.splice(index, 1);
 
         this.updateFilters();
@@ -84,15 +97,16 @@ define([
         this.render();
       },
 
-      'change .adv-search-col-id': function (e) {
-        var selectedVal = $(e.target).val();
-        if(selectedVal !== "") {
+      'change .adv-search-col-id': function (event) {
+        var selectedVal = $(event.target).val();
+
+        if (selectedVal !== '') {
           this.addNewFilter(selectedVal);
         }
       },
 
-      'change .filter_ui': function (e) {
-        this.processFilterChange(e);
+      'change .filter_ui': function (event) {
+        this.processFilterChange(event);
       }
     },
 
@@ -232,10 +246,13 @@ define([
       this.collection.fetch();
     },
 
-    processFilterChange: function(event) {
+    processFilterChange: function (event) {
       var $element = $(event.target);
       var $filter = $(event.target).parent();
       var type = 'like';
+      var hasSearch = false;
+      var index = $filter.index();
+
       if ($(event.target).prop('tagName') === 'SELECT') {
         type = '=';
       }
@@ -246,15 +263,26 @@ define([
         value: this.mysql_real_escape_string($element.val())
       };
 
-      if($element.is(':checkbox')) {
+      if ($element.is(':checkbox')) {
         if($element.prop('checked')) {
           data.value = 1;
         } else {
           data.value = 0;
         }
       }
-      this.selfChanged = true;
-      this.options.filters[$filter.index()].filterData = data;
+
+      _.each(this.options.filters, function (filter) {
+        var filterData = filter.filterData;
+        if (filterData && filterData.id === 'q' && !filterData.type) {
+          hasSearch = true;
+        }
+      });
+
+      if (hasSearch) {
+        index++;
+      }
+
+      this.options.filters[index].filterData = data;
       this.updateFilters();
       this.collection.fetch();
       this.saveFilterString();
@@ -335,7 +363,7 @@ define([
       }
     },
 
-    serialize: function() {
+    serialize: function () {
       var data = {resultCount: this.collection.length};
       var structure = this.collection.structure;
       var table = this.collection.getTable();
@@ -416,7 +444,6 @@ define([
       data.filters = _.compact(data.filters);
       data.searchString = this.searchString;
       data.hasFilters = this.options.filters.length > 0;
-
       return data;
     },
 
@@ -638,6 +665,7 @@ define([
         var that = this;
         search.forEach(function (filter) {
           var data = {};
+
           filter = filter.replace('\\:', '%20');
           filter = filter.split(':');
 
@@ -647,6 +675,11 @@ define([
               id: filter[0].replace('%20',':'),
               value: filter[1].replace('%20',':').replace('%21',',')
             };
+
+            // Do not add global search filter into the filters list
+            if (data.filterData && data.filterData.id === 'q') {
+              return false;
+            }
 
             that.options.filters.push(data);
           } else if (filter.length === 3) {

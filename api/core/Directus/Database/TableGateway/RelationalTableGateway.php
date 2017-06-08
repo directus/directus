@@ -1047,11 +1047,19 @@ class RelationalTableGateway extends BaseTableGateway
         $columns = TableSchema::getAllTableColumns($this->getTable());
         $table = $this->getTable();
 
-        foreach ($columns as $column) {
-            if (!$column->isAlias()) {
-                $query->orWhereLike($column->getTableName() . '.' . $column->getName(), $search);
+        $query->nestOrWhere(function (Builder $query) use ($columns, $search, $table) {
+            foreach ($columns as $column) {
+                if (!$column->isAlias()) {
+                    $columnName = $statusColumn = sprintf('%s%s%s',
+                        $column->getTableName(),
+                        $this->getAdapter()->getPlatform()->getIdentifierSeparator(),
+                        $column->getName()
+                    );
+
+                    $query->orWhereLike($columnName, $search);
+                }
             }
-        }
+        });
 
         $query->nestOrWhere(function (Builder $query) use ($columns, $search, $table) {
             foreach ($columns as $column) {
@@ -1063,7 +1071,12 @@ class RelationalTableGateway extends BaseTableGateway
                         $query->nestOrWhere(function (Builder $query) use ($relatedTableColumns, $relatedTable, $search) {
                             foreach ($relatedTableColumns as $column) {
                                 if (!$column->isAlias()) {
-                                    $query->orWhereLike($column->getTableName() . '.' . $column->getName(), $search);
+                                    $columnName = $statusColumn = sprintf('%s%s%s',
+                                        $column->getTableName(),
+                                        $this->getAdapter()->getPlatform()->getIdentifierSeparator(),
+                                        $column->getName()
+                                    );
+                                    $query->orWhereLike($columnName, $search);
                                 }
                             }
                         });
