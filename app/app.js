@@ -23,6 +23,14 @@ define(function (require, exports, module) {
   // Sync changes between views and model
   require('plugins/backbone.stickit');
 
+  // hotfix: add isTracking function to all models
+  // TODO: Implement this into the Directus base model object
+  _.extend(Backbone.Model.prototype, {
+    isTracking: function () {
+      return this._isTracking;
+    }
+  });
+
   // Globally load Bootstrap plugins
   require('plugins/bootstrap-dropdown');
   require('plugins/typeahead');

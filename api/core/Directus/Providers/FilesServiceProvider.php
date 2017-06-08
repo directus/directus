@@ -26,7 +26,7 @@ class FilesServiceProvider implements ServiceProviderInterface
         $app->container->singleton('files', function(Set $container) {
             $filesystem = $container->get('filesystem');
             $config = $container->get('config');
-            $config = is_array($config) ? ArrayUtils::get($config, 'filesystem', []) : [];
+            $config = $config->get('filesystem', []);
             $settings = $container->get('fileSettings');
             $emitter = $container->get('hookEmitter');
 
