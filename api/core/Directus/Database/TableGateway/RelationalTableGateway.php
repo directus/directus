@@ -1049,20 +1049,6 @@ class RelationalTableGateway extends BaseTableGateway
 
         $query->nestWhere(function (Builder $query) use ($columns, $search, $table) {
             foreach ($columns as $column) {
-                if (!$column->isAlias()) {
-                    $columnName = $statusColumn = sprintf('%s%s%s',
-                        $column->getTableName(),
-                        $this->getAdapter()->getPlatform()->getIdentifierSeparator(),
-                        $column->getName()
-                    );
-
-                    $query->orWhereLike($columnName, $search);
-                }
-            }
-        });
-
-        $query->nestWhere(function (Builder $query) use ($columns, $search, $table) {
-            foreach ($columns as $column) {
                 if ($column->isManyToOne()) {
                     $relationship = $column->getRelationship();
                     $relatedTable = $relationship->getRelatedTable();
@@ -1096,7 +1082,15 @@ class RelationalTableGateway extends BaseTableGateway
                         }
                     });
                 } else if ($column->isManyToMany()) {
-                    // @TODO:
+                    // @TODO: Implement Many to Many search
+                } else if (!$column->isAlias()) {
+                    $columnName = $statusColumn = sprintf('%s%s%s',
+                        $column->getTableName(),
+                        $this->getAdapter()->getPlatform()->getIdentifierSeparator(),
+                        $column->getName()
+                    );
+
+                    $query->orWhereLike($columnName, $search);
                 }
             }
         });
