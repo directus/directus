@@ -34,4 +34,7 @@ customs/uis/*
 .gulp-scss-cache
 node_modules
 storage
+bin/composer
+composer-setup.php
+package-lock.json
 
