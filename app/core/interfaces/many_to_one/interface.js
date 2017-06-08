@@ -51,6 +51,12 @@ define([
 
       data = _.sortBy(data, 'name');
 
+      // Set the first value to the column when the record is new
+      // This prevent assigning the incorrect (null/empty) value to the column
+      if (data.length > 0 && !this.options.settings.get('allow_null') && this.model.isNew()) {
+        this.model.set(this.name, _.first(data).id);
+      }
+
       return {
         canEdit: this.canEdit,
         name: this.options.name,
