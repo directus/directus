@@ -24,6 +24,7 @@ class Tracking extends Route
     // /1.1/users/tracking/page
     public function page()
     {
+        $acl = $this->app->container->get('acl');
         $dbConnection = $this->app->container->get('zenddb');
         $tableGateway = new BaseTableGateway('directus_users', $dbConnection);
         $lastPage = $this->app->request()->post('last_page');
@@ -32,7 +33,7 @@ class Tracking extends Route
             'ip' => get_request_ip(),
             'last_page' => $lastPage,
             'last_access' => DateUtils::now()
-        ]);
+        ], ['id' => $acl->getUserId()]);
 
         return $this->app->response([
             'success' => (bool) $updated
