@@ -67,13 +67,13 @@ $app = Bootstrap::get('app');
  * Load Registered Hooks
  */
 $config = Bootstrap::get('config');
-if (array_key_exists('hooks', $config)) {
-    load_registered_hooks($config['hooks'], false);
+if ($config->has('hooks')) {
+    load_registered_hooks($config->get('hooks'), false);
 }
 
-if (array_key_exists('filters', $config)) {
+if ($config->get('filters')) {
     // set seconds parameter "true" to add as filters
-    load_registered_hooks($config['filters'], true);
+    load_registered_hooks($config->get('filters'), true);
 }
 
 $app->add(new \Directus\Slim\CorsMiddleware());
