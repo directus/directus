@@ -87,22 +87,39 @@ define([
       toolbar = (styleFormats.length > 0 ? 'styleselect | ' : '');
 
       if (toolbarOptions.length > 0) {
-        toolbar += toolbarOptions.reduce(function (str, option) {
-          if (str === 'inline') {
-            return str = inline.reduce(function (inlineStr, option) {
-              return inlineStr += ' ' + option;
-            });
-          } else if (option === 'alignment') {
-            return str += alignment.reduce(function (alignmentStr, option) {
-              return alignmentStr += ' ' + option;
-            });
-          } else {
+        // Convert inline / alignment to appropriate options & add to toolbar
+        toolbar = toolbarOptions
+          .map(function (option) {
+            if (option === 'inline') {
+              return inline.reduce(function (inlineStr, inlineOption) {
+                return inlineStr += ' ' + inlineOption;
+              });
+            } else if (option === 'alignment') {
+              return alignment.reduce(function (alignmentStr, alignmentOption) {
+                return alignmentStr += ' ' + alignmentOption;
+              });
+            } else {
+              return option;
+            }
+          })
+          .reduce(function (str, option) {
             return str += ' ' + option;
-          }
-        });
+          });
       }
 
       toolbar += settings.get('custom_toolbar_options');
+
+      // Parse custom_wrapper and add to toolbar
+      var customWrapperSettings;
+      if (settings.get('custom_wrapper').length > 0) {
+        try {
+          customWrapperSettings = JSON.parse(settings.get('custom_wrapper'));
+        } catch (err) {
+          console.error(err);
+        }
+
+        toolbar += ' | ' + Object.keys(customWrapperSettings).join(' ');
+      }
 
       this.editor = tinyMCE.init({
         plugins: 'table hr lists link image print pagebreak code insertdatetime media',
@@ -127,6 +144,34 @@ define([
           editor.on('undo', saveEditorContents);
           editor.on('redo', saveEditorContents);
           editor.on('NodeChange', saveEditorContents);
+
+          if (customWrapperSettings) {
+            var previewStyles = '';
+
+            Object.keys(customWrapperSettings).map(function(identifier) {
+              // Add preview styling if set
+              if (customWrapperSettings[identifier].selector && customWrapperSettings[identifier].preview_style) {
+                previewStyles += customWrapperSettings[identifier].selector + ' {' + customWrapperSettings[identifier].preview_style + '}\n';
+              }
+
+              // Add button to editor
+              editor.addButton(identifier, {
+                title: customWrapperSettings[identifier].name,
+                text: customWrapperSettings[identifier].label || customWrapperSettings[identifier].name.match(/\b(\w)/g).join('').toUpperCase(),
+                onclick: function () {
+                  var text = editor.selection.getContent({format: 'text'});
+                  if (text && text.length > 0) {
+                    editor.execCommand('mceInsertContent', false, customWrapperSettings[identifier].template.replace(/{{text}}/g, text));
+                  }
+                }
+              });
+            });
+
+            previewStyles += '';
+
+            // This = tinyMCE instance
+            this.contentStyles.push(previewStyles);
+          }
         }
       });
     },
@@ -135,7 +180,7 @@ define([
       // Remove tinyMCE
       tinyMCE.remove();
 
-      delete this.editor;
+      this.editor = null;
     }
   });
 });
