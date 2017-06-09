@@ -25,9 +25,9 @@ define(['underscore', 'core/UIView'], function (_, UIView) {
     },
 
     unbindEvents: function () {
-      var mirroredField = this.getMirroredFieldName();
-
-      $('.fields #' + mirroredField).off('keyup', _.bind(this.onKeyUp, this));
+      if (this.canUpdateSlug()) {
+        $('.fields #' + this.getMirroredFieldName()).off('keyup', _.bind(this.onKeyUp, this));
+      }
     },
 
     onKeyUp: function (event) {
