@@ -73,7 +73,7 @@ define(['underscore', 'core/UIView', 'core/t', 'select2'], function (_, UIView, 
 
       options = _.map(options, function (value, key) {
         var item = {};
-        var selected = ($.inArray(item.key, values) !== -1);
+        var selected = _.indexOf(values, key) >= 0;
 
         if (selected) {
           hasSelectedValue = true;
