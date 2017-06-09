@@ -48,17 +48,20 @@ define(['underscore', 'core/UIView', 'core/t', 'select2'], function (_, UIView, 
 
     updateCheckboxValue: function () {
       var values = this.$('input[type=checkbox]:checked');
-      var out = '';
+      var delimiter = this.options.settings.get('delimiter');
+      var out = [];
 
       if (values.length > 0) {
         for (var i = 0; i < values.length; i++) {
-          out += values[i].value + this.options.settings.get('delimiter');
+          out.push(values[i].value);
         }
 
-        out = out.substr(0, out.length - 1);
+        // Wrap values into delimiter
+        // easy to search values
+        out = delimiter + out.join(delimiter) + delimiter;
       }
 
-      this.$('input').val(out);
+      this.$('input#js-checkbox-values').val(out);
       this.model.set(this.name, out);
     },
 
