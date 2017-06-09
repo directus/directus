@@ -104,6 +104,18 @@ define([
 
       toolbar += settings.get('custom_toolbar_options');
 
+      // Parse custom_wrapper and add to toolbar
+      var customWrapperSettings;
+      if (settings.get('custom_wrapper').length > 0) {
+        try {
+          customWrapperSettings = JSON.parse(settings.get('custom_wrapper'));
+        } catch (err) {
+          console.error(err);
+        }
+
+        toolbar += ' | ' + Object.keys(customWrapperSettings).join(' ');
+      }
+
       this.editor = tinyMCE.init({
         plugins: 'table hr lists link image print pagebreak code insertdatetime media',
         selector: '#wysiwyg_' + this.options.name,
@@ -127,6 +139,34 @@ define([
           editor.on('undo', saveEditorContents);
           editor.on('redo', saveEditorContents);
           editor.on('NodeChange', saveEditorContents);
+
+          if (customWrapperSettings) {
+            var previewStyles = '';
+
+            Object.keys(customWrapperSettings).map(function(identifier) {
+              // Add preview styling if set
+              if (customWrapperSettings[identifier].selector && customWrapperSettings[identifier].preview_style) {
+                previewStyles += customWrapperSettings[identifier].selector + ' {' + customWrapperSettings[identifier].preview_style + '}\n';
+              }
+
+              // Add button to editor
+              editor.addButton(identifier, {
+                title: customWrapperSettings[identifier].name,
+                text: customWrapperSettings[identifier].name.match(/\b(\w)/g).join('').toUpperCase(),
+                onclick: function () {
+                  var text = editor.selection.getContent({format: 'text'});
+                  if (text && text.length > 0) {
+                    editor.execCommand('mceInsertContent', false, customWrapperSettings[identifier].template.replace(/{{text}}/g, text));
+                  }
+                }
+              });
+            });
+
+            previewStyles += '';
+
+            // This = tinyMCE instance
+            this.contentStyles.push(previewStyles);
+          }
         }
       });
     },
@@ -135,7 +175,7 @@ define([
       // Remove tinyMCE
       tinyMCE.remove();
 
-      delete this.editor;
+      this.editor = null;
     }
   });
 });
