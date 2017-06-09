@@ -36,6 +36,11 @@ class Entries extends Route
         }
 
         // GET all table entries
+        // If it's not a GET request, let's get entry no matter the status
+        if ($this->app->request()->isGet()) {
+            $params['status'] = null;
+        }
+
         $response = $tableGateway->getEntries($params);
 
         return $this->app->response($response);
@@ -105,6 +110,11 @@ class Entries extends Route
         $params['filters'] = [
             $primaryKeyFieldName => ['in' => $rowIds]
         ];
+
+        // If it's not a GET request, let's get entry no matter the status
+        if (!$this->app->request()->isGet()) {
+            $params['status'] = null;
+        }
 
         $entries = $tableGateway->getEntries($params);
 

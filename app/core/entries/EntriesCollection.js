@@ -142,6 +142,7 @@ define(function(require, exports, module) {
       var collection = this;
       var method = options.patch ? 'patch' : 'update';
       var success = options.success;
+      var primaryColumnName = this.table.getPrimaryColumnName();
 
       // if there's not models set
       // get all the collection models
@@ -150,8 +151,23 @@ define(function(require, exports, module) {
       }
 
       if (method === 'patch') {
+        if (_.isArray(options.attributes) && _.indexOf(options.attributes, primaryColumnName)) {
+          options.attributes.push(primaryColumnName);
+        }
+
         options.attrs = {rows: models.map(function(model) {
-          return model.toJSON({changed: true});
+          var attrs = model;
+
+          if (model instanceof Backbone.Model) {
+            attrs = model.toJSON({changed: true});
+          }
+
+          // Only save the given attributes
+          if (options.attributes) {
+            attrs = _.pick(attrs, options.attributes);
+          }
+
+          return attrs;
         })};
       } else {
         // @note: to support the API expecting a all rows inside rows property.

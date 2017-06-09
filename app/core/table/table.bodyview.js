@@ -51,7 +51,7 @@ function(app, Backbone, _, Sortable, Notification) {
       this.collection.trigger('select');
     },
 
-    serialize: function() {
+    serialize: function () {
       var rowIdentifiers, models, rows;
       var table = this.collection.table;
       var statusValues = this.collection.getFilter('status') || table.getStatusVisibleValues().join(',');
@@ -94,7 +94,7 @@ function(app, Backbone, _, Sortable, Notification) {
       }
 
       rows = _.map(models, function (model, i) {
-        var classes = _.map(rowIdentifiers, function(columnName) { return 'row-'+columnName+'-'+model.get(columnName); });
+        var classes = _.map(rowIdentifiers, function (columnName) { return 'row-'+columnName+'-'+model.get(columnName); });
         var highlight = _.contains(highlightIds, model.id);
         var selected = _.contains(this.selectedIds, model.id);
         var table = model.table;
@@ -149,9 +149,14 @@ function(app, Backbone, _, Sortable, Notification) {
       if (this.options.saveAfterDrop) {
         // collection.save({columns:['id','sort']});
         var self = this;
-        collection.save(null, {wait: true, patch: true, success: function() {
-          self.collection.setOrder(sortColumnName, 'ASC', {silent: false});
-        }});
+        collection.save(null, {
+          attributes: ['sort'],
+          wait: true,
+          patch: true,
+          success: function () {
+            self.collection.setOrder(sortColumnName, 'ASC', {silent: false});
+          }
+        });
       } else {
         this.collection.setOrder(sortColumnName, 'ASC',{silent: true});
       }
