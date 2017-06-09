@@ -259,10 +259,13 @@ define(function(require, exports, module) {
       var attributes = this.attributes;
 
       options = options || {};
-      options.data = options.data || {};
 
-      if (!options.data.status) {
-        options.data.preview = true;
+      if (method === 'read') {
+        options.data = options.data || {};
+
+        if (!options.data.status) {
+          options.data.preview = true;
+        }
       }
 
       if (method === 'patch' && options.includeRelationships) {
