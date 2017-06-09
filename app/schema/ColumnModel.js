@@ -123,6 +123,10 @@ define(function(require, exports, module) {
       return this.get('required') || !this.isNullable();
     },
 
+    isSystemColumn: function () {
+      return this.get('system') === true;
+    },
+
     isStatusColumn: function () {
       return this.table.getStatusColumnName() === this.id;
     },
@@ -133,6 +137,10 @@ define(function(require, exports, module) {
 
     isSortColumn: function () {
       return this.table.getSortColumnName() === this.id;
+    },
+
+    isInputVisible: function () {
+      return this.get('hidden_input') || !this.isSystemColumn();
     },
 
     getColumnTypeLength: function () {

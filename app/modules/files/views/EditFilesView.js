@@ -96,11 +96,11 @@ function(app, _, Backbone, __t, Directus, Notification, BasePageView, RightPane,
         return;
       }
 
-      // patch only the changed values
-      model.save(model.unsavedAttributes(), {
+      // Patch only the changed values if it's not new
+      model.save(model.isNew() ? null : model.unsavedAttributes(), {
         success: success,
         wait: true,
-        patch: true,
+        patch: !model.isNew(),
         includeRelationships: true
       });
     },

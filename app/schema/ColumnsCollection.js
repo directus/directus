@@ -19,6 +19,16 @@ define(function(require, exports, module) {
       return result.data ? result.data : result;
     },
 
+    getVisibleInputColumns: function () {
+      return this.filter(function (column) {
+        return column.isInputVisible();
+      });
+    },
+
+    getVisibleInputColumnsName: function () {
+      return _.invoke(this.getVisibleInputColumns(), 'get', 'column_name')
+    },
+
     getRelationalColumns: function() {
       return this.filter(function(column) {
         return column.hasRelated();
@@ -61,7 +71,5 @@ define(function(require, exports, module) {
       _.extend(this, _.pick(options, columnsOptions));
       this.bindEvents();
     }
-
   });
-
 });

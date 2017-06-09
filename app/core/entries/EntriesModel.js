@@ -72,15 +72,14 @@ define(function(require, exports, module) {
     // @todo: Why is this one called so many times?
     // @note: Use HTML5 form validation when possible
     validate: function (attributes, options) {
-      var errors = [];
       var structure = this.getStructure();
+      // Only validates visible columns
+      var columnsName = structure.getVisibleInputColumnsName();
+      var errors = [];
 
-      //only validates attributes that are part of the schema
-      attributes = _.pick(attributes, structure.pluck('column_name'));
-
-      _.each(attributes, function (value, key, list) {
-        //Column
-        var column = structure.get(key);
+      _.each(columnsName, function (columnName) {
+        var column = structure.get(columnName);
+        var value = attributes[columnName];
 
         // Don't validate hidden fields
         // @todo should this be adjusted since these fields are now posting in some cases?
@@ -88,8 +87,8 @@ define(function(require, exports, module) {
           return;
         }
 
-        // Don't validate ID
-        if (column.isPrimaryColumn()) {
+        // Don't validate System Columns
+        if (column.isSystemColumn()) {
           return;
         }
 
@@ -104,10 +103,10 @@ define(function(require, exports, module) {
 
         var mess = (!forceUIValidation && !skipSerializationIfNull && nullDisallowed && isNull) ?
           'The field cannot be empty'
-          : UIManager.validate(this, key, value);
+          : UIManager.validate(this, columnName, value);
 
         if (mess !== undefined) {
-          errors.push({attr: key, message: mess});
+          errors.push({attr: columnName, message: mess});
         }
       }, this);
 

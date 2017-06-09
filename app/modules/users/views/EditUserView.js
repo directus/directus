@@ -74,14 +74,14 @@ define([
         return;
       }
 
-      // patch only the changed values
-      model.save(model.unsavedAttributes(), {
+      // Patch only the changed values if it's not new
+      model.save(model.isNew() ? null : model.unsavedAttributes(), {
         success: success,
-        error: function(model, xhr, options) {
+        error: function (model, xhr, options) {
           console.error('err');
         },
         wait: true,
-        patch: true,
+        patch: !model.isNew(),
         includeRelationships: true
       });
     },
