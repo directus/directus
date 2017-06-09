@@ -157,7 +157,7 @@ define([
               // Add button to editor
               editor.addButton(identifier, {
                 title: customWrapperSettings[identifier].name,
-                text: customWrapperSettings[identifier].name.match(/\b(\w)/g).join('').toUpperCase(),
+                text: customWrapperSettings[identifier].label || customWrapperSettings[identifier].name.match(/\b(\w)/g).join('').toUpperCase(),
                 onclick: function () {
                   var text = editor.selection.getContent({format: 'text'});
                   if (text && text.length > 0) {
