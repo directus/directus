@@ -58,7 +58,7 @@ define([
                   var $checked = $('.js-select-row:checked');
                   var collection = tableView.collection;
                   var actionCollection = collection.clone();
-                  var options = {}, ids = [];
+                  var options = {wait: true}, ids = [];
 
                   actionCollection.reset();
                   $checked.each(function () {
