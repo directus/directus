@@ -9,14 +9,27 @@
 define([
   'core/UIView',
   'core/t'
-], function(UIView, __t) {
+], function(UIView) {
   return UIView.extend({
+
     template: 'numeric/input',
 
-    serialize: function() {
+    events: {
+      'input input': 'onChangeInput'
+    },
+
+    onChangeInput: function (event) {
+      this.updateValue(event.currentTarget.value);
+    },
+
+    updateValue: function (value) {
+      this.model.set(this.name, value);
+    },
+
+    serialize: function () {
       var value = '';
 
-      if(!isNaN(this.options.value)) {
+      if (!isNaN(this.options.value)) {
         value = this.options.value;
       }
 
@@ -35,6 +48,10 @@ define([
         this.options.schema.get('type') === 'CHAR'
       ) {
         step = 'any';
+      }
+
+      if (this.model.isNew()) {
+        this.updateValue(value);
       }
 
       return {
