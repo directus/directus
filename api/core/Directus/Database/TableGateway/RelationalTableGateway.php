@@ -621,7 +621,9 @@ class RelationalTableGateway extends BaseTableGateway
             unset($defaultParams['order']);
         }
 
-        if (!ArrayUtils::has($params, 'status')) {
+        if (ArrayUtils::get($params, 'preview')) {
+            $defaultParams['status'] = null;
+        } else if (!ArrayUtils::has($params, 'status')) {
             $config = Bootstrap::get('config');
             $defaultParams['status'] = $config->getPublishedStatuses();
         }
@@ -847,7 +849,11 @@ class RelationalTableGateway extends BaseTableGateway
                 $relationalColumns = ArrayUtils::intersection($paramColumns, $relationalColumns);
             }
 
-            $results = $this->loadRelationalDataByDepth($results, (int) $depth, $relationalColumns);
+            $relationalParams = [
+                'preview' => ArrayUtils::get($params, 'preview')
+            ];
+
+            $results = $this->loadRelationalDataByDepth($results, (int) $depth, $relationalColumns, $relationalParams);
         }
 
         // When the params column list doesn't include the primary key
@@ -890,10 +896,11 @@ class RelationalTableGateway extends BaseTableGateway
      * @param $result
      * @param int $maxDepth
      * @param array|null $columns
+     * @param array $params
      *
      * @return array
      */
-    protected function loadRelationalDataByDepth($result, $maxDepth = 0, array $columns = [])
+    protected function loadRelationalDataByDepth($result, $maxDepth = 0, array $columns = [], array $params = [])
     {
         if ((int) $maxDepth <= 0 || !$columns) {
             return $result;
@@ -902,9 +909,9 @@ class RelationalTableGateway extends BaseTableGateway
         $columns = $this->getTableSchema()->getColumns($columns);
 
         $maxDepth--;
-        $result = $this->loadManyToOneRelationships($result, $maxDepth, $columns);
-        $result = $this->loadOneToManyRelationships($result, $maxDepth, $columns);
-        $result = $this->loadManyToManyRelationships($result, $maxDepth, $columns);
+        $result = $this->loadManyToOneRelationships($result, $maxDepth, $columns, $params);
+        $result = $this->loadOneToManyRelationships($result, $maxDepth, $columns, $params);
+        $result = $this->loadManyToManyRelationships($result, $maxDepth, $columns, $params);
 
         return $result;
     }
@@ -1261,10 +1268,11 @@ class RelationalTableGateway extends BaseTableGateway
      * @param array $entries
      * @param int $depth
      * @param Column[] $columns
+     * @param array $params
      *
      * @return bool|array
      */
-    public function loadOneToManyRelationships($entries, $depth = 0, $columns)
+    public function loadOneToManyRelationships($entries, $depth = 0, $columns, array $params = [])
     {
         foreach ($columns as $alias) {
             if (!$alias->isAlias() || !$alias->isOneToMany()) {
@@ -1290,13 +1298,13 @@ class RelationalTableGateway extends BaseTableGateway
             $columns = TableSchema::getAllNonAliasTableColumnNames($relatedTableName);
             $relationalColumnName = $alias->getRelationship()->getJunctionKeyRight();
             $tableGateway = new RelationalTableGateway($relatedTableName, $this->adapter, $this->acl);
-            $results = $tableGateway->loadEntries([
+            $results = $tableGateway->loadEntries(array_merge([
                 'columns' => $columns,
                 'filters' => [
                     $relationalColumnName => ['in' => $ids]
                 ],
                 'depth' => $depth
-            ]);
+            ], $params));
 
             $relatedEntries = [];
             foreach ($results as $row) {
@@ -1336,10 +1344,11 @@ class RelationalTableGateway extends BaseTableGateway
      * @param array $entries
      * @param int $depth
      * @param Column[] $columns
+     * @param array $params
      *
      * @return bool|array
      */
-    public function loadManyToManyRelationships($entries, $depth = 0, $columns)
+    public function loadManyToManyRelationships($entries, $depth = 0, $columns, array $params = [])
     {
         foreach ($columns as $alias) {
             if (!$alias->isAlias() || !$alias->isManyToMany()) {
@@ -1391,13 +1400,13 @@ class RelationalTableGateway extends BaseTableGateway
                 return $query;
             };
 
-            $results = $relatedTableGateway->loadEntries([
+            $results = $relatedTableGateway->loadEntries(array_merge([
                 'columns' => $relatedTableColumns,
                 'filters' => [
                     $junctionKeyLeftColumn => ['in' => $ids]
                 ],
                 'depth' => $depth
-            ], $queryCallBack);
+            ], $params), $queryCallBack);
 
             $relationalColumnName = $alias->getName();
             $relatedEntries = [];
@@ -1488,12 +1497,13 @@ class RelationalTableGateway extends BaseTableGateway
      * @param array $entries Table rows
      * @param int $depth
      * @param Column[] $columns
+     * @param array $params
      *
      * @return array Revised table rows, now including foreign rows
      *
      * @throws Exception\RelationshipMetadataException
      */
-    public function loadManyToOneRelationships($entries, $depth = 0, $columns)
+    public function loadManyToOneRelationships($entries, $depth = 0, $columns, array $params = [])
     {
         // Identify the ManyToOne columns
         foreach ($columns as $column) {
@@ -1557,13 +1567,13 @@ class RelationalTableGateway extends BaseTableGateway
             // Fetch the foreign data
             $columnNames = TableSchema::getAllNonAliasTableColumnNames($relatedTable);
 
-            $results = $tableGateway->loadEntries([
+            $results = $tableGateway->loadEntries(array_merge([
                 'columns' => $columnNames,
                 'filters' => [
                     $primaryKeyName=> ['in' => $ids]
                 ],
                 'depth' => (int) $depth
-            ]);
+            ], $params));
 
             $relatedEntries = [];
             foreach ($results as $row) {

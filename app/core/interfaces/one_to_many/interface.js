@@ -234,6 +234,8 @@ define([
         return model.unsavedAttributes();
       });
 
+
+      // NOTE: Do we really need to fetch this data when we already have it on the main/parent model?
       if (!hasUnsavedModels && ids.length > 0) {
         // Make sure column we are joining on is respected
         var filters = relatedCollection.filters;
@@ -267,6 +269,9 @@ define([
         if (!filters.filters) {
           filters.filters = {};
         }
+
+        // Get all entries
+        filters.preview = true;
 
         // only fetch related items
         filters.filters[joinColumn] = this.model.id;
