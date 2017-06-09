@@ -66,16 +66,29 @@ define(['underscore', 'core/UIView', 'core/t', 'select2'], function (_, UIView, 
       var value = this.options.value || '';
       var values = value.split(this.options.settings.get('delimiter'));
       var options = this.options.settings.get('options');
+      var defaultValue = this.columnSchema.get('default_value');
+      var hasSelectedValue = false;
 
       options = parseOptions(options);
 
       options = _.map(options, function (value, key) {
         var item = {};
+        var selected = ($.inArray(item.key, values) !== -1);
+
+        if (selected) {
+          hasSelectedValue = true;
+        }
+
         item.value = value;
         item.key = key;
-        item.selected = ($.inArray(item.key, values) !== -1);
+        item.selected = selected;
+
         return item;
       });
+
+      if (!hasSelectedValue) {
+        this.model.set(this.name, defaultValue);
+      }
 
       return {
         options: options,
