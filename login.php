@@ -45,8 +45,7 @@ if (isset($_SESSION['_directus_login_redirect'])) {
 }
 
 $authList = [];
-$config = Bootstrap::get('config');
-$authConfig = \Directus\Util\ArrayUtils::get($config, 'auth');
+$authConfig = Bootstrap::get('config')->get('auth');
 if ($authConfig) {
     $services = array_keys($authConfig);
     foreach (\Directus\Authentication\Social::supported() as $service) {

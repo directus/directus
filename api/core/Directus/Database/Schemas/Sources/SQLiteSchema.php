@@ -61,8 +61,8 @@ class SQLiteSchema extends AbstractSchema
         $config = Bootstrap::get('config');
 
         $blacklist = [];
-        if (array_key_exists('tableBlacklist', $config)) {
-            $blacklist = $config['tableBlacklist'];
+        if ($config->has('tableBlacklist')) {
+            $blacklist = $config->get('tableBlacklist');
         }
 
         $select = new Select();

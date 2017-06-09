@@ -117,7 +117,7 @@ $exceptionView = new ExceptionView();
 $exceptionHandler = function (\Exception $exception) use ($app, $exceptionView) {
     $app->hookEmitter->run('application.error', [$exception]);
     $config = $app->container->get('config');
-    if (ArrayUtils::get($config, 'app.debug', true)) {
+    if ($config->get('app.debug', true)) {
         $exceptionView->exceptionHandler($app, $exception);
     } else {
         $response = $app->response();
@@ -658,7 +658,7 @@ $app->post("/$v/auth/login/?", function () use ($app, $ZendDb, $acl, $authentica
         // This can be disabled in your config file.
         // =============================================================================
         $config = Bootstrap::get('config');
-        $feedbackConfig = ArrayUtils::get($config, 'feedback', []);
+        $feedbackConfig = $config->get('feedback', []);
         if (ArrayUtils::get($feedbackConfig, 'login', false)) {
             feedback_login_ping(ArrayUtils::get($feedbackConfig, 'token', ''));
         }

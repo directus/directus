@@ -39,6 +39,7 @@ class Mail
     {
         $config = Bootstrap::get('config');
         $mailer = Bootstrap::get('mailer');
+
         if (!$mailer) {
             throw new InvalidArgumentException(__t('mail_configuration_no_defined'));
         }
@@ -48,7 +49,7 @@ class Mail
         $message = Swift_Message::newInstance();
 
         // default mail from address
-        $mailConfig = $config['mail'];
+        $mailConfig = $config->get('mail');
         $message->setFrom($mailConfig['from']);
 
         $bcc = ArrayUtils::get($mailConfig, 'bcc', null);

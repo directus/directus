@@ -9,6 +9,7 @@ use Directus\Authentication\GoogleProvider;
 use Directus\Authentication\Provider as AuthProvider;
 use Directus\Authentication\Social;
 use Directus\Authentication\TwitterProvider;
+use Directus\Config\Config;
 use Directus\Database\Connection;
 use Directus\Database\SchemaManager;
 use Directus\Database\Schemas\Sources\MySQLSchema;
@@ -171,7 +172,7 @@ class Bootstrap
             return Bootstrap::get('socialAuth');
         });
 
-        $config = defined('BASE_PATH') ? Bootstrap::get('config') : [];
+        $config = defined('BASE_PATH') ? Bootstrap::get('config') : new Config();
         $app->container->set('config', $config);
 
         $app->container->singleton('schemaManager', function () {
@@ -983,7 +984,7 @@ class Bootstrap
         $zendDb = self::get('zendDb');
         $session = self::get('session');
         $config = self::get('config');
-        $prefix = ArrayUtils::get($config, 'session.prefix', 'directus_');
+        $prefix = $config->get('session.prefix', 'directus_');
         $table = new TableGateway('directus_users', $zendDb);
 
         return new AuthProvider($table, $session, $prefix);
