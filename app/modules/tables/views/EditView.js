@@ -125,6 +125,7 @@ function(app, Backbone, _, Handlebars, __t, Notification, Directus, BasePageView
     save: function (event) {
       this.editView.beforeSaveHook();
 
+      var self = this;
       var action = this.single ? 'save-form-stay' : 'save-form-leave';
       if (event.target.options !== undefined && !this.single) {
         action = $(event.target.options[event.target.selectedIndex]).val();
@@ -151,14 +152,13 @@ function(app, Backbone, _, Handlebars, __t, Notification, Directus, BasePageView
           if (!model.table.get('single')) {
             route.pop();
             route.push(model.get('id'));
-            self.model.disablePrompt();
+            model.disablePrompt();
             app.router.go(route);
           }
 
           Notification.success(__t('item_has_been_saved'));
         };
       } else {
-        var self = this;
         success = function(model, response, options) {
           var route = Backbone.history.fragment.split('/');
 
