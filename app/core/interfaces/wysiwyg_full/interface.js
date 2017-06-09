@@ -87,19 +87,24 @@ define([
       toolbar = (styleFormats.length > 0 ? 'styleselect | ' : '');
 
       if (toolbarOptions.length > 0) {
-        toolbar += toolbarOptions.reduce(function (str, option) {
-          if (str === 'inline') {
-            return str = inline.reduce(function (inlineStr, option) {
-              return inlineStr += ' ' + option;
-            });
-          } else if (option === 'alignment') {
-            return str += alignment.reduce(function (alignmentStr, option) {
-              return alignmentStr += ' ' + option;
-            });
-          } else {
+        // Convert inline / alignment to appropriate options & add to toolbar
+        toolbar = toolbarOptions
+          .map(function (option) {
+            if (option === 'inline') {
+              return inline.reduce(function (inlineStr, inlineOption) {
+                return inlineStr += ' ' + inlineOption;
+              });
+            } else if (option === 'alignment') {
+              return alignment.reduce(function (alignmentStr, alignmentOption) {
+                return alignmentStr += ' ' + alignmentOption;
+              });
+            } else {
+              return option;
+            }
+          })
+          .reduce(function (str, option) {
             return str += ' ' + option;
-          }
-        });
+          });
       }
 
       toolbar += settings.get('custom_toolbar_options');
