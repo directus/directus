@@ -97,7 +97,7 @@ define(['./interface', 'core/UIComponent', 'core/t'], function (Input, UICompone
             openlink: 'Open Link',
             image: 'Image',
             pagebreak: 'Page Break',
-            code: 'Inline Code',
+            code: 'View Source',
             insertdatetime: 'Time and Date',
             media: 'Insert Media'
           }
