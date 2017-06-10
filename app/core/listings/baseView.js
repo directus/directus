@@ -7,24 +7,26 @@ define(['app', 'underscore', 'backbone', 'core/t'], function(app, _, Backbone, _
     optionsStructure: function () {},
 
     getAllViewOptions: function (viewId) {
-      if (this.state && this.state.malformedOptions) {
-        return {};
+      var defaultOptions = this.defaultOptions || {};
+      var viewOptions = this.collection.preferences.get('list_view_options');
+
+      if (!viewOptions || (this.state && this.state.malformedOptions)) {
+        return defaultOptions;
       }
 
-      var viewOptions = {};
       try {
-        viewOptions = JSON.parse(this.collection.preferences.get('list_view_options')) || {};
+        viewOptions = JSON.parse(viewOptions) || {};
       } catch (err) {
         viewOptions = {};
         this.state.malformedOptions = true;
-        console.error(__t('calendar_has_malformed_options_json'));
+        console.error(__t('view_has_malformed_options_json'));
       }
 
       if (viewId) {
         viewOptions = viewOptions[viewId] || {};
       }
 
-      return _.extend(this.defaultOptions || {}, viewOptions);
+      return _.extend(defaultOptions, viewOptions);
     },
 
     getViewOptions: function (attr) {

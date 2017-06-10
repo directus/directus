@@ -315,7 +315,7 @@
     "slider_step_comment": "Specifies the allowed number intervals",
     "your_template_chooser_has_a_malformed_json": "Your 'Template Chooser' UI has malformed JSON",
 
-    "calendar_has_malformed_options_json": "Your 'Calendar' View has malformed options JSON",
+    "view_has_malformed_options_json": "Your view has malformed options JSON",
 
     "character_blacklist": "Character Blacklist",
     "character_whitelist": "Character Whitelist",
