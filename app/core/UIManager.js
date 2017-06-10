@@ -64,7 +64,7 @@ define(function(require, exports, module) {
     require('core/interfaces/datetime/datetime'),
     require('core/interfaces/datetime/date'),
     require('core/interfaces/datetime/time')
-  ].map(interfaceGroup('datetime_and_time'));
+  ].map(interfaceGroup('date_and_time'));
 
   var NumericInterfaces = [
     require('core/interfaces/color/component'),
