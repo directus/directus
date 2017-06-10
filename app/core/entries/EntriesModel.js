@@ -384,20 +384,23 @@ define(function(require, exports, module) {
       }
 
       // expand relations
-      _.each(this.attributes, function (value, key) {
-        isModel = (value instanceof Backbone.Model);
-        isCollection = (value instanceof Backbone.Collection);
+      for (var key in this.attributes) {
+        if (this.attributes.hasOwnProperty(key)) {
+          var value = this.attributes[key];
 
-        if (isModel || isCollection) {
-          value = value.toJSON(options);
+          isModel = (value instanceof Backbone.Model);
+          isCollection = (value instanceof Backbone.Collection);
 
-          //@todo keep an eye on why this wasn't serialized before
-          //if (_.isEmpty(value)) return;
+          if (isModel || isCollection) {
+            value = value.toJSON(options);
 
-          attributes[key] = value;
+            //@todo keep an eye on why this wasn't serialized before
+            //if (_.isEmpty(value)) return;
+
+            attributes[key] = value;
+          }
         }
-
-      });
+      }
 
       // Pick selected columns, useful for collection "save"
       if (options && options.columns) {
