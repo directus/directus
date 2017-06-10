@@ -90,14 +90,14 @@ function(app, _, Backbone, __t, Directus, Notification, BasePageView, RightPane,
         collection.add(model);
       }
 
-      if (!model.unsavedAttributes()) {
-        Notification.warning('Nothing changed, nothing saved');
-
-        return;
-      }
+      // if (!model.unsavedAttributes()) {
+      //   Notification.warning('Nothing changed, nothing saved');
+      //
+      //   return;
+      // }
 
       // Patch only the changed values if it's not new
-      model.save(model.isNew() ? null : model.unsavedAttributes(), {
+      model.save(model.isNew() ? null : model.unsavedAttributes() || {}, {
         success: success,
         wait: true,
         patch: !model.isNew(),

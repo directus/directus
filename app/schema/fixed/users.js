@@ -49,7 +49,7 @@ define(function(require, exports, module) {
             "hidden_list":false,
             "hidden_input":true,
             "required":false,
-            "ui":"checkbox",
+            "ui":"primary_key",
             "hidden":true
           },
           {
@@ -64,7 +64,7 @@ define(function(require, exports, module) {
             "hidden_list":false,
             "hidden_input":false,
             "required":false,
-            "ui":"checkbox",
+            "ui":"status",
             "hidden":true
           },
           {

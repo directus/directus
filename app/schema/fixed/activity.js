@@ -37,7 +37,7 @@ define(function(require, exports, module) {
         "hidden_list":false,
         "hidden_input":false,
         "required":false,
-        "ui":"numeric",
+        "ui":"primary_key",
         "hidden":true
       },
       {

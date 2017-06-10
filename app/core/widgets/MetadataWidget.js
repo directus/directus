@@ -48,10 +48,9 @@ function(app, Backbone, _, Handlebars, __t) {
     },
 
     serialize: function () {
-      var model = this.model;
       var itemModel = this.options.itemModel ? this.options.itemModel.toJSON() : {};
       var table = this.model.table ? this.model.table : null;
-      // @TODO: Add Timezone
+      // TODO: Add Timezone
       var dateFormat = 'MMM Mo, YYYY @ H:mma';
       var previewUrl = table ? table.get('preview_url') : null;
       var metadata = {
@@ -146,7 +145,7 @@ function(app, Backbone, _, Handlebars, __t) {
       this.listenTo(this.model, 'sync', this.render);
 
       var privileges = app.schemaManager.getPrivileges('directus_activity');
-      if (this.model.isNew() && privileges && privileges.can('view')) {
+      if (!this.model.isNew() && privileges && privileges.can('view')) {
         this.model.fetch();
       }
 

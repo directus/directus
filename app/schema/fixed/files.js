@@ -17,10 +17,10 @@ define(function(require, exports, module) {
 
         "columns": [
           {
-            "id": "asset",
-            "column_name": "asset",
+            "id": "data",
+            "column_name": "data",
             "type":"ALIAS",
-            "is_nullable":"NO",
+            "is_nullable": false,
             "comment":"",
             "sort":-1,
             "ui":"directus_file",
@@ -41,7 +41,7 @@ define(function(require, exports, module) {
             "hidden_list":false,
             "hidden_input":false,
             "required":false,
-            "ui":"numeric",
+            "ui":"primary_key",
             "hidden":true
           },
           {
@@ -56,7 +56,7 @@ define(function(require, exports, module) {
             "hidden_list":false,
             "hidden_input":false,
             "required":false,
-            "ui":"checkbox",
+            "ui":"status",
             "hidden":true
           },
           {

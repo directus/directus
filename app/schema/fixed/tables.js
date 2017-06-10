@@ -18,7 +18,7 @@ define(function(require, exports, module) {
       {
         "id": "table_name",
         "column_name": "table_name",
-        "ui": "textinput",
+        "ui": "primary_key",
         "type": "VARCHAR",
         "length": 64,
         "system": true,

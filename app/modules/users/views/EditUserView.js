@@ -68,14 +68,14 @@ define([
         collection.add(model);
       }
 
-      if (!model.unsavedAttributes()) {
-        Notification.warning('Nothing changed, nothing saved');
-
-        return;
-      }
+      // if (!model.unsavedAttributes()) {
+      //   Notification.warning('Nothing changed, nothing saved');
+      //
+      //   return;
+      // }
 
       // Patch only the changed values if it's not new
-      model.save(model.isNew() ? null : model.unsavedAttributes(), {
+      model.save(model.isNew() ? null : model.unsavedAttributes() || {}, {
         success: success,
         error: function (model, xhr, options) {
           console.error('err');

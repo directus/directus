@@ -13,7 +13,7 @@ define(function(require, exports, module) {
       {
         'id': 'id',
         'column_name': 'id',
-        'ui': 'numeric',
+        'ui': 'primary_key',
         'type': 'INT',
         'system': true,
         'hidden_list': true,

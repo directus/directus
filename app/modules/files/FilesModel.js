@@ -21,7 +21,11 @@ define([
         url = this.getThumbnailUrl();
       } else {
         url = this.get('url');
-      }
+
+        if (!url && this.isNew()) {
+          url = this.get('data');
+        }
+       }
 
       return url;
     },
@@ -72,8 +76,15 @@ define([
     setFile: function (file, allowedTypes, fn) {
       var allowed = false;
 
+      if (_.isFunction(allowedTypes)) {
+        fn = allowedTypes;
+        allowedTypes = null;
+      }
+
       if (!this.isFileAllowed(file, allowedTypes)) {
-        fn(allowed);
+        if (_.isFunction(fn)) {
+          fn(allowed);
+        }
 
         return allowed;
       }
@@ -84,7 +95,9 @@ define([
           unit: app.settings.getMaxFileSizeUnit()
         }));
 
-        fn(allowed);
+        if (_.isFunction(fn)) {
+          fn(allowed);
+        }
 
         return allowed;
       }
