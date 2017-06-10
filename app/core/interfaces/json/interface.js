@@ -32,7 +32,6 @@ define(['core/UIView'], function(UIView) {
 
         if (lastChar === '{' || lastChar === '[') {
           more = nextChar === '}' || nextChar === ']' ? 0 : 1;
-          console.log(indents, more);
           this.addIndent(before, after, indents + more);
           event.preventDefault();
         }
