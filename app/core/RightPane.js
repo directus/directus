@@ -17,6 +17,13 @@ define([
       return this.state.wide ? this.dom.WIDE : this.dom.SMALL;
     },
 
+    getAllOpenClassName: function () {
+      return [
+        this.dom.SMALL,
+        this.dom.WIDE
+      ].join(' ');
+    },
+
     close: function () {
       this.state.open = false;
       $('body').removeClass(this.getOpenClassName());

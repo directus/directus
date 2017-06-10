@@ -104,8 +104,9 @@ define([
 
     _ensurePaneIsClosed: function () {
       var pane = this.getRightPane();
+
       if (pane) {
-        $('body').removeClass(pane.getOpenClassName());
+        $('body').removeClass(pane.getAllOpenClassName());
       }
 
       this.state.rightPaneOpen = false;
