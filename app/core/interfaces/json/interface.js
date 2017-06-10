@@ -49,6 +49,9 @@ define(['core/UIView'], function(UIView) {
     },
 
     validate: function(event) {
+      // Set changed flag
+      this.model.set(this.name, event.target.value);
+
       var textarea = event.target;
       var value = textarea.value;
       if (value.length === 0) {

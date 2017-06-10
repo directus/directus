@@ -13,6 +13,8 @@ define(['./interface', 'core/UIComponent', 'core/t'], function (Input, UICompone
         return __t('this_field_is_required')
       }
 
+      console.log(value);
+
       try {
         JSON.parse(value);
       } catch(err) {
