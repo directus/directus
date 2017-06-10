@@ -9,14 +9,12 @@ define(['core/UIView'], function(UIView) {
     lastValue: '',
     process: function(event) {
       var textarea = event.target;
-      var change = this.change;
-      var lastValue = this.lastValue;
 
-      change = textarea.value.length - lastValue.length;
+      this.change = textarea.value.length - this.lastValue.length;
 
       var caret = textarea.selectionStart;
-      var added = change > 0 && textarea.value.substr(caret - change, change) || '';
-      var removed = change < 0 && lastValue.substr(caret, -change) || '';
+      var added = this.change > 0 && textarea.value.substr(caret - this.change, this.change) || '';
+      var removed = this.change < 0 && this.lastValue.substr(caret, -this.change) || '';
 
       var code = event.keyCode;
       var value = textarea.value;
@@ -34,6 +32,7 @@ define(['core/UIView'], function(UIView) {
 
         if (lastChar === '{' || lastChar === '[') {
           more = nextChar === '}' || nextChar === ']' ? 0 : 1;
+          console.log(indents, more);
           this.addIndent(before, after, indents + more);
           event.preventDefault();
         }
@@ -72,7 +71,7 @@ define(['core/UIView'], function(UIView) {
     isIndented: function(line) {
       var indent = this.options.settings.get('indent');
       var textarea = this.$('textarea')[0];
-      var regex = new RegExp('^($' + indent + '+)', 'g');
+      var regex = new RegExp('^(' + indent + '+)', 'g');
       var match = line.match(regex);
       return match && match[0].length / indent.length || 0;
     },
@@ -80,29 +79,25 @@ define(['core/UIView'], function(UIView) {
     addIndent: function(before, after, num) {
       var textarea = this.$('textarea')[0];
       var indent = this.options.settings.get('indent');
-      var lastValue = this.lastValue;
 
       if (!num) {
         return;
       }
 
-      var newValue = before + '\n' + indent.repeat(num) + after;
-      lastValue = newValue;
-      textarea.value = newValue;
-      textarea.selectionStart = textarea.selectionEnd = lastValue.length - after.length;
+      textarea.value = this.lastValue = before + '\n' + indent.repeat(num) + after;
+      textarea.selectionStart = textarea.selectionEnd = this.lastValue.length - after.length;
     },
 
     removeIndent: function(before, after) {
       var textarea = this.$('textarea')[0];
       var indent = this.options.settings.get('indent');
-      var lastValue = this.lastValue;
 
       var remove = before.slice(before.length - indent.length, before.length);
       if (remove !== indent) {
         return;
       }
 
-      textarea.value = lastValue = before.slice(0, -indent.length) + after;
+      textarea.value = this.lastValue = before.slice(0, -indent.length) + after;
       textarea.selectionStart = textarea.selectionEnd = before.length - indent.length;
     },
 
