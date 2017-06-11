@@ -114,7 +114,7 @@ define(['./interface', 'core/UIComponent', 'core/t'], function (Input, UICompone
       },
       {
         id: 'custom_wrapper',
-        ui: 'textarea',
+        ui: 'json',
         default_value: '',
         options: {
           rows: 25,
