@@ -170,13 +170,24 @@
 		animation: medium-editor-pop-upwards 160ms forwards linear;
 	}
 
+	.width-4 .medium-editor-toolbar ul {
+		max-width: 228px;
+	}
+
+	.width-5 .medium-editor-toolbar ul {
+		max-width: 284px;
+	}
+
+	.width-6 .medium-editor-toolbar ul {
+		max-width: 236px;
+	}
+
 	.medium-editor-toolbar ul {
 		margin: 0;
 		display: flex !important; /* medium-editors adds display: block inline */
 		align-items: center;
 		background-color: #fff;
 		border-radius: 2px;
-		max-width: 332px;
 		padding: 10px;
 		flex-wrap: wrap;
 	}
@@ -191,6 +202,7 @@
 
 	.medium-editor-action {
 		width: 100%;
+		max-width: 52px;
 		height: 100%;
 		padding: 10px 16px;
 		display: flex;
@@ -302,5 +314,5 @@
 		content: 'close';
 	}
 </style>
-<div style="position: absolute; width: 100%;" id="medium-editor-{{name}}"></div>
+<div style="position: absolute; width: 100%;" id="medium-editor-{{name}}" class="{{widthClass}}"></div>
 <textarea id="wysiwyg-interface_{{name}}" name="{{name}}" {{#if simple_editor}}class="simple-editor"{{/if}}>{{value}}</textarea>

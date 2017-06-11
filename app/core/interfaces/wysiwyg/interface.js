@@ -75,12 +75,48 @@ define(['core/UIView', 'core/interfaces/wysiwyg/vendor/medium-editor.min'], func
 
     serialize: function () {
       var value = this.options.value || '';
+      var buttonsLength = this.options.settings.get('buttons').split(',').length;
 
       return {
         value: value,
         name: this.name,
+        widthClass: getWidthClass(buttonsLength),
         simple_editor: (this.options.settings && this.options.settings.get('simple_editor') === true),
       };
+
+      function getWidthClass(amount) {
+        if (amount < 6) {
+          return '';
+        }
+
+        var mod4 = amount % 4;
+        var mod5 = amount % 5;
+        var mod6 = amount % 6;
+
+        if (mod4 === 0) {
+          return 'width-4';
+        }
+
+        if (mod5 === 0) {
+          return 'width-5';
+        }
+
+        if (mod6 === 0) {
+          return 'width-6';
+        }
+
+        var highestIndex;
+        var highestNumber = 0;
+
+        [mod4, mod5, mod6].forEach(function(val, i) {
+          if (val > highestNumber) {
+            highestNumber = val;
+            highestIndex = i;
+          }
+        });
+
+        return 'width-' + (highestIndex + 4);
+      }
     },
 
     getButtons: function () {
