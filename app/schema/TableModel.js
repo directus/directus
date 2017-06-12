@@ -12,6 +12,7 @@ define(function(require, exports, module) {
 
     parse: function (data) {
       data = data.data ? data.data : data;
+
       if (this.columns === undefined) {
         this.columns = new ColumnsCollection(data.columns, {
           parse: true,

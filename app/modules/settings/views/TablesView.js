@@ -175,7 +175,7 @@ define([
       var table = app.schemaManager.getTable(model.get('table_name'));
 
       // @todo: clean this into a factory or similar
-      table.set(resp, {parse: true});
+      table.set(resp.data, {parse: true});
       table.columns.reset(resp.data.columns.toJSON(), {parse: true, table: table});
       model.table = table;
     },

@@ -147,7 +147,11 @@ function(app, Backbone, _, Handlebars, __t, Notification, Directus, BasePageView
       });
 
       if (action === 'save-form-stay') {
-        success = function(model, response, options) {
+        success = function (model, response, options) {
+          if (self.onSuccess) {
+            self.onSuccess(model, response, options);
+          }
+
           var route = Backbone.history.fragment.split('/');
           if (!model.table.get('single')) {
             route.pop();
@@ -159,7 +163,7 @@ function(app, Backbone, _, Handlebars, __t, Notification, Directus, BasePageView
           Notification.success(__t('item_has_been_saved'));
         };
       } else {
-        success = function(model, response, options) {
+        success = function (model, response, options) {
           var route = Backbone.history.fragment.split('/');
 
           route.pop();
@@ -200,7 +204,7 @@ function(app, Backbone, _, Handlebars, __t, Notification, Directus, BasePageView
       // Patch only the changed values if it's not new
       model.save(model.isNew() ? null : model.unsavedAttributes() || {}, {
         success: success,
-        error: function(model, xhr, options) {
+        error: function (model, xhr, options) {
           // console.error('err');
           //Duplicate entry, forced but works
           //@todo finds a better way to determine whether there's an duplicate error
