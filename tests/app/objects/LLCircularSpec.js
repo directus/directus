@@ -1,5 +1,5 @@
 define(['objects/linked-list/circular'], function (Circular) {
-  describe('Utils test', function () {
+  describe('Circular linked list tests', function () {
     it('should has the correct values', function () {
       var circular = new Circular([1, 2, 3]);
       var head = circular.headNode;
