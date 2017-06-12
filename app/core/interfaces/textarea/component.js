@@ -10,7 +10,7 @@ define([
   'core/interfaces/textarea/interface',
   'core/UIComponent',
   'core/t'
-],function(Input, UIComponent, __t) {
+], function(Input, UIComponent, __t) {
 
   'use strict';
 
