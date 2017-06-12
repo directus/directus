@@ -1,4 +1,7 @@
-define(['core/UIView'], function (UIView) {
+define(['core/CustomUIView'], function (UIView) {
+
+  'use strict';
+
   return UIView.extend({
     template: 'rating/input',
     serialize: function () {
