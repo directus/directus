@@ -578,7 +578,7 @@ define([
     saveFilterString: function () {
       var self = this;
       var options = this.options;
-
+      var syncFilters = this.options.syncFilters !== false;
       var save = function (sync) {
         var string = [];
         var method = 'save';
@@ -610,7 +610,7 @@ define([
 
       this.confirmBookmarkAction()
         .done(function () {
-          save(true);
+          save(syncFilters);
         })
         .fail(function () {
           save(false);
@@ -733,6 +733,10 @@ define([
 
     initialize: function() {
       this.options.filters = [];
+
+      if (this.options.syncFilters === false) {
+        this.collection.preferences = this.collection.preferences.clone();
+      }
 
       this.listenTo(this.collection.preferences, 'change sync', function() {
         this.updateFiltersFromPreference();

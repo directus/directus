@@ -1,11 +1,12 @@
 define([
   'app',
+  'underscore',
   'backbone',
   'core/t',
   'core/BasePageView',
   'core/ListViewManager',
   'core/widgets/widgets'
-], function (app, Backbone, __t, BasePageView, ListViewManager, Widgets) {
+], function (app, _, Backbone, __t, BasePageView, ListViewManager, Widgets) {
 
   return BasePageView.extend({
     headerOptions: {
@@ -33,10 +34,18 @@ define([
 
     rightToolbar: function () {
       return [
-        new Widgets.PaginatorWidget({
-          collection: this.collection
+        new Widgets.FilterWidget({
+          syncFilters: false,
+          collection: this.collection,
+          basePage: this
         })
       ];
+
+      // return [
+      //   new Widgets.PaginatorWidget({
+      //     collection: this.collection
+      //   })
+      // ];
     },
 
     leftSecondaryToolbar: function() {
