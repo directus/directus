@@ -314,7 +314,7 @@ define(function(require, exports, module) {
     // returns true or false
     isMine: function () {
       var myId = app.users.getCurrentUser().id,
-          magicOwnerColumn = (this.collection !== null) ? this.collection.table.get('user_create_column') : null,
+          magicOwnerColumn = (this.collection != null) ? this.collection.table.get('user_create_column') : null,
           magicOwnerId = this.get(magicOwnerColumn);
 
       // If magecownerid is model, grab the id instead

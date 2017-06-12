@@ -145,7 +145,7 @@ function(app, Backbone, _, Handlebars, __t) {
       this.listenTo(this.model, 'sync', this.render);
 
       var privileges = app.schemaManager.getPrivileges('directus_activity');
-      if (!this.model.isNew() && privileges && privileges.can('view')) {
+      if (!this.options.itemModel.isNew() && privileges && privileges.can('view')) {
         this.model.fetch();
       }
 
