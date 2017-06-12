@@ -73,9 +73,15 @@ define(function(require, exports, module) {
     // @note: Use HTML5 form validation when possible
     validate: function (attributes, options) {
       var structure = this.getStructure();
-      // Only validates visible columns
-      var columnsName = structure.getVisibleInputColumnsName();
+      var columnsName;
       var errors = [];
+
+      if (options.validateAttributes === true) {
+        columnsName = _.keys(attributes);
+      } else {
+        // Only validates visible columns
+        columnsName = structure.getVisibleInputColumnsName();
+      }
 
       _.each(columnsName, function (columnName) {
         var column = structure.get(columnName);

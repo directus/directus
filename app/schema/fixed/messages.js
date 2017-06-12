@@ -133,6 +133,16 @@ define(function(require, exports, module) {
         "system":true,
         "hidden_list":true,
         "hidden_input":true
+      },
+      {
+        "id":"comment_metadata",
+        "column_name":"comment_metadata",
+        "ui":"textinput",
+        "type":"VARCHAR",
+        "length": 255,
+        "system": false,
+        "hidden_list": true,
+        "hidden_input": true
       }
     ]
   };

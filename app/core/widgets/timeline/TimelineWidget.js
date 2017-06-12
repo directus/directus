@@ -129,7 +129,7 @@ function(app, Backbone, $, _, __t, Directus, moment) {
       });
 
       this.$('#itemCommentButton').prop('disabled', true);
-      model.save();
+      model.save(null, {validateAttributes: true});
     },
 
     isCreation: function (model) {
