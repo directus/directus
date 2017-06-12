@@ -12,7 +12,7 @@ define([
     },
 
     onToggleTables: function () {
-      this.showCoreTables = this.nestedTableView.toggleTables();
+      this.nestedTableView.toggleSystemTables();
     },
 
     serialize: function () {

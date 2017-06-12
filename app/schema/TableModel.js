@@ -97,6 +97,10 @@ define(function(require, exports, module) {
       return column ? column.get('column_name') : null;
     },
 
+    isSystemTable: function () {
+      return (this.get('table_name') || '').startsWith('directus_');
+    },
+
     toJSON: function (options) {
       var attrs = _.clone(this.attributes);
 

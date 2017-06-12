@@ -35,7 +35,9 @@ define(function(require, exports, module) {
    * @private
    * Default Privileges
    */
-  var defaultPrivileges = new PrivilegeModel({}, {parse:true});
+  var defaultPrivileges = new PrivilegeModel({}, {
+    parse: true
+  });
 
   /**
    * @private
