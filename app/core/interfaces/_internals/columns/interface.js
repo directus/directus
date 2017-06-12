@@ -341,23 +341,30 @@ define([
 
     drop: function () {
       var collection = this.columns;
+      var table = collection.table;
 
       this.$('table tbody tr').each(function (i) {
         // Use data-id instead of data-cid
         // As collection models will be synced from the server its cid will be generated again
         // But the dom element will be still pointing to the older cid
-        collection.get($(this).data('id')).set({sort: i}, {silent: true});
+        var attrs = {};
+
+        attrs[table.getStatusColumnName()] = i;
+        collection.get($(this).data('id')).set(attrs, {silent: true});
       });
 
       var self = this;
       var originalUrl = collection.url;
-      var table = this.model.id;
-      collection.url = app.API_URL + 'tables/' + table + '/columns';
+      var options = {wait: true, patch: true, attributes: [table.getStatusColumnName()]};
 
-      collection.save(null, {wait: true, patch: true, success: function () {
+      collection.url = app.API_URL + 'tables/' + table.id + '/columns';
+
+      options.success = function () {
         collection = originalUrl;
-        self.collection.setOrder('sort', 'ASC', {silent: false});
-      }});
+        self.collection.setOrder(table.getStatusColumnName(), 'ASC', {silent: false});
+      };
+
+      collection.save(null, options);
     },
 
     enableSort: function () {

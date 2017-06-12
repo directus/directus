@@ -129,7 +129,8 @@ function(app, Backbone, _, Sortable, Notification) {
       return tableData;
     },
 
-    drop: function() {
+    drop: function () {
+      // NOTE: This code is duplicated in columns interface
       var collection = this.collection;
       var table = collection.table;
       // if we are dropping something it means we allowed sorting
