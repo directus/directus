@@ -237,7 +237,7 @@ class Entries extends Route
         $params[$TableGateway->primaryKeyFieldName] = $id;
         // If it's not a GET request, let's get entry no matter the status
         if (!$this->app->request()->isGet()) {
-            $params['status'] = null;
+            $params['preview'] = null;
         }
 
         $response = $TableGateway->getEntries($params);
