@@ -149,6 +149,15 @@ define(function(require, exports, module) {
       return new this.constructor(this.models, options);
     },
 
+    // listen to the related model and propagate to their parent collection
+    _onAdd: function (model) {
+      var relatedModel = model.get('data');
+
+      relatedModel.on('change', function (model, options) {
+        this.trigger.call(this, 'change', relatedModel, options);
+      }, this);
+    },
+
     initialize: function (models, options) {
       var EntriesCollection = require('core/entries/EntriesCollection');
 
@@ -162,12 +171,15 @@ define(function(require, exports, module) {
         this.nestedCollection = new EntriesCollection({}, options);
       }
 
+      this.on('add', this._onAdd, this);
+
       this.nestedCollection.on('change', function() {
         this.trigger('change');
       }, this);
     },
 
     constructor: function EntriesJunctionCollection (data, options) {
+      options.silent = false;
       NestedCollection.__super__.constructor.call(this, data, options);
     }
   });

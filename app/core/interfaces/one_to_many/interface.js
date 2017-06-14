@@ -94,7 +94,6 @@ define([
       app.router.overlayPage(view);
 
       view.save = function () {
-        model.set(model.diff(view.editView.data()));
         app.router.removeOverlayPage(this);
       };
     },
