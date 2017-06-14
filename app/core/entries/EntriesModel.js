@@ -172,12 +172,25 @@ define(function(require, exports, module) {
               // Provide model to prevent loading issues
               options.model = EntriesModel;
               attributes[id] = new EntriesCollection(value, options);
+
+              if (this.attributes[id] instanceof EntriesCollection) {
+                this.attributes[id].set(value, {merge: true, parse: true});
+                attributes[id] = this.attributes[id];
+              } else {
+                attributes[id] = new EntriesCollection(value, options);
+              }
               break;
             }
 
             if (relationshipType === 'MANYTOMANY') {
               options.junctionStructure = SchemaManager.getColumns('tables', column.relationship.get('junction_table'));
-              attributes[id] = new EntriesJunctionCollection(value, options);
+
+              if (this.attributes[id] instanceof EntriesJunctionCollection) {
+                this.attributes[id].set(value, {merge: true, parse: true});
+                attributes[id] = this.attributes[id];
+              } else {
+                attributes[id] = new EntriesJunctionCollection(value, options);
+              }
             }
 
             break;
