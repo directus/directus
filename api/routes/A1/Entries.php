@@ -38,7 +38,7 @@ class Entries extends Route
         // GET all table entries
         // If it's not a GET request, let's get entry no matter the status
         if ($this->app->request()->isGet()) {
-            $params['status'] = null;
+            $params['preview'] = true;
         }
 
         $response = $tableGateway->getEntries($params);
@@ -113,7 +113,7 @@ class Entries extends Route
 
         // If it's not a GET request, let's get entry no matter the status
         if (!$this->app->request()->isGet()) {
-            $params['status'] = null;
+            $params['preview'] = true;
         }
 
         $entries = $tableGateway->getEntries($params);
@@ -237,7 +237,7 @@ class Entries extends Route
         $params[$TableGateway->primaryKeyFieldName] = $id;
         // If it's not a GET request, let's get entry no matter the status
         if (!$this->app->request()->isGet()) {
-            $params['preview'] = null;
+            $params['preview'] = true;
         }
 
         $response = $TableGateway->getEntries($params);
