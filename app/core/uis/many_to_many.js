@@ -93,9 +93,9 @@ define(['app', 'core/UIComponent', 'core/uis/one_to_many', 'core/table/table.vie
               return false;
             }
           }
-          me.relatedCollection.add(data, {parse: true, silent: true, nest: true});
+          me.relatedCollection.add(data, {parse: true, silent: false, nest: true});
         }, this);
-        me.relatedCollection.trigger('add');
+
         app.router.removeOverlayPage(this);
       };
 
