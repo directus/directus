@@ -35,17 +35,8 @@ define(function(require, exports, module) {
       }
     }),
 
-    trash: [],
-
-    create: function() {
+    create: function () {
       return this.nestedCollection.create(arguments);
-    },
-
-    remove: function(model, options) {
-      if (!model.isNew()) {
-        this.trash.push(model);
-      }
-      this.constructor.__super__.remove.apply(this, arguments);
     },
 
     //If getNested is set to true, the this will point to the nested element
