@@ -63,8 +63,8 @@ define([
       app.router.overlayPage(view);
 
       view.save = function() {
-        model.set(view.editView.data());
-        collection.add(model,{nest: true});
+        // model.set(view.editView.data());
+        collection.add(model, {nest: true});
         app.router.removeOverlayPage(this);
       };
     },
@@ -82,7 +82,7 @@ define([
       var me = this;
 
       view.save = function() {
-        _.each(view.table.selection(), function(id) {
+        _.each(view.table.selection(), function (id) {
           var data = collection.get(id).toJSON();
           // prevent duplicate
           if (me.columnSchema.options.get('no_duplicates') === true) {
@@ -92,13 +92,14 @@ define([
                 duplicated = true;
               }
             });
+
             if (duplicated) {
               return false;
             }
           }
-          me.relatedCollection.add(data, {parse: true, silent: true, nest: true});
+          me.relatedCollection.add(data, {parse: true, silent: false, nest: true});
         }, this);
-        me.relatedCollection.trigger('add');
+
         app.router.removeOverlayPage(this);
       };
 
