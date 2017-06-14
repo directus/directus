@@ -62,9 +62,16 @@ define([
 
       app.router.overlayPage(view);
 
-      view.save = function() {
-        // model.set(view.editView.data());
-        collection.add(model, {nest: true});
+      view.save = function () {
+        var newModel = new collection.model({}, {
+          parse: true,
+          collection: collection,
+          structure: collection.structure,
+          table: collection.table
+        });
+
+        newModel.set('data', model);
+        collection.add(newModel);
         app.router.removeOverlayPage(this);
       };
     },

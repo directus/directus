@@ -44,6 +44,10 @@ define(function(require, exports, module) {
       }
 
       return attributes;
+    },
+
+    constructor: function EntriesJunctionModel() {
+      return Backbone.Model.prototype.constructor.apply(this, arguments);
     }
   });
 
@@ -153,9 +157,11 @@ define(function(require, exports, module) {
     _onAdd: function (model) {
       var relatedModel = model.get('data');
 
-      relatedModel.on('change', function (model, options) {
-        this.trigger.call(this, 'change', relatedModel, options);
-      }, this);
+      if (relatedModel) {
+        relatedModel.on('change', function (model, options) {
+          this.trigger.call(this, 'change', relatedModel, options);
+        }, this);
+      }
     },
 
     initialize: function (models, options) {
