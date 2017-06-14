@@ -171,7 +171,6 @@ define(function(require, exports, module) {
             if (relationshipType === 'ONETOMANY') {
               // Provide model to prevent loading issues
               options.model = EntriesModel;
-              attributes[id] = new EntriesCollection(value, options);
 
               if (this.attributes[id] instanceof EntriesCollection) {
                 this.attributes[id].set(value, {merge: true, parse: true});
