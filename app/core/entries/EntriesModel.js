@@ -76,6 +76,8 @@ define(function(require, exports, module) {
       var columnsName;
       var errors = [];
 
+      options = options || {};
+
       if (options.validateAttributes === true) {
         columnsName = _.keys(attributes);
       } else {

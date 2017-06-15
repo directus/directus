@@ -62,7 +62,7 @@ define([
       var model = this.model;
       var errors;
 
-      errors = model.validate(data);
+      errors = model.validate(data, {validateAttributes: true});
       if (errors) {
         this.model.trigger('invalid', this.model, errors);
         return;
