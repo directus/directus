@@ -6,7 +6,7 @@ define(['./interface', 'core/UIComponent', 'core/t'], function (Input, UICompone
     dataTypes: ['VARCHAR', 'ALIAS'],
     variables: [
       // Google API Key (Provided by Google)
-      {id: 'apiKey', type: 'String', default_value: '', ui: 'textinput', char_length: 200},
+      {id: 'apiKey', type: 'String', default_value: '', ui: 'textinput', char_length: 200, required: true},
       // Column names to fill with respective item
       {id: 'street_number_field', type: 'String', default_value: '', ui: 'textinput', char_length: 200},
       {id: 'street_field', type: 'String', default_value: '', ui: 'textinput', char_length: 200},
