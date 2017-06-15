@@ -82,6 +82,7 @@ define([
         },
         wait: true,
         patch: !model.isNew(),
+        validateAttributes: !model.isNew(),
         includeRelationships: true
       });
     },
