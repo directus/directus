@@ -26,11 +26,11 @@
 				<td class="reorder js-sort"><i class="material-icons reorder-handle">drag_handle</i></td>
 				<td class="required js-required" title="Required?"><i class="material-icons">star{{#unless required}}_outline{{/unless}}</i></td>
 				<td class="visible js-visible" title="Visible?"><i class="material-icons">visibility{{#if hidden_input}}_off{{/if}}</i></td>
-				<td class="column-name" title="{{column_name}}" data-section="column">{{capitalize column_name}}{{#if isMissingRequiredOptions}}<i class="material-icons missing-options" title="{{t 'warning_missing_interface_options_title'}}">warning</i>{{/if}}</td>
-				<td class="user-interface js-cell" data-field="ui_type" data-section="interface">{{capitalize ui}}</td>
+				<td class="column-name" title="{{column_name}}" data-section="column">{{capitalize column_name}}</td>
+				<td class="user-interface js-cell" data-field="ui_type" data-section="interface">{{capitalize ui}}{{#if isMissingRequiredOptions}}<i class="material-icons missing-options" title="{{t 'warning_missing_interface_options_title'}}">warning</i>{{/if}}</td>
 				<td class="relationship js-cell {{#unless related_table}}js-cell-disable not-allowed{{/unless}}" data-section="column" data-sub-section="relationship">
 					{{#if related_table}}
-					{{capitalize relationship_type}} <span class="table-name">({{capitalize related_table}})</span>
+					{{capitalize relationship_type}}<br><span class="table-name">{{capitalize related_table}}</span>
 					{{else}}
 					<span class="no-value">{{t "relationship_none"}}</span>
 					{{/if}}
