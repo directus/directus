@@ -100,6 +100,11 @@ define(function(require, exports, module) {
           return;
         }
 
+        // NOTE: Column with default value should not be required
+        if (column.get('default_value') !== undefined) {
+          return;
+        }
+
         var nullDisallowed = column.get('nullable') !== true;
         var ui = UIManager._getUI(column.get('ui'));
         var forceUIValidation = ui.forceUIValidation === true;
