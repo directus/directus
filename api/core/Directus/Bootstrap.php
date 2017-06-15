@@ -260,11 +260,11 @@ class Bootstrap
     private static function mailer()
     {
         $config = self::get('config');
-        if (!array_key_exists('mail', $config)) {
+        if (!$config->has('mail')) {
             return null;
         }
 
-        $mailConfig = $config['mail'];
+        $mailConfig = $config->get('mail');
         switch ($mailConfig['transport']) {
             case 'smtp':
                 $transport = \Swift_SmtpTransport::newInstance($mailConfig['host'], $mailConfig['port']);
