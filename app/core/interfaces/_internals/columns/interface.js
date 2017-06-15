@@ -228,7 +228,7 @@ define([
       if (column) {
         attrs = {};
         attrs[attr] = !column.get(attr);
-        options = {patch: true};
+        options = {patch: true, validateAttributes: true};
 
         // Hotfix:
         originalUrl = column.url;
@@ -342,6 +342,7 @@ define([
     drop: function () {
       var collection = this.columns;
       var table = collection.table;
+      var sortColumnName = table.getSortColumnName();
 
       this.$('table tbody tr').each(function (i) {
         // Use data-id instead of data-cid
@@ -349,15 +350,15 @@ define([
         // But the dom element will be still pointing to the older cid
         var attrs = {};
 
-        attrs[table.getStatusColumnName()] = i;
+        attrs[sortColumnName] = i;
         collection.get($(this).data('id')).set(attrs, {silent: true});
       });
 
       var self = this;
       var originalUrl = collection.url;
-      var options = {wait: true, patch: true, attributes: [table.getStatusColumnName()]};
+      var options = {wait: true, patch: true, attributes: [sortColumnName]};
 
-      collection.url = app.API_URL + 'tables/' + table.id + '/columns';
+      collection.url = app.API_URL + 'tables/' + this.model.id + '/columns';
 
       options.success = function () {
         collection = originalUrl;

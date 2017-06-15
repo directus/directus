@@ -89,6 +89,11 @@ define(function(require, exports, module) {
         var column = structure.get(columnName);
         var value = attributes[columnName];
 
+        // skip if the column name doesn't exists in the structure
+        if (!column) {
+          return;
+        }
+
         // Don't validate hidden fields
         // @todo should this be adjusted since these fields are now posting in some cases?
         if (column.get('hidden_input')) {

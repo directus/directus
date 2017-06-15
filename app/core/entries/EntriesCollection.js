@@ -151,7 +151,7 @@ define(function(require, exports, module) {
       }
 
       if (method === 'patch') {
-        if (_.isArray(options.attributes) && _.indexOf(options.attributes, primaryColumnName)) {
+        if (_.isArray(options.attributes) && _.indexOf(options.attributes, primaryColumnName) < 0) {
           options.attributes.push(primaryColumnName);
         }
 

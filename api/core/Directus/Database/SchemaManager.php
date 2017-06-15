@@ -576,9 +576,6 @@ class SchemaManager
 
         $isSystemColumn = $this->isSystemColumn($column['ui']);
         $column['system'] = $isSystemColumn;
-        if ($isSystemColumn) {
-            $column['hidden_input'] = $column['hidden_list'] = true;
-        }
 
         // NOTE: Alias column must are nullable
         if (ArrayUtils::get($column, 'type') === 'ALIAS') {
