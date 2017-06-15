@@ -101,6 +101,7 @@ function(app, _, Backbone, __t, Directus, Notification, BasePageView, RightPane,
         success: success,
         wait: true,
         patch: !model.isNew(),
+        validateAttributes: !model.isNew(),
         includeRelationships: true
       });
     },
