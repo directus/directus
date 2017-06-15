@@ -18,7 +18,7 @@
 define([
   'core/UIView',
   'core/t'
-], function(UIView, __t) {
+], function (UIView, __t) {
 
   'use strict';
 

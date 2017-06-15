@@ -115,19 +115,14 @@ define(function(require, exports, module) {
 
     template: Handlebars.compile('<div class="fields"></div>'),
 
-    beforeRender: function() {
+    beforeRender: function () {
       var views = {};
       var isBatchEdit = this.options.isBatchEdit;
       var model = this.model;
       var table = model.table;
       var statusName = table ? table.getStatusColumnName() : app.statusMapping.get('*').get('status_name');
 
-      this.structure.each(function(column) {
-        // Skip ID
-        if (column.get('key') === 'PRI' && column.get('omit_input') !== false && !model.isNew()) {
-          return;
-        }
-
+      this.structure.each(function (column) {
         // This column interface won't be rendered
         // or submitted
         if (this.omitInput(column)) {
@@ -141,25 +136,6 @@ define(function(require, exports, module) {
         // Skip magic owner column if we dont have bigedit
         if (table && table.get('user_create_column') === column.id && !model.collection.hasPermission('bigedit')) {
           return;
-        }
-
-        if (column.isStatusColumn()) {
-          var collection = this.model.collection;
-          var canAdd = this.model.isNew() && collection.canAdd();
-          var canEdit = !this.model.isNew() && collection.canEdit();
-          if (!canAdd && !canEdit) {
-            return;
-          }
-
-          if (this.options.collectionAdd) {
-            this.model.set(statusName, app.statusMapping.get(table.id, true).get('default_value'));
-          }
-
-          // Set this to be first field in edit table by modifiying groupings.
-          if (table && table.get('column_groupings')) {
-            var columnGrouping = table.get('column_groupings');
-            table.set({'column_groupings': statusName + '^' + columnGrouping});
-          }
         }
 
         var inputOptions = {
@@ -328,8 +304,7 @@ define(function(require, exports, module) {
         .pluck('id')
         .value();
 
-      this.hiddenFields = this.getHiddenSystemColumns().concat(this.hiddenFields || []);
-      this.hiddenFields = _.union(optionsHiddenFields, structureHiddenFields, this.hiddenFields);
+      this.hiddenFields = _.union(optionsHiddenFields, structureHiddenFields, this.hiddenFields || []);
       this.visibleFields = _.difference(this.structure.pluck('id'), this.hiddenFields);
       this.omittedFields = options.omittedFields;
 

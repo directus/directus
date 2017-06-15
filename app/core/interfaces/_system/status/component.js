@@ -10,7 +10,7 @@ define([
   'app',
   'core/t',
   'core/UIComponent',
-  'core/UIView'
+  './interface'
 ], function (app, __t, UIComponent, UIView) {
 
   'use strict';

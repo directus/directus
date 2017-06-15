@@ -46,9 +46,14 @@ function(app, _, Backbone) {
 
     serialize: function () {
       var statuses = [];
+      var model = this.model;
+      var structure = model.structure;
       var attr = this.getStatusColumnName();
       var currentStatus = this.model.get(attr);
-      var model = this.model;
+
+      if (!currentStatus && structure.get(attr)) {
+        currentStatus = structure.get(attr).get('default_value');
+      }
 
       _.each(model.getStatusVisible(), function (status) {
         var item = status.toJSON();
@@ -71,11 +76,10 @@ function(app, _, Backbone) {
       };
     },
 
-    afterRender: function() {
-
-    },
-
-    initialize: function() {
+    initialize: function () {
+      if (this.getStatusColumnName()) {
+        this.model.on('change:' + this.getStatusColumnName(), this.render, this);
+      }
     }
   });
 });

@@ -18,7 +18,7 @@ define([
 
       this.baseView.rightSidebarView.$el.addClass('scroll-y wide no-title');
 
-      if (this.model.has(statusColumnName)) {
+      if (this.model.structure.get(statusColumnName)) {
         this.insertView(new StatusWidget({model: this.model}));
       }
 
