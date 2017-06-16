@@ -64,6 +64,10 @@ define(function(require, exports, module) {
           return;
         }
 
+        if (column.get('default_value') !== undefined) {
+          return;
+        }
+
         // UIModel is being define before UIManager
         // @TODO: Fix this
         var UIManager = require('core/UIManager');
