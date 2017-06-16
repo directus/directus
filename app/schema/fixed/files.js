@@ -53,8 +53,8 @@ define(function(require, exports, module) {
             "comment":"",
             "sort":2,
             "system":true,
-            "hidden_list":false,
-            "hidden_input":false,
+            "hidden_list":true,
+            "hidden_input":true,
             "required":false,
             "ui":"status",
             "hidden":true
