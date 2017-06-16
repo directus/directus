@@ -87,6 +87,12 @@ define(function(require, exports, module) {
 
       _.each(columnsName, function (columnName) {
         var column = structure.get(columnName);
+
+        // skip if the column name doesn't exists in the structure
+        if (!column) {
+          return;
+        }
+
         var value = attributes[columnName];
         var nullDisallowed = column.get('nullable') !== true;
         var ui = UIManager._getUI(column.get('ui'));
@@ -94,11 +100,6 @@ define(function(require, exports, module) {
         var isNull = Utils.isNothing(value);
         var uiSettings = UIManager.getSettings(column.get('ui'));
         var skipSerializationIfNull = uiSettings.skipSerializationIfNull;
-
-        // skip if the column name doesn't exists in the structure
-        if (!column) {
-          return;
-        }
 
         // Don't validate hidden fields
         // @todo should this be adjusted since these fields are now posting in some cases?
