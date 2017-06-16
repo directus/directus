@@ -61,8 +61,8 @@ define(function(require, exports, module) {
             "comment":"",
             "sort":1,
             "system":true,
-            "hidden_list":false,
-            "hidden_input":false,
+            "hidden_list": true,
+            "hidden_input": true,
             "required":false,
             "ui":"status",
             "hidden":true
@@ -124,14 +124,14 @@ define(function(require, exports, module) {
             "column_name":"first_name",
             "type":"VARCHAR",
             "char_length":"50",
-            "nullable": false,
+            "nullable": true,
             "default_value":"",
             "comment":"",
             "sort":3,
             "system":false,
             "hidden_list":false,
             "hidden_input":false,
-            "required":true,
+            "required": false,
             "ui":"textinput",
             "options": {
               "size": "medium"
@@ -142,14 +142,14 @@ define(function(require, exports, module) {
             "column_name":"last_name",
             "type":"VARCHAR",
             "char_length":"50",
-            "nullable": false,
+            "nullable": true,
             "default_value":"",
             "comment":"",
             "sort":4,
             "system":false,
             "hidden_list":false,
             "hidden_input":false,
-            "required":true,
+            "required": false,
             "ui":"textinput",
             "options": {
               "size": "medium"
@@ -161,7 +161,6 @@ define(function(require, exports, module) {
             "type":"VARCHAR",
             "char_length":"255",
             "nullable": false,
-            "default_value":"",
             "comment":"",
             "sort":5,
             "ui":"textinput",
@@ -245,7 +244,7 @@ define(function(require, exports, module) {
             "system":false,
             "hidden_list":false,
             "hidden_input":false,
-            "required": true,
+            "required": false,
             "options": {
               "allow_null": false,
               "options": parseSelectOptions(locales, function (key, list, locale, result) {
@@ -266,7 +265,7 @@ define(function(require, exports, module) {
             "system":false,
             "hidden_list":false,
             "hidden_input":false,
-            "required": true,
+            "required": false,
             "options": {
               "allow_null": false,
               "options": parseSelectOptions(timezones, function(key, list, name, result) {
@@ -441,7 +440,6 @@ define(function(require, exports, module) {
             "type":"VARCHAR",
             "char_length":"255",
             "nullable": false,
-            "default_value":"",
             "comment":"This is your user's API authentication token. Keep it safe!",
             "sort":20,
             "system":false,

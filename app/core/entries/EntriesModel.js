@@ -88,6 +88,12 @@ define(function(require, exports, module) {
       _.each(columnsName, function (columnName) {
         var column = structure.get(columnName);
         var value = attributes[columnName];
+        var nullDisallowed = column.get('nullable') !== true;
+        var ui = UIManager._getUI(column.get('ui'));
+        var forceUIValidation = ui.forceUIValidation === true;
+        var isNull = Utils.isNothing(value);
+        var uiSettings = UIManager.getSettings(column.get('ui'));
+        var skipSerializationIfNull = uiSettings.skipSerializationIfNull;
 
         // skip if the column name doesn't exists in the structure
         if (!column) {
@@ -105,19 +111,14 @@ define(function(require, exports, module) {
           return;
         }
 
+        if (isNull && !nullDisallowed) {
+          return;
+        }
+
         // NOTE: Column with default value should not be required
         if (column.get('default_value') !== undefined) {
           return;
         }
-
-        var nullDisallowed = column.get('nullable') !== true;
-        var ui = UIManager._getUI(column.get('ui'));
-        var forceUIValidation = ui.forceUIValidation === true;
-        var isNull = Utils.isNothing(value);
-
-        var uiSettings = UIManager.getSettings(column.get('ui'));
-
-        var skipSerializationIfNull = uiSettings.skipSerializationIfNull;
 
         var mess = (!forceUIValidation && !skipSerializationIfNull && nullDisallowed && isNull) ?
           'The field cannot be empty'
