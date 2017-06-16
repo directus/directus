@@ -203,6 +203,7 @@ function(app, _, moment, Backbone, DirectusModal, DirectusEdit, __t, Notificatio
       app.sendFiles([fileInfo.fileInfo], function(data) {
         if (data && typeof(data[0]) === 'object') {
           var attributes = data[0];
+          debugger;
           attributes['type'] = fileInfo.fileInfo.type;
           fileInfo.model.save(attributes, {
             success: function() {
@@ -221,7 +222,7 @@ function(app, _, moment, Backbone, DirectusModal, DirectusEdit, __t, Notificatio
             },
             wait: true,
             patch: true,
-            includeRelationships: true
+            validate: false
           });
           that.collection.trigger('sync');
           that.uploadNextImage();
