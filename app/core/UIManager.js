@@ -86,7 +86,6 @@ define(function(require, exports, module) {
 
   var MiscInterfaces = [
     require('core/interfaces/section_break/component'),
-    require('core/interfaces/alias/component'),
     require('core/interfaces/user/interface'),
     require('core/interfaces/user')
   ].map(interfaceGroup('misc'));
