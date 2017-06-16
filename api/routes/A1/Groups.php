@@ -73,18 +73,6 @@ class Groups extends Route
         $requestPayload['id'] = $id;
 
         ArrayUtils::remove($requestPayload, 'permissions');
-        $users = ArrayUtils::get($requestPayload, 'users', []);
-        if ($users) {
-            $users = array_filter($users, function ($user) {
-                return ArrayUtils::has($user, 'id');
-            });
-
-            foreach ($users as &$user) {
-                $user = ArrayUtils::pick($user, ['id', 'group']);
-            }
-
-            $requestPayload['users'] = $users;
-        }
 
         $newRecord = $tableGateway->manageRecordUpdate($tableName, $requestPayload);
         $newGroupId = $newRecord['id'];
