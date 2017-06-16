@@ -159,12 +159,13 @@
     ret = oldSet.call(this, attrs, options);
 
     if (this._trackingChanges && !options.silent && !options.trackit_silent) {
-      _.each(attrs, _.bind(function(val, key) {
+      for (key in attrs) {
+        val = attrs[key];
         if (_.isEqual(this._originalAttrs[key], val))
           delete this._unsavedChanges[key];
         else
           this._unsavedChanges[key] = val;
-      }, this));
+      }
       this._triggerUnsavedChanges();
     }
     return ret;
