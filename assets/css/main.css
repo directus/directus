@@ -1954,7 +1954,8 @@ table {
         transition: color 200ms ease-in-out 0ms;
         white-space: nowrap;
         overflow: hidden;
-        text-overflow: ellipsis; }
+        text-overflow: ellipsis;
+        max-width: 300px; }
         table tbody tr td.comment:hover {
           color: #3498DB; }
           table tbody tr td.comment:hover .no-value {
