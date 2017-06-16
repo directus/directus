@@ -189,6 +189,17 @@ class ColumnsService extends AbstractService
 
             $newColumn->setOptions($options);
 
+            // @TODO: add a list of supported types by databases
+            $type = ArrayUtils::get($data, 'data_type', $columnObject->getDataType());
+            $newColumn->setType($type);
+
+            // NOTE: This hot fix prevent from specify the length for TEXTs data types
+            // even though they internally have a length, those length are fixed
+            $supportLength = !in_array($type, ['TINYTEXT', 'TEXT', 'MEDIUMTEXT', 'LONGTEXT']);
+            if ($supportLength) {
+                ArrayUtils::remove($data, 'length');
+            }
+
             // TODO: Avoid using get length to get the char length
             // instead it will return the char length or the numeric length
             // depending of the column data type
@@ -206,7 +217,7 @@ class ColumnsService extends AbstractService
                 } else {
                     $newColumn->setLength($length);
                 }
-            } else {
+            } else if ($supportLength) {
                 if ($columnObject->getPrecision()) {
                     $newColumn->setDigits($columnObject->getPrecision());
                     $newColumn->setDecimal($columnObject->getScale());
@@ -232,10 +243,6 @@ class ColumnsService extends AbstractService
             }
 
             $newColumn->setDefault($defaultValue);
-
-            // @TODO: add a list of supported types by databases
-            $type = ArrayUtils::get($data, 'data_type', $columnObject->getDataType());
-            $newColumn->setType($type);
 
             // FIXME: Allow SET/ENUM values
             if (ArrayUtils::has($data, 'length')) {
