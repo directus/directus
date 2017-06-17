@@ -50,7 +50,6 @@ define(function (require, exports, module) {
     require('core/interfaces/json/component'),
     require('core/interfaces/random/component'),
     require('core/interfaces/blob/component'),
-    require('core/interfaces/select/component'),
     require('core/interfaces/select_list/component'),
     require('core/interfaces/multiselect_list/component'),
     require('core/interfaces/dropdown/component'),
