@@ -12,10 +12,7 @@ define(['./interface', 'core/UIComponent', 'core/t', 'utils'], function (Input, 
       }
     },
     list: function (options) {
-      // Convert default csv to csv with spaces => demo1,demo2 => demo1, demo2
-      return options.value.split(options.settings.get('delimiter')).reduce(function (string, value) {
-        return string + ', ' + value;
-      });
+      return options.value;
     }
   });
 });
