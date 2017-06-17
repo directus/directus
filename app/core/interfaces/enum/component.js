@@ -6,7 +6,7 @@ define(['core/interfaces/enum/interface', 'core/UIComponent', 'core/t', 'select2
     dataTypes: ['ENUM', 'SET'],
     Input: Input,
     variables: [
-      {id: 'allow_null', type: 'Boolean', default_value: false, ui: 'checkbox'}
+      {id: 'allow_null', type: 'Boolean', default_value: false, ui: 'toggle'}
     ],
     validate: function (value, options) {
       if (options.schema.isRequired() && _.isEmpty(value)) {

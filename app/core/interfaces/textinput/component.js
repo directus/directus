@@ -10,7 +10,7 @@ define([
     dataTypes: ['VARCHAR', 'CHAR', 'DATE', 'TIME', 'ENUM'],
     variables: [
       // Disables editing of the field while still letting users see the value (true = readonly)
-      {id: 'readonly', type: 'Boolean', default_value: false, ui: 'checkbox'},
+      {id: 'readonly', type: 'Boolean', default_value: false, ui: 'toggle'},
       // Adjusts the max width of the input (Small, Medium, Large)
       {id: 'size', type: 'String', default_value: 'large', ui: 'select', options: {options: {'large': __t('size_large'), 'medium': __t('size_medium'), 'small': __t('size_small')}}},
       // Grayed out default placeholder text in the input when it's empty

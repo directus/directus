@@ -7,7 +7,7 @@ define(['./interface', 'core/UIComponent', 'core/t'], function (Input, UICompone
     dataTypes: ['VARCHAR', 'TEXT', 'MEDIUMTEXT', 'LONGTEXT'],
     Input: Input,
     variables: [
-      {id: 'show_element_path', ui: 'checkbox', default: true},
+      {id: 'show_element_path', ui: 'toggle', default: true},
       {
         id: 'headings',
         ui: 'select',

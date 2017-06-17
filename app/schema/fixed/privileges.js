@@ -34,7 +34,7 @@ define(function(require, exports, module) {
       {
         "id": "allow_view",
         "column_name": "allow_view",
-        "ui": "checkbox",
+        "ui": "toggle",
         "type": "TINYINT",
         "length": 1,
         "system": false,
@@ -45,7 +45,7 @@ define(function(require, exports, module) {
       {
         "id": "allow_add",
         "column_name": "allow_add",
-        "ui": "checkbox",
+        "ui": "toggle",
         "type": "TINYINT",
         "length": 1,
         "system": false,
@@ -56,7 +56,7 @@ define(function(require, exports, module) {
       {
         "id": "allow_edit",
         "column_name": "allow_edit",
-        "ui": "checkbox",
+        "ui": "toggle",
         "type": "TINYINT",
         "length": 1,
         "system": false,
@@ -67,7 +67,7 @@ define(function(require, exports, module) {
       {
         "id": "allow_delete",
         "column_name": "allow_delete",
-        "ui": "checkbox",
+        "ui": "toggle",
         "type": "TINYINT",
         "length": 1,
         "system": false,
@@ -78,7 +78,7 @@ define(function(require, exports, module) {
       {
         "id": "allow_alter",
         "column_name": "allow_alter",
-        "ui": "checkbox",
+        "ui": "toggle",
         "type": "TINYINT",
         "length": 1,
         "system": false,
@@ -126,7 +126,7 @@ define(function(require, exports, module) {
       {
         "id": "nav_listed",
         "column_name": "nav_listed",
-        "ui": "checkbox",
+        "ui": "toggle",
         "type": "TINYINT",
         "length": 1,
         "system": false,
@@ -137,7 +137,7 @@ define(function(require, exports, module) {
       {
         "id": "status_id",
         "column_name": "status_id",
-        "ui": "checkbox",
+        "ui": "toggle",
         "type": "TINYINT",
         "length": 1,
         "system": false,

@@ -20,14 +20,14 @@ define([
     dataTypes: ['MANYTOMANY'],
     variables: [
       {id: 'visible_columns', type: 'String', default_value: '', ui: 'textinput', char_length: 255, required: true},
-      {id: 'add_button', type: 'Boolean', default_value: true, ui: 'checkbox'},
-      {id: 'choose_button', type: 'Boolean', default_value: true, ui: 'checkbox'},
-      {id: 'remove_button', type: 'Boolean', default_value: true, ui: 'checkbox'},
+      {id: 'add_button', type: 'Boolean', default_value: true, ui: 'toggle'},
+      {id: 'choose_button', type: 'Boolean', default_value: true, ui: 'toggle'},
+      {id: 'remove_button', type: 'Boolean', default_value: true, ui: 'toggle'},
       {id: 'filter_type', type: 'String', default_value: 'dropdown', ui: 'select', options: {options: {'dropdown':__t('dropdown'),'textinput':__t('text_input')} }},
       {id: 'filter_column', type: 'String', default_value: '', ui: 'textinput', char_length: 255, comment: __t('m2m_filter_column_comment'), required: true},
       {id: 'visible_column_template', type: 'String', default_value:'', ui: 'textinput', char_length: 255, comment: __t('m2m_visible_column_template_comment'), required: true},
       {id: 'min_entries', type: 'Number', default_value: 0, ui: 'numeric', char_length: 11, comment: __t('m2m_min_entries_comment')},
-      {id: 'no_duplicates', type: 'Boolean', default_value: false, ui: 'checkbox', comment: __t('m2m_no_duplicates_comment')}
+      {id: 'no_duplicates', type: 'Boolean', default_value: false, ui: 'toggle', comment: __t('m2m_no_duplicates_comment')}
     ],
     Input: Input,
     validate: function (value, options) {

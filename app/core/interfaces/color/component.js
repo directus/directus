@@ -60,15 +60,15 @@ define([
         id: 'palette_only',
         type: 'Boolean',
         default_value: false,
-        ui: 'checkbox'
+        ui: 'toggle'
       },
       {
         id: 'allow_alpha',
         type: 'Boolean',
         default_value: false,
-        ui: 'checkbox'
+        ui: 'toggle'
       },
-      {id: 'readonly', type: 'Boolean', default_value: false, ui: 'checkbox'}
+      {id: 'readonly', type: 'Boolean', default_value: false, ui: 'toggle'}
     ],
     Input: Input,
     validate: function (value, options) {

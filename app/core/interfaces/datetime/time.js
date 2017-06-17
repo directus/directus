@@ -129,8 +129,8 @@ define(['app', 'moment', 'core/UIComponent', 'core/UIView', 'core/t'], function(
     dataTypes: ['TIME'],
     variables: [
       // @TODO: add time step setting
-      {id: 'readonly', type: 'Boolean', default_value: false, ui: 'checkbox'},
-      {id: 'include_seconds', type: 'Boolean', default_value: false, ui: 'checkbox'}
+      {id: 'readonly', type: 'Boolean', default_value: false, ui: 'toggle'},
+      {id: 'include_seconds', type: 'Boolean', default_value: false, ui: 'toggle'}
     ],
     Input: Input,
     validate: function (value, options) {

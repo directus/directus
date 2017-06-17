@@ -106,7 +106,7 @@ abstract class AbstractSchema implements SchemaInterface
                 $interfaceName = 'relational';
                 break;
             case 'TINYINT':
-                $interfaceName = 'checkbox';
+                $interfaceName = 'toggle';
                 break;
             case 'MEDIUMBLOB':
             case 'BLOB':
