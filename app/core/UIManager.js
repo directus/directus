@@ -51,7 +51,7 @@ define(function (require, exports, module) {
     require('core/interfaces/blob/component'),
     require('core/interfaces/select/component'),
     require('core/interfaces/select_list/component'),
-    require('core/interfaces/multiselect_list/component'),
+    require('core/interfaces/select_list_multiple/component'),
     require('core/interfaces/dropdown/component'),
     require('core/interfaces/dropdown_multiple/component'),
     require('core/interfaces/tags/component'),

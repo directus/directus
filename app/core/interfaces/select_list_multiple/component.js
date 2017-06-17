@@ -1,6 +1,6 @@
 define(['./interface', 'core/UIComponent', 'core/t', 'utils'], function (Input, UIComponent, __t, Utils) {
   return UIComponent.extend({
-    id: 'multiselect_list',
+    id: 'select_list_multiple',
     dataTypes: ['VARCHAR'],
     variables: [
       {id: 'options', default_value: '', ui: 'json', options: {rows: 25, placeholder_text: '{\n    "value1": "Option One",\n    "value2": "Option Two",\n    "value3": "Option Three"\n}'}, comment: __t('select_options_comment'), required: true},
