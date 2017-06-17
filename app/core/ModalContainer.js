@@ -1,7 +1,12 @@
 define(['app', 'backbone', 'underscore'], function(app, Backbone, _) {
 
   return Backbone.Layout.extend({
+
     el: '#modal_container',
+
+    // Prevents the container view from being removed
+    // from its parent view when it's re-rendered
+    keep: true,
 
     events: {
       'click .modal-bg': function(event) {
