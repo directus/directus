@@ -1,4 +1,14 @@
-define(['core/UIView', 'app', 'core/overlays/overlays', 'helpers/file', 'mixins/status', 'mixins/save-item', 'sortable'], function (UIView, app, Overlays, FileHelper, StatusMixin, SaveItemMixin, Sortable) {
+define([
+  'underscore',
+  'core/UIView',
+  'app',
+  'core/overlays/overlays',
+  'helpers/file',
+  'mixins/status',
+  'mixins/save-item',
+  'sortable'
+], function (_, UIView, app, Overlays, FileHelper, StatusMixin, SaveItemMixin, Sortable) {
+
   return UIView.extend({
     template: 'multiple_files/relational/input',
 
@@ -67,8 +77,15 @@ define(['core/UIView', 'app', 'core/overlays/overlays', 'helpers/file', 'mixins/
       app.router.overlayPage(view);
 
       view.save = function () {
-        model.set(view.editView.data());
-        collection.add(model, {nest: true});
+        var junctionModel = new collection.model({data: model});
+
+        _.extend(junctionModel, {
+          collection: collection,
+          structure: collection.structure,
+          table: collection.table
+        });
+
+        collection.add(junctionModel);
         app.router.removeOverlayPage(this);
       };
     },
