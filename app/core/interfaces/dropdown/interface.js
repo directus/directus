@@ -1,4 +1,4 @@
-define(['core/UIView'], function (UIView) {
+define(['core/UIView', 'select2'], function (UIView) {
   function parseOptions(options) {
     if (_.isString(options)) {
       try {
@@ -35,8 +35,19 @@ define(['core/UIView'], function (UIView) {
         name: this.options.name,
         comment: this.options.schema.get('comment'),
         readonly: !this.options.canWrite,
+        placeholder: this.options.schema.get('placeholder'),
+        readOnly: Boolean(Number(this.options.settings.get('read_only'))),
+        native: Boolean(Number(this.options.settings.get('use_native_input'))),
         value: value
       };
+    },
+
+    afterRender: function() {
+      var native = Boolean(Number(this.options.settings.get('use_native_input'))) || false;
+
+      if (!native) {
+        this.$el.find('select').select2();
+      }
     }
   });
 });

@@ -3,7 +3,9 @@
 </style>
 
 <div class="dropdown-interface">
-	<select name="{{name}}">
+	<select name="{{name}}" {{#if readOnly}}disabled{{/if}}>
+		<option value="">{{placeholder}}</option>
+
 		{{#options}}
 		<option value="{{key}}" {{#if selected}}selected{{/if}}>{{value}}</option>
 		{{/options}}
