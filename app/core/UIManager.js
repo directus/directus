@@ -52,11 +52,12 @@ define(function (require, exports, module) {
     require('core/interfaces/select/component'),
     require('core/interfaces/select_list/component'),
     require('core/interfaces/multiselect_list/component'),
+    require('core/interfaces/dropdown/component'),
     require('core/interfaces/tags/component'),
     require('core/interfaces/wysiwyg/component'),
     require('core/interfaces/wysiwyg_full/component'),
     require('core/interfaces/password/component'),
-    require('core/interfaces/enum/component'),
+    require('core/interfaces/dropdown_enum/component'),
     require('core/interfaces/map/component'),
     require('core/interfaces/markdown/component')
   ].map(interfaceGroup('string'));
