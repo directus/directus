@@ -684,6 +684,11 @@ class Bootstrap
                 $payload[$userModified] = $acl->getUserId();
             }
 
+            // NOTE: exclude date_uploaded from updating a file record
+            if ($payload->attribute('tableName') === 'directus_files') {
+                $payload->remove('date_uploaded');
+            }
+
             return $payload;
         }, Emitter::P_HIGH);
 
