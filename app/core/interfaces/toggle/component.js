@@ -3,6 +3,7 @@ define(['./interface', 'core/UIComponent', 'core/t'], function(Input, UIComponen
     id: 'toggle',
     dataTypes: ['TINYINT'],
     variables: [
+      {id: 'read_only', ui: 'toggle', default_value: false},
       {id: 'label', ui: 'textinput', default_value: ''},
       {id: 'show_as_checkbox', ui: 'toggle', default_value: false, comment: 'Display a checkbox instead of the default switch'}
     ],

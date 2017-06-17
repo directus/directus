@@ -32,6 +32,7 @@
 		transform: translate(0, -50%);
 		transition: all 0.3s ease;
 	}
+
 	.interface-toggle.toggle label:before {
 		left: 1px;
 		width: 34px;
@@ -56,10 +57,22 @@
 		background-color: #3598db;
 		transform: translate(80%, -50%);
 	}
+
+	.interface-toggle.toggle input:disabled + label {
+		cursor: not-allowed;
+	}
+
+	.interface-toggle.toggle input:disabled + label:before {
+		opacity: 0.3;
+	}
+
+	.interface-toggle.toggle input:checked:disabled + label:after {
+		background-color: hsl(206, 69%, 80%);
+	}
 </style>
 
 <div class="interface-toggle {{#unless showAsCheckbox}}toggle{{/unless}}">
-	<input id="toggle_{{name}}" class="{{#if showAsCheckbox}}custom-checkbox{{/if}}" type="checkbox" {{#if readonly}}disabled{{/if}} {{#if selected}}checked{{/if}} />
+	<input id="toggle_{{name}}" class="{{#if showAsCheckbox}}custom-checkbox{{/if}}" type="checkbox" {{#if readOnly}}disabled{{/if}} {{#if selected}}checked{{/if}} />
 	<label for="toggle_{{name}}"><span></span>{{label}}</label>
 
 	<input type="hidden" name="{{name}}" value="{{#if selected}}1{{else}}0{{/if}}">
