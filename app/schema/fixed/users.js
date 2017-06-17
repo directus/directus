@@ -432,7 +432,7 @@ define(function(require, exports, module) {
             "hidden_list":false,
             "hidden_input":false,
             "required":false,
-            "ui":"checkbox"
+            "ui":"toggle"
           },
           {
             "id":"token",
@@ -584,7 +584,7 @@ define(function(require, exports, module) {
             "id": "invite_accepted",
             "column_name": "invite_accepted",
             "type": "TINYINT",
-            "ui": "checkbox",
+            "ui": "toggle",
             "nullable": true,
             "omit_input": true
           }

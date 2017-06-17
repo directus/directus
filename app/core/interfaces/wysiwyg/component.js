@@ -41,7 +41,7 @@ define(['core/interfaces/wysiwyg/interface', 'core/UIComponent', 'core/t'], func
       id: 'simple_editor',
       type: 'Boolean',
       nullable: true,
-      default_value: false, ui: 'checkbox'
+      default_value: false, ui: 'toggle'
     }],
     validate: function (value, options) {
       if (options.view.isRequired() && !value) {

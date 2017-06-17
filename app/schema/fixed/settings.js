@@ -97,7 +97,7 @@ define(function(require, exports, module) {
       comment: transComments('files_file_naming')
     },
     {id: 'thumbnail_quality', ui: 'numeric', char_length: 255, options: {size: 'small', placeholder_text: "eg: 90"}, comment: __t('directus_settings_files_thumbnail_quality_comment')},
-    {id: 'thumbnail_crop_enabled', ui: 'checkbox', comment: __t('directus_settings_files_thumbnail_crop_enabled')},
+    {id: 'thumbnail_crop_enabled', ui: 'toggle', comment: __t('directus_settings_files_thumbnail_crop_enabled')},
     {id: 'youtube_api_key', ui: 'textinput', char_length: 255, comment: __t('directus_settings_files_youtube_api_key_comment')}
   ];
 

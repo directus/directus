@@ -132,7 +132,7 @@ define([
             //   id: 'chart_enabled',
             //   type: 'Boolean',
             //   required: false,
-            //   ui: 'checkbox',
+            //   ui: 'toggle',
             //   default_value: false
             // },
             // {

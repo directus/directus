@@ -14,11 +14,11 @@ define([
 
     variables: [
       // Toggles an "Add" button for adding new files directly into the UI
-      {id: 'add_button', type: 'Boolean', default_value: true, ui: 'checkbox'},
+      {id: 'add_button', type: 'Boolean', default_value: true, ui: 'toggle'},
       // Toggles a "Choose" button that opens a modal with all existing Directus files to choose from
-      {id: 'choose_button', type: 'Boolean', default_value: true, ui: 'checkbox'},
+      {id: 'choose_button', type: 'Boolean', default_value: true, ui: 'toggle'},
       // Toggles "Remove" buttons for each file that let's you delete the file
-      {id: 'remove_button', type: 'Boolean', default_value: true, ui: 'checkbox'}
+      {id: 'remove_button', type: 'Boolean', default_value: true, ui: 'toggle'}
     ],
 
     Input: Input,

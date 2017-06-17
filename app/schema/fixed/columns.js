@@ -75,7 +75,7 @@ define(function(require, exports, module) {
       {
         'id':'hidden_input',
         'column_name':'hidden_input',
-        'ui':'checkbox',
+        'ui':'toggle',
         'type':'TINYINT',
         'default_value': false,
         'system':false,
@@ -87,7 +87,7 @@ define(function(require, exports, module) {
       {
         'id':'hidden_list',
         'column_name':'hidden_list',
-        'ui':'checkbox',
+        'ui':'toggle',
         'type':'TINYINT',
         'default_value': false,
         'system':false,
@@ -99,7 +99,7 @@ define(function(require, exports, module) {
       {
         'id': 'required',
         'column_name': 'required',
-        'ui':'checkbox',
+        'ui':'toggle',
         'type':'TINYINT',
         'system':false,
         'hidden_list':false,

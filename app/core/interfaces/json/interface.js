@@ -1,4 +1,4 @@
-define(['core/UIView'], function(UIView) {
+define(['core/UIView'], function (UIView) {
   return UIView.extend({
     template: 'json/input',
     events: {
@@ -7,7 +7,7 @@ define(['core/UIView'], function(UIView) {
     },
     change: 0,
     lastValue: '',
-    process: function(event) {
+    process: function (event) {
       var textarea = event.target;
 
       this.change = textarea.value.length - this.lastValue.length;
@@ -24,7 +24,7 @@ define(['core/UIView'], function(UIView) {
       var nextChar = after.substr(0, 1);
 
       // Enter key
-      if (+code === 13) {
+      if (Number(code) === 13) {
         var previousLine = this.getPreviousLine(before);
         var indents = this.isIndented(previousLine);
 
@@ -33,22 +33,23 @@ define(['core/UIView'], function(UIView) {
         if (lastChar === '{' || lastChar === '[') {
           more = nextChar === '}' || nextChar === ']' ? 0 : 1;
           this.addIndent(before, after, indents + more);
-          event.preventDefault();
         }
 
         if (indents + more > 0) {
           this.addIndent(before, after, indents + more);
-          event.preventDefault();
         }
+
+        event.preventDefault();
+        return false;
       }
 
       // ] or } key
-      if (+code === 221) {
+      if (Number(code) === 221) {
         this.removeIndent(before, after);
       }
     },
 
-    validate: function(event) {
+    validate: function (event) {
       // Set changed flag
       this.model.set(this.name, event.target.value);
 
@@ -63,14 +64,14 @@ define(['core/UIView'], function(UIView) {
         .catch(this.showError);
     },
 
-    getPreviousLine: function(before) {
+    getPreviousLine: function (before) {
       var textarea = this.$('textarea')[0];
       var lines = textarea.value.split(/\n/g);
       var line = before.trimRight().split(/\n/g).length - 1;
       return lines[line] || '';
     },
 
-    isIndented: function(line) {
+    isIndented: function (line) {
       var indent = this.options.settings.get('indent');
       var textarea = this.$('textarea')[0];
       var regex = new RegExp('^(' + indent + '+)', 'g');
@@ -78,7 +79,7 @@ define(['core/UIView'], function(UIView) {
       return match && match[0].length / indent.length || 0;
     },
 
-    addIndent: function(before, after, num) {
+    addIndent: function (before, after, num) {
       var textarea = this.$('textarea')[0];
       var indent = this.options.settings.get('indent');
 
@@ -90,7 +91,7 @@ define(['core/UIView'], function(UIView) {
       textarea.selectionStart = textarea.selectionEnd = this.lastValue.length - after.length;
     },
 
-    removeIndent: function(before, after) {
+    removeIndent: function (before, after) {
       var textarea = this.$('textarea')[0];
       var indent = this.options.settings.get('indent');
 
@@ -103,30 +104,37 @@ define(['core/UIView'], function(UIView) {
       textarea.selectionStart = textarea.selectionEnd = before.length - indent.length;
     },
 
-    validateJSON: function(string) {
-      return new Promise(function(resolve, reject) {
+    validateJSON: function (string) {
+      return new Promise(function (resolve, reject) {
         try {
           JSON.parse(string);
           resolve();
-        } catch(err) {
+        } catch (err) {
           reject(err);
         }
       });
     },
 
-    clearError: function() {
+    clearError: function () {
       var textarea = this.$('textarea')[0];
       textarea.classList.remove('invalid');
     },
 
-    showError: function(err) {
+    showError: function () {
       var textarea = this.$('textarea')[0];
       textarea.classList.add('invalid');
     },
 
-    serialize: function() {
+    serialize: function () {
       // Beautify JSON
-      var value = this.options.value ? JSON.stringify(JSON.parse(this.options.value), null, '\t') : '';
+      var value;
+      if (this.options.value) {
+        try {
+          value = JSON.stringify(JSON.parse(this.options.value), null, this.options.settings.get('indent'));
+        } catch (error) {
+          value = this.options.value;
+        }
+      }
       return {
         value: value,
         name: this.options.name,

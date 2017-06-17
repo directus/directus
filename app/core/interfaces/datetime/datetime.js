@@ -69,7 +69,7 @@ define(['app', 'underscore', 'core/interfaces/datetime/date', 'moment'], functio
 
   var variables = UIDate.prototype.variables.slice();
   // @TODO: add time step setting
-  variables.push({id: 'include_seconds', type: 'Boolean', default_value: true, ui: 'checkbox'});
+  variables.push({id: 'include_seconds', type: 'Boolean', default_value: true, ui: 'toggle'});
 
   var Component = UIDate.extend({
     id: 'datetime',

@@ -18,7 +18,7 @@ define(['./interface', 'core/UIComponent', 'core/t'], function (Input, UICompone
       {id: 'countryCode_field', type: 'String', default_value: '', ui: 'textinput', char_length: 200},
       // Height of Map Element in Pixels
       {id: 'mapHeight', type: 'Number', default_value: 400, ui: 'numeric', char_length: 4, comment: __t('map_mapHeight_comment')},
-      {id: 'showLatLng', type: 'Boolean', default_value: false, ui: 'checkbox', comment: __t('map_showLatLng_comment')}
+      {id: 'showLatLng', type: 'Boolean', default_value: false, ui: 'toggle', comment: __t('map_showLatLng_comment')}
     ],
     settings: [{
       collection: 'global',

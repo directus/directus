@@ -86,7 +86,7 @@ define(function(require, exports, module) {
       {
         "id":"hidden",
         "column_name":"hidden",
-        "ui":"checkbox",
+        "ui":"toggle",
         "type":"TINYINT",
         "default_value": false,
         "system":false,
@@ -100,7 +100,7 @@ define(function(require, exports, module) {
       {
         "id": "footer",
         "column_name": "footer",
-        "ui": "checkbox",
+        "ui": "toggle",
         "type": "TINYINT",
         "system": false,
         "required": false,
@@ -114,7 +114,7 @@ define(function(require, exports, module) {
       {
         "id":"single",
         "column_name":"single",
-        "ui":"checkbox",
+        "ui":"toggle",
         "type":"TINYINT",
         "default_value": false,
         "system":false,

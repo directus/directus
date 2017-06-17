@@ -11,7 +11,7 @@ define(['core/interfaces/password/interface', 'underscore', 'core/UIComponent', 
 
     variables: [
       // Toggles the second input ("Confirm Password"). On by default.
-      {id: 'require_confirmation', default_value: true, type: 'Boolean', ui: 'checkbox'},
+      {id: 'require_confirmation', default_value: true, type: 'Boolean', ui: 'toggle'},
       // The name of the column to be used as a salt in the password hash
       {id: 'salt_field', type: 'String', default_value: 'salt', ui: 'textinput'}
     ],
