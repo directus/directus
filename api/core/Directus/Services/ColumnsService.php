@@ -218,7 +218,9 @@ class ColumnsService extends AbstractService
                     $newColumn->setLength($length);
                 }
             } else if ($supportLength) {
-                if ($columnObject->getPrecision()) {
+                // NOTE: if a column has scale (decimals)
+                // it means it's a decimal type
+                if ($columnObject->getScale()) {
                     $newColumn->setDigits($columnObject->getPrecision());
                     $newColumn->setDecimal($columnObject->getScale());
                 } else {
