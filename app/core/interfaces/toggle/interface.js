@@ -1,4 +1,4 @@
-define(['underscore', 'utils', 'core/UIView', 'core/t'], function (_, Utils, UIView, __t) {
+define(['underscore', 'utils', 'core/UIView'], function (_, Utils, UIView) {
   return UIView.extend({
     template: 'toggle/input',
 
@@ -8,12 +8,6 @@ define(['underscore', 'utils', 'core/UIView', 'core/t'], function (_, Utils, UIV
         this.$('input[type=hidden]').val(value);
         this.model.set(this.name, value);
       }
-    },
-
-    isRequired: function () {
-      var settings = this.options.settings;
-
-      return settings.get('required') === true;
     },
 
     serialize: function () {
@@ -31,7 +25,7 @@ define(['underscore', 'utils', 'core/UIView', 'core/t'], function (_, Utils, UIV
         name: this.options.name,
         selected: (value === true),
         label: this.options.settings.get('label'),
-        showAsCheckbox: this.options.settings.get('show_as_checkbox') == 1,
+        showAsCheckbox: Number(this.options.settings.get('show_as_checkbox')) === 1,
         readonly: !this.options.canWrite
       };
     }
