@@ -335,17 +335,18 @@ define(function (require, exports, module) {
 
     entries: function (tableName, pref) {
       var privileges = SchemaManager.getPrivileges(tableName);
-      if (_.contains(this.navBlacklist, 'tables') || (privileges && privileges.get('allow_view') === 0)) {
+
+      if (
+        !SchemaManager.getTable(tableName)
+        || _.contains(this.navBlacklist, 'tables')
+        || !privileges || !privileges.can('view')
+      ) {
         return this.notFound();
       }
 
       var collection;
 
       $.xhrPool.abortAll();
-
-      if (!SchemaManager.getTable(tableName)) {
-        return this.notFound();
-      }
 
       // see if the collection is cached...
       if (this.currentCollection !== undefined && this.currentCollection.table.id === tableName) {
@@ -392,8 +393,15 @@ define(function (require, exports, module) {
     },
 
     entry: function (tableName, id) {
-      if (_.contains(this.navBlacklist,'tables'))
+      var privileges = SchemaManager.getPrivileges(tableName);
+
+      if (
+        !SchemaManager.getTable(tableName)
+        || _.contains(this.navBlacklist, 'tables')
+        || !privileges || !privileges.can('view')
+      ) {
         return this.notFound();
+      }
 
       this.setTitle(app.settings.get('global').get('project_name') + ' | Entry');
 
@@ -407,10 +415,6 @@ define(function (require, exports, module) {
         collection = this.currentCollection;
       } else {
         collection = EntriesManager.getInstance(tableName);
-      }
-
-      if (collection === undefined) {
-        return this.notFound();
       }
 
       if (collection.structure.length <= 1) {
