@@ -23,7 +23,7 @@ define(function(require, exports, module) {
         "type": "INT",
         "system": true,
         "hidden_list": false,
-        "hidden_input": false,
+        "hidden_input": true,
         "sort": 0
       },
       {
