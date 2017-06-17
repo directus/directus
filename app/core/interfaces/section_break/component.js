@@ -13,7 +13,7 @@ define([
         id: 'show_inline',
         type: 'Boolean',
         default_value: false,
-        ui: 'checkbox'
+        ui: 'toggle'
       },
       {
         id: 'title',

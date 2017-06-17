@@ -114,7 +114,7 @@ define(function(require, exports, module) {
       {
         "id": "show_files",
         "column_name": "show_files",
-        "ui": "checkbox",
+        "ui": "toggle",
         "type": "TINYINT",
         "length": 1,
         "default_value": 1,
@@ -126,7 +126,7 @@ define(function(require, exports, module) {
       {
         "id": "show_messages",
         "column_name": "show_messages",
-        "ui": "checkbox",
+        "ui": "toggle",
         "type": "TINYINT",
         "length": 1,
         "default_value": 1,
@@ -138,7 +138,7 @@ define(function(require, exports, module) {
       {
         "id": "show_users",
         "column_name": "show_users",
-        "ui": "checkbox",
+        "ui": "toggle",
         "type": "TINYINT",
         "length": 1,
         "default_value": 1,

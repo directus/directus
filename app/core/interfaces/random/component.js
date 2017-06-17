@@ -11,8 +11,8 @@ define([
     variables: [
       {id: 'string_length', type: 'Number', default_value: 32, ui: 'numeric', char_length: 200},
       // Allow the user to input their own value
-      {id: 'allow_any_value', type: 'Boolean', default_value: true, ui: 'checkbox'},
-      {id: 'auto_generate',  type: 'Boolean', default_value: false, ui: 'checkbox'},
+      {id: 'allow_any_value', type: 'Boolean', default_value: true, ui: 'toggle'},
+      {id: 'auto_generate',  type: 'Boolean', default_value: false, ui: 'toggle'},
       // Initial Placeholder text for the UI
       {id: 'placeholder_text', type: 'String', default_value: '', ui: 'textinput', char_length: 200},
     ],

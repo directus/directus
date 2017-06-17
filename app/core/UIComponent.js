@@ -9,7 +9,7 @@ define(['backbone', 'handlebars', 'helpers/ui', 'core/t'], function(Backbone, Ha
         id: 'footer',
         type: 'Boolean',
         default_value: false,
-        ui: 'checkbox',
+        ui: 'toggle',
         comment: __t('numeric_footer_comment')
       });
     }
