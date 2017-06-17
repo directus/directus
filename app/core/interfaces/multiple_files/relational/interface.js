@@ -162,8 +162,6 @@ define([
       this.$('.js-file').each(function (i) {
         relatedCollection.get($(this).data('cid')).set({sort: i}, {silent: true});
       });
-
-      relatedCollection.setOrder('sort', 'ASC', {silent: true});
     },
 
     serialize: function () {
@@ -195,7 +193,7 @@ define([
 
       var relatedCollection = this.model.get(this.name);
       var junctionStructure = relatedCollection.junctionStructure;
-      var sortable = (junctionStructure.get('sort') !== undefined);
+      var sortable = junctionStructure.table.hasSortColumn();
 
       return {
         rows: rows,
@@ -294,17 +292,17 @@ define([
       }
 
       var relatedCollection = this.model.get(this.name);
-      var relatedSchema = relatedCollection.structure;
       var junctionStructure = relatedCollection.junctionStructure;
+      var table = junctionStructure.table;
       var sortable = false;
 
       relatedCollection.each(function (model) {
         return model.startTracking();
       });
 
-      if (junctionStructure.get('sort') !== undefined) {
+      if (table.hasSortColumn()) {
         sortable = true;
-        relatedCollection.setOrder('sort', 'ASC');
+        relatedCollection.setOrder(table.getSortColumnName(), 'ASC');
       }
 
       this.canEdit = !(options.inModal || false);
@@ -314,9 +312,7 @@ define([
       this.sortable = sortable;
 
       this.relatedCollection = relatedCollection;
-      this.listenTo(relatedCollection, 'change add remove', function () {
-        this.render();
-      }, this);
+      this.listenTo(relatedCollection, 'change add remove', this.render);
 
       this.listenTo(relatedCollection.nestedCollection, 'sync', function () {
       }, this);
