@@ -193,14 +193,14 @@ define(function(require, exports, module) {
             // make sure that the table exists
             // @todo move this to column schema?
             if (options.table === undefined) {
-              throw "Directus Error! The related table '" + tableRelated + "' does not exist! Check your UI settings for the field '" + id + "' in the table '" + this.collection.table.id + "'";
+              throw "Error! The related table '" + tableRelated + "' does not exist! Check your UI settings for the field '" + id + "' in the table '" + this.collection.table.id + "'";
             }
 
             // make sure that the visible columns exists
             // todo move this to ??
             var diff = _.difference(columns, options.structure.pluck('column_name'));
             if (diff.length > 0) {
-              throw "Directus Error! The column(s) '" + diff.join(',') + "' does not exist in related table '" + options.table.id + "'. Check your UI settings";
+              throw "Error! The column(s) '" + diff.join(',') + "' does not exist in related table '" + options.table.id + "'. Check your UI settings";
             }
 
             if (relationshipType === 'ONETOMANY') {
