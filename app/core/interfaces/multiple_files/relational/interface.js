@@ -42,7 +42,7 @@ define(['core/UIView', 'app', 'core/overlays/overlays', 'helpers/file', 'mixins/
       if (model.isNew()) {
         this.relatedCollection.remove(model);
       } else {
-        name[model.table.getStatusColumnName()] = model.getTableStatuses().getDeleteValue();
+        name[this.relatedCollection.table.getStatusColumnName()] = model.getTableStatuses().getDeleteValue();
         model.set(name);
       }
     },
