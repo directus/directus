@@ -42,11 +42,13 @@ define(['core/UIView', 'select2'], function (UIView) {
       };
     },
 
-    afterRender: function() {
+    afterRender: function () {
       var native = Boolean(Number(this.options.settings.get('use_native_input'))) || false;
 
       if (!native) {
-        this.$el.find('select').select2();
+        this.$el.find('select').select2({
+          minimumResultsForSearch: 10
+        });
       }
     }
   });
