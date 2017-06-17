@@ -1907,13 +1907,6 @@ table {
           font-size: 20px; }
       table tbody tr td.column-name:hover {
         color: #3498DB; }
-      table tbody tr td.column-name .missing-options {
-        font-size: 20px;
-        vertical-align: middle;
-        line-height: 10px;
-        margin-left: 6px;
-        margin-top: -4px;
-        color: #FF9800; }
       table tbody tr td.user-interface {
         -webkit-transition: color 200ms ease-in-out 0ms;
         -moz-transition: color 200ms ease-in-out 0ms;
@@ -1922,6 +1915,13 @@ table {
         transition: color 200ms ease-in-out 0ms; }
         table tbody tr td.user-interface:hover {
           color: #3498DB; }
+        table tbody tr td.user-interface .missing-options {
+          font-size: 20px;
+          vertical-align: middle;
+          line-height: 10px;
+          margin-left: 6px;
+          margin-top: -4px;
+          color: #FF9800; }
       table tbody tr td.relationship {
         -webkit-transition: color 200ms ease-in-out 0ms;
         -moz-transition: color 200ms ease-in-out 0ms;
