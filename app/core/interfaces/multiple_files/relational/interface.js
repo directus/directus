@@ -83,10 +83,9 @@ define(['core/UIView', 'app', 'core/overlays/overlays', 'helpers/file', 'mixins/
       view.save = function () {
         _.each(view.table.selection(), function (id) {
           var data = _.clone(collection.get(id).attributes);
-          me.relatedCollection.add(data, {parse: true, silent: true, nest: true});
+          me.relatedCollection.add(data, {parse: true, silent: false, nest: true});
         }, this);
 
-        me.relatedCollection.trigger('add');
         app.router.removeOverlayPage(this);
       };
 

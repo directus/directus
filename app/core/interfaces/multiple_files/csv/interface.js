@@ -94,9 +94,9 @@ define([
       view.save = function () {
         _.each(view.table.selection(), function (id) {
           var data = _.clone(collection.get(id).attributes);
-          me.relatedCollection.add(data, {silent: true});
+          me.relatedCollection.add(data, {silent: false});
         }, this);
-        me.relatedCollection.trigger('add');
+
         app.router.removeOverlayPage(this);
       };
 
