@@ -1,4 +1,4 @@
-define(['core/UIView', 'select2'], function (UIView) {
+define(['core/UIView'], function (UIView) {
   function parseOptions(options) {
     if (_.isString(options)) {
       try {
