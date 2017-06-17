@@ -57,7 +57,7 @@ define(function (require, exports, module) {
     require('core/interfaces/wysiwyg/component'),
     require('core/interfaces/wysiwyg_full/component'),
     require('core/interfaces/password/component'),
-    require('core/interfaces/enum/component'),
+    require('core/interfaces/dropdown_enum/component'),
     require('core/interfaces/map/component'),
     require('core/interfaces/markdown/component')
   ].map(interfaceGroup('string'));
