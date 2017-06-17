@@ -1,6 +1,8 @@
 define([
-  'core/t', 'underscore'
-], function (__t, _) {
+  'core/t',
+  'underscore',
+  'backbone'
+], function (__t, _, Backbone) {
 
   'use strict';
 
@@ -90,7 +92,11 @@ define([
     var missing = false;
 
     _.each(uiOptionsName, function (optionName) {
-      var option = columnOptions.get(optionName);
+      // NOTE: After we merge the synced data with the existing model this trigger a render event
+      // because the model "changed" with the new synced values
+      // which make the columns options not a UIModel anymore but a plain object
+      // TODO: Make the column options parsed to UIModel
+      var option = columnOptions instanceof Backbone.Model ? columnOptions.get(optionName) : columnOptions;
 
       if (!option || _.isEmpty(option)) {
         missing = true;
