@@ -2,6 +2,7 @@ define(function (require, exports, module) {
   'use strict';
 
   var _ = require('underscore');
+  var Utils = require('utils');
 
   var interfaceGroup = function (name) {
     return function (ui) {
@@ -315,7 +316,7 @@ define(function (require, exports, module) {
       if (typeof model.getStructure === 'function') {
         structure = model.getStructure();
       } else {
-        structure = this.structure || undefined;
+        structure = model.structure || undefined;
       }
       var UI;
       if (structure !== undefined) {
@@ -372,7 +373,7 @@ define(function (require, exports, module) {
       var value = UIObject.UI[section](UIOptions);
       this.triggerAfterValue(section, UIObject.UI, UIOptions);
 
-      if ((!value || value === '') && returnDefaultValue) {
+      if (Utils.isNothing(value) && returnDefaultValue) {
         value = defaultValue;
       }
 
