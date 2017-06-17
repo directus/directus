@@ -1,0 +1,52 @@
+<style>
+	.interface-toggle.toggle input {
+		display: none;
+	}
+
+	.interface-toggle.toggle label {
+		padding: 16px 0 16px 44px;
+		position: relative;
+		cursor: pointer;
+	}
+
+	.interface-toggle.toggle label:before, .interface-toggle.toggle label:after {
+		content: "";
+		position: absolute;
+		margin: 0;
+		outline: 0;
+		top: 50%;
+		transform: translate(0, -50%);
+		transition: all 0.3s ease;
+	}
+	.interface-toggle.toggle label:before {
+		left: 1px;
+		width: 34px;
+		height: 14px;
+		background-color: #9E9E9E;
+		border-radius: 8px;
+	}
+	.interface-toggle.toggle label:after {
+		left: 0;
+		width: 20px;
+		height: 20px;
+		background-color: #FAFAFA;
+		border-radius: 50%;
+		box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.14), 0 2px 2px 0 rgba(0, 0, 0, 0.098), 0 1px 5px 0 rgba(0, 0, 0, 0.084);
+	}
+
+	.interface-toggle.toggle input:checked + label:before {
+		background-color: #57bafd;
+	}
+
+	.interface-toggle.toggle input:checked + label:after {
+		background-color: #3598db;
+		transform: translate(80%, -50%);
+	}
+</style>
+
+<div class="interface-toggle {{#if showAsCheckbox}}custom-checkbox{{else}}toggle{{/if}}">
+	<input id="toggle_{{name}}" type="checkbox" {{#if readonly}}disabled{{/if}} {{#if selected}}checked{{/if}} />
+	<label for="toggle_{{name}}">{{label}}</label>
+
+	<input type="hidden" name="{{name}}" value="{{#if selected}}1{{else}}0{{/if}}">
+</div>
