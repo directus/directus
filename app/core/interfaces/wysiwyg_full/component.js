@@ -10,11 +10,9 @@ define(['./interface', 'core/UIComponent', 'core/t'], function (Input, UICompone
       {id: 'show_element_path', ui: 'toggle', default: true},
       {
         id: 'headings',
-        ui: 'select',
+        ui: 'radio_buttons',
         default_value: 'h2,h3,h4',
         options: {
-          select_multiple: true,
-          input_type: 'radio',
           options: {
             h1: 'Heading 1',
             h2: 'Heading 2',
@@ -27,11 +25,9 @@ define(['./interface', 'core/UIComponent', 'core/t'], function (Input, UICompone
       },
       {
         id: 'inline',
-        ui: 'select',
+        ui: 'radio_buttons',
         default_value: 'bold,italic,underline',
         options: {
-          select_multiple: true,
-          input_type: 'radio',
           options: {
             bold: 'Bold',
             italic: 'Italic',
@@ -45,11 +41,9 @@ define(['./interface', 'core/UIComponent', 'core/t'], function (Input, UICompone
       },
       {
         id: 'blocks',
-        ui: 'select',
+        ui: 'radio_buttons',
         default_value: 'p,blockquote',
         options: {
-          select_multiple: true,
-          input_type: 'radio',
           options: {
             p: 'Paragraph',
             blockquote: 'Blockquote',
@@ -60,11 +54,9 @@ define(['./interface', 'core/UIComponent', 'core/t'], function (Input, UICompone
       },
       {
         id: 'alignment',
-        ui: 'select',
+        ui: 'radio_buttons',
         default_value: '',
         options: {
-          select_multiple: true,
-          input_type: 'radio',
           options: {
             alignleft: 'Left',
             aligncenter: 'Center',
@@ -75,11 +67,9 @@ define(['./interface', 'core/UIComponent', 'core/t'], function (Input, UICompone
       },
       {
         id: 'toolbar_options',
-        ui: 'select',
+        ui: 'radio_buttons',
         default_value: 'inline,table,undo,redo,subscript,superscript,bullist,numlist,link,unlink,image,media',
         options: {
-          select_multiple: true,
-          input_type: 'radio',
           options: {
             inline: 'Inline Options',
             alignment: 'Alignment Options',
