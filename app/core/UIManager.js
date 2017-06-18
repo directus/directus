@@ -208,7 +208,9 @@ define(function (require, exports, module) {
         UI = this._getUI(this.getDefaultInterface(schema.get('type')));
       }
 
-      this.parseDefaultValue(UI, model, schema.options);
+      if (UI) {
+        this.parseDefaultValue(UI, model, schema.options);
+      }
 
       return UI;
     },
@@ -279,9 +281,13 @@ define(function (require, exports, module) {
     // Returns all properties and settings of a UI with the provided ID
     getSettings: function (uiId) {
       var ui = this._getUI(uiId);
+      var variablesDeepClone = [];
+      var sortbyDeepClone = [];
 
-      var variablesDeepClone = JSON.parse(JSON.stringify(ui.variables || []));
-      var sortbyDeepClone = JSON.parse(JSON.stringify(ui.sortBy || []));
+      if (ui) {
+        variablesDeepClone = JSON.parse(JSON.stringify(ui.variables || []));
+        sortbyDeepClone = JSON.parse(JSON.stringify(ui.sortBy || []));
+      }
 
       return {
         id: ui.id,
@@ -414,7 +420,7 @@ define(function (require, exports, module) {
       var UI = this._getUI(uiId);
       var options = [];
 
-      if (!_.isArray(UI.variables) || UI.variables.length <= 0) {
+      if (!UI || !_.isArray(UI.variables) || UI.variables.length <= 0) {
         return [];
       }
 
