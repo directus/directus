@@ -419,12 +419,13 @@ class RelationalTableGateway extends BaseTableGateway
                 $foreignTableName = null;
 
                 $foreignTableName = $column['relationship']['related_table'];
+                $foreignTableSchema = $this->getTableSchema($foreignTableName);
 
                 // Update/Add foreign record
                 if ($this->recordDataContainsNonPrimaryKeyData($foreignRow)) {
                     $foreignRow = $this->addOrUpdateRecordByArray($foreignRow, $foreignTableName);
                 }
-                $parentRow[$colName] = $foreignRow['id'];
+                $parentRow[$colName] = $foreignRow[$foreignTableSchema->getPrimaryColumn()];
             } /** One-to-Many, Many-to-Many */
             elseif ($fieldIsCollectionAssociation) {
                 unset($parentRow[$colName]);
