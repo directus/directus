@@ -158,12 +158,24 @@ define([
 
     drop: function () {
       var relatedCollection = this.model.get(this.name);
+      var table = relatedCollection.junctionStructure.table;
+      var sortColumnName = table.getSortColumnName();
+
+      // just in case
+      if (!sortColumnName) {
+        return;
+      }
 
       this.$('.js-file').each(function (i) {
-        relatedCollection.get($(this).data('cid')).set({sort: i}, {silent: true});
+        var cid = $(this).data('cid');
+        var attrs = {};
+
+        attrs[sortColumnName] = i;
+
+        relatedCollection.get(cid).set(attrs, {silent: true});
       });
 
-      relatedCollection.setOrder('sort', 'ASC', {silent: true});
+      relatedCollection.sort();
     },
 
     serialize: function () {
@@ -195,7 +207,7 @@ define([
 
       var relatedCollection = this.model.get(this.name);
       var junctionStructure = relatedCollection.junctionStructure;
-      var sortable = (junctionStructure.get('sort') !== undefined);
+      var sortable = junctionStructure.table.hasSortColumn();
 
       return {
         rows: rows,
@@ -294,17 +306,17 @@ define([
       }
 
       var relatedCollection = this.model.get(this.name);
-      var relatedSchema = relatedCollection.structure;
       var junctionStructure = relatedCollection.junctionStructure;
+      var table = junctionStructure.table;
       var sortable = false;
 
       relatedCollection.each(function (model) {
         return model.startTracking();
       });
 
-      if (junctionStructure.get('sort') !== undefined) {
+      if (table.hasSortColumn()) {
         sortable = true;
-        relatedCollection.setOrder('sort', 'ASC');
+        relatedCollection.setOrder(table.getSortColumnName(), 'ASC');
       }
 
       this.canEdit = !(options.inModal || false);
@@ -314,12 +326,7 @@ define([
       this.sortable = sortable;
 
       this.relatedCollection = relatedCollection;
-      this.listenTo(relatedCollection, 'change add remove', function () {
-        this.render();
-      }, this);
-
-      this.listenTo(relatedCollection.nestedCollection, 'sync', function () {
-      }, this);
+      this.listenTo(relatedCollection, 'change add remove', this.render);
     }
   });
 });

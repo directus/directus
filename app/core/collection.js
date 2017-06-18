@@ -11,6 +11,11 @@ function(app, Backbone, StatusHelper, _) {
 
   var Collection = Backbone.Collection.extend({
 
+    constructor: function (models, options) {
+      options.sort = false;
+      Backbone.Collection.prototype.constructor.apply(this, [models, options]);
+    },
+
     initialize: function(models, options) {
       this.filters = options.filters || {};
     },
@@ -122,8 +127,11 @@ function(app, Backbone, StatusHelper, _) {
     comparator: function (rowA, rowB) {
       var UIManager = require('core/UIManager');
       var column = rowA.idAttribute;
-      var sortColumn = this.table ? this.table.getSortColumnName() : null;
+      var table = rowA.table ? rowA.table : this.table;
+      var sortColumn;
       var valueA, valueB;
+
+      sortColumn = table ? table.getSortColumnName() : null;
 
       if (!sortColumn) {
         sortColumn = this.table ? this.table.getPrimaryColumnName() : 'id';
@@ -138,7 +146,8 @@ function(app, Backbone, StatusHelper, _) {
       }
 
       // @todo find a better way to check is a entriesjunctioncollection
-      if(rowA.collection.nestedCollection && [sortColumn, rowA.idAttribute].indexOf(column) < 0) {
+      var EntriesJunctionCollection = require('core/entries/EntriesJunctionCollection');
+      if(rowA instanceof EntriesJunctionCollection.prototype.model && [sortColumn, rowA.idAttribute].indexOf(column) < 0) {
         rowA = rowA.get('data');
         rowB = rowB.get('data');
       }
