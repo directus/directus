@@ -19,7 +19,7 @@ define([
         id: 'title',
         type: 'String',
         default_value: '',
-        ui: 'textinput'
+        ui: 'text_input'
       },
       {
         id: 'instructions',

@@ -4,7 +4,7 @@ define(['./interface', 'core/UIComponent', 'core/t', 'utils'], function (Input, 
     dataTypes: ['VARCHAR'],
     variables: [
       {id: 'options', default_value: '', ui: 'json', options: {rows: 25, placeholder_text: '{\n    "value1": "Option One",\n    "value2": "Option Two",\n    "value3": "Option Three"\n}'}, comment: __t('select_options_comment'), required: true},
-      {id: 'delimiter', default_value: ',', ui: 'textinput', length: 1, required: true}
+      {id: 'delimiter', default_value: ',', ui: 'text_input', length: 1, required: true}
     ],
     Input: Input,
     validate: function (value, options) {

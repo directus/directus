@@ -105,7 +105,7 @@ define(['./interface', 'core/UIComponent', 'core/t'], function (Input, UICompone
       },
       {
         id: 'custom_toolbar_options',
-        ui: 'textinput',
+        ui: 'text_input',
         default_value: '',
         options: {
           placeholder: 'undo redo | table'

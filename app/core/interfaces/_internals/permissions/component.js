@@ -3,7 +3,7 @@ define(['./interface', 'core/UIComponent', 'core/t'], function (Input, UICompone
     id: 'directus_permissions',
     dataTypes: ['ONETOMANY'],
     variables: [
-      {id: 'visible_columns', type: 'String', ui: 'textinput', char_length: 255, required: true},
+      {id: 'visible_columns', type: 'String', ui: 'text_input', char_length: 255, required: true},
       {id: 'result_limit', type: 'Number', ui: 'numeric', char_length: 10, default_value: 100, comment: __t('o2m_result_limit_comment')},
       {id: 'add_button', type: 'Boolean', ui: 'toggle'},
       {id: 'choose_button', type: 'Boolean', ui: 'toggle', default_value: true},

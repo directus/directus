@@ -46,7 +46,7 @@ define(function(require, exports, module) {
       {
         "id":"subject",
         "column_name":"subject",
-        "ui":"textinput",
+        "ui":"text_input",
         "type":"VARCHAR",
         "required":true,
         "system":false,
@@ -137,7 +137,7 @@ define(function(require, exports, module) {
       {
         "id":"comment_metadata",
         "column_name":"comment_metadata",
-        "ui":"textinput",
+        "ui":"text_input",
         "type":"VARCHAR",
         "length": 255,
         "system": false,

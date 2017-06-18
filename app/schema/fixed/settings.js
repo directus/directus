@@ -33,7 +33,7 @@ define(function(require, exports, module) {
   settingsGlobalSchema.columns = [
     {
       id: 'project_name',
-      ui: 'textinput',
+      ui: 'text_input',
       char_length: 50,
       options: {
         placeholder_text: trans('global_project_name_placeholder')
@@ -42,7 +42,7 @@ define(function(require, exports, module) {
     },
     {
       id: 'project_url',
-      ui: 'textinput',
+      ui: 'text_input',
       char_length: 255,
       options: {
         placeholder_text: "http://"
@@ -98,7 +98,7 @@ define(function(require, exports, module) {
     },
     {id: 'thumbnail_quality', ui: 'numeric', char_length: 255, options: {size: 'small', placeholder_text: "eg: 90"}, comment: __t('directus_settings_files_thumbnail_quality_comment')},
     {id: 'thumbnail_crop_enabled', ui: 'toggle', comment: __t('directus_settings_files_thumbnail_crop_enabled')},
-    {id: 'youtube_api_key', ui: 'textinput', char_length: 255, comment: __t('directus_settings_files_youtube_api_key_comment')}
+    {id: 'youtube_api_key', ui: 'text_input', char_length: 255, comment: __t('directus_settings_files_youtube_api_key_comment')}
   ];
 
   module.exports = {

@@ -23,7 +23,7 @@ define([
   'use strict';
 
   return UIView.extend({
-    template: 'textinput/input',
+    template: 'text_input/input',
 
     // Event Declarations
     events: {

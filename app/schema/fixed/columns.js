@@ -23,7 +23,7 @@ define(function(require, exports, module) {
       {
         'id': 'table_name',
         'column_name': 'table_name',
-        'ui': 'textinput',
+        'ui': 'text_input',
         'type': 'VARCHAR',
         'system': false,
         'hidden_list': false,
@@ -33,7 +33,7 @@ define(function(require, exports, module) {
       {
         'id': 'column_name',
         'column_name': 'column_name',
-        'ui': 'textinput',
+        'ui': 'text_input',
         'type': 'VARCHAR',
         'system': false,
         'hidden_list': false,
@@ -43,7 +43,7 @@ define(function(require, exports, module) {
       {
         'id': 'data_type',
         'column_name': 'data_type',
-        'ui': 'textinput',
+        'ui': 'text_input',
         'type': 'VARCHAR',
         'system': false,
         'hidden_list': false,
@@ -53,7 +53,7 @@ define(function(require, exports, module) {
       {
         'id': 'ui',
         'column_name': 'ui',
-        'ui': 'textinput',
+        'ui': 'text_input',
         'type': 'VARCHAR',
         'system': false,
         'hidden_list': false,
@@ -63,7 +63,7 @@ define(function(require, exports, module) {
       {
         'id': 'relationship_type',
         'column_name': 'relationship_type',
-        'ui': 'textinput',
+        'ui': 'text_input',
         'type': 'VARCHAR',
         'required': false,
         'nullable': true,
@@ -120,7 +120,7 @@ define(function(require, exports, module) {
       {
         'id': 'comment',
         'column_name': 'comment',
-        'ui': 'textinput',
+        'ui': 'text_input',
         'type': 'VARCHAR',
         'char_length': 255,
         'default_value': '',

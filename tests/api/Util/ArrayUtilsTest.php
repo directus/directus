@@ -187,8 +187,8 @@ class ArrayUtilsTest extends PHPUnit_Framework_TestCase
 
     public function testAliasKeys()
     {
-        $data = ['table' => 'users', 'column' => 'email', 'type' => 'varchar', 'ui' => 'textinput'];
-        $expectedData = ['table_name' => 'users', 'column_name' => 'email', 'data_type' => 'varchar', 'ui' => 'textinput'];
+        $data = ['table' => 'users', 'column' => 'email', 'type' => 'varchar', 'ui' => 'text_input'];
+        $expectedData = ['table_name' => 'users', 'column_name' => 'email', 'data_type' => 'varchar', 'ui' => 'text_input'];
 
         $newData = ArrayUtils::aliasKeys($data, [
             'table_name' => 'table',

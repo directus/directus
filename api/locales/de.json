@@ -270,7 +270,7 @@
   "character_blacklist": "Character Blacklist",
   "character_whitelist": "Character Whitelist",
   "regex": "Regex",
-  "textinput_validation_string_comment": "All characters below will be enforced",
+  "text_input_validation_string_comment": "All characters below will be enforced",
 
   "translation_title": "Übersetzungen",
   "translations_x": "%{field}",

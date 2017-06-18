@@ -273,7 +273,7 @@
     "character_blacklist": "Karakter Blacklist",
     "character_whitelist": "Karakter Whitelist",
     "regex": "Regex",
-    "textinput_validation_string_comment": "Alle onderstaande karakters worden afgedwongen",
+    "text_input_validation_string_comment": "Alle onderstaande karakters worden afgedwongen",
 
     "translation_title": "Vertalingen",
     "translations_x": "%{field}",

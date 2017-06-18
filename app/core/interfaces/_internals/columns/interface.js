@@ -110,8 +110,8 @@ define([
       var model = new ColumnModel({
         table_name: collection.table.id,
         data_type: 'VARCHAR',
-        options: new UIModel({id: 'textinput'}),
-        ui: 'textinput'
+        options: new UIModel({id: 'text_input'}),
+        ui: 'text_input'
       }, {
         collection: collection,
         table: collection.table
@@ -120,7 +120,7 @@ define([
       var optionsModel = model.get('options');
       optionsModel.parent = model;
 
-      var schema = app.schemaManager.getColumns('ui', 'textinput');
+      var schema = app.schemaManager.getColumns('ui', 'text_input');
       var ColumnView = require('modules/settings/views/modals/columns/column');
       var view = new ColumnView({
         model: optionsModel,

@@ -4,9 +4,9 @@ define(['./interface', 'core/UIComponent', 'core/t'], function (Input, UICompone
     dataTypes: ['TEXT', 'VARCHAR'],
     Input: Input,
     variables: [
-      {id: 'indent', default_value: '\t', ui: 'textinput'},
+      {id: 'indent', default_value: '\t', ui: 'text_input'},
       {id: 'rows', type: 'Number', default_value: 12, ui: 'numeric', char_length: 3},
-      {id: 'placeholder_text', default_value: '', type: 'String', ui: 'textinput', char_lenth: 200}
+      {id: 'placeholder_text', default_value: '', type: 'String', ui: 'text_input', char_lenth: 200}
     ],
     validate: function(value, options) {
       if (options.schema.isRequired() && _.isEmpty(value)) {

@@ -132,7 +132,7 @@ define(function(require, exports, module) {
             "hidden_list":false,
             "hidden_input":false,
             "required": false,
-            "ui":"textinput",
+            "ui":"text_input",
             "options": {
               "size": "medium"
             }
@@ -150,7 +150,7 @@ define(function(require, exports, module) {
             "hidden_list":false,
             "hidden_input":false,
             "required": false,
-            "ui":"textinput",
+            "ui":"text_input",
             "options": {
               "size": "medium"
             }
@@ -163,7 +163,7 @@ define(function(require, exports, module) {
             "nullable": false,
             "comment":"",
             "sort":5,
-            "ui":"textinput",
+            "ui":"text_input",
             "system":false,
             "hidden_list":false,
             "hidden_input":false,
@@ -203,7 +203,7 @@ define(function(require, exports, module) {
             "hidden_list":true,
             "hidden_input":true,
             "required":true,
-            "ui":"textinput"
+            "ui":"text_input"
           },
           {
             "id":"group",
@@ -282,7 +282,7 @@ define(function(require, exports, module) {
             "default_value":"",
             "comment":"",
             "sort":11,
-            "ui":"textinput",
+            "ui":"text_input",
             "system":false,
             "hidden_list":false,
             "hidden_input":false,
@@ -300,7 +300,7 @@ define(function(require, exports, module) {
             "default_value":"",
             "comment":"",
             "sort":12,
-            "ui":"textinput",
+            "ui":"text_input",
             "system":false,
             "hidden_list":false,
             "hidden_input":false,
@@ -318,7 +318,7 @@ define(function(require, exports, module) {
             "default_value":"",
             "comment":"",
             "sort":13,
-            "ui":"textinput",
+            "ui":"text_input",
             "system":false,
             "hidden_list":false,
             "hidden_input":false,
@@ -336,7 +336,7 @@ define(function(require, exports, module) {
             "default_value":"",
             "comment":"",
             "sort":14,
-            "ui":"textinput",
+            "ui":"text_input",
             "system":false,
             "hidden_list":false,
             "hidden_input":false,
@@ -354,7 +354,7 @@ define(function(require, exports, module) {
             "default_value":"",
             "comment":"",
             "sort":15,
-            "ui":"textinput",
+            "ui":"text_input",
             "system":false,
             "hidden_list":false,
             "hidden_input":false,
@@ -372,7 +372,7 @@ define(function(require, exports, module) {
             "default_value":"",
             "comment":"",
             "sort":16,
-            "ui":"textinput",
+            "ui":"text_input",
             "system":false,
             "hidden_list":false,
             "hidden_input":false,
@@ -390,7 +390,7 @@ define(function(require, exports, module) {
             "default_value":"",
             "comment":"",
             "sort":17,
-            "ui":"textinput",
+            "ui":"text_input",
             "system":false,
             "hidden_list":false,
             "hidden_input":false,
@@ -465,7 +465,7 @@ define(function(require, exports, module) {
             "hidden_list":true,
             "hidden_input":true,
             "required":false,
-            "ui":"textinput"
+            "ui":"text_input"
           },
           {
             "id":"reset_token",
@@ -480,7 +480,7 @@ define(function(require, exports, module) {
             "hidden_list":false,
             "hidden_input":true,
             "required":false,
-            "ui":"textinput"
+            "ui":"text_input"
           },
           {
             "id":"reset_expiration",
@@ -539,7 +539,7 @@ define(function(require, exports, module) {
             "hidden_list":false,
             "hidden_input":true,
             "required":false,
-            "ui":"textinput"
+            "ui":"text_input"
           },
           {
             "id":"ip",
@@ -554,13 +554,13 @@ define(function(require, exports, module) {
             "hidden_list":false,
             "hidden_input":true,
             "required":false,
-            "ui":"textinput"
+            "ui":"text_input"
           },
           {
             "id": "invite_token",
             "column_name": "invite_token",
             "type": "VARCHAR",
-            "ui": "textinput",
+            "ui": "text_input",
             "nullable": true,
             "omit_input": true
           },

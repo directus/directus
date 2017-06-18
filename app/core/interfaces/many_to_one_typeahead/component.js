@@ -18,10 +18,10 @@ define(['./interface', 'app', 'backbone', 'core/UIComponent', 'core/t'], functio
     id: 'many_to_one_typeahead',
     dataTypes: ['INT', 'TINYINT', 'SMALLINT', 'MEDIUMINT', 'BIGINT'],
     variables: [
-      {id: 'visible_column', type: 'String', default_value: '', ui: 'textinput', comment: __t('m2o_typeahead_visible_column_comment'), char_length: 64, required: true},
-      {id: 'template', type: 'String', default_value: '', ui: 'textinput', required: true, comment: __t('m2o_typeahead_template_comment')},
+      {id: 'visible_column', type: 'String', default_value: '', ui: 'text_input', comment: __t('m2o_typeahead_visible_column_comment'), char_length: 64, required: true},
+      {id: 'template', type: 'String', default_value: '', ui: 'text_input', required: true, comment: __t('m2o_typeahead_template_comment')},
       {id: 'size', type: 'String', default_value: 'large', ui: 'select', options: {options: {large: __t('size_large'), medium: __t('size_medium'), small: __t('size_small')}}, comment: __t('m2o_typeahead_size_comment')},
-      {id: 'visible_status_ids', type: 'String', ui: 'textinput', char_length: 64, default_value: 1, comment: __t('m2o_visible_status_ids_comment')}
+      {id: 'visible_status_ids', type: 'String', ui: 'text_input', char_length: 64, default_value: 1, comment: __t('m2o_visible_status_ids_comment')}
     ],
     Input: Input,
     list: function (options) {

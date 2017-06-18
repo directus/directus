@@ -274,7 +274,7 @@
     "character_blacklist": "Sorteliste for tegn",
     "character_whitelist": "Hviteliste for tegn",
     "regex": "Regex",
-    "textinput_validation_string_comment": "Alle tegn under vil håndheves",
+    "text_input_validation_string_comment": "Alle tegn under vil håndheves",
 
     "translation_title": "Oversettelser",
     "translations_x": "%{field}",

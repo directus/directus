@@ -76,7 +76,7 @@ define([
             column_name: 'email',
             type: 'VARCHAR',
             nullable: false,
-            ui: 'textinput',
+            ui: 'text_input',
             required: true
           },
           {

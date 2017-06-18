@@ -269,7 +269,7 @@
     "character_blacklist": "Blacklist caratteri",
     "character_whitelist": "Whitelist caratteri",
     "regex": "Regex",
-    "textinput_validation_string_comment": "Tutti i caratteri sottostanti verranno convalidati forzatamente",
+    "text_input_validation_string_comment": "Tutti i caratteri sottostanti verranno convalidati forzatamente",
 
     "translation_title": "Traduzioni",
     "translations_x": "%{field}",

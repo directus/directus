@@ -274,7 +274,7 @@
     "character_blacklist": "Caractères interdits",
     "character_whitelist": "Caractères permis",
     "regex": "Regex",
-    "textinput_validation_string_comment": "Tous les caractères ci-dessous seront supprimés",
+    "text_input_validation_string_comment": "Tous les caractères ci-dessous seront supprimés",
 
     "translation_title": "Traductions",
     "translations_x": "%{field}",
