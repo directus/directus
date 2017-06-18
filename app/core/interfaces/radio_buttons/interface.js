@@ -1,4 +1,10 @@
-define(['core/UIView'], function (UIView) {
+define([
+  'underscore',
+  'core/UIView'
+], function (_, UIView) {
+
+  'use strict';
+
   function parseOptions(options) {
     if (_.isString(options)) {
       try {
@@ -12,7 +18,7 @@ define(['core/UIView'], function (UIView) {
   }
 
   return UIView.extend({
-    template: 'select_list/input',
+    template: 'radio_buttons/input',
     events: {
       'change input[type=radio]': 'updateValue'
     },
@@ -24,7 +30,7 @@ define(['core/UIView'], function (UIView) {
       var options = parseOptions(this.options.settings.get('options'));
       var optionsArray = Object.keys(options).map(function (key) {
         return {
-          key,
+          key: key,
           value: options[key],
           selected: value === key
         };
