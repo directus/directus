@@ -1059,8 +1059,10 @@ class RelationalTableGateway extends BaseTableGateway
                 if ($column->isManyToOne()) {
                     $relationship = $column->getRelationship();
                     $relatedTable = $relationship->getRelatedTable();
-                    $relatedTableColumns = TableSchema::getAllTableColumns($relatedTable);
-                    $query->whereRelational($column->getName(), $relatedTable, $this->primaryKeyFieldName, function (Builder $query) use ($column, $relatedTable, $relatedTableColumns, $search) {
+                    $tableSchema = TableSchema::getTableSchema($relatedTable);
+                    $relatedTableColumns = $tableSchema->getColumns();
+                    $relatedPrimaryColumnName = $tableSchema->getPrimaryColumn();
+                    $query->orWhereRelational($column->getName(), $relatedTable, $relatedPrimaryColumnName, function (Builder $query) use ($column, $relatedTable, $relatedTableColumns, $search) {
                         $query->nestOrWhere(function (Builder $query) use ($relatedTableColumns, $relatedTable, $search) {
                             foreach ($relatedTableColumns as $column) {
                                 if (!$column->isAlias()) {
@@ -1081,7 +1083,8 @@ class RelationalTableGateway extends BaseTableGateway
                     $relatedTableColumns = TableSchema::getAllTableColumns($relatedTable);
 
                     $query->from($table);
-                    $query->whereRelational($this->primaryKeyFieldName, $relatedTable, null, $relatedRightColumn, function(Builder $query) use ($column, $relatedTable, $relatedTableColumns, $search) {
+                    // TODO: Test here it may be not setting the proper primary key name
+                    $query->orWhereRelational($this->primaryKeyFieldName, $relatedTable, null, $relatedRightColumn, function(Builder $query) use ($column, $relatedTable, $relatedTableColumns, $search) {
                         foreach ($relatedTableColumns as $column) {
                             if (!$column->isAlias()) {
                                 $query->orWhereLike($column->getName(), $search, false);

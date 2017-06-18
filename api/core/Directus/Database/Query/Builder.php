@@ -235,12 +235,27 @@ class Builder
      * @param $column
      * @param array|Builder $values
      * @param bool $not
+     * @param string $logical
      *
      * @return Builder
      */
-    public function whereIn($column, $values, $not = false)
+    public function whereIn($column, $values, $not = false, $logical = 'and')
     {
-        return $this->where($column, 'in', $values, $not);
+        return $this->where($column, 'in', $values, $not, $logical);
+    }
+
+    /**
+     * Sets a "where or in" condition
+     *
+     * @param $column
+     * @param array|Builder $values
+     * @param bool $not
+     *
+     * @return Builder
+     */
+    public function orWhereIn($column, $values, $not = false)
+    {
+        return $this->where($column, 'in', $values, $not, 'or');
     }
 
     /**
@@ -352,7 +367,7 @@ class Builder
         return $this->whereIn($column, $relation);
     }
 
-    public function whereRelational($column, $table, $columnLeft, $columnRight = null, \Closure $callback = null)
+    public function whereRelational($column, $table, $columnLeft, $columnRight = null, \Closure $callback = null, $logical = 'and')
     {
         if (is_callable($columnRight)) {
             // $column: Relational Column
@@ -370,7 +385,12 @@ class Builder
 
         call_user_func($callback, $relation);
 
-        return $this->whereIn($column, $relation);
+        return $this->whereIn($column, $relation, false, $logical);
+    }
+
+    public function orWhereRelational($column, $table, $columnLeft, $columnRight = null, \Closure $callback = null)
+    {
+        return $this->whereRelational($column, $table, $columnLeft, $columnRight, $callback, 'or');
     }
 
     /**
