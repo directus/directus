@@ -41,7 +41,7 @@ define(['core/UIView'], function (UIView) {
 
       var optionsArray = Object.keys(options).map(function (key) {
         return {
-          key,
+          key: key,
           value: options[key],
           selected: values.indexOf(key) > 0
         };
