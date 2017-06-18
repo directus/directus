@@ -55,4 +55,4 @@ define('MEMCACHED_ENV_NAMESPACE', 'staging');
 define('STATUS_DELETED_NUM', 0);
 define('STATUS_ACTIVE_NUM', 1);
 define('STATUS_DRAFT_NUM', 2);
-define('STATUS_COLUMN_NAME', 'active');
+define('STATUS_COLUMN_NAME', 'status');
