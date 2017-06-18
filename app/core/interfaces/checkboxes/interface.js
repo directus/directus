@@ -12,7 +12,7 @@ define(['core/UIView'], function (UIView) {
   }
 
   return UIView.extend({
-    template: 'multiselect_list/input',
+    template: 'checkboxes/input',
     events: {
       'change input[type=checkbox]': 'updateValue'
     },
@@ -46,6 +46,8 @@ define(['core/UIView'], function (UIView) {
           selected: values.indexOf(key) > 0
         };
       });
+
+      console.log(optionsArray);
 
       return {
         options: optionsArray,
