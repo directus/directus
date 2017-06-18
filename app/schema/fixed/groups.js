@@ -29,7 +29,7 @@ define(function(require, exports, module) {
       {
         "id": "name",
         "column_name": "name",
-        "ui": "textinput",
+        "ui": "text_input",
         "type": "VARCHAR",
         "length": 64,
         "system": false,
@@ -42,7 +42,7 @@ define(function(require, exports, module) {
       {
         "id": "description",
         "column_name": "description",
-        "ui": "textinput",
+        "ui": "text_input",
         "type": "VARCHAR",
         "length": 255,
         "system": false,
@@ -171,7 +171,7 @@ define(function(require, exports, module) {
         "id": "nav_blacklist",
         "column_name": "nav_blacklist",
         "type": "VARCHAR",
-        "ui": "textinput",
+        "ui": "text_input",
         "length": 500,
         "system": false,
         "hidden_list": false,

@@ -44,7 +44,7 @@ define(function (require, exports, module) {
   ].map(interfaceGroup('system'));
 
   var StringInterfaces = [
-    require('core/interfaces/textinput/component'),
+    require('core/interfaces/text_input/component'),
     require('core/interfaces/slug/component'),
     require('core/interfaces/textarea/component'),
     require('core/interfaces/json/component'),

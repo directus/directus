@@ -52,7 +52,7 @@ define(function(require, exports, module) {
         "hidden_list":false,
         "hidden_input":false,
         "required":false,
-        "ui":"textinput"
+        "ui":"text_input"
       },
       {
         "id":"action",
@@ -67,7 +67,7 @@ define(function(require, exports, module) {
         "hidden_list":false,
         "hidden_input":false,
         "required":false,
-        "ui":"textinput"
+        "ui":"text_input"
       },
       {
         "id":"table_name",
@@ -82,7 +82,7 @@ define(function(require, exports, module) {
         "hidden_list":false,
         "hidden_input":false,
         "required":false,
-        "ui":"textinput"
+        "ui":"text_input"
       },
       {
         "id":"row_id",

@@ -275,7 +275,7 @@
     "character_blacklist": "字符黑名單",
     "character_whitelist": "字符白名單",
     "regex": "正則表達式",
-    "textinput_validation_string_comment": "所有以下字符將被強制驗證",
+    "text_input_validation_string_comment": "所有以下字符將被強制驗證",
 
     "translation_title": "譯文",
     "translations_x": "%{field} ",

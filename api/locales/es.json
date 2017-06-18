@@ -271,7 +271,7 @@
     "character_blacklist": "Lista negra de caracteres",
     "character_whitelist": "Lista blanca de caracteres",
     "regex": "Regex",
-    "textinput_validation_string_comment": "Todos los caracteres siguiente seran forzados",
+    "text_input_validation_string_comment": "Todos los caracteres siguiente seran forzados",
 
     "translation_title": "Traducciones",
     "translations_x": "%{field}",

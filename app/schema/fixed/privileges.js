@@ -23,7 +23,7 @@ define(function(require, exports, module) {
       {
         "id": "table_name",
         "column_name": "table_name",
-        "ui": "textinput",
+        "ui": "text_input",
         "type": "VARCHAR",
         "length": 255,
         "system": false,

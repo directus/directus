@@ -9,7 +9,7 @@ define([
     dataTypes: SchemaHelper.getNumericInterfaceTypes(),
     variables: [
       {id: 'size', type: 'String', default_value: 'large', ui: 'select', options: {options: {'large':__t('size_large'),'medium':__t('size_medium'),'small':__t('size_small')} }},
-      {id: 'placeholder_text', type: 'String', default_value: '', ui: 'textinput', char_length: 200},
+      {id: 'placeholder_text', type: 'String', default_value: '', ui: 'text_input', char_length: 200},
       {id: 'localized', type: 'Boolean', default_value: true, ui: 'toggle', comment: __t('numeric_localized_comment')}
     ],
     Input: Input,

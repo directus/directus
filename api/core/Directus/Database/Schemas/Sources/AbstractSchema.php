@@ -95,7 +95,7 @@ abstract class AbstractSchema implements SchemaInterface
      */
     public function getColumnDefaultInterface($type)
     {
-        $interfaceName = 'textinput';
+        $interfaceName = 'text_input';
 
         switch ($type) {
             case 'ALIAS':
@@ -119,7 +119,7 @@ abstract class AbstractSchema implements SchemaInterface
             case 'CHAR':
             case 'VARCHAR':
             case 'POINT':
-                $interfaceName = 'textinput';
+                $interfaceName = 'text_input';
                 break;
             case 'DATETIME':
             case 'TIMESTAMP':

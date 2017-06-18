@@ -258,7 +258,7 @@
     "character_blacklist": "字符黑名单",
     "character_whitelist": "字符白名单",
     "regex": "正则表达式",
-    "textinput_validation_string_comment": "所有以下字符将被强制验证",
+    "text_input_validation_string_comment": "所有以下字符将被强制验证",
 
     "translation_title": "译文",
     "translations_x": "%{field}",

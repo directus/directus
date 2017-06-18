@@ -52,7 +52,7 @@ define(function(require, exports, module) {
       {
         "id": "preview_url",
         "column_name": "preview_url",
-        "ui": "textinput",
+        "ui": "text_input",
         "type": "VARCHAR",
         "length": 255,
         "system": false,
@@ -69,7 +69,7 @@ define(function(require, exports, module) {
       {
         "id": "display_template",
         "column_name": "display_template",
-        "ui": "textinput",
+        "ui": "text_input",
         "type": "VARCHAR",
         "length": 255,
         "system": false,
@@ -128,7 +128,7 @@ define(function(require, exports, module) {
       {
         "id": "user_create_column",
         "column_name": "user_create_column",
-        "ui": "textinput",
+        "ui": "text_input",
         "type": "VARCHAR",
         "length": 64,
         "system": false,
@@ -143,7 +143,7 @@ define(function(require, exports, module) {
       {
         "id": "user_update_column",
         "column_name": "user_update_column",
-        "ui": "textinput",
+        "ui": "text_input",
         "type": "VARCHAR",
         "length": 64,
         "system": false,
@@ -158,7 +158,7 @@ define(function(require, exports, module) {
       {
         "id": "date_create_column",
         "column_name": "date_create_column",
-        "ui": "textinput",
+        "ui": "text_input",
         "type": "VARCHAR",
         "length": 64,
         "system": false,
@@ -173,7 +173,7 @@ define(function(require, exports, module) {
       {
         "id": "date_update_column",
         "column_name": "date_update_column",
-        "ui": "textinput",
+        "ui": "text_input",
         "type": "VARCHAR",
         "length": 64,
         "system": false,
