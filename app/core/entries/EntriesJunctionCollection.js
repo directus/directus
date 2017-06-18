@@ -20,7 +20,11 @@ define(function(require, exports, module) {
       parse: function(result) {
         var EntriesModel = require('core/entries/EntriesModel');
         result.data = new EntriesModel(result.data, {collection: this.collection.nestedCollection});
+
+        this.structure = this.collection.junctionStructure;
+        this.table = this.structure.table;
         this.collection.nestedCollection.add(result.data);
+
         return result;
       },
 

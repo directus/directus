@@ -52,6 +52,9 @@ define(function (require, exports, module) {
   ]);
 
   var jQuery = require('jquery');
+  var Utils = require('utils');
+  var _ = require('underscore');
+
   /**
    * @private
    * Holds all UI's that are registered
@@ -244,7 +247,7 @@ define(function (require, exports, module) {
       if (typeof model.getStructure === 'function') {
         structure = model.getStructure();
       } else {
-        structure = this.structure || undefined;
+        structure = model.structure || undefined;
       }
       var UI;
       if (structure !== undefined) {
@@ -265,14 +268,16 @@ define(function (require, exports, module) {
     // Finds the UI for the model/attribute and
     // returns a string containing the table view
     getUIValue: function (section, model, attr, noDefault) {
-      var section = _.contains(this.validSections, section) ? section : 'list';
       var defaultValue = '<span class="secondary-info">--</span>';
       // Return true or false whether there's value or not (UI)
       // Instead of returning the default HTML
       // https://github.com/RNGR/Directus/issues/452
-      var returnDefaultValue = true === noDefault ? true : false;
+      var returnDefaultValue = true === noDefault;
 
       var UIObject = this.getUIByModel(model, attr);
+
+      section = _.contains(this.validSections, section) ? section : 'list';
+
       // If there is no UI, return just text
       if (UIObject === false) {
         var attribute = model.get(attr);
@@ -296,12 +301,13 @@ define(function (require, exports, module) {
 
       // Section is the name of a method that represents an value.
       // list: represents the value that will be shown on a list.
-      var section = UIObject.UI[section] !== null ? section : 'list';
+      section = UIObject.UI[section] !== null ? section : 'list';
+
       this.triggerBeforeValue(section, UIObject.UI, UIOptions);
       var value = UIObject.UI[section](UIOptions);
       this.triggerAfterValue(section, UIObject.UI, UIOptions);
 
-      if ((!value || value === "") && returnDefaultValue) {
+      if (Utils.isNothing(value) && returnDefaultValue) {
         value = defaultValue;
       }
 

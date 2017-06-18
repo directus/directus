@@ -125,6 +125,13 @@ define(function() {
     return value == null || value === '';
   };
 
+  Utils.isNothing = function (value) {
+    return value === undefined
+      || value === null
+      || value === ''
+      || (!_.isNumber(value)  && !_.isDate(value) && _.isEmpty(value) && !_.isBoolean(value));
+  };
+
   Utils.clearElement = function(element) {
     element.wrap('<form>').closest('form').get(0).reset();
     element.unwrap();

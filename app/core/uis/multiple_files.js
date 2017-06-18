@@ -216,21 +216,18 @@ define([
       var relatedCollection = this.model.get(this.name);
 
       this.$('.media-slideshow-item img').each(function(i) {
-        relatedCollection.get($(this).attr('data-file-cid')).set({sort: i},{silent: true});
+        var cid = $(this).attr('data-file-cid');
+        relatedCollection.get(cid).set({sort: i}, {silent: true});
       });
 
-      // There is no "saveAfterDrop" now, but we could use this for instant saving
-      // if (this.options.saveAfterDrop) {
-      //   relatedCollection.save({columns:['id','sort']});
-      // }
-
-      relatedCollection.setOrder('sort','ASC',{silent: true});
+      relatedCollection.sort();
     },
 
     serialize: function() {
       var models = this.relatedCollection.models;
       var rows = [];
       var that = this;
+
       _.each(models, function(model) {
         if(model.get(app.statusMapping.status_name) !== app.statusMapping.deleted_num) {
           var cid = model.cid;
