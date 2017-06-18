@@ -430,7 +430,7 @@ define(function (require, exports, module) {
       } else {
         model = collection.get(id);
         if (model === undefined) {
-          var primaryColumn = collection.table.get('primary_column');
+          var primaryColumn = collection.table.getPrimaryColumnName();
           var modelData = {};
           modelData[primaryColumn] = id;
           model = new collection.model(modelData, {collection: collection, parse: true});
@@ -611,7 +611,7 @@ define(function (require, exports, module) {
       var model = collection.get(tableName);
 
       if (model === undefined) {
-        var primaryColumn = collection.table.get('primary_column');
+        var primaryColumn = collection.table.getPrimaryColumnName();
         var modelData = {};
         modelData[primaryColumn] = tableName;
         model = new collection.model(modelData, {collection: collection, parse: true});
