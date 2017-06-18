@@ -95,8 +95,7 @@ define(function(require, exports, module) {
 
         var value = attributes[columnName];
         var nullDisallowed = column.get('nullable') !== true;
-        var ui = UIManager._getUI(column.get('ui'));
-        var forceUIValidation = ui.forceUIValidation === true;
+        var forceUIValidation = UIManager.shouldForceUIValidation(column.get('ui'));
         var isNull = Utils.isNothing(value);
         var uiSettings = UIManager.getSettings(column.get('ui'));
         var skipSerializationIfNull = uiSettings.skipSerializationIfNull;

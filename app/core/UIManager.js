@@ -253,6 +253,12 @@ define(function (require, exports, module) {
       return ui && (ui.variables || []).length > 0;
     },
 
+    shouldForceUIValidation: function (uiId) {
+      var ui = this._getUI(uiId);
+
+      return ui && ui.forceUIValidation === true;
+    },
+
     // Get all the settings specified in the UI
     // Do not confused this with UI variables
     // UI Variables is used for each single UI
@@ -296,18 +302,24 @@ define(function (require, exports, module) {
       var ui = this._getUI(uiId);
       var variablesDeepClone = [];
       var sortbyDeepClone = [];
+      var skipSerializationIfNull = false;
+      var dataTypes = [];
+      var system = false;
 
       if (ui) {
         variablesDeepClone = JSON.parse(JSON.stringify(ui.variables || []));
         sortbyDeepClone = JSON.parse(JSON.stringify(ui.sortBy || []));
+        skipSerializationIfNull = ui.skipSerializationIfNull || false
+        dataTypes = ui.dataTypes || [];
+        system = ui.system || false;
       }
 
       return {
-        id: ui.id,
-        skipSerializationIfNull: ui.skipSerializationIfNull || false,
+        id: uiId,
+        skipSerializationIfNull: skipSerializationIfNull,
         variables: variablesDeepClone,
-        dataTypes: ui.dataTypes || [],
-        system: ui.system || false,
+        dataTypes: dataTypes,
+        system: system,
         sortBy: sortbyDeepClone
       };
     },
