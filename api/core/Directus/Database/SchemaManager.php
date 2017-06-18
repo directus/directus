@@ -633,6 +633,23 @@ class SchemaManager
         $this->data['columns'][$tableName][$columnName] = $column;
     }
 
+    /**
+     * Gets the data types default interfaces
+     *
+     * @return array
+     */
+    public function getDefaultInterfaces()
+    {
+        return $this->source->getDefaultInterfaces();
+    }
+
+    /**
+     * Gets the given data type default interface
+     *
+     * @param $type
+     *
+     * @return string
+     */
     public function getColumnDefaultInterface($type)
     {
         return $this->source->getColumnDefaultInterface($type);

@@ -35,4 +35,8 @@ define([
   app.on('alert:error', function(title, details, showDetails, moreOptions) {
     Notification.error(title, details, moreOptions);
   });
+
+  app.on('alert:warning', function(title, details, showDetails, moreOptions) {
+    Notification.warning(title, details, moreOptions);
+  });
 });

@@ -2,6 +2,7 @@ define(function (require, exports, module) {
   'use strict';
 
   var _ = require('underscore');
+  var __t = require('core/t');
   var Utils = require('utils');
 
   var interfaceGroup = function (name) {
@@ -93,16 +94,25 @@ define(function (require, exports, module) {
     require('core/interfaces/user')
   ].map(interfaceGroup('misc'));
 
-  // Register Core UI's
-  var defaultInterfaces = []
+  // Directus Core Interfaces
+  var coreInterfaces = []
     .concat(StringInterfaces, NumericInterfaces, DateTimeInterfaces, RelationalInterfaces, MiscInterfaces);
 
   var jQuery = require('jquery');
+
   /**
    * @private
    * Holds all UI's that are registered
    */
   var uis = {};
+
+  /**
+   * Holds the default interface by date type
+   *
+   * @private
+   */
+  var defaultInterfaces = {};
+  var defaultInterfaceName = 'text_input';
 
   var app = require('app');
 
@@ -125,10 +135,17 @@ define(function (require, exports, module) {
     validSections: ['list', 'value', 'sort'],
 
     setup: function () {
-      // Register default UI's
-      this.register(defaultInterfaces);
-      this.register(systemInterfaces, true);
+      this.register(coreInterfaces);
+      this.register(systemInterfaces);
       this.register(internalInterfaces);
+    },
+
+    setDefaultInterfaces: function (map) {
+      defaultInterfaces = map;
+    },
+
+    getDefaultInterface: function (type) {
+      return defaultInterfaces[type] || defaultInterfaces[defaultInterfaceName];
     },
 
     // Get reference to external UI file
@@ -176,18 +193,19 @@ define(function (require, exports, module) {
     // model/attribute/schema combination
     _getModelUI: function (model, attr, schema) {
       if (schema === undefined) {
-        var structure = model.getStructure();
-        schema = structure.get(attr);
+        schema = model.getStructure().get(attr);
       }
+
       if (schema === undefined) {
         throw 'Cannot Find Schema for: \'' + attr + '\' Check Your Preferences!';
       }
-      var uiId = schema.get('ui');
 
+      var uiId = schema.get('ui');
       var UI = this._getUI(uiId);
 
       if (!UI) {
-        throw 'Could not find Interface "' + uiId + '"';
+        app.trigger('alert:warning', __t('warning_missing_interface_x', {name: uiId}));
+        UI = this._getUI(this.getDefaultInterface(schema.get('type')));
       }
 
       this.parseDefaultValue(UI, model, schema.options);

@@ -45,7 +45,8 @@ require(['config', 'polyfills'], function () {
       authenticatedUser: 7,
       groups: {},
       privileges: [],
-      ui: [],
+      interfaces: [],
+      default_interfaces: {},
       active_files: {},
       users: {},
       bookmarks: {},
@@ -104,6 +105,7 @@ require(['config', 'polyfills'], function () {
     });
 
     UIManager.setup();
+    UIManager.setDefaultInterfaces(options.default_interfaces);
     SchemaManager.setup({apiURL: app.API_URL});
     ListViewManager.setup();
 
@@ -111,7 +113,7 @@ require(['config', 'polyfills'], function () {
 
     // Load extenral UI / extensions
     $.when(
-      UIManager.load(options.ui),
+      UIManager.load(options.interfaces),
       ExtensionManager.load(options.extensions),
       ListViewManager.load(options.listViews)
 

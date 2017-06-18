@@ -505,9 +505,16 @@ function getPrivileges($groupId)
     return $tableGateway->fetchGroupPrivilegesRaw($groupId);
 }
 
-function getUI()
+function getInterfaces()
 {
     return Bootstrap::get('interfaces');
+}
+
+function getDefaultInterfaces()
+{
+    $schema = Bootstrap::get('schemaManager');
+
+    return $schema->getDefaultInterfaces();
 }
 
 function getListViews()
@@ -671,7 +678,8 @@ $data = [
     'authenticatedUser' => $authenticatedUser,
     'extensions' => getExtensions($currentUserGroup),
     'privileges' => getPrivileges($groupId),
-    'ui' => getUI(),
+    'interfaces' => getInterfaces(),
+    'default_interfaces' => getDefaultInterfaces(),
     'locale' => get_user_locale(),
     'localesAvailable' => parseLocalesAvailable(get_locales_available()),
     'phrases' => get_phrases(get_user_locale()),
