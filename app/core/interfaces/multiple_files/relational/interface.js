@@ -158,10 +158,24 @@ define([
 
     drop: function () {
       var relatedCollection = this.model.get(this.name);
+      var table = relatedCollection.junctionStructure.table;
+      var sortColumnName = table.getSortColumnName();
+
+      // just in case
+      if (!sortColumnName) {
+        return;
+      }
 
       this.$('.js-file').each(function (i) {
-        relatedCollection.get($(this).data('cid')).set({sort: i}, {silent: true});
+        var cid = $(this).data('cid');
+        var attrs = {};
+
+        attrs[sortColumnName] = i;
+
+        relatedCollection.get(cid).set(attrs, {silent: true});
       });
+
+      relatedCollection.sort();
     },
 
     serialize: function () {
@@ -313,9 +327,6 @@ define([
 
       this.relatedCollection = relatedCollection;
       this.listenTo(relatedCollection, 'change add remove', this.render);
-
-      this.listenTo(relatedCollection.nestedCollection, 'sync', function () {
-      }, this);
     }
   });
 });
