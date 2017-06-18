@@ -45,7 +45,7 @@ define([
     },
 
     onClickWorkflow: function () {
-      if (!this.table.hasStatusColumn()) {
+      if (!this.supportsWorkflow()) {
         return;
       }
 
@@ -138,7 +138,7 @@ define([
     hasWorkflowEnabled: function () {
       var privileges = this.getPrivileges();
 
-      return this.table.hasStatusColumn() && privileges && privileges.length > 1;
+      return this.supportsWorkflow() && privileges && privileges.length > 1;
     },
 
     enableWorkflow: function () {
@@ -397,6 +397,12 @@ define([
       return data;
     },
 
+    supportsWorkflow: function () {
+      // NOTE: disable workflow icon
+      // this.table.hasStatusColumn();
+      return false;
+    },
+
     serialize: function () {
       var hasWorkflowEnabled = this.hasWorkflowEnabled();
       var globalPrivilege = this.getPrivilege(null);
@@ -405,12 +411,12 @@ define([
 
       data.table_name = this.table.id;
       data.isSystemTable = this.table.isSystemTable();
-      data.hasStatusColumn = this.table.hasStatusColumn();
+      data.supportsWorkflow = this.supportsWorkflow();
       data.permissions = this.getPermissions(globalPrivilege);
 
-      if (data.hasStatusColumn && hasWorkflowEnabled) {
+      if (data.supportsWorkflow && hasWorkflowEnabled) {
         data.hasWorkflowEnabled = true;
-        data.statuses = data.hasStatusColumn ? this.getStatuses() : [];
+        data.statuses = data.supportsWorkflow ? this.getStatuses() : [];
         data.permissions = this.getPermissions(globalPrivilege);
 
         _.each(data.permissions, function (permission) {

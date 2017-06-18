@@ -1,5 +1,5 @@
 <td class="tableName{{#if isSystemTable}} system-table{{/if}}"><div style="display:inline-block">{{table_name}}<span class="privilege-shortcuts"><a class="all js-add-full-permissions">All</a>/<a class="none js-remove-full-permissions">None</a></span></div></td>
-<td class="permissions-workflow {{#unless hasStatusColumn}} disabled{{/unless}}" title="{{t 'permissions_field_level_permissions'}}">
+<td class="permissions-workflow {{#unless supportsWorkflow}} disabled{{/unless}}" title="{{t 'permissions_field_level_permissions'}}">
 	<i class="material-icons vertical-middle js-status-toggle">tune</i>
 </td>
 <td class="permissions-status">
