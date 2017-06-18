@@ -63,6 +63,7 @@ define([
       var table = app.schemaManager.getTable(this.model.id);
       var collection = table.columns;
       var columnModel = collection.get(id, true);
+      var UIManager = require('core/UIManager');
 
       if (!columnModel) {
         Notification.warning(__t('column_x_not_found', {
@@ -86,6 +87,10 @@ define([
         case 'interface':
           viewName = ColumnView.VIEW_INTERFACE_ID;
           break;
+      }
+
+      if (viewName == ColumnView.VIEW_INTERFACE_ID && !UIManager.hasOptions(schema.get('ui'))) {
+        viewName = ColumnView.VIEW_COLUMN_ID;
       }
 
       var view = new ColumnView({

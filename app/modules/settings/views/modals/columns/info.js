@@ -373,7 +373,7 @@ define([
       data.selectedRelationshipType = this.selectedRelationshipType;
 
       var uiChanged = !this.model.isNew() && this.selectedUI != this.model._originalAttrs['ui'];
-      var hasOptions = (uis[this.selectedUI].variables || []).length > 0;
+      var hasOptions = UIManager.hasOptions(this.selectedUI);
 
       data.showOptions = !this.model.isNew() && hasOptions && !uiChanged;
       data.interfaces = this.getInterfacesGrouped(data.ui_types, this.selectedUI);

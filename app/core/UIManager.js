@@ -235,9 +235,15 @@ define(function (require, exports, module) {
     },
 
     isSystem: function (uiId) {
-      var ui = uis[uiId];
+      var ui = this._getUI(uiId);
 
       return (ui && ui.isSystem);
+    },
+
+    hasOptions: function (uiId) {
+      var ui = this._getUI(uiId);
+
+      return ui && (ui.variables || []).length > 0;
     },
 
     // Get all the settings specified in the UI
