@@ -4,6 +4,9 @@ define(function (require, exports, module) {
   var _ = require('underscore');
   var __t = require('core/t');
   var Utils = require('utils');
+  // holds all the warned interfaces
+  // to prevent tons of warning on the same interface
+  var missingInterfacesWarned = {};
 
   var interfaceGroup = function (name) {
     return function (ui) {
@@ -204,7 +207,11 @@ define(function (require, exports, module) {
       var UI = this._getUI(uiId);
 
       if (!UI) {
-        app.trigger('alert:warning', __t('warning_missing_interface_x', {name: uiId}));
+        if (!missingInterfacesWarned[uiId]) {
+          missingInterfacesWarned[uiId] = true;
+          app.trigger('alert:warning', __t('warning_missing_interface_x', {name: uiId}));
+        }
+
         UI = this._getUI(this.getDefaultInterface(schema.get('type')));
       }
 
