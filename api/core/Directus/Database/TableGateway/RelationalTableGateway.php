@@ -78,6 +78,7 @@ class RelationalTableGateway extends BaseTableGateway
         $recordIsNew = !array_key_exists($TableGateway->primaryKeyFieldName, $recordData);
 
         $tableSchema = TableSchema::getTableSchema($tableName);
+        $statusColumnName = $tableSchema->getStatusColumn();
 
         $currentUserId = $this->acl ? $this->acl->getUserId() : null;
         $currentUserGroupId = $this->acl ? $this->acl->getGroupId() : null;
@@ -229,8 +230,8 @@ class RelationalTableGateway extends BaseTableGateway
                 if ($parentRecordChanged || $nestedCollectionRelationshipsChanged) {
                     $logEntryAction = $recordIsNew ? DirectusActivityTableGateway::ACTION_ADD : DirectusActivityTableGateway::ACTION_UPDATE;
                     //If we are updating and active is being set to 0 then we are deleting
-                    if (!$recordIsNew && array_key_exists(STATUS_COLUMN_NAME, $deltaRecordData)) {
-                        if ($deltaRecordData[STATUS_COLUMN_NAME] == STATUS_DELETED_NUM) {
+                    if (!$recordIsNew && array_key_exists($statusColumnName, $deltaRecordData)) {
+                        if ($deltaRecordData[$statusColumnName] == STATUS_DELETED_NUM) {
                             $logEntryAction = DirectusActivityTableGateway::ACTION_DELETE;
                         }
                     }
@@ -284,7 +285,9 @@ class RelationalTableGateway extends BaseTableGateway
             return false;
         }
 
-        if (!isset($recordData[STATUS_COLUMN_NAME]) || $recordData[STATUS_COLUMN_NAME] != STATUS_DELETED_NUM) {
+        $statusColumnName = 'active';
+
+        if (!isset($recordData[$statusColumnName]) || $recordData[$statusColumnName] != STATUS_DELETED_NUM) {
             return false;
         }
 
@@ -492,7 +495,7 @@ class RelationalTableGateway extends BaseTableGateway
                             $hasPrimaryKey = isset($foreignRecord[$ForeignTable->primaryKeyFieldName]);
                             $canBeNull = $foreignColumn->isNullable();
 
-                            if ($hasPrimaryKey && isset($foreignRecord[STATUS_COLUMN_NAME]) && $foreignRecord[STATUS_COLUMN_NAME] === STATUS_DELETED_NUM) {
+                            if ($hasPrimaryKey && isset($foreignRecord[$foreignSchema->getStatusColumn()]) && $foreignRecord[$foreignSchema->getStatusColumn()] === STATUS_DELETED_NUM) {
                                 if (!$hasActiveColumn && !$canBeNull) {
                                     $Where = new Where();
                                     $Where->equalTo($ForeignTable->primaryKeyFieldName, $foreignRecord[$ForeignTable->primaryKeyFieldName]);
@@ -502,7 +505,7 @@ class RelationalTableGateway extends BaseTableGateway
                                 }
 
                                 if (!$hasActiveColumn || $canBeNull) {
-                                    unset($foreignRecord[STATUS_COLUMN_NAME]);
+                                    unset($foreignRecord[$foreignSchema->getStatusColumn()]);
                                 }
 
                                 if (!$canBeNull) {
@@ -538,7 +541,7 @@ class RelationalTableGateway extends BaseTableGateway
                         $ForeignTable = new RelationalTableGateway($foreignTableName, $this->adapter, $this->acl);
                         foreach ($foreignDataSet as $junctionRow) {
                             /** This association is designated for removal */
-                            if (isset($junctionRow[STATUS_COLUMN_NAME]) && $junctionRow[STATUS_COLUMN_NAME] == STATUS_DELETED_NUM) {
+                            if (TableSchema::hasStatusColumn($junctionTableName) && $junctionRow[$JunctionTable->getStatusColumnName()] == STATUS_DELETED_NUM) {
                                 $Where = new Where;
                                 $Where->equalTo($JunctionTable->primaryKeyFieldName, $junctionRow[$JunctionTable->primaryKeyFieldName]);
                                 $JunctionTable->delete($Where);
@@ -1679,7 +1682,7 @@ class RelationalTableGateway extends BaseTableGateway
             return ['total_entries' => $this->countTotal()];
         }
 
-        $statusColumnName = $tableSchema->getStatusColumn() ?:  STATUS_COLUMN_NAME;
+        $statusColumnName = $tableSchema->getStatusColumn();
 
         $select = new Select($this->getTable());
         $select
@@ -1717,39 +1720,5 @@ class RelationalTableGateway extends BaseTableGateway
         $stats['total_entries'] = array_sum($stats);
 
         return $stats;
-    }
-
-    function countActiveOld($no_active = false)
-    {
-        $select = new Select($this->table);
-
-        return [
-            'active' => 0,
-            'inactive' => 0,
-            'trash' => 0
-        ];
-
-        $result = ['active' => 0];
-        if ($no_active) {
-            $select->columns(['count' => new \Zend\Db\Sql\Expression('COUNT(*)'), STATUS_COLUMN_NAME => STATUS_COLUMN_NAME]);
-        } else {
-            $select->columns([
-                new \Zend\Db\Sql\Expression('CASE ' . STATUS_COLUMN_NAME . 'WHEN 0 THEN \'trash\'
-              WHEN 1 THEN \'active\'
-              WHEN 2 THEN \'active\'
-            END AS ' . STATUS_COLUMN_NAME), 'count' => new \Zend\Db\Sql\Expression('COUNT(*)')
-            ]);
-            $select->group(STATUS_COLUMN_NAME);
-        }
-
-        $rows = $this->selectWith($select)->toArray();
-
-        print_r($rows);
-        die();
-
-        while ($row = $sth->fetch(\PDO::FETCH_ASSOC))
-            $result[$row[STATUS_COLUMN_NAME]] = (int)$row['count'];
-        $total = 0;
-        return $result;
     }
 }

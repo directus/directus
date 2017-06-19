@@ -191,6 +191,16 @@ class BaseTableGateway extends TableGateway
     }
 
     /**
+     * Gets the status column name
+     *
+     * @return string
+     */
+    public function getStatusColumnName()
+    {
+        return $this->getTableSchema()->getStatusColumn();
+    }
+
+    /**
      * Find the identifying string to effectively represent a record in the activity log.
      *
      * @param  Table $tableSchema
@@ -1006,13 +1016,14 @@ class BaseTableGateway extends TableGateway
         $updateState = $update->getRawState();
         $updateTable = $this->getRawTableNameFromQueryStateTable($updateState['table']);
         $cmsOwnerColumn = $this->acl->getCmsOwnerColumnByTable($updateTable);
+        $statusColumnName = TableSchema::getStatusColumn($updateTable);
 
         // check if it's NOT soft delete
         $updateFields = $updateState['set'];
 
         $permissionName = 'edit';
-        $hasStatusColumn = array_key_exists(STATUS_COLUMN_NAME, $updateFields) ? true : false;
-        if ($hasStatusColumn && $updateFields[STATUS_COLUMN_NAME] == STATUS_DELETED_NUM) {
+        $hasStatusColumn = array_key_exists($statusColumnName, $updateFields) ? true : false;
+        if ($hasStatusColumn && $updateFields[$statusColumnName] == STATUS_DELETED_NUM) {
             $permissionName = 'delete';
         }
 

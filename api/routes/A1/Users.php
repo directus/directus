@@ -68,7 +68,7 @@ class Users extends Route
 
         $token = StringUtils::randomString(128);
         $result = $tableGateway->insert([
-            STATUS_COLUMN_NAME => STATUS_DRAFT_NUM,
+            $tableGateway->getStatusColumnName() => STATUS_DRAFT_NUM,
             'email' => $email,
             'token' => StringUtils::randomString(32),
             'invite_token' => $token,

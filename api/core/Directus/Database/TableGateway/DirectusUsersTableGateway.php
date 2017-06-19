@@ -31,6 +31,8 @@ class DirectusUsersTableGateway extends RelationalTableGateway
 
     public function fetchAllWithGroupData()
     {
+        $statusColumnName = $this->getTableSchema()->getStatusColumn();
+
         $rowset = $this->select(function (Select $select) {
             $select->join(
                 'directus_groups',
@@ -46,7 +48,7 @@ class DirectusUsersTableGateway extends RelationalTableGateway
         foreach ($rowset as $row) {
             $row['group'] = ['id' => (int)$row['group'], 'name' => $row['group_name']];
             unset($row['group_name']);
-            $row[STATUS_COLUMN_NAME] = (int)$row[STATUS_COLUMN_NAME];
+            $row[$statusColumnName] = (int)$row[$statusColumnName];
             array_push($results, $row);
         }
         return ['rows' => $results];
@@ -54,10 +56,12 @@ class DirectusUsersTableGateway extends RelationalTableGateway
 
     public function findActiveUserIdsByGroupIds($ids = [])
     {
+        $statusColumnName = $this->getTableSchema()->getStatusColumn();
+
         $select = new Select($this->getTable());
         $select
             ->columns(['id', 'group'])
-            ->where->in('group', $ids)->and->equalTo(STATUS_COLUMN_NAME, STATUS_ACTIVE_NUM);
+            ->where->in('group', $ids)->and->equalTo($statusColumnName, STATUS_ACTIVE_NUM);
         return $this->selectWith($select)->toArray();
     }
 
