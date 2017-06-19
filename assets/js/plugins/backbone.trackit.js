@@ -143,6 +143,7 @@
 
   // Wrap `model.set()` and update the internal
   // unsaved changes record keeping.
+  Backbone.Model.prototype.originalSet = Backbone.Model.prototype.set;
   Backbone.Model.prototype.set = _.wrap(Backbone.Model.prototype.set, function(oldSet, key, val, options) {
     var attrs, ret;
     if (key == null) return this;

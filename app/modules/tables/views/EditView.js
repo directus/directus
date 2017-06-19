@@ -195,14 +195,14 @@ function(app, Backbone, _, Handlebars, __t, Notification, Directus, BasePageView
         collection.add(model);
       }
 
-      // if (!model.unsavedAttributes()) {
-      //   Notification.warning('Nothing changed, nothing saved');
-      //
-      //   return;
-      // }
+      if (!model.unsavedAttributes()) {
+        Notification.warning('Nothing changed, nothing saved');
+
+        return;
+      }
 
       // Patch only the changed values if it's not new
-      model.save(model.isNew() ? null : model.unsavedAttributes() || {}, {
+      model.save(model.isNew() ? null : model.unsavedChanges() || {}, {
         success: success,
         error: function (model, xhr, options) {
           // console.error('err');
@@ -312,7 +312,10 @@ function(app, Backbone, _, Handlebars, __t, Notification, Directus, BasePageView
 
     cleanup: function () {
       BasePageView.prototype.cleanup.apply(this, arguments);
-      this.model.stopTracking();
+
+      if (this.options.parentView) {
+        this.model.stopTracking();
+      }
     },
 
     initialize: function (options) {
@@ -329,7 +332,13 @@ function(app, Backbone, _, Handlebars, __t, Notification, Directus, BasePageView
       this.skipFetch = options.skipFetch;
       this.onSuccess = options.onSuccess;
 
-      this.model.startTracking();
+      if (!this.model.isTracking()) {
+        this.model.startTracking();
+      }
+
+      if (options.warnOnExit === true) {
+        this.model.enablePrompt();
+      }
 
       if (_.isUndefined(this.headerOptions.basicSave)) {
         this.headerOptions.basicSave = false;

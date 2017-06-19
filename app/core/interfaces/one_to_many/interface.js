@@ -209,6 +209,10 @@ define([
     },
 
     onCollectionChange: function () {
+      var value = this.model.get(this.name);
+
+      // NOTE: setting the value again to mark the changes
+      this.model.set(this.name, value);
       this.nestedTableView.tableHead = this.relatedCollection.visibleCount() > 0;
       this.nestedTableView.render();
     },

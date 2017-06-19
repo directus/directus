@@ -90,14 +90,14 @@ function(app, _, Backbone, __t, Directus, Notification, BasePageView, RightPane,
         collection.add(model);
       }
 
-      // if (!model.unsavedAttributes()) {
-      //   Notification.warning('Nothing changed, nothing saved');
-      //
-      //   return;
-      // }
+      if (!model.unsavedAttributes()) {
+        Notification.warning('Nothing changed, nothing saved');
+
+        return;
+      }
 
       // Patch only the changed values if it's not new
-      model.save(model.isNew() ? null : model.unsavedAttributes() || {}, {
+      model.save(model.isNew() ? null : model.unsavedChanges() || {}, {
         success: success,
         wait: true,
         patch: !model.isNew(),
@@ -198,14 +198,23 @@ function(app, _, Backbone, __t, Directus, Notification, BasePageView, RightPane,
     },
 
     cleanup: function () {
-      this.model.stopTracking();
+      if (this.options.parentView) {
+        this.model.stopTracking();
+      }
     },
 
-    initialize: function () {
+    initialize: function (options) {
       this.editView = new Directus.EditView({model: this.model, ui: this.options.ui});
       this.headerOptions.route.title = this.model.isNew() ? __t('uploading_new_file') : __t('editing_file');
       this.collection = app.files;
-      this.model.startTracking();
+
+      if (!this.model.isTracking()) {
+        this.model.startTracking();
+      }
+
+      if (options.warnOnExit === true) {
+        this.model.enablePrompt();
+      }
     }
   });
 });

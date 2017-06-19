@@ -68,14 +68,14 @@ define([
         collection.add(model);
       }
 
-      // if (!model.unsavedAttributes()) {
-      //   Notification.warning('Nothing changed, nothing saved');
-      //
-      //   return;
-      // }
+      if (!model.unsavedAttributes()) {
+        Notification.warning('Nothing changed, nothing saved');
+
+        return;
+      }
 
       // Patch only the changed values if it's not new
-      model.save(model.isNew() ? null : model.unsavedAttributes() || {}, {
+      model.save(model.isNew() ? null : model.unsavedChanges() || {}, {
         success: success,
         error: function (model, xhr, options) {
           console.error('err');
@@ -141,14 +141,23 @@ define([
     },
 
     cleanup: function () {
-      this.model.stopTracking();
+      if (this.options.parentView) {
+        this.model.stopTracking();
+      }
     },
 
-    initialize: function () {
+    initialize: function (options) {
       this.editView = new Directus.EditView({model: this.model});
-      this.headerOptions.route.title = (this.model.id) ? this.model.get('first_name') + ' ' + this.model.get('last_name') : __t('new_user');
 
-      this.model.startTracking();
+      if (!this.model.isTracking()) {
+        this.model.startTracking();
+      }
+
+      if (options.warnOnExit === true) {
+        this.model.enablePrompt();
+      }
+
+      this.headerOptions.route.title = (this.model.id) ? this.model.get('first_name') + ' ' + this.model.get('last_name') : __t('new_user');
     }
   });
 });

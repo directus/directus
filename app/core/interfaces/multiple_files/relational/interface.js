@@ -156,7 +156,6 @@ define([
       app.router.overlayPage(view);
 
       view.save = function () {
-        model.set(model.diff(view.editView.data()));
         app.router.removeOverlayPage(this);
       };
 
@@ -306,6 +305,14 @@ define([
       FileHelper.hideOnImageError(this.$('.js-image img'));
     },
 
+    onCollectionChange: function () {
+      var value = this.model.get(this.name);
+
+      // NOTE: setting the value again to mark the changes
+      this.model.set(this.name, value);
+      this.render();
+    },
+
     initialize: function (options) {
       if (!this.columnSchema.relationship ||
            this.columnSchema.relationship.get('type') !== 'MANYTOMANY') {
@@ -337,7 +344,7 @@ define([
       this.sortable = sortable;
 
       this.relatedCollection = relatedCollection;
-      this.listenTo(relatedCollection, 'change add remove', this.render);
+      this.listenTo(relatedCollection, 'change add remove', this.onCollectionChange);
     }
   });
 });

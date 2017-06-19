@@ -29,6 +29,7 @@ define(function(require, exports, module) {
     parse: function (result, options) {
       this._lastFetchedResult = result;
       //result = this.parseDate(result);
+      this._resetTracking();
 
       // if collection exists in options it means this model is part of a collection
       // Which means the actual model attributes are not inside `data` attribute
@@ -305,28 +306,31 @@ define(function(require, exports, module) {
         //var relationalAttributes = _.pick(this.attributes, relationalKeys);
 
         _.each(relationalColumns, function (column) {
-            var key = column.id;
-            var value = attributes[key];
+          var key = column.id;
+          var value = attributes[key];
 
-            // omit if the user has not permission to edit the field
-            if (!this.canEdit(key)) return;
+          if (!this.hasChanges(key)) {
+            return false;
+          }
 
-            // Some one-manys are not nested objects and will not need any special treatment
-            if (!_.isObject(value)) return;
+          // omit if the user has not permission to edit the field
+          if (!this.canEdit(key)) return;
 
-            // Check if it is a one-many and if it should be deleted!
-            if ('MANYTOONE' === column.getRelationshipType() && _.isEmpty(value.attributes)) {
-              options.attrs[key] = null;
-              return;
-            }
+          // Some one-manys are not nested objects and will not need any special treatment
+          if (!_.isObject(value)) return;
 
-            // Add foreign data to patch. Only add changed attributes
-            value = value.toJSON({changed: true});
+          // Check if it is a one-many and if it should be deleted!
+          if ('MANYTOONE' === column.getRelationshipType() && _.isEmpty(value.attributes)) {
+            options.attrs[key] = null;
+            return;
+          }
 
-            if (!_.isEmpty(value)) {
-              options.attrs[key] = value;
-            }
+          // Add foreign data to patch. Only add changed attributes
+          value = value.toJSON({changed: true});
 
+          if (!_.isEmpty(value)) {
+            options.attrs[key] = value;
+          }
         }, this);
       }
 
@@ -553,15 +557,24 @@ define(function(require, exports, module) {
     },
 
     _resetTracking: function () {
+      this._originalAttributes = {};
       Backbone.Model.prototype._resetTracking.apply(this, arguments);
 
-      _.map(this._originalAttrs, function (value) {
-        if (value instanceof Backbone.Model) {
+      for (var key in this._originalAttrs) {
+        var value;
+
+        if (!this._originalAttrs.hasOwnProperty(key)) {
+          continue;
+        }
+
+        value = this._originalAttrs[key];
+
+        if (value instanceof Backbone.Model || value instanceof Backbone.Collection) {
           value = value.toJSON();
         }
 
-        return value;
-      }, this);
+        this._originalAttributes[key] = value;
+      }
     },
 
     _onTrackingSync: function () {
@@ -572,8 +585,31 @@ define(function(require, exports, module) {
       return this._trackingChanges;
     },
 
-    hasChanges: function () {
-      return !_.isEmpty(this._unsavedChanges);
+    hasChanges: function (attr) {
+      var changes = this._unsavedChanges;
+      var hasChanges = false;
+
+      if (attr) {
+        hasChanges = !!changes[attr];
+      } else {
+        hasChanges = !_.isEmpty(changes);
+      }
+
+      return hasChanges;
+    },
+
+    unsavedChanges: function (options) {
+      var changes = _.isEmpty(this._unsavedChanges) ? false : _.clone(this._unsavedChanges);
+
+      options = options || {};
+
+      if (changes && options.includeRelationships !== true) {
+        _.each(this.getStructure().getRelationalColumns(), function (column) {
+          delete changes[column.id];
+        });
+      }
+
+      return changes;
     },
 
     startTracking: function () {
@@ -585,11 +621,11 @@ define(function(require, exports, module) {
         }
       });
 
-      this.enablePrompt();
       this.on('sync', this._onTrackingSync, this);
     },
 
     stopTracking: function () {
+      this._originalAttributes = {};
       this.disablePrompt();
       this._stopTracking();
 
@@ -617,6 +653,43 @@ define(function(require, exports, module) {
         this._unsavedConfig.unloadRouterPrompt = enabled;
         this._unsavedConfig.unloadWindowPrompt = enabled;
       }
+    },
+
+    set: function (key, val, options) {
+      var attrs, ret;
+
+      if (key == null) return this;
+      // Handle both `"key", value` and `{key: value}` -style arguments.
+      if (typeof key === 'object') {
+        attrs = key;
+        options = val;
+      } else {
+        (attrs = {})[key] = val;
+      }
+
+      options || (options = {});
+
+      // Delegate to Backbone's set.
+      ret = Backbone.Model.prototype.originalSet.call(this, attrs, options);
+
+      if (this._trackingChanges && !options.silent && !options.trackit_silent) {
+        for (key in attrs) {
+          val = attrs[key];
+          // NOTE: This code was inserted by us to support relational attributes
+          // not part of TrackIt library original code
+          if (val instanceof Backbone.Model || val instanceof Backbone.Collection) {
+            val = val.toJSON();
+          }
+
+          if (_.isEqual(this._originalAttributes[key], val))
+            delete this._unsavedChanges[key];
+          else
+            this._unsavedChanges[key] = val;
+        }
+        this._triggerUnsavedChanges();
+      }
+
+      return ret;
     },
 
     // we need to do this because initialize is called AFTER parse.

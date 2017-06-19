@@ -408,6 +408,7 @@ define(function (require, exports, module) {
       var isBatchEdit = (typeof id === 'string') && id.indexOf(',') !== -1,
           collection,
           model,
+          options,
           view;
 
       // see if the collection is cached...
@@ -439,10 +440,17 @@ define(function (require, exports, module) {
         }
       }
 
+      options = {
+        model: model,
+        warnOnExit: true,
+        parentView: true
+      };
+
+      // NOTE: Set warnOnExit flag on to warn the user is leaving a page with unsaved changes
       if (isBatchEdit) {
-        view = new Table.Views.BatchEdit({model: model, batchIds: id.split(',')});
+        view = new Table.Views.BatchEdit(_.extend(options, {batchIds: id.split(',')}));
       } else {
-        view = new Table.Views.Edit({model: model});
+        view = new Table.Views.Edit(options);
       }
 
       this.v.main.setView('#content', view);
@@ -517,7 +525,12 @@ define(function (require, exports, module) {
         }
       }
 
-      this.v.main.setView('#content', new Files.Views.Edit({model: model}));
+      this.v.main.setView('#content', new Files.Views.Edit({
+        model: model,
+        warnOnExit: true,
+        parentView: true
+      }));
+
       this.v.main.render();
     },
 
@@ -559,7 +572,13 @@ define(function (require, exports, module) {
       } else {
         model = app.users.get(id);
       }
-      this.v.main.setView('#content', new Users.Views.Edit({model: model}));
+
+      this.v.main.setView('#content', new Users.Views.Edit({
+        model: model,
+        warnOnExit: true,
+        parentView: true
+      }));
+
       this.v.main.render();
     },
 

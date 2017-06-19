@@ -12,6 +12,7 @@ define(function(require, exports, module) {
         "hidden":true,
         "single":false,
         "count":0,
+        "status_column": "active",
         "url": "api/1/files",
         "title":"Files",
 

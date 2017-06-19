@@ -34,6 +34,7 @@ define(function(require, exports, module) {
         "footer": 1,
         "count":0,
         "active":0,
+        "status_column": "active",
         "user_create_column": "id",
         "user_update_column": "id",
         "url": "api/1/tables/directus_users/",
