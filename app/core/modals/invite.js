@@ -84,7 +84,7 @@ define([
             column_name: 'group',
             type: 'INT',
             nullable: false,
-            ui: 'select',
+            ui: 'dropdown',
             required: true,
             options: {
               options: options

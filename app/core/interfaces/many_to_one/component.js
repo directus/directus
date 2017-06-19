@@ -11,7 +11,7 @@ define(['./interface', 'backbone', 'handlebars', 'core/UIComponent', 'core/t'], 
       {id: 'visible_status_ids', type: 'String', ui: 'text_input', char_length: 64, required: false, default_value: '1', comment: __t('m2o_visible_status_ids_comment')},
       {id: 'placeholder_text', type: 'String', default_value: '', ui: 'text_input', char_length: 255, required: false, comment: __t('m2o_placeholder_text_comment')},
       {id: 'allow_null', type: 'Boolean', default_value: false, ui: 'toggle'},
-      {id: 'filter_type', type: 'String', default_value: 'dropdown', required: true, ui: 'select', options: {options: {dropdown: __t('dropdown'), textinput: __t('text_input')}}},
+      {id: 'filter_type', type: 'String', default_value: 'dropdown', required: true, ui: 'dropdown', options: {options: {dropdown: __t('dropdown'), textinput: __t('text_input')}}},
       {id: 'filter_column', type: 'String', default_value: '', ui: 'text_input', char_length: 255, comment: __t('m2o_filter_column_comment')}
     ],
     Input: Input,

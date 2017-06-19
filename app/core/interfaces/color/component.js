@@ -16,7 +16,7 @@ define([
         id: 'input',
         type: 'String',
         default_value: 'hex',
-        ui: 'select',
+        ui: 'dropdown',
         options: {
           options: {
             hex: 'Hex',
@@ -29,7 +29,7 @@ define([
         id: 'output',
         type: 'String',
         default_value: 'hex',
-        ui: 'select',
+        ui: 'dropdown',
         options: {
           options: {
             hex: 'Hex',
@@ -42,7 +42,7 @@ define([
         id: 'listing',
         type: 'String',
         default_value: 'swatch',
-        ui: 'select',
+        ui: 'dropdown',
         options: {
           options: {
             swatch: 'Color Swatch',

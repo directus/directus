@@ -90,7 +90,7 @@ define([
               id: 'date_column',
               type: 'String',
               required: true,
-              ui: 'select',
+              ui: 'dropdown',
               options: {
                 options: options.datetime
               }
@@ -99,7 +99,7 @@ define([
               id: 'title_column',
               type: 'String',
               required: true,
-              ui: 'select',
+              ui: 'dropdown',
               options: {
                 options: options.title
               }

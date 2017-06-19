@@ -3,7 +3,7 @@ define(['./interface', 'core/UIComponent', 'core/t'], function (Input, UICompone
     id: 'directus_file_title',
     system: true,
     variables: [
-      {id: 'size', type: 'String', default_value: 'large', ui: 'select', options: {options: {large: __t('size_large'), medium: __t('size_medium'), small: __t('size_small')}}}
+      {id: 'size', type: 'String', default_value: 'large', ui: 'dropdown', options: {options: {large: __t('size_large'), medium: __t('size_medium'), small: __t('size_small')}}}
     ],
     Input: Input,
     list: function (options) {

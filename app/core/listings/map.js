@@ -45,7 +45,7 @@ define([
               id: 'location_column',
               type: 'String',
               required: true,
-              ui: 'select',
+              ui: 'dropdown',
               options: {
                 options: options.location
               }
