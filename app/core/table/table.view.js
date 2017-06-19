@@ -25,7 +25,7 @@ function(app, _, Backbone, Notification, __t, TableHelpers, ModelHelper, TableHe
 
     events: {
       // TODO: make those element to stop propagation to avoid this nesting
-      'click tbody td:not(.js-check):not(.status):not(.js-sort)' : function (event) {
+      'click tbody td:not(.js-check):not(.relational-remove):not(.status):not(.js-sort)' : function (event) {
         var id = $(event.currentTarget).closest('tr').data('id');
         if (!this.options.navigate) {
           return;
@@ -90,7 +90,7 @@ function(app, _, Backbone, Notification, __t, TableHelpers, ModelHelper, TableHe
       }
 
       if (this.collection.length > 0) {
-        options = _.pick(this.options, 'collection', 'systemCollection', 'system', 'selectable', 'filters', 'preferences', 'structure', 'sort', 'deleteColumn', 'rowIdentifiers', 'saveAfterDrop', 'blacklist', 'highlight', 'columns');
+        options = _.pick(this.options, 'collection', 'systemCollection', 'system', 'selectable', 'filters', 'preferences', 'structure', 'sort', 'showRemoveButton', 'rowIdentifiers', 'saveAfterDrop', 'blacklist', 'highlight', 'columns');
         options.parentView = this;
 
         if (!this.tableBodyView) {

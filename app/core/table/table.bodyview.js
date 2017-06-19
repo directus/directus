@@ -118,13 +118,12 @@ function(app, Backbone, _, Sortable, Notification) {
         status: this.parentView.options.status,
         sortable: this.options.sort,
         selectable: this.options.selectable,
-        deleteColumn: this.options.deleteColumn
+        showRemoveButton: this.options.showRemoveButton
       };
 
       var blacklist = this.options.blacklist;
 
       tableData.columns = _.difference(tableData.columns, blacklist);
-      tableData.showRemoveButton = this.parentView.options.showRemoveButton;
 
       return tableData;
     },

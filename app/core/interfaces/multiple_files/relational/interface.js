@@ -45,15 +45,26 @@ define([
     removeItem: function (event) {
       var cid = $(event.target).closest('.js-file').data('cid');
       var model = this.relatedCollection.get(cid);
-      var name = {};
+      var attributes = {};
 
       event.stopPropagation();
 
       if (model.isNew()) {
         this.relatedCollection.remove(model);
       } else {
-        name[this.relatedCollection.table.getStatusColumnName()] = model.getTableStatuses().getDeleteValue();
-        model.set(name);
+        // FIXME: Make a method to encapsulate all this functionality
+        // duplicated across all the relational interfaces
+        var junctionTable = this.relatedCollection.junctionStructure.table;
+        var statusColumnName = junctionTable.getStatusColumnName();
+        var statusValue = model.getTableStatuses().getDeleteValue();
+
+        if (!statusColumnName) {
+          statusColumnName = app.statusMapping.get('status_name');
+          statusValue = app.statusMapping.get('delete_value');
+        }
+
+        attributes[statusColumnName] = statusValue;
+        model.set(attributes);
       }
     },
 

@@ -21,6 +21,7 @@ define([
       var action = $(event.currentTarget).data('action');
 
       event.preventDefault();
+      event.stopPropagation();
 
       switch (action) {
         case 'insert':
@@ -42,17 +43,31 @@ define([
       this.editModel(model);
     },
 
-    deleteRow: function (e) {
-      var cid = $(e.target).closest('tr').attr('data-cid');
+    deleteRow: function (event) {
+      var cid = $(event.currentTarget).closest('tr').data('cid');
       var model = this.relatedCollection.get(cid);
       var relatedColumnName = this.columnSchema.relationship.get('junction_key_right');
+
+      event.preventDefault();
+      event.stopPropagation();
 
       if (model.isNew()) {
         return this.relatedCollection.remove(model);
       }
 
+      // FIXME: Make a method to encapsulate all this functionality
+      // duplicated across all the relational interfaces
       var attributes = {};
-      attributes[model.table.getStatusColumnName()] = model.getTableStatuses().getDeleteValue();
+      var junctionTable = this.relatedCollection.junctionStructure.table;
+      var statusColumnName = junctionTable.getStatusColumnName();
+      var statusValue = model.getTableStatuses().getDeleteValue();
+
+      if (!statusColumnName) {
+        statusColumnName = app.statusMapping.get('status_name');
+        statusValue = app.statusMapping.get('delete_value');
+      }
+
+      attributes[statusColumnName] = statusValue;
       attributes[relatedColumnName] = null;
       model.set(attributes);
     },

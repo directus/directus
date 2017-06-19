@@ -101,9 +101,8 @@ function(app, Backbone, _, __t, Notification) {
         sortable: this.options.sort,
         columns: columns,
         showItemNumbers: this.options.showItemNumbers,
-        deleteColumn: this.options.deleteColumn,
         showMoreButton: this.options.showMoreButton,
-        showRemoveButton: this.parentView.options.showRemoveButton,
+        showRemoveButton: this.options.showRemoveButton,
         hideColumnPreferences: this.options.hideColumnPreferences
       };
     },

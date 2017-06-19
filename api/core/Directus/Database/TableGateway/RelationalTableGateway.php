@@ -231,7 +231,11 @@ class RelationalTableGateway extends BaseTableGateway
                     $logEntryAction = $recordIsNew ? DirectusActivityTableGateway::ACTION_ADD : DirectusActivityTableGateway::ACTION_UPDATE;
                     //If we are updating and active is being set to 0 then we are deleting
                     if (!$recordIsNew && array_key_exists($statusColumnName, $deltaRecordData)) {
-                        if ($deltaRecordData[$statusColumnName] == STATUS_DELETED_NUM) {
+                        // Get status delete value
+                        $statusColumnObject = $tableSchema->getColumn($statusColumnName);
+                        $deletedValue = ArrayUtils::get($statusColumnObject->getOptions(), 'delete_value', STATUS_DELETED_NUM);
+
+                        if ($deltaRecordData[$statusColumnName] == $deletedValue) {
                             $logEntryAction = DirectusActivityTableGateway::ACTION_DELETE;
                         }
                     }
@@ -287,7 +291,12 @@ class RelationalTableGateway extends BaseTableGateway
 
         $statusColumnName = 'active';
 
-        if (!isset($recordData[$statusColumnName]) || $recordData[$statusColumnName] != STATUS_DELETED_NUM) {
+        // Get status delete value
+        $tableSchema = TableSchema::getTableSchema($tableName);
+        $statusColumnObject = $tableSchema->getColumn($statusColumnName);
+        $deletedValue = ArrayUtils::get($statusColumnObject->getOptions(), 'delete_value', STATUS_DELETED_NUM);
+
+        if (!isset($recordData[$statusColumnName]) || $recordData[$statusColumnName] != $deletedValue) {
             return false;
         }
 
@@ -495,7 +504,15 @@ class RelationalTableGateway extends BaseTableGateway
                             $hasPrimaryKey = isset($foreignRecord[$ForeignTable->primaryKeyFieldName]);
                             $canBeNull = $foreignColumn->isNullable();
 
-                            if ($hasPrimaryKey && isset($foreignRecord[$foreignSchema->getStatusColumn()]) && $foreignRecord[$foreignSchema->getStatusColumn()] === STATUS_DELETED_NUM) {
+                            // Get status delete value
+                            $deletedValue = STATUS_DELETED_NUM;
+                            if ($hasActiveColumn) {
+                                $statusColumnName = $foreignSchema->getStatusColumn();
+                                $statusColumnObject = $foreignSchema->getColumn($statusColumnName);
+                                $deletedValue = ArrayUtils::get($statusColumnObject->getOptions(), 'delete_value', STATUS_DELETED_NUM);
+                            }
+
+                            if ($hasPrimaryKey && isset($foreignRecord[$foreignSchema->getStatusColumn()]) && $foreignRecord[$foreignSchema->getStatusColumn()] === $deletedValue) {
                                 if (!$hasActiveColumn && !$canBeNull) {
                                     $Where = new Where();
                                     $Where->equalTo($ForeignTable->primaryKeyFieldName, $foreignRecord[$ForeignTable->primaryKeyFieldName]);
@@ -544,7 +561,13 @@ class RelationalTableGateway extends BaseTableGateway
                             $hasPrimaryKey = isset($foreignRecord[$JunctionTable->primaryKeyFieldName]);
                             $statusColumnName = TableSchema::getStatusColumn($junctionTableName) ?: STATUS_COLUMN_NAME;
                             $hasStatus = isset($junctionRow[$JunctionTable->getStatusColumnName()]);
-                            if ($hasPrimaryKey && $hasStatus && $junctionRow[$statusColumnName] == STATUS_DELETED_NUM) {
+                            $deletedValue = STATUS_DELETED_NUM;
+                            if ($hasStatus) {
+                                $statusColumnObject = $JunctionTable->getTableSchema()->getColumn($statusColumnName);
+                                $deletedValue = ArrayUtils::get($statusColumnObject->getOptions(), 'delete_value', STATUS_DELETED_NUM);
+                            }
+
+                            if ($hasPrimaryKey && $hasStatus && $junctionRow[$statusColumnName] == $deletedValue) {
                                 $Where = new Where;
                                 $Where->equalTo($JunctionTable->primaryKeyFieldName, $junctionRow[$JunctionTable->primaryKeyFieldName]);
                                 $JunctionTable->delete($Where);

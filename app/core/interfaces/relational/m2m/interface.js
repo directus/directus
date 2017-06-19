@@ -21,25 +21,39 @@ define([
   return Onetomany.prototype.Input.extend({
 
     events: {
-      'click div.related-table > div td:not(.delete)': 'editRow',
+      'click div.related-table td:not(.relational-remove)': 'editRow',
       'click .js-button': 'onClickButton',
-      'click td.delete': 'deleteRow'
+      'click .js-remove': 'deleteRow'
     },
 
     template: 'relational/table',
 
-    addRow: function() {
+    addRow: function () {
       this.addModel(new this.relatedCollection.nestedCollection.model({}, {collection: this.relatedCollection.nestedCollection, parse: true}));
     },
 
-    deleteRow: function(e) {
-      var cid = $(e.target).closest('tr').attr('data-cid');
+    deleteRow: function (event) {
+      var cid = $(event.currentTarget).closest('tr').data('cid');
       var model = this.relatedCollection.get(cid);
+      var attributes = {};
 
-      if (model.isNew()) return this.relatedCollection.remove(model);
-      var name = {};
-      name[app.statusMapping.status_name] = app.statusMapping.deleted_num;
-      model.set(name);
+      if (model.isNew()) {
+        this.relatedCollection.remove(model);
+      } else {
+        // FIXME: Make a method to encapsulate all this functionality
+        // duplicated across all the relational interfaces
+        var junctionTable = this.relatedCollection.junctionStructure.table;
+        var statusColumnName = junctionTable.getStatusColumnName();
+        var statusValue = model.getTableStatuses().getDeleteValue();
+
+        if (!statusColumnName) {
+          statusColumnName = app.statusMapping.get('status_name');
+          statusValue = app.statusMapping.get('delete_value');
+        }
+
+        attributes[statusColumnName] = statusValue;
+        model.set(attributes);
+      }
     },
 
     addModel: function(model) {
@@ -161,7 +175,7 @@ define([
         footer: false,
         tableHead: false,
         saveAfterDrop: false,
-        deleteColumn: this.showRemoveButton,
+        showRemoveButton: this.showRemoveButton,
         hideEmptyMessage: true,
         hideColumnPreferences: true,
         sort: junctionStructure.get('sort') !== undefined,

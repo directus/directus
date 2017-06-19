@@ -1023,7 +1023,16 @@ class BaseTableGateway extends TableGateway
 
         $permissionName = 'edit';
         $hasStatusColumn = array_key_exists($statusColumnName, $updateFields) ? true : false;
-        if ($hasStatusColumn && $updateFields[$statusColumnName] == STATUS_DELETED_NUM) {
+
+        // Get status delete value
+        $deletedValue = STATUS_DELETED_NUM;
+        if ($hasStatusColumn) {
+            $tableSchema = TableSchema::getTableSchema($updateTable);
+            $statusColumnObject = $tableSchema->getColumn($statusColumnName);
+            $deletedValue = ArrayUtils::get($statusColumnObject->getOptions(), 'delete_value', STATUS_DELETED_NUM);
+        }
+
+        if ($hasStatusColumn && $updateFields[$statusColumnName] == $deletedValue) {
             $permissionName = 'delete';
         }
 
