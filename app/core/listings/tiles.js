@@ -101,7 +101,7 @@ define([
               id: 'title_column',
               type: 'String',
               required: true,
-              ui: 'select',
+              ui: 'dropdown',
               options: {
                 options: options.title
               }
@@ -110,7 +110,7 @@ define([
               id: 'subtitle_column',
               type: 'String',
               required: true,
-              ui: 'select',
+              ui: 'dropdown',
               options: {
                 options: options.subtitle
               }
@@ -119,7 +119,7 @@ define([
               id: 'type_column',
               type: 'String',
               required: true,
-              ui: 'select',
+              ui: 'dropdown',
               options: {
                 options: options.type
               }
@@ -128,7 +128,7 @@ define([
               id: 'file_column',
               type: 'String',
               required: true,
-              ui: 'select',
+              ui: 'dropdown',
               options: {
                 options: options.file
               }

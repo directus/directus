@@ -84,7 +84,7 @@ define(function(require, exports, module) {
   settingsFilesSchema.columns = [
     {
       id: 'file_naming',
-      ui: 'select',
+      ui: 'dropdown',
       char_length: 255,
       options: {
         allow_null: false,

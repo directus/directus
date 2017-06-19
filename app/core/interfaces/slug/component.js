@@ -8,7 +8,7 @@ define(['./interface', 'core/UIComponent', 'core/t'], function (Input, UICompone
       // Disables editing of the field while still letting users see the value
       {id: 'readonly', type: 'Boolean', default_value: true, ui: 'toggle'},
       // Adjusts the max width of the input (Small, Medium, Large)
-      {id: 'size', type: 'String', default_value: 'large', ui: 'select', options: {options: {large: __t('size_large'), medium: __t('size_medium'), small: __t('size_small')}}},
+      {id: 'size', type: 'String', default_value: 'large', ui: 'dropdown', options: {options: {large: __t('size_large'), medium: __t('size_medium'), small: __t('size_small')}}},
       // Enter the column name of the field the slug will pull it's value from
       {id: 'mirrored_field', type: 'String', default_value: '', required: true, ui: 'text_input', char_length: 200},
       // Whether to update slug only on creation

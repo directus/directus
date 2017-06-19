@@ -139,7 +139,7 @@ define([
             //   id: CHART_Y_AXIS_NAME,
             //   type: 'String',
             //   required: false,
-            //   ui: 'select',
+            //   ui: 'dropdown',
             //   options: {
             //     allow_null: true,
             //     options: options.numericColumns
@@ -149,7 +149,7 @@ define([
             //   id: CHART_X_AXIS_NAME,
             //   type: 'String',
             //   required: false,
-            //   ui: 'select',
+            //   ui: 'dropdown',
             //   options: {
             //     options: options.dateColumns
             //   }
@@ -158,7 +158,7 @@ define([
               id: 'spacing',
               type: 'String',
               required: true,
-              ui: 'select',
+              ui: 'dropdown',
               options: {
                 options: options.spacings
               }
