@@ -146,7 +146,7 @@ define([
         sortable: false,
         footer: false,
         saveAfterDrop: true,
-        deleteColumn: this.canEdit && this.showRemoveButton,
+        showRemoveButton: this.canEdit && this.showRemoveButton,
         hideColumnPreferences: true,
         hideEmptyMessage: true,
         tableHead: false,
