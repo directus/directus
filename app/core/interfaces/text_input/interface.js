@@ -44,7 +44,9 @@ define([
     onChangeInput: function (event) {
       var $input = $(event.currentTarget);
 
-      this.model.set(this.name, $input.val());
+      // NOTE: change silently to prevent "widgets" to display unsaved changes
+      // Ex: the user first/last name in the sidebar
+      this.model.set(this.name, $input.val(), {silent: true});
 
       this.updateMaxLength($input.val().length);
     },

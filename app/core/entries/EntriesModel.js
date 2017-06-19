@@ -672,7 +672,8 @@ define(function(require, exports, module) {
       // Delegate to Backbone's set.
       ret = Backbone.Model.prototype.originalSet.call(this, attrs, options);
 
-      if (this._trackingChanges && !options.silent && !options.trackit_silent) {
+      // NOTE: Track changes even when the silent flag has been set
+      if (this._trackingChanges) {
         for (key in attrs) {
           val = attrs[key];
           // NOTE: This code was inserted by us to support relational attributes
