@@ -69,7 +69,7 @@ function(app, Backbone, _) {
             onClick(event);
           }
         });
-        this._events['change #save_options'] = options.onClick;
+        this._events['click #save_options'] = options.onClick;
       }
 
       if (_.isFunction(options.onChange)) {
