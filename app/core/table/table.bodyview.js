@@ -135,6 +135,8 @@ function(app, Backbone, _, Sortable, Notification) {
       // if we are dropping something it means we allowed sorting
       // and the collection has a sort column
       var sortColumnName = table ? table.getSortColumnName() : 'sort';
+      var self = this;
+      var success;
 
       this.$('tr').each(function (i) {
         // Use data-id instead of data-cid
@@ -146,24 +148,21 @@ function(app, Backbone, _, Sortable, Notification) {
         collection.get($(this).attr('data-id')).set(attributes, {silent: true});
       });
 
+      success = function () {
+        self.collection.setOrder(sortColumnName, 'ASC', {silent: false});
+      };
+
       if (this.options.saveAfterDrop) {
         // collection.save({columns:['id','sort']});
-        var self = this;
         collection.save(null, {
           attributes: ['sort'],
           wait: true,
           patch: true,
-          success: function () {
-            self.collection.setOrder(sortColumnName, 'ASC', {silent: false});
-          }
+          success: success
         });
       } else {
-        this.collection.setOrder(sortColumnName, 'ASC',{silent: true});
+        success();
       }
-
-      // NOTE: this event was intented to work with X2M interfaces
-      // so they are aware when a collection has sorted
-      this.parentView.trigger('drop:after');
     },
 
     initialize: function(options) {

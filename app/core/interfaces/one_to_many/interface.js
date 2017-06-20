@@ -344,7 +344,7 @@ define([
       }
 
       this.listenTo(relatedCollection, 'add change remove', this.onCollectionChange);
-      this.listenTo(this.nestedTableView, 'drop:after', this.onCollectionSorted);
+      this.listenTo(relatedCollection, 'sort', this.onCollectionSorted);
 
       this.relatedCollection = relatedCollection;
     }
