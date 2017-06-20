@@ -253,6 +253,7 @@ function(app, Backbone, _, Handlebars, __t, Notification, Directus, BasePageView
       var widgets = [];
       var isNew = this.model.isNew();
       var canAdd = this.model.collection.canAdd();
+      var isOverlay = this.headerOptions.route.isOverlay === true;
       var editView = this;
 
       this.saveWidget = new Widgets.SaveWidget({
@@ -275,7 +276,7 @@ function(app, Backbone, _, Handlebars, __t, Notification, Directus, BasePageView
       widgets.push(this.saveWidget);
 
       // delete button
-      if (!this.model.isNew() && !this.single && this.model.canDelete()) {
+      if (!isOverlay && !this.model.isNew() && !this.single && this.model.canDelete()) {
         this.deleteWidget = new Widgets.ButtonWidget({
           widgetOptions: {
             buttonId: 'deleteBtn',
