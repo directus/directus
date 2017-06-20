@@ -186,6 +186,8 @@ define([
       });
 
       relatedCollection.sort();
+
+      this.model.set(this.name, relatedCollection);
     },
 
     serialize: function () {
