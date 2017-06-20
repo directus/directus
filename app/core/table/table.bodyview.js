@@ -160,6 +160,10 @@ function(app, Backbone, _, Sortable, Notification) {
       } else {
         this.collection.setOrder(sortColumnName, 'ASC',{silent: true});
       }
+
+      // NOTE: this event was intented to work with X2M interfaces
+      // so they are aware when a collection has sorted
+      this.parentView.trigger('drop:after');
     },
 
     initialize: function(options) {

@@ -336,6 +336,7 @@ define([
       }
 
       this.listenTo(relatedCollection, 'add change remove', this.onCollectionChange);
+      this.listenTo(this.nestedTableView, 'drop:after', this.onCollectionChange);
 
       this.relatedCollection = relatedCollection;
     }
