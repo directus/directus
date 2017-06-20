@@ -13,6 +13,10 @@ function(app, Backbone, _, Sortable, Notification) {
   var TableBodyView = Backbone.Layout.extend({
     tagName: 'tbody',
 
+    // To prevent this view from being removed from its parent
+    // set the keep flag on
+    keep: true,
+
     template: 'tables/table-body',
 
     attributes: {

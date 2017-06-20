@@ -16,6 +16,10 @@ function(app, Backbone, _, __t, Notification) {
 
     tagName: 'thead',
 
+    // To prevent this view from being removed from its parent
+    // set the keep flag on
+    keep: true,
+
     events: {
       'click input.js-select-all-row': function () {
         var checkAll = this.checkedAll = this.$('#checkAll:checked').prop('checked') !== undefined;
