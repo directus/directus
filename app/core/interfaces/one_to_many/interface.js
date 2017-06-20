@@ -58,16 +58,14 @@ define([
       // FIXME: Make a method to encapsulate all this functionality
       // duplicated across all the relational interfaces
       var attributes = {};
-      var junctionTable = this.relatedCollection.junctionStructure.table;
-      var statusColumnName = junctionTable.getStatusColumnName();
+      var relatedTable = this.relatedCollection.structure.table;
+      var statusColumnName = relatedTable.getStatusColumnName();
       var statusValue = model.getTableStatuses().getDeleteValue();
 
-      if (!statusColumnName) {
-        statusColumnName = app.statusMapping.get('status_name');
-        statusValue = app.statusMapping.get('delete_value');
+      if (statusColumnName) {
+        attributes[statusColumnName] = statusValue;
       }
 
-      attributes[statusColumnName] = statusValue;
       attributes[relatedColumnName] = null;
       model.set(attributes);
     },

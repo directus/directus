@@ -607,7 +607,9 @@ define(function(require, exports, module) {
 
       if (changes && options.includeRelationships !== true) {
         _.each(this.getStructure().getRelationalColumns(), function (column) {
-          delete changes[column.id];
+          if (column.isAlias()) {
+            delete changes[column.id];
+          }
         });
       }
 
