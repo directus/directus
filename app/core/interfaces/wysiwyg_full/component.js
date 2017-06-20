@@ -10,7 +10,7 @@ define(['./interface', 'core/UIComponent', 'core/t'], function (Input, UICompone
       {id: 'show_element_path', ui: 'toggle', default: true},
       {
         id: 'headings',
-        ui: 'radio_buttons',
+        ui: 'checkboxes',
         default_value: 'h2,h3,h4',
         options: {
           options: {
@@ -25,7 +25,7 @@ define(['./interface', 'core/UIComponent', 'core/t'], function (Input, UICompone
       },
       {
         id: 'inline',
-        ui: 'radio_buttons',
+        ui: 'checkboxes',
         default_value: 'bold,italic,underline',
         options: {
           options: {
@@ -41,7 +41,7 @@ define(['./interface', 'core/UIComponent', 'core/t'], function (Input, UICompone
       },
       {
         id: 'blocks',
-        ui: 'radio_buttons',
+        ui: 'checkboxes',
         default_value: 'p,blockquote',
         options: {
           options: {
@@ -54,7 +54,7 @@ define(['./interface', 'core/UIComponent', 'core/t'], function (Input, UICompone
       },
       {
         id: 'alignment',
-        ui: 'radio_buttons',
+        ui: 'checkboxes',
         default_value: '',
         options: {
           options: {
@@ -67,7 +67,7 @@ define(['./interface', 'core/UIComponent', 'core/t'], function (Input, UICompone
       },
       {
         id: 'toolbar_options',
-        ui: 'radio_buttons',
+        ui: 'checkboxes',
         default_value: 'inline,table,undo,redo,subscript,superscript,bullist,numlist,link,unlink,image,media',
         options: {
           options: {
