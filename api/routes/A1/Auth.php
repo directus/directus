@@ -100,7 +100,8 @@ class Auth extends Route
         // When the credentials are correct but the user is Inactive
         $isUserActive = false;
         // TODO: Add a method in RowGateway to check whether the user is active or not
-        if ($user[$Users->getStatusColumnName()] == STATUS_ACTIVE_NUM) {
+        // TODO: Add information about the user status
+        if ($user['active'] == STATUS_ACTIVE_NUM) {
             $isUserActive = true;
         }
 

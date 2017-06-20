@@ -617,7 +617,7 @@ $app->post("/$v/auth/login/?", function () use ($app, $ZendDb, $acl, $authentica
     // When the credentials are correct but the user is Inactive
     $isUserActive = false;
     // TODO: Add a method in RowGateway to check whether the user is active or not
-    if (ArrayUtils::get($user, $Users->getStatusColumnName()) == STATUS_ACTIVE_NUM) {
+    if (ArrayUtils::get($user, 'active') == STATUS_ACTIVE_NUM) {
         $isUserActive = true;
     }
 
