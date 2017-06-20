@@ -189,7 +189,7 @@ define([
       this.relatedCollection = relatedCollection;
       this.listenTo(relatedCollection, 'change add remove', this.onCollectionChange);
       this.listenTo(relatedCollection.nestedCollection, 'sync', this.onCollectionChange);
-      this.listenTo(this.nestedTableView, 'drop:after', this.onCollectionChange);
+      this.listenTo(this.nestedTableView, 'drop:after', this.onCollectionSorted);
     }
   });
 });

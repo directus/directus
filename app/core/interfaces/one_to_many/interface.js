@@ -208,11 +208,19 @@ define([
       this.setView('#related_table_' + this.name, this.nestedTableView).render();
     },
 
-    onCollectionChange: function () {
+    triggerModelChange: function () {
       var value = this.model.get(this.name);
 
       // NOTE: setting the value again to mark the changes
       this.model.set(this.name, value);
+    },
+
+    onCollectionSorted: function () {
+      this.triggerModelChange();
+    },
+
+    onCollectionChange: function () {
+      this.triggerModelChange();
       this.nestedTableView.tableHead = this.relatedCollection.visibleCount() > 0;
       this.nestedTableView.render();
     },
@@ -336,7 +344,7 @@ define([
       }
 
       this.listenTo(relatedCollection, 'add change remove', this.onCollectionChange);
-      this.listenTo(this.nestedTableView, 'drop:after', this.onCollectionChange);
+      this.listenTo(this.nestedTableView, 'drop:after', this.onCollectionSorted);
 
       this.relatedCollection = relatedCollection;
     }
