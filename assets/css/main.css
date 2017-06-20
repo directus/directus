@@ -3110,7 +3110,7 @@ body.loading .header .logo {
     bottom: 0;
     left: 0;
     right: 0;
-    padding-bottom: 0;
+    padding-bottom: 60px;
     border-top: 1px solid #DDDDDD; }
     .right-sidebar .scroll-y .select-container {
       margin-left: 20px;
