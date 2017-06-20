@@ -500,8 +500,15 @@ define(function (require, exports, module) {
       options.structure = options.structure || options.model.getStructure();
       options.schema = options.structure.get(options.name);
       options.settings = options.schema.options;
-      options.value = options.model.get(options.name) || options.schema.get('default_value');
       options.collection = options.collection || options.model.collection;
+      options.value = options.model.get(options.name);
+
+      // NOTE: Should we let each interface get their default value
+      // this can be confusing to know whether is the actual value OR the default value
+      // let this be commented out until we certanly need it
+      // if (Utils.isNothing(options.value)) {
+      //   options.value = options.schema.get('default_value');
+      // }
 
       if (options.canWrite === undefined) {
         options.canWrite = typeof options.model.canEdit === 'function' ? options.model.canEdit(attr) : true;
