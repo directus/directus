@@ -558,14 +558,18 @@ class RelationalTableGateway extends BaseTableGateway
                         $ForeignTable = new RelationalTableGateway($foreignTableName, $this->adapter, $this->acl);
                         foreach ($foreignDataSet as $junctionRow) {
                             /** This association is designated for removal */
-                            $hasPrimaryKey = isset($foreignRecord[$JunctionTable->primaryKeyFieldName]);
-                            $statusColumnName = TableSchema::getStatusColumn($junctionTableName) ?: STATUS_COLUMN_NAME;
-                            $hasStatus = isset($junctionRow[$JunctionTable->getStatusColumnName()]);
-                            $deletedValue = STATUS_DELETED_NUM;
-                            if ($hasStatus) {
+                            $hasPrimaryKey = isset($junctionRow[$JunctionTable->primaryKeyFieldName]);
+                            $statusColumnName = TableSchema::getStatusColumn($junctionTableName);
+
+                            if ($statusColumnName) {
                                 $statusColumnObject = $JunctionTable->getTableSchema()->getColumn($statusColumnName);
                                 $deletedValue = ArrayUtils::get($statusColumnObject->getOptions(), 'delete_value', STATUS_DELETED_NUM);
+                            } else {
+                                $statusColumnName = STATUS_COLUMN_NAME;
+                                $deletedValue = STATUS_DELETED_NUM;
                             }
+
+                            $hasStatus = isset($junctionRow[$statusColumnName]);
 
                             if ($hasPrimaryKey && $hasStatus && $junctionRow[$statusColumnName] == $deletedValue) {
                                 $Where = new Where;

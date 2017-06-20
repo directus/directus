@@ -58,9 +58,12 @@ define([
         var statusColumnName = junctionTable.getStatusColumnName();
         var statusValue = model.getTableStatuses().getDeleteValue();
 
+        // NOTE: if there's not status column in the table
+        // we gotta use the default status column name and delete value
+        // so we flag the record as "to be deleted"
         if (!statusColumnName) {
-          statusColumnName = app.statusMapping.get('status_name');
-          statusValue = app.statusMapping.get('delete_value');
+          statusColumnName = app.statusMapping.get('*').get('status_name');
+          statusValue = app.statusMapping.get('*').get('delete_value');
         }
 
         attributes[statusColumnName] = statusValue;
