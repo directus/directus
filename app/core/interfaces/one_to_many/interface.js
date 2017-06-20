@@ -2,11 +2,12 @@ define([
   'core/interfaces/one_to_many/component',
   'underscore',
   'app',
+  'core/notification',
   'core/UIView',
   'core/table/table.view',
   'core/overlays/overlays',
   'core/t'
-], function (Component, _, app, UIView, TableView, Overlays, __t) {
+], function (Component, _, app, Notification, UIView, TableView, Overlays, __t) {
   'use strict';
 
   return UIView.extend({
@@ -144,9 +145,7 @@ define([
       app.router.overlayPage(view);
 
       view.save = function () {
-        var data = view.editView.data();
-        data[columnName] = id;
-        model.set(data);
+        model.set(columnName, id);
 
         if (model.isValid()) {
           app.router.removeOverlayPage(this);
@@ -166,11 +165,12 @@ define([
         _.each(view.table.selection(), function (id) {
           var existingModel = me.relatedCollection.get(id);
           var model = collection.get(id);
-          var data = model.toJSON();
+          var newModel = model.clone();
           var reAdd = existingModel && existingModel.getStatusValue() === existingModel.getTableStatuses().getDeleteValue();
           var onlyUnassigned = me.columnSchema.options.get('only_unassigned') === true;
 
           if (!reAdd && model.get(columnName, {flatten: true}) != null && onlyUnassigned) {
+            Notification.warning('Already assigned');
             return
           }
 
@@ -179,10 +179,18 @@ define([
 
             attributes[existingModel.table.getStatusColumnName()] = Number(existingModel.table.getStatusDefaultValue());
             attributes[columnName] = me.model.id;
+            if (!existingModel._isTracking) {
+              existingModel.startTracking();
+            }
+
             existingModel.set(attributes);
           } else {
-            data[columnName] = me.model.id;
-            me.relatedCollection.add(data, {nest: true});
+            if (!newModel._isTracking) {
+              newModel.startTracking();
+            }
+
+            newModel.set(columnName, me.model.id);
+            me.relatedCollection.add(newModel, {nest: true});
           }
         }, this);
 
