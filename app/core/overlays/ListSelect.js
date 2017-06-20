@@ -28,6 +28,9 @@ define([
           onClick: _.bind(function () {
             this.save();
           }, this)
+        }),
+        new Widgets.InfoButtonWidget({
+          enable: false
         })
       ];
     },
