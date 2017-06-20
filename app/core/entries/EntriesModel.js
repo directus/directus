@@ -412,7 +412,9 @@ define(function(require, exports, module) {
       options = options || {};
 
       if (options.changed && !this.isNew()) {
-        attributes = this.unsavedAttributes() || this.changed;
+        // NOTE: Use unsavedChanges instead of unsavedAttributes
+        // Avoiding the empty object for related values
+        attributes = this.unsavedChanges() || this.changed;
         // always include id
         if (this.id) {
           attributes[this.idAttribute] = this.id;
