@@ -1,5 +1,5 @@
 {{#each rows}}
-<tr data-id="{{model.id}}" data-cid="{{model.cid}}" class="js-row {{{notPublishedClass model}}}"> <!-- Optional Classes: selected -->
+<tr data-id="{{model.id}}" data-cid="{{model.cid}}" class="js-row{{#unless selectable}} not-selectable{{/unless}} {{{notPublishedClass model}}}"> <!-- Optional Classes: selected -->
 	{{#if ../showItemNumbers}}
 	<td class="static-numbers">{{index}}</td>
 	{{/if}}

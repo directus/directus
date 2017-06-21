@@ -90,7 +90,24 @@ function(app, _, Backbone, Notification, __t, TableHelpers, ModelHelper, TableHe
       }
 
       if (this.collection.length > 0) {
-        options = _.pick(this.options, 'collection', 'systemCollection', 'system', 'selectable', 'filters', 'preferences', 'structure', 'sort', 'showRemoveButton', 'rowIdentifiers', 'saveAfterDrop', 'blacklist', 'highlight', 'columns');
+        options = _.pick(this.options,
+          'collection',
+          'systemCollection',
+          'system',
+          'isModelSelectable',
+          'selectable',
+          'filters',
+          'preferences',
+          'structure',
+          'sort',
+          'showRemoveButton',
+          'rowIdentifiers',
+          'saveAfterDrop',
+          'blacklist',
+          'highlight',
+          'columns'
+        );
+
         options.parentView = this;
 
         if (!this.tableBodyView) {

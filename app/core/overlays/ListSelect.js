@@ -101,8 +101,9 @@ define([
     },
 
     initialize: function (options) {
+      options || (options = {});
 
-      //Default to true
+      // Default to true
       if (options.selectable === undefined) {
         options.selectable = true;
       }
@@ -110,7 +111,8 @@ define([
       this.table = ListViewManager.getInstance({
         flex: true,
         collection: this.collection,
-        selectable: options.selectable
+        selectable: options.selectable,
+        isModelSelectable: options.isModelSelectable
       });
 
       var that = this;

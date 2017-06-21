@@ -156,9 +156,22 @@ define([
 
     insertRow: function () {
       var me = this;
+      var onlyUnassigned = me.columnSchema.options.get('only_unassigned') === true;
       var columnName = this.columnSchema.relationship.get('junction_key_right');
       var collection = app.getEntries(this.relatedCollection.table.id);
-      var view = new Overlays.ListSelect({collection: collection});
+      var isModelSelectable = function (model) {
+        var selectable = true;
+
+        if (onlyUnassigned && model.get(columnName, {flatten: true}) != null) {
+          selectable = false;
+        }
+
+        return selectable;
+      };
+      var view = new Overlays.ListSelect({
+        collection: collection,
+        isModelSelectable: isModelSelectable
+      });
 
       app.router.overlayPage(view);
       view.save = function () {
@@ -167,7 +180,6 @@ define([
           var model = collection.get(id);
           var newModel = model.clone();
           var reAdd = existingModel && existingModel.getStatusValue() === existingModel.getTableStatuses().getDeleteValue();
-          var onlyUnassigned = me.columnSchema.options.get('only_unassigned') === true;
 
           if (!reAdd && model.get(columnName, {flatten: true}) != null && onlyUnassigned) {
             Notification.warning(__t('o2m_warning_item_already_assigned'));

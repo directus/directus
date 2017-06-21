@@ -101,16 +101,18 @@ function(app, Backbone, _, Sortable, Notification) {
         var classes = _.map(rowIdentifiers, function (columnName) { return 'row-'+columnName+'-'+model.get(columnName); });
         var highlight = _.contains(highlightIds, model.id);
         var selected = _.contains(this.selectedIds, model.id);
-        var table = model.table;
-        var statusColumnName = table ? table.getStatusColumnName() : app.statusMapping.status_name;
-        var statusDraft = model.get(statusColumnName) === app.statusMapping.draft_num;
+        var selectable = true;
+
+        if (this.options.isModelSelectable) {
+          selectable = this.options.isModelSelectable(model);
+        }
 
         return {
           index: i+1,
           model: model,
           classes: classes,
           highlight: highlight,
-          statusDraft: statusDraft,
+          selectable: selectable,
           selected: selected
         };
       }, this);
