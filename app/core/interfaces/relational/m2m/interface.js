@@ -47,8 +47,8 @@ define([
         var statusValue = model.getTableStatuses().getDeleteValue();
 
         if (!statusColumnName) {
-          statusColumnName = app.statusMapping.get('status_name');
-          statusValue = app.statusMapping.get('delete_value');
+          statusColumnName = app.statusMapping.get('*').get('status_name');
+          statusValue = app.statusMapping.get('*').get('delete_value');
         }
 
         attributes[statusColumnName] = statusValue;
