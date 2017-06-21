@@ -170,7 +170,7 @@ define([
           var onlyUnassigned = me.columnSchema.options.get('only_unassigned') === true;
 
           if (!reAdd && model.get(columnName, {flatten: true}) != null && onlyUnassigned) {
-            Notification.warning('Already assigned');
+            Notification.warning(__t('o2m_warning_item_already_assigned'));
             return
           }
 
