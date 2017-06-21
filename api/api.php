@@ -191,6 +191,7 @@ $app->hook('slim.before.dispatch', function () use ($app, $authRouteWhitelist, $
         }
 
         $user = null;
+        $isPublicUser = false;
         if ($authToken) {
             // @TODO: Users without group shouldn't be allow to log in
             $DirectusUsersTableGateway = new \Zend\Db\TableGateway\TableGateway('directus_users', $ZendDb);
@@ -210,6 +211,7 @@ $app->hook('slim.before.dispatch', function () use ($app, $authRouteWhitelist, $
             $uriParts = explode('/', $uri);
 
             if (ArrayUtils::get($uriParts, 0) === '1.1' && $publicGroup) {
+                $isPublicUser = true;
                 $user = [
                     'id' => null,
                     'group' => $publicGroup['id']
@@ -255,6 +257,7 @@ $app->hook('slim.before.dispatch', function () use ($app, $authRouteWhitelist, $
             // @TODO: Adding an user should auto set its ID and GROUP
             $acl->setUserId($user['id']);
             $acl->setGroupId($user['group']);
+            $acl->setPublic($isPublicUser);
         }
 
         /** Enforce required authentication. */

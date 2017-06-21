@@ -633,6 +633,16 @@ class Bootstrap
             $log->error($e);
         });
 
+        $emitter->addFilter('response', function (Payload $payload) {
+            $acl = Bootstrap::get('acl');
+
+            if ($acl->isPublic()) {
+                $payload->set('public', true);
+            }
+
+            return $payload;
+        });
+
         $emitter->addAction('table.insert.directus_groups', function ($data) {
             $acl = Bootstrap::get('acl');
             $zendDb = Bootstrap::get('zendDb');

@@ -98,7 +98,9 @@ class ExceptionView
             }
         }
 
-        $data = @json_encode($data);
+        $response = $app->response($data);
+        $data = $response->getBody();
+
         if ('production' !== DIRECTUS_ENV) {
             $data = JsonView::format_json($data);
         }
