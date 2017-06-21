@@ -132,9 +132,15 @@ define([
         style_formats: styleFormats,
         setup: function (editor) {
           var saveEditorContents = _.debounce(function () {
-            self.model.set(self.name, editor.getContent());
+            self.model.set(self.name, self.$body.html());
             editor.save();
           }, 500);
+
+          var onEditorInit = function () {
+            self.$body = $(editor.getBody());
+          };
+
+          editor.on('init', onEditorInit);
 
           // All events on which the contents of the editor should be saved
           editor.on('input', saveEditorContents);
