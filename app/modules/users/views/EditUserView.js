@@ -114,6 +114,7 @@ define([
       }
 
       this.infoWidget = new Widgets.InfoButtonWidget({
+        enable: !this.model.isNew(),
         onClick: function (event) {
           editView.toggleRightPane();
         }

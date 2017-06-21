@@ -4,6 +4,7 @@ define(function(require, exports, module) {
 
   var app         = require('app');
   var _           = require('underscore');
+  var Utils       = require('utils');
   var StringHelper= require('helpers/string');
   var Backbone    = require('backbone');
   var Handlebars  = require('handlebars');
@@ -153,7 +154,9 @@ define(function(require, exports, module) {
         }
 
         // Display:none; hidden fields
-        var isHidden = _.contains(this.hiddenFields, column.id);
+        // forcing interface-based visibility
+        var visibility = _.result(view, 'visible');
+        var isHidden = Utils.isSomething(visibility) ? !visibility : _.contains(this.hiddenFields, column.id);
         if (isHidden) {
           view.$el.css({'display':'none'});
         }

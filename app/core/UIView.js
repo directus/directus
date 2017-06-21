@@ -25,6 +25,11 @@ define(function(require, exports, module) {
     model: null,
     settings: null,
 
+    // null: do not force visibility
+    // false: hidden
+    // true: visible
+    visible: null,
+
     isRequired: function() {
       return this.columnSchema.get('required') === true;
     },

@@ -23,6 +23,11 @@ define([
       }
     },
 
+    // NOTE: Force status interface visibility on new items
+    visible: function () {
+      return this.model.isNew();
+    },
+
     serialize: function () {
       var currentStatus = this.options.value;
       var model = this.model;
