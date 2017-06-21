@@ -89,7 +89,6 @@ define([
           break;
       }
 
-      debugger;
       if (viewName == ColumnView.VIEW_INTERFACE_ID && !UIManager.hasOptions(columnModel.get('ui'))) {
         viewName = ColumnView.VIEW_COLUMN_ID;
       }
