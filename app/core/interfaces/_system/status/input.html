@@ -1,5 +1,5 @@
 <div class="status-group">
-	{{#mapping}}
+	{{#statuses}}
 	<label style="color: {{color}}">
 		<input
 			type="radio"
@@ -9,5 +9,7 @@
 			{{#if selected}}checked{{/if}} />
 		{{name}}
 	</label>
-	{{/mapping}}
+	{{/statuses}}
+
+	<input type="hidden" name="{{name}}" value="{{value}}" />
 </div>
