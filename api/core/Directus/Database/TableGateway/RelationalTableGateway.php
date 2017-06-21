@@ -434,8 +434,10 @@ class RelationalTableGateway extends BaseTableGateway
                 $foreignTableSchema = $this->getTableSchema($foreignTableName);
 
                 // Update/Add foreign record
-                if ($this->recordDataContainsNonPrimaryKeyData($foreignRow)) {
-                    $foreignRow = $this->addOrUpdateRecordByArray($foreignRow, $foreignTableName);
+                if ($this->recordDataContainsNonPrimaryKeyData($foreignRow, $foreignTableSchema->getPrimaryColumn())) {
+                    // $foreignRow = $this->addOrUpdateRecordByArray($foreignRow, $foreignTableName);
+                    // NOTE: using manageRecordUpdate instead to update related data
+                    $foreignRow = $this->manageRecordUpdate($foreignTableName, $foreignRow);
                 }
                 $parentRow[$colName] = $foreignRow[$foreignTableSchema->getPrimaryColumn()];
             } /** One-to-Many, Many-to-Many */
@@ -1655,7 +1657,9 @@ class RelationalTableGateway extends BaseTableGateway
         } elseif (!is_array($record)) {
             throw new \InvalidArgumentException('$record must an array or a subclass of AbstractRowGateway');
         }
+
         $keyCount = count($record);
+
         return array_key_exists($pkFieldName, $record) ? $keyCount > 1 : $keyCount > 0;
     }
 
