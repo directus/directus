@@ -12,24 +12,23 @@ define([
   'core/UIComponent',
   './interface'
 ], function (app, __t, UIComponent, UIView) {
-
   'use strict';
 
   var statusMappingPlaceholder = JSON.stringify({
-    "0": {
-      "name": "Delete",
-      "color": "#C1272D",
-      "sort": 3
+    0: {
+      name: 'Delete',
+      color: '#C1272D',
+      sort: 3
     },
-    "1": {
-      "name": "Active",
-      "color": "#3498DB",
-      "sort": 1
+    1: {
+      name: 'Active',
+      color: '#3498DB',
+      sort: 1
     },
-    "2": {
-      "name": "Draft",
-      "color": "#BBBBBB",
-      "sort": 2
+    2: {
+      name: 'Draft',
+      color: '#BBBBBB',
+      sort: 2
     }
   }, null, 2);
 
