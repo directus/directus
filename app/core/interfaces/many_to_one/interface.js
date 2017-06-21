@@ -29,7 +29,12 @@ define([
 
         attributesName = _.keys(model.attributes);
         model.clear();
-        model.set(_.pick(attributes, attributesName));
+
+        if (attributesName.length > 0) {
+          attributes = _.pick(attributes, attributesName)
+        }
+
+        model.set(attributes);
 
         this.model.set(this.name, model);
       }
