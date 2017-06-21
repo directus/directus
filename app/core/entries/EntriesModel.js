@@ -320,13 +320,13 @@ define(function(require, exports, module) {
           if (!_.isObject(value)) return;
 
           // Check if it is a one-many and if it should be deleted!
-          if ('MANYTOONE' === column.getRelationshipType() && _.isEmpty(value.attributes)) {
-            options.attrs[key] = null;
-            return;
+          // NOTE: MANYTOONE are passed as object (attributes)
+          if (!column.isManyToOne()) {
+            // Add foreign data to patch. Only add changed attributes
+            value = value.toJSON({changed: true});
+          } else if (_.isEmpty(value)) {
+            value = null;
           }
-
-          // Add foreign data to patch. Only add changed attributes
-          value = value.toJSON({changed: true});
 
           if (!_.isEmpty(value)) {
             options.attrs[key] = value;
@@ -546,7 +546,7 @@ define(function(require, exports, module) {
       var parentOriginalValue;
 
       if (parent && this.parentAttribute) {
-        parentOriginalValue = parent._originalAttrs[this.parentAttribute];
+        parentOriginalValue = parent._originalAttributes[this.parentAttribute];
 
         if (_.isEmpty(this._unsavedChanges) || _.isEqual(parentOriginalValue, this._unsavedChanges)) {
           delete parent._unsavedChanges[this.parentAttribute];

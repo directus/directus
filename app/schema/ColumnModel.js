@@ -115,6 +115,18 @@ define(function(require, exports, module) {
       return this.relationship !== undefined;
     },
 
+    isManyToOne: function () {
+      return this.getRelationshipType() === 'MANYTOONE';
+    },
+
+    isManyToMany: function () {
+      return this.getRelationshipType() === 'MANYTOMANY';
+    },
+
+    isoneToMany: function () {
+      return this.getRelationshipType() === 'ONETOMANY';
+    },
+
     isNullable: function () {
       return this.get('nullable') === true;
     },
