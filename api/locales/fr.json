@@ -71,8 +71,8 @@
     "left_column": "Colonne gauche",
     "right_column": "Colonne droite",
     "related_column": "Colonne relationnelle",
+    "this_column": "Cette colonne",
     "alias_column_description": "Les colonnes ALIAS n'existent pas dans le modèle de la table. Elles représentent un champ qui ne stocke pas de données ou la stocke ailleurs.",
-    "alias_column_description": "ALIAS columns do not exist within the table's schema – instead, they represent a field that doesn't store data or stores it elsewhere.",
     "relationship_type": "Type de relation",
     "relationship_settings": "Paramètres relationnels",
     "unregistered_tables": "Tables non enregistrée",
@@ -150,6 +150,7 @@
     "table_sort_enabled_message": "Vous pouvez maintenant glisser-déposer des éléments pour les trier",
     "table_sort_disabled": "Tri désactivé",
     "table_sort_disabled_message": "Vous avez désactivé le mode glisser-déposer pour le tri d'éléments",
+    "table_sort_multiple_pages_message": "Le tri manuel de Directus a été désactivé sur cette page en raison de la répartition d'éléments sur plusieurs pages",
 
     "item_history": "Historique de l'élément",
     "leave_a_comment_placeholder": "Laisser un commentaire...",
@@ -194,6 +195,9 @@
     "size_medium": "Moyen",
     "size_small": "Petit",
 
+    "select_ui_show_options_value": "Valeur",
+    "select_ui_show_options_text": "Texte",
+
     "directus_user_activity_never_logged_in": "Ne s'est jamais connecté",
     "directus_user_activity_user_edit_form": "Édition d'utilisateur",
     "directus_user_activity_table_entry_action": "%{param} entrée de table %{action}",
@@ -230,6 +234,8 @@
     "o2m_result_limit_comment": "Nombre maximal de résultats à rechercher",
     "add_new_x_item": "Ajouter élément à la table %{table}",
 
+    "numeric_localized_comment": "Localiser ou non la valeur numérique, ex : devises",
+
     "directus_files": "Fichiers Directus",
     "file_upload": "Upload",
     "drag_and_drop": "Glisser-déposer",
@@ -257,6 +263,8 @@
 
     "select_options_comment": "Entrez des paires de clés JSON avec la valeur enregistrée et le texte affiché.",
     "select_placeholder_text": "Entrez le texte par défaut",
+
+    "slug_only_on_creation_comment": "Mettre le Slug à jour (ou non) uniquement à la création",
 
     "one_file_only_please": "Un fichier seulement",
     "enter_the_url_to_a_file": "Entrez le URL du fichier :",
