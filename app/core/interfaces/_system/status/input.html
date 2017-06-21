@@ -1,0 +1,13 @@
+<div class="status-group">
+	{{#mapping}}
+	<label style="color: {{color}}">
+		<input
+			type="radio"
+			{{#if ../readonly}}disabled{{/if}}
+			name="{{../name}}"
+			value="{{id}}"
+			{{#if selected}}checked{{/if}} />
+		{{name}}
+	</label>
+	{{/mapping}}
+</div>

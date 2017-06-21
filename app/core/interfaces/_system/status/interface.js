@@ -1,6 +1,4 @@
-define([
-  'underscore',
-  'core/UIView'
+define(['underscore', 'core/UIView'
 ], function (_, UIView) {
 
   'use strict';
@@ -12,8 +10,7 @@ define([
                   </div>';
 
   return UIView.extend({
-    templateSource: template,
-
+    template: '_system/status/input',
     events: {
       'change input[type=radio]': function (event) {
         var statusValue = $(event.currentTarget).val();

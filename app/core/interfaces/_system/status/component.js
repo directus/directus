@@ -1,19 +1,4 @@
-//  Status Interface component
-//  Directus 6.0
-
-//  (c) RANGER
-//  Directus may be freely distributed under the GNU license.
-//  For all details and documentation:
-//  http://www.getdirectus.com
-
-define([
-  'app',
-  'core/t',
-  'core/UIComponent',
-  './interface'
-], function (app, __t, UIComponent, UIView) {
-  'use strict';
-
+define(['./interface', 'core/UIComponent', 'core/t'], function (Input, UIComponent, __t) {
   var statusMappingPlaceholder = JSON.stringify({
     0: {
       name: 'Delete',
@@ -64,6 +49,6 @@ define([
         filter: 'number'
       }
     }],
-    Input: UIView
+    Input: Input
   });
 });
