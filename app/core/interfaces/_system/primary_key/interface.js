@@ -1,4 +1,11 @@
-define(['core/interfaces/text_input/interface'], function (TextInput) {
-
-  return TextInput;
+define(['core/UIView'], function (UIView) {
+  return UIView.extend({
+    template: '_system/primary_key/input',
+    serialize: function () {
+      var value = this.options.value;
+      return {
+        value: value || '--'
+      };
+    }
+  });
 });
