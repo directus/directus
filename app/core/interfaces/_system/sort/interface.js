@@ -1,4 +1,4 @@
-define(['core/interfaces/text_input/interface'], function (TextInput) {
+define(['core/interfaces/numeric/interface'], function (Numeric) {
 
-  return TextInput;
+  return Numeric;
 });
