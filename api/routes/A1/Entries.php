@@ -37,7 +37,7 @@ class Entries extends Route
 
         // GET all table entries
         // If it's not a GET request, let's get entry no matter the status
-        if ($this->app->request()->isGet()) {
+        if (!$this->app->request()->isGet()) {
             $params['preview'] = true;
         }
 

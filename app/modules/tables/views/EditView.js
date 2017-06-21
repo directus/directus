@@ -155,7 +155,7 @@ function(app, Backbone, _, Handlebars, __t, Notification, Directus, BasePageView
           var route = Backbone.history.fragment.split('/');
           if (!model.table.get('single')) {
             route.pop();
-            route.push(model.get('id'));
+            route.push(model.id);
             model.disablePrompt();
             app.router.go(route);
           }
