@@ -59,6 +59,8 @@ define([
         response.attachment = self.parseAttachment(response.attachment);
         response.reads = response.reads ? response.reads.split(',') : null;
 
+        response.message = new Handlebars.SafeString(app.replaceAll('\n', '<br>', response.message));
+
         return response;
       });
 
