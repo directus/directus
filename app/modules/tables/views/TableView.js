@@ -309,13 +309,14 @@ define([
       var collection = this.collection;
       var table = collection.table;
       var selectedIds = this.table.tableBodyView.selectedIds;
-      var collectionVisibleLength = 0;
+      var collectionVisibleLength = collection.length;
       // @NOTE: Hotfix render on empty selection
       var render;
       var statusValues;
 
       // try removing hidden items from selected when the columns has status column
       if (table.getStatusColumnName()) {
+        collectionVisibleLength = 0;
         statusValues = collection.getFilter('status') || table.getStatusVisibleValues();
         statusValues = _.compact((statusValues || '').split(','));
 
