@@ -1,7 +1,8 @@
 define([
+  'utils',
   'underscore',
   'core/UIView'
-], function (_, UIView) {
+], function (Utils, _, UIView) {
 
   'use strict';
 
@@ -33,6 +34,10 @@ define([
       var model = this.model;
       var data = {};
       var statuses = [];
+
+      if (this.model.isNew() && Utils.isNothing(currentStatus)) {
+        currentStatus = this.options.schema.get('default_value');
+      }
 
       _.each(model.getStatusVisible(), function (status) {
         var item = status.toJSON();

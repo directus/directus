@@ -502,6 +502,7 @@ define(function (require, exports, module) {
       options.settings = options.schema.options;
       options.collection = options.collection || options.model.collection;
       options.value = options.model.get(options.name);
+      options.default_value = options.schema.get('default_value');
 
       // NOTE: Should we let each interface get their default value
       // this can be confusing to know whether is the actual value OR the default value
