@@ -1,12 +1,7 @@
 <div class="status-group">
 	{{#statuses}}
 	<label style="color: {{color}}">
-		<input
-			type="radio"
-			{{#if ../readonly}}disabled{{/if}}
-			name="{{../name}}"
-			value="{{id}}"
-			{{#if selected}}checked{{/if}} />
+		<input type="radio" {{#if ../readonly}}disabled{{/if}} name="{{../name}}" value="{{id}}" {{#if selected}}checked{{/if}} />
 		{{name}}
 	</label>
 	{{/statuses}}
