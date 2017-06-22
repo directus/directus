@@ -242,7 +242,9 @@ define([
         };
 
         var self = this;
-        options.success = function () {
+        options.success = function (model, resp) {
+          self.onColumnChange(model, resp);
+
           column.url = originalUrl;
           self.render();
 
