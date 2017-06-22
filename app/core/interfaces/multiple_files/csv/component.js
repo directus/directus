@@ -13,12 +13,27 @@ define([
     dataTypes: ['TEXT', 'VARCHAR'],
 
     variables: [
-      // Toggles an "Add" button for adding new files directly into the UI
-      {id: 'add_button', type: 'Boolean', default_value: true, ui: 'toggle'},
-      // Toggles a "Choose" button that opens a modal with all existing Directus files to choose from
-      {id: 'choose_button', type: 'Boolean', default_value: true, ui: 'toggle'},
-      // Toggles "Remove" buttons for each file that let's you delete the file
-      {id: 'remove_button', type: 'Boolean', default_value: true, ui: 'toggle'}
+      {
+        id: 'add_button',
+        ui: 'toggle',
+        type: 'Boolean',
+        comment: 'Toggles an "Add" button for adding new files directly into the UI',
+        default_value: true
+      },
+      {
+        id: 'choose_button',
+        ui: 'toggle',
+        type: 'Boolean',
+        comment: 'Toggles a "Choose" button that opens a modal with all existing Directus files to choose from',
+        default_value: true
+      },
+      {
+        id: 'remove_button',
+        ui: 'toggle',
+        type: 'Boolean',
+        comment: 'Toggles "Remove" buttons for each file that let\'s you delete the file',
+        default_value: true
+      }
     ],
 
     Input: Input,
