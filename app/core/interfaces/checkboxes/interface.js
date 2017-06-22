@@ -36,7 +36,7 @@ define(['core/UIView'], function (UIView) {
     },
     serialize: function () {
       var value = this.options.value || this.columnSchema.get('default_value') || '';
-      var values = value.split(this.options.settings.get('delimiter'));
+      var values = typeof value === 'string' ? value.split(this.options.settings.get('delimiter')) : value;
       var options = parseOptions(this.options.settings.get('options'));
 
       var optionsArray = Object.keys(options).map(function (key) {
@@ -46,8 +46,6 @@ define(['core/UIView'], function (UIView) {
           selected: values.indexOf(key) > 0
         };
       });
-
-      console.log(optionsArray);
 
       return {
         options: optionsArray,
