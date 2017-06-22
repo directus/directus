@@ -142,7 +142,7 @@ define([
     },
 
     getApiKey: function () {
-      return this.options.settings.get('apiKey') || app.settings.get('global').get('google_api_key');
+      return this.options.settings.get('google_api_key') || app.settings.get('global').get('google_api_key');
     },
 
     serialize: function () {
