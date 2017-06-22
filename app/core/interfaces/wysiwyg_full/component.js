@@ -68,7 +68,7 @@ define(['./interface', 'core/UIComponent', 'core/t'], function (Input, UICompone
       {
         id: 'toolbar_options',
         ui: 'checkboxes',
-        default_value: 'inline,table,undo,redo,subscript,superscript,bullist,numlist,link,unlink,image,media',
+        default_value: 'inline,table,undo,redo,subscript,superscript,bullist,numlist,link,unlink,image,media,paste',
         options: {
           options: {
             inline: 'Inline Options',
@@ -89,7 +89,8 @@ define(['./interface', 'core/UIComponent', 'core/t'], function (Input, UICompone
             pagebreak: 'Page Break',
             code: 'View Source',
             insertdatetime: 'Time and Date',
-            media: 'Insert Media'
+            media: 'Insert Media',
+            paste: 'Formatted paste'
           }
         }
       },
