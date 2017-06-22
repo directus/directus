@@ -3,17 +3,43 @@ define([
   'core/UIComponent',
   'helpers/schema',
   'core/t'
-], function(Input, UIComponent, SchemaHelper, __t) {
+], function (Input, UIComponent, SchemaHelper, __t) {
   return UIComponent.extend({
     id: 'numeric',
     dataTypes: SchemaHelper.getNumericInterfaceTypes(),
     variables: [
-      {id: 'size', type: 'String', default_value: 'large', ui: 'dropdown', options: {options: {'large':__t('size_large'),'medium':__t('size_medium'),'small':__t('size_small')} }},
-      {id: 'placeholder', type: 'String', default_value: '', ui: 'text_input', char_length: 200},
-      {id: 'localized', type: 'Boolean', default_value: true, ui: 'toggle', comment: __t('numeric_localized_comment')}
+      {
+        id: 'size',
+        ui: 'dropdown',
+        type: 'String',
+        comment: 'Size of the input field',
+        default_value: 'large',
+        options: {
+          options: {
+            large: __t('size_large'),
+            medium: __t('size_medium'),
+            small: __t('size_small')
+          }
+        }
+      },
+      {
+        id: 'placeholder',
+        ui: 'text_input',
+        type: 'String',
+        comment: 'Enter Placeholder Text',
+        default_value: '',
+        char_length: 200
+      },
+      {
+        id: 'localized',
+        ui: 'toggle',
+        type: 'Boolean',
+        comment: __t('numeric_localized_comment'),
+        default_value: true
+      }
     ],
     Input: Input,
-    validate: function(value, options) {
+    validate: function (value, options) {
       var inputView = options.view;
 
       if (options.schema.isRequired() && value != 0 && !value) {
