@@ -4,9 +4,28 @@ define(['./interface', 'core/UIComponent', 'core/t'], function (Input, UICompone
     dataTypes: ['TEXT', 'VARCHAR'],
     Input: Input,
     variables: [
-      {id: 'indent', default_value: '\t', ui: 'text_input'},
-      {id: 'rows', type: 'Number', default_value: 12, ui: 'numeric', char_length: 3},
-      {id: 'placeholder_text', default_value: '', type: 'String', ui: 'text_input', char_lenth: 200}
+      {
+        id: 'indent',
+        ui: 'text_input',
+        type: 'String',
+        comment: 'What character(s) to use as indentation',
+        default_value: '\t'
+      },
+      {
+        id: 'rows',
+        ui: 'numeric',
+        type: 'Number',
+        comment: 'Height of the field in rows',
+        default_value: 12,
+        char_length: 3
+      },
+      {
+        id: 'placeholder',
+        ui: 'text_input',
+        type: 'String',
+        comment: 'Enter Placeholder Text',
+        default_value: ''
+      }
     ],
     validate: function(value, options) {
       if (options.schema.isRequired() && _.isEmpty(value)) {
