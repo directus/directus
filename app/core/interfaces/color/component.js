@@ -5,7 +5,6 @@ define([
   'core/t',
   'core/interfaces/color/lib/color'
 ], function (_, Input, UIComponent, __t, Color) {
-
   'use strict';
 
   return UIComponent.extend({
@@ -85,11 +84,14 @@ define([
           break;
         case 'rgb':
         case 'hsl':
-          value = options.value
-            ? options.value.split(',').map(function (color) {
-              return +color;
-            })
-            : false;
+          value = options.value ?
+            options.value.split(',').map(function (color) {
+              return Number(color);
+            }) :
+            false;
+          break;
+        default:
+          return false;
       }
 
       if (value) {
@@ -97,9 +99,8 @@ define([
         var rgb = color.length === 4 ? 'rgba(' + color + ')' : 'rgb(' + color + ')';
         var swatch = '<div style="width: 20px; height: 20px; border-radius: 50%; background-color: ' + rgb + '"></div>';
         return options.settings.get('list_view_formatting') === 'swatch' ? swatch : value;
-      } else {
-        return '';
       }
+      return '';
     }
   });
 });
