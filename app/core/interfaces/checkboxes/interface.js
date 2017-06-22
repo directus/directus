@@ -29,14 +29,16 @@ define(['core/UIView'], function (UIView) {
         // Wrap values into delimiter
         // easy to search values
         out = delimiter + out.join(delimiter) + delimiter;
+      } else {
+        out = '';
       }
 
       this.$('input#js-checkbox-values').val(out);
       this.model.set(this.name, out);
     },
     serialize: function () {
-      var value = this.options.value || this.columnSchema.get('default_value') || '';
-      var values = typeof value === 'string' ? value.split(this.options.settings.get('delimiter')) : value;
+      var value = this.options.value === undefined ? this.columnSchema.get('default_value') : this.options.value;
+      var values = value.split(this.options.settings.get('delimiter'));
       var options = parseOptions(this.options.settings.get('options'));
 
       var optionsArray = Object.keys(options).map(function (key) {
