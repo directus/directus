@@ -130,6 +130,7 @@ define([
         elementpath: elementpath,
         menubar: false,
         toolbar: toolbar,
+        content_style: 'body.mce-content-body {font-family: \'Roboto\', sans-serif;line-height: 22px;font-size: 14px;color: #333;}',
         style_formats: styleFormats,
         setup: function (editor) {
           var saveEditorContents = _.debounce(function () {
