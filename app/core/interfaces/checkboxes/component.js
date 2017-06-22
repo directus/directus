@@ -3,8 +3,29 @@ define(['./interface', 'core/UIComponent', 'core/t', 'utils'], function (Input, 
     id: 'checkboxes',
     dataTypes: ['VARCHAR'],
     variables: [
-      {id: 'options', default_value: '', ui: 'json', options: {rows: 25, placeholder_text: '{\n    "value1": "Option One",\n    "value2": "Option Two",\n    "value3": "Option Three"\n}'}, comment: __t('select_options_comment'), required: true},
-      {id: 'delimiter', default_value: ',', ui: 'text_input', length: 1, required: true}
+      {
+        id: 'options',
+        ui: 'json',
+        comment: __t('select_options_comment'),
+        default_value: '',
+        required: true,
+        options: {
+          rows: 25,
+          placeholder: JSON.stringify({
+            value1: 'Option One',
+            value2: 'Option two',
+            value3: 'Option three'
+          }, null, '  ')
+        }
+      },
+      {
+        id: 'delimiter',
+        ui: 'text_input',
+        comment: 'The delimiter to use in the saved CSV value',
+        default_value: ',',
+        length: 1,
+        required: true
+      }
     ],
     Input: Input,
     validate: function (value, options) {
