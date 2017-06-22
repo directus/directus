@@ -27,6 +27,19 @@ define(['./interface', 'core/UIComponent', 'core/t', 'utils'], function (Input, 
         default_value: ',',
         length: 1,
         required: true
+      },
+      {
+        id: 'list_view_formatting',
+        ui: 'radio_buttons',
+        type: 'String',
+        comment: 'The output format on the list view',
+        default_value: 'text',
+        options: {
+          options: {
+            text: 'Display Text',
+            value: 'Value'
+          }
+        }
       }
     ],
     Input: Input,
@@ -37,9 +50,23 @@ define(['./interface', 'core/UIComponent', 'core/t', 'utils'], function (Input, 
     },
     list: function (options) {
       // Convert default csv to csv with spaces => demo1,demo2 => demo1, demo2
-      return options.value.split(options.settings.get('delimiter')).reduce(function (string, value) {
-        return string + ', ' + value;
-      });
+      var showAsText = options.settings.get('list_view_formatting') === 'text';
+      return options.value.split(options.settings.get('delimiter'))
+        .filter(function (value) {
+          // Filter out the first and last empty delimiter
+          return value.length > 0;
+        })
+        .map(function (value) {
+          if (showAsText) {
+            var displayOptions = JSON.parse(options.settings.get('options'));
+            return displayOptions[value];
+          }
+
+          return value;
+        })
+        .reduce(function (string, value) {
+          return string + ', ' + value;
+        });
     }
   });
 });
