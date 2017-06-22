@@ -36,7 +36,6 @@ define([
 				// NOTE: do not strictly compare as status can (will) be string
         item.selected = status.get('id') == currentStatus; // eslint-disable-line eqeqeq
         item.model = status;
-        item.color = item.background_color || item.color;
 
         return item;
       });
