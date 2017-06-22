@@ -7,7 +7,7 @@ define(['./interface', 'core/UIComponent', 'core/t'], function (Input, UICompone
     variables: [
       // Google API Key (Provided by Google)
       {
-        id: 'apiKey',
+        id: 'google_api_key',
         ui: 'text_input',
         type: 'String',
         comment: 'Google API Key w/ Maps JS access',
@@ -57,7 +57,7 @@ define(['./interface', 'core/UIComponent', 'core/t'], function (Input, UICompone
         char_length: 200
       },
       {
-        id: 'stateCode_field',
+        id: 'state_code_field',
         ui: 'text_input',
         type: 'String',
         comment: 'State code column to fill with respective item',
@@ -73,7 +73,7 @@ define(['./interface', 'core/UIComponent', 'core/t'], function (Input, UICompone
         char_length: 200
       },
       {
-        id: 'countryCode_field',
+        id: 'country_code_field',
         ui: 'text_input',
         type: 'String',
         comment: 'Country code column to fill with respective item',
@@ -81,7 +81,7 @@ define(['./interface', 'core/UIComponent', 'core/t'], function (Input, UICompone
         char_length: 200
       },
       {
-        id: 'mapHeight',
+        id: 'map_height',
         ui: 'numeric',
         type: 'Number',
         comment: __t('map_mapHeight_comment'),
@@ -89,7 +89,7 @@ define(['./interface', 'core/UIComponent', 'core/t'], function (Input, UICompone
         char_length: 4
       },
       {
-        id: 'showLatLng',
+        id: 'show_lat_lng',
         ui: 'toggle',
         type: 'Boolean',
         comment: __t('map_showLatLng_comment'),
