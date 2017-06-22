@@ -6980,19 +6980,6 @@ body.login {
       .file-listing .folder .info .more,
       .file-listing .file .info .more {
         display: none; }
-      .attachments .folder .info .name,
-      .attachments .folder .info .uploaded,
-      .attachments .file .info .name,
-      .attachments .file .info .uploaded,
-      .folder-listing .folder .info .name,
-      .folder-listing .folder .info .uploaded,
-      .folder-listing .file .info .name,
-      .folder-listing .file .info .uploaded,
-      .file-listing .folder .info .name,
-      .file-listing .folder .info .uploaded,
-      .file-listing .file .info .name,
-      .file-listing .file .info .uploaded {
-        margin-right: 0; }
 
   .fields .field .interface .attachments.multiple .dropzone {
     width: 140px;

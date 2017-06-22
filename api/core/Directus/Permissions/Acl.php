@@ -86,6 +86,13 @@ class Acl
      */
     protected $groupId = null;
 
+    /**
+     * Flag to determine whether the user is public or not
+     *
+     * @var bool
+     */
+    protected $isPublic = null;
+
     public function __construct(array $groupPrivileges = [])
     {
         $this->setGroupPrivileges($groupPrivileges);
@@ -112,6 +119,16 @@ class Acl
     }
 
     /**
+     * Sets whether the authenticated user is public
+     *
+     * @param $public
+     */
+    public function setPublic($public)
+    {
+        $this->isPublic = (bool) $public;
+    }
+
+    /**
      * Gets the authenticated user id
      *
      * @return int|null
@@ -129,6 +146,16 @@ class Acl
     public function getGroupId()
     {
         return $this->groupId;
+    }
+
+    /**
+     * Gets whether the authenticated user is public
+     *
+     * @return bool
+     */
+    public function isPublic()
+    {
+        return $this->isPublic === true;
     }
 
     /**

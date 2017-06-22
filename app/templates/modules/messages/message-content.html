@@ -12,6 +12,7 @@
 		{{message}}
 	</div>
 
+	{{# if attachment}}
 	<div class="attachments">
 		{{#attachment}}
 		<div class="file js-file" data-id="{{id}}">
@@ -31,6 +32,7 @@
 		</div>
 		{{/attachment}}
 	</div>
+	{{/if}}
 
 	{{#if reads}}
 	<div class="seen">
@@ -51,6 +53,7 @@
 		{{message}}
 	</div>
 
+	{{# if attachment}}
 	<div class="attachments">
 		{{#attachment}}
 		<div class="file js-file" data-id="{{id}}">
@@ -70,6 +73,7 @@
 		</div>
 		{{/attachment}}
 	</div>
+	{{/if}}
 
 	{{#if reads}}
 	<div class="seen">

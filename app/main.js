@@ -405,8 +405,22 @@ require(['config', 'polyfills'], function () {
         app.trigger('load');
       });
 
+      function logOutIfPublicRequest(xhr) {
+        if (xhr.responseJSON && xhr.responseJSON.public === true) {
+          $.xhrPool.abortAll();
+          app.logOut(true, true);
+        }
+      }
+
+      $(document).ajaxSuccess(function (event, xhr) {
+        logOutIfPublicRequest(xhr);
+      });
+
       // Capture sync errors...
       $(document).ajaxError(function (event, xhr, settings) {
+
+        logOutIfPublicRequest(xhr);
+
         if (settings.errorPropagation === false) {
           return;
         }

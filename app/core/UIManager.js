@@ -502,13 +502,9 @@ define(function (require, exports, module) {
       options.settings = options.schema.options;
       options.collection = options.collection || options.model.collection;
       options.value = options.model.get(options.name);
-
-      // NOTE: Should we let each interface get their default value
-      // this can be confusing to know whether is the actual value OR the default value
-      // let this be commented out until we certanly need it
-      // if (Utils.isNothing(options.value)) {
-      //   options.value = options.schema.get('default_value');
-      // }
+      // NOTE: we must let each interface get their default value
+      // this prevent the confusion of whether is the actual value OR the default value
+      options.default_value = options.schema.get('default_value');
 
       if (options.canWrite === undefined) {
         options.canWrite = typeof options.model.canEdit === 'function' ? options.model.canEdit(attr) : true;

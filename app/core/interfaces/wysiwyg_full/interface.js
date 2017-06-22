@@ -122,19 +122,26 @@ define([
       }
 
       this.editor = tinyMCE.init({
-        plugins: 'table hr lists link image print pagebreak code insertdatetime media',
+        plugins: 'table hr lists link image print pagebreak code insertdatetime media autoresize',
         selector: '#wysiwyg_' + this.options.name,
         branding: false,
         skin: 'directus',
+        autoresize_max_height: this.options.settings.get('max_height'),
         elementpath: elementpath,
         menubar: false,
         toolbar: toolbar,
         style_formats: styleFormats,
         setup: function (editor) {
           var saveEditorContents = _.debounce(function () {
-            self.model.set(self.name, editor.getContent());
+            self.model.set(self.name, self.$body.html());
             editor.save();
           }, 500);
+
+          var onEditorInit = function () {
+            self.$body = $(editor.getBody());
+          };
+
+          editor.on('init', onEditorInit);
 
           // All events on which the contents of the editor should be saved
           editor.on('input', saveEditorContents);

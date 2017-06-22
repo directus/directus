@@ -1,4 +1,9 @@
-define(['core/UIView'], function (UIView) {
+define([
+  'utils',
+  'underscore',
+  'core/UIView'
+], function (Utils, _, UIView) {
+
   return UIView.extend({
     template: '_system/status/input',
 
@@ -11,8 +16,18 @@ define(['core/UIView'], function (UIView) {
       }
     },
 
+    // NOTE: Force status interface visibility on new items
+    visible: function () {
+      return this.model.isNew();
+    },
+
     serialize: function () {
       var currentStatus = this.options.value;
+
+      if (this.model.isNew() && Utils.isNothing(currentStatus)) {
+        currentStatus = this.options.schema.get('default_value');
+      }
+
       var model = this.model;
 
       var statuses = model.getStatusVisible().map(function (status) {

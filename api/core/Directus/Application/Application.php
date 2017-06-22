@@ -11,6 +11,7 @@
 namespace Directus\Application;
 
 use Directus\Bootstrap;
+use Directus\Hook\Payload;
 use Directus\Util\ArrayUtils;
 use Slim\Http\Util;
 use Slim\Slim;
@@ -196,15 +197,16 @@ class Application extends Slim
             ];
         }
 
-        $payload = (object) array_merge($options, [
-            'apiVersion' => $apiVersion,
-            'data' => $data,
+        $attributes = [
             'meta' => $meta,
+            'apiVersion' => $apiVersion,
             'request' => [
                 'path' => $this->request()->getResourceUri(),
                 'method' => $this->request()->getMethod()
             ]
-        ]);
+        ];
+
+        $payload = new Payload($data, $attributes);
 
         $method = strtolower($this->request()->getMethod());
         $payload = $this->triggerFilter('response', $payload);
@@ -217,7 +219,7 @@ class Application extends Slim
             ), $payload);
         }
 
-        return $payload->data;
+        return $payload->getData();
     }
 
     /**

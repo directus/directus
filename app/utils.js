@@ -136,6 +136,10 @@ define(['underscore'], function (_) {
         || (!_.isNumber(value)  && !_.isDate(value) && _.isEmpty(value) && !_.isBoolean(value));
   };
 
+  Utils.isSomething = function (value) {
+    return !Utils.isNothing(value);
+  };
+
   Utils.clearElement = function (element) {
     element.wrap('<form>').closest('form').get(0).reset();
     element.unwrap();

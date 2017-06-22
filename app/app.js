@@ -35,6 +35,8 @@ define(function (require, exports, module) {
   require('plugins/bootstrap-dropdown');
   require('plugins/typeahead');
 
+  var locked = false;
+
   var app = {
 
     config: config,
@@ -42,6 +44,20 @@ define(function (require, exports, module) {
     progressView: undefined,
 
     alertViews: [],
+
+    lock: function () {
+      this.lockScreen();
+      locked = true;
+    },
+
+    unlock: function () {
+      this.unlockScreen();
+      locked = false;
+    },
+
+    isLocked: function () {
+      return locked === true;
+    },
 
     lockScreen: function () {
       this.noScroll = true;
@@ -78,6 +94,8 @@ define(function (require, exports, module) {
     // bInactive true if logged out because inactive
     logOut: function (bInactive, force) {
       var url = app.API_URL + 'auth/logout';
+
+      this.lock();
 
       // if bInactive pass url parameter
       if (bInactive) {
