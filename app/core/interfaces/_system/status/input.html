@@ -1,0 +1,52 @@
+<style>
+	.status-group {
+		display: flex;
+		align-items: stretch;
+		align-content: center;
+		border-radius: 4px;
+		overflow: hidden;
+		border: 1px solid #3598db;
+		width: 400px;
+		width: -webkit-max-content;
+		width: max-content;
+	}
+
+	.status-group input {
+		position: absolute;
+		opacity: 0;
+		z-index: -1;
+	}
+
+	.status-group label {
+		cursor: pointer;
+		color: #999;
+		padding: 1em;
+		text-align: center;
+		font-size: 1rem;
+		font-weight: 500;
+		border-right: 1px solid #3598db;
+		transition: 250ms ease-in-out;
+	}
+
+	.status-group label:hover {
+		color: #3598db;
+	}
+
+	.status-group label:last-of-type {
+		border-right: 0;
+	}
+
+	.status-group input:checked + label {
+		background-color: #3598db;
+		color: white;
+	}
+</style>
+
+<div class="status-group">
+	{{#statuses}}
+	<input id={{name}} type="radio" {{#if ../readonly}}disabled{{/if}} name="{{../name}}" value="{{id}}" {{#if selected}}checked{{/if}} />
+	<label for={{name}}>{{name}}</label>
+	{{/statuses}}
+
+	<input type="hidden" name="{{name}}" value="{{value}}" />
+</div>
