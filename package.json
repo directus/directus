@@ -21,7 +21,8 @@
     "space": true,
     "esnext": false,
     "rules": {
-      "import/no-amd": 0
+      "import/no-amd": 0,
+      "camelcase": 0
     }
   },
   "private": true,
