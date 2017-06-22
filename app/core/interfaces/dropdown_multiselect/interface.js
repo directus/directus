@@ -12,7 +12,7 @@ define(['core/UIView', 'select2'], function (UIView) {
   }
 
   return UIView.extend({
-    template: 'dropdown_multiple/input',
+    template: 'dropdown_multiselect/input',
     events: {
       'change select': 'updateValue'
     },
