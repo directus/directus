@@ -39,7 +39,7 @@ define([
         }
       },
       {
-        id: 'listing',
+        id: 'list_view_formatting',
         type: 'String',
         default_value: 'swatch',
         ui: 'dropdown',
@@ -96,7 +96,7 @@ define([
         var color = Color(value, options.settings.get('output')).rgb;
         var rgb = color.length === 4 ? 'rgba(' + color + ')' : 'rgb(' + color + ')';
         var swatch = '<div style="width: 20px; height: 20px; border-radius: 50%; background-color: ' + rgb + '"></div>';
-        return options.settings.get('listing') === 'swatch' ? swatch : value;
+        return options.settings.get('list_view_formatting') === 'swatch' ? swatch : value;
       } else {
         return '';
       }
