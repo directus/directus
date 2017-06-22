@@ -110,6 +110,12 @@ define(['./interface', 'core/UIComponent', 'core/t'], function (Input, UICompone
           rows: 25,
           placeholder_text: '{\n    "highlight": {\n        "name": "Add Highlight",\n        "template": "<div class=\'highlight\'>{{text}}</div>",\n        "selector": "div.highlight",\n        "preview_style": "border: 2px dashed grey;"\n   }\n}'
         }
+      },
+      {
+        id: 'max_height',
+        ui: 'numeric',
+        default_value: 500,
+        comment: 'Set the max height the editor will resize to'
       }
     ],
     validate: function (value, options) {
