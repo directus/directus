@@ -13,12 +13,12 @@ define(['./interface', 'core/UIComponent', 'core/t'], function (Input, UICompone
       {id: 'city_field', type: 'String', default_value: '', ui: 'text_input', char_length: 200},
       {id: 'postal_code_field', type: 'String', default_value: '', ui: 'text_input', char_length: 200},
       {id: 'state_field', type: 'String', default_value: '', ui: 'text_input', char_length: 200},
-      {id: 'stateCode_field', type: 'String', default_value: '', ui: 'text_input', char_length: 200},
+      {id: 'state_code_field', type: 'String', default_value: '', ui: 'text_input', char_length: 200},
       {id: 'country_field', type: 'String', default_value: '', ui: 'text_input', char_length: 200},
-      {id: 'countryCode_field', type: 'String', default_value: '', ui: 'text_input', char_length: 200},
+      {id: 'country_code_field', type: 'String', default_value: '', ui: 'text_input', char_length: 200},
       // Height of Map Element in Pixels
-      {id: 'mapHeight', type: 'Number', default_value: 400, ui: 'numeric', char_length: 4, comment: __t('map_mapHeight_comment')},
-      {id: 'showLatLng', type: 'Boolean', default_value: false, ui: 'toggle', comment: __t('map_showLatLng_comment')}
+      {id: 'map_height', type: 'Number', default_value: 400, ui: 'numeric', char_length: 4, comment: __t('map_mapHeight_comment')},
+      {id: 'show_lat_lng', type: 'Boolean', default_value: false, ui: 'toggle', comment: __t('map_showLatLng_comment')}
     ],
     settings: [{
       collection: 'global',
