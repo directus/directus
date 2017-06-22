@@ -37,7 +37,7 @@ define(['core/UIView'], function (UIView) {
       this.model.set(this.name, out);
     },
     serialize: function () {
-      var value = this.options.value === undefined ? this.columnSchema.get('default_value') : this.options.value;
+      var value = typeof this.options.value === 'string' ? this.options.value : this.columnSchema.get('default_value') || '';
       var values = value.split(this.options.settings.get('delimiter'));
       var options = parseOptions(this.options.settings.get('options'));
 
