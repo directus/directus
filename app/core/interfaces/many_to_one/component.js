@@ -6,13 +6,70 @@ define(['./interface', 'backbone', 'handlebars', 'core/UIComponent', 'core/t'], 
     dataTypes: ['INT', 'TINYINT', 'SMALLINT', 'MEDIUMINT', 'BIGINT'],
     variables: [
       {id: 'readonly', type: 'Boolean', default_value: false, ui: 'toggle'},
-      {id: 'visible_column', type: 'String', default_value: '', ui: 'text_input', char_length: 64, required: true, comment: __t('m2o_visible_column_comment')},
-      {id: 'visible_column_template', type: 'String', default_value: '', ui: 'text_input', char_length: 64, required: true, comment: __t('m2o_visible_column_template_comment')},
-      {id: 'visible_status_ids', type: 'String', ui: 'text_input', char_length: 64, required: false, default_value: '1', comment: __t('m2o_visible_status_ids_comment')},
-      {id: 'placeholder_text', type: 'String', default_value: '', ui: 'text_input', char_length: 255, required: false, comment: __t('m2o_placeholder_text_comment')},
-      {id: 'allow_null', type: 'Boolean', default_value: false, ui: 'toggle'},
-      {id: 'filter_type', type: 'String', default_value: 'dropdown', required: true, ui: 'dropdown', options: {options: {dropdown: __t('dropdown'), textinput: __t('text_input')}}},
-      {id: 'filter_column', type: 'String', default_value: '', ui: 'text_input', char_length: 255, comment: __t('m2o_filter_column_comment')}
+      {
+        id: 'visible_column',
+        ui: 'text_input',
+        type: 'String',
+        comment: __t('m2o_visible_column_comment'),
+        default_value: '',
+        char_length: 64,
+        required: true
+      },
+      {
+        id: 'visible_column_template',
+        ui: 'text_input',
+        type: 'String',
+        comment: __t('m2o_visible_column_template_comment'),
+        default_value: '',
+        char_length: 64,
+        required: true
+      },
+      {
+        id: 'visible_status_ids',
+        ui: 'text_input',
+        type: 'String',
+        comment: __t('m2o_visible_status_ids_comment'),
+        default_value: '1',
+        char_length: 64,
+        required: false
+      },
+      {
+        id: 'placeholder_text',
+        ui: 'text_input',
+        type: 'String',
+        comment: __t('m2o_placeholder_text_comment'),
+        default_value: '',
+        char_length: 255,
+        required: false
+      },
+      {
+        id: 'allow_null',
+        ui: 'toggle',
+        type: 'Boolean',
+        default_value: false
+      },
+      {
+        id: 'filter_type',
+        ui: 'dropdown',
+        type: 'String',
+        comment: 'What type of interface to use for the filter',
+        default_value: 'dropdown',
+        required: true,
+        options: {
+          options: {
+            dropdown: __t('dropdown'),
+            textinput: __t('text_input')
+          }
+        }
+      },
+      {
+        id: 'filter_column',
+        ui: 'text_input',
+        type: 'String',
+        comment: __t('m2o_filter_column_comment'),
+        default_value: '',
+        char_length: 255
+      }
     ],
     Input: Input,
     forceUIValidation: true,
