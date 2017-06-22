@@ -26,7 +26,9 @@ define([
 
     // NOTE: Force status interface visibility on new items
     visible: function () {
-      return this.model.isNew();
+      if (this.model.isNew()) {
+        return true;
+      }
     },
 
     serialize: function () {
