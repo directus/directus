@@ -58,7 +58,7 @@ define([
         value: value,
         name: this.options.name,
         size: this.options.settings.get('size'),
-        placeholder: (this.options.settings) ? this.options.settings.get('placeholder_text') : '',
+        placeholder: (this.options.settings) ? this.options.settings.get('placeholder') : '',
         comment: this.options.schema.get('comment'),
         readonly: !this.options.canWrite,
         step: step
