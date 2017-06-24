@@ -67,7 +67,7 @@ define([
         value: this.options.value,
         readonly: !this.options.canWrite || this.options.settings.get('allow_any_value') !== true,
         comment: this.options.schema.get('comment'),
-        placeholder: this.options.settings.get('placeholder_text')
+        placeholder: this.options.settings.get('placeholder')
       };
     }
   });

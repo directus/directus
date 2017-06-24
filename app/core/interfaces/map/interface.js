@@ -117,11 +117,11 @@ define([
                   break;
                 case 'administrative_area_level_1':
                   address.state = part.long_name;
-                  address.stateCode = part.short_name;
+                  address.state_code = part.short_name;
                   break;
                 case 'country':
                   address.country = part.long_name;
-                  address.countryCode = part.short_name;
+                  address.country_code = part.short_name;
                   break;
               }
             });
@@ -142,7 +142,7 @@ define([
     },
 
     getApiKey: function () {
-      return this.options.settings.get('apiKey') || app.settings.get('global').get('google_api_key');
+      return this.options.settings.get('google_api_key') || app.settings.get('global').get('google_api_key');
     },
 
     serialize: function () {
@@ -161,7 +161,7 @@ define([
     },
 
     afterRender: function () {
-      this.$el.find('#map-canvas').css('height', this.options.settings.get('mapHeight'));
+      this.$el.find('#map-canvas').css('height', this.options.settings.get('map_height'));
     },
 
     // Called when UI is first created

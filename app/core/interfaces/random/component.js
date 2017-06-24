@@ -14,7 +14,7 @@ define([
       {id: 'allow_any_value', type: 'Boolean', default_value: true, ui: 'toggle'},
       {id: 'auto_generate',  type: 'Boolean', default_value: false, ui: 'toggle'},
       // Initial Placeholder text for the UI
-      {id: 'placeholder_text', type: 'String', default_value: '', ui: 'text_input', char_length: 200},
+      {id: 'placeholder', type: 'String', default_value: '', ui: 'text_input', char_length: 200},
     ],
     Input: Input,
     validate: function(value, options) {

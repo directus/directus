@@ -78,7 +78,7 @@ define([
         characters: length - value.toString().length,
         comment: this.options.schema.get('comment'),
         readonly: ((this.options.settings && this.options.settings.get('readonly') === true) || !this.options.canWrite),
-        placeholder: (this.options.settings) ? this.options.settings.get('placeholder_text') : ''
+        placeholder: (this.options.settings) ? this.options.settings.get('placeholder') : ''
       };
     },
     // Validate String  Checks the passed in value against validation_string
