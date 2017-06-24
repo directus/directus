@@ -50,9 +50,13 @@ define([
         step = 'any';
       }
 
-      if (this.model.isNew()) {
-        this.updateValue(value);
-      }
+      // NOTE: we shouldn't update the model with the default value
+      // the database will take care of this
+      // unless we have to do it for some reason
+      // if that's needed we should implement a set before save event
+      // if (this.model.isNew()) {
+      //   this.updateValue(value);
+      // }
 
       return {
         value: value,
