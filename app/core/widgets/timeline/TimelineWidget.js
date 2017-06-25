@@ -35,8 +35,8 @@ function(app, Backbone, $, _, __t, Directus, moment) {
         }
       },
 
-      'click .tagInsertItem': function(event) {
-        var target = $(event.target);
+      'click .tagInsertItem': function (event) {
+        var $target = $(event.currentTarget);
         var $commentText = this.$('#itemCommentText');
         var caretPos = $commentText[0].selectionStart;
         var text = $commentText.val();
@@ -54,7 +54,7 @@ function(app, Backbone, $, _, __t, Directus, moment) {
             end = endText.indexOf(" ") + start +startString.length;
           }
 
-          text = text.substring(0, start) + "@[" + target.data('id') + " " + target.data('name') + "] " + text.substring(end, text.length);
+          text = text.substring(0, start) + "@[" + $target.data('id') + " " + $target.data('name') + "] " + text.substring(end, text.length);
           $commentText.val(text);
           this.$('#tagInsert').empty();
         }
