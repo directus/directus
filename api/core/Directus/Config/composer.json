@@ -1,5 +1,5 @@
 {
-  "name": "directus/container",
+  "name": "directus/config",
   "description": "Directus Config Library",
   "keywords": [
     "directus",
