@@ -1237,7 +1237,7 @@ class BaseTableGateway extends TableGateway
         $settings = [];
 
         if (static::$container) {
-            $settings = static::$container->get('settings');
+            $settings = static::$container->get('app.settings');
         }
 
         return $key !== null ? ArrayUtils::get($settings, $key) : $settings;
