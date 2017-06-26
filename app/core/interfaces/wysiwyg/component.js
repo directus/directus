@@ -8,9 +8,10 @@ define(['core/interfaces/wysiwyg/interface', 'core/UIComponent', 'core/t'], func
     Input: Input,
     variables: [{
       id: 'buttons',
+      ui: 'checkboxes',
       type: 'String',
+      comment: 'Buttons that will be shown when selecting text',
       default_value: 'bold,italic,underline,anchor,h2,h3,quote',
-      ui: 'radio_buttons',
       nullable: true,
       options: {
         options: {
@@ -37,9 +38,10 @@ define(['core/interfaces/wysiwyg/interface', 'core/UIComponent', 'core/t'], func
     },
     {
       id: 'simple_editor',
+      ui: 'toggle',
       type: 'Boolean',
-      nullable: true,
-      default_value: false, ui: 'toggle'
+      comment: 'Simplify styling of the interface input',
+      default_value: false
     }],
     validate: function (value, options) {
       if (options.view.isRequired() && !value) {

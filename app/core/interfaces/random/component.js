@@ -9,12 +9,35 @@ define([
     id: 'random',
     dataTypes: ['VARCHAR'],
     variables: [
-      {id: 'string_length', type: 'Number', default_value: 32, ui: 'numeric', char_length: 200},
-      // Allow the user to input their own value
-      {id: 'allow_any_value', type: 'Boolean', default_value: true, ui: 'toggle'},
-      {id: 'auto_generate',  type: 'Boolean', default_value: false, ui: 'toggle'},
-      // Initial Placeholder text for the UI
-      {id: 'placeholder', type: 'String', default_value: '', ui: 'text_input', char_length: 200},
+      {
+        id: 'string_length',
+        ui: 'numeric',
+        type: 'Number',
+        comment: 'The length of the value',
+        default_value: 32,
+        char_length: 200
+      },
+      {
+        id: 'allow_any_value',
+        type: 'Boolean',
+        ui: 'toggle',
+        comment: 'Allow the user to override the random string',
+        default_value: true
+      }, {
+        id: 'auto_generate',
+        ui: 'toggle',
+        type: 'Boolean',
+        comment: 'Automatically generate a random string',
+        default_value: false
+      },
+      {
+        id: 'placeholder',
+        ui: 'text_input',
+        type: 'String',
+        comment: 'Enter Placeholder Text',
+        default_value: '',
+        char_length: 200
+      }
     ],
     Input: Input,
     validate: function(value, options) {
