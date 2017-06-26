@@ -121,7 +121,6 @@ define(function(require, exports, module) {
       var isBatchEdit = this.options.isBatchEdit;
       var model = this.model;
       var table = model.table;
-      var statusName = table ? table.getStatusColumnName() : app.statusMapping.get('*').get('status_name');
 
       this.structure.each(function (column) {
         // This column interface won't be rendered
@@ -203,12 +202,6 @@ define(function(require, exports, module) {
           i++;
         });
       } else {
-        if (views[statusName]) {
-          this.insertView('.fields', new Backbone.Layout({attributes: {class:'gutter-bottom-big', id:'grouping_0'}}));
-          this.insertView('#grouping_0', views[statusName]);
-          delete views[statusName];
-        }
-
         this.insertView('.fields', new Backbone.Layout({attributes: {class:'gutter-bottom-big', id:'grouping_1'}}));
         for (var key in views) {
           self.insertView('#grouping_1', views[key]);
