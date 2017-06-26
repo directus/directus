@@ -45,7 +45,7 @@ define(['./interface', 'core/UIComponent', 'core/t'], function (Input, UICompone
       comment: __t('directus_tables_status_mapping_comment'),
       options: {
         rows: 17,
-        placeholder_text: statusMappingPlaceholder,
+        placeholder: statusMappingPlaceholder,
         filter: 'number'
       }
     }],
