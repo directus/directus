@@ -179,6 +179,10 @@ class Bootstrap
             return Bootstrap::get('schemaManager');
         });
 
+        $app->container->singleton('settings', function () {
+            return Bootstrap::get('settings');
+        });
+
         $authConfig = ArrayUtils::get($config, 'auth', []);
         $socialAuth = $app->container->get('socialAuth');
 
