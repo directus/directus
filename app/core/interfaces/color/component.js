@@ -41,7 +41,7 @@ define([
         }
       },
       {
-        id: 'listing',
+        id: 'list_view_formatting',
         ui: 'radio_buttons',
         type: 'String',
         comment: 'The output format on the list view',
