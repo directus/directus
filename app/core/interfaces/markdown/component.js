@@ -19,11 +19,42 @@ define([
     id: 'markdown',
     dataTypes: ['TEXT', 'VARCHAR'],
     variables: [
-      {id: 'rows', type: 'Number', default_value: 14, ui: 'numeric', char_length: 3},
-      {id: 'github_flavored_markdown', type: 'Boolean', default_value: false, ui: 'toggle'},
-      {id: 'tables', type: 'Boolean', default_value: false, ui: 'toggle'},
-      {id: 'breaks', type: 'Boolean', default_value: false, ui: 'toggle'},
-      {id: 'sanitize', type: 'Boolean', default_value: false, ui: 'toggle'}
+      {
+        id: 'rows',
+        ui: 'numeric',
+        type: 'Number',
+        comment: 'Height of the field in rows',
+        default_value: 12,
+        char_length: 3
+      },
+      {
+        id: 'github_flavored_markdown',
+        ui: 'toggle',
+        type: 'Boolean',
+        comment: 'Use GitHub flavored markdown when parsing the value',
+        default_value: false
+      },
+      {
+        id: 'tables',
+        ui: 'toggle',
+        type: 'Boolean',
+        comment: 'Allow tables',
+        default_value: false
+      },
+      {
+        id: 'breaks',
+        ui: 'toggle',
+        type: 'Boolean',
+        comment: 'Allow breaks',
+        default_value: false
+      },
+      {
+        id: 'sanitize',
+        type: 'Boolean',
+        default_value: false,
+        comment: 'Sanitize the value',
+        ui: 'toggle'
+      }
     ],
     Input: Input,
     validate: function (value, options) {

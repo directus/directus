@@ -3,9 +3,44 @@ define(['./interface', 'core/UIComponent', 'core/t', 'utils'], function (Input, 
     id: 'checkboxes',
     dataTypes: ['VARCHAR'],
     variables: [
-      {id: 'options', default_value: '', ui: 'json', options: {rows: 25, placeholder_text: '{\n    "value1": "Option One",\n    "value2": "Option Two",\n    "value3": "Option Three"\n}'}, comment: __t('select_options_comment'), required: true},
-      {id: 'delimiter', default_value: ',', ui: 'text_input', length: 1, required: true},
-      {id: 'list_view_formatting', ui: 'radio_buttons', default_value: 'text', options: {options: {text: 'Display Text', value: 'Value'}}}
+      {
+        id: 'options',
+        ui: 'json',
+        type: 'Object',
+        comment: __t('select_options_comment'),
+        default_value: '',
+        required: true,
+        options: {
+          rows: 25,
+          placeholder: JSON.stringify({
+            value1: 'Option One',
+            value2: 'Option two',
+            value3: 'Option three'
+          }, null, '  ')
+        }
+      },
+      {
+        id: 'delimiter',
+        ui: 'text_input',
+        type: 'String',
+        comment: 'The delimiter to use in the saved CSV value',
+        default_value: ',',
+        length: 1,
+        required: true
+      },
+      {
+        id: 'list_view_formatting',
+        ui: 'radio_buttons',
+        type: 'String',
+        comment: 'The output format on the list view',
+        default_value: 'text',
+        options: {
+          options: {
+            text: 'Display Text',
+            value: 'Value'
+          }
+        }
+      }
     ],
     Input: Input,
     validate: function (value, options) {

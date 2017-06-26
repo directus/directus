@@ -28,7 +28,17 @@ define([
     // Interface options
     // These are schema structures object
     variables: [
-      {id: 'allowed_filetypes', type: 'String', default_value: '', ui: 'text_input', char_length: 200, options: {placeholder: 'Allow all filetypes'}}
+      {
+        id: 'allowed_filetypes',
+        ui: 'text_input',
+        type: 'String',
+        comment: 'What filetypes (mimetypes) to support. Leave empty for all.',
+        default_value: '',
+        char_length: 200,
+        options: {
+          placeholder: 'Allow all filetypes'
+        }
+      }
     ],
 
     // Interface View

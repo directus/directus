@@ -13,9 +13,11 @@ define([
     variables: [
       {
         id: 'input',
+        ui: 'radio_buttons',
         type: 'String',
+        comment: 'The unit in which the user will enter the data',
         default_value: 'hex',
-        ui: 'dropdown',
+        required: true,
         options: {
           options: {
             hex: 'Hex',
@@ -26,9 +28,10 @@ define([
       },
       {
         id: 'output',
+        ui: 'radio_buttons',
         type: 'String',
+        comment: 'The unit in which the data gets saved to the DB',
         default_value: 'hex',
-        ui: 'dropdown',
         options: {
           options: {
             hex: 'Hex',
@@ -39,9 +42,10 @@ define([
       },
       {
         id: 'list_view_formatting',
+        ui: 'radio_buttons',
         type: 'String',
+        comment: 'The output format on the list view',
         default_value: 'swatch',
-        ui: 'dropdown',
         options: {
           options: {
             swatch: 'Color Swatch',
@@ -51,21 +55,23 @@ define([
       },
       {
         id: 'palette',
-        type: 'String',
         ui: 'tags',
+        type: 'String',
         comment: 'Add color options as hex values'
       },
       {
         id: 'palette_only',
+        ui: 'toggle',
         type: 'Boolean',
-        default_value: false,
-        ui: 'toggle'
+        comment: 'Only allow the user to pick from the palette',
+        default_value: false
       },
       {
         id: 'allow_alpha',
+        ui: 'toggle',
         type: 'Boolean',
-        default_value: false,
-        ui: 'toggle'
+        comment: 'Allow values with an alpha channel',
+        default_value: false
       },
       {id: 'readonly', type: 'Boolean', default_value: false, ui: 'toggle'}
     ],

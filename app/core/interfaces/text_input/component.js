@@ -9,21 +9,68 @@ define([
     id: 'text_input',
     dataTypes: ['VARCHAR', 'CHAR', 'DATE', 'TIME', 'ENUM'],
     variables: [
-      // Disables editing of the field while still letting users see the value (true = readonly)
-      {id: 'readonly', type: 'Boolean', default_value: false, ui: 'toggle'},
-      // Adjusts the max width of the input (Small, Medium, Large)
-      {id: 'size', type: 'String', default_value: 'large', ui: 'dropdown', options: {options: {'large': __t('size_large'), 'medium': __t('size_medium'), 'small': __t('size_small')}}},
-      // Grayed out default placeholder text in the input when it's empty
-      {id: 'placeholder', type: 'String', default_value: '', ui: 'text_input', char_length: 200},
-      // Chooses the type of validation used on this field
-      // * Character Blacklist: Choose the specific characters **not** allowed in the input
-      // * Character Whitelist: Choose the specific characters allowed in the input
-      // * RegEx: Create a regular expression to validate the value. Useful for emails, phone number formatting, or almost anything
-      {id: 'validation_type', type: 'String', ui: 'dropdown', options: {options: {'bl': __t('character_blacklist'), 'wl': __t('character_whitelist'), 'rgx': __t('regex')} }, default_value: 'rgx'},
-      // Holds the CSV list of Whitelist/Blacklist characters or the RegEx value (based on the above option)
-      {id: 'validation_string', type: 'String', default_value: '', ui: 'text_input', char_length: 200, comment: __t('text_input_validation_string_comment')},
-      // A message that is shown to the user if the validation fails
-      {id: 'validation_message', type: 'String', default_value: '', ui: 'text_input', char_length: 200}
+      {
+        id: 'readonly',
+        type: 'Boolean',
+        default_value: false,
+        ui: 'toggle'
+      },
+      {
+        id: 'size',
+        ui: 'dropdown',
+        type: 'String',
+        comment: 'What width to use for the input',
+        default_value: 'large',
+        options: {
+          options: {
+            large: __t('size_large'),
+            medium: __t('size_medium'),
+            small: __t('size_small')
+          }
+        }
+      },
+      {
+        id: 'placeholder',
+        ui: 'text_input',
+        type: 'String',
+        comment: 'Enter Placeholder Text',
+        default_value: '',
+        char_length: 200
+      },
+      {
+        id: 'validation_type',
+        ui: 'dropdown',
+        type: 'String',
+        comment:
+          'The type of validation used on this field \n' +
+          'Character Blacklist: Choose the specific characters not allowed in the input \n' +
+          'Character Whitelist: Choose the specific characters allowed in the input \n' +
+          'RegEx: Create a regular expression to validate the value. Useful for emails, phone number formatting, or almost anything',
+        options: {
+          options: {
+            bl: __t('character_blacklist'),
+            wl: __t('character_whitelist'),
+            rgx: __t('regex')
+          }
+        },
+        default_value: 'rgx'
+      },
+      {
+        id: 'validation_string',
+        ui: 'text_input',
+        type: 'String',
+        comment: __t('text_input_validation_string_comment'),
+        default_value: '',
+        char_length: 200
+      },
+      {
+        id: 'validation_message',
+        ui: 'text_input',
+        type: 'String',
+        comment: 'A message that is shown to the user if the validation fails',
+        default_value: '',
+        char_length: 200
+      }
     ],
     Input: Input,
     validate: function(value, options) {

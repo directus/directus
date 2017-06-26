@@ -87,9 +87,31 @@ define(['app', 'core/UIComponent', 'core/UIView', 'moment', 'helpers/ui', 'core/
     dataTypes: ['DATE'],
     variables: [
       {id: 'readonly', type: 'Boolean', default_value: false, ui: 'toggle'},
-      {id: 'format', type: 'String', ui: 'text_input', char_length: 255, default_value: 'YYYY-MM-DD', comment: '<a href="http://momentjs.com/docs/#/displaying/format/" target="_blank">Formatting Rules</a>', options: {placeholder_text: 'eg: YYYY-MM-DD HH:mm:ss'}},
-      {id: 'contextual_date_in_listview', type: 'Boolean', ui: 'toggle', comment: 'Eg: 3 days ago'},
-      {id: 'auto-populate_when_hidden_and_null', type: 'Boolean', ui: 'toggle', default_value: true}
+      {
+        id: 'format',
+        ui: 'text_input',
+        type: 'String',
+        comment: '<a href="http://momentjs.com/docs/#/displaying/format/" target="_blank">Formatting Rules</a>',
+        char_length: 255,
+        default_value: 'YYYY-MM-DD',
+        options: {
+          placeholder_text: 'eg: YYYY-MM-DD HH:mm:ss'
+        }
+      },
+      {
+        id: 'contextual_date_in_listview',
+        type: 'Boolean',
+        ui: 'toggle',
+        comment: 'Show dates in relatively to now (eg: 3 days ago)',
+        default_value: false
+      },
+      {
+        id: 'auto-populate_when_hidden_and_null',
+        type: 'Boolean',
+        ui: 'toggle',
+        comment: 'Automatically fill this field with the current date if the input is hidden and empty',
+        default_value: true
+      }
     ],
     Input: Input,
     validate: function (value, options) {

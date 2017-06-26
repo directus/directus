@@ -5,14 +5,42 @@ define(['./interface', 'core/UIComponent', 'core/t'], function (Input, UICompone
     id: 'slug',
     dataTypes: ['VARCHAR'],
     variables: [
-      // Disables editing of the field while still letting users see the value
-      {id: 'readonly', type: 'Boolean', default_value: true, ui: 'toggle'},
-      // Adjusts the max width of the input (Small, Medium, Large)
-      {id: 'size', type: 'String', default_value: 'large', ui: 'dropdown', options: {options: {large: __t('size_large'), medium: __t('size_medium'), small: __t('size_small')}}},
-      // Enter the column name of the field the slug will pull it's value from
-      {id: 'mirrored_field', type: 'String', default_value: '', required: true, ui: 'text_input', char_length: 200},
-      // Whether to update slug only on creation
-      {id: 'only_on_creation', type: 'Boolean', default_value: false, ui: 'toggle', comment: __t('slug_only_on_creation_comment')}
+      {
+        id: 'readonly',
+        type: 'Boolean',
+        default_value: true,
+        ui: 'toggle'
+      },
+      {
+        id: 'size',
+        ui: 'dropdown',
+        type: 'String',
+        comment: 'What width to use for the input',
+        default_value: 'large',
+        options: {
+          options: {
+            large: __t('size_large'),
+            medium: __t('size_medium'),
+            small: __t('size_small')
+          }
+        }
+      },
+      {
+        id: 'mirrored_field',
+        ui: 'text_input',
+        type: 'String',
+        comment: 'Column name of the field the slug will pull it\'s value from',
+        default_value: '',
+        required: true,
+        char_length: 200
+      },
+      {
+        id: 'only_on_creation',
+        ui: 'toggle',
+        type: 'Boolean',
+        comment: __t('slug_only_on_creation_comment'),
+        default_value: false
+      }
     ],
     Input: Input,
     validate: function (value, options) {

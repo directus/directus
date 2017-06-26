@@ -3,9 +3,25 @@ define(['./interface', 'core/UIComponent', 'core/t'], function(Input, UIComponen
     id: 'toggle',
     dataTypes: ['TINYINT'],
     variables: [
-      {id: 'read_only', ui: 'toggle', default_value: false},
-      {id: 'label', ui: 'text_input', default_value: ''},
-      {id: 'show_as_checkbox', ui: 'toggle', default_value: false, comment: 'Display a checkbox instead of the default switch'}
+      {
+        id: 'read_only',
+        ui: 'toggle',
+        default_value: false
+      },
+      {
+        id: 'label',
+        ui: 'text_input',
+        type: 'String',
+        comment: 'Label to show next to the toggle',
+        default_value: ''
+      },
+      {
+        id: 'show_as_checkbox',
+        ui: 'toggle',
+        type: 'Boolean',
+        comment: 'Display a checkbox instead of the default switch',
+        default_value: false
+      }
     ],
     Input: Input,
     validate: function (value, options) {

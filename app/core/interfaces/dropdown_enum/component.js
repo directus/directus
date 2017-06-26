@@ -3,9 +3,21 @@ define(['./interface', 'core/UIComponent', 'core/t', 'utils'], function (Input, 
     id: 'dropdown_enum',
     dataTypes: ['ENUM'],
     variables: [
-      {id: 'placeholder', default_value: '', ui: 'text_input'},
+      {
+        id: 'placeholder',
+        ui: 'text_input',
+        type: 'String',
+        comment: 'Enter Placeholder Text',
+        default_value: ''
+      },
       {id: 'read_only', default_value: false, ui: 'toggle'},
-      {id: 'use_native_input', ui: 'toggle', default_value: false, comment: 'Render the dropdown as a native HTML <section> element instead of our custom solution'}
+      {
+        id: 'use_native_input',
+        ui: 'toggle',
+        type: 'String',
+        comment: 'Render the dropdown as a native HTML &lt;select&gt; element instead of our custom solution',
+        default_value: false
+      }
     ],
     Input: Input,
     validate: function (value, options) {

@@ -130,7 +130,13 @@ define(['app', 'moment', 'core/UIComponent', 'core/UIView', 'core/t'], function(
     variables: [
       // @TODO: add time step setting
       {id: 'readonly', type: 'Boolean', default_value: false, ui: 'toggle'},
-      {id: 'include_seconds', type: 'Boolean', default_value: false, ui: 'toggle'}
+      {
+        id: 'include_seconds',
+        ui: 'toggle',
+        type: 'Boolean',
+        comment: 'Include seconds in the interface',
+        default_value: false
+      }
     ],
     Input: Input,
     validate: function (value, options) {

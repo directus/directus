@@ -10,7 +10,13 @@ define([
     id: 'tags',
     dataTypes: ['TEXT','VARCHAR','CHAR'],
     variables: [
-      {id: 'force_lowercase', type: 'Boolean', default_value: true, ui: 'toggle'} // When on, all entered tags are converted to lowercase
+      {
+        id: 'force_lowercase',
+        ui: 'toggle',
+        type: 'Boolean',
+        comment: 'Convert all tags to lowercase',
+        default_value: true
+      }
       // TODO: Include spaces in CSV value
     ],
     Input: Input,

@@ -3,11 +3,50 @@ define(['./interface', 'core/UIComponent', 'core/t', 'utils'], function (Input, 
     id: 'dropdown_multiselect',
     dataTypes: ['VARCHAR'],
     variables: [
-      {id: 'options', default_value: '', ui: 'json', options: {rows: 25, placeholder_text: '{\n    "value1": "Option One",\n    "value2": "Option Two",\n    "value3": "Option Three"\n}'}, comment: __t('select_options_comment'), required: true},
-      {id: 'placeholder', default_value: '', ui: 'text_input'},
+      {
+        id: 'options',
+        ui: 'json',
+        type: 'String',
+        comment: __t('select_options_comment'),
+        default_value: '',
+        required: true,
+        options: {
+          rows: 25,
+          placeholder: JSON.stringify({
+            value1: 'Option One',
+            value2: 'Option two',
+            value3: 'Option three'
+          }, null, '  ')
+        }
+      },
+      {
+        id: 'placeholder',
+        ui: 'text_input',
+        type: 'String',
+        comment: 'Enter Placeholder Text',
+        default_value: ''
+      },
       {id: 'read_only', default_value: false, ui: 'toggle'},
-      {id: 'use_native_input', ui: 'toggle', default_value: false, comment: 'Render the dropdown as a native HTML <section> element instead of our custom solution'},
-      {id: 'list_view_formatting', ui: 'radio_buttons', default_value: 'text', options: {options: {text: 'Display Text', value: 'Value'}}}
+      {
+        id: 'use_native_input',
+        ui: 'toggle',
+        type: 'String',
+        comment: 'Render the dropdown as a native HTML &lt;select&gt; element instead of our custom solution',
+        default_value: false
+      },
+      {
+        id: 'list_view_formatting',
+        ui: 'radio_buttons',
+        type: 'string',
+        comment: 'The output format on the list view',
+        default_value: 'text',
+        options: {
+          options: {
+            text: 'Display Text',
+            value: 'Value'
+          }
+        }
+      }
     ],
     Input: Input,
     validate: function (value, options) {

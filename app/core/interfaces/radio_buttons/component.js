@@ -3,8 +3,34 @@ define(['./interface', 'core/UIComponent', 'core/t', 'utils'], function (Input, 
     id: 'radio_buttons',
     dataTypes: ['VARCHAR'],
     variables: [
-      {id: 'options', default_value: '', ui: 'json', options: {rows: 25, placeholder_text: '{\n    "value1": "Option One",\n    "value2": "Option Two",\n    "value3": "Option Three"\n}'}, comment: __t('select_options_comment'), required: true},
-      {id: 'list_view_formatting', ui: 'radio_buttons', default_value: 'text', options: {options: {text: 'Display Text', value: 'Value'}}}
+      {
+        id: 'options',
+        ui: 'json',
+        type: 'String',
+        comment: __t('select_options_comment'),
+        default_value: '',
+        required: true,
+        options: {
+          rows: 25,
+          placeholder_text: JSON.stringify({
+            value1: 'Option 1',
+            value2: 'Option 2',
+            value3: 'Option 3'
+          }, null, '  ')
+        }
+      }, {
+        id: 'list_view_formatting',
+        ui: 'radio_buttons',
+        type: 'String',
+        comment: 'The output format on the list view',
+        default_value: 'text',
+        options: {
+          options: {
+            text: 'Display Text',
+            value: 'Value'
+          }
+        }
+      }
     ],
     Input: Input,
     validate: function (value, options) {
