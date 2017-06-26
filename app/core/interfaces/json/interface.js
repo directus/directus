@@ -139,7 +139,7 @@ define(['core/UIView'], function (UIView) {
         value: value,
         name: this.options.name,
         rows: this.options.settings.get('rows'),
-        placeholder_text: this.options.settings.get('placeholder_text'),
+        placeholder: this.options.settings.get('placeholder'),
         readonly: !this.options.canWrite
       };
     }

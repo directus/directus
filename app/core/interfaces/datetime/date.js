@@ -95,7 +95,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'moment', 'helpers/ui', 'core/
         char_length: 255,
         default_value: 'YYYY-MM-DD',
         options: {
-          placeholder_text: 'eg: YYYY-MM-DD HH:mm:ss'
+          placeholder: 'eg: YYYY-MM-DD HH:mm:ss'
         }
       },
       {
