@@ -35,7 +35,7 @@ define(['./interface', 'core/UIComponent', 'core/t', 'utils'], function (Input, 
         id: 'use_native_input',
         ui: 'toggle',
         type: 'String',
-        comment: 'Render the dropdown as a native HTML <section> element instead of our custom solution',
+        comment: 'Render the dropdown as a native HTML &lt;select&gt; element instead of our custom solution',
         default_value: false
       },
       {
