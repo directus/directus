@@ -7,10 +7,18 @@ define(['./interface', 'core/UIComponent', 'core/t'], function (Input, UICompone
     dataTypes: ['VARCHAR', 'TEXT', 'MEDIUMTEXT', 'LONGTEXT'],
     Input: Input,
     variables: [
-      {id: 'show_element_path', ui: 'toggle', default_value: true},
+      {
+        id: 'show_element_path',
+        ui: 'toggle',
+        type: 'Boolean',
+        comment: 'Show the element path (e.g. "div > p > b")',
+        default_value: true
+      },
       {
         id: 'headings',
         ui: 'checkboxes',
+        type: 'String',
+        comment: 'What heading levels to support',
         default_value: 'h2,h3,h4',
         options: {
           options: {
@@ -26,6 +34,8 @@ define(['./interface', 'core/UIComponent', 'core/t'], function (Input, UICompone
       {
         id: 'inline',
         ui: 'checkboxes',
+        type: 'String',
+        comment: 'What text-style options to support',
         default_value: 'bold,italic,underline',
         options: {
           options: {
@@ -42,6 +52,8 @@ define(['./interface', 'core/UIComponent', 'core/t'], function (Input, UICompone
       {
         id: 'blocks',
         ui: 'checkboxes',
+        type: 'String',
+        comment: 'What block-style options to support',
         default_value: 'p,blockquote',
         options: {
           options: {
@@ -55,6 +67,8 @@ define(['./interface', 'core/UIComponent', 'core/t'], function (Input, UICompone
       {
         id: 'alignment',
         ui: 'checkboxes',
+        type: 'String',
+        comment: 'What alignment options to support',
         default_value: '',
         options: {
           options: {
@@ -68,6 +82,8 @@ define(['./interface', 'core/UIComponent', 'core/t'], function (Input, UICompone
       {
         id: 'toolbar_options',
         ui: 'checkboxes',
+        type: 'String',
+        comment: 'What options to show in the toolbar',
         default_value: 'inline,table,undo,redo,subscript,superscript,bullist,numlist,link,unlink,image,media,paste',
         options: {
           options: {
@@ -97,26 +113,37 @@ define(['./interface', 'core/UIComponent', 'core/t'], function (Input, UICompone
       {
         id: 'custom_toolbar_options',
         ui: 'text_input',
+        type: 'String',
+        comment: 'Space separated list of <a href="https://www.tinymce.com/docs/configure/editor-appearance/#toolbar" target="_blank" rel="noopener">TinyMCE toolbar controls</a>',
         default_value: '',
         options: {
           placeholder: 'undo redo | table'
-        },
-        comment: 'Space separated list of <a href="https://www.tinymce.com/docs/configure/editor-appearance/#toolbar" target="_blank" rel="noopener">TinyMCE toolbar controls</a>'
+        }
       },
       {
         id: 'custom_wrapper',
         ui: 'json',
+        type: 'String',
+        comment: 'Add custom html-element wrapper(s)',
         default_value: '',
         options: {
           rows: 25,
-          placeholder_text: '{\n    "highlight": {\n        "name": "Add Highlight",\n        "template": "<div class=\'highlight\'>{{text}}</div>",\n        "selector": "div.highlight",\n        "preview_style": "border: 2px dashed grey;"\n   }\n}'
+          placeholder_text: JSON.stringify({
+            highlight: {
+              name: 'Add Highlight',
+              template: '"<div class=\'highlight\'>{{text}}</div>"',
+              selector: 'div.highlight',
+              preview_style: 'border: 2px dashed grey;'
+            }
+          }, null, '  ')
         }
       },
       {
         id: 'max_height',
         ui: 'numeric',
-        default_value: 500,
-        comment: 'Set the max height the editor will resize to'
+        type: 'Number',
+        comment: 'Set the max height the editor will resize to',
+        default_value: 500
       }
     ],
     validate: function (value, options) {
