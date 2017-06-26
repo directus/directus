@@ -2,7 +2,6 @@
 
 namespace Directus\Database\TableGateway;
 
-use Directus\Bootstrap;
 use Directus\Database\Exception;
 use Directus\Database\Object\Column;
 use Directus\Database\Object\Table;
@@ -659,8 +658,8 @@ class RelationalTableGateway extends BaseTableGateway
 
         if (ArrayUtils::get($params, 'preview')) {
             $defaultParams['status'] = null;
-        } else if (!ArrayUtils::has($params, 'status')) {
-            $config = Bootstrap::get('config');
+        } else if (static::$container && !ArrayUtils::has($params, 'status')) {
+            $config = static::$container->get('config');
             $defaultParams['status'] = $config->getPublishedStatuses();
         }
 
