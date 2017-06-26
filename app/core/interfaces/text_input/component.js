@@ -43,8 +43,8 @@ define([
         type: 'String',
         comment:
           'The type of validation used on this field \n' +
-          'Character Blacklist: Choose the specific characters not allowed in the input \n' +
-          'Character Whitelist: Choose the specific characters allowed in the input \n' +
+          'Character Blacklist: Choose the characters not allowed in the input \n' +
+          'Character Whitelist: Choose the characters allowed in the input \n' +
           'RegEx: Create a regular expression to validate the value. Useful for emails, phone number formatting, or almost anything',
         options: {
           options: {
