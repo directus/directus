@@ -4,6 +4,13 @@ define(['./interface', 'core/UIComponent', 'core/t', 'utils'], function (Input, 
     dataTypes: ['VARCHAR'],
     variables: [
       {
+        id: 'read_only',
+        ui: 'toggle',
+        type: 'Boolean',
+        comment: 'Force this interface to be read only',
+        default_value: false
+      },
+      {
         id: 'options',
         ui: 'json',
         type: 'Object',
@@ -26,7 +33,6 @@ define(['./interface', 'core/UIComponent', 'core/t', 'utils'], function (Input, 
         comment: 'Enter Placeholder Text',
         default_value: ''
       },
-      {id: 'read_only', default_value: false, ui: 'toggle'},
       {
         id: 'use_native_input',
         ui: 'toggle',

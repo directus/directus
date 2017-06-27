@@ -6,6 +6,13 @@ define(['core/interfaces/slider/interface', 'core/UIComponent', 'core/t'], funct
     dataTypes: ['INT'],
     variables: [
       {
+        id: 'read_only',
+        ui: 'toggle',
+        type: 'Boolean',
+        comment: 'Force this interface to be read only',
+        default_value: false
+      },
+      {
         id: 'minimum',
         ui: 'numeric',
         type: 'Number',

@@ -11,6 +11,13 @@ define(['core/interfaces/password/interface', 'underscore', 'core/UIComponent', 
 
     variables: [
       {
+        id: 'read_only',
+        ui: 'toggle',
+        type: 'Boolean',
+        comment: 'Force this interface to be read only',
+        default_value: false
+      },
+      {
         id: 'require_confirmation',
         ui: 'toggle',
         type: 'Boolean',

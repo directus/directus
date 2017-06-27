@@ -6,6 +6,8 @@ define(['./interface', 'core/UIComponent', 'core/t'], function(Input, UIComponen
       {
         id: 'read_only',
         ui: 'toggle',
+        type: 'Boolean',
+        comment: 'Force this interface to be read only',
         default_value: false
       },
       {

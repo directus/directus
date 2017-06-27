@@ -86,7 +86,13 @@ define(['app', 'core/UIComponent', 'core/UIView', 'moment', 'helpers/ui', 'core/
     id: 'date',
     dataTypes: ['DATE'],
     variables: [
-      {id: 'readonly', type: 'Boolean', default_value: false, ui: 'toggle'},
+      {
+        id: 'read_only',
+        ui: 'toggle',
+        type: 'Boolean',
+        comment: 'Force this interface to be read only',
+        default_value: false
+      },
       {
         id: 'format',
         ui: 'text_input',

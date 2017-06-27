@@ -72,7 +72,7 @@
 </style>
 
 <div class="interface-toggle {{#unless showAsCheckbox}}toggle{{/unless}}">
-	<input id="toggle_{{name}}" class="{{#if showAsCheckbox}}custom-checkbox{{/if}}" type="checkbox" {{#if readOnly}}disabled{{/if}} {{#if selected}}checked{{/if}} />
+	<input id="toggle_{{name}}" class="{{#if showAsCheckbox}}custom-checkbox{{/if}}" type="checkbox" {{#if readOnly}}readonly{{/if}} {{#if selected}}checked{{/if}} />
 	<label for="toggle_{{name}}"><span></span>{{label}}</label>
 
 	<input type="hidden" name="{{name}}" value="{{#if selected}}1{{else}}0{{/if}}">

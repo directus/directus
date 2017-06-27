@@ -11,6 +11,13 @@ define([
     dataTypes: ['TEXT','VARCHAR','CHAR'],
     variables: [
       {
+        id: 'read_only',
+        ui: 'toggle',
+        type: 'Boolean',
+        comment: 'Force this interface to be read only',
+        default_value: false
+      },
+      {
         id: 'force_lowercase',
         ui: 'toggle',
         type: 'Boolean',

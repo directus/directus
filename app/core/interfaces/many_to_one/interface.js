@@ -76,14 +76,14 @@ define([
       }
 
       return {
-        canEdit: this.canEdit,
         name: this.options.name,
         data: data,
         handleBarString: this.options.settings.get('value_template'),
         comment: this.options.schema.get('comment'),
         use_radio_buttons: this.options.settings.get('use_radio_buttons') === true,
         allowNull: this.options.settings.get('allow_null') === true,
-        placeholder: (this.options.settings.get('placeholder')) ? this.options.settings.get('placeholder') : __t('select_from_below')
+        placeholder: (this.options.settings.get('placeholder')) ? this.options.settings.get('placeholder') : __t('select_from_below'),
+        readOnly: this.options.settings.get('read_only') || !this.options.canWrite
       };
     },
 

@@ -5,6 +5,13 @@ define(['./interface', 'core/UIComponent', 'core/t'], function (Input, UICompone
     id: 'map',
     dataTypes: ['VARCHAR', 'ALIAS'],
     variables: [
+      {
+        id: 'read_only',
+        ui: 'toggle',
+        type: 'Boolean',
+        comment: 'Force this interface to be read only',
+        default_value: false
+      },
       // Google API Key (Provided by Google)
       {
         id: 'google_api_key',

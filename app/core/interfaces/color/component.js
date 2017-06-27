@@ -12,12 +12,18 @@ define([
     dataTypes: ['VARCHAR'],
     variables: [
       {
+        id: 'read_only',
+        ui: 'toggle',
+        type: 'Boolean',
+        comment: 'Force this interface to be read only',
+        default_value: false
+      },
+      {
         id: 'input',
         ui: 'radio_buttons',
         type: 'String',
         comment: 'The unit in which the user will enter the data',
         default_value: 'hex',
-        required: true,
         options: {
           options: {
             hex: 'Hex',
@@ -57,7 +63,8 @@ define([
         id: 'palette',
         ui: 'tags',
         type: 'String',
-        comment: 'Add color options as hex values'
+        comment: 'Add color options as hex values',
+        default_value: ''
       },
       {
         id: 'palette_only',
@@ -72,8 +79,7 @@ define([
         type: 'Boolean',
         comment: 'Allow values with an alpha channel',
         default_value: false
-      },
-      {id: 'readonly', type: 'Boolean', default_value: false, ui: 'toggle'}
+      }
     ],
     Input: Input,
     validate: function (value, options) {

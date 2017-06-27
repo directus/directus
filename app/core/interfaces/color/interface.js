@@ -196,7 +196,7 @@ define(['core/UIView', 'core/t', 'core/interfaces/color/lib/color'], function(UI
         name: this.options.name,
         comment: this.options.schema.get('comment'),
         palette: userPalette.length ? userPalette.split(',') : false,
-        readonly: this.options.settings.get('readonly'),
+        readOnly: this.options.settings.get('read_only') || !this.options.canWrite,
         input: input,
         output: this.options.settings.get('output'),
         hex: input === 'hex',

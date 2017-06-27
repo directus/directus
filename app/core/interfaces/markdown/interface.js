@@ -63,7 +63,7 @@ define([
         name: this.options.name,
         rows: this.options.settings.get('rows'),
         comment: this.options.schema.get('comment'),
-        readonly: !this.options.canWrite
+        readOnly: this.options.settings.get('read_only') || !this.options.canWrite
       };
     }
   });

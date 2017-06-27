@@ -115,7 +115,7 @@ define(['app', 'moment', 'core/UIComponent', 'core/UIView', 'core/t'], function(
         hasValue: true,
         timeValue: timeValue,
         value: timeValue,
-        readonly: !this.options.canWrite || (settings && settings.has('readonly')) ? settings.get('readonly')!=0 : false
+        readOnly: this.options.settings.get('read_only') || !this.options.canWrite
       };
     },
 
@@ -128,8 +128,13 @@ define(['app', 'moment', 'core/UIComponent', 'core/UIView', 'core/t'], function(
     id: 'time',
     dataTypes: ['TIME'],
     variables: [
-      // @TODO: add time step setting
-      {id: 'readonly', type: 'Boolean', default_value: false, ui: 'toggle'},
+      {
+        id: 'read_only',
+        ui: 'toggle',
+        type: 'Boolean',
+        comment: 'Force this interface to be read only',
+        default_value: false
+      },
       {
         id: 'include_seconds',
         ui: 'toggle',

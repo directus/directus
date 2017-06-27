@@ -27,5 +27,5 @@
 		width: 401px;
 	}
 </style>
-<input id="pac-input" class="controls" type="text" placeholder="Search Box"><div style="height: 400px" id="map-canvas"/>
+<input id="pac-input" class="controls" type="text" placeholder="Search Box" {{#if readOnly}}readonly{{/if}}><div style="height: 400px" id="map-canvas"/>
 <input type="text" value="{{value}}" name="{{name}}" id="{{name}}" class="medium" readonly/>

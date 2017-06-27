@@ -62,7 +62,7 @@ define(['app', 'underscore', 'core/interfaces/datetime/date', 'moment'], functio
         dateValue: date.format(this.getDateFormat()),
         value: date.format(format),
         name: this.name,
-        readonly: this.options.canWrite === false || (settings && settings.has('readonly')) ? settings.get('readonly') === true : false
+        readOnly: this.options.settings.get('read_only') || !this.options.canWrite
       });
     },
   });

@@ -5,7 +5,13 @@ define(['./interface', 'backbone', 'handlebars', 'core/UIComponent', 'core/t'], 
     id: 'many_to_one',
     dataTypes: ['INT', 'TINYINT', 'SMALLINT', 'MEDIUMINT', 'BIGINT'],
     variables: [
-      {id: 'readonly', type: 'Boolean', default_value: false, ui: 'toggle'},
+      {
+        id: 'read_only',
+        ui: 'toggle',
+        type: 'Boolean',
+        comment: 'Force this interface to be read only',
+        default_value: false
+      },
       {
         id: 'visible_column',
         ui: 'text_input',

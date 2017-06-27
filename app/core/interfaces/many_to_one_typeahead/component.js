@@ -19,6 +19,13 @@ define(['./interface', 'app', 'backbone', 'core/UIComponent', 'core/t'], functio
     dataTypes: ['INT', 'TINYINT', 'SMALLINT', 'MEDIUMINT', 'BIGINT'],
     variables: [
       {
+        id: 'read_only',
+        ui: 'toggle',
+        type: 'Boolean',
+        comment: 'Force this interface to be read only',
+        default_value: false
+      },
+      {
         id: 'visible_column',
         ui: 'text_input',
         type: 'String',

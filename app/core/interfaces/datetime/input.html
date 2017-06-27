@@ -16,7 +16,7 @@
 	}
 </style>
 
-{{#if useDate}}<input type="date" {{#if readonly}}disabled{{/if}} class="date" {{#if hasValue}}value="{{dateValue}}"{{/if}}>{{/if}}
-{{#if useTime}}<input type="time" step="1" {{#if readonly}}disabled{{/if}} class="time" {{#if hasValue}}value="{{timeValue}}"{{/if}}>{{/if}}
-{{#unless readonly}}<a class="now text-button">{{t "date_now"}}</a>{{/unless}}
+{{#if useDate}}<input type="date" {{#if readOnly}}readonly{{/if}} class="date" {{#if hasValue}}value="{{dateValue}}"{{/if}}>{{/if}}
+{{#if useTime}}<input type="time" step="1" {{#if readOnly}}readonly{{/if}} class="time" {{#if hasValue}}value="{{timeValue}}"{{/if}}>{{/if}}
+{{#unless readOnly}}<a class="now text-button">{{t "date_now"}}</a>{{/unless}}
 <input class="merged" type="hidden" {{#if hasValue}}value="{{value}}"{{/if}} name="{{name}}" id="{{name}}">
