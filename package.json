@@ -23,7 +23,8 @@
     "rules": {
       "import/no-amd": 0,
       "camelcase": 0,
-      "capitalized-comments": 0
+      "capitalized-comments": 0,
+      "import/no-extraneous-dependencies": 0
     }
   },
   "private": true,
