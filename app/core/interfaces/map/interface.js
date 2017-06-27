@@ -31,7 +31,8 @@ define([
 
       var mapOptions = {
         center: center,
-        zoom: 12
+        zoom: 12,
+        disableDefaultUI: this.options.settings.get('read_only') || !this.options.canWrite
       };
 
       var map = new google.maps.Map(this.$el.find('#map-canvas').get(0), mapOptions);
@@ -150,7 +151,8 @@ define([
 
       var data = {
         value: value,
-        name: this.options.name
+        name: this.options.name,
+        readOnly: this.options.settings.get('read_only') || !this.options.canWrite
       };
 
       if (this.options.schema.get('type') === 'ALIAS') {
