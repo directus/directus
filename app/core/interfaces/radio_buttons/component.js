@@ -4,6 +4,13 @@ define(['./interface', 'core/UIComponent', 'core/t', 'utils'], function (Input, 
     dataTypes: ['VARCHAR'],
     variables: [
       {
+        id: 'read_only',
+        ui: 'toggle',
+        type: 'Boolean',
+        comment: 'Force this interface to be read only',
+        default_value: false
+      },
+      {
         id: 'options',
         ui: 'json',
         type: 'Object',
@@ -18,7 +25,8 @@ define(['./interface', 'core/UIComponent', 'core/t', 'utils'], function (Input, 
             value3: 'Option 3'
           }, null, '  ')
         }
-      }, {
+      },
+      {
         id: 'list_view_formatting',
         ui: 'radio_buttons',
         type: 'String',

@@ -30,7 +30,7 @@
 		cursor: pointer;
 	}
 
-	.select_list-interface input[type=radio]:checked + label {
+	.select_list-interface input[type=radio]:checked:not(:disabled) + label {
 		font-weight: 700;
 		color: #3498DB;
 	}
@@ -49,10 +49,15 @@
 		transition: color 200ms ease-in-out;
 	}
 
-	.select_list-interface input[type=radio]:checked + label::before,
-	.select_list-interface input[type=radio]:hover + label::before,
-	.select_list-interface input[type=radio]:focus + label::before {
+	.select_list-interface input[type=radio]:checked:not(:disabled) + label::before,
+	.select_list-interface input[type=radio]:hover:not(:disabled) + label::before,
+	.select_list-interface input[type=radio]:focus:not(:disabled) + label::before {
 		color: #3498DB;
+	}
+
+	.select_list-interface input[type=radio]:disabled + label {
+		cursor: not-allowed;
+		opacity: 0.6;
 	}
 
 	.select_list-interface input[type=radio] + label::before {
@@ -68,7 +73,7 @@
 	<ul class="gridlist">
 	{{#options}}
 		<li>
-			<input type="radio" name="{{../name}}" value="{{key}}" id="radio-{{../name}}-{{key}}" {{#if selected}}checked{{/if}}>
+			<input type="radio" name="{{../name}}" value="{{key}}" id="radio-{{../name}}-{{key}}" {{#if selected}}checked{{/if}} {{#if readOnly}}readonly{{/if}}>
 			<label class="radiobuttons" for="radio-{{../name}}-{{key}}">{{value}}</label>
 		</li>
 	{{/options}}
