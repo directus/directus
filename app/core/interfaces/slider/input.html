@@ -5,9 +5,13 @@
 		background-color: transparent;
 	}
 
+	input[type=range]:disabled {
+		opacity: 0.6 !important;
+	}
+
 	span.slider-value {
 		margin-left: 10px;
 		width: auto !important;
 	}
 </style>
-<input type="range" value="{{value}}" name="{{name}}" id="{{name}}" min="{{min}}" max="{{max}}" step="{{step}}"><span class="slider-value">{{value}} {{unit}}</span>
+<input type="range" value="{{value}}" name="{{name}}" id="{{name}}" min="{{min}}" max="{{max}}" step="{{step}}" {{#if readOnly}}readonly{{/if}}><span class="slider-value">{{value}} {{unit}}</span>
