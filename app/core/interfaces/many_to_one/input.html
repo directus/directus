@@ -1,5 +1,5 @@
 <div class="select-container">
-	<select name="{{name}}" {{#unless canEdit}}disabled{{/unless}}>
+	<select name="{{name}}" {{#if readOnly}}disabled{{/if}}>
 		{{#if allowNull}}
 		<option value="">{{placeholder}}</option>
 		{{/if}}
