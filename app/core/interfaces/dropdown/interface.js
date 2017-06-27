@@ -36,7 +36,7 @@ define(['core/UIView', 'select2'], function (UIView) {
         comment: this.options.schema.get('comment'),
         readonly: !this.options.canWrite,
         placeholder: this.options.schema.get('placeholder'),
-        readOnly: Boolean(Number(this.options.settings.get('read_only'))),
+        readOnly: this.options.settings.get('read_only') || !this.options.canWrite,
         native: Boolean(Number(this.options.settings.get('use_native_input'))),
         value: value
       };
