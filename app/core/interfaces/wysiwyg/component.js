@@ -6,43 +6,52 @@ define(['core/interfaces/wysiwyg/interface', 'core/UIComponent', 'core/t'], func
     id: 'wysiwyg',
     dataTypes: ['VARCHAR', 'TEXT', 'MEDIUMTEXT', 'LONGTEXT'],
     Input: Input,
-    variables: [{
-      id: 'buttons',
-      ui: 'checkboxes',
-      type: 'String',
-      comment: 'Buttons that will be shown when selecting text',
-      default_value: 'bold,italic,underline,anchor,h2,h3,quote',
-      nullable: true,
-      options: {
+    variables: [
+      {
+        id: 'read_only',
+        ui: 'toggle',
+        type: 'Boolean',
+        comment: 'Force this interface to be read only',
+        default_value: false
+      },
+      {
+        id: 'buttons',
+        ui: 'checkboxes',
+        type: 'String',
+        comment: 'Buttons that will be shown when selecting text',
+        default_value: 'bold,italic,underline,anchor,h2,h3,quote',
+        nullable: true,
         options: {
-          bold: 'Bold',
-          italic: 'Italic',
-          underline: 'Underline',
-          strikethrough: 'Strikethrough',
-          subscript: 'Subscript',
-          superscript: 'Superscript',
-          anchor: 'Link',
-          quote: 'Quote',
-          pre: 'Pre',
-          orderedlist: 'Ordered List',
-          unorderedlist: 'Unordered List',
-          h1: 'H1',
-          h2: 'H2',
-          h3: 'H3',
-          h4: 'H4',
-          h5: 'H5',
-          h6: 'H6',
-          removeFormat: 'Remove all formatting'
+          options: {
+            bold: 'Bold',
+            italic: 'Italic',
+            underline: 'Underline',
+            strikethrough: 'Strikethrough',
+            subscript: 'Subscript',
+            superscript: 'Superscript',
+            anchor: 'Link',
+            quote: 'Quote',
+            pre: 'Pre',
+            orderedlist: 'Ordered List',
+            unorderedlist: 'Unordered List',
+            h1: 'H1',
+            h2: 'H2',
+            h3: 'H3',
+            h4: 'H4',
+            h5: 'H5',
+            h6: 'H6',
+            removeFormat: 'Remove all formatting'
+          }
         }
+      },
+      {
+        id: 'simple_editor',
+        ui: 'toggle',
+        type: 'Boolean',
+        comment: 'Simplify styling of the interface input',
+        default_value: false
       }
-    },
-    {
-      id: 'simple_editor',
-      ui: 'toggle',
-      type: 'Boolean',
-      comment: 'Simplify styling of the interface input',
-      default_value: false
-    }],
+    ],
     validate: function (value, options) {
       if (options.view.isRequired() && !value) {
         return __t('this_field_is_required');

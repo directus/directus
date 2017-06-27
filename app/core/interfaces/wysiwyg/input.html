@@ -319,4 +319,4 @@
 	}
 </style>
 <div style="position: absolute; width: 100%;" id="medium-editor-{{name}}" class="{{widthClass}}"></div>
-<textarea id="wysiwyg-interface_{{name}}" name="{{name}}" {{#if simple_editor}}class="simple-editor"{{/if}}>{{value}}</textarea>
+<textarea id="wysiwyg-interface_{{name}}" name="{{name}}" {{#if simple_editor}}class="simple-editor"{{/if}} {{#if readOnly}}readonly{{/if}}>{{value}}</textarea>
