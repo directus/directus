@@ -18,6 +18,13 @@ define([
     id: 'textarea',
     dataTypes: ['TEXT', 'VARCHAR'],
     variables: [
+      {
+        id: 'read_only',
+        ui: 'toggle',
+        type: 'Boolean',
+        comment: 'Force this interface to be read only',
+        default_value: false
+      },
       // The number of text rows available for the input before scrolling
       {
         id: 'rows',
