@@ -1,7 +1,7 @@
 define(['./interface', 'core/UIComponent', 'core/t', 'utils'], function (Input, UIComponent, __t, Utils) {
   return UIComponent.extend({
     id: 'dropdown',
-    dataTypes: ['VARCHAR'],
+    dataTypes: ['VARCHAR', 'CHAR', 'TINYTEXT', 'TEXT', 'MEDIUMTEXT', 'LONGTEXT'],
     variables: [
       {
         id: 'read_only',
