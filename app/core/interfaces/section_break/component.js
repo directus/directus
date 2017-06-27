@@ -7,7 +7,7 @@ define([
 
   return UIComponent.extend({
     id: 'section_break',
-    dataTypes: ['VARCHAR', 'TEXT'],
+    dataTypes: ['VARCHAR', 'CHAR', 'TINYTEXT', 'TEXT', 'MEDIUMTEXT', 'LONGTEXT'],
     variables: [
       {
         id: 'show_inline',

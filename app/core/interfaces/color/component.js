@@ -9,7 +9,7 @@ define([
 
   return UIComponent.extend({
     id: 'color',
-    dataTypes: ['VARCHAR'],
+    dataTypes: ['VARCHAR', 'CHAR', 'TINYTEXT', 'TEXT', 'MEDIUMTEXT', 'LONGTEXT'],
     variables: [
       {
         id: 'read_only',
