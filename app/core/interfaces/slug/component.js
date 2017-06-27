@@ -6,10 +6,11 @@ define(['./interface', 'core/UIComponent', 'core/t'], function (Input, UICompone
     dataTypes: ['VARCHAR'],
     variables: [
       {
-        id: 'readonly',
+        id: 'read_only',
+        ui: 'toggle',
         type: 'Boolean',
-        default_value: true,
-        ui: 'toggle'
+        comment: 'Force this interface to be read only',
+        default_value: false
       },
       {
         id: 'size',

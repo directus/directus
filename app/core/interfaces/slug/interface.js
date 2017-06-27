@@ -87,7 +87,7 @@ define(['underscore', 'core/UIView'], function (_, UIView) {
       var mirroredField = this.getMirroredFieldName();
       var model = this.options.model;
 
-      if (this.options.settings.get('readonly') === true) {
+      if (this.options.settings.get('read_only') === true) {
         $slugInput.prop('readonly', true);
       }
 
@@ -111,7 +111,7 @@ define(['underscore', 'core/UIView'], function (_, UIView) {
         name: this.options.name,
         maxLength: length,
         comment: this.options.schema.get('comment'),
-        readonly: this.options.settings.get('readonly') === true
+        readOnly: this.options.settings.get('read_only') || !this.options.canWrite
       };
     }
   });
