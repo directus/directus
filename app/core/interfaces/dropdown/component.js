@@ -6,7 +6,7 @@ define(['./interface', 'core/UIComponent', 'core/t', 'utils'], function (Input, 
       {
         id: 'options',
         ui: 'json',
-        type: 'String',
+        type: 'Object',
         comment: __t('select_options_comment'),
         default_value: '',
         required: true,

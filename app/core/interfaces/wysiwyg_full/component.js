@@ -123,7 +123,7 @@ define(['./interface', 'core/UIComponent', 'core/t'], function (Input, UICompone
       {
         id: 'custom_wrapper',
         ui: 'json',
-        type: 'String',
+        type: 'Object',
         comment: 'Add custom html-element wrapper(s)',
         default_value: '',
         options: {
