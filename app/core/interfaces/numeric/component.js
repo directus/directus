@@ -9,6 +9,13 @@ define([
     dataTypes: SchemaHelper.getNumericInterfaceTypes(),
     variables: [
       {
+        id: 'read_only',
+        ui: 'toggle',
+        type: 'Boolean',
+        comment: 'Force this interface to be read only',
+        default_value: false
+      },
+      {
         id: 'size',
         ui: 'dropdown',
         type: 'String',

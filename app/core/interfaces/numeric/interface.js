@@ -64,7 +64,7 @@ define([
         size: this.options.settings.get('size'),
         placeholder: (this.options.settings) ? this.options.settings.get('placeholder') : '',
         comment: this.options.schema.get('comment'),
-        readonly: !this.options.canWrite,
+        readOnly: this.options.settings.get('read_only') || !this.options.canWrite,
         step: step
       };
     }
