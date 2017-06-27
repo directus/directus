@@ -120,7 +120,8 @@ define(['underscore', 'core/UIView', 'core/t', 'core/notification'], function (_
         name: this.options.name,
         value: this.options.value,
         comment: this.options.schema.get('comment'),
-        require_confirmation: (this.options.settings.get('require_confirmation') === true)
+        require_confirmation: (this.options.settings.get('require_confirmation') === true),
+        readOnly: this.options.settings.get('read_only') || !this.options.canWrite
       };
     },
 
