@@ -20,6 +20,7 @@ use Directus\Database\TableGateway\DirectusSettingsTableGateway;
 use Directus\Database\TableGateway\DirectusTablesTableGateway;
 use Directus\Database\TableGateway\DirectusUsersTableGateway;
 use Directus\Database\TableGateway\RelationalTableGateway;
+use Directus\Database\TableGatewayFactory;
 use Directus\Database\TableSchema;
 use Directus\Embed\EmbedManager;
 use Directus\Exception\Exception;
@@ -168,6 +169,14 @@ class Bootstrap
             return Bootstrap::get('auth');
         });
 
+        $app->container->singleton('acl', function () {
+            return Bootstrap::get('acl');
+        });
+
+        $app->container->singleton('zendDb', function () {
+            return Bootstrap::get('zendDb');
+        });
+
         $app->container->singleton('socialAuth', function() {
             return Bootstrap::get('socialAuth');
         });
@@ -196,6 +205,7 @@ class Bootstrap
 
         BaseTableGateway::setHookEmitter($app->container->get('hookEmitter'));
         BaseTableGateway::setContainer($app->container);
+        TableGatewayFactory::setContainer($app->container);
 
         // @NOTE: Trying to separate the configuration from bootstrap, bit by bit.
         TableSchema::setConfig(static::get('config'));

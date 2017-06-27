@@ -11,6 +11,7 @@
 namespace Directus\Database;
 
 use Directus\Bootstrap;
+use Directus\Container\Container;
 use Directus\Database\TableGateway\BaseTableGateway;
 use Directus\Database\TableGateway\RelationalTableGateway;
 use Directus\Util\ArrayUtils;
@@ -23,6 +24,16 @@ use Directus\Util\Formatting;
  */
 class TableGatewayFactory
 {
+    /**
+     * @var object
+     */
+    protected static $container = null;
+
+    public static function setContainer($container)
+    {
+        static::$container = $container;
+    }
+
     /**
      * Create a new table gateway
      *
@@ -39,8 +50,18 @@ class TableGatewayFactory
         $namespace = __NAMESPACE__ . '\\TableGateway\\';
         $tableGatewayClassName = $namespace . $tableGatewayClassName;
 
-        $acl = ArrayUtils::get($options, 'acl', Bootstrap::get('acl'));
-        $adapter = ArrayUtils::get($options, 'adapter', Bootstrap::get('zendDb'));
+        $acl = ArrayUtils::get($options, 'acl');;
+        $adapter = ArrayUtils::get($options, 'adapter');
+
+        if (static::$container) {
+            if ($acl === null) {
+                $acl = static::$container->get('acl');
+            }
+
+            if ($acl === null) {
+                $adapter = static::$container->get('zendDb');
+            }
+        }
 
         if (class_exists($tableGatewayClassName)) {
             $instance = new $tableGatewayClassName($adapter, $acl);
