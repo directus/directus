@@ -136,28 +136,28 @@
 
 	{{#if hex}}
 	{{#unless alpha}}
-	<input type="text" class="color-text" placeholder="000000" pattern="[0-9a-fA-F]{3,6}" maxlength="6" value="{{value}}" {{#if readOnly}} disabled {{/if}}>
+	<input type="text" class="color-text" placeholder="000000" pattern="[0-9a-fA-F]{3,6}" maxlength="6" value="{{value}}" {{#if readOnly}} readonly {{/if}}>
 	{{/unless}}
 	{{#if alpha}}
-	<input type="text" class="color-text alpha" placeholder="00000000" pattern="[0-9a-fA-F]{3,8}" maxlength="8" value="{{value}}" {{#if readOnly}} disabled {{/if}}>
+	<input type="text" class="color-text alpha" placeholder="00000000" pattern="[0-9a-fA-F]{3,8}" maxlength="8" value="{{value}}" {{#if readOnly}} readonly {{/if}}>
 	{{/if}}
 	{{/if}}
 
 	{{#if rgb}}
-	<label><span>Red: </span><input type="number" class="color-text red" placeholder="0" value="{{value.[0]}}" min="0" max="255" step="1" {{#if readOnly}} disabled {{/if}} /></label>
-	<label><span>Green: </span><input type="number" class="color-text green" placeholder="0" value="{{value.[1]}}" min="0" max="255" step="1" {{#if readOnly}} disabled {{/if}} /></label>
-	<label><span>Blue: </span><input type="number" class="color-text blue" placeholder="0" value="{{value.[2]}}" min="0" max="255" step="1" {{#if readOnly}} disabled {{/if}} /></label>
+	<label><span>Red: </span><input type="number" class="color-text red" placeholder="0" value="{{value.[0]}}" min="0" max="255" step="1" {{#if readOnly}} readonly {{/if}} /></label>
+	<label><span>Green: </span><input type="number" class="color-text green" placeholder="0" value="{{value.[1]}}" min="0" max="255" step="1" {{#if readOnly}} readonly {{/if}} /></label>
+	<label><span>Blue: </span><input type="number" class="color-text blue" placeholder="0" value="{{value.[2]}}" min="0" max="255" step="1" {{#if readOnly}} readonly {{/if}} /></label>
 	{{#if alpha}}
-	<label><span>Alpha: </span><input type="number" class="color-text alpha" placeholder="0" value="{{value.[3]}}" min="0" max="1" {{#if readOnly}} disabled {{/if}} /></label>
+	<label><span>Alpha: </span><input type="number" class="color-text alpha" placeholder="0" value="{{value.[3]}}" min="0" max="1" {{#if readOnly}} readonly {{/if}} /></label>
 	{{/if}}
 	{{/if}}
 
 	{{#if hsl}}
-	<label><span>Hue: </span><input type="number" class="color-text hue" placeholder="0" value="{{value.[0]}}" min="0" max="360" step="1" {{#if readOnly}} disabled {{/if}} /></label>
-	<label><span>Saturation: </span><input type="number" class="color-text saturation" placeholder="0" value="{{value.[1]}}" min="0" max="100" step="1" {{#if readOnly}} disabled {{/if}} /></label>
-	<label><span>Lightness: </span><input type="number" class="color-text lightness" placeholder="0" value="{{value.[2]}}" min="0" max="100" step="1" {{#if readOnly}} disabled {{/if}} /></label>
+	<label><span>Hue: </span><input type="number" class="color-text hue" placeholder="0" value="{{value.[0]}}" min="0" max="360" step="1" {{#if readOnly}} readonly {{/if}} /></label>
+	<label><span>Saturation: </span><input type="number" class="color-text saturation" placeholder="0" value="{{value.[1]}}" min="0" max="100" step="1" {{#if readOnly}} readonly {{/if}} /></label>
+	<label><span>Lightness: </span><input type="number" class="color-text lightness" placeholder="0" value="{{value.[2]}}" min="0" max="100" step="1" {{#if readOnly}} readonly {{/if}} /></label>
 	{{#if alpha}}
-	<label><span>Alpha: </span><input type="number" class="color-text alpha" placeholder="0" value="{{value.[3]}}" min="0" max="1" {{#if readOnly}} disabled {{/if}} /></label>
+	<label><span>Alpha: </span><input type="number" class="color-text alpha" placeholder="0" value="{{value.[3]}}" min="0" max="1" {{#if readOnly}} readonly {{/if}} /></label>
 	{{/if}}
 	{{/if}}
 

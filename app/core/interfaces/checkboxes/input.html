@@ -69,7 +69,7 @@
 	<ul class="gridlist">
 	{{#options}}
 		<li>
-			<input id="multi_select_{{../name}}_{{key}}" name="{{../name}}_{{key}}" value="{{key}}" type="checkbox" {{#if ../readOnly}} disabled {{/if}} {{#if selected}}checked{{/if}}/>
+			<input id="multi_select_{{../name}}_{{key}}" name="{{../name}}_{{key}}" value="{{key}}" type="checkbox" {{#if ../readOnly}} readonly {{/if}} {{#if selected}}checked{{/if}}/>
 			<label for="multi_select_{{../name}}_{{key}}">{{value}}</label>
 		</li>
 	{{/options}}
