@@ -14,6 +14,7 @@ define([
 
       return {
         value: value,
+        readOnly: this.options.settings.get('read_only') || !this.options.canWrite,
         name: this.options.name
       };
     },
@@ -129,6 +130,7 @@ define([
         autoresize_max_height: this.options.settings.get('max_height'),
         elementpath: elementpath,
         menubar: false,
+        readonly: this.options.settings.get('read_only') || !this.options.canWrite,
         toolbar: toolbar,
         content_style: 'body.mce-content-body {font-family: \'Roboto\', sans-serif;line-height: 22px;font-size: 14px;color: #333;}',
         style_formats: styleFormats,

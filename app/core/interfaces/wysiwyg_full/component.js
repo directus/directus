@@ -8,6 +8,13 @@ define(['./interface', 'core/UIComponent', 'core/t'], function (Input, UICompone
     Input: Input,
     variables: [
       {
+        id: 'read_only',
+        ui: 'toggle',
+        type: 'Boolean',
+        comment: 'Force this interface to be read only',
+        default_value: false
+      },
+      {
         id: 'show_element_path',
         ui: 'toggle',
         type: 'Boolean',
