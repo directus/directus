@@ -77,7 +77,7 @@ define([
         maxLength: length,
         characters: length - value.toString().length,
         comment: this.options.schema.get('comment'),
-        readonly: ((this.options.settings && this.options.settings.get('readonly') === true) || !this.options.canWrite),
+        readOnly: this.options.settings.get('read_only') || !this.options.canWrite,
         placeholder: (this.options.settings) ? this.options.settings.get('placeholder') : ''
       };
     },

@@ -10,10 +10,11 @@ define([
     dataTypes: ['VARCHAR', 'CHAR', 'DATE', 'TIME', 'ENUM'],
     variables: [
       {
-        id: 'readonly',
+        id: 'read_only',
+        ui: 'toggle',
         type: 'Boolean',
-        default_value: false,
-        ui: 'toggle'
+        comment: 'Force this interface to be read only',
+        default_value: false
       },
       {
         id: 'size',
