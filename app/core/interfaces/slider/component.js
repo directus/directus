@@ -3,7 +3,7 @@ define(['core/interfaces/slider/interface', 'core/UIComponent', 'core/t'], funct
 
   return UIComponent.extend({
     id: 'slider',
-    dataTypes: ['INT'],
+    dataTypes: ['INT', 'TINYINT', 'SMALLINT', 'MEDIUMINT', 'BIGINT'],
     variables: [
       {
         id: 'read_only',

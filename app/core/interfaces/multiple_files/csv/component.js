@@ -10,8 +10,7 @@ define([
   return UIComponent.extend({
     id: 'multiple_files_csv',
 
-    dataTypes: ['TEXT', 'VARCHAR'],
-
+    dataTypes: ['VARCHAR', 'CHAR', 'TINYTEXT', 'TEXT', 'MEDIUMTEXT', 'LONGTEXT'],
     variables: [
       {
         id: 'add_button',

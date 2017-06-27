@@ -7,7 +7,17 @@ define([
 
   return UIComponent.extend({
     id: 'text_input',
-    dataTypes: ['VARCHAR', 'CHAR', 'DATE', 'TIME', 'ENUM'],
+    dataTypes: [
+      'VARCHAR',
+      'CHAR',
+      'TINYTEXT',
+      'TEXT',
+      'MEDIUMTEXT',
+      'LONGTEXT',
+      'DATE',
+      'TIME',
+      'ENUM'
+    ],
     variables: [
       {
         id: 'read_only',

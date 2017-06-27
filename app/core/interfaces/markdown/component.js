@@ -17,7 +17,7 @@ define([
 
   return UIComponent.extend({
     id: 'markdown',
-    dataTypes: ['TEXT', 'VARCHAR'],
+    dataTypes: ['TEXT', 'VARCHAR', 'TINYTEXT', 'MEDIUMTEXT', 'LONGTEXT'],
     variables: [
       {
         id: 'read_only',
