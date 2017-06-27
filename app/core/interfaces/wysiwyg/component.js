@@ -4,7 +4,7 @@ define(['core/interfaces/wysiwyg/interface', 'core/UIComponent', 'core/t'], func
 
   return UIComponent.extend({
     id: 'wysiwyg',
-    dataTypes: ['VARCHAR', 'TEXT', 'MEDIUMTEXT', 'LONGTEXT'],
+    dataTypes: ['TEXT', 'VARCHAR', 'CHAR', 'TINYTEXT', 'MEDIUMTEXT', 'LONGTEXT'],
     Input: Input,
     variables: [
       {

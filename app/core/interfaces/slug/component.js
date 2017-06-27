@@ -3,7 +3,7 @@ define(['./interface', 'core/UIComponent', 'core/t'], function (Input, UICompone
 
   return UIComponent.extend({
     id: 'slug',
-    dataTypes: ['VARCHAR'],
+    dataTypes: ['VARCHAR', 'CHAR', 'TINYTEXT', 'TEXT', 'MEDIUMTEXT', 'LONGTEXT'],
     variables: [
       {
         id: 'read_only',

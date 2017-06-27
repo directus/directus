@@ -1,7 +1,7 @@
 define(['./interface', 'core/UIComponent', 'core/t'], function (Input, UIComponent, __t) {
   return UIComponent.extend({
     id: 'json',
-    dataTypes: ['TEXT', 'VARCHAR'],
+    dataTypes: ['TEXT', 'VARCHAR', 'TINYTEXT', 'MEDIUMTEXT', 'LONGTEXT'],
     Input: Input,
     variables: [
       {

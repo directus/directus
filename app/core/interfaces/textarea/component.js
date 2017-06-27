@@ -16,7 +16,7 @@ define([
 
   return UIComponent.extend({
     id: 'textarea',
-    dataTypes: ['TEXT', 'VARCHAR'],
+    dataTypes: ['TEXT', 'CHAR', 'VARCHAR', 'TINYTEXT', 'MEDIUMTEXT', 'LONGTEXT'],
     variables: [
       {
         id: 'read_only',

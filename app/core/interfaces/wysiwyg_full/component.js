@@ -4,7 +4,7 @@ define(['./interface', 'core/UIComponent', 'core/t'], function (Input, UICompone
 
   return UIComponent.extend({
     id: 'wysiwyg_full',
-    dataTypes: ['VARCHAR', 'TEXT', 'MEDIUMTEXT', 'LONGTEXT'],
+    dataTypes: ['TEXT', 'VARCHAR', 'CHAR', 'TINYTEXT', 'MEDIUMTEXT', 'LONGTEXT'],
     Input: Input,
     variables: [
       {
