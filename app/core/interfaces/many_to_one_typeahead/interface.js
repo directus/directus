@@ -30,7 +30,7 @@ define(['app', 'handlebars', 'core/UIView', 'utils'], function (app, Handlebars,
       return {
         name: this.options.name,
         size: this.columnSchema.options.get('size'),
-        readonly: false,
+        readOnly: this.options.settings.get('read_only') || !this.options.canWrite,
         disabled: !this.visibleColumn,
         selectedItem: relatedModel,
         hasSelectedItem: !relatedModel.isNew(),
