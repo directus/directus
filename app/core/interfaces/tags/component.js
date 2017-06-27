@@ -8,7 +8,7 @@ define([
 
   return UIComponent.extend({
     id: 'tags',
-    dataTypes: ['TEXT','VARCHAR','CHAR'],
+    dataTypes: ['VARCHAR', 'CHAR', 'TINYTEXT', 'TEXT', 'MEDIUMTEXT', 'LONGTEXT'],
     variables: [
       {
         id: 'read_only',

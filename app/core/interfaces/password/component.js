@@ -4,8 +4,7 @@ define(['core/interfaces/password/interface', 'underscore', 'core/UIComponent', 
   return UIComponent.extend({
 
     id: 'password',
-
-    dataTypes: ['VARCHAR'],
+    dataTypes: ['VARCHAR', 'CHAR', 'TINYTEXT', 'TEXT', 'MEDIUMTEXT', 'LONGTEXT'],
 
     skipSerializationIfNull: true,
 

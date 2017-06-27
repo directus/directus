@@ -3,7 +3,7 @@ define(['./interface', 'core/UIComponent', 'core/t'], function (Input, UICompone
 
   return UIComponent.extend({
     id: 'map',
-    dataTypes: ['VARCHAR', 'ALIAS'],
+    dataTypes: ['VARCHAR', 'CHAR', 'TINYTEXT', 'TEXT', 'MEDIUMTEXT', 'LONGTEXT', 'ALIAS'],
     variables: [
       {
         id: 'read_only',
