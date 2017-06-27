@@ -1,9 +1,9 @@
+/* global $ */
 define([
   'underscore',
   'core/UIView',
   'tinyMCE'
 ], function (_, UIView, tinyMCE) {
-
   'use strict';
 
   return UIView.extend({
@@ -93,18 +93,17 @@ define([
           .map(function (option) {
             if (option === 'inline') {
               return inline.reduce(function (inlineStr, inlineOption) {
-                return inlineStr += ' ' + inlineOption;
+                return inlineStr + ' ' + inlineOption;
               });
             } else if (option === 'alignment') {
               return alignment.reduce(function (alignmentStr, alignmentOption) {
-                return alignmentStr += ' ' + alignmentOption;
+                return alignmentStr + ' ' + alignmentOption;
               });
-            } else {
-              return option;
             }
+            return option;
           })
           .reduce(function (str, option) {
-            return str += ' ' + option;
+            return str + ' ' + option;
           });
       }
 
@@ -158,7 +157,7 @@ define([
           if (customWrapperSettings) {
             var previewStyles = '';
 
-            Object.keys(customWrapperSettings).map(function(identifier) {
+            Object.keys(customWrapperSettings).map(function (identifier) {
               // Add preview styling if set
               if (customWrapperSettings[identifier].selector && customWrapperSettings[identifier].preview_style) {
                 previewStyles += customWrapperSettings[identifier].selector + ' {' + customWrapperSettings[identifier].preview_style + '}\n';
@@ -177,7 +176,7 @@ define([
               });
             });
 
-            previewStyles += '';
+            previewStyles = String(previewStyles);
 
             // This = tinyMCE instance
             this.contentStyles.push(previewStyles);

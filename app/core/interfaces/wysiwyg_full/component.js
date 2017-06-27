@@ -1,5 +1,4 @@
 define(['./interface', 'core/UIComponent', 'core/t'], function (Input, UIComponent, __t) {
-
   'use strict';
 
   return UIComponent.extend({

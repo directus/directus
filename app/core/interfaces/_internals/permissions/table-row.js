@@ -1,3 +1,4 @@
+/* global $ */
 define([
   'app',
   'underscore',
@@ -6,7 +7,6 @@ define([
   './edit-fields-modal',
   'objects/linked-list/circular'
 ], function (app, _, Backbone, __t, EditFieldsModal, CircularLinkedList) {
-
   'use strict';
 
   // TODO: Create a API to handle multiple status actions
@@ -24,15 +24,15 @@ define([
       var className = ['js-permission'];
 
       if (this.hasWorkflowEnabled()) {
-        className.push('workflow-enabled')
+        className.push('workflow-enabled');
       }
 
       return {
-        'class': className.join(' '),
+        class: className.join(' '),
         'data-table': this.table.id,
         'data-id': this.table.id,
         'data-cid': this.getPrivilege(null).cid
-      }
+      };
     },
 
     events: {
@@ -82,10 +82,10 @@ define([
 
     fullUpdate: function (id, attributes, options) {
       var statuses;
-      if (!this.hasWorkflowEnabled()) {
-        statuses = [{value: null}];
-      } else {
+      if (this.hasWorkflowEnabled()) {
         statuses = this.getStatuses();
+      } else {
+        statuses = [{value: null}];
       }
 
       _.each(statuses, function (status) {
@@ -173,14 +173,14 @@ define([
     },
 
     toggleWorkflow: function () {
-      if (!this.hasWorkflowEnabled()) {
-        this.enableWorkflow();
-      } else {
+      if (this.hasWorkflowEnabled()) {
         app.router.openModal({
           type: 'confirm',
           text: __t('permissions_are_you_sure_you_want_to_reset_workflow'),
           callback: _.bind(this.disableWorkflow, this)
         });
+      } else {
+        this.enableWorkflow();
       }
     },
 
@@ -265,6 +265,8 @@ define([
           break;
         case 'add':
           value = 1;
+          break;
+        default:
           break;
       }
 
@@ -357,14 +359,15 @@ define([
     },
 
     permissionTitle: function (model, name) {
-      var title, permission;
+      var title;
+      var permission;
 
       permission = 'allow_' + name;
       if (model.get(permission) > 1) {
         title = __t('permissions_can_' + name + '_any_items');
       } else if (model.get(permission) === 1) {
         title = __t('permissions_can_' + name + '_their_items');
-      } else if (!model.has(permission)) {
+      } else if (!model.has(permission)) { // eslint-disable-line no-negated-condition
         title = __t('permissions_can_' + name + '_items');
       } else {
         title = __t('permissions_can_not_' + name + '_items');
@@ -444,7 +447,6 @@ define([
             list: this.formatBlacklist(privilege.get('write_field_blacklist'))
           });
         });
-
       } else {
         data.permissions = this.getPermissions(globalPrivilege);
         data.readBlacklist = this.formatBlacklist(globalPrivilege.get('read_field_blacklist'));
@@ -507,5 +509,5 @@ define([
       this.listenTo(this.collection, 'change', this.render);
       this.listenTo(this.collection, 'change remove', this.toggleWorkflowFlag);
     }
-  })
+  });
 });

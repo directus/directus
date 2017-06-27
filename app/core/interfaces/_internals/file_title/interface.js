@@ -1,3 +1,4 @@
+/* global $ */
 define(['core/UIView'], function (UIView) {
   return UIView.extend({
     template: '_internals/file_title/input',

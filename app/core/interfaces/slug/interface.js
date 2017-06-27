@@ -1,5 +1,5 @@
+/* global $ */
 define(['underscore', 'core/UIView'], function (_, UIView) {
-
   'use strict';
 
   return UIView.extend({
@@ -73,7 +73,7 @@ define(['underscore', 'core/UIView'], function (_, UIView) {
         slug = slug.replace(new RegExp(from.charAt(i), 'g'), to.charAt(i));
       }
 
-      slug = slug.replace(/[^a-z0-9 \-]/g, '') // remove invalid chars
+      slug = slug.replace(/[^a-z0-9 -]/g, '') // remove invalid chars
         .replace(/\s+/g, '-') // Collapse whitespace and replace by -
         .replace(/-+/g, '-'); // Collapse dashes
 

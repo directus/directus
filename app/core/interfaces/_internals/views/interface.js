@@ -1,3 +1,4 @@
+/* global $ _ */
 define(['core/UIView'], function (UIView) {
   return UIView.extend({
     template: '_internals/views/interface',

@@ -1,4 +1,5 @@
-define(['./interface', 'core/UIComponent', 'core/t'], function(Input, UIComponent, __t) {
+/* global _ */
+define(['./interface', 'core/UIComponent', 'core/t'], function (Input, UIComponent, __t) {
   return UIComponent.extend({
     id: 'toggle',
     dataTypes: ['TINYINT'],
@@ -28,7 +29,7 @@ define(['./interface', 'core/UIComponent', 'core/t'], function(Input, UIComponen
     Input: Input,
     validate: function (value, options) {
       var required = options.schema.isRequired();
-      if ((required && _.isEmpty(value)) || (required && +value === 0)) {
+      if ((required && _.isEmpty(value)) || (required && Number(value) === 0)) {
         return __t('this_field_is_required');
       }
     },

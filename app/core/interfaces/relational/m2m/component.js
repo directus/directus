@@ -86,9 +86,9 @@ define([
     ],
     Input: Input,
     validate: function (value, options) {
-      var minEntries = parseInt(options.settings.get('min_entries'));
+      var minEntries = parseInt(options.settings.get('min_entries'), 10);
 
-      if(value.length < minEntries) {
+      if (value.length < minEntries) {
         return __t('this_field_requires_at_least_x_entries', {
           count: minEntries
         });
@@ -99,7 +99,7 @@ define([
         return __t('this_field_is_required');
       }
     },
-    list: function (options) {
+    list: function () {
       return 'x';
     }
   });

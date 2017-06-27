@@ -1,4 +1,11 @@
-define(['app', 'helpers/file', 'core/UIView'], function (app, FileHelper, UIView) {
+/* global $ */
+define([
+  'app',
+  'helpers/file',
+  'core/UIView',
+  'core/notification',
+  'core/t'
+], function (app, FileHelper, UIView, Notification, __t) {
   return UIView.extend({
 
     template: '_internals/file_preview/interface',
@@ -125,7 +132,7 @@ define(['app', 'helpers/file', 'core/UIView'], function (app, FileHelper, UIView
         e.preventDefault();
 
         if (e.dataTransfer.files.length > 1) {
-          alert('One file only please');
+          Notification.error('File', __t('one_file_only_please'));
           return;
         }
 
@@ -141,7 +148,7 @@ define(['app', 'helpers/file', 'core/UIView'], function (app, FileHelper, UIView
     },
 
     initialize: function () {
-      var FilesModel = require('modules/files/FilesModel');
+      var FilesModel = require('modules/files/FilesModel'); // eslint-disable-line import/no-unresolved
 
       if (!(this.model instanceof FilesModel)) {
         this.model = new FilesModel(this.model.attributes, {collection: this.collection});

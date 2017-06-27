@@ -7,7 +7,6 @@ define([
   'core/interfaces/one_to_many/component',
   'core/t'
 ], function (app, _, Overlays, TableView, InviteModal, OneToMany, __t) {
-
   'use strict';
 
   return OneToMany.prototype.Input.extend({
@@ -20,9 +19,9 @@ define([
     },
 
     createUser: function () {
-      var EditView = require('modules/tables/views/EditView');
+      var EditView = require('modules/tables/views/EditView'); // eslint-disable-line import/no-unresolved
       var collection = this.relatedCollection;
-      var model = new collection.model({}, {
+      var model = new collection.model({}, { // eslint-disable-line new-cap
         collection: collection,
         parse: true,
         structure: collection.structure,
@@ -77,7 +76,6 @@ define([
       view.save = function () {
         _.each(view.table.selection(), function (id) {
           var user = self.relatedCollection.get(id);
-          var data = {};
 
           if (!user) {
             user = collection.get(id);

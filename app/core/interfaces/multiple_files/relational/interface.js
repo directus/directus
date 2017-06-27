@@ -1,14 +1,14 @@
+/* global $ Backbone jQuery _ Component */
 define([
-  'underscore',
   'core/UIView',
   'app',
   'core/overlays/overlays',
   'helpers/file',
   'mixins/status',
   'mixins/save-item',
-  'sortable'
-], function (_, UIView, app, Overlays, FileHelper, StatusMixin, SaveItemMixin, Sortable) {
-
+  'sortable',
+  'core/t'
+], function (UIView, app, Overlays, FileHelper, StatusMixin, SaveItemMixin, Sortable, __t) {
   return UIView.extend({
     template: 'multiple_files/relational/input',
 
@@ -30,12 +30,14 @@ define([
         case 'add':
           this.addItem();
           break;
+        default:
+          break;
       }
     },
 
     addItem: function () {
       if (this.showAddButton && this.canEdit) {
-        this.addModel(new this.relatedCollection.nestedCollection.model({}, {
+        this.addModel(new this.relatedCollection.nestedCollection.model({}, { // eslint-disable-line new-cap
           collection: this.relatedCollection.nestedCollection,
           parse: true
         }));
@@ -72,7 +74,7 @@ define([
     },
 
     addModel: function (model) {
-      var EditView = require('modules/tables/views/EditView');
+      var EditView = require('modules/tables/views/EditView'); // eslint-disable-line import/no-unresolved
       var collection = this.relatedCollection;
       var view = new EditView({model: model, inModal: true});
       view.headerOptions.route.isOverlay = true;
@@ -91,7 +93,7 @@ define([
       app.router.overlayPage(view);
 
       view.save = function () {
-        var junctionModel = new collection.model({data: model});
+        var junctionModel = new collection.model({data: model}); // eslint-disable-line new-cap
 
         _.extend(junctionModel, {
           collection: collection,
@@ -135,7 +137,7 @@ define([
     },
 
     editModel: function (model) {
-      var EditView = require('modules/tables/views/EditView');
+      var EditView = require('modules/tables/views/EditView'); // eslint-disable-line import/no-unresolved
       var columnName = this.columnSchema.relationship.get('junction_key_right');
       var view = new EditView({
         model: model,
@@ -204,7 +206,7 @@ define([
           var url;
           var data;
 
-          model = new app.files.model(model.get('data').attributes, {
+          model = new app.files.model(model.get('data').attributes, { // eslint-disable-line new-cap
             collection: that.relatedCollection
           });
 
@@ -250,7 +252,7 @@ define([
           self.sort.isDragging = false;
           return;
         }
-        var FilesModel = require('modules/files/FilesModel');
+        var FilesModel = require('modules/files/FilesModel'); // eslint-disable-line import/no-unresolved
         _.each(e.dataTransfer.files, function (file) {
           // Force a fileModel object
           var fileModel = new FilesModel({}, {collection: {}});
@@ -259,7 +261,7 @@ define([
             // (and the old file record isn't replaced w/ this data)
             item.id = undefined;
             item.user = self.userId;
-            var model = new self.relatedCollection.nestedCollection.model(item, {
+            var model = new self.relatedCollection.nestedCollection.model(item, { // eslint-disable-line new-cap
               collection: self.relatedCollection.nestedCollection,
               parse: true
             });
@@ -290,17 +292,17 @@ define([
           animation: 150, // Ms, animation speed moving items when sorting, `0` — without animation
           draggable: '.js-file', // Specifies which items inside the element should be sortable
           ghostClass: 'sortable-file-ghost',
-          onStart: function (evt) {
+          onStart: function () {
             // Var dragItem = jQuery(evt.item);
             var jContainer = jQuery(container);
             jContainer.addClass('remove-hover-state');
           },
-          onEnd: function (evt) {
+          onEnd: function () {
             // Var dragItem = jQuery(evt.item);
             var jContainer = jQuery(container);
             jContainer.removeClass('remove-hover-state');
           },
-          onUpdate: function (evt) {
+          onUpdate: function () {
             that.drop();
           }
         });

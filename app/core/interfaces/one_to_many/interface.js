@@ -1,3 +1,4 @@
+/* global $ */
 define([
   'core/interfaces/one_to_many/component',
   'underscore',
@@ -30,6 +31,8 @@ define([
           break;
         case 'add':
           this.addRow();
+          break;
+        default:
           break;
       }
     },
@@ -74,7 +77,7 @@ define([
     addRow: function () {
       var collection = this.relatedCollection;
 
-      this.addModel(new collection.model({}, {
+      this.addModel(new collection.model({}, { // eslint-disable-line new-cap
         collection: collection,
         parse: true,
         structure: collection.structure,
@@ -84,7 +87,7 @@ define([
     },
 
     editModel: function (model) {
-      var EditView = require('modules/tables/views/EditView');
+      var EditView = require('modules/tables/views/EditView'); // eslint-disable-line import/no-unresolved
       var columnName = this.columnSchema.relationship.get('junction_key_right');
       var view = new EditView({
         model: model,
@@ -113,7 +116,7 @@ define([
     },
 
     addModel: function (model) {
-      var EditView = require('modules/tables/views/EditView');
+      var EditView = require('modules/tables/views/EditView'); // eslint-disable-line import/no-unresolved
       var collection = this.relatedCollection;
       var columnName = this.columnSchema.relationship.get('junction_key_right');
       var id = this.model.id;
@@ -162,7 +165,7 @@ define([
       var isModelSelectable = function (model) {
         var selectable = true;
 
-        if (onlyUnassigned && model.get(columnName, {flatten: true}) != null) {
+        if (onlyUnassigned && model.get(columnName, {flatten: true}) !== null) {
           selectable = false;
         }
 
@@ -181,9 +184,9 @@ define([
           var newModel = model.clone();
           var reAdd = existingModel && existingModel.getStatusValue() === existingModel.getTableStatuses().getDeleteValue();
 
-          if (!reAdd && model.get(columnName, {flatten: true}) != null && onlyUnassigned) {
+          if (!reAdd && model.get(columnName, {flatten: true}) !== null && onlyUnassigned) {
             Notification.warning(__t('o2m_warning_item_already_assigned'));
-            return
+            return;
           }
 
           if (existingModel && reAdd) {
@@ -277,7 +280,6 @@ define([
       var hasUnsavedModels = _.some(relatedCollection.models, function (model) {
         return model.unsavedAttributes();
       });
-
 
       // NOTE: Do we really need to fetch this data when we already have it on the main/parent model?
       if (!hasUnsavedModels && ids.length > 0) {

@@ -1,3 +1,4 @@
+/* global $ */
 define([
   'app',
   'underscore',
@@ -5,7 +6,6 @@ define([
   'core/notification',
   'core/t'
 ], function (app, _, UIView, Notification, __t) {
-
   'use strict';
 
   return UIView.extend({
@@ -13,7 +13,7 @@ define([
 
     events: {
       'input input': 'onInputChange',
-      'click .string-generate': function (event) {
+      'click .string-generate': function () {
         var length = this.options.settings.get('string_length');
 
         this.generateString(length);
@@ -29,10 +29,10 @@ define([
     generateString: function (length) {
       length = (length || this.options.settings.get('string_length') || 32);
 
-      var randomSuccess = _.bind(function (resp, textStatus, jqXHR) {
+      var randomSuccess = _.bind(function (resp) {
         var randomString;
 
-        if(!_.isEmpty(resp) && !_.isEmpty(resp.data.random)) {
+        if (!_.isEmpty(resp) && !_.isEmpty(resp.data.random)) {
           randomString = resp.data.random;
           this.$('input.password-primary').val(randomString);
           this.$('.generated').removeClass('hide');
@@ -49,7 +49,7 @@ define([
         data: {length: length},
         success: randomSuccess,
         dataType: 'json',
-        error: function (data, textStatus, jqXHR) {
+        error: function () {
           Notification.error('Random', __t('error_generating_a_random_string'));
         }
       });

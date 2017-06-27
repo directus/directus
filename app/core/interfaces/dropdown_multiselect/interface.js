@@ -1,3 +1,4 @@
+/* global _ */
 define(['core/UIView', 'select2'], function (UIView) {
   function parseOptions(options) {
     if (_.isString(options)) {

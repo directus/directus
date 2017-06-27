@@ -1,5 +1,4 @@
 define(['core/UIView', 'core/interfaces/wysiwyg/vendor/medium-editor.min'], function (UIView, MediumEditor) {
-
   'use strict';
 
   var buttonTypes = {
@@ -82,7 +81,7 @@ define(['core/UIView', 'core/interfaces/wysiwyg/vendor/medium-editor.min'], func
         name: this.name,
         widthClass: getWidthClass(buttonsLength),
         readOnly: this.options.settings.get('read_only') || !this.options.canWrite,
-        simple_editor: (this.options.settings && this.options.settings.get('simple_editor') === true),
+        simple_editor: (this.options.settings && this.options.settings.get('simple_editor') === true)
       };
 
       function getWidthClass(amount) {
@@ -109,7 +108,7 @@ define(['core/UIView', 'core/interfaces/wysiwyg/vendor/medium-editor.min'], func
         var highestIndex;
         var highestNumber = 0;
 
-        [mod4, mod5, mod6].forEach(function(val, i) {
+        [mod4, mod5, mod6].forEach(function (val, i) {
           if (val > highestNumber) {
             highestNumber = val;
             highestIndex = i;

@@ -1,5 +1,4 @@
-define(['app', 'core/UIComponent', 'core/UIView', 'helpers/schema'], function(app, UIComponent, UIView, SchemaHelper) {
-
+define(['app', 'core/UIComponent', 'core/UIView', 'helpers/schema'], function (app, UIComponent, UIView, SchemaHelper) {
   'use strict';
 
   var Input = UIView.extend({
@@ -8,23 +7,27 @@ define(['app', 'core/UIComponent', 'core/UIView', 'helpers/schema'], function(ap
     serialize: function () {
       var model = this.model;
       var columns = this.options.tableColumns;
-      var dateColumns, numericColumns,
-          dateCreateColumns = [], dateUpdateColumns = [],
-          userCreateColumns = [], userUpdateColumns = [];
+      var dateColumns;
+      var numericColumns;
+      var dateCreateColumns = [];
+      var dateUpdateColumns = [];
+      var userCreateColumns = [];
+      var userUpdateColumns = [];
 
       dateColumns = SchemaHelper.dateColumns(columns, true);
       numericColumns = SchemaHelper.numericColumns(columns, true);
 
       dateColumns.forEach(function (column) {
-        var createColumn, updateColumn;
+        var createColumn;
+        var updateColumn;
 
         createColumn = column.toJSON();
         updateColumn = column.toJSON();
-        if (model.get('date_create_column') == column.get('column_name')) {
+        if (model.get('date_create_column') === column.get('column_name')) {
           createColumn.isSelected = true;
         }
 
-        if (model.get('date_update_column') == column.get('column_name')) {
+        if (model.get('date_update_column') === column.get('column_name')) {
           updateColumn.isSelected = true;
         }
 
@@ -33,15 +36,16 @@ define(['app', 'core/UIComponent', 'core/UIView', 'helpers/schema'], function(ap
       });
 
       numericColumns.forEach(function (column) {
-        var createColumn, updateColumn;
+        var createColumn;
+        var updateColumn;
 
         createColumn = column.toJSON();
         updateColumn = column.toJSON();
-        if (model.get('user_create_column') == column.get('column_name')) {
+        if (model.get('user_create_column') === column.get('column_name')) {
           createColumn.isSelected = true;
         }
 
-        if (model.get('user_update_column') == column.get('column_name')) {
+        if (model.get('user_update_column') === column.get('column_name')) {
           updateColumn.isSelected = true;
         }
 
@@ -54,7 +58,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'helpers/schema'], function(ap
         dateCreateColumns: dateCreateColumns,
         userUpdateColumns: userUpdateColumns,
         userCreateColumns: userCreateColumns
-      }
+      };
     },
 
     initialize: function (options) {

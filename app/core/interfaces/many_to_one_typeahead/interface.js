@@ -1,3 +1,4 @@
+/* global _ Bloodhound */
 define(['app', 'handlebars', 'core/UIView', 'utils'], function (app, Handlebars, UIView, Utils) {
   'use strict';
 

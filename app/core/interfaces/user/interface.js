@@ -1,13 +1,4 @@
-//  Directus User List View component
-//  Directus 6.0
-
-//  (c) RANGER
-//  Directus may be freely distributed under the GNU license.
-//  For all details and documentation:
-//  http://www.getdirectus.com
-
-define(['app', 'core/UIComponent', 'core/UIView'], function(app, UIComponent, UIView) {
-
+define(['app', 'core/UIComponent', 'core/UIView'], function (app, UIComponent, UIView) {
   'use strict';
 
   var Input = UIView.extend({
@@ -21,14 +12,14 @@ define(['app', 'core/UIComponent', 'core/UIView'], function(app, UIComponent, UI
         name: name,
         user: user,
         avatarUrl: user.getAvatar()
-      }
+      };
     }
   });
 
   var Component = UIComponent.extend({
     id: 'directus_user',
     system: true,
-    sortBy: ['first_name','last_name'],
+    sortBy: ['first_name', 'last_name'],
     Input: Input,
     list: function (options) {
       var html;

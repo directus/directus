@@ -1,3 +1,4 @@
+/* global _ */
 define(['./interface', 'app', 'core/UIComponent'], function (Input, app, UIComponent) {
   return UIComponent.extend({
     id: 'directus_file',
@@ -7,7 +8,7 @@ define(['./interface', 'app', 'core/UIComponent'], function (Input, app, UICompo
       var model = options.model;
 
       // Force model To be a Files Model
-      var FileModel = require('modules/files/FilesModel');
+      var FileModel = require('modules/files/FilesModel'); // eslint-disable-line import/no-unresolved
       if (!(model instanceof FileModel)) {
         model = new FileModel(model.attributes, {collection: model.collection});
       }

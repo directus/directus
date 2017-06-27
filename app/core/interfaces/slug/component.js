@@ -1,3 +1,4 @@
+/* global _ */
 define(['./interface', 'core/UIComponent', 'core/t'], function (Input, UIComponent, __t) {
   'use strict';
 

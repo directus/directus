@@ -2,7 +2,6 @@ define([
   'underscore',
   'core/UIView'
 ], function (_, UIView) {
-
   'use strict';
 
   function parseOptions(options) {

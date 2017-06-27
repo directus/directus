@@ -1,8 +1,4 @@
-define([
-  'core/interfaces/section_break/interface',
-  'core/UIComponent',
-  'core/t'
-], function(Input, UIComponent, __t) {
+define(['core/interfaces/section_break/interface', 'core/UIComponent'], function (Input, UIComponent) {
   'use strict';
 
   return UIComponent.extend({
@@ -36,11 +32,11 @@ define([
       }
     ],
     Input: Input,
-    list: function(options) {
+    list: function (options) {
       var instructions = options.settings.get('instructions') || '...';
       var regex = /(<([^>]+)>)/ig;
 
-      return instructions.replace(regex, "");
+      return instructions.replace(regex, '');
     }
   });
 });

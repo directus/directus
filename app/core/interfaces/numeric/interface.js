@@ -9,7 +9,7 @@
 define([
   'core/UIView',
   'core/t'
-], function(UIView) {
+], function (UIView) {
   return UIView.extend({
 
     template: 'numeric/input',
@@ -37,7 +37,7 @@ define([
       if (
         this.options.value === undefined &&
         this.options.schema.has('default_value')) {
-          value = this.options.schema.get('default_value');
+        value = this.options.schema.get('default_value');
       }
 
       var step = 1;

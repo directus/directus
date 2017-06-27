@@ -1,11 +1,4 @@
-//  Single Files core UI component
-//  Directus 6.0
-
-//  (c) RANGER
-//  Directus may be freely distributed under the GNU license.
-//  For all details and documentation:
-//  http://www.getdirectus.com
-
+/* global $ */
 define([
   'app',
   'underscore',
@@ -14,9 +7,9 @@ define([
   'helpers/file',
   'core/UIView',
   'core/table/table.view',
-  'core/overlays/overlays'
-], function (app, _, __t, Utils, FileHelper, UIView, TableView, Overlays) {
-
+  'core/overlays/overlays',
+  'core/notification'
+], function (app, _, __t, Utils, FileHelper, UIView, TableView, Overlays, Notification) {
   'use strict';
 
   return UIView.extend({
@@ -38,11 +31,11 @@ define([
       app.router.openFileModal(this.fileModel.id);
     },
 
-    chooseFromComputer: function() {
+    chooseFromComputer: function () {
       this.$('#fileInput').click();
     },
 
-    chooseFromUrl: function() {
+    chooseFromUrl: function () {
       app.router.openModal({
         type: 'prompt',
         text: __t('enter_the_url_to_a_file'),
@@ -92,7 +85,7 @@ define([
     },
 
     edit: function () {
-      var EditView = require("modules/tables/views/EditView");
+      var EditView = require('modules/tables/views/EditView'); // eslint-disable-line import/no-unresolved
       var model = this.fileModel;
       var view = new EditView({model: model});
       view.headerOptions.route.isOverlay = true;
@@ -144,7 +137,7 @@ define([
       var $dropzone = this.$('.dropzone');
       var model = this.fileModel;
 
-      if (!$dropzone.length) {
+      if ($dropzone.length === 0) {
         return;
       }
 
@@ -155,7 +148,7 @@ define([
         $dropzone.addClass('dragover');
       });
 
-      $dropzone.on('dragleave', function (e) {
+      $dropzone.on('dragleave', function () {
         clearInterval(timer);
         timer = setInterval(function () {
           $dropzone.removeClass('dragover');
@@ -170,7 +163,7 @@ define([
         e.preventDefault();
 
         if (e.dataTransfer.files.length > 1) {
-          alert(__t('one_file_only_please'));
+          Notification.error('Single File', __t('one_file_only_please'));
           return;
         }
 
@@ -184,7 +177,8 @@ define([
     },
 
     serialize: function () {
-      var url, link;
+      var url;
+      var link;
 
       if (this.fileModel.has('name')) {
         if (this.fileModel.isNew()) {
@@ -241,7 +235,7 @@ define([
     },
 
     initialize: function () {
-      var FilesModel = require('modules/files/FilesModel');
+      var FilesModel = require('modules/files/FilesModel'); // eslint-disable-line import/no-unresolved
       var parentModel = this.options.model;
 
       this.uploading = false;

@@ -1,23 +1,4 @@
-//  DateTime core UI component
-//  Directus 6.0
-
-//  (c) RANGER
-//  Directus may be freely distributed under the GNU license.
-//  For all details and documentation:
-//  http://www.getdirectus.com
-
-// Attribute          Type              Contains                                Example
-// -------------------------------------------------------------------------------------------------------------------------------------
-// options.schema     Backbone.Model    Structure/Schema for this table row     options.schema.get('type') [column_name, comment, type]
-// options.model      Backbone.Model    Data/Model for this table row           options.model.get('id') [any column in current table row]
-// options.value      String            Value for this field
-// options.settings   Backbone.Model    Saved values for current UI options     options.settings.get('length') [any key from this UI options]
-// options.name       String            Field name
-/*jshint multistr: true */
-
-
-define(['app', 'underscore', 'core/interfaces/datetime/date', 'moment'], function(app, _, UIDate, moment) {
-
+define(['app', 'underscore', 'core/interfaces/datetime/date'], function (app, _, UIDate) {
   'use strict';
 
   // The HTML5 date tag accepts RFC3339
@@ -52,7 +33,6 @@ define(['app', 'underscore', 'core/interfaces/datetime/date', 'moment'], functio
       var data = ParentInput.prototype.serialize.apply(this, arguments);
       var date = this.value;
       var format = dateFormat + ' ' + timeFormat;
-      var settings = this.options.settings;
 
       return _.extend(data, {
         hasValue: this.value.isValid(),
@@ -64,7 +44,7 @@ define(['app', 'underscore', 'core/interfaces/datetime/date', 'moment'], functio
         name: this.name,
         readOnly: this.options.settings.get('read_only') || !this.options.canWrite
       });
-    },
+    }
   });
 
   var variables = UIDate.prototype.variables.slice();

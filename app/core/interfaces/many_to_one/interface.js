@@ -1,3 +1,4 @@
+/* global $ */
 define([
   'backbone',
   'underscore',
@@ -31,7 +32,7 @@ define([
         model.clear();
 
         if (attributesName.length > 0) {
-          attributes = _.pick(attributes, attributesName)
+          attributes = _.pick(attributes, attributesName);
         }
 
         model.set(attributes);
@@ -59,7 +60,7 @@ define([
       }, this);
 
       // Default data while syncing (to avoid flickr when data is loaded)
-      if (this.options.value !== undefined && this.options.value.id && !data.length) {
+      if (this.options.value !== undefined && this.options.value.id && data.length === 0) {
         data = [{
           id: this.options.value.id,
           name: this.options.value,
