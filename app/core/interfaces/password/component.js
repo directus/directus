@@ -1,3 +1,4 @@
+/* global $ */
 define(['core/interfaces/password/interface', 'underscore', 'core/UIComponent', 'core/t'], function (Input, _, UIComponent, __t) {
   'use strict';
 

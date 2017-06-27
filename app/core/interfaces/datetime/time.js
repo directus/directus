@@ -1,26 +1,8 @@
-//  Time core UI component
-//  Directus 6.0
-
-//  (c) RANGER
-//  Directus may be freely distributed under the GNU license.
-//  For all details and documentation:
-//  http://www.getdirectus.com
-
-// Attribute          Type              Contains                                Example
-// -------------------------------------------------------------------------------------------------------------------------------------
-// options.schema     Backbone.Model    Structure/Schema for this table row     options.schema.get('type') [column_name, comment, type]
-// options.model      Backbone.Model    Data/Model for this table row           options.model.get('id') [any column in current table row]
-// options.value      String            Value for this field
-// options.settings   Backbone.Model    Saved values for current UI options     options.settings.get('length') [any key from this UI options]
-// options.name       String            Field name
-/*jshint multistr: true */
-
-
-define(['app', 'moment', 'core/UIComponent', 'core/UIView', 'core/t'], function(app, moment, UIComponent, UIView, __t) {
-
+/* global _ */
+define(['app', 'moment', 'core/UIComponent', 'core/UIView', 'core/t'], function (app, moment, UIComponent, UIView, __t) {
   'use strict';
 
-  function getTimeData(value, options) {
+  function getTimeData(value) {
     if (!value) {
       return;
     }
@@ -28,9 +10,9 @@ define(['app', 'moment', 'core/UIComponent', 'core/UIView', 'core/t'], function(
     var date = new Date();
     var timeParts = value.split(':');
 
-    date.setHours(parseInt(timeParts[0],10));
-    date.setMinutes(parseInt(timeParts[1],10) || 0 );
-    date.setSeconds(parseInt(timeParts[2],10) || 0 );
+    date.setHours(parseInt(timeParts[0], 10));
+    date.setMinutes(parseInt(timeParts[1], 10) || 0);
+    date.setSeconds(parseInt(timeParts[2], 10) || 0);
 
     var hours = (date.getHours() < 10 ? '0' : '') + date.getHours();
     var minutes = (date.getMinutes() < 10 ? '0' : '') + date.getMinutes();
@@ -40,7 +22,7 @@ define(['app', 'moment', 'core/UIComponent', 'core/UIView', 'core/t'], function(
       hours: hours,
       minutes: minutes,
       seconds: seconds,
-      meridiem: (hours >= 12)? 'pm' : 'am'
+      meridiem: (hours >= 12) ? 'pm' : 'am'
     };
   }
 
@@ -48,12 +30,12 @@ define(['app', 'moment', 'core/UIComponent', 'core/UIView', 'core/t'], function(
     template: 'datetime/input',
 
     events: {
-      'blur  input.time':   'updateValue',
+      'blur  input.time': 'updateValue',
       'change  input.time': 'updateValue',
       'click .now': 'makeNow'
     },
 
-    makeNow: function (event) {
+    makeNow: function () {
       var timeFormat = 'HH:mm';
 
       if (this.options.settings.get('include_seconds') === true) {
@@ -67,17 +49,16 @@ define(['app', 'moment', 'core/UIComponent', 'core/UIView', 'core/t'], function(
     },
 
     getTime: function () {
-
       var format = 'HH:mm';
 
-      if (this.options.settings.get('include_seconds') == 1) {
+      if (this.options.settings.get('include_seconds')) {
         format += ':ss';
       }
 
       return {
         value: this.$('input[type=time]').val(),
         format: format
-      }
+      };
     },
 
     updateValue: function () {
@@ -89,18 +70,17 @@ define(['app', 'moment', 'core/UIComponent', 'core/UIView', 'core/t'], function(
         value = '';
       }
 
-      this.$('#'+this.name).val(value);
+      this.$('#' + this.name).val(value);
       this.model.set(this.name, value);
     },
 
     serialize: function () {
       var date = getTimeData(this.value, this.options);
-      var settings = this.options.settings;
       var timeValue;
 
       if (date) {
         timeValue = [date.hours, date.minutes];
-        if (this.options.settings.get('include_seconds') == 1) {
+        if (this.options.settings.get('include_seconds')) {
           timeValue.push(date.seconds);
         }
 

@@ -1,10 +1,10 @@
+/* global $ google */
 define([
   './interface',
   'app',
   'core/UIView',
   'core/t'
 ], function (Input, app, UIView) {
-
   'use strict';
 
   return UIView.extend({
@@ -124,16 +124,20 @@ define([
                   address.country = part.long_name;
                   address.country_code = part.short_name;
                   break;
+                default:
+                  break;
               }
             });
 
             // Update the value for the specified fields on the editpage form
             for (var key in address) {
-              var field = that.options.settings.get(key + '_field') || false;
-              if (field) {
-                var $fieldInput = that.$el.closest('form').find('input[name=' + field + ']');
-                if ($fieldInput.length) {
-                  $fieldInput.val(address[key]);
+              if (Object.prototype.hasOwnProperty.call(address, key)) {
+                var field = that.options.settings.get(key + '_field') || false;
+                if (field) {
+                  var $fieldInput = that.$el.closest('form').find('input[name=' + field + ']');
+                  if ($fieldInput.length > 0) {
+                    $fieldInput.val(address[key]);
+                  }
                 }
               }
             }

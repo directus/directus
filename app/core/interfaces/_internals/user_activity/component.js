@@ -1,3 +1,4 @@
+/* global $ */
 define(['app', 'core/UIComponent', 'core/UIView', 'moment', 'core/t'], function (app, UIComponent, UIView, moment, __t) {
   return UIComponent.extend({
     id: 'directus_user_activity',
@@ -31,6 +32,8 @@ define(['app', 'core/UIComponent', 'core/UIView', 'moment', 'core/t'], function 
               break;
             case 'user':
               pageSummary += __t('directus_user_activity_user_edit_form');
+              break;
+            default:
               break;
           }
         }

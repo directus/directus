@@ -1,16 +1,5 @@
+/* global _ */
 define(['core/UIView', 'select2'], function (UIView) {
-  function parseOptions(options) {
-    if (_.isString(options)) {
-      try {
-        options = JSON.parse(options);
-      } catch (err) {
-        options = {};
-      }
-    }
-
-    return options;
-  }
-
   return UIView.extend({
     template: 'dropdown_enum/input',
     events: {

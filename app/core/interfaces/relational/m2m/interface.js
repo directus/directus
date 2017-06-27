@@ -1,12 +1,4 @@
-//  Relational core UI component
-//  Directus 6.0
-
-//  (c) RANGER
-//  Directus may be freely distributed under the GNU license.
-//  For all details and documentation:
-//  http://www.getdirectus.com
-/*jshint multistr: true */
-
+/* global $ */
 define([
   'app',
   'underscore',
@@ -15,7 +7,6 @@ define([
   'core/overlays/overlays',
   'core/t'
 ], function (app, _, Onetomany, TableView, Overlays, __t) {
-
   'use strict';
 
   return Onetomany.prototype.Input.extend({
@@ -29,7 +20,7 @@ define([
     template: 'relational/table',
 
     addRow: function () {
-      this.addModel(new this.relatedCollection.nestedCollection.model({}, {collection: this.relatedCollection.nestedCollection, parse: true}));
+      this.addModel(new this.relatedCollection.nestedCollection.model({}, {collection: this.relatedCollection.nestedCollection, parse: true})); // eslint-disable-line new-cap
     },
 
     deleteRow: function (event) {
@@ -56,8 +47,8 @@ define([
       }
     },
 
-    addModel: function(model) {
-      var EditView = require("modules/tables/views/EditView");
+    addModel: function (model) {
+      var EditView = require('modules/tables/views/EditView'); // eslint-disable-line import/no-unresolved
       var collection = this.relatedCollection;
       var view = new EditView({model: model, inModal: true});
       view.headerOptions.route.isOverlay = true;
@@ -65,19 +56,18 @@ define([
       view.headerOptions.basicSave = true;
 
       view.events = {
-        'click .saved-success': function() {
+        'click .saved-success': function () {
           this.save();
         },
-        'click #removeOverlay': function() {
+        'click #removeOverlay': function () {
           app.router.removeOverlayPage(this);
         }
       };
 
-
       app.router.overlayPage(view);
 
       view.save = function () {
-        var newModel = new collection.model({}, {
+        var newModel = new collection.model({}, { // eslint-disable-line new-cap
           parse: true,
           collection: collection,
           structure: collection.structure,
@@ -90,25 +80,21 @@ define([
       };
     },
 
-    insertRow: function() {
-      var highLightIds = this.relatedCollection.map(function(model) {
-        return model.get('data').id;
-        //pluck('id');
-      });
+    insertRow: function () {
       var collection = app.getEntries(this.relatedCollection.table.id);
       var view = new Overlays.ListSelect({collection: collection});
       app.router.overlayPage(view);
 
-      //please proxy this instead
+      // please proxy this instead
       var me = this;
 
-      view.save = function() {
+      view.save = function () {
         _.each(view.table.selection(), function (id) {
           var data = collection.get(id).toJSON();
           // prevent duplicate
           if (me.columnSchema.options.get('no_duplicates') === true) {
             var duplicated = false;
-            me.relatedCollection.each(function(model) {
+            me.relatedCollection.each(function (model) {
               if (model.get('data').id === id) {
                 duplicated = true;
               }
@@ -127,9 +113,9 @@ define([
       collection.fetch();
     },
 
-    initialize: function(options) {
+    initialize: function (options) {
       if (!this.columnSchema.relationship ||
-        'MANYTOMANY' !== this.columnSchema.relationship.get('type')) {
+        this.columnSchema.relationship.get('type') !== 'MANYTOMANY') {
         throw __t('m2m_the_column_need_to_have_m2m_relationship', {
           column: this.columnSchema.id,
           type: 'MANYTOMANY',
@@ -143,25 +129,24 @@ define([
       this.showAddButton = this.columnSchema.options.get('add_button') === true;
 
       var relatedCollection = this.model.get(this.name);
-      var relatedSchema = relatedCollection.structure;
       var junctionStructure = relatedCollection.junctionStructure;
 
       var ids = [];
 
-      //Remove inactive items from collection
-      for (var i=0; i<relatedCollection.size(); i++) {
+      // Remove inactive items from collection
+      for (var i = 0; i < relatedCollection.size(); i++) {
         var model = relatedCollection.at(i);
-        if (!model.get('data').isDeleted()) {
-          ids.push(model.get('data').id);
-        } else {
+        if (model.get('data').isDeleted()) {
           relatedCollection.remove(model, {silent: true});
           i--;
+        } else {
+          ids.push(model.get('data').id);
         }
       }
 
       if (ids.length === 0) {
         relatedCollection.nestedCollection.setFilter({
-          ids: ids.slice(0,relatedCollection.nestedCollection.filters.perPage).join(',')
+          ids: ids.slice(0, relatedCollection.nestedCollection.filters.perPage).join(',')
         });
         relatedCollection.nestedCollection.fetch();
       }
@@ -183,7 +168,7 @@ define([
       });
 
       if (junctionStructure.get('sort') !== undefined) {
-        relatedCollection.setOrder('sort','ASC');
+        relatedCollection.setOrder('sort', 'ASC');
       }
 
       this.relatedCollection = relatedCollection;

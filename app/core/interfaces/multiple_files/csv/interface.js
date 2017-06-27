@@ -1,3 +1,4 @@
+/* global $ */
 define([
   'app',
   'underscore',
@@ -8,7 +9,7 @@ define([
 ], function (app, _, Backbone, FileHelper, UIView, Overlays) {
   'use strict';
 
-  var EntriesManager = require('core/EntriesManager');
+  var EntriesManager = require('core/EntriesManager'); // eslint-disable-line import/no-unresolved
 
   return UIView.extend({
     template: 'multiple_files/csv/input',
@@ -22,14 +23,14 @@ define([
 
     addItem: function () {
       if (this.showAddButton && this.canEdit) {
-        this.addModel(new this.relatedCollection.model({}, {
+        this.addModel(new this.relatedCollection.model({}, { // eslint-disable-line new-cap
           collection: this.relatedCollection,
           parse: true
         }));
       }
     },
 
-    editItem: function (event) {
+    editItem: function () {
       // NOTE: Do nothing, until we find a way to update/create files using csv
 
       // if (!this.canEdit) {
@@ -52,7 +53,7 @@ define([
     },
 
     addModel: function (model) {
-      var EditView = require('modules/tables/views/EditView');
+      var EditView = require('modules/tables/views/EditView'); // eslint-disable-line import/no-unresolved
       var collection = this.relatedCollection;
       var view = new EditView({
         model: model,
@@ -104,7 +105,7 @@ define([
     },
 
     editModel: function (model) {
-      var EditView = require('modules/tables/views/EditView');
+      var EditView = require('modules/tables/views/EditView'); // eslint-disable-line import/no-unresolved
       var view = new EditView({model: model});
 
       view.headerOptions.route.isOverlay = true;
@@ -158,9 +159,10 @@ define([
       _.each(models, function (model) {
         if (!model.isDeleted()) {
           var cid = model.cid;
-          var url, data = model.toJSON();
+          var url;
+          var data = model.toJSON();
 
-          model = new app.files.model(model.attributes, {collection: self.relatedCollection});
+          model = new app.files.model(model.attributes, {collection: self.relatedCollection}); // eslint-disable-line new-cap
 
           url = model.getThumbnailUrl();
           data.size = model.isEmbed() ? app.seconds_convert(data.size) : FileHelper.humanReadableSize(data.size);
@@ -214,7 +216,7 @@ define([
       var self = this;
       app.sendFiles([file], function (data) {
         if (data && typeof (data[0]) === 'object') {
-          var fileModel = new self.relatedCollection.model({}, {
+          var fileModel = new self.relatedCollection.model({}, { // eslint-disable-line new-cap
             collection: self.relatedCollection,
             parse: true
           });

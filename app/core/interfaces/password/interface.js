@@ -1,3 +1,4 @@
+/* global $ */
 define(['underscore', 'core/UIView', 'core/t', 'core/notification'], function (_, UIView, __t, Notification) {
   'use strict';
 
@@ -94,16 +95,16 @@ define(['underscore', 'core/UIView', 'core/t', 'core/notification'], function (_
       });
     },
 
-    onInputChange: function (event) {
-      var $password = this.$el.find('input.password-primary'),
-        $confirm = this.$el.find('input.password-confirm'),
-        primaryPass = $password.val();
+    onInputChange: function () {
+      var $password = this.$el.find('input.password-primary');
+      var $confirm = this.$el.find('input.password-confirm');
+      var primaryPass = $password.val();
 
       if (!primaryPass) {
         return;
       }
 
-      if ($confirm.length && primaryPass !== $confirm.val()) {
+      if ($confirm.length > 0 && primaryPass !== $confirm.val()) {
         Notification.warning(__t('password_do_not_match'));
         return false;
       }

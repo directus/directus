@@ -6,7 +6,6 @@ define([
   './interface',
   'core/t'
 ], function (app, _, Backbone, UIComponent, Input, __t) {
-
   'use strict';
 
   // Attribute            Type                   Contains                                Example

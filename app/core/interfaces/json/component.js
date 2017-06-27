@@ -1,3 +1,4 @@
+/* global _ */
 define(['./interface', 'core/UIComponent', 'core/t'], function (Input, UIComponent, __t) {
   return UIComponent.extend({
     id: 'json',
@@ -34,19 +35,19 @@ define(['./interface', 'core/UIComponent', 'core/t'], function (Input, UICompone
         default_value: ''
       }
     ],
-    validate: function(value, options) {
+    validate: function (value, options) {
       if (options.schema.isRequired() && _.isEmpty(value)) {
-        return __t('this_field_is_required')
+        return __t('this_field_is_required');
       }
 
       try {
         JSON.parse(value);
-      } catch(err) {
+      } catch (err) {
         return err;
       }
     },
-    list: function(options) {
-      return _.isString(options.value) ? options.value.replace(/<(?:.|\n)*?>/gm, '').substr(0,100) : '<span class="silver">--</span>';
+    list: function (options) {
+      return _.isString(options.value) ? options.value.replace(/<(?:.|\n)*?>/gm, '').substr(0, 100) : '<span class="silver">--</span>';
     }
   });
 });

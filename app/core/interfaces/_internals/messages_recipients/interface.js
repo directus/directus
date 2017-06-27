@@ -1,3 +1,4 @@
+/* global $ _ Bloodhound */
 define(['app', 'handlebars', 'core/UIView'], function (app, Handlebars, UIView) {
   return UIView.extend({
     template: '_internals/messages_recipients/input',

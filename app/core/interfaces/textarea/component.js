@@ -1,17 +1,9 @@
-//  Textarea Core UI component
-//  Directus 6.0
-
-//  (c) RANGER
-//  Directus may be freely distributed under the GNU license.
-//  For all details and documentation:
-//  http://www.getdirectus.com
-
+/* global _ */
 define([
   'core/interfaces/textarea/interface',
   'core/UIComponent',
   'core/t'
-], function(Input, UIComponent, __t) {
-
+], function (Input, UIComponent, __t) {
   'use strict';
 
   return UIComponent.extend({
@@ -44,15 +36,15 @@ define([
       }
     ],
     Input: Input,
-    validate: function(value, options) {
+    validate: function (value, options) {
       if (options.schema.isRequired() && _.isEmpty(value)) {
         // TODO: fix this line, it is too repetitive
         // over all the UIs
         return __t('this_field_is_required');
       }
     },
-    list: function(options) {
-      return _.isString(options.value) ? options.value.replace(/<(?:.|\n)*?>/gm, '').substr(0,100) : '<span class="silver">--</span>';
+    list: function (options) {
+      return _.isString(options.value) ? options.value.replace(/<(?:.|\n)*?>/gm, '').substr(0, 100) : '<span class="silver">--</span>';
     }
   });
 });

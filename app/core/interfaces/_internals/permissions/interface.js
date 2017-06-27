@@ -1,3 +1,4 @@
+/* Component */
 define([
   'core/UIView',
   'core/overlays/overlays',

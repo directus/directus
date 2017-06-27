@@ -1,8 +1,8 @@
+/* global $ */
 define([
   'core/UIComponent',
   './interface'
 ], function (UIComponent, Input) {
-
   'use strict';
 
   return UIComponent.extend({
@@ -47,17 +47,16 @@ define([
       }
     ],
     Input: Input,
-    validate: function(value, options) {
+    validate: function (value, options) {
       var $el = $('input[name="' + options.schema.id + '"]').parent();
-      var data = $el.data();
       var randomString = $el.find('input.password-primary').val();
 
-      if(!randomString && options.schema.get('required')) {
-        return 'This field is required ['+options.schema.id+'].';
+      if (!randomString && options.schema.get('required')) {
+        return 'This field is required [' + options.schema.id + '].';
       }
     },
-    list: function(options) {
-      return (options.value) ? options.value.toString().replace(/<(?:.|\n)*?>/gm, '').substr(0,100) : '';
+    list: function (options) {
+      return (options.value) ? options.value.toString().replace(/<(?:.|\n)*?>/gm, '').substr(0, 100) : '';
     }
   });
 });

@@ -1,9 +1,9 @@
+/* global $ */
 define([
   'utils',
   'underscore',
   'core/UIView'
 ], function (Utils, _, UIView) {
-
   return UIView.extend({
     template: '_system/status/input',
 

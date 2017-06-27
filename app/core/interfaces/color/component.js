@@ -1,10 +1,10 @@
+/* global _ */
 define([
-  'underscore',
   'core/interfaces/color/interface',
   'core/UIComponent',
   'core/t',
   'core/interfaces/color/lib/color'
-], function (_, Input, UIComponent, __t, Color) {
+], function (Input, UIComponent, __t, color) {
   'use strict';
 
   return UIComponent.extend({
@@ -107,8 +107,8 @@ define([
       }
 
       if (value) {
-        var color = Color(value, options.settings.get('output')).rgb;
-        var rgb = color.length === 4 ? 'rgba(' + color + ')' : 'rgb(' + color + ')';
+        var rgbColor = color(value, options.settings.get('output')).rgb;
+        var rgb = rgbColor.length === 4 ? 'rgba(' + rgbColor + ')' : 'rgb(' + rgbColor + ')';
         var swatch = '<div style="width: 20px; height: 20px; border-radius: 50%; background-color: ' + rgb + '"></div>';
         return options.settings.get('list_view_formatting') === 'swatch' ? swatch : value;
       }

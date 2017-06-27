@@ -1,7 +1,5 @@
-/*jshint multistr: true */
-
-define(['app', 'core/UIComponent', 'core/UIView', 'moment', 'helpers/ui', 'core/t'], function(app, UIComponent, UIView, moment, UIHelper, __t) {
-
+/* global _ */
+define(['app', 'core/UIComponent', 'core/UIView', 'moment', 'helpers/ui', 'core/t'], function (app, UIComponent, UIView, moment, UIHelper, __t) {
   'use strict';
 
   function removeTimeFromFormat(format) {
@@ -12,11 +10,11 @@ define(['app', 'core/UIComponent', 'core/UIView', 'moment', 'helpers/ui', 'core/
     template: 'datetime/input',
 
     events: {
-      'blur  input.date':   'updateValue',
-      'blur  input.time':   'updateValue',
-      'change  input.date': 'updateValue',
-      'change  input.time': 'updateValue',
-      'click .now':         'makeNow'
+      'blur input.date': 'updateValue',
+      'blur input.time': 'updateValue',
+      'change input.date': 'updateValue',
+      'change input.time': 'updateValue',
+      'click .now': 'makeNow'
     },
 
     supportsTime: function (type) {
@@ -35,7 +33,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'moment', 'helpers/ui', 'core/
       return {
         value: this.$('input[type=date]').val(),
         format: 'YYYY-MM-DD'
-      }
+      };
     },
 
     updateValue: function () {
@@ -74,7 +72,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'moment', 'helpers/ui', 'core/
 
     initialize: function () {
       var value = this.model.get(this.name);
-      if(undefined === value) {
+      if (undefined === value) {
         this.value = moment('0000-00-00');
       } else {
         this.value = moment(value);

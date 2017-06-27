@@ -14,6 +14,8 @@ define(['app', 'core/UIView', 'helpers/schema'], function (app, UIView, SchemaHe
         case 'primary':
           columns = SchemaHelper.primaryColumns(columns);
           break;
+        default:
+          break;
       }
 
       return columns;

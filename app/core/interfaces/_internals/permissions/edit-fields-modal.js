@@ -1,10 +1,10 @@
+/* global $ */
 define([
   'app',
   'backbone',
   'core/t',
   'core/Modal'
 ], function (app, Backbone, __t, ModalView) {
-
   'use strict';
 
   var EditFields = Backbone.Layout.extend({
@@ -68,7 +68,7 @@ define([
 
       data.columns = app.schemaManager.getColumns('tables', this.model.get('table_name'))
         .filter(function (model) {
-          return ! model.isPrimaryColumn();
+          return !model.isPrimaryColumn();
         })
         .map(function (model) {
           return {

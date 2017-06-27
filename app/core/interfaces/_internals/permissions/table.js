@@ -6,7 +6,6 @@ define([
   'core/Modal',
   './table-row'
 ], function (app, _, Backbone, __t, ModalView, TableRow) {
-
   'use strict';
 
   return Backbone.Layout.extend({

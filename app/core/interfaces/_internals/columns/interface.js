@@ -1,3 +1,4 @@
+/* global $ */
 define([
   'app',
   'underscore',
@@ -9,7 +10,7 @@ define([
   'schema/UIModel',
   'sortable',
   'core/t'
-], function (app, _, SchemaHelper, UIView, Notification, DoubleConfirmation, ColumnsCollection, UIModel, Sortable, __t) {
+], function (app, _, SchemaHelper, UIView, Notification, doubleConfirmation, ColumnsCollection, UIModel, Sortable, __t) {
   'use strict';
 
   var parseOptions = function (column, options) {
@@ -63,7 +64,7 @@ define([
       var table = app.schemaManager.getTable(this.model.id);
       var collection = table.columns;
       var columnModel = collection.get(id, true);
-      var UIManager = require('core/UIManager');
+      var UIManager = require('core/UIManager'); // eslint-disable-line import/no-unresolved
 
       if (!columnModel) {
         Notification.warning(__t('column_x_not_found', {
@@ -72,7 +73,7 @@ define([
         return;
       }
 
-      var ColumnView = require('modules/settings/views/modals/columns/column');
+      var ColumnView = require('modules/settings/views/modals/columns/column'); // eslint-disable-line import/no-unresolved
       var optionsModel = columnModel.get('options');
       optionsModel.set({id: columnModel.get('ui')});
 
@@ -89,7 +90,7 @@ define([
           break;
       }
 
-      if (viewName == ColumnView.VIEW_INTERFACE_ID && !UIManager.hasOptions(columnModel.get('ui'))) {
+      if (viewName === ColumnView.VIEW_INTERFACE_ID && !UIManager.hasOptions(columnModel.get('ui'))) {
         viewName = ColumnView.VIEW_COLUMN_ID;
       }
 
@@ -109,7 +110,7 @@ define([
 
     // TODO: Optimize this method, is almost identical to editRow
     addRow: function () {
-      var ColumnModel = require('schema/ColumnModel');
+      var ColumnModel = require('schema/ColumnModel'); // eslint-disable-line import/no-unresolved
       var collection = app.schemaManager.getColumns('tables', this.model.id);
       // TODO: Add model/view required options mechanism
       var model = new ColumnModel({
@@ -126,7 +127,7 @@ define([
       optionsModel.parent = model;
 
       var schema = app.schemaManager.getColumns('ui', 'text_input');
-      var ColumnView = require('modules/settings/views/modals/columns/column');
+      var ColumnView = require('modules/settings/views/modals/columns/column'); // eslint-disable-line import/no-unresolved
       var view = new ColumnView({
         model: optionsModel,
         schema: schema,
@@ -188,18 +189,18 @@ define([
 
       var self = this;
       var onSuccess = function (model, response) {
-        if (!response.success) {
-          Notification.error('Column not removed', response.message);
-        } else {
+        if (response.success) {
           self.collection.remove(originalColumnModel);
           collection.remove(originalColumnModel);
           columns.remove(originalColumnModel);
           self.$el.find('[data-id=' + model.get('id') + ']').remove();
           Notification.success('Column removed', '<b>' + columnName + '</b> was removed.');
+        } else {
+          Notification.error('Column not removed', response.message);
         }
       };
 
-      var onError = function (model, resp, options) {
+      var onError = function (model, resp) {
         Notification.error('Column not removed', resp.responseJSON.message);
       };
 
@@ -215,7 +216,7 @@ define([
         self.destroyColumn(columnName);
       };
 
-      DoubleConfirmation({
+      doubleConfirmation({
         value: columnName,
         emptyValueMessage: __t('invalid_column'),
 
@@ -228,7 +229,9 @@ define([
 
     toggleAttr: function (id, attr) {
       var column = this.columns.get(id);
-      var options, attrs, originalUrl;
+      var options;
+      var attrs;
+      var originalUrl;
 
       if (column) {
         attrs = {};
@@ -415,7 +418,8 @@ define([
       this.canEdit = !(options.inModal || false);
 
       // TODO: Parse the result on fetch
-      var columns = this.columns = this.model.get(this.name);
+      var columns = this.model.get(this.name);
+      this.columns = columns;
       // NOTE: parsing the options of each column into UIModel object
       columns.map(function (column) {
         column.set('options', parseOptions(column, column.get('options') || {}));

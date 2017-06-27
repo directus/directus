@@ -1,18 +1,9 @@
-//  Markdown UI component
-//  Directus 6.0
-
-//  (c) RANGER
-//  Directus may be freely distributed under the GNU license.
-//  For all details and documentation:
-//  http://www.getdirectus.com
-
+/* global _ */
 define([
-  'underscore',
   'core/interfaces/markdown/interface',
   'core/UIComponent',
   'marked'
-], function (_, Input, UIComponent, marked) {
-
+], function (Input, UIComponent, marked) {
   'use strict';
 
   return UIComponent.extend({
@@ -78,7 +69,7 @@ define([
 
       var raw_val = marked(value);
 
-      return _.isString(raw_val) ? raw_val.replace(/<(?:.|\n)*?>/gm, '').substr(0,100) : '<span class="silver">--</span>';
+      return _.isString(raw_val) ? raw_val.replace(/<(?:.|\n)*?>/gm, '').substr(0, 100) : '<span class="silver">--</span>';
     }
   });
 });

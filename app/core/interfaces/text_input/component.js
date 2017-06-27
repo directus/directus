@@ -1,8 +1,9 @@
+/* global _ */
 define([
   './interface',
   'core/UIComponent',
   'core/t'
-], function(Input, UIComponent, __t) {
+], function (Input, UIComponent, __t) {
   'use strict';
 
   return UIComponent.extend({
@@ -84,7 +85,7 @@ define([
       }
     ],
     Input: Input,
-    validate: function(value, options) {
+    validate: function (value, options) {
       var validationMessage = options.settings.get('validation_message') || __t('confirm_invalid_value');
 
       if (_.isEmpty(value)) {
@@ -95,16 +96,16 @@ define([
         return;
       }
 
-      switch(options.settings.get('validation_type')) {
+      switch (options.settings.get('validation_type')) {
         case ('wl') :
           var Regex = new RegExp('^[' + options.settings.get('validation_string') + ']+$');
-          if(!value.match(Regex)) {
+          if (!value.match(Regex)) {
             return validationMessage;
           }
           break;
         case ('bl') :
           var chars = options.settings.get('validation_string').split('');
-          if(chars.length > 0 && value.match(chars.join('|'))) {
+          if (chars.length > 0 && value.match(chars.join('|'))) {
             return validationMessage;
           }
           break;
@@ -114,9 +115,11 @@ define([
             return validationMessage;
           }
           break;
+        default:
+          break;
       }
     },
-    list: function(options) {
+    list: function (options) {
       return (options.value) ? options.value.toString().replace(/<(?:.|\n)*?>/gm, '').substr(0, 100) : '';
     }
   });

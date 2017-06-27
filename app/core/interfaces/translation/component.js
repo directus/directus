@@ -1,11 +1,3 @@
-//  Translation core UI component
-//  Directus 6.0
-
-//  (c) RANGER
-//  Directus may be freely distributed under the GNU license.
-//  For all details and documentation:
-//  http://www.getdirectus.com
-
 define(['core/UIComponent', 'core/UIView', 'core/t'], function (UIComponent, UIView, __t) {
   'use strict';
 

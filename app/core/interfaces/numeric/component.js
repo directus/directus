@@ -49,7 +49,7 @@ define([
     validate: function (value, options) {
       var inputView = options.view;
 
-      if (options.schema.isRequired() && value != 0 && !value) {
+      if (options.schema.isRequired() && value !== 0 && !value) {
         return __t('this_field_is_required');
       }
 
@@ -60,14 +60,14 @@ define([
     list: function (options) {
       var value = options.value;
 
-      if (!isNaN(Number(value))) {
+      if (isNaN(Number(value))) {
+        value = '<span class="silver">--</span>';
+      } else {
         value = Number(value);
 
         if (options.settings.get('localized')) {
           value = value.toLocaleString();
         }
-      } else {
-        value = '<span class="silver">--</span>';
       }
 
       return value;

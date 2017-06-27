@@ -1,15 +1,4 @@
-//  Textarea Core UI component
-//  Directus 6.0
-
-//  (c) RANGER
-//  Directus may be freely distributed under the GNU license.
-//  For all details and documentation:
-//  http://www.getdirectus.com
-
-define([
-  'core/UIView'
-],function(UIView) {
-
+define(['core/UIView'], function (UIView) {
   'use strict';
 
   return UIView.extend({
@@ -23,7 +12,7 @@ define([
     onKeyDown: function (event) {
       var key = event.keyCode || event.which;
 
-      if (key == 13) {
+      if (key === 13) {
         event.stopPropagation();
       }
     },
@@ -34,7 +23,7 @@ define([
       this.model.set(this.name, target.value);
     },
 
-    serialize: function() {
+    serialize: function () {
       return {
         value: this.options.value,
         name: this.options.name,

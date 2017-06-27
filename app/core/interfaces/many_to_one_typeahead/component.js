@@ -1,3 +1,4 @@
+/* global _ */
 define(['./interface', 'app', 'backbone', 'core/UIComponent', 'core/t'], function (Input, app, Backbone, UIComponent, __t) {
   'use strict';
 

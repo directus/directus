@@ -3,7 +3,7 @@ define([
   'underscore',
   'core/UIComponent',
   'core/t'
-], function(Input, _, UIComponent, __t) {
+], function (Input, _, UIComponent, __t) {
   'use strict';
 
   return UIComponent.extend({
@@ -27,23 +27,22 @@ define([
       // TODO: Include spaces in CSV value
     ],
     Input: Input,
-    validate: function(value, options) {
+    validate: function (value, options) {
       if (options.schema.isRequired() && _.isEmpty(value)) {
         return __t('this_field_is_required');
       }
     },
-    list: function(options) {
+    list: function (options) {
       var tags = options.model.attributes.tags ? options.model.attributes.tags.split(',') : [];
 
-      if(tags.length){
+      if (tags.length > 0) {
         for (var i = 0; i < tags.length; i++) {
           tags[i] = '<span class="tag">' + tags[i] + '</span>';
         }
 
         return '<span class="tag-container"><div class="fade-out"></div>' + tags.join(' ') + '</span>';
-      } else {
-        return options.model.attributes.tags;
       }
+      return options.model.attributes.tags;
     }
   });
 });
