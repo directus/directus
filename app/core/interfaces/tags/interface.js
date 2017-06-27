@@ -72,6 +72,7 @@ define([
       return {
         value: this.getTagsValue(),
         name: this.options.name,
+        readOnly: this.options.settings.get('read_only') || !this.options.canWrite,
         tags: this.tags,
         comment: this.options.schema.get('comment')
       };
