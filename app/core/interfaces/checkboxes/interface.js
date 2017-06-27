@@ -53,7 +53,7 @@ define(['core/UIView'], function (UIView) {
         options: optionsArray,
         name: this.options.name,
         comment: this.options.schema.get('comment'),
-        readonly: !this.options.canWrite,
+        readOnly: this.options.settings.get('read_only') || !this.options.canWrite,
         value: value
       };
     }

@@ -26,7 +26,7 @@
 		cursor: pointer;
 	}
 
-	.multi_selectlist-interface input[type=checkbox]:checked + label {
+	.multi_selectlist-interface input[type=checkbox]:checked:not(:disabled) + label {
 		font-weight: 700;
 		color: #3498DB;
 	}
@@ -45,10 +45,14 @@
 		transition: color 200ms ease-in-out;
 	}
 
-	.multi_selectlist-interface input[type=checkbox]:checked + label::before,
-	.multi_selectlist-interface input[type=checkbox]:hover + label::before,
-	.multi_selectlist-interface input[type=checkbox]:focus + label::before {
+	.multi_selectlist-interface input[type=checkbox]:checked:not(:disabled) + label::before,
+	.multi_selectlist-interface input[type=checkbox]:hover:not(:disabled) + label::before,
+	.multi_selectlist-interface input[type=checkbox]:focus:not(:disabled) + label::before {
 		color: #3498DB;
+	}
+
+	.multi_selectlist-interface input[type=checkbox]:disabled + label {
+		opacity: 0.6;
 	}
 
 	.multi_selectlist-interface input[type=checkbox] + label::before {
@@ -64,7 +68,7 @@
 	<ul class="gridlist">
 	{{#options}}
 		<li>
-			<input id="multi_select_{{../name}}_{{key}}" name="{{../name}}_{{key}}" value="{{key}}" type="checkbox" {{#if selected}}checked{{/if}}/>
+			<input id="multi_select_{{../name}}_{{key}}" name="{{../name}}_{{key}}" value="{{key}}" type="checkbox" {{#if ../readOnly}} disabled {{/if}} {{#if selected}}checked{{/if}}/>
 			<label for="multi_select_{{../name}}_{{key}}">{{value}}</label>
 		</li>
 	{{/options}}

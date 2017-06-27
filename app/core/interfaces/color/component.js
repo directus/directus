@@ -72,8 +72,7 @@ define([
         type: 'Boolean',
         comment: 'Allow values with an alpha channel',
         default_value: false
-      },
-      {id: 'readonly', type: 'Boolean', default_value: false, ui: 'toggle'}
+      }
     ],
     Input: Input,
     validate: function (value, options) {
