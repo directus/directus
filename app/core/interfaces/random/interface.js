@@ -65,7 +65,7 @@ define([
       return {
         name: this.options.name,
         value: this.options.value,
-        readonly: !this.options.canWrite || this.options.settings.get('allow_any_value') !== true,
+        readOnly: this.options.settings.get('read_only') || !this.options.canWrite,
         comment: this.options.schema.get('comment'),
         placeholder: this.options.settings.get('placeholder')
       };

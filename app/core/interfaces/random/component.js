@@ -10,6 +10,13 @@ define([
     dataTypes: ['VARCHAR'],
     variables: [
       {
+        id: 'read_only',
+        ui: 'toggle',
+        type: 'Boolean',
+        comment: 'Force this interface to be read only',
+        default_value: false
+      },
+      {
         id: 'string_length',
         ui: 'numeric',
         type: 'Number',
