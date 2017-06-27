@@ -1234,7 +1234,11 @@ class BaseTableGateway extends TableGateway
      */
     public function getSettings($key = null)
     {
-        $settings = Bootstrap::get('settings');
+        $settings = [];
+
+        if (static::$container) {
+            $settings = static::$container->get('app.settings');
+        }
 
         return $key !== null ? ArrayUtils::get($settings, $key) : $settings;
     }

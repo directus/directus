@@ -12,7 +12,7 @@ define(['./interface', 'core/UIComponent', 'core/t', 'utils'], function (Input, 
         required: true,
         options: {
           rows: 25,
-          placeholder_text: JSON.stringify({
+          placeholder: JSON.stringify({
             value1: 'Option 1',
             value2: 'Option 2',
             value3: 'Option 3'

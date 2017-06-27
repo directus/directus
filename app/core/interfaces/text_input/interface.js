@@ -11,7 +11,7 @@
 // options.schema     Backbone.Model    Structure/Schema for this table row     options.schema.get('type') [column_name, comment, type]
 // options.model      Backbone.Model    Data/Model for this table row           options.model.get('id') [any column in current table row]
 // options.value      String            Value for this field
-// options.settings   Backbone.Model    Saved values for current UI options     options.settings.get('placeholder_text') [any key from this UI options]
+// options.settings   Backbone.Model    Saved values for current UI options     options.settings.get('placeholder') [any key from this UI options]
 // options.name       String            Field name
 /*jshint multistr: true */
 

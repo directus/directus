@@ -36,7 +36,7 @@ define(function(require, exports, module) {
       ui: 'text_input',
       char_length: 50,
       options: {
-        placeholder_text: trans('global_project_name_placeholder')
+        placeholder: trans('global_project_name_placeholder')
       },
       comment: transComments('global_project_name')
     },
@@ -45,7 +45,7 @@ define(function(require, exports, module) {
       ui: 'text_input',
       char_length: 255,
       options: {
-        placeholder_text: "http://"
+        placeholder: "http://"
       },
       comment: transComments('global_project_url')
     },
@@ -96,7 +96,7 @@ define(function(require, exports, module) {
       },
       comment: transComments('files_file_naming')
     },
-    {id: 'thumbnail_quality', ui: 'numeric', char_length: 255, options: {size: 'small', placeholder_text: "eg: 90"}, comment: __t('directus_settings_files_thumbnail_quality_comment')},
+    {id: 'thumbnail_quality', ui: 'numeric', char_length: 255, options: {size: 'small', placeholder: "eg: 90"}, comment: __t('directus_settings_files_thumbnail_quality_comment')},
     {id: 'thumbnail_crop_enabled', ui: 'toggle', comment: __t('directus_settings_files_thumbnail_crop_enabled')},
     {id: 'youtube_api_key', ui: 'text_input', char_length: 255, comment: __t('directus_settings_files_youtube_api_key_comment')}
   ];

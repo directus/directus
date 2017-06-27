@@ -51,7 +51,7 @@ define(['./interface', 'core/UIComponent', 'core/t', 'utils'], function (Input, 
     list: function (options) {
       // Convert default csv to csv with spaces => demo1,demo2 => demo1, demo2
       var showAsText = options.settings.get('list_view_formatting') === 'text';
-      return options.value.split(options.settings.get('delimiter'))
+      var values = options.value.split(options.settings.get('delimiter'))
         .filter(function (value) {
           // Filter out the first and last empty delimiter
           return value.length > 0;
@@ -63,10 +63,9 @@ define(['./interface', 'core/UIComponent', 'core/t', 'utils'], function (Input, 
           }
 
           return value;
-        })
-        .reduce(function (string, value) {
-          return string + ', ' + value;
         });
+
+      return values.join(', ');
     }
   });
 });

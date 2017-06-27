@@ -128,7 +128,7 @@ define(['./interface', 'core/UIComponent', 'core/t'], function (Input, UICompone
         default_value: '',
         options: {
           rows: 25,
-          placeholder_text: JSON.stringify({
+          placeholder: JSON.stringify({
             highlight: {
               name: 'Add Highlight',
               template: '"<div class=\'highlight\'>{{text}}</div>"',

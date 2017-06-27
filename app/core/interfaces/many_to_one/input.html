@@ -1,7 +1,7 @@
 <div class="select-container">
 	<select name="{{name}}" {{#unless canEdit}}disabled{{/unless}}>
 		{{#if allowNull}}
-		<option value="">{{placeholder_text}}</option>
+		<option value="">{{placeholder}}</option>
 		{{/if}}
 		{{#data}}
 		<option value="{{id}}" {{#if selected}}selected{{/if}}>{{{name}}}</option>

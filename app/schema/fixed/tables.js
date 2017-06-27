@@ -62,7 +62,7 @@ define(function(require, exports, module) {
         "nullable": true,
         "sort": 9,
         "options": {
-          "placeholder_text": __t('eg_x', {text: 'http://example.com/articles/{{slug}}'})
+          "placeholder": __t('eg_x', {text: 'http://example.com/articles/{{slug}}'})
         },
         "comment": transComments('preview_url')
       },
@@ -79,7 +79,7 @@ define(function(require, exports, module) {
         "nullable": true,
         "sort": 10,
         "options": {
-          "placeholder_text": __t('eg_x', {text: '{{first_name}} {{last_name}}'})
+          "placeholder": __t('eg_x', {text: '{{first_name}} {{last_name}}'})
         },
         "comment": transComments('display_template')
       },

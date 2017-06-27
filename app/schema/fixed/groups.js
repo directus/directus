@@ -106,7 +106,7 @@ define(function(require, exports, module) {
         "hidden_input": false,
         "sort": 50,
         "options": {
-          "placeholder_text": __t('eg_x', {text: '000.000.000.000, 111.111.111.111'}),
+          "placeholder": __t('eg_x', {text: '000.000.000.000, 111.111.111.111'}),
           "rows": 3
         },
         "comment": transComments('restrict_to_ip_whitelist')
@@ -158,7 +158,7 @@ define(function(require, exports, module) {
         "nullable": true,
         "comment": transComments('nav_override'),
         "options": {
-          placeholder_text: JSON.stringify({
+          "placeholder": JSON.stringify({
             "Category": {
               "Title 1": "/link-1",
               "Title 2": "/link-2"

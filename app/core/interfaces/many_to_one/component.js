@@ -34,7 +34,7 @@ define(['./interface', 'backbone', 'handlebars', 'core/UIComponent', 'core/t'], 
         required: false
       },
       {
-        id: 'placeholder_text',
+        id: 'placeholder',
         ui: 'text_input',
         type: 'String',
         comment: __t('m2o_placeholder_text_comment'),

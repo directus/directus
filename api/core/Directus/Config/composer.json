@@ -1,5 +1,5 @@
 {
-  "name": "directus/container",
+  "name": "directus/config",
   "description": "Directus Config Library",
   "keywords": [
     "directus",
@@ -8,11 +8,16 @@
   "license": "MIT",
   "require": {
     "php": ">=5.4.0",
-    "directus/collection": "dev-d64"
+    "directus/collection": "0.9.*@dev"
   },
   "autoload": {
     "psr-4": {
       "Directus\\Config\\": ""
+    }
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-version/6.4": "0.9.x-dev"
     }
   }
 }

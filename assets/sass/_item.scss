@@ -187,6 +187,12 @@
 			}
 			input {
 				min-width: 400px;
+				&.small {
+					width: 150px;
+				}
+				&.medium {
+					width: 300px;
+				}
 			}
 			textarea {
 				position: relative;

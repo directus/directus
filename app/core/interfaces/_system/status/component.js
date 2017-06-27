@@ -2,17 +2,35 @@ define(['./interface', 'core/UIComponent', 'core/t'], function (Input, UICompone
   var statusMappingPlaceholder = JSON.stringify({
     0: {
       name: 'Delete',
-      color: '#C1272D',
+      text_color: '#FFFFFF',
+      background_color: '#F44336',
+      subdued_in_listing: true,
+      show_listing_badge: true,
+      hidden_globally: true,
+      hard_delete: false,
+      published: false,
       sort: 3
     },
     1: {
       name: 'Active',
-      color: '#3498DB',
+      text_color: '#FFFFFF',
+      background_color: '#3498DB',
+      subdued_in_listing: false,
+      show_listing_badge: false,
+      hidden_globally: false,
+      hard_delete: false,
+      published: true,
       sort: 1
     },
     2: {
       name: 'Draft',
-      color: '#BBBBBB',
+      text_color: '#999999',
+      background_color: '#EEEEEE',
+      subdued_in_listing: true,
+      show_listing_badge: true,
+      hidden_globally: false,
+      hard_delete: false,
+      published: false,
       sort: 2
     }
   }, null, 2);
@@ -32,11 +50,11 @@ define(['./interface', 'core/UIComponent', 'core/t'], function (Input, UICompone
       hidden_list: false,
       hidden_input: false,
       sort: 6,
-      comment: __t('directus_tables_delete_value_comment')
+      comment: "The value of the status option that hard deletes"
     }, {
       id: 'status_mapping',
       column_name: 'status_mapping',
-      ui: 'textarea',
+      ui: 'json',
       type: 'TEXT',
       hidden_list: false,
       hidden_input: false,
@@ -45,7 +63,7 @@ define(['./interface', 'core/UIComponent', 'core/t'], function (Input, UICompone
       comment: __t('directus_tables_status_mapping_comment'),
       options: {
         rows: 17,
-        placeholder_text: statusMappingPlaceholder,
+        placeholder: statusMappingPlaceholder,
         filter: 'number'
       }
     }],

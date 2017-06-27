@@ -39,7 +39,7 @@ define([
         value: this.options.value,
         name: this.options.name,
         rows: this.options.settings.get('rows'),
-        placeholder_text: this.options.settings.get('placeholder'),
+        placeholder: this.options.settings.get('placeholder'),
         comment: this.options.schema.get('comment'),
         readonly: !this.options.canWrite
       };
