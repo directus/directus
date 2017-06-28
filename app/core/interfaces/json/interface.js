@@ -3,7 +3,8 @@ define(['core/UIView'], function (UIView) {
     template: 'json/input',
     events: {
       'keydown textarea': 'process',
-      'keyup textarea': 'validate'
+      'keyup textarea': 'validate',
+      'click .interface_json_example': 'fillWithExample'
     },
     change: 0,
     lastValue: '',
@@ -13,8 +14,6 @@ define(['core/UIView'], function (UIView) {
       this.change = textarea.value.length - this.lastValue.length;
 
       var caret = textarea.selectionStart;
-      var added = this.change > 0 && textarea.value.substr(caret - this.change, this.change) || '';
-      var removed = this.change < 0 && this.lastValue.substr(caret, -this.change) || '';
 
       var code = event.keyCode;
       var value = textarea.value;
@@ -73,10 +72,9 @@ define(['core/UIView'], function (UIView) {
 
     isIndented: function (line) {
       var indent = this.options.settings.get('indent');
-      var textarea = this.$('textarea')[0];
       var regex = new RegExp('^(' + indent + '+)', 'g');
       var match = line.match(regex);
-      return match && match[0].length / indent.length || 0;
+      return (match && match[0].length / indent.length) || 0;
     },
 
     addIndent: function (before, after, num) {
@@ -87,8 +85,10 @@ define(['core/UIView'], function (UIView) {
         return;
       }
 
-      textarea.value = this.lastValue = before + '\n' + indent.repeat(num) + after;
-      textarea.selectionStart = textarea.selectionEnd = this.lastValue.length - after.length;
+      textarea.value = before + '\n' + indent.repeat(num) + after;
+      this.lastValue = before + '\n' + indent.repeat(num) + after;
+      textarea.selectionStart = this.lastValue.length - after.length;
+      textarea.selectionEnd = this.lastValue.length - after.length;
     },
 
     removeIndent: function (before, after) {
@@ -100,8 +100,10 @@ define(['core/UIView'], function (UIView) {
         return;
       }
 
-      textarea.value = this.lastValue = before.slice(0, -indent.length) + after;
-      textarea.selectionStart = textarea.selectionEnd = before.length - indent.length;
+      textarea.value = before.slice(0, -indent.length) + after;
+      this.lastValue = before.slice(0, -indent.length) + after;
+      textarea.selectionStart = before.length - indent.length;
+      textarea.selectionEnd = before.length - indent.length;
     },
 
     validateJSON: function (string) {
@@ -125,13 +127,22 @@ define(['core/UIView'], function (UIView) {
       textarea.classList.add('invalid');
     },
 
+    fillWithExample: function () {
+      var textarea = this.$('textarea')[0];
+      textarea.value = JSON.stringify({
+        value1: 'Option One',
+        value2: 'Option Two',
+        value3: 'Option Three'
+      }, null, '   ');
+    },
+
     serialize: function () {
       // Beautify JSON
       var value;
       if (this.options.value) {
         try {
           value = JSON.stringify(JSON.parse(this.options.value), null, this.options.settings.get('indent'));
-        } catch (error) {
+        } catch (err) {
           value = this.options.value;
         }
       }
