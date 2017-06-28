@@ -705,14 +705,32 @@ class Column implements \ArrayAccess, Arrayable, \JsonSerializable
         return $this->ui;
     }
 
+    /**
+     * Sets the column options
+     *
+     * @param array $options
+     */
     public function setOptions(array $options)
     {
         $this->options = $options;
     }
 
-    public function getOptions()
+    /**
+     * Gets all or the given key options
+     *
+     * @param string|null $key
+     *
+     * @return mixed
+     */
+    public function getOptions($key = null)
     {
-        return $this->options;
+        $options = $this->options ?: [];
+
+        if ($key !== null) {
+            return ArrayUtils::get($options, $key);
+        }
+
+        return $options;
     }
 
     /**

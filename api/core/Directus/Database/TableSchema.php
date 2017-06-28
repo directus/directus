@@ -144,7 +144,7 @@ class TableSchema
     public static function getStatusMap($tableName)
     {
         $tableObject = static::getTableSchema($tableName);
-        $statusMapping = json_decode($tableObject->getStatusMapping(), true);
+        $statusMapping = $tableObject->getStatusMapping();
 
         if (!$statusMapping) {
             $statusMapping = isset(static::$config['statusMapping']) ? static::$config['statusMapping'] : null;

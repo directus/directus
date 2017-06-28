@@ -10,11 +10,16 @@ class Config extends Collection implements ConfigInterface
     /**
      * Get a list of published statuses
      *
+     * @param array $statusMapping
+     *
      * @return array
      */
-    public function getPublishedStatuses()
+    public function getPublishedStatuses($statusMapping = [])
     {
-        $statusMapping = $this->get('statusMapping', []);
+        if (!empty($statusMapping)) {
+            $statusMapping = $this->get('statusMapping', []);
+        }
+
         $visibleStatus = [];
 
         foreach ($statusMapping as $value => $status) {

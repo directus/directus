@@ -95,7 +95,7 @@ class Table implements \ArrayAccess, Arrayable, \JsonSerializable
     protected $defaultStatus;
 
     /**
-     * @var string
+     * @var array
      */
     protected $statusMapping;
 
@@ -315,6 +315,8 @@ class Table implements \ArrayAccess, Arrayable, \JsonSerializable
                 $this->setSortColumn($column->getName());
             } else if (!$this->getStatusColumn() && $column->getUI() === SchemaManager::INTERFACE_STATUS) {
                 $this->setStatusColumn($column->getName());
+                $statusMapping = @json_decode($column->getOptions('status_mapping'), true);
+                $this->setStatusMapping($statusMapping);
             } else if (!$this->getDateCreateColumn() && $column->getUI() === SchemaManager::INTERFACE_DATE_CREATED) {
                 $this->setDateCreateColumn($column->getName());
             } else if (!$this->getUserCreateColumn() && $column->getUI() === SchemaManager::INTERFACE_USER_CREATED) {
@@ -749,7 +751,7 @@ class Table implements \ArrayAccess, Arrayable, \JsonSerializable
     /**
      * Get the table custom status mapping
      *
-     * @return string
+     * @return array
      */
     public function getStatusMapping()
     {

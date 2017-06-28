@@ -1242,4 +1242,22 @@ class BaseTableGateway extends TableGateway
 
         return $key !== null ? ArrayUtils::get($settings, $key) : $settings;
     }
+
+    public function getPublishedStatuses()
+    {
+        $publishedStatuses = [];
+
+        if (static::$container && TableSchema::hasStatusColumn($this->table, true)) {
+            $config = static::$container->get('config');
+            $statusMapping = $this->getTableSchema()->getStatusMapping();
+
+            if ($statusMapping) {
+                $publishedStatuses = $config->getPublishedStatuses($statusMapping);
+            } else {
+                $publishedStatuses = $config->getPublishedStatuses();
+            }
+        }
+
+        return $publishedStatuses;
+    }
 }

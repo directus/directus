@@ -658,9 +658,8 @@ class RelationalTableGateway extends BaseTableGateway
 
         if (ArrayUtils::get($params, 'preview')) {
             $defaultParams['status'] = null;
-        } else if (static::$container && !ArrayUtils::has($params, 'status')) {
-            $config = static::$container->get('config');
-            $defaultParams['status'] = $config->getPublishedStatuses();
+        } else if (!ArrayUtils::has($params, 'status')) {
+            $defaultParams['status'] = $this->getPublishedStatuses();
         }
 
         $params = array_merge($defaultParams, $params);
