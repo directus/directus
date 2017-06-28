@@ -16,7 +16,7 @@ class Config extends Collection implements ConfigInterface
      */
     public function getPublishedStatuses($statusMapping = [])
     {
-        if (!empty($statusMapping)) {
+        if (empty($statusMapping)) {
             $statusMapping = $this->get('statusMapping', []);
         }
 
