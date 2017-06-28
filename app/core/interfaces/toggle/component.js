@@ -29,7 +29,7 @@ define(['./interface', 'core/UIComponent', 'core/t'], function (Input, UICompone
     Input: Input,
     validate: function (value, options) {
       var required = options.schema.isRequired();
-      if ((required && _.isEmpty(value)) || (required && Number(value) === 0)) {
+      if (required && value === undefined) {
         return __t('this_field_is_required');
       }
     },
