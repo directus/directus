@@ -139,7 +139,8 @@ define(['./interface', 'core/UIComponent', 'core/t'], function (Input, UICompone
               name: 'Add Highlight',
               template: '"<div class=\'highlight\'>{{text}}</div>"',
               selector: 'div.highlight',
-              preview_style: 'border: 2px dashed grey;'
+              preview_style: 'border: 2px dashed grey;',
+              label: 'HL'
             }
           }, null, '  ')
         }
