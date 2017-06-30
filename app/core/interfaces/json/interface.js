@@ -127,13 +127,15 @@ define(['core/UIView'], function (UIView) {
       textarea.classList.add('invalid');
     },
 
-    fillWithExample: function () {
+    fillWithExample: function (e) {
       var textarea = this.$('textarea')[0];
       textarea.value = JSON.stringify({
         value1: 'Option One',
         value2: 'Option Two',
         value3: 'Option Three'
       }, null, '   ');
+      e.preventDefault();
+      return false;
     },
 
     serialize: function () {
