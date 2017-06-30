@@ -126,7 +126,6 @@ define([
               if (_.isFunction(fn)) {
                 fn(_.clone(model.attributes), allowed);
               }
-              model.trigger('sync');
             });
           } else {
             model.set(_.extend(modelData, {
@@ -135,7 +134,6 @@ define([
             if (_.isFunction(fn)) {
               fn(_.clone(model.toJSON()), allowed);
             }
-            model.trigger('sync');
           }
         });
       });
@@ -276,6 +274,13 @@ define([
       type = this.getSubType(type);
 
       return _.isString(type) && type.toLowerCase() === allowedType.toLowerCase();
+    },
+
+    // Do not track any column that doesn't belong to the files structure
+    // NOTE: this can be fixed by not set non-structure attribute to attributes
+    // TODO: Remove this method and do not add thumbnailData to attributes
+    shouldBeTracked: function (attr) {
+      return this.structure.get(attr) != null;
     },
 
     constructor: function FilesModel(data, options) {

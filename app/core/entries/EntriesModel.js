@@ -679,6 +679,11 @@ define(function(require, exports, module) {
       // NOTE: Track changes even when the silent flag has been set
       if (this._trackingChanges) {
         for (key in attrs) {
+          // NOTE: this was added to avoid tracking files non-structure column attributes
+          if (_.isFunction(this.shouldBeTracked) && !this.shouldBeTracked(key)) {
+            continue;
+          }
+
           val = attrs[key];
           // NOTE: This code was inserted by us to support relational attributes
           // not part of TrackIt library original code
