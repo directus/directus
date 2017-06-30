@@ -35,6 +35,14 @@
 
 	div.mce-tinymce.mce-container.mce-panel {
 		max-width: 400px;
+		border-color: #cccccc;
+		border-radius: 2px;
+		overflow: hidden;
+		transition: box-shadow 250ms ease-in-out;
+	}
+
+	div.mce-tinymce.mce-container.mce-panel.focus {
+		box-shadow: 0px 0px 0px 2px #3498DB;
 	}
 </style>
 <textarea name="{{name}}" id="wysiwyg_{{name}}" {{#if readOnly}}readonly{{/if}}>{{value}}</textarea>

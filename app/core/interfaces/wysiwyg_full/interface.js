@@ -128,6 +128,7 @@ define([
         skin: 'directus',
         autoresize_max_height: this.options.settings.get('max_height'),
         elementpath: elementpath,
+        statusbar: elementpath,
         menubar: false,
         readonly: this.options.settings.get('read_only') || !this.options.canWrite,
         toolbar: toolbar,
@@ -181,6 +182,15 @@ define([
             // This = tinyMCE instance
             this.contentStyles.push(previewStyles);
           }
+
+          // Add focus styles
+          editor.on('focus', function (e) {
+            e.target.editorContainer.classList.add('focus');
+          });
+
+          editor.on('blur', function (e) {
+            e.target.editorContainer.classList.remove('focus');
+          });
         }
       });
 
