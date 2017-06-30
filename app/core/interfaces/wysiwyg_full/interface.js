@@ -89,7 +89,7 @@ define([
 
       if (toolbarOptions.length > 0) {
         // Convert inline / alignment to appropriate options & add to toolbar
-        toolbar = toolbarOptions
+        toolbar += toolbarOptions
           .map(function (option) {
             if (option === 'inline') {
               return inline.reduce(function (inlineStr, inlineOption) {
