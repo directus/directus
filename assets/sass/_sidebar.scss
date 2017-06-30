@@ -746,18 +746,6 @@
 									}
 								}
 							}
-							.comment-instructions {
-								@include transition (all, $timing-short, ease-in-out);
-								position: absolute;
-								bottom: 16px;
-								right: 16px;
-								color: $gray-2;
-								font-size: 10px;
-								line-height: 13px;
-								text-transform: uppercase;
-								opacity: 0;
-								pointer-events: none;
-							}
 						}
 						.byline {
 							position: relative;

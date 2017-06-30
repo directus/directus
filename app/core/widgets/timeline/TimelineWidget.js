@@ -26,13 +26,9 @@ function(app, Backbone, $, _, __t, Directus, moment) {
 
       'click .activity-full-toggle': 'showActivityDetails',
 
-      'keydown #itemCommentText': function (event) {
-        if (event.keyCode === 13 && !event.shiftKey) {
-          event.preventDefault();
-
-          var message = this.$('#itemCommentText').val();
-          this.addComment(message);
-        }
+      'click .submitComment': function (event) {
+        var message = this.$('#itemCommentText').val();
+        this.addComment(message);
       },
 
       'click .tagInsertItem': function (event) {

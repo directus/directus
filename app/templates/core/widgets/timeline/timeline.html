@@ -4,8 +4,8 @@
 
 {{#if canComment}}
 <li class="comment create">
-	<textarea id="itemCommentText" placeholder="Write a comment..."></textarea>
-	<div class="comment-instructions">Press ENTER to submit</div>
+	<textarea id="itemCommentText" placeholder="{{t 'write_comment'}}"></textarea>
+	<button class="btn btn-small submitComment">{{t "submit"}}</button>
 	<span id="tagInsert" class="mention-list"></span>
 </li>
 {{/if}}
