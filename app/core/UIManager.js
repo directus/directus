@@ -23,7 +23,6 @@ define(function (require, exports, module) {
     require('core/interfaces/_internals/columns/component'),
     require('core/interfaces/_internals/directus_users/component'),
     require('core/interfaces/_internals/file_preview/component'),
-    require('core/interfaces/_internals/file_title/component'),
     require('core/interfaces/_internals/file_size/component'),
     require('core/interfaces/_internals/permissions/component'),
     require('core/interfaces/_internals/messages_recipients/component'),

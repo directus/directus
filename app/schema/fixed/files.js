@@ -87,7 +87,7 @@ define(function(require, exports, module) {
             "hidden_list":false,
             "hidden_input":false,
             "required":false,
-            "ui":"directus_file_title"
+            "ui":"text_input"
           },
           {
             "id":"location",
