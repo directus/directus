@@ -85,7 +85,7 @@ define([
         });
       }
 
-      toolbar = (styleFormats.length > 0 ? 'styleselect | ' : '');
+      toolbar = (styleFormats.length > 0 ? 'styleselect ' : '');
 
       if (toolbarOptions.length > 0) {
         // Convert inline / alignment to appropriate options & add to toolbar
@@ -131,7 +131,7 @@ define([
         menubar: false,
         readonly: this.options.settings.get('read_only') || !this.options.canWrite,
         toolbar: toolbar,
-        content_style: 'body.mce-content-body {font-family: \'Roboto\', sans-serif;line-height: 22px;font-size: 14px;color: #333;}',
+        content_style: 'body.mce-content-body {font-family: \'Roboto\', sans-serif;line-height: 22px;font-size: 14px;color: #333;padding: 7px 11px !important;}',
         style_formats: styleFormats,
         setup: function (editor) {
           var saveEditorContents = _.debounce(function () {

@@ -32,5 +32,9 @@
 	.mce-grid td {
 		min-width: 0 !important;
 	}
+
+	div.mce-tinymce.mce-container.mce-panel {
+		max-width: 400px;
+	}
 </style>
 <textarea name="{{name}}" id="wysiwyg_{{name}}" {{#if readOnly}}readonly{{/if}}>{{value}}</textarea>
