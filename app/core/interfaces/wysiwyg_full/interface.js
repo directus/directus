@@ -132,7 +132,7 @@ define([
         menubar: false,
         readonly: this.options.settings.get('read_only') || !this.options.canWrite,
         toolbar: toolbar,
-        content_style: 'body.mce-content-body {font-family: \'Roboto\', sans-serif;line-height:24px;letter-spacing:0.2px;font-size:14px;color:#333;margin:0;padding: 10px 30px !important;}body.mce-content-body p{line-height:inherit !important;}',
+        content_style: 'body.mce-content-body {font-family: \'Roboto\', sans-serif;line-height:24px;letter-spacing:0.2px;font-size:14px;color:#333;margin:0;padding: 10px 30px !important;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}body.mce-content-body p{line-height:inherit !important;}',
         style_formats: styleFormats,
         setup: function (editor) {
           var saveEditorContents = _.debounce(function () {
