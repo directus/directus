@@ -24,11 +24,11 @@ define([
       var settings = this.options.settings;
       var elementpath = Boolean(Number(settings.get('show_element_path')));
       var styleFormats = []; // Format menu (styleselect) options
-      var headings = settings.get('headings').split(',');
-      var inline = settings.get('inline').split(',');
-      var blocks = settings.get('blocks').split(',');
-      var alignment = settings.get('alignment').split(',');
-      var toolbarOptions = settings.get('toolbar_options').split(',');
+      var headings = getCheckboxesSettings('headings');
+      var inline = getCheckboxesSettings('inline');
+      var blocks = getCheckboxesSettings('blocks');
+      var alignment = getCheckboxesSettings('alignment');
+      var toolbarOptions = getCheckboxesSettings('toolbar_options');
       var toolbar;
 
       function capitalizeFirstLetter(string) {
@@ -183,6 +183,15 @@ define([
           }
         }
       });
+
+      function getCheckboxesSettings(name) {
+        return settings
+          .get(name)
+          .split(',')
+          .filter(function (option) {
+            return option.length > 0;
+          });
+      }
     },
 
     cleanup: function () {
