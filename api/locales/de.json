@@ -347,7 +347,7 @@
   "column_x_was_removed": "Column [%{column}] was removed",
   "unable_to_find_table_x": "Unable to find the table [%{table_name}]",
   "unable_to_remove_table_x": "Unable to remove the table [%{table_name}]",
-  "table_x_was_removed": "Table [%{table}] was removed",
+  "table_x_was_removed": "Table \"%{table_name}\" was removed",
   "invalid_unsupported_url": "Invalid/Unsupported URL",
   "message_not_found": "Message not found",
 
