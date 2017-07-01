@@ -76,7 +76,7 @@ class CreateDirectusUsersTable extends Ruckusing_Migration_Base
         ]);
         $t->column('token', 'string', [
             'limit' => 128,
-            'null' => false
+            'null' => true
         ]);
         $t->column('access_token', 'string', [
             'limit' => 255,
