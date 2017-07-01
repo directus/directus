@@ -25,7 +25,7 @@ define(['core/UIView', 'select2'], function (UIView) {
       var options = parseOptions(this.options.settings.get('options'));
       var optionsArray = Object.keys(options).map(function (key) {
         return {
-          key,
+          key: key,
           value: options[key],
           selected: value === key
         };
