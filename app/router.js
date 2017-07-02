@@ -462,6 +462,12 @@ define(function (require, exports, module) {
 
       SchemaManager.getBookmarkPreferences(title)
         .done(function (data) {
+          if (!data || data.success !== true) {
+            self.notFound();
+
+            return;
+          }
+
           var tableName = data.table_name;
 
           self.currentCollection = EntriesManager.getInstance(tableName).clone();

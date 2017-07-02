@@ -93,11 +93,6 @@ class TablesService extends AbstractService
     public function dropTable($name)
     {
         $tableGateway = $this->createTableGateway($name);
-        $columnsTableGateway = $this->createTableGateway('directus_columns');
-        $tablesTableGateway = $this->createTableGateway('directus_tables');
-
-        $columnsTableGateway->delete(['table_name' => $name]);
-        $tablesTableGateway->delete(['table_name' => $name]);
 
         return $tableGateway->drop();
     }

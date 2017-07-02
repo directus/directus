@@ -160,6 +160,17 @@ class Bookmarks extends Route
         $dbConnection = $app->container->get('zenddb');
         $tableGateway = new DirectusPreferencesTableGateway($dbConnection, $acl);
 
-        return $app->response($tableGateway->fetchByUserAndTitle($acl->getUserId(), $title));
+        $response = $tableGateway->fetchByUserAndTitle($acl->getUserId(), $title);
+
+        if (!$response) {
+            $response = [
+                'success' => false,
+                'error' => [
+                    'message' => __t('bookmark_not_found')
+                ]
+            ];
+        }
+
+        return $app->response($response);
     }
 }

@@ -4,6 +4,7 @@
     "bookmarks": "Bookmarks",
     "no_bookmarks": "No Bookmarks",
     "bookmark_this_page": "Bookmark this page",
+    "bookmark_not_found": "Bookmark not found",
     "delete_the_bookmark_x": "Delete the bookmark \"%{title}\"?",
     "what_would_you_like_to_name_this_bookmark": "What would you like to name this bookmark?",
     "extensions": "Extensions",
