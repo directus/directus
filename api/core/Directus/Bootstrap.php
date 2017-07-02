@@ -642,6 +642,7 @@ class Bootstrap
     {
         $emitter = new Emitter();
 
+        // TODO: Move all this filters to a dedicated file/class/function
         $emitter->addAction('application.error', function ($e) {
             $log = Bootstrap::get('log');
             $log->error($e);
@@ -685,10 +686,20 @@ class Bootstrap
                 $payload[$dateCreated] = DateUtils::now();
             }
 
+            if ($dateCreated = $tableObject->getDateUpdateColumn()) {
+                $payload[$dateCreated] = DateUtils::now();
+            }
+
             // Directus Users created user are themselves (primary key)
             // populating that field will be a duplicated primary key violation
-            if ($tableName !== 'directus_users' && $userCreated = $tableObject->getUserCreateColumn()) {
-                $payload[$userCreated] = $acl->getUserId();
+            if ($tableName !== 'directus_users') {
+                if ($userCreated = $tableObject->getUserCreateColumn()) {
+                    $payload[$userCreated] = $acl->getUserId();
+                }
+
+                if ($userModified = $tableObject->getUserUpdateColumn()) {
+                    $payload[$userModified] = $acl->getUserId();
+                }
             }
 
             return $payload;

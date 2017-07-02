@@ -1,0 +1,8 @@
+{{#if user}}
+<img src="{{avatarUrl}}" class="big-avatar">
+<br>
+<span class="big-avatar-name">{{user.first_name}} {{user.last_name}}</span>
+<input type="hidden" placeholder="" value="{{user.id}}" name="{{name}}" id="{{name}}" readonly maxlength="11">
+{{else}}
+<span class="avatar-name medium-grey-color">{{t "no_user"}}</span>
+{{/if}}

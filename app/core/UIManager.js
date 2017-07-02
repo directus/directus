@@ -91,9 +91,7 @@ define(function (require, exports, module) {
   ].map(interfaceGroup('relational'));
 
   var MiscInterfaces = [
-    require('core/interfaces/section_break/component'),
-    require('core/interfaces/user/interface'),
-    require('core/interfaces/user')
+    require('core/interfaces/section_break/component')
   ].map(interfaceGroup('misc'));
 
   // Directus Core Interfaces
