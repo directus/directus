@@ -656,7 +656,8 @@ $app->post("/$v/auth/login/?", function () use ($app, $ZendDb, $acl, $requestNon
     }
 
     return $app->response([
-        'success' => true,
+        'success' => false,
+        'message' => __t('incorrect_email_or_password'),
         'all_nonces' => $requestNonceProvider->getAllNonces()
     ]);
 })->name('auth_login');
