@@ -110,14 +110,13 @@ body.loading {
 			margin-left: -33px;
 			background-image: url(../imgs/directus-logo-frames-small.svg);
 			background-repeat: no-repeat;
-            background-position: left center;
-            animation: logosprite .5s steps(15) infinite;
-            opacity: 1;
-
-            transform: translateZ(0);
-            -webkit-transform: translateZ(0);
-            -ms-transform: translateZ(0);
-            will-change: transform;
+      background-position: left center;
+			animation: logosprite .5s steps(15) infinite;
+			opacity: 1;
+      transform: translateZ(0);
+      -webkit-transform: translateZ(0);
+      -ms-transform: translateZ(0);
+      will-change: transform;
 
 			@keyframes logosprite {
 				100% { background-position: -990px; }
@@ -136,8 +135,10 @@ body.loading {
 			@include transition (opacity, $timing-short, ease-in-out);
 			position: absolute;
 			top: 0;
-			left: 0;
-			width: 200px;
+			left: 50%;
+			transform: translateX(-50%);
+			max-width: 200px;
+			max-height: 64px;
 			opacity: 0.2;
 		}
 		.project-name {
