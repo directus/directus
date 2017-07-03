@@ -35,15 +35,16 @@ define([
       var statuses = model.getStatusVisible().map(function (status) {
         var item = status.toJSON();
 
-				// NOTE: do not strictly compare as status can (will) be string
+        // NOTE: do not strictly compare as status can (will) be string
         item.selected = status.get('id') == currentStatus; // eslint-disable-line eqeqeq
         item.model = status;
 
         return item;
       });
 
+      // Make sure the order is right
       statuses.sort(function (a, b) {
-        return a.sort < b.sort;
+        return a.sort - b.sort;
       });
 
       return {
