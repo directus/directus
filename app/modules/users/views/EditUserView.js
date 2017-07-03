@@ -75,7 +75,7 @@ define([
       }
 
       // Patch only the changed values if it's not new
-      model.save(model.isNew() ? null : model.unsavedChanges() || {}, {
+      model.save(this.model.getChanges(), {
         success: success,
         error: function (model, xhr, options) {
           console.error('err');

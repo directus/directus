@@ -616,6 +616,29 @@ define(function(require, exports, module) {
       return changes;
     },
 
+    getChanges: function () {
+      var data = null;
+
+      this.trigger('save:before');
+
+      if (this.isNew()) {
+        return data;
+      }
+
+      data = this.unsavedChanges() || {};
+
+      this.structure.each(function (column) {
+        var attr = column.id;
+        var options = column.options;
+
+        if (options && options.get('allow_null') === true && data[attr] === '') {
+          data[attr] = null;
+        }
+      }, this);
+
+      return data;
+    },
+
     startTracking: function () {
       this._startTracking();
 

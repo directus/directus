@@ -8,16 +8,13 @@ define([
   return UIView.extend({
     template: 'user/interface',
 
+    beforeSaving: function () {
+      return this.userId;
+    },
+
     serialize: function () {
-      var value = this.options.value;
-      var user;
-
-      if (value === undefined) {
-        value = app.users.getCurrentUser().id;
-      }
-
-      this.model.set(this.name, value);
-      user = app.users.get(value);
+      var value = this.userId;
+      var user = app.users.get(value);
 
       return {
         name: this.name,
@@ -25,6 +22,16 @@ define([
         avatarUrl: user.getAvatar(),
         value: value
       };
+    },
+
+    initialize: function (options) {
+      var userId = options.value;
+
+      if (userId === undefined) {
+        userId = app.users.getCurrentUser().id;
+      }
+
+      this.userId = userId;
     }
   });
 });

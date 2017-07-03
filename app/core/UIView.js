@@ -30,6 +30,17 @@ define(function(require, exports, module) {
     // true: visible
     visible: null,
 
+    // Adding a `beforeSaving` method into any interface
+    // will allow the interface to inject value before saving
+    // this changes won't trigger the unsaved changes event on leaving the form
+    _beforeSaving: function () {
+      var value = _.result(this, 'beforeSaving');
+
+      if (value !== undefined) {
+        this.model.set(this.name, value);
+      }
+    },
+
     isRequired: function() {
       return this.columnSchema.get('required') === true;
     },
@@ -53,17 +64,21 @@ define(function(require, exports, module) {
     */
     constructor: function UIView(options) {
       var structure = _.result(options.model, 'getStructure') || options.model.structure || options.structure;
+
       this.name = options.name;
       this.columnSchema = structure.get(this.name);
       this.settings = this.columnSchema.options;
       this.isRelational = (this.columnSchema.relationship !== undefined);
       this.templateCompileOptions = this.templateCompileOptions || {};
+
       if (this.templateSource) {
         this.template = Handlebars.compile(this.templateSource, this.templateCompileOptions);
       }
 
       // Default LayoutManager constructor
       UIView.__super__.constructor.call(this, options);
+
+     this.listenTo(this.model, 'save:before', this._beforeSaving);
     }
   });
 });

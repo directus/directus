@@ -131,20 +131,10 @@ function(app, Backbone, _, Handlebars, __t, Notification, Directus, BasePageView
         action = $(event.target.options[event.target.selectedIndex]).val();
       }
 
-      var data = this.editView.data();
-
       var model = this.model;
       var isNew = this.model.isNew();
       var collection = this.model.collection;
       var success;
-
-      model.structure.each(function (column) {
-        var options = column.options;
-
-        if (options && options.get('allow_null') === true && data[column.id] === '') {
-          data[column.id] = null;
-        }
-      });
 
       if (action === 'save-form-stay') {
         success = function (model, response, options) {
@@ -202,7 +192,7 @@ function(app, Backbone, _, Handlebars, __t, Notification, Directus, BasePageView
       }
 
       // Patch only the changed values if it's not new
-      model.save(model.isNew() ? null : model.unsavedChanges() || {}, {
+      model.save(this.model.getChanges(), {
         success: success,
         error: function (model, xhr, options) {
           // console.error('err');
