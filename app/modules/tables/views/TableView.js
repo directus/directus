@@ -56,7 +56,6 @@ define([
               buttonText: __t('delete')
             },
             onClick: function () {
-              debugger;
               app.router.openModal({type: 'confirm', text: __t('confirm_delete_item'), callback: function () {
                 var $checked = $('.js-select-row:checked');
                 var collection = tableView.collection;
@@ -371,7 +370,6 @@ define([
       this.showBatchEditButton = selectedIds.length > 1;
 
       if (render || this.showDeleteButton || this.showBatchEditButton) {
-        debugger;
         this.reRender();
       }
     },
