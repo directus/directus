@@ -435,7 +435,7 @@ $app->group('/1.1', function() use($app) {
     // FILES
     // =============================================================================
     $app->map('/files(/:id)/?', '\Directus\API\Routes\A1\Files:files')
-        ->via('GET', 'PATCH', 'POST', 'PUT');
+        ->via('GET', 'PATCH', 'POST', 'PUT', 'DELETE');
 
     // =============================================================================
     // UPLOAD

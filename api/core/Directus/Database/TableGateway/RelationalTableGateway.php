@@ -291,7 +291,7 @@ class RelationalTableGateway extends BaseTableGateway
         $statusColumnName = 'active';
 
         // Get status delete value
-        $tableSchema = TableSchema::getTableSchema($tableName);
+        $tableSchema = $this->getTableSchema();
         $statusColumnObject = $tableSchema->getColumn($statusColumnName);
         $deletedValue = ArrayUtils::get($statusColumnObject->getOptions(), 'delete_value', STATUS_DELETED_NUM);
 
@@ -299,15 +299,25 @@ class RelationalTableGateway extends BaseTableGateway
             return false;
         }
 
-        $filesTableGateway = new RelationalTableGateway($tableName, $this->adapter, $this->acl);
-        $primaryKeyFieldName = $filesTableGateway->primaryKeyFieldName;
+        return $this->deleteFile($recordData[$tableSchema->getPrimaryColumn()]);
+    }
+
+    public function deleteFile($id)
+    {
+        $tableName = 'directus_files';
+        $tableSchema = $this->getTableSchema();
+        $primaryKeyFieldName = $tableSchema->getPrimaryColumn();
+
+        $filesTableGateway = new RelationalTableGateway($tableName, $this->adapter, $this->acl, null, null, null, $primaryKeyFieldName);
 
         $params = [];
-        $params[$primaryKeyFieldName] = $recordData[$primaryKeyFieldName];
+        $params[$primaryKeyFieldName] = $id;
         $file = $filesTableGateway->loadItems($params);
 
-        $Files = static::$container->get('files');
-        $Files->delete($file);
+        if ($file) {
+            $Files = static::$container->get('files');
+            $Files->delete($file);
+        }
 
         return true;
     }

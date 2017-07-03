@@ -26,7 +26,10 @@ function(app, _, Backbone, __t, Directus, Notification, BasePageView, RightPane,
       }
 
       app.router.openModal({type: 'confirm', text: __t('confirm_delete_item'), callback: function () {
-        var xhr = self.model.saveWithDeleteStatus();
+        // var xhr = self.model.saveWithDeleteStatus();
+        // NOTE: force delete files
+        // TODO: Add global option to set whether to soft or hard delete files
+        var xhr = self.model.destroy({wait: true});
 
         xhr.then(function () {
           var route = Backbone.history.fragment.split('/');
