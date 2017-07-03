@@ -531,6 +531,7 @@
     "directus_tables_status_mapping_comment": "Overrides the default status options",
     "directus_tables_accountability": "Accountability",
     "directus_tables_accountability_comment": "You can choose columns for tracking the date and Directus user who created or modified each item",
+    "directus_tables_status_delete_value_comment": "The value of the status option that hard deletes",
 
     "directus_groups_name": "Name",
     "directus_groups_name_comment": "Must be unique",

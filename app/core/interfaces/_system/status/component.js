@@ -50,7 +50,7 @@ define(['./interface', 'core/UIComponent', 'core/t'], function (Input, UICompone
       hidden_list: false,
       hidden_input: false,
       sort: 6,
-      comment: 'The value of the status option that hard deletes'
+      comment: __t('directus_tables_status_delete_value_comment')
     }, {
       id: 'status_mapping',
       column_name: 'status_mapping',
