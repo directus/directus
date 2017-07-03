@@ -579,6 +579,12 @@ $app->post("/$v/auth/login/?", function () use ($app, $ZendDb, $acl, $requestNon
         return $app->response(['success' => true]);
     }
 
+    $response = [
+        'success' => false,
+        'message' => __t('incorrect_email_or_password'),
+        'all_nonces' => $requestNonceProvider->getAllNonces()
+    ];
+
     $req = $app->request();
     $email = $req->post('email');
     $password = $req->post('password');
@@ -586,11 +592,7 @@ $app->post("/$v/auth/login/?", function () use ($app, $ZendDb, $acl, $requestNon
     $user = $Users->findOneBy('email', $email);
 
     if (!$user) {
-        return $app->response([
-            'message' => __t('incorrect_email_or_password'),
-            'success' => false,
-            'all_nonces' => $requestNonceProvider->getAllNonces()
-        ]);
+        return $app->response($response);
     }
 
     // ------------------------------
@@ -623,13 +625,10 @@ $app->post("/$v/auth/login/?", function () use ($app, $ZendDb, $acl, $requestNon
         $isUserActive = true;
     }
 
-    if ($loginSuccessful  && !$isUserActive) {
+    if ($loginSuccessful && !$isUserActive) {
         Auth::logout();
 
-        return $app->response([
-            'success' => false,
-            'message' => __t('login_error_user_is_not_active')
-        ]);
+        return $app->response($response);
     }
 
     if ($loginSuccessful) {
@@ -653,13 +652,12 @@ $app->post("/$v/auth/login/?", function () use ($app, $ZendDb, $acl, $requestNon
         if (ArrayUtils::get($feedbackConfig, 'login', false)) {
             feedback_login_ping(ArrayUtils::get($feedbackConfig, 'token', ''));
         }
+
+        $response['success'] = true;
+        unset($response['message']);
     }
 
-    return $app->response([
-        'success' => false,
-        'message' => __t('incorrect_email_or_password'),
-        'all_nonces' => $requestNonceProvider->getAllNonces()
-    ]);
+    return $app->response($response);
 })->name('auth_login');
 
 $app->get("/$v/auth/logout(/:inactive)", function ($inactive = null) use ($app) {
