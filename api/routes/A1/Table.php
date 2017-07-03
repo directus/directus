@@ -426,6 +426,10 @@ class Table extends Route
                     $columnInfo = TableSchema::getColumnSchema($table, $column);
                     $columnInfo = $columnInfo->toArray();
                     $columnsName = TableSchema::getAllTableColumnsName('directus_columns');
+                    // NOTE: remove the column id info
+                    // this information is the column name
+                    // not the record id in the database
+                    ArrayUtils::remove($columnInfo, 'id');
                     $columnInfo = ArrayUtils::pick($columnInfo, $columnsName);
                     ArrayUtils::remove($columnInfo, 'options');
                     $TableGateway->insert($columnInfo);
