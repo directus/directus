@@ -44,49 +44,51 @@ define([
         widgets.push(this.widgets.addWidget);
 
         if (this.showDeleteButton) {
-          if (!this.widgets.deleteWidget) {
-            // var tableView = this;
-            this.widgets.deleteWidget = new Widgets.ButtonWidget({
-              widgetOptions: {
-                buttonId: 'deleteBtn',
-                iconClass: 'close',
-                buttonClass: 'serious',
-                buttonText: __t('delete')
-              },
-              onClick: function () {
-                app.router.openModal({type: 'confirm', text: __t('confirm_delete_item'), callback: function () {
-                  var $checked = $('.js-select-row:checked');
-                  var collection = tableView.collection;
-                  var actionCollection = collection.clone();
-                  var options = {wait: true}, ids = [];
-
-                  actionCollection.reset();
-                  $checked.each(function () {
-                    var model = tableView.collection.get(this.value);
-
-                    actionCollection.add(model);
-                    ids.push(model.id);
-                  });
-
-                  if (actionCollection.length) {
-                    options.success = function (model, resp, options) {
-                      collection.remove(ids);
-                      collection.trigger('visibility');
-                      collection.trigger('select');
-                      options.remove = true;
-                      // on delete we get empty result
-                      // let's use the actual collection models
-                      // after remove the removed ids
-                      resp = {data: collection.toJSON()};
-                      collection.trigger('sync', collection, resp, options);
-                    };
-
-                    actionCollection.saveWithDeleteStatus(options);
-                  }
-                }});
-              }
-            });
+          if (this.widgets.deleteWidget) {
+            this.widgets.deleteWidget.remove();
           }
+
+          this.widgets.deleteWidget = new Widgets.ButtonWidget({
+            widgetOptions: {
+              buttonId: 'deleteBtn',
+              iconClass: 'close',
+              buttonClass: 'serious',
+              buttonText: __t('delete')
+            },
+            onClick: function () {
+              debugger;
+              app.router.openModal({type: 'confirm', text: __t('confirm_delete_item'), callback: function () {
+                var $checked = $('.js-select-row:checked');
+                var collection = tableView.collection;
+                var actionCollection = collection.clone();
+                var options = {wait: true}, ids = [];
+
+                actionCollection.reset();
+                $checked.each(function () {
+                  var model = tableView.collection.get(this.value);
+
+                  actionCollection.add(model);
+                  ids.push(model.id);
+                });
+
+                if (actionCollection.length) {
+                  options.success = function (model, resp, options) {
+                    collection.remove(ids);
+                    collection.trigger('visibility');
+                    collection.trigger('select');
+                    options.remove = true;
+                    // on delete we get empty result
+                    // let's use the actual collection models
+                    // after remove the removed ids
+                    resp = {data: collection.toJSON()};
+                    collection.trigger('sync', collection, resp, options);
+                  };
+
+                  actionCollection.saveWithDeleteStatus(options);
+                }
+              }});
+            }
+          });
 
           widgets.push(this.widgets.deleteWidget);
         }
@@ -369,6 +371,7 @@ define([
       this.showBatchEditButton = selectedIds.length > 1;
 
       if (render || this.showDeleteButton || this.showBatchEditButton) {
+        debugger;
         this.reRender();
       }
     },
