@@ -69,7 +69,10 @@ function(app, Backbone, _) {
             onClick(event);
           }
         });
-        this._events['click #save_options'] = options.onClick;
+        this._events['change #save_options'] = function (event) {
+          options.onClick(event);
+          event.target.selectedIndex = -1;
+        };
       }
 
       if (_.isFunction(options.onChange)) {
