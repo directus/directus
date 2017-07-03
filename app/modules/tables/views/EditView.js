@@ -188,7 +188,7 @@ function(app, Backbone, _, Handlebars, __t, Notification, Directus, BasePageView
       if (!model.unsavedAttributes()) {
         Notification.warning('Nothing changed, nothing saved');
 
-        // return;
+        return;
       }
 
       // Patch only the changed values if it's not new
