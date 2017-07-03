@@ -95,7 +95,9 @@ define(function(require, exports, module) {
         }
 
         var value = attributes[columnName];
-        var nullDisallowed = column.get('nullable') !== true;
+        var allowNull = column.isNullable();
+        var required = column.isRequired();
+        var defaultValue = column.get('default_value');
         var forceUIValidation = UIManager.shouldForceUIValidation(column.get('ui'));
         var isNull = Utils.isNothing(value);
         var uiSettings = UIManager.getSettings(column.get('ui'));
@@ -112,16 +114,17 @@ define(function(require, exports, module) {
           return;
         }
 
-        if (isNull && !nullDisallowed) {
+        if (isNull && allowNull && !required) {
           return;
         }
 
         // NOTE: Column with default value should not be required
-        if (column.get('default_value') !== undefined) {
+
+        if (!required && defaultValue !== undefined) {
           return;
         }
 
-        var mess = (!forceUIValidation && !skipSerializationIfNull && nullDisallowed && isNull) ?
+        var mess = (!forceUIValidation && !skipSerializationIfNull && !allowNull && isNull) ?
           'The field cannot be empty'
           : UIManager.validate(this, columnName, value);
 
