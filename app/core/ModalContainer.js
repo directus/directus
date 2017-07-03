@@ -64,9 +64,10 @@ define(['app', 'backbone', 'underscore'], function(app, Backbone, _) {
     },
 
     onClose: function (event) {
-      if (!this.canCloseOnButton()) {
+      if (this.canCloseOnButton()) {
+        this.close();
+      } else {
         event.stopPropagation();
-        return;
       }
     },
 
