@@ -30,14 +30,6 @@ class Table extends Route
             throw new \Exception(__t('permission_denied'));
         }
 
-        $isTableNameAlphanumeric = preg_match('/[a-z0-9]+/i', $tableName);
-        $zeroOrMoreUnderscoresDashes = preg_match('/[_-]*/i', $tableName);
-
-        if (!($isTableNameAlphanumeric && $zeroOrMoreUnderscoresDashes)) {
-            $app->response->setStatus(400);
-            return $this->app->response(['message' => __t('invalid_table_name')]);
-        }
-
         $schema = Bootstrap::get('schemaManager');
         if ($schema->tableExists($tableName)) {
             return $this->app->response([
@@ -50,10 +42,6 @@ class Table extends Route
 
         $app->hookEmitter->run('table.create:before', $tableName);
 
-        // Through API:
-        // Remove spaces and symbols from table name
-        // And in lowercase
-        $tableName = SchemaUtils::cleanTableName($tableName);
         $schema->createTable($tableName);
         $app->hookEmitter->run('table.create', $tableName);
         $app->hookEmitter->run('table.create:after', $tableName);

@@ -405,6 +405,7 @@
     "this_column_will_be_saved_as_x": "This column will be saved as \"%{column_name}\"",
     "this_table_was_saved_as_x": "This table was saved as %{table_name}",
     "table_x_was_created": "Table \"%{table_name}\" was created",
+    "table_x_already_exists": "Table \"%{table_name}\" already exists",
     "table_manage": "Manage",
     "table_unmanage": "Don't Manage",
     "confirm_manage_table": "Are you sure you would like to manage this table within the CMS?",

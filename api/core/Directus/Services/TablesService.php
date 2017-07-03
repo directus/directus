@@ -10,6 +10,8 @@
 
 namespace Directus\Services;
 
+use Directus\Database\Exception\TableAlreadyExistsException;
+use Directus\Database\Exception\TableNotFoundException;
 use Directus\Database\TableSchema;
 use Directus\Util\SchemaUtils;
 
@@ -20,12 +22,20 @@ use Directus\Util\SchemaUtils;
  */
 class TablesService extends AbstractService
 {
+    /**
+     * @param $name
+     * @param array $columns
+     *
+     * @return bool
+     *
+     * @throws TableAlreadyExistsException
+     */
     public function createTable($name, $columns = [])
     {
         $schema = $this->getSchemaManager();
 
         if ($schema->tableExists($name)) {
-            return false;
+            throw new TableAlreadyExistsException($name);
         }
 
         $tableGateway = $this->createTableGateway('directus_columns');
@@ -33,11 +43,6 @@ class TablesService extends AbstractService
         if (!is_array($columns)) {
             $columns = [$columns];
         }
-
-        // Through API:
-        // Remove spaces and symbols from table name
-        // And in lowercase
-        $name = SchemaUtils::cleanTableName($name);
 
         $this->app->triggerAction('table.create:before', $name);
 

@@ -13,16 +13,16 @@ namespace Directus\Database\Exception;
 use Exception;
 
 /**
- * Table was not found in the database
+ * Table already exists in the database
  *
  * @author Welling Guzmán <welling@rngr.org>
  */
-class TableNotFoundException extends DbException
+class TableAlreadyExistsException extends DbException
 {
     public function __construct($table, $message = '', $code = 0, Exception $previous = null)
     {
         if ($message === '') {
-            $message = __t('unable_to_find_table_x', ['table_name' => $table]);
+            $message = __t('table_x_already_exists', ['table_name' => $table]);
         }
 
         parent::__construct($message, $code, $previous);

@@ -4,6 +4,7 @@ namespace Directus\API\Routes\A1;
 
 use Directus\Application\Route;
 use Directus\Bootstrap;
+use Directus\Database\Exception\TableAlreadyExistsException;
 use Directus\Database\SchemaManager;
 use Directus\Database\TableGateway\DirectusPrivilegesTableGateway;
 use Directus\Database\TableSchema;
@@ -65,22 +66,18 @@ class Privileges extends Route
 
         if (isset($requestPayload['addTable'])) {
             $tableName = ArrayUtils::get($requestPayload, 'table_name');
-            $isTableNameAlphanumeric = preg_match("/[a-z0-9]+/i", $tableName);
-            $zeroOrMoreUnderscoresDashes = preg_match("/[_-]*/i", $tableName);
-
-            if (!($isTableNameAlphanumeric && $zeroOrMoreUnderscoresDashes)) {
-                $app->response->setStatus(400);
-                return $this->app->response(['message' => __t('invalid_table_name')]);
-            }
 
             ArrayUtils::remove($requestPayload, 'addTable');
 
             $tableService = new TablesService($app);
-            $created = $tableService->createTable($requestPayload['table_name'], ArrayUtils::get($requestPayload, 'columnsName'));
 
-            if (!$created) {
+            try {
+                $tableService->createTable($tableName, ArrayUtils::get($requestPayload, 'columnsName'));
+            } catch (TableAlreadyExistsException $e) {
                 // ----------------------------------------------------------------------------
                 // Setting the primary key column interface
+                // NOTE: if the table already exists but not managed by directus
+                // the primary key interface is added to its primary column
                 // ----------------------------------------------------------------------------
                 $columnService = new ColumnsService($app);
                 $tableObject = $tableService->getTableObject($tableName);

@@ -88,6 +88,7 @@ define([
       var data = this.$('form').serializeObject();
       var tableName = data.name;
       var columns = data.columns;
+      var isStrict = this.state.strictNaming;
 
       // @TODO: better error message.
       if (!tableName) {
@@ -98,11 +99,14 @@ define([
       }
 
       var rawTableName = tableName;
-      tableName = SchemaHelper.cleanTableName(tableName);
+
+      if (this.state.strictNaming) {
+        tableName = SchemaHelper.cleanTableName(tableName);
+      }
 
       // Make sure it's an alphanumeric table name
       // and it has at least one character or one number
-      if (!(/[a-z0-9]+/i.test(tableName) && /[_-]*/i.test(tableName))) {
+      if (isStrict && !(/[a-z0-9]+/i.test(tableName) && /[_-]*/i.test(tableName))) {
         app.trigger('alert:error',
           __t('you_must_enter_an_valid_table_name'),
           'letters_az_numbers_andor_underscores_and_dashes',
@@ -113,7 +117,10 @@ define([
       }
 
       if (app.schemaManager.getPrivileges(tableName)) {
-        app.trigger('alert:error', 'Error', 'This table already exists!', true, {
+        var title = __t('error');
+        var message = __t('table_x_already_exists', {table_name: tableName});
+
+        app.trigger('alert:error', title, message, true, {
           timeout: 5000
         });
         return;
