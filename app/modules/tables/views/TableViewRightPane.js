@@ -162,7 +162,7 @@ define([
 
       data.columns = structure.chain()
         .filter(function(model) {
-          return !model.get('system') && !model.get('hidden_list') && !model.get('hidden_input');
+          return !model.get('hidden_list') && !model.get('hidden_input');
         })
         .map(function(model) {
           var sort, isVisible;
