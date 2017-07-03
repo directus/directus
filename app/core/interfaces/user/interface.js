@@ -6,7 +6,7 @@ define([
   'use strict';
 
   return UIView.extend({
-    template: '_system/accountability/user',
+    template: 'user/interface',
 
     serialize: function () {
       var value = this.options.value;
@@ -16,6 +16,7 @@ define([
         value = app.users.getCurrentUser().id;
       }
 
+      this.model.set(this.name, value);
       user = app.users.get(value);
 
       return {

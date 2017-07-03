@@ -43,7 +43,8 @@ define(function (require, exports, module) {
     require('core/interfaces/_system/accountability/date_created'),
     require('core/interfaces/_system/accountability/date_modified'),
     require('core/interfaces/_system/accountability/user_created'),
-    require('core/interfaces/_system/accountability/user_modified')
+    require('core/interfaces/_system/accountability/user_modified'),
+    require('core/interfaces/user/component')
   ].map(interfaceGroup('system'));
 
   var StringInterfaces = [

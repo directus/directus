@@ -1,6 +1,6 @@
 define([
   'core/UIComponent',
-  './user_interface'
+  '../../user/interface'
 ], function (UIComponent, Input) {
 
   'use strict';
