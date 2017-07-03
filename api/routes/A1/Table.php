@@ -426,12 +426,15 @@ class Table extends Route
                     $columnInfo = TableSchema::getColumnSchema($table, $column);
                     $columnInfo = $columnInfo->toArray();
                     $columnsName = TableSchema::getAllTableColumnsName('directus_columns');
+                    // NOTE: the column name name is data_type in the database
+                    // but the attribute in the object is type
+                    // change the name to insert the data type value into the columns table
+                    ArrayUtils::rename($columnInfo, 'type', 'data_type');
+                    $columnInfo = ArrayUtils::pick($columnInfo, $columnsName);
                     // NOTE: remove the column id info
                     // this information is the column name
                     // not the record id in the database
-                    ArrayUtils::remove($columnInfo, 'id');
-                    $columnInfo = ArrayUtils::pick($columnInfo, $columnsName);
-                    ArrayUtils::remove($columnInfo, 'options');
+                    ArrayUtils::remove($columnInfo, ['id', 'options']);
                     $TableGateway->insert($columnInfo);
                 }
 

@@ -315,6 +315,47 @@ class ArrayUtils
     }
 
     /**
+     * Renames a key
+     *
+     * @param array $array
+     * @param string $from
+     * @param string $to
+     *
+     * @return int
+     */
+    public static function rename(array &$array, $from, $to)
+    {
+        if (ArrayUtils::exists($array, $from)) {
+            $value = ArrayUtils::get($array, $from);
+
+            $array[$to] = $value;
+
+            ArrayUtils::remove($array, $from);
+        }
+    }
+
+    /**
+     * Swaps element values
+     *
+     * @param array $array
+     * @param string $from
+     * @param string $to
+     *
+     * @return int
+     */
+    public static function swap(array &$array, $from, $to)
+    {
+        // TODO: Swap values
+        // if (!isset($array[$to])) {
+        //     static::rename($array, $from, $to);
+        // } else {
+        //     $temp = ArrayUtils::get($array, $from);
+        //     $array[$from] = ArrayUtils::get($array, $to);
+        //     $array[$to] = $temp;
+        // }
+    }
+
+    /**
      * Pushes a new element at the end of the given array
      *
      * @param array $array

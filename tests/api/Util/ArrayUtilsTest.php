@@ -210,48 +210,21 @@ class ArrayUtilsTest extends PHPUnit_Framework_TestCase
         $this->assertCount(2, $result);
     }
 
-    public function defaults()
+    public function testRename()
     {
-        $array1 = [
-            'user' => [
-                'first_name' => 'John',
-                'age' => 56,
-                'country' => [
-                    'name' => 'Trapponia'
-                ]
-            ],
-            'total' => 1
+        $array = [
+            'name' => 'John Doe',
+            'age' => 20
         ];
 
-        $array2 = [
-            'user' => [
-                'first_name' => 'John',
-                'last_name' => 'Smith',
-                'age' => 19,
-            ],
-            'new' => 1
-        ];
+        ArrayUtils::rename($array, 'name', 'full_name');
 
-        $array3 = [
-            'user' => [
-                'country' => [
-                    'population' => 2,
-                    'est' => 1735
-                ]
-            ],
-            'new' => 1
-        ];
+        $this->assertSame('John Doe', $array['full_name']);
+        $this->assertFalse(isset($array['name']));
 
+        ArrayUtils::rename($array, 'age', 'full_name');
 
-        $array12 = ArrayUtils::defaults($array1, $array2);
-        $this->assertSame('John', $array12['user']['first_name']);
-        $this->assertSame('Smith', $array12['user']['last_name']);
-
-        $array13 = ArrayUtils::defaults($array1, $array3);
-        $this->assertSame('John', $array13['user']['first_name']);
-        $this->assertSame(2, $array13['user']['country']['population']);
-        $this->assertSame('Trapponia', $array13['user']['country']['name']);
-        $this->assertSame(1, $array13['new']);
-        $this->assertSame(1, $array13['total']);
+        $this->assertSame(20, $array['full_name']);
+        $this->assertFalse(isset($array['age']));
     }
 }
