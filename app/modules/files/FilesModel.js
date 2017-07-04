@@ -167,7 +167,7 @@ define([
       var model = this;
       app.sendLink(url, function(data) {
         var item = data[0];
-        item[model.getStatusColumnName()] = model.table.getStatusDefaultValue();
+        item[model.table.getStatusColumnName()] = model.table.getStatusDefaultValue();
         // item[app.statusMapping.status_name] = app.statusMapping.active_num;
         // Unset the model ID so that a new file record is created
         // (and the old file record isn't replaced w/ this data)
