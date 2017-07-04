@@ -370,7 +370,6 @@ th {
   src: url(../fonts/material-design/MaterialIcons-Regular.eot);
   /* For IE6-8 */
   src: local("Material Icons"), local("MaterialIcons-Regular"), url(../fonts/material-design/MaterialIcons-Regular.woff2) format("woff2"), url(../fonts/material-design/MaterialIcons-Regular.woff) format("woff"), url(../fonts/material-design/MaterialIcons-Regular.ttf) format("truetype"); }
-
 .material-icons, .custom-check input[type="checkbox"] + label span:before, .custom-check input[type="radio"] + label span:before,
 input[type="checkbox"].custom-check + label span:before, input[type="radio"].custom-check + label span:before {
   font-family: 'Material Icons';
@@ -405,7 +404,6 @@ input[type="checkbox"].custom-check + label span:before, input[type="radio"].cus
   /* IE9 Compat Modes */
   src: url("../fonts/directus/directus-regular.eot?#iefix") format("embedded-opentype"), url("../fonts/directus/directus-regular.woff") format("woff"), url("../fonts/directus/directus-regular.ttf") format("truetype"), url("../fonts/directus/directus-regular.svg#entypo") format("svg");
   /* Legacy iOS */ }
-
 .icon {
   display: inline-block;
   font-family: "Directus";
@@ -437,862 +435,862 @@ input[type="checkbox"].custom-check + label span:before, input[type="radio"].cus
   color: #fbb03b; }
 
 .icon-directus:before {
-  content: "\1F6C5"; }
+  content: "🛅"; }
 
 .icon-power-button:before {
-  content: "\1F6C9"; }
+  content: "🛉"; }
 
 .icon-phone:before {
-  content: "\1F4DE"; }
+  content: "📞"; }
 
 .icon-mobile:before {
-  content: "\1F4F1"; }
+  content: "📱"; }
 
 .icon-mouse:before {
-  content: "\E789"; }
+  content: ""; }
 
 .icon-address:before {
-  content: "\E723"; }
+  content: ""; }
 
 .icon-mail:before {
-  content: "\2709"; }
+  content: "✉"; }
 
 .icon-paper-plane:before {
-  content: "\1F53F"; }
+  content: "🔿"; }
 
 .icon-pencil:before {
-  content: "\270F"; }
+  content: "✏"; }
 
 .icon-feather:before {
-  content: "\2712"; }
+  content: "✒"; }
 
 .icon-attach:before {
-  content: "\1F4CE"; }
+  content: "📎"; }
 
 .icon-inbox:before {
-  content: "\E777"; }
+  content: ""; }
 
 .icon-reply:before {
-  content: "\E712"; }
+  content: ""; }
 
 .icon-reply-all:before {
-  content: "\E713"; }
+  content: ""; }
 
 .icon-forward:before {
-  content: "\27A6"; }
+  content: "➦"; }
 
 .icon-user:before {
-  content: "\1F464"; }
+  content: "👤"; }
 
 .icon-users:before {
-  content: "\1F465"; }
+  content: "👥"; }
 
 .icon-add-user:before {
-  content: "\E700"; }
+  content: ""; }
 
 .icon-vcard:before {
-  content: "\E722"; }
+  content: ""; }
 
 .icon-export:before {
-  content: "\E715"; }
+  content: ""; }
 
 .icon-location:before {
-  content: "\E724"; }
+  content: ""; }
 
 .icon-map:before {
-  content: "\E727"; }
+  content: ""; }
 
 .icon-compass:before {
-  content: "\E728"; }
+  content: ""; }
 
 .icon-direction:before {
-  content: "\27A2"; }
+  content: "➢"; }
 
 .icon-hair-cross:before {
-  content: "\1F3AF"; }
+  content: "🎯"; }
 
 .icon-share:before {
-  content: "\E73C"; }
+  content: ""; }
 
 .icon-shareable:before {
-  content: "\E73E"; }
+  content: ""; }
 
 .icon-heart:before {
-  content: "\2665"; }
+  content: "♥"; }
 
 .icon-heart-empty:before {
-  content: "\2661"; }
+  content: "♡"; }
 
 .icon-star:before {
-  content: "\2605"; }
+  content: "★"; }
 
 .icon-star-empty:before {
-  content: "\2606"; }
+  content: "☆"; }
 
 .icon-thumbs-up:before {
-  content: "\1F44D"; }
+  content: "👍"; }
 
 .icon-thumbs-down:before {
-  content: "\1F44E"; }
+  content: "👎"; }
 
 .icon-chat:before {
-  content: "\E720"; }
+  content: ""; }
 
 .icon-comment:before {
-  content: "\E718"; }
+  content: ""; }
 
 .icon-quote:before {
-  content: "\275E"; }
+  content: "❞"; }
 
 .icon-home:before {
-  content: "\2302"; }
+  content: "⌂"; }
 
 .icon-popup:before {
-  content: "\E74C"; }
+  content: ""; }
 
 .icon-search:before {
-  content: "\1F50D"; }
+  content: "🔍"; }
 
 .icon-flashlight:before {
-  content: "\1F526"; }
+  content: "🔦"; }
 
 .icon-print:before {
-  content: "\E716"; }
+  content: ""; }
 
 .icon-bell:before {
-  content: "\1F514"; }
+  content: "🔔"; }
 
 .icon-link:before {
-  content: "\1F517"; }
+  content: "🔗"; }
 
 .icon-flag:before {
-  content: "\2691"; }
+  content: "⚑"; }
 
 .icon-cog:before {
-  content: "\2699"; }
+  content: "⚙"; }
 
 .icon-tools:before {
-  content: "\2692"; }
+  content: "⚒"; }
 
 .icon-trophy:before {
-  content: "\1F3C6"; }
+  content: "🏆"; }
 
 .icon-tag:before {
-  content: "\E70C"; }
+  content: ""; }
 
 .icon-camera:before {
-  content: "\1F4F7"; }
+  content: "📷"; }
 
 .icon-megaphone:before {
-  content: "\1F4E3"; }
+  content: "📣"; }
 
 .icon-moon:before {
-  content: "\263D"; }
+  content: "☽"; }
 
 .icon-palette:before {
-  content: "\1F3A8"; }
+  content: "🎨"; }
 
 .icon-leaf:before {
-  content: "\1F342"; }
+  content: "🍂"; }
 
 .icon-note:before {
-  content: "\266A"; }
+  content: "♪"; }
 
 .icon-beamed-note:before {
-  content: "\266B"; }
+  content: "♫"; }
 
 .icon-new:before {
-  content: "\1F4A5"; }
+  content: "💥"; }
 
 .icon-graduation-cap:before {
-  content: "\1F393"; }
+  content: "🎓"; }
 
 .icon-book:before {
-  content: "\1F4D5"; }
+  content: "📕"; }
 
 .icon-newspaper:before {
-  content: "\1F4F0"; }
+  content: "📰"; }
 
 .icon-bag:before {
-  content: "\1F45C"; }
+  content: "👜"; }
 
 .icon-airplane:before {
-  content: "\2708"; }
+  content: "✈"; }
 
 .icon-lifebuoy:before {
-  content: "\E788"; }
+  content: ""; }
 
 .icon-eye:before {
-  content: "\E70A"; }
+  content: ""; }
 
 .icon-clock:before {
-  content: "\1F554"; }
+  content: "🕔"; }
 
 .icon-mic:before {
-  content: "\1F3A4"; }
+  content: "🎤"; }
 
 .icon-calendar:before {
-  content: "\1F4C5"; }
+  content: "📅"; }
 
 .icon-flash:before {
-  content: "\26A1"; }
+  content: "⚡"; }
 
 .icon-thunder-cloud:before {
-  content: "\26C8"; }
+  content: "⛈"; }
 
 .icon-droplet:before {
-  content: "\1F4A7"; }
+  content: "💧"; }
 
 .icon-cd:before {
-  content: "\1F4BF"; }
+  content: "💿"; }
 
 .icon-briefcase:before {
-  content: "\1F4BC"; }
+  content: "💼"; }
 
 .icon-air:before {
-  content: "\1F4A8"; }
+  content: "💨"; }
 
 .icon-hourglass:before {
-  content: "\23F3"; }
+  content: "⏳"; }
 
 .icon-gauge:before {
-  content: "\1F6C7"; }
+  content: "🛇"; }
 
 .icon-language:before {
-  content: "\1F394"; }
+  content: "🎔"; }
 
 .icon-network:before {
-  content: "\E776"; }
+  content: ""; }
 
 .icon-key:before {
-  content: "\1F511"; }
+  content: "🔑"; }
 
 .icon-battery:before {
-  content: "\1F50B"; }
+  content: "🔋"; }
 
 .icon-bucket:before {
-  content: "\1F4FE"; }
+  content: "📾"; }
 
 .icon-magnet:before {
-  content: "\E7A1"; }
+  content: ""; }
 
 .icon-drive:before {
-  content: "\1F4FD"; }
+  content: "📽"; }
 
 .icon-cup:before {
-  content: "\2615"; }
+  content: "☕"; }
 
 .icon-rocket:before {
-  content: "\1F680"; }
+  content: "🚀"; }
 
 .icon-brush:before {
-  content: "\E79A"; }
+  content: ""; }
 
 .icon-suitcase:before {
-  content: "\1F6C6"; }
+  content: "🛆"; }
 
 .icon-traffic-cone:before {
-  content: "\1F6C8"; }
+  content: "🛈"; }
 
 .icon-globe:before {
-  content: "\1F30E"; }
+  content: "🌎"; }
 
 .icon-keyboard:before {
-  content: "\2328"; }
+  content: "⌨"; }
 
 .icon-browser:before {
-  content: "\E74E"; }
+  content: ""; }
 
 .icon-publish:before {
-  content: "\E74D"; }
+  content: ""; }
 
 .icon-progress-3:before {
-  content: "\E76B"; }
+  content: ""; }
 
 .icon-progress-2:before {
-  content: "\E76A"; }
+  content: ""; }
 
 .icon-progress-1:before {
-  content: "\E769"; }
+  content: ""; }
 
 .icon-progress-0:before {
-  content: "\E768"; }
+  content: ""; }
 
 .icon-light-down:before {
-  content: "\1F505"; }
+  content: "🔅"; }
 
 .icon-light-up:before {
-  content: "\1F506"; }
+  content: "🔆"; }
 
 .icon-adjust:before {
-  content: "\25D1"; }
+  content: "◑"; }
 
 .icon-code:before {
-  content: "\E714"; }
+  content: ""; }
 
 .icon-monitor:before {
-  content: "\1F4BB"; }
+  content: "💻"; }
 
 .icon-infinity:before {
-  content: "\221E"; }
+  content: "∞"; }
 
 .icon-light-bulb:before {
-  content: "\1F4A1"; }
+  content: "💡"; }
 
 .icon-credit-card:before {
-  content: "\1F4B3"; }
+  content: "💳"; }
 
 .icon-database:before {
-  content: "\1F4F8"; }
+  content: "📸"; }
 
 .icon-voicemail:before {
-  content: "\2707"; }
+  content: "✇"; }
 
 .icon-clipboard:before {
-  content: "\1F4CB"; }
+  content: "📋"; }
 
 .icon-cart:before {
-  content: "\E73D"; }
+  content: ""; }
 
 .icon-box:before {
-  content: "\1F4E6"; }
+  content: "📦"; }
 
 .icon-ticket:before {
-  content: "\1F3AB"; }
+  content: "🎫"; }
 
 .icon-rss:before {
-  content: "\E73A"; }
+  content: ""; }
 
 .icon-signal:before {
-  content: "\1F4F6"; }
+  content: "📶"; }
 
 .icon-thermometer:before {
-  content: "\1F4FF"; }
+  content: "📿"; }
 
 .icon-water:before {
-  content: "\1F4A6"; }
+  content: "💦"; }
 
 .icon-sweden:before {
-  content: "\F601"; }
+  content: ""; }
 
 .icon-line-graph:before {
-  content: "\1F4C8"; }
+  content: "📈"; }
 
 .icon-pie-chart:before {
-  content: "\25F4"; }
+  content: "◴"; }
 
 .icon-bar-graph:before {
-  content: "\1F4CA"; }
+  content: "📊"; }
 
 .icon-area-graph:before {
-  content: "\1F53E"; }
+  content: "🔾"; }
 
 .icon-lock:before {
-  content: "\1F512"; }
+  content: "🔒"; }
 
 .icon-lock-open:before {
-  content: "\1F513"; }
+  content: "🔓"; }
 
 .icon-logout:before {
-  content: "\E741"; }
+  content: ""; }
 
 .icon-login:before {
-  content: "\E740"; }
+  content: ""; }
 
 .icon-check:before {
-  content: "\2713"; }
+  content: "✓"; }
 
 .icon-cross:before {
-  content: "\271D"; }
+  content: "✝"; }
 
 .icon-squared-minus:before {
-  content: "\229F"; }
+  content: "⊟"; }
 
 .icon-squared-plus:before {
-  content: "\229E"; }
+  content: "⊞"; }
 
 .icon-squared-cross:before {
-  content: "\274E"; }
+  content: "❎"; }
 
 .icon-circled-minus:before {
-  content: "\2296"; }
+  content: "⊖"; }
 
 .icon-circled-plus:before {
-  content: "\2295"; }
+  content: "⊕"; }
 
 .icon-circled-cross:before {
-  content: "\2716"; }
+  content: "✖"; }
 
 .icon-minus:before {
-  content: "\2796"; }
+  content: "➖"; }
 
 .icon-plus:before {
-  content: "\2795"; }
+  content: "➕"; }
 
 .icon-erase:before {
-  content: "\232B"; }
+  content: "⌫"; }
 
 .icon-block:before {
-  content: "\1F6AB"; }
+  content: "🚫"; }
 
 .icon-info:before {
-  content: "\2139"; }
+  content: "ℹ"; }
 
 .icon-circled-info:before {
-  content: "\E705"; }
+  content: ""; }
 
 .icon-help:before {
-  content: "\2753"; }
+  content: "❓"; }
 
 .icon-circled-help:before {
-  content: "\E704"; }
+  content: ""; }
 
 .icon-warning:before {
-  content: "\26A0"; }
+  content: "⚠"; }
 
 .icon-cycle:before {
-  content: "\1F504"; }
+  content: "🔄"; }
 
 .icon-cw:before {
-  content: "\27F3"; }
+  content: "⟳"; }
 
 .icon-ccw:before {
-  content: "\27F2"; }
+  content: "⟲"; }
 
 .icon-shuffle:before {
-  content: "\1F500"; }
+  content: "🔀"; }
 
 .icon-back:before {
-  content: "\1F519"; }
+  content: "🔙"; }
 
 .icon-level-down:before {
-  content: "\21B3"; }
+  content: "↳"; }
 
 .icon-retweet:before {
-  content: "\E717"; }
+  content: ""; }
 
 .icon-loop:before {
-  content: "\1F501"; }
+  content: "🔁"; }
 
 .icon-back-in-time:before {
-  content: "\E771"; }
+  content: ""; }
 
 .icon-level-up:before {
-  content: "\21B0"; }
+  content: "↰"; }
 
 .icon-switch:before {
-  content: "\21C6"; }
+  content: "⇆"; }
 
 .icon-numbered-list:before {
-  content: "\E005"; }
+  content: ""; }
 
 .icon-add-to-list:before {
-  content: "\E003"; }
+  content: ""; }
 
 .icon-layout:before {
-  content: "\268F"; }
+  content: "⚏"; }
 
 .icon-list:before {
-  content: "\2630"; }
+  content: "☰"; }
 
 .icon-text-doc:before {
-  content: "\1F4C4"; }
+  content: "📄"; }
 
 .icon-text-doc-inverted:before {
-  content: "\E731"; }
+  content: ""; }
 
 .icon-doc:before {
-  content: "\E730"; }
+  content: ""; }
 
 .icon-docs:before {
-  content: "\E736"; }
+  content: ""; }
 
 .icon-landscape-doc:before {
-  content: "\E737"; }
+  content: ""; }
 
 .icon-picture:before {
-  content: "\1F304"; }
+  content: "🌄"; }
 
 .icon-video:before {
-  content: "\1F3AC"; }
+  content: "🎬"; }
 
 .icon-music:before {
-  content: "\1F3B5"; }
+  content: "🎵"; }
 
 .icon-folder:before {
-  content: "\1F4C1"; }
+  content: "📁"; }
 
 .icon-archive:before {
-  content: "\E800"; }
+  content: ""; }
 
 .icon-trash:before {
-  content: "\E729"; }
+  content: ""; }
 
 .icon-upload:before {
-  content: "\1F4E4"; }
+  content: "📤"; }
 
 .icon-download:before {
-  content: "\1F4E5"; }
+  content: "📥"; }
 
 .icon-save:before {
-  content: "\1F4BE"; }
+  content: "💾"; }
 
 .icon-install:before {
-  content: "\E778"; }
+  content: ""; }
 
 .icon-cloud:before {
-  content: "\2601"; }
+  content: "☁"; }
 
 .icon-upload-cloud:before {
-  content: "\E711"; }
+  content: ""; }
 
 .icon-bookmark:before {
-  content: "\1F516"; }
+  content: "🔖"; }
 
 .icon-bookmarks:before {
-  content: "\1F4D1"; }
+  content: "📑"; }
 
 .icon-open-book:before {
-  content: "\1F4D6"; }
+  content: "📖"; }
 
 .icon-play:before {
-  content: "\25B6"; }
+  content: "▶"; }
 
 .icon-paus:before {
-  content: "\2016"; }
+  content: "‖"; }
 
 .icon-record:before {
-  content: "\25CF"; }
+  content: "●"; }
 
 .icon-stop:before {
-  content: "\25A0"; }
+  content: "■"; }
 
 .icon-ff:before {
-  content: "\23E9"; }
+  content: "⏩"; }
 
 .icon-fb:before {
-  content: "\23EA"; }
+  content: "⏪"; }
 
 .icon-to-start:before {
-  content: "\23EE"; }
+  content: "⏮"; }
 
 .icon-to-end:before {
-  content: "\23ED"; }
+  content: "⏭"; }
 
 .icon-resize-full:before {
-  content: "\E744"; }
+  content: ""; }
 
 .icon-resize-small:before {
-  content: "\E746"; }
+  content: ""; }
 
 .icon-volume:before {
-  content: "\23F7"; }
+  content: "⏷"; }
 
 .icon-sound:before {
-  content: "\1F50A"; }
+  content: "🔊"; }
 
 .icon-mute:before {
-  content: "\1F507"; }
+  content: "🔇"; }
 
 .icon-flow-cascade:before {
-  content: "\1F568"; }
+  content: "🕨"; }
 
 .icon-flow-branch:before {
-  content: "\1F569"; }
+  content: "🕩"; }
 
 .icon-flow-tree:before {
-  content: "\1F56A"; }
+  content: "🕪"; }
 
 .icon-flow-line:before {
-  content: "\1F56B"; }
+  content: "🕫"; }
 
 .icon-flow-parallel:before {
-  content: "\1F56C"; }
+  content: "🕬"; }
 
 .icon-left-bold:before {
-  content: "\E4AD"; }
+  content: ""; }
 
 .icon-down-bold:before {
-  content: "\E4B0"; }
+  content: ""; }
 
 .icon-up-bold:before {
-  content: "\E4AF"; }
+  content: ""; }
 
 .icon-right-bold:before {
-  content: "\E4AE"; }
+  content: ""; }
 
 .icon-left:before {
-  content: "\2B05"; }
+  content: "⬅"; }
 
 .icon-down:before {
-  content: "\2B07"; }
+  content: "⬇"; }
 
 .icon-up:before {
-  content: "\2B06"; }
+  content: "⬆"; }
 
 .icon-right:before {
-  content: "\27A1"; }
+  content: "➡"; }
 
 .icon-circled-left:before {
-  content: "\E759"; }
+  content: ""; }
 
 .icon-circled-down:before {
-  content: "\E758"; }
+  content: ""; }
 
 .icon-circled-up:before {
-  content: "\E75B"; }
+  content: ""; }
 
 .icon-circled-right:before {
-  content: "\E75A"; }
+  content: ""; }
 
 .icon-triangle-left:before {
-  content: "\25C2"; }
+  content: "◂"; }
 
 .icon-triangle-down:before {
-  content: "\25BE"; }
+  content: "▾"; }
 
 .icon-triangle-up:before {
-  content: "\25B4"; }
+  content: "▴"; }
 
 .icon-triangle-right:before {
-  content: "\25B8"; }
+  content: "▸"; }
 
 .icon-chevron-left:before {
-  content: "\E75D"; }
+  content: ""; }
 
 .icon-chevron-down:before {
-  content: "\E75C"; }
+  content: ""; }
 
 .icon-chevron-up:before {
-  content: "\E75F"; }
+  content: ""; }
 
 .icon-chevron-right:before {
-  content: "\E75E"; }
+  content: ""; }
 
 .icon-chevron-small-left:before {
-  content: "\E761"; }
+  content: ""; }
 
 .icon-chevron-small-down:before {
-  content: "\E760"; }
+  content: ""; }
 
 .icon-chevron-small-up:before {
-  content: "\E763"; }
+  content: ""; }
 
 .icon-chevron-small-right:before {
-  content: "\E762"; }
+  content: ""; }
 
 .icon-chevron-thin-left:before {
-  content: "\E765"; }
+  content: ""; }
 
 .icon-chevron-thin-down:before {
-  content: "\E764"; }
+  content: ""; }
 
 .icon-chevron-thin-up:before {
-  content: "\E767"; }
+  content: ""; }
 
 .icon-chevron-thin-right:before {
-  content: "\E766"; }
+  content: ""; }
 
 .icon-left-thin:before {
-  content: "\2190"; }
+  content: "←"; }
 
 .icon-down-thin:before {
-  content: "\2193"; }
+  content: "↓"; }
 
 .icon-up-thin:before {
-  content: "\2191"; }
+  content: "↑"; }
 
 .icon-right-thin:before {
-  content: "\2192"; }
+  content: "→"; }
 
 .icon-arrow-combo:before {
-  content: "\E74F"; }
+  content: ""; }
 
 .icon-three-dots:before {
-  content: "\23F6"; }
+  content: "⏶"; }
 
 .icon-two-dots:before {
-  content: "\23F5"; }
+  content: "⏵"; }
 
 .icon-dot:before {
-  content: "\23F4"; }
+  content: "⏴"; }
 
 .icon-cc:before {
-  content: "\1F545"; }
+  content: "🕅"; }
 
 .icon-cc-by:before {
-  content: "\1F546"; }
+  content: "🕆"; }
 
 .icon-cc-nc:before {
-  content: "\1F547"; }
+  content: "🕇"; }
 
 .icon-cc-nc-eu:before {
-  content: "\1F548"; }
+  content: "🕈"; }
 
 .icon-cc-nc-jp:before {
-  content: "\1F549"; }
+  content: "🕉"; }
 
 .icon-cc-sa:before {
-  content: "\1F54A"; }
+  content: "🕊"; }
 
 .icon-cc-nd:before {
-  content: "\1F54B"; }
+  content: "🕋"; }
 
 .icon-cc-pd:before {
-  content: "\1F54C"; }
+  content: "🕌"; }
 
 .icon-cc-zero:before {
-  content: "\1F54D"; }
+  content: "🕍"; }
 
 .icon-cc-share:before {
-  content: "\1F54E"; }
+  content: "🕎"; }
 
 .icon-cc-remix:before {
-  content: "\1F54F"; }
+  content: "🕏"; }
 
 .icon-db-logo:before {
-  content: "\1F5F9"; }
+  content: "🗹"; }
 
 .icon-db-shape:before {
-  content: "\1F5FA"; }
+  content: "🗺"; }
 
 .icon-github:before {
-  content: "\F300"; }
+  content: ""; }
 
 .icon-c-github:before {
-  content: "\F301"; }
+  content: ""; }
 
 .icon-flickr:before {
-  content: "\F303"; }
+  content: ""; }
 
 .icon-c-flickr:before {
-  content: "\F304"; }
+  content: ""; }
 
 .icon-vimeo:before {
-  content: "\F306"; }
+  content: ""; }
 
 .icon-c-vimeo:before {
-  content: "\F307"; }
+  content: ""; }
 
 .icon-twitter:before {
-  content: "\F309"; }
+  content: ""; }
 
 .icon-c-twitter:before {
-  content: "\F30A"; }
+  content: ""; }
 
 .icon-facebook:before {
-  content: "\F30C"; }
+  content: ""; }
 
 .icon-c-facebook:before {
-  content: "\F30D"; }
+  content: ""; }
 
 .icon-s-facebook:before {
-  content: "\F30E"; }
+  content: ""; }
 
 .icon-google-plus:before {
-  content: "\F30F"; }
+  content: ""; }
 
 .icon-c-google-plus:before {
-  content: "\F310"; }
+  content: ""; }
 
 .icon-pinterest:before {
-  content: "\F312"; }
+  content: ""; }
 
 .icon-c-pinterest:before {
-  content: "\F313"; }
+  content: ""; }
 
 .icon-tumblr:before {
-  content: "\F315"; }
+  content: ""; }
 
 .icon-c-tumblr:before {
-  content: "\F316"; }
+  content: ""; }
 
 .icon-linkedin:before {
-  content: "\F318"; }
+  content: ""; }
 
 .icon-c-linkedin:before {
-  content: "\F319"; }
+  content: ""; }
 
 .icon-dribbble:before {
-  content: "\F31B"; }
+  content: ""; }
 
 .icon-c-dribbble:before {
-  content: "\F31C"; }
+  content: ""; }
 
 .icon-stumbleupon:before {
-  content: "\F31E"; }
+  content: ""; }
 
 .icon-c-stumbleupon:before {
-  content: "\F31F"; }
+  content: ""; }
 
 .icon-lastfm:before {
-  content: "\F321"; }
+  content: ""; }
 
 .icon-c-lastfm:before {
-  content: "\F322"; }
+  content: ""; }
 
 .icon-rdio:before {
-  content: "\F324"; }
+  content: ""; }
 
 .icon-c-rdio:before {
-  content: "\F325"; }
+  content: ""; }
 
 .icon-spotify:before {
-  content: "\F327"; }
+  content: ""; }
 
 .icon-c-spotify:before {
-  content: "\F328"; }
+  content: ""; }
 
 .icon-qq:before {
-  content: "\F32A"; }
+  content: ""; }
 
 .icon-instagram:before {
-  content: "\F32D"; }
+  content: ""; }
 
 .icon-dropbox:before {
-  content: "\F330"; }
+  content: ""; }
 
 .icon-evernote:before {
-  content: "\F333"; }
+  content: ""; }
 
 .icon-flattr:before {
-  content: "\F336"; }
+  content: ""; }
 
 .icon-skype:before {
-  content: "\F339"; }
+  content: ""; }
 
 .icon-c-skype:before {
-  content: "\F33A"; }
+  content: ""; }
 
 .icon-renren:before {
-  content: "\F33C"; }
+  content: ""; }
 
 .icon-sina-weibo:before {
-  content: "\F33F"; }
+  content: ""; }
 
 .icon-paypal:before {
-  content: "\F342"; }
+  content: ""; }
 
 .icon-picasa:before {
-  content: "\F345"; }
+  content: ""; }
 
 .icon-soundcloud:before {
-  content: "\F348"; }
+  content: ""; }
 
 .icon-mixi:before {
-  content: "\F34B"; }
+  content: ""; }
 
 .icon-behance:before {
-  content: "\F34E"; }
+  content: ""; }
 
 .icon-google-circles:before {
-  content: "\F351"; }
+  content: ""; }
 
 .icon-vk:before {
-  content: "\F354"; }
+  content: ""; }
 
 .icon-smashing:before {
-  content: "\F357"; }
+  content: ""; }
 
 .row-plain {
   clear: both;
@@ -1342,67 +1340,56 @@ input[type="checkbox"].custom-check + label span:before, input[type="radio"].cus
     opacity: 0; }
   to {
     opacity: 1; } }
-
 @-moz-keyframes fadein {
   from {
     opacity: 0; }
   to {
     opacity: 1; } }
-
 @-ms-keyframes fadein {
   from {
     opacity: 0; }
   to {
     opacity: 1; } }
-
 @-o-keyframes fadein {
   from {
     opacity: 0; }
   to {
     opacity: 1; } }
-
 @keyframes fadein {
   from {
     opacity: 0; }
   to {
     opacity: 1; } }
-
 @-webkit-keyframes fadeout {
   from {
     opacity: 1; }
   to {
     opacity: 0; } }
-
 @-moz-keyframes fadeout {
   from {
     opacity: 1; }
   to {
     opacity: 0; } }
-
 @-ms-keyframes fadeout {
   from {
     opacity: 1; }
   to {
     opacity: 0; } }
-
 @-o-keyframes fadeout {
   from {
     opacity: 1; }
   to {
     opacity: 0; } }
-
 @keyframes fadeout {
   from {
     opacity: 1; }
   to {
     opacity: 0; } }
-
 @-webkit-keyframes rotate {
   from {
     -webkit-transform: rotate(0deg); }
   to {
     -webkit-transform: rotate(360deg); } }
-
 html, body {
   background-color: #ececec;
   color: #666666;
@@ -1543,8 +1530,8 @@ input, button {
     -ms-transform: scale(1.1);
     -webkit-transform: scale(1.1);
     transform: scale(1.1); }
-  .large-circle .material-icons, .large-circle .custom-check input[type="checkbox"] + label span:before, .custom-check input[type="checkbox"] + label .large-circle span:before, .large-circle .custom-check input[type="radio"] + label span:before, .custom-check input[type="radio"] + label .large-circle span:before, .large-circle
-  input[type="checkbox"].custom-check + label span:before,
+  .large-circle .material-icons, .large-circle .custom-check input[type="checkbox"] + label span:before, .custom-check input[type="checkbox"] + label .large-circle span:before, .large-circle .custom-check input[type="radio"] + label span:before, .custom-check input[type="radio"] + label .large-circle span:before,
+  .large-circle input[type="checkbox"].custom-check + label span:before,
   input[type="checkbox"].custom-check + label .large-circle span:before, .large-circle input[type="radio"].custom-check + label span:before, input[type="radio"].custom-check + label .large-circle span:before {
     display: inline-block;
     margin-top: 3px; }
@@ -1727,7 +1714,6 @@ span.gc-cs-link {
 
 .media-thumb .img.portrait {
   height: 50px; }
-
 .media-thumb .img.landscape {
   width: 50px; }
 
@@ -1838,7 +1824,6 @@ body.initial-load #page-blocker-smoke {
     -webkit-transform: perspective(120px) rotateY(180deg); }
   100% {
     -webkit-transform: perspective(120px) rotateY(180deg) rotateX(180deg); } }
-
 @keyframes rotateplane {
   0% {
     transform: perspective(120px) rotateX(0deg) rotateY(0deg);
@@ -1849,11 +1834,10 @@ body.initial-load #page-blocker-smoke {
   100% {
     transform: perspective(120px) rotateX(-180deg) rotateY(-179.9deg);
     -webkit-transform: perspective(120px) rotateX(-180deg) rotateY(-179.9deg); } }
-
-.pulsate, .external-drop-indicator, .sortableHeader .material-icons, .sortableHeader .custom-check input[type="checkbox"] + label span:before, .custom-check input[type="checkbox"] + label .sortableHeader span:before, .sortableHeader .custom-check input[type="radio"] + label span:before, .custom-check input[type="radio"] + label .sortableHeader span:before, .sortableHeader
-input[type="checkbox"].custom-check + label span:before,
-input[type="checkbox"].custom-check + label .sortableHeader span:before, .sortableHeader input[type="radio"].custom-check + label span:before, input[type="radio"].custom-check + label .sortableHeader span:before, .cards .card .header-image .default-loading .icon, #sidebar .unread-color, .login-box p.error .material-icons, .login-box p.error .custom-check input[type="checkbox"] + label span:before, .custom-check input[type="checkbox"] + label .login-box p.error span:before, .login-box p.error .custom-check input[type="radio"] + label span:before, .custom-check input[type="radio"] + label .login-box p.error span:before, .login-box p.error
-input[type="checkbox"].custom-check + label span:before,
+.pulsate, .external-drop-indicator, .sortableHeader .material-icons, .sortableHeader .custom-check input[type="checkbox"] + label span:before, .custom-check input[type="checkbox"] + label .sortableHeader span:before, .sortableHeader .custom-check input[type="radio"] + label span:before, .custom-check input[type="radio"] + label .sortableHeader span:before,
+.sortableHeader input[type="checkbox"].custom-check + label span:before,
+input[type="checkbox"].custom-check + label .sortableHeader span:before, .sortableHeader input[type="radio"].custom-check + label span:before, input[type="radio"].custom-check + label .sortableHeader span:before, .cards .card .header-image .default-loading .icon, #sidebar .unread-color, .login-box p.error .material-icons, .login-box p.error .custom-check input[type="checkbox"] + label span:before, .custom-check input[type="checkbox"] + label .login-box p.error span:before, .login-box p.error .custom-check input[type="radio"] + label span:before, .custom-check input[type="radio"] + label .login-box p.error span:before,
+.login-box p.error input[type="checkbox"].custom-check + label span:before,
 input[type="checkbox"].custom-check + label .login-box p.error span:before, .login-box p.error input[type="radio"].custom-check + label span:before, input[type="radio"].custom-check + label .login-box p.error span:before {
   -webkit-animation: pulsate 2s ease-out;
   -webkit-animation-iteration-count: infinite;
@@ -1866,7 +1850,6 @@ input[type="checkbox"].custom-check + label .login-box p.error span:before, .log
     opacity: 1.0; }
   100% {
     opacity: 0.6; } }
-
 .external-drop-indicator {
   position: fixed;
   background-color: #4ca6de;
@@ -2063,7 +2046,6 @@ input[type="date"]::-webkit-inner-spin-button {
     border-left-width: 1px; }
   .btn-group.btn-white .btn:last-child {
     border-right: 1px solid #dddddd; }
-
 .btn-group .btn {
   -webkit-border-top-right-radius: 0px;
   -webkit-border-bottom-right-radius: 0px;
@@ -2150,7 +2132,6 @@ input[type="date"]::-webkit-inner-spin-button {
     -moz-background-clip: padding-box;
     -webkit-background-clip: padding-box;
     background-clip: padding-box; }
-
 .btn-group.wysiwyg-toolbar .btn {
   padding: 5px 6px 5px 6px;
   font-size: 14px;
@@ -2232,8 +2213,8 @@ input[type="date"]::-webkit-inner-spin-button {
   .btn .icon {
     font-size: 400%;
     line-height: 16%; }
-  .btn .material-icons, .btn .custom-check input[type="checkbox"] + label span:before, .custom-check input[type="checkbox"] + label .btn span:before, .btn .custom-check input[type="radio"] + label span:before, .custom-check input[type="radio"] + label .btn span:before, .btn
-  input[type="checkbox"].custom-check + label span:before,
+  .btn .material-icons, .btn .custom-check input[type="checkbox"] + label span:before, .custom-check input[type="checkbox"] + label .btn span:before, .btn .custom-check input[type="radio"] + label span:before, .custom-check input[type="radio"] + label .btn span:before,
+  .btn input[type="checkbox"].custom-check + label span:before,
   input[type="checkbox"].custom-check + label .btn span:before, .btn input[type="radio"].custom-check + label span:before, input[type="radio"].custom-check + label .btn span:before {
     vertical-align: middle;
     font-size: 18px; }
@@ -2621,13 +2602,10 @@ select,
 
 .two-column-form .medium {
   width: 300px; }
-
 .two-column-form .small {
   width: 100px; }
-
 .two-column-form h2 {
   margin-bottom: 10px; }
-
 .two-column-form .fields {
   list-style: none;
   margin: 0px;
@@ -2768,7 +2746,6 @@ select,
 #directus_columns .input-selector {
   width: 150px;
   display: inline-block; }
-
 #directus_columns .open-ui-options {
   margin-left: 4px;
   vertical-align: inherit;
@@ -2833,8 +2810,8 @@ select,
         height: 0px;
         line-height: 12px;
         vertical-align: top; }
-      .table-striped thead tr th.sort .material-icons, .table-striped thead tr th.sort .custom-check input[type="checkbox"] + label span:before, .custom-check input[type="checkbox"] + label .table-striped thead tr th.sort span:before, .table-striped thead tr th.sort .custom-check input[type="radio"] + label span:before, .custom-check input[type="radio"] + label .table-striped thead tr th.sort span:before, .table-striped thead tr th.sort
-      input[type="checkbox"].custom-check + label span:before,
+      .table-striped thead tr th.sort .material-icons, .table-striped thead tr th.sort .custom-check input[type="checkbox"] + label span:before, .custom-check input[type="checkbox"] + label .table-striped thead tr th.sort span:before, .table-striped thead tr th.sort .custom-check input[type="radio"] + label span:before, .custom-check input[type="radio"] + label .table-striped thead tr th.sort span:before,
+      .table-striped thead tr th.sort input[type="checkbox"].custom-check + label span:before,
       input[type="checkbox"].custom-check + label .table-striped thead tr th.sort span:before, .table-striped thead tr th.sort input[type="radio"].custom-check + label span:before, input[type="radio"].custom-check + label .table-striped thead tr th.sort span:before {
         font-size: 18px;
         vertical-align: middle; }
@@ -2846,8 +2823,7 @@ select,
     color: #aaaaaa; }
     .table-striped thead #set-visible-columns:hover {
       color: #666666; }
-  .table-striped thead.force-hover #set-visible-columns,
-  .table-striped thead:hover #set-visible-columns {
+  .table-striped thead.force-hover #set-visible-columns, .table-striped thead:hover #set-visible-columns {
     display: block;
     background-color: #f7f7f7;
     padding-left: 10px;
@@ -2878,8 +2854,8 @@ select,
       text-align: left; }
       .table-striped tbody .sort:hover {
         color: #666666; }
-      .table-striped tbody .sort .material-icons, .table-striped tbody .sort .custom-check input[type="checkbox"] + label span:before, .custom-check input[type="checkbox"] + label .table-striped tbody .sort span:before, .table-striped tbody .sort .custom-check input[type="radio"] + label span:before, .custom-check input[type="radio"] + label .table-striped tbody .sort span:before, .table-striped tbody .sort
-      input[type="checkbox"].custom-check + label span:before,
+      .table-striped tbody .sort .material-icons, .table-striped tbody .sort .custom-check input[type="checkbox"] + label span:before, .custom-check input[type="checkbox"] + label .table-striped tbody .sort span:before, .table-striped tbody .sort .custom-check input[type="radio"] + label span:before, .custom-check input[type="radio"] + label .table-striped tbody .sort span:before,
+      .table-striped tbody .sort input[type="checkbox"].custom-check + label span:before,
       input[type="checkbox"].custom-check + label .table-striped tbody .sort span:before, .table-striped tbody .sort input[type="radio"].custom-check + label span:before, input[type="radio"].custom-check + label .table-striped tbody .sort span:before {
         font-size: 18px;
         vertical-align: middle; }
@@ -3257,65 +3233,65 @@ select,
         -moz-background-clip: padding-box;
         -webkit-background-clip: padding-box;
         background-clip: padding-box; }
-        .history-container ul li .history-icon .material-icons, .history-container ul li .history-icon .custom-check input[type="checkbox"] + label span:before, .custom-check input[type="checkbox"] + label .history-container ul li .history-icon span:before, .history-container ul li .history-icon .custom-check input[type="radio"] + label span:before, .custom-check input[type="radio"] + label .history-container ul li .history-icon span:before, .history-container ul li .history-icon
-        input[type="checkbox"].custom-check + label span:before,
+        .history-container ul li .history-icon .material-icons, .history-container ul li .history-icon .custom-check input[type="checkbox"] + label span:before, .custom-check input[type="checkbox"] + label .history-container ul li .history-icon span:before, .history-container ul li .history-icon .custom-check input[type="radio"] + label span:before, .custom-check input[type="radio"] + label .history-container ul li .history-icon span:before,
+        .history-container ul li .history-icon input[type="checkbox"].custom-check + label span:before,
         input[type="checkbox"].custom-check + label .history-container ul li .history-icon span:before, .history-container ul li .history-icon input[type="radio"].custom-check + label span:before, input[type="radio"].custom-check + label .history-container ul li .history-icon span:before {
           font-size: 100%;
           line-height: 60%;
           position: absolute; }
         .history-container ul li .history-icon.add {
           background-color: #7ac943; }
-          .history-container ul li .history-icon.add .material-icons, .history-container ul li .history-icon.add .custom-check input[type="checkbox"] + label span:before, .custom-check input[type="checkbox"] + label .history-container ul li .history-icon.add span:before, .history-container ul li .history-icon.add .custom-check input[type="radio"] + label span:before, .custom-check input[type="radio"] + label .history-container ul li .history-icon.add span:before, .history-container ul li .history-icon.add
-          input[type="checkbox"].custom-check + label span:before,
+          .history-container ul li .history-icon.add .material-icons, .history-container ul li .history-icon.add .custom-check input[type="checkbox"] + label span:before, .custom-check input[type="checkbox"] + label .history-container ul li .history-icon.add span:before, .history-container ul li .history-icon.add .custom-check input[type="radio"] + label span:before, .custom-check input[type="radio"] + label .history-container ul li .history-icon.add span:before,
+          .history-container ul li .history-icon.add input[type="checkbox"].custom-check + label span:before,
           input[type="checkbox"].custom-check + label .history-container ul li .history-icon.add span:before, .history-container ul li .history-icon.add input[type="radio"].custom-check + label span:before, input[type="radio"].custom-check + label .history-container ul li .history-icon.add span:before {
             top: 6px;
             left: 4px; }
         .history-container ul li .history-icon.edit {
           background-color: #3fa9f5; }
-          .history-container ul li .history-icon.edit .material-icons, .history-container ul li .history-icon.edit .custom-check input[type="checkbox"] + label span:before, .custom-check input[type="checkbox"] + label .history-container ul li .history-icon.edit span:before, .history-container ul li .history-icon.edit .custom-check input[type="radio"] + label span:before, .custom-check input[type="radio"] + label .history-container ul li .history-icon.edit span:before, .history-container ul li .history-icon.edit
-          input[type="checkbox"].custom-check + label span:before,
+          .history-container ul li .history-icon.edit .material-icons, .history-container ul li .history-icon.edit .custom-check input[type="checkbox"] + label span:before, .custom-check input[type="checkbox"] + label .history-container ul li .history-icon.edit span:before, .history-container ul li .history-icon.edit .custom-check input[type="radio"] + label span:before, .custom-check input[type="radio"] + label .history-container ul li .history-icon.edit span:before,
+          .history-container ul li .history-icon.edit input[type="checkbox"].custom-check + label span:before,
           input[type="checkbox"].custom-check + label .history-container ul li .history-icon.edit span:before, .history-container ul li .history-icon.edit input[type="radio"].custom-check + label span:before, input[type="radio"].custom-check + label .history-container ul li .history-icon.edit span:before {
             top: 6px;
             left: 4px; }
         .history-container ul li .history-icon.delete {
           background-color: #c1272d; }
-          .history-container ul li .history-icon.delete .material-icons, .history-container ul li .history-icon.delete .custom-check input[type="checkbox"] + label span:before, .custom-check input[type="checkbox"] + label .history-container ul li .history-icon.delete span:before, .history-container ul li .history-icon.delete .custom-check input[type="radio"] + label span:before, .custom-check input[type="radio"] + label .history-container ul li .history-icon.delete span:before, .history-container ul li .history-icon.delete
-          input[type="checkbox"].custom-check + label span:before,
+          .history-container ul li .history-icon.delete .material-icons, .history-container ul li .history-icon.delete .custom-check input[type="checkbox"] + label span:before, .custom-check input[type="checkbox"] + label .history-container ul li .history-icon.delete span:before, .history-container ul li .history-icon.delete .custom-check input[type="radio"] + label span:before, .custom-check input[type="radio"] + label .history-container ul li .history-icon.delete span:before,
+          .history-container ul li .history-icon.delete input[type="checkbox"].custom-check + label span:before,
           input[type="checkbox"].custom-check + label .history-container ul li .history-icon.delete span:before, .history-container ul li .history-icon.delete input[type="radio"].custom-check + label span:before, input[type="radio"].custom-check + label .history-container ul li .history-icon.delete span:before {
             top: 6px;
             left: 4px; }
         .history-container ul li .history-icon.message {
           background-color: #a63c96; }
-          .history-container ul li .history-icon.message .material-icons, .history-container ul li .history-icon.message .custom-check input[type="checkbox"] + label span:before, .custom-check input[type="checkbox"] + label .history-container ul li .history-icon.message span:before, .history-container ul li .history-icon.message .custom-check input[type="radio"] + label span:before, .custom-check input[type="radio"] + label .history-container ul li .history-icon.message span:before, .history-container ul li .history-icon.message
-          input[type="checkbox"].custom-check + label span:before,
+          .history-container ul li .history-icon.message .material-icons, .history-container ul li .history-icon.message .custom-check input[type="checkbox"] + label span:before, .custom-check input[type="checkbox"] + label .history-container ul li .history-icon.message span:before, .history-container ul li .history-icon.message .custom-check input[type="radio"] + label span:before, .custom-check input[type="radio"] + label .history-container ul li .history-icon.message span:before,
+          .history-container ul li .history-icon.message input[type="checkbox"].custom-check + label span:before,
           input[type="checkbox"].custom-check + label .history-container ul li .history-icon.message span:before, .history-container ul li .history-icon.message input[type="radio"].custom-check + label span:before, input[type="radio"].custom-check + label .history-container ul li .history-icon.message span:before {
             top: 2px;
             left: 4px; }
         .history-container ul li .history-icon.comment {
           background-color: #a63c96; }
-          .history-container ul li .history-icon.comment .material-icons, .history-container ul li .history-icon.comment .custom-check input[type="checkbox"] + label span:before, .custom-check input[type="checkbox"] + label .history-container ul li .history-icon.comment span:before, .history-container ul li .history-icon.comment .custom-check input[type="radio"] + label span:before, .custom-check input[type="radio"] + label .history-container ul li .history-icon.comment span:before, .history-container ul li .history-icon.comment
-          input[type="checkbox"].custom-check + label span:before,
+          .history-container ul li .history-icon.comment .material-icons, .history-container ul li .history-icon.comment .custom-check input[type="checkbox"] + label span:before, .custom-check input[type="checkbox"] + label .history-container ul li .history-icon.comment span:before, .history-container ul li .history-icon.comment .custom-check input[type="radio"] + label span:before, .custom-check input[type="radio"] + label .history-container ul li .history-icon.comment span:before,
+          .history-container ul li .history-icon.comment input[type="checkbox"].custom-check + label span:before,
           input[type="checkbox"].custom-check + label .history-container ul li .history-icon.comment span:before, .history-container ul li .history-icon.comment input[type="radio"].custom-check + label span:before, input[type="radio"].custom-check + label .history-container ul li .history-icon.comment span:before {
             top: 6px;
             left: 4px; }
         .history-container ul li .history-icon.attach {
           background-color: #ff7bac; }
-          .history-container ul li .history-icon.attach .material-icons, .history-container ul li .history-icon.attach .custom-check input[type="checkbox"] + label span:before, .custom-check input[type="checkbox"] + label .history-container ul li .history-icon.attach span:before, .history-container ul li .history-icon.attach .custom-check input[type="radio"] + label span:before, .custom-check input[type="radio"] + label .history-container ul li .history-icon.attach span:before, .history-container ul li .history-icon.attach
-          input[type="checkbox"].custom-check + label span:before,
+          .history-container ul li .history-icon.attach .material-icons, .history-container ul li .history-icon.attach .custom-check input[type="checkbox"] + label span:before, .custom-check input[type="checkbox"] + label .history-container ul li .history-icon.attach span:before, .history-container ul li .history-icon.attach .custom-check input[type="radio"] + label span:before, .custom-check input[type="radio"] + label .history-container ul li .history-icon.attach span:before,
+          .history-container ul li .history-icon.attach input[type="checkbox"].custom-check + label span:before,
           input[type="checkbox"].custom-check + label .history-container ul li .history-icon.attach span:before, .history-container ul li .history-icon.attach input[type="radio"].custom-check + label span:before, input[type="radio"].custom-check + label .history-container ul li .history-icon.attach span:before {
             top: 6px;
             left: 4px; }
         .history-container ul li .history-icon.login {
           background-color: #5b5b5b; }
-          .history-container ul li .history-icon.login .material-icons, .history-container ul li .history-icon.login .custom-check input[type="checkbox"] + label span:before, .custom-check input[type="checkbox"] + label .history-container ul li .history-icon.login span:before, .history-container ul li .history-icon.login .custom-check input[type="radio"] + label span:before, .custom-check input[type="radio"] + label .history-container ul li .history-icon.login span:before, .history-container ul li .history-icon.login
-          input[type="checkbox"].custom-check + label span:before,
+          .history-container ul li .history-icon.login .material-icons, .history-container ul li .history-icon.login .custom-check input[type="checkbox"] + label span:before, .custom-check input[type="checkbox"] + label .history-container ul li .history-icon.login span:before, .history-container ul li .history-icon.login .custom-check input[type="radio"] + label span:before, .custom-check input[type="radio"] + label .history-container ul li .history-icon.login span:before,
+          .history-container ul li .history-icon.login input[type="checkbox"].custom-check + label span:before,
           input[type="checkbox"].custom-check + label .history-container ul li .history-icon.login span:before, .history-container ul li .history-icon.login input[type="radio"].custom-check + label span:before, input[type="radio"].custom-check + label .history-container ul li .history-icon.login span:before {
             top: 6px;
             left: 4px; }
         .history-container ul li .history-icon.system {
           background-color: #fdcd30; }
-          .history-container ul li .history-icon.system .material-icons, .history-container ul li .history-icon.system .custom-check input[type="checkbox"] + label span:before, .custom-check input[type="checkbox"] + label .history-container ul li .history-icon.system span:before, .history-container ul li .history-icon.system .custom-check input[type="radio"] + label span:before, .custom-check input[type="radio"] + label .history-container ul li .history-icon.system span:before, .history-container ul li .history-icon.system
-          input[type="checkbox"].custom-check + label span:before,
+          .history-container ul li .history-icon.system .material-icons, .history-container ul li .history-icon.system .custom-check input[type="checkbox"] + label span:before, .custom-check input[type="checkbox"] + label .history-container ul li .history-icon.system span:before, .history-container ul li .history-icon.system .custom-check input[type="radio"] + label span:before, .custom-check input[type="radio"] + label .history-container ul li .history-icon.system span:before,
+          .history-container ul li .history-icon.system input[type="checkbox"].custom-check + label span:before,
           input[type="checkbox"].custom-check + label .history-container ul li .history-icon.system span:before, .history-container ul li .history-icon.system input[type="radio"].custom-check + label span:before, input[type="radio"].custom-check + label .history-container ul li .history-icon.system span:before {
             top: 6px;
             left: 4px; }
@@ -3427,19 +3403,18 @@ select,
 
 .disable-sorting .sortableHeader {
   cursor: pointer; }
-  .disable-sorting .sortableHeader .material-icons, .disable-sorting .sortableHeader .custom-check input[type="checkbox"] + label span:before, .custom-check input[type="checkbox"] + label .disable-sorting .sortableHeader span:before, .disable-sorting .sortableHeader .custom-check input[type="radio"] + label span:before, .custom-check input[type="radio"] + label .disable-sorting .sortableHeader span:before, .disable-sorting .sortableHeader
-  input[type="checkbox"].custom-check + label span:before,
+  .disable-sorting .sortableHeader .material-icons, .disable-sorting .sortableHeader .custom-check input[type="checkbox"] + label span:before, .custom-check input[type="checkbox"] + label .disable-sorting .sortableHeader span:before, .disable-sorting .sortableHeader .custom-check input[type="radio"] + label span:before, .custom-check input[type="radio"] + label .disable-sorting .sortableHeader span:before,
+  .disable-sorting .sortableHeader input[type="checkbox"].custom-check + label span:before,
   input[type="checkbox"].custom-check + label .disable-sorting .sortableHeader span:before, .disable-sorting .sortableHeader input[type="radio"].custom-check + label span:before, input[type="radio"].custom-check + label .disable-sorting .sortableHeader span:before {
     color: #aaaaaa; }
-  .disable-sorting .sortableHeader:hover .material-icons, .disable-sorting .sortableHeader:hover .custom-check input[type="checkbox"] + label span:before, .custom-check input[type="checkbox"] + label .disable-sorting .sortableHeader:hover span:before, .disable-sorting .sortableHeader:hover .custom-check input[type="radio"] + label span:before, .custom-check input[type="radio"] + label .disable-sorting .sortableHeader:hover span:before, .disable-sorting .sortableHeader:hover
-  input[type="checkbox"].custom-check + label span:before,
+  .disable-sorting .sortableHeader:hover .material-icons, .disable-sorting .sortableHeader:hover .custom-check input[type="checkbox"] + label span:before, .custom-check input[type="checkbox"] + label .disable-sorting .sortableHeader:hover span:before, .disable-sorting .sortableHeader:hover .custom-check input[type="radio"] + label span:before, .custom-check input[type="radio"] + label .disable-sorting .sortableHeader:hover span:before,
+  .disable-sorting .sortableHeader:hover input[type="checkbox"].custom-check + label span:before,
   input[type="checkbox"].custom-check + label .disable-sorting .sortableHeader:hover span:before, .disable-sorting .sortableHeader:hover input[type="radio"].custom-check + label span:before, input[type="radio"].custom-check + label .disable-sorting .sortableHeader:hover span:before {
     color: #666666; }
-
 .disable-sorting td.sort {
   color: #ececec; }
-  .disable-sorting td.sort .material-icons, .disable-sorting td.sort .custom-check input[type="checkbox"] + label span:before, .custom-check input[type="checkbox"] + label .disable-sorting td.sort span:before, .disable-sorting td.sort .custom-check input[type="radio"] + label span:before, .custom-check input[type="radio"] + label .disable-sorting td.sort span:before, .disable-sorting td.sort
-  input[type="checkbox"].custom-check + label span:before,
+  .disable-sorting td.sort .material-icons, .disable-sorting td.sort .custom-check input[type="checkbox"] + label span:before, .custom-check input[type="checkbox"] + label .disable-sorting td.sort span:before, .disable-sorting td.sort .custom-check input[type="radio"] + label span:before, .custom-check input[type="radio"] + label .disable-sorting td.sort span:before,
+  .disable-sorting td.sort input[type="checkbox"].custom-check + label span:before,
   input[type="checkbox"].custom-check + label .disable-sorting td.sort span:before, .disable-sorting td.sort input[type="radio"].custom-check + label span:before, input[type="radio"].custom-check + label .disable-sorting td.sort span:before {
     font-size: 18px;
     vertical-align: middle;
@@ -3462,7 +3437,6 @@ select,
 
 tbody.remove-hover-state tr:hover td {
   background-color: #ffffff; }
-
 tbody.remove-hover-state .sort {
   color: #aaaaaa !important; }
 
@@ -3485,7 +3459,6 @@ tbody.remove-hover-state .sort {
   100% {
     -webkit-transform: translateX(-2px) rotate(-2deg);
     transform: translateX(-2px) rotate(-2deg); } }
-
 @keyframes buzz {
   50% {
     -webkit-transform: translateX(2px) rotate(2deg);
@@ -3493,9 +3466,8 @@ tbody.remove-hover-state .sort {
   100% {
     -webkit-transform: translateX(-2px) rotate(-2deg);
     transform: translateX(-2px) rotate(-2deg); } }
-
-.reorder-effect, tbody.remove-hover-state .sort .material-icons, tbody.remove-hover-state .sort .custom-check input[type="checkbox"] + label span:before, .custom-check input[type="checkbox"] + label tbody.remove-hover-state .sort span:before, tbody.remove-hover-state .sort .custom-check input[type="radio"] + label span:before, .custom-check input[type="radio"] + label tbody.remove-hover-state .sort span:before, tbody.remove-hover-state .sort
-input[type="checkbox"].custom-check + label span:before,
+.reorder-effect, tbody.remove-hover-state .sort .material-icons, tbody.remove-hover-state .sort .custom-check input[type="checkbox"] + label span:before, .custom-check input[type="checkbox"] + label tbody.remove-hover-state .sort span:before, tbody.remove-hover-state .sort .custom-check input[type="radio"] + label span:before, .custom-check input[type="radio"] + label tbody.remove-hover-state .sort span:before,
+tbody.remove-hover-state .sort input[type="checkbox"].custom-check + label span:before,
 input[type="checkbox"].custom-check + label tbody.remove-hover-state .sort span:before, tbody.remove-hover-state .sort input[type="radio"].custom-check + label span:before, input[type="radio"].custom-check + label tbody.remove-hover-state .sort span:before {
   display: inline-block;
   -webkit-transform: translateZ(0);
@@ -3515,13 +3487,11 @@ input[type="checkbox"].custom-check + label tbody.remove-hover-state .sort span:
     -moz-transform: rotate(-1deg); }
   50% {
     -moz-transform: rotate(1deg); } }
-
 @-webkit-keyframes jiggle {
   0% {
     -webkit-transform: rotate(-1deg); }
   50% {
     -webkit-transform: rotate(1deg); } }
-
 .jiggly, .ui-file-container.remove-hover-state img {
   -webkit-animation: jiggle 0.2s infinite;
   -moz-animation-duration: 0.2s;
@@ -3589,8 +3559,8 @@ input[type="checkbox"].custom-check + label tbody.remove-hover-state .sort span:
         right: 10px;
         z-index: 3;
         opacity: 0; }
-        .cards .card .header-image .tool-item .material-icons, .cards .card .header-image .tool-item .custom-check input[type="checkbox"] + label span:before, .custom-check input[type="checkbox"] + label .cards .card .header-image .tool-item span:before, .cards .card .header-image .tool-item .custom-check input[type="radio"] + label span:before, .custom-check input[type="radio"] + label .cards .card .header-image .tool-item span:before, .cards .card .header-image .tool-item
-        input[type="checkbox"].custom-check + label span:before,
+        .cards .card .header-image .tool-item .material-icons, .cards .card .header-image .tool-item .custom-check input[type="checkbox"] + label span:before, .custom-check input[type="checkbox"] + label .cards .card .header-image .tool-item span:before, .cards .card .header-image .tool-item .custom-check input[type="radio"] + label span:before, .custom-check input[type="radio"] + label .cards .card .header-image .tool-item span:before,
+        .cards .card .header-image .tool-item input[type="checkbox"].custom-check + label span:before,
         input[type="checkbox"].custom-check + label .cards .card .header-image .tool-item span:before, .cards .card .header-image .tool-item input[type="radio"].custom-check + label span:before, input[type="radio"].custom-check + label .cards .card .header-image .tool-item span:before {
           font-size: 18px;
           margin-top: 6px; }
@@ -3666,8 +3636,8 @@ input[type="checkbox"].custom-check + label tbody.remove-hover-state .sort span:
     height: 100px;
     overflow: hidden;
     position: relative; }
-    .feature-cards .feature-card:hover .material-icons, .feature-cards .feature-card:hover .custom-check input[type="checkbox"] + label span:before, .custom-check input[type="checkbox"] + label .feature-cards .feature-card:hover span:before, .feature-cards .feature-card:hover .custom-check input[type="radio"] + label span:before, .custom-check input[type="radio"] + label .feature-cards .feature-card:hover span:before, .feature-cards .feature-card:hover
-    input[type="checkbox"].custom-check + label span:before,
+    .feature-cards .feature-card:hover .material-icons, .feature-cards .feature-card:hover .custom-check input[type="checkbox"] + label span:before, .custom-check input[type="checkbox"] + label .feature-cards .feature-card:hover span:before, .feature-cards .feature-card:hover .custom-check input[type="radio"] + label span:before, .custom-check input[type="radio"] + label .feature-cards .feature-card:hover span:before,
+    .feature-cards .feature-card:hover input[type="checkbox"].custom-check + label span:before,
     input[type="checkbox"].custom-check + label .feature-cards .feature-card:hover span:before, .feature-cards .feature-card:hover input[type="radio"].custom-check + label span:before, input[type="radio"].custom-check + label .feature-cards .feature-card:hover span:before {
       color: #268fd1 !important; }
     .feature-cards .feature-card .left-col {
@@ -3677,8 +3647,8 @@ input[type="checkbox"].custom-check + label tbody.remove-hover-state .sort span:
       position: absolute;
       top: 0;
       left: 0; }
-      .feature-cards .feature-card .left-col .material-icons, .feature-cards .feature-card .left-col .custom-check input[type="checkbox"] + label span:before, .custom-check input[type="checkbox"] + label .feature-cards .feature-card .left-col span:before, .feature-cards .feature-card .left-col .custom-check input[type="radio"] + label span:before, .custom-check input[type="radio"] + label .feature-cards .feature-card .left-col span:before, .feature-cards .feature-card .left-col
-      input[type="checkbox"].custom-check + label span:before,
+      .feature-cards .feature-card .left-col .material-icons, .feature-cards .feature-card .left-col .custom-check input[type="checkbox"] + label span:before, .custom-check input[type="checkbox"] + label .feature-cards .feature-card .left-col span:before, .feature-cards .feature-card .left-col .custom-check input[type="radio"] + label span:before, .custom-check input[type="radio"] + label .feature-cards .feature-card .left-col span:before,
+      .feature-cards .feature-card .left-col input[type="checkbox"].custom-check + label span:before,
       input[type="checkbox"].custom-check + label .feature-cards .feature-card .left-col span:before, .feature-cards .feature-card .left-col input[type="radio"].custom-check + label span:before, input[type="radio"].custom-check + label .feature-cards .feature-card .left-col span:before {
         -webkit-transition: all 100ms ease-in-out;
         -moz-transition: all 100ms ease-in-out;
@@ -3939,7 +3909,6 @@ body.initial-load #sidebar {
       background-repeat: no-repeat;
       background-position: left center;
       animation: logosprite 0.5s steps(15) infinite; }
-
 @keyframes logosprite {
   100% {
     background-position: -1200px; } }
@@ -4120,7 +4089,6 @@ body.initial-load #sidebar {
 
 .has-toolbar .secondary-row {
   min-height: 34px; }
-
 .has-toolbar .content-body {
   margin-top: 114px; }
 
@@ -4138,8 +4106,8 @@ body.initial-load #sidebar {
   .header1 .btn-header {
     padding: 10px 15px 10px 10px;
     margin-top: -1px; }
-    .header1 .btn-header .material-icons, .header1 .btn-header .custom-check input[type="checkbox"] + label span:before, .custom-check input[type="checkbox"] + label .header1 .btn-header span:before, .header1 .btn-header .custom-check input[type="radio"] + label span:before, .custom-check input[type="radio"] + label .header1 .btn-header span:before, .header1 .btn-header
-    input[type="checkbox"].custom-check + label span:before,
+    .header1 .btn-header .material-icons, .header1 .btn-header .custom-check input[type="checkbox"] + label span:before, .custom-check input[type="checkbox"] + label .header1 .btn-header span:before, .header1 .btn-header .custom-check input[type="radio"] + label span:before, .custom-check input[type="radio"] + label .header1 .btn-header span:before,
+    .header1 .btn-header input[type="checkbox"].custom-check + label span:before,
     input[type="checkbox"].custom-check + label .header1 .btn-header span:before, .header1 .btn-header input[type="radio"].custom-check + label span:before, input[type="radio"].custom-check + label .header1 .btn-header span:before {
       font-size: 24px;
       margin-top: -6px;
@@ -4457,7 +4425,6 @@ body.initial-load #sidebar {
     left: 0px;
     top: 7px;
     transform: rotateZ(45deg); } }
-
 @keyframes tox-2-on {
   0% {
     left: 0px;
@@ -4470,7 +4437,6 @@ body.initial-load #sidebar {
     left: 0px;
     top: 7px;
     transform: rotateZ(45deg); } }
-
 @keyframes tox-3-on {
   0% {
     left: 0px;
@@ -4483,7 +4449,6 @@ body.initial-load #sidebar {
     left: 0px;
     top: 7px;
     transform: rotateZ(-45deg); } }
-
 @keyframes tox-1-off {
   0% {
     left: 0px;
@@ -4496,7 +4461,6 @@ body.initial-load #sidebar {
   100% {
     left: 0px;
     top: 0px; } }
-
 @keyframes tox-2-off {
   0% {
     left: 0px;
@@ -4509,7 +4473,6 @@ body.initial-load #sidebar {
   100% {
     left: 0px;
     top: 7px; } }
-
 @keyframes tox-3-off {
   0% {
     left: 0px;
@@ -4522,7 +4485,6 @@ body.initial-load #sidebar {
   100% {
     left: 0px;
     top: 14px; } }
-
 @media only screen and (max-width: 800px) {
   #main.sidebar-active #sidebar {
     left: 0 !important; }
@@ -4537,6 +4499,7 @@ body.initial-load #sidebar {
   #main.sidebar-active .responsive-nav-toggle .line-3 {
     animation-name: tox-3-on;
     -webkit-animation-name: tox-3-on; }
+
   .responsive-nav-toggle {
     position: relative;
     display: inline-block;
@@ -4578,8 +4541,10 @@ body.initial-load #sidebar {
       left: 0px;
       animation-name: tox-3-off;
       -webkit-animation-name: tox-3-off; }
+
   #sidebar {
     left: -170px !important; }
+
   .cards .card {
     width: 150px; }
     .cards .card .header-image {
@@ -4588,9 +4553,11 @@ body.initial-load #sidebar {
       .cards .card .header-image img {
         width: 150px !important;
         height: 150px !important; }
+
   .set-columns {
     top: 125px !important;
     right: 20px !important; }
+
   .main-container {
     margin-left: 0px;
     padding: 0px 20px; }
@@ -4620,8 +4587,10 @@ body.initial-load #sidebar {
         display: none; }
       .main-container .header1 #tools-right-insert {
         display: none; }
+
   .content-body {
     margin-top: 70px !important; }
+
   .two-column-form .fields .table .trow .label, .two-column-form .fields .table .trow .field {
     display: block; }
   .two-column-form .fields .field {
@@ -4629,18 +4598,21 @@ body.initial-load #sidebar {
   .two-column-form .fields .label {
     width: 100%;
     padding: 30px 30px 10px 30px; }
+
   .bar-date {
     display: none; }
+
   .history-container ul .history-add-comment {
     padding-right: 20px; }
   .history-container ul li {
     padding-right: 70px; }
+
   .feature-cards .feature-card {
     height: 60px; }
     .feature-cards .feature-card .left-col {
       width: 100px; }
-      .feature-cards .feature-card .left-col .material-icons, .feature-cards .feature-card .left-col .custom-check input[type="checkbox"] + label span:before, .custom-check input[type="checkbox"] + label .feature-cards .feature-card .left-col span:before, .feature-cards .feature-card .left-col .custom-check input[type="radio"] + label span:before, .custom-check input[type="radio"] + label .feature-cards .feature-card .left-col span:before, .feature-cards .feature-card .left-col
-      input[type="checkbox"].custom-check + label span:before,
+      .feature-cards .feature-card .left-col .material-icons, .feature-cards .feature-card .left-col .custom-check input[type="checkbox"] + label span:before, .custom-check input[type="checkbox"] + label .feature-cards .feature-card .left-col span:before, .feature-cards .feature-card .left-col .custom-check input[type="radio"] + label span:before, .custom-check input[type="radio"] + label .feature-cards .feature-card .left-col span:before,
+      .feature-cards .feature-card .left-col input[type="checkbox"].custom-check + label span:before,
       input[type="checkbox"].custom-check + label .feature-cards .feature-card .left-col span:before, .feature-cards .feature-card .left-col input[type="radio"].custom-check + label span:before, input[type="radio"].custom-check + label .feature-cards .feature-card .left-col span:before {
         font-size: 70px;
         line-height: 100px; }
@@ -4653,11 +4625,11 @@ body.initial-load #sidebar {
         overflow: hidden; }
       .feature-cards .feature-card .right-col p {
         display: none; }
+
   .invisible-blocker.sidebar-active #page-blocker-smoke {
     left: 170px; }
   .invisible-blocker #page-blocker-smoke {
     left: 0; } }
-
 .login-box {
   -webkit-transition: all 100ms ease-in-out;
   -moz-transition: all 100ms ease-in-out;
@@ -4673,7 +4645,8 @@ body.initial-load #sidebar {
   width: 350px;
   text-align: center; }
   .login-box button[type="submit"] {
-    float: right;
+    display: block;
+    margin: 0 auto 1em;
     min-width: 150px;
     font-size: 14px;
     background: #4ca6de;
@@ -4692,8 +4665,8 @@ body.initial-load #sidebar {
     margin: 20px auto;
     text-transform: uppercase;
     font-size: 12px; }
-    .login-box p.error .material-icons, .login-box p.error .custom-check input[type="checkbox"] + label span:before, .custom-check input[type="checkbox"] + label .login-box p.error span:before, .login-box p.error .custom-check input[type="radio"] + label span:before, .custom-check input[type="radio"] + label .login-box p.error span:before, .login-box p.error
-    input[type="checkbox"].custom-check + label span:before,
+    .login-box p.error .material-icons, .login-box p.error .custom-check input[type="checkbox"] + label span:before, .custom-check input[type="checkbox"] + label .login-box p.error span:before, .login-box p.error .custom-check input[type="radio"] + label span:before, .custom-check input[type="radio"] + label .login-box p.error span:before,
+    .login-box p.error input[type="checkbox"].custom-check + label span:before,
     input[type="checkbox"].custom-check + label .login-box p.error span:before, .login-box p.error input[type="radio"].custom-check + label span:before, input[type="radio"].custom-check + label .login-box p.error span:before {
       margin-right: 5px;
       font-size: 22px;
@@ -4705,8 +4678,8 @@ body.initial-load #sidebar {
     margin: 0;
     padding: 15px 0 0 10px;
     text-align: center; }
-    .login-box p.message .material-icons, .login-box p.message .custom-check input[type="checkbox"] + label span:before, .custom-check input[type="checkbox"] + label .login-box p.message span:before, .login-box p.message .custom-check input[type="radio"] + label span:before, .custom-check input[type="radio"] + label .login-box p.message span:before, .login-box p.message
-    input[type="checkbox"].custom-check + label span:before,
+    .login-box p.message .material-icons, .login-box p.message .custom-check input[type="checkbox"] + label span:before, .custom-check input[type="checkbox"] + label .login-box p.message span:before, .login-box p.message .custom-check input[type="radio"] + label span:before, .custom-check input[type="radio"] + label .login-box p.message span:before,
+    .login-box p.message input[type="checkbox"].custom-check + label span:before,
     input[type="checkbox"].custom-check + label .login-box p.message span:before, .login-box p.message input[type="radio"].custom-check + label span:before, input[type="radio"].custom-check + label .login-box p.message span:before {
       vertical-align: middle;
       padding-right: 10px; }
@@ -4761,33 +4734,30 @@ body.initial-load #sidebar {
       -o-transition: all 100ms ease-in-out;
       -ms-transition: all 100ms ease-in-out;
       transition: all 100ms ease-in-out;
+      margin: 0 auto;
       background: transparent;
       border: none;
       padding: 0px;
-      position: absolute;
-      right: 10px;
-      top: 12px;
       color: #d0d0d0; }
-      .login-panel p #forgot-password .material-icons, .login-panel p #forgot-password .custom-check input[type="checkbox"] + label span:before, .custom-check input[type="checkbox"] + label .login-panel p #forgot-password span:before, .login-panel p #forgot-password .custom-check input[type="radio"] + label span:before, .custom-check input[type="radio"] + label .login-panel p #forgot-password span:before, .login-panel p #forgot-password
-      input[type="checkbox"].custom-check + label span:before,
+      .login-panel p #forgot-password .material-icons, .login-panel p #forgot-password .custom-check input[type="checkbox"] + label span:before, .custom-check input[type="checkbox"] + label .login-panel p #forgot-password span:before, .login-panel p #forgot-password .custom-check input[type="radio"] + label span:before, .custom-check input[type="radio"] + label .login-panel p #forgot-password span:before,
+      .login-panel p #forgot-password input[type="checkbox"].custom-check + label span:before,
       input[type="checkbox"].custom-check + label .login-panel p #forgot-password span:before, .login-panel p #forgot-password input[type="radio"].custom-check + label span:before, input[type="radio"].custom-check + label .login-panel p #forgot-password span:before {
         font-size: 24px; }
       .login-panel p #forgot-password:hover {
         color: #4ca6de; }
 
-  .message .message-content .title {
-    font-weight: 400;
-    font-size: 16px;
-    margin-bottom: 2px; }
-  .message .message-content .users {
-    font-weight: 400;
-    font-size: 14px;
-    margin-bottom: 4px; }
-  .message .message-content .subject {
-    color: #aaaaaa;
-    font-size: 14px;
-    font-weight: 400; }
-
+.message .message-content .title {
+  font-weight: 400;
+  font-size: 16px;
+  margin-bottom: 2px; }
+.message .message-content .users {
+  font-weight: 400;
+  font-size: 14px;
+  margin-bottom: 4px; }
+.message .message-content .subject {
+  color: #aaaaaa;
+  font-size: 14px;
+  font-weight: 400; }
 .message.unread {
   background-color: #ffffff;
   color: #666666; }
@@ -4885,3 +4855,5 @@ ul.general-container {
           position: absolute;
           top: 1px;
           left: 12px; }
+
+/*# sourceMappingURL=directus.css.map */

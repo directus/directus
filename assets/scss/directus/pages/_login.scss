@@ -9,7 +9,8 @@
   width:350px;
   text-align: center;
   button[type="submit"] {
-    float: right;
+    display: block;
+    margin: 0 auto 1em;
     min-width: 150px;
     font-size: 14px;
     background: $primaryColor;
@@ -115,12 +116,10 @@
     }
     #forgot-password {
       @include transition();
+      margin: 0 auto;
       background: transparent;
       border: none;
       padding: 0px;
-      position: absolute;
-      right: 10px;
-      top: 12px;
       color: lighten($mediumGrey, 15%);
       // right: 7px;
       // top: 7px;
