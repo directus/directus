@@ -1,7 +1,8 @@
 <?php
 date_default_timezone_set('America/New_York');
 
-define('API_VERSION', 1);
+// Do not change, only supporting one API version
+define('API_VERSION', '1.1');
 
 /**
  * DIRECTUS_ENV - Possible values:

@@ -83,7 +83,7 @@ if (!function_exists('create_ping_route')) {
         /**
          * Ping the server
          */
-        $apiVersion = defined('API_VERSION') ? API_VERSION : '1';
+        $apiVersion = defined('API_VERSION') ? API_VERSION : '1.1';
 
         $app->get('/' . $apiVersion . '/ping/?', ping_route($app))->name('ping_server');
 
