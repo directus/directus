@@ -42,7 +42,7 @@ class TableGatewayFactory
      * @param $tableName
      * @param array $options
      *
-     * @return BaseTableGateway
+     * @return RelationalTableGateway
      */
     public static function create($tableName, $options = [])
     {
@@ -50,7 +50,7 @@ class TableGatewayFactory
         $namespace = __NAMESPACE__ . '\\TableGateway\\';
         $tableGatewayClassName = $namespace . $tableGatewayClassName;
 
-        $acl = ArrayUtils::get($options, 'acl');;
+        $acl = ArrayUtils::get($options, 'acl');
         $adapter = ArrayUtils::get($options, 'adapter');
 
         if (static::$container) {
@@ -58,7 +58,7 @@ class TableGatewayFactory
                 $acl = static::$container->get('acl');
             }
 
-            if ($acl === null) {
+            if ($adapter === null) {
                 $adapter = static::$container->get('zendDb');
             }
         }
