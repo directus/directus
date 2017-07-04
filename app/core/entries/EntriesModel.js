@@ -96,7 +96,7 @@ define(function(require, exports, module) {
 
         var value = attributes[columnName];
         var allowNull = column.isNullable();
-        var required = column.isRequired();
+        var required = column.get('required');
         var defaultValue = column.get('default_value');
         var forceUIValidation = UIManager.shouldForceUIValidation(column.get('ui'));
         var isNull = Utils.isNothing(value);
