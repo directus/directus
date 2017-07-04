@@ -59,7 +59,7 @@ class CreateDirectusPreferencesTable extends Ruckusing_Migration_Base
             'default' => 'ASC'
         ]);
         $t->column('status', 'string', [
-            'limit' => 5,
+            'limit' => 64,
             'default' => 3
         ]);
         $t->column('search_string', 'text');
