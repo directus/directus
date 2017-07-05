@@ -1281,7 +1281,6 @@ if (!function_exists('get_project_info')) {
     {
         /** @var \Directus\Database\TableGateway\DirectusSettingsTableGateway $settingsTable */
         $settingsTable = \Directus\Database\TableGatewayFactory::create('directus_settings');
-        // DirectusSettingsTableGateway($dbConnection, $acl);
         $settings = $settingsTable->fetchCollection('global');
 
         $projectName = isset($settings['project_name']) ? $settings['project_name'] : 'Directus';
