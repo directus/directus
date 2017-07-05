@@ -63,7 +63,7 @@ function(app, Backbone, StatusHelper, _) {
       visibleStates.forEach(function (state) {
         var status = StatusHelper.getStatus(this.table.id, state);
         if (status) {
-          totalCount += this.table.get(status.get('name'));
+          totalCount += this.table.get(status.get('name')) || 0;
         }
       }, this);
 
