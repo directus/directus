@@ -24,6 +24,11 @@ use Directus\Database\TableSchema;
 
 // @TODO: Wrap all this into a routing "app"
 $app = Bootstrap::get('app');
+
+$app->onMissingRequirements(function (array $errors) use ($app) {
+    display_missing_requirements_html($errors, $app);
+});
+
 // do not call the api hooks
 $app->clearHooks();
 

@@ -175,6 +175,16 @@ class Application extends Slim
         call_user_func_array([$this->container->get('hookEmitter'), 'run'], $params);
     }
 
+    public function onMissingRequirements(Callable $callback)
+    {
+        $errors = get_missing_requirements();
+
+        if ($errors) {
+            $callback($errors);
+            exit; // Stop
+        }
+    }
+
     /**
      * Trigger a response filter
      *

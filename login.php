@@ -17,6 +17,11 @@ use Directus\Bootstrap;
 require 'api/config.php';
 
 $app = Bootstrap::get('app');
+
+$app->onMissingRequirements(function (array $errors) use ($app) {
+    display_missing_requirements_html($errors, $app);
+});
+
 $authentication = Bootstrap::get('auth');
 $emitter = Bootstrap::get('hookEmitter');
 $emitter->run('directus.login.start');

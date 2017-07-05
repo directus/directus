@@ -388,7 +388,15 @@ if (!function_exists('get_auth_info')) {
         }
 
         $authentication = \Directus\Bootstrap::get('auth');
-        if (!$authentication->loggedIn()) {
+        // Check for the cache refresh provider function
+        // if it doesn't exists we should move along
+        // this function create a temporary users cache
+        // that is required and used from the beginning of times of Directus
+        // this method will be replaced by the cache layer some time soon
+        // we are doing this because it throws an exception which results in a infinite loop
+        // error trying to translate the information by fetching the user language
+        // then throws an exception while fetching the auth info and so on
+        if (!$authentication->loggedIn() || !$authentication->getUserCacheRefreshProvider()) {
             return null;
         }
 
@@ -1265,5 +1273,92 @@ if (!function_exists('get_request_ip')) {
         }
 
         return $_SERVER['REMOTE_ADDR'];
+    }
+}
+
+if (!function_exists('get_project_info')) {
+    function get_project_info()
+    {
+        /** @var \Directus\Database\TableGateway\DirectusSettingsTableGateway $settingsTable */
+        $settingsTable = \Directus\Database\TableGatewayFactory::create('directus_settings');
+        // DirectusSettingsTableGateway($dbConnection, $acl);
+        $settings = $settingsTable->fetchCollection('global');
+
+        $projectName = isset($settings['project_name']) ? $settings['project_name'] : 'Directus';
+        $defaultProjectLogo = get_directus_path('/assets/img/directus-logo-flat.svg');
+        if (isset($settings['cms_thumbnail_url']) && $settings['cms_thumbnail_url']) {
+            $projectLogoURL = $settings['cms_thumbnail_url'];
+            $filesTable = \Directus\Database\TableGatewayFactory::create('directus_files');
+            $data = $filesTable->loadEntries([
+                'id' => $projectLogoURL
+            ]);
+
+            $projectLogoURL = \Directus\Util\ArrayUtils::get($data, 'url', $defaultProjectLogo);
+        } else {
+            $projectLogoURL = $defaultProjectLogo;
+        }
+
+        return [
+            'project_name' => $projectName,
+            'project_logo_url' => $projectLogoURL
+        ];
+    }
+}
+
+if (!function_exists('get_missing_requirements')) {
+    /**
+     * Gets an array of errors message when there's a missing requirements
+     *
+     * @return array
+     */
+    function get_missing_requirements()
+    {
+        $errors = [];
+
+        if (version_compare(PHP_VERSION, '5.5.0', '<')) {
+            $errors[] = 'Your host needs to use PHP 5.5.0 or higher to run this version of Directus!';
+        }
+
+        if (!defined('PDO::ATTR_DRIVER_NAME')) {
+            $errors[] = 'Your host needs to have PDO enabled to run this version of Directus!';
+        }
+
+        if (!extension_loaded('gd') || !function_exists('gd_info')) {
+            $errors[] = 'Your host needs to have GD Library enabled to run this version of Directus!';
+        }
+
+        if (!extension_loaded('fileinfo') || !class_exists('finfo')) {
+            $errors[] = 'Your host needs to have File Information extension enabled to run this version of Directus!';
+        }
+
+        if (!extension_loaded('curl') || !function_exists('curl_init')) {
+            $errors[] = 'Your host needs to have cURL extension enabled to run this version of Directus!';
+        }
+
+        if (!file_exists(BASE_PATH . '/vendor/autoload.php')) {
+            $errors[] = 'Composer dependencies must be installed first.';
+        }
+
+        return $errors;
+    }
+}
+
+if (!function_exists('display_missing_requirements_html')) {
+    /**
+     * Display an html error page
+     *
+     * @param array $errors
+     * @param \Directus\Application\Application $app
+     */
+    function display_missing_requirements_html($errors, $app)
+    {
+        $projectInfo = get_project_info();
+
+        $data = array_merge($projectInfo, [
+            'errors' => $errors
+        ]);
+
+        $app->response()->header('Content-Type', 'text/html; charset=utf-8');
+        $app->render('errors/requirements.twig.html', $data);
     }
 }

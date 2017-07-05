@@ -15,30 +15,7 @@ class CheckRequirementsStep extends AbstractStep
     {
         parent::preRun($state);
 
-        $errors = [];
-        if (version_compare(PHP_VERSION, '5.5.0', '<')) {
-            $errors[] = 'Your host needs to use PHP 5.5.0 or higher to run this version of Directus!';
-        }
-
-        if (!defined('PDO::ATTR_DRIVER_NAME')) {
-            $errors[] = 'Your host needs to have PDO enabled to run this version of Directus!';
-        }
-
-        if (!extension_loaded('gd') || !function_exists('gd_info')) {
-            $errors[] = 'Your host needs to have GD Library enabled to run this version of Directus!';
-        }
-
-        if (!extension_loaded('fileinfo') || !class_exists('finfo')) {
-            $errors[] = 'Your host needs to have File Information extension enabled to run this version of Directus!';
-        }
-
-        if (!extension_loaded('curl') || !function_exists('curl_init')) {
-            $errors[] = 'Your host needs to have cURL extension enabled to run this version of Directus!';
-        }
-
-        if (!file_exists(BASE_PATH . '/vendor/autoload.php')) {
-            $errors[] = 'Composer dependencies must be installed first.';
-        }
+        $errors = get_missing_requirements();
 
         $this->response = new StepResponse([]);
         if ($errors) {

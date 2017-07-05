@@ -330,6 +330,11 @@ class Provider
         $this->userCacheRefreshProvider = $callable;
     }
 
+    public function getUserCacheRefreshProvider()
+    {
+        return $this->userCacheRefreshProvider;
+    }
+
     /**
      * After a successful login attempt, registers the user in the session.
      *
