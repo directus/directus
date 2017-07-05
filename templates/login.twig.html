@@ -27,7 +27,7 @@
 	</div>
 	<div class="alt-auth">
 		{% for service in authList %}
-		<div class="tile {{service}}"><a href="/auth/{{service}}"><img src="{{assetsRoot}}imgs/login-logo-{{service}}.svg"></a></div>
+		<div class="tile {{service}}"><a href="{{rootUrl}}auth/{{service}}"><img src="{{assetsRoot}}imgs/login-logo-{{service}}.svg"></a></div>
 		{% endfor %}
 	</div>
 	{% endif %}
@@ -49,7 +49,7 @@
 {% endblock %}
 
 {% block login_script %}
-<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+<script type="text/javascript" src="{{assetsRoot}}js/libs/jquery.js"></script>
 {# make this a separate file #}
 <script type="text/javascript">
 	$(function () {
