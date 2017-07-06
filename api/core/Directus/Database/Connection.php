@@ -79,4 +79,16 @@ class Connection extends Adapter
     {
         return call_user_func_array([$this->getDriver()->getConnection(), 'connect'], func_get_args());
     }
+
+    /**
+     * Execute an query string
+     *
+     * @param $sql
+     *
+     * @return \Zend\Db\Adapter\Driver\StatementInterface|\Zend\Db\ResultSet\ResultSet
+     */
+    public function execute($sql)
+    {
+        return $this->query($sql, static::QUERY_MODE_EXECUTE);
+    }
 }
