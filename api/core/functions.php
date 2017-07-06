@@ -158,7 +158,7 @@ if (!function_exists('get_directus_path')) {
             $basePath = realpath(__DIR__ . '/../..');
             $position = (int) strpos($basePath, $_SERVER['DOCUMENT_ROOT']);
             $length = strlen($_SERVER['DOCUMENT_ROOT']);
-            $path = substr($basePath, $position + $length);
+            $path = normalize_path(substr($basePath, $position + $length));
         } else {
             $path = DIRECTUS_PATH;
         }
@@ -167,6 +167,14 @@ if (!function_exists('get_directus_path')) {
         $subPath = ltrim($subPath, '/');
 
         return (empty($path) ? '/' : sprintf('/%s/', $path)) . $subPath;
+    }
+}
+
+if (!function_exists('normalize_path')) {
+    function normalize_path( $path ) {
+        $path = str_replace( '\\', '/', $path );
+        $path = preg_replace( '|/+|','/', $path );
+        return $path;
     }
 }
 
