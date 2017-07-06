@@ -461,13 +461,14 @@ define(function (require, exports, module) {
       var self = this;
 
       SchemaManager.getBookmarkPreferences(title)
-        .done(function (data) {
-          if (!data || data.success !== true) {
+        .done(function (response) {
+          if (!response || response.success !== true) {
             self.notFound();
 
             return;
           }
 
+          var data = response.data;
           var tableName = data.table_name;
 
           self.currentCollection = EntriesManager.getInstance(tableName).clone();

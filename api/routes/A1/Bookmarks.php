@@ -169,6 +169,9 @@ class Bookmarks extends Route
                     'message' => __t('bookmark_not_found')
                 ]
             ];
+        } else {
+            $response = $tableGateway->loadMetadata($response, true);
+            $response['success'] = true;
         }
 
         return $app->response($response);
