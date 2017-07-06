@@ -100,7 +100,7 @@ function(app, _, Backbone, __t, Directus, Notification, BasePageView, RightPane,
       }
 
       // Patch only the changed values if it's not new
-      model.save(this.model.getChanges(), {
+      model.save(this.model.getChanges(false), {
         success: success,
         wait: true,
         patch: !model.isNew(),

@@ -295,6 +295,14 @@ define(function(require, exports, module) {
 
       options = options || {};
 
+      if (options.includeRelationships) {
+         attributes = this.unsavedChanges();
+
+         if (method === 'patch') {
+           options.attrs = attributes;
+         }
+      }
+
       if (method === 'read') {
         options.data = options.data || {};
 
@@ -618,8 +626,12 @@ define(function(require, exports, module) {
       return changes;
     },
 
-    getChanges: function () {
+    getChanges: function (includeRelationship) {
       var data = null;
+
+      if (includeRelationship === undefined) {
+        includeRelationship = true;
+      }
 
       this.trigger('save:before');
 
@@ -635,6 +647,10 @@ define(function(require, exports, module) {
 
         if (options && options.get('allow_null') === true && data[attr] === '') {
           data[attr] = null;
+        }
+
+        if (!includeRelationship && _.has(data, column.id) && column.isRelational()) {
+          delete data[column.id];
         }
       }, this);
 
