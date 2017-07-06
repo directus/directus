@@ -171,9 +171,23 @@ if (!function_exists('get_directus_path')) {
 }
 
 if (!function_exists('normalize_path')) {
-    function normalize_path( $path ) {
-        $path = str_replace( '\\', '/', $path );
-        $path = preg_replace( '|/+|','/', $path );
+    /**
+    * Normalize a filesystem path.
+    *
+    * On windows systems, replaces backslashes with forward slashes.
+    * Ensures that no duplicate slashes exist.
+    *
+    * from WordPress source code
+    *
+    * @param string $path Path to normalize.
+    *
+    * @return string Normalized path.
+    */
+    function normalize_path($path)
+    {
+        $path = str_replace('\\', '/', $path);
+        $path = preg_replace('|/+|','/', $path);
+
         return $path;
     }
 }

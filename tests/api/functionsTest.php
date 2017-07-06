@@ -173,6 +173,31 @@ class FunctionsTest extends PHPUnit_Framework_TestCase
         $this->assertSame('<img src="' . $expected . '" alt="image" />', $avatarImg);
     }
 
+    public function testNormalizePath()
+    {
+        // From WordPress tests
+        // NOTE: Comment out the disk letter as we don't support that part from the borrow function
+        // if we end up doing it, we have the tests
+        $paths = array(
+            '/WINDOWS' => '/WINDOWS',
+            // 'C:/' => 'C:/',
+            // 'C:/WINDOWS' => 'C:/WINDOWS',
+            // 'C:/WINDOWS/system32' => 'C:/WINDOWS/system32',
+            '\\WINDOWS' => '/WINDOWS',
+            // 'C:\\' => 'C:/',
+            // 'C:\\WINDOWS' => 'C:/WINDOWS',
+            // 'C:\\\\WINDOWS' => 'C:/WINDOWS',
+            // 'C:\\WINDOWS\\system32' => 'C:/WINDOWS/system32',
+            '\\\\sambashare\\foo' => '/sambashare/foo',
+            // 'c:/windows' => 'C:/windows',
+            // 'c:\\windows' => 'C:/windows',
+        );
+
+        foreach ($paths as $original => $expected) {
+            $this->assertEquals($expected, normalize_path($original));
+        }
+    }
+
     protected $files = [
         'file.js',
         'module.js',
