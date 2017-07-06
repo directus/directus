@@ -67,8 +67,8 @@ define(['underscore', 'core/UIView'], function (_, UIView) {
       slug = slug.replace(/^\s+|\s+$/g, ''); // Trim
       slug = slug.toLowerCase();
 
-      var from = 'ãàáäâẽèéëêìíïîõòóöôùúüûñç·/_,:;';
-      var to = 'aaaaaeeeeeiiiiooooouuuunc------';
+      var from = 'ÁÄÂÀÃÅČÇĆĎÉĚËÈÊẼĔȆÍÌÎÏŇÑÓÖÒÔÕØŘŔŠŤÚŮÜÙÛÝŸŽáäâàãåčçćďéěëèêẽĕȇíìîïňñóöòôõøðřŕšťúůüùûýÿžþÞĐđßÆa·/_,:;';
+      var to = 'AAAAAACCCDEEEEEEEEIIIINNOOOOOORRSTUUUUUYYZaaaaaacccdeeeeeeeeiiiinnooooooorrstuuuuuyyzbBDdBAa------';
       for (var i = 0, l = from.length; i < l; i++) {
         slug = slug.replace(new RegExp(from.charAt(i), 'g'), to.charAt(i));
       }
