@@ -55,9 +55,7 @@ define([
       app.router.overlayPage(view);
 
       view.save = function () {
-        var data = view.editView.data();
-        data[columnName] = id;
-        model.set(data);
+        model.set(columnName, id);
 
         if (model.isValid()) {
           app.router.removeOverlayPage(this);
@@ -109,6 +107,13 @@ define([
       data.canInvite = this.model.get('show_users');
 
       return data;
+    },
+
+    onCollectionChange: function () {
+      var value = this.model.get(this.name);
+
+      // NOTE: setting the value again to mark the changes
+      this.model.set(this.name, value);
     },
 
     // @TODO: Hotfix: solve the problem of fetching new users

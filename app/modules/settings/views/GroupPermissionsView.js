@@ -83,6 +83,7 @@ function(app, Backbone, _, Handlebars, BasePageView, EditView, Widgets, __t, Not
 
       return fields;
     },
+
     getHeaderOptions: function() {
       var options = EditView.prototype.getHeaderOptions.apply(this, arguments);
 
@@ -108,7 +109,12 @@ function(app, Backbone, _, Handlebars, BasePageView, EditView, Widgets, __t, Not
       });
     },
 
-    rightPane: false
+    rightPane: false,
+
+    initialize: function (options) {
+      options.warnOnExit = true;
+      EditView.prototype.initialize.apply(this, [options]);
+    }
   });
 
   return GroupPermissions;

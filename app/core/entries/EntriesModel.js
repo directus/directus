@@ -295,12 +295,8 @@ define(function(require, exports, module) {
 
       options = options || {};
 
-      if (options.includeRelationships) {
-         attributes = this.unsavedChanges();
-
-         if (method === 'patch') {
-           options.attrs = attributes;
-         }
+      if (options.includeRelationships && method === 'patch') {
+        options.attrs = this.getChanges();
       }
 
       if (method === 'read') {
@@ -626,11 +622,11 @@ define(function(require, exports, module) {
       return changes;
     },
 
-    getChanges: function (includeRelationship) {
+    getChanges: function (includeRelationships) {
       var data = null;
 
-      if (includeRelationship === undefined) {
-        includeRelationship = true;
+      if (includeRelationships === undefined) {
+        includeRelationships = true;
       }
 
       this.trigger('save:before');
@@ -639,17 +635,18 @@ define(function(require, exports, module) {
         return data;
       }
 
-      data = this.unsavedChanges() || {};
+      data = this.unsavedChanges({includeRelationships: includeRelationships}) || {};
 
       this.structure.each(function (column) {
         var attr = column.id;
         var options = column.options;
+        var nullable = (options && options.get('allow_null') === true) || column.isNullable();
 
-        if (options && options.get('allow_null') === true && data[attr] === '') {
+        if (nullable && data[attr] === '') {
           data[attr] = null;
         }
 
-        if (!includeRelationship && _.has(data, column.id) && column.isRelational()) {
+        if (!includeRelationships && _.has(data, column.id) && column.isRelational()) {
           delete data[column.id];
         }
       }, this);
