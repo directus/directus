@@ -40,9 +40,14 @@ define([
         default_value: 'core',
         options: {
           options: {
-            core: 'Default (string)',
-            md5: 'MD5',
-            sh1: 'SH1'
+            core: 'Default',
+            bcrypt: 'bcrypt',
+            md5: 'md5',
+            sha1: 'SHA-1',
+            sha224: 'SHA-224',
+            sha256: 'SHA-256',
+            sha384: 'SHA-384',
+            sha512: 'SHA-512'
           }
         }
       }

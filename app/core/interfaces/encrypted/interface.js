@@ -19,7 +19,7 @@ define(['core/UIView', './lib/text-scrambler'], function (UIView, TextScrambler)
         url: '/api/1.1/hash',
         method: 'post',
         data: {
-          password: value,
+          string: value,
           hasher: hasher
         }
       });
