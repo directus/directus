@@ -3,6 +3,9 @@ git subsplit init git@github.com:directus/directus.git
 # Collection
 git subsplit publish --heads="version/6.4" --no-tags --debug api/core/Directus/Collection:git@github.com:directus/directus-collection.git
 
+# Config
+git subsplit publish --heads="version/6.4" --no-tags --debug api/core/Directus/Config:git@github.com:directus/directus-config.git
+
 # Permissions
 git subsplit publish --heads="version/6.4" --no-tags --debug api/core/Directus/Permissions:git@github.com:directus/directus-permissions.git
 
