@@ -25,7 +25,7 @@ define(['core/UIView', './lib/text-scrambler'], function (UIView, TextScrambler)
       });
 
       request.done(function (response) {
-        var result = response.data.password;
+        var result = response.data.hash;
 
         that.saveResult(result);
         that.displayResult(result);
