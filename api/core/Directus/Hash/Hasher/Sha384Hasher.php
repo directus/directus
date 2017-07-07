@@ -10,7 +10,6 @@
 
 namespace Directus\Hash\Hasher;
 
-
 /**
  * Hash using sha384 algorithm
  *

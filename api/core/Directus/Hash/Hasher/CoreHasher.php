@@ -10,8 +10,6 @@
 
 namespace Directus\Hash\Hasher;
 
-use Directus\Util\ArrayUtils;
-
 /**
  * Hash using password_hash
  *

@@ -9,6 +9,7 @@
  */
 
 namespace Directus\Hash;
+
 use Directus\Hash\Exception\MissingHasherException;
 use Directus\Hash\Hasher\BCryptHasher;
 use Directus\Hash\Hasher\CoreHasher;
