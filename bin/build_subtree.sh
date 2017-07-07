@@ -12,6 +12,9 @@ git subsplit publish --heads="version/6.4" --no-tags --debug api/core/Directus/D
 # Filesystem
 git subsplit publish --heads="version/6.4" --no-tags --debug api/core/Directus/Filesystem:git@github.com:directus/directus-filesystem.git
 
+# Hash
+git subsplit publish --heads="version/6.4" --no-tags --debug api/core/Directus/Hash:git@github.com:directus/directus-hash.git
+
 # Hooks
 git subsplit publish --heads="version/6.4" --no-tags --debug api/core/Directus/Hook:git@github.com:directus/directus-hook.git
 
