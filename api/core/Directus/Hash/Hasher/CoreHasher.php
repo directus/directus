@@ -32,8 +32,6 @@ class CoreHasher implements HasherInterface
      */
     public function hash($string, array $options = [])
     {
-        $algo = ArrayUtils::pull($options, 'algo', PASSWORD_DEFAULT);
-
-        return password_hash($string, $algo, $options);
+        return password_hash($string, PASSWORD_DEFAULT, $options);
     }
 }
