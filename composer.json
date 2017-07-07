@@ -29,8 +29,9 @@
       "Directus\\": "api/core/Directus/",
       "Directus\\API\\Routes\\": "api/routes/",
       "Directus\\Installation\\": "installation/includes/",
-      "Directus\\Embed\\Provider\\": "customs/embeds/",
-      "Directus\\Customs\\Hooks\\": "customs/hooks/"
+      "Directus\\Customs\\Embed\\Provider\\": "customs/embeds/",
+      "Directus\\Customs\\Hooks\\": "customs/hooks/",
+      "Directus\\Customs\\Hasher\\": "customs/hashers/"
     },
     "files": [
       "api/core/functions.php"

@@ -297,6 +297,9 @@
     "password_must_match": "Passwords must match.",
     "you_must_hash_your_password": "You Must Hash Your Password",
 
+    "hash_expect_a_string": "Hash expect a string",
+    "hasher_x_not_found": "Hash \"%{name}\" not found",
+
     "radiobuttons_options_comment": "Use a Comma Delimited list",
 
     "numeric_footer_comment": "Show a footer on the Item Listing with: Min, Max, Avg, Sum",

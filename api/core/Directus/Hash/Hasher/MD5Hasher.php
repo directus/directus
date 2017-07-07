@@ -1,0 +1,35 @@
+<?php
+
+/**
+ * Directus – <http://getdirectus.com>
+ *
+ * @link      The canonical repository – <https://github.com/directus/directus>
+ * @copyright Copyright 2006-2017 RANGER Studio, LLC – <http://rangerstudio.com>
+ * @license   GNU General Public License (v3) – <http://www.gnu.org/copyleft/gpl.html>
+ */
+
+namespace Directus\Hash\Hasher;
+
+/**
+ * Hash using md5 algorithm
+ *
+ * @author Welling Guzmán <welling@rngr.org>
+ */
+class MD5Hasher implements HasherInterface
+{
+    /**
+     * @inheritdoc
+     */
+    public function getName()
+    {
+        return 'md5';
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function hash($string, array $options = [])
+    {
+        return hash('md5', $string);
+    }
+}

@@ -28,6 +28,15 @@ use Directus\Exception\ForbiddenException;
 use Directus\Filesystem\Filesystem;
 use Directus\Filesystem\FilesystemFactory;
 use Directus\Filesystem\Thumbnail;
+use Directus\Hash\Hasher\BCryptHasher;
+use Directus\Hash\Hasher\CoreHasher;
+use Directus\Hash\Hasher\MD5Hasher;
+use Directus\Hash\Hasher\Sha1Hasher;
+use Directus\Hash\Hasher\Sha224Hasher;
+use Directus\Hash\Hasher\Sha256Hasher;
+use Directus\Hash\Hasher\Sha384Hasher;
+use Directus\Hash\Hasher\Sha512Hasher;
+use Directus\Hash\HashManager;
 use Directus\Hook\Emitter;
 use Directus\Hook\Payload;
 use Directus\Language\LanguageManager;
@@ -190,6 +199,10 @@ class Bootstrap
 
         $app->container->singleton('app.settings', function () {
             return Bootstrap::get('settings');
+        });
+
+        $app->container->singleton('hashManager', function () {
+            return Bootstrap::get('hashManager');
         });
 
         $authConfig = ArrayUtils::get($config, 'auth', []);
@@ -631,6 +644,48 @@ class Bootstrap
         }
 
         return $embedManager;
+    }
+
+    private static function hashManager()
+    {
+        $hashManager = new HashManager();
+
+        $hashers = [
+            CoreHasher::class,
+            BCryptHasher::class,
+            MD5Hasher::class,
+            Sha1Hasher::class,
+            Sha224Hasher::class,
+            Sha256Hasher::class,
+            Sha384Hasher::class,
+            Sha512Hasher::class
+        ];
+
+        $path = implode(DIRECTORY_SEPARATOR, [
+            BASE_PATH,
+            'customs',
+            'hashers',
+            '*.php'
+        ]);
+
+        $customHashersFiles = glob($path);
+        if ($customHashersFiles) {
+            foreach ($customHashersFiles as $filename) {
+                $name = basename($filename, '.php');
+                // filename starting with underscore are skipped
+                if (StringUtils::startsWith($name, '_')) {
+                    continue;
+                }
+
+                $hashers[] = '\\Directus\\Customs\\Hasher\\' . $name;
+            }
+        }
+
+        foreach ($hashers as $hasher) {
+            $hashManager->register(new $hasher());
+        }
+
+        return $hashManager;
     }
 
     /**

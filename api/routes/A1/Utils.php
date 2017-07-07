@@ -3,6 +3,8 @@
 namespace Directus\API\Routes\A1;
 
 use Directus\Application\Route;
+use Directus\Hash\HashManager;
+use Directus\Util\ArrayUtils;
 use Directus\Util\StringUtils;
 use Directus\View\JsonView;
 
@@ -11,25 +13,33 @@ class Utils extends Route
     public function hash()
     {
         $request = $this->app->request();
+        $payload = $request->post();
+        $string = ArrayUtils::get($payload, 'string');
+        $hasher = ArrayUtils::get($payload, 'hasher', 'core');
+        $options = ArrayUtils::get($payload, 'options', []);
 
-        $password = $request->post('password');
-        if (empty($password)) {
+        if (!is_array($options)) {
+            $options = [$options];
+        }
+
+        if (empty($string)) {
             return $this->app->response([
                 'success' => false,
                 'error' => [
-                    'message' => __t('hash_must_provide_string')
+                    'message' => __t('hash_expect_a_string')
                 ]
             ]);
         }
 
-        $salt = !empty($request->post('salt')) ? $request->post('salt') : '';
-        $auth = $this->app->container->get('auth');
-        $hashedPassword = $auth->hashPassword($password, $salt);
+        $options['hasher'] = $hasher;
+        /** @var HashManager $hashManager */
+        $hashManager = $this->app->container->get('hashManager');
+        $hashedString = $hashManager->hash($string, $options);
 
         return $this->app->response([
             'success' => true,
             'data' => [
-                'password' => $hashedPassword
+                'hash' => $hashedString
             ]
         ]);
     }

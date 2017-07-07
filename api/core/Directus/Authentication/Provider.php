@@ -378,6 +378,7 @@ class Provider
      */
     public function hashPassword($password, $salt = '')
     {
+        // TODO: Create a library to hash/verify passwords up to the user which algorithm to use
         return password_hash($password, PASSWORD_DEFAULT, ['cost' => 12]);
     }
 

@@ -52,6 +52,25 @@ class ArrayUtils
         return $default;
     }
 
+    /**
+     * Gets and remove an item from the array
+     *
+     * @param array $array
+     * @param string $key
+     * @param mixed $default
+     *
+     * @return mixed
+     */
+    public static function pull(array &$array, $key, $default = null)
+    {
+        // TODO: Implement access by separator (example dot-notation)
+        $value = ArrayUtils::get($array, $key, $default);
+
+        ArrayUtils::remove($array, $key);
+
+        return $value;
+    }
+
     public static function has($array, $key)
     {
         if (static::exists($array, $key)) {
