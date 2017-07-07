@@ -91,17 +91,6 @@ body.login {
 						color: $primary;
 					}
 				}
-				&.forgot {
-					pointer-events: auto;
-					cursor: pointer;
-					left: auto;
-					right: 10px;
-					top: 10px;
-					font-size: 20px;
-					&:hover {
-						color: $primary;
-					}
-				}
 			}
 			input {
 				padding-left: 30px;
@@ -119,6 +108,17 @@ body.login {
 		}
 		button {
 			width: 100%;
+		}
+		.forgot {
+			@include transition (all, $timing-short, ease-in-out);
+			pointer-events: auto;
+			cursor: pointer;
+			text-align: center;
+			margin-top: 20px;
+			color: $gray-3;
+			&:hover {
+				color: $primary;
+			}
 		}
 		.hr-label {
 			position: relative;

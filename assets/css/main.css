@@ -6709,15 +6709,6 @@ body.login {
         pointer-events: none; }
         body.login .login-panel .input .material-icons.focus-color.active {
           color: #3498DB; }
-        body.login .login-panel .input .material-icons.forgot {
-          pointer-events: auto;
-          cursor: pointer;
-          left: auto;
-          right: 10px;
-          top: 10px;
-          font-size: 20px; }
-          body.login .login-panel .input .material-icons.forgot:hover {
-            color: #3498DB; }
       body.login .login-panel .input input {
         padding-left: 30px;
         font-size: 14px;
@@ -6730,6 +6721,19 @@ body.login {
           padding-right: 30px; }
     body.login .login-panel button {
       width: 100%; }
+    body.login .login-panel .forgot {
+      -webkit-transition: all 200ms ease-in-out 0ms;
+      -moz-transition: all 200ms ease-in-out 0ms;
+      -o-transition: all 200ms ease-in-out 0ms;
+      -ms-transition: all 200ms ease-in-out 0ms;
+      transition: all 200ms ease-in-out 0ms;
+      pointer-events: auto;
+      cursor: pointer;
+      text-align: center;
+      margin-top: 20px;
+      color: #CCCCCC; }
+      body.login .login-panel .forgot:hover {
+        color: #3498DB; }
     body.login .login-panel .hr-label {
       position: relative;
       margin-top: 20px;
