@@ -10,7 +10,15 @@
 
 namespace Directus\Hash;
 use Directus\Hash\Exception\MissingHasherException;
+use Directus\Hash\Hasher\BCryptHasher;
+use Directus\Hash\Hasher\CoreHasher;
 use Directus\Hash\Hasher\HasherInterface;
+use Directus\Hash\Hasher\MD5Hasher;
+use Directus\Hash\Hasher\Sha1Hasher;
+use Directus\Hash\Hasher\Sha224Hasher;
+use Directus\Hash\Hasher\Sha256Hasher;
+use Directus\Hash\Hasher\Sha384Hasher;
+use Directus\Hash\Hasher\Sha512Hasher;
 use Directus\Util\ArrayUtils;
 
 /**
@@ -27,6 +35,8 @@ class HashManager
 
     public function __construct(array $hashers = [])
     {
+        $this->registerDefaultHashers();
+
         foreach ($hashers as $hasher) {
             $this->register($hasher);
         }
@@ -55,6 +65,24 @@ class HashManager
     public function register(HasherInterface $hasher)
     {
         $this->hashers[$hasher->getName()] = $hasher;
+    }
+
+    public function registerDefaultHashers()
+    {
+        $hashers = [
+            CoreHasher::class,
+            BCryptHasher::class,
+            MD5Hasher::class,
+            Sha1Hasher::class,
+            Sha224Hasher::class,
+            Sha256Hasher::class,
+            Sha384Hasher::class,
+            Sha512Hasher::class
+        ];
+
+        foreach ($hashers as $hasher) {
+            $this->register(new $hasher());
+        }
     }
 
     /**

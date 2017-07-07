@@ -46,6 +46,7 @@ class Utils extends Route
 
     public function randomString()
     {
+        // TODO: Create a service/function that shared the same code with other part of Directus
         // default random string length
         $request = $this->app->request();
         $length = $request->post('length') ? (int)$request->post('length') : 32;

@@ -28,14 +28,6 @@ use Directus\Exception\ForbiddenException;
 use Directus\Filesystem\Filesystem;
 use Directus\Filesystem\FilesystemFactory;
 use Directus\Filesystem\Thumbnail;
-use Directus\Hash\Hasher\BCryptHasher;
-use Directus\Hash\Hasher\CoreHasher;
-use Directus\Hash\Hasher\MD5Hasher;
-use Directus\Hash\Hasher\Sha1Hasher;
-use Directus\Hash\Hasher\Sha224Hasher;
-use Directus\Hash\Hasher\Sha256Hasher;
-use Directus\Hash\Hasher\Sha384Hasher;
-use Directus\Hash\Hasher\Sha512Hasher;
 use Directus\Hash\HashManager;
 use Directus\Hook\Emitter;
 use Directus\Hook\Payload;
@@ -650,17 +642,6 @@ class Bootstrap
     {
         $hashManager = new HashManager();
 
-        $hashers = [
-            CoreHasher::class,
-            BCryptHasher::class,
-            MD5Hasher::class,
-            Sha1Hasher::class,
-            Sha224Hasher::class,
-            Sha256Hasher::class,
-            Sha384Hasher::class,
-            Sha512Hasher::class
-        ];
-
         $path = implode(DIRECTORY_SEPARATOR, [
             BASE_PATH,
             'customs',
@@ -669,6 +650,8 @@ class Bootstrap
         ]);
 
         $customHashersFiles = glob($path);
+        $hashers = [];
+
         if ($customHashersFiles) {
             foreach ($customHashersFiles as $filename) {
                 $name = basename($filename, '.php');
