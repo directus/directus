@@ -7,6 +7,7 @@ define(function (require, exports, module) {
       Backbone       = require('backbone'),
       config         = new Backbone.Model(require('core/config')),
       _              = require('underscore'),
+      Notification   = require('core/notification'),
       typetools      = require('typetools');
 
   // Globally load Handlebars helpers
@@ -65,6 +66,87 @@ define(function (require, exports, module) {
 
     unlockScreen: function () {
       this.noScroll = false;
+    },
+
+    startMessagesPolling: function () {
+      this.pollingMessages = true;
+      this.checkMessages();
+    },
+
+    checkMessages: function () {
+      if (this.pollingMessages !== true) {
+        return;
+      }
+
+      var updateFrequency = 10000; // 10 seconds
+
+      this.fetchMessages();
+
+      window.setTimeout(this.checkMessages.bind(this), updateFrequency);
+    },
+
+    stopMessagesPolling: function () {
+      var waitToRestart = 30000; // 30 seconds
+
+      this.pollingMessages = false;
+      window.setTimeout(this.startMessagesPolling.bind(this), waitToRestart);
+    },
+
+    fetchMessages: function () {
+      var self = this;
+      var data = {
+        'max_id': this.messages.maxId
+      };
+
+      var onSuccess = function (collection, response) {
+        if (response != null && response.data) {
+          var messages = response.data;
+
+          if (!_.isArray(messages)) {
+            messages = [messages];
+          }
+
+          messages.forEach(function (data) {
+            var message_excerpt = (data.message && data.message.length > 50) ? data.message.substr(0, 50) : data.message;
+
+            Notification.show('New Message — <i>' + data.subject + '</i>', message_excerpt + '<br><br><i>View message</i>', {
+              timeout: 5000,
+              callback: {
+                onCloseClick: function () {
+                  var path = '/messages/' + data.id;
+                  var reply;
+
+                  if (data.responses) {
+                    reply = data.responses.first();
+                    path += '/response/' + reply.id;
+                  }
+
+                  Backbone.history.navigate(path, true);
+                }
+              }
+            });
+          });
+
+          self.trigger('messages:new', messages);
+        }
+      };
+
+      var onError = function () {
+        // self.trigger('error:polling');
+        // Notification.error('Directus can\'t reach the server', '<i>A new attempt will be made in 30 seconds</i>');
+        self.stopMessagesPolling();
+      };
+
+      this.messages.fetch({
+        data: data,
+        parse: true,
+        remove: false,
+        global: false,
+        silent: true,
+        success: onSuccess,
+        error: onError
+      });
+
     },
 
     request: function (type, url, options) {

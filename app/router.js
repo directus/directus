@@ -51,7 +51,7 @@ define(function (require, exports, module) {
       'settings/permissions/:groupId(/pref/:pref)':  'settingsPermissions',
       'messages(/pref/:pref)':                       'messages',
       'messages/new(/pref/:pref)':                   'newMessage',
-      'messages/:id(/pref/:pref)':                   'message',
+      'messages/:id(/response/:respId)':              'message',
       '*notFound':                                   'notFound'
     },
 
@@ -668,23 +668,18 @@ define(function (require, exports, module) {
       this.v.main.render();
     },
 
-    messages: function (name) {
-      this.setTitle(app.settings.get('global').get('project_name') + ' | Messages')
-      this.v.main.setView('#content', new Messages.Views.List({collection: app.messages}));
+    messages: function (id, respId) {
+      this.setTitle(app.settings.get('global').get('project_name') + ' | Messages');
+      this.v.main.setView('#content', new Messages.Views.List({
+        collection: app.messages,
+        currentMessage: id,
+        jumpToResponse: respId
+      }));
       this.v.main.render();
     },
 
-    message: function (id) {
-      var model = app.messages.get(id);
-      this.setTitle(app.settings.get('global').get('project_name') + ' | Message');
-
-      if (model === undefined) {
-        model = new app.messages.model({id: id}, {collection: app.messages, parse: true});
-        model.fetch();
-      }
-
-      this.v.main.setView('#content', new Messages.Views.Read({model: model}));
-      this.v.main.render();
+    message: function (id, respId) {
+      return this.messages(id, respId);
     },
 
     newMessage: function () {

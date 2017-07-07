@@ -176,10 +176,6 @@ require(['config', 'polyfills'], function () {
         url: app.API_URL + 'messages/rows'
       }, SchemaManager.getFullSchema('directus_messages')));
 
-      app.messages.on('error:polling', function () {
-        Notification.error('Directus can\'t reach the server', '<i>A new attempt will be made in 30 seconds</i>');
-      });
-
       // app.messages.on('sync', function(collection, object) {
       //   if (object != null && object.data) {
       //     var messages = object.data;
@@ -205,7 +201,7 @@ require(['config', 'polyfills'], function () {
       app.users.reset(options.users, {parse: true});
       app.messages.reset(options.messages, {parse: true});
 
-      // app.messages.startPolling();
+      app.startMessagesPolling();
 
       var autoLogoutMinutes = parseInt(app.settings.get('cms_user_auto_sign_out') || 60, 10);
 

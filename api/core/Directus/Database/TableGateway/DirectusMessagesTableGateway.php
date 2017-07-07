@@ -41,9 +41,11 @@ class DirectusMessagesTableGateway extends RelationalTableGateway
                 'message' => $payload['message'],
                 'datetime' => DateUtils::now(),
                 'attachment' => ArrayUtils::get($payload, 'attachment'),
+                'comment_metadata' => ArrayUtils::get($payload, 'comment_metadata'),
                 'response_to' => $payload['response_to']
             ]);
-        $rows = $this->insertWith($insert);
+
+        $this->insertWith($insert);
 
         $messageId = $this->lastInsertValue;
 
@@ -59,9 +61,10 @@ class DirectusMessagesTableGateway extends RelationalTableGateway
 
         $valuesString = implode(',', $values);
 
-        //@todo sanitize and implement ACL
+        // TODO: sanitize and implement ACL
         $sql = 'INSERT INTO directus_messages_recipients (`message_id`, `recipient`, `read`) VALUES ' . $valuesString;
-        $result = $this->adapter->query($sql, Adapter::QUERY_MODE_EXECUTE);
+
+        $this->adapter->query($sql, Adapter::QUERY_MODE_EXECUTE);
 
         return $messageId;
     }
@@ -70,7 +73,16 @@ class DirectusMessagesTableGateway extends RelationalTableGateway
     {
         $select = new Select($this->getTable());
         $select
-            ->columns(['id', 'from', 'subject', 'message', 'attachment', 'datetime', 'response_to'])
+            ->columns([
+                'id',
+                'from',
+                'subject',
+                'message',
+                'attachment',
+                'datetime',
+                'response_to',
+                'comment_metadata'
+            ])
             ->join('directus_messages_recipients', 'directus_messages.id = directus_messages_recipients.message_id', ['read', 'archived'])
             ->where
             ->equalTo('directus_messages_recipients.recipient', $uid)

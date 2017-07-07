@@ -3,12 +3,13 @@ define([
   'underscore',
   'backbone',
   'core/t',
+  'core/notification',
   'core/BasePageView',
   'modules/messages/views/MessageItemView',
   'modules/messages/views/MessageView',
   'modules/messages/views/NewMessageView',
   'core/widgets/widgets'
-], function(app, _, Backbone, __t, BasePageView, MessageItemView, MessageView, NewMessageView,  Widgets) {
+], function(app, _, Backbone, __t, Notification, BasePageView, MessageItemView, MessageView, NewMessageView,  Widgets) {
 
   var isResizing = false;
   var lastDownX = 0;
@@ -70,7 +71,8 @@ define([
 
       if (messageModel) {
         this.setCurrentMessage(messageModel);
-        this.displayMessage(id, true);
+        app.router.navigateTo('/messages/' + id);
+        this.displayMessage(id, null, true);
       } else {
         console.warn('message with id: ' + id + ' does not exists.');
       }
@@ -99,7 +101,7 @@ define([
       };
     },
 
-    addItem: function (model, render) {
+    addItem: function (model, render, prepend) {
       var itemView = new MessageItemView({
         model: model,
         parentView: this
@@ -110,11 +112,15 @@ define([
       this.listenTo(itemView, 'clicked', this.onItemClick);
       this.listenTo(itemView, 'select', this.onItemSelect);
 
-      this.addItemView(itemView, render);
+      this.addItemView(itemView, render, prepend);
     },
 
-    addItemView: function (view, render) {
-      this.insertView(view);
+    addItemView: function (view, render, prepend) {
+      if (prepend === true) {
+        this.prependView(view);
+      } else {
+        this.insertView(view);
+      }
 
       if (render === true) {
         view.render();
@@ -144,7 +150,7 @@ define([
       }
 
       if (this.collection.get(currentMessage)) {
-        this.displayMessage(currentMessage);
+        this.displayMessage(currentMessage, this.options.jumpToResponse);
       }
     },
 
@@ -215,16 +221,13 @@ define([
       newMessageView.render();
     },
 
-    displayMessage: function(id, render) {
+    displayMessage: function (id, jumpTo, render) {
+      var current = this.getCurrentMessage();
       var messageView;
       var newMessageView;
       var views;
-      var previous = this.getPreviousMessage();
-      var current = this.getCurrentMessage();
 
-      if (previous) {
-        previous.deselect();
-      }
+      this.deselectAll();
 
       if (current) {
         current.select();
@@ -243,6 +246,11 @@ define([
 
       this.$(this.dom.MESSAGE_VIEW).addClass(this.dom.SHOW_MESSAGE_CONTENT);
 
+      if (this.options.jumpToResponse) {
+        messageView.jumpTo(this.options.jumpToResponse);
+        this.options.jumpToResponse = null;
+      }
+
       if (render === true) {
         messageView.render();
         newMessageView.render();
@@ -257,7 +265,38 @@ define([
       });
     },
 
-    initialize: function () {
+    onNewMessages: function (messages) {
+      var renderCurrentView = false;
+      var currentMessage = this.getCurrentMessage();
+
+      messages.forEach(function (data) {
+        var model = this.collection.get(data.id);
+        var view = this.state.itemViews[model.id];
+
+        if (currentMessage && !renderCurrentView) {
+          if (data.id === currentMessage.model.id) {
+            renderCurrentView = true;
+          }
+        }
+
+        if (!view) {
+          this.addItem(new this.collection.model(data), true, true);
+        } else {
+          view.markAsUnread();
+          view.render();
+        }
+      }, this);
+
+      // TODO: Fix this, not working
+      // implement a separate view for each responses
+      if (currentMessage && renderCurrentView) {
+        var views = this.getContentViews(currentMessage.model.id);
+
+        views.content.render();
+      }
+    },
+
+    initialize: function (options) {
       this.listenTo(this.collection, 'add remove', this.render);
       // @TODO: Fix adding new messages
       // Getting a new message will re-render everything
@@ -268,6 +307,8 @@ define([
       //     this.render();
       //   }
       // });
+
+      app.on('messages:new', this.onNewMessages, this);
 
       this.listenTo(this.collection, 'sync', function () {
         this.state.currentMessage = null;
@@ -280,6 +321,10 @@ define([
         itemViews: {},
         contentViews: {}
       };
+
+      if (options.currentMessage) {
+        this.state.currentMessage = this.collection.get(options.currentMessage);
+      }
     }
   });
 
@@ -449,6 +494,11 @@ define([
         $('.resize-left').removeClass('resize-active');
         isResizing = false;
       });
+
+      this.options.jumpToResponse = null;
+      _.each(this.state.itemViews, function (view) {
+        view.jumpTo(null);
+      });
     },
 
     cleanup: function () {
@@ -466,8 +516,10 @@ define([
       this.archiveButton.addClass('disabled');
     },
 
-    initialize: function() {
+    initialize: function (options) {
       this.table = new ListView({
+        currentMessage: options.currentMessage,
+        jumpToResponse: options.jumpToResponse,
         collection: this.collection,
         parentView: this
       });

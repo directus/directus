@@ -5,9 +5,10 @@ define([
   'underscore',
   'core/t',
   'core/directus',
+  'utils',
   'moment'
 ],
-function(app, Backbone, $, _, __t, Directus, moment) {
+function(app, Backbone, $, _, __t, Directus, Utils, moment) {
 
   'use strict';
 
@@ -111,7 +112,9 @@ function(app, Backbone, $, _, __t, Directus, moment) {
       }
 
       var model = new app.messages.model({from: app.authenticatedUserId.id}, {collection: this.comments, parse: true});
-      var subject = '[' + app.settings.get('global').get('project_name') + '] ' + app.capitalize(this.model.collection.table.id) + ': "' + this.model.get(this.model.table.get('primary_column')) + '"';
+      var tableName = app.capitalize(this.model.collection.table.id);
+      var projectTitle = app.settings.get('global').get('project_name');
+      var subject = tableName + ': ' + projectTitle;
 
       var date = moment().format("YYYY-MM-DD HH:mm:ss");
       model.set({
@@ -217,39 +220,12 @@ function(app, Backbone, $, _, __t, Directus, moment) {
       data = _.sortBy(data, function(item) {
         return -moment(item.timestamp);
       });
+
       for (var key in data) {
         if (data.hasOwnProperty(key)) {
-          data[key].hidden = (key >= 5)? 'hide' : 'preview';
+          data[key].hidden = (key >= 5) ? 'hide' : 'preview';
 
-          var title = data[key].title;
-          var offset = 0;
-          while(true) {
-            if(title) {
-              var atPos = title.indexOf('@[');
-              if(atPos !== -1) {
-                var spacePos = title.substring(atPos).indexOf(' ');
-                if(spacePos !== -1) {
-                  var substring = title.substring(atPos + 2, spacePos + atPos);
-                  var contains = /^[0-9]|_+$/.test(substring);
-                  if(contains) {
-                    var bracketPos2 = title.indexOf(']');
-                    if(bracketPos2 !== -1) {
-                      var name = title.substring(spacePos + 1 + atPos, bracketPos2);
-                      var newTitle = data[key].title;
-                      data[key].title = newTitle.substring(0, atPos + offset) + '<span class="mention-tag">' + name + '</span>';
-                      var newOffset = data[key].title.length;
-                      data[key].title += newTitle.substring(bracketPos2 + offset + 1);
-                      title = newTitle.substring(bracketPos2 + offset + 1);
-                      offset = newOffset;
-                      continue;
-                    }
-                  }
-                }
-              }
-            }
-            break;
-          }
-
+          data[key].title = Utils.parseMentions(data[key].title);
         }
       }
 

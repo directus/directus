@@ -112,7 +112,6 @@ class Messages extends Route
         $currentUserId = $acl->getUserId();
 
         $messagesTableGateway = new DirectusMessagesTableGateway($ZendDb, $acl);
-        $messagesRecipientsTableGateway = new DirectusMessagesRecipientsTableGateway($ZendDb, $acl);
 
         $message = $messagesTableGateway->fetchMessageWithRecipients($id, $currentUserId);
 
@@ -124,7 +123,9 @@ class Messages extends Route
             $responseItem['read'] = 1;
         }
 
-        $messagesRecipientsTableGateway->markAsRead($ids, $currentUserId);
+        // NOTE: Force Read without the need of the user permission to update this table
+        $messagesRecipientsTable = new DirectusMessagesRecipientsTableGateway($ZendDb, null);
+        $messagesRecipientsTable->markAsRead($ids, $currentUserId);
 
         $response = [
             'meta' => ['table' => 'directus_messages', 'type' => 'item'],
@@ -143,9 +144,16 @@ class Messages extends Route
         $ZendDb = $app->container->get('zenddb');
         $currentUserId = $acl->getUserId();
         $requestPayload = $app->request()->post();
+        $messagesTableGateway = new DirectusMessagesTableGateway($ZendDb, $acl);
 
         if ($responseTo !== null) {
             $requestPayload['response_to'] = $responseTo;
+        }
+
+        $responseTo = ArrayUtils::get($requestPayload, 'response_to');
+        if ($responseTo) {
+            $parentMessage = $messagesTableGateway->loadEntries(['id' => $responseTo]);
+            $requestPayload['comment_metadata'] = ArrayUtils::get($parentMessage, 'comment_metadata');
         }
 
         // Unpack recipients
@@ -172,7 +180,6 @@ class Messages extends Route
 
         $userRecipients[] = $currentUserId;
 
-        $messagesTableGateway = new DirectusMessagesTableGateway($ZendDb, $acl);
         $id = $messagesTableGateway->sendMessage($requestPayload, array_unique($userRecipients), $currentUserId);
 
         if ($id) {

@@ -54,6 +54,5 @@ function(app, Backbone, EntriesModel) {
 
       return this.set({read: 1}, {silent: true});
     }
-
   });
 });

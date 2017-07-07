@@ -5,7 +5,7 @@
 <div class="unread-indicator"></div>
 <div class="timeago" title="{{fullDateTime datetime}}">{{contextualDate datetime type="small"}}</div>
 <div class="byline">
-	<div class="subject">
+	<div class="subject"{{# if isComment}} title="ID: {{commentRecordId}}"{{/if}}>
 		{{subject}} {{#if showCounter}}<span class='count'>({{count}})</span>{{/if}}
 		{{# if hasAttachment}}
 		<i class="material-icons has-attachment">attachment</i>

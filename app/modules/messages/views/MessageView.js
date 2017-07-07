@@ -3,8 +3,10 @@ define([
   'backbone',
   'underscore',
   'handlebars',
+  'utils',
   'helpers/file'
-], function(app, Backbone, _, Handlebars, FileHelper) {
+], function(app, Backbone, _, Handlebars, Utils, FileHelper) {
+
   return Backbone.Layout.extend({
 
     maxRecipients: 10,
@@ -32,9 +34,20 @@ define([
     // Message List view
     parentView: null,
 
+    jumpTo: function (id) {
+      this.state.jumpTo = id;
+    },
+
     beforeRender: function() {
       if (!this.parentView) {
         return;
+      }
+    },
+
+    afterRender: function () {
+      if (this.state.jumpTo) {
+        document.getElementById('message_content_' + this.state.jumpTo).scrollIntoView(true);
+        this.state.jumpTo = null;
       }
     },
 
@@ -68,36 +81,8 @@ define([
         return new Date(response.datetime);
       });
 
-      var title = data.message;
-      var offset = 0;
-      while (true) {
-        if (title) {
-          var atPos = title.indexOf('@[');
-          if (atPos !== -1) {
-            var spacePos = title.substring(atPos).indexOf(' ');
-            if (spacePos !== -1) {
-              var substring = title.substring(atPos + 2, spacePos + atPos);
-              var contains = /^[0-9]|_+$/.test(substring);
-              if (contains) {
-                var bracketPos2 = title.indexOf(']');
-                if (bracketPos2 !== -1) {
-                  var name = title.substring(spacePos + 1 + atPos, bracketPos2);
-                  var newTitle = data.message;
-                  data.message = newTitle.substring(0, atPos + offset) + "<span class=\"mention-tag\">" + name + "</span>";
-                  var newOffset = data.message.length;
-                  data.message += newTitle.substring(bracketPos2 + offset + 1);
-                  title = newTitle.substring(bracketPos2 + offset + 1);
-                  offset = newOffset;
-                  continue;
-                }
-              }
-            }
-          }
-        }
-        break;
-      }
-
       if (data.message) {
+        data.message = Utils.parseMentions(data.message);
         data.message = new Handlebars.SafeString(app.replaceAll('\n', '<br>', data.message));
       }
 
@@ -117,8 +102,9 @@ define([
       });
     },
 
-    initialize: function(options) {
+    initialize: function (options) {
       this.parentView = options.parentView;
+      this.state = {};
 
       if (!this.model.isRead()) {
         this.parentView.$el.find('[data-id=' + this.model.get('id') + ']').removeClass('unread');
@@ -130,6 +116,10 @@ define([
       if (responsesCollection) {
         this.listenTo(responsesCollection, 'add remove', this.render);
       }
+    },
+
+    constructor: function MessageView() {
+      return Backbone.Layout.prototype.constructor.apply(this, arguments);
     }
   });
 });

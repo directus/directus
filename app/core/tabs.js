@@ -39,7 +39,7 @@ function(app, Backbone, _, __t) {
 
     tagName: 'div',
 
-    serialize: function() {
+    serialize: function () {
 
       return {
         avatar: app.users.getCurrentUser().getAvatar(),
@@ -89,6 +89,7 @@ function(app, Backbone, _, __t) {
     initialize: function () {
       this.collection.on('change', this.render, this);
       app.users.getCurrentUser().on('change sync', this.render, this);
+      app.on('messages:new', this.render, this);
     }
 
   });

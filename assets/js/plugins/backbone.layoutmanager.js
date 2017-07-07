@@ -145,16 +145,20 @@ var LayoutManager = Backbone.View.extend({
   },
 
   // Shorthand to `setView` function with the `insert` flag set.
-  insertView: function(selector, view) {
+  insertView: function(selector, view, prepend) {
     // If the `view` argument exists, then a selector was passed in.  This code
     // path will forward the selector on to `setView`.
     if (view) {
-      return this.setView(selector, view, true);
+      return this.setView(selector, view, true, prepend);
     }
 
     // If no `view` argument is defined, then assume the first argument is the
     // View, somewhat now confusingly named `selector`.
-    return this.setView(selector, true);
+    return this.setView(selector, true, prepend);
+  },
+
+  prependView: function (selector, view) {
+    return this.insertView(selector, view, true);
   },
 
   // Iterate over an object and ensure every value is wrapped in an array to
@@ -238,13 +242,14 @@ var LayoutManager = Backbone.View.extend({
   //
   // Must definitely wrap any render method passed in or defaults to a
   // typical render function `return layout(this).render()`.
-  setView: function(name, view, insert) {
+  setView: function(name, view, insert, prepend) {
     var manager, options, selector;
     // Parent view, the one you are setting a View on.
     var root = this;
 
     // If no name was passed, use an empty string and shift all arguments.
     if (typeof name !== "string") {
+      prepend = insert;
       insert = view;
       view = name;
       name = "";
@@ -294,7 +299,16 @@ var LayoutManager = Backbone.View.extend({
 
     // Ensure this.views[selector] is an array and push this View to
     // the end.
-    root.views[selector] = aConcat.call([], root.views[name] || [], view);
+    var View;
+
+    if (insert && prepend) {
+      View = aConcat.call([], view, root.views[name] || []);
+      root.__manager__.prepend = true;
+    } else {
+      View = aConcat.call([], root.views[name] || [], view);
+    }
+
+    root.views[selector] = View;
 
     // Put the parent view into `insert` mode.
     root.__manager__.insert = true;
@@ -383,6 +397,11 @@ var LayoutManager = Backbone.View.extend({
 
         if (afterRender) {
           afterRender.call(root, root);
+        }
+
+        // Remove prepend mode
+        if (rentManager) {
+          rentManager.prepend = undefined;
         }
 
         // Always emit an afterRender event.
@@ -925,7 +944,9 @@ LayoutManager.prototype.options = {
 
     // Use the insert method if the parent's `insert` argument is true.
     if (rentManager.insert) {
-      this.insert($root, $el);
+      // Support prepend element at the top of the stack
+      var method = rentManager.prepend ? 'prepend' : 'insert';
+      this[method]($root, $el);
     } else {
       this.html($root, $el);
     }
@@ -976,6 +997,10 @@ LayoutManager.prototype.options = {
   // Very similar to HTML except this one will appendChild by default.
   insert: function($root, $el) {
     $root.append($el);
+  },
+
+  prepend: function($root, $el) {
+    $root.prepend($el);
   },
 
   // Return a deferred for when all promises resolve/reject.

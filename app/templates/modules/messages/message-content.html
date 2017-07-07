@@ -42,7 +42,7 @@
 </div>
 
 {{#each responses}}
-<div class="response">
+<div id="message_content_{{id}}" class="response">
 	<div class="details">
 		<img class="avatar js-user" data-id="{{from}}" src="{{userAvatarUrl from}}">
 		<div class="from js-user" data-id="{{from}}">{{userFirstAndLastName from}}</div>

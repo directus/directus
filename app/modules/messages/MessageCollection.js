@@ -19,35 +19,18 @@ define([
       return -moment(modelA.get('date_updated')).diff(moment(modelB.get('date_updated')));
     },
 
-    updateMessages: function() {
-      var that = this;
-      var data = {
-        'max_id': this.maxId
-      };
-
-      this.fetch({data: data, remove: false, global: false, error: function(collection, response, options) {
-        that.trigger('error:polling');
-        that.stopPolling();
-      }});
-
-    },
-
-    startPolling: function(ms) {
-      this.timerId = window.setInterval(this.updateMessages.bind(this), this.updateFrequency);
-    },
-
-    stopPolling: function(ms) {
-      clearInterval(this.timerId);
-      window.setTimeout(this.startPolling.bind(this), 30000);
-    },
-
-    parse: function(response) {
+    parse: function (response) {
       if (response === null) return [];
 
-      if (response.max_id !== undefined) {
-        this.maxId = response.max_id;
-        this.unread = response.unread;
-        this.total = response.total;
+      // TODO: Send messages in new format when loading from index page
+      // Or better yet don't do it, as we are splitting the API with the client
+      // and use the new format
+      var meta = response.meta || response;
+
+      if (meta.max_id !== undefined) {
+        this.maxId = meta.max_id;
+        this.unread = meta.unread;
+        this.total = meta.total;
       }
 
       return response.data;

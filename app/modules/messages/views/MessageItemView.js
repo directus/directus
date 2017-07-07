@@ -1,4 +1,10 @@
-define(['app', 'backbone', 'moment-tz'], function (app, Backbone, moment) {
+define([
+  'app',
+  'underscore',
+  'backbone',
+  'utils',
+  'moment-tz'
+], function (app, _, Backbone, Utils, moment) {
 
   return Backbone.View.extend({
 
@@ -60,6 +66,7 @@ define(['app', 'backbone', 'moment-tz'], function (app, Backbone, moment) {
       var currentMessage = this.options.parentView.state.currentMessage;
       var recipients;
 
+      data.datetime = momentDate;
       data.timestamp = parseInt(momentDate.format('X'), 10);
       data.niceDate = moment().diff(momentDate, 'days') > 1 ? momentDate.format('MMMM D') : momentDate.fromNow();
       data.read = model.getUnreadCount() === 0;
@@ -68,6 +75,17 @@ define(['app', 'backbone', 'moment-tz'], function (app, Backbone, moment) {
       data.selected = currentMessage ? (currentMessage.get('id') === data.id) : false;
       data.count = model.get('responses').length + 1;
       data.showCounter = data.count > 1;
+      data.message = Utils.parseMentions(data.message, false);
+      data.isComment = !!data.comment_metadata;
+
+      if (data.isComment) {
+        var myRegexp = /^.+:([0-9])+$/g;
+        var match = myRegexp.exec(data.comment_metadata);
+
+        if (match) {
+          data.commentRecordId = match[1];
+        }
+      }
 
       if (data.recipients) {
         recipients = data.recipients.split(',');
@@ -108,10 +126,19 @@ define(['app', 'backbone', 'moment-tz'], function (app, Backbone, moment) {
       return data;
     },
 
+    markAsUnread: function () {
+      this.$el.addClass('unread');
+      this.model.set('read', 0);
+    },
+
     initialize: function () {
       this.selected = false;
       this.listenTo(this.model, 'sync change', this.render);
       this.listenTo(this.model.get('responses'), 'sync add remove', this.render);
+    },
+
+    constructor: function MessageItemView() {
+      return Backbone.View.prototype.constructor.apply(this, arguments);
     }
   });
 });

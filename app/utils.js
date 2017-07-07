@@ -145,5 +145,57 @@ define(['underscore'], function (_) {
     element.unwrap();
   };
 
+  Utils.parseMentions = function (string, html) {
+    if (!string) {
+      return '';
+    }
+
+    var offset = 0;
+    var parsedString = string;
+
+    if (html === undefined) {
+      html = true;
+    }
+
+    while (true) {
+        var atPos = string.indexOf('@[');
+
+        if (atPos !== -1) {
+          var spacePos = string.substring(atPos).indexOf(' ');
+
+          if (spacePos !== -1) {
+            var substring = string.substring(atPos + 2, spacePos + atPos);
+            var contains = /^[0-9]|_+$/.test(substring);
+
+            if (contains) {
+              var bracketPos2 = string.indexOf(']');
+
+              if (bracketPos2 !== -1) {
+                var name = string.substring(spacePos + 1 + atPos, bracketPos2);
+                var newTitle = parsedString;
+                var newOffset;
+
+                if (html === true) {
+                  name = '<span class="mention-tag">' + name + '</span>';
+                }
+
+                parsedString = newTitle.substring(0, atPos + offset) + name;
+                newOffset = parsedString.length;
+                parsedString += newTitle.substring(bracketPos2 + offset + 1);
+                string = newTitle.substring(bracketPos2 + offset + 1);
+                offset = newOffset;
+
+                continue;
+              }
+            }
+          }
+        }
+
+        break;
+    }
+
+    return parsedString;
+  };
+
   return Utils;
 });

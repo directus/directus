@@ -55,7 +55,8 @@ define([
 
   //@TODO: Wrap Noty into a Notification Object
   function showNotification(options) {
-    var args = Utils.argumentsToArray(arguments);
+    var args = addTypeArgument(arguments, 'Notification');
+
     return createNotification.apply(this, args);
   }
 
@@ -70,16 +71,19 @@ define([
 
   function showInfo(options) {
     var args = addTypeArgument(arguments, 'Information');
+
     return createNotification.apply(this, args);
   }
 
   function showWarning(options) {
     var args = addTypeArgument(arguments, 'Warning');
+
     return createNotification.apply(this, args);
   }
 
   function showSuccess(options) {
     var args = addTypeArgument(arguments, 'Success');
+
     return createNotification.apply(this, args);
   }
 
