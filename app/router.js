@@ -51,7 +51,7 @@ define(function (require, exports, module) {
       'settings/permissions/:groupId(/pref/:pref)':  'settingsPermissions',
       'messages(/pref/:pref)':                       'messages',
       'messages/new(/pref/:pref)':                   'newMessage',
-      'messages/:id(/response/:respId)':              'message',
+      'messages/:id(/response/:respId)':             'message',
       '*notFound':                                   'notFound'
     },
 

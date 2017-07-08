@@ -5,6 +5,9 @@ var gulp      = require('gulp');
 var uglify    = require('gulp-uglify');
 var mincss    = require('gulp-minify-css');
 var concat    = require('gulp-concat');
+var zip       = require('gulp-zip');
+var tar       = require('gulp-tar');
+var gzip      = require('gulp-gzip');
 var rename    = require('gulp-rename');
 var sass      = require('gulp-sass');
 var size      = require('gulp-size');
@@ -13,6 +16,9 @@ var prohtml   = require('gulp-processhtml');
 var deploy    = require('gulp-gh-pages');
 var merge     = require('merge-stream');
 var excludeGitignore = require('gulp-exclude-gitignore');
+var moment    = require('moment');
+var pac       = require('./package.json');
+var datetime  = moment().format('YYYYMMDDHHmmss');
 
 
 // ----------------------------
@@ -240,6 +246,30 @@ gulp.task('singlepage', function () {
     .pipe(gulp.dest('dist/templates'));
 });
 
+function getZippedFilename() {
+  var name = 'directus-build';
+  var version = pac.version;
+
+  return [name, version, datetime].join('-');
+}
+
+gulp.task('zipit', function () {
+  var filename = getZippedFilename();
+
+  return gulp.src('dist/**/*')
+    .pipe(zip(filename + '.zip'))
+    .pipe(gulp.dest('./'))
+});
+
+gulp.task('tarit', function () {
+  var filename = getZippedFilename();
+
+  return gulp.src('dist/**/*')
+    .pipe(tar(filename + '.tar'))
+    .pipe(gzip())
+    .pipe(gulp.dest('./'))
+});
+
 function executeCommand(cb, opts) {
   var command = opts.command;
   var args = opts.args;
@@ -372,7 +402,21 @@ gulp.task('deploy', function() {
 // Run all the tasks
 // ------------------- 'composer',
 gulp.task('build', function(cb) {
-    runSequence(['scripts', 'templates', 'styles', 'fonts', 'images', 'submodules', 'move', 'singlepage', 'composer', 'clean-git', cb]);
+    runSequence([
+      'scripts',
+      'templates',
+      'styles',
+      'fonts',
+      'images',
+      'submodules',
+      'move',
+      'singlepage',
+      'composer',
+      'clean-git',
+      'zipit',
+      'tarit',
+      cb
+    ]);
 });
 
 // Default task
