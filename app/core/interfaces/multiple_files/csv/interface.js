@@ -9,8 +9,6 @@ define([
 ], function (app, _, Backbone, FileHelper, UIView, Overlays) {
   'use strict';
 
-  var EntriesManager = require('core/EntriesManager'); // eslint-disable-line import/no-unresolved
-
   return UIView.extend({
     template: 'multiple_files/csv/input',
 
@@ -243,6 +241,8 @@ define([
     },
 
     initialize: function (options) {
+      var EntriesManager = require('core/EntriesManager'); // eslint-disable-line import/no-unresolved
+
       this.value = this.model.get(this.name);
       this.canEdit = !(options.inModal || false);
       this.showRemoveButton = this.columnSchema.options.get('remove_button') === true;

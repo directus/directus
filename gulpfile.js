@@ -95,10 +95,10 @@ gulp.task('scripts:vendor', function() {
 // Concat all application scripts
 gulp.task('scripts:app', function() {
   return rjs(({
-    mainConfigFile : "app/main.js",
-    baseUrl : "app",
-    name: "main",
-    out: "app.min.js",
+    mainConfigFile : 'app/main.js',
+    baseUrl : 'app',
+    name: 'main',
+    out: 'app.min.js',
     removeCombined: true,
     findNestedDependencies: true,
     optimize: 'uglify2',
@@ -233,11 +233,11 @@ gulp.task('templates', function() {
     .pipe(gulp.dest('dist/app/'));
 });
 
-var singlePageFiles = ['./main.html', './login.php'];
+var singlePageFiles = ['./templates/base.twig.html'];
 gulp.task('singlepage', function () {
   return gulp.src(singlePageFiles)
     .pipe(prohtml())
-    .pipe(gulp.dest('dist'));
+    .pipe(gulp.dest('dist/templates'));
 });
 
 function executeCommand(cb, opts) {
@@ -306,14 +306,15 @@ gulp.task('move', function() {
     './api/configuration_sample.php',
     './api/ruckusing.conf.php',
     './api/schema.sql',
+    './assets/css/**/*',
+    './assets/imgs/**/*',
     // for login.php
     './assets/js/libs/jquery.js',
     './assets/js/libs/jquery.min.map',
-    './assets/js/libs/wysihtml5.js',
-    './assets/css/wysiwyg.css',
     './bin/**',
     //'./extensions/**',
     './installation/**',
+    './templates/**',
     // These two directories are moved separately below
     //'./listviews/**',
     //'./media/**/*',
@@ -322,6 +323,7 @@ gulp.task('move', function() {
     './.htaccess',
     './favicon.ico',
     './index.php',
+    './login.php',
     // This two files are processed by singlepage task
     //'./login.php',
     //'./main.html',
@@ -370,7 +372,7 @@ gulp.task('deploy', function() {
 // Run all the tasks
 // ------------------- 'composer',
 gulp.task('build', function(cb) {
-    runSequence(['scripts', 'templates', 'singlepage', 'styles', 'fonts', 'images', 'submodules', 'move', 'composer', 'clean-git', cb]);
+    runSequence(['scripts', 'templates', 'styles', 'fonts', 'images', 'submodules', 'move', 'singlepage', 'composer', 'clean-git', cb]);
 });
 
 // Default task
