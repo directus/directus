@@ -253,10 +253,16 @@ function getZippedFilename() {
   return [name, version, datetime].join('-');
 }
 
+function allFiles(prefix) {
+  return ['**/*', '**/.*', '.**/*', '.**/.*'].map(function (path) {
+    return prefix + path;
+  });
+}
+
 gulp.task('zipit', function () {
   var filename = getZippedFilename();
 
-  return gulp.src('dist/**/*')
+  return gulp.src(allFiles('dist/'))
     .pipe(zip(filename + '.zip'))
     .pipe(gulp.dest('./'))
 });
@@ -264,7 +270,7 @@ gulp.task('zipit', function () {
 gulp.task('tarit', function () {
   var filename = getZippedFilename();
 
-  return gulp.src('dist/**/*')
+  return gulp.src(allFiles('dist/'))
     .pipe(tar(filename + '.tar'))
     .pipe(gzip())
     .pipe(gulp.dest('./'))
