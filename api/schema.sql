@@ -1,13 +1,13 @@
 # ************************************************************
 # Sequel Pro SQL dump
-# Version 4004
+# Version 4541
 #
 # http://www.sequelpro.com/
-# http://code.google.com/p/sequel-pro/
+# https://github.com/sequelpro/sequelpro
 #
-# Host: 127.0.0.1 (MySQL 5.6.10)
-# Database: directus2
-# Generation Time: 2014-07-30 23:13:17 +0000
+# Host: localhost (MySQL 5.6.35)
+# Database: delete
+# Generation Time: 2017-07-09 00:47:55 +0000
 # ************************************************************
 
 
@@ -26,23 +26,25 @@
 DROP TABLE IF EXISTS `directus_activity`;
 
 CREATE TABLE `directus_activity` (
-  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `type` varchar(100) DEFAULT NULL,
   `action` varchar(100) NOT NULL,
   `identifier` varchar(100) DEFAULT NULL,
   `table_name` varchar(100) NOT NULL DEFAULT '',
-  `row_id` int unsigned DEFAULT '0',
-  `user` int unsigned NOT NULL DEFAULT '0',
+  `row_id` int(11) unsigned DEFAULT '0',
+  `user` int(11) unsigned NOT NULL DEFAULT '0',
   `data` text,
   `delta` text,
-  `parent_id` int unsigned DEFAULT NULL,
+  `parent_id` int(11) unsigned DEFAULT NULL,
   `parent_table` varchar(100) DEFAULT NULL,
   `parent_changed` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Did the top-level record in the change set alter (scalar values/many-to-one relationships)? Or only the data within its related foreign collection records? (*toMany)',
   `datetime` datetime DEFAULT NULL,
   `logged_ip` varchar(20) DEFAULT NULL,
   `user_agent` varchar(256) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Contains history of revisions';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
 
 # Dump of table directus_bookmarks
 # ------------------------------------------------------------
@@ -50,8 +52,8 @@ CREATE TABLE `directus_activity` (
 DROP TABLE IF EXISTS `directus_bookmarks`;
 
 CREATE TABLE `directus_bookmarks` (
-  `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `user` int unsigned DEFAULT NULL,
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `user` int(11) unsigned DEFAULT NULL,
   `title` varchar(255) DEFAULT NULL,
   `url` varchar(255) DEFAULT NULL,
   `icon_class` varchar(255) DEFAULT NULL,
@@ -61,13 +63,14 @@ CREATE TABLE `directus_bookmarks` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
+
 # Dump of table directus_columns
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `directus_columns`;
 
 CREATE TABLE `directus_columns` (
-  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `table_name` varchar(64) NOT NULL DEFAULT '',
   `column_name` varchar(64) NOT NULL DEFAULT '',
   `data_type` varchar(64) DEFAULT NULL,
@@ -80,7 +83,7 @@ CREATE TABLE `directus_columns` (
   `hidden_input` tinyint(1) NOT NULL DEFAULT '0',
   `hidden_list` tinyint(1) NOT NULL DEFAULT '0',
   `required` tinyint(1) NOT NULL DEFAULT '0',
-  `sort` int DEFAULT NULL,
+  `sort` int(11) DEFAULT NULL,
   `comment` varchar(1024) DEFAULT NULL,
   `options` text,
   PRIMARY KEY (`id`),
@@ -92,7 +95,7 @@ LOCK TABLES `directus_columns` WRITE;
 
 INSERT INTO `directus_columns` (`id`, `table_name`, `column_name`, `data_type`, `ui`, `relationship_type`, `related_table`, `junction_table`, `junction_key_left`, `junction_key_right`, `hidden_input`, `hidden_list`, `required`, `sort`, `comment`, `options`)
 VALUES
-	(1,'directus_users','group',NULL,'many_to_one','MANYTOONE','directus_groups',NULL,NULL,'group_id',0,0,0,NULL,'',NULL),
+	(1,'directus_users','group','INT','many_to_one','MANYTOONE','directus_groups',NULL,NULL,'group_id',0,0,0,NULL,'',NULL),
 	(2,'directus_users','avatar_file_id','INT','single_file','MANYTOONE','directus_files',NULL,NULL,'avatar_file_id',0,0,0,NULL,'',NULL),
 	(3,'directus_groups','users','ALIAS','directus_users','ONETOMANY','directus_users',NULL,NULL,'group',0,0,0,NULL,NULL,NULL),
 	(4,'directus_groups','permissions','ALIAS','directus_permissions','ONETOMANY','directus_privileges',NULL,NULL,'group_id',0,0,0,NULL,NULL,NULL);
@@ -107,24 +110,24 @@ UNLOCK TABLES;
 DROP TABLE IF EXISTS `directus_files`;
 
 CREATE TABLE `directus_files` (
-  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `active` tinyint(1) DEFAULT '1',
   `name` varchar(255) DEFAULT NULL,
   `title` varchar(255) DEFAULT '',
   `location` varchar(200) DEFAULT NULL,
   `caption` text,
-  `type` varchar(50) DEFAULT '',
+  `type` varchar(255) DEFAULT '',
   `charset` varchar(50) DEFAULT '',
   `tags` varchar(255) DEFAULT '',
-  `width` int unsigned DEFAULT '0',
-  `height` int unsigned DEFAULT '0',
-  `size` int unsigned DEFAULT '0',
+  `width` int(11) unsigned DEFAULT '0',
+  `height` int(11) unsigned DEFAULT '0',
+  `size` int(11) unsigned DEFAULT '0',
   `embed_id` varchar(200) DEFAULT NULL,
-  `user` int unsigned NOT NULL,
+  `user` int(11) unsigned NOT NULL,
   `date_uploaded` datetime DEFAULT NULL,
   `storage_adapter` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Directus Files Storage';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 
@@ -134,7 +137,7 @@ CREATE TABLE `directus_files` (
 DROP TABLE IF EXISTS `directus_groups`;
 
 CREATE TABLE `directus_groups` (
-  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(100) DEFAULT NULL,
   `description` varchar(500) DEFAULT NULL,
   `restrict_to_ip_whitelist` text,
@@ -165,13 +168,13 @@ UNLOCK TABLES;
 DROP TABLE IF EXISTS `directus_messages`;
 
 CREATE TABLE `directus_messages` (
-  `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `from` int unsigned DEFAULT NULL,
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `from` int(11) unsigned DEFAULT NULL,
   `subject` varchar(255) NOT NULL DEFAULT '',
   `message` text NOT NULL,
   `datetime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `attachment` varchar(512) DEFAULT NULL,
-  `response_to` int unsigned DEFAULT NULL,
+  `response_to` int(11) unsigned DEFAULT NULL,
   `comment_metadata` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -184,11 +187,11 @@ CREATE TABLE `directus_messages` (
 DROP TABLE IF EXISTS `directus_messages_recipients`;
 
 CREATE TABLE `directus_messages_recipients` (
-  `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `message_id` int unsigned NOT NULL,
-  `recipient` int unsigned NOT NULL,
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `message_id` int(11) unsigned NOT NULL,
+  `recipient` int(11) unsigned NOT NULL,
   `read` tinyint(1) NOT NULL,
-  `group` int unsigned DEFAULT NULL,
+  `group` int(11) unsigned DEFAULT NULL,
   `archived` tinyint(1) DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -201,14 +204,14 @@ CREATE TABLE `directus_messages_recipients` (
 DROP TABLE IF EXISTS `directus_preferences`;
 
 CREATE TABLE `directus_preferences` (
-  `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `user` int unsigned DEFAULT NULL,
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `user` int(11) unsigned DEFAULT NULL,
   `table_name` varchar(64) DEFAULT NULL,
-  `title` varchar(255) DEFAULT NULL,
+  `title` varchar(128) DEFAULT NULL,
   `columns_visible` varchar(300) DEFAULT NULL,
   `sort` varchar(64) DEFAULT 'id',
   `sort_order` varchar(5) DEFAULT 'ASC',
-  `status` varchar(5) DEFAULT '3',
+  `status` varchar(64) DEFAULT '3',
   `search_string` text,
   `list_view_options` text,
   PRIMARY KEY (`id`),
@@ -216,22 +219,24 @@ CREATE TABLE `directus_preferences` (
   UNIQUE KEY `pref_title_constraint` (`user`,`table_name`,`title`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+
+
 # Dump of table directus_privileges
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `directus_privileges`;
 
 CREATE TABLE `directus_privileges` (
-  `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `table_name` varchar(255) CHARACTER SET latin1 NOT NULL,
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `table_name` varchar(255) NOT NULL DEFAULT '',
   `allow_view` tinyint(1) NOT NULL DEFAULT '0',
   `allow_add` tinyint(1) NOT NULL DEFAULT '0',
   `allow_edit` tinyint(1) NOT NULL DEFAULT '0',
   `allow_delete` tinyint(1) NOT NULL DEFAULT '0',
   `allow_alter` tinyint(1) NOT NULL DEFAULT '0',
-  `group_id` int unsigned NOT NULL,
-  `read_field_blacklist` varchar(1000) CHARACTER SET latin1 DEFAULT NULL,
-  `write_field_blacklist` varchar(1000) CHARACTER SET latin1 DEFAULT NULL,
+  `group_id` int(11) unsigned NOT NULL,
+  `read_field_blacklist` varchar(1000) DEFAULT NULL,
+  `write_field_blacklist` varchar(1000) DEFAULT NULL,
   `nav_listed` tinyint(1) NOT NULL DEFAULT '1',
   `status_id` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`id`)
@@ -265,8 +270,7 @@ UNLOCK TABLES;
 DROP TABLE IF EXISTS `directus_schema_migrations`;
 
 CREATE TABLE `directus_schema_migrations` (
-  `version` varchar(255) DEFAULT NULL,
-  UNIQUE KEY `idx_directus_schema_migrations_version` (`version`)
+  `version` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 LOCK TABLES `directus_schema_migrations` WRITE;
@@ -297,10 +301,10 @@ UNLOCK TABLES;
 DROP TABLE IF EXISTS `directus_settings`;
 
 CREATE TABLE `directus_settings` (
-  `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `collection` varchar(250) DEFAULT NULL,
-  `name` varchar(250) DEFAULT NULL,
-  `value` varchar(250) DEFAULT NULL,
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `collection` varchar(64) DEFAULT NULL,
+  `name` varchar(64) DEFAULT NULL,
+  `value` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `Unique Collection and Name` (`collection`,`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -310,16 +314,16 @@ LOCK TABLES `directus_settings` WRITE;
 
 INSERT INTO `directus_settings` (`id`, `collection`, `name`, `value`)
 VALUES
-    (1,'global','cms_user_auto_sign_out','60'),
-    (2,'global','project_name','Directus'),
-    (3,'global','project_url','http://directus.local'),
-    (4,'global','rows_per_page','200'),
-    (5,'files','thumbnail_quality','100'),
-    (6,'files','thumbnail_size','200'),
-    (7,'global','cms_thumbnail_url',''),
-    (8,'files','file_naming','file_id'),
-    (9,'files','thumbnail_crop_enabled','1'),
-    (10,'files','youtube_api_key','');
+	(1,'global','cms_user_auto_sign_out','60'),
+	(2,'global','project_name','Directus'),
+	(3,'global','project_url','http://directus.local'),
+	(4,'global','rows_per_page','200'),
+	(5,'files','thumbnail_quality','100'),
+	(6,'files','thumbnail_size','200'),
+	(7,'global','cms_thumbnail_url',''),
+	(8,'files','file_naming','file_id'),
+	(9,'files','thumbnail_crop_enabled','1'),
+	(10,'files','youtube_api_key','');
 
 /*!40000 ALTER TABLE `directus_settings` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -372,14 +376,14 @@ UNLOCK TABLES;
 DROP TABLE IF EXISTS `directus_users`;
 
 CREATE TABLE `directus_users` (
-  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `active` tinyint(1) DEFAULT '1',
   `first_name` varchar(50) DEFAULT '',
   `last_name` varchar(50) DEFAULT '',
-  `email` varchar(255) NOT NULL DEFAULT '',
+  `email` varchar(128) NOT NULL DEFAULT '',
   `password` varchar(255) DEFAULT '',
   `salt` varchar(255) DEFAULT '',
-  `token` varchar(255) NOT NULL,
+  `token` varchar(128) DEFAULT NULL,
   `access_token` varchar(255) DEFAULT '',
   `reset_token` varchar(255) DEFAULT '',
   `reset_expiration` datetime DEFAULT NULL,
@@ -389,9 +393,9 @@ CREATE TABLE `directus_users` (
   `last_access` datetime DEFAULT NULL,
   `last_page` varchar(255) DEFAULT '',
   `ip` varchar(50) DEFAULT '',
-  `group` int unsigned DEFAULT NULL,
+  `group` int(11) unsigned DEFAULT NULL,
   `avatar` varchar(500) DEFAULT NULL,
-  `avatar_file_id` int unsigned DEFAULT NULL,
+  `avatar_file_id` int(11) unsigned DEFAULT NULL,
   `location` varchar(255) DEFAULT NULL,
   `phone` varchar(255) DEFAULT NULL,
   `address` varchar(255) DEFAULT NULL,
@@ -403,7 +407,7 @@ CREATE TABLE `directus_users` (
   `timezone` varchar(32) DEFAULT 'America/New_York',
   `invite_token` varchar(255) DEFAULT NULL,
   `invite_date` datetime DEFAULT NULL,
-  `invite_sender` int unsigned DEFAULT NULL,
+  `invite_sender` int(11) unsigned DEFAULT NULL,
   `invite_accepted` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `directus_users_email_unique` (`email`),
@@ -415,7 +419,7 @@ LOCK TABLES `directus_users` WRITE;
 
 INSERT INTO `directus_users` (`id`, `active`, `first_name`, `last_name`, `email`, `password`, `salt`, `token`, `access_token`, `reset_token`, `reset_expiration`, `position`, `email_messages`, `last_login`, `last_access`, `last_page`, `ip`, `group`, `avatar`, `avatar_file_id`, `location`, `phone`, `address`, `city`, `state`, `country`, `zip`, `language`, `timezone`, `invite_token`, `invite_date`, `invite_sender`, `invite_accepted`)
 VALUES
-	(1,1,'Admin','User','admin@admin.com','$2y$12$xLck7Q/xGo6uWfV7MYuy5eMA/z/.fXmYT9IHG4ByuZZJzy8gFiute','eDaAcThmF7WNvUwD','test-token','','',NULL,'',1,NULL,NULL,'','',1,'//www.gravatar.com/avatar/64e1b8d34f425d19e1ee2ea7236d3028?s=200&d=identicon&r=g',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'en','America/New_York',NULL,NULL,NULL,NULL);
+	(1,1,'Admin','User','admin@admin.com','$2y$12$wzU2hwDsGfofO5swMxVY6exTRcC.IkB4gKNu4RKdnW40p4LTudQ96','36JjNIG3eGVoYDky','vpqBqeRX4CGw2OgDdZxv9H26Rw8mIo4Z','','',NULL,'',1,NULL,NULL,'','',1,'//www.gravatar.com/avatar/64e1b8d34f425d19e1ee2ea7236d3028?s=200&d=identicon&r=g',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'en','America/New_York',NULL,NULL,NULL,NULL);
 
 /*!40000 ALTER TABLE `directus_users` ENABLE KEYS */;
 UNLOCK TABLES;
