@@ -147,7 +147,7 @@ class TableSchema
         $statusMapping = $tableObject->getStatusMapping();
 
         if (!$statusMapping) {
-            $statusMapping = isset(static::$config['statusMapping']) ? static::$config['statusMapping'] : null;
+            $statusMapping = ArrayUtils::get(static::$config, 'statusMapping', []);
         }
 
         if ($statusMapping) {
