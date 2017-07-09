@@ -33,3 +33,5 @@ abstract class Twig_Node_Expression_Binary extends Twig_Node_Expression
 
     abstract public function operator(Twig_Compiler $compiler);
 }
+
+class_alias('Twig_Node_Expression_Binary', 'Twig\Node\Expression\Binary\AbstractBinary', false);

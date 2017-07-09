@@ -37,3 +37,5 @@ class Twig_Node_Block extends Twig_Node
         ;
     }
 }
+
+class_alias('Twig_Node_Block', 'Twig\Node\BlockNode', false);

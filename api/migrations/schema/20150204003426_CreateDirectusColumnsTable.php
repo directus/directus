@@ -59,9 +59,9 @@ class CreateDirectusColumnsTable extends Ruckusing_Migration_Base
             'limit' => 64,
             'default' => NULL
         ]);
-        $t->column('relationship_type', 'string', [
-            'limit' => 20,
-            'default' => NULL
+        $t->column('relationship_type', 'enum', [
+            'values' => ['MANYTOONE', 'MANYTOMANY', 'ONETOMANY'],
+            'default' => null
         ]);
         $t->column('related_table', 'string', [
             'limit' => 64,
@@ -99,6 +99,10 @@ class CreateDirectusColumnsTable extends Ruckusing_Migration_Base
         ]);
         $t->column('comment', 'string', [
             'limit' => 1024,
+            'default' => NULL
+        ]);
+        $t->column('options', 'text', [
+            'null' => true,
             'default' => NULL
         ]);
 
@@ -143,10 +147,35 @@ class CreateDirectusColumnsTable extends Ruckusing_Migration_Base
             'comment' => ''
         ]);
 
-        /*$this->execute('INSERT INTO `directus_columns` (`id`, `table_name`, `column_name`, `data_type`, `ui`, `system`, `master`, `hidden_input`, `hidden_list`, `required`, `relationship_type`, `table_related`, `junction_table`, `junction_key_left`, `junction_key_right`, `sort`, `comment`)
-  VALUES
-    (1,'directus_users','group',NULL,'many_to_one',0,0,0,0,0,'MANYTOONE','directus_groups',NULL,NULL,'group_id',NULL,''),
-    (2,'directus_users','avatar_file_id','INT','single_file',0,0,0,0,0,'MANYTOONE','directus_files',NULL,NULL,'avatar_file_id',NULL,'');');*/
+        $this->insert('directus_columns', [
+            'table_name' => 'directus_groups',
+            'column_name' => 'users',
+            'data_type' => 'ALIAS',
+            'ui' => 'directus_users',
+            'hidden_input' => 0,
+            'hidden_list' => 0,
+            'required' => 0,
+            'relationship_type' => 'ONETOMANY',
+            'related_table' => 'directus_users',
+            'junction_table' => NULL,
+            'junction_key_left' => NULL,
+            'junction_key_right' => 'group'
+        ]);
+
+        $this->insert('directus_columns', [
+            'table_name' => 'directus_groups',
+            'column_name' => 'permissions',
+            'data_type' => 'ALIAS',
+            'ui' => 'directus_permissions',
+            'hidden_input' => 0,
+            'hidden_list' => 0,
+            'required' => 0,
+            'relationship_type' => 'ONETOMANY',
+            'related_table' => 'directus_privileges',
+            'junction_table' => NULL,
+            'junction_key_left' => NULL,
+            'junction_key_right' => 'group_id'
+        ]);
     }//up()
 
     public function down()

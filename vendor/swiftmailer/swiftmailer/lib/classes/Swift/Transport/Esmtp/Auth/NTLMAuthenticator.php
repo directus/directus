@@ -366,11 +366,9 @@ class Swift_Transport_Esmtp_Auth_NTLMAuthenticator implements Swift_Transport_Es
     protected function getCorrectTimestamp($time)
     {
         // Get our timestamp (tricky!)
-        bcscale(0);
-
         $time = number_format($time, 0, '.', ''); // save microtime to string
-        $time = bcadd($time, '11644473600000'); // add epoch time
-        $time = bcmul($time, 10000); // tenths of a microsecond.
+        $time = bcadd($time, '11644473600000', 0); // add epoch time
+        $time = bcmul($time, 10000, 0); // tenths of a microsecond.
 
         $binary = $this->si2bin($time, 64); // create 64 bit binary string
         $timestamp = '';

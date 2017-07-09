@@ -24,7 +24,7 @@ if (!function_exists('getDatabaseConfig')) {
             'pass' => defined('DB_PASSWORD') ? DB_PASSWORD : '',
             'prefix' => defined('DB_PREFIX') ? DB_PREFIX : '',
             'engine' => defined('DB_ENGINE') ? DB_ENGINE : 'InnoDB',
-            'charset' => defined('DB_CHARSET') ? DB_CHARSET : 'utf8',
+            'charset' => defined('DB_CHARSET') ? DB_CHARSET : 'utf8mb4',
             'directory' => 'schema',
             //'socket' => '/var/run/mysqld/mysqld.sock'
         ];
@@ -59,7 +59,7 @@ Valid types (adapters) are Postgres & MySQL:
 
 */
 return [
-    'migrations_dir' => ['default' => dirname(__FILE__) . DIRECTORY_SEPARATOR . 'migrations'],
+    'migrations_dir' => ['default' => dirname(__FILE__) . DIRECTORY_SEPARATOR . 'migrations', 'customs' => dirname(__FILE__,2) . DIRECTORY_SEPARATOR . 'customs' . DIRECTORY_SEPARATOR. 'migrations'],
     'db_dir' => dirname(__FILE__) . DIRECTORY_SEPARATOR . 'logs' . DIRECTORY_SEPARATOR . 'db',
     'log_dir' => dirname(__FILE__) . DIRECTORY_SEPARATOR . 'logs',
     'ruckusing_base' => dirname(__FILE__) . DIRECTORY_SEPARATOR . 'vendor/ruckusing/ruckusing-migrations'

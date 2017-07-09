@@ -21,3 +21,5 @@ class Twig_Node_Expression_Constant extends Twig_Node_Expression
         $compiler->repr($this->getAttribute('value'));
     }
 }
+
+class_alias('Twig_Node_Expression_Constant', 'Twig\Node\Expression\ConstantExpression', false);

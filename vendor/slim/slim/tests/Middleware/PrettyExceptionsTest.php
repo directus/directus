@@ -6,7 +6,7 @@
  * @copyright   2011 Josh Lockhart
  * @link        http://www.slimframework.com
  * @license     http://www.slimframework.com/license
- * @version     2.3.2
+ * @version     2.6.1
  *
  * MIT LICENSE
  *
@@ -112,6 +112,34 @@ class PrettyExceptionsTest extends PHPUnit_Framework_TestCase
         $app = new \Slim\Slim(array(
             'log.enabled' => false
         ));
+        $app->get('/foo', function () use ($app) {
+            throw new \LogicException('Test Message', 100);
+        });
+        $mw = new \Slim\Middleware\PrettyExceptions();
+        $mw->setApplication($app);
+        $mw->setNextMiddleware($app);
+        $mw->call();
+
+        $this->assertContains('LogicException', $app->response()->body());
+    }
+
+    /**
+     * Test with custom log
+     */
+    public function testWithCustomLogWriter()
+    {
+        $this->setExpectedException('\LogicException');
+
+        \Slim\Environment::mock(array(
+            'SCRIPT_NAME' => '/index.php',
+            'PATH_INFO' => '/foo'
+        ));
+        $app = new \Slim\Slim(array(
+            'log.enabled' => false
+        ));
+        $app->container->singleton('log', function () use ($app) {
+            return new \Slim\Log(new \Slim\LogWriter('php://temp'));
+        });
         $app->get('/foo', function () use ($app) {
             throw new \LogicException('Test Message', 100);
         });

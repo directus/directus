@@ -94,3 +94,5 @@ class Twig_Node_Set extends Twig_Node implements Twig_NodeCaptureInterface
         $compiler->raw(";\n");
     }
 }
+
+class_alias('Twig_Node_Set', 'Twig\Node\SetNode', false);

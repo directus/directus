@@ -6,7 +6,7 @@
  * @copyright   2011 Josh Lockhart
  * @link        http://www.slimframework.com
  * @license     http://www.slimframework.com/license
- * @version     2.3.2
+ * @version     2.6.1
  *
  * MIT LICENSE
  *
@@ -104,6 +104,7 @@ class ContentTypesTest extends PHPUnit_Framework_TestCase
      */
     public function testParsesXmlWithError()
     {
+	libxml_use_internal_errors(true);
         \Slim\Environment::mock(array(
             'REQUEST_METHOD' => 'POST',
             'CONTENT_TYPE' => 'application/xml',

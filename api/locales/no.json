@@ -34,7 +34,7 @@
     "global_settings_project_name_placeholder": "Mitt prosjekt",
     "global_settings_project_name_comment": "Navnet på ditt prosjekt",
     "global_settings_project_url_comment": "Klikk på prosjektlogoen tar deg til denne URL-en",
-    "global_settings_cms_thumbnail_url_comment": "Legg til en bilde-URL for hovedlogoen (170x100)",
+    "global_settings_cms_thumbnail_url_comment": "Legg til en bilde-URL for hovedlogoen (200×64)",
     "global_settings_cms_user_auto_sign_out_comment": "Minutter før brukerne automatisk logges ut",
     "global_settings_rows_per_page_comment": "Antall elementer som vises per listeside",
     "maps_ui_global_settings_google_api_key": "Google API-nøkkel til Maps UI",
@@ -274,7 +274,7 @@
     "character_blacklist": "Sorteliste for tegn",
     "character_whitelist": "Hviteliste for tegn",
     "regex": "Regex",
-    "textinput_validation_string_comment": "Alle tegn under vil håndheves",
+    "text_input_validation_string_comment": "Alle tegn under vil håndheves",
 
     "translation_title": "Oversettelser",
     "translations_x": "%{field}",
@@ -322,9 +322,7 @@
     "are_you_sure_you_want_to_sign_out": "Er du sikker på at du vil logge ut?",
 
     "you_must_be_logged_in_to_access_the_api": "Du må være logget inn for å få tilgang til API-et",
-    "invalid_request_nonce": "Ugyldig forespørsel (nonce)",
     "no_such_extensions_found": "Utvidelse finnes ikke.",
-    "unauthorized_nonce": "Uautorisert (nonce)",
     "extension_x_must_return_array_got_y_instead": "Utvidelsen %{extension_name} må gjengi matrise, fikk %{type} istedenfor",
     "incorrect_email_or_password": "Feil e-post eller passord",
     "missing_email_or_password": "Manglende e-post eller passord",

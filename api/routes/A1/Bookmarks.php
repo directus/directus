@@ -4,8 +4,9 @@ namespace Directus\API\Routes\A1;
 
 use Directus\Application\Route;
 use Directus\Database\TableGateway\DirectusBookmarksTableGateway;
+use Directus\Database\TableGateway\DirectusPreferencesTableGateway;
 use Directus\Database\TableGateway\RelationalTableGateway;
-use Directus\View\JsonView;
+use Directus\Permissions\Acl;
 
 class Bookmarks extends Route
 {
@@ -18,6 +19,8 @@ class Bookmarks extends Route
 
         $currentUserId = $acl->getUserId();
         $bookmarks = new DirectusBookmarksTableGateway($ZendDb, $acl);
+        $preferences = new DirectusPreferencesTableGateway($ZendDb, null);
+
         switch ($app->request()->getMethod()) {
             case 'PUT':
                 $bookmarks->updateBookmark($requestPayload);
@@ -30,8 +33,15 @@ class Bookmarks extends Route
             case 'DELETE':
                 $bookmark = $bookmarks->fetchByUserAndId($currentUserId, $id);
                 $response = [];
+
                 if ($bookmark) {
                     $response['success'] = (bool) $bookmarks->delete(['id' => $id]);
+
+                    // delete the preferences
+                    $preferences->delete([
+                        'user' => $currentUserId,
+                        'title' => $bookmark['title']
+                    ]);
                 } else {
                     $response['success'] = false;
                     $response['error'] = [
@@ -140,5 +150,30 @@ class Bookmarks extends Route
 
         $params = $app->request()->get();
         return $this->app->response($tableGateway->getItems($params));
+    }
+
+    public function preferences($title)
+    {
+        $app = $this->app;
+        /** @var Acl $acl */
+        $acl = $app->container->get('acl');
+        $dbConnection = $app->container->get('zenddb');
+        $tableGateway = new DirectusPreferencesTableGateway($dbConnection, $acl);
+
+        $response = $tableGateway->fetchByUserAndTitle($acl->getUserId(), $title);
+
+        if (!$response) {
+            $response = [
+                'success' => false,
+                'error' => [
+                    'message' => __t('bookmark_not_found')
+                ]
+            ];
+        } else {
+            $response = $tableGateway->loadMetadata($response, true);
+            $response['success'] = true;
+        }
+
+        return $app->response($response);
     }
 }

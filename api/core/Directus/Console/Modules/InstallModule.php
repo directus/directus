@@ -104,7 +104,7 @@ class InstallModule extends ModuleBase
         $data['db_password'] = 'directus';
         $data['directus_path'] = '/';
 
-        $directus_path = BASE_PATH . DIRECTORY_SEPARATOR;
+        $directusPath = BASE_PATH;
 
         foreach ($args as $key => $value) {
             switch ($key) {
@@ -127,15 +127,23 @@ class InstallModule extends ModuleBase
                     $data['db_password'] = $value;
                     break;
                 case 'r':
-                    $data['directus_path'] = $value;
+                    $directusPath = $value;
                     break;
                 case 'd':
-                    $directus_path = $directus_path . $value;
+                    $data['directus_path'] = rtrim($value, '/') . '/';
+                    break;
+                case 'e':
+                    $data['directus_email'] = $value;
                     break;
             }
         }
 
-        InstallerUtils::createConfig($data, $directus_path . 'api');
+        $apiPath = rtrim($directusPath, '/') . '/api';
+        if (!file_exists($apiPath)) {
+            throw new \Exception(sprintf('Path "%s" does not exists', $apiPath));
+        }
+
+        InstallerUtils::createConfig($data, $apiPath);
     }
 
     public function cmdDatabase($args, $extra)
@@ -198,9 +206,9 @@ class InstallModule extends ModuleBase
                      throw new CommandFailedException(__t('Error changing user password') . ': ' . $ex->getMessage());
                  }
             }
-        } catch (PDOException $e) {
+        } catch (\PDOException $e) {
             echo PHP_EOL . "PDO Excetion!!" . PHP_EOL;
-            echo PHP_EOL . PHP_EOL . __t('Module ') . $module . __t(' error: ') . $e->getMessage() . PHP_EOL . PHP_EOL;
+            echo PHP_EOL . PHP_EOL . __t('Module ') . $this->__module_name . __t(' error: ') . $e->getMessage() . PHP_EOL . PHP_EOL;
         }
     }
 }

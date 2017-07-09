@@ -6,7 +6,7 @@
  * @copyright   2011 Josh Lockhart
  * @link        http://www.slimframework.com
  * @license     http://www.slimframework.com/license
- * @version     2.3.2
+ * @version     2.6.1
  * @package     Slim
  *
  * MIT LICENSE
@@ -169,9 +169,9 @@ class Request
             return true;
         } elseif (isset($this->headers['X_REQUESTED_WITH']) && $this->headers['X_REQUESTED_WITH'] === 'XMLHttpRequest') {
             return true;
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     /**
@@ -187,16 +187,18 @@ class Request
      * Fetch GET and POST data
      *
      * This method returns a union of GET and POST data as a key-value array, or the value
-     * of the array key if requested; if the array key does not exist, NULL is returned.
+     * of the array key if requested; if the array key does not exist, NULL is returned,
+     * unless there is a default value specified.
      *
      * @param  string           $key
+     * @param  mixed            $default
      * @return array|mixed|null
      */
-    public function params($key = null)
+    public function params($key = null, $default = null)
     {
         $union = array_merge($this->get(), $this->post());
         if ($key) {
-            return isset($union[$key]) ? $union[$key] : null;
+            return isset($union[$key]) ? $union[$key] : $default;
         }
 
         return $union;
@@ -209,9 +211,10 @@ class Request
      * the value of the array key if requested; if the array key does not exist, NULL is returned.
      *
      * @param  string           $key
+     * @param  mixed            $default Default return value when key does not exist
      * @return array|mixed|null
      */
-    public function get($key = null)
+    public function get($key = null, $default = null)
     {
         if (!isset($this->env['slim.request.query_hash'])) {
             $output = array();
@@ -226,7 +229,7 @@ class Request
             if (isset($this->env['slim.request.query_hash'][$key])) {
                 return $this->env['slim.request.query_hash'][$key];
             } else {
-                return null;
+                return $default;
             }
         } else {
             return $this->env['slim.request.query_hash'];
@@ -240,10 +243,11 @@ class Request
      * the value of a hash key if requested; if the array key does not exist, NULL is returned.
      *
      * @param  string           $key
+     * @param  mixed            $default Default return value when key does not exist
      * @return array|mixed|null
      * @throws \RuntimeException If environment input is not available
      */
-    public function post($key = null)
+    public function post($key = null, $default = null)
     {
         if (!isset($this->env['slim.input'])) {
             throw new \RuntimeException('Missing slim.input in environment variables');
@@ -266,7 +270,7 @@ class Request
             if (isset($this->env['slim.request.form_hash'][$key])) {
                 return $this->env['slim.request.form_hash'][$key];
             } else {
-                return null;
+                return $default;
             }
         } else {
             return $this->env['slim.request.form_hash'];
@@ -276,31 +280,34 @@ class Request
     /**
      * Fetch PUT data (alias for \Slim\Http\Request::post)
      * @param  string           $key
+     * @param  mixed            $default Default return value when key does not exist
      * @return array|mixed|null
      */
-    public function put($key = null)
+    public function put($key = null, $default = null)
     {
-        return $this->post($key);
+        return $this->post($key, $default);
     }
 
     /**
      * Fetch PATCH data (alias for \Slim\Http\Request::post)
      * @param  string           $key
+     * @param  mixed            $default Default return value when key does not exist
      * @return array|mixed|null
      */
-    public function patch($key = null)
+    public function patch($key = null, $default = null)
     {
-        return $this->post($key);
+        return $this->post($key, $default);
     }
 
     /**
      * Fetch DELETE data (alias for \Slim\Http\Request::post)
      * @param  string           $key
+     * @param  mixed            $default Default return value when key does not exist
      * @return array|mixed|null
      */
-    public function delete($key = null)
+    public function delete($key = null, $default = null)
     {
-        return $this->post($key);
+        return $this->post($key, $default);
     }
 
     /**
@@ -571,10 +578,11 @@ class Request
      */
     public function getIp()
     {
-        if (isset($this->env['X_FORWARDED_FOR'])) {
-            return $this->env['X_FORWARDED_FOR'];
-        } elseif (isset($this->env['CLIENT_IP'])) {
-            return $this->env['CLIENT_IP'];
+        $keys = array('X_FORWARDED_FOR', 'HTTP_X_FORWARDED_FOR', 'CLIENT_IP', 'REMOTE_ADDR');
+        foreach ($keys as $key) {
+            if (isset($this->env[$key])) {
+                return $this->env[$key];
+            }
         }
 
         return $this->env['REMOTE_ADDR'];

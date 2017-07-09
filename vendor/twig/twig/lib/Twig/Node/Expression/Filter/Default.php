@@ -41,3 +41,5 @@ class Twig_Node_Expression_Filter_Default extends Twig_Node_Expression_Filter
         $compiler->subcompile($this->getNode('node'));
     }
 }
+
+class_alias('Twig_Node_Expression_Filter_Default', 'Twig\Node\Expression\Filter\DefaultFilter', false);

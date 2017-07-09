@@ -2,29 +2,48 @@
 
 namespace Directus;
 
-use Directus\Acl\Acl;
 use Directus\Application\Application;
-use Directus\Auth\Provider as AuthProvider;
+use Directus\Authentication\FacebookProvider;
+use Directus\Authentication\GitHubProvider;
+use Directus\Authentication\GoogleProvider;
+use Directus\Authentication\Provider as AuthProvider;
+use Directus\Authentication\Social;
+use Directus\Authentication\TwitterProvider;
+use Directus\Config\Config;
+use Directus\Database\Connection;
 use Directus\Database\SchemaManager;
+use Directus\Database\Schemas\Sources\MySQLSchema;
+use Directus\Database\Schemas\Sources\SQLiteSchema;
+use Directus\Database\TableGateway\BaseTableGateway;
+use Directus\Database\TableGateway\DirectusPrivilegesTableGateway;
+use Directus\Database\TableGateway\DirectusSettingsTableGateway;
+use Directus\Database\TableGateway\DirectusTablesTableGateway;
+use Directus\Database\TableGateway\DirectusUsersTableGateway;
+use Directus\Database\TableGateway\RelationalTableGateway;
+use Directus\Database\TableGatewayFactory;
 use Directus\Database\TableSchema;
-use Directus\Db\Connection;
-use Directus\Db\Schemas\MySQLSchema;
-use Directus\Db\Schemas\SQLiteSchema;
-use Directus\Db\TableGateway\BaseTableGateway;
-use Directus\Db\TableGateway\DirectusPrivilegesTableGateway;
-use Directus\Db\TableGateway\DirectusSettingsTableGateway;
-use Directus\Db\TableGateway\DirectusTablesTableGateway;
-use Directus\Db\TableGateway\DirectusUsersTableGateway;
 use Directus\Embed\EmbedManager;
+use Directus\Exception\Exception;
+use Directus\Exception\ForbiddenException;
 use Directus\Filesystem\Filesystem;
 use Directus\Filesystem\FilesystemFactory;
+use Directus\Filesystem\Thumbnail;
+use Directus\Hash\HashManager;
 use Directus\Hook\Emitter;
+use Directus\Hook\Payload;
 use Directus\Language\LanguageManager;
+use Directus\Permissions\Acl;
 use Directus\Providers\FilesServiceProvider;
+use Directus\Services\AuthService;
+use Directus\Session\Session;
+use Directus\Session\Storage\NativeSessionStorage;
 use Directus\Util\ArrayUtils;
+use Directus\Util\DateUtils;
+use Directus\Util\StringUtils;
 use Directus\View\Twig\DirectusTwigExtension;
 use Slim\Extras\Log\DateTimeFileWriter;
 use Slim\Extras\Views\Twig;
+use Zend\Db\TableGateway\TableGateway;
 
 /**
  * NOTE: This class depends on the constants defined in config.php
@@ -119,8 +138,9 @@ class Bootstrap
             'path' => APPLICATION_PATH . '/api/logs'
         ];
 
+        $templatesPaths = [APPLICATION_PATH . '/api/views/', APPLICATION_PATH . '/templates/'];
         $app = new Application([
-            'templates.path' => APPLICATION_PATH . '/api/views/',
+            'templates.path' => $templatesPaths[0],
             'mode' => DIRECTUS_ENV,
             'debug' => false,
             'log.enable' => true,
@@ -128,21 +148,72 @@ class Bootstrap
             'view' => new Twig()
         ]);
 
+        Twig::$twigTemplateDirs = $templatesPaths;
+
         Twig::$twigExtensions = [
             new DirectusTwigExtension()
         ];
 
-        $app->container->singleton('emitter', function () {
+        $app->container->singleton('hookEmitter', function () {
             return Bootstrap::get('hookEmitter');
         });
 
-        $config = defined('BASE_PATH') ? Bootstrap::get('config') : [];
+        $app->container->singleton('authService', function () use ($app) {
+            return new AuthService($app);
+        });
+
+        $app->container->singleton('session', function () {
+            return Bootstrap::get('session');
+        });
+
+        $app->container->singleton('auth', function () {
+            return Bootstrap::get('auth');
+        });
+
+        $app->container->singleton('acl', function () {
+            return Bootstrap::get('acl');
+        });
+
+        $app->container->singleton('zendDb', function () {
+            return Bootstrap::get('zendDb');
+        });
+
+        $app->container->singleton('socialAuth', function() {
+            return Bootstrap::get('socialAuth');
+        });
+
+        $config = defined('BASE_PATH') ? Bootstrap::get('config') : new Config();
         $app->container->set('config', $config);
 
-        BaseTableGateway::setHookEmitter($app->container->get('emitter'));
-        \Directus\Database\TableGateway\BaseTableGateway::setContainer($app->container);
-        \Directus\Database\TableGateway\BaseTableGateway::setHookEmitter($app->container->get('emitter'));
+        $app->container->singleton('schemaManager', function () {
+            return Bootstrap::get('schemaManager');
+        });
 
+        $app->container->singleton('app.settings', function () {
+            return Bootstrap::get('settings');
+        });
+
+        $app->container->singleton('hashManager', function () {
+            return Bootstrap::get('hashManager');
+        });
+
+        $authConfig = ArrayUtils::get($config, 'auth', []);
+        $socialAuth = $app->container->get('socialAuth');
+
+        $socialAuthServices = static::getSocialAuthServices();
+        foreach ($socialAuthServices as $name => $class) {
+            if (ArrayUtils::has($authConfig, $name)) {
+                $config = ArrayUtils::get($authConfig, $name);
+                $socialAuth->register(new $class($app, $config));
+            }
+        }
+
+        BaseTableGateway::setHookEmitter($app->container->get('hookEmitter'));
+        BaseTableGateway::setContainer($app->container);
+        TableGatewayFactory::setContainer($app->container);
+
+        // @NOTE: Trying to separate the configuration from bootstrap, bit by bit.
+        TableSchema::setConfig(static::get('config'));
         $app->register(new FilesServiceProvider());
 
         $app->container->singleton('zenddb', function() {
@@ -157,7 +228,19 @@ class Bootstrap
             return new \Directus\Permissions\Acl();
         });
 
+        $app->container->get('session')->start();
+
         return $app;
+    }
+
+    private static function getSocialAuthServices()
+    {
+        return [
+            'github' => GitHubProvider::class,
+            'facebook' => FacebookProvider::class,
+            'twitter' => TwitterProvider::class,
+            'google' => GoogleProvider::class
+        ];
     }
 
     private static function config()
@@ -170,7 +253,20 @@ class Bootstrap
             }
         }
 
-        return $config;
+        return new Config($config);
+    }
+
+    private static function settings()
+    {
+        $DirectusSettingsTableGateway = new \Zend\Db\TableGateway\TableGateway('directus_settings', Bootstrap::get('zendDb'));
+        $rowSet = $DirectusSettingsTableGateway->select();
+
+        $settings = [];
+        foreach ($rowSet as $setting) {
+            $settings[$setting['collection']][$setting['name']] = $setting['value'];
+        }
+
+        return $settings;
     }
 
     private static function status()
@@ -183,11 +279,11 @@ class Bootstrap
     private static function mailer()
     {
         $config = self::get('config');
-        if (!array_key_exists('mail', $config)) {
+        if (!$config->has('mail')) {
             return null;
         }
 
-        $mailConfig = $config['mail'];
+        $mailConfig = $config->get('mail');
         switch ($mailConfig['transport']) {
             case 'smtp':
                 $transport = \Swift_SmtpTransport::newInstance($mailConfig['host'], $mailConfig['port']);
@@ -277,7 +373,8 @@ class Bootstrap
     {
         self::requireConstants(['DIRECTUS_ENV', 'DB_TYPE', 'DB_HOST', 'DB_PORT', 'DB_NAME', 'DB_USER', 'DB_PASSWORD'], __FUNCTION__);
 
-        $charset = defined('DB_CHARSET') ? DB_CHARSET : 'utf8';
+        // TODO: Store default default charset somewhere
+        $charset = defined('DB_CHARSET') ? DB_CHARSET : 'utf8mb4';
         $dbConfig = [
             'driver' => 'Pdo_' . DB_TYPE,
             'host' => DB_HOST,
@@ -299,38 +396,6 @@ class Bootstrap
         }
 
         return $db;
-        //        $dbConfig = array(
-        //            'driver'    => 'Pdo_Mysql',
-        //            'host'      => DB_HOST,
-        //            'database'  => DB_NAME,
-        //            'username'  => DB_USER,
-        //            'password'  => DB_PASSWORD,
-        //            'charset'   => 'utf8',
-        ////            'options' => array(
-        ////                \PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true
-        ////            ),
-        ////            'driver_options' => array(
-        ////                \PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8; SET CHARACTER SET utf8;",
-        //////                \PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true
-        ////            )
-        //        );
-        //        $db = new \Zend\Db\Adapter\Adapter($dbConfig);
-        //        $connection = $db->getDriver()->getConnection();
-        //        try { $connection->connect(); }
-        //        catch(\PDOException $e) {
-        //            echo "Database connection failed.<br />";
-        //            self::get('log')->fatal(print_r($e, true));
-        //            if('production' !== DIRECTUS_ENV) {
-        //                die(var_dump($e));
-        //            }
-        //            die;
-        //        }
-        //        $dbh = $connection->getResource();
-        //        $dbh->exec("SET CHARACTER SET utf8");
-        //        $dbh->query("SET NAMES utf8");
-        ////        $pdo = $db->getDriver()->getConnection()->getResource();
-        ////        $pdo->setAttribute(\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, true);
-        //        return $db;
     }
 
     private static function schemaManager()
@@ -378,19 +443,21 @@ class Bootstrap
 
     /**
      * Construct Acl provider
-     * @return \Directus\Acl
+     * @return \Directus\Permissions\Acl
      */
     private static function acl()
     {
         $acl = new Acl();
+        $auth = self::get('auth');
         $db = self::get('ZendDb');
 
-        $DirectusTablesTableGateway = new DirectusTablesTableGateway($acl, $db);
+        $DirectusTablesTableGateway = new DirectusTablesTableGateway($db, $acl);
         $getTables = function () use ($DirectusTablesTableGateway) {
             return $DirectusTablesTableGateway->select()->toArray();
         };
 
-        $tableRecords = $DirectusTablesTableGateway->memcache->getOrCache(MemcacheProvider::getKeyDirectusTables(), $getTables, 1800);
+        // $tableRecords = $DirectusTablesTableGateway->memcache->getOrCache(MemcacheProvider::getKeyDirectusTables(), $getTables, 1800);
+        $tableRecords = $getTables();
 
         $magicOwnerColumnsByTable = [];
         foreach ($tableRecords as $tableRecord) {
@@ -400,19 +467,21 @@ class Bootstrap
         }
         $acl::$cms_owner_columns_by_table = $magicOwnerColumnsByTable;
 
-        if (AuthProvider::loggedIn()) {
-            $currentUser = AuthProvider::getUserInfo();
-            $Users = new DirectusUsersTableGateway($acl, $db);
+        if ($auth->loggedIn()) {
+            $currentUser = $auth->getUserInfo();
+            $Users = new DirectusUsersTableGateway($db, $acl);
             $cacheFn = function () use ($currentUser, $Users) {
                 return $Users->find($currentUser['id']);
             };
             $cacheKey = MemcacheProvider::getKeyDirectusUserFind($currentUser['id']);
-            $currentUser = $Users->memcache->getOrCache($cacheKey, $cacheFn, 10800);
+            // $currentUser = $Users->memcache->getOrCache($cacheKey, $cacheFn, 10800);
+            $currentUser = $cacheFn();
             if ($currentUser) {
-                $privilegesTable = new DirectusPrivilegesTableGateway($acl, $db);
+                $privilegesTable = new DirectusPrivilegesTableGateway($db, $acl);
                 $acl->setGroupPrivileges($privilegesTable->getGroupPrivileges($currentUser['group']));
             }
         }
+
         return $acl;
     }
 
@@ -421,24 +490,6 @@ class Bootstrap
         $config = self::get('config');
         return new Filesystem(FilesystemFactory::createAdapter($config['filesystem']));
     }
-
-    /**
-     * Construct CodeBird Twitter API Client
-     * @return \Codebird\Codebird
-     */
-    // private static function codebird() {
-    //     $acl = self::get('acl');
-    //     $db = self::get('ZendDb');
-    //     // Social settings
-    //     $SettingsTableGateway = new DirectusSettingsTableGateway($acl, $db);
-    //     $requiredKeys = array('twitter_consumer_key','twitter_consumer_secret', 'twitter_oauth_token', 'twitter_oauth_token_secret');
-    //     $socialSettings = $SettingsTableGateway->fetchCollection('social', $requiredKeys);
-    //     // Codebird initialization
-    //     \Codebird\Codebird::setConsumerKey($socialSettings['twitter_consumer_key'], $socialSettings['twitter_consumer_secret']);
-    //     $cb = \Codebird\Codebird::getInstance();
-    //     $cb->setToken($socialSettings['twitter_oauth_token'], $socialSettings['twitter_oauth_token_secret']);
-    //     return $cb;
-    // }
 
     /**
      * Scan for extensions.
@@ -473,22 +524,27 @@ class Bootstrap
     }
 
     /**
-     * Scan for uis.
+     * Scan for interfaces.
      * @return  array
      */
-    private static function uis()
+    private static function interfaces()
     {
         self::requireConstants('APPLICATION_PATH', __FUNCTION__);
         $uiBasePath = APPLICATION_PATH . '/customs';
-        $uiDirectory = $uiBasePath . '/uis';
+        $uiDirectory = $uiBasePath . '/interfaces';
         $uis = [];
 
         if (!file_exists($uiDirectory)) {
             return $uis;
         }
 
-        $filePaths = find_js_files($uiDirectory, true);
+        $filePaths = find_directories($uiDirectory);
         foreach ($filePaths as $path) {
+            $path .= '/component.js';
+            if (!file_exists($path)) {
+                continue;
+            }
+
             $uiPath = trim(substr($path, strlen($uiBasePath)), '/');
             $uis[] = substr($uiPath, 0, -3);
         }
@@ -544,7 +600,7 @@ class Bootstrap
         $adapter = static::get('ZendDb');
 
         // Fetch files settings
-        $SettingsTable = new DirectusSettingsTableGateway($acl, $adapter);
+        $SettingsTable = new DirectusSettingsTableGateway($adapter, $acl);
         try {
             $settings = $SettingsTable->fetchCollection('files', [
                 'thumbnail_size', 'thumbnail_quality', 'thumbnail_crop_enabled'
@@ -582,6 +638,39 @@ class Bootstrap
         return $embedManager;
     }
 
+    private static function hashManager()
+    {
+        $hashManager = new HashManager();
+
+        $path = implode(DIRECTORY_SEPARATOR, [
+            BASE_PATH,
+            'customs',
+            'hashers',
+            '*.php'
+        ]);
+
+        $customHashersFiles = glob($path);
+        $hashers = [];
+
+        if ($customHashersFiles) {
+            foreach ($customHashersFiles as $filename) {
+                $name = basename($filename, '.php');
+                // filename starting with underscore are skipped
+                if (StringUtils::startsWith($name, '_')) {
+                    continue;
+                }
+
+                $hashers[] = '\\Directus\\Customs\\Hasher\\' . $name;
+            }
+        }
+
+        foreach ($hashers as $hasher) {
+            $hashManager->register(new $hasher());
+        }
+
+        return $hashManager;
+    }
+
     /**
      * Get Hook Emitter
      *
@@ -591,15 +680,26 @@ class Bootstrap
     {
         $emitter = new Emitter();
 
+        // TODO: Move all this filters to a dedicated file/class/function
         $emitter->addAction('application.error', function ($e) {
             $log = Bootstrap::get('log');
             $log->error($e);
         });
 
+        $emitter->addFilter('response', function (Payload $payload) {
+            $acl = Bootstrap::get('acl');
+
+            if ($acl->isPublic()) {
+                $payload->set('public', true);
+            }
+
+            return $payload;
+        });
+
         $emitter->addAction('table.insert.directus_groups', function ($data) {
             $acl = Bootstrap::get('acl');
             $zendDb = Bootstrap::get('zendDb');
-            $privilegesTable = new DirectusPrivilegesTableGateway($acl, $zendDb);
+            $privilegesTable = new DirectusPrivilegesTableGateway($zendDb, $acl);
 
             $privilegesTable->insertPrivilege([
                 'group_id' => $data['id'],
@@ -614,155 +714,362 @@ class Bootstrap
             ]);
         });
 
-        $emitter->addFilter('table.insert:before', function($payload) {
-            // $tableName, $data
-            if (func_num_args() == 2) {
-                $tableName = func_get_arg(0);
-                $data = func_get_arg(1);
-            } else {
-                $tableName = $payload->tableName;
-                $data = $payload->data;
+        $emitter->addFilter('table.insert:before', function (Payload $payload) {
+            $tableName = $payload->attribute('tableName');
+            $tableObject = TableSchema::getTableSchema($tableName);
+            /** @var Acl $acl */
+            $acl = Bootstrap::get('acl');
+
+            if ($dateCreated = $tableObject->getDateCreateColumn()) {
+                $payload[$dateCreated] = DateUtils::now();
             }
 
-            if ($tableName == 'directus_files') {
-                unset($data['data']);
-                $data['user'] = AuthProvider::getUserInfo('id');
+            if ($dateCreated = $tableObject->getDateUpdateColumn()) {
+                $payload[$dateCreated] = DateUtils::now();
             }
 
-            return func_num_args() == 2 ? $data : $payload;
-        });
-
-        // Add file url and thumb url
-        $emitter->addFilter('table.select', function($payload) {
-            if (func_num_args() == 2) {
-                $result = func_get_arg(0);
-                $selectState = func_get_arg(1);
-            } else {
-                $selectState = $payload->selectState;
-                $result = $payload->result;
-            }
-
-            if ($selectState['table'] == 'directus_files') {
-                $fileRows = $result->toArray();
-                $app = Bootstrap::get('app');
-                $files = $app->container->get('files');
-                foreach ($fileRows as &$row) {
-                    $config = Bootstrap::get('config');
-                    $fileURL = $config['filesystem']['root_url'];
-                    $thumbnailURL = $config['filesystem']['root_thumb_url'];
-                    $thumbnailFilenameParts = explode('.', $row['name']);
-                    $thumbnailExtension = array_pop($thumbnailFilenameParts);
-
-                    $row['url'] = $fileURL . '/' . $row['name'];
-                    if (in_array($thumbnailExtension, ['tif', 'tiff', 'psd', 'pdf'])) {
-                        $thumbnailExtension = 'jpg';
-                    }
-
-                    $thumbnailFilename = $row['id'] . '.' . $thumbnailExtension;
-                    $row['thumbnail_url'] = $thumbnailURL . '/' . $thumbnailFilename;
-
-                    // filename-ext-100-100-true.jpg
-                    // @TODO: This should be another hook listener
-                    $row['thumbnail_url'] = null;
-                    $filename = implode('.', $thumbnailFilenameParts);
-                    if ($row['type'] == 'embed/vimeo') {
-                        $oldThumbnailFilename = $row['name'] . '-vimeo-220-124-true.jpg';
-                    } else {
-                        $oldThumbnailFilename = $filename . '-' . $thumbnailExtension . '-160-160-true.jpg';
-                    }
-
-                    // 314551321-vimeo-220-124-true.jpg
-                    // hotfix: there's not thumbnail for this file
-                    $row['old_thumbnail_url'] = $thumbnailURL . '/' . $oldThumbnailFilename;
-                    $row['thumbnail_url'] = $thumbnailURL . '/' . $thumbnailFilename;
-
-                    $embedManager = Bootstrap::get('embedManager');
-                    $provider = $embedManager->getByType($row['type']);
-                    $row['html'] = null;
-                    if ($provider) {
-                        $row['html'] = $provider->getCode($row);
-                    }
+            // Directus Users created user are themselves (primary key)
+            // populating that field will be a duplicated primary key violation
+            if ($tableName !== 'directus_users') {
+                if ($userCreated = $tableObject->getUserCreateColumn()) {
+                    $payload[$userCreated] = $acl->getUserId();
                 }
 
-                $filesArrayObject = new \ArrayObject($fileRows);
-                $result->initialize($filesArrayObject->getIterator());
-            }
-
-            return (func_num_args() == 2) ? $result : $payload;
-        });
-
-        $emitter->addFilter('table.directus_users.select', function($payload) {
-            $result = $payload->result;
-
-            $rows = $result->toArray();
-            $userId = AuthProvider::loggedIn() ? AuthProvider::getUserInfo('id') : null;
-            foreach ($rows as &$row) {
-                // Authenticated user can see their private info
-                if ($userId && $userId === $row['id']) {
-                    continue;
+                if ($userModified = $tableObject->getUserUpdateColumn()) {
+                    $payload[$userModified] = $acl->getUserId();
                 }
-
-                $row = ArrayUtils::omit($row, [
-                    'password',
-                    'salt',
-                    'token',
-                    'access_token',
-                    'reset_token',
-                    'reset_expiration',
-                    'email_messages',
-                    'last_access',
-                    'last_page'
-                ]);
             }
 
-            $rowsArrayObject = new \ArrayObject($rows);
-            $result->initialize($rowsArrayObject->getIterator());
+            return $payload;
+        }, Emitter::P_HIGH);
+
+        $emitter->addFilter('table.update:before', function (Payload $payload) {
+            $tableName = $payload->attribute('tableName');
+            $tableObject = TableSchema::getTableSchema($tableName);
+            /** @var Acl $acl */
+            $acl = Bootstrap::get('acl');
+
+            if ($dateModified = $tableObject->getDateUpdateColumn()) {
+                $payload[$dateModified] = DateUtils::now();
+            }
+
+            if ($userModified = $tableObject->getUserUpdateColumn()) {
+                $payload[$userModified] = $acl->getUserId();
+            }
+
+            // NOTE: exclude date_uploaded from updating a file record
+            if ($payload->attribute('tableName') === 'directus_files') {
+                $payload->remove('date_uploaded');
+            }
+
+            return $payload;
+        }, Emitter::P_HIGH);
+
+        $emitter->addFilter('table.insert:before', function (Payload $payload) {
+            if ($payload->attribute('tableName') === 'directus_files') {
+                $auth = Bootstrap::get('auth');
+                $payload->remove('data');
+                $payload->set('user', $auth->getUserInfo('id'));
+            }
 
             return $payload;
         });
 
-        $emitter->addFilter('load.relational.onetomany', function($payload) {
-            $rows = $payload->data;
-            $column = $payload->column;
+        $addFilesUrl = function ($rows) {
+            foreach ($rows as &$row) {
+                $config = Bootstrap::get('config');
+                $fileURL = $config['filesystem']['root_url'];
+                $thumbnailURL = $config['filesystem']['root_thumb_url'];
+                $thumbnailFilenameParts = explode('.', $row['name']);
+                $thumbnailExtension = array_pop($thumbnailFilenameParts);
 
-            if ($column->getUi() !== 'translation') {
+                $row['url'] = $fileURL . '/' . $row['name'];
+                if (Thumbnail::isNonImageFormatSupported($thumbnailExtension)) {
+                    $thumbnailExtension = Thumbnail::defaultFormat();
+                }
+
+                $thumbnailFilename = $row['id'] . '.' . $thumbnailExtension;
+                $row['thumbnail_url'] = $thumbnailURL . '/' . $thumbnailFilename;
+
+                // filename-ext-100-100-true.jpg
+                // @TODO: This should be another hook listener
+                $filename = implode('.', $thumbnailFilenameParts);
+                if (isset($row['type']) && $row['type'] == 'embed/vimeo') {
+                    $oldThumbnailFilename = $row['name'] . '-vimeo-220-124-true.jpg';
+                } else {
+                    $oldThumbnailFilename = $filename . '-' . $thumbnailExtension . '-160-160-true.jpg';
+                }
+
+                // 314551321-vimeo-220-124-true.jpg
+                // hotfix: there's not thumbnail for this file
+                $row['old_thumbnail_url'] = $thumbnailURL . '/' . $oldThumbnailFilename;
+
+                $embedManager = Bootstrap::get('embedManager');
+                $provider = isset($row['type']) ? $embedManager->getByType($row['type']) : null;
+                $row['html'] = null;
+                if ($provider) {
+                    $row['html'] = $provider->getCode($row);
+                    $row['embed_url'] = $provider->getUrl($row);
+                }
+            }
+
+            return $rows;
+        };
+
+        // Add file url and thumb url
+        $emitter->addFilter('table.select', function (Payload $payload) use ($addFilesUrl) {
+            $selectState = $payload->attribute('selectState');
+            $rows = $payload->getData();
+
+            if ($selectState['table'] == 'directus_files') {
+                $rows = $addFilesUrl($rows);
+            } else if ($selectState['table'] === 'directus_messages') {
+                $filesIds = [];
+                foreach ($rows as &$row) {
+                    if (!ArrayUtils::has($row, 'attachment')) {
+                        continue;
+                    }
+
+                    $ids = array_filter(StringUtils::csv((string) $row['attachment'], true));
+                    $row['attachment'] = ['data' => []];
+                    foreach ($ids as  $id) {
+                        $row['attachment']['data'][$id] = [];
+                        $filesIds[] = $id;
+                    }
+                }
+
+                $filesIds = array_filter($filesIds);
+                if ($filesIds) {
+                    $ZendDb = Bootstrap::get('zenddb');
+                    $acl = Bootstrap::get('acl');
+                    $table = new RelationalTableGateway('directus_files', $ZendDb, $acl);
+                    $filesEntries = $table->loadItems([
+                        'in' => ['id' => $filesIds]
+                    ]);
+
+                    $entries = [];
+                    foreach($filesEntries as $id => $entry) {
+                        $entries[$entry['id']] = $entry;
+                    }
+
+                    foreach ($rows as &$row) {
+                        if (ArrayUtils::has($row, 'attachment') && $row['attachment']) {
+                            foreach ($row['attachment']['data'] as $id => $attachment) {
+                                $row['attachment']['data'][$id] = $entries[$id];
+                            }
+
+                            $row['attachment']['data'] = array_values($row['attachment']['data']);
+                        }
+                    }
+                }
+            }
+
+            $payload->replace($rows);
+
+            return $payload;
+        });
+
+        $emitter->addFilter('table.directus_users.select', function (Payload $payload) {
+            $acl = Bootstrap::get('acl');
+            $auth = Bootstrap::get('auth');
+            $rows = $payload->getData();
+
+            $userId = null;
+            $groupId = null;
+            if ($auth->loggedIn()) {
+                $userId = $acl->getUserId();
+                $groupId = $acl->getGroupId();
+            }
+
+            foreach ($rows as &$row) {
+                $omit = [
+                    'password',
+                    'salt',
+                ];
+
+                // Authenticated user can see their private info
+                // Admin can see all users private info
+                if ($groupId !== 1 && $userId !== $row['id']) {
+                    $omit = array_merge($omit, [
+                        'token',
+                        'access_token',
+                        'reset_token',
+                        'reset_expiration',
+                        'email_messages',
+                        'last_access',
+                        'last_page'
+                    ]);
+                }
+
+                $row = ArrayUtils::omit($row, $omit);
+            }
+
+            $payload->replace($rows);
+
+            return $payload;
+        });
+
+        $hashUserPassword = function (Payload $payload) {
+            if ($payload->has('password')) {
+                $auth = Bootstrap::get('auth');
+                $payload['salt'] = StringUtils::randomString();
+                $payload['password'] = $auth->hashPassword($payload['password'], $payload['salt']);
+            }
+
+            return $payload;
+        };
+
+        $emitter->addFilter('table.update.directus_users:before', function (Payload $payload) {
+            $acl = Bootstrap::get('acl');
+            $currentUserId = $acl->getUserId();
+
+            if ($currentUserId != $payload->get('id')) {
                 return $payload;
             }
 
-            $options = $column->getUiOptions();
-            $code = ArrayUtils::get($options, 'languages_code_column', 'id');
-            $languagesTable = ArrayUtils::get($options, 'languages_table');
-            $languageIdColumn = ArrayUtils::get($options, 'left_column_name');
+            // ----------------------------------------------------------------------------
+            // TODO: Add enforce method to ACL
+            $adapter = Bootstrap::get('zendDb');
+            $userTable = new BaseTableGateway('directus_users', $adapter);
+            $groupTable = new BaseTableGateway('directus_groups', $adapter);
 
-            if (!$languagesTable) {
-                throw new \Exception('Translations language table not defined for ' . $languageIdColumn);
+            $user = $userTable->find($payload->get('id'));
+            $group = $groupTable->find($user['group']);
+
+            if (!$group || !ArrayUtils::get($group, 'show_users')) {
+                throw new ForbiddenException('you are not allowed to update your user information');
             }
-
-            $tableSchema = TableSchema::getTableSchema($languagesTable);
-            $primaryKeyColumn = 'id';
-            foreach($tableSchema->getColumns() as $column) {
-                if ($column->isPrimary()) {
-                    $primaryKeyColumn = $column->getName();
-                    break;
-                }
-            }
-
-            $newData = [];
-            foreach($rows['data'] as $row) {
-                $index = $row[$languageIdColumn];
-                if (is_array($row[$languageIdColumn])) {
-                    $index = $row[$languageIdColumn]['data'][$code];
-                    $row[$languageIdColumn] = $row[$languageIdColumn]['data'][$primaryKeyColumn];
-                }
-
-                $newData[$index] = $row;
-            }
-
-            $payload->data['data'] = $newData;
+            // ----------------------------------------------------------------------------
 
             return $payload;
-        }, $emitter::P_HIGH);
+        });
+        $emitter->addFilter('table.insert.directus_users:before', $hashUserPassword);
+        $emitter->addFilter('table.update.directus_users:before', $hashUserPassword);
+
+        $preventUsePublicGroup = function (Payload $payload) {
+            $data = $payload->getData();
+
+            if (!ArrayUtils::has($data, 'group')) {
+                return $payload;
+            }
+
+            $groupId = ArrayUtils::get($data, 'group');
+            if (is_array($groupId)) {
+                $groupId = ArrayUtils::get($groupId, 'id');
+            }
+
+            if (!$groupId) {
+                return $payload;
+            }
+
+            $zendDb = static::get('zendDb');
+            $acl = static::get('acl');
+            $tableGateway = new Database\TableGateway\BaseTableGateway('directus_groups', $zendDb, $acl);
+
+            $row = $tableGateway->select(['id' => $groupId])->current();
+
+            if (strtolower($row->name) == 'public') {
+                throw new ForbiddenException(__t('exception_users_cannot_be_added_into_public_group'));
+            }
+
+            return $payload;
+        };
+        $emitter->addFilter('table.insert.directus_users:before', $preventUsePublicGroup);
+        $emitter->addFilter('table.update.directus_users:before', $preventUsePublicGroup);
+
+        $beforeSavingFiles = function ($payload) {
+            $acl = Bootstrap::get('acl');
+            $currentUserId = $acl->getUserId();
+
+            // ----------------------------------------------------------------------------
+            // TODO: Add enforce method to ACL
+            $adapter = Bootstrap::get('zendDb');
+            $userTable = new BaseTableGateway('directus_users', $adapter);
+            $groupTable = new BaseTableGateway('directus_groups', $adapter);
+
+            $user = $userTable->find($currentUserId);
+            $group = $groupTable->find($user['group']);
+
+            if (!$group || !ArrayUtils::get($group, 'show_files')) {
+                throw new ForbiddenException('you are not allowed to upload, edit or delete files');
+            }
+            // ----------------------------------------------------------------------------
+
+            return $payload;
+        };
+
+        $emitter->addAction('files.saving', $beforeSavingFiles);
+        $emitter->addAction('files.thumbnail.saving', $beforeSavingFiles);
+        // TODO: Make insert actions and filters
+        $emitter->addFilter('table.insert.directus_files:before', $beforeSavingFiles);
+        $emitter->addFilter('table.update.directus_files:before', $beforeSavingFiles);
+        $emitter->addFilter('table.delete.directus_files:before', $beforeSavingFiles);
+
+        // NOTE: Adding the translation key into as array key, return a not valid array (json)
+        // so instead of creating each element as model, backbone thinks those are attributes of a model
+        // $emitter->addFilter('load.relational.onetomany', function($payload) {
+        //     $rows = $payload->data;
+        //     $column = $payload->column;
+        //
+        //     if ($column->getUi() !== 'translation') {
+        //         return $payload;
+        //     }
+        //
+        //     $options = $column->getOptions();
+        //     $code = ArrayUtils::get($options, 'languages_code_column', 'id');
+        //     $languagesTable = ArrayUtils::get($options, 'languages_table');
+        //     $languageIdColumn = ArrayUtils::get($options, 'left_column_name');
+        //
+        //     if (!$languagesTable) {
+        //         throw new \Exception('Translations language table not defined for ' . $languageIdColumn);
+        //     }
+        //
+        //     $tableSchema = TableSchema::getTableSchema($languagesTable);
+        //     $primaryKeyColumn = 'id';
+        //     foreach($tableSchema->getColumns() as $column) {
+        //         if ($column->isPrimary()) {
+        //             $primaryKeyColumn = $column->getName();
+        //             break;
+        //         }
+        //     }
+        //
+        //     $newData = [];
+        //     foreach($rows['data'] as $row) {
+        //         $index = $row[$languageIdColumn];
+        //         if (is_array($row[$languageIdColumn])) {
+        //             $index = $row[$languageIdColumn]['data'][$code];
+        //             $row[$languageIdColumn] = $row[$languageIdColumn]['data'][$primaryKeyColumn];
+        //         }
+        //
+        //         $newData[$index] = $row;
+        //     }
+        //
+        //     $payload->data['data'] = $newData;
+        //
+        //     return $payload;
+        // }, $emitter::P_HIGH);
 
         return $emitter;
+    }
+
+    private static function session()
+    {
+        return new Session(new NativeSessionStorage());
+    }
+
+    private static function auth()
+    {
+        $zendDb = self::get('zendDb');
+        $session = self::get('session');
+        $config = self::get('config');
+        $prefix = $config->get('session.prefix', 'directus_');
+        $table = new TableGateway('directus_users', $zendDb);
+
+        return new AuthProvider($table, $session, $prefix);
+    }
+
+    private static function socialAuth()
+    {
+        return new Social();
     }
 }

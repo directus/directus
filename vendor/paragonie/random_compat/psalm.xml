@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<psalm
+    autoloader="psalm-autoload.php"
+    stopOnFirstError="false"
+    useDocblockTypes="true"
+>
+    <projectFiles>
+        <directory name="lib" />
+    </projectFiles>
+    <issueHandlers>
+        <InvalidOperand errorLevel="info" />
+        <UndefinedConstant errorLevel="info" />
+        <MissingReturnType errorLevel="info" />
+    </issueHandlers>
+</psalm>

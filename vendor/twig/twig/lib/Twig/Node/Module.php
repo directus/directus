@@ -457,3 +457,5 @@ class Twig_Node_Module extends Twig_Node
         }
     }
 }
+
+class_alias('Twig_Node_Module', 'Twig\Node\ModuleNode', false);

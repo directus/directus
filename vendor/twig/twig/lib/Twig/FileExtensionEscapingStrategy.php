@@ -56,3 +56,5 @@ class Twig_FileExtensionEscapingStrategy
         }
     }
 }
+
+class_alias('Twig_FileExtensionEscapingStrategy', 'Twig\FileExtensionEscapingStrategy', false);

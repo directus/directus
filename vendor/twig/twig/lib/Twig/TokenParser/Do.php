@@ -30,3 +30,5 @@ class Twig_TokenParser_Do extends Twig_TokenParser
         return 'do';
     }
 }
+
+class_alias('Twig_TokenParser_Do', 'Twig\TokenParser\DoTokenParser', false);

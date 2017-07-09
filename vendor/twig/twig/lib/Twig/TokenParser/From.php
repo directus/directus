@@ -62,3 +62,5 @@ class Twig_TokenParser_From extends Twig_TokenParser
         return 'from';
     }
 }
+
+class_alias('Twig_TokenParser_From', 'Twig\TokenParser\FromTokenParser', false);

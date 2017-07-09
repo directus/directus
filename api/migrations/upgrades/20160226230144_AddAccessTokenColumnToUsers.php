@@ -16,7 +16,7 @@ class AddAccessTokenColumnToUsers extends Ruckusing_Migration_Base
     public function down()
     {
         if ($this->has_column('directus_users', 'access_token')) {
-            $this->remove_column('directus_users', 'access_token', 'string');
+            $this->remove_column('directus_users', 'access_token');
         }
     }//down()
 }

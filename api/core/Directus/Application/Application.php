@@ -4,13 +4,14 @@
  * Directus – <http://getdirectus.com>
  *
  * @link      The canonical repository – <https://github.com/directus/directus>
- * @copyright Copyright 2006-2016 RANGER Studio, LLC – <http://rangerstudio.com>
+ * @copyright Copyright 2006-2017 RANGER Studio, LLC – <http://rangerstudio.com>
  * @license   GNU General Public License (v3) – <http://www.gnu.org/copyleft/gpl.html>
  */
 
 namespace Directus\Application;
 
 use Directus\Bootstrap;
+use Directus\Hook\Payload;
 use Directus\Util\ArrayUtils;
 use Slim\Http\Util;
 use Slim\Slim;
@@ -22,6 +23,13 @@ use Slim\Slim;
  */
 class Application extends Slim
 {
+    /**
+     * Directus version
+     *
+     * @var string
+     */
+    const DIRECTUS_VERSION = '6.4.0';
+
     /**
      * @var bool
      */
@@ -37,24 +45,37 @@ class Application extends Slim
      *
      * @param array $userSettings
      */
+
     public function __construct(array $userSettings)
     {
         parent::__construct($userSettings);
+
+        $this->container->singleton('environment', function () {
+            return Environment::getInstance();
+        });
 
         $this->container->singleton('response', function () {
             return new BaseResponse();
         });
 
-        $request = $this->request();
-        // @NOTE: Slim request do not parse a json request body
-        //        We need to parse it ourselves
-        if ($request->getMediaType() == 'application/json') {
-            $env = $this->environment();
-            $jsonRequest = json_decode($request->getBody(), true);
-            $env['slim.request.form_hash'] = Util::stripSlashesIfMagicQuotes($jsonRequest);
-        }
+        // Default request
+        $this->container->singleton('request', function ($c) {
+            return new BaseRequest($c['environment']);
+        });
 
         $this->hook('slim.before.router', [$this, 'guessOutputFormat']);
+    }
+
+    /**
+     * Gets an application instance with the given name
+     *
+     * @param string $name
+     *
+     * @return null|Application
+     */
+    public static function getInstance($name = 'default')
+    {
+        return isset(static::$apps[$name]) ? static::$apps[$name] : null;
     }
 
     /**
@@ -67,6 +88,8 @@ class Application extends Slim
     public function register(ServiceProviderInterface $provider)
     {
         $provider->register($this);
+
+        $this->providers[] = $provider;
 
         return $this;
     }
@@ -91,6 +114,16 @@ class Application extends Slim
         }
 
         $this->booted = true;
+    }
+
+    /**
+     * Get the Directus Version
+     *
+     * @return string
+     */
+    public function getVersion()
+    {
+        return static::DIRECTUS_VERSION;
     }
 
     public function response()
@@ -118,12 +151,38 @@ class Application extends Slim
      *
      * @return mixed
      */
-    protected function triggerFilter($name, $payload)
+    public function triggerFilter($name, $payload)
     {
-        $emitter = Bootstrap::get('hookEmitter');
-        $payload = $emitter->apply($name, $payload);
+        return $this->container->get('hookEmitter')->apply($name, $payload);
+    }
 
-        return $payload;
+    /**
+     * Trigger given action name
+     *
+     * @param $name
+     * @param $params
+     *
+     * @return void
+     */
+    public function triggerAction($name, $params = [])
+    {
+        if (!is_array($params)) {
+            $params = [$params];
+        }
+
+        array_unshift($params, $name);
+
+        call_user_func_array([$this->container->get('hookEmitter'), 'run'], $params);
+    }
+
+    public function onMissingRequirements(Callable $callback)
+    {
+        $errors = get_missing_requirements();
+
+        if ($errors) {
+            $callback($errors);
+            exit; // Stop
+        }
     }
 
     /**
@@ -148,15 +207,16 @@ class Application extends Slim
             ];
         }
 
-        $payload = (object) array_merge($options, [
-            'apiVersion' => $apiVersion,
-            'data' => $data,
+        $attributes = [
             'meta' => $meta,
+            'apiVersion' => $apiVersion,
             'request' => [
                 'path' => $this->request()->getResourceUri(),
                 'method' => $this->request()->getMethod()
             ]
-        ]);
+        ];
+
+        $payload = new Payload($data, $attributes);
 
         $method = strtolower($this->request()->getMethod());
         $payload = $this->triggerFilter('response', $payload);
@@ -169,7 +229,7 @@ class Application extends Slim
             ), $payload);
         }
 
-        return $payload->data;
+        return $payload->getData();
     }
 
     /**

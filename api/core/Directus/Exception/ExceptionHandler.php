@@ -1,5 +1,13 @@
 <?php
 
+/**
+ * Directus – <http://getdirectus.com>
+ *
+ * @link      The canonical repository – <https://github.com/directus/directus>
+ * @copyright Copyright 2006-2017 RANGER Studio, LLC – <http://rangerstudio.com>
+ * @license   GNU General Public License (v3) – <http://www.gnu.org/copyleft/gpl.html>
+ */
+
 namespace Directus\Exception;
 
 use Directus\Bootstrap;
@@ -7,6 +15,11 @@ use Directus\Hook\Hook;
 use Directus\View\ExceptionView;
 use ErrorException;
 
+/**
+ * Handles all exceptions thrown
+ *
+ * @author Welling Guzmán <welling@rngr.org>
+ */
 class ExceptionHandler
 {
     /**
@@ -16,13 +29,18 @@ class ExceptionHandler
      */
     protected $emitter;
 
-    public function __construct()
+    public function __construct($emitter = null)
     {
         set_error_handler([$this, 'handleError']);
         set_exception_handler([$this, 'handleException']);
         register_shutdown_function([$this, 'handleShutdown']);
 
-        $this->emitter = Bootstrap::get('hookEmitter');
+        // TODO: Cut the dependency on hook emitter
+        if (!$emitter) {
+            $emitter = Bootstrap::get('hookEmitter');
+        }
+
+        $this->emitter = $emitter;
     }
 
     /**
@@ -66,11 +84,17 @@ class ExceptionHandler
     public function handleShutdown()
     {
         if (!is_null($error = error_get_last()) && $this->isFatal($error['type'])) {
+            // clean buffer
+            ob_end_clean();
+
             $e = new ErrorException(
                 $error['message'], $error['type'], 0, $error['file'], $error['line']
             );
 
             $this->emitter->run('application.error', $e);
+            $app = Bootstrap::get('app');
+            $exceptionView = new ExceptionView();
+            $exceptionView->exceptionHandler($app, $e);
         }
     }
 

@@ -79,3 +79,5 @@ class Twig_TokenParser_AutoEscape extends Twig_TokenParser
         return 'autoescape';
     }
 }
+
+class_alias('Twig_TokenParser_AutoEscape', 'Twig\TokenParser\AutoEscapeTokenParser', false);

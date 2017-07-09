@@ -64,3 +64,5 @@ class Twig_Node_If extends Twig_Node
             ->write("}\n");
     }
 }
+
+class_alias('Twig_Node_If', 'Twig\Node\IfNode', false);

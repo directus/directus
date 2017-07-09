@@ -63,10 +63,6 @@ class Twig_Tests_Node_Expression_CallTest extends PHPUnit_Framework_TestCase
      */
     public function testResolveArgumentsWithMissingValueForOptionalArgument()
     {
-        if (defined('HHVM_VERSION')) {
-            $this->markTestSkipped('Skip under HHVM as the behavior is not the same as plain PHP (which is an edge case anyway)');
-        }
-
         $node = new Twig_Tests_Node_Expression_Call(array(), array('type' => 'function', 'name' => 'substr_compare'));
         $node->getArguments('substr_compare', array('abcd', 'bc', 'offset' => 1, 'case_sensitivity' => true));
     }

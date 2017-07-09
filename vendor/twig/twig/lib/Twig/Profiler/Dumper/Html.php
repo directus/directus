@@ -14,7 +14,7 @@
  *
  * @final
  */
-class Twig_Profiler_Dumper_Html extends Twig_Profiler_Dumper_Text
+class Twig_Profiler_Dumper_Html extends Twig_Profiler_Dumper_Base
 {
     private static $colors = array(
         'block' => '#dfd',
@@ -43,3 +43,5 @@ class Twig_Profiler_Dumper_Html extends Twig_Profiler_Dumper_Text
         return sprintf('<span style="color: %s">%.2fms/%.0f%%</span>', $percent > 20 ? self::$colors['big'] : 'auto', $profile->getDuration() * 1000, $percent);
     }
 }
+
+class_alias('Twig_Profiler_Dumper_Html', 'Twig\Profiler\Dumper\HtmlDumper', false);

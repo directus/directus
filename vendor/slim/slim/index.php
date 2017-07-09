@@ -90,7 +90,7 @@ $app->get(
             <h1>Welcome to Slim!</h1>
             <p>
                 Congratulations! Your Slim application is running. If this is
-                your first time using Slim, start with this <a href="http://www.slimframework.com/learn" target="_blank">"Hello World" Tutorial</a>.
+                your first time using Slim, start with this <a href="http://docs.slimframework.com/#Hello-World" target="_blank">"Hello World" Tutorial</a>.
             </p>
             <section>
                 <h2>Get Started</h2>

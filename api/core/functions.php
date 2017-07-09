@@ -1,6 +1,7 @@
 <?php
 
 require __DIR__ . '/constants.php';
+require __DIR__ . '/helpers/mail.php';
 
 if (!function_exists('uc_convert')) {
     /**
@@ -38,6 +39,7 @@ if (!function_exists('uc_convert')) {
             'Php' => 'PHP',
             'Html' => 'HTML',
             'Js' => 'JS',
+            'Json' => 'JSON',
             'Css' => 'CSS',
             'Csv' => 'CSV',
             'Ios' => 'iOS',
@@ -81,7 +83,7 @@ if (!function_exists('create_ping_route')) {
         /**
          * Ping the server
          */
-        $apiVersion = defined('API_VERSION') ? API_VERSION : '1';
+        $apiVersion = defined('API_VERSION') ? API_VERSION : '1.1';
 
         $app->get('/' . $apiVersion . '/ping/?', ping_route($app))->name('ping_server');
 
@@ -146,20 +148,47 @@ if (!function_exists('get_directus_path')) {
     /**
      * Gets the Directus path (subdirectory based on the host)
      *
+     * @param string $subPath
+     *
      * @return string
      */
-    function get_directus_path()
+    function get_directus_path($subPath = '')
     {
         if (!defined('DIRECTUS_PATH')) {
             $basePath = realpath(__DIR__ . '/../..');
             $position = (int) strpos($basePath, $_SERVER['DOCUMENT_ROOT']);
             $length = strlen($_SERVER['DOCUMENT_ROOT']);
-            $path = substr($basePath, $position + $length);
+            $path = normalize_path(substr($basePath, $position + $length));
         } else {
             $path = DIRECTUS_PATH;
         }
 
-        return rtrim($path, '/') . '/';
+        $path = trim($path, '/');
+        $subPath = ltrim($subPath, '/');
+
+        return (empty($path) ? '/' : sprintf('/%s/', $path)) . $subPath;
+    }
+}
+
+if (!function_exists('normalize_path')) {
+    /**
+    * Normalize a filesystem path.
+    *
+    * On windows systems, replaces backslashes with forward slashes.
+    * Ensures that no duplicate slashes exist.
+    *
+    * from WordPress source code
+    *
+    * @param string $path Path to normalize.
+    *
+    * @return string Normalized path.
+    */
+    function normalize_path($path)
+    {
+        $path = str_replace('\\', '/', $path);
+        $path = preg_replace('|/+|','/', $path);
+
+        return $path;
     }
 }
 
@@ -288,13 +317,7 @@ if (!function_exists('is_numeric_array')) {
 if (!function_exists('is_numeric_keys_array')) {
     function is_numeric_keys_array($array)
     {
-        foreach (array_keys($array) as $key) {
-            if (!is_numeric($key)) {
-                return false;
-            }
-        }
-
-        return true;
+        return \Directus\Util\ArrayUtils::isNumericKeys($array);
     }
 }
 
@@ -386,11 +409,20 @@ if (!function_exists('get_auth_info')) {
             return null;
         }
 
-        if (!Directus\Auth\Provider::loggedIn()) {
+        $authentication = \Directus\Bootstrap::get('auth');
+        // Check for the cache refresh provider function
+        // if it doesn't exists we should move along
+        // this function create a temporary users cache
+        // that is required and used from the beginning of times of Directus
+        // this method will be replaced by the cache layer some time soon
+        // we are doing this because it throws an exception which results in a infinite loop
+        // error trying to translate the information by fetching the user language
+        // then throws an exception while fetching the auth info and so on
+        if (!$authentication->loggedIn() || !$authentication->getUserCacheRefreshProvider()) {
             return null;
         }
 
-        $userInfo = \Directus\Auth\Provider::getUserRecord();
+        $userInfo = $authentication->getUserRecord();
 
         return isset($userInfo[$attribute]) ? $userInfo[$attribute] : null;
     }
@@ -748,7 +780,6 @@ if (!function_exists('get_country_list')) {
             'DM' => 'Dominica',
             'DO' => 'Dominican Republic',
             'NQ' => 'Dronning Maud Land',
-            'DD' => 'East Germany',
             'EC' => 'Ecuador',
             'EG' => 'Egypt',
             'SV' => 'El Salvador',
@@ -991,6 +1022,24 @@ if (!function_exists('get_max_upload_size')) {
     }
 }
 
+if (!function_exists('find_directories')) {
+    /**
+     * Gets directories inside the given path
+     *
+     * @param $path
+     *
+     * @return array
+     */
+    function find_directories($path)
+    {
+        return array_filter(glob(rtrim($path, '/') . '/*', GLOB_ONLYDIR), function ($path) {
+            $name = basename($path);
+
+            return $name[0] !== '_';
+        });
+    }
+}
+
 if (!function_exists('find_files')) {
     /**
      * Find files inside $paths, directories and file name starting with "_" will be ignored.
@@ -1139,7 +1188,6 @@ if (!function_exists('get_gravatar')) {
     }
 }
 
-
 if (!function_exists('get_contents')) {
     /**
      * Get content from an URL
@@ -1199,6 +1247,8 @@ if (!function_exists('check_version')) {
             'outdated' => false,
         ];
 
+        $version = \Directus\Application\Application::DIRECTUS_VERSION;
+
         // =============================================================================
         // Getting the latest version, silently skip it if the server is no responsive.
         // =============================================================================
@@ -1208,7 +1258,7 @@ if (!function_exists('check_version')) {
             if ($responseData && isset($responseData['success']) && $responseData['success'] == true) {
                 $versionData = $responseData['data'];
                 $data = array_merge($data, $versionData);
-                $data['outdated'] = version_compare(DIRECTUS_VERSION, $versionData['current_version'], '<');
+                $data['outdated'] = version_compare($version, $versionData['current_version'], '<');
             }
         } catch (\Exception $e) {
             // Do nothing
@@ -1232,5 +1282,104 @@ if (!function_exists('feedback_login_ping')) {
         } catch (\Exception $e) {
             // Do nothing
         }
+    }
+}
+
+if (!function_exists('get_request_ip')) {
+    function get_request_ip()
+    {
+        if (isset($_SERVER['X_FORWARDED_FOR'])) {
+            return $_SERVER['X_FORWARDED_FOR'];
+        } elseif (isset($_SERVER['CLIENT_IP'])) {
+            return $_SERVER['CLIENT_IP'];
+        }
+
+        return $_SERVER['REMOTE_ADDR'];
+    }
+}
+
+if (!function_exists('get_project_info')) {
+    function get_project_info()
+    {
+        /** @var \Directus\Database\TableGateway\DirectusSettingsTableGateway $settingsTable */
+        $settingsTable = \Directus\Database\TableGatewayFactory::create('directus_settings');
+        $settings = $settingsTable->fetchCollection('global');
+
+        $projectName = isset($settings['project_name']) ? $settings['project_name'] : 'Directus';
+        $defaultProjectLogo = get_directus_path('/assets/img/directus-logo-flat.svg');
+        if (isset($settings['cms_thumbnail_url']) && $settings['cms_thumbnail_url']) {
+            $projectLogoURL = $settings['cms_thumbnail_url'];
+            $filesTable = \Directus\Database\TableGatewayFactory::create('directus_files');
+            $data = $filesTable->loadEntries([
+                'id' => $projectLogoURL
+            ]);
+
+            $projectLogoURL = \Directus\Util\ArrayUtils::get($data, 'url', $defaultProjectLogo);
+        } else {
+            $projectLogoURL = $defaultProjectLogo;
+        }
+
+        return [
+            'project_name' => $projectName,
+            'project_logo_url' => $projectLogoURL
+        ];
+    }
+}
+
+if (!function_exists('get_missing_requirements')) {
+    /**
+     * Gets an array of errors message when there's a missing requirements
+     *
+     * @return array
+     */
+    function get_missing_requirements()
+    {
+        $errors = [];
+
+        if (version_compare(PHP_VERSION, '5.5.0', '<')) {
+            $errors[] = 'Your host needs to use PHP 5.5.0 or higher to run this version of Directus!';
+        }
+
+        if (!defined('PDO::ATTR_DRIVER_NAME')) {
+            $errors[] = 'Your host needs to have PDO enabled to run this version of Directus!';
+        }
+
+        if (!extension_loaded('gd') || !function_exists('gd_info')) {
+            $errors[] = 'Your host needs to have GD Library enabled to run this version of Directus!';
+        }
+
+        if (!extension_loaded('fileinfo') || !class_exists('finfo')) {
+            $errors[] = 'Your host needs to have File Information extension enabled to run this version of Directus!';
+        }
+
+        if (!extension_loaded('curl') || !function_exists('curl_init')) {
+            $errors[] = 'Your host needs to have cURL extension enabled to run this version of Directus!';
+        }
+
+        if (!file_exists(BASE_PATH . '/vendor/autoload.php')) {
+            $errors[] = 'Composer dependencies must be installed first.';
+        }
+
+        return $errors;
+    }
+}
+
+if (!function_exists('display_missing_requirements_html')) {
+    /**
+     * Display an html error page
+     *
+     * @param array $errors
+     * @param \Directus\Application\Application $app
+     */
+    function display_missing_requirements_html($errors, $app)
+    {
+        $projectInfo = get_project_info();
+
+        $data = array_merge($projectInfo, [
+            'errors' => $errors
+        ]);
+
+        $app->response()->header('Content-Type', 'text/html; charset=utf-8');
+        $app->render('errors/requirements.twig.html', $data);
     }
 }

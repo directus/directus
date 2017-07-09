@@ -16,18 +16,7 @@ class DirectusTwigHelpers extends \Twig_Extension
      */
     public function getName()
     {
-        return 'directus';
-    }
-
-    /**
-     * @desc Register twig filter helpers
-     * @return {mixed}
-     */
-    public function getFilters()
-    {
-        return [
-            new \Twig_SimpleFilter('__t', '__t')
-        ];
+        return 'directus_installation';
     }
 
     /**

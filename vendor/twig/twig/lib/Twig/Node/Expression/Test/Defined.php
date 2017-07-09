@@ -57,3 +57,5 @@ class Twig_Node_Expression_Test_Defined extends Twig_Node_Expression_Test
         $compiler->subcompile($this->getNode('node'));
     }
 }
+
+class_alias('Twig_Node_Expression_Test_Defined', 'Twig\Node\Expression\Test\DefinedTest', false);

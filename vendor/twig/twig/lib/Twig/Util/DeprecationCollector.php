@@ -82,3 +82,5 @@ class Twig_Util_DeprecationCollector
         }
     }
 }
+
+class_alias('Twig_Util_DeprecationCollector', 'Twig\Util\DeprecationCollector', false);

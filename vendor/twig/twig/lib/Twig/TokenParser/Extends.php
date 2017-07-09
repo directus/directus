@@ -42,3 +42,5 @@ class Twig_TokenParser_Extends extends Twig_TokenParser
         return 'extends';
     }
 }
+
+class_alias('Twig_TokenParser_Extends', 'Twig\TokenParser\ExtendsTokenParser', false);

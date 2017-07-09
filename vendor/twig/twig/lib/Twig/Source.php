@@ -49,3 +49,5 @@ class Twig_Source
         return $this->path;
     }
 }
+
+class_alias('Twig_Source', 'Twig\Source', false);

@@ -35,3 +35,5 @@ class Twig_FactoryRuntimeLoader implements Twig_RuntimeLoaderInterface
         }
     }
 }
+
+class_alias('Twig_FactoryRuntimeLoader', 'Twig\RuntimeLoader\FactoryRuntimeLoader', false);

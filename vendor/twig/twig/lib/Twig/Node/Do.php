@@ -31,3 +31,5 @@ class Twig_Node_Do extends Twig_Node
         ;
     }
 }
+
+class_alias('Twig_Node_Do', 'Twig\Node\DoNode', false);

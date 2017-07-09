@@ -56,7 +56,10 @@ class DatabaseModule extends ModuleBase
         $config = array_merge($config, $dbConfig);
         $main = new Ruckusing_Framework($config);
 
-        $main->execute(['', 'db:setup']);
-        $main->execute(['', 'db:migrate']);
+        $output = $main->execute(['', 'db:setup']);
+        echo 'db:setup - ' . $output['message'] . PHP_EOL;
+
+        $output = $main->execute(['', 'db:migrate']);
+        echo 'db:migrate - ' . $output['message'] . PHP_EOL;
     }
 }

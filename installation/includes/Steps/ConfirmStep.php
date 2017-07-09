@@ -2,8 +2,10 @@
 
 namespace Directus\Installation\Steps;
 
-use Directus\Db\Connection;
+use Directus\Application\Application;
+use Directus\Database\Connection;
 use Directus\Mail\Mail;
+use Directus\Util\ArrayUtils;
 use Directus\Util\Installation\InstallerUtils;
 use Directus\Util\StringUtils;
 
@@ -54,6 +56,7 @@ class ConfirmStep extends AbstractStep
         }
 
         $stepsData = [];
+        $stepsData['directus_path'] = ArrayUtils::get($state, 'root_path', '/');
         foreach ($state['steps'] as $aStep) {
             if ($stepData = $aStep->getData()) {
                 $stepsData = array_merge($stepsData, $stepData);
@@ -76,7 +79,7 @@ class ConfirmStep extends AbstractStep
             ],
             'project' => [
                 'name' => $stepsData['directus_name'],
-                'version' => DIRECTUS_VERSION,
+                'version' => Application::DIRECTUS_VERSION,
                 'url' => get_url()
             ],
             'database' => [
@@ -87,14 +90,7 @@ class ConfirmStep extends AbstractStep
             ]
         ];
 
-        if ($response->getData('send_config_email')) {
-            Mail::send('mail/new-install.twig.html', $data, function ($message) use ($data) {
-                $message->setSubject(__t('your_new_directus_instance_x', [
-                    'name' => $data['project']['name']
-                ]));
-                $message->setTo($data['user']['email']);
-            });
-        }
+        send_new_install_email($data);
 
         return $response;
     }

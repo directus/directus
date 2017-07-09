@@ -5,6 +5,29 @@ namespace Directus\Util;
 class ArrayUtils
 {
     /**
+     * Sets a value in the given array with the given key
+     *
+     * @param array $array
+     * @param string $key
+     * @param mixed $value
+     */
+    public static function set(array &$array, $key, $value)
+    {
+        $keys = explode('.', $key);
+
+        while(count($keys) > 1) {
+            $key = array_shift($keys);
+            if (!isset($array[$key])) {
+                $array[$key] = [];
+            }
+
+            $array = &$array[$key];
+        }
+
+        $array[array_shift($keys)] = $value;
+    }
+
+    /**
      * Get an item from an array
      *
      * @param  array $array
@@ -27,6 +50,25 @@ class ArrayUtils
         }
 
         return $default;
+    }
+
+    /**
+     * Gets and remove an item from the array
+     *
+     * @param array $array
+     * @param string $key
+     * @param mixed $default
+     *
+     * @return mixed
+     */
+    public static function pull(array &$array, $key, $default = null)
+    {
+        // TODO: Implement access by separator (example dot-notation)
+        $value = ArrayUtils::get($array, $key, $default);
+
+        ArrayUtils::remove($array, $key);
+
+        return $value;
     }
 
     public static function has($array, $key)
@@ -108,7 +150,7 @@ class ArrayUtils
      *
      * @return bool
      */
-    public static function contains($array, $keys)
+    public static function contains(array $array, $keys)
     {
         if (!is_array($keys)) {
             $keys = [$keys];
@@ -121,6 +163,25 @@ class ArrayUtils
         }
 
         return true;
+    }
+
+    /**
+     * Checks whether the given array contain at least one of the given keys
+     *
+     * @param array $array
+     * @param array $keys
+     *
+     * @return bool
+     */
+    public static function containsSome(array $array, array $keys)
+    {
+        foreach($keys as $key) {
+            if (static::has($array, $key)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -148,15 +209,11 @@ class ArrayUtils
         $results = [];
 
         foreach ($array as $key => $value) {
-            if (is_array($value)) {
-                if (empty($value)) {
-                    $results[$prepend . $key] = '';
-                } else {
-                    $results = array_merge($results, static::flatKey($separator, $value, $prepend . $key . $separator));
-                }
-            } else {
-                $results[$prepend . $key] = $value;
+            if (is_array($value) && !empty($value)) {
+                $results = array_merge($results, static::flatKey($separator, $value, $prepend . $key . $separator));
             }
+
+            $results[$prepend . $key] = $value;
         }
 
         return $results;
@@ -215,11 +272,11 @@ class ArrayUtils
     /**
      * Checks whether the given array has only numeric keys
      *
-     * @param $array
+     * @param array $array
      *
      * @return bool
      */
-    public static function isNumericKeys($array)
+    public static function isNumericKeys(array $array)
     {
         foreach (array_keys($array) as $key) {
             if (!is_numeric($key)) {
@@ -274,6 +331,84 @@ class ArrayUtils
         }
 
         return $newArray;
+    }
+
+    /**
+     * Renames a key
+     *
+     * @param array $array
+     * @param string $from
+     * @param string $to
+     *
+     * @return int
+     */
+    public static function rename(array &$array, $from, $to)
+    {
+        if (ArrayUtils::exists($array, $from)) {
+            $value = ArrayUtils::get($array, $from);
+
+            $array[$to] = $value;
+
+            ArrayUtils::remove($array, $from);
+        }
+    }
+
+    /**
+     * Swaps element values
+     *
+     * @param array $array
+     * @param string $from
+     * @param string $to
+     *
+     * @return int
+     */
+    public static function swap(array &$array, $from, $to)
+    {
+        // TODO: Swap values
+        // if (!isset($array[$to])) {
+        //     static::rename($array, $from, $to);
+        // } else {
+        //     $temp = ArrayUtils::get($array, $from);
+        //     $array[$from] = ArrayUtils::get($array, $to);
+        //     $array[$to] = $temp;
+        // }
+    }
+
+    /**
+     * Pushes a new element at the end of the given array
+     *
+     * @param array $array
+     * @param $value
+     *
+     * @return int
+     */
+    public static function push(array &$array, $value)
+    {
+        return array_push($array, $value);
+    }
+
+    /**
+     * Pulls the last element from the given array
+     *
+     * @param array $array
+     *
+     * @return mixed
+     */
+    public static function pop(array &$array)
+    {
+        return array_pop($array);
+    }
+
+    /**
+     * Pulls the first element from the given array
+     *
+     * @param array $array
+     *
+     * @return mixed
+     */
+    public static function shift(array &$array)
+    {
+        return array_shift($array);
     }
 
     /**

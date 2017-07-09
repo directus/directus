@@ -11,8 +11,7 @@ before_script:
     - gem install mailcatcher
     - mailcatcher --smtp-port 4456
 
-script:
-    - phpunit --verbose
+script: ./vendor/bin/simple-phpunit
 
 matrix:
     include:
@@ -26,3 +25,7 @@ matrix:
     allow_failures:
         - php: hhvm
     fast_finish: true
+
+cache:
+    directories:
+        - .phpunit

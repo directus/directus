@@ -1,25 +1,10 @@
-<!--<form id="user-preferences">-->
-
 {{#if showEmptyMessage}}
-<div class="nothing-here secondary-info">
-<h1>{{t "listing_items_not_found"}}</h1>
-<!-- Add a new item -->
-</div>
+{{{include "listingEmpty"}}}
 {{else}}
-<div class="table-shadow">
-    <div class="directus-toolbar"></div>
-    <table class="table table-striped directus-table hover-header {{#if disabledSorting}}disable-sorting{{/if}}" id="{{id}}">
-        <colgroup>
-        	<col class="col-status">
-        	{{#if sortable}}<col class="col-sort">{{/if}}
-        	{{#if selectable}}<col class="col-check">{{/if}}
-        	{{#columns}}
-        		<col class="col-{{this}}">
-        	{{/columns}}
-        </colgroup>
-    </table>
-</div>
+{{#if showChart}}<div id="items-chart" class="items-chart"></div>{{/if}}
+<table class="lines {{spacing}} clickable item-listing{{#if fixedHead}} fixed-header{{/if}}{{#unless sortable}} header-sortable{{/unless}}{{#unless disabledSorting}} reorder-enabled{{/unless}}{{#unless hasSortColumn}} pad-status pad-first{{/unless}}"></table> <!-- charted, pad-status -->
 {{/if}}
-
-<!--</form>-->
-<div class="overlay"><h3>Just let go...</h3></div>
+<div class="loading-more" style="display: none;">
+	<!-- <div class="spinner"></div> -->
+	<i class="material-icons spinner">autorenew</i>
+</div>

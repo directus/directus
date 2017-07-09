@@ -71,3 +71,5 @@ class Twig_TokenParser_Set extends Twig_TokenParser
         return 'set';
     }
 }
+
+class_alias('Twig_TokenParser_Set', 'Twig\TokenParser\SetTokenParser', false);

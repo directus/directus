@@ -1,0 +1,34 @@
+{
+    "name": "guzzlehttp/promises",
+    "description": "Guzzle promises library",
+    "keywords": ["promise"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Michael Dowling",
+            "email": "mtdowling@gmail.com",
+            "homepage": "https://github.com/mtdowling"
+        }
+    ],
+    "require": {
+        "php": ">=5.5.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^4.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "GuzzleHttp\\Promise\\": "src/"
+        },
+        "files": ["src/functions_include.php"]
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit",
+        "test-ci": "vendor/bin/phpunit --coverage-text"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.4-dev"
+        }
+    }
+}

@@ -27,6 +27,31 @@ class Files extends Route
         $activityMode = $activityLoggingEnabled ? TableGateway::ACTIVITY_ENTRY_MODE_PARENT : TableGateway::ACTIVITY_ENTRY_MODE_DISABLED;
 
         switch ($app->request()->getMethod()) {
+            case 'DELETE':
+                // Force delete files
+                $requestPayload['id'] = $id;
+
+                // Deletes files
+                // TODO: Make the hook listen to deletes and catch ALL ids (from conditions)
+                // and deletes every matched files
+                $TableGateway->deleteFile($id);
+
+                $conditions = [
+                    $TableGateway->primaryKeyFieldName => $id
+                ];
+
+                // Delete file record
+                // var_dump($conditions);
+                $success = $TableGateway->delete($conditions);
+
+                $response = [
+                    'success' => $success,
+                    'data' => $conditions
+                ];
+
+                return $this->app->response($response);
+
+                break;
             case 'POST':
                 $requestPayload['user'] = $acl->getUserId();
                 $requestPayload['date_uploaded'] = DateUtils::now();
@@ -84,7 +109,9 @@ class Files extends Route
         $Files = $app->container->get('files');
         $link = $app->request()->post('link');
         $result = [
-            'message' => __t('invalid_unsupported_url'),
+            'error' => [
+                'message' => __t('invalid_unsupported_url')
+            ],
             'success' => false
         ];
 

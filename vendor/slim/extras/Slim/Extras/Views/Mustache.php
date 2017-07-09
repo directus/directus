@@ -50,26 +50,6 @@ class Mustache extends \Slim\View
     public static $mustacheDirectory = null;
 
     /**
-     * @var array An array of \Mustache_Engine options
-     */
-    public static $mustacheOptions = array();
-
-    /**
-     * @var \Mustache_Engine A Mustache engine instance for this view
-     */
-    private $engine = null;
-
-    /**
-     * @param array $options \Mustache_Engine configuration options
-     */
-    public function __construct(array $options = null)
-    {
-        if ($options !== null) {
-            self::$mustacheOptions = $options;
-        }
-    }
-
-    /**
      * Renders a template using Mustache.php.
      *
      * @see View::render()
@@ -78,38 +58,10 @@ class Mustache extends \Slim\View
      */
     public function render($template)
     {
-        return $this->getEngine()->render($template, $this->data);
-    }
-
-    /**
-     * Get a \Mustache_Engine instance.
-     *
-     * @return \Mustache_Engine
-     */
-    private function getEngine()
-    {
-        if (!isset($this->engine)) {
-            // Check for Composer autoloading
-            if (!class_exists('\Mustache_Engine')) {
-                require_once self::$mustacheDirectory . '/Autoloader.php';
-                \Mustache_Autoloader::register(dirname(self::$mustacheDirectory));
-            }
-
-            $options = self::$mustacheOptions;
-
-            // Autoload templates from the templates directory.
-            if (!isset($options['loader'])) {
-                $options['loader'] = new \Mustache_Loader_FilesystemLoader($this->getTemplatesDirectory());
-            }
-
-            // If a partials loader is not specified, fall back to the default template loader.
-            if (!isset($options['partials_loader']) && !isset($options['partials'])) {
-                $options['partials_loader'] = $options['loader'];
-            }
-
-            $this->engine = new \Mustache_Engine($options);
-        }
-
-        return $this->engine;
+        require_once self::$mustacheDirectory . '/Autoloader.php';
+        \Mustache_Autoloader::register(dirname(self::$mustacheDirectory));
+        $m = new \Mustache_Engine();
+        $contents = file_get_contents($this->getTemplatesDirectory() . '/' . ltrim($template, '/'));
+        return $m->render($contents, $this->data);
     }
 }

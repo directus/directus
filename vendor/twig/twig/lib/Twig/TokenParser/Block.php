@@ -69,3 +69,5 @@ class Twig_TokenParser_Block extends Twig_TokenParser
         return 'block';
     }
 }
+
+class_alias('Twig_TokenParser_Block', 'Twig\TokenParser\BlockTokenParser', false);

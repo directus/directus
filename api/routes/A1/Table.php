@@ -2,17 +2,19 @@
 
 namespace Directus\API\Routes\A1;
 
-use Directus\Acl\Exception\UnauthorizedTableAlterException;
+use Directus\Database\Object\Column;
+use Directus\Database\TableGateway\DirectusTablesTableGateway;
+use Directus\Permissions\Exception\UnauthorizedTableAlterException;
 use Directus\Application\Route;
 use Directus\Bootstrap;
-use Directus\Database\Object\Column;
 use Directus\Database\TableGateway\DirectusPrivilegesTableGateway;
-use Directus\Database\TableGateway\DirectusUiTableGateway;
 use Directus\Database\TableGateway\RelationalTableGateway as TableGateway;
 use Directus\Database\TableSchema;
+use Directus\Services\ColumnsService;
+use Directus\Services\TablesService;
 use Directus\Util\ArrayUtils;
 use Directus\Util\SchemaUtils;
-use Directus\View\JsonView;
+use Zend\Db\Sql\Predicate\In;
 
 class Table extends Route
 {
@@ -21,41 +23,31 @@ class Table extends Route
         $app = $this->app;
         $ZendDb = $app->container->get('zenddb');
         $acl = $app->container->get('acl');
-        $requestPayload = $app->request()->post();
+        // $requestPayload = $app->request()->post();
+        $tableName = $app->request()->post('name');
 
         if ($acl->getGroupId() != 1) {
             throw new \Exception(__t('permission_denied'));
         }
 
-        $isTableNameAlphanumeric = preg_match("/[a-z0-9]+/i", $requestPayload['name']);
-        $zeroOrMoreUnderscoresDashes = preg_match("/[_-]*/i", $requestPayload['name']);
-
-        if (!($isTableNameAlphanumeric && $zeroOrMoreUnderscoresDashes)) {
-            $app->response->setStatus(400);
-            return $this->app->response(['message' => __t('invalid_table_name')]);
-        }
-
         $schema = Bootstrap::get('schemaManager');
-        if ($schema->tableExists($requestPayload['name'])) {
+        if ($schema->tableExists($tableName)) {
             return $this->app->response([
                 'success' => false,
                 'error' => [
-                    'message' => sprintf('table_%s_exists', $requestPayload['name'])
+                    'message' => sprintf('table_%s_exists', $tableName)
                 ]
             ]);
         }
 
-        $app->emitter->run('table.create:before', $requestPayload['name']);
-        // Through API:
-        // Remove spaces and symbols from table name
-        // And in lowercase
-        $requestPayload['name'] = SchemaUtils::cleanTableName($requestPayload['name']);
-        $schema->createTable($requestPayload['name']);
-        $app->emitter->run('table.create', $requestPayload['name']);
-        $app->emitter->run('table.create:after', $requestPayload['name']);
+        $app->hookEmitter->run('table.create:before', $tableName);
 
-        $privileges = new DirectusPrivilegesTableGateway($ZendDb, $acl);
-        $response = $privileges->insertPrivilege([
+        $schema->createTable($tableName);
+        $app->hookEmitter->run('table.create', $tableName);
+        $app->hookEmitter->run('table.create:after', $tableName);
+
+        $privilegesTableGateway = new DirectusPrivilegesTableGateway($ZendDb, $acl);
+        $privileges = [
             'nav_listed' => 1,
             'status_id' => 0,
             'allow_view' => 2,
@@ -63,9 +55,12 @@ class Table extends Route
             'allow_edit' => 2,
             'allow_delete' => 2,
             'allow_alter' => 1
-        ]);
+        ];
 
-        return $this->info($requestPayload['name']);
+        $privilegesTableGateway->insertPrivilege($privileges);
+        $acl->setTablePrivileges($tableName, $privileges);
+
+        return $this->info($tableName);
     }
 
     public function columns($tableName)
@@ -75,6 +70,10 @@ class Table extends Route
         $ZendDb = $app->container->get('zenddb');
         $requestPayload = $app->request()->post();
         $params = $app->request()->get();
+
+        if ($app->request()->isPatch()) {
+            return $this->patchColumns($tableName, $requestPayload);
+        }
 
         $params['table_name'] = $tableName;
         if ($app->request()->isPost()) {
@@ -88,12 +87,8 @@ class Table extends Route
                 ]));
             }
 
-            $tableGateway = new TableGateway($tableName, $ZendDb, $acl);
-            // Through API:
-            // Remove spaces and symbols from column name
-            // And in lowercase
-            $requestPayload['column_name'] = SchemaUtils::cleanColumnName($requestPayload['column_name']);
-            $params['column_name'] = $tableGateway->addColumn($tableName, $requestPayload);
+            $columnService = new ColumnsService($app);
+            $params['column_name'] = $columnService->addColumn($tableName, $requestPayload);
             $response = [
                 'meta' => ['type' => 'item', 'table' => 'directus_columns'],
                 'data' => TableSchema::getColumnSchema($tableName, $params['column_name'])->toArray()
@@ -117,6 +112,7 @@ class Table extends Route
         $params = $app->request()->get();
         $ZendDb = $app->container->get('zenddb');
         $acl = $app->container->get('acl');
+
         if ($app->request()->isDelete()) {
             $tableGateway = new TableGateway($table, $ZendDb, $acl);
             $hasColumn = TableSchema::hasTableColumn($table, $column);
@@ -162,36 +158,12 @@ class Table extends Route
             }
         }
 
-        if ($app->request()->isPut()) {
-            $TableGateway = new TableGateway('directus_columns', $ZendDb, $acl);
-            $columnData = $TableGateway->select([
-                'table_name' => $table,
-                'column_name' => $column
-            ])->current();
-
-            if ($columnData) {
-                $columnData = $columnData->toArray();
-                $requestPayload = ArrayUtils::pick($requestPayload, [
-                    'data_type',
-                    'ui',
-                    'hidden_input',
-                    'hidden_list',
-                    'required',
-                    'relationship_type',
-                    'related_table',
-                    'junction_table',
-                    'junction_key_left',
-                    'junction_key_right',
-                    'sort',
-                    'comment'
-                ]);
-
-                $requestPayload['id'] = $columnData['id'];
-                $TableGateway->updateCollection($requestPayload);
-            }
+        if ($app->request()->isPut() || $app->request()->isPatch()) {
+            $columnsService = new ColumnsService($this->app);
+            $columnsService->update($table, $column, $requestPayload, $app->request()->isPatch());
         }
 
-        $response = TableSchema::getSchemaArray($table, $params);
+        $response = TableSchema::getColumnSchema($table, $column, true);
         if (!$response) {
             $response = [
                 'error' => [
@@ -200,10 +172,12 @@ class Table extends Route
                 'success' => false
             ];
         } else {
-            $response['data'] = $response;
-            $response['meta'] = [
-                'type' => 'collection',
-                'table' => 'directus_columns'
+            $response = [
+                'data' => $response,
+                'meta' => [
+                    'type' => 'collection',
+                    'table' => 'directus_columns'
+                ]
             ];
         }
 
@@ -213,18 +187,19 @@ class Table extends Route
     public function postColumn($table, $column)
     {
         $container = $this->app->container;
-        $ZendDb = $container->get('ZendDb');
+        $ZendDb = $container->get('zenddb');
         $acl = $container->get('acl');
         $requestPayload = $this->app->request()->post();
         $TableGateway = new TableGateway('directus_columns', $ZendDb, $acl);
         $data = $requestPayload;
+
         // @TODO: check whether this condition is still needed
         if (isset($data['type'])) {
             $data['data_type'] = $data['type'];
             $data['relationship_type'] = $data['type'];
             unset($data['type']);
         }
-        //$data['column_name'] = $data['junction_key_left'];
+
         $data['column_name'] = $column;
         $data['table_name'] = $table;
         $row = $TableGateway->findOneByArray(['table_name' => $table, 'column_name' => $column]);
@@ -232,9 +207,10 @@ class Table extends Route
         if ($row) {
             $data['id'] = $row['id'];
         }
+
         $newRecord = $TableGateway->manageRecordUpdate('directus_columns', $data, TableGateway::ACTIVITY_ENTRY_MODE_DISABLED);
-        $_POST['id'] = $newRecord['id'];
-        return $this->app->response($_POST);
+
+        return $this->app->response($newRecord);
     }
 
     // get all table names
@@ -264,8 +240,9 @@ class Table extends Route
         $requestPayload = $app->request()->post();
 
         if ($app->request()->isDelete()) {
-            $tableGateway = new TableGateway($table, $ZendDb, $acl);
-            $success = $tableGateway->drop();
+            // NOTE: similar code to unmanage table in Table::stopManaging
+            $tableService = new TablesService($app);
+            $success = $tableService->dropTable($table);
 
             $response = [
                 'error' => [
@@ -283,18 +260,24 @@ class Table extends Route
             return $this->app->response($response);
         }
 
-        $TableGateway = new TableGateway('directus_tables', $ZendDb, $acl, null, null, null, 'table_name');
-        $ColumnsTableGateway = new TableGateway('directus_columns', $ZendDb, $acl);
+        $TableGateway = new DirectusTablesTableGateway($ZendDb, $acl);
+
         /* PUT updates the table */
-        if ($app->request()->isPut()) {
+        if ($app->request()->isPut() || $app->request()->isPatch()) {
             $data = $requestPayload;
-            $table_settings = [
-                'table_name' => $data['table_name'],
-                'hidden' => (int)$data['hidden'],
-                'single' => (int)$data['single'],
-                'footer' => (int)$data['footer'],
-                'primary_column' => array_key_exists('primary_column', $data) ? $data['primary_column'] : ''
-            ];
+            $data['table_name'] = $table;
+
+            if ($app->request()->isPut()) {
+                $table_settings = [
+                    'table_name' => $data['table_name'],
+                    'hidden' => (int)$data['hidden'],
+                    'single' => (int)$data['single'],
+                    'footer' => (int)$data['footer'],
+                    'primary_column' => array_key_exists('primary_column', $data) ? $data['primary_column'] : ''
+                ];
+            } else {
+                $table_settings = ArrayUtils::omit($data, 'columns');
+            }
 
             //@TODO: Possibly pretty this up so not doing direct inserts/updates
             $set = $TableGateway->select(['table_name' => $table])->toArray();
@@ -305,38 +288,6 @@ class Table extends Route
             } else {
                 $TableGateway->insert($table_settings);
             }
-
-            $column_settings = [];
-            foreach ($data['columns'] as $col) {
-                $columnData = [
-                    'table_name' => $table,
-                    'column_name' => $col['column_name'],
-                    'ui' => $col['ui'],
-                    'hidden_input' => $col['hidden_input'] ? 1 : 0,
-                    'hidden_list' => $col['hidden_list'] ? 1 : 0,
-                    'required' => $col['required'] ? 1 : 0,
-                    'sort' => array_key_exists('sort', $col) ? $col['sort'] : 99999,
-                    'comment' => array_key_exists('comment', $col) ? $col['comment'] : ''
-                ];
-
-                // hotfix #1069 single_file UI not saving relational settings
-                $extraFields = ['data_type', 'relationship_type', 'related_table', 'junction_key_right'];
-                foreach ($extraFields as $field) {
-                    if (array_key_exists($field, $col)) {
-                        $columnData[$field] = $col[$field];
-                    }
-                }
-
-                $existing = $ColumnsTableGateway->select(['table_name' => $table, 'column_name' => $col['column_name']])->toArray();
-                if (count($existing) > 0) {
-                    $columnData['id'] = $existing[0]['id'];
-                }
-
-                array_push($column_settings, $columnData);
-            }
-
-
-            $ColumnsTableGateway->updateCollection($column_settings);
         }
 
         $response = TableSchema::getTable($table);
@@ -362,39 +313,147 @@ class Table extends Route
         return $this->app->response($response);
     }
 
+    public function unmanage($table)
+    {
+        $app = $this->app;
+        $dbConnection = $app->container->get('zenddb');
+        $acl = $app->container->get('acl');
+
+        // NOTE: Similar code in delete table Table::info
+        $tableGateway = new TableGateway($table, $dbConnection, $acl);
+        $success = $tableGateway->stopManaging();
+
+        $response = [
+            'error' => [
+                'message' => __t('unable_to_remove_table_x', ['table_name' => $table])
+            ],
+            'success' => false
+        ];
+
+        if ($success) {
+            unset($response['error']);
+            $response['success'] = true;
+            $response['data']['message'] = __t('table_x_was_removed', ['table_name' => $table]);
+        }
+
+        return $this->app->response($response);
+    }
+
     public function columnUi($table, $column, $ui)
     {
         $app = $this->app;
         $ZendDb = $app->container->get('zenddb');
         $acl = $app->container->get('acl');
-        $requestPayload = $app->request()->post();
-        $TableGateway = new TableGateway('directus_ui', $ZendDb, $acl);
+        $tableGateway = new TableGateway('directus_columns', $ZendDb, $acl);
 
         switch ($app->request()->getMethod()) {
             case 'PUT':
             case 'POST':
-                $keys = ['table_name' => $table, 'column_name' => $column, 'ui_name' => $ui];
-                $uis = to_name_value($requestPayload, $keys);
+            $payload = $app->request()->post();
 
-                $column_settings = [];
-                foreach ($uis as $col) {
-                    $existing = $TableGateway->select(['table_name' => $table, 'column_name' => $column, 'ui_name' => $ui, 'name' => $col['name']])->toArray();
-                    if (count($existing) > 0) {
-                        $col['id'] = $existing[0]['id'];
-                    }
-                    array_push($column_settings, $col);
-                }
-                $TableGateway->updateCollection($column_settings);
+            $columnData = $tableGateway->select([
+                'table_name' => $table,
+                'column_name' => $column
+            ])->current();
+
+            if ($columnData) {
+                $columnData = $columnData->toArray();
+
+                $data = [
+                    'id' => $columnData['id'],
+                    'options' => json_encode($payload)
+                ];
+
+                $tableGateway->updateCollection($data);
+            }
         }
-        $UiOptions = new DirectusUiTableGateway($ZendDb, $acl);
-        $response = $UiOptions->fetchOptions($table, $column, $ui);
+
+        $select = $tableGateway->getSql()->select();
+        $select->columns(['id', 'options']);
+        $select->where([
+            'table_name' => $table,
+            'column_name' => $column
+        ]);
+
+        $response = $tableGateway->selectWith($select)->current();
+
         if (!$response) {
             $app->response()->setStatus(404);
             $response = [
                 'message' => __t('unable_to_find_column_x_options_for_x', ['column' => $column, 'ui' => $ui]),
                 'success' => false
             ];
+        } else {
+            $data = $response->toArray();
+
+            $response = [
+                'meta' => ['table' => 'directus_columns', 'type' => 'item'],
+                'data' => json_decode($data['options'], true)
+            ];
         }
+
+        return $this->app->response($response);
+    }
+
+    protected function patchColumns($table, $payload)
+    {
+        $container = $this->app->container;
+        $ZendDb = $container->get('zenddb');
+        $acl = $container->get('acl');
+        $TableGateway = new TableGateway('directus_columns', $ZendDb, $acl);
+
+        $rows = array_key_exists('rows', $payload) ? $payload['rows'] : false;
+        if (!is_array($rows) || count($rows) <= 0) {
+            throw new \Exception(__t('rows_no_specified'));
+        }
+
+        $columnNames = [];
+        foreach ($rows as $row) {
+            $column = $row['id'];
+            $columnNames[] = $column;
+            unset($row['id']);
+
+            $condition = [
+                'table_name' => $table,
+                'column_name' => $column
+            ];
+
+            if ($row) {
+                // check if the column data exists in `directus_columns`
+                $columnInfo = $TableGateway->select($condition);
+                if ($columnInfo->count() === 0) {
+                    // add the column information into `directus_columns`
+                    $columnInfo = TableSchema::getColumnSchema($table, $column);
+                    $columnInfo = $columnInfo->toArray();
+                    $columnsName = TableSchema::getAllTableColumnsName('directus_columns');
+                    // NOTE: the column name name is data_type in the database
+                    // but the attribute in the object is type
+                    // change the name to insert the data type value into the columns table
+                    ArrayUtils::rename($columnInfo, 'type', 'data_type');
+                    $columnInfo = ArrayUtils::pick($columnInfo, $columnsName);
+                    // NOTE: remove the column id info
+                    // this information is the column name
+                    // not the record id in the database
+                    ArrayUtils::remove($columnInfo, ['id', 'options']);
+                    $TableGateway->insert($columnInfo);
+                }
+
+                $TableGateway->update($row, $condition);
+            }
+        }
+
+        $rows = $TableGateway->select([
+           'table_name' => $table,
+            new In('column_name', $columnNames)
+        ]);
+
+        $response = [
+            'meta' => [
+                'table' => 'directus_columns',
+                'type' => 'collection'
+            ],
+            'data' => $rows->toArray()
+        ];
 
         return $this->app->response($response);
     }

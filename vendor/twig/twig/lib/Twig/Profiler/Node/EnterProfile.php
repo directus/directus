@@ -35,3 +35,5 @@ class Twig_Profiler_Node_EnterProfile extends Twig_Node
         ;
     }
 }
+
+class_alias('Twig_Profiler_Node_EnterProfile', 'Twig\Profiler\Node\EnterProfileNode', false);

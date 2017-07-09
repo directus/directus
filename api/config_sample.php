@@ -2,15 +2,15 @@
 
 date_default_timezone_set('America/New_York');
 
-define('API_VERSION', 1);
+// Do not change, only supporting one API version
+define('API_VERSION', '1.1');
 
 /**
  * DIRECTUS_ENV - Possible values:
  *
- *   'production' => error suppression, nonce protection
- *   'development' => no error suppression, no nonce protection (allows manual viewing of API output)
- *   'staging' => no error suppression, no nonce protection (allows manual viewing of API output)
- *   'development_enforce_nonce' => no error suppression, nonce protection
+ *   'production' => error suppression
+ *   'development' => no error suppression
+ *   'staging' => no error suppression
  */
 define('DIRECTUS_ENV', 'development');
 
@@ -28,7 +28,7 @@ define('DB_USER_SLAVE', '');
 define('DB_PASSWORD_SLAVE', '');
 
 // Url path to Directus
-define('DIRECTUS_PATH', '/directus/');
+define('DIRECTUS_PATH', '/');
 
 $host = 'www.example.com'; // (Make it work for CLI)
 if (isset($_SERVER['SERVER_NAME'])) {
@@ -44,14 +44,14 @@ if (!defined('ROOT_URL_WITH_SCHEME')) {
 // Absolute path to application
 define('APPLICATION_PATH', realpath(dirname(__FILE__) . '/..'));
 
-//Memcached Server, operates on default 11211 port.
+// Memcache Server, operates on default 11211 port.
 define('MEMCACHED_SERVER', '127.0.0.1');
 
-//Namespaced the memcached keys so branches/databases to not collide
-//options are prod, staging, testing, development
+// Namespaced the memcache keys so branches/databases to not collide
+// options are prod, staging, testing, development
 define('MEMCACHED_ENV_NAMESPACE', 'staging');
 
 define('STATUS_DELETED_NUM', 0);
 define('STATUS_ACTIVE_NUM', 1);
 define('STATUS_DRAFT_NUM', 2);
-define('STATUS_COLUMN_NAME', 'active');
+define('STATUS_COLUMN_NAME', 'status');

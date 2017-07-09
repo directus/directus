@@ -6,7 +6,7 @@
  * @copyright   2011 Josh Lockhart
  * @link        http://www.slimframework.com
  * @license     http://www.slimframework.com/license
- * @version     2.3.2
+ * @version     2.6.1
  *
  * MIT LICENSE
  *
@@ -115,6 +115,21 @@ class ViewTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(array('foo' => 'bar'), $prop->getValue($view)->all());
     }
 
+    public function testLocalData()
+    {
+        $view = new \Slim\View();
+        $prop1 = new \ReflectionProperty($view, 'data');
+        $prop1->setAccessible(true);
+        $prop1->setValue($view, new \Slim\Helper\Set(array('foo' => 'bar')));
+
+        $prop2 = new \ReflectionProperty($view, 'templatesDirectory');
+        $prop2->setAccessible(true);
+        $prop2->setValue($view, dirname(__FILE__) . '/templates');
+
+        $output = $view->fetch('test.php', array('foo' => 'baz'));
+        $this->assertEquals('test output baz', $output);
+    }
+
     public function testAppendDataOverwrite()
     {
         $view = new \Slim\View();
@@ -147,7 +162,8 @@ class ViewTest extends PHPUnit_Framework_TestCase
     public function testSetTemplatesDirectory()
     {
         $view = new \Slim\View();
-        $view->setTemplatesDirectory('templates/'); // <-- Should strip trailing slash
+        $directory = 'templates' . DIRECTORY_SEPARATOR;
+        $view->setTemplatesDirectory($directory); // <-- Should strip trailing slash
 
         $this->assertAttributeEquals('templates', 'templatesDirectory', $view);
     }

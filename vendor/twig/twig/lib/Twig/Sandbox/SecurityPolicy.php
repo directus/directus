@@ -121,3 +121,5 @@ class Twig_Sandbox_SecurityPolicy implements Twig_Sandbox_SecurityPolicyInterfac
         }
     }
 }
+
+class_alias('Twig_Sandbox_SecurityPolicy', 'Twig\Sandbox\SecurityPolicy', false);

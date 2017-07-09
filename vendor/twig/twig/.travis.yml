@@ -8,36 +8,41 @@ cache:
         - $HOME/.composer/cache/files
 
 php:
-    - 5.2
     - 5.3
     - 5.4
     - 5.5
     - 5.6
     - 7.0
     - 7.1
-    - hhvm
+    - nightly
 
 env:
     - TWIG_EXT=no
     - TWIG_EXT=yes
 
 before_install:
-    - if [[ ! $TRAVIS_PHP_VERSION = hhvm* ]]; then phpenv config-rm xdebug.ini || echo "xdebug not available"; fi
+    - phpenv config-rm xdebug.ini
 
 install:
-    # Composer is not available on PHP 5.2
-    - if [ ${TRAVIS_PHP_VERSION:0:3} != "5.2" ]; then travis_retry composer install; fi
+    - travis_retry composer install
 
 before_script:
     - if [ "$TWIG_EXT" == "yes" ]; then sh -c "cd ext/twig && phpize && ./configure --enable-twig && make && make install"; fi
     - if [ "$TWIG_EXT" == "yes" ]; then echo "extension=twig.so" >> `php --ini | grep "Loaded Configuration" | sed -e "s|.*:\s*||"`; fi
 
+script: |
+    if [[ $TRAVIS_PHP_VERSION = 7.* || $TRAVIS_PHP_VERSION = nightly ]]; then
+        SYMFONY_PHPUNIT_VERSION=6.1 ./vendor/bin/simple-phpunit
+    else
+        ./vendor/bin/simple-phpunit
+    fi
+
 matrix:
     fast_finish: true
     exclude:
-        - php: hhvm
-          env: TWIG_EXT=yes
         - php: 7.0
           env: TWIG_EXT=yes
         - php: 7.1
+          env: TWIG_EXT=yes
+        - php: nightly
           env: TWIG_EXT=yes

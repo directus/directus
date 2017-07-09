@@ -11,54 +11,140 @@ $loader = require 'vendor/autoload.php';
 
 // Non-autoloaded components
 require 'api/api.php';
-require 'api/globals.php';
 
-use Directus\Auth\Provider as AuthProvider;
-use Directus\Auth\RequestNonceProvider;
+use Directus\Util\ArrayUtils;
 use Directus\Bootstrap;
-use Directus\Db\TableGateway\DirectusBookmarksTableGateway;
-use Directus\Db\TableGateway\DirectusMessagesTableGateway;
-use Directus\Db\TableGateway\DirectusPrivilegesTableGateway;
-use Directus\Db\TableGateway\DirectusSettingsTableGateway;
-use Directus\Db\TableGateway\DirectusUsersTableGateway;
-use Directus\Db\TableGateway\RelationalTableGatewayWithConditions as TableGateway;
-use Directus\Db\TableSchema;
+use Directus\Database\TableGateway\DirectusBookmarksTableGateway;
+use Directus\Database\TableGateway\DirectusMessagesTableGateway;
+use Directus\Database\TableGateway\DirectusPrivilegesTableGateway;
+use Directus\Database\TableGateway\DirectusSettingsTableGateway;
+use Directus\Database\TableGateway\DirectusUsersTableGateway;
+use Directus\Database\TableGateway\RelationalTableGateway as TableGateway;
+use Directus\Database\TableSchema;
 
-$emitter = Bootstrap::get('hookEmitter');
+// @TODO: Wrap all this into a routing "app"
+$app = Bootstrap::get('app');
 
-$emitter->run('directus.index.start');
+$app->onMissingRequirements(function (array $errors) use ($app) {
+    display_missing_requirements_html($errors, $app);
+});
 
-// No access, forward to login page
-unset($_SESSION['_directus_login_redirect']);
-if (!AuthProvider::loggedIn()) {
-    $request_uri = $_SERVER['REQUEST_URI'];
-    if (strpos($request_uri, DIRECTUS_PATH) === 0) {
-        $request_uri = substr($request_uri, strlen(DIRECTUS_PATH));
+// do not call the api hooks
+$app->clearHooks();
+
+// hotfix: while this page still not part of the routing
+// Not found means, you have to continue with the this file statements
+$redirectToLogin = function () use ($app) {
+    $request_uri = $app->request()->getResourceUri();
+
+    if (strpos($request_uri, get_directus_path()) === 0) {
+        $request_uri = substr($request_uri, strlen(get_directus_path()));
     }
+
     $redirect = htmlspecialchars(trim($request_uri, '/'), ENT_QUOTES, 'UTF-8');
     if ($redirect) {
         $_SESSION['_directus_login_redirect'] = $redirect;
         $redirect = '?redirect=' . $redirect;
     }
-    header('Location: ' . DIRECTUS_PATH . 'login.php' . $redirect);
-    die();
+
+    header('Location: ' . get_directus_path('/login.php' . $redirect));
+    exit;
+    // $app->response()->redirect(DIRECTUS_PATH . 'login.php' . $redirect);
+};
+
+$authentication = Bootstrap::get('auth');
+
+$emitter = Bootstrap::get('hookEmitter');
+$emitter->run('directus.index.start');
+
+$app->group('/auth', function() use ($app) {
+    $app->get('/:name', function($name) use ($app) {
+        $socialAuth = $app->container->get('socialAuth');
+        try {
+            $socialAuth->get($name)->request();
+        } catch (\Exception $e) {
+            $session = $app->container->get('session');
+            // @TODO: Implement/use a set flash
+            $session->set('error_message', $e->getMessage());
+            header('Location: /');
+        }
+        exit;
+    });
+    $app->get('/:name/receive', function($name) use ($app) {
+        $socialAuth = $app->container->get('socialAuth');
+        $authService = $app->container->get('authService');
+
+        try {
+            $user = $socialAuth->get($name)->handle();
+            if ($user instanceof \League\OAuth1\Client\Server\User) {
+                $email = $user->email;
+            } else {
+                $email = $user->getEmail();
+            }
+
+            $authService->authenticateUserWithEmail($email);
+
+            // $app->response()->redirect($directusPath . ' /tables');
+            header('Location: ' . get_directus_path('/tables'));
+            exit;
+        } catch (\Exception $e) {
+            $log = Bootstrap::get('log');
+            $log->error($e);
+
+            $session = $app->container->get('session');
+            // @TODO: Implement/use a set flash
+            $session->set('error_message', $e->getMessage());
+            // $app->response()->redirect('/');
+            header('Location: /');
+            exit;
+        }
+    });
+});
+
+// Only run the routing when requesting anything by root
+if (!$authentication->loggedIn() && $app->request()->getResourceUri() !== get_directus_path() . '/') {
+    $app->notFound($redirectToLogin);
+    $app->run();
+}
+
+// No access, forward to login page
+unset($_SESSION['_directus_login_redirect']);
+$showWelcomeWindow = false;
+if (!$authentication->loggedIn()) {
+    $invitationCode = $app->request()->get('invitation_code');
+    $authenticated = false;
+
+    if ($invitationCode) {
+        $authenticated = $authentication->authenticateWithInvitation($invitationCode);
+    }
+
+    if ($authenticated) {
+        $session->set('on_invitation', true);
+        $showWelcomeWindow = true;
+        $invitationUser = $authentication->getUserRecord();
+
+        $privilegesTable = new DirectusPrivilegesTableGateway($ZendDb, $acl);
+        $privileges = $privilegesTable->getGroupPrivileges($invitationUser['group']);
+        $acl->setGroupPrivileges($privileges);
+        // @TODO: Adding an user should auto set its ID and GROUP
+        $acl->setUserId($invitationUser['id']);
+        $acl->setGroupId($invitationUser['group']);
+    } else {
+        $redirectToLogin();
+        exit;
+    }
+}
+
+if (!$showWelcomeWindow) {
+    $authenticatedUser = $authentication->getUserRecord();
+    if ($authenticatedUser['invite_accepted'] != 1) {
+        $showWelcomeWindow = true;
+    }
 }
 
 $acl = Bootstrap::get('acl');
 $ZendDb = Bootstrap::get('ZendDb');
-$authenticatedUser = AuthProvider::loggedIn() ? AuthProvider::getUserInfo() : [];
-
-function getNonces()
-{
-    $requestNonceProvider = new RequestNonceProvider();
-    $nonces = array_merge($requestNonceProvider->getOptions(), [
-        'pool' => $requestNonceProvider->getAllNonces()
-    ]);
-
-    return $nonces;
-}
-
-;
+$authenticatedUser = $authentication->loggedIn() ? $authentication->getUserInfo() : [];
 
 function getStorageAdapters()
 {
@@ -81,10 +167,10 @@ function parseTables($tableSchema)
     foreach ($tableSchema as $table) {
         $tableName = $table['schema']['id'];
 
-        //remove preferences
+        // Remove preferences
         unset($table['preferences']);
 
-        //skip directus tables
+        // Skip directus tables
         if ('directus_' === substr($tableName, 0, 9) && 'directus_messages_recipients' !== $tableName) {
             continue;
         }
@@ -113,6 +199,41 @@ function getExtendedUserColumns($tableSchema)
 
 }
 
+function getExtendedFilesColumns($tableSchema)
+{
+    // TODO: Create an object that stores all system tables columns
+    $filesColumns = [
+        'id',
+        'active',
+        'name',
+        'title',
+        'location',
+        'caption',
+        'type',
+        'charset',
+        'tags',
+        'width',
+        'height',
+        'size',
+        'embed_id',
+        'user',
+        'date_uploaded',
+        'storage_adapter'
+    ];
+
+    $schema = array_filter($tableSchema, function ($table) {
+        return $table['schema']['id'] === 'directus_files';
+    });
+
+    $schema = reset($schema);
+
+    $columns = array_filter($schema['schema']['columns'], function ($column) use ($filesColumns) {
+        return !in_array($column['id'], $filesColumns);
+    });
+
+    return array_values($columns);
+}
+
 function parsePreferences($tableSchema)
 {
     $preferences = [];
@@ -129,18 +250,30 @@ function parsePreferences($tableSchema)
 function getUsers()
 {
     global $ZendDb, $acl;
-    $tableGateway = new TableGateway($acl, 'directus_users', $ZendDb);
-    $users = $tableGateway->getEntries([
+
+    $aclParam = $acl;
+    $params = [
         'table_name' => 'directus_users',
         'perPage' => 1000,
-        STATUS_COLUMN_NAME => STATUS_ACTIVE_NUM,
-        'columns_visible' => [STATUS_COLUMN_NAME, 'avatar', 'first_name', 'last_name', 'group', 'email', 'position', 'last_access']
-    ]);
+        'depth' => 1,
+        'columns' => TableSchema::getAllTableColumnsName('directus_users')
+        // 'columns_visible' => ['id', STATUS_COLUMN_NAME, 'avatar', 'first_name', 'last_name', 'group', 'email', 'position', 'last_access']
+    ];
+
+    if (!$acl->canView('directus_users')) {
+        $aclParam = null;
+        $params['filters'] = [
+            'id' => ['in' => $acl->getUserId()]
+        ];
+    }
+
+    $tableGateway = new TableGateway('directus_users', $ZendDb, $aclParam);
+    $users = $tableGateway->getEntries($params);
 
     // Lets get the gravatar if no avatar is set.
     // TODO: Add this on insert/update of any user.
     $usersRowsToUpdate = [];
-    foreach ($users['rows'] as $user) {
+    foreach ($users['data'] as $user) {
         $hasAvatar = array_key_exists('avatar', $user) ? $user['avatar'] : false;
         $hasEmail = array_key_exists('email', $user) ? $user['email'] : false;
         if (!$hasAvatar && $hasEmail) {
@@ -162,7 +295,7 @@ function getUsers()
 function getCurrentUserInfo($users)
 {
     global $authenticatedUser;
-    $data = array_filter($users['rows'], function ($item) use ($authenticatedUser) {
+    $data = array_filter($users['data'], function ($item) use ($authenticatedUser) {
         return ($item['id'] == $authenticatedUser['id']);
     });
 
@@ -171,8 +304,9 @@ function getCurrentUserInfo($users)
 
 function getBookmarks()
 {
-    global $ZendDb, $acl, $authenticatedUser;
-    $bookmarks = new DirectusBookmarksTableGateway($acl, $ZendDb);
+    global $ZendDb, $authenticatedUser;
+
+    $bookmarks = new DirectusBookmarksTableGateway($ZendDb, null);
 
     return $bookmarks->fetchAllByUser($authenticatedUser['id']);
 }
@@ -180,64 +314,98 @@ function getBookmarks()
 function getGroups()
 {
     global $ZendDb, $acl;
-    $groups = new TableGateway($acl, 'directus_groups', $ZendDb);
-    // @todo: move to DirectusGroupsTableGateway
-    $groupEntries = $groups->getEntries();
 
-    $groupEntries['rows'] = array_map(function ($row) {
-        if (array_key_exists('nav_override', $row)) {
-            if (!empty($row['nav_override'])) {
-                $row['nav_override'] = @json_decode($row['nav_override']);
-                if (json_last_error() !== JSON_ERROR_NONE) {
-                    $row['nav_override'] = false;
-                }
-            } else {
-                $row['nav_override'] = NULL;
+    $aclParam = $acl;
+    $params = ['depth' => 1];
+
+    if (!$acl->canView('directus_groups')) {
+        $aclParam = null;
+        $params['filters'] = [
+            'id' => ['in' => $acl->getGroupId()]
+        ];
+    }
+
+    $groups = new TableGateway('directus_groups', $ZendDb, $aclParam);
+    // @todo: move to DirectusGroupsTableGateway
+    $groupEntries = $groups->getEntries($params);
+
+    $groupEntries['data'] = array_map(function ($row) {
+        $navOverride = ArrayUtils::get($row, 'nav_override');
+        ArrayUtils::set($row, 'nav_override', null);
+
+        $navOverride = @json_decode($navOverride);
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            return $row;
+        }
+
+        $row['nav_override'] = [];
+        foreach ($navOverride as $category => $items) {
+            foreach ($items as $title => $path) {
+                $key = implode('.', ['nav_override', $category, $title]);
+                ArrayUtils::set($row, $key, [
+                    'path' => $path
+                ]);
             }
         }
+
         return $row;
-    }, $groupEntries['rows']);
+    }, $groupEntries['data']);
 
     return $groupEntries;
 }
 
 function getSettings()
 {
-    global $ZendDb, $acl;
-    $settings = new DirectusSettingsTableGateway($acl, $ZendDb);
-    $items = [];
-    foreach ($settings->fetchAll() as $key => $value) {
-        if ($key == 'global') {
-            $value['max_file_size'] = get_max_upload_size();
+    global $ZendDb;
+
+    $settingsTable = new DirectusSettingsTableGateway($ZendDb, null);
+
+    $settings = $settingsTable->getItems(['limit' => null]);
+
+    foreach ($settings['data'] as &$setting) {
+        if ($setting['name'] === 'cms_thumbnail_url') {
+            $filesTableGateway = new TableGateway('directus_files', $ZendDb, null);
+            $setting['value'] = $filesTableGateway->loadEntries(['id' => $setting['value']]);
+            break;
         }
+    }
 
-        $value['id'] = $key;
-        $items[] = $value;
-    };
+    array_push($settings['data'], [
+        'id' => 'max_file_size',
+        'name' => 'max_file_size',
+        'collection' => 'global',
+        'value' => get_max_upload_size()
+    ]);
 
-    return $items;
+    return $settings;
 }
 
-function getActiveFiles()
+function getConfig($settings)
 {
-    global $ZendDb, $acl;
-    $tableGateway = new TableGateway($acl, 'directus_files', $ZendDb);
+    $keys = ['rows_per_page'];
+    $configs = [];
+    foreach($settings['data'] as $setting) {
+        if (in_array($setting['name'], $keys)) {
+            $configs[$setting['name']] = $setting['value'];
+        }
+    }
 
-    return $tableGateway->countActive();
+    return $configs;
 }
-
-// function getTabPrivileges($groupId) {
-//     global $ZendDb, $acl;
-//     $tableGateway = new DirectusTabPrivilegesTableGateway($acl, $ZendDb);
-//     return $tableGateway->fetchAllByGroup($groupId);
-// }
 
 function getInbox()
 {
     global $ZendDb, $acl, $authenticatedUser;
-    $tableGateway = new DirectusMessagesTableGateway($acl, $ZendDb);
 
-    return $tableGateway->fetchMessagesInboxWithHeaders($authenticatedUser['id']);
+    $messages = [];
+
+    if ($acl->canView('directus_messages') && $acl->canView('directus_messages_recipients')) {
+        $tableGateway = new DirectusMessagesTableGateway($ZendDb, $acl);
+
+        $messages = $tableGateway->fetchMessagesInboxWithHeaders($authenticatedUser['id']);
+    }
+
+    return $messages;
 }
 
 /**
@@ -247,6 +415,8 @@ function getInbox()
  */
 function getVersionNotification()
 {
+    $app = \Directus\Application\Application::getInstance();
+
     $message = null;
     $firstTimeVersionCheck = false;
     if (isset($_SESSION['first_version_check'])) {
@@ -268,7 +438,7 @@ function getVersionNotification()
         $message = [
             'title' => __t('version_outdated_title'),
             'text' => __t('version_outdated_text_x', [
-                'installed_version' => DIRECTUS_VERSION,
+                'installed_version' => $app->getVersion(),
                 'current_version' => $data['current_version']
             ])
         ];
@@ -333,15 +503,23 @@ function getExtensions($currentUserGroup)
 
 function getPrivileges($groupId)
 {
-    global $ZendDb, $acl;
-    $tableGateway = new DirectusPrivilegesTableGateway($acl, $ZendDb);
+    global $ZendDb;
+
+    $tableGateway = new DirectusPrivilegesTableGateway($ZendDb, null);
 
     return $tableGateway->fetchGroupPrivilegesRaw($groupId);
 }
 
-function getUI()
+function getInterfaces()
 {
-    return Bootstrap::get('uis');
+    return Bootstrap::get('interfaces');
+}
+
+function getDefaultInterfaces()
+{
+    $schema = Bootstrap::get('schemaManager');
+
+    return $schema->getDefaultInterfaces();
 }
 
 function getListViews()
@@ -361,10 +539,10 @@ function getCusomFooterHTML()
 function getCSSFilePath()
 {
     if (file_exists('./assets/css/custom.css')) {
-        return DIRECTUS_PATH . 'assets/css/custom.css';
+        return get_directus_path('/assets/css/custom.css');
     }
 
-    return DIRECTUS_PATH . 'assets/css/directus.css';
+    return get_directus_path('/assets/css/directus.css');
 }
 
 function parseLocalesAvailable($localesAvailable)
@@ -406,12 +584,17 @@ $users = getUsers();
 // it should be log out
 // see: https://github.com/directus/directus/issues/1268
 if (!$users) {
-    AuthProvider::logout();
+    $authentication->logout();
     $_SESSION['error_message'] = 'Your user doesn\'t have permission to log in';
-    header('Location: ' . DIRECTUS_PATH . 'login.php');
+    header('Location: ' . get_directus_path('/login.php'));
     exit;
 }
 $currentUserInfo = getCurrentUserInfo($users);
+
+// hide welcome modal when the group has not permission to edit user information
+if ($showWelcomeWindow === true && !ArrayUtils::get($currentUserInfo, 'group.show_files')) {
+    $showWelcomeWindow = false;
+}
 
 // Cache buster
 $git = __DIR__ . '/.git';
@@ -419,12 +602,11 @@ $cacheBuster = Directus\Util\Git::getCloneHash($git);
 
 $tableSchema = TableSchema::getAllSchemas($currentUserInfo['group']['id'], $cacheBuster);
 
-// $tabPrivileges = getTabPrivileges(($currentUserInfo['group']['id']));
-$groupId = $currentUserInfo['group']['id'];
+$groupId = $currentUserInfo['group']['data']['id'];
 $groups = getGroups();
 $currentUserGroup = [];
-if (isset($groups['rows']) && count($groups['rows'] > 0)) {
-    foreach ($groups['rows'] as $group) {
+if (isset($groups['data']) && count($groups['data']) > 0) {
+    foreach ($groups['data'] as $group) {
         if ($group['id'] === $groupId) {
             $currentUserGroup = $group;
             break;
@@ -432,26 +614,77 @@ if (isset($groups['rows']) && count($groups['rows'] > 0)) {
     }
 }
 
-$statusMapping = ['active_num' => STATUS_ACTIVE_NUM, 'deleted_num' => STATUS_DELETED_NUM, 'status_name' => STATUS_COLUMN_NAME];
-$statusMapping['mapping'] = $config['statusMapping'];
+$allTables = parseTables($tableSchema);
+
+$mapping = [];
+foreach ($config['statusMapping'] as $key => $status) {
+    $status['id'] = $key;
+
+    $mapping[] = $status;
+}
+
+$statusMapping = [
+    '*' => [
+        'mapping' => $mapping,
+        'status_name' => STATUS_COLUMN_NAME,
+        'default_value' => STATUS_DRAFT_NUM,
+        'delete_value' => STATUS_DELETED_NUM
+    ]
+];
+
+foreach ($allTables as $table) {
+    $tableName = \Directus\Util\ArrayUtils::get($table, 'schema.id');
+    $tableObject = TableSchema::getTableSchema($tableName);
+
+    /** @var \Directus\Database\Object\Column $statusColumn */
+    $statusColumn = $tableObject->getStatusColumn();
+    if (!$statusColumn) {
+        continue;
+    }
+
+    $statusColumn = $tableObject->getColumn($statusColumn);
+    $mapping = \Directus\Util\ArrayUtils::get($statusColumn->getOptions(), 'status_mapping');
+    if ($mapping && ($mapping = json_decode($mapping, true))) {
+        // Add the status index as 'id' if it doesn't exists
+        foreach ($mapping as $key => &$item) {
+            if (!array_key_exists('id', $item)) {
+                $item['id'] = $key;
+            }
+        }
+
+        $deleteValue = \Directus\Util\ArrayUtils::get($statusColumn->getOptions(), 'delete_value');
+        if ($deleteValue === null) {
+            $deleteValue = STATUS_DELETED_NUM;
+        }
+
+        $statusMapping[\Directus\Util\ArrayUtils::get($table, 'schema.table_name')] = [
+            'mapping' => $mapping,
+            'status_name' => STATUS_COLUMN_NAME,
+            'default_value' => STATUS_DRAFT_NUM,
+            'delete_value' => $deleteValue
+        ];
+    }
+}
+
+$settings = getSettings();
+$configuration = getConfig($settings);
 
 $data = [
     'cacheBuster' => $cacheBuster,
-    'nonces' => getNonces(),
     'storage_adapters' => getStorageAdapters(),
-    'path' => DIRECTUS_PATH,
+    'path' => get_directus_path(),
     'page' => '#tables',
-    'tables' => parseTables($tableSchema),
+    'tables' => $allTables,
     'preferences' => parsePreferences($tableSchema), //ok
     'users' => $users,
     'groups' => $groups,
-    'settings' => getSettings(),
-    'active_files' => getActiveFiles(),
+    'settings' => $settings,
+    'config' => $configuration,
     'authenticatedUser' => $authenticatedUser,
-    // 'tab_privileges' => $tabPrivileges,
     'extensions' => getExtensions($currentUserGroup),
     'privileges' => getPrivileges($groupId),
-    'ui' => getUI(),
+    'interfaces' => getInterfaces(),
+    'default_interfaces' => getDefaultInterfaces(),
     'locale' => get_user_locale(),
     'localesAvailable' => parseLocalesAvailable(get_locales_available()),
     'phrases' => get_phrases(get_user_locale()),
@@ -463,17 +696,23 @@ $data = [
     'user_notifications' => getLoginNotification(),
     'bookmarks' => getBookmarks(),
     'extendedUserColumns' => getExtendedUserColumns($tableSchema),
+    'extendedFilesColumns' => getExtendedFilesColumns($tableSchema),
+    'showWelcomeWindow' => $showWelcomeWindow,
     'statusMapping' => $statusMapping
 ];
 
 $templateVars = [
     'cacheBuster' => $cacheBuster,
+    'isAuthenticated' => $authentication->loggedIn() === true,
     'data' => json_encode($data),
-    'path' => DIRECTUS_PATH,
+    // 'path' => DIRECTUS_PATH,
+    'rootUrl' => get_directus_path(),
+    'assetsRoot' => get_directus_path('/assets/'),
     'locale' => get_user_locale(),
     'dir' => 'ltr',
     'customFooterHTML' => getCusomFooterHTML(),
     'cssFilePath' => getCSSFilePath()
 ];
 
-echo template(file_get_contents('main.html'), $templateVars);
+// @TODO: Compile html
+$app->render('base.twig.html', $templateVars);

@@ -47,3 +47,5 @@ class Twig_Node_Import extends Twig_Node
         $compiler->raw(";\n");
     }
 }
+
+class_alias('Twig_Node_Import', 'Twig\Node\ImportNode', false);

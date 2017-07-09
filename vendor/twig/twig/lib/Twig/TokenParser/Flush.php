@@ -30,3 +30,5 @@ class Twig_TokenParser_Flush extends Twig_TokenParser
         return 'flush';
     }
 }
+
+class_alias('Twig_TokenParser_Flush', 'Twig\TokenParser\FlushTokenParser', false);

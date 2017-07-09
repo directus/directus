@@ -1,17 +1,16 @@
-<div class="table-shadow">
-    <table class="table table-striped directus-table">
-    <thead>
-    	<tr>
-    		<th>{{t "table"}}</th>
-    		<th style="width:80px">{{t "fields"}}</th>
-    		<th style="width:80px">{{t "hidden"}}</th>
-    		<th style="width:80px">{{t "single"}}</th>
-            <th style="width:50px">{{t "delete"}}</th>
-    		{{!--<th style="width:80px">{{t "footer"}}</th>--}}
-    	</tr>
-    </thead>
-    <tbody>
+{{#if isEmpty}}
+{{{include "listingEmpty"}}}
+{{else}}
+<table class="lines cozy clickable item-listing fixed-header pad-first">
+<thead>
+	<tr>
+		<th scope="column" style="width: 200px;">{{t "table"}}</th>
+		<!-- <th scope="column" style="width: 733px;">{{t "total_items"}}</th> -->
+		<th scope="column" style="width: 100px;"></th>
+	</tr>
+</thead>
+<tbody>
 
-    </tbody>
-    </table>
-</div>
+</tbody>
+</table>
+{{/if}}

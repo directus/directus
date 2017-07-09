@@ -39,24 +39,17 @@ class Mail
     {
         $config = Bootstrap::get('config');
         $mailer = Bootstrap::get('mailer');
+
         if (!$mailer) {
             throw new InvalidArgumentException(__t('mail_configuration_no_defined'));
         }
 
-        $DirectusSettingsTableGateway = new \Zend\Db\TableGateway\TableGateway('directus_settings', Bootstrap::get('zendDb'));
-        $rowSet = $DirectusSettingsTableGateway->select();
-
-        $settings = [];
-        foreach ($rowSet as $setting) {
-            $settings[$setting['collection']][$setting['name']] = $setting['value'];
-        }
-
-        $instance = new static($mailer, $settings);
+        $instance = new static($mailer, Bootstrap::get('settings'));
 
         $message = Swift_Message::newInstance();
 
         // default mail from address
-        $mailConfig = $config['mail'];
+        $mailConfig = $config->get('mail');
         $message->setFrom($mailConfig['from']);
 
         $bcc = ArrayUtils::get($mailConfig, 'bcc', null);

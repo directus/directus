@@ -404,3 +404,7 @@ class Twig_Parser implements Twig_ParserInterface
         return $node;
     }
 }
+
+class_alias('Twig_Parser', 'Twig\Parser', false);
+class_exists('Twig_Node');
+class_exists('Twig_TokenStream');

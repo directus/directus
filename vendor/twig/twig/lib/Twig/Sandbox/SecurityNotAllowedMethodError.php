@@ -36,3 +36,5 @@ class Twig_Sandbox_SecurityNotAllowedMethodError extends Twig_Sandbox_SecurityEr
         return $this->methodName;
     }
 }
+
+class_alias('Twig_Sandbox_SecurityNotAllowedMethodError', 'Twig\Sandbox\SecurityNotAllowedMethodError', false);

@@ -42,3 +42,5 @@ class Twig_Node_Embed extends Twig_Node_Include
         ;
     }
 }
+
+class_alias('Twig_Node_Embed', 'Twig\Node\EmbedNode', false);

@@ -34,7 +34,7 @@
   "global_settings_project_name_placeholder": "Projektname",
   "global_settings_project_name_comment": "Der Name von Ihrem Projekt",
   "global_settings_project_url_comment": "Per Klick auf das Logo des Projekts werden Sie zu dieser URL geführt",
-  "global_settings_cms_thumbnail_url_comment": "Fügen Sie eine Bild URL für das Hauptlogo hinzu (170x100)",
+  "global_settings_cms_thumbnail_url_comment": "Fügen Sie eine Bild URL für das Hauptlogo hinzu (200×64)",
   "global_settings_cms_user_auto_sign_out_comment": "Minuten bis die Benutzer automatisch abgemeldet werden",
   "global_settings_rows_per_page_comment": "Die Anzahl Zeilen pro Auflistungsseite",
   "settings_files_file_naming_comment": "Die Dateisystem Namesvorgabe für Uploads",
@@ -226,7 +226,7 @@
   "o2m_result_limit_comment": "Maximum number of results to fetch",
   "add_new_x_item": "Add New %{table} Item",
 
-  "directus_files": "Directus Dateien",
+  "directus_files_choose": "Directus Dateien",
   "file_upload": "Hochladen",
   "drag_and_drop": "Drag and drop",
   "file_here": "Datei hier",
@@ -249,10 +249,11 @@
 
   "radiobuttons_options_comment": "Benutzen Sie eine kommaseparierte Liste",
 
-  "numeric_footer_comment": "Show a footer on the Item Listing page with useful info, such as: Min, Max, Avg, Sum",
+  "numeric_footer_comment": "Show a footer on the Item Listing with: Min, Max, Avg, Sum",
 
   "select_options_comment": "Enter JSON key value pairs with the saved value and text displayed.",
   "select_placeholder_text": "Enter Placeholder Text",
+  "select_auto_search_limit_text": "Minimum number of value to display search",
 
   "one_file_only_please": "One file only please",
   "enter_the_url_to_a_file": "Enter the URL to a file:",
@@ -269,7 +270,7 @@
   "character_blacklist": "Character Blacklist",
   "character_whitelist": "Character Whitelist",
   "regex": "Regex",
-  "textinput_validation_string_comment": "All characters below will be enforced",
+  "text_input_validation_string_comment": "All characters below will be enforced",
 
   "translation_title": "Übersetzungen",
   "translations_x": "%{field}",
@@ -317,9 +318,7 @@
   "are_you_sure_you_want_to_sign_out": "Are you sure you want to sign out?",
 
   "you_must_be_logged_in_to_access_the_api": "You must be logged in to access the API",
-  "invalid_request_nonce": "Invalid request (nonce)",
   "no_such_extensions_found": "No such extension.",
-  "unauthorized_nonce": "Unauthorized (nonce)",
   "extension_x_must_return_array_got_y_instead": "Extension %{extension_name} must return array, got %{type} instead",
   "incorrect_email_or_password": "Incorrect email or password",
   "missing_email_or_password": "Missing email or password",
@@ -348,7 +347,7 @@
   "column_x_was_removed": "Column [%{column}] was removed",
   "unable_to_find_table_x": "Unable to find the table [%{table_name}]",
   "unable_to_remove_table_x": "Unable to remove the table [%{table_name}]",
-  "table_x_was_removed": "Table [%{table}] was removed",
+  "table_x_was_removed": "Table \"%{table_name}\" was removed",
   "invalid_unsupported_url": "Invalid/Unsupported URL",
   "message_not_found": "Message not found",
 
@@ -425,5 +424,28 @@
   "status": "Status",
   "status_active": "Aktiv",
   "status_delete": "Gelöscht",
-  "status_draft": "Entwurf"
+  "status_draft": "Entwurf",
+
+  "admin_settings": "Einstellungen",
+  "loading": "Lade Daten",
+  "help_and_docs": "Hilfe & Dokumentation",
+  "your_profile": "Dein Profil",
+  "your_messages": "Nachrichten",
+  "user_directory": "Benutzer",
+  "file_library": "Dateien",
+
+  "settings_edit": "Bearbeiten",
+  "settings_manage": "Verwalten",
+  "settings_view": "Ansehen",
+
+  "activity_log": "Activity Log",
+  "activity_log_description": "Review any activity and errors encountered by the Directus system. Some database and server errors may only be available in your server's logs.",
+  "server_details": "Server Details",
+  "server_details_description": "See all of your server details in one place, including: compilation options, PHP extensions, environment details, and OS info.",
+  "version_updates": "Version & Updates",
+  "version_updates_description": "A bird's eye view of previous, current, and available versions of the Directus framework. Coming Soon: Ability to auto-upgrade.",
+
+  "loaded_items": "gefundene Einträge",
+  "filtered_items": "gefilterte Einträge",
+  "header_new_filter": "Neuen Filter hinzufügen"
 }

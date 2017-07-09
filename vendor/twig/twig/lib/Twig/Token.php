@@ -203,3 +203,5 @@ class Twig_Token
         }
     }
 }
+
+class_alias('Twig_Token', 'Twig\Token', false);

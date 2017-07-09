@@ -48,8 +48,8 @@ class CreateDirectusMessagesTable extends Ruckusing_Migration_Base
             'null' => false,
             'default' => 'CURRENT_TIMESTAMP'
         ]);
-        $t->column('attachment', 'integer', [
-            'unsigned' => true,
+        $t->column('attachment', 'string', [
+            'limit' => 512,
             'default' => NULL
         ]);
         $t->column('response_to', 'integer', [

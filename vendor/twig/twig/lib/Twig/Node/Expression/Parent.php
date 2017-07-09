@@ -40,3 +40,5 @@ class Twig_Node_Expression_Parent extends Twig_Node_Expression
         }
     }
 }
+
+class_alias('Twig_Node_Expression_Parent', 'Twig\Node\Expression\ParentExpression', false);

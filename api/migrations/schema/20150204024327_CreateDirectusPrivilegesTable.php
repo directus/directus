@@ -33,7 +33,6 @@ class CreateDirectusPrivilegesTable extends Ruckusing_Migration_Base
         $t->column('table_name', 'string', [
             'limit' => 255,
             'null' => false,
-            'character' => 'latin1'
         ]);
         $t->column('allow_view', 'tinyinteger', [
             'limit' => 1,
@@ -66,8 +65,7 @@ class CreateDirectusPrivilegesTable extends Ruckusing_Migration_Base
         ]);
         $t->column('read_field_blacklist', 'string', [
             'limit' => 1000,
-            'default' => NULL,
-            'character' => 'latin1',
+            'default' => NULL
         ]);
         $t->column('write_field_blacklist', 'string', [
             'limit' => 1000,
@@ -81,8 +79,8 @@ class CreateDirectusPrivilegesTable extends Ruckusing_Migration_Base
         ]);
         $t->column('status_id', 'tinyinteger', [
             'limit' => 1,
-            'default' => 0,
-            'null' => false
+            'default' => NULL,
+            'null' => true
         ]);
 
         $t->finish();
@@ -97,7 +95,6 @@ class CreateDirectusPrivilegesTable extends Ruckusing_Migration_Base
             'directus_privileges',
             'directus_settings',
             'directus_tables',
-            'directus_ui',
             'directus_users',
             'directus_messages_recipients',
             'directus_bookmarks'

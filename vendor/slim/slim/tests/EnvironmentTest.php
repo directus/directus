@@ -6,7 +6,7 @@
  * @copyright   2011 Josh Lockhart
  * @link        http://www.slimframework.com
  * @license     http://www.slimframework.com/license
- * @version     2.3.2
+ * @version     2.6.1
  *
  * MIT LICENSE
  *
@@ -43,6 +43,8 @@ class EnvironmentTest extends PHPUnit_Framework_TestCase
      */
     public function setUp()
     {
+        $_SERVER['DOCUMENT_ROOT'] = '/var/www';
+        $_SERVER['SCRIPT_FILENAME'] = '/var/www/foo/index.php';
         $_SERVER['SERVER_NAME'] = 'slim';
         $_SERVER['SERVER_PORT'] = '80';
         $_SERVER['SCRIPT_NAME'] = '/foo/index.php';
@@ -106,6 +108,7 @@ class EnvironmentTest extends PHPUnit_Framework_TestCase
      */
     public function testParsesPathsWithoutUrlRewriteInRootDirectory()
     {
+        $_SERVER['SCRIPT_FILENAME'] = '/var/www/index.php';
         $_SERVER['REQUEST_URI'] = '/index.php/bar/xyz';
         $_SERVER['SCRIPT_NAME'] = '/index.php';
         $env = \Slim\Environment::getInstance(true);
@@ -123,6 +126,7 @@ class EnvironmentTest extends PHPUnit_Framework_TestCase
      */
     public function testParsesPathsWithoutUrlRewriteInRootDirectoryForAppRootUri()
     {
+        $_SERVER['SCRIPT_FILENAME'] = '/var/www/index.php';
         $_SERVER['REQUEST_URI'] = '/index.php';
         $_SERVER['SCRIPT_NAME'] = '/index.php';
         unset($_SERVER['PATH_INFO']);
@@ -157,6 +161,7 @@ class EnvironmentTest extends PHPUnit_Framework_TestCase
      */
     public function testParsesPathsWithUrlRewriteInRootDirectory()
     {
+        $_SERVER['SCRIPT_FILENAME'] = '/var/www/index.php';
         $_SERVER['SCRIPT_NAME'] = '/index.php';
         $_SERVER['REQUEST_URI'] = '/bar/xyz';
         unset($_SERVER['PATH_INFO']);
@@ -175,6 +180,7 @@ class EnvironmentTest extends PHPUnit_Framework_TestCase
      */
     public function testParsesPathsWithUrlRewriteInRootDirectoryForAppRootUri()
     {
+        $_SERVER['SCRIPT_FILENAME'] = '/var/www/index.php';
         $_SERVER['REQUEST_URI'] = '/';
         $_SERVER['SCRIPT_NAME'] = '/index.php';
         unset($_SERVER['PATH_INFO']);
@@ -224,6 +230,7 @@ class EnvironmentTest extends PHPUnit_Framework_TestCase
      */
     public function testPathInfoRetainsUrlEncodedCharacters()
     {
+        $_SERVER['SCRIPT_FILENAME'] = '/var/www/index.php';
         $_SERVER['SCRIPT_NAME'] = '/index.php';
         $_SERVER['REQUEST_URI'] = '/foo/%23bar'; //<-- URL-encoded "#bar"
         $env = \Slim\Environment::getInstance(true);
@@ -270,10 +277,8 @@ class EnvironmentTest extends PHPUnit_Framework_TestCase
      */
     public function testUnsetsContentTypeAndContentLength()
     {
-        $_SERVER['HTTP_CONTENT_TYPE'] = 'text/csv';
         $_SERVER['HTTP_CONTENT_LENGTH'] = 150;
         $env = \Slim\Environment::getInstance(true);
-        $this->assertFalse(isset($env['HTTP_CONTENT_TYPE']));
         $this->assertFalse(isset($env['HTTP_CONTENT_LENGTH']));
     }
 

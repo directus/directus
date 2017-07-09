@@ -286,3 +286,5 @@ class Twig_Loader_Filesystem implements Twig_LoaderInterface, Twig_ExistsLoaderI
         ;
     }
 }
+
+class_alias('Twig_Loader_Filesystem', 'Twig\Loader\FilesystemLoader', false);

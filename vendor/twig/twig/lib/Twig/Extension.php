@@ -8,6 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 abstract class Twig_Extension implements Twig_ExtensionInterface
 {
     /**
@@ -63,3 +64,6 @@ abstract class Twig_Extension implements Twig_ExtensionInterface
         return get_class($this);
     }
 }
+
+class_alias('Twig_Extension', 'Twig\Extension\AbstractExtension', false);
+class_exists('Twig_Environment');

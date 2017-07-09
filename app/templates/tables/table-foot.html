@@ -1,32 +1,22 @@
 {{#if hasANumericColumn}}
-  <tr>
-  {{#if sortable}}<td></td>{{/if}}
-  {{#if selectable}}<td></td>{{/if}}
-  {{#columns}}
-  <td>
-    {{#if showFooter}}
-    <div class="footer-function" data-column="{{title}}">
-      <span class="value">{{value}}</span>
-      <span class="method">{{selectedFunction}}</span>
-      <ul style="list-style:none;margin:0;cursor:pointer;" class="hide footer-function-options">
-        {{#otherFunctions}}
-          <li>{{this}}</li>
-        {{/otherFunctions}}
-      </ul>
-    </div>
-
-    {{!--
-    <select style="width:85px; margin-top:12px" data-id="{{title}}">
-    <option>Sum</option>
-    <option>Average</option>
-    <option>Min/Max</option>
-    </select>
-    <p style="margin-top:10px; font-weight:bold;">{{value}}</p>
-    --}}
-
-    {{/if}}
-  </td>
-  {{/columns}}
-    <td></td>
-  </tr>
+<tr>
+	{{#if showItemNumbers}}<td></td>{{/if}}
+	{{#if sortable}}<td></td>{{/if}}
+	{{#if selectable}}<td></td>{{/if}}
+	{{#columns}}
+	<td>
+	{{#if showFooter}}
+		<div class="select-container choose-footer-metric">
+			<select>
+				{{#functionsValues}}
+				<option value="{{value}}"{{# if selected}} selected{{/if}}>{{value}} ({{name}})</option>
+				{{/functionsValues}}
+			</select>
+			<i class="material-icons select-arrow">arrow_drop_down</i>
+		</div>
+	{{/if}}
+	</td>
+	{{/columns}}
+	<td></td>
+</tr>
 {{/if}}

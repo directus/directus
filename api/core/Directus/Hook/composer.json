@@ -14,5 +14,10 @@
     "psr-4": {
       "Directus\\Hook\\": ""
     }
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-d64": "0.9.x-dev"
+    }
   }
 }

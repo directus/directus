@@ -4,10 +4,13 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit01beb550ff7a79a063e38260b1b1695f
+class ComposerStaticInit8c5395608affa52568792f914ba2d6a2
 {
     public static $files = array (
-        '1625aab00bebe8f618cdad8a767de4f0' => __DIR__ . '/..' . '/directus/database/functions.php',
+        'c964ee0ededf28c96ebd9db5099ef910' => __DIR__ . '/..' . '/guzzlehttp/promises/src/functions_include.php',
+        'a0edc8309cc5e1d60e3047b5df6b7052' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/functions_include.php',
+        '37a3dc5111fe8f707ab4c132ef1dbc62' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/functions_include.php',
+        '5255c38a0faeba867671b61dfda6d864' => __DIR__ . '/..' . '/paragonie/random_compat/lib/random.php',
         '2c102faa651ef8ea5874edb585946bce' => __DIR__ . '/..' . '/swiftmailer/swiftmailer/lib/swift_required.php',
         '1d1d744f1bd36f7044f0f268edf1c6a2' => __DIR__ . '/../..' . '/api/core/functions.php',
     );
@@ -18,17 +21,32 @@ class ComposerStaticInit01beb550ff7a79a063e38260b1b1695f
             'Zend\\Stdlib\\' => 12,
             'Zend\\Db\\' => 8,
         ),
+        'T' => 
+        array (
+            'Twig\\' => 5,
+        ),
+        'P' => 
+        array (
+            'Psr\\Http\\Message\\' => 17,
+        ),
         'L' => 
         array (
+            'League\\OAuth2\\Client\\' => 21,
+            'League\\OAuth1\\' => 14,
             'League\\Flysystem\\' => 17,
+        ),
+        'G' => 
+        array (
+            'GuzzleHttp\\Psr7\\' => 16,
+            'GuzzleHttp\\Promise\\' => 19,
+            'GuzzleHttp\\' => 11,
         ),
         'D' => 
         array (
-            'Directus\\Permissions\\' => 21,
             'Directus\\Installation\\' => 22,
-            'Directus\\Embed\\Provider\\' => 24,
-            'Directus\\Database\\' => 18,
-            'Directus\\Collection\\' => 20,
+            'Directus\\Customs\\Hooks\\' => 23,
+            'Directus\\Customs\\Hasher\\' => 24,
+            'Directus\\Customs\\Embed\\Provider\\' => 32,
             'Directus\\API\\Routes\\' => 20,
             'Directus\\' => 9,
         ),
@@ -43,29 +61,56 @@ class ComposerStaticInit01beb550ff7a79a063e38260b1b1695f
         array (
             0 => __DIR__ . '/..' . '/zendframework/zend-db/src',
         ),
+        'Twig\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/twig/twig/src',
+        ),
+        'Psr\\Http\\Message\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/psr/http-message/src',
+        ),
+        'League\\OAuth2\\Client\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/league/oauth2-client/src',
+            1 => __DIR__ . '/..' . '/league/oauth2-github/src',
+            2 => __DIR__ . '/..' . '/league/oauth2-facebook/src',
+            3 => __DIR__ . '/..' . '/league/oauth2-google/src',
+        ),
+        'League\\OAuth1\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/league/oauth1-client/src',
+        ),
         'League\\Flysystem\\' => 
         array (
             0 => __DIR__ . '/..' . '/league/flysystem/src',
         ),
-        'Directus\\Permissions\\' => 
+        'GuzzleHttp\\Psr7\\' => 
         array (
-            0 => __DIR__ . '/..' . '/directus/permissions',
+            0 => __DIR__ . '/..' . '/guzzlehttp/psr7/src',
+        ),
+        'GuzzleHttp\\Promise\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/guzzlehttp/promises/src',
+        ),
+        'GuzzleHttp\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/guzzlehttp/guzzle/src',
         ),
         'Directus\\Installation\\' => 
         array (
             0 => __DIR__ . '/../..' . '/installation/includes',
         ),
-        'Directus\\Embed\\Provider\\' => 
+        'Directus\\Customs\\Hooks\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/customs/hooks',
+        ),
+        'Directus\\Customs\\Hasher\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/customs/hashers',
+        ),
+        'Directus\\Customs\\Embed\\Provider\\' => 
         array (
             0 => __DIR__ . '/../..' . '/customs/embeds',
-        ),
-        'Directus\\Database\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/directus/database',
-        ),
-        'Directus\\Collection\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/directus/collection',
         ),
         'Directus\\API\\Routes\\' => 
         array (
@@ -116,9 +161,9 @@ class ComposerStaticInit01beb550ff7a79a063e38260b1b1695f
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit01beb550ff7a79a063e38260b1b1695f::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit01beb550ff7a79a063e38260b1b1695f::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInit01beb550ff7a79a063e38260b1b1695f::$prefixesPsr0;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit8c5395608affa52568792f914ba2d6a2::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit8c5395608affa52568792f914ba2d6a2::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit8c5395608affa52568792f914ba2d6a2::$prefixesPsr0;
 
         }, null, ClassLoader::class);
     }

@@ -6,7 +6,7 @@
  * @copyright   2011 Josh Lockhart
  * @link        http://www.slimframework.com
  * @license     http://www.slimframework.com/license
- * @version     2.3.2
+ * @version     2.6.1
  *
  * MIT LICENSE
  *
@@ -34,10 +34,6 @@ class SessionCookieTest extends PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
-        if ( session_id() !== '' ) {
-            session_unset();
-            session_destroy();
-        }
         $_SESSION = array();
     }
 
@@ -67,7 +63,7 @@ class SessionCookieTest extends PHPUnit_Framework_TestCase
         list($status, $header, $body) = $app->response()->finalize();
         $this->assertTrue($app->response->cookies->has('slim_session'));
         $cookie = $app->response->cookies->get('slim_session');
-        $this->assertEquals(serialize(array('foo' => 'bar')), $cookie['value']);
+        $this->assertEquals('{"foo":"bar"}', $cookie['value']);
     }
 
     /**
@@ -77,17 +73,44 @@ class SessionCookieTest extends PHPUnit_Framework_TestCase
      * global secret, cipher, and cipher mode are assumed to be the default
      * values.
      */
-    public function testSessionIsPopulatedFromEncryptedCookie()
+    // public function testSessionIsPopulatedFromEncryptedCookie()
+    // {
+    //     \Slim\Environment::mock(array(
+    //         'SCRIPT_NAME' => '/index.php',
+    //         'PATH_INFO' => '/foo',
+    //         'HTTP_COOKIE' => 'slim_session=1644004961%7CLKkYPwqKIMvBK7MWl6D%2BxeuhLuMaW4quN%2F512ZAaVIY%3D%7Ce0f007fa852c7101e8224bb529e26be4d0dfbd63',
+    //     ));
+    //     $app = new \Slim\Slim();
+    //     // The cookie value in the test is encrypted, so cookies.encrypt must
+    //     // be set to true
+    //     $app->config('cookies.encrypt', true);
+    //     $app->get('/foo', function () {
+    //         echo "Success";
+    //     });
+    //     $mw = new \Slim\Middleware\SessionCookie(array('expires' => '10 years'));
+    //     $mw->setApplication($app);
+    //     $mw->setNextMiddleware($app);
+    //     $mw->call();
+    //     $this->assertEquals(array('foo' => 'bar'), $_SESSION);
+    // }
+
+    /**
+     * Test $_SESSION is populated from an unencrypted HTTP cookie
+     *
+     * The unencrypted cookie contains the serialized array ['foo' => 'bar'].
+     * The global cookies.encrypt setting is set to false
+     */
+    public function testSessionIsPopulatedFromUnencryptedCookie()
     {
         \Slim\Environment::mock(array(
             'SCRIPT_NAME' => '/index.php',
             'PATH_INFO' => '/foo',
-            'HTTP_COOKIE' => 'slim_session=1644004961%7CLKkYPwqKIMvBK7MWl6D%2BxeuhLuMaW4quN%2F512ZAaVIY%3D%7Ce0f007fa852c7101e8224bb529e26be4d0dfbd63',
+            'HTTP_COOKIE' => 'slim_session={"foo":"bar"}',
         ));
         $app = new \Slim\Slim();
-        // The cookie value in the test is encrypted, so cookies.encrypt must
-        // be set to true
-        $app->config('cookies.encrypt', true);
+        // The cookie value in the test is unencrypted, so cookies.encrypt must
+        // be set to false
+        $app->config('cookies.encrypt', false);
         $app->get('/foo', function () {
             echo "Success";
         });
@@ -104,47 +127,16 @@ class SessionCookieTest extends PHPUnit_Framework_TestCase
      * The unencrypted cookie contains the serialized array ['foo' => 'bar'].
      * The global cookies.encrypt setting is set to false
      */
-    public function testSessionIsPopulatedFromUnencryptedCookie()
+    public function testSessionIsPopulatedFromMalformedCookieData()
     {
         \Slim\Environment::mock(array(
             'SCRIPT_NAME' => '/index.php',
             'PATH_INFO' => '/foo',
-            'HTTP_COOKIE' => 'slim_session=a%3A1%3A%7Bs%3A3%3A%22foo%22%3Bs%3A3%3A%22bar%22%3B%7D',
+            'HTTP_COOKIE' => 'slim_session={"foo":"bar"sdkhguy5y}',
         ));
         $app = new \Slim\Slim();
         // The cookie value in the test is unencrypted, so cookies.encrypt must
         // be set to false
-        $app->config('cookies.encrypt', false);
-        $app->get('/foo', function () {
-            echo "Success";
-        });
-        $mw = new \Slim\Middleware\SessionCookie(array('expires' => '10 years'));
-        $mw->setApplication($app);
-        $mw->setNextMiddleware($app);
-        $mw->call();
-        $this->assertEquals(array('foo' => 'bar'), $_SESSION);
-    }
-
-    public function testUnserializeErrorsAreCaughtAndLogged()
-    {
-        \Slim\Environment::mock(array(
-            'SCRIPT_NAME' => '/index.php',
-            'PATH_INFO' => '/foo',
-            'HTTP_COOKIE' => 'slim_session=1644004961%7CLKkYPwqKIMvBK7MWl6D%2BxeuhLuMaW4quN%2F512ZAaVIY%3D%7Ce0f007fa852c7101e8224bb529e26be4d0dfbd63',
-        ));
-
-        $logWriter = $this->getMockBuilder('Slim\LogWriter')
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $logWriter->expects($this->once())
-            ->method('write')
-            ->with('Error unserializing session cookie value! unserialize(): Error at offset 0 of 96 bytes', \Slim\Log::ERROR);
-
-        $app = new \Slim\Slim(array(
-            'log.writer' => $logWriter
-        ));
-        // Unserializing an encrypted value fails if cookie not decrpyted
         $app->config('cookies.encrypt', false);
         $app->get('/foo', function () {
             echo "Success";

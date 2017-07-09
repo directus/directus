@@ -2,9 +2,9 @@
 
 namespace Directus\Installation\Steps;
 
-use Directus\Db\Connection;
-use Directus\Db\SchemaManager;
-use Directus\Db\Schemas\MySQLSchema;
+use Directus\Database\Connection;
+use Directus\Database\SchemaManager;
+use Directus\Database\Schemas\Sources\MySQLSchema;
 use Directus\Util\Installation\InstallerUtils;
 
 class DatabaseStep extends AbstractStep
@@ -94,7 +94,8 @@ class DatabaseStep extends AbstractStep
         // @FIXME: SchemaManager should accept a connection as parameter
         // it shouldn't be a static class no more.
         $schema = new MySQLSchema($connection);
-        if ($schema->someTableExists(SchemaManager::getCoreTables())) {
+        $schemaManager = new SchemaManager($schema);
+        if ($schema->someTableExists($schemaManager->getCoreTables())) {
             throw new \InvalidArgumentException(__t('installation_core_table_exists'));
         }
 

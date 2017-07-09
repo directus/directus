@@ -21,3 +21,5 @@ class Twig_Node_Expression_AssignName extends Twig_Node_Expression_Name
         ;
     }
 }
+
+class_alias('Twig_Node_Expression_AssignName', 'Twig\Node\Expression\AssignNameExpression', false);

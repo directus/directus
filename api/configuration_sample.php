@@ -1,4 +1,5 @@
 <?php
+
 return [
     // Unique session naming
     'session' => [
@@ -23,6 +24,27 @@ return [
         //   'region' => 's3-region',
         //   'version' => 's3-version',
         //   'bucket' => 's3-bucket'
+    ],
+
+    // Third-party authentication options
+    'auth' => [
+        // 'github' => [
+        //     'client_id' => '',
+        //     'client_secret' => ''
+        // ],
+        // 'facebook' => [
+        //     'client_id'          => '',
+        //     'client_secret'      => '',
+        //     'graph_api_version'  => 'v2.8',
+        // ],
+        // 'google' => [
+        //     'client_id'       => '',
+        //     'client_secret'   => '',
+        // ],
+        // 'twitter' => [
+        //     'identifier'   => '',
+        //     'secret'       => ''
+        // ]
     ],
 
     // HTTP Settings
@@ -65,6 +87,7 @@ return [
     ],
 
     'filters' => [
+        // 'table.insert.products:before' => \Directus\Customs\Hooks\BeforeInsertProducts::class,
         'response.directus_users.get' => function ($payload) {
             /*
             // assigned by reference to directly change the value on $payload->data
@@ -113,18 +136,36 @@ return [
     // By default, `active` is the status column's name
     'statusMapping' => [
         0 => [
-            'name' => 'Delete',
-            'color' => '#C1272D',
+            'name' => 'Deleted',
+            'text_color' => '#FFFFFF',
+            'background_color' => '#F44336',
+            'subdued_in_listing' => true,
+            'show_listing_badge' => true,
+            'hidden_globally' => true,
+            'hard_delete' => false,
+            'published' => false,
             'sort' => 3
         ],
         1 => [
-            'name' => 'Active',
-            'color' => '#5B5B5B',
+            'name' => 'Published',
+            'text_color' => '#FFFFFF',
+            'background_color' => '#3498DB',
+            'subdued_in_listing' => false,
+            'show_listing_badge' => false,
+            'hidden_globally' => false,
+            'hard_delete' => false,
+            'published' => true,
             'sort' => 1
         ],
         2 => [
             'name' => 'Draft',
-            'color' => '#BBBBBB',
+            'text_color' => '#999999',
+            'background_color' => '#EEEEEE',
+            'subdued_in_listing' => true,
+            'show_listing_badge' => true,
+            'hidden_globally' => false,
+            'hard_delete' => false,
+            'published' => false,
             'sort' => 2
         ]
     ]

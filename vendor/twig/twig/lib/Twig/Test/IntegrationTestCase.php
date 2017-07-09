@@ -9,18 +9,28 @@
  * file that was distributed with this source code.
  */
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * Integration test helper.
  *
  * @author Fabien Potencier <fabien@symfony.com>
  * @author Karma Dordrak <drak@zikula.org>
  */
-abstract class Twig_Test_IntegrationTestCase extends PHPUnit_Framework_TestCase
+abstract class Twig_Test_IntegrationTestCase extends TestCase
 {
     /**
      * @return string
      */
     abstract protected function getFixturesDir();
+
+    /**
+     * @return Twig_RuntimeLoaderInterface[]
+     */
+    protected function getRuntimeLoaders()
+    {
+        return array();
+    }
 
     /**
      * @return Twig_ExtensionInterface[]
@@ -141,6 +151,10 @@ abstract class Twig_Test_IntegrationTestCase extends PHPUnit_Framework_TestCase
             ), $match[2] ? eval($match[2].';') : array());
             $twig = new Twig_Environment($loader, $config);
             $twig->addGlobal('global', 'global');
+            foreach ($this->getRuntimeLoaders() as $runtimeLoader) {
+                $twig->addRuntimeLoader($runtimeLoader);
+            }
+
             foreach ($this->getExtensions() as $extension) {
                 $twig->addExtension($extension);
             }
@@ -196,7 +210,8 @@ abstract class Twig_Test_IntegrationTestCase extends PHPUnit_Framework_TestCase
 
             if (false !== $exception) {
                 list($class) = explode(':', $exception);
-                $this->assertThat(null, new PHPUnit_Framework_Constraint_Exception($class));
+                $constraintClass = class_exists('PHPUnit\Framework\Constraint\Exception') ? 'PHPUnit\Framework\Constraint\Exception' : 'PHPUnit_Framework_Constraint_Exception';
+                $this->assertThat(null, new $constraintClass($class));
             }
 
             $expected = trim($match[3], "\n ");
@@ -230,3 +245,5 @@ abstract class Twig_Test_IntegrationTestCase extends PHPUnit_Framework_TestCase
         return $templates;
     }
 }
+
+class_alias('Twig_Test_IntegrationTestCase', 'Twig\Test\IntegrationTestCase', false);

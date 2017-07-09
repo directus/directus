@@ -6,7 +6,7 @@
  * @copyright   2011 Josh Lockhart
  * @link        http://www.slimframework.com
  * @license     http://www.slimframework.com/license
- * @version     2.3.2
+ * @version     2.6.1
  *
  * MIT LICENSE
  *
@@ -33,7 +33,7 @@
 //Mock custom view
 class CustomView extends \Slim\View
 {
-    public function render($template) { echo "Custom view"; }
+    public function render($template, $data = null) { echo "Custom view"; }
 }
 
 //Echo Logger
@@ -197,6 +197,50 @@ class SlimTest extends PHPUnit_Framework_TestCase
         ));
         $this->assertEquals('./tmpl', $s->config('templates.path'));
         $this->assertFalse($s->config('debug'));
+    }
+
+    /**
+     * Test set settings recursively
+     */
+    public function testSetSettingsRecursively()
+    {
+        $config = array(
+            'my_module' => array(
+                'paths'  => array(
+                    './my_module/path/1',
+                ),
+            )
+        );
+
+        $s = new \Slim\Slim($config);
+
+        $override = array(
+            'my_module' => array(
+                'paths'  => array(
+                    './my_module/path/2',
+                    './my_module/path/3',
+                ),
+            )
+        );
+
+        // Test recursive batch behaviour
+        $s->config($override, true);
+
+        $expected =  array(
+            'paths'  => array(
+                './my_module/path/1',
+                './my_module/path/2',
+                './my_module/path/3',
+            ),
+        );
+
+        $this->assertEquals($expected, $s->config('my_module'));
+
+        // Test default batch behaviour
+        $s = new \Slim\Slim($config);
+        $s->config($override);
+
+        $this->assertNotEquals($expected, $s->config('my_module'));
     }
 
     /************************************************
@@ -495,6 +539,22 @@ class SlimTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * Tests if route will match in case-insensitive manner if configured to do so
+     */
+    public function testRouteMatchesInCaseInsensitiveMannerIfConfigured()
+    {
+        \Slim\Environment::mock(array(
+            'PATH_INFO' => '/BaR', // Does not match route case
+        ));
+        $s = new \Slim\Slim(array('routes.case_sensitive' => false));
+        $route = $s->get('/bar', function () { echo "xyz"; });
+        $s->call();
+        $this->assertEquals(200, $s->response()->status());
+        $this->assertEquals('xyz', $s->response()->body());
+        $this->assertEquals('/bar', $route->getPattern());
+    }
+
+    /**
      * Test if route contains URL encoded characters
      */
     public function testRouteWithUrlEncodedCharacters()
@@ -550,6 +610,16 @@ class SlimTest extends PHPUnit_Framework_TestCase
     /************************************************
      * RENDERING
      ************************************************/
+
+    /**
+     * Test template path is passed to view
+     */
+    public function testViewGetsTemplatesPath()
+    {
+        $path = dirname(__FILE__) . '/templates';
+        $s = new \Slim\Slim(array('templates.path' => $path));
+        $this->assertEquals($s->view->getTemplatesDirectory(), $path);
+    }
 
     /**
      * Test render with template and data
@@ -735,7 +805,6 @@ class SlimTest extends PHPUnit_Framework_TestCase
             'SCRIPT_NAME' => '/foo', //<-- Physical
             'PATH_INFO' => '/bar', //<-- Virtual
         ));
-        $expectedDate = gmdate('D, d M Y H:i:s T', strtotime('5 days'));
         $s = new \Slim\Slim();
         $s->get('/bar', function () use ($s) {
             $s->expires('5 days');
@@ -743,7 +812,12 @@ class SlimTest extends PHPUnit_Framework_TestCase
         $s->call();
         list($status, $header, $body) = $s->response()->finalize();
         $this->assertTrue(isset($header['Expires']));
-        $this->assertEquals($header['Expires'], $expectedDate);
+
+        $this->assertEquals(
+          strtotime('5 days'),
+          strtotime($header['Expires']),
+          1 // delta
+        );
     }
 
     /**
@@ -1158,6 +1232,25 @@ class SlimTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('Hello', $s->response()->header('X-Slim-Test'));
     }
 
+    /**
+     * Test exception when adding circular middleware queues
+     *
+     * This asserts that the same middleware can NOT be queued twice (usually by accident).
+     * Circular middleware stack causes a troublesome to debug PHP Fatal error:
+     *
+     * > Fatal error: Maximum function nesting level of '100' reached. aborting!
+     */
+    public function testFailureWhenAddingCircularMiddleware()
+    {
+        $this->setExpectedException('\RuntimeException');
+        $middleware = new CustomMiddleware;
+        $s = new \Slim\Slim;
+        $s->add($middleware);
+        $s->add(new CustomMiddleware);
+        $s->add($middleware);
+        $s->run();
+    }
+
     /************************************************
      * FLASH MESSAGING
      ************************************************/
@@ -1193,6 +1286,16 @@ class SlimTest extends PHPUnit_Framework_TestCase
         });
         $s->run();
         $this->assertEquals('Foo', $_SESSION['slim.flash']['info']);
+    }
+
+    public function testFlashData()
+    {
+        $s = new \Slim\Slim();
+        $s->get('/bar', function () use ($s) {
+            $s->flashNow('info', 'bar');
+        });
+        $s->run();
+        $this->assertEquals(array('info' => 'bar'), $s->flashData());
     }
 
     /************************************************
@@ -1507,6 +1610,32 @@ class SlimTest extends PHPUnit_Framework_TestCase
         $this->assertTrue(count($hookOne[10]) === 1);
         $app->clearHooks();
         $this->assertEquals(array(array()), $app->getHooks('test.hook.one'));
+    }
+
+    /**
+     * Test hooks accept multiple arguments
+     *
+     * Pre-conditions:
+     * Slim app instantiated;
+     * Hook name does not exist;
+     * Listener is a callable object;
+     *
+     * Post-conditions:
+     * Callable invoked with 2 arguments
+     */
+    public function testHooksMultipleArguments()
+    {
+        $testArgA = 'argumentA';
+        $testArgB = 'argumentB';
+
+        $this->expectOutputString($testArgA . $testArgB);
+
+	$app = new \Slim\Slim();
+
+        $app->hook('test.hook.one', function ($argA, $argB) {
+                echo $argA . $argB;
+        });
+        $app->applyHook('test.hook.one', $testArgA, $testArgB);
     }
 
     /**

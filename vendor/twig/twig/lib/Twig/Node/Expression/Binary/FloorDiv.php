@@ -22,3 +22,5 @@ class Twig_Node_Expression_Binary_FloorDiv extends Twig_Node_Expression_Binary
         return $compiler->raw('/');
     }
 }
+
+class_alias('Twig_Node_Expression_Binary_FloorDiv', 'Twig\Node\Expression\Binary\FloorDivBinary', false);

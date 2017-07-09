@@ -36,3 +36,5 @@ class Twig_Cache_Null implements Twig_CacheInterface
         return 0;
     }
 }
+
+class_alias('Twig_Cache_Null', 'Twig\Cache\NullCache', false);

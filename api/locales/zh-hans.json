@@ -33,7 +33,7 @@
     "global_settings_project_name_placeholder": "我的项目",
     "global_settings_project_name_comment": "你的项目名称",
     "global_settings_project_url_comment": "点击 logo 时将重定向至此链接",
-    "global_settings_cms_thumbnail_url_comment": "设置 logo 的图片链接 (170x100)",
+    "global_settings_cms_thumbnail_url_comment": "设置 logo 的图片链接 (200×64)",
     "global_settings_cms_user_auto_sign_out_comment": "用户在闲置时限过后将被自动退出",
     "global_settings_rows_per_page_comment": "单页列表可显示的最大行数",
     "settings_files_file_naming_comment": "所上传文件的命名规范",
@@ -216,7 +216,7 @@
     "o2m_result_limit_comment": "返回结果的最大数量",
     "add_new_x_item": "在 %{table} 添加新项目",
 
-    "directus_files": "Directus 文件",
+    "directus_files_choose": "Directus 文件",
     "file_upload": "上传",
     "drag_and_drop": "拖放",
     "file_here": "文件到这里",
@@ -241,6 +241,7 @@
 
     "select_options_comment": "输入 JSON 键值对：键为要保存的值，值为显示予前端的名称。",
     "select_placeholder_text": "输入占位文本",
+    "select_auto_search_limit_text": "Minimum number of value to display search",
 
     "one_file_only_please": "只能上传一个文件",
     "enter_the_url_to_a_file": "输入文件 URL：",
@@ -257,7 +258,7 @@
     "character_blacklist": "字符黑名单",
     "character_whitelist": "字符白名单",
     "regex": "正则表达式",
-    "textinput_validation_string_comment": "所有以下字符将被强制验证",
+    "text_input_validation_string_comment": "所有以下字符将被强制验证",
 
     "translation_title": "译文",
     "translations_x": "%{field}",
@@ -305,9 +306,7 @@
     "are_you_sure_you_want_to_sign_out": "你确定要退出吗？",
 
     "you_must_be_logged_in_to_access_the_api": "访问 API 需先登录",
-    "invalid_request_nonce": "无效请求（nonce）",
     "no_such_extensions_found": "找不到扩展",
-    "unauthorized_nonce": "未授权（nonce）",
     "extension_x_must_return_array_got_y_instead": "扩展 %{extension_name} 必须返回 array；实际返回 %{type}",
     "incorrect_email_or_password": "邮箱地址或密码不正确",
     "missing_email_or_password": "邮箱地址或密码未输入",

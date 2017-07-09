@@ -25,3 +25,5 @@ abstract class Twig_Node_Expression_Unary extends Twig_Node_Expression
 
     abstract public function operator(Twig_Compiler $compiler);
 }
+
+class_alias('Twig_Node_Expression_Unary', 'Twig\Node\Expression\Unary\AbstractUnary', false);

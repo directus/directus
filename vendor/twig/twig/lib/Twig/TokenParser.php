@@ -29,3 +29,5 @@ abstract class Twig_TokenParser implements Twig_TokenParserInterface
         $this->parser = $parser;
     }
 }
+
+class_alias('Twig_TokenParser', 'Twig\TokenParser\AbstractTokenParser', false);

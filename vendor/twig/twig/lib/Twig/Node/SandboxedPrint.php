@@ -47,3 +47,5 @@ class Twig_Node_SandboxedPrint extends Twig_Node_Print
         return $node;
     }
 }
+
+class_alias('Twig_Node_SandboxedPrint', 'Twig\Node\SandboxedPrintNode', false);

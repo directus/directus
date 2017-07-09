@@ -6,7 +6,7 @@
  * @copyright   2011 Josh Lockhart
  * @link        http://www.slimframework.com
  * @license     http://www.slimframework.com/license
- * @version     2.3.2
+ * @version     2.6.1
  *
  * MIT LICENSE
  *
@@ -29,6 +29,28 @@
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+
+class LazyInitializeTestClass {
+    public static $initialized = false;
+
+    public function __construct() {
+        self::$initialized = true;
+    }
+
+    public function foo() {
+    }
+}
+
+class FooTestClass {
+    public static $foo_invoked = false;
+    public static $foo_invoked_args = array();
+
+    public function foo() {
+        self::$foo_invoked = true;
+        self::$foo_invoked_args = func_get_args();
+    }
+}
+
 class RouteTest extends PHPUnit_Framework_TestCase
 {
     public function testGetPattern()
@@ -65,6 +87,51 @@ class RouteTest extends PHPUnit_Framework_TestCase
         $route = new \Slim\Route('/foo', $callable);
 
         $this->assertSame($callable, $route->getCallable());
+    }
+
+    public function testGetCallableAsClass()
+    {
+        FooTestClass::$foo_invoked = false;
+        FooTestClass::$foo_invoked_args = array();
+        $route = new \Slim\Route('/foo', '\FooTestClass:foo');
+        $route->setParams(array('bar' => '1234'));
+
+        $this->assertFalse(FooTestClass::$foo_invoked);
+        $this->assertTrue($route->dispatch());
+        $this->assertTrue(FooTestClass::$foo_invoked);
+        $this->assertEquals(array('1234'), FooTestClass::$foo_invoked_args);
+    }
+
+    public function testGetCallableAsClassLazyInitialize()
+    {
+        LazyInitializeTestClass::$initialized = false;
+
+        $route = new \Slim\Route('/foo', '\LazyInitializeTestClass:foo');
+        $this->assertFalse(LazyInitializeTestClass::$initialized);
+
+        $route->dispatch();
+        $this->assertTrue(LazyInitializeTestClass::$initialized);
+    }
+
+    public function testGetCallableAsStaticMethod()
+    {
+        $route = new \Slim\Route('/bar', '\Slim\Slim::getInstance');
+
+        $callable = $route->getCallable();
+        $this->assertEquals('\Slim\Slim::getInstance', $callable);
+    }
+
+    public function example_càllâble_wïth_wéird_chars()
+    {
+        return 'test';
+    }
+
+    public function testGetCallableWithOddCharsAsClass()
+    {
+        $route = new \Slim\Route('/foo', '\RouteTest:example_càllâble_wïth_wéird_chars');
+        $callable = $route->getCallable();
+
+        $this->assertEquals('test', $callable());
     }
 
     public function testSetCallable()
@@ -253,6 +320,20 @@ class RouteTest extends PHPUnit_Framework_TestCase
         $route3 = new \Slim\Route($pattern, function () {});
         $this->assertTrue($route3->matches('/archive/2010/05/13'));
         $this->assertEquals(array('year' => '2010', 'month' => '05', 'day' => '13'), $route3->getParams());
+    }
+
+    public function testMatchesIsCaseSensitiveByDefault()
+    {
+        $route = new \Slim\Route('/case/sensitive', function () {});
+        $this->assertTrue($route->matches('/case/sensitive'));
+        $this->assertFalse($route->matches('/CaSe/SensItiVe'));
+    }
+
+    public function testMatchesCanBeCaseInsensitive()
+    {
+        $route = new \Slim\Route('/Case/Insensitive', function () {}, false);
+        $this->assertTrue($route->matches('/Case/Insensitive'));
+        $this->assertTrue($route->matches('/CaSe/iNSensItiVe'));
     }
 
     public function testGetConditions()
@@ -453,12 +534,30 @@ class RouteTest extends PHPUnit_Framework_TestCase
         $this->assertAttributeEquals(array('GET', 'POST', 'PUT'), 'methods', $route);
     }
 
+    public function testAppendArrayOfHttpMethods()
+    {
+        $arrayOfMethods = array('GET','POST','PUT');
+        $route = new \Slim\Route('/foo', function () {});
+        $route->appendHttpMethods($arrayOfMethods);
+
+        $this->assertAttributeEquals($arrayOfMethods,'methods',$route);
+    }
+
     public function testAppendHttpMethodsWithVia()
     {
         $route = new \Slim\Route('/foo', function () {});
         $route->via('PUT');
 
         $this->assertAttributeContains('PUT', 'methods', $route);
+    }
+
+    public function testAppendArrayOfHttpMethodsWithVia()
+    {
+        $arrayOfMethods = array('GET','POST','PUT');
+        $route = new \Slim\Route('/foo', function () {});
+        $route->via($arrayOfMethods);
+
+        $this->assertAttributeEquals($arrayOfMethods,'methods',$route);
     }
 
     public function testSupportsHttpMethod()

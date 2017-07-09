@@ -32,3 +32,5 @@ class Twig_Node_AutoEscape extends Twig_Node
         $compiler->subcompile($this->getNode('body'));
     }
 }
+
+class_alias('Twig_Node_AutoEscape', 'Twig\Node\AutoEscapeNode', false);

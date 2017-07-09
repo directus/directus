@@ -70,3 +70,5 @@ class Twig_Node_Expression_GetAttr extends Twig_Node_Expression
         $compiler->raw(')');
     }
 }
+
+class_alias('Twig_Node_Expression_GetAttr', 'Twig\Node\Expression\GetAttrExpression', false);

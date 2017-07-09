@@ -3,6 +3,7 @@
 namespace League\Flysystem;
 
 use InvalidArgumentException;
+use League\Flysystem\Adapter\CanOverwriteFiles;
 use League\Flysystem\Plugin\PluggableTrait;
 use League\Flysystem\Util\ContentListingFormatter;
 
@@ -94,7 +95,7 @@ class Filesystem implements FilesystemInterface
         $path = Util::normalizePath($path);
         $config = $this->prepareConfig($config);
 
-        if ($this->has($path)) {
+        if ( ! $this->adapter instanceof CanOverwriteFiles && $this->has($path)) {
             return (bool) $this->getAdapter()->update($path, $contents, $config);
         }
 
@@ -114,7 +115,7 @@ class Filesystem implements FilesystemInterface
         $config = $this->prepareConfig($config);
         Util::rewindStream($resource);
 
-        if ($this->has($path)) {
+        if ( ! $this->adapter instanceof CanOverwriteFiles &&$this->has($path)) {
             return (bool) $this->getAdapter()->updateStream($path, $resource, $config);
         }
 

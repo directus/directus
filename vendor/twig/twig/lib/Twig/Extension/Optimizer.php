@@ -31,3 +31,5 @@ class Twig_Extension_Optimizer extends Twig_Extension
         return 'optimizer';
     }
 }
+
+class_alias('Twig_Extension_Optimizer', 'Twig\Extension\OptimizerExtension', false);

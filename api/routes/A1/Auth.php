@@ -11,6 +11,7 @@ use Directus\Services\AuthService;
 use Directus\Util\DateUtils;
 use Directus\Util\StringUtils;
 use Directus\View\JsonView;
+use Zend\Db\TableGateway\TableGateway;
 
 class Auth extends Route
 {
@@ -65,7 +66,7 @@ class Auth extends Route
         $req = $app->request();
         $email = $req->post('email');
         $password = $req->post('password');
-        $Users = new DirectusUsersTableGateway($ZendDb, $acl);
+        $Users = new DirectusUsersTableGateway($ZendDb, null);
         $user = $Users->findOneBy('email', $email);
 
         if (!$user) {
@@ -75,12 +76,13 @@ class Auth extends Route
         // ------------------------------
         // Check if group needs whitelist
         $groupId = $user['group'];
-        $directusGroupsTableGateway = new DirectusGroupsTableGateway($ZendDb, $acl);
+        $directusGroupsTableGateway = new DirectusGroupsTableGateway($ZendDb, null);
         if (!$directusGroupsTableGateway->acceptIP($groupId, $app->request->getIp())) {
             return $this->app->response([
-                'message' => 'Request not allowed from IP address',
-                'success' => false
-                // 'all_nonces' => $requestNonceProvider->getAllNonces()
+                'success' => false,
+                'error' => [
+                    'message' => 'Request not allowed from IP address',
+                ]
             ]);
         }
 
@@ -96,9 +98,10 @@ class Auth extends Route
         $response['success'] = $auth->login($user['id'], $user['password'], $user['salt'], $password);
 
         // When the credentials are correct but the user is Inactive
-        $userHasStatusColumn = array_key_exists(STATUS_COLUMN_NAME, $user);
         $isUserActive = false;
-        if ($userHasStatusColumn && $user[STATUS_COLUMN_NAME] == STATUS_ACTIVE_NUM) {
+        // TODO: Add a method in RowGateway to check whether the user is active or not
+        // TODO: Add information about the user status
+        if ($user['active'] == STATUS_ACTIVE_NUM) {
             $isUserActive = true;
         }
 
@@ -115,16 +118,20 @@ class Auth extends Route
             $acl->setUserId($user['id']);
             $acl->setGroupId($user['group']);
 
-            $app->emitter->run('directus.authenticated', [$app, $user]);
-            $app->emitter->run('directus.authenticated.admin', [$app, $user]);
+            $app->hookEmitter->run('directus.authenticated', [$app, $user]);
+            $app->hookEmitter->run('directus.authenticated.admin', [$app, $user]);
             unset($response['message']);
             $response['last_page'] = json_decode($user['last_page']);
             $userSession = $auth->getUserInfo();
-            $set = ['last_login' => DateUtils::now(), 'access_token' => $userSession['access_token']];
+            $set = [
+                'ip' => get_request_ip(),
+                'last_login' => DateUtils::now(),
+                'access_token' => $userSession['access_token']
+            ];
             $where = ['id' => $user['id']];
             $updateResult = $Users->update($set, $where);
 
-            $Activity = new DirectusActivityTableGateway($ZendDb, $acl);
+            $Activity = new DirectusActivityTableGateway($ZendDb, null);
             $Activity->recordLogin($user['id']);
         }
 
@@ -140,9 +147,9 @@ class Auth extends Route
         }
 
         if ($inactive) {
-            $app->redirect(DIRECTUS_PATH . 'login.php?inactive=1');
+            $app->redirect(get_directus_path('/login.php?inactive=1'));
         } else {
-            $app->redirect(DIRECTUS_PATH . 'login.php');
+            $app->redirect(get_directus_path('/login.php'));
         }
     }
 
@@ -151,9 +158,8 @@ class Auth extends Route
         $app = $this->app;
         $auth = $app->container->get('auth');
         $ZendDb = $app->container->get('zenddb');
-        $acl = $app->container->get('acl');
 
-        $DirectusUsersTableGateway = new DirectusUsersTableGateway($ZendDb, $acl);
+        $DirectusUsersTableGateway = new DirectusUsersTableGateway($ZendDb, null);
         $user = $DirectusUsersTableGateway->findOneBy('reset_token', $token);
 
         if (!$user) {
@@ -180,11 +186,7 @@ class Auth extends Route
             $app->halt(200, __t('password_reset_error'));
         }
 
-        $data = ['new_password' => $password];
-        Mail::send('mail/forgot-password.twig.html', $data, function ($message) use ($user) {
-            $message->setSubject(__t('password_reset_new_password_email_subject'));
-            $message->setTo($user['email']);
-        });
+        send_forgot_password_email($user, $password);
 
         $app->halt(200, __t('password_reset_new_temporary_password_sent'));
     }
@@ -192,9 +194,7 @@ class Auth extends Route
     public function forgotPassword()
     {
         $app = $this->app;
-        $auth = $app->container->get('auth');
         $ZendDb = $app->container->get('zenddb');
-        $acl = $app->container->get('acl');
 
         $email = $app->request()->post('email');
         if (!isset($email)) {
@@ -206,7 +206,7 @@ class Auth extends Route
             ]);
         }
 
-        $DirectusUsersTableGateway = new DirectusUsersTableGateway($ZendDb, $acl);
+        $DirectusUsersTableGateway = new DirectusUsersTableGateway($ZendDb, null);
         $user = $DirectusUsersTableGateway->findOneBy('email', $email);
 
         if (false === $user) {
@@ -232,11 +232,7 @@ class Auth extends Route
             ]);
         }
 
-        $data = ['reset_token' => $set['reset_token']];
-        Mail::send('mail/reset-password.twig.html', $data, function ($message) use ($user) {
-            $message->setSubject(__t('password_forgot_password_reset_email_subject'));
-            $message->setTo($user['email']);
-        });
+        send_reset_password_email($user, $set['reset_token']);
 
         return $this->app->response([
             'success' => true

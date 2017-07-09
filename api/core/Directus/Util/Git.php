@@ -4,31 +4,30 @@ namespace Directus\Util;
 
 class Git
 {
-
-    public static function getCloneHash($expectedGitDirectory)
+    public static function getCloneHash($rootDirectory)
     {
-        $headFile = $expectedGitDirectory . '/HEAD';
+        $hash = static::getGitHash($rootDirectory);
+
+        return $hash ? $hash : session_id();
+    }
+
+    public static function getGitHash($rootDirectory)
+    {
+        $hash = null;
+        $headFile = $rootDirectory . '/HEAD';
         // Parent-level clone
         if (is_file($headFile)) {
             $headFileContents = file_get_contents($headFile);
             if (false === strpos($headFileContents, 'ref:')) {
-                return $headFileContents;
+                $hash = $headFileContents;
             } else {
                 $branchPath = explode('ref:', $headFileContents);
                 $branchPath = trim(array_pop($branchPath));
-                $branchPath = $expectedGitDirectory . "/$branchPath";
-                return trim(file_get_contents($branchPath));
+                $branchPath = $rootDirectory . '/' . $branchPath;
+                $hash = trim(file_get_contents($branchPath));
             }
-        } // Submodule
-        elseif (is_file($expectedGitDirectory)) {
-            $modulePath = explode('gitdir:', file_get_contents($expectedGitDirectory));
-            $modulePath = trim(array_pop($modulePath));
-            $modulePath = dirname($expectedGitDirectory) . "/$modulePath";
-            return self::getCloneHash($modulePath);
-        } else {
-            //Always bust cache
-            return session_id();
         }
-    }
 
+        return $hash;
+    }
 }

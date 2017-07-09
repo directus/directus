@@ -30,7 +30,6 @@ class AddMessagesRecipientsCreateColumn extends Ruckusing_Migration_Base
                 'hidden' => 1,
                 'single' => 0,
                 'footer' => 0,
-                'list_view' => NULL,
                 'column_groupings' => NULL,
                 'primary_column' => NULL,
                 'user_create_column' => 'recipient',

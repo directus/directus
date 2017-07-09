@@ -29,3 +29,5 @@ class Twig_Node_Flush extends Twig_Node
         ;
     }
 }
+
+class_alias('Twig_Node_Flush', 'Twig\Node\FlushNode', false);

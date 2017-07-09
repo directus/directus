@@ -5,16 +5,20 @@
 
 <body>
 
-    {% include 'partials/header.twig.html' %}
+    <div class="modal">
 
-    <div class="container">
+        {% include 'partials/header.twig.html' %}
+
         <form method="post" action="{{ directus.root_path }}installation/index.php?step={{ directus.current_step }}">
 
             {% block content %}{% endblock %}
 
-            <button type="submit" class="button primary disabled">{{ 'Continue'|__t }}</button>
-            <a href="{{ directus.root_path }}installation/index.php?step={{ directus.current_step - 1 }}"
-               class="no-button{{ directus.current_step > 1 ? '' : ' hide' }}">{{ 'Go Back' }}</a>
+            <div class="buttons">
+                <a href="{{ directus.root_path }}installation/index.php?step={{ directus.current_step - 1 }}" class="{{ directus.current_step > 1 ? '' : ' hide' }}">
+                    <button type="button" class="button back-button">{{ 'Back'|t }}</button>
+                </a>
+                <button type="submit" class="button primary disabled">{{ 'Next'|t }}</button>
+            </div>
         </form>
     </div>
 

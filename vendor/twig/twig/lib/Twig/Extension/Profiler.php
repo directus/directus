@@ -44,3 +44,6 @@ class Twig_Extension_Profiler extends Twig_Extension
         return 'profiler';
     }
 }
+
+class_alias('Twig_Extension_Profiler', 'Twig\Extension\ProfilerExtension', false);
+class_exists('Twig_Profiler_Profile');

@@ -332,11 +332,6 @@ class Twig_Error extends Exception
         $r = new ReflectionObject($template);
         $file = $r->getFileName();
 
-        // hhvm has a bug where eval'ed files comes out as the current directory
-        if (is_dir($file)) {
-            $file = '';
-        }
-
         $exceptions = array($e = $this);
         while (($e instanceof self || method_exists($e, 'getPrevious')) && $e = $e->getPrevious()) {
             $exceptions[] = $e;
@@ -363,3 +358,6 @@ class Twig_Error extends Exception
         }
     }
 }
+
+class_alias('Twig_Error', 'Twig\Error\Error', false);
+class_exists('Twig_Source');

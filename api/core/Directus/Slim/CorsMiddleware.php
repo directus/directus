@@ -9,7 +9,9 @@ class CorsMiddleware extends Middleware
 {
     public function call()
     {
-        $corsOptions = ArrayUtils::get($this->app->container->get('config'), 'cors', []);
+        $config = $this->app->container->get('config');
+        $corsOptions = $config->get('cors', []);
+
         if (ArrayUtils::get($corsOptions, 'enabled', false)) {
             $response = $this->app->response();
             $response->header('Access-Control-Allow-Origin', ArrayUtils::get($corsOptions, 'origin', '*'));

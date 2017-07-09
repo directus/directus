@@ -24,3 +24,5 @@ class Twig_Node_Expression_TempName extends Twig_Node_Expression
         ;
     }
 }
+
+class_alias('Twig_Node_Expression_TempName', 'Twig\Node\Expression\TempNameExpression', false);

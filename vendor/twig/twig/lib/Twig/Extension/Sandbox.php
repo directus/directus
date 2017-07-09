@@ -99,3 +99,5 @@ class Twig_Extension_Sandbox extends Twig_Extension
         return 'sandbox';
     }
 }
+
+class_alias('Twig_Extension_Sandbox', 'Twig\Extension\SandboxExtension', false);

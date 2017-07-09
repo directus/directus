@@ -89,3 +89,5 @@ class Twig_Node_Expression_BlockReference extends Twig_Node_Expression
         return $compiler->raw(')');
     }
 }
+
+class_alias('Twig_Node_Expression_BlockReference', 'Twig\Node\Expression\BlockReferenceExpression', false);

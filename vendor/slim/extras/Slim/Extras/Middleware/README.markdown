@@ -1,24 +1,5 @@
 # Slim Authentication and XSS Middlewares
 
-## Cache
-
-Provides basic Caching functionality.
-
-### How to use
-
-    use \Slim\Slim;
-    use \Slim\Extras\Middleware\Cache;
-    use \Slim\Extras\Middleware\Cache\PDOCacheHandler;
-
-    $db = ...
-    $app = new Slim();
-    $handler = new PDOCacheHandler($db);
-    $app->add(new Cache($handler));
-
-The example implementation `PDOCacheHandler` uses a PDO connection to a MySQL
-database and the table structure included in `Cache/cache.sql`. You can write
-your own handler by implementing the `ICacheHandler` interface.
-
 ## CsrfGuard
 
 This is used to protect your website from CSRF attacks. 

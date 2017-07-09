@@ -2,14 +2,16 @@
 
 namespace Directus\API\Routes\A1;
 
+use Directus\Application\Application;
 use Directus\Application\Route;
+use Directus\Database\TableGateway\BaseTableGateway;
 use Directus\Database\TableGateway\DirectusActivityTableGateway;
 use Directus\Database\TableGateway\DirectusGroupsTableGateway;
 use Directus\Database\TableGateway\DirectusMessagesRecipientsTableGateway;
 use Directus\Database\TableGateway\DirectusMessagesTableGateway;
 use Directus\Database\TableGateway\DirectusUsersTableGateway;
 use Directus\Database\TableGateway\RelationalTableGateway as TableGateway;
-use Directus\Mail\Mail;
+use Directus\Exception\ForbiddenException;
 use Directus\Util\ArrayUtils;
 use Directus\Util\DateUtils;
 use Directus\View\JsonView;
@@ -21,6 +23,7 @@ class Messages extends Route
         $acl = $this->app->container->get('acl');
         $ZendDb = $this->app->container->get('zenddb');
         $currentUserId = $userId !== null ? $userId : $acl->getUserId();
+        $params = $this->app->request()->get();
 
         if (isset($_GET['max_id'])) {
             $messagesRecipientsTableGateway = new DirectusMessagesRecipientsTableGateway($ZendDb, $acl);
@@ -36,14 +39,37 @@ class Messages extends Route
         }
 
         $messagesTableGateway = new DirectusMessagesTableGateway($ZendDb, $acl);
-        $result = $messagesTableGateway->fetchMessagesInboxWithHeaders($currentUserId);
-        $meta = ArrayUtils::omit($result, 'rows');
-        $result['meta']['type'] = 'collection';
-        $result['meta']['table'] = 'directus_messages';
+        $result = $messagesTableGateway->fetchMessagesInboxWithHeaders($currentUserId, null, $params);
+
+        $meta = ArrayUtils::omit($result, 'data');
+        $meta['type'] = 'collection';
+        $meta['table'] = 'directus_messages';
 
         return $this->app->response([
             'meta' => $meta,
-            'data' => ArrayUtils::get($result, 'rows', [])
+            'data' => ArrayUtils::get($result, 'data', [])
+        ]);
+    }
+
+    public function archiveMessages()
+    {
+        $acl = $this->app->container->get('acl');
+        $ZendDb = $this->app->container->get('zenddb');
+        $currentUserId = $acl->getUserId();
+
+        $request = $this->app->request();
+        $rows = $request->post('rows');
+        $responsesIds = [];
+
+        foreach($rows as $row) {
+            $responsesIds[] = $row['id'];
+        }
+
+        $messagesTableGateway = new DirectusMessagesRecipientsTableGateway($ZendDb, $acl);
+        $success = $messagesTableGateway->archiveMessages($currentUserId, $responsesIds);
+
+        return JsonView::render([
+            'success' => (bool) $success
         ]);
     }
 
@@ -78,36 +104,57 @@ class Messages extends Route
 
     public function patchRow($id)
     {
+        $this->enforceAddMessages();
+
         $app = $this->app;
         $acl = $app->container->get('acl');
         $ZendDb = $app->container->get('zenddb');
         $currentUserId = $acl->getUserId();
 
         $messagesTableGateway = new DirectusMessagesTableGateway($ZendDb, $acl);
-        $messagesRecipientsTableGateway = new DirectusMessagesRecipientsTableGateway($ZendDb, $acl);
 
         $message = $messagesTableGateway->fetchMessageWithRecipients($id, $currentUserId);
 
         $ids = [$message['id']];
         $message['read'] = 1;
 
-        foreach ($message['responses']['rows'] as &$response) {
-            $ids[] = $response['id'];
-            $response['read'] = 1;
+        foreach ($message['responses']['data'] as &$responseItem) {
+            $ids[] = $responseItem['id'];
+            $responseItem['read'] = 1;
         }
 
-        $messagesRecipientsTableGateway->markAsRead($ids, $currentUserId);
+        // NOTE: Force Read without the need of the user permission to update this table
+        $messagesRecipientsTable = new DirectusMessagesRecipientsTableGateway($ZendDb, null);
+        $messagesRecipientsTable->markAsRead($ids, $currentUserId);
 
-        return $this->app->response($message);
+        $response = [
+            'meta' => ['table' => 'directus_messages', 'type' => 'item'],
+            'data' => $message
+        ];
+
+        return $this->app->response($response);
     }
 
-    public function postRows()
+    public function postRows($responseTo = null)
     {
+        $this->enforceAddMessages();
+
         $app = $this->app;
         $acl = $app->container->get('acl');
         $ZendDb = $app->container->get('zenddb');
         $currentUserId = $acl->getUserId();
         $requestPayload = $app->request()->post();
+        $messagesTableGateway = new DirectusMessagesTableGateway($ZendDb, $acl);
+
+        if ($responseTo !== null) {
+            $requestPayload['response_to'] = $responseTo;
+        }
+
+        $responseTo = ArrayUtils::get($requestPayload, 'response_to');
+        if ($responseTo) {
+            $parentMessage = $messagesTableGateway->loadEntries(['id' => $responseTo]);
+            $requestPayload['comment_metadata'] = ArrayUtils::get($parentMessage, 'comment_metadata');
+        }
 
         // Unpack recipients
         $recipients = explode(',', $requestPayload['recipients']);
@@ -133,32 +180,41 @@ class Messages extends Route
 
         $userRecipients[] = $currentUserId;
 
-        $messagesTableGateway = new DirectusMessagesTableGateway($ZendDb, $acl);
         $id = $messagesTableGateway->sendMessage($requestPayload, array_unique($userRecipients), $currentUserId);
 
         if ($id) {
-            $Activity = new DirectusActivityTableGateway($ZendDb, $acl);
+            $Activity = new DirectusActivityTableGateway($ZendDb);
             $requestPayload['id'] = $id;
             $Activity->recordMessage($requestPayload, $currentUserId);
         }
 
         foreach ($userRecipients as $recipient) {
+            // Do not the send a notification to the sender
+            if ($recipient == $currentUserId) {
+                continue;
+            }
+
             $usersTableGateway = new DirectusUsersTableGateway($ZendDb, $acl);
             $user = $usersTableGateway->findOneBy('id', $recipient);
 
             if (isset($user) && $user['email_messages'] == 1) {
-                $data = ['message' => $requestPayload['message']];
-                $view = 'mail/notification.twig.html';
-                Mail::send($view, $data, function ($message) use ($user, $requestPayload) {
-                    $message->setSubject($requestPayload['subject']);
-                    $message->setTo($user['email']);
-                });
+                send_message_notification_email($user, $requestPayload);
             }
         }
 
         $message = $messagesTableGateway->fetchMessageWithRecipients($id, $currentUserId);
+        // hotfix: When the message is a response, it will be inside responses.data keys
+        if (ArrayUtils::get($requestPayload, 'response_to')) {
+            $messageData = ArrayUtils::get($message, 'responses.data', []);
+            $message = array_shift($messageData);
+        }
 
-        return $this->app->response($message);
+        $response = [
+            'meta' => ['table' => 'directus_messages', 'type' => 'item'],
+            'data' => $message
+        ];
+
+        return $this->app->response($response);
     }
 
     public function recipients()
@@ -182,6 +238,8 @@ class Messages extends Route
 
     public function comments()
     {
+        $this->enforceAddMessages();
+
         $app = $this->app;
         $acl = $app->container->get('acl');
         $ZendDb = $app->container->get('zenddb');
@@ -247,16 +305,16 @@ class Messages extends Route
             }
 
             foreach ($userRecipients as $recipient) {
+                // Do not the send a notification to the sender
+                if ($recipient == $currentUserId) {
+                    continue;
+                }
+
                 $usersTableGateway = new DirectusUsersTableGateway($ZendDb, $acl);
                 $user = $usersTableGateway->findOneBy('id', $recipient);
 
                 if (isset($user) && $user['email_messages'] == 1) {
-                    $data = ['message' => $requestPayload['message']];
-                    $view = 'mail/notification.twig.html';
-                    Mail::send($view, $data, function ($message) use ($user, $requestPayload) {
-                        $message->setSubject($requestPayload['subject']);
-                        $message->setTo($user['email']);
-                    });
+                    send_message_notification_email($user, $requestPayload);
                 }
             }
         }
@@ -269,5 +327,17 @@ class Messages extends Route
         $entries = $TableGateway->getEntries($params);
 
         return $this->app->response($entries);
+    }
+
+    private function enforceAddMessages()
+    {
+        $dbConnection = $this->app->container->get('zenddb');
+        $acl = $this->app->container->get('acl');
+        $groupTable = new BaseTableGateway('directus_groups', $dbConnection);
+        $group = $groupTable->find($acl->getGroupId());
+
+        if (!$group || !ArrayUtils::get($group, 'show_messages')) {
+            throw new ForbiddenException('You are not allowed to send messages');
+        }
     }
 }

@@ -6,7 +6,7 @@
  * @copyright   2011 Josh Lockhart
  * @link        http://www.slimframework.com
  * @license     http://www.slimframework.com/license
- * @version     2.3.2
+ * @version     2.6.1
  *
  * MIT LICENSE
  *
@@ -190,6 +190,7 @@ class RequestTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(3, count($req->params()));
         $this->assertEquals('1', $req->params('one'));
         $this->assertNull($req->params('foo'));
+        $this->assertEquals(1, $req->params('foo', 1));
     }
 
     /**
@@ -221,6 +222,7 @@ class RequestTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(3, count($req->get()));
         $this->assertEquals('1', $req->get('one'));
         $this->assertNull($req->get('foo'));
+        $this->assertFalse($req->get('foo', false));
     }
 
     /**
@@ -236,6 +238,7 @@ class RequestTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(3, count($req->get()));
         $this->assertEquals('1', $req->get('one'));
         $this->assertNull($req->get('foo'));
+        $this->assertFalse($req->get('foo', false));
     }
 
     /**
@@ -253,6 +256,7 @@ class RequestTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(2, count($req->post()));
         $this->assertEquals('bar', $req->post('foo'));
         $this->assertNull($req->post('xyz'));
+        $this->assertFalse($req->post('xyz', false));
     }
 
     /**
@@ -271,6 +275,7 @@ class RequestTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(2, count($req->post()));
         $this->assertEquals('bar', $req->post('foo'));
         $this->assertNull($req->post('xyz'));
+        $this->assertFalse($req->post('xyz', false));
     }
 
     /**
@@ -319,6 +324,7 @@ class RequestTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('bar', $req->put('foo'));
         $this->assertEquals('bar', $req->params('foo'));
         $this->assertNull($req->put('xyz'));
+        $this->assertFalse($req->put('xyz', false));
     }
 
     /**
@@ -337,6 +343,7 @@ class RequestTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('bar', $req->patch('foo'));
         $this->assertEquals('bar', $req->params('foo'));
         $this->assertNull($req->patch('xyz'));
+        $this->assertFalse($req->patch('xyz', false));
     }
 
     /**
@@ -355,6 +362,7 @@ class RequestTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('bar', $req->delete('foo'));
         $this->assertEquals('bar', $req->params('foo'));
         $this->assertNull($req->delete('xyz'));
+        $this->assertFalse($req->delete('xyz', false));
     }
 
     /**
@@ -501,6 +509,19 @@ class RequestTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * Test get content type for built-in PHP server
+     */
+    public function testGetContentTypeForBuiltInServer()
+    {
+        $env = \Slim\Environment::mock(array(
+            'slim.input' => '',
+            'HTTP_CONTENT_TYPE' => 'application/json; charset=ISO-8859-4'
+        ));
+        $req = new \Slim\Http\Request($env);
+        $this->assertEquals('application/json; charset=ISO-8859-4', $req->getContentType());
+    }
+
+    /**
      * Test get content type
      */
     public function testGetContentTypeWhenNotExists()
@@ -508,6 +529,19 @@ class RequestTest extends PHPUnit_Framework_TestCase
         $env = \Slim\Environment::mock();
         $req = new \Slim\Http\Request($env);
         $this->assertNull($req->getContentType());
+    }
+
+    /**
+     * Test get content type with built-in server
+     */
+    public function testGetContentTypeWithBuiltInServer()
+    {
+        $env = \Slim\Environment::mock(array(
+            'slim.input' => '',
+            'HTTP_CONTENT_TYPE' => 'application/json; charset=ISO-8859-4'
+        ));
+        $req = new \Slim\Http\Request($env);
+        $this->assertEquals('application/json; charset=ISO-8859-4', $req->getContentType());
     }
 
     /**
@@ -846,41 +880,24 @@ class RequestTest extends PHPUnit_Framework_TestCase
 
     /**
      * Test get IP
+     *  @dataProvider dataTestIp
      */
-    public function testGetIp()
+    public function testGetIp(array $server, $expected)
     {
-        $env = \Slim\Environment::mock(array(
-            'REMOTE_ADDR' => '127.0.0.1'
-        ));
+        $env = \Slim\Environment::mock($server);
         $req = new \Slim\Http\Request($env);
-        $this->assertEquals('127.0.0.1', $req->getIp());
+        $this->assertEquals($expected, $req->getIp());
     }
 
-    /**
-     * Test get IP with proxy server and Client-Ip header
-     */
-    public function testGetIpWithClientIp()
+    public function dataTestIp()
     {
-        $env = \Slim\Environment::mock(array(
-            'REMOTE_ADDR' => '127.0.0.1',
-            'CLIENT_IP' => '127.0.0.2'
-        ));
-        $req = new \Slim\Http\Request($env);
-        $this->assertEquals('127.0.0.2', $req->getIp());
-    }
-
-    /**
-     * Test get IP with proxy server and X-Forwarded-For header
-     */
-    public function testGetIpWithForwardedFor()
-    {
-        $env = \Slim\Environment::mock(array(
-            'REMOTE_ADDR' => '127.0.0.1',
-            'CLIENT_IP' => '127.0.0.2',
-            'X_FORWARDED_FOR' => '127.0.0.3'
-        ));
-        $req = new \Slim\Http\Request($env);
-        $this->assertEquals('127.0.0.3', $req->getIp());
+        return array(
+                array(array('REMOTE_ADDR' => '127.0.0.1'), '127.0.0.1'),
+                array(array('REMOTE_ADDR' => '127.0.0.1', 'CLIENT_IP' => '127.0.0.2'), '127.0.0.2'),
+                array(array('REMOTE_ADDR' => '127.0.0.1', 'CLIENT_IP' => '127.0.0.2', 'X_FORWARDED_FOR' => '127.0.0.3'), '127.0.0.3'),
+                array(array('REMOTE_ADDR' => '127.0.0.1', 'CLIENT_IP' => '127.0.0.2', 'HTTP_X_FORWARDED_FOR' => '127.0.0.4'), '127.0.0.4'),
+                array(array('REMOTE_ADDR' => '127.0.0.1', 'CLIENT_IP' => '127.0.0.2', 'X_FORWARDED_FOR' => '127.0.0.3', 'HTTP_X_FORWARDED_FOR' => '127.0.0.4'), '127.0.0.3'),
+        );
     }
 
     /**

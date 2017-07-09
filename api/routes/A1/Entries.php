@@ -3,10 +3,12 @@
 namespace Directus\API\Routes\A1;
 
 use Directus\Application\Route;
+use Directus\Database\TableGateway\DirectusActivityTableGateway;
 use Directus\Database\TableGateway\DirectusUsersTableGateway;
 use Directus\Database\TableGateway\RelationalTableGateway as TableGateway;
 use Directus\Services\EntriesService;
-use Directus\View\JsonView;
+use Directus\Services\GroupsService;
+use Directus\Util\ArrayUtils;
 
 class Entries extends Route
 {
@@ -34,6 +36,11 @@ class Entries extends Route
         }
 
         // GET all table entries
+        // If it's not a GET request, let's get entry no matter the status
+        if (!$this->app->request()->isGet()) {
+            $params['preview'] = true;
+        }
+
         $response = $tableGateway->getEntries($params);
 
         return $this->app->response($response);
@@ -46,33 +53,81 @@ class Entries extends Route
         $requestPayload = $this->app->request()->post();
         $params = $this->app->request()->get();
         $rows = array_key_exists('rows', $requestPayload) ? $requestPayload['rows'] : false;
+        $isDelete = $this->app->request()->isDelete();
+        $deleted = false;
+
         if (!is_array($rows) || count($rows) <= 0) {
             throw new \Exception(__t('rows_no_specified'));
         }
 
-        $TableGateway = new TableGateway($table, $ZendDb, $acl);
-        $primaryKeyFieldName = $TableGateway->primaryKeyFieldName;
-
         $rowIds = [];
-        foreach ($rows as $row) {
-            if (!array_key_exists($primaryKeyFieldName, $row)) {
-                throw new \Exception(__t('row_without_primary_key_field'));
+        $tableGateway = new TableGateway($table, $ZendDb, $acl);
+        $primaryKeyFieldName = $tableGateway->primaryKeyFieldName;
+
+        // hotfix add entries by bulk
+        if ($this->app->request()->isPost()) {
+            $entriesService = new EntriesService($this->app);
+            foreach($rows as $row) {
+                $rowIds[] = $row[$primaryKeyFieldName];
+                $entriesService->createEntry($table, $row, $params);
             }
-            array_push($rowIds, $row[$primaryKeyFieldName]);
-        }
-
-        $where = new \Zend\Db\Sql\Where;
-
-        if ($this->app->request()->isDelete()) {
-            $TableGateway->delete($where->in($primaryKeyFieldName, $rowIds));
         } else {
             foreach ($rows as $row) {
-                $TableGateway->updateCollection($row);
+                if (!array_key_exists($primaryKeyFieldName, $row)) {
+                    throw new \Exception(__t('row_without_primary_key_field'));
+                }
+
+                array_push($rowIds, $row[$primaryKeyFieldName]);
+            }
+
+            $where = new \Zend\Db\Sql\Where;
+
+            if ($isDelete) {
+                if ($table === 'directus_groups') {
+                    $groupService = new GroupsService($this->app);
+                    foreach ($rowIds as $id) {
+                        $group = $groupService->find($id);
+                        if ($group && !$groupService->canDelete($id)) {
+                            $this->app->response()->setStatus(403);
+
+                            return $this->app->response([
+                                'success' => false,
+                                'error' => [
+                                    'message' => sprintf('You are not allowed to delete group [%s]', $group->name)
+                                ]
+                            ]);
+                        }
+                    }
+                }
+                $deleted = $tableGateway->delete($where->in($primaryKeyFieldName, $rowIds));
+            } else {
+                foreach ($rows as $row) {
+                    $tableGateway->updateCollection($row);
+                }
             }
         }
 
-        $entries = $TableGateway->getEntries($params);
-        return $this->app->response($entries);
+        $params['filters'] = [
+            $primaryKeyFieldName => ['in' => $rowIds]
+        ];
+
+        // If it's not a GET request, let's get entry no matter the status
+        if (!$this->app->request()->isGet()) {
+            $params['preview'] = true;
+        }
+
+        $entries = $tableGateway->getEntries($params);
+
+        if ($isDelete) {
+            $response = [
+                'meta' => ['table' => $tableGateway->getTable(), 'ids' => $rowIds],
+                'data' => ['success' => !! $deleted]
+            ];
+        } else {
+            $response = $entries;
+        }
+
+        return $this->app->response($response);
     }
 
     public function typeAhead($table, $query = null)
@@ -89,6 +144,8 @@ class Entries extends Route
         }
 
         $columns = ($params['columns']) ? explode(',', $params['columns']) : [];
+        ArrayUtils::push($columns, $Table->primaryKeyFieldName);
+        $params['columns'] = implode(',', $columns);
         if (count($columns) > 0) {
             $params['group_by'] = $columns[0];
 
@@ -102,16 +159,20 @@ class Entries extends Route
             $entries = $Table->getEntries($params);
         }
 
-        $entries = $entries['rows'];
+        $entries = $entries['data'];
         $response = [];
         foreach ($entries as $entry) {
-            $val = '';
             $tokens = [];
             foreach ($columns as $col) {
                 array_push($tokens, $entry[$col]);
             }
+
             $val = implode(' ', $tokens);
-            array_push($response, ['value' => $val, 'tokens' => $tokens, 'id' => $entry['id']]);
+            array_push($response, [
+                'value' => $val,
+                'tokens' => $tokens,
+                'id' => $entry[$Table->primaryKeyFieldName]
+            ]);
         }
 
         return $this->app->response($response);
@@ -121,12 +182,10 @@ class Entries extends Route
     {
         $app = $this->app;
         $ZendDb = $app->container->get('zenddb');
-        $auth = $app->container->get('auth');
         $acl = $app->container->get('acl');
         $requestPayload = $app->request()->post();
         $params = $app->request()->get();
 
-        $currentUser = $auth->getUserInfo();
         $params['table_name'] = $table;
 
         // any UPDATE requests should md5 the email
@@ -138,7 +197,8 @@ class Entries extends Route
             $requestPayload['avatar'] = $avatar;
         }
 
-        $TableGateway = new TableGateway($table, $ZendDb, $acl);
+        // $TableGateway = new TableGateway($table, $ZendDb, $acl);
+        $TableGateway = TableGateway::makeTableGatewayFromTableName($table, $ZendDb, $acl);
         switch ($app->request()->getMethod()) {
             // PUT an updated table entry
             case 'PATCH':
@@ -150,6 +210,20 @@ class Entries extends Route
                 break;
             // DELETE a given table entry
             case 'DELETE':
+                if ($table === 'directus_groups') {
+                    $groupService = new GroupsService($app);
+                    $group = $groupService->find($id);
+                    if ($group && !$groupService->canDelete($id)) {
+                        $app->response()->setStatus(403);
+
+                        return $app->response([
+                            'success' => false,
+                            'error' => [
+                                'message' => sprintf('You are not allowed to delete group [%s]', $group->name)
+                            ]
+                        ]);
+                    }
+                }
                 $success =  $TableGateway->delete([$TableGateway->primaryKeyFieldName => $id]);
                 return $this->app->response([
                     'meta' => [
@@ -159,16 +233,36 @@ class Entries extends Route
                 ]);
         }
 
-        $params[$TableGateway->primaryKeyFieldName] = $id;
         // GET a table entry
-        $Table = new TableGateway($table, $ZendDb, $acl);
-        $response = $Table->getEntries($params);
+        $params[$TableGateway->primaryKeyFieldName] = $id;
+        // If it's not a GET request, let's get entry no matter the status
+        if (!$this->app->request()->isGet()) {
+            $params['preview'] = true;
+        }
+
+        $response = $TableGateway->getEntries($params);
         if (!$response) {
             $response = [
                 'message' => __t('unable_to_find_record_in_x_with_id_x', ['table' => $table, 'id' => $id]),
                 'success' => false
             ];
         }
+
+        return $this->app->response($response);
+    }
+
+    public function meta($table, $id)
+    {
+        $app = $this->app;
+        $dbConnection = $app->container->get('zenddb');
+        $acl = $app->container->get('acl');
+
+        $tableGateway = new DirectusActivityTableGateway($dbConnection, $acl);
+        $data = $tableGateway->getMetadata($table, $id);
+        $response = [
+            'meta' => ['table' => 'directus_activity', 'type' => 'item'],
+            'data' => $data
+        ];
 
         return $this->app->response($response);
     }

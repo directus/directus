@@ -6,7 +6,7 @@
  * @copyright   2011 Josh Lockhart
  * @link        http://www.slimframework.com
  * @license     http://www.slimframework.com/license
- * @version     2.3.2
+ * @version     2.6.1
  * @package     Slim
  *
  * MIT LICENSE
@@ -119,15 +119,10 @@ class SessionCookie extends \Slim\Middleware
         if (session_id() === '') {
             session_start();
         }
-
         $value = $this->app->getCookie($this->settings['name']);
-
         if ($value) {
-            try {
-                $_SESSION = unserialize($value);
-            } catch (\Exception $e) {
-                $this->app->getLog()->error('Error unserializing session cookie value! ' . $e->getMessage());
-            }
+            $value = json_decode($value, true);
+            $_SESSION = is_array($value) ? $value : array();
         } else {
             $_SESSION = array();
         }
@@ -138,7 +133,7 @@ class SessionCookie extends \Slim\Middleware
      */
     protected function saveSession()
     {
-        $value = serialize($_SESSION);
+        $value = json_encode($_SESSION);
 
         if (strlen($value) > 4096) {
             $this->app->getLog()->error('WARNING! Slim\Middleware\SessionCookie data size is larger than 4KB. Content save failed.');
@@ -153,7 +148,7 @@ class SessionCookie extends \Slim\Middleware
                 $this->settings['httponly']
             );
         }
-        session_destroy();
+        // session_destroy();
     }
 
     /********************************************************************************

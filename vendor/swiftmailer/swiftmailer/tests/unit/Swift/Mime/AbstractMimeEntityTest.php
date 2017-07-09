@@ -740,6 +740,46 @@ abstract class Swift_Mime_AbstractMimeEntityTest extends \SwiftMailerTestCase
             );
     }
 
+    public function testOrderingEqualContentTypesMaintainsOriginalOrdering()
+    {
+        $firstChild = new MimeEntityFixture(Swift_Mime_MimeEntity::LEVEL_ALTERNATIVE,
+            "Content-Type: text/plain\r\n".
+            "\r\n".
+            'PART 1',
+            'text/plain'
+        );
+        $secondChild = new MimeEntityFixture(Swift_Mime_MimeEntity::LEVEL_ALTERNATIVE,
+            "Content-Type: text/plain\r\n".
+            "\r\n".
+            'PART 2',
+            'text/plain'
+        );
+        $headers = $this->_createHeaderSet(array(), false);
+        $headers->shouldReceive('toString')
+            ->zeroOrMoreTimes()
+            ->andReturn("Content-Type: multipart/alternative; boundary=\"xxx\"\r\n");
+
+        $entity = $this->_createEntity($headers, $this->_createEncoder(),
+            $this->_createCache()
+        );
+        $entity->setBoundary('xxx');
+        $entity->setChildren(array($firstChild, $secondChild));
+
+        $this->assertEquals(
+            "Content-Type: multipart/alternative; boundary=\"xxx\"\r\n".
+            "\r\n\r\n--xxx\r\n".
+            "Content-Type: text/plain\r\n".
+            "\r\n".
+            'PART 1'.
+            "\r\n\r\n--xxx\r\n".
+            "Content-Type: text/plain\r\n".
+            "\r\n".
+            'PART 2'.
+            "\r\n\r\n--xxx--\r\n",
+            $entity->toString()
+        );
+    }
+
     public function testUnsettingChildrenRestoresContentType()
     {
         $cType = $this->_createHeader('Content-Type', 'text/plain', array(), false);

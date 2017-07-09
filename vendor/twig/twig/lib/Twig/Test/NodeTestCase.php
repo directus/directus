@@ -8,7 +8,10 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-abstract class Twig_Test_NodeTestCase extends PHPUnit_Framework_TestCase
+
+use PHPUnit\Framework\TestCase;
+
+abstract class Twig_Test_NodeTestCase extends TestCase
 {
     abstract public function getTests();
 
@@ -66,3 +69,7 @@ abstract class Twig_Test_NodeTestCase extends PHPUnit_Framework_TestCase
         return '$this->getAttribute(';
     }
 }
+
+class_alias('Twig_Test_NodeTestCase', 'Twig\Test\NodeTestCase', false);
+class_exists('Twig_Environment');
+class_exists('Twig_Node');

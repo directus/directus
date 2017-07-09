@@ -52,6 +52,10 @@ class InstallerUtils
      */
     protected static function createConfigFile($data, $path)
     {
+        $data = ArrayUtils::defaults([
+            'directus_path' => '/'
+        ], $data);
+
         $configStub = static::createConfigFileContent($data);
 
         $configPath = rtrim($path, '/') . '/config.php';
@@ -70,6 +74,7 @@ class InstallerUtils
         }
 
         $data = ArrayUtils::defaults([
+            'directus_email' => 'root@localhost',
             'default_language' => 'en',
             'feedback_token' => sha1(gmdate('U') . StringUtils::randomString(32)),
             'feedback_login' => true
@@ -218,13 +223,37 @@ class InstallerUtils
 
     /**
      * Install the given schema template name
+     *
      * @param $name
      * @param $directusPath
+     *
      * @throws \Exception
      */
     public static function installSchema($name, $directusPath)
     {
         $directusPath = rtrim($directusPath, '/');
+        $templatePath = $directusPath . '/api/migrations/templates/' . $name;
+        $sqlImportPath = $templatePath . '/import.sql';
+
+        if (file_exists($sqlImportPath)) {
+            static::installSchemaFromSQL(file_get_contents($sqlImportPath));
+        } else {
+            static::installSchemaFromMigration($name, $directusPath);
+        }
+    }
+
+    /**
+     * Executes the template migration
+     *
+     * @param $name
+     * @param $directusPath
+     *
+     * @throws \Exception
+     */
+    public static function installSchemaFromMigration($name, $directusPath)
+    {
+        $directusPath = rtrim($directusPath, '/');
+
         /**
          * Check if configuration files exists
          * @throws \InvalidArgumentException
@@ -249,6 +278,24 @@ class InstallerUtils
         $main = new Ruckusing_Framework($config);
 
         $main->execute(['', 'db:migrate']);
+    }
+
+    /**
+     * Execute a sql query string
+     *
+     * NOTE: This is not recommended at all
+     *       we are doing this because we are trained pro
+     *       soon to be deprecated
+     *
+     * @param $sql
+     *
+     * @throws \Exception
+     */
+    public static function installSchemaFromSQL($sql)
+    {
+        $dbConnection = Bootstrap::get('ZendDb');
+
+        $dbConnection->execute($sql);
     }
 
     /**

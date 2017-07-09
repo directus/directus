@@ -22,3 +22,5 @@ interface Twig_Sandbox_SecurityPolicyInterface
 
     public function checkPropertyAllowed($obj, $method);
 }
+
+class_alias('Twig_Sandbox_SecurityPolicyInterface', 'Twig\Sandbox\SecurityPolicyInterface', false);

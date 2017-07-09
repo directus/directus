@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    {% if page.url == '/' %}
+        <title>{{ site.data.project.title }} - {{ site.data.project.tagline }}</title>
+    {% else %}
+        <title>{{ page.title }} - {{ site.data.project.title }}</title>
+    {% endif %}
+    {% if site.data.project.description %}
+        <meta name="description" content="{{ site.data.project.description }}">
+    {% endif %}
+    {% if site.data.images.favicon %}
+        <link rel="icon" type="image/x-icon" href="{{ site.data.images.favicon }}" />
+    {% else %}
+        <link rel="icon" type="image/x-icon" href="//theme.thephpleague.com/img/favicon.ico" />
+    {% endif %}
+    {% if site.data.images.apple_touch %}
+        <link rel="apple-touch-icon-precomposed" href="{{ site.data.images.apple_touch }}">
+    {% else %}
+        <link rel="apple-touch-icon-precomposed" href="//theme.thephpleague.com/img/apple-touch-icon-precomposed.png">
+    {% endif %}
+    <link rel="stylesheet" href="//theme.thephpleague.com/css/all.css">
+    <base href="//flysystem.thephpleague.com{{ page.permalink }}">
+</head>
+<body>
+
+<section class="all_packages">
+    <a href="//thephpleague.com/">
+        <img src="//theme.thephpleague.com/img/loep_logo.png" width="195" height="200" alt="The League of Extraordinary Packages">
+    </a>
+    <h2>Our Packages:</h2>
+    <ul>
+        <!-- Loaded via JavaScript -->
+    </ul>
+</section>
+
+<header>
+    <a class="logo" href="/">
+        {% if site.data.images.logo %}
+            <span class="icon">
+                <img src="{{ site.data.images.logo }}" width="50" height="40" alt="{{ site.data.project.title }} - {{ site.data.project.tagline }}">
+            </span>
+        {% endif %}
+        <span class="name">{{ site.data.project.title }}</span>
+        <span class="tagline">{{ site.data.project.tagline }}</span>
+    </a>
+    <a href="//thephpleague.com/" class="league">
+        Presented by The League of Extraordinary Packages
+    </a>
+</header>
+
+<input type="checkbox" id="menu">
+<label for="menu" onclick>
+    <div class="closed">&#9776; Menu</div>
+    <div class="open">&#9776; Hide Menu</div>
+</label>
+
+<main>
+    <menu>
+        {% for section in site.data.menu %}
+            <h2>{{ section[0] }}</h2>
+            <ul>
+                {% for link in section[1] %}
+                    <li {% if page.url == link[1] %}class="selected"{% endif %}>
+                        <a href="{{ link[1] }}">{{ link[0] }}</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endfor %}
+    </menu>
+    <article>
+        {{ content }}
+    </article>
+</main>
+
+<footer>
+    <span>&copy; Copyright <a href="//thephpleague.com">The League of Extraordinary Packages</a>.</span>
+    <span>Site design by <a href="//reinink.ca">Jonathan Reinink</a>.</span>
+</footer>
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="//theme.thephpleague.com/js/scripts.js"></script>
+<script src="//theme.thephpleague.com/js/prism.js"></script>
+
+{% if site.data.project.google_analytics_tracking_id %}
+    <script>
+        (function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=
+        function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;
+        e=o.createElement(i);r=o.getElementsByTagName(i)[0];
+        e.src='//www.google-analytics.com/analytics.js';
+        r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
+        ga('create','{{  site.data.project.google_analytics_tracking_id }}');ga('send','pageview');
+    </script>
+{% endif %}
+
+</body>
+</html>

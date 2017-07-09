@@ -15,3 +15,5 @@ class Twig_Node_Expression_Binary_Greater extends Twig_Node_Expression_Binary
         return $compiler->raw('>');
     }
 }
+
+class_alias('Twig_Node_Expression_Binary_Greater', 'Twig\Node\Expression\Binary\GreaterBinary', false);

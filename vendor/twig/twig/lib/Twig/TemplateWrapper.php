@@ -129,3 +129,5 @@ final class Twig_TemplateWrapper
         return $this->template->getSourceContext();
     }
 }
+
+class_alias('Twig_TemplateWrapper', 'Twig\TemplateWrapper', false);

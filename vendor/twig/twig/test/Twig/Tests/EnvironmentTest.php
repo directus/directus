@@ -311,6 +311,9 @@ class Twig_Tests_EnvironmentTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame($ext, $twig->getExtension('Twig_Tests_EnvironmentTest_Extension'));
         $this->assertSame($ext, $twig->getExtension('\Twig_Tests_EnvironmentTest_Extension'));
+
+        $this->assertTrue($twig->hasExtension('Twig\Tests\EnvironmentTest\Extension'));
+        $this->assertSame($ext, $twig->getExtension('Twig\Tests\EnvironmentTest\Extension'));
     }
 
     public function testAddExtension()
@@ -557,6 +560,7 @@ class Twig_Tests_EnvironmentTest_Extension extends Twig_Extension implements Twi
         );
     }
 }
+class_alias('Twig_Tests_EnvironmentTest_Extension', 'Twig\Tests\EnvironmentTest\Extension', false);
 
 class Twig_Tests_EnvironmentTest_Extension_WithDeprecatedName extends Twig_Extension
 {

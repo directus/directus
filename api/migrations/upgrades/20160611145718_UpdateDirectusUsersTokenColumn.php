@@ -6,7 +6,7 @@ class UpdateDirectusUsersTokenColumn extends Ruckusing_Migration_Base
     public function up()
     {
         $this->change_column('directus_users', 'token', 'string', [
-            'limit' => 255,
+            'limit' => 128,
             'null' => false
         ]);
     }//up()

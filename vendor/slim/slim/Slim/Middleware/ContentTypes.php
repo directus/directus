@@ -6,7 +6,7 @@
  * @copyright   2011 Josh Lockhart
  * @link        http://www.slimframework.com
  * @license     http://www.slimframework.com/license
- * @version     2.3.2
+ * @version     2.6.1
  * @package     Slim
  *
  * MIT LICENSE
@@ -116,7 +116,7 @@ class ContentTypes extends \Slim\Middleware
     {
         if (function_exists('json_decode')) {
             $result = json_decode($input, true);
-            if ($result) {
+            if(json_last_error() === JSON_ERROR_NONE) {
                 return $result;
             }
         }

@@ -1,14 +1,17 @@
 {
   "require": {
-    "php": ">=5.5.0",
-    "slim/slim": "2.3.2",
-    "slim/extras": "dev-develop",
+    "php": ">=5.6.0",
+    "slim/slim": "2.6.2",
+    "slim/extras": "dev-master",
     "twig/twig":  "1.*",
+    "zendframework/zend-db": "dev-directus",
     "directus/migrations": "dev-master",
-    "directus/permissions": "0.9.*@dev",
-    "directus/database": "~0.1.3",
     "league/flysystem": "^1.0",
-    "swiftmailer/swiftmailer": "^5.4"
+    "swiftmailer/swiftmailer": "^5.4",
+    "league/oauth2-google": "^2.0",
+    "league/oauth2-github": "^2.0",
+    "league/oauth2-facebook": "^2.0",
+    "league/oauth1-client": "^1.7"
   },
   "require-dev": {
     "phpunit/phpunit": "~3.7.0"
@@ -26,13 +29,14 @@
       "Directus\\": "api/core/Directus/",
       "Directus\\API\\Routes\\": "api/routes/",
       "Directus\\Installation\\": "installation/includes/",
-      "Directus\\Embed\\Provider\\": "customs/embeds/"
+      "Directus\\Customs\\Embed\\Provider\\": "customs/embeds/",
+      "Directus\\Customs\\Hooks\\": "customs/hooks/",
+      "Directus\\Customs\\Hasher\\": "customs/hashers/"
     },
     "files": [
       "api/core/functions.php"
     ]
   },
-  "minimum-stability": "dev",
   "repositories": [
     {
       "type": "git",

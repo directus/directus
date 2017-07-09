@@ -16,3 +16,5 @@ class Twig_Node_Expression_Binary_Mul extends Twig_Node_Expression_Binary
         return $compiler->raw('*');
     }
 }
+
+class_alias('Twig_Node_Expression_Binary_Mul', 'Twig\Node\Expression\Binary\MulBinary', false);

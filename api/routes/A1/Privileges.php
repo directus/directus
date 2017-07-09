@@ -4,7 +4,14 @@ namespace Directus\API\Routes\A1;
 
 use Directus\Application\Route;
 use Directus\Bootstrap;
+use Directus\Database\Exception\TableAlreadyExistsException;
+use Directus\Database\SchemaManager;
 use Directus\Database\TableGateway\DirectusPrivilegesTableGateway;
+use Directus\Database\TableSchema;
+use Directus\Exception\ForbiddenException;
+use Directus\Services\ColumnsService;
+use Directus\Services\TablesService;
+use Directus\Util\ArrayUtils;
 use Directus\Util\SchemaUtils;
 use Directus\View\JsonView;
 
@@ -17,7 +24,7 @@ class Privileges extends Route
         $acl = $app->container->get('acl');
 
         if ($acl->getGroupId() != 1) {
-            throw new \Exception(__t('permission_denied'));
+            throw new ForbiddenException(__t('permission_denied'));
         }
 
         $privileges = new DirectusPrivilegesTableGateway($ZendDb, $acl);
@@ -54,31 +61,38 @@ class Privileges extends Route
         $requestPayload = $app->request()->post();
 
         if ($acl->getGroupId() != 1) {
-            throw new \Exception(__t('permission_denied'));
+            throw new ForbiddenException(__t('permission_denied'));
         }
 
         if (isset($requestPayload['addTable'])) {
-            $isTableNameAlphanumeric = preg_match("/[a-z0-9]+/i", $requestPayload['table_name']);
-            $zeroOrMoreUnderscoresDashes = preg_match("/[_-]*/i", $requestPayload['table_name']);
+            $tableName = ArrayUtils::get($requestPayload, 'table_name');
 
-            if (!($isTableNameAlphanumeric && $zeroOrMoreUnderscoresDashes)) {
-                $app->response->setStatus(400);
-                return $this->app->response(['message' => __t('invalid_table_name')]);
+            ArrayUtils::remove($requestPayload, 'addTable');
+
+            $tableService = new TablesService($app);
+
+            try {
+                $tableService->createTable($tableName, ArrayUtils::get($requestPayload, 'columnsName'));
+            } catch (TableAlreadyExistsException $e) {
+                // ----------------------------------------------------------------------------
+                // Setting the primary key column interface
+                // NOTE: if the table already exists but not managed by directus
+                // the primary key interface is added to its primary column
+                // ----------------------------------------------------------------------------
+                $columnService = new ColumnsService($app);
+                $tableObject = $tableService->getTableObject($tableName);
+                $primaryColumn = $tableObject->getPrimaryColumn();
+                if ($primaryColumn) {
+                    $columnObject = $columnService->getColumnObject($tableName, $primaryColumn);
+                    if (!TableSchema::isSystemColumn($columnObject->getUI())) {
+                        $data = $columnObject->toArray();
+                        $data['ui'] = SchemaManager::INTERFACE_PRIMARY_KEY;
+                        $columnService->update($tableName, $primaryColumn, $data);
+                    }
+                }
             }
 
-            unset($requestPayload['addTable']);
-
-            $schema = Bootstrap::get('schemaManager');
-            if (!$schema->tableExists($requestPayload['table_name'])) {
-                $app->emitter->run('table.create:before', $requestPayload['table_name']);
-                // Through API:
-                // Remove spaces and symbols from table name
-                // And in lowercase
-                $requestPayload['table_name'] = SchemaUtils::cleanTableName($requestPayload['table_name']);
-                $schema->createTable($requestPayload['table_name']);
-                $app->emitter->run('table.create', $requestPayload['table_name']);
-                $app->emitter->run('table.create:after', $requestPayload['table_name']);
-            }
+            ArrayUtils::remove($requestPayload, 'columnsName');
         }
 
         $privileges = new DirectusPrivilegesTableGateway($ZendDb, $acl);
@@ -102,7 +116,7 @@ class Privileges extends Route
 
         $requestPayload['id'] = $privilegeId;
         if ($acl->getGroupId() != 1) {
-            throw new \Exception(__t('permission_denied'));
+            throw new ForbiddenException(__t('permission_denied'));
         }
 
         $privileges = new DirectusPrivilegesTableGateway($ZendDb, $acl);

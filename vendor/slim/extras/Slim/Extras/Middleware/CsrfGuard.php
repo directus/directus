@@ -23,30 +23,18 @@ class CsrfGuard extends \Slim\Middleware
     protected $key;
 
     /**
-     * CSRF token header name.
-     *
-     * @var string
-     */
-    protected $header;
-
-    /**
      * Constructor.
      *
      * @param string    $key        The CSRF token key name.
-     * @param string    $header     The CSRF token header name.
      * @return void
      */
-    public function __construct($key = 'csrf_token', $header = 'X-CSRFToken')
+    public function __construct($key = 'csrf_token')
     {
         if (! is_string($key) || empty($key) || preg_match('/[^a-zA-Z0-9\-\_]/', $key)) {
             throw new \OutOfBoundsException('Invalid CSRF token key "' . $key . '"');
         }
-        if (! is_string($header) || empty($header) || preg_match('/[^a-zA-Z0-9\-\_]/', $header)) {
-            throw new \OutOfBoundsException('Invalid CSRF token header "' . $header . '"');
-        }
 
-        $this->key    = $key;
-        $this->header = $header;
+        $this->key = $key;
     }
 
     /**
@@ -83,8 +71,7 @@ class CsrfGuard extends \Slim\Middleware
 
         // Validate the CSRF token.
         if (in_array($this->app->request()->getMethod(), array('POST', 'PUT', 'DELETE'))) {
-            $normalized_header = str_replace('-', '_', strtoupper($this->header));
-            $userToken = $this->app->request()->post($this->key) ?: $this->app->environment()[$normalized_header];
+            $userToken = $this->app->request()->post($this->key);
             if ($token !== $userToken) {
                 $this->app->halt(400, 'Invalid or missing CSRF token.');
             }
@@ -92,9 +79,8 @@ class CsrfGuard extends \Slim\Middleware
 
         // Assign CSRF token key and value to view.
         $this->app->view()->appendData(array(
-            'csrf_key'    => $this->key,
-            'csrf_token'  => $token,
-            'csrf_header' => $this->header
+            'csrf_key'      => $this->key,
+            'csrf_token'    => $token,
         ));
     }
 }

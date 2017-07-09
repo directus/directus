@@ -1,0 +1,4 @@
+title: "Flysystem"
+tagline: "Multiple Filesystems, One API"
+description: "Filesystem abstraction package allowing you to use the same API for both local, remote and cloud filesystems."
+google_analytics_tracking_id: "UA-46050814-3"

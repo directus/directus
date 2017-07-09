@@ -34,7 +34,7 @@
     "global_settings_project_name_placeholder": "Mio Progetto",
     "global_settings_project_name_comment": "Nome del tuo progetto",
     "global_settings_project_url_comment": "URL di destinazione cliccando il logo del progetto",
-    "global_settings_cms_thumbnail_url_comment": "Aggiungi URL immagine per il logo principale (170x100)",
+    "global_settings_cms_thumbnail_url_comment": "Aggiungi URL immagine per il logo principale (200×64)",
     "global_settings_cms_user_auto_sign_out_comment": "Tempo dopo il quale gli utenti verranno automaticamente disconnessi (minuti)",
     "global_settings_rows_per_page_comment": "Numero di elementi mostrati per ciascuna pagina.",
     "maps_ui_global_settings_google_api_key": "Google API key per Maps",
@@ -225,7 +225,7 @@
     "o2m_result_limit_comment": "Numero massimo di risultati",
     "add_new_x_item": "Aggiungi Nuovo %{table} Elemento",
 
-    "directus_files": "Directus Files",
+    "directus_files_choose": "Directus Files",
     "file_upload": "Carica",
     "drag_and_drop": "Clicca e trascina",
     "file_here": "file qui",
@@ -252,6 +252,7 @@
 
     "select_options_comment": "Inserisci coppie di valori chiave JSON contenenti il valore salvato e il testo visualizzato.",
     "select_placeholder_text": "Inserisci Testo Placeholder",
+    "select_auto_search_limit_text": "Valore minimo per mostrare di ricerca",
 
     "one_file_only_please": "Seleziona un solo file",
     "enter_the_url_to_a_file": "Inserisci URL del file:",
@@ -268,7 +269,7 @@
     "character_blacklist": "Blacklist caratteri",
     "character_whitelist": "Whitelist caratteri",
     "regex": "Regex",
-    "textinput_validation_string_comment": "Tutti i caratteri sottostanti verranno convalidati forzatamente",
+    "text_input_validation_string_comment": "Tutti i caratteri sottostanti verranno convalidati forzatamente",
 
     "translation_title": "Traduzioni",
     "translations_x": "%{field}",
@@ -316,9 +317,7 @@
     "are_you_sure_you_want_to_sign_out": "Sei sicuro di voler disconnetterti?",
 
     "you_must_be_logged_in_to_access_the_api": "Devi essere connesso per avere accesso alle API",
-    "invalid_request_nonce": "Richiesta non valida (nonce)",
     "no_such_extensions_found": "Estensione non esistente.",
-    "unauthorized_nonce": "Non autorizzato (nonce)",
     "extension_x_must_return_array_got_y_instead": "Estensione %{extension_name} deve restituire un array, tipo restituito: %{type}",
     "incorrect_email_or_password": "Email o password non corretti",
     "missing_email_or_password": "Email o password mancanti",

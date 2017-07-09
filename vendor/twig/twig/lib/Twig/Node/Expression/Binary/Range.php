@@ -26,3 +26,5 @@ class Twig_Node_Expression_Binary_Range extends Twig_Node_Expression_Binary
         return $compiler->raw('..');
     }
 }
+
+class_alias('Twig_Node_Expression_Binary_Range', 'Twig\Node\Expression\Binary\RangeBinary', false);

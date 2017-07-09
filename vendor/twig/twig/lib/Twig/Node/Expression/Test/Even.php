@@ -30,3 +30,5 @@ class Twig_Node_Expression_Test_Even extends Twig_Node_Expression_Test
         ;
     }
 }
+
+class_alias('Twig_Node_Expression_Test_Even', 'Twig\Node\Expression\Test\EvenTest', false);

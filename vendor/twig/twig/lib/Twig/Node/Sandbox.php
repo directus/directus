@@ -40,3 +40,5 @@ class Twig_Node_Sandbox extends Twig_Node
         ;
     }
 }
+
+class_alias('Twig_Node_Sandbox', 'Twig\Node\SandboxNode', false);

@@ -29,15 +29,15 @@ class CreateDirectusSettingsTable extends Ruckusing_Migration_Base
             'primary_key' => true
         ]);
         $t->column('collection', 'string', [
-            'limit' => 250,
+            'limit' => 64,
             'default' => NULL
         ]);
         $t->column('name', 'string', [
-            'limit' => 250,
+            'limit' => 64,
             'default' => NULL
         ]);
         $t->column('value', 'string', [
-            'limit' => 250,
+            'limit' => 255,
             'default' => NULL
         ]);
 

@@ -464,7 +464,7 @@ from the token stream (``$this->parser->getStream()``):
   type/value a syntax error is thrown. Otherwise, if the type and value are correct,
   the token is returned and the stream moves to the next token.
 
-* ``look()``: Looks a the next token without consuming it.
+* ``look()``: Looks at the next token without consuming it.
 
 Parsing expressions is done by calling the ``parseExpression()`` like we did for
 the ``set`` tag.
@@ -838,7 +838,7 @@ instance on the environment that knows how to instantiate such runtime classes
 It is now possible to move the runtime logic to a new
 ``Project_Twig_RuntimeExtension`` class and use it directly in the extension::
 
-    class Project_Twig_RuntimeExtension extends Twig_Extension
+    class Project_Twig_RuntimeExtension
     {
         private $rot13Provider;
 

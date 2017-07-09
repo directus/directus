@@ -1,0 +1,43 @@
+{{#if url}}
+<div class="attachments">
+    <div class="file js-file js-modal" id="file_{{model.id}}" data-id="{{model.id}}" data-cid="{{model.cid}}">
+        {{#if html}}
+        {{{html}}}
+        {{else}}
+		<div class="thumbnail js-image">
+			<div class="extension-fallback">{{model.type}}</div>
+			<img src="{{thumbUrl}}">
+		</div>
+        {{/if}}
+        <div class="type">{{model.type}}</div>
+        <div class="info">
+            <div class="name js-title">{{model.title}}</div>
+            <div class="uploaded" title="{{fullDateTime model.date_uploaded}}">{{contextualDate model.date_uploaded}}</div>
+            <i class="material-icons remove js-remove">close</i>
+        </div>
+    </div>
+</div>
+{{else}}
+{{#if uploading}}
+<div class="attachments">
+	<div class="file">
+		<div class="thumbnail js-image">
+			<div class="extension-fallback">
+				<div class="type">{{t "uploading"}}</div>
+			</div>
+		</div>
+	</div>
+</div>
+{{else}}
+<div class="dropzone js-from-computer">
+    <i class="material-icons cloud">cloud_upload</i>
+    <div class="drag-and-drop">{{t "drag_and_drop"}}</div>
+    <div class="click-to-browse">{{t "or_browse"}}</div>
+</div>
+<input type="file" id="fileInput" style="display:none">
+{{/if}}
+{{/if}}
+<div class="button-group">
+    <button class="button js-from-system"><i class="material-icons">playlist_add_check</i> {{t "directus_files_choose"}}</button>
+    <button class="button js-from-url"><i class="material-icons">insert_link</i> {{t "url_import"}}</button>
+</div>
