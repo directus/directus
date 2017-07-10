@@ -69,7 +69,7 @@ define([
       var subtype = model.getSubType(true);
 
       var isImage = _.contains(['image', 'embed'], type) || _.contains(['pdf'], subtype);
-      var thumbUrl = isImage ? model.makeFileUrl(true) : (this._avatarList(options) || app.PATH + 'assets/img/document.png');
+      var thumbUrl = isImage ? model.makeFileUrl(true) : (this._avatarList(options) || app.PATH + 'assets/imgs/missing-thumbnail.svg');
 
       return '<div class="media-thumb"><img src="' + thumbUrl + '" class="img ' + orientation + '"></div>';
     }

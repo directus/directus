@@ -194,7 +194,7 @@ define([
       var type = this.fileModel.has('type') ? this.fileModel.get('type').substring(0, this.fileModel.get('type').indexOf('/')) : '';
       var isImage = _.contains(['image', 'embed'], type);
       // TODO: Fix this path
-      var thumbUrl = isImage ? url : app.PATH + 'assets/img/document.png';
+      var thumbUrl = isImage ? url : app.PATH + 'assets/imgs/missing-thumbnail.svg';
 
       switch (data.type) {
         case 'embed/youtube':
