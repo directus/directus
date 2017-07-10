@@ -59,7 +59,10 @@ Valid types (adapters) are Postgres & MySQL:
 
 */
 return [
-    'migrations_dir' => ['default' => dirname(__FILE__) . DIRECTORY_SEPARATOR . 'migrations', 'customs' => dirname(__FILE__,2) . DIRECTORY_SEPARATOR . 'customs' . DIRECTORY_SEPARATOR. 'migrations'],
+    'migrations_dir' => [
+        'default' => dirname(__FILE__) . DIRECTORY_SEPARATOR . 'migrations',
+        'customs' => dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'customs' . DIRECTORY_SEPARATOR. 'migrations'
+    ],
     'db_dir' => dirname(__FILE__) . DIRECTORY_SEPARATOR . 'logs' . DIRECTORY_SEPARATOR . 'db',
     'log_dir' => dirname(__FILE__) . DIRECTORY_SEPARATOR . 'logs',
     'ruckusing_base' => dirname(__FILE__) . DIRECTORY_SEPARATOR . 'vendor/ruckusing/ruckusing-migrations'
