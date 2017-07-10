@@ -17,20 +17,20 @@
 			<input name="password" type="password" class="password" placeholder="Password" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
 		</div>
 		<button type="submit" class="button">Log In</button> <!-- Optional Class: disabled -->
+		{% if authList %}
+		<div class="hr-label">
+			<hr>
+			<hr>
+			<div class="label">or</div>
+		</div>
+		<div class="alt-auth">
+			{% for service in authList %}
+			<div class="tile {{service}}"><a href="{{rootUrl}}auth/{{service}}"><img src="{{assetsRoot}}imgs/login-logo-{{service}}.svg"></a></div>
+			{% endfor %}
+		</div>
+		{% endif %}
 		<div id="forgot-password" class="forgot">Forgot Password</div>
 	</form>
-	{% if authList %}
-	<div class="hr-label">
-		<hr>
-		<hr>
-		<div class="label">or</div>
-	</div>
-	<div class="alt-auth">
-		{% for service in authList %}
-		<div class="tile {{service}}"><a href="{{rootUrl}}auth/{{service}}"><img src="{{assetsRoot}}imgs/login-logo-{{service}}.svg"></a></div>
-		{% endfor %}
-	</div>
-	{% endif %}
 </div>
 
 <div class="processing"><div class="loading-container"><div class="loading-bar"></div></div></div>
