@@ -88,6 +88,10 @@ define(function(require, exports, module) {
 
       var result = _.extend(filters, _.pick(preferences, 'columns_visible', 'sort', 'sort_order', 'status'));
 
+      if (result.sort && !this.structure.get(result.sort)) {
+        result.sort_order = result.sort = undefined;
+      }
+
       // preferences normally trump filters, this is an edge case
       // @todo fix the data structure to make this logic less wierd
       if (this.filters.hasOwnProperty('columns_visible')) {
@@ -403,6 +407,10 @@ define(function(require, exports, module) {
         sort: 'id',
         sort_order: 'ASC'
       }, this.filters);
+
+      if (!this.structure.get(this.filters.sort)) {
+        this.filters.sort = this.structure.at(0).get('column_name');
+      }
 
       // do we got a sort column?
       // let sort it by that instead please

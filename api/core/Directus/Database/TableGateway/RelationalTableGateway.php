@@ -1155,10 +1155,16 @@ class RelationalTableGateway extends BaseTableGateway
      *
      * @param Builder $query
      * @param array $order
+     *
+     * @throws Exception\ColumnNotFoundException
      */
     protected function processOrder(Builder $query, array $order)
     {
         foreach($order as $orderBy => $orderDirection) {
+            if (!TableSchema::hasTableColumn($this->table, $orderBy, $this->acl === null)) {
+                throw new Exception\ColumnNotFoundException($orderBy);
+            }
+
             $query->orderBy($orderBy, $orderDirection);
         }
     }
@@ -1190,6 +1196,8 @@ class RelationalTableGateway extends BaseTableGateway
      *
      * @param Builder $query
      * @param array $params
+     *
+     * @throws Exception\ColumnNotFoundException
      */
     protected function applyLegacyParams(Builder $query, array $params = [])
     {
@@ -1197,12 +1205,22 @@ class RelationalTableGateway extends BaseTableGateway
         // "order" will be replace it with "orderBy", if presented
         if (ArrayUtils::has($params, 'orderBy')) {
             $query->clearOrder();
+
+            if (!TableSchema::hasTableColumn($this->table, $params['orderBy'], $this->acl === null)) {
+                throw new Exception\ColumnNotFoundException($params['orderBy']);
+            }
+
             $query->orderBy($params['orderBy'], ArrayUtils::get($params, 'orderDirection', 'ASC'));
         }
 
         // sort, sort_order will replace "order" and "orderBy", if presented
         if (ArrayUtils::has($params, 'sort')) {
             $query->clearOrder();
+
+            if (!TableSchema::hasTableColumn($this->table, $params['sort'], $this->acl === null)) {
+                throw new Exception\ColumnNotFoundException($params['sort']);
+            }
+
             $query->orderBy($params['sort'], ArrayUtils::get($params, 'sort_order', 'ASC'));
         }
 

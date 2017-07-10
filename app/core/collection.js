@@ -196,7 +196,14 @@ function(app, Backbone, StatusHelper, _) {
       if (column === undefined) {
         this.setFilter({sort:'id', sort_order: 'ASC'});
       } else {
-        this.setFilter({sort: column, sort_order: sortOrder});
+        options = options || {};
+
+        // NOTE: if the column doesn't exist, do not save it to preferences
+        if (!this.structure.get(column)) {
+          options.save = false;
+        }
+
+        this.setFilter({sort: column, sort_order: sortOrder}, options);
       }
 
 

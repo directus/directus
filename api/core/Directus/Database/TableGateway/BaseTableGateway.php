@@ -520,6 +520,16 @@ class BaseTableGateway extends TableGateway
             'column_name' => $columnName
         ]);
 
+        // Remove column from sorting column in directus_preferences
+        $preferencesTableGateway = new TableGateway('directus_preferences', $this->adapter);
+        $preferencesTableGateway->update([
+            'sort' => $this->primaryKeyFieldName,
+            'sort_order' => 'ASC'
+        ], [
+            'table_name' => $tableName,
+            'sort' => $columnName
+        ]);
+
         return true;
     }
 

@@ -513,14 +513,16 @@ class TableSchema
         return static::hasTableColumn($table, $column, $includeAlias);
     }
 
-    public static function hasTableColumn($table, $column, $includeAlias = false)
+    public static function hasTableColumn($table, $column, $includeAlias = false, $skipAcl = false)
     {
-        $columns = array_flip(self::getTableColumns($table, null, true));
+        $tableObject = static::getTableSchema($table, [], false, $skipAcl);
+
+        $columns = $tableObject->getNonAliasColumnsName();
         if ($includeAlias) {
-            $columns = array_merge($columns, array_flip(self::getAllAliasTableColumns($table, true)));
+            $columns = array_merge($columns, $tableObject->getAliasColumnsName());
         }
 
-        if (array_key_exists($column, $columns)) {
+        if (in_array($column, $columns)) {
             return true;
         }
 
