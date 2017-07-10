@@ -221,7 +221,7 @@ class DirectusActivityTableGateway extends RelationalTableGateway
         ]);
 
         $on = 'directus_users.id = directus_activity.user';
-        $select->join('directus_users', $on, ['last_access']);
+        $select->join('directus_users', $on, []);
 
         $select->where([
             'table_name' => $table,
