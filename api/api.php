@@ -518,23 +518,10 @@ $app->group('/1.1', function() use($app) {
 });
 
 $app->notFound(function () use ($app, $acl, $ZendDb) {
+    $projectInfo = get_project_info();
+
     $app->response()->header('Content-Type', 'text/html; charset=utf-8');
-
-    $settingsTable = new DirectusSettingsTableGateway($ZendDb, $acl);
-    $settings = $settingsTable->fetchCollection('global');
-
-    $projectName = isset($settings['project_name']) ? $settings['project_name'] : 'Directus';
-    $projectLogoURL = get_directus_path('/assets/img/directus-logo-flat.svg');
-    if (isset($settings['cms_thumbnail_url']) && $settings['cms_thumbnail_url']) {
-        $projectLogoURL = $settings['cms_thumbnail_url'];
-    }
-
-    $data = [
-        'project_name' => $projectName,
-        'project_logo' => $projectLogoURL,
-    ];
-
-    $app->render('errors/404.twig.html', $data);
+    $app->render('errors/404.twig.html', $projectInfo);
 });
 
 /**

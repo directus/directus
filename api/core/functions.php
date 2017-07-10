@@ -1306,7 +1306,7 @@ if (!function_exists('get_project_info')) {
         $settings = $settingsTable->fetchCollection('global');
 
         $projectName = isset($settings['project_name']) ? $settings['project_name'] : 'Directus';
-        $defaultProjectLogo = get_directus_path('/assets/img/directus-logo-flat.svg');
+        $defaultProjectLogo = get_directus_path('/assets/imgs/directus-logo-flat.svg');
         if (isset($settings['cms_thumbnail_url']) && $settings['cms_thumbnail_url']) {
             $projectLogoURL = $settings['cms_thumbnail_url'];
             $filesTable = \Directus\Database\TableGatewayFactory::create('directus_files');
