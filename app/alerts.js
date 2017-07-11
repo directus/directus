@@ -5,7 +5,6 @@ define([
 
   'use strict';
 
-
   var showProgressNotification = function () {
     app.activityInProgress = true;
     $('#header').find('.logo').removeClass('static');
