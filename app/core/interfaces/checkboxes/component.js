@@ -36,6 +36,13 @@ define(['./interface', 'core/UIComponent', 'core/t', 'utils'], function (Input, 
         required: true
       },
       {
+        id: 'wrap_with_delimiter',
+        ui: 'toggle',
+        type: 'Boolean',
+        comment: 'Wrap the values with a pair of delimiters to <a href="https://github.com/directus/directus/issues/1681">allow strict searching for a single value</a>',
+        default_value: true
+      },
+      {
         id: 'list_view_formatting',
         ui: 'radio_buttons',
         type: 'String',

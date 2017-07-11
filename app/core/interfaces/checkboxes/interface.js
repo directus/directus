@@ -27,9 +27,12 @@ define(['core/UIView'], function (UIView) {
           out.push(values[i].value);
         }
 
-        // Wrap values into delimiter
-        // easy to search values
-        out = delimiter + out.join(delimiter) + delimiter;
+        // Wrap the values with a pair of delimiters to allow strict searching for a single value
+        if (this.options.settings.get('wrap_with_delimiter')) {
+          out = delimiter + out.join(delimiter) + delimiter;
+        } else {
+          out = out.join(delimiter);
+        }
       } else {
         out = '';
       }
