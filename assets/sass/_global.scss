@@ -273,15 +273,17 @@ ul {
 	left: 0;
 	right: 0;
 	bottom: 0;
-	background-color: rgba($gray-1, 1);
 	opacity: 0;
 	z-index: 0;
 	text-align: center;
 	&.blocking {
 		z-index: 999;
+    opacity: 1;
+    background-color: rgba($gray-1, 0.5);
 	}
 	&.fading {
 		opacity: 1;
+    background-color: rgba($gray-1, 1);
 	}
 	.loading-container {
 		@include box-shadow ($x: 0px, $y: 0px, $blur: 2px, $spread: 0px, $opacity: 0.05);
