@@ -31,7 +31,9 @@ define(function(require, exports, module) {
       this.structure = this.collection.junctionStructure;
       this.table = this.structure.table;
 
-      this._resetTracking();
+      if (this._trackingChanges) {
+        this.restartTracking();
+      }
 
       return attributes;
     },
@@ -46,16 +48,6 @@ define(function(require, exports, module) {
       }
 
       return attributes;
-    },
-
-    _resetTracking: function () {
-      if (this._trackingChanges) {
-        this.restartTracking();
-      }
-    },
-
-    initialize: function () {
-      this.on('sync', this._resetTracking, this);
     },
 
     constructor: function EntriesJunctionModel() {
