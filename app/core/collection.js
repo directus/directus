@@ -60,8 +60,6 @@ function(app, Backbone, StatusHelper, _) {
       var visibleStates = (this.getFilter('status') || '').split(',');
       totalCount = 0;
 
-      debugger;
-
       visibleStates.forEach(function (state) {
         var status = StatusHelper.getStatus(this.table.id, state);
         if (status) {
