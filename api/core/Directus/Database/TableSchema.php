@@ -4,6 +4,7 @@ namespace Directus\Database;
 
 use Directus\Authentication\Provider as Auth;
 use Directus\Bootstrap;
+use Directus\Config\Config;
 use Directus\Database\Object\Column;
 use Directus\Database\Object\Table;
 use Directus\Database\TableGateway\DirectusPreferencesTableGateway;
@@ -38,6 +39,9 @@ class TableSchema
      */
     protected static $connection = null;
 
+    /**
+     * @var Config
+     */
     protected static $config = [];
 
     public static $many_to_one_uis = ['many_to_one', 'single_files'];
@@ -147,7 +151,7 @@ class TableSchema
         $statusMapping = $tableObject->getStatusMapping();
 
         if (!$statusMapping) {
-            $statusMapping = ArrayUtils::get(static::$config, 'statusMapping', []);
+            $statusMapping = static::$config->get('statusMapping', []);
         }
 
         if ($statusMapping) {
