@@ -25,7 +25,8 @@ Please consider supporting us on [Patreon](https://www.patreon.com/directus)!
 Download the latest pre-built version from [our releases page](https://github.com/directus/directus/releases) or clone this repo and install the composer dependencies by running `composer install` from the root folder.
 
 ### Requirements:
-NGINX or Apache Server, PHP 5.5+, MySQL 5.2+
+NGINX or Apache Server, PHP 5.5+, MySQL 5.2+  
+Also, please ensure the following PHP modules are installed: curl, gd, finfo, pdo_mysql
 
 ### Database types
 While Directus has been abstracted to allow for different database adapters in the future, currently only MySQL is supported. PostgreSQL, SQLite, and MongoDB support is under development – and we hope to expand support for additional database types as we gain contributors.
