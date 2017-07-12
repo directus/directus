@@ -656,7 +656,12 @@ class RelationalTableGateway extends BaseTableGateway
             $defaultParams['limit'] = $rowsPerPage;
         }
 
-        if ($this->primaryKeyFieldName) {
+        $tableSchema = $this->getTableSchema();
+        $sortingColumnName = $tableSchema->getSortColumn();
+
+        if ($sortingColumnName) {
+            $defaultParams['order'] = [$sortingColumnName => 'ASC'];
+        } else if ($this->primaryKeyFieldName) {
             $defaultParams['order'] = [$this->primaryKeyFieldName => 'ASC'];
         }
 
