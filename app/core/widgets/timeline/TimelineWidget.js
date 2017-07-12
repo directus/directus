@@ -65,8 +65,10 @@ function(app, Backbone, $, _, __t, Directus, Utils, moment) {
 
         // Enable submit button when content exists
         if(text.length > 0){
+          $('#itemCommentText').addClass('active');
           $('#messages-response-button').removeClass('disabled');
         } else {
+          $('#itemCommentText').removeClass('active');
           $('#messages-response-button').addClass('disabled');
         }
 
