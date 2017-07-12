@@ -15,7 +15,7 @@ _Checkout our [live demo](https://preview.getdirectus.com)!_
 ## Description
 Directus is a free and open-source database API and 'headless' CMS. Unlike traditional CMS that encompass your entire project codebase, the decoupled approach of Directus offers an API and SDKs to connect your content to: websites, native apps, kiosks, IoT devices, or any other data-driven projects.
 
-Directus makes no assumptions about how you should architect your database – giving you complete freedom to optimize structure and performance for projects of any size or complexity. Built on top of the API is our feature-rich admin webapp (CMS) webapp dynamically maps to your database's schema, instantly providing your users/clients with an intuitive interface for managing content.
+Directus makes no assumptions about how you should architect your database – giving you complete freedom to optimize structure and performance for projects of any size or complexity. Built on top of the API is our feature-rich admin webapp (CMS) which dynamically maps to your database's schema, instantly providing your users/clients with an intuitive interface for managing content.
 
 Learn more at [getdirectus.com](https://getdirectus.com) and follow us on Twitter: [@directus](https://twitter.com/directus)
 
@@ -25,8 +25,7 @@ Please consider supporting us on [Patreon](https://www.patreon.com/directus)!
 Download the latest pre-built version from [our releases page](https://github.com/directus/directus/releases) or clone this repo and install the composer dependencies by running `composer install` from the root folder.
 
 ### Requirements:
-NGINX or Apache Server, PHP 5.5+, MySQL 5.2+  
-Also, please ensure the following PHP modules are installed: curl, gd, finfo, pdo_mysql
+NGINX or Apache Server, MySQL 5.2+, PHP 5.5+ (curl, gd, finfo, pdo_mysql)
 
 ### Database types
 While Directus has been abstracted to allow for different database adapters in the future, currently only MySQL is supported. PostgreSQL, SQLite, and MongoDB support is under development – and we hope to expand support for additional database types as we gain contributors.
@@ -36,15 +35,17 @@ While Directus has been abstracted to allow for different database adapters in t
 ### Directus ADMIN
 The full documentation about using the admin Directus can be found over at [docs.getdirectus.com](https://docs.getdirectus.com).
 
-You can find the source of this documentation at [our docs repo](https://github.com/directus/docs).
+You can find the source of this documentation in [our docs repo](https://github.com/directus/docs).
 
 ### Directus API & SDKs
 Our full API reference can be found over at [api.getdirectus.com](https://api.getdirectus.com). Together with the endpoints and supported params, you can also find code examples for our supported SDKs.
 
-## Contributing to Directus
-First of all, thanks for taking the time to work on Directus!
+You can find the source of this documentation in [our API docs repo](https://github.com/directus/api-docs).
 
-The following is a set of guidelines for contributing to Directus and it's components. These are just guidelines, not strict rules. Feel free to propose changes to this and other documents in a pull request.
+## Contributing to Directus
+First of all, thank you for taking the time to work on Directus!
+
+The following is a set of guidelines for contributing to Directus and its components. These are just guidelines, not strict rules. Feel free to propose changes to this and other documents in a pull request.
 
 ### How Can I Contribute?
 #### Reporting Bugs
