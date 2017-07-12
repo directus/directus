@@ -1,113 +1,74 @@
 <p align="center">
-<img src="http://getdirectus.com/assets/imgs/directus.png" alt="Directus Logo"/>
+<img src="https://camo.githubusercontent.com/ebf016c308b7472411bd951e5ee3c418a44c0755/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f662e636c2e6c792f6974656d732f33513238333030343348315931633146314b32442f64697265637475732d6c6f676f2d737461636b65642e706e67" alt="Directus Logo"/>
 </p>
 
-Directus
-====================
-
-#### Learn more at [GetDirectus.com](https://getdirectus.com) and follow us on Twitter: [@directus](https://twitter.com/directus)
-
-Directus is a free and open-source database API and "headless" CMS. Unlike traditional CMS that encompass your entire project codebase, the decoupled approach of Directus offers an API and SDKs to connect your content to: websites, native apps, kiosks, IoT devices, or any other data-driven projects. Directus makes no assumptions about how you should architect your database – giving you complete freedom to optimize structure and performance for projects of any size or complexity. Built on top of the API is our feature-rich admin webapp (CMS) webapp dynamically maps to your database's schema, instantly providing your users/clients with an intuitive interface for managing content.
+<p align="center">Free & Open-Source Headless CMS</p>
 
 [![Join the chat at https://slack.getdirectus.com](https://img.shields.io/badge/chat-on%20slack-C7205A.svg)](https://slack.getdirectus.com)
 ![BrowserStack Status](https://www.browserstack.com/automate/badge.svg?badge_key=<badge_key>)
 [![GitHub issues](https://img.shields.io/github/issues/directus/directus.svg)](https://github.com/directus/directus/issues)
 [![GitHub license](https://img.shields.io/badge/license-GPL-blue.svg)](https://raw.githubusercontent.com/directus/directus/master/license.md)
-[![StackShare](http://img.shields.io/badge/tech-stack-0690fa.svg?style=flat)](http://stackshare.io/ranger-studio-llc/directus)
+[![StackShare](http://img.shields.io/badge/tech-stack-0690fa.svg?style=flat)](https://stackshare.io/ranger/directus)
 
+_Checkout our [live demo](https://preview.getdirectus.com)!_
 
-## Community Preview
-We release a static front-end preview of each upcoming version for community feedback. Please use the button on the bottom-right corner of the screen to leave feedback or recommendations. This is a work-in-progress and will continue to change: **[preview.getdirectus.com](https://preview.getdirectus.com)**
+## Description
+Directus is a free and open-source database API and 'headless' CMS. Unlike traditional CMS that encompass your entire project codebase, the decoupled approach of Directus offers an API and SDKs to connect your content to: websites, native apps, kiosks, IoT devices, or any other data-driven projects.
 
+Directus makes no assumptions about how you should architect your database – giving you complete freedom to optimize structure and performance for projects of any size or complexity. Built on top of the API is our feature-rich admin webapp (CMS) webapp dynamically maps to your database's schema, instantly providing your users/clients with an intuitive interface for managing content.
 
-## Contributors
-* Designer and Original Author: [@BenHaynes](https://github.com/BenHaynes)
-* Lead Developer: [@WellingGuzman](https://github.com/WellingGuzman)
-* Key Developers: [@coolov](https://github.com/coolov), [@freen](https://github.com/freen), [@jel-massih](https://github.com/jel-massih), [@Lasha](https://github.com/Lasha)
+Learn more at [getdirectus.com](https://getdirectus.com) and follow us on Twitter: [@directus](https://twitter.com/directus)
 
+Please consider supporting us on [Patreon](https://www.patreon.com/directus)!
 
-#### New Contributors
-We're currently a very small team looking to grow our network of contributors. If you're interested in helping advance the Directus framework please reach out to [@BenHaynes](mailto:ben@rngr.org), join us on [Slack](https://slack.getdirectus.com), or chat with us at [getdirectus.com](https://getdirectus.com/). We're actively seeking developers, designers, and testers who are willing to contribute time to: 
+## Installation
+Download the latest pre-built version from [our releases page](https://github.com/directus/directus/releases) or clone this repo and install the composer dependencies by running `composer install` from the root folder.
 
-* The core codebase
-* Database Ports (PostgreSQL, SQLite, MongoDB, etc)
-* Server-side Ports (Node, RoR, Python, etc)
-* Custom UIs
-* Custom Extensions
+### Requirements:
+NGINX or Apache Server, PHP 5.5+, MySQL 5.2+
 
-
-## Having Problems?
-Think you discover a bug? First, read through our [Docs](https://github.com/directus/docs) to be sure – then submit a ticket to our [GitHub Issues](https://github.com/directus/directus/issues/new). And if you already know a good solution, we love [pull-requests](https://github.com/directus/directus/pulls)! **For all security related issues, please chat with us directly through [getdirectus.com](https://getdirectus.com/).**
-
-## Documentation
-* **[docs.getdirectus.com](https://docs.getdirectus.com)** – _The full platform docs and user guides_
-* **[api.getdirectus.com](https://api.getdirectus.com)** – _The docs for each version of our API_
-* **[sdk.getdirectus.com](https://sdk.getdirectus.com)** – _The docs for our SDKs_
-
-## Documentation
-* **[docs.getdirectus.com](http://docs.getdirectus.com)** – _The full platform docs and user guides_
-* **[api.getdirectus.com](http://api.getdirectus.com)** – _The docs for each version of our API_
-* **[sdk.getdirectus.com](http://sdk.getdirectus.com)** – _The docs for our SDKs_
-
-**[Docs Repository](https://github.com/directus/docs)** – _Available directly on GitHub with a history of changes from version 6+. For those interested in helping build, correct, or clarify the Directus docs – please submit [pull-requests](https://github.com/directus/docs/pulls)._
-
-## Requirements
-NGINX or Apache Server, PHP 5.5+, MySQL 5.2+, pdo_mysql, mysqli, mod_rewrite, curl, fileinfo, gd, and mcrypt
-
-## Versioning
-Directus releases are numbered with the following format and guidelines:
-
-`<major>.<minor>.<patch>`
-
-* Breaking backwards compatibility bumps the major
-* New additions without breaking backwards compatibility bumps the minor
-* Bug fixes and misc changes bump the patch
-
-_For more information on semantic versioning, please visit [semver.org](http://semver.org/)._
-
-
-## Database Types
+### Database types
 While Directus has been abstracted to allow for different database adapters in the future, currently only MySQL is supported. PostgreSQL, SQLite, and MongoDB support is under development – and we hope to expand support for additional database types as we gain contributors.
 
+## Documentation
+
+### Directus ADMIN
+The full documentation about using the admin Directus can be found over at [docs.getdirectus.com](https://docs.getdirectus.com).
+
+You can find the source of this documentation at [our docs repo](https://github.com/directus/docs).
+
+### Directus API & SDKs
+Our full API reference can be found over at [api.getdirectus.com](https://api.getdirectus.com). Together with the endpoints and supported params, you can also find code examples for our supported SDKs.
+
+## Contributing to Directus
+First of all, thanks for taking the time to work on Directus!
+
+The following is a set of guidelines for contributing to Directus and it's components. These are just guidelines, not strict rules. Feel free to propose changes to this and other documents in a pull request.
+
+### How Can I Contribute?
+#### Reporting Bugs
+Think you've discovered a bug? First, read through our [docs](https://docs.getdirectus.com) to be sure – then submit a ticket to our [GitHub Issues](https://github.com/directus/directus/issues/new). And if you already know a good solution, we love [Pull Requests](https://github.com/directus/directus/pulls)! **For all security related issues, please chat with us directly through [getdirectus.com](https://getdirectus.com/).**
+
+#### Suggesting Enhancements
+When you are creating an enhancement suggestion, please include as many details as possible. Fill out the required template; including the steps that you imagine you would take if the feature you're requesting existed.
+
+#### Requesting features
+You can request and vote for other feature requests over at [our FeatHub page](http://feathub.com/directus/directus).
+
+#### Your First Code Contribution
+Unsure where to begin contributing to Directus? You can start by looking through the [`Beginner`](https://github.com/directus/directus/issues?q=is%3Aopen+is%3Aissue+label%3ABeginner) and [`Help Wanted`](https://github.com/directus/directus/issues?q=is%3Aopen+is%3Aissue+label%3A%22Help+Wanted%22) issues. `Beginner` issues are issues that often only require a few lines of code. Help wanted issues are a bit more involved than beginner issues.
+
+#### Pull Requests
+Pull requests are always welcome for every part of Directus. Please make sure to adhere to our [`.editorconfig`](http://editorconfig.org) rules and to lint your code with [XO](https://github.com/sindresorhus/xo).
+
+## Team
+- Project Lead: [Ben Haynes](https://github.com/benhaynes)
+- Development Lead: [Welling Guzmán](https://github.com/wellingguzman)
+- Interface Lead: [Rijk van Zanten](https://github.com/rijkvanzanten)
+
+Key developers: [coolov](https://github.com/coolov), [freen](https://github.com/freen), [jel-massih](https://github.com/jel-massih), [Lasha](https://github.com/Lasha)
 
 ## Copyright, License, and Trademarks
-* Directus Core codebase released under the [GPLv3](http://www.gnu.org/copyleft/gpl.html).
-* Example Code, Design Previews, Demonstration Apps, Custom Extensions, Custom UIs, and Documentation copyright 2017 [RANGER Studio LLC](http://rngr.org/).
-* RANGER Studio owns all Directus trademarks, service marks, and graphic logos on behalf of our project's community. The names of all Directus projects are trademarks of RANGER Studio.
-
-
-## Feature Requests
-If you would like to request or vote for new Directus features please visit our [FeatHub page](http://feathub.com/directus/directus).
-
-[![Feature Requests](http://feathub.com/directus/directus?format=svg)](http://feathub.com/directus/directus)
-
-
-## Screenshots
-![Directus Tables](https://getdirectus.com/assets/imgs/ss-full-tables.png)
-
-
-![Directus Item Listing](https://getdirectus.com/assets/imgs/ss-full-item-listing.png)
-
-
-![Directus Edit Page](https://getdirectus.com/assets/imgs/ss-full-item-edit.png)
-
-
-![Directus Activity](https://getdirectus.com/assets/imgs/ss-full-activity.png)
-
-
-![Directus Files](https://getdirectus.com/assets/imgs/ss-full-files.png)
-
-
-![Directus Users](https://getdirectus.com/assets/imgs/ss-full-users.png)
-
-
-![Directus Settings](https://getdirectus.com/assets/imgs/ss-full-settings.png)
-
-
-![Directus Tables & Inputs](https://getdirectus.com/assets/imgs/ss-full-tablesinputs.png)
-
-
-![Directus Tables & Inputs Edit](https://getdirectus.com/assets/imgs/ss-full-tablesinputs-edit.png)
-
-
-![Directus Permissions](https://getdirectus.com/assets/imgs/ss-full-permissions.png)
+* Directus Core codebase released under the [GPLv3](http://www.gnu.org/copyleft/gpl.html) license.
+* Example Code, Design Previews, Demonstration Apps, Custom Extensions, Custom interfaces, and Documentation copyright 2017 [RANGER Studio LLC](http://rngr.org/).
+* RANGER Studio owns all Directus trademarks, service marks, and graphic logos on behalf of our project's community. The names of all Directus projects are trademarks of [RANGER Studio LLC](http://rngr.org/).
