@@ -7,24 +7,24 @@ define([
 
   var showProgressNotification = function () {
     app.activityInProgress = true;
-    // $('#page-blocker').show();
     $('#header').find('.logo').removeClass('static');
-    // app.lockScreen();
+    $('#page-blocker').addClass('blocking');
+    app.lockScreen();
   };
 
   var hideProgressNotification = function () {
     app.activityInProgress = false;
-
     // Stop animation after cycle completes
     $('#header').find('.logo').one('animationiteration webkitAnimationIteration', function() {
       $(this).addClass('static');
     });
 
-    // app.unlockScreen();
+    $('#page-blocker').removeClass('blocking');
+    app.unlockScreen();
   };
 
   var onAppLoaded = function () {
-    $('.loading').removeClass('blocking fade');
+    $('.loading').removeClass('blocking fading');
   };
 
   // listen to alter events!
