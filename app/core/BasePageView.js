@@ -70,15 +70,9 @@ define([
       }
 
       if (this.isRightPaneOpen()) {
-        this.on('afterRender', this.loadRightPane);
+        this.on('afterRender', this.loadRightPane, this);
       } else if (this.shouldRightPaneOpen()) {
-        this.on('afterRender', function () {
-          var pane = this.loadRightPane();
-
-          if (pane && pane.canBeOpen()) {
-            pane.open();
-          }
-        }, this);
+        this.on('afterRender', this.openRightPane, this);
       } else {
         this._ensurePaneIsClosed();
       }
@@ -102,6 +96,14 @@ define([
       return hasOpenClass || this.state.rightPaneOpen === true;
     },
 
+    openRightPane: function (force) {
+      var pane = this.loadRightPane();
+
+      if (force || (pane && pane.canBeOpen())) {
+        pane.open();
+      }
+    },
+
     _ensurePaneIsClosed: function () {
       var pane = this.getRightPane();
 
@@ -110,6 +112,20 @@ define([
       }
 
       this.state.rightPaneOpen = false;
+    },
+
+    closeRightPane: function () {
+      var pane = this.loadRightPane();
+
+      if (pane) {
+        pane.close();
+
+        setTimeout(_.bind(function () {
+          this.trigger('rightPane:toggle', this);
+        }, this), 200);
+      }
+
+      this._ensurePaneIsClosed();
     },
 
     toggleRightPane: function () {
