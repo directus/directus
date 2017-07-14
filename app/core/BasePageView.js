@@ -238,6 +238,10 @@ define([
       // NOTE: a way to remove the cached collection
       // when the page is changed we need to clean up the cache
       this.currentCollection = undefined;
+
+      if (this.options.parentView) {
+        this.model.stopTracking();
+      }
     }
   });
 });
