@@ -226,7 +226,14 @@ define(function(require, exports, module) {
                 this.attributes[id].set(value, {merge: true, parse: true});
                 attributes[id] = this.attributes[id];
               } else {
-                attributes[id] = new EntriesJunctionCollection(value, options);
+                var models = value;
+
+                if (value instanceof EntriesJunctionCollection) {
+                  models = value.models;
+                  options.parse = false;
+                }
+
+                attributes[id] = new EntriesJunctionCollection(models, options);
               }
             }
 

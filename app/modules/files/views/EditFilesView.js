@@ -200,12 +200,6 @@ function(app, _, Backbone, __t, Directus, Notification, BasePageView, RightPane,
       return RightPane;
     },
 
-    cleanup: function () {
-      if (this.options.parentView) {
-        this.model.stopTracking();
-      }
-    },
-
     initialize: function (options) {
       this.editView = new Directus.EditView({model: this.model, ui: this.options.ui});
       this.headerOptions.route.title = this.model.isNew() ? __t('uploading_new_file') : __t('editing_file');

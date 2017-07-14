@@ -31,6 +31,10 @@ define(function(require, exports, module) {
       this.structure = this.collection.junctionStructure;
       this.table = this.structure.table;
 
+      if (this._trackingChanges) {
+        this.restartTracking();
+      }
+
       return attributes;
     },
 

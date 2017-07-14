@@ -155,9 +155,10 @@ if (!function_exists('get_directus_path')) {
     function get_directus_path($subPath = '')
     {
         if (!defined('DIRECTUS_PATH')) {
+            $rootPath = realpath($_SERVER['DOCUMENT_ROOT']);
             $basePath = realpath(__DIR__ . '/../..');
-            $position = (int) strpos($basePath, $_SERVER['DOCUMENT_ROOT']);
-            $length = strlen($_SERVER['DOCUMENT_ROOT']);
+            $position = (int) strpos($basePath, $rootPath);
+            $length = strlen($rootPath);
             $path = normalize_path(substr($basePath, $position + $length));
         } else {
             $path = DIRECTUS_PATH;

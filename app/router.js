@@ -234,24 +234,37 @@ define(function (require, exports, module) {
       containerView.show(view);
     },
 
+    overlayViews: [],
+
     overlayPage: function (view) {
       var views = this.v.main.getViews('#content');
+      var lastView = views.last().value();
+      var isLastViewPaneOpen = _.result(lastView, 'isRightPaneOpen');
+
+      this.overlayViews.push({
+        view: view,
+        isParentRightPaneOpen: isLastViewPaneOpen
+      });
+
       if (views.value().length <= 1) {
         this.baseRouteSave = Backbone.history.fragment;
         this.oldLoadUrlFunction = Backbone.History.prototype.loadUrl;
       }
 
-      var lastView = views.last().value();
+      if (isLastViewPaneOpen) {
+        lastView.closeRightPane();
+      }
+
       lastView.scrollTop = document.body.scrollTop;
       views.each(function (view) {
         view.$el.hide();
       });
 
-      // @TODO: move this into a global collection
+      // TODO: move this into a global collection
       if (view.model && !view.model._trackingChanges) {
           view.model.startTracking();
       } else if (view.collection) {
-        // TODO: make startTtracking part of Collection
+        // TODO: make startTracking part of Collection
         var cb = function (collection) {
           collection.each(function (model) {
             if (!model._trackingChanges) {
@@ -298,18 +311,24 @@ define(function (require, exports, module) {
     },
 
     removeOverlayPage: function (view) {
-      /*if (view.headerView) {
-        view.headerView.remove();
-      }*/
+      var topViewInfo = this.overlayViews.pop();
+      var topView;
 
-      view.remove(); //Remove Overlay Page
-      var vieww = this.v.main.getViews('#content').last().value();
-      // vieww.headerView.render();
-      vieww.reRender();
-      vieww.$el.show();
+      // Remove Overlay Page
+      // NOTE: also remove the last view from the "content" stack
+      // making its parent the current last view
+      view.remove();
+      topView = this.v.main.getViews('#content').last().value();
 
-      if (vieww.scrollTop !== undefined) {
-        document.body.scrollTop = parseInt(vieww.scrollTop, 10);
+      if (topViewInfo.isParentRightPaneOpen) {
+        topView.openRightPane(true);
+      }
+
+      topView.reRender();
+      topView.$el.show();
+
+      if (topView.scrollTop !== undefined) {
+        document.body.scrollTop = parseInt(topView.scrollTop, 10);
       }
 
       if (this.v.main.getViews('#content').value().length <= 1) {

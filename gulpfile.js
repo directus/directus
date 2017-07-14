@@ -2,11 +2,11 @@
 var fs        = require('fs');
 var cp        = require('child_process');
 var gulp      = require('gulp');
+var flatten   = require('gulp-flatten');
+var archiver  = require('gulp-archiver');
 var uglify    = require('gulp-uglify');
 var mincss    = require('gulp-minify-css');
 var concat    = require('gulp-concat');
-var zip       = require('gulp-zip');
-var tar       = require('gulp-tar');
 var gzip      = require('gulp-gzip');
 var rename    = require('gulp-rename');
 var sass      = require('gulp-sass');
@@ -263,7 +263,7 @@ gulp.task('zipit', function () {
   var filename = getZippedFilename();
 
   return gulp.src(allFiles('dist/'))
-    .pipe(zip(filename + '.zip'))
+    .pipe(archiver(filename + '.zip'))
     .pipe(gulp.dest('./'))
 });
 
@@ -271,7 +271,7 @@ gulp.task('tarit', function () {
   var filename = getZippedFilename();
 
   return gulp.src(allFiles('dist/'))
-    .pipe(tar(filename + '.tar'))
+    .pipe(archiver(filename + '.tar'))
     .pipe(gzip())
     .pipe(gulp.dest('./'))
 });
@@ -384,7 +384,14 @@ gulp.task('move', function() {
   var keepFiles = gulp.src(dirsToKeep, { base: './', dot: true })
     .pipe(gulp.dest('dist'));
 
-  return merge(mainFiles, keepFiles);
+  var tinyMCEFiles = gulp.src([
+      './assets/js/vendor/tinymce/**/*',
+      '!./assets/js/vendor/tinymce/*'
+    ])
+    .pipe(flatten({includeParents: 99}))
+    .pipe(gulp.dest('dist/assets/js/'));
+
+  return merge(mainFiles, keepFiles, tinyMCEFiles);
 });
 
 // Rerun the task when a file changes
@@ -416,6 +423,7 @@ gulp.task('build', function(cb) {
       'images',
       'submodules',
       'move',
+      'tinymce',
       'singlepage',
       'composer',
       'clean-git',

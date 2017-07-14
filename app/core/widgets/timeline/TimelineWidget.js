@@ -27,13 +27,9 @@ function(app, Backbone, $, _, __t, Directus, Utils, moment) {
 
       'click .activity-full-toggle': 'showActivityDetails',
 
-      'keydown #itemCommentText': function (event) {
-        if (event.keyCode === 13 && !event.shiftKey) {
-          event.preventDefault();
-
-          var message = this.$('#itemCommentText').val();
-          this.addComment(message);
-        }
+      'click .submitComment': function (event) {
+        var message = this.$('#itemCommentText').val();
+        this.addComment(message);
       },
 
       'click .tagInsertItem': function (event) {
@@ -69,8 +65,10 @@ function(app, Backbone, $, _, __t, Directus, Utils, moment) {
 
         // Enable submit button when content exists
         if(text.length > 0){
+          $('#itemCommentText').addClass('active');
           $('#messages-response-button').removeClass('disabled');
         } else {
+          $('#itemCommentText').removeClass('active');
           $('#messages-response-button').addClass('disabled');
         }
 
@@ -338,7 +336,7 @@ function(app, Backbone, $, _, __t, Directus, Utils, moment) {
           id: item.id,
           uid: DIRECTUS_GROUPS + '_' + item.id,
           name: item.get('name'),
-          avatar: app.PATH + 'assets/img/directus-group-avatar-100x100.jpg',
+          avatar: app.PATH + 'assets/imgs/directus-group-avatar.svg',
           type: DIRECTUS_GROUPS
         };
       });

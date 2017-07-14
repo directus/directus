@@ -241,8 +241,6 @@ require(['config', 'polyfills'], function () {
         alerts.hideProgressNotification();
       };
 
-      $('#page-blocker').fadeOut(0);
-
       ////////////////////////////////////////////////////////////////////////////////////
       // Setup Tabs @TODO: REMOVE
       // Default directus tabs

@@ -10,9 +10,7 @@ define([
   'core/widgets/widgets',
   'modules/tables/views/EditViewRightPane',
   'modules/tables/views/TranslationView'
-],
-
-function(app, Backbone, _, Handlebars, __t, Notification, Directus, BasePageView, Widgets, EditViewRightPane, TranslationView) {
+], function (app, Backbone, _, Handlebars, __t, Notification, Directus, BasePageView, Widgets, EditViewRightPane, TranslationView) {
 
   'use strict';
 

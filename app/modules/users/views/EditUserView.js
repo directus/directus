@@ -141,12 +141,6 @@ define([
       }
     },
 
-    cleanup: function () {
-      if (this.options.parentView) {
-        this.model.stopTracking();
-      }
-    },
-
     initialize: function (options) {
       this.editView = new Directus.EditView({model: this.model});
 

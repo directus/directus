@@ -34,7 +34,6 @@ define('BASE_PATH', dirname(API_PATH));
 use Directus\Bootstrap;
 use Directus\Database\TableGateway\DirectusGroupsTableGateway;
 use Directus\Database\TableGateway\DirectusPrivilegesTableGateway;
-use Directus\Database\TableGateway\DirectusSettingsTableGateway;
 use Directus\Database\TableGateway\DirectusUsersTableGateway;
 use Directus\Exception\ExceptionHandler;
 use Directus\Util\ArrayUtils;
