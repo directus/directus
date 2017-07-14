@@ -2,6 +2,7 @@
 var fs        = require('fs');
 var cp        = require('child_process');
 var gulp      = require('gulp');
+var flatten   = require('gulp-flatten');
 var archiver  = require('gulp-archiver');
 var uglify    = require('gulp-uglify');
 var mincss    = require('gulp-minify-css');
@@ -383,7 +384,14 @@ gulp.task('move', function() {
   var keepFiles = gulp.src(dirsToKeep, { base: './', dot: true })
     .pipe(gulp.dest('dist'));
 
-  return merge(mainFiles, keepFiles);
+  var tinyMCEFiles = gulp.src([
+      './assets/js/vendor/tinymce/**/*',
+      '!./assets/js/vendor/tinymce/*'
+    ])
+    .pipe(flatten({includeParents: 99}))
+    .pipe(gulp.dest('dist/assets/js/'));
+
+  return merge(mainFiles, keepFiles, tinyMCEFiles);
 });
 
 // Rerun the task when a file changes
@@ -415,6 +423,7 @@ gulp.task('build', function(cb) {
       'images',
       'submodules',
       'move',
+      'tinymce',
       'singlepage',
       'composer',
       'clean-git',
