@@ -336,7 +336,7 @@ function(app, Backbone, $, _, __t, Directus, Utils, moment) {
           id: item.id,
           uid: DIRECTUS_GROUPS + '_' + item.id,
           name: item.get('name'),
-          avatar: app.PATH + 'assets/img/directus-group-avatar-100x100.jpg',
+          avatar: app.PATH + 'assets/imgs/directus-group-avatar.svg',
           type: DIRECTUS_GROUPS
         };
       });

@@ -71,7 +71,7 @@ define(['app', 'handlebars', 'core/UIView'], function (app, Handlebars, UIView) 
           id: item.id,
           uid: DIRECTUS_GROUPS + '_' + item.id,
           name: item.get('name'),
-          avatar: app.PATH + 'assets/img/directus-group-avatar-100x100.jpg',
+          avatar: app.PATH + 'assets/imgs/directus-group-avatar.svg',
           type: DIRECTUS_GROUPS
         };
       });

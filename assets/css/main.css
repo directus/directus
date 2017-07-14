@@ -4830,6 +4830,10 @@ body.help .discover-spotlight {
   .mention:hover {
     color: #2383c4; }
 
+.mention-choice img {
+  width: 30px;
+  margin-right: 5px; }
+
 .message {
   position: absolute;
   top: 0;
