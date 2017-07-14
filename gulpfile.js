@@ -2,11 +2,10 @@
 var fs        = require('fs');
 var cp        = require('child_process');
 var gulp      = require('gulp');
+var archiver  = require('gulp-archiver');
 var uglify    = require('gulp-uglify');
 var mincss    = require('gulp-minify-css');
 var concat    = require('gulp-concat');
-var zip       = require('gulp-zip');
-var tar       = require('gulp-tar');
 var gzip      = require('gulp-gzip');
 var rename    = require('gulp-rename');
 var sass      = require('gulp-sass');
@@ -263,7 +262,7 @@ gulp.task('zipit', function () {
   var filename = getZippedFilename();
 
   return gulp.src(allFiles('dist/'))
-    .pipe(zip(filename + '.zip'))
+    .pipe(archiver(filename + '.zip'))
     .pipe(gulp.dest('./'))
 });
 
@@ -271,7 +270,7 @@ gulp.task('tarit', function () {
   var filename = getZippedFilename();
 
   return gulp.src(allFiles('dist/'))
-    .pipe(tar(filename + '.tar'))
+    .pipe(archiver(filename + '.tar'))
     .pipe(gzip())
     .pipe(gulp.dest('./'))
 });
