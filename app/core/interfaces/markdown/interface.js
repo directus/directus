@@ -34,7 +34,8 @@ define([
         newValue = marked(value);
       }
 
-      this.model.set(this.name, newValue);
+      // NOTE: Save raw markdown value
+      this.model.set(this.name, value);
       this.$('.md-editor-preview').html(newValue);
     },
 
