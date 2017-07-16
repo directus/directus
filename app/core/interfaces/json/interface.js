@@ -58,9 +58,19 @@ define(['core/UIView'], function (UIView) {
         return this.clearError();
       }
 
-      this.validateJSON(value)
-        .then(this.clearError)
-        .catch(this.showError);
+      var success = true;
+
+      try {
+        JSON.parse(event.target.value);
+      } catch (err) {
+        success = false;
+      }
+
+      if (success) {
+        event.target.classList.remove('invalid');
+      } else {
+        event.target.classList.add('invalid');
+      }
     },
 
     getPreviousLine: function (before) {
@@ -104,27 +114,6 @@ define(['core/UIView'], function (UIView) {
       this.lastValue = before.slice(0, -indent.length) + after;
       textarea.selectionStart = before.length - indent.length;
       textarea.selectionEnd = before.length - indent.length;
-    },
-
-    validateJSON: function (string) {
-      return new Promise(function (resolve, reject) {
-        try {
-          JSON.parse(string);
-          resolve();
-        } catch (err) {
-          reject(err);
-        }
-      });
-    },
-
-    clearError: function () {
-      var textarea = this.$('textarea')[0];
-      textarea.classList.remove('invalid');
-    },
-
-    showError: function () {
-      var textarea = this.$('textarea')[0];
-      textarea.classList.add('invalid');
     },
 
     fillWithExample: function (e) {
