@@ -242,8 +242,20 @@ define(function(require, exports, module) {
           case 'MANYTOONE':
             var data = {};
 
-            if (attributes[id] !== undefined && attributes[id] !== null) {
-              data = _.isObject(attributes[id]) ? attributes[id] : {id: attributes[id]};
+            if (Utils.isSomething(attributes[id])) {
+              if (!_.isObject(attributes[id])) {
+                var idAttribute = 'id';
+                var relatedTableName = this.structure.get(id).relationship.get('related_table');
+                var relatedTable = app.schemaManager.getTable(relatedTableName);
+
+                if (relatedTable) {
+                  idAttribute = relatedTable.getPrimaryColumnName();
+                }
+
+                data[idAttribute] = attributes[id];
+              } else {
+                data = attributes[id].data;
+              }
             }
 
             // Create a new model only when the value is not already a model
@@ -251,7 +263,7 @@ define(function(require, exports, module) {
               var collectionRelated = EntriesManager.getInstance(tableRelated);
               var ModelRelated = collectionRelated.model;
 
-              attributes[id] = new ModelRelated(data.data, {collection: collectionRelated});
+              attributes[id] = new ModelRelated(data, {collection: collectionRelated});
             }
 
             attributes[id].parentAttribute = id;
