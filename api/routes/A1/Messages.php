@@ -53,24 +53,40 @@ class Messages extends Route
 
     public function archiveMessages()
     {
+        $app = $this->app;
         $acl = $this->app->container->get('acl');
         $ZendDb = $this->app->container->get('zenddb');
         $currentUserId = $acl->getUserId();
 
-        $request = $this->app->request();
+        $request = $app->request();
         $rows = $request->post('rows');
-        $responsesIds = [];
+        $messagesIds = [];
 
         foreach($rows as $row) {
-            $responsesIds[] = $row['id'];
+            $messagesIds[] = ArrayUtils::get($row, 'id');
         }
 
-        $messagesTableGateway = new DirectusMessagesRecipientsTableGateway($ZendDb, $acl);
-        $success = $messagesTableGateway->archiveMessages($currentUserId, $responsesIds);
+        $messagesIds = array_filter($messagesIds);
 
-        return JsonView::render([
-            'success' => (bool) $success
-        ]);
+        if (!empty($messagesIds)) {
+            $messagesTableGateway = new DirectusMessagesRecipientsTableGateway($ZendDb, $acl);
+            $success = $messagesTableGateway->archiveMessages($currentUserId, $messagesIds);
+
+            $data = [
+                'success' => (bool) $success
+            ];
+        } else {
+            $app->response()->setStatus(404);
+
+            $data = [
+                'success' => false,
+                'error' => [
+                    'message' => __t('no_messages_ids_to_archive_provided')
+                ]
+            ];
+        }
+
+        return JsonView::render($data);
     }
 
     public function row($id)
@@ -176,6 +192,19 @@ class Messages extends Route
             foreach ($result as $item) {
                 $userRecipients[] = $item['id'];
             }
+        }
+
+        if (empty($userRecipients)) {
+            $response = [
+                'success' => false,
+                'error' => [
+                    'message' => __t('sending_message_to_an_empty_group')
+                ]
+            ];
+
+            $app->response()->setStatus(404);
+
+            return $this->app->response($response);
         }
 
         $userRecipients[] = $currentUserId;

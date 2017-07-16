@@ -54,6 +54,18 @@ class DirectusUsersTableGateway extends RelationalTableGateway
         return ['rows' => $results];
     }
 
+    public function getTableSchema($tableName = null)
+    {
+        $schema = parent::getTableSchema($tableName);
+
+        // TODO: Add proper information to all system columns
+        $schema->setStatusColumn('active');
+        $schema->setPrimaryColumn('id');
+
+        return $schema;
+    }
+
+
     public function findActiveUserIdsByGroupIds($ids = [])
     {
         $statusColumnName = $this->getTableSchema()->getStatusColumn();
@@ -61,7 +73,11 @@ class DirectusUsersTableGateway extends RelationalTableGateway
         $select = new Select($this->getTable());
         $select
             ->columns(['id', 'group'])
-            ->where->in('group', $ids)->and->equalTo($statusColumnName, STATUS_ACTIVE_NUM);
+            ->where
+                ->in('group', $ids)
+                ->and
+                ->equalTo($statusColumnName, STATUS_ACTIVE_NUM);
+
         return $this->selectWith($select)->toArray();
     }
 

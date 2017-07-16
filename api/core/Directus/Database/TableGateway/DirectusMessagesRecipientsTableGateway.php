@@ -2,6 +2,7 @@
 
 namespace Directus\Database\TableGateway;
 
+use Directus\Util\ArrayUtils;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Select;
@@ -123,9 +124,30 @@ class DirectusMessagesRecipientsTableGateway extends RelationalTableGateway
         return array_values(array_unique($messageThreads));
     }
 
-    public function archiveMessages($userId, $responsesIds)
+    public function archiveMessages($userId, $messagesIds)
     {
         $payload = ['archived' => 1];
+
+        $select = new Select('directus_messages');
+        $select
+            ->columns(['id'])
+            ->where
+                ->in('id', $messagesIds)
+                ->or
+                ->in('response_to', $messagesIds);
+
+        $result = $this->selectWith($select);
+
+        if (!$result) {
+            return false;
+        }
+
+        $result = $result->toArray();
+
+        $responsesIds = [];
+        foreach ($result as $item) {
+            array_push($responsesIds, ArrayUtils::get($item, 'id'));
+        }
 
         $update = new Update($this->getTable());
         $update->set($payload);
