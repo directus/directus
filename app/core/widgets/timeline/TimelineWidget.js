@@ -247,8 +247,7 @@ function(app, Backbone, $, _, __t, Directus, Utils, moment) {
       var tableName = collection.table.id;
       var rowId = this.model.id;
 
-      var privileges = app.schemaManager.getPrivileges('directus_activity');
-      if (!privileges || !privileges.can('view')) {
+      if (!this.canSeeActivities()) {
         return;
       }
 
@@ -270,8 +269,7 @@ function(app, Backbone, $, _, __t, Directus, Utils, moment) {
       var tableName = collection.table.id;
       var rowId = this.model.id;
 
-      var privileges = app.schemaManager.getPrivileges('directus_messages');
-      if (!privileges || !privileges.can('view')) {
+      if (!this.canSeeComments()) {
         return;
       }
 
@@ -282,6 +280,18 @@ function(app, Backbone, $, _, __t, Directus, Utils, moment) {
       });
 
       this.comments.fetch();
+    },
+
+    canSeeComments: function () {
+      var privileges = app.schemaManager.getPrivileges('directus_messages');
+
+      return privileges && privileges.can('view');
+    },
+
+    canSeeActivities: function () {
+      var privileges = app.schemaManager.getPrivileges('directus_activity');
+
+      return privileges && privileges.can('view');
     },
 
     initialize: function (options) {
@@ -298,16 +308,18 @@ function(app, Backbone, $, _, __t, Directus, Utils, moment) {
       var otherFetched = false;
 
       this.listenTo(this.activity, 'sync', function() {
-        if(otherFetched) {
+        if (otherFetched || !this.canSeeComments()) {
           this.render();
         }
+
         otherFetched = true;
       });
 
       this.listenTo(this.comments, 'sync', function() {
-        if(otherFetched) {
+        if (otherFetched || !this.canSeeActivities()) {
           this.render();
         }
+
         otherFetched = true;
       });
 
