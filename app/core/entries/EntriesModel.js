@@ -119,7 +119,8 @@ define(function(require, exports, module) {
         }
 
         // NOTE: Column with default value should not be required
-        if (!required && defaultValue !== undefined) {
+        // if the value is null/nothing/empty
+        if (isNull && !required && defaultValue !== undefined) {
           return;
         }
 
