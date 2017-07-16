@@ -69,8 +69,12 @@ class DirectusMessagesTableGateway extends RelationalTableGateway
         return $messageId;
     }
 
-    public function fetchMessageThreads($ids, $uid)
+    public function fetchMessageThreads($ids, $uid, array $states = [])
     {
+        if (empty($states)) {
+            $states = [0];
+        }
+
         $select = new Select($this->getTable());
         $select
             ->columns([
@@ -86,6 +90,8 @@ class DirectusMessagesTableGateway extends RelationalTableGateway
             ->join('directus_messages_recipients', 'directus_messages.id = directus_messages_recipients.message_id', ['read', 'archived'])
             ->where
             ->equalTo('directus_messages_recipients.recipient', $uid)
+            ->and
+            ->in('directus_messages_recipients.archived', $states)
             ->and
             ->where
             ->nest
@@ -115,25 +121,26 @@ class DirectusMessagesTableGateway extends RelationalTableGateway
         $messageIds = [];
         $params['columns'] = ArrayUtils::get($params, 'columns', 'id');
         $table = $this;
-        $result = $this->loadItems($params, function (Builder $query) use ($uid, $table, $messageId, $params) {
+
+        // ----------------------------------------------------------------------------
+        // NOTE: state are a fake way to call the "state" of a message
+        // 0 means in the inbox
+        // 1 means in the archive box
+        // ----------------------------------------------------------------------------
+        $defaultState = '0';
+        $states = ArrayUtils::get($params, 'states', $defaultState);
+        if (!$states) {
+            $states = $defaultState;
+        }
+
+        $states = explode(',', $states);
+
+        $result = $this->loadItems($params, function (Builder $query) use ($uid, $table, $messageId, $states) {
             $query->join('directus_messages_recipients', 'directus_messages_recipients.message_id = directus_messages.id', [
                 'recipient'
             ]);
 
             $query->whereEqualTo('directus_messages_recipients.recipient', $uid);
-
-            // ----------------------------------------------------------------------------
-            // NOTE: state are a fake way to call the "state" of a message
-            // 0 means in the inbox
-            // 1 means in the archive box
-            // ----------------------------------------------------------------------------
-            $defaultState = '0';
-            $states = ArrayUtils::get($params, 'states', $defaultState);
-            if (!$states) {
-                $states = $defaultState;
-            }
-
-            $states = explode(',', $states);
             $query->whereIn('directus_messages_recipients.archived', $states);
 
             if ($messageId) {
@@ -155,7 +162,7 @@ class DirectusMessagesTableGateway extends RelationalTableGateway
             return [];
         };
 
-        $result = $this->fetchMessageThreads($messageIds, $uid);
+        $result = $this->fetchMessageThreads($messageIds, $uid, $states);
 
         if (count($result) === 0) {
             return [];

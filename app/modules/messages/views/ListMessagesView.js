@@ -310,8 +310,10 @@ define([
 
       app.on('messages:new', this.onNewMessages, this);
 
-      this.listenTo(this.collection, 'sync', function () {
-        this.state.currentMessage = null;
+      this.listenTo(this.collection, 'sync', function (collection, resp, options) {
+        if (options.silent !== true) {
+          this.state.currentMessage = null;
+        }
       });
 
       this.state = {
@@ -379,10 +381,17 @@ define([
 
           if ($checksChecked.length) {
             _.each($checksChecked, function (checkbox) {
-              ids.push($(checkbox).parent().data('id'));
+              var $message = $(checkbox).parents('.js-message');
+
+              ids.push($message.data('id'));
             });
           } else if (this.table.state.currentMessage) {
             ids.push(this.table.state.currentMessage.id);
+          }
+
+          if (ids.length === 0) {
+            Notification.warning(__t('select_message_to_archive'));
+            return;
           }
 
           var models = this.collection.filter(function (model) {

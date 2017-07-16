@@ -104,6 +104,7 @@ function(app, Backbone, EntriesModel, moment) {
       });
 
       app.request('POST', '/users/tracking/page', {
+        global: false,
         data: {
           last_page: lastPage
         }
