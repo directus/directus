@@ -1,6 +1,7 @@
 define([
-  "app",
-  "backbone",
+  'app',
+  'underscore',
+  'backbone',
   'handlebars',
   "core/directus",
   'core/BasePageView',
@@ -10,7 +11,7 @@ define([
   'moment'
 ],
 
-function(app, Backbone, Handlebars, Directus, BasePageView, FileHelper, Widgets, __t, moment) {
+function(app, _, Backbone, Handlebars, Directus, BasePageView, FileHelper, Widgets, __t, moment) {
 
   'use strict';
 
@@ -115,8 +116,7 @@ function(app, Backbone, Handlebars, Directus, BasePageView, FileHelper, Widgets,
       });
     },
 
-    initialize: function(options) {
-      this.collection.on('sort', this.render, this);
+    initialize: function (options) {
       this.listenTo(this.collection, 'sync', function(model, resp, options) {
         if (options.silent) return;
         this.render();
@@ -168,23 +168,11 @@ function(app, Backbone, Handlebars, Directus, BasePageView, FileHelper, Widgets,
       return widgets;
     },
 
-    leftSecondaryToolbar: function() {
-      // if (!this.widgets.visibilityWidget) {
-      //   this.widgets.visibilityWidget = new Widgets.VisibilityWidget({collection: this.collection, basePage: this});
-      // }
-      //
-      // if (!this.widgets.filterWidget) {
-      //   this.widgets.filterWidget = new Widgets.FilterWidget({collection: this.collection, basePage: this});
-      // }
-      //
-      // return [this.widgets.visibilityWidget, this.widgets.filterWidget];
-    },
-
     afterRender: function() {
       this.setView('#page-content', this.table);
       var status = this.collection.preferences.get('status');
       // Ignore preferences and get all users
-      // @todo: make a better solution
+      // TODO: make a better solution
       this.collection.preferences.unset('status');
       this.collection.filters['status'] = '0,1,2';
       this.collection.fetch();
@@ -193,8 +181,10 @@ function(app, Backbone, Handlebars, Directus, BasePageView, FileHelper, Widgets,
 
     initialize: function() {
       this.viewList = false;
-      this.table = new BodyView({collection:this.collection});
       this.widgets = [];
+      this.table = new BodyView({
+        collection: this.collection
+      });
     }
   });
 
