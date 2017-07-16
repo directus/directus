@@ -144,6 +144,12 @@ define(['core/UIView'], function (UIView) {
         placeholder: this.options.settings.get('placeholder'),
         readOnly: this.options.settings.get('read_only') || !this.options.canWrite
       };
+    },
+
+    afterRender: function () {
+      this.validate({
+        target: this.$el.find('textarea')[0]
+      });
     }
   });
 });
