@@ -55,7 +55,7 @@ define(['core/UIView'], function (UIView) {
       var textarea = event.target;
       var value = textarea.value;
       if (value.length === 0) {
-        return this.clearError();
+        return event.target.classList.remove('invalid');
       }
 
       var success = true;
