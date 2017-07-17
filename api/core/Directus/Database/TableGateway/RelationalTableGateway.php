@@ -1105,6 +1105,13 @@ class RelationalTableGateway extends BaseTableGateway
 
         $query->nestWhere(function (Builder $query) use ($columns, $search, $table) {
             foreach ($columns as $column) {
+                // NOTE: Only search numeric or string type columns
+                $isNumeric = $this->getSchemaManager()->isNumericType($column->getType());
+                $isString = $this->getSchemaManager()->isStringType($column->getType());
+                if (!$isNumeric && !$isString) {
+                    continue;
+                }
+
                 if ($column->isManyToOne()) {
                     $relationship = $column->getRelationship();
                     $relatedTable = $relationship->getRelatedTable();

@@ -268,4 +268,20 @@ interface SchemaInterface
      * @return bool
      */
     public function isNumericType($type);
+
+    /**
+     * Gets String data types
+     *
+     * @return mixed
+     */
+    public function getStringTypes();
+
+    /**
+     * Checks whether the given type is string type
+     *
+     * @param $type
+     *
+     * @return bool
+     */
+    public function isStringType($type);
 }

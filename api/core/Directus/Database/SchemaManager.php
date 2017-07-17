@@ -438,6 +438,18 @@ class SchemaManager
     }
 
     /**
+     * Checks whether the given type is string type
+     *
+     * @param $type
+     *
+     * @return bool
+     */
+    public function isStringType($type)
+    {
+        return $this->source->isStringType($type);
+    }
+
+    /**
      * Checks whether the given type is integer type
      *
      * @param $type

@@ -687,4 +687,30 @@ class MySQLSchema extends AbstractSchema
     {
         return in_array(strtolower($type), $this->getNumericTypes());
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function getStringTypes()
+    {
+        return [
+            'char',
+            'varchar',
+            'text',
+            'enum',
+            'set',
+            'tinytext',
+            'text',
+            'mediumtext',
+            'longtext'
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function isStringType($type)
+    {
+        return in_array(strtolower($type), $this->getStringTypes());
+    }
 }
