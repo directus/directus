@@ -70,7 +70,6 @@ class SchemaManager
         'schema_migrations',
         'settings',
         'tables',
-        'ui',
         'users'
     ];
 
