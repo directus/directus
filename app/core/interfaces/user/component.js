@@ -10,6 +10,7 @@ define([
     system: true,
     sortBy: ['first_name', 'last_name'],
     Input: Input,
+    dataTypes: ['INT'],
     list: function (options) {
       var html;
       var userId = options.value || options.model.id;
