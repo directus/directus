@@ -68,4 +68,6 @@
 	<input id={{identifier}} type="radio" {{#if ../readonly}}disabled{{/if}} name="{{../name}}" value="{{id}}" {{#if selected}}checked{{/if}} />
 	<label for={{identifier}}>{{name}}</label>
 	{{/statuses}}
+
+	<input type="hidden" name="{{name}}" value="{{value}}">
 </div>

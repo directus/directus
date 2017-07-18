@@ -9,7 +9,10 @@ define([
 
     events: {
       'change input[type=radio]': function (event) {
-        this.model.set(this.name, $(event.currentTarget).val());
+        var statusValue = $(event.currentTarget).val();
+
+        this.$('input[type=hidden]').val(statusValue);
+        this.model.set(this.name, statusValue);
       }
     },
 
