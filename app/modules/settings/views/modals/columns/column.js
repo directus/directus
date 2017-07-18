@@ -44,19 +44,26 @@ define([
       }
     },
 
-    _close: function() {
+    _close: function () {
       // change Modal.close to Modal._close
       // change this._close to this.close
       // closing the modal should close it from their container
       this.container.close();
     },
 
-    save: function() {
-      var view = this.getCurrentView();
+    save: function () {
       var columnModel = this.model.parent;
+      var infoView = this.getColumnView();
+      var optionsView = this.getOptionsView();
       var isOptionsView;
 
-      if (view.save()) {
+      if (!infoView.model.isNew()) {
+        infoView.model.set('options', JSON.stringify(optionsView.model.toJSON()));
+      }
+
+      // TODO: Improve saving payload
+      // sending the new values and if there's not info value to be save, only save the options
+      if (infoView.save()) {
         isOptionsView = this.state.currentView === VIEW_INTERFACE_ID;
 
         if (!isOptionsView && SchemaHelper.isMissingRequiredOptions(columnModel)) {
@@ -86,7 +93,7 @@ define([
       this.render();
     },
 
-    getCurrentView: function() {
+    getCurrentView: function () {
       if (this.state.currentView === VIEW_COLUMN_ID) {
         return this.getColumnView();
       } else {
@@ -171,7 +178,7 @@ define([
     cleanup: function () {
       this.model.parent.resetAttributes();
       this.model.parent.stopTracking();
-      // TODO: clean options model
+      this.model.stopTracking();
     },
 
     getActiveViewModel: function () {
@@ -199,6 +206,7 @@ define([
       this.state.activeModel = this.getActiveViewModel();
       this.optionsView = this.getOptionsView();
       this.model.parent.startTracking();
+      this.model.startTracking();
     }
   });
 

@@ -12,7 +12,9 @@ define(['app', 'backbone', 'core/edit'], function(app, Backbone, EditView) {
     //  this.model.resetAttributes();
     // },
 
-    save: function() {
+    // NOTE: This method is not being used anymore
+    // and will be soon removed to merge info and options view save
+    save: function () {
       return this.model.save(this.editView.data());
     },
 
@@ -26,7 +28,7 @@ define(['app', 'backbone', 'core/edit'], function(app, Backbone, EditView) {
       }
     },
 
-    initialize: function() {
+    initialize: function () {
       this.editView = new EditView({
         model: this.model,
         structure: this.options.schema

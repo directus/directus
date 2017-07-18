@@ -111,6 +111,7 @@ class ColumnsService extends AbstractService
             'junction_key_left',
             'junction_key_right',
             'sort',
+            'options',
             'comment'
         ]);
 
@@ -123,6 +124,11 @@ class ColumnsService extends AbstractService
             if (!$relationshipType && array_key_exists('ui', $data) && in_array($data['ui'], $manytoones)) {
                 $data['relationship_type'] = 'MANYTOONE';
                 $data['junction_key_right'] = $columnName;
+            }
+
+            $options = ArrayUtils::get($data, 'options');
+            if (is_array($options)) {
+                $data['options'] = @json_encode($options);
             }
 
             $tableGateway->updateCollection($data);
