@@ -136,9 +136,9 @@ define([
         style_formats: styleFormats,
         setup: function (editor) {
           var saveEditorContents = _.debounce(function () {
-            if (tinyMCE.activeEditor && tinyMCE.activeEditor.getContent) {
-              self.model.set(self.name, tinyMCE.activeEditor.getContent());
-              self.$el.find('textarea')[0].innerHTML = tinyMCE.activeEditor.getContent();
+            if (editor && editor.getContent) {
+              self.model.set(self.name, editor.getContent());
+              self.$el.find('textarea')[0].innerHTML = editor.getContent();
             }
           }, 500);
 
