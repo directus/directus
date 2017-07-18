@@ -122,7 +122,7 @@ define([
       }
 
       this.editor = tinyMCE.init({
-        plugins: 'table hr lists link image print pagebreak code insertdatetime media autoresize paste',
+        plugins: 'table hr lists link image print pagebreak code insertdatetime media autoresize paste preview',
         selector: '#wysiwyg_' + this.options.name,
         branding: false,
         skin: 'directus',
