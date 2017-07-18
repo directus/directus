@@ -816,6 +816,25 @@
 							}
 						}
 					}
+					&.mention-list {
+						@include box-shadow ();
+						@include border-radius (2px);
+						background-color: $white;
+						margin-bottom: 20px;
+						.mention-choice {
+							@include transition (all, $timing-short, ease-in-out);
+							padding: 10px;
+							&:hover {
+								color: $primary;
+								cursor: pointer;
+							}
+							img {
+								@include border-radius (50%);
+								vertical-align: middle;
+								margin-right: 10px;
+							}
+						}
+					}
 				}
 			}
 		}
