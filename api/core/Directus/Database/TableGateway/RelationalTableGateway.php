@@ -87,7 +87,7 @@ class RelationalTableGateway extends BaseTableGateway
         // Delete file if necessary
         $TableGateway->deleteFiles($tableName, $recordData);
 
-        //Dont do for directus users since id is pk
+        // Do not set owner id to directus_users since id is the owner column
         if ($recordIsNew && $tableName != 'directus_users') {
             $cmsOwnerColumnName = $this->acl->getCmsOwnerColumnByTable($tableName);
             if ($cmsOwnerColumnName) {
@@ -95,7 +95,7 @@ class RelationalTableGateway extends BaseTableGateway
             }
         }
 
-        //Dont let non-admins make admins
+        // Do not let non-admins make admins
         if ($tableName == 'directus_users' && $currentUserGroupId != 1) {
             if (isset($recordData['group']) && $recordData['group']['id'] == 1) {
                 unset($recordData['group']);
@@ -119,19 +119,32 @@ class RelationalTableGateway extends BaseTableGateway
         }
 
         // Update and/or Add Many-to-One Associations
-        $parentRecordWithForeignKeys = $TableGateway->addOrUpdateManyToOneRelationships($tableSchema, $recordData, $nestedLogEntries, $nestedCollectionRelationshipsChanged);
+        $recordData = $TableGateway->addOrUpdateManyToOneRelationships($tableSchema, $recordData, $nestedLogEntries, $nestedCollectionRelationshipsChanged);
 
-        // Merge the M21 foreign keys into the recordData array
-        $recordData = array_merge($recordData, $parentRecordWithForeignKeys);
+        $parentRecordWithoutAlias = [];
+        foreach ($recordData as $key => $data) {
+            $column = $tableSchema->getColumn($key);
+
+            if ($column && !$column->isAlias()) {
+                $parentRecordWithoutAlias[$key] = $data;
+            }
+        }
+
+        // NOTE: set the primary key to null
+        // to default the value to whatever increment value is next
+        // avoiding the error of inserting nothing
+        if (empty($parentRecordWithoutAlias)) {
+            $parentRecordWithoutAlias[$tableSchema->getPrimaryColumn()] = null;
+        }
 
         // If more than the record ID is present.
         $newRecordObject = null;
-        $parentRecordChanged = $this->recordDataContainsNonPrimaryKeyData($parentRecordWithForeignKeys); // || $recordIsNew;
+        $parentRecordChanged = $this->recordDataContainsNonPrimaryKeyData($recordData);
 
         if ($parentRecordChanged) {
             // Update the parent row, w/ any new association fields replaced by their IDs
             $newRecordObject = $TableGateway
-                ->addOrUpdateRecordByArray($parentRecordWithForeignKeys);
+                ->addOrUpdateRecordByArray($parentRecordWithoutAlias);
 
             if (!$newRecordObject) {
                 return [];
@@ -143,7 +156,7 @@ class RelationalTableGateway extends BaseTableGateway
         }
 
         // Do it this way, because & byref for outcome of ternary operator spells trouble
-        $draftRecord = &$parentRecordWithForeignKeys;
+        $draftRecord = &$parentRecordWithoutAlias;
         if ($recordIsNew) {
             $draftRecord = &$newRecordObject;
         }
@@ -180,10 +193,8 @@ class RelationalTableGateway extends BaseTableGateway
             throw new \RuntimeException('Attempted to load ' . $recordType . ' record post-insert with empty result. Lookup via row id: ' . print_r($rowId, true));
         }
 
-        $fullRecordData = (array)$fullRecordData;
-
-
-        $deltaRecordData = $recordIsNew ? [] : array_intersect_key((array)$parentRecordWithForeignKeys, (array)$fullRecordData);
+        $fullRecordData = (array) $fullRecordData;
+        $deltaRecordData = $recordIsNew ? [] : array_intersect_key((array)$parentRecordWithoutAlias, (array) $fullRecordData);
 
         switch ($activityEntryMode) {
             // Activity logging is enabled, and I am a nested action
@@ -405,7 +416,7 @@ class RelationalTableGateway extends BaseTableGateway
         foreach ($schema->getColumns() as $column) {
             $colName = $column['id'];
 
-            if (!$column->hasRelationship()) {
+            if (!$column->isManyToOne()) {
                 continue;
             }
 
@@ -413,13 +424,6 @@ class RelationalTableGateway extends BaseTableGateway
             if (!isset($parentRow[$colName]) || !is_array($parentRow[$colName])) {
                 continue;
             }
-
-            $relationship = $column['relationship'];
-            $fieldIsCollectionAssociation = in_array($relationship['type'], TableSchema::$association_types);
-            $lowercaseColumnType = strtolower($relationship['type']);
-
-            // Ignore empty OneToMany collections
-            $fieldIsOneToMany = ('onetomany' === $lowercaseColumnType);
 
             // Ignore non-arrays and empty collections
             if (empty($parentRow[$colName])) {
@@ -429,31 +433,19 @@ class RelationalTableGateway extends BaseTableGateway
             }
 
             $foreignDataSet = $parentRow[$colName];
+            $foreignRow = $foreignDataSet;
+            $foreignTableName = $column->getRelationship()->getRelatedTable();
+            $foreignTableSchema = $this->getTableSchema($foreignTableName);
 
-            $colUiType = $column['ui'];
-            // @TODO: create isManyToOne, etc helpers in Relationship and Column
-            $isManyToOne = $column->hasRelationship() && $column->getRelationship()->getType() === 'MANYTOONE';
-
-            /** Many-to-One */
-            if ($isManyToOne) {
-                $foreignRow = $foreignDataSet;
-                $foreignTableName = null;
-
-                $foreignTableName = $column['relationship']['related_table'];
-                $foreignTableSchema = $this->getTableSchema($foreignTableName);
-
-                // Update/Add foreign record
-                if ($this->recordDataContainsNonPrimaryKeyData($foreignRow, $foreignTableSchema->getPrimaryColumn())) {
-                    // $foreignRow = $this->addOrUpdateRecordByArray($foreignRow, $foreignTableName);
-                    // NOTE: using manageRecordUpdate instead to update related data
-                    $foreignRow = $this->manageRecordUpdate($foreignTableName, $foreignRow);
-                }
-                $parentRow[$colName] = $foreignRow[$foreignTableSchema->getPrimaryColumn()];
-            } /** One-to-Many, Many-to-Many */
-            elseif ($fieldIsCollectionAssociation) {
-                unset($parentRow[$colName]);
+            // Update/Add foreign record
+            if ($this->recordDataContainsNonPrimaryKeyData($foreignRow, $foreignTableSchema->getPrimaryColumn())) {
+                // NOTE: using manageRecordUpdate instead of addOrUpdateRecordByArray to update related data
+                $foreignRow = $this->manageRecordUpdate($foreignTableName, $foreignRow);
             }
+
+            $parentRow[$colName] = $foreignRow[$foreignTableSchema->getPrimaryColumn()];
         }
+
         return $parentRow;
     }
 
