@@ -90,8 +90,10 @@ class CreateDirectusFilesTable extends Ruckusing_Migration_Base
             'unsigned' => true,
             'null' => false
         ]);
+        // default to current timestamp
+        // fallback to something rather than NULL
         $t->column('date_uploaded', 'datetime', [
-            'default' => NULL
+            'default' => 'CURRENT_TIMESTAMP'
         ]);
         $t->column('storage_adapter', 'string', [
             'limit' => 50,
@@ -99,6 +101,23 @@ class CreateDirectusFilesTable extends Ruckusing_Migration_Base
         ]);
 
         $t->finish();
+
+        $this->insert('directus_files', [
+            'id' => 1,
+            'name' => '00000000001.jpg',
+            'title' => 'Mountain Range',
+            'location' => 'Earth',
+            'caption' => 'A gorgeous view of this wooded mountain range',
+            'type' => 'image/jpeg',
+            'charset' => 'binary',
+            'tags' => 'trees,rocks,nature,mountains,forest',
+            'width' => 1800,
+            'height' => 1200,
+            'size' => 602058,
+            'user' => 1,
+            'date_uploaded' => \Directus\Util\DateUtils::now(),
+            'storage_adapter' => 'local'
+        ]);
     }//up()
 
     public function down()
