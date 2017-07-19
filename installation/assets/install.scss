@@ -187,9 +187,6 @@ input[type=number] {
     -moz-appearance: none;
     appearance: none;
     // -webkit-text-fill-color: lighten($primary, 20%); // Controls placeholder and autocomplete, needs to differ from actual entry
-    option {
-        padding: 10px 12px;
-    }
     &:focus {
         border: 1px solid $primary;
     }
@@ -220,7 +217,7 @@ input[type=number] {
 .select-arrow {
     position: absolute;
 	top: 50%;
-	transform: translateY(-67.5%);
+	transform: translateY(-80%);
     right: 4px;
     font-size: 29px;
 }
