@@ -1,3 +1,4 @@
 [submodule "api/migrations/templates"]
-	path = api/migrations/templates
-	url = https://github.com/directus/schemas-boilerplate
+    path = api/migrations/templates
+    url = https://github.com/directus/schemas-boilerplate
+    branch = version/6.4
