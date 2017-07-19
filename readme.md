@@ -44,11 +44,6 @@ Think you discover a bug? First, read through our [Docs](https://github.com/dire
 * **[api.getdirectus.com](https://api.getdirectus.com)** – _The docs for each version of our API_
 * **[sdk.getdirectus.com](https://sdk.getdirectus.com)** – _The docs for our SDKs_
 
-## Documentation
-* **[docs.getdirectus.com](http://docs.getdirectus.com)** – _The full platform docs and user guides_
-* **[api.getdirectus.com](http://api.getdirectus.com)** – _The docs for each version of our API_
-* **[sdk.getdirectus.com](http://sdk.getdirectus.com)** – _The docs for our SDKs_
-
 **[Docs Repository](https://github.com/directus/docs)** – _Available directly on GitHub with a history of changes from version 6+. For those interested in helping build, correct, or clarify the Directus docs – please submit [pull-requests](https://github.com/directus/docs/pulls)._
 
 ## Requirements
