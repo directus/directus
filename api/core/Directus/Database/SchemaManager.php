@@ -16,6 +16,7 @@ use Directus\Database\Object\Column;
 use Directus\Database\Object\Table;
 use Directus\Database\Schemas\Sources\SchemaInterface;
 use Directus\Util\ArrayUtils;
+use Directus\Util\StringUtils;
 use Zend\Db\Sql\Ddl\Column\Integer;
 use Zend\Db\Sql\Ddl\Constraint\PrimaryKey;
 use Zend\Db\Sql\Ddl\CreateTable;
@@ -51,6 +52,13 @@ class SchemaManager
      * @var array
      */
     protected $data = [];
+
+    /**
+     * Core table prefix
+     *
+     * @var string
+     */
+    protected $prefix = 'directus_';
 
     /**
      * Directus core tables
@@ -227,7 +235,7 @@ class SchemaManager
     {
         $filterFunction = function ($table) {
             // @TODO: Directus tables prefix will be dynamic
-            return 'directus_' . $table;
+            return $this->prefix . $table;
         };
 
         if (!is_array($tables)) {
@@ -503,7 +511,11 @@ class SchemaManager
     {
         $tables = $this->directusTables;
         if ($filterNames) {
-            $tables = ArrayUtils::pick($tables, $filterNames);
+            foreach ($tables as $i => $table) {
+                if (!in_array($table, $filterNames)) {
+                    unset($tables[$i]);
+                }
+            }
         }
 
         return $this->addCoreTablePrefix($tables);
@@ -576,11 +588,38 @@ class SchemaManager
         return new Table($data);
     }
 
+    /**
+     * Adds fixed core table columns information such as system columns name
+     *
+     * @param array $column
+     *
+     * @return array
+     */
+    public function parseCoreTablesColumn(array $column)
+    {
+        $tableName = ArrayUtils::get($column, 'table_name');
+        $columnName = ArrayUtils::get($column, 'column_name');
+
+        if (!StringUtils::startsWith($tableName, $this->prefix)) {
+            return $column;
+        }
+
+        // Status
+        $hasStatus = in_array($tableName, $this->getDirectusTables(['users', 'files']));
+        if ($columnName == 'status' && $hasStatus) {
+            $column['ui'] = static::INTERFACE_STATUS;
+        }
+
+        return $column;
+    }
+
     public function createColumnObjectFromArray($column)
     {
         if (!isset($column['ui'])) {
             $column['ui'] = $this->getColumnDefaultInterface($column['type']);
         }
+
+        $column = $this->parseCoreTablesColumn($column);
 
         $options = json_decode(ArrayUtils::get($column, 'options', ''), true);
         $column['options'] = $options ? $options : [];

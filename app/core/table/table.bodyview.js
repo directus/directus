@@ -138,6 +138,16 @@ function(app, Backbone, _, Sortable, Notification) {
       // NOTE: This code is duplicated in columns interface
       var collection = this.collection;
       var table = collection.table;
+
+      // NOTE: the structure of a junction record is the related record
+      // This will need to be fixed to the structure will be the junction structure
+      // and the related structure will be relatedStructure or similar
+      // If the junctionStructure property exists then it means it's a junction collection
+      // and the it needs to use the junction table instead
+      if (collection.junctionStructure) {
+        table = collection.junctionStructure.table;
+      }
+
       // if we are dropping something it means we allowed sorting
       // and the collection has a sort column
       var sortColumnName = table ? table.getSortColumnName() : 'sort';
