@@ -4,9 +4,10 @@ define([
   'underscore',
   'backbone',
   'core/t',
+  'utils',
   './edit-fields-modal',
   'objects/linked-list/circular'
-], function (app, _, Backbone, __t, EditFieldsModal, CircularLinkedList) {
+], function (app, _, Backbone, __t, Utils, EditFieldsModal, CircularLinkedList) {
   'use strict';
 
   // TODO: Create a API to handle multiple status actions
@@ -108,6 +109,11 @@ define([
       var currentPermissionValue;
 
       currentPermissionValue = privilege.get(permissionName);
+      // NOTE: if currentPermissionValue is undefined set the current value to 0
+      if (Utils.isNothing(currentPermissionValue)) {
+        currentPermissionValue = 0;
+      }
+
       attributes[permissionName] = this.getNextPermissionValue(permission, currentPermissionValue);
 
       this.updateModel(privilege.cid, attributes, {wait: false});
