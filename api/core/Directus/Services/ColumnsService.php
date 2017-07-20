@@ -98,7 +98,11 @@ class ColumnsService extends AbstractService
         // set the current column to the default interface
         $this->updateCurrentSystemInterfaces($tableName, ArrayUtils::get($data, 'ui'));
 
-        $this->ddlUpdate($tableName, $columnName, $data);
+        $columnObject = TableSchema::getTableSchema($tableName)->getColumn($columnName);
+        if ($columnObject && !$columnObject->isAlias()) {
+            $this->ddlUpdate($tableName, $columnName, $data);
+        }
+
         $data = ArrayUtils::pick($data, [
             'data_type',
             'ui',
