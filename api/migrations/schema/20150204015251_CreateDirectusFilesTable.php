@@ -90,10 +90,10 @@ class CreateDirectusFilesTable extends Ruckusing_Migration_Base
             'unsigned' => true,
             'null' => false
         ]);
-        // default to current timestamp
-        // fallback to something rather than NULL
+        // TODO: Make directus set this value to whatever default is on the server (UTC)
+        // In MySQL 5.5 and below doesn't support CURRENT TIMESTAMP on datetime as default
         $t->column('date_uploaded', 'datetime', [
-            'default' => 'CURRENT_TIMESTAMP'
+            'default' => NULL
         ]);
         $t->column('storage_adapter', 'string', [
             'limit' => 50,
