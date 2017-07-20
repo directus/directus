@@ -149,9 +149,10 @@ function(app, Backbone, _, Sortable, Notification) {
         // As collection models will be synced from the server its cid will be generated again
         // But the dom element will be still pointing to the older cid
         var attributes = {};
+        var $el = $(this);
 
         attributes[sortColumnName] = i;
-        collection.get($(this).attr('data-id')).set(attributes, {silent: true});
+        collection.get($el.data('cid')).set(attributes, {silent: true});
       });
 
       success = function () {
