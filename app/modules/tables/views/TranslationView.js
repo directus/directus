@@ -87,11 +87,11 @@ function(app, Backbone, Handlebars, Directus, EntriesManager) {
       });
 
       if(!this.translateModel) {
-        this.translateModel = new this.translateCollection.model({}, {collection: this.translateCollection, parse: true});
         var data = {};
         data[this.translateSettings.left_column_name] = this.activeLanguageId;
         data[this.translateRelationship.junction_key_right] = this.model.id;
-        this.translateModel.set(data);
+
+        this.translateModel = new this.translateCollection.model({}, {collection: this.translateCollection, parse: true});
       }
 
       this.editView = new Directus.EditView({
