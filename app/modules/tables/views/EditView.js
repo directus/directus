@@ -40,10 +40,10 @@ define([
       this.unstickit();
     },
 
-    beforeSaveHook: function() {
+    beforeSaveHook: function () {
       if (this.translateViews.length) {
-        _.each(this.translateViews, function(view) {
-          view.saveTranslation();
+        _.each(this.translateViews, function (view) {
+          this.model.set(view.translateId, view.translateCollection);
         }, this);
       }
     },
