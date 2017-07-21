@@ -299,7 +299,7 @@ class RelationalTableGateway extends BaseTableGateway
             return false;
         }
 
-        $statusColumnName = 'active';
+        $statusColumnName = TableSchema::getTableSchema($tableName)->getStatusColumn();
 
         // Get status delete value
         $tableSchema = $this->getTableSchema();
