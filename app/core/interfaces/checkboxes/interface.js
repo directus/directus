@@ -1,5 +1,5 @@
 /* global _ */
-define(['core/UIView'], function (UIView) {
+define(['core/UIView', 'underscore'], function (UIView, _) {
   function parseOptions(options) {
     if (_.isString(options)) {
       try {
@@ -49,7 +49,7 @@ define(['core/UIView'], function (UIView) {
         return {
           key: key,
           value: options[key],
-          selected: values.indexOf(key) > 0
+          selected: values.indexOf(key) >= 0
         };
       });
 
