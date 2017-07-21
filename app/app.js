@@ -242,7 +242,13 @@ define(function (require, exports, module) {
         var fullNames = [];
 
         collection.each(function (user) {
-          var lastPage = JSON.parse(user.get('last_page'));
+          var lastPage;
+
+          try {
+            lastPage = JSON.parse(user.get('last_page'));
+          } catch (ex) {
+            lastPage = {};
+          }
 
           if (lastPage && lastPage.path == currentPagePath) {
             editingThisPage.push(user);
