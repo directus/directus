@@ -145,6 +145,18 @@ define(['underscore'], function (_) {
     element.unwrap();
   };
 
+  Utils.joinList = function (list, separator, lastSeparator) {
+    var result;
+
+    if (lastSeparator) {
+      result = list.slice(0, -1).join(', ') + ' ' + lastSeparator +  ' ' + list.slice(-1);
+    } else {
+      result = list.join(separator);
+    }
+
+    return result;
+  },
+
   Utils.parseMentions = function (string, html) {
     if (!string) {
       return '';

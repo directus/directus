@@ -7,6 +7,7 @@ define(function (require, exports, module) {
       Backbone       = require('backbone'),
       config         = new Backbone.Model(require('core/config')),
       moment         = require('moment'),
+      Utils          = require('utils'),
       _              = require('underscore'),
       __t            = require('core/t'),
       Notification   = require('core/notification'),
@@ -252,8 +253,17 @@ define(function (require, exports, module) {
           fullNames = _.map(editingThisPage, function (user) {
             return user.getFullName();
           });
-          Notification.warning(__t('warning_x_is_editing_same_page', {
-            full_names: fullNames.join(',')
+
+          var localeKey = 'warning_x_is_editing_same_page';
+          if (fullNames.length > 1) {
+            localeKey = 'warning_x_are_editing_same_page';
+            fullNames = Utils.joinList(fullNames, ', ', __t('and'));
+          } else {
+            fullNames = fullNames.join(', ');
+          }
+
+          Notification.warning(__t(localeKey, {
+            full_names: fullNames
           }))
         }
       };
