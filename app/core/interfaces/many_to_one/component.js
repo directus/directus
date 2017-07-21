@@ -1,4 +1,12 @@
-define(['./interface', 'backbone', 'handlebars', 'core/UIComponent', 'core/t'], function (Input, Backbone, Handlebars, UIComponent, __t) {
+define([
+  './interface',
+  'underscore',
+  'utils',
+  'backbone',
+  'handlebars',
+  'core/UIComponent',
+  'core/t'
+], function (Input, _, Utils, Backbone, Handlebars, UIComponent, __t) {
   'use strict';
 
   return UIComponent.extend({
@@ -79,6 +87,19 @@ define(['./interface', 'backbone', 'handlebars', 'core/UIComponent', 'core/t'], 
     ],
     Input: Input,
     forceUIValidation: true,
+    validate: function (value, options) {
+      var hasValue;
+
+      if (value instanceof Backbone.Model) {
+        hasValue = !_.isEmpty(value.attributes)
+      } else {
+        hasValue = Utils.isSomething(value);
+      }
+
+      if (options.schema.isRequired() && !hasValue) {
+        return __t('this_field_is_required');
+      }
+    },
     list: function (options) {
       if (options.value === undefined) {
         return '';
