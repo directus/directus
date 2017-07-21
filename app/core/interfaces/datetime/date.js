@@ -66,7 +66,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'moment', 'helpers/ui', 'core/
         dateValue: dateValue,
         value: dateValue,
         name: this.name,
-        readonly: this.options.canWrite === false || (settings && settings.has('readonly')) ? settings.get('readonly') === true : false
+        readOnly: settings.get('read_only') || !this.options.canWrite
       };
     },
 
