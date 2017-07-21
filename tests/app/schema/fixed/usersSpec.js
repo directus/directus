@@ -23,7 +23,7 @@ define(['app', 'schema/fixed/users'], function(app, schema) {
       var columns = users.columns;
       var expectedColumns = [
         'id',
-        app.statusMapping.status_name,
+        'status',
         'avatar_file_id',
         'avatar',
         'name',
