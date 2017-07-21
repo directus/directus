@@ -1345,6 +1345,10 @@ if (!function_exists('get_missing_requirements')) {
             $errors[] = 'Your host needs to have PDO enabled to run this version of Directus!';
         }
 
+        if (defined('PDO::ATTR_DRIVER_NAME') && !in_array('mysql', PDO::getAvailableDrivers())) {
+            $errors[] = 'Your host needs to have PDO MySQL Driver enabled to run this version of Directus!';
+        }
+
         if (!extension_loaded('gd') || !function_exists('gd_info')) {
             $errors[] = 'Your host needs to have GD Library enabled to run this version of Directus!';
         }
