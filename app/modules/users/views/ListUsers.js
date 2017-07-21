@@ -104,7 +104,10 @@ function(app, _, Backbone, Handlebars, Directus, BasePageView, FileHelper, Widge
         data.push(groupedData['group_0']);
       }
 
-      return {groups: data};
+      return {
+        empty: rows.length <= 0,
+        groups: data
+      };
     },
 
     afterRender: function () {
