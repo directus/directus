@@ -111,7 +111,7 @@ DROP TABLE IF EXISTS `directus_files`;
 
 CREATE TABLE `directus_files` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `active` tinyint(1) DEFAULT '1',
+  `status` tinyint(1) DEFAULT '1',
   `name` varchar(255) DEFAULT NULL,
   `title` varchar(255) DEFAULT '',
   `location` varchar(200) DEFAULT NULL,
@@ -129,7 +129,15 @@ CREATE TABLE `directus_files` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+LOCK TABLES `directus_files` WRITE;
+/*!40000 ALTER TABLE `directus_files` DISABLE KEYS */;
 
+INSERT INTO `directus_files` (`id`, `status`, `name`, `title`, `location`, `caption`, `type`, `charset`, `tags`, `width`, `height`, `size`, `embed_id`, `user`, `date_uploaded`, `storage_adapter`, `identifier`)
+VALUES
+	(1, 1, '00000000001.jpg', 'Mountain Range', 'Earth', 'A gorgeous view of this wooded mountain range', 'image/jpeg', 'binary', 'trees,rocks,nature,mountains,forest', 1800, 1200, 602058, NULL, 1, '2017-07-19 15:44:10', 'local', NULL);
+
+/*!40000 ALTER TABLE `directus_files` ENABLE KEYS */;
+UNLOCK TABLES;
 
 # Dump of table directus_groups
 # ------------------------------------------------------------
@@ -377,7 +385,7 @@ DROP TABLE IF EXISTS `directus_users`;
 
 CREATE TABLE `directus_users` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `active` tinyint(1) DEFAULT '1',
+  `status` tinyint(1) DEFAULT '1',
   `first_name` varchar(50) DEFAULT '',
   `last_name` varchar(50) DEFAULT '',
   `email` varchar(128) NOT NULL DEFAULT '',
