@@ -12,7 +12,6 @@ define(['core/UIView'], function (UIView) {
 
     visible: function () {
       if (!this.columnSchema.hasAutoIncrement()) {
-        debugger;
         return true;
       }
     },

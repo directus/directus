@@ -237,7 +237,6 @@ define(function (require, exports, module) {
       });
 
       var onSuccess = function (collection) {
-        debugger;
         var editingThisPage = [];
         var fullNames = [];
 
