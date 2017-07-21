@@ -20,17 +20,19 @@ class Entries extends Route
         $ZendDb = $this->app->container->get('zenddb');
         $acl = $this->app->container->get('acl');
         $tableGateway = new TableGateway($table, $ZendDb, $acl);
+        $primaryKey = $tableGateway->primaryKeyFieldName;
 
         switch ($this->app->request()->getMethod()) {
             case 'POST':
                 $newRecord = $entriesService->createEntry($table, $payload, $params);
-                $params[$tableGateway->primaryKeyFieldName] = $newRecord[$tableGateway->primaryKeyFieldName];
+                $params[$primaryKey] = ArrayUtils::get($newRecord->toArray(), $primaryKey);
                 break;
             case 'PUT':
                 if (!is_numeric_array($payload)) {
-                    $params[$tableGateway->primaryKeyFieldName] = $payload[$tableGateway->primaryKeyFieldName];
+                    $params[$primaryKey] = ArrayUtils::get($payload, $primaryKey);
                     $payload = [$payload];
                 }
+
                 $tableGateway->updateCollection($payload);
                 break;
         }

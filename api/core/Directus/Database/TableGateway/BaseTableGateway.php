@@ -344,7 +344,20 @@ class BaseTableGateway extends TableGateway
         // $recordData = $this->parseRecord($recordData);
 
         $TableGateway = $this->makeTable($tableName);
-        $rowExists = isset($recordData[$TableGateway->primaryKeyFieldName]);
+        $primaryKey = $TableGateway->primaryKeyFieldName;
+        $hasPrimaryKeyData = isset($recordData[$primaryKey]);
+        $rowExists = false;
+
+        if ($hasPrimaryKeyData) {
+            $select = new Select($tableName);
+            $select->columns([$primaryKey]);
+            $select->where([
+                $primaryKey => $recordData[$primaryKey]
+            ]);
+            $select->limit(1);
+            $rowExists = $TableGateway->selectWith($select)->count() > 0;
+        }
+
         if ($rowExists) {
             $recordData = $this->applyHook('table.update:before', $recordData, [
                 'tableName' => $tableName
@@ -354,7 +367,9 @@ class BaseTableGateway extends TableGateway
 
             $Update = new Update($tableName);
             $Update->set($recordData);
-            $Update->where([$TableGateway->primaryKeyFieldName => $recordData[$TableGateway->primaryKeyFieldName]]);
+            $Update->where([
+                $primaryKey => $recordData[$primaryKey]
+            ]);
             $TableGateway->updateWith($Update);
 
             $this->runHook('postUpdate', [$TableGateway, $recordData, $this->adapter, null]);
@@ -364,7 +379,12 @@ class BaseTableGateway extends TableGateway
             ]);
             $recordData = $this->applyHook('table.insert.' . $tableName . ':before', $recordData);
             $TableGateway->insert($recordData);
-            $recordData[$TableGateway->primaryKeyFieldName] = $TableGateway->getLastInsertValue();
+
+            // Only get the last inserted id, if the column has auto increment value
+            $columnObject = $this->getTableSchema()->getColumn($primaryKey);
+            if ($columnObject->hasAutoIncrement()) {
+                $recordData[$primaryKey] = $TableGateway->getLastInsertValue();
+            }
 
             if ($tableName == 'directus_files' && static::$container) {
                 $Files = static::$container->get('files');
@@ -400,11 +420,11 @@ class BaseTableGateway extends TableGateway
         }
 
         $columns = TableSchema::getAllNonAliasTableColumnNames($tableName);
-        $recordData = $TableGateway->fetchAll(function ($select) use ($recordData, $columns, $TableGateway) {
+        $recordData = $TableGateway->fetchAll(function ($select) use ($recordData, $columns, $primaryKey) {
             $select
                 ->columns($columns)
                 ->limit(1);
-            $select->where->equalTo($TableGateway->primaryKeyFieldName, $recordData[$TableGateway->primaryKeyFieldName]);
+            $select->where->equalTo($primaryKey, $recordData[$primaryKey]);
         })->current();
 
         return $recordData;

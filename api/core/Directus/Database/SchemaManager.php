@@ -627,6 +627,11 @@ class SchemaManager
         $isSystemColumn = $this->isSystemColumn($column['ui']);
         $column['system'] = $isSystemColumn;
 
+        // PRIMARY KEY must be required
+        if (ArrayUtils::get($column, 'key') === 'PRI') {
+            $column['required'] = true;
+        }
+
         // NOTE: Alias column must are nullable
         if (ArrayUtils::get($column, 'type') === 'ALIAS') {
             $column['is_nullable'] = 'YES';

@@ -110,7 +110,7 @@ define(function(require, exports, module) {
         }
 
         // Don't validate System Columns
-        if (column.isSystemColumn()) {
+        if (!column.shouldValidate()) {
           return;
         }
 
@@ -365,6 +365,14 @@ define(function(require, exports, module) {
       }
 
       return Backbone.sync.apply(this, [method, model, options]);
+    },
+
+    isNew: function () {
+      if (this.isTracking()) {
+        return this._originalAttributes[this.idAttribute] == null;
+      }
+
+      return this.id == null;
     },
 
     // returns true or false
