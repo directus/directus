@@ -623,7 +623,7 @@ define(function (require, exports, module) {
       if (isNew) {
         displayView();
       } else {
-        model.fetch().done(displayView);
+        model.fetch({success: displayView});
       }
     },
 
