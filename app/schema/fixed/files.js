@@ -12,8 +12,8 @@ define(function(require, exports, module) {
         "hidden":true,
         "single":false,
         "count":0,
-        "status_column": "active",
-        "url": "api/1/files",
+        "status_column": "status",
+        "url": "api/1.1/files",
         "title":"Files",
 
         "columns": [
@@ -43,6 +43,8 @@ define(function(require, exports, module) {
             "hidden_input":false,
             "required":false,
             "ui":"primary_key",
+            "key": "PRI",
+            "extra": "auto_increment",
             "hidden":true
           },
           {
