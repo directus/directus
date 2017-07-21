@@ -14,6 +14,8 @@ define(function(require, exports, module) {
         "id": "id",
         "column_name": "id",
         "ui": "primary_key",
+        "key": "PRI",
+        "extra": "auto_increment",
         "type": "INT",
         "system": true,
         "hidden_list": false,

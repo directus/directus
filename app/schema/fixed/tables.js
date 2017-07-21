@@ -19,6 +19,8 @@ define(function(require, exports, module) {
         "id": "table_name",
         "column_name": "table_name",
         "ui": "primary_key",
+        "key": "PRI",
+        "extra": "",
         "type": "VARCHAR",
         "length": 64,
         "system": true,

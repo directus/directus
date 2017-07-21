@@ -38,6 +38,8 @@ define(function(require, exports, module) {
         "hidden_input":false,
         "required":false,
         "ui":"primary_key",
+        "key": "PRI",
+        "extra": "auto_increment",
         "hidden":true
       },
       {
