@@ -198,7 +198,7 @@ require(['config', 'polyfills'], function () {
           authenticatedUserModel = authenticatedUserModel.get(app.user.id, false);
         }
 
-        if (authenticatedUserModel) {
+        if (authenticatedUserModel && authenticatedUserModel.id === app.user.id) {
           app.user.set(_.clone(authenticatedUserModel.attributes));
         }
       });
