@@ -151,7 +151,7 @@ define(function (require, exports, module) {
 
       if (app.showWelcomeWindow) {
         this.openViewInModal(new WelcomeModal({
-          model: app.users.getCurrentUser()
+          model: app.user
         }));
 
         app.showWelcomeWindow = false;
@@ -536,7 +536,7 @@ define(function (require, exports, module) {
       var isNewFile = id === 'new';
       var model;
 
-      if (isNewFile && !app.users.getCurrentUser().canUploadFiles()) {
+      if (isNewFile && !app.user.canUploadFiles()) {
         return this.notFound();
       }
 
@@ -583,7 +583,7 @@ define(function (require, exports, module) {
     },
 
     user: function (id) {
-      var user = app.users.getCurrentUser();
+      var user = app.user;
       var userGroup = user.get('group');
 
       if (!(parseInt(id,10) === user.id || userGroup.id === 1)) {
@@ -591,25 +591,44 @@ define(function (require, exports, module) {
       }
 
       var model;
+      var isNew = id === 'new';
       this.setTitle(app.settings.get('global').get('project_name') + ' | Users');
 
-      if (id === 'new') {
+      if (isNew) {
         model = new app.users.model({}, {collection: app.users, parse:true});
       } else {
-        model = app.users.get(id);
+        model = app.users.get(id, false);
+
+        // TODO: Create a method to get or fetch the item from server
+        if (!model) {
+          var primaryColumn = app.users.table.getPrimaryColumnName();
+          var modelData = {};
+          modelData[primaryColumn] = id;
+          model = new app.users.model(modelData, {collection: app.users, parse: true});
+          model.idAttribute = primaryColumn;
+          model.id = id;
+        }
       }
 
-      this.v.main.setView('#content', new Users.Views.Edit({
-        model: model,
-        warnOnExit: true,
-        parentView: true
-      }));
+      var self = this;
+      var displayView = function () {
+        self.v.main.setView('#content', new Users.Views.Edit({
+          model: model,
+          warnOnExit: true,
+          parentView: true
+        }));
+        self.v.main.render();
+      };
 
-      this.v.main.render();
+      if (isNew) {
+        displayView();
+      } else {
+        model.fetch().done(displayView);
+      }
     },
 
     settings: function (name) {
-      if (_.contains(this.navBlacklist, 'settings') || app.users.getCurrentUser().get('group').id !== 1) {
+      if (_.contains(this.navBlacklist, 'settings') || app.user.get('group').id !== 1) {
         return this.notFound();
       }
 
@@ -646,7 +665,7 @@ define(function (require, exports, module) {
     },
 
     settingsTable: function (tableName) {
-      if (_.contains(this.navBlacklist, 'settings') || app.users.getCurrentUser().get('group').id !== 1) {
+      if (_.contains(this.navBlacklist, 'settings') || app.user.get('group').id !== 1) {
         return this.notFound();
       }
 
@@ -670,7 +689,7 @@ define(function (require, exports, module) {
     },
 
     settingsPermissions: function (groupId) {
-      if (_.contains(this.navBlacklist, 'settings') || app.users.getCurrentUser().get('group').id !== 1) {
+      if (_.contains(this.navBlacklist, 'settings') || app.user.get('group').id !== 1) {
         return this.notFound();
       }
 
@@ -704,7 +723,7 @@ define(function (require, exports, module) {
     newMessage: function () {
       this.setTitle(app.settings.get('global').get('project_name') + ' | Compose');
 
-      var model = new app.messages.model({from: app.users.getCurrentUser().id}, {collection: app.messages, parse: true});
+      var model = new app.messages.model({from: app.user.id}, {collection: app.messages, parse: true});
 
       this.v.main.setView('#content', new Messages.Views.New({model: model}));
       this.v.main.render();
@@ -726,7 +745,7 @@ define(function (require, exports, module) {
       }
 
       // update user last route
-      var currentUser = app.users.getCurrentUser().clone();
+      var currentUser = app.user.clone();
       var history = _.clone(Backbone.history);
       currentUser.updateLastRoute(route, history);
 

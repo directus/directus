@@ -40,11 +40,13 @@ function(app, Backbone, _, __t) {
     tagName: 'div',
 
     serialize: function () {
+      var user = app.user;
 
       return {
-        avatar: app.users.getCurrentUser().getAvatar(),
-        currentUserId: app.users.getCurrentUser().get('id'),
-        showSettings: app.users.getCurrentUser().get('group').id === 1,
+        userFullName: user.get('first_name') + ' ' + user.get('last_name'),
+        avatar: app.user.getAvatar(),
+        currentUserId: app.user.id,
+        showSettings: app.user.get('group').id === 1,
         unreadMessagesCount: app.messages.unread
       };
     },
@@ -88,7 +90,7 @@ function(app, Backbone, _, __t) {
 
     initialize: function () {
       this.collection.on('change', this.render, this);
-      app.users.getCurrentUser().on('change sync', this.render, this);
+      app.user.on('change sync', this.render, this);
       app.on('messages:new', this.render, this);
     }
 

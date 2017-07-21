@@ -193,7 +193,7 @@ define(function (require, exports, module) {
 
     //  TODO: implement this into a new logger
     //logErrorToServer: function(type, message, details) {
-    //  var user = app.users.getCurrentUser(), email = 'n/a';
+    //  var user = app.user, email = 'n/a';
     //
     //  if (user) {
     //    email = user.get('email');
@@ -226,7 +226,7 @@ define(function (require, exports, module) {
     },
 
     getCurrentGroup: function () {
-      var user = app.users.getCurrentUser();
+      var user = app.user;
       return user.get('group');
     },
 

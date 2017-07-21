@@ -81,7 +81,7 @@ function(app, _, Backbone, __t, Notification) {
           title: title,
           url: Backbone.history.fragment + '/pref/' + encodeURIComponent(title),
           icon_class: 'icon-search',
-          user: app.users.getCurrentUser().get("id"),
+          user: app.user.id,
           section: 'search'
         });
       }

@@ -28,7 +28,7 @@ define([
       var userId = options.value;
 
       if (userId === undefined) {
-        userId = app.users.getCurrentUser().id;
+        userId = app.user.id;
       }
 
       this.userId = userId;

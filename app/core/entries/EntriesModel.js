@@ -369,7 +369,7 @@ define(function(require, exports, module) {
 
     // returns true or false
     isMine: function () {
-      var myId = app.users.getCurrentUser().id,
+      var myId = app.user.id,
           magicOwnerColumn = (this.collection != null) ? this.collection.table.get('user_create_column') : null,
           magicOwnerId = this.get(magicOwnerColumn);
 

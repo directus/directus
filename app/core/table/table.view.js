@@ -224,7 +224,7 @@ function(app, _, Backbone, Notification, __t, TableHelpers, ModelHelper, TableHe
         app.sendFiles(event.dataTransfer.files, function (data) {
           _.each(data, function (item) {
             var table = app.schemaManager.getTable('directus_users');
-            item.user = app.users.getCurrentUser().id;
+            item.user = app.user.id;
             item[table.getStatusColumnName()] = table.getStatusDefaultValue();
             // item[app.statusMapping.status_name] = app.statusMapping.active_num;
 

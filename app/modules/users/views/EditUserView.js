@@ -134,9 +134,7 @@ define([
       var editView = this.editView;
 
       this.setView('#page-content', editView);
-      if (!this.model.isNew()) {
-        this.model.fetch();
-      } else {
+      if (this.model.isNew()) {
         editView.render();
       }
     },

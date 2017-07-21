@@ -183,7 +183,7 @@ function parseTables($tableSchema)
 
 function getExtendedUserColumns($tableSchema)
 {
-    $userColumns = ['activity', 'avatar', 'name', 'id', 'active', 'first_name', 'last_name', 'email', 'email_messages', 'password', 'salt', 'token', 'reset_token', 'reset_expiration', 'last_login', 'last_page', 'ip', 'group'];
+    $userColumns = ['activity', 'avatar', 'name', 'id', 'status', 'first_name', 'last_name', 'email', 'email_messages', 'password', 'salt', 'token', 'reset_token', 'reset_expiration', 'last_login', 'last_page', 'ip', 'group'];
 
     $schema = array_filter($tableSchema, function ($table) {
         return $table['schema']['id'] === 'directus_users';
@@ -677,6 +677,7 @@ $data = [
     'tables' => $allTables,
     'preferences' => parsePreferences($tableSchema), //ok
     'users' => $users,
+    'user' => ['data' => $currentUserInfo],
     'groups' => $groups,
     'settings' => $settings,
     'config' => $configuration,

@@ -49,6 +49,7 @@ require(['config', 'polyfills'], function () {
       default_interfaces: {},
       active_files: {},
       users: {},
+      user: {},
       bookmarks: {},
       extensions: [],
       messages: {},
@@ -176,32 +177,31 @@ require(['config', 'polyfills'], function () {
         url: app.API_URL + 'messages/rows'
       }, SchemaManager.getFullSchema('directus_messages')));
 
-      // app.messages.on('sync', function(collection, object) {
-      //   if (object != null && object.data) {
-      //     var messages = object.data;
-      //     if (!_.isArray(messages)) {
-      //       messages = [messages];
-      //     }
-      //
-      //     messages.forEach(function(msg) {
-      //       var message_excerpt = (msg.message && msg.message.length > 50) ? msg.message.substr(0, 50) : msg.message;
-      //       Notification.show('New Message — <i>' + msg.subject + '</i>', message_excerpt + '<br><br><i>View message</i>', {timeout: 5000,
-      //         callback: {
-      //           onCloseClick: function() {
-      //             Backbone.history.navigate('/messages/' + msg.id, true);
-      //           }
-      //         }
-      //       });
-      //     });
-      //   }
-      // });
-
       // Bootstrap data
       app.groups.reset(options.groups, {parse: true});
       app.users.reset(options.users, {parse: true});
       app.messages.reset(options.messages, {parse: true});
+      app.user = new app.users.model(options.user, _.extend({
+        parse: true
+      }, SchemaManager.getFullSchema('directus_users')));
 
       app.startMessagesPolling();
+      app.users.on('change sync', function (collection, resp, options) {
+        var authenticatedUserModel = collection;
+
+        // NOTE: Some `change` events has empty collection parameter, fix it!
+        if (!authenticatedUserModel) {
+          return;
+        }
+
+        if (authenticatedUserModel instanceof Backbone.Collection) {
+          authenticatedUserModel = authenticatedUserModel.get(app.user.id, false);
+        }
+
+        if (authenticatedUserModel) {
+          app.user.set(_.clone(authenticatedUserModel.attributes));
+        }
+      });
 
       var autoLogoutMinutes = parseInt(app.settings.get('cms_user_auto_sign_out') || 60, 10);
 
@@ -246,11 +246,11 @@ require(['config', 'polyfills'], function () {
       // Default directus tabs
 
       var tabs = [
-        {id: 'users/' + app.users.getCurrentUser().get('id'), icon_class: 'icon-pencil', avatar: ''},
+        {id: 'users/' + app.user.id, icon_class: 'icon-pencil', avatar: ''},
         {id: 'logout', icon_class: 'icon-power-button'}
       ];
 
-      if (app.users.getCurrentUser().get('group').id === 1) {
+      if (app.user.get('group').id === 1) {
         tabs.unshift();
       }
 
@@ -293,7 +293,7 @@ require(['config', 'polyfills'], function () {
       });
 
       // Grab nav permissions
-      var currentUserGroupId = app.users.getCurrentUser().get('group').get('id');
+      var currentUserGroupId = app.user.get('group').get('id');
       var currentUserGroup = app.groups.get(currentUserGroupId);
       var navBlacklist = (currentUserGroup.get('nav_blacklist') || '').split(',');
 
@@ -489,7 +489,7 @@ require(['config', 'polyfills'], function () {
       app.router = new Router({
         extensions: extensions,
         tabs: tabs,
-        navPrivileges: app.users.getCurrentUser().get('group')
+        navPrivileges: app.user.get('group')
       });
 
       // Trigger the initial route and enable HTML5 History API support, set the

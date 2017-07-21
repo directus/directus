@@ -165,7 +165,7 @@ function(app, Backbone, _, EntriesManager, __t, Notification) {
 
       this.collection.each(function(model) {
         var bookmark = model.toJSON();
-        var currentUserGroup = app.users.getCurrentUser().get('group');
+        var currentUserGroup = app.user.get('group');
         // force | remove from activity from navigation
         if (bookmark.title === 'Activity') return false;
 

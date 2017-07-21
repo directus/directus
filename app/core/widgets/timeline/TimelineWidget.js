@@ -229,7 +229,7 @@ function(app, Backbone, $, _, __t, Directus, Utils, moment) {
 
       var preview = data.length > 5;
       var additionalCount = data.length - 5;
-      var canSendMessages = app.users.getCurrentUser().canSendMessages();
+      var canSendMessages = app.user.canSendMessages();
       var privileges = app.schemaManager.getPrivileges('directus_messages');
       var canAddMessages = privileges && privileges.can('add');
 

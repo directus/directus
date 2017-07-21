@@ -31,7 +31,7 @@ function(app, _, Backbone, Handlebars, Directus, BasePageView, FileHelper, Widge
 
     showUser: function (event) {
       var id = $(event.currentTarget).data('id');
-      var user = app.users.getCurrentUser();
+      var user = app.user;
       var userGroup = user.get('group');
 
       // @TODO: fix this so it respects ACL instead of being hardcoded
@@ -148,7 +148,7 @@ function(app, _, Backbone, Handlebars, Directus, BasePageView, FileHelper, Widge
     leftToolbar: function() {
       var widgets = [];
 
-      if (app.users.getCurrentUser().get('group').id === 1) {
+      if (app.user.get('group').id === 1) {
         widgets.push(new Widgets.ButtonWidget({
           widgetOptions: {
             buttonId: 'addBtn',
@@ -171,10 +171,7 @@ function(app, _, Backbone, Handlebars, Directus, BasePageView, FileHelper, Widge
     afterRender: function() {
       this.setView('#page-content', this.table);
       var status = this.collection.preferences.get('status');
-      // Ignore preferences and get all users
-      // TODO: make a better solution
-      this.collection.preferences.unset('status');
-      this.collection.filters['status'] = '0,1,2';
+
       this.collection.fetch();
       this.collection.preferences.set('status', status);
     },

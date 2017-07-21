@@ -21,7 +21,7 @@ function(app, _, Backbone, __t, Directus, Notification, BasePageView, RightPane,
     deleteConfirm: function () {
       var self = this;
 
-      if (!app.users.getCurrentUser().canUploadFiles()) {
+      if (!app.user.canUploadFiles()) {
         return;
       }
 
@@ -40,7 +40,7 @@ function(app, _, Backbone, __t, Directus, Notification, BasePageView, RightPane,
     },
 
     saveConfirm: function (event) {
-      if (!app.users.getCurrentUser().canUploadFiles()) {
+      if (!app.user.canUploadFiles()) {
         return;
       }
 
@@ -135,7 +135,7 @@ function(app, _, Backbone, __t, Directus, Notification, BasePageView, RightPane,
     },
 
     leftToolbar: function () {
-      var canUploadFiles = app.users.getCurrentUser().canUploadFiles();
+      var canUploadFiles = app.user.canUploadFiles();
       var canAdd = this.model.collection.canAdd();
       var canEdit = this.model.collection.canEdit();
       var widgets = [];

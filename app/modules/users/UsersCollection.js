@@ -12,8 +12,7 @@ define([
     model: UsersModel,
 
     getCurrentUser: function() {
-      var authenticatedUser = app.authenticatedUserId;
-      return this.get(authenticatedUser.id);
+      return app.user;
     },
 
     get: function(id, emptyObject) {

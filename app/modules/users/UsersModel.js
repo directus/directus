@@ -11,7 +11,7 @@ function(app, Backbone, EntriesModel, moment) {
 
     canEdit: function (attribute) {
       // hotfix: admin can edit user
-      if (app.users.getCurrentUser().isAdmin()) {
+      if (app.user.isAdmin()) {
         return true;
       }
 

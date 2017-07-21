@@ -239,7 +239,7 @@ define([
       var parentModel = this.options.model;
 
       this.uploading = false;
-      this.userId = app.users.getCurrentUser().id;
+      this.userId = app.user.id;
       if (!(this.options.value instanceof FilesModel)) {
         this.options.value = new FilesModel(this.options.value || {});
         parentModel.set(this.name, this.options.value);

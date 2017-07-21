@@ -28,7 +28,7 @@ define(['app', 'core/Modal'], function(app, Modal) {
     serialize: function () {
       var model = this.model;
       var data = model.toJSON();
-      var authenticatedUser = app.users.getCurrentUser();
+      var authenticatedUser = app.user;
       var timeDiff = authenticatedUser.timezoneDifference(model);
       var canEdit = (model.isMe() && model.canEdit()) || authenticatedUser.isAdmin() && model.id;
 

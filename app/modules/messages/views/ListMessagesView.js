@@ -186,7 +186,7 @@ define([
           form: new NewMessageView({
             parentModel: model,
             model: new app.messages.model({
-              from: app.users.getCurrentUser().id
+              from: app.user.id
             }, {
               collection: app.messages,
               parse: true
@@ -201,7 +201,7 @@ define([
 
     displayNewMessage: function() {
       var model = new app.messages.model({
-        from: app.users.getCurrentUser().id
+        from: app.user.id
       }, {
         collection: app.messages,
         parse: true
@@ -343,7 +343,7 @@ define([
     },
 
     leftToolbar: function () {
-      var canSendMessages = app.users.getCurrentUser().canSendMessages();
+      var canSendMessages = app.user.canSendMessages();
       var widgets = [
         // TODO: Add option to disable button widget
         // same as SaveButtonWidget
