@@ -205,6 +205,8 @@ function(app, _, Backbone, __t, Directus, Notification, BasePageView, RightPane,
       this.headerOptions.route.title = this.model.isNew() ? __t('uploading_new_file') : __t('editing_file');
       this.collection = app.files;
 
+      app.checkUserEditingConflict();
+
       if (!this.model.isTracking()) {
         this.model.startTracking();
       }

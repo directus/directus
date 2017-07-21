@@ -6,7 +6,9 @@ define(function (require, exports, module) {
   var Handlebars     = require('handlebars'),
       Backbone       = require('backbone'),
       config         = new Backbone.Model(require('core/config')),
+      moment         = require('moment'),
       _              = require('underscore'),
+      __t            = require('core/t'),
       Notification   = require('core/notification'),
       typetools      = require('typetools');
 
@@ -215,6 +217,50 @@ define(function (require, exports, module) {
     //      console.log('FAILED TO LOG ERROR'+obj.responseText);
     //    });
     //},
+
+    checkUserEditingConflict: function () {
+      var users = app.users.clone();
+      var currentPagePath = Backbone.history.fragment;
+
+      users.clearFilter();
+      users.setFilter({
+        limit: -1,
+        columns: ['id', 'first_name', 'last_name', 'last_page'],
+        filters: {
+          id: {
+            neq: app.user.id
+          },
+          last_access: {
+            lte: moment.utc().add(3, 'minutes').format('YYYY-MM-DD HH:mm:ss')
+          }
+        }
+      });
+
+      var onSuccess = function (collection) {
+        debugger;
+        var editingThisPage = [];
+        var fullNames = [];
+
+        collection.each(function (user) {
+          var lastPage = JSON.parse(user.get('last_page'));
+
+          if (lastPage && lastPage.path == currentPagePath) {
+            editingThisPage.push(user);
+          }
+        });
+
+        if (editingThisPage.length > 0) {
+          fullNames = _.map(editingThisPage, function (user) {
+            return user.getFullName();
+          });
+          Notification.warning(__t('warning_x_is_editing_same_page', {
+            full_names: fullNames.join(',')
+          }))
+        }
+      };
+
+      users.fetch({success: onSuccess});
+    },
 
     evaluateExpression: function (a, operator, b) {
       switch (operator) {

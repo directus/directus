@@ -9,6 +9,10 @@ function(app, Backbone, EntriesModel, moment) {
 
   return EntriesModel.extend({
 
+    getFullName: function () {
+      return this.get('first_name') + ' ' + this.get('last_name');
+    },
+
     canEdit: function (attribute) {
       // hotfix: admin can edit user
       if (app.user.isAdmin()) {

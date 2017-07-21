@@ -142,6 +142,8 @@ define([
     initialize: function (options) {
       this.editView = new Directus.EditView({model: this.model});
 
+      app.checkUserEditingConflict();
+
       if (!this.model.isTracking()) {
         this.model.startTracking();
       }

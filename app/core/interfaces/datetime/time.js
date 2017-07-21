@@ -8,7 +8,7 @@ define(['app', 'moment', 'core/UIComponent', 'core/UIView', 'core/t'], function 
     }
 
     var date = new Date();
-    var timeParts = value.split(':');
+    var timeParts = (value || '').split(':');
 
     date.setHours(parseInt(timeParts[0], 10));
     date.setMinutes(parseInt(timeParts[1], 10) || 0);
@@ -75,7 +75,7 @@ define(['app', 'moment', 'core/UIComponent', 'core/UIView', 'core/t'], function 
     },
 
     serialize: function () {
-      var date = getTimeData(this.value, this.options);
+      var date = getTimeData(this.value);
       var timeValue;
 
       if (date) {
@@ -130,7 +130,7 @@ define(['app', 'moment', 'core/UIComponent', 'core/UIView', 'core/t'], function 
       }
     },
     list: function (options) {
-      var data = getTimeData(options);
+      var data = getTimeData(options.value, options);
 
       if (!data) {
         return '-';

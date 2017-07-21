@@ -322,6 +322,8 @@ define([
       this.skipFetch = options.skipFetch;
       this.onSuccess = options.onSuccess;
 
+      app.checkUserEditingConflict();
+
       if (!this.model.isTracking()) {
         this.model.startTracking();
       }
