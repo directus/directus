@@ -355,7 +355,7 @@ class BaseTableGateway extends TableGateway
                 $primaryKey => $recordData[$primaryKey]
             ]);
             $select->limit(1);
-            $rowExists = $TableGateway->selectWith($select)->count() > 0;
+            $rowExists = $TableGateway->selectWith($select, ['filter' => false])->count() > 0;
         }
 
         if ($rowExists) {
