@@ -204,7 +204,7 @@ function getExtendedFilesColumns($tableSchema)
     // TODO: Create an object that stores all system tables columns
     $filesColumns = [
         'id',
-        'active',
+        'status',
         'name',
         'title',
         'location',
