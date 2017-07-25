@@ -334,7 +334,7 @@ function getGroups()
         ArrayUtils::set($row, 'nav_override', null);
 
         $navOverride = @json_decode($navOverride);
-        if (json_last_error() !== JSON_ERROR_NONE) {
+        if (json_last_error() !== JSON_ERROR_NONE || !$navOverride) {
             return $row;
         }
 
@@ -600,7 +600,7 @@ if ($showWelcomeWindow === true && !ArrayUtils::get($currentUserInfo, 'group.sho
 $git = __DIR__ . '/.git';
 $cacheBuster = Directus\Util\Git::getCloneHash($git);
 
-$tableSchema = TableSchema::getAllSchemas($currentUserInfo['group']['id'], $cacheBuster);
+$tableSchema = TableSchema::getAllSchemas($currentUserInfo['group']['data']['id'], $cacheBuster);
 
 $groupId = $currentUserInfo['group']['data']['id'];
 $groups = getGroups();
