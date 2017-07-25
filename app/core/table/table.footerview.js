@@ -63,7 +63,7 @@ function(app, _, Backbone, UIHelper) {
 
       columns = _.map(columns, function (column) {
         var columnInfo = this.collection.structure.get(column);
-        var showFooter, isANumericColumn;
+        var showFooter, isANumericColumn, isRelationalColumn;
 
         if (!columnInfo) {
           return {};
@@ -71,6 +71,8 @@ function(app, _, Backbone, UIHelper) {
 
         showFooter = this.options.showFooter || columnInfo.options.get('footer') === true;
         isANumericColumn = UIHelper.supportsNumeric(columnInfo.get('type'));
+        // Omit M2O column which can be numeric
+        isRelationalColumn = columnInfo.isRelational();
 
         if (isANumericColumn) {
           hasANumericColumn = true;
@@ -78,7 +80,7 @@ function(app, _, Backbone, UIHelper) {
 
         var col = {
           title: column,
-          showFooter: isANumericColumn && showFooter,
+          showFooter: isANumericColumn && showFooter && !isRelationalColumn,
           functionsValues: [],
           selectedFunction: this.functions.hasOwnProperty(column) ? this.functions[column] : 'SUM'
         };
