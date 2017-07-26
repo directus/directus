@@ -22,4 +22,4 @@ For feature requests please use the [Directus FeatHub](http://feathub.com/direct
  2. 
  3. 
 
-## Logs or Screenshots
+## Schema Dump, Logs, or Screenshots
