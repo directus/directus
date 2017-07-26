@@ -15,9 +15,9 @@ return [
         // Note: BASE_PATH constant does not end with a trailing slash
         'root' => BASE_PATH . '/storage/uploads',
         // This is the url where all files/media will be pointing to
-        // All orignial files will exist at your-domain.com/media
+        // All orignial files will exist at your-domain.com/uploads
         'root_url' => '/storage/uploads',
-        // All thumbnails will exist at your-domain.com/media/thumbs
+        // All thumbnails will exist at your-domain.com/uploads/thumbs
         'root_thumb_url' => '/storage/uploads/thumbs',
         //   'key'    => 's3-key',
         //   'secret' => 's3-key',
