@@ -1,5 +1,5 @@
 /* global $ */
-define(['underscore', 'core/UIView'], function (_, UIView) {
+define(['utils', 'underscore', 'core/UIView'], function (Utils, _, UIView) {
   'use strict';
 
   return UIView.extend({
@@ -7,6 +7,15 @@ define(['underscore', 'core/UIView'], function (_, UIView) {
 
     events: {
       'input input': 'onInputChange'
+    },
+
+    beforeSaving: function () {
+      var mirroredField = this.getMirroredFieldName();
+      var model = this.options.model;
+
+      if (Utils.isSomething(model.get(mirroredField))) {
+        this.model.set(this.name, this.slugValue);
+      }
     },
 
     onInputChange: function (event) {
@@ -78,7 +87,7 @@ define(['underscore', 'core/UIView'], function (_, UIView) {
         .replace(/-+/g, '-'); // Collapse dashes
 
       $slugInput.val(slug);
-      this.model.set(this.name, slug);
+      this.slugValue = slug;
     },
 
     afterRender: function () {

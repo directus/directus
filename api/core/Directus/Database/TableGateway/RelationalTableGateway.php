@@ -299,7 +299,7 @@ class RelationalTableGateway extends BaseTableGateway
             return false;
         }
 
-        $statusColumnName = 'active';
+        $statusColumnName = TableSchema::getTableSchema($tableName)->getStatusColumn();
 
         // Get status delete value
         $tableSchema = $this->getTableSchema();
@@ -683,11 +683,6 @@ class RelationalTableGateway extends BaseTableGateway
         // Stripe whitespaces
         $columns = array_map('trim', $columns);
 
-        // Pick non-forbidden columns
-        if (empty($columns)) {
-            $columns = TableSchema::getAllTableColumnsName($this->getTable());
-        }
-
         // ----------------------------------------------------------------------------
         // merge legacy visible columns param
         // ----------------------------------------------------------------------------
@@ -699,7 +694,12 @@ class RelationalTableGateway extends BaseTableGateway
             $visibleColumns = StringUtils::csv($visibleColumns, true);
         }
 
-        $columns = array_merge($visibleColumns, $columns);
+        $columns = array_unique(array_merge($visibleColumns, $columns));
+
+        // Pick non-forbidden columns
+        if (empty($columns)) {
+            $columns = TableSchema::getAllTableColumnsName($this->getTable());
+        }
 
         // Add columns to params if it's not empty.
         // otherwise remove from params

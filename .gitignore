@@ -12,6 +12,7 @@ dist/*
 
 # Don't track composer phar/vendors
 composer.phar
+composer.lock
 /vendor
 
 # Ignore log files, but track the log README

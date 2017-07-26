@@ -1,9 +1,10 @@
 /* global $ */
 define([
+  'utils',
   'underscore',
   'core/UIView',
   'tinyMCE'
-], function (_, UIView, tinyMCE) {
+], function (Utils, _, UIView, tinyMCE) {
   'use strict';
 
   return UIView.extend({
@@ -121,7 +122,7 @@ define([
         toolbar += ' | ' + Object.keys(customWrapperSettings).join(' ');
       }
 
-      this.editor = tinyMCE.init({
+      tinyMCE.init({
         plugins: 'table hr lists link image print pagebreak code insertdatetime media autoresize paste preview',
         selector: '#wysiwyg_' + this.options.name,
         branding: false,
@@ -135,10 +136,16 @@ define([
         content_style: 'body.mce-content-body {font-family: \'Roboto\', sans-serif;line-height:24px;letter-spacing:0.2px;font-size:14px;color:#333;margin:0;padding: 10px 30px !important;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}body.mce-content-body p{line-height:inherit !important;}',
         style_formats: styleFormats,
         setup: function (editor) {
+          // NOTE: Do we need this?
           var saveEditorContents = _.debounce(function () {
             if (editor && editor.getContent) {
-              self.model.set(self.name, editor.getContent());
-              self.$el.find('textarea')[0].innerHTML = editor.getContent();
+              var content = editor.getContent();
+              var value = self.model.get(self.name);
+
+              if ((value === null || value === undefined) && Utils.isSomething(content)) {
+                self.model.set(self.name, content);
+                self.$el.find('textarea')[0].innerHTML = content;
+              }
             }
           }, 500);
 
@@ -209,8 +216,6 @@ define([
     cleanup: function () {
       // Remove tinyMCE
       tinyMCE.remove();
-
-      this.editor = null;
     }
   });
 });

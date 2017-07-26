@@ -786,7 +786,7 @@ class TableSchema
         // Append preferences post cache
         $preferences = $getPreferencesFn();
         foreach ($schemas as &$table) {
-            $table['preferences'] = $preferences[$table['schema']['id']];
+            $table['preferences'] = ArrayUtils::get($preferences, $table['schema']['id']);
         }
 
         return $schemas;

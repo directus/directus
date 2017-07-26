@@ -183,7 +183,7 @@ class InstallerUtils
         $data['avatar'] = get_gravatar($data['directus_email']);
 
         $tableGateway->insert([
-            'active' => 1,
+            'status' => 1,
             'first_name' => 'Admin',
             'last_name' => 'User',
             'email' => $data['directus_email'],

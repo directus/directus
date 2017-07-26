@@ -101,7 +101,7 @@ class Auth extends Route
         $isUserActive = false;
         // TODO: Add a method in RowGateway to check whether the user is active or not
         // TODO: Add information about the user status
-        if ($user['active'] == STATUS_ACTIVE_NUM) {
+        if ($user['status'] == STATUS_ACTIVE_NUM) {
             $isUserActive = true;
         }
 
