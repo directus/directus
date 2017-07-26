@@ -41,8 +41,21 @@ define([
       }
     },
 
+    beforeSaving: function () {
+      if (this.value) {
+        this.model.set(this.name, this.value);
+      }
+    },
+
     serialize: function () {
       var optionTemplate = Handlebars.compile(this.options.settings.get('visible_column_template'));
+      var value = this.options.value;
+
+      // Set the first value to the column when the record is new
+      // This prevent assigning the incorrect (null/empty) value to the column
+      if (this.collection.length > 0 && !this.options.settings.get('allow_null') && this.model.isNew()) {
+        value = this.collection.first().id;
+      }
 
       if (this.options.settings.get('readonly') === true) {
         this.canEdit = false;
@@ -51,11 +64,14 @@ define([
       var data = this.collection.map(function (model) {
         var data = model.toJSON();
 
-        var name = optionTemplate(data);
+        if (value instanceof Backbone.Model) {
+          value = value.id;
+        }
+
         return {
           id: model.id,
-          name: name,
-          selected: this.options.value !== undefined && (model.id === this.options.value.id)
+          name: optionTemplate(data),
+          selected: value !== undefined && model.id === value
         };
       }, this);
 
@@ -70,11 +86,7 @@ define([
 
       data = _.sortBy(data, 'name');
 
-      // Set the first value to the column when the record is new
-      // This prevent assigning the incorrect (null/empty) value to the column
-      if (data.length > 0 && !this.options.settings.get('allow_null') && this.model.isNew()) {
-        this.model.set(this.name, _.first(data).id);
-      }
+      this.value = value;
 
       return {
         name: this.options.name,
