@@ -136,7 +136,7 @@ function(app, Backbone, _, Sortable, Notification) {
 
     drop: function () {
       // NOTE: This code is duplicated in columns interface
-      var collection = this.collection;
+      var collection = this.parentView.getTableCollection();
       var table = collection.table;
 
       // NOTE: the structure of a junction record is the related record
