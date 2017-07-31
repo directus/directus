@@ -103,18 +103,32 @@ define(function(require, exports, module) {
       return this.nestedCollection.getColumns();
     },
 
-    parse: function C(response) {
-      var junction = response.junction;
-      var data = response.data ? response.data : response;
+    parse: function C(response, options) {
+      var parent = this.parent || options.parent;
+      var parentAttribute = this.parentAttribute || options.parentAttribute;
+
+      var junction = response.junction ? response.junction : undefined;
+      var junctionData = junction && junction.data ? junction.data : [];
+      var relatedData = response.data ? response.data : response;
+
+      var parentColumnModel = parent.structure.get(parentAttribute);
+      var relatedColumnName = parentColumnModel.getRelatedColumn();
+      var relatedPrimaryColumnName = this.structure.table.getPrimaryColumnName();
+      var _byId = {};
 
       response = [];
 
-      if (data) {
-        _.each(data, function (attributes, index) {
-          var _junction = (junction && junction.data ? junction.data : junction);
+      if (junctionData.length > 0) {
+        // Set all relational data easy to reach by ids
+        _.each(relatedData, function (data) {
+          _byId[data[relatedPrimaryColumnName]] = data;
+        });
+
+        // Set each junction data with its related data
+        _.each(junctionData, function (attributes) {
           response.push({
-            junction: _junction ? _junction[index] : undefined,
-            data: attributes
+            junction: attributes,
+            data: _byId[attributes[relatedColumnName]]
           })
         });
       }

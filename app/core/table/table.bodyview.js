@@ -166,7 +166,7 @@ function(app, Backbone, _, Sortable, Notification) {
       });
 
       success = function () {
-        self.collection.setOrder(sortColumnName, 'ASC', {silent: false});
+        collection.setOrder(sortColumnName, 'ASC', {silent: false});
       };
 
       if (this.options.saveAfterDrop) {

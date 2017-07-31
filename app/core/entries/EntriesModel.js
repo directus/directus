@@ -234,6 +234,9 @@ define(function(require, exports, module) {
                   options.parse = false;
                 }
 
+                options.parentAttribute = id;
+                options.parent = this;
+
                 attributes[id] = new EntriesJunctionCollection(models, options);
               }
             }
@@ -267,12 +270,13 @@ define(function(require, exports, module) {
               attributes[id] = new ModelRelated(data, {collection: collectionRelated});
             }
 
-            attributes[id].parentAttribute = id;
-
             break;
         }
 
         attributes[id].parent = this;
+        if (relationshipType) {
+          attributes[id].parentAttribute = id;
+        }
 
       }, this);
 

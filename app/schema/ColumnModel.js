@@ -80,6 +80,12 @@ define(function(require, exports, module) {
       return this.relationship.get('related_table');
     },
 
+    getRelatedColumn: function () {
+      if (this.relationship) {
+        return this.relationship.get('junction_key_right');
+      }
+    },
+
     getTable: function () {
       return this.collection.table;
     },
