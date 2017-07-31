@@ -2,6 +2,7 @@
 
 require __DIR__ . '/constants.php';
 require __DIR__ . '/helpers/mail.php';
+require __DIR__ . '/helpers/sorting.php';
 
 if (!function_exists('uc_convert')) {
     /**

@@ -1547,6 +1547,18 @@ class RelationalTableGateway extends BaseTableGateway
 
                 $junctionTableGateway = new RelationalTableGateway($junctionTableName, $this->getAdapter(), $this->acl);
                 $junctionData = $this->schemaManager->castRecordValues($junctionData, TableSchema::getTableSchema($junctionTableName)->getColumns());
+
+                // Sorting junction data by its sorting column or ID column
+                // NOTE: All the junction table are fetched all together from all the rows IDs
+                // After all junction IDs are attached to an specific parent row, it must sort.
+                $junctionTableSchema = $junctionTableGateway->getTableSchema();
+                $sortColumnName = $junctionTableSchema->getPrimaryColumn();
+                if ($junctionTableSchema->hasSortColumn()) {
+                    $sortColumnName = $junctionTableSchema->getSortColumn();
+                }
+
+                // NOTE: usort doesn't maintain the array key
+                usort($junctionData, sorting_by_key($sortColumnName, 'ASC'));
                 $junctionData = $junctionTableGateway->loadMetadata($junctionData);
 
                 $row = $relatedTableGateway->loadMetadata($row);

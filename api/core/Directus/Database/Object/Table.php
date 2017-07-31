@@ -513,6 +513,16 @@ class Table implements \ArrayAccess, Arrayable, \JsonSerializable
     }
 
     /**
+     * Checks whether the table has a sorting column
+     *
+     * @return bool
+     */
+    public function hasSortColumn()
+    {
+        return $this->getSortColumn() ? true : false;
+    }
+
+    /**
      * Whether or not the table has the given column name
      *
      * @param $name
