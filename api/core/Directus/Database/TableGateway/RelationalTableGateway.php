@@ -1559,6 +1559,19 @@ class RelationalTableGateway extends BaseTableGateway
 
                 // NOTE: usort doesn't maintain the array key
                 usort($junctionData, sorting_by_key($sortColumnName, 'ASC'));
+
+                // NOTE: Sort the related data by its junction sorting order
+                $tempRow = $row;
+                $_byId = [];
+                foreach ($tempRow as $item) {
+                    $_byId[$item[$primaryKey]] = $item;
+                }
+
+                $row = [];
+                foreach ($junctionData as $item) {
+                    $row[] = $_byId[$item[$junctionKeyRightColumn]];
+                }
+
                 $junctionData = $junctionTableGateway->loadMetadata($junctionData);
 
                 $row = $relatedTableGateway->loadMetadata($row);
