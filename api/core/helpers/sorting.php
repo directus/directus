@@ -13,11 +13,10 @@ if (!function_exists('sorting_by_key')) {
     {
         return function ($a, $b) use ($key, $order) {
             if ($a[$key] === $b[$key]) {
-                $value = 0;
-            } else {
-                $value = $a[$key] < $b[$key] ? -1 : 1;
+                return 0;
             }
 
+            $value = $a[$key] < $b[$key] ? -1 : 1;
             if ($order === 'DESC') {
                 $value *= -1;
             }
