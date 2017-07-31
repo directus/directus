@@ -87,6 +87,7 @@ define([
     },
 
     editModel: function (model) {
+      var self = this;
       var EditView = require('modules/tables/views/EditView'); // eslint-disable-line import/no-unresolved
       var columnName = this.columnSchema.relationship.get('junction_key_right');
       var view = new EditView({
@@ -111,6 +112,9 @@ define([
       app.router.overlayPage(view);
 
       view.save = function () {
+        // trigger changes on the related collection
+        // to be visible on the listing table
+        self.onCollectionChange();
         app.router.removeOverlayPage(this);
       };
     },

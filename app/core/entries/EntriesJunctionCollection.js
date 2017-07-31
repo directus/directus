@@ -22,11 +22,12 @@ define(function(require, exports, module) {
       return this.table;
     },
 
-    parse: function M(result) {
+    parse: function M(result, options) {
       var EntriesModel = require('core/entries/EntriesModel');
       var attributes = result.junction || {};
+      var data = options.nest === true ? result : result.data;
 
-      attributes.data = new EntriesModel(result.data, {collection: this.collection.nestedCollection});
+      attributes.data = new EntriesModel(data, {collection: this.collection.nestedCollection});
 
       this.structure = this.collection.junctionStructure;
       this.table = this.structure.table;
@@ -116,9 +117,9 @@ define(function(require, exports, module) {
       var relatedPrimaryColumnName = this.structure.table.getPrimaryColumnName();
       var _byId = {};
 
-      response = [];
-
       if (junctionData.length > 0) {
+        response = [];
+
         // Set all relational data easy to reach by ids
         _.each(relatedData, function (data) {
           _byId[data[relatedPrimaryColumnName]] = data;
