@@ -582,27 +582,6 @@ class RelationalTableGateway extends BaseTableGateway
                                 // (disassociating w/ existing M2M collection entry)
                                 $parentCollectionRelationshipsChanged = true;
                                 continue;
-                            } else if (isset($junctionRow['data'][$JunctionTable->primaryKeyFieldName])) {
-                                // Is this a new element?
-                                // if the element `id` exists it's because is not a new element
-                                // and already had its id given.
-                                $Where = new Where;
-                                $Where->equalTo($junctionKeyLeft, $parentRow[$this->primaryKeyFieldName])
-                                    ->equalTo($junctionKeyRight, $junctionRow['data'][$JunctionTable->primaryKeyFieldName]);
-
-                                // hard-coded check for sort diff
-                                // @todo fix this
-                                $junctionRowResult = $JunctionTable->select($Where);
-                                if ($junctionRowResult->count()) {
-                                    // we are expecting one.
-                                    $junctionRowResultArray = $junctionRowResult->toArray();
-                                    $junctionRowResultArray = end($junctionRowResultArray);
-                                    if (array_key_exists('sort', $junctionRow) && array_key_exists('sort', $junctionRowResultArray)) {
-                                        if ($junctionRowResultArray['sort'] === $junctionRow['sort']) {
-                                            continue;
-                                        }
-                                    }
-                                }
                             }
 
                             /** Update foreign record */
