@@ -232,7 +232,7 @@ define(function (require, exports, module) {
             neq: app.user.id
           },
           last_access: {
-            lte: moment.utc().add(3, 'minutes').format('YYYY-MM-DD HH:mm:ss')
+            gte: moment.utc().subtract(3, 'minutes').format('YYYY-MM-DD HH:mm:ss')
           }
         }
       });
