@@ -1092,7 +1092,10 @@ class RelationalTableGateway extends BaseTableGateway
                     $query->orWhereRelational($column->getName(), $relatedTable, $relatedPrimaryColumnName, function (Builder $query) use ($column, $relatedTable, $relatedTableColumns, $search) {
                         $query->nestOrWhere(function (Builder $query) use ($relatedTableColumns, $relatedTable, $search) {
                             foreach ($relatedTableColumns as $column) {
-                                if (!$column->isAlias()) {
+                                // NOTE: Only search numeric or string type columns
+                                $isNumeric = $this->getSchemaManager()->isNumericType($column->getType());
+                                $isString = $this->getSchemaManager()->isStringType($column->getType());
+                                if (!$column->isAlias() && ($isNumeric || $isString)) {
                                     $columnName = $statusColumn = sprintf('%s%s%s',
                                         $column->getTableName(),
                                         $this->getAdapter()->getPlatform()->getIdentifierSeparator(),
@@ -1113,7 +1116,10 @@ class RelationalTableGateway extends BaseTableGateway
                     // TODO: Test here it may be not setting the proper primary key name
                     $query->orWhereRelational($this->primaryKeyFieldName, $relatedTable, null, $relatedRightColumn, function(Builder $query) use ($column, $relatedTable, $relatedTableColumns, $search) {
                         foreach ($relatedTableColumns as $column) {
-                            if (!$column->isAlias()) {
+                            // NOTE: Only search numeric or string type columns
+                            $isNumeric = $this->getSchemaManager()->isNumericType($column->getType());
+                            $isString = $this->getSchemaManager()->isStringType($column->getType());
+                            if (!$column->isAlias() && ($isNumeric || $isString)) {
                                 $query->orWhereLike($column->getName(), $search, false);
                             }
                         }
