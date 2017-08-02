@@ -48,7 +48,7 @@ function(app, Backbone, $, _, __t, Directus, Utils, moment) {
           if (!endText || endText.indexOf(' ') === -1) {
             end = text.length;
           } else {
-            end = endText.indexOf(" ") + start +startString.length;
+            end = endText.indexOf(' ') + start + startString.length;
           }
 
           text = text.substring(0, start) + "@[" + $target.data('id') + " " + $target.data('name') + "] " + text.substring(end, text.length);
@@ -57,14 +57,15 @@ function(app, Backbone, $, _, __t, Directus, Utils, moment) {
         }
       },
 
-      'input #itemCommentText': function(e) {
-        var caretPos = $(e.target)[0].selectionStart;
-        var text = $(e.target).val();
+      'input #itemCommentText': function (event) {
+        var caretPos = $(event.target)[0].selectionStart;
+        var text = $(event.target).val();
         var sub = text.substring(0, caretPos);
-        var activeChunk = sub.substring(sub.lastIndexOf(" ") + 1);
+        var activeChunk = sub.substring(sub.lastIndexOf(' ') + 1);
+        var search = activeChunk.substring(1);
 
         // Enable submit button when content exists
-        if(text.length > 0){
+        if (text.length > 0){
           $('#itemCommentText').addClass('active');
           $('#messages-response-button').removeClass('disabled');
         } else {
@@ -72,14 +73,8 @@ function(app, Backbone, $, _, __t, Directus, Utils, moment) {
           $('#messages-response-button').addClass('disabled');
         }
 
-        if(activeChunk.substring(0,1) === "@") {
-          var search = activeChunk.substring(1);
-
-          if(search) {
-            this.displaySearch(search);
-          } else {
-            $('#tagInsert').empty();
-          }
+        if (activeChunk.substring(0, 1) === '@' && search) {
+          this.displaySearch(search);
         } else {
           $('#tagInsert').empty();
         }
@@ -273,6 +268,7 @@ function(app, Backbone, $, _, __t, Directus, Utils, moment) {
         return;
       }
 
+      this.comments.clearFilter();
       this.comments.setFilter({
         filters: {
           comment_metadata: tableName + ':' + rowId
@@ -323,45 +319,25 @@ function(app, Backbone, $, _, __t, Directus, Utils, moment) {
         otherFetched = true;
       });
 
-      var DIRECTUS_USERS = 0;
-      var DIRECTUS_GROUPS = 1;
-
-      var users = app.users.filter(function(item) {
-        if(item.get('id') === app.authenticatedUserId.id) {
-          return false;
-        }
-        return true;
+      var users = app.users.filter(function (user) {
+        return user.id !== app.authenticatedUserId.id;
       });
 
       users = users.map(function(item) {
         return {
           id: item.id,
-          uid: DIRECTUS_USERS + '_' + item.id,
+          uid: item.id,
           name: item.get('first_name') + ' ' + item.get('last_name'),
-          avatar: item.getAvatar(),
-          type: DIRECTUS_USERS
+          avatar: item.getAvatar()
         };
       });
 
-      var groups = app.groups.map(function(item) {
-        return {
-          id: item.id,
-          uid: DIRECTUS_GROUPS + '_' + item.id,
-          name: item.get('name'),
-          avatar: app.PATH + 'assets/imgs/directus-group-avatar.svg',
-          type: DIRECTUS_GROUPS
-        };
-      });
-
-      var usersAndGroups = users.concat(groups);
       var datums = [];
       this.deletedDatums = [];
 
-      _.each(usersAndGroups, function(item) {
-        var uid = item.uid;
-
+      _.each(users, function (item) {
         datums.push({
-          id: uid,
+          id: item.uid,
           name: item.name,
           avatar: item.avatar,
           tokens: item.name.split(' ')
@@ -371,8 +347,8 @@ function(app, Backbone, $, _, __t, Directus, Utils, moment) {
       var engine = new Bloodhound({
         name: 'users',
         local: datums,
-        datumTokenizer: function(d) {
-          return Bloodhound.tokenizers.whitespace(d.name);
+        datumTokenizer: function (data) {
+          return Bloodhound.tokenizers.whitespace(data.name);
         },
         queryTokenizer: Bloodhound.tokenizers.whitespace
       });
@@ -381,10 +357,11 @@ function(app, Backbone, $, _, __t, Directus, Utils, moment) {
       engine.initialize();
     },
 
-    displaySearch: function(query) {
+    displaySearch: function (query) {
       $('#tagInsert').empty();
-      this.searchEngine.get(query, function(res) {
-        res.forEach(function(item) {
+
+      this.searchEngine.get(query, function (res) {
+        res.forEach(function (item) {
           $('#tagInsert').append('<div class="tagInsertItem mention-choice" data-id="' + item.id + '" data-name="' + item.name + '"><img src="' + item.avatar + '"/>'  + item.name + '</div>');
         });
       });

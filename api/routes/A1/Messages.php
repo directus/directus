@@ -280,29 +280,14 @@ class Messages extends Route
         $params['table_name'] = 'directus_messages';
         $TableGateway = new TableGateway('directus_messages', $ZendDb, $acl);
 
-        $groupRecipients = [];
         $userRecipients = [];
 
-        preg_match_all('/@\[.*? /', $requestPayload['message'], $results);
-        $results = $results[0];
+        preg_match_all('/@\[([0-9]+)? /', $requestPayload['message'], $results);
 
-        if (count($results) > 0) {
-            foreach ($results as $result) {
-                $result = substr($result, 2);
-                $typeAndId = explode('_', $result);
-                if ($typeAndId[0] == 0) {
-                    $userRecipients[] = $typeAndId[1];
-                } else {
-                    $groupRecipients[] = $typeAndId[1];
-                }
-            }
-
-            if (count($groupRecipients) > 0) {
-                $usersTableGateway = new DirectusUsersTableGateway($ZendDb, $acl);
-                $result = $usersTableGateway->findActiveUserIdsByGroupIds($groupRecipients);
-                foreach ($result as $item) {
-                    $userRecipients[] = $item['id'];
-                }
+        $results = ArrayUtils::get($results, 1);
+        if ($results && count($results) > 0) {
+            foreach ($results as $userId) {
+                $userRecipients[] = $userId;
             }
 
             $messagesTableGateway = new DirectusMessagesTableGateway($ZendDb, $acl);
