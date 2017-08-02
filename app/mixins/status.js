@@ -24,6 +24,7 @@ define(['underscore', 'helpers/status'], function (_, StatusHelper) {
 
     // gets model status information
     getStatus: function () {
+      // TODO: Make this return null if there's not status column in the table
       var statuses = this.getTableStatuses();
       var statusValue = this.getStatusValue();
 

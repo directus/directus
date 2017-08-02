@@ -116,17 +116,7 @@ require([
 
   // Get the model status name
   Handlebars.registerHelper('statusName', function (model) {
-    // var table = model.table;
-    // var statusColumnName = table ? table.getStatusColumnName() : app.statusMapping.status_name;
-    // var statusValue = model.get(statusColumnName);
-    // var status = app.statusMapping.mapping[statusValue] || {};
-    // status = app.statusMapping.
-    // var statuses = model.getTableStatuses();
-    // var statusValue = model.getStatusValue();// model.get(statuses.get('status_name'));
-
-    //return statuses.get('mapping').get(statusValue).get('name');
     return model.getStatusName();
-    // return status ? status.name : '';
   });
 
   Handlebars.registerHelper('statusBackgroundColor', function (model) {
@@ -144,10 +134,16 @@ require([
   });
 
   Handlebars.registerHelper('ifShowStatusBadge', function (model, options) {
-    var status = model ? model.getStatus() : null;
-    var canShowBadge = status ? status.get('show_listing_badge') : false;
+    var status;
+    var canShowBadge = false;
 
-    if(!canShowBadge) {
+    // check if the table actually has
+    if (model && model.table.hasStatusColumn()) {
+      status = model ? model.getStatus() : null;
+      canShowBadge = status ? status.get('show_listing_badge') : false;
+    }
+
+    if (!canShowBadge) {
       return options.inverse(this);
     } else {
       return options.fn(this);

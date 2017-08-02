@@ -32,17 +32,29 @@ define(function(require, exports, module) {
         }
       }
 
-      data.status_column = data.status_column || app.statusMapping.get(data.id, true).get('status_name');
-      data.primary_column = data.primary_column || 'id';
-      data.sort_column = data.sort_column || 'sort';
+      if (!data.status_column) {
+        var status = app.statusMapping.get(data.id, false);
+
+        if (status) {
+          data.status_column = status.get('status_name');
+        }
+      }
 
       return _.omit(data, ['columns', 'preferences']);
     },
 
     getStatusColumn: function () {
-      var name = this.get('status_column') || app.statusMapping.get(this.id, true).get('status_name');
+      var name = this.get('status_column');
+      var status;
 
-      return this.columns.get(name);
+      if (!name) {
+        status = app.statusMapping.get(this.id, false);
+        if (status) {
+          name = status.get('status_name');
+        }
+      }
+
+      return name ? this.columns.get(name) : null;
     },
 
     getStatusColumnName: function () {
