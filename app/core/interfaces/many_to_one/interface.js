@@ -37,6 +37,7 @@ define([
 
         model.set(attributes);
 
+        this.value = model;
         this.model.set(this.name, model);
       }
     },
