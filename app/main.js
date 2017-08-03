@@ -21,6 +21,7 @@ require(['config', 'polyfills'], function () {
     'schema/SchemaManager',
     'modules/settings/SettingsCollection',
     'core/entries/EntriesModel',
+    'core/extensions',
     'core/ExtensionManager',
     'core/EntriesManager',
     'core/ListViewManager',
@@ -29,7 +30,7 @@ require(['config', 'polyfills'], function () {
     'ext/moment-timeago',
     'contextual-date',
     'core/notification'
-  ], function (app, _, UIManager, Router, Backbone, alerts, __t, Tabs, Bookmarks, Messages, SchemaManager, SettingsCollection, EntriesModel, ExtensionManager, EntriesManager, ListViewManager, StatusTableCollection, Idle, moment, ContextualDate, Notification) {
+  ], function (app, _, UIManager, Router, Backbone, alerts, __t, Tabs, Bookmarks, Messages, SchemaManager, SettingsCollection, EntriesModel, Extension, ExtensionManager, EntriesManager, ListViewManager, StatusTableCollection, Idle, moment, ContextualDate, Notification) {
 
     'use strict';
 
