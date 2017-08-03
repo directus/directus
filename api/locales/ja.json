@@ -60,7 +60,6 @@
     "single": "単一レコード",
     "hidden": "非表示",
     "hidden_input": "入力フォーム非表示",
-    "hidden_list": "一覧上で非表示",
     "is_junction_table": "中間テーブル",
     "delete": "削除",
     "footer": "集計フッター",

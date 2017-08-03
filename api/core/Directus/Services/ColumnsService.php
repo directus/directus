@@ -107,7 +107,6 @@ class ColumnsService extends AbstractService
             'data_type',
             'ui',
             'hidden_input',
-            'hidden_list',
             'required',
             'relationship_type',
             'related_table',

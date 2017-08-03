@@ -47,7 +47,6 @@ define(['./interface', 'core/UIComponent', 'core/t'], function (Input, UICompone
       required: false,
       nullable: true,
       system: false,
-      hidden_list: false,
       hidden_input: false,
       sort: 6,
       comment: __t('directus_tables_status_delete_value_comment')
@@ -56,7 +55,6 @@ define(['./interface', 'core/UIComponent', 'core/t'], function (Input, UICompone
       column_name: 'status_mapping',
       ui: 'json',
       type: 'TEXT',
-      hidden_list: false,
       hidden_input: false,
       required: false,
       nullable: true,

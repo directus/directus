@@ -24,7 +24,6 @@ define(function(require, exports, module) {
         "extra": "auto_increment",
         "type": "INT",
         "system": true,
-        "hidden_list": false,
         "hidden_input": true,
         "sort": 0
       },
@@ -35,7 +34,6 @@ define(function(require, exports, module) {
         "type": "VARCHAR",
         "length": 64,
         "system": false,
-        "hidden_list": false,
         "hidden_input": false,
         "required": true,
         "sort": 10,
@@ -49,7 +47,6 @@ define(function(require, exports, module) {
         "length": 255,
         "system": false,
         "nullable": true,
-        "hidden_list": false,
         "hidden_input": false,
         "sort": 20,
         "comment": transComments('description')
@@ -65,7 +62,6 @@ define(function(require, exports, module) {
         "default_value": null,
         "required": false,
         "system": false,
-        "hidden_list": false,
         "hidden_input": false,
         "nullable": true,
         "sort": 30,
@@ -86,7 +82,6 @@ define(function(require, exports, module) {
         "default_value": null,
         "required": false,
         "system": false,
-        "hidden_list": false,
         "hidden_input": false,
         "nullable": true,
         "sort": 40,
@@ -104,7 +99,6 @@ define(function(require, exports, module) {
         "length": 255,
         "system": false,
         "nullable": true,
-        "hidden_list": false,
         "hidden_input": false,
         "sort": 50,
         "options": {
@@ -121,7 +115,6 @@ define(function(require, exports, module) {
         "length": 1,
         "default_value": 1,
         "system": false,
-        "hidden_list": false,
         "hidden_input": false,
         "sort": 60
       },
@@ -133,7 +126,6 @@ define(function(require, exports, module) {
         "length": 1,
         "default_value": 1,
         "system": false,
-        "hidden_list": false,
         "hidden_input": false,
         "sort": 70
       },
@@ -145,7 +137,6 @@ define(function(require, exports, module) {
         "length": 1,
         "default_value": 1,
         "system": false,
-        "hidden_list": false,
         "hidden_input": false,
         "sort": 80
       },
@@ -155,7 +146,6 @@ define(function(require, exports, module) {
         "type": "TEXT",
         "ui": "textarea",
         "system": false,
-        "hidden_list": false,
         "hidden_input": false,
         "nullable": true,
         "comment": transComments('nav_override'),
@@ -176,7 +166,6 @@ define(function(require, exports, module) {
         "ui": "text_input",
         "length": 500,
         "system": false,
-        "hidden_list": false,
         "hidden_input": false,
         "nullable": true,
         "comment": transComments('nav_blacklist'),

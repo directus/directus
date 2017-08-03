@@ -18,7 +18,6 @@ define(function(require, exports, module) {
         "extra": "auto_increment",
         "type":"INT",
         "system":true,
-        "hidden_list":true,
         "hidden_input":true
       },
       {
@@ -27,7 +26,6 @@ define(function(require, exports, module) {
         "ui":"directus_user",
         "type":"INT",
         "system":false,
-        "hidden_list":false,
         "hidden_input":false,
         "options":{
           "id":"directus_user",
@@ -42,7 +40,6 @@ define(function(require, exports, module) {
         "type":"VARCHAR",
         "system":false,
         "char_length":1000,
-        "hidden_list":false,
         "hidden_input":false
       },
       {
@@ -53,7 +50,6 @@ define(function(require, exports, module) {
         "required":true,
         "system":false,
         "char_length":100,
-        "hidden_list":false,
         "hidden_input":false
       },
       {
@@ -62,7 +58,6 @@ define(function(require, exports, module) {
         "ui": "textarea",
         "type": "VARCHAR",
         "system": false,
-        "hidden_list": false,
         "hidden_input" :false,
         "options": {
           "id": "textarea",
@@ -76,7 +71,6 @@ define(function(require, exports, module) {
         "is_nullable":"YES",
         "ui":"datetime",
         "system":false,
-        "hidden_list":false,
         "hidden_input":true,
         "required":false,
         "is_writable":true,
@@ -91,7 +85,6 @@ define(function(require, exports, module) {
         "is_nullable":"YES",
         "ui":"datetime",
         "system":false,
-        "hidden_list":false,
         "hidden_input":true,
         "required":false,
         "is_writable":true,
@@ -115,7 +108,6 @@ define(function(require, exports, module) {
         "sort":38,
         "ui":"one_to_many",
         "system":false,
-        "hidden_list":true,
         "hidden_input":true,
         "relationship_type": "ONETOMANY",
         "related_table": "directus_messages",
@@ -133,7 +125,6 @@ define(function(require, exports, module) {
         "ui":"numeric",
         "type":"INT",
         "system":true,
-        "hidden_list":true,
         "hidden_input":true
       },
       {
@@ -143,7 +134,6 @@ define(function(require, exports, module) {
         "type":"VARCHAR",
         "length": 255,
         "system": false,
-        "hidden_list": true,
         "hidden_input": true
       }
     ]

@@ -47,7 +47,6 @@ define(function(require, exports, module) {
             "comment":"",
             "sort":0,
             "system":true,
-            "hidden_list":false,
             "hidden_input":true,
             "required":false,
             "ui":"primary_key",
@@ -64,7 +63,6 @@ define(function(require, exports, module) {
             "comment":"",
             "sort":1,
             "system":true,
-            "hidden_list": true,
             "hidden_input": true,
             "required":false,
             "ui":"status",
@@ -78,7 +76,6 @@ define(function(require, exports, module) {
             "comment":"",
             "ui":"single_file",
             "system":false,
-            "hidden_list":false,
             "hidden_input":false,
             "required":false,
             "column_type":"int(11)",
@@ -101,7 +98,6 @@ define(function(require, exports, module) {
             "comment":"",
             "sort":2,
             "system":false,
-            "hidden_list":false,
             "hidden_input":true,
             "required":false,
             "ui":"directus_user_avatar"
@@ -115,7 +111,6 @@ define(function(require, exports, module) {
             "ui":"directus_user",
             "system":false,
             "omit_input": true,
-            "hidden_list": false,
             "hidden_input": true,
             "required":false,
             "options": {
@@ -132,7 +127,6 @@ define(function(require, exports, module) {
             "comment":"",
             "sort":3,
             "system":false,
-            "hidden_list":false,
             "hidden_input":false,
             "required": false,
             "ui":"text_input",
@@ -150,7 +144,6 @@ define(function(require, exports, module) {
             "comment":"",
             "sort":4,
             "system":false,
-            "hidden_list":false,
             "hidden_input":false,
             "required": false,
             "ui":"text_input",
@@ -168,7 +161,6 @@ define(function(require, exports, module) {
             "sort":5,
             "ui":"text_input",
             "system":false,
-            "hidden_list":false,
             "hidden_input":false,
             "required":true,
             "options": {
@@ -185,7 +177,6 @@ define(function(require, exports, module) {
             "comment":"Passwords are encrypted, if forgotten they must be reset",
             "sort":6,
             "system":false,
-            "hidden_list":true,
             "hidden_input":false,
             "required":true,
             "ui":"password",
@@ -203,7 +194,6 @@ define(function(require, exports, module) {
             "comment":"",
             "sort":7,
             "system":true,
-            "hidden_list":true,
             "hidden_input":true,
             "required":true,
             "ui":"text_input"
@@ -216,7 +206,6 @@ define(function(require, exports, module) {
             "comment":"Determines this user's access",
             "sort":8,
             "system":false,
-            "hidden_list":false,
             "hidden_input":false,
             "required":true,
             "is_writable": true,
@@ -245,7 +234,6 @@ define(function(require, exports, module) {
             "sort":9,
             "ui":"dropdown",
             "system":false,
-            "hidden_list":false,
             "hidden_input":false,
             "required": false,
             "options": {
@@ -266,7 +254,6 @@ define(function(require, exports, module) {
             "sort":10,
             "ui":"dropdown",
             "system":false,
-            "hidden_list":false,
             "hidden_input":false,
             "required": false,
             "options": {
@@ -287,7 +274,6 @@ define(function(require, exports, module) {
             "sort":11,
             "ui":"text_input",
             "system":false,
-            "hidden_list":false,
             "hidden_input":false,
             "required":false,
             "options": {
@@ -305,7 +291,6 @@ define(function(require, exports, module) {
             "sort":12,
             "ui":"text_input",
             "system":false,
-            "hidden_list":false,
             "hidden_input":false,
             "required":false,
             "options": {
@@ -323,7 +308,6 @@ define(function(require, exports, module) {
             "sort":13,
             "ui":"text_input",
             "system":false,
-            "hidden_list":false,
             "hidden_input":false,
             "required":false,
             "options": {
@@ -341,7 +325,6 @@ define(function(require, exports, module) {
             "sort":14,
             "ui":"text_input",
             "system":false,
-            "hidden_list":false,
             "hidden_input":false,
             "required":false,
             "options": {
@@ -359,7 +342,6 @@ define(function(require, exports, module) {
             "sort":15,
             "ui":"text_input",
             "system":false,
-            "hidden_list":false,
             "hidden_input":false,
             "required":false,
             "options": {
@@ -377,7 +359,6 @@ define(function(require, exports, module) {
             "sort":16,
             "ui":"text_input",
             "system":false,
-            "hidden_list":false,
             "hidden_input":false,
             "required":false,
             "options": {
@@ -395,7 +376,6 @@ define(function(require, exports, module) {
             "sort":17,
             "ui":"text_input",
             "system":false,
-            "hidden_list":false,
             "hidden_input":false,
             "required":false,
             "options": {
@@ -413,7 +393,6 @@ define(function(require, exports, module) {
             "sort":18,
             "ui":"dropdown",
             "system":false,
-            "hidden_list":false,
             "hidden_input":false,
             "required":false,
             "options": {
@@ -432,7 +411,6 @@ define(function(require, exports, module) {
             "comment":"CMS messages will also be sent to email address above",
             "sort":19,
             "system":false,
-            "hidden_list":false,
             "hidden_input":false,
             "required":false,
             "ui":"toggle"
@@ -445,7 +423,6 @@ define(function(require, exports, module) {
             "comment":"This is your user's API authentication token. Keep it safe!",
             "sort":20,
             "system":false,
-            "hidden_list":false,
             "hidden_input":false,
             "required": false,
             "nullable": true,
@@ -465,7 +442,6 @@ define(function(require, exports, module) {
             "comment":"",
             "sort":21,
             "system":true,
-            "hidden_list":true,
             "hidden_input":true,
             "required":false,
             "ui":"text_input"
@@ -480,7 +456,6 @@ define(function(require, exports, module) {
             "comment":"",
             "sort":22,
             "system":true,
-            "hidden_list":false,
             "hidden_input":true,
             "required":false,
             "ui":"text_input"
@@ -493,7 +468,6 @@ define(function(require, exports, module) {
             "comment":"",
             "sort":23,
             "system":true,
-            "hidden_list":false,
             "hidden_input":true,
             "required":false,
             "ui":"datetime"
@@ -507,7 +481,6 @@ define(function(require, exports, module) {
             "comment":"",
             "sort":24,
             "system":false,
-            "hidden_list":false,
             "hidden_input":true,
             "required":false,
             "ui":"datetime"
@@ -521,7 +494,6 @@ define(function(require, exports, module) {
             "comment":"",
             "sort":25,
             "system":false,
-            "hidden_list":false,
             "hidden_input":true,
             "required":false,
             "ui":"datetime",
@@ -539,7 +511,6 @@ define(function(require, exports, module) {
             "comment":"",
             "sort":26,
             "system":false,
-            "hidden_list":false,
             "hidden_input":true,
             "required":false,
             "ui":"text_input"
@@ -554,7 +525,6 @@ define(function(require, exports, module) {
             "comment":"",
             "sort":27,
             "system":true,
-            "hidden_list":false,
             "hidden_input":true,
             "required":false,
             "ui":"text_input"

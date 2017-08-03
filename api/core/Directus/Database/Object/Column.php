@@ -138,13 +138,6 @@ class Column implements \ArrayAccess, Arrayable, \JsonSerializable
     protected $ui;
 
     /**
-     * Whether the column will be hidden on listing
-     *
-     * @var bool
-     */
-    protected $hiddenList = false;
-
-    /**
      * Whether the column will be hidden on forms
      *
      * @var bool
@@ -198,7 +191,6 @@ class Column implements \ArrayAccess, Arrayable, \JsonSerializable
             'extra',
             'required',
             'ui',
-            'hidden_list',
             'hidden_input',
             'relationship',
             'comment',
@@ -731,30 +723,6 @@ class Column implements \ArrayAccess, Arrayable, \JsonSerializable
         }
 
         return $options;
-    }
-
-    /**
-     * Set whether the column must be hidden in lists
-     *
-     * @param $hidden
-     *
-     * @return Column
-     */
-    public function setHiddenList($hidden)
-    {
-        $this->hiddenList = (bool) $hidden;
-
-        return $this;
-    }
-
-    /**
-     * Get whether the column must be hidden in lists
-     *
-     * @return bool
-     */
-    public function getHiddenList()
-    {
-        return $this->hiddenList;
     }
 
     /**

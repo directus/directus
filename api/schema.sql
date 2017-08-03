@@ -81,7 +81,6 @@ CREATE TABLE `directus_columns` (
   `junction_key_left` varchar(64) DEFAULT NULL,
   `junction_key_right` varchar(64) DEFAULT NULL,
   `hidden_input` tinyint(1) NOT NULL DEFAULT '0',
-  `hidden_list` tinyint(1) NOT NULL DEFAULT '0',
   `required` tinyint(1) NOT NULL DEFAULT '0',
   `sort` int(11) DEFAULT NULL,
   `comment` varchar(1024) DEFAULT NULL,
@@ -93,12 +92,12 @@ CREATE TABLE `directus_columns` (
 LOCK TABLES `directus_columns` WRITE;
 /*!40000 ALTER TABLE `directus_columns` DISABLE KEYS */;
 
-INSERT INTO `directus_columns` (`id`, `table_name`, `column_name`, `data_type`, `ui`, `relationship_type`, `related_table`, `junction_table`, `junction_key_left`, `junction_key_right`, `hidden_input`, `hidden_list`, `required`, `sort`, `comment`, `options`)
+INSERT INTO `directus_columns` (`id`, `table_name`, `column_name`, `data_type`, `ui`, `relationship_type`, `related_table`, `junction_table`, `junction_key_left`, `junction_key_right`, `hidden_input`, `required`, `sort`, `comment`, `options`)
 VALUES
-	(1,'directus_users','group','INT','many_to_one','MANYTOONE','directus_groups',NULL,NULL,'group_id',0,0,0,NULL,'',NULL),
-	(2,'directus_users','avatar_file_id','INT','single_file','MANYTOONE','directus_files',NULL,NULL,'avatar_file_id',0,0,0,NULL,'',NULL),
-	(3,'directus_groups','users','ALIAS','directus_users','ONETOMANY','directus_users',NULL,NULL,'group',0,0,0,NULL,NULL,NULL),
-	(4,'directus_groups','permissions','ALIAS','directus_permissions','ONETOMANY','directus_privileges',NULL,NULL,'group_id',0,0,0,NULL,NULL,NULL);
+	(1,'directus_users','group','INT','many_to_one','MANYTOONE','directus_groups',NULL,NULL,'group_id',0,0,NULL,'',NULL),
+	(2,'directus_users','avatar_file_id','INT','single_file','MANYTOONE','directus_files',NULL,NULL,'avatar_file_id',0,0,NULL,'',NULL),
+	(3,'directus_groups','users','ALIAS','directus_users','ONETOMANY','directus_users',NULL,NULL,'group',0,0,NULL,NULL,NULL),
+	(4,'directus_groups','permissions','ALIAS','directus_permissions','ONETOMANY','directus_privileges',NULL,NULL,'group_id',0,0,NULL,NULL,NULL);
 
 /*!40000 ALTER TABLE `directus_columns` ENABLE KEYS */;
 UNLOCK TABLES;
