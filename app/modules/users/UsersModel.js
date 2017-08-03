@@ -69,7 +69,7 @@ function(app, Backbone, EntriesModel, moment) {
     },
 
     isAdmin: function () {
-      return this.get('group').get('id') === 1;
+      return this.getGroup().id === 1;
     },
 
     isOnline: function () {

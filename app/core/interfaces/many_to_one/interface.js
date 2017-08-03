@@ -42,7 +42,8 @@ define([
     },
 
     beforeSaving: function () {
-      if (this.value) {
+      // NOTE: Only set the new value (mark changed) if the value has changed
+      if (this.value && this.model.hasChanges(this.name)) {
         this.model.set(this.name, this.value);
       }
     },
