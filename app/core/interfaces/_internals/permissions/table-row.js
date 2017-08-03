@@ -476,14 +476,6 @@ define([
         patch: true
       }, options);
 
-      options.success = function (model) {
-        var tableName = model.get('table_name');
-        app.schemaManager.getOrFetchTable(tableName, function (tableModel) {
-          app.schemaManager.registerPrivileges([model.toJSON()]);
-          app.trigger('tables:change:permissions', tableModel, model);
-        });
-      };
-
       model[method](attributes, options);
     },
 
