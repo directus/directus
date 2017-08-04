@@ -182,7 +182,9 @@ define(function(require, exports, module) {
                 return column.trim();
               });
             }
+
             var value = attributes[id] || [];
+            var models = value;
             var options = {
               table: SchemaManager.getTable(tableRelated),
               structure: SchemaManager.getColumns('tables', tableRelated),
@@ -215,8 +217,14 @@ define(function(require, exports, module) {
                 this.attributes[id].set(value, {merge: true, parse: true});
                 attributes[id] = this.attributes[id];
               } else {
-                attributes[id] = new EntriesCollection(value, options);
+                if (value instanceof EntriesCollection) {
+                  models = value.models;
+                  options.parse = false;
+                }
+
+                attributes[id] = new EntriesCollection(models, options);
               }
+
               break;
             }
 
@@ -227,8 +235,6 @@ define(function(require, exports, module) {
                 this.attributes[id].set(value, {merge: true, parse: true});
                 attributes[id] = this.attributes[id];
               } else {
-                var models = value;
-
                 if (value instanceof EntriesJunctionCollection) {
                   models = value.models;
                   options.parse = false;

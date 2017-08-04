@@ -641,6 +641,10 @@
     "version_updates": "Version & Updates",
     "version_updates_description": "A bird's eye view of previous, current, and available versions of the Directus framework. Coming Soon: Ability to auto-upgrade.",
 
+    "relational_count_x_file_single": "%{count} file",
+    "relational_count_x_file_multiple": "%{count} files",
+    "relational_count_x_item_single": "%{count} item",
+    "relational_count_x_item_multiple": "%{count} items",
     "loaded_items": "Loaded Items",
     "filtered_items": "Filtered Results",
     "header_new_filter": "Add New Filter"

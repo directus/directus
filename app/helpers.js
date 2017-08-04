@@ -305,13 +305,30 @@ require([
 
   // Handlebars UI helper!
   function uiHelper(model, attr, options) {
+    var column = model.structure.get(attr);
     var html;
 
-    if (model.isNested) {
-      model = model.get('data');
-    }
+    if (column && (column.isOneToMany() || column.isManyToMany())) {
+      var count = model.get(attr).length;
+      var what = 'item';
+      var type = 'multiple';
 
-    html = UIManager.getList(model, attr) || '<span class="no-value">--</span>';
+      if (column.getRelatedTableName() === 'directus_files') {
+        what = 'file';
+      }
+
+      if (count === 1) {
+        type = 'single';
+      }
+
+      html = __t('relational_count_x_' + what + '_' + type, {count: count});
+    } else {
+      if (model.isNested) {
+        model = model.get('data');
+      }
+
+      html = UIManager.getList(model, attr) || '<span class="no-value">--</span>';
+    }
 
     return new Handlebars.SafeString(html);
   }

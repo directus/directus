@@ -86,6 +86,12 @@ define(function(require, exports, module) {
       }
     },
 
+    getRelatedTableName: function () {
+      if (this.relationship) {
+        return this.relationship.get('related_table');
+      }
+    },
+
     getTable: function () {
       return this.collection.table;
     },
@@ -130,7 +136,7 @@ define(function(require, exports, module) {
       return this.getRelationshipType() === 'MANYTOMANY';
     },
 
-    isoneToMany: function () {
+    isOneToMany: function () {
       return this.getRelationshipType() === 'ONETOMANY';
     },
 
