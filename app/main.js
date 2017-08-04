@@ -265,19 +265,19 @@ require(['config', 'polyfills'], function () {
         if (SchemaManager.getPrivileges(table.table_name)) {
         var privileges = SchemaManager.getPrivileges(table.table_name);
         if (privileges.get('allow_view') > 0 && !table.hidden && privileges.get('nav_listed') > 0) {
-            bookmarks.push(new Backbone.Model({
+            bookmarks.push({
               icon_class: '',
               title: app.capitalize(table.table_name),
               url: 'tables/' + encodeURIComponent(table.table_name),
               section: 'table'
-            }));
+            });
           }
         }
       });
 
       var bookmarksData = window.directusData.bookmarks;
       _.each(bookmarksData, function (bookmark) {
-        bookmarks.push(new Backbone.Model(bookmark));
+        bookmarks.push(bookmark);
       });
 
       var extensions = ExtensionManager.getIds();
@@ -285,12 +285,12 @@ require(['config', 'polyfills'], function () {
       // Add extensions to bookmarks
       _.each(extensions, function (item) {
         item = ExtensionManager.getInfo(item);
-        bookmarks.push(new Backbone.Model({
+        bookmarks.push({
           icon_class: item.icon,
           title: item.title,
           url: item.path,
           section: 'extension'
-        }));
+        });
       });
 
       // Grab nav permissions
@@ -308,12 +308,12 @@ require(['config', 'polyfills'], function () {
         _.each(currentUserGroup.get('nav_override'), function (sectionItems, section) {
           _.each(sectionItems, function (item, title) {
             var path = item.path || '';
-            customBookmarks.push(new Backbone.Model({
+            customBookmarks.push({
               icon_class: item.icon,
               title: title,
               url: path,
               section: section
-            }));
+            });
           });
         });
       } else {
@@ -328,7 +328,7 @@ require(['config', 'polyfills'], function () {
 
       // Filter out blacklisted bookmarks (case-sensitive)
       bookmarks = _.filter(bookmarks, function (bookmark) {
-        return !_.contains(navBlacklist, (bookmark.attributes.title || '').toLowerCase());
+        return !_.contains(navBlacklist, (bookmark.title || '').toLowerCase());
       });
 
       // Turn into collection

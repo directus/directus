@@ -22,8 +22,23 @@ function(app, Backbone, _, EntriesManager, __t, Notification) {
 
   var Bookmarks = {};
 
+  Bookmarks.Model = Backbone.Model.extend({
+    constructor: function BookmarksModel() {
+      debugger;
+      Backbone.Model.prototype.constructor.apply(this, arguments);
+    },
+
+    setActive: function (active) {
+      this.active = active;
+    },
+
+    isActive: function () {
+      return !!this.active;
+    }
+  });
+
   Bookmarks.Collection = Backbone.Collection.extend({
-    constructor: function(models, options) {
+    constructor: function BookmarksCollection(models, options) {
       this.url = app.API_URL + 'bookmarks/';
 
       this.isCustomBookmarks = options.isCustomBookmarks || false;
@@ -33,6 +48,8 @@ function(app, Backbone, _, EntriesManager, __t, Notification) {
 
       Backbone.Collection.prototype.constructor.apply(this, [models, options]);
     },
+
+    model: Bookmarks.Model,
 
     _comparator: function(a, b) {
       if (a.get('title') < b.get('title')) {
@@ -60,7 +77,7 @@ function(app, Backbone, _, EntriesManager, __t, Notification) {
       var found = false;
 
       this.each(function (model) {
-        model.unset('active_bookmark', {silent: true});
+        model.setActive(false);
 
         if (found) {
           return false;
@@ -83,7 +100,7 @@ function(app, Backbone, _, EntriesManager, __t, Notification) {
       }, this);
 
       if (activeModel) {
-        activeModel.set({'active_bookmark': true});
+        activeModel.setActive(true);
       }
     },
 
@@ -171,6 +188,7 @@ function(app, Backbone, _, EntriesManager, __t, Notification) {
         if (bookmark.title === 'Activity') return false;
 
         bookmark.cid = model.cid;
+        bookmark.active_bookmark = model.isActive();
 
         // skip system nav to an user
         // if the user's group aren't allow to
