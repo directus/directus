@@ -8,6 +8,7 @@ define(function(require, exports, module) {
     'hidden': true,
     'single': false,
     'primary_column': 'id',
+    'sort_column': 'sort',
 
     'columns': [
       {
@@ -92,7 +93,7 @@ define(function(require, exports, module) {
       {
         'id': 'sort',
         'column_name': 'sort',
-        'ui':'numeric',
+        'ui':'sort',
         'type':'INT',
         'default_value': 0,
         'system':false,
