@@ -98,6 +98,7 @@ function(app, Backbone, _, EntriesManager, __t, Notification) {
 
     addNewBookmark: function(data) {
       data.user = data.user.toString();
+
       if (this.findWhere(data) === undefined) {
         this.create(data);
       }

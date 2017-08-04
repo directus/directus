@@ -437,6 +437,9 @@ define(function (require, exports, module) {
         collection = EntriesManager.getInstance(tableName);
       }
 
+      // clear the current collection
+      this.currentCollection = undefined;
+
       if (collection.structure.length <= 1) {
         var message = 'Table only has one or no fields.';
         this.navigateTo('/tables/' + tableName, message);
@@ -446,7 +449,6 @@ define(function (require, exports, module) {
       if (id === 'new' || isBatchEdit) {
         // Passing parse:true will setup relations
         model = new collection.model({}, {collection: collection, parse: true});
-
       } else {
         model = collection.get(id);
         if (model === undefined) {
@@ -478,11 +480,20 @@ define(function (require, exports, module) {
 
     bookmark: function (title) {
       var self = this;
+      var goToUrl = function (title) {
+        var bookmark = app.getBookmarks().findWhere({title: title});
+
+        if (bookmark) {
+          self.navigate(bookmark.get('url'), {trigger: true});
+        } else {
+          self.notFound();
+        }
+      };
 
       SchemaManager.getBookmarkPreferences(title)
         .done(function (response) {
           if (!response || response.success !== true) {
-            self.notFound();
+            goToUrl(title);
 
             return;
           }
@@ -495,7 +506,7 @@ define(function (require, exports, module) {
           self.entries(tableName);
           self.currentCollection = undefined;
         }).fail(function () {
-          self.notFound();
+          goToUrl(title);
         });
     },
 

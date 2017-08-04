@@ -79,7 +79,7 @@ function(app, _, Backbone, __t, Notification) {
       if (!app.getBookmarks().isBookmarked(title)) {
         app.getBookmarks().addNewBookmark({
           title: title,
-          url: Backbone.history.fragment + '/pref/' + encodeURIComponent(title),
+          url: Backbone.history.fragment,
           icon_class: 'icon-search',
           user: app.user.id,
           section: 'search'
