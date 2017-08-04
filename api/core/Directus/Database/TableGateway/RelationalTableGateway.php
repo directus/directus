@@ -644,6 +644,8 @@ class RelationalTableGateway extends BaseTableGateway
 
         if (ArrayUtils::get($params, 'preview')) {
             $defaultParams['status'] = null;
+            // Remove the status from param if preview is set
+            ArrayUtils::remove($params, 'status');
         } else if (!ArrayUtils::has($params, 'status')) {
             $defaultParams['status'] = $this->getPublishedStatuses();
         }

@@ -328,7 +328,7 @@ define([
 
         // avoid fetching the relational value
         filters.depth = 1;
-        relatedCollection.fetch({includeFilters: false, data: filters, success: function (collection) {
+        relatedCollection.fetch({includeFilters: false, silent: true, data: filters, success: function (collection) {
           var filters = collection.filters;
 
           filters.columns_visible = actualVisibleColumns;
