@@ -1058,10 +1058,14 @@ class RelationalTableGateway extends BaseTableGateway
      * Process group-by
      *
      * @param Builder $query
-     * @param array $columns
+     * @param array|string $columns
      */
-    protected function processGroups(Builder $query, array $columns = [])
+    protected function processGroups(Builder $query, $columns = [])
     {
+        if (!is_array($columns)) {
+            $columns = explode(',', $columns);
+        }
+
         $query->groupBy($columns);
     }
 
@@ -1098,12 +1102,7 @@ class RelationalTableGateway extends BaseTableGateway
                                 $isNumeric = $this->getSchemaManager()->isNumericType($column->getType());
                                 $isString = $this->getSchemaManager()->isStringType($column->getType());
                                 if (!$column->isAlias() && ($isNumeric || $isString)) {
-                                    $columnName = $statusColumn = sprintf('%s%s%s',
-                                        $column->getTableName(),
-                                        $this->getAdapter()->getPlatform()->getIdentifierSeparator(),
-                                        $column->getName()
-                                    );
-                                    $query->orWhereLike($columnName, $search);
+                                    $query->orWhereLike($column->getName(), $search);
                                 }
                             }
                         });
@@ -1129,13 +1128,7 @@ class RelationalTableGateway extends BaseTableGateway
                 } else if ($column->isManyToMany()) {
                     // @TODO: Implement Many to Many search
                 } else if (!$column->isAlias()) {
-                    $columnName = $statusColumn = sprintf('%s%s%s',
-                        $column->getTableName(),
-                        $this->getAdapter()->getPlatform()->getIdentifierSeparator(),
-                        $column->getName()
-                    );
-
-                    $query->orWhereLike($columnName, $search);
+                    $query->orWhereLike($column->getName(), $search);
                 }
             }
         });
@@ -1231,13 +1224,7 @@ class RelationalTableGateway extends BaseTableGateway
 
             $statuses = array_filter($statuses);
             if ($statuses) {
-                // TODO: Add a way to add this without duplication to all main queries
-                $statusColumn = sprintf('%s%s%s',
-                    $this->getTable(),
-                    $this->getAdapter()->getPlatform()->getIdentifierSeparator(),
-                    TableSchema::getStatusColumn($this->getTable())
-                );
-                $query->whereIn($statusColumn, $statuses);
+                $query->whereIn(TableSchema::getStatusColumn($this->getTable()), $statuses);
             }
         }
 
@@ -1260,7 +1247,13 @@ class RelationalTableGateway extends BaseTableGateway
         }
 
         if (ArrayUtils::has($params, 'group_by')) {
-            $query->groupBy($params['group_by']);
+            $groupBy = $params['group_by'];
+
+            if (!is_array($groupBy)) {
+                $groupBy = explode(',', $params['group_by']);
+            }
+
+            $query->groupBy($groupBy);
         }
 
         // Filter entries that match one of these values separated by comma
@@ -1449,8 +1442,10 @@ class RelationalTableGateway extends BaseTableGateway
 
             $queryCallBack = function(Builder $query) use ($junctionTableName, $on, $joinColumns, $ids, $joinColumnsPrefix) {
                 $query->join($junctionTableName, $on, $joinColumns);
-                if (in_array('sort', $joinColumns)) {
-                    $query->orderBy($joinColumnsPrefix . 'sort', 'ASC');
+
+                if (TableSchema::hasTableSortColumn($junctionTableName)) {
+                    $sortColumnName = TableSchema::getTableSortColumn($junctionTableName);
+                    $query->orderBy($this->getColumnIdentifier($sortColumnName, $junctionTableName), 'ASC');
                 }
 
                 return $query;
@@ -1459,7 +1454,9 @@ class RelationalTableGateway extends BaseTableGateway
             $results = $relatedTableGateway->loadEntries(array_merge([
                 'columns' => $relatedTableColumns,
                 'filters' => [
-                    $junctionKeyLeftColumn => ['in' => $ids]
+                    $relatedTableGateway->getColumnIdentifier($junctionKeyLeftColumn, $junctionTableName) => [
+                        'in' => $ids
+                    ]
                 ],
                 'depth' => $depth
             ], $params), $queryCallBack);

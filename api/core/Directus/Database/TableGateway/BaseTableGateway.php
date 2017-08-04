@@ -1173,14 +1173,13 @@ class BaseTableGateway extends TableGateway
     {
         $platform = $this->getAdapter()->getPlatform();
 
-        $identifier = [];
-        if ($table !== null) {
-            $identifier[] = $table;
+        // TODO: find a common place to share this code
+        // It is duplicated code in Builder.php
+        if (strpos($column, $platform->getIdentifierSeparator()) === false) {
+            $column = implode($platform->getIdentifierSeparator(), [$table, $column]);
         }
 
-        $identifier[] = $column;
-
-        return implode($platform->getIdentifierSeparator(), $identifier);
+        return $column;
     }
 
     /**
