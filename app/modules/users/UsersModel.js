@@ -19,26 +19,21 @@ function(app, Backbone, EntriesModel, moment) {
         return true;
       }
 
-      var group = this.getGroup();
-
-      if (group && !group.get('show_users')) {
-        return false;
-      }
-
       return EntriesModel.prototype.canEdit.apply(this, arguments);
     },
 
     canSendMessages: function () {
-      var group = this.getGroup();
-      // TODO: Add whether or not has permission to insert in messages table
+      var messagesPrivileges = app.schemaManager.getPrivileges('directus_messages');
+      var recipientsPrivileges = app.schemaManager.getPrivileges('directus_messages_recipients');
 
-      return group && group.get('show_messages');
+      return messagesPrivileges && messagesPrivileges.can('add')
+              && recipientsPrivileges && recipientsPrivileges.can('add');
     },
 
     canUploadFiles: function () {
-      var group = this.getGroup();
+      var privilege = app.schemaManager.getPrivileges('directus_files');
 
-      return group && group.get('show_files');
+      return privilege && privilege.can('add');
     },
 
     getGroup: function () {

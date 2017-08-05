@@ -101,14 +101,6 @@ define([
       app.router.openViewInModal(new InviteModal());
     },
 
-    serialize: function () {
-      var data = OneToMany.prototype.Input.prototype.serialize.apply(this, arguments);
-
-      data.canInvite = this.model.get('show_users');
-
-      return data;
-    },
-
     onCollectionChange: function () {
       var value = this.model.get(this.name);
 

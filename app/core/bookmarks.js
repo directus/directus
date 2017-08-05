@@ -24,7 +24,6 @@ function(app, Backbone, _, EntriesManager, __t, Notification) {
 
   Bookmarks.Model = Backbone.Model.extend({
     constructor: function BookmarksModel() {
-      debugger;
       Backbone.Model.prototype.constructor.apply(this, arguments);
     },
 
@@ -189,30 +188,6 @@ function(app, Backbone, _, EntriesManager, __t, Notification) {
 
         bookmark.cid = model.cid;
         bookmark.active_bookmark = model.isActive();
-
-        // skip system nav to an user
-        // if the user's group aren't allow to
-        // see it on the navigation panel
-        var skipSystemNav = false;
-        // @todo: bookmark.title to id or url.
-        switch (bookmark.title) {
-          case 'Activity':
-            skipSystemNav = currentUserGroup.get('show_activity') === 0;
-            break;
-          case 'Files':
-            skipSystemNav = currentUserGroup.get('show_files') === 0;
-            break;
-          case 'Users':
-            skipSystemNav = currentUserGroup.get('show_users') === 0;
-            break;
-          case 'Messages':
-            skipSystemNav = currentUserGroup.get('show_messages') === 0;
-            break;
-        }
-
-        if (skipSystemNav) {
-          return false;
-        }
 
         if (bookmark.section === 'search') {
           bookmark.url = 'bookmark/' + encodeURIComponent(bookmark.title);

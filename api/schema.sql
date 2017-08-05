@@ -149,10 +149,6 @@ CREATE TABLE `directus_groups` (
   `description` varchar(500) DEFAULT NULL,
   `restrict_to_ip_whitelist` text,
   `nav_override` text,
-  `show_activity` tinyint(1) NOT NULL DEFAULT '1',
-  `show_messages` tinyint(1) NOT NULL DEFAULT '1',
-  `show_users` tinyint(1) NOT NULL DEFAULT '1',
-  `show_files` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`),
   UNIQUE KEY `directus_users_name_unique` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -160,10 +156,10 @@ CREATE TABLE `directus_groups` (
 LOCK TABLES `directus_groups` WRITE;
 /*!40000 ALTER TABLE `directus_groups` DISABLE KEYS */;
 
-INSERT INTO `directus_groups` (`id`, `name`, `description`, `restrict_to_ip_whitelist`, `nav_override`, `show_activity`, `show_messages`, `show_users`, `show_files`)
+INSERT INTO `directus_groups` (`id`, `name`, `description`, `restrict_to_ip_whitelist`, `nav_override`)
 VALUES
-	(1,'Administrator','Admins have access to all managed data within the system by default',NULL,NULL,1,1,1,1),
-	(2,'Public','This sets the data that is publicly available through the API without a token',NULL,NULL,1,1,1,1);
+	(1,'Administrator','Admins have access to all managed data within the system by default',NULL,NULL,1),
+	(2,'Public','This sets the data that is publicly available through the API without a token',NULL,NULL,1);
 
 /*!40000 ALTER TABLE `directus_groups` ENABLE KEYS */;
 UNLOCK TABLES;

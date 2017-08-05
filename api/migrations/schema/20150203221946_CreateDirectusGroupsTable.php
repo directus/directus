@@ -38,26 +38,6 @@ class CreateDirectusGroupsTable extends Ruckusing_Migration_Base
             'default' => null,
         ]);
         $t->column('nav_override', 'text');
-        $t->column('show_activity', 'tinyinteger', [
-            'limit' => 1,
-            'null' => false,
-            'default' => 1
-        ]);
-        $t->column('show_messages', 'tinyinteger', [
-            'limit' => 1,
-            'null' => false,
-            'default' => 1
-        ]);
-        $t->column('show_users', 'tinyinteger', [
-            'limit' => 1,
-            'null' => false,
-            'default' => 1
-        ]);
-        $t->column('show_files', 'tinyinteger', [
-            'limit' => 1,
-            'null' => false,
-            'default' => 1
-        ]);
         $t->finish();
 
         $this->add_index('directus_groups', 'name', [

@@ -137,7 +137,7 @@ if (!$authentication->loggedIn()) {
 
 if (!$showWelcomeWindow) {
     $authenticatedUser = $authentication->getUserRecord();
-    if ($authenticatedUser['invite_accepted'] != 1) {
+    if ($authenticatedUser['invite_accepted'] === 0) {
         $showWelcomeWindow = true;
     }
 }
@@ -592,7 +592,7 @@ if (!$users) {
 $currentUserInfo = getCurrentUserInfo($users);
 
 // hide welcome modal when the group has not permission to edit user information
-if ($showWelcomeWindow === true && !ArrayUtils::get($currentUserInfo, 'group.show_files')) {
+if ($showWelcomeWindow === true && !$acl->canEdit('directus_users')) {
     $showWelcomeWindow = false;
 }
 

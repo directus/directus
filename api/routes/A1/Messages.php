@@ -350,7 +350,7 @@ class Messages extends Route
         $groupTable = new BaseTableGateway('directus_groups', $dbConnection);
         $group = $groupTable->find($acl->getGroupId());
 
-        if (!$group || !ArrayUtils::get($group, 'show_messages')) {
+        if (!$group || !$acl->canAdd('directus_messages') || !$acl->canAdd('directus_messages_recipients')) {
             throw new ForbiddenException('You are not allowed to send messages');
         }
     }

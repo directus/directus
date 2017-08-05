@@ -545,8 +545,6 @@
     "directus_groups_restrict_to_ip_whitelist": "IP Whitelist",
     "directus_groups_restrict_to_ip_whitelist_comment": "Restrict access to a CSV of IP addresses. Leave empty for no restrictions",
     "directus_groups_show_file": "Allow Uploads",
-    "directus_groups_show_messages": "Allow Messaging",
-    "directus_groups_show_users": "Allow Profile Editing",
     "directus_groups_users": "Users",
     "directus_groups_users_comment": "View, edit, add, and delete users from this group",
     "directus_groups_permissions": "Permissions",

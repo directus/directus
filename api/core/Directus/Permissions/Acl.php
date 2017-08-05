@@ -227,7 +227,7 @@ class Acl
     }
 
     /**
-     * Can the user add record in the given table
+     * Checks whether the user can add record in the given table
      *
      * @param $tableName
      *
@@ -239,7 +239,7 @@ class Acl
     }
 
     /**
-     * Cam the user view the given table
+     * Checks whether the user can view the given table
      *
      * @param $tableName
      *
@@ -248,6 +248,18 @@ class Acl
     public function canView($tableName)
     {
         return $this->hasTablePrivilege($tableName, 'view');
+    }
+
+    /**
+     * Checks whether the user can view the given table
+     *
+     * @param $tableName
+     *
+     * @return bool
+     */
+    public function canEdit($tableName)
+    {
+        return $this->hasTablePrivilege($tableName, 'edit');
     }
 
     /**

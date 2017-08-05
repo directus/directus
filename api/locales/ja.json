@@ -542,8 +542,6 @@
     "directus_groups_restrict_to_ip_whitelist": "IPホワイトリスト",
     "directus_groups_restrict_to_ip_whitelist_comment": "IPアドレスのCSVへのアクセスを制限する。制限なしの場合は空のままにしてください",
     "directus_groups_show_file": "アップロードを許可",
-    "directus_groups_show_messages": "メッセージを許可",
-    "directus_groups_show_users": "プロファイル編集を許可",
     "directus_groups_users": "ユーザー",
     "directus_groups_users_comment": "このグループのユーザーを表示、編集、追加、削除",
     "directus_groups_permissions": "アクセス許可",

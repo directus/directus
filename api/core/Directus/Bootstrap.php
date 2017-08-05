@@ -936,7 +936,7 @@ class Bootstrap
             $user = $userTable->find($payload->get('id'));
             $group = $groupTable->find($user['group']);
 
-            if (!$group || !ArrayUtils::get($group, 'show_users')) {
+            if (!$group || !$acl->canEdit('directus_users')) {
                 throw new ForbiddenException('you are not allowed to update your user information');
             }
             // ----------------------------------------------------------------------------
@@ -990,7 +990,7 @@ class Bootstrap
             $user = $userTable->find($currentUserId);
             $group = $groupTable->find($user['group']);
 
-            if (!$group || !ArrayUtils::get($group, 'show_files')) {
+            if (!$group || !$acl->canEdit('directus_files')) {
                 throw new ForbiddenException('you are not allowed to upload, edit or delete files');
             }
             // ----------------------------------------------------------------------------

@@ -70,20 +70,6 @@ function(app, Backbone, _, Handlebars, BasePageView, EditView, Widgets, __t, Not
   });
 
   GroupPermissions.EditPage = EditView.extend({
-    omittedFields: function () {
-      var fields = [];
-
-      if (this.model.isAdmin()) {
-        fields = [
-          'show_files',
-          'show_messages',
-          'show_users'
-        ];
-      }
-
-      return fields;
-    },
-
     getHeaderOptions: function() {
       var options = EditView.prototype.getHeaderOptions.apply(this, arguments);
 

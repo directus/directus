@@ -183,6 +183,8 @@ require(['config', 'polyfills'], function () {
       app.users.reset(options.users, {parse: true});
       app.messages.reset(options.messages, {parse: true});
       app.user = new app.users.model(options.user, _.extend({
+        // NOTE: the model has not url set, we need to set based on the users collection
+        urlRoot: app.users.url,
         parse: true
       }, SchemaManager.getFullSchema('directus_users')));
 

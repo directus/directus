@@ -108,39 +108,6 @@ define(function(require, exports, module) {
         "comment": transComments('restrict_to_ip_whitelist')
       },
       {
-        "id": "show_files",
-        "column_name": "show_files",
-        "ui": "toggle",
-        "type": "TINYINT",
-        "length": 1,
-        "default_value": 1,
-        "system": false,
-        "hidden_input": false,
-        "sort": 60
-      },
-      {
-        "id": "show_messages",
-        "column_name": "show_messages",
-        "ui": "toggle",
-        "type": "TINYINT",
-        "length": 1,
-        "default_value": 1,
-        "system": false,
-        "hidden_input": false,
-        "sort": 70
-      },
-      {
-        "id": "show_users",
-        "column_name": "show_users",
-        "ui": "toggle",
-        "type": "TINYINT",
-        "length": 1,
-        "default_value": 1,
-        "system": false,
-        "hidden_input": false,
-        "sort": 80
-      },
-      {
         "id": "nav_override",
         "column_name": "nav_override",
         "type": "TEXT",
