@@ -1,7 +1,8 @@
 define([
+  'app',
   'core/UIComponent',
   './interface'
-], function (UIComponent, Input) {
+], function (app, UIComponent, Input) {
 
   'use strict';
 
@@ -29,6 +30,13 @@ define([
       return this.compileView(html, {
         user: userId
       });
+    },
+
+    sort: function (options) {
+      var userId = options.value || options.model.id;
+      var userModel = app.users.get(userId);
+
+      return userModel.getFullName();
     }
   });
 });
