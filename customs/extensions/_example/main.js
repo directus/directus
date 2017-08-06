@@ -1,71 +1,56 @@
 define([
   'app',
   'core/extensions',
-  'backbone',
-  'moment'
-], function (app, Extension, Backbone, moment) {
+  './views/main',
+  './views/example',
+  './views/pageone',
+  './views/pagetwo'
+], function (app, Extension, MainView, ExampleView, PageOneView, PageTwoView) {
   var ext = {
     id: 'example_extension',
     icon: 'icon-folder',
     title: 'Example Extension'
   };
 
-  var Model = Backbone.Model.extend({
-    url: '/api/extensions/example/time'
-  });
-
-  var ExampleContainerView = Extension.View.extend({
-    template: 'example/templates/example',
-
-    serialize: function () {
-      return {
-        datetime: moment(this.model.get('datetime')).format('YY-MM-DD hh:mm:ss')
-      }
-    },
-
-    initialize: function () {
-      this.listenTo(this.model, 'sync', this.render);
-
-      this.model.fetch();
-    }
-  });
-
-  var ExamplePageView = Extension.BasePageView.extend({
-    headerOptions: {
-      route: {
-        title: 'Example Extension'
-      },
-      leftToolbar: false,
-      rightToolbar: false
-    },
-
-    beforeRender: function () {
-      this.setView('#page-content', this.exampleView);
-    },
-
-    initialize: function() {
-      this.exampleView = new ExampleContainerView({
-        model: new Model()
-      });
-    }
-  });
-
   ext.Router = Extension.Router.extend({
     routes: {
-      "(/)":         "index"
+      "(/)":         "index",
+      "/pageone":    "pageOne",
+      "/pagetwo":    "pageTwo"
     },
 
-    index: function() {
-      this.view = new ExamplePageView({model: this.model});
-      app.router.v.main.setView('#content', this.view);
+    getMainView: function () {
+      if (!this.mainView) {
+        this.mainView = new MainView();
+        app.router.v.main.setView('#content', this.mainView);
+      }
 
+      return this.mainView;
+    },
+
+    setPage: function (view) {
+      this.getMainView().getPage().setView('#example-extension-view', view);
+    },
+
+    index: function () {
+      this.setPage(new ExampleView());
       app.router.v.main.render();
     },
 
-    initialize: function() {
+    pageOne: function () {
+      this.setPage(new PageOneView());
+      app.router.v.main.render();
+    },
+
+    pageTwo: function () {
+      this.setPage(new PageTwoView());
+      app.router.v.main.render();
+    },
+
+    initialize: function () {
+      //
     }
   });
-
 
   return ext;
 });
