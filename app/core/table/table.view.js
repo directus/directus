@@ -117,7 +117,7 @@ function(app, _, Backbone, Notification, __t, TableHelpers, ModelHelper, TableHe
       }
 
       if (this.collection.length > 0 && this.options.footer !== false) {
-        this.insertView('table', new TableFooter(this.options));
+        this.insertView('table', new TableFooter(options));
       }
     },
 
