@@ -250,6 +250,21 @@ define([
       this.nestedTableView.render();
     },
 
+    getWhitelistedColumnsName: function () {
+      var whitelist = [];
+      var relatedCollection = this.model.get(this.name);
+      var columns = relatedCollection.structure.pluck('id');
+      var visibleColumns = this.columnSchema.options.get('visible_columns').split(',');
+
+      columns.forEach(function (column) {
+        if (visibleColumns.indexOf(column) >= 0) {
+          whitelist.push(column);
+        }
+      }, this);
+
+      return whitelist;
+    },
+
     getBlacklistedColumnsName: function () {
       var blacklist = [];
       var relatedCollection = this.model.get(this.name);

@@ -13,9 +13,16 @@ define([
     template: '_internals/directus_users/input',
 
     events: {
+      'click table tr': 'openUserModal',
       'click .js-create-user': 'createUser',
       'click .js-choose-user': 'chooseUser',
       'click .js-invite-user': 'invitationPrompt'
+    },
+
+    openUserModal: function (event) {
+      var userId = $(event.currentTarget).data('id');
+
+      app.router.openUserModal(userId);
     },
 
     createUser: function () {
@@ -141,11 +148,12 @@ define([
         sortable: false,
         footer: false,
         saveAfterDrop: true,
-        showRemoveButton: this.canEdit && this.showRemoveButton,
+        showRemoveButton: false,
         hideColumnPreferences: true,
         hideEmptyMessage: true,
         tableHead: false,
         blacklist: this.getBlacklistedColumnsName(),
+        whitelist: this.getWhitelistedColumnsName(),
         filters: {
           booleanOperator: '&&',
           expressions: [

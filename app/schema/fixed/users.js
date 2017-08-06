@@ -494,7 +494,7 @@ define(function(require, exports, module) {
             "comment":"",
             "sort":25,
             "system":false,
-            "hidden_input":true,
+            "hidden_input": false,
             "required":false,
             "ui":"datetime",
             "options": {

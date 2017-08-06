@@ -86,7 +86,7 @@ define(function(require, exports, module) {
         "nullable": true,
         "sort": 40,
         "options": {
-          "visible_columns": "name,email,last_login",
+          "visible_columns": "name,email,last_login,ip",
           "add_button": 1
         },
         "comment": transComments('users')

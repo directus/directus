@@ -78,17 +78,6 @@ function(app, _, Backbone, Notification, __t, TableHelpers, ModelHelper, TableHe
       var options;
       this.startRenderTime = new Date().getTime();
 
-      if (this.tableHead) {
-        options = this.options;
-        options.parentView = this;
-
-        if (!this.tableHeadView) {
-          this.tableHeadView = new TableHead(options);
-        }
-
-        this.insertView('table', this.tableHeadView);
-      }
-
       if (this.collection.length > 0) {
         options = _.pick(this.options,
           'collection',
@@ -107,9 +96,19 @@ function(app, _, Backbone, Notification, __t, TableHelpers, ModelHelper, TableHe
           'highlight',
           'columns'
         );
+      }
 
-        options.parentView = this;
+      options.parentView = this;
 
+      if (this.tableHead) {
+        if (!this.tableHeadView) {
+          this.tableHeadView = new TableHead(options);
+        }
+
+        this.insertView('table', this.tableHeadView);
+      }
+
+      if (this.collection.length > 0) {
         if (!this.tableBodyView) {
           this.tableBodyView = new this.TableBody(options);
         }
@@ -241,18 +240,35 @@ function(app, _, Backbone, Notification, __t, TableHelpers, ModelHelper, TableHe
     },
 
     getTableColumns: function() {
-      var structure = this.collection.structure,
-          blacklist = this.options.blacklist || [],
-          columns;
+      var structure = this.collection.structure;
+      var blacklist = this.options.blacklist || [];
+      var whitelist = this.options.whitelist || [];
+      var columns = whitelist;
 
-      columns = _.filter(this.collection.getColumns(), function(col) {
-        var columnModel = structure.get(col),
-            hiddenList = (columnModel && columnModel.get('hidden_input') !== true);
-
-        return !_.contains(blacklist, col) && hiddenList;
+      _.each(this.collection.getColumns(), function (column) {
+        if (!_.contains(columns, column)) {
+          columns.push(column);
+        }
       });
 
-      return columns;
+      columns = _.filter(columns, function (column) {
+        var columnModel = structure.get(column);
+        var hiddenList;
+
+        if (!columnModel) {
+          return false;
+        }
+
+        if (_.contains(whitelist, column)) {
+          return true;
+        }
+
+        hiddenList = (columnModel && columnModel.get('hidden_input') !== true);
+
+        return !_.contains(blacklist, column) && hiddenList;
+      });
+
+      return _.uniq(columns);
     },
 
     getTableCollection: function () {
