@@ -305,8 +305,12 @@ require([
 
   // Handlebars UI helper!
   function uiHelper(model, attr, options) {
-    var column = model.structure.get(attr);
+    var column;
     var html;
+
+    if (model.structure) {
+      column = model.structure.get(attr)
+    }
 
     if (column && (column.isOneToMany() || column.isManyToMany())) {
       var count = model.get(attr).length;
