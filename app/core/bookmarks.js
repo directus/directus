@@ -179,12 +179,22 @@ function(app, Backbone, _, EntriesManager, __t, Notification) {
     serialize: function() {
       var bookmarks = {table:[],search:[],extension:[],other:[]};
       var isCustomBookmarks = this.isCustomBookmarks;
+      var currentUserGroup = app.user.get('group');
+      var navBlacklist = (currentUserGroup.get('nav_blacklist') || '').split(',').map(function (name) {
+        return name.trim();
+      });
 
-      this.collection.each(function(model) {
+      this.collection.each(function (model) {
         var bookmark = model.toJSON();
-        var currentUserGroup = app.user.get('group');
+
+        if (navBlacklist.indexOf(bookmark.identifier) >= 0) {
+          return false;
+        }
+
         // force | remove from activity from navigation
-        if (bookmark.title === 'Activity') return false;
+        if (bookmark.title === 'Activity') {
+          return false;
+        }
 
         bookmark.cid = model.cid;
         bookmark.active_bookmark = model.isActive();
@@ -287,7 +297,9 @@ function(app, Backbone, _, EntriesManager, __t, Notification) {
         } else {
           self.removeBookmark(table);
         }
-      })
+      });
+
+      app.on('user:change:group', this.render, this);
     },
 
     addBookmark: function(model) {
@@ -309,7 +321,6 @@ function(app, Backbone, _, EntriesManager, __t, Notification) {
       this.collection.setActive(route);
       this.render();
     }
-
   });
 
   return Bookmarks;

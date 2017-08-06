@@ -12,9 +12,7 @@ define([
   'backbone',
   'underscore',
   'core/t'
-],
-
-function(app, Backbone, _, __t) {
+], function(app, Backbone, _, __t) {
 
   'use strict';
 
@@ -41,12 +39,24 @@ function(app, Backbone, _, __t) {
 
     serialize: function () {
       var user = app.user;
+      var currentUserGroup = user.get('group');
+      var navBlacklist = (currentUserGroup.get('nav_blacklist') || '').split(',').map(function (name) {
+        return name.trim();
+      })
+
+      var showUsers = navBlacklist.indexOf('directus_users') < 0;
+      var showFiles = navBlacklist.indexOf('directus_files') < 0;
+      var showMessages = navBlacklist.indexOf('directus_messages') < 0;
 
       return {
         userFullName: user.get('first_name') + ' ' + user.get('last_name'),
         avatar: app.user.getAvatar(),
+        showMessages: showMessages,
+        showMiddleSection: showUsers || showFiles,
+        showUsers: showUsers,
+        showFiles: showFiles,
         currentUserId: app.user.id,
-        showSettings: app.user.get('group').id === 1,
+        showSettings: app.user.isAdmin(),
         unreadMessagesCount: app.messages.unread
       };
     },

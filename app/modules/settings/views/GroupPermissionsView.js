@@ -99,6 +99,12 @@ function(app, Backbone, _, Handlebars, BasePageView, EditView, Widgets, __t, Not
 
     initialize: function (options) {
       options.warnOnExit = true;
+      options.onSuccess = function (model, response) {
+        app.user.get('group').set(response.data, {parse: true});
+        app.trigger('user:change', 'group');
+        app.trigger('user:change:group');
+      };
+
       EditView.prototype.initialize.apply(this, [options]);
     }
   });

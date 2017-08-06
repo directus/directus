@@ -265,10 +265,11 @@ require(['config', 'polyfills'], function () {
       options.tables.forEach(function (table) {
         table = table.schema;
         if (SchemaManager.getPrivileges(table.table_name)) {
-        var privileges = SchemaManager.getPrivileges(table.table_name);
-        if (privileges.get('allow_view') > 0 && !table.hidden && privileges.get('nav_listed') > 0) {
+          var privileges = SchemaManager.getPrivileges(table.table_name);
+          if (privileges.get('allow_view') > 0 && !table.hidden && privileges.get('nav_listed') > 0) {
             bookmarks.push({
               icon_class: '',
+              identifier: table.table_name,
               title: app.capitalize(table.table_name),
               url: 'tables/' + encodeURIComponent(table.table_name),
               section: 'table'
@@ -279,6 +280,7 @@ require(['config', 'polyfills'], function () {
 
       var bookmarksData = window.directusData.bookmarks;
       _.each(bookmarksData, function (bookmark) {
+        bookmark.identifier = bookmark.title;
         bookmarks.push(bookmark);
       });
 
@@ -289,6 +291,7 @@ require(['config', 'polyfills'], function () {
         item = ExtensionManager.getInfo(item);
         bookmarks.push({
           icon_class: item.icon,
+          identifier: item.id,
           title: item.title,
           url: item.path,
           section: 'extension'
@@ -314,6 +317,7 @@ require(['config', 'polyfills'], function () {
               icon_class: item.icon,
               title: title,
               url: path,
+              identifier: title,
               section: section
             });
           });

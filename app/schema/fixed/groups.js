@@ -130,7 +130,7 @@ define(function(require, exports, module) {
         "id": "nav_blacklist",
         "column_name": "nav_blacklist",
         "type": "VARCHAR",
-        "ui": "text_input",
+        "ui": "tags",
         "length": 500,
         "system": false,
         "hidden_input": false,
