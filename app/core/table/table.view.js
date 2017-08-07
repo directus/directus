@@ -75,28 +75,7 @@ function(app, _, Backbone, Notification, __t, TableHelpers, ModelHelper, TableHe
     },
 
     beforeRender: function() {
-      var options;
-      this.startRenderTime = new Date().getTime();
-
-      if (this.collection.length > 0) {
-        options = _.pick(this.options,
-          'collection',
-          'systemCollection',
-          'system',
-          'isModelSelectable',
-          'selectable',
-          'filters',
-          'preferences',
-          'structure',
-          'sort',
-          'showRemoveButton',
-          'rowIdentifiers',
-          'saveAfterDrop',
-          'blacklist',
-          'highlight',
-          'columns'
-        );
-      }
+      var options = this.options;
 
       options.parentView = this;
 
@@ -110,13 +89,30 @@ function(app, _, Backbone, Notification, __t, TableHelpers, ModelHelper, TableHe
 
       if (this.collection.length > 0) {
         if (!this.tableBodyView) {
-          this.tableBodyView = new this.TableBody(options);
+          this.tableBodyView = new this.TableBody(_.pick(this.options,
+            'collection',
+            'systemCollection',
+            'system',
+            'isModelSelectable',
+            'selectable',
+            'filters',
+            'preferences',
+            'structure',
+            'sort',
+            'showRemoveButton',
+            'rowIdentifiers',
+            'saveAfterDrop',
+            'blacklist',
+            'highlight',
+            'parentView',
+            'columns'
+          ));
         }
 
         this.insertView('table', this.tableBodyView);
       }
 
-      if (this.collection.length > 0 && this.options.footer !== false) {
+      if (this.collection.length > 0 && options.footer !== false) {
         this.insertView('table', new TableFooter(options));
       }
     },
