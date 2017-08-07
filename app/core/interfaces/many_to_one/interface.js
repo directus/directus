@@ -17,25 +17,32 @@ define([
         var model = this.model.get(this.name);
         var $target = $(event.currentTarget);
         var selectedId = parseInt($target.find(':selected').val(), 10);
-        var attributes = this.collection.get(selectedId).toJSON();
-        var primaryColumn = this.columnSchema.table.get('primary_column') || 'id';
+        var attributes;
+        var primaryColumn;
         var attributesName;
 
-        // TODO: Set proper model based on table name
-        // ex: GroupsModel for directus_groups
-        if (!(model instanceof Backbone.Model)) {
-          model = new Backbone.Model();
-          model.set(primaryColumn, selectedId);
+        if (this.collection.get(selectedId)) {
+          attributes = this.collection.get(selectedId).toJSON();
+          primaryColumn = this.columnSchema.table.get('primary_column') || 'id';
+
+          // TODO: Set proper model based on table name
+          // ex: GroupsModel for directus_groups
+          if (!(model instanceof Backbone.Model)) {
+            model = new Backbone.Model();
+            model.set(primaryColumn, selectedId);
+          }
+
+          attributesName = _.keys(model.attributes);
+          model.clear();
+
+          if (attributesName.length > 0) {
+            attributes = _.pick(attributes, attributesName);
+          }
+
+          model.set(attributes);
+        } else {
+          model = null;
         }
-
-        attributesName = _.keys(model.attributes);
-        model.clear();
-
-        if (attributesName.length > 0) {
-          attributes = _.pick(attributes, attributesName);
-        }
-
-        model.set(attributes);
 
         this.value = model;
         this.model.set(this.name, model);

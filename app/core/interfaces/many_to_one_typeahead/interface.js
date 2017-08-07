@@ -18,7 +18,16 @@ define(['app', 'handlebars', 'core/UIView', 'utils'], function (app, Handlebars,
   return UIView.extend({
     events: {
       'click .clear': function () {
-        this.model.get(this.name).clear();
+        var model = this.model.get(this.name);
+        var table = model.table;
+
+        model.clear();
+
+        if (table && table.getPrimaryColumnName()) {
+          model.set(table.getPrimaryColumnName(), null);
+        }
+
+        this.model.set(this.name, model);
         this.render();
       }
     },
@@ -119,6 +128,9 @@ define(['app', 'handlebars', 'core/UIView', 'utils'], function (app, Handlebars,
     },
 
     updateSelectedValue: function () {
+      var value = this.model.get(this.name);
+
+      this.model.set(this.name, value);
       this.$el.find('#selectedValue').html(this.getSelectedValue());
     },
 

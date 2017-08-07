@@ -145,7 +145,7 @@ class Entries extends Route
             $params['columns'] = '';
         }
 
-        $columns = ($params['columns']) ? explode(',', $params['columns']) : [];
+        $columns = $visibleColumns = ($params['columns']) ? explode(',', $params['columns']) : [];
         ArrayUtils::push($columns, $Table->primaryKeyFieldName);
         $params['columns'] = implode(',', $columns);
         if (count($columns) > 0) {
@@ -165,7 +165,7 @@ class Entries extends Route
         $response = [];
         foreach ($entries as $entry) {
             $tokens = [];
-            foreach ($columns as $col) {
+            foreach ($visibleColumns as $col) {
                 array_push($tokens, $entry[$col]);
             }
 
