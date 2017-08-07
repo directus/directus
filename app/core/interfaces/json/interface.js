@@ -64,7 +64,7 @@ define(['core/UIView'], function (UIView) {
       var success = true;
 
       try {
-        JSON.parse(event.target.value);
+        JSON.parse(value);
       } catch (err) {
         success = false;
       }
