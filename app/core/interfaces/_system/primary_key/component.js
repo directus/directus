@@ -3,7 +3,7 @@ define(['app', 'core/UIComponent', './interface'], function (app, UIComponent, U
 
   return UIComponent.extend({
     id: 'primary_key',
-    dataTypes: ['TINYINT', 'SMALL', 'INT', 'BIGINT'],
+    dataTypes: ['INT', 'TINYINT', 'SMALL', 'BIGINT'],
     Input: UIView
   });
 });

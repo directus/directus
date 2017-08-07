@@ -440,7 +440,7 @@ define(function (require, exports, module) {
       return this.getUIValue('list', model, attr, noDefault);
     },
 
-    getRequiredOptions: function (uiId) {
+    getRequiredOptions: function (uiId, includeDefault) {
       var UI = this._getUI(uiId);
       var options = [];
 
@@ -449,6 +449,10 @@ define(function (require, exports, module) {
       }
 
       _.each(UI.variables, function (option) {
+        if (includeDefault !== true && Utils.isSomething(option.default_value)) {
+          return false;
+        }
+
         if (option.required === true) {
           options.push(option.id);
         }

@@ -93,7 +93,7 @@ define([
       recipients.push('0_' + newResponseModel.get('from'));
 
       var attrs = _.extend({
-        'from': app.users.getCurrentUser().get('id'),
+        'from': app.user.id,
         'subject': 'RE: ' + parentMessageModel.get('subject'),
         'recipients': recipients.join(','),
         'response_to': parentMessageModel.id,
@@ -106,7 +106,7 @@ define([
         // create a new model after one has been successfully sent
         self.model = self.model.clone();
         self.model.clear();
-        self.model.set('from', app.users.getCurrentUser().id);
+        self.model.set('from', app.user.id);
 
         self.render();
       };
@@ -118,12 +118,12 @@ define([
     },
 
     serialize: function () {
-     var user = app.users.getCurrentUser();
+     var user = app.user;
 
      return {
        model: this.model,
        isResponse: this.options.parentModel,
-       canSendMessages: app.users.getCurrentUser().canSendMessages(),
+       canSendMessages: app.user.canSendMessages(),
        view: {
          recipients: {
            parent: this,

@@ -262,6 +262,9 @@ function(app, Backbone, StatusHelper, _) {
         var sortColumn = this.table.getSortColumnName();
         var statusColumn = this.table.getStatusColumnName();
 
+        // remove falsy columns value
+        filters.columns_visible = _.compact(filters.columns_visible);
+
         if (filters && filters.columns_visible && !(filters.columns_visible.indexOf(filters.sort) !== -1) && this.structure.get(filters.sort)) {
           // when there's only one visible column
           // it's an string so we need to convert it to an array
@@ -272,19 +275,19 @@ function(app, Backbone, StatusHelper, _) {
           filters.columns_visible.push(filters.sort);
         }
 
-        var columnsName = [primaryColumn, statusColumn, sortColumn];
-        _.each(columnsName, function (column) {
-          if (this.isReadBlacklisted && this.isReadBlacklisted(column)) {
-            return false;
-          }
+        if (filters.columns_visible && filters.columns_visible.length > 0) {
+          var columnsName = [primaryColumn, statusColumn, sortColumn];
+          _.each(columnsName, function (column) {
+            if (this.isReadBlacklisted && this.isReadBlacklisted(column)) {
+              return false;
+            }
 
-          // Make sure to include the system columns in visible columns list
-          if (column && filters.columns_visible && filters.columns_visible.indexOf(column) === -1) {
-            filters.columns_visible.push(column);
-          }
-        }, this);
+            // Make sure to include the system columns in visible columns list
+            if (column && filters.columns_visible && filters.columns_visible.indexOf(column) === -1) {
+              filters.columns_visible.push(column);
+            }
+          }, this);
 
-        if (filters.columns_visible) {
           filters.columns_visible = (filters.columns_visible || '').join(',');
         }
 

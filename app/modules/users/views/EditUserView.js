@@ -134,15 +134,15 @@ define([
       var editView = this.editView;
 
       this.setView('#page-content', editView);
-      if (!this.model.isNew()) {
-        this.model.fetch();
-      } else {
+      if (this.model.isNew()) {
         editView.render();
       }
     },
 
     initialize: function (options) {
       this.editView = new Directus.EditView({model: this.model});
+
+      app.checkUserEditingConflict();
 
       if (!this.model.isTracking()) {
         this.model.startTracking();

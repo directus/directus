@@ -604,7 +604,7 @@ define([
           method = 'set';
         }
 
-        return preferences[method]({search_string: string});
+        return preferences[method]({search_string: string}, {silent: true});
       };
 
 
@@ -727,7 +727,6 @@ define([
       }
 
       this.updateFilters(true);
-      //this.collection.fetch();
       this.render();
     },
 
@@ -738,8 +737,14 @@ define([
         this.collection.preferences = this.collection.preferences.clone();
       }
 
-      this.listenTo(this.collection.preferences, 'change sync', function() {
-        this.updateFiltersFromPreference();
+      this.listenTo(this.collection.preferences, 'change sync', function (collection, model, options) {
+        if (options === undefined) {
+          options = model;
+        }
+
+        if (options.silent !== true) {
+          this.updateFiltersFromPreference();
+        }
       });
 
       this.listenTo(this.collection, 'sync', this.render);

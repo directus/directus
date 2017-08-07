@@ -24,13 +24,14 @@ define([
     },
 
     serialize: function () {
+      var model = this.model;
       var currentStatus = this.options.value;
+      var table = model.table;
+      var fieldName = this.name;
 
       if (this.model.isNew() && Utils.isNothing(currentStatus)) {
         currentStatus = this.options.schema.get('default_value');
       }
-
-      var model = this.model;
 
       var statuses = model.getStatusVisible().map(function (status) {
         var item = status.toJSON();
@@ -38,6 +39,9 @@ define([
         // NOTE: do not strictly compare as status can (will) be string
         item.selected = status.get('id') == currentStatus; // eslint-disable-line eqeqeq
         item.model = status;
+        // NOTE: identifier of each field, as it can be duplicated
+        // when another column in overlay has the same name
+        item.identifier = table.id + '_' + fieldName + '_' + item.name;
 
         return item;
       });
@@ -48,7 +52,8 @@ define([
       });
 
       return {
-        name: this.options.name,
+        table: table.id,
+        name: this.name,
         value: this.options.value,
         readonly: !this.options.canWrite,
         statuses: statuses

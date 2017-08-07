@@ -11,12 +11,11 @@ define([
 
     model: UsersModel,
 
-    getCurrentUser: function() {
-      var authenticatedUser = app.authenticatedUserId;
-      return this.get(authenticatedUser.id);
+    getCurrentUser: function () {
+      return app.user;
     },
 
-    get: function(id, emptyObject) {
+    get: function (id, emptyObject) {
       var user = EntriesCollection.__super__.get.call(this, id);
       if (emptyObject !== false && !_.isObject(id) && !user) {
         user = new UsersModel({
@@ -39,13 +38,11 @@ define([
       delete this._byId[model.get('email')];
     },
 
-    initialize: function() {
+    initialize: function () {
       EntriesCollection.prototype.initialize.apply(this, arguments);
 
       this.on('add', this.onAdd, this);
       this.on('remove', this.onRemove, this);
     }
-
   });
-
 });

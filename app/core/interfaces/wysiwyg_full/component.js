@@ -112,7 +112,8 @@ define(['./interface', 'core/UIComponent', 'core/t'], function (Input, UICompone
             code: 'View Source',
             insertdatetime: 'Time and Date',
             media: 'Insert Media',
-            paste: 'Formatted paste'
+            paste: 'Formatted paste',
+            preview: 'Preview editor output'
           }
         }
       },

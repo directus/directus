@@ -41,7 +41,7 @@ class CreateDirectusFilesTable extends Ruckusing_Migration_Base
             'auto_increment' => true,
             'primary_key' => true
         ]);
-        $t->column('active', 'tinyinteger', [
+        $t->column('status', 'tinyinteger', [
             'limit' => 1,
             'default' => 1
         ]);
@@ -90,6 +90,8 @@ class CreateDirectusFilesTable extends Ruckusing_Migration_Base
             'unsigned' => true,
             'null' => false
         ]);
+        // TODO: Make directus set this value to whatever default is on the server (UTC)
+        // In MySQL 5.5 and below doesn't support CURRENT TIMESTAMP on datetime as default
         $t->column('date_uploaded', 'datetime', [
             'default' => NULL
         ]);
@@ -99,6 +101,23 @@ class CreateDirectusFilesTable extends Ruckusing_Migration_Base
         ]);
 
         $t->finish();
+
+        $this->insert('directus_files', [
+            'id' => 1,
+            'name' => '00000000001.jpg',
+            'title' => 'Mountain Range',
+            'location' => 'Earth',
+            'caption' => 'A gorgeous view of this wooded mountain range',
+            'type' => 'image/jpeg',
+            'charset' => 'binary',
+            'tags' => 'trees,rocks,nature,mountains,forest',
+            'width' => 1800,
+            'height' => 1200,
+            'size' => 602058,
+            'user' => 1,
+            'date_uploaded' => \Directus\Util\DateUtils::now(),
+            'storage_adapter' => 'local'
+        ]);
     }//up()
 
     public function down()

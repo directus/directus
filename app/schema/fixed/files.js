@@ -12,8 +12,8 @@ define(function(require, exports, module) {
         "hidden":true,
         "single":false,
         "count":0,
-        "status_column": "active",
-        "url": "api/1/files",
+        "status_column": "status",
+        "url": "api/1.1/files",
         "title":"Files",
 
         "columns": [
@@ -26,7 +26,6 @@ define(function(require, exports, module) {
             "sort":-1,
             "ui":"directus_file",
             "system":false,
-            "hidden_list":false,
             "hidden_input":false,
             "hidden_label": true,
             "required":false
@@ -39,22 +38,22 @@ define(function(require, exports, module) {
             "comment":"",
             "sort":1,
             "system":true,
-            "hidden_list":false,
             "hidden_input":false,
             "required":false,
             "ui":"primary_key",
+            "key": "PRI",
+            "extra": "auto_increment",
             "hidden":true
           },
           {
-            "id": "active",
-            "column_name": "active",
+            "id": "status",
+            "column_name": "status",
             "type":"TINYINT",
             "is_nullable":"YES",
             "default_value":"1",
             "comment":"",
             "sort":2,
             "system":true,
-            "hidden_list":true,
             "hidden_input":true,
             "required":false,
             "ui":"status",
@@ -69,7 +68,6 @@ define(function(require, exports, module) {
             "comment":"",
             "sort":3,
             "system":false,
-            "hidden_list":false,
             "hidden_input":true,
             "required":false,
             "ui":"text_input"
@@ -84,7 +82,6 @@ define(function(require, exports, module) {
             "comment":"",
             "sort":4,
             "system":false,
-            "hidden_list":false,
             "hidden_input":false,
             "required":false,
             "ui":"text_input"
@@ -98,7 +95,6 @@ define(function(require, exports, module) {
             "comment":"",
             "sort":5,
             "system":false,
-            "hidden_list":false,
             "hidden_input":false,
             "required":false,
             "ui":"text_input"
@@ -113,7 +109,6 @@ define(function(require, exports, module) {
             "comment":"",
             "sort":6,
             "system":false,
-            "hidden_list":false,
             "hidden_input":true,
             "required":false,
             "ui":"text_input"
@@ -128,7 +123,6 @@ define(function(require, exports, module) {
             "comment":"",
             "sort":7,
             "system":true,
-            "hidden_list":false,
             "hidden_input":true,
             "required":false,
             "ui":"text_input"
@@ -142,7 +136,6 @@ define(function(require, exports, module) {
             "comment":"",
             "sort":8,
             "system":false,
-            "hidden_list":false,
             "hidden_input":false,
             "required":false,
             "ui":"textarea",
@@ -162,7 +155,6 @@ define(function(require, exports, module) {
             "sort":9,
             "ui":"tags",
             "system":false,
-            "hidden_list":false,
             "hidden_input":false,
             "required":false
           },
@@ -175,7 +167,6 @@ define(function(require, exports, module) {
             "comment":"",
             "sort":10,
             "system":false,
-            "hidden_list":false,
             "hidden_input":true,
             "required":false,
             "ui":"numeric"
@@ -190,7 +181,6 @@ define(function(require, exports, module) {
             "sort":11,
             "ui":"numeric",
             "system":false,
-            "hidden_list":false,
             "hidden_input":true,
             "required":false
           },
@@ -204,7 +194,6 @@ define(function(require, exports, module) {
             "sort":12,
             "ui":"directus_file_size",
             "system":false,
-            "hidden_list":false,
             "hidden_input":true,
             "required":false
           },
@@ -217,7 +206,6 @@ define(function(require, exports, module) {
             "comment":"",
             "sort":13,
             "system":false,
-            "hidden_list":false,
             "hidden_input":true,
             "required":false,
             "ui":"text_input"
@@ -231,7 +219,6 @@ define(function(require, exports, module) {
             "sort":14,
             "ui":"directus_user",
             "system":false,
-            "hidden_list":false,
             "hidden_input":true,
             "required":false,
             "options":{
@@ -248,7 +235,6 @@ define(function(require, exports, module) {
             "sort":14,
             "ui":"numeric",
             "system":true,
-            "hidden_list":true,
             "hidden_input":true,
             "required":false
           },
@@ -260,7 +246,6 @@ define(function(require, exports, module) {
             "comment":"",
             "sort":15,
             "system":false,
-            "hidden_list":false,
             "hidden_input":true,
             "required":false,
             "ui":"datetime",

@@ -21,7 +21,7 @@ function(app, _, Backbone, __t, Directus, Notification, BasePageView, RightPane,
     deleteConfirm: function () {
       var self = this;
 
-      if (!app.users.getCurrentUser().canUploadFiles()) {
+      if (!app.user.canUploadFiles()) {
         return;
       }
 
@@ -40,7 +40,7 @@ function(app, _, Backbone, __t, Directus, Notification, BasePageView, RightPane,
     },
 
     saveConfirm: function (event) {
-      if (!app.users.getCurrentUser().canUploadFiles()) {
+      if (!app.user.canUploadFiles()) {
         return;
       }
 
@@ -135,7 +135,7 @@ function(app, _, Backbone, __t, Directus, Notification, BasePageView, RightPane,
     },
 
     leftToolbar: function () {
-      var canUploadFiles = app.users.getCurrentUser().canUploadFiles();
+      var canUploadFiles = app.user.canUploadFiles();
       var canAdd = this.model.collection.canAdd();
       var canEdit = this.model.collection.canEdit();
       var widgets = [];
@@ -204,6 +204,8 @@ function(app, _, Backbone, __t, Directus, Notification, BasePageView, RightPane,
       this.editView = new Directus.EditView({model: this.model, ui: this.options.ui});
       this.headerOptions.route.title = this.model.isNew() ? __t('uploading_new_file') : __t('editing_file');
       this.collection = app.files;
+
+      app.checkUserEditingConflict();
 
       if (!this.model.isTracking()) {
         this.model.startTracking();

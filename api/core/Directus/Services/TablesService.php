@@ -59,7 +59,6 @@ class TablesService extends AbstractService
             'column_name' => 'id',
             'data_type' => 'INT',
             'hidden_input' => true,
-            'hidden_list' => true,
             'ui' => 'primary_key'
         ]);
 
@@ -69,7 +68,6 @@ class TablesService extends AbstractService
                 'column_name' => 'sort',
                 'data_type' => 'INT',
                 'hidden_input' => true,
-                'hidden_list' => true,
                 'ui' => 'sort'
             ]);
         }
@@ -80,7 +78,6 @@ class TablesService extends AbstractService
                 'column_name' => STATUS_COLUMN_NAME,
                 'data_type' => 'INT',
                 'hidden_input' => true,
-                'hidden_list' => true,
                 'ui' => 'status'
             ]);
         }

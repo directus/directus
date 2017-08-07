@@ -9,32 +9,31 @@ function(app, Backbone, EntriesModel, moment) {
 
   return EntriesModel.extend({
 
+    getFullName: function () {
+      return this.get('first_name') + ' ' + this.get('last_name');
+    },
+
     canEdit: function (attribute) {
       // hotfix: admin can edit user
-      if (app.users.getCurrentUser().isAdmin()) {
+      if (app.user.isAdmin()) {
         return true;
-      }
-
-      var group = this.getGroup();
-
-      if (group && !group.get('show_users')) {
-        return false;
       }
 
       return EntriesModel.prototype.canEdit.apply(this, arguments);
     },
 
     canSendMessages: function () {
-      var group = this.getGroup();
-      // TODO: Add whether or not has permission to insert in messages table
+      var messagesPrivileges = app.schemaManager.getPrivileges('directus_messages');
+      var recipientsPrivileges = app.schemaManager.getPrivileges('directus_messages_recipients');
 
-      return group && group.get('show_messages');
+      return messagesPrivileges && messagesPrivileges.can('add')
+              && recipientsPrivileges && recipientsPrivileges.can('add');
     },
 
     canUploadFiles: function () {
-      var group = this.getGroup();
+      var privilege = app.schemaManager.getPrivileges('directus_files');
 
-      return group && group.get('show_files');
+      return privilege && privilege.can('add');
     },
 
     getGroup: function () {
@@ -65,7 +64,7 @@ function(app, Backbone, EntriesModel, moment) {
     },
 
     isAdmin: function () {
-      return this.get('group').get('id') === 1;
+      return this.getGroup().id === 1;
     },
 
     isOnline: function () {
@@ -104,6 +103,7 @@ function(app, Backbone, EntriesModel, moment) {
       });
 
       app.request('POST', '/users/tracking/page', {
+        global: false,
         data: {
           last_page: lastPage
         }

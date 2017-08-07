@@ -62,7 +62,7 @@ define(function(require, exports, module) {
       }
 
       columns = columns.filter(function (column) {
-        return structure.get(column) && !structure.get(column).get('hidden_list');
+        return structure.get(column) && !structure.get(column).get('hidden_input');
       });
 
       var visibleColumns = this.preferences.get('columns_visible');
@@ -83,7 +83,7 @@ define(function(require, exports, module) {
 
       //Temporary fix to turn columns_visible into an array. @todo: Move this to the preferences object
       if (preferences.hasOwnProperty('columns_visible')) {
-        preferences.columns_visible = preferences.columns_visible.split(',');
+        preferences.columns_visible = (preferences.columns_visible || '').split(',');
       }
 
       var result = _.extend(filters, _.pick(preferences, 'columns_visible', 'sort', 'sort_order', 'status'));

@@ -6,7 +6,10 @@ define(function (require, exports, module) {
   var Handlebars     = require('handlebars'),
       Backbone       = require('backbone'),
       config         = new Backbone.Model(require('core/config')),
+      moment         = require('moment'),
+      Utils          = require('utils'),
       _              = require('underscore'),
+      __t            = require('core/t'),
       Notification   = require('core/notification'),
       typetools      = require('typetools');
 
@@ -193,7 +196,7 @@ define(function (require, exports, module) {
 
     //  TODO: implement this into a new logger
     //logErrorToServer: function(type, message, details) {
-    //  var user = app.users.getCurrentUser(), email = 'n/a';
+    //  var user = app.user, email = 'n/a';
     //
     //  if (user) {
     //    email = user.get('email');
@@ -216,6 +219,64 @@ define(function (require, exports, module) {
     //    });
     //},
 
+    checkUserEditingConflict: function () {
+      var users = app.users.clone();
+      var currentPagePath = Backbone.history.fragment;
+
+      users.clearFilter();
+      users.setFilter({
+        limit: -1,
+        columns: ['id', 'first_name', 'last_name', 'last_page'],
+        filters: {
+          id: {
+            neq: app.user.id
+          },
+          last_access: {
+            gte: moment.utc().subtract(3, 'minutes').format('YYYY-MM-DD HH:mm:ss')
+          }
+        }
+      });
+
+      var onSuccess = function (collection) {
+        var editingThisPage = [];
+        var fullNames = [];
+
+        collection.each(function (user) {
+          var lastPage;
+
+          try {
+            lastPage = JSON.parse(user.get('last_page'));
+          } catch (ex) {
+            lastPage = {};
+          }
+
+          if (lastPage && lastPage.path == currentPagePath) {
+            editingThisPage.push(user);
+          }
+        });
+
+        if (editingThisPage.length > 0) {
+          fullNames = _.map(editingThisPage, function (user) {
+            return user.getFullName();
+          });
+
+          var localeKey = 'warning_x_is_editing_same_page';
+          if (fullNames.length > 1) {
+            localeKey = 'warning_x_are_editing_same_page';
+            fullNames = Utils.joinList(fullNames, ', ', __t('and'));
+          } else {
+            fullNames = fullNames.join(', ');
+          }
+
+          Notification.warning(__t(localeKey, {
+            full_names: fullNames
+          }))
+        }
+      };
+
+      users.fetch({success: onSuccess});
+    },
+
     evaluateExpression: function (a, operator, b) {
       switch (operator) {
         case '==':
@@ -226,7 +287,7 @@ define(function (require, exports, module) {
     },
 
     getCurrentGroup: function () {
-      var user = app.users.getCurrentUser();
+      var user = app.user;
       return user.get('group');
     },
 

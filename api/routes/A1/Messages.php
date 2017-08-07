@@ -53,24 +53,40 @@ class Messages extends Route
 
     public function archiveMessages()
     {
+        $app = $this->app;
         $acl = $this->app->container->get('acl');
         $ZendDb = $this->app->container->get('zenddb');
         $currentUserId = $acl->getUserId();
 
-        $request = $this->app->request();
+        $request = $app->request();
         $rows = $request->post('rows');
-        $responsesIds = [];
+        $messagesIds = [];
 
         foreach($rows as $row) {
-            $responsesIds[] = $row['id'];
+            $messagesIds[] = ArrayUtils::get($row, 'id');
         }
 
-        $messagesTableGateway = new DirectusMessagesRecipientsTableGateway($ZendDb, $acl);
-        $success = $messagesTableGateway->archiveMessages($currentUserId, $responsesIds);
+        $messagesIds = array_filter($messagesIds);
 
-        return JsonView::render([
-            'success' => (bool) $success
-        ]);
+        if (!empty($messagesIds)) {
+            $messagesTableGateway = new DirectusMessagesRecipientsTableGateway($ZendDb, $acl);
+            $success = $messagesTableGateway->archiveMessages($currentUserId, $messagesIds);
+
+            $data = [
+                'success' => (bool) $success
+            ];
+        } else {
+            $app->response()->setStatus(404);
+
+            $data = [
+                'success' => false,
+                'error' => [
+                    'message' => __t('no_messages_ids_to_archive_provided')
+                ]
+            ];
+        }
+
+        return JsonView::render($data);
     }
 
     public function row($id)
@@ -178,6 +194,19 @@ class Messages extends Route
             }
         }
 
+        if (empty($userRecipients)) {
+            $response = [
+                'success' => false,
+                'error' => [
+                    'message' => __t('sending_message_to_an_empty_group')
+                ]
+            ];
+
+            $app->response()->setStatus(404);
+
+            return $this->app->response($response);
+        }
+
         $userRecipients[] = $currentUserId;
 
         $id = $messagesTableGateway->sendMessage($requestPayload, array_unique($userRecipients), $currentUserId);
@@ -251,29 +280,14 @@ class Messages extends Route
         $params['table_name'] = 'directus_messages';
         $TableGateway = new TableGateway('directus_messages', $ZendDb, $acl);
 
-        $groupRecipients = [];
         $userRecipients = [];
 
-        preg_match_all('/@\[.*? /', $requestPayload['message'], $results);
-        $results = $results[0];
+        preg_match_all('/@\[([0-9]+)? /', $requestPayload['message'], $results);
 
-        if (count($results) > 0) {
-            foreach ($results as $result) {
-                $result = substr($result, 2);
-                $typeAndId = explode('_', $result);
-                if ($typeAndId[0] == 0) {
-                    $userRecipients[] = $typeAndId[1];
-                } else {
-                    $groupRecipients[] = $typeAndId[1];
-                }
-            }
-
-            if (count($groupRecipients) > 0) {
-                $usersTableGateway = new DirectusUsersTableGateway($ZendDb, $acl);
-                $result = $usersTableGateway->findActiveUserIdsByGroupIds($groupRecipients);
-                foreach ($result as $item) {
-                    $userRecipients[] = $item['id'];
-                }
+        $results = ArrayUtils::get($results, 1);
+        if ($results && count($results) > 0) {
+            foreach ($results as $userId) {
+                $userRecipients[] = $userId;
             }
 
             $messagesTableGateway = new DirectusMessagesTableGateway($ZendDb, $acl);
@@ -336,7 +350,7 @@ class Messages extends Route
         $groupTable = new BaseTableGateway('directus_groups', $dbConnection);
         $group = $groupTable->find($acl->getGroupId());
 
-        if (!$group || !ArrayUtils::get($group, 'show_messages')) {
+        if (!$group || !$acl->canAdd('directus_messages') || !$acl->canAdd('directus_messages_recipients')) {
             throw new ForbiddenException('You are not allowed to send messages');
         }
     }

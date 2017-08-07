@@ -12,7 +12,6 @@ class ColumnTest extends PHPUnit_Framework_TestCase
             'data_type' => 'ALIAS',
             'ui' => 'many_to_many',
             'hidden_input' => 0,
-            'hidden_list' => 0,
             'required' => 0,
             'relationship' => [
                 'type' => 'MANYTOMANY',
@@ -37,7 +36,7 @@ class ColumnTest extends PHPUnit_Framework_TestCase
             $result = call_user_func([$column, 'get' . $method]);
 
             // these value must have been converted to boolean
-            if (in_array($attribute, ['required', 'hidden_list', 'hidden_input'])) {
+            if (in_array($attribute, ['required', 'hidden_input'])) {
                 $value = (bool) $value;
                 $result = call_user_func([$column, 'is' . $method]);
             }

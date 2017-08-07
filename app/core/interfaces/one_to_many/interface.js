@@ -87,6 +87,7 @@ define([
     },
 
     editModel: function (model) {
+      var self = this;
       var EditView = require('modules/tables/views/EditView'); // eslint-disable-line import/no-unresolved
       var columnName = this.columnSchema.relationship.get('junction_key_right');
       var view = new EditView({
@@ -111,6 +112,9 @@ define([
       app.router.overlayPage(view);
 
       view.save = function () {
+        // trigger changes on the related collection
+        // to be visible on the listing table
+        self.onCollectionChange();
         app.router.removeOverlayPage(this);
       };
     },
@@ -246,6 +250,21 @@ define([
       this.nestedTableView.render();
     },
 
+    getWhitelistedColumnsName: function () {
+      var whitelist = [];
+      var relatedCollection = this.model.get(this.name);
+      var columns = relatedCollection.structure.pluck('id');
+      var visibleColumns = this.columnSchema.options.get('visible_columns').split(',');
+
+      columns.forEach(function (column) {
+        if (visibleColumns.indexOf(column) >= 0) {
+          whitelist.push(column);
+        }
+      }, this);
+
+      return whitelist;
+    },
+
     getBlacklistedColumnsName: function () {
       var blacklist = [];
       var relatedCollection = this.model.get(this.name);
@@ -324,7 +343,7 @@ define([
 
         // avoid fetching the relational value
         filters.depth = 1;
-        relatedCollection.fetch({includeFilters: false, data: filters, success: function (collection) {
+        relatedCollection.fetch({includeFilters: false, silent: true, data: filters, success: function (collection) {
           var filters = collection.filters;
 
           filters.columns_visible = actualVisibleColumns;

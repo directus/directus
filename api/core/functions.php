@@ -2,6 +2,7 @@
 
 require __DIR__ . '/constants.php';
 require __DIR__ . '/helpers/mail.php';
+require __DIR__ . '/helpers/sorting.php';
 
 if (!function_exists('uc_convert')) {
     /**
@@ -126,7 +127,7 @@ if (!function_exists('ping_server')) {
     {
         // @TODO: Fix error when the route exists but there's an error
         // It will not return "pong" back
-        $response = @file_get_contents(get_url('/api/1/ping'));
+        $response = @file_get_contents(get_url('/api/1.1/ping'));
 
         return $response === 'pong';
     }
@@ -1343,6 +1344,10 @@ if (!function_exists('get_missing_requirements')) {
 
         if (!defined('PDO::ATTR_DRIVER_NAME')) {
             $errors[] = 'Your host needs to have PDO enabled to run this version of Directus!';
+        }
+
+        if (defined('PDO::ATTR_DRIVER_NAME') && !in_array('mysql', PDO::getAvailableDrivers())) {
+            $errors[] = 'Your host needs to have PDO MySQL Driver enabled to run this version of Directus!';
         }
 
         if (!extension_loaded('gd') || !function_exists('gd_info')) {

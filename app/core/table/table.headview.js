@@ -88,9 +88,8 @@ function(app, Backbone, _, __t, Notification) {
     serialize: function() {
       var order = this.getCollection().getOrder();
       var blacklist = this.options.blacklist;
-
       // get whitelisted columns first
-      var columns = _.filter(this.parentView.getTableColumns(), function(column) {
+      var columns = _.filter(this.parentView.getTableColumns(), function (column) {
         return ! _.contains(blacklist, column);
       });
 

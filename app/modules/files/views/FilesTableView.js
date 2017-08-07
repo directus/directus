@@ -28,7 +28,7 @@ function(app, _, moment, Backbone, DirectusModal, DirectusEdit, __t, Notificatio
     },
 
     leftToolbar: function() {
-      var canUploadFiles = app.users.getCurrentUser().canUploadFiles();
+      var canUploadFiles = app.user.canUploadFiles();
       return [
         new Widgets.ButtonWidget({
           widgetOptions: {

@@ -11,28 +11,16 @@ function(app, Backbone, Handlebars, Directus, EntriesManager) {
   return Backbone.Layout.extend({
     template: 'modules/tables/translation',
     events: {
-      'change #activeLanguageSelect': function(e) {
-        var that = this;
-        var originalVal = $(e.target).val();
-        $(e.target).val(this.activeLanguageId);
+      'change #activeLanguageSelect': function (event) {
+        var languageId = $(event.currentTarget).val();
 
-        var diff = this.translateModel.diff(this.editView.data());
-        delete diff.id;
-        if(!$.isEmptyObject(diff)) {
-          app.router.openModal({type: 'yesno', text: 'Would you like to save this translation?', callback: function(response) {
-            if(response === 'yes') {
-              that.saveTranslation();
-            }
-            that.initializeTranslateView(originalVal);
-          }});
-        } else {
-          this.initializeTranslateView(originalVal);
-        }
+        this.saveTranslation(this.activeLanguageId);
+        this.initializeTranslateView(languageId);
       }
     },
     saveTranslation: function() {
-      this.translateModel.set(this.translateModel.diff(this.editView.data()));
-      if(!this.translateCollection.contains(this.translateModel)) {
+      this.translateModel.set(this.translateSettings.left_column_name, this.activeLanguageId);
+      if (!this.translateCollection.contains(this.translateModel)) {
         this.translateCollection.add(this.translateModel, {nest: true});
       }
     },
@@ -87,15 +75,20 @@ function(app, Backbone, Handlebars, Directus, EntriesManager) {
       });
 
       if(!this.translateModel) {
-        this.translateModel = new this.translateCollection.model({}, {collection: this.translateCollection, parse: true});
         var data = {};
         data[this.translateSettings.left_column_name] = this.activeLanguageId;
         data[this.translateRelationship.junction_key_right] = this.model.id;
-        this.translateModel.set(data);
+
+        this.translateModel = new this.translateCollection.model({}, {collection: this.translateCollection, parse: true});
+      }
+
+      if (!this.translateModel.isTracking()) {
+        this.translateModel.startTracking();
       }
 
       this.editView = new Directus.EditView({
         model: this.translateModel,
+        forceVisibleFields: [this.translateModel.table.getStatusColumnName()],
         hiddenFields: [this.translateSettings.left_column_name, this.translateRelationship.junction_key_right],
       });
 

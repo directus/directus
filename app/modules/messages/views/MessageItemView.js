@@ -11,15 +11,22 @@ define([
     template: 'modules/messages/messages-item',
 
     events: {
-      'click': 'onClick',
-      'click .js-select-row': 'onSelect'
+      'click :not(.js-check)': 'onItemClick',
+      'click .js-check': 'stopPropagation',
+      'change .js-check > input[type=checkbox]': 'onSelect'
+    },
+
+    stopPropagation: function (event) {
+      event.stopPropagation();
     },
 
     onClick: function () {
       this.trigger('clicked', this);
     },
 
-    onSelect: function () {
+    onSelect: function (event) {
+      event.stopPropagation();
+
       this.trigger('select', this);
     },
 

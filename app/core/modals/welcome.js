@@ -98,7 +98,7 @@ define([
 
     next: function () {
       var data = this.$('form').serializeObject();
-      var errors = this.model.validate(data);
+      var errors = this.model.validate(data, {validateAttributes: true});
       var fileModel = this.model.get('avatar_file_id');
 
       if (errors) {
@@ -168,7 +168,7 @@ define([
         data = _.omit(data, 'password', 'confirm_password');
       }
 
-      errors = this.model.validate(data);
+      errors = this.model.validate(data, {validateAttributes: true});
 
       if (errors) {
         this.model.trigger('invalid', this.model, errors);

@@ -87,7 +87,7 @@ class RelationalTableGateway extends BaseTableGateway
         // Delete file if necessary
         $TableGateway->deleteFiles($tableName, $recordData);
 
-        //Dont do for directus users since id is pk
+        // Do not set owner id to directus_users since id is the owner column
         if ($recordIsNew && $tableName != 'directus_users') {
             $cmsOwnerColumnName = $this->acl->getCmsOwnerColumnByTable($tableName);
             if ($cmsOwnerColumnName) {
@@ -95,7 +95,7 @@ class RelationalTableGateway extends BaseTableGateway
             }
         }
 
-        //Dont let non-admins make admins
+        // Do not let non-admins make admins
         if ($tableName == 'directus_users' && $currentUserGroupId != 1) {
             if (isset($recordData['group']) && $recordData['group']['id'] == 1) {
                 unset($recordData['group']);
@@ -119,19 +119,32 @@ class RelationalTableGateway extends BaseTableGateway
         }
 
         // Update and/or Add Many-to-One Associations
-        $parentRecordWithForeignKeys = $TableGateway->addOrUpdateManyToOneRelationships($tableSchema, $recordData, $nestedLogEntries, $nestedCollectionRelationshipsChanged);
+        $recordData = $TableGateway->addOrUpdateManyToOneRelationships($tableSchema, $recordData, $nestedLogEntries, $nestedCollectionRelationshipsChanged);
 
-        // Merge the M21 foreign keys into the recordData array
-        $recordData = array_merge($recordData, $parentRecordWithForeignKeys);
+        $parentRecordWithoutAlias = [];
+        foreach ($recordData as $key => $data) {
+            $column = $tableSchema->getColumn($key);
+
+            if ($column && !$column->isAlias()) {
+                $parentRecordWithoutAlias[$key] = $data;
+            }
+        }
+
+        // NOTE: set the primary key to null
+        // to default the value to whatever increment value is next
+        // avoiding the error of inserting nothing
+        if (empty($parentRecordWithoutAlias)) {
+            $parentRecordWithoutAlias[$tableSchema->getPrimaryColumn()] = null;
+        }
 
         // If more than the record ID is present.
         $newRecordObject = null;
-        $parentRecordChanged = $this->recordDataContainsNonPrimaryKeyData($parentRecordWithForeignKeys); // || $recordIsNew;
+        $parentRecordChanged = $this->recordDataContainsNonPrimaryKeyData($recordData);
 
         if ($parentRecordChanged) {
             // Update the parent row, w/ any new association fields replaced by their IDs
             $newRecordObject = $TableGateway
-                ->addOrUpdateRecordByArray($parentRecordWithForeignKeys);
+                ->addOrUpdateRecordByArray($parentRecordWithoutAlias);
 
             if (!$newRecordObject) {
                 return [];
@@ -143,7 +156,7 @@ class RelationalTableGateway extends BaseTableGateway
         }
 
         // Do it this way, because & byref for outcome of ternary operator spells trouble
-        $draftRecord = &$parentRecordWithForeignKeys;
+        $draftRecord = &$parentRecordWithoutAlias;
         if ($recordIsNew) {
             $draftRecord = &$newRecordObject;
         }
@@ -180,10 +193,8 @@ class RelationalTableGateway extends BaseTableGateway
             throw new \RuntimeException('Attempted to load ' . $recordType . ' record post-insert with empty result. Lookup via row id: ' . print_r($rowId, true));
         }
 
-        $fullRecordData = (array)$fullRecordData;
-
-
-        $deltaRecordData = $recordIsNew ? [] : array_intersect_key((array)$parentRecordWithForeignKeys, (array)$fullRecordData);
+        $fullRecordData = (array) $fullRecordData;
+        $deltaRecordData = $recordIsNew ? [] : array_intersect_key((array)$parentRecordWithoutAlias, (array) $fullRecordData);
 
         switch ($activityEntryMode) {
             // Activity logging is enabled, and I am a nested action
@@ -288,7 +299,7 @@ class RelationalTableGateway extends BaseTableGateway
             return false;
         }
 
-        $statusColumnName = 'active';
+        $statusColumnName = TableSchema::getTableSchema($tableName)->getStatusColumn();
 
         // Get status delete value
         $tableSchema = $this->getTableSchema();
@@ -405,7 +416,7 @@ class RelationalTableGateway extends BaseTableGateway
         foreach ($schema->getColumns() as $column) {
             $colName = $column['id'];
 
-            if (!$column->hasRelationship()) {
+            if (!$column->isManyToOne()) {
                 continue;
             }
 
@@ -413,13 +424,6 @@ class RelationalTableGateway extends BaseTableGateway
             if (!isset($parentRow[$colName]) || !is_array($parentRow[$colName])) {
                 continue;
             }
-
-            $relationship = $column['relationship'];
-            $fieldIsCollectionAssociation = in_array($relationship['type'], TableSchema::$association_types);
-            $lowercaseColumnType = strtolower($relationship['type']);
-
-            // Ignore empty OneToMany collections
-            $fieldIsOneToMany = ('onetomany' === $lowercaseColumnType);
 
             // Ignore non-arrays and empty collections
             if (empty($parentRow[$colName])) {
@@ -429,31 +433,19 @@ class RelationalTableGateway extends BaseTableGateway
             }
 
             $foreignDataSet = $parentRow[$colName];
+            $foreignRow = $foreignDataSet;
+            $foreignTableName = $column->getRelationship()->getRelatedTable();
+            $foreignTableSchema = $this->getTableSchema($foreignTableName);
 
-            $colUiType = $column['ui'];
-            // @TODO: create isManyToOne, etc helpers in Relationship and Column
-            $isManyToOne = $column->hasRelationship() && $column->getRelationship()->getType() === 'MANYTOONE';
-
-            /** Many-to-One */
-            if ($isManyToOne) {
-                $foreignRow = $foreignDataSet;
-                $foreignTableName = null;
-
-                $foreignTableName = $column['relationship']['related_table'];
-                $foreignTableSchema = $this->getTableSchema($foreignTableName);
-
-                // Update/Add foreign record
-                if ($this->recordDataContainsNonPrimaryKeyData($foreignRow, $foreignTableSchema->getPrimaryColumn())) {
-                    // $foreignRow = $this->addOrUpdateRecordByArray($foreignRow, $foreignTableName);
-                    // NOTE: using manageRecordUpdate instead to update related data
-                    $foreignRow = $this->manageRecordUpdate($foreignTableName, $foreignRow);
-                }
-                $parentRow[$colName] = $foreignRow[$foreignTableSchema->getPrimaryColumn()];
-            } /** One-to-Many, Many-to-Many */
-            elseif ($fieldIsCollectionAssociation) {
-                unset($parentRow[$colName]);
+            // Update/Add foreign record
+            if ($this->recordDataContainsNonPrimaryKeyData($foreignRow, $foreignTableSchema->getPrimaryColumn())) {
+                // NOTE: using manageRecordUpdate instead of addOrUpdateRecordByArray to update related data
+                $foreignRow = $this->manageRecordUpdate($foreignTableName, $foreignRow);
             }
+
+            $parentRow[$colName] = $foreignRow[$foreignTableSchema->getPrimaryColumn()];
         }
+
         return $parentRow;
     }
 
@@ -590,27 +582,6 @@ class RelationalTableGateway extends BaseTableGateway
                                 // (disassociating w/ existing M2M collection entry)
                                 $parentCollectionRelationshipsChanged = true;
                                 continue;
-                            } else if (isset($junctionRow['data'][$JunctionTable->primaryKeyFieldName])) {
-                                // Is this a new element?
-                                // if the element `id` exists it's because is not a new element
-                                // and already had its id given.
-                                $Where = new Where;
-                                $Where->equalTo($junctionKeyLeft, $parentRow[$this->primaryKeyFieldName])
-                                    ->equalTo($junctionKeyRight, $junctionRow['data'][$JunctionTable->primaryKeyFieldName]);
-
-                                // hard-coded check for sort diff
-                                // @todo fix this
-                                $junctionRowResult = $JunctionTable->select($Where);
-                                if ($junctionRowResult->count()) {
-                                    // we are expecting one.
-                                    $junctionRowResultArray = $junctionRowResult->toArray();
-                                    $junctionRowResultArray = end($junctionRowResultArray);
-                                    if (array_key_exists('sort', $junctionRow) && array_key_exists('sort', $junctionRowResultArray)) {
-                                        if ($junctionRowResultArray['sort'] === $junctionRow['sort']) {
-                                            continue;
-                                        }
-                                    }
-                                }
                             }
 
                             /** Update foreign record */
@@ -673,6 +644,8 @@ class RelationalTableGateway extends BaseTableGateway
 
         if (ArrayUtils::get($params, 'preview')) {
             $defaultParams['status'] = null;
+            // Remove the status from param if preview is set
+            ArrayUtils::remove($params, 'status');
         } else if (!ArrayUtils::has($params, 'status')) {
             $defaultParams['status'] = $this->getPublishedStatuses();
         }
@@ -691,11 +664,6 @@ class RelationalTableGateway extends BaseTableGateway
         // Stripe whitespaces
         $columns = array_map('trim', $columns);
 
-        // Pick non-forbidden columns
-        if (empty($columns)) {
-            $columns = TableSchema::getAllTableColumnsName($this->getTable());
-        }
-
         // ----------------------------------------------------------------------------
         // merge legacy visible columns param
         // ----------------------------------------------------------------------------
@@ -707,7 +675,12 @@ class RelationalTableGateway extends BaseTableGateway
             $visibleColumns = StringUtils::csv($visibleColumns, true);
         }
 
-        $columns = array_merge($visibleColumns, $columns);
+        $columns = array_unique(array_merge($visibleColumns, $columns));
+
+        // Pick non-forbidden columns
+        if (empty($columns)) {
+            $columns = TableSchema::getAllTableColumnsName($this->getTable());
+        }
 
         // Add columns to params if it's not empty.
         // otherwise remove from params
@@ -1085,10 +1058,14 @@ class RelationalTableGateway extends BaseTableGateway
      * Process group-by
      *
      * @param Builder $query
-     * @param array $columns
+     * @param array|string $columns
      */
-    protected function processGroups(Builder $query, array $columns = [])
+    protected function processGroups(Builder $query, $columns = [])
     {
+        if (!is_array($columns)) {
+            $columns = explode(',', $columns);
+        }
+
         $query->groupBy($columns);
     }
 
@@ -1105,6 +1082,13 @@ class RelationalTableGateway extends BaseTableGateway
 
         $query->nestWhere(function (Builder $query) use ($columns, $search, $table) {
             foreach ($columns as $column) {
+                // NOTE: Only search numeric or string type columns
+                $isNumeric = $this->getSchemaManager()->isNumericType($column->getType());
+                $isString = $this->getSchemaManager()->isStringType($column->getType());
+                if (!$isNumeric && !$isString) {
+                    continue;
+                }
+
                 if ($column->isManyToOne()) {
                     $relationship = $column->getRelationship();
                     $relatedTable = $relationship->getRelatedTable();
@@ -1114,13 +1098,11 @@ class RelationalTableGateway extends BaseTableGateway
                     $query->orWhereRelational($column->getName(), $relatedTable, $relatedPrimaryColumnName, function (Builder $query) use ($column, $relatedTable, $relatedTableColumns, $search) {
                         $query->nestOrWhere(function (Builder $query) use ($relatedTableColumns, $relatedTable, $search) {
                             foreach ($relatedTableColumns as $column) {
-                                if (!$column->isAlias()) {
-                                    $columnName = $statusColumn = sprintf('%s%s%s',
-                                        $column->getTableName(),
-                                        $this->getAdapter()->getPlatform()->getIdentifierSeparator(),
-                                        $column->getName()
-                                    );
-                                    $query->orWhereLike($columnName, $search);
+                                // NOTE: Only search numeric or string type columns
+                                $isNumeric = $this->getSchemaManager()->isNumericType($column->getType());
+                                $isString = $this->getSchemaManager()->isStringType($column->getType());
+                                if (!$column->isAlias() && ($isNumeric || $isString)) {
+                                    $query->orWhereLike($column->getName(), $search);
                                 }
                             }
                         });
@@ -1135,7 +1117,10 @@ class RelationalTableGateway extends BaseTableGateway
                     // TODO: Test here it may be not setting the proper primary key name
                     $query->orWhereRelational($this->primaryKeyFieldName, $relatedTable, null, $relatedRightColumn, function(Builder $query) use ($column, $relatedTable, $relatedTableColumns, $search) {
                         foreach ($relatedTableColumns as $column) {
-                            if (!$column->isAlias()) {
+                            // NOTE: Only search numeric or string type columns
+                            $isNumeric = $this->getSchemaManager()->isNumericType($column->getType());
+                            $isString = $this->getSchemaManager()->isStringType($column->getType());
+                            if (!$column->isAlias() && ($isNumeric || $isString)) {
                                 $query->orWhereLike($column->getName(), $search, false);
                             }
                         }
@@ -1143,13 +1128,7 @@ class RelationalTableGateway extends BaseTableGateway
                 } else if ($column->isManyToMany()) {
                     // @TODO: Implement Many to Many search
                 } else if (!$column->isAlias()) {
-                    $columnName = $statusColumn = sprintf('%s%s%s',
-                        $column->getTableName(),
-                        $this->getAdapter()->getPlatform()->getIdentifierSeparator(),
-                        $column->getName()
-                    );
-
-                    $query->orWhereLike($columnName, $search);
+                    $query->orWhereLike($column->getName(), $search);
                 }
             }
         });
@@ -1245,13 +1224,7 @@ class RelationalTableGateway extends BaseTableGateway
 
             $statuses = array_filter($statuses);
             if ($statuses) {
-                // TODO: Add a way to add this without duplication to all main queries
-                $statusColumn = sprintf('%s%s%s',
-                    $this->getTable(),
-                    $this->getAdapter()->getPlatform()->getIdentifierSeparator(),
-                    TableSchema::getStatusColumn($this->getTable())
-                );
-                $query->whereIn($statusColumn, $statuses);
+                $query->whereIn(TableSchema::getStatusColumn($this->getTable()), $statuses);
             }
         }
 
@@ -1274,7 +1247,13 @@ class RelationalTableGateway extends BaseTableGateway
         }
 
         if (ArrayUtils::has($params, 'group_by')) {
-            $query->groupBy($params['group_by']);
+            $groupBy = $params['group_by'];
+
+            if (!is_array($groupBy)) {
+                $groupBy = explode(',', $params['group_by']);
+            }
+
+            $query->groupBy($groupBy);
         }
 
         // Filter entries that match one of these values separated by comma
@@ -1463,8 +1442,10 @@ class RelationalTableGateway extends BaseTableGateway
 
             $queryCallBack = function(Builder $query) use ($junctionTableName, $on, $joinColumns, $ids, $joinColumnsPrefix) {
                 $query->join($junctionTableName, $on, $joinColumns);
-                if (in_array('sort', $joinColumns)) {
-                    $query->orderBy($joinColumnsPrefix . 'sort', 'ASC');
+
+                if (TableSchema::hasTableSortColumn($junctionTableName)) {
+                    $sortColumnName = TableSchema::getTableSortColumn($junctionTableName);
+                    $query->orderBy($this->getColumnIdentifier($sortColumnName, $junctionTableName), 'ASC');
                 }
 
                 return $query;
@@ -1473,7 +1454,9 @@ class RelationalTableGateway extends BaseTableGateway
             $results = $relatedTableGateway->loadEntries(array_merge([
                 'columns' => $relatedTableColumns,
                 'filters' => [
-                    $junctionKeyLeftColumn => ['in' => $ids]
+                    $relatedTableGateway->getColumnIdentifier($junctionKeyLeftColumn, $junctionTableName) => [
+                        'in' => $ids
+                    ]
                 ],
                 'depth' => $depth
             ], $params), $queryCallBack);
@@ -1548,6 +1531,31 @@ class RelationalTableGateway extends BaseTableGateway
 
                 $junctionTableGateway = new RelationalTableGateway($junctionTableName, $this->getAdapter(), $this->acl);
                 $junctionData = $this->schemaManager->castRecordValues($junctionData, TableSchema::getTableSchema($junctionTableName)->getColumns());
+
+                // Sorting junction data by its sorting column or ID column
+                // NOTE: All the junction table are fetched all together from all the rows IDs
+                // After all junction IDs are attached to an specific parent row, it must sort.
+                $junctionTableSchema = $junctionTableGateway->getTableSchema();
+                $sortColumnName = $junctionTableSchema->getPrimaryColumn();
+                if ($junctionTableSchema->hasSortColumn()) {
+                    $sortColumnName = $junctionTableSchema->getSortColumn();
+                }
+
+                // NOTE: usort doesn't maintain the array key
+                usort($junctionData, sorting_by_key($sortColumnName, 'ASC'));
+
+                // NOTE: Sort the related data by its junction sorting order
+                $tempRow = $row;
+                $_byId = [];
+                foreach ($tempRow as $item) {
+                    $_byId[$item[$primaryKey]] = $item;
+                }
+
+                $row = [];
+                foreach ($junctionData as $item) {
+                    $row[] = $_byId[$item[$junctionKeyRightColumn]];
+                }
+
                 $junctionData = $junctionTableGateway->loadMetadata($junctionData);
 
                 $row = $relatedTableGateway->loadMetadata($row);

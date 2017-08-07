@@ -1,5 +1,5 @@
 <style>
-	.status-group {
+	.{{table}}.status-group {
 		display: flex;
 		align-items: stretch;
 		align-content: center;
@@ -8,13 +8,13 @@
 		width: max-content;
 	}
 
-	.status-group input {
+	.{{table}}.status-group input {
 		position: absolute;
 		opacity: 0;
 		z-index: -1;
 	}
 
-	.status-group label {
+	.{{table}}.status-group label {
 		cursor: pointer;
 		color: #999;
 		padding: 1em;
@@ -28,26 +28,26 @@
 		min-width: 140px;
 	}
 
-	.status-group label:hover {
+	.{{table}}.status-group label:hover {
 		color: #3598db;
 	}
 
-	.status-group label:first-of-type {
+	.{{table}}.status-group label:first-of-type {
 		border-top-left-radius: 4px;
 		border-bottom-left-radius: 4px;
 	}
 
-	.status-group label:last-of-type {
+	.{{table}}.status-group label:last-of-type {
 		border-top-right-radius: 4px;
 		border-bottom-right-radius: 4px;
 	}
 
-	.status-group input:checked + label {
+	.{{table}}.status-group input:checked + label {
 		background-color: #3598db;
 		color: #fff;
 	}
 
-	.status-group input:checked + label::before {
+	.{{table}}.status-group input:checked + label::before {
 		content: 'check';
 		font-family: 'Material Icons';
 		display: inline-block;
@@ -56,18 +56,18 @@
 	}
 
 	/*{{#statuses}}
-	.status-group input#{{name}}:checked + label {
+	.{{table}}.status-group input#{{name}}:checked + label {
 		background-color: {{background_color}};
 		color: {{text_color}};
 	}
 	{{/statuses}}*/
 </style>
 
-<div class="status-group">
+<div class="{{table}} status-group">
 	{{#statuses}}
-	<input id={{name}} type="radio" {{#if ../readonly}}disabled{{/if}} name="{{../name}}" value="{{id}}" {{#if selected}}checked{{/if}} />
-	<label for={{name}}>{{name}}</label>
+	<input id={{identifier}} type="radio" {{#if ../readonly}}disabled{{/if}} name="{{../name}}" value="{{id}}" {{#if selected}}checked{{/if}} />
+	<label for={{identifier}}>{{name}}</label>
 	{{/statuses}}
 
-	<input type="hidden" name="{{name}}" value="{{value}}" />
+	<input type="hidden" name="{{name}}" value="{{value}}">
 </div>

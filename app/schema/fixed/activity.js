@@ -22,7 +22,6 @@ define(function(require, exports, module) {
         "is_nullable":"NO",
         "ui":"directus_activity",
         "system":false,
-        "hidden_list":false,
         "hidden_input":false,
         "required":false
       },
@@ -34,10 +33,11 @@ define(function(require, exports, module) {
         "comment":"",
         "sort":1,
         "system":true,
-        "hidden_list":false,
         "hidden_input":false,
         "required":false,
         "ui":"primary_key",
+        "key": "PRI",
+        "extra": "auto_increment",
         "hidden":true
       },
       {
@@ -49,7 +49,6 @@ define(function(require, exports, module) {
         "comment":"",
         "sort":2,
         "system":false,
-        "hidden_list":false,
         "hidden_input":false,
         "required":false,
         "ui":"text_input"
@@ -64,7 +63,6 @@ define(function(require, exports, module) {
         "comment":"",
         "sort":3,
         "system":false,
-        "hidden_list":false,
         "hidden_input":false,
         "required":false,
         "ui":"text_input"
@@ -79,7 +77,6 @@ define(function(require, exports, module) {
         "comment":"",
         "sort":4,
         "system":false,
-        "hidden_list":false,
         "hidden_input":false,
         "required":false,
         "ui":"text_input"
@@ -92,7 +89,6 @@ define(function(require, exports, module) {
         "comment":"",
         "sort":5,
         "system":false,
-        "hidden_list":false,
         "hidden_input":false,
         "required":false,
         "ui":"numeric"
@@ -107,7 +103,6 @@ define(function(require, exports, module) {
         "sort":6,
         "ui":"directus_user",
         "system":false,
-        "hidden_list":false,
         "hidden_input":false,
         "required":false,
         "options": {
@@ -123,7 +118,6 @@ define(function(require, exports, module) {
         "comment":"",
         "sort":7,
         "system":false,
-        "hidden_list":false,
         "hidden_input":false,
         "required":false,
         "ui":"textarea"
@@ -136,7 +130,6 @@ define(function(require, exports, module) {
         "comment":"",
         "sort":8,
         "system":false,
-        "hidden_list":false,
         "hidden_input":false,
         "required":false,
         "ui":"numeric"
@@ -149,7 +142,6 @@ define(function(require, exports, module) {
         "comment":"",
         "sort":9,
         "system":false,
-        "hidden_list":false,
         "hidden_input":false,
         "required":false,
         "ui":"datetime",

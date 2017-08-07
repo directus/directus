@@ -1,6 +1,7 @@
 define([
-  "app",
-  "backbone",
+  'app',
+  'underscore',
+  'backbone',
   'handlebars',
   "core/directus",
   'core/BasePageView',
@@ -10,7 +11,7 @@ define([
   'moment'
 ],
 
-function(app, Backbone, Handlebars, Directus, BasePageView, FileHelper, Widgets, __t, moment) {
+function(app, _, Backbone, Handlebars, Directus, BasePageView, FileHelper, Widgets, __t, moment) {
 
   'use strict';
 
@@ -30,7 +31,7 @@ function(app, Backbone, Handlebars, Directus, BasePageView, FileHelper, Widgets,
 
     showUser: function (event) {
       var id = $(event.currentTarget).data('id');
-      var user = app.users.getCurrentUser();
+      var user = app.user;
       var userGroup = user.get('group');
 
       // @TODO: fix this so it respects ACL instead of being hardcoded
@@ -103,7 +104,10 @@ function(app, Backbone, Handlebars, Directus, BasePageView, FileHelper, Widgets,
         data.push(groupedData['group_0']);
       }
 
-      return {groups: data};
+      return {
+        empty: rows.length <= 0,
+        groups: data
+      };
     },
 
     afterRender: function () {
@@ -115,8 +119,7 @@ function(app, Backbone, Handlebars, Directus, BasePageView, FileHelper, Widgets,
       });
     },
 
-    initialize: function(options) {
-      this.collection.on('sort', this.render, this);
+    initialize: function (options) {
       this.listenTo(this.collection, 'sync', function(model, resp, options) {
         if (options.silent) return;
         this.render();
@@ -148,7 +151,7 @@ function(app, Backbone, Handlebars, Directus, BasePageView, FileHelper, Widgets,
     leftToolbar: function() {
       var widgets = [];
 
-      if (app.users.getCurrentUser().get('group').id === 1) {
+      if (app.user.get('group').id === 1) {
         widgets.push(new Widgets.ButtonWidget({
           widgetOptions: {
             buttonId: 'addBtn',
@@ -168,33 +171,20 @@ function(app, Backbone, Handlebars, Directus, BasePageView, FileHelper, Widgets,
       return widgets;
     },
 
-    leftSecondaryToolbar: function() {
-      // if (!this.widgets.visibilityWidget) {
-      //   this.widgets.visibilityWidget = new Widgets.VisibilityWidget({collection: this.collection, basePage: this});
-      // }
-      //
-      // if (!this.widgets.filterWidget) {
-      //   this.widgets.filterWidget = new Widgets.FilterWidget({collection: this.collection, basePage: this});
-      // }
-      //
-      // return [this.widgets.visibilityWidget, this.widgets.filterWidget];
-    },
-
     afterRender: function() {
       this.setView('#page-content', this.table);
       var status = this.collection.preferences.get('status');
-      // Ignore preferences and get all users
-      // @todo: make a better solution
-      this.collection.preferences.unset('status');
-      this.collection.filters['status'] = '0,1,2';
+
       this.collection.fetch();
       this.collection.preferences.set('status', status);
     },
 
     initialize: function() {
       this.viewList = false;
-      this.table = new BodyView({collection:this.collection});
       this.widgets = [];
+      this.table = new BodyView({
+        collection: this.collection
+      });
     }
   });
 

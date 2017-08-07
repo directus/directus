@@ -15,10 +15,11 @@ define([
     'NUMERIC'
   ];
   var numericTypes = [
+    // NOTE: set INT as default. first = default
+    'INT',
     'TINYINT',
     'SMALLINT',
     'MEDIUMINT',
-    'INT',
     'YEAR',
     'BIGINT'
   ].concat(decimalTypes);

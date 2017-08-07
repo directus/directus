@@ -17,32 +17,54 @@ define([
         var model = this.model.get(this.name);
         var $target = $(event.currentTarget);
         var selectedId = parseInt($target.find(':selected').val(), 10);
-        var attributes = this.collection.get(selectedId).toJSON();
-        var primaryColumn = this.columnSchema.table.get('primary_column') || 'id';
+        var attributes;
+        var primaryColumn;
         var attributesName;
 
-        // TODO: Set proper model based on table name
-        // ex: GroupsModel for directus_groups
-        if (!(model instanceof Backbone.Model)) {
-          model = new Backbone.Model();
-          model.set(primaryColumn, selectedId);
+        if (this.collection.get(selectedId)) {
+          attributes = this.collection.get(selectedId).toJSON();
+          primaryColumn = this.columnSchema.table.get('primary_column') || 'id';
+
+          // TODO: Set proper model based on table name
+          // ex: GroupsModel for directus_groups
+          if (!(model instanceof Backbone.Model)) {
+            model = new Backbone.Model();
+            model.set(primaryColumn, selectedId);
+          }
+
+          attributesName = _.keys(model.attributes);
+          model.clear();
+
+          if (attributesName.length > 0) {
+            attributes = _.pick(attributes, attributesName);
+          }
+
+          model.set(attributes);
+        } else {
+          model = null;
         }
 
-        attributesName = _.keys(model.attributes);
-        model.clear();
-
-        if (attributesName.length > 0) {
-          attributes = _.pick(attributes, attributesName);
-        }
-
-        model.set(attributes);
-
+        this.value = model;
         this.model.set(this.name, model);
+      }
+    },
+
+    beforeSaving: function () {
+      // NOTE: Only set the new value (mark changed) if the value has changed
+      if (this.value && this.model.hasChanges(this.name)) {
+        this.model.set(this.name, this.value);
       }
     },
 
     serialize: function () {
       var optionTemplate = Handlebars.compile(this.options.settings.get('visible_column_template'));
+      var value = this.options.value;
+
+      // Set the first value to the column when the record is new
+      // This prevent assigning the incorrect (null/empty) value to the column
+      if (this.collection.length > 0 && !this.options.settings.get('allow_null') && this.model.isNew()) {
+        value = this.collection.first().id;
+      }
 
       if (this.options.settings.get('readonly') === true) {
         this.canEdit = false;
@@ -51,11 +73,14 @@ define([
       var data = this.collection.map(function (model) {
         var data = model.toJSON();
 
-        var name = optionTemplate(data);
+        if (value instanceof Backbone.Model) {
+          value = value.id;
+        }
+
         return {
           id: model.id,
-          name: name,
-          selected: this.options.value !== undefined && (model.id === this.options.value.id)
+          name: optionTemplate(data),
+          selected: value !== undefined && model.id === value
         };
       }, this);
 
@@ -70,11 +95,7 @@ define([
 
       data = _.sortBy(data, 'name');
 
-      // Set the first value to the column when the record is new
-      // This prevent assigning the incorrect (null/empty) value to the column
-      if (data.length > 0 && !this.options.settings.get('allow_null') && this.model.isNew()) {
-        this.model.set(this.name, _.first(data).id);
-      }
+      this.value = value;
 
       return {
         name: this.options.name,

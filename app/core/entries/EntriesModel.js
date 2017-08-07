@@ -110,7 +110,7 @@ define(function(require, exports, module) {
         }
 
         // Don't validate System Columns
-        if (column.isSystemColumn()) {
+        if (!column.shouldValidate()) {
           return;
         }
 
@@ -119,7 +119,8 @@ define(function(require, exports, module) {
         }
 
         // NOTE: Column with default value should not be required
-        if (!required && defaultValue !== undefined) {
+        // if the value is null/nothing/empty
+        if (isNull && !required && defaultValue !== undefined) {
           return;
         }
 
@@ -181,7 +182,9 @@ define(function(require, exports, module) {
                 return column.trim();
               });
             }
+
             var value = attributes[id] || [];
+            var models = value;
             var options = {
               table: SchemaManager.getTable(tableRelated),
               structure: SchemaManager.getColumns('tables', tableRelated),
@@ -214,8 +217,14 @@ define(function(require, exports, module) {
                 this.attributes[id].set(value, {merge: true, parse: true});
                 attributes[id] = this.attributes[id];
               } else {
-                attributes[id] = new EntriesCollection(value, options);
+                if (value instanceof EntriesCollection) {
+                  models = value.models;
+                  options.parse = false;
+                }
+
+                attributes[id] = new EntriesCollection(models, options);
               }
+
               break;
             }
 
@@ -226,12 +235,13 @@ define(function(require, exports, module) {
                 this.attributes[id].set(value, {merge: true, parse: true});
                 attributes[id] = this.attributes[id];
               } else {
-                var models = value;
-
                 if (value instanceof EntriesJunctionCollection) {
                   models = value.models;
                   options.parse = false;
                 }
+
+                options.parentAttribute = id;
+                options.parent = this;
 
                 attributes[id] = new EntriesJunctionCollection(models, options);
               }
@@ -242,8 +252,20 @@ define(function(require, exports, module) {
           case 'MANYTOONE':
             var data = {};
 
-            if (attributes[id] !== undefined && attributes[id] !== null) {
-              data = _.isObject(attributes[id]) ? attributes[id] : {id: attributes[id]};
+            if (Utils.isSomething(attributes[id])) {
+              if (!_.isObject(attributes[id])) {
+                var idAttribute = 'id';
+                var relatedTableName = this.structure.get(id).relationship.get('related_table');
+                var relatedTable = app.schemaManager.getTable(relatedTableName);
+
+                if (relatedTable) {
+                  idAttribute = relatedTable.getPrimaryColumnName();
+                }
+
+                data[idAttribute] = attributes[id];
+              } else {
+                data = attributes[id].data;
+              }
             }
 
             // Create a new model only when the value is not already a model
@@ -251,15 +273,16 @@ define(function(require, exports, module) {
               var collectionRelated = EntriesManager.getInstance(tableRelated);
               var ModelRelated = collectionRelated.model;
 
-              attributes[id] = new ModelRelated(data.data, {collection: collectionRelated});
+              attributes[id] = new ModelRelated(data, {collection: collectionRelated});
             }
-
-            attributes[id].parentAttribute = id;
 
             break;
         }
 
         attributes[id].parent = this;
+        if (relationshipType) {
+          attributes[id].parentAttribute = id;
+        }
 
       }, this);
 
@@ -354,9 +377,17 @@ define(function(require, exports, module) {
       return Backbone.sync.apply(this, [method, model, options]);
     },
 
+    isNew: function () {
+      if (this.isTracking()) {
+        return this._originalAttributes[this.idAttribute] == null;
+      }
+
+      return this.id == null;
+    },
+
     // returns true or false
     isMine: function () {
-      var myId = app.users.getCurrentUser().id,
+      var myId = app.user.id,
           magicOwnerColumn = (this.collection != null) ? this.collection.table.get('user_create_column') : null,
           magicOwnerId = this.get(magicOwnerColumn);
 

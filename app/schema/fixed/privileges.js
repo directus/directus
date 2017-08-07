@@ -14,9 +14,10 @@ define(function(require, exports, module) {
         "id": "id",
         "column_name": "id",
         "ui": "primary_key",
+        "key": "PRI",
+        "extra": "auto_increment",
         "type": "INT",
         "system": true,
-        "hidden_list": false,
         "hidden_input": false,
         "sort": 0
       },
@@ -27,7 +28,6 @@ define(function(require, exports, module) {
         "type": "VARCHAR",
         "length": 255,
         "system": false,
-        "hidden_list": false,
         "hidden_input": false,
         "sort": 10
       },
@@ -38,7 +38,6 @@ define(function(require, exports, module) {
         "type": "TINYINT",
         "length": 1,
         "system": false,
-        "hidden_list": false,
         "hidden_input": false,
         "sort": 40
       },
@@ -49,7 +48,6 @@ define(function(require, exports, module) {
         "type": "TINYINT",
         "length": 1,
         "system": false,
-        "hidden_list": false,
         "hidden_input": false,
         "sort": 40
       },
@@ -60,7 +58,6 @@ define(function(require, exports, module) {
         "type": "TINYINT",
         "length": 1,
         "system": false,
-        "hidden_list": false,
         "hidden_input": false,
         "sort": 40
       },
@@ -71,7 +68,6 @@ define(function(require, exports, module) {
         "type": "TINYINT",
         "length": 1,
         "system": false,
-        "hidden_list": false,
         "hidden_input": false,
         "sort": 40
       },
@@ -82,7 +78,6 @@ define(function(require, exports, module) {
         "type": "TINYINT",
         "length": 1,
         "system": false,
-        "hidden_list": false,
         "hidden_input": false,
         "sort": 40
       },
@@ -92,7 +87,6 @@ define(function(require, exports, module) {
         "ui": "many_to_one",
         "type": "INT",
         "system": true,
-        "hidden_list": false,
         "hidden_input": false,
         "sort": 0,
         "relationship_type": "MANYTOONE",
@@ -107,7 +101,6 @@ define(function(require, exports, module) {
         "length": 1000,
         "system": false,
         "nullable": true,
-        "hidden_list": false,
         "hidden_input": false,
         "sort": 20
       },
@@ -119,7 +112,6 @@ define(function(require, exports, module) {
         "length": 1000,
         "system": false,
         "nullable": true,
-        "hidden_list": false,
         "hidden_input": false,
         "sort": 20
       },
@@ -130,7 +122,6 @@ define(function(require, exports, module) {
         "type": "TINYINT",
         "length": 1,
         "system": false,
-        "hidden_list": false,
         "hidden_input": false,
         "sort": 40
       },
@@ -142,7 +133,6 @@ define(function(require, exports, module) {
         "length": 1,
         "system": false,
         "nullable": true,
-        "hidden_list": false,
         "hidden_input": false,
         "sort": 40
       }

@@ -137,7 +137,7 @@ if (!$authentication->loggedIn()) {
 
 if (!$showWelcomeWindow) {
     $authenticatedUser = $authentication->getUserRecord();
-    if ($authenticatedUser['invite_accepted'] != 1) {
+    if ($authenticatedUser['invite_accepted'] === 0) {
         $showWelcomeWindow = true;
     }
 }
@@ -183,7 +183,7 @@ function parseTables($tableSchema)
 
 function getExtendedUserColumns($tableSchema)
 {
-    $userColumns = ['activity', 'avatar', 'name', 'id', 'active', 'first_name', 'last_name', 'email', 'email_messages', 'password', 'salt', 'token', 'reset_token', 'reset_expiration', 'last_login', 'last_page', 'ip', 'group'];
+    $userColumns = ['activity', 'avatar', 'name', 'id', 'status', 'first_name', 'last_name', 'email', 'email_messages', 'password', 'salt', 'token', 'reset_token', 'reset_expiration', 'last_login', 'last_page', 'ip', 'group'];
 
     $schema = array_filter($tableSchema, function ($table) {
         return $table['schema']['id'] === 'directus_users';
@@ -204,7 +204,7 @@ function getExtendedFilesColumns($tableSchema)
     // TODO: Create an object that stores all system tables columns
     $filesColumns = [
         'id',
-        'active',
+        'status',
         'name',
         'title',
         'location',
@@ -334,7 +334,7 @@ function getGroups()
         ArrayUtils::set($row, 'nav_override', null);
 
         $navOverride = @json_decode($navOverride);
-        if (json_last_error() !== JSON_ERROR_NONE) {
+        if (json_last_error() !== JSON_ERROR_NONE || !$navOverride) {
             return $row;
         }
 
@@ -592,7 +592,7 @@ if (!$users) {
 $currentUserInfo = getCurrentUserInfo($users);
 
 // hide welcome modal when the group has not permission to edit user information
-if ($showWelcomeWindow === true && !ArrayUtils::get($currentUserInfo, 'group.show_files')) {
+if ($showWelcomeWindow === true && !$acl->canEdit('directus_users')) {
     $showWelcomeWindow = false;
 }
 
@@ -600,7 +600,7 @@ if ($showWelcomeWindow === true && !ArrayUtils::get($currentUserInfo, 'group.sho
 $git = __DIR__ . '/.git';
 $cacheBuster = Directus\Util\Git::getCloneHash($git);
 
-$tableSchema = TableSchema::getAllSchemas($currentUserInfo['group']['id'], $cacheBuster);
+$tableSchema = TableSchema::getAllSchemas($currentUserInfo['group']['data']['id'], $cacheBuster);
 
 $groupId = $currentUserInfo['group']['data']['id'];
 $groups = getGroups();
@@ -677,6 +677,7 @@ $data = [
     'tables' => $allTables,
     'preferences' => parsePreferences($tableSchema), //ok
     'users' => $users,
+    'user' => ['data' => $currentUserInfo],
     'groups' => $groups,
     'settings' => $settings,
     'config' => $configuration,

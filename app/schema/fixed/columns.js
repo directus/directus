@@ -8,15 +8,17 @@ define(function(require, exports, module) {
     'hidden': true,
     'single': false,
     'primary_column': 'id',
+    'sort_column': 'sort',
 
     'columns': [
       {
         'id': 'id',
         'column_name': 'id',
         'ui': 'primary_key',
+        'key': 'PRI',
+        'extra': 'auto_increment',
         'type': 'INT',
         'system': true,
-        'hidden_list': true,
         'hidden_input': true,
         'sort': 0
       },
@@ -26,7 +28,6 @@ define(function(require, exports, module) {
         'ui': 'text_input',
         'type': 'VARCHAR',
         'system': false,
-        'hidden_list': false,
         'hidden_input': false,
         'sort': 1
       },
@@ -36,7 +37,6 @@ define(function(require, exports, module) {
         'ui': 'text_input',
         'type': 'VARCHAR',
         'system': false,
-        'hidden_list': false,
         'hidden_input': false,
         'sort': 2
       },
@@ -46,7 +46,6 @@ define(function(require, exports, module) {
         'ui': 'text_input',
         'type': 'VARCHAR',
         'system': false,
-        'hidden_list': false,
         'hidden_input': false,
         'sort': 2
       },
@@ -56,7 +55,6 @@ define(function(require, exports, module) {
         'ui': 'text_input',
         'type': 'VARCHAR',
         'system': false,
-        'hidden_list': false,
         'hidden_input': false,
         'sort': 2
       },
@@ -68,7 +66,6 @@ define(function(require, exports, module) {
         'required': false,
         'nullable': true,
         'system': false,
-        'hidden_list': false,
         'hidden_input': false,
         'sort': 2
       },
@@ -79,19 +76,6 @@ define(function(require, exports, module) {
         'type':'TINYINT',
         'default_value': false,
         'system':false,
-        'hidden_list':false,
-        'hidden_input':false,
-        'nullable': true,
-        'required': false
-      },
-      {
-        'id':'hidden_list',
-        'column_name':'hidden_list',
-        'ui':'toggle',
-        'type':'TINYINT',
-        'default_value': false,
-        'system':false,
-        'hidden_list':false,
         'hidden_input':false,
         'nullable': true,
         'required': false
@@ -102,7 +86,6 @@ define(function(require, exports, module) {
         'ui':'toggle',
         'type':'TINYINT',
         'system':false,
-        'hidden_list':false,
         'hidden_input':false,
         'nullable': true,
         'required': false
@@ -110,11 +93,10 @@ define(function(require, exports, module) {
       {
         'id': 'sort',
         'column_name': 'sort',
-        'ui':'numeric',
+        'ui':'sort',
         'type':'INT',
         'default_value': 0,
         'system':false,
-        'hidden_list':false,
         'hidden_input':false
       },
       {
@@ -127,7 +109,6 @@ define(function(require, exports, module) {
         'required': false,
         'nullable': true,
         'system':false,
-        'hidden_list':false,
         'hidden_input':false
       }
     ]

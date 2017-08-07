@@ -61,7 +61,11 @@ class DirectusUsersTableGateway extends RelationalTableGateway
         $select = new Select($this->getTable());
         $select
             ->columns(['id', 'group'])
-            ->where->in('group', $ids)->and->equalTo($statusColumnName, STATUS_ACTIVE_NUM);
+            ->where
+                ->in('group', $ids)
+                ->and
+                ->equalTo($statusColumnName, STATUS_ACTIVE_NUM);
+
         return $this->selectWith($select)->toArray();
     }
 

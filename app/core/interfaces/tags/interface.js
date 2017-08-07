@@ -28,6 +28,11 @@ define([
       'click .tag': function (event) {
         var $target = $(event.currentTarget);
         var index = this.$('.tag').index($target);
+        
+        //return if the widget is read only ( Do not remove tag )
+        if (this.$('#tag-input').is('[readonly]')) {
+            return;
+        }
 
         this.tags.splice(index, 1);
         this.model.set(this.name, this.getTagsValue());

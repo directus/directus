@@ -186,7 +186,7 @@ define([
           form: new NewMessageView({
             parentModel: model,
             model: new app.messages.model({
-              from: app.users.getCurrentUser().id
+              from: app.user.id
             }, {
               collection: app.messages,
               parse: true
@@ -201,7 +201,7 @@ define([
 
     displayNewMessage: function() {
       var model = new app.messages.model({
-        from: app.users.getCurrentUser().id
+        from: app.user.id
       }, {
         collection: app.messages,
         parse: true
@@ -310,8 +310,10 @@ define([
 
       app.on('messages:new', this.onNewMessages, this);
 
-      this.listenTo(this.collection, 'sync', function () {
-        this.state.currentMessage = null;
+      this.listenTo(this.collection, 'sync', function (collection, resp, options) {
+        if (options.silent !== true) {
+          this.state.currentMessage = null;
+        }
       });
 
       this.state = {
@@ -341,7 +343,7 @@ define([
     },
 
     leftToolbar: function () {
-      var canSendMessages = app.users.getCurrentUser().canSendMessages();
+      var canSendMessages = app.user.canSendMessages();
       var widgets = [
         // TODO: Add option to disable button widget
         // same as SaveButtonWidget
@@ -379,10 +381,17 @@ define([
 
           if ($checksChecked.length) {
             _.each($checksChecked, function (checkbox) {
-              ids.push($(checkbox).parent().data('id'));
+              var $message = $(checkbox).parents('.js-message');
+
+              ids.push($message.data('id'));
             });
           } else if (this.table.state.currentMessage) {
             ids.push(this.table.state.currentMessage.id);
+          }
+
+          if (ids.length === 0) {
+            Notification.warning(__t('select_message_to_archive'));
+            return;
           }
 
           var models = this.collection.filter(function (model) {

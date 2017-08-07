@@ -22,11 +22,12 @@ define(function(require, exports, module) {
       return this.table;
     },
 
-    parse: function M(result) {
+    parse: function M(result, options) {
       var EntriesModel = require('core/entries/EntriesModel');
       var attributes = result.junction || {};
+      var data = options.nest === true ? result : result.data;
 
-      attributes.data = new EntriesModel(result.data, {collection: this.collection.nestedCollection});
+      attributes.data = new EntriesModel(data, {collection: this.collection.nestedCollection});
 
       this.structure = this.collection.junctionStructure;
       this.table = this.structure.table;
@@ -103,18 +104,32 @@ define(function(require, exports, module) {
       return this.nestedCollection.getColumns();
     },
 
-    parse: function C(response) {
-      var junction = response.junction;
-      var data = response.data ? response.data : response;
+    parse: function C(response, options) {
+      var parent = this.parent || options.parent;
+      var parentAttribute = this.parentAttribute || options.parentAttribute;
 
-      response = [];
+      var junction = response.junction ? response.junction : undefined;
+      var junctionData = junction && junction.data ? junction.data : [];
+      var relatedData = response.data ? response.data : response;
 
-      if (data) {
-        _.each(data, function (attributes, index) {
-          var _junction = (junction && junction.data ? junction.data : junction);
+      var parentColumnModel = parent.structure.get(parentAttribute);
+      var relatedColumnName = parentColumnModel.getRelatedColumn();
+      var relatedPrimaryColumnName = this.structure.table.getPrimaryColumnName();
+      var _byId = {};
+
+      if (junctionData.length > 0) {
+        response = [];
+
+        // Set all relational data easy to reach by ids
+        _.each(relatedData, function (data) {
+          _byId[data[relatedPrimaryColumnName]] = data;
+        });
+
+        // Set each junction data with its related data
+        _.each(junctionData, function (attributes) {
           response.push({
-            junction: _junction ? _junction[index] : undefined,
-            data: attributes
+            junction: attributes,
+            data: _byId[attributes[relatedColumnName]]
           })
         });
       }

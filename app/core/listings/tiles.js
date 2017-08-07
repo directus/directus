@@ -49,6 +49,10 @@ define([
 
       editItem: function (event) {
         var id = $(event.currentTarget).data('id');
+        var route = Backbone.history.fragment.split('/');
+
+        route.push(id);
+        app.router.go(route);
       },
 
       serialize: function () {

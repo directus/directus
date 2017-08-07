@@ -22,8 +22,22 @@ function(app, Backbone, _, EntriesManager, __t, Notification) {
 
   var Bookmarks = {};
 
+  Bookmarks.Model = Backbone.Model.extend({
+    constructor: function BookmarksModel() {
+      Backbone.Model.prototype.constructor.apply(this, arguments);
+    },
+
+    setActive: function (active) {
+      this.active = active;
+    },
+
+    isActive: function () {
+      return !!this.active;
+    }
+  });
+
   Bookmarks.Collection = Backbone.Collection.extend({
-    constructor: function(models, options) {
+    constructor: function BookmarksCollection(models, options) {
       this.url = app.API_URL + 'bookmarks/';
 
       this.isCustomBookmarks = options.isCustomBookmarks || false;
@@ -33,6 +47,8 @@ function(app, Backbone, _, EntriesManager, __t, Notification) {
 
       Backbone.Collection.prototype.constructor.apply(this, [models, options]);
     },
+
+    model: Bookmarks.Model,
 
     _comparator: function(a, b) {
       if (a.get('title') < b.get('title')) {
@@ -60,7 +76,7 @@ function(app, Backbone, _, EntriesManager, __t, Notification) {
       var found = false;
 
       this.each(function (model) {
-        model.unset('active_bookmark', {silent: true});
+        model.setActive(false);
 
         if (found) {
           return false;
@@ -83,7 +99,7 @@ function(app, Backbone, _, EntriesManager, __t, Notification) {
       }, this);
 
       if (activeModel) {
-        activeModel.set({'active_bookmark': true});
+        activeModel.setActive(true);
       }
     },
 
@@ -98,6 +114,7 @@ function(app, Backbone, _, EntriesManager, __t, Notification) {
 
     addNewBookmark: function(data) {
       data.user = data.user.toString();
+
       if (this.findWhere(data) === undefined) {
         this.create(data);
       }
@@ -162,38 +179,25 @@ function(app, Backbone, _, EntriesManager, __t, Notification) {
     serialize: function() {
       var bookmarks = {table:[],search:[],extension:[],other:[]};
       var isCustomBookmarks = this.isCustomBookmarks;
+      var currentUserGroup = app.user.get('group');
+      var navBlacklist = (currentUserGroup.get('nav_blacklist') || '').split(',').map(function (name) {
+        return name.trim();
+      });
 
-      this.collection.each(function(model) {
+      this.collection.each(function (model) {
         var bookmark = model.toJSON();
-        var currentUserGroup = app.users.getCurrentUser().get('group');
-        // force | remove from activity from navigation
-        if (bookmark.title === 'Activity') return false;
 
-        bookmark.cid = model.cid;
-
-        // skip system nav to an user
-        // if the user's group aren't allow to
-        // see it on the navigation panel
-        var skipSystemNav = false;
-        // @todo: bookmark.title to id or url.
-        switch (bookmark.title) {
-          case 'Activity':
-            skipSystemNav = currentUserGroup.get('show_activity') === 0;
-            break;
-          case 'Files':
-            skipSystemNav = currentUserGroup.get('show_files') === 0;
-            break;
-          case 'Users':
-            skipSystemNav = currentUserGroup.get('show_users') === 0;
-            break;
-          case 'Messages':
-            skipSystemNav = currentUserGroup.get('show_messages') === 0;
-            break;
-        }
-
-        if (skipSystemNav) {
+        if (navBlacklist.indexOf(bookmark.identifier) >= 0) {
           return false;
         }
+
+        // force | remove from activity from navigation
+        if (bookmark.title === 'Activity') {
+          return false;
+        }
+
+        bookmark.cid = model.cid;
+        bookmark.active_bookmark = model.isActive();
 
         if (bookmark.section === 'search') {
           bookmark.url = 'bookmark/' + encodeURIComponent(bookmark.title);
@@ -293,7 +297,9 @@ function(app, Backbone, _, EntriesManager, __t, Notification) {
         } else {
           self.removeBookmark(table);
         }
-      })
+      });
+
+      app.on('user:change:group', this.render, this);
     },
 
     addBookmark: function(model) {
@@ -315,7 +321,6 @@ function(app, Backbone, _, EntriesManager, __t, Notification) {
       this.collection.setActive(route);
       this.render();
     }
-
   });
 
   return Bookmarks;

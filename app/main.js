@@ -21,6 +21,7 @@ require(['config', 'polyfills'], function () {
     'schema/SchemaManager',
     'modules/settings/SettingsCollection',
     'core/entries/EntriesModel',
+    'core/extensions',
     'core/ExtensionManager',
     'core/EntriesManager',
     'core/ListViewManager',
@@ -29,7 +30,7 @@ require(['config', 'polyfills'], function () {
     'ext/moment-timeago',
     'contextual-date',
     'core/notification'
-  ], function (app, _, UIManager, Router, Backbone, alerts, __t, Tabs, Bookmarks, Messages, SchemaManager, SettingsCollection, EntriesModel, ExtensionManager, EntriesManager, ListViewManager, StatusTableCollection, Idle, moment, ContextualDate, Notification) {
+  ], function (app, _, UIManager, Router, Backbone, alerts, __t, Tabs, Bookmarks, Messages, SchemaManager, SettingsCollection, EntriesModel, Extension, ExtensionManager, EntriesManager, ListViewManager, StatusTableCollection, Idle, moment, ContextualDate, Notification) {
 
     'use strict';
 
@@ -49,6 +50,7 @@ require(['config', 'polyfills'], function () {
       default_interfaces: {},
       active_files: {},
       users: {},
+      user: {},
       bookmarks: {},
       extensions: [],
       messages: {},
@@ -176,32 +178,33 @@ require(['config', 'polyfills'], function () {
         url: app.API_URL + 'messages/rows'
       }, SchemaManager.getFullSchema('directus_messages')));
 
-      // app.messages.on('sync', function(collection, object) {
-      //   if (object != null && object.data) {
-      //     var messages = object.data;
-      //     if (!_.isArray(messages)) {
-      //       messages = [messages];
-      //     }
-      //
-      //     messages.forEach(function(msg) {
-      //       var message_excerpt = (msg.message && msg.message.length > 50) ? msg.message.substr(0, 50) : msg.message;
-      //       Notification.show('New Message — <i>' + msg.subject + '</i>', message_excerpt + '<br><br><i>View message</i>', {timeout: 5000,
-      //         callback: {
-      //           onCloseClick: function() {
-      //             Backbone.history.navigate('/messages/' + msg.id, true);
-      //           }
-      //         }
-      //       });
-      //     });
-      //   }
-      // });
-
       // Bootstrap data
       app.groups.reset(options.groups, {parse: true});
       app.users.reset(options.users, {parse: true});
       app.messages.reset(options.messages, {parse: true});
+      app.user = new app.users.model(options.user, _.extend({
+        // NOTE: the model has not url set, we need to set based on the users collection
+        urlRoot: app.users.url,
+        parse: true
+      }, SchemaManager.getFullSchema('directus_users')));
 
       app.startMessagesPolling();
+      app.users.on('change sync', function (collection, resp, options) {
+        var authenticatedUserModel = collection;
+
+        // NOTE: Some `change` events has empty collection parameter, fix it!
+        if (!authenticatedUserModel) {
+          return;
+        }
+
+        if (authenticatedUserModel instanceof Backbone.Collection) {
+          authenticatedUserModel = authenticatedUserModel.get(app.user.id, false);
+        }
+
+        if (authenticatedUserModel && authenticatedUserModel.id === app.user.id) {
+          app.user.set(_.clone(authenticatedUserModel.attributes));
+        }
+      });
 
       var autoLogoutMinutes = parseInt(app.settings.get('cms_user_auto_sign_out') || 60, 10);
 
@@ -246,11 +249,11 @@ require(['config', 'polyfills'], function () {
       // Default directus tabs
 
       var tabs = [
-        {id: 'users/' + app.users.getCurrentUser().get('id'), icon_class: 'icon-pencil', avatar: ''},
+        {id: 'users/' + app.user.id, icon_class: 'icon-pencil', avatar: ''},
         {id: 'logout', icon_class: 'icon-power-button'}
       ];
 
-      if (app.users.getCurrentUser().get('group').id === 1) {
+      if (app.user.get('group').id === 1) {
         tabs.unshift();
       }
 
@@ -262,21 +265,23 @@ require(['config', 'polyfills'], function () {
       options.tables.forEach(function (table) {
         table = table.schema;
         if (SchemaManager.getPrivileges(table.table_name)) {
-        var privileges = SchemaManager.getPrivileges(table.table_name);
-        if (privileges.get('allow_view') > 0 && !table.hidden && privileges.get('nav_listed') > 0) {
-            bookmarks.push(new Backbone.Model({
+          var privileges = SchemaManager.getPrivileges(table.table_name);
+          if (privileges.get('allow_view') > 0 && !table.hidden && privileges.get('nav_listed') > 0) {
+            bookmarks.push({
               icon_class: '',
+              identifier: table.table_name,
               title: app.capitalize(table.table_name),
               url: 'tables/' + encodeURIComponent(table.table_name),
               section: 'table'
-            }));
+            });
           }
         }
       });
 
       var bookmarksData = window.directusData.bookmarks;
       _.each(bookmarksData, function (bookmark) {
-        bookmarks.push(new Backbone.Model(bookmark));
+        bookmark.identifier = bookmark.title;
+        bookmarks.push(bookmark);
       });
 
       var extensions = ExtensionManager.getIds();
@@ -284,16 +289,17 @@ require(['config', 'polyfills'], function () {
       // Add extensions to bookmarks
       _.each(extensions, function (item) {
         item = ExtensionManager.getInfo(item);
-        bookmarks.push(new Backbone.Model({
+        bookmarks.push({
           icon_class: item.icon,
+          identifier: item.id,
           title: item.title,
           url: item.path,
           section: 'extension'
-        }));
+        });
       });
 
       // Grab nav permissions
-      var currentUserGroupId = app.users.getCurrentUser().get('group').get('id');
+      var currentUserGroupId = app.user.get('group').get('id');
       var currentUserGroup = app.groups.get(currentUserGroupId);
       var navBlacklist = (currentUserGroup.get('nav_blacklist') || '').split(',');
 
@@ -307,12 +313,13 @@ require(['config', 'polyfills'], function () {
         _.each(currentUserGroup.get('nav_override'), function (sectionItems, section) {
           _.each(sectionItems, function (item, title) {
             var path = item.path || '';
-            customBookmarks.push(new Backbone.Model({
+            customBookmarks.push({
               icon_class: item.icon,
               title: title,
               url: path,
+              identifier: title,
               section: section
-            }));
+            });
           });
         });
       } else {
@@ -327,7 +334,7 @@ require(['config', 'polyfills'], function () {
 
       // Filter out blacklisted bookmarks (case-sensitive)
       bookmarks = _.filter(bookmarks, function (bookmark) {
-        return !_.contains(navBlacklist, (bookmark.attributes.title || '').toLowerCase());
+        return !_.contains(navBlacklist, (bookmark.title || '').toLowerCase());
       });
 
       // Turn into collection
@@ -489,7 +496,7 @@ require(['config', 'polyfills'], function () {
       app.router = new Router({
         extensions: extensions,
         tabs: tabs,
-        navPrivileges: app.users.getCurrentUser().get('group')
+        navPrivileges: app.user.get('group')
       });
 
       // Trigger the initial route and enable HTML5 History API support, set the

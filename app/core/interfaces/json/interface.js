@@ -3,11 +3,17 @@ define(['core/UIView'], function (UIView) {
     template: 'json/input',
     events: {
       'keydown textarea': 'process',
-      'keyup textarea': 'validate',
+      'keyup textarea': 'onKeyUp',
       'click .interface_json_example': 'fillWithExample'
     },
     change: 0,
     lastValue: '',
+    onKeyUp: function (event) {
+      var value = event.currentTarget.value;
+
+      this.validate(event.currentTarget);
+      this.model.set(this.name, value);
+    },
     process: function (event) {
       var textarea = event.target;
 
@@ -48,25 +54,33 @@ define(['core/UIView'], function (UIView) {
       }
     },
 
-    validate: function (event) {
-      // Set changed flag
-      this.model.set(this.name, event.target.value);
+    validate: function (target) {
+      var value = target.value;
 
-      var textarea = event.target;
-      var value = textarea.value;
       if (value.length === 0) {
-        return this.clearError();
+        return target.classList.remove('invalid');
       }
 
-      this.validateJSON(value)
-        .then(this.clearError)
-        .catch(this.showError);
+      var success = true;
+
+      try {
+        JSON.parse(value);
+      } catch (err) {
+        success = false;
+      }
+
+      if (success) {
+        target.classList.remove('invalid');
+      } else {
+        target.classList.add('invalid');
+      }
     },
 
     getPreviousLine: function (before) {
       var textarea = this.$('textarea')[0];
       var lines = textarea.value.split(/\n/g);
       var line = before.trimRight().split(/\n/g).length - 1;
+
       return lines[line] || '';
     },
 
@@ -74,6 +88,7 @@ define(['core/UIView'], function (UIView) {
       var indent = this.options.settings.get('indent');
       var regex = new RegExp('^(' + indent + '+)', 'g');
       var match = line.match(regex);
+
       return (match && match[0].length / indent.length) || 0;
     },
 
@@ -94,8 +109,8 @@ define(['core/UIView'], function (UIView) {
     removeIndent: function (before, after) {
       var textarea = this.$('textarea')[0];
       var indent = this.options.settings.get('indent');
-
       var remove = before.slice(before.length - indent.length, before.length);
+
       if (remove !== indent) {
         return;
       }
@@ -106,41 +121,24 @@ define(['core/UIView'], function (UIView) {
       textarea.selectionEnd = before.length - indent.length;
     },
 
-    validateJSON: function (string) {
-      return new Promise(function (resolve, reject) {
-        try {
-          JSON.parse(string);
-          resolve();
-        } catch (err) {
-          reject(err);
-        }
-      });
-    },
-
-    clearError: function () {
+    fillWithExample: function (event) {
       var textarea = this.$('textarea')[0];
-      textarea.classList.remove('invalid');
-    },
 
-    showError: function () {
-      var textarea = this.$('textarea')[0];
-      textarea.classList.add('invalid');
-    },
-
-    fillWithExample: function (e) {
-      var textarea = this.$('textarea')[0];
       textarea.value = JSON.stringify({
         value1: 'Option One',
         value2: 'Option Two',
         value3: 'Option Three'
       }, null, '   ');
-      e.preventDefault();
+
+      event.preventDefault();
+
       return false;
     },
 
     serialize: function () {
       // Beautify JSON
       var value;
+
       if (this.options.value) {
         try {
           value = JSON.stringify(JSON.parse(this.options.value), null, this.options.settings.get('indent'));
@@ -148,6 +146,7 @@ define(['core/UIView'], function (UIView) {
           value = this.options.value;
         }
       }
+
       return {
         value: value,
         name: this.options.name,
@@ -155,6 +154,10 @@ define(['core/UIView'], function (UIView) {
         placeholder: this.options.settings.get('placeholder'),
         readOnly: this.options.settings.get('read_only') || !this.options.canWrite
       };
+    },
+
+    afterRender: function () {
+      this.validate(this.$('#' + this.name).get(0));
     }
   });
 });

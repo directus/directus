@@ -56,7 +56,6 @@ class SchemaTest extends PHPUnit_Framework_TestCase
             'schema_migrations',
             'settings',
             'tables',
-            'ui',
             'users'
         ]);
 
@@ -79,11 +78,12 @@ class SchemaTest extends PHPUnit_Framework_TestCase
             'databases'
         ];
 
-        $filteredTables = $schema->getDirectusTables(array_merge($pickCoreTables, $notExistingTable));
+        $tables = array_merge($pickCoreTables, $notExistingTable);
+        $filteredTables = $schema->getDirectusTables($tables);
 
-        foreach ($pickCoreTables as $pickCoreTable) {
-            $result = in_array($schema->addCoreTablePrefix($pickCoreTable), $filteredTables);
-            if (!in_array($pickCoreTable, $notExistingTable)) {
+        foreach ($tables as $table) {
+            $result = in_array($schema->addCoreTablePrefix($table), $filteredTables);
+            if (in_array($table, $notExistingTable)) {
                 $this->assertFalse($result);
             } else {
                 $this->assertTrue($result);

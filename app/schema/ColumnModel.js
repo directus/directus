@@ -2,6 +2,7 @@ define(function(require, exports, module) {
   'use strict';
 
   var app = require('app'),
+      Utils = require('utils'),
       Backbone = require('backbone'),
       _ = require('underscore'),
       UIModel = require('./UIModel'),
@@ -79,6 +80,18 @@ define(function(require, exports, module) {
       return this.relationship.get('related_table');
     },
 
+    getRelatedColumn: function () {
+      if (this.relationship) {
+        return this.relationship.get('junction_key_right');
+      }
+    },
+
+    getRelatedTableName: function () {
+      if (this.relationship) {
+        return this.relationship.get('related_table');
+      }
+    },
+
     getTable: function () {
       return this.collection.table;
     },
@@ -123,7 +136,7 @@ define(function(require, exports, module) {
       return this.getRelationshipType() === 'MANYTOMANY';
     },
 
-    isoneToMany: function () {
+    isOneToMany: function () {
       return this.getRelationshipType() === 'ONETOMANY';
     },
 
@@ -152,7 +165,30 @@ define(function(require, exports, module) {
     },
 
     isInputVisible: function () {
-      return this.get('hidden_input') || !this.isSystemColumn();
+      var hiddenInput = this.get('hidden_input');
+
+      if (Utils.isNothing(hiddenInput)) {
+        hiddenInput = this.isSystemColumn();
+      }
+
+      // Primary column that has not auto increment option should be visible
+      if (this.isPrimaryColumn() && this.hasAutoIncrement()) {
+        hiddenInput = true;
+      }
+
+      return !hiddenInput;
+    },
+
+    hasAutoIncrement: function () {
+      return this.get('extra') === 'auto_increment';
+    },
+
+    shouldValidate: function () {
+      if (this.isPrimaryColumn() && !this.hasAutoIncrement()) {
+        return true;
+      }
+
+      return !this.isSystemColumn();
     },
 
     getColumnTypeLength: function () {

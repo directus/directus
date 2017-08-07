@@ -75,13 +75,11 @@ function(app, _, Backbone, Notification, __t, TableHelpers, ModelHelper, TableHe
     },
 
     beforeRender: function() {
-      var options;
-      this.startRenderTime = new Date().getTime();
+      var options = this.options;
+
+      options.parentView = this;
 
       if (this.tableHead) {
-        options = this.options;
-        options.parentView = this;
-
         if (!this.tableHeadView) {
           this.tableHeadView = new TableHead(options);
         }
@@ -90,35 +88,32 @@ function(app, _, Backbone, Notification, __t, TableHelpers, ModelHelper, TableHe
       }
 
       if (this.collection.length > 0) {
-        options = _.pick(this.options,
-          'collection',
-          'systemCollection',
-          'system',
-          'isModelSelectable',
-          'selectable',
-          'filters',
-          'preferences',
-          'structure',
-          'sort',
-          'showRemoveButton',
-          'rowIdentifiers',
-          'saveAfterDrop',
-          'blacklist',
-          'highlight',
-          'columns'
-        );
-
-        options.parentView = this;
-
         if (!this.tableBodyView) {
-          this.tableBodyView = new this.TableBody(options);
+          this.tableBodyView = new this.TableBody(_.pick(this.options,
+            'collection',
+            'systemCollection',
+            'system',
+            'isModelSelectable',
+            'selectable',
+            'filters',
+            'preferences',
+            'structure',
+            'sort',
+            'showRemoveButton',
+            'rowIdentifiers',
+            'saveAfterDrop',
+            'blacklist',
+            'highlight',
+            'parentView',
+            'columns'
+          ));
         }
 
         this.insertView('table', this.tableBodyView);
       }
 
-      if (this.collection.length > 0 && this.options.footer !== false) {
-        this.insertView('table', new TableFooter(this.options));
+      if (this.collection.length > 0 && options.footer !== false) {
+        this.insertView('table', new TableFooter(options));
       }
     },
 
@@ -224,7 +219,7 @@ function(app, _, Backbone, Notification, __t, TableHelpers, ModelHelper, TableHe
         app.sendFiles(event.dataTransfer.files, function (data) {
           _.each(data, function (item) {
             var table = app.schemaManager.getTable('directus_users');
-            item.user = app.users.getCurrentUser().id;
+            item.user = app.user.id;
             item[table.getStatusColumnName()] = table.getStatusDefaultValue();
             // item[app.statusMapping.status_name] = app.statusMapping.active_num;
 
@@ -241,18 +236,35 @@ function(app, _, Backbone, Notification, __t, TableHelpers, ModelHelper, TableHe
     },
 
     getTableColumns: function() {
-      var structure = this.collection.structure,
-          blacklist = this.options.blacklist || [],
-          columns;
+      var structure = this.collection.structure;
+      var blacklist = this.options.blacklist || [];
+      var whitelist = this.options.whitelist || [];
+      var columns = whitelist;
 
-      columns = _.filter(this.collection.getColumns(), function(col) {
-        var columnModel = structure.get(col),
-            hiddenList = (columnModel && columnModel.get('hidden_list') !== true);
-
-        return !_.contains(blacklist, col) && hiddenList;
+      _.each(this.collection.getColumns(), function (column) {
+        if (!_.contains(columns, column)) {
+          columns.push(column);
+        }
       });
 
-      return columns;
+      columns = _.filter(columns, function (column) {
+        var columnModel = structure.get(column);
+        var hiddenList;
+
+        if (!columnModel) {
+          return false;
+        }
+
+        if (_.contains(whitelist, column)) {
+          return true;
+        }
+
+        hiddenList = (columnModel && columnModel.get('hidden_input') !== true);
+
+        return !_.contains(blacklist, column) && hiddenList;
+      });
+
+      return _.uniq(columns);
     },
 
     getTableCollection: function () {

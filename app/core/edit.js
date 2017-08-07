@@ -156,6 +156,10 @@ define(function(require, exports, module) {
         // forcing interface-based visibility
         var visibility = _.result(view, 'visible');
         var isHidden = Utils.isSomething(visibility) ? !visibility : _.contains(this.hiddenFields, column.id);
+        if (_.contains(this.forceVisibleFields, column.id)) {
+          isHidden = false;
+        }
+
         if (isHidden) {
           view.$el.css({'display':'none'});
         }
@@ -303,6 +307,8 @@ define(function(require, exports, module) {
       this.hiddenFields = _.union(optionsHiddenFields, structureHiddenFields, this.hiddenFields || []);
       this.visibleFields = _.difference(this.structure.pluck('id'), this.hiddenFields);
       this.omittedFields = options.omittedFields;
+      // NOTE: This was implemented to force status interface to be visible on translation view
+      this.forceVisibleFields = options.forceVisibleFields || [];
 
       // @todo rewrite this!
       this.model.on('invalid', function(model, errors) {
