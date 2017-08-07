@@ -238,7 +238,6 @@ class MySQLSchema extends AbstractSchema
             'C.COLUMN_NAME = D.column_name AND C.TABLE_NAME = D.table_name',
             [
                 'ui',
-                'hidden_list' => new Expression('IFNULL(hidden_list, 0)'),
                 'hidden_input' => new Expression('IFNULL(hidden_input, 0)'),
                 'relationship_type',
                 'related_table',
@@ -285,7 +284,6 @@ class MySQLSchema extends AbstractSchema
             'sort',
             'column_type' => new Expression('NULL'),
             'ui',
-            'hidden_list',
             'hidden_input',
             'relationship_type',
             'related_table',
@@ -353,7 +351,6 @@ class MySQLSchema extends AbstractSchema
             'C.COLUMN_NAME = D.column_name AND C.TABLE_NAME = D.table_name',
             [
                 'ui',
-                'hidden_list' => new Expression('IFNULL(hidden_list, 0)'),
                 'hidden_input' => new Expression('IFNULL(hidden_input, 0)'),
                 'relationship_type',
                 'related_table',
@@ -396,7 +393,6 @@ class MySQLSchema extends AbstractSchema
             'comment',
             'column_type' => new Expression('NULL'),
             'ui',
-            'hidden_list',
             'hidden_input',
             'relationship_type',
             'related_table',
@@ -686,5 +682,31 @@ class MySQLSchema extends AbstractSchema
     public function isNumericType($type)
     {
         return in_array(strtolower($type), $this->getNumericTypes());
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getStringTypes()
+    {
+        return [
+            'char',
+            'varchar',
+            'text',
+            'enum',
+            'set',
+            'tinytext',
+            'text',
+            'mediumtext',
+            'longtext'
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function isStringType($type)
+    {
+        return in_array(strtolower($type), $this->getStringTypes());
     }
 }

@@ -390,14 +390,16 @@ ul {
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: #eeeeee;
   opacity: 0;
   z-index: 0;
   text-align: center; }
   .loading.blocking {
-    z-index: 999; }
+    z-index: 999;
+    opacity: 1;
+    background-color: rgba(238, 238, 238, 0.5); }
   .loading.fading {
-    opacity: 1; }
+    opacity: 1;
+    background-color: #eeeeee; }
   .loading .loading-container {
     -webkit-box-shadow: 0px 0px 2px 0px rgba(0, 0, 0, 0.05);
     -moz-box-shadow: 0px 0px 2px 0px rgba(0, 0, 0, 0.05);
@@ -3543,7 +3545,8 @@ body.loading .header .logo {
             margin-bottom: 20px;
             margin-top: 20px; }
             .right-sidebar .scroll-y ul.timeline li.comment.create {
-              padding: 0; }
+              padding: 0;
+              overflow: hidden; }
               .right-sidebar .scroll-y ul.timeline li.comment.create textarea {
                 -webkit-transition: all 200ms ease-in-out 0ms;
                 -moz-transition: all 200ms ease-in-out 0ms;
@@ -3556,32 +3559,47 @@ body.loading .header .logo {
                 display: block;
                 padding: 16px;
                 width: 100%;
-                height: 100%;
                 border: none;
                 resize: none;
                 color: #999999;
                 line-height: 22px;
                 font-size: 14px;
                 height: 54px; }
-                .right-sidebar .scroll-y ul.timeline li.comment.create textarea:focus {
+                .right-sidebar .scroll-y ul.timeline li.comment.create textarea.active, .right-sidebar .scroll-y ul.timeline li.comment.create textarea:focus {
                   height: 148px; }
-                  .right-sidebar .scroll-y ul.timeline li.comment.create textarea:focus + .comment-instructions {
-                    opacity: 1; }
-              .right-sidebar .scroll-y ul.timeline li.comment.create .comment-instructions {
+                  .right-sidebar .scroll-y ul.timeline li.comment.create textarea.active + button, .right-sidebar .scroll-y ul.timeline li.comment.create textarea:focus + button {
+                    opacity: 1;
+                    bottom: 8px; }
+                .right-sidebar .scroll-y ul.timeline li.comment.create textarea.active + button {
+                  background-color: #3498DB;
+                  color: #FFFFFF;
+                  cursor: pointer; }
+                  .right-sidebar .scroll-y ul.timeline li.comment.create textarea.active + button:hover {
+                    background-color: #217dbb;
+                    color: #FFFFFF; }
+              .right-sidebar .scroll-y ul.timeline li.comment.create button {
                 -webkit-transition: all 200ms ease-in-out 0ms;
                 -moz-transition: all 200ms ease-in-out 0ms;
                 -o-transition: all 200ms ease-in-out 0ms;
                 -ms-transition: all 200ms ease-in-out 0ms;
                 transition: all 200ms ease-in-out 0ms;
+                -webkit-border-radius: 2px;
+                -moz-border-radius: 2px;
+                border-radius: 2px;
+                -moz-background-clip: padding;
+                -webkit-background-clip: padding-box;
+                background-clip: padding-box;
                 position: absolute;
-                bottom: 16px;
-                right: 16px;
-                color: #DDDDDD;
-                font-size: 10px;
-                line-height: 13px;
+                bottom: -26px;
+                right: 8px;
+                background-color: #EEEEEE;
+                padding: 2px 10px;
+                color: #CCCCCC;
                 text-transform: uppercase;
+                font-size: 12px;
+                font-weight: 600;
                 opacity: 0;
-                pointer-events: none; }
+                cursor: not-allowed; }
             .right-sidebar .scroll-y ul.timeline li.comment .byline {
               position: relative;
               font-weight: 500;
@@ -3621,6 +3639,37 @@ body.loading .header .logo {
                 border: 2px solid #FFFFFF; }
                 .right-sidebar .scroll-y ul.timeline li.comment .byline .avatar img {
                   width: 100%; }
+          .right-sidebar .scroll-y ul.timeline li.mention-list {
+            -webkit-box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.2);
+            -moz-box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.2);
+            box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.2);
+            -webkit-border-radius: 2px;
+            -moz-border-radius: 2px;
+            border-radius: 2px;
+            -moz-background-clip: padding;
+            -webkit-background-clip: padding-box;
+            background-clip: padding-box;
+            background-color: #FFFFFF;
+            margin-bottom: 20px; }
+            .right-sidebar .scroll-y ul.timeline li.mention-list .mention-choice {
+              -webkit-transition: all 200ms ease-in-out 0ms;
+              -moz-transition: all 200ms ease-in-out 0ms;
+              -o-transition: all 200ms ease-in-out 0ms;
+              -ms-transition: all 200ms ease-in-out 0ms;
+              transition: all 200ms ease-in-out 0ms;
+              padding: 10px; }
+              .right-sidebar .scroll-y ul.timeline li.mention-list .mention-choice:hover {
+                color: #3498DB;
+                cursor: pointer; }
+              .right-sidebar .scroll-y ul.timeline li.mention-list .mention-choice img {
+                -webkit-border-radius: 50%;
+                -moz-border-radius: 50%;
+                border-radius: 50%;
+                -moz-background-clip: padding;
+                -webkit-background-clip: padding-box;
+                background-clip: padding-box;
+                vertical-align: middle;
+                margin-right: 10px; }
     .right-sidebar .scroll-y input[type="checkbox"].custom-checkbox + label {
       color: #999999; }
       .right-sidebar .scroll-y input[type="checkbox"].custom-checkbox + label span {
@@ -4811,6 +4860,10 @@ body.help .discover-spotlight {
   cursor: pointer; }
   .mention:hover {
     color: #2383c4; }
+
+.mention-choice img {
+  width: 30px;
+  margin-right: 5px; }
 
 .message {
   position: absolute;

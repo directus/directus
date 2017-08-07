@@ -4,10 +4,10 @@
 
 {{#if canComment}}
 <li class="comment create">
-	<textarea id="itemCommentText" placeholder="Write a comment..."></textarea>
-	<div class="comment-instructions">Press ENTER to submit</div>
-	<span id="tagInsert" class="mention-list"></span>
+	<textarea id="itemCommentText" placeholder="{{t 'write_comment'}}"></textarea>
+	<button class="btn btn-small submitComment">{{t "submit"}}</button>
 </li>
+<li id="tagInsert" class="mention-list"></li>
 {{/if}}
 
 {{#activities}}

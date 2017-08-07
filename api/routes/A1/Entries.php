@@ -20,17 +20,19 @@ class Entries extends Route
         $ZendDb = $this->app->container->get('zenddb');
         $acl = $this->app->container->get('acl');
         $tableGateway = new TableGateway($table, $ZendDb, $acl);
+        $primaryKey = $tableGateway->primaryKeyFieldName;
 
         switch ($this->app->request()->getMethod()) {
             case 'POST':
                 $newRecord = $entriesService->createEntry($table, $payload, $params);
-                $params[$tableGateway->primaryKeyFieldName] = $newRecord[$tableGateway->primaryKeyFieldName];
+                $params[$primaryKey] = ArrayUtils::get($newRecord->toArray(), $primaryKey);
                 break;
             case 'PUT':
                 if (!is_numeric_array($payload)) {
-                    $params[$tableGateway->primaryKeyFieldName] = $payload[$tableGateway->primaryKeyFieldName];
+                    $params[$primaryKey] = ArrayUtils::get($payload, $primaryKey);
                     $payload = [$payload];
                 }
+
                 $tableGateway->updateCollection($payload);
                 break;
         }
@@ -143,7 +145,7 @@ class Entries extends Route
             $params['columns'] = '';
         }
 
-        $columns = ($params['columns']) ? explode(',', $params['columns']) : [];
+        $columns = $visibleColumns = ($params['columns']) ? explode(',', $params['columns']) : [];
         ArrayUtils::push($columns, $Table->primaryKeyFieldName);
         $params['columns'] = implode(',', $columns);
         if (count($columns) > 0) {
@@ -163,7 +165,7 @@ class Entries extends Route
         $response = [];
         foreach ($entries as $entry) {
             $tokens = [];
-            foreach ($columns as $col) {
+            foreach ($visibleColumns as $col) {
                 array_push($tokens, $entry[$col]);
             }
 

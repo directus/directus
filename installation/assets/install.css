@@ -119,6 +119,7 @@ input[type=number] {
   transition: all 200ms linear;
   padding: 10px 12px;
   width: 100%;
+  text-transform: initial;
   margin-top: 5px;
   margin-bottom: 20px;
   font-size: 16px;
@@ -130,12 +131,6 @@ input[type=number] {
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none; }
-  select option,
-  input[type=text] option,
-  input[type=email] option,
-  input[type=password] option,
-  input[type=number] option {
-    padding: 10px 12px; }
   select:focus,
   input[type=text]:focus,
   input[type=email]:focus,
@@ -180,7 +175,8 @@ input[type=number] {
 
 .select-arrow {
   position: absolute;
-  top: 10px;
+  top: 50%;
+  transform: translateY(-80%);
   right: 4px;
   font-size: 29px; }
 

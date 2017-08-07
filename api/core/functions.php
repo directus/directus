@@ -2,6 +2,7 @@
 
 require __DIR__ . '/constants.php';
 require __DIR__ . '/helpers/mail.php';
+require __DIR__ . '/helpers/sorting.php';
 
 if (!function_exists('uc_convert')) {
     /**
@@ -126,7 +127,7 @@ if (!function_exists('ping_server')) {
     {
         // @TODO: Fix error when the route exists but there's an error
         // It will not return "pong" back
-        $response = @file_get_contents(get_url('/api/1/ping'));
+        $response = @file_get_contents(get_url('/api/1.1/ping'));
 
         return $response === 'pong';
     }
@@ -155,9 +156,10 @@ if (!function_exists('get_directus_path')) {
     function get_directus_path($subPath = '')
     {
         if (!defined('DIRECTUS_PATH')) {
+            $rootPath = realpath($_SERVER['DOCUMENT_ROOT']);
             $basePath = realpath(__DIR__ . '/../..');
-            $position = (int) strpos($basePath, $_SERVER['DOCUMENT_ROOT']);
-            $length = strlen($_SERVER['DOCUMENT_ROOT']);
+            $position = (int) strpos($basePath, $rootPath);
+            $length = strlen($rootPath);
             $path = normalize_path(substr($basePath, $position + $length));
         } else {
             $path = DIRECTUS_PATH;
@@ -1306,7 +1308,7 @@ if (!function_exists('get_project_info')) {
         $settings = $settingsTable->fetchCollection('global');
 
         $projectName = isset($settings['project_name']) ? $settings['project_name'] : 'Directus';
-        $defaultProjectLogo = get_directus_path('/assets/img/directus-logo-flat.svg');
+        $defaultProjectLogo = get_directus_path('/assets/imgs/directus-logo-flat.svg');
         if (isset($settings['cms_thumbnail_url']) && $settings['cms_thumbnail_url']) {
             $projectLogoURL = $settings['cms_thumbnail_url'];
             $filesTable = \Directus\Database\TableGatewayFactory::create('directus_files');
@@ -1342,6 +1344,10 @@ if (!function_exists('get_missing_requirements')) {
 
         if (!defined('PDO::ATTR_DRIVER_NAME')) {
             $errors[] = 'Your host needs to have PDO enabled to run this version of Directus!';
+        }
+
+        if (defined('PDO::ATTR_DRIVER_NAME') && !in_array('mysql', PDO::getAvailableDrivers())) {
+            $errors[] = 'Your host needs to have PDO MySQL Driver enabled to run this version of Directus!';
         }
 
         if (!extension_loaded('gd') || !function_exists('gd_info')) {

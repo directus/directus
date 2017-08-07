@@ -84,11 +84,6 @@ class CreateDirectusColumnsTable extends Ruckusing_Migration_Base
             'null' => false,
             'default' => 0
         ]);
-        $t->column('hidden_list', 'tinyinteger', [
-            'limit' => 1,
-            'null' => false,
-            'default' => 0
-        ]);
         $t->column('required', 'tinyinteger', [
             'limit' => 1,
             'null' => false,
@@ -119,7 +114,6 @@ class CreateDirectusColumnsTable extends Ruckusing_Migration_Base
             'data_type' => NULL,
             'ui' => 'many_to_one',
             'hidden_input' => 0,
-            'hidden_list' => 0,
             'required' => 0,
             'relationship_type' => 'MANYTOONE',
             'related_table' => 'directus_groups',
@@ -136,7 +130,6 @@ class CreateDirectusColumnsTable extends Ruckusing_Migration_Base
             'data_type' => 'INT',
             'ui' => 'single_file',
             'hidden_input' => 0,
-            'hidden_list' => 0,
             'required' => 0,
             'relationship_type' => 'MANYTOONE',
             'related_table' => 'directus_files',
@@ -153,7 +146,6 @@ class CreateDirectusColumnsTable extends Ruckusing_Migration_Base
             'data_type' => 'ALIAS',
             'ui' => 'directus_users',
             'hidden_input' => 0,
-            'hidden_list' => 0,
             'required' => 0,
             'relationship_type' => 'ONETOMANY',
             'related_table' => 'directus_users',
@@ -168,7 +160,6 @@ class CreateDirectusColumnsTable extends Ruckusing_Migration_Base
             'data_type' => 'ALIAS',
             'ui' => 'directus_permissions',
             'hidden_input' => 0,
-            'hidden_list' => 0,
             'required' => 0,
             'relationship_type' => 'ONETOMANY',
             'related_table' => 'directus_privileges',

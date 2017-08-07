@@ -55,7 +55,6 @@
     "single": "Unique",
     "hidden": "Masqué",
     "hidden_input": "Masquer l'entrée",
-    "hidden_list": "Masquer la liste",
     "is_junction_table": "Est une table de jointure",
     "delete": "Supprimer",
     "footer": "Bas de page",

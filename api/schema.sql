@@ -81,7 +81,6 @@ CREATE TABLE `directus_columns` (
   `junction_key_left` varchar(64) DEFAULT NULL,
   `junction_key_right` varchar(64) DEFAULT NULL,
   `hidden_input` tinyint(1) NOT NULL DEFAULT '0',
-  `hidden_list` tinyint(1) NOT NULL DEFAULT '0',
   `required` tinyint(1) NOT NULL DEFAULT '0',
   `sort` int(11) DEFAULT NULL,
   `comment` varchar(1024) DEFAULT NULL,
@@ -93,12 +92,12 @@ CREATE TABLE `directus_columns` (
 LOCK TABLES `directus_columns` WRITE;
 /*!40000 ALTER TABLE `directus_columns` DISABLE KEYS */;
 
-INSERT INTO `directus_columns` (`id`, `table_name`, `column_name`, `data_type`, `ui`, `relationship_type`, `related_table`, `junction_table`, `junction_key_left`, `junction_key_right`, `hidden_input`, `hidden_list`, `required`, `sort`, `comment`, `options`)
+INSERT INTO `directus_columns` (`id`, `table_name`, `column_name`, `data_type`, `ui`, `relationship_type`, `related_table`, `junction_table`, `junction_key_left`, `junction_key_right`, `hidden_input`, `required`, `sort`, `comment`, `options`)
 VALUES
-	(1,'directus_users','group','INT','many_to_one','MANYTOONE','directus_groups',NULL,NULL,'group_id',0,0,0,NULL,'',NULL),
-	(2,'directus_users','avatar_file_id','INT','single_file','MANYTOONE','directus_files',NULL,NULL,'avatar_file_id',0,0,0,NULL,'',NULL),
-	(3,'directus_groups','users','ALIAS','directus_users','ONETOMANY','directus_users',NULL,NULL,'group',0,0,0,NULL,NULL,NULL),
-	(4,'directus_groups','permissions','ALIAS','directus_permissions','ONETOMANY','directus_privileges',NULL,NULL,'group_id',0,0,0,NULL,NULL,NULL);
+	(1,'directus_users','group','INT','many_to_one','MANYTOONE','directus_groups',NULL,NULL,'group_id',0,0,NULL,'',NULL),
+	(2,'directus_users','avatar_file_id','INT','single_file','MANYTOONE','directus_files',NULL,NULL,'avatar_file_id',0,0,NULL,'',NULL),
+	(3,'directus_groups','users','ALIAS','directus_users','ONETOMANY','directus_users',NULL,NULL,'group',0,0,NULL,NULL,NULL),
+	(4,'directus_groups','permissions','ALIAS','directus_permissions','ONETOMANY','directus_privileges',NULL,NULL,'group_id',0,0,NULL,NULL,NULL);
 
 /*!40000 ALTER TABLE `directus_columns` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -111,7 +110,7 @@ DROP TABLE IF EXISTS `directus_files`;
 
 CREATE TABLE `directus_files` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `active` tinyint(1) DEFAULT '1',
+  `status` tinyint(1) DEFAULT '1',
   `name` varchar(255) DEFAULT NULL,
   `title` varchar(255) DEFAULT '',
   `location` varchar(200) DEFAULT NULL,
@@ -129,7 +128,15 @@ CREATE TABLE `directus_files` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+LOCK TABLES `directus_files` WRITE;
+/*!40000 ALTER TABLE `directus_files` DISABLE KEYS */;
 
+INSERT INTO `directus_files` (`id`, `status`, `name`, `title`, `location`, `caption`, `type`, `charset`, `tags`, `width`, `height`, `size`, `embed_id`, `user`, `date_uploaded`, `storage_adapter`, `identifier`)
+VALUES
+	(1, 1, '00000000001.jpg', 'Mountain Range', 'Earth', 'A gorgeous view of this wooded mountain range', 'image/jpeg', 'binary', 'trees,rocks,nature,mountains,forest', 1800, 1200, 602058, NULL, 1, '2017-07-19 15:44:10', 'local', NULL);
+
+/*!40000 ALTER TABLE `directus_files` ENABLE KEYS */;
+UNLOCK TABLES;
 
 # Dump of table directus_groups
 # ------------------------------------------------------------
@@ -142,10 +149,6 @@ CREATE TABLE `directus_groups` (
   `description` varchar(500) DEFAULT NULL,
   `restrict_to_ip_whitelist` text,
   `nav_override` text,
-  `show_activity` tinyint(1) NOT NULL DEFAULT '1',
-  `show_messages` tinyint(1) NOT NULL DEFAULT '1',
-  `show_users` tinyint(1) NOT NULL DEFAULT '1',
-  `show_files` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`),
   UNIQUE KEY `directus_users_name_unique` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -153,10 +156,10 @@ CREATE TABLE `directus_groups` (
 LOCK TABLES `directus_groups` WRITE;
 /*!40000 ALTER TABLE `directus_groups` DISABLE KEYS */;
 
-INSERT INTO `directus_groups` (`id`, `name`, `description`, `restrict_to_ip_whitelist`, `nav_override`, `show_activity`, `show_messages`, `show_users`, `show_files`)
+INSERT INTO `directus_groups` (`id`, `name`, `description`, `restrict_to_ip_whitelist`, `nav_override`)
 VALUES
-	(1,'Administrator','Admins have access to all managed data within the system by default',NULL,NULL,1,1,1,1),
-	(2,'Public','This sets the data that is publicly available through the API without a token',NULL,NULL,1,1,1,1);
+	(1,'Administrator','Admins have access to all managed data within the system by default',NULL,NULL,1),
+	(2,'Public','This sets the data that is publicly available through the API without a token',NULL,NULL,1);
 
 /*!40000 ALTER TABLE `directus_groups` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -377,7 +380,7 @@ DROP TABLE IF EXISTS `directus_users`;
 
 CREATE TABLE `directus_users` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `active` tinyint(1) DEFAULT '1',
+  `status` tinyint(1) DEFAULT '1',
   `first_name` varchar(50) DEFAULT '',
   `last_name` varchar(50) DEFAULT '',
   `email` varchar(128) NOT NULL DEFAULT '',

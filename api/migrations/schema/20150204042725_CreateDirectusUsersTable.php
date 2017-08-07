@@ -49,7 +49,7 @@ class CreateDirectusUsersTable extends Ruckusing_Migration_Base
             'auto_increment' => true,
             'primary_key' => true
         ]);
-        $t->column('active', 'tinyinteger', [
+        $t->column('status', 'tinyinteger', [
             'limit' => 1,
             'default' => 1
         ]);

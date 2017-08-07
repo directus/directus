@@ -107,7 +107,7 @@ class Facebook extends AbstractProvider
         ];
 
         // backwards compatibility less than 2.8
-        if ((float) substr($this->graphApiVersion, 1) < 2.8) {
+        if (version_compare(substr($this->graphApiVersion, 1), '2.8') < 0) {
             $fields[] = 'bio';
         }
 

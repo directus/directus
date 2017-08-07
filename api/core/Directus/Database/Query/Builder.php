@@ -613,7 +613,13 @@ class Builder
         }
 
         if ($this->groupBys !== null) {
-            $select->group($this->groupBys);
+            $groupBys = [];
+
+            foreach ($this->groupBys as $groupBy) {
+                $groupBys[] = $this->getIdentifier($groupBy);
+            }
+
+            $select->group($groupBys);
         }
 
         if ($this->getHavings() !== null) {
@@ -672,10 +678,29 @@ class Builder
     {
         $order = [];
         foreach($this->getOrder() as $orderBy => $orderDirection) {
-            $order[] = sprintf('%s %s', $orderBy, $orderDirection);
+            $order[] = sprintf('%s %s', $this->getIdentifier($orderBy), $orderDirection);
         }
 
         return $order;
+    }
+
+    /**
+     * Get the column identifier (table name prepended)
+     *
+     * @param string $column
+     *
+     * @return string
+     */
+    protected function getIdentifier($column)
+    {
+        $platform = $this->getConnection()->getPlatform();
+        $table = $this->getFrom();
+
+        if (strpos($column, $platform->getIdentifierSeparator()) === false) {
+            $column = implode($platform->getIdentifierSeparator(), [$table, $column]);
+        }
+
+        return $column;
     }
 
     protected function buildConditionExpression($condition)
@@ -685,44 +710,46 @@ class Builder
         if ($not === true) {
             $notChar = $condition['operator'] === '=' ? '!' : 'n';
         }
+
         $operator = $notChar . $condition['operator'];
 
         $column = $condition['column'];
+        $identifier = $this->getIdentifier($column);
         $value = $condition['value'];
 
         if ($value instanceof Builder) {
             $value = $value->buildSelect();
         }
 
-        switch($operator) {
+        switch ($operator) {
             case 'in':
-                $expression = new In($column, $value);
+                $expression = new In($identifier, $value);
                 break;
             case 'nin':
-                $expression = new NotIn($column, $value);
+                $expression = new NotIn($identifier, $value);
                 break;
             case 'like':
                 $value = "%$value%";
-                $expression = new Like($column, $value);
+                $expression = new Like($identifier, $value);
                 break;
             case 'nlike':
                 $value = "%$value%";
-                $expression = new NotLike($column, $value);
+                $expression = new NotLike($identifier, $value);
                 break;
             case 'null':
-                $expression = new IsNull($column);
+                $expression = new IsNull($identifier);
                 break;
             case 'nnull':
-                $expression = new IsNotNull($column);
+                $expression = new IsNotNull($identifier);
                 break;
             case 'between':
-                $expression = new Between($column, array_shift($value), array_pop($value));
+                $expression = new Between($identifier, array_shift($value), array_pop($value));
                 break;
             case 'nbetween':
-                $expression = new  NotBetween($column, array_shift($value), array_pop($value));
+                $expression = new  NotBetween($identifier, array_shift($value), array_pop($value));
                 break;
             default:
-                $expression = new Operator($column, $operator, $value);
+                $expression = new Operator($identifier, $operator, $value);
         }
 
         return $expression;

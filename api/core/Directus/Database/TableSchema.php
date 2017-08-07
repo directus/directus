@@ -4,6 +4,7 @@ namespace Directus\Database;
 
 use Directus\Authentication\Provider as Auth;
 use Directus\Bootstrap;
+use Directus\Config\Config;
 use Directus\Database\Object\Column;
 use Directus\Database\Object\Table;
 use Directus\Database\TableGateway\DirectusPreferencesTableGateway;
@@ -38,6 +39,9 @@ class TableSchema
      */
     protected static $connection = null;
 
+    /**
+     * @var Config
+     */
     protected static $config = [];
 
     public static $many_to_one_uis = ['many_to_one', 'single_files'];
@@ -147,7 +151,7 @@ class TableSchema
         $statusMapping = $tableObject->getStatusMapping();
 
         if (!$statusMapping) {
-            $statusMapping = ArrayUtils::get(static::$config, 'statusMapping', []);
+            $statusMapping = static::$config->get('statusMapping', []);
         }
 
         if ($statusMapping) {
@@ -513,14 +517,16 @@ class TableSchema
         return static::hasTableColumn($table, $column, $includeAlias);
     }
 
-    public static function hasTableColumn($table, $column, $includeAlias = false)
+    public static function hasTableColumn($table, $column, $includeAlias = false, $skipAcl = false)
     {
-        $columns = array_flip(self::getTableColumns($table, null, true));
+        $tableObject = static::getTableSchema($table, [], false, $skipAcl);
+
+        $columns = $tableObject->getNonAliasColumnsName();
         if ($includeAlias) {
-            $columns = array_merge($columns, array_flip(self::getAllAliasTableColumns($table, true)));
+            $columns = array_merge($columns, $tableObject->getAliasColumnsName());
         }
 
-        if (array_key_exists($column, $columns)) {
+        if (in_array($column, $columns)) {
             return true;
         }
 
@@ -780,7 +786,7 @@ class TableSchema
         // Append preferences post cache
         $preferences = $getPreferencesFn();
         foreach ($schemas as &$table) {
-            $table['preferences'] = $preferences[$table['schema']['id']];
+            $table['preferences'] = ArrayUtils::get($preferences, $table['schema']['id']);
         }
 
         return $schemas;

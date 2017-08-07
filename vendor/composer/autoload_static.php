@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticIniteffec1bf4b25c5836f07203d69d63933
+class ComposerStaticInit99459fe5a7509622560a9bf981122741
 {
     public static $files = array (
         'c964ee0ededf28c96ebd9db5099ef910' => __DIR__ . '/..' . '/guzzlehttp/promises/src/functions_include.php',
@@ -73,8 +73,8 @@ class ComposerStaticIniteffec1bf4b25c5836f07203d69d63933
         array (
             0 => __DIR__ . '/..' . '/league/oauth2-client/src',
             1 => __DIR__ . '/..' . '/league/oauth2-github/src',
-            2 => __DIR__ . '/..' . '/league/oauth2-facebook/src',
-            3 => __DIR__ . '/..' . '/league/oauth2-google/src',
+            2 => __DIR__ . '/..' . '/league/oauth2-google/src',
+            3 => __DIR__ . '/..' . '/league/oauth2-facebook/src',
         ),
         'League\\OAuth1\\' => 
         array (
@@ -161,9 +161,9 @@ class ComposerStaticIniteffec1bf4b25c5836f07203d69d63933
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticIniteffec1bf4b25c5836f07203d69d63933::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticIniteffec1bf4b25c5836f07203d69d63933::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticIniteffec1bf4b25c5836f07203d69d63933::$prefixesPsr0;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit99459fe5a7509622560a9bf981122741::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit99459fe5a7509622560a9bf981122741::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit99459fe5a7509622560a9bf981122741::$prefixesPsr0;
 
         }, null, ClassLoader::class);
     }
