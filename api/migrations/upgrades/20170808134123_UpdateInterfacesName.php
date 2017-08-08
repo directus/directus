@@ -22,6 +22,9 @@ class UpdateInterfacesName extends Ruckusing_Migration_Base
         foreach ($this->names as $old => $new) {
             $this->updateUI($this->tableName, $old, $new);
         }
+
+        $this->updateSystemUI($this->tableName, 'id', 'numeric', 'primary_key');
+        $this->updateSystemUI($this->tableName, 'sort', 'numeric', 'sort');
     }//up()
 
     public function down()
@@ -29,11 +32,21 @@ class UpdateInterfacesName extends Ruckusing_Migration_Base
         foreach ($this->names as $old => $new) {
             $this->updateUI($this->tableName, $new, $old);
         }
+
+        $this->updateSystemUI($this->tableName, 'id', 'primary_key', 'numeric');
+        $this->updateSystemUI($this->tableName, 'sort', 'sort', 'numeric');
     }//down()
 
     protected function updateUI($table, $from, $to)
     {
-        $query = sprintf('UPDATE %s SET `ui` = "%s" WHERE `ui` = "%s"', $table, $to, $from);
+        $query = sprintf('UPDATE `%s` SET `ui` = "%s" WHERE `ui` = "%s"', $table, $to, $from);
+
+        $this->execute($query);
+    }
+
+    protected function updateSystemUI($table, $name, $from, $to)
+    {
+        $query = sprintf('UPDATE `%s` SET `ui` = "%s" WHERE `ui` = "%s" AND `column_name` = "%s"', $table, $to, $from, $name);
 
         $this->execute($query);
     }
