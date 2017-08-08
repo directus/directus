@@ -2,7 +2,8 @@
 <img src="https://camo.githubusercontent.com/ebf016c308b7472411bd951e5ee3c418a44c0755/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f662e636c2e6c792f6974656d732f33513238333030343348315931633146314b32442f64697265637475732d6c6f676f2d737461636b65642e706e67" alt="Directus Logo"/>
 </p>
 
-<p align="center">Free & Open-Source Headless CMS</p>
+<p align="center">Open-Source Headless CMS & API</p>
+<p>&nbsp;</p>
 
 [![Join the chat at https://slack.getdirectus.com](https://img.shields.io/badge/chat-on%20slack-C7205A.svg)](https://slack.getdirectus.com)
 ![BrowserStack Status](https://www.browserstack.com/automate/badge.svg?badge_key=<badge_key>)
