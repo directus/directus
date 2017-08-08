@@ -369,10 +369,18 @@ gulp.task('move', function() {
   var dirsToKeep = [
     './customs/interfaces/.gitignore',
     './customs/endpoints/.htaccess',
+    './customs/endpoints/_example.php',
     './customs/extensions/.htaccess',
     './customs/extensions/.gitignore',
+    './customs/extensions/_example/**/*',
+    './customs/hashers/_CustomHasher.php',
+    './customs/hooks/BeforeInsertProducts.php',
+    './customs/interfaces/_example/**/*',
+    './customs/interfaces/rating/**/*',
     './storage/uploads/.htaccess',
     './storage/uploads/**/.gitignore',
+    './storage/uploads/00000000001.jpg',
+    './storage/uploads/thumbs/1.jpg',
     //'./media_auth_proxy/client_auth_proxies/.gitignore',
     './customs/listviews/.gitignore'
   ];
