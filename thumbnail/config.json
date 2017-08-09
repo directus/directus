@@ -1,0 +1,17 @@
+{
+    "thumbnailDirectory":".",
+    "acceptableFileExtensions":[
+            "jpg",
+            "jpeg",
+            "png",
+            "gif",
+            "tif",
+            "tiff",
+            "psd",
+            "pdf"
+    ],
+    "acceptableThumbnailDimensions":[
+            "100x100",
+            "300x200"
+    ]
+}
