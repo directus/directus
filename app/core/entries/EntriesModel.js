@@ -232,7 +232,11 @@ define(function(require, exports, module) {
               options.junctionStructure = SchemaManager.getColumns('tables', column.relationship.get('junction_table'));
 
               if (this.attributes[id] instanceof EntriesJunctionCollection) {
-                this.attributes[id].set(value, {merge: true, parse: true});
+                // If the junction has no items, do not set the data into the collection
+                if (value.junction && value.junction.data.length > 0) {
+                  this.attributes[id].set(value, {merge: true, parse: true});
+                }
+
                 attributes[id] = this.attributes[id];
               } else {
                 if (value instanceof EntriesJunctionCollection) {
