@@ -38,13 +38,18 @@ define([
           return false;
         }
 
+        // Omit tables without permission record (not managed)
+        if (!app.schemaManager.getPrivileges(tableModel.id)) {
+          return false;
+        }
+
         this.addRowView(tableModel, false);
       }, this);
     },
 
     initialize: function () {
       this.tables = {};
-      this.showCoreTables = false;
+      this.showSystemTables = false;
     }
   });
 });
