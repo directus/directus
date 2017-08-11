@@ -220,6 +220,7 @@ define([
 
         if (this.selectedUI === 'single_file') {
           tables = [{id: 'directus_files', selected: true}];
+          tableRelated = 'directus_files';
         } else {
           tables = app.schemaManager.getTables();
           tables = tables.map(function(model) {

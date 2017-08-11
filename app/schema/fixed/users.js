@@ -34,6 +34,7 @@ define(function(require, exports, module) {
         "footer": 1,
         "count":0,
         "active":0,
+        "primary_column": "id",
         "status_column": "status",
         "user_create_column": "id",
         "user_update_column": "id",
