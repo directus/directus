@@ -146,8 +146,18 @@ define([
 
       // Add new column to the table collection (interface)
       this.columns.add(resp, {parse: true, merge: true});
+
       // Add the new column into the table columns schema
       columnsCollection.add(model, {parse: true, merge: true});
+
+      // NOTE: parsing the options of each column into UIModel object
+      _.each([this.columns, columnsCollection], function (columns) {
+        columns.map(function (column) {
+          column.set('options', parseOptions(column, column.get('options') || {}));
+
+          return column;
+        });
+      });
     },
 
     // When the column change or a new column is added into a table
