@@ -155,21 +155,13 @@ define([
       if (this.model.parent.isNew() || this.model.parent.get('ui') !== this.model.id) {
         var columnModel = this.model.parent;
         var newInterfaceId = columnModel.get('ui');
-        var schema = app.schemaManager.getColumns('ui', newInterfaceId);
+
+        this.model.structure = app.schemaManager.getColumns('ui', newInterfaceId);
 
         columnModel.set('options', this.model);
 
         this.model.clear();
         this.model.set('id', this.model.parent.get('ui'));
-
-        if (!this.model.structure) {
-          this.model.structure = schema;
-        } else {
-          this.model.structure.reset(schema.models, {
-            silent: true,
-            parse: true
-          });
-        }
 
         if (this.optionsView) {
           this.optionsView.remove();

@@ -126,7 +126,9 @@ define([
       var optionsModel = model.get('options');
       optionsModel.parent = model;
 
-      var schema = app.schemaManager.getColumns('ui', 'text_input');
+      // NOTE: Get a cloned version to prevent unwanted changes (Ref Issue #1730)
+      // Should we always return a clone version?
+      var schema = _.clone(app.schemaManager.getColumns('ui', 'text_input'));
       var ColumnView = require('modules/settings/views/modals/columns/column'); // eslint-disable-line import/no-unresolved
       var view = new ColumnView({
         model: optionsModel,
