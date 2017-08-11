@@ -72,7 +72,9 @@ define([
       if (this.isRightPaneOpen()) {
         this.on('afterRender', this.loadRightPane, this);
       } else if (this.shouldRightPaneOpen()) {
-        this.on('afterRender', this.openRightPane, this);
+        this.on('afterRender', function () {
+          this.openRightPane();
+        }, this);
       } else {
         this._ensurePaneIsClosed();
       }

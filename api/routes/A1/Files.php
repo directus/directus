@@ -6,6 +6,7 @@ use Directus\Application\Route;
 use Directus\Database\TableGateway\RelationalTableGateway as TableGateway;
 use Directus\Util\ArrayUtils;
 use Directus\Util\DateUtils;
+use Directus\Util\StringUtils;
 use Directus\View\JsonView;
 
 class Files extends Route
@@ -56,10 +57,31 @@ class Files extends Route
                 $requestPayload['user'] = $acl->getUserId();
                 $requestPayload['date_uploaded'] = DateUtils::now();
 
+                if (!ArrayUtils::has($requestPayload, 'name')) {
+                    return $this->app->response([
+                        'error' => [
+                            'message' => __t('upload_missing_filename')
+                        ],
+                        'success' => false
+                    ]);
+                }
+
                 // When the file is uploaded there's not a data key
                 if (array_key_exists('data', $requestPayload)) {
                     $Files = $app->container->get('files');
-                    if (!array_key_exists('type', $requestPayload) || strpos($requestPayload['type'], 'embed/') === 0) {
+                    $dataInfo = $Files->getDataInfo($requestPayload['data']);
+                    $type = ArrayUtils::get($dataInfo, 'type', ArrayUtils::get($requestPayload, 'type'));
+
+                    if (!$type) {
+                        return $this->app->response([
+                            'error' => [
+                                'message' => __t('upload_missing_file_type')
+                            ],
+                            'success' => false
+                        ]);
+                    }
+
+                    if (strpos($type, 'embed/') === 0) {
                         $recordData = $Files->saveEmbedData($requestPayload);
                     } else {
                         $recordData = $Files->saveData($requestPayload['data'], $requestPayload['name']);

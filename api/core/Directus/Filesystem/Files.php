@@ -197,6 +197,31 @@ class Files
     }
 
     /**
+     * Get base64 data information
+     *
+     * @param $data
+     *
+     * @return array
+     */
+    public function getDataInfo($data)
+    {
+        $type = null;
+
+        if (strpos($data, 'data:') === 0) {
+            $parts = explode(',', $data);
+
+            preg_match('/^data:(.*);base64$/', $parts[0], $matches);
+            if (count($matches) > 1) {
+                $type = $matches[1];
+            }
+
+            $data = $parts[1];
+        }
+
+        return ['type' => $type, 'data' => $data];
+    }
+
+    /**
      * Copy base64 data into Directus Media
      *
      * @param string $fileData - base64 data
@@ -206,11 +231,7 @@ class Files
      */
     public function saveData($fileData, $fileName)
     {
-        if (strpos($fileData, 'data:') === 0) {
-            $fileData = explode(',', $fileData)[1];
-        }
-
-        $fileData = base64_decode($fileData);
+        $fileData = base64_decode($this->getDataInfo($fileData)['data']);
 
         // @TODO: merge with upload()
         $fileName = $this->getFileName($fileName);
