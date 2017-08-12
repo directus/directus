@@ -80,7 +80,6 @@ function(app, _, Backbone, __t, Notification) {
         app.getBookmarks().addNewBookmark({
           title: title,
           url: Backbone.history.fragment,
-          icon_class: 'icon-search',
           user: app.user.id,
           section: 'search'
         });

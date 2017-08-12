@@ -56,8 +56,6 @@ CREATE TABLE `directus_bookmarks` (
   `user` int(11) unsigned DEFAULT NULL,
   `title` varchar(255) DEFAULT NULL,
   `url` varchar(255) DEFAULT NULL,
-  `icon_class` varchar(255) DEFAULT NULL,
-  `active` tinyint(1) DEFAULT NULL,
   `section` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
