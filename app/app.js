@@ -31,10 +31,10 @@ require.config({
     vendor: '../assets/vendor',
 
     // Extensions
-    extensions: '../customs/extensions',
-    listviews: '../customs/listviews',
-    interfaces: '../customs/interfaces',
-    uis: '../customs/interfaces'
+    extensions: 'customs/extensions',
+    listviews: 'customs/listviews',
+    interfaces: 'customs/interfaces',
+    uis: 'customs/interfaces'
   },
 
   shim: {
@@ -84,8 +84,8 @@ require.config({
     tinyMCE: {
       exports: 'tinyMCE',
       init: function () {
-          this.tinyMCE.DOM.events.domLoaded = true;
-          return this.tinyMCE;
+        this.tinyMCE.DOM.events.domLoaded = true;
+        return this.tinyMCE;
       }
     },
 
@@ -11608,8 +11608,18 @@ define('core/interfaces/_internals/columns/interface',[
 
       // Add new column to the table collection (interface)
       this.columns.add(resp, {parse: true, merge: true});
+
       // Add the new column into the table columns schema
       columnsCollection.add(model, {parse: true, merge: true});
+
+      // NOTE: parsing the options of each column into UIModel object
+      _.each([this.columns, columnsCollection], function (columns) {
+        columns.map(function (column) {
+          column.set('options', parseOptions(column, column.get('options') || {}));
+
+          return column;
+        });
+      });
     },
 
     // When the column change or a new column is added into a table
