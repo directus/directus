@@ -30,10 +30,10 @@ require.config({
     vendor: '../assets/vendor',
 
     // Extensions
-    extensions: '../customs/extensions',
-    listviews: '../customs/listviews',
-    interfaces: '../customs/interfaces',
-    uis: '../customs/interfaces'
+    extensions: 'customs/extensions',
+    listviews: 'customs/listviews',
+    interfaces: 'customs/interfaces',
+    uis: 'customs/interfaces'
   },
 
   shim: {
@@ -83,8 +83,8 @@ require.config({
     tinyMCE: {
       exports: 'tinyMCE',
       init: function () {
-          this.tinyMCE.DOM.events.domLoaded = true;
-          return this.tinyMCE;
+        this.tinyMCE.DOM.events.domLoaded = true;
+        return this.tinyMCE;
       }
     },
 
