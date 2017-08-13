@@ -1,5 +1,4 @@
 <?php
-
 require __DIR__ . '/../vendor/autoload.php';
 require __DIR__ . '/../api/api.php';
 require __DIR__ . '/Thumbnailer.php';

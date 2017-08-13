@@ -465,6 +465,24 @@ class Files
     }
 
     /**
+     * Reads and returns data from the given location
+     *
+     * @param $location
+     *
+     * @return bool|false|string
+     *
+     * @throws \Exception
+     */
+    public function read($location)
+    {
+        try {
+            return $this->filesystem->getAdapter()->read($location);
+        } catch (\Exception $e) {
+            throw $e;
+        }
+    }
+
+    /**
      * Creates a new file for Directus Media
      *
      * @param string $filePath

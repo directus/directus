@@ -161,6 +161,36 @@ class Thumbnail
     }
 
     /**
+     * Gets supported formats
+     *
+     * @return array
+     */
+    public static function getFormatsSupported()
+    {
+        return array_merge(static::getImageFormatSupported(), static::getNonImageFormatSupported());
+    }
+
+    /**
+     * Gets image supported formats
+     *
+     * @return array
+     */
+    public static function getImageFormatSupported()
+    {
+        return Thumbnail::$imageFormatsSupported;
+    }
+
+    /**
+     * Gets non-image supported formats
+     *
+     * @return array
+     */
+    public static function getNonImageFormatSupported()
+    {
+        return static::$nonImageFormatsSupported;
+    }
+
+    /**
      * If a given format/extension is a non-image supported to generate thumbnail
      *
      * @param $format
