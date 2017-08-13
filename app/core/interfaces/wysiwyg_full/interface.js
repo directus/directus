@@ -142,7 +142,7 @@ define([
               var content = editor.getContent();
               var value = self.model.get(self.name);
 
-              if ((value === null || value === undefined) && Utils.isSomething(content)) {
+              if ((Utils.isNothing(value) || value !== content) && Utils.isSomething(content)) {
                 self.model.set(self.name, content);
                 self.$el.find('textarea')[0].innerHTML = content;
               }

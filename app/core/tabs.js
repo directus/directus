@@ -18,19 +18,7 @@ define([
 
   var Tabs = {};
 
-  Tabs.Collection = Backbone.Collection.extend({
-    setActive: function(route) {
-
-      var model = this.get(route);
-      //deactive all tabs
-      _.each(this.where({'active':true}),function(model) {
-        model.unset('active',{silent: true});
-      });
-
-      if (!model) { return; }
-      model.set({'active':true});
-    }
-  });
+  Tabs.Collection = Backbone.Collection.extend({});
 
   Tabs.View = Backbone.Layout.extend({
     template: 'tabs',
@@ -42,7 +30,7 @@ define([
       var currentUserGroup = user.get('group');
       var navBlacklist = (currentUserGroup.get('nav_blacklist') || '').split(',').map(function (name) {
         return name.trim();
-      })
+      });
 
       var showUsers = navBlacklist.indexOf('directus_users') < 0;
       var showFiles = navBlacklist.indexOf('directus_files') < 0;
@@ -103,7 +91,6 @@ define([
       app.user.on('change sync', this.render, this);
       app.on('messages:new', this.render, this);
     }
-
   });
 
   return Tabs;

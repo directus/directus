@@ -6,8 +6,6 @@ CREATE TABLE `directus_bookmarks` (
   `user` int(11) DEFAULT NULL,
   `title` varchar(255) DEFAULT NULL,
   `url` varchar(255) DEFAULT NULL,
-  `icon_class` varchar(255) DEFAULT NULL,
-  `active` tinyint(4) DEFAULT NULL,
   `section` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -25,8 +23,6 @@ class CreateDirectusBookmarksTable extends Ruckusing_Migration_Base
         $t->column('user', 'integer', ['unsigned' => true, 'default' => NULL]);
         $t->column('title', 'string', ['limit' => 255, 'default' => NULL]);
         $t->column('url', 'string', ['limit' => 255, 'default' => NULL]);
-        $t->column('icon_class', 'string', ['limit' => 255, 'default' => NULL]);
-        $t->column('active', 'tinyinteger', ['limit' => 1, 'default' => NULL]);
         $t->column('section', 'string', ['limit' => 255, 'default' => NULL]);
 
         $t->finish();

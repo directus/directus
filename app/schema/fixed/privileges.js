@@ -6,6 +6,7 @@ define(function(require, exports, module) {
 
     "id": "directus_privileges",
     "table_name": "directus_privileges",
+    "primary_column": "id",
     "hidden": true,
     "single": false,
 

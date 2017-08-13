@@ -250,8 +250,8 @@ require(['config', 'polyfills'], function () {
       // Default directus tabs
 
       var tabs = [
-        {id: 'users/' + app.user.id, icon_class: 'icon-pencil', avatar: ''},
-        {id: 'logout', icon_class: 'icon-power-button'}
+        {id: 'users/' + app.user.id, avatar: ''},
+        {id: 'logout'}
       ];
 
       if (app.user.get('group').id === 1) {
@@ -269,7 +269,6 @@ require(['config', 'polyfills'], function () {
           var privileges = SchemaManager.getPrivileges(table.table_name);
           if (privileges.get('allow_view') > 0 && !table.hidden && privileges.get('nav_listed') > 0) {
             bookmarks.push({
-              icon_class: '',
               identifier: table.table_name,
               title: app.capitalize(table.table_name),
               url: 'tables/' + encodeURIComponent(table.table_name),
@@ -291,7 +290,6 @@ require(['config', 'polyfills'], function () {
       _.each(extensions, function (item) {
         item = ExtensionManager.getInfo(item);
         bookmarks.push({
-          icon_class: item.icon,
           identifier: item.id,
           title: item.title,
           url: item.path,
@@ -315,7 +313,6 @@ require(['config', 'polyfills'], function () {
           _.each(sectionItems, function (item, title) {
             var path = item.path || '';
             customBookmarks.push({
-              icon_class: item.icon,
               title: title,
               url: path,
               identifier: title,
