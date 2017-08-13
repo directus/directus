@@ -83,7 +83,7 @@ define([
     shouldRightPaneOpen: function () {
       var pane = this.getRightPane();
 
-      return $(window).width() >= 1200 && pane && pane.isWide === true;
+      return $(window).width() >= 1200 && pane && pane.shouldOpen();
     },
 
     isRightPaneOpen: function () {

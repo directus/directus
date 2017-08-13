@@ -48,6 +48,10 @@ define([
       }
     },
 
+    shouldOpen: function () {
+      return false;
+    },
+
     canBeOpen: function () {
       return !this.model.isNew();
     },
