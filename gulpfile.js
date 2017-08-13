@@ -77,8 +77,8 @@ gulp.task('scripts', function(cb) {
   runSequence(['scripts:app', cb, 'scripts:vendor', 'scripts:directus']);
 });
 
-// Include what's neccesary
-// @TODO: include all vendors
+// Include what's necessary
+// TODO: include all vendors
 var vendorFiles = [
   'assets/js/libs/handlebars.js',
   //'assets/js/libs/bootstrap.js',
@@ -90,21 +90,17 @@ var vendorFiles = [
 gulp.task('scripts:vendor', function() {
   return gulp.src(vendorFiles)
     .pipe(concat('vendor.js'))
-    .pipe(gulp.dest('dist/assets/js'))
-    .pipe(rename('vendor.min.js'))
-    .pipe(size())
-    .pipe(uglify())
-    .pipe(size())
-    .pipe(gulp.dest('dist/assets/js'));
+    .pipe(gulp.dest('./dist/app'));
 });
 
 // Concat all application scripts
 gulp.task('scripts:app', function() {
   return rjs(({
     mainConfigFile : 'app/main.js',
+    generateSourceMaps: true,
     baseUrl : 'app',
     name: 'main',
-    out: 'app.min.js',
+    out: 'app.js',
     removeCombined: true,
     findNestedDependencies: true,
     optimize: 'uglify2',
@@ -135,10 +131,10 @@ gulp.task('scripts:app', function() {
       vendor: '../assets/vendor',
 
       // Extensions
-      extensions: '../customs/extensions',
-      listviews: '../customs/listviews',
-      interfaces: '../customs/interfaces',
-      uis: '../customs/interfaces'
+      extensions: 'customs/extensions',
+      listviews: 'customs/listviews',
+      interfaces: 'customs/interfaces',
+      uis: 'customs/interfaces'
     },
 
     shim: {
@@ -206,15 +202,15 @@ gulp.task('scripts:app', function() {
       'plugins/bootstrap-tooltip': ['jquery']
     }
   }))
-    .pipe(gulp.dest('./dist/assets/js/')); // pipe it to the output DIR
+    .pipe(gulp.dest('./dist/app/')); // pipe it to the output DIR
 });
 
 // Concat vendors and application into one minified file
 gulp.task('scripts:directus', function() {
-  return gulp.src(['./dist/assets/js/vendor.js', './dist/assets/js/app.min.js'])
+  return gulp.src(['./dist/app/vendor.js', './dist/app/app.js'])
     .pipe(concat('directus.min.js'))
     .pipe(uglify())
-    .pipe(gulp.dest('dist/assets/js'));
+    .pipe(gulp.dest('dist/app'));
 });
 
 // --------------------
