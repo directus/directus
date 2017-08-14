@@ -30,10 +30,10 @@ require.config({
     vendor: '../assets/vendor',
 
     // Extensions
-    extensions: 'customs/extensions',
-    listviews: 'customs/listviews',
-    interfaces: 'customs/interfaces',
-    uis: 'customs/interfaces'
+    extensions: '../customs/extensions',
+    listviews: '../customs/listviews',
+    interfaces: '../customs/interfaces',
+    uis: '../customs/interfaces'
   },
 
   shim: {
