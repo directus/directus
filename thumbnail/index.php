@@ -37,6 +37,6 @@ try {
 
 catch (Exception $e) {
     header('Content-type: image/png');
-    echo file_get_contents(ArrayUtils::get($app->container->get('config')->get('thumbnailer'), '404imageLocation'));
+    echo file_get_contents(ArrayUtils::get($app->container->get('config')->get('thumbnailer'), '404imageLocation', './img-not-found.png'));
     exit(0);
 }
