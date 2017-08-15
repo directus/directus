@@ -4,7 +4,6 @@ require __DIR__ . '/../api/api.php';
 
 use Directus\Util\ArrayUtils;
 use Directus\Filesystem\Thumbnailer as ThumbnailerService;
-use Exception;
 
 try {
     $app = \Directus\Bootstrap::get('app');
