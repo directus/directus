@@ -169,10 +169,14 @@ return [
             'sort' => 2
         ]
     ],
-    
+
+    // This is the configuration for the Directus Dynamic Thumbnailer
+    // It creates image thumbnails on the fly, simply by requesting them. For example:
+    // http://directus.example.com/thumbnail/100/100/crop/best/original-image-name.jpg
     'thumbnailer' => [
         '404imageLocation' => __DIR__ . '/../thumbnail/img-not-found.png',
         'supportedThumbnailDimensions' => [
+            // width x height
             '100x100',
             '300x200',
             '100x200',
@@ -181,7 +185,7 @@ return [
             'poor' => 25,
             'good' => 50,
             'better' => 75,
-            'best' => 100,   
+            'best' => 100,
         ],
         'supportedActions' => [
             'contain' => [
@@ -191,12 +195,12 @@ return [
                     'resizeRelative' => false,
                     'canvasBackground' => 'ccc', // http://image.intervention.io/getting_started/formats
                  ]
-             ], 
+             ],
             'crop' => [
                 'options' => [
                     'position' => 'center', // http://image.intervention.io/api/fit
                  ]
             ],
         ]
-    ],
+    ]
 ];
