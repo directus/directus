@@ -7,7 +7,7 @@ use Directus\Filesystem\Thumbnailer as ThumbnailerService;
 
 try {
     $app = \Directus\Bootstrap::get('app');
-                                 
+    
     // if the thumb already exists, return it
     $thumbnailer = new ThumbnailerService($app->files, $app->container->get('config')->get('thumbnailer'), $app->request->getPathInfo());
     $image = $thumbnailer->get();
@@ -29,13 +29,17 @@ try {
         }
     }
     
-    header('Content-type: image/jpeg');
+    header('HTTP/1.1 200 OK');
+    header('Content-type: ' . $thumbnailer->getThumbnailMimeType());
     echo $image;
     exit(0);
 } 
 
 catch (Exception $e) {
-    header('Content-type: image/png');
-    echo file_get_contents(ArrayUtils::get($app->container->get('config')->get('thumbnailer'), '404imageLocation', './img-not-found.png'));
+    $filePath = ArrayUtils::get($app->container->get('config')->get('thumbnailer'), '404imageLocation', './img-not-found.png');
+    $mime = image_type_to_mime_type(exif_imagetype($filePath));
+    
+    header('Content-type: ' . $mime);
+    echo file_get_contents($filePath);
     exit(0);
 }
