@@ -103,6 +103,28 @@ class Thumbnailer {
             throw $e;
         }
     }
+    
+    /**
+     * Get thumbnail mime type
+     * 
+     * @throws Exception
+     * @return string
+     */
+    public function getThumbnailMimeType()
+    {
+        try {                        
+            if( $this->files->exists($this->thumbnailDir . '/' . $this->fileName) ) {
+                $img = Image::make($this->files->read($this->thumbnailDir . '/' . $this->fileName));
+                return $img->mime();
+            }
+            
+            return 'application/octet-stream';
+        }
+        
+        catch (Exception $e) {
+            throw $e;
+        }
+    }
 
     /**
      * Create thumbnail from image and `contain` 
