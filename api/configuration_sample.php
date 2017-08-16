@@ -192,7 +192,7 @@ return [
                     'canvasBackground' => 'ccc', // http://image.intervention.io/getting_started/formats
                  ]
              ], 
-            'cover' => [
+            'crop' => [
                 'options' => [
                     'position' => 'center', // http://image.intervention.io/api/fit
                  ]
