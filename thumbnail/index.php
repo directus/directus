@@ -1,51 +1,45 @@
 <?php
 require __DIR__ . '/../vendor/autoload.php';
 require __DIR__ . '/../api/api.php';
-require __DIR__ . '/Thumbnailer.php';
+
+use Directus\Util\ArrayUtils;
+use Directus\Filesystem\Thumbnailer as ThumbnailerService;
 
 try {
-    if (! file_exists(__DIR__ . '/../api/config.php') || filesize(__DIR__ . '/../api/config.php') == 0) {
-        throw new Exception('Invalid Directus config.');
-    }
-
     $app = \Directus\Bootstrap::get('app');
-
-    $thumbnailer = new Thumbnailer([
-        'thumbnailUrlPath' => $app->request->getPathInfo(),
-        'configFilePath' => __DIR__ . '/config.json',
-    ]);
-
-    // now we can create the thumb
-    switch ($thumbnailer->action) {
-
-        // http://image.intervention.io/api/crop
-        case 'crop':
-            $imagePath = $thumbnailer->crop();
-            break;
-
-        // http://image.intervention.io/api/fit
-        case 'fit':
-        default:
-            $imagePath = $thumbnailer->fit();
+    
+    // if the thumb already exists, return it
+    $thumbnailer = new ThumbnailerService($app->files, $app->container->get('config')->get('thumbnailer'), $app->request->getPathInfo());
+    $image = $thumbnailer->get();
+    
+    if (! $image) {
+        
+        // now we can create the thumb
+        switch ($thumbnailer->action) {
+            
+            // http://image.intervention.io/api/resize
+            case 'contain':
+                $image = $thumbnailer->contain();
+                break;
+            
+            // http://image.intervention.io/api/fit
+            case 'crop':
+            default:
+                $image = $thumbnailer->crop();
+        }
     }
-
+    
     header('HTTP/1.1 200 OK');
-    header('Content-type: image/jpeg');
-    echo file_get_contents($imagePath);
+    header('Content-type: ' . $thumbnailer->getThumbnailMimeType());
+    echo $image;
     exit(0);
-}
+} 
 
-// all exceptions are handled by displaying an 'image not found' png
 catch (Exception $e) {
-    // dd($e);
-    header('Content-type: image/jpeg');
-    echo file_get_contents(__DIR__ . '/img-not-found.png');
+    $filePath = ArrayUtils::get($app->container->get('config')->get('thumbnailer'), '404imageLocation', './img-not-found.png');
+    $mime = image_type_to_mime_type(exif_imagetype($filePath));
+    
+    header('Content-type: ' . $mime);
+    echo file_get_contents($filePath);
     exit(0);
-}
-
-// dev helper
-function dd($c)
-{
-    var_dump($c);
-    die();
 }
