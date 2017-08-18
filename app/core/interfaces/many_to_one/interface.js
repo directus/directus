@@ -59,6 +59,7 @@ define([
     serialize: function () {
       var optionTemplate = Handlebars.compile(this.options.settings.get('visible_column_template'));
       var defaultValue = +this.options.schema.get('default_value');
+      var placeholderAvailable = !!this.options.settings.get('placeholder') && this.options.settings.get('placeholder').length > 0;
 
       var value = this.options.value || defaultValue;
 
@@ -66,7 +67,8 @@ define([
         value = value.id;
       }
 
-      // If we don't set this, user gets "nothing changed, nothing saved"
+      // Save value when the defaultValue is used
+      // (prevents nothing changed nothing saved error)
       if (defaultValue && defaultValue === value) {
         this.model.set(this.name, defaultValue);
       }
@@ -105,9 +107,11 @@ define([
         comment: this.options.schema.get('comment'),
         use_radio_buttons: this.options.settings.get('use_radio_buttons') === true,
         allowNull: this.options.settings.get('allow_null') === true,
-        placeholder: (this.options.settings.get('placeholder')) ? this.options.settings.get('placeholder') : __t('select_from_below'),
+        placeholder: this.options.settings.get('placeholder'),
+        placeholderAvailable: placeholderAvailable,
         readOnly: this.options.settings.get('read_only') || !this.options.canWrite,
-        value: this.value
+        value: this.value,
+        required: this.options.schema.isRequired()
       };
     },
 
