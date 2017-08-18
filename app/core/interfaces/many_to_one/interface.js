@@ -98,6 +98,12 @@ define([
 
       data = _.sortBy(data, 'name');
 
+      // Save value when there's no placeholder and the first item is auto-selected
+      // (prevents nothing changed nothing saved error)
+      if (data.length > 0 && !placeholderAvailable && !value) {
+        this.model.set(this.name, data[0].id);
+      }
+
       this.value = value;
 
       return {
