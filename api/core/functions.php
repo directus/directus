@@ -133,6 +133,20 @@ if (!function_exists('ping_server')) {
     }
 }
 
+if (!function_exists('check_apache_module')) {
+    /**
+     * Check if apache module is enabled
+     *
+     * @param string $subPath
+     *
+     * @return bool
+     */
+    function check_apache_module($name)
+    {
+        return in_array($name, apache_get_modules());
+    }
+}
+
 if (!function_exists('is_ssl')) {
     /**
      * Check if ssl is being used
