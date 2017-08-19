@@ -51,7 +51,7 @@ define([
 
     beforeSaving: function () {
       // NOTE: Only set the new value (mark changed) if the value has changed
-      if (this.value && this.model.hasChanges(this.name)) {
+      if (this.value && (this.model.isNew() || this.model.hasChanges(this.name))) {
         this.model.set(this.name, this.value);
       }
     },
