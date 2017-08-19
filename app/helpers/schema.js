@@ -97,7 +97,17 @@ define([
       // because the model "changed" with the new synced values
       // which make the columns options not a UIModel anymore but a plain object
       // TODO: Make the column options parsed to UIModel
-      var option = columnOptions instanceof Backbone.Model ? columnOptions.get(optionName) : columnOptions;
+      var option;
+      if (columnOptions instanceof Backbone.Model) {
+        option = columnOptions.get(optionName);
+      } else {
+        try {
+          columnOptions = JSON.parse(columnOptions);
+          option = _.result(columnOptions, optionName);
+        } catch (e) {
+          // bad json
+        }
+      }
 
       if (!option || _.isEmpty(option)) {
         missing = true;

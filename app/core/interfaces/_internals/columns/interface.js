@@ -14,9 +14,11 @@ define([
   'use strict';
 
   var parseOptions = function (column, options) {
-    options.id = column.get('ui');
-    options = new UIModel(options);
-    options.parent = column;
+    if (!(options instanceof UIModel)) {
+      options.id = column.get('ui');
+      options = new UIModel(options);
+      options.parent = column;
+    }
 
     return options;
   };
