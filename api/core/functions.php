@@ -137,7 +137,7 @@ if (!function_exists('check_apache_module')) {
     /**
      * Check if apache module is enabled
      *
-     * @param string $subPath
+     * @param string $name
      *
      * @return bool
      */
