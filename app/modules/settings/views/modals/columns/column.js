@@ -156,7 +156,7 @@ define([
         var columnModel = this.model.parent;
         var newInterfaceId = columnModel.get('ui');
 
-        this.model.structure = app.schemaManager.getColumns('ui', newInterfaceId);
+        this.model.structure = app.schemaManager.getColumns('ui', newInterfaceId, true);
 
         columnModel.set('options', this.model);
 
@@ -170,7 +170,9 @@ define([
       }
 
       if (!this.optionsView) {
-        this.optionsView = new ColumnOptionsView(this.options);
+        this.optionsView = new ColumnOptionsView({
+          model: this.model
+        });
       }
 
       return this.optionsView;

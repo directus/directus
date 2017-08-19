@@ -317,8 +317,16 @@ define(function(require, exports, module) {
       return hasPrivilege(table);
     },
 
-    getColumns: function(namespace, tableName) {
-      return columnSchemas[namespace][tableName];
+    getColumns: function(namespace, tableName, clone) {
+      var columns = columnSchemas[namespace][tableName];
+
+      if (clone === true) {
+        columns = new columns.constructor(columns.models, {
+          table: columns.table
+        });
+      }
+
+      return columns;
     },
 
     getSettingsSchemas: function () {

@@ -30,8 +30,7 @@ define(['app', 'backbone', 'core/edit'], function(app, Backbone, EditView) {
 
     initialize: function () {
       this.editView = new EditView({
-        model: this.model,
-        structure: this.options.schema
+        model: this.model
       });
     }
   });
