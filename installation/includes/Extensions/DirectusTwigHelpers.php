@@ -30,6 +30,7 @@ class DirectusTwigHelpers extends \Twig_Extension
             new \Twig_SimpleFunction('extension_loaded', 'extension_loaded'),
             new \Twig_SimpleFunction('file_exists', 'file_exists'),
             new \Twig_SimpleFunction('ping_server', 'ping_server'),
+            new \Twig_SimpleFunction('check_apache_module', 'check_apache_module'),
             new \Twig_SimpleFunction('is_writable', 'is_writable'),
             new \Twig_SimpleFunction('filesize', 'filesize')
         ];

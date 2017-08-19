@@ -109,7 +109,7 @@
             <td class="item">{{ 'Mod_Rewrite Enabled'|t }} (<a href="http://getdirectus.com/docs/developer/faq"
                                                                     target="_blank" class="underline">{{ 'Learn More'|t }}</a>)
             </td>
-            <td class="result">{% if ping_server() %}
+            <td class="result">{% if check_apache_module('mod_rewrite') %}
                     <span class="label label-success">{{ 'Yes'|t }}</span>
                 {% else %}
                     <span class="label label-important">{{ 'No'|t }}</span>
