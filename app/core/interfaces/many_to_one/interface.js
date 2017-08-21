@@ -67,12 +67,6 @@ define([
         value = value.id;
       }
 
-      // Save value when the defaultValue is used
-      // (prevents nothing changed nothing saved error)
-      if (defaultValue && defaultValue === value) {
-        this.model.set(this.name, defaultValue);
-      }
-
       if (this.options.settings.get('readonly') === true) {
         this.canEdit = false;
       }
@@ -97,12 +91,6 @@ define([
       }
 
       data = _.sortBy(data, 'name');
-
-      // Save value when there's no placeholder and the first item is auto-selected
-      // (prevents nothing changed nothing saved error)
-      if (data.length > 0 && !placeholderAvailable && !value) {
-        this.model.set(this.name, data[0].id);
-      }
 
       this.value = value;
 
