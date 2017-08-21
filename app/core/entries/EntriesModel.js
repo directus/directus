@@ -338,6 +338,9 @@ define(function(require, exports, module) {
 
         if (!options.data.status) {
           options.data.preview = true;
+          // Add "reqid" (request id) query param to all GET request
+          // to prevent caching
+          options.data.reqid = Date.now();
         }
       }
 
