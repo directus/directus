@@ -58,12 +58,13 @@ define([
 
     serialize: function () {
       var optionTemplate = Handlebars.compile(this.options.settings.get('visible_column_template'));
-      var value = this.options.value;
+      var defaultValue = +this.options.schema.get('default_value');
+      var placeholderAvailable = !!this.options.settings.get('placeholder') && this.options.settings.get('placeholder').length > 0;
 
-      // Set the first value to the column when the record is new
-      // This prevent assigning the incorrect (null/empty) value to the column
-      if (this.collection.length > 0 && !this.options.settings.get('allow_null') && this.model.isNew()) {
-        value = this.collection.first().id;
+      var value = this.options.value || defaultValue;
+
+      if (value instanceof Backbone.Model) {
+        value = value.id;
       }
 
       if (this.options.settings.get('readonly') === true) {
@@ -72,10 +73,6 @@ define([
 
       var data = this.collection.map(function (model) {
         var data = model.toJSON();
-
-        if (value instanceof Backbone.Model) {
-          value = value.id;
-        }
 
         return {
           id: model.id,
@@ -104,8 +101,11 @@ define([
         comment: this.options.schema.get('comment'),
         use_radio_buttons: this.options.settings.get('use_radio_buttons') === true,
         allowNull: this.options.settings.get('allow_null') === true,
-        placeholder: (this.options.settings.get('placeholder')) ? this.options.settings.get('placeholder') : __t('select_from_below'),
-        readOnly: this.options.settings.get('read_only') || !this.options.canWrite
+        placeholder: this.options.settings.get('placeholder'),
+        placeholderAvailable: placeholderAvailable,
+        readOnly: this.options.settings.get('read_only') || !this.options.canWrite,
+        value: this.value,
+        required: this.options.schema.isRequired()
       };
     },
 

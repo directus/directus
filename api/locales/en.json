@@ -256,7 +256,7 @@
     "m2o_visible_column_comment": "Visible Column Name",
     "m2o_visible_column_template_comment": "Twig Template String",
     "m2o_visible_status_ids_comment": "A CSV of visible statuses (eg: '1,2' shows Published and Draft)",
-    "m2o_placeholder_text_comment": "Placeholder Text",
+    "m2o_placeholder_text_comment": "The first value will be saved for new items if no default or placeholder is used",
     "m2o_filter_column_comment": "Column thats value is used for filter search",
 
     "m2o_typeahead_placeholder": "Search for an item...",
