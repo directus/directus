@@ -30,11 +30,11 @@ define(function(require, exports, module) {
     // true: visible
     visible: null,
 
-    // Adding a `beforeSaving` method into any interface
+    // Adding a `unsavedChange` method into any interface
     // will allow the interface to inject value before saving
     // this changes won't trigger the unsaved changes event on leaving the form
     _beforeSaving: function () {
-      var value = _.result(this, 'beforeSaving');
+      var value = _.result(this, 'unsavedChange');
 
       if (value !== undefined) {
         this.model.set(this.name, value);

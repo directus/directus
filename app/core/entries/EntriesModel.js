@@ -648,6 +648,34 @@ define(function(require, exports, module) {
       return hasChanges;
     },
 
+    unsavedAttributes: function () {
+      var attributes = Backbone.Model.prototype.unsavedAttributes.apply(this, arguments);
+      var unsavedChanges = {};
+
+      this.structure.each(function (column) {
+        if (!_.isFunction(this.getInput)) {
+          return false;
+        }
+
+        var ui = this.getInput(column.getName());
+        var change;
+
+        if (ui) {
+          change = _.result(ui, 'unsavedChange');
+
+          if (change !== undefined) {
+            unsavedChanges[column.getName()] = change;
+          }
+        }
+      }, this);
+
+      if (!_.isEmpty(unsavedChanges)) {
+        attributes = _.extend(attributes || {}, unsavedChanges);
+      }
+
+      return attributes;
+    },
+
     unsavedChanges: function (options) {
       var changes = _.isEmpty(this._unsavedChanges) ? false : _.clone(this._unsavedChanges);
 

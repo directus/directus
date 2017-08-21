@@ -72,6 +72,10 @@ define(function(require, exports, module) {
       return _.omit(result, 'relationship');
     },
 
+    getName: function () {
+      return this.get('column_name');
+    },
+
     getOptions: function () {
       return this.options.get(this.attributes.ui);
     },

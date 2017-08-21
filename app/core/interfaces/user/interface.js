@@ -8,7 +8,7 @@ define([
   return UIView.extend({
     template: 'user/interface',
 
-    beforeSaving: function () {
+    unsavedChange: function () {
       return this.userId;
     },
 

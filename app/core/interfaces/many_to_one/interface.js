@@ -49,10 +49,10 @@ define([
       }
     },
 
-    beforeSaving: function () {
+    unsavedChange: function () {
       // NOTE: Only set the new value (mark changed) if the value has changed
       if (this.value && (this.model.isNew() || this.model.hasChanges(this.name))) {
-        this.model.set(this.name, this.value);
+        return this.value;
       }
     },
 
@@ -60,15 +60,10 @@ define([
       var optionTemplate = Handlebars.compile(this.options.settings.get('visible_column_template'));
       var defaultValue = +this.options.schema.get('default_value');
       var placeholderAvailable = !!this.options.settings.get('placeholder') && this.options.settings.get('placeholder').length > 0;
-
       var value = this.options.value || defaultValue;
 
       if (value instanceof Backbone.Model) {
         value = value.id;
-      }
-
-      if (this.options.settings.get('readonly') === true) {
-        this.canEdit = false;
       }
 
       var data = this.collection.map(function (model) {
@@ -80,6 +75,15 @@ define([
           selected: value !== undefined && model.id === value
         };
       }, this);
+
+      // Pick first element if there's no placeholder available
+      if (data.length > 0 && !placeholderAvailable && value === undefined) {
+        value = data[0].id;
+      }
+
+      if (this.options.settings.get('readonly') === true) {
+        this.canEdit = false;
+      }
 
       // Default data while syncing (to avoid flickr when data is loaded)
       if (this.options.value !== undefined && this.options.value.id && data.length === 0) {
