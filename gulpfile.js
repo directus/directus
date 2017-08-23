@@ -410,8 +410,9 @@ gulp.task('watch', function() {
 });
 
 gulp.task('deploy', function() {
+  // force = true, to include all files avoiding .gitignore
   return gulp.src(['./dist/**/*'], {dot: true})
-        .pipe(deploy({branch: 'build', remoteUrl:'https://github.com/directus/directus'}));
+        .pipe(deploy({branch: 'build', force: true, remoteUrl:'https://github.com/directus/directus'}));
 });
 
 // -------------------

@@ -42,7 +42,7 @@
     "gulp-concat": "~2.4.2",
     "gulp-exclude-gitignore": "~1.0.0",
     "gulp-flatten": "^0.3.1",
-    "gulp-gh-pages": "~0.4.0",
+    "gulp-gh-pages": "~0.5.4",
     "gulp-gzip": "^1.4.0",
     "gulp-jshint": "~1.9.0",
     "gulp-minify-css": "~0.3.11",
