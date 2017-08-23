@@ -76,6 +76,7 @@
 {% block login_script %}{% endblock %}
 {% else %}
 <script>
+	window.directusPath = '{{rootUrl}}';
 	window.directusData = {{data | raw}};
 </script>
 

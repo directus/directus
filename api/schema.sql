@@ -131,9 +131,9 @@ CREATE TABLE `directus_files` (
 LOCK TABLES `directus_files` WRITE;
 /*!40000 ALTER TABLE `directus_files` DISABLE KEYS */;
 
-INSERT INTO `directus_files` (`id`, `status`, `name`, `title`, `location`, `caption`, `type`, `charset`, `tags`, `width`, `height`, `size`, `embed_id`, `user`, `date_uploaded`, `storage_adapter`, `identifier`)
+INSERT INTO `directus_files` (`id`, `status`, `name`, `title`, `location`, `caption`, `type`, `charset`, `tags`, `width`, `height`, `size`, `embed_id`, `user`, `date_uploaded`, `storage_adapter`)
 VALUES
-	(1, 1, '00000000001.jpg', 'Mountain Range', 'Earth', 'A gorgeous view of this wooded mountain range', 'image/jpeg', 'binary', 'trees,rocks,nature,mountains,forest', 1800, 1200, 602058, NULL, 1, '2017-07-19 15:44:10', 'local', NULL);
+	(1, 1, '00000000001.jpg', 'Mountain Range', 'Earth', 'A gorgeous view of this wooded mountain range', 'image/jpeg', 'binary', 'trees,rocks,nature,mountains,forest', 1800, 1200, 602058, NULL, 1, '2017-07-19 15:44:10', 'local');
 
 /*!40000 ALTER TABLE `directus_files` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -158,8 +158,8 @@ LOCK TABLES `directus_groups` WRITE;
 
 INSERT INTO `directus_groups` (`id`, `name`, `description`, `restrict_to_ip_whitelist`, `nav_override`)
 VALUES
-	(1,'Administrator','Admins have access to all managed data within the system by default',NULL,NULL,1),
-	(2,'Public','This sets the data that is publicly available through the API without a token',NULL,NULL,1);
+	(1,'Administrator','Admins have access to all managed data within the system by default',NULL,NULL),
+	(2,'Public','This sets the data that is publicly available through the API without a token',NULL,NULL);
 
 /*!40000 ALTER TABLE `directus_groups` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -420,7 +420,7 @@ CREATE TABLE `directus_users` (
 LOCK TABLES `directus_users` WRITE;
 /*!40000 ALTER TABLE `directus_users` DISABLE KEYS */;
 
-INSERT INTO `directus_users` (`id`, `active`, `first_name`, `last_name`, `email`, `password`, `salt`, `token`, `access_token`, `reset_token`, `reset_expiration`, `position`, `email_messages`, `last_login`, `last_access`, `last_page`, `ip`, `group`, `avatar`, `avatar_file_id`, `location`, `phone`, `address`, `city`, `state`, `country`, `zip`, `language`, `timezone`, `invite_token`, `invite_date`, `invite_sender`, `invite_accepted`)
+INSERT INTO `directus_users` (`id`, `status`, `first_name`, `last_name`, `email`, `password`, `salt`, `token`, `access_token`, `reset_token`, `reset_expiration`, `position`, `email_messages`, `last_login`, `last_access`, `last_page`, `ip`, `group`, `avatar`, `avatar_file_id`, `location`, `phone`, `address`, `city`, `state`, `country`, `zip`, `language`, `timezone`, `invite_token`, `invite_date`, `invite_sender`, `invite_accepted`)
 VALUES
 	(1,1,'Admin','User','admin@admin.com','$2y$12$wzU2hwDsGfofO5swMxVY6exTRcC.IkB4gKNu4RKdnW40p4LTudQ96','36JjNIG3eGVoYDky','vpqBqeRX4CGw2OgDdZxv9H26Rw8mIo4Z','','',NULL,'',1,NULL,NULL,'','',1,'//www.gravatar.com/avatar/64e1b8d34f425d19e1ee2ea7236d3028?s=200&d=identicon&r=g',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'en','America/New_York',NULL,NULL,NULL,NULL);
 

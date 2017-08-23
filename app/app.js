@@ -1,4 +1,6 @@
 (function () {
+window.directusPath = window.directusPath || '/';
+
 require.config({
 
   urlArgs: 'bust=' + window.directusData.cacheBuster,
@@ -30,11 +32,11 @@ require.config({
     plugins: '../assets/js/plugins',
     vendor: '../assets/vendor',
 
-    // Extensions
-    extensions: 'customs/extensions',
-    listviews: 'customs/listviews',
-    interfaces: 'customs/interfaces',
-    uis: 'customs/interfaces'
+    // Customs paths
+    extensions: directusPath + 'customs/extensions',
+    listviews: directusPath + 'customs/listviews',
+    interfaces: directusPath + 'customs/interfaces',
+    uis: directusPath + 'customs/interfaces'
   },
 
   shim: {
