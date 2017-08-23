@@ -706,7 +706,6 @@ $templateVars = [
     'cacheBuster' => $cacheBuster,
     'isAuthenticated' => $authentication->loggedIn() === true,
     'data' => json_encode($data),
-    // 'path' => DIRECTUS_PATH,
     'rootUrl' => get_directus_path(),
     'assetsRoot' => get_directus_path('/assets/'),
     'locale' => get_user_locale(),
