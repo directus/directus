@@ -1184,6 +1184,49 @@ class BaseTableGateway extends TableGateway
     }
 
     /**
+     * Get the column name from the identifier
+     *
+     * @param string $column
+     *
+     * @return string
+     */
+    public function getColumnFromIdentifier($column)
+    {
+        $platform = $this->getAdapter()->getPlatform();
+
+        // TODO: find a common place to share this code
+        // It is duplicated code in Builder.php
+        if (strpos($column, $platform->getIdentifierSeparator()) !== false) {
+            $identifierParts = explode($platform->getIdentifierSeparator(), $column);
+            $column = array_pop($identifierParts);
+        }
+
+        return $column;
+    }
+
+    /**
+     * Get the table name from the identifier
+     *
+     * @param string $column
+     *
+     * @return string
+     */
+    public function getTableFromIdentifier($column)
+    {
+        $platform = $this->getAdapter()->getPlatform();
+        $table = $this->getTable();
+
+        // TODO: find a common place to share this code
+        // It is duplicated code in Builder.php
+        if (strpos($column, $platform->getIdentifierSeparator()) !== false) {
+            $identifierParts = explode($platform->getIdentifierSeparator(), $column);
+            $table = array_shift($identifierParts);
+        }
+
+        return $table;
+    }
+
+    /**
      * Gets schema manager
      *
      * @return SchemaManager|null

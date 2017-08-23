@@ -985,7 +985,11 @@ class RelationalTableGateway extends BaseTableGateway
                 $arguments[] = $logical;
             }
 
-            $relationship = TableSchema::getColumnRelationship($this->getTable(), $column);
+            $relationship = TableSchema::getColumnRelationship(
+                $this->getTableFromIdentifier($column),
+                $this->getColumnFromIdentifier($column)
+            );
+
             if (in_array($operator, ['all', 'has']) && in_array($relationship->getType(), ['ONETOMANY', 'MANYTOMANY'])) {
                 if ($operator == 'all' && is_string($value)) {
                     $value = array_map(function ($item) {
@@ -1454,7 +1458,7 @@ class RelationalTableGateway extends BaseTableGateway
             $results = $relatedTableGateway->loadEntries(array_merge([
                 'columns' => $relatedTableColumns,
                 'filters' => [
-                    $relatedTableGateway->primaryKeyFieldName => [
+                    $relatedTableGateway->getColumnIdentifier($junctionKeyLeftColumn, $junctionTableName) => [
                         'in' => $ids
                     ]
                 ],
