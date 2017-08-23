@@ -55,11 +55,20 @@ define([
       var columnModel = this.model.parent;
       var infoView = this.getColumnView();
       var optionsView = this.getOptionsView();
+      var sort = 0;
+      var lastColumnModel;
       var isOptionsView;
 
       if (!infoView.model.isNew()) {
         infoView.model.set('options', JSON.stringify(optionsView.model.toJSON()));
       }
+
+      lastColumnModel = infoView.model.collection.last();
+      if (lastColumnModel) {
+        sort = lastColumnModel.get('sort') + 1;
+      }
+
+      infoView.model.set('sort', sort);
 
       // TODO: Improve saving payload
       // sending the new values and if there's not info value to be save, only save the options
@@ -146,21 +155,13 @@ define([
       if (this.model.parent.isNew() || this.model.parent.get('ui') !== this.model.id) {
         var columnModel = this.model.parent;
         var newInterfaceId = columnModel.get('ui');
-        var schema = app.schemaManager.getColumns('ui', newInterfaceId);
+
+        this.model.structure = app.schemaManager.getColumns('ui', newInterfaceId, true);
 
         columnModel.set('options', this.model);
 
         this.model.clear();
         this.model.set('id', this.model.parent.get('ui'));
-
-        if (!this.model.structure) {
-          this.model.structure = schema;
-        } else {
-          this.model.structure.reset(schema.models, {
-            silent: true,
-            parse: true
-          });
-        }
 
         if (this.optionsView) {
           this.optionsView.remove();
@@ -169,7 +170,9 @@ define([
       }
 
       if (!this.optionsView) {
-        this.optionsView = new ColumnOptionsView(this.options);
+        this.optionsView = new ColumnOptionsView({
+          model: this.model
+        });
       }
 
       return this.optionsView;

@@ -14,9 +14,11 @@ define([
   'use strict';
 
   var parseOptions = function (column, options) {
-    options.id = column.get('ui');
-    options = new UIModel(options);
-    options.parent = column;
+    if (!(options instanceof UIModel)) {
+      options.id = column.get('ui');
+      options = new UIModel(options);
+      options.parent = column;
+    }
 
     return options;
   };
@@ -126,7 +128,9 @@ define([
       var optionsModel = model.get('options');
       optionsModel.parent = model;
 
-      var schema = app.schemaManager.getColumns('ui', 'text_input');
+      // NOTE: Get a cloned version to prevent unwanted changes (Ref Issue #1730)
+      // Should we always return a clone version?
+      var schema = app.schemaManager.getColumns('ui', 'text_input', true);
       var ColumnView = require('modules/settings/views/modals/columns/column'); // eslint-disable-line import/no-unresolved
       var view = new ColumnView({
         model: optionsModel,

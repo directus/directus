@@ -49,33 +49,25 @@ define([
       }
     },
 
-    beforeSaving: function () {
+    unsavedChange: function () {
       // NOTE: Only set the new value (mark changed) if the value has changed
-      if (this.value && this.model.hasChanges(this.name)) {
-        this.model.set(this.name, this.value);
+      if (this.value && (this.model.isNew() || this.model.hasChanges(this.name))) {
+        return this.value;
       }
     },
 
     serialize: function () {
       var optionTemplate = Handlebars.compile(this.options.settings.get('visible_column_template'));
-      var value = this.options.value;
+      var defaultValue = +this.options.schema.get('default_value');
+      var placeholderAvailable = !!this.options.settings.get('placeholder') && this.options.settings.get('placeholder').length > 0;
+      var value = this.options.value || defaultValue;
 
-      // Set the first value to the column when the record is new
-      // This prevent assigning the incorrect (null/empty) value to the column
-      if (this.collection.length > 0 && !this.options.settings.get('allow_null') && this.model.isNew()) {
-        value = this.collection.first().id;
-      }
-
-      if (this.options.settings.get('readonly') === true) {
-        this.canEdit = false;
+      if (value instanceof Backbone.Model) {
+        value = value.id;
       }
 
       var data = this.collection.map(function (model) {
         var data = model.toJSON();
-
-        if (value instanceof Backbone.Model) {
-          value = value.id;
-        }
 
         return {
           id: model.id,
@@ -83,6 +75,15 @@ define([
           selected: value !== undefined && model.id === value
         };
       }, this);
+
+      // Pick first element if there's no placeholder available
+      if (data.length > 0 && !placeholderAvailable && value === undefined) {
+        value = data[0].id;
+      }
+
+      if (this.options.settings.get('readonly') === true) {
+        this.canEdit = false;
+      }
 
       // Default data while syncing (to avoid flickr when data is loaded)
       if (this.options.value !== undefined && this.options.value.id && data.length === 0) {
@@ -104,8 +105,11 @@ define([
         comment: this.options.schema.get('comment'),
         use_radio_buttons: this.options.settings.get('use_radio_buttons') === true,
         allowNull: this.options.settings.get('allow_null') === true,
-        placeholder: (this.options.settings.get('placeholder')) ? this.options.settings.get('placeholder') : __t('select_from_below'),
-        readOnly: this.options.settings.get('read_only') || !this.options.canWrite
+        placeholder: this.options.settings.get('placeholder'),
+        placeholderAvailable: placeholderAvailable,
+        readOnly: this.options.settings.get('read_only') || !this.options.canWrite,
+        value: this.value,
+        required: this.options.schema.isRequired()
       };
     },
 

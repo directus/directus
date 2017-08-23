@@ -6,7 +6,7 @@ define([
   'use strict';
 
   return Numeric.extend({
-    beforeSaving: function () {
+    unsavedChange: function () {
       var value = this.model.get(this.name);
 
       if (Utils.isNothing(value) && !this.columnSchema.isNullable()) {

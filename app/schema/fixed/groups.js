@@ -13,6 +13,7 @@ define(function(require, exports, module) {
     "table_name": "directus_groups",
     "hidden": true,
     "single": false,
+    "primary_column": "id",
     "url": "api/1/groups",
 
     "columns": [

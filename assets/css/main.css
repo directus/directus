@@ -5419,7 +5419,6 @@ body.help .discover-spotlight {
       color: #3498DB;
       vertical-align: middle;
       margin-top: -8px;
-      margin-left: -2px;
       cursor: default; }
     .fields .field .label .cancel-batch-edit {
       -webkit-transition: all 200ms ease-in-out 0ms;

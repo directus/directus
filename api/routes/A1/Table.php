@@ -115,7 +115,8 @@ class Table extends Route
 
         if ($app->request()->isDelete()) {
             $tableGateway = new TableGateway($table, $ZendDb, $acl);
-            $hasColumn = TableSchema::hasTableColumn($table, $column);
+            // NOTE: make sure to check aliases column (Ex: M2M Columns)
+            $hasColumn = TableSchema::hasTableColumn($table, $column, true);
             $success = false;
 
             if ($hasColumn) {

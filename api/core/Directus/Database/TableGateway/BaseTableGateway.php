@@ -622,7 +622,8 @@ class BaseTableGateway extends TableGateway
         $alias_columns = ['table_name', 'column_name', 'data_type', 'related_table', 'junction_table', 'junction_key_left', 'junction_key_right', 'sort', 'ui', 'comment', 'relationship_type'];
 
         $columnData['table_name'] = $tableName;
-        $columnData['sort'] = 9999;
+        // NOTE: setting 9999 as default just because
+        $columnData['sort'] = ArrayUtils::get($columnData, 'sort', 9999);
 
         $data = array_intersect_key($columnData, array_flip($alias_columns));
         return $this->addOrUpdateRecordByArray($data, 'directus_columns');

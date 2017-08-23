@@ -10,6 +10,7 @@ define(function(require, exports, module) {
     "single":false,
     "count":0,
     "active":0,
+    "primary_column": "id",
     "url": "api/1/activity",
     "title": "Activity",
 

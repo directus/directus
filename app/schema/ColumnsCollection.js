@@ -29,10 +29,14 @@ define(function(require, exports, module) {
       return _.invoke(this.getVisibleInputColumns(), 'get', 'column_name')
     },
 
-    getRelationalColumns: function() {
-      return this.filter(function(column) {
+    getRelationalColumns: function () {
+      return this.filter(function (column) {
         return column.hasRelated();
       });
+    },
+
+    hasRelationalColumns: function () {
+      return this.getRelationalColumns().length > 0;
     },
 
     getColumnsByType: function(type) {

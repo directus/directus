@@ -96,6 +96,11 @@ function(app, _, Backbone, __t, Directus, Notification, BasePageView, RightPane,
       if (!model.unsavedAttributes()) {
         Notification.warning('Nothing changed, nothing saved');
 
+        // Write this as a helper function
+        var route = Backbone.history.fragment.split('/');
+        route.pop();
+        app.router.go(route);
+
         return;
       }
 

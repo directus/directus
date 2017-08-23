@@ -338,6 +338,9 @@ define(function(require, exports, module) {
 
         if (!options.data.status) {
           options.data.preview = true;
+          // Add "reqid" (request id) query param to all GET request
+          // to prevent caching
+          options.data.reqid = Date.now();
         }
       }
 
@@ -646,6 +649,34 @@ define(function(require, exports, module) {
       }
 
       return hasChanges;
+    },
+
+    unsavedAttributes: function () {
+      var attributes = Backbone.Model.prototype.unsavedAttributes.apply(this, arguments);
+      var unsavedChanges = {};
+
+      this.structure.each(function (column) {
+        if (!_.isFunction(this.getInput)) {
+          return false;
+        }
+
+        var ui = this.getInput(column.getName());
+        var change;
+
+        if (ui) {
+          change = _.result(ui, 'unsavedChange');
+
+          if (change !== undefined) {
+            unsavedChanges[column.getName()] = change;
+          }
+        }
+      }, this);
+
+      if (!_.isEmpty(unsavedChanges)) {
+        attributes = _.extend(attributes || {}, unsavedChanges);
+      }
+
+      return attributes;
     },
 
     unsavedChanges: function (options) {

@@ -105,7 +105,6 @@ function(app, Backbone, _, EntriesManager, __t, Notification) {
 
     addTable: function(tableModel) {
       this.add({
-        icon_class: '',
         title: app.capitalize(tableModel.get('table_name')),
         url: 'tables/' + tableModel.get('table_name'),
         section: 'table'

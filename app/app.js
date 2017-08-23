@@ -274,7 +274,7 @@ define(function (require, exports, module) {
         }
       };
 
-      users.fetch({success: onSuccess});
+      users.fetch({success: onSuccess, global: false});
     },
 
     evaluateExpression: function (a, operator, b) {
