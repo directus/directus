@@ -9072,11 +9072,11 @@ define('core/UIView',['require','exports','module','backbone','underscore','hand
     // true: visible
     visible: null,
 
-    // Adding a `beforeSaving` method into any interface
+    // Adding a `unsavedChange` method into any interface
     // will allow the interface to inject value before saving
     // this changes won't trigger the unsaved changes event on leaving the form
     _beforeSaving: function () {
-      var value = _.result(this, 'beforeSaving');
+      var value = _.result(this, 'unsavedChange');
 
       if (value !== undefined) {
         this.model.set(this.name, value);
@@ -9224,7 +9224,17 @@ define('helpers/schema',[
       // because the model "changed" with the new synced values
       // which make the columns options not a UIModel anymore but a plain object
       // TODO: Make the column options parsed to UIModel
-      var option = columnOptions instanceof Backbone.Model ? columnOptions.get(optionName) : columnOptions;
+      var option;
+      if (columnOptions instanceof Backbone.Model) {
+        option = columnOptions.get(optionName);
+      } else {
+        try {
+          columnOptions = JSON.parse(columnOptions);
+          option = _.result(columnOptions, optionName);
+        } catch (e) {
+          // bad json
+        }
+      }
 
       if (!option || _.isEmpty(option)) {
         missing = true;
@@ -9716,6 +9726,10 @@ define('schema/ColumnModel',['require','exports','module','app','utils','backbon
       return _.omit(result, 'relationship');
     },
 
+    getName: function () {
+      return this.get('column_name');
+    },
+
     getOptions: function () {
       return this.options.get(this.attributes.ui);
     },
@@ -9935,10 +9949,14 @@ define('schema/ColumnsCollection',['require','exports','module','backbone','unde
       return _.invoke(this.getVisibleInputColumns(), 'get', 'column_name')
     },
 
-    getRelationalColumns: function() {
-      return this.filter(function(column) {
+    getRelationalColumns: function () {
+      return this.filter(function (column) {
         return column.hasRelated();
       });
+    },
+
+    hasRelationalColumns: function () {
+      return this.getRelationalColumns().length > 0;
     },
 
     getColumnsByType: function(type) {
@@ -11478,9 +11496,11 @@ define('core/interfaces/_internals/columns/interface',[
   
 
   var parseOptions = function (column, options) {
-    options.id = column.get('ui');
-    options = new UIModel(options);
-    options.parent = column;
+    if (!(options instanceof UIModel)) {
+      options.id = column.get('ui');
+      options = new UIModel(options);
+      options.parent = column;
+    }
 
     return options;
   };
@@ -11590,7 +11610,9 @@ define('core/interfaces/_internals/columns/interface',[
       var optionsModel = model.get('options');
       optionsModel.parent = model;
 
-      var schema = app.schemaManager.getColumns('ui', 'text_input');
+      // NOTE: Get a cloned version to prevent unwanted changes (Ref Issue #1730)
+      // Should we always return a clone version?
+      var schema = app.schemaManager.getColumns('ui', 'text_input', true);
       var ColumnView = require('modules/settings/views/modals/columns/column'); // eslint-disable-line import/no-unresolved
       var view = new ColumnView({
         model: optionsModel,
@@ -12018,7 +12040,6 @@ function(app, _, Backbone, __t, Notification) {
         app.getBookmarks().addNewBookmark({
           title: title,
           url: Backbone.history.fragment,
-          icon_class: 'icon-search',
           user: app.user.id,
           section: 'search'
         });
@@ -12200,7 +12221,9 @@ define('core/BasePageView',[
       if (this.isRightPaneOpen()) {
         this.on('afterRender', this.loadRightPane, this);
       } else if (this.shouldRightPaneOpen()) {
-        this.on('afterRender', this.openRightPane, this);
+        this.on('afterRender', function () {
+          this.openRightPane();
+        }, this);
       } else {
         this._ensurePaneIsClosed();
       }
@@ -12209,7 +12232,7 @@ define('core/BasePageView',[
     shouldRightPaneOpen: function () {
       var pane = this.getRightPane();
 
-      return $(window).width() >= 1200 && pane && pane.isWide === true;
+      return $(window).width() >= 1200 && pane && pane.shouldOpen();
     },
 
     isRightPaneOpen: function () {
@@ -19503,13 +19526,18 @@ define('core/interfaces/_internals/permissions/table',[
           return false;
         }
 
+        // Omit tables without permission record (not managed)
+        if (!app.schemaManager.getPrivileges(tableModel.id)) {
+          return false;
+        }
+
         this.addRowView(tableModel, false);
       }, this);
     },
 
     initialize: function () {
       this.tables = {};
-      this.showCoreTables = false;
+      this.showSystemTables = false;
     }
   });
 });
@@ -19995,7 +20023,7 @@ define('core/interfaces/_system/sort/interface',[
   
 
   return Numeric.extend({
-    beforeSaving: function () {
+    unsavedChange: function () {
       var value = this.model.get(this.name);
 
       if (Utils.isNothing(value) && !this.columnSchema.isNullable()) {
@@ -20180,7 +20208,7 @@ define('core/interfaces/user/interface',[
   return UIView.extend({
     template: 'user/interface',
 
-    beforeSaving: function () {
+    unsavedChange: function () {
       return this.userId;
     },
 
@@ -20501,12 +20529,12 @@ define('core/interfaces/slug/interface',['utils', 'underscore', 'core/UIView'], 
       'input input': 'onInputChange'
     },
 
-    beforeSaving: function () {
+    unsavedChange: function () {
       var mirroredField = this.getMirroredFieldName();
       var model = this.options.model;
 
       if (Utils.isSomething(model.get(mirroredField))) {
-        this.model.set(this.name, this.slugValue);
+        return this.slugValue;
       }
     },
 
@@ -22220,7 +22248,7 @@ define('core/interfaces/wysiwyg_full/interface',[
               var content = editor.getContent();
               var value = self.model.get(self.name);
 
-              if ((value === null || value === undefined) && Utils.isSomething(content)) {
+              if ((Utils.isNothing(value) || value !== content) && Utils.isSomething(content)) {
                 self.model.set(self.name, content);
                 self.$el.find('textarea')[0].innerHTML = content;
               }
@@ -24968,33 +24996,25 @@ define('core/interfaces/many_to_one/interface',[
       }
     },
 
-    beforeSaving: function () {
+    unsavedChange: function () {
       // NOTE: Only set the new value (mark changed) if the value has changed
-      if (this.value && this.model.hasChanges(this.name)) {
-        this.model.set(this.name, this.value);
+      if (this.value && (this.model.isNew() || this.model.hasChanges(this.name))) {
+        return this.value;
       }
     },
 
     serialize: function () {
       var optionTemplate = Handlebars.compile(this.options.settings.get('visible_column_template'));
-      var value = this.options.value;
+      var defaultValue = +this.options.schema.get('default_value');
+      var placeholderAvailable = !!this.options.settings.get('placeholder') && this.options.settings.get('placeholder').length > 0;
+      var value = this.options.value || defaultValue;
 
-      // Set the first value to the column when the record is new
-      // This prevent assigning the incorrect (null/empty) value to the column
-      if (this.collection.length > 0 && !this.options.settings.get('allow_null') && this.model.isNew()) {
-        value = this.collection.first().id;
-      }
-
-      if (this.options.settings.get('readonly') === true) {
-        this.canEdit = false;
+      if (value instanceof Backbone.Model) {
+        value = value.id;
       }
 
       var data = this.collection.map(function (model) {
         var data = model.toJSON();
-
-        if (value instanceof Backbone.Model) {
-          value = value.id;
-        }
 
         return {
           id: model.id,
@@ -25002,6 +25022,15 @@ define('core/interfaces/many_to_one/interface',[
           selected: value !== undefined && model.id === value
         };
       }, this);
+
+      // Pick first element if there's no placeholder available
+      if (data.length > 0 && !placeholderAvailable && value === undefined) {
+        value = data[0].id;
+      }
+
+      if (this.options.settings.get('readonly') === true) {
+        this.canEdit = false;
+      }
 
       // Default data while syncing (to avoid flickr when data is loaded)
       if (this.options.value !== undefined && this.options.value.id && data.length === 0) {
@@ -25023,8 +25052,11 @@ define('core/interfaces/many_to_one/interface',[
         comment: this.options.schema.get('comment'),
         use_radio_buttons: this.options.settings.get('use_radio_buttons') === true,
         allowNull: this.options.settings.get('allow_null') === true,
-        placeholder: (this.options.settings.get('placeholder')) ? this.options.settings.get('placeholder') : __t('select_from_below'),
-        readOnly: this.options.settings.get('read_only') || !this.options.canWrite
+        placeholder: this.options.settings.get('placeholder'),
+        placeholderAvailable: placeholderAvailable,
+        readOnly: this.options.settings.get('read_only') || !this.options.canWrite,
+        value: this.value,
+        required: this.options.schema.isRequired()
       };
     },
 
@@ -25125,7 +25157,7 @@ define('core/interfaces/many_to_one/component',[
         ui: 'text_input',
         type: 'String',
         comment: __t('m2o_placeholder_text_comment'),
-        default_value: '',
+        default_value: 'Please select an option',
         char_length: 255,
         required: false
       },
@@ -29224,7 +29256,7 @@ define('app',['require','exports','module','handlebars','backbone','core/config'
         }
       };
 
-      users.fetch({success: onSuccess});
+      users.fetch({success: onSuccess, global: false});
     },
 
     evaluateExpression: function (a, operator, b) {
@@ -30152,19 +30184,7 @@ define('core/tabs',[
 
   var Tabs = {};
 
-  Tabs.Collection = Backbone.Collection.extend({
-    setActive: function(route) {
-
-      var model = this.get(route);
-      //deactive all tabs
-      _.each(this.where({'active':true}),function(model) {
-        model.unset('active',{silent: true});
-      });
-
-      if (!model) { return; }
-      model.set({'active':true});
-    }
-  });
+  Tabs.Collection = Backbone.Collection.extend({});
 
   Tabs.View = Backbone.Layout.extend({
     template: 'tabs',
@@ -30176,7 +30196,7 @@ define('core/tabs',[
       var currentUserGroup = user.get('group');
       var navBlacklist = (currentUserGroup.get('nav_blacklist') || '').split(',').map(function (name) {
         return name.trim();
-      })
+      });
 
       var showUsers = navBlacklist.indexOf('directus_users') < 0;
       var showFiles = navBlacklist.indexOf('directus_files') < 0;
@@ -30237,7 +30257,6 @@ define('core/tabs',[
       app.user.on('change sync', this.render, this);
       app.on('messages:new', this.render, this);
     }
-
   });
 
   return Tabs;
@@ -30600,6 +30619,7 @@ define('schema/fixed/activity',['require','exports','module'],function(require, 
     "single":false,
     "count":0,
     "active":0,
+    "primary_column": "id",
     "url": "api/1/activity",
     "title": "Activity",
 
@@ -30877,6 +30897,7 @@ define('schema/fixed/groups',['require','exports','module','core/t'],function(re
     "table_name": "directus_groups",
     "hidden": true,
     "single": false,
+    "primary_column": "id",
     "url": "api/1/groups",
 
     "columns": [
@@ -31020,6 +31041,7 @@ define('schema/fixed/files',['require','exports','module','app'],function(requir
         "hidden":true,
         "single":false,
         "count":0,
+        "primary_column": "id",
         "status_column": "status",
         "url": "api/1.1/files",
         "title":"Files",
@@ -31278,6 +31300,7 @@ define('schema/fixed/messages',['require','exports','module'],function(require, 
     "table_name":"directus_messages",
     "hidden":true,
     "single":false,
+    "primary_column": "id",
     "url": "api/1/groups",
 
     "columns": [
@@ -31420,6 +31443,7 @@ define('schema/fixed/privileges',['require','exports','module'],function(require
 
     "id": "directus_privileges",
     "table_name": "directus_privileges",
+    "primary_column": "id",
     "hidden": true,
     "single": false,
 
@@ -31772,6 +31796,7 @@ define('schema/fixed/users',['require','exports','module','app'],function(requir
         "footer": 1,
         "count":0,
         "active":0,
+        "primary_column": "id",
         "status_column": "status",
         "user_create_column": "id",
         "user_update_column": "id",
@@ -32734,8 +32759,16 @@ define('schema/SchemaManager',['require','exports','module','app','underscore','
       return hasPrivilege(table);
     },
 
-    getColumns: function(namespace, tableName) {
-      return columnSchemas[namespace][tableName];
+    getColumns: function(namespace, tableName, clone) {
+      var columns = columnSchemas[namespace][tableName];
+
+      if (clone === true) {
+        columns = new columns.constructor(columns.models, {
+          table: columns.table
+        });
+      }
+
+      return columns;
     },
 
     getSettingsSchemas: function () {
@@ -33431,6 +33464,9 @@ define('core/entries/EntriesModel',['require','exports','module','app','undersco
 
         if (!options.data.status) {
           options.data.preview = true;
+          // Add "reqid" (request id) query param to all GET request
+          // to prevent caching
+          options.data.reqid = Date.now();
         }
       }
 
@@ -33739,6 +33775,34 @@ define('core/entries/EntriesModel',['require','exports','module','app','undersco
       }
 
       return hasChanges;
+    },
+
+    unsavedAttributes: function () {
+      var attributes = Backbone.Model.prototype.unsavedAttributes.apply(this, arguments);
+      var unsavedChanges = {};
+
+      this.structure.each(function (column) {
+        if (!_.isFunction(this.getInput)) {
+          return false;
+        }
+
+        var ui = this.getInput(column.getName());
+        var change;
+
+        if (ui) {
+          change = _.result(ui, 'unsavedChange');
+
+          if (change !== undefined) {
+            unsavedChanges[column.getName()] = change;
+          }
+        }
+      }, this);
+
+      if (!_.isEmpty(unsavedChanges)) {
+        attributes = _.extend(attributes || {}, unsavedChanges);
+      }
+
+      return attributes;
     },
 
     unsavedChanges: function (options) {
@@ -35217,7 +35281,6 @@ function(app, Backbone, _, EntriesManager, __t, Notification) {
 
     addTable: function(tableModel) {
       this.add({
-        icon_class: '',
         title: app.capitalize(tableModel.get('table_name')),
         url: 'tables/' + tableModel.get('table_name'),
         section: 'table'
@@ -36205,6 +36268,10 @@ define('core/RightPane',[
       }
     },
 
+    shouldOpen: function () {
+      return false;
+    },
+
     canBeOpen: function () {
       return !this.model.isNew();
     },
@@ -36219,11 +36286,19 @@ define('core/RightPane',[
   });
 });
 
-define('core/RightPaneWide',['core/RightPane'], function (RightPane) {
+define('core/RightPaneWide',['underscore', 'core/RightPane'], function (_, RightPane) {
 
   return RightPane.extend({
 
     isWide: true,
+
+    shouldOpen: function () {
+      if (this.model) {
+        return !_.result(this.model, 'isNew');
+      }
+
+      return true;
+    },
 
     constructor: function (options) {
       RightPane.prototype.constructor.apply(this, arguments);
@@ -37049,6 +37124,11 @@ function(app, _, Backbone, __t, Directus, Notification, BasePageView, RightPane,
 
       if (!model.unsavedAttributes()) {
         Notification.warning('Nothing changed, nothing saved');
+
+        // Write this as a helper function
+        var route = Backbone.history.fragment.split('/');
+        route.pop();
+        app.router.go(route);
 
         return;
       }
@@ -37937,9 +38017,15 @@ function(app, Backbone, Handlebars, Directus, EntriesManager) {
       }
     },
     afterRender: function() {
-      if(this.editView) {
-        this.insertView("#translateEditFormEntry", this.editView);
-        this.editView.render();
+      if (this.editView) {
+        this.insertView('#translateEditFormEntry', this.editView);
+
+        // If the translation table has relational data, fetch them
+        if (this.editView.model.structure.hasRelationalColumns()) {
+          this.editView.model.fetch();
+        } else {
+          this.editView.render();
+        }
       }
     },
     initialize: function(options) {
@@ -37947,7 +38033,7 @@ function(app, Backbone, Handlebars, Directus, EntriesManager) {
       this.translateSettings = options.translateSettings;
       this.translateRelationship = options.translateRelationship;
 
-      if(this.model.id) {
+      if (this.model.id) {
         this.listenToOnce(this.model, 'sync', this.updateTranslateConnection);
       } else {
         this.updateTranslateConnection();
@@ -38210,6 +38296,11 @@ define('modules/tables/views/EditView',[
 
       if (!model.unsavedAttributes()) {
         Notification.warning('Nothing changed, nothing saved');
+
+        // Write this as a helper function
+        var route = Backbone.history.fragment.split('/');
+        route.pop();
+        app.router.go(route);
 
         return;
       }
@@ -39361,6 +39452,7 @@ define('modules/settings/views/modals/columns/info',[
 
         if (this.selectedUI === 'single_file') {
           tables = [{id: 'directus_files', selected: true}];
+          tableRelated = 'directus_files';
         } else {
           tables = app.schemaManager.getTables();
           tables = tables.map(function(model) {
@@ -39734,8 +39826,7 @@ define('modules/settings/views/modals/columns/options',['app', 'backbone', 'core
 
     initialize: function () {
       this.editView = new EditView({
-        model: this.model,
-        structure: this.options.schema
+        model: this.model
       });
     }
   });
@@ -39798,11 +39889,20 @@ define('modules/settings/views/modals/columns/column',[
       var columnModel = this.model.parent;
       var infoView = this.getColumnView();
       var optionsView = this.getOptionsView();
+      var sort = 0;
+      var lastColumnModel;
       var isOptionsView;
 
       if (!infoView.model.isNew()) {
         infoView.model.set('options', JSON.stringify(optionsView.model.toJSON()));
       }
+
+      lastColumnModel = infoView.model.collection.last();
+      if (lastColumnModel) {
+        sort = lastColumnModel.get('sort') + 1;
+      }
+
+      infoView.model.set('sort', sort);
 
       // TODO: Improve saving payload
       // sending the new values and if there's not info value to be save, only save the options
@@ -39889,21 +39989,13 @@ define('modules/settings/views/modals/columns/column',[
       if (this.model.parent.isNew() || this.model.parent.get('ui') !== this.model.id) {
         var columnModel = this.model.parent;
         var newInterfaceId = columnModel.get('ui');
-        var schema = app.schemaManager.getColumns('ui', newInterfaceId);
+
+        this.model.structure = app.schemaManager.getColumns('ui', newInterfaceId, true);
 
         columnModel.set('options', this.model);
 
         this.model.clear();
         this.model.set('id', this.model.parent.get('ui'));
-
-        if (!this.model.structure) {
-          this.model.structure = schema;
-        } else {
-          this.model.structure.reset(schema.models, {
-            silent: true,
-            parse: true
-          });
-        }
 
         if (this.optionsView) {
           this.optionsView.remove();
@@ -39912,7 +40004,9 @@ define('modules/settings/views/modals/columns/column',[
       }
 
       if (!this.optionsView) {
-        this.optionsView = new ColumnOptionsView(this.options);
+        this.optionsView = new ColumnOptionsView({
+          model: this.model
+        });
       }
 
       return this.optionsView;
@@ -41194,6 +41288,11 @@ define('modules/users/views/EditUserView',[
 
       if (!model.unsavedAttributes()) {
         Notification.warning('Nothing changed, nothing saved');
+
+        // Write this as a helper function
+        var route = Backbone.history.fragment.split('/');
+        route.pop();
+        app.router.go(route);
 
         return;
       }
@@ -44163,8 +44262,8 @@ require(['config', 'polyfills'], function () {
       // Default directus tabs
 
       var tabs = [
-        {id: 'users/' + app.user.id, icon_class: 'icon-pencil', avatar: ''},
-        {id: 'logout', icon_class: 'icon-power-button'}
+        {id: 'users/' + app.user.id, avatar: ''},
+        {id: 'logout'}
       ];
 
       if (app.user.get('group').id === 1) {
@@ -44182,7 +44281,6 @@ require(['config', 'polyfills'], function () {
           var privileges = SchemaManager.getPrivileges(table.table_name);
           if (privileges.get('allow_view') > 0 && !table.hidden && privileges.get('nav_listed') > 0) {
             bookmarks.push({
-              icon_class: '',
               identifier: table.table_name,
               title: app.capitalize(table.table_name),
               url: 'tables/' + encodeURIComponent(table.table_name),
@@ -44204,7 +44302,6 @@ require(['config', 'polyfills'], function () {
       _.each(extensions, function (item) {
         item = ExtensionManager.getInfo(item);
         bookmarks.push({
-          icon_class: item.icon,
           identifier: item.id,
           title: item.title,
           url: item.path,
@@ -44228,7 +44325,6 @@ require(['config', 'polyfills'], function () {
           _.each(sectionItems, function (item, title) {
             var path = item.path || '';
             customBookmarks.push({
-              icon_class: item.icon,
               title: title,
               url: path,
               identifier: title,

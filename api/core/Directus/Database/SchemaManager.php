@@ -637,6 +637,12 @@ class SchemaManager
             $column['is_nullable'] = 'YES';
         }
 
+        // NOTE: MariaDB store "NULL" as a string on some data types such as VARCHAR.
+        // We reserved the word "NULL" on nullable data type to be actually null
+        if (ArrayUtils::get($column, 'is_nullable') === 'YES' && ArrayUtils::get($column, 'default_value') == 'NULL') {
+            $column['default_value'] = null;
+        }
+
         $columnObject = new Column($column);
         if (isset($column['related_table'])) {
             $columnObject->setRelationship([

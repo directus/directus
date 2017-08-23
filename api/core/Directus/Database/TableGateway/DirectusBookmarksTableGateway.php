@@ -24,25 +24,21 @@ class DirectusBookmarksTableGateway extends RelationalTableGateway
         'Activity' => [
             'title' => 'Activity',
             'url' => 'activity',
-            'icon_class' => 'icon-bell',
             'section' => 'other'
         ],
         'Files' => [
             'title' => 'Files',
             'url' => 'files',
-            'icon_class' => 'icon-attach',
             'section' => 'other'
         ],
         'Messages' => [
             'title' => 'Messages',
             'url' => 'messages',
-            'icon_class' => 'icon-chat',
             'section' => 'other'
         ],
         'Users' => [
             'title' => 'Users',
             'url' => 'users',
-            'icon_class' => 'icon-users',
             'section' => 'other'
         ]
     ];

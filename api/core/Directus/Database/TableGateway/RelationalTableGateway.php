@@ -1454,7 +1454,7 @@ class RelationalTableGateway extends BaseTableGateway
             $results = $relatedTableGateway->loadEntries(array_merge([
                 'columns' => $relatedTableColumns,
                 'filters' => [
-                    $relatedTableGateway->getColumnIdentifier($junctionKeyLeftColumn, $junctionTableName) => [
+                    $relatedTableGateway->primaryKeyFieldName => [
                         'in' => $ids
                     ]
                 ],

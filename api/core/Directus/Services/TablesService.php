@@ -59,7 +59,8 @@ class TablesService extends AbstractService
             'column_name' => 'id',
             'data_type' => 'INT',
             'hidden_input' => true,
-            'ui' => 'primary_key'
+            'ui' => 'primary_key',
+            'sort' => 0
         ]);
 
         if (in_array('sort', $columns)) {
@@ -68,7 +69,8 @@ class TablesService extends AbstractService
                 'column_name' => 'sort',
                 'data_type' => 'INT',
                 'hidden_input' => true,
-                'ui' => 'sort'
+                'ui' => 'sort',
+                'sort' => 1
             ]);
         }
 
@@ -78,7 +80,8 @@ class TablesService extends AbstractService
                 'column_name' => STATUS_COLUMN_NAME,
                 'data_type' => 'INT',
                 'hidden_input' => true,
-                'ui' => 'status'
+                'ui' => 'status',
+                'sort' => 2
             ]);
         }
 
