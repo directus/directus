@@ -34,9 +34,11 @@ define(['./interface', 'core/UIComponent', 'core/t'], function (Input, UICompone
       }
     },
     list: function (options) {
-      var listTemplateSource = '<input type="checkbox" class="custom-checkbox" {{#if selected}}checked="true"{{/if}} disabled>';
+      if (Boolean(options.value) === true) {
+        return '<i class="material-icons">check_box</i>';
+      }
 
-      return this.compileView(listTemplateSource, {selected: parseInt(options.value, 10) === 1});
+      return '<i class="material-icons">check_box_outline_blank</i>';
     }
   });
 });
