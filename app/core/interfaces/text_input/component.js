@@ -37,7 +37,8 @@ define([
           options: {
             large: __t('size_large'),
             medium: __t('size_medium'),
-            small: __t('size_small')
+            small: __t('size_small'),
+            auto: __t('size_auto')
           }
         }
       },
