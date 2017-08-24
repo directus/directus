@@ -185,12 +185,13 @@
 				width: auto;
 			}
 			input {
-				min-width: 400px;
+				width: 100%;
+				max-width: 400px;
 				&.small {
-					width: 150px;
+					max-width: 150px;
 				}
 				&.medium {
-					width: 300px;
+					max-width: 300px;
 				}
 			}
 			textarea {
@@ -202,18 +203,19 @@
 			}
 			select {
 				padding-right: 36px; // So the right side isn't cropped
-				min-width: 200px;
+				width: 100%;
+				max-width: 200px;
 			}
 			input[type="checkbox"].custom-checkbox + label {
 				display: inline-block;
 			}
 			input[type="checkbox"],
 			input[type="radio"] {
-				min-width: auto;
+				max-width: auto;
 				width: auto;
 			}
 			input[type="date"] {
-				min-width: auto;
+				max-width: auto;
 				width: 170px;
 				margin-right: 20px;
 			}
