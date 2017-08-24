@@ -196,7 +196,8 @@
 			}
 			textarea {
 				position: relative;
-				min-width: 400px;
+				width: 100%;
+				max-width: 400px;
 				min-height: 140px;
 				line-height: 18px;
 				height: auto;
@@ -225,7 +226,7 @@
 			}
 			input[type="range"] {
 				padding: 0;
-				min-width: 340px;
+				max-width: 340px;
 				-webkit-appearance: none;
 				border: none;
 				margin-right: 10px;
