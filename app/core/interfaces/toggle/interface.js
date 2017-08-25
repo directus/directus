@@ -10,6 +10,16 @@ define(['underscore', 'utils', 'core/UIView'], function (_, Utils, UIView) {
       }
     },
 
+    unsavedChange: function () {
+      // NOTE: Only set the new value (mark changed) if the value has changed
+      var hasValue = Utils.isSomething(this.value);
+      var nullable = this.columnSchema.isNullable();
+
+      if ((hasValue || this.value === null && nullable)  && (this.model.isNew() || this.model.hasChanges(this.name))) {
+        return this.value;
+      }
+    },
+
     serialize: function () {
       var value = this.options.value;
 
@@ -28,6 +38,10 @@ define(['underscore', 'utils', 'core/UIView'], function (_, Utils, UIView) {
         showAsCheckbox: Number(this.options.settings.get('show_as_checkbox')) === 1,
         readOnly: this.options.settings.get('read_only') || !this.options.canWrite
       };
+    },
+
+    initialize: function (options) {
+      this.value = options.value !== undefined ? options.value : options.default_value;
     }
   });
 });

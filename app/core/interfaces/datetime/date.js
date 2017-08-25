@@ -17,6 +17,13 @@ define(['app', 'core/UIComponent', 'core/UIView', 'moment', 'helpers/ui', 'core/
       'click .now': 'makeNow'
     },
 
+    unsavedChange: function () {
+      // NOTE: Only set the new value (mark changed) if the value has changed
+      if (this.value && (this.model.isNew() || this.model.hasChanges(this.name))) {
+        return this.value;
+      }
+    },
+
     supportsTime: function (type) {
       type = type || this.columnSchema.get('type');
 

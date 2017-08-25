@@ -127,7 +127,7 @@
 
 <div class="dropdown-interface">
 	<select name="{{name}}" {{#if readOnly}}disabled{{/if}}>
-		{{#if placeholder}}<option value="" disabled>{{placeholder}}</option>{{/if}}
+		{{#if showSelectOption}}<option value="">{{placeholder}}</option>{{/if}}
 
 		{{#options}}
 		<option value="{{key}}" {{#if selected}}selected{{/if}}>{{value}}</option>
