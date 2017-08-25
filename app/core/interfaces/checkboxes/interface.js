@@ -1,7 +1,7 @@
 /* global _ */
 define(['core/UIView', 'underscore'], function(UIView, _) {
 
-  function parseOptions(options) {
+  function parseOptions (options) {
     if (_.isString(options)) {
       try {
         options = JSON.parse(options);
@@ -19,12 +19,7 @@ define(['core/UIView', 'underscore'], function(UIView, _) {
       'change input[type=checkbox]': 'update',
       'change #customText': 'update'
     },
-    allowCustomCheckboxes() {
-      if (this.options.settings.get('allow_custom_checkboxes')) {
-        return true
-      }
-    },
-    delimiterize: function(out) {
+    delimiterize: function (out) {
 
       var delimiter = this.options.settings.get('delimiter');
 
@@ -36,7 +31,7 @@ define(['core/UIView', 'underscore'], function(UIView, _) {
 
       return out;
     },
-    value: function() {
+    value: function () {
       var checkedValues = this.$('input[type=checkbox]:checked');
 
       var out = [];
@@ -58,14 +53,14 @@ define(['core/UIView', 'underscore'], function(UIView, _) {
 
 
     },
-    customValue: function() {
+    customValue: function () {
 
       var customValues = this.$('#customText')[0].value;
 
       return customValues;
     },
 
-    update: function() {
+    update: function () {
       var out = []
 
       out.push(this.value())
@@ -76,10 +71,10 @@ define(['core/UIView', 'underscore'], function(UIView, _) {
 
       this.model.set(this.name, out);
     },
-    serialize: function() {
+    serialize: function () {
       var value = typeof this.options.value === 'string' ? this.options.value :
         this.columnSchema.get('default_value') || '';
-        
+
       var values = value.split(this.options.settings.get('delimiter'));
 
       var options = parseOptions(this.options.settings.get('options'));
@@ -95,7 +90,7 @@ define(['core/UIView', 'underscore'], function(UIView, _) {
       var customArray = {
         key: 'custom',
         value: values[values.length - 2]
-        }
+      }
 
       return {
         options: optionsArray,
