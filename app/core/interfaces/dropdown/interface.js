@@ -38,6 +38,7 @@ define([
     serialize: function () {
       var value = this.options.value || this.columnSchema.get('default_value') || '';
       var options = parseOptions(this.options.settings.get('options'));
+      var hasPlaceHolder = this.options.schema.has('placeholder');
       var placeholder = this.options.schema.get('placeholder') || __t('select_from_below');
       var optionsArray = Object.keys(options).map(function (key) {
         return {
@@ -52,7 +53,7 @@ define([
         name: this.options.name,
         comment: this.options.schema.get('comment'),
         readonly: !this.options.canWrite,
-        showSelectOption: placeholder || this.columnSchema.isNullable(),
+        showSelectOption: hasPlaceHolder || this.columnSchema.isNullable(),
         placeholder: placeholder,
         readOnly: this.options.settings.get('read_only') || !this.options.canWrite,
         native: Boolean(Number(this.options.settings.get('use_native_input'))),
