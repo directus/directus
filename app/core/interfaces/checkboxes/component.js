@@ -1,9 +1,9 @@
-define(['./interface', 'core/UIComponent', 'core/t', 'utils'], function (Input, UIComponent, __t, Utils) {
+define(['./interface', 'core/UIComponent', 'core/t', 'utils'], function(Input,
+  UIComponent, __t, Utils) {
   return UIComponent.extend({
     id: 'checkboxes',
     dataTypes: ['VARCHAR', 'CHAR', 'TINYTEXT', 'TEXT', 'MEDIUMTEXT', 'LONGTEXT'],
-    variables: [
-      {
+    variables: [{
         id: 'read_only',
         ui: 'toggle',
         type: 'Boolean',
@@ -54,28 +54,39 @@ define(['./interface', 'core/UIComponent', 'core/t', 'utils'], function (Input, 
             value: 'Value'
           }
         }
-      }
+      },
+      {
+        id: 'allow_custom_checkboxes',
+        ui: 'toggle',
+        type: 'Boolean',
+        comment: 'Enable to allow user add custom checkbox values',
+        default_value: false
+      },
     ],
     Input: Input,
-    validate: function (value, options) {
+    validate: function(value, options) {
       if (options.schema.isRequired() && Utils.isEmpty(value)) {
         return __t('this_field_is_required');
       }
     },
-    list: function (options) {
+    list: function(options) {
       // Convert default csv to csv with spaces => demo1,demo2 => demo1, demo2
       var showAsText = options.settings.get('list_view_formatting') === 'text';
       var values = (options.value || '').split(options.settings.get('delimiter'))
-        .filter(function (value) {
+        .filter(function(value) {
           // Filter out the first and last empty delimiter
           return value.length > 0;
         })
-        .map(function (value) {
+        .map(function(value) {
+          //map value to options key
           if (showAsText) {
             var displayOptions = JSON.parse(options.settings.get('options'));
-            return displayOptions[value];
-          }
 
+            if (displayOptions[value]) {
+              return displayOptions[value];
+            }else{
+              return value  }
+          }
           return value;
         });
 
