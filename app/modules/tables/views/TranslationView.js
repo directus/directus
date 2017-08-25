@@ -85,7 +85,12 @@ function(app, Backbone, Handlebars, Directus, EntriesManager) {
         data[this.translateSettings.left_column_name] = this.activeLanguageId;
         data[this.translateRelationship.junction_key_right] = this.model.id;
 
-        this.translateModel = new this.translateCollection.model({}, {collection: this.translateCollection, parse: true});
+        this.translateModel = new this.translateCollection.model(data, {
+          collection: this.translateCollection,
+          parse: true
+        });
+
+        this.translateCollection.add(this.translateModel);
       }
 
       if (!this.translateModel.isTracking()) {
