@@ -2,13 +2,11 @@
 
 namespace Directus\Database\TableGateway;
 
-use Directus\Bootstrap;
 use Directus\Database\Exception\DuplicateEntryException;
 use Directus\Database\Exception\SuppliedArrayAsColumnValue;
 use Directus\Database\Object\Table;
 use Directus\Database\RowGateway\BaseRowGateway;
 use Directus\Database\SchemaManager;
-use Directus\Database\Schemas\Sources\MySQLSchema;
 use Directus\Database\TableGatewayFactory;
 use Directus\Database\TableSchema;
 use Directus\Filesystem\Thumbnail;
@@ -20,8 +18,6 @@ use Directus\Permissions\Exception\UnauthorizedTableDeleteException;
 use Directus\Permissions\Exception\UnauthorizedTableEditException;
 use Directus\Util\ArrayUtils;
 use Directus\Util\DateUtils;
-use Directus\Util\Formatting;
-use Zend\Db\Adapter\Adapter;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Adapter\Exception\InvalidQueryException;
 use Zend\Db\ResultSet\ResultSet;
@@ -701,20 +697,33 @@ class BaseTableGateway extends TableGateway
      */
     protected function executeSelect(Select $select)
     {
+        // Select query options
+        $options = ArrayUtils::get(func_get_args(), 1, []);
+        if (!is_array($options)) {
+            $options = [];
+        }
+
+        $useFilter = ArrayUtils::get($options, 'filter', true) !== false;
+
         if ($this->acl) {
             $this->enforceSelectPermission($select);
         }
 
         try {
-            $result = parent::executeSelect($select);
+            if ($useFilter) {
+                $selectState = $select->getRawState();
+                $selectTableName = $selectState['table'];
 
-            // Select query options
-            $options = ArrayUtils::get(func_get_args(), 1, []);
-            if (!is_array($options)) {
-                $options = [];
+                $selectState = $this->applyHook('table.select:before', $selectState);
+                $selectState = $this->applyHook('table.' . $selectTableName . '.select:before', $selectState);
+
+                // NOTE: This can be a "dangerous" hook, so for now we only support columns
+                $select->columns(ArrayUtils::get($selectState, 'columns', ['*']));
             }
 
-            if (ArrayUtils::get($options, 'filter', true) !== false) {
+            $result = parent::executeSelect($select);
+
+            if ($useFilter) {
                 $selectState = $select->getRawState();
                 $selectTableName = $selectState['table'];
 
@@ -1259,15 +1268,33 @@ class BaseTableGateway extends TableGateway
     }
 
     /**
+     * Apply a list of hook against the given data
+     *
+     * @param array $names
+     * @param null $data
+     * @param array $attributes
+     *
+     * @return array|\ArrayObject|null
+     */
+    public function applyHooks(array $names, $data = null, array $attributes = [])
+    {
+        foreach ($names as $name) {
+            $data = $this->applyHook($name, $data, $attributes);
+        }
+
+        return $data;
+    }
+
+    /**
      * Apply hook against the given data
      *
      * @param $name
      * @param null $data
      * @param array $attributes
      *
-     * @return \ArrayObject|null
+     * @return \ArrayObject|array|null
      */
-    public function applyHook($name, $data = null, $attributes = [])
+    public function applyHook($name, $data = null, array $attributes = [])
     {
         // TODO: Ability to run multiple hook names
         // $this->applyHook('hook1,hook2');

@@ -816,6 +816,17 @@ class Bootstrap
             return $rows;
         };
 
+        $emitter->addFilter('table.directus_files.select:before', function (Payload $payload) {
+            $columns = $payload->get('columns');
+
+            if (!in_array('name', $columns)) {
+                $columns[] = 'name';
+                $payload->set('columns', $columns);
+            }
+
+            return $payload;
+        });
+
         // Add file url and thumb url
         $emitter->addFilter('table.select', function (Payload $payload) use ($addFilesUrl) {
             $selectState = $payload->attribute('selectState');
