@@ -355,12 +355,6 @@ class BaseTableGateway extends TableGateway
         }
 
         if ($rowExists) {
-            $recordData = $this->applyHook('table.update:before', $recordData, [
-                'tableName' => $tableName
-            ]);
-
-            $recordData = $this->applyHook('table.update.' . $tableName . ':before', $recordData);
-
             $Update = new Update($tableName);
             $Update->set($recordData);
             $Update->where([
@@ -825,14 +819,12 @@ class BaseTableGateway extends TableGateway
         $updateData = $updateState['set'];
 
         try {
-            // @TODO: Move hook filters here
-            $this->runHook('table.update:before', [$updateTable, $updateData]);
-            $this->runHook('table.update.' . $updateTable . ':before', [$updateData]);
+            $isSoftDelete = $this->isSoftDelete($updateData);
+
+            $updateData = $this->runBeforeUpdateHooks($updateTable, $updateData, $isSoftDelete);
+            $update->set($updateData);
             $result = parent::executeUpdate($update);
-            $this->runHook('table.update', [$updateTable, $updateData]);
-            $this->runHook('table.update:after', [$updateTable, $updateData]);
-            $this->runHook('table.update.' . $updateTable, [$updateData]);
-            $this->runHook('table.update.' . $updateTable . ':after', [$updateData]);
+            $this->runAfterUpdateHooks($updateTable, $updateData, $isSoftDelete);
 
             return $result;
         } catch (InvalidQueryException $e) {
@@ -868,15 +860,30 @@ class BaseTableGateway extends TableGateway
 
         $deleteState = $delete->getRawState();
         $deleteTable = $this->getRawTableNameFromQueryStateTable($deleteState['table']);
+        // NOTE: this is used to send the "delete" data to table.remove hook
+        // on update this hook pass the updated data array, on delete has nothing,
+        // a empty array is passed instead
+        // TODO: Add the ID of the record being deleted
+        $deleteData = [];
 
         try {
             $this->runHook('table.delete:before', [$deleteTable]);
             $this->runHook('table.delete.' . $deleteTable . ':before');
+            $this->runHook('table.remove:before', [$deleteTable, $deleteData, 'soft' => false]);
+            $this->runHook('table.remove.' . $deleteTable . ':before', [$deleteData, 'soft' => false]);
+
             $result = parent::executeDelete($delete);
+
             $this->runHook('table.delete', [$deleteTable]);
             $this->runHook('table.delete:after', [$deleteTable]);
             $this->runHook('table.delete.' . $deleteTable);
             $this->runHook('table.delete.' . $deleteTable . ':after');
+
+            $this->runHook('table.remove', [$deleteTable, $deleteData, 'soft' => false]);
+            $this->runHook('table.remove:after', [$deleteTable, $deleteData, 'soft' => false]);
+            $this->runHook('table.remove.' . $deleteTable, [$deleteData, 'soft' => false]);
+            $this->runHook('table.remove.' . $deleteTable . ':after', [$deleteData, 'soft' => false]);
+
             return $result;
         } catch (InvalidQueryException $e) {
             if ('production' !== DIRECTUS_ENV) {
@@ -885,6 +892,31 @@ class BaseTableGateway extends TableGateway
             // @todo send developer warning
             throw $e;
         }
+    }
+
+    /**
+     * Check whether the data will perform soft delete
+     *
+     * @param array $data
+     *
+     * @return bool
+     */
+    protected function isSoftDelete(array $data)
+    {
+        $isSoftDelete = false;
+        $tableSchema = $this->getTableSchema();
+        $statusColumnName = $tableSchema->getStatusColumn();
+        $hasStatusColumnData = ArrayUtils::has($data, $statusColumnName);
+        $deletedValues = $this->getDeletedStatuses();
+
+        if ($hasStatusColumnData) {
+            $statusColumnObject = $tableSchema->getColumn($statusColumnName);
+            $deletedValues[] = $statusColumnObject->getOptions('delete_value') ?: STATUS_DELETED_NUM;
+            $statusValue = ArrayUtils::get($data, $this->getStatusColumnName());
+            $isSoftDelete =  in_array($statusValue, $this->getDeletedStatuses());
+        }
+
+        return $isSoftDelete;
     }
 
     protected function getRawTableNameFromQueryStateTable($table)
@@ -1184,7 +1216,7 @@ class BaseTableGateway extends TableGateway
         $platform = $this->getAdapter()->getPlatform();
 
         // TODO: find a common place to share this code
-        // It is duplicated code in Builder.php
+        // It is a duplicated code from Builder.php
         if (strpos($column, $platform->getIdentifierSeparator()) === false) {
             $column = implode($platform->getIdentifierSeparator(), [$table, $column]);
         }
@@ -1326,6 +1358,66 @@ class BaseTableGateway extends TableGateway
     }
 
     /**
+     * Run before table update hooks and filters
+     *
+     * @param string $updateTable
+     * @param array $updateData
+     * @param bool $isSoftDelete
+     *
+     * @return array|\ArrayObject
+     */
+    protected function runBeforeUpdateHooks($updateTable, $updateData, $isSoftDelete)
+    {
+        // Filters
+        $updateData = $this->applyHook('table.update:before', $updateData, [
+            'tableName' => $updateTable
+        ]);
+        $updateData = $this->applyHook('table.update.' . $updateTable . ':before', $updateData);
+
+        // Hooks
+        $this->runHook('table.update:before', [$updateTable, $updateData]);
+        $this->runHook('table.update.' . $updateTable . ':before', [$updateData]);
+
+        if ($isSoftDelete === true) {
+            $updateData = $this->applyHook('table.remove:before', $updateData, [
+                'tableName' => $updateTable,
+                'soft' => true
+            ]);
+
+            $updateData = $this->applyHook('table.remove.' . $updateTable . ':before', $updateData, [
+                'soft' => true
+            ]);
+
+            $this->runHook('table.remove:before', [$updateTable, $updateData, 'soft' => true]);
+            $this->runHook('table.remove.' . $updateTable . ':before', [$updateData, 'soft' => true]);
+        }
+
+        return $updateData;
+    }
+
+    /**
+     * Run after table update hooks and filters
+     *
+     * @param string $updateTable
+     * @param string $updateData
+     * @param bool $isSoftDelete
+     */
+    protected function runAfterUpdateHooks($updateTable, $updateData, $isSoftDelete)
+    {
+        $this->runHook('table.update', [$updateTable, $updateData]);
+        $this->runHook('table.update:after', [$updateTable, $updateData]);
+        $this->runHook('table.update.' . $updateTable, [$updateData]);
+        $this->runHook('table.update.' . $updateTable . ':after', [$updateData]);
+
+        if ($isSoftDelete === true) {
+            $this->runHook('table.remove', [$updateTable, $updateData, 'soft' => true]);
+            $this->runHook('table.remove.' . $updateTable, [$updateData, 'soft' => true]);
+            $this->runHook('table.remove:after', [$updateTable, $updateData, 'soft' => true]);
+            $this->runHook('table.remove.' . $updateTable . ':after', [$updateData, 'soft' => true]);
+        }
+    }
+
+    /**
      * Gets Directus settings (from DB)
      *
      * @param null $key
@@ -1345,19 +1437,32 @@ class BaseTableGateway extends TableGateway
 
     public function getPublishedStatuses()
     {
-        $publishedStatuses = [];
+        return $this->getStatuses('published');
+    }
+
+    public function getDeletedStatuses()
+    {
+        return $this->getStatuses('deleted');
+    }
+
+    protected function getStatuses($type)
+    {
+        $statuses = [];
 
         if (static::$container && TableSchema::hasStatusColumn($this->table, true)) {
             $config = static::$container->get('config');
-            $statusMapping = $this->getTableSchema()->getStatusMapping();
+            $statusMapping = $this->getTableSchema()->getStatusMapping() ?: [];
 
-            if ($statusMapping) {
-                $publishedStatuses = $config->getPublishedStatuses($statusMapping);
-            } else {
-                $publishedStatuses = $config->getPublishedStatuses();
+            switch ($type) {
+                case 'published':
+                    $statuses = $config->getPublishedStatuses($statusMapping);
+                    break;
+                case 'deleted':
+                    $statuses = $config->getDeletedStatuses($statusMapping);
+                    break;
             }
         }
 
-        return $publishedStatuses;
+        return $statuses;
     }
 }

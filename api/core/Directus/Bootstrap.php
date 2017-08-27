@@ -151,7 +151,8 @@ class Bootstrap
         Twig::$twigTemplateDirs = $templatesPaths;
 
         Twig::$twigExtensions = [
-            new DirectusTwigExtension()
+            new DirectusTwigExtension(),
+            new \Twig_Extension_Debug()
         ];
 
         $app->container->singleton('hookEmitter', function () {
@@ -391,7 +392,8 @@ class Bootstrap
             $db = new Connection($dbConfig);
             $db->connect();
         } catch (\Exception $e) {
-            echo 'Database connection failed.';
+            echo $e->getMessage();
+            // echo 'Database connection failed.';
             exit;
         }
 
