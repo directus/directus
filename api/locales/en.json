@@ -232,6 +232,7 @@
     "size_large": "Large",
     "size_medium": "Medium",
     "size_small": "Small",
+    "size_auto": "Automatic",
 
     "select_ui_show_options_value": "Value",
     "select_ui_show_options_text": "Text",
