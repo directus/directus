@@ -816,7 +816,7 @@ class Bootstrap
             return $rows;
         };
 
-        $emitter->addFilter('table.directus_files.select:before', function (Payload $payload) {
+        $emitter->addFilter('table.select.directus_files:before', function (Payload $payload) {
             $columns = $payload->get('columns');
 
             if (!in_array('name', $columns)) {
@@ -880,7 +880,7 @@ class Bootstrap
             return $payload;
         });
 
-        $emitter->addFilter('table.directus_users.select', function (Payload $payload) {
+        $emitter->addFilter('table.select.directus_users', function (Payload $payload) {
             $acl = Bootstrap::get('acl');
             $auth = Bootstrap::get('auth');
             $rows = $payload->getData();

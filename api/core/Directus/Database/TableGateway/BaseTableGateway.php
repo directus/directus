@@ -704,12 +704,16 @@ class BaseTableGateway extends TableGateway
         }
 
         try {
-            if ($useFilter) {
-                $selectState = $select->getRawState();
-                $selectTableName = $selectState['table'];
+            $selectState = $select->getRawState();
+            $selectTableName = $selectState['table'];
 
-                $selectState = $this->applyHook('table.select:before', $selectState);
-                $selectState = $this->applyHook('table.' . $selectTableName . '.select:before', $selectState);
+            if ($useFilter) {
+                $selectState = $this->applyHooks([
+                    'table.select:before',
+                    'table.select.' . $selectTableName . ':before',
+                ], $selectState, [
+                    'tableName' => $selectTableName
+                ]);
 
                 // NOTE: This can be a "dangerous" hook, so for now we only support columns
                 $select->columns(ArrayUtils::get($selectState, 'columns', ['*']));
@@ -718,14 +722,13 @@ class BaseTableGateway extends TableGateway
             $result = parent::executeSelect($select);
 
             if ($useFilter) {
-                $selectState = $select->getRawState();
-                $selectTableName = $selectState['table'];
-
-                $result = $this->applyHook('table.select', $result, [
-                    'selectState' => $selectState
+                $result = $this->applyHooks([
+                    'table.select',
+                    'table.select.' . $selectTableName
+                ], $result, [
+                    'selectState' => $selectState,
+                    'tableName' => $selectTableName
                 ]);
-
-                $result = $this->applyHook('table.' . $selectTableName . '.select', $result);
             }
 
             return $result;
