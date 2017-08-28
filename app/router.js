@@ -228,6 +228,7 @@ define(function (require, exports, module) {
 
     openViewInModal: function (view) {
       var containerView = this.v.main.getView('#modal_container');
+      var router = this;
 
       if (!containerView || containerView.isOpen()) {
         return;
@@ -235,7 +236,9 @@ define(function (require, exports, module) {
 
       this.navigateToSubroute('modal', arguments, view);
       view.on('close', function() {
-        Backbone.history.history.back();
+        if(router.isCurrentSubrouteView(view)) {
+          Backbone.history.history.back();
+        }
       });
 
       containerView.show(view);
@@ -794,18 +797,19 @@ define(function (require, exports, module) {
     checkUrlForSubroute: function(e) {
       var newSubrouteId = (e.state) ? e.state.subrouteId : null;
       var previousSubrouteId = this.routeHistory.subrouteId;
-      var subroutes = _.last(this.routeHistory.stack)['subroutes'];
+      var route = _.last(this.routeHistory.stack);
+      var subroutes = route['subroutes'];
 
       if(!_.isNumber(previousSubrouteId) && !_.isNumber(newSubrouteId)) {
         return;
       }
 
-      var convertId = function(value) {
+      var toOrdinal = function(value) {
         return (_.isNumber(value)) ? value + 1 : 0;
       };
 
-      if(convertId(newSubrouteId) > convertId(previousSubrouteId)) {
-        return Backbone.history.history.go(convertId(newSubrouteId) - convertId(previousSubrouteId));
+      if(toOrdinal(newSubrouteId) > toOrdinal(previousSubrouteId)) {
+        return Backbone.history.history.go(toOrdinal(newSubrouteId) - toOrdinal(previousSubrouteId));
       }
 
       if(_.isNumber(previousSubrouteId) && subroutes[previousSubrouteId]) {
@@ -813,7 +817,7 @@ define(function (require, exports, module) {
 
         switch(subroute.type) {
           case 'modal':
-            subroute.view.close();
+            subroute.view.close(true);
             break;
           case 'overlay':
             this.removeOverlayPage(subroute.view);
@@ -822,6 +826,12 @@ define(function (require, exports, module) {
       }
 
       this.routeHistory.subrouteId = newSubrouteId;
+      route['subroutes'] = route['subroutes'].slice(0, toOrdinal(newSubrouteId));
+    },
+
+    isCurrentSubrouteView: function(view) {
+      var subrouteId = this.routeHistory.subrouteId
+      return (_.isNumber(subrouteId) && _.last(this.routeHistory.stack)['subroutes'][subrouteId].view === view);
     },
 
     initialize: function (options) {
