@@ -800,14 +800,24 @@ define(function (require, exports, module) {
         return;
       }
 
+      var convertId = function(value) {
+        return (_.isNumber(value)) ? value + 1 : 0;
+      };
+
+      if(convertId(newSubrouteId) > convertId(previousSubrouteId)) {
+        return Backbone.history.history.go(convertId(newSubrouteId) - convertId(previousSubrouteId));
+      }
+
       if(_.isNumber(previousSubrouteId) && subroutes[previousSubrouteId]) {
         var subroute = subroutes[previousSubrouteId];
-        if(subroute.type == 'modal') {
-          subroute.view.close();
-        }
 
-        if(subroutes[previousSubrouteId].type == 'overlay') {
-          this.removeOverlayPage(subroute.view);
+        switch(subroute.type) {
+          case 'modal':
+            subroute.view.close();
+            break;
+          case 'overlay':
+            this.removeOverlayPage(subroute.view);
+            break;
         }
       }
 
@@ -815,9 +825,9 @@ define(function (require, exports, module) {
     },
 
     initialize: function (options) {
-      window.onpopstate = function (event) {
+      window.addEventListener('popstate', function (event) {
         Backbone.trigger('popstate', event);
-      };
+      });
       this.listenTo(Backbone, 'popstate', this.checkUrlForSubroute);
 
       var historyState = Backbone.history.history.state;
