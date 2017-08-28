@@ -800,7 +800,11 @@ define(function (require, exports, module) {
       var route = _.last(this.routeHistory.stack);
       var subroutes = route['subroutes'];
 
-      if(!_.isNumber(previousSubrouteId) && !_.isNumber(newSubrouteId)) {
+      // if previous and new are equal, then we don't need to do anything - it was already done before
+      // (and, probably, it was done better)
+      if((!_.isNumber(previousSubrouteId) && !_.isNumber(newSubrouteId)) ||
+        (previousSubrouteId == newSubrouteId))
+      {
         return;
       }
 
@@ -809,18 +813,18 @@ define(function (require, exports, module) {
       };
 
       if(toOrdinal(newSubrouteId) > toOrdinal(previousSubrouteId)) {
-        return Backbone.history.history.go(toOrdinal(newSubrouteId) - toOrdinal(previousSubrouteId));
+        return Backbone.history.history.go(toOrdinal(previousSubrouteId) - toOrdinal(newSubrouteId));
       }
 
       if(_.isNumber(previousSubrouteId) && subroutes[previousSubrouteId]) {
-        var subroute = subroutes[previousSubrouteId];
+        var previousSubroute = subroutes[previousSubrouteId];
 
-        switch(subroute.type) {
+        switch(previousSubroute.type) {
           case 'modal':
-            subroute.view.close(true);
+            previousSubroute.view.close(true);
             break;
           case 'overlay':
-            this.removeOverlayPage(subroute.view);
+            this.removeOverlayPage(previousSubroute.view);
             break;
         }
       }
