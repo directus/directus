@@ -89,8 +89,10 @@ define(function (require, exports, module) {
           this.routeHistory.routes = {};
         }
 
+        this.routeHistory.subrouteId = null;
+
         var currentRoute = _.last(this.routeHistory.stack);
-        var nextRoute = {route: name, path: fragment, args: this.getRouteParameters(route, fragment)};
+        var nextRoute = {route: name, path: fragment, args: this.getRouteParameters(route, fragment), subroutes: []};
 
         // Exists
         if(currentRoute && nextRoute) {
@@ -209,7 +211,7 @@ define(function (require, exports, module) {
 
       var view = new directus.Modal.Prompt(options);
 
-      containerView.show(view);
+      this.openViewInModal(view);
     },
 
     openUserModal: function (userId) {
@@ -230,6 +232,11 @@ define(function (require, exports, module) {
       if (!containerView || containerView.isOpen()) {
         return;
       }
+
+      this.navigateToSubroute('modal', arguments, view);
+      view.on('close', function() {
+        Backbone.history.history.back();
+      });
 
       containerView.show(view);
     },
@@ -289,6 +296,7 @@ define(function (require, exports, module) {
         return false;
       }
 
+      this.navigateToSubroute('overlay', arguments, view);
       this.v.main.insertView('#content', view).render();
 
       var that = this;
@@ -767,7 +775,56 @@ define(function (require, exports, module) {
       }
     },
 
+    navigateToSubroute: function(type, callArguments, view) {
+      var parentRoute = _.last(this.routeHistory.stack);
+      var subroute = {
+        type: type,
+        callArguments: callArguments,
+        view: view
+      };
+
+      var subrouteId = parentRoute.subroutes.push(subroute) - 1;
+      this.routeHistory.subrouteId = subrouteId;
+
+      Backbone.history.history.pushState({
+        subrouteId: subrouteId
+      }, document.title, Backbone.history.root + Backbone.history.fragment);
+    },
+
+    checkUrlForSubroute: function(e) {
+      var newSubrouteId = (e.state) ? e.state.subrouteId : null;
+      var previousSubrouteId = this.routeHistory.subrouteId;
+      var subroutes = _.last(this.routeHistory.stack)['subroutes'];
+
+      if(!_.isNumber(previousSubrouteId) && !_.isNumber(newSubrouteId)) {
+        return;
+      }
+
+      if(_.isNumber(previousSubrouteId) && subroutes[previousSubrouteId]) {
+        var subroute = subroutes[previousSubrouteId];
+        if(subroute.type == 'modal') {
+          subroute.view.close();
+        }
+
+        if(subroutes[previousSubrouteId].type == 'overlay') {
+          this.removeOverlayPage(subroute.view);
+        }
+      }
+
+      this.routeHistory.subrouteId = newSubrouteId;
+    },
+
     initialize: function (options) {
+      window.onpopstate = function (event) {
+        Backbone.trigger('popstate', event);
+      };
+      this.listenTo(Backbone, 'popstate', this.checkUrlForSubroute);
+
+      var historyState = Backbone.history.history.state;
+      if(historyState && _.isNumber(historyState.subrouteId)) {
+        window.history.go(-(historyState.subrouteId+1));
+      }
+
       this.navBlacklist = (options.navPrivileges.get('nav_blacklist') || '').split(',');
       // @todo: Allow a queue of pending alerts, maybe?
       this.pendingAlert = {};
