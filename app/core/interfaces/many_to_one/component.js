@@ -52,7 +52,7 @@ define([
         ui: 'text_input',
         type: 'String',
         comment: __t('m2o_placeholder_text_comment'),
-        default_value: '',
+        default_value: 'Please select an option',
         char_length: 255,
         required: false
       },

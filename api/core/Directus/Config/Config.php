@@ -16,24 +16,57 @@ class Config extends Collection implements ConfigInterface
      */
     public function getPublishedStatuses($statusMapping = [])
     {
+        $visibleStatus = $this->getStatuses('published', $statusMapping);
+
+        if (empty($visibleStatus) && defined('STATUS_ACTIVE_NUM')) {
+            $visibleStatus[] = STATUS_ACTIVE_NUM;
+        }
+
+        return $visibleStatus;
+    }
+
+    /**
+     * Get a list of hard-deleted statuses
+     *
+     * @param array $statusMapping
+     *
+     * @return array
+     */
+    public function getDeletedStatuses($statusMapping = [])
+    {
+        $visibleStatus = $this->getStatuses('hard_delete', $statusMapping);
+
+        if (empty($visibleStatus) && defined('STATUS_DELETED_NUM')) {
+            $visibleStatus[] = STATUS_DELETED_NUM;
+        }
+
+        return $visibleStatus;
+    }
+
+    /**
+     * Get statuses list by the given type
+     *
+     * @param $type
+     * @param array $statusMapping
+     *
+     * @return array
+     */
+    protected function getStatuses($type, $statusMapping = [])
+    {
         if (empty($statusMapping)) {
             $statusMapping = $this->get('statusMapping', []);
         }
 
-        $visibleStatus = [];
+        $statuses = [];
 
         foreach ($statusMapping as $value => $status) {
-            $isPublished = ArrayUtils::get($status, 'published', false);
+            $isPublished = ArrayUtils::get($status, $type, false);
 
             if (is_array($status) && $isPublished) {
-                $visibleStatus[] = $value;
+                $statuses[] = $value;
             }
         }
 
-        if (empty($visibleStatus)) {
-            $visibleStatus[] = defined('STATUS_ACTIVE_NUM') ? STATUS_ACTIVE_NUM : 1;
-        }
-
-        return $visibleStatus;
+        return $statuses;
     }
 }

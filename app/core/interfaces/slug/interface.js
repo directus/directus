@@ -9,12 +9,12 @@ define(['utils', 'underscore', 'core/UIView'], function (Utils, _, UIView) {
       'input input': 'onInputChange'
     },
 
-    beforeSaving: function () {
+    unsavedChange: function () {
       var mirroredField = this.getMirroredFieldName();
       var model = this.options.model;
 
       if (Utils.isSomething(model.get(mirroredField))) {
-        this.model.set(this.name, this.slugValue);
+        return this.slugValue;
       }
     },
 

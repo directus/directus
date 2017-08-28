@@ -53,6 +53,7 @@ define(['core/UIView'], function (UIView) {
         characters: length - value.toString().length,
         comment: this.options.schema.get('comment'),
         readOnly: this.options.settings.get('read_only') || !this.options.canWrite,
+        autoSize: this.options.settings.get('size') === 'auto',
         placeholder: (this.options.settings) ? this.options.settings.get('placeholder') : ''
       };
     },

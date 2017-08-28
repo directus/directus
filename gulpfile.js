@@ -130,11 +130,11 @@ gulp.task('scripts:app', function() {
       plugins: '../assets/js/plugins',
       vendor: '../assets/vendor',
 
-      // Extensions
-      extensions: 'customs/extensions',
-      listviews: 'customs/listviews',
-      interfaces: 'customs/interfaces',
-      uis: 'customs/interfaces'
+      // Customs paths
+      // extensions: 'customs/extensions',
+      // listviews: 'customs/listviews',
+      // interfaces: 'customs/interfaces',
+      // uis: 'customs/interfaces'
     },
 
     shim: {
@@ -210,7 +210,7 @@ gulp.task('scripts:directus', function() {
   return gulp.src(['./dist/app/vendor.js', './dist/app/app.js'])
     .pipe(concat('directus.min.js'))
     .pipe(uglify())
-    .pipe(gulp.dest('dist/app'));
+    .pipe(gulp.dest('./dist/app/'));
 });
 
 // --------------------
@@ -393,7 +393,7 @@ gulp.task('move', function() {
       '!./assets/js/vendor/tinymce/*'
     ])
     .pipe(flatten({includeParents: 99}))
-    .pipe(gulp.dest('dist/assets/js/'));
+    .pipe(gulp.dest('./dist/app'));
 
   return merge(mainFiles, keepFiles, tinyMCEFiles);
 });
@@ -410,8 +410,9 @@ gulp.task('watch', function() {
 });
 
 gulp.task('deploy', function() {
+  // force = true, to include all files avoiding .gitignore
   return gulp.src(['./dist/**/*'], {dot: true})
-        .pipe(deploy({branch: 'build', remoteUrl:'https://github.com/directus/directus'}));
+        .pipe(deploy({branch: 'build', force: true, remoteUrl:'https://github.com/directus/directus'}));
 });
 
 // -------------------
@@ -427,7 +428,6 @@ gulp.task('build', function(cb) {
       'images',
       'submodules',
       'move',
-      'tinymce',
       'singlepage',
       'composer',
       'clean-git',

@@ -59,6 +59,9 @@ if ($config->get('filters')) {
 }
 
 $app->add(new \Directus\Slim\CorsMiddleware());
+$app->add(new \Directus\Slim\CacheMiddleware());
+
+// curl -s -H "Authorization: Bearer 0b7f6x59a0" https://cdn.contentful.com/spaces/developer_bookshelf/entries/5PeGS2SoZGSa4GuiQsigQu
 
 /**
  * Creates and /<version>/ping endpoint

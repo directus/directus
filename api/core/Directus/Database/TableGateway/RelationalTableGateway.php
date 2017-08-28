@@ -826,7 +826,13 @@ class RelationalTableGateway extends BaseTableGateway
             $params['status'] = null;
         }
 
-        $params = $this->applyDefaultEntriesSelectParams($params);
+        $params = $this->applyHooks([
+            'table.load.params',
+            'table.' . $this->getTable() . '.load.params'
+        ], $this->applyDefaultEntriesSelectParams($params), [
+            'table' => $this->getTable()
+        ]);
+
         // @TODO: Create a new TableGateway Query Builder based on Query\Builder
         $builder = new Builder($this->getAdapter());
         $builder->from($this->getTable());
@@ -882,12 +888,17 @@ class RelationalTableGateway extends BaseTableGateway
         // it should be included because each row gateway expects the primary key
         // after all the row gateway are created and initiated it only returns the chosen columns
         if (ArrayUtils::has($params, 'columns')) {
-            $primaryKeysName = $tableSchema->getPrimaryKeysName();
-            if (!ArrayUtils::contains(array_flip(ArrayUtils::get($params, 'columns')), $primaryKeysName)) {
-                $results = array_map(function ($entry) use ($primaryKeysName) {
-                    return ArrayUtils::omit($entry, $primaryKeysName);
-                }, $results);
-            }
+            $visibleColumns = ArrayUtils::get($params, 'columns');
+
+            $results = array_map(function ($entry) use ($visibleColumns) {
+                foreach ($entry as $key => $value) {
+                    if (!in_array($key, $visibleColumns)) {
+                        $entry = ArrayUtils::omit($entry, $key);
+                    }
+                }
+
+                return $entry;
+            }, $results);
         }
 
         if (ArrayUtils::get($params, $this->primaryKeyFieldName)) {
@@ -985,7 +996,11 @@ class RelationalTableGateway extends BaseTableGateway
                 $arguments[] = $logical;
             }
 
-            $relationship = TableSchema::getColumnRelationship($this->getTable(), $column);
+            $relationship = TableSchema::getColumnRelationship(
+                $this->getTableFromIdentifier($column),
+                $this->getColumnFromIdentifier($column)
+            );
+
             if (in_array($operator, ['all', 'has']) && in_array($relationship->getType(), ['ONETOMANY', 'MANYTOMANY'])) {
                 if ($operator == 'all' && is_string($value)) {
                     $value = array_map(function ($item) {

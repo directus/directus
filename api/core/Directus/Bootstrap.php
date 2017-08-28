@@ -816,6 +816,17 @@ class Bootstrap
             return $rows;
         };
 
+        $emitter->addFilter('table.select.directus_files:before', function (Payload $payload) {
+            $columns = $payload->get('columns');
+
+            if (!in_array('name', $columns)) {
+                $columns[] = 'name';
+                $payload->set('columns', $columns);
+            }
+
+            return $payload;
+        });
+
         // Add file url and thumb url
         $emitter->addFilter('table.select', function (Payload $payload) use ($addFilesUrl) {
             $selectState = $payload->attribute('selectState');
@@ -869,7 +880,7 @@ class Bootstrap
             return $payload;
         });
 
-        $emitter->addFilter('table.directus_users.select', function (Payload $payload) {
+        $emitter->addFilter('table.select.directus_users', function (Payload $payload) {
             $acl = Bootstrap::get('acl');
             $auth = Bootstrap::get('auth');
             $rows = $payload->getData();
