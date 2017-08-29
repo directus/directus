@@ -5450,8 +5450,7 @@ body.help .discover-spotlight {
     .fields .field .interface input {
       min-width: 400px; }
       .fields .field .interface input.small {
-        width: 150px; 
-        min-width: 10em;}
+        width: 150px; }
       .fields .field .interface input.medium {
         width: 300px; }
     .fields .field .interface textarea {
