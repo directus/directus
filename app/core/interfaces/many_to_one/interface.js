@@ -4,8 +4,10 @@ define([
   'underscore',
   'handlebars',
   'core/UIView',
-  'core/t'
-], function (Backbone, _, Handlebars, UIView, __t) {
+  'core/t',
+  'utils'
+], function (Backbone, _, Handlebars, UIView, __t, Utils) {
+
   'use strict';
 
   return UIView.extend({
@@ -57,14 +59,22 @@ define([
     },
 
     serialize: function () {
-      var optionTemplate = Handlebars.compile(this.options.settings.get('visible_column_template'));
-      var defaultValue = +this.options.schema.get('default_value');
+      var columnTemplate = this.options.settings.get('visible_column_template');
+      var templateColumns = Utils.getTemplateVariables(columnTemplate);
+      var optionTemplate = Handlebars.compile(columnTemplate);
+      var defaultValue = this.options.schema.get('default_value');
       var placeholderAvailable = !!this.options.settings.get('placeholder') && this.options.settings.get('placeholder').length > 0;
       var value = this.options.value || defaultValue;
 
       if (value instanceof Backbone.Model) {
         value = value.id;
       }
+
+      // sort by the template columns
+      // it can be multiple columns
+      // and it will be sorted by its data type
+      // https://github.com/directus/directus/issues/1769
+      this.collection.sortBy(templateColumns);
 
       var data = this.collection.map(function (model) {
         var data = model.toJSON();
@@ -93,8 +103,6 @@ define([
           selected: true
         }];
       }
-
-      data = _.sortBy(data, 'name');
 
       this.value = value;
 

@@ -104,10 +104,31 @@ function(app, Backbone, StatusHelper, _) {
 
     // Proxies underscore's sortBy to reverse order
 
-    sortBy: function() {
-      var models = _.sortBy(this.models, this.comparator, this);
+    sortBy: function (attributes) {
+      var self = this;
+      var comparator = this.comparator;
 
-      return models;
+      if (_.isArray(attributes)) {
+        comparator = function (a, b) {
+          var attr;
+          var r;
+
+          for (var i in attributes) {
+            if (!attributes.hasOwnProperty(i)) {
+              continue;
+            }
+
+            attr = attributes[i];
+            r = self.comparator.apply(self, [a, b, attr]);
+
+            if (r !== 0) {
+              return r;
+            }
+          }
+        };
+      }
+
+      return this.models.sort(_.bind(comparator, this))
     },
 
     comparatorValue: function(a, b) {
@@ -124,7 +145,7 @@ function(app, Backbone, StatusHelper, _) {
       return cmp;
     },
 
-    comparator: function (rowA, rowB) {
+    comparator: function (rowA, rowB, sortBy) {
       var UIManager = require('core/UIManager');
       var column = rowA.idAttribute;
       var table = rowA.table ? rowA.table : this.table;
@@ -143,6 +164,11 @@ function(app, Backbone, StatusHelper, _) {
         column = sortColumn;
       } else if (this.junctionStructure && this.junctionStructure.get(sortColumn)) {
         column = sortColumn;
+      }
+
+      // force sorting by the given column
+      if (_.isString(sortBy)) {
+        column = sortBy;
       }
 
       // @todo find a better way to check is a entriesjunctioncollection
@@ -221,7 +247,7 @@ function(app, Backbone, StatusHelper, _) {
       return order;
     },
 
-   filterMulti: function(filters) {
+    filterMulti: function(filters) {
       return this.filter(function(model) {
         // Every filter has to pass the test!
         return _.every(filters, function(value, key) { return (model.has(key) && model.get(key) === value); });
@@ -299,7 +325,6 @@ function(app, Backbone, StatusHelper, _) {
 
       return Backbone.Collection.prototype.fetch.call(this, options);
     }
-
   });
 
   return Collection;
