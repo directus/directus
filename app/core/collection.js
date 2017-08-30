@@ -106,10 +106,9 @@ function(app, Backbone, StatusHelper, _) {
 
     sortBy: function (attributes) {
       var self = this;
-      var comparator = this.comparator;
 
       if (_.isArray(attributes)) {
-        comparator = function (a, b) {
+        return this.models.sort(_.bind(function (a, b) {
           var attr;
           var r;
 
@@ -125,10 +124,10 @@ function(app, Backbone, StatusHelper, _) {
               return r;
             }
           }
-        };
+        }, this));
       }
 
-      return _.sortBy(this.models, comparator, this);
+      return _.sortBy(this.models, this.comparator, this);
     },
 
     comparatorValue: function(a, b) {
