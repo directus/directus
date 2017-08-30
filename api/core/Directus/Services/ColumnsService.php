@@ -204,8 +204,10 @@ class ColumnsService extends AbstractService
 
             // NOTE: This hot fix prevent from specify the length for TEXTs data types
             // even though they internally have a length, those length are fixed
-            $supportLength = !in_array($type, ['TINYTEXT', 'TEXT', 'MEDIUMTEXT', 'LONGTEXT']);
-            if ($supportLength) {
+            $isTextType = in_array($type, ['TINYTEXT', 'TEXT', 'MEDIUMTEXT', 'LONGTEXT']);
+            $supportLength = !$isTextType;
+
+            if ($isTextType) {
                 ArrayUtils::remove($data, 'length');
             }
 
@@ -224,7 +226,9 @@ class ColumnsService extends AbstractService
                     $newColumn->setDigits(array_shift($lengthParts));
                     $newColumn->setDecimal(array_pop($lengthParts));
                 } else {
-                    $newColumn->setLength($length);
+                    if (strpos($length, ',') !== false) {
+                        $newColumn->setLength(explode(',', $length));
+                    }
                 }
             } else if ($supportLength) {
                 // NOTE: if a column has scale (decimals)
@@ -254,12 +258,6 @@ class ColumnsService extends AbstractService
             }
 
             $newColumn->setDefault($defaultValue);
-
-            // FIXME: Allow SET/ENUM values
-            if (ArrayUtils::has($data, 'length')) {
-                $length = ArrayUtils::get($data, 'length', 0);
-                $newColumn->setLength($length);
-            }
 
             $alterTable->changeColumn($columnName, $newColumn);
 
