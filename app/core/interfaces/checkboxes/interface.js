@@ -1,5 +1,9 @@
 /* global _ */
-define(['core/UIView', 'underscore'], function(UIView, _) {
+define([
+  'core/UIView',
+  'underscore',
+  'utils'
+], function(UIView, _, Utils) {
 
   function parseOptions (options) {
     if (_.isString(options)) {
@@ -20,7 +24,6 @@ define(['core/UIView', 'underscore'], function(UIView, _) {
       'change #customText': 'update'
     },
     delimiterize: function (out) {
-
       var delimiter = this.options.settings.get('delimiter');
 
       if (this.options.settings.get('wrap_with_delimiter')) {
@@ -33,53 +36,43 @@ define(['core/UIView', 'underscore'], function(UIView, _) {
     },
     value: function () {
       var checkedValues = this.$('input[type=checkbox]:checked');
-
       var out = [];
 
-      if (checkedValues.length > 0) {
-
-        for (var i = 0; i < checkedValues.length; i++) {
-          out.push(checkedValues[i].value);
-        }
-
-        return out
-
-      } else {
-
-        out = '';
-
-        return out
+      for (var i = 0; i < checkedValues.length; i++) {
+        out.push(checkedValues[i].value);
       }
 
-
+      return out
     },
     customValue: function () {
-
-      var customValues = this.$('#customText')[0].value;
-
-      return customValues;
+      return this.$('#customText').val();
     },
 
     update: function () {
-      var out = []
+      var out = [];
 
-      out.push(this.value())
+      out.push(this.value());
 
-      out.push(this.customValue())
+      if (Utils.isSomething(this.customValue())) {
+        out.push(this.customValue());
+      }
+
+      out = _.uniq(out);
 
       out = this.delimiterize(out);
 
       this.model.set(this.name, out);
     },
     serialize: function () {
-      var value = typeof this.options.value === 'string' ? this.options.value :
-        this.columnSchema.get('default_value') || '';
+      var value = typeof this.options.value === 'string'
+          ? this.options.value
+          : this.columnSchema.get('default_value') || '';
 
       var values = value.split(this.options.settings.get('delimiter'));
 
       var options = parseOptions(this.options.settings.get('options'));
 
-      var optionsArray = Object.keys(options).map(function(key) {
+      var optionsArray = Object.keys(options).map(function (key) {
         return {
           key: key,
           value: options[key],
@@ -90,7 +83,7 @@ define(['core/UIView', 'underscore'], function(UIView, _) {
       var customArray = {
         key: 'custom',
         value: values[values.length - 2]
-      }
+      };
 
       return {
         options: optionsArray,
@@ -100,7 +93,8 @@ define(['core/UIView', 'underscore'], function(UIView, _) {
         readOnly: this.options.settings.get('read_only') || !this.options.canWrite,
         value: value,
         allowCustomCheckboxes: this.options.settings.get(
-          'allow_custom_checkboxes')
+          'allow_custom_checkboxes'
+        )
       };
     }
   });
