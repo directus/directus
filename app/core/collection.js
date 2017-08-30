@@ -128,7 +128,7 @@ function(app, Backbone, StatusHelper, _) {
         };
       }
 
-      return this.models.sort(_.bind(comparator, this))
+      return _.sortBy(this.models, comparator, this);
     },
 
     comparatorValue: function(a, b) {
