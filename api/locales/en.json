@@ -395,6 +395,7 @@
     "permission_denied": "Permission denied",
     "permission_table_alter_access_forbidden_on_table": "Table alter access forbidden on table `%{table_name}`",
 
+    "request_payload_empty": "Empty request payload",
     "rows_no_specified": "Rows no specified",
     "row_without_primary_key_field": "Row without primary key field",
 

@@ -96,7 +96,7 @@ class ColumnsService extends AbstractService
 
         // if the column is a system column
         // set the current column to the default interface
-        $this->updateCurrentSystemInterfaces($tableName, ArrayUtils::get($data, 'ui'));
+        // $this->updateCurrentSystemInterfaces($tableName, ArrayUtils::get($data, 'ui'));
 
         $columnObject = TableSchema::getTableSchema($tableName)->getColumn($columnName);
         if ($columnObject && !$columnObject->isAlias()) {
@@ -177,6 +177,7 @@ class ColumnsService extends AbstractService
             $adapter = $this->getTableGateway()->getAdapter();
             $schemaManager = TableSchema::getSchemaManagerInstance();
             $columnObject = $this->getColumnObject($tableName, $columnName);
+            $dataType = ArrayUtils::get($data, 'data_type', $columnObject->getType());
             $newColumn = new Custom($columnName);
             $alterTable = new AlterTable($tableName);
 
@@ -184,16 +185,18 @@ class ColumnsService extends AbstractService
                 'comment' => $columnObject->getComment()
             ];
 
-            if ($columnObject->hasAutoIncrement()) {
-                $options['autoincrement'] = true;
-            }
+            if ($schemaManager->isNumericType($dataType)) {
+                if ($columnObject->hasAutoIncrement()) {
+                    $options['autoincrement'] = true;
+                }
 
-            if ($columnObject->isUnsigned()) {
-                $options['unsigned'] = true;
-            }
+                if ($columnObject->isUnsigned()) {
+                    $options['unsigned'] = true;
+                }
 
-            if ($columnObject->hasZeroFill()) {
-                $options['zerofill'] = true;
+                if ($columnObject->hasZeroFill()) {
+                    $options['zerofill'] = true;
+                }
             }
 
             $newColumn->setOptions($options);
@@ -217,8 +220,6 @@ class ColumnsService extends AbstractService
 
             if (ArrayUtils::has($data, 'length')) {
                 $length = ArrayUtils::get($data, 'length');
-                // hotfix: parse the length to integer
-                $dataType = ArrayUtils::get($data, 'data_type', $columnObject->getType());
                 if ($schemaManager->isIntegerType($dataType)) {
                     $newColumn->setLength((int) $length);
                 } else if ($schemaManager->isDecimalType($dataType)) {
@@ -227,8 +228,10 @@ class ColumnsService extends AbstractService
                     $newColumn->setDecimal(array_pop($lengthParts));
                 } else {
                     if (strpos($length, ',') !== false) {
-                        $newColumn->setLength(explode(',', $length));
+                        $length = explode(',', $length);
                     }
+
+                    $newColumn->setLength($length);
                 }
             } else if ($supportLength) {
                 // NOTE: if a column has scale (decimals)
