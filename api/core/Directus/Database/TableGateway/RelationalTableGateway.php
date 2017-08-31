@@ -967,6 +967,7 @@ class RelationalTableGateway extends BaseTableGateway
                 $logical = $condition['logical'];
                 unset($condition['logical']);
             }
+
             $operator = is_array($condition) ? key($condition) : '=';
             $value = is_array($condition) ? current($condition) : $condition;
             $not = false;
@@ -1001,7 +1002,7 @@ class RelationalTableGateway extends BaseTableGateway
                 $this->getColumnFromIdentifier($column)
             );
 
-            if (in_array($operator, ['all', 'has']) && in_array($relationship->getType(), ['ONETOMANY', 'MANYTOMANY'])) {
+            if (in_array($operator, ['all', 'has']) && $relationship && in_array($relationship->getType(), ['ONETOMANY', 'MANYTOMANY'])) {
                 if ($operator == 'all' && is_string($value)) {
                     $value = array_map(function ($item) {
                         return trim($item);
@@ -1029,7 +1030,27 @@ class RelationalTableGateway extends BaseTableGateway
                 }
             }
 
-            call_user_func_array([$query, $method], $arguments);
+            // TODO: Move this into QueryBuilder if possible
+            if (in_array($operator, ['like']) && $relationship && $relationship->isManyToOne()) {
+                $relatedTable = $relationship->getRelatedTable();
+                $tableSchema = TableSchema::getTableSchema($relatedTable);
+                $relatedTableColumns = $tableSchema->getColumns();
+                $relatedPrimaryColumnName = $tableSchema->getPrimaryColumn();
+                $query->orWhereRelational($this->getColumnFromIdentifier($column), $relatedTable, $relatedPrimaryColumnName, function (Builder $query) use ($column, $relatedTable, $relatedTableColumns, $value) {
+                    $query->nestOrWhere(function (Builder $query) use ($relatedTableColumns, $relatedTable, $value) {
+                        foreach ($relatedTableColumns as $column) {
+                            // NOTE: Only search numeric or string type columns
+                            $isNumeric = $this->getSchemaManager()->isNumericType($column->getType());
+                            $isString = $this->getSchemaManager()->isStringType($column->getType());
+                            if (!$column->isAlias() && ($isNumeric || $isString)) {
+                                $query->orWhereLike($column->getName(), $value);
+                            }
+                        }
+                    });
+                });
+            } else {
+                call_user_func_array([$query, $method], $arguments);
+            }
         }
     }
 
