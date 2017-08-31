@@ -107,6 +107,8 @@ require(['config', 'polyfills'], function () {
         }
     });
 
+    moment.locale(options.locale);
+
     UIManager.setup();
     UIManager.setDefaultInterfaces(options.default_interfaces);
     SchemaManager.setup({apiURL: app.API_URL});
