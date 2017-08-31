@@ -1565,7 +1565,7 @@ class RelationalTableGateway extends BaseTableGateway
                 $tempRow = $row;
                 $_byId = [];
                 foreach ($tempRow as $item) {
-                    $_byId[$item[$primaryKey]] = $item;
+                    $_byId[$item[$relatedTablePrimaryKey]] = $item;
                 }
 
                 $row = [];
