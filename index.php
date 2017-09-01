@@ -363,9 +363,9 @@ function getSettings()
     $settings = $settingsTable->getItems(['limit' => null]);
 
     foreach ($settings['data'] as &$setting) {
-        if ($setting['name'] === 'cms_thumbnail_url') {
+        if ($setting['name'] === 'cms_thumbnail_url' && isset($setting['value'])) {
             $filesTableGateway = new TableGateway('directus_files', $ZendDb, null);
-            $setting['value'] = $filesTableGateway->loadEntries(['id' => $setting['value']]);
+            $setting['value'] = $filesTableGateway->loadItems(['id' => $setting['value']]);
             break;
         }
     }

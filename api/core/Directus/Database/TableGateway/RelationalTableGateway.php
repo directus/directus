@@ -677,11 +677,6 @@ class RelationalTableGateway extends BaseTableGateway
 
         $columns = array_unique(array_merge($visibleColumns, $columns));
 
-        // Pick non-forbidden columns
-        if (empty($columns)) {
-            $columns = TableSchema::getAllTableColumnsName($this->getTable());
-        }
-
         // Add columns to params if it's not empty.
         // otherwise remove from params
         if (!empty($columns)) {
