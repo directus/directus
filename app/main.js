@@ -191,7 +191,10 @@ require(['config', 'polyfills'], function () {
         parse: true
       }, SchemaManager.getFullSchema('directus_users')));
 
-      app.startMessagesPolling();
+      if (app.user.canReadMessages()) {
+        app.startMessagesPolling();
+      }
+
       app.users.on('change sync', function (collection, resp, options) {
         var authenticatedUserModel = collection;
 
