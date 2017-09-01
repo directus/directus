@@ -1,12 +1,13 @@
 /* global $ */
 define([
+  'app',
   'backbone',
   'underscore',
   'handlebars',
   'core/UIView',
   'core/t',
   'utils'
-], function (Backbone, _, Handlebars, UIView, __t, Utils) {
+], function (app, Backbone, _, Handlebars, UIView, __t, Utils) {
 
   'use strict';
 
@@ -47,14 +48,28 @@ define([
         }
 
         this.value = model;
-        this.model.set(this.name, model);
+        this.model.set(this.name, this.getValue());
       }
     },
 
+    getValue: function () {
+      var privilege = app.schemaManager.getPrivileges(this.columnSchema.getRelatedTableName());
+      var value;
+
+      if (privilege.canEdit() || privilege.canAdd()) {
+        value = this.value;
+      } else {
+        value = this.value.id;
+      }
+
+      return value;
+    },
+
     unsavedChange: function () {
+      var value = this.getValue();
       // NOTE: Only set the new value (mark changed) if the value has changed
-      if (this.value && (this.model.isNew() || this.model.hasChanges(this.name))) {
-        return this.value;
+      if (value && (this.model.isNew() || this.model.hasChanges(this.name))) {
+        return value;
       }
     },
 
