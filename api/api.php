@@ -93,7 +93,7 @@ if (DIRECTUS_ENV !== 'production') {
 }
 
 $app->config('debug', false);
-$app->config('production', 'production' !== DIRECTUS_ENV);
+$app->config('production', 'production' === DIRECTUS_ENV);
 
 // Catch all exceptions
 $exceptionHandler = new ExceptionHandler($app->hookEmitter);
