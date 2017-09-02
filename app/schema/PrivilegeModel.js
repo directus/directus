@@ -34,11 +34,18 @@ define(['app', 'backbone'] ,function(app, Backbone) {
     },
 
     can: function (permission) {
+      var permissionLevel = 1;
+
+      if (permission.indexOf('big') === 0) {
+        permissionLevel = 2;
+        permission= permission.substr(3);
+      }
+
       if (permission.indexOf('allow_') !== 0) {
         permission = 'allow_' + permission;
       }
 
-      return this.get(permission) > 0;
+      return this.get(permission) >= permissionLevel;
     }
   });
 
