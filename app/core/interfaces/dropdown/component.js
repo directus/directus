@@ -59,7 +59,7 @@ define(['./interface', 'core/UIComponent', 'core/t', 'utils'], function (Input, 
       var nullable = options.schema.isNullable();
       var defaultValue = options.schema.getDefaultValue();
 
-      if ((defaultValue || !nullable) && options.schema.isRequired() && Utils.isEmpty(value)) {
+      if (((!defaultValue && !nullable) || options.schema.isRequired()) && Utils.isEmpty(value)) {
         return __t('this_field_is_required');
       }
     },
