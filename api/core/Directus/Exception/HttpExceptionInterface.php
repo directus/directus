@@ -10,17 +10,19 @@
 
 namespace Directus\Exception;
 
-use Directus\Exception\Traits\HttpExceptionTrait;
-
-/**
- * HTTP Exceptions
- *
- * @author Welling Guzmán <welling@rngr.org>
- */
-class HttpException extends Exception implements HttpExceptionInterface
+interface HttpExceptionInterface
 {
-    use HttpExceptionTrait;
+    /**
+     * Returns HTTP status code
+     *
+     * @return int
+     */
+    public function getHttpStatus();
 
-    protected $httpStatus = 500;
-    protected $httpHeaders = '';
+    /**
+     * Returns HTTP headers
+     *
+     * @return array headers
+     */
+    public function getHttpHeaders();
 }

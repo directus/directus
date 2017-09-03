@@ -2,6 +2,12 @@
 
 namespace Directus\Database\Exception;
 
-class DbException extends \Exception
+use Directus\Exception\HttpExceptionInterface;
+use Directus\Exception\Traits\HttpExceptionTrait;
+
+class DbException extends \Exception implements HttpExceptionInterface
 {
+    use HttpExceptionTrait;
+
+    protected $httpStatus = 422;
 }
