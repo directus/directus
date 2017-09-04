@@ -28,7 +28,6 @@ define([
       var hasValue = Utils.isSomething(this.value);
       var nullable = this.columnSchema.isNullable();
 
-      debugger;
       if ((hasValue || this.value === null && nullable)  && (this.model.isNew() || this.model.hasChanges(this.name))) {
         return this.value;
       }
