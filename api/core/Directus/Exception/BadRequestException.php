@@ -10,17 +10,12 @@
 
 namespace Directus\Exception;
 
-use Directus\Exception\Traits\HttpExceptionTrait;
-
 /**
- * HTTP Exceptions
+ * Exception for bad request actions
  *
  * @author Welling Guzmán <welling@rngr.org>
  */
-class HttpException extends Exception implements HttpExceptionInterface
+class BadRequestException extends HttpException
 {
-    use HttpExceptionTrait;
-
-    protected $httpStatus = 500;
-    protected $httpHeaders = '';
+    protected $httpStatus = 400;
 }

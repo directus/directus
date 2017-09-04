@@ -129,7 +129,7 @@ class Auth extends Route
                 'access_token' => $userSession['access_token']
             ];
             $where = ['id' => $user['id']];
-            $updateResult = $Users->update($set, $where);
+            $updateResult = $Users->ignoreFilters()->update($set, $where, null);
 
             $Activity = new DirectusActivityTableGateway($ZendDb, null);
             $Activity->recordLogin($user['id']);

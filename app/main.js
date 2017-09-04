@@ -107,6 +107,8 @@ require(['config', 'polyfills'], function () {
         }
     });
 
+    moment.locale(options.locale);
+
     UIManager.setup();
     UIManager.setDefaultInterfaces(options.default_interfaces);
     SchemaManager.setup({apiURL: app.API_URL});
@@ -189,7 +191,10 @@ require(['config', 'polyfills'], function () {
         parse: true
       }, SchemaManager.getFullSchema('directus_users')));
 
-      app.startMessagesPolling();
+      if (app.user.canReadMessages()) {
+        app.startMessagesPolling();
+      }
+
       app.users.on('change sync', function (collection, resp, options) {
         var authenticatedUserModel = collection;
 

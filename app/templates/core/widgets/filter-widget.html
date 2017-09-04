@@ -49,7 +49,7 @@
 								<select name="keywords" id="advKeywords" class="medium filter_ui">
 									<option value="" disabled>Choose one</option>
 								{{#relatedEntries}}
-									<option value="{{this.visible_column}}">{{{this.visible_column_template}}}</option>
+									<option value="{{this.visible_column}}"{{#if selected}} selected{{/if}}>{{{this.visible_column_template}}}</option>
 								{{/relatedEntries}}
 								</select>
 						</span>

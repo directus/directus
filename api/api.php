@@ -43,6 +43,7 @@ use Directus\View\ExceptionView;
  * Slim App & Directus Providers
  */
 
+/** @var \Directus\Application\Application $app */
 $app = Bootstrap::get('app');
 
 /**
@@ -60,8 +61,6 @@ if ($config->get('filters')) {
 
 $app->add(new \Directus\Slim\CorsMiddleware());
 $app->add(new \Directus\Slim\CacheMiddleware());
-
-// curl -s -H "Authorization: Bearer 0b7f6x59a0" https://cdn.contentful.com/spaces/developer_bookshelf/entries/5PeGS2SoZGSa4GuiQsigQu
 
 /**
  * Creates and /<version>/ping endpoint
@@ -93,31 +92,12 @@ if (DIRECTUS_ENV !== 'production') {
     $pong($app);
 }
 
-/**
- * Catch user-related exceptions & produce client responses.
- */
-
 $app->config('debug', false);
-$exceptionView = new ExceptionView();
-$exceptionHandler = function (\Exception $exception) use ($app, $exceptionView) {
-    $app->hookEmitter->run('application.error', [$exception]);
-    $config = $app->container->get('config');
-    if ($config->get('app.debug', true)) {
-        $exceptionView->exceptionHandler($app, $exception);
-    } else {
-        $response = $app->response();
-        $response->header('Content-type', 'application/json');
-        return $app->response([
-            'error' => [
-                'message' => $exception->getMessage()
-            ]
-        ], ['error' => true]);
-    }
-};
-$app->error($exceptionHandler);
+$app->config('production', 'production' === DIRECTUS_ENV);
 
-// Catch all exception
-$exceptionHandler = new ExceptionHandler();
+// Catch all exceptions
+$exceptionHandler = new ExceptionHandler($app->hookEmitter);
+$app->error([$exceptionHandler, 'handleException']);
 
 // Routes which do not need protection by the authentication and the request
 // @TODO: Move this to a middleware

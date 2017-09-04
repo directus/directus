@@ -29,7 +29,7 @@ function(app, Backbone, Handlebars, Directus, EntriesManager) {
         this.insertView('#translateEditFormEntry', this.editView);
 
         // If the translation table has relational data, fetch them
-        if (this.editView.model.structure.hasRelationalColumns()) {
+        if (!this.model.isNew() && this.editView.model.structure.hasRelationalColumns()) {
           this.editView.model.fetch();
         } else {
           this.editView.render();
@@ -41,7 +41,7 @@ function(app, Backbone, Handlebars, Directus, EntriesManager) {
       this.translateSettings = options.translateSettings;
       this.translateRelationship = options.translateRelationship;
 
-      if (this.model.id) {
+      if (!this.model.isNew()) {
         this.listenToOnce(this.model, 'sync', this.updateTranslateConnection);
       } else {
         this.updateTranslateConnection();
