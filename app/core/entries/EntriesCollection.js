@@ -312,19 +312,8 @@ define(function(require, exports, module) {
       return this.structure.get(columnName) !== undefined;
     },
 
-    hasPermission: function(permissionType) {
-      var permissionLevel = 1;
-      var permissionName = permissionType;
-      if (permissionType.indexOf('big') === 0) {
-        permissionLevel = 2;
-        permissionName = permissionType.substr(3);
-      }
-
-      if (this.privileges && this.privileges.has('allow_' + permissionName) && permissionLevel <= this.privileges.get('allow_' + permissionName)) {
-        return true;
-      }
-
-      return false;
+    hasPermission: function (permissionType) {
+      return this.can(permissionType);
     },
 
     getFieldBlacklist: function(permission) {

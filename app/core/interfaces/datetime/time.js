@@ -3,20 +3,22 @@ define(['app', 'moment', 'core/UIComponent', 'core/UIView', 'core/t'], function 
   'use strict';
 
   function getTimeData(value) {
-    if (!value) {
-      return;
+    var date = new Date();
+    var timeParts;
+    var hours;
+    var minutes;
+    var seconds;
+
+    if (value) {
+      timeParts = (value || '').split(':');
+      date.setHours(parseInt(timeParts[0], 10));
+      date.setMinutes(parseInt(timeParts[1], 10) || 0);
+      date.setSeconds(parseInt(timeParts[2], 10) || 0);
     }
 
-    var date = new Date();
-    var timeParts = (value || '').split(':');
-
-    date.setHours(parseInt(timeParts[0], 10));
-    date.setMinutes(parseInt(timeParts[1], 10) || 0);
-    date.setSeconds(parseInt(timeParts[2], 10) || 0);
-
-    var hours = (date.getHours() < 10 ? '0' : '') + date.getHours();
-    var minutes = (date.getMinutes() < 10 ? '0' : '') + date.getMinutes();
-    var seconds = (date.getSeconds() < 10 ? '0' : '') + date.getSeconds();
+    hours = (date.getHours() < 10 ? '0' : '') + date.getHours();
+    minutes = (date.getMinutes() < 10 ? '0' : '') + date.getMinutes();
+    seconds = (date.getSeconds() < 10 ? '0' : '') + date.getSeconds();
 
     return {
       hours: hours,
@@ -35,17 +37,20 @@ define(['app', 'moment', 'core/UIComponent', 'core/UIView', 'core/t'], function 
       'click .now': 'makeNow'
     },
 
-    makeNow: function () {
+    getFormat: function () {
       var timeFormat = 'HH:mm';
 
       if (this.options.settings.get('include_seconds') === true) {
         timeFormat += ':ss';
       }
 
-      this.value = moment().format(timeFormat);
-      this.updateValue();
+      return timeFormat;
+    },
 
+    makeNow: function () {
+      this.value = moment().format(this.getFormat());
       this.render();
+      this.updateValue();
     },
 
     getTime: function () {

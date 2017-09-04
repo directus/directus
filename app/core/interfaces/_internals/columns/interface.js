@@ -367,6 +367,7 @@ define([
       var collection = this.columns;
       var table = collection.table;
       var sortColumnName = table.getSortColumnName();
+      var options = {wait: true, patch: true, attributes: [sortColumnName]};
 
       this.$('table tbody tr').each(function (i) {
         // Use data-id instead of data-cid
@@ -378,15 +379,9 @@ define([
         collection.get($(this).data('id')).set(attrs, {silent: true});
       });
 
-      var self = this;
-      var originalUrl = collection.url;
-      var options = {wait: true, patch: true, attributes: [sortColumnName]};
-
       collection.url = app.API_URL + 'tables/' + this.model.id + '/columns';
-
       options.success = function () {
-        collection = originalUrl;
-        self.collection.setOrder(table.getStatusColumnName(), 'ASC', {silent: false});
+        collection.setOrder(table.getStatusColumnName(), 'ASC', {silent: false});
       };
 
       collection.save(null, options);

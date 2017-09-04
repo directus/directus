@@ -677,11 +677,6 @@ class RelationalTableGateway extends BaseTableGateway
 
         $columns = array_unique(array_merge($visibleColumns, $columns));
 
-        // Pick non-forbidden columns
-        if (empty($columns)) {
-            $columns = TableSchema::getAllTableColumnsName($this->getTable());
-        }
-
         // Add columns to params if it's not empty.
         // otherwise remove from params
         if (!empty($columns)) {
@@ -967,6 +962,7 @@ class RelationalTableGateway extends BaseTableGateway
                 $logical = $condition['logical'];
                 unset($condition['logical']);
             }
+
             $operator = is_array($condition) ? key($condition) : '=';
             $value = is_array($condition) ? current($condition) : $condition;
             $not = false;
@@ -1001,7 +997,7 @@ class RelationalTableGateway extends BaseTableGateway
                 $this->getColumnFromIdentifier($column)
             );
 
-            if (in_array($operator, ['all', 'has']) && in_array($relationship->getType(), ['ONETOMANY', 'MANYTOMANY'])) {
+            if (in_array($operator, ['all', 'has']) && $relationship && in_array($relationship->getType(), ['ONETOMANY', 'MANYTOMANY'])) {
                 if ($operator == 'all' && is_string($value)) {
                     $value = array_map(function ($item) {
                         return trim($item);
@@ -1029,7 +1025,27 @@ class RelationalTableGateway extends BaseTableGateway
                 }
             }
 
-            call_user_func_array([$query, $method], $arguments);
+            // TODO: Move this into QueryBuilder if possible
+            if (in_array($operator, ['like']) && $relationship && $relationship->isManyToOne()) {
+                $relatedTable = $relationship->getRelatedTable();
+                $tableSchema = TableSchema::getTableSchema($relatedTable);
+                $relatedTableColumns = $tableSchema->getColumns();
+                $relatedPrimaryColumnName = $tableSchema->getPrimaryColumn();
+                $query->orWhereRelational($this->getColumnFromIdentifier($column), $relatedTable, $relatedPrimaryColumnName, function (Builder $query) use ($column, $relatedTable, $relatedTableColumns, $value) {
+                    $query->nestOrWhere(function (Builder $query) use ($relatedTableColumns, $relatedTable, $value) {
+                        foreach ($relatedTableColumns as $column) {
+                            // NOTE: Only search numeric or string type columns
+                            $isNumeric = $this->getSchemaManager()->isNumericType($column->getType());
+                            $isString = $this->getSchemaManager()->isStringType($column->getType());
+                            if (!$column->isAlias() && ($isNumeric || $isString)) {
+                                $query->orWhereLike($column->getName(), $value);
+                            }
+                        }
+                    });
+                });
+            } else {
+                call_user_func_array([$query, $method], $arguments);
+            }
         }
     }
 
@@ -1467,7 +1483,9 @@ class RelationalTableGateway extends BaseTableGateway
             };
 
             $results = $relatedTableGateway->loadEntries(array_merge([
-                'columns' => $relatedTableColumns,
+                // Add the aliases of the join columns to prevent being removed from array
+                // because there aren't part of the "visible" columns list
+                'columns' => array_merge($relatedTableColumns, array_keys($joinColumns)),
                 'filters' => [
                     $relatedTableGateway->getColumnIdentifier($junctionKeyLeftColumn, $junctionTableName) => [
                         'in' => $ids
@@ -1563,7 +1581,7 @@ class RelationalTableGateway extends BaseTableGateway
                 $tempRow = $row;
                 $_byId = [];
                 foreach ($tempRow as $item) {
-                    $_byId[$item[$primaryKey]] = $item;
+                    $_byId[$item[$relatedTablePrimaryKey]] = $item;
                 }
 
                 $row = [];

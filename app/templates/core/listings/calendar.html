@@ -5,13 +5,9 @@
 </header>
 
 <ul class="day-names">
-	<li>Sun</li>
-	<li>Mon</li>
-	<li>Tue</li>
-	<li>Wed</li>
-	<li>Thu</li>
-	<li>Fri</li>
-	<li>Sat</li>
+	{{#daysName}}
+	<li>{{this}}</li>
+	{{/daysName}}
 </ul>
 
 <div class="days">

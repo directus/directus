@@ -41,6 +41,11 @@ class BaseTableGateway extends TableGateway
     public $memcache;
 
     /**
+     * @var array
+     */
+    protected $options = [];
+
+    /**
      * Hook Emitter Instance
      *
      * @var \Directus\Hook\Emitter
@@ -298,10 +303,10 @@ class BaseTableGateway extends TableGateway
 
     public function findOneBy($field, $value)
     {
-        $rowset = $this->select(function (Select $select) use ($field, $value) {
+        $rowset = $this->ignoreFilters()->select(function (Select $select) use ($field, $value) {
             $select->limit(1);
             $select->where->equalTo($field, $value);
-        }, ['filter' => false]);
+        });
 
         $row = $rowset->current();
         // Supposing this "one" doesn't exist in the DB
@@ -351,7 +356,7 @@ class BaseTableGateway extends TableGateway
                 $primaryKey => $recordData[$primaryKey]
             ]);
             $select->limit(1);
-            $rowExists = $TableGateway->selectWith($select, ['filter' => false])->count() > 0;
+            $rowExists = $TableGateway->ignoreFilters()->selectWith($select)->count() > 0;
         }
 
         if ($rowExists) {
@@ -640,44 +645,11 @@ class BaseTableGateway extends TableGateway
         return $query;
     }
 
-    /**
-     * Select
-     *
-     * @param Where|\Closure|string|array $where
-     *
-     * @return ResultSetInterface
-     */
-    public function select($where = null)
+    public function ignoreFilters()
     {
-        if (!$this->isInitialized) {
-            $this->initialize();
-        }
+        $this->options['filter'] = false;
 
-        $select = $this->sql->select();
-
-        if ($where instanceof \Closure) {
-            $where($select);
-        } elseif ($where !== null) {
-            $select->where($where);
-        }
-
-        return $this->selectWith($select, ArrayUtils::get(func_get_args(), 1, []));
-    }
-
-    /**
-     * @param Select $select
-     *
-     * @return null|ResultSetInterface
-     *
-     * @throws \RuntimeException
-     */
-    public function selectWith(Select $select)
-    {
-        if (!$this->isInitialized) {
-            $this->initialize();
-        }
-
-        return $this->executeSelect($select, ArrayUtils::get(func_get_args(), 1, []));
+        return $this;
     }
 
     /**
@@ -691,13 +663,8 @@ class BaseTableGateway extends TableGateway
      */
     protected function executeSelect(Select $select)
     {
-        // Select query options
-        $options = ArrayUtils::get(func_get_args(), 1, []);
-        if (!is_array($options)) {
-            $options = [];
-        }
-
-        $useFilter = ArrayUtils::get($options, 'filter', true) !== false;
+        $useFilter = ArrayUtils::get($this->options, 'filter', true) !== false;
+        unset($this->options['filter']);
 
         if ($this->acl) {
             $this->enforceSelectPermission($select);
@@ -813,6 +780,9 @@ class BaseTableGateway extends TableGateway
      */
     protected function executeUpdate(Update $update)
     {
+        $useFilter = ArrayUtils::get($this->options, 'filter', true) !== false;
+        unset($this->options['filter']);
+
         if ($this->acl) {
             $this->enforceUpdatePermission($update);
         }
@@ -824,10 +794,16 @@ class BaseTableGateway extends TableGateway
         try {
             $isSoftDelete = $this->isSoftDelete($updateData);
 
-            $updateData = $this->runBeforeUpdateHooks($updateTable, $updateData, $isSoftDelete);
+            if ($useFilter) {
+                $updateData = $this->runBeforeUpdateHooks($updateTable, $updateData, $isSoftDelete);
+            }
+
             $update->set($updateData);
             $result = parent::executeUpdate($update);
-            $this->runAfterUpdateHooks($updateTable, $updateData, $isSoftDelete);
+
+            if ($useFilter) {
+                $this->runAfterUpdateHooks($updateTable, $updateData, $isSoftDelete);
+            }
 
             return $result;
         } catch (InvalidQueryException $e) {

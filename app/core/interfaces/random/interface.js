@@ -35,7 +35,7 @@ define([
         if (!_.isEmpty(resp) && !_.isEmpty(resp.data.random)) {
           randomString = resp.data.random;
           this.$('input.password-primary').val(randomString);
-          this.$('.generated').removeClass('hide');
+          this.$('.generated').removeClass('hidden');
           this.model.set(this.name, randomString);
         } else {
           Notification.error('Random', __t('error_generating_a_random_string'));

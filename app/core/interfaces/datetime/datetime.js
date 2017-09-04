@@ -21,6 +21,9 @@ define(['app', 'underscore', 'core/interfaces/datetime/date'], function (app, _,
 
       return date;
     },
+    getFormat: function () {
+      return this.getDateFormat() + ' ' + this.getTimeFormat();
+    },
     getDateFormat: function () {
       return dateFormat;
     },
@@ -35,7 +38,6 @@ define(['app', 'underscore', 'core/interfaces/datetime/date'], function (app, _,
       var format = dateFormat + ' ' + timeFormat;
 
       return _.extend(data, {
-        hasValue: this.value.isValid(),
         useDate: true,
         useTime: true,
         timeValue: date.format(this.getTimeFormat()),
