@@ -208,7 +208,7 @@ class Entries extends Route
                 $requestPayload[$TableGateway->primaryKeyFieldName] = $id;
                 $activityLoggingEnabled = !(isset($_GET['skip_activity_log']) && (1 == $_GET['skip_activity_log']));
                 $activityMode = $activityLoggingEnabled ? TableGateway::ACTIVITY_ENTRY_MODE_PARENT : TableGateway::ACTIVITY_ENTRY_MODE_DISABLED;
-                $TableGateway->manageRecordUpdate($table, $requestPayload, $activityMode);
+                $TableGateway->manageRecordUpdate($requestPayload, $table, $this->getActivityMode());
                 break;
             // DELETE a given table entry
             case 'DELETE':

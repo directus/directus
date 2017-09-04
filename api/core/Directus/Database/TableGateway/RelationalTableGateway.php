@@ -67,10 +67,12 @@ class RelationalTableGateway extends BaseTableGateway
         'nbetween' => ['operator' => 'between', 'not' => true],
     ];
 
-    public function manageRecordUpdate($tableName, $recordData, $activityEntryMode = self::ACTIVITY_ENTRY_MODE_PARENT, &$childLogEntries = null, &$parentCollectionRelationshipsChanged = false, $parentData = [])
+    public function manageRecordUpdate($recordData, $tableName = null, $activityEntryMode = self::ACTIVITY_ENTRY_MODE_PARENT, &$childLogEntries = null, &$parentCollectionRelationshipsChanged = false, $parentData = [])
     {
+        $tableName = $tableName ?: $this->getTable();
+
         $TableGateway = $this;
-        if ($tableName !== $this->table) {
+        if ($tableName !== $this->getTable()) {
             $TableGateway = new RelationalTableGateway($tableName, $this->adapter, $this->acl);
         }
 
@@ -440,7 +442,7 @@ class RelationalTableGateway extends BaseTableGateway
             // Update/Add foreign record
             if ($this->recordDataContainsNonPrimaryKeyData($foreignRow, $foreignTableSchema->getPrimaryColumn())) {
                 // NOTE: using manageRecordUpdate instead of addOrUpdateRecordByArray to update related data
-                $foreignRow = $this->manageRecordUpdate($foreignTableName, $foreignRow);
+                $foreignRow = $this->manageRecordUpdate($foreignRow, $foreignTableName);
             }
 
             $parentRow[$colName] = $foreignRow[$foreignTableSchema->getPrimaryColumn()];
@@ -538,7 +540,7 @@ class RelationalTableGateway extends BaseTableGateway
                                 $foreignRecord[$foreignJoinColumn] = $parentRow['id'];
                             }
 
-                            $foreignRecord = $this->manageRecordUpdate($foreignTableName, $foreignRecord, self::ACTIVITY_ENTRY_MODE_CHILD, $childLogEntries, $parentCollectionRelationshipsChanged, $parentData);
+                            $foreignRecord = $this->manageRecordUpdate($foreignRecord, $foreignTableName, self::ACTIVITY_ENTRY_MODE_CHILD, $childLogEntries, $parentCollectionRelationshipsChanged, $parentData);
                         }
                         break;
 
@@ -585,7 +587,7 @@ class RelationalTableGateway extends BaseTableGateway
                             }
 
                             /** Update foreign record */
-                            $foreignRecord = $ForeignTable->manageRecordUpdate($foreignTableName, $junctionRow['data'], self::ACTIVITY_ENTRY_MODE_CHILD, $childLogEntries, $parentCollectionRelationshipsChanged, $parentData);
+                            $foreignRecord = $ForeignTable->manageRecordUpdate($junctionRow['data'], $foreignTableName, self::ACTIVITY_ENTRY_MODE_CHILD, $childLogEntries, $parentCollectionRelationshipsChanged, $parentData);
                             // Junction/Association row
                             $junctionTableRecord = [
                                 $junctionKeyLeft => $parentRow[$this->primaryKeyFieldName],
@@ -1744,7 +1746,7 @@ class RelationalTableGateway extends BaseTableGateway
     {
         $entries = ArrayUtils::isNumericKeys($entries) ? $entries : [$entries];
         foreach ($entries as $entry) {
-            $entry = $this->manageRecordUpdate($this->table, $entry);
+            $entry = $this->manageRecordUpdate($entry);
             $entry->save();
         }
     }

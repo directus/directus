@@ -27,7 +27,7 @@ class Groups extends Route
 
         switch ($app->request()->getMethod()) {
             case 'POST':
-                $newRecord = $GroupsTableGateway->manageRecordUpdate($tableName, $requestPayload);
+                $newRecord = $GroupsTableGateway->manageRecordUpdate($requestPayload, $tableName);
                 $newGroupId = $newRecord['id'];
                 $response = $GroupsTableGateway->getEntries(['id' => $newGroupId]);
                 break;
@@ -74,7 +74,7 @@ class Groups extends Route
 
         ArrayUtils::remove($requestPayload, 'permissions');
 
-        $newRecord = $tableGateway->manageRecordUpdate($tableName, $requestPayload);
+        $newRecord = $tableGateway->manageRecordUpdate($requestPayload, $tableName);
         $newGroupId = $newRecord['id'];
         $response = $tableGateway->getEntries(['id' => $newGroupId]);
 

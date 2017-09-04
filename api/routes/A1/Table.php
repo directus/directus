@@ -209,7 +209,7 @@ class Table extends Route
             $data['id'] = $row['id'];
         }
 
-        $newRecord = $TableGateway->manageRecordUpdate('directus_columns', $data, TableGateway::ACTIVITY_ENTRY_MODE_DISABLED);
+        $newRecord = $TableGateway->manageRecordUpdate($data, 'directus_columns', TableGateway::ACTIVITY_ENTRY_MODE_DISABLED);
 
         return $this->app->response($newRecord);
     }
