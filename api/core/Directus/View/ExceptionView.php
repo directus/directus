@@ -40,7 +40,7 @@ class ExceptionView
         ];
 
         // Not showing internal PHP errors (for PHP7) for production
-        if($productionMode && $exception instanceof \Error) {
+        if($productionMode && ($exception instanceof \Error || $exception instanceof \ErrorException)) {
             $exception = new InternalServerErrorException(__t('internal_server_error'));
         }
 
