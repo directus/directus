@@ -1128,7 +1128,7 @@ if (!function_exists('find_html_files')) {
      */
     function find_html_files($paths, $includeSubDirectories = false)
     {
-        return find_files($paths, 0, '*.html', $includeSubDirectories);
+        return find_files($paths, 0, '*.twig', $includeSubDirectories);
     }
 }
 
@@ -1386,6 +1386,6 @@ if (!function_exists('display_missing_requirements_html')) {
         ]);
 
         $app->response()->header('Content-Type', 'text/html; charset=utf-8');
-        $app->render('errors/requirements.twig.html', $data);
+        $app->render('errors/requirements.twig', $data);
     }
 }

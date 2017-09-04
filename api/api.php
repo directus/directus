@@ -503,7 +503,7 @@ $app->notFound(function () use ($app, $acl, $ZendDb) {
     $projectInfo = get_project_info();
 
     $app->response()->header('Content-Type', 'text/html; charset=utf-8');
-    $app->render('errors/404.twig.html', $projectInfo);
+    $app->render('errors/404.twig', $projectInfo);
 });
 
 /**
