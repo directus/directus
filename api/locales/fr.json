@@ -331,7 +331,7 @@
     "password_reset_error": "Erreur de réinitialisation du mot de passe",
     "password_reset_new_temporary_password_sent": "Nouveau mot de passe temporaire envoyé",
     "password_reset_new_password_email_subject": "Votre nouveau mot de passe Directus",
-    "password_forgot_invalid_email": "Adresse email non valide",
+    "invalid_email": "Adresse email non valide",
     "password_forgot_no_account_found": "Aucun compte trouvé avec cette adresse email",
     "password_forgot_password_reset_email_subject": "Réinitialisation de mot de passe Directus",
     "hash_must_provide_string": "Fournissez un mot de passe",

@@ -327,7 +327,7 @@
     "password_reset_error": "Error restableciendo la contraseña",
     "password_reset_new_temporary_password_sent": "Nueva contraseña temporal enviada",
     "password_reset_new_password_email_subject": "Tu nueva contraseña de Directus",
-    "password_forgot_invalid_email": "Correo invalido",
+    "invalid_email": "Correo invalido",
     "password_forgot_no_account_found": "Ninguna cuenta con este correo encontrada.",
     "password_forgot_password_reset_email_subject": "Restablecer contraseña de Directus",
     "hash_must_provide_string": "Tiene proveer una contraseña",

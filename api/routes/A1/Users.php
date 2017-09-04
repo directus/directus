@@ -4,6 +4,7 @@ namespace Directus\API\Routes\A1;
 
 use Directus\Application\Route;
 use Directus\Database\TableGateway\DirectusUsersTableGateway;
+use Directus\Exception\Http\BadRequestException;
 use Directus\Mail\Mail;
 use Directus\Util\ArrayUtils;
 use Directus\Util\DateUtils;
@@ -58,6 +59,9 @@ class Users extends Route
             ]));
         }
 
+    protected function sendInvitationTo($email)
+    {
+        $this->validateEmailOrFail($email);
         // @TODO: Builder/Service to get table gateway
         // $usersRepository = $repositoryCollection->get('users');
         // $usersRepository->add();
@@ -79,6 +83,13 @@ class Users extends Route
 
         if ($result) {
             send_user_invitation_email($email, $token);
+        }
+    }
+
+    protected function validateEmailOrFail($email)
+    {
+        if (!Validator::email($email)) {
+            throw new BadRequestException(__t('invalid_email'));
         }
     }
 }

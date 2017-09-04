@@ -387,7 +387,7 @@
     "password_reset_error": "Error resetting the password",
     "password_reset_new_temporary_password_sent": "New temporary password sent",
     "password_reset_new_password_email_subject": "Your new Directus password",
-    "password_forgot_invalid_email": "Invalid email address",
+    "invalid_email": "Invalid email address",
     "password_forgot_no_account_found": "No account found with this email address",
     "password_forgot_password_reset_email_subject": "Directus Password Reset",
     "hash_must_provide_string": "Must provide password",

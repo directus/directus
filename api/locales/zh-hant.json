@@ -332,7 +332,7 @@
     "password_reset_error": "重置密碼時發生錯誤",
     "password_reset_new_temporary_password_sent": "已發送新的臨時密碼",
     "password_reset_new_password_email_subject": "您在Directus的新密碼",
-    "password_forgot_invalid_email": "無效的郵箱地址",
+    "invalid_email": "無效的郵箱地址",
     "password_forgot_no_account_found": "沒有找到與此郵箱關聯的賬戶",
     "password_forgot_password_reset_email_subject": "重置Directus密碼",
     "hash_must_provide_string": "必須提供密碼",
