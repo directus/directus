@@ -12,6 +12,8 @@ use Directus\Util\ArrayUtils;
 
 class Entries extends Route
 {
+    use Traits\ActivityMode;
+
     public function rows($table)
     {
         $entriesService = new EntriesService($this->app);
@@ -206,8 +208,6 @@ class Entries extends Route
             case 'PATCH':
             case 'PUT':
                 $requestPayload[$TableGateway->primaryKeyFieldName] = $id;
-                $activityLoggingEnabled = !(isset($_GET['skip_activity_log']) && (1 == $_GET['skip_activity_log']));
-                $activityMode = $activityLoggingEnabled ? TableGateway::ACTIVITY_ENTRY_MODE_PARENT : TableGateway::ACTIVITY_ENTRY_MODE_DISABLED;
                 $TableGateway->manageRecordUpdate($requestPayload, $table, $this->getActivityMode());
                 break;
             // DELETE a given table entry
