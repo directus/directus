@@ -192,16 +192,6 @@ class Entries extends Route
 
         $params['table_name'] = $table;
 
-        // any UPDATE requests should md5 the email
-        if ('directus_users' === $table &&
-            in_array($app->request()->getMethod(), ['PUT', 'PATCH']) &&
-            array_key_exists('email', $requestPayload)
-        ) {
-            $avatar = DirectusUsersTableGateway::get_avatar($requestPayload['email']);
-            $requestPayload['avatar'] = $avatar;
-        }
-
-        // $TableGateway = new TableGateway($table, $ZendDb, $acl);
         $TableGateway = TableGateway::makeTableGatewayFromTableName($table, $ZendDb, $acl);
         switch ($app->request()->getMethod()) {
             // PUT an updated table entry
