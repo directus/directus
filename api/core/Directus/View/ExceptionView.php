@@ -11,6 +11,7 @@
 namespace Directus\View;
 
 use Directus\Application\Application;
+use Directus\Exception\Http\InternalServerErrorException;
 use Directus\Exception\HttpExceptionInterface;
 use Directus\Util\ArrayUtils;
 
@@ -38,9 +39,13 @@ class ExceptionView
             'success' => false
         ];
 
+        // Not showing internal PHP errors (for PHP7) for production
+        if($productionMode && $exception instanceof \Error) {
+            $exception = new InternalServerErrorException(__t('internal_server_error'));
+        }
+
         // set default exception
         ArrayUtils::set($data, 'error.message', $exception->getMessage());
-
 
         if($exception instanceof HttpExceptionInterface) {
             $httpCode = $exception->getHttpStatus();
