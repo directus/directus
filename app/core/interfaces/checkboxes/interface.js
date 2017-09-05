@@ -80,33 +80,35 @@ define([
       });
 
       function isLastValueCustom() {
-
-        //this function looks for keys of selected options,
+        // this function looks for keys of selected options,
         // then compares these keys against the values list
         // if anything matches, there is no custom value.
 
-        //reduces the options array to an array of selectex keys with either "undefined" or the key
-        let selectedOptions = optionsArray.map(function (option){ if (option.selected == true) { return option.key } })
+        // reduces the options array to an array of selectex keys with either "undefined" or the key
+        var selectedOptions = optionsArray.map(function (option) {
+          if (option.selected === true) {
+            return option.key;
+          }
+        });
 
-        //do any of the selected values in list match the second last value in values array?
-        let hasCustomValue = selectedOptions.map(function(val){ if (values[values.length - 2] == val){ return false } else{ return true}})
+        // do any of the selected values in list match the second last value in values array?
+        var hasCustomValue = selectedOptions.map(function (val) {
+          return values[values.length - 2] === val;
+        });
 
-        if(hasCustomValue.includes(false)){
-
-          //if no matches, supplement ''
+        if (hasCustomValue.includes(false)) {
+          // if no matches, supplement ''
           return {
             key: 'custom',
             value: ''
           };
-        }else{
-
-          //if existing value, supplement value
-          return {
-            key: 'custom',
-            value: values[values.length - 2]
-          };
-
         }
+
+        // if existing value, supplement value
+        return {
+          key: 'custom',
+          value: values[values.length - 2]
+        };
       }
 
       var customArray = isLastValueCustom();
