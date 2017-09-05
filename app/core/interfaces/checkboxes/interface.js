@@ -3,9 +3,8 @@ define([
   'core/UIView',
   'underscore',
   'utils'
-], function(UIView, _, Utils) {
-
-  function parseOptions (options) {
+], function (UIView, _, Utils) {
+  function parseOptions(options) {
     if (_.isString(options)) {
       try {
         options = JSON.parse(options);
@@ -42,7 +41,7 @@ define([
         out.push(checkedValues[i].value);
       }
 
-      return out
+      return out;
     },
     customValue: function () {
       return this.$('#customText').val();
@@ -80,10 +79,37 @@ define([
         };
       });
 
-      var customArray = {
-        key: 'custom',
-        value: values[values.length - 2]
-      };
+      function isLastValueCustom() {
+
+        //this function looks for keys of selected options,
+        // then compares these keys against the values list
+        // if anything matches, there is no custom value.
+
+        //reduces the options array to an array of selectex keys with either "undefined" or the key
+        let selectedOptions = optionsArray.map(function (option){ if (option.selected == true) { return option.key } })
+
+        //do any of the selected values in list match the second last value in values array?
+        let hasCustomValue = selectedOptions.map(function(val){ if (values[values.length - 2] == val){ return false } else{ return true}})
+
+        if(hasCustomValue.includes(false)){
+
+          //if no matches, supplement ''
+          return {
+            key: 'custom',
+            value: ''
+          };
+        }else{
+
+          //if existing value, supplement value
+          return {
+            key: 'custom',
+            value: values[values.length - 2]
+          };
+
+        }
+      }
+
+      var customArray = isLastValueCustom();
 
       return {
         options: optionsArray,
