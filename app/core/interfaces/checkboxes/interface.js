@@ -63,9 +63,9 @@ define([
       this.model.set(this.name, out);
     },
     serialize: function () {
-      var value = typeof this.options.value === 'string'
-          ? this.options.value
-          : this.columnSchema.get('default_value') || '';
+      var value = typeof this.options.value === 'string' ?
+        this.options.value :
+        this.columnSchema.get('default_value') || '';
 
       var values = value.split(this.options.settings.get('delimiter'));
 
@@ -79,39 +79,42 @@ define([
         };
       });
 
-      function isLastValueCustom() {
-        // this function looks for keys of selected options,
-        // then compares these keys against the values list
-        // if anything matches, there is no custom value.
+      function getCustomValue(values, isWrappedInDelimiter) {
+        if (isWrappedInDelimiter) {
+          values.shift();
+          values.pop();
+        }
 
-        // reduces the options array to an array of selectex keys with either "undefined" or the key
-        var selectedOptions = optionsArray.map(function (option) {
-          if (option.selected === true) {
+        // reduces the options array to an array of selected keys
+        var selectedOptions = optionsArray
+          .filter(function (option) {
+            return option.selected;
+          })
+          .map(function (option) {
             return option.key;
-          }
-        });
+          });
 
-        // do any of the selected values in list match the second last value in values array?
-        var hasCustomValue = selectedOptions.map(function (val) {
-          return values[values.length - 2] === val;
-        });
+        var potentialCustomValue = values[values.length - 1];
+        var hasCustomValue = selectedOptions.indexOf(potentialCustomValue) === -1;
 
-        if (hasCustomValue.includes(false)) {
-          // if no matches, supplement ''
+        if (hasCustomValue) {
           return {
             key: 'custom',
-            value: ''
+            value: potentialCustomValue
           };
         }
 
         // if existing value, supplement value
         return {
           key: 'custom',
-          value: values[values.length - 2]
+          value: ''
         };
       }
 
-      var customArray = isLastValueCustom();
+      var customArray = getCustomValue(
+        values,
+        this.options.settings.get('wrap_with_delimiter')
+      );
 
       return {
         options: optionsArray,
