@@ -152,6 +152,13 @@ define(['./interface', 'core/UIComponent', 'core/t'], function (Input, UICompone
         type: 'Number',
         comment: 'Set the max height the editor will resize to',
         default_value: 500
+      },
+      {
+        id: 'remove_unsafe_tags',
+        ui: 'toggle',
+        type: 'Boolean',
+        comment: 'Have the editor remove potentially unsafe tags like iframe and script',
+        default_value: true
       }
     ],
     validate: function (value, options) {
