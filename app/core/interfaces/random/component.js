@@ -8,7 +8,7 @@ define([
   return UIComponent.extend({
     id: 'random',
     dataTypes: ['VARCHAR', 'CHAR', 'TINYTEXT', 'TEXT', 'MEDIUMTEXT', 'LONGTEXT'],
-    variables: [
+    options: [
       {
         id: 'read_only',
         ui: 'toggle',
@@ -47,16 +47,18 @@ define([
       }
     ],
     Input: Input,
-    validate: function (value, options) {
-      var $el = $('input[name="' + options.schema.id + '"]').parent();
+    validate: function (value, interfaceOptions) {
+      var $el = $('input[name="' + interfaceOptions.schema.id + '"]').parent();
       var randomString = $el.find('input.password-primary').val();
 
-      if (!randomString && options.schema.get('required')) {
-        return 'This field is required [' + options.schema.id + '].';
+      if (!randomString && interfaceOptions.schema.get('required')) {
+        return 'This field is required [' + interfaceOptions.schema.id + '].';
       }
     },
-    list: function (options) {
-      return (options.value) ? options.value.toString().replace(/<(?:.|\n)*?>/gm, '').substr(0, 100) : '';
+    list: function (interfaceOptions) {
+      return (interfaceOptions.value)
+        ? interfaceOptions.value.toString().replace(/<(?:.|\n)*?>/gm, '').substr(0, 100)
+        : '';
     }
   });
 });

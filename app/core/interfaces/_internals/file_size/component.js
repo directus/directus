@@ -5,8 +5,8 @@ define(['app', 'core/UIComponent', 'core/UIView'], function (app, UIComponent, U
     id: 'directus_file_size',
     system: true,
     Input: UIView,
-    list: function (options) {
-      return app.bytesToSize(options.value);
+    list: function (interfaceOptions) {
+      return app.bytesToSize(interfaceOptions.value);
     }
   });
 });

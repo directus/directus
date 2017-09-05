@@ -1,15 +1,16 @@
 /* global _ */
 define([
+  'underscore',
   'core/interfaces/markdown/interface',
   'core/UIComponent',
   'marked'
-], function (Input, UIComponent, marked) {
+], function (_, Input, UIComponent, marked) {
   'use strict';
 
   return UIComponent.extend({
     id: 'markdown',
     dataTypes: ['TEXT', 'VARCHAR', 'TINYTEXT', 'MEDIUMTEXT', 'LONGTEXT'],
-    variables: [
+    options: [
       {
         id: 'read_only',
         ui: 'toggle',
@@ -55,13 +56,13 @@ define([
       }
     ],
     Input: Input,
-    validate: function (value, options) {
-      if (options.schema.isRequired() && _.isEmpty(value)) {
+    validate: function (value, interfaceOptions) {
+      if (interfaceOptions.schema.isRequired() && _.isEmpty(value)) {
         return 'This field is required';
       }
     },
-    list: function (options) {
-      var value = options.value;
+    list: function (interfaceOptions) {
+      var value = interfaceOptions.value;
 
       if (!_.isString(value)) {
         value = '';
@@ -69,7 +70,9 @@ define([
 
       var raw_val = marked(value);
 
-      return _.isString(raw_val) ? raw_val.replace(/<(?:.|\n)*?>/gm, '').substr(0, 100) : '<span class="silver">--</span>';
+      return _.isString(raw_val)
+        ? raw_val.replace(/<(?:.|\n)*?>/gm, '').substr(0, 100)
+        : '<span class="silver">--</span>';
     }
   });
 });

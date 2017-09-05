@@ -4,10 +4,10 @@ define(['./interface', 'core/UIComponent'], function (Input, UIComponent) {
     system: true,
     sortBy: ['email'],
     Input: Input,
-    list: function (options) {
+    list: function (interfaceOptions) {
       var html = '{{userAvatar user}}';
 
-      return this.compileView(html, {user: parseInt(options.model.id, 10)});
+      return this.compileView(html, {user: parseInt(interfaceOptions.model.id, 10)});
     }
   });
 });

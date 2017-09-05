@@ -4,7 +4,7 @@ define(['core/interfaces/slider/interface', 'core/UIComponent', 'core/t'], funct
   return UIComponent.extend({
     id: 'slider',
     dataTypes: ['INT', 'TINYINT', 'SMALLINT', 'MEDIUMINT', 'BIGINT'],
-    variables: [
+    options: [
       {
         id: 'read_only',
         ui: 'toggle',
@@ -42,8 +42,8 @@ define(['core/interfaces/slider/interface', 'core/UIComponent', 'core/t'], funct
       }
     ],
     Input: Input,
-    validate: function (value, options) {
-      if (options.schema.isRequired() && !value) {
+    validate: function (value, interfaceOptions) {
+      if (interfaceOptions.schema.isRequired() && !value) {
         return __t('this_field_is_required');
       }
     }

@@ -9,7 +9,7 @@ define(['core/interfaces/password/interface', 'underscore', 'core/UIComponent', 
 
     skipSerializationIfNull: true,
 
-    variables: [
+    options: [
       {
         id: 'read_only',
         ui: 'toggle',
@@ -35,12 +35,12 @@ define(['core/interfaces/password/interface', 'underscore', 'core/UIComponent', 
 
     Input: Input,
 
-    validate: function (value, options) {
-      var $el = $('input[name="' + options.schema.id + '"]').parent();
+    validate: function (value, interfaceOptions) {
+      var $el = $('input[name="' + interfaceOptions.schema.id + '"]').parent();
       var password = $el.find('input.password-primary').val();
       var confirm = $el.find('input.password-confirm').val();
 
-      if (options.model.isMine() && !password && options.schema.get('required')) {
+      if (interfaceOptions.model.isMine() && !password && interfaceOptions.schema.get('required')) {
         return __t('you_must_specify_a_password');
       }
 
