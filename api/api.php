@@ -479,7 +479,7 @@ $app->group('/1.1', function() use($app) {
     $app->map('/users/?', '\Directus\API\Routes\A1\Users:all')
         ->via('GET', 'POST', 'PUT');
     $app->map('/users/:id/?', '\Directus\API\Routes\A1\Users:get')
-        ->conditions(['id' => '[0-9]'])
+        ->conditions(['id' => '[0-9]+'])
         ->via('DELETE', 'GET', 'PUT', 'PATCH');
     $app->post('/users/invite/?', '\Directus\API\Routes\A1\Users:invite');
 
