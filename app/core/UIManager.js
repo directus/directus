@@ -185,6 +185,7 @@ define(function (require, exports, module) {
       var allInterfaces = _.clone(interfaces);
       var filter = ids && ids.length > 0;
 
+      debugger;
       _.each(allInterfaces, function (ui) {
         if (filter && ids.indexOf(ui.id) < 0) {
           return false;
@@ -247,14 +248,13 @@ define(function (require, exports, module) {
         interfaceList = [interfaceList];
       }
 
-      _.each(interfaceList, function (interfaceComponent) {
+      _.each(interfaceList, function (ui) {
         try {
-          var ui = new interfaceComponent();
-
-          interfaces[ui.id] = ui;
-          interfaces[ui.id].group = ui.group || 'custom';
-          interfaces[ui.id].isSystem = ui.group === 'system';
-          interfaces[ui.id].isInternal = ui.group === 'internal';
+          var uiInstance = new ui();
+          interfaces[uiInstance.id] = uiInstance;
+          interfaces[uiInstance.id].group = ui.group || 'custom';
+          interfaces[uiInstance.id].isSystem = ui.group === 'system';
+          interfaces[uiInstance.id].isInternal = ui.group === 'internal';
         } catch (ex) {
           console.warn(ex.message);
         }
