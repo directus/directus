@@ -93,6 +93,7 @@ define([
     },
 
     leftToolbar: function() {
+      var widgets = [];
       var collection = this.model.collection;
       var isNew = this.model.isNew();
       var canAdd = isNew && collection.canAdd();
@@ -118,6 +119,42 @@ define([
         // });
       }
 
+      widgets.push(this.saveWidget);
+
+      this.enableWidget = new Widgets.ButtonWidget({
+        widgetOptions: {
+          buttonId: 'enableBtn',
+          iconClass: 'blur_on',
+          buttonClass: 'important',
+          buttonText: __t('enable')
+        },
+        onClick: _.bind(editView.changeStatusConfirm, this, 1)
+      });
+
+      this.disableWidget = new Widgets.ButtonWidget({
+        widgetOptions: {
+          buttonId: 'disableBtn',
+          iconClass: 'blur_off',
+          buttonClass: 'important',
+          buttonText: __t('disable')
+        },
+        onClick: _.bind(editView.changeStatusConfirm, this, 2)
+      });
+
+      widgets.push((this.model.get('status') === 1) ? this.disableWidget : this.enableWidget);
+
+      this.deleteWidget = new Widgets.ButtonWidget({
+        widgetOptions: {
+          buttonId: 'deleteBtn',
+          iconClass: 'close',
+          buttonClass: 'serious',
+          buttonText: __t('delete')
+        },
+        onClick: _.bind(editView.changeStatusConfirm, this, 0)
+      });
+
+      widgets.push(this.deleteWidget);
+
       this.infoWidget = new Widgets.InfoButtonWidget({
         enable: !this.model.isNew(),
         onClick: function (event) {
@@ -125,10 +162,9 @@ define([
         }
       });
 
-      return [
-        this.saveWidget,
-        this.infoWidget
-      ];
+      widgets.push(this.infoWidget);
+
+      return widgets;
     },
 
     rightPane: function() {
@@ -142,6 +178,20 @@ define([
       if (this.model.isNew()) {
         editView.render();
       }
+    },
+
+    changeStatusConfirm: function(status) {
+      var editView = this;
+
+      app.router.openModal({type: 'confirm', text: __t('confirm_question'), callback: function () {
+        var xhr = editView.model.save({status: status}, {validate: false});
+
+        if(!xhr) {
+          return;
+        }
+
+        app.router.go('/users/');
+      }});
     },
 
     initialize: function (options) {

@@ -24,7 +24,7 @@ define(function(require, exports, module) {
       case 'directus_users':
         return new UsersCollection([], _.extend({
           rowsPerPage: 3000,
-          url: apiURL + 'tables/directus_users/rows',
+          url: apiURL + 'users/',
           filters: {columns_visible: ['avatar', 'avatar_file_id', 'first_name', 'last_name', 'group', 'email', 'position', 'location', 'phone', 'last_access'], active:1}
         }, SchemaManager.getFullSchema('directus_users')));
 

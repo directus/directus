@@ -37,7 +37,7 @@ class Users extends Route
     // /1.1/users/:id
     public function get($id)
     {
-        $user = (array)$this->usersGateway->getEntries(['id' => $id]);
+        $user = (array)$this->usersGateway->getEntries(['id' => $id, 'status' => null]);
 
         return $this->app->response($user);
     }
