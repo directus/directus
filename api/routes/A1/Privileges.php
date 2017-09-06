@@ -8,7 +8,7 @@ use Directus\Database\Exception\TableAlreadyExistsException;
 use Directus\Database\SchemaManager;
 use Directus\Database\TableGateway\DirectusPrivilegesTableGateway;
 use Directus\Database\TableSchema;
-use Directus\Exception\ForbiddenException;
+use Directus\Exception\Http\ForbiddenException;
 use Directus\Services\ColumnsService;
 use Directus\Services\TablesService;
 use Directus\Util\ArrayUtils;
