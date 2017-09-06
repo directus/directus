@@ -185,7 +185,6 @@ define(function (require, exports, module) {
       var allInterfaces = _.clone(interfaces);
       var filter = ids && ids.length > 0;
 
-      debugger;
       _.each(allInterfaces, function (ui) {
         if (filter && ids.indexOf(ui.id) < 0) {
           return false;
