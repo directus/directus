@@ -6,7 +6,7 @@ define([
   return UIComponent.extend({
     id: 'many_to_many',
     dataTypes: ['MANYTOMANY'],
-    variables: [
+    options: [
       {
         id: 'visible_columns',
         ui: 'text_input',
@@ -85,8 +85,8 @@ define([
       }
     ],
     Input: Input,
-    validate: function (value, options) {
-      var minEntries = parseInt(options.settings.get('min_entries'), 10);
+    validate: function (value, interfaceOptions) {
+      var minEntries = parseInt(interfaceOptions.settings.get('min_entries'), 10);
 
       if (value.length < minEntries) {
         return __t('this_field_requires_at_least_x_entries', {
@@ -95,7 +95,7 @@ define([
       }
 
       // @TODO: Does not currently consider newly deleted items
-      if (options.schema.isRequired() && value.length === 0) {
+      if (interfaceOptions.schema.isRequired() && value.length === 0) {
         return __t('this_field_is_required');
       }
     },

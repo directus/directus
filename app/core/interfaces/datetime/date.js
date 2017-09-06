@@ -1,5 +1,13 @@
 /* global _ */
-define(['app', 'core/UIComponent', 'core/UIView', 'moment', 'helpers/ui', 'core/t'], function (app, UIComponent, UIView, moment, UIHelper, __t) {
+define([
+  'app',
+  'underscore',
+  'core/UIComponent',
+  'core/UIView',
+  'moment',
+  'helpers/ui',
+  'core/t'
+], function (app, _, UIComponent, UIView, moment, UIHelper, __t) {
   'use strict';
 
   function removeTimeFromFormat(format) {
@@ -101,7 +109,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'moment', 'helpers/ui', 'core/
   var Component = UIComponent.extend({
     id: 'date',
     dataTypes: ['DATE'],
-    variables: [
+    options: [
       {
         id: 'read_only',
         ui: 'toggle',
@@ -136,8 +144,8 @@ define(['app', 'core/UIComponent', 'core/UIView', 'moment', 'helpers/ui', 'core/
       }
     ],
     Input: Input,
-    validate: function (value, options) {
-      if (options.schema.isRequired() && _.isEmpty(value)) {
+    validate: function (value, interfaceOptions) {
+      if (interfaceOptions.schema.isRequired() && _.isEmpty(value)) {
         return __t('this_field_is_required');
       }
 
@@ -148,12 +156,12 @@ define(['app', 'core/UIComponent', 'core/UIView', 'moment', 'helpers/ui', 'core/
 
       return 'Not a valid date';
     },
-    list: function (options) {
-      var value = options.value;
-      var format = this.getFormat(options);
+    list: function (interfaceOptions) {
+      var value = interfaceOptions.value;
+      var format = this.getFormat(interfaceOptions);
 
-      if (options.settings.get('contextual_date_in_listview') === true) {
-        var momentDate = moment(options.value);
+      if (interfaceOptions.settings.get('contextual_date_in_listview') === true) {
+        var momentDate = moment(interfaceOptions.value);
         value = '-';
         if (momentDate.isValid()) {
           value = momentDate.fromNow();
@@ -164,13 +172,13 @@ define(['app', 'core/UIComponent', 'core/UIView', 'moment', 'helpers/ui', 'core/
 
       return value;
     },
-    getFormat: function (options) {
-      var format = options.settings.get('format');
+    getFormat: function (interfaceOptions) {
+      var format = interfaceOptions.settings.get('format');
 
       return removeTimeFromFormat(format);
     },
-    sort: function (options) {
-      return options.value;
+    sort: function (interfaceOptions) {
+      return interfaceOptions.value;
     }
   });
 

@@ -4,7 +4,7 @@ define(['core/interfaces/section_break/interface', 'core/UIComponent'], function
   return UIComponent.extend({
     id: 'section_break',
     dataTypes: ['VARCHAR', 'CHAR', 'TINYTEXT', 'TEXT', 'MEDIUMTEXT', 'LONGTEXT'],
-    variables: [
+    options: [
       {
         id: 'show_inline',
         ui: 'toggle',
@@ -32,8 +32,8 @@ define(['core/interfaces/section_break/interface', 'core/UIComponent'], function
       }
     ],
     Input: Input,
-    list: function (options) {
-      var instructions = options.settings.get('instructions') || '...';
+    list: function (interfaceOptions) {
+      var instructions = interfaceOptions.settings.get('instructions') || '...';
       var regex = /(<([^>]+)>)/ig;
 
       return instructions.replace(regex, '');

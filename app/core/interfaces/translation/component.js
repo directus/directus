@@ -4,7 +4,7 @@ define(['core/UIComponent', 'core/UIView', 'core/t'], function (UIComponent, UIV
   return UIComponent.extend({
     id: 'translation',
     dataTypes: ['ONETOMANY'],
-    variables: [
+    options: [
       {
         id: 'languages_table',
         ui: 'text_input',

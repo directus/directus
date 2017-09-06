@@ -1,5 +1,11 @@
 /* global _ */
-define(['app', 'moment', 'core/UIComponent', 'core/UIView', 'core/t'], function (app, moment, UIComponent, UIView, __t) {
+define([
+  'app',
+  'moment',
+  'core/UIComponent',
+  'core/UIView',
+  'core/t'
+], function (app, moment, UIComponent, UIView, __t) {
   'use strict';
 
   function getTimeData(value) {
@@ -112,7 +118,7 @@ define(['app', 'moment', 'core/UIComponent', 'core/UIView', 'core/t'], function 
   var Component = UIComponent.extend({
     id: 'time',
     dataTypes: ['TIME'],
-    variables: [
+    options: [
       {
         id: 'read_only',
         ui: 'toggle',
@@ -129,13 +135,13 @@ define(['app', 'moment', 'core/UIComponent', 'core/UIView', 'core/t'], function 
       }
     ],
     Input: Input,
-    validate: function (value, options) {
-      if (options.schema.isRequired() && _.isEmpty(value)) {
+    validate: function (value, interfaceOptions) {
+      if (interfaceOptions.schema.isRequired() && _.isEmpty(value)) {
         return __t('this_field_is_required');
       }
     },
-    list: function (options) {
-      var data = getTimeData(options.value, options);
+    list: function (interfaceOptions) {
+      var data = getTimeData(interfaceOptions.value, interfaceOptions);
 
       if (!data) {
         return '-';
@@ -145,7 +151,7 @@ define(['app', 'moment', 'core/UIComponent', 'core/UIView', 'core/t'], function 
       var minutes = data.minutes;
       var seconds = data.seconds;
       var meridiem = data.meridiem;
-      var settings = options.settings;
+      var settings = interfaceOptions.settings;
       var includeSeconds = settings.get('include_seconds') === true;
 
       return hours + ':' + minutes + (includeSeconds ? ':' + seconds : '') + ' ' + meridiem;

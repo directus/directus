@@ -4,7 +4,7 @@ define(['core/interfaces/one_to_many/interface', 'core/UIComponent', 'core/t'], 
   return UIComponent.extend({
     id: 'one_to_many',
     dataTypes: ['ONETOMANY'],
-    variables: [
+    options: [
       {
         id: 'visible_columns',
         ui: 'text_input',
@@ -51,8 +51,8 @@ define(['core/interfaces/one_to_many/interface', 'core/UIComponent', 'core/t'], 
       }
     ],
     Input: Input,
-    validate: function (collection, options) {
-      if (options.schema.isRequired() && collection.length === 0) {
+    validate: function (collection, interfaceOptions) {
+      if (interfaceOptions.schema.isRequired() && collection.length === 0) {
         return __t('this_field_is_required');
       }
     },

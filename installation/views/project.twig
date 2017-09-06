@@ -1,8 +1,8 @@
-{% extends 'base.twig.html' %}
+{% extends 'base.twig' %}
 
 {% block content %}
     <div class="container">
-        {% include 'partials/errors.twig.html' %}
+        {% include 'partials/errors.twig' %}
         <label for="directus_name">{{ 'Project Name'|t }}<input type="text" id="directus_name"
             name="directus_name"
             placeholder="{{ 'eg: My Project Name'|t }}"

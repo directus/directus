@@ -714,5 +714,5 @@ $templateVars = [
     'cssFilePath' => getCSSFilePath()
 ];
 
-// @TODO: Compile html
-$app->render('base.twig.html', $templateVars);
+// TODO: Compile html
+$app->render('base.twig', $templateVars);

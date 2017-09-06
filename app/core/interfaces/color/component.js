@@ -1,16 +1,17 @@
 /* global _ */
 define([
+  'underscore',
   'core/interfaces/color/interface',
   'core/UIComponent',
   'core/t',
   'core/interfaces/color/lib/color'
-], function (Input, UIComponent, __t, color) {
+], function (_, Input, UIComponent, __t, color) {
   'use strict';
 
   return UIComponent.extend({
     id: 'color',
     dataTypes: ['VARCHAR', 'CHAR', 'TINYTEXT', 'TEXT', 'MEDIUMTEXT', 'LONGTEXT'],
-    variables: [
+    options: [
       {
         id: 'read_only',
         ui: 'toggle',
@@ -82,22 +83,22 @@ define([
       }
     ],
     Input: Input,
-    validate: function (value, options) {
-      if (options.schema.isRequired() && _.isEmpty(value)) {
+    validate: function (value, interfaceOptions) {
+      if (interfaceOptions.schema.isRequired() && _.isEmpty(value)) {
         return __t('this_field_is_required');
       }
     },
-    list: function (options) {
+    list: function (interfaceOptions) {
       var value;
 
-      switch (options.settings.get('output')) {
+      switch (interfaceOptions.settings.get('output')) {
         case 'hex':
-          value = options.value || false;
+          value = interfaceOptions.value || false;
           break;
         case 'rgb':
         case 'hsl':
-          value = options.value ?
-            options.value.split(',').map(function (color) {
+          value = interfaceOptions.value ?
+            interfaceOptions.value.split(',').map(function (color) {
               return Number(color);
             }) :
             false;
@@ -107,11 +108,12 @@ define([
       }
 
       if (value) {
-        var rgbColor = color(value, options.settings.get('output')).rgb;
+        var rgbColor = color(value, interfaceOptions.settings.get('output')).rgb;
         var rgb = rgbColor.length === 4 ? 'rgba(' + rgbColor + ')' : 'rgb(' + rgbColor + ')';
         var swatch = '<div style="width: 20px; height: 20px; border-radius: 50%; background-color: ' + rgb + '"></div>';
-        return options.settings.get('list_view_formatting') === 'swatch' ? swatch : value;
+        return interfaceOptions.settings.get('list_view_formatting') === 'swatch' ? swatch : value;
       }
+
       return '';
     }
   });

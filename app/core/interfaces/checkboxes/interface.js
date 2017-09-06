@@ -3,9 +3,8 @@ define([
   'core/UIView',
   'underscore',
   'utils'
-], function(UIView, _, Utils) {
-
-  function parseOptions (options) {
+], function (UIView, _, Utils) {
+  function parseOptions(options) {
     if (_.isString(options)) {
       try {
         options = JSON.parse(options);
@@ -42,7 +41,7 @@ define([
         out.push(checkedValues[i].value);
       }
 
-      return out
+      return out;
     },
     customValue: function () {
       return this.$('#customText').val();
@@ -64,9 +63,9 @@ define([
       this.model.set(this.name, out);
     },
     serialize: function () {
-      var value = typeof this.options.value === 'string'
-          ? this.options.value
-          : this.columnSchema.get('default_value') || '';
+      var value = typeof this.options.value === 'string' ?
+        this.options.value :
+        this.columnSchema.get('default_value') || '';
 
       var values = value.split(this.options.settings.get('delimiter'));
 
@@ -80,10 +79,42 @@ define([
         };
       });
 
-      var customArray = {
-        key: 'custom',
-        value: values[values.length - 2]
-      };
+      function getCustomValue(values, isWrappedInDelimiter) {
+        if (isWrappedInDelimiter) {
+          values.shift();
+          values.pop();
+        }
+
+        // reduces the options array to an array of selected keys
+        var selectedOptions = optionsArray
+          .filter(function (option) {
+            return option.selected;
+          })
+          .map(function (option) {
+            return option.key;
+          });
+
+        var potentialCustomValue = values[values.length - 1];
+        var hasCustomValue = selectedOptions.indexOf(potentialCustomValue) === -1;
+
+        if (hasCustomValue) {
+          return {
+            key: 'custom',
+            value: potentialCustomValue
+          };
+        }
+
+        // if existing value, supplement value
+        return {
+          key: 'custom',
+          value: ''
+        };
+      }
+
+      var customArray = getCustomValue(
+        values,
+        this.options.settings.get('wrap_with_delimiter')
+      );
 
       return {
         options: optionsArray,

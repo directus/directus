@@ -73,7 +73,7 @@ define(function(require, exports, module) {
         var UIManager = require('core/UIManager');
 
         var nullDisallowed = column.get('is_nullable') === 'NO';
-        var ui = UIManager._getUI(column.get('ui'));
+        var ui = UIManager._getInterface(column.get('ui'));
         var forceUIValidation = ui.forceUIValidation === true;
         var isNull = Utils.isNothing(value);
         var uiSettings = UIManager.getSettings(column.get('ui'));

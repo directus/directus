@@ -4,8 +4,8 @@ define(['./interface', 'app', 'core/UIComponent'], function (Input, app, UICompo
     id: 'directus_file',
     system: true,
     Input: Input,
-    list: function (options) {
-      var model = options.model;
+    list: function (interfaceOptions) {
+      var model = interfaceOptions.model;
 
       // Force model To be a Files Model
       var FileModel = require('modules/files/FilesModel'); // eslint-disable-line import/no-unresolved

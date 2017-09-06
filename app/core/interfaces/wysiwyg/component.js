@@ -5,7 +5,7 @@ define(['core/interfaces/wysiwyg/interface', 'core/UIComponent', 'core/t'], func
     id: 'wysiwyg',
     dataTypes: ['TEXT', 'VARCHAR', 'CHAR', 'TINYTEXT', 'MEDIUMTEXT', 'LONGTEXT'],
     Input: Input,
-    variables: [
+    options: [
       {
         id: 'read_only',
         ui: 'toggle',
@@ -51,13 +51,15 @@ define(['core/interfaces/wysiwyg/interface', 'core/UIComponent', 'core/t'], func
         default_value: false
       }
     ],
-    validate: function (value, options) {
-      if (options.view.isRequired() && !value) {
+    validate: function (value, interfaceOptions) {
+      if (interfaceOptions.view.isRequired() && !value) {
         return __t('this_field_is_required');
       }
     },
-    list: function (options) {
-      return options.value ? options.value.toString().replace(/(<([^>]+)>)/ig, '').substr(0, 100) : '';
+    list: function (interfaceOptions) {
+      return interfaceOptions.value
+        ? interfaceOptions.value.toString().replace(/(<([^>]+)>)/ig, '').substr(0, 100)
+        : '';
     }
   });
 });

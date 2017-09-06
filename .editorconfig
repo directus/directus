@@ -15,6 +15,6 @@ indent_size = 2
 trim_trailing_whitespace = false
 
 # Tabs
-[*.{scss,sass,css,html}]
+[*.{scss,sass,css,html,handlebars}]
 indent_style = tab
 indent_size = 4
