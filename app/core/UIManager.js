@@ -106,7 +106,7 @@ define(function (require, exports, module) {
    * @private
    * Holds all UI's that are registered
    */
-  var uis = {};
+  var interfaces = {};
 
   /**
    * Holds the default interface by date type
@@ -150,27 +150,42 @@ define(function (require, exports, module) {
       return defaultInterfaces[type] || defaultInterfaces[defaultInterfaceName];
     },
 
+    // @deprecated since 6.4.3
+    _getUI: function (interfaceId) {
+      return this._getInterface(interfaceId)
+    },
+
     // Get reference to external UI file
-    _getUI: function (uiId) {
-      var ui = uis[uiId];
+    _getInterface: function (interfaceId) {
+      var ui = interfaces[interfaceId];
 
       if (ui === undefined) {
-        console.warn('There is no registered UI with id "' + uiId + '"');
+        console.warn('There is no registered UI with id "' + interfaceId + '"');
       }
 
       return ui;
     },
 
+    // @deprecated since 6.4.3
     _getAllUIs: function () {
-      return uis;
+      return this._getAllInterfaces();
     },
 
+    _getAllInterfaces: function () {
+      return interfaces;
+    },
+
+    // @deprecated since 6.4.3
     getAllUIsGrouped: function (ids) {
+      return this.getAllInterfacesGrouped(ids);
+    },
+
+    getAllInterfacesGrouped: function (ids) {
       var list = {};
-      var allUIs = _.clone(uis);
+      var allInterfaces = _.clone(interfaces);
       var filter = ids && ids.length > 0;
 
-      _.each(allUIs, function (ui) {
+      _.each(allInterfaces, function (ui) {
         if (filter && ids.indexOf(ui.id) < 0) {
           return false;
         }
@@ -191,9 +206,14 @@ define(function (require, exports, module) {
       return list;
     },
 
-    // Returns a reference to a UI based on a
-    // model/attribute/schema combination
+    // @deprecated since 6.4.3
     _getModelUI: function (model, attr, schema) {
+      return this._getModelInterface(model, attr, schema);
+    },
+
+    // Returns a reference to a interface
+    // based on a model/attribute/schema combination
+    _getModelInterface: function (model, attr, schema) {
       if (schema === undefined) {
         schema = model.getStructure().get(attr);
       }
@@ -202,16 +222,16 @@ define(function (require, exports, module) {
         throw 'Cannot Find Schema for: \'' + attr + '\' Check Your Preferences!';
       }
 
-      var uiId = schema.get('ui');
-      var UI = this._getUI(uiId);
+      var interfaceId = schema.get('ui');
+      var UI = this._getInterface(interfaceId);
 
       if (!UI) {
-        if (!missingInterfacesWarned[uiId]) {
-          missingInterfacesWarned[uiId] = true;
-          app.trigger('alert:warning', __t('warning_missing_interface_x', {name: uiId}));
+        if (!missingInterfacesWarned[interfaceId]) {
+          missingInterfacesWarned[interfaceId] = true;
+          app.trigger('alert:warning', __t('warning_missing_interface_x', {name: interfaceId}));
         }
 
-        UI = this._getUI(this.getDefaultInterface(schema.get('type')));
+        UI = this._getInterface(this.getDefaultInterface(schema.get('type')));
       }
 
       if (UI) {
@@ -221,63 +241,63 @@ define(function (require, exports, module) {
       return UI;
     },
 
-    // Registers (@todo: one or) many UI's
-    register: function (uiArray) {
-      if (!_.isArray(uiArray)) {
-        uiArray = [uiArray];
+    // Registers one or many Interfaces
+    register: function (interfaceList) {
+      if (!_.isArray(interfaceList)) {
+        interfaceList = [interfaceList];
       }
 
-      _.each(uiArray, function (ui) {
+      _.each(interfaceList, function (ui) {
         try {
           var uiInstance = new ui();
-          uis[uiInstance.id] = uiInstance;
-          uis[uiInstance.id].group = ui.group || 'custom';
-          uis[uiInstance.id].isSystem = ui.group === 'system';
-          uis[uiInstance.id].isInternal = ui.group === 'internal';
+          interfaces[uiInstance.id] = uiInstance;
+          interfaces[uiInstance.id].group = ui.group || 'custom';
+          interfaces[uiInstance.id].isSystem = ui.group === 'system';
+          interfaces[uiInstance.id].isInternal = ui.group === 'internal';
         } catch (ex) {
           console.warn(ex.message);
         }
       }, this);
     },
 
-    isSystem: function (uiId) {
-      var ui = this._getUI(uiId);
+    isSystem: function (interfaceId) {
+      var ui = this._getInterface(interfaceId);
 
       return (ui && ui.isSystem);
     },
 
-    hasOptions: function (uiId) {
-      var ui = this._getUI(uiId);
+    hasOptions: function (interfaceId) {
+      var ui = this._getInterface(interfaceId);
 
-      return ui && (ui.variables || []).length > 0;
+      return ui && (ui.getOptions() || []).length > 0;
     },
 
-    shouldForceUIValidation: function (uiId) {
-      var ui = this._getUI(uiId);
+    shouldForceUIValidation: function (interfaceId) {
+      var ui = this._getInterface(interfaceId);
 
       return ui && ui.forceUIValidation === true;
     },
 
-    // Get all the settings specified in the UI
-    // Do not confused this with UI variables
-    // UI Variables is used for each single UI
-    // UI Settings is used to add new Settings to Directus
+    // Get all the settings specified in the Interface
+    // Do not confused this with Interface variables
+    // Interface Variables is used for each single Interface
+    // Interface Settings is used to add new Settings to Directus
     getDirectusSettings: function () {
-      var allUISettings = [];
+      var allInterfaceSettings = [];
 
-      _.each(uis, function (ui) {
+      _.each(interfaces, function (ui) {
         if (ui.settings) {
           var settings = _.isArray(ui.settings) ? ui.settings : [ui.settings];
           _.each(settings, function (setting) {
-            allUISettings.push(setting);
+            allInterfaceSettings.push(setting);
           });
         }
       });
 
-      return allUISettings;
+      return allInterfaceSettings;
     },
 
-    // Loads an array of paths to UI's and registers them.
+    // Loads and register an array of interfaces paths
     // Returns a jQuery Deferred's Promise object
     load: function (paths) {
       var self = this;
@@ -291,14 +311,20 @@ define(function (require, exports, module) {
       return dfd;
     },
 
-    // Returns `true` if a UI with the provided ID exists
-    hasUI: function (uiId) {
-      return uis.hasOwnProperty(uiId);
+    // Returns `true` if a Interface with the provided ID exists
+    // @deprecated since 6.4.3
+    hasUI: function (interfaceId) {
+      return this.hasInterface(interfaceId);
     },
 
-    // Returns all properties and settings of a UI with the provided ID
-    getSettings: function (uiId) {
-      var ui = this._getUI(uiId);
+    // Returns `true` if a Interface with the provided ID exists
+    hasInterface: function (interfaceId) {
+      return interfaces.hasOwnProperty(interfaceId);
+    },
+
+    // Returns all properties and settings of a Interface with the provided ID
+    getSettings: function (interfaceId) {
+      var ui = this._getInterface(interfaceId);
       var variablesDeepClone = [];
       var sortbyDeepClone = [];
       var skipSerializationIfNull = false;
@@ -306,15 +332,15 @@ define(function (require, exports, module) {
       var system = false;
 
       if (ui) {
-        variablesDeepClone = JSON.parse(JSON.stringify(ui.variables || []));
+        variablesDeepClone = JSON.parse(JSON.stringify(ui.getOptions() || []));
         sortbyDeepClone = JSON.parse(JSON.stringify(ui.sortBy || []));
-        skipSerializationIfNull = ui.skipSerializationIfNull || false
+        skipSerializationIfNull = ui.skipSerializationIfNull || false;
         dataTypes = ui.dataTypes || [];
         system = ui.system || false;
       }
 
       return {
-        id: uiId,
+        id: interfaceId,
         skipSerializationIfNull: skipSerializationIfNull,
         variables: variablesDeepClone,
         dataTypes: dataTypes,
@@ -323,27 +349,27 @@ define(function (require, exports, module) {
       };
     },
 
-    // Returns all properties and settings for all registered UI's
+    // Returns all properties and settings for all registered interfaces
     getAllSettings: function (options) {
       options = options || {};
 
-      var array = _.map(uis, function (ui) {
+      var settings = _.map(interfaces, function (ui) {
         return this.getSettings(ui.id);
       }, this);
 
-      // Maps the settings to a key-value datastructure where
-      // the key is the id of the UI.
+      // Maps the settings to a key-value data structure where
+      // the key is the id of the Interface.
       if (options.returnObject) {
         var obj = {};
 
-        _.each(array, function (item) {
+        _.each(settings, function (item) {
           obj[item.id] = item;
         });
 
         return obj;
       }
 
-      return array;
+      return settings;
     },
 
     hasList: function (model, attr) {
@@ -358,18 +384,25 @@ define(function (require, exports, module) {
       return this.getSortValue(model, attr) || this.getValue(model, attr);
     },
 
+    // @deprecated since 6.4.3
     getUIByModel: function (model, attr, defaultValue) {
-      // @TODO: we need to make this getStructure available to our base model
+      return this.getInterfaceByModel(model, attr, defaultValue);
+    },
+
+    getInterfaceByModel: function (model, attr, defaultValue) {
+      // TODO: we need to make this getStructure available to our base model
       var structure;
+      var UI;
+
       if (typeof model.getStructure === 'function') {
         structure = model.getStructure();
       } else {
         structure = model.structure || undefined;
       }
-      var UI;
+
       if (structure !== undefined) {
         var schema = structure.get(attr);
-        UI = schema ? this._getModelUI(model, attr, schema) : undefined;
+        UI = schema ? this._getModelInterface(model, attr, schema) : undefined;
       }
 
       if (typeof UI === 'undefined') {
@@ -382,9 +415,14 @@ define(function (require, exports, module) {
       };
     },
 
-    // Finds the UI for the model/attribute and
-    // returns a string containing the table view
+    // @deprecated since 6.4.3
     getUIValue: function (section, model, attr, noDefault) {
+      return this.getInterfaceValue(section, model, attr, noDefault);
+    },
+
+    // Finds the Interface for the model/attribute and
+    // returns a string containing the table view
+    getInterfaceValue: function (section, model, attr, noDefault) {
       var section = _.contains(this.validSections, section) ? section : 'list';
       var defaultValue = '<span class="no-value">--</span>';
       // Return true or false whether there's value or not (UI)
@@ -392,9 +430,9 @@ define(function (require, exports, module) {
       // https://github.com/RNGR/Directus/issues/452
       var returnDefaultValue = noDefault === true;
 
-      var UIObject = this.getUIByModel(model, attr);
+      var InterfaceObject = this.getInterfaceByModel(model, attr);
       // If there is no UI, return just text
-      if (UIObject === false) {
+      if (InterfaceObject === false) {
         var attribute = model.get(attr);
         if (!attribute || attribute === '') {
           if (!defaultValue) {
@@ -405,21 +443,21 @@ define(function (require, exports, module) {
         return attribute;
       }
 
-      var UIOptions = {
+      var InterfaceOptions = {
         model: model,
         collection: model.collection,
-        settings: UIObject.schema.options,
-        schema: UIObject.schema,
+        settings: InterfaceObject.schema.options,
+        schema: InterfaceObject.schema,
         value: model.get(attr),
         tagName: 'td'
       };
 
       // Section is the name of a method that represents an value.
       // list: represents the value that will be shown on a list.
-      var section = UIObject.UI[section] !== null ? section : 'list';
-      this.triggerBeforeValue(section, UIObject.UI, UIOptions);
-      var value = UIObject.UI[section](UIOptions);
-      this.triggerAfterValue(section, UIObject.UI, UIOptions);
+      section = InterfaceObject.UI[section] !== null ? section : 'list';
+      this.triggerBeforeValue(section, InterfaceObject.UI, InterfaceOptions);
+      var value = InterfaceObject.UI[section](InterfaceOptions);
+      this.triggerAfterValue(section, InterfaceObject.UI, InterfaceOptions);
 
       if (Utils.isNothing(value) && returnDefaultValue) {
         value = defaultValue;
@@ -429,26 +467,26 @@ define(function (require, exports, module) {
     },
 
     getSortValue: function (model, attr, noDefault) {
-      return this.getUIValue('sort', model, attr, noDefault);
+      return this.getInterfaceValue('sort', model, attr, noDefault);
     },
 
     getValue: function (model, attr, defaultValue) {
-      return this.getUIValue('value', model, attr, noDefault);
+      return this.getInterfaceValue('value', model, attr, noDefault);
     },
 
     getList: function (model, attr, noDefault) {
-      return this.getUIValue('list', model, attr, noDefault);
+      return this.getInterfaceValue('list', model, attr, noDefault);
     },
 
-    getRequiredOptions: function (uiId, includeDefault) {
-      var UI = this._getUI(uiId);
+    getRequiredOptions: function (interfaceId, includeDefault) {
+      var UI = this._getInterface(interfaceId);
       var options = [];
 
-      if (!UI || !_.isArray(UI.variables) || UI.variables.length <= 0) {
+      if (!UI || !_.isArray(UI.getOptions()) || UI.getOptions().length <= 0) {
         return [];
       }
 
-      _.each(UI.variables, function (option) {
+      _.each(UI.getOptions(), function (option) {
         if (includeDefault !== true && Utils.isSomething(option.default_value)) {
           return false;
         }
@@ -462,7 +500,7 @@ define(function (require, exports, module) {
     },
 
     parseDefaultValue: function (UI, model, settings) {
-      if (!_.isArray(UI.variables) || UI.variables.length <= 0) {
+      if (!_.isArray(UI.getOptions()) || UI.getOptions().length <= 0) {
         return;
       }
 
@@ -473,7 +511,7 @@ define(function (require, exports, module) {
         settings.attributeTypes = {};
       }
 
-      _.each(UI.variables, function (variable) {
+      _.each(UI.getOptions(), function (variable) {
         if (typeof variable.default_value !== 'undefined') {
           settings.defaultAttributes[variable.id] = variable.default_value;
         }
@@ -513,7 +551,7 @@ define(function (require, exports, module) {
         options.canWrite = typeof options.model.canEdit === 'function' ? options.model.canEdit(attr) : true;
       }
 
-      var UI = this._getModelUI(model, attr, options.schema);
+      var UI = this._getModelInterface(model, attr, options.schema);
       if (UI.Input === undefined) {
         throw new Error('The UI with id "' + UI.id + '" has no input view');
       }
@@ -531,7 +569,7 @@ define(function (require, exports, module) {
       var collection = model.collection;
       var structure = model.getStructure();
       var schema = structure.get(attr);
-      var UI = this._getModelUI(model, attr, schema);
+      var UI = this._getModelInterface(model, attr, schema);
 
       if (UI.validate) {
         return UI.validate(value, {

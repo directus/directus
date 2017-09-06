@@ -24,7 +24,7 @@ use Directus\Database\TableGatewayFactory;
 use Directus\Database\TableSchema;
 use Directus\Embed\EmbedManager;
 use Directus\Exception\Exception;
-use Directus\Exception\ForbiddenException;
+use Directus\Exception\Http\ForbiddenException;
 use Directus\Filesystem\Filesystem;
 use Directus\Filesystem\FilesystemFactory;
 use Directus\Filesystem\Thumbnail;

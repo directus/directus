@@ -1,12 +1,12 @@
-{% extends 'base.twig.html' %}
+{% extends 'base.twig' %}
 
 {% block content %}
 
-{% import 'macros/error_codes.twig.html' as code %}
+{% import 'macros/error_codes.twig' as code %}
 {% set code = code.getErrorCode(directus.step.getResponse.getErrors()) %}
 
 <div class="container">
-    {% include 'partials/errors.twig.html' %}
+    {% include 'partials/errors.twig' %}
     <label for="db_type">{{ 'Database Type'|t }}
         <div class="select-container">
             <select name="db_type" id="db_type">

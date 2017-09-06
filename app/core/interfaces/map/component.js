@@ -4,7 +4,7 @@ define(['./interface', 'core/UIComponent', 'core/t'], function (Input, UICompone
   return UIComponent.extend({
     id: 'map',
     dataTypes: ['VARCHAR', 'CHAR', 'TINYTEXT', 'TEXT', 'MEDIUMTEXT', 'LONGTEXT', 'ALIAS'],
-    variables: [
+    options: [
       {
         id: 'read_only',
         ui: 'toggle',
@@ -111,8 +111,10 @@ define(['./interface', 'core/UIComponent', 'core/t'], function (Input, UICompone
       comment: __t('maps_ui_global_settings_google_api_key')
     }],
     Input: Input,
-    list: function (options) {
-      return (options.value) ? options.value.toString().replace(/<(?:.|\n)*?>/gm, '').substr(0, 100) : '';
+    list: function (interfaceOptions) {
+      return (interfaceOptions.value)
+        ? interfaceOptions.value.toString().replace(/<(?:.|\n)*?>/gm, '').substr(0, 100)
+        : '';
     }
   });
 });

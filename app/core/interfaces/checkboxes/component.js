@@ -1,8 +1,8 @@
-define(['./interface', 'core/UIComponent', 'core/t', 'utils'], function(Input, UIComponent, __t, Utils) {
+define(['./interface', 'core/UIComponent', 'core/t', 'utils'], function (Input, UIComponent, __t, Utils) {
   return UIComponent.extend({
     id: 'checkboxes',
     dataTypes: ['VARCHAR', 'CHAR', 'TINYTEXT', 'TEXT', 'MEDIUMTEXT', 'LONGTEXT'],
-    variables: [
+    options: [
     {
         id: 'read_only',
         ui: 'toggle',
@@ -61,32 +61,32 @@ define(['./interface', 'core/UIComponent', 'core/t', 'utils'], function(Input, U
         type: 'Boolean',
         comment: 'Enable to allow user add custom checkbox values',
         default_value: false
-      },
+      }
     ],
     Input: Input,
-    validate: function (value, options) {
-      if (options.schema.isRequired() && Utils.isEmpty(value)) {
+    validate: function (value, interfaceOptions) {
+      if (interfaceOptions.schema.isRequired() && Utils.isEmpty(value)) {
         return __t('this_field_is_required');
       }
     },
-    list: function (options) {
+    list: function (interfaceOptions) {
       // Convert default csv to csv with spaces => demo1,demo2 => demo1, demo2
-      var showAsText = options.settings.get('list_view_formatting') === 'text';
-      var values = (options.value || '').split(options.settings.get('delimiter'))
+      var showAsText = interfaceOptions.settings.get('list_view_formatting') === 'text';
+      var values = (interfaceOptions.value || '').split(interfaceOptions.settings.get('delimiter'))
         .filter(function(value) {
           // Filter out the first and last empty delimiter
           return value.length > 0;
         })
-        .map(function(value) {
-          //map value to options key
+        .map(function (value) {
+          // map value to options key
           if (showAsText) {
-            var displayOptions = JSON.parse(options.settings.get('options'));
+            var displayOptions = JSON.parse(interfaceOptions.settings.get('options'));
 
             if (displayOptions[value]) {
               return displayOptions[value];
-            } else {
-              return value
             }
+
+            return value;
           }
           return value;
         });

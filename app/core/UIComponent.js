@@ -1,11 +1,18 @@
-define(['backbone', 'handlebars', 'helpers/ui', 'core/t'], function(Backbone, Handlebars, UIHelper, __t) {
+define([
+  'backbone',
+  'underscore',
+  'handlebars',
+  'helpers/ui',
+  'core/t'
+], function (Backbone, _, Handlebars, UIHelper, __t) {
+
   var UIComponentsOptions = ['id'];
-  var UIComponent = function(options) {
+  var UIComponent = function (options) {
     _.extend(this, _.pick(UIComponentsOptions, options));
 
     if (this.isNumeric() && this.supportsNumber()) {
-      this.variables = this.variables || [];
-      this.variables.push({
+      this.options = this.options || this.variables || [];
+      this.options.push({
         id: 'footer',
         type: 'Boolean',
         default_value: false,
@@ -22,11 +29,15 @@ define(['backbone', 'handlebars', 'helpers/ui', 'core/t'], function(Backbone, Ha
     // Supported Data Types for this UI
     dataTypes: [],
     // UI Options that can be set in Column Settings Page
-    variables: [],
+    options: [],
     // UI global options. (Directus Settings)
     settings: [],
     // UI Input view (UIView instance)
     Input: null,
+    // Get the UI Options
+    getOptions: function () {
+      return this.options;
+    },
     // Returns String That should be used to represent this UI when being listed as part of a table
     // @param options : Object : Contains Options/Attributes for this UI (value, collection [TableCollection], model [EntriesModel], schema, settings)
     list: function(options) {

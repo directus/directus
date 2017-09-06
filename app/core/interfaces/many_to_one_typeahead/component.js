@@ -1,8 +1,15 @@
 /* global _ */
-define(['./interface', 'app', 'backbone', 'core/UIComponent', 'core/t'], function (Input, app, Backbone, UIComponent, __t) {
+define([
+  'underscore',
+  './interface',
+  'app',
+  'backbone',
+  'core/UIComponent',
+  'core/t'
+], function (_, Input, app, Backbone, UIComponent, __t) {
   'use strict';
 
-  // @TODO: this should be a great feature on Models
+  // TODO: this should be a great feature on Models
   function getMultipleAttributes(model, attributes) {
     if (attributes && attributes.length > 0) {
       var columns = attributes.split(',');
@@ -18,7 +25,7 @@ define(['./interface', 'app', 'backbone', 'core/UIComponent', 'core/t'], functio
   return UIComponent.extend({
     id: 'many_to_one_typeahead',
     dataTypes: ['INT', 'TINYINT', 'SMALLINT', 'MEDIUMINT', 'BIGINT'],
-    variables: [
+    options: [
       {
         id: 'read_only',
         ui: 'toggle',
@@ -67,19 +74,19 @@ define(['./interface', 'app', 'backbone', 'core/UIComponent', 'core/t'], functio
       }
     ],
     Input: Input,
-    list: function (options) {
-      if (options.value === undefined || options.value.isNew()) {
+    list: function (interfaceOptions) {
+      if (interfaceOptions.value === undefined || interfaceOptions.value.isNew()) {
         return '';
       }
 
-      if (options.value instanceof Backbone.Model) {
-        if (options.settings.get('template')) {
-          return this.compileView(options.settings.get('template'), options.value.toJSON());
+      if (interfaceOptions.value instanceof Backbone.Model) {
+        if (interfaceOptions.settings.get('template')) {
+          return this.compileView(interfaceOptions.settings.get('template'), interfaceOptions.value.toJSON());
         }
-        return getMultipleAttributes(options.value, options.settings.get('visible_column'));
+        return getMultipleAttributes(interfaceOptions.value, interfaceOptions.settings.get('visible_column'));
       }
 
-      return options.value;
+      return interfaceOptions.value;
     }
   });
 });

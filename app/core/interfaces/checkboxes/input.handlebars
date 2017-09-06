@@ -78,23 +78,23 @@
 
 </style>
 <div class="multi_selectlist-interface">
-				<ul class="gridlist">
-								{{#options}}
-												<li>
-																<input id="multi_select_{{../name}}_{{key}}" name="{{../name}}_{{key}}" value="{{key}}" type="checkbox"
-																    {{#if ../readOnly}} readonly {{/if}} {{#if selected}} checked {{/if}} />
-																<label for="multi_select_{{../name}}_{{key}}">{{value}}</label>
-												</li>
-								{{/options}}
-				</ul>
-				{{#if allowCustomCheckboxes}}
-								{{#custom}}
-												<div class="custom_text-interface">
-																<h4 for="customText">Other (single item)</h4>
-																<input value="{{value}}" id="customText" class="small" name="customTextInput" type="text" />
-												</div>
-								{{/custom}}
-				{{/if}}
+	<ul class="gridlist">
+		{{#options}}
+		<li>
+			<input id="multi_select_{{../name}}_{{key}}" name="{{../name}}_{{key}}" value="{{key}}" type="checkbox"
+			{{#if ../readOnly}} readonly {{/if}} {{#if selected}} checked {{/if}} />
+			<label for="multi_select_{{../name}}_{{key}}">{{value}}</label>
+		</li>
+		{{/options}}
+	</ul>
+	{{#if allowCustomCheckboxes}}
+	{{#custom}}
+	<div class="custom_text-interface">
+		<h4 for="customText">Other (single item)</h4>
+		<input value="{{value}}" id="customText" class="small" name="customTextInput" type="text" />
+	</div>
+	{{/custom}}
+	{{/if}}
 </div>
 <div>
 </div>

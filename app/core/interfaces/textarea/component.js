@@ -1,15 +1,16 @@
 /* global _ */
 define([
+  'underscore',
   'core/interfaces/textarea/interface',
   'core/UIComponent',
   'core/t'
-], function (Input, UIComponent, __t) {
+], function (_, Input, UIComponent, __t) {
   'use strict';
 
   return UIComponent.extend({
     id: 'textarea',
     dataTypes: ['TEXT', 'CHAR', 'VARCHAR', 'TINYTEXT', 'MEDIUMTEXT', 'LONGTEXT'],
-    variables: [
+    options: [
       {
         id: 'read_only',
         ui: 'toggle',
@@ -36,15 +37,17 @@ define([
       }
     ],
     Input: Input,
-    validate: function (value, options) {
-      if (options.schema.isRequired() && _.isEmpty(value)) {
+    validate: function (value, interfaceOptions) {
+      if (interfaceOptions.schema.isRequired() && _.isEmpty(value)) {
         // TODO: fix this line, it is too repetitive
         // over all the UIs
         return __t('this_field_is_required');
       }
     },
-    list: function (options) {
-      return _.isString(options.value) ? options.value.replace(/<(?:.|\n)*?>/gm, '').substr(0, 100) : '<span class="silver">--</span>';
+    list: function (interfaceOptions) {
+      return _.isString(interfaceOptions.value)
+        ? interfaceOptions.value.replace(/<(?:.|\n)*?>/gm, '').substr(0, 100)
+        : '<span class="silver">--</span>';
     }
   });
 });

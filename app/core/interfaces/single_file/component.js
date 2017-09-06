@@ -26,7 +26,7 @@ define([
 
     // Interface options
     // These are schema structures object
-    variables: [
+    options: [
       {
         id: 'allowed_filetypes',
         ui: 'text_input',
@@ -45,15 +45,15 @@ define([
 
     // This is execute before saving a model
     // to make sure this Interface has valid data.
-    validate: function (value, options) {
-      if (options.schema.isRequired() && _.isEmpty(value.attributes)) {
+    validate: function (value, interfaceOptions) {
+      if (interfaceOptions.schema.isRequired() && _.isEmpty(value.attributes)) {
         return __t('this_field_is_required');
       }
     },
 
-    _avatarList: function (options) {
-      var model = options.model;
-      var table = options.collection.table.id;
+    _avatarList: function (interfaceOptions) {
+      var model = interfaceOptions.model;
+      var table = interfaceOptions.collection.table.id;
 
       if (table === 'directus_users') {
         return model.get('avatar');
@@ -61,15 +61,15 @@ define([
     },
 
     // Interface representation on table listing
-    list: function (options) {
-      var model = options.value;
+    list: function (interfaceOptions) {
+      var model = interfaceOptions.value;
 
       var orientation = (parseInt(model.get('width'), 10) > parseInt(model.get('height'), 10)) ? 'landscape' : 'portrait';
       var type = (model.get('type')) ? model.get('type').substring(0, model.get('type').indexOf('/')) : '';
       var subtype = model.getSubType(true);
 
       var isImage = _.contains(['image', 'embed'], type) || _.contains(['pdf'], subtype);
-      var thumbUrl = isImage ? model.makeFileUrl(true) : (this._avatarList(options) || app.PATH + 'assets/imgs/missing-thumbnail.svg');
+      var thumbUrl = isImage ? model.makeFileUrl(true) : (this._avatarList(interfaceOptions) || app.PATH + 'assets/imgs/missing-thumbnail.svg');
 
       return '<div class="media-thumb"><img src="' + thumbUrl + '" class="img ' + orientation + '"></div>';
     }

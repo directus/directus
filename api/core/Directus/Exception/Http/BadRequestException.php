@@ -8,14 +8,11 @@
  * @license   GNU General Public License (v3) – <http://www.gnu.org/copyleft/gpl.html>
  */
 
-namespace Directus\Exception;
+namespace Directus\Exception\Http;
 
-/**
- * Exception for Forbidden actions
- *
- * @author Welling Guzmán <welling@rngr.org>
- */
-class ForbiddenException extends HttpException
+use Directus\Exception\HttpException;
+
+class BadRequestException extends HttpException
 {
-    protected $httpStatus = 403;
+    protected $httpStatus = 404;
 }

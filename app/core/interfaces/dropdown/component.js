@@ -2,7 +2,7 @@ define(['./interface', 'core/UIComponent', 'core/t', 'utils'], function (Input, 
   return UIComponent.extend({
     id: 'dropdown',
     dataTypes: ['VARCHAR', 'CHAR', 'TINYTEXT', 'TEXT', 'MEDIUMTEXT', 'LONGTEXT'],
-    variables: [
+    options: [
       {
         id: 'read_only',
         ui: 'toggle',
@@ -55,23 +55,24 @@ define(['./interface', 'core/UIComponent', 'core/t', 'utils'], function (Input, 
       }
     ],
     Input: Input,
-    validate: function (value, options) {
-      var nullable = options.schema.isNullable();
-      var defaultValue = options.schema.getDefaultValue();
+    validate: function (value, interfaceOptions) {
+      var nullable = interfaceOptions.schema.isNullable();
+      var defaultValue = interfaceOptions.schema.getDefaultValue();
 
-      if ((defaultValue || !nullable) && options.schema.isRequired() && Utils.isEmpty(value)) {
+      if ((defaultValue || !nullable) && interfaceOptions.schema.isRequired() && Utils.isEmpty(value)) {
         return __t('this_field_is_required');
       }
     },
-    list: function (options) {
-      var showAsText = options.settings.get('list_view_formatting') === 'text';
+    list: function (interfaceOptions) {
+      var showAsText = interfaceOptions.settings.get('list_view_formatting') === 'text';
+      var value = interfaceOptions.value;
 
       if (showAsText) {
-        var displayOptions = JSON.parse(options.settings.get('options'));
-        return displayOptions[options.value];
+        var displayOptions = JSON.parse(interfaceOptions.settings.get('options'));
+        value = displayOptions[interfaceOptions.value];
       }
 
-      return options.value;
+      return value;
     }
   });
 });

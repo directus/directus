@@ -49,17 +49,17 @@ define(['app', 'underscore', 'core/interfaces/datetime/date'], function (app, _,
     }
   });
 
-  var variables = UIDate.prototype.variables.slice();
-  // @TODO: add time step setting
-  variables.push({id: 'include_seconds', type: 'Boolean', default_value: true, ui: 'toggle'});
+  var options = UIDate.prototype.options.slice();
+  // TODO: add time step setting
+  options.push({id: 'include_seconds', type: 'Boolean', default_value: true, ui: 'toggle'});
 
   var Component = UIDate.extend({
     id: 'datetime',
     dataTypes: ['DATETIME', 'TIMESTAMP'],
-    variables: variables,
+    options: options,
     Input: Input,
-    getFormat: function (options) {
-      return options.settings.get('format');
+    getFormat: function (interfaceOptions) {
+      return interfaceOptions.settings.get('format');
     }
   });
 

@@ -3,7 +3,7 @@ define(['./interface', 'core/UIComponent', 'core/t'], function (Input, UICompone
   return UIComponent.extend({
     id: 'toggle',
     dataTypes: ['TINYINT'],
-    variables: [
+    options: [
       {
         id: 'read_only',
         ui: 'toggle',
@@ -27,14 +27,14 @@ define(['./interface', 'core/UIComponent', 'core/t'], function (Input, UICompone
       }
     ],
     Input: Input,
-    validate: function (value, options) {
-      var required = options.schema.isRequired();
+    validate: function (value, interfaceOptions) {
+      var required = interfaceOptions.schema.isRequired();
       if (required && value === undefined) {
         return __t('this_field_is_required');
       }
     },
-    list: function (options) {
-      if (Boolean(options.value) === true) {
+    list: function (interfaceOptions) {
+      if (Boolean(interfaceOptions.value) === true) {
         return '<i class="material-icons">check_box</i>';
       }
 

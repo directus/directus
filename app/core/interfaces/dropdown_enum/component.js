@@ -2,7 +2,7 @@ define(['./interface', 'core/UIComponent', 'core/t', 'utils'], function (Input, 
   return UIComponent.extend({
     id: 'dropdown_enum',
     dataTypes: ['ENUM'],
-    variables: [
+    options: [
       {
         id: 'read_only',
         ui: 'toggle',
@@ -26,13 +26,13 @@ define(['./interface', 'core/UIComponent', 'core/t', 'utils'], function (Input, 
       }
     ],
     Input: Input,
-    validate: function (value, options) {
-      if (options.schema.isRequired() && Utils.isEmpty(value)) {
+    validate: function (value, interfaceOptions) {
+      if (interfaceOptions.schema.isRequired() && Utils.isEmpty(value)) {
         return __t('this_field_is_required');
       }
     },
-    list: function (options) {
-      return options.value;
+    list: function (interfaceOptions) {
+      return interfaceOptions.value;
     }
   });
 });

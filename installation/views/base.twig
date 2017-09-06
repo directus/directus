@@ -1,13 +1,13 @@
 <!doctype html>
 <html lang="en">
 
-    {% include 'partials/html_head.twig.html' %}
+    {% include 'partials/html_head.twig' %}
 
 <body>
 
     <div class="modal">
 
-        {% include 'partials/header.twig.html' %}
+        {% include 'partials/header.twig' %}
 
         <form method="post" action="{{ directus.root_path }}installation/index.php?step={{ directus.current_step }}">
 
@@ -22,7 +22,7 @@
         </form>
     </div>
 
-    {% include 'partials/footer.twig.html' %}
+    {% include 'partials/footer.twig' %}
 
 </body>
 </html>

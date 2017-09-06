@@ -1,10 +1,15 @@
 /* global _ */
-define(['./interface', 'core/UIComponent', 'core/t'], function (Input, UIComponent, __t) {
+define([
+  'underscore',
+  './interface',
+  'core/UIComponent',
+  'core/t'
+], function (_, Input, UIComponent, __t) {
   return UIComponent.extend({
     id: 'json',
     dataTypes: ['TEXT', 'VARCHAR', 'TINYTEXT', 'MEDIUMTEXT', 'LONGTEXT'],
     Input: Input,
-    variables: [
+    options: [
       {
         id: 'read_only',
         ui: 'toggle',
@@ -35,8 +40,8 @@ define(['./interface', 'core/UIComponent', 'core/t'], function (Input, UICompone
         default_value: ''
       }
     ],
-    validate: function (value, options) {
-      if (options.schema.isRequired() && _.isEmpty(value)) {
+    validate: function (value, interfaceOptions) {
+      if (interfaceOptions.schema.isRequired() && _.isEmpty(value)) {
         return __t('this_field_is_required');
       }
 
@@ -46,8 +51,10 @@ define(['./interface', 'core/UIComponent', 'core/t'], function (Input, UICompone
         return err;
       }
     },
-    list: function (options) {
-      return _.isString(options.value) ? options.value.replace(/<(?:.|\n)*?>/gm, '').substr(0, 100) : '<span class="silver">--</span>';
+    list: function (interfaceOptions) {
+      return _.isString(interfaceOptions.value)
+        ? interfaceOptions.value.replace(/<(?:.|\n)*?>/gm, '').substr(0, 100)
+        : '<span class="silver">--</span>';
     }
   });
 });

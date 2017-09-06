@@ -12,11 +12,11 @@ define([
     sortBy: ['first_name', 'last_name'],
     Input: Input,
     dataTypes: ['INT'],
-    list: function (options) {
+    list: function (interfaceOptions) {
       var html;
-      var userId = options.value || options.model.id;
+      var userId = interfaceOptions.value || interfaceOptions.model.id;
 
-      switch (options.settings.get('format')) {
+      switch (interfaceOptions.settings.get('format')) {
         case 'full':
           html = '{{userFull user}}';
           break;
@@ -32,8 +32,8 @@ define([
       });
     },
 
-    sort: function (options) {
-      var userId = options.value || options.model.id;
+    sort: function (interfaceOptions) {
+      var userId = interfaceOptions.value || interfaceOptions.model.id;
       var userModel = app.users.get(userId);
 
       return userModel.getFullName();
