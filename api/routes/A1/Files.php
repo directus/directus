@@ -89,14 +89,14 @@ class Files extends Route
 
                     $requestPayload = array_merge($recordData, ArrayUtils::omit($requestPayload, ['data', 'name']));
                 }
-                $newRecord = $TableGateway->manageRecordUpdate($requestPayload, $table, $this->getActivityMode());
+                $newRecord = $TableGateway->updateRecord($requestPayload, $this->getActivityMode());
                 $params['id'] = $newRecord['id'];
                 break;
             case 'PATCH':
                 $requestPayload['id'] = $id;
             case 'PUT':
                 if (!is_null($id)) {
-                    $TableGateway->manageRecordUpdate($requestPayload, $table, $this->getActivityMode());
+                    $TableGateway->updateRecord($requestPayload, $this->getActivityMode());
                     break;
                 }
         }

@@ -334,7 +334,7 @@ class Messages extends Route
         }
 
         $requestPayload['datetime'] = DateUtils::now();
-        $newRecord = $TableGateway->manageRecordUpdate($requestPayload, 'directus_messages', TableGateway::ACTIVITY_ENTRY_MODE_DISABLED);
+        $newRecord = $TableGateway->updateRecord($requestPayload, TableGateway::ACTIVITY_ENTRY_MODE_DISABLED);
         $params['id'] = $newRecord['id'];
 
         // GET all table entries

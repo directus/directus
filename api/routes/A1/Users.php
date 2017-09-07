@@ -94,7 +94,7 @@ class Users extends Route
             $requestPayload['avatar'] = $avatar;
         }
 
-        $user = $usersGateway->manageRecordUpdate($requestPayload);
+        $user = $usersGateway->updateRecord($requestPayload);
 
         return $this->get($user['id']);
     }

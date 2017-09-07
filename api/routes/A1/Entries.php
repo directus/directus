@@ -198,7 +198,7 @@ class Entries extends Route
             case 'PATCH':
             case 'PUT':
                 $requestPayload[$TableGateway->primaryKeyFieldName] = $id;
-                $TableGateway->manageRecordUpdate($requestPayload, $table, $this->getActivityMode());
+                $TableGateway->updateRecord($requestPayload, $this->getActivityMode());
                 break;
             // DELETE a given table entry
             case 'DELETE':
