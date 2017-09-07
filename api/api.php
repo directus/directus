@@ -483,7 +483,7 @@ $app->group('/1.1', function() use($app) {
     $app->map('/users/:id/?', '\Directus\API\Routes\A1\Users:update')
         ->conditions(['id' => '[0-9]+'])
         ->via('DELETE', 'PUT', 'PATCH');
-    $app->post('/users/', '\Directus\API\Routes\A1\Users:update');
+    $app->post('/users/?', '\Directus\API\Routes\A1\Users:update');
 
     // =============================================================================
     // USERS TRACKING
@@ -505,7 +505,7 @@ $app->notFound(function () use ($app, $acl, $ZendDb) {
     $projectInfo = get_project_info();
 
     $app->response()->header('Content-Type', 'text/html; charset=utf-8');
-    $app->render('errors/404.twig.html', $projectInfo);
+    $app->render('errors/404.twig', $projectInfo);
 });
 
 /**
