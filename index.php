@@ -623,14 +623,24 @@ foreach ($config['statusMapping'] as $key => $status) {
     $mapping[] = $status;
 }
 
-$statusMapping = [
-    '*' => [
-        'mapping' => $mapping,
-        'status_name' => STATUS_COLUMN_NAME,
-        'default_value' => STATUS_DRAFT_NUM,
-        'delete_value' => STATUS_DELETED_NUM
-    ]
+$statusMappingConfiguration = [
+    'mapping' => $mapping,
+    'status_name' => STATUS_COLUMN_NAME,
+    'default_value' => STATUS_DRAFT_NUM,
+    'delete_value' => STATUS_DELETED_NUM
 ];
+
+
+$statusMapping = [
+    '*' => $statusMappingConfiguration
+];
+
+$statusMapping['directus_users'] = array_replace_recursive($statusMappingConfiguration, [
+    'mapping' => [
+        1 => ['name' => __t('Active')],
+        2 => ['name' => __t('Inactive')]
+    ]
+]);
 
 foreach ($allTables as $table) {
     $tableName = \Directus\Util\ArrayUtils::get($table, 'schema.id');

@@ -121,28 +121,6 @@ define([
 
       widgets.push(this.saveWidget);
 
-      this.enableWidget = new Widgets.ButtonWidget({
-        widgetOptions: {
-          buttonId: 'enableBtn',
-          iconClass: 'blur_on',
-          buttonClass: 'important',
-          buttonText: __t('enable')
-        },
-        onClick: _.bind(editView.changeStatusConfirm, this, 1)
-      });
-
-      this.disableWidget = new Widgets.ButtonWidget({
-        widgetOptions: {
-          buttonId: 'disableBtn',
-          iconClass: 'blur_off',
-          buttonClass: 'important',
-          buttonText: __t('disable')
-        },
-        onClick: _.bind(editView.changeStatusConfirm, this, 2)
-      });
-
-      widgets.push((this.model.get('status') === 1) ? this.disableWidget : this.enableWidget);
-
       this.deleteWidget = new Widgets.ButtonWidget({
         widgetOptions: {
           buttonId: 'deleteBtn',
@@ -150,7 +128,7 @@ define([
           buttonClass: 'serious',
           buttonText: __t('delete')
         },
-        onClick: _.bind(editView.changeStatusConfirm, this, 0)
+        onClick: _.bind(editView.deleteConfirm, this)
       });
 
       widgets.push(this.deleteWidget);
@@ -180,11 +158,11 @@ define([
       }
     },
 
-    changeStatusConfirm: function(status) {
+    deleteConfirm: function(status) {
       var editView = this;
 
-      app.router.openModal({type: 'confirm', text: __t('confirm_question'), callback: function () {
-        var xhr = editView.model.save({status: status}, {validate: false});
+      app.router.openModal({type: 'confirm', text: __t('confirm_delete_item'), callback: function () {
+        var xhr = editView.model.destroy();
 
         if(!xhr) {
           return;
