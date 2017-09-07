@@ -36,7 +36,7 @@ class EntriesService extends AbstractService
         $activityLoggingEnabled = !(isset($params['skip_activity_log']) && (1 == $params['skip_activity_log']));
         $activityMode = $activityLoggingEnabled ? TableGateway::ACTIVITY_ENTRY_MODE_PARENT : TableGateway::ACTIVITY_ENTRY_MODE_DISABLED;
 
-        $newRecord = $TableGateway->manageRecordUpdate($table, $payload, $activityMode);
+        $newRecord = $TableGateway->updateRecord($payload, $activityMode);
 
         return $newRecord;
     }

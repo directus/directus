@@ -201,7 +201,7 @@ class Auth extends Route
             return $this->app->response([
                 'success' => false,
                 'error' => [
-                    'message' => __t('password_forgot_invalid_email')
+                    'message' => __t('invalid_email')
                 ]
             ]);
         }

@@ -12,6 +12,8 @@ use Directus\Util\ArrayUtils;
 
 class Entries extends Route
 {
+    use Traits\ActivityMode;
+
     public function rows($table)
     {
         $entriesService = new EntriesService($this->app);
@@ -190,25 +192,13 @@ class Entries extends Route
 
         $params['table_name'] = $table;
 
-        // any UPDATE requests should md5 the email
-        if ('directus_users' === $table &&
-            in_array($app->request()->getMethod(), ['PUT', 'PATCH']) &&
-            array_key_exists('email', $requestPayload)
-        ) {
-            $avatar = DirectusUsersTableGateway::get_avatar($requestPayload['email']);
-            $requestPayload['avatar'] = $avatar;
-        }
-
-        // $TableGateway = new TableGateway($table, $ZendDb, $acl);
         $TableGateway = TableGateway::makeTableGatewayFromTableName($table, $ZendDb, $acl);
         switch ($app->request()->getMethod()) {
             // PUT an updated table entry
             case 'PATCH':
             case 'PUT':
                 $requestPayload[$TableGateway->primaryKeyFieldName] = $id;
-                $activityLoggingEnabled = !(isset($_GET['skip_activity_log']) && (1 == $_GET['skip_activity_log']));
-                $activityMode = $activityLoggingEnabled ? TableGateway::ACTIVITY_ENTRY_MODE_PARENT : TableGateway::ACTIVITY_ENTRY_MODE_DISABLED;
-                $TableGateway->manageRecordUpdate($table, $requestPayload, $activityMode);
+                $TableGateway->updateRecord($requestPayload, $this->getActivityMode());
                 break;
             // DELETE a given table entry
             case 'DELETE':

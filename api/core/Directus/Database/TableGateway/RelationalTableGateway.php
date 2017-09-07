@@ -67,10 +67,15 @@ class RelationalTableGateway extends BaseTableGateway
         'nbetween' => ['operator' => 'between', 'not' => true],
     ];
 
+    public function updateRecord($recordData, $activityEntryMode = self::ACTIVITY_ENTRY_MODE_PARENT)
+    {
+        return $this->manageRecordUpdate($this->getTable(), $recordData, $activityEntryMode);
+    }
+
     public function manageRecordUpdate($tableName, $recordData, $activityEntryMode = self::ACTIVITY_ENTRY_MODE_PARENT, &$childLogEntries = null, &$parentCollectionRelationshipsChanged = false, $parentData = [])
     {
         $TableGateway = $this;
-        if ($tableName !== $this->table) {
+        if ($tableName !== $this->getTable()) {
             $TableGateway = new RelationalTableGateway($tableName, $this->adapter, $this->acl);
         }
 
@@ -1744,7 +1749,7 @@ class RelationalTableGateway extends BaseTableGateway
     {
         $entries = ArrayUtils::isNumericKeys($entries) ? $entries : [$entries];
         foreach ($entries as $entry) {
-            $entry = $this->manageRecordUpdate($this->table, $entry);
+            $entry = $this->updateRecord($entry);
             $entry->save();
         }
     }

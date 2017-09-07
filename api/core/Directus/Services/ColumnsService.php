@@ -67,7 +67,7 @@ class ColumnsService extends AbstractService
                 'sort',
                 'comment'
             ]);
-            $columnData = $tableGateway->manageRecordUpdate('directus_columns', $data, TableGateway::ACTIVITY_ENTRY_MODE_DISABLED);
+            $columnData = $tableGateway->updateRecord($data, TableGateway::ACTIVITY_ENTRY_MODE_DISABLED);
         }
 
         return $columnData;
