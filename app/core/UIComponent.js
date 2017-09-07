@@ -10,8 +10,9 @@ define([
   var UIComponent = function (options) {
     _.extend(this, _.pick(UIComponentsOptions, options));
 
+    this.options = this.options || this.variables || [];
+
     if (this.isNumeric() && this.supportsNumber()) {
-      this.options = this.options || this.variables || [];
       this.options.push({
         id: 'footer',
         type: 'Boolean',
@@ -29,7 +30,8 @@ define([
     // Supported Data Types for this UI
     dataTypes: [],
     // UI Options that can be set in Column Settings Page
-    options: [],
+    // NOTE: undefined to fallback to "variables" property if it doesn't exists
+    options: undefined,
     // UI global options. (Directus Settings)
     settings: [],
     // UI Input view (UIView instance)

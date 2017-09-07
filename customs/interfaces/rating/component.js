@@ -2,7 +2,7 @@ define(['./interface', 'core/UIComponent', 'core/t'], function (Input, UICompone
   return UIComponent.extend({
     id: 'rating',
     dataTypes: ['INT'],
-    variables: [
+    options: [
       {id: 'max_score', default_value: 5, ui: 'numeric'}
     ],
     Input: Input,
