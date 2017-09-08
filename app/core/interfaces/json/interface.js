@@ -132,6 +132,8 @@ define(['core/UIView'], function (UIView) {
 
       event.preventDefault();
 
+      this.model.set(this.name, value);
+
       return false;
     },
 
