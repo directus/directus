@@ -38,6 +38,13 @@ define(['./interface', 'core/UIComponent', 'core/t', 'utils'], function (Input, 
             value: 'Value'
           }
         }
+      },
+      {
+        id: 'allow_custom_value',
+        ui: 'toggle',
+        type: 'Boolean',
+        comment: 'Allow user to add an extra custom value',
+        default_value: false
       }
     ],
     Input: Input,
