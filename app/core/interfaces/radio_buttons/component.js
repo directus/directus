@@ -59,7 +59,7 @@ define(['./interface', 'core/UIComponent', 'core/t', 'utils'], function (Input, 
 
       if (showAsText) {
         var displayOptions = JSON.parse(interfaceOptions.settings.get('options'));
-        value = displayOptions[interfaceOptions.value];
+        value = displayOptions[interfaceOptions.value] || value;
       }
 
       return value;
