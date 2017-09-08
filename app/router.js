@@ -211,7 +211,7 @@ define(function (require, exports, module) {
 
       var view = new directus.Modal.Prompt(options);
 
-      this.openViewInModal(view);
+      containerView.show(view);
     },
 
     openUserModal: function (userId) {
@@ -234,12 +234,13 @@ define(function (require, exports, module) {
         return;
       }
 
-      this.navigateToSubroute('modal', arguments, view);
-      view.on('close', function() {
-        if(router.isCurrentSubrouteView(view)) {
-          Backbone.history.history.back();
-        }
-      });
+      // Re-enable for back button working with modals
+      // this.navigateToSubroute('modal', arguments, view);
+      // view.on('close', function() {
+      //   if(router.isCurrentSubrouteView(view)) {
+      //     Backbone.history.history.back();
+      //   }
+      // });
 
       containerView.show(view);
     },
