@@ -92,11 +92,11 @@ define([
         // Convert inline / alignment to appropriate options & add to toolbar
         toolbar += toolbarOptions
           .map(function (option) {
-            if (option === 'inline') {
+            if (option === 'inline' && inline.length > 0) {
               return inline.reduce(function (inlineStr, inlineOption) {
                 return inlineStr + ' ' + inlineOption;
               });
-            } else if (option === 'alignment') {
+            } else if (option === 'alignment' && alignment.length > 0) {
               return alignment.reduce(function (alignmentStr, alignmentOption) {
                 return alignmentStr + ' ' + alignmentOption;
               });
