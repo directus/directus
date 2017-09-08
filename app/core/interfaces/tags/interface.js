@@ -20,6 +20,7 @@ define([
       'keydown #tag-input': function (event) {
         // 188 = comma, 13 = enter
         if (_.contains([188, 13], event.keyCode)) {
+          event.stopPropagation();
           event.preventDefault();
 
           this.insertTag();
@@ -28,7 +29,7 @@ define([
       'click .tag': function (event) {
         var $target = $(event.currentTarget);
         var index = this.$('.tag').index($target);
-        
+
         //return if the widget is read only ( Do not remove tag )
         if (this.$('#tag-input').is('[readonly]')) {
             return;
