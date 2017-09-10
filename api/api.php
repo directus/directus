@@ -177,8 +177,11 @@ $app->hook('slim.before.dispatch', function () use ($app, $authRouteWhitelist, $
 
             if (ArrayUtils::get($uriParts, 0) === '1.1' && $publicGroup) {
                 $isPublicUser = true;
+
+                // NOTE: 0 will not represent a "guest" or the "public" user
+                // To prevent the issue where user column on activity table can't be null
                 $user = [
-                    'id' => null,
+                    'id' => 0,
                     'group' => $publicGroup['id']
                 ];
             }
