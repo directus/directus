@@ -18,8 +18,7 @@ define([
 
     events: {
       'keydown #tag-input': function (event) {
-        // 188 = comma, 13 = enter
-        if (_.contains([188, 13], event.keyCode)) {
+        if (_.contains(['Enter', ','], event.key)) {
           event.stopPropagation();
           event.preventDefault();
 
