@@ -225,7 +225,7 @@
     "map_mapHeight_comment": "Height in Pixels",
     "map_mapLatLng_comment": "Display latlng Textbox below map",
 
-    "o2m_result_limit_comment": "Maximum number of results to fetch",
+    "result_limit_comment": "Maximum number of results to fetch",
     "add_new_x_item": "Add New %{table} Item",
 
     "directus_files_choose": "Archivos de Directus",

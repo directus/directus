@@ -221,7 +221,7 @@
     "map_mapHeight_comment": "Altezza (pixels)",
     "map_mapLatLng_comment": "Mostra coordinate sotto la mappa",
 
-    "o2m_result_limit_comment": "Numero massimo di risultati",
+    "result_limit_comment": "Numero massimo di risultati",
     "add_new_x_item": "Aggiungi Nuovo %{table} Elemento",
 
     "directus_files_choose": "Directus Files",

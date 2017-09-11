@@ -227,7 +227,7 @@
     "map_mapHeight_comment": "高度（單位：像素）",
     "map_mapLatLng_comment": "在地圖底部顯示經緯度",
 
-    "o2m_result_limit_comment": "返回結果的最大數量",
+    "result_limit_comment": "返回結果的最大數量",
     "add_new_x_item": "在%{table}增加新項目",
 
     "directus_files_choose": "Directus檔案",

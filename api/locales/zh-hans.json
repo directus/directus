@@ -212,7 +212,7 @@
     "map_mapHeight_comment": "高度（单位：像素）",
     "map_mapLatLng_comment": "在地图底部显示经纬度",
 
-    "o2m_result_limit_comment": "返回结果的最大数量",
+    "result_limit_comment": "返回结果的最大数量",
     "add_new_x_item": "在 %{table} 添加新项目",
 
     "directus_files_choose": "Directus 文件",

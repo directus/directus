@@ -227,7 +227,7 @@
     "map_mapHeight_comment": "Høyde i piksler",
     "map_mapLatLng_comment": "Vis latlng-tekstboks under kartet",
 
-    "o2m_result_limit_comment": "Maks antall resultater som hentes",
+    "result_limit_comment": "Maks antall resultater som hentes",
     "add_new_x_item": "Legg til nytt %{table} element",
 
     "directus_files": "Directus-filer",

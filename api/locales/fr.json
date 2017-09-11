@@ -226,7 +226,7 @@
     "map_mapHeight_comment": "Hauteur en pixels",
     "map_mapLatLng_comment": "Afficher la Textbox latlng sous la carte",
 
-    "o2m_result_limit_comment": "Nombre maximal de résultats à rechercher",
+    "result_limit_comment": "Nombre maximal de résultats à rechercher",
     "add_new_x_item": "Ajouter élément à la table %{table}",
 
     "directus_files_choose": "Fichiers Directus",

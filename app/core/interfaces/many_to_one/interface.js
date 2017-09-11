@@ -170,6 +170,9 @@ define([
       }
 
       data.columns_visible = visibleColumns.join(',');
+      if (this.columnSchema.options.get('result_limit')) {
+        data.limit = this.columnSchema.options.get('result_limit');
+      }
 
       // FILTER HERE!
       this.collection.fetch({includeFilters: false, data: data});

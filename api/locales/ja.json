@@ -266,7 +266,7 @@
     "map_mapHeight_comment": "ピクセル単位の高さ",
     "map_mapLatLng_comment": "地図の下の緯度と経度のテキストボックスを表示",
 
-    "o2m_result_limit_comment": "結果取得件数の最大値",
+    "result_limit_comment": "結果取得件数の最大値",
     "o2m_warning_item_already_assigned": "アイテムはすでに別の親に割り当てられているため追加されませんでした。この設定を無効にするには、インターフェイスオプションを変更してください。",
     "add_new_x_item": "%{table}に新しいアイテムを追加",
 

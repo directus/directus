@@ -270,7 +270,7 @@
     "map_mapHeight_comment": "Height in Pixels",
     "map_mapLatLng_comment": "Display latlng Textbox below map",
 
-    "o2m_result_limit_comment": "Maximum number of results to fetch",
+    "result_limit_comment": "Maximum number of results to fetch",
     "o2m_warning_item_already_assigned": "An item was not added because it is already assigned to another parent. Please change your interface option to override this setting.",
     "add_new_x_item": "Add New %{table} Item",
 
