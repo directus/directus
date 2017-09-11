@@ -124,11 +124,13 @@ define(['core/UIView'], function (UIView) {
     fillWithExample: function (event) {
       var textarea = this.$('textarea')[0];
 
-      textarea.value = JSON.stringify({
+      var value = JSON.stringify({
         value1: 'Option One',
         value2: 'Option Two',
         value3: 'Option Three'
       }, null, '   ');
+
+      textarea.value = value;
 
       event.preventDefault();
 
