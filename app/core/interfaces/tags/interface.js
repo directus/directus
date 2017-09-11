@@ -18,6 +18,9 @@ define([
 
     events: {
       'keydown #tag-input': function (event) {
+        // Check actual key values to prevent issues
+        //   with non-latin keyboards which use different
+        //   key codes
         if (_.contains(['Enter', ','], event.key)) {
           event.stopPropagation();
           event.preventDefault();
