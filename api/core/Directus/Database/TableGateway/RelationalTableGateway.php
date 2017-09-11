@@ -1380,7 +1380,7 @@ class RelationalTableGateway extends BaseTableGateway
             }
 
             // Only select the fields not on the currently authenticated user group's read field blacklist
-            $columns = TableSchema::getAllNonAliasTableColumnNames($relatedTableName);
+            $columns = TableSchema::getAllTableColumnsName($relatedTableName);
             $relationalColumnName = $alias->getRelationship()->getJunctionKeyRight();
             $tableGateway = new RelationalTableGateway($relatedTableName, $this->adapter, $this->acl);
             $results = $tableGateway->loadEntries(array_merge([
