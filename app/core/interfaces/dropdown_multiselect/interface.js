@@ -18,7 +18,7 @@ define(['core/UIView', 'select2'], function (UIView) {
       this.model.set(this.name, event.currentTarget.value);
     },
     serialize: function () {
-      var value = this.options.value.split(',') || this.columnSchema.get('default_value').split(',') || '';
+      var value = (this.options.value || this.columnSchema.get('default_value') || '').split(',');
       var options = parseOptions(this.options.settings.get('options'));
       var optionsArray = Object.keys(options).map(function (key) {
         return {
