@@ -1371,11 +1371,9 @@ class RelationalTableGateway extends BaseTableGateway
             }
 
             // Only select the fields not on the currently authenticated user group's read field blacklist
-            $columns = TableSchema::getAllTableColumnsName($relatedTableName);
             $relationalColumnName = $alias->getRelationship()->getJunctionKeyRight();
             $tableGateway = new RelationalTableGateway($relatedTableName, $this->adapter, $this->acl);
             $results = $tableGateway->loadEntries(array_merge([
-                'columns' => $columns,
                 'filters' => [
                     $relationalColumnName => ['in' => $ids]
                 ],
@@ -1481,7 +1479,7 @@ class RelationalTableGateway extends BaseTableGateway
             $results = $relatedTableGateway->loadEntries(array_merge([
                 // Add the aliases of the join columns to prevent being removed from array
                 // because there aren't part of the "visible" columns list
-                'columns' => array_merge($relatedTableColumns, array_keys($joinColumns)),
+                // 'columns' => array_merge($relatedTableColumns, array_keys($joinColumns)),
                 'filters' => [
                     $relatedTableGateway->getColumnIdentifier($junctionKeyLeftColumn, $junctionTableName) => [
                         'in' => $ids
@@ -1672,10 +1670,7 @@ class RelationalTableGateway extends BaseTableGateway
             }
 
             // Fetch the foreign data
-            $columnNames = TableSchema::getAllNonAliasTableColumnNames($relatedTable);
-
             $results = $tableGateway->loadEntries(array_merge([
-                'columns' => $columnNames,
                 'filters' => [
                     $primaryKeyName=> ['in' => $ids]
                 ],
