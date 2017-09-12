@@ -826,24 +826,15 @@ class RelationalTableGateway extends BaseTableGateway
             $params['status'] = null;
         }
 
-        $params = $this->applyHooks([
-            'table.load.params',
-            'table.' . $this->getTable() . '.load.params'
-        ], $this->applyDefaultEntriesSelectParams($params), [
-            'table' => $this->getTable()
-        ]);
+        $params = $this->applyDefaultEntriesSelectParams($params);
 
-        // @TODO: Create a new TableGateway Query Builder based on Query\Builder
+        $columns = ArrayUtils::get($params, 'columns', $tableSchema->getColumnsName());
+        $columns = array_unique(array_merge($tableSchema->getPrimaryKeysName(), $columns));
+        $nonAliasColumns = ArrayUtils::intersection($columns, $tableSchema->getNonAliasColumnsName());
+
+        // TODO: Create a new TableGateway Query Builder based on Query\Builder
         $builder = new Builder($this->getAdapter());
         $builder->from($this->getTable());
-
-        if (ArrayUtils::has($params, 'columns')) {
-            $columns = array_unique(array_merge($tableSchema->getPrimaryKeysName(), ArrayUtils::get($params, 'columns', [])));
-        } else {
-            $columns = $tableSchema->getColumnsName();
-        }
-
-        $nonAliasColumns = ArrayUtils::intersection($columns, $tableSchema->getNonAliasColumnsName());
         $builder->columns($nonAliasColumns);
         $builder = $this->applyParamsToTableEntriesSelect($params, $builder, $tableSchema, $hasActiveColumn);
 
