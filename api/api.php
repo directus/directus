@@ -222,10 +222,16 @@ $app->hook('slim.before.dispatch', function () use ($app, $authRouteWhitelist, $
             // When logged through API we need to reload all their permissions
             $privilegesTable = new DirectusPrivilegesTableGateway($ZendDb, $acl);
             $acl->setGroupPrivileges($privilegesTable->getGroupPrivileges($user['group']));
-            // @TODO: Adding an user should auto set its ID and GROUP
+            // TODO: Adding an user should auto set its ID and GROUP
+            // TODO: User data should be casted to its data type
             $acl->setUserId($user['id']);
             $acl->setGroupId($user['group']);
             $acl->setPublic($isPublicUser);
+
+            // Set full permission to Admin
+            if ($acl->isAdmin()) {
+                $acl->setTablePrivileges('*', $acl::PERMISSION_FULL);
+            }
         }
 
         /** Enforce required authentication. */
