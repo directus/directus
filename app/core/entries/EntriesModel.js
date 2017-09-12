@@ -678,6 +678,10 @@ define(function(require, exports, module) {
       return attributes;
     },
 
+    hasUnsavedAttributes: function () {
+      return !!this.unsavedAttributes();
+    },
+
     unsavedChanges: function (options) {
       var changes = _.isEmpty(this._unsavedChanges) ? false : _.clone(this._unsavedChanges);
 
