@@ -2,6 +2,7 @@
 
 namespace Directus;
 
+use Cache\Adapter\Filesystem\FilesystemCachePool;
 use Directus\Application\Application;
 use Directus\Authentication\FacebookProvider;
 use Directus\Authentication\GitHubProvider;
@@ -9,6 +10,7 @@ use Directus\Authentication\GoogleProvider;
 use Directus\Authentication\Provider as AuthProvider;
 use Directus\Authentication\Social;
 use Directus\Authentication\TwitterProvider;
+use Directus\Cache\Response as CacheResponse;
 use Directus\Config\Config;
 use Directus\Database\Connection;
 use Directus\Database\SchemaManager;
@@ -43,6 +45,10 @@ use Directus\Util\StringUtils;
 use Directus\View\Twig\DirectusTwigExtension;
 use Slim\Extras\Log\DateTimeFileWriter;
 use Slim\Extras\Views\Twig;
+
+use Cache\Adapter\Memcache\MemcacheCachePool;
+use League\Flysystem\Adapter\Local;
+
 
 /**
  * NOTE: This class depends on the constants defined in config.php
@@ -217,6 +223,10 @@ class Bootstrap
 
         $app->container->singleton('zenddb', function() {
             return Bootstrap::get('ZendDb');
+        });
+
+        $app->container->singleton('responseCache', function() {
+            return Bootstrap::get('responseCache');
         });
 
         $app->container->singleton('filesystem', function() {
@@ -1081,5 +1091,18 @@ class Bootstrap
     private static function socialAuth()
     {
         return new Social();
+    }
+
+    private static function responseCache()
+    {
+//        $client = new \Memcache();
+//        $client->connect('localhost', 11211);
+//        $pool = new MemcacheCachePool($client);
+
+        $filesystemAdapter = new Local(__DIR__.'/../../../cache/');
+        $filesystem        = new \League\Flysystem\Filesystem($filesystemAdapter);
+
+        $pool = new FilesystemCachePool($filesystem);
+        return new CacheResponse($pool);
     }
 }

@@ -60,7 +60,8 @@ if ($config->get('filters')) {
 }
 
 $app->add(new \Directus\Slim\CorsMiddleware());
-$app->add(new \Directus\Slim\CacheMiddleware());
+$app->add(new \Directus\Slim\HttpCacheMiddleware());
+$app->add(new \Directus\Slim\ResponseCacheMiddleware());
 
 /**
  * Creates and /<version>/ping endpoint

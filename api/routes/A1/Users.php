@@ -4,6 +4,8 @@ namespace Directus\API\Routes\A1;
 
 use Directus\Application\Application;
 use Directus\Application\Route;
+use Directus\Bootstrap;
+use Directus\Cache\Response;
 use Directus\Database\TableGateway\DirectusUsersTableGateway;
 use Directus\Database\TableGatewayFactory;
 use Directus\Exception\Http\BadRequestException;
@@ -39,6 +41,7 @@ class Users extends Route
     {
         $user = (array)$this->usersGateway->getEntries(['id' => $id, 'status' => null]);
 
+        $this->setTags(['table_users', 'entity_user_'.$id]);
         return $this->app->response($user);
     }
 
@@ -95,6 +98,8 @@ class Users extends Route
         }
 
         $user = $usersGateway->updateRecord($requestPayload);
+
+        $this->invalidateTags('entity_user_'.$id);
 
         return $this->get($user['id']);
     }
