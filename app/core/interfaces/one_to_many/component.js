@@ -17,7 +17,7 @@ define(['core/interfaces/one_to_many/interface', 'core/UIComponent', 'core/t'], 
         id: 'result_limit',
         ui: 'numeric',
         type: 'Number',
-        comment: __t('o2m_result_limit_comment'),
+        comment: __t('result_limit_comment'),
         char_length: 10,
         default_value: 100
       },

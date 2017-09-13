@@ -212,7 +212,7 @@
     "map_mapHeight_comment": "高度（单位：像素）",
     "map_mapLatLng_comment": "在地图底部显示经纬度",
 
-    "o2m_result_limit_comment": "返回结果的最大数量",
+    "result_limit_comment": "返回结果的最大数量",
     "add_new_x_item": "在 %{table} 添加新项目",
 
     "directus_files_choose": "Directus 文件",
@@ -315,7 +315,7 @@
     "password_reset_error": "重置密码时发生错误",
     "password_reset_new_temporary_password_sent": "已发送新的临时密码",
     "password_reset_new_password_email_subject": "您在 Directus 的新密码",
-    "password_forgot_invalid_email": "无效的邮箱地址",
+    "invalid_email": "无效的邮箱地址",
     "password_forgot_no_account_found": "没有找到与此邮箱关联的账户",
     "password_forgot_password_reset_email_subject": "重置 Directus 密码",
     "hash_must_provide_string": "必须提供密码",

@@ -2,18 +2,18 @@
 
 namespace Directus\API\Routes\A1;
 
+use Directus\Database\Exception\TableAlreadyExistsException;
 use Directus\Database\Object\Column;
 use Directus\Database\TableGateway\DirectusTablesTableGateway;
+use Directus\Permissions\Acl;
 use Directus\Permissions\Exception\UnauthorizedTableAlterException;
 use Directus\Application\Route;
-use Directus\Bootstrap;
 use Directus\Database\TableGateway\DirectusPrivilegesTableGateway;
 use Directus\Database\TableGateway\RelationalTableGateway as TableGateway;
 use Directus\Database\TableSchema;
 use Directus\Services\ColumnsService;
 use Directus\Services\TablesService;
 use Directus\Util\ArrayUtils;
-use Directus\Util\SchemaUtils;
 use Zend\Db\Sql\Predicate\In;
 
 class Table extends Route
@@ -23,39 +23,36 @@ class Table extends Route
         $app = $this->app;
         $ZendDb = $app->container->get('zenddb');
         $acl = $app->container->get('acl');
-        // $requestPayload = $app->request()->post();
-        $tableName = $app->request()->post('name');
+        $requestPayload = $app->request()->post();
+        $tableName = ArrayUtils::get($requestPayload, 'name');
+        $systemColumns = ArrayUtils::get($requestPayload, 'columns', []);
 
         if ($acl->getGroupId() != 1) {
             throw new \Exception(__t('permission_denied'));
         }
 
-        $schema = Bootstrap::get('schemaManager');
-        if ($schema->tableExists($tableName)) {
+        $tableService = new TablesService($app);
+
+        try {
+            $tableService->createTable($tableName, $systemColumns);
+        } catch (TableAlreadyExistsException $e) {
             return $this->app->response([
                 'success' => false,
                 'error' => [
-                    'message' => sprintf('table_%s_exists', $tableName)
+                    'message' => __t('table_x_already_exists', [
+                        'table_name' => $tableName
+                    ])
                 ]
             ]);
         }
 
-        $app->hookEmitter->run('table.create:before', $tableName);
-
-        $schema->createTable($tableName);
-        $app->hookEmitter->run('table.create', $tableName);
-        $app->hookEmitter->run('table.create:after', $tableName);
-
         $privilegesTableGateway = new DirectusPrivilegesTableGateway($ZendDb, $acl);
-        $privileges = [
+        $privileges = array_merge(Acl::PERMISSION_FULL, [
+            'table_name' => $tableName,
             'nav_listed' => 1,
-            'status_id' => 0,
-            'allow_view' => 2,
-            'allow_add' => 1,
-            'allow_edit' => 2,
-            'allow_delete' => 2,
-            'allow_alter' => 1
-        ];
+            'status_id' => null,
+            'group_id' => 1
+        ]);
 
         $privilegesTableGateway->insertPrivilege($privileges);
         $acl->setTablePrivileges($tableName, $privileges);
@@ -209,7 +206,7 @@ class Table extends Route
             $data['id'] = $row['id'];
         }
 
-        $newRecord = $TableGateway->manageRecordUpdate('directus_columns', $data, TableGateway::ACTIVITY_ENTRY_MODE_DISABLED);
+        $newRecord = $TableGateway->updateRecord($data, TableGateway::ACTIVITY_ENTRY_MODE_DISABLED);
 
         return $this->app->response($newRecord);
     }

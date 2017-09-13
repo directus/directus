@@ -26,10 +26,11 @@ function(app, Backbone, Handlebars, Directus, EntriesManager) {
     },
     afterRender: function() {
       if (this.editView) {
+        var newTranslation = this.translateModel && this.translateModel.isNew();
         this.insertView('#translateEditFormEntry', this.editView);
 
         // If the translation table has relational data, fetch them
-        if (!this.model.isNew() && this.editView.model.structure.hasRelationalColumns()) {
+        if (!this.model.isNew() && !newTranslation && this.editView.model.structure.hasRelationalColumns()) {
           this.editView.model.fetch();
         } else {
           this.editView.render();

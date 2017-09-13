@@ -227,7 +227,7 @@
     "map_mapHeight_comment": "Høyde i piksler",
     "map_mapLatLng_comment": "Vis latlng-tekstboks under kartet",
 
-    "o2m_result_limit_comment": "Maks antall resultater som hentes",
+    "result_limit_comment": "Maks antall resultater som hentes",
     "add_new_x_item": "Legg til nytt %{table} element",
 
     "directus_files": "Directus-filer",
@@ -331,7 +331,7 @@
     "password_reset_error": "Feil ved nullstilling av passord",
     "password_reset_new_temporary_password_sent": "Nytt midlertidig passord sendt",
     "password_reset_new_password_email_subject": "Ditt nye Directus-passord",
-    "password_forgot_invalid_email": "Ugyldig e-postadresse",
+    "invalid_email": "Ugyldig e-postadresse",
     "password_forgot_no_account_found": "Ingen konto ble funnet med denne e-postadressen",
     "password_forgot_password_reset_email_subject": "Directus passordnullstilling",
     "hash_must_provide_string": "Må oppgi passord",

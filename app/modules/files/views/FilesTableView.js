@@ -101,7 +101,8 @@ function(app, _, moment, Backbone, DirectusModal, DirectusEdit, __t, Notificatio
       var dropzone = document.getElementById('content');
 
       this.setView('#page-content', this.table);
-      this.collection.fetch();
+      // Ignore the filters to avoid preferences visible columns
+      this.collection.fetch({includeFilters: false});
 
       this.dragoverListener = function (event) {
         $(dropzone).addClass('dragover');

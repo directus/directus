@@ -8,6 +8,7 @@
 		display: grid;
 		grid-gap: 4px;
 		grid-template-columns: repeat(4, 1fr);
+		align-items: center;
 	}
 
 	.select_list-interface .gridlist > li label {
@@ -67,6 +68,19 @@
 	.select_list-interface input[type=radio]:checked + label::before {
 		content: 'radio_button_checked';
 	}
+
+	.select_list-interface input[type=text] {
+		border: 0;
+		background-color: transparent;
+		border-bottom: 1px solid #999999;
+		border-radius: 0;
+		padding: 6px;
+	}
+
+	.select_list-interface input[type=text]:focus {
+		box-shadow: none;
+		border-color: #3498db;
+	}
 </style>
 
 <div class="select_list-interface">
@@ -77,5 +91,11 @@
 			<label class="radiobuttons" for="radio-{{../name}}-{{key}}">{{value}}</label>
 		</li>
 	{{/options}}
+	{{#if allow_custom}}
+		<li>
+			<input type="radio" name="{{../name}}" {{#if valueIsCustom}}value="{{value}}" checked{{/if}} id="radio-{{../name}}-custom" {{#if selected}}checked{{/if}} {{#if readOnly}}readonly{{/if}}>
+			<label class="radiobuttons" for="radio-{{../name}}-custom"><input type="text" {{#if valueIsCustom}}value="{{value}}"{{/if}} name={{../name}}-custom" placeholder="Other..." {{#if readOnly}}readonly{{/if}} /></label>
+		</li>
+	{{/if}}
 	</ul>
 </div>

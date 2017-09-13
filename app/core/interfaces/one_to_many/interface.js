@@ -93,7 +93,7 @@ define([
       var view = new EditView({
         model: model,
         hiddenFields: [columnName],
-        skipFetch: (model.isNew() || model.unsavedAttributes())
+        skipFetch: (model.isNew() || model.hasUnsavedAttributes())
       });
 
       view.headerOptions.route.isOverlay = true;

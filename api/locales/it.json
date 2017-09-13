@@ -221,7 +221,7 @@
     "map_mapHeight_comment": "Altezza (pixels)",
     "map_mapLatLng_comment": "Mostra coordinate sotto la mappa",
 
-    "o2m_result_limit_comment": "Numero massimo di risultati",
+    "result_limit_comment": "Numero massimo di risultati",
     "add_new_x_item": "Aggiungi Nuovo %{table} Elemento",
 
     "directus_files_choose": "Directus Files",
@@ -326,7 +326,7 @@
     "password_reset_error": "Errore nel resettare la password",
     "password_reset_new_temporary_password_sent": "Nuova password temporanea inviata",
     "password_reset_new_password_email_subject": "Nuova password Directus",
-    "password_forgot_invalid_email": "Indirizzo email non valido",
+    "invalid_email": "Indirizzo email non valido",
     "password_forgot_no_account_found": "Nessuno account trovato per questo indirizzo email",
     "password_forgot_password_reset_email_subject": "Reset password Directus",
     "hash_must_provide_string": "Devi inserire una password",

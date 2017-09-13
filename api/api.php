@@ -177,8 +177,11 @@ $app->hook('slim.before.dispatch', function () use ($app, $authRouteWhitelist, $
 
             if (ArrayUtils::get($uriParts, 0) === '1.1' && $publicGroup) {
                 $isPublicUser = true;
+
+                // NOTE: 0 will not represent a "guest" or the "public" user
+                // To prevent the issue where user column on activity table can't be null
                 $user = [
-                    'id' => null,
+                    'id' => 0,
                     'group' => $publicGroup['id']
                 ];
             }
@@ -219,10 +222,16 @@ $app->hook('slim.before.dispatch', function () use ($app, $authRouteWhitelist, $
             // When logged through API we need to reload all their permissions
             $privilegesTable = new DirectusPrivilegesTableGateway($ZendDb, $acl);
             $acl->setGroupPrivileges($privilegesTable->getGroupPrivileges($user['group']));
-            // @TODO: Adding an user should auto set its ID and GROUP
+            // TODO: Adding an user should auto set its ID and GROUP
+            // TODO: User data should be casted to its data type
             $acl->setUserId($user['id']);
             $acl->setGroupId($user['group']);
             $acl->setPublic($isPublicUser);
+
+            // Set full permission to Admin
+            if ($acl->isAdmin()) {
+                $acl->setTablePrivileges('*', $acl::PERMISSION_FULL);
+            }
         }
 
         /** Enforce required authentication. */
@@ -476,12 +485,14 @@ $app->group('/1.1', function() use($app) {
     // =============================================================================
     // USERS
     // =============================================================================
-    $app->map('/users/?', '\Directus\API\Routes\A1\Users:all')
-        ->via('GET', 'POST', 'PUT');
-    $app->map('/users/:id/?', '\Directus\API\Routes\A1\Users:get')
-        ->conditions(['id' => '[0-9]+'])
-        ->via('DELETE', 'GET', 'PUT', 'PATCH');
+    $app->get('/users/?', '\Directus\API\Routes\A1\Users:all');
+    $app->get('/users/:id/?', '\Directus\API\Routes\A1\Users:get')
+        ->conditions(['id' => '[0-9]+']);
     $app->post('/users/invite/?', '\Directus\API\Routes\A1\Users:invite');
+    $app->map('/users/:id/?', '\Directus\API\Routes\A1\Users:update')
+        ->conditions(['id' => '[0-9]+'])
+        ->via('DELETE', 'PUT', 'PATCH');
+    $app->post('/users/?', '\Directus\API\Routes\A1\Users:update');
 
     // =============================================================================
     // USERS TRACKING
