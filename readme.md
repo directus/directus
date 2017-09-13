@@ -52,6 +52,25 @@ The following is a set of guidelines for contributing to Directus and its compon
 #### Reporting Bugs
 Think you've discovered a bug? First, read through our [docs](https://docs.getdirectus.com) to be sure – then submit a ticket to our [GitHub Issues](https://github.com/directus/directus/issues/new). And if you already know a good solution, we love [Pull Requests](https://github.com/directus/directus/pulls)! **For all security related issues, please chat with us directly through [getdirectus.com](https://getdirectus.com/).**
 
+#### Translations
+Directus has multilingual support – and we're looking for anyone interested in helping translate our [English default language file](https://github.com/directus/directus/blob/master/api/locales/en.json) into other languages. It's as easy as copying that `en.json` file and changing the values!
+
+PR any translations into [this Directory](https://github.com/directus/directus/tree/master/api/locales).
+
+Huge thanks to the following contributors!
+
+🇺🇸  [@benhaynes](https://github.com/benhaynes)
+🇫🇷  [@EmilienCo](https://github.com/EmilienCo) & [@JackNUMBER](https://github.com/JackNUMBER)
+🇪🇸  [@WellingGuzman](https://github.com/WellingGuzman)
+🇩🇪  [@katywings](https://github.com/katywings)
+🇨🇳  [@TigerHix](https://github.com/TigerHix) & [@Gfast2](https://github.com/Gfast2)
+🇧🇷  [@michaelnagy](https://github.com/michaelnagy)
+🇮🇹  [@AeonZh](https://github.com/AeonZh)
+🇳🇱  [@RijkvanZanten](https://github.com/RijkvanZanten)
+🇯🇵  [@hokkaidobeard](https://github.com/hokkaidobeard)
+🇳🇴  [@franctic-aerobic](https://github.com/franctic-aerobic)
+
+
 #### Suggesting Enhancements
 When you are creating an enhancement suggestion, please include as many details as possible. Fill out the required template; including the steps that you imagine you would take if the feature you're requesting existed.
 
