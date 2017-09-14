@@ -59,16 +59,16 @@ PR any translations into [this Directory](https://github.com/directus/directus/t
 
 Huge thanks to the following contributors!
 
-🇺🇸  [@benhaynes](https://github.com/benhaynes)
-🇫🇷  [@EmilienCo](https://github.com/EmilienCo) & [@JackNUMBER](https://github.com/JackNUMBER)
-🇪🇸  [@WellingGuzman](https://github.com/WellingGuzman)
-🇩🇪  [@katywings](https://github.com/katywings)
-🇨🇳  [@TigerHix](https://github.com/TigerHix) & [@Gfast2](https://github.com/Gfast2)
-🇧🇷  [@michaelnagy](https://github.com/michaelnagy)
-🇮🇹  [@AeonZh](https://github.com/AeonZh)
-🇳🇱  [@RijkvanZanten](https://github.com/RijkvanZanten)
-🇯🇵  [@hokkaidobeard](https://github.com/hokkaidobeard)
-🇳🇴  [@franctic-aerobic](https://github.com/franctic-aerobic)
+- 🇺🇸  [@benhaynes](https://github.com/benhaynes)
+- 🇫🇷  [@EmilienCo](https://github.com/EmilienCo) & [@JackNUMBER](https://github.com/JackNUMBER)
+- 🇪🇸  [@WellingGuzman](https://github.com/WellingGuzman)
+- 🇩🇪  [@katywings](https://github.com/katywings) & [@ymilhahn](https://github.com/ymilhahn)
+- 🇨🇳  [@TigerHix](https://github.com/TigerHix) & [@Gfast2](https://github.com/Gfast2)
+- 🇧🇷  [@michaelnagy](https://github.com/michaelnagy)
+- 🇮🇹  [@AeonZh](https://github.com/AeonZh)
+- 🇳🇱  [@RijkvanZanten](https://github.com/RijkvanZanten)
+- 🇯🇵  [@hokkaidobeard](https://github.com/hokkaidobeard)
+- 🇳🇴  [@franctic-aerobic](https://github.com/franctic-aerobic)
 
 
 #### Suggesting Enhancements
