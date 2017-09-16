@@ -1414,6 +1414,19 @@ class BaseTableGateway extends TableGateway
         return $key !== null ? ArrayUtils::get($settings, $key) : $settings;
     }
 
+    public function getDeletedValue()
+    {
+        $statusColumnName = $this->getStatusColumnName();
+        $deletedValue = null;
+
+        if ($statusColumnName) {
+            $statusColumnObject = $this->getTableSchema()->getColumn($statusColumnName);
+            $deletedValue = ArrayUtils::get($statusColumnObject->getOptions(), 'delete_value', STATUS_DELETED_NUM);
+        }
+
+        return $deletedValue;
+    }
+
     public function getPublishedStatuses()
     {
         return $this->getStatuses('published');

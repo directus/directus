@@ -6,6 +6,7 @@ use Directus\Application\Route;
 use Directus\Database\TableGateway\DirectusActivityTableGateway;
 use Directus\Database\TableGateway\DirectusUsersTableGateway;
 use Directus\Database\TableGateway\RelationalTableGateway as TableGateway;
+use Directus\Exception\Http\BadRequestException;
 use Directus\Services\EntriesService;
 use Directus\Services\GroupsService;
 use Directus\Util\ArrayUtils;
@@ -216,7 +217,22 @@ class Entries extends Route
                         ]);
                     }
                 }
-                $success =  $TableGateway->delete([$TableGateway->primaryKeyFieldName => $id]);
+                $condition = [
+                    $TableGateway->primaryKeyFieldName => $id
+                ];
+
+                if (ArrayUtils::get($params, 'soft')) {
+                    if (!$TableGateway->getTableSchema()->hasStatusColumn()) {
+                        throw new BadRequestException(__t('cannot_soft_delete_missing_status_column'));
+                    }
+
+                    $success = $TableGateway->update([
+                        $TableGateway->getStatusColumnName() => $TableGateway->getDeletedValue()
+                    ], $condition);
+                } else {
+                    $success =  $TableGateway->delete($condition);
+                }
+
                 return $this->app->response([
                     'meta' => [
                         'table' => $table
