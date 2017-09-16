@@ -246,6 +246,7 @@ define([
       var widgets = [];
       var isNew = this.model.isNew();
       var canAdd = this.model.collection.canAdd();
+      var canEdit = this.model.collection.canEdit();
       var isOverlay = this.headerOptions.route.isOverlay === true;
       var editView = this;
 
@@ -254,7 +255,7 @@ define([
           basicSave: this.headerOptions.basicSave,
           singlePage: this.single
         },
-        enabled: isNew && canAdd,
+        enabled: (isNew && canAdd) || (!isNew && canEdit),
         onClick: _.bind(editView.saveConfirm, editView)
       });
 
