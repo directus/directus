@@ -272,7 +272,8 @@ require(['config', 'polyfills'], function () {
         table = table.schema;
         if (SchemaManager.getPrivileges(table.table_name)) {
           var privileges = SchemaManager.getPrivileges(table.table_name);
-          if (privileges.get('allow_view') > 0 && !table.hidden && privileges.get('nav_listed') > 0) {
+
+          if (table.hidden !== true && privileges.canView() && privileges.canBeListed()) {
             bookmarks.push({
               identifier: table.table_name,
               title: app.capitalize(table.table_name),

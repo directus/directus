@@ -174,7 +174,12 @@ define([
     syncTableInformation: function (model, resp) {
       var table = app.schemaManager.getTable(model.get('table_name'));
 
-      // @todo: clean this into a factory or similar
+      _.each(model.changed, function (value, attr) {
+        app.trigger('tables:change:attributes', model, attr);
+        app.trigger('tables:change:attributes:' + attr, model, attr);
+      });
+
+      // TODO: clean this into a factory or similar
       table.set(resp.data, {parse: true});
       table.columns.reset(resp.data.columns.toJSON(), {parse: true, table: table});
       model.table = table;

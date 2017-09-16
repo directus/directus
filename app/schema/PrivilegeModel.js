@@ -17,6 +17,10 @@ define(['app', 'backbone'] ,function(app, Backbone) {
       return result.data ? result.data : result;
     },
 
+    canBeListed: function () {
+      return this.get('nav_listed') > 0
+    },
+
     canView: function () {
       return this.can('view');
     },
