@@ -105,6 +105,12 @@ define(function(require, exports, module) {
     },
 
     parse: function C(response, options) {
+      // when nest is set, the response is already "clear it out"
+      // without junction, containing only the related data
+      if (options.nest && !response.junction) {
+        return response;
+      }
+
       var result = [];
       var parent = this.parent || options.parent;
       var parentAttribute = this.parentAttribute || options.parentAttribute;
