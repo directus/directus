@@ -155,7 +155,13 @@ define(['underscore'], function (_) {
     }
 
     return result;
-  },
+  };
+
+  Utils.getTemplateVariables = function (string) {
+    return (string || '').match(/{{([^{}]+)}}/g).map(function (value) {
+      return value.slice(2, -2);
+    })
+  };
 
   Utils.parseMentions = function (string, html) {
     if (!string) {

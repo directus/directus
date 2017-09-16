@@ -225,7 +225,7 @@
     "map_mapHeight_comment": "Hoogte in Pixels",
     "map_mapLatLng_comment": "Toon latlng Textbox onder kaart",
 
-    "o2m_result_limit_comment": "Maximum aantal resultaten om te tonen",
+    "result_limit_comment": "Maximum aantal resultaten om te tonen",
     "add_new_x_item": "Voeg Nieuw %{table} Item toe",
 
     "directus_files_choose": "Directus Bestanden",
@@ -330,7 +330,7 @@
     "password_reset_error": "Error tijdens resetten van wachtwoord",
     "password_reset_new_temporary_password_sent": "Nieuw tijdelijk wachtwoord verstuurd",
     "password_reset_new_password_email_subject": "Je nieuwe Directus wachtwoord",
-    "password_forgot_invalid_email": "Ongeldig emailadres",
+    "invalid_email": "Ongeldig emailadres",
     "password_forgot_no_account_found": "Geen account gevonden met dit emailadres",
     "password_forgot_password_reset_email_subject": "Directus wachtwoord reset",
     "hash_must_provide_string": "Voer een wachtwoord in",

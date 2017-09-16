@@ -120,6 +120,10 @@ define(function(require, exports, module) {
       return this.relationship.get('type');
     },
 
+    getDefaultValue: function () {
+      return this.get('default_value');
+    },
+
     isAlias: function () {
       return (this.get('type') || '').toUpperCase() === 'ALIAS';
     },

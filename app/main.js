@@ -107,6 +107,8 @@ require(['config', 'polyfills'], function () {
         }
     });
 
+    moment.locale(options.locale);
+
     UIManager.setup();
     UIManager.setDefaultInterfaces(options.default_interfaces);
     SchemaManager.setup({apiURL: app.API_URL});
@@ -189,7 +191,10 @@ require(['config', 'polyfills'], function () {
         parse: true
       }, SchemaManager.getFullSchema('directus_users')));
 
-      app.startMessagesPolling();
+      if (app.user.canReadMessages()) {
+        app.startMessagesPolling();
+      }
+
       app.users.on('change sync', function (collection, resp, options) {
         var authenticatedUserModel = collection;
 
@@ -267,7 +272,8 @@ require(['config', 'polyfills'], function () {
         table = table.schema;
         if (SchemaManager.getPrivileges(table.table_name)) {
           var privileges = SchemaManager.getPrivileges(table.table_name);
-          if (privileges.get('allow_view') > 0 && !table.hidden && privileges.get('nav_listed') > 0) {
+
+          if (table.hidden !== true && privileges.canView() && privileges.canBeListed()) {
             bookmarks.push({
               identifier: table.table_name,
               title: app.capitalize(table.table_name),

@@ -2,7 +2,7 @@ define(['./interface', 'core/UIComponent', 'core/t', 'utils'], function (Input, 
   return UIComponent.extend({
     id: 'radio_buttons',
     dataTypes: ['VARCHAR', 'CHAR', 'TINYTEXT', 'TEXT', 'MEDIUMTEXT', 'LONGTEXT'],
-    variables: [
+    options: [
       {
         id: 'read_only',
         ui: 'toggle',
@@ -38,23 +38,31 @@ define(['./interface', 'core/UIComponent', 'core/t', 'utils'], function (Input, 
             value: 'Value'
           }
         }
+      },
+      {
+        id: 'allow_custom_value',
+        ui: 'toggle',
+        type: 'Boolean',
+        comment: 'Allow user to add an extra custom value',
+        default_value: false
       }
     ],
     Input: Input,
-    validate: function (value, options) {
-      if (options.schema.isRequired() && Utils.isEmpty(value)) {
+    validate: function (value, interfaceOptions) {
+      if (interfaceOptions.schema.isRequired() && Utils.isEmpty(value)) {
         return __t('this_field_is_required');
       }
     },
-    list: function (options) {
-      var showAsText = options.settings.get('list_view_formatting') === 'text';
+    list: function (interfaceOptions) {
+      var showAsText = interfaceOptions.settings.get('list_view_formatting') === 'text';
+      var value = interfaceOptions.value;
 
       if (showAsText) {
-        var displayOptions = JSON.parse(options.settings.get('options'));
-        return displayOptions[options.value];
+        var displayOptions = JSON.parse(interfaceOptions.settings.get('options'));
+        value = displayOptions[interfaceOptions.value] || value;
       }
 
-      return options.value;
+      return value;
     }
   });
 });

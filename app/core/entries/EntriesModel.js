@@ -346,7 +346,6 @@ define(function(require, exports, module) {
 
       if (method === 'patch' && options.includeRelationships) {
         var relationalColumns = this.getStructure().getRelationalColumns();
-        //var relationalAttributes = _.pick(this.attributes, relationalKeys);
 
         _.each(relationalColumns, function (column) {
           var key = column.id;
@@ -677,6 +676,10 @@ define(function(require, exports, module) {
       }
 
       return attributes;
+    },
+
+    hasUnsavedAttributes: function () {
+      return !!this.unsavedAttributes();
     },
 
     unsavedChanges: function (options) {

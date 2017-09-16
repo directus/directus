@@ -423,7 +423,7 @@ define(function (require, exports, module) {
         return path;
       }
 
-      path = path + '.html';
+      path = path + '.handlebars';
 
       // If cached, use the compiled template.
       if (JST[path]) {

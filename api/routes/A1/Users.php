@@ -2,8 +2,11 @@
 
 namespace Directus\API\Routes\A1;
 
+use Directus\Application\Application;
 use Directus\Application\Route;
 use Directus\Database\TableGateway\DirectusUsersTableGateway;
+use Directus\Database\TableGatewayFactory;
+use Directus\Exception\Http\BadRequestException;
 use Directus\Mail\Mail;
 use Directus\Util\ArrayUtils;
 use Directus\Util\DateUtils;
@@ -13,6 +16,16 @@ use Directus\View\JsonView;
 
 class Users extends Route
 {
+    /** @var $usersGateway DirectusUsersTableGateway */
+    protected $usersGateway;
+
+    public function __construct(Application $app)
+    {
+        parent::__construct($app);
+
+        $this->usersGateway = TableGatewayFactory::create('directus_users');
+    }
+
     // /1.1/users
     public function all()
     {
@@ -24,9 +37,9 @@ class Users extends Route
     // /1.1/users/:id
     public function get($id)
     {
-        $entries = new Entries($this->app);
+        $user = (array)$this->usersGateway->getEntries(['id' => $id, 'status' => null]);
 
-        return $entries->row('directus_users', $id);
+        return $this->app->response($user);
     }
 
     // /1.1/users/invitation
@@ -44,20 +57,52 @@ class Users extends Route
         ]);
     }
 
-    protected function sendInvitationTo($email)
+    // /1.1/users/:id
+    public function update($id = null)
     {
-        if (!Validator::email($email)) {
-            // FIXME: incorrect method overwritten
-            $this->app->response()->setStatus(400);
-            return $this->app->response(([
-                'success' => false,
-                'error' => [
-                    'code' => 'invalid_email',
-                    'message' => 'invalid_email'
-                ]
-            ]));
+        $usersGateway = $this->usersGateway;
+        $requestPayload = $this->app->request()->post();
+
+        $email = $this->app->request()->post('email');
+
+        if($email || $this->app->request()->getMethod() == 'POST') {
+            $this->validateEmailOrFail($email);
         }
 
+        switch ($this->app->request()->getMethod()) {
+            case 'DELETE':
+                $requestPayload = [];
+                $requestPayload['id'] = $id;
+                $requestPayload['status'] = $usersGateway::STATUS_HIDDEN;
+                break;
+            case 'PATCH':
+            case 'PUT':
+                $requestPayload['id'] = $id;
+                break;
+            case 'POST':
+                $user = $usersGateway->findOneBy('email', $email);
+
+                if ($user) {
+                    $requestPayload['id'] = $user['id'];
+                    $requestPayload['status'] = $usersGateway::STATUS_ACTIVE;
+                }
+                break;
+        }
+
+        if(!empty($requestPayload['email'])) {
+            $avatar = DirectusUsersTableGateway::get_avatar($requestPayload['email']);
+            $requestPayload['avatar'] = $avatar;
+        }
+
+        $user = $usersGateway->updateRecord($requestPayload);
+
+        return $this->get($user['id']);
+    }
+
+
+    protected function sendInvitationTo($email)
+    {
+        $this->validateEmailOrFail($email);
         // @TODO: Builder/Service to get table gateway
         // $usersRepository = $repositoryCollection->get('users');
         // $usersRepository->add();
@@ -79,6 +124,13 @@ class Users extends Route
 
         if ($result) {
             send_user_invitation_email($email, $token);
+        }
+    }
+
+    protected function validateEmailOrFail($email)
+    {
+        if (!Validator::email($email)) {
+            throw new BadRequestException(__t('invalid_email'));
         }
     }
 }

@@ -3,8 +3,8 @@ define(['app', 'core/UIComponent', 'core/UIView', 'core/t'], function (app, UICo
     id: 'directus_activity',
     system: true,
     Input: UIView,
-    list: function (options) {
-      var model = options.model;
+    list: function (interfaceOptions) {
+      var model = interfaceOptions.model;
       var action = model.get('action');
       var table = model.get('table_name');
       var type = model.get('type');

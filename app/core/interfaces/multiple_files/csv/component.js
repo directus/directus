@@ -10,7 +10,7 @@ define([
     id: 'multiple_files_csv',
 
     dataTypes: ['VARCHAR', 'CHAR', 'TINYTEXT', 'TEXT', 'MEDIUMTEXT', 'LONGTEXT'],
-    variables: [
+    options: [
       {
         id: 'add_button',
         ui: 'toggle',
@@ -36,8 +36,8 @@ define([
 
     Input: Input,
 
-    validate: function (value, options) {
-      if (options.schema.isRequired() && value.length === 0) {
+    validate: function (value, interfaceOptions) {
+      if (interfaceOptions.schema.isRequired() && value.length === 0) {
         return __t('this_field_is_required');
       }
     },

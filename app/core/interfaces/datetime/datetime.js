@@ -21,6 +21,9 @@ define(['app', 'underscore', 'core/interfaces/datetime/date'], function (app, _,
 
       return date;
     },
+    getFormat: function () {
+      return this.getDateFormat() + ' ' + this.getTimeFormat();
+    },
     getDateFormat: function () {
       return dateFormat;
     },
@@ -35,7 +38,6 @@ define(['app', 'underscore', 'core/interfaces/datetime/date'], function (app, _,
       var format = dateFormat + ' ' + timeFormat;
 
       return _.extend(data, {
-        hasValue: this.value.isValid(),
         useDate: true,
         useTime: true,
         timeValue: date.format(this.getTimeFormat()),
@@ -47,17 +49,17 @@ define(['app', 'underscore', 'core/interfaces/datetime/date'], function (app, _,
     }
   });
 
-  var variables = UIDate.prototype.variables.slice();
-  // @TODO: add time step setting
-  variables.push({id: 'include_seconds', type: 'Boolean', default_value: true, ui: 'toggle'});
+  var options = UIDate.prototype.options.slice();
+  // TODO: add time step setting
+  options.push({id: 'include_seconds', type: 'Boolean', default_value: true, ui: 'toggle'});
 
   var Component = UIDate.extend({
     id: 'datetime',
     dataTypes: ['DATETIME', 'TIMESTAMP'],
-    variables: variables,
+    options: options,
     Input: Input,
-    getFormat: function (options) {
-      return options.settings.get('format');
+    getFormat: function (interfaceOptions) {
+      return interfaceOptions.settings.get('format');
     }
   });
 

@@ -24,7 +24,7 @@ use Directus\Database\TableGatewayFactory;
 use Directus\Database\TableSchema;
 use Directus\Embed\EmbedManager;
 use Directus\Exception\Exception;
-use Directus\Exception\ForbiddenException;
+use Directus\Exception\Http\ForbiddenException;
 use Directus\Filesystem\Filesystem;
 use Directus\Filesystem\FilesystemFactory;
 use Directus\Filesystem\Thumbnail;
@@ -43,7 +43,6 @@ use Directus\Util\StringUtils;
 use Directus\View\Twig\DirectusTwigExtension;
 use Slim\Extras\Log\DateTimeFileWriter;
 use Slim\Extras\Views\Twig;
-use Zend\Db\TableGateway\TableGateway;
 
 /**
  * NOTE: This class depends on the constants defined in config.php
@@ -816,6 +815,17 @@ class Bootstrap
             return $rows;
         };
 
+        $emitter->addFilter('table.select.directus_files:before', function (Payload $payload) {
+            $columns = $payload->get('columns');
+
+            if (!in_array('name', $columns)) {
+                $columns[] = 'name';
+                $payload->set('columns', $columns);
+            }
+
+            return $payload;
+        });
+
         // Add file url and thumb url
         $emitter->addFilter('table.select', function (Payload $payload) use ($addFilesUrl) {
             $selectState = $payload->attribute('selectState');
@@ -869,7 +879,7 @@ class Bootstrap
             return $payload;
         });
 
-        $emitter->addFilter('table.directus_users.select', function (Payload $payload) {
+        $emitter->addFilter('table.select.directus_users', function (Payload $payload) {
             $acl = Bootstrap::get('acl');
             $auth = Bootstrap::get('auth');
             $rows = $payload->getData();
@@ -1063,7 +1073,7 @@ class Bootstrap
         $session = self::get('session');
         $config = self::get('config');
         $prefix = $config->get('session.prefix', 'directus_');
-        $table = new TableGateway('directus_users', $zendDb);
+        $table = new BaseTableGateway('directus_users', $zendDb);
 
         return new AuthProvider($table, $session, $prefix);
     }

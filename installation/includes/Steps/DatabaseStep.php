@@ -13,7 +13,7 @@ class DatabaseStep extends AbstractStep
     protected $name = 'database';
     protected $title = 'Database';
     protected $shortTitle = 'Database';
-    protected $viewName = 'database.twig.html';
+    protected $viewName = 'database.twig';
     protected $fields = [
         [
             'name' => 'db_type',

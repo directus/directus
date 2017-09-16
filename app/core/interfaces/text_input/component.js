@@ -1,9 +1,10 @@
 /* global _ */
 define([
+  'underscore',
   './interface',
   'core/UIComponent',
   'core/t'
-], function (Input, UIComponent, __t) {
+], function (_, Input, UIComponent, __t) {
   'use strict';
 
   return UIComponent.extend({
@@ -19,7 +20,7 @@ define([
       'TIME',
       'ENUM'
     ],
-    variables: [
+    options: [
       {
         id: 'read_only',
         ui: 'toggle',
@@ -37,7 +38,8 @@ define([
           options: {
             large: __t('size_large'),
             medium: __t('size_medium'),
-            small: __t('size_small')
+            small: __t('size_small'),
+            auto: __t('size_auto')
           }
         }
       },
@@ -85,32 +87,32 @@ define([
       }
     ],
     Input: Input,
-    validate: function (value, options) {
-      var validationMessage = options.settings.get('validation_message') || __t('confirm_invalid_value');
+    validate: function (value, interfaceOptions) {
+      var validationMessage = interfaceOptions.settings.get('validation_message') || __t('confirm_invalid_value');
 
       if (_.isEmpty(value)) {
-        if (options.schema.get('required') === true) {
+        if (interfaceOptions.schema.get('required') === true) {
           return __t('this_field_is_required');
         }
 
         return;
       }
 
-      switch (options.settings.get('validation_type')) {
+      switch (interfaceOptions.settings.get('validation_type')) {
         case ('wl') :
-          var Regex = new RegExp('^[' + options.settings.get('validation_string') + ']+$');
+          var Regex = new RegExp('^[' + interfaceOptions.settings.get('validation_string') + ']+$');
           if (!value.match(Regex)) {
             return validationMessage;
           }
           break;
         case ('bl') :
-          var chars = options.settings.get('validation_string').split('');
+          var chars = interfaceOptions.settings.get('validation_string').split('');
           if (chars.length > 0 && value.match(chars.join('|'))) {
             return validationMessage;
           }
           break;
         case ('rgx'):
-          var regex = new RegExp(options.settings.get('validation_string'));
+          var regex = new RegExp(interfaceOptions.settings.get('validation_string'));
           if (!regex.test(value)) {
             return validationMessage;
           }
@@ -119,8 +121,10 @@ define([
           break;
       }
     },
-    list: function (options) {
-      return (options.value) ? options.value.toString().replace(/<(?:.|\n)*?>/gm, '').substr(0, 100) : '';
+    list: function (interfaceOptions) {
+      return (interfaceOptions.value)
+        ? interfaceOptions.value.toString().replace(/<(?:.|\n)*?>/gm, '').substr(0, 100)
+        : '';
     }
   });
 });

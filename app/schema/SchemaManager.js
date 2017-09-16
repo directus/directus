@@ -200,7 +200,7 @@ define(function(require, exports, module) {
         // Interfaces schema does not have a actual table
         // we fake it to use their variables/settings as if they were columns
         var table = new FakeTableModel();
-        var columns = new ColumnsCollection(ui.variables, {
+        var columns = new ColumnsCollection(ui.options || ui.variables, {
           parse: true,
           table: table
         });

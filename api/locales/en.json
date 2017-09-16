@@ -232,6 +232,7 @@
     "size_large": "Large",
     "size_medium": "Medium",
     "size_small": "Small",
+    "size_auto": "Automatic",
 
     "select_ui_show_options_value": "Value",
     "select_ui_show_options_text": "Text",
@@ -269,7 +270,7 @@
     "map_mapHeight_comment": "Height in Pixels",
     "map_mapLatLng_comment": "Display latlng Textbox below map",
 
-    "o2m_result_limit_comment": "Maximum number of results to fetch",
+    "result_limit_comment": "Maximum number of results to fetch",
     "o2m_warning_item_already_assigned": "An item was not added because it is already assigned to another parent. Please change your interface option to override this setting.",
     "add_new_x_item": "Add New %{table} Item",
 
@@ -386,7 +387,7 @@
     "password_reset_error": "Error resetting the password",
     "password_reset_new_temporary_password_sent": "New temporary password sent",
     "password_reset_new_password_email_subject": "Your new Directus password",
-    "password_forgot_invalid_email": "Invalid email address",
+    "invalid_email": "Invalid email address",
     "password_forgot_no_account_found": "No account found with this email address",
     "password_forgot_password_reset_email_subject": "Directus Password Reset",
     "hash_must_provide_string": "Must provide password",
@@ -394,8 +395,11 @@
     "permission_denied": "Permission denied",
     "permission_table_alter_access_forbidden_on_table": "Table alter access forbidden on table `%{table_name}`",
 
+    "request_payload_empty": "Empty request payload",
     "rows_no_specified": "Rows no specified",
     "row_without_primary_key_field": "Row without primary key field",
+
+    "cannot_soft_delete_missing_status_column": "Cannot soft delete. Table has not status column.",
 
     "add_new_column": "Add New Column",
     "create_table": "Create Table",

@@ -12,11 +12,11 @@ namespace Directus\Authentication;
 
 use Directus\Authentication\Exception\UserAlreadyLoggedInException;
 use Directus\Authentication\Exception\UserIsntLoggedInException;
+use Directus\Database\TableGateway\BaseTableGateway;
 use Directus\Session\Session;
 use Directus\Util\ArrayUtils;
 use Directus\Util\DateUtils;
 use Directus\Util\StringUtils;
-use Zend\Db\TableGateway\TableGateway;
 
 /**
  * Authentication Provider
@@ -50,7 +50,7 @@ class Provider
     /**
      * User TableGateway
      *
-     * @var TableGateway
+     * @var BaseTableGateway
      */
     protected $table;
 
@@ -68,7 +68,7 @@ class Provider
      */
     protected $prefix;
 
-    public function __construct(TableGateway $table, Session $session, $prefix = 'directus_')
+    public function __construct(BaseTableGateway $table, Session $session, $prefix = 'directus_')
     {
         $this->table = $table;
         $this->session = $session;
@@ -80,7 +80,7 @@ class Provider
     }
 
     /**
-     * @return TableGateway
+     * @return BaseTableGateway
      */
     public function getTableGateway()
     {
@@ -178,8 +178,7 @@ class Provider
         // skip filtering
         // allowing to select ALL columns
         // by omitting the "private" users column
-        $options = ['filter' => false];
-        $user = $this->table->select(['email' => $email], $options)->current();
+        $user = $this->table->ignoreFilters()->select(['email' => $email])->current();
         $correct = false;
 
         if ($user) {
@@ -196,9 +195,9 @@ class Provider
             return $this->authenticated;
         }
 
-        $user = $this->table->select([
+        $user = $this->table->ignoreFilters()->select([
             'invite_token' => $invitationCode
-        ], ['filter' => false])->current();
+        ])->current();
 
         if ($user) {
             $this->completeLogin($user->id, [
@@ -260,10 +259,10 @@ class Provider
         $this->authenticated = $isLoggedIn = false;
         $session = $this->session->get($this->SESSION_KEY);
         if (is_array($session) && ArrayUtils::contains($session, ['id', 'access_token'])) {
-            $user = $this->table->select([
+            $user = $this->table->ignoreFilters()->select([
                 'id' => $session['id'],
                 'access_token' => $session['access_token']
-            ], ['filter' => false]);
+            ]);
 
             if ($user->count()) {
                 $this->authenticated = $isLoggedIn = true;
@@ -358,7 +357,7 @@ class Provider
         ]);
 
         if ($stateless !== true) {
-            $this->table->update($set, ['id' => $uid]);
+            $this->table->ignoreFilters()->update($set, ['id' => $uid]);
         }
 
         $this->session->set($this->SESSION_KEY, array_merge($set, [

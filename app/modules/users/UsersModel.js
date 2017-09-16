@@ -23,11 +23,19 @@ function(app, Backbone, EntriesModel, moment) {
     },
 
     canSendMessages: function () {
+      return this.canXMessage('add');
+    },
+
+    canReadMessages: function () {
+      return this.canXMessage('view');
+    },
+
+    canXMessage: function (privilege) {
       var messagesPrivileges = app.schemaManager.getPrivileges('directus_messages');
       var recipientsPrivileges = app.schemaManager.getPrivileges('directus_messages_recipients');
 
-      return messagesPrivileges && messagesPrivileges.can('add')
-              && recipientsPrivileges && recipientsPrivileges.can('add');
+      return messagesPrivileges && messagesPrivileges.can(privilege)
+        && recipientsPrivileges && recipientsPrivileges.can(privilege);
     },
 
     canUploadFiles: function () {

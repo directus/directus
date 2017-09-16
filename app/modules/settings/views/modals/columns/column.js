@@ -55,20 +55,20 @@ define([
       var columnModel = this.model.parent;
       var infoView = this.getColumnView();
       var optionsView = this.getOptionsView();
-      var sort = 0;
-      var lastColumnModel;
       var isOptionsView;
 
       if (!infoView.model.isNew()) {
         infoView.model.set('options', JSON.stringify(optionsView.model.toJSON()));
-      }
+      } else {
+        var sort = 0;
+        var lastColumnModel = infoView.model.collection.last();
 
-      lastColumnModel = infoView.model.collection.last();
-      if (lastColumnModel) {
-        sort = lastColumnModel.get('sort') + 1;
-      }
+        if (lastColumnModel) {
+          sort = lastColumnModel.get('sort') + 1;
+        }
 
-      infoView.model.set('sort', sort);
+        infoView.model.set('sort', sort);
+      }
 
       // TODO: Improve saving payload
       // sending the new values and if there's not info value to be save, only save the options

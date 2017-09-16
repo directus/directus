@@ -93,7 +93,7 @@ define([
       var view = new EditView({
         model: model,
         hiddenFields: [columnName],
-        skipFetch: (model.isNew() || model.unsavedAttributes())
+        skipFetch: (model.isNew() || model.hasUnsavedAttributes())
       });
 
       view.headerOptions.route.isOverlay = true;
@@ -220,12 +220,14 @@ define([
     },
 
     serialize: function () {
+      var relatedTablePrivilege = app.schemaManager.getPrivileges(this.columnSchema.getRelatedTableName());
+
       return {
         name: this.name,
         tableTitle: this.relatedCollection.table.get('table_name'),
         canEdit: this.canEdit,
-        showChooseButton: this.showChooseButton, // && this.canEdit,
-        showAddButton: this.showAddButton && this.canEdit
+        showChooseButton: this.showChooseButton,
+        showAddButton: this.showAddButton && relatedTablePrivilege.canAdd()
       };
     },
 

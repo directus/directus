@@ -9,6 +9,10 @@ use Zend\Db\Sql\Select;
 
 class DirectusUsersTableGateway extends RelationalTableGateway
 {
+    const STATUS_HIDDEN = STATUS_DELETED_NUM;
+    const STATUS_ACTIVE = STATUS_ACTIVE_NUM;
+    const STATUS_DISABLED = STATUS_DRAFT_NUM;
+
     const GRAVATAR_SIZE = 100;
 
     public static $_tableName = 'directus_users';

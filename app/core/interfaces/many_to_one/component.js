@@ -12,7 +12,7 @@ define([
   return UIComponent.extend({
     id: 'many_to_one',
     dataTypes: ['INT', 'TINYINT', 'SMALLINT', 'MEDIUMINT', 'BIGINT'],
-    variables: [
+    options: [
       {
         id: 'read_only',
         ui: 'toggle',
@@ -46,6 +46,14 @@ define([
         default_value: '1',
         char_length: 64,
         required: false
+      },
+      {
+        id: 'result_limit',
+        ui: 'numeric',
+        type: 'Number',
+        comment: __t('result_limit_comment'),
+        char_length: 10,
+        default_value: 100
       },
       {
         id: 'placeholder',
@@ -87,7 +95,7 @@ define([
     ],
     Input: Input,
     forceUIValidation: true,
-    validate: function (value, options) {
+    validate: function (value, interfaceOptions) {
       var hasValue;
 
       if (value instanceof Backbone.Model) {
@@ -96,31 +104,31 @@ define([
         hasValue = Utils.isSomething(value);
       }
 
-      if (options.schema.isRequired() && !hasValue) {
+      if (interfaceOptions.schema.isRequired() && !hasValue) {
         return __t('this_field_is_required');
       }
     },
-    list: function (options) {
-      if (options.value === undefined) {
+    list: function (interfaceOptions) {
+      if (interfaceOptions.value === undefined) {
         return '';
       }
 
-      if (options.settings.get('visible_column_template') !== undefined) {
-        var displayTemplate = Handlebars.compile(options.settings.get('visible_column_template'));
-        if (options.value instanceof Backbone.Model) {
-          return displayTemplate(options.value.attributes);
-        } else if (options.value instanceof Object) {
-          return displayTemplate(options.value);
+      if (interfaceOptions.settings.get('visible_column_template') !== undefined) {
+        var displayTemplate = Handlebars.compile(interfaceOptions.settings.get('visible_column_template'));
+        if (interfaceOptions.value instanceof Backbone.Model) {
+          return displayTemplate(interfaceOptions.value.attributes);
+        } else if (interfaceOptions.value instanceof Object) {
+          return displayTemplate(interfaceOptions.value);
         }
       }
 
-      if (options.value instanceof Backbone.Model) {
-        return options.value.get(options.settings.get('visible_column'));
-      } else if (options.value instanceof Object) {
-        return options.value[options.settings.get('visible_column')];
+      if (interfaceOptions.value instanceof Backbone.Model) {
+        return interfaceOptions.value.get(interfaceOptions.settings.get('visible_column'));
+      } else if (interfaceOptions.value instanceof Object) {
+        return interfaceOptions.value[interfaceOptions.settings.get('visible_column')];
       }
 
-      return options.value;
+      return interfaceOptions.value;
     }
   });
 });

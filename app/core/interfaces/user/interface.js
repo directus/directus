@@ -9,7 +9,9 @@ define([
     template: 'user/interface',
 
     unsavedChange: function () {
-      return this.userId;
+      if (this.model.isNew()) {
+        return this.userId;
+      }
     },
 
     serialize: function () {

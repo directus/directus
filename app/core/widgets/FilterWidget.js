@@ -248,7 +248,7 @@ define([
 
     processFilterChange: function (event) {
       var $element = $(event.target);
-      var $filter = $(event.target).parent();
+      var $filter = $(event.target).closest('.column-filter');
       var type = 'like';
       var hasSearch = false;
       var index = $filter.index();
@@ -403,21 +403,24 @@ define([
       _.each(this.options.filters, function (item, i) {
         if (item.relatedCollection) {
           data.filters[i].relatedEntries = [];
-          if(item.columnModel.options.has('filter_column')) {
-            var visibleColumn = item.columnModel.options.get('filter_column');
-          } else {
-            var visibleColumn = item.columnModel.options.get('visible_column');
-          }
+
           var displayTemplate = Handlebars.compile(item.columnModel.options.get('visible_column_template'));
-          item.relatedCollection.each(function(model) {
-            data.filters[i].relatedEntries.push({visible_column:model.get('id'), visible_column_template: displayTemplate(model.attributes)});
+          item.relatedCollection.each(function (model) {
+            data.filters[i].relatedEntries.push({
+              selected: item.filterData.value == model.id,
+              visible_column: model.id,
+              visible_column_template: displayTemplate(model.attributes)
+            });
           });
 
           data.filters[i].relatedEntries = _.sortBy(data.filters[i].relatedEntries, 'visible_column_template');
         } else if (item.dropdownValues) {
           data.filters[i].relatedEntries = [];
           _.each(item.dropdownValues, function(model) {
-            data.filters[i].relatedEntries.push({visible_column:model, visible_column_template: model});
+            data.filters[i].relatedEntries.push({
+              visible_column:model,
+              visible_column_template: model
+            });
           });
         } else {
           // Global filters doesn't have a columnName property
@@ -444,6 +447,7 @@ define([
       data.filters = _.compact(data.filters);
       data.searchString = this.searchString;
       data.hasFilters = this.options.filters.length > 0;
+
       return data;
     },
 
