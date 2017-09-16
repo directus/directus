@@ -105,6 +105,7 @@ define(function(require, exports, module) {
     },
 
     parse: function C(response, options) {
+      var result = [];
       var parent = this.parent || options.parent;
       var parentAttribute = this.parentAttribute || options.parentAttribute;
 
@@ -118,7 +119,7 @@ define(function(require, exports, module) {
       var _byId = {};
 
       if (junctionData.length > 0) {
-        response = [];
+        result = [];
 
         // Set all relational data easy to reach by ids
         _.each(relatedData, function (data) {
@@ -127,14 +128,14 @@ define(function(require, exports, module) {
 
         // Set each junction data with its related data
         _.each(junctionData, function (attributes) {
-          response.push({
+          result.push({
             junction: attributes,
             data: _byId[attributes[relatedColumnName]]
           })
         });
       }
 
-      return response;
+      return result;
     },
 
     reset: function (models, options) {
