@@ -82,10 +82,12 @@ class Emitter
      * @param $name
      * @param $listener
      * @param int $priority
+     *
+     * @return int Listener's index {@see removeListener}
      */
     public function addAction($name, $listener, $priority = self::P_NORMAL)
     {
-        $this->addListener($name, $listener, $priority, self::TYPE_ACTION);
+        return $this->addListener($name, $listener, $priority, self::TYPE_ACTION);
     }
 
     /**
@@ -94,10 +96,12 @@ class Emitter
      * @param $name
      * @param $listener
      * @param int $priority
+     *
+     * @return int Listener's index {@see removeListener}
      */
     public function addFilter($name, $listener, $priority = self::P_NORMAL)
     {
-        $this->addListener($name, $listener, $priority, self::TYPE_FILTER);
+        return $this->addListener($name, $listener, $priority, self::TYPE_FILTER);
     }
 
     /**

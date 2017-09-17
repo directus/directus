@@ -28,21 +28,20 @@ class Users extends Route
         $this->usersGateway = TableGatewayFactory::create('directus_users');
     }
 
-    // /1.1/users
-    public function all()
+    public function get($pk = null)
     {
-        $entries = new Entries($this->app);
+        $params = [];
+        if($pk) {
+            $params = [
+                $this->usersGateway->primaryKeyFieldName => $pk
+            ];
+        }
 
-        return $entries->rows('directus_users');
-    }
+        $user = $this->getEntriesAndSetIdTags($this->usersGateway, $params);
+        $this->setTags('table_users');
 
-    // /1.1/users/:id
-    public function get($id)
-    {
-        $user = (array)$this->usersGateway->getEntries(['id' => $id, 'status' => null]);
-
-        $this->setTags(['table_users', 'entity_user_'.$id]);
         return $this->app->response($user);
+
     }
 
     // /1.1/users/invitation

@@ -486,12 +486,14 @@ $app->group('/1.1', function() use($app) {
     // =============================================================================
     // USERS
     // =============================================================================
-    $app->get('/users/?', '\Directus\API\Routes\A1\Users:all');
-    $app->get('/users/:id/?', '\Directus\API\Routes\A1\Users:get')
-        ->conditions(['id' => '[0-9]+']);
+    $usersPkCondition = ['pk' => '[0-9]+'];
+
+    $app->get('/users/?', '\Directus\API\Routes\A1\Users:get');
+    $app->get('/users/:pk/?', '\Directus\API\Routes\A1\Users:get')
+        ->conditions($usersPkCondition);
     $app->post('/users/invite/?', '\Directus\API\Routes\A1\Users:invite');
-    $app->map('/users/:id/?', '\Directus\API\Routes\A1\Users:update')
-        ->conditions(['id' => '[0-9]+'])
+    $app->map('/users/:pk/?', '\Directus\API\Routes\A1\Users:update')
+        ->conditions($usersPkCondition)
         ->via('DELETE', 'PUT', 'PATCH');
     $app->post('/users/?', '\Directus\API\Routes\A1\Users:update');
 
