@@ -151,13 +151,9 @@ class Entries extends Route
         $columns = $visibleColumns = ($params['columns']) ? explode(',', $params['columns']) : [];
         ArrayUtils::push($columns, $Table->primaryKeyFieldName);
         $params['columns'] = implode(',', $columns);
-        if (count($columns) > 0) {
-            $params['group_by'] = $columns[0];
-
-            if (isset($params['q'])) {
-                $params['adv_where'] = "`{$columns[0]}` like '%{$params['q']}%'";
-                $params['perPage'] = 50;
-            }
+        if (count($columns) > 0 && isset($params['q'])) {
+            $params['adv_where'] = "`{$columns[0]}` like '%{$params['q']}%'";
+            $params['perPage'] = 50;
         }
 
         if (!$query) {
