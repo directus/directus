@@ -1374,6 +1374,8 @@ class RelationalTableGateway extends BaseTableGateway
             $relationalColumnName = $alias->getRelationship()->getJunctionKeyRight();
             $tableGateway = new RelationalTableGateway($relatedTableName, $this->adapter, $this->acl);
             $results = $tableGateway->loadEntries(array_merge([
+                // Fetch all related data
+                'limit' => -1,
                 'filters' => [
                     $relationalColumnName => ['in' => $ids]
                 ],
@@ -1477,6 +1479,8 @@ class RelationalTableGateway extends BaseTableGateway
             };
 
             $results = $relatedTableGateway->loadEntries(array_merge([
+                // Fetch all related data
+                'limit' => -1,
                 // Add the aliases of the join columns to prevent being removed from array
                 // because there aren't part of the "visible" columns list
                 // 'columns' => array_merge($relatedTableColumns, array_keys($joinColumns)),
@@ -1671,6 +1675,8 @@ class RelationalTableGateway extends BaseTableGateway
 
             // Fetch the foreign data
             $results = $tableGateway->loadEntries(array_merge([
+                // Fetch all related data
+                'limit' => -1,
                 'filters' => [
                     $primaryKeyName=> ['in' => $ids]
                 ],

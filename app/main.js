@@ -306,11 +306,7 @@ require(['config', 'polyfills'], function () {
       // Grab nav permissions
       var currentUserGroupId = app.user.get('group').get('id');
       var currentUserGroup = app.groups.get(currentUserGroupId);
-      var navBlacklist = (currentUserGroup.get('nav_blacklist') || '').split(',');
-
-      navBlacklist = navBlacklist.map(function (name) {
-        return name.trim().toLowerCase();
-      });
+      var navBlacklist = currentUserGroup.getNavBlacklist();
 
       // Custom Bookmarks Nav
       var customBookmarks = [];
@@ -499,8 +495,7 @@ require(['config', 'polyfills'], function () {
 
       app.router = new Router({
         extensions: extensions,
-        tabs: tabs,
-        navPrivileges: app.user.get('group')
+        tabs: tabs
       });
 
       // Trigger the initial route and enable HTML5 History API support, set the

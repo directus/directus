@@ -2,9 +2,10 @@
 define([
   'app',
   'backbone',
+  'utils',
   'core/t',
   'core/Modal'
-], function (app, Backbone, __t, ModalView) {
+], function (app, Backbone, Utils, __t, ModalView) {
   'use strict';
 
   var EditFields = Backbone.Layout.extend({
@@ -31,7 +32,7 @@ define([
 
     toggleColumn: function (columnName) {
       var attr = this.name + '_field_blacklist';
-      var blacklist = (this.model.get(attr)) ? this.model.get(attr).split(',') : [];
+      var blacklist = Utils.parseCSV(this.model.get(attr));
       var $checkbox = this.$('#check_' + columnName);
       var changed = false;
 
@@ -54,14 +55,14 @@ define([
     },
 
     hasColumn: function (name) {
-      var blacklist = (this.model.get(this.name + '_field_blacklist') || '').split(',');
+      var blacklist = Utils.parseCSV(this.model.get(this.name + '_field_blacklist'));
 
       return blacklist.indexOf(name) >= 0;
     },
 
     serialize: function () {
       var data = {columns: []};
-      var blacklist = (this.model.get(this.name + '_field_blacklist') || '').split(',');
+      var blacklist = Utils.parseCSV(this.model.get(this.name + '_field_blacklist'));
 
       data.permission = __t('permissions_' + this.name);
       data.name = this.name;

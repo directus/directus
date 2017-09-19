@@ -3,9 +3,10 @@ define([
   'core/t',
   'backbone',
   'underscore',
+  'utils',
   'helpers/sort',
   'handlebars'
-], function (app, __t, Backbone, _, SortHelper, Handlebars) {
+], function (app, __t, Backbone, _, Utils, SortHelper, Handlebars) {
 
   'use strict';
 
@@ -368,7 +369,7 @@ define([
       var structure = this.collection.structure;
       var table = this.collection.getTable();
       var statusColumnName = table.getStatusColumnName();
-      var statusSelected = (this.collection.getFilter('status') || '').split(',') || [1, 2];
+      var statusSelected = Utils.parseCSV(this.collection.getFilter('status')) || [1, 2];
 
       statusSelected = _.map(statusSelected, function(value) {
         return Number(value);
@@ -394,7 +395,11 @@ define([
       data.filters = (this.options.filters || []).slice();
       data.tableColumns = _.difference(structure.pluck('id'), [app.statusMapping.status_name]);
       if (this.collection.table.get('filter_column_blacklist')) {
-        data.tableColumns = _.difference(data.tableColumns, this.collection.table.get('filter_column_blacklist').split(','));
+        // TODO: Add filter column blacklist method on table model
+        data.tableColumns = _.difference(
+          data.tableColumns,
+          Utils.parseCSV(this.collection.table.get('filter_column_blacklist'))
+        );
       }
 
       data.tableColumns.sort(SortHelper.arraySort);
