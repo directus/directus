@@ -163,6 +163,21 @@ define(['underscore'], function (_) {
     })
   };
 
+  // NOTE: This are meant to work with single line csv
+  Utils.parseCSV = function (string, options) {
+    options || (options = {});
+
+    options.trim = options.trim === undefined ? true : options.trim;
+
+    return (string  || '').split(',').map(function (name) {
+      if (options.trim === true) {
+        name = name.trim()
+      }
+
+      return name;
+    });
+  };
+
   Utils.parseMentions = function (string, html) {
     if (!string) {
       return '';

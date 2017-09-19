@@ -162,7 +162,7 @@ define([
 
       var visibleColumns = [];
       if (this.options.settings.get('visible_column')) {
-        visibleColumns = this.options.settings.get('visible_column').split(',');
+        visibleColumns = Utils.parseCSV(this.options.settings.get('visible_column'));
       }
 
       if (value.table.hasPrimaryColumn() && visibleColumns.indexOf(value.table.getPrimaryColumnName()) < 0) {

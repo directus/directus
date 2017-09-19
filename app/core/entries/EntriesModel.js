@@ -178,9 +178,7 @@ define(function(require, exports, module) {
             var columns = [];
             if (ui.get('visible_columns')) {
               // Clean whitespaces
-              columns = ui.get('visible_columns').split(',').map(function(column) {
-                return column.trim();
-              });
+              columns = Utils.parseCSV(ui.get('visible_columns'));
             }
 
             var value = attributes[id] || [];

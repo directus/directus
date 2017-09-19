@@ -1,4 +1,7 @@
-define(['core/entries/EntriesModel'], function(EntriesModel) {
+define([
+  'utils',
+  'core/entries/EntriesModel'
+], function (Utils, EntriesModel) {
 
   return EntriesModel.extend({
 
@@ -22,6 +25,14 @@ define(['core/entries/EntriesModel'], function(EntriesModel) {
 
     canDelete: function () {
       return EntriesModel.prototype.canDelete.apply(this, arguments) && !this.isPublic() && !this.isAdmin();
+    },
+
+    getNavBlacklist: function () {
+      var blacklisted = Utils.parseCSV(this.get('nav_blacklist'));
+
+      return blacklisted.map(function (name) {
+        return name.toLowerCase();
+      });
     },
 
     isReadBlacklisted: function (attribute) {

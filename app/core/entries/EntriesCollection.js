@@ -5,6 +5,7 @@ define(function(require, exports, module) {
   var Backbone            = require('backbone'),
       app                 = require('app'),
       _                   = require('underscore'),
+      Utils               = require('utils'),
       Collection          = require('core/collection'),
       StatusMixin         = require('mixins/status'),
       SaveCollectionMixin = require('mixins/save-collection'),
@@ -57,7 +58,7 @@ define(function(require, exports, module) {
         columns = filters.columns_visible;
         // @todo: ensure that this always be an array everywhere.
         if (typeof columns === 'string') {
-          columns = columns.split(',');
+          columns = Utils.parseCSV(columns);
         }
       }
 
@@ -67,7 +68,7 @@ define(function(require, exports, module) {
 
       var visibleColumns = this.preferences.get('columns_visible');
       if (!_.isEmpty(visibleColumns)) {
-        columns = _.intersection(columns, visibleColumns.split(','));
+        columns = _.intersection(columns, Utils.parseCSV(visibleColumns));
       }
 
       return columns;
@@ -83,7 +84,7 @@ define(function(require, exports, module) {
 
       //Temporary fix to turn columns_visible into an array. @todo: Move this to the preferences object
       if (preferences.hasOwnProperty('columns_visible')) {
-        preferences.columns_visible = (preferences.columns_visible || '').split(',');
+        preferences.columns_visible = Utils.parseCSV(preferences.columns_visible);
       }
 
       var result = _.extend(filters, _.pick(preferences, 'columns_visible', 'sort', 'sort_order', 'status'));
@@ -316,11 +317,13 @@ define(function(require, exports, module) {
       return this.can(permissionType);
     },
 
-    getFieldBlacklist: function(permission) {
+    getFieldBlacklist: function (permission) {
       var fieldBlacklist = [];
+
       if (this.privileges) {
+        // TODO: Add this into privilege method
         fieldBlacklist = this.privileges.get(permission + '_field_blacklist') || '';
-        fieldBlacklist = fieldBlacklist.split(',');
+        fieldBlacklist = Utils.parseCSV(fieldBlacklist);
       }
 
       return fieldBlacklist;

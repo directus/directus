@@ -14,6 +14,7 @@ define(function (require, exports, module) {
       directus         = require('directus'),
       Backbone         = require('backbone'),
       _                = require('underscore'),
+      Utils            = require('utils'),
       Notification     = require('core/notification'),
       WelcomeModal     = require('core/modals/welcome'),
       //Directus       = require('core/directus'),
@@ -850,8 +851,10 @@ define(function (require, exports, module) {
         window.history.go(-(historyState.subrouteId+1));
       }
 
-      this.navBlacklist = (options.navPrivileges.get('nav_blacklist') || '').split(',');
-      // @todo: Allow a queue of pending alerts, maybe?
+      // TODO: Make this into a function
+      // to check whether the nav is blacklisted or not
+      this.navBlacklist = app.user.get('group').getNavBlacklist();
+      // TODO: Allow a queue of pending alerts, maybe?
       this.pendingAlert = {};
 
       //Fade out and remove splash
