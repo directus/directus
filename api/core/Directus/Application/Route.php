@@ -28,13 +28,15 @@ abstract class Route
         $this->app->container->get('responseCache')->invalidateTags($tags);
     }
 
-    public function getEntriesAndSetIdTags(RelationalTableGateway $gateway, array $params = [], \Closure $queryCallback = null)
+    public function getEntriesAndSetTags(RelationalTableGateway $gateway, array $params = [], \Closure $queryCallback = null)
     {
         $setIdTags = function(Payload $payload) use($gateway) {
-            $entityName = $payload->attribute('tableName');
+            $tableName = $payload->attribute('tableName');
+
+            $this->setTags('table_'.$tableName);
 
             foreach($payload->getData() as $item) {
-                $this->setTags('entity_'.$entityName.'_'.$item[$gateway->primaryKeyFieldName]);
+                $this->setTags('entity_'.$tableName.'_'.$item[$gateway->primaryKeyFieldName]);
             }
 
             return $payload;

@@ -37,8 +37,7 @@ class Users extends Route
             ];
         }
 
-        $user = $this->getEntriesAndSetIdTags($this->usersGateway, $params);
-        $this->setTags('table_users');
+        $user = $this->getEntriesAndSetTags($this->usersGateway, $params);
 
         return $this->app->response($user);
 

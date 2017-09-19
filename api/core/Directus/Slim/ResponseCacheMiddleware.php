@@ -11,15 +11,13 @@ class ResponseCacheMiddleware extends Middleware
     public function call()
     {
         /** @var Response $cache */
-        $cache = Bootstrap::get('responseCache');
+        $cache = $this->app->container->get('responseCache');
 
-        if($_SERVER['REQUEST_METHOD'] == 'GET') {
-            $path = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
-
-            $parameters = $_GET;
+        if($this->app->request->isGet()) {
+            $parameters = $this->app->request()->get();
             ksort($parameters);
 
-            $key = md5($path.'?'.http_build_query($parameters));
+            $key = md5($this->app->request->getResourceUri().'?'.http_build_query($parameters));
         } else {
             $key = null;
         }
