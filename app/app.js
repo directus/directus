@@ -121,7 +121,9 @@ define(function (require, exports, module) {
 
                   if (data.responses) {
                     reply = data.responses.first();
-                    path += '/response/' + reply.id;
+                    if (reply) {
+                      path += '/response/' + reply.id;
+                    }
                   }
 
                   Backbone.history.navigate(path, true);
