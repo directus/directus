@@ -33,7 +33,7 @@ define([
       }
     },
     list: function (interfaceOptions) {
-      var tags = interfaceOptions.value.split(',');
+      var tags = (interfaceOptions.value || '').split(',');
 
       if (tags.length > 0) {
         for (var i = 0; i < tags.length; i++) {
