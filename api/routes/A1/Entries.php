@@ -10,6 +10,7 @@ use Directus\Exception\Http\BadRequestException;
 use Directus\Services\EntriesService;
 use Directus\Services\GroupsService;
 use Directus\Util\ArrayUtils;
+use League\OAuth2\Client\Tool\ArrayAccessorTrait;
 
 class Entries extends Route
 {
@@ -73,8 +74,11 @@ class Entries extends Route
         if ($this->app->request()->isPost()) {
             $entriesService = new EntriesService($this->app);
             foreach($rows as $row) {
-                $rowIds[] = $row[$primaryKeyFieldName];
-                $entriesService->createEntry($table, $row, $params);
+                $newRecord = $entriesService->createEntry($table, $row, $params);
+
+                if (ArrayUtils::has($newRecord->toArray(), $primaryKeyFieldName)) {
+                    $rowIds[] = $newRecord[$primaryKeyFieldName];
+                }
             }
         } else {
             foreach ($rows as $row) {
@@ -112,9 +116,11 @@ class Entries extends Route
             }
         }
 
-        $params['filters'] = [
-            $primaryKeyFieldName => ['in' => $rowIds]
-        ];
+        if (!empty($rowIds)) {
+            $params['filters'] = [
+                $primaryKeyFieldName => ['in' => $rowIds]
+            ];
+        }
 
         // If it's not a GET request, let's get entry no matter the status
         if (!$this->app->request()->isGet()) {
