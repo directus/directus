@@ -4,13 +4,11 @@ namespace Directus\API\Routes\A1;
 
 use Directus\Application\Route;
 use Directus\Database\TableGateway\DirectusActivityTableGateway;
-use Directus\Database\TableGateway\DirectusUsersTableGateway;
 use Directus\Database\TableGateway\RelationalTableGateway as TableGateway;
 use Directus\Exception\Http\BadRequestException;
 use Directus\Services\EntriesService;
 use Directus\Services\GroupsService;
 use Directus\Util\ArrayUtils;
-use League\OAuth2\Client\Tool\ArrayAccessorTrait;
 
 class Entries extends Route
 {
