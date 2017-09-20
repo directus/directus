@@ -63,22 +63,26 @@ define(['./interface', 'core/UIComponent', 'core/t', 'utils'], function (Input, 
     list: function (interfaceOptions) {
       var showAsText = interfaceOptions.settings.get('list_view_formatting') === 'text';
 
-      return interfaceOptions.value.split(',')
-        .filter(function (value) {
-          // Filter out the first and last empty delimiter
-          return value.length > 0;
-        })
-        .map(function (value) {
-          if (showAsText) {
-            var displayOptions = JSON.parse(interfaceOptions.settings.get('options'));
-            return displayOptions[value];
-          }
+      if (interfaceOptions.value) {
+        return (interfaceOptions.value || '').split(',')
+          .filter(function (value) {
+            // Filter out the first and last empty delimiter
+            return value.length > 0;
+          })
+          .map(function (value) {
+            if (showAsText) {
+              var displayOptions = JSON.parse(interfaceOptions.settings.get('options'));
+              return displayOptions[value];
+            }
 
-          return value;
-        })
-        .reduce(function (string, value) {
-          return string + ', ' + value;
-        });
+            return value;
+          })
+          .reduce(function (string, value) {
+            return string + ', ' + value;
+          });
+      }
+
+      return interfaceOptions.value;
     }
   });
 });
