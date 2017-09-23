@@ -144,7 +144,7 @@ class BaseTableGateway extends TableGateway
      * @param AdapterInterface $adapter
      * @param null $acl
      *
-     * @return BaseTableGateway
+     * @return RelationalTableGateway
      */
     public static function makeTableGatewayFromTableName($table, $adapter, $acl = null)
     {

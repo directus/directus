@@ -45,7 +45,7 @@ class Entries extends Route
             $params['preview'] = true;
         }
 
-        $response = $tableGateway->getEntries($params);
+        $response = $this->getEntriesAndSetResponseCacheTags($tableGateway, $params);
 
         return $this->app->response($response);
     }
@@ -120,7 +120,7 @@ class Entries extends Route
             $params['preview'] = true;
         }
 
-        $entries = $tableGateway->getEntries($params);
+        $entries = $this->getEntriesAndSetResponseCacheTags($tableGateway, $params);
 
         if ($isDelete) {
             $response = [
@@ -160,7 +160,7 @@ class Entries extends Route
         }
 
         if (!$query) {
-            $entries = $Table->getEntries($params);
+            $entries = $this->getEntriesAndSetResponseCacheTags($Table, $params);
         }
 
         $entries = $entries['data'];
@@ -232,7 +232,8 @@ class Entries extends Route
             $params['preview'] = true;
         }
 
-        $response = $TableGateway->getEntries($params);
+        $response = $this->getEntriesAndSetResponseCacheTags($TableGateway, $params);
+
         if (!$response) {
             $response = [
                 'message' => __t('unable_to_find_record_in_x_with_id_x', ['table' => $table, 'id' => $id]),
@@ -250,7 +251,9 @@ class Entries extends Route
         $acl = $app->container->get('acl');
 
         $tableGateway = new DirectusActivityTableGateway($dbConnection, $acl);
-        $data = $tableGateway->getMetadata($table, $id);
+
+        $data = $this->getDataAndSetResponseCacheTags([$tableGateway, 'getMetadata'], [$table, $id]);
+
         $response = [
             'meta' => ['table' => 'directus_activity', 'type' => 'item'],
             'data' => $data

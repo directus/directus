@@ -10,7 +10,7 @@ use Directus\Authentication\GoogleProvider;
 use Directus\Authentication\Provider as AuthProvider;
 use Directus\Authentication\Social;
 use Directus\Authentication\TwitterProvider;
-use Directus\Cache\Response as CacheResponse;
+use Directus\Cache\Response as ResponseCache;
 use Directus\Config\Config;
 use Directus\Database\Connection;
 use Directus\Database\SchemaManager;
@@ -159,6 +159,14 @@ class Bootstrap
             new DirectusTwigExtension()
         ];
 
+        $app->container->singleton('cache', function() {
+            return Bootstrap::get('cache');
+        });
+
+        $app->container->singleton('responseCache', function() {
+            return Bootstrap::get('responseCache');
+        });
+
         $app->container->singleton('hookEmitter', function () {
             return Bootstrap::get('hookEmitter');
         });
@@ -223,10 +231,6 @@ class Bootstrap
 
         $app->container->singleton('zenddb', function() {
             return Bootstrap::get('ZendDb');
-        });
-
-        $app->container->singleton('responseCache', function() {
-            return Bootstrap::get('responseCache');
         });
 
         $app->container->singleton('filesystem', function() {
@@ -690,6 +694,24 @@ class Bootstrap
         $emitter = new Emitter();
 
         // TODO: Move all this filters to a dedicated file/class/function
+        $emitter->addAction('postUpdate', function(RelationalTableGateway $gateway, $data) {
+            $pool = Bootstrap::get('cache');
+
+            if(isset($data[$gateway->primaryKeyFieldName])) {
+                $pool->invalidateTags('entity_'.$gateway->getTable().'_'.$data[$gateway->primaryKeyFieldName]);
+            }
+        });
+
+        $cacheTableTagInvalidator = function($tableName) {
+            $pool = Bootstrap::get('cache');
+
+            $pool->invalidateTags('table_'.$tableName);
+        };
+
+        foreach(['table.update:after', 'table.delete:after', 'table.drop:after'] as $action) {
+            $emitter->addAction($action, $cacheTableTagInvalidator);
+        }
+
         $emitter->addAction('application.error', function ($e) {
             $log = Bootstrap::get('log');
             $log->error($e);
@@ -1093,7 +1115,7 @@ class Bootstrap
         return new Social();
     }
 
-    private static function responseCache()
+    private static function cache()
     {
 //        $client = new \Memcache();
 //        $client->connect('localhost', 11211);
@@ -1103,6 +1125,13 @@ class Bootstrap
         $filesystem        = new \League\Flysystem\Filesystem($filesystemAdapter);
 
         $pool = new FilesystemCachePool($filesystem);
-        return new CacheResponse($pool);
+        return $pool;
     }
+
+    private static function responseCache()
+    {
+        return new ResponseCache(self::get('cache'));
+    }
+
+
 }

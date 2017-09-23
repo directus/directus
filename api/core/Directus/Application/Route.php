@@ -18,25 +18,42 @@ abstract class Route
         $this->app = $app;
     }
 
-    public function setTags($tags)
+    protected function setResponseCacheTags($tags)
     {
         $this->app->container->get('responseCache')->setTags($tags);
     }
 
-    public function invalidateTags($tags)
+    /**
+     * @param RelationalTableGateway $gateway
+     * @param array $params
+     * @param \Closure|null $queryCallback
+     * @return array|mixed
+     */
+    protected function getEntriesAndSetResponseCacheTags(RelationalTableGateway $gateway, array $params, \Closure $queryCallback = null)
     {
-        $this->app->container->get('responseCache')->invalidateTags($tags);
+        return $this->getDataAndSetResponseCacheTags([$gateway, 'getEntries'], [$params, $queryCallback]);
     }
 
-    public function getEntriesAndSetTags(RelationalTableGateway $gateway, array $params = [], \Closure $queryCallback = null)
+    /**
+     * @param callable $callable
+     * @param array $callableParams
+     * @param null $pkName
+     * @return array|mixed
+     */
+    protected function getDataAndSetResponseCacheTags(Callable $callable, array $callableParams = [], $pkName = null)
     {
-        $setIdTags = function(Payload $payload) use($gateway) {
+        if(is_array($callable) && $callable[0] instanceof RelationalTableGateway) {
+            /** @var $callable[0] RelationalTableGateway */
+            $pkName = $callable[0]->primaryKeyFieldName;
+        }
+
+        $setIdTags = function(Payload $payload) use($pkName) {
             $tableName = $payload->attribute('tableName');
 
-            $this->setTags('table_'.$tableName);
+            $this->setResponseCacheTags('table_'.$tableName);
 
             foreach($payload->getData() as $item) {
-                $this->setTags('entity_'.$tableName.'_'.$item[$gateway->primaryKeyFieldName]);
+                $this->setResponseCacheTags('entity_'.$tableName.'_'.$item[$pkName]);
             }
 
             return $payload;
@@ -45,8 +62,8 @@ abstract class Route
         /** @var Emitter $hookEmitter */
         $hookEmitter = $this->app->container->get('hookEmitter');
 
-        $listenerId = $hookEmitter->addFilter('table.select', $setIdTags);
-        $result = $gateway->getEntries($params);
+        $listenerId = $hookEmitter->addFilter('table.select', $setIdTags, Emitter::P_LOW);
+        $result = call_user_func_array($callable, $callableParams);
         $hookEmitter->removeListener($listenerId);
 
         return $result;

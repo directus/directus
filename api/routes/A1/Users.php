@@ -37,7 +37,7 @@ class Users extends Route
             ];
         }
 
-        $user = $this->getEntriesAndSetTags($this->usersGateway, $params);
+        $user = $this->getEntriesAndSetResponseCacheTags($this->usersGateway, $params);
 
         return $this->app->response($user);
 
@@ -96,8 +96,6 @@ class Users extends Route
         }
 
         $user = $usersGateway->updateRecord($requestPayload);
-
-        $this->invalidateTags('entity_user_'.$id);
 
         return $this->get($user['id']);
     }

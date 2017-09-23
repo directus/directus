@@ -20,9 +20,14 @@ class Response extends Cache
         return $this->updateTagsArray('invalidateTags', $tags);
     }
 
-    protected function updateTagsArray($array, $tags)
+    /**
+     * @param string $arrayName
+     * @param (array|string) $tags
+     * @return $this
+     */
+    protected function updateTagsArray($arrayName, $tags)
     {
-        $this->$array = array_merge($this->$array, (array)$tags);
+        $this->$arrayName = array_merge($this->$arrayName, (array)$tags);
 
         return $this;
     }

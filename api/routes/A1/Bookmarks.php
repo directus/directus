@@ -53,9 +53,9 @@ class Bookmarks extends Route
         }
 
         if (!is_null($id)) {
-            $jsonResponse = $bookmarks->fetchByUserAndId($currentUserId, $id);
+            $jsonResponse = $this->getDataAndSetResponseCacheTags([$bookmarks, 'fetchByUserAndId'], [$currentUserId, $id]);
         } else {
-            $jsonResponse = $bookmarks->fetchByUserId($currentUserId);
+            $jsonResponse = $this->getDataAndSetResponseCacheTags([$bookmarks, 'fetchByUserId'], [$currentUserId]);
         }
 
         return $this->app->response([
@@ -93,7 +93,7 @@ class Bookmarks extends Route
                 return;
         }
 
-        $jsonResponse = $bookmarks->fetchByUserId($currentUserId);
+        $jsonResponse = $this->getDataAndSetResponseCacheTags([$bookmarks, 'fetchByUserId'], [$currentUserId]);
 
         return $this->app->response([
             'meta' => [
@@ -130,7 +130,7 @@ class Bookmarks extends Route
                 return;
         }
 
-        $jsonResponse = $bookmarks->fetchByUserId($currentUserId);
+        $jsonResponse = $this->getDataAndSetResponseCacheTags([$bookmarks, 'fetchByUserId'], [$currentUserId]);
 
         return $this->app->response([
             'meta' => [
@@ -149,7 +149,7 @@ class Bookmarks extends Route
         $tableGateway = new RelationalTableGateway('directus_bookmarks', $ZendDb, $acl);
 
         $params = $app->request()->get();
-        return $this->app->response($tableGateway->getItems($params));
+        return $this->app->response($this->getEntriesAndSetResponseCacheTags($tableGateway, $params));
     }
 
     public function preferences($title)
@@ -160,9 +160,9 @@ class Bookmarks extends Route
         $dbConnection = $app->container->get('zenddb');
         $tableGateway = new DirectusPreferencesTableGateway($dbConnection, $acl);
 
-        $response = $tableGateway->fetchByUserAndTitle($acl->getUserId(), $title);
+        $response = $this->getDataAndSetResponseCacheTags([$tableGateway, 'fetchByUserAndTitle'], [$acl->getUserId(), $title]);
 
-        if (!$response) {
+        if (!$response['data']) {
             $response = [
                 'success' => false,
                 'error' => [
@@ -170,7 +170,6 @@ class Bookmarks extends Route
                 ]
             ];
         } else {
-            $response = $tableGateway->loadMetadata($response, true);
             $response['success'] = true;
         }
 
