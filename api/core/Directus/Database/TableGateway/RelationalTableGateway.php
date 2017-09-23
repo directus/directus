@@ -747,7 +747,7 @@ class RelationalTableGateway extends BaseTableGateway
         $entries = $this->loadItems($params);
         // @NOTE: it should has another name
         //        this evolved into something else
-        $entries = $this->loadMetadata($entries, ArrayUtils::has($params, 'id'));
+        $entries = $this->loadMetadata($entries, (ArrayUtils::has($params, 'id') || ArrayUtils::has($params, 'single')));
 
         return $entries;
     }
@@ -826,6 +826,10 @@ class RelationalTableGateway extends BaseTableGateway
             $params['status'] = null;
         }
 
+        if(ArrayUtils::has($params, 'single')) {
+            $params['limit'] = 1;
+        }
+
         $params = $this->applyDefaultEntriesSelectParams($params);
 
         $columns = ArrayUtils::get($params, 'columns', $tableSchema->getColumnsName());
@@ -892,7 +896,7 @@ class RelationalTableGateway extends BaseTableGateway
             }, $results);
         }
 
-        if (ArrayUtils::get($params, $this->primaryKeyFieldName)) {
+        if (ArrayUtils::get($params, $this->primaryKeyFieldName) || ArrayUtils::has($params, 'single')) {
             $results = reset($results);
         }
 
