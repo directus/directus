@@ -166,24 +166,19 @@ class DirectusPreferencesTableGateway extends RelationalTableGateway
     public function fetchByUserAndTitle($user_id, $title)
     {
         // TODO: Merge with fetchByUserAndTableAndTitle
-        $select = new Select($this->table);
-        $select->limit(1);
-        $select
-            ->where
-            ->equalTo('title', $title)
-            ->equalTo('user', $user_id);
 
-        $preferences = $this->selectWith($select)->current();
+        $result = $this->getEntries([
+            'single' => true,
+            'filters' => [
+                'user' => $user_id,
+                'title' => $title
+            ]
+        ]);
 
-        if ($preferences) {
-            $preferences = $preferences->toArray();
-        }
+        $result['data'] = ($result['data'])
+            ? $this->constructPreferences($user_id, $result['data']['table_name'], $result['data']) : [];
 
-        if ($preferences) {
-            $preferences = $this->constructPreferences($user_id, $preferences['table_name'], $preferences);
-        }
-
-        return $this->parseRecord($preferences);
+        return $result;
     }
 
     /*
