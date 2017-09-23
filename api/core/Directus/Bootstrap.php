@@ -698,14 +698,14 @@ class Bootstrap
             $pool = Bootstrap::get('cache');
 
             if(isset($data[$gateway->primaryKeyFieldName])) {
-                $pool->invalidateTags('entity_'.$gateway->getTable().'_'.$data[$gateway->primaryKeyFieldName]);
+                $pool->invalidateTags(['entity_'.$gateway->getTable().'_'.$data[$gateway->primaryKeyFieldName]]);
             }
         });
 
         $cacheTableTagInvalidator = function($tableName) {
             $pool = Bootstrap::get('cache');
 
-            $pool->invalidateTags('table_'.$tableName);
+            $pool->invalidateTags(['table_'.$tableName]);
         };
 
         foreach(['table.update:after', 'table.delete:after', 'table.drop:after'] as $action) {

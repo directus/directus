@@ -34,13 +34,13 @@ class Bookmarks extends Route
                 $bookmark = $bookmarks->fetchByUserAndId($currentUserId, $id);
                 $response = [];
 
-                if ($bookmark) {
+                if (!empty($bookmark['data'])) {
                     $response['success'] = (bool) $bookmarks->delete(['id' => $id]);
 
                     // delete the preferences
                     $preferences->delete([
                         'user' => $currentUserId,
-                        'title' => $bookmark['title']
+                        'title' => $bookmark['data']['title']
                     ]);
                 } else {
                     $response['success'] = false;
@@ -58,13 +58,7 @@ class Bookmarks extends Route
             $jsonResponse = $this->getDataAndSetResponseCacheTags([$bookmarks, 'fetchByUserId'], [$currentUserId]);
         }
 
-        return $this->app->response([
-            'meta' => [
-                'table' => 'directus_bookmarks',
-                'type' => is_null($id) ? 'collection' : 'item'
-            ],
-            'data' => $jsonResponse
-        ]);
+        return $app->response($jsonResponse);
     }
 
     public function selfBookmarks()
@@ -85,23 +79,11 @@ class Bookmarks extends Route
                 $requestPayload['user'] = $currentUserId;
                 $id = $bookmarks->insertBookmark($requestPayload);
                 break;
-            case 'DELETE':
-                $bookmark = $bookmarks->fetchByUserAndId($currentUserId, $id);
-                if ($bookmark) {
-                    echo $bookmarks->delete(['id' => $id]);
-                }
-                return;
         }
 
         $jsonResponse = $this->getDataAndSetResponseCacheTags([$bookmarks, 'fetchByUserId'], [$currentUserId]);
 
-        return $this->app->response([
-            'meta' => [
-                'table' => 'directus_bookmarks',
-                'type' => 'collection'
-            ],
-            'data' => $jsonResponse
-        ]);
+        return $app->response($jsonResponse);
     }
 
     // @NOTE: duplicate selfBookmarks
@@ -122,23 +104,11 @@ class Bookmarks extends Route
                 $requestPayload['user'] = $currentUserId;
                 $id = $bookmarks->insertBookmark($requestPayload);
                 break;
-            case 'DELETE':
-                $bookmark = $bookmarks->fetchByUserAndId($currentUserId, $id);
-                if ($bookmark) {
-                    echo $bookmarks->delete(['id' => $id]);
-                }
-                return;
         }
 
         $jsonResponse = $this->getDataAndSetResponseCacheTags([$bookmarks, 'fetchByUserId'], [$currentUserId]);
 
-        return $this->app->response([
-            'meta' => [
-                'table' => 'directus_bookmarks',
-                'type' => 'collection'
-            ],
-            'data' => $jsonResponse
-        ]);
+        return $app->response($jsonResponse);
     }
 
     public function allBookmarks()

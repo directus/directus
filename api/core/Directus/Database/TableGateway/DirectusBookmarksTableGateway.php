@@ -75,22 +75,14 @@ class DirectusBookmarksTableGateway extends RelationalTableGateway
 
     public function fetchByUserAndId($user_id, $id)
     {
-        $select = new Select($this->table);
-        $select->limit(1);
-        $select
-            ->where
-            ->equalTo('id', $id)
-            ->equalTo('user', $user_id);
+        $result = $this->getEntries([
+            $this->primaryKeyFieldName => $id,
+            'filters' => [
+                'user' => $user_id
+            ]
+        ]);
 
-        $bookmarks = $this
-            ->selectWith($select)
-            ->current();
-
-        if ($bookmarks) {
-            $bookmarks = $bookmarks->toArray();
-        }
-
-        return $bookmarks ? $this->parseRecord($bookmarks) : [];
+        return $result;
     }
 
     /**
@@ -102,16 +94,13 @@ class DirectusBookmarksTableGateway extends RelationalTableGateway
      */
     public function fetchByUserId($userId)
     {
-        $select = new Select($this->getTable());
-        $select->where->equalTo('user', $userId);
+        $result = $this->getEntries([
+            'filters' => [
+                'user' => $userId
+            ]
+        ]);
 
-        $bookmarks = $this->selectWith($select);
-
-        if ($bookmarks) {
-            $bookmarks = $bookmarks->toArray();
-        }
-
-        return $this->parseRecord($bookmarks);
+        return $result;
     }
 
     public function fetchAllByUser($userId)
