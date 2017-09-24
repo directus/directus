@@ -892,7 +892,7 @@ class RelationalTableGateway extends BaseTableGateway
             }, $results);
         }
 
-        if (ArrayUtils::get($params, $this->primaryKeyFieldName)) {
+        if (ArrayUtils::get($params, 'id')) {
             $results = reset($results);
         }
 
