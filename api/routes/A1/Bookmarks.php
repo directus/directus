@@ -31,7 +31,7 @@ class Bookmarks extends Route
                 $id = $bookmarks->insertBookmark($requestPayload);
                 break;
             case 'DELETE':
-                $bookmark = $bookmarks->fetchByUserAndId($currentUserId, $id);
+                $bookmark = $bookmarks->fetchEntityByUserAndId($currentUserId, $id);
                 $response = [];
 
                 if (!empty($bookmark['data'])) {
@@ -53,9 +53,9 @@ class Bookmarks extends Route
         }
 
         if (!is_null($id)) {
-            $jsonResponse = $this->getDataAndSetResponseCacheTags([$bookmarks, 'fetchByUserAndId'], [$currentUserId, $id]);
+            $jsonResponse = $this->getDataAndSetResponseCacheTags([$bookmarks, 'fetchEntityByUserAndId'], [$currentUserId, $id]);
         } else {
-            $jsonResponse = $this->getDataAndSetResponseCacheTags([$bookmarks, 'fetchByUserId'], [$currentUserId]);
+            $jsonResponse = $this->getDataAndSetResponseCacheTags([$bookmarks, 'fetchEntitiesByUserId'], [$currentUserId]);
         }
 
         return $app->response($jsonResponse);
@@ -81,7 +81,7 @@ class Bookmarks extends Route
                 break;
         }
 
-        $jsonResponse = $this->getDataAndSetResponseCacheTags([$bookmarks, 'fetchByUserId'], [$currentUserId]);
+        $jsonResponse = $this->getDataAndSetResponseCacheTags([$bookmarks, 'fetchEntitiesByUserId'], [$currentUserId]);
 
         return $app->response($jsonResponse);
     }
@@ -106,7 +106,7 @@ class Bookmarks extends Route
                 break;
         }
 
-        $jsonResponse = $this->getDataAndSetResponseCacheTags([$bookmarks, 'fetchByUserId'], [$currentUserId]);
+        $jsonResponse = $this->getDataAndSetResponseCacheTags([$bookmarks, 'fetchEntitiesByUserId'], [$currentUserId]);
 
         return $app->response($jsonResponse);
     }
@@ -130,7 +130,7 @@ class Bookmarks extends Route
         $dbConnection = $app->container->get('zenddb');
         $tableGateway = new DirectusPreferencesTableGateway($dbConnection, $acl);
 
-        $response = $this->getDataAndSetResponseCacheTags([$tableGateway, 'fetchByUserAndTitle'], [$acl->getUserId(), $title]);
+        $response = $this->getDataAndSetResponseCacheTags([$tableGateway, 'fetchEntityByUserAndTitle'], [$acl->getUserId(), $title]);
 
         if (!$response['data']) {
             $response = [

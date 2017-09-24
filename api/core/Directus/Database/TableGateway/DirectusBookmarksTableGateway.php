@@ -73,7 +73,25 @@ class DirectusBookmarksTableGateway extends RelationalTableGateway
         return $this->lastInsertValue;
     }
 
+    /**
+     * @deprecated
+     * @param $user_id
+     * @param $id
+     * @return array
+     */
     public function fetchByUserAndId($user_id, $id)
+    {
+        $result = $this->fetchEntityByUserAndId($user_id, $id);
+
+        return ($result['data']) ? $result['data'] : [];
+    }
+
+    /**
+     * @param $user_id
+     * @param $id
+     * @return array|mixed
+     */
+    public function fetchEntityByUserAndId($user_id, $id)
     {
         $result = $this->getEntries([
             $this->primaryKeyFieldName => $id,
@@ -86,13 +104,25 @@ class DirectusBookmarksTableGateway extends RelationalTableGateway
     }
 
     /**
+     * @deprecated
+     * @param $userId
+     * @return array|mixed
+     */
+    public function fetchByUserId($userId)
+    {
+        $result = $this->fetchEntitiesByUserId($userId);
+
+        return ($result['data']) ? $result['data'] : [];
+    }
+
+    /**
      * Gets all the bookmarks for the given user
      *
      * @param $userId
      *
      * @return array
      */
-    public function fetchByUserId($userId)
+    public function fetchEntitiesByUserId($userId)
     {
         $result = $this->getEntries([
             'filters' => [

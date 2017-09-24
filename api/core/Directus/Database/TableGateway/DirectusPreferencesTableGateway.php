@@ -163,7 +163,25 @@ class DirectusPreferencesTableGateway extends RelationalTableGateway
         return $this->parseRecord($preferences);
     }
 
+    /**
+     * @deprecated
+     * @param $user_id
+     * @param $title
+     * @return array
+     */
     public function fetchByUserAndTitle($user_id, $title)
+    {
+        $result = $this->fetchEntityByUserAndTitle($user_id, $title);
+        return (isset($result['data'])) ? $result['data'] : [];
+
+    }
+
+    /**
+     * @param $user_id
+     * @param $title
+     * @return array|mixed
+     */
+    public function fetchEntityByUserAndTitle($user_id, $title)
     {
         // TODO: Merge with fetchByUserAndTableAndTitle
 
