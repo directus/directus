@@ -25,6 +25,7 @@ use Zend\Db\ResultSet\ResultSetInterface;
 use Zend\Db\Sql\Ddl;
 use Zend\Db\Sql\Delete;
 use Zend\Db\Sql\Insert;
+use Zend\Db\Sql\Predicate\In;
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\SqlInterface;
@@ -833,43 +834,64 @@ class BaseTableGateway extends TableGateway
      */
     protected function executeDelete(Delete $delete)
     {
+        $ids = [];
+
         if ($this->acl) {
             $this->enforceDeletePermission($delete);
         }
 
         $deleteState = $delete->getRawState();
         $deleteTable = $this->getRawTableNameFromQueryStateTable($deleteState['table']);
-        // NOTE: this is used to send the "delete" data to table.remove hook
-        // on update this hook pass the updated data array, on delete has nothing,
-        // a empty array is passed instead
-        // TODO: Add the ID of the record being deleted
-        $deleteData = [];
 
-        try {
-            $this->runHook('table.delete:before', [$deleteTable]);
-            $this->runHook('table.delete.' . $deleteTable . ':before');
-            $this->runHook('table.remove:before', [$deleteTable, $deleteData, 'soft' => false]);
-            $this->runHook('table.remove.' . $deleteTable . ':before', [$deleteData, 'soft' => false]);
+        // Runs select PK with passed delete's $where before deleting, to use those for the even hook
+        if($pk = $this->primaryKeyFieldName) {
+            $select = $this->sql->select();
+            $select->where($deleteState['where']);
+            $select->columns([$pk]);
+            $results = parent::executeSelect($select);
 
-            $result = parent::executeDelete($delete);
-
-            $this->runHook('table.delete', [$deleteTable]);
-            $this->runHook('table.delete:after', [$deleteTable]);
-            $this->runHook('table.delete.' . $deleteTable);
-            $this->runHook('table.delete.' . $deleteTable . ':after');
-
-            $this->runHook('table.remove', [$deleteTable, $deleteData, 'soft' => false]);
-            $this->runHook('table.remove:after', [$deleteTable, $deleteData, 'soft' => false]);
-            $this->runHook('table.remove.' . $deleteTable, [$deleteData, 'soft' => false]);
-            $this->runHook('table.remove.' . $deleteTable . ':after', [$deleteData, 'soft' => false]);
-
-            return $result;
-        } catch (InvalidQueryException $e) {
-            if ('production' !== DIRECTUS_ENV) {
-                throw new \RuntimeException('This query failed: ' . $this->dumpSql($delete), 0, $e);
+            foreach($results as $result) {
+                $ids[] = $result['id'];
             }
-            // @todo send developer warning
-            throw $e;
+        }
+
+        // skipping everything, if there is nothing to delete
+        if($ids) {
+            $delete = $this->sql->delete();
+            $expression = new In($pk, $ids);
+            $delete->where($expression);
+
+            // NOTE: this is used to send the "delete" data to table.remove hook
+            // on update this hook pass the updated data array, on delete has nothing,
+            // a empty array is passed instead
+            $deleteData = $ids;
+
+            try {
+                $this->runHook('table.delete:before', [$deleteTable]);
+                $this->runHook('table.delete.' . $deleteTable . ':before');
+                $this->runHook('table.remove:before', [$deleteTable, $deleteData, 'soft' => false]);
+                $this->runHook('table.remove.' . $deleteTable . ':before', [$deleteData, 'soft' => false]);
+
+                $result = parent::executeDelete($delete);
+
+                $this->runHook('table.delete', [$deleteTable]);
+                $this->runHook('table.delete:after', [$deleteTable]);
+                $this->runHook('table.delete.' . $deleteTable);
+                $this->runHook('table.delete.' . $deleteTable . ':after');
+
+                $this->runHook('table.remove', [$deleteTable, $deleteData, 'soft' => false]);
+                $this->runHook('table.remove:after', [$deleteTable, $deleteData, 'soft' => false]);
+                $this->runHook('table.remove.' . $deleteTable, [$deleteData, 'soft' => false]);
+                $this->runHook('table.remove.' . $deleteTable . ':after', [$deleteData, 'soft' => false]);
+
+                return $result;
+            } catch (InvalidQueryException $e) {
+                if ('production' !== DIRECTUS_ENV) {
+                    throw new \RuntimeException('This query failed: ' . $this->dumpSql($delete), 0, $e);
+                }
+                // @todo send developer warning
+                throw $e;
+            }
         }
     }
 
