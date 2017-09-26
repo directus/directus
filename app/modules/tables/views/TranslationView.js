@@ -26,10 +26,11 @@ function(app, Backbone, Handlebars, Directus, EntriesManager) {
     },
     afterRender: function() {
       if (this.editView) {
+        var newTranslation = this.translateModel && this.translateModel.isNew();
         this.insertView('#translateEditFormEntry', this.editView);
 
         // If the translation table has relational data, fetch them
-        if (this.editView.model.structure.hasRelationalColumns()) {
+        if (!this.model.isNew() && !newTranslation && this.editView.model.structure.hasRelationalColumns()) {
           this.editView.model.fetch();
         } else {
           this.editView.render();
@@ -41,7 +42,7 @@ function(app, Backbone, Handlebars, Directus, EntriesManager) {
       this.translateSettings = options.translateSettings;
       this.translateRelationship = options.translateRelationship;
 
-      if (this.model.id) {
+      if (!this.model.isNew()) {
         this.listenToOnce(this.model, 'sync', this.updateTranslateConnection);
       } else {
         this.updateTranslateConnection();
@@ -85,7 +86,12 @@ function(app, Backbone, Handlebars, Directus, EntriesManager) {
         data[this.translateSettings.left_column_name] = this.activeLanguageId;
         data[this.translateRelationship.junction_key_right] = this.model.id;
 
-        this.translateModel = new this.translateCollection.model({}, {collection: this.translateCollection, parse: true});
+        this.translateModel = new this.translateCollection.model(data, {
+          collection: this.translateCollection,
+          parse: true
+        });
+
+        this.translateCollection.add(this.translateModel);
       }
 
       if (!this.translateModel.isTracking()) {

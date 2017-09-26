@@ -20,7 +20,7 @@ define([
       event.stopPropagation();
     },
 
-    onClick: function () {
+    onItemClick: function () {
       this.trigger('clicked', this);
     },
 

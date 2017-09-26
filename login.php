@@ -75,4 +75,4 @@ $templateVars = [
     'subtitle' => 'Login'
 ];
 
-$app->render('login.twig.html', $templateVars);
+$app->render('login.twig', $templateVars);

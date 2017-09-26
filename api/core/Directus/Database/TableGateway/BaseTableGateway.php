@@ -2,13 +2,11 @@
 
 namespace Directus\Database\TableGateway;
 
-use Directus\Bootstrap;
 use Directus\Database\Exception\DuplicateEntryException;
 use Directus\Database\Exception\SuppliedArrayAsColumnValue;
 use Directus\Database\Object\Table;
 use Directus\Database\RowGateway\BaseRowGateway;
 use Directus\Database\SchemaManager;
-use Directus\Database\Schemas\Sources\MySQLSchema;
 use Directus\Database\TableGatewayFactory;
 use Directus\Database\TableSchema;
 use Directus\Filesystem\Thumbnail;
@@ -20,8 +18,6 @@ use Directus\Permissions\Exception\UnauthorizedTableDeleteException;
 use Directus\Permissions\Exception\UnauthorizedTableEditException;
 use Directus\Util\ArrayUtils;
 use Directus\Util\DateUtils;
-use Directus\Util\Formatting;
-use Zend\Db\Adapter\Adapter;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Adapter\Exception\InvalidQueryException;
 use Zend\Db\ResultSet\ResultSet;
@@ -43,6 +39,11 @@ class BaseTableGateway extends TableGateway
     public $primaryKeyFieldName = null;
 
     public $memcache;
+
+    /**
+     * @var array
+     */
+    protected $options = [];
 
     /**
      * Hook Emitter Instance
@@ -302,10 +303,10 @@ class BaseTableGateway extends TableGateway
 
     public function findOneBy($field, $value)
     {
-        $rowset = $this->select(function (Select $select) use ($field, $value) {
+        $rowset = $this->ignoreFilters()->select(function (Select $select) use ($field, $value) {
             $select->limit(1);
             $select->where->equalTo($field, $value);
-        }, ['filter' => false]);
+        });
 
         $row = $rowset->current();
         // Supposing this "one" doesn't exist in the DB
@@ -355,16 +356,10 @@ class BaseTableGateway extends TableGateway
                 $primaryKey => $recordData[$primaryKey]
             ]);
             $select->limit(1);
-            $rowExists = $TableGateway->selectWith($select, ['filter' => false])->count() > 0;
+            $rowExists = $TableGateway->ignoreFilters()->selectWith($select)->count() > 0;
         }
 
         if ($rowExists) {
-            $recordData = $this->applyHook('table.update:before', $recordData, [
-                'tableName' => $tableName
-            ]);
-
-            $recordData = $this->applyHook('table.update.' . $tableName . ':before', $recordData);
-
             $Update = new Update($tableName);
             $Update->set($recordData);
             $Update->where([
@@ -650,44 +645,11 @@ class BaseTableGateway extends TableGateway
         return $query;
     }
 
-    /**
-     * Select
-     *
-     * @param Where|\Closure|string|array $where
-     *
-     * @return ResultSetInterface
-     */
-    public function select($where = null)
+    public function ignoreFilters()
     {
-        if (!$this->isInitialized) {
-            $this->initialize();
-        }
+        $this->options['filter'] = false;
 
-        $select = $this->sql->select();
-
-        if ($where instanceof \Closure) {
-            $where($select);
-        } elseif ($where !== null) {
-            $select->where($where);
-        }
-
-        return $this->selectWith($select, ArrayUtils::get(func_get_args(), 1, []));
-    }
-
-    /**
-     * @param Select $select
-     *
-     * @return null|ResultSetInterface
-     *
-     * @throws \RuntimeException
-     */
-    public function selectWith(Select $select)
-    {
-        if (!$this->isInitialized) {
-            $this->initialize();
-        }
-
-        return $this->executeSelect($select, ArrayUtils::get(func_get_args(), 1, []));
+        return $this;
     }
 
     /**
@@ -701,28 +663,39 @@ class BaseTableGateway extends TableGateway
      */
     protected function executeSelect(Select $select)
     {
+        $useFilter = ArrayUtils::get($this->options, 'filter', true) !== false;
+        unset($this->options['filter']);
+
         if ($this->acl) {
             $this->enforceSelectPermission($select);
         }
 
         try {
-            $result = parent::executeSelect($select);
+            $selectState = $select->getRawState();
+            $selectTableName = $selectState['table'];
 
-            // Select query options
-            $options = ArrayUtils::get(func_get_args(), 1, []);
-            if (!is_array($options)) {
-                $options = [];
-            }
-
-            if (ArrayUtils::get($options, 'filter', true) !== false) {
-                $selectState = $select->getRawState();
-                $selectTableName = $selectState['table'];
-
-                $result = $this->applyHook('table.select', $result, [
-                    'selectState' => $selectState
+            if ($useFilter) {
+                $selectState = $this->applyHooks([
+                    'table.select:before',
+                    'table.select.' . $selectTableName . ':before',
+                ], $selectState, [
+                    'tableName' => $selectTableName
                 ]);
 
-                $result = $this->applyHook('table.' . $selectTableName . '.select', $result);
+                // NOTE: This can be a "dangerous" hook, so for now we only support columns
+                $select->columns(ArrayUtils::get($selectState, 'columns', ['*']));
+            }
+
+            $result = parent::executeSelect($select);
+
+            if ($useFilter) {
+                $result = $this->applyHooks([
+                    'table.select',
+                    'table.select.' . $selectTableName
+                ], $result, [
+                    'selectState' => $selectState,
+                    'tableName' => $selectTableName
+                ]);
             }
 
             return $result;
@@ -807,6 +780,9 @@ class BaseTableGateway extends TableGateway
      */
     protected function executeUpdate(Update $update)
     {
+        $useFilter = ArrayUtils::get($this->options, 'filter', true) !== false;
+        unset($this->options['filter']);
+
         if ($this->acl) {
             $this->enforceUpdatePermission($update);
         }
@@ -816,14 +792,18 @@ class BaseTableGateway extends TableGateway
         $updateData = $updateState['set'];
 
         try {
-            // @TODO: Move hook filters here
-            $this->runHook('table.update:before', [$updateTable, $updateData]);
-            $this->runHook('table.update.' . $updateTable . ':before', [$updateData]);
+            $isSoftDelete = $this->isSoftDelete($updateData);
+
+            if ($useFilter) {
+                $updateData = $this->runBeforeUpdateHooks($updateTable, $updateData, $isSoftDelete);
+            }
+
+            $update->set($updateData);
             $result = parent::executeUpdate($update);
-            $this->runHook('table.update', [$updateTable, $updateData]);
-            $this->runHook('table.update:after', [$updateTable, $updateData]);
-            $this->runHook('table.update.' . $updateTable, [$updateData]);
-            $this->runHook('table.update.' . $updateTable . ':after', [$updateData]);
+
+            if ($useFilter) {
+                $this->runAfterUpdateHooks($updateTable, $updateData, $isSoftDelete);
+            }
 
             return $result;
         } catch (InvalidQueryException $e) {
@@ -859,15 +839,30 @@ class BaseTableGateway extends TableGateway
 
         $deleteState = $delete->getRawState();
         $deleteTable = $this->getRawTableNameFromQueryStateTable($deleteState['table']);
+        // NOTE: this is used to send the "delete" data to table.remove hook
+        // on update this hook pass the updated data array, on delete has nothing,
+        // a empty array is passed instead
+        // TODO: Add the ID of the record being deleted
+        $deleteData = [];
 
         try {
             $this->runHook('table.delete:before', [$deleteTable]);
             $this->runHook('table.delete.' . $deleteTable . ':before');
+            $this->runHook('table.remove:before', [$deleteTable, $deleteData, 'soft' => false]);
+            $this->runHook('table.remove.' . $deleteTable . ':before', [$deleteData, 'soft' => false]);
+
             $result = parent::executeDelete($delete);
+
             $this->runHook('table.delete', [$deleteTable]);
             $this->runHook('table.delete:after', [$deleteTable]);
             $this->runHook('table.delete.' . $deleteTable);
             $this->runHook('table.delete.' . $deleteTable . ':after');
+
+            $this->runHook('table.remove', [$deleteTable, $deleteData, 'soft' => false]);
+            $this->runHook('table.remove:after', [$deleteTable, $deleteData, 'soft' => false]);
+            $this->runHook('table.remove.' . $deleteTable, [$deleteData, 'soft' => false]);
+            $this->runHook('table.remove.' . $deleteTable . ':after', [$deleteData, 'soft' => false]);
+
             return $result;
         } catch (InvalidQueryException $e) {
             if ('production' !== DIRECTUS_ENV) {
@@ -876,6 +871,31 @@ class BaseTableGateway extends TableGateway
             // @todo send developer warning
             throw $e;
         }
+    }
+
+    /**
+     * Check whether the data will perform soft delete
+     *
+     * @param array $data
+     *
+     * @return bool
+     */
+    protected function isSoftDelete(array $data)
+    {
+        $isSoftDelete = false;
+        $tableSchema = $this->getTableSchema();
+        $statusColumnName = $tableSchema->getStatusColumn();
+        $hasStatusColumnData = ArrayUtils::has($data, $statusColumnName);
+        $deletedValues = $this->getDeletedStatuses();
+
+        if ($hasStatusColumnData) {
+            $statusColumnObject = $tableSchema->getColumn($statusColumnName);
+            $deletedValues[] = $statusColumnObject->getOptions('delete_value') ?: STATUS_DELETED_NUM;
+            $statusValue = ArrayUtils::get($data, $this->getStatusColumnName());
+            $isSoftDelete =  in_array($statusValue, $this->getDeletedStatuses());
+        }
+
+        return $isSoftDelete;
     }
 
     protected function getRawTableNameFromQueryStateTable($table)
@@ -1175,7 +1195,7 @@ class BaseTableGateway extends TableGateway
         $platform = $this->getAdapter()->getPlatform();
 
         // TODO: find a common place to share this code
-        // It is duplicated code in Builder.php
+        // It is a duplicated code from Builder.php
         if (strpos($column, $platform->getIdentifierSeparator()) === false) {
             $column = implode($platform->getIdentifierSeparator(), [$table, $column]);
         }
@@ -1259,15 +1279,33 @@ class BaseTableGateway extends TableGateway
     }
 
     /**
+     * Apply a list of hook against the given data
+     *
+     * @param array $names
+     * @param null $data
+     * @param array $attributes
+     *
+     * @return array|\ArrayObject|null
+     */
+    public function applyHooks(array $names, $data = null, array $attributes = [])
+    {
+        foreach ($names as $name) {
+            $data = $this->applyHook($name, $data, $attributes);
+        }
+
+        return $data;
+    }
+
+    /**
      * Apply hook against the given data
      *
      * @param $name
      * @param null $data
      * @param array $attributes
      *
-     * @return \ArrayObject|null
+     * @return \ArrayObject|array|null
      */
-    public function applyHook($name, $data = null, $attributes = [])
+    public function applyHook($name, $data = null, array $attributes = [])
     {
         // TODO: Ability to run multiple hook names
         // $this->applyHook('hook1,hook2');
@@ -1299,6 +1337,66 @@ class BaseTableGateway extends TableGateway
     }
 
     /**
+     * Run before table update hooks and filters
+     *
+     * @param string $updateTable
+     * @param array $updateData
+     * @param bool $isSoftDelete
+     *
+     * @return array|\ArrayObject
+     */
+    protected function runBeforeUpdateHooks($updateTable, $updateData, $isSoftDelete)
+    {
+        // Filters
+        $updateData = $this->applyHook('table.update:before', $updateData, [
+            'tableName' => $updateTable
+        ]);
+        $updateData = $this->applyHook('table.update.' . $updateTable . ':before', $updateData);
+
+        // Hooks
+        $this->runHook('table.update:before', [$updateTable, $updateData]);
+        $this->runHook('table.update.' . $updateTable . ':before', [$updateData]);
+
+        if ($isSoftDelete === true) {
+            $updateData = $this->applyHook('table.remove:before', $updateData, [
+                'tableName' => $updateTable,
+                'soft' => true
+            ]);
+
+            $updateData = $this->applyHook('table.remove.' . $updateTable . ':before', $updateData, [
+                'soft' => true
+            ]);
+
+            $this->runHook('table.remove:before', [$updateTable, $updateData, 'soft' => true]);
+            $this->runHook('table.remove.' . $updateTable . ':before', [$updateData, 'soft' => true]);
+        }
+
+        return $updateData;
+    }
+
+    /**
+     * Run after table update hooks and filters
+     *
+     * @param string $updateTable
+     * @param string $updateData
+     * @param bool $isSoftDelete
+     */
+    protected function runAfterUpdateHooks($updateTable, $updateData, $isSoftDelete)
+    {
+        $this->runHook('table.update', [$updateTable, $updateData]);
+        $this->runHook('table.update:after', [$updateTable, $updateData]);
+        $this->runHook('table.update.' . $updateTable, [$updateData]);
+        $this->runHook('table.update.' . $updateTable . ':after', [$updateData]);
+
+        if ($isSoftDelete === true) {
+            $this->runHook('table.remove', [$updateTable, $updateData, 'soft' => true]);
+            $this->runHook('table.remove.' . $updateTable, [$updateData, 'soft' => true]);
+            $this->runHook('table.remove:after', [$updateTable, $updateData, 'soft' => true]);
+            $this->runHook('table.remove.' . $updateTable . ':after', [$updateData, 'soft' => true]);
+        }
+    }
+
+    /**
      * Gets Directus settings (from DB)
      *
      * @param null $key
@@ -1316,21 +1414,47 @@ class BaseTableGateway extends TableGateway
         return $key !== null ? ArrayUtils::get($settings, $key) : $settings;
     }
 
+    public function getDeletedValue()
+    {
+        $statusColumnName = $this->getStatusColumnName();
+        $deletedValue = null;
+
+        if ($statusColumnName) {
+            $statusColumnObject = $this->getTableSchema()->getColumn($statusColumnName);
+            $deletedValue = ArrayUtils::get($statusColumnObject->getOptions(), 'delete_value', STATUS_DELETED_NUM);
+        }
+
+        return $deletedValue;
+    }
+
     public function getPublishedStatuses()
     {
-        $publishedStatuses = [];
+        return $this->getStatuses('published');
+    }
+
+    public function getDeletedStatuses()
+    {
+        return $this->getStatuses('deleted');
+    }
+
+    protected function getStatuses($type)
+    {
+        $statuses = [];
 
         if (static::$container && TableSchema::hasStatusColumn($this->table, true)) {
             $config = static::$container->get('config');
-            $statusMapping = $this->getTableSchema()->getStatusMapping();
+            $statusMapping = $this->getTableSchema()->getStatusMapping() ?: [];
 
-            if ($statusMapping) {
-                $publishedStatuses = $config->getPublishedStatuses($statusMapping);
-            } else {
-                $publishedStatuses = $config->getPublishedStatuses();
+            switch ($type) {
+                case 'published':
+                    $statuses = $config->getPublishedStatuses($statusMapping);
+                    break;
+                case 'deleted':
+                    $statuses = $config->getDeletedStatuses($statusMapping);
+                    break;
             }
         }
 
-        return $publishedStatuses;
+        return $statuses;
     }
 }

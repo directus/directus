@@ -11,6 +11,8 @@ use Directus\View\JsonView;
 
 class Files extends Route
 {
+    use Traits\ActivityMode;
+
     public function files($id = null)
     {
         $app = $this->app;
@@ -24,8 +26,6 @@ class Files extends Route
 
         $table = 'directus_files';
         $TableGateway = new TableGateway($table, $ZendDb, $acl);
-        $activityLoggingEnabled = !(isset($_GET['skip_activity_log']) && (1 == $_GET['skip_activity_log']));
-        $activityMode = $activityLoggingEnabled ? TableGateway::ACTIVITY_ENTRY_MODE_PARENT : TableGateway::ACTIVITY_ENTRY_MODE_DISABLED;
 
         switch ($app->request()->getMethod()) {
             case 'DELETE':
@@ -89,14 +89,14 @@ class Files extends Route
 
                     $requestPayload = array_merge($recordData, ArrayUtils::omit($requestPayload, ['data', 'name']));
                 }
-                $newRecord = $TableGateway->manageRecordUpdate($table, $requestPayload, $activityMode);
+                $newRecord = $TableGateway->updateRecord($requestPayload, $this->getActivityMode());
                 $params['id'] = $newRecord['id'];
                 break;
             case 'PATCH':
                 $requestPayload['id'] = $id;
             case 'PUT':
                 if (!is_null($id)) {
-                    $TableGateway->manageRecordUpdate($table, $requestPayload, $activityMode);
+                    $TableGateway->updateRecord($requestPayload, $this->getActivityMode());
                     break;
                 }
         }

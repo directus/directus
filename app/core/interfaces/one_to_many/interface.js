@@ -3,12 +3,13 @@ define([
   'core/interfaces/one_to_many/component',
   'underscore',
   'app',
+  'utils',
   'core/notification',
   'core/UIView',
   'core/table/table.view',
   'core/overlays/overlays',
   'core/t'
-], function (Component, _, app, Notification, UIView, TableView, Overlays, __t) {
+], function (Component, _, app, Utils, Notification, UIView, TableView, Overlays, __t) {
   'use strict';
 
   return UIView.extend({
@@ -93,7 +94,7 @@ define([
       var view = new EditView({
         model: model,
         hiddenFields: [columnName],
-        skipFetch: (model.isNew() || model.unsavedAttributes())
+        skipFetch: (model.isNew() || model.hasUnsavedAttributes())
       });
 
       view.headerOptions.route.isOverlay = true;
@@ -220,12 +221,14 @@ define([
     },
 
     serialize: function () {
+      var relatedTablePrivilege = app.schemaManager.getPrivileges(this.columnSchema.getRelatedTableName());
+
       return {
         name: this.name,
         tableTitle: this.relatedCollection.table.get('table_name'),
         canEdit: this.canEdit,
-        showChooseButton: this.showChooseButton, // && this.canEdit,
-        showAddButton: this.showAddButton && this.canEdit
+        showChooseButton: this.showChooseButton,
+        showAddButton: this.showAddButton && relatedTablePrivilege.canAdd()
       };
     },
 
@@ -254,7 +257,7 @@ define([
       var whitelist = [];
       var relatedCollection = this.model.get(this.name);
       var columns = relatedCollection.structure.pluck('id');
-      var visibleColumns = this.columnSchema.options.get('visible_columns').split(',');
+      var visibleColumns = Utils.parseCSV(this.columnSchema.options.get('visible_columns'));
 
       columns.forEach(function (column) {
         if (visibleColumns.indexOf(column) >= 0) {
@@ -269,9 +272,10 @@ define([
       var blacklist = [];
       var relatedCollection = this.model.get(this.name);
       var columns = relatedCollection.structure.pluck('id');
+      var visibleColumns = Utils.parseCSV(this.columnSchema.options.get('visible_columns'));
 
       columns.forEach(function (column) {
-        if (this.columnSchema.options.get('visible_columns').split(',').indexOf(column) === -1) {
+        if (visibleColumns.indexOf(column) === -1) {
           blacklist.push(column);
         }
       }, this);

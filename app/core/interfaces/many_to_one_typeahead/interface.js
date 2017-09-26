@@ -135,9 +135,7 @@ define(['app', 'handlebars', 'core/UIView', 'utils'], function (app, Handlebars,
     },
 
     initialize: function () {
-      this.visibleColumn = this.columnSchema.options.get('visible_column').split(',').map(function (column) {
-        return column.trim();
-      }).join(',');
+      this.visibleColumn = Utils.parseCSV(this.columnSchema.options.get('visible_column')).join(',');
       this.includeInactives = this.columnSchema.options.get('include_inactive');
       var value = this.model.get(this.name);
       this.collection = value.collection.getNewInstance({omit: ['preferences']});

@@ -185,35 +185,38 @@
 				width: auto;
 			}
 			input {
-				min-width: 400px;
+				width: 100%;
+				max-width: 400px;
 				&.small {
-					width: 150px;
+					max-width: 150px;
 				}
 				&.medium {
-					width: 300px;
+					max-width: 300px;
 				}
 			}
 			textarea {
 				position: relative;
-				min-width: 400px;
+				width: 100%;
+				max-width: 400px;
 				min-height: 140px;
 				line-height: 18px;
 				height: auto;
 			}
 			select {
 				padding-right: 36px; // So the right side isn't cropped
-				min-width: 200px;
+				width: 100%;
+				max-width: 200px;
 			}
 			input[type="checkbox"].custom-checkbox + label {
 				display: inline-block;
 			}
 			input[type="checkbox"],
 			input[type="radio"] {
-				min-width: auto;
+				max-width: auto;
 				width: auto;
 			}
 			input[type="date"] {
-				min-width: auto;
+				max-width: auto;
 				width: 170px;
 				margin-right: 20px;
 			}
@@ -223,7 +226,7 @@
 			}
 			input[type="range"] {
 				padding: 0;
-				min-width: 340px;
+				max-width: 340px;
 				-webkit-appearance: none;
 				border: none;
 				margin-right: 10px;

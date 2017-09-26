@@ -3535,9 +3535,9 @@ body.loading .header .logo {
                 -o-transition: all 200ms ease-in-out 0ms;
                 -ms-transition: all 200ms ease-in-out 0ms;
                 transition: all 200ms ease-in-out 0ms;
-                -webkit-box-shadow: 0px 0px 0px 0px transparent;
-                -moz-box-shadow: 0px 0px 0px 0px transparent;
-                box-shadow: 0px 0px 0px 0px transparent;
+                -webkit-box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0);
+                -moz-box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0);
+                box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0);
                 display: block;
                 padding: 16px;
                 width: 100%;
@@ -5077,9 +5077,9 @@ body.help .discover-spotlight {
       line-height: 30px;
       background-color: #f6f6f6; }
       .message .reply textarea:focus {
-        -webkit-box-shadow: 0px 0px 0px 0px transparent;
-        -moz-box-shadow: 0px 0px 0px 0px transparent;
-        box-shadow: 0px 0px 0px 0px transparent; }
+        -webkit-box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0);
+        -moz-box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0);
+        box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0); }
     .message .reply .button {
       -webkit-transition: all 400ms ease-in-out 0ms;
       -moz-transition: all 400ms ease-in-out 0ms;
@@ -5448,28 +5448,31 @@ body.help .discover-spotlight {
       line-height: 14px;
       width: auto; }
     .fields .field .interface input {
-      min-width: 400px; }
+      width: 100%;
+      max-width: 400px; }
       .fields .field .interface input.small {
-        width: 150px; }
+        max-width: 150px; }
       .fields .field .interface input.medium {
-        width: 300px; }
+        max-width: 300px; }
     .fields .field .interface textarea {
       position: relative;
-      min-width: 400px;
+      width: 100%;
+      max-width: 400px;
       min-height: 140px;
       line-height: 18px;
       height: auto; }
     .fields .field .interface select {
       padding-right: 36px;
-      min-width: 200px; }
+      width: 100%;
+      max-width: 200px; }
     .fields .field .interface input[type="checkbox"].custom-checkbox + label {
       display: inline-block; }
     .fields .field .interface input[type="checkbox"],
     .fields .field .interface input[type="radio"] {
-      min-width: auto;
+      max-width: auto;
       width: auto; }
     .fields .field .interface input[type="date"] {
-      min-width: auto;
+      max-width: auto;
       width: 170px;
       margin-right: 20px; }
     .fields .field .interface input[type="time"] {
@@ -5477,7 +5480,7 @@ body.help .discover-spotlight {
       min-width: auto; }
     .fields .field .interface input[type="range"] {
       padding: 0;
-      min-width: 340px;
+      max-width: 340px;
       -webkit-appearance: none;
       border: none;
       margin-right: 10px;
@@ -5825,9 +5828,9 @@ body.help .discover-spotlight {
           margin: 80px auto 40px;
           color: #CCCCCC; }
       .fields .field .interface .wysiwyg textarea {
-        -webkit-box-shadow: 0px 1px 4px 0px transparent;
-        -moz-box-shadow: 0px 1px 4px 0px transparent;
-        box-shadow: 0px 1px 4px 0px transparent;
+        -webkit-box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0);
+        -moz-box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0);
+        box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0);
         padding: 0;
         border: none;
         resize: none;

@@ -121,7 +121,9 @@ define(function (require, exports, module) {
 
                   if (data.responses) {
                     reply = data.responses.first();
-                    path += '/response/' + reply.id;
+                    if (reply) {
+                      path += '/response/' + reply.id;
+                    }
                   }
 
                   Backbone.history.navigate(path, true);
@@ -423,7 +425,7 @@ define(function (require, exports, module) {
         return path;
       }
 
-      path = path + '.html';
+      path = path + '.handlebars';
 
       // If cached, use the compiled template.
       if (JST[path]) {

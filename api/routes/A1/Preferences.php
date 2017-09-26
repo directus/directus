@@ -25,7 +25,7 @@ class Preferences extends Route
         $TableGateway = new TableGateway('directus_preferences', $ZendDb, $acl);
         switch ($app->request()->getMethod()) {
             case 'PUT':
-                $TableGateway->manageRecordUpdate('directus_preferences', $requestPayload, TableGateway::ACTIVITY_ENTRY_MODE_DISABLED);
+                $TableGateway->updateRecord($requestPayload, TableGateway::ACTIVITY_ENTRY_MODE_DISABLED);
                 break;
             case 'POST':
                 //If Already exists and not saving with title, then updateit!
@@ -34,7 +34,7 @@ class Preferences extends Route
                     $requestPayload['id'] = $existing['id'];
                 }
                 $requestPayload['user'] = $currentUserId;
-                $id = $TableGateway->manageRecordUpdate('directus_preferences', $requestPayload, TableGateway::ACTIVITY_ENTRY_MODE_DISABLED);
+                $id = $TableGateway->updateRecord($requestPayload, TableGateway::ACTIVITY_ENTRY_MODE_DISABLED);
                 break;
             case 'DELETE':
                 if ($requestPayload['user'] != $currentUserId) {

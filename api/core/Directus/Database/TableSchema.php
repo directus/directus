@@ -8,7 +8,7 @@ use Directus\Config\Config;
 use Directus\Database\Object\Column;
 use Directus\Database\Object\Table;
 use Directus\Database\TableGateway\DirectusPreferencesTableGateway;
-use Directus\Exception\ForbiddenException;
+use Directus\Exception\Http\ForbiddenException;
 use Directus\MemcacheProvider;
 use Directus\Util\ArrayUtils;
 use Zend\Db\Sql\Predicate\NotIn;

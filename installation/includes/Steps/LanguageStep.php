@@ -10,7 +10,7 @@ class LanguageStep extends AbstractStep
     protected $name = 'language';
     protected $title = 'Language';
     protected $shortTitle = 'Language';
-    protected $viewName = 'language.twig.html';
+    protected $viewName = 'language.twig';
     protected $fields = [
         [
             'name' => 'default_language',

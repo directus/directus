@@ -1,5 +1,11 @@
 /* global _ */
-define(['core/UIView', 'select2'], function (UIView) {
+define([
+  'underscore',
+  'core/UIView',
+  'utils',
+  'select2'
+], function (_, UIView, Utils) {
+
   return UIView.extend({
     template: 'dropdown_enum/input',
     events: {
@@ -7,6 +13,15 @@ define(['core/UIView', 'select2'], function (UIView) {
     },
     updateValue: function (event) {
       this.model.set(this.name, event.currentTarget.value);
+    },
+    unsavedChange: function () {
+      // NOTE: Only set the new value (mark changed) if the value has changed
+      var hasValue = Utils.isSomething(this.value);
+      var nullable = this.columnSchema.isNullable();
+
+      if ((hasValue || this.value === null && nullable)  && (this.model.isNew() || this.model.hasChanges(this.name))) {
+        return this.value;
+      }
     },
     serialize: function () {
       var value = this.options.value || this.columnSchema.get('default_value') || '';
@@ -16,11 +31,11 @@ define(['core/UIView', 'select2'], function (UIView) {
       enumText = enumText.replace(/'/g, '');
       var enumArray = enumText.split(',');
 
-      enumArray = _.map(enumArray, function (value) {
-        var item = {};
-        item.value = value;
-        item.selected = (item.value === value);
-        return item;
+      enumArray = _.map(enumArray, function (enumValue) {
+        return {
+          value: enumValue,
+          selected: enumValue === value
+        };
       });
 
       return {
@@ -43,6 +58,10 @@ define(['core/UIView', 'select2'], function (UIView) {
           minimumResultsForSearch: 10
         });
       }
+    },
+
+    initialize: function (options) {
+      this.value = options.value !== undefined ? options.value : options.default_value;
     }
   });
 });

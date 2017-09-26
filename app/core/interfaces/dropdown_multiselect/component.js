@@ -2,7 +2,7 @@ define(['./interface', 'core/UIComponent', 'core/t', 'utils'], function (Input, 
   return UIComponent.extend({
     id: 'dropdown_multiselect',
     dataTypes: ['VARCHAR', 'CHAR', 'TINYTEXT', 'TEXT', 'MEDIUMTEXT', 'LONGTEXT'],
-    variables: [
+    options: [
       {
         id: 'read_only',
         ui: 'toggle',
@@ -55,30 +55,34 @@ define(['./interface', 'core/UIComponent', 'core/t', 'utils'], function (Input, 
       }
     ],
     Input: Input,
-    validate: function (value, options) {
-      if (options.schema.isRequired() && Utils.isEmpty(value)) {
+    validate: function (value, interfaceOptions) {
+      if (interfaceOptions.schema.isRequired() && Utils.isEmpty(value)) {
         return __t('this_field_is_required');
       }
     },
-    list: function (options) {
-      // Convert default csv to csv with spaces => demo1,demo2 => demo1, demo2
-      var showAsText = options.settings.get('list_view_formatting') === 'text';
-      return options.value.split(options.settings.get('delimiter'))
-        .filter(function (value) {
-          // Filter out the first and last empty delimiter
-          return value.length > 0;
-        })
-        .map(function (value) {
-          if (showAsText) {
-            var displayOptions = JSON.parse(options.settings.get('options'));
-            return displayOptions[value];
-          }
+    list: function (interfaceOptions) {
+      var showAsText = interfaceOptions.settings.get('list_view_formatting') === 'text';
 
-          return value;
-        })
-        .reduce(function (string, value) {
-          return string + ', ' + value;
-        });
+      if (interfaceOptions.value) {
+        return (interfaceOptions.value || '').split(',')
+          .filter(function (value) {
+            // Filter out the first and last empty delimiter
+            return value.length > 0;
+          })
+          .map(function (value) {
+            if (showAsText) {
+              var displayOptions = JSON.parse(interfaceOptions.settings.get('options'));
+              return displayOptions[value];
+            }
+
+            return value;
+          })
+          .reduce(function (string, value) {
+            return string + ', ' + value;
+          });
+      }
+
+      return interfaceOptions.value;
     }
   });
 });

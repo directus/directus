@@ -38,7 +38,7 @@ define(['./interface', 'core/UIComponent', 'core/t'], function (Input, UICompone
   return UIComponent.extend({
     id: 'status',
     dataTypes: ['TINYINT', 'SMALLINT', 'INT', 'BIGINT'],
-    variables: [{
+    options: [{
       id: 'delete_value',
       column_name: 'delete_value',
       ui: 'numeric',

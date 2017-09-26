@@ -93,6 +93,7 @@ define([
     },
 
     leftToolbar: function() {
+      var widgets = [];
       var collection = this.model.collection;
       var isNew = this.model.isNew();
       var canAdd = isNew && collection.canAdd();
@@ -118,6 +119,20 @@ define([
         // });
       }
 
+      widgets.push(this.saveWidget);
+
+      this.deleteWidget = new Widgets.ButtonWidget({
+        widgetOptions: {
+          buttonId: 'deleteBtn',
+          iconClass: 'close',
+          buttonClass: 'serious',
+          buttonText: __t('delete')
+        },
+        onClick: _.bind(editView.deleteConfirm, this)
+      });
+
+      widgets.push(this.deleteWidget);
+
       this.infoWidget = new Widgets.InfoButtonWidget({
         enable: !this.model.isNew(),
         onClick: function (event) {
@@ -125,10 +140,9 @@ define([
         }
       });
 
-      return [
-        this.saveWidget,
-        this.infoWidget
-      ];
+      widgets.push(this.infoWidget);
+
+      return widgets;
     },
 
     rightPane: function() {
@@ -142,6 +156,20 @@ define([
       if (this.model.isNew()) {
         editView.render();
       }
+    },
+
+    deleteConfirm: function(status) {
+      var editView = this;
+
+      app.router.openModal({type: 'confirm', text: __t('confirm_delete_item'), callback: function () {
+        var xhr = editView.model.destroy();
+
+        if(!xhr) {
+          return;
+        }
+
+        app.router.go('/users/');
+      }});
     },
 
     initialize: function (options) {

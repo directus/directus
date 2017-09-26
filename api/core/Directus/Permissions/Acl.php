@@ -29,6 +29,20 @@ class Acl
     const TABLE_PERMISSIONS = 'permissions';
     const FIELD_READ_BLACKLIST = 'read_field_blacklist';
     const FIELD_WRITE_BLACKLIST = 'write_field_blacklist';
+    const PERMISSION_FULL = [
+        'allow_view' => 2,
+        'allow_add' => 1,
+        'allow_edit' => 2,
+        'allow_delete' => 2,
+        'allow_alter' => 1
+    ];
+    const PERMISSION_NONE = [
+        'allow_view' => 0,
+        'allow_add' => 0,
+        'allow_edit' => 0,
+        'allow_delete' => 0,
+        'allow_alter' => 0
+    ];
 
     /**
      * The magic Directus column identifying the record's CMS owner.
@@ -105,7 +119,7 @@ class Acl
      */
     public function setUserId($userId)
     {
-        $this->userId = $userId;
+        $this->userId = (int)$userId;
     }
 
     /**
@@ -115,7 +129,7 @@ class Acl
      */
     public function setGroupId($groupId)
     {
-        $this->groupId = $groupId;
+        $this->groupId = (int)$groupId;
     }
 
     /**
@@ -125,7 +139,7 @@ class Acl
      */
     public function setPublic($public)
     {
-        $this->isPublic = (bool) $public;
+        $this->isPublic = (bool)$public;
     }
 
     /**
@@ -156,6 +170,23 @@ class Acl
     public function isPublic()
     {
         return $this->isPublic === true;
+    }
+
+    /**
+     * Gets whether the authenticated user is admin
+     *
+     * @return bool
+     */
+    public function isAdmin()
+    {
+        return $this->getGroupId() === 1;
+    }
+
+    public function getFullPermission()
+    {
+        return [
+            ''
+        ];
     }
 
     /**
@@ -549,7 +580,7 @@ class Acl
         $select
             ->columns([$TableGateway->primaryKeyFieldName, $cmsOwnerColumn]);
         $select->where($predicate);
-        $results = $TableGateway->selectWith($select, ['filter' => false]);
+        $results = $TableGateway->ignoreFilters()->selectWith($select);
         foreach ($results as $row) {
             $ownerIds[] = $row[$cmsOwnerColumn];
         }

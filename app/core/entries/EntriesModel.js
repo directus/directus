@@ -178,9 +178,7 @@ define(function(require, exports, module) {
             var columns = [];
             if (ui.get('visible_columns')) {
               // Clean whitespaces
-              columns = ui.get('visible_columns').split(',').map(function(column) {
-                return column.trim();
-              });
+              columns = Utils.parseCSV(ui.get('visible_columns'));
             }
 
             var value = attributes[id] || [];
@@ -346,7 +344,6 @@ define(function(require, exports, module) {
 
       if (method === 'patch' && options.includeRelationships) {
         var relationalColumns = this.getStructure().getRelationalColumns();
-        //var relationalAttributes = _.pick(this.attributes, relationalKeys);
 
         _.each(relationalColumns, function (column) {
           var key = column.id;
@@ -677,6 +674,10 @@ define(function(require, exports, module) {
       }
 
       return attributes;
+    },
+
+    hasUnsavedAttributes: function () {
+      return !!this.unsavedAttributes();
     },
 
     unsavedChanges: function (options) {

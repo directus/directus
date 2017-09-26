@@ -92,11 +92,11 @@ define([
         // Convert inline / alignment to appropriate options & add to toolbar
         toolbar += toolbarOptions
           .map(function (option) {
-            if (option === 'inline') {
+            if (option === 'inline' && inline.length > 0) {
               return inline.reduce(function (inlineStr, inlineOption) {
                 return inlineStr + ' ' + inlineOption;
               });
-            } else if (option === 'alignment') {
+            } else if (option === 'alignment' && alignment.length > 0) {
               return alignment.reduce(function (alignmentStr, alignmentOption) {
                 return alignmentStr + ' ' + alignmentOption;
               });
@@ -122,7 +122,7 @@ define([
         toolbar += ' | ' + Object.keys(customWrapperSettings).join(' ');
       }
 
-      tinyMCE.init({
+      var options = {
         plugins: 'table hr lists link image print pagebreak code insertdatetime media autoresize paste preview',
         selector: '#wysiwyg_' + this.options.name,
         branding: false,
@@ -201,7 +201,14 @@ define([
             e.target.editorContainer.classList.remove('focus');
           });
         }
-      });
+      };
+
+      if (this.options.settings.get('remove_unsafe_tags') === false) {
+        options.valid_elements = '*[*]';
+        options.extended_valid_elements = '*[*]';
+      }
+
+      tinyMCE.init(options);
 
       function getCheckboxesSettings(name) {
         return settings

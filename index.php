@@ -363,9 +363,9 @@ function getSettings()
     $settings = $settingsTable->getItems(['limit' => null]);
 
     foreach ($settings['data'] as &$setting) {
-        if ($setting['name'] === 'cms_thumbnail_url') {
+        if ($setting['name'] === 'cms_thumbnail_url' && isset($setting['value'])) {
             $filesTableGateway = new TableGateway('directus_files', $ZendDb, null);
-            $setting['value'] = $filesTableGateway->loadEntries(['id' => $setting['value']]);
+            $setting['value'] = $filesTableGateway->loadItems(['id' => $setting['value']]);
             break;
         }
     }
@@ -623,14 +623,24 @@ foreach ($config['statusMapping'] as $key => $status) {
     $mapping[] = $status;
 }
 
-$statusMapping = [
-    '*' => [
-        'mapping' => $mapping,
-        'status_name' => STATUS_COLUMN_NAME,
-        'default_value' => STATUS_DRAFT_NUM,
-        'delete_value' => STATUS_DELETED_NUM
-    ]
+$statusMappingConfiguration = [
+    'mapping' => $mapping,
+    'status_name' => STATUS_COLUMN_NAME,
+    'default_value' => STATUS_DRAFT_NUM,
+    'delete_value' => STATUS_DELETED_NUM
 ];
+
+
+$statusMapping = [
+    '*' => $statusMappingConfiguration
+];
+
+$statusMapping['directus_users'] = array_replace_recursive($statusMappingConfiguration, [
+    'mapping' => [
+        1 => ['name' => __t('Active')],
+        2 => ['name' => __t('Inactive')]
+    ]
+]);
 
 foreach ($allTables as $table) {
     $tableName = \Directus\Util\ArrayUtils::get($table, 'schema.id');
@@ -714,5 +724,5 @@ $templateVars = [
     'cssFilePath' => getCSSFilePath()
 ];
 
-// @TODO: Compile html
-$app->render('base.twig.html', $templateVars);
+// TODO: Compile html
+$app->render('base.twig', $templateVars);

@@ -1,6 +1,7 @@
 define([
   'app',
   'underscore',
+  'utils',
   'backbone',
   'core/t',
   'core/notification',
@@ -9,7 +10,7 @@ define([
   'modules/messages/views/MessageView',
   'modules/messages/views/NewMessageView',
   'core/widgets/widgets'
-], function(app, _, Backbone, __t, Notification, BasePageView, MessageItemView, MessageView, NewMessageView,  Widgets) {
+], function(app, _, Utils, Backbone, __t, Notification, BasePageView, MessageItemView, MessageView, NewMessageView,  Widgets) {
 
   var isResizing = false;
   var lastDownX = 0;
@@ -446,7 +447,7 @@ define([
             collection.setFilter('states', '0');
           }
 
-          var filteredStates = (collection.getFilter('states') || '').split(',');
+          var filteredStates = Utils.parseCSV(collection.getFilter('states'));
 
           return [
             {

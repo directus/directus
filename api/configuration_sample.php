@@ -177,9 +177,9 @@ return [
         '404imageLocation' => __DIR__ . '/../thumbnail/img-not-found.png',
         'supportedThumbnailDimensions' => [
             // width x height
-            '100x100',
-            '300x200',
-            '100x200',
+            // '100x100',
+            // '300x200',
+            // '100x200',
         ],
         'supportedQualityTags' => [
             'poor' => 25,

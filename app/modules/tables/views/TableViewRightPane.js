@@ -1,6 +1,7 @@
 define([
   'app',
   'underscore',
+  'utils',
   'core/t',
   'core/notification',
   'backbone',
@@ -9,7 +10,7 @@ define([
   'core/RightPane',
   'core/ListViewManager',
   'dragula'
-], function(app, _, __t, Notification, Backbone, EditView, FakeTableModel, RightPane, ListViewManager, Dragula) {
+], function(app, _, Utils, __t, Notification, Backbone, EditView, FakeTableModel, RightPane, ListViewManager, Dragula) {
 
   return RightPane.extend({
 
@@ -147,7 +148,8 @@ define([
       var structure = collection.structure;
       var preferences = collection.preferences;
       var data = collection ? collection.toJSON() : {};
-      var visibleColumns = preferences.get('columns_visible').split(',');
+      // TODO: Add getVisibleColumns method to prefereces model
+      var visibleColumns = Utils.parseCSV(preferences.get('columns_visible'));
       var selectedSpacing = this.baseView.getSpacing();
       var viewOptions = this.baseView.table.getViewOptions();
 

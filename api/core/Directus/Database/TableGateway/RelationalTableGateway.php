@@ -67,10 +67,15 @@ class RelationalTableGateway extends BaseTableGateway
         'nbetween' => ['operator' => 'between', 'not' => true],
     ];
 
+    public function updateRecord($recordData, $activityEntryMode = self::ACTIVITY_ENTRY_MODE_PARENT)
+    {
+        return $this->manageRecordUpdate($this->getTable(), $recordData, $activityEntryMode);
+    }
+
     public function manageRecordUpdate($tableName, $recordData, $activityEntryMode = self::ACTIVITY_ENTRY_MODE_PARENT, &$childLogEntries = null, &$parentCollectionRelationshipsChanged = false, $parentData = [])
     {
         $TableGateway = $this;
-        if ($tableName !== $this->table) {
+        if ($tableName !== $this->getTable()) {
             $TableGateway = new RelationalTableGateway($tableName, $this->adapter, $this->acl);
         }
 
@@ -677,11 +682,6 @@ class RelationalTableGateway extends BaseTableGateway
 
         $columns = array_unique(array_merge($visibleColumns, $columns));
 
-        // Pick non-forbidden columns
-        if (empty($columns)) {
-            $columns = TableSchema::getAllTableColumnsName($this->getTable());
-        }
-
         // Add columns to params if it's not empty.
         // otherwise remove from params
         if (!empty($columns)) {
@@ -827,17 +827,14 @@ class RelationalTableGateway extends BaseTableGateway
         }
 
         $params = $this->applyDefaultEntriesSelectParams($params);
-        // @TODO: Create a new TableGateway Query Builder based on Query\Builder
+
+        $columns = ArrayUtils::get($params, 'columns', $tableSchema->getColumnsName());
+        $columns = array_unique(array_merge($tableSchema->getPrimaryKeysName(), $columns));
+        $nonAliasColumns = ArrayUtils::intersection($columns, $tableSchema->getNonAliasColumnsName());
+
+        // TODO: Create a new TableGateway Query Builder based on Query\Builder
         $builder = new Builder($this->getAdapter());
         $builder->from($this->getTable());
-
-        if (ArrayUtils::has($params, 'columns')) {
-            $columns = array_unique(array_merge($tableSchema->getPrimaryKeysName(), ArrayUtils::get($params, 'columns', [])));
-        } else {
-            $columns = $tableSchema->getColumnsName();
-        }
-
-        $nonAliasColumns = ArrayUtils::intersection($columns, $tableSchema->getNonAliasColumnsName());
         $builder->columns($nonAliasColumns);
         $builder = $this->applyParamsToTableEntriesSelect($params, $builder, $tableSchema, $hasActiveColumn);
 
@@ -882,15 +879,20 @@ class RelationalTableGateway extends BaseTableGateway
         // it should be included because each row gateway expects the primary key
         // after all the row gateway are created and initiated it only returns the chosen columns
         if (ArrayUtils::has($params, 'columns')) {
-            $primaryKeysName = $tableSchema->getPrimaryKeysName();
-            if (!ArrayUtils::contains(array_flip(ArrayUtils::get($params, 'columns')), $primaryKeysName)) {
-                $results = array_map(function ($entry) use ($primaryKeysName) {
-                    return ArrayUtils::omit($entry, $primaryKeysName);
-                }, $results);
-            }
+            $visibleColumns = ArrayUtils::get($params, 'columns');
+
+            $results = array_map(function ($entry) use ($visibleColumns) {
+                foreach ($entry as $key => $value) {
+                    if (!in_array($key, $visibleColumns)) {
+                        $entry = ArrayUtils::omit($entry, $key);
+                    }
+                }
+
+                return $entry;
+            }, $results);
         }
 
-        if (ArrayUtils::get($params, $this->primaryKeyFieldName)) {
+        if (ArrayUtils::get($params, 'id')) {
             $results = reset($results);
         }
 
@@ -956,6 +958,7 @@ class RelationalTableGateway extends BaseTableGateway
                 $logical = $condition['logical'];
                 unset($condition['logical']);
             }
+
             $operator = is_array($condition) ? key($condition) : '=';
             $value = is_array($condition) ? current($condition) : $condition;
             $not = false;
@@ -990,7 +993,7 @@ class RelationalTableGateway extends BaseTableGateway
                 $this->getColumnFromIdentifier($column)
             );
 
-            if (in_array($operator, ['all', 'has']) && in_array($relationship->getType(), ['ONETOMANY', 'MANYTOMANY'])) {
+            if (in_array($operator, ['all', 'has']) && $relationship && in_array($relationship->getType(), ['ONETOMANY', 'MANYTOMANY'])) {
                 if ($operator == 'all' && is_string($value)) {
                     $value = array_map(function ($item) {
                         return trim($item);
@@ -1018,7 +1021,27 @@ class RelationalTableGateway extends BaseTableGateway
                 }
             }
 
-            call_user_func_array([$query, $method], $arguments);
+            // TODO: Move this into QueryBuilder if possible
+            if (in_array($operator, ['like']) && $relationship && $relationship->isManyToOne()) {
+                $relatedTable = $relationship->getRelatedTable();
+                $tableSchema = TableSchema::getTableSchema($relatedTable);
+                $relatedTableColumns = $tableSchema->getColumns();
+                $relatedPrimaryColumnName = $tableSchema->getPrimaryColumn();
+                $query->orWhereRelational($this->getColumnFromIdentifier($column), $relatedTable, $relatedPrimaryColumnName, function (Builder $query) use ($column, $relatedTable, $relatedTableColumns, $value) {
+                    $query->nestOrWhere(function (Builder $query) use ($relatedTableColumns, $relatedTable, $value) {
+                        foreach ($relatedTableColumns as $column) {
+                            // NOTE: Only search numeric or string type columns
+                            $isNumeric = $this->getSchemaManager()->isNumericType($column->getType());
+                            $isString = $this->getSchemaManager()->isStringType($column->getType());
+                            if (!$column->isAlias() && ($isNumeric || $isString)) {
+                                $query->orWhereLike($column->getName(), $value);
+                            }
+                        }
+                    });
+                });
+            } else {
+                call_user_func_array([$query, $method], $arguments);
+            }
         }
     }
 
@@ -1348,11 +1371,11 @@ class RelationalTableGateway extends BaseTableGateway
             }
 
             // Only select the fields not on the currently authenticated user group's read field blacklist
-            $columns = TableSchema::getAllNonAliasTableColumnNames($relatedTableName);
             $relationalColumnName = $alias->getRelationship()->getJunctionKeyRight();
             $tableGateway = new RelationalTableGateway($relatedTableName, $this->adapter, $this->acl);
             $results = $tableGateway->loadEntries(array_merge([
-                'columns' => $columns,
+                // Fetch all related data
+                'limit' => -1,
                 'filters' => [
                     $relationalColumnName => ['in' => $ids]
                 ],
@@ -1456,7 +1479,11 @@ class RelationalTableGateway extends BaseTableGateway
             };
 
             $results = $relatedTableGateway->loadEntries(array_merge([
-                'columns' => $relatedTableColumns,
+                // Fetch all related data
+                'limit' => -1,
+                // Add the aliases of the join columns to prevent being removed from array
+                // because there aren't part of the "visible" columns list
+                // 'columns' => array_merge($relatedTableColumns, array_keys($joinColumns)),
                 'filters' => [
                     $relatedTableGateway->getColumnIdentifier($junctionKeyLeftColumn, $junctionTableName) => [
                         'in' => $ids
@@ -1552,7 +1579,7 @@ class RelationalTableGateway extends BaseTableGateway
                 $tempRow = $row;
                 $_byId = [];
                 foreach ($tempRow as $item) {
-                    $_byId[$item[$primaryKey]] = $item;
+                    $_byId[$item[$relatedTablePrimaryKey]] = $item;
                 }
 
                 $row = [];
@@ -1647,10 +1674,9 @@ class RelationalTableGateway extends BaseTableGateway
             }
 
             // Fetch the foreign data
-            $columnNames = TableSchema::getAllNonAliasTableColumnNames($relatedTable);
-
             $results = $tableGateway->loadEntries(array_merge([
-                'columns' => $columnNames,
+                // Fetch all related data
+                'limit' => -1,
                 'filters' => [
                     $primaryKeyName=> ['in' => $ids]
                 ],
@@ -1715,7 +1741,7 @@ class RelationalTableGateway extends BaseTableGateway
     {
         $entries = ArrayUtils::isNumericKeys($entries) ? $entries : [$entries];
         foreach ($entries as $entry) {
-            $entry = $this->manageRecordUpdate($this->table, $entry);
+            $entry = $this->updateRecord($entry);
             $entry->save();
         }
     }

@@ -1,22 +1,30 @@
 /* global _ */
-define(['app', 'moment', 'core/UIComponent', 'core/UIView', 'core/t'], function (app, moment, UIComponent, UIView, __t) {
+define([
+  'app',
+  'moment',
+  'core/UIComponent',
+  'core/UIView',
+  'core/t'
+], function (app, moment, UIComponent, UIView, __t) {
   'use strict';
 
   function getTimeData(value) {
-    if (!value) {
-      return;
+    var date = new Date();
+    var timeParts;
+    var hours;
+    var minutes;
+    var seconds;
+
+    if (value) {
+      timeParts = (value || '').split(':');
+      date.setHours(parseInt(timeParts[0], 10));
+      date.setMinutes(parseInt(timeParts[1], 10) || 0);
+      date.setSeconds(parseInt(timeParts[2], 10) || 0);
     }
 
-    var date = new Date();
-    var timeParts = (value || '').split(':');
-
-    date.setHours(parseInt(timeParts[0], 10));
-    date.setMinutes(parseInt(timeParts[1], 10) || 0);
-    date.setSeconds(parseInt(timeParts[2], 10) || 0);
-
-    var hours = (date.getHours() < 10 ? '0' : '') + date.getHours();
-    var minutes = (date.getMinutes() < 10 ? '0' : '') + date.getMinutes();
-    var seconds = (date.getSeconds() < 10 ? '0' : '') + date.getSeconds();
+    hours = (date.getHours() < 10 ? '0' : '') + date.getHours();
+    minutes = (date.getMinutes() < 10 ? '0' : '') + date.getMinutes();
+    seconds = (date.getSeconds() < 10 ? '0' : '') + date.getSeconds();
 
     return {
       hours: hours,
@@ -35,17 +43,20 @@ define(['app', 'moment', 'core/UIComponent', 'core/UIView', 'core/t'], function 
       'click .now': 'makeNow'
     },
 
-    makeNow: function () {
+    getFormat: function () {
       var timeFormat = 'HH:mm';
 
       if (this.options.settings.get('include_seconds') === true) {
         timeFormat += ':ss';
       }
 
-      this.value = moment().format(timeFormat);
-      this.updateValue();
+      return timeFormat;
+    },
 
+    makeNow: function () {
+      this.value = moment().format(this.getFormat());
       this.render();
+      this.updateValue();
     },
 
     getTime: function () {
@@ -107,7 +118,7 @@ define(['app', 'moment', 'core/UIComponent', 'core/UIView', 'core/t'], function 
   var Component = UIComponent.extend({
     id: 'time',
     dataTypes: ['TIME'],
-    variables: [
+    options: [
       {
         id: 'read_only',
         ui: 'toggle',
@@ -124,13 +135,13 @@ define(['app', 'moment', 'core/UIComponent', 'core/UIView', 'core/t'], function 
       }
     ],
     Input: Input,
-    validate: function (value, options) {
-      if (options.schema.isRequired() && _.isEmpty(value)) {
+    validate: function (value, interfaceOptions) {
+      if (interfaceOptions.schema.isRequired() && _.isEmpty(value)) {
         return __t('this_field_is_required');
       }
     },
-    list: function (options) {
-      var data = getTimeData(options.value, options);
+    list: function (interfaceOptions) {
+      var data = getTimeData(interfaceOptions.value, interfaceOptions);
 
       if (!data) {
         return '-';
@@ -140,7 +151,7 @@ define(['app', 'moment', 'core/UIComponent', 'core/UIView', 'core/t'], function 
       var minutes = data.minutes;
       var seconds = data.seconds;
       var meridiem = data.meridiem;
-      var settings = options.settings;
+      var settings = interfaceOptions.settings;
       var includeSeconds = settings.get('include_seconds') === true;
 
       return hours + ':' + minutes + (includeSeconds ? ':' + seconds : '') + ' ' + meridiem;

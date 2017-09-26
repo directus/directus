@@ -9,7 +9,7 @@ define([
   return UIComponent.extend({
     id: 'tags',
     dataTypes: ['VARCHAR', 'CHAR', 'TINYTEXT', 'TEXT', 'MEDIUMTEXT', 'LONGTEXT'],
-    variables: [
+    options: [
       {
         id: 'read_only',
         ui: 'toggle',
@@ -27,13 +27,13 @@ define([
       // TODO: Include spaces in CSV value
     ],
     Input: Input,
-    validate: function (value, options) {
-      if (options.schema.isRequired() && _.isEmpty(value)) {
+    validate: function (value, interfaceOptions) {
+      if (interfaceOptions.schema.isRequired() && _.isEmpty(value)) {
         return __t('this_field_is_required');
       }
     },
-    list: function (options) {
-      var tags = options.model.attributes.tags ? options.model.attributes.tags.split(',') : [];
+    list: function (interfaceOptions) {
+      var tags = (interfaceOptions.value || '').split(',');
 
       if (tags.length > 0) {
         for (var i = 0; i < tags.length; i++) {
@@ -42,7 +42,8 @@ define([
 
         return '<span class="tag-container"><div class="fade-out"></div>' + tags.join(' ') + '</span>';
       }
-      return options.model.attributes.tags;
+
+      return value;
     }
   });
 });

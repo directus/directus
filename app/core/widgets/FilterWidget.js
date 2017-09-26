@@ -3,9 +3,10 @@ define([
   'core/t',
   'backbone',
   'underscore',
+  'utils',
   'helpers/sort',
   'handlebars'
-], function (app, __t, Backbone, _, SortHelper, Handlebars) {
+], function (app, __t, Backbone, _, Utils, SortHelper, Handlebars) {
 
   'use strict';
 
@@ -248,7 +249,7 @@ define([
 
     processFilterChange: function (event) {
       var $element = $(event.target);
-      var $filter = $(event.target).parent();
+      var $filter = $(event.target).closest('.column-filter');
       var type = 'like';
       var hasSearch = false;
       var index = $filter.index();
@@ -368,7 +369,7 @@ define([
       var structure = this.collection.structure;
       var table = this.collection.getTable();
       var statusColumnName = table.getStatusColumnName();
-      var statusSelected = (this.collection.getFilter('status') || '').split(',') || [1, 2];
+      var statusSelected = Utils.parseCSV(this.collection.getFilter('status')) || [1, 2];
 
       statusSelected = _.map(statusSelected, function(value) {
         return Number(value);
@@ -394,7 +395,11 @@ define([
       data.filters = (this.options.filters || []).slice();
       data.tableColumns = _.difference(structure.pluck('id'), [app.statusMapping.status_name]);
       if (this.collection.table.get('filter_column_blacklist')) {
-        data.tableColumns = _.difference(data.tableColumns, this.collection.table.get('filter_column_blacklist').split(','));
+        // TODO: Add filter column blacklist method on table model
+        data.tableColumns = _.difference(
+          data.tableColumns,
+          Utils.parseCSV(this.collection.table.get('filter_column_blacklist'))
+        );
       }
 
       data.tableColumns.sort(SortHelper.arraySort);
@@ -403,21 +408,24 @@ define([
       _.each(this.options.filters, function (item, i) {
         if (item.relatedCollection) {
           data.filters[i].relatedEntries = [];
-          if(item.columnModel.options.has('filter_column')) {
-            var visibleColumn = item.columnModel.options.get('filter_column');
-          } else {
-            var visibleColumn = item.columnModel.options.get('visible_column');
-          }
+
           var displayTemplate = Handlebars.compile(item.columnModel.options.get('visible_column_template'));
-          item.relatedCollection.each(function(model) {
-            data.filters[i].relatedEntries.push({visible_column:model.get('id'), visible_column_template: displayTemplate(model.attributes)});
+          item.relatedCollection.each(function (model) {
+            data.filters[i].relatedEntries.push({
+              selected: item.filterData.value == model.id,
+              visible_column: model.id,
+              visible_column_template: displayTemplate(model.attributes)
+            });
           });
 
           data.filters[i].relatedEntries = _.sortBy(data.filters[i].relatedEntries, 'visible_column_template');
         } else if (item.dropdownValues) {
           data.filters[i].relatedEntries = [];
           _.each(item.dropdownValues, function(model) {
-            data.filters[i].relatedEntries.push({visible_column:model, visible_column_template: model});
+            data.filters[i].relatedEntries.push({
+              visible_column:model,
+              visible_column_template: model
+            });
           });
         } else {
           // Global filters doesn't have a columnName property
@@ -444,6 +452,7 @@ define([
       data.filters = _.compact(data.filters);
       data.searchString = this.searchString;
       data.hasFilters = this.options.filters.length > 0;
+
       return data;
     },
 

@@ -4,6 +4,7 @@ define(function(require, exports, module) {
 
   var app       = require('app');
   var _         = require('underscore');
+  var Utils     = require('utils');
   var Backbone  = require('backbone');
   var __t       = require('core/t');
   var $         = require('jquery');
@@ -101,7 +102,7 @@ define(function(require, exports, module) {
     },
 
     getStatuses: function () {
-      return this.get('status').split(',');
+      return Utils.parseCSV(this.get('status'));
     },
 
     getListViewOptions: function (attr) {

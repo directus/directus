@@ -14,6 +14,7 @@ define(function (require, exports, module) {
       directus         = require('directus'),
       Backbone         = require('backbone'),
       _                = require('underscore'),
+      Utils            = require('utils'),
       Notification     = require('core/notification'),
       WelcomeModal     = require('core/modals/welcome'),
       //Directus       = require('core/directus'),
@@ -89,8 +90,10 @@ define(function (require, exports, module) {
           this.routeHistory.routes = {};
         }
 
+        this.routeHistory.subrouteId = null;
+
         var currentRoute = _.last(this.routeHistory.stack);
-        var nextRoute = {route: name, path: fragment, args: this.getRouteParameters(route, fragment)};
+        var nextRoute = {route: name, path: fragment, args: this.getRouteParameters(route, fragment), subroutes: []};
 
         // Exists
         if(currentRoute && nextRoute) {
@@ -226,10 +229,19 @@ define(function (require, exports, module) {
 
     openViewInModal: function (view) {
       var containerView = this.v.main.getView('#modal_container');
+      var router = this;
 
       if (!containerView || containerView.isOpen()) {
         return;
       }
+
+      // Re-enable for back button working with modals
+      // this.navigateToSubroute('modal', arguments, view);
+      // view.on('close', function() {
+      //   if(router.isCurrentSubrouteView(view)) {
+      //     Backbone.history.history.back();
+      //   }
+      // });
 
       containerView.show(view);
     },
@@ -289,6 +301,7 @@ define(function (require, exports, module) {
         return false;
       }
 
+      this.navigateToSubroute('overlay', arguments, view);
       this.v.main.insertView('#content', view).render();
 
       var that = this;
@@ -767,9 +780,81 @@ define(function (require, exports, module) {
       }
     },
 
+    navigateToSubroute: function(type, callArguments, view) {
+      var parentRoute = _.last(this.routeHistory.stack);
+      var subroute = {
+        type: type,
+        callArguments: callArguments,
+        view: view
+      };
+
+      var subrouteId = parentRoute.subroutes.push(subroute) - 1;
+      this.routeHistory.subrouteId = subrouteId;
+
+      Backbone.history.history.pushState({
+        subrouteId: subrouteId
+      }, document.title, Backbone.history.root + Backbone.history.fragment);
+    },
+
+    checkUrlForSubroute: function(e) {
+      var newSubrouteId = (e.state) ? e.state.subrouteId : null;
+      var previousSubrouteId = this.routeHistory.subrouteId;
+      var route = _.last(this.routeHistory.stack);
+      var subroutes = route['subroutes'];
+
+      // if previous and new are equal, then we don't need to do anything - it was already done before
+      // (and, probably, it was done better)
+      if((!_.isNumber(previousSubrouteId) && !_.isNumber(newSubrouteId)) ||
+        (previousSubrouteId == newSubrouteId))
+      {
+        return;
+      }
+
+      var toOrdinal = function(value) {
+        return (_.isNumber(value)) ? value + 1 : 0;
+      };
+
+      if(toOrdinal(newSubrouteId) > toOrdinal(previousSubrouteId)) {
+        return Backbone.history.history.go(toOrdinal(previousSubrouteId) - toOrdinal(newSubrouteId));
+      }
+
+      if(_.isNumber(previousSubrouteId) && subroutes[previousSubrouteId]) {
+        var previousSubroute = subroutes[previousSubrouteId];
+
+        switch(previousSubroute.type) {
+          case 'modal':
+            previousSubroute.view.close(true);
+            break;
+          case 'overlay':
+            this.removeOverlayPage(previousSubroute.view);
+            break;
+        }
+      }
+
+      this.routeHistory.subrouteId = newSubrouteId;
+      route['subroutes'] = route['subroutes'].slice(0, toOrdinal(newSubrouteId));
+    },
+
+    isCurrentSubrouteView: function(view) {
+      var subrouteId = this.routeHistory.subrouteId
+      return (_.isNumber(subrouteId) && _.last(this.routeHistory.stack)['subroutes'][subrouteId].view === view);
+    },
+
     initialize: function (options) {
-      this.navBlacklist = (options.navPrivileges.get('nav_blacklist') || '').split(',');
-      // @todo: Allow a queue of pending alerts, maybe?
+      window.addEventListener('popstate', function (event) {
+        Backbone.trigger('popstate', event);
+      });
+      this.listenTo(Backbone, 'popstate', this.checkUrlForSubroute);
+
+      var historyState = Backbone.history.history.state;
+      if(historyState && _.isNumber(historyState.subrouteId)) {
+        window.history.go(-(historyState.subrouteId+1));
+      }
+
+      // TODO: Make this into a function
+      // to check whether the nav is blacklisted or not
+      this.navBlacklist = app.user.get('group').getNavBlacklist();
+      // TODO: Allow a queue of pending alerts, maybe?
       this.pendingAlert = {};
 
       //Fade out and remove splash

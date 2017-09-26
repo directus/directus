@@ -7,7 +7,7 @@ define([
   return UIComponent.extend({
     id: 'numeric',
     dataTypes: SchemaHelper.getNumericInterfaceTypes(),
-    variables: [
+    options: [
       {
         id: 'read_only',
         ui: 'toggle',
@@ -46,10 +46,10 @@ define([
       }
     ],
     Input: Input,
-    validate: function (value, options) {
-      var inputView = options.view;
+    validate: function (value, interfaceOptions) {
+      var inputView = interfaceOptions.view;
 
-      if (options.schema.isRequired() && value !== 0 && !value) {
+      if (interfaceOptions.schema.isRequired() && value !== 0 && !value) {
         return __t('this_field_is_required');
       }
 
@@ -57,15 +57,15 @@ define([
         return __t('confirm_invalid_value');
       }
     },
-    list: function (options) {
-      var value = options.value;
+    list: function (interfaceOptions) {
+      var value = interfaceOptions.value;
 
       if (isNaN(Number(value))) {
         value = '<span class="silver">--</span>';
       } else {
         value = Number(value);
 
-        if (options.settings.get('localized')) {
+        if (interfaceOptions.settings.get('localized')) {
           value = value.toLocaleString();
         }
       }

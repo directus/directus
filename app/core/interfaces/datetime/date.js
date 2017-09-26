@@ -1,10 +1,20 @@
 /* global _ */
-define(['app', 'core/UIComponent', 'core/UIView', 'moment', 'helpers/ui', 'core/t'], function (app, UIComponent, UIView, moment, UIHelper, __t) {
+define([
+  'app',
+  'underscore',
+  'core/UIComponent',
+  'core/UIView',
+  'moment',
+  'helpers/ui',
+  'core/t'
+], function (app, _, UIComponent, UIView, moment, UIHelper, __t) {
   'use strict';
 
   function removeTimeFromFormat(format) {
     return format.replace(/(A|a|H|h|m|s|S|z|Z|x|X)/g, '');
   }
+
+  var dateFormat = 'YYYY-MM-DD';
 
   var Input = UIView.extend({
     template: 'datetime/input',
@@ -15,6 +25,17 @@ define(['app', 'core/UIComponent', 'core/UIView', 'moment', 'helpers/ui', 'core/
       'change input.date': 'updateValue',
       'change input.time': 'updateValue',
       'click .now': 'makeNow'
+    },
+
+    getFormat: function () {
+      return dateFormat;
+    },
+
+    unsavedChange: function () {
+      // NOTE: Only set the new value (mark changed) if the value has changed
+      if (this.value && (this.model.isNew() || this.model.hasChanges(this.name))) {
+        return this.value.format(this.getFormat());
+      }
     },
 
     supportsTime: function (type) {
@@ -32,7 +53,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'moment', 'helpers/ui', 'core/
     getDate: function () {
       return {
         value: this.$('input[type=date]').val(),
-        format: 'YYYY-MM-DD'
+        format: dateFormat
       };
     },
 
@@ -43,7 +64,8 @@ define(['app', 'core/UIComponent', 'core/UIView', 'moment', 'helpers/ui', 'core/
       var newValue = '';
 
       if (moment(value).isValid()) {
-        newValue = moment(value).format(format);
+        this.value = moment(value);
+        newValue = this.value.format(format);
       }
 
       this.$('#' + this.name).val(newValue);
@@ -52,15 +74,11 @@ define(['app', 'core/UIComponent', 'core/UIView', 'moment', 'helpers/ui', 'core/
 
     serialize: function () {
       var settings = this.options.settings;
-      if (settings.get('auto-populate_when_hidden_and_null') === true && !this.value.isValid()) {
-        this.value = moment();
-      }
-
-      var date = this.value;
-      var dateValue = date.format('YYYY-MM-DD');
+      var isValid = this.value.isValid();
+      var dateValue = isValid ? this.value.format(dateFormat) : null;
 
       return {
-        hasValue: this.value.isValid(),
+        hasValue: isValid,
         useDate: true,
         useTime: false,
         dateValue: dateValue,
@@ -72,18 +90,26 @@ define(['app', 'core/UIComponent', 'core/UIView', 'moment', 'helpers/ui', 'core/
 
     initialize: function () {
       var value = this.model.get(this.name);
+      var settings = this.options.settings;
+
       if (undefined === value) {
-        this.value = moment('0000-00-00');
+        value = moment('0000-00-00');
       } else {
-        this.value = moment(value);
+        value = moment(value);
       }
+
+      if (settings.get('auto-populate_when_hidden_and_null') === true && !value.isValid()) {
+        value = moment();
+      }
+
+      this.value = value;
     }
   });
 
   var Component = UIComponent.extend({
     id: 'date',
     dataTypes: ['DATE'],
-    variables: [
+    options: [
       {
         id: 'read_only',
         ui: 'toggle',
@@ -118,8 +144,8 @@ define(['app', 'core/UIComponent', 'core/UIView', 'moment', 'helpers/ui', 'core/
       }
     ],
     Input: Input,
-    validate: function (value, options) {
-      if (options.schema.isRequired() && _.isEmpty(value)) {
+    validate: function (value, interfaceOptions) {
+      if (interfaceOptions.schema.isRequired() && _.isEmpty(value)) {
         return __t('this_field_is_required');
       }
 
@@ -130,12 +156,12 @@ define(['app', 'core/UIComponent', 'core/UIView', 'moment', 'helpers/ui', 'core/
 
       return 'Not a valid date';
     },
-    list: function (options) {
-      var value = options.value;
-      var format = this.getFormat(options);
+    list: function (interfaceOptions) {
+      var value = interfaceOptions.value;
+      var format = this.getFormat(interfaceOptions);
 
-      if (options.settings.get('contextual_date_in_listview') === true) {
-        var momentDate = moment(options.value);
+      if (interfaceOptions.settings.get('contextual_date_in_listview') === true) {
+        var momentDate = moment(interfaceOptions.value);
         value = '-';
         if (momentDate.isValid()) {
           value = momentDate.fromNow();
@@ -146,13 +172,13 @@ define(['app', 'core/UIComponent', 'core/UIView', 'moment', 'helpers/ui', 'core/
 
       return value;
     },
-    getFormat: function (options) {
-      var format = options.settings.get('format');
+    getFormat: function (interfaceOptions) {
+      var format = interfaceOptions.settings.get('format');
 
       return removeTimeFromFormat(format);
     },
-    sort: function (options) {
-      return options.value;
+    sort: function (interfaceOptions) {
+      return interfaceOptions.value;
     }
   });
 

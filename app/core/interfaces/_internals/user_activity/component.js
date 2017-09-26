@@ -5,10 +5,10 @@ define(['app', 'core/UIComponent', 'core/UIView', 'moment', 'core/t'], function 
     system: true,
     sortBy: 'last_login',
     Input: UIView,
-    list: function (options) {
-      if (options.model.get('last_access') !== null) {
+    list: function (interfaceOptions) {
+      if (interfaceOptions.model.get('last_access') !== null) {
         var pageSummary = '';
-        var lastPage = $.parseJSON(options.model.get('last_page')) || {};
+        var lastPage = $.parseJSON(interfaceOptions.model.get('last_page')) || {};
         if (undefined === lastPage.param) {
           pageSummary += __t('directus_user_activity_route_action', {
             route: app.capitalize(lastPage.route)
@@ -37,7 +37,7 @@ define(['app', 'core/UIComponent', 'core/UIView', 'moment', 'core/t'], function 
               break;
           }
         }
-        var activityTime = options.model.get('last_access');
+        var activityTime = interfaceOptions.model.get('last_access');
         return '<a href="#' + lastPage.path + '" title="' + activityTime + '">' + pageSummary + ' ' + moment(activityTime).fromNow() + '</a>';
       }
       return '<a href="#">' + __t('directus_user_activity_never_logged_in') + '</a>';

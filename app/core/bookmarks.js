@@ -179,9 +179,7 @@ function(app, Backbone, _, EntriesManager, __t, Notification) {
       var bookmarks = {table:[],search:[],extension:[],other:[]};
       var isCustomBookmarks = this.isCustomBookmarks;
       var currentUserGroup = app.user.get('group');
-      var navBlacklist = (currentUserGroup.get('nav_blacklist') || '').split(',').map(function (name) {
-        return name.trim();
-      });
+      var navBlacklist = currentUserGroup.getNavBlacklist();
 
       this.collection.each(function (model) {
         var bookmark = model.toJSON();

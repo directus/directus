@@ -147,6 +147,28 @@ class Files
     }
 
     /**
+     * Gets the mime-type from the content type
+     *
+     * @param $contentType
+     *
+     * @return string
+     */
+    protected function getMimeTypeFromContentType($contentType)
+    {
+        // split the data type if it has charset or boundaries set
+        // ex: image/jpg;charset=UTF8
+        if (strpos($contentType, ';') !== false) {
+            $contentType = array_map('trim', explode(';', $contentType));
+        }
+
+        if (is_array($contentType)) {
+            $contentType = $contentType[0];
+        }
+
+        return $contentType;
+    }
+
+    /**
      * Get Image from URL
      *
      * @param $url
@@ -170,7 +192,8 @@ class Files
 
         $info = [];
 
-        $contentType = is_array($urlHeaders['Content-Type']) ? $urlHeaders['Content-Type'][0] : $urlHeaders['Content-Type'];
+        $contentType = $this->getMimeTypeFromContentType($urlHeaders['Content-Type']);
+
         if (strpos($contentType, 'image/') === false) {
             return $info;
         }
@@ -183,11 +206,11 @@ class Files
 
         list($width, $height) = getimagesizefromstring($content);
 
-        $data = 'data:' . $urlHeaders['Content-Type'] . ';base64,' . base64_encode($content);
+        $data = 'data:' . $contentType . ';base64,' . base64_encode($content);
         $info['title'] = $urlInfo['filename'];
         $info['name'] = $urlInfo['basename'];
         $info['size'] = isset($urlHeaders['Content-Length']) ? $urlHeaders['Content-Length'] : 0;
-        $info['type'] = $urlHeaders['Content-Type'];
+        $info['type'] = $contentType;
         $info['width'] = $width;
         $info['height'] = $height;
         $info['data'] = $data;
@@ -632,20 +655,22 @@ class Files
     public function getLinkInfo($link)
     {
         $fileData = [];
+        $width = 0;
+        $height = 0;
 
         $urlHeaders = get_headers($link, 1);
-        $urlInfo = pathinfo($link);
+        $contentType = $this->getMimeTypeFromContentType($urlHeaders['Content-Type']);
 
-        if (strpos($urlHeaders['Content-Type'], 'image/') === 0) {
+        if (strpos($contentType, 'image/') === 0) {
             list($width, $height) = getimagesize($link);
         }
 
         $urlInfo = pathinfo($link);
         $linkContent = file_get_contents($link);
-        $url = 'data:' . $urlHeaders['Content-Type'] . ';base64,' . base64_encode($linkContent);
+        $url = 'data:' . $contentType . ';base64,' . base64_encode($linkContent);
 
         $fileData = array_merge($fileData, [
-            'type' => $urlHeaders['Content-Type'],
+            'type' => $contentType,
             'name' => $urlInfo['basename'],
             'title' => $urlInfo['filename'],
             'charset' => 'binary',

@@ -10,10 +10,8 @@ define(['utils', 'underscore', 'core/UIView'], function (Utils, _, UIView) {
     },
 
     unsavedChange: function () {
-      var mirroredField = this.getMirroredFieldName();
-      var model = this.options.model;
-
-      if (Utils.isSomething(model.get(mirroredField))) {
+      // NOTE: Only set the new value (mark changed) if the value has changed or the model is new
+      if (this.slugValue && (this.model.isNew() || this.model.hasChanges(this.name))) {
         return this.slugValue;
       }
     },

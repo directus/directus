@@ -125,6 +125,7 @@ define([
         data.monthName = moment(date).format('MMMM');
         data.month = parseInt(moment(date).format('M'), 10);
         data.year = parseInt(moment(date).format('YYYY'), 10);
+        data.daysName = moment.weekdaysShort();
 
         var startDate = moment([data.year, data.month - 1]).format();
         var dayOfTheWeek = parseInt(moment(startDate).format('d'), 10);
@@ -228,11 +229,12 @@ define([
         this.collection.each(function(model) {
           var date = dateColumn ? model.get(dateColumn.id) : null;
           var published = !model.isSubduedInListing();
+          var timeFormat = moment.localeData().longDateFormat('LT');
 
           if (date && parseInt(moment(date).format('D'), 10) === day) {
             data.push({
               title: titleColumn ? model.get(titleColumn.id) : '',
-              time: isUsingDateTime ? moment(date).format('h:mm a') : null,
+              time: isUsingDateTime ? moment(date).format(timeFormat) : null,
               fullDate: moment(date).format(),
               published: published,
               id: model.id,

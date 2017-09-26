@@ -1,11 +1,16 @@
 /* global _ */
-define(['./interface', 'core/UIComponent', 'core/t'], function (Input, UIComponent, __t) {
+define([
+  'underscore',
+  './interface',
+  'core/UIComponent',
+  'core/t'
+], function (_, Input, UIComponent, __t) {
   'use strict';
 
   return UIComponent.extend({
     id: 'slug',
     dataTypes: ['VARCHAR', 'CHAR', 'TINYTEXT', 'TEXT', 'MEDIUMTEXT', 'LONGTEXT'],
-    variables: [
+    options: [
       {
         id: 'read_only',
         ui: 'toggle',
@@ -45,13 +50,15 @@ define(['./interface', 'core/UIComponent', 'core/t'], function (Input, UICompone
       }
     ],
     Input: Input,
-    validate: function (value, options) {
-      if (options.schema.isRequired() && _.isEmpty(value)) {
+    validate: function (value, interfaceOptions) {
+      if (interfaceOptions.schema.isRequired() && _.isEmpty(value)) {
         return __t('this_field_is_required');
       }
     },
-    list: function (options) {
-      return (options.value) ? options.value.toString().replace(/<(?:.|\n)*?>/gm, '').substr(0, 100) : '';
+    list: function (interfaceOptions) {
+      return (interfaceOptions.value)
+        ? interfaceOptions.value.toString().replace(/<(?:.|\n)*?>/gm, '').substr(0, 100)
+        : '';
     }
   });
 });
