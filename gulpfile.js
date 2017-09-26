@@ -378,7 +378,8 @@ gulp.task('move', function() {
     './storage/uploads/00000000001.jpg',
     './storage/uploads/thumbs/1.jpg',
     //'./media_auth_proxy/client_auth_proxies/.gitignore',
-    './customs/listviews/.gitignore'
+    './customs/listviews/.gitignore',
+    './thumbnail/*'
   ];
 
   var mainFiles = gulp.src(filesToMove, { base: './' })
