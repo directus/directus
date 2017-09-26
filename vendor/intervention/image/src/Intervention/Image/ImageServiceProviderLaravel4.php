@@ -32,7 +32,7 @@ class ImageServiceProviderLaravel4 extends ServiceProvider
                 $config->set('imagecache::templates.original', null);
 
                 // setup image manipulator route
-                $app['router']->get($config->get('imagecache::route').'/{template}/{filename}', array('as' => 'imagecache', function ($template, $filename) use ($app, $config) {
+                $app['router']->get($config->get('imagecache::route').'/{template}/{filename}', ['as' => 'imagecache', function ($template, $filename) use ($app, $config) {
 
                     // disable session cookies for image route
                     $app['config']->set('session.driver', 'array');
@@ -83,13 +83,13 @@ class ImageServiceProviderLaravel4 extends ServiceProvider
                     $mime = finfo_buffer(finfo_open(FILEINFO_MIME_TYPE), $content);
 
                     // return http response
-                    return new IlluminateResponse($content, 200, array(
+                    return new IlluminateResponse($content, 200, [
                         'Content-Type' => $mime,
                         'Cache-Control' => 'max-age='.($config->get('imagecache::lifetime')*60).', public',
                         'Etag' => md5($content)
-                    ));
+                    ]);
 
-                }))->where(array('template' => join('|', array_keys($config->get('imagecache::templates'))), 'filename' => '[ \w\\.\\/\\-]+'));
+                }])->where(['template' => join('|', array_keys($config->get('imagecache::templates'))), 'filename' => '[ \w\\.\\/\\-]+']);
             }
         }
     }

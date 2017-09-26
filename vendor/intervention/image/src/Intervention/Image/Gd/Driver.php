@@ -76,6 +76,8 @@ class Driver extends \Intervention\Image\AbstractDriver
         $clone = imagecreatetruecolor($width, $height);
         imagealphablending($clone, false);
         imagesavealpha($clone, true);
+        $transparency = imagecolorallocatealpha($clone, 0, 0, 0, 127);
+        imagefill($clone, 0, 0, $transparency);
         
         imagecopy($clone, $core, 0, 0, 0, 0, $width, $height);
 

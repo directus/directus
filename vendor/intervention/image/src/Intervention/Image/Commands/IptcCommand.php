@@ -20,10 +20,10 @@ class IptcCommand extends AbstractCommand
 
         $key = $this->argument(0)->value();
 
-        $info = array();
+        $info = [];
         @getimagesize($image->dirname .'/'. $image->basename, $info);
 
-        $data = array();
+        $data = [];
 
         if (array_key_exists('APP13', $info)) {
             $iptc = iptcparse($info['APP13']);

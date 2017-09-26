@@ -43,6 +43,7 @@ use Directus\View\ExceptionView;
  * Slim App & Directus Providers
  */
 
+/** @var \Directus\Application\Application $app */
 $app = Bootstrap::get('app');
 
 /**
@@ -59,6 +60,7 @@ if ($config->get('filters')) {
 }
 
 $app->add(new \Directus\Slim\CorsMiddleware());
+$app->add(new \Directus\Slim\CacheMiddleware());
 
 /**
  * Creates and /<version>/ping endpoint
@@ -90,31 +92,12 @@ if (DIRECTUS_ENV !== 'production') {
     $pong($app);
 }
 
-/**
- * Catch user-related exceptions & produce client responses.
- */
-
 $app->config('debug', false);
-$exceptionView = new ExceptionView();
-$exceptionHandler = function (\Exception $exception) use ($app, $exceptionView) {
-    $app->hookEmitter->run('application.error', [$exception]);
-    $config = $app->container->get('config');
-    if ($config->get('app.debug', true)) {
-        $exceptionView->exceptionHandler($app, $exception);
-    } else {
-        $response = $app->response();
-        $response->header('Content-type', 'application/json');
-        return $app->response([
-            'error' => [
-                'message' => $exception->getMessage()
-            ]
-        ], ['error' => true]);
-    }
-};
-$app->error($exceptionHandler);
+$app->config('production', 'production' === DIRECTUS_ENV);
 
-// Catch all exception
-$exceptionHandler = new ExceptionHandler();
+// Catch all exceptions
+$exceptionHandler = new ExceptionHandler($app->hookEmitter);
+$app->error([$exceptionHandler, 'handleException']);
 
 // Routes which do not need protection by the authentication and the request
 // @TODO: Move this to a middleware
@@ -194,8 +177,11 @@ $app->hook('slim.before.dispatch', function () use ($app, $authRouteWhitelist, $
 
             if (ArrayUtils::get($uriParts, 0) === '1.1' && $publicGroup) {
                 $isPublicUser = true;
+
+                // NOTE: 0 will not represent a "guest" or the "public" user
+                // To prevent the issue where user column on activity table can't be null
                 $user = [
-                    'id' => null,
+                    'id' => 0,
                     'group' => $publicGroup['id']
                 ];
             }
@@ -236,10 +222,16 @@ $app->hook('slim.before.dispatch', function () use ($app, $authRouteWhitelist, $
             // When logged through API we need to reload all their permissions
             $privilegesTable = new DirectusPrivilegesTableGateway($ZendDb, $acl);
             $acl->setGroupPrivileges($privilegesTable->getGroupPrivileges($user['group']));
-            // @TODO: Adding an user should auto set its ID and GROUP
+            // TODO: Adding an user should auto set its ID and GROUP
+            // TODO: User data should be casted to its data type
             $acl->setUserId($user['id']);
             $acl->setGroupId($user['group']);
             $acl->setPublic($isPublicUser);
+
+            // Set full permission to Admin
+            if ($acl->isAdmin()) {
+                $acl->setTablePrivileges('*', $acl::PERMISSION_FULL);
+            }
         }
 
         /** Enforce required authentication. */
@@ -493,12 +485,14 @@ $app->group('/1.1', function() use($app) {
     // =============================================================================
     // USERS
     // =============================================================================
-    $app->map('/users/?', '\Directus\API\Routes\A1\Users:all')
-        ->via('GET', 'POST', 'PUT');
-    $app->map('/users/:id/?', '\Directus\API\Routes\A1\Users:get')
-        ->conditions(['id' => '[0-9]'])
-        ->via('DELETE', 'GET', 'PUT', 'PATCH');
+    $app->get('/users/?', '\Directus\API\Routes\A1\Users:all');
+    $app->get('/users/:id/?', '\Directus\API\Routes\A1\Users:get')
+        ->conditions(['id' => '[0-9]+']);
     $app->post('/users/invite/?', '\Directus\API\Routes\A1\Users:invite');
+    $app->map('/users/:id/?', '\Directus\API\Routes\A1\Users:update')
+        ->conditions(['id' => '[0-9]+'])
+        ->via('DELETE', 'PUT', 'PATCH');
+    $app->post('/users/?', '\Directus\API\Routes\A1\Users:update');
 
     // =============================================================================
     // USERS TRACKING
@@ -520,7 +514,7 @@ $app->notFound(function () use ($app, $acl, $ZendDb) {
     $projectInfo = get_project_info();
 
     $app->response()->header('Content-Type', 'text/html; charset=utf-8');
-    $app->render('errors/404.twig.html', $projectInfo);
+    $app->render('errors/404.twig', $projectInfo);
 });
 
 /**

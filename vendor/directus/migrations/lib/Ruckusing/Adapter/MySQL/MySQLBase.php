@@ -146,7 +146,9 @@ class MySQLBase extends Ruckusing_Adapter_Base implements Ruckusing_Adapter_Inte
     {
         $table_name = RUCKUSING_TS_SCHEMA_TBL_NAME;
         if (!$this->has_table($table_name)) {
-            $t = $this->create_table($table_name, array('id' => false));
+            // NOTE: Make sure to use charset utf8
+            // to prevent unique key issue on utf8mb4 charset
+            $t = $this->create_table($table_name, array('id' => false, 'charset' => 'utf8'));
             $t->column('version', 'string');
             $t->finish();
             $this->add_index($table_name, 'version', array('unique' => true));

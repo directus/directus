@@ -20,11 +20,11 @@ class SharpenCommand extends \Intervention\Image\Commands\AbstractCommand
         $abs = ((4 * $min + 4 * $max) * -1) + 1;
         $div = 1;
 
-        $matrix = array(
-            array($min, $max, $min),
-            array($max, $abs, $max),
-            array($min, $max, $min)
-        );
+        $matrix = [
+            [$min, $max, $min],
+            [$max, $abs, $max],
+            [$min, $max, $min]
+        ];
 
         // apply the matrix
         return imageconvolution($image->getCore(), $matrix, $div, 0);

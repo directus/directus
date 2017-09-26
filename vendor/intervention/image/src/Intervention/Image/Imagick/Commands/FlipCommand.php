@@ -14,7 +14,7 @@ class FlipCommand extends \Intervention\Image\Commands\AbstractCommand
     {
         $mode = $this->argument(0)->value('h');
 
-        if (in_array(strtolower($mode), array(2, 'v', 'vert', 'vertical'))) {
+        if (in_array(strtolower($mode), [2, 'v', 'vert', 'vertical'])) {
             // flip vertical
             return $image->getCore()->flipImage();
         } else {

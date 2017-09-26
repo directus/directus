@@ -40,7 +40,7 @@ class ImageManagerStatic
      *
      * @return ImageManager
      */
-    public static function configure(array $config = array())
+    public static function configure(array $config = [])
     {
         return self::$manager = self::getManager()->configure($config);
     }

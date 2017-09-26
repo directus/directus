@@ -132,7 +132,7 @@ abstract class AbstractColor
                 break;
 
             case is_null($value):
-                $this->initFromArray(array(255, 255, 255, 0));
+                $this->initFromArray([255, 255, 255, 0]);
                 break;
 
             default:
@@ -198,19 +198,19 @@ abstract class AbstractColor
         $rgbaPattern = '/^rgba ?\(([0-9]{1,3}), ?([0-9]{1,3}), ?([0-9]{1,3}), ?([0-9.]{1,4})\)$/i';
 
         if (preg_match($hexPattern, $value, $matches)) {
-            $result = array();
+            $result = [];
             $result[0] = strlen($matches[1]) == '1' ? hexdec($matches[1].$matches[1]) : hexdec($matches[1]);
             $result[1] = strlen($matches[2]) == '1' ? hexdec($matches[2].$matches[2]) : hexdec($matches[2]);
             $result[2] = strlen($matches[3]) == '1' ? hexdec($matches[3].$matches[3]) : hexdec($matches[3]);
             $result[3] = 1;
         } elseif (preg_match($rgbPattern, $value, $matches)) {
-            $result = array();
+            $result = [];
             $result[0] = ($matches[1] >= 0 && $matches[1] <= 255) ? intval($matches[1]) : 0;
             $result[1] = ($matches[2] >= 0 && $matches[2] <= 255) ? intval($matches[2]) : 0;
             $result[2] = ($matches[3] >= 0 && $matches[3] <= 255) ? intval($matches[3]) : 0;
             $result[3] = 1;
         } elseif (preg_match($rgbaPattern, $value, $matches)) {
-            $result = array();
+            $result = [];
             $result[0] = ($matches[1] >= 0 && $matches[1] <= 255) ? intval($matches[1]) : 0;
             $result[1] = ($matches[2] >= 0 && $matches[2] <= 255) ? intval($matches[2]) : 0;
             $result[2] = ($matches[3] >= 0 && $matches[3] <= 255) ? intval($matches[3]) : 0;

@@ -11,16 +11,16 @@ class ImageManager
      *
      * @var array
      */
-    public $config = array(
+    public $config = [
         'driver' => 'gd'
-    );
+    ];
 
     /**
      * Creates new instance of Image Manager
      *
      * @param array $config
      */
-    public function __construct(array $config = array())
+    public function __construct(array $config = [])
     {
         $this->checkRequirements();
         $this->configure($config);
@@ -31,7 +31,7 @@ class ImageManager
      *
      * @param array $config
      */
-    public function configure(array $config = array())
+    public function configure(array $config = [])
     {
         $this->config = array_replace($this->config, $config);
 

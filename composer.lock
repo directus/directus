@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/WellingGuzman/Migrations.git",
-                "reference": "3f0f3a1eb7739b2d903dea8d53ca2d294edc654b"
+                "reference": "5a0a8843de5e57c7302f36146d261bed828e1454"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/WellingGuzman/Migrations/zipball/3f0f3a1eb7739b2d903dea8d53ca2d294edc654b",
-                "reference": "3f0f3a1eb7739b2d903dea8d53ca2d294edc654b",
+                "url": "https://api.github.com/repos/WellingGuzman/Migrations/zipball/5a0a8843de5e57c7302f36146d261bed828e1454",
+                "reference": "5a0a8843de5e57c7302f36146d261bed828e1454",
                 "shasum": ""
             },
             "require": {
@@ -55,7 +55,7 @@
             ],
             "description": "Framework for generating and managing database migrations",
             "homepage": "https://github.com/wellingguzman/migrations",
-            "time": "2016-07-28T18:37:42+00:00"
+            "time": "2017-09-15T17:34:21+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -240,16 +240,16 @@
         },
         {
             "name": "intervention/image",
-            "version": "2.4.0",
+            "version": "2.4.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Intervention/image.git",
-                "reference": "322a4ade249467179c50a3e50eda8760ff3af2a3"
+                "reference": "3603dbcc9a17d307533473246a6c58c31cf17919"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Intervention/image/zipball/322a4ade249467179c50a3e50eda8760ff3af2a3",
-                "reference": "322a4ade249467179c50a3e50eda8760ff3af2a3",
+                "url": "https://api.github.com/repos/Intervention/image/zipball/3603dbcc9a17d307533473246a6c58c31cf17919",
+                "reference": "3603dbcc9a17d307533473246a6c58c31cf17919",
                 "shasum": ""
             },
             "require": {
@@ -306,7 +306,7 @@
                 "thumbnail",
                 "watermark"
             ],
-            "time": "2017-07-03T15:50:40+00:00"
+            "time": "2017-09-21T16:29:17+00:00"
         },
         {
             "name": "league/flysystem",
@@ -990,7 +990,7 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/wellingguzman/zend-db",
-                "reference": "38cd41381462eaacff6dccc0ec0597962b2be1d8"
+                "reference": "6bedd69fb149d9ec001816320fce5527adeb9725"
             },
             "require": {
                 "php": "^5.5 || ^7.0",
@@ -1038,7 +1038,7 @@
                 "db",
                 "zf2"
             ],
-            "time": "2017-01-20 19:34:42"
+            "time": "2017-09-07 20:30:27"
         },
         {
             "name": "zendframework/zend-stdlib",
@@ -1459,7 +1459,7 @@
         },
         {
             "name": "symfony/yaml",
-            "version": "v2.8.26",
+            "version": "v2.8.27",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/yaml.git",

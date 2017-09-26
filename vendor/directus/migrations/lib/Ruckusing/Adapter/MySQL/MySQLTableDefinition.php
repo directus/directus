@@ -223,11 +223,8 @@ class MySQLTableDefinition
         if (isset($this->_adapter->db_info['engine'])) {
             $opt_str .= ' ENGINE='.$this->_adapter->db_info['engine'].' ';
         }
-        if(isset($this->_adapter->db_info['charset'])){
-            $opt_str .= " DEFAULT CHARSET=".$this->_adapter->db_info['charset'];
-        } else {
-            $opt_str .= " DEFAULT CHARSET=utf8";
-        }
+
+        $opt_str .= " DEFAULT CHARSET=" . $this->getCharset();
 
         $close_sql = sprintf(") %s;",$opt_str);
         $create_table_sql = $this->_sql;
@@ -297,5 +294,22 @@ class MySQLTableDefinition
         $create_sql .= sprintf("%s (\n", $this->_adapter->identifier($name));
         $this->_sql .= $create_sql;
         $this->_initialized = true;
+    }
+
+    /**
+     * Gets table definition charset
+     *
+     * @return string
+     */
+    private function getCharset()
+    {
+        $charset = 'utf8';
+        if (isset($this->_options['charset'])) {
+            $charset = $this->_options['charset'];
+        } else if (isset($this->_adapter->db_info['charset'])) {
+            $charset = $this->_adapter->db_info['charset'];
+        }
+
+        return $charset;
     }
 }

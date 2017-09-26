@@ -80,6 +80,6 @@ class ImageServiceProvider extends ServiceProvider
      */
     public function provides()
     {
-        return array('image');
+        return ['image'];
     }
 }

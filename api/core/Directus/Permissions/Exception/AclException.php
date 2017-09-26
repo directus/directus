@@ -10,11 +10,17 @@
 
 namespace Directus\Permissions\Exception;
 
+use Directus\Exception\HttpExceptionInterface;
+use Directus\Exception\Traits\HttpExceptionTrait;
+
 /**
  * ACL Exception
  *
  * @author Daniel Bickett <daniel@rngr.org>
  */
-abstract class AclException extends \Exception
+abstract class AclException extends \Exception implements HttpExceptionInterface
 {
+    use HttpExceptionTrait;
+    protected $httpStatus = 403;
+
 }

@@ -42,7 +42,7 @@ class TableGatewayFactory
      * @param $tableName
      * @param array $options
      *
-     * @return RelationalTableGateway
+     * @return mixed
      */
     public static function create($tableName, $options = [])
     {

@@ -8,7 +8,7 @@
   "license": "MIT",
   "require": {
     "php": ">=5.4.0",
-    "directus/collection": "0.9.*@dev"
+    "directus/collection": "^1.0.0"
   },
   "autoload": {
     "psr-4": {

@@ -26,9 +26,9 @@ class TrimCommand extends \Intervention\Image\Commands\AbstractCommand
 
         // define borders to trim away
         if (is_null($away)) {
-            $away = array('top', 'right', 'bottom', 'left');
+            $away = ['top', 'right', 'bottom', 'left'];
         } elseif (is_string($away)) {
-            $away = array($away);
+            $away = [$away];
         }
 
         // lower border names
@@ -77,9 +77,9 @@ class TrimCommand extends \Intervention\Image\Commands\AbstractCommand
 
         // get coordinates of trim
         $imagePage = $trimed->getImagePage();
-        list($crop_x, $crop_y) = array($imagePage['x']-1, $imagePage['y']-1);
+        list($crop_x, $crop_y) = [$imagePage['x']-1, $imagePage['y']-1];
         // $trimed->setImagePage(0, 0, 0, 0);
-        list($crop_width, $crop_height) = array($trimed->width, $trimed->height);
+        list($crop_width, $crop_height) = [$trimed->width, $trimed->height];
 
         // adjust settings if right should not be trimed
         if ( ! in_array('right', $away)) {

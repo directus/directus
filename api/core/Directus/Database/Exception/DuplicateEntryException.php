@@ -4,6 +4,8 @@ namespace Directus\Database\Exception;
 
 class DuplicateEntryException extends DbException
 {
+    protected $httpStatus = 409;
+
     public function __construct($message, $code = 0, \Exception $previous = null)
     {
         parent::__construct($message, $code, $previous);

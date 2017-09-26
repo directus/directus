@@ -11,7 +11,7 @@ use Directus\Database\TableGateway\DirectusMessagesRecipientsTableGateway;
 use Directus\Database\TableGateway\DirectusMessagesTableGateway;
 use Directus\Database\TableGateway\DirectusUsersTableGateway;
 use Directus\Database\TableGateway\RelationalTableGateway as TableGateway;
-use Directus\Exception\ForbiddenException;
+use Directus\Exception\Http\ForbiddenException;
 use Directus\Util\ArrayUtils;
 use Directus\Util\DateUtils;
 use Directus\View\JsonView;
@@ -334,7 +334,7 @@ class Messages extends Route
         }
 
         $requestPayload['datetime'] = DateUtils::now();
-        $newRecord = $TableGateway->manageRecordUpdate('directus_messages', $requestPayload, TableGateway::ACTIVITY_ENTRY_MODE_DISABLED);
+        $newRecord = $TableGateway->updateRecord($requestPayload, TableGateway::ACTIVITY_ENTRY_MODE_DISABLED);
         $params['id'] = $newRecord['id'];
 
         // GET all table entries

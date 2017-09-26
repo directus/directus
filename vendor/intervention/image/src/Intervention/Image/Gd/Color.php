@@ -167,7 +167,7 @@ class Color extends AbstractColor
      */
     public function getArray()
     {
-        return array($this->r, $this->g, $this->b, round(1 - $this->a / 127, 2));
+        return [$this->r, $this->g, $this->b, round(1 - $this->a / 127, 2)];
     }
 
     /**
@@ -192,12 +192,12 @@ class Color extends AbstractColor
         $color_tolerance = round($tolerance * 2.55);
         $alpha_tolerance = round($tolerance * 1.27);
 
-        $delta = array(
+        $delta = [
             'r' => abs($color->r - $this->r),
             'g' => abs($color->g - $this->g),
             'b' => abs($color->b - $this->b),
             'a' => abs($color->a - $this->a)
-        );
+        ];
 
         return (
             $delta['r'] > $color_tolerance or

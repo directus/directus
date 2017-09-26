@@ -26,7 +26,7 @@ class Font extends \Intervention\Image\AbstractFont
         $internalfont = is_null($this->file) ? 1 : $this->file;
         $internalfont = is_numeric($internalfont) ? $internalfont : false;
 
-        if ( ! in_array($internalfont, array(1, 2, 3, 4, 5))) {
+        if ( ! in_array($internalfont, [1, 2, 3, 4, 5])) {
             throw new \Intervention\Image\Exception\NotSupportedException(
                 sprintf('Internal GD font (%s) not available. Use only 1-5.', $internalfont)
             );
@@ -77,7 +77,7 @@ class Font extends \Intervention\Image\AbstractFont
      */
     public function getBoxSize()
     {
-        $box = array();
+        $box = [];
 
         if ($this->hasApplicableFontFile()) {
 

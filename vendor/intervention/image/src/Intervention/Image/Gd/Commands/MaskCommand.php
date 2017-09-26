@@ -18,7 +18,7 @@ class MaskCommand extends \Intervention\Image\Commands\AbstractCommand
         $image_size = $image->getSize();
 
         // create empty canvas
-        $canvas = $image->getDriver()->newImage($image_size->width, $image_size->height, array(0,0,0,0));
+        $canvas = $image->getDriver()->newImage($image_size->width, $image_size->height, [0,0,0,0]);
 
         // build mask image from source
         $mask = $image->getDriver()->init($mask_source);

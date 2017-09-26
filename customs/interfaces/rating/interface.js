@@ -1,9 +1,24 @@
-define(['core/CustomUIView'], function (UIView) {
+define(['core/CustomUIView', 'utils'], function (UIView, Utils) {
 
   'use strict';
 
   return UIView.extend({
     template: 'rating/input',
+    events: {
+      'change [type="radio"]': 'onChange'
+    },
+    unsavedChange: function () {
+      var hasValue = Utils.isSomething(this.value);
+      var isNullable = this.columnSchema.isNullable();
+
+      if ((hasValue || this.value === null && isNullable)  && (this.model.isNew() || this.model.hasChanges(this.name))) {
+        return this.value;
+      }
+    },
+    onChange: function (event) {
+      this.value = event.currentTarget.value;
+      this.model.set(this.name, this.value);
+    },
     serialize: function () {
       var value = this.options.value;
 
@@ -22,6 +37,10 @@ define(['core/CustomUIView'], function (UIView) {
         name: this.options.name,
         comment: this.options.schema.get('comment')
       };
+    },
+
+    initialize: function (options) {
+      this.value = options.value !== undefined ? options.value : options.default_value;
     }
   });
 });
