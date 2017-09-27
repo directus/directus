@@ -175,11 +175,14 @@ define([
           }
         };
       }
+
       if (action === 'save-form-copy') {
-        // console.log('cloning...');
         var clone = model.toJSON();
         delete clone.id;
-        model = new collection.model(clone, {collection: collection, parse: true});
+        model = new collection.model({}, {collection: collection, parse: true});
+        // Start tracking changes to mark the new values
+        model.startTracking();
+        model.set(clone);
         collection.add(model);
       }
 
