@@ -1,3 +1,7 @@
+{{#unless rows}}
+{{{include "listingEmpty"}}}
+{{/unless}}
+{{#if rows}}
 <table class="lines cozy clickable fixed-header pad-first">
     <thead>
     <tr>
@@ -14,21 +18,4 @@
         {{/rows}}
     </tbody>
 </table>
-{{!--
-<table class="table table-striped directus-table" id="directus_tables">
-<thead>
-<tr>
-    <!-- <th class="active">Active</th> -->
-    <th class="table_name">{{t "table_name"}}</th>
-    <!--<th class="modified">Modified</th>-->
-</tr>
-</thead>
-<tbody>
-  {{#rows}}
-    <tr data-id="{{table_name}}">
-      <td>{{{capitalize table_name}}}</td>
-    </tr>
-  {{/rows}}
-</tbody>
-</table>
---}}
+{{/if}}
