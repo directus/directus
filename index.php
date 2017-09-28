@@ -356,17 +356,19 @@ function getGroups()
 
 function getSettings()
 {
-    global $ZendDb;
+    global $ZendDb, $acl;
 
     $settingsTable = new DirectusSettingsTableGateway($ZendDb, null);
 
     $settings = $settingsTable->getItems(['limit' => null]);
 
-    foreach ($settings['data'] as &$setting) {
-        if ($setting['name'] === 'cms_thumbnail_url' && isset($setting['value'])) {
-            $filesTableGateway = new TableGateway('directus_files', $ZendDb, null);
-            $setting['value'] = $filesTableGateway->loadItems(['id' => $setting['value']]);
-            break;
+    if ($acl->canView('directus_files')) {
+        foreach ($settings['data'] as &$setting) {
+            if ($setting['name'] === 'cms_thumbnail_url' && isset($setting['value'])) {
+                $filesTableGateway = new TableGateway('directus_files', $ZendDb, null);
+                $setting['value'] = $filesTableGateway->loadItems(['id' => $setting['value']]);
+                break;
+            }
         }
     }
 
