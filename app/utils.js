@@ -158,7 +158,9 @@ define(['underscore'], function (_) {
   };
 
   Utils.getTemplateVariables = function (string) {
-    return (string || '').match(/{{([^{}]+)}}/g).map(function (value) {
+    var variables = (string || '').match(/{{([^{}]+)}}/g);
+
+    return (variables || []).map(function (value) {
       return value.slice(2, -2);
     })
   };
