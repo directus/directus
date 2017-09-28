@@ -828,9 +828,10 @@ class RelationalTableGateway extends BaseTableGateway
 
         $params = $this->applyDefaultEntriesSelectParams($params);
 
-        $columns = ArrayUtils::get($params, 'columns', $tableSchema->getColumnsName());
+        // NOTE: fallback to all columns the user has permission to
+        $columns = ArrayUtils::get($params, 'columns', TableSchema::getAllTableColumnsName($tableSchema->getName()));
         $columns = array_unique(array_merge($tableSchema->getPrimaryKeysName(), $columns));
-        $nonAliasColumns = ArrayUtils::intersection($columns, $tableSchema->getNonAliasColumnsName());
+        $nonAliasColumns = ArrayUtils::intersection($columns, TableSchema::getAllNonAliasTableColumnNames($tableSchema->getName()));
 
         // TODO: Create a new TableGateway Query Builder based on Query\Builder
         $builder = new Builder($this->getAdapter());
