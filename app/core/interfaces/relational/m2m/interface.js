@@ -51,7 +51,7 @@ define([
       var OverlayEditView = require('modules/tables/views/OverlayEditView'); // eslint-disable-line import/no-unresolved
       var collection = this.relatedCollection;
 
-      var saveFunction = function () {
+      var view = new OverlayEditView({model: model, inModal: true, saveFunction: function () {
         var newModel = new collection.model({}, { // eslint-disable-line new-cap
           parse: true,
           collection: collection,
@@ -62,9 +62,7 @@ define([
         newModel.set('data', model);
         collection.add(newModel);
         app.router.removeOverlayPage(this);
-      };
-
-      var view = new OverlayEditView({model: model, inModal: true, saveFunction: saveFunction});
+      }});
       app.router.overlayPage(view);
     },
 

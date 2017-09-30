@@ -51,37 +51,24 @@ define([
     },
 
     addModel: function (model) {
-      var EditView = require('modules/tables/views/EditView'); // eslint-disable-line import/no-unresolved
+      var OverlayEditView = require('modules/tables/views/OverlayEditView'); // eslint-disable-line import/no-unresolved
       var collection = this.relatedCollection;
-      var view = new EditView({
+
+      var view = new OverlayEditView({
         model: model,
         inModal: true,
         onSuccess: function (model) {
           if (model.isValid()) {
             collection.add(model);
           }
-        }
-      });
-      view.headerOptions.route.isOverlay = true;
-      view.headerOptions.route.breadcrumbs = [];
-      view.headerOptions.basicSave = true;
-
-      view.events = {
-        'click .saved-success': function (event) {
-          this.save(event);
         },
-        'click #removeOverlay': function () {
+        saveFunction: function () {
+          view.__proto__.__proto__.save.apply(this, arguments);
           app.router.removeOverlayPage(this);
         }
-      };
+      });
 
       app.router.overlayPage(view);
-
-      var originalSave = view.save;
-      view.save = function () {
-        originalSave.apply(this, arguments);
-        app.router.removeOverlayPage(this);
-      };
     },
 
     chooseItem: function () {
@@ -103,29 +90,14 @@ define([
     },
 
     editModel: function (model) {
-      var EditView = require('modules/tables/views/EditView'); // eslint-disable-line import/no-unresolved
-      var view = new EditView({model: model});
+      var OverlayEditView = require('modules/tables/views/OverlayEditView'); // eslint-disable-line import/no-unresolved
 
-      view.headerOptions.route.isOverlay = true;
-      view.headerOptions.route.breadcrumbs = [];
-      view.headerOptions.basicSave = true;
-
-      view.events = {
-        'click .saved-success': function (event) {
-          this.save(event);
-        },
-        'click #removeOverlay': function () {
-          app.router.removeOverlayPage(this);
-        }
-      };
+      var view = new OverlayEditView({model: model, saveFunction: function () {
+        view.__proto__.__proto__.save.apply(this, arguments);
+        app.router.removeOverlayPage(this);
+      }});
 
       app.router.overlayPage(view);
-
-      var originalSave = view.save;
-      view.save = function () {
-        originalSave.apply(this, arguments);
-        app.router.removeOverlayPage(this);
-      };
 
       // Fetch first time to get the nested tables
       // Only fetch if it's not a new entry
