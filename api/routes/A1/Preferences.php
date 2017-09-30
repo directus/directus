@@ -58,7 +58,10 @@ class Preferences extends Route
         // If Title is set then return this version
         // this is the bookmark title
         $title = ArrayUtils::get($requestPayload, 'title') ?: ArrayUtils::get($params, 'title');
-        $jsonResponse = $Preferences->fetchByUserAndTableAndTitle($currentUserId, $table, $title);
+        $jsonResponse = $this->getDataAndSetResponseCacheTags(
+            [$Preferences, 'fetchByUserAndTableAndTitle'],
+            [$currentUserId, $table, $title]
+        );
 
         if (!$jsonResponse) {
             // @TODO: The app treat 404 as not found url, instead of not found resource
@@ -92,7 +95,12 @@ class Preferences extends Route
 
         $params['table_name'] = $table;
         $Preferences = new DirectusPreferencesTableGateway($ZendDb, $acl);
-        $jsonResponse = $Preferences->fetchSavedPreferencesByUserAndTable($currentUserId, $table);
+
+        $jsonResponse = $this->getDataAndSetResponseCacheTags(
+            [$Preferences, 'fetchSavedPreferencesByUserAndTable'],
+            [$currentUserId, $table]
+        );
+
 
         return $this->app->response($jsonResponse);
     }
