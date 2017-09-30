@@ -23,6 +23,11 @@ abstract class Route
         $this->app->container->get('responseCache')->setTags($tags);
     }
 
+    protected function invalidateResponseCacheTags($tags)
+    {
+        $this->app->container->get('responseCache')->invalidateTags($tags);
+    }
+
     /**
      * @param RelationalTableGateway $gateway
      * @param array $params

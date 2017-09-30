@@ -91,6 +91,8 @@ class Table extends Route
                 'data' => TableSchema::getColumnSchema($tableName, $params['column_name'])->toArray()
             ];
         } else {
+
+            $this->setResponseCacheTags('tableColumnsSchema_'.$tableName);
             $response = [
                 'meta' => ['type' => 'collection', 'table' => 'directus_columns'],
                 'data' => array_map(function(Column $column) {
@@ -161,6 +163,7 @@ class Table extends Route
             $columnsService->update($table, $column, $requestPayload, $app->request()->isPatch());
         }
 
+        $this->setResponseCacheTags(['tableColumnsSchema_'.$table, 'columnSchema_'.$table.'_'.$column]);
         $response = TableSchema::getColumnSchema($table, $column, true);
         if (!$response) {
             $response = [
@@ -206,6 +209,7 @@ class Table extends Route
             $data['id'] = $row['id'];
         }
 
+        $this->invalidateResponseCacheTags(['tableColumnsSchema_'.$table, 'columnSchema_'.$table.'_'.$column]);
         $newRecord = $TableGateway->updateRecord($data, TableGateway::ACTIVITY_ENTRY_MODE_DISABLED);
 
         return $this->app->response($newRecord);
@@ -288,6 +292,7 @@ class Table extends Route
             }
         }
 
+        $this->setResponseCacheTags(['tableSchema_'.$table, 'table_directus_columns']);
         $response = TableSchema::getTable($table);
 
         if (!$response) {
@@ -373,7 +378,10 @@ class Table extends Route
             'column_name' => $column
         ]);
 
-        $response = $tableGateway->selectWith($select)->current();
+        $response = $this->getDataAndSetResponseCacheTags(
+            [$tableGateway, 'selectWith'],
+            [$select]
+        )->current();
 
         if (!$response) {
             $app->response()->setStatus(404);
