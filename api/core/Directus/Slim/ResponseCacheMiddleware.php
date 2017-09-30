@@ -22,7 +22,8 @@ class ResponseCacheMiddleware extends Middleware
             $key = null;
         }
 
-        if($key && $cachedResponse = $cache->get($key)) {
+        $config = $this->app->container->get('config');
+        if($config->get('cache.enabled') && $key && $cachedResponse = $cache->get($key)) {
             $response = $this->app->response();
             $response->setBody($cachedResponse->getBody());
             $response->headers = $cachedResponse->headers;

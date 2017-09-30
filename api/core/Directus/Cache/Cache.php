@@ -8,10 +8,13 @@ use Cache\TagInterop\TaggableCacheItemPoolInterface;
 class Cache
 {
     protected $pool;
+    public $ttl = null;
 
-    public function __construct(TaggableCacheItemPoolInterface $pool)
+    public function __construct(TaggableCacheItemPoolInterface $pool, $defaultTtl = null)
     {
         $this->pool = $pool;
+        $this->ttl = $defaultTtl;
+
     }
 
     public function getPool()

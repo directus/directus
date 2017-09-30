@@ -6,6 +6,11 @@ return [
         'prefix' => 'directus6_'
     ],
 
+    'cache' => [
+        'enabled' => true,
+        'ttl' => null
+    ],
+
     // @TODO: the option to have multiple filesystem
     'filesystem' => [
         'adapter' => 'local',

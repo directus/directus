@@ -2,11 +2,8 @@
 
 namespace Directus\Cache;
 
-use Cache\TagInterop\TaggableCacheItemPoolInterface;
-
 class Response extends Cache
 {
-    protected $ttl = null;
     protected $setTags = [];
     protected $invalidateTags = [];
 
