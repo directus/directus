@@ -1410,8 +1410,6 @@ class RelationalTableGateway extends BaseTableGateway
                 // $hookPayload->data = $tableGateway->loadMetadata($rows);
                 // $hookPayload->column = $alias;
                 // $hookPayload = $this->applyHook('load.relational.onetomany', $hookPayload);
-
-                $parentRow[$relationalColumnName] = $tableGateway->loadMetadata($rows);
             }
         }
 
