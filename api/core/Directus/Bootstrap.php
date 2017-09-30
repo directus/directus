@@ -694,23 +694,30 @@ class Bootstrap
         $emitter = new Emitter();
 
         // TODO: Move all this filters to a dedicated file/class/function
-        $emitter->addAction('postUpdate', function(RelationalTableGateway $gateway, $data) {
-            $pool = Bootstrap::get('cache');
 
+        // Cache subscriptions
+        $cachePool = Bootstrap::get('cache');
+
+        $emitter->addAction('postUpdate', function(RelationalTableGateway $gateway, $data) use ($cachePool) {
             if(isset($data[$gateway->primaryKeyFieldName])) {
-                $pool->invalidateTags(['entity_'.$gateway->getTable().'_'.$data[$gateway->primaryKeyFieldName]]);
+                $cachePool->invalidateTags(['entity_'.$gateway->getTable().'_'.$data[$gateway->primaryKeyFieldName]]);
             }
         });
 
-        $cacheTableTagInvalidator = function($tableName) {
-            $pool = Bootstrap::get('cache');
-
-            $pool->invalidateTags(['table_'.$tableName]);
+        $cacheTableTagInvalidator = function($tableName) use ($cachePool) {
+            $cachePool->invalidateTags(['table_'.$tableName]);
         };
 
-        foreach(['table.update:after', 'table.delete:after', 'table.drop:after'] as $action) {
+        foreach(['table.update:after', 'table.drop:after'] as $action) {
             $emitter->addAction($action, $cacheTableTagInvalidator);
         }
+
+        $emitter->addAction('table.remove:after', function($tableName, $ids) use ($cachePool){
+            foreach($ids as $id) {
+                $cachePool->invalidateTags(['entity_'.$tableName.'_'.$id]);
+            }
+        });
+        // /Cache subscriptions
 
         $emitter->addAction('application.error', function ($e) {
             $log = Bootstrap::get('log');
