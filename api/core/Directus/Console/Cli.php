@@ -55,7 +55,8 @@ class Cli
                 if ($this->help_module != '') {
                     $this->showModuleHelp();
                 } else {
-                    $this->showHelp();
+                    $extended = ($this->command == 'help');
+                    $this->showHelp($extended);
                 }
                 break;
             default:
@@ -90,27 +91,37 @@ class Cli
         }
     }
 
-    private function showHelp()
+    private function showHelp($extended = false)
     {
         echo PHP_EOL . __t('Directus CLI Modules: ') . PHP_EOL . PHP_EOL;
         foreach ($this->cmd_modules as $name => $module) {
             echo "\t" . $module->getInfo() . PHP_EOL;
+            $this->showModuleHelp($name, false);
         }
         echo PHP_EOL . __t('For more information on a module use: "directus help <module name>"') . PHP_EOL . PHP_EOL;
     }
 
-    private function showModuleHelp()
+    private function showModuleHelp($help_module = null, $full_formatting = true)
     {
-        if (!array_key_exists($this->help_module, $this->cmd_modules)) {
-            echo PHP_EOL . PHP_EOL . __t('Module ') . $this->help_module . __t(': does not exists!') . PHP_EOL . PHP_EOL;
-            return;
+        $help_module = $help_module ?: $this->help_module;
+        $command_prefix = ($full_formatting) ? "\t" : "\t\t";
+        $command_suffix = ($full_formatting) ? PHP_EOL.PHP_EOL : PHP_EOL;
+
+        if($full_formatting) {
+            if (!array_key_exists($help_module, $this->cmd_modules)) {
+                echo PHP_EOL . PHP_EOL . __t('Module ') . $help_module . __t(': does not exists!') . PHP_EOL . PHP_EOL;
+                return;
+            }
+            echo PHP_EOL . __t('Directus Module ') . ucfirst($help_module) . __t(' Commands') . PHP_EOL . PHP_EOL;
         }
-        echo PHP_EOL . __t('Directus Module ') . $this->help_module . __t(' Commands') . PHP_EOL . PHP_EOL;
-        $module_commands = $this->cmd_modules[$this->help_module]->getCommands();
+        $module_commands = $this->cmd_modules[$help_module]->getCommands();
+
         foreach ($module_commands as $command => $cmd_help) {
-            echo "\t" . $cmd_help . PHP_EOL . PHP_EOL;
+            echo $command_prefix . $cmd_help . $command_suffix;
         }
-        echo PHP_EOL . __t('For more information on a command use: "directus <module name>:help command"') . PHP_EOL . PHP_EOL;
+        if($full_formatting) {
+            echo PHP_EOL . __t('For more information on a command use: "directus <module name>:help command"') . PHP_EOL . PHP_EOL;
+        }
     }
 
     private function parseOptions($argv)
