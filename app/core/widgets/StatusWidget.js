@@ -1,9 +1,11 @@
 define([
   'app',
   'underscore',
-  'backbone'
+  'backbone',
+  'utils',
+  'core/t'
 ],
-function(app, _, Backbone) {
+function(app, _, Backbone, Utils, __t) {
 
   'use strict';
 
@@ -44,35 +46,65 @@ function(app, _, Backbone) {
       return table.getStatusColumnName();
     },
 
-    serialize: function () {
+    parseStatusItem: function (status, currentStatus) {
+      var item = status.toJSON();
+
+      // NOTE: do not strictly compare as status can (will) be string
+      item.selected = status.get('id') == currentStatus;
+      item.model = status;
+      item.color = item.background_color || item.color;
+
+      return item;
+    },
+
+    getStatusList: function () {
       var statuses = [];
       var model = this.model;
+      var foundMatch = false;
       var structure = model.structure;
-      var attr = this.getStatusColumnName();
-      var currentStatus = this.model.get(attr);
+      var statusColumnName = this.getStatusColumnName();
+      var currentStatus = this.model.get(statusColumnName);
 
-      if (!currentStatus && structure.get(attr)) {
-        currentStatus = structure.get(attr).get('default_value');
+      if (Utils.isNothing(currentStatus) && structure.get(statusColumnName)) {
+        currentStatus = structure.get(statusColumnName).get('default_value');
       }
 
-      _.each(model.getStatusVisible(), function (status) {
-        var item = status.toJSON();
+      // Go through all the statuses and add to the list all visible or a selected one
+      model.getTableStatusesMapping().each(function (status) {
+        var item = this.parseStatusItem(status, currentStatus);
 
-        // NOTE: do not strictly compare as status can (will) be string
-        item.selected = status.get('id') == currentStatus;
-        item.model = status;
-        item.color = item.background_color || item.color;
-        statuses.push(item);
-      });
+        if (item.selected) {
+          foundMatch = true;
+        }
+
+        if (item.selected || model.isStatusVisible(status)) {
+          statuses.push(item);
+        }
+      }, this);
+
+      // if there's not a match, we add the status as selected and name it "unknown"
+      if (!foundMatch) {
+        statuses.push({
+          id: currentStatus,
+          name: __t('unknown'),
+          selected: true
+        })
+      }
 
       statuses = _.sortBy(statuses, function(item) {
         return item.sort;
       });
 
+      return statuses;
+    },
+
+    serialize: function () {
       return {
         model: this.model,
-        readonly: typeof this.model.canEdit === 'function' ? this.model.canEdit(attr) : true,
-        statuses: statuses
+        readonly: typeof this.model.canEdit === 'function'
+                    ? this.model.canEdit(this.getStatusColumnName())
+                    : true,
+        statuses: this.getStatusList()
       };
     },
 
