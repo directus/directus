@@ -55,7 +55,9 @@ function(app, Backbone, StatusHelper, Utils, _) {
       // There is no active column. Use total
       // if (!this.table.columns.get(app.statusMapping.status_name)) {
       if (!this.table.hasStatusColumn()) {
-        return Math.max(this.table.get('total'), collectionCount);
+        // NOTE: "total_entries" will return all the entries (total) in a table
+        // while "total" is the total entries returned
+        return Math.max(this.table.get('total_entries'), collectionCount);
       }
 
       var visibleStates = Utils.parseCSV(this.getFilter('status'));
