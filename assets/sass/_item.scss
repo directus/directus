@@ -154,6 +154,7 @@
 				color: $serious;
 				cursor: pointer;
 				font-size: 11px;
+				margin-left: 5px;
 				&:hover {
 					color: darken($serious, 25%);
 				}
