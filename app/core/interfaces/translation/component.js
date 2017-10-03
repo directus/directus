@@ -33,8 +33,8 @@ define(['core/UIComponent', 'core/UIView', 'core/t'], function (UIComponent, UIV
         required: false
       }, {
         id: 'default_language_id',
-        ui: 'numeric',
-        type: 'Number',
+        ui: 'text_input',
+        type: 'String',
         comment: __t('translation_default_language_id_comment'),
         required: true
       }, {
