@@ -19,8 +19,8 @@ define('DB_TYPE', 'mysql');
 define('DB_HOST', 'localhost');
 define('DB_PORT', 3306);
 define('DB_NAME', 'directus');
-define('DB_USER', 'gabo');
-define('DB_PASSWORD', 'directus');
+define('DB_USER', 'root');
+define('DB_PASSWORD', 'password');
 define('DB_PREFIX', '');
 
 define('DB_HOST_SLAVE', ''); //Leave undefined to fall back on master
