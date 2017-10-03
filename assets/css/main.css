@@ -6997,7 +6997,7 @@ body.login {
   .attachments,
   .folder-listing,
   .file-listing {
-    padding: 15px 0; }
+    padding: 15px; }
     .attachments .folder .folder-icon,
     .folder-listing .folder .folder-icon,
     .file-listing .folder .folder-icon {
