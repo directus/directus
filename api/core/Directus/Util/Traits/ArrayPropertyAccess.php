@@ -24,11 +24,15 @@ trait ArrayPropertyAccess
     /**
      * @param mixed $offset
      *
-     * @return mixed
+     * @return bool
      */
     public function offsetExists($offset)
     {
-        return property_exists($this, $this->getPropertyFromArrayKey($offset));
+        try {
+            return property_exists($this, $this->getPropertyFromArrayKey($offset));
+        } catch (\Exception $e) {
+            return false;
+        }
     }
 
     /**
