@@ -75,7 +75,7 @@ Huge thanks to the following contributors!
 When you are creating an enhancement suggestion, please include as many details as possible. Fill out the required template; including the steps that you imagine you would take if the feature you're requesting existed.
 
 #### Requesting Features
-Use [our Feature Request Tool](https://request.getdirectus.com/) to request new features or vote on existing commmunity suggestions.
+Use our [Feature Request Tool](https://request.getdirectus.com/) to request new features or vote on existing commmunity suggestions.
 
 #### Your First Code Contribution
 Unsure where to begin contributing to Directus? You can start by looking through the [`Beginner`](https://github.com/directus/directus/issues?q=is%3Aopen+is%3Aissue+label%3ABeginner) and [`Help Wanted`](https://github.com/directus/directus/issues?q=is%3Aopen+is%3Aissue+label%3A%22Help+Wanted%22) issues. `Beginner` issues are issues that often only require a few lines of code. Help wanted issues are a bit more involved than beginner issues.
