@@ -90,6 +90,8 @@ Pull requests are always welcome for every part of Directus. Please make sure to
 
 Key developers: [coolov](https://github.com/coolov), [freen](https://github.com/freen), [jel-massih](https://github.com/jel-massih), [Lasha](https://github.com/Lasha)
 
+Sponsors: Bas Jansen
+
 ## Copyright, License, and Trademarks
 * Directus Core codebase released under the [GPLv3](http://www.gnu.org/copyleft/gpl.html) license.
 * Example Code, Design Previews, Demonstration Apps, Custom Extensions, Custom interfaces, and Documentation copyright 2017 [RANGER Studio LLC](http://rngr.org/).
