@@ -96,8 +96,12 @@ $app->config('debug', false);
 $app->config('production', 'production' === DIRECTUS_ENV);
 
 // Catch all exceptions
-$exceptionHandler = new ExceptionHandler($app->hookEmitter);
-$app->error([$exceptionHandler, 'handleException']);
+$app->error(function ($exception) use ($app) {
+    // Force the server status to be 500
+    $app->response->status(500);
+    $exceptionHandler = new ExceptionHandler($app->hookEmitter);
+    $exceptionHandler->handleException($exception);
+});
 
 // Routes which do not need protection by the authentication and the request
 // @TODO: Move this to a middleware
