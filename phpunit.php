@@ -2,17 +2,10 @@
 
 $loader = require __DIR__ . '/vendor/autoload.php';
 
-if (!defined('BASE_PATH')) {
-    define('BASE_PATH', __DIR__);
-}
-
-if (!defined('DIRECTUS_PATH')) {
-    define('DIRECTUS_PATH', '/');
-}
-
-if (!defined('STATUS_COLUMN_NAME')) {
-    define('STATUS_COLUMN_NAME', 'active');
-}
+define_constant('BASE_PATH', __DIR__);
+define_constant('DIRECTUS_PATH', '/');
+define_constant('STATUS_COLUMN_NAME', 'active');
+define_constant('DIRECTUS_ENV', 'development');
 
 // force a timezone
 date_default_timezone_set('America/New_York');
