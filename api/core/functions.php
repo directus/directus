@@ -1128,6 +1128,21 @@ if (!function_exists('find_html_files')) {
      */
     function find_html_files($paths, $includeSubDirectories = false)
     {
+        return find_files($paths, 0, '*.html', $includeSubDirectories);
+    }
+}
+
+if (!function_exists('find_twig_files')) {
+    /**
+     * Find Twig files in the given path
+     *
+     * @param $paths
+     * @param bool $includeSubDirectories
+     *
+     * @return array
+     */
+    function find_twig_files($paths, $includeSubDirectories = false)
+    {
         return find_files($paths, 0, '*.twig', $includeSubDirectories);
     }
 }
@@ -1149,7 +1164,7 @@ if (!function_exists('find_templates')) {
 
             return array_map(function ($path) use ($basePath) {
                 return substr($path, strlen($basePath));
-            }, find_html_files($basePath, true));
+            }, find_twig_files($basePath, true));
         };
 
         return array_merge($getTemplateKeyPath('/app/templates/'), $getTemplateKeyPath('/app/core-ui'));
@@ -1387,5 +1402,27 @@ if (!function_exists('display_missing_requirements_html')) {
 
         $app->response()->header('Content-Type', 'text/html; charset=utf-8');
         $app->render('errors/requirements.twig', $data);
+    }
+}
+
+if (!function_exists('define_constant')) {
+    /**
+     * Define a constant if it does not exists
+     *
+     * @param string $name
+     * @param mixed $value
+     *
+     * @return bool
+     */
+    function define_constant($name, $value)
+    {
+        $defined = true;
+
+        if (!defined($name)) {
+            define($name, $value);
+            $defined = false;
+        }
+
+        return $defined;
     }
 }

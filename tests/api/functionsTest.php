@@ -126,7 +126,7 @@ class FunctionsTest extends PHPUnit_Framework_TestCase
         $path = $this->path;
 
         $filesFound = find_files($path, 0, '*');
-        $this->assertSame(7, count($filesFound));
+        $this->assertSame(9, count($filesFound));
 
         $jsFilesFound = find_js_files($path);
         $this->assertSame(2, count($jsFilesFound));
@@ -134,18 +134,24 @@ class FunctionsTest extends PHPUnit_Framework_TestCase
         $htmlFilesFound = find_html_files($path);
         $this->assertSame(2, count($htmlFilesFound));
 
+        $twigFilesFound = find_twig_files($path);
+        $this->assertSame(2, count($twigFilesFound));
+
         $phpFilesFound = find_php_files($path);
         $this->assertSame(2, count($phpFilesFound));
 
         // Including subdirectories
         $filesFound = find_files($path, 0, '*', true);
-        $this->assertSame(10, count($filesFound));
+        $this->assertSame(13, count($filesFound));
 
         $jsFilesFound = find_js_files($path, true);
         $this->assertSame(3, count($jsFilesFound));
 
         $htmlFilesFound = find_html_files($path, true);
         $this->assertSame(3, count($htmlFilesFound));
+
+        $twigFilesFound = find_twig_files($path, true);
+        $this->assertSame(3, count($twigFilesFound));
 
         $phpFilesFound = find_php_files($path, true);
         $this->assertSame(3, count($phpFilesFound));
@@ -206,8 +212,11 @@ class FunctionsTest extends PHPUnit_Framework_TestCase
         'module.php',
         'dir/index.php',
         'file.html',
+        'file.twig',
         'module.html',
+        'module.twig',
         'dir/index.html',
+        'dir/index.twig',
     ];
 
     protected $path;
@@ -215,6 +224,9 @@ class FunctionsTest extends PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->path = __DIR__ . '/tmp';
+
+        $this->removeTempFiles();
+        $this->removeTempDirs();
     }
 
     protected function createTempDirs()
@@ -252,18 +264,30 @@ class FunctionsTest extends PHPUnit_Framework_TestCase
             // make sure to remove the subdirectory first
             // rmdir only remove empty directories
             foreach ($subs as $sub) {
-                rmdir($dir . '/' . $sub);
+                $subdir = $dir . '/' . $sub;
+                if (is_dir($subdir)) {
+                    rmdir($subdir);
+                }
             }
 
-            rmdir($dir);
+            if (is_dir($dir)) {
+                rmdir($dir);
+            }
         }
 
         // remove files
-        unlink($path . '/ignore1');
-        unlink($path . '/ignore2');
+        if (file_exists($path . '/ignore1')) {
+            unlink($path . '/ignore1');
+        }
+
+        if (file_exists($path . '/ignore2')) {
+            unlink($path . '/ignore2');
+        }
 
         // remove main directory
-        rmdir($path);
+        if (is_dir($path)) {
+            rmdir($path);
+        }
     }
 
     protected function createTempFiles()
@@ -289,10 +313,18 @@ class FunctionsTest extends PHPUnit_Framework_TestCase
         $files = $this->files;
 
         foreach ($files as $file) {
-            unlink($path . '/' . $file);
+            $filePath = $path . '/' . $file;
+            if (file_exists($filePath)) {
+                unlink($filePath);
+            }
         }
 
-        rmdir($path . '/dir');
-        rmdir($path);
+        if (is_dir($path . '/dir')) {
+            rmdir($path . '/dir');
+        }
+
+        if (is_dir($path)) {
+            rmdir($path);
+        }
     }
 }
