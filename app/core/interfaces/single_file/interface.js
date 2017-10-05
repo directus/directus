@@ -36,6 +36,7 @@ define([
     },
 
     chooseFromUrl: function (event) {
+      // Prevent this button from submitting the form
       event.preventDefault();
       app.router.openModal({
         type: 'prompt',
@@ -64,6 +65,7 @@ define([
     },
 
     chooseFromSystem: function (event) {
+      // Prevent this button from submitting the form
       event.preventDefault();
 
       var collection = app.files;
