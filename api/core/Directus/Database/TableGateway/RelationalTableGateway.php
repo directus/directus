@@ -1734,7 +1734,7 @@ class RelationalTableGateway extends BaseTableGateway
 
             $relatedEntries = [];
             foreach ($results as $row) {
-                $relatedEntries[$row[$primaryKeyName]] = $this->wrapData(
+                $relatedEntries[$row[$primaryKeyName]] = $tableGateway->wrapData(
                     $row,
                     true,
                     ArrayUtils::get($params, 'meta', 1)
