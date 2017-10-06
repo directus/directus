@@ -765,13 +765,13 @@ class RelationalTableGateway extends BaseTableGateway
      */
     public function wrapData($data, $single = false, $meta = true)
     {
-        $result = [
-            'data' => $data
-        ];
+        $result = [];
 
         if ($meta) {
             $result['meta'] = $this->createMetadata($data, $single);
         }
+
+        $result['data'] = $data;
 
         return $result;
     }
