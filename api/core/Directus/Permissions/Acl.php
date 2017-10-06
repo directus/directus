@@ -53,6 +53,8 @@ class Acl
 
     public static $cms_owner_columns_by_table = [
         'directus_files' => 'user',
+        'directus_preferences' => 'user',
+        'directus_messages_recipients' => 'recipient',
         'directus_users' => 'id'
     ];
 

@@ -796,10 +796,11 @@ class TableSchema
      * Get all the tables schema
      *
      * @param array $params
+     * @param bool $skipAcl
      *
      * @return array
      */
-    public static function getTablesSchema(array $params = [])
+    public static function getTablesSchema(array $params = [], $skipAcl = false)
     {
         $schema = static::getSchemaManagerInstance();
         $includeSystemTables = ArrayUtils::get($params, 'include_system', false);
@@ -820,7 +821,7 @@ class TableSchema
                 continue;
             }
             // Only include tables w ACL privileges
-            if (!self::canGroupViewTable($tableName)) {
+            if ($skipAcl === false && !self::canGroupViewTable($tableName)) {
                 continue;
             }
 
