@@ -1440,7 +1440,11 @@ class RelationalTableGateway extends BaseTableGateway
             $relationalColumnName = $alias->getName();
             foreach ($entries as &$parentRow) {
                 $rows = ArrayUtils::get($relatedEntries, $parentRow[$primaryKey], []);
-                $parentRow[$relationalColumnName] = $tableGateway->loadMetadata($rows);
+                $parentRow[$relationalColumnName] = $tableGateway->wrapData(
+                    $rows,
+                    false,
+                    ArrayUtils::get($params, 'meta', 1)
+                );
                 // $hookPayload = new \stdClass();
                 // $hookPayload->data = $tableGateway->loadMetadata($rows);
                 // $hookPayload->column = $alias;
@@ -1626,13 +1630,13 @@ class RelationalTableGateway extends BaseTableGateway
 
                 $junctionData = $junctionTableGateway->wrapData(
                     $junctionData,
-                    ArrayUtils::has($params, 'id'),
+                    false,
                     ArrayUtils::get($params, 'meta', 1)
                 );
 
                 $row = $relatedTableGateway->wrapData(
                     $row,
-                    ArrayUtils::has($params, 'id'),
+                    false,
                     ArrayUtils::get($params, 'meta', 1)
                 );
                 $row['junction'] = $junctionData;
