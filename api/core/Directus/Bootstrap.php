@@ -11,6 +11,7 @@ use Directus\Authentication\Social;
 use Directus\Authentication\TwitterProvider;
 use Directus\Config\Config;
 use Directus\Database\Connection;
+use Directus\Database\Object\Table;
 use Directus\Database\SchemaManager;
 use Directus\Database\Schemas\Sources\MySQLSchema;
 use Directus\Database\Schemas\Sources\SQLiteSchema;
@@ -450,21 +451,20 @@ class Bootstrap
         $auth = self::get('auth');
         $db = self::get('ZendDb');
 
-        $DirectusTablesTableGateway = new DirectusTablesTableGateway($db, $acl);
-        $getTables = function () use ($DirectusTablesTableGateway) {
-            return $DirectusTablesTableGateway->select()->toArray();
-        };
+        /** @var Table[] $tables */
+        $tables = TableSchema::getTablesSchema([
+            'include_columns' => true
+        ], true);
 
         // $tableRecords = $DirectusTablesTableGateway->memcache->getOrCache(MemcacheProvider::getKeyDirectusTables(), $getTables, 1800);
-        $tableRecords = $getTables();
 
         $magicOwnerColumnsByTable = [];
-        foreach ($tableRecords as $tableRecord) {
-            if (!empty($tableRecord['user_create_column'])) {
-                $magicOwnerColumnsByTable[$tableRecord['table_name']] = $tableRecord['user_create_column'];
-            }
+        foreach ($tables as $table) {
+            $magicOwnerColumnsByTable[$table->getName()] = $table->getUserCreateColumn();
         }
-        $acl::$cms_owner_columns_by_table = $magicOwnerColumnsByTable;
+
+        // TODO: Move this to a method
+        $acl::$cms_owner_columns_by_table = array_merge($magicOwnerColumnsByTable, $acl::$cms_owner_columns_by_table);
 
         if ($auth->loggedIn()) {
             $currentUser = $auth->getUserInfo();
@@ -472,7 +472,7 @@ class Bootstrap
             $cacheFn = function () use ($currentUser, $Users) {
                 return $Users->find($currentUser['id']);
             };
-            $cacheKey = MemcacheProvider::getKeyDirectusUserFind($currentUser['id']);
+            // $cacheKey = MemcacheProvider::getKeyDirectusUserFind($currentUser['id']);
             // $currentUser = $Users->memcache->getOrCache($cacheKey, $cacheFn, 10800);
             $currentUser = $cacheFn();
             if ($currentUser) {
