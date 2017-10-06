@@ -34,6 +34,7 @@ class RelationalTableGateway extends BaseTableGateway
         'offset' => 0,
         'skip' => null,
         'search' => null,
+        'meta' => 1,
         'depth' => 1,
         'status' => null
     ];
@@ -745,46 +746,79 @@ class RelationalTableGateway extends BaseTableGateway
     public function getItems(array $params = [])
     {
         $entries = $this->loadItems($params);
-        // @NOTE: it should has another name
-        //        this evolved into something else
-        $entries = $this->loadMetadata($entries, ArrayUtils::has($params, 'id'));
+        $single = ArrayUtils::has($params, 'id');
+        $meta = ArrayUtils::get($params, 'meta', 1);
 
-        return $entries;
+        return $this->wrapData($entries, $single, $meta);
     }
 
-    public function loadMetadata($entriesData, $single = false)
+    /**
+     * wrap the query result into the api response format
+     *
+     * TODO: This will be soon out of TableGateway
+     *
+     * @param array $data
+     * @param bool $single
+     * @param bool $meta
+     *
+     * @return array
+     */
+    public function wrapData($data, $single = false, $meta = true)
     {
-        return [
-            'meta' => $this->createMetadata($entriesData, $single),
-            'data' => $entriesData
+        $result = [
+            'data' => $data
         ];
+
+        if ($meta) {
+            $result['meta'] = $this->createMetadata($data, $single);
+        }
+
+        return $result;
+    }
+
+    public function loadMetadata($data, $single = false)
+    {
+        return $this->wrapData($data, $single);
     }
 
     public function createMetadata($entriesData, $single)
     {
         $singleEntry = $single || !ArrayUtils::isNumericKeys($entriesData);
-        $tableSchema = $this->getTableSchema($this->table);
-        $metadata = [
-            'table' => $tableSchema->getTableName(),
-            'type' => $singleEntry ? 'item' : 'collection'
-        ];
+        $metadata = $this->createGlobalMetadata($singleEntry);
 
         if (!$singleEntry) {
-            $metadata = array_merge($metadata, $this->createEntriesMetadata($entriesData, $tableSchema));
+            $metadata = array_merge($metadata, $this->createEntriesMetadata($entriesData));
         }
 
         return $metadata;
     }
 
     /**
+     * Creates the "global" metadata
+     *
+     * @param $single
+     *
+     * @return array
+     */
+    public function createGlobalMetadata($single)
+    {
+        return [
+            'table' => $this->getTable(),
+            'type' => $single ? 'item' : 'collection'
+        ];
+    }
+
+    /**
      * Create entries metadata
      *
      * @param array $entries
-     * @param Table $tableSchema
+     *
      * @return array
      */
-    public function createEntriesMetadata($entries, Table $tableSchema)
+    public function createEntriesMetadata($entries)
     {
+        $tableSchema = $this->getTableSchema($this->table);
+
         $metadata = [
             'table' => $tableSchema->getTableName(),
             'total' => count($entries)
@@ -870,7 +904,8 @@ class RelationalTableGateway extends BaseTableGateway
             }
 
             $relationalParams = [
-                'preview' => ArrayUtils::get($params, 'preview')
+                'meta' => ArrayUtils::get($params, 'meta', 1),
+                'preview' => ArrayUtils::get($params, 'preview', 0)
             ];
 
             $results = $this->loadRelationalDataByDepth($results, (int) $depth, $relationalColumns, $relationalParams);
@@ -1589,9 +1624,17 @@ class RelationalTableGateway extends BaseTableGateway
                     $row[] = $_byId[$item[$junctionKeyRightColumn]];
                 }
 
-                $junctionData = $junctionTableGateway->loadMetadata($junctionData);
+                $junctionData = $junctionTableGateway->wrapData(
+                    $junctionData,
+                    ArrayUtils::has($params, 'id'),
+                    ArrayUtils::get($params, 'meta', 1)
+                );
 
-                $row = $relatedTableGateway->loadMetadata($row);
+                $row = $relatedTableGateway->wrapData(
+                    $row,
+                    ArrayUtils::has($params, 'id'),
+                    ArrayUtils::get($params, 'meta', 1)
+                );
                 $row['junction'] = $junctionData;
                 $parentRow[$relationalColumnName] = $row;
             }
@@ -1687,7 +1730,11 @@ class RelationalTableGateway extends BaseTableGateway
 
             $relatedEntries = [];
             foreach ($results as $row) {
-                $relatedEntries[$row[$primaryKeyName]] = $tableGateway->loadMetadata($row);
+                $relatedEntries[$row[$primaryKeyName]] = $this->wrapData(
+                    $row,
+                    true,
+                    ArrayUtils::get($params, 'meta', 1)
+                );
             }
 
             // Replace foreign keys with foreign rows
