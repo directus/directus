@@ -85,6 +85,8 @@ define(['utils', 'underscore', 'core/UIView'], function (Utils, _, UIView) {
         .replace(/-+/g, '-'); // Collapse dashes
 
       $slugInput.val(slug);
+      // Trigger the input event to run "onInputChange" method
+      $slugInput.trigger('input');
       this.slugValue = slug;
     },
 
