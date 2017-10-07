@@ -7,6 +7,7 @@ use Directus\Authentication\FacebookProvider;
 use Directus\Authentication\GitHubProvider;
 use Directus\Authentication\GoogleProvider;
 use Directus\Authentication\Provider as AuthProvider;
+use Directus\Authentication\Provider;
 use Directus\Authentication\Social;
 use Directus\Authentication\TwitterProvider;
 use Directus\Config\Config;
@@ -929,6 +930,35 @@ class Bootstrap
             return $payload;
         };
 
+        // TODO: Merge with hash user password
+        $hashPasswordInterface = function (Payload $payload) {
+            /** @var Provider $auth */
+            $auth = Bootstrap::get('auth');
+            $tableName = $payload->attribute('tableName');
+
+            if (TableSchema::isSystemTable($tableName)) {
+                return $payload;
+            }
+
+            $tableObject = TableSchema::getTableSchema($tableName);
+            $data = $payload->getData();
+
+            foreach ($data as $key => $value) {
+                $columnObject = $tableObject->getColumn($key);
+
+                if (!$columnObject) {
+                    continue;
+                }
+
+                if ($columnObject->getUI() === 'password') {
+                    // TODO: Use custom password hashing method
+                    $payload->set($key, $auth->hashPassword($value));
+                }
+            }
+
+            return $payload;
+        };
+
         $emitter->addFilter('table.update.directus_users:before', function (Payload $payload) {
             $acl = Bootstrap::get('acl');
             $currentUserId = $acl->getUserId();
@@ -955,6 +985,10 @@ class Bootstrap
         });
         $emitter->addFilter('table.insert.directus_users:before', $hashUserPassword);
         $emitter->addFilter('table.update.directus_users:before', $hashUserPassword);
+
+        // Hash value to any non system table password interface column
+        $emitter->addFilter('table.insert:before', $hashPasswordInterface);
+        $emitter->addFilter('table.update:before', $hashPasswordInterface);
 
         $preventUsePublicGroup = function (Payload $payload) {
             $data = $payload->getData();

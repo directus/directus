@@ -54,14 +54,14 @@ class SchemaManager
     protected $data = [];
 
     /**
-     * Core table prefix
+     * System table prefix
      *
      * @var string
      */
     protected $prefix = 'directus_';
 
     /**
-     * Directus core tables
+     * Directus System tables
      *
      * @var array
      */
@@ -225,13 +225,13 @@ class SchemaManager
     }
 
     /**
-     * Add the core table prefix to to a table name.
+     * Add the system table prefix to to a table name.
      *
      * @param string $tables
      *
      * @return string|array
      */
-    public function addCoreTablePrefix($tables)
+    public function addSystemTablePrefix($tables)
     {
         $filterFunction = function ($table) {
             // @TODO: Directus tables prefix will be dynamic
@@ -246,13 +246,47 @@ class SchemaManager
     }
 
     /**
-     * Get Directus Core tables name
+     * @deprecated 6.4.4 See addSystemTablesPrefix
+     *
+     * @param $tables
+     *
+     * @return array|string
+     */
+    public function addCoreTablePrefix($tables)
+    {
+        return $this->addSystemTablePrefix($tables);
+    }
+
+    /**
+     * Get Directus System tables name
+     *
+     * @return array
+     */
+    public function getSystemTables()
+    {
+        return $this->addSystemTablePrefix($this->directusTables);
+    }
+
+    /**
+     * @deprecated 6.4.4 See getSystemTables
      *
      * @return array
      */
     public function getCoreTables()
     {
-        return $this->addCoreTablePrefix($this->directusTables);
+        return $this->getSystemTables();
+    }
+
+    /**
+     * Check if the given name is a system table
+     *
+     * @param $name
+     *
+     * @return bool
+     */
+    public function isSystemTables($name)
+    {
+        return in_array($name, $this->getSystemTables());
     }
 
     /**
@@ -501,7 +535,7 @@ class SchemaManager
     }
 
     /**
-     * Get all Directus core tables name
+     * Get all Directus system tables name
      *
      * @param array $filterNames
      *
@@ -518,11 +552,11 @@ class SchemaManager
             }
         }
 
-        return $this->addCoreTablePrefix($tables);
+        return $this->addSystemTablePrefix($tables);
     }
 
     /**
-     * Check if a given table is a directus core table name
+     * Check if a given table is a directus system table name
      *
      * @param $tableName
      *
@@ -595,7 +629,7 @@ class SchemaManager
      *
      * @return array
      */
-    public function parseCoreTablesColumn(array $column)
+    public function parseSystemTablesColumn(array $column)
     {
         $tableName = ArrayUtils::get($column, 'table_name');
         $columnName = ArrayUtils::get($column, 'column_name');
@@ -611,6 +645,18 @@ class SchemaManager
         }
 
         return $column;
+    }
+
+    /**
+     * @deprecated 6.4.4 See parseSystemTablesColumn
+     *
+     * @param array $column
+     *
+     * @return array
+     */
+    public function parseCoreTablesColumn(array $column)
+    {
+        return $this->parseSystemTablesColumn($column);
     }
 
     public function createColumnObjectFromArray($column)
