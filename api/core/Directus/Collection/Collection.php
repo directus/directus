@@ -142,7 +142,7 @@ class Collection implements CollectionInterface
      */
     public function offsetSet($offset, $value)
     {
-        return $this->set($offset, $value);
+        $this->set($offset, $value);
     }
 
     /**
@@ -150,7 +150,7 @@ class Collection implements CollectionInterface
      */
     public function offsetUnset($offset)
     {
-        return $this->remove($offset);
+        $this->remove($offset);
     }
 
     /**
