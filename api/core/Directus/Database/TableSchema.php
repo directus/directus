@@ -329,6 +329,18 @@ class TableSchema
     }
 
     /**
+     * Checks whether the table is a system table
+     *
+     * @param $tableName
+     *
+     * @return bool
+     */
+    public static function isSystemTable($tableName)
+    {
+        return static::getSchemaManagerInstance()->isSystemTables($tableName);
+    }
+
+    /**
      * @param $tableName
      *
      * @return \Directus\Database\Object\Column[] |bool
