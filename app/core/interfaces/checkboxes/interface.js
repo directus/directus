@@ -1,4 +1,3 @@
-/* global _ */
 define([
   'core/UIView',
   'underscore',
@@ -25,10 +24,10 @@ define([
     delimiterize: function (out) {
       var delimiter = this.options.settings.get('delimiter');
 
+      out = out.join(delimiter);
+
       if (this.options.settings.get('wrap_with_delimiter')) {
-        out = delimiter + out.join(delimiter) + delimiter;
-      } else {
-        out = out.join(delimiter);
+        out = delimiter + out + delimiter;
       }
 
       return out;
@@ -48,9 +47,7 @@ define([
     },
 
     update: function () {
-      var out = [];
-
-      out.push(this.value());
+      var out = this.value();
 
       if (Utils.isSomething(this.customValue())) {
         out.push(this.customValue());
