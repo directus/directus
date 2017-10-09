@@ -1,2 +1,2 @@
 RewriteEngine On
-ErrorDocument 404 /thumbnail/index.php
+RewriteRule (.*) index.php [L]
