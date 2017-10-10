@@ -208,14 +208,16 @@ define([
           collection.remove(originalColumnModel);
           columns.remove(originalColumnModel);
           self.$el.find('[data-id=' + model.get('id') + ']').remove();
-          Notification.success('Column removed', '<b>' + columnName + '</b> was removed.');
+          Notification.success(__t('column_x_was_removed', {
+            columnName: columnName
+          }));
         } else {
-          Notification.error('Column not removed', response.message);
+          Notification.error(__t('column_not_removed'), response.error.message);
         }
       };
 
       var onError = function (model, resp) {
-        Notification.error('Column not removed', resp.responseJSON.message);
+        Notification.error(__t('column_not_removed'), resp.responseJSON.error.message);
       };
 
       columnModel.destroy({success: onSuccess, error: onError, wait: true});
@@ -355,6 +357,7 @@ define([
         tableTitle: this.relatedCollection.table.get('table_name'),
         canEdit: this.canEdit,
         showChooseButton: this.showChooseButton,
+        showRemoveButton: columns.length > 1,
         showAddButton: this.showAddButton && this.canEdit
       };
     },
