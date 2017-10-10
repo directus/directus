@@ -659,6 +659,13 @@ class SchemaManager
         return $this->parseSystemTablesColumn($column);
     }
 
+    /**
+     * Creates a column object from the given array
+     *
+     * @param array $column
+     *
+     * @return Column
+     */
     public function createColumnObjectFromArray($column)
     {
         if (!isset($column['ui'])) {

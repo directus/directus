@@ -83,7 +83,6 @@ class RelationalTableGateway extends BaseTableGateway
         $recordIsNew = !array_key_exists($TableGateway->primaryKeyFieldName, $recordData);
 
         $tableSchema = TableSchema::getTableSchema($tableName);
-        $statusColumnName = $tableSchema->getStatusColumn();
 
         $currentUserId = $this->acl ? $this->acl->getUserId() : null;
         $currentUserGroupId = $this->acl ? $this->acl->getGroupId() : null;
@@ -479,9 +478,6 @@ class RelationalTableGateway extends BaseTableGateway
             $fieldIsCollectionAssociation = in_array($relationship['type'], TableSchema::$association_types);
             $lowercaseColumnType = strtolower($relationship['type']);
 
-            // Ignore empty OneToMany collections
-            $fieldIsOneToMany = ('onetomany' === $lowercaseColumnType);
-
             // Ignore non-arrays and empty collections
             if (empty($parentRow[$colName])) {//} || ($fieldIsOneToMany && )) {
                 // Once they're managed, remove the foreign collections from the record array
@@ -490,7 +486,6 @@ class RelationalTableGateway extends BaseTableGateway
             }
 
             $foreignDataSet = $parentRow[$colName];
-            $colUiType = $column['ui'];
 
             /** One-to-Many, Many-to-Many */
             if ($fieldIsCollectionAssociation) {
@@ -509,7 +504,10 @@ class RelationalTableGateway extends BaseTableGateway
 
                             $foreignSchema = TableSchema::getTableSchema($ForeignTable->getTable());
                             $hasActiveColumn = $foreignSchema->hasStatusColumn();
-                            $foreignColumn = TableSchema::getColumnSchema($ForeignTable->getTable(), $foreignJoinColumn);
+                            // TODO: Fix a bug when fetching a single column
+                            // before fetching all columns from a table
+                            // due to our basic "cache" implementation on schema layer
+                            $foreignColumn = $foreignSchema->getColumn($foreignJoinColumn);
                             $hasPrimaryKey = isset($foreignRecord[$ForeignTable->primaryKeyFieldName]);
                             $canBeNull = $foreignColumn->isNullable();
 
