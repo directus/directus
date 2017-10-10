@@ -1107,7 +1107,7 @@ class Bootstrap
         $session = self::get('session');
         $config = self::get('config');
         $prefix = $config->get('session.prefix', 'directus_');
-        $table = new BaseTableGateway('directus_users', $zendDb);
+        $table = new DirectusUsersTableGateway($zendDb);
 
         return new AuthProvider($table, $session, $prefix);
     }
