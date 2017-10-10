@@ -243,6 +243,7 @@ class RelationalTableGateway extends BaseTableGateway
                 $recordIdentifier = $this->findRecordIdentifier($tableSchema, $fullRecordData);
                 // Produce log if something changed.
                 if ($parentRecordChanged || $nestedCollectionRelationshipsChanged) {
+                    $statusColumnName = $tableSchema->getStatusColumn();
                     $logEntryAction = $recordIsNew ? DirectusActivityTableGateway::ACTION_ADD : DirectusActivityTableGateway::ACTION_UPDATE;
                     //If we are updating and active is being set to 0 then we are deleting
                     if (!$recordIsNew && array_key_exists($statusColumnName, $deltaRecordData)) {
