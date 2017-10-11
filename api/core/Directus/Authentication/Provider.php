@@ -248,7 +248,7 @@ class Provider
         $this->prependSessionKey();
         $this->enforceUserIsAuthenticated();
         $this->expireCachedUserRecord();
-        $this->session->set($this->SESSION_KEY, []);
+        $this->completeLogout($this->getUserInfo('id'));
     }
 
     /**
@@ -376,6 +376,22 @@ class Provider
         ]));
 
         $this->authenticated = true;
+    }
+
+    /**
+     * Completes the logout process by removing the session and access_token
+     *
+     * @throws \Exception
+     */
+    protected function completeLogout($uid)
+    {
+        $this->table->ignoreFilters()->update([
+            'access_token' => null
+        ], ['id' => $uid]);
+
+        $this->session->set($this->SESSION_KEY, []);
+
+        $this->authenticated = false;
     }
 
     /**
