@@ -1319,14 +1319,18 @@ if (!function_exists('get_project_info')) {
     function get_project_info()
     {
         /** @var \Directus\Database\TableGateway\DirectusSettingsTableGateway $settingsTable */
-        $settingsTable = \Directus\Database\TableGatewayFactory::create('directus_settings');
+        $settingsTable = \Directus\Database\TableGatewayFactory::create('directus_settings', [
+            'acl' => null
+        ]);
         $settings = $settingsTable->fetchCollection('global');
 
         $projectName = isset($settings['project_name']) ? $settings['project_name'] : 'Directus';
         $defaultProjectLogo = get_directus_path('/assets/imgs/directus-logo-flat.svg');
         if (isset($settings['cms_thumbnail_url']) && $settings['cms_thumbnail_url']) {
             $projectLogoURL = $settings['cms_thumbnail_url'];
-            $filesTable = \Directus\Database\TableGatewayFactory::create('directus_files');
+            $filesTable = \Directus\Database\TableGatewayFactory::create('directus_files', [
+                'acl' => null
+            ]);
             $data = $filesTable->loadEntries([
                 'id' => $projectLogoURL
             ]);
