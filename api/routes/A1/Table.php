@@ -130,7 +130,6 @@ class Table extends Route
                 'success' => $success
             ];
 
-            // Success: __t('column_x_was_removed', ['column' => $column]),
             // TODO: implement successful messages
             if (!$success) {
                 if (!$hasMoreThanOneColumn) {

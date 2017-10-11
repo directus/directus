@@ -209,7 +209,7 @@ define([
           columns.remove(originalColumnModel);
           self.$el.find('[data-id=' + model.get('id') + ']').remove();
           Notification.success(__t('column_x_was_removed', {
-            columnName: columnName
+            column: columnName
           }));
         } else {
           Notification.error(__t('column_not_removed'), response.error.message);
