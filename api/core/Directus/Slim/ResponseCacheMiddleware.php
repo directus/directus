@@ -10,6 +10,9 @@ class ResponseCacheMiddleware extends Middleware
 {
     public function call()
     {
+        $container = $this->app->container;
+        $forceRefresh = false;
+
         /** @var Response $cache */
         $cache = $this->app->container->get('responseCache');
 
@@ -17,13 +20,16 @@ class ResponseCacheMiddleware extends Middleware
             $parameters = $this->app->request()->get();
             ksort($parameters);
 
+            $forceRefresh = (empty($parameters['refresh_cache'])) ? false : true;
+            unset($parameters['refresh_cache']);
+
             $key = md5($this->app->request->getResourceUri().'?'.http_build_query($parameters));
         } else {
             $key = null;
         }
 
-        $config = $this->app->container->get('config');
-        if($config->get('cache.enabled') && $key && $cachedResponse = $cache->get($key)) {
+        $config = $container->get('config');
+        if($config->get('cache.enabled') && $key && !$forceRefresh && $cachedResponse = $cache->get($key)) {
             $response = $this->app->response();
             $response->setBody($cachedResponse->getBody());
             $response->headers = $cachedResponse->headers;
