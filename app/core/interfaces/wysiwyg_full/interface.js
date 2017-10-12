@@ -130,6 +130,7 @@ define([
         autoresize_max_height: this.options.settings.get('max_height'),
         elementpath: elementpath,
         statusbar: elementpath,
+        convert_urls: false,
         menubar: false,
         readonly: this.options.settings.get('read_only') || !this.options.canWrite,
         toolbar: toolbar,
