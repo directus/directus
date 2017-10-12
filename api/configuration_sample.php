@@ -8,6 +8,12 @@ return [
 
     'cache' => [
 //        'pool' => [
+//            'adapter' => 'apc'
+//        ],
+//        'pool' => [
+//            'adapter' => 'apcu'
+//        ],
+//        'pool' => [
 //            'adapter' => 'filesystem',
 //            'path' => '../cache/', // relative to the api directory
 //        ],

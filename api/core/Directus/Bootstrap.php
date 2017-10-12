@@ -2,9 +2,12 @@
 
 namespace Directus;
 
+use Cache\Adapter\Apc\ApcCachePool;
+use Cache\Adapter\Apcu\ApcuCachePool;
 use Cache\Adapter\Common\PhpCachePool;
 use Cache\Adapter\Filesystem\FilesystemCachePool;
 use Cache\Adapter\Memcached\MemcachedCachePool;
+use Cache\Adapter\PHPArray\ArrayCachePool;
 use Cache\Adapter\Redis\RedisCachePool;
 use Cache\Adapter\Void\VoidCachePool;
 use Directus\Application\Application;
@@ -1138,13 +1141,26 @@ class Bootstrap
         if(is_object($poolConfig) && $poolConfig instanceof PhpCachePool) {
             $pool = $poolConfig;
         } else {
-            if(!in_array($poolConfig['adapter'], ['filesystem', 'memcached', 'redis', 'void'])) {
-                throw new \Exception("Valid cache adapters are 'filesystem', 'memcached', 'redis' or 'void'");
+            if(!in_array($poolConfig['adapter'], ['apc', 'apcu', 'array', 'filesystem', 'memcached', 'redis', 'void'])) {
+                throw new \Exception("Valid cache adapters are 'apc', 'apcu', 'filesystem', 'memcached', 'redis'");
             }
 
             $pool = new VoidCachePool();
 
             $adapter = $poolConfig['adapter'];
+
+            if($adapter == 'apc') {
+                $pool = new ApcCachePool();
+            }
+
+            if($adapter == 'apcu') {
+                $pool = new ApcuCachePool();
+            }
+
+            if($adapter == 'array') {
+                $pool = new ArrayCachePool();
+            }
+
             if($adapter == 'filesystem') {
                 if(empty($poolConfig['path'])) {
                     throw new \Exception("'cache.pool.path' parameter is required for 'filesystem' adapter");
