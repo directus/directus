@@ -9,7 +9,7 @@ return [
     'cache' => [
 //        'pool' => [
 //            'adapter' => 'filesystem',
-//            'path' => '../cache/',
+//            'path' => '../cache/', // relative to the api directory
 //        ],
 //        'pool' => [
 //            'adapter'   => 'memcached',
