@@ -7,6 +7,20 @@ return [
     ],
 
     'cache' => [
+//        'pool' => [
+//            'adapter' => 'filesystem',
+//            'path' => '../cache/',
+//        ],
+//        'pool' => [
+//            'adapter'   => 'memcached',
+//            'host'      => 'localhost',
+//            'port'      => 11211
+//        ],
+//        'pool' => [
+//            'adapter'   => 'redis',
+//            'host'      => 'localhost',
+//            'port'      => 6379
+//        ],
         'enabled' => true,
         'ttl' => null
     ],

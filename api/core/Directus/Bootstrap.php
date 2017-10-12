@@ -2,7 +2,11 @@
 
 namespace Directus;
 
+use Cache\Adapter\Common\PhpCachePool;
 use Cache\Adapter\Filesystem\FilesystemCachePool;
+use Cache\Adapter\Memcached\MemcachedCachePool;
+use Cache\Adapter\Redis\RedisCachePool;
+use Cache\Adapter\Void\VoidCachePool;
 use Directus\Application\Application;
 use Directus\Authentication\FacebookProvider;
 use Directus\Authentication\GitHubProvider;
@@ -1124,19 +1128,59 @@ class Bootstrap
 
     private static function cache()
     {
-//        $client = new \Memcache();
-//        $client->connect('localhost', 11211);
-//        $pool = new MemcacheCachePool($client);
+        $config = self::get('config');
+        $poolConfig = $config->get('cache.pool');
 
-        $filesystemAdapter = new Local(__DIR__.'/../../../cache/');
-        $filesystem        = new \League\Flysystem\Filesystem($filesystemAdapter);
+        if(!$poolConfig || (!is_object($poolConfig) && empty($poolConfig['adapter']))) {
+            $poolConfig = ['adapter' => 'void'];
+        }
 
-        $pool = new FilesystemCachePool($filesystem);
+        if(is_object($poolConfig) && $poolConfig instanceof PhpCachePool) {
+            $pool = $poolConfig;
+        } else {
+            if(!in_array($poolConfig['adapter'], ['filesystem', 'memcached', 'redis', 'void'])) {
+                throw new \Exception("Valid cache adapters are 'filesystem', 'memcached', 'redis' or 'void'");
+            }
+
+            $pool = new VoidCachePool();
+
+            $adapter = $poolConfig['adapter'];
+            if($adapter == 'filesystem') {
+                if(empty($poolConfig['path'])) {
+                    throw new \Exception("'cache.pool.path' parameter is required for 'filesystem' adapter");
+                }
+
+                $filesystemAdapter = new Local(__DIR__.'/../../'.$poolConfig['path']);
+                $filesystem        = new \League\Flysystem\Filesystem($filesystemAdapter);
+
+                $pool = new FilesystemCachePool($filesystem);
+            }
+
+            if($adapter == 'memcached') {
+                $host = (isset($poolConfig['host'])) ? $poolConfig['host'] : 'localhost';
+                $port = (isset($poolConfig['port'])) ? $poolConfig['port'] : 11211;
+
+                $client = new \Memcached();
+                $client->addServer($host, $port);
+                $pool = new MemcachedCachePool($client);
+            }
+
+            if($adapter == 'redis') {
+                $host = (isset($poolConfig['host'])) ? $poolConfig['host'] : 'localhost';
+                $port = (isset($poolConfig['port'])) ? $poolConfig['port'] : 6379;
+
+                $client = new \Redis();
+                $client->connect($host, $port);
+                $pool = new RedisCachePool($client);
+            }
+        }
+
         return $pool;
     }
 
     private static function responseCache()
     {
+//        die(var_dump(self::get('cache')));
         return new ResponseCache(self::get('cache'), self::get('config')->get('cache.ttl'));
     }
 
