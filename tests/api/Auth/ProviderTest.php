@@ -236,13 +236,13 @@ class ProviderTest extends PHPUnit_Framework_TestCase
         $session = get_array_session();
         $provider = new Auth($this->table, $session, $this->prefix);
 
-        $provider->logout();
+        $provider->logout(true);
     }
 
     public function testLogout()
     {
         $this->testLogin();
-        $this->provider->logout();
+        $this->provider->logout(true);
         $session = $this->session->get($this->provider->getSessionKey());
         $this->assertEmpty($session);
     }
