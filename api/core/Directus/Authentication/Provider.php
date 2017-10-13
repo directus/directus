@@ -239,16 +239,18 @@ class Provider
     /**
      * De-authenticate the logged-in user.
      *
+     * @param bool $stateless
+     *
      * @return null
      *
      * @throws  \Directus\Authentication\Exception\UserIsntLoggedInException
      */
-    public function logout()
+    public function logout($stateless = false)
     {
         $this->prependSessionKey();
         $this->enforceUserIsAuthenticated();
         $this->expireCachedUserRecord();
-        $this->completeLogout($this->getUserInfo('id'));
+        $this->completeLogout($this->getUserInfo('id'), $stateless);
     }
 
     /**
@@ -381,13 +383,18 @@ class Provider
     /**
      * Completes the logout process by removing the session and access_token
      *
+     * @param int $uid
+     * @param bool $stateless
+     *
      * @throws \Exception
      */
-    protected function completeLogout($uid)
+    protected function completeLogout($uid, $stateless = false)
     {
-        $this->table->ignoreFilters()->update([
-            'access_token' => null
-        ], ['id' => $uid]);
+        if ($stateless !== true) {
+            $this->table->ignoreFilters()->update([
+                'access_token' => null
+            ], ['id' => $uid]);
+        }
 
         $this->session->set($this->SESSION_KEY, []);
 
