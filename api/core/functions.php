@@ -610,7 +610,7 @@ if (!function_exists('get_timezones_list')) {
             'Europe/Amsterdam' => '(UTC+01:00) Amsterdam',
             'Europe/Belgrade' => '(UTC+01:00) Belgrade',
             'Europe/Berlin' => '(UTC+01:00) Berlin',
-            'Europe/Berlin' => '(UTC+01:00) Bern',
+            'Europe/Bern' => '(UTC+01:00) Bern',
             'Europe/Bratislava' => '(UTC+01:00) Bratislava',
             'Europe/Brussels' => '(UTC+01:00) Brussels',
             'Europe/Budapest' => '(UTC+01:00) Budapest',
