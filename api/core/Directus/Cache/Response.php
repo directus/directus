@@ -21,13 +21,9 @@ class Response extends Cache
     public function process($key = null, $value = null)
     {
         if($key && !empty($this->tags)) {
-            $item = $this->set($key, $value)->setTags($this->tags);
-
-            if($this->ttl) {
-                $item->expiresAfter($this->ttl);
-            }
-
-            $this->getPool()->save($item);
+            return $this->set($key, $value, $this->tags, $this->defaultTtl);
         }
+
+        return false;
     }
 }

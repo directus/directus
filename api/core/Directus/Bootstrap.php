@@ -166,14 +166,6 @@ class Bootstrap
             new DirectusTwigExtension()
         ];
 
-        $app->container->singleton('cache', function() {
-            return Bootstrap::get('cache');
-        });
-
-        $app->container->singleton('responseCache', function() {
-            return Bootstrap::get('responseCache');
-        });
-
         $app->container->singleton('hookEmitter', function () {
             return Bootstrap::get('hookEmitter');
         });
@@ -217,6 +209,14 @@ class Bootstrap
             return Bootstrap::get('hashManager');
         });
 
+        $app->container->singleton('cache', function() {
+            return Bootstrap::get('cache');
+        });
+
+        $app->container->singleton('responseCache', function() {
+            return Bootstrap::get('responseCache');
+        });
+
         $authConfig = ArrayUtils::get($config, 'auth', []);
         $socialAuth = $app->container->get('socialAuth');
 
@@ -242,10 +242,6 @@ class Bootstrap
 
         $app->container->singleton('filesystem', function() {
             return Bootstrap::get('filesystem');
-        });
-
-        $app->container->singleton('acl', function() {
-            return new \Directus\Permissions\Acl();
         });
 
         $app->container->get('session')->start();

@@ -23,7 +23,7 @@ class ResponseCacheMiddleware extends Middleware
             $forceRefresh = (empty($parameters['refresh_cache'])) ? false : true;
             unset($parameters['refresh_cache']);
 
-            $key = md5($this->app->request->getResourceUri().'?'.http_build_query($parameters));
+            $key = md5($container->get('acl')->getUserId().'@'.$this->app->request->getResourceUri().'?'.http_build_query($parameters));
         } else {
             $key = null;
         }

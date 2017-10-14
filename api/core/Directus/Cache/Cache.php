@@ -8,12 +8,12 @@ use Cache\TagInterop\TaggableCacheItemPoolInterface;
 class Cache
 {
     protected $pool;
-    public $ttl = null;
+    public $defaultTtl = null;
 
     public function __construct(TaggableCacheItemPoolInterface $pool, $defaultTtl = null)
     {
         $this->pool = $pool;
-        $this->ttl = $defaultTtl;
+        $this->defaultTtl = $defaultTtl;
 
     }
 
@@ -24,12 +24,24 @@ class Cache
 
     /**
      * @param $key
-     * @param null $value
+     * @param bool $value
+     * @param array $tags
      * @return TaggableCacheItemInterface
      */
-    public function set($key, $value = null)
+    public function set($key, $value = null, $tags = [], $ttl = null)
     {
+        $ttl = ($ttl) ? $ttl : $this->defaultTtl;
+
         $item = $this->getPool()->getItem($key)->set($value);
+
+        if($tags) {
+            $item->setTags($tags);
+        }
+
+        if($ttl) {
+            $item->expiresAfter($this->ttl);
+        }
+
         $this->getPool()->save($item);
 
         return $item;
