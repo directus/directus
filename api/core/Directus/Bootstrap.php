@@ -225,10 +225,6 @@ class Bootstrap
             return Bootstrap::get('filesystem');
         });
 
-        $app->container->singleton('acl', function() {
-            return new \Directus\Permissions\Acl();
-        });
-
         $app->container->get('session')->start();
 
         return $app;
