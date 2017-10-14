@@ -92,7 +92,7 @@ class Table extends Route
             ];
         } else {
 
-            $this->setResponseCacheTags('tableColumnsSchema_'.$tableName);
+            $this->tagResponseCache('tableColumnsSchema_'.$tableName);
             $response = [
                 'meta' => ['type' => 'collection', 'table' => 'directus_columns'],
                 'data' => array_map(function(Column $column) {
@@ -163,7 +163,7 @@ class Table extends Route
             $columnsService->update($table, $column, $requestPayload, $app->request()->isPatch());
         }
 
-        $this->setResponseCacheTags(['tableColumnsSchema_'.$table, 'columnSchema_'.$table.'_'.$column]);
+        $this->tagResponseCache(['tableColumnsSchema_'.$table, 'columnSchema_'.$table.'_'.$column]);
         $response = TableSchema::getColumnSchema($table, $column, true);
         if (!$response) {
             $response = [
@@ -292,7 +292,7 @@ class Table extends Route
             }
         }
 
-        $this->setResponseCacheTags(['tableSchema_'.$table, 'table_directus_columns']);
+        $this->tagResponseCache(['tableSchema_'.$table, 'table_directus_columns']);
         $response = TableSchema::getTable($table);
 
         if (!$response) {

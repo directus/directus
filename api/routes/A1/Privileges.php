@@ -127,6 +127,8 @@ class Privileges extends Route
 
         $privileges = new DirectusPrivilegesTableGateway($ZendDb, $acl);
 
+        $preUpdateRecord = $privileges->fetchById($privilegeId);
+
         if (isset($requestPayload['activeState'])) {
             if ($requestPayload['activeState'] !== 'all') {
                 $priv = $privileges->findByStatus($requestPayload['table_name'], $requestPayload['group_id'], $requestPayload['activeState']);
@@ -143,6 +145,8 @@ class Privileges extends Route
         }
 
         $response = $privileges->updatePrivilege($requestPayload);
+
+        $this->invalidateCacheTags(['privilege_table_'.$preUpdateRecord['table_name'].'_group_'.$preUpdateRecord['group_id']]);
 
         return $this->app->response([
             'data' => $response

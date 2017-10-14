@@ -18,14 +18,14 @@ abstract class Route
         $this->app = $app;
     }
 
-    protected function setResponseCacheTags($tags)
+    protected function tagResponseCache($tags)
     {
-        $this->app->container->get('responseCache')->setTags($tags);
+        $this->app->container->get('responseCache')->tag($tags);
     }
 
-    protected function invalidateCacheTags($tags, $mode = 'ANY')
+    protected function invalidateCacheTags($tags)
     {
-        $this->app->container->get('cache')->invalidateTags($tags, $mode);
+        $this->app->container->get('cache')->getPool()->invalidateTags($tags);
     }
 
     /**
@@ -47,25 +47,28 @@ abstract class Route
      */
     protected function getDataAndSetResponseCacheTags(Callable $callable, array $callableParams = [], $pkName = null)
     {
+        $container = $this->app->container;
+
         if(is_array($callable) && $callable[0] instanceof RelationalTableGateway) {
             /** @var $callable[0] RelationalTableGateway */
             $pkName = $callable[0]->primaryKeyFieldName;
         }
 
-        $setIdTags = function(Payload $payload) use($pkName) {
+        $setIdTags = function(Payload $payload) use($pkName, $container) {
             $tableName = $payload->attribute('tableName');
 
-            $this->setResponseCacheTags('table_'.$tableName);
+            $this->tagResponseCache('table_'.$tableName);
+            $this->tagResponseCache('privilege_table_'.$tableName.'_group_'.$container->get('acl')->getGroupId());
 
             foreach($payload->getData() as $item) {
-                $this->setResponseCacheTags('entity_'.$tableName.'_'.$item[$pkName]);
+                $this->tagResponseCache('entity_'.$tableName.'_'.$item[$pkName]);
             }
 
             return $payload;
         };
 
         /** @var Emitter $hookEmitter */
-        $hookEmitter = $this->app->container->get('hookEmitter');
+        $hookEmitter = $container->get('hookEmitter');
 
         $listenerId = $hookEmitter->addFilter('table.select', $setIdTags, Emitter::P_LOW);
         $result = call_user_func_array($callable, $callableParams);

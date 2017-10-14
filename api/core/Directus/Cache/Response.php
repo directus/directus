@@ -6,7 +6,7 @@ class Response extends Cache
 {
     protected $tags = [];
 
-    public function setTags($tags)
+    public function tag($tags)
     {
         $this->tags = array_merge($this->tags, (array)$tags);
 
@@ -20,8 +20,8 @@ class Response extends Cache
 
     public function process($key = null, $value = null)
     {
-        if($key && !empty($this->setTags)) {
-            $item = $this->set($key, $value)->setTags($this->setTags);
+        if($key && !empty($this->tags)) {
+            $item = $this->set($key, $value)->setTags($this->tags);
 
             if($this->ttl) {
                 $item->expiresAfter($this->ttl);
