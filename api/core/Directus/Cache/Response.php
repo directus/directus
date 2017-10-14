@@ -4,11 +4,11 @@ namespace Directus\Cache;
 
 class Response extends Cache
 {
-    protected $setTags = [];
+    protected $tags = [];
 
     public function setTags($tags)
     {
-        $this->setTags(array_merge($this->setTags, (array)$tags));
+        $this->tags = array_merge($this->tags, (array)$tags);
 
         return $this;
     }
