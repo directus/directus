@@ -1196,7 +1196,6 @@ class Bootstrap
 
     private static function responseCache()
     {
-//        die(var_dump(self::get('cache')));
         return new ResponseCache(self::get('cache'), self::get('config')->get('cache.ttl'));
     }
 

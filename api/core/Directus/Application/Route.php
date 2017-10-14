@@ -23,9 +23,9 @@ abstract class Route
         $this->app->container->get('responseCache')->setTags($tags);
     }
 
-    protected function invalidateResponseCacheTags($tags)
+    protected function invalidateCacheTags($tags, $mode = 'ANY')
     {
-        $this->app->container->get('responseCache')->invalidateTags($tags);
+        $this->app->container->get('cache')->invalidateTags($tags, $mode);
     }
 
     /**

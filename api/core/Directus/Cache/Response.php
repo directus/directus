@@ -5,26 +5,10 @@ namespace Directus\Cache;
 class Response extends Cache
 {
     protected $setTags = [];
-    protected $invalidateTags = [];
 
     public function setTags($tags)
     {
-        return $this->updateTagsArray('setTags', $tags);
-    }
-
-    public function invalidateTags($tags)
-    {
-        return $this->updateTagsArray('invalidateTags', $tags);
-    }
-
-    /**
-     * @param string $arrayName
-     * @param (array|string) $tags
-     * @return $this
-     */
-    protected function updateTagsArray($arrayName, $tags)
-    {
-        $this->$arrayName = array_merge($this->$arrayName, (array)$tags);
+        $this->setTags(array_merge($this->setTags, (array)$tags));
 
         return $this;
     }
@@ -36,8 +20,6 @@ class Response extends Cache
 
     public function process($key = null, $value = null)
     {
-        $this->getPool()->invalidateTags($this->invalidateTags);
-
         if($key && !empty($this->setTags)) {
             $item = $this->set($key, $value)->setTags($this->setTags);
 

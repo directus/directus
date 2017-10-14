@@ -209,7 +209,7 @@ class Table extends Route
             $data['id'] = $row['id'];
         }
 
-        $this->invalidateResponseCacheTags(['tableColumnsSchema_'.$table, 'columnSchema_'.$table.'_'.$column]);
+        $this->invalidateCacheTags(['tableColumnsSchema_'.$table, 'columnSchema_'.$table.'_'.$column]);
         $newRecord = $TableGateway->updateRecord($data, TableGateway::ACTIVITY_ENTRY_MODE_DISABLED);
 
         return $this->app->response($newRecord);
