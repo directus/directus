@@ -28,7 +28,7 @@ return [
 //            'port'      => 6379
 //        ],
         'enabled' => true,
-        'ttl' => null
+        'response_ttl' => 3600 // seconds
     ],
 
     // @TODO: the option to have multiple filesystem
