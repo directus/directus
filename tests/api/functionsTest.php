@@ -204,6 +204,157 @@ class FunctionsTest extends PHPUnit_Framework_TestCase
         }
     }
 
+    public function testColumnIdentifierReverse()
+    {
+        $original = 'posts.comments.author.email';
+        $expected = 'email.author.comments.posts';
+
+        $this->assertSame($expected, column_identifier_reverse($original));
+    }
+
+    public function testArrayDeep()
+    {
+        $array1 = [
+            'one',
+            'two',
+            'three'
+        ];
+
+        $this->assertSame(0, \Directus\Util\ArrayUtils::deepLevel($array1));
+
+        $array2 = [
+            'one',
+            'two',
+            'three' => [
+                'threed',
+                '3d',
+                'triple'
+            ],
+            'four' => [
+                'for',
+                '4'
+            ]
+        ];
+
+        $this->assertSame(1, \Directus\Util\ArrayUtils::deepLevel($array2));
+
+        $array3 = [
+            'one',
+            'two',
+            'three' => [
+                'threed',
+                '3d' => [
+                    '4d'
+                ],
+                'triple'
+            ],
+
+        ];
+
+        $this->assertSame(2, \Directus\Util\ArrayUtils::deepLevel($array3));
+    }
+
+    public function testGetColumnsFlatAt()
+    {
+        $columns = [
+            'zero-0',
+            'zero-1.one-1',
+            'zero-2',
+            'zero-3.one-1.two-1',
+            'zero-3.one-2'
+        ];
+
+        $this->assertSame([
+            'zero-0',
+            'zero-1',
+            'zero-2',
+            'zero-3',
+            'zero-3'
+        ], get_columns_flat_at($columns, 0));
+
+        $this->assertSame([
+            'one-1',
+            'one-1',
+            'one-2'
+        ], get_columns_flat_at($columns, 1));
+
+        $this->assertSame([
+            'two-1'
+        ], get_columns_flat_at($columns, 2));
+
+        $this->assertCount(5, get_columns_flat_at($columns, 0));
+        $this->assertCount(3, get_columns_flat_at($columns, 1));
+        $this->assertCount(1, get_columns_flat_at($columns, 2));
+    }
+
+    public function testGetFlatColumns()
+    {
+        $original = [
+            'one' => null,
+            'two' => null,
+            'three' => [
+                'threed' => null,
+                '3d' => null,
+                'triple' => null,
+                '3ple' => [
+                    'double' => null
+                ]
+            ],
+            'four' => [
+                'for' => null,
+                '4' => null
+            ]
+        ];
+
+        $expected = [
+            'one',
+            'two',
+            'three.threed',
+            'three.3d',
+            'three.triple',
+            'three.3ple.double',
+            'four.for',
+            'four.4'
+        ];
+
+        $this->assertSame($expected, get_array_flat_columns($original));
+        $this->assertSame(implode(',', $expected), get_csv_flat_columns($original));
+    }
+
+    public function testGetUnflatColumns()
+    {
+        $original = [
+            'one',
+            'two',
+            'three.threed',
+            'three.3d',
+            'three.triple',
+            'three.3ple.double',
+            'four.for',
+            'four.4'
+        ];
+
+        $expected = [
+            'one' => null,
+            'two' => null,
+            'three' => [
+                'threed' => null,
+                '3d' => null,
+                'triple' => null,
+                '3ple' => [
+                    'double' => null
+                ]
+            ],
+            'four' => [
+                'for' => null,
+                '4' => null
+            ]
+        ];
+
+        $this->assertSame($expected, get_unflat_columns($original));
+        $this->assertSame($expected, get_unflat_columns(implode(',', $original)));
+    }
+
     protected $files = [
         'file.js',
         'module.js',
