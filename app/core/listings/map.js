@@ -3,7 +3,7 @@ define([
   'underscore',
   'backbone',
   'core/listings/baseView',
-  'core/Notification',
+  'core/notification',
   'core/t',
   'core/google'
 ], function(app, _, Backbone, BaseView, Notification, __t, g) {
