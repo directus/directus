@@ -5,6 +5,7 @@ namespace Directus\Database;
 use Directus\Authentication\Provider as Auth;
 use Directus\Bootstrap;
 use Directus\Config\Config;
+use Directus\Database\Exception\ColumnNotFoundException;
 use Directus\Database\Object\Column;
 use Directus\Database\Object\Table;
 use Directus\Database\TableGateway\DirectusPreferencesTableGateway;
@@ -313,6 +314,48 @@ class TableSchema
         $column = static::getColumnSchema($tableName, $columnName);
 
         return $column && $column->hasRelationship() ? $column->getRelationship() : null;
+    }
+
+    /**
+     * Check whether the given table-column has relationship
+     *
+     * @param $tableName
+     * @param $columnName
+     *
+     * @return bool
+     *
+     * @throws ColumnNotFoundException
+     */
+    public static function hasRelationship($tableName, $columnName)
+    {
+        $tableObject = static::getTableSchema($tableName);
+        $columnObject = $tableObject->getColumn($columnName);
+
+        if (!$columnObject) {
+            throw new ColumnNotFoundException($columnName);
+        }
+
+        return $columnObject->hasRelationship();
+    }
+
+    /**
+     * Gets related table name
+     *
+     * @param $tableName
+     * @param $columnName
+     *
+     * @return string
+     */
+    public static function getRelatedTableName($tableName, $columnName)
+    {
+        if (!static::hasRelationship($tableName, $columnName)) {
+            return null;
+        }
+
+        $tableObject = static::getTableSchema($tableName);
+        $columnObject = $tableObject->getColumn($columnName);
+
+        return $columnObject->getRelationship()->getRelatedTable();
     }
 
     // @NOTE: This was copy-paste to Column Object

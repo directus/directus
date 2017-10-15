@@ -427,4 +427,26 @@ class ArrayUtils
             unset($array[$key]);
         }
     }
+
+    /**
+     * Gets how deep is the given array
+     *
+     * 0 = no child
+     *
+     * @param array $array
+     *
+     * @return int
+     */
+    public static function deepLevel($array)
+    {
+        $depth = 0;
+
+        foreach ($array as $value) {
+            if (is_array($value)) {
+                $depth = max(static::deepLevel($value) + 1, $depth);
+            }
+        }
+
+        return $depth;
+    }
 }

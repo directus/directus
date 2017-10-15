@@ -1228,13 +1228,17 @@ class BaseTableGateway extends TableGateway
      * Get the table name from the identifier
      *
      * @param string $column
+     * @param string|null $table
      *
      * @return string
      */
-    public function getTableFromIdentifier($column)
+    public function getTableFromIdentifier($column, $table = null)
     {
         $platform = $this->getAdapter()->getPlatform();
-        $table = $this->getTable();
+
+        if ($table === null) {
+            $table = $this->getTable();
+        }
 
         // TODO: find a common place to share this code
         // It is duplicated code in Builder.php
