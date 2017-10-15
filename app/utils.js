@@ -232,5 +232,30 @@ define(['underscore'], function (_) {
     return parsedString;
   };
 
+  Utils.repeatString = function (string, times) {
+    return Array(times + 1).join(string);
+  };
+
+  Utils.pad = function (position, string, fillString, times) {
+    var fill = this.repeatString(fillString, times);
+    var result;
+
+    if (position === 'right') {
+      result = string + fill;
+    } else {
+      result = fill + string;
+    }
+
+    return result.slice(-times);
+  };
+
+  Utils.leftPad = function (string, fillString, times) {
+    return this.pad('left', string, fillString, times);
+  };
+
+  Utils.rightPad = function (string, fillString, times) {
+    return this.pad('right', string, fillString, times);
+  };
+
   return Utils;
 });
