@@ -451,7 +451,7 @@ class Acl
 
         if ($groupHasTablePrivileges) {
             $privilegeList = ArrayUtils::get($this->groupPrivileges, $table . '.' . $list, []);
-            if (!is_array($privilegeList) || empty($privilegeList)) {
+            if (!is_array($privilegeList)) {
                 throw new \RuntimeException(__t('expected_permission_list_x_for_table_y_to_be_set_and_type_array', [
                     'list' => $list,
                     'table' => $table
