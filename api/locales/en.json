@@ -173,6 +173,7 @@
     "widget_pagination_count_no_items_found": "No Items Found",
     "widget_table_chart_title_x_x": "%{countColumnName} by %{dateColumnName}",
     "listing_items_not_found": "Nothing to see here...",
+    "no_results_were_found_for_x": "No results were found for: %{query}",
     "preview_url": "Preview Item",
 
     "table_sort_enabled": "Sorting Enabled",

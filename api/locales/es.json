@@ -173,6 +173,7 @@
     "widget_pagination_count_no_items_found": "Ningún registro encontrado",
     "widget_table_chart_title_x_x": "%{countColumnName} por %{dateColumnName}",
     "listing_items_not_found": "Nada que ver aquí...",
+    "no_results_were_found_for_x": "No se encontró resultados para: %{query}",
     "preview_url": "Vista previa del Registro",
 
     "table_sort_enabled": "Ordenar habilitado",
