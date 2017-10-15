@@ -6,28 +6,70 @@ define([
 
   'use strict';
 
-  // @TODO: Add an object that handle supported values by types
-  var dateTypes = ['DATETIME', 'DATE'];
-  var decimalTypes = [
-    'FLOAT',
-    'DOUBLE',
-    'DECIMAL',
-    'NUMERIC'
-  ];
-  var numericTypes = [
-    // NOTE: set INT as default. first = default
-    'INT',
-    'TINYINT',
-    'SMALLINT',
-    'MEDIUMINT',
-    'YEAR',
-    'BIGINT'
-  ].concat(decimalTypes);
+  // All types must be unique
+  var types = {
+    DATE: {
+      DATETIME: null,
+      DATE: null
+    },
+    DECIMAL: {
+      FLOAT: {length: '10,2'},
+      DOUBLE: {length: '10,2'},
+      DECIMAL: {length: '10,2'},
+      NUMERIC: {length: '10,2'}
+    },
+    INTEGER: {
+      // NOTE: set INT as default. first = default
+      INT: {length: 11},
+      TINYINT: {length: 1},
+      SMALLINT: {length: 5},
+      MEDIUMINT: {length: 7},
+      BIGINT: {length: 18},
+      YEAR: {length: 4}
+    },
+    STRING: {
+      CHAR: {length: 1},
+      VARCHAR: {length: 100}
+    }
+  };
 
-  var stringTypes = [
-    'VARCHAR',
-    'CHAR'
-  ];
+  function getTypes(group) {
+    var typesGroup = types[group];
+
+    if (group) {
+      typesGroup = _.keys(typesGroup);
+    }
+
+    return typesGroup;
+  }
+
+  function getTypesWithoutGroup() {
+    var list = {};
+
+    _.each(types, function (type) {
+      _.each(type, function (value, key) {
+        list[key] = value;
+      });
+    });
+
+    return list;
+  }
+
+  function getType(name) {
+    var types = getTypesWithoutGroup();
+
+    return _.find(types, function (value, key) {
+      if (key === name) {
+        return true;
+      }
+    });
+  }
+
+  // @TODO: Add an object that handle supported values by types
+  var dateTypes = getTypes('DATE');
+  var decimalTypes = getTypes('DECIMAL');
+  var numericTypes = getTypes('INTEGER').concat(decimalTypes);
+  var stringTypes = getTypes('STRING');
 
   var getNumericInterfaceTypes = function () {
     return numericTypes.concat(stringTypes);
@@ -54,6 +96,12 @@ define([
 
       return hasType;
     })
+  };
+
+  var getTypeDefaultLength = function (name) {
+    var type = getType(name);
+
+    return type && type.length ? type.length : null;
   };
 
   var dateColumns = function (structure, excludeSystems) {
@@ -149,6 +197,7 @@ define([
   };
 
   return {
+    getTypeDefaultLength: getTypeDefaultLength,
     getSystemDefaultComment: getSystemDefaultComment,
     isMissingRequiredOptions: isMissingRequiredOptions,
     isSystem: isSystem,
