@@ -489,12 +489,13 @@ $app->group('/1.1', function() use($app) {
     // =============================================================================
     // USERS
     // =============================================================================
+    \Slim\Route::setDefaultConditions([
+        'userId' => '([0-9]+|me)'
+    ]);
     $app->get('/users/?', '\Directus\API\Routes\A1\Users:all');
-    $app->get('/users/:id/?', '\Directus\API\Routes\A1\Users:get')
-        ->conditions(['id' => '[0-9]+']);
+    $app->get('/users/:userId/?', '\Directus\API\Routes\A1\Users:get');
     $app->post('/users/invite/?', '\Directus\API\Routes\A1\Users:invite');
-    $app->map('/users/:id/?', '\Directus\API\Routes\A1\Users:update')
-        ->conditions(['id' => '[0-9]+'])
+    $app->map('/users/:userId/?', '\Directus\API\Routes\A1\Users:update')
         ->via('DELETE', 'PUT', 'PATCH');
     $app->post('/users/?', '\Directus\API\Routes\A1\Users:update');
 

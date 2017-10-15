@@ -8,6 +8,7 @@ use Directus\Database\TableGateway\DirectusUsersTableGateway;
 use Directus\Database\TableGatewayFactory;
 use Directus\Exception\Http\BadRequestException;
 use Directus\Mail\Mail;
+use Directus\Permissions\Acl;
 use Directus\Util\ArrayUtils;
 use Directus\Util\DateUtils;
 use Directus\Util\StringUtils;
@@ -37,6 +38,8 @@ class Users extends Route
     // /1.1/users/:id
     public function get($id)
     {
+        $id = $this->getUserId($id);
+
         $user = (array)$this->usersGateway->getEntries(['id' => $id, 'status' => null]);
 
         return $this->app->response($user);
@@ -60,6 +63,8 @@ class Users extends Route
     // /1.1/users/:id
     public function update($id = null)
     {
+        $id = $this->getUserId($id);
+
         $usersGateway = $this->usersGateway;
         $requestPayload = $this->app->request()->post();
 
@@ -125,6 +130,17 @@ class Users extends Route
         if ($result) {
             send_user_invitation_email($email, $token);
         }
+    }
+
+    protected function getUserId($id = null)
+    {
+        if ($id === 'me') {
+            /** @var Acl $acl */
+            $acl = $this->app->container->get('acl');
+            $id = $acl->getUserId();
+        }
+
+        return $id;
     }
 
     protected function validateEmailOrFail($email)
