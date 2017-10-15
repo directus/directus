@@ -2,6 +2,7 @@ define(function(require, exports, module) {
   'use strict';
 
   var app = require('app'),
+      schemaHelper = require('helpers/schema'),
       Utils = require('utils'),
       Backbone = require('backbone'),
       _ = require('underscore'),
@@ -102,6 +103,18 @@ define(function(require, exports, module) {
 
     getType: function () {
       return this.get('type');
+    },
+
+    isDecimal: function () {
+      return schemaHelper.isDecimalType(this.getType());
+    },
+
+    getPrecision: function () {
+      return this.get('precision');
+    },
+
+    getScale: function () {
+      return this.get('scale');
     },
 
     get: function (attr, skip) {

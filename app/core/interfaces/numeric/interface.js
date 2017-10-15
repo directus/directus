@@ -8,8 +8,9 @@
 
 define([
   'core/UIView',
+  'utils',
   'core/t'
-], function (UIView) {
+], function (UIView, Utils, __t) {
   return UIView.extend({
 
     template: 'numeric/input',
@@ -41,13 +42,13 @@ define([
       }
 
       var step = 1;
-
-      if (
-        this.options.schema.get('type') === 'FLOAT' ||
-        this.options.schema.get('type') === 'VARCHAR' ||
-        this.options.schema.get('type') === 'CHAR'
-      ) {
+      if (this.columnSchema.isDecimal()) {
+        var scale = this.columnSchema.getScale();
         step = 'any';
+
+        if (scale > 0) {
+          step = '0.' + Utils.repeatString('0', scale - 1) + '1';
+        }
       }
 
       // NOTE: we shouldn't update the model with the default value
