@@ -43,7 +43,7 @@ class ArrayUtils
         }
 
         if (strpos($key, '.') !== FALSE) {
-            $array = static::dot($array);
+            $array = static::findDot($array, $key);
             if (static::exists($array, $key)) {
                 return $array[$key];
             }
@@ -81,7 +81,7 @@ class ArrayUtils
             return false;
         }
 
-        $array = static::dot($array);
+        $array = static::findDot($array, $key);
 
         return static::exists($array, $key);
     }
@@ -197,6 +197,25 @@ class ArrayUtils
     }
 
     /**
+     * Find a the value of an array based on a relational key (nested value)
+     *
+     * This is a better option than using dot
+     * Dot flatten ALL keys which make thing slower when the array is big
+     * to just find one value
+     *
+     * @param $array
+     * @param $key
+     *
+     * @return array
+     */
+    public static function findDot($array, $key)
+    {
+        $result = static::findFlatKey('.', $array, $key);
+
+        return $result ? [$result['key'] => $result['value']] : [];
+    }
+
+    /**
      * Flatten a multi-dimensional associative array with a character.
      *
      * @param  string $separator
@@ -217,6 +236,51 @@ class ArrayUtils
         }
 
         return $results;
+    }
+
+    /**
+     * Find the nested value of an array using the given separator-notation key
+     *
+     * @param $separator
+     * @param $array
+     * @param $key
+     *
+     * @return array|null
+     */
+    public static function findFlatKey($separator, $array, $key)
+    {
+        $keysPath = [];
+        $result = null;
+
+        if (strpos($key, $separator) !== FALSE) {
+            $keys = explode($separator, $key);
+            $value = $array;
+
+            while ($keys) {
+                $k = array_shift($keys);
+
+                if (!isset($value[$k])) {
+                    break;
+                }
+
+                $value = $value[$k];
+                $keysPath[] = $k;
+
+                if ($key == implode($separator, $keysPath)) {
+                    $result = [
+                        'key' => $key,
+                        'value' => $value
+                    ];
+                }
+
+                // stop the search if the next value is not an array
+                if (!is_array($value)) {
+                    break;
+                }
+            }
+        }
+
+        return $result;
     }
 
     /**
