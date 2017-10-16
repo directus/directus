@@ -44,6 +44,7 @@ class ArrayUtils
 
         if (strpos($key, '.') !== false) {
             $array = static::findDot($array, $key);
+
             if (static::exists($array, $key)) {
                 return $array[$key];
             }
@@ -259,7 +260,7 @@ class ArrayUtils
             while ($keys) {
                 $k = array_shift($keys);
 
-                if (!isset($value[$k])) {
+                if (!array_key_exists($k, $value)) {
                     break;
                 }
 
