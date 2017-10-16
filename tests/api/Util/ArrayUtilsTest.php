@@ -126,17 +126,20 @@ class ArrayUtilsTest extends PHPUnit_Framework_TestCase
                 'country' => [
                     'name' => 'yes'
                 ],
-                'email' => []
+                'email' => [],
+                'account' => [
+                    'balance' => null
+                ]
             ]
         ];
 
-        $this->assertInternalType('array', ArrayUtils::findDot($array, 'user.name'));
         $this->assertEmpty(ArrayUtils::findDot($array, 'user.first_name'));
 
         $this->assertInternalType('array', ArrayUtils::findDot($array, 'user.name'));
         $this->assertInternalType('array', ArrayUtils::findDot($array, 'user.country'));
         $this->assertInternalType('array', ArrayUtils::findDot($array, 'user.country.name'));
         $this->assertInternalType('array', ArrayUtils::findDot($array, 'user.email'));
+        $this->assertInternalType('array', ArrayUtils::findDot($array, 'user.account.balance'));
 
         $this->assertInternalType('array', ArrayUtils::findFlatKey('_', $array, 'user_name'));
         $this->assertEmpty(ArrayUtils::findFlatKey('_', $array, 'user_dob'));
