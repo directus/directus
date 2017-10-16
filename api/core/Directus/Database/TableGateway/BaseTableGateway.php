@@ -755,7 +755,7 @@ class BaseTableGateway extends TableGateway
         } catch (InvalidQueryException $e) {
             // @todo send developer warning
             // @TODO: This is not being call in BaseTableGateway
-            if (strpos(strtolower($e->getMessage()), 'duplicate entry') !== FALSE) {
+            if (strpos(strtolower($e->getMessage()), 'duplicate entry') !== false) {
                 throw new DuplicateEntryException($e->getMessage());
             }
 
@@ -809,7 +809,7 @@ class BaseTableGateway extends TableGateway
         } catch (InvalidQueryException $e) {
             // @TODO: these lines are the same as the executeInsert,
             // let's put it together
-            if (strpos(strtolower($e->getMessage()), 'duplicate entry') !== FALSE) {
+            if (strpos(strtolower($e->getMessage()), 'duplicate entry') !== false) {
                 throw new DuplicateEntryException($e->getMessage());
             }
 

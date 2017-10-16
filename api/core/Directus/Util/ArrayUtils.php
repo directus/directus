@@ -42,7 +42,7 @@ class ArrayUtils
             return $array[$key];
         }
 
-        if (strpos($key, '.') !== FALSE) {
+        if (strpos($key, '.') !== false) {
             $array = static::findDot($array, $key);
             if (static::exists($array, $key)) {
                 return $array[$key];
@@ -77,7 +77,7 @@ class ArrayUtils
             return true;
         }
 
-        if (strpos($key, '.') === FALSE) {
+        if (strpos($key, '.') === false) {
             return false;
         }
 
@@ -252,7 +252,7 @@ class ArrayUtils
         $keysPath = [];
         $result = null;
 
-        if (strpos($key, $separator) !== FALSE) {
+        if (strpos($key, $separator) !== false) {
             $keys = explode($separator, $key);
             $value = $array;
 
