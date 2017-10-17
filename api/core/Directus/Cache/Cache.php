@@ -26,6 +26,7 @@ class Cache
      * @param $key
      * @param bool $value
      * @param array $tags
+     * @param int $ttl
      * @return TaggableCacheItemInterface
      */
     public function set($key, $value = null, $tags = [], $ttl = null)
@@ -39,7 +40,7 @@ class Cache
         }
 
         if($ttl) {
-            $item->expiresAfter($this->ttl);
+            $item->expiresAfter($ttl);
         }
 
         $this->getPool()->save($item);

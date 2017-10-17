@@ -720,6 +720,17 @@ class Bootstrap
                 $cachePool->invalidateTags(['entity_'.$tableName.'_'.$id]);
             }
         });
+
+        $emitter->addAction('table.update.directus_privileges:after', function ($data) use($cachePool) {
+            $acl = Bootstrap::get('acl');
+            $zendDb = Bootstrap::get('zendDb');
+            $privileges = new DirectusPrivilegesTableGateway($zendDb, $acl);
+
+            $record = $privileges->fetchById($data['id']);
+
+            $cachePool->invalidateTags(['privilege_table_'.$record['table_name'].'_group_'.$record['group_id']]);
+        });
+
         // /Cache subscriptions
 
         $emitter->addAction('application.error', function ($e) {
