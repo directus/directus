@@ -11,7 +11,7 @@ define([
     tagName: 'div',
 
     attributes: {
-      class: 'file-listing',
+      class: 'file-listing flex',
       id: 'file-listing'
     },
 
