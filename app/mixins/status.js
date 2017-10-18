@@ -58,8 +58,16 @@ define(['underscore', 'helpers/status'], function (_, StatusHelper) {
       return this.getStatus().get('name');
     },
 
+    getTableStatusesMapping: function () {
+      return StatusHelper.getTableStatusesMapping(this._getTableName());
+    },
+
     getStatusVisible: function () {
       return StatusHelper.getStatusVisible(this._getTableName());
+    },
+
+    isStatusVisible: function (status) {
+      return StatusHelper.isStatusVisible(this._getTableName(), status);
     },
 
     getStatusVisibleValues: function () {

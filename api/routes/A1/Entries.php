@@ -4,8 +4,8 @@ namespace Directus\API\Routes\A1;
 
 use Directus\Application\Route;
 use Directus\Database\TableGateway\DirectusActivityTableGateway;
-use Directus\Database\TableGateway\DirectusUsersTableGateway;
 use Directus\Database\TableGateway\RelationalTableGateway as TableGateway;
+use Directus\Exception\Http\BadRequestException;
 use Directus\Services\EntriesService;
 use Directus\Services\GroupsService;
 use Directus\Util\ArrayUtils;
@@ -72,8 +72,11 @@ class Entries extends Route
         if ($this->app->request()->isPost()) {
             $entriesService = new EntriesService($this->app);
             foreach($rows as $row) {
-                $rowIds[] = $row[$primaryKeyFieldName];
-                $entriesService->createEntry($table, $row, $params);
+                $newRecord = $entriesService->createEntry($table, $row, $params);
+
+                if (ArrayUtils::has($newRecord->toArray(), $primaryKeyFieldName)) {
+                    $rowIds[] = $newRecord[$primaryKeyFieldName];
+                }
             }
         } else {
             foreach ($rows as $row) {
@@ -111,9 +114,11 @@ class Entries extends Route
             }
         }
 
-        $params['filters'] = [
-            $primaryKeyFieldName => ['in' => $rowIds]
-        ];
+        if (!empty($rowIds)) {
+            $params['filters'] = [
+                $primaryKeyFieldName => ['in' => $rowIds]
+            ];
+        }
 
         // If it's not a GET request, let's get entry no matter the status
         if (!$this->app->request()->isGet()) {
@@ -150,13 +155,9 @@ class Entries extends Route
         $columns = $visibleColumns = ($params['columns']) ? explode(',', $params['columns']) : [];
         ArrayUtils::push($columns, $Table->primaryKeyFieldName);
         $params['columns'] = implode(',', $columns);
-        if (count($columns) > 0) {
-            $params['group_by'] = $columns[0];
-
-            if (isset($params['q'])) {
-                $params['adv_where'] = "`{$columns[0]}` like '%{$params['q']}%'";
-                $params['perPage'] = 50;
-            }
+        if (count($columns) > 0 && isset($params['q'])) {
+            $params['adv_where'] = "`{$columns[0]}` like '%{$params['q']}%'";
+            $params['perPage'] = 50;
         }
 
         if (!$query) {
@@ -216,7 +217,22 @@ class Entries extends Route
                         ]);
                     }
                 }
-                $success =  $TableGateway->delete([$TableGateway->primaryKeyFieldName => $id]);
+                $condition = [
+                    $TableGateway->primaryKeyFieldName => $id
+                ];
+
+                if (ArrayUtils::get($params, 'soft')) {
+                    if (!$TableGateway->getTableSchema()->hasStatusColumn()) {
+                        throw new BadRequestException(__t('cannot_soft_delete_missing_status_column'));
+                    }
+
+                    $success = $TableGateway->update([
+                        $TableGateway->getStatusColumnName() => $TableGateway->getDeletedValue()
+                    ], $condition);
+                } else {
+                    $success =  $TableGateway->delete($condition);
+                }
+
                 return $this->app->response([
                     'meta' => [
                         'table' => $table

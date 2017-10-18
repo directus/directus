@@ -19,19 +19,23 @@ define(['app', 'underscore'], function (app, _) {
       return mapping.get(statusValue);
     },
 
+    isStatusVisible: function (table, status) {
+      var tableStatuses = this.getTableStatuses(table);
+      var deleteValue = status ? tableStatuses.get('delete_value') : undefined;
+      var isDelete = deleteValue == status.get('id');
+
+      return status.get('hidden_globally') !== true && !isDelete;
+    },
+
     getStatusVisible: function (tableName) {
       var mapping = this.getTableStatusesMapping(tableName);
-      var status = this.getTableStatuses(tableName);
-      var deleteValue = status ? status.get('delete_value') : undefined;
       var statuses = [];
 
       mapping.each(function (status) {
-        var isDelete = deleteValue == status.get('id');
-
-        if (status.get('hidden_globally') !== true && !isDelete) {
+        if (this.isStatusVisible(tableName, status)) {
           statuses.push(status);
         }
-      });
+      }, this);
 
       return statuses;
     },

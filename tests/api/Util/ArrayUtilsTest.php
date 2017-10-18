@@ -118,6 +118,33 @@ class ArrayUtilsTest extends PHPUnit_Framework_TestCase
         $this->assertSame('English', ArrayUtils::get($array, 'user.language', 'English'));
     }
 
+    public function testFindFlatKeys()
+    {
+        $array = [
+            'user' => [
+                'name' => 'John',
+                'country' => [
+                    'name' => 'yes'
+                ],
+                'email' => [],
+                'account' => [
+                    'balance' => null
+                ]
+            ]
+        ];
+
+        $this->assertEmpty(ArrayUtils::findDot($array, 'user.first_name'));
+
+        $this->assertInternalType('array', ArrayUtils::findDot($array, 'user.name'));
+        $this->assertInternalType('array', ArrayUtils::findDot($array, 'user.country'));
+        $this->assertInternalType('array', ArrayUtils::findDot($array, 'user.country.name'));
+        $this->assertInternalType('array', ArrayUtils::findDot($array, 'user.email'));
+        $this->assertInternalType('array', ArrayUtils::findDot($array, 'user.account.balance'));
+
+        $this->assertInternalType('array', ArrayUtils::findFlatKey('_', $array, 'user_name'));
+        $this->assertEmpty(ArrayUtils::findFlatKey('_', $array, 'user_dob'));
+    }
+
     public function testMissing()
     {
         $array1 = ['one', 'two', 'three', 'five'];

@@ -9,18 +9,15 @@ define(['utils', 'underscore', 'core/UIView'], function (Utils, _, UIView) {
       'input input': 'onInputChange'
     },
 
-    unsavedChange: function () {
-      // NOTE: Only set the new value (mark changed) if the value has changed or the model is new
-      if (this.slugValue && (this.model.isNew() || this.model.hasChanges(this.name))) {
-        return this.slugValue;
-      }
-    },
-
     onInputChange: function (event) {
       var target = event.currentTarget;
 
       this.$('.char-count').show();
       this.model.set(this.name, target.value);
+
+      // Set value attribute of input, since that's used as the actual value
+      //  that's saved to the DB
+      target.setAttribute('value', target.value);
     },
 
     bindEvents: function () {
@@ -85,6 +82,8 @@ define(['utils', 'underscore', 'core/UIView'], function (Utils, _, UIView) {
         .replace(/-+/g, '-'); // Collapse dashes
 
       $slugInput.val(slug);
+      // Trigger the input event to run "onInputChange" method
+      $slugInput.trigger('input');
       this.slugValue = slug;
     },
 

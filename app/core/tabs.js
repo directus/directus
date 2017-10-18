@@ -28,10 +28,7 @@ define([
     serialize: function () {
       var user = app.user;
       var currentUserGroup = user.get('group');
-      var navBlacklist = (currentUserGroup.get('nav_blacklist') || '').split(',').map(function (name) {
-        return name.trim();
-      });
-
+      var navBlacklist = currentUserGroup.getNavBlacklist();
       var showUsers = navBlacklist.indexOf('directus_users') < 0;
       var showFiles = navBlacklist.indexOf('directus_files') < 0;
       var showMessages = navBlacklist.indexOf('directus_messages') < 0;

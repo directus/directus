@@ -610,7 +610,7 @@ if (!function_exists('get_timezones_list')) {
             'Europe/Amsterdam' => '(UTC+01:00) Amsterdam',
             'Europe/Belgrade' => '(UTC+01:00) Belgrade',
             'Europe/Berlin' => '(UTC+01:00) Berlin',
-            'Europe/Berlin' => '(UTC+01:00) Bern',
+            'Europe/Bern' => '(UTC+01:00) Bern',
             'Europe/Bratislava' => '(UTC+01:00) Bratislava',
             'Europe/Brussels' => '(UTC+01:00) Brussels',
             'Europe/Budapest' => '(UTC+01:00) Budapest',
@@ -1128,6 +1128,21 @@ if (!function_exists('find_html_files')) {
      */
     function find_html_files($paths, $includeSubDirectories = false)
     {
+        return find_files($paths, 0, '*.html', $includeSubDirectories);
+    }
+}
+
+if (!function_exists('find_twig_files')) {
+    /**
+     * Find Twig files in the given path
+     *
+     * @param $paths
+     * @param bool $includeSubDirectories
+     *
+     * @return array
+     */
+    function find_twig_files($paths, $includeSubDirectories = false)
+    {
         return find_files($paths, 0, '*.twig', $includeSubDirectories);
     }
 }
@@ -1149,7 +1164,7 @@ if (!function_exists('find_templates')) {
 
             return array_map(function ($path) use ($basePath) {
                 return substr($path, strlen($basePath));
-            }, find_html_files($basePath, true));
+            }, find_twig_files($basePath, true));
         };
 
         return array_merge($getTemplateKeyPath('/app/templates/'), $getTemplateKeyPath('/app/core-ui'));
@@ -1304,14 +1319,18 @@ if (!function_exists('get_project_info')) {
     function get_project_info()
     {
         /** @var \Directus\Database\TableGateway\DirectusSettingsTableGateway $settingsTable */
-        $settingsTable = \Directus\Database\TableGatewayFactory::create('directus_settings');
+        $settingsTable = \Directus\Database\TableGatewayFactory::create('directus_settings', [
+            'acl' => null
+        ]);
         $settings = $settingsTable->fetchCollection('global');
 
         $projectName = isset($settings['project_name']) ? $settings['project_name'] : 'Directus';
         $defaultProjectLogo = get_directus_path('/assets/imgs/directus-logo-flat.svg');
         if (isset($settings['cms_thumbnail_url']) && $settings['cms_thumbnail_url']) {
             $projectLogoURL = $settings['cms_thumbnail_url'];
-            $filesTable = \Directus\Database\TableGatewayFactory::create('directus_files');
+            $filesTable = \Directus\Database\TableGatewayFactory::create('directus_files', [
+                'acl' => null
+            ]);
             $data = $filesTable->loadEntries([
                 'id' => $projectLogoURL
             ]);
@@ -1387,5 +1406,155 @@ if (!function_exists('display_missing_requirements_html')) {
 
         $app->response()->header('Content-Type', 'text/html; charset=utf-8');
         $app->render('errors/requirements.twig', $data);
+    }
+}
+
+if (!function_exists('define_constant')) {
+    /**
+     * Define a constant if it does not exists
+     *
+     * @param string $name
+     * @param mixed $value
+     *
+     * @return bool
+     */
+    function define_constant($name, $value)
+    {
+        $defined = true;
+
+        if (!defined($name)) {
+            define($name, $value);
+            $defined = false;
+        }
+
+        return $defined;
+    }
+}
+
+if (!function_exists('get_columns_flat_at')) {
+    /**
+     * Get all the columns name in the given level
+     *
+     * @param array $columns
+     * @param int $level
+     *
+     * @return array
+     */
+    function get_columns_flat_at(array $columns, $level = 0)
+    {
+        $names = [];
+
+        foreach ($columns as $column) {
+            $parts = explode('.', $column);
+
+            if (isset($parts[$level])) {
+                $names[] = $parts[$level];
+            }
+        }
+
+        return $names;
+    }
+}
+
+if (!function_exists('get_csv_flat_columns')) {
+    /**
+     * Gets a CSV flat columns list from the given array
+     *
+     * @param array $columns
+     * @param null $prefix
+     *
+     * @return string
+     */
+    function get_csv_flat_columns(array $columns, $prefix = null)
+    {
+        $flatColumns = [];
+        $prefix = $prefix === null ? '' : $prefix . '.';
+
+        foreach ($columns as $key => $value) {
+            if (is_array($value)) {
+                $value = get_csv_flat_columns($value, $prefix . $key);
+            } else {
+                $value = $prefix . $key;
+            }
+
+            $flatColumns[] = $value;
+        }
+
+        return implode(',', $flatColumns);
+    }
+}
+
+if (!function_exists('get_array_flat_columns')) {
+    /**
+     * Gets an array flat columns list from the given array
+     *
+     * @param $columns
+     *
+     * @return array
+     */
+    function get_array_flat_columns($columns)
+    {
+        // TODO: make sure array is passed???
+        return explode(',', get_csv_flat_columns($columns ?: []));
+    }
+}
+if (!function_exists('get_unflat_columns')) {
+    /**
+     * Gets the unflat version of flat (dot-notated) column list
+     *
+     * @param string|array $columns
+     *
+     * @return array
+     */
+    function get_unflat_columns($columns)
+    {
+        $names = [];
+
+        if (!is_array($columns)) {
+            $columns = explode(',', $columns);
+        }
+
+        foreach ($columns as $column) {
+            $parts = explode('.', $column, 2);
+
+            if (isset($parts[0])) {
+                if (!isset($names[$parts[0]])) {
+                    $names[$parts[0]] = null;
+                }
+
+                if (isset($parts[1])) {
+                    if ($names[$parts[0]] === null) {
+                        $names[$parts[0]] = [];
+                    }
+
+                    $child = get_unflat_columns($parts[1]);
+                    $names[$parts[0]][key($child)] = current($child);
+                };
+            }
+        }
+
+        return $names;
+    }
+}
+
+if (!function_exists('column_identifier_reverse')) {
+    /**
+     * Reverse a dot notation column identifier
+     *
+     * Ex: posts.comments.author.email => email.author.comments.posts
+     *
+     * @param string $identifier
+     *
+     * @return string
+     */
+    function column_identifier_reverse($identifier)
+    {
+        if (strpos($identifier, '.') === false) {
+            return $identifier;
+        }
+
+        $parts = array_reverse(explode('.', $identifier));
+
+        return implode('.', $parts);
     }
 }

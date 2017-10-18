@@ -33,9 +33,7 @@ define([
       }
     },
     list: function (interfaceOptions) {
-      var tags = interfaceOptions.model.attributes.tags
-        ? interfaceOptions.model.attributes.tags.split(',')
-        : [];
+      var tags = (interfaceOptions.value || '').split(',');
 
       if (tags.length > 0) {
         for (var i = 0; i < tags.length; i++) {
@@ -44,7 +42,8 @@ define([
 
         return '<span class="tag-container"><div class="fade-out"></div>' + tags.join(' ') + '</span>';
       }
-      return interfaceOptions.model.attributes.tags;
+
+      return value;
     }
   });
 });

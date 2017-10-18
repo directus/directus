@@ -10,12 +10,6 @@ define(['core/UIView'], function (UIView) {
       this.model.set(this.name, $(event.currentTarget).val());
     },
 
-    visible: function () {
-      if (!this.columnSchema.hasAutoIncrement()) {
-        return true;
-      }
-    },
-
     serialize: function () {
       var value = this.options.value;
       var hasAutoIncrement = this.columnSchema.hasAutoIncrement();

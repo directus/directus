@@ -175,7 +175,7 @@ abstract class AbstractStep implements StepInterface
     {
         $response = true;
 
-        if (strpos($rule, '|') !== FALSE) {
+        if (strpos($rule, '|') !== false) {
             list($field, $attribute) = explode('|', $rule);
             $response = call_user_func_array([$this, 'validate' . ucwords($field)], [$field, $value, $attribute]);
         } elseif (preg_match("/(.+)\[(.*)\]/", $rule, $matches)) {

@@ -61,8 +61,10 @@ function(app, Backbone, _) {
     initialize: function(options) {
       this.listenTo(app.router.v.main, 'flashItem', this.flashItem);
       this.columns = options.columns || false;
+      // TODO: Add table row view to add or remove one row
+      // instead of render the whole table again
+      this.listenTo(this.collection, 'add remove', this.render);
     }
-
   });
 
   return TableSimple;

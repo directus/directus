@@ -35,7 +35,9 @@ define([
       this.$('#fileInput').click();
     },
 
-    chooseFromUrl: function () {
+    chooseFromUrl: function (event) {
+      // Prevent this button from submitting the form
+      event.preventDefault();
       app.router.openModal({
         type: 'prompt',
         text: __t('enter_the_url_to_a_file'),
@@ -62,7 +64,10 @@ define([
       model.setLink(url, this.options.settings.get('allowed_filetypes'));
     },
 
-    chooseFromSystem: function () {
+    chooseFromSystem: function (event) {
+      // Prevent this button from submitting the form
+      event.preventDefault();
+
       var collection = app.files;
       var model;
       var fileModel = this.fileModel;

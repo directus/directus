@@ -42,8 +42,9 @@ class ArrayUtils
             return $array[$key];
         }
 
-        if (strpos($key, '.') !== FALSE) {
-            $array = static::dot($array);
+        if (strpos($key, '.') !== false) {
+            $array = static::findDot($array, $key);
+
             if (static::exists($array, $key)) {
                 return $array[$key];
             }
@@ -77,11 +78,11 @@ class ArrayUtils
             return true;
         }
 
-        if (strpos($key, '.') === FALSE) {
+        if (strpos($key, '.') === false) {
             return false;
         }
 
-        $array = static::dot($array);
+        $array = static::findDot($array, $key);
 
         return static::exists($array, $key);
     }
@@ -197,6 +198,25 @@ class ArrayUtils
     }
 
     /**
+     * Find a the value of an array based on a relational key (nested value)
+     *
+     * This is a better option than using dot
+     * Dot flatten ALL keys which make thing slower when the array is big
+     * to just find one value
+     *
+     * @param $array
+     * @param $key
+     *
+     * @return array
+     */
+    public static function findDot($array, $key)
+    {
+        $result = static::findFlatKey('.', $array, $key);
+
+        return $result ? [$result['key'] => $result['value']] : [];
+    }
+
+    /**
      * Flatten a multi-dimensional associative array with a character.
      *
      * @param  string $separator
@@ -217,6 +237,51 @@ class ArrayUtils
         }
 
         return $results;
+    }
+
+    /**
+     * Find the nested value of an array using the given separator-notation key
+     *
+     * @param $separator
+     * @param $array
+     * @param $key
+     *
+     * @return array|null
+     */
+    public static function findFlatKey($separator, $array, $key)
+    {
+        $keysPath = [];
+        $result = null;
+
+        if (strpos($key, $separator) !== false) {
+            $keys = explode($separator, $key);
+            $value = $array;
+
+            while ($keys) {
+                $k = array_shift($keys);
+
+                if (!array_key_exists($k, $value)) {
+                    break;
+                }
+
+                $value = $value[$k];
+                $keysPath[] = $k;
+
+                if ($key == implode($separator, $keysPath)) {
+                    $result = [
+                        'key' => $key,
+                        'value' => $value
+                    ];
+                }
+
+                // stop the search if the next value is not an array
+                if (!is_array($value)) {
+                    break;
+                }
+            }
+        }
+
+        return $result;
     }
 
     /**
@@ -426,5 +491,27 @@ class ArrayUtils
         foreach($keys as $key) {
             unset($array[$key]);
         }
+    }
+
+    /**
+     * Gets how deep is the given array
+     *
+     * 0 = no child
+     *
+     * @param array $array
+     *
+     * @return int
+     */
+    public static function deepLevel($array)
+    {
+        $depth = 0;
+
+        foreach ($array as $value) {
+            if (is_array($value)) {
+                $depth = max(static::deepLevel($value) + 1, $depth);
+            }
+        }
+
+        return $depth;
     }
 }

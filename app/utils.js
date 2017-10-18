@@ -158,9 +158,26 @@ define(['underscore'], function (_) {
   };
 
   Utils.getTemplateVariables = function (string) {
-    return (string || '').match(/{{([^{}]+)}}/g).map(function (value) {
+    var variables = (string || '').match(/{{([^{}]+)}}/g);
+
+    return (variables || []).map(function (value) {
       return value.slice(2, -2);
     })
+  };
+
+  // NOTE: This are meant to work with single line csv
+  Utils.parseCSV = function (string, options) {
+    options || (options = {});
+
+    options.trim = options.trim === undefined ? true : options.trim;
+
+    return (string  || '').split(',').map(function (name) {
+      if (options.trim === true) {
+        name = name.trim()
+      }
+
+      return name;
+    });
   };
 
   Utils.parseMentions = function (string, html) {
@@ -213,6 +230,31 @@ define(['underscore'], function (_) {
     }
 
     return parsedString;
+  };
+
+  Utils.repeatString = function (string, times) {
+    return Array(times + 1).join(string);
+  };
+
+  Utils.pad = function (position, string, fillString, times) {
+    var fill = this.repeatString(fillString, times);
+    var result;
+
+    if (position === 'right') {
+      result = string + fill;
+    } else {
+      result = fill + string;
+    }
+
+    return result.slice(-times);
+  };
+
+  Utils.leftPad = function (string, fillString, times) {
+    return this.pad('left', string, fillString, times);
+  };
+
+  Utils.rightPad = function (string, fillString, times) {
+    return this.pad('right', string, fillString, times);
   };
 
   return Utils;

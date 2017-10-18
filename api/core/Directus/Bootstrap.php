@@ -15,11 +15,13 @@ use Directus\Authentication\FacebookProvider;
 use Directus\Authentication\GitHubProvider;
 use Directus\Authentication\GoogleProvider;
 use Directus\Authentication\Provider as AuthProvider;
+use Directus\Authentication\Provider;
 use Directus\Authentication\Social;
 use Directus\Authentication\TwitterProvider;
 use Directus\Cache\Response as ResponseCache;
 use Directus\Config\Config;
 use Directus\Database\Connection;
+use Directus\Database\Object\Table;
 use Directus\Database\SchemaManager;
 use Directus\Database\Schemas\Sources\MySQLSchema;
 use Directus\Database\Schemas\Sources\SQLiteSchema;
@@ -467,21 +469,20 @@ class Bootstrap
         $auth = self::get('auth');
         $db = self::get('ZendDb');
 
-        $DirectusTablesTableGateway = new DirectusTablesTableGateway($db, $acl);
-        $getTables = function () use ($DirectusTablesTableGateway) {
-            return $DirectusTablesTableGateway->select()->toArray();
-        };
+        /** @var Table[] $tables */
+        $tables = TableSchema::getTablesSchema([
+            'include_columns' => true
+        ], true);
 
         // $tableRecords = $DirectusTablesTableGateway->memcache->getOrCache(MemcacheProvider::getKeyDirectusTables(), $getTables, 1800);
-        $tableRecords = $getTables();
 
         $magicOwnerColumnsByTable = [];
-        foreach ($tableRecords as $tableRecord) {
-            if (!empty($tableRecord['user_create_column'])) {
-                $magicOwnerColumnsByTable[$tableRecord['table_name']] = $tableRecord['user_create_column'];
-            }
+        foreach ($tables as $table) {
+            $magicOwnerColumnsByTable[$table->getName()] = $table->getUserCreateColumn();
         }
-        $acl::$cms_owner_columns_by_table = $magicOwnerColumnsByTable;
+
+        // TODO: Move this to a method
+        $acl::$cms_owner_columns_by_table = array_merge($magicOwnerColumnsByTable, $acl::$cms_owner_columns_by_table);
 
         if ($auth->loggedIn()) {
             $currentUser = $auth->getUserInfo();
@@ -489,7 +490,7 @@ class Bootstrap
             $cacheFn = function () use ($currentUser, $Users) {
                 return $Users->find($currentUser['id']);
             };
-            $cacheKey = MemcacheProvider::getKeyDirectusUserFind($currentUser['id']);
+            // $cacheKey = MemcacheProvider::getKeyDirectusUserFind($currentUser['id']);
             // $currentUser = $Users->memcache->getOrCache($cacheKey, $cacheFn, 10800);
             $currentUser = $cacheFn();
             if ($currentUser) {
@@ -982,6 +983,35 @@ class Bootstrap
             return $payload;
         };
 
+        // TODO: Merge with hash user password
+        $hashPasswordInterface = function (Payload $payload) {
+            /** @var Provider $auth */
+            $auth = Bootstrap::get('auth');
+            $tableName = $payload->attribute('tableName');
+
+            if (TableSchema::isSystemTable($tableName)) {
+                return $payload;
+            }
+
+            $tableObject = TableSchema::getTableSchema($tableName);
+            $data = $payload->getData();
+
+            foreach ($data as $key => $value) {
+                $columnObject = $tableObject->getColumn($key);
+
+                if (!$columnObject) {
+                    continue;
+                }
+
+                if ($columnObject->getUI() === 'password') {
+                    // TODO: Use custom password hashing method
+                    $payload->set($key, $auth->hashPassword($value));
+                }
+            }
+
+            return $payload;
+        };
+
         $emitter->addFilter('table.update.directus_users:before', function (Payload $payload) {
             $acl = Bootstrap::get('acl');
             $currentUserId = $acl->getUserId();
@@ -1008,6 +1038,10 @@ class Bootstrap
         });
         $emitter->addFilter('table.insert.directus_users:before', $hashUserPassword);
         $emitter->addFilter('table.update.directus_users:before', $hashUserPassword);
+
+        // Hash value to any non system table password interface column
+        $emitter->addFilter('table.insert:before', $hashPasswordInterface);
+        $emitter->addFilter('table.update:before', $hashPasswordInterface);
 
         $preventUsePublicGroup = function (Payload $payload) {
             $data = $payload->getData();
@@ -1126,7 +1160,7 @@ class Bootstrap
         $session = self::get('session');
         $config = self::get('config');
         $prefix = $config->get('session.prefix', 'directus_');
-        $table = new BaseTableGateway('directus_users', $zendDb);
+        $table = new DirectusUsersTableGateway($zendDb);
 
         return new AuthProvider($table, $session, $prefix);
     }

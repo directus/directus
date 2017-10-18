@@ -68,6 +68,13 @@ class Provider
      */
     protected $prefix;
 
+    /**
+     * Provider constructor.
+     *
+     * @param BaseTableGateway $table
+     * @param Session $session
+     * @param string $prefix
+     */
     public function __construct(BaseTableGateway $table, Session $session, $prefix = 'directus_')
     {
         $this->table = $table;
@@ -143,11 +150,15 @@ class Provider
      * @param  string $password The User account's (actual) hashed password string.
      * @param  string $salt The User account's salt string.
      * @param  string $passwordAttempt The User's attempted, unhashed password string.
+     * @param  bool   $stateless Prevent to update the user token
      *
      * @return boolean
      */
-    public function login($uid, $password, $salt, $passwordAttempt)
+    public function login($uid, $password, $salt, $passwordAttempt, $stateless = false)
     {
+        // TODO: Make this a separate method where the authentication can be verified
+        // but the authentication can't be made
+        // This will be removed when we remove persistent authentication
         $this->prependSessionKey();
         $attributes = [
             'password' => $password
@@ -159,7 +170,7 @@ class Provider
         }
 
         if (password_verify($passwordAttempt, $password)) {
-            $this->completeLogin($uid, $attributes);
+            $this->completeLogin($uid, $attributes, $stateless);
 
             return true;
         }
@@ -228,16 +239,18 @@ class Provider
     /**
      * De-authenticate the logged-in user.
      *
+     * @param bool $stateless
+     *
      * @return null
      *
      * @throws  \Directus\Authentication\Exception\UserIsntLoggedInException
      */
-    public function logout()
+    public function logout($stateless = false)
     {
         $this->prependSessionKey();
         $this->enforceUserIsAuthenticated();
         $this->expireCachedUserRecord();
-        $this->session->set($this->SESSION_KEY, []);
+        $this->completeLogout($this->getUserInfo('id'), $stateless);
     }
 
     /**
@@ -365,6 +378,27 @@ class Provider
         ]));
 
         $this->authenticated = true;
+    }
+
+    /**
+     * Completes the logout process by removing the session and access_token
+     *
+     * @param int $uid
+     * @param bool $stateless
+     *
+     * @throws \Exception
+     */
+    protected function completeLogout($uid, $stateless = false)
+    {
+        if ($stateless !== true) {
+            $this->table->ignoreFilters()->update([
+                'access_token' => null
+            ], ['id' => $uid]);
+        }
+
+        $this->session->set($this->SESSION_KEY, []);
+
+        $this->authenticated = false;
     }
 
     /**

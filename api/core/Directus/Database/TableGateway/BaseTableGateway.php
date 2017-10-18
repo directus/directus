@@ -756,7 +756,7 @@ class BaseTableGateway extends TableGateway
         } catch (InvalidQueryException $e) {
             // @todo send developer warning
             // @TODO: This is not being call in BaseTableGateway
-            if (strpos(strtolower($e->getMessage()), 'duplicate entry') !== FALSE) {
+            if (strpos(strtolower($e->getMessage()), 'duplicate entry') !== false) {
                 throw new DuplicateEntryException($e->getMessage());
             }
 
@@ -810,7 +810,7 @@ class BaseTableGateway extends TableGateway
         } catch (InvalidQueryException $e) {
             // @TODO: these lines are the same as the executeInsert,
             // let's put it together
-            if (strpos(strtolower($e->getMessage()), 'duplicate entry') !== FALSE) {
+            if (strpos(strtolower($e->getMessage()), 'duplicate entry') !== false) {
                 throw new DuplicateEntryException($e->getMessage());
             }
 
@@ -1250,13 +1250,17 @@ class BaseTableGateway extends TableGateway
      * Get the table name from the identifier
      *
      * @param string $column
+     * @param string|null $table
      *
      * @return string
      */
-    public function getTableFromIdentifier($column)
+    public function getTableFromIdentifier($column, $table = null)
     {
         $platform = $this->getAdapter()->getPlatform();
-        $table = $this->getTable();
+
+        if ($table === null) {
+            $table = $this->getTable();
+        }
 
         // TODO: find a common place to share this code
         // It is duplicated code in Builder.php
@@ -1434,6 +1438,19 @@ class BaseTableGateway extends TableGateway
         }
 
         return $key !== null ? ArrayUtils::get($settings, $key) : $settings;
+    }
+
+    public function getDeletedValue()
+    {
+        $statusColumnName = $this->getStatusColumnName();
+        $deletedValue = null;
+
+        if ($statusColumnName) {
+            $statusColumnObject = $this->getTableSchema()->getColumn($statusColumnName);
+            $deletedValue = ArrayUtils::get($statusColumnObject->getOptions(), 'delete_value', STATUS_DELETED_NUM);
+        }
+
+        return $deletedValue;
     }
 
     public function getPublishedStatuses()

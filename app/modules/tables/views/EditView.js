@@ -175,11 +175,14 @@ define([
           }
         };
       }
+
       if (action === 'save-form-copy') {
-        // console.log('cloning...');
         var clone = model.toJSON();
         delete clone.id;
-        model = new collection.model(clone, {collection: collection, parse: true});
+        model = new collection.model({}, {collection: collection, parse: true});
+        // Start tracking changes to mark the new values
+        model.startTracking();
+        model.set(clone);
         collection.add(model);
       }
 
@@ -246,6 +249,7 @@ define([
       var widgets = [];
       var isNew = this.model.isNew();
       var canAdd = this.model.collection.canAdd();
+      var canEdit = this.model.collection.canEdit();
       var isOverlay = this.headerOptions.route.isOverlay === true;
       var editView = this;
 
@@ -254,7 +258,7 @@ define([
           basicSave: this.headerOptions.basicSave,
           singlePage: this.single
         },
-        enabled: isNew && canAdd,
+        enabled: (isNew && canAdd) || (!isNew && canEdit),
         onClick: _.bind(editView.saveConfirm, editView)
       });
 

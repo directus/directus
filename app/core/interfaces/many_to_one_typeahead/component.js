@@ -75,7 +75,7 @@ define([
     ],
     Input: Input,
     list: function (interfaceOptions) {
-      if (interfaceOptions.value === undefined || interfaceOptions.value.isNew()) {
+      if (interfaceOptions.value === undefined) {
         return '';
       }
 

@@ -2,11 +2,12 @@ define([
   'app',
   'backbone',
   'underscore',
+  'utils',
   'core/t',
   'core/notification'
 ],
 
-function(app, Backbone, _, __t, Notification) {
+function(app, Backbone, _, Utils, __t, Notification) {
 
   'use strict';
 
@@ -122,7 +123,8 @@ function(app, Backbone, _, __t, Notification) {
 
       if (collection.preferences) {
         collection.filters.columns_visible = [];
-        collection.preferences.get('columns_visible').split(',').forEach(function(column) {
+        // TODO: Add getColumnsVisible to preferences model with trimmed spaces column
+        Utils.parseCSV(collection.preferences.get('columns_visible')).forEach(function(column) {
           //Only add columns that actually exist
           if (collection.structure.get(column) !== undefined) {
             collection.filters.columns_visible.push(column);

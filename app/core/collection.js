@@ -2,10 +2,11 @@ define([
   'app',
   'backbone',
   'helpers/status',
+  'utils',
   'underscore'
 ],
 
-function(app, Backbone, StatusHelper, _) {
+function(app, Backbone, StatusHelper, Utils, _) {
 
   'use strict';
 
@@ -54,10 +55,12 @@ function(app, Backbone, StatusHelper, _) {
       // There is no active column. Use total
       // if (!this.table.columns.get(app.statusMapping.status_name)) {
       if (!this.table.hasStatusColumn()) {
-        return Math.max(this.table.get('total'), collectionCount);
+        // NOTE: "total_entries" will return all the entries (total) in a table
+        // while "total" is the total entries returned
+        return Math.max(this.table.get('total_entries'), collectionCount);
       }
 
-      var visibleStates = (this.getFilter('status') || '').split(',');
+      var visibleStates = Utils.parseCSV(this.getFilter('status'));
       totalCount = 0;
 
       visibleStates.forEach(function (state) {
@@ -294,7 +297,7 @@ function(app, Backbone, StatusHelper, _) {
           // when there's only one visible column
           // it's an string so we need to convert it to an array
           if (typeof filters.columns_visible === 'string') {
-            filters.columns_visible = filters.columns_visible.split(',');
+            filters.columns_visible = Utils.parseCSV(filters.columns_visible);
           }
 
           filters.columns_visible.push(filters.sort);

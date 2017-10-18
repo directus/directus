@@ -97,8 +97,12 @@ $app->config('debug', false);
 $app->config('production', 'production' === DIRECTUS_ENV);
 
 // Catch all exceptions
-$exceptionHandler = new ExceptionHandler($app->hookEmitter);
-$app->error([$exceptionHandler, 'handleException']);
+$app->error(function ($exception) use ($app) {
+    // Force the server status to be 500
+    $app->response->status(500);
+    $exceptionHandler = new ExceptionHandler($app->hookEmitter);
+    $exceptionHandler->handleException($exception);
+});
 
 // Routes which do not need protection by the authentication and the request
 // @TODO: Move this to a middleware
@@ -486,14 +490,14 @@ $app->group('/1.1', function() use($app) {
     // =============================================================================
     // USERS
     // =============================================================================
-    $usersPkCondition = ['pk' => '[0-9]+'];
+    \Slim\Route::setDefaultConditions([
+        'userId' => '([0-9]+|me)'
+    ]);
 
     $app->get('/users/?', '\Directus\API\Routes\A1\Users:get');
-    $app->get('/users/:pk/?', '\Directus\API\Routes\A1\Users:get')
-        ->conditions($usersPkCondition);
+    $app->get('/users/:userId/?', '\Directus\API\Routes\A1\Users:get');
     $app->post('/users/invite/?', '\Directus\API\Routes\A1\Users:invite');
-    $app->map('/users/:pk/?', '\Directus\API\Routes\A1\Users:update')
-        ->conditions($usersPkCondition)
+    $app->map('/users/:userId/?', '\Directus\API\Routes\A1\Users:update');
         ->via('DELETE', 'PUT', 'PATCH');
     $app->post('/users/?', '\Directus\API\Routes\A1\Users:update');
 

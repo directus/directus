@@ -30,6 +30,8 @@ customs/interfaces/*
 !storage/uploads/.gitignore
 !storage/uploads/thumbs/.gitignore
 
+thumbnail/**/
+
 # Ignore dev files
 .idea
 .sass-cache

@@ -5,8 +5,10 @@ define(['underscore', 'utils', 'core/UIView'], function (_, Utils, UIView) {
     events: {
       'change input[type=checkbox]': function () {
         var value = (this.$el.find('input[type=checkbox]:checked').val() === undefined) ? 0 : 1;
+
         this.$('input[type=hidden]').val(value);
         this.model.set(this.name, value);
+        this.value = value;
       }
     },
 

@@ -2,13 +2,14 @@ define([
   'app',
   'backbone',
   'underscore',
+  'utils',
   'core/t',
   'core/BasePageView',
   'core/ListViewManager',
   'modules/tables/views/TableViewRightPane',
   'helpers/table',
   'core/widgets/widgets'
-], function(app, Backbone, _, __t, BasePageView, ListViewManager, TableViewRightPane, TableHelpers, Widgets) {
+], function(app, Backbone, _, Utils, __t, BasePageView, ListViewManager, TableViewRightPane, TableHelpers, Widgets) {
 
   return BasePageView.extend({
 
@@ -319,7 +320,7 @@ define([
       if (table.getStatusColumnName()) {
         collectionVisibleLength = 0;
         statusValues = collection.getFilter('status') || table.getStatusVisibleValues();
-        statusValues = _.compact((statusValues || '').split(','));
+        statusValues = _.compact(Utils.parseCSV(statusValues));
 
         // count the visible items
         collection.each(function (model) {
