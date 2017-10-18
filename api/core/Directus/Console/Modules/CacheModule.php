@@ -30,12 +30,15 @@ class CacheModule extends ModuleBase
             'invalidate' => __t('List of tags to invalidate')
         ];
 
-        foreach([
+        $helpArrays = [
             'commands_help' => $this->__module_name.':%s – %s',
-            'help' => "\t\t".'%2$s'] as $arrayName => $format)
+            'help' => "\t\t".'%2$s'
+        ];
+
+        foreach($helpArrays as $arrayName => $format)
         {
-            foreach($this->$arrayName as $key => $value) {
-                $this->$arrayName[$key] = sprintf($format, $key, $value);
+            foreach($this->$arrayName as $key => &$value) {
+                $this->{$arrayName}[$key] = sprintf($format, $key, $value);
             }
         }
 

@@ -497,7 +497,7 @@ $app->group('/1.1', function() use($app) {
     $app->get('/users/?', '\Directus\API\Routes\A1\Users:get');
     $app->get('/users/:userId/?', '\Directus\API\Routes\A1\Users:get');
     $app->post('/users/invite/?', '\Directus\API\Routes\A1\Users:invite');
-    $app->map('/users/:userId/?', '\Directus\API\Routes\A1\Users:update')
+    $app->map('/users/:userId/?', '\Directus\API\Routes\A1\Users:update');
         ->via('DELETE', 'PUT', 'PATCH');
     $app->post('/users/?', '\Directus\API\Routes\A1\Users:update');
 

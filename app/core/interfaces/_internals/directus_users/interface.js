@@ -26,7 +26,7 @@ define([
     },
 
     createUser: function () {
-      var OverlayEditView = require('modules/tables/views/OverlayEditView'); // eslint-disable-line import/no-unresolved
+      var EditView = require('modules/tables/views/EditView'); // eslint-disable-line import/no-unresolved
       var collection = this.relatedCollection;
       var model = new collection.model({}, { // eslint-disable-line new-cap
         collection: collection,
@@ -37,8 +37,7 @@ define([
       });
       var columnName = this.columnSchema.relationship.get('junction_key_right');
       var id = this.model.id;
-
-      var view = new OverlayEditView({
+      var view = new EditView({
         model: model,
         collectionAdd: true,
         hiddenFields: [columnName],
@@ -46,19 +45,30 @@ define([
           name: columnName,
           value: id
         },
-        skipFetch: true,
-        onSave: function () {
-          model.set(columnName, id);
-
-          if (model.isValid()) {
-            app.router.removeOverlayPage(this);
-            collection.add(model, {nest: true});
-          }
-        }
+        skipFetch: true
       });
+
+      view.headerOptions.route.isOverlay = true;
+      view.headerOptions.route.breadcrumbs = [];
+      view.headerOptions.basicSave = true;
+
+      view.events['click .saved-success'] = function () {
+        this.save();
+      };
+      view.events['click #removeOverlay'] = function () {
+        app.router.removeOverlayPage(this);
+      };
 
       app.router.overlayPage(view);
 
+      view.save = function () {
+        model.set(columnName, id);
+
+        if (model.isValid()) {
+          app.router.removeOverlayPage(this);
+          collection.add(model, {nest: true});
+        }
+      };
     },
 
     chooseUser: function () {
