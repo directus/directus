@@ -90,28 +90,15 @@ define([
     },
 
     edit: function () {
-      var EditView = require('modules/tables/views/EditView'); // eslint-disable-line import/no-unresolved
+      var OverlayEditView = require('modules/tables/views/OverlayEditView'); // eslint-disable-line import/no-unresolved
       var model = this.fileModel;
-      var view = new EditView({model: model});
-      view.headerOptions.route.isOverlay = true;
-      view.headerOptions.route.breadcrumbs = [];
-      view.headerOptions.basicSave = true;
 
-      view.events = {
-        'click .saved-success': function () {
-          this.save();
-        },
-        'click #removeOverlay': function () {
-          app.router.removeOverlayPage(this);
-        }
-      };
-
-      app.router.overlayPage(view);
-
-      view.save = function () {
+      var view = new OverlayEditView({model: model, saveFunction: function () {
         model.set(model.diff(view.editView.data()));
         app.router.removeOverlayPage(this);
-      };
+      }});
+
+     app.router.overlayPage(view);
 
       // Fetch first time to get the nested tables
       if (!model.isNew()) {
