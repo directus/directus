@@ -12,7 +12,8 @@
     "league/oauth2-github": "^2.0",
     "league/oauth2-facebook": "^2.0",
     "league/oauth1-client": "^1.7",
-    "intervention/image": "^2.4"
+    "intervention/image": "^2.4",
+    "cache/cache": "^1.0"
   },
   "require-dev": {
     "phpunit/phpunit": "~3.7.0"

@@ -2,6 +2,14 @@
 
 namespace Directus;
 
+use Cache\Adapter\Apc\ApcCachePool;
+use Cache\Adapter\Apcu\ApcuCachePool;
+use Cache\Adapter\Common\PhpCachePool;
+use Cache\Adapter\Filesystem\FilesystemCachePool;
+use Cache\Adapter\Memcached\MemcachedCachePool;
+use Cache\Adapter\PHPArray\ArrayCachePool;
+use Cache\Adapter\Redis\RedisCachePool;
+use Cache\Adapter\Void\VoidCachePool;
 use Directus\Application\Application;
 use Directus\Authentication\FacebookProvider;
 use Directus\Authentication\GitHubProvider;
@@ -10,6 +18,7 @@ use Directus\Authentication\Provider as AuthProvider;
 use Directus\Authentication\Provider;
 use Directus\Authentication\Social;
 use Directus\Authentication\TwitterProvider;
+use Directus\Cache\Response as ResponseCache;
 use Directus\Config\Config;
 use Directus\Database\Connection;
 use Directus\Database\Object\Table;
@@ -45,6 +54,10 @@ use Directus\Util\StringUtils;
 use Directus\View\Twig\DirectusTwigExtension;
 use Slim\Extras\Log\DateTimeFileWriter;
 use Slim\Extras\Views\Twig;
+
+use Cache\Adapter\Memcache\MemcacheCachePool;
+use League\Flysystem\Adapter\Local;
+
 
 /**
  * NOTE: This class depends on the constants defined in config.php
@@ -196,6 +209,14 @@ class Bootstrap
 
         $app->container->singleton('hashManager', function () {
             return Bootstrap::get('hashManager');
+        });
+
+        $app->container->singleton('cache', function() {
+            return Bootstrap::get('cache');
+        });
+
+        $app->container->singleton('responseCache', function() {
+            return Bootstrap::get('responseCache');
         });
 
         $authConfig = ArrayUtils::get($config, 'auth', []);
@@ -677,6 +698,42 @@ class Bootstrap
         $emitter = new Emitter();
 
         // TODO: Move all this filters to a dedicated file/class/function
+
+        // Cache subscriptions
+        $cachePool = Bootstrap::get('cache');
+
+        $emitter->addAction('postUpdate', function(RelationalTableGateway $gateway, $data) use ($cachePool) {
+            if(isset($data[$gateway->primaryKeyFieldName])) {
+                $cachePool->invalidateTags(['entity_'.$gateway->getTable().'_'.$data[$gateway->primaryKeyFieldName]]);
+            }
+        });
+
+        $cacheTableTagInvalidator = function($tableName) use ($cachePool) {
+            $cachePool->invalidateTags(['table_'.$tableName]);
+        };
+
+        foreach(['table.update:after', 'table.drop:after'] as $action) {
+            $emitter->addAction($action, $cacheTableTagInvalidator);
+        }
+
+        $emitter->addAction('table.remove:after', function($tableName, $ids) use ($cachePool){
+            foreach($ids as $id) {
+                $cachePool->invalidateTags(['entity_'.$tableName.'_'.$id]);
+            }
+        });
+
+        $emitter->addAction('table.update.directus_privileges:after', function ($data) use($cachePool) {
+            $acl = Bootstrap::get('acl');
+            $zendDb = Bootstrap::get('zendDb');
+            $privileges = new DirectusPrivilegesTableGateway($zendDb, $acl);
+
+            $record = $privileges->fetchById($data['id']);
+
+            $cachePool->invalidateTags(['privilege_table_'.$record['table_name'].'_group_'.$record['group_id']]);
+        });
+
+        // /Cache subscriptions
+
         $emitter->addAction('application.error', function ($e) {
             $log = Bootstrap::get('log');
             $log->error($e);
@@ -1112,4 +1169,76 @@ class Bootstrap
     {
         return new Social();
     }
+
+    private static function cache()
+    {
+        $config = self::get('config');
+        $poolConfig = $config->get('cache.pool');
+
+        if(!$poolConfig || (!is_object($poolConfig) && empty($poolConfig['adapter']))) {
+            $poolConfig = ['adapter' => 'void'];
+        }
+
+        if(is_object($poolConfig) && $poolConfig instanceof PhpCachePool) {
+            $pool = $poolConfig;
+        } else {
+            if(!in_array($poolConfig['adapter'], ['apc', 'apcu', 'array', 'filesystem', 'memcached', 'redis', 'void'])) {
+                throw new \Exception("Valid cache adapters are 'apc', 'apcu', 'filesystem', 'memcached', 'redis'");
+            }
+
+            $pool = new VoidCachePool();
+
+            $adapter = $poolConfig['adapter'];
+
+            if($adapter == 'apc') {
+                $pool = new ApcCachePool();
+            }
+
+            if($adapter == 'apcu') {
+                $pool = new ApcuCachePool();
+            }
+
+            if($adapter == 'array') {
+                $pool = new ArrayCachePool();
+            }
+
+            if($adapter == 'filesystem') {
+                if(empty($poolConfig['path'])) {
+                    throw new \Exception("'cache.pool.path' parameter is required for 'filesystem' adapter");
+                }
+
+                $filesystemAdapter = new Local(__DIR__.'/../../'.$poolConfig['path']);
+                $filesystem        = new \League\Flysystem\Filesystem($filesystemAdapter);
+
+                $pool = new FilesystemCachePool($filesystem);
+            }
+
+            if($adapter == 'memcached') {
+                $host = (isset($poolConfig['host'])) ? $poolConfig['host'] : 'localhost';
+                $port = (isset($poolConfig['port'])) ? $poolConfig['port'] : 11211;
+
+                $client = new \Memcached();
+                $client->addServer($host, $port);
+                $pool = new MemcachedCachePool($client);
+            }
+
+            if($adapter == 'redis') {
+                $host = (isset($poolConfig['host'])) ? $poolConfig['host'] : 'localhost';
+                $port = (isset($poolConfig['port'])) ? $poolConfig['port'] : 6379;
+
+                $client = new \Redis();
+                $client->connect($host, $port);
+                $pool = new RedisCachePool($client);
+            }
+        }
+
+        return $pool;
+    }
+
+    private static function responseCache()
+    {
+        return new ResponseCache(self::get('cache'), self::get('config')->get('cache.response_ttl'));
+    }
+
+
 }

@@ -75,9 +75,12 @@ class Settings extends Route
         };
 
         if (!is_null($id)) {
-            $response = $fetchCmsFile($Settings->fetchCollection($id));
+            $response = $this->getDataAndSetResponseCacheTags(
+                [$Settings, 'fetchCollection'],
+                [$id]
+            );
         } else {
-            $response = $Settings->fetchAll();
+            $response = $this->getDataAndSetResponseCacheTags([$Settings, 'fetchAll']);
             $response['global'] = $fetchCmsFile($response['global']);
         }
 

@@ -55,18 +55,26 @@ class Emitter
     const TYPE_FILTER = 1;
 
     /**
-     * List of registered action listeners
+     * List of references to registered action listeners
      *
      * @var array
      */
     protected $actionListeners = [];
 
     /**
-     * List of registered filter listeners
+     * List of references to filter listeners
      *
      * @var array
      */
     protected $filterListeners = [];
+
+
+    /**
+     * List of registered listeners
+     *
+     * @var array
+     */
+    protected $listenersList = [];
 
     /**
      * Add an action listener with the given name
@@ -74,10 +82,12 @@ class Emitter
      * @param $name
      * @param $listener
      * @param int $priority
+     *
+     * @return int Listener's index {@see removeListener}
      */
     public function addAction($name, $listener, $priority = self::P_NORMAL)
     {
-        $this->addListener($name, $listener, $priority, self::TYPE_ACTION);
+        return $this->addListener($name, $listener, $priority, self::TYPE_ACTION);
     }
 
     /**
@@ -86,10 +96,22 @@ class Emitter
      * @param $name
      * @param $listener
      * @param int $priority
+     *
+     * @return int Listener's index {@see removeListener}
      */
     public function addFilter($name, $listener, $priority = self::P_NORMAL)
     {
-        $this->addListener($name, $listener, $priority, self::TYPE_FILTER);
+        return $this->addListener($name, $listener, $priority, self::TYPE_FILTER);
+    }
+
+    /**
+     * Remove listener with a given index
+     *
+     * @param $index
+     */
+    public function removeListener($index)
+    {
+        $this->listenersList[$index] = null;
     }
 
     /**
@@ -194,6 +216,8 @@ class Emitter
      * @param $listener
      * @param int $priority
      * @param int $type
+     *
+     * @return int Listener's index {@see removeListener}
      */
     protected function addListener($name, $listener, $priority = self::P_NORMAL, $type = self::TYPE_ACTION)
     {
@@ -203,11 +227,12 @@ class Emitter
 
         $this->validateListener($listener);
 
-        if ($type == self::TYPE_FILTER) {
-            $this->filterListeners[$name][$priority][] = $listener;
-        } else {
-            $this->actionListeners[$name][$priority][] = $listener;
-        }
+        $index = array_push($this->listenersList, $listener) - 1;
+
+        $arrayName = ($type == self::TYPE_FILTER) ? 'filter' : 'action';
+        $this->{$arrayName.'Listeners'}[$name][$priority][] = $index;
+
+        return $index;
     }
 
     /**
@@ -245,27 +270,31 @@ class Emitter
     /**
      * Execute a given listeners list
      *
-     * @param array $listeners
+     * @param array $listenersIds
      * @param null $data
      * @param int $listenerType
      *
      * @return array|mixed|null
      */
-    protected function executeListeners(array $listeners, $data = null, $listenerType = self::TYPE_ACTION)
+    protected function executeListeners(array $listenersIds, $data = null, $listenerType = self::TYPE_ACTION)
     {
         $isFilterType = ($listenerType == self::TYPE_FILTER);
-        foreach ($listeners as $listener) {
-            if ($listener instanceof HookInterface) {
-                $listener = [$listener, 'handle'];
-            }
+        foreach ($listenersIds as $index) {
+            $listener = $this->listenersList[$index];
 
-            if (!is_array($data)) {
-                $data = [$data];
-            }
+            if($listener) {
+                if ($listener instanceof HookInterface) {
+                    $listener = [$listener, 'handle'];
+                }
 
-            $returnedValue = call_user_func_array($listener, $data);
-            if ($isFilterType) {
-                $data = $returnedValue;
+                if (!is_array($data)) {
+                    $data = [$data];
+                }
+
+                $returnedValue = call_user_func_array($listener, $data);
+                if ($isFilterType) {
+                    $data = $returnedValue;
+                }
             }
         }
 

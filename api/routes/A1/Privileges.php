@@ -28,12 +28,18 @@ class Privileges extends Route
         }
 
         $privileges = new DirectusPrivilegesTableGateway($ZendDb, $acl);
+
+        $data = $this->getDataAndSetResponseCacheTags(
+            [$privileges, 'fetchPerTable'],
+            [$groupId, $tableName]
+        );
+
         $response = [
             'meta' => [
                 'type' => 'item',
                 'table' => 'directus_privileges'
             ],
-            'data' => $privileges->fetchPerTable($groupId, $tableName)
+            'data' => $data
         ];
 
         if (!$response['data']) {

@@ -33,7 +33,7 @@ class Groups extends Route
                 break;
             case 'GET':
             default:
-                $response = $GroupsTableGateway->getEntries($params);
+                $response = $this->getEntriesAndSetResponseCacheTags($GroupsTableGateway, $params);
         }
 
         return $this->app->response($response);
@@ -50,7 +50,7 @@ class Groups extends Route
         // @TODO need POST and PUT
         $tableName = 'directus_groups';
         $Groups = new TableGateway($tableName, $ZendDb, $acl);
-        $response = $Groups->getEntries($params);
+        $response = $this->getEntriesAndSetResponseCacheTags($Groups, $params);
         if (!$response) {
             $response = [
                 'message' => __t('unable_to_find_group_with_id_x', ['id' => $id]),
@@ -76,7 +76,7 @@ class Groups extends Route
 
         $newRecord = $tableGateway->updateRecord($requestPayload);
         $newGroupId = $newRecord['id'];
-        $response = $tableGateway->getEntries(['id' => $newGroupId]);
+        $response = $this->getEntriesAndSetResponseCacheTags($tableGateway, ['id' => $newGroupId]);
 
         return $this->app->response($response);
     }
