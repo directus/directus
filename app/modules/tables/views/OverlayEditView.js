@@ -24,8 +24,8 @@ define([
     initialize: function(options){
       EditView.prototype.initialize.call(this, options);
 
-      if(options.saveFunction) {
-        this.save = options.saveFunction;
+      if (options.onSave) {
+        this.save = options.onSave;
       }
 
       this.events = _.extend({}, EditView.prototype.events, this.overlayEvents);

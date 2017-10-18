@@ -51,18 +51,22 @@ define([
       var OverlayEditView = require('modules/tables/views/OverlayEditView'); // eslint-disable-line import/no-unresolved
       var collection = this.relatedCollection;
 
-      var view = new OverlayEditView({model: model, inModal: true, saveFunction: function () {
-        var newModel = new collection.model({}, { // eslint-disable-line new-cap
-          parse: true,
-          collection: collection,
-          structure: collection.structure,
-          table: collection.table
-        });
+      var view = new OverlayEditView({
+        model: model,
+        inModal: true,
+        onSave: function () {
+          var newModel = new collection.model({}, { // eslint-disable-line new-cap
+            parse: true,
+            collection: collection,
+            structure: collection.structure,
+            table: collection.table
+          });
 
-        newModel.set('data', model);
-        collection.add(newModel);
-        app.router.removeOverlayPage(this);
-      }});
+          newModel.set('data', model);
+          collection.add(newModel);
+          app.router.removeOverlayPage(this);
+        }
+      });
       app.router.overlayPage(view);
     },
 
