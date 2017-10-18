@@ -89,44 +89,30 @@ define([
 
     editModel: function (model) {
       var self = this;
-      var EditView = require('modules/tables/views/EditView'); // eslint-disable-line import/no-unresolved
+      var OverlayEditView = require('modules/tables/views/OverlayEditView'); // eslint-disable-line import/no-unresolved
       var columnName = this.columnSchema.relationship.get('junction_key_right');
-      var view = new EditView({
+      var view = new OverlayEditView({
         model: model,
         hiddenFields: [columnName],
-        skipFetch: (model.isNew() || model.hasUnsavedAttributes())
-      });
-
-      view.headerOptions.route.isOverlay = true;
-      view.headerOptions.route.breadcrumbs = [];
-      view.headerOptions.basicSave = true;
-
-      view.events = {
-        'click .saved-success': function () {
-          this.save();
-        },
-        'click #removeOverlay': function () {
+        skipFetch: (model.isNew() || model.hasUnsavedAttributes()),
+        onSave: function () {
+          // trigger changes on the related collection
+          // to be visible on the listing table
+          self.onCollectionChange();
           app.router.removeOverlayPage(this);
         }
-      };
+      });
 
       app.router.overlayPage(view);
-
-      view.save = function () {
-        // trigger changes on the related collection
-        // to be visible on the listing table
-        self.onCollectionChange();
-        app.router.removeOverlayPage(this);
-      };
     },
 
     addModel: function (model) {
-      var EditView = require('modules/tables/views/EditView'); // eslint-disable-line import/no-unresolved
+      var OverlayEditView = require('modules/tables/views/OverlayEditView'); // eslint-disable-line import/no-unresolved
       var collection = this.relatedCollection;
       var columnName = this.columnSchema.relationship.get('junction_key_right');
       var id = this.model.id;
 
-      var view = new EditView({
+      var view = new OverlayEditView({
         model: model,
         collectionAdd: true,
         hiddenFields: [columnName],
@@ -134,32 +120,19 @@ define([
           name: columnName,
           value: id
         },
-        skipFetch: true
-      });
+        skipFetch: true,
+        onSave: function () {
+          model.set(columnName, id);
 
-      view.headerOptions.route.isOverlay = true;
-      view.headerOptions.route.breadcrumbs = [];
-      view.headerOptions.basicSave = true;
-
-      view.events = {
-        'click .saved-success': function () {
-          this.save();
-        },
-        'click #removeOverlay': function () {
-          app.router.removeOverlayPage(this);
+          if (model.isValid()) {
+            app.router.removeOverlayPage(this);
+            collection.add(model, {nest: true});
+          }
         }
-      };
+      });
 
       app.router.overlayPage(view);
 
-      view.save = function () {
-        model.set(columnName, id);
-
-        if (model.isValid()) {
-          app.router.removeOverlayPage(this);
-          collection.add(model, {nest: true});
-        }
-      };
     },
 
     insertRow: function () {

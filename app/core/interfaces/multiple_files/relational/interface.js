@@ -1,6 +1,7 @@
 /* global $ Backbone jQuery _ Component */
 define([
   'core/UIView',
+  'underscore',
   'app',
   'core/overlays/overlays',
   'helpers/file',
@@ -8,7 +9,7 @@ define([
   'mixins/save-item',
   'sortable',
   'core/t'
-], function (UIView, app, Overlays, FileHelper, StatusMixin, SaveItemMixin, Sortable, __t) {
+], function (UIView, _, app, Overlays, FileHelper, StatusMixin, SaveItemMixin, Sortable, __t) {
   return UIView.extend({
     template: 'multiple_files/relational/input',
 
@@ -74,36 +75,27 @@ define([
     },
 
     addModel: function (model) {
-      var EditView = require('modules/tables/views/EditView'); // eslint-disable-line import/no-unresolved
+      var OverlayEditView = require('modules/tables/views/OverlayEditView'); // eslint-disable-line import/no-unresolved
       var collection = this.relatedCollection;
-      var view = new EditView({model: model, inModal: true});
-      view.headerOptions.route.isOverlay = true;
-      view.headerOptions.route.breadcrumbs = [];
-      view.headerOptions.basicSave = true;
 
-      view.events = {
-        'click .saved-success': function () {
-          this.save();
-        },
-        'click #removeOverlay': function () {
+      var view = new OverlayEditView({
+        model: model,
+        inModal: true,
+        onSave: function () {
+          var junctionModel = new collection.model({data: model}); // eslint-disable-line new-cap
+
+          _.extend(junctionModel, {
+            collection: collection,
+            structure: collection.structure,
+            table: collection.table
+          });
+
+          collection.add(junctionModel);
           app.router.removeOverlayPage(this);
         }
-      };
+      });
 
       app.router.overlayPage(view);
-
-      view.save = function () {
-        var junctionModel = new collection.model({data: model}); // eslint-disable-line new-cap
-
-        _.extend(junctionModel, {
-          collection: collection,
-          structure: collection.structure,
-          table: collection.table
-        });
-
-        collection.add(junctionModel);
-        app.router.removeOverlayPage(this);
-      };
     },
 
     chooseItem: function () {
@@ -137,32 +129,19 @@ define([
     },
 
     editModel: function (model) {
-      var EditView = require('modules/tables/views/EditView'); // eslint-disable-line import/no-unresolved
+      var OverlayEditView = require('modules/tables/views/OverlayEditView'); // eslint-disable-line import/no-unresolved
       var columnName = this.columnSchema.relationship.get('junction_key_right');
-      var view = new EditView({
+
+      var view = new OverlayEditView({
         model: model,
         hiddenFields: [columnName],
-        skipFetch: (model.isNew() || model.unsavedAttributes())
-      });
-
-      view.headerOptions.route.isOverlay = true;
-      view.headerOptions.route.breadcrumbs = [];
-      view.headerOptions.basicSave = true;
-
-      view.events = {
-        'click .saved-success': function () {
-          this.save();
-        },
-        'click #removeOverlay': function () {
+        skipFetch: (model.isNew() || model.unsavedAttributes()),
+        onSave: function () {
           app.router.removeOverlayPage(this);
         }
-      };
+      });
 
       app.router.overlayPage(view);
-
-      view.save = function () {
-        app.router.removeOverlayPage(this);
-      };
 
       // Fetch first time to get the nested tables
       // Only fetch if it's not a new entry

@@ -11,11 +11,12 @@ define([
   'app',
   'modules/tables/views/BatchEditView',
   'modules/tables/views/EditView',
+  'modules/tables/views/OverlayEditView',
   'modules/tables/views/TablesView',
   'modules/tables/views/TableView'
 ],
 
-function(app, BatchEditView, EditView, TablesView, TableView) {
+function(app, BatchEditView, EditView, OverlayEditView, TablesView, TableView) {
 
   "use strict";
 
@@ -26,6 +27,7 @@ function(app, BatchEditView, EditView, TablesView, TableView) {
   Table.Views.Tables = TablesView;
   Table.Views.BatchEdit = BatchEditView;
   Table.Views.Edit = EditView;
+  Table.Views.OverlayEdit = OverlayEditView;
   Table.Views.List = TableView;
 
   return Table;
