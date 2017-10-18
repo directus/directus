@@ -47,7 +47,7 @@ define([
           value: id
         },
         skipFetch: true,
-        saveFunction: function () {
+        onSave: function () {
           model.set(columnName, id);
 
           if (model.isValid()) {

@@ -93,10 +93,13 @@ define([
       var OverlayEditView = require('modules/tables/views/OverlayEditView'); // eslint-disable-line import/no-unresolved
       var model = this.fileModel;
 
-      var view = new OverlayEditView({model: model, saveFunction: function () {
-        model.set(model.diff(view.editView.data()));
-        app.router.removeOverlayPage(this);
-      }});
+      var view = new OverlayEditView({
+        model: model,
+        onSave: function () {
+          model.set(model.diff(view.editView.data()));
+          app.router.removeOverlayPage(this);
+        }
+      });
 
      app.router.overlayPage(view);
 

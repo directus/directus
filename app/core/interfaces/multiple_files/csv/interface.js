@@ -62,7 +62,7 @@ define([
             collection.add(model);
           }
         },
-        saveFunction: function () {
+        onSave: function () {
           view.__proto__.__proto__.save.apply(this, arguments);
           app.router.removeOverlayPage(this);
         }
@@ -92,10 +92,13 @@ define([
     editModel: function (model) {
       var OverlayEditView = require('modules/tables/views/OverlayEditView'); // eslint-disable-line import/no-unresolved
 
-      var view = new OverlayEditView({model: model, saveFunction: function () {
-        view.__proto__.__proto__.save.apply(this, arguments);
-        app.router.removeOverlayPage(this);
-      }});
+      var view = new OverlayEditView({
+        model: model,
+        onSave: function () {
+          view.__proto__.__proto__.save.apply(this, arguments);
+          app.router.removeOverlayPage(this);
+        }
+      });
 
       app.router.overlayPage(view);
 

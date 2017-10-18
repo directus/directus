@@ -95,7 +95,7 @@ define([
         model: model,
         hiddenFields: [columnName],
         skipFetch: (model.isNew() || model.hasUnsavedAttributes()),
-        saveFunction: function () {
+        onSave: function () {
           // trigger changes on the related collection
           // to be visible on the listing table
           self.onCollectionChange();
@@ -121,7 +121,7 @@ define([
           value: id
         },
         skipFetch: true,
-        saveFunction: function () {
+        onSave: function () {
           model.set(columnName, id);
 
           if (model.isValid()) {
