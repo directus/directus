@@ -39,7 +39,10 @@ class Messages extends Route
         }
 
         $messagesTableGateway = new DirectusMessagesTableGateway($ZendDb, $acl);
-        $result = $messagesTableGateway->fetchMessagesInboxWithHeaders($currentUserId, null, $params);
+        $result = $this->getDataAndSetResponseCacheTags(
+            [$messagesTableGateway, 'fetchMessagesInboxWithHeaders'],
+            [$currentUserId, null, $params]
+        );
 
         $meta = ArrayUtils::omit($result, 'data');
         $meta['type'] = 'collection';
@@ -97,7 +100,11 @@ class Messages extends Route
         $currentUserId = $acl->getUserId();
 
         $messagesTableGateway = new DirectusMessagesTableGateway($ZendDb, $acl);
-        $message = $messagesTableGateway->fetchMessageWithRecipients($id, $currentUserId);
+
+        $result = $this->getDataAndSetResponseCacheTags(
+            [$messagesTableGateway, 'fetchMessageWithRecipients'],
+            [$id, $currentUserId]
+        );
 
         if (!isset($message)) {
             header('HTTP/1.0 404 Not Found');
@@ -338,7 +345,7 @@ class Messages extends Route
         $params['id'] = $newRecord['id'];
 
         // GET all table entries
-        $entries = $TableGateway->getEntries($params);
+        $entries = $this->getEntriesAndSetResponseCacheTags($TableGateway, $params);
 
         return $this->app->response($entries);
     }

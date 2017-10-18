@@ -4,7 +4,7 @@ namespace Directus\Slim;
 
 use Slim\Middleware;
 
-class CacheMiddleware extends Middleware
+class HttpCacheMiddleware extends Middleware
 {
     public function call()
     {

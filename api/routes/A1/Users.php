@@ -4,6 +4,8 @@ namespace Directus\API\Routes\A1;
 
 use Directus\Application\Application;
 use Directus\Application\Route;
+use Directus\Bootstrap;
+use Directus\Cache\Response;
 use Directus\Database\TableGateway\DirectusUsersTableGateway;
 use Directus\Database\TableGatewayFactory;
 use Directus\Exception\Http\BadRequestException;
@@ -27,22 +29,22 @@ class Users extends Route
         $this->usersGateway = TableGatewayFactory::create('directus_users');
     }
 
-    // /1.1/users
-    public function all()
-    {
-        $entries = new Entries($this->app);
-
-        return $entries->rows('directus_users');
-    }
-
     // /1.1/users/:id
-    public function get($id)
+    public function get($id = null)
     {
         $id = $this->getUserId($id);
+        $params = [];
 
-        $user = (array)$this->usersGateway->getEntries(['id' => $id, 'status' => null]);
+        if ($id) {
+            $params = [
+                'id' => $id
+            ];
+        }
+
+        $user = $this->getEntriesAndSetResponseCacheTags($this->usersGateway, $params);
 
         return $this->app->response($user);
+
     }
 
     // /1.1/users/invitation

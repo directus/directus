@@ -747,7 +747,8 @@ class RelationalTableGateway extends BaseTableGateway
     public function getItems(array $params = [])
     {
         $entries = $this->loadItems($params);
-        $single = ArrayUtils::has($params, 'id');
+
+        $single = ArrayUtils::has($params, 'id') || ArrayUtils::has($params, 'single');
         $meta = ArrayUtils::get($params, 'meta', 1);
 
         return $this->wrapData($entries, $single, $meta);
@@ -861,6 +862,10 @@ class RelationalTableGateway extends BaseTableGateway
             $params['status'] = null;
         }
 
+        if(ArrayUtils::has($params, 'single')) {
+            $params['limit'] = 1;
+        }
+
         $params = $this->applyDefaultEntriesSelectParams($params);
 
         // // NOTE: fallback to all columns the user has permission to
@@ -941,7 +946,7 @@ class RelationalTableGateway extends BaseTableGateway
             }, $results);
         }
 
-        if (ArrayUtils::get($params, 'id')) {
+        if (ArrayUtils::get($params, 'id') || ArrayUtils::has($params, 'single')) {
             $results = reset($results);
         }
 
