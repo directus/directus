@@ -21,7 +21,7 @@ class TableNotFoundException extends DbException
 {
     public function __construct($table, $message = '', $code = 0, Exception $previous = null)
     {
-        if ($message === '') {
+        if ($message === '' && function_exists('__t')) {
             $message = __t('unable_to_find_table_x', ['table_name' => $table]);
         }
 
