@@ -28,11 +28,11 @@ use Directus\Database\Schemas\Sources\SQLiteSchema;
 use Directus\Database\TableGateway\BaseTableGateway;
 use Directus\Database\TableGateway\DirectusPrivilegesTableGateway;
 use Directus\Database\TableGateway\DirectusSettingsTableGateway;
-use Directus\Database\TableGateway\DirectusTablesTableGateway;
 use Directus\Database\TableGateway\DirectusUsersTableGateway;
 use Directus\Database\TableGateway\RelationalTableGateway;
 use Directus\Database\TableGatewayFactory;
 use Directus\Database\TableSchema;
+use Directus\Debug\Log\Writer;
 use Directus\Embed\EmbedManager;
 use Directus\Exception\Exception;
 use Directus\Exception\Http\ForbiddenException;
@@ -52,10 +52,7 @@ use Directus\Util\ArrayUtils;
 use Directus\Util\DateUtils;
 use Directus\Util\StringUtils;
 use Directus\View\Twig\DirectusTwigExtension;
-use Slim\Extras\Log\DateTimeFileWriter;
 use Slim\Extras\Views\Twig;
-
-use Cache\Adapter\Memcache\MemcacheCachePool;
 use League\Flysystem\Adapter\Local;
 
 
@@ -158,7 +155,7 @@ class Bootstrap
             'mode' => DIRECTUS_ENV,
             'debug' => false,
             'log.enable' => true,
-            'log.writer' => new DateTimeFileWriter($loggerSettings),
+            'log.writer' => new Writer($loggerSettings),
             'view' => new Twig()
         ]);
 
