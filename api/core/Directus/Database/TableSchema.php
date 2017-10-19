@@ -311,7 +311,13 @@ class TableSchema
      */
     public static function getColumnRelationship($tableName, $columnName)
     {
-        $column = static::getColumnSchema($tableName, $columnName);
+        // Due to a problem the way we use to cache using array
+        // if a column information is fetched before its table
+        // the table is going to be created with only one column
+        // to prevent this we always get the table even if we only want one column
+        // Stop using getColumnSchema($tableName, $columnName); until we fix this.
+        $tableObject = static::getTableSchema($tableName);
+        $column = $tableObject->getColumn($columnName);
 
         return $column && $column->hasRelationship() ? $column->getRelationship() : null;
     }
