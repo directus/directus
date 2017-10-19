@@ -382,7 +382,13 @@ define(function(require, exports, module) {
     },
 
     isNew: function () {
-      if (this.isTracking()) {
+      var column = this.structure.get(this.idAttribute);
+
+      // If this is an non-autoincrement primary key column
+      // we check for the original value if it's null
+      // NOTE: This not suitable for autoincrement because the field is disabled
+      // so the user won't change the value and make it look like it's new or not.
+      if (column && column.isPrimaryColumn() && !column.hasAutoIncrement() && this.isTracking()) {
         return this._originalAttributes[this.idAttribute] == null;
       }
 
