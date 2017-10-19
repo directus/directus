@@ -32,7 +32,7 @@ define(function(require, exports, module) {
         return new FilesCollection([], _.extend({
           rowsPerPage: rowsPerPage,
           url: apiURL + 'files',
-          filters: {columns_visible: ['name','title','size', 'type', 'url', 'user','date_uploaded', 'storage_adapter', 'width', 'height']}
+          filters: {columns_visible: ['name','title','size', 'type', 'thumbnail_url', 'url', 'user','date_uploaded', 'storage_adapter', 'width', 'height']}
         }, SchemaManager.getFullSchema('directus_files')));
 
       case 'directus_tables':
