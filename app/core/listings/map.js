@@ -245,6 +245,10 @@ define([
         }
       },
 
+      getMarkers: function () {
+        return this.state.markers || [];
+      },
+
       clearMarkers: function () {
         var markers = this.state.markers;
         for (var i = 0; i < markers.length; i++) {
@@ -331,6 +335,14 @@ define([
             });
           }
         }, this));
+
+        // Reference: https://developers.google.com/maps/documentation/javascript/reference#LatLngBounds
+        var bounds = new google.maps.LatLngBounds();
+        _.each(this.getMarkers(), function (marker) {
+          bounds.extend(marker.getPosition());
+        });
+
+        this.map.fitBounds(bounds);
       },
 
       afterRender: function () {
