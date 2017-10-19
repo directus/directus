@@ -458,7 +458,7 @@
   "display_as_x": "Angezeigt als: \"%{name}\"",
   "enable_strict_table_naming": "Aktiviere strikte Benennung",
   "directus_tables_table_name": "Name",
-  "directus_tables_table_name_comment": "Kann (zur Zeit) nicht durch das CMS verändert nachträglich werden",
+  "directus_tables_table_name_comment": "Kann (zur Zeit) nicht nachträglich durch das CMS verändert werden",
   "directus_tables_display_template": "Zeige Template",
   "directus_tables_display_template_comment": "Dieses Twig Template bestimmt wie die Einträge der Tabelle im ganzen System angezeigt werden",
   "directus_tables_preview_url": "Vorschau Link",
