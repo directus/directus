@@ -1090,7 +1090,7 @@ class RelationalTableGateway extends BaseTableGateway
                 $selectColumn = $tableObject->getPrimaryColumn();
                 $table = $columnsTable[$key];
 
-                if ($columnObject->hasRelationship() && $columnObject->isAlias()) {
+                if ($columnObject->isAlias()) {
                     $column = $tableObject->getPrimaryColumn();
                 }
 
@@ -1103,6 +1103,36 @@ class RelationalTableGateway extends BaseTableGateway
                 $query->columns([$selectColumn]);
                 $query->from($table);
                 $query->whereIn($column, $oldQuery);
+            }
+
+            $tableObject = $this->getTableSchema($mainTable);
+            $columnObject = $tableObject->getColumn($mainColumn);
+            $relationship = $columnObject->getRelationship();
+
+            // TODO: Make all this whereIn duplication into a function
+            // TODO: Can we make the O2M simpler getting the parent id from itself
+            //       right now is creating one unnecessary select
+            if ($columnObject->isManyToMany() || $columnObject->isOneToMany()) {
+                $mainColumn = $tableObject->getPrimaryColumn();
+                $oldQuery = $query;
+                $query = new Builder($this->getAdapter());
+
+                if ($columnObject->isManyToMany()) {
+                    $selectColumn = $relationship->getJunctionKeyLeft();
+                    $table = $relationship->getJunctionTable();
+                    $column = $relationship->getJunctionKeyRight();
+                } else {
+                    $selectColumn = $relationship->getJunctionKeyRight();
+                    $table = $relationship->getRelatedTable();
+                    $column = $relationship->getJunctionKeyRight();
+                }
+
+                $query->columns([$selectColumn]);
+                $query->from($table);
+                $query->whereIn(
+                    $column,
+                    $oldQuery
+                );
             }
 
             $this->doFilter(
