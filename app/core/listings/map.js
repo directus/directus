@@ -102,64 +102,9 @@ define([
         return marker;
       },
 
-      mapInit: function () {
-        var mapOptions = {
-          zoom: 14,
-          center: new google.maps.LatLng(40.720, -73.953),
-          styles: [{'featureType':'administrative','elementType':'labels.text.fill','stylers':[{'color':'#444444'}]},{'featureType':'landscape','elementType':'all','stylers':[{'color':'#f2f2f2'}]},{'featureType':'poi','elementType':'all','stylers':[{'visibility':'off'}]},{'featureType':'poi','elementType':'labels.text','stylers':[{'visibility':'off'}]},{'featureType':'road','elementType':'all','stylers':[{'saturation':-100},{'lightness':45}]},{'featureType':'road.highway','elementType':'all','stylers':[{'visibility':'simplified'}]},{'featureType':'road.arterial','elementType':'labels.icon','stylers':[{'visibility':'off'}]},{'featureType':'transit','elementType':'all','stylers':[{'visibility':'off'}]},{'featureType':'water','elementType':'all','stylers':[{'color':'#dbdbdb'},{'visibility':'on'}]}]
-        };
-
-        var mapElement = $('.map')[0];
-        map = new google.maps.Map(mapElement, mapOptions);
-        var marker = new google.maps.Marker({
-          position: new google.maps.LatLng(40.720, -73.953),
-          map: map,
-          draggable: true,
-          title: 'Select a Location',
-          icon: this.pinSymbol('#3498DB')
-        });
-
-        var input = (document.getElementById('map-search'));
-        map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
-
-        var autocomplete = new google.maps.places.Autocomplete(input);
-        autocomplete.bindTo('bounds', map);
-
-        //////////////////////////////////////////////////////////////////////////////
-
-        google.maps.event.addListener(marker, 'dragstart', function (event) {
-          marker.setAnimation(3); // Raise
-          $('#map-search').val('');
-        });
-
-        google.maps.event.addListener(marker, 'drag', function (event) {
-          $('.lat-long').html('Latitude: '+ event.latLng.lat().toFixed(3) +'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Longitude: '+ event.latLng.lng().toFixed(3));
-        });
-
-        google.maps.event.addListener(marker, 'dragend', function (event) {
-          marker.setAnimation(4); // Bounce
-          $('.lat-long').html('Latitude: '+ event.latLng.lat().toFixed(3) +'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Longitude: '+ event.latLng.lng().toFixed(3));
-        });
-
-        map.setOptions({
-          draggable: true,
-          zoomControl: true,
-          scrollwheel: false,
-          disableDoubleClickZoom: false,
-          streetViewControl: false,
-          disableDefaultUI: true
-        });
-
-        google.maps.event.addDomListener(window, 'resize', function() {
-          var center = map.getCenter();
-          google.maps.event.trigger(map, 'resize');
-          map.setCenter(center);
-        });
-      },
-
       initMap: function() {
         var mapOptions = {
-          zoom: 14,
+          zoom: 2,
           center: new google.maps.LatLng(40.720, -73.953),
           styles: [
             {
@@ -217,7 +162,6 @@ define([
 
         var mapElement = this.$('.map')[0];
         var map = this.map = new google.maps.Map(mapElement, mapOptions);
-        var marker = this.marker = this.createMarker(40.720, -73.953);
 
         google.maps.event.addListenerOnce(map, 'idle', _.bind(function() {
           this.updateMap();
@@ -247,22 +191,6 @@ define([
           $(this.input).val(this.state.search);
           this.changePlace(this.state.place);
         }
-
-        //////////////////////////////////////////////////////////////////////////////
-
-        google.maps.event.addListener(marker, 'dragstart', function (event) {
-          marker.setAnimation(3); // Raise
-          $('#map-search').val('');
-        });
-
-        google.maps.event.addListener(marker, 'drag', function (event) {
-          $('.lat-long').html('Latitude: '+ event.latLng.lat().toFixed(3) +'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Longitude: '+ event.latLng.lng().toFixed(3));
-        });
-
-        google.maps.event.addListener(marker, 'dragend', function (event) {
-          marker.setAnimation(4); // Bounce
-          $('.lat-long').html('Latitude: '+ event.latLng.lat().toFixed(3) +'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Longitude: '+ event.latLng.lng().toFixed(3));
-        });
 
         map.setOptions({
           draggable: true,
