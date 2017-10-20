@@ -61,9 +61,7 @@ $(window).ready(function () {
   }
 
   function CheckConfirmationStep() {
-    if (!$('#strict_mode_enabled').length) {
-      $('button[type=submit]').removeClass('disabled').html('Install').attr('name', 'install');
-    }
+    // nothing, strict mode warning removed
   }
 
   function CheckLanguageStep() {
