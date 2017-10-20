@@ -26,43 +26,34 @@
     <h3>{{ 'Database Configuration'|t }}</h3>
     <table>
         <tbody>
-            {% if directus.data.getSafe('strict_mode_enabled') == true %}
-            <tr id="strict_mode_enabled">
-                <td class="item">{{ 'Strict Mode Disabled'|t }} (<a
-                    href="http://getdirectus.com/docs/developer/installation"
-                    target="_blank" class="underline">{{ 'Learn More'|t }}</a>)
-                </td>
-                <td class="result"><span class="label label-important">{{ 'No'|t }}</span></td>
+            <tr>
+                <td class="item">{{ 'Database'|t }}</td>
+                <td class="result">{{ directus.data.getSafe('db_type') }}</td>
             </tr>
-            {% endif %}
-        <tr>
-            <td class="item">{{ 'Database'|t }}</td>
-            <td class="result">{{ directus.data.getSafe('db_type') }}</td>
-        </tr>
-        <tr>
-            <td class="item">{{ 'Host Name'|t }}</td>
-            <td class="result">{{ directus.data.getSafe('db_host') }}</td>
-        </tr>
-        <tr>
-            <td class="item">{{ 'Port'|t }}</td>
-            <td class="result">{{ directus.data.getSafe('db_port') }}</td>
-        </tr>
-        <tr>
-            <td class="item">{{ 'Username'|t }}</td>
-            <td class="result"><span>{{ directus.data.getSafe('db_user') }}</span></td>
-        </tr>
-        <tr>
-            <td class="item">{{ 'Password'|t }}</td>
-            <td class="result">***</td>
-        </tr>
-        <tr>
-            <td class="item">{{ 'Database Name'|t }}</td>
-            <td class="result">{{ directus.data.getSafe('db_name') }}</td>
-        </tr>
-        <tr>
-            <td class="item">{{ 'Schema'|t }}</td>
-            <td class="result">{{ directus.data.getSafe('db_schema') ? directus.data.getSafe('db_schema') : 'none' }}</td>
-        </tr>
+            <tr>
+                <td class="item">{{ 'Host Name'|t }}</td>
+                <td class="result">{{ directus.data.getSafe('db_host') }}</td>
+            </tr>
+            <tr>
+                <td class="item">{{ 'Port'|t }}</td>
+                <td class="result">{{ directus.data.getSafe('db_port') }}</td>
+            </tr>
+            <tr>
+                <td class="item">{{ 'Username'|t }}</td>
+                <td class="result"><span>{{ directus.data.getSafe('db_user') }}</span></td>
+            </tr>
+            <tr>
+                <td class="item">{{ 'Password'|t }}</td>
+                <td class="result">***</td>
+            </tr>
+            <tr>
+                <td class="item">{{ 'Database Name'|t }}</td>
+                <td class="result">{{ directus.data.getSafe('db_name') }}</td>
+            </tr>
+            <tr>
+                <td class="item">{{ 'Schema'|t }}</td>
+                <td class="result">{{ directus.data.getSafe('db_schema') ? directus.data.getSafe('db_schema') : 'none' }}</td>
+            </tr>
         </tbody>
     </table>
 

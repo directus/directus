@@ -31,21 +31,6 @@ class ConfirmStep extends AbstractStep
             echo is_writeable(BASE_PATH . '/api') ? 'true' : 'false';
             exit;
         }
-
-        $steps = $state['steps'];
-        foreach ($steps as $step) {
-            if ($step->getName() != 'database') {
-                continue;
-            }
-
-            $strictModeEnabled = false;
-            if ($this->isStrictMode($step)) {
-                $strictModeEnabled = true;
-                $this->response->addError(__t('mysql_strict_mode_warning'));
-            }
-
-            $this->getDataContainer()->set('strict_mode_enabled', $strictModeEnabled);
-        }
     }
 
     public function run($formData, $step, &$state)
@@ -93,36 +78,5 @@ class ConfirmStep extends AbstractStep
         send_new_install_email($data);
 
         return $response;
-    }
-
-    public function validate($data)
-    {
-        parent::validate($data);
-
-        $step = install_get_step(3);
-        if ($this->isStrictMode($step)) {
-            throw new \RuntimeException(__t('mysql_strict_mode_warning'));
-        }
-    }
-
-    protected function isStrictMode($step)
-    {
-        $data = $step->getData();
-        $connection = new Connection([
-            'driver' => 'pdo_' . $data['db_type'],
-            'host' => $data['db_host'],
-            'port' => $data['db_port'],
-            'database' => $data['db_name'],
-            'username' => $data['db_user'],
-            'password' => $data['db_password'],
-            'charset' => 'utf8'
-        ]);
-
-        $connection->connect();
-        if ($connection->isStrictModeEnabled()) {
-            return true;
-        }
-
-        return false;
     }
 }
