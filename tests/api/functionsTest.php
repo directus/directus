@@ -355,6 +355,14 @@ class FunctionsTest extends PHPUnit_Framework_TestCase
         $this->assertSame($expected, get_unflat_columns(implode(',', $original)));
     }
 
+    public function testSlugify()
+    {
+        $original = 'ÁÄÂÀÃÅČÇĆĎÉĚËÈÊẼĔȆÍÌÎÏŇÑÓÖÒÔÕØŘŔŠŤÚŮÜÙÛÝŸŽáäâàãåčçćďéěëèêẽĕȇíìîïňñóöòôõøðřŕšťúůüùûýÿžþÞĐđßÆa·/_,:;';
+        $expected = 'aaaaaacccdeeeeeeeeiiiinnoooooorrstuuuuuyyzaaaaaacccdeeeeeeeeiiiinnooooooorrstuuuuuyyzbbddbaa-';
+
+        $this->assertSame($expected, slugify($original));
+    }
+
     protected $files = [
         'file.js',
         'module.js',

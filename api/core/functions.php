@@ -1558,3 +1558,36 @@ if (!function_exists('column_identifier_reverse')) {
         return implode('.', $parts);
     }
 }
+
+
+if (!function_exists('slugify')) {
+    /**
+     * Converts a string to a valid slug
+     *
+     * @param string $string
+     *
+     * @return string
+     */
+    function slugify($string)
+    {
+        $string = trim($string);
+        $search = ['Á', 'Ä', 'Â', 'À', 'Ã', 'Å', 'Č', 'Ç', 'Ć', 'Ď', 'É', 'Ě', 'Ë', 'È', 'Ê', 'Ẽ', 'Ĕ', 'Ȇ', 'Í', 'Ì', 'Î', 'Ï', 'Ň', 'Ñ', 'Ó', 'Ö', 'Ò', 'Ô', 'Õ', 'Ø', 'Ř', 'Ŕ', 'Š', 'Ť', 'Ú', 'Ů', 'Ü', 'Ù', 'Û', 'Ý', 'Ÿ', 'Ž', 'á', 'ä', 'â', 'à', 'ã', 'å', 'č', 'ç', 'ć', 'ď', 'é', 'ě', 'ë', 'è', 'ê', 'ẽ', 'ĕ', 'ȇ', 'í', 'ì', 'î', 'ï', 'ň', 'ñ', 'ó', 'ö', 'ò', 'ô', 'õ', 'ø', 'ð', 'ř', 'ŕ', 'š', 'ť', 'ú', 'ů', 'ü', 'ù', 'û', 'ý', 'ÿ', 'ž', 'þ', 'Þ', 'Đ', 'đ', 'ß', 'Æ', 'a', '·', '/', '_', ',', ':', ';'];
+        $replace = ['A', 'A', 'A', 'A', 'A', 'A', 'C', 'C', 'C', 'D', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'I', 'I', 'I', 'I', 'N', 'N', 'O', 'O', 'O', 'O', 'O', 'O', 'R', 'R', 'S', 'T', 'U', 'U', 'U', 'U', 'U', 'Y', 'Y', 'Z', 'a', 'a', 'a', 'a', 'a', 'a', 'c', 'c', 'c', 'd', 'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e', 'i', 'i', 'i', 'i', 'n', 'n', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'r', 'r', 's', 't', 'u', 'u', 'u', 'u', 'u', 'y', 'y', 'z', 'b', 'B', 'D', 'd', 'B', 'A', 'a', '-', '-', '-', '-', '-', '-'];
+
+        $string = str_replace($search, $replace, $string);
+
+        $patterns = [
+            '/[^A-Za-z0-9 -]/', // remove invalid chars
+            '/\s+/', // Collapse whitespace and replace by -
+            '/\-+/' // Collapse dashes
+        ];
+        $replacements = [
+            '',
+            '-',
+            '-'
+        ];
+
+        // NOTE: using lowercase because the interface also always return lowercase
+        return mb_strtolower(preg_replace($patterns, $replacements, $string));
+    }
+}
