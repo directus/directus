@@ -100,7 +100,9 @@ define([
 
       switch (interfaceOptions.settings.get('validation_type')) {
         case ('wl') :
-          var Regex = new RegExp('^[' + interfaceOptions.settings.get('validation_string') + ']+$');
+          var whitelist = interfaceOptions.settings.get('validation_string') || '';
+          var pattern = whitelist.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+          var Regex = new RegExp('^[' + pattern + ']+$');
           if (!value.match(Regex)) {
             return validationMessage;
           }
