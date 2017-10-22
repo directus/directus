@@ -980,6 +980,40 @@ class Bootstrap
             return $payload;
         };
 
+        $slugifyString = function ($insert, Payload $payload) {
+            $tableName = $payload->attribute('tableName');
+            $tableObject = TableSchema::getTableSchema($tableName);
+            $data = $payload->getData();
+
+            foreach ($tableObject->getColumns() as $column) {
+                if ($column->getUI() !== 'slug') {
+                    continue;
+                }
+
+                $parentColumnName = $column->getOptions('mirrored_field');
+                if (!ArrayUtils::has($data, $parentColumnName)) {
+                    continue;
+                }
+
+                $onCreationOnly = boolval($column->getOptions('only_on_creation'));
+                if (!$insert && $onCreationOnly) {
+                    continue;
+                }
+
+                $payload->set($column->getName(), slugify(ArrayUtils::get($data, $parentColumnName, '')));
+            }
+
+            return $payload;
+        };
+
+        $emitter->addFilter('table.insert:before', function (Payload $payload) use ($slugifyString) {
+            return $slugifyString(true, $payload);
+        });
+
+        $emitter->addFilter('table.update:before', function (Payload $payload) use ($slugifyString) {
+            return $slugifyString(false, $payload);
+        });
+
         // TODO: Merge with hash user password
         $hashPasswordInterface = function (Payload $payload) {
             /** @var Provider $auth */
