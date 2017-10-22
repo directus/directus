@@ -1,4 +1,4 @@
-define(['core/UIView', 'core/t', 'core/interfaces/color/lib/color'], function (UIView, __t, color) {
+define(['underscore', 'core/UIView', 'core/t', 'core/interfaces/color/lib/color'], function (_, UIView, __t, color) {
   'use strict';
 
   function setPreviewColor(view, color) {
@@ -9,8 +9,14 @@ define(['core/UIView', 'core/t', 'core/interfaces/color/lib/color'], function (U
   }
 
   function setInputValue(view, color, output) {
-    view.$('.value').val(color[output]);
-    view.model.set(view.name, color[output]);
+    var value = color[output];
+
+    if (_.isArray(value)) {
+      value = value.join(',');
+    }
+
+    view.$('.value').val(value);
+    view.model.set(view.name, value);
   }
 
   function showInvalidMessage(view) {
@@ -173,13 +179,15 @@ define(['core/UIView', 'core/t', 'core/interfaces/color/lib/color'], function (U
 
       if (this.options.value && this.options.value.length > 1) {
         var rawValue = this.options.value;
+        var colorObject;
+
         if (output === 'rgb' || output === 'hsl') {
           rawValue = this.options.value.split(',').map(function (color) {
             return Number(color);
           });
         }
-        var colorObject = color(rawValue, output);
 
+        colorObject = color(rawValue, output);
         value = colorObject[input];
         outputValue = colorObject[output];
         preview = colorObject.rgb.length === 4 ? 'rgba(' + colorObject.rgb + ')' : 'rgb(' + colorObject.rgb + ')';
