@@ -67,6 +67,8 @@ class RelationalTableGateway extends BaseTableGateway
 
         'nempty' => ['operator' => 'empty', 'not' => true],
 
+        'nhas' => ['operator' => 'has', 'not' => true],
+
         'nbetween' => ['operator' => 'between', 'not' => true],
     ];
 
@@ -1150,11 +1152,32 @@ class RelationalTableGateway extends BaseTableGateway
 
     protected function doFilter(Builder $query, $column, $condition, $table)
     {
+        $columnObject = TableSchema::getColumnSchema(
+            // $table will be the default value to get
+            // if the column has not identifier format
+            $this->getTableFromIdentifier($column, $table),
+            $this->getColumnFromIdentifier($column)
+        );
+
         $condition = $this->parseCondition($condition);
         $operator = ArrayUtils::get($condition, 'operator');
         $value = ArrayUtils::get($condition, 'value');
         $not = ArrayUtils::get($condition, 'not');
         $logical = ArrayUtils::get($condition, 'logical');
+
+        // TODO: if there's more, please add a better way to handle all this
+        if ($columnObject->isXToManyRelationship()) {
+            // translate some non-x2m relationship filter to x2m equivalent (if exists)
+            switch ($operator) {
+                case 'empty':
+                    // convert x2m empty
+                    // to not has at least one record
+                    $operator = 'has';
+                    $not = true;
+                    $value = 1;
+                    break;
+            }
+        }
 
         // Get information about the operator shorthand
         if (ArrayUtils::has($this->operatorShorthand, $operator)) {
@@ -1181,14 +1204,7 @@ class RelationalTableGateway extends BaseTableGateway
             $arguments[] = $logical;
         }
 
-        $relationship = TableSchema::getColumnRelationship(
-            // $table will be the default value to get
-            // if the column has not identifier format
-            $this->getTableFromIdentifier($column, $table),
-            $this->getColumnFromIdentifier($column)
-        );
-
-        if (in_array($operator, ['all', 'has']) && $relationship && in_array($relationship->getType(), ['ONETOMANY', 'MANYTOMANY'])) {
+        if (in_array($operator, ['all', 'has']) && $columnObject->isXToManyRelationship()) {
             if ($operator == 'all' && is_string($value)) {
                 $value = array_map(function ($item) {
                     return trim($item);
@@ -1198,6 +1214,7 @@ class RelationalTableGateway extends BaseTableGateway
             }
 
             $primaryKey = $this->getTableSchema($table)->getPrimaryColumn();
+            $relationship = $columnObject->getRelationship();
             if ($relationship->getType() == 'ONETOMANY') {
                 $arguments = [
                     $primaryKey,
@@ -1218,8 +1235,8 @@ class RelationalTableGateway extends BaseTableGateway
         }
 
         // TODO: Move this into QueryBuilder if possible
-        if (in_array($operator, ['like']) && $relationship && $relationship->isManyToOne()) {
-            $relatedTable = $relationship->getRelatedTable();
+        if (in_array($operator, ['like']) && $columnObject->isManyToOne()) {
+            $relatedTable = $columnObject->getRelationship()->getRelatedTable();
             $tableSchema = TableSchema::getTableSchema($relatedTable);
             $relatedTableColumns = $tableSchema->getColumns();
             $relatedPrimaryColumnName = $tableSchema->getPrimaryColumn();

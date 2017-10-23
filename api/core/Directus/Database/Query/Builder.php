@@ -209,9 +209,9 @@ class Builder
     public function whereEmpty($column)
     {
         return $this->nestWhere(function(Builder $query) use ($column) {
-            $query->whereNull($column);
-            $query->whereEqualTo($column, '');
-        }, 'or');
+            $query->orWhereNull($column);
+            $query->orWhereEqualTo($column, '');
+        });
     }
 
     /**
@@ -316,9 +316,14 @@ class Builder
         return $this->where($column, '>=', $value);
     }
 
-    public function whereNull($column, $not = false)
+    public function whereNull($column, $not = false, $logical = 'and')
     {
-        return $this->where($column, 'null', null, $not);
+        return $this->where($column, 'null', null, $not, $logical);
+    }
+
+    public function orWhereNull($column, $not = false)
+    {
+        return $this->whereNull($column, $not, 'or');
     }
 
     public function whereNotNull($column)
@@ -354,7 +359,7 @@ class Builder
         return $this->whereIn($column, $relation);
     }
 
-    public function whereHas($column, $table, $columnLeft, $columnRight, $count = 1)
+    public function whereHas($column, $table, $columnLeft, $columnRight, $count = 1, $not = false)
     {
         if (is_null($columnLeft)) {
             $relation = new OneToManyRelation($this, $column, $table, $columnRight, $this->getFrom());
@@ -362,9 +367,21 @@ class Builder
             $relation = new ManyToManyRelation($this, $table, $columnLeft, $columnRight);
         }
 
+        // If checking if has 0, this case will be the opposite
+        // has = 0, NOT IN the record that has more than 0
+        // not has = 0, IN the record that has more than 0
+        if ($count < 1) {
+            $not = !$not;
+        }
+
         $relation->has($count);
 
-        return $this->whereIn($column, $relation);
+        return $this->whereIn($column, $relation, $not);
+    }
+
+    public function whereNotHas($column, $table, $columnLeft, $columnRight, $count = 1)
+    {
+        return $this->whereHas($column, $table, $columnLeft, $columnRight, $count, true);
     }
 
     public function whereRelational($column, $table, $columnLeft, $columnRight = null, \Closure $callback = null, $logical = 'and')
@@ -586,8 +603,9 @@ class Builder
             $select->limit($this->getLimit());
         }
 
-        foreach($this->getWheres() as $condition) {
+        foreach ($this->getWheres() as $condition) {
             $logical = strtoupper(ArrayUtils::get($condition, 'logical', 'and'));
+
             if (ArrayUtils::get($condition, 'type') === 'nest') {
                 $query = ArrayUtils::get($condition, 'query');
                 if ($logical === 'OR') {
@@ -606,6 +624,7 @@ class Builder
                     $where->addPredicate($this->buildConditionExpression($nestCondition), $whereLogical);
                     $condition = null;
                 }
+
                 $where->unnest();
             } else {
                 $select->where($this->buildConditionExpression($condition), $logical);
