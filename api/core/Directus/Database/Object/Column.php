@@ -883,25 +883,7 @@ class Column implements \ArrayAccess, Arrayable, \JsonSerializable
             ColumnRelationship::MANY_TO_MANY
         ]);
 
-        return $isLegacyAliasType || $this->isXToManyRelationship();
-    }
-
-    /**
-     * Checks whether the column has ONE/MANY TO MANY Relationship
-     *
-     * @return bool
-     */
-    public function isXToManyRelationship()
-    {
-        $isAliasType = false;
-        if ($this->hasRelationship()) {
-            $isAliasType = in_array($this->getRelationship()->getType(), [
-                ColumnRelationship::ONE_TO_MANY,
-                ColumnRelationship::MANY_TO_MANY
-            ]);
-        }
-
-        return $isAliasType;
+        return $isLegacyAliasType || $this->isToMany();
     }
 
     /**
@@ -981,6 +963,15 @@ class Column implements \ArrayAccess, Arrayable, \JsonSerializable
         return $this->hasRelationship() ? $this->getRelationship()->isOneToMany() : false;
     }
 
+    /**
+     * Checks whether the column has ONE/MANY TO MANY Relationship
+     *
+     * @return bool
+     */
+    public function isToMany()
+    {
+        return $this->isOneToMany() || $this->isManyToMany();
+    }
 
     public function toArray()
     {
