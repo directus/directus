@@ -1166,7 +1166,7 @@ class RelationalTableGateway extends BaseTableGateway
         $logical = ArrayUtils::get($condition, 'logical');
 
         // TODO: if there's more, please add a better way to handle all this
-        if ($columnObject->isXToManyRelationship()) {
+        if ($columnObject->isToMany()) {
             // translate some non-x2m relationship filter to x2m equivalent (if exists)
             switch ($operator) {
                 case 'empty':
@@ -1204,7 +1204,7 @@ class RelationalTableGateway extends BaseTableGateway
             $arguments[] = $logical;
         }
 
-        if (in_array($operator, ['all', 'has']) && $columnObject->isXToManyRelationship()) {
+        if (in_array($operator, ['all', 'has']) && $columnObject->isToMany()) {
             if ($operator == 'all' && is_string($value)) {
                 $value = array_map(function ($item) {
                     return trim($item);

@@ -161,6 +161,10 @@ define(function(require, exports, module) {
       return this.getRelationshipType() === 'ONETOMANY';
     },
 
+    isToMany: function () {
+      return this.isOneToMany() || this.isManyToMany();
+    },
+
     isNullable: function () {
       return this.get('nullable') === true;
     },

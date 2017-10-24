@@ -253,13 +253,32 @@ define([
       var type = 'like';
       var hasSearch = false;
       var index = $filter.index();
+      var column = this.mysql_real_escape_string($filter.data('filter-id-master'));
+      var columnModel = this.collection.structure.get(column);
+      var columnOptions = columnModel.options;
+      var relatedFilterColumn = columnOptions.get('filter_column');
+      var isDropdown = $(event.target).prop('tagName') === 'SELECT';
 
-      if ($(event.target).prop('tagName') === 'SELECT') {
+      if (!columnModel.isToMany() && isDropdown) {
         type = '=';
       }
 
+      if (isDropdown) {
+        if (!columnModel.isToMany()) {
+          type = '=';
+        } else {
+          var table = app.schemaManager.getTable(columnModel.getRelatedTableName());
+
+          relatedFilterColumn = table.getPrimaryColumnName();
+        }
+      }
+
+      if (relatedFilterColumn) {
+        column += '.' + relatedFilterColumn;
+      }
+
       var data = {
-        id: this.mysql_real_escape_string($filter.data('filter-id-master')),
+        id: column,
         type: type,
         value: this.mysql_real_escape_string($element.val())
       };
@@ -681,7 +700,7 @@ define([
           if (filter.length === 2) {
             data = {};
             data.filterData = {
-              id: filter[0].replace('%20',':'),
+              id: filter[0].replace('%20',':').split('.').shift(),
               value: filter[1].replace('%20',':').replace('%21',',')
             };
 
@@ -693,7 +712,8 @@ define([
             that.options.filters.push(data);
           } else if (filter.length === 3) {
             data = {};
-            var selectedColumn = filter[0].replace('%20',':');
+            var filterColumn = filter[0].replace('%20',':');
+            var selectedColumn = filterColumn.split('.').shift();
 
             data.columnName = selectedColumn;
             if(!that.collection.structure.get(selectedColumn)) {
@@ -728,7 +748,7 @@ define([
             }
             data.filter_type = that.collection.structure.get(selectedColumn).get('type');
 
-            data.filterData = {id: selectedColumn, type: filter[1].replace('%20',':'), value: filter[2].replace('%20',':').replace('%21',',')};
+            data.filterData = {id: filterColumn, type: filter[1].replace('%20',':'), value: filter[2].replace('%20',':').replace('%21',',')};
 
             that.options.filters.push(data);
           }
