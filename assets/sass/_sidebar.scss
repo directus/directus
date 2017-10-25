@@ -566,9 +566,9 @@
 			list-style: none;
 			&.reorder-columns {
 				li {
-					cursor: row-resize;
+					@extend %cursor-drag;
 					label {
-						cursor: row-resize;
+						@extend %cursor-drag;
 						span,
 						span:before {
 							cursor: pointer;

@@ -630,7 +630,7 @@ table {
 							color: $gray-2;
 							&:hover {
 								color: $gray-4;
-								cursor: row-resize;
+								@extend %cursor-drag;
 							}
 						}
 					}

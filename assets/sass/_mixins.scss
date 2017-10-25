@@ -60,6 +60,14 @@
 	-webkit-transform: $transforms;
 	transform: $transforms;
 }
+
+/* not a mixing, but Ben will put it in the right place */
+%cursor-drag {
+	cursor: move;
+	cursor: grab;
+	cursor: -moz-grab;
+	cursor: -webkit-grab;
+}
 @mixin rotate ($deg) {
   @include transform(rotate(#{$deg}deg));
 }
