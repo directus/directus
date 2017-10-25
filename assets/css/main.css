@@ -2118,7 +2118,10 @@ table {
     color: #DDDDDD; }
     table.reorder-enabled tbody tr td.reorder .reorder-handle:hover {
       color: #999999;
-      cursor: row-resize; }
+      cursor: move;
+      cursor: grab;
+      cursor: -moz-grab;
+      cursor: -webkit-grab; }
 
 .items-chart {
   position: relative;
@@ -3393,9 +3396,15 @@ body.loading .header .logo {
     .right-sidebar .scroll-y ul {
       list-style: none; }
       .right-sidebar .scroll-y ul.reorder-columns li {
-        cursor: row-resize; }
+          cursor: move;
+          cursor: grab;
+          cursor: -moz-grab;
+          cursor: -webkit-grab; }
         .right-sidebar .scroll-y ul.reorder-columns li label {
-          cursor: row-resize; }
+            cursor: move;
+            cursor: grab;
+            cursor: -moz-grab;
+            cursor: -webkit-grab; }
           .right-sidebar .scroll-y ul.reorder-columns li label span,
           .right-sidebar .scroll-y ul.reorder-columns li label span:before {
             cursor: pointer; }
