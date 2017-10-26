@@ -39,6 +39,7 @@
 		margin-bottom: 1em;
 	}
 
+	{{#if always_show_preview}}
 	@media screen and (min-width: 70em) {
 		.md-interface {
 			width: auto;
@@ -52,6 +53,7 @@
 			display: block;
 		}
 	}
+	{{/if}}
 </style>
 <div class="md-controls">
 	<button class="toggle-pane" type="button" data-action="md-edit">Editor</button>

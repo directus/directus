@@ -19,6 +19,13 @@ define([
         default_value: false
       },
       {
+        id: 'always_show_preview',
+        ui: 'toggle',
+        type: 'Boolean',
+        comment: 'Always show the preview next to the input',
+        default_value: true
+      },
+      {
         id: 'rows',
         ui: 'numeric',
         type: 'Number',
@@ -70,9 +77,9 @@ define([
 
       var raw_val = marked(value);
 
-      return _.isString(raw_val)
-        ? raw_val.replace(/<(?:.|\n)*?>/gm, '').substr(0, 100)
-        : '<span class="silver">--</span>';
+      return _.isString(raw_val) ?
+        raw_val.replace(/<(?:.|\n)*?>/gm, '').substr(0, 100) :
+        '<span class="silver">--</span>';
     }
   });
 });
