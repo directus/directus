@@ -33,18 +33,15 @@ class Users extends Route
     public function get($id = null)
     {
         $id = $this->getUserId($id);
-        $params = [];
+        $params = $this->app->request()->get();
 
         if ($id) {
-            $params = [
-                'id' => $id
-            ];
+            $params['id'] = $id;
         }
 
         $user = $this->getEntriesAndSetResponseCacheTags($this->usersGateway, $params);
 
         return $this->app->response($user);
-
     }
 
     // /1.1/users/invitation
