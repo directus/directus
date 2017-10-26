@@ -1152,11 +1152,11 @@ class RelationalTableGateway extends BaseTableGateway
 
     protected function doFilter(Builder $query, $column, $condition, $table)
     {
-        $columnObject = TableSchema::getColumnSchema(
+        $columnObject = $this->getColumnSchema(
             // $table will be the default value to get
             // if the column has not identifier format
-            $this->getTableFromIdentifier($column, $table),
-            $this->getColumnFromIdentifier($column)
+            $this->getColumnFromIdentifier($column),
+            $this->getTableFromIdentifier($column, $table)
         );
 
         $condition = $this->parseCondition($condition);
@@ -1193,7 +1193,8 @@ class RelationalTableGateway extends BaseTableGateway
         }
 
         $splitOperators = ['between', 'in'];
-        if (in_array($operator, $splitOperators) && is_string($value)) {
+        // TODO: Add exception for API 2.0
+        if (in_array($operator, $splitOperators) && is_scalar($value)) {
             $value = explode(',', $value);
         }
 
