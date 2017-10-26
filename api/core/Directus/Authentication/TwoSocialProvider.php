@@ -10,6 +10,9 @@
 
 namespace Directus\Authentication;
 
+use League\OAuth2\Client\Provider\ResourceOwnerInterface;
+use League\OAuth2\Client\Token\AccessToken;
+
 /**
  * Provider for oAuth 2.0
  *
@@ -51,11 +54,23 @@ abstract class TwoSocialProvider extends AbstractSocialProvider
             'code' => $_GET['code']
         ]);
 
+        return new SocialUser([
+            'email' => $this->getResourceOwnerEmail($token)
+        ]);
+    }
+
+    /**
+     * Gets the resource owner email
+     *
+     * @param AccessToken $token
+     *
+     * @return string
+     */
+    protected function getResourceOwnerEmail(AccessToken $token)
+    {
         $user = $this->provider->getResourceOwner($token);
 
-        return new SocialUser([
-            'email' => $user->getEmail()
-        ]);
+        return $user->getEmail();
     }
 
     /**

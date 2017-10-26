@@ -216,7 +216,7 @@ class Bootstrap
             return Bootstrap::get('responseCache');
         });
 
-        $authConfig = ArrayUtils::get($config, 'auth', []);
+        $authConfig = $config->get('auth', []);
         $socialAuth = $app->container->get('socialAuth');
 
         $socialAuthServices = static::getSocialAuthServices();
