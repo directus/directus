@@ -161,7 +161,9 @@ define(['underscore'], function (_) {
     var variables = (string || '').match(/{{([^{}]+)}}/g);
 
     return (variables || []).map(function (value) {
-      return value.slice(2, -2);
+      // remove the spaces between the variables
+      // to avoid invalid variable name
+      return value.slice(2, -2).trim();
     })
   };
 
