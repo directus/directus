@@ -193,6 +193,25 @@ class BaseTableGateway extends TableGateway
     }
 
     /**
+     * Gets the column schema (object)
+     *
+     * @param $columnName
+     * @param null $tableName
+     *
+     * @return \Directus\Database\Object\Column
+     */
+    public function getColumnSchema($columnName, $tableName = null)
+    {
+        if ($tableName === null) {
+            $tableName = $this->getTable();
+        }
+
+        $skipAcl = $this->acl === null;
+
+        return TableSchema::getColumnSchema($tableName, $columnName, false, $skipAcl);
+    }
+
+    /**
      * Gets the status column name
      *
      * @return string

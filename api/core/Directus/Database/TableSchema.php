@@ -207,20 +207,21 @@ class TableSchema
     /**
      * Gets the column object
      *
-     * @param $tableName
-     * @param $columnName
+     * @param string $tableName
+     * @param string $columnName
      * @param bool $skipCache
+     * @param bool $skipAcl
      *
      * @return Object\Column
      */
-    public static function getColumnSchema($tableName, $columnName, $skipCache = false)
+    public static function getColumnSchema($tableName, $columnName, $skipCache = false, $skipAcl = false)
     {
         // Due to a problem the way we use to cache using array
         // if a column information is fetched before its table
         // the table is going to be created with only one column
         // to prevent this we always get the table even if we only want one column
         // Stop using getColumnSchema($tableName, $columnName); until we fix this.
-        $tableObject = static::getTableSchema($tableName);
+        $tableObject = static::getTableSchema($tableName, [], $skipCache, $skipAcl);
         $column = $tableObject->getColumn($columnName);
 
         return $column;
