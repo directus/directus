@@ -1,5 +1,4 @@
-define(function(require, exports, module) {
-
+define(function (require, exports, module) {
   'use strict';
 
   var Backbone = require('backbone');
@@ -41,12 +40,12 @@ define(function(require, exports, module) {
       }
     },
 
-    isRequired: function() {
+    isRequired: function () {
       return this.columnSchema.get('required') === true;
     },
 
     // Parent field view additional classes
-    fieldClass: function() {},
+    fieldClass: function () {},
 
     hideLabel: false,
 
@@ -78,7 +77,7 @@ define(function(require, exports, module) {
       // Default LayoutManager constructor
       UIView.__super__.constructor.call(this, options);
 
-     this.listenTo(this.model, 'save:before', this._beforeSaving);
+      this.listenTo(this.model, 'save:before', this._beforeSaving);
     }
   });
 });
