@@ -1,4 +1,3 @@
-/* global _ */
 define([
   'underscore',
   './interface',
@@ -27,6 +26,13 @@ define([
         type: 'Boolean',
         comment: 'Force this interface to be read only',
         default_value: false
+      },
+      {
+        id: 'show_character_count',
+        ui: 'toggle',
+        type: 'Boolean',
+        comment: 'Show the remaining characters available next to the input',
+        default_value: true
       },
       {
         id: 'size',
@@ -101,7 +107,7 @@ define([
       switch (interfaceOptions.settings.get('validation_type')) {
         case ('wl') :
           var whitelist = interfaceOptions.settings.get('validation_string') || '';
-          var pattern = whitelist.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+          var pattern = whitelist.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&');
           var Regex = new RegExp('^[' + pattern + ']+$');
           if (!value.match(Regex)) {
             return validationMessage;
@@ -124,9 +130,9 @@ define([
       }
     },
     list: function (interfaceOptions) {
-      return (interfaceOptions.value)
-        ? interfaceOptions.value.toString().replace(/<(?:.|\n)*?>/gm, '').substr(0, 100)
-        : '';
+      return (interfaceOptions.value) ?
+        interfaceOptions.value.toString().replace(/<(?:.|\n)*?>/gm, '').substr(0, 100) :
+        '';
     }
   });
 });

@@ -10,10 +10,8 @@
 </style>
 
 <div class="char-count-container {{size}}">
-	<input {{#if autoSize}}style="width: {{length}}ch;"{{/if}} type="text" placeholder="{{placeholder}}" value="{{value}}" name="{{name}}" id="{{name}}" maxLength="{{maxLength}}" class="{{size}}" {{#if readOnly}}readonly{{/if}}/>
-	{{#if length}}
-	{{#unless readOnly}}
-		<span class="char-count hide">{{characters}}</span>
-	{{/unless}}
+	<input {{#if autoSize}}style="width: {{maxLength}}ch;"{{/if}} type="text" placeholder="{{placeholder}}" value="{{value}}" name="{{name}}" id="{{name}}" maxLength="{{maxLength}}" class="{{size}}" {{#if readOnly}}readonly{{/if}}/>
+	{{#if showCharacterCount}}
+	<span class="char-count hide">{{charsLeft}}</span>
 	{{/if}}
 </div>
