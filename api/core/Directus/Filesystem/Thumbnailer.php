@@ -42,7 +42,7 @@ class Thumbnailer {
             $this->files = $files;
             $this->config = $thumbnailerConfig;
             $this->thumbnailParams = $this->extractThumbnailParams($thumbnailUrlPath);
-            
+           
             // check if the original file exists in storage
             if (! $this->files->exists($this->fileName)) {
                 throw new Exception($this->fileName . ' does not exist.'); // original file doesn't exist
@@ -219,12 +219,12 @@ class Thumbnailer {
             
             // make sure filename is valid
             $info = pathinfo($fileName);
-            if (! in_array(ArrayUtils::get($info, 'extension'), $this->getSupportedFileExtensions())) {
+            if (! $this->isSupportedFileExtension((ArrayUtils::get($info, 'extension')))) {
                 throw new Exception('Invalid file extension.');
             }
             
             $thumbnailParams = [
-                'fileName' => $fileName,
+                'fileName' => ArrayUtils::get($info, 'filename') . '.' . strtolower(ArrayUtils::get($info, 'extension')),
                 'fileExt' => ArrayUtils::get($info, 'extension')
             ];
             
@@ -298,7 +298,7 @@ class Thumbnailer {
      */
     public function isSupportedFileExtension($ext)
     {
-        return in_array($ext, $this->getSupportedFileExtensions());
+        return in_array(strtolower($ext), $this->getSupportedFileExtensions());
     }
 
     /**
