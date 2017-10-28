@@ -133,7 +133,7 @@ abstract class AbstractStep implements StepInterface
         if ($key != null) {
             $data = $this->dataContainer ? $this->dataContainer->get($key) : null;
             if (is_string($data)) {
-                return htmlentities($data, ENT_QUOTES);
+                return htmlspecialchars($data, ENT_QUOTES, 'UTF-8');
             }
         }
 
