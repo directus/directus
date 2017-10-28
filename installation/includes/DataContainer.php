@@ -40,7 +40,7 @@ class DataContainer
         $item = $this->get($key);
 
         if (is_string($item)) {
-            $item = htmlentities($item, ENT_QUOTES);
+            $item = htmlspecialchars($item, ENT_QUOTES, 'UTF-8');
         }
 
         return $item;
