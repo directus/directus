@@ -64,6 +64,10 @@ define([
     list: function (interfaceOptions) {
       var model = interfaceOptions.value;
 
+      if (!(model instanceof Backbone.Model)) {
+        return model;
+      }
+
       var orientation = (parseInt(model.get('width'), 10) > parseInt(model.get('height'), 10)) ? 'landscape' : 'portrait';
       var type = (model.get('type')) ? model.get('type').substring(0, model.get('type').indexOf('/')) : '';
       var subtype = model.getSubType(true);
