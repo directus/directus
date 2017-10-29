@@ -50,8 +50,8 @@ return [
         'enabled' => false,
         'origin' => '*', // can be a comma separated value or array of hosts
         'headers' => [
-            ['Access-Control-Allow-Headers', 'Authorization, Content-Type, Access-Control-Allow-Origin'],
-            ['Access-Control-Allow-Credentials', 'false']
+            'Access-Control-Allow-Headers' => 'Authorization, Content-Type, Access-Control-Allow-Origin',
+            'Access-Control-Allow-Credentials' => 'false'
         ]
     ],
 
