@@ -110,7 +110,7 @@ define([
         return;
       }
 
-      var options = _.result(view, 'getViewOptions');
+      var options = _.result(view, 'viewOptions');
       var model = new Backbone.Model(options);
       var table = new FakeTableModel(_.result(view, 'optionsStructure'), {parse: true});
 
@@ -119,7 +119,8 @@ define([
         structure: table.columns,
         events: {
           'change input[type=text], select, textarea': _.bind(this.onInputChange, this),
-          'change input[type=checkbox]': _.bind(this.onCheckboxChange, this)
+          'change input[type=checkbox]': _.bind(this.onCheckboxChange, this),
+          'change': 'render'
         }
       });
 
@@ -147,11 +148,13 @@ define([
       var collection = this.collection;
       var structure = collection.structure;
       var preferences = collection.preferences;
+      var table = collection.table;
       var data = collection ? collection.toJSON() : {};
       // TODO: Add getVisibleColumns method to prefereces model
       var visibleColumns = Utils.parseCSV(preferences.get('columns_visible'));
       var selectedSpacing = this.baseView.getSpacing();
       var viewOptions = this.baseView.table.getViewOptions();
+      var enabledViews = table.get('enable_views');
 
       data.spacings = _.map(app.config.get('spacings'), function(value) {
         return {
@@ -192,6 +195,7 @@ define([
         var data = _.omit(view, 'View');
         data.isActive = data.id === this.state.viewId;
         data.isSupported = this.supportsView(data.id);
+        data.isEnabled = this.enablesView(data.id, enabledViews) || false;
 
         return data;
       }, this));
@@ -215,6 +219,14 @@ define([
       }
 
       return  supported;
+    },
+    
+    enablesView: function(viewId, views = false) {
+      if (!views) return true;
+      // turn comma-delimited string into array
+      views = views.split(',');
+
+      return views.indexOf(viewId) != -1;
     },
 
     viewSupport: function (list, name) {
@@ -246,6 +258,17 @@ define([
         this.$('.tiles .tile.active').removeClass('active');
         this.$('#' + viewId + '-view').addClass('active');
       }, this);
+
+      this.baseView.on('rightPane:view', function (name, value) {
+        // this saves the preferences
+        this.triggerChange(name, value);
+        
+        // now how to update the UI?
+        // this.serialize();
+        // this.beforeRender();
+        // this.editView.trigger('change');
+        // this.trigger('view:change', 'calendar');
+      }, this)
 
       var drag = Dragula({
         isContainer: function (el) {

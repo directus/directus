@@ -26,8 +26,17 @@ define([
         'click .file': 'editItem'
       },
 
+      viewOptions: function (id = this.id) {
+        return this.getViewOptions()[id]
+      },
+
       fetchData: function () {
-        return this.collection.fetch();
+        var options = {
+          replaceOptions: {
+            depth: 2
+          }
+        }
+        return this.collection.fetch(options);
       },
 
       // TODO: Add this method into base view so any child can inherit it
@@ -143,7 +152,7 @@ define([
       },
 
       getTitleColumn: function () {
-        var viewOptions = this.getViewOptions();
+        var viewOptions = this.viewOptions();
         var column;
 
         if (viewOptions.title_column) {
@@ -156,7 +165,7 @@ define([
       },
 
       getSubTitleColumn: function () {
-        var viewOptions = this.getViewOptions();
+        var viewOptions = this.viewOptions();
         var column;
 
         if (viewOptions.subtitle_column) {
@@ -169,7 +178,7 @@ define([
       },
 
       getTypeColumn: function () {
-        var viewOptions = this.getViewOptions();
+        var viewOptions = this.viewOptions();
         var column;
 
         if (viewOptions.type_column) {
@@ -182,7 +191,7 @@ define([
       },
 
       getFileColumn: function () {
-        var viewOptions = this.getViewOptions();
+        var viewOptions = this.viewOptions();
         var column;
 
         if (viewOptions.file_column) {

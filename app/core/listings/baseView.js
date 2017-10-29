@@ -7,26 +7,24 @@ define(['app', 'underscore', 'backbone', 'core/t'], function(app, _, Backbone, _
     optionsStructure: function () {},
 
     getAllViewOptions: function (viewId) {
-      var defaultOptions = this.defaultOptions || {};
-      var viewOptions = this.collection.preferences.get('list_view_options');
+      var globalOptions = {}; // these would come from hwere?
+      var defaultViewOptions = {};
+      defaultViewOptions[viewId] = this.defaultOptions || {};
+      var savedViewOptions = this.collection.preferences.get('list_view_options');
 
-      if (!viewOptions || (this.state && this.state.malformedOptions)) {
-        return defaultOptions;
+      if (!savedViewOptions || (this.state && this.state.malformedOptions)) {
+        return defaultViewOptions;
       }
 
       try {
-        viewOptions = JSON.parse(viewOptions) || {};
+        savedViewOptions = JSON.parse(savedViewOptions) || {};
       } catch (err) {
-        viewOptions = {};
+        savedViewOptions = {};
         this.state.malformedOptions = true;
         console.error(__t('view_has_malformed_options_json'));
       }
 
-      if (viewId) {
-        viewOptions = viewOptions[viewId] || {};
-      }
-
-      return _.extend(defaultOptions, viewOptions);
+      return _.extend(globalOptions, defaultViewOptions, savedViewOptions);
     },
 
     getViewOptions: function (attr) {
@@ -67,15 +65,15 @@ define(['app', 'underscore', 'backbone', 'core/t'], function(app, _, Backbone, _
       _.result(this, 'onDisable');
     },
 
-    savePreferences: function (name, value, global) {
+    savePreferences: function (name, value, global = false) {
       var attributes = {};
-      var viewOptions = this.getAllViewOptions();
-      var options;
       var viewId = this.options.id;
+      var viewOptions = this.getAllViewOptions(viewId);
+      var options;
 
-      // @TODO: create helper to create value using string key
-      // calendar.date_column
-      if (global !== true) {
+      // @TODO: create helper to create value using string key      
+      if (!global) {
+        // values need to be saved per viewId
         if (!viewOptions[viewId]) {
           viewOptions[viewId] = {};
         }

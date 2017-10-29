@@ -4,9 +4,11 @@
 <div class="scroll-y">
 	<div class="tiles">
 		{{#views}}
-		<div id="{{id}}-view" class="tile {{id}}-view{{#if isActive}} active{{/if}}{{#unless isSupported}} disabled{{/unless}}" data-view="{{id}}" title="{{capitalize id}}">
-			<i class="material-icons">{{icon}}</i>
-		</div>
+		{{#if isEnabled}}
+			<div id="{{id}}-view" class="tile {{id}}-view{{#if isActive}} active{{/if}}{{#unless isSupported}} disabled{{/unless}}" data-view="{{id}}" title="{{capitalize id}}">
+				<i class="material-icons">{{icon}}</i>
+			</div>
+		{{/if}}
 		{{/views}}
 	</div>
 

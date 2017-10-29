@@ -1,31 +1,69 @@
 <header>
-	<h1>{{monthName}} {{year}}</h1>
+	<h1>
+		{{#if isDayView }}{{dayName}} {{/if}}
+		{{monthName}}&nbsp;
+		{{#if isWeekView }}&nbsp;
+			{{startDate.date}}-
+			{{#if toNextMonth }}{{ nextMonthName }} {{/if}}
+			{{endDate.date}}&nbsp;
+		{{/if}}
+		{{#if isDayView }}{{day}} {{/if}}
+		{{year}}&nbsp;
+		{{#if isWeekView }}(week {{week}}){{/if}}
+	</h1>
 	<i class="material-icons prev-month js-prev">arrow_back</i>
 	<i class="material-icons next-month js-next">arrow_forward</i>
 </header>
 
 <ul class="day-names">
+	{{#if isDayView }}
+	{{else}}
 	{{#daysName}}
 	<li>{{this}}</li>
 	{{/daysName}}
+	{{/if}}
 </ul>
 
-<div class="days">
-	{{#weeks}}
-	{{#days}}
-	<div class="day{{#if isEmpty}} blank{{/if}}{{#if isToday}} today{{/if}}">
-		<span class="number">{{day}}</span>
-		{{#if data}}
-		<div class="items">
-		{{#data}}
-			<div data-id="{{id}}" class="js-item item{{#unless published}} not-published{{/unless}}" title="{{title}}">
-				{{#if time}}<span class="time">{{time}}</span>{{/if}}
-				{{title}}
+<div class="days {{view}}">
+	{{#if isDayView}}
+		{{#weeks}}
+			{{#each this}}
+				<div class="hour {{ @key }}">
+					<div class="day">
+						{{ @key }}
+					</div>
+					<div class="items">
+						{{#each this }}
+							{{#if data }}
+								{{#data}}
+										<div data-id="{{id}}" class="js-item item {{#unless published}}not-published{{/unless}}" title="{{title}}">
+											{{#if time}}<span data-hour={{hour}} class="time">{{time}}</span>{{/if}}
+											{{title}}
+										</div>
+								{{/data}}
+							{{/if}}
+						{{/each}}
+					</div>
+				</div>
+			{{/each}}
+		{{/weeks}}
+	{{else}}
+		{{#weeks}}
+			{{#days}}
+			<div class="day{{#if isEmpty}} blank{{/if}}{{#if isToday}} today{{/if}}">
+				<span data-id={{day}} class="js-dateItem item number">{{day}}</span>
+				{{#if data}}
+					<div class="items">
+						{{#data}}
+							<div data-id="{{id}}" class="js-item item {{#unless published}}not-published{{/unless}}" title="{{title}}">
+								{{#if time}}<span data-hour={{hour}} class="time">{{time}}</span>{{/if}}
+								{{title}}
+							</div>
+						{{/data}}
+					</div>
+				{{/if}}
 			</div>
-		{{/data}}
-		</div>
-		{{/if}}
-	</div>
-	{{/days}}
-	{{/weeks}}
+			{{/days}}
+		{{/weeks}}
+	{{/if}}
 </div>

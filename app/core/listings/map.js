@@ -22,6 +22,10 @@ define([
         class: 'view-map js-listing-view'
       },
 
+      viewOptions: function (id = this.id) {
+        return this.getViewOptions()[id]
+      },
+
       navigate: function (id) {
         var route = Backbone.history.fragment.split('/');
 
@@ -54,8 +58,8 @@ define([
         };
       },
 
-      getLocationColumn: function () {
-        var viewOptions = this.getViewOptions();
+      getLocationColumn: function() {
+        var viewOptions = this.viewOptions();
         var column;
 
         if (viewOptions.location_column) {

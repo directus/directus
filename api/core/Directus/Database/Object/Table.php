@@ -172,6 +172,11 @@ class Table implements \ArrayAccess, Arrayable, \JsonSerializable
     /**
      * @var string
      */
+    protected $enable_views;
+
+    /**
+     * @var string
+     */
     protected $display_template;
 
     /**
@@ -1060,6 +1065,34 @@ class Table implements \ArrayAccess, Arrayable, \JsonSerializable
     public function setDisplayTemplate($template)
     {
         $this->display_template = $template;
+
+        return $this;
+    }
+
+    /**
+     * Gets Table Items display template
+     *
+     * Representation value of the table items
+     *
+     * @return string
+     */
+    public function getEnableViews()
+    {
+        return $this->enable_views;
+    }
+
+    /**
+     * Sets Table Items display template
+     *
+     * Representation value of the table items
+     *
+     * @param $template
+     *
+     * @return Table
+     */
+    public function setEnableViews($arr)
+    {
+        $this->enable_views = $arr;
 
         return $this;
     }

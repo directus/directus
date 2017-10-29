@@ -5,8 +5,7 @@ define(['./interface', 'core/UIComponent', 'core/t'], function (Input, UICompone
     id: 'wysiwyg_full',
     dataTypes: ['TEXT', 'VARCHAR', 'CHAR', 'TINYTEXT', 'MEDIUMTEXT', 'LONGTEXT'],
     Input: Input,
-    options: [
-      {
+    options: [{
         id: 'read_only',
         ui: 'toggle',
         type: 'Boolean',
@@ -186,9 +185,9 @@ define(['./interface', 'core/UIComponent', 'core/t'], function (Input, UICompone
       }
     },
     list: function (interfaceOptions) {
-      return interfaceOptions.value
-        ? interfaceOptions.value.toString().replace(/(<([^>]+)>)/ig, '').substr(0, 100)
-        : '';
+      return interfaceOptions.value ?
+        interfaceOptions.value.toString().replace(/(<([^>]+)>)/ig, '').substr(0, 100) :
+        '';
     }
   });
 });

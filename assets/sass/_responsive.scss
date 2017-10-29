@@ -68,12 +68,16 @@
 				}
 			}
 		}
+		.view-calendar .month.days .day {
+				min-height: 200px;
+		}
 	}
 
 	// Show calendar items as dots (no room for text)
 	.view-calendar {
 		.days {
 			.day {
+				
 				&.active {
 					.items {
 						bottom: 5px;
@@ -88,17 +92,32 @@
 					right: 6px;
 					width: auto;
 					.item {
-						@include border-radius (10px);
-						width: 10px;
-						height: 10px;
+						@include border-radius (20px);
+						width: 30px;
+						height: 30px;
 						float: left;
 						margin-right: 4px;
 						margin-bottom: 4px;
 						padding: 0;
-						text-indent: 100px;
+						font-size: 0;
+
+						.time::after {
+							content: attr(data-hour);
+							position: relative;
+							display: block;
+							top: 4px;
+							left: 4px;
+							opacity: 1;
+							font-size: 18px;
+							text-align: center;
+							padding-right: 8px;
+						}
 					}
 				}
 			}
+		}
+		.month.days .day {
+			min-height: auto;
 		}
 	}
 	// Tiles
@@ -180,6 +199,11 @@
 // Responsive <1000px wide
 
 @media only screen and (max-width: 1000px) {
+
+	.view-calendar .month.days .day {
+		min-height: 200px;
+	}
+
 	// Messages as overlay
 	.message {
 		@include transition (all, $timing-short, ease-in-out);

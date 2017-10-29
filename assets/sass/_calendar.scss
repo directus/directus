@@ -39,12 +39,17 @@
 			padding: 10px;
 		}
 	}
+	.month.days .day {
+		min-height: 200px;
+	}
 	.days {
 		position: absolute;
 		top: 153px;
 		bottom: 0;
 		left: 0;
 		right: 0;
+
+		.hour,
 		.day {
 			@include transition (color, $timing-short, ease-in-out);
 			position: relative;
@@ -96,11 +101,14 @@
 				background-color: $white;
 				text-align: center;
 			}
+			.day {
+				border: 0;
+			}
 			.items {
 				width: 100%;
 				height: 100%;
 				padding: 50px 10px 10px 10px;
-				overflow: scroll;
+				// overflow: scroll;
 				z-index: 1;
 				.item {
 					@include transition (all, $timing-short, ease-in-out);
@@ -131,6 +139,117 @@
 				}
 			}
 		}
+
+		.hour {
+			height: auto;
+			min-height: 80px;
+			width: 100%;
+			display: flex;
+			flex-flow: row nowrap;
+
+			.user-listing {
+				padding: 0;
+
+				.user {
+					margin: 0 15px 15px;
+					max-width: 140px;
+
+					.thumbnail {
+						background: #fffffe;
+					}
+
+					.name {
+						white-space: nowrap;
+						overflow: hidden;
+						text-overflow: ellipsis;
+					}
+					.info {
+						margin-top: -6px;
+						font-size: 13px;
+						border-top-style: solid;
+						border-top-width: 4px;
+					}
+					img {
+						width: 140px;
+						height: 140px;
+					}
+					
+					.status {
+						opacity: 1 !important;
+						top: 115px;
+					}
+					
+					&.not-published .status {
+						background-color: #ddd;
+						color: #999;
+					}
+
+					&.not-published .info {
+						border-top: solid 4px #ddd;
+					}
+				}
+			}
+		}
+
+		.items .item,
+		.user-listing .user {
+			&:hover .time { 
+				opacity: 0.9;
+			}
+
+			.info {
+				background: #fffffe;
+				border-top-color: inherit;
+			}
+			.online {
+				top: 115px;
+				opacity: 1;
+				background: inherit;
+				color: #fffffe;
+			}
+			&.not-published {
+				background: $gray-2;
+				border-top-color: $gray-2;
+				
+				.online {
+					color: $gray-4;
+				}
+			}
+			&.confirmed {
+				background: $primary;
+				border-top-color: $primary;
+			}
+			&.cancelled {
+				background: #333;
+				border-top-color: #333;
+				
+				&:hover {
+					background-color: darken(#333, 8%);
+				}
+			}
+			&.show {
+				background: green;
+				border-top-color: green;
+				
+				&:hover {
+					background-color: darken(green, 8%);
+				}
+			}
+			&.no-show {
+				border-top-color: #f00;
+				background: #f00;
+
+				&:hover {
+					background-color: darken(#ff0000, 8%);
+				}
+			}
+		}
+		&.day .day {
+			height: 100%;
+		}
+		&.week .day {
+			height: 100%;
+		}
 	}
 	&.abbrev-items {
 		.day {
@@ -140,5 +259,9 @@
 				text-overflow: ellipsis;
 			}
 		}
+	}
+
+	.js-dateItem {
+		cursor: pointer;
 	}
 }

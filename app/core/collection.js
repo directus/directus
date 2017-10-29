@@ -287,6 +287,7 @@ function(app, Backbone, StatusHelper, Utils, _) {
 
       if (options.includeFilters) {
         var filters = options.replaceOptions || this.getFilters();
+        if (!filters.status) filters.status = this.getFilters().status;
         var primaryColumn = this.table.getPrimaryColumnName();
         var sortColumn = this.table.getSortColumnName();
         var statusColumn = this.table.getStatusColumnName();

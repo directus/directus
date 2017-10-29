@@ -28,6 +28,62 @@ define(['moment'], function (moment) {
     return { start: startDate, end: endDate };
   };
 
+  // source: http://stackoverflow.com/a/26131085
+  helper.weekDateRange = function (year, week, value) {
+    if (moment.isMoment(year)) {
+      var m = year;
+
+      value = week;
+      year = m.format('YYYY');
+      var month = m.format('M');
+      var date = m.format('D');
+      week = m.format('w')
+    }
+
+    // month in moment is 0 based
+    var startDate = moment([year, month - 1, date]).startOf('week');
+
+    // Clone the value before .endOf()
+    var endDate = moment(startDate).endOf('week');
+
+    if (value === true) {
+      // NOTE: Add time so dates are inclusive
+      startDate = startDate.format('YYYY-MM-DD') + ' 00:00:00';
+      endDate = endDate.format('YYYY-MM-DD') + ' 23:59:59';
+    }
+
+    // make sure to call toDate() for plain JavaScript date type
+    return { start: startDate, end: endDate };
+  };
+
+  // source: http://stackoverflow.com/a/26131085
+  helper.dayDateRange = function (year, date, value) {
+    if (moment.isMoment(year)) {
+      var m = year;
+
+      value = date;
+      year = m.format('YYYY');
+      var month = m.format('M');
+      var week = m.format('W');
+      date = m.format('D');
+    }
+
+    // month in moment is 0 based
+    var startDate = moment([year, month - 1, date]);
+
+    // Clone the value
+    var endDate = moment(startDate);
+
+    if (value === true) {
+      // NOTE: Add time so dates are inclusive
+      startDate = startDate.format('YYYY-MM-DD') + ' 00:00:00';
+      endDate = endDate.format('YYYY-MM-DD') + ' 23:59:59';
+    }
+
+    // make sure to call toDate() for plain JavaScript date type
+    return { start: startDate, end: endDate };
+  };
+
   helper.range = function (from, to) {
     var range = [];
     from = moment(from);

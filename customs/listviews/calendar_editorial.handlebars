@@ -1,0 +1,144 @@
+<header>
+	<h1>
+		{{#if isDayView }}{{dayName}} {{/if}}
+		{{monthName}}&nbsp;
+		{{#if isWeekView }}&nbsp;
+			{{startDate.date}}-
+			{{#if toNextMonth }}{{ nextMonthName }} {{/if}}
+			{{endDate.date}}&nbsp;
+		{{/if}}
+		{{#if isDayView }}{{day}} {{/if}}
+		{{year}}&nbsp;
+		{{#if isWeekView }}(week {{week}}){{/if}}
+	</h1>
+	<i class="material-icons prev-month js-prev">arrow_back</i>
+	<i class="material-icons next-month js-next">arrow_forward</i>
+</header>
+
+<ul class="day-names">
+	{{#if isDayView }}
+	{{else}}
+	{{#daysName}}
+	<li>{{this}}</li>
+	{{/daysName}}
+	{{/if}}
+</ul>
+
+<div class="days {{view}}">
+	{{#if isDayView}}
+		{{#weeks}}
+			{{#each this}}
+				<div class="hour {{ @key }}">
+					<div class="day">
+						{{ @key }}
+					</div>
+					<div class="user-listing">
+						{{#each this }}
+							{{#if data }}
+								{{#data}}
+										{{!-- @todo model specific-ness needs to be refactored into partial! /--}}
+										<div class="js-item user 
+										{{#if status.published}}show{{/if}}
+										{{#if status.pending}}confirmed{{/if}}
+										{{#if status.cancelled}}cancelled{{/if}}
+										{{#if status.draft}}not-published{{/if}}"  data-id="{{id}}" data-cid="{{cid}}"> <!-- .open-modal data-modal="profile" -->
+											<div class="thumbnail js-image">
+												{{#if avatar}}
+													<img src="{{avatar.thumbnail_url}}">
+												{{else}}
+													<img src="https://s3-us-west-2.amazonaws.com/pique-io-staging/app/storage/uploads/thumbs/527.png">
+												{{/if}}
+											</div>
+											{{!-- <div class="group">
+												{{#if customer}}
+													{{customer.customer_status}}
+												{{/if}}
+											</div> --}}
+											<div class="online">{{time}}</div>
+											<div class="info">
+												<div class="name">
+													{{#if customer}}
+														{{customer.customer_first_name}}&nbsp;{{customer.customer_last_name}}
+													{{else}}
+														{{title}}
+													{{/if}}
+												</div>
+												<div class="position">
+													{{#if customer}}
+														{{customer.customer_email}}
+													{{else}}
+														{{model.attributes.exam_email}}
+													{{/if}}
+												</div>
+												<div class="extended hidden"><!-- Toggle for details -->
+													<div class="location"><i class="material-icons">place</i> {{#if location}}{{location}}{{else}}--{{/if}}</div>
+													<div class="phone"><i class="material-icons">local_phone</i> {{#if phone}}{{phone}}{{else}}--{{/if}}</div>
+														<div class="email"><i class="material-icons">email</i> {{#if customer}}
+															{{customer.customer_email}}
+														{{else}}
+															{{model.attributes.exam_email}}
+														{{/if}}
+													</div>
+												</div>
+												{{!-- <i class="material-icons more">more_vert</i> --}}
+											</div>
+										</div>
+
+								{{/data}}
+							{{/if}}
+						{{/each}}
+					</div>
+				</div>
+			{{/each}}
+		{{/weeks}}
+	{{else}}
+		{{#weeks}}
+			{{#days}}
+			<div class="day{{#if isEmpty}} blank{{/if}}{{#if isToday}} today{{/if}}">
+				<span data-id={{day}} class="js-dateItem item number">{{day}}</span>
+				{{#if ../../isWeekView}}
+					{{#if data}}
+						<div class="items">
+							{{#data}}
+								<div data-id="{{id}}" class="js-item item 
+									{{#if status.published}}show{{/if}}
+									{{#if status.pending}}confirmed{{/if}}
+									{{#if status.cancelled}}cancelled{{/if}}
+									{{#if status.draft}}not-published{{/if}}" title="{{title}}">
+									{{#if time}}<span data-hour={{hour}} class="time">{{time}}</span>{{/if}}
+									{{title}}
+								</div>
+							{{/data}}
+						</div>
+					{{/if}}
+				{{else}}
+					<div class="items">
+						{{#if totals.pending}}
+							<div data-id={{day}} class="js-dateItem item" title="{{title}}">
+								<span data-hour={{totals.pending}} class="time">{{totals.pending}}
+									 pending
+								</span>
+							</div>
+						{{/if}}
+						{{#if totals.published}}
+							<div data-id={{day}} class="js-dateItem item show" title="{{title}}">
+								<span data-hour={{totals.published}} class="time">{{totals.published}} no-show</span>
+							</div>
+						{{/if}}
+						{{#if totals.draft}}
+							<div data-id={{day}} class="js-dateItem item not-published" title="{{title}}">
+								<span data-hour={{totals.draft}} class="time">{{totals.draft}} show</span>
+							</div>
+						{{/if}}
+						{{#if totals.cancelled}}
+							<div data-id={{day}} class="js-dateItem item cancelled" title="{{title}}">
+								<span data-hour={{totals.cancelled}} class="time">{{totals.cancelled}} cancelled</span>
+							</div>
+						{{/if}}
+					</div>
+				{{/if}}
+			</div>
+			{{/days}}
+		{{/weeks}}
+	{{/if}}
+</div>

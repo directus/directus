@@ -853,11 +853,12 @@
 			color: $gray-6;
 		}
 		.tiles {
+			display: inline-block;
 			position: relative;
 			margin-left: 19px;
 			margin-top: 20px;
 			margin-bottom: 20px;
-			width: 162px;
+			width: auto;
 			height: 42px;
 			background-color: inherit;
 

@@ -65,6 +65,7 @@ class MySQLSchema extends AbstractSchema
                 'status_column',
                 'display_template',
                 'preview_url',
+                'enable_views',
                 'status_mapping'
             ],
             $select::JOIN_LEFT

@@ -9,7 +9,7 @@ define([
   'core/widgets/TableChartWidget',
   'helpers/table',
   'core/listings/baseView'
-], function(app, _, moment, __t, Backbone, FakeColumnModel, TableView, TableChartWidget, TableHelpers, BaseView) {
+], function (app, _, moment, __t, Backbone, FakeColumnModel, TableView, TableChartWidget, TableHelpers, BaseView) {
 
   var CHART_Y_AXIS_NAME = 'chart_y_axis';
   var CHART_X_AXIS_NAME = 'chart_x_axis';
@@ -26,6 +26,10 @@ define([
     icon: 'menu',
 
     View: View.extend({
+
+      viewOptions: function (id = this.id) {
+        return this.getViewOptions()[id]
+      },
 
       dom: {
         CHART: '#items-chart'
@@ -50,21 +54,21 @@ define([
 
       // date column
       getXAxis: function () {
-        return this.getViewOptions(CHART_X_AXIS_NAME) || this.getDateColumnName();
+        return this.viewOptions()[CHART_X_AXIS_NAME] || this.getDateColumnName();
       },
 
       // numeric column
       getYAxis: function () {
-        return this.getViewOptions(CHART_Y_AXIS_NAME);
+        return this.viewOptions()[CHART_Y_AXIS_NAME];
       },
 
       addChart: function () {
-          var chartView = this.getChartView(true);
+        var chartView = this.getChartView(true);
 
-          this.setView(this.dom.CHART, chartView);
-          chartView.fetchChartData().then(function () {
-            chartView.render();
-          });
+        this.setView(this.dom.CHART, chartView);
+        chartView.fetchChartData().then(function () {
+          chartView.render();
+        });
       },
 
       getChartView: function (force) {
@@ -88,7 +92,7 @@ define([
 
       serialize: function () {
         var data = View.prototype.serialize.apply(this, arguments);
-        var chartEnabled = false;// this.showChart && this.isChartEnabled();
+        var chartEnabled = false; // this.showChart && this.isChartEnabled();
 
         data.fixedHead = chartEnabled !== true;
         data.showChart = chartEnabled === true;
@@ -107,19 +111,14 @@ define([
         });
       },
 
-      onEnable: function () {
-        // update the system collection with the new data fetched after switch from another listing view
-        this._configureTable(this.options);
-      },
-
-      optionsStructure: function() {
+      optionsStructure: function () {
         var options = {
           spacings: {},
           numericColumns: {},
           dateColumns: {}
         };
 
-        _.each(app.config.get('spacings'), function(name) {
+        _.each(app.config.get('spacings'), function (name) {
           options.spacings[name] = app.capitalize(__t(name));
         });
 
@@ -182,7 +181,7 @@ define([
       },
 
       getDateColumn: function () {
-        var viewOptions = this.getViewOptions();
+        var viewOptions = this.viewOptions();
         var column;
 
         if (viewOptions.date_column) {
@@ -201,7 +200,7 @@ define([
       },
 
       getNumericColumn: function () {
-        var viewOptions = this.getViewOptions();
+        var viewOptions = this.viewOptions();
         var column;
 
         if (viewOptions.numeric_column) {
@@ -214,7 +213,7 @@ define([
       },
 
       dateColumns: function () {
-        return this.collection.structure.filter(function(model) {
+        return this.collection.structure.filter(function (model) {
           return _.contains(['DATETIME', 'DATE'], model.get('type'));
         });
       },
@@ -231,8 +230,8 @@ define([
         return column.get('type') === 'DATETIME';
       },
 
-      updateTableSpacing: function() {
-        var viewOptions = this.getViewOptions();
+      updateTableSpacing: function () {
+        var viewOptions = this.viewOptions();
         this.setSpacing(viewOptions.spacing);
       },
 
@@ -269,11 +268,11 @@ define([
       },
 
       updateSystemColumns: function () {
-        if (this.getViewOptions('item_numbers') != this.options.showItemNumbers) {
+        if (this.viewOptions()['item_numbers'] != this.options.showItemNumbers) {
           this.options.showItemNumbers = !this.options.showItemNumbers;
         }
 
-        if (this.getViewOptions('show_footer') != this.options.showFooter) {
+        if (this.viewOptions()['show_footer'] != this.options.showFooter) {
           this.$('tfoot').toggleClass('footer-open');
           this.options.showFooter = !this.options.showFooter;
         }
@@ -294,7 +293,7 @@ define([
       },
 
       fetchComments: function () {
-        var showCommentsCount = this.getViewOptions('comments_count');
+        var showCommentsCount = this.viewOptions()['comments_count'];
 
         if (!showCommentsCount || this.options.systemCollection.length <= 0) {
           var deferred = new $.Deferred();
@@ -313,7 +312,9 @@ define([
             limit: -1,
             columns: ['id', 'from', 'datetime', 'comment_metadata'],
             filters: {
-              comment_metadata: {like: this.collection.table.id + ':'}
+              comment_metadata: {
+                like: this.collection.table.id + ':'
+              }
             }
           });
 
@@ -354,7 +355,7 @@ define([
           return deferred.promise();
         }
 
-        showRevisionsCount = this.getViewOptions('revisions_count');
+        showRevisionsCount = this.viewOptions()['revisions_count'];
         if (!showRevisionsCount) {
           return;
         }
@@ -363,8 +364,7 @@ define([
         activityCollection.setFilter({
           filters: {
             table_name: this.collection.table.id,
-            row_id: {
-              in: systemCollection.pluck(systemCollection.table.getPrimaryColumnName())
+            row_id: { in: systemCollection.pluck(systemCollection.table.getPrimaryColumnName())
             }
           }
         });
@@ -410,7 +410,7 @@ define([
           return deferred.promise();
         }
 
-        showLastUpdate = this.getViewOptions('last_updated');
+        showLastUpdate = this.viewOptions()['last_updated'];
         if (!showLastUpdate) {
           return;
         }
@@ -468,16 +468,16 @@ define([
       getAppendColumns: function () {
         var columns = [];
 
-        if (this.getViewOptions('comments_count')) {
-          columns.push(COLUMN_COMMENTS_COUNT);
+        if (this.viewOptions()['comments_count']) {
+          columns.push('_comments');
         }
 
-        if (this.getViewOptions('revisions_count')) {
-          columns.push(COLUMN_REVISIONS_COUNT);
+        if (this.viewOptions()['revisions_count']) {
+          columns.push('_revisions');
         }
 
-        if (this.getViewOptions('last_updated')) {
-          columns.push(COLUMN_LAST_UPDATED);
+        if (this.viewOptions()['last_updated']) {
+          columns.push('_last_updated');
         }
 
         return columns;
@@ -487,7 +487,7 @@ define([
         TableView.prototype.initialize.apply(this, arguments);
 
         this.options.footer = true;
-        this.options.showFooter = this.getViewOptions('show_footer');
+        this.options.showFooter = this.viewOptions()['show_footer'];
         this.on('afterRender', function () {
           if (this.options.showFooter) {
             this.$('tfoot').addClass('footer-open');
@@ -567,7 +567,9 @@ define([
           column_name: COLUMN_COMMENTS_COUNT,
           data_type: 'integer',
           ui: 'comments_count'
-        }, {parse: true});
+        }, {
+          parse: true
+        });
 
         var columnLastUpdated = new FakeColumnModel({
           id: COLUMN_LAST_UPDATED,
@@ -577,7 +579,9 @@ define([
           options: {
             contextual_date_in_listview: true
           }
-        }, {parse: true});
+        }, {
+          parse: true
+        });
 
         this.options.systemCollection.structure.add([columnCommentsCount, columnLastUpdated]);
       },
