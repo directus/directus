@@ -32,8 +32,15 @@ class CorsMiddleware extends Middleware
         if ($origin) {
             $response->header('Access-Control-Allow-Origin', $origin);
 
-            foreach (ArrayUtils::get($corsOptions, 'headers', []) as list($headerType, $headerValue)) {
-                $response->header($headerType, $headerValue);
+            foreach (ArrayUtils::get($corsOptions, 'headers', []) as $name => $value) {
+                // Support two options:
+                // 1. [Key, Value]
+                // 2. Key => Value
+                if (is_array($value)) {
+                    list($name, $value) = $value;
+                }
+
+                $response->header($name, $value);
             }
         }
     }
