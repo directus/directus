@@ -55,13 +55,21 @@ define(['core/UIView'], function (UIView) {
      * @param  {Object} event The input's input event
      */
     saveAndUpdateCharCount: function (event) {
+      var maxLength = this.options.schema.get('length');
+      var trim = this.options.settings.get('trim');
+
       var $input = this.$(event.currentTarget);
+
+      var value = $input.val();
+
+      if (trim) {
+        value = value.trim();
+      }
 
       // Set silently to prevent "widgets" to display unsaved changes
       //   Ex: the user first/last name in the sidebar
-      this.model.set(this.name, $input.val(), {silent: true});
+      this.model.set(this.name, value, {silent: true});
 
-      var maxLength = this.options.schema.get('length');
       if (maxLength) {
         var charsLeft = maxLength - $input.val().length;
         this.$el.find('.char-count').html(charsLeft);

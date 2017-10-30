@@ -35,6 +35,13 @@ define([
         default_value: true
       },
       {
+        id: 'trim',
+        ui: 'toggle',
+        type: 'Boolean',
+        comment: 'Trim surrounding whitespace from the value before saving',
+        default_value: true
+      },
+      {
         id: 'size',
         ui: 'dropdown',
         type: 'String',
