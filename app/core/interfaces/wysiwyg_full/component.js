@@ -27,6 +27,7 @@ define(['./interface', 'core/UIComponent', 'core/t'], function (Input, UICompone
         comment: 'What heading levels to support',
         default_value: 'h2,h3,h4',
         options: {
+          wrap_with_delimiter: false,
           options: {
             h1: 'Heading 1',
             h2: 'Heading 2',
@@ -44,6 +45,7 @@ define(['./interface', 'core/UIComponent', 'core/t'], function (Input, UICompone
         comment: 'What text-style options to support',
         default_value: 'bold,italic,underline',
         options: {
+          wrap_with_delimiter: false,
           options: {
             bold: 'Bold',
             italic: 'Italic',
@@ -62,6 +64,7 @@ define(['./interface', 'core/UIComponent', 'core/t'], function (Input, UICompone
         comment: 'What block-style options to support',
         default_value: 'p,blockquote',
         options: {
+          wrap_with_delimiter: false,
           options: {
             p: 'Paragraph',
             blockquote: 'Blockquote',
@@ -77,6 +80,7 @@ define(['./interface', 'core/UIComponent', 'core/t'], function (Input, UICompone
         comment: 'What alignment options to support',
         default_value: '',
         options: {
+          wrap_with_delimiter: false,
           options: {
             alignleft: 'Left',
             aligncenter: 'Center',
@@ -92,6 +96,7 @@ define(['./interface', 'core/UIComponent', 'core/t'], function (Input, UICompone
         comment: 'What options to show in the toolbar',
         default_value: 'inline,table,undo,redo,subscript,superscript,bullist,numlist,link,unlink,image,media,paste',
         options: {
+          wrap_with_delimiter: false,
           options: {
             inline: 'Inline Options',
             alignment: 'Alignment Options',
