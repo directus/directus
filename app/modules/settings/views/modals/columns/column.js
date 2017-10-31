@@ -58,6 +58,13 @@ define([
       var isOptionsView;
 
       if (!infoView.model.isNew()) {
+				// strip first and last character from buttons
+				if(optionsView.model.attributes.buttons[0]===','){
+					optionsView.model.attributes.buttons = optionsView.model.attributes.buttons.substr(1);
+				}
+				if(optionsView.model.attributes.buttons[optionsView.model.attributes.buttons.length-1]===','){
+					optionsView.model.attributes.buttons = optionsView.model.attributes.buttons.slice(0, -1);
+				}
         infoView.model.set('options', JSON.stringify(optionsView.model.toJSON()));
       } else {
         var sort = 0;
@@ -74,7 +81,6 @@ define([
       // sending the new values and if there's not info value to be save, only save the options
       if (infoView.save()) {
         isOptionsView = this.state.currentView === VIEW_INTERFACE_ID;
-
         if (!isOptionsView && SchemaHelper.isMissingRequiredOptions(columnModel)) {
           this.changeTo(VIEW_INTERFACE_ID);
         } else {
@@ -85,7 +91,6 @@ define([
 
     toggle: function (event) {
       var $toggle = $(event.currentTarget);
-
       event.preventDefault();
 
       this.changeTo($toggle.data('pane'));
