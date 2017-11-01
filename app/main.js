@@ -44,7 +44,7 @@ require(['config', 'polyfills'], function () {
       countries: [],
       path: '/directus/',
       page: '',
-      authenticatedUser: 7,
+      authenticatedUser: 0, // 0 = guest, sort of :)
       groups: {},
       privileges: [],
       interfaces: [],
