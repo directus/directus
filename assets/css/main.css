@@ -6841,8 +6841,8 @@ body.login {
         height: 40px;
         padding: 8px;
         text-align: center;
-        margin-right: 10px;
-        cursor: pointer; }
+        cursor: pointer;
+        margin: 0 5px; }
         body.login .login-panel .alt-auth .tile:hover {
           background-color: #3498DB; }
         body.login .login-panel .alt-auth .tile:nth-child(4) {
