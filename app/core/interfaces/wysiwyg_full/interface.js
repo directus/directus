@@ -137,13 +137,19 @@ define([
         content_style: 'body.mce-content-body {font-family: \'Roboto\', sans-serif;line-height:24px;letter-spacing:0.2px;font-size:14px;color:#333;margin:0;padding: 10px 30px !important;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}body.mce-content-body p{line-height:inherit !important;}',
         style_formats: styleFormats,
         setup: function (editor) {
-          // NOTE: Do we need this?
+          /**
+           * Event handler for the input event of the TineMCE editor
+           *
+           * Is needed because we need to set the value of the parent model onInput / onChange
+           * Normally, we'd do that using Backbone events, but since we're relying
+           * on TinyMCE for data creation, we need to use TinyMCEs event system in this instance
+           */
           var saveEditorContents = _.debounce(function () {
             if (editor && editor.getContent) {
               var content = editor.getContent();
               var value = self.model.get(self.name);
 
-              if ((Utils.isNothing(value) || value !== content) && Utils.isSomething(content)) {
+              if ((Utils.isNothing(value) || value !== content)) {
                 self.model.set(self.name, content);
                 self.$el.find('textarea')[0].innerHTML = content;
               }
@@ -168,7 +174,7 @@ define([
           if (customWrapperSettings) {
             var previewStyles = '';
 
-            Object.keys(customWrapperSettings).map(function (identifier) {
+            Object.keys(customWrapperSettings).forEach(function (identifier) {
               // Add preview styling if set
               if (customWrapperSettings[identifier].selector && customWrapperSettings[identifier].preview_style) {
                 previewStyles += customWrapperSettings[identifier].selector + ' {' + customWrapperSettings[identifier].preview_style + '}\n';
