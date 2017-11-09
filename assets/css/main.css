@@ -2706,6 +2706,7 @@ body.loading .header .logo {
       width: 64px;
       height: 64px;
       text-align: center;
+      border-radius: 0;
       cursor: pointer;
       color: #FFFFFF; }
       .header .actions .action:hover .action-text {
