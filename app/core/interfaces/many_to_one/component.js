@@ -11,7 +11,7 @@ define([
 
   return UIComponent.extend({
     id: 'many_to_one',
-    dataTypes: ['INT', 'TINYINT', 'SMALLINT', 'MEDIUMINT', 'BIGINT'],
+    dataTypes: ['INT', 'TINYINT', 'SMALL', 'BIGINT', 'CHAR', 'VARCHAR'],
     options: [
       {
         id: 'read_only',
@@ -99,7 +99,7 @@ define([
       var hasValue;
 
       if (value instanceof Backbone.Model) {
-        hasValue = !_.isEmpty(value.attributes)
+        hasValue = !_.isEmpty(value.attributes);
       } else {
         hasValue = Utils.isSomething(value);
       }

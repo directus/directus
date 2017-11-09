@@ -24,7 +24,7 @@ define([
 
   return UIComponent.extend({
     id: 'many_to_one_typeahead',
-    dataTypes: ['INT', 'TINYINT', 'SMALLINT', 'MEDIUMINT', 'BIGINT'],
+    dataTypes: ['INT', 'TINYINT', 'SMALL', 'BIGINT', 'CHAR', 'VARCHAR'],
     options: [
       {
         id: 'read_only',
