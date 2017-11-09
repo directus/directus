@@ -6,8 +6,7 @@ define([
   'core/notification',
   'core/t',
   'core/google'
-], function(app, _, Backbone, BaseView, Notification, __t, g) {
-
+], function (app, _, Backbone, BaseView, Notification, __t, g) {
   return {
     id: 'map',
 
@@ -30,12 +29,12 @@ define([
         app.router.go(route);
       },
 
-      optionsStructure: function() {
+      optionsStructure: function () {
         var options = {
           location: {}
         };
 
-        _.each(this.locationColumns(), function(column) {
+        _.each(this.locationColumns(), function (column) {
           options.location[column.id] = app.capitalize(column.id);
         });
 
@@ -52,24 +51,24 @@ define([
               }
             }
           ]
-        }
+        };
       },
 
-      getLocationColumn: function() {
+      getLocationColumn: function () {
         var viewOptions = this.getViewOptions();
         var column;
 
         if (viewOptions.location_column) {
           column = this.collection.structure.get(viewOptions.location_column);
         } else {
-          column = _.first(this.locationColumns())
+          column = _.first(this.locationColumns());
         }
 
         return column;
       },
 
-      locationColumns: function() {
-        return this.collection.structure.filter(function(model) {
+      locationColumns: function () {
+        return this.collection.structure.filter(function (model) {
           return _.contains(['map'], model.get('ui'));
         });
       },
@@ -88,7 +87,7 @@ define([
         };
       },
 
-      createMarker: function(lat, lng, title) {
+      createMarker: function (lat, lng, title) {
         var marker = new google.maps.Marker({
           position: new google.maps.LatLng(lat, lng),
           map: this.map,
@@ -102,35 +101,35 @@ define([
         return marker;
       },
 
-      initMap: function() {
+      initMap: function () {
         var mapOptions = {
           zoom: 2,
           center: new google.maps.LatLng(40.720, -73.953),
           styles: [
             {
-              'featureType': 'administrative',
-              'elementType': 'labels.text.fill',
-              'stylers': [{'color':'#444444'}]
+              featureType: 'administrative',
+              elementType: 'labels.text.fill',
+              stylers: [{color: '#444444'}]
             },
             {
-              'featureType': 'landscape',
-              'elementType': 'all',
-              'stylers': [{'color':'#eeeeee'}]
+              featureType: 'landscape',
+              elementType: 'all',
+              stylers: [{color: '#eeeeee'}]
             },
             {
-              'featureType': 'poi',
-              'elementType': 'all',
-              'stylers': [{'visibility':'off'}]
+              featureType: 'poi',
+              elementType: 'all',
+              stylers: [{visibility: 'off'}]
             },
             {
-              'featureType': 'poi',
-              'elementType': 'labels.text',
-              'stylers': [{'visibility':'off'}]
+              featureType: 'poi',
+              elementType: 'labels.text',
+              stylers: [{visibility: 'off'}]
             },
             {
-              'featureType': 'road',
-              'elementType': 'all',
-              'stylers': [{'saturation':-100},{'lightness':10}]
+              featureType: 'road',
+              elementType: 'all',
+              stylers: [{saturation: -100}, {lightness: 10}]
             },
             // {
             //   'featureType': 'road.local',
@@ -138,24 +137,24 @@ define([
             //   'stylers': [{color: '#cccccc'}]
             // },
             {
-              'featureType': 'road.highway',
-              'elementType': 'all',
-              'stylers': [{'visibility':'simplified'}]
+              featureType: 'road.highway',
+              elementType: 'all',
+              stylers: [{visibility: 'simplified'}]
             },
             {
-              'featureType': 'road.arterial',
-              'elementType': 'labels.icon',
-              'stylers': [{'visibility':'off'}]
+              featureType: 'road.arterial',
+              elementType: 'labels.icon',
+              stylers: [{visibility: 'off'}]
             },
             {
-              'featureType': 'transit',
-              'elementType': 'all',
-              'stylers': [{'visibility':'off'}]
+              featureType: 'transit',
+              elementType: 'all',
+              stylers: [{visibility: 'off'}]
             },
             {
-              'featureType': 'water',
-              'elementType': 'all',
-              'stylers': [{'color':'#9ACCED'},{'visibility':'on'}]
+              featureType: 'water',
+              elementType: 'all',
+              stylers: [{color: '#9ACCED'}, {visibility: 'on'}]
             }
           ]
         };
@@ -163,7 +162,7 @@ define([
         var mapElement = this.$('.map')[0];
         var map = this.map = new google.maps.Map(mapElement, mapOptions);
 
-        google.maps.event.addListenerOnce(map, 'idle', _.bind(function() {
+        google.maps.event.addListenerOnce(map, 'idle', _.bind(function () {
           this.updateMap();
         }, this));
 
@@ -174,7 +173,7 @@ define([
         autocomplete.bindTo('bounds', map);
 
         // var infowindow = new google.maps.InfoWindow();
-        autocomplete.addListener('place_changed', _.bind(function() {
+        autocomplete.addListener('place_changed', _.bind(function () {
           var place = autocomplete.getPlace();
 
           if (!place.geometry) {
@@ -201,7 +200,7 @@ define([
           disableDefaultUI: true
         });
 
-        google.maps.event.addDomListener(window, 'resize', _.bind(function() {
+        google.maps.event.addDomListener(window, 'resize', _.bind(function () {
           var center = map.getCenter();
 
           google.maps.event.trigger(map, 'resize');
@@ -212,7 +211,7 @@ define([
         this.state.loaded = true;
       },
 
-      addMarker: function(marker, place) {
+      addMarker: function (marker, place) {
         var map = this.map;
         // infowindow.close();
         marker.setVisible(false);
@@ -271,24 +270,23 @@ define([
         this.addMarker(marker, place);
 
         $('.lat-long').html('Latitude: ' + place.geometry.location.lat().toFixed(3) + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Longitude: ' + place.geometry.location.lng().toFixed(3) + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(' + place.name + ')'); // address
-
       },
 
-      getMapBoundsLocation: function() {
+      getMapBoundsLocation: function () {
         var bounds = this.map.getBounds();
 
         return {
           ne: bounds.getNorthEast(),
           sw: bounds.getSouthWest()
-        }
+        };
       },
 
-      updateMap: function() {
+      updateMap: function () {
         this.updateLocationRangeFilter();
         this.collection.fetch();
       },
 
-      updateLocationRangeFilter: function() {
+      updateLocationRangeFilter: function () {
         var range = this.getMapBoundsLocation();
         var filters = {};
 
@@ -336,13 +334,15 @@ define([
           }
         }, this));
 
-        // Reference: https://developers.google.com/maps/documentation/javascript/reference#LatLngBounds
-        var bounds = new google.maps.LatLngBounds();
-        _.each(this.getMarkers(), function (marker) {
-          bounds.extend(marker.getPosition());
-        });
+        if (this.collection.length > 0) {
+          // Reference: https://developers.google.com/maps/documentation/javascript/reference#LatLngBounds
+          var bounds = new google.maps.LatLngBounds();
+          _.each(this.getMarkers(), function (marker) {
+            bounds.extend(marker.getPosition());
+          });
 
-        this.map.fitBounds(bounds);
+          this.map.fitBounds(bounds);
+        }
       },
 
       afterRender: function () {
@@ -374,7 +374,7 @@ define([
         this.map = null;
       },
 
-      initialize: function() {
+      initialize: function () {
         this.state = {
           loaded: false,
           search: null,
@@ -389,5 +389,5 @@ define([
         // }, this);
       }
     })
-  }
+  };
 });
