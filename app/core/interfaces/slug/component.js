@@ -38,8 +38,14 @@ define([
         type: 'String',
         comment: 'Column name of the field the slug will pull it\'s value from',
         default_value: '',
-        required: true,
         char_length: 200
+      },
+      {
+        id: 'force_lowercase',
+        ui: 'toggle',
+        type: 'Boolean',
+        comment: 'Force the slug to be in all lowercase',
+        default_value: true
       },
       {
         id: 'only_on_creation',
@@ -56,9 +62,9 @@ define([
       }
     },
     list: function (interfaceOptions) {
-      return (interfaceOptions.value)
-        ? interfaceOptions.value.toString().replace(/<(?:.|\n)*?>/gm, '').substr(0, 100)
-        : '';
+      return (interfaceOptions.value) ?
+        interfaceOptions.value.toString().replace(/<(?:.|\n)*?>/gm, '').substr(0, 100) :
+        '';
     }
   });
 });
