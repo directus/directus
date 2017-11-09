@@ -33,7 +33,7 @@ define([
 
     unsavedChange: function () {
       // NOTE: Only set the new value (mark changed) if the value has changed
-      if (this.value && (this.model.isNew() || this.model.hasChanges(this.name))) {
+      if (this.model.isNew() || this.model.hasChanges(this.name)) {
         return this.value.format(this.getFormat());
       }
     },
@@ -92,13 +92,13 @@ define([
       var value = this.model.get(this.name);
       var settings = this.options.settings;
 
-      if (undefined === value) {
+      if (value === undefined) {
         value = moment('0000-00-00');
       } else {
         value = moment(value);
       }
 
-      if (settings.get('auto-populate_when_hidden_and_null') === true && !value.isValid()) {
+      if (settings.get('auto_populate') === true && value.isValid() === false) {
         value = moment();
       }
 
@@ -136,10 +136,10 @@ define([
         default_value: false
       },
       {
-        id: 'auto-populate_when_hidden_and_null',
+        id: 'auto_populate',
         type: 'Boolean',
         ui: 'toggle',
-        comment: 'Automatically fill this field with the current date if the input is hidden and empty',
+        comment: 'Automatically fill this field with the current date if it\'s empty',
         default_value: true
       }
     ],
