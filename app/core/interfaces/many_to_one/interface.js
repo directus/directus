@@ -8,7 +8,6 @@ define([
   'core/t',
   'utils'
 ], function (app, Backbone, _, Handlebars, UIView, __t, Utils) {
-
   'use strict';
 
   return UIView.extend({
@@ -78,7 +77,7 @@ define([
       var templateColumns = Utils.getTemplateVariables(columnTemplate);
       var optionTemplate = Handlebars.compile(columnTemplate);
       var defaultValue = this.options.schema.get('default_value');
-      var placeholderAvailable = !!this.options.settings.get('placeholder') && this.options.settings.get('placeholder').length > 0;
+      var placeholderAvailable = Boolean(this.options.settings.get('placeholder')) && this.options.settings.get('placeholder').length > 0;
       var value = this.options.value || defaultValue;
 
       if (value instanceof Backbone.Model) {
@@ -150,14 +149,11 @@ define([
       this.canEdit = this.model.canEdit(this.name);
       this.collection = value.collection.getNewInstance({omit: ['preferences']});
 
-      var status = 1;
-      if (this.options.settings.get('visible_status_ids')) {
-        status = this.options.settings.get('visible_status_ids');
-      }
-
       var data = {};
-      if (value.table.hasStatusColumn()) {
-        data[value.table.getStatusColumnName()] = status;
+
+      var visibleStatusIDs = this.options.settings.get('visible_status_ids');
+      if (visibleStatusIDs) {
+        data.status = visibleStatusIDs;
       }
 
       var visibleColumns = [];
