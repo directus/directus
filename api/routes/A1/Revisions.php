@@ -20,7 +20,7 @@ class Revisions extends Route
         $Activity = new DirectusActivityTableGateway($ZendDb, $acl);
 
         $revisions = $this->getDataAndSetResponseCacheTags(
-            [$Activity, fetchRevisions],
+            [$Activity, 'fetchRevisions'],
             [$id, $table]
         );
 
