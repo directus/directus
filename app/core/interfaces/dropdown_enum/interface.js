@@ -12,7 +12,8 @@ define([
       'change select': 'updateValue'
     },
     updateValue: function (event) {
-      this.model.set(this.name, event.currentTarget.value);
+      this.value = event.currentTarget.value
+      this.model.set(this.name, this.value);
     },
     unsavedChange: function () {
       // NOTE: Only set the new value (mark changed) if the value has changed
