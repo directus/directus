@@ -114,7 +114,7 @@ function(app, Backbone, $, _, __t, Directus, Utils, moment) {
         datetime: date,
         subject: subject,
         message: message,
-        comment_metadata: this.model.collection.table.id + ":" + this.model.get(this.model.idAttribute)
+        comment_metadata: this.model.collection.table.id + ":" + this.model.id
       });
       model.unset('responses');
       model.url = app.API_URL + 'comments/';
