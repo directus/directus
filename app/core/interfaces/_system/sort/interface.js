@@ -9,8 +9,8 @@ define([
     unsavedChange: function () {
       var value = this.model.get(this.name);
 
-      if (Utils.isNothing(value) && !this.columnSchema.isNullable()) {
-        return 0;
+      if (Utils.isSomething(value) && (this.model.isNew() || this.model.hasChanges(this.name))) {
+        return value;
       }
     }
   });

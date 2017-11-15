@@ -206,10 +206,10 @@ define(function(require, exports, module) {
               throw "Error! The column(s) '" + diff.join(',') + "' does not exist in related table '" + options.table.id + "'. Check your UI settings";
             }
 
+            // TODO: Update conditional logic
             if (relationshipType === 'ONETOMANY') {
               // Provide model to prevent loading issues
               options.model = EntriesModel;
-              attributes[id] = new EntriesCollection(value, options);
 
               if (this.attributes[id] instanceof EntriesCollection) {
                 this.attributes[id].set(value, {merge: true, parse: true});
@@ -220,7 +220,13 @@ define(function(require, exports, module) {
                   options.parse = false;
                 }
 
-                attributes[id] = new EntriesCollection(models, options);
+                if (attributes[id] instanceof EntriesCollection) {
+                  attributes[id].set(value, {merge: true, parse: true});
+                } else {
+                  options.parentAttribute = id;
+                  options.parent = this;
+                  attributes[id] = new EntriesCollection(models, options);
+                }
               }
 
               break;
@@ -242,10 +248,13 @@ define(function(require, exports, module) {
                   options.parse = false;
                 }
 
-                options.parentAttribute = id;
-                options.parent = this;
-
-                attributes[id] = new EntriesJunctionCollection(models, options);
+                if (attributes[id] instanceof EntriesJunctionCollection) {
+                  attributes[id].set(value, {merge: true, parse: true});
+                } else {
+                  options.parentAttribute = id;
+                  options.parent = this;
+                  attributes[id] = new EntriesJunctionCollection(models, options);
+                }
               }
             }
 
