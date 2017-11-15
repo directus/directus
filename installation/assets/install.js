@@ -62,6 +62,7 @@ $(window).ready(function () {
 
   function CheckConfirmationStep() {
     // nothing, strict mode warning removed
+    $('button[type=submit]').removeClass('disabled').html('Install').attr('name', 'install')
   }
 
   function CheckLanguageStep() {
