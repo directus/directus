@@ -88,7 +88,9 @@ class Table extends Route
             $params['column_name'] = $columnService->addColumn($tableName, $requestPayload);
             $response = [
                 'meta' => ['type' => 'item', 'table' => 'directus_columns'],
-                'data' => TableSchema::getColumnSchema($tableName, $params['column_name'])->toArray()
+                // Fetch column skipping cache
+                // New columns are not cached
+                'data' => TableSchema::getColumnSchema($tableName, $params['column_name'], true)->toArray()
             ];
         } else {
 
