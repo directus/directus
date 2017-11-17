@@ -68,7 +68,7 @@ function(app, _, Backbone, Notification, __t, TableHelpers, ModelHelper, TableHe
       var selection = [];
 
       this.$('td .js-select-row:checked').each(function () {
-        selection.push(parseInt(this.value, 10));
+        selection.push(this.value);
       });
 
       return selection;
