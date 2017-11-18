@@ -413,9 +413,22 @@ function(app, _, Backbone, Notification, __t, TableHelpers, ModelHelper, TableHe
     _configureTable: function (options) {
       this.showChart = options.showChart === true;
       this.options.systemCollection = this.collection.clone();
-      this.listenTo(this.collection, 'sync', function (collection, resp, options) {
+      this.listenTo(this.collection, 'sync', function (collectionOrModel, resp, options) {
         var method = options.reset ? 'reset' : 'set';
+
         options.parse = true;
+        // When we fetch a model that belongs to a collection from a table
+        // AKA: X2M Relationship, a single model it's fetch and this sync event is triggered
+        // which will set the model with a model response object
+        // creating an invalid result of a single model, removing the previous model
+        // missing table information
+        // We check if it's a collection and add the new/merge the new model to the collection
+        if (collectionOrModel instanceof Backbone.Model) {
+          method = 'add';
+          options.parse = false;
+          resp = collection.toJSON();
+        }
+
         this.options.systemCollection[method](resp, options);
 
         // force render the table again
