@@ -426,7 +426,7 @@ function(app, _, Backbone, Notification, __t, TableHelpers, ModelHelper, TableHe
         if (collectionOrModel instanceof Backbone.Model) {
           method = 'add';
           options.parse = false;
-          resp = collection.toJSON();
+          resp = collectionOrModel.toJSON();
         }
 
         this.options.systemCollection[method](resp, options);
