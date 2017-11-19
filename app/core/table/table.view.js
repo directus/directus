@@ -413,29 +413,31 @@ function(app, _, Backbone, Notification, __t, TableHelpers, ModelHelper, TableHe
     _configureTable: function (options) {
       this.showChart = options.showChart === true;
       this.options.systemCollection = this.collection.clone();
-      this.listenTo(this.collection, 'sync', function (collectionOrModel, resp, options) {
-        var method = options.reset ? 'reset' : 'set';
+      this.listenTo(this.collection, 'sync', this._onCollectionSynced);
+    },
 
-        options.parse = true;
-        // When we fetch a model that belongs to a collection from a table
-        // AKA: X2M Relationship, a single model it's fetch and this sync event is triggered
-        // which will set the model with a model response object
-        // creating an invalid result of a single model, removing the previous model
-        // missing table information
-        // We check if it's a collection and add the new/merge the new model to the collection
-        if (collectionOrModel instanceof Backbone.Model) {
-          method = 'add';
-          options.parse = false;
-          // Get the data from the saved model
-          // instead of the response to avoid parsing the data
-          resp = collectionOrModel.toJSON();
-        }
+    _onCollectionSynced: function (collectionOrModel, resp, options) {
+      var method = options.reset ? 'reset' : 'set';
 
-        this.options.systemCollection[method](resp, options);
+      options.parse = true;
+      // When we fetch a model that belongs to a collection from a table
+      // AKA: X2M Relationship, a single model it's fetch and this sync event is triggered
+      // which will set the model with a model response object
+      // creating an invalid result of a single model, removing the previous model
+      // missing table information
+      // We check if it's a collection and add the new/merge the new model to the collection
+      if (collectionOrModel instanceof Backbone.Model) {
+        method = 'add';
+        options.parse = false;
+        // Get the data from the saved model
+        // instead of the response to avoid parsing the data
+        resp = collectionOrModel.toJSON();
+      }
 
-        // force render the table again
-        this.trigger('render');
-      });
+      this.options.systemCollection[method](resp, options);
+
+      // force render the table again
+      this.trigger('render');
     },
 
     constructor: function (options) {
