@@ -426,6 +426,8 @@ function(app, _, Backbone, Notification, __t, TableHelpers, ModelHelper, TableHe
         if (collectionOrModel instanceof Backbone.Model) {
           method = 'add';
           options.parse = false;
+          // Get the data from the saved model
+          // instead of the response to avoid parsing the data
           resp = collectionOrModel.toJSON();
         }
 
