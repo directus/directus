@@ -169,11 +169,25 @@ define(['underscore'], function (_) {
 
   // NOTE: This are meant to work with single line csv
   Utils.parseCSV = function (string, options) {
-    options || (options = {});
+    var parts = [];
 
+    // play it safe for the end user now
+    // return empty instead of an exception
+    if (!_.isString(string)) {
+      return [];
+    }
+
+    options || (options = {});
+    string = (string  || '');
     options.trim = options.trim === undefined ? true : options.trim;
 
-    return (string  || '').split(',').map(function (name) {
+    if (string.indexOf(',') >= 0) {
+      parts = string.split(',');
+    } else if (string) {
+      parts = [string];
+    }
+
+    return parts.map(function (name) {
       if (options.trim === true) {
         name = name.trim()
       }
