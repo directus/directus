@@ -78,8 +78,9 @@ When you are creating an enhancement suggestion, please include as many details 
 Use our [Feature Request Tool](https://request.getdirectus.com/) to request new features or vote on existing commmunity suggestions.
 
 #### Your First Code Contribution
-Unsure where to begin contributing to Directus? You can start by looking through the [`Beginner`](https://github.com/directus/directus/issues?q=is%3Aopen+is%3Aissue+label%3ABeginner) and [`Help Wanted`](https://github.com/directus/directus/issues?q=is%3Aopen+is%3Aissue+label%3A%22Help+Wanted%22) issues. `Beginner` issues are issues that often only require a few lines of code. Help wanted issues are a bit more involved than beginner issues.
+Unsure where to begin contributing to Directus? You can start by looking through the [`Beginner`](https://github.com/directus/directus/issues?q=is%3Aopen+is%3Aissue+label%3ABeginner), [`good first issue`](https://github.com/directus/directus/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22) and [`Help Wanted`](https://github.com/directus/directus/issues?q=is%3Aopen+is%3Aissue+label%3A%22Help+Wanted%22) issues. `Beginner` and `good first issue` issues are issues that often only require a few lines of code. Help wanted issues are a bit more involved than beginner issues.
 
+Want to help but have some trouble understanding the issue, ask us and we will help you to get you started.
 #### Pull Requests
 Pull requests are always welcome for every part of Directus. Please make sure to adhere to our [`.editorconfig`](http://editorconfig.org) rules and to lint your code with [XO](https://github.com/sindresorhus/xo).
 
