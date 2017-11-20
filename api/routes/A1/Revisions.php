@@ -16,8 +16,13 @@ class Revisions extends Route
 
         $params['table_name'] = $table;
         $params['id'] = $id;
+
         $Activity = new DirectusActivityTableGateway($ZendDb, $acl);
-        $revisions = $Activity->fetchRevisions($id, $table);
+
+        $revisions = $this->getDataAndSetResponseCacheTags(
+            [$Activity, 'fetchRevisions'],
+            [$id, $table]
+        );
 
         return $this->app->response($revisions);
     }

@@ -163,27 +163,40 @@ class DirectusPreferencesTableGateway extends RelationalTableGateway
         return $this->parseRecord($preferences);
     }
 
+    /**
+     * @deprecated
+     * @param $user_id
+     * @param $title
+     * @return array
+     */
     public function fetchByUserAndTitle($user_id, $title)
     {
+        $result = $this->fetchEntityByUserAndTitle($user_id, $title);
+        return (isset($result['data'])) ? $result['data'] : [];
+
+    }
+
+    /**
+     * @param $user_id
+     * @param $title
+     * @return array|mixed
+     */
+    public function fetchEntityByUserAndTitle($user_id, $title)
+    {
         // TODO: Merge with fetchByUserAndTableAndTitle
-        $select = new Select($this->table);
-        $select->limit(1);
-        $select
-            ->where
-            ->equalTo('title', $title)
-            ->equalTo('user', $user_id);
 
-        $preferences = $this->selectWith($select)->current();
+        $result = $this->getEntries([
+            'single' => true,
+            'filters' => [
+                'user' => $user_id,
+                'title' => $title
+            ]
+        ]);
 
-        if ($preferences) {
-            $preferences = $preferences->toArray();
-        }
+        $result['data'] = ($result['data'])
+            ? $this->constructPreferences($user_id, $result['data']['table_name'], $result['data']) : [];
 
-        if ($preferences) {
-            $preferences = $this->constructPreferences($user_id, $preferences['table_name'], $preferences);
-        }
-
-        return $this->parseRecord($preferences);
+        return $result;
     }
 
     /*

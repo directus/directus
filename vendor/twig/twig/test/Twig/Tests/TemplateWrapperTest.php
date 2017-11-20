@@ -8,7 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-class Twig_Tests_TemplateWrapperTest extends PHPUnit_Framework_TestCase
+class Twig_Tests_TemplateWrapperTest extends \PHPUnit\Framework\TestCase
 {
     public function testHasGetBlocks()
     {

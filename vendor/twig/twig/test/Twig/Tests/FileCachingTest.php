@@ -11,7 +11,7 @@
 
 require_once dirname(__FILE__).'/FilesystemHelper.php';
 
-class Twig_Tests_FileCachingTest extends PHPUnit_Framework_TestCase
+class Twig_Tests_FileCachingTest extends \PHPUnit\Framework\TestCase
 {
     private $env;
     private $tmpDir;

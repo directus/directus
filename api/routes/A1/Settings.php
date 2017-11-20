@@ -36,7 +36,7 @@ class Settings extends Route
                             $data = ArrayUtils::get($value, 'data', '');
                             $name = ArrayUtils::get($value, 'name', 'unknown.jpg');
                             $fileData = $Files->saveData($data, $name);
-                            $newRecord = $Settings->updateRecord('directus_files', $fileData, RelationalTableGateway::ACTIVITY_ENTRY_MODE_PARENT);
+                            $newRecord = $Settings->manageRecordUpdate('directus_files', $fileData, RelationalTableGateway::ACTIVITY_ENTRY_MODE_PARENT);
 
                             $values[$key] = $newRecord['id'];
                         } else {
@@ -75,9 +75,12 @@ class Settings extends Route
         };
 
         if (!is_null($id)) {
-            $response = $fetchCmsFile($Settings->fetchCollection($id));
+            $response = $this->getDataAndSetResponseCacheTags(
+                [$Settings, 'fetchCollection'],
+                [$id]
+            );
         } else {
-            $response = $Settings->fetchAll();
+            $response = $this->getDataAndSetResponseCacheTags([$Settings, 'fetchAll']);
             $response['global'] = $fetchCmsFile($response['global']);
         }
 

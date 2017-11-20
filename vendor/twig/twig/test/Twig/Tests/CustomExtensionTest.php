@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-class CustomExtensionTest extends PHPUnit_Framework_TestCase
+class CustomExtensionTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @requires PHP 5.3

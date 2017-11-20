@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-class Twig_Tests_Loader_FilesystemTest extends PHPUnit_Framework_TestCase
+class Twig_Tests_Loader_FilesystemTest extends \PHPUnit\Framework\TestCase
 {
     public function testGetSourceContext()
     {

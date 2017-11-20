@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-class Twig_Tests_Node_Expression_CallTest extends PHPUnit_Framework_TestCase
+class Twig_Tests_Node_Expression_CallTest extends \PHPUnit\Framework\TestCase
 {
     public function testGetArguments()
     {

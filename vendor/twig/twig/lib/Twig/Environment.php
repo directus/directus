@@ -16,11 +16,11 @@
  */
 class Twig_Environment
 {
-    const VERSION = '1.34.4';
-    const VERSION_ID = 13404;
+    const VERSION = '1.35.0';
+    const VERSION_ID = 13500;
     const MAJOR_VERSION = 1;
-    const MINOR_VERSION = 34;
-    const RELEASE_VERSION = 4;
+    const MINOR_VERSION = 35;
+    const RELEASE_VERSION = 0;
     const EXTRA_VERSION = '';
 
     protected $charset;
@@ -58,6 +58,7 @@ class Twig_Environment
     private $runtimeLoaders = array();
     private $runtimes = array();
     private $optionsHash;
+    private $loading = array();
 
     /**
      * Constructor.
@@ -382,6 +383,10 @@ class Twig_Environment
      *
      * @param string|Twig_TemplateWrapper|Twig_Template $name The template name
      *
+     * @throws Twig_Error_Loader  When the template cannot be found
+     * @throws Twig_Error_Runtime When a previously generated cache is corrupted
+     * @throws Twig_Error_Syntax  When an error occurred during compilation
+     *
      * @return Twig_TemplateWrapper
      */
     public function load($name)
@@ -472,7 +477,22 @@ class Twig_Environment
             $this->initRuntime();
         }
 
-        return $this->loadedTemplates[$cls] = new $cls($this);
+        if (isset($this->loading[$cls])) {
+            throw new Twig_Error_Runtime(sprintf('Circular reference detected for Twig template "%s", path: %s.', $name, implode(' -> ', array_merge($this->loading, array($name)))));
+        }
+
+        $this->loading[$cls] = $name;
+
+        try {
+            $this->loadedTemplates[$cls] = new $cls($this);
+            unset($this->loading[$cls]);
+        } catch (\Exception $e) {
+            unset($this->loading[$cls]);
+
+            throw $e;
+        }
+
+        return $this->loadedTemplates[$cls];
     }
 
     /**

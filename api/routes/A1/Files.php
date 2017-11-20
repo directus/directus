@@ -102,7 +102,7 @@ class Files extends Route
         }
 
         $Files = new TableGateway($table, $ZendDb, $acl);
-        $response = $Files->getEntries($params);
+        $response = $this->getEntriesAndSetResponseCacheTags($Files, $params);
         if (!$response) {
             $response = [
                 'message' => __t('unable_to_find_file_with_id_x', ['id' => $id]),

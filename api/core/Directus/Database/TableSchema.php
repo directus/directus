@@ -5,6 +5,7 @@ namespace Directus\Database;
 use Directus\Authentication\Provider as Auth;
 use Directus\Bootstrap;
 use Directus\Config\Config;
+use Directus\Database\Exception\ColumnNotFoundException;
 use Directus\Database\Object\Column;
 use Directus\Database\Object\Table;
 use Directus\Database\TableGateway\DirectusPreferencesTableGateway;
@@ -206,17 +207,22 @@ class TableSchema
     /**
      * Gets the column object
      *
-     * @param $tableName
-     * @param $columnName
+     * @param string $tableName
+     * @param string $columnName
      * @param bool $skipCache
+     * @param bool $skipAcl
      *
      * @return Object\Column
      */
-    public static function getColumnSchema($tableName, $columnName, $skipCache = false)
+    public static function getColumnSchema($tableName, $columnName, $skipCache = false, $skipAcl = false)
     {
-        $column = static::getSchemaManagerInstance()->getColumnSchema($tableName, $columnName, $skipCache);
-
-        // @TODO: enforce permission
+        // Due to a problem the way we use to cache using array
+        // if a column information is fetched before its table
+        // the table is going to be created with only one column
+        // to prevent this we always get the table even if we only want one column
+        // Stop using getColumnSchema($tableName, $columnName); until we fix this.
+        $tableObject = static::getTableSchema($tableName, [], $skipCache, $skipAcl);
+        $column = $tableObject->getColumn($columnName);
 
         return $column;
     }
@@ -315,6 +321,48 @@ class TableSchema
         return $column && $column->hasRelationship() ? $column->getRelationship() : null;
     }
 
+    /**
+     * Check whether the given table-column has relationship
+     *
+     * @param $tableName
+     * @param $columnName
+     *
+     * @return bool
+     *
+     * @throws ColumnNotFoundException
+     */
+    public static function hasRelationship($tableName, $columnName)
+    {
+        $tableObject = static::getTableSchema($tableName);
+        $columnObject = $tableObject->getColumn($columnName);
+
+        if (!$columnObject) {
+            throw new ColumnNotFoundException($columnName);
+        }
+
+        return $columnObject->hasRelationship();
+    }
+
+    /**
+     * Gets related table name
+     *
+     * @param $tableName
+     * @param $columnName
+     *
+     * @return string
+     */
+    public static function getRelatedTableName($tableName, $columnName)
+    {
+        if (!static::hasRelationship($tableName, $columnName)) {
+            return null;
+        }
+
+        $tableObject = static::getTableSchema($tableName);
+        $columnObject = $tableObject->getColumn($columnName);
+
+        return $columnObject->getRelationship()->getRelatedTable();
+    }
+
     // @NOTE: This was copy-paste to Column Object
     /**
      * Whether or not the column name is the name of a system column.
@@ -326,6 +374,18 @@ class TableSchema
     public static function isSystemColumn($interfaceName)
     {
         return static::getSchemaManagerInstance()->isSystemColumn($interfaceName);
+    }
+
+    /**
+     * Checks whether the table is a system table
+     *
+     * @param $tableName
+     *
+     * @return bool
+     */
+    public static function isSystemTable($tableName)
+    {
+        return static::getSchemaManagerInstance()->isSystemTables($tableName);
     }
 
     /**
@@ -796,10 +856,11 @@ class TableSchema
      * Get all the tables schema
      *
      * @param array $params
+     * @param bool $skipAcl
      *
      * @return array
      */
-    public static function getTablesSchema(array $params = [])
+    public static function getTablesSchema(array $params = [], $skipAcl = false)
     {
         $schema = static::getSchemaManagerInstance();
         $includeSystemTables = ArrayUtils::get($params, 'include_system', false);
@@ -809,7 +870,10 @@ class TableSchema
         if ($includeColumns === true) {
             $columns = $schema->getAllColumnsByTable();
             foreach($columns as $table => $column) {
-                $allTables[$table]->setColumns($column);
+                // Make sure the table exists
+                if (isset($allTables[$table])) {
+                    $allTables[$table]->setColumns($column);
+                }
             }
         }
 
@@ -820,7 +884,7 @@ class TableSchema
                 continue;
             }
             // Only include tables w ACL privileges
-            if (!self::canGroupViewTable($tableName)) {
+            if ($skipAcl === false && !self::canGroupViewTable($tableName)) {
                 continue;
             }
 

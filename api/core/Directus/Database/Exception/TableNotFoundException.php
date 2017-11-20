@@ -19,6 +19,8 @@ use Exception;
  */
 class TableNotFoundException extends DbException
 {
+    protected $httpStatus = 404;
+
     public function __construct($table, $message = '', $code = 0, Exception $previous = null)
     {
         if ($message === '') {

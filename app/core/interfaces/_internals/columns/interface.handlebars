@@ -42,7 +42,7 @@
 					<span class="{{#if emptyComment}}no-value{{/if}}">{{comment}}</span>
 				</td>
 				<td class="relational-remove">
-					<i class="material-icons js-remove">close</i>
+					{{# if ../showRemoveButton}}<i class="material-icons js-remove">close</i>{{/if}}
 				</td>
 			</tr>
 			{{/columns}}

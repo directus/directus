@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInitce02416b8f69109d80c416b56f49dad8
+class ComposerStaticInite088d8d8fa71c3ececb07fbcc85978d5
 {
     public static $files = array (
         'a0edc8309cc5e1d60e3047b5df6b7052' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/functions_include.php',
@@ -27,7 +27,10 @@ class ComposerStaticInitce02416b8f69109d80c416b56f49dad8
         ),
         'P' => 
         array (
+            'Psr\\SimpleCache\\' => 16,
+            'Psr\\Log\\' => 8,
             'Psr\\Http\\Message\\' => 17,
+            'Psr\\Cache\\' => 10,
         ),
         'L' => 
         array (
@@ -47,12 +50,17 @@ class ComposerStaticInitce02416b8f69109d80c416b56f49dad8
         ),
         'D' => 
         array (
+            'Doctrine\\Common\\Cache\\' => 22,
             'Directus\\Installation\\' => 22,
             'Directus\\Customs\\Hooks\\' => 23,
             'Directus\\Customs\\Hasher\\' => 24,
             'Directus\\Customs\\Embed\\Provider\\' => 32,
             'Directus\\API\\Routes\\' => 20,
             'Directus\\' => 9,
+        ),
+        'C' => 
+        array (
+            'Cache\\' => 6,
         ),
     );
 
@@ -69,9 +77,21 @@ class ComposerStaticInitce02416b8f69109d80c416b56f49dad8
         array (
             0 => __DIR__ . '/..' . '/twig/twig/src',
         ),
+        'Psr\\SimpleCache\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/psr/simple-cache/src',
+        ),
+        'Psr\\Log\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/psr/log/Psr/Log',
+        ),
         'Psr\\Http\\Message\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/http-message/src',
+        ),
+        'Psr\\Cache\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/psr/cache/src',
         ),
         'League\\OAuth2\\Client\\' => 
         array (
@@ -104,6 +124,10 @@ class ComposerStaticInitce02416b8f69109d80c416b56f49dad8
         array (
             0 => __DIR__ . '/..' . '/guzzlehttp/guzzle/src',
         ),
+        'Doctrine\\Common\\Cache\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/doctrine/cache/lib/Doctrine/Common/Cache',
+        ),
         'Directus\\Installation\\' => 
         array (
             0 => __DIR__ . '/../..' . '/installation/includes',
@@ -127,6 +151,10 @@ class ComposerStaticInitce02416b8f69109d80c416b56f49dad8
         'Directus\\' => 
         array (
             0 => __DIR__ . '/../..' . '/api/core/Directus',
+        ),
+        'Cache\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/cache/cache/src',
         ),
     );
 
@@ -169,9 +197,9 @@ class ComposerStaticInitce02416b8f69109d80c416b56f49dad8
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInitce02416b8f69109d80c416b56f49dad8::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInitce02416b8f69109d80c416b56f49dad8::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInitce02416b8f69109d80c416b56f49dad8::$prefixesPsr0;
+            $loader->prefixLengthsPsr4 = ComposerStaticInite088d8d8fa71c3ececb07fbcc85978d5::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInite088d8d8fa71c3ececb07fbcc85978d5::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInite088d8d8fa71c3ececb07fbcc85978d5::$prefixesPsr0;
 
         }, null, ClassLoader::class);
     }

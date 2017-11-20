@@ -21,6 +21,7 @@ use Directus\Util\ArrayUtils;
 use Zend\Db\Sql\Ddl\AlterTable;
 use Zend\Db\Sql\Ddl\Column\Integer;
 use Zend\Db\Sql\Ddl\Constraint\PrimaryKey;
+use Zend\Db\Sql\Literal;
 use Zend\Db\Sql\Sql;
 
 /**
@@ -258,6 +259,13 @@ class ColumnsService extends AbstractService
                 }
 
                 $defaultValue = $schemaManager->castDefaultValue($value, $type, $length);
+            }
+
+            // Set CURRENT_TIMESTAMP as literal value instead of string
+            // TODO: Implement a modular way to support more
+            // (we need to list them first)
+            if ($defaultValue === 'CURRENT_TIMESTAMP') {
+                $defaultValue = new Literal($defaultValue);
             }
 
             $newColumn->setDefault($defaultValue);

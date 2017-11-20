@@ -1,0 +1,37 @@
+{
+    "name": "doctrine/cache",
+    "type": "library",
+    "description": "Caching library offering an object-oriented API for many cache backends",
+    "keywords": ["cache", "caching"],
+    "homepage": "http://www.doctrine-project.org",
+    "license": "MIT",
+    "authors": [
+        {"name": "Guilherme Blanco", "email": "guilhermeblanco@gmail.com"},
+        {"name": "Roman Borschel", "email": "roman@code-factory.org"},
+        {"name": "Benjamin Eberlei", "email": "kontakt@beberlei.de"},
+        {"name": "Jonathan Wage", "email": "jonwage@gmail.com"},
+        {"name": "Johannes Schmitt", "email": "schmittjoh@gmail.com"}
+    ],
+    "require": {
+        "php": "~5.5|~7.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit":         "~4.8|~5.0",
+        "satooshi/php-coveralls":  "~0.6",
+        "predis/predis":           "~1.0"
+    },
+    "conflict": {
+        "doctrine/common": ">2.2,<2.4"
+    },
+    "autoload": {
+        "psr-4": { "Doctrine\\Common\\Cache\\": "lib/Doctrine/Common/Cache" }
+    },
+    "autoload-dev": {
+        "psr-4": { "Doctrine\\Tests\\": "tests/Doctrine/Tests" }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.6.x-dev"
+        }
+    }
+}

@@ -60,7 +60,8 @@ if ($config->get('filters')) {
 }
 
 $app->add(new \Directus\Slim\CorsMiddleware());
-$app->add(new \Directus\Slim\CacheMiddleware());
+$app->add(new \Directus\Slim\HttpCacheMiddleware());
+$app->add(new \Directus\Slim\ResponseCacheMiddleware());
 
 /**
  * Creates and /<version>/ping endpoint
@@ -96,8 +97,12 @@ $app->config('debug', false);
 $app->config('production', 'production' === DIRECTUS_ENV);
 
 // Catch all exceptions
-$exceptionHandler = new ExceptionHandler($app->hookEmitter);
-$app->error([$exceptionHandler, 'handleException']);
+$app->error(function ($exception) use ($app) {
+    // Force the server status to be 500
+    $app->response->status(500);
+    $exceptionHandler = new ExceptionHandler($app->hookEmitter);
+    $exceptionHandler->handleException($exception);
+});
 
 // Routes which do not need protection by the authentication and the request
 // @TODO: Move this to a middleware
@@ -485,12 +490,14 @@ $app->group('/1.1', function() use($app) {
     // =============================================================================
     // USERS
     // =============================================================================
-    $app->get('/users/?', '\Directus\API\Routes\A1\Users:all');
-    $app->get('/users/:id/?', '\Directus\API\Routes\A1\Users:get')
-        ->conditions(['id' => '[0-9]+']);
+    \Slim\Route::setDefaultConditions([
+        'userId' => '([0-9]+|me)'
+    ]);
+
+    $app->get('/users/?', '\Directus\API\Routes\A1\Users:get');
+    $app->get('/users/:userId/?', '\Directus\API\Routes\A1\Users:get');
     $app->post('/users/invite/?', '\Directus\API\Routes\A1\Users:invite');
-    $app->map('/users/:id/?', '\Directus\API\Routes\A1\Users:update')
-        ->conditions(['id' => '[0-9]+'])
+    $app->map('/users/:userId/?', '\Directus\API\Routes\A1\Users:update')
         ->via('DELETE', 'PUT', 'PATCH');
     $app->post('/users/?', '\Directus\API\Routes\A1\Users:update');
 

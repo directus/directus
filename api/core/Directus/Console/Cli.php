@@ -105,7 +105,7 @@ class Cli
             echo PHP_EOL . PHP_EOL . __t('Module ') . $this->help_module . __t(': does not exists!') . PHP_EOL . PHP_EOL;
             return;
         }
-        echo PHP_EOL . __t('Directus Module ') . $this->help_module . __t(' Commands') . PHP_EOL . PHP_EOL;
+        echo PHP_EOL . __t('Directus Module ') . ucfirst($this->help_module) . __t(' Commands') . PHP_EOL . PHP_EOL;
         $module_commands = $this->cmd_modules[$this->help_module]->getCommands();
         foreach ($module_commands as $command => $cmd_help) {
             echo "\t" . $cmd_help . PHP_EOL . PHP_EOL;

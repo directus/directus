@@ -49,14 +49,16 @@ class Environment extends \Slim\Environment
         if ($newInstance) {
             $requestUri = $_SERVER['REQUEST_URI'];
             $scriptName = $_SERVER['SCRIPT_NAME'];
+            $scriptDir = dirname($scriptName);
 
             // Physical path
+            $physicalPath = '';
             if (strpos($requestUri, $scriptName) !== false) {
                 // Without rewriting
                 $physicalPath = $scriptName;
-            } else {
+            } else if ($scriptDir !== '/') {
                 // With rewriting
-                $physicalPath = str_replace('\\', '', dirname($scriptName));
+                $physicalPath = str_replace('\\', '', $scriptDir);
             }
 
             // if Virtual path, starts with physical path

@@ -1,3 +1,10 @@
+/* not a mixing, but Ben will put it in the right place */
+table.reorder-enabled tbody tr td.reorder .reorder-handle:hover, .right-sidebar .scroll-y ul.reorder-columns li, .right-sidebar .scroll-y ul.reorder-columns li label {
+  cursor: move;
+  cursor: grab;
+  cursor: -moz-grab;
+  cursor: -webkit-grab; }
+
 @keyframes pulsate {
   0% {
     background-color: #3498DB; }
@@ -2117,8 +2124,7 @@ table {
   table.reorder-enabled tbody tr td.reorder .reorder-handle {
     color: #DDDDDD; }
     table.reorder-enabled tbody tr td.reorder .reorder-handle:hover {
-      color: #999999;
-      cursor: row-resize; }
+      color: #999999; }
 
 .items-chart {
   position: relative;
@@ -2718,6 +2724,7 @@ body.loading .header .logo {
       width: 64px;
       height: 64px;
       text-align: center;
+      border-radius: 0;
       cursor: pointer;
       color: #FFFFFF; }
       .header .actions .action:hover .action-text {
@@ -3392,13 +3399,9 @@ body.loading .header .logo {
           color: #999999; }
     .right-sidebar .scroll-y ul {
       list-style: none; }
-      .right-sidebar .scroll-y ul.reorder-columns li {
-        cursor: row-resize; }
-        .right-sidebar .scroll-y ul.reorder-columns li label {
-          cursor: row-resize; }
-          .right-sidebar .scroll-y ul.reorder-columns li label span,
-          .right-sidebar .scroll-y ul.reorder-columns li label span:before {
-            cursor: pointer; }
+      .right-sidebar .scroll-y ul.reorder-columns li label span,
+      .right-sidebar .scroll-y ul.reorder-columns li label span:before {
+        cursor: pointer; }
       .right-sidebar .scroll-y ul li {
         padding: 2px 16px 2px 16px; }
         .right-sidebar .scroll-y ul li.gu-transit {
@@ -4596,6 +4599,13 @@ body.help .discover-spotlight {
     margin: 0 !important;
     z-index: 9999 !important;
     opacity: 0.2; }
+  .attachments .folder.no-margin,
+  .attachments .file.no-margin,
+  .folder-listing .folder.no-margin,
+  .folder-listing .file.no-margin,
+  .file-listing .folder.no-margin,
+  .file-listing .file.no-margin {
+    margin: 0; }
   .attachments .folder:active,
   .attachments .file:active,
   .folder-listing .folder:active,
@@ -5478,7 +5488,8 @@ body.help .discover-spotlight {
       transition: all 200ms ease-in-out 0ms;
       color: #E53935;
       cursor: pointer;
-      font-size: 11px; }
+      font-size: 11px;
+      margin-left: 5px; }
       .fields .field .label .cancel-batch-edit:hover {
         color: #891412; }
   .fields .field .interface {
@@ -6884,8 +6895,8 @@ body.login {
         height: 40px;
         padding: 8px;
         text-align: center;
-        margin-right: 10px;
-        cursor: pointer; }
+        cursor: pointer;
+        margin: 0 5px; }
         body.login .login-panel .alt-auth .tile:hover {
           background-color: #3498DB; }
         body.login .login-panel .alt-auth .tile:nth-child(4) {
@@ -7048,7 +7059,7 @@ body.login {
   .attachments,
   .folder-listing,
   .file-listing {
-    padding: 15px 0; }
+    padding: 15px; }
     .attachments .folder .folder-icon,
     .folder-listing .folder .folder-icon,
     .file-listing .folder .folder-icon {

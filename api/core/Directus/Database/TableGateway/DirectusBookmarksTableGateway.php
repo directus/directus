@@ -73,24 +73,46 @@ class DirectusBookmarksTableGateway extends RelationalTableGateway
         return $this->lastInsertValue;
     }
 
+    /**
+     * @deprecated
+     * @param $user_id
+     * @param $id
+     * @return array
+     */
     public function fetchByUserAndId($user_id, $id)
     {
-        $select = new Select($this->table);
-        $select->limit(1);
-        $select
-            ->where
-            ->equalTo('id', $id)
-            ->equalTo('user', $user_id);
+        $result = $this->fetchEntityByUserAndId($user_id, $id);
 
-        $bookmarks = $this
-            ->selectWith($select)
-            ->current();
+        return ($result['data']) ? $result['data'] : [];
+    }
 
-        if ($bookmarks) {
-            $bookmarks = $bookmarks->toArray();
-        }
+    /**
+     * @param $user_id
+     * @param $id
+     * @return array|mixed
+     */
+    public function fetchEntityByUserAndId($user_id, $id)
+    {
+        $result = $this->getEntries([
+            $this->primaryKeyFieldName => $id,
+            'filters' => [
+                'user' => $user_id
+            ]
+        ]);
 
-        return $bookmarks ? $this->parseRecord($bookmarks) : [];
+        return $result;
+    }
+
+    /**
+     * @deprecated
+     * @param $userId
+     * @return array|mixed
+     */
+    public function fetchByUserId($userId)
+    {
+        $result = $this->fetchEntitiesByUserId($userId);
+
+        return ($result['data']) ? $result['data'] : [];
     }
 
     /**
@@ -100,18 +122,15 @@ class DirectusBookmarksTableGateway extends RelationalTableGateway
      *
      * @return array
      */
-    public function fetchByUserId($userId)
+    public function fetchEntitiesByUserId($userId)
     {
-        $select = new Select($this->getTable());
-        $select->where->equalTo('user', $userId);
+        $result = $this->getEntries([
+            'filters' => [
+                'user' => $userId
+            ]
+        ]);
 
-        $bookmarks = $this->selectWith($select);
-
-        if ($bookmarks) {
-            $bookmarks = $bookmarks->toArray();
-        }
-
-        return $this->parseRecord($bookmarks);
+        return $result;
     }
 
     public function fetchAllByUser($userId)

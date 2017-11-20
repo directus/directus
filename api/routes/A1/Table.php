@@ -88,9 +88,13 @@ class Table extends Route
             $params['column_name'] = $columnService->addColumn($tableName, $requestPayload);
             $response = [
                 'meta' => ['type' => 'item', 'table' => 'directus_columns'],
-                'data' => TableSchema::getColumnSchema($tableName, $params['column_name'])->toArray()
+                // Fetch column skipping cache
+                // New columns are not cached
+                'data' => TableSchema::getColumnSchema($tableName, $params['column_name'], true)->toArray()
             ];
         } else {
+
+            $this->tagResponseCache('tableColumnsSchema_'.$tableName);
             $response = [
                 'meta' => ['type' => 'collection', 'table' => 'directus_columns'],
                 'data' => array_map(function(Column $column) {
@@ -113,10 +117,12 @@ class Table extends Route
         if ($app->request()->isDelete()) {
             $tableGateway = new TableGateway($table, $ZendDb, $acl);
             // NOTE: make sure to check aliases column (Ex: M2M Columns)
-            $hasColumn = TableSchema::hasTableColumn($table, $column, true);
+            $tableObject = TableSchema::getTableSchema($table, [], false, true);
+            $hasColumn = $tableObject->hasColumn($column);
+            $hasMoreThanOneColumn = count($tableObject->getColumns()) > 1;
             $success = false;
 
-            if ($hasColumn) {
+            if ($hasColumn && $hasMoreThanOneColumn) {
                 $success = $tableGateway->dropColumn($column);
             }
 
@@ -128,13 +134,22 @@ class Table extends Route
                 'success' => $success
             ];
 
-            // Success: __t('column_x_was_removed', ['column' => $column]),
-            // @TODO: implement successful messages
-            if ($hasColumn && !$success) {
-                $response['error']['message'] = __t('unable_to_remove_column_x', ['column' => $column]);
-            } else if (!$hasColumn) {
-                // @TODO: add translation
-                $response['error']['message'] = sprintf('column `%s` does not exists in table: `%s`', $column, $table);
+            // TODO: implement successful messages
+            if (!$success) {
+                if (!$hasMoreThanOneColumn) {
+                    $errorMessage = __t('cannot_remove_last_column');
+                } else if (!$hasColumn) {
+                    $errorMessage = __t('unable_to_find_column_X_in_table_y', [
+                        'table' => $table,
+                        'column' => $column
+                    ]);
+                } else {
+                    $errorMessage = __t('unable_to_remove_column_x', [
+                        'column_name' => $column
+                    ]);
+                }
+
+                $response['error']['message'] = $errorMessage;
             }
 
             return $this->app->response($response);
@@ -161,6 +176,7 @@ class Table extends Route
             $columnsService->update($table, $column, $requestPayload, $app->request()->isPatch());
         }
 
+        $this->tagResponseCache(['tableColumnsSchema_'.$table, 'columnSchema_'.$table.'_'.$column]);
         $response = TableSchema::getColumnSchema($table, $column, true);
         if (!$response) {
             $response = [
@@ -206,6 +222,7 @@ class Table extends Route
             $data['id'] = $row['id'];
         }
 
+        $this->invalidateCacheTags(['tableColumnsSchema_'.$table, 'columnSchema_'.$table.'_'.$column]);
         $newRecord = $TableGateway->updateRecord($data, TableGateway::ACTIVITY_ENTRY_MODE_DISABLED);
 
         return $this->app->response($newRecord);
@@ -288,6 +305,7 @@ class Table extends Route
             }
         }
 
+        $this->tagResponseCache(['tableSchema_'.$table, 'table_directus_columns']);
         $response = TableSchema::getTable($table);
 
         if (!$response) {
@@ -373,7 +391,10 @@ class Table extends Route
             'column_name' => $column
         ]);
 
-        $response = $tableGateway->selectWith($select)->current();
+        $response = $this->getDataAndSetResponseCacheTags(
+            [$tableGateway, 'selectWith'],
+            [$select]
+        )->current();
 
         if (!$response) {
             $app->response()->setStatus(404);

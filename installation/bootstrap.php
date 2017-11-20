@@ -14,10 +14,16 @@ require $vendorAutoload;
 
 $emitter = new \Directus\Hook\Emitter();
 $exceptionHandler = new \Directus\Exception\ExceptionHandler($emitter);
-$emitter->addAction('application.error', function (Exception $exception) {
+
+/**
+ * @param \Throwable|\Exception $exception
+ */
+$onError = function ($exception) {
     $now = time();
     $path = get_directus_path();
     $message = $exception->getMessage();
 
     include __DIR__ . '/views/page.php';
-});
+};
+
+$emitter->addAction('application.error', $onError);

@@ -1,0 +1,42 @@
+language: php
+
+sudo: false
+
+cache:
+    directories:
+        - vendor
+        - $HOME/.composer/cache
+
+php:
+    - 5.5
+    - 5.6
+    - 7.0
+    - hhvm
+
+services:
+    - riak
+    - mongodb
+    - memcached
+    - redis-server
+
+before_install:
+    - if [[ $TRAVIS_PHP_VERSION != 'hhvm' ]] ; then pecl channel-update pecl.php.net; fi;
+    - if [[ $TRAVIS_PHP_VERSION != 'hhvm' && $TRAVIS_PHP_VERSION != '7.0' ]]; then pecl install riak-beta; fi;
+    - if [[ $TRAVIS_PHP_VERSION =~ 5.[56] ]] ; then echo yes | pecl install apcu-4.0.10; fi;
+    - if [[ $TRAVIS_PHP_VERSION = 7.* ]] ; then pecl config-set preferred_state beta; echo yes | pecl install apcu; fi;
+    - if [[ $TRAVIS_PHP_VERSION != 'hhvm' ]]; then phpenv config-add ./tests/travis/php.ini; fi;
+
+install:
+    - travis_retry composer install
+
+script:
+    - ./vendor/bin/phpunit -c ./tests/travis/phpunit.travis.xml -v
+
+after_script:
+    - php vendor/bin/coveralls -v
+
+matrix:
+    fast_finish: true
+    allow_failures:
+        - php: hhvm
+        - php: 7.0

@@ -1,0 +1,110 @@
+<?xml version="1.0"?>
+<project name="DoctrineCommonCache" default="build" basedir=".">
+    <property file="build.properties" />
+
+    <target name="php">
+        <exec executable="which" outputproperty="php_executable">
+            <arg value="php" />
+        </exec>
+    </target>
+
+    <target name="prepare">
+        <mkdir dir="build" />
+    </target>
+
+    <target name="build" depends="check-git-checkout-clean,prepare,php,composer">
+        <exec executable="${php_executable}">
+            <arg value="build/composer.phar" />
+            <arg value="archive" />
+            <arg value="--dir=build" />
+        </exec>
+    </target>
+
+    <target name="composer" depends="php,composer-check,composer-download">
+        <exec executable="${php_executable}">
+            <arg value="build/composer.phar" />
+            <arg value="install" />
+        </exec>
+    </target>
+
+    <target name="composer-check" depends="prepare">
+        <available file="build/composer.phar" property="composer.present"/>
+    </target>
+
+    <target name="composer-download" unless="composer.present">
+        <exec executable="wget">
+            <arg value="-Obuild/composer.phar" />
+            <arg value="http://getcomposer.org/composer.phar" />
+        </exec>
+    </target>
+
+    <target name="make-release" depends="check-git-checkout-clean,prepare,php">
+        <replace file="${project.version_file}" token="-DEV" value="" failOnNoReplacements="true" />
+        <exec executable="git" failonerror="true" outputproperty="current_git_branch">
+            <arg value="rev-parse" />
+            <arg value="--abbrev-ref" />
+            <arg value="HEAD" />
+        </exec>
+        <exec executable="${php_executable}" outputproperty="doctrine.current_version" failonerror="true">
+            <arg value="-r" />
+            <arg value="require_once '${project.version_file}';echo ${project.version_class}::VERSION;" />
+        </exec>
+        <exec executable="${php_executable}" outputproperty="doctrine.next_version" failonerror="true">
+            <arg value="-r" />
+            <arg value="$parts = explode('.', str_ireplace(array('-DEV', '-ALPHA', '-BETA'), '', '${doctrine.current_version}'));
+                if (count($parts) != 3) {
+                    throw new \InvalidArgumentException('Version is assumed in format x.y.z, ${doctrine.current_version} given');
+                }
+                if ('${current_git_branch}' === 'master') {
+                    $parts[1]++;
+                } else {
+                    $parts[2]++;
+                }
+                echo implode('.', $parts);
+            " />
+        </exec>
+
+        <git-commit file="${project.version_file}" message="Release ${doctrine.current_version}" />
+        <git-tag version="${doctrine.current_version}" />
+        <replace file="${project.version_file}" token="${doctrine.current_version}" value="${doctrine.next_version}-DEV" />
+        <git-commit file="${project.version_file}" message="Bump version to ${doctrine.next_version}" />
+    </target>
+
+    <target name="check-git-checkout-clean">
+        <exec executable="git" failonerror="true">
+            <arg value="diff-index" />
+            <arg value="--quiet" />
+            <arg value="HEAD" />
+        </exec>
+    </target>
+
+    <macrodef name="git-commit">
+        <attribute name="file" default="NOT SET"/>
+        <attribute name="message" default="NOT SET"/>
+
+        <sequential>
+            <exec executable="git">
+                <arg value="add" />
+                <arg value="@{file}" />
+            </exec>
+            <exec executable="git">
+                <arg value="commit" />
+                <arg value="-m" />
+                <arg value="@{message}" />
+            </exec>
+        </sequential>
+    </macrodef>
+
+    <macrodef name="git-tag">
+        <attribute name="version" default="NOT SET" />
+
+        <sequential>
+            <exec executable="git">
+                <arg value="tag" />
+                <arg value="-m" />
+                <arg value="v@{version}" />
+                <arg value="v@{version}" />
+            </exec>
+        </sequential>
+    </macrodef>
+</project>

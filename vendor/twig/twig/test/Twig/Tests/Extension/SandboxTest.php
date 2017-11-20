@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-class Twig_Tests_Extension_SandboxTest extends PHPUnit_Framework_TestCase
+class Twig_Tests_Extension_SandboxTest extends \PHPUnit\Framework\TestCase
 {
     protected static $params;
     protected static $templates;

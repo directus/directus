@@ -70,10 +70,10 @@ if (!is_callable('random_bytes')) {
                 $n = ($bytes - $i) > 1073741824
                     ? 1073741824
                     : $bytes - $i;
-                $buf .= Sodium::randombytes_buf($n);
+                $buf .= Sodium::randombytes_buf((int) $n);
             }
         } else {
-            $buf .= Sodium::randombytes_buf($bytes);
+            $buf .= Sodium::randombytes_buf((int) $bytes);
         }
 
         if (is_string($buf)) {

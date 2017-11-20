@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-abstract class Twig_Tests_Profiler_Dumper_AbstractTest extends PHPUnit_Framework_TestCase
+abstract class Twig_Tests_Profiler_Dumper_AbstractTest extends \PHPUnit\Framework\TestCase
 {
     protected function getProfile()
     {

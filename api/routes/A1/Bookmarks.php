@@ -31,16 +31,16 @@ class Bookmarks extends Route
                 $id = $bookmarks->insertBookmark($requestPayload);
                 break;
             case 'DELETE':
-                $bookmark = $bookmarks->fetchByUserAndId($currentUserId, $id);
+                $bookmark = $bookmarks->fetchEntityByUserAndId($currentUserId, $id);
                 $response = [];
 
-                if ($bookmark) {
+                if (!empty($bookmark['data'])) {
                     $response['success'] = (bool) $bookmarks->delete(['id' => $id]);
 
                     // delete the preferences
                     $preferences->delete([
                         'user' => $currentUserId,
-                        'title' => $bookmark['title']
+                        'title' => $bookmark['data']['title']
                     ]);
                 } else {
                     $response['success'] = false;
@@ -53,18 +53,12 @@ class Bookmarks extends Route
         }
 
         if (!is_null($id)) {
-            $jsonResponse = $bookmarks->fetchByUserAndId($currentUserId, $id);
+            $jsonResponse = $this->getDataAndSetResponseCacheTags([$bookmarks, 'fetchEntityByUserAndId'], [$currentUserId, $id]);
         } else {
-            $jsonResponse = $bookmarks->fetchByUserId($currentUserId);
+            $jsonResponse = $this->getDataAndSetResponseCacheTags([$bookmarks, 'fetchEntitiesByUserId'], [$currentUserId]);
         }
 
-        return $this->app->response([
-            'meta' => [
-                'table' => 'directus_bookmarks',
-                'type' => is_null($id) ? 'collection' : 'item'
-            ],
-            'data' => $jsonResponse
-        ]);
+        return $app->response($jsonResponse);
     }
 
     public function selfBookmarks()
@@ -85,23 +79,11 @@ class Bookmarks extends Route
                 $requestPayload['user'] = $currentUserId;
                 $id = $bookmarks->insertBookmark($requestPayload);
                 break;
-            case 'DELETE':
-                $bookmark = $bookmarks->fetchByUserAndId($currentUserId, $id);
-                if ($bookmark) {
-                    echo $bookmarks->delete(['id' => $id]);
-                }
-                return;
         }
 
-        $jsonResponse = $bookmarks->fetchByUserId($currentUserId);
+        $jsonResponse = $this->getDataAndSetResponseCacheTags([$bookmarks, 'fetchEntitiesByUserId'], [$currentUserId]);
 
-        return $this->app->response([
-            'meta' => [
-                'table' => 'directus_bookmarks',
-                'type' => 'collection'
-            ],
-            'data' => $jsonResponse
-        ]);
+        return $app->response($jsonResponse);
     }
 
     // @NOTE: duplicate selfBookmarks
@@ -122,23 +104,11 @@ class Bookmarks extends Route
                 $requestPayload['user'] = $currentUserId;
                 $id = $bookmarks->insertBookmark($requestPayload);
                 break;
-            case 'DELETE':
-                $bookmark = $bookmarks->fetchByUserAndId($currentUserId, $id);
-                if ($bookmark) {
-                    echo $bookmarks->delete(['id' => $id]);
-                }
-                return;
         }
 
-        $jsonResponse = $bookmarks->fetchByUserId($currentUserId);
+        $jsonResponse = $this->getDataAndSetResponseCacheTags([$bookmarks, 'fetchEntitiesByUserId'], [$currentUserId]);
 
-        return $this->app->response([
-            'meta' => [
-                'table' => 'directus_bookmarks',
-                'type' => 'collection'
-            ],
-            'data' => $jsonResponse
-        ]);
+        return $app->response($jsonResponse);
     }
 
     public function allBookmarks()
@@ -149,7 +119,7 @@ class Bookmarks extends Route
         $tableGateway = new RelationalTableGateway('directus_bookmarks', $ZendDb, $acl);
 
         $params = $app->request()->get();
-        return $this->app->response($tableGateway->getItems($params));
+        return $this->app->response($this->getEntriesAndSetResponseCacheTags($tableGateway, $params));
     }
 
     public function preferences($title)
@@ -160,9 +130,9 @@ class Bookmarks extends Route
         $dbConnection = $app->container->get('zenddb');
         $tableGateway = new DirectusPreferencesTableGateway($dbConnection, $acl);
 
-        $response = $tableGateway->fetchByUserAndTitle($acl->getUserId(), $title);
+        $response = $this->getDataAndSetResponseCacheTags([$tableGateway, 'fetchEntityByUserAndTitle'], [$acl->getUserId(), $title]);
 
-        if (!$response) {
+        if (!$response['data']) {
             $response = [
                 'success' => false,
                 'error' => [
@@ -170,7 +140,6 @@ class Bookmarks extends Route
                 ]
             ];
         } else {
-            $response = $tableGateway->loadMetadata($response, true);
             $response['success'] = true;
         }
 

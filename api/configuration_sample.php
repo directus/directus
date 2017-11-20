@@ -6,6 +6,31 @@ return [
         'prefix' => 'directus6_'
     ],
 
+    'cache' => [
+//        'pool' => [
+//            'adapter' => 'apc'
+//        ],
+//        'pool' => [
+//            'adapter' => 'apcu'
+//        ],
+//        'pool' => [
+//            'adapter' => 'filesystem',
+//            'path' => '../cache/', // relative to the api directory
+//        ],
+//        'pool' => [
+//            'adapter'   => 'memcached',
+//            'host'      => 'localhost',
+//            'port'      => 11211
+//        ],
+//        'pool' => [
+//            'adapter'   => 'redis',
+//            'host'      => 'localhost',
+//            'port'      => 6379
+//        ],
+        'enabled' => true,
+        'response_ttl' => 3600 // seconds
+    ],
+
     // @TODO: the option to have multiple filesystem
     'filesystem' => [
         'adapter' => 'local',
@@ -66,10 +91,10 @@ return [
 
     'cors' => [
         'enabled' => false,
-        'origin' => '*',
+        'origin' => '*', // can be a comma separated value or array of hosts
         'headers' => [
-            ['Access-Control-Allow-Headers', 'Authorization, Content-Type, Access-Control-Allow-Origin'],
-            ['Access-Control-Allow-Credentials', 'false']
+            'Access-Control-Allow-Headers' => 'Authorization, Content-Type, Access-Control-Allow-Origin',
+            'Access-Control-Allow-Credentials' => 'false'
         ]
     ],
 

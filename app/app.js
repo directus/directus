@@ -116,7 +116,7 @@ define('polyfills',[],function () {
   }
 
   if (!String.prototype.startsWith) {
-    String.prototype.startsWith = function (suffix){
+    String.prototype.startsWith = function (suffix) {
       return this.indexOf(suffix, this.length - suffix.length) !== -1;
     };
   }
@@ -124,7 +124,13 @@ define('polyfills',[],function () {
   if (!String.prototype.endsWith) {
     String.prototype.endsWith = function (prefix) {
       return this.lastIndexOf(prefix, 0) === 0;
-    }
+    };
+  }
+
+  if (!String.prototype.trim) {
+    String.prototype.trim = function () {
+      return this.replace(/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g, '');
+    };
   }
 });
 
@@ -6618,18 +6624,36 @@ define('utils',['underscore'], function (_) {
   };
 
   Utils.getTemplateVariables = function (string) {
-    return (string || '').match(/{{([^{}]+)}}/g).map(function (value) {
-      return value.slice(2, -2);
+    var variables = (string || '').match(/{{([^{}]+)}}/g);
+
+    return (variables || []).map(function (value) {
+      // remove the spaces between the variables
+      // to avoid invalid variable name
+      return value.slice(2, -2).trim();
     })
   };
 
   // NOTE: This are meant to work with single line csv
   Utils.parseCSV = function (string, options) {
-    options || (options = {});
+    var parts = [];
 
+    // play it safe for the end user now
+    // return empty instead of an exception
+    if (!_.isString(string)) {
+      return [];
+    }
+
+    options || (options = {});
+    string = (string  || '');
     options.trim = options.trim === undefined ? true : options.trim;
 
-    return (string  || '').split(',').map(function (name) {
+    if (string.indexOf(',') >= 0) {
+      parts = string.split(',');
+    } else if (string) {
+      parts = [string];
+    }
+
+    return parts.map(function (name) {
       if (options.trim === true) {
         name = name.trim()
       }
@@ -6688,6 +6712,31 @@ define('utils',['underscore'], function (_) {
     }
 
     return parsedString;
+  };
+
+  Utils.repeatString = function (string, times) {
+    return Array(times + 1).join(string);
+  };
+
+  Utils.pad = function (position, string, fillString, times) {
+    var fill = this.repeatString(fillString, times);
+    var result;
+
+    if (position === 'right') {
+      result = string + fill;
+    } else {
+      result = fill + string;
+    }
+
+    return result.slice(-times);
+  };
+
+  Utils.leftPad = function (string, fillString, times) {
+    return this.pad('left', string, fillString, times);
+  };
+
+  Utils.rightPad = function (string, fillString, times) {
+    return this.pad('right', string, fillString, times);
   };
 
   return Utils;
@@ -9745,8 +9794,7 @@ return LayoutManager;
 
 }));
 
-define('core/UIView',['require','exports','module','backbone','underscore','handlebars','plugins/backbone.layoutmanager'],function(require, exports, module) {
-
+define('core/UIView',['require','exports','module','backbone','underscore','handlebars','plugins/backbone.layoutmanager'],function (require, exports, module) {
   
 
   var Backbone = require('backbone');
@@ -9788,12 +9836,12 @@ define('core/UIView',['require','exports','module','backbone','underscore','hand
       }
     },
 
-    isRequired: function() {
+    isRequired: function () {
       return this.columnSchema.get('required') === true;
     },
 
     // Parent field view additional classes
-    fieldClass: function() {},
+    fieldClass: function () {},
 
     hideLabel: false,
 
@@ -9825,7 +9873,7 @@ define('core/UIView',['require','exports','module','backbone','underscore','hand
       // Default LayoutManager constructor
       UIView.__super__.constructor.call(this, options);
 
-     this.listenTo(this.model, 'save:before', this._beforeSaving);
+      this.listenTo(this.model, 'save:before', this._beforeSaving);
     }
   });
 });
@@ -9838,28 +9886,70 @@ define('helpers/schema',[
 
   
 
-  // @TODO: Add an object that handle supported values by types
-  var dateTypes = ['DATETIME', 'DATE'];
-  var decimalTypes = [
-    'FLOAT',
-    'DOUBLE',
-    'DECIMAL',
-    'NUMERIC'
-  ];
-  var numericTypes = [
-    // NOTE: set INT as default. first = default
-    'INT',
-    'TINYINT',
-    'SMALLINT',
-    'MEDIUMINT',
-    'YEAR',
-    'BIGINT'
-  ].concat(decimalTypes);
+  // All types must be unique
+  var types = {
+    DATE: {
+      DATETIME: null,
+      DATE: null
+    },
+    DECIMAL: {
+      FLOAT: {length: '10,2'},
+      DOUBLE: {length: '10,2'},
+      DECIMAL: {length: '10,2'},
+      NUMERIC: {length: '10,2'}
+    },
+    INTEGER: {
+      // NOTE: set INT as default. first = default
+      INT: {length: 11},
+      TINYINT: {length: 1},
+      SMALLINT: {length: 5},
+      MEDIUMINT: {length: 7},
+      BIGINT: {length: 18},
+      YEAR: {length: 4}
+    },
+    STRING: {
+      CHAR: {length: 1},
+      VARCHAR: {length: 100}
+    }
+  };
 
-  var stringTypes = [
-    'VARCHAR',
-    'CHAR'
-  ];
+  function getTypes(group) {
+    var typesGroup = types[group];
+
+    if (group) {
+      typesGroup = _.keys(typesGroup);
+    }
+
+    return typesGroup;
+  }
+
+  function getTypesWithoutGroup() {
+    var list = {};
+
+    _.each(types, function (type) {
+      _.each(type, function (value, key) {
+        list[key] = value;
+      });
+    });
+
+    return list;
+  }
+
+  function getType(name) {
+    var types = getTypesWithoutGroup();
+
+    return _.find(types, function (value, key) {
+      if (key === name) {
+        return true;
+      }
+    });
+  }
+
+  // @TODO: Add an object that handle supported values by types
+  var dateTypes = getTypes('DATE');
+  var decimalTypes = getTypes('DECIMAL');
+  var numericTypes = getTypes('INTEGER').concat(decimalTypes);
+  var stringTypes = getTypes('STRING');
 
   var getNumericInterfaceTypes = function () {
     return numericTypes.concat(stringTypes);
@@ -9886,6 +9976,12 @@ define('helpers/schema',[
 
       return hasType;
     })
+  };
+
+  var getTypeDefaultLength = function (name) {
+    var type = getType(name);
+
+    return type && type.length ? type.length : null;
   };
 
   var dateColumns = function (structure, excludeSystems) {
@@ -9981,6 +10077,7 @@ define('helpers/schema',[
   };
 
   return {
+    getTypeDefaultLength: getTypeDefaultLength,
     getSystemDefaultComment: getSystemDefaultComment,
     isMissingRequiredOptions: isMissingRequiredOptions,
     isSystem: isSystem,
@@ -10357,10 +10454,11 @@ define('schema/RelationshipModel',['require','exports','module','backbone'],func
 
 });
 
-define('schema/ColumnModel',['require','exports','module','app','utils','backbone','underscore','./UIModel','./RelationshipModel'],function(require, exports, module) {
+define('schema/ColumnModel',['require','exports','module','app','helpers/schema','utils','backbone','underscore','./UIModel','./RelationshipModel'],function(require, exports, module) {
   
 
   var app = require('app'),
+      schemaHelper = require('helpers/schema'),
       Utils = require('utils'),
       Backbone = require('backbone'),
       _ = require('underscore'),
@@ -10463,6 +10561,18 @@ define('schema/ColumnModel',['require','exports','module','app','utils','backbon
       return this.get('type');
     },
 
+    isDecimal: function () {
+      return schemaHelper.isDecimalType(this.getType());
+    },
+
+    getPrecision: function () {
+      return this.get('precision');
+    },
+
+    getScale: function () {
+      return this.get('scale');
+    },
+
     get: function (attr, skip) {
       if (attr === 'length' && !this.isNew() && !skip && this.isEnumOrSet()) {
         return this.getValues();
@@ -10505,6 +10615,10 @@ define('schema/ColumnModel',['require','exports','module','app','utils','backbon
 
     isOneToMany: function () {
       return this.getRelationshipType() === 'ONETOMANY';
+    },
+
+    isToMany: function () {
+      return this.isOneToMany() || this.isManyToMany();
     },
 
     isNullable: function () {
@@ -10707,7 +10821,7 @@ define('schema/ColumnsCollection',['require','exports','module','backbone','unde
   });
 });
 
-/**!
+/** !
  * Sortable
  * @author	RubaXa   <trash@rubaxa.org>
  * @license MIT
@@ -10716,22 +10830,20 @@ define('schema/ColumnsCollection',['require','exports','module','backbone','unde
 (function sortableModule(factory) {
   
 
-  if (typeof define === "function" && define.amd) {
+  if (typeof define === 'function' && define.amd) {
     define('sortable',factory);
-  }
-  else if (typeof module != "undefined" && typeof module.exports != "undefined") {
+  }	else if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
     module.exports = factory();
-  }
-  else {
-    /* jshint sub:true */
-    window["Sortable"] = factory();
+  }	else {
+		/* jshint sub:true */
+    window.Sortable = factory();
   }
 })(function sortableFactory() {
   
 
-  if (typeof window == "undefined" || !window.document) {
+  if (typeof window === 'undefined' || !window.document) {
     return function sortableError() {
-      throw new Error("Sortable.js requires a window with a document");
+      throw new Error('Sortable.js requires a window with a document');
     };
   }
 
@@ -10764,25 +10876,27 @@ define('schema/ColumnsCollection',['require','exports','module','backbone','unde
 
     moved,
 
-    /** @const */
+		/** @const */
     R_SPACE = /\s+/g,
     R_FLOAT = /left|right|inline/,
 
-    expando = 'Sortable' + (new Date).getTime(),
+    expando = 'Sortable' + (new Date()).getTime(),
 
     win = window,
     document = win.document,
     parseInt = win.parseInt,
+    setTimeout = win.setTimeout,
 
     $ = win.jQuery || win.Zepto,
     Polymer = win.Polymer,
 
     captureMode = false,
+    passiveMode = false,
 
-    supportDraggable = !!('draggable' in document.createElement('div')),
+    supportDraggable = ('draggable' in document.createElement('div')),
     supportCssPointerEvents = (function (el) {
-      // false when IE11
-      if (!!navigator.userAgent.match(/Trident.*rv[ :]?11\./)) {
+			// false when IE11
+      if (navigator.userAgent.match(/(?:Trident.*rv[ :]?11\.|msie)/i)) {
         return false;
       }
       el = document.createElement('x');
@@ -10798,8 +10912,8 @@ define('schema/ColumnsCollection',['require','exports','module','backbone','unde
     savedInputChecked = [],
     touchDragOverListeners = [],
 
-    _autoScroll = _throttle(function (/**Event*/evt, /**Object*/options, /**HTMLElement*/rootEl) {
-      // Bug: https://bugzilla.mozilla.org/show_bug.cgi?id=505521
+    _autoScroll = _throttle(function (/** Event */evt, /** Object */options, /** HTMLElement */rootEl) {
+			// Bug: https://bugzilla.mozilla.org/show_bug.cgi?id=505521
       if (rootEl && options.scroll) {
         var _this = rootEl[expando],
           el,
@@ -10820,7 +10934,7 @@ define('schema/ColumnsCollection',['require','exports','module','backbone','unde
           scrollOffsetY
           ;
 
-        // Delect scrollEl
+				// Delect scrollEl
         if (scrollParentEl !== rootEl) {
           scrollEl = options.scroll;
           scrollParentEl = rootEl;
@@ -10831,11 +10945,11 @@ define('schema/ColumnsCollection',['require','exports','module','backbone','unde
 
             do {
               if ((scrollEl.offsetWidth < scrollEl.scrollWidth) ||
-                (scrollEl.offsetHeight < scrollEl.scrollHeight)
-              ) {
+								(scrollEl.offsetHeight < scrollEl.scrollHeight)
+							) {
                 break;
               }
-              /* jshint boss:true */
+							/* jshint boss:true */
             } while (scrollEl = scrollEl.parentNode);
           }
         }
@@ -10847,15 +10961,13 @@ define('schema/ColumnsCollection',['require','exports','module','backbone','unde
           vy = (abs(rect.bottom - y) <= sens) - (abs(rect.top - y) <= sens);
         }
 
-
         if (!(vx || vy)) {
           vx = (winWidth - x <= sens) - (x <= sens);
           vy = (winHeight - y <= sens) - (y <= sens);
 
-          /* jshint expr:true */
+					/* jshint expr:true */
           (vx || vy) && (el = win);
         }
-
 
         if (autoScroll.vx !== vx || autoScroll.vy !== vy || autoScroll.el !== el) {
           autoScroll.el = el;
@@ -10869,7 +10981,7 @@ define('schema/ColumnsCollection',['require','exports','module','backbone','unde
               scrollOffsetY = vy ? vy * speed : 0;
               scrollOffsetX = vx ? vx * speed : 0;
 
-              if ('function' === typeof(scrollCustomFn)) {
+              if (typeof (scrollCustomFn) === 'function') {
                 return scrollCustomFn.call(_this, scrollOffsetX, scrollOffsetY, evt);
               }
 
@@ -10893,24 +11005,23 @@ define('schema/ColumnsCollection',['require','exports','module','backbone','unde
 
         if (typeof value === 'function') {
           return value;
-        } else {
-          return function (to, from) {
-            var fromGroup = from.options.group.name;
-
-            return pull
-              ? value
-              : value && (value.join
-                  ? value.indexOf(fromGroup) > -1
-                  : (fromGroup == value)
-              );
-          };
         }
+        return function (to, from) {
+          var fromGroup = from.options.group.name;
+
+          return pull ?
+							value :
+							value && (value.join ?
+								value.indexOf(fromGroup) > -1 :
+								(fromGroup == value)
+							);
+        };
       }
 
       var group = {};
       var originalGroup = options.group;
 
-      if (!originalGroup || typeof originalGroup != 'object') {
+      if (!originalGroup || typeof originalGroup !== 'object') {
         originalGroup = {name: originalGroup};
       }
 
@@ -10923,12 +11034,26 @@ define('schema/ColumnsCollection',['require','exports','module','backbone','unde
     }
     ;
 
+	// Detect support a passive mode
+  try {
+    window.addEventListener('test', null, Object.defineProperty({}, 'passive', {
+      get: function () {
+				// `false`, because everything starts to work incorrectly and instead of d'n'd,
+				// begins the page has scrolled.
+        passiveMode = false;
+        captureMode = {
+          capture: false,
+          passive: passiveMode
+        };
+      }
+    }));
+  } catch (err) {}
 
-  /**
-   * @class  Sortable
-   * @param  {HTMLElement}  el
-   * @param  {Object}       [options]
-   */
+	/**
+	 * @class  Sortable
+	 * @param  {HTMLElement}  el
+	 * @param  {Object}       [options]
+	 */
   function Sortable(el, options) {
     if (!(el && el.nodeType && el.nodeType === 1)) {
       throw 'Sortable: `el` must be HTMLElement, and not ' + {}.toString.call(el);
@@ -10937,11 +11062,10 @@ define('schema/ColumnsCollection',['require','exports','module','backbone','unde
     this.el = el; // root element
     this.options = options = _extend({}, options);
 
-
-    // Export instance
+		// Export instance
     el[expando] = this;
 
-    // Default options
+		// Default options
     var defaults = {
       group: Math.random(),
       sort: true,
@@ -10970,31 +11094,31 @@ define('schema/ColumnsCollection',['require','exports','module','backbone','unde
       fallbackClass: 'sortable-fallback',
       fallbackOnBody: false,
       fallbackTolerance: 0,
-      fallbackOffset: {x: 0, y: 0}
+      fallbackOffset: {x: 0, y: 0},
+      supportPointer: Sortable.supportPointer !== false
     };
 
-
-    // Set default options
+		// Set default options
     for (var name in defaults) {
       !(name in options) && (options[name] = defaults[name]);
     }
 
     _prepareGroup(options);
 
-    // Bind all private methods
+		// Bind all private methods
     for (var fn in this) {
       if (fn.charAt(0) === '_' && typeof this[fn] === 'function') {
         this[fn] = this[fn].bind(this);
       }
     }
 
-    // Setup drag mode
+		// Setup drag mode
     this.nativeDraggable = options.forceFallback ? false : supportDraggable;
 
-    // Bind events
+		// Bind events
     _on(el, 'mousedown', this._onTapStart);
     _on(el, 'touchstart', this._onTapStart);
-    _on(el, 'pointerdown', this._onTapStart);
+    options.supportPointer && _on(el, 'pointerdown', this._onTapStart);
 
     if (this.nativeDraggable) {
       _on(el, 'dragover', this);
@@ -11003,10 +11127,9 @@ define('schema/ColumnsCollection',['require','exports','module','backbone','unde
 
     touchDragOverListeners.push(this._onDragOver);
 
-    // Restore sorting
+		// Restore sorting
     options.store && this.sort(options.store.get(this));
   }
-
 
   Sortable.prototype = /** @lends Sortable.prototype */ {
     constructor: Sortable,
@@ -11019,22 +11142,25 @@ define('schema/ColumnsCollection',['require','exports','module','backbone','unde
         type = evt.type,
         touch = evt.touches && evt.touches[0],
         target = (touch || evt).target,
-        originalTarget = evt.target.shadowRoot && evt.path[0] || target,
+        originalTarget = evt.target.shadowRoot && (evt.path && evt.path[0]) || target,
         filter = options.filter,
         startIndex;
 
       _saveInputCheckedState(el);
 
-
-      // Don't trigger start event when an element is been dragged, otherwise the evt.oldindex always wrong when set option.group.
+			// Don't trigger start event when an element is been dragged, otherwise the evt.oldindex always wrong when set option.group.
       if (dragEl) {
         return;
       }
 
-      if (type === 'mousedown' && evt.button !== 0 || options.disabled) {
+      if (/mousedown|pointerdown/.test(type) && evt.button !== 0 || options.disabled) {
         return; // only left button or enabled
       }
 
+			// cancel dnd if original target is content editable
+      if (originalTarget.isContentEditable) {
+        return;
+      }
 
       target = _closest(target, options.draggable, el);
 
@@ -11043,27 +11169,26 @@ define('schema/ColumnsCollection',['require','exports','module','backbone','unde
       }
 
       if (lastDownEl === target) {
-        // Ignoring duplicate `down`
+				// Ignoring duplicate `down`
         return;
       }
 
-      // Get the index of the dragged element within its parent
+			// Get the index of the dragged element within its parent
       startIndex = _index(target, options.draggable);
 
-      // Check filter
+			// Check filter
       if (typeof filter === 'function') {
         if (filter.call(this, evt, target, this)) {
-          _dispatchEvent(_this, originalTarget, 'filter', target, el, startIndex);
+          _dispatchEvent(_this, originalTarget, 'filter', target, el, el, startIndex);
           preventOnFilter && evt.preventDefault();
           return; // cancel dnd
         }
-      }
-      else if (filter) {
+      }			else if (filter) {
         filter = filter.split(',').some(function (criteria) {
           criteria = _closest(originalTarget, criteria.trim(), el);
 
           if (criteria) {
-            _dispatchEvent(_this, criteria, 'filter', target, el, startIndex);
+            _dispatchEvent(_this, criteria, 'filter', target, el, el, startIndex);
             return true;
           }
         });
@@ -11078,7 +11203,7 @@ define('schema/ColumnsCollection',['require','exports','module','backbone','unde
         return;
       }
 
-      // Prepare `dragstart`
+			// Prepare `dragstart`
       this._prepareDragStart(evt, touch, target, startIndex);
     },
 
@@ -11103,27 +11228,27 @@ define('schema/ColumnsCollection',['require','exports','module','backbone','unde
         this._lastX = (touch || evt).clientX;
         this._lastY = (touch || evt).clientY;
 
-        dragEl.style['will-change'] = 'transform';
+        dragEl.style['will-change'] = 'all';
 
         dragStartFn = function () {
-          // Delayed drag has been triggered
-          // we can re-enable the events: touchmove/mousemove
+					// Delayed drag has been triggered
+					// we can re-enable the events: touchmove/mousemove
           _this._disableDelayedDrag();
 
-          // Make the element draggable
+					// Make the element draggable
           dragEl.draggable = _this.nativeDraggable;
 
-          // Chosen item
+					// Chosen item
           _toggleClass(dragEl, options.chosenClass, true);
 
-          // Bind the events: dragstart/dragend
+					// Bind the events: dragstart/dragend
           _this._triggerDragStart(evt, touch);
 
-          // Drag start event
-          _dispatchEvent(_this, rootEl, 'choose', dragEl, rootEl, oldIndex);
+					// Drag start event
+          _dispatchEvent(_this, rootEl, 'choose', dragEl, rootEl, rootEl, oldIndex);
         };
 
-        // Disable "draggable"
+				// Disable "draggable"
         options.ignore.split(',').forEach(function (criteria) {
           _find(dragEl, criteria.trim(), _disableDraggable);
         });
@@ -11131,26 +11256,24 @@ define('schema/ColumnsCollection',['require','exports','module','backbone','unde
         _on(ownerDocument, 'mouseup', _this._onDrop);
         _on(ownerDocument, 'touchend', _this._onDrop);
         _on(ownerDocument, 'touchcancel', _this._onDrop);
-        _on(ownerDocument, 'pointercancel', _this._onDrop);
         _on(ownerDocument, 'selectstart', _this);
+        options.supportPointer && _on(ownerDocument, 'pointercancel', _this._onDrop);
 
         if (options.delay) {
-          // If the user moves the pointer or let go the click or touch
-          // before the delay has been reached:
-          // disable the delayed drag
+					// If the user moves the pointer or let go the click or touch
+					// before the delay has been reached:
+					// disable the delayed drag
           _on(ownerDocument, 'mouseup', _this._disableDelayedDrag);
           _on(ownerDocument, 'touchend', _this._disableDelayedDrag);
           _on(ownerDocument, 'touchcancel', _this._disableDelayedDrag);
           _on(ownerDocument, 'mousemove', _this._disableDelayedDrag);
           _on(ownerDocument, 'touchmove', _this._disableDelayedDrag);
-          _on(ownerDocument, 'pointermove', _this._disableDelayedDrag);
+          options.supportPointer && _on(ownerDocument, 'pointermove', _this._disableDelayedDrag);
 
           _this._dragStartTimer = setTimeout(dragStartFn, options.delay);
         } else {
           dragStartFn();
         }
-
-
       }
     },
 
@@ -11170,7 +11293,7 @@ define('schema/ColumnsCollection',['require','exports','module','backbone','unde
       touch = touch || (evt.pointerType == 'touch' ? evt : null);
 
       if (touch) {
-        // Touch device support
+				// Touch device support
         tapEvt = {
           target: dragEl,
           clientX: touch.clientX,
@@ -11178,19 +11301,17 @@ define('schema/ColumnsCollection',['require','exports','module','backbone','unde
         };
 
         this._onDragStart(tapEvt, 'touch');
-      }
-      else if (!this.nativeDraggable) {
+      }			else if (!this.nativeDraggable) {
         this._onDragStart(tapEvt, true);
-      }
-      else {
+      }			else {
         _on(dragEl, 'dragend', this);
         _on(rootEl, 'dragstart', this._onDragStart);
       }
 
       try {
         if (document.selection) {
-          // Timeout neccessary for IE9
-          setTimeout(function () {
+					// Timeout neccessary for IE9
+          _nextTick(function () {
             document.selection.empty();
           });
         } else {
@@ -11204,14 +11325,14 @@ define('schema/ColumnsCollection',['require','exports','module','backbone','unde
       if (rootEl && dragEl) {
         var options = this.options;
 
-        // Apply effect
+				// Apply effect
         _toggleClass(dragEl, options.ghostClass, true);
         _toggleClass(dragEl, options.dragClass, false);
 
         Sortable.active = this;
 
-        // Drag start event
-        _dispatchEvent(this, rootEl, 'start', dragEl, rootEl, oldIndex);
+				// Drag start event
+        _dispatchEvent(this, rootEl, 'start', dragEl, rootEl, rootEl, oldIndex);
       } else {
         this._nulling();
       }
@@ -11230,9 +11351,14 @@ define('schema/ColumnsCollection',['require','exports','module','backbone','unde
           _css(ghostEl, 'display', 'none');
         }
 
-        var target = document.elementFromPoint(touchEvt.clientX, touchEvt.clientY),
-          parent = target,
-          i = touchDragOverListeners.length;
+        var target = document.elementFromPoint(touchEvt.clientX, touchEvt.clientY);
+        var parent = target;
+        var i = touchDragOverListeners.length;
+
+        if (target && target.shadowRoot) {
+          target = target.shadowRoot.elementFromPoint(touchEvt.clientX, touchEvt.clientY);
+          parent = target;
+        }
 
         if (parent) {
           do {
@@ -11251,7 +11377,7 @@ define('schema/ColumnsCollection',['require','exports','module','backbone','unde
 
             target = parent; // store last element
           }
-            /* jshint boss:true */
+					/* jshint boss:true */
           while (parent = parent.parentNode);
         }
 
@@ -11261,8 +11387,7 @@ define('schema/ColumnsCollection',['require','exports','module','backbone','unde
       }
     },
 
-
-    _onTouchMove: function (/**TouchEvent*/evt) {
+    _onTouchMove: function (/** TouchEvent */evt) {
       if (tapEvt) {
         var	options = this.options,
           fallbackTolerance = options.fallbackTolerance,
@@ -11272,18 +11397,18 @@ define('schema/ColumnsCollection',['require','exports','module','backbone','unde
           dy = (touch.clientY - tapEvt.clientY) + fallbackOffset.y,
           translate3d = evt.touches ? 'translate3d(' + dx + 'px,' + dy + 'px,0)' : 'translate(' + dx + 'px,' + dy + 'px)';
 
-        // only set the status to dragging, when we are actually dragging
+				// only set the status to dragging, when we are actually dragging
         if (!Sortable.active) {
           if (fallbackTolerance &&
-            min(abs(touch.clientX - this._lastX), abs(touch.clientY - this._lastY)) < fallbackTolerance
-          ) {
+						min(abs(touch.clientX - this._lastX), abs(touch.clientY - this._lastY)) < fallbackTolerance
+					) {
             return;
           }
 
           this._dragStarted();
         }
 
-        // as well as creating the ghost element on the document body
+				// as well as creating the ghost element on the document body
         this._appendGhost();
 
         moved = true;
@@ -11322,62 +11447,74 @@ define('schema/ColumnsCollection',['require','exports','module','backbone','unde
 
         options.fallbackOnBody && document.body.appendChild(ghostEl) || rootEl.appendChild(ghostEl);
 
-        // Fixing dimensions.
+				// Fixing dimensions.
         ghostRect = ghostEl.getBoundingClientRect();
         _css(ghostEl, 'width', rect.width * 2 - ghostRect.width);
         _css(ghostEl, 'height', rect.height * 2 - ghostRect.height);
       }
     },
 
-    _onDragStart: function (/**Event*/evt, /**boolean*/useFallback) {
-      var dataTransfer = evt.dataTransfer,
-        options = this.options;
+    _onDragStart: function (/** Event */evt, /** boolean */useFallback) {
+      var _this = this;
+      var dataTransfer = evt.dataTransfer;
+      var options = _this.options;
 
-      this._offUpEvents();
+      _this._offUpEvents();
 
-      if (activeGroup.checkPull(this, this, dragEl, evt)) {
+      if (activeGroup.checkPull(_this, _this, dragEl, evt)) {
         cloneEl = _clone(dragEl);
 
         cloneEl.draggable = false;
         cloneEl.style['will-change'] = '';
 
         _css(cloneEl, 'display', 'none');
-        _toggleClass(cloneEl, this.options.chosenClass, false);
+        _toggleClass(cloneEl, _this.options.chosenClass, false);
 
-        rootEl.insertBefore(cloneEl, dragEl);
-        _dispatchEvent(this, rootEl, 'clone', dragEl);
+				// #1143: IFrame support workaround
+        _this._cloneId = _nextTick(function () {
+          rootEl.insertBefore(cloneEl, dragEl);
+          _dispatchEvent(_this, rootEl, 'clone', dragEl);
+        });
       }
 
       _toggleClass(dragEl, options.dragClass, true);
 
       if (useFallback) {
         if (useFallback === 'touch') {
-          // Bind touch events
-          _on(document, 'touchmove', this._onTouchMove);
-          _on(document, 'touchend', this._onDrop);
-          _on(document, 'touchcancel', this._onDrop);
-          _on(document, 'pointermove', this._onTouchMove);
-          _on(document, 'pointerup', this._onDrop);
+					// Bind touch events
+          _on(document, 'touchmove', _this._onTouchMove);
+          _on(document, 'touchend', _this._onDrop);
+          _on(document, 'touchcancel', _this._onDrop);
+
+          if (options.supportPointer) {
+            _on(document, 'pointermove', _this._onTouchMove);
+            _on(document, 'pointerup', _this._onDrop);
+          }
         } else {
-          // Old brwoser
-          _on(document, 'mousemove', this._onTouchMove);
-          _on(document, 'mouseup', this._onDrop);
+					// Old brwoser
+          _on(document, 'mousemove', _this._onTouchMove);
+          _on(document, 'mouseup', _this._onDrop);
         }
 
-        this._loopId = setInterval(this._emulateDragOver, 50);
-      }
-      else {
+        _this._loopId = setInterval(_this._emulateDragOver, 50);
+      }			else {
         if (dataTransfer) {
           dataTransfer.effectAllowed = 'move';
-          options.setData && options.setData.call(this, dataTransfer, dragEl);
+          options.setData && options.setData.call(_this, dataTransfer, dragEl);
         }
 
-        _on(document, 'drop', this);
-        setTimeout(this._dragStarted, 0);
+        _on(document, 'drop', _this);
+
+				// #1143: Бывает элемент с IFrame внутри блокирует `drop`,
+				// поэтому если вызвался `mouseover`, значит надо отменять весь d'n'd.
+				// Breaking Chrome 62+
+				// _on(document, 'mouseover', _this);
+
+        _this._dragStartId = _nextTick(_this._dragStarted);
       }
     },
 
-    _onDragOver: function (/**Event*/evt) {
+    _onDragOver: function (/** Event */evt) {
       var el = this.el,
         target,
         dragRect,
@@ -11402,19 +11539,19 @@ define('schema/ColumnsCollection',['require','exports','module','backbone','unde
       moved = true;
 
       if (activeSortable && !options.disabled &&
-        (isOwner
-            ? canSort || (revert = !rootEl.contains(dragEl)) // Reverting item into the original list
-            : (
-              putSortable === this ||
-              (
-                (activeSortable.lastPullMode = activeGroup.checkPull(this, activeSortable, dragEl, evt)) &&
-                group.checkPut(this, activeSortable, dragEl, evt)
-              )
-            )
-        ) &&
-        (evt.rootEl === void 0 || evt.rootEl === this.el) // touch fallback
-      ) {
-        // Smart auto-scrolling
+				(isOwner ?
+					canSort || (revert = !rootEl.contains(dragEl)) : // Reverting item into the original list
+					(
+						putSortable === this ||
+						(
+							(activeSortable.lastPullMode = activeGroup.checkPull(this, activeSortable, dragEl, evt)) &&
+							group.checkPut(this, activeSortable, dragEl, evt)
+						)
+					)
+				) &&
+				(evt.rootEl === void 0 || evt.rootEl === this.el) // touch fallback
+			) {
+				// Smart auto-scrolling
         _autoScroll(evt, options, this.el);
 
         if (_silent) {
@@ -11435,18 +11572,21 @@ define('schema/ColumnsCollection',['require','exports','module','backbone','unde
 
           if (cloneEl || nextEl) {
             rootEl.insertBefore(dragEl, cloneEl || nextEl);
-          }
-          else if (!canSort) {
+          }					else if (!canSort) {
             rootEl.appendChild(dragEl);
           }
 
           return;
         }
 
-
         if ((el.children.length === 0) || (el.children[0] === ghostEl) ||
-          (el === evt.target) && (target = _ghostIsLast(el, evt))
-        ) {
+					(el === evt.target) && (_ghostIsLast(el, evt))
+				) {
+					// assign target only if condition is true
+          if (el.children.length !== 0 && el.children[0] !== ghostEl && el === evt.target) {
+            target = el.lastElementChild;
+          }
+
           if (target) {
             if (target.animated) {
               return;
@@ -11466,8 +11606,7 @@ define('schema/ColumnsCollection',['require','exports','module','backbone','unde
             this._animate(dragRect, dragEl);
             target && this._animate(targetRect, target);
           }
-        }
-        else if (target && !target.animated && target !== dragEl && (target.parentNode[expando] !== void 0)) {
+        }				else if (target && !target.animated && target !== dragEl && (target.parentNode[expando] !== void 0)) {
           if (lastEl !== target) {
             lastEl = target;
             lastCSS = _css(target);
@@ -11478,40 +11617,41 @@ define('schema/ColumnsCollection',['require','exports','module','backbone','unde
 
           var width = targetRect.right - targetRect.left,
             height = targetRect.bottom - targetRect.top,
-            floating = R_FLOAT.test(lastCSS.cssFloat + lastCSS.display)
-              || (lastParentCSS.display == 'flex' && lastParentCSS['flex-direction'].indexOf('row') === 0),
+            floating = R_FLOAT.test(lastCSS.cssFloat + lastCSS.display) ||
+							(lastParentCSS.display == 'flex' && lastParentCSS['flex-direction'].indexOf('row') === 0),
             isWide = (target.offsetWidth > dragEl.offsetWidth),
             isLong = (target.offsetHeight > dragEl.offsetHeight),
             halfway = (floating ? (evt.clientX - targetRect.left) / width : (evt.clientY - targetRect.top) / height) > 0.5,
             nextSibling = target.nextElementSibling,
-            moveVector = _onMove(rootEl, el, dragEl, dragRect, target, targetRect, evt),
             after = false
             ;
 
+          if (floating) {
+            var elTop = dragEl.offsetTop,
+              tgTop = target.offsetTop;
+
+            if (elTop === tgTop) {
+              after = (target.previousElementSibling === dragEl) && !isWide || halfway && isWide;
+            }						else if (target.previousElementSibling === dragEl || dragEl.previousElementSibling === target) {
+              after = (evt.clientY - targetRect.top) / height > 0.5;
+            } else {
+              after = tgTop > elTop;
+            }
+          } else if (!isMovingBetweenSortable) {
+            after = (nextSibling !== dragEl) && !isLong || halfway && isLong;
+          }
+
+          var moveVector = _onMove(rootEl, el, dragEl, dragRect, target, targetRect, evt, after);
+
           if (moveVector !== false) {
+            if (moveVector === 1 || moveVector === -1) {
+              after = (moveVector === 1);
+            }
+
             _silent = true;
             setTimeout(_unsilent, 30);
 
             _cloneHide(activeSortable, isOwner);
-
-            if (moveVector === 1 || moveVector === -1) {
-              after = (moveVector === 1);
-            }
-            else if (floating) {
-              var elTop = dragEl.offsetTop,
-                tgTop = target.offsetTop;
-
-              if (elTop === tgTop) {
-                after = (target.previousElementSibling === dragEl) && !isWide || halfway && isWide;
-              }
-              else if (target.previousElementSibling === dragEl || dragEl.previousElementSibling === target) {
-                after = (evt.clientY - targetRect.top) / height > 0.5;
-              } else {
-                after = tgTop > elTop;
-              }
-            } else if (!isMovingBetweenSortable) {
-              after = (nextSibling !== dragEl) && !isLong || halfway && isLong;
-            }
 
             if (!dragEl.contains(el)) {
               if (after && !nextSibling) {
@@ -11541,10 +11681,10 @@ define('schema/ColumnsCollection',['require','exports','module','backbone','unde
         }
 
         _css(target, 'transition', 'none');
-        _css(target, 'transform', 'translate3d('
-          + (prevRect.left - currentRect.left) + 'px,'
-          + (prevRect.top - currentRect.top) + 'px,0)'
-        );
+        _css(target, 'transform', 'translate3d(' +
+					(prevRect.left - currentRect.left) + 'px,' +
+					(prevRect.top - currentRect.top) + 'px,0)'
+				);
 
         target.offsetWidth; // repaint
 
@@ -11569,10 +11709,11 @@ define('schema/ColumnsCollection',['require','exports','module','backbone','unde
       _off(ownerDocument, 'touchend', this._onDrop);
       _off(ownerDocument, 'pointerup', this._onDrop);
       _off(ownerDocument, 'touchcancel', this._onDrop);
+      _off(ownerDocument, 'pointercancel', this._onDrop);
       _off(ownerDocument, 'selectstart', this);
     },
 
-    _onDrop: function (/**Event*/evt) {
+    _onDrop: function (/** Event */evt) {
       var el = this.el,
         options = this.options;
 
@@ -11580,7 +11721,11 @@ define('schema/ColumnsCollection',['require','exports','module','backbone','unde
       clearInterval(autoScroll.pid);
       clearTimeout(this._dragStartTimer);
 
-      // Unbind events
+      _cancelNextTick(this._cloneId);
+      _cancelNextTick(this._dragStartId);
+
+			// Unbind events
+      _off(document, 'mouseover', this);
       _off(document, 'mousemove', this._onTouchMove);
 
       if (this.nativeDraggable) {
@@ -11596,11 +11741,11 @@ define('schema/ColumnsCollection',['require','exports','module','backbone','unde
           !options.dropBubble && evt.stopPropagation();
         }
 
-        ghostEl && ghostEl.parentNode.removeChild(ghostEl);
+        ghostEl && ghostEl.parentNode && ghostEl.parentNode.removeChild(ghostEl);
 
         if (rootEl === parentEl || Sortable.active.lastPullMode !== 'clone') {
-          // Remove clone
-          cloneEl && cloneEl.parentNode.removeChild(cloneEl);
+					// Remove clone
+          cloneEl && cloneEl.parentNode && cloneEl.parentNode.removeChild(cloneEl);
         }
 
         if (dragEl) {
@@ -11611,80 +11756,79 @@ define('schema/ColumnsCollection',['require','exports','module','backbone','unde
           _disableDraggable(dragEl);
           dragEl.style['will-change'] = '';
 
-          // Remove class's
+					// Remove class's
           _toggleClass(dragEl, this.options.ghostClass, false);
           _toggleClass(dragEl, this.options.chosenClass, false);
+
+					// Drag stop event
+          _dispatchEvent(this, rootEl, 'unchoose', dragEl, parentEl, rootEl, oldIndex);
 
           if (rootEl !== parentEl) {
             newIndex = _index(dragEl, options.draggable);
 
             if (newIndex >= 0) {
-              // Add event
-              _dispatchEvent(null, parentEl, 'add', dragEl, rootEl, oldIndex, newIndex);
+							// Add event
+              _dispatchEvent(null, parentEl, 'add', dragEl, parentEl, rootEl, oldIndex, newIndex);
 
-              // Remove event
-              _dispatchEvent(this, rootEl, 'remove', dragEl, rootEl, oldIndex, newIndex);
+							// Remove event
+              _dispatchEvent(this, rootEl, 'remove', dragEl, parentEl, rootEl, oldIndex, newIndex);
 
-              // drag from one list and drop into another
-              _dispatchEvent(null, parentEl, 'sort', dragEl, rootEl, oldIndex, newIndex);
-              _dispatchEvent(this, rootEl, 'sort', dragEl, rootEl, oldIndex, newIndex);
+							// drag from one list and drop into another
+              _dispatchEvent(null, parentEl, 'sort', dragEl, parentEl, rootEl, oldIndex, newIndex);
+              _dispatchEvent(this, rootEl, 'sort', dragEl, parentEl, rootEl, oldIndex, newIndex);
             }
-          }
-          else {
-            if (dragEl.nextSibling !== nextEl) {
-              // Get the index of the dragged element within its parent
-              newIndex = _index(dragEl, options.draggable);
+          }					else if (dragEl.nextSibling !== nextEl) {
+							// Get the index of the dragged element within its parent
+            newIndex = _index(dragEl, options.draggable);
 
-              if (newIndex >= 0) {
-                // drag & drop within the same list
-                _dispatchEvent(this, rootEl, 'update', dragEl, rootEl, oldIndex, newIndex);
-                _dispatchEvent(this, rootEl, 'sort', dragEl, rootEl, oldIndex, newIndex);
-              }
+            if (newIndex >= 0) {
+								// drag & drop within the same list
+              _dispatchEvent(this, rootEl, 'update', dragEl, parentEl, rootEl, oldIndex, newIndex);
+              _dispatchEvent(this, rootEl, 'sort', dragEl, parentEl, rootEl, oldIndex, newIndex);
             }
           }
 
           if (Sortable.active) {
-            /* jshint eqnull:true */
+						/* jshint eqnull:true */
             if (newIndex == null || newIndex === -1) {
               newIndex = oldIndex;
             }
 
-            _dispatchEvent(this, rootEl, 'end', dragEl, rootEl, oldIndex, newIndex);
+            _dispatchEvent(this, rootEl, 'end', dragEl, parentEl, rootEl, oldIndex, newIndex);
 
-            // Save sorting
+						// Save sorting
             this.save();
           }
         }
-
       }
 
       this._nulling();
     },
 
-    _nulling: function() {
+    _nulling: function () {
       rootEl =
-        dragEl =
-          parentEl =
-            ghostEl =
-              nextEl =
-                cloneEl =
-                  lastDownEl =
+			dragEl =
+			parentEl =
+			ghostEl =
+			nextEl =
+			cloneEl =
+			lastDownEl =
 
-                    scrollEl =
-                      scrollParentEl =
+			scrollEl =
+			scrollParentEl =
 
-                        tapEvt =
-                          touchEvt =
+			tapEvt =
+			touchEvt =
 
-                            moved =
-                              newIndex =
+			moved =
+			newIndex =
 
-                                lastEl =
-                                  lastCSS =
+			lastEl =
+			lastCSS =
 
-                                    putSortable =
-                                      activeGroup =
-                                        Sortable.active = null;
+			putSortable =
+			activeGroup =
+			Sortable.active = null;
 
       savedInputChecked.forEach(function (el) {
         el.checked = true;
@@ -11692,7 +11836,7 @@ define('schema/ColumnsCollection',['require','exports','module','backbone','unde
       savedInputChecked.length = 0;
     },
 
-    handleEvent: function (/**Event*/evt) {
+    handleEvent: function (/** Event */evt) {
       switch (evt.type) {
         case 'drop':
         case 'dragend':
@@ -11707,17 +11851,20 @@ define('schema/ColumnsCollection',['require','exports','module','backbone','unde
           }
           break;
 
+        case 'mouseover':
+          this._onDrop(evt);
+          break;
+
         case 'selectstart':
           evt.preventDefault();
           break;
       }
     },
 
-
-    /**
-     * Serializes the item into an array of string.
-     * @returns {String[]}
-     */
+		/**
+		 * Serializes the item into an array of string.
+		 * @returns {String[]}
+		 */
     toArray: function () {
       var order = [],
         el,
@@ -11736,13 +11883,13 @@ define('schema/ColumnsCollection',['require','exports','module','backbone','unde
       return order;
     },
 
-
-    /**
-     * Sorts the elements according to the array.
-     * @param  {String[]}  order  order of the items
-     */
+		/**
+		 * Sorts the elements according to the array.
+		 * @param  {String[]}  order  order of the items
+		 */
     sort: function (order) {
-      var items = {}, rootEl = this.el;
+      var items = {},
+        rootEl = this.el;
 
       this.toArray().forEach(function (id, i) {
         var el = rootEl.children[i];
@@ -11760,51 +11907,46 @@ define('schema/ColumnsCollection',['require','exports','module','backbone','unde
       });
     },
 
-
-    /**
-     * Save the current sorting
-     */
+		/**
+		 * Save the current sorting
+		 */
     save: function () {
       var store = this.options.store;
       store && store.set(this);
     },
 
-
-    /**
-     * For each element in the set, get the first element that matches the selector by testing the element itself and traversing up through its ancestors in the DOM tree.
-     * @param   {HTMLElement}  el
-     * @param   {String}       [selector]  default: `options.draggable`
-     * @returns {HTMLElement|null}
-     */
+		/**
+		 * For each element in the set, get the first element that matches the selector by testing the element itself and traversing up through its ancestors in the DOM tree.
+		 * @param   {HTMLElement}  el
+		 * @param   {String}       [selector]  default: `options.draggable`
+		 * @returns {HTMLElement|null}
+		 */
     closest: function (el, selector) {
       return _closest(el, selector || this.options.draggable, this.el);
     },
 
-
-    /**
-     * Set/get option
-     * @param   {string} name
-     * @param   {*}      [value]
-     * @returns {*}
-     */
+		/**
+		 * Set/get option
+		 * @param   {string} name
+		 * @param   {*}      [value]
+		 * @returns {*}
+		 */
     option: function (name, value) {
       var options = this.options;
 
       if (value === void 0) {
         return options[name];
-      } else {
-        options[name] = value;
+      }
+      options[name] = value;
 
-        if (name === 'group') {
-          _prepareGroup(options);
-        }
+      if (name === 'group') {
+        _prepareGroup(options);
       }
     },
 
-
-    /**
-     * Destroy
-     */
+		/**
+		 * Destroy
+		 */
     destroy: function () {
       var el = this.el;
 
@@ -11819,7 +11961,7 @@ define('schema/ColumnsCollection',['require','exports','module','backbone','unde
         _off(el, 'dragenter', this);
       }
 
-      // Remove draggable attributes
+			// Remove draggable attributes
       Array.prototype.forEach.call(el.querySelectorAll('[draggable]'), function (el) {
         el.removeAttribute('draggable');
       });
@@ -11831,7 +11973,6 @@ define('schema/ColumnsCollection',['require','exports','module','backbone','unde
       this.el = el = null;
     }
   };
-
 
   function _cloneHide(sortable, state) {
     if (sortable.lastPullMode !== 'clone') {
@@ -11856,8 +11997,7 @@ define('schema/ColumnsCollection',['require','exports','module','backbone','unde
     }
   }
 
-
-  function _closest(/**HTMLElement*/el, /**String*/selector, /**HTMLElement*/ctx) {
+  function _closest(/** HTMLElement */el, /** String */selector, /** HTMLElement */ctx) {
     if (el) {
       ctx = ctx || document;
 
@@ -11865,13 +12005,12 @@ define('schema/ColumnsCollection',['require','exports','module','backbone','unde
         if ((selector === '>*' && el.parentNode === ctx) || _matches(el, selector)) {
           return el;
         }
-        /* jshint boss:true */
+				/* jshint boss:true */
       } while (el = _getParentOrHost(el));
     }
 
     return null;
   }
-
 
   function _getParentOrHost(el) {
     var parent = el.host;
@@ -11879,37 +12018,31 @@ define('schema/ColumnsCollection',['require','exports','module','backbone','unde
     return (parent && parent.nodeType) ? parent : el.parentNode;
   }
 
-
-  function _globalDragOver(/**Event*/evt) {
+  function _globalDragOver(/** Event */evt) {
     if (evt.dataTransfer) {
       evt.dataTransfer.dropEffect = 'move';
     }
     evt.preventDefault();
   }
 
-
   function _on(el, event, fn) {
     el.addEventListener(event, fn, captureMode);
   }
-
 
   function _off(el, event, fn) {
     el.removeEventListener(event, fn, captureMode);
   }
 
-
   function _toggleClass(el, name, state) {
     if (el) {
       if (el.classList) {
         el.classList[state ? 'add' : 'remove'](name);
-      }
-      else {
+      }			else {
         var className = (' ' + el.className + ' ').replace(R_SPACE, ' ').replace(' ' + name + ' ', ' ');
         el.className = (className + (state ? ' ' + name : '')).replace(R_SPACE, ' ');
       }
     }
   }
-
 
   function _css(el, prop, val) {
     var style = el && el.style;
@@ -11918,27 +12051,25 @@ define('schema/ColumnsCollection',['require','exports','module','backbone','unde
       if (val === void 0) {
         if (document.defaultView && document.defaultView.getComputedStyle) {
           val = document.defaultView.getComputedStyle(el, '');
-        }
-        else if (el.currentStyle) {
+        }				else if (el.currentStyle) {
           val = el.currentStyle;
         }
 
         return prop === void 0 ? val : val[prop];
       }
-      else {
-        if (!(prop in style)) {
-          prop = '-webkit-' + prop;
-        }
-
-        style[prop] = val + (typeof val === 'string' ? '' : 'px');
+      if (!(prop in style)) {
+        prop = '-webkit-' + prop;
       }
+
+      style[prop] = val + (typeof val === 'string' ? '' : 'px');
     }
   }
 
-
   function _find(ctx, tagName, iterator) {
     if (ctx) {
-      var list = ctx.getElementsByTagName(tagName), i = 0, n = list.length;
+      var list = ctx.getElementsByTagName(tagName),
+        i = 0,
+        n = list.length;
 
       if (iterator) {
         for (; i < n; i++) {
@@ -11952,9 +12083,7 @@ define('schema/ColumnsCollection',['require','exports','module','backbone','unde
     return [];
   }
 
-
-
-  function _dispatchEvent(sortable, rootEl, name, targetEl, fromEl, startIndex, newIndex) {
+  function _dispatchEvent(sortable, rootEl, name, targetEl, toEl, fromEl, startIndex, newIndex) {
     sortable = (sortable || rootEl[expando]);
 
     var evt = document.createEvent('Event'),
@@ -11963,7 +12092,7 @@ define('schema/ColumnsCollection',['require','exports','module','backbone','unde
 
     evt.initEvent(name, true, true);
 
-    evt.to = rootEl;
+    evt.to = toEl || rootEl;
     evt.from = fromEl || rootEl;
     evt.item = targetEl || rootEl;
     evt.clone = cloneEl;
@@ -11978,8 +12107,7 @@ define('schema/ColumnsCollection',['require','exports','module','backbone','unde
     }
   }
 
-
-  function _onMove(fromEl, toEl, dragEl, dragRect, targetEl, targetRect, originalEvt) {
+  function _onMove(fromEl, toEl, dragEl, dragRect, targetEl, targetRect, originalEvt, willInsertAfter) {
     var evt,
       sortable = fromEl[expando],
       onMoveFn = sortable.options.onMove,
@@ -11994,6 +12122,7 @@ define('schema/ColumnsCollection',['require','exports','module','backbone','unde
     evt.draggedRect = dragRect;
     evt.related = targetEl || toEl;
     evt.relatedRect = targetRect || toEl.getBoundingClientRect();
+    evt.willInsertAfter = willInsertAfter;
 
     fromEl.dispatchEvent(evt);
 
@@ -12004,37 +12133,31 @@ define('schema/ColumnsCollection',['require','exports','module','backbone','unde
     return retVal;
   }
 
-
   function _disableDraggable(el) {
     el.draggable = false;
   }
-
 
   function _unsilent() {
     _silent = false;
   }
 
-
-  /** @returns {HTMLElement|false} */
+	/** @returns {HTMLElement|false} */
   function _ghostIsLast(el, evt) {
     var lastEl = el.lastElementChild,
       rect = lastEl.getBoundingClientRect();
 
-    // 5 — min delta
-    // abs — нельзя добавлять, а то глюки при наведении сверху
-    return (
-        (evt.clientY - (rect.top + rect.height) > 5) ||
-        (evt.clientX - (rect.right + rect.width) > 5)
-      ) && lastEl;
+		// 5 — min delta
+		// abs — нельзя добавлять, а то глюки при наведении сверху
+    return (evt.clientY - (rect.top + rect.height) > 5) ||
+			(evt.clientX - (rect.left + rect.width) > 5);
   }
 
-
-  /**
-   * Generate id
-   * @param   {HTMLElement} el
-   * @returns {String}
-   * @private
-   */
+	/**
+	 * Generate id
+	 * @param   {HTMLElement} el
+	 * @returns {String}
+	 * @private
+	 */
   function _generateId(el) {
     var str = el.tagName + el.className + el.src + el.href + el.textContent,
       i = str.length,
@@ -12047,13 +12170,13 @@ define('schema/ColumnsCollection',['require','exports','module','backbone','unde
     return sum.toString(36);
   }
 
-  /**
-   * Returns the index of an element within its parent for a selected set of
-   * elements
-   * @param  {HTMLElement} el
-   * @param  {selector} selector
-   * @return {number}
-   */
+	/**
+	 * Returns the index of an element within its parent for a selected set of
+	 * elements
+	 * @param  {HTMLElement} el
+	 * @param  {selector} selector
+	 * @return {number}
+	 */
   function _index(el, selector) {
     var index = 0;
 
@@ -12070,7 +12193,7 @@ define('schema/ColumnsCollection',['require','exports','module','backbone','unde
     return index;
   }
 
-  function _matches(/**HTMLElement*/el, /**String*/selector) {
+  function _matches(/** HTMLElement */el, /** String */selector) {
     if (el) {
       selector = selector.split('.');
 
@@ -12078,8 +12201,8 @@ define('schema/ColumnsCollection',['require','exports','module','backbone','unde
         re = new RegExp('\\s(' + selector.join('|') + ')(?=\\s)', 'g');
 
       return (
-        (tag === '' || el.nodeName.toUpperCase() == tag) &&
-        (!selector.length || ((' ' + el.className + ' ').match(re) || []).length == selector.length)
+				(tag === '' || el.nodeName.toUpperCase() == tag) &&
+				(!selector.length || ((' ' + el.className + ' ').match(re) || []).length == selector.length)
       );
     }
 
@@ -12120,12 +12243,12 @@ define('schema/ColumnsCollection',['require','exports','module','backbone','unde
   }
 
   function _clone(el) {
-    return $
-      ? $(el).clone(true)[0]
-      : (Polymer && Polymer.dom
-          ? Polymer.dom(el).cloneNode(true)
-          : el.cloneNode(true)
-      );
+    if (Polymer && Polymer.dom) {
+      return Polymer.dom(el).cloneNode(true);
+    }		else if ($) {
+      return $(el).clone(true)[0];
+    }
+    return el.cloneNode(true);
   }
 
   function _saveInputCheckedState(root) {
@@ -12138,54 +12261,51 @@ define('schema/ColumnsCollection',['require','exports','module','backbone','unde
     }
   }
 
-  // Fixed #973:
+  function _nextTick(fn) {
+    return setTimeout(fn, 0);
+  }
+
+  function _cancelNextTick(id) {
+    return clearTimeout(id);
+  }
+
+	// Fixed #973:
   _on(document, 'touchmove', function (evt) {
     if (Sortable.active) {
       evt.preventDefault();
     }
   });
 
-  try {
-    window.addEventListener('test', null, Object.defineProperty({}, 'passive', {
-      get: function () {
-        captureMode = {
-          capture: false,
-          passive: false
-        };
-      }
-    }));
-  } catch (err) {}
-
-  // Export utils
+	// Export utils
   Sortable.utils = {
     on: _on,
     off: _off,
     css: _css,
     find: _find,
     is: function (el, selector) {
-      return !!_closest(el, selector, el);
+      return Boolean(_closest(el, selector, el));
     },
     extend: _extend,
     throttle: _throttle,
     closest: _closest,
     toggleClass: _toggleClass,
     clone: _clone,
-    index: _index
+    index: _index,
+    nextTick: _nextTick,
+    cancelNextTick: _cancelNextTick
   };
 
-
-  /**
-   * Create sortable instance
-   * @param {HTMLElement}  el
-   * @param {Object}      [options]
-   */
+	/**
+	 * Create sortable instance
+	 * @param {HTMLElement}  el
+	 * @param {Object}      [options]
+	 */
   Sortable.create = function (el, options) {
     return new Sortable(el, options);
   };
 
-
-  // Export
-  Sortable.version = '1.5.1';
+	// Export
+  Sortable.version = '1.7.0';
   return Sortable;
 });
 
@@ -12399,14 +12519,16 @@ define('core/interfaces/_internals/columns/interface',[
           collection.remove(originalColumnModel);
           columns.remove(originalColumnModel);
           self.$el.find('[data-id=' + model.get('id') + ']').remove();
-          Notification.success('Column removed', '<b>' + columnName + '</b> was removed.');
+          Notification.success(__t('column_x_was_removed', {
+            column: columnName
+          }));
         } else {
-          Notification.error('Column not removed', response.message);
+          Notification.error(__t('column_not_removed'), response.error.message);
         }
       };
 
       var onError = function (model, resp) {
-        Notification.error('Column not removed', resp.responseJSON.message);
+        Notification.error(__t('column_not_removed'), resp.responseJSON.error.message);
       };
 
       columnModel.destroy({success: onSuccess, error: onError, wait: true});
@@ -12546,6 +12668,7 @@ define('core/interfaces/_internals/columns/interface',[
         tableTitle: this.relatedCollection.table.get('table_name'),
         canEdit: this.canEdit,
         showChooseButton: this.showChooseButton,
+        showRemoveButton: columns.length > 1,
         showAddButton: this.showAddButton && this.canEdit
       };
     },
@@ -13799,7 +13922,7 @@ function(app, _, Backbone, Notification, __t, TableHelpers, ModelHelper, TableHe
       var selection = [];
 
       this.$('td .js-select-row:checked').each(function () {
-        selection.push(parseInt(this.value, 10));
+        selection.push(this.value);
       });
 
       return selection;
@@ -14144,14 +14267,31 @@ function(app, _, Backbone, Notification, __t, TableHelpers, ModelHelper, TableHe
     _configureTable: function (options) {
       this.showChart = options.showChart === true;
       this.options.systemCollection = this.collection.clone();
-      this.listenTo(this.collection, 'sync', function (collection, resp, options) {
-        var method = options.reset ? 'reset' : 'set';
-        options.parse = true;
-        this.options.systemCollection[method](resp, options);
+      this.listenTo(this.collection, 'sync', this._onCollectionSynced);
+    },
 
-        // force render the table again
-        this.trigger('render');
-      });
+    _onCollectionSynced: function (collectionOrModel, resp, options) {
+      var method = options.reset ? 'reset' : 'set';
+
+      options.parse = true;
+      // When we fetch a model that belongs to a collection from a table
+      // AKA: X2M Relationship, a single model it's fetch and this sync event is triggered
+      // which will set the model with a model response object
+      // creating an invalid result of a single model, removing the previous model
+      // missing table information
+      // We check if it's a collection and add the new/merge the new model to the collection
+      if (collectionOrModel instanceof Backbone.Model) {
+        method = 'add';
+        options.parse = false;
+        // Get the data from the saved model
+        // instead of the response to avoid parsing the data
+        resp = collectionOrModel.toJSON();
+      }
+
+      this.options.systemCollection[method](resp, options);
+
+      // force render the table again
+      this.trigger('render');
     },
 
     constructor: function (options) {
@@ -15408,7 +15548,7 @@ define('core/listings/tiles',[
       template: 'core/listings/tiles',
 
       attributes: {
-        class: 'view-tiles js-listing-view file-listing flex'
+        class: 'view-tiles js-listing-view file-listing'
       },
 
       events: {
@@ -15452,14 +15592,15 @@ define('core/listings/tiles',[
         var items = [];
 
         if (fileColumn) {
-          items = this.collection.map(function(model) {
+          items = this.collection.map(function (model) {
             var item = {};
 
             item.id = model.get('id');
-            item.title = titleColumn ? model.get(titleColumn.id) : '';
-            item.subtitle = subTitleColumn ? model.get(subTitleColumn.id) : '';
-            item.type = typeColumn ? model.get(typeColumn.id) : '';
+            item.titleColumn = titleColumn ? titleColumn.id : null;
+            item.subtitleColumn = subTitleColumn ? subTitleColumn.id : null;
+            item.typeColumn = typeColumn ? typeColumn.id : null;
             item.thumb = model.has(fileColumn.id) ? model.get(fileColumn.id).get('thumbnail_url') : null;
+            item.model = model;
 
             return item;
           });
@@ -15678,10 +15819,10 @@ define('core/listings/map',[
   'underscore',
   'backbone',
   'core/listings/baseView',
+  'core/notification',
   'core/t',
   'core/google'
-], function(app, _, Backbone, BaseView, __t, g) {
-
+], function (app, _, Backbone, BaseView, Notification, __t, g) {
   return {
     id: 'map',
 
@@ -15704,12 +15845,12 @@ define('core/listings/map',[
         app.router.go(route);
       },
 
-      optionsStructure: function() {
+      optionsStructure: function () {
         var options = {
           location: {}
         };
 
-        _.each(this.locationColumns(), function(column) {
+        _.each(this.locationColumns(), function (column) {
           options.location[column.id] = app.capitalize(column.id);
         });
 
@@ -15726,24 +15867,24 @@ define('core/listings/map',[
               }
             }
           ]
-        }
+        };
       },
 
-      getLocationColumn: function() {
+      getLocationColumn: function () {
         var viewOptions = this.getViewOptions();
         var column;
 
         if (viewOptions.location_column) {
           column = this.collection.structure.get(viewOptions.location_column);
         } else {
-          column = _.first(this.locationColumns())
+          column = _.first(this.locationColumns());
         }
 
         return column;
       },
 
-      locationColumns: function() {
-        return this.collection.structure.filter(function(model) {
+      locationColumns: function () {
+        return this.collection.structure.filter(function (model) {
           return _.contains(['map'], model.get('ui'));
         });
       },
@@ -15762,7 +15903,7 @@ define('core/listings/map',[
         };
       },
 
-      createMarker: function(lat, lng, title) {
+      createMarker: function (lat, lng, title) {
         var marker = new google.maps.Marker({
           position: new google.maps.LatLng(lat, lng),
           map: this.map,
@@ -15776,127 +15917,35 @@ define('core/listings/map',[
         return marker;
       },
 
-      mapInit: function () {
+      initMap: function () {
         var mapOptions = {
-          zoom: 14,
-          center: new google.maps.LatLng(40.720, -73.953),
-          styles: [{"featureType":"administrative","elementType":"labels.text.fill","stylers":[{"color":"#444444"}]},{"featureType":"landscape","elementType":"all","stylers":[{"color":"#f2f2f2"}]},{"featureType":"poi","elementType":"all","stylers":[{"visibility":"off"}]},{"featureType":"poi","elementType":"labels.text","stylers":[{"visibility":"off"}]},{"featureType":"road","elementType":"all","stylers":[{"saturation":-100},{"lightness":45}]},{"featureType":"road.highway","elementType":"all","stylers":[{"visibility":"simplified"}]},{"featureType":"road.arterial","elementType":"labels.icon","stylers":[{"visibility":"off"}]},{"featureType":"transit","elementType":"all","stylers":[{"visibility":"off"}]},{"featureType":"water","elementType":"all","stylers":[{"color":"#dbdbdb"},{"visibility":"on"}]}]
-        };
-
-        var mapElement = $('.map')[0];
-        map = new google.maps.Map(mapElement, mapOptions);
-        var marker = new google.maps.Marker({
-          position: new google.maps.LatLng(40.720, -73.953),
-          map: map,
-          draggable: true,
-          title: 'Select a Location',
-          icon: this.pinSymbol("#3498DB")
-        });
-
-        var input = (document.getElementById('map-search'));
-        map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
-
-        var autocomplete = new google.maps.places.Autocomplete(input);
-        autocomplete.bindTo('bounds', map);
-
-        // var infowindow = new google.maps.InfoWindow();
-
-        autocomplete.addListener('place_changed', function(event) {
-          // infowindow.close();
-          marker.setVisible(false);
-          var place = autocomplete.getPlace();
-          if (!place.geometry) {
-            // User entered the name of a Place that was not suggested and
-            // pressed the Enter key, or the Place Details request failed.
-            window.alert("Please select a result from the menu below.");
-            return;
-          }
-
-          // If the place has a geometry, then present it on a map.
-          if (place.geometry.viewport) {
-            map.fitBounds(place.geometry.viewport);
-          } else {
-            map.setCenter(place.geometry.location);
-            map.setZoom(17);
-          }
-
-          marker.setPosition(place.geometry.location);
-          marker.setVisible(true);
-
-          var address = '';
-          if (place.address_components) {
-            address = [
-              (place.address_components[0] && place.address_components[0].short_name || ''),
-              (place.address_components[1] && place.address_components[1].short_name || ''),
-              (place.address_components[2] && place.address_components[2].short_name || '')
-            ].join(' ');
-          }
-
-          $('.lat-long').html('Latitude: ' + place.geometry.location.lat().toFixed(3) + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Longitude: ' + place.geometry.location.lng().toFixed(3) + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(' + place.name + ')'); // address
-
-        });
-
-        //////////////////////////////////////////////////////////////////////////////
-
-        google.maps.event.addListener(marker, "dragstart", function (event) {
-          marker.setAnimation(3); // Raise
-          $('#map-search').val('');
-        });
-
-        google.maps.event.addListener(marker, "drag", function (event) {
-          $('.lat-long').html('Latitude: '+ event.latLng.lat().toFixed(3) +'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Longitude: '+ event.latLng.lng().toFixed(3));
-        });
-
-        google.maps.event.addListener(marker, "dragend", function (event) {
-          marker.setAnimation(4); // Bounce
-          $('.lat-long').html('Latitude: '+ event.latLng.lat().toFixed(3) +'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Longitude: '+ event.latLng.lng().toFixed(3));
-        });
-
-        map.setOptions({
-          draggable: true,
-          zoomControl: true,
-          scrollwheel: false,
-          disableDoubleClickZoom: false,
-          streetViewControl: false,
-          disableDefaultUI: true
-        });
-
-        google.maps.event.addDomListener(window, "resize", function() {
-          var center = map.getCenter();
-          google.maps.event.trigger(map, "resize");
-          map.setCenter(center);
-        });
-      },
-
-      initMap: function() {
-        var mapOptions = {
-          zoom: 14,
+          zoom: 2,
           center: new google.maps.LatLng(40.720, -73.953),
           styles: [
             {
-              'featureType': 'administrative',
-              'elementType': 'labels.text.fill',
-              'stylers': [{'color':'#444444'}]
+              featureType: 'administrative',
+              elementType: 'labels.text.fill',
+              stylers: [{color: '#444444'}]
             },
             {
-              'featureType': 'landscape',
-              'elementType': 'all',
-              'stylers': [{'color':'#eeeeee'}]
+              featureType: 'landscape',
+              elementType: 'all',
+              stylers: [{color: '#eeeeee'}]
             },
             {
-              'featureType': 'poi',
-              'elementType': 'all',
-              'stylers': [{'visibility':'off'}]
+              featureType: 'poi',
+              elementType: 'all',
+              stylers: [{visibility: 'off'}]
             },
             {
-              'featureType': 'poi',
-              'elementType': 'labels.text',
-              'stylers': [{'visibility':'off'}]
+              featureType: 'poi',
+              elementType: 'labels.text',
+              stylers: [{visibility: 'off'}]
             },
             {
-              'featureType': 'road',
-              'elementType': 'all',
-              'stylers': [{'saturation':-100},{'lightness':10}]
+              featureType: 'road',
+              elementType: 'all',
+              stylers: [{saturation: -100}, {lightness: 10}]
             },
             // {
             //   'featureType': 'road.local',
@@ -15904,33 +15953,32 @@ define('core/listings/map',[
             //   'stylers': [{color: '#cccccc'}]
             // },
             {
-              'featureType': 'road.highway',
-              'elementType': 'all',
-              'stylers': [{'visibility':'simplified'}]
+              featureType: 'road.highway',
+              elementType: 'all',
+              stylers: [{visibility: 'simplified'}]
             },
             {
-              'featureType': 'road.arterial',
-              'elementType': 'labels.icon',
-              'stylers': [{'visibility':'off'}]
+              featureType: 'road.arterial',
+              elementType: 'labels.icon',
+              stylers: [{visibility: 'off'}]
             },
             {
-              'featureType': 'transit',
-              'elementType': 'all',
-              'stylers': [{'visibility':'off'}]
+              featureType: 'transit',
+              elementType: 'all',
+              stylers: [{visibility: 'off'}]
             },
             {
-              'featureType': 'water',
-              'elementType': 'all',
-              'stylers': [{'color':'#9ACCED'},{'visibility':'on'}]
+              featureType: 'water',
+              elementType: 'all',
+              stylers: [{color: '#9ACCED'}, {visibility: 'on'}]
             }
           ]
         };
 
         var mapElement = this.$('.map')[0];
         var map = this.map = new google.maps.Map(mapElement, mapOptions);
-        var marker = this.marker = this.createMarker(40.720, -73.953);
 
-        google.maps.event.addListenerOnce(map, 'idle', _.bind(function() {
+        google.maps.event.addListenerOnce(map, 'idle', _.bind(function () {
           this.updateMap();
         }, this));
 
@@ -15941,8 +15989,13 @@ define('core/listings/map',[
         autocomplete.bindTo('bounds', map);
 
         // var infowindow = new google.maps.InfoWindow();
-        autocomplete.addListener('place_changed', _.bind(function() {
+        autocomplete.addListener('place_changed', _.bind(function () {
           var place = autocomplete.getPlace();
+
+          if (!place.geometry) {
+            Notification.warning(__t('no_results_were_found_for_x', {query: place.name}));
+          }
+
           this.state.place = place;
           this.state.search = this.input.value;
           this.changePlace(place);
@@ -15954,22 +16007,6 @@ define('core/listings/map',[
           this.changePlace(this.state.place);
         }
 
-        //////////////////////////////////////////////////////////////////////////////
-
-        google.maps.event.addListener(marker, 'dragstart', function (event) {
-          marker.setAnimation(3); // Raise
-          $('#map-search').val('');
-        });
-
-        google.maps.event.addListener(marker, 'drag', function (event) {
-          $('.lat-long').html('Latitude: '+ event.latLng.lat().toFixed(3) +'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Longitude: '+ event.latLng.lng().toFixed(3));
-        });
-
-        google.maps.event.addListener(marker, 'dragend', function (event) {
-          marker.setAnimation(4); // Bounce
-          $('.lat-long').html('Latitude: '+ event.latLng.lat().toFixed(3) +'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Longitude: '+ event.latLng.lng().toFixed(3));
-        });
-
         map.setOptions({
           draggable: true,
           zoomControl: true,
@@ -15979,7 +16016,7 @@ define('core/listings/map',[
           disableDefaultUI: true
         });
 
-        google.maps.event.addDomListener(window, 'resize', _.bind(function() {
+        google.maps.event.addDomListener(window, 'resize', _.bind(function () {
           var center = map.getCenter();
 
           google.maps.event.trigger(map, 'resize');
@@ -15990,7 +16027,7 @@ define('core/listings/map',[
         this.state.loaded = true;
       },
 
-      addMarker: function(marker, place) {
+      addMarker: function (marker, place) {
         var map = this.map;
         // infowindow.close();
         marker.setVisible(false);
@@ -16023,6 +16060,10 @@ define('core/listings/map',[
         }
       },
 
+      getMarkers: function () {
+        return this.state.markers || [];
+      },
+
       clearMarkers: function () {
         var markers = this.state.markers;
         for (var i = 0; i < markers.length; i++) {
@@ -16035,30 +16076,33 @@ define('core/listings/map',[
         this.state.markers = [];
       },
 
-      changePlace: function(place) {
+      changePlace: function (place) {
         var marker = this.marker;
+
+        if (!place || !place.geometry) {
+          return;
+        }
 
         this.addMarker(marker, place);
 
         $('.lat-long').html('Latitude: ' + place.geometry.location.lat().toFixed(3) + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Longitude: ' + place.geometry.location.lng().toFixed(3) + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(' + place.name + ')'); // address
-
       },
 
-      getMapBoundsLocation: function() {
+      getMapBoundsLocation: function () {
         var bounds = this.map.getBounds();
 
         return {
           ne: bounds.getNorthEast(),
           sw: bounds.getSouthWest()
-        }
+        };
       },
 
-      updateMap: function() {
+      updateMap: function () {
         this.updateLocationRangeFilter();
         this.collection.fetch();
       },
 
-      updateLocationRangeFilter: function() {
+      updateLocationRangeFilter: function () {
         var range = this.getMapBoundsLocation();
         var filters = {};
 
@@ -16105,6 +16149,16 @@ define('core/listings/map',[
             });
           }
         }, this));
+
+        if (this.collection.length > 0) {
+          // Reference: https://developers.google.com/maps/documentation/javascript/reference#LatLngBounds
+          var bounds = new google.maps.LatLngBounds();
+          _.each(this.getMarkers(), function (marker) {
+            bounds.extend(marker.getPosition());
+          });
+
+          this.map.fitBounds(bounds);
+        }
       },
 
       afterRender: function () {
@@ -16136,7 +16190,7 @@ define('core/listings/map',[
         this.map = null;
       },
 
-      initialize: function() {
+      initialize: function () {
         this.state = {
           loaded: false,
           search: null,
@@ -16151,7 +16205,7 @@ define('core/listings/map',[
         // }, this);
       }
     })
-  }
+  };
 });
 
 define('core/listings/calendar',[
@@ -17399,13 +17453,32 @@ define('core/widgets/FilterWidget',[
       var type = 'like';
       var hasSearch = false;
       var index = $filter.index();
+      var column = this.mysql_real_escape_string($filter.data('filter-id-master'));
+      var columnModel = this.collection.structure.get(column);
+      var columnOptions = columnModel.options;
+      var relatedFilterColumn = columnOptions.get('filter_column');
+      var isDropdown = $(event.target).prop('tagName') === 'SELECT';
 
-      if ($(event.target).prop('tagName') === 'SELECT') {
+      if (!columnModel.isToMany() && isDropdown) {
         type = '=';
       }
 
+      if (isDropdown) {
+        if (!columnModel.isToMany()) {
+          type = '=';
+        } else {
+          var table = app.schemaManager.getTable(columnModel.getRelatedTableName());
+
+          relatedFilterColumn = table.getPrimaryColumnName();
+        }
+      }
+
+      if (relatedFilterColumn) {
+        column += '.' + relatedFilterColumn;
+      }
+
       var data = {
-        id: this.mysql_real_escape_string($filter.data('filter-id-master')),
+        id: column,
         type: type,
         value: this.mysql_real_escape_string($element.val())
       };
@@ -17827,7 +17900,7 @@ define('core/widgets/FilterWidget',[
           if (filter.length === 2) {
             data = {};
             data.filterData = {
-              id: filter[0].replace('%20',':'),
+              id: filter[0].replace('%20',':').split('.').shift(),
               value: filter[1].replace('%20',':').replace('%21',',')
             };
 
@@ -17839,7 +17912,8 @@ define('core/widgets/FilterWidget',[
             that.options.filters.push(data);
           } else if (filter.length === 3) {
             data = {};
-            var selectedColumn = filter[0].replace('%20',':');
+            var filterColumn = filter[0].replace('%20',':');
+            var selectedColumn = filterColumn.split('.').shift();
 
             data.columnName = selectedColumn;
             if(!that.collection.structure.get(selectedColumn)) {
@@ -17874,7 +17948,7 @@ define('core/widgets/FilterWidget',[
             }
             data.filter_type = that.collection.structure.get(selectedColumn).get('type');
 
-            data.filterData = {id: selectedColumn, type: filter[1].replace('%20',':'), value: filter[2].replace('%20',':').replace('%21',',')};
+            data.filterData = {id: filterColumn, type: filter[1].replace('%20',':'), value: filter[2].replace('%20',':').replace('%21',',')};
 
             that.options.filters.push(data);
           }
@@ -18367,19 +18441,23 @@ define('helpers/status',['app', 'underscore'], function (app, _) {
       return mapping.get(statusValue);
     },
 
+    isStatusVisible: function (table, status) {
+      var tableStatuses = this.getTableStatuses(table);
+      var deleteValue = status ? tableStatuses.get('delete_value') : undefined;
+      var isDelete = deleteValue == status.get('id');
+
+      return status.get('hidden_globally') !== true && !isDelete;
+    },
+
     getStatusVisible: function (tableName) {
       var mapping = this.getTableStatusesMapping(tableName);
-      var status = this.getTableStatuses(tableName);
-      var deleteValue = status ? status.get('delete_value') : undefined;
       var statuses = [];
 
       mapping.each(function (status) {
-        var isDelete = deleteValue == status.get('id');
-
-        if (status.get('hidden_globally') !== true && !isDelete) {
+        if (this.isStatusVisible(tableName, status)) {
           statuses.push(status);
         }
-      });
+      }, this);
 
       return statuses;
     },
@@ -18760,44 +18838,30 @@ define('core/interfaces/one_to_many/interface',[
 
     editModel: function (model) {
       var self = this;
-      var EditView = require('modules/tables/views/EditView'); // eslint-disable-line import/no-unresolved
+      var OverlayEditView = require('modules/tables/views/OverlayEditView'); // eslint-disable-line import/no-unresolved
       var columnName = this.columnSchema.relationship.get('junction_key_right');
-      var view = new EditView({
+      var view = new OverlayEditView({
         model: model,
         hiddenFields: [columnName],
-        skipFetch: (model.isNew() || model.hasUnsavedAttributes())
-      });
-
-      view.headerOptions.route.isOverlay = true;
-      view.headerOptions.route.breadcrumbs = [];
-      view.headerOptions.basicSave = true;
-
-      view.events = {
-        'click .saved-success': function () {
-          this.save();
-        },
-        'click #removeOverlay': function () {
+        skipFetch: (model.isNew() || model.hasUnsavedAttributes()),
+        onSave: function () {
+          // trigger changes on the related collection
+          // to be visible on the listing table
+          self.onCollectionChange();
           app.router.removeOverlayPage(this);
         }
-      };
+      });
 
       app.router.overlayPage(view);
-
-      view.save = function () {
-        // trigger changes on the related collection
-        // to be visible on the listing table
-        self.onCollectionChange();
-        app.router.removeOverlayPage(this);
-      };
     },
 
     addModel: function (model) {
-      var EditView = require('modules/tables/views/EditView'); // eslint-disable-line import/no-unresolved
+      var OverlayEditView = require('modules/tables/views/OverlayEditView'); // eslint-disable-line import/no-unresolved
       var collection = this.relatedCollection;
       var columnName = this.columnSchema.relationship.get('junction_key_right');
       var id = this.model.id;
 
-      var view = new EditView({
+      var view = new OverlayEditView({
         model: model,
         collectionAdd: true,
         hiddenFields: [columnName],
@@ -18805,32 +18869,19 @@ define('core/interfaces/one_to_many/interface',[
           name: columnName,
           value: id
         },
-        skipFetch: true
-      });
+        skipFetch: true,
+        onSave: function () {
+          model.set(columnName, id);
 
-      view.headerOptions.route.isOverlay = true;
-      view.headerOptions.route.breadcrumbs = [];
-      view.headerOptions.basicSave = true;
-
-      view.events = {
-        'click .saved-success': function () {
-          this.save();
-        },
-        'click #removeOverlay': function () {
-          app.router.removeOverlayPage(this);
+          if (model.isValid()) {
+            app.router.removeOverlayPage(this);
+            collection.add(model, {nest: true});
+          }
         }
-      };
+      });
 
       app.router.overlayPage(view);
 
-      view.save = function () {
-        model.set(columnName, id);
-
-        if (model.isValid()) {
-          app.router.removeOverlayPage(this);
-          collection.add(model, {nest: true});
-        }
-      };
     },
 
     insertRow: function () {
@@ -19157,7 +19208,7 @@ define('core/interfaces/_internals/directus_users/interface',[
     },
 
     createUser: function () {
-      var EditView = require('modules/tables/views/EditView'); // eslint-disable-line import/no-unresolved
+      var OverlayEditView = require('modules/tables/views/OverlayEditView'); // eslint-disable-line import/no-unresolved
       var collection = this.relatedCollection;
       var model = new collection.model({}, { // eslint-disable-line new-cap
         collection: collection,
@@ -19168,7 +19219,8 @@ define('core/interfaces/_internals/directus_users/interface',[
       });
       var columnName = this.columnSchema.relationship.get('junction_key_right');
       var id = this.model.id;
-      var view = new EditView({
+
+      var view = new OverlayEditView({
         model: model,
         collectionAdd: true,
         hiddenFields: [columnName],
@@ -19176,30 +19228,19 @@ define('core/interfaces/_internals/directus_users/interface',[
           name: columnName,
           value: id
         },
-        skipFetch: true
+        skipFetch: true,
+        onSave: function () {
+          model.set(columnName, id);
+
+          if (model.isValid()) {
+            app.router.removeOverlayPage(this);
+            collection.add(model, {nest: true});
+          }
+        }
       });
-
-      view.headerOptions.route.isOverlay = true;
-      view.headerOptions.route.breadcrumbs = [];
-      view.headerOptions.basicSave = true;
-
-      view.events['click .saved-success'] = function () {
-        this.save();
-      };
-      view.events['click #removeOverlay'] = function () {
-        app.router.removeOverlayPage(this);
-      };
 
       app.router.overlayPage(view);
 
-      view.save = function () {
-        model.set(columnName, id);
-
-        if (model.isValid()) {
-          app.router.removeOverlayPage(this);
-          collection.add(model, {nest: true});
-        }
-      };
     },
 
     chooseUser: function () {
@@ -20633,12 +20674,6 @@ define('core/interfaces/_system/primary_key/interface',['core/UIView'], function
       this.model.set(this.name, $(event.currentTarget).val());
     },
 
-    visible: function () {
-      if (!this.columnSchema.hasAutoIncrement()) {
-        return true;
-      }
-    },
-
     serialize: function () {
       var value = this.options.value;
       var hasAutoIncrement = this.columnSchema.hasAutoIncrement();
@@ -20675,8 +20710,9 @@ define('core/interfaces/_system/primary_key/component',['app', 'core/UIComponent
 
 define('core/interfaces/numeric/interface',[
   'core/UIView',
+  'utils',
   'core/t'
-], function (UIView) {
+], function (UIView, Utils, __t) {
   return UIView.extend({
 
     template: 'numeric/input',
@@ -20708,13 +20744,13 @@ define('core/interfaces/numeric/interface',[
       }
 
       var step = 1;
-
-      if (
-        this.options.schema.get('type') === 'FLOAT' ||
-        this.options.schema.get('type') === 'VARCHAR' ||
-        this.options.schema.get('type') === 'CHAR'
-      ) {
+      if (this.columnSchema.isDecimal()) {
+        var scale = this.columnSchema.getScale();
         step = 'any';
+
+        if (scale > 0) {
+          step = '0.' + Utils.repeatString('0', scale - 1) + '1';
+        }
       }
 
       // NOTE: we shouldn't update the model with the default value
@@ -20749,8 +20785,8 @@ define('core/interfaces/_system/sort/interface',[
     unsavedChange: function () {
       var value = this.model.get(this.name);
 
-      if (Utils.isNothing(value) && !this.columnSchema.isNullable()) {
-        return 0;
+      if (Utils.isSomething(value) && (this.model.isNew() || this.model.hasChanges(this.name))) {
+        return value;
       }
     }
   });
@@ -21033,91 +21069,110 @@ define('core/interfaces/user/component',[
   });
 });
 
-/* global $ */
 define('core/interfaces/text_input/interface',['core/UIView'], function (UIView) {
   
 
   return UIView.extend({
     template: 'text_input/input',
 
-    // Event Declarations
     events: {
-      // Show character counter when input gains focus
-      'focus input': function () {
-        this.$el.find('.char-count').removeClass('hide');
-      },
-      // Update character counter when input changes
-      'input input': 'onChangeInput',
-      // Validate keypress against validation_string
-      'keypress input': 'validateString',
-      // Hide character counter when input loses focus
-      'blur input': function () {
-        this.$el.find('.char-count').addClass('hide');
+      'focus input': 'toggleHideClass',
+      'blur input': 'toggleHideClass',
+      'input input': 'saveAndUpdateCharCount',
+      'keypress input': 'validateString'
+    },
+
+    /**
+     * Serialize the data that's being send to the Handlebars template
+     * @return {Object} Locals for Handlebars template
+     */
+    serialize: function () {
+      var schema = this.options.schema;
+      var settings = this.options.settings;
+
+      var name = this.options.name;
+      var length = schema.get('length');
+      var value = this.options.value || schema.get('default_value') || '';
+
+      var autoSize = settings.get('size') === 'auto';
+      var charsLeft = length - value.toString().length;
+      var placeholder = settings.get('placeholder') || '';
+      var readOnly = settings.get('read_only') || !this.options.canWrite;
+      var showCharacterCount = this.options.schema.get('length');
+      var size = settings.get('size');
+
+      return {
+        autoSize: autoSize,
+        charsLeft: charsLeft,
+        maxLength: length,
+        name: name,
+        placeholder: placeholder,
+        readOnly: readOnly,
+        showCharacterCount: showCharacterCount,
+        size: size,
+        value: value
+      };
+    },
+
+    /**
+     * Toggle the class 'hide' on the .char-count element
+     */
+    toggleHideClass: function () {
+      this.$el.find('.char-count').toggleClass('hide');
+    },
+
+    /**
+     * Save value to model and update character count div
+     * @param  {Object} event The input's input event
+     */
+    saveAndUpdateCharCount: function (event) {
+      var maxLength = this.options.schema.get('length');
+      var trim = this.options.settings.get('trim');
+
+      var $input = this.$(event.currentTarget);
+
+      var value = $input.val();
+
+      if (trim) {
+        value = value.trim();
       }
-    },
 
-    onChangeInput: function (event) {
-      var $input = $(event.currentTarget);
+      // Set silently to prevent "widgets" to display unsaved changes
+      //   Ex: the user first/last name in the sidebar
+      this.model.set(this.name, value, {silent: true});
 
-      // NOTE: change silently to prevent "widgets" to display unsaved changes
-      // Ex: the user first/last name in the sidebar
-      this.model.set(this.name, $input.val(), {silent: true});
-
-      this.updateMaxLength($input.val().length);
-    },
-
-    // Update the character counter with the remaining characters available
-    updateMaxLength: function (length) {
-      if (this.maxCharLength) {
-        var charsLeft = this.maxCharLength - length;
+      if (maxLength) {
+        var charsLeft = maxLength - $input.val().length;
         this.$el.find('.char-count').html(charsLeft);
       }
     },
 
-    // Called before template is rendered, serialize returns an object that gets used as data for template string
-    serialize: function () {
-      var length = this.maxCharLength;
-      var value = this.options.value || this.options.schema.get('default_value') || '';
-
-      return {
-        size: this.options.settings.get('size'),
-        value: value,
-        name: this.options.name,
-        length: length,
-        maxLength: length,
-        characters: length - value.toString().length,
-        comment: this.options.schema.get('comment'),
-        readOnly: this.options.settings.get('read_only') || !this.options.canWrite,
-        autoSize: this.options.settings.get('size') === 'auto',
-        placeholder: (this.options.settings) ? this.options.settings.get('placeholder') : ''
-      };
-    },
-    // Validate String  Checks the passed in value against validation_string
-    // @param e : keypress event object
-    validateString: function (e) {
+    /**
+     * Checks the passed in value against the validation_string
+     * @param  {Object} event The input's keypress event
+     * @return {Boolean} Validates or not
+     */
+    validateString: function (event) {
       var chars;
+      var validationType = this.options.settings.get('validation_type');
+      var validationString = this.options.settings.get('validation_string');
 
-      switch (this.options.settings.get('validation_type')) {
+      switch (validationType) {
         case ('bl') :
-          chars = this.options.settings.get('validation_string').split('');
-          return chars.indexOf(String.fromCharCode(e.which)) === -1;
+          chars = validationString.split('');
+          return chars.indexOf(String.fromCharCode(event.which)) === -1;
         case ('wl') :
-          chars = this.options.settings.get('validation_string').split('');
-          return chars.indexOf(String.fromCharCode(e.which)) !== -1;
+          chars = validationString.split('');
+          return chars.indexOf(String.fromCharCode(event.which)) !== -1;
         default:
           break;
       }
 
       return true;
-    },
-
-    initialize: function () {
-      this.maxCharLength = this.options.schema.get('length');
     }
   });
 });
 
-/* global _ */
 define('core/interfaces/text_input/component',[
   'underscore',
   './interface',
@@ -21146,6 +21201,20 @@ define('core/interfaces/text_input/component',[
         type: 'Boolean',
         comment: 'Force this interface to be read only',
         default_value: false
+      },
+      {
+        id: 'show_character_count',
+        ui: 'toggle',
+        type: 'Boolean',
+        comment: 'Show the remaining characters available next to the input',
+        default_value: true
+      },
+      {
+        id: 'trim',
+        ui: 'toggle',
+        type: 'Boolean',
+        comment: 'Trim surrounding whitespace from the value before saving',
+        default_value: true
       },
       {
         id: 'size',
@@ -21219,7 +21288,9 @@ define('core/interfaces/text_input/component',[
 
       switch (interfaceOptions.settings.get('validation_type')) {
         case ('wl') :
-          var Regex = new RegExp('^[' + interfaceOptions.settings.get('validation_string') + ']+$');
+          var whitelist = interfaceOptions.settings.get('validation_string') || '';
+          var pattern = whitelist.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&');
+          var Regex = new RegExp('^[' + pattern + ']+$');
           if (!value.match(Regex)) {
             return validationMessage;
           }
@@ -21241,135 +21312,309 @@ define('core/interfaces/text_input/component',[
       }
     },
     list: function (interfaceOptions) {
-      return (interfaceOptions.value)
-        ? interfaceOptions.value.toString().replace(/<(?:.|\n)*?>/gm, '').substr(0, 100)
-        : '';
+      return (interfaceOptions.value) ?
+        interfaceOptions.value.toString().replace(/<(?:.|\n)*?>/gm, '').substr(0, 100) :
+        '';
     }
   });
 });
 
-/* global $ */
-define('core/interfaces/slug/interface',['utils', 'underscore', 'core/UIView'], function (Utils, _, UIView) {
+(function (root) {
+// lazy require symbols table
+  var _symbols, removelist;
+  function symbols(code) {
+    if (_symbols) {
+      return _symbols[code];
+    }
+    _symbols = require('unicode/category/So');
+    removelist = ['sign', 'cross', 'of', 'symbol', 'staff', 'hand', 'black', 'white']
+        .map(function (word) {
+          return new RegExp(word, 'gi');
+        });
+    return _symbols[code];
+  }
+
+  function slug(string, opts) {
+    string = string.toString();
+    if (typeof opts === 'string') {
+      opts = {replacement: opts};
+    }
+    opts = opts || {};
+    opts.mode = opts.mode || slug.defaults.mode;
+    var defaults = slug.defaults.modes[opts.mode];
+    var keys = ['replacement', 'multicharmap', 'charmap', 'remove', 'lower'];
+    for (var key, i = 0, l = keys.length; i < l; i++) {
+      key = keys[i];
+      opts[key] = (key in opts) ? opts[key] : defaults[key];
+    }
+    if (typeof opts.symbols === 'undefined') {
+      opts.symbols = defaults.symbols;
+    }
+
+    var lengths = [];
+    for (var key in opts.multicharmap) {
+      if (!opts.multicharmap.hasOwnProperty(key)) {
+        continue;
+      }
+
+      var len = key.length;
+      if (lengths.indexOf(len) === -1) {
+        lengths.push(len);
+      }
+    }
+
+    var code, unicode,
+      result = '';
+    for (var char, i = 0, l = string.length; i < l; i++) {
+      char = string[i];
+      if (!lengths.some(function (len) {
+        var str = string.substr(i, len);
+        if (opts.multicharmap[str]) {
+          i += len - 1;
+          char = opts.multicharmap[str];
+          return true;
+        } return false;
+      })) {
+        if (opts.charmap[char]) {
+          char = opts.charmap[char];
+          code = char.charCodeAt(0);
+        } else {
+          code = string.charCodeAt(i);
+        }
+        if (opts.symbols && (unicode = symbols(code))) {
+          char = unicode.name.toLowerCase();
+          for (var j = 0, rl = removelist.length; j < rl; j++) {
+            char = char.replace(removelist[j], '');
+          }
+          char = char.replace(/^\s+|\s+$/g, '');
+        }
+      }
+      char = char.replace(/[^\w\s\-\.\_~]/g, ''); // allowed
+      if (opts.remove) {
+        char = char.replace(opts.remove, '');
+      } // add flavour
+      result += char;
+    }
+    result = result.replace(/^\s+|\s+$/g, ''); // trim leading/trailing spaces
+    result = result.replace(/[-\s]+/g, opts.replacement); // convert spaces
+    result = result.replace(opts.replacement + '$', ''); // remove trailing separator
+    if (opts.lower) {
+      result = result.toLowerCase();
+    }
+    return result;
+  }
+
+  slug.defaults = {
+    mode: 'pretty'
+  };
+
+  slug.multicharmap = slug.defaults.multicharmap = {
+    '<3': 'love', '&&': 'and', '||': 'or', 'w/': 'with'
+  };
+
+// https://code.djangoproject.com/browser/django/trunk/django/contrib/admin/media/js/urlify.js
+  slug.charmap = slug.defaults.charmap = {
+    // latin
+    À: 'A', Á: 'A', Â: 'A', Ã: 'A', Ä: 'A', Å: 'A', Æ: 'AE',
+    Ç: 'C', È: 'E', É: 'E', Ê: 'E', Ë: 'E', Ì: 'I', Í: 'I',
+    Î: 'I', Ï: 'I', Ð: 'D', Ñ: 'N', Ò: 'O', Ó: 'O', Ô: 'O',
+    Õ: 'O', Ö: 'O', Ő: 'O', Ø: 'O', Ù: 'U', Ú: 'U', Û: 'U',
+    Ü: 'U', Ű: 'U', Ý: 'Y', Þ: 'TH', ß: 'ss', à: 'a', á: 'a',
+    â: 'a', ã: 'a', ä: 'a', å: 'a', æ: 'ae', ç: 'c', è: 'e',
+    é: 'e', ê: 'e', ë: 'e', ì: 'i', í: 'i', î: 'i', ï: 'i',
+    ð: 'd', ñ: 'n', ò: 'o', ó: 'o', ô: 'o', õ: 'o', ö: 'o',
+    ő: 'o', ø: 'o', ù: 'u', ú: 'u', û: 'u', ü: 'u', ű: 'u',
+    ý: 'y', þ: 'th', ÿ: 'y', ẞ: 'SS',
+    // greek
+    α: 'a', β: 'b', γ: 'g', δ: 'd', ε: 'e', ζ: 'z', η: 'h', θ: '8',
+    ι: 'i', κ: 'k', λ: 'l', μ: 'm', ν: 'n', ξ: '3', ο: 'o', π: 'p',
+    ρ: 'r', σ: 's', τ: 't', υ: 'y', φ: 'f', χ: 'x', ψ: 'ps', ω: 'w',
+    ά: 'a', έ: 'e', ί: 'i', ό: 'o', ύ: 'y', ή: 'h', ώ: 'w', ς: 's',
+    ϊ: 'i', ΰ: 'y', ϋ: 'y', ΐ: 'i',
+    Α: 'A', Β: 'B', Γ: 'G', Δ: 'D', Ε: 'E', Ζ: 'Z', Η: 'H', Θ: '8',
+    Ι: 'I', Κ: 'K', Λ: 'L', Μ: 'M', Ν: 'N', Ξ: '3', Ο: 'O', Π: 'P',
+    Ρ: 'R', Σ: 'S', Τ: 'T', Υ: 'Y', Φ: 'F', Χ: 'X', Ψ: 'PS', Ω: 'W',
+    Ά: 'A', Έ: 'E', Ί: 'I', Ό: 'O', Ύ: 'Y', Ή: 'H', Ώ: 'W', Ϊ: 'I',
+    Ϋ: 'Y',
+    // turkish
+    ş: 's', Ş: 'S', ı: 'i', İ: 'I',
+    ğ: 'g', Ğ: 'G',
+    // russian
+    а: 'a', б: 'b', в: 'v', г: 'g', д: 'd', е: 'e', ё: 'yo', ж: 'zh',
+    з: 'z', и: 'i', й: 'j', к: 'k', л: 'l', м: 'm', н: 'n', о: 'o',
+    п: 'p', р: 'r', с: 's', т: 't', у: 'u', ф: 'f', х: 'h', ц: 'c',
+    ч: 'ch', ш: 'sh', щ: 'sh', ъ: 'u', ы: 'y', ь: '', э: 'e', ю: 'yu',
+    я: 'ya',
+    А: 'A', Б: 'B', В: 'V', Г: 'G', Д: 'D', Е: 'E', Ё: 'Yo', Ж: 'Zh',
+    З: 'Z', И: 'I', Й: 'J', К: 'K', Л: 'L', М: 'M', Н: 'N', О: 'O',
+    П: 'P', Р: 'R', С: 'S', Т: 'T', У: 'U', Ф: 'F', Х: 'H', Ц: 'C',
+    Ч: 'Ch', Ш: 'Sh', Щ: 'Sh', Ъ: 'U', Ы: 'Y', Ь: '', Э: 'E', Ю: 'Yu',
+    Я: 'Ya',
+    // ukranian
+    Є: 'Ye', І: 'I', Ї: 'Yi', Ґ: 'G', є: 'ye', і: 'i', ї: 'yi', ґ: 'g',
+    // czech
+    č: 'c', ď: 'd', ě: 'e', ň: 'n', ř: 'r', š: 's', ť: 't', ů: 'u',
+    ž: 'z', Č: 'C', Ď: 'D', Ě: 'E', Ň: 'N', Ř: 'R', Š: 'S', Ť: 'T',
+    Ů: 'U', Ž: 'Z',
+    // polish
+    ą: 'a', ć: 'c', ę: 'e', ł: 'l', ń: 'n', ś: 's', ź: 'z',
+    ż: 'z', Ą: 'A', Ć: 'C', Ę: 'E', Ł: 'L', Ń: 'N', Ś: 'S',
+    Ź: 'Z', Ż: 'Z',
+    // latvian
+    ā: 'a', ē: 'e', ģ: 'g', ī: 'i', ķ: 'k', ļ: 'l', ņ: 'n',
+    ū: 'u', Ā: 'A', Ē: 'E', Ģ: 'G', Ī: 'I',
+    Ķ: 'K', Ļ: 'L', Ņ: 'N', Ū: 'U',
+    // lithuanian
+    ė: 'e', į: 'i', ų: 'u', Ė: 'E', Į: 'I', Ų: 'U',
+    // romanian
+    ț: 't', Ț: 'T', ţ: 't', Ţ: 'T', ș: 's', Ș: 'S', ă: 'a', Ă: 'A',
+    // vietnamese
+    Ạ: 'A', Ả: 'A', Ầ: 'A', Ấ: 'A', Ậ: 'A', Ẩ: 'A', Ẫ: 'A',
+    Ằ: 'A', Ắ: 'A', Ặ: 'A', Ẳ: 'A', Ẵ: 'A', Ẹ: 'E', Ẻ: 'E',
+    Ẽ: 'E', Ề: 'E', Ế: 'E', Ệ: 'E', Ể: 'E', Ễ: 'E', Ị: 'I',
+    Ỉ: 'I', Ĩ: 'I', Ọ: 'O', Ỏ: 'O', Ồ: 'O', Ố: 'O', Ộ: 'O',
+    Ổ: 'O', Ỗ: 'O', Ơ: 'O', Ờ: 'O', Ớ: 'O', Ợ: 'O', Ở: 'O',
+    Ỡ: 'O', Ụ: 'U', Ủ: 'U', Ũ: 'U', Ư: 'U', Ừ: 'U', Ứ: 'U',
+    Ự: 'U', Ử: 'U', Ữ: 'U', Ỳ: 'Y', Ỵ: 'Y', Ỷ: 'Y', Ỹ: 'Y',
+    Đ: 'D', ạ: 'a', ả: 'a', ầ: 'a', ấ: 'a', ậ: 'a', ẩ: 'a',
+    ẫ: 'a', ằ: 'a', ắ: 'a', ặ: 'a', ẳ: 'a', ẵ: 'a', ẹ: 'e',
+    ẻ: 'e', ẽ: 'e', ề: 'e', ế: 'e', ệ: 'e', ể: 'e', ễ: 'e',
+    ị: 'i', ỉ: 'i', ĩ: 'i', ọ: 'o', ỏ: 'o', ồ: 'o', ố: 'o',
+    ộ: 'o', ổ: 'o', ỗ: 'o', ơ: 'o', ờ: 'o', ớ: 'o', ợ: 'o',
+    ở: 'o', ỡ: 'o', ụ: 'u', ủ: 'u', ũ: 'u', ư: 'u', ừ: 'u',
+    ứ: 'u', ự: 'u', ử: 'u', ữ: 'u', ỳ: 'y', ỵ: 'y', ỷ: 'y',
+    ỹ: 'y', đ: 'd',
+    // currency
+    '€': 'euro', '₢': 'cruzeiro', '₣': 'french franc', '£': 'pound',
+    '₤': 'lira', '₥': 'mill', '₦': 'naira', '₧': 'peseta', '₨': 'rupee',
+    '₩': 'won', '₪': 'new shequel', '₫': 'dong', '₭': 'kip', '₮': 'tugrik',
+    '₯': 'drachma', '₰': 'penny', '₱': 'peso', '₲': 'guarani', '₳': 'austral',
+    '₴': 'hryvnia', '₵': 'cedi', '¢': 'cent', '¥': 'yen', 元: 'yuan',
+    円: 'yen', '﷼': 'rial', '₠': 'ecu', '¤': 'currency', '฿': 'baht',
+    $: 'dollar', '₹': 'indian rupee',
+    // symbols
+    '©': '(c)', œ: 'oe', Œ: 'OE', '∑': 'sum', '®': '(r)', '†': '+',
+    '“': '"', '”': '"', '‘': '\'', '’': '\'', '∂': 'd', ƒ: 'f', '™': 'tm',
+    '℠': 'sm', '…': '...', '˚': 'o', º: 'o', ª: 'a', '•': '*',
+    '∆': 'delta', '∞': 'infinity', '♥': 'love', '&': 'and', '|': 'or',
+    '<': 'less', '>': 'greater'
+  };
+
+  slug.defaults.modes = {
+    rfc3986: {
+      replacement: '-',
+      symbols: true,
+      remove: null,
+      lower: true,
+      charmap: slug.defaults.charmap,
+      multicharmap: slug.defaults.multicharmap
+    },
+    pretty: {
+      replacement: '-',
+      symbols: true,
+      remove: /[.]/g,
+      lower: false,
+      charmap: slug.defaults.charmap,
+      multicharmap: slug.defaults.multicharmap
+    }
+  };
+
+// Be compatible with different module systems
+
+  if (typeof define !== 'undefined' && define.amd) { // AMD
+    // dont load symbols table in the browser
+    for (var key in slug.defaults.modes) {
+      if (!slug.defaults.modes.hasOwnProperty(key)) {
+        continue;
+      }
+
+      slug.defaults.modes[key].symbols = false;
+    }
+    define('libs/node-slug',[], function () {
+      return slug;
+    });
+  } else if (typeof module !== 'undefined' && module.exports) { // CommonJS
+    symbols(); // preload symbols table
+    module.exports = slug;
+  } else { // Script tag
+    // dont load symbols table in the browser
+    for (var key in slug.defaults.modes) {
+      if (!slug.defaults.modes.hasOwnProperty(key)) {
+        continue;
+      }
+
+      slug.defaults.modes[key].symbols = false;
+    }
+    root.slug = slug;
+  }
+})(this);
+
+define('core/interfaces/slug/interface',['require','exports','module','core/UIView','libs/node-slug'],function (require, exports, module) {
   
 
-  return UIView.extend({
+  var UIView = require('core/UIView');
+  var slug = require('libs/node-slug');
+
+  module.exports = UIView.extend({
     template: 'slug/input',
 
     events: {
-      'input input': 'onInputChange'
-    },
-
-    unsavedChange: function () {
-      // NOTE: Only set the new value (mark changed) if the value has changed or the model is new
-      if (this.slugValue && (this.model.isNew() || this.model.hasChanges(this.name))) {
-        return this.slugValue;
-      }
-    },
-
-    onInputChange: function (event) {
-      var target = event.currentTarget;
-
-      this.$('.char-count').show();
-      this.model.set(this.name, target.value);
-    },
-
-    bindEvents: function () {
-      var mirroredField = this.getMirroredFieldName();
-
-      if (this.canUpdateSlug()) {
-        $('.fields #' + mirroredField).on('keyup', _.bind(this.onKeyUp, this));
-      }
-    },
-
-    unbindEvents: function () {
-      if (this.canUpdateSlug()) {
-        $('.fields #' + this.getMirroredFieldName()).off('keyup', _.bind(this.onKeyUp, this));
-      }
-    },
-
-    onKeyUp: function (event) {
-      var slug = $(event.currentTarget).val();
-
-      this.updateSlug(slug);
-    },
-
-    getSlugInput: function () {
-      if (!this.$slugField) {
-        this.$slugField = this.$el.find('input');
-      }
-
-      return this.$slugField;
-    },
-
-    getMirroredFieldName: function () {
-      var settings = this.options.settings;
-
-      return settings.get('mirrored_field');
-    },
-
-    canUpdateSlug: function () {
-      var settings = this.options.settings;
-      var mirroredField = this.getMirroredFieldName();
-
-      if (!mirroredField) {
-        return false;
-      }
-
-      return !(settings.get('only_creation') === true && !this.model.isNew());
-    },
-
-    updateSlug: function (slug) {
-      var $slugInput = this.getSlugInput();
-
-      slug = slug.replace(/^\s+|\s+$/g, ''); // Trim
-      slug = slug.toLowerCase();
-
-      var from = 'ÁÄÂÀÃÅČÇĆĎÉĚËÈÊẼĔȆÍÌÎÏŇÑÓÖÒÔÕØŘŔŠŤÚŮÜÙÛÝŸŽáäâàãåčçćďéěëèêẽĕȇíìîïňñóöòôõøðřŕšťúůüùûýÿžþÞĐđßÆa·/_,:;';
-      var to = 'AAAAAACCCDEEEEEEEEIIIINNOOOOOORRSTUUUUUYYZaaaaaacccdeeeeeeeeiiiinnooooooorrstuuuuuyyzbBDdBAa------';
-      for (var i = 0, l = from.length; i < l; i++) {
-        slug = slug.replace(new RegExp(from.charAt(i), 'g'), to.charAt(i));
-      }
-
-      slug = slug.replace(/[^a-z0-9 -]/g, '') // remove invalid chars
-        .replace(/\s+/g, '-') // Collapse whitespace and replace by -
-        .replace(/-+/g, '-'); // Collapse dashes
-
-      $slugInput.val(slug);
-      this.slugValue = slug;
-    },
-
-    afterRender: function () {
-      var $slugInput = this.$('input');
-      var value = this.options.value;
-      var mirroredField = this.getMirroredFieldName();
-      var model = this.options.model;
-
-      if (this.options.settings.get('read_only') === true) {
-        $slugInput.prop('readonly', true);
-      }
-
-      if (this.canUpdateSlug()) {
-        this.updateSlug(value || model.get(mirroredField) || '');
-        this.bindEvents();
-      }
-    },
-
-    cleanup: function () {
-      this.unbindEvents();
+      'input input': 'sluggifyAndSave'
     },
 
     serialize: function () {
       var length = this.options.schema.get('char_length');
       var value = this.options.value || '';
 
+      var onlyOnCreation = this.options.settings.get('only_on_creation');
+      var isNew = this.model.isNew();
+
       return {
         size: this.options.settings.get('size'),
         value: value,
         name: this.options.name,
         maxLength: length,
-        comment: this.options.schema.get('comment'),
-        readOnly: this.options.settings.get('read_only') || !this.options.canWrite
+        readOnly:
+          (onlyOnCreation === true && isNew === false) ||
+          this.options.settings.get('read_only') ||
+          (this.options.canWrite === false)
       };
+    },
+
+    afterRender: function () {
+      var mirroredField = this.options.settings.get('mirrored_field');
+
+      // Add event listener to the mirrored fields input change event
+      if (mirroredField) {
+        // Bind the UIView to make sure we have access to this.model in the callback
+        document.getElementById(mirroredField).addEventListener('input', this.sluggifyAndSave.bind(this));
+      }
+    },
+
+    /**
+     * Sluggify the value found in event.currentTarget.value and save it to the
+     *   parent model
+     * @param  {Object} event InputEvent
+     */
+    sluggifyAndSave: function (event) {
+      var onlyOnCreation = this.options.settings.get('only_on_creation');
+      var isNew = this.model.isNew();
+
+      if (onlyOnCreation === true && isNew === false) {
+        return;
+      }
+
+      var value = event.currentTarget.value;
+
+      var sluggedValue = slug(value, {
+        lower: this.options.settings.get('force_lowercase')
+      });
+
+      // Save slugged value to parent model
+      this.model.set(this.name, sluggedValue);
+
+      // Set input value to slug to reflect value that is going to be saved
+      this.el.querySelector('input').value = sluggedValue;
     }
   });
 });
@@ -21414,8 +21659,14 @@ define('core/interfaces/slug/component',[
         type: 'String',
         comment: 'Column name of the field the slug will pull it\'s value from',
         default_value: '',
-        required: true,
         char_length: 200
+      },
+      {
+        id: 'force_lowercase',
+        ui: 'toggle',
+        type: 'Boolean',
+        comment: 'Force the slug to be in all lowercase',
+        default_value: true
       },
       {
         id: 'only_on_creation',
@@ -21432,9 +21683,9 @@ define('core/interfaces/slug/component',[
       }
     },
     list: function (interfaceOptions) {
-      return (interfaceOptions.value)
-        ? interfaceOptions.value.toString().replace(/<(?:.|\n)*?>/gm, '').substr(0, 100)
-        : '';
+      return (interfaceOptions.value) ?
+        interfaceOptions.value.toString().replace(/<(?:.|\n)*?>/gm, '').substr(0, 100) :
+        '';
     }
   });
 });
@@ -22058,7 +22309,6 @@ define('core/interfaces/radio_buttons/component',['./interface', 'core/UICompone
   });
 });
 
-/* global _ */
 define('core/interfaces/checkboxes/interface',[
   'core/UIView',
   'underscore',
@@ -22085,10 +22335,10 @@ define('core/interfaces/checkboxes/interface',[
     delimiterize: function (out) {
       var delimiter = this.options.settings.get('delimiter');
 
+      out = out.join(delimiter);
+
       if (this.options.settings.get('wrap_with_delimiter')) {
-        out = delimiter + out.join(delimiter) + delimiter;
-      } else {
-        out = out.join(delimiter);
+        out = delimiter + out + delimiter;
       }
 
       return out;
@@ -22108,9 +22358,7 @@ define('core/interfaces/checkboxes/interface',[
     },
 
     update: function () {
-      var out = [];
-
-      out.push(this.value());
+      var out = this.value();
 
       if (Utils.isSomething(this.customValue())) {
         out.push(this.customValue());
@@ -23130,19 +23378,26 @@ define('core/interfaces/wysiwyg_full/interface',[
         autoresize_max_height: this.options.settings.get('max_height'),
         elementpath: elementpath,
         statusbar: elementpath,
+        convert_urls: false,
         menubar: false,
         readonly: this.options.settings.get('read_only') || !this.options.canWrite,
         toolbar: toolbar,
         content_style: 'body.mce-content-body {font-family: \'Roboto\', sans-serif;line-height:24px;letter-spacing:0.2px;font-size:14px;color:#333;margin:0;padding: 10px 30px !important;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}body.mce-content-body p{line-height:inherit !important;}',
         style_formats: styleFormats,
         setup: function (editor) {
-          // NOTE: Do we need this?
+          /**
+           * Event handler for the input event of the TineMCE editor
+           *
+           * Is needed because we need to set the value of the parent model onInput / onChange
+           * Normally, we'd do that using Backbone events, but since we're relying
+           * on TinyMCE for data creation, we need to use TinyMCEs event system in this instance
+           */
           var saveEditorContents = _.debounce(function () {
             if (editor && editor.getContent) {
               var content = editor.getContent();
               var value = self.model.get(self.name);
 
-              if ((Utils.isNothing(value) || value !== content) && Utils.isSomething(content)) {
+              if ((Utils.isNothing(value) || value !== content)) {
                 self.model.set(self.name, content);
                 self.$el.find('textarea')[0].innerHTML = content;
               }
@@ -23167,7 +23422,7 @@ define('core/interfaces/wysiwyg_full/interface',[
           if (customWrapperSettings) {
             var previewStyles = '';
 
-            Object.keys(customWrapperSettings).map(function (identifier) {
+            Object.keys(customWrapperSettings).forEach(function (identifier) {
               // Add preview styling if set
               if (customWrapperSettings[identifier].selector && customWrapperSettings[identifier].preview_style) {
                 previewStyles += customWrapperSettings[identifier].selector + ' {' + customWrapperSettings[identifier].preview_style + '}\n';
@@ -23256,6 +23511,7 @@ define('core/interfaces/wysiwyg_full/component',['./interface', 'core/UIComponen
         comment: 'What heading levels to support',
         default_value: 'h2,h3,h4',
         options: {
+          wrap_with_delimiter: false,
           options: {
             h1: 'Heading 1',
             h2: 'Heading 2',
@@ -23273,6 +23529,7 @@ define('core/interfaces/wysiwyg_full/component',['./interface', 'core/UIComponen
         comment: 'What text-style options to support',
         default_value: 'bold,italic,underline',
         options: {
+          wrap_with_delimiter: false,
           options: {
             bold: 'Bold',
             italic: 'Italic',
@@ -23291,6 +23548,7 @@ define('core/interfaces/wysiwyg_full/component',['./interface', 'core/UIComponen
         comment: 'What block-style options to support',
         default_value: 'p,blockquote',
         options: {
+          wrap_with_delimiter: false,
           options: {
             p: 'Paragraph',
             blockquote: 'Blockquote',
@@ -23306,6 +23564,7 @@ define('core/interfaces/wysiwyg_full/component',['./interface', 'core/UIComponen
         comment: 'What alignment options to support',
         default_value: '',
         options: {
+          wrap_with_delimiter: false,
           options: {
             alignleft: 'Left',
             aligncenter: 'Center',
@@ -23321,6 +23580,7 @@ define('core/interfaces/wysiwyg_full/component',['./interface', 'core/UIComponen
         comment: 'What options to show in the toolbar',
         default_value: 'inline,table,undo,redo,subscript,superscript,bullist,numlist,link,unlink,image,media,paste',
         options: {
+          wrap_with_delimiter: false,
           options: {
             inline: 'Inline Options',
             alignment: 'Alignment Options',
@@ -23843,7 +24103,8 @@ define('core/interfaces/dropdown_enum/interface',[
       'change select': 'updateValue'
     },
     updateValue: function (event) {
-      this.model.set(this.name, event.currentTarget.value);
+      this.value = event.currentTarget.value
+      this.model.set(this.name, this.value);
     },
     unsavedChange: function () {
       // NOTE: Only set the new value (mark changed) if the value has changed
@@ -24306,7 +24567,8 @@ define('core/interfaces/markdown/interface',[
         name: this.options.name,
         rows: this.options.settings.get('rows'),
         comment: this.options.schema.get('comment'),
-        readOnly: this.options.settings.get('read_only') || !this.options.canWrite
+        readOnly: this.options.settings.get('read_only') || !this.options.canWrite,
+        always_show_preview: this.options.settings.get('always_show_preview')
       };
     }
   });
@@ -24331,6 +24593,13 @@ define('core/interfaces/markdown/component',[
         type: 'Boolean',
         comment: 'Force this interface to be read only',
         default_value: false
+      },
+      {
+        id: 'always_show_preview',
+        ui: 'toggle',
+        type: 'Boolean',
+        comment: 'Always show the preview next to the input',
+        default_value: true
       },
       {
         id: 'rows',
@@ -24384,9 +24653,9 @@ define('core/interfaces/markdown/component',[
 
       var raw_val = marked(value);
 
-      return _.isString(raw_val)
-        ? raw_val.replace(/<(?:.|\n)*?>/gm, '').substr(0, 100)
-        : '<span class="silver">--</span>';
+      return _.isString(raw_val) ?
+        raw_val.replace(/<(?:.|\n)*?>/gm, '').substr(0, 100) :
+        '<span class="silver">--</span>';
     }
   });
 });
@@ -24426,7 +24695,7 @@ define('core/interfaces/datetime/date',[
 
     unsavedChange: function () {
       // NOTE: Only set the new value (mark changed) if the value has changed
-      if (this.value && (this.model.isNew() || this.model.hasChanges(this.name))) {
+      if (this.model.isNew() || this.model.hasChanges(this.name)) {
         return this.value.format(this.getFormat());
       }
     },
@@ -24485,13 +24754,13 @@ define('core/interfaces/datetime/date',[
       var value = this.model.get(this.name);
       var settings = this.options.settings;
 
-      if (undefined === value) {
+      if (value === undefined) {
         value = moment('0000-00-00');
       } else {
         value = moment(value);
       }
 
-      if (settings.get('auto-populate_when_hidden_and_null') === true && !value.isValid()) {
+      if (settings.get('auto_populate') === true && value.isValid() === false) {
         value = moment();
       }
 
@@ -24529,10 +24798,10 @@ define('core/interfaces/datetime/date',[
         default_value: false
       },
       {
-        id: 'auto-populate_when_hidden_and_null',
+        id: 'auto_populate',
         type: 'Boolean',
         ui: 'toggle',
-        comment: 'Automatically fill this field with the current date if the input is hidden and empty',
+        comment: 'Automatically fill this field with the current date if it\'s empty',
         default_value: true
       }
     ],
@@ -25120,7 +25389,7 @@ define('core/interfaces/color/lib/color',[], function() {
   return Color;
 });
 
-define('core/interfaces/color/interface',['core/UIView', 'core/t', 'core/interfaces/color/lib/color'], function (UIView, __t, color) {
+define('core/interfaces/color/interface',['underscore', 'core/UIView', 'core/t', 'core/interfaces/color/lib/color'], function (_, UIView, __t, color) {
   
 
   function setPreviewColor(view, color) {
@@ -25131,8 +25400,14 @@ define('core/interfaces/color/interface',['core/UIView', 'core/t', 'core/interfa
   }
 
   function setInputValue(view, color, output) {
-    view.$('.value').val(color[output]);
-    view.model.set(view.name, color[output]);
+    var value = color[output];
+
+    if (_.isArray(value)) {
+      value = value.join(',');
+    }
+
+    view.$('.value').val(value);
+    view.model.set(view.name, value);
   }
 
   function showInvalidMessage(view) {
@@ -25295,13 +25570,15 @@ define('core/interfaces/color/interface',['core/UIView', 'core/t', 'core/interfa
 
       if (this.options.value && this.options.value.length > 1) {
         var rawValue = this.options.value;
+        var colorObject;
+
         if (output === 'rgb' || output === 'hsl') {
           rawValue = this.options.value.split(',').map(function (color) {
             return Number(color);
           });
         }
-        var colorObject = color(rawValue, output);
 
+        colorObject = color(rawValue, output);
         value = colorObject[input];
         outputValue = colorObject[output];
         preview = colorObject.rgb.length === 4 ? 'rgba(' + colorObject.rgb + ')' : 'rgb(' + colorObject.rgb + ')';
@@ -25879,7 +26156,7 @@ define('core/interfaces/many_to_one_typeahead/component',[
 
   return UIComponent.extend({
     id: 'many_to_one_typeahead',
-    dataTypes: ['INT', 'TINYINT', 'SMALLINT', 'MEDIUMINT', 'BIGINT'],
+    dataTypes: ['INT', 'TINYINT', 'SMALL', 'BIGINT', 'CHAR', 'VARCHAR'],
     options: [
       {
         id: 'read_only',
@@ -25930,7 +26207,7 @@ define('core/interfaces/many_to_one_typeahead/component',[
     ],
     Input: Input,
     list: function (interfaceOptions) {
-      if (interfaceOptions.value === undefined || interfaceOptions.value.isNew()) {
+      if (interfaceOptions.value === undefined) {
         return '';
       }
 
@@ -25956,7 +26233,6 @@ define('core/interfaces/many_to_one/interface',[
   'core/t',
   'utils'
 ], function (app, Backbone, _, Handlebars, UIView, __t, Utils) {
-
   
 
   return UIView.extend({
@@ -26026,7 +26302,7 @@ define('core/interfaces/many_to_one/interface',[
       var templateColumns = Utils.getTemplateVariables(columnTemplate);
       var optionTemplate = Handlebars.compile(columnTemplate);
       var defaultValue = this.options.schema.get('default_value');
-      var placeholderAvailable = !!this.options.settings.get('placeholder') && this.options.settings.get('placeholder').length > 0;
+      var placeholderAvailable = Boolean(this.options.settings.get('placeholder')) && this.options.settings.get('placeholder').length > 0;
       var value = this.options.value || defaultValue;
 
       if (value instanceof Backbone.Model) {
@@ -26098,14 +26374,11 @@ define('core/interfaces/many_to_one/interface',[
       this.canEdit = this.model.canEdit(this.name);
       this.collection = value.collection.getNewInstance({omit: ['preferences']});
 
-      var status = 1;
-      if (this.options.settings.get('visible_status_ids')) {
-        status = this.options.settings.get('visible_status_ids');
-      }
-
       var data = {};
-      if (value.table.hasStatusColumn()) {
-        data[value.table.getStatusColumnName()] = status;
+
+      var visibleStatusIDs = this.options.settings.get('visible_status_ids');
+      if (visibleStatusIDs) {
+        data.status = visibleStatusIDs;
       }
 
       var visibleColumns = [];
@@ -26143,7 +26416,7 @@ define('core/interfaces/many_to_one/component',[
 
   return UIComponent.extend({
     id: 'many_to_one',
-    dataTypes: ['INT', 'TINYINT', 'SMALLINT', 'MEDIUMINT', 'BIGINT'],
+    dataTypes: ['INT', 'TINYINT', 'SMALL', 'BIGINT', 'CHAR', 'VARCHAR'],
     options: [
       {
         id: 'read_only',
@@ -26231,7 +26504,7 @@ define('core/interfaces/many_to_one/component',[
       var hasValue;
 
       if (value instanceof Backbone.Model) {
-        hasValue = !_.isEmpty(value.attributes)
+        hasValue = !_.isEmpty(value.attributes);
       } else {
         hasValue = Utils.isSomething(value);
       }
@@ -26315,36 +26588,26 @@ define('core/interfaces/relational/m2m/interface',[
     },
 
     addModel: function (model) {
-      var EditView = require('modules/tables/views/EditView'); // eslint-disable-line import/no-unresolved
+      var OverlayEditView = require('modules/tables/views/OverlayEditView'); // eslint-disable-line import/no-unresolved
       var collection = this.relatedCollection;
-      var view = new EditView({model: model, inModal: true});
-      view.headerOptions.route.isOverlay = true;
-      view.headerOptions.route.breadcrumbs = [];
-      view.headerOptions.basicSave = true;
 
-      view.events = {
-        'click .saved-success': function () {
-          this.save();
-        },
-        'click #removeOverlay': function () {
+      var view = new OverlayEditView({
+        model: model,
+        inModal: true,
+        onSave: function () {
+          var newModel = new collection.model({}, { // eslint-disable-line new-cap
+            parse: true,
+            collection: collection,
+            structure: collection.structure,
+            table: collection.table
+          });
+
+          newModel.set('data', model);
+          collection.add(newModel);
           app.router.removeOverlayPage(this);
         }
-      };
-
+      });
       app.router.overlayPage(view);
-
-      view.save = function () {
-        var newModel = new collection.model({}, { // eslint-disable-line new-cap
-          parse: true,
-          collection: collection,
-          structure: collection.structure,
-          table: collection.table
-        });
-
-        newModel.set('data', model);
-        collection.add(newModel);
-        app.router.removeOverlayPage(this);
-      };
     },
 
     insertRow: function () {
@@ -26590,7 +26853,9 @@ define('core/interfaces/single_file/interface',[
       this.$('#fileInput').click();
     },
 
-    chooseFromUrl: function () {
+    chooseFromUrl: function (event) {
+      // Prevent this button from submitting the form
+      event.preventDefault();
       app.router.openModal({
         type: 'prompt',
         text: __t('enter_the_url_to_a_file'),
@@ -26617,7 +26882,10 @@ define('core/interfaces/single_file/interface',[
       model.setLink(url, this.options.settings.get('allowed_filetypes'));
     },
 
-    chooseFromSystem: function () {
+    chooseFromSystem: function (event) {
+      // Prevent this button from submitting the form
+      event.preventDefault();
+
       var collection = app.files;
       var model;
       var fileModel = this.fileModel;
@@ -26640,28 +26908,18 @@ define('core/interfaces/single_file/interface',[
     },
 
     edit: function () {
-      var EditView = require('modules/tables/views/EditView'); // eslint-disable-line import/no-unresolved
+      var OverlayEditView = require('modules/tables/views/OverlayEditView'); // eslint-disable-line import/no-unresolved
       var model = this.fileModel;
-      var view = new EditView({model: model});
-      view.headerOptions.route.isOverlay = true;
-      view.headerOptions.route.breadcrumbs = [];
-      view.headerOptions.basicSave = true;
 
-      view.events = {
-        'click .saved-success': function () {
-          this.save();
-        },
-        'click #removeOverlay': function () {
+      var view = new OverlayEditView({
+        model: model,
+        onSave: function () {
+          model.set(model.diff(view.editView.data()));
           app.router.removeOverlayPage(this);
         }
-      };
+      });
 
-      app.router.overlayPage(view);
-
-      view.save = function () {
-        model.set(model.diff(view.editView.data()));
-        app.router.removeOverlayPage(this);
-      };
+     app.router.overlayPage(view);
 
       // Fetch first time to get the nested tables
       if (!model.isNew()) {
@@ -26881,6 +27139,10 @@ define('core/interfaces/single_file/component',[
     list: function (interfaceOptions) {
       var model = interfaceOptions.value;
 
+      if (!(model instanceof Backbone.Model)) {
+        return model;
+      }
+
       var orientation = (parseInt(model.get('width'), 10) > parseInt(model.get('height'), 10)) ? 'landscape' : 'portrait';
       var type = (model.get('type')) ? model.get('type').substring(0, model.get('type').indexOf('/')) : '';
       var subtype = model.getSubType(true);
@@ -26963,8 +27225,16 @@ define('mixins/status',['underscore', 'helpers/status'], function (_, StatusHelp
       return this.getStatus().get('name');
     },
 
+    getTableStatusesMapping: function () {
+      return StatusHelper.getTableStatusesMapping(this._getTableName());
+    },
+
     getStatusVisible: function () {
       return StatusHelper.getStatusVisible(this._getTableName());
+    },
+
+    isStatusVisible: function (status) {
+      return StatusHelper.isStatusVisible(this._getTableName(), status);
     },
 
     getStatusVisibleValues: function () {
@@ -27085,6 +27355,7 @@ define('mixins/save-item',['app'], function (app) {
 /* global $ Backbone jQuery _ Component */
 define('core/interfaces/multiple_files/relational/interface',[
   'core/UIView',
+  'underscore',
   'app',
   'core/overlays/overlays',
   'helpers/file',
@@ -27092,7 +27363,7 @@ define('core/interfaces/multiple_files/relational/interface',[
   'mixins/save-item',
   'sortable',
   'core/t'
-], function (UIView, app, Overlays, FileHelper, StatusMixin, SaveItemMixin, Sortable, __t) {
+], function (UIView, _, app, Overlays, FileHelper, StatusMixin, SaveItemMixin, Sortable, __t) {
   return UIView.extend({
     template: 'multiple_files/relational/input',
 
@@ -27158,36 +27429,27 @@ define('core/interfaces/multiple_files/relational/interface',[
     },
 
     addModel: function (model) {
-      var EditView = require('modules/tables/views/EditView'); // eslint-disable-line import/no-unresolved
+      var OverlayEditView = require('modules/tables/views/OverlayEditView'); // eslint-disable-line import/no-unresolved
       var collection = this.relatedCollection;
-      var view = new EditView({model: model, inModal: true});
-      view.headerOptions.route.isOverlay = true;
-      view.headerOptions.route.breadcrumbs = [];
-      view.headerOptions.basicSave = true;
 
-      view.events = {
-        'click .saved-success': function () {
-          this.save();
-        },
-        'click #removeOverlay': function () {
+      var view = new OverlayEditView({
+        model: model,
+        inModal: true,
+        onSave: function () {
+          var junctionModel = new collection.model({data: model}); // eslint-disable-line new-cap
+
+          _.extend(junctionModel, {
+            collection: collection,
+            structure: collection.structure,
+            table: collection.table
+          });
+
+          collection.add(junctionModel);
           app.router.removeOverlayPage(this);
         }
-      };
+      });
 
       app.router.overlayPage(view);
-
-      view.save = function () {
-        var junctionModel = new collection.model({data: model}); // eslint-disable-line new-cap
-
-        _.extend(junctionModel, {
-          collection: collection,
-          structure: collection.structure,
-          table: collection.table
-        });
-
-        collection.add(junctionModel);
-        app.router.removeOverlayPage(this);
-      };
     },
 
     chooseItem: function () {
@@ -27221,32 +27483,19 @@ define('core/interfaces/multiple_files/relational/interface',[
     },
 
     editModel: function (model) {
-      var EditView = require('modules/tables/views/EditView'); // eslint-disable-line import/no-unresolved
+      var OverlayEditView = require('modules/tables/views/OverlayEditView'); // eslint-disable-line import/no-unresolved
       var columnName = this.columnSchema.relationship.get('junction_key_right');
-      var view = new EditView({
+
+      var view = new OverlayEditView({
         model: model,
         hiddenFields: [columnName],
-        skipFetch: (model.isNew() || model.unsavedAttributes())
-      });
-
-      view.headerOptions.route.isOverlay = true;
-      view.headerOptions.route.breadcrumbs = [];
-      view.headerOptions.basicSave = true;
-
-      view.events = {
-        'click .saved-success': function () {
-          this.save();
-        },
-        'click #removeOverlay': function () {
+        skipFetch: (model.isNew() || model.unsavedAttributes()),
+        onSave: function () {
           app.router.removeOverlayPage(this);
         }
-      };
+      });
 
       app.router.overlayPage(view);
-
-      view.save = function () {
-        app.router.removeOverlayPage(this);
-      };
 
       // Fetch first time to get the nested tables
       // Only fetch if it's not a new entry
@@ -27538,37 +27787,24 @@ define('core/interfaces/multiple_files/csv/interface',[
     },
 
     addModel: function (model) {
-      var EditView = require('modules/tables/views/EditView'); // eslint-disable-line import/no-unresolved
+      var OverlayEditView = require('modules/tables/views/OverlayEditView'); // eslint-disable-line import/no-unresolved
       var collection = this.relatedCollection;
-      var view = new EditView({
+
+      var view = new OverlayEditView({
         model: model,
         inModal: true,
         onSuccess: function (model) {
           if (model.isValid()) {
             collection.add(model);
           }
-        }
-      });
-      view.headerOptions.route.isOverlay = true;
-      view.headerOptions.route.breadcrumbs = [];
-      view.headerOptions.basicSave = true;
-
-      view.events = {
-        'click .saved-success': function (event) {
-          this.save(event);
         },
-        'click #removeOverlay': function () {
+        onSave: function () {
+          view.__proto__.__proto__.save.apply(this, arguments);
           app.router.removeOverlayPage(this);
         }
-      };
+      });
 
       app.router.overlayPage(view);
-
-      var originalSave = view.save;
-      view.save = function () {
-        originalSave.apply(this, arguments);
-        app.router.removeOverlayPage(this);
-      };
     },
 
     chooseItem: function () {
@@ -27590,29 +27826,17 @@ define('core/interfaces/multiple_files/csv/interface',[
     },
 
     editModel: function (model) {
-      var EditView = require('modules/tables/views/EditView'); // eslint-disable-line import/no-unresolved
-      var view = new EditView({model: model});
+      var OverlayEditView = require('modules/tables/views/OverlayEditView'); // eslint-disable-line import/no-unresolved
 
-      view.headerOptions.route.isOverlay = true;
-      view.headerOptions.route.breadcrumbs = [];
-      view.headerOptions.basicSave = true;
-
-      view.events = {
-        'click .saved-success': function (event) {
-          this.save(event);
-        },
-        'click #removeOverlay': function () {
+      var view = new OverlayEditView({
+        model: model,
+        onSave: function () {
+          view.__proto__.__proto__.save.apply(this, arguments);
           app.router.removeOverlayPage(this);
         }
-      };
+      });
 
       app.router.overlayPage(view);
-
-      var originalSave = view.save;
-      view.save = function () {
-        originalSave.apply(this, arguments);
-        app.router.removeOverlayPage(this);
-      };
 
       // Fetch first time to get the nested tables
       // Only fetch if it's not a new entry
@@ -27856,8 +28080,8 @@ define('core/interfaces/translation/component',['core/UIComponent', 'core/UIView
         required: false
       }, {
         id: 'default_language_id',
-        ui: 'numeric',
-        type: 'Number',
+        ui: 'text_input',
+        type: 'String',
         comment: __t('translation_default_language_id_comment'),
         required: true
       }, {
@@ -31456,7 +31680,9 @@ function(app, Backbone, StatusHelper, Utils, _) {
       // There is no active column. Use total
       // if (!this.table.columns.get(app.statusMapping.status_name)) {
       if (!this.table.hasStatusColumn()) {
-        return Math.max(this.table.get('total'), collectionCount);
+        // NOTE: "total_entries" will return all the entries (total) in a table
+        // while "total" is the total entries returned
+        return Math.max(this.table.get('total_entries'), collectionCount);
       }
 
       var visibleStates = Utils.parseCSV(this.getFilter('status'));
@@ -34463,10 +34689,10 @@ define('core/entries/EntriesModel',['require','exports','module','app','undersco
               throw "Error! The column(s) '" + diff.join(',') + "' does not exist in related table '" + options.table.id + "'. Check your UI settings";
             }
 
+            // TODO: Update conditional logic
             if (relationshipType === 'ONETOMANY') {
               // Provide model to prevent loading issues
               options.model = EntriesModel;
-              attributes[id] = new EntriesCollection(value, options);
 
               if (this.attributes[id] instanceof EntriesCollection) {
                 this.attributes[id].set(value, {merge: true, parse: true});
@@ -34477,7 +34703,13 @@ define('core/entries/EntriesModel',['require','exports','module','app','undersco
                   options.parse = false;
                 }
 
-                attributes[id] = new EntriesCollection(models, options);
+                if (attributes[id] instanceof EntriesCollection) {
+                  attributes[id].set(value, {merge: true, parse: true});
+                } else {
+                  options.parentAttribute = id;
+                  options.parent = this;
+                  attributes[id] = new EntriesCollection(models, options);
+                }
               }
 
               break;
@@ -34499,10 +34731,13 @@ define('core/entries/EntriesModel',['require','exports','module','app','undersco
                   options.parse = false;
                 }
 
-                options.parentAttribute = id;
-                options.parent = this;
-
-                attributes[id] = new EntriesJunctionCollection(models, options);
+                if (attributes[id] instanceof EntriesJunctionCollection) {
+                  attributes[id].set(value, {merge: true, parse: true});
+                } else {
+                  options.parentAttribute = id;
+                  options.parent = this;
+                  attributes[id] = new EntriesJunctionCollection(models, options);
+                }
               }
             }
 
@@ -34639,7 +34874,13 @@ define('core/entries/EntriesModel',['require','exports','module','app','undersco
     },
 
     isNew: function () {
-      if (this.isTracking()) {
+      var column = this.structure.get(this.idAttribute);
+
+      // If this is an non-autoincrement primary key column
+      // we check for the original value if it's null
+      // NOTE: This not suitable for autoincrement because the field is disabled
+      // so the user won't change the value and make it look like it's new or not.
+      if (column && column.isPrimaryColumn() && !column.hasAutoIncrement() && this.isTracking()) {
         return this._originalAttributes[this.idAttribute] == null;
       }
 
@@ -36224,7 +36465,7 @@ define('core/EntriesManager',['require','exports','module','./../schema/SchemaMa
         return new FilesCollection([], _.extend({
           rowsPerPage: rowsPerPage,
           url: apiURL + 'files',
-          filters: {columns_visible: ['name','title','size', 'type', 'url', 'user','date_uploaded', 'storage_adapter', 'width', 'height']}
+          filters: {columns_visible: ['name','title','size', 'type', 'thumbnail_url', 'url', 'user','date_uploaded', 'storage_adapter', 'width', 'height']}
         }, SchemaManager.getFullSchema('directus_files')));
 
       case 'directus_tables':
@@ -37086,8 +37327,10 @@ function(app, Backbone, _) {
     initialize: function(options) {
       this.listenTo(app.router.v.main, 'flashItem', this.flashItem);
       this.columns = options.columns || false;
+      // TODO: Add table row view to add or remove one row
+      // instead of render the whole table again
+      this.listenTo(this.collection, 'add remove', this.render);
     }
-
   });
 
   return TableSimple;
@@ -37565,7 +37808,7 @@ function(app, Backbone, $, _, __t, Directus, Utils, moment) {
         datetime: date,
         subject: subject,
         message: message,
-        comment_metadata: this.model.collection.table.id + ":" + this.model.get('id')
+        comment_metadata: this.model.collection.table.id + ":" + this.model.id
       });
       model.unset('responses');
       model.url = app.API_URL + 'comments/';
@@ -38051,9 +38294,11 @@ define('core/widgets/FilesMetadataWidget',[
 define('core/widgets/StatusWidget',[
   'app',
   'underscore',
-  'backbone'
+  'backbone',
+  'utils',
+  'core/t'
 ],
-function(app, _, Backbone) {
+function(app, _, Backbone, Utils, __t) {
 
   
 
@@ -38094,35 +38339,65 @@ function(app, _, Backbone) {
       return table.getStatusColumnName();
     },
 
-    serialize: function () {
+    parseStatusItem: function (status, currentStatus) {
+      var item = status.toJSON();
+
+      // NOTE: do not strictly compare as status can (will) be string
+      item.selected = status.get('id') == currentStatus;
+      item.model = status;
+      item.color = item.background_color || item.color;
+
+      return item;
+    },
+
+    getStatusList: function () {
       var statuses = [];
       var model = this.model;
+      var foundMatch = false;
       var structure = model.structure;
-      var attr = this.getStatusColumnName();
-      var currentStatus = this.model.get(attr);
+      var statusColumnName = this.getStatusColumnName();
+      var currentStatus = this.model.get(statusColumnName);
 
-      if (!currentStatus && structure.get(attr)) {
-        currentStatus = structure.get(attr).get('default_value');
+      if (Utils.isNothing(currentStatus) && structure.get(statusColumnName)) {
+        currentStatus = structure.get(statusColumnName).get('default_value');
       }
 
-      _.each(model.getStatusVisible(), function (status) {
-        var item = status.toJSON();
+      // Go through all the statuses and add to the list all visible or a selected one
+      model.getTableStatusesMapping().each(function (status) {
+        var item = this.parseStatusItem(status, currentStatus);
 
-        // NOTE: do not strictly compare as status can (will) be string
-        item.selected = status.get('id') == currentStatus;
-        item.model = status;
-        item.color = item.background_color || item.color;
-        statuses.push(item);
-      });
+        if (item.selected) {
+          foundMatch = true;
+        }
+
+        if (item.selected || model.isStatusVisible(status)) {
+          statuses.push(item);
+        }
+      }, this);
+
+      // if there's not a match, we add the status as selected and name it "unknown"
+      if (!foundMatch) {
+        statuses.push({
+          id: currentStatus,
+          name: __t('unknown'),
+          selected: true
+        })
+      }
 
       statuses = _.sortBy(statuses, function(item) {
         return item.sort;
       });
 
+      return statuses;
+    },
+
+    serialize: function () {
       return {
         model: this.model,
-        readonly: typeof this.model.canEdit === 'function' ? this.model.canEdit(attr) : true,
-        statuses: statuses
+        readonly: typeof this.model.canEdit === 'function'
+                    ? this.model.canEdit(this.getStatusColumnName())
+                    : true,
+        statuses: this.getStatusList()
       };
     },
 
@@ -38406,7 +38681,7 @@ define('modules/files/views/FilesCardView',[
     tagName: 'div',
 
     attributes: {
-      class: 'file-listing flex',
+      class: 'file-listing',
       id: 'file-listing'
     },
 
@@ -39434,11 +39709,14 @@ define('modules/tables/views/EditView',[
           }
         };
       }
+
       if (action === 'save-form-copy') {
-        // console.log('cloning...');
         var clone = model.toJSON();
         delete clone.id;
-        model = new collection.model(clone, {collection: collection, parse: true});
+        model = new collection.model({}, {collection: collection, parse: true});
+        // Start tracking changes to mark the new values
+        model.startTracking();
+        model.set(clone);
         collection.add(model);
       }
 
@@ -39622,15 +39900,206 @@ define('modules/tables/views/EditView',[
   });
 });
 
+define('modules/tables/views/OverlayEditView',[
+  'app',
+  'backbone',
+  'underscore',
+  'modules/tables/views/EditView'
+], function (app, Backbone, _, EditView) {
+
+  
+
+  return EditView.extend({
+    overlayEvents: {
+      'click .saved-success': function () {
+        this.save();
+      },
+      'click #removeOverlay': function () {
+        app.router.removeOverlayPage(this);
+      }
+    },
+
+    save: function() {
+      console.error('Save function for OverlayEditView is not implemented');
+    },
+
+    initialize: function(options){
+      EditView.prototype.initialize.call(this, options);
+
+      if (options.onSave) {
+        this.save = options.onSave;
+      }
+
+      this.events = _.extend({}, EditView.prototype.events, this.overlayEvents);
+
+      this.headerOptions.route.isOverlay = true;
+      this.headerOptions.route.breadcrumbs = [];
+      this.headerOptions.basicSave = true;
+    }
+  });
+});
+
+define('modules/settings/views/modals/table-new',[
+  'app',
+  'core/Modal',
+  'helpers/schema',
+  'core/t',
+  'core/notification',
+  'underscore'
+], function (app, Modal, SchemaHelper, __t, Notification, _) {
+
+  
+
+  return Modal.extend({
+
+    template: 'modal/table-new',
+
+    attributes: {
+      'id': 'modal',
+      'class': 'modal table-create'
+    },
+
+    state: {},
+
+    DOM: {
+      name: 'input#table_name'
+    },
+
+    events: {
+      'submit': 'onSubmit',
+
+      'change input#strictNaming': 'onChangeStrictNaming',
+
+      'change input#table_name': 'onChangeInputName',
+      'keypress input#table_name': 'onChangeInputName',
+      'focus input#table_name': 'onChangeInputName',
+      'textInput input#table_name': 'onChangeInputName',
+      'input input#table_name': 'onChangeInputName',
+
+      'click .js-cancel': '_close',
+
+      'click .js-save': 'save'
+    },
+
+    onSubmit: function (event) {
+      event.preventDefault();
+    },
+
+    onChangeStrictNaming: function (event) {
+      this.state.strictNaming = $(event.currentTarget).is(':checked');
+
+      if (this.state.strictNaming) {
+        this.updateNameWith(this.$(this.DOM.name).val());
+      }
+    },
+
+    onChangeInputName: function (event) {
+      var input = event.currentTarget;
+      var $input = $(input);
+      var name = $input.val();
+      var start = input.selectionStart;
+      var end = input.selectionEnd;
+
+
+      this.updateNameWith(name);
+
+      input.setSelectionRange(start, end);
+    },
+
+    updateNameWith: function (name) {
+      if (this.state.strictNaming) {
+        name = SchemaHelper.cleanTableName(name);
+      }
+
+      this.$(this.DOM.name).val(name);
+    },
+
+    afterRender: function () {
+      this.$(this.DOM.name).focus();
+    },
+
+    _close: function () {
+      // change Modal.close to Modal._close
+      // change this._close to this.close
+      // closing the modal should close it from their container
+      this.container.close();
+    },
+
+    save: function () {
+      var data = this.$('form').serializeObject();
+      var tableName = data.name;
+      var columns = data.columns;
+      var isStrict = this.state.strictNaming;
+
+      // @TODO: better error message.
+      if (!tableName) {
+        app.trigger('alert:error', __t('empty_table_name'), '', true, {
+          timeout: 5000
+        });
+        return;
+      }
+
+      var rawTableName = tableName;
+
+      if (this.state.strictNaming) {
+        tableName = SchemaHelper.cleanTableName(tableName);
+      }
+
+      // Make sure it's an alphanumeric table name
+      // and it has at least one character or one number
+      if (isStrict && !(/[a-z0-9]+/i.test(tableName) && /[_-]*/i.test(tableName))) {
+        app.trigger('alert:error',
+          __t('you_must_enter_an_valid_table_name'),
+          'letters_az_numbers_andor_underscores_and_dashes',
+          true, {
+            timeout: 5000
+          });
+        return;
+      }
+
+      if (app.schemaManager.getPrivileges(tableName)) {
+        var title = __t('error');
+        var message = __t('table_x_already_exists', {table_name: tableName});
+
+        app.trigger('alert:error', title, message, true, {
+          timeout: 5000
+        });
+        return;
+      }
+
+      // @TODO: make this save a table info rather than permissions.
+      app.schemaManager.addTableWithSystemColumns(tableName, columns, function (tableModel) {
+        if (rawTableName !== tableName) {
+          Notification.success(__t('this_table_was_saved_as_x', {table_name: tableName}));
+        } else {
+          Notification.success(__t('table_x_was_created', {table_name: tableName}));
+        }
+
+        // @TODO: listen to a tables collection
+        // to add or remove table from sidebar
+        app.router.bookmarks.addTable(tableModel);
+      });
+
+      this._close();
+    },
+
+    initialize: function () {
+      this.state.strictNaming = true;
+    }
+  });
+});
+
 define('modules/tables/views/TablesView',[
   'app',
   'backbone',
   'core/directus',
   'core/t',
-  'core/BasePageView'
+  'core/BasePageView',
+  'core/widgets/widgets',
+  'modules/settings/views/modals/table-new'
 ],
 
-function(app, Backbone, Directus, __t, BasePageView) {
+function(app, Backbone, Directus, __t, BasePageView, Widgets, TableNewModal) {
 
   return BasePageView.extend({
 
@@ -39638,6 +40107,26 @@ function(app, Backbone, Directus, __t, BasePageView) {
       route: {
         title: __t('tables')
       }
+    },
+
+    leftToolbar: function() {
+      var widgets = [];
+
+      if (app.user.isAdmin()) {
+        widgets.push(new Widgets.ButtonWidget({
+          widgetOptions: {
+            buttonId: 'addBtn',
+            iconClass: 'add',
+            buttonClass: 'primary',
+            buttonText: __t('new_item')
+          },
+          onClick: function (event) {
+            app.router.openViewInModal(new TableNewModal());
+          }
+        }));
+      }
+
+      return widgets;
     },
 
     beforeRender: function() {
@@ -40362,11 +40851,12 @@ define('modules/tables/table',[
   'app',
   'modules/tables/views/BatchEditView',
   'modules/tables/views/EditView',
+  'modules/tables/views/OverlayEditView',
   'modules/tables/views/TablesView',
   'modules/tables/views/TableView'
 ],
 
-function(app, BatchEditView, EditView, TablesView, TableView) {
+function(app, BatchEditView, EditView, OverlayEditView, TablesView, TableView) {
 
   
 
@@ -40377,6 +40867,7 @@ function(app, BatchEditView, EditView, TablesView, TableView) {
   Table.Views.Tables = TablesView;
   Table.Views.BatchEdit = BatchEditView;
   Table.Views.Edit = EditView;
+  Table.Views.OverlayEdit = OverlayEditView;
   Table.Views.List = TableView;
 
   return Table;
@@ -40580,12 +41071,9 @@ define('modules/settings/views/modals/columns/info',[
       if (SchemaHelper.supportsLength(this.selectedDataType)) {
         data.SHOW_LENGTH = true;
 
-        // TODO: Set a default length for each data type
         var changeLength = this.model.isNew() || !this.model.get('length');
-        if (SchemaHelper.isNumericType(this.selectedDataType) && changeLength) {
-          this.model.set({length: SchemaHelper.isDecimalType(this.selectedDataType) ? '10,2' : 11});
-        } else if (SchemaHelper.isStringType(this.selectedDataType) && changeLength) {
-          this.model.set({length: 100});
+        if (changeLength) {
+          this.model.set('length', SchemaHelper.getTypeDefaultLength(this.selectedDataType));
         }
 
         data.length = this.model.getLength();
@@ -41044,6 +41532,13 @@ define('modules/settings/views/modals/columns/column',[
       var isOptionsView;
 
       if (!infoView.model.isNew()) {
+				// strip first and last character from buttons
+				if(optionsView.model.attributes.buttons&&optionsView.model.attributes.buttons[0]===','){
+					optionsView.model.attributes.buttons = optionsView.model.attributes.buttons.substr(1);
+				}
+				if(optionsView.model.attributes.buttons&&optionsView.model.attributes.buttons[optionsView.model.attributes.buttons.length-1]===','){
+					optionsView.model.attributes.buttons = optionsView.model.attributes.buttons.slice(0, -1);
+				}
         infoView.model.set('options', JSON.stringify(optionsView.model.toJSON()));
       } else {
         var sort = 0;
@@ -41060,7 +41555,6 @@ define('modules/settings/views/modals/columns/column',[
       // sending the new values and if there's not info value to be save, only save the options
       if (infoView.save()) {
         isOptionsView = this.state.currentView === VIEW_INTERFACE_ID;
-
         if (!isOptionsView && SchemaHelper.isMissingRequiredOptions(columnModel)) {
           this.changeTo(VIEW_INTERFACE_ID);
         } else {
@@ -41071,7 +41565,6 @@ define('modules/settings/views/modals/columns/column',[
 
     toggle: function (event) {
       var $toggle = $(event.currentTarget);
-
       event.preventDefault();
 
       this.changeTo($toggle.data('pane'));
@@ -41203,156 +41696,6 @@ define('modules/settings/views/modals/columns/column',[
   View.VIEW_COLUMN_ID = VIEW_COLUMN_ID;
 
   return View;
-});
-
-define('modules/settings/views/modals/table-new',[
-  'app',
-  'core/Modal',
-  'helpers/schema',
-  'core/t',
-  'core/notification',
-  'underscore'
-], function (app, Modal, SchemaHelper, __t, Notification, _) {
-
-  
-
-  return Modal.extend({
-
-    template: 'modal/table-new',
-
-    attributes: {
-      'id': 'modal',
-      'class': 'modal table-create'
-    },
-
-    state: {},
-
-    DOM: {
-      name: 'input#table_name'
-    },
-
-    events: {
-      'submit': 'onSubmit',
-
-      'change input#strictNaming': 'onChangeStrictNaming',
-
-      'change input#table_name': 'onChangeInputName',
-      'keypress input#table_name': 'onChangeInputName',
-      'focus input#table_name': 'onChangeInputName',
-      'textInput input#table_name': 'onChangeInputName',
-      'input input#table_name': 'onChangeInputName',
-
-      'click .js-cancel': '_close',
-
-      'click .js-save': 'save'
-    },
-
-    onSubmit: function (event) {
-      event.preventDefault();
-    },
-
-    onChangeStrictNaming: function (event) {
-      this.state.strictNaming = $(event.currentTarget).is(':checked');
-
-      if (this.state.strictNaming) {
-        this.updateNameWith(this.$(this.DOM.name).val());
-      }
-    },
-
-    onChangeInputName: function (event) {
-      var input = event.currentTarget;
-      var $input = $(input);
-      var name = $input.val();
-      var start = input.selectionStart;
-      var end = input.selectionEnd;
-
-
-      this.updateNameWith(name);
-
-      input.setSelectionRange(start, end);
-    },
-
-    updateNameWith: function (name) {
-      if (this.state.strictNaming) {
-        name = SchemaHelper.cleanTableName(name);
-      }
-
-      this.$(this.DOM.name).val(name);
-    },
-
-    afterRender: function () {
-      this.$(this.DOM.name).focus();
-    },
-
-    _close: function () {
-      // change Modal.close to Modal._close
-      // change this._close to this.close
-      // closing the modal should close it from their container
-      this.container.close();
-    },
-
-    save: function () {
-      var data = this.$('form').serializeObject();
-      var tableName = data.name;
-      var columns = data.columns;
-      var isStrict = this.state.strictNaming;
-
-      // @TODO: better error message.
-      if (!tableName) {
-        app.trigger('alert:error', __t('empty_table_name'), '', true, {
-          timeout: 5000
-        });
-        return;
-      }
-
-      var rawTableName = tableName;
-
-      if (this.state.strictNaming) {
-        tableName = SchemaHelper.cleanTableName(tableName);
-      }
-
-      // Make sure it's an alphanumeric table name
-      // and it has at least one character or one number
-      if (isStrict && !(/[a-z0-9]+/i.test(tableName) && /[_-]*/i.test(tableName))) {
-        app.trigger('alert:error',
-          __t('you_must_enter_an_valid_table_name'),
-          'letters_az_numbers_andor_underscores_and_dashes',
-          true, {
-            timeout: 5000
-          });
-        return;
-      }
-
-      if (app.schemaManager.getPrivileges(tableName)) {
-        var title = __t('error');
-        var message = __t('table_x_already_exists', {table_name: tableName});
-
-        app.trigger('alert:error', title, message, true, {
-          timeout: 5000
-        });
-        return;
-      }
-
-      // @TODO: make this save a table info rather than permissions.
-      app.schemaManager.addTableWithSystemColumns(tableName, columns, function (tableModel) {
-        if (rawTableName !== tableName) {
-          Notification.success(__t('this_table_was_saved_as_x', {table_name: tableName}));
-        } else {
-          Notification.success(__t('table_x_was_created', {table_name: tableName}));
-        }
-
-        // @TODO: listen to a tables collection
-        // to add or remove table from sidebar
-        app.router.bookmarks.addTable(tableModel);
-      });
-
-      this._close();
-    },
-
-    initialize: function () {
-      this.state.strictNaming = true;
-    }
-  });
 });
 
 //  tables.js
@@ -45330,7 +45673,7 @@ require(['config', 'polyfills'], function () {
       countries: [],
       path: '/directus/',
       page: '',
-      authenticatedUser: 7,
+      authenticatedUser: 0, // 0 = guest, sort of :)
       groups: {},
       privileges: [],
       interfaces: [],

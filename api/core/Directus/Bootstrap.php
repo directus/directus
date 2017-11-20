@@ -2,26 +2,37 @@
 
 namespace Directus;
 
+use Cache\Adapter\Apc\ApcCachePool;
+use Cache\Adapter\Apcu\ApcuCachePool;
+use Cache\Adapter\Common\PhpCachePool;
+use Cache\Adapter\Filesystem\FilesystemCachePool;
+use Cache\Adapter\Memcached\MemcachedCachePool;
+use Cache\Adapter\PHPArray\ArrayCachePool;
+use Cache\Adapter\Redis\RedisCachePool;
+use Cache\Adapter\Void\VoidCachePool;
 use Directus\Application\Application;
 use Directus\Authentication\FacebookProvider;
 use Directus\Authentication\GitHubProvider;
 use Directus\Authentication\GoogleProvider;
 use Directus\Authentication\Provider as AuthProvider;
+use Directus\Authentication\Provider;
 use Directus\Authentication\Social;
 use Directus\Authentication\TwitterProvider;
+use Directus\Cache\Response as ResponseCache;
 use Directus\Config\Config;
 use Directus\Database\Connection;
+use Directus\Database\Object\Table;
 use Directus\Database\SchemaManager;
 use Directus\Database\Schemas\Sources\MySQLSchema;
 use Directus\Database\Schemas\Sources\SQLiteSchema;
 use Directus\Database\TableGateway\BaseTableGateway;
 use Directus\Database\TableGateway\DirectusPrivilegesTableGateway;
 use Directus\Database\TableGateway\DirectusSettingsTableGateway;
-use Directus\Database\TableGateway\DirectusTablesTableGateway;
 use Directus\Database\TableGateway\DirectusUsersTableGateway;
 use Directus\Database\TableGateway\RelationalTableGateway;
 use Directus\Database\TableGatewayFactory;
 use Directus\Database\TableSchema;
+use Directus\Debug\Log\Writer;
 use Directus\Embed\EmbedManager;
 use Directus\Exception\Exception;
 use Directus\Exception\Http\ForbiddenException;
@@ -41,8 +52,9 @@ use Directus\Util\ArrayUtils;
 use Directus\Util\DateUtils;
 use Directus\Util\StringUtils;
 use Directus\View\Twig\DirectusTwigExtension;
-use Slim\Extras\Log\DateTimeFileWriter;
 use Slim\Extras\Views\Twig;
+use League\Flysystem\Adapter\Local;
+
 
 /**
  * NOTE: This class depends on the constants defined in config.php
@@ -143,7 +155,7 @@ class Bootstrap
             'mode' => DIRECTUS_ENV,
             'debug' => false,
             'log.enable' => true,
-            'log.writer' => new DateTimeFileWriter($loggerSettings),
+            'log.writer' => new Writer($loggerSettings),
             'view' => new Twig()
         ]);
 
@@ -196,7 +208,15 @@ class Bootstrap
             return Bootstrap::get('hashManager');
         });
 
-        $authConfig = ArrayUtils::get($config, 'auth', []);
+        $app->container->singleton('cache', function() {
+            return Bootstrap::get('cache');
+        });
+
+        $app->container->singleton('responseCache', function() {
+            return Bootstrap::get('responseCache');
+        });
+
+        $authConfig = $config->get('auth', []);
         $socialAuth = $app->container->get('socialAuth');
 
         $socialAuthServices = static::getSocialAuthServices();
@@ -221,10 +241,6 @@ class Bootstrap
 
         $app->container->singleton('filesystem', function() {
             return Bootstrap::get('filesystem');
-        });
-
-        $app->container->singleton('acl', function() {
-            return new \Directus\Permissions\Acl();
         });
 
         $app->container->get('session')->start();
@@ -450,21 +466,20 @@ class Bootstrap
         $auth = self::get('auth');
         $db = self::get('ZendDb');
 
-        $DirectusTablesTableGateway = new DirectusTablesTableGateway($db, $acl);
-        $getTables = function () use ($DirectusTablesTableGateway) {
-            return $DirectusTablesTableGateway->select()->toArray();
-        };
+        /** @var Table[] $tables */
+        $tables = TableSchema::getTablesSchema([
+            'include_columns' => true
+        ], true);
 
         // $tableRecords = $DirectusTablesTableGateway->memcache->getOrCache(MemcacheProvider::getKeyDirectusTables(), $getTables, 1800);
-        $tableRecords = $getTables();
 
         $magicOwnerColumnsByTable = [];
-        foreach ($tableRecords as $tableRecord) {
-            if (!empty($tableRecord['user_create_column'])) {
-                $magicOwnerColumnsByTable[$tableRecord['table_name']] = $tableRecord['user_create_column'];
-            }
+        foreach ($tables as $table) {
+            $magicOwnerColumnsByTable[$table->getName()] = $table->getUserCreateColumn();
         }
-        $acl::$cms_owner_columns_by_table = $magicOwnerColumnsByTable;
+
+        // TODO: Move this to a method
+        $acl::$cms_owner_columns_by_table = array_merge($magicOwnerColumnsByTable, $acl::$cms_owner_columns_by_table);
 
         if ($auth->loggedIn()) {
             $currentUser = $auth->getUserInfo();
@@ -472,7 +487,7 @@ class Bootstrap
             $cacheFn = function () use ($currentUser, $Users) {
                 return $Users->find($currentUser['id']);
             };
-            $cacheKey = MemcacheProvider::getKeyDirectusUserFind($currentUser['id']);
+            // $cacheKey = MemcacheProvider::getKeyDirectusUserFind($currentUser['id']);
             // $currentUser = $Users->memcache->getOrCache($cacheKey, $cacheFn, 10800);
             $currentUser = $cacheFn();
             if ($currentUser) {
@@ -680,6 +695,42 @@ class Bootstrap
         $emitter = new Emitter();
 
         // TODO: Move all this filters to a dedicated file/class/function
+
+        // Cache subscriptions
+        $cachePool = Bootstrap::get('cache');
+
+        $emitter->addAction('postUpdate', function(RelationalTableGateway $gateway, $data) use ($cachePool) {
+            if(isset($data[$gateway->primaryKeyFieldName])) {
+                $cachePool->invalidateTags(['entity_'.$gateway->getTable().'_'.$data[$gateway->primaryKeyFieldName]]);
+            }
+        });
+
+        $cacheTableTagInvalidator = function($tableName) use ($cachePool) {
+            $cachePool->invalidateTags(['table_'.$tableName]);
+        };
+
+        foreach(['table.update:after', 'table.drop:after'] as $action) {
+            $emitter->addAction($action, $cacheTableTagInvalidator);
+        }
+
+        $emitter->addAction('table.remove:after', function($tableName, $ids) use ($cachePool){
+            foreach($ids as $id) {
+                $cachePool->invalidateTags(['entity_'.$tableName.'_'.$id]);
+            }
+        });
+
+        $emitter->addAction('table.update.directus_privileges:after', function ($data) use($cachePool) {
+            $acl = Bootstrap::get('acl');
+            $zendDb = Bootstrap::get('zendDb');
+            $privileges = new DirectusPrivilegesTableGateway($zendDb, $acl);
+
+            $record = $privileges->fetchById($data['id']);
+
+            $cachePool->invalidateTags(['privilege_table_'.$record['table_name'].'_group_'.$record['group_id']]);
+        });
+
+        // /Cache subscriptions
+
         $emitter->addAction('application.error', function ($e) {
             $log = Bootstrap::get('log');
             $log->error($e);
@@ -929,6 +980,69 @@ class Bootstrap
             return $payload;
         };
 
+        $slugifyString = function ($insert, Payload $payload) {
+            $tableName = $payload->attribute('tableName');
+            $tableObject = TableSchema::getTableSchema($tableName);
+            $data = $payload->getData();
+
+            foreach ($tableObject->getColumns() as $column) {
+                if ($column->getUI() !== 'slug') {
+                    continue;
+                }
+
+                $parentColumnName = $column->getOptions('mirrored_field');
+                if (!ArrayUtils::has($data, $parentColumnName)) {
+                    continue;
+                }
+
+                $onCreationOnly = boolval($column->getOptions('only_on_creation'));
+                if (!$insert && $onCreationOnly) {
+                    continue;
+                }
+
+                $payload->set($column->getName(), slugify(ArrayUtils::get($data, $parentColumnName, '')));
+            }
+
+            return $payload;
+        };
+
+        $emitter->addFilter('table.insert:before', function (Payload $payload) use ($slugifyString) {
+            return $slugifyString(true, $payload);
+        });
+
+        $emitter->addFilter('table.update:before', function (Payload $payload) use ($slugifyString) {
+            return $slugifyString(false, $payload);
+        });
+
+        // TODO: Merge with hash user password
+        $hashPasswordInterface = function (Payload $payload) {
+            /** @var Provider $auth */
+            $auth = Bootstrap::get('auth');
+            $tableName = $payload->attribute('tableName');
+
+            if (TableSchema::isSystemTable($tableName)) {
+                return $payload;
+            }
+
+            $tableObject = TableSchema::getTableSchema($tableName);
+            $data = $payload->getData();
+
+            foreach ($data as $key => $value) {
+                $columnObject = $tableObject->getColumn($key);
+
+                if (!$columnObject) {
+                    continue;
+                }
+
+                if ($columnObject->getUI() === 'password') {
+                    // TODO: Use custom password hashing method
+                    $payload->set($key, $auth->hashPassword($value));
+                }
+            }
+
+            return $payload;
+        };
+
         $emitter->addFilter('table.update.directus_users:before', function (Payload $payload) {
             $acl = Bootstrap::get('acl');
             $currentUserId = $acl->getUserId();
@@ -955,6 +1069,10 @@ class Bootstrap
         });
         $emitter->addFilter('table.insert.directus_users:before', $hashUserPassword);
         $emitter->addFilter('table.update.directus_users:before', $hashUserPassword);
+
+        // Hash value to any non system table password interface column
+        $emitter->addFilter('table.insert:before', $hashPasswordInterface);
+        $emitter->addFilter('table.update:before', $hashPasswordInterface);
 
         $preventUsePublicGroup = function (Payload $payload) {
             $data = $payload->getData();
@@ -1073,7 +1191,7 @@ class Bootstrap
         $session = self::get('session');
         $config = self::get('config');
         $prefix = $config->get('session.prefix', 'directus_');
-        $table = new BaseTableGateway('directus_users', $zendDb);
+        $table = new DirectusUsersTableGateway($zendDb);
 
         return new AuthProvider($table, $session, $prefix);
     }
@@ -1082,4 +1200,76 @@ class Bootstrap
     {
         return new Social();
     }
+
+    private static function cache()
+    {
+        $config = self::get('config');
+        $poolConfig = $config->get('cache.pool');
+
+        if(!$poolConfig || (!is_object($poolConfig) && empty($poolConfig['adapter']))) {
+            $poolConfig = ['adapter' => 'void'];
+        }
+
+        if(is_object($poolConfig) && $poolConfig instanceof PhpCachePool) {
+            $pool = $poolConfig;
+        } else {
+            if(!in_array($poolConfig['adapter'], ['apc', 'apcu', 'array', 'filesystem', 'memcached', 'redis', 'void'])) {
+                throw new \Exception("Valid cache adapters are 'apc', 'apcu', 'filesystem', 'memcached', 'redis'");
+            }
+
+            $pool = new VoidCachePool();
+
+            $adapter = $poolConfig['adapter'];
+
+            if($adapter == 'apc') {
+                $pool = new ApcCachePool();
+            }
+
+            if($adapter == 'apcu') {
+                $pool = new ApcuCachePool();
+            }
+
+            if($adapter == 'array') {
+                $pool = new ArrayCachePool();
+            }
+
+            if($adapter == 'filesystem') {
+                if(empty($poolConfig['path'])) {
+                    throw new \Exception("'cache.pool.path' parameter is required for 'filesystem' adapter");
+                }
+
+                $filesystemAdapter = new Local(__DIR__.'/../../'.$poolConfig['path']);
+                $filesystem        = new \League\Flysystem\Filesystem($filesystemAdapter);
+
+                $pool = new FilesystemCachePool($filesystem);
+            }
+
+            if($adapter == 'memcached') {
+                $host = (isset($poolConfig['host'])) ? $poolConfig['host'] : 'localhost';
+                $port = (isset($poolConfig['port'])) ? $poolConfig['port'] : 11211;
+
+                $client = new \Memcached();
+                $client->addServer($host, $port);
+                $pool = new MemcachedCachePool($client);
+            }
+
+            if($adapter == 'redis') {
+                $host = (isset($poolConfig['host'])) ? $poolConfig['host'] : 'localhost';
+                $port = (isset($poolConfig['port'])) ? $poolConfig['port'] : 6379;
+
+                $client = new \Redis();
+                $client->connect($host, $port);
+                $pool = new RedisCachePool($client);
+            }
+        }
+
+        return $pool;
+    }
+
+    private static function responseCache()
+    {
+        return new ResponseCache(self::get('cache'), self::get('config')->get('cache.response_ttl'));
+    }
+
+
 }
