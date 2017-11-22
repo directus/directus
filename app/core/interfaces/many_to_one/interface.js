@@ -18,7 +18,7 @@ define([
       'change select': function (event) {
         var model = this.model.get(this.name);
         var $target = $(event.currentTarget);
-        var selectedId = parseInt($target.find(':selected').val(), 10);
+        var selectedId = $target.find(':selected').val();
         var attributes;
         var primaryColumn;
         var attributesName;

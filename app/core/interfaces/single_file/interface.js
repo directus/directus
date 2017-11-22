@@ -236,7 +236,11 @@ define([
       this.uploading = false;
       this.userId = app.user.id;
       if (!(this.options.value instanceof FilesModel)) {
-        this.options.value = new FilesModel(this.options.value || {});
+        // Add the files table privileges, preferences and structure
+        // the method isNew need the structure
+        // See EntriesModel.isNew
+        // See https://github.com/directus/directus/issues/1961
+        this.options.value = new FilesModel(this.options.value || {}, app.schemaManager.getFullSchema('directus_files'));
         parentModel.set(this.name, this.options.value);
       }
 
