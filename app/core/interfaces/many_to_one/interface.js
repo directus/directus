@@ -55,6 +55,11 @@ define([
       return app.schemaManager.getPrivileges(this.columnSchema.getRelatedTableName());
     },
 
+    visible: function () {
+      // Hide M2O Interface if the user has not permission to read the related table data
+      return this.canRead() === true;
+    },
+
     canRead: function () {
       var privilege = this.getPrivilege();
 
@@ -126,10 +131,6 @@ define([
         value = data[0].id;
       }
 
-      if (this.options.settings.get('readonly') === true) {
-        this.canEdit = false;
-      }
-
       // Default data while syncing (to avoid flickr when data is loaded)
       if (this.options.value !== undefined && this.options.value.id && data.length === 0) {
         data = [{
@@ -167,7 +168,6 @@ define([
       var value = this.model.get(this.name);
       value.startTracking();
 
-      this.canEdit = this.model.canEdit(this.name);
       this.collection = value.collection.getNewInstance({omit: ['preferences']});
 
       var data = {};
