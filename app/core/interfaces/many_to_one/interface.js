@@ -51,13 +51,34 @@ define([
       }
     },
 
-    getValue: function () {
-      var privilege = app.schemaManager.getPrivileges(this.columnSchema.getRelatedTableName());
-      var value;
+    getPrivilege: function () {
+      return app.schemaManager.getPrivileges(this.columnSchema.getRelatedTableName());
+    },
 
-      if (privilege.canEdit() || privilege.canAdd()) {
-        value = this.value;
-      } else {
+    canRead: function () {
+      var privilege = this.getPrivilege();
+
+      return privilege && privilege.canView();
+    },
+
+    canEdit: function () {
+      var privilege = this.getPrivilege();
+
+      return privilege && privilege.canEdit();
+    },
+
+    canAdd: function () {
+      var privilege = this.getPrivilege();
+
+      return privilege && privilege.canAdd();
+    },
+
+    getValue: function () {
+      var value = this.value;
+
+      // If the user has permission to edit or add value is a model
+      // otherwise is the id
+      if (this.canEdit() || this.canAdd()) {
         value = this.value.id;
       }
 
@@ -113,7 +134,7 @@ define([
       if (this.options.value !== undefined && this.options.value.id && data.length === 0) {
         data = [{
           id: this.options.value.id,
-          name: this.options.value,
+          name: '--', // data has not loaded or user has not permission to the related table
           selected: true
         }];
       }
@@ -171,7 +192,10 @@ define([
       }
 
       // FILTER HERE!
-      this.collection.fetch({includeFilters: false, data: data});
+      if (this.canRead()) {
+        this.collection.fetch({includeFilters: false, data: data});
+      }
+
       // This.collection.on('reset', this.render, this);
       this.collection.on('sync', this.render, this);
     }
