@@ -137,7 +137,10 @@ class Application extends Slim
             $data = $this->triggerResponseFilter($data, (array) $options);
 
             // @TODO: Response will support xml
-            $response->setBody(json_encode($data));
+            // NOTE: Added JSON_UNESCAPED_UNICODE to prevent unicode from being escaped :)
+            // This will prevent to show escaped text that uses unicode
+            // See: https://github.com/directus/directus/issues/1963
+            $response->setBody(json_encode($data, JSON_UNESCAPED_UNICODE));
         }
 
         return $response;
