@@ -948,7 +948,9 @@ class RelationalTableGateway extends BaseTableGateway
             }, $results);
         }
 
-        if (ArrayUtils::get($params, 'id') || ArrayUtils::has($params, 'single')) {
+        // FIXME: This was a bug that was let it live too long
+        // it should've been 'id' instead of the actual primary key name
+        if (ArrayUtils::get($params, $this->primaryKeyFieldName) || ArrayUtils::has($params, 'single')) {
             $results = reset($results);
         }
 
