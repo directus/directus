@@ -83,7 +83,7 @@ define([
 
       // If the user has permission to edit or add value is a model
       // otherwise is the id
-      if (this.canEdit() || this.canAdd()) {
+      if (value && (this.canEdit() || this.canAdd())) {
         value = this.value.id;
       }
 
