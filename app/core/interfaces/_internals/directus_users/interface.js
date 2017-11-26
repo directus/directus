@@ -98,11 +98,20 @@ define([
       app.router.openViewInModal(new InviteModal());
     },
 
-    onCollectionChange: function () {
+    // NOTE: Duplicated from O2M
+    // TODO: Need to be merged into a base interface for any O2M
+    triggerModelChange: function () {
       var value = this.model.get(this.name);
 
       // NOTE: setting the value again to mark the changes
       this.model.set(this.name, value);
+    },
+
+    onCollectionChange: function () {
+      this.triggerModelChange();
+
+      this.nestedTableView.tableHead = this.relatedCollection.visibleCount() > 0;
+      this.nestedTableView.render();
     },
 
     // @TODO: Hotfix: solve the problem of fetching new users
