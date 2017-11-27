@@ -1381,6 +1381,10 @@ if (!function_exists('get_missing_requirements')) {
             $errors[] = 'Your host needs to have cURL extension enabled to run this version of Directus!';
         }
 
+        if (!extension_loaded('mbstring')) {
+            $errors[] = 'Your host needs to have Multibyte String extension enabled to run this version of Directus!';
+        }
+
         if (!file_exists(BASE_PATH . '/vendor/autoload.php')) {
             $errors[] = 'Composer dependencies must be installed first.';
         }
