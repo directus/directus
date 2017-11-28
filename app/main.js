@@ -86,6 +86,8 @@ require(['config', 'polyfills'], function () {
     app.countries = options.countries;
     app.user_notifications = options.user_notifications;
     app.showWelcomeWindow = options.showWelcomeWindow;
+    // TODO: Make the options part of the app internally
+    app.options = options;
 
     $.xhrPool = []; // array of uncompleted requests
     $.xhrPool.abortAll = function () { // our abort function
@@ -362,6 +364,27 @@ require(['config', 'polyfills'], function () {
 
         if (options.errorPropagation !== false) {
           options.error = errorCodeHandler;
+        }
+
+        var httpOptions = app.options.http || {};
+        var emulateEnabled =  httpOptions ? httpOptions.emulate_enabled : false;
+        var emulatedMethods = httpOptions ? httpOptions.emulate_methods : true;
+        var methodMap = {
+          'create': 'POST',
+          'update': 'PUT',
+          'patch':  'PATCH',
+          'delete': 'DELETE',
+          'read':   'GET'
+        };
+
+        if (
+          emulateEnabled === true
+          && (
+            !_.isArray(emulatedMethods)
+            || (emulatedMethods.indexOf(methodMap[method]) >= 0)
+          )
+        ) {
+          options.emulateHTTP = true;
         }
 
         return sync(method, model, options);

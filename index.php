@@ -558,15 +558,14 @@ function parseLocalesAvailable($localesAvailable)
  * Optionally force HTTPS
  */
 
+/** @var \Directus\Config\Config $config */
 $config = Bootstrap::get('config');
-$forceHttps = isset($config['HTTP']) && isset($config['HTTP']['forceHttps'])
-    && $config['HTTP']['forceHttps'];
+$forceHttps = $config->get('http.force_https', false);
 if ($forceHttps) {
     $isHttpsFallbackFn = function () {
         return isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off';
     };
-    $isHttpsFn = isset($config['HTTP']['isHttpsFn']) ?
-        $config['HTTP']['isHttpsFn'] : $isHttpsFallbackFn;
+    $isHttpsFn = $config->get('isHttpsFn', $isHttpsFallbackFn);
     if (!$isHttpsFn()) {
         $host = 'https://' . $_SERVER['SERVER_NAME'];
         if ('80' != $_SERVER['SERVER_PORT']) {
@@ -691,6 +690,7 @@ $data = [
     'groups' => $groups,
     'settings' => $settings,
     'config' => $configuration,
+    'http' => $config->get('http', []),
     'authenticatedUser' => $authenticatedUser,
     'extensions' => getExtensions($currentUserGroup),
     'privileges' => getPrivileges($groupId),

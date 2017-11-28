@@ -33,8 +33,12 @@ return [
         //   'bucket' => 's3-bucket'
     ],
 
-    'HTTP' => [
-        'forceHttps' => false,
+    'http' => [
+        'emulate_enabled' => false,
+        // can be null, or an array list of method to be emulated
+        // Ex: ['PATH', 'DELETE', 'PUT']
+        // 'emulate_methods' => null,
+        'force_https' => false,
         'isHttpsFn' => function () {
             // Override this check for custom arrangements, e.g. SSL-termination @ load balancer
             return isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off';
