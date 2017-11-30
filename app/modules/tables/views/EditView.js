@@ -133,6 +133,18 @@ define([
       var isNew = this.model.isNew();
       var collection = this.model.collection;
       var success;
+      var goToNewItem = function () {
+        var route = Backbone.history.fragment.split('/');
+
+        // Trick the router to refresh this page when we are dealing with new items
+        if (isNew) {
+          app.router.navigate('#', {trigger: false, replace: true});
+        }
+
+        route.pop();
+        route.push('new');
+        app.router.go(route);
+      };
 
       if (action === 'save-form-stay') {
         success = function (model, response, options) {
@@ -152,17 +164,12 @@ define([
         };
       } else {
         success = function (model, response, options) {
-          var route = Backbone.history.fragment.split('/');
-
-          route.pop();
-          if (action === 'save-form-add') {
-            // Trick the router to refresh this page when we are dealing with new items
-            if (isNew) app.router.navigate("#", {trigger: false, replace: true});
-            route.push('new');
-          }
-
           if (self.onSuccess) {
             self.onSuccess(model, response, options);
+          }
+
+          if (action === 'save-form-add') {
+            goToNewItem();
           }
 
           // TODO: check if this view is a overlay then close the overlay
@@ -170,6 +177,9 @@ define([
           // -------------------------------------------------------------
           // if it's an overlay view do not go to any route
           if (!self.headerOptions.route.isOverlay) {
+            var route = Backbone.history.fragment.split('/');
+
+            route.pop();
             self.model.disablePrompt();
             app.router.go(route);
           }
@@ -189,10 +199,14 @@ define([
       if (!model.unsavedAttributes()) {
         Notification.warning('Nothing changed, nothing saved');
 
-        // Write this as a helper function
-        var route = Backbone.history.fragment.split('/');
-        route.pop();
-        app.router.go(route);
+        if (action === 'save-form-add') {
+          goToNewItem();
+        } else {
+          // Write this as a helper function
+          var route = Backbone.history.fragment.split('/');
+          route.pop();
+          app.router.go(route);
+        }
 
         return;
       }
