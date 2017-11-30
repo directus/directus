@@ -11,12 +11,16 @@ define(function(require, exports, module) {
 
     model: ColumnModel,
 
-    comparator: function(row) {
+    comparator: function (row) {
       return row.get('sort');
     },
 
-    parse: function(result) {
+    parse: function (result) {
       return result.data ? result.data : result;
+    },
+
+    clone: function () {
+      return new this.constructor(this.models, {table: this.table});
     },
 
     getVisibleInputColumns: function () {

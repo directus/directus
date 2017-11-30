@@ -224,10 +224,11 @@ function(app, Backbone, StatusHelper, Utils, _) {
       if (column === undefined) {
         this.setFilter({sort:'id', sort_order: 'ASC'});
       } else {
+        var columnModel = this.structure.get(column);
         options = options || {};
 
         // NOTE: if the column doesn't exist, do not save it to preferences
-        if (!this.structure.get(column)) {
+        if (!columnModel || _.result(columnModel, 'isFake')) {
           options.save = false;
         }
 

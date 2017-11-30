@@ -412,7 +412,7 @@ function(app, _, Backbone, Notification, __t, TableHelpers, ModelHelper, TableHe
 
     _configureTable: function (options) {
       this.showChart = options.showChart === true;
-      this.options.systemCollection = this.collection.clone();
+      this.options.systemCollection = this.collection.clone({structure: true});
       this.listenTo(this.collection, 'sync', this._onCollectionSynced);
     },
 
