@@ -296,6 +296,7 @@ define([
         if (showCommentsCount) {
           var commentsCollection = this.getCommentCollection();
           commentsCollection.setFilter({
+            columns: ['id', 'comment_metadata'],
             filters: {
               comment_metadata: {like: this.collection.table.id + ':'}
             }
