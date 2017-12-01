@@ -573,6 +573,7 @@
 
     "same_time_as_you": "Ambos tienen la misma hora",
     "x_hours_from_you": "A %{hours} horas de usted",
+    "x_time_by_y": "%{time} por %{by}",
 
     "views_table": "Tabla",
     "views_map": "Mapa",

@@ -301,7 +301,7 @@ define([
         if (showCommentsCount) {
           var commentsCollection = this.getCommentCollection();
           commentsCollection.setFilter({
-            columns: ['id', 'comment_metadata'],
+            columns: ['id', 'from', 'datetime', 'comment_metadata'],
             filters: {
               comment_metadata: {like: this.collection.table.id + ':'}
             }
@@ -310,24 +310,22 @@ define([
           return commentsCollection.fetch().then(_.bind(function () {
             var systemCollection = this.options.systemCollection;
             var comments = [];
+
             this.comments.each(function (model) {
               var metadata = (model.get('comment_metadata') || '').split(':');
 
               if (!comments[metadata[1]]) {
-                comments[metadata[1]] = {
-                  id: metadata[1],
-                  count: 0
-                };
+                comments[metadata[1]] = new Backbone.Collection();
               }
 
-              comments[metadata[1]].count++;
+              comments[metadata[1]].add(model);
             });
 
-            _.each(comments, function (comment) {
-              var model = systemCollection.get(comment.id);
+            _.each(comments, function (collection, id) {
+              var model = systemCollection.get(id);
               // if the collection are filtered some models may not be
               if (model) {
-                model.set(COLUMN_COMMENTS_COUNT, comment.count);
+                model.set(COLUMN_COMMENTS_COUNT, collection);
               }
             });
           }, this));
@@ -553,7 +551,14 @@ define([
       _onCollectionSynced: function () {
         TableView.prototype._onCollectionSynced.apply(this, arguments);
 
-        // NOTE: Add _revisions and _comments if it's necessary
+        // NOTE: Add _revisions if it's necessary
+        var columnCommentsCount = new FakeColumnModel({
+          id: COLUMN_COMMENTS_COUNT,
+          column_name: COLUMN_COMMENTS_COUNT,
+          data_type: 'integer',
+          ui: 'comments_count'
+        }, {parse: true});
+
         var columnLastUpdated = new FakeColumnModel({
           id: COLUMN_LAST_UPDATED,
           column_name: COLUMN_LAST_UPDATED,
@@ -564,7 +569,7 @@ define([
           }
         }, {parse: true});
 
-        this.options.systemCollection.structure.add(columnLastUpdated);
+        this.options.systemCollection.structure.add([columnCommentsCount, columnLastUpdated]);
       },
 
       constructor: function (options) {

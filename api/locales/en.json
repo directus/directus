@@ -577,6 +577,7 @@
 
     "same_time_as_you": "Same time as you",
     "x_hours_from_you": "%{hours} hours from you",
+    "x_time_by_y": "%{time} by %{by}",
 
     "views_table": "Table",
     "views_map": "Map",
