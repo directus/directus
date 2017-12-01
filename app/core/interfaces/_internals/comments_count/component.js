@@ -17,7 +17,7 @@ define([
     list: function (interfaceOptions) {
       var collection = interfaceOptions.value;
       var latest;
-      var output;
+      var output = 0;
 
       if (collection instanceof Backbone.Collection && collection.length > 0) {
         collection.each(function (model) {

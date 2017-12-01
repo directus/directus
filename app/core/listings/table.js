@@ -300,7 +300,12 @@ define([
 
         if (showCommentsCount) {
           var commentsCollection = this.getCommentCollection();
+
+          // remove all filters, to prevent previous undesired filters
+          // TODO: create a nice solution to just fetch the comments from the items ids in the collection
+          commentsCollection.clearFilter();
           commentsCollection.setFilter({
+            limit: -1,
             columns: ['id', 'from', 'datetime', 'comment_metadata'],
             filters: {
               comment_metadata: {like: this.collection.table.id + ':'}
