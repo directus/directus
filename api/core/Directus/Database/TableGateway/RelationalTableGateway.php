@@ -1268,16 +1268,20 @@ class RelationalTableGateway extends BaseTableGateway
      */
     protected function processFilters(Builder $query, array $filters = [])
     {
-        $filters = $this->parseDotFilters($query, $filters);
+        // NOTE: The filters are going to be nested as this filters should collapse with the main "AND" conditions
+        // any ORs inside filters are not going to be affect the others conditions
+        $query->nestWhere(function (Builder $query) use ($filters) {
+            $filters = $this->parseDotFilters($query, $filters);
 
-        foreach ($filters as $column => $condition) {
-            if ($condition instanceof Filter) {
-                $column =  $condition->getIdentifier();
-                $condition = $condition->getValue();
+            foreach ($filters as $column => $condition) {
+                if ($condition instanceof Filter) {
+                    $column =  $condition->getIdentifier();
+                    $condition = $condition->getValue();
+                }
+
+                $this->doFilter($query, $column, $condition, $this->getTable());
             }
-
-            $this->doFilter($query, $column, $condition, $this->getTable());
-        }
+        });
     }
 
     /**
