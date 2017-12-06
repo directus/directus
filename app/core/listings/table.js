@@ -90,8 +90,8 @@ define([
         var data = View.prototype.serialize.apply(this, arguments);
         var chartEnabled = false;// this.showChart && this.isChartEnabled();
 
-        data.fixedHead = chartEnabled != true;
-        data.showChart = chartEnabled == true;
+        data.fixedHead = chartEnabled !== true;
+        data.showChart = chartEnabled === true;
 
         return data;
       },
@@ -105,6 +105,11 @@ define([
             self.render();
           });
         });
+      },
+
+      onEnable: function () {
+        // update the system collection with the new data fetched after switch from another listing view
+        this._configureTable(this.options);
       },
 
       optionsStructure: function() {
