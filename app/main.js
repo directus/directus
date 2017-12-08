@@ -42,6 +42,8 @@ require(['config', 'polyfills'], function () {
       // @TODO: Make timezone an object with id and name
       timezones: [],
       countries: [],
+      http: {},
+      cors: {},
       path: '/directus/',
       page: '',
       authenticatedUser: 0, // 0 = guest, sort of :)
@@ -123,7 +125,6 @@ require(['config', 'polyfills'], function () {
       UIManager.load(options.interfaces),
       ExtensionManager.load(options.extensions),
       ListViewManager.load(options.listViews)
-
     ).done(function () {
 
       app.trigger('loaded');

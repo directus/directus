@@ -691,6 +691,7 @@ $data = [
     'settings' => $settings,
     'config' => $configuration,
     'http' => $config->get('http', []),
+    'cors' => $config->get('cors', []),
     'authenticatedUser' => $authenticatedUser,
     'extensions' => getExtensions($currentUserGroup),
     'privileges' => getPrivileges($groupId),

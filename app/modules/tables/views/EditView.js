@@ -145,12 +145,19 @@ define([
         route.push('new');
         app.router.go(route);
       };
+      var afterSaved = function () {
+        _.each(app.getCorsTargets(), function (origin) {
+          window.parent.postMessage('item.saved', origin);
+        });
+      };
 
       if (action === 'save-form-stay') {
         success = function (model, response, options) {
           if (self.onSuccess) {
             self.onSuccess(model, response, options);
           }
+
+          afterSaved();
 
           var route = Backbone.history.fragment.split('/');
           if (!model.table.get('single')) {
@@ -167,6 +174,8 @@ define([
           if (self.onSuccess) {
             self.onSuccess(model, response, options);
           }
+
+          afterSaved();
 
           if (action === 'save-form-add') {
             goToNewItem();

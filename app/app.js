@@ -196,6 +196,22 @@ define(function (require, exports, module) {
       window.location.href = url;
     },
 
+    getCorsOptions: function () {
+      return this.options.cors || {};
+    },
+
+    getCors: function (key) {
+      var options = this.getCorsOptions() || {};
+
+      return options[key];
+    },
+
+    getCorsTargets: function () {
+      var origins = this.getCors('origin');
+
+      return Utils.parseCSV(origins);
+    },
+
     //  TODO: implement this into a new logger
     //logErrorToServer: function(type, message, details) {
     //  var user = app.user, email = 'n/a';
