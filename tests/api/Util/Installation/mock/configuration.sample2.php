@@ -30,7 +30,9 @@ return [
         //   'secret' => 's3-key',
         //   'region' => 's3-region',
         //   'version' => 's3-version',
-        //   'bucket' => 's3-bucket'
+        //   'bucket' => 's3-bucket',
+        //   Digital Ocean endpoint
+        //   'endpoint' => '
     ],
 
     'http' => [
