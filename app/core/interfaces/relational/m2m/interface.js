@@ -85,7 +85,7 @@ define([
           if (me.columnSchema.options.get('no_duplicates') === true) {
             var duplicated = false;
             me.relatedCollection.each(function (model) {
-              if (model.get('data').id === id) {
+              if (+model.get('data').id === +id) {
                 duplicated = true;
               }
             });
