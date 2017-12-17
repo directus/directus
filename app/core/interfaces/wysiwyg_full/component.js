@@ -164,6 +164,13 @@ define(['./interface', 'core/UIComponent', 'core/t'], function (Input, UICompone
         type: 'Boolean',
         comment: 'Have the editor remove potentially unsafe tags like iframe and script',
         default_value: true
+      },
+      {
+        id: 'basic_image_list',
+        ui: 'toggle',
+        type: 'Boolean',
+        comment: 'use basic image listing in ui (potentially slow with high number of images)',
+        default_value: true
       }
     ],
     validate: function (value, interfaceOptions) {
