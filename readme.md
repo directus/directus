@@ -14,7 +14,7 @@ Directus is a free and open-source database API and 'headless' CMS. Unlike tradi
 
 Directus makes no assumptions about how you should architect your database – giving you complete freedom to optimize structure and performance for projects of any size or complexity. Built on top of the API is our feature-rich admin webapp (CMS) which dynamically maps to your database's schema, instantly providing your users/clients with an intuitive interface for managing content.
 
-Learn more at [getdirectus.com](https://getdirectus.com) and follow us on Twitter: [@directus](https://twitter.com/directus)
+Learn more at [getdirectus.com](https://getdirectus.com), chat with us on [Slack](https://slack.getdirectus.com), and follow us on Twitter: [@directus](https://twitter.com/directus)
 
 
 ## Installation
