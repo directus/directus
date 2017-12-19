@@ -948,7 +948,9 @@ class RelationalTableGateway extends BaseTableGateway
             }, $results);
         }
 
-        if (ArrayUtils::get($params, 'id') || ArrayUtils::has($params, 'single')) {
+        // FIXME: This was a bug that was let it live too long
+        // it should've been 'id' instead of the actual primary key name
+        if (ArrayUtils::get($params, $this->primaryKeyFieldName) || ArrayUtils::has($params, 'single')) {
             $results = reset($results);
         }
 
@@ -1266,16 +1268,20 @@ class RelationalTableGateway extends BaseTableGateway
      */
     protected function processFilters(Builder $query, array $filters = [])
     {
-        $filters = $this->parseDotFilters($query, $filters);
+        // NOTE: The filters are going to be nested as this filters should collapse with the main "AND" conditions
+        // any ORs inside filters are not going to be affect the others conditions
+        $query->nestWhere(function (Builder $query) use ($filters) {
+            $filters = $this->parseDotFilters($query, $filters);
 
-        foreach ($filters as $column => $condition) {
-            if ($condition instanceof Filter) {
-                $column =  $condition->getIdentifier();
-                $condition = $condition->getValue();
+            foreach ($filters as $column => $condition) {
+                if ($condition instanceof Filter) {
+                    $column =  $condition->getIdentifier();
+                    $condition = $condition->getValue();
+                }
+
+                $this->doFilter($query, $column, $condition, $this->getTable());
             }
-
-            $this->doFilter($query, $column, $condition, $this->getTable());
-        }
+        });
     }
 
     /**
@@ -1963,8 +1969,7 @@ class RelationalTableGateway extends BaseTableGateway
             // Replace foreign keys with foreign rows
             foreach ($entries as &$parentRow) {
                 if (array_key_exists($relationalColumnName, $parentRow)) {
-                    // @NOTE: Not always will be a integer
-                    $foreign_id = (int)$parentRow[$relationalColumnName];
+                    $foreign_id = $parentRow[$relationalColumnName];
                     $parentRow[$relationalColumnName] = null;
                     // "Did we retrieve the foreign row with this foreign ID in our recent query of the foreign table"?
                     if (array_key_exists($foreign_id, $relatedEntries)) {

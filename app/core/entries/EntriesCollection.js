@@ -265,7 +265,10 @@ define(function(require, exports, module) {
       this.destroy(this.toJSON(), options);
     },
 
-    clone: function() {
+    clone: function (cloneOptions) {
+      cloneOptions = cloneOptions || {};
+      var whitelist = ['structure', 'table', 'privileges', 'preferences'];
+
       var options = {
         model: this.model,
         comparator: this.comparator,
@@ -276,6 +279,12 @@ define(function(require, exports, module) {
         url: this.url,
         rowsPerPage: this.rowsPerPage
       };
+
+      _.each(whitelist, function (property) {
+        if (cloneOptions[property] === true) {
+          options[property] = options[property].clone();
+        }
+      });
 
       return new this.constructor(this.models, options);
     },

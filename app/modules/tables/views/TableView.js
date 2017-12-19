@@ -225,7 +225,7 @@ define([
 
     _ensureView: function (viewId, triggerEvent) {
       _.each(this.state.views, function (view) {
-          view.disable();
+        view.disable();
         this.stopListening(view, 'toggleRightPane', this.toggleRightPane);
       }, this);
 

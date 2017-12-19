@@ -82,7 +82,8 @@ define(function (require, exports, module) {
     // @todo: refactoring
     before: function (route, name) {
       var fragment = Backbone.history.fragment;
-      if(fragment) {
+
+      if (fragment) {
         var routeHistoryBase = fragment;
         if (this.routeHistory.base === '' || routeHistoryBase.indexOf(this.routeHistory.base) !== 0) {
           this.routeHistory.base = routeHistoryBase;
@@ -96,30 +97,41 @@ define(function (require, exports, module) {
         var nextRoute = {route: name, path: fragment, args: this.getRouteParameters(route, fragment), subroutes: []};
 
         // Exists
-        if(currentRoute && nextRoute) {
+        if (currentRoute && nextRoute) {
           var current = currentRoute = this.routeHistory.routes[currentRoute.path];
           var next = this.routeHistory.routes[nextRoute.path];
 
-          if(next) {
+          if (next) {
             delete this.routeHistory.routes[currentRoute.path];
             currentRoute = undefined;
           }
         }
 
-        if(currentRoute) {
+        if (currentRoute) {
           currentRoute.scrollTop = parseInt(document.body.scrollTop, 10) || 0;
           currentRoute.toRoute = nextRoute;
         }
+
         this.routeHistory.stack.push(nextRoute);
         this.routeHistory.last = currentRoute ? currentRoute.path : fragment;
-        if(!this.routeHistory.routes[fragment]) {
+
+        if (!this.routeHistory.routes[fragment]) {
           this.routeHistory.routes[fragment] = nextRoute;
         }
       }
 
       var mainSidebar = document.getElementById('mainSidebar');
-      if(mainSidebar) {
+      if (mainSidebar) {
         this.scrollTop = parseInt(mainSidebar.scrollTop, 10) || 0;
+      }
+
+      // TODO: Make the "cache" collection, at least a light caching layer/object
+      // NOTE: This is a hotfix to prevent caching the collection when we've moved to another page
+      // We actually only used it on `entry` and `header`
+      // by removing it to any other page but entry endpoints we make sure bookmarks doesn't use it as reference
+      // See: https://github.com/directus/directus/issues/1972
+      if (name !== 'entry') {
+        this.currentCollection = undefined;
       }
     },
 

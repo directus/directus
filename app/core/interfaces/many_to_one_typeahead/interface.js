@@ -100,7 +100,7 @@ define(['app', 'handlebars', 'core/UIView', 'utils'], function (app, Handlebars,
 
       this.$('.for_display_only').on('typeahead:selected', function (e, datum) {
         var model = self.model.get(self.name);
-        var selectedId = parseInt(datum.id, 10);
+        var selectedId = datum.id;
 
         model.clear();
         model.setId(selectedId);

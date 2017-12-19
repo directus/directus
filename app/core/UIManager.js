@@ -21,6 +21,7 @@ define(function (require, exports, module) {
     require('core/interfaces/_internals/activity/component'),
     require('core/interfaces/_internals/columns_picker/component'),
     require('core/interfaces/_internals/columns/component'),
+    require('core/interfaces/_internals/comments_count/component'),
     require('core/interfaces/_internals/directus_users/component'),
     require('core/interfaces/_internals/file_preview/component'),
     require('core/interfaces/_internals/file_size/component'),

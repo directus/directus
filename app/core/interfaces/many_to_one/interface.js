@@ -18,7 +18,7 @@ define([
       'change select': function (event) {
         var model = this.model.get(this.name);
         var $target = $(event.currentTarget);
-        var selectedId = parseInt($target.find(':selected').val(), 10);
+        var selectedId = $target.find(':selected').val();
         var attributes;
         var primaryColumn;
         var attributesName;
@@ -51,13 +51,39 @@ define([
       }
     },
 
-    getValue: function () {
-      var privilege = app.schemaManager.getPrivileges(this.columnSchema.getRelatedTableName());
-      var value;
+    getPrivilege: function () {
+      return app.schemaManager.getPrivileges(this.columnSchema.getRelatedTableName());
+    },
 
-      if (privilege.canEdit() || privilege.canAdd()) {
-        value = this.value;
-      } else {
+    visible: function () {
+      // Hide M2O Interface if the user has not permission to read the related table data
+      return this.canRead() === true;
+    },
+
+    canRead: function () {
+      var privilege = this.getPrivilege();
+
+      return privilege && privilege.canView();
+    },
+
+    canEdit: function () {
+      var privilege = this.getPrivilege();
+
+      return privilege && privilege.canEdit();
+    },
+
+    canAdd: function () {
+      var privilege = this.getPrivilege();
+
+      return privilege && privilege.canAdd();
+    },
+
+    getValue: function () {
+      var value = this.value;
+
+      // If the user has permission to edit or add value is a model
+      // otherwise is the id
+      if (value && (this.canEdit() || this.canAdd())) {
         value = this.value.id;
       }
 
@@ -105,15 +131,11 @@ define([
         value = data[0].id;
       }
 
-      if (this.options.settings.get('readonly') === true) {
-        this.canEdit = false;
-      }
-
       // Default data while syncing (to avoid flickr when data is loaded)
       if (this.options.value !== undefined && this.options.value.id && data.length === 0) {
         data = [{
           id: this.options.value.id,
-          name: this.options.value,
+          name: '--', // data has not loaded or user has not permission to the related table
           selected: true
         }];
       }
@@ -146,7 +168,6 @@ define([
       var value = this.model.get(this.name);
       value.startTracking();
 
-      this.canEdit = this.model.canEdit(this.name);
       this.collection = value.collection.getNewInstance({omit: ['preferences']});
 
       var data = {};
@@ -171,7 +192,10 @@ define([
       }
 
       // FILTER HERE!
-      this.collection.fetch({includeFilters: false, data: data});
+      if (this.canRead()) {
+        this.collection.fetch({includeFilters: false, data: data});
+      }
+
       // This.collection.on('reset', this.render, this);
       this.collection.on('sync', this.render, this);
     }

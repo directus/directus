@@ -162,8 +162,12 @@ define([
 
       if (interfaceOptions.settings.get('contextual_date_in_listview') === true) {
         var momentDate = moment(interfaceOptions.value);
+
         value = '-';
-        if (momentDate.isValid()) {
+
+        // make sure the value is also valid
+        // otherwise the date will be "now"
+        if (interfaceOptions.value && momentDate.isValid()) {
           value = momentDate.fromNow();
         }
       } else if (format) {

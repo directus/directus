@@ -4,14 +4,19 @@ define([
   'moment',
   'core/t',
   'backbone',
+  'schema/FakeColumnModel',
   'core/table/table.view',
   'core/widgets/TableChartWidget',
   'helpers/table',
   'core/listings/baseView'
-], function(app, _, moment, __t, Backbone, TableView, TableChartWidget, TableHelpers, BaseView) {
+], function(app, _, moment, __t, Backbone, FakeColumnModel, TableView, TableChartWidget, TableHelpers, BaseView) {
 
   var CHART_Y_AXIS_NAME = 'chart_y_axis';
   var CHART_X_AXIS_NAME = 'chart_x_axis';
+  // TODO: Add impossible names, a table could have this column as real columns
+  var COLUMN_LAST_UPDATED = '_last_updated';
+  var COLUMN_REVISIONS_COUNT = '_revisions';
+  var COLUMN_COMMENTS_COUNT = '_comments';
 
   var View = BaseView.extend(TableView.prototype, {});
 
@@ -85,8 +90,8 @@ define([
         var data = View.prototype.serialize.apply(this, arguments);
         var chartEnabled = false;// this.showChart && this.isChartEnabled();
 
-        data.fixedHead = chartEnabled != true;
-        data.showChart = chartEnabled == true;
+        data.fixedHead = chartEnabled !== true;
+        data.showChart = chartEnabled === true;
 
         return data;
       },
@@ -100,6 +105,11 @@ define([
             self.render();
           });
         });
+      },
+
+      onEnable: function () {
+        // update the system collection with the new data fetched after switch from another listing view
+        this._configureTable(this.options);
       },
 
       optionsStructure: function() {
@@ -295,7 +305,13 @@ define([
 
         if (showCommentsCount) {
           var commentsCollection = this.getCommentCollection();
+
+          // remove all filters, to prevent previous undesired filters
+          // TODO: create a nice solution to just fetch the comments from the items ids in the collection
+          commentsCollection.clearFilter();
           commentsCollection.setFilter({
+            limit: -1,
+            columns: ['id', 'from', 'datetime', 'comment_metadata'],
             filters: {
               comment_metadata: {like: this.collection.table.id + ':'}
             }
@@ -304,24 +320,22 @@ define([
           return commentsCollection.fetch().then(_.bind(function () {
             var systemCollection = this.options.systemCollection;
             var comments = [];
+
             this.comments.each(function (model) {
               var metadata = (model.get('comment_metadata') || '').split(':');
 
               if (!comments[metadata[1]]) {
-                comments[metadata[1]] = {
-                  id: metadata[1],
-                  count: 0
-                };
+                comments[metadata[1]] = new Backbone.Collection();
               }
 
-              comments[metadata[1]].count++;
+              comments[metadata[1]].add(model);
             });
 
-            _.each(comments, function (comment) {
-              var model = systemCollection.get(comment.id);
+            _.each(comments, function (collection, id) {
+              var model = systemCollection.get(id);
               // if the collection are filtered some models may not be
               if (model) {
-                model.set('_comments', comment.count);
+                model.set(COLUMN_COMMENTS_COUNT, collection);
               }
             });
           }, this));
@@ -378,7 +392,7 @@ define([
             var model = systemCollection.get(revision.id);
             // if the collection are filtered some models may not be
             if (model) {
-              model.set('_revisions', revision.count);
+              model.set(COLUMN_REVISIONS_COUNT, revision.count);
             }
           });
         }, this));
@@ -417,10 +431,22 @@ define([
           collection.each(function (model) {
             var rowId = model.get('row_id');
             var rowModel = systemCollection.get(rowId);
+            var value = model.get('datetime');
 
-            if (rowModel) {
-              rowModel.set('_last_updated', moment(model.get('datetime')).fromNow());
+            if (!rowModel) {
+              return;
             }
+
+            if (rowModel.has(COLUMN_LAST_UPDATED)) {
+              value = _.max([
+                rowModel.get(COLUMN_LAST_UPDATED),
+                value
+              ], function (date) {
+                return moment(date)
+              });
+            }
+
+            rowModel.set(COLUMN_LAST_UPDATED, value);
           });
         };
 
@@ -443,15 +469,15 @@ define([
         var columns = [];
 
         if (this.getViewOptions('comments_count')) {
-          columns.push('_comments');
+          columns.push(COLUMN_COMMENTS_COUNT);
         }
 
         if (this.getViewOptions('revisions_count')) {
-          columns.push('_revisions');
+          columns.push(COLUMN_REVISIONS_COUNT);
         }
 
         if (this.getViewOptions('last_updated')) {
-          columns.push('_last_updated');
+          columns.push(COLUMN_LAST_UPDATED);
         }
 
         return columns;
@@ -530,6 +556,30 @@ define([
           this.collection.preferences.off('sync', this.updateSystemColumnsAndRender, this);
           this.stopListening(this, 'onShowMore', this.onShowMore);
         }
+      },
+
+      _onCollectionSynced: function () {
+        TableView.prototype._onCollectionSynced.apply(this, arguments);
+
+        // NOTE: Add _revisions if it's necessary
+        var columnCommentsCount = new FakeColumnModel({
+          id: COLUMN_COMMENTS_COUNT,
+          column_name: COLUMN_COMMENTS_COUNT,
+          data_type: 'integer',
+          ui: 'comments_count'
+        }, {parse: true});
+
+        var columnLastUpdated = new FakeColumnModel({
+          id: COLUMN_LAST_UPDATED,
+          column_name: COLUMN_LAST_UPDATED,
+          data_type: 'datetime',
+          ui: 'datetime',
+          options: {
+            contextual_date_in_listview: true
+          }
+        }, {parse: true});
+
+        this.options.systemCollection.structure.add([columnCommentsCount, columnLastUpdated]);
       },
 
       constructor: function (options) {
