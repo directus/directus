@@ -4,14 +4,10 @@
 
 <p align="center">Open-Source Headless CMS & API</p>
 <p>&nbsp;</p>
+<p>&nbsp;</p>
 
-[![Join the chat at https://slack.getdirectus.com](https://img.shields.io/badge/chat-on%20slack-C7205A.svg)](https://slack.getdirectus.com)
-![BrowserStack Status](https://www.browserstack.com/automate/badge.svg?badge_key=<badge_key>)
-[![GitHub issues](https://img.shields.io/github/issues/directus/directus.svg)](https://github.com/directus/directus/issues)
-[![GitHub license](https://img.shields.io/badge/license-GPL-blue.svg)](https://raw.githubusercontent.com/directus/directus/master/license.md)
-[![StackShare](http://img.shields.io/badge/tech-stack-0690fa.svg?style=flat)](https://stackshare.io/ranger/directus)
+<p align="center"><i>Directus is free and open-source and we like to keep it that way.<br>Please help us out by <a href="https://www.patreon.com/directus">supporting the project on Patreon!</a></i></p>
 
-_Checkout our [live demo](https://preview.getdirectus.com)!_
 
 ## Description
 Directus is a free and open-source database API and 'headless' CMS. Unlike traditional CMS that encompass your entire project codebase, the decoupled approach of Directus offers an API and SDKs to connect your content to: websites, native apps, kiosks, IoT devices, or any other data-driven projects.
@@ -20,16 +16,16 @@ Directus makes no assumptions about how you should architect your database – g
 
 Learn more at [getdirectus.com](https://getdirectus.com) and follow us on Twitter: [@directus](https://twitter.com/directus)
 
-Please consider supporting us on [Patreon](https://www.patreon.com/directus)!
 
 ## Installation
-Download the latest pre-built version from [our releases page](https://github.com/directus/directus/releases) or clone this repo and install the composer dependencies by running `composer install` from the root folder.
+Download the latest pre-built version from [our releases page](https://github.com/directus/directus/releases) or clone this repo and install the composer dependencies by running `composer install` from the root folder. 
 
 ### Requirements:
 NGINX or Apache Server, MySQL 5.2+, PHP 5.5+ (curl, gd, finfo, pdo_mysql)
 
 ### Database types
 While Directus has been abstracted to allow for different database adapters in the future, currently only MySQL is supported. PostgreSQL, SQLite, and MongoDB support is under development – and we hope to expand support for additional database types as we gain contributors.
+
 
 ## Documentation
 
@@ -42,6 +38,7 @@ You can find the source of this documentation in [our docs repo](https://github.
 Our full API reference can be found over at [api.getdirectus.com](https://api.getdirectus.com). Together with the endpoints and supported params, you can also find code examples for our supported SDKs.
 
 You can find the source of this documentation in [our API docs repo](https://github.com/directus/api-docs).
+
 
 ## Contributing to Directus
 First of all, thank you for taking the time to work on Directus!
@@ -70,23 +67,21 @@ Huge thanks to the following contributors!
 - 🇨🇳  [@TigerHix](https://github.com/TigerHix) & [@Gfast2](https://github.com/Gfast2)
 - 🇧🇷  [@michaelnagy](https://github.com/michaelnagy)
 - 🇮🇹  [@AeonZh](https://github.com/AeonZh)
-- 🇳🇱  [@RijkvanZanten](https://github.com/RijkvanZanten)
+- 🇳🇱  [@rijkvanzanten](https://github.com/RijkvanZanten)
 - 🇯🇵  [@hokkaidobeard](https://github.com/hokkaidobeard)
 - 🇳🇴  [@franctic-aerobic](https://github.com/franctic-aerobic)
 
-
-#### Suggesting Enhancements
-When you are creating an enhancement suggestion, please include as many details as possible. Fill out the required template; including the steps that you imagine you would take if the feature you're requesting existed.
-
-#### Requesting Features
+#### Requesting Features or Enhancements
 Use our [Feature Request Tool](https://request.getdirectus.com/) to request new features or vote on existing commmunity suggestions.
 
 #### Your First Code Contribution
 Unsure where to begin contributing to Directus? You can start by looking through the [`Beginner`](https://github.com/directus/directus/issues?q=is%3Aopen+is%3Aissue+label%3ABeginner), [`good first issue`](https://github.com/directus/directus/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22) and [`Help Wanted`](https://github.com/directus/directus/issues?q=is%3Aopen+is%3Aissue+label%3A%22Help+Wanted%22) issues. `Beginner` and `good first issue` issues are issues that often only require a few lines of code. `Help wanted` issues are a bit more involved than beginner issues.
 
 Want to help but have some trouble understanding the issue, ask us and we will help you to get you started.
+
 #### Pull Requests
 Pull requests are always welcome for every part of Directus. Please make sure to adhere to our [`.editorconfig`](http://editorconfig.org) rules and to lint your code with [XO](https://github.com/sindresorhus/xo).
+
 
 ## Public Roadmap
 _This is what we want to get done next:_
@@ -96,7 +91,7 @@ _This is what we want to get done next:_
 - API 2.0 - Speed improvements, better relational filtering / querying and increased i18n support
 
 ### Q1 2018
-- [Support Node.JS as backend platform](https://request.getdirectus.com/r/3)
+- Begin work on Directus v7.0 (moving from Backbone to Vue)
 - [Support for multiple database (multitenant)](https://request.getdirectus.com/r/1)
 - [Digital Asset Management improvements](https://request.getdirectus.com/r/2)
 - [Web Hooks](https://request.getdirectus.com/r/9)
@@ -114,6 +109,7 @@ _This is what we want to get done next:_
 Key developers: [coolov](https://github.com/coolov), [freen](https://github.com/freen), [jel-massih](https://github.com/jel-massih), [Lasha](https://github.com/Lasha)
 
 Sponsors: Bas Jansen
+
 
 ## Copyright, License, and Trademarks
 * Directus Core codebase released under the [GPLv3](http://www.gnu.org/copyleft/gpl.html) license.
