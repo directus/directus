@@ -1,3 +1,5 @@
+#!/bin/sh
+
 git subsplit init git@github.com:directus/directus.git
 
 # Collection
