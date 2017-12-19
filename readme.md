@@ -49,6 +49,10 @@ First of all, thank you for taking the time to work on Directus!
 The following is a set of guidelines for contributing to Directus and its components. These are just guidelines, not strict rules. Feel free to propose changes to this and other documents in a pull request.
 
 ### How Can I Contribute?
+
+#### Financial Support
+[<img src="https://user-images.githubusercontent.com/522079/33287837-0218cbfc-d388-11e7-9fbe-36ff3261b61a.png" alt="Patreon" />](https://www.patreon.com/directus)
+
 #### Reporting Bugs
 Think you've discovered a bug? First, read through our [docs](https://docs.getdirectus.com) to be sure – then submit a ticket to our [GitHub Issues](https://github.com/directus/directus/issues/new). And if you already know a good solution, we love [Pull Requests](https://github.com/directus/directus/pulls)! **For all security related issues, please chat with us directly through [getdirectus.com](https://getdirectus.com/).**
 

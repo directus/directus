@@ -48,7 +48,9 @@ return [
         //   'secret' => 's3-key',
         //   'region' => 's3-region',
         //   'version' => 's3-version',
-        //   'bucket' => 's3-bucket'
+        //   'bucket' => 's3-bucket',
+        //   Digital Ocean endpoint
+        //   'endpoint' => ''
     ],
 
     // Third-party authentication options
@@ -73,8 +75,12 @@ return [
     ],
 
     // HTTP Settings
-    'HTTP' => [
-        'forceHttps' => false,
+    'http' => [
+        'emulate_enabled' => false,
+        // can be null, or an array list of method to be emulated
+        // Ex: ['PATH', 'DELETE', 'PUT']
+        // 'emulate_methods' => null,
+        'force_https' => false,
         'isHttpsFn' => function () {
             // Override this check for custom arrangements, e.g. SSL-termination @ load balancer
             return isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off';

@@ -11,7 +11,12 @@ namespace Zend\Db\Metadata\Source;
 
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\Metadata\MetadataInterface;
-use Zend\Db\Metadata\Object;
+use Zend\Db\Metadata\Object\ColumnObject;
+use Zend\Db\Metadata\Object\ConstraintKeyObject;
+use Zend\Db\Metadata\Object\ConstraintObject;
+use Zend\Db\Metadata\Object\TableObject;
+use Zend\Db\Metadata\Object\TriggerObject;
+use Zend\Db\Metadata\Object\ViewObject;
 
 abstract class AbstractSource implements MetadataInterface
 {
@@ -115,10 +120,10 @@ abstract class AbstractSource implements MetadataInterface
         $data = $this->data['table_names'][$schema][$tableName];
         switch ($data['table_type']) {
             case 'BASE TABLE':
-                $table = new Object\TableObject($tableName);
+                $table = new TableObject($tableName);
                 break;
             case 'VIEW':
-                $table = new Object\ViewObject($tableName);
+                $table = new ViewObject($tableName);
                 $table->setViewDefinition($data['view_definition']);
                 $table->setCheckOption($data['check_option']);
                 $table->setIsUpdatable($data['is_updatable']);
@@ -238,7 +243,7 @@ abstract class AbstractSource implements MetadataInterface
 
         $info = $this->data['columns'][$schema][$table][$columnName];
 
-        $column = new Object\ColumnObject($columnName, $table, $schema);
+        $column = new ColumnObject($columnName, $table, $schema);
         $props = [
             'ordinal_position', 'column_default', 'is_nullable',
             'data_type', 'character_maximum_length', 'character_octet_length',
@@ -300,7 +305,7 @@ abstract class AbstractSource implements MetadataInterface
         }
 
         $info = $this->data['constraints'][$schema][$table][$constraintName];
-        $constraint = new Object\ConstraintObject($constraintName, $table, $schema);
+        $constraint = new ConstraintObject($constraintName, $table, $schema);
 
         foreach ([
             'constraint_type'         => 'setType',
@@ -345,7 +350,7 @@ abstract class AbstractSource implements MetadataInterface
         $keys = [];
         foreach ($this->data['constraint_keys'][$schema] as $constraintKeyInfo) {
             if ($constraintKeyInfo['table_name'] == $table && $constraintKeyInfo['constraint_name'] === $constraint) {
-                $keys[] = $key = new Object\ConstraintKeyObject($constraintKeyInfo['column_name']);
+                $keys[] = $key = new ConstraintKeyObject($constraintKeyInfo['column_name']);
                 $key->setOrdinalPosition($constraintKeyInfo['ordinal_position']);
                 if (isset($references[$constraint])) {
                     //$key->setReferencedTableSchema($constraintKeyInfo['referenced_table_schema']);
@@ -408,7 +413,7 @@ abstract class AbstractSource implements MetadataInterface
 
         $info = $this->data['triggers'][$schema][$triggerName];
 
-        $trigger = new Object\TriggerObject();
+        $trigger = new TriggerObject();
 
         $trigger->setName($triggerName);
         $trigger->setEventManipulation($info['event_manipulation']);

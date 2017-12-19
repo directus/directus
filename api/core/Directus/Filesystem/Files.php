@@ -122,8 +122,6 @@ class Files
      */
     public function getLink($url)
     {
-        $info = [];
-
         // @TODO: use oEmbed
         // @TODO: better provider url validation
         // checking for 'youtube.com' for a valid youtube video is wrong
@@ -155,6 +153,16 @@ class Files
      */
     protected function getMimeTypeFromContentType($contentType)
     {
+        // NOTE: When loading data from a url some requests responds with multiple content type
+        if (is_array($contentType)) {
+            foreach ($contentType as $type) {
+                if (strpos($type, 'image/') === 0) {
+                    $contentType = $type;
+                    break;
+                }
+            }
+        }
+
         // split the data type if it has charset or boundaries set
         // ex: image/jpg;charset=UTF8
         if (strpos($contentType, ';') !== false) {

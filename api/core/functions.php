@@ -358,7 +358,8 @@ if (!function_exists('load_registered_hooks')) {
 if (!function_exists('get_user_timezone')) {
     function get_user_timezone()
     {
-        $userTimeZone = get_auth_timezone();
+        // translate the fake timezone to a real php supported timezone
+        $userTimeZone = get_real_timezone(get_auth_timezone());
 
         if (!$userTimeZone) {
             $userTimeZone = date_default_timezone_get();
@@ -559,7 +560,60 @@ if (!function_exists('__t')) {
     }
 }
 
-if (!function_exists('get_timezones_list')) {
+if (!function_exists('get_fake_timezones')) {
+    /**
+     * Gets the list of fake timezone map to an real one
+     *
+     * @return array
+     */
+    function get_fake_timezones()
+    {
+        return [
+            'America/Mexico/La_Paz' => 'America/Chihuahua',
+            'America/Guadalajara' => 'America/Mexico_City',
+            'America/Quito' => 'America/Bogota',
+            'America/Argentina/GeorgeTown' => 'America/Argentina/Buenos_Aires',
+            'Europe/Edinburgh' => 'Europe/London',
+            'Europe/Bern' => 'Europe/Berlin',
+            'Europe/Kyiv' => 'Europe/Helsinki',
+            'Asia/Abu_Dhabi' => 'Asia/Muscat',
+            'Europe/St_Petersburg' => 'Europe/Moscow',
+            'Asia/Islamabad' => 'Asia/Karachi',
+            'Asia/Mumbai' => 'Asia/Calcutta',
+            'Asia/New_Delhi' => 'Asia/Calcutta',
+            'Asia/Sri_Jayawardenepura' => 'Asia/Calcutta',
+            'Asia/Astana' => 'Asia/Dhaka',
+            'Asia/Hanoi' => 'Asia/Bangkok',
+            'Asia/Beijing' => 'Asia/Hong_Kong',
+            'Asia/Sapporo' => 'Asia/Tokyo',
+            'Asia/Osaka' => 'Asia/Tokyo',
+            'Pacific/Marshall_Is' => 'Pacific/Fiji',
+            'Asia/Solomon_Is' => 'Asia/Magadan',
+            'Asia/New_Caledonia' => 'Asia/Magadan',
+            'Pacific/Wellington' => 'Pacific/Auckland'
+        ];
+    }
+}
+
+if (!function_exists('get_real_timezone')) {
+    /**
+     * Gets the real name of the timezone name
+     *
+     * we have fake it until php makes it
+     *
+     * @param $name
+     *
+     * @return string
+     */
+    function get_real_timezone($name)
+    {
+        $fakes = get_fake_timezones();
+
+        return isset($fakes[$name]) ? $fakes[$name] : $name;
+    }
+}
+
+if (!function_exists('get_timezone_list')) {
     function get_timezone_list()
     {
         // List from: https://github.com/tamaspap/timezones
@@ -572,12 +626,12 @@ if (!function_exists('get_timezones_list')) {
             'America/Tijuana' => '(UTC-08:00) Tijuana',
             'US/Arizona' => '(UTC-07:00) Arizona',
             'America/Chihuahua' => '(UTC-07:00) Chihuahua',
-            'America/Chihuahua' => '(UTC-07:00) La Paz',
+            'America/Mexico/La_Paz' => '(UTC-07:00) La Paz',
             'America/Mazatlan' => '(UTC-07:00) Mazatlan',
             'US/Mountain' => '(UTC-07:00) Mountain Time (US & Canada)',
             'America/Managua' => '(UTC-06:00) Central America',
             'US/Central' => '(UTC-06:00) Central Time (US & Canada)',
-            'America/Mexico_City' => '(UTC-06:00) Guadalajara',
+            'America/Guadalajara' => '(UTC-06:00) Guadalajara',
             'America/Mexico_City' => '(UTC-06:00) Mexico City',
             'America/Monterrey' => '(UTC-06:00) Monterrey',
             'Canada/Saskatchewan' => '(UTC-06:00) Saskatchewan',
@@ -585,7 +639,7 @@ if (!function_exists('get_timezones_list')) {
             'US/Eastern' => '(UTC-05:00) Eastern Time (US & Canada)',
             'US/East-Indiana' => '(UTC-05:00) Indiana (East)',
             'America/Lima' => '(UTC-05:00) Lima',
-            'America/Bogota' => '(UTC-05:00) Quito',
+            'America/Quito' => '(UTC-05:00) Quito',
             'Canada/Atlantic' => '(UTC-04:00) Atlantic Time (Canada)',
             'America/New_York' => '(UTC-04:00) New York',
             'America/Caracas' => '(UTC-04:30) Caracas',
@@ -595,13 +649,13 @@ if (!function_exists('get_timezones_list')) {
             'Canada/Newfoundland' => '(UTC-03:30) Newfoundland',
             'America/Sao_Paulo' => '(UTC-03:00) Brasilia',
             'America/Argentina/Buenos_Aires' => '(UTC-03:00) Buenos Aires',
-            'America/Argentina/Buenos_Aires' => '(UTC-03:00) Georgetown',
+            'America/Argentina/GeorgeTown' => '(UTC-03:00) Georgetown',
             'America/Godthab' => '(UTC-03:00) Greenland',
             'America/Noronha' => '(UTC-02:00) Mid-Atlantic',
             'Atlantic/Azores' => '(UTC-01:00) Azores',
             'Atlantic/Cape_Verde' => '(UTC-01:00) Cape Verde Is.',
             'Africa/Casablanca' => '(UTC+00:00) Casablanca',
-            'Europe/London' => '(UTC+00:00) Edinburgh',
+            'Europe/Edinburgh' => '(UTC+00:00) Edinburgh',
             'Etc/Greenwich' => '(UTC+00:00) Greenwich Mean Time : Dublin',
             'Europe/Lisbon' => '(UTC+00:00) Lisbon',
             'Europe/London' => '(UTC+00:00) London',
@@ -634,7 +688,7 @@ if (!function_exists('get_timezones_list')) {
             'Europe/Helsinki' => '(UTC+02:00) Helsinki',
             'Europe/Istanbul' => '(UTC+02:00) Istanbul',
             'Asia/Jerusalem' => '(UTC+02:00) Jerusalem',
-            'Europe/Helsinki' => '(UTC+02:00) Kyiv',
+            'Europe/Kyiv' => '(UTC+02:00) Kyiv',
             'Africa/Johannesburg' => '(UTC+02:00) Pretoria',
             'Europe/Riga' => '(UTC+02:00) Riga',
             'Europe/Sofia' => '(UTC+02:00) Sofia',
@@ -647,33 +701,33 @@ if (!function_exists('get_timezones_list')) {
             'Asia/Riyadh' => '(UTC+03:00) Riyadh',
             'Europe/Volgograd' => '(UTC+03:00) Volgograd',
             'Asia/Tehran' => '(UTC+03:30) Tehran',
-            'Asia/Muscat' => '(UTC+04:00) Abu Dhabi',
+            'Asia/Abu_Dhabi' => '(UTC+04:00) Abu Dhabi',
             'Asia/Baku' => '(UTC+04:00) Baku',
             'Europe/Moscow' => '(UTC+04:00) Moscow',
             'Asia/Muscat' => '(UTC+04:00) Muscat',
-            'Europe/Moscow' => '(UTC+04:00) St. Petersburg',
+            'Europe/St_Petersburg' => '(UTC+04:00) St. Petersburg',
             'Asia/Tbilisi' => '(UTC+04:00) Tbilisi',
             'Asia/Yerevan' => '(UTC+04:00) Yerevan',
             'Asia/Kabul' => '(UTC+04:30) Kabul',
-            'Asia/Karachi' => '(UTC+05:00) Islamabad',
+            'Asia/Islamabad' => '(UTC+05:00) Islamabad',
             'Asia/Karachi' => '(UTC+05:00) Karachi',
             'Asia/Tashkent' => '(UTC+05:00) Tashkent',
             'Asia/Calcutta' => '(UTC+05:30) Chennai',
             'Asia/Kolkata' => '(UTC+05:30) Kolkata',
-            'Asia/Calcutta' => '(UTC+05:30) Mumbai',
-            'Asia/Calcutta' => '(UTC+05:30) New Delhi',
-            'Asia/Calcutta' => '(UTC+05:30) Sri Jayawardenepura',
+            'Asia/Mumbai' => '(UTC+05:30) Mumbai',
+            'Asia/New_Delhi' => '(UTC+05:30) New Delhi',
+            'Asia/Sri_Jayawardenepura' => '(UTC+05:30) Sri Jayawardenepura',
             'Asia/Katmandu' => '(UTC+05:45) Kathmandu',
             'Asia/Almaty' => '(UTC+06:00) Almaty',
-            'Asia/Dhaka' => '(UTC+06:00) Astana',
+            'Asia/Astana' => '(UTC+06:00) Astana',
             'Asia/Dhaka' => '(UTC+06:00) Dhaka',
             'Asia/Yekaterinburg' => '(UTC+06:00) Ekaterinburg',
             'Asia/Rangoon' => '(UTC+06:30) Rangoon',
             'Asia/Bangkok' => '(UTC+07:00) Bangkok',
-            'Asia/Bangkok' => '(UTC+07:00) Hanoi',
+            'Asia/Hanoi' => '(UTC+07:00) Hanoi',
             'Asia/Jakarta' => '(UTC+07:00) Jakarta',
             'Asia/Novosibirsk' => '(UTC+07:00) Novosibirsk',
-            'Asia/Hong_Kong' => '(UTC+08:00) Beijing',
+            'Asia/Beijing' => '(UTC+08:00) Beijing',
             'Asia/Chongqing' => '(UTC+08:00) Chongqing',
             'Asia/Hong_Kong' => '(UTC+08:00) Hong Kong',
             'Asia/Krasnoyarsk' => '(UTC+08:00) Krasnoyarsk',
@@ -684,8 +738,8 @@ if (!function_exists('get_timezones_list')) {
             'Asia/Ulan_Bator' => '(UTC+08:00) Ulaan Bataar',
             'Asia/Urumqi' => '(UTC+08:00) Urumqi',
             'Asia/Irkutsk' => '(UTC+09:00) Irkutsk',
-            'Asia/Tokyo' => '(UTC+09:00) Osaka',
-            'Asia/Tokyo' => '(UTC+09:00) Sapporo',
+            'Asia/Osaka' => '(UTC+09:00) Osaka',
+            'Asia/Sapporo' => '(UTC+09:00) Sapporo',
             'Asia/Seoul' => '(UTC+09:00) Seoul',
             'Asia/Tokyo' => '(UTC+09:00) Tokyo',
             'Australia/Adelaide' => '(UTC+09:30) Adelaide',
@@ -704,10 +758,10 @@ if (!function_exists('get_timezones_list')) {
             'Pacific/Kwajalein' => '(UTC+12:00) International Date Line West',
             'Asia/Kamchatka' => '(UTC+12:00) Kamchatka',
             'Asia/Magadan' => '(UTC+12:00) Magadan',
-            'Pacific/Fiji' => '(UTC+12:00) Marshall Is.',
-            'Asia/Magadan' => '(UTC+12:00) New Caledonia',
-            'Asia/Magadan' => '(UTC+12:00) Solomon Is.',
-            'Pacific/Auckland' => '(UTC+12:00) Wellington',
+            'Pacific/Marshall_Is' => '(UTC+12:00) Marshall Is.',
+            'Asia/New_Caledonia' => '(UTC+12:00) New Caledonia',
+            'Asia/Solomon_Is' => '(UTC+12:00) Solomon Is.',
+            'Pacific/Wellington' => '(UTC+12:00) Wellington',
             'Pacific/Tongatapu' => '(UTC+13:00) Nuku\'alofa',
         ];
     }
@@ -1357,8 +1411,8 @@ if (!function_exists('get_missing_requirements')) {
     {
         $errors = [];
 
-        if (version_compare(PHP_VERSION, '5.5.0', '<')) {
-            $errors[] = 'Your host needs to use PHP 5.5.0 or higher to run this version of Directus!';
+        if (version_compare(PHP_VERSION, '5.6.0', '<')) {
+            $errors[] = 'Your host needs to use PHP 5.6.0 or higher to run this version of Directus!';
         }
 
         if (!defined('PDO::ATTR_DRIVER_NAME')) {
@@ -1379,6 +1433,10 @@ if (!function_exists('get_missing_requirements')) {
 
         if (!extension_loaded('curl') || !function_exists('curl_init')) {
             $errors[] = 'Your host needs to have cURL extension enabled to run this version of Directus!';
+        }
+
+        if (!extension_loaded('mbstring')) {
+            $errors[] = 'Your host needs to have Multibyte String extension enabled to run this version of Directus!';
         }
 
         if (!file_exists(BASE_PATH . '/vendor/autoload.php')) {

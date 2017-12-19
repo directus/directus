@@ -10754,12 +10754,16 @@ define('schema/ColumnsCollection',['require','exports','module','backbone','unde
 
     model: ColumnModel,
 
-    comparator: function(row) {
+    comparator: function (row) {
       return row.get('sort');
     },
 
-    parse: function(result) {
+    parse: function (result) {
       return result.data ? result.data : result;
+    },
+
+    clone: function () {
+      return new this.constructor(this.models, {table: this.table});
     },
 
     getVisibleInputColumns: function () {
@@ -12520,7 +12524,7 @@ define('core/interfaces/_internals/columns/interface',[
           columns.remove(originalColumnModel);
           self.$el.find('[data-id=' + model.get('id') + ']').remove();
           Notification.success(__t('column_x_was_removed', {
-            column: columnName
+            column_name: columnName
           }));
         } else {
           Notification.error(__t('column_not_removed'), response.error.message);
@@ -12781,6 +12785,49 @@ define('core/interfaces/_internals/columns/component',['./interface', 'core/UICo
     },
     list: function () {
       return 'x';
+    }
+  });
+});
+
+define('core/interfaces/_internals/comments_count/component',[
+  'app',
+  'backbone',
+  'underscore',
+  'moment',
+  'core/t',
+  'core/UIComponent',
+  'core/UIView'
+], function (app, Backbone, _, moment, __t, UIComponent, UIView) {
+
+  
+
+  return UIComponent.extend({
+    id: 'comments_count',
+    system: true,
+    Input: UIView,
+    list: function (interfaceOptions) {
+      var collection = interfaceOptions.value;
+      var latest;
+      var output = 0;
+
+      if (collection instanceof Backbone.Collection && collection.length > 0) {
+        collection.each(function (model) {
+          latest = _.max([latest, model], function (model) {
+            return model ? moment(model.get('datetime')) : -1;
+          });
+        });
+
+        var count = collection.length;
+        var time = moment(latest.get('datetime')).timeAgo('small');
+        var author = app.users.get(latest.get('from')).getFullName();
+
+        output = '<span class="tag">' + count + '</span> ' + __t('x_time_by_y', {
+          time: time,
+          by: author
+        });
+      }
+
+      return output;
     }
   });
 });
@@ -13222,6 +13269,14 @@ define('core/BasePageView',[
       }
     }
   });
+});
+
+define('schema/FakeColumnModel',['schema/ColumnModel'], function (ColumnModel) {
+  
+
+  return ColumnModel.extend({
+    isFake: true
+  })
 });
 
 define('helpers/table',[],function () {
@@ -14266,7 +14321,7 @@ function(app, _, Backbone, Notification, __t, TableHelpers, ModelHelper, TableHe
 
     _configureTable: function (options) {
       this.showChart = options.showChart === true;
-      this.options.systemCollection = this.collection.clone();
+      this.options.systemCollection = this.collection.clone({structure: true});
       this.listenTo(this.collection, 'sync', this._onCollectionSynced);
     },
 
@@ -14767,14 +14822,19 @@ define('core/listings/table',[
   'moment',
   'core/t',
   'backbone',
+  'schema/FakeColumnModel',
   'core/table/table.view',
   'core/widgets/TableChartWidget',
   'helpers/table',
   'core/listings/baseView'
-], function(app, _, moment, __t, Backbone, TableView, TableChartWidget, TableHelpers, BaseView) {
+], function(app, _, moment, __t, Backbone, FakeColumnModel, TableView, TableChartWidget, TableHelpers, BaseView) {
 
   var CHART_Y_AXIS_NAME = 'chart_y_axis';
   var CHART_X_AXIS_NAME = 'chart_x_axis';
+  // TODO: Add impossible names, a table could have this column as real columns
+  var COLUMN_LAST_UPDATED = '_last_updated';
+  var COLUMN_REVISIONS_COUNT = '_revisions';
+  var COLUMN_COMMENTS_COUNT = '_comments';
 
   var View = BaseView.extend(TableView.prototype, {});
 
@@ -14848,8 +14908,8 @@ define('core/listings/table',[
         var data = View.prototype.serialize.apply(this, arguments);
         var chartEnabled = false;// this.showChart && this.isChartEnabled();
 
-        data.fixedHead = chartEnabled != true;
-        data.showChart = chartEnabled == true;
+        data.fixedHead = chartEnabled !== true;
+        data.showChart = chartEnabled === true;
 
         return data;
       },
@@ -14863,6 +14923,11 @@ define('core/listings/table',[
             self.render();
           });
         });
+      },
+
+      onEnable: function () {
+        // update the system collection with the new data fetched after switch from another listing view
+        this._configureTable(this.options);
       },
 
       optionsStructure: function() {
@@ -15058,7 +15123,13 @@ define('core/listings/table',[
 
         if (showCommentsCount) {
           var commentsCollection = this.getCommentCollection();
+
+          // remove all filters, to prevent previous undesired filters
+          // TODO: create a nice solution to just fetch the comments from the items ids in the collection
+          commentsCollection.clearFilter();
           commentsCollection.setFilter({
+            limit: -1,
+            columns: ['id', 'from', 'datetime', 'comment_metadata'],
             filters: {
               comment_metadata: {like: this.collection.table.id + ':'}
             }
@@ -15067,24 +15138,22 @@ define('core/listings/table',[
           return commentsCollection.fetch().then(_.bind(function () {
             var systemCollection = this.options.systemCollection;
             var comments = [];
+
             this.comments.each(function (model) {
               var metadata = (model.get('comment_metadata') || '').split(':');
 
               if (!comments[metadata[1]]) {
-                comments[metadata[1]] = {
-                  id: metadata[1],
-                  count: 0
-                };
+                comments[metadata[1]] = new Backbone.Collection();
               }
 
-              comments[metadata[1]].count++;
+              comments[metadata[1]].add(model);
             });
 
-            _.each(comments, function (comment) {
-              var model = systemCollection.get(comment.id);
+            _.each(comments, function (collection, id) {
+              var model = systemCollection.get(id);
               // if the collection are filtered some models may not be
               if (model) {
-                model.set('_comments', comment.count);
+                model.set(COLUMN_COMMENTS_COUNT, collection);
               }
             });
           }, this));
@@ -15141,7 +15210,7 @@ define('core/listings/table',[
             var model = systemCollection.get(revision.id);
             // if the collection are filtered some models may not be
             if (model) {
-              model.set('_revisions', revision.count);
+              model.set(COLUMN_REVISIONS_COUNT, revision.count);
             }
           });
         }, this));
@@ -15180,10 +15249,22 @@ define('core/listings/table',[
           collection.each(function (model) {
             var rowId = model.get('row_id');
             var rowModel = systemCollection.get(rowId);
+            var value = model.get('datetime');
 
-            if (rowModel) {
-              rowModel.set('_last_updated', moment(model.get('datetime')).fromNow());
+            if (!rowModel) {
+              return;
             }
+
+            if (rowModel.has(COLUMN_LAST_UPDATED)) {
+              value = _.max([
+                rowModel.get(COLUMN_LAST_UPDATED),
+                value
+              ], function (date) {
+                return moment(date)
+              });
+            }
+
+            rowModel.set(COLUMN_LAST_UPDATED, value);
           });
         };
 
@@ -15206,15 +15287,15 @@ define('core/listings/table',[
         var columns = [];
 
         if (this.getViewOptions('comments_count')) {
-          columns.push('_comments');
+          columns.push(COLUMN_COMMENTS_COUNT);
         }
 
         if (this.getViewOptions('revisions_count')) {
-          columns.push('_revisions');
+          columns.push(COLUMN_REVISIONS_COUNT);
         }
 
         if (this.getViewOptions('last_updated')) {
-          columns.push('_last_updated');
+          columns.push(COLUMN_LAST_UPDATED);
         }
 
         return columns;
@@ -15293,6 +15374,30 @@ define('core/listings/table',[
           this.collection.preferences.off('sync', this.updateSystemColumnsAndRender, this);
           this.stopListening(this, 'onShowMore', this.onShowMore);
         }
+      },
+
+      _onCollectionSynced: function () {
+        TableView.prototype._onCollectionSynced.apply(this, arguments);
+
+        // NOTE: Add _revisions if it's necessary
+        var columnCommentsCount = new FakeColumnModel({
+          id: COLUMN_COMMENTS_COUNT,
+          column_name: COLUMN_COMMENTS_COUNT,
+          data_type: 'integer',
+          ui: 'comments_count'
+        }, {parse: true});
+
+        var columnLastUpdated = new FakeColumnModel({
+          id: COLUMN_LAST_UPDATED,
+          column_name: COLUMN_LAST_UPDATED,
+          data_type: 'datetime',
+          ui: 'datetime',
+          options: {
+            contextual_date_in_listview: true
+          }
+        }, {parse: true});
+
+        this.options.systemCollection.structure.add([columnCommentsCount, columnLastUpdated]);
       },
 
       constructor: function (options) {
@@ -19280,11 +19385,20 @@ define('core/interfaces/_internals/directus_users/interface',[
       app.router.openViewInModal(new InviteModal());
     },
 
-    onCollectionChange: function () {
+    // NOTE: Duplicated from O2M
+    // TODO: Need to be merged into a base interface for any O2M
+    triggerModelChange: function () {
       var value = this.model.get(this.name);
 
       // NOTE: setting the value again to mark the changes
       this.model.set(this.name, value);
+    },
+
+    onCollectionChange: function () {
+      this.triggerModelChange();
+
+      this.nestedTableView.tableHead = this.relatedCollection.visibleCount() > 0;
+      this.nestedTableView.render();
     },
 
     // @TODO: Hotfix: solve the problem of fetching new users
@@ -20785,8 +20899,15 @@ define('core/interfaces/_system/sort/interface',[
     unsavedChange: function () {
       var value = this.model.get(this.name);
 
-      if (Utils.isSomething(value) && (this.model.isNew() || this.model.hasChanges(this.name))) {
-        return value;
+      if (this.model.isNew() || this.model.hasChanges(this.name)) {
+        // if the value is "falsy" and the column is nullable replace the value to 0
+        if (Utils.isNothing(value) && !this.columnSchema.isNullable()) {
+          value = 0;
+        }
+
+        if (Utils.isSomething(value)) {
+          return value
+        }
       }
     }
   });
@@ -24824,8 +24945,12 @@ define('core/interfaces/datetime/date',[
 
       if (interfaceOptions.settings.get('contextual_date_in_listview') === true) {
         var momentDate = moment(interfaceOptions.value);
+
         value = '-';
-        if (momentDate.isValid()) {
+
+        // make sure the value is also valid
+        // otherwise the date will be "now"
+        if (interfaceOptions.value && momentDate.isValid()) {
           value = momentDate.fromNow();
         }
       } else if (format) {
@@ -26087,7 +26212,7 @@ define('core/interfaces/many_to_one_typeahead/interface',['app', 'handlebars', '
 
       this.$('.for_display_only').on('typeahead:selected', function (e, datum) {
         var model = self.model.get(self.name);
-        var selectedId = parseInt(datum.id, 10);
+        var selectedId = datum.id;
 
         model.clear();
         model.setId(selectedId);
@@ -26243,7 +26368,7 @@ define('core/interfaces/many_to_one/interface',[
       'change select': function (event) {
         var model = this.model.get(this.name);
         var $target = $(event.currentTarget);
-        var selectedId = parseInt($target.find(':selected').val(), 10);
+        var selectedId = $target.find(':selected').val();
         var attributes;
         var primaryColumn;
         var attributesName;
@@ -26276,13 +26401,39 @@ define('core/interfaces/many_to_one/interface',[
       }
     },
 
-    getValue: function () {
-      var privilege = app.schemaManager.getPrivileges(this.columnSchema.getRelatedTableName());
-      var value;
+    getPrivilege: function () {
+      return app.schemaManager.getPrivileges(this.columnSchema.getRelatedTableName());
+    },
 
-      if (privilege.canEdit() || privilege.canAdd()) {
-        value = this.value;
-      } else {
+    visible: function () {
+      // Hide M2O Interface if the user has not permission to read the related table data
+      return this.canRead() === true;
+    },
+
+    canRead: function () {
+      var privilege = this.getPrivilege();
+
+      return privilege && privilege.canView();
+    },
+
+    canEdit: function () {
+      var privilege = this.getPrivilege();
+
+      return privilege && privilege.canEdit();
+    },
+
+    canAdd: function () {
+      var privilege = this.getPrivilege();
+
+      return privilege && privilege.canAdd();
+    },
+
+    getValue: function () {
+      var value = this.value;
+
+      // If the user has permission to edit or add value is a model
+      // otherwise is the id
+      if (value && (this.canEdit() || this.canAdd())) {
         value = this.value.id;
       }
 
@@ -26330,15 +26481,11 @@ define('core/interfaces/many_to_one/interface',[
         value = data[0].id;
       }
 
-      if (this.options.settings.get('readonly') === true) {
-        this.canEdit = false;
-      }
-
       // Default data while syncing (to avoid flickr when data is loaded)
       if (this.options.value !== undefined && this.options.value.id && data.length === 0) {
         data = [{
           id: this.options.value.id,
-          name: this.options.value,
+          name: '--', // data has not loaded or user has not permission to the related table
           selected: true
         }];
       }
@@ -26371,7 +26518,6 @@ define('core/interfaces/many_to_one/interface',[
       var value = this.model.get(this.name);
       value.startTracking();
 
-      this.canEdit = this.model.canEdit(this.name);
       this.collection = value.collection.getNewInstance({omit: ['preferences']});
 
       var data = {};
@@ -26396,7 +26542,10 @@ define('core/interfaces/many_to_one/interface',[
       }
 
       // FILTER HERE!
-      this.collection.fetch({includeFilters: false, data: data});
+      if (this.canRead()) {
+        this.collection.fetch({includeFilters: false, data: data});
+      }
+
       // This.collection.on('reset', this.render, this);
       this.collection.on('sync', this.render, this);
     }
@@ -27054,7 +27203,11 @@ define('core/interfaces/single_file/interface',[
       this.uploading = false;
       this.userId = app.user.id;
       if (!(this.options.value instanceof FilesModel)) {
-        this.options.value = new FilesModel(this.options.value || {});
+        // Add the files table privileges, preferences and structure
+        // the method isNew need the structure
+        // See EntriesModel.isNew
+        // See https://github.com/directus/directus/issues/1961
+        this.options.value = new FilesModel(this.options.value || {}, app.schemaManager.getFullSchema('directus_files'));
         parentModel.set(this.name, this.options.value);
       }
 
@@ -28164,7 +28317,7 @@ define('core/interfaces/section_break/component',['core/interfaces/section_break
   });
 });
 
-define('core/UIManager',['require','exports','module','underscore','core/t','utils','core/interfaces/_system/accountability/interface','core/interfaces/_internals/activity/component','core/interfaces/_internals/columns_picker/component','core/interfaces/_internals/columns/component','core/interfaces/_internals/directus_users/component','core/interfaces/_internals/file_preview/component','core/interfaces/_internals/file_size/component','core/interfaces/_internals/permissions/component','core/interfaces/_internals/messages_recipients/component','core/interfaces/_internals/views/component','core/interfaces/_internals/user_avatar/component','core/interfaces/_internals/user_activity/component','core/interfaces/_system/primary_key/component','core/interfaces/_system/sort/component','core/interfaces/_system/status/component','core/interfaces/_system/accountability/date_created','core/interfaces/_system/accountability/date_modified','core/interfaces/_system/accountability/user_created','core/interfaces/_system/accountability/user_modified','core/interfaces/user/component','core/interfaces/text_input/component','core/interfaces/slug/component','core/interfaces/textarea/component','core/interfaces/json/component','core/interfaces/random/component','core/interfaces/blob/component','core/interfaces/radio_buttons/component','core/interfaces/checkboxes/component','core/interfaces/dropdown/component','core/interfaces/dropdown_multiselect/component','core/interfaces/tags/component','core/interfaces/wysiwyg/component','core/interfaces/wysiwyg_full/component','core/interfaces/password/component','core/interfaces/encrypted/component','core/interfaces/dropdown_enum/component','core/interfaces/map/component','core/interfaces/markdown/component','core/interfaces/datetime/datetime','core/interfaces/datetime/date','core/interfaces/datetime/time','core/interfaces/color/component','core/interfaces/numeric/component','core/interfaces/slider/component','core/interfaces/toggle/component','core/interfaces/many_to_one_typeahead/component','core/interfaces/many_to_one/component','core/interfaces/relational/m2m/component','core/interfaces/one_to_many/component','core/interfaces/single_file/component','core/interfaces/multiple_files/relational/component','core/interfaces/multiple_files/csv/component','core/interfaces/translation/component','core/interfaces/section_break/component','jquery','app'],function (require, exports, module) {
+define('core/UIManager',['require','exports','module','underscore','core/t','utils','core/interfaces/_system/accountability/interface','core/interfaces/_internals/activity/component','core/interfaces/_internals/columns_picker/component','core/interfaces/_internals/columns/component','core/interfaces/_internals/comments_count/component','core/interfaces/_internals/directus_users/component','core/interfaces/_internals/file_preview/component','core/interfaces/_internals/file_size/component','core/interfaces/_internals/permissions/component','core/interfaces/_internals/messages_recipients/component','core/interfaces/_internals/views/component','core/interfaces/_internals/user_avatar/component','core/interfaces/_internals/user_activity/component','core/interfaces/_system/primary_key/component','core/interfaces/_system/sort/component','core/interfaces/_system/status/component','core/interfaces/_system/accountability/date_created','core/interfaces/_system/accountability/date_modified','core/interfaces/_system/accountability/user_created','core/interfaces/_system/accountability/user_modified','core/interfaces/user/component','core/interfaces/text_input/component','core/interfaces/slug/component','core/interfaces/textarea/component','core/interfaces/json/component','core/interfaces/random/component','core/interfaces/blob/component','core/interfaces/radio_buttons/component','core/interfaces/checkboxes/component','core/interfaces/dropdown/component','core/interfaces/dropdown_multiselect/component','core/interfaces/tags/component','core/interfaces/wysiwyg/component','core/interfaces/wysiwyg_full/component','core/interfaces/password/component','core/interfaces/encrypted/component','core/interfaces/dropdown_enum/component','core/interfaces/map/component','core/interfaces/markdown/component','core/interfaces/datetime/datetime','core/interfaces/datetime/date','core/interfaces/datetime/time','core/interfaces/color/component','core/interfaces/numeric/component','core/interfaces/slider/component','core/interfaces/toggle/component','core/interfaces/many_to_one_typeahead/component','core/interfaces/many_to_one/component','core/interfaces/relational/m2m/component','core/interfaces/one_to_many/component','core/interfaces/single_file/component','core/interfaces/multiple_files/relational/component','core/interfaces/multiple_files/csv/component','core/interfaces/translation/component','core/interfaces/section_break/component','jquery','app'],function (require, exports, module) {
   
 
   var _ = require('underscore');
@@ -28187,6 +28340,7 @@ define('core/UIManager',['require','exports','module','underscore','core/t','uti
     require('core/interfaces/_internals/activity/component'),
     require('core/interfaces/_internals/columns_picker/component'),
     require('core/interfaces/_internals/columns/component'),
+    require('core/interfaces/_internals/comments_count/component'),
     require('core/interfaces/_internals/directus_users/component'),
     require('core/interfaces/_internals/file_preview/component'),
     require('core/interfaces/_internals/file_size/component'),
@@ -30475,6 +30629,22 @@ define('app',['require','exports','module','handlebars','backbone','core/config'
       window.location.href = url;
     },
 
+    getCorsOptions: function () {
+      return this.options.cors || {};
+    },
+
+    getCors: function (key) {
+      var options = this.getCorsOptions() || {};
+
+      return options[key];
+    },
+
+    getCorsTargets: function () {
+      var origins = this.getCors('origin');
+
+      return Utils.parseCSV(origins);
+    },
+
     //  TODO: implement this into a new logger
     //logErrorToServer: function(type, message, details) {
     //  var user = app.user, email = 'n/a';
@@ -31849,10 +32019,11 @@ function(app, Backbone, StatusHelper, Utils, _) {
       if (column === undefined) {
         this.setFilter({sort:'id', sort_order: 'ASC'});
       } else {
+        var columnModel = this.structure.get(column);
         options = options || {};
 
         // NOTE: if the column doesn't exist, do not save it to preferences
-        if (!this.structure.get(column)) {
+        if (!columnModel || _.result(columnModel, 'isFake')) {
           options.save = false;
         }
 
@@ -35600,7 +35771,10 @@ define('core/entries/EntriesCollection',['require','exports','module','backbone'
       this.destroy(this.toJSON(), options);
     },
 
-    clone: function() {
+    clone: function (cloneOptions) {
+      cloneOptions = cloneOptions || {};
+      var whitelist = ['structure', 'table', 'privileges', 'preferences'];
+
       var options = {
         model: this.model,
         comparator: this.comparator,
@@ -35611,6 +35785,12 @@ define('core/entries/EntriesCollection',['require','exports','module','backbone'
         url: this.url,
         rowsPerPage: this.rowsPerPage
       };
+
+      _.each(whitelist, function (property) {
+        if (cloneOptions[property] === true) {
+          options[property] = options[property].clone();
+        }
+      });
 
       return new this.constructor(this.models, options);
     },
@@ -39667,12 +39847,31 @@ define('modules/tables/views/EditView',[
       var isNew = this.model.isNew();
       var collection = this.model.collection;
       var success;
+      var goToNewItem = function () {
+        var route = Backbone.history.fragment.split('/');
+
+        // Trick the router to refresh this page when we are dealing with new items
+        if (isNew) {
+          app.router.navigate('#', {trigger: false, replace: true});
+        }
+
+        route.pop();
+        route.push('new');
+        app.router.go(route);
+      };
+      var afterSaved = function () {
+        _.each(app.getCorsTargets(), function (origin) {
+          window.parent.postMessage('item.saved', origin);
+        });
+      };
 
       if (action === 'save-form-stay') {
         success = function (model, response, options) {
           if (self.onSuccess) {
             self.onSuccess(model, response, options);
           }
+
+          afterSaved();
 
           var route = Backbone.history.fragment.split('/');
           if (!model.table.get('single')) {
@@ -39686,17 +39885,14 @@ define('modules/tables/views/EditView',[
         };
       } else {
         success = function (model, response, options) {
-          var route = Backbone.history.fragment.split('/');
-
-          route.pop();
-          if (action === 'save-form-add') {
-            // Trick the router to refresh this page when we are dealing with new items
-            if (isNew) app.router.navigate("#", {trigger: false, replace: true});
-            route.push('new');
-          }
-
           if (self.onSuccess) {
             self.onSuccess(model, response, options);
+          }
+
+          afterSaved();
+
+          if (action === 'save-form-add') {
+            goToNewItem();
           }
 
           // TODO: check if this view is a overlay then close the overlay
@@ -39704,6 +39900,9 @@ define('modules/tables/views/EditView',[
           // -------------------------------------------------------------
           // if it's an overlay view do not go to any route
           if (!self.headerOptions.route.isOverlay) {
+            var route = Backbone.history.fragment.split('/');
+
+            route.pop();
             self.model.disablePrompt();
             app.router.go(route);
           }
@@ -39723,10 +39922,14 @@ define('modules/tables/views/EditView',[
       if (!model.unsavedAttributes()) {
         Notification.warning('Nothing changed, nothing saved');
 
-        // Write this as a helper function
-        var route = Backbone.history.fragment.split('/');
-        route.pop();
-        app.router.go(route);
+        if (action === 'save-form-add') {
+          goToNewItem();
+        } else {
+          // Write this as a helper function
+          var route = Backbone.history.fragment.split('/');
+          route.pop();
+          app.router.go(route);
+        }
 
         return;
       }
@@ -40648,7 +40851,7 @@ define('modules/tables/views/TableView',[
 
     _ensureView: function (viewId, triggerEvent) {
       _.each(this.state.views, function (view) {
-          view.disable();
+        view.disable();
         this.stopListening(view, 'toggleRightPane', this.toggleRightPane);
       }, this);
 
@@ -44317,7 +44520,8 @@ define('router',['require','exports','module','app','directus','backbone','under
     // @todo: refactoring
     before: function (route, name) {
       var fragment = Backbone.history.fragment;
-      if(fragment) {
+
+      if (fragment) {
         var routeHistoryBase = fragment;
         if (this.routeHistory.base === '' || routeHistoryBase.indexOf(this.routeHistory.base) !== 0) {
           this.routeHistory.base = routeHistoryBase;
@@ -44331,30 +44535,41 @@ define('router',['require','exports','module','app','directus','backbone','under
         var nextRoute = {route: name, path: fragment, args: this.getRouteParameters(route, fragment), subroutes: []};
 
         // Exists
-        if(currentRoute && nextRoute) {
+        if (currentRoute && nextRoute) {
           var current = currentRoute = this.routeHistory.routes[currentRoute.path];
           var next = this.routeHistory.routes[nextRoute.path];
 
-          if(next) {
+          if (next) {
             delete this.routeHistory.routes[currentRoute.path];
             currentRoute = undefined;
           }
         }
 
-        if(currentRoute) {
+        if (currentRoute) {
           currentRoute.scrollTop = parseInt(document.body.scrollTop, 10) || 0;
           currentRoute.toRoute = nextRoute;
         }
+
         this.routeHistory.stack.push(nextRoute);
         this.routeHistory.last = currentRoute ? currentRoute.path : fragment;
-        if(!this.routeHistory.routes[fragment]) {
+
+        if (!this.routeHistory.routes[fragment]) {
           this.routeHistory.routes[fragment] = nextRoute;
         }
       }
 
       var mainSidebar = document.getElementById('mainSidebar');
-      if(mainSidebar) {
+      if (mainSidebar) {
         this.scrollTop = parseInt(mainSidebar.scrollTop, 10) || 0;
+      }
+
+      // TODO: Make the "cache" collection, at least a light caching layer/object
+      // NOTE: This is a hotfix to prevent caching the collection when we've moved to another page
+      // We actually only used it on `entry` and `header`
+      // by removing it to any other page but entry endpoints we make sure bookmarks doesn't use it as reference
+      // See: https://github.com/directus/directus/issues/1972
+      if (name !== 'entry') {
+        this.currentCollection = undefined;
       }
     },
 
@@ -45671,6 +45886,8 @@ require(['config', 'polyfills'], function () {
       // @TODO: Make timezone an object with id and name
       timezones: [],
       countries: [],
+      http: {},
+      cors: {},
       path: '/directus/',
       page: '',
       authenticatedUser: 0, // 0 = guest, sort of :)
@@ -45715,6 +45932,8 @@ require(['config', 'polyfills'], function () {
     app.countries = options.countries;
     app.user_notifications = options.user_notifications;
     app.showWelcomeWindow = options.showWelcomeWindow;
+    // TODO: Make the options part of the app internally
+    app.options = options;
 
     $.xhrPool = []; // array of uncompleted requests
     $.xhrPool.abortAll = function () { // our abort function
@@ -45750,7 +45969,6 @@ require(['config', 'polyfills'], function () {
       UIManager.load(options.interfaces),
       ExtensionManager.load(options.extensions),
       ListViewManager.load(options.listViews)
-
     ).done(function () {
 
       app.trigger('loaded');
@@ -45991,6 +46209,27 @@ require(['config', 'polyfills'], function () {
 
         if (options.errorPropagation !== false) {
           options.error = errorCodeHandler;
+        }
+
+        var httpOptions = app.options.http || {};
+        var emulateEnabled =  httpOptions ? httpOptions.emulate_enabled : false;
+        var emulatedMethods = httpOptions ? httpOptions.emulate_methods : true;
+        var methodMap = {
+          'create': 'POST',
+          'update': 'PUT',
+          'patch':  'PATCH',
+          'delete': 'DELETE',
+          'read':   'GET'
+        };
+
+        if (
+          emulateEnabled === true
+          && (
+            !_.isArray(emulatedMethods)
+            || (emulatedMethods.indexOf(methodMap[method]) >= 0)
+          )
+        ) {
+          options.emulateHTTP = true;
         }
 
         return sync(method, model, options);

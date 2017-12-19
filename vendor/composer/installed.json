@@ -53,7 +53,7 @@
         "source": {
             "type": "git",
             "url": "https://github.com/wellingguzman/zend-db",
-            "reference": "6bedd69fb149d9ec001816320fce5527adeb9725"
+            "reference": "b22b09e61f88d03b770dd8d7c336407593f28443"
         },
         "require": {
             "php": "^5.5 || ^7.0",
@@ -71,7 +71,7 @@
             "zendframework/zend-hydrator": "Zend\\Hydrator component for using HydratingResultSets",
             "zendframework/zend-servicemanager": "Zend\\ServiceManager component"
         },
-        "time": "2017-09-07T20:30:27+00:00",
+        "time": "2017-12-08T16:35:06+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
