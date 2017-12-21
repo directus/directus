@@ -164,6 +164,13 @@ define(['./interface', 'core/UIComponent', 'core/t'], function (Input, UICompone
         type: 'Boolean',
         comment: 'Have the editor remove potentially unsafe tags like iframe and script',
         default_value: true
+      },
+      {
+        id: 'show_format_menu',
+        ui: 'toggle',
+        type: 'Boolean',
+        comment: 'Show the format menu',
+        default_value: true
       }
     ],
     validate: function (value, interfaceOptions) {
