@@ -32,7 +32,8 @@ define([
       var mapOptions = {
         center: center,
         zoom: 12,
-        disableDefaultUI: this.options.settings.get('read_only') || !this.options.canWrite
+        disableDefaultUI: this.options.settings.get('read_only') || !this.options.canWrite,
+        gestureHandling: 'cooperative',
       };
 
       var map = new google.maps.Map(this.$el.find('#map-canvas').get(0), mapOptions);
