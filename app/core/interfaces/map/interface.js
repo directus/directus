@@ -176,7 +176,7 @@ define([
       // Include the Google JSAPI for using Maps
       require(['https://www.google.com/jsapi'], function () {
         // Load Maps API using provided key, and call initializeMap() when API is loaded
-        google.load('maps', '3', {other_params: 'sensor=false&libraries=places&key=' + that.getApiKey(), callback: function () {
+        google.load('maps', '3', {other_params: 'libraries=places&key=' + that.getApiKey(), callback: function () {
           that.initializeMap();
         }});
       });
