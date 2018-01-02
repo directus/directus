@@ -137,6 +137,7 @@ define([
                   var $fieldInput = that.$el.closest('form').find('input[name=' + field + ']');
                   if ($fieldInput.length > 0) {
                     $fieldInput.val(address[key]);
+                    that.model.set(field, address[key]);
                   }
                 }
               }
