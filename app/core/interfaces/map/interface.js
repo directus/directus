@@ -33,6 +33,8 @@ define([
         center: center,
         zoom: 12,
         disableDefaultUI: this.options.settings.get('read_only') || !this.options.canWrite,
+        // Using **cooperative gesture handling** lets the user control the panning and scrolling behavior
+        // of a map when viewed on a mobile device.
         gestureHandling: 'cooperative',
       };
 
