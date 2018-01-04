@@ -171,6 +171,13 @@ define(['./interface', 'core/UIComponent', 'core/t'], function (Input, UICompone
         type: 'Boolean',
         comment: 'use basic image listing in ui (potentially slow with high number of images)',
         default_value: true
+      },
+      {
+        id: 'show_format_menu',
+        ui: 'toggle',
+        type: 'Boolean',
+        comment: 'Show the format menu',
+        default_value: true
       }
     ],
     validate: function (value, interfaceOptions) {

@@ -31,7 +31,7 @@ define([
       var blocks = getCheckboxesSettings('blocks');
       var alignment = getCheckboxesSettings('alignment');
       var toolbarOptions = getCheckboxesSettings('toolbar_options');
-      var toolbar;
+      var toolbar = '';
 
       function capitalizeFirstLetter(string) {
         return string.charAt(0).toUpperCase() + string.slice(1);
@@ -87,7 +87,9 @@ define([
         });
       }
 
-      toolbar = (styleFormats.length > 0 ? 'styleselect ' : '');
+      if  (styleFormats.length > 0 && this.options.settings.get('show_format_menu')) {
+        toolbar = 'styleselect ';
+      }
 
       if (toolbarOptions.length > 0) {
         // Convert inline / alignment to appropriate options & add to toolbar
