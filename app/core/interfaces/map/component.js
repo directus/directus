@@ -17,7 +17,7 @@ define(['./interface', 'core/UIComponent', 'core/t'], function (Input, UICompone
         id: 'google_api_key',
         ui: 'text_input',
         type: 'String',
-        comment: 'Google API Key w/ Maps JS access',
+        comment: 'Google API Key w/ Maps JS, Places & Geocoding access',
         default_value: '',
         required: true,
         char_length: 200

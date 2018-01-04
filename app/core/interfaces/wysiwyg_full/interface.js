@@ -1,10 +1,11 @@
 /* global $ */
 define([
+  'app',
   'utils',
   'underscore',
   'core/UIView',
   'tinyMCE'
-], function (Utils, _, UIView, tinyMCE) {
+], function (app, Utils, _, UIView, tinyMCE) {
   'use strict';
 
   return UIView.extend({
@@ -215,6 +216,23 @@ define([
       if (this.options.settings.get('remove_unsafe_tags') === false) {
         options.valid_elements = '*[*]';
         options.extended_valid_elements = '*[*]';
+      }
+
+      if (settings.get('basic_image_list')) {
+        options.image_list = function(success) {
+          var collection = app.files;
+          collection.once('sync', function(collection) {
+            var images = [];
+            collection.each(function(model) {
+              images.push({
+                'text': model.get('title'),
+                'value': model.get('url')
+              });
+            });
+            success(images)
+          })
+          collection.fetch();
+        }
       }
 
       tinyMCE.init(options);
