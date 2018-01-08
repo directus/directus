@@ -5,11 +5,40 @@ $loader = require __DIR__ . '/../vendor/autoload.php';
 
 // Non-autoload components
 $configFile = __DIR__ . '/config.php';
-if (!file_exists($configFile)) {
+
+// Make sure the config file has something in it
+if (!file_exists($configFile) || filesize($configFile) === 0) {
     return create_ping_server();
 }
 
 require $configFile;
+
+/**
+ * Intercepts /<version>/ping request path
+ *
+ * To verify the server is working
+ * But it's actually to check if mod_rewrite is working :)
+ *
+ * Only available when it's not in production
+ *
+ * This is a hotfix to prevent other issues to make it looks like the API is not receiving the request
+ * See:
+ */
+if (!defined('DIRECTUS_ENV') || DIRECTUS_ENV !== 'production') {
+    $requestUri = trim(get_request_uri(), '/');
+    $parts = explode('/', $requestUri);
+    array_shift($parts);
+    $requestUri = implode('/', $parts);
+
+    if ($requestUri === 'ping') {
+        if (ob_get_level() !== 0) {
+            ob_clean();
+        }
+
+        echo 'pong';
+        exit;
+    }
+}
 
 // Define directus environment
 defined('DIRECTUS_ENV')
@@ -62,36 +91,6 @@ if ($config->get('filters')) {
 $app->add(new \Directus\Slim\CorsMiddleware());
 $app->add(new \Directus\Slim\HttpCacheMiddleware());
 $app->add(new \Directus\Slim\ResponseCacheMiddleware());
-
-/**
- * Creates and /<version>/ping endpoint
- *
- * To verify the server is working
- * But it's actually to check if mod_rewrite is working :)
- *
- * Only available when it's not in production
- *
- * @param \Slim\Slim $app
- */
-$pong = function(\Slim\Slim $app) {
-    $request = $app->request();
-    $requestUri = trim($request->getResourceUri(), '/');
-    $parts = explode('/', $requestUri);
-    array_shift($parts);
-    $requestUri = implode('/', $parts);
-
-    if ($requestUri === 'ping') {
-        if (ob_get_level() !== 0) {
-            ob_clean();
-        }
-
-        echo 'pong';
-        exit;
-    }
-};
-if (DIRECTUS_ENV !== 'production') {
-    $pong($app);
-}
 
 $app->config('debug', false);
 $app->config('production', 'production' === DIRECTUS_ENV);

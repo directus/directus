@@ -1649,3 +1649,37 @@ if (!function_exists('slugify')) {
         return mb_strtolower(preg_replace($patterns, $replacements, $string));
     }
 }
+
+if (!function_exists('get_request_uri')) {
+    /**
+     * Gets the request path
+     *
+     * @return string
+     */
+    function get_request_uri()
+    {
+        // Server params
+        $scriptName = $_SERVER['SCRIPT_NAME']; // <-- "/foo/index.php"
+        $requestUri = $_SERVER['REQUEST_URI']; // <-- "/foo/bar?test=abc" or "/foo/index.php/bar?test=abc"
+        $queryString = isset($_SERVER['QUERY_STRING']) ? $_SERVER['QUERY_STRING'] : ''; // <-- "test=abc" or ""
+
+        // Physical path
+        if (strpos($requestUri, $scriptName) !== false) {
+            $physicalPath = $scriptName; // <-- Without rewriting
+        } else {
+            $physicalPath = str_replace('\\', '', dirname($scriptName)); // <-- With rewriting
+        }
+        // $env['SCRIPT_NAME'] = rtrim($physicalPath, '/'); // <-- Remove trailing slashes
+
+        // Virtual path
+        // $env['PATH_INFO'] = $requestUri;
+        if (substr($requestUri, 0, strlen($physicalPath)) == $physicalPath) {
+            $requestUri = substr($requestUri, strlen($physicalPath)); // <-- Remove physical path
+        }
+
+        $requestUri = str_replace('?' . $queryString, '', $requestUri); // <-- Remove query string
+        $requestUri = '/' . ltrim($requestUri, '/'); // <-- Ensure leading slash
+
+        return $requestUri;
+    }
+}
