@@ -1,10 +1,11 @@
 /* global $ */
 define([
+  'app',
   'utils',
   'underscore',
   'core/UIView',
   'tinyMCE'
-], function (Utils, _, UIView, tinyMCE) {
+], function (app, Utils, _, UIView, tinyMCE) {
   'use strict';
 
   return UIView.extend({
@@ -30,7 +31,7 @@ define([
       var blocks = getCheckboxesSettings('blocks');
       var alignment = getCheckboxesSettings('alignment');
       var toolbarOptions = getCheckboxesSettings('toolbar_options');
-      var toolbar;
+      var toolbar = '';
 
       function capitalizeFirstLetter(string) {
         return string.charAt(0).toUpperCase() + string.slice(1);
@@ -86,7 +87,9 @@ define([
         });
       }
 
-      toolbar = (styleFormats.length > 0 ? 'styleselect ' : '');
+      if  (styleFormats.length > 0 && this.options.settings.get('show_format_menu')) {
+        toolbar = 'styleselect ';
+      }
 
       if (toolbarOptions.length > 0) {
         // Convert inline / alignment to appropriate options & add to toolbar
@@ -213,6 +216,23 @@ define([
       if (this.options.settings.get('remove_unsafe_tags') === false) {
         options.valid_elements = '*[*]';
         options.extended_valid_elements = '*[*]';
+      }
+
+      if (settings.get('basic_image_list')) {
+        options.image_list = function(success) {
+          var collection = app.files;
+          collection.once('sync', function(collection) {
+            var images = [];
+            collection.each(function(model) {
+              images.push({
+                'text': model.get('title'),
+                'value': model.get('url')
+              });
+            });
+            success(images)
+          })
+          collection.fetch();
+        }
       }
 
       tinyMCE.init(options);

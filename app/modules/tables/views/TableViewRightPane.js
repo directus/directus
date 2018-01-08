@@ -164,7 +164,7 @@ define([
 
       data.columns = structure.chain()
         .filter(function(model) {
-          return !model.get('hidden_input');
+          return model.attributes.ui != 'section_break' && !model.get('hidden_input');
         })
         .map(function(model) {
           var sort, isVisible;
