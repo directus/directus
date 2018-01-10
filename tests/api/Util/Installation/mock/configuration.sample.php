@@ -26,13 +26,14 @@ return [
         // same with thumbnails (yourdomain)/storage/uploads/thumbs
         'root_url' => '/directus/storage/uploads',
         'root_thumb_url' => '/directus/storage/uploads/thumbs',
-        //   'key'    => 's3-key',
-        //   'secret' => 's3-key',
-        //   'region' => 's3-region',
-        //   'version' => 's3-version',
-        //   'bucket' => 's3-bucket',
-        //   Digital Ocean endpoint
-        //   'endpoint' => '
+        //  'key'    => 's3-key',
+        //  'secret' => 's3-key',
+        //  'region' => 's3-region',
+        //  'version' => 's3-version',
+        //  'bucket' => 's3-bucket',
+        //  // Digital Ocean endpoint
+        //  'endpoint' => ''
+        //  'visibility' => 'public'
     ],
 
     'http' => [
