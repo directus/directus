@@ -117,6 +117,8 @@ class SchemaManager
         if (in_array('sort', $columnsName)) {
             $sortColumn = new Integer('sort');
             $sortColumn->setOption('unsigned', true);
+            $sortColumn->setNullable(true);
+            $sortColumn->setDefault(null);
             $table->addColumn($sortColumn);
         }
 
