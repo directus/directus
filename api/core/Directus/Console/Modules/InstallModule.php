@@ -152,8 +152,8 @@ class InstallModule extends ModuleBase
     {
         $data = [];
 
-        $data['directus_email'] = 'admin@directus.com';
-        $data['directus_password'] = 'directus';
+        $data['directus_email'] = 'admin@getdirectus.com';
+        $data['directus_password'] = 'password';
         $data['directus_name'] = 'Directus';
 
         $directus_path = BASE_PATH . DIRECTORY_SEPARATOR;
