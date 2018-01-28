@@ -168,8 +168,6 @@ define(function(require, exports, module) {
         var id = column.id;
         var tableRelated = column.getRelated();
         var relationshipType = column.getRelationshipType();
-        //var value = attributes[id];
-        var hasData = attributes[id] !== undefined;
         var ui = structure.get(column).options;
 
         switch (relationshipType) {
@@ -192,7 +190,6 @@ define(function(require, exports, module) {
               //preferences: app.preferences[column.get('related_table')],
             };
 
-
             // make sure that the table exists
             // @todo move this to column schema?
             if (options.table === undefined) {
@@ -214,19 +211,12 @@ define(function(require, exports, module) {
               if (this.attributes[id] instanceof EntriesCollection) {
                 this.attributes[id].set(value, {merge: true, parse: true});
                 attributes[id] = this.attributes[id];
+              } else if (value instanceof EntriesCollection) {
+                attributes[id].set(value.models, {merge: true, parse: false});
               } else {
-                if (value instanceof EntriesCollection) {
-                  models = value.models;
-                  options.parse = false;
-                }
-
-                if (attributes[id] instanceof EntriesCollection) {
-                  attributes[id].set(value, {merge: true, parse: true});
-                } else {
-                  options.parentAttribute = id;
-                  options.parent = this;
-                  attributes[id] = new EntriesCollection(models, options);
-                }
+                options.parentAttribute = id;
+                options.parent = this;
+                attributes[id] = new EntriesCollection(value, options);
               }
 
               break;
@@ -242,19 +232,12 @@ define(function(require, exports, module) {
                 }
 
                 attributes[id] = this.attributes[id];
+              } else if (value instanceof EntriesJunctionCollection) {
+                attributes[id].set(value.models, {merge: true, parse: false});
               } else {
-                if (value instanceof EntriesJunctionCollection) {
-                  models = value.models;
-                  options.parse = false;
-                }
-
-                if (attributes[id] instanceof EntriesJunctionCollection) {
-                  attributes[id].set(value, {merge: true, parse: true});
-                } else {
-                  options.parentAttribute = id;
-                  options.parent = this;
-                  attributes[id] = new EntriesJunctionCollection(models, options);
-                }
+                options.parentAttribute = id;
+                options.parent = this;
+                attributes[id] = new EntriesJunctionCollection(models, options);
               }
             }
 
