@@ -714,7 +714,7 @@ class RelationalTableGateway extends BaseTableGateway
     public function applyParamsToTableEntriesSelect(array $params, Builder $builder, Table $schema, $hasActiveColumn = false)
     {
         // @TODO: Query Builder Object
-        foreach($params as $type => $argument) {
+        foreach ($params as $type => $argument) {
             $method = 'process' . ucfirst($type);
             if (method_exists($this, $method)) {
                 call_user_func_array([$this, $method], [$builder, $argument]);
@@ -1270,8 +1270,9 @@ class RelationalTableGateway extends BaseTableGateway
     {
         // NOTE: The filters are going to be nested as this filters should collapse with the main "AND" conditions
         // any ORs inside filters are not going to be affect the others conditions
-        $query->nestWhere(function (Builder $query) use ($filters) {
-            $filters = $this->parseDotFilters($query, $filters);
+        $query->nestWhere(function (Builder $childQuery) use ($filters) {
+            $childQuery->from($this->getTable());
+            $filters = $this->parseDotFilters($childQuery, $filters);
 
             foreach ($filters as $column => $condition) {
                 if ($condition instanceof Filter) {
@@ -1279,7 +1280,7 @@ class RelationalTableGateway extends BaseTableGateway
                     $condition = $condition->getValue();
                 }
 
-                $this->doFilter($query, $column, $condition, $this->getTable());
+                $this->doFilter($childQuery, $column, $condition, $this->getTable());
             }
         });
     }
