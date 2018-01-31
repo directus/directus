@@ -12,6 +12,7 @@ table.reorder-enabled tbody tr td.reorder .reorder-handle:hover, .right-sidebar 
     background-color: #b6daf2; }
   100% {
     background-color: #3498DB; } }
+
 @keyframes pulsate-opacity {
   0% {
     opacity: 1; }
@@ -19,6 +20,7 @@ table.reorder-enabled tbody tr td.reorder .reorder-handle:hover, .right-sidebar 
     opacity: 0.7; }
   100% {
     opacity: 1; } }
+
 @keyframes pulsate-login {
   0% {
     background-color: #3498DB; }
@@ -26,6 +28,7 @@ table.reorder-enabled tbody tr td.reorder .reorder-handle:hover, .right-sidebar 
     background-color: #2383c4; }
   100% {
     background-color: #3498DB; } }
+
 @keyframes pulsate-bg {
   0% {
     background-color: #a0cfee; }
@@ -33,6 +36,7 @@ table.reorder-enabled tbody tr td.reorder .reorder-handle:hover, .right-sidebar 
     background-color: #cce5f6; }
   100% {
     background-color: #a0cfee; } }
+
 @keyframes dragover {
   0% {
     border-color: #b6daf2; }
@@ -40,6 +44,7 @@ table.reorder-enabled tbody tr td.reorder .reorder-handle:hover, .right-sidebar 
     border-color: #3498DB; }
   100% {
     border-color: #b6daf2; } }
+
 @keyframes pulsate-text {
   0% {
     color: #999999; }
@@ -47,11 +52,13 @@ table.reorder-enabled tbody tr td.reorder .reorder-handle:hover, .right-sidebar 
     color: #DDDDDD; }
   100% {
     color: #999999; } }
+
 @keyframes spin {
   from {
     transform: rotate(0deg); }
   to {
     transform: rotate(360deg); } }
+
 @keyframes floating {
   0% {
     transform: translate(0%, 0%); }
@@ -63,6 +70,7 @@ table.reorder-enabled tbody tr td.reorder .reorder-handle:hover, .right-sidebar 
     transform: translate(0%, 15%); }
   100% {
     transform: translate(0%, 0%); } }
+
 @keyframes progress-bar {
   0% {
     width: 0%; }
@@ -76,6 +84,7 @@ table.reorder-enabled tbody tr td.reorder .reorder-handle:hover, .right-sidebar 
     width: 90%; }
   100% {
     width: 92%; } }
+
 @font-face {
   font-family: 'Material Icons';
   font-style: normal;
@@ -83,26 +92,31 @@ table.reorder-enabled tbody tr td.reorder .reorder-handle:hover, .right-sidebar 
   src: url("../fonts/MaterialIcons-Regular.eot");
   /* For IE6-8 */
   src: local("Material Icons"), local("MaterialIcons-Regular"), url("../fonts/MaterialIcons-Regular.woff2") format("woff2"), url("../fonts/MaterialIcons-Regular.woff") format("woff"), url("../fonts/MaterialIcons-Regular.ttf") format("truetype"); }
+
 @font-face {
   font-family: 'Roboto';
   font-style: normal;
   font-weight: 400;
   src: url("../fonts/Roboto-Regular.woff2") format("woff2"), url("../fonts/Roboto-Regular.woff") format("woff"), url("../fonts/Roboto-Regular.ttf") format("truetype"); }
+
 @font-face {
   font-family: 'Roboto';
   font-style: normal;
   font-weight: 300;
   src: url("../fonts/Roboto-Light.woff2") format("woff2"), url("../fonts/Roboto-Light.woff") format("woff"), url("../fonts/Roboto-Light.ttf") format("truetype"); }
+
 @font-face {
   font-family: 'Roboto';
   font-style: normal;
   font-weight: 500;
   src: url("../fonts/Roboto-Medium.woff2") format("woff2"), url("../fonts/Roboto-Medium.woff") format("woff"), url("../fonts/Roboto-Medium.ttf") format("truetype"); }
+
 @font-face {
   font-family: 'Roboto';
   font-style: normal;
   font-weight: 700;
   src: url("../fonts/Roboto-Bold.woff2") format("woff2"), url("../fonts/Roboto-Bold.woff") format("woff"), url("../fonts/Roboto-Bold.ttf") format("truetype"); }
+
 .material-icons {
   font-family: 'Material Icons';
   font-weight: normal;
@@ -364,9 +378,11 @@ ul {
 
 .noty_box .noty_message .noty_text {
   display: block; }
+
 .noty_box .noty_message hr {
   margin: 16px 0;
   opacity: 0.5; }
+
 .noty_box .noty_message ul {
   margin-left: 16px; }
 
@@ -422,6 +438,7 @@ ul {
       height: 4px;
       background-color: #3498DB;
       animation: loading 2s linear infinite; }
+
 @keyframes loading {
   from {
     left: -200px;
@@ -2448,6 +2465,7 @@ body.loading .header .logo {
       -webkit-transform: translateZ(0);
       -ms-transform: translateZ(0);
       will-change: transform; }
+
 @keyframes logosprite {
   100% {
     background-position: -990px; } }
@@ -3538,9 +3556,9 @@ body.loading .header .logo {
                 -o-transition: all 200ms ease-in-out 0ms;
                 -ms-transition: all 200ms ease-in-out 0ms;
                 transition: all 200ms ease-in-out 0ms;
-                -webkit-box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0);
-                -moz-box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0);
-                box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0);
+                -webkit-box-shadow: 0px 0px 0px 0px transparent;
+                -moz-box-shadow: 0px 0px 0px 0px transparent;
+                box-shadow: 0px 0px 0px 0px transparent;
                 display: block;
                 padding: 16px;
                 width: 100%;
@@ -3771,8 +3789,10 @@ body.loading .header .logo {
 
 body.help .help *:hover {
   cursor: help !important; }
+
 body.help .discover-container {
   display: block; }
+
 body.help .discover-spotlight {
   opacity: 1; }
 
@@ -4172,16 +4192,21 @@ body.help .discover-spotlight {
             margin-bottom: 4px;
             font-size: 12px;
             height: 16px; }
-    .smoke .modal.column .modal-bg, .smoke .modal.interface .modal-bg {
+    .smoke .modal.column .modal-bg,
+    .smoke .modal.interface .modal-bg {
       width: 600px;
       text-align: left; }
-      .smoke .modal.column .modal-bg h1, .smoke .modal.interface .modal-bg h1 {
+      .smoke .modal.column .modal-bg h1,
+      .smoke .modal.interface .modal-bg h1 {
         margin-bottom: 20px; }
-        .smoke .modal.column .modal-bg h1 .table-name, .smoke .modal.interface .modal-bg h1 .table-name {
+        .smoke .modal.column .modal-bg h1 .table-name,
+        .smoke .modal.interface .modal-bg h1 .table-name {
           color: #999999; }
-        .smoke .modal.column .modal-bg h1 .column-name, .smoke .modal.interface .modal-bg h1 .column-name {
+        .smoke .modal.column .modal-bg h1 .column-name,
+        .smoke .modal.interface .modal-bg h1 .column-name {
           color: #FF9800; }
-      .smoke .modal.column .modal-bg .toggle-pane, .smoke .modal.interface .modal-bg .toggle-pane {
+      .smoke .modal.column .modal-bg .toggle-pane,
+      .smoke .modal.interface .modal-bg .toggle-pane {
         -webkit-transition: color 200ms ease-in-out 0ms;
         -moz-transition: color 200ms ease-in-out 0ms;
         -o-transition: color 200ms ease-in-out 0ms;
@@ -4198,11 +4223,14 @@ body.help .discover-spotlight {
         background-color: #FFFFFF;
         color: #999999;
         z-index: 2; }
-        .smoke .modal.column .modal-bg .toggle-pane:hover, .smoke .modal.interface .modal-bg .toggle-pane:hover {
+        .smoke .modal.column .modal-bg .toggle-pane:hover,
+        .smoke .modal.interface .modal-bg .toggle-pane:hover {
           color: #333333; }
-        .smoke .modal.column .modal-bg .toggle-pane.active, .smoke .modal.interface .modal-bg .toggle-pane.active {
+        .smoke .modal.column .modal-bg .toggle-pane.active,
+        .smoke .modal.interface .modal-bg .toggle-pane.active {
           color: #333333; }
-          .smoke .modal.column .modal-bg .toggle-pane.active:after, .smoke .modal.interface .modal-bg .toggle-pane.active:after {
+          .smoke .modal.column .modal-bg .toggle-pane.active:after,
+          .smoke .modal.interface .modal-bg .toggle-pane.active:after {
             content: "";
             position: absolute;
             bottom: -1px;
@@ -4210,7 +4238,8 @@ body.help .discover-spotlight {
             right: 0;
             height: 1px;
             background-color: #FFFFFF; }
-      .smoke .modal.column .modal-bg .row, .smoke .modal.interface .modal-bg .row {
+      .smoke .modal.column .modal-bg .row,
+      .smoke .modal.interface .modal-bg .row {
         position: relative;
         font-size: 14px;
         color: #999999;
@@ -4309,30 +4338,46 @@ body.help .discover-spotlight {
           height: 140px; }
         .smoke .modal.column .modal-bg .row select {
           min-width: 200px; }
-    .smoke .modal.welcome-1 .modal-bg, .smoke .modal.welcome-2 .modal-bg, .smoke .modal.welcome-3 .modal-bg {
+    .smoke .modal.welcome-1 .modal-bg,
+    .smoke .modal.welcome-2 .modal-bg,
+    .smoke .modal.welcome-3 .modal-bg {
       width: 300px; }
-      .smoke .modal.welcome-1 .modal-bg h1, .smoke .modal.welcome-2 .modal-bg h1, .smoke .modal.welcome-3 .modal-bg h1 {
+      .smoke .modal.welcome-1 .modal-bg h1,
+      .smoke .modal.welcome-2 .modal-bg h1,
+      .smoke .modal.welcome-3 .modal-bg h1 {
         margin: 20px 0  20px; }
-      .smoke .modal.welcome-1 .modal-bg h5, .smoke .modal.welcome-2 .modal-bg h5, .smoke .modal.welcome-3 .modal-bg h5 {
+      .smoke .modal.welcome-1 .modal-bg h5,
+      .smoke .modal.welcome-2 .modal-bg h5,
+      .smoke .modal.welcome-3 .modal-bg h5 {
         margin: 0 0 30px;
         font-weight: 400; }
       .smoke .modal.welcome-1 .modal-bg .select-container,
-      .smoke .modal.welcome-1 .modal-bg input, .smoke .modal.welcome-2 .modal-bg .select-container,
-      .smoke .modal.welcome-2 .modal-bg input, .smoke .modal.welcome-3 .modal-bg .select-container,
+      .smoke .modal.welcome-1 .modal-bg input,
+      .smoke .modal.welcome-2 .modal-bg .select-container,
+      .smoke .modal.welcome-2 .modal-bg input,
+      .smoke .modal.welcome-3 .modal-bg .select-container,
       .smoke .modal.welcome-3 .modal-bg input {
         width: 100%;
         margin-bottom: 20px; }
         .smoke .modal.welcome-1 .modal-bg .select-container select,
-        .smoke .modal.welcome-1 .modal-bg input select, .smoke .modal.welcome-2 .modal-bg .select-container select,
-        .smoke .modal.welcome-2 .modal-bg input select, .smoke .modal.welcome-3 .modal-bg .select-container select,
+        .smoke .modal.welcome-1 .modal-bg input select,
+        .smoke .modal.welcome-2 .modal-bg .select-container select,
+        .smoke .modal.welcome-2 .modal-bg input select,
+        .smoke .modal.welcome-3 .modal-bg .select-container select,
         .smoke .modal.welcome-3 .modal-bg input select {
           width: 100%; }
-      .smoke .modal.welcome-1 .modal-bg .custom-checkbox-label, .smoke .modal.welcome-2 .modal-bg .custom-checkbox-label, .smoke .modal.welcome-3 .modal-bg .custom-checkbox-label {
+      .smoke .modal.welcome-1 .modal-bg .custom-checkbox-label,
+      .smoke .modal.welcome-2 .modal-bg .custom-checkbox-label,
+      .smoke .modal.welcome-3 .modal-bg .custom-checkbox-label {
         margin: 0 0 10px; }
-      .smoke .modal.welcome-1 .modal-bg .button, .smoke .modal.welcome-2 .modal-bg .button, .smoke .modal.welcome-3 .modal-bg .button {
+      .smoke .modal.welcome-1 .modal-bg .button,
+      .smoke .modal.welcome-2 .modal-bg .button,
+      .smoke .modal.welcome-3 .modal-bg .button {
         width: 100%;
         margin-top: 10px; }
-      .smoke .modal.welcome-1 .modal-bg .go-back, .smoke .modal.welcome-2 .modal-bg .go-back, .smoke .modal.welcome-3 .modal-bg .go-back {
+      .smoke .modal.welcome-1 .modal-bg .go-back,
+      .smoke .modal.welcome-2 .modal-bg .go-back,
+      .smoke .modal.welcome-3 .modal-bg .go-back {
         -webkit-transition: color 200ms ease-in-out 0ms;
         -moz-transition: color 200ms ease-in-out 0ms;
         -o-transition: color 200ms ease-in-out 0ms;
@@ -4343,7 +4388,9 @@ body.help .discover-spotlight {
         margin-top: 14px;
         margin-bottom: -4px;
         cursor: pointer; }
-        .smoke .modal.welcome-1 .modal-bg .go-back:hover, .smoke .modal.welcome-2 .modal-bg .go-back:hover, .smoke .modal.welcome-3 .modal-bg .go-back:hover {
+        .smoke .modal.welcome-1 .modal-bg .go-back:hover,
+        .smoke .modal.welcome-2 .modal-bg .go-back:hover,
+        .smoke .modal.welcome-3 .modal-bg .go-back:hover {
           color: #666666; }
 
 .error-page {
@@ -4429,6 +4476,7 @@ body.help .discover-spotlight {
   flex-wrap: wrap;
   justify-content: space-around;
   align-items: flex-start; }
+
 .attachments .folder .folder-icon,
 .folder-listing .folder .folder-icon,
 .file-listing .folder .folder-icon {
@@ -4441,6 +4489,7 @@ body.help .discover-spotlight {
   .file-listing .folder .folder-icon .material-icons {
     font-size: 100px;
     margin-top: 50px; }
+
 .attachments .folder .folder,
 .attachments .folder .file,
 .folder-listing .folder .folder,
@@ -4448,6 +4497,7 @@ body.help .discover-spotlight {
 .file-listing .folder .folder,
 .file-listing .folder .file {
   display: none; }
+
 .attachments .folder,
 .attachments .file,
 .folder-listing .folder,
@@ -5087,9 +5137,9 @@ body.help .discover-spotlight {
       line-height: 30px;
       background-color: #f6f6f6; }
       .message .reply textarea:focus {
-        -webkit-box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0);
-        -moz-box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0);
-        box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0); }
+        -webkit-box-shadow: 0px 0px 0px 0px transparent;
+        -moz-box-shadow: 0px 0px 0px 0px transparent;
+        box-shadow: 0px 0px 0px 0px transparent; }
     .message .reply .button {
       -webkit-transition: all 400ms ease-in-out 0ms;
       -moz-transition: all 400ms ease-in-out 0ms;
@@ -5839,9 +5889,9 @@ body.help .discover-spotlight {
           margin: 80px auto 40px;
           color: #CCCCCC; }
       .fields .field .interface .wysiwyg textarea {
-        -webkit-box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0);
-        -moz-box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0);
-        box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0);
+        -webkit-box-shadow: 0px 1px 4px 0px transparent;
+        -moz-box-shadow: 0px 1px 4px 0px transparent;
+        box-shadow: 0px 1px 4px 0px transparent;
         padding: 0;
         border: none;
         resize: none;
@@ -6033,6 +6083,7 @@ body.help .discover-spotlight {
 
 .interface-field table td:hover .privilege-shortcuts {
   opacity: 1; }
+
 .interface-field table td .privilege-shortcuts {
   -webkit-transition: all 200ms ease-in-out 0ms;
   -moz-transition: all 200ms ease-in-out 0ms;
@@ -6054,6 +6105,7 @@ body.help .discover-spotlight {
 
 .page.settings-container hr {
   margin: 30px 40px; }
+
 .page.settings-container .settings-modules {
   padding: 40px 20px 0 20px;
   display: flex;
@@ -6115,6 +6167,7 @@ body.help .discover-spotlight {
       bottom: 30px;
       left: 30px;
       right: 30px; }
+
 .page.settings-container .marketplace {
   -webkit-transition: all 200ms ease-in-out 0ms;
   -moz-transition: all 200ms ease-in-out 0ms;
@@ -6955,6 +7008,7 @@ body.login {
         margin-bottom: 0; }
         .fields .field .interface .wysiwyg textarea {
           padding: 0; } }
+
 @media only screen and (max-width: 1200px) {
   body.right-sidebar-open .right-sidebar,
   body.right-sidebar-open-wide .right-sidebar {
@@ -6965,7 +7019,6 @@ body.login {
   body.right-sidebar-open .page .page-container .main-container,
   body.right-sidebar-open-wide .page .page-container .main-container {
     margin-right: 200px; }
-
   .view-calendar .days .day.active .items {
     bottom: 5px;
     left: 8px;
@@ -6990,7 +7043,6 @@ body.login {
       margin-bottom: 4px;
       padding: 0;
       text-indent: 100px; }
-
   .user-listing {
     padding: 15px; }
     .user-listing .user {
@@ -7004,7 +7056,6 @@ body.login {
         top: 115px; }
       .user-listing .user .info .more {
         display: none; }
-
   .attachments,
   .folder-listing,
   .file-listing {
@@ -7057,7 +7108,6 @@ body.login {
       .file-listing .folder .info .more,
       .file-listing .file .info .more {
         display: none; }
-
   .fields .field .interface .attachments.multiple .dropzone {
     width: 140px;
     height: 189px;
@@ -7065,6 +7115,7 @@ body.login {
     .fields .field .interface .attachments.multiple .dropzone .cloud {
       font-size: 60px;
       margin-top: -30px; } }
+
 @media only screen and (max-width: 1000px) {
   .message {
     -webkit-transition: all 200ms ease-in-out 0ms;
@@ -7081,20 +7132,16 @@ body.login {
     .message.show-responsive-message {
       left: 0px !important;
       right: -100% !important; }
-
   .message-listing {
     width: 100%; }
-
   .resize-handle {
     display: none; }
-
   .header .tools-right .filter {
     display: none; }
   .header .actions .action.filter-toggle {
     display: inline-block; }
   .header .breadcrumb {
     font-size: 22px; }
-
   .page.settings-container .settings-modules {
     display: block;
     flex-direction: inherit;
@@ -7115,6 +7162,7 @@ body.login {
         width: 240px; }
   .page.settings-container .marketplace {
     font-size: 10px; } }
+
 @media only screen and (max-width: 800px) {
   .header .logo {
     left: -200px; }
@@ -7131,7 +7179,6 @@ body.login {
         display: inline; }
   .header .fading-separator {
     display: none; }
-
   .sidebar {
     left: -200px; }
     .sidebar ul.menu li {
@@ -7139,19 +7186,14 @@ body.login {
       padding: 8px 20px 8px 20px; }
     .sidebar ul.menu.bookmarks li {
       padding: 8px 35px 8px 20px; }
-
   .right-sidebar {
     left: -200px; }
-
   .right-sidebar {
     left: auto; }
-
   .page {
     left: 0; }
-
   table.fixed-header thead {
     left: 0; }
-
   body.sidebar-open .header .logo {
     left: -200px; }
   body.sidebar-open .sidebar {
@@ -7161,14 +7203,12 @@ body.login {
     left: 0; }
   body.sidebar-open .table-sidebar {
     left: auto; }
-
   body.right-sidebar-open .right-sidebar,
   body.right-sidebar-open-wide .right-sidebar {
     right: 0; }
   body.right-sidebar-open .page .page-container .main-container,
   body.right-sidebar-open-wide .page .page-container .main-container {
     margin-right: 200px; }
-
   .view-calendar header {
     padding: 20px; }
     .view-calendar header .next-month {
@@ -7179,15 +7219,15 @@ body.login {
       left: 20px; }
   .view-calendar .days {
     top: 113px; } }
+
 @media only screen and (max-width: 600px) {
   .header .tools-right .filter {
     display: none; }
-
   .smoke .modal.confirm .modal-bg {
     min-width: 90%; }
-
   .page.settings-container .settings-modules .settings-module .button {
     width: auto; } }
+
 @media only screen and (max-width: 500px) {
   .fields .field .interface input {
     min-width: auto;
@@ -7222,7 +7262,6 @@ body.login {
     margin-right: 10%; }
   .fields .field .interface .dropzone {
     width: 100%; }
-
   .header .tools-right .filter {
     position: absolute;
     top: 64px;
@@ -7244,14 +7283,11 @@ body.login {
       top: 13px; }
     .header .tools-right .filter .filter-dropdown-toggle {
       display: none; }
-
   .items-chart {
     margin: 40px 20px 0 0px;
     height: 140px; }
-
   table.charted.fixed-header thead {
     top: 244px; }
-
   .message {
     min-width: auto;
     padding: 30px;
@@ -7266,5 +7302,3 @@ body.login {
       top: 61px; }
     .message .response .details .timeago {
       top: 29px; } }
-
-/*# sourceMappingURL=main.css.map */

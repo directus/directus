@@ -162,7 +162,7 @@ function(app, Backbone, _, Sortable, Notification) {
         var $el = $(this);
 
         attributes[sortColumnName] = i;
-        collection.get($el.data('cid')).set(attributes, {silent: true});
+        collection.get($el.data('id')).set(attributes, {silent: true});
       });
 
       success = function () {
