@@ -38,3 +38,6 @@ thumbnail/**/
 .gulp-scss-cache
 node_modules
 storage
+
+# ignore build files
+directus-build*
