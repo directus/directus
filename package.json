@@ -16,14 +16,8 @@
     "url": "https://github.com/directus/directus/issues"
   },
   "xo": {
-    "envs": [
-      "amd",
-      "browser"
-    ],
-    "ignores": [
-      "assets",
-      "vendor"
-    ],
+    "envs": ["amd", "browser"],
+    "ignores": ["assets", "vendor"],
     "space": true,
     "esnext": false,
     "rules": {
@@ -53,7 +47,7 @@
     "gulp-processhtml": "^1.0.2",
     "gulp-rename": "~1.2.0",
     "gulp-requirejs": "~0.1.3",
-    "gulp-sass": "^2.3.2",
+    "gulp-sass": "^3.1.0",
     "gulp-size": "~1.1.0",
     "gulp-uglify": "~1.5.4",
     "gulp-zip": "^4.0.0",
