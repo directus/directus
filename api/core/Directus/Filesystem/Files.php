@@ -236,20 +236,14 @@ class Files
      */
     public function getDataInfo($data)
     {
-        $type = null;
-
         if (strpos($data, 'data:') === 0) {
             $parts = explode(',', $data);
-
-            preg_match('/^data:(.*);base64$/', $parts[0], $matches);
-            if (count($matches) > 1) {
-                $type = $matches[1];
-            }
-
             $data = $parts[1];
         }
 
-        return ['type' => $type, 'data' => $data];
+        $info = $this->getFileInfoFromData(base64_decode($data));
+
+        return array_merge(['data' => $data], $info);
     }
 
     /**
@@ -258,7 +252,7 @@ class Files
      * @param string $fileData - base64 data
      * @param string $fileName - name of the file
      *
-     * @return bool
+     * @return array
      */
     public function saveData($fileData, $fileName)
     {
@@ -340,18 +334,23 @@ class Files
      */
     public function getFileInfo($path, $outside = false)
     {
-        if (!class_exists('\finfo')) {
-            throw new \RuntimeException('PHP File Information extension was not loaded.');
-        }
-
         if ($outside === true) {
             $buffer = file_get_contents($path);
         } else {
             $buffer = $this->filesystem->getAdapter()->read($path);
         }
 
+        return $this->getFileInfoFromData($buffer);
+    }
+
+    public function getFileInfoFromData($data)
+    {
+        if (!class_exists('\finfo')) {
+            throw new \RuntimeException('PHP File Information extension was not loaded.');
+        }
+
         $finfo = new \finfo(FILEINFO_MIME);
-        $type = explode('; charset=', $finfo->buffer($buffer));
+        $type = explode('; charset=', $finfo->buffer($data));
 
         $mime = $type[0];
         $charset = $type[1];
@@ -361,7 +360,7 @@ class Files
             'type' => $mime,
             'format' => $typeTokens[1],
             'charset' => $charset,
-            'size' => strlen($buffer),
+            'size' => strlen($data),
             'width' => null,
             'height' => null
         ];
@@ -369,7 +368,7 @@ class Files
         if ($typeTokens[0] == 'image') {
             $meta = [];
             // @TODO: use this as fallback for finfo?
-            $imageInfo = getimagesizefromstring($buffer, $meta);
+            $imageInfo = getimagesizefromstring($data, $meta);
 
             $info['width'] = $imageInfo[0];
             $info['height'] = $imageInfo[1];
@@ -405,6 +404,8 @@ class Files
                 $info['location'] = implode(', ', $location);
             }
         }
+
+        unset($data);
 
         return $info;
     }
@@ -658,7 +659,7 @@ class Files
      *
      * @param string $link
      *
-     * @return Array
+     * @return array
      */
     public function getLinkInfo($link)
     {
