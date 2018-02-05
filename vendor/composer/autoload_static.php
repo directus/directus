@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInitadb64905368fade260aeaf1b6debf68b
+class ComposerStaticInit0dba2f4cb6472f456e881fd63e72de50
 {
     public static $files = array (
         'a0edc8309cc5e1d60e3047b5df6b7052' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/functions_include.php',
@@ -197,9 +197,9 @@ class ComposerStaticInitadb64905368fade260aeaf1b6debf68b
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInitadb64905368fade260aeaf1b6debf68b::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInitadb64905368fade260aeaf1b6debf68b::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInitadb64905368fade260aeaf1b6debf68b::$prefixesPsr0;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit0dba2f4cb6472f456e881fd63e72de50::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit0dba2f4cb6472f456e881fd63e72de50::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit0dba2f4cb6472f456e881fd63e72de50::$prefixesPsr0;
 
         }, null, ClassLoader::class);
     }

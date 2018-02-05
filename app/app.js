@@ -13688,7 +13688,7 @@ function(app, Backbone, _, Sortable, Notification) {
         var $el = $(this);
 
         attributes[sortColumnName] = i;
-        collection.get($el.data('cid')).set(attributes, {silent: true});
+        collection.get($el.data('id')).set(attributes, {silent: true});
       });
 
       success = function () {
@@ -23369,11 +23369,12 @@ define("tinyMCE", (function (global) {
 
 /* global $ */
 define('core/interfaces/wysiwyg_full/interface',[
+  'app',
   'utils',
   'underscore',
   'core/UIView',
   'tinyMCE'
-], function (Utils, _, UIView, tinyMCE) {
+], function (app, Utils, _, UIView, tinyMCE) {
   
 
   return UIView.extend({
@@ -23399,7 +23400,7 @@ define('core/interfaces/wysiwyg_full/interface',[
       var blocks = getCheckboxesSettings('blocks');
       var alignment = getCheckboxesSettings('alignment');
       var toolbarOptions = getCheckboxesSettings('toolbar_options');
-      var toolbar;
+      var toolbar = '';
 
       function capitalizeFirstLetter(string) {
         return string.charAt(0).toUpperCase() + string.slice(1);
@@ -23455,7 +23456,9 @@ define('core/interfaces/wysiwyg_full/interface',[
         });
       }
 
-      toolbar = (styleFormats.length > 0 ? 'styleselect ' : '');
+      if  (styleFormats.length > 0 && this.options.settings.get('show_format_menu')) {
+        toolbar = 'styleselect ';
+      }
 
       if (toolbarOptions.length > 0) {
         // Convert inline / alignment to appropriate options & add to toolbar
@@ -23582,6 +23585,23 @@ define('core/interfaces/wysiwyg_full/interface',[
       if (this.options.settings.get('remove_unsafe_tags') === false) {
         options.valid_elements = '*[*]';
         options.extended_valid_elements = '*[*]';
+      }
+
+      if (settings.get('basic_image_list')) {
+        options.image_list = function(success) {
+          var collection = app.files;
+          collection.once('sync', function(collection) {
+            var images = [];
+            collection.each(function(model) {
+              images.push({
+                'text': model.get('title'),
+                'value': model.get('url')
+              });
+            });
+            success(images)
+          })
+          collection.fetch();
+        }
       }
 
       tinyMCE.init(options);
@@ -23768,6 +23788,20 @@ define('core/interfaces/wysiwyg_full/component',['./interface', 'core/UIComponen
         ui: 'toggle',
         type: 'Boolean',
         comment: 'Have the editor remove potentially unsafe tags like iframe and script',
+        default_value: true
+      },
+      {
+        id: 'basic_image_list',
+        ui: 'toggle',
+        type: 'Boolean',
+        comment: 'use basic image listing in ui (potentially slow with high number of images)',
+        default_value: true
+      },
+      {
+        id: 'show_format_menu',
+        ui: 'toggle',
+        type: 'Boolean',
+        comment: 'Show the format menu',
         default_value: true
       }
     ],
@@ -24352,7 +24386,10 @@ define('core/interfaces/map/interface',[
       var mapOptions = {
         center: center,
         zoom: 12,
-        disableDefaultUI: this.options.settings.get('read_only') || !this.options.canWrite
+        disableDefaultUI: this.options.settings.get('read_only') || !this.options.canWrite,
+        // Using **cooperative gesture handling** lets the user control the panning and scrolling behavior
+        // of a map when viewed on a mobile device.
+        gestureHandling: 'cooperative',
       };
 
       var map = new google.maps.Map(this.$el.find('#map-canvas').get(0), mapOptions);
@@ -24457,6 +24494,7 @@ define('core/interfaces/map/interface',[
                   var $fieldInput = that.$el.closest('form').find('input[name=' + field + ']');
                   if ($fieldInput.length > 0) {
                     $fieldInput.val(address[key]);
+                    that.model.set(field, address[key]);
                   }
                 }
               }
@@ -24496,7 +24534,7 @@ define('core/interfaces/map/interface',[
       // Include the Google JSAPI for using Maps
       require(['https://www.google.com/jsapi'], function () {
         // Load Maps API using provided key, and call initializeMap() when API is loaded
-        google.load('maps', '3', {other_params: 'sensor=false&libraries=places&key=' + that.getApiKey(), callback: function () {
+        google.load('maps', '3', {other_params: 'libraries=places&key=' + that.getApiKey(), callback: function () {
           that.initializeMap();
         }});
       });
@@ -24523,7 +24561,7 @@ define('core/interfaces/map/component',['./interface', 'core/UIComponent', 'core
         id: 'google_api_key',
         ui: 'text_input',
         type: 'String',
-        comment: 'Google API Key w/ Maps JS access',
+        comment: 'Google API Key w/ Maps JS, Places & Geocoding access',
         default_value: '',
         required: true,
         char_length: 200
@@ -34822,8 +34860,6 @@ define('core/entries/EntriesModel',['require','exports','module','app','undersco
         var id = column.id;
         var tableRelated = column.getRelated();
         var relationshipType = column.getRelationshipType();
-        //var value = attributes[id];
-        var hasData = attributes[id] !== undefined;
         var ui = structure.get(column).options;
 
         switch (relationshipType) {
@@ -34846,7 +34882,6 @@ define('core/entries/EntriesModel',['require','exports','module','app','undersco
               //preferences: app.preferences[column.get('related_table')],
             };
 
-
             // make sure that the table exists
             // @todo move this to column schema?
             if (options.table === undefined) {
@@ -34868,19 +34903,12 @@ define('core/entries/EntriesModel',['require','exports','module','app','undersco
               if (this.attributes[id] instanceof EntriesCollection) {
                 this.attributes[id].set(value, {merge: true, parse: true});
                 attributes[id] = this.attributes[id];
+              } else if (value instanceof EntriesCollection) {
+                attributes[id].set(value.models, {merge: true, parse: false});
               } else {
-                if (value instanceof EntriesCollection) {
-                  models = value.models;
-                  options.parse = false;
-                }
-
-                if (attributes[id] instanceof EntriesCollection) {
-                  attributes[id].set(value, {merge: true, parse: true});
-                } else {
-                  options.parentAttribute = id;
-                  options.parent = this;
-                  attributes[id] = new EntriesCollection(models, options);
-                }
+                options.parentAttribute = id;
+                options.parent = this;
+                attributes[id] = new EntriesCollection(value, options);
               }
 
               break;
@@ -34896,19 +34924,12 @@ define('core/entries/EntriesModel',['require','exports','module','app','undersco
                 }
 
                 attributes[id] = this.attributes[id];
+              } else if (value instanceof EntriesJunctionCollection) {
+                attributes[id].set(value.models, {merge: true, parse: false});
               } else {
-                if (value instanceof EntriesJunctionCollection) {
-                  models = value.models;
-                  options.parse = false;
-                }
-
-                if (attributes[id] instanceof EntriesJunctionCollection) {
-                  attributes[id].set(value, {merge: true, parse: true});
-                } else {
-                  options.parentAttribute = id;
-                  options.parent = this;
-                  attributes[id] = new EntriesJunctionCollection(models, options);
-                }
+                options.parentAttribute = id;
+                options.parent = this;
+                attributes[id] = new EntriesJunctionCollection(models, options);
               }
             }
 
@@ -40513,7 +40534,7 @@ define('modules/tables/views/TableViewRightPane',[
 
       data.columns = structure.chain()
         .filter(function(model) {
-          return !model.get('hidden_input');
+          return model.attributes.ui != 'section_break' && !model.get('hidden_input');
         })
         .map(function(model) {
           var sort, isVisible;

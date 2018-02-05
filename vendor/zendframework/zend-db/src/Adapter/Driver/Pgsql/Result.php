@@ -44,7 +44,7 @@ class Result implements ResultInterface
      */
     public function initialize($resource, $generatedValue)
     {
-        if (!is_resource($resource) || get_resource_type($resource) != 'pgsql result') {
+        if (! is_resource($resource) || get_resource_type($resource) != 'pgsql result') {
             throw new Exception\InvalidArgumentException('Resource not of the correct type.');
         }
 

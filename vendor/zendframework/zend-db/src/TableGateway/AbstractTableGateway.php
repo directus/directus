@@ -91,26 +91,26 @@ abstract class AbstractTableGateway implements TableGatewayInterface
             return;
         }
 
-        if (!$this->featureSet instanceof Feature\FeatureSet) {
+        if (! $this->featureSet instanceof Feature\FeatureSet) {
             $this->featureSet = new Feature\FeatureSet;
         }
 
         $this->featureSet->setTableGateway($this);
         $this->featureSet->apply(EventFeatureEventsInterface::EVENT_PRE_INITIALIZE, []);
 
-        if (!$this->adapter instanceof AdapterInterface) {
+        if (! $this->adapter instanceof AdapterInterface) {
             throw new Exception\RuntimeException('This table does not have an Adapter setup');
         }
 
-        if (!is_string($this->table) && !$this->table instanceof TableIdentifier && !is_array($this->table)) {
+        if (! is_string($this->table) && ! $this->table instanceof TableIdentifier && ! is_array($this->table)) {
             throw new Exception\RuntimeException('This table object does not have a valid table set.');
         }
 
-        if (!$this->resultSetPrototype instanceof ResultSetInterface) {
+        if (! $this->resultSetPrototype instanceof ResultSetInterface) {
             $this->resultSetPrototype = new ResultSet;
         }
 
-        if (!$this->sql instanceof Sql) {
+        if (! $this->sql instanceof Sql) {
             $this->sql = new Sql($this->adapter, $this->table);
         }
 
@@ -181,7 +181,7 @@ abstract class AbstractTableGateway implements TableGatewayInterface
      */
     public function select($where = null)
     {
-        if (!$this->isInitialized) {
+        if (! $this->isInitialized) {
             $this->initialize();
         }
 
@@ -198,12 +198,12 @@ abstract class AbstractTableGateway implements TableGatewayInterface
 
     /**
      * @param Select $select
-     * @return null|ResultSetInterface
+     * @return ResultSetInterface
      * @throws \RuntimeException
      */
     public function selectWith(Select $select)
     {
-        if (!$this->isInitialized) {
+        if (! $this->isInitialized) {
             $this->initialize();
         }
         return $this->executeSelect($select);
@@ -256,7 +256,7 @@ abstract class AbstractTableGateway implements TableGatewayInterface
      */
     public function insert($set)
     {
-        if (!$this->isInitialized) {
+        if (! $this->isInitialized) {
             $this->initialize();
         }
         $insert = $this->sql->insert();
@@ -270,7 +270,7 @@ abstract class AbstractTableGateway implements TableGatewayInterface
      */
     public function insertWith(Insert $insert)
     {
-        if (!$this->isInitialized) {
+        if (! $this->isInitialized) {
             $this->initialize();
         }
         return $this->executeInsert($insert);
@@ -329,7 +329,7 @@ abstract class AbstractTableGateway implements TableGatewayInterface
      */
     public function update($set, $where = null, array $joins = null)
     {
-        if (!$this->isInitialized) {
+        if (! $this->isInitialized) {
             $this->initialize();
         }
         $sql = $this->sql;
@@ -355,7 +355,7 @@ abstract class AbstractTableGateway implements TableGatewayInterface
      */
     public function updateWith(Update $update)
     {
-        if (!$this->isInitialized) {
+        if (! $this->isInitialized) {
             $this->initialize();
         }
         return $this->executeUpdate($update);
@@ -409,7 +409,7 @@ abstract class AbstractTableGateway implements TableGatewayInterface
      */
     public function delete($where)
     {
-        if (!$this->isInitialized) {
+        if (! $this->isInitialized) {
             $this->initialize();
         }
         $delete = $this->sql->delete();

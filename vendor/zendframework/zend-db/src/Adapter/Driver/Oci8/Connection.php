@@ -32,13 +32,15 @@ class Connection extends AbstractConnection
         } elseif ($connectionInfo instanceof \oci8) {
             $this->setResource($connectionInfo);
         } elseif (null !== $connectionInfo) {
-            throw new Exception\InvalidArgumentException('$connection must be an array of parameters, an oci8 resource or null');
+            throw new Exception\InvalidArgumentException(
+                '$connection must be an array of parameters, an oci8 resource or null'
+            );
         }
     }
 
     /**
      * @param  Oci8 $driver
-     * @return self
+     * @return self Provides a fluent interface
      */
     public function setDriver(Oci8 $driver)
     {
@@ -52,7 +54,7 @@ class Connection extends AbstractConnection
      */
     public function getCurrentSchema()
     {
-        if (!$this->isConnected()) {
+        if (! $this->isConnected()) {
             $this->connect();
         }
 
@@ -68,11 +70,11 @@ class Connection extends AbstractConnection
      * Set resource
      *
      * @param  resource $resource
-     * @return self
+     * @return self Provides a fluent interface
      */
     public function setResource($resource)
     {
-        if (!is_resource($resource) || get_resource_type($resource) !== 'oci8 connection') {
+        if (! is_resource($resource) || get_resource_type($resource) !== 'oci8 connection') {
             throw new Exception\InvalidArgumentException('A resource of type "oci8 connection" was expected');
         }
         $this->resource = $resource;
@@ -106,7 +108,13 @@ class Connection extends AbstractConnection
         // http://www.php.net/manual/en/function.oci-connect.php
         $username = $findParameterValue(['username']);
         $password = $findParameterValue(['password']);
-        $connectionString = $findParameterValue(['connection_string', 'connectionstring', 'connection', 'hostname', 'instance']);
+        $connectionString = $findParameterValue([
+            'connection_string',
+            'connectionstring',
+            'connection',
+            'hostname',
+            'instance'
+        ]);
         $characterSet = $findParameterValue(['character_set', 'charset', 'encoding']);
         $sessionMode = $findParameterValue(['session_mode']);
 
@@ -122,7 +130,7 @@ class Connection extends AbstractConnection
             $this->resource = oci_connect($username, $password, $connectionString, $characterSet, $sessionMode);
         }
 
-        if (!$this->resource) {
+        if (! $this->resource) {
             $e = oci_error();
             throw new Exception\RuntimeException(
                 'Connection error',
@@ -157,11 +165,12 @@ class Connection extends AbstractConnection
      */
     public function beginTransaction()
     {
-        if (!$this->isConnected()) {
+        if (! $this->isConnected()) {
             $this->connect();
         }
 
-        // A transaction begins when the first SQL statement that changes data is executed with oci_execute() using the OCI_NO_AUTO_COMMIT flag.
+        // A transaction begins when the first SQL statement that changes data is executed with oci_execute() using
+        // the OCI_NO_AUTO_COMMIT flag.
         $this->inTransaction = true;
 
         return $this;
@@ -172,7 +181,7 @@ class Connection extends AbstractConnection
      */
     public function commit()
     {
-        if (!$this->isConnected()) {
+        if (! $this->isConnected()) {
             $this->connect();
         }
 
@@ -194,11 +203,11 @@ class Connection extends AbstractConnection
      */
     public function rollback()
     {
-        if (!$this->isConnected()) {
+        if (! $this->isConnected()) {
             throw new Exception\RuntimeException('Must be connected before you can rollback.');
         }
 
-        if (!$this->inTransaction()) {
+        if (! $this->inTransaction()) {
             throw new Exception\RuntimeException('Must call commit() before you can rollback.');
         }
 
@@ -218,7 +227,7 @@ class Connection extends AbstractConnection
      */
     public function execute($sql)
     {
-        if (!$this->isConnected()) {
+        if (! $this->isConnected()) {
             $this->connect();
         }
 

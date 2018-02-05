@@ -34,7 +34,7 @@ class OracleMetadataTest extends AbstractIntegrationTest
      */
     protected function setUp()
     {
-        if (!extension_loaded('oci8')) {
+        if (! extension_loaded('oci8')) {
             $this->markTestSkipped('I cannot test without the oci8 extension');
         }
         parent::setUp();
@@ -46,8 +46,8 @@ class OracleMetadataTest extends AbstractIntegrationTest
     public function testGetConstraints()
     {
         $constraints = $this->metadata->getConstraints(null, 'main');
-        $this->assertCount(0, $constraints);
-        $this->assertContainsOnlyInstancesOf(
+        self::assertCount(0, $constraints);
+        self::assertContainsOnlyInstancesOf(
             'Zend\Db\Metadata\Object\ConstraintObject',
             $constraints
         );

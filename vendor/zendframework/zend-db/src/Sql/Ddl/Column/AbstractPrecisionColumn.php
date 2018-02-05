@@ -22,8 +22,14 @@ abstract class AbstractPrecisionColumn extends AbstractLengthColumn
      * @param int|null $decimal
      * @param int      $digits
      */
-    public function __construct($name, $digits = null, $decimal = null, $nullable = false, $default = null, array $options = [])
-    {
+    public function __construct(
+        $name,
+        $digits = null,
+        $decimal = null,
+        $nullable = false,
+        $default = null,
+        array $options = []
+    ) {
         $this->setDecimal($decimal);
 
         parent::__construct($name, $digits, $nullable, $default, $options);
@@ -49,7 +55,7 @@ abstract class AbstractPrecisionColumn extends AbstractLengthColumn
 
     /**
      * @param int|null $decimal
-     * @return self
+     * @return self Provides a fluent interface
      */
     public function setDecimal($decimal)
     {

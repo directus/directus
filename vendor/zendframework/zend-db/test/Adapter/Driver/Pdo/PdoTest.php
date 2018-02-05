@@ -9,10 +9,11 @@
 
 namespace ZendTest\Db\Adapter\Driver\Pdo;
 
+use PHPUnit\Framework\TestCase;
 use Zend\Db\Adapter\Driver\DriverInterface;
 use Zend\Db\Adapter\Driver\Pdo\Pdo;
 
-class PdoTest extends \PHPUnit_Framework_TestCase
+class PdoTest extends TestCase
 {
     /**
      * @var Pdo
@@ -29,13 +30,58 @@ class PdoTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Zend\Db\Adapter\Driver\Pdo\Pdo::getDatabasePlatformName
+     * @covers \Zend\Db\Adapter\Driver\Pdo\Pdo::getDatabasePlatformName
      */
     public function testGetDatabasePlatformName()
     {
         // Test platform name for SqlServer
         $this->pdo->getConnection()->setConnectionParameters(['pdodriver' => 'sqlsrv']);
-        $this->assertEquals('SqlServer', $this->pdo->getDatabasePlatformName());
-        $this->assertEquals('SQLServer', $this->pdo->getDatabasePlatformName(DriverInterface::NAME_FORMAT_NATURAL));
+        self::assertEquals('SqlServer', $this->pdo->getDatabasePlatformName());
+        self::assertEquals('SQLServer', $this->pdo->getDatabasePlatformName(DriverInterface::NAME_FORMAT_NATURAL));
+    }
+
+    public function getParamsAndType()
+    {
+        return [
+            [ 'foo', null, ':foo' ],
+            [ 'foo_bar', null, ':foo_bar' ],
+            [ '123foo', null, ':123foo' ],
+            [ 1, null, '?' ],
+            [ '1', null, '?' ],
+            [ 'foo', Pdo::PARAMETERIZATION_NAMED, ':foo' ],
+            [ 'foo_bar', Pdo::PARAMETERIZATION_NAMED, ':foo_bar' ],
+            [ '123foo', Pdo::PARAMETERIZATION_NAMED, ':123foo' ],
+            [ 1, Pdo::PARAMETERIZATION_NAMED, ':1' ],
+            [ '1', Pdo::PARAMETERIZATION_NAMED, ':1' ],
+            [ ':foo', null, ':foo' ],
+        ];
+    }
+
+    /**
+     * @dataProvider getParamsAndType
+     */
+    public function testFormatParameterName($name, $type, $expected)
+    {
+        $result = $this->pdo->formatParameterName($name, $type);
+        $this->assertEquals($expected, $result);
+    }
+
+    public function getInvalidParamName()
+    {
+        return [
+            [ 'foo%' ],
+            [ 'foo-' ],
+            [ 'foo$' ],
+            [ 'foo0!' ]
+        ];
+    }
+
+    /**
+     * @dataProvider getInvalidParamName
+     * @expectedException Zend\Db\Exception\RuntimeException
+     */
+    public function testFormatParameterNameWithInvalidCharacters($name)
+    {
+        $this->pdo->formatParameterName($name);
     }
 }

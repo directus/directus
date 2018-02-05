@@ -2,9 +2,13 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
-## 2.8.3 - TBD
+## 2.9.3 - TBD
 
 ### Added
+
+- Nothing.
+
+### Changed
 
 - Nothing.
 
@@ -19,6 +23,106 @@ All notable changes to this project will be documented in this file, in reverse 
 ### Fixed
 
 - Nothing.
+
+## 2.9.2 - 2017-12-11
+
+### Added
+
+- Nothing.
+
+### Changed
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- [#292](https://github.com/zendframework/zend-db/pull/292) ensures that you may
+  reference bound parameter names using a leading colon (`:`) character when
+  using the PDO adapter. (The leading colon is not technically necessary, as the
+  adapter will prefix for you; however, this ensures portability with vanilla
+  PDO.)
+
+## 2.9.1 - 2017-12-07
+
+### Added
+
+- Nothing.
+
+### Changed
+
+- [#289](https://github.com/zendframework/zend-db/pull/289) reverts a change
+  introduced in 2.9.0 and modifies the behavior of the PDO adapter slightly
+  to remove a regression. In 2.9.0, when binding parameters with names that
+  contained characters not supported by PDO, we would pass the parameter names
+  to `md5()`; this caused a regression, as the SQL string containing the
+  parameter name was not also updated.
+
+  This patch modifies the behavior during a bind-operation to instead raise an
+  exception if a parameter name contains characters not supported by PDO.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- Nothing.
+
+## 2.9.0 - 2017-12-06
+
+### Added
+
+- [#216](https://github.com/zendframework/zend-db/pull/216) added AFTER support
+  in ALTER TABLE syntax for MySQL
+- [#223](https://github.com/zendframework/zend-db/pull/223) added support for
+  empty values set with IN predicate
+- [#271](https://github.com/zendframework/zend-db/pull/271) added support for
+  dash character on MySQL identifier
+- [#273](https://github.com/zendframework/zend-db/pull/273) added support for
+  implementing an error handler for db2_prepare
+- [#275](https://github.com/zendframework/zend-db/pull/275) added support for
+  LIMIT OFFSET for db2
+- [#280](https://github.com/zendframework/zend-db/pull/280) added version dsn
+  parameter for pdo_dblib
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- [#205](https://github.com/zendframework/zend-db/pull/205) fixes the spaces in
+  ORDER BY syntax
+- [#224](https://github.com/zendframework/zend-db/pull/224) fixes how parameters
+  are bound to statements in the PDO adapter. PDO has a restriction on parameter
+  names of `[0-9a-zA_Z_]`; as such, the driver now hashes the parameter names
+  using `md5()` in order to ensure compatibility with other drivers.
+- [#229](https://github.com/zendframework/zend-db/pull/229) fixes the support
+  of SSL for mysqli
+- [#255](https://github.com/zendframework/zend-db/pull/255) fixes ResultSet with
+  array values
+- [#261](https://github.com/zendframework/zend-db/pull/261) fixes Exception in
+  Firebird driver doesn't support lastInsertId
+- [#276](https://github.com/zendframework/zend-db/pull/276) fixes the support
+  of PHP 7.2
+- [#287](https://github.com/zendframework/zend-db/pull/287) fixes the usage of
+  count() with PHP 7.2
 
 ## 2.8.2 - 2016-08-09
 

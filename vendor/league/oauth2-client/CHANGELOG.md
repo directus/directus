@@ -1,5 +1,15 @@
 # OAuth 2.0 Client Changelog
 
+## 2.3.0
+
+_Released: 2018-01-13_
+
+* Add `ProviderRedirectTrait` tool for 3rd-party provider libraries to use when
+  handling provider redirections
+* Fix TypeError thrown because `getResourceOwner()` receives a non-JSON Response
+* Gracefully handle non-standard errors received from providers
+* Update README to reflect official support of PHP 7.2
+
 ## 2.2.1
 
 _Released: 2017-04-25_

@@ -48,8 +48,13 @@ class SelectDecorator extends Select implements PlatformDecoratorInterface
      * @param $parameters
      * @return null
      */
-    protected function processLimitOffset(PlatformInterface $platform, DriverInterface $driver = null, ParameterContainer $parameterContainer = null, &$sqls, &$parameters)
-    {
+    protected function processLimitOffset(
+        PlatformInterface $platform,
+        DriverInterface $driver = null,
+        ParameterContainer $parameterContainer = null,
+        &$sqls,
+        &$parameters
+    ) {
         if ($this->limit === null && $this->offset === null) {
             return;
         }
@@ -66,7 +71,10 @@ class SelectDecorator extends Select implements PlatformDecoratorInterface
 
         $starSuffix = $platform->getIdentifierSeparator() . self::SQL_STAR;
         foreach ($selectParameters[0] as $i => $columnParameters) {
-            if ($columnParameters[0] == self::SQL_STAR || (isset($columnParameters[1]) && $columnParameters[1] == self::SQL_STAR) || strpos($columnParameters[0], $starSuffix)) {
+            if ($columnParameters[0] == self::SQL_STAR
+                || (isset($columnParameters[1]) && $columnParameters[1] == self::SQL_STAR)
+                || strpos($columnParameters[0], $starSuffix)
+            ) {
                 $selectParameters[0] = [[self::SQL_STAR]];
                 break;
             }
@@ -87,16 +95,19 @@ class SelectDecorator extends Select implements PlatformDecoratorInterface
             $limitParamName = $driver->formatParameterName('limit');
             $offsetParamName = $driver->formatParameterName('offset');
             $offsetForSumParamName = $driver->formatParameterName('offsetForSum');
+            // @codingStandardsIgnoreStart
             array_push($sqls, ') AS [ZEND_SQL_SERVER_LIMIT_OFFSET_EMULATION] WHERE [ZEND_SQL_SERVER_LIMIT_OFFSET_EMULATION].[__ZEND_ROW_NUMBER] BETWEEN '
                 . $offsetParamName . '+1 AND ' . $limitParamName . '+' . $offsetForSumParamName);
+            // @codingStandardsIgnoreEnd
             $parameterContainer->offsetSet('offset', $this->offset);
             $parameterContainer->offsetSet('limit', $this->limit);
             $parameterContainer->offsetSetReference('offsetForSum', 'offset');
         } else {
+            // @codingStandardsIgnoreStart
             array_push($sqls, ') AS [ZEND_SQL_SERVER_LIMIT_OFFSET_EMULATION] WHERE [ZEND_SQL_SERVER_LIMIT_OFFSET_EMULATION].[__ZEND_ROW_NUMBER] BETWEEN '
                 . (int) $this->offset . '+1 AND '
-                . (int) $this->limit . '+' . (int) $this->offset
-            );
+                . (int) $this->limit . '+' . (int) $this->offset);
+            // @codingStandardsIgnoreEnd
         }
 
         if (isset($sqls[self::ORDER])) {

@@ -9,45 +9,46 @@
 
 namespace ZendTest\Db\Sql\Predicate;
 
+use PHPUnit\Framework\TestCase;
 use Zend\Db\Sql\Predicate\NotLike;
 
-class NotLikeTest extends \PHPUnit_Framework_TestCase
+class NotLikeTest extends TestCase
 {
     public function testConstructEmptyArgs()
     {
         $notLike = new NotLike();
-        $this->assertEquals('', $notLike->getIdentifier());
-        $this->assertEquals('', $notLike->getLike());
+        self::assertEquals('', $notLike->getIdentifier());
+        self::assertEquals('', $notLike->getLike());
     }
 
     public function testConstructWithArgs()
     {
         $notLike = new NotLike('bar', 'Foo%');
-        $this->assertEquals('bar', $notLike->getIdentifier());
-        $this->assertEquals('Foo%', $notLike->getLike());
+        self::assertEquals('bar', $notLike->getIdentifier());
+        self::assertEquals('Foo%', $notLike->getLike());
     }
 
     public function testAccessorsMutators()
     {
         $notLike = new NotLike();
         $notLike->setIdentifier('bar');
-        $this->assertEquals('bar', $notLike->getIdentifier());
+        self::assertEquals('bar', $notLike->getIdentifier());
         $notLike->setLike('foo%');
-        $this->assertEquals('foo%', $notLike->getLike());
+        self::assertEquals('foo%', $notLike->getLike());
         $notLike->setSpecification('target = target');
-        $this->assertEquals('target = target', $notLike->getSpecification());
+        self::assertEquals('target = target', $notLike->getSpecification());
     }
 
     public function testGetExpressionData()
     {
         $notLike = new NotLike('bar', 'Foo%');
-        $this->assertEquals(
+        self::assertEquals(
             [
                 [
                     '%1$s NOT LIKE %2$s',
                     ['bar', 'Foo%'],
-                    [$notLike::TYPE_IDENTIFIER, $notLike::TYPE_VALUE]
-                ]
+                    [$notLike::TYPE_IDENTIFIER, $notLike::TYPE_VALUE],
+                ],
             ],
             $notLike->getExpressionData()
         );
@@ -56,8 +57,8 @@ class NotLikeTest extends \PHPUnit_Framework_TestCase
     public function testInstanceOfPerSetters()
     {
         $notLike = new NotLike();
-        $this->assertInstanceOf('Zend\Db\Sql\Predicate\Like', $notLike->setIdentifier('bar'));
-        $this->assertInstanceOf('Zend\Db\Sql\Predicate\Like', $notLike->setSpecification('%1$s NOT LIKE %2$s'));
-        $this->assertInstanceOf('Zend\Db\Sql\Predicate\Like', $notLike->setLike('foo%'));
+        self::assertInstanceOf('Zend\Db\Sql\Predicate\Like', $notLike->setIdentifier('bar'));
+        self::assertInstanceOf('Zend\Db\Sql\Predicate\Like', $notLike->setSpecification('%1$s NOT LIKE %2$s'));
+        self::assertInstanceOf('Zend\Db\Sql\Predicate\Like', $notLike->setLike('foo%'));
     }
 }

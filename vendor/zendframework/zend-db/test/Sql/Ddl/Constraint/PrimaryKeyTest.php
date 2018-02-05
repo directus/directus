@@ -9,21 +9,22 @@
 
 namespace ZendTest\Db\Sql\Ddl\Constraint;
 
+use PHPUnit\Framework\TestCase;
 use Zend\Db\Sql\Ddl\Constraint\PrimaryKey;
 
-class PrimaryKeyTest extends \PHPUnit_Framework_TestCase
+class PrimaryKeyTest extends TestCase
 {
     /**
-     * @covers Zend\Db\Sql\Ddl\Constraint\PrimaryKey::getExpressionData
+     * @covers \Zend\Db\Sql\Ddl\Constraint\PrimaryKey::getExpressionData
      */
     public function testGetExpressionData()
     {
         $pk = new PrimaryKey('foo');
-        $this->assertEquals(
+        self::assertEquals(
             [[
                 'PRIMARY KEY (%s)',
                 ['foo'],
-                [$pk::TYPE_IDENTIFIER]
+                [$pk::TYPE_IDENTIFIER],
             ]],
             $pk->getExpressionData()
         );

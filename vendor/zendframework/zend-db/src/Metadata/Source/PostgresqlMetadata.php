@@ -55,7 +55,9 @@ class PostgresqlMetadata extends AbstractSource
             ['v', 'is_updatable'],
         ];
 
-        array_walk($isColumns, function (&$c) use ($p) { $c = $p->quoteIdentifierChain($c); });
+        array_walk($isColumns, function (&$c) use ($p) {
+            $c = $p->quoteIdentifierChain($c);
+        });
 
         $sql = 'SELECT ' . implode(', ', $isColumns)
             . ' FROM ' . $p->quoteIdentifierChain(['information_schema', 'tables']) . ' t'
@@ -115,7 +117,9 @@ class PostgresqlMetadata extends AbstractSource
             'numeric_scale',
         ];
 
-        array_walk($isColumns, function (&$c) use ($platform) { $c = $platform->quoteIdentifier($c); });
+        array_walk($isColumns, function (&$c) use ($platform) {
+            $c = $platform->quoteIdentifier($c);
+        });
 
         $sql = 'SELECT ' . implode(', ', $isColumns)
             . ' FROM ' . $platform->quoteIdentifier('information_schema')

@@ -27,6 +27,11 @@ abstract class AbstractPlatform implements PlatformInterface
     protected $quoteIdentifiers = true;
 
     /**
+     * @var string
+     */
+    protected $quoteIdentifierFragmentPattern = '/([^0-9,a-z,A-Z$_:])/i';
+
+    /**
      * {@inheritDoc}
      */
     public function quoteIdentifierInFragment($identifier, array $safeWords = [])

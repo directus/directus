@@ -9,9 +9,11 @@
 
 namespace ZendTest\Db\Adapter\Platform;
 
+use PHPUnit\Framework\Error;
+use PHPUnit\Framework\TestCase;
 use Zend\Db\Adapter\Platform\Postgresql;
 
-class PostgresqlTest extends \PHPUnit_Framework_TestCase
+class PostgresqlTest extends TestCase
 {
     /**
      * @var Postgresql
@@ -28,126 +30,155 @@ class PostgresqlTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Zend\Db\Adapter\Platform\Postgresql::getName
+     * @covers \Zend\Db\Adapter\Platform\Postgresql::getName
      */
     public function testGetName()
     {
-        $this->assertEquals('PostgreSQL', $this->platform->getName());
+        self::assertEquals('PostgreSQL', $this->platform->getName());
     }
 
     /**
-     * @covers Zend\Db\Adapter\Platform\Postgresql::getQuoteIdentifierSymbol
+     * @covers \Zend\Db\Adapter\Platform\Postgresql::getQuoteIdentifierSymbol
      */
     public function testGetQuoteIdentifierSymbol()
     {
-        $this->assertEquals('"', $this->platform->getQuoteIdentifierSymbol());
+        self::assertEquals('"', $this->platform->getQuoteIdentifierSymbol());
     }
 
     /**
-     * @covers Zend\Db\Adapter\Platform\Postgresql::quoteIdentifier
+     * @covers \Zend\Db\Adapter\Platform\Postgresql::quoteIdentifier
      */
     public function testQuoteIdentifier()
     {
-        $this->assertEquals('"identifier"', $this->platform->quoteIdentifier('identifier'));
-        $this->assertEquals('"identifier ""with"" double-quotes"', $this->platform->quoteIdentifier('identifier "with" double-quotes'));
+        self::assertEquals('"identifier"', $this->platform->quoteIdentifier('identifier'));
+        self::assertEquals(
+            '"identifier ""with"" double-quotes"',
+            $this->platform->quoteIdentifier('identifier "with" double-quotes')
+        );
     }
 
     /**
-     * @covers Zend\Db\Adapter\Platform\Postgresql::quoteIdentifierChain
+     * @covers \Zend\Db\Adapter\Platform\Postgresql::quoteIdentifierChain
      */
     public function testQuoteIdentifierChain()
     {
-        $this->assertEquals('"identifier"', $this->platform->quoteIdentifierChain('identifier'));
-        $this->assertEquals('"identifier"', $this->platform->quoteIdentifierChain(['identifier']));
-        $this->assertEquals('"schema"."identifier"', $this->platform->quoteIdentifierChain(['schema', 'identifier']));
-        $this->assertEquals('"schema"."identifier ""with"" double-quotes"', $this->platform->quoteIdentifierChain(['schema', 'identifier "with" double-quotes']));
+        self::assertEquals('"identifier"', $this->platform->quoteIdentifierChain('identifier'));
+        self::assertEquals('"identifier"', $this->platform->quoteIdentifierChain(['identifier']));
+        self::assertEquals('"schema"."identifier"', $this->platform->quoteIdentifierChain(['schema', 'identifier']));
+        self::assertEquals(
+            '"schema"."identifier ""with"" double-quotes"',
+            $this->platform->quoteIdentifierChain(['schema', 'identifier "with" double-quotes'])
+        );
     }
 
     /**
-     * @covers Zend\Db\Adapter\Platform\Postgresql::getQuoteValueSymbol
+     * @covers \Zend\Db\Adapter\Platform\Postgresql::getQuoteValueSymbol
      */
     public function testGetQuoteValueSymbol()
     {
-        $this->assertEquals("'", $this->platform->getQuoteValueSymbol());
+        self::assertEquals("'", $this->platform->getQuoteValueSymbol());
     }
 
     /**
-     * @covers Zend\Db\Adapter\Platform\Postgresql::quoteValue
+     * @covers \Zend\Db\Adapter\Platform\Postgresql::quoteValue
      */
     public function testQuoteValueRaisesNoticeWithoutPlatformSupport()
     {
-        $this->setExpectedException(
-            'PHPUnit_Framework_Error_Notice',
-            'Attempting to quote a value in Zend\Db\Adapter\Platform\Postgresql without extension/driver support can introduce security vulnerabilities in a production environment'
+        $this->expectException(Error\Notice::class);
+        $this->expectExceptionMessage(
+            'Attempting to quote a value in Zend\Db\Adapter\Platform\Postgresql without extension/driver support can '
+            . 'introduce security vulnerabilities in a production environment'
         );
         $this->platform->quoteValue('value');
     }
 
     /**
-     * @covers Zend\Db\Adapter\Platform\Postgresql::quoteValue
+     * @covers \Zend\Db\Adapter\Platform\Postgresql::quoteValue
      */
     public function testQuoteValue()
     {
-        $this->assertEquals("E'value'", @$this->platform->quoteValue('value'));
-        $this->assertEquals("E'Foo O\\'Bar'", @$this->platform->quoteValue("Foo O'Bar"));
-        $this->assertEquals('E\'\\\'; DELETE FROM some_table; -- \'', @$this->platform->quoteValue('\'; DELETE FROM some_table; -- '));
-        $this->assertEquals("E'\\\\\\'; DELETE FROM some_table; -- '", @$this->platform->quoteValue('\\\'; DELETE FROM some_table; -- '));
+        self::assertEquals("E'value'", @$this->platform->quoteValue('value'));
+        self::assertEquals("E'Foo O\\'Bar'", @$this->platform->quoteValue("Foo O'Bar"));
+        self::assertEquals(
+            'E\'\\\'; DELETE FROM some_table; -- \'',
+            @$this->platform->quoteValue('\'; DELETE FROM some_table; -- ')
+        );
+        self::assertEquals(
+            "E'\\\\\\'; DELETE FROM some_table; -- '",
+            @$this->platform->quoteValue('\\\'; DELETE FROM some_table; -- ')
+        );
     }
 
     /**
-     * @covers Zend\Db\Adapter\Platform\Postgresql::quoteTrustedValue
+     * @covers \Zend\Db\Adapter\Platform\Postgresql::quoteTrustedValue
      */
     public function testQuoteTrustedValue()
     {
-        $this->assertEquals("E'value'", $this->platform->quoteTrustedValue('value'));
-        $this->assertEquals("E'Foo O\\'Bar'", $this->platform->quoteTrustedValue("Foo O'Bar"));
-        $this->assertEquals('E\'\\\'; DELETE FROM some_table; -- \'', $this->platform->quoteTrustedValue('\'; DELETE FROM some_table; -- '));
+        self::assertEquals("E'value'", $this->platform->quoteTrustedValue('value'));
+        self::assertEquals("E'Foo O\\'Bar'", $this->platform->quoteTrustedValue("Foo O'Bar"));
+        self::assertEquals(
+            'E\'\\\'; DELETE FROM some_table; -- \'',
+            $this->platform->quoteTrustedValue('\'; DELETE FROM some_table; -- ')
+        );
 
         //                   '\\\'; DELETE FROM some_table; -- '  <- actual below
-        $this->assertEquals("E'\\\\\\'; DELETE FROM some_table; -- '", $this->platform->quoteTrustedValue('\\\'; DELETE FROM some_table; -- '));
+        self::assertEquals(
+            "E'\\\\\\'; DELETE FROM some_table; -- '",
+            $this->platform->quoteTrustedValue('\\\'; DELETE FROM some_table; -- ')
+        );
     }
 
     /**
-     * @covers Zend\Db\Adapter\Platform\Postgresql::quoteValueList
+     * @covers \Zend\Db\Adapter\Platform\Postgresql::quoteValueList
      */
     public function testQuoteValueList()
     {
-        $this->setExpectedException(
-            'PHPUnit_Framework_Error',
-            'Attempting to quote a value in Zend\Db\Adapter\Platform\Postgresql without extension/driver support can introduce security vulnerabilities in a production environment'
+        $this->expectException(Error\Error::class);
+        $this->expectExceptionMessage(
+            'Attempting to quote a value in Zend\Db\Adapter\Platform\Postgresql without extension/driver support can '
+            . 'introduce security vulnerabilities in a production environment'
         );
-        $this->assertEquals("'Foo O\'\'Bar'", $this->platform->quoteValueList("Foo O'Bar"));
+        self::assertEquals("'Foo O\'\'Bar'", $this->platform->quoteValueList("Foo O'Bar"));
     }
 
     /**
-     * @covers Zend\Db\Adapter\Platform\Postgresql::getIdentifierSeparator
+     * @covers \Zend\Db\Adapter\Platform\Postgresql::getIdentifierSeparator
      */
     public function testGetIdentifierSeparator()
     {
-        $this->assertEquals('.', $this->platform->getIdentifierSeparator());
+        self::assertEquals('.', $this->platform->getIdentifierSeparator());
     }
 
     /**
-     * @covers Zend\Db\Adapter\Platform\Postgresql::quoteIdentifierInFragment
+     * @covers \Zend\Db\Adapter\Platform\Postgresql::quoteIdentifierInFragment
      */
     public function testQuoteIdentifierInFragment()
     {
-        $this->assertEquals('"foo"."bar"', $this->platform->quoteIdentifierInFragment('foo.bar'));
-        $this->assertEquals('"foo" as "bar"', $this->platform->quoteIdentifierInFragment('foo as bar'));
+        self::assertEquals('"foo"."bar"', $this->platform->quoteIdentifierInFragment('foo.bar'));
+        self::assertEquals('"foo" as "bar"', $this->platform->quoteIdentifierInFragment('foo as bar'));
 
         // single char words
-        $this->assertEquals('("foo"."bar" = "boo"."baz")', $this->platform->quoteIdentifierInFragment('(foo.bar = boo.baz)', ['(', ')', '=']));
+        self::assertEquals(
+            '("foo"."bar" = "boo"."baz")',
+            $this->platform->quoteIdentifierInFragment('(foo.bar = boo.baz)', ['(', ')', '='])
+        );
 
         // case insensitive safe words
-        $this->assertEquals(
+        self::assertEquals(
             '("foo"."bar" = "boo"."baz") AND ("foo"."baz" = "boo"."baz")',
-            $this->platform->quoteIdentifierInFragment('(foo.bar = boo.baz) AND (foo.baz = boo.baz)', ['(', ')', '=', 'and'])
+            $this->platform->quoteIdentifierInFragment(
+                '(foo.bar = boo.baz) AND (foo.baz = boo.baz)',
+                ['(', ')', '=', 'and']
+            )
         );
 
         // case insensitive safe words in field
-        $this->assertEquals(
+        self::assertEquals(
             '("foo"."bar" = "boo".baz) AND ("foo".baz = "boo".baz)',
-            $this->platform->quoteIdentifierInFragment('(foo.bar = boo.baz) AND (foo.baz = boo.baz)', ['(', ')', '=', 'and', 'bAz'])
+            $this->platform->quoteIdentifierInFragment(
+                '(foo.bar = boo.baz) AND (foo.baz = boo.baz)',
+                ['(', ')', '=', 'and', 'bAz']
+            )
         );
     }
 }

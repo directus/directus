@@ -54,7 +54,9 @@ class MysqlMetadata extends AbstractSource
             ['V', 'IS_UPDATABLE'],
         ];
 
-        array_walk($isColumns, function (&$c) use ($p) { $c = $p->quoteIdentifierChain($c); });
+        array_walk($isColumns, function (&$c) use ($p) {
+            $c = $p->quoteIdentifierChain($c);
+        });
 
         $sql = 'SELECT ' . implode(', ', $isColumns)
              . ' FROM ' . $p->quoteIdentifierChain(['INFORMATION_SCHEMA', 'TABLES']) . 'T'
@@ -112,7 +114,9 @@ class MysqlMetadata extends AbstractSource
             ['C', 'COLUMN_TYPE'],
         ];
 
-        array_walk($isColumns, function (&$c) use ($p) { $c = $p->quoteIdentifierChain($c); });
+        array_walk($isColumns, function (&$c) use ($p) {
+            $c = $p->quoteIdentifierChain($c);
+        });
 
         $sql = 'SELECT ' . implode(', ', $isColumns)
              . ' FROM ' . $p->quoteIdentifierChain(['INFORMATION_SCHEMA', 'TABLES']) . 'T'
@@ -141,7 +145,13 @@ class MysqlMetadata extends AbstractSource
             $matches = [];
             if (preg_match('/^(?:enum|set)\((.+)\)$/i', $row['COLUMN_TYPE'], $matches)) {
                 $permittedValues = $matches[1];
-                if (preg_match_all("/\\s*'((?:[^']++|'')*+)'\\s*(?:,|\$)/", $permittedValues, $matches, PREG_PATTERN_ORDER)) {
+                if (preg_match_all(
+                    "/\\s*'((?:[^']++|'')*+)'\\s*(?:,|\$)/",
+                    $permittedValues,
+                    $matches,
+                    PREG_PATTERN_ORDER
+                )
+                ) {
                     $permittedValues = str_replace("''", "'", $matches[1]);
                 } else {
                     $permittedValues = [$permittedValues];

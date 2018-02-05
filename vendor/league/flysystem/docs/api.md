@@ -141,7 +141,7 @@ $filesystem = new League\Flysystem\Filesystem($adapter, [
 __List Contents__
 
 ~~~ php
-$contents = $filemanager->listContents();
+$contents = $filesystem->listContents();
 ~~~
 
 The result of a contents listing is a collection of arrays containing all the metadata the file manager knows at that time. By default you'll receive path info and file type. Additional info could be supplied by default depending on the adapter used.

@@ -41,7 +41,7 @@ class Connection extends AbstractConnection
      * Set driver
      *
      * @param  Sqlsrv $driver
-     * @return self
+     * @return self Provides a fluent interface
      */
     public function setDriver(Sqlsrv $driver)
     {
@@ -55,7 +55,7 @@ class Connection extends AbstractConnection
      */
     public function getCurrentSchema()
     {
-        if (!$this->isConnected()) {
+        if (! $this->isConnected()) {
             $this->connect();
         }
 
@@ -68,9 +68,9 @@ class Connection extends AbstractConnection
     /**
      * Set resource
      *
-     * @param  resource                           $resource
+     * @param  resource $resource
+     * @return self Provides a fluent interface
      * @throws Exception\InvalidArgumentException
-     * @return self
      */
     public function setResource($resource)
     {
@@ -122,13 +122,12 @@ class Connection extends AbstractConnection
                 case 'options':
                     $params = array_merge($params, (array) $value);
                     break;
-
             }
         }
 
         $this->resource = sqlsrv_connect($serverName, $params);
 
-        if (!$this->resource) {
+        if (! $this->resource) {
             throw new Exception\RuntimeException(
                 'Connect Error',
                 null,
@@ -161,7 +160,7 @@ class Connection extends AbstractConnection
      */
     public function beginTransaction()
     {
-        if (!$this->isConnected()) {
+        if (! $this->isConnected()) {
             $this->connect();
         }
 
@@ -183,7 +182,7 @@ class Connection extends AbstractConnection
     {
         // http://msdn.microsoft.com/en-us/library/cc296194.aspx
 
-        if (!$this->isConnected()) {
+        if (! $this->isConnected()) {
             $this->connect();
         }
 
@@ -201,7 +200,7 @@ class Connection extends AbstractConnection
     {
         // http://msdn.microsoft.com/en-us/library/cc296176.aspx
 
-        if (!$this->isConnected()) {
+        if (! $this->isConnected()) {
             throw new Exception\RuntimeException('Must be connected before you can rollback.');
         }
 
@@ -218,11 +217,11 @@ class Connection extends AbstractConnection
      */
     public function execute($sql)
     {
-        if (!$this->isConnected()) {
+        if (! $this->isConnected()) {
             $this->connect();
         }
 
-        if (!$this->driver instanceof Sqlsrv) {
+        if (! $this->driver instanceof Sqlsrv) {
             throw new Exception\RuntimeException('Connection is missing an instance of Sqlsrv');
         }
 
@@ -262,7 +261,7 @@ class Connection extends AbstractConnection
      */
     public function prepare($sql)
     {
-        if (!$this->isConnected()) {
+        if (! $this->isConnected()) {
             $this->connect();
         }
 
@@ -278,7 +277,7 @@ class Connection extends AbstractConnection
      */
     public function getLastGeneratedValue($name = null)
     {
-        if (!$this->resource) {
+        if (! $this->resource) {
             $this->connect();
         }
         $sql = 'SELECT @@IDENTITY as Current_Identity';

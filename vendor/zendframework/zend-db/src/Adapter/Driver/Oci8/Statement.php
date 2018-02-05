@@ -64,7 +64,7 @@ class Statement implements StatementInterface, Profiler\ProfilerAwareInterface
      * Set driver
      *
      * @param  Oci8 $driver
-     * @return Statement
+     * @return self Provides a fluent interface
      */
     public function setDriver($driver)
     {
@@ -74,7 +74,7 @@ class Statement implements StatementInterface, Profiler\ProfilerAwareInterface
 
     /**
      * @param Profiler\ProfilerInterface $profiler
-     * @return Statement
+     * @return self Provides a fluent interface
      */
     public function setProfiler(Profiler\ProfilerInterface $profiler)
     {
@@ -94,7 +94,7 @@ class Statement implements StatementInterface, Profiler\ProfilerAwareInterface
      * Initialize
      *
      * @param  resource $oci8
-     * @return Statement
+     * @return self Provides a fluent interface
      */
     public function initialize($oci8)
     {
@@ -106,7 +106,7 @@ class Statement implements StatementInterface, Profiler\ProfilerAwareInterface
      * Set sql
      *
      * @param  string $sql
-     * @return Statement
+     * @return self Provides a fluent interface
      */
     public function setSql($sql)
     {
@@ -118,7 +118,7 @@ class Statement implements StatementInterface, Profiler\ProfilerAwareInterface
      * Set Parameter container
      *
      * @param ParameterContainer $parameterContainer
-     * @return Statement
+     * @return self Provides a fluent interface
      */
     public function setParameterContainer(ParameterContainer $parameterContainer)
     {
@@ -140,7 +140,7 @@ class Statement implements StatementInterface, Profiler\ProfilerAwareInterface
      * Set resource
      *
      * @param  resource $oci8Statement
-     * @return Statement
+     * @return self Provides a fluent interface
      */
     public function setResource($oci8Statement)
     {
@@ -184,7 +184,7 @@ class Statement implements StatementInterface, Profiler\ProfilerAwareInterface
 
     /**
      * @param string $sql
-     * @return Statement
+     * @return self Provides a fluent interface
      */
     public function prepare($sql = null)
     {
@@ -197,7 +197,7 @@ class Statement implements StatementInterface, Profiler\ProfilerAwareInterface
         // get oci8 statement resource
         $this->resource = oci_parse($this->oci8, $sql);
 
-        if (!$this->resource) {
+        if (! $this->resource) {
             $e = oci_error($this->oci8);
             throw new Exception\InvalidQueryException(
                 'Statement couldn\'t be produced with sql: ' . $sql,
@@ -218,12 +218,12 @@ class Statement implements StatementInterface, Profiler\ProfilerAwareInterface
      */
     public function execute($parameters = null)
     {
-        if (!$this->isPrepared) {
+        if (! $this->isPrepared) {
             $this->prepare();
         }
 
         /** START Standard ParameterContainer Merging Block */
-        if (!$this->parameterContainer instanceof ParameterContainer) {
+        if (! $this->parameterContainer instanceof ParameterContainer) {
             if ($parameters instanceof ParameterContainer) {
                 $this->parameterContainer = $parameters;
                 $parameters = null;
@@ -266,8 +266,6 @@ class Statement implements StatementInterface, Profiler\ProfilerAwareInterface
 
     /**
      * Bind parameters from container
-     *
-     * @param ParameterContainer $pContainer
      */
     protected function bindParametersFromContainer()
     {

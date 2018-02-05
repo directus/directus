@@ -9,42 +9,38 @@
 
 namespace ZendTest\Db\Sql\Ddl\Column;
 
-class AbstractLengthColumnTest extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class AbstractLengthColumnTest extends TestCase
 {
     /**
-     * @covers Zend\Db\Sql\Ddl\Column\AbstractLengthColumn::setLength
+     * @covers \Zend\Db\Sql\Ddl\Column\AbstractLengthColumn::setLength
      */
     public function testSetLength()
     {
-        $column = $this->getMockForAbstractClass('Zend\Db\Sql\Ddl\Column\AbstractLengthColumn', [
-            'foo', 55
-        ]);
-        $this->assertEquals(55, $column->getLength());
-        $this->assertSame($column, $column->setLength(20));
-        $this->assertEquals(20, $column->getLength());
+        $column = $this->getMockForAbstractClass('Zend\Db\Sql\Ddl\Column\AbstractLengthColumn', ['foo', 55]);
+        self::assertEquals(55, $column->getLength());
+        self::assertSame($column, $column->setLength(20));
+        self::assertEquals(20, $column->getLength());
     }
 
     /**
-     * @covers Zend\Db\Sql\Ddl\Column\AbstractLengthColumn::getLength
+     * @covers \Zend\Db\Sql\Ddl\Column\AbstractLengthColumn::getLength
      */
     public function testGetLength()
     {
-        $column = $this->getMockForAbstractClass('Zend\Db\Sql\Ddl\Column\AbstractLengthColumn', [
-            'foo', 55
-        ]);
-        $this->assertEquals(55, $column->getLength());
+        $column = $this->getMockForAbstractClass('Zend\Db\Sql\Ddl\Column\AbstractLengthColumn', ['foo', 55]);
+        self::assertEquals(55, $column->getLength());
     }
 
     /**
-     * @covers Zend\Db\Sql\Ddl\Column\AbstractLengthColumn::getExpressionData
+     * @covers \Zend\Db\Sql\Ddl\Column\AbstractLengthColumn::getExpressionData
      */
     public function testGetExpressionData()
     {
-        $column = $this->getMockForAbstractClass('Zend\Db\Sql\Ddl\Column\AbstractLengthColumn', [
-            'foo', 4
-        ]);
+        $column = $this->getMockForAbstractClass('Zend\Db\Sql\Ddl\Column\AbstractLengthColumn', ['foo', 4]);
 
-        $this->assertEquals(
+        self::assertEquals(
             [['%s %s NOT NULL', ['foo', 'INTEGER(4)'], [$column::TYPE_IDENTIFIER, $column::TYPE_LITERAL]]],
             $column->getExpressionData()
         );

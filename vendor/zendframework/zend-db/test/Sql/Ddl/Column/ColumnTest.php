@@ -9,118 +9,123 @@
 
 namespace ZendTest\Db\Sql\Ddl\Column;
 
+use PHPUnit\Framework\TestCase;
 use Zend\Db\Sql\Ddl\Column\Column;
 
-class ColumnTest extends \PHPUnit_Framework_TestCase
+class ColumnTest extends TestCase
 {
     /**
-     * @covers Zend\Db\Sql\Ddl\Column\Column::setName
+     * @covers \Zend\Db\Sql\Ddl\Column\Column::setName
      */
     public function testSetName()
     {
         $column = new Column();
-        $this->assertSame($column, $column->setName('foo'));
+        self::assertSame($column, $column->setName('foo'));
         return $column;
     }
 
     /**
-     * @covers Zend\Db\Sql\Ddl\Column\Column::getName
+     * @covers \Zend\Db\Sql\Ddl\Column\Column::getName
      * @depends testSetName
      */
     public function testGetName(Column $column)
     {
-        $this->assertEquals('foo', $column->getName());
+        self::assertEquals('foo', $column->getName());
     }
 
     /**
-     * @covers Zend\Db\Sql\Ddl\Column\Column::setNullable
+     * @covers \Zend\Db\Sql\Ddl\Column\Column::setNullable
      */
     public function testSetNullable()
     {
         $column = new Column;
-        $this->assertSame($column, $column->setNullable(true));
+        self::assertSame($column, $column->setNullable(true));
         return $column;
     }
 
     /**
-     * @covers Zend\Db\Sql\Ddl\Column\Column::isNullable
+     * @covers \Zend\Db\Sql\Ddl\Column\Column::isNullable
      * @depends testSetNullable
      */
     public function testIsNullable(Column $column)
     {
-        $this->assertTrue($column->isNullable());
+        self::assertTrue($column->isNullable());
         $column->setNullable(false);
-        $this->assertFalse($column->isNullable());
+        self::assertFalse($column->isNullable());
     }
 
     /**
-     * @covers Zend\Db\Sql\Ddl\Column\Column::setDefault
+     * @covers \Zend\Db\Sql\Ddl\Column\Column::setDefault
      */
     public function testSetDefault()
     {
         $column = new Column;
-        $this->assertSame($column, $column->setDefault('foo bar'));
+        self::assertSame($column, $column->setDefault('foo bar'));
         return $column;
     }
 
     /**
-     * @covers Zend\Db\Sql\Ddl\Column\Column::getDefault
+     * @covers \Zend\Db\Sql\Ddl\Column\Column::getDefault
      * @depends testSetDefault
      */
     public function testGetDefault(Column $column)
     {
-        $this->assertEquals('foo bar', $column->getDefault());
+        self::assertEquals('foo bar', $column->getDefault());
     }
 
     /**
-     * @covers Zend\Db\Sql\Ddl\Column\Column::setOptions
+     * @covers \Zend\Db\Sql\Ddl\Column\Column::setOptions
      */
     public function testSetOptions()
     {
         $column = new Column;
-        $this->assertSame($column, $column->setOptions(['autoincrement' => true]));
+        self::assertSame($column, $column->setOptions(['autoincrement' => true]));
         return $column;
     }
 
     /**
-     * @covers Zend\Db\Sql\Ddl\Column\Column::setOption
+     * @covers \Zend\Db\Sql\Ddl\Column\Column::setOption
      */
     public function testSetOption()
     {
         $column = new Column;
-        $this->assertSame($column, $column->setOption('primary', true));
+        self::assertSame($column, $column->setOption('primary', true));
     }
 
     /**
-     * @covers Zend\Db\Sql\Ddl\Column\Column::getOptions
+     * @covers \Zend\Db\Sql\Ddl\Column\Column::getOptions
      * @depends testSetOptions
      */
     public function testGetOptions(Column $column)
     {
-        $this->assertEquals(['autoincrement' => true], $column->getOptions());
+        self::assertEquals(['autoincrement' => true], $column->getOptions());
     }
 
     /**
-     * @covers Zend\Db\Sql\Ddl\Column\Column::getExpressionData
+     * @covers \Zend\Db\Sql\Ddl\Column\Column::getExpressionData
      */
     public function testGetExpressionData()
     {
         $column = new Column;
         $column->setName('foo');
-        $this->assertEquals(
+        self::assertEquals(
             [['%s %s NOT NULL', ['foo', 'INTEGER'], [$column::TYPE_IDENTIFIER, $column::TYPE_LITERAL]]],
             $column->getExpressionData()
         );
 
         $column->setNullable(true);
-        $this->assertEquals(
+        self::assertEquals(
             [['%s %s', ['foo', 'INTEGER'], [$column::TYPE_IDENTIFIER, $column::TYPE_LITERAL]]],
             $column->getExpressionData()
         );
 
         $column->setDefault('bar');
-        $this->assertEquals(
-            [['%s %s DEFAULT %s', ['foo', 'INTEGER', 'bar'], [$column::TYPE_IDENTIFIER, $column::TYPE_LITERAL, $column::TYPE_VALUE]]],
+        self::assertEquals(
+            [[
+                '%s %s DEFAULT %s',
+                ['foo', 'INTEGER', 'bar'],
+                [$column::TYPE_IDENTIFIER, $column::TYPE_LITERAL, $column::TYPE_VALUE],
+            ]],
             $column->getExpressionData()
         );
     }

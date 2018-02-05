@@ -9,10 +9,12 @@
 
 namespace ZendTest\Db\Adapter\Platform;
 
+use PHPUnit\Framework\Error;
+use PHPUnit\Framework\TestCase;
 use Zend\Db\Adapter\Driver\Pdo\Pdo;
 use Zend\Db\Adapter\Platform\SqlServer;
 
-class SqlServerTest extends \PHPUnit_Framework_TestCase
+class SqlServerTest extends TestCase
 {
     /**
      * @var SqlServer
@@ -29,127 +31,150 @@ class SqlServerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Zend\Db\Adapter\Platform\SqlServer::getName
+     * @covers \Zend\Db\Adapter\Platform\SqlServer::getName
      */
     public function testGetName()
     {
-        $this->assertEquals('SQLServer', $this->platform->getName());
+        self::assertEquals('SQLServer', $this->platform->getName());
     }
 
     /**
-     * @covers Zend\Db\Adapter\Platform\SqlServer::getQuoteIdentifierSymbol
+     * @covers \Zend\Db\Adapter\Platform\SqlServer::getQuoteIdentifierSymbol
      */
     public function testGetQuoteIdentifierSymbol()
     {
-        $this->assertEquals(['[', ']'], $this->platform->getQuoteIdentifierSymbol());
+        self::assertEquals(['[', ']'], $this->platform->getQuoteIdentifierSymbol());
     }
 
     /**
-     * @covers Zend\Db\Adapter\Platform\SqlServer::quoteIdentifier
+     * @covers \Zend\Db\Adapter\Platform\SqlServer::quoteIdentifier
      */
     public function testQuoteIdentifier()
     {
-        $this->assertEquals('[identifier]', $this->platform->quoteIdentifier('identifier'));
+        self::assertEquals('[identifier]', $this->platform->quoteIdentifier('identifier'));
     }
 
     /**
-     * @covers Zend\Db\Adapter\Platform\SqlServer::quoteIdentifierChain
+     * @covers \Zend\Db\Adapter\Platform\SqlServer::quoteIdentifierChain
      */
     public function testQuoteIdentifierChain()
     {
-        $this->assertEquals('[identifier]', $this->platform->quoteIdentifierChain('identifier'));
-        $this->assertEquals('[identifier]', $this->platform->quoteIdentifierChain(['identifier']));
-        $this->assertEquals('[schema].[identifier]', $this->platform->quoteIdentifierChain(['schema', 'identifier']));
+        self::assertEquals('[identifier]', $this->platform->quoteIdentifierChain('identifier'));
+        self::assertEquals('[identifier]', $this->platform->quoteIdentifierChain(['identifier']));
+        self::assertEquals('[schema].[identifier]', $this->platform->quoteIdentifierChain(['schema', 'identifier']));
     }
 
     /**
-     * @covers Zend\Db\Adapter\Platform\SqlServer::getQuoteValueSymbol
+     * @covers \Zend\Db\Adapter\Platform\SqlServer::getQuoteValueSymbol
      */
     public function testGetQuoteValueSymbol()
     {
-        $this->assertEquals("'", $this->platform->getQuoteValueSymbol());
+        self::assertEquals("'", $this->platform->getQuoteValueSymbol());
     }
 
     /**
-     * @covers Zend\Db\Adapter\Platform\SqlServer::quoteValue
+     * @covers \Zend\Db\Adapter\Platform\SqlServer::quoteValue
      */
     public function testQuoteValueRaisesNoticeWithoutPlatformSupport()
     {
-        $this->setExpectedException(
-            'PHPUnit_Framework_Error_Notice',
-            'Attempting to quote a value in Zend\Db\Adapter\Platform\SqlServer without extension/driver support can introduce security vulnerabilities in a production environment'
+        $this->expectException(Error\Notice::class);
+        $this->expectExceptionMessage(
+            'Attempting to quote a value in Zend\Db\Adapter\Platform\SqlServer without extension/driver support can '
+            . 'introduce security vulnerabilities in a production environment'
         );
         $this->platform->quoteValue('value');
     }
 
     /**
-     * @covers Zend\Db\Adapter\Platform\SqlServer::quoteValue
+     * @covers \Zend\Db\Adapter\Platform\SqlServer::quoteValue
      */
     public function testQuoteValue()
     {
-        $this->assertEquals("'value'", @$this->platform->quoteValue('value'));
-        $this->assertEquals("'Foo O''Bar'", @$this->platform->quoteValue("Foo O'Bar"));
-        $this->assertEquals("'''; DELETE FROM some_table; -- '", @$this->platform->quoteValue('\'; DELETE FROM some_table; -- '));
-        $this->assertEquals("'\\''; DELETE FROM some_table; -- '", @$this->platform->quoteValue('\\\'; DELETE FROM some_table; -- '));
+        self::assertEquals("'value'", @$this->platform->quoteValue('value'));
+        self::assertEquals("'Foo O''Bar'", @$this->platform->quoteValue("Foo O'Bar"));
+        self::assertEquals(
+            "'''; DELETE FROM some_table; -- '",
+            @$this->platform->quoteValue('\'; DELETE FROM some_table; -- ')
+        );
+        self::assertEquals(
+            "'\\''; DELETE FROM some_table; -- '",
+            @$this->platform->quoteValue('\\\'; DELETE FROM some_table; -- ')
+        );
     }
 
     /**
-     * @covers Zend\Db\Adapter\Platform\SqlServer::quoteTrustedValue
+     * @covers \Zend\Db\Adapter\Platform\SqlServer::quoteTrustedValue
      */
     public function testQuoteTrustedValue()
     {
-        $this->assertEquals("'value'", $this->platform->quoteTrustedValue('value'));
-        $this->assertEquals("'Foo O''Bar'", $this->platform->quoteTrustedValue("Foo O'Bar"));
-        $this->assertEquals("'''; DELETE FROM some_table; -- '", $this->platform->quoteTrustedValue('\'; DELETE FROM some_table; -- '));
-        $this->assertEquals("'\\''; DELETE FROM some_table; -- '", $this->platform->quoteTrustedValue('\\\'; DELETE FROM some_table; -- '));
+        self::assertEquals("'value'", $this->platform->quoteTrustedValue('value'));
+        self::assertEquals("'Foo O''Bar'", $this->platform->quoteTrustedValue("Foo O'Bar"));
+        self::assertEquals(
+            "'''; DELETE FROM some_table; -- '",
+            $this->platform->quoteTrustedValue('\'; DELETE FROM some_table; -- ')
+        );
+        self::assertEquals(
+            "'\\''; DELETE FROM some_table; -- '",
+            $this->platform->quoteTrustedValue('\\\'; DELETE FROM some_table; -- ')
+        );
     }
 
     /**
-     * @covers Zend\Db\Adapter\Platform\SqlServer::quoteValueList
+     * @covers \Zend\Db\Adapter\Platform\SqlServer::quoteValueList
      */
     public function testQuoteValueList()
     {
-        $this->setExpectedException(
-            'PHPUnit_Framework_Error',
-            'Attempting to quote a value in Zend\Db\Adapter\Platform\SqlServer without extension/driver support can introduce security vulnerabilities in a production environment'
+        $this->expectException(Error\Error::class);
+        $this->expectExceptionMessage(
+            'Attempting to quote a value in Zend\Db\Adapter\Platform\SqlServer without extension/driver support can '
+            . 'introduce security vulnerabilities in a production environment'
         );
-        $this->assertEquals("'Foo O''Bar'", $this->platform->quoteValueList("Foo O'Bar"));
+        self::assertEquals("'Foo O''Bar'", $this->platform->quoteValueList("Foo O'Bar"));
     }
 
     /**
-     * @covers Zend\Db\Adapter\Platform\SqlServer::getIdentifierSeparator
+     * @covers \Zend\Db\Adapter\Platform\SqlServer::getIdentifierSeparator
      */
     public function testGetIdentifierSeparator()
     {
-        $this->assertEquals('.', $this->platform->getIdentifierSeparator());
+        self::assertEquals('.', $this->platform->getIdentifierSeparator());
     }
 
     /**
-     * @covers Zend\Db\Adapter\Platform\SqlServer::quoteIdentifierInFragment
+     * @covers \Zend\Db\Adapter\Platform\SqlServer::quoteIdentifierInFragment
      */
     public function testQuoteIdentifierInFragment()
     {
-        $this->assertEquals('[foo].[bar]', $this->platform->quoteIdentifierInFragment('foo.bar'));
-        $this->assertEquals('[foo] as [bar]', $this->platform->quoteIdentifierInFragment('foo as bar'));
+        self::assertEquals('[foo].[bar]', $this->platform->quoteIdentifierInFragment('foo.bar'));
+        self::assertEquals('[foo] as [bar]', $this->platform->quoteIdentifierInFragment('foo as bar'));
 
         // single char words
-        $this->assertEquals('([foo].[bar] = [boo].[baz])', $this->platform->quoteIdentifierInFragment('(foo.bar = boo.baz)', ['(', ')', '=']));
+        self::assertEquals(
+            '([foo].[bar] = [boo].[baz])',
+            $this->platform->quoteIdentifierInFragment('(foo.bar = boo.baz)', ['(', ')', '='])
+        );
 
         // case insensitive safe words
-        $this->assertEquals(
+        self::assertEquals(
             '([foo].[bar] = [boo].[baz]) AND ([foo].[baz] = [boo].[baz])',
-            $this->platform->quoteIdentifierInFragment('(foo.bar = boo.baz) AND (foo.baz = boo.baz)', ['(', ')', '=', 'and'])
+            $this->platform->quoteIdentifierInFragment(
+                '(foo.bar = boo.baz) AND (foo.baz = boo.baz)',
+                ['(', ')', '=', 'and']
+            )
         );
 
         // case insensitive safe words in field
-        $this->assertEquals(
+        self::assertEquals(
             '([foo].[bar] = [boo].baz) AND ([foo].baz = [boo].baz)',
-            $this->platform->quoteIdentifierInFragment('(foo.bar = boo.baz) AND (foo.baz = boo.baz)', ['(', ')', '=', 'and', 'bAz'])
+            $this->platform->quoteIdentifierInFragment(
+                '(foo.bar = boo.baz) AND (foo.baz = boo.baz)',
+                ['(', ')', '=', 'and', 'bAz']
+            )
         );
     }
 
     /**
-     * @covers Zend\Db\Adapter\Platform\SqlServer::setDriver
+     * @covers \Zend\Db\Adapter\Platform\SqlServer::setDriver
      */
     public function testSetDriver()
     {
@@ -159,10 +184,11 @@ class SqlServerTest extends \PHPUnit_Framework_TestCase
 
     public function testPlatformQuotesNullByteCharacter()
     {
-        set_error_handler(function () {});
+        set_error_handler(function () {
+        });
         $string = "1\0";
         $value = $this->platform->quoteValue($string);
         restore_error_handler();
-        $this->assertEquals("'1\\000'", $value);
+        self::assertEquals("'1\\000'", $value);
     }
 }

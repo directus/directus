@@ -9,12 +9,13 @@
 
 namespace ZendTest\Db\ResultSet;
 
+use PHPUnit\Framework\TestCase;
 use Zend\Db\ResultSet\HydratingResultSet;
 
-class HydratingResultSetIntegrationTest extends \PHPUnit_Framework_TestCase
+class HydratingResultSetIntegrationTest extends TestCase
 {
     /**
-     * @covers Zend\Db\ResultSet\HydratingResultSet::current
+     * @covers \Zend\Db\ResultSet\HydratingResultSet::current
      */
     public function testCurrentWillReturnBufferedRow()
     {
@@ -27,6 +28,6 @@ class HydratingResultSetIntegrationTest extends \PHPUnit_Framework_TestCase
         $obj1 = $hydratingRs->current();
         $hydratingRs->rewind();
         $obj2 = $hydratingRs->current();
-        $this->assertSame($obj1, $obj2);
+        self::assertSame($obj1, $obj2);
     }
 }

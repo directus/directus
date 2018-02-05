@@ -2,96 +2,82 @@ sudo: false
 
 language: php
 
-branches:
-  except:
-    - /^release-\d+\.\d+\.\d+.*$/
-    - /^ghgfk-.*$/
-
 cache:
   directories:
     - $HOME/.composer/cache
-    - $HOME/.local
-    - zf-mkdoc-theme
 
 env:
   global:
+    - COMPOSER_ARGS="--no-interaction"
+    - COVERAGE_DEPS="satooshi/php-coveralls"
     - TESTS_ZEND_DB_ADAPTER_DRIVER_MYSQL_HOSTNAME=localhost
+    - TESTS_ZEND_DB_ADAPTER_DRIVER_MYSQL_PASSWORD=
     - TESTS_ZEND_DB_ADAPTER_DRIVER_PGSQL_HOSTNAME=localhost
-    - SITE_URL: https://zendframework.github.io/zend-db
-    - GH_USER_NAME: "Matthew Weier O'Phinney"
-    - GH_USER_EMAIL: matthew@weierophinney.net
-    - GH_REF: github.com/zendframework/zend-db.git
-    - secure: "L1Tnu2NIZpYU/P2JvOQAyOjAR8X52yVxW18b6x0qxT8d3LxHpunCFHwI6VV5D4llKJCRwyGdgKsVKNfroE/+368P2LQ71m6REzWGpW6q4uRQKdNhy2yjyDRKr5dPow+mEYKgGP8jbcmI6rxVDFpJTtPMTn/6PTmKmiaF6H0GCUFohy5tuGWkoujwkY8T3UjoRHqFv86L47P+UXlj5KmnYPYKTuNsiQNHJcpI21uA5UIBeGlazUJdi3a2UmRktg1SbAJcPcr87WxWd2Xe29ZaQLmpS93cCgq3e7skfWWptjEzp4Sr+mql67ZOO13wgNHK+K6uA2jvtdes+TrUA9+XeONZ3JGoQGCcpGl+j78Oi8Zt8jrz2+shQip7RvnT1grX6WKquhtsGR9woFsEh4WGbE+4B53fTVUDWuOdn5ywBjR1fJd90GbwMuq6fjB4m+LRL7dfc9Wap/zFPzn6k9YsdAAZHJfgT1inK+xp7g4QypVFgpjm5OVbipbtt+N/Ag8bySYB9ykIjD/1xmfdLy/HOyQobi+jQX8ktxgFfQrWb6N8ZuJNzC6D1t8opzdFl5Gzd8PKAieArkXmtnr2BGTdzDPmbsJWoHZ2XGldWtqcr7yYOfyXd7+szlGae1w62kxy0k293EleheXScSn3mc5RLChj/IF5RpebIc31nDU6DQs="
 
 matrix:
-  fast_finish: true
   include:
-    - php: 5.5
-      env:
-        - EXECUTE_CS_CHECK=true
-    - php: 5.5
-      env:
-        - EVENT_MANAGER_VERSION:'^2.6.2'
-        - HYDRATOR_VERSION='^1.1'
-        - SERVICE_MANAGER_VERSION='^2.7.5'
     - php: 5.6
       env:
-        - EXECUTE_TEST_COVERALLS=true
-        - DEPLOY_DOCS="$(if [[ $TRAVIS_BRANCH == 'master' && $TRAVIS_PULL_REQUEST == 'false' ]]; then echo -n 'true' ; else echo -n 'false' ; fi)"
-        - PATH="$HOME/.local/bin:$PATH"
+        - DEPS=lowest
     - php: 5.6
       env:
-        - EVENT_MANAGER_VERSION='^2.6.2'
-        - HYDRATOR_VERSION='^1.1'
-        - SERVICE_MANAGER_VERSION='^2.7.5'
-    - php: 7
-    - php: 7
+        - DEPS=locked
+        - LEGACY_DEPS="phpunit/phpunit"
+    - php: 5.6
       env:
-        - EVENT_MANAGER_VERSION='^2.6.2'
-        - HYDRATOR_VERSION='^1.1'
-        - SERVICE_MANAGER_VERSION='^2.7.5'
-    - php: hhvm
-    - php: hhvm
+        - DEPS=latest
+    - php: 7.0
       env:
-        - EVENT_MANAGER_VERSION='^2.6.2'
-        - HYDRATOR_VERSION='^1.1'
-        - SERVICE_MANAGER_VERSION='^2.7.5'
-  allow_failures:
-    - php: hhvm
-
-notifications:
-  irc: "irc.freenode.org#zftalk.dev"
-  email: false
+        - DEPS=lowest
+    - php: 7.0
+      env:
+        - DEPS=locked
+        - LEGACY_DEPS="phpunit/phpunit"
+    - php: 7.0
+      env:
+        - DEPS=latest
+    - php: 7.1
+      env:
+        - DEPS=lowest
+    - php: 7.1
+      env:
+        - DEPS=locked
+        - CS_CHECK=true
+        - TEST_COVERAGE=true
+    - php: 7.1
+      env:
+        - DEPS=latest
+    - php: 7.2
+      env:
+        - DEPS=lowest
+    - php: 7.2
+      env:
+        - DEPS=locked
+    - php: 7.2
+      env:
+        - DEPS=latest
 
 before_install:
-  - if [[ $EXECUTE_TEST_COVERALLS != 'true' ]]; then phpenv config-rm xdebug.ini || return 0 ; fi
-  - composer self-update
-  - if [[ $EXECUTE_TEST_COVERALLS == 'true' ]]; then composer require --dev --no-update satooshi/php-coveralls ; fi
-  - if [[ $EVENT_MANAGER_VERSION != '' ]]; then composer require --dev --no-update "zendframework/zend-eventmanager:$EVENT_MANAGER_VERSION" ; fi
-  - if [[ $EVENT_MANAGER_VERSION == '' ]]; then composer require --dev --no-update "zendframework/zend-eventmanager:^3.0" ; fi
-  - if [[ $HYDRATOR_VERSION != '' ]]; then composer require --no-update "zendframework/zend-stdlib:^2.7" ; fi
-  - if [[ $HYDRATOR_VERSION != '' ]]; then composer require --dev --no-update "zendframework/zend-hydrator:$HYDRATOR_VERSION" ; fi
-  - if [[ $HYDRATOR_VERSION == '' ]]; then composer require --dev --no-update "zendframework/zend-hydrator:^2.1" ; fi
-  - if [[ $SERVICE_MANAGER_VERSION != '' ]]; then composer require --dev --no-update "zendframework/zend-servicemanager:$SERVICE_MANAGER_VERSION" ; fi
-  - if [[ $SERVICE_MANAGER_VERSION == '' ]]; then composer require --dev --no-update "zendframework/zend-servicemanager:^3.0.3" ; fi
-  - echo "composer.json to install:"
-  - cat composer.json
+  - if [[ $TEST_COVERAGE != 'true' ]]; then phpenv config-rm xdebug.ini || return 0 ; fi
 
 install:
-  - travis_retry composer install --no-interaction --ignore-platform-reqs
+  - travis_retry composer install $COMPOSER_ARGS --ignore-platform-reqs
+  - if [[ $LEGACY_DEPS != '' ]]; then travis_retry composer update $COMPOSER_ARGS --with-dependencies $LEGACY_DEPS ; fi
+  - if [[ $DEPS == 'latest' ]]; then travis_retry composer update $COMPOSER_ARGS ; fi
+  - if [[ $DEPS == 'lowest' ]]; then travis_retry composer update --prefer-lowest --prefer-stable $COMPOSER_ARGS ; fi
+  - if [[ $TEST_COVERAGE == 'true' ]]; then travis_retry composer require --dev $COMPOSER_ARGS $COVERAGE_DEPS ; fi
+  - stty cols 120 && composer show
 
 before_script:
-  - .ci/mysql_fixtures.sh
+  - .ci/mysql_fixtures_travis.sh
   - .ci/pgsql_fixtures.sh
 
 script:
-  - if [[ $EXECUTE_TEST_COVERALLS == 'true' ]]; then ./vendor/bin/phpunit --coverage-clover clover.xml ; fi
-  - if [[ $EXECUTE_TEST_COVERALLS != 'true' ]]; then ./vendor/bin/phpunit ; fi
-  - if [[ $EXECUTE_CS_CHECK == 'true' ]]; then ./vendor/bin/php-cs-fixer fix -v --diff --dry-run ; fi
-  - if [[ $DEPLOY_DOCS == "true" && "$TRAVIS_TEST_RESULT" == "0" ]]; then wget -O theme-installer.sh "https://raw.githubusercontent.com/zendframework/zf-mkdoc-theme/master/theme-installer.sh" ; chmod 755 theme-installer.sh ; ./theme-installer.sh ; fi
-
-after_success:
-  - if [[ $DEPLOY_DOCS == "true" ]]; then echo "Preparing to build and deploy documentation" ; ./zf-mkdoc-theme/deploy.sh ; echo "Completed deploying documentation" ; fi
+  - if [[ $TEST_COVERAGE == 'true' ]]; then composer test-coverage ; else composer test ; fi
+  - if [[ $CS_CHECK == 'true' ]]; then composer cs-check ; fi
 
 after_script:
-  - if [[ $EXECUTE_TEST_COVERALLS == 'true' ]]; then ./vendor/bin/coveralls ; fi
+  - if [[ $TEST_COVERAGE == 'true' ]]; then composer upload-coverage ; fi
+
+notifications:
+  email: false

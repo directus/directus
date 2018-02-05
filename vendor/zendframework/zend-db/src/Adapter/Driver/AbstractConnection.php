@@ -93,7 +93,7 @@ abstract class AbstractConnection implements ConnectionInterface, ProfilerAwareI
      */
     public function getResource()
     {
-        if (!$this->isConnected()) {
+        if (! $this->isConnected()) {
             $this->connect();
         }
 
@@ -112,7 +112,7 @@ abstract class AbstractConnection implements ConnectionInterface, ProfilerAwareI
 
     /**
      * @param  array $connectionParameters
-     * @return self
+     * @return self Provides a fluent interface
      */
     public function setConnectionParameters(array $connectionParameters)
     {
@@ -124,7 +124,7 @@ abstract class AbstractConnection implements ConnectionInterface, ProfilerAwareI
     /**
      * {@inheritDoc}
      *
-     * @return self
+     * @return self Provides a fluent interface
      */
     public function setProfiler(ProfilerInterface $profiler)
     {

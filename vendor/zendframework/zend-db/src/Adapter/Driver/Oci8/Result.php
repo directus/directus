@@ -64,11 +64,11 @@ class Result implements Iterator, ResultInterface
      * @param resource $resource
      * @param null|int $generatedValue
      * @param null|int $rowCount
-     * @return Result
+     * @return self Provides a fluent interface
      */
     public function initialize($resource, $generatedValue = null, $rowCount = null)
     {
-        if (!is_resource($resource) && get_resource_type($resource) !== 'oci8 statement') {
+        if (! is_resource($resource) && get_resource_type($resource) !== 'oci8 statement') {
             throw new Exception\InvalidArgumentException('Invalid resource provided.');
         }
         $this->resource = $resource;

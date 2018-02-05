@@ -62,6 +62,45 @@ $adapter = new Zend\Db\Adapter\Adapter([
 ]);
 ```
 
+Another example, of an IBM i DB2 connection via IbmDb2:
+
+```php
+$adapter = new Zend\Db\Adapter\Adapter([
+    'database' => '*LOCAL', // or name from WRKRDBDIRE, may be serial #
+    'driver' => 'IbmDb2',
+    'driver_options' => [
+        'autocommit' => DB2_AUTOCOMMIT_ON,
+        'i5_naming' => DB2_I5_NAMING_ON,
+        'i5_libl' => 'SCHEMA1 SCHEMA2 SCHEMA3',
+    ],
+    'username' => '__USER__',
+    'password' => '__PASS__',
+    // 'persistent' => true,
+    'platform' => 'IbmDb2',
+    'platform_options' => ['quote_identifiers' => false],
+]);
+```
+
+Another example, of an IBM i DB2 connection via PDO:
+
+```php
+$adapter = new Zend\Db\Adapter\Adapter([
+    'dsn' => 'ibm:DB_NAME', // DB_NAME is from WRKRDBDIRE, may be serial #
+    'driver' => 'pdo',
+    'driver_options' => [
+        // PDO::ATTR_PERSISTENT => true,
+        PDO::ATTR_AUTOCOMMIT => true,
+        PDO::I5_ATTR_DBC_SYS_NAMING => true,
+        PDO::I5_ATTR_DBC_CURLIB => '',
+        PDO::I5_ATTR_DBC_LIBL => 'SCHEMA1 SCHEMA2 SCHEMA3',
+    ],
+    'username' => '__USER__',
+    'password' => '__PASS__',
+    'platform' => 'IbmDb2',
+    'platform_options' => ['quote_identifiers' => false],
+]);
+```
+
 It is important to know that by using this style of adapter creation, the
 `Adapter` will attempt to create any dependencies that were not explicitly
 provided. A `Driver` object will be created from the configuration array
@@ -72,7 +111,7 @@ this, see the next section.
 
 The list of officially supported drivers:
 
-- `IbmDb2`: The ext/ibm_db2 deriver
+- `IbmDb2`: The ext/ibm_db2 driver
 - `Mysqli`: The ext/mysqli driver
 - `Oci8`: The ext/oci8 driver
 - `Pgsql`: The ext/pgsql driver
@@ -358,32 +397,32 @@ use Iterator;
 class ParameterContainer implements Iterator, ArrayAccess, Countable
 {
     public function __construct(array $data = [])
-    
+
     /** methods to interact with values */
     public function offsetExists(string|int $name) : bool;
     public function offsetGet(string|int $name) : mixed;
     public function offsetSetReference(string|int $name, string|int $from) : void;
     public function offsetSet(string|int $name, mixed $value, mixed $errata = null, int $maxLength = null) : void;
     public function offsetUnset(string|int $name) : void;
-    
+
     /** set values from array (will reset first) */
     public function setFromArray(array $data) : ParameterContainer;
-    
+
     /** methods to interact with value errata */
     public function offsetSetErrata(string|int $name, mixed $errata) : void;
     public function offsetGetErrata(string|int $name) : mixed;
     public function offsetHasErrata(string|int $name) : bool;
     public function offsetUnsetErrata(string|int $name) : void;
-    
+
     /** errata only iterator */
     public function getErrataIterator() : ArrayIterator;
-    
+
     /** get array with named keys */
     public function getNamedArray() : array;
-    
+
     /** get array with int keys, ordered by position */
     public function getPositionalArray() : array;
-    
+
     /** iterator: */
     public function count() : int;
     public function current() : mixed;
@@ -391,7 +430,7 @@ class ParameterContainer implements Iterator, ArrayAccess, Countable
     public function key() : string|int;
     public function valid() : bool;
     public function rewind() : void;
-    
+
     /** merge existing array of parameters with existing parameters */
     public function merge(array $parameters) : ParameterContainer;
 }

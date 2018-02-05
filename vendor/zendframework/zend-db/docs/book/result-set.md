@@ -7,7 +7,7 @@ can be anything that is iterable, generally these will be populated from
 
 Result sets must implement the `Zend\Db\ResultSet\ResultSetInterface`, and all
 sub-components of zend-db that return a result set as part of their API will
-assume an instance of a `ResultSetInterface` should be returned. In most casts,
+assume an instance of a `ResultSetInterface` should be returned. In most cases,
 the prototype pattern will be used by consuming object to clone a prototype of
 a `ResultSet` and return a specialized `ResultSet` with a specific data source
 injected. `ResultSetInterface` is defined as follows:
@@ -95,7 +95,7 @@ for each row. The `HydratingResultSet` will then hydrate that clone with the
 row data.
 
 The `HydratingResultSet` depends on
-[zend-hydrator](https://zendframework.github.io/zend-hydrator), which you will
+[zend-hydrator](https://docs.zendframework.com/zend-hydrator), which you will
 need to install:
 
 ```bash
@@ -152,6 +152,6 @@ if ($result instanceof ResultInterface && $result->isQueryResult()) {
 }
 ```
 
-For more information, see the [zend-hydrator](https://zendframework.github.io/zend-hydrator/)
+For more information, see the [zend-hydrator](https://docs.zendframework.com/zend-hydrator/)
 documentation to get a better sense of the different strategies that can be
 employed in order to populate a target object.

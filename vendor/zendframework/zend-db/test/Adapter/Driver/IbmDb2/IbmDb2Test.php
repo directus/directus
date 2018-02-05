@@ -9,14 +9,15 @@
 
 namespace ZendTest\Db\Adapter\Driver\IbmDb2;
 
+use PHPUnit\Framework\TestCase;
 use Zend\Db\Adapter\Driver\IbmDb2\IbmDb2;
 
-class IbmDb2Test extends \PHPUnit_Framework_TestCase
+class IbmDb2Test extends TestCase
 {
     /**
      * @var IbmDb2
      */
-    protected $ibmdb2 = null;
+    protected $ibmdb2;
 
     /**
      * Sets up the fixture, for example, opens a network connection.
@@ -28,59 +29,83 @@ class IbmDb2Test extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Zend\Db\Adapter\Driver\IbmDb2\IbmDb2::registerConnection
+     * @covers \Zend\Db\Adapter\Driver\IbmDb2\IbmDb2::registerConnection
      */
     public function testRegisterConnection()
     {
-        $mockConnection = $this->getMockForAbstractClass('Zend\Db\Adapter\Driver\IbmDb2\Connection', [[]], '', true, true, true, ['setDriver']);
+        $mockConnection = $this->getMockForAbstractClass(
+            'Zend\Db\Adapter\Driver\IbmDb2\Connection',
+            [[]],
+            '',
+            true,
+            true,
+            true,
+            ['setDriver']
+        );
         $mockConnection->expects($this->once())->method('setDriver')->with($this->equalTo($this->ibmdb2));
-        $this->assertSame($this->ibmdb2, $this->ibmdb2->registerConnection($mockConnection));
+        self::assertSame($this->ibmdb2, $this->ibmdb2->registerConnection($mockConnection));
     }
 
     /**
-     * @covers Zend\Db\Adapter\Driver\IbmDb2\IbmDb2::registerStatementPrototype
+     * @covers \Zend\Db\Adapter\Driver\IbmDb2\IbmDb2::registerStatementPrototype
      */
     public function testRegisterStatementPrototype()
     {
         $this->ibmdb2 = new IbmDb2([]);
-        $mockStatement = $this->getMockForAbstractClass('Zend\Db\Adapter\Driver\IbmDb2\Statement', [], '', true, true, true, ['setDriver']);
+        $mockStatement = $this->getMockForAbstractClass(
+            'Zend\Db\Adapter\Driver\IbmDb2\Statement',
+            [],
+            '',
+            true,
+            true,
+            true,
+            ['setDriver']
+        );
         $mockStatement->expects($this->once())->method('setDriver')->with($this->equalTo($this->ibmdb2));
-        $this->assertSame($this->ibmdb2, $this->ibmdb2->registerStatementPrototype($mockStatement));
+        self::assertSame($this->ibmdb2, $this->ibmdb2->registerStatementPrototype($mockStatement));
     }
 
     /**
-     * @covers Zend\Db\Adapter\Driver\IbmDb2\IbmDb2::registerResultPrototype
+     * @covers \Zend\Db\Adapter\Driver\IbmDb2\IbmDb2::registerResultPrototype
      */
     public function testRegisterResultPrototype()
     {
         $this->ibmdb2 = new IbmDb2([]);
-        $mockStatement = $this->getMockForAbstractClass('Zend\Db\Adapter\Driver\IbmDb2\Result', [], '', true, true, true, ['setDriver']);
-        $this->assertSame($this->ibmdb2, $this->ibmdb2->registerResultPrototype($mockStatement));
+        $mockStatement = $this->getMockForAbstractClass(
+            'Zend\Db\Adapter\Driver\IbmDb2\Result',
+            [],
+            '',
+            true,
+            true,
+            true,
+            ['setDriver']
+        );
+        self::assertSame($this->ibmdb2, $this->ibmdb2->registerResultPrototype($mockStatement));
     }
 
     /**
-     * @covers Zend\Db\Adapter\Driver\IbmDb2\IbmDb2::getDatabasePlatformName
+     * @covers \Zend\Db\Adapter\Driver\IbmDb2\IbmDb2::getDatabasePlatformName
      */
     public function testGetDatabasePlatformName()
     {
         $this->ibmdb2 = new IbmDb2([]);
-        $this->assertEquals('IbmDb2', $this->ibmdb2->getDatabasePlatformName());
-        $this->assertEquals('IBM DB2', $this->ibmdb2->getDatabasePlatformName(IbmDb2::NAME_FORMAT_NATURAL));
+        self::assertEquals('IbmDb2', $this->ibmdb2->getDatabasePlatformName());
+        self::assertEquals('IBM DB2', $this->ibmdb2->getDatabasePlatformName(IbmDb2::NAME_FORMAT_NATURAL));
     }
 
     /**
      * @depends testRegisterConnection
-     * @covers Zend\Db\Adapter\Driver\IbmDb2\IbmDb2::getConnection
+     * @covers \Zend\Db\Adapter\Driver\IbmDb2\IbmDb2::getConnection
      */
     public function testGetConnection($mockConnection)
     {
         $conn = new \Zend\Db\Adapter\Driver\IbmDb2\Connection([]);
         $this->ibmdb2->registerConnection($conn);
-        $this->assertSame($conn, $this->ibmdb2->getConnection());
+        self::assertSame($conn, $this->ibmdb2->getConnection());
     }
 
     /**
-     * @covers Zend\Db\Adapter\Driver\IbmDb2\IbmDb2::createStatement
+     * @covers \Zend\Db\Adapter\Driver\IbmDb2\IbmDb2::createStatement
      * @todo   Implement testGetPrepareType().
      */
     public function testCreateStatement()
@@ -92,7 +117,7 @@ class IbmDb2Test extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Zend\Db\Adapter\Driver\IbmDb2\IbmDb2::createResult
+     * @covers \Zend\Db\Adapter\Driver\IbmDb2\IbmDb2::createResult
      * @todo   Implement testGetPrepareType().
      */
     public function testCreateResult()
@@ -104,38 +129,38 @@ class IbmDb2Test extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Zend\Db\Adapter\Driver\IbmDb2\IbmDb2::getPrepareType
+     * @covers \Zend\Db\Adapter\Driver\IbmDb2\IbmDb2::getPrepareType
      * @todo   Implement testGetPrepareType().
      */
     public function testGetPrepareType()
     {
         // Remove the following lines when you implement this test.
         $this->markTestIncomplete(
-          'This test has not been implemented yet.'
+            'This test has not been implemented yet.'
         );
     }
 
     /**
-     * @covers Zend\Db\Adapter\Driver\IbmDb2\IbmDb2::formatParameterName
+     * @covers \Zend\Db\Adapter\Driver\IbmDb2\IbmDb2::formatParameterName
      * @todo   Implement testFormatParameterName().
      */
     public function testFormatParameterName()
     {
         // Remove the following lines when you implement this test.
         $this->markTestIncomplete(
-          'This test has not been implemented yet.'
+            'This test has not been implemented yet.'
         );
     }
 
     /**
-     * @covers Zend\Db\Adapter\Driver\IbmDb2\IbmDb2::getLastGeneratedValue
+     * @covers \Zend\Db\Adapter\Driver\IbmDb2\IbmDb2::getLastGeneratedValue
      * @todo   Implement testGetLastGeneratedValue().
      */
     public function testGetLastGeneratedValue()
     {
         // Remove the following lines when you implement this test.
         $this->markTestIncomplete(
-          'This test has not been implemented yet.'
+            'This test has not been implemented yet.'
         );
     }
 }

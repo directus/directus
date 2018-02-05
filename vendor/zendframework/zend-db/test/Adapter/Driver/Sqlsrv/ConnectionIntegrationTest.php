@@ -9,8 +9,8 @@
 
 namespace ZendTest\Db\Adapter\Driver\Sqlsrv;
 
-use Zend\Db\Adapter\Driver\Sqlsrv\Sqlsrv;
 use Zend\Db\Adapter\Driver\Sqlsrv\Connection;
+use Zend\Db\Adapter\Driver\Sqlsrv\Sqlsrv;
 
 /**
  * @group integration
@@ -19,27 +19,28 @@ use Zend\Db\Adapter\Driver\Sqlsrv\Connection;
 class ConnectionIntegrationTest extends AbstractIntegrationTest
 {
     /**
-     * @covers Zend\Db\Adapter\Driver\Sqlsrv\Connection::getCurrentSchema
+     * @covers \Zend\Db\Adapter\Driver\Sqlsrv\Connection::getCurrentSchema
      */
     public function testGetCurrentSchema()
     {
         $connection = new Connection($this->variables);
-        $this->assertInternalType('string', $connection->getCurrentSchema());
+        self::assertInternalType('string', $connection->getCurrentSchema());
     }
 
     /**
-     * @covers Zend\Db\Adapter\Driver\Sqlsrv\Connection::setResource
+     * @covers \Zend\Db\Adapter\Driver\Sqlsrv\Connection::setResource
      */
     public function testSetResource()
     {
         $resource = sqlsrv_connect(
-            $this->variables['hostname'], [
+            $this->variables['hostname'],
+            [
                 'UID' => $this->variables['username'],
-                'PWD' => $this->variables['password']
+                'PWD' => $this->variables['password'],
             ]
         );
         $connection = new Connection([]);
-        $this->assertSame($connection, $connection->setResource($resource));
+        self::assertSame($connection, $connection->setResource($resource));
 
         $connection->disconnect();
         unset($connection);
@@ -47,59 +48,59 @@ class ConnectionIntegrationTest extends AbstractIntegrationTest
     }
 
     /**
-     * @covers Zend\Db\Adapter\Driver\Sqlsrv\Connection::getResource
+     * @covers \Zend\Db\Adapter\Driver\Sqlsrv\Connection::getResource
      */
     public function testGetResource()
     {
         $connection = new Connection($this->variables);
         $connection->connect();
-        $this->assertInternalType('resource', $connection->getResource());
+        self::assertInternalType('resource', $connection->getResource());
 
         $connection->disconnect();
         unset($connection);
     }
 
     /**
-     * @covers Zend\Db\Adapter\Driver\Sqlsrv\Connection::connect
+     * @covers \Zend\Db\Adapter\Driver\Sqlsrv\Connection::connect
      */
     public function testConnect()
     {
         $connection = new Connection($this->variables);
-        $this->assertSame($connection, $connection->connect());
-        $this->assertTrue($connection->isConnected());
+        self::assertSame($connection, $connection->connect());
+        self::assertTrue($connection->isConnected());
 
         $connection->disconnect();
         unset($connection);
     }
 
     /**
-     * @covers Zend\Db\Adapter\Driver\Sqlsrv\Connection::isConnected
+     * @covers \Zend\Db\Adapter\Driver\Sqlsrv\Connection::isConnected
      */
     public function testIsConnected()
     {
         $connection = new Connection($this->variables);
-        $this->assertFalse($connection->isConnected());
-        $this->assertSame($connection, $connection->connect());
-        $this->assertTrue($connection->isConnected());
+        self::assertFalse($connection->isConnected());
+        self::assertSame($connection, $connection->connect());
+        self::assertTrue($connection->isConnected());
 
         $connection->disconnect();
         unset($connection);
     }
 
     /**
-     * @covers Zend\Db\Adapter\Driver\Sqlsrv\Connection::disconnect
+     * @covers \Zend\Db\Adapter\Driver\Sqlsrv\Connection::disconnect
      */
     public function testDisconnect()
     {
         $connection = new Connection($this->variables);
         $connection->connect();
-        $this->assertTrue($connection->isConnected());
+        self::assertTrue($connection->isConnected());
         $connection->disconnect();
-        $this->assertFalse($connection->isConnected());
+        self::assertFalse($connection->isConnected());
     }
 
     /**
-     * @covers Zend\Db\Adapter\Driver\Sqlsrv\Connection::beginTransaction
+     * @covers \Zend\Db\Adapter\Driver\Sqlsrv\Connection::beginTransaction
      * @todo   Implement testBeginTransaction().
      */
     public function testBeginTransaction()
@@ -111,7 +112,7 @@ class ConnectionIntegrationTest extends AbstractIntegrationTest
     }
 
     /**
-     * @covers Zend\Db\Adapter\Driver\Sqlsrv\Connection::commit
+     * @covers \Zend\Db\Adapter\Driver\Sqlsrv\Connection::commit
      * @todo   Implement testCommit().
      */
     public function testCommit()
@@ -123,7 +124,7 @@ class ConnectionIntegrationTest extends AbstractIntegrationTest
     }
 
     /**
-     * @covers Zend\Db\Adapter\Driver\Sqlsrv\Connection::rollback
+     * @covers \Zend\Db\Adapter\Driver\Sqlsrv\Connection::rollback
      * @todo   Implement testRollback().
      */
     public function testRollback()
@@ -135,7 +136,7 @@ class ConnectionIntegrationTest extends AbstractIntegrationTest
     }
 
     /**
-     * @covers Zend\Db\Adapter\Driver\Sqlsrv\Connection::execute
+     * @covers \Zend\Db\Adapter\Driver\Sqlsrv\Connection::execute
      */
     public function testExecute()
     {
@@ -143,11 +144,11 @@ class ConnectionIntegrationTest extends AbstractIntegrationTest
         $connection = $sqlsrv->getConnection();
 
         $result = $connection->execute('SELECT \'foo\'');
-        $this->assertInstanceOf('Zend\Db\Adapter\Driver\Sqlsrv\Result', $result);
+        self::assertInstanceOf('Zend\Db\Adapter\Driver\Sqlsrv\Result', $result);
     }
 
     /**
-     * @covers Zend\Db\Adapter\Driver\Sqlsrv\Connection::prepare
+     * @covers \Zend\Db\Adapter\Driver\Sqlsrv\Connection::prepare
      */
     public function testPrepare()
     {
@@ -155,11 +156,11 @@ class ConnectionIntegrationTest extends AbstractIntegrationTest
         $connection = $sqlsrv->getConnection();
 
         $statement = $connection->prepare('SELECT \'foo\'');
-        $this->assertInstanceOf('Zend\Db\Adapter\Driver\Sqlsrv\Statement', $statement);
+        self::assertInstanceOf('Zend\Db\Adapter\Driver\Sqlsrv\Statement', $statement);
     }
 
     /**
-     * @covers Zend\Db\Adapter\Driver\Sqlsrv\Connection::getLastGeneratedValue
+     * @covers \Zend\Db\Adapter\Driver\Sqlsrv\Connection::getLastGeneratedValue
      */
     public function testGetLastGeneratedValue()
     {
@@ -174,14 +175,15 @@ class ConnectionIntegrationTest extends AbstractIntegrationTest
     public function testConnectReturnsConnectionWhenResourceSet()
     {
         $resource = sqlsrv_connect(
-            $this->variables['hostname'], [
+            $this->variables['hostname'],
+            [
                 'UID' => $this->variables['username'],
-                'PWD' => $this->variables['password']
+                'PWD' => $this->variables['password'],
             ]
         );
         $connection = new Connection([]);
         $connection->setResource($resource);
-        $this->assertSame($connection, $connection->connect());
+        self::assertSame($connection, $connection->connect());
 
         $connection->disconnect();
         unset($connection);

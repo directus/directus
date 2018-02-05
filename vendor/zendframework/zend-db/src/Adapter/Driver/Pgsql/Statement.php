@@ -58,7 +58,7 @@ class Statement implements StatementInterface, Profiler\ProfilerAwareInterface
 
     /**
      * @param  Pgsql $driver
-     * @return Statement
+     * @return self Provides a fluent interface
      */
     public function setDriver(Pgsql $driver)
     {
@@ -68,7 +68,7 @@ class Statement implements StatementInterface, Profiler\ProfilerAwareInterface
 
     /**
      * @param Profiler\ProfilerInterface $profiler
-     * @return Statement
+     * @return self Provides a fluent interface
      */
     public function setProfiler(Profiler\ProfilerInterface $profiler)
     {
@@ -93,7 +93,7 @@ class Statement implements StatementInterface, Profiler\ProfilerAwareInterface
      */
     public function initialize($pgsql)
     {
-        if (!is_resource($pgsql) || get_resource_type($pgsql) !== 'pgsql link') {
+        if (! is_resource($pgsql) || get_resource_type($pgsql) !== 'pgsql link') {
             throw new Exception\RuntimeException(sprintf(
                 '%s: Invalid or missing postgresql connection; received "%s"',
                 __METHOD__,
@@ -117,7 +117,7 @@ class Statement implements StatementInterface, Profiler\ProfilerAwareInterface
      * Set sql
      *
      * @param string $sql
-     * @return Statement
+     * @return self Provides a fluent interface
      */
     public function setSql($sql)
     {
@@ -139,7 +139,7 @@ class Statement implements StatementInterface, Profiler\ProfilerAwareInterface
      * Set parameter container
      *
      * @param ParameterContainer $parameterContainer
-     * @return Statement
+     * @return self Provides a fluent interface
      */
     public function setParameterContainer(ParameterContainer $parameterContainer)
     {
@@ -168,7 +168,8 @@ class Statement implements StatementInterface, Profiler\ProfilerAwareInterface
 
         $pCount = 1;
         $sql = preg_replace_callback(
-            '#\$\##', function () use (&$pCount) {
+            '#\$\##',
+            function () use (&$pCount) {
                 return '$' . $pCount++;
             },
             $sql
@@ -198,12 +199,12 @@ class Statement implements StatementInterface, Profiler\ProfilerAwareInterface
      */
     public function execute($parameters = null)
     {
-        if (!$this->isPrepared()) {
+        if (! $this->isPrepared()) {
             $this->prepare();
         }
 
         /** START Standard ParameterContainer Merging Block */
-        if (!$this->parameterContainer instanceof ParameterContainer) {
+        if (! $this->parameterContainer instanceof ParameterContainer) {
             if ($parameters instanceof ParameterContainer) {
                 $this->parameterContainer = $parameters;
                 $parameters = null;

@@ -9,9 +9,11 @@
 
 namespace ZendTest\Db\Adapter\Platform;
 
+use PHPUnit\Framework\Error;
+use PHPUnit\Framework\TestCase;
 use Zend\Db\Adapter\Platform\Mysql;
 
-class MysqlTest extends \PHPUnit_Framework_TestCase
+class MysqlTest extends TestCase
 {
     /**
      * @var Mysql
@@ -28,134 +30,213 @@ class MysqlTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Zend\Db\Adapter\Platform\Mysql::getName
+     * @covers \Zend\Db\Adapter\Platform\Mysql::getName
      */
     public function testGetName()
     {
-        $this->assertEquals('MySQL', $this->platform->getName());
+        self::assertEquals('MySQL', $this->platform->getName());
     }
 
     /**
-     * @covers Zend\Db\Adapter\Platform\Mysql::getQuoteIdentifierSymbol
+     * @covers \Zend\Db\Adapter\Platform\Mysql::getQuoteIdentifierSymbol
      */
     public function testGetQuoteIdentifierSymbol()
     {
-        $this->assertEquals('`', $this->platform->getQuoteIdentifierSymbol());
+        self::assertEquals('`', $this->platform->getQuoteIdentifierSymbol());
     }
 
     /**
-     * @covers Zend\Db\Adapter\Platform\Mysql::quoteIdentifier
+     * @covers \Zend\Db\Adapter\Platform\Mysql::quoteIdentifier
      */
     public function testQuoteIdentifier()
     {
-        $this->assertEquals('`identifier`', $this->platform->quoteIdentifier('identifier'));
-        $this->assertEquals('`ident``ifier`', $this->platform->quoteIdentifier('ident`ifier'));
-        $this->assertEquals('`namespace:$identifier`', $this->platform->quoteIdentifier('namespace:$identifier'));
+        self::assertEquals('`identifier`', $this->platform->quoteIdentifier('identifier'));
+        self::assertEquals('`ident``ifier`', $this->platform->quoteIdentifier('ident`ifier'));
+        self::assertEquals('`namespace:$identifier`', $this->platform->quoteIdentifier('namespace:$identifier'));
     }
 
     /**
-     * @covers Zend\Db\Adapter\Platform\Mysql::quoteIdentifierChain
+     * @covers \Zend\Db\Adapter\Platform\Mysql::quoteIdentifierChain
      */
     public function testQuoteIdentifierChain()
     {
-        $this->assertEquals('`identifier`', $this->platform->quoteIdentifierChain('identifier'));
-        $this->assertEquals('`identifier`', $this->platform->quoteIdentifierChain(['identifier']));
-        $this->assertEquals('`schema`.`identifier`', $this->platform->quoteIdentifierChain(['schema', 'identifier']));
+        self::assertEquals('`identifier`', $this->platform->quoteIdentifierChain('identifier'));
+        self::assertEquals('`identifier`', $this->platform->quoteIdentifierChain(['identifier']));
+        self::assertEquals('`schema`.`identifier`', $this->platform->quoteIdentifierChain(['schema', 'identifier']));
 
-        $this->assertEquals('`ident``ifier`', $this->platform->quoteIdentifierChain('ident`ifier'));
-        $this->assertEquals('`ident``ifier`', $this->platform->quoteIdentifierChain(['ident`ifier']));
-        $this->assertEquals('`schema`.`ident``ifier`', $this->platform->quoteIdentifierChain(['schema', 'ident`ifier']));
+        self::assertEquals('`ident``ifier`', $this->platform->quoteIdentifierChain('ident`ifier'));
+        self::assertEquals('`ident``ifier`', $this->platform->quoteIdentifierChain(['ident`ifier']));
+        self::assertEquals(
+            '`schema`.`ident``ifier`',
+            $this->platform->quoteIdentifierChain(['schema', 'ident`ifier'])
+        );
     }
 
     /**
-     * @covers Zend\Db\Adapter\Platform\Mysql::getQuoteValueSymbol
+     * @covers \Zend\Db\Adapter\Platform\Mysql::getQuoteValueSymbol
      */
     public function testGetQuoteValueSymbol()
     {
-        $this->assertEquals("'", $this->platform->getQuoteValueSymbol());
+        self::assertEquals("'", $this->platform->getQuoteValueSymbol());
     }
 
     /**
-     * @covers Zend\Db\Adapter\Platform\Mysql::quoteValue
+     * @covers \Zend\Db\Adapter\Platform\Mysql::quoteValue
      */
     public function testQuoteValueRaisesNoticeWithoutPlatformSupport()
     {
-        $this->setExpectedException(
-            'PHPUnit_Framework_Error_Notice',
-            'Attempting to quote a value in Zend\Db\Adapter\Platform\Mysql without extension/driver support can introduce security vulnerabilities in a production environment'
+        $this->expectException(Error\Notice::class);
+        $this->expectExceptionMessage(
+            'Attempting to quote a value in Zend\Db\Adapter\Platform\Mysql without extension/driver support can '
+            . 'introduce security vulnerabilities in a production environment'
         );
         $this->platform->quoteValue('value');
     }
 
     /**
-     * @covers Zend\Db\Adapter\Platform\Mysql::quoteValue
+     * @covers \Zend\Db\Adapter\Platform\Mysql::quoteValue
      */
     public function testQuoteValue()
     {
-        $this->assertEquals("'value'", @$this->platform->quoteValue('value'));
-        $this->assertEquals("'Foo O\\'Bar'", @$this->platform->quoteValue("Foo O'Bar"));
-        $this->assertEquals('\'\\\'; DELETE FROM some_table; -- \'', @$this->platform->quoteValue('\'; DELETE FROM some_table; -- '));
-        $this->assertEquals("'\\\\\\'; DELETE FROM some_table; -- '", @$this->platform->quoteValue('\\\'; DELETE FROM some_table; -- '));
+        self::assertEquals("'value'", @$this->platform->quoteValue('value'));
+        self::assertEquals("'Foo O\\'Bar'", @$this->platform->quoteValue("Foo O'Bar"));
+        self::assertEquals(
+            '\'\\\'; DELETE FROM some_table; -- \'',
+            @$this->platform->quoteValue('\'; DELETE FROM some_table; -- ')
+        );
+        self::assertEquals(
+            "'\\\\\\'; DELETE FROM some_table; -- '",
+            @$this->platform->quoteValue('\\\'; DELETE FROM some_table; -- ')
+        );
     }
 
     /**
-     * @covers Zend\Db\Adapter\Platform\Mysql::quoteTrustedValue
+     * @covers \Zend\Db\Adapter\Platform\Mysql::quoteTrustedValue
      */
     public function testQuoteTrustedValue()
     {
-        $this->assertEquals("'value'", $this->platform->quoteTrustedValue('value'));
-        $this->assertEquals("'Foo O\\'Bar'", $this->platform->quoteTrustedValue("Foo O'Bar"));
-        $this->assertEquals('\'\\\'; DELETE FROM some_table; -- \'', $this->platform->quoteTrustedValue('\'; DELETE FROM some_table; -- '));
+        self::assertEquals("'value'", $this->platform->quoteTrustedValue('value'));
+        self::assertEquals("'Foo O\\'Bar'", $this->platform->quoteTrustedValue("Foo O'Bar"));
+        self::assertEquals(
+            '\'\\\'; DELETE FROM some_table; -- \'',
+            $this->platform->quoteTrustedValue('\'; DELETE FROM some_table; -- ')
+        );
 
         //                   '\\\'; DELETE FROM some_table; -- '  <- actual below
-        $this->assertEquals("'\\\\\\'; DELETE FROM some_table; -- '", $this->platform->quoteTrustedValue('\\\'; DELETE FROM some_table; -- '));
+        self::assertEquals(
+            "'\\\\\\'; DELETE FROM some_table; -- '",
+            $this->platform->quoteTrustedValue('\\\'; DELETE FROM some_table; -- ')
+        );
     }
 
     /**
-     * @covers Zend\Db\Adapter\Platform\Mysql::quoteValueList
+     * @covers \Zend\Db\Adapter\Platform\Mysql::quoteValueList
      */
     public function testQuoteValueList()
     {
-        $this->setExpectedException(
-            'PHPUnit_Framework_Error',
-            'Attempting to quote a value in Zend\Db\Adapter\Platform\Mysql without extension/driver support can introduce security vulnerabilities in a production environment'
+        $this->expectException(Error\Error::class);
+        $this->expectExceptionMessage(
+            'Attempting to quote a value in Zend\Db\Adapter\Platform\Mysql without extension/driver support can '
+            . 'introduce security vulnerabilities in a production environment'
         );
-        $this->assertEquals("'Foo O\\'Bar'", $this->platform->quoteValueList("Foo O'Bar"));
+        self::assertEquals("'Foo O\\'Bar'", $this->platform->quoteValueList("Foo O'Bar"));
     }
 
     /**
-     * @covers Zend\Db\Adapter\Platform\Mysql::getIdentifierSeparator
+     * @covers \Zend\Db\Adapter\Platform\Mysql::getIdentifierSeparator
      */
     public function testGetIdentifierSeparator()
     {
-        $this->assertEquals('.', $this->platform->getIdentifierSeparator());
+        self::assertEquals('.', $this->platform->getIdentifierSeparator());
     }
 
     /**
-     * @covers Zend\Db\Adapter\Platform\Mysql::quoteIdentifierInFragment
+     * @covers \Zend\Db\Adapter\Platform\Mysql::quoteIdentifierInFragment
      */
     public function testQuoteIdentifierInFragment()
     {
-        $this->assertEquals('`foo`.`bar`', $this->platform->quoteIdentifierInFragment('foo.bar'));
-        $this->assertEquals('`foo` as `bar`', $this->platform->quoteIdentifierInFragment('foo as bar'));
-        $this->assertEquals('`$TableName`.`bar`', $this->platform->quoteIdentifierInFragment('$TableName.bar'));
-        $this->assertEquals('`cmis:$TableName` as `cmis:TableAlias`', $this->platform->quoteIdentifierInFragment('cmis:$TableName as cmis:TableAlias'));
+        self::assertEquals('`foo`.`bar`', $this->platform->quoteIdentifierInFragment('foo.bar'));
+        self::assertEquals('`foo` as `bar`', $this->platform->quoteIdentifierInFragment('foo as bar'));
+        self::assertEquals('`$TableName`.`bar`', $this->platform->quoteIdentifierInFragment('$TableName.bar'));
+        self::assertEquals(
+            '`cmis:$TableName` as `cmis:TableAlias`',
+            $this->platform->quoteIdentifierInFragment('cmis:$TableName as cmis:TableAlias')
+        );
+
+        $this->assertEquals(
+            '`foo-bar`.`bar-foo`',
+            $this->platform->quoteIdentifierInFragment('foo-bar.bar-foo')
+        );
+        $this->assertEquals(
+            '`foo-bar` as `bar-foo`',
+            $this->platform->quoteIdentifierInFragment('foo-bar as bar-foo')
+        );
+        $this->assertEquals(
+            '`$TableName-$ColumnName`.`bar-foo`',
+            $this->platform->quoteIdentifierInFragment('$TableName-$ColumnName.bar-foo')
+        );
+        $this->assertEquals(
+            '`cmis:$TableName-$ColumnName` as `cmis:TableAlias-ColumnAlias`',
+            $this->platform->quoteIdentifierInFragment('cmis:$TableName-$ColumnName as cmis:TableAlias-ColumnAlias')
+        );
 
         // single char words
-        $this->assertEquals('(`foo`.`bar` = `boo`.`baz`)', $this->platform->quoteIdentifierInFragment('(foo.bar = boo.baz)', ['(', ')', '=']));
-        $this->assertEquals('(`foo`.`bar`=`boo`.`baz`)', $this->platform->quoteIdentifierInFragment('(foo.bar=boo.baz)', ['(', ')', '=']));
-        $this->assertEquals('`foo`=`bar`', $this->platform->quoteIdentifierInFragment('foo=bar', ['=']));
+        self::assertEquals(
+            '(`foo`.`bar` = `boo`.`baz`)',
+            $this->platform->quoteIdentifierInFragment('(foo.bar = boo.baz)', ['(', ')', '='])
+        );
+        self::assertEquals(
+            '(`foo`.`bar`=`boo`.`baz`)',
+            $this->platform->quoteIdentifierInFragment('(foo.bar=boo.baz)', ['(', ')', '='])
+        );
+        self::assertEquals('`foo`=`bar`', $this->platform->quoteIdentifierInFragment('foo=bar', ['=']));
+
+        $this->assertEquals(
+            '(`foo-bar`.`bar-foo` = `boo-baz`.`baz-boo`)',
+            $this->platform->quoteIdentifierInFragment('(foo-bar.bar-foo = boo-baz.baz-boo)', ['(', ')', '='])
+        );
+        $this->assertEquals(
+            '(`foo-bar`.`bar-foo`=`boo-baz`.`baz-boo`)',
+            $this->platform->quoteIdentifierInFragment('(foo-bar.bar-foo=boo-baz.baz-boo)', ['(', ')', '='])
+        );
+        $this->assertEquals(
+            '`foo-bar`=`bar-foo`',
+            $this->platform->quoteIdentifierInFragment('foo-bar=bar-foo', ['='])
+        );
 
         // case insensitive safe words
-        $this->assertEquals(
+        self::assertEquals(
             '(`foo`.`bar` = `boo`.`baz`) AND (`foo`.`baz` = `boo`.`baz`)',
-            $this->platform->quoteIdentifierInFragment('(foo.bar = boo.baz) AND (foo.baz = boo.baz)', ['(', ')', '=', 'and'])
+            $this->platform->quoteIdentifierInFragment(
+                '(foo.bar = boo.baz) AND (foo.baz = boo.baz)',
+                ['(', ')', '=', 'and']
+            )
+        );
+
+        $this->assertEquals(
+            '(`foo-bar`.`bar-foo` = `boo-baz`.`baz-boo`) AND (`foo-baz`.`baz-foo` = `boo-baz`.`baz-boo`)',
+            $this->platform->quoteIdentifierInFragment(
+                '(foo-bar.bar-foo = boo-baz.baz-boo) AND (foo-baz.baz-foo = boo-baz.baz-boo)',
+                ['(', ')', '=', 'and']
+            )
+        );
+
+        // case insensitive safe words in field
+        self::assertEquals(
+            '(`foo`.`bar` = `boo`.baz) AND (`foo`.baz = `boo`.baz)',
+            $this->platform->quoteIdentifierInFragment(
+                '(foo.bar = boo.baz) AND (foo.baz = boo.baz)',
+                ['(', ')', '=', 'and', 'bAz']
+            )
         );
 
         // case insensitive safe words in field
         $this->assertEquals(
-            '(`foo`.`bar` = `boo`.baz) AND (`foo`.baz = `boo`.baz)',
-            $this->platform->quoteIdentifierInFragment('(foo.bar = boo.baz) AND (foo.baz = boo.baz)', ['(', ')', '=', 'and', 'bAz'])
+            '(`foo-bar`.`bar-foo` = `boo-baz`.baz-boo) AND (`foo-baz`.`baz-foo` = `boo-baz`.baz-boo)',
+            $this->platform->quoteIdentifierInFragment(
+                '(foo-bar.bar-foo = boo-baz.baz-boo) AND (foo-baz.baz-foo = boo-baz.baz-boo)',
+                ['(', ')', '=', 'and', 'bAz-BOo']
+            )
         );
     }
 }

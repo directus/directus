@@ -9,17 +9,18 @@
 
 namespace ZendTest\Db\Sql\Ddl\Column;
 
+use PHPUnit\Framework\TestCase;
 use Zend\Db\Sql\Ddl\Column\Binary;
 
-class BinaryTest extends \PHPUnit_Framework_TestCase
+class BinaryTest extends TestCase
 {
     /**
-     * @covers Zend\Db\Sql\Ddl\Column\Binary::getExpressionData
+     * @covers \Zend\Db\Sql\Ddl\Column\Binary::getExpressionData
      */
     public function testGetExpressionData()
     {
         $column = new Binary('foo', 10000000);
-        $this->assertEquals(
+        self::assertEquals(
             [['%s %s NOT NULL', ['foo', 'BINARY(10000000)'], [$column::TYPE_IDENTIFIER, $column::TYPE_LITERAL]]],
             $column->getExpressionData()
         );

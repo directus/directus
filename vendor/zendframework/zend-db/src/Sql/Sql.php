@@ -51,12 +51,19 @@ class Sql
         return ($this->table !== null);
     }
 
+    /**
+     * @param string|array|TableIdentifier $table
+     * @return self Provides a fluent interface
+     * @throws Exception\InvalidArgumentException
+     */
     public function setTable($table)
     {
         if (is_string($table) || is_array($table) || $table instanceof TableIdentifier) {
             $this->table = $table;
         } else {
-            throw new Exception\InvalidArgumentException('Table must be a string, array or instance of TableIdentifier.');
+            throw new Exception\InvalidArgumentException(
+                'Table must be a string, array or instance of TableIdentifier.'
+            );
         }
         return $this;
     }
@@ -122,8 +129,11 @@ class Sql
      *
      * @return StatementInterface
      */
-    public function prepareStatementForSqlObject(PreparableSqlInterface $sqlObject, StatementInterface $statement = null, AdapterInterface $adapter = null)
-    {
+    public function prepareStatementForSqlObject(
+        PreparableSqlInterface $sqlObject,
+        StatementInterface $statement = null,
+        AdapterInterface $adapter = null
+    ) {
         $adapter   = $adapter ?: $this->adapter;
         $statement = $statement ?: $adapter->getDriver()->createStatement();
 

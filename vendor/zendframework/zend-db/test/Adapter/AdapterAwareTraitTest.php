@@ -9,7 +9,7 @@
 
 namespace ZendTest\Db\Adapter;
 
-use PHPUnit_Framework_TestCase as TestCase;
+use PHPUnit\Framework\TestCase;
 use Zend\Db\Adapter\Adapter;
 
 class AdapterAwareTraitTest extends TestCase
@@ -18,15 +18,15 @@ class AdapterAwareTraitTest extends TestCase
     {
         $object = $this->getObjectForTrait('\Zend\Db\Adapter\AdapterAwareTrait');
 
-        $this->assertAttributeEquals(null, 'adapter', $object);
+        self::assertAttributeEquals(null, 'adapter', $object);
 
-        $driver = $this->getMock('Zend\Db\Adapter\Driver\DriverInterface');
-        $platform = $this->getMock('Zend\Db\Adapter\Platform\PlatformInterface');
+        $driver = $this->getMockBuilder('Zend\Db\Adapter\Driver\DriverInterface')->getMock();
+        $platform = $this->getMockBuilder('Zend\Db\Adapter\Platform\PlatformInterface')->getMock();
 
         $adapter = new Adapter($driver, $platform);
 
         $object->setDbAdapter($adapter);
 
-        $this->assertAttributeEquals($adapter, 'adapter', $object);
+        self::assertAttributeEquals($adapter, 'adapter', $object);
     }
 }

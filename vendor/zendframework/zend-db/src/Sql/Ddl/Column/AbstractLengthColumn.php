@@ -30,8 +30,7 @@ abstract class AbstractLengthColumn extends Column
 
     /**
      * @param  int $length
-     *
-     * @return self
+     * @return self Provides a fluent interface
      */
     public function setLength($length)
     {

@@ -9,21 +9,23 @@
 
 namespace ZendTest\Db\Sql\Platform\Sqlite;
 
+use PHPUnit\Framework\TestCase;
 use Zend\Db\Sql\Platform\Sqlite\Sqlite;
 
-class SqliteTest extends \PHPUnit_Framework_TestCase
+class SqliteTest extends TestCase
 {
     /**
      * @testdox unit test / object test: Test Sqlite constructor will register the decorator
-     * @covers Zend\Db\Sql\Platform\Sqlite\Sqlite::__construct
+     * @covers \Zend\Db\Sql\Platform\Sqlite\Sqlite::__construct
      */
     public function testConstructorRegistersSqliteDecorator()
     {
         $mysql = new Sqlite;
         $decorators = $mysql->getDecorators();
 
-        list($type, $decorator) = each($decorators);
-        $this->assertEquals('Zend\Db\Sql\Select', $type);
-        $this->assertInstanceOf('Zend\Db\Sql\Platform\Sqlite\SelectDecorator', $decorator);
+        $type = key($decorators);
+        $decorator = current($decorators);
+        self::assertEquals('Zend\Db\Sql\Select', $type);
+        self::assertInstanceOf('Zend\Db\Sql\Platform\Sqlite\SelectDecorator', $decorator);
     }
 }

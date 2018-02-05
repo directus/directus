@@ -9,16 +9,17 @@
 
 namespace ZendTest\Db\Adapter\Driver\Pgsql;
 
+use PHPUnit\Framework\TestCase;
 use ReflectionMethod;
 use Zend\Db\Adapter\Driver\Pgsql\Connection;
 use Zend\Db\Adapter\Exception as AdapterException;
 
-class ConnectionTest extends \PHPUnit_Framework_TestCase
+class ConnectionTest extends TestCase
 {
     /**
      * @var Connection
      */
-    protected $connection = null;
+    protected $connection;
 
     /**
      * Sets up the fixture, for example, opens a network connection.
@@ -32,7 +33,7 @@ class ConnectionTest extends \PHPUnit_Framework_TestCase
     /**
      * Test getResource method if it tries to connect to the database.
      *
-     * @covers Zend\Db\Adapter\Driver\Pgsql\Connection::getResource
+     * @covers \Zend\Db\Adapter\Driver\Pgsql\Connection::getResource
      */
     public function testResource()
     {
@@ -43,10 +44,10 @@ class ConnectionTest extends \PHPUnit_Framework_TestCase
         try {
             $resource = $this->connection->getResource();
             // connected with empty string
-            $this->assertInternalType('resource', $resource);
+            self::assertInternalType('resource', $resource);
         } catch (AdapterException\RuntimeException $exc) {
             // If it throws an exception it has failed to connect
-            $this->setExpectedException('Zend\Db\Adapter\Exception\RuntimeException');
+            $this->expectException('Zend\Db\Adapter\Exception\RuntimeException');
             throw $exc;
         }
     }
@@ -57,7 +58,7 @@ class ConnectionTest extends \PHPUnit_Framework_TestCase
     public function testDisconnect()
     {
         include_once 'pgsqlMockFunctions.php';
-        $this->assertSame($this->connection, $this->connection->disconnect());
+        self::assertSame($this->connection, $this->connection->disconnect());
     }
 
     /**
@@ -84,20 +85,19 @@ class ConnectionTest extends \PHPUnit_Framework_TestCase
 
         $getConnectionString->setAccessible(true);
 
-        $this->assertEquals(
+        self::assertEquals(
             'host=localhost user=test password=test123! dbname=test',
             $getConnectionString->invoke($this->connection)
         );
     }
 
-    /**
-     * @expectedException \Zend\Db\Adapter\Exception\InvalidArgumentException
-     */
     public function testSetConnectionTypeException()
     {
         if (! extension_loaded('pgsql')) {
             $this->markTestSkipped('pgsql extension not loaded');
         }
+
+        $this->expectException('\Zend\Db\Adapter\Exception\InvalidArgumentException');
         $this->connection->setType(3);
     }
 
@@ -111,7 +111,7 @@ class ConnectionTest extends \PHPUnit_Framework_TestCase
         }
         $type = PGSQL_CONNECT_FORCE_NEW;
         $this->connection->setType($type);
-        $this->assertEquals($type, self::readAttribute($this->connection, 'type'));
+        self::assertEquals($type, self::readAttribute($this->connection, 'type'));
     }
 
     /**
@@ -139,7 +139,7 @@ class ConnectionTest extends \PHPUnit_Framework_TestCase
             $this->markTestSkipped('Skipping pgsql charset test due to inability to connecto to database');
         }
 
-        $this->assertEquals('SQL_ASCII', pg_client_encoding($this->connection->getResource()));
+        self::assertEquals('SQL_ASCII', pg_client_encoding($this->connection->getResource()));
     }
 
     /**
@@ -151,7 +151,7 @@ class ConnectionTest extends \PHPUnit_Framework_TestCase
             $this->markTestSkipped('pgsql extension not loaded');
         }
 
-        $this->setExpectedException('Zend\Db\Adapter\Exception\RuntimeException');
+        $this->expectException('Zend\Db\Adapter\Exception\RuntimeException');
 
         $this->connection->setConnectionParameters([
             'driver'   => 'pgsql',

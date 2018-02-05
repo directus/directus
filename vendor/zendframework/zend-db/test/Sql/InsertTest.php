@@ -9,13 +9,15 @@
 
 namespace ZendTest\Db\Sql;
 
+use PHPUnit\Framework\TestCase;
+use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Insert;
 use Zend\Db\Sql\Select;
-use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\TableIdentifier;
+use ZendTest\Db\TestAsset\Replace;
 use ZendTest\Db\TestAsset\TrustingSql92Platform;
 
-class InsertTest extends \PHPUnit_Framework_TestCase
+class InsertTest extends TestCase
 {
     /**
      * @var Insert
@@ -32,109 +34,109 @@ class InsertTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Zend\Db\Sql\Insert::into
+     * @covers \Zend\Db\Sql\Insert::into
      */
     public function testInto()
     {
         $this->insert->into('table', 'schema');
-        $this->assertEquals('table', $this->insert->getRawState('table'));
+        self::assertEquals('table', $this->insert->getRawState('table'));
 
         $tableIdentifier = new TableIdentifier('table', 'schema');
         $this->insert->into($tableIdentifier);
-        $this->assertEquals($tableIdentifier, $this->insert->getRawState('table'));
+        self::assertEquals($tableIdentifier, $this->insert->getRawState('table'));
     }
 
     /**
-     * @covers Zend\Db\Sql\Insert::columns
+     * @covers \Zend\Db\Sql\Insert::columns
      */
     public function testColumns()
     {
         $columns = ['foo', 'bar'];
         $this->insert->columns($columns);
-        $this->assertEquals($columns, $this->insert->getRawState('columns'));
+        self::assertEquals($columns, $this->insert->getRawState('columns'));
     }
 
     /**
-     * @covers Zend\Db\Sql\Insert::values
+     * @covers \Zend\Db\Sql\Insert::values
      */
     public function testValues()
     {
         $this->insert->values(['foo' => 'bar']);
-        $this->assertEquals(['foo'], $this->insert->getRawState('columns'));
-        $this->assertEquals(['bar'], $this->insert->getRawState('values'));
+        self::assertEquals(['foo'], $this->insert->getRawState('columns'));
+        self::assertEquals(['bar'], $this->insert->getRawState('values'));
 
         // test will merge cols and values of previously set stuff
         $this->insert->values(['foo' => 'bax'], Insert::VALUES_MERGE);
         $this->insert->values(['boom' => 'bam'], Insert::VALUES_MERGE);
-        $this->assertEquals(['foo', 'boom'], $this->insert->getRawState('columns'));
-        $this->assertEquals(['bax', 'bam'], $this->insert->getRawState('values'));
+        self::assertEquals(['foo', 'boom'], $this->insert->getRawState('columns'));
+        self::assertEquals(['bax', 'bam'], $this->insert->getRawState('values'));
 
         $this->insert->values(['foo' => 'bax']);
-        $this->assertEquals(['foo'], $this->insert->getRawState('columns'));
-        $this->assertEquals(['bax'], $this->insert->getRawState('values'));
+        self::assertEquals(['foo'], $this->insert->getRawState('columns'));
+        self::assertEquals(['bax'], $this->insert->getRawState('values'));
     }
 
     /**
-     * @covers Zend\Db\Sql\Insert::values
+     * @covers \Zend\Db\Sql\Insert::values
      */
     public function testValuesThrowsExceptionWhenNotArrayOrSelect()
     {
-        $this->setExpectedException(
-            'Zend\Db\Sql\Exception\InvalidArgumentException',
-            'values() expects an array of values or Zend\Db\Sql\Select instance'
-        );
+        $this->expectException('Zend\Db\Sql\Exception\InvalidArgumentException');
+        $this->expectExceptionMessage('values() expects an array of values or Zend\Db\Sql\Select instance');
         $this->insert->values(5);
     }
 
     /**
-     * @covers Zend\Db\Sql\Insert::values
+     * @covers \Zend\Db\Sql\Insert::values
      */
     public function testValuesThrowsExceptionWhenSelectMergeOverArray()
     {
         $this->insert->values(['foo' => 'bar']);
 
-        $this->setExpectedException(
-            'Zend\Db\Sql\Exception\InvalidArgumentException',
-            'A Zend\Db\Sql\Select instance cannot be provided with the merge flag'
-        );
+        $this->expectException('Zend\Db\Sql\Exception\InvalidArgumentException');
+        $this->expectExceptionMessage('A Zend\Db\Sql\Select instance cannot be provided with the merge flag');
         $this->insert->values(new Select, Insert::VALUES_MERGE);
     }
 
     /**
-     * @covers Zend\Db\Sql\Insert::values
+     * @covers \Zend\Db\Sql\Insert::values
      */
     public function testValuesThrowsExceptionWhenArrayMergeOverSelect()
     {
         $this->insert->values(new Select);
 
-        $this->setExpectedException(
-            'Zend\Db\Sql\Exception\InvalidArgumentException',
-            'An array of values cannot be provided with the merge flag when a Zend\Db\Sql\Select instance already exists as the value source'
+        $this->expectException('Zend\Db\Sql\Exception\InvalidArgumentException');
+        $this->expectExceptionMessage(
+            'An array of values cannot be provided with the merge flag when a Zend\Db\Sql\Select instance already '
+            . 'exists as the value source'
         );
         $this->insert->values(['foo' => 'bar'], Insert::VALUES_MERGE);
     }
 
     /**
-     * @covers Zend\Db\Sql\Insert::values
+     * @covers \Zend\Db\Sql\Insert::values
      * @group ZF2-4926
      */
     public function testEmptyArrayValues()
     {
         $this->insert->values([]);
-        $this->assertEquals([], $this->readAttribute($this->insert, 'columns'));
+        self::assertEquals([], $this->readAttribute($this->insert, 'columns'));
     }
 
     /**
-     * @covers Zend\Db\Sql\Insert::prepareStatement
+     * @covers \Zend\Db\Sql\Insert::prepareStatement
      */
     public function testPrepareStatement()
     {
-        $mockDriver = $this->getMock('Zend\Db\Adapter\Driver\DriverInterface');
+        $mockDriver = $this->getMockBuilder('Zend\Db\Adapter\Driver\DriverInterface')->getMock();
         $mockDriver->expects($this->any())->method('getPrepareType')->will($this->returnValue('positional'));
         $mockDriver->expects($this->any())->method('formatParameterName')->will($this->returnValue('?'));
-        $mockAdapter = $this->getMock('Zend\Db\Adapter\Adapter', null, [$mockDriver]);
+        $mockAdapter = $this->getMockBuilder('Zend\Db\Adapter\Adapter')
+            ->setMethods()
+            ->setConstructorArgs([$mockDriver])
+            ->getMock();
 
-        $mockStatement = $this->getMock('Zend\Db\Adapter\Driver\StatementInterface');
+        $mockStatement = $this->getMockBuilder('Zend\Db\Adapter\Driver\StatementInterface')->getMock();
         $pContainer = new \Zend\Db\Adapter\ParameterContainer([]);
         $mockStatement->expects($this->any())->method('getParameterContainer')->will($this->returnValue($pContainer));
         $mockStatement->expects($this->at(1))
@@ -148,12 +150,15 @@ class InsertTest extends \PHPUnit_Framework_TestCase
 
         // with TableIdentifier
         $this->insert = new Insert;
-        $mockDriver = $this->getMock('Zend\Db\Adapter\Driver\DriverInterface');
+        $mockDriver = $this->getMockBuilder('Zend\Db\Adapter\Driver\DriverInterface')->getMock();
         $mockDriver->expects($this->any())->method('getPrepareType')->will($this->returnValue('positional'));
         $mockDriver->expects($this->any())->method('formatParameterName')->will($this->returnValue('?'));
-        $mockAdapter = $this->getMock('Zend\Db\Adapter\Adapter', null, [$mockDriver]);
+        $mockAdapter = $this->getMockBuilder('Zend\Db\Adapter\Adapter')
+            ->setMethods()
+            ->setConstructorArgs([$mockDriver])
+            ->getMock();
 
-        $mockStatement = $this->getMock('Zend\Db\Adapter\Driver\StatementInterface');
+        $mockStatement = $this->getMockBuilder('Zend\Db\Adapter\Driver\StatementInterface')->getMock();
         $pContainer = new \Zend\Db\Adapter\ParameterContainer([]);
         $mockStatement->expects($this->any())->method('getParameterContainer')->will($this->returnValue($pContainer));
         $mockStatement->expects($this->at(1))
@@ -167,14 +172,17 @@ class InsertTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Zend\Db\Sql\Insert::prepareStatement
+     * @covers \Zend\Db\Sql\Insert::prepareStatement
      */
     public function testPrepareStatementWithSelect()
     {
-        $mockDriver = $this->getMock('Zend\Db\Adapter\Driver\DriverInterface');
+        $mockDriver = $this->getMockBuilder('Zend\Db\Adapter\Driver\DriverInterface')->getMock();
         $mockDriver->expects($this->any())->method('getPrepareType')->will($this->returnValue('positional'));
         $mockDriver->expects($this->any())->method('formatParameterName')->will($this->returnValue('?'));
-        $mockAdapter = $this->getMock('Zend\Db\Adapter\Adapter', null, [$mockDriver]);
+        $mockAdapter = $this->getMockBuilder('Zend\Db\Adapter\Adapter')
+            ->setMethods()
+            ->setConstructorArgs([$mockDriver])
+            ->getMock();
 
         $mockStatement = new \Zend\Db\Adapter\StatementContainer();
 
@@ -182,44 +190,53 @@ class InsertTest extends \PHPUnit_Framework_TestCase
         $this->insert
                 ->into('foo')
                 ->columns(['col1'])
-                ->select($select->where(['x'=>5]))
+                ->select($select->where(['x' => 5]))
                 ->prepareStatement($mockAdapter, $mockStatement);
 
-        $this->assertEquals(
+        self::assertEquals(
             'INSERT INTO "foo" ("col1") SELECT "bar".* FROM "bar" WHERE "x" = ?',
             $mockStatement->getSql()
         );
         $parameters = $mockStatement->getParameterContainer()->getNamedArray();
-        $this->assertSame(['subselect1where1'=>5], $parameters);
+        self::assertSame(['subselect1where1' => 5], $parameters);
     }
 
     /**
-     * @covers Zend\Db\Sql\Insert::getSqlString
+     * @covers \Zend\Db\Sql\Insert::getSqlString
      */
     public function testGetSqlString()
     {
         $this->insert->into('foo')
             ->values(['bar' => 'baz', 'boo' => new Expression('NOW()'), 'bam' => null]);
 
-        $this->assertEquals('INSERT INTO "foo" ("bar", "boo", "bam") VALUES (\'baz\', NOW(), NULL)', $this->insert->getSqlString(new TrustingSql92Platform()));
+        self::assertEquals(
+            'INSERT INTO "foo" ("bar", "boo", "bam") VALUES (\'baz\', NOW(), NULL)',
+            $this->insert->getSqlString(new TrustingSql92Platform())
+        );
 
         // with TableIdentifier
         $this->insert = new Insert;
         $this->insert->into(new TableIdentifier('foo', 'sch'))
             ->values(['bar' => 'baz', 'boo' => new Expression('NOW()'), 'bam' => null]);
 
-        $this->assertEquals('INSERT INTO "sch"."foo" ("bar", "boo", "bam") VALUES (\'baz\', NOW(), NULL)', $this->insert->getSqlString(new TrustingSql92Platform()));
+        self::assertEquals(
+            'INSERT INTO "sch"."foo" ("bar", "boo", "bam") VALUES (\'baz\', NOW(), NULL)',
+            $this->insert->getSqlString(new TrustingSql92Platform())
+        );
 
         // with Select
         $this->insert = new Insert;
         $select = new Select();
         $this->insert->into('foo')->select($select->from('bar'));
 
-        $this->assertEquals('INSERT INTO "foo"  SELECT "bar".* FROM "bar"', $this->insert->getSqlString(new TrustingSql92Platform()));
+        self::assertEquals(
+            'INSERT INTO "foo"  SELECT "bar".* FROM "bar"',
+            $this->insert->getSqlString(new TrustingSql92Platform())
+        );
 
         // with Select and columns
         $this->insert->columns(['col1', 'col2']);
-        $this->assertEquals(
+        self::assertEquals(
             'INSERT INTO "foo" ("col1", "col2") SELECT "bar".* FROM "bar"',
             $this->insert->getSqlString(new TrustingSql92Platform())
         );
@@ -232,65 +249,73 @@ class InsertTest extends \PHPUnit_Framework_TestCase
             ->into('foo')
             ->columns(['col1', 'col2', 'col3'])
             ->values(['val1', 'val2', 'val3']);
-        $this->assertEquals(
+        self::assertEquals(
             'INSERT INTO "foo" ("col1", "col2", "col3") VALUES (\'val1\', \'val2\', \'val3\')',
             $this->insert->getSqlString(new TrustingSql92Platform())
         );
     }
 
     /**
-     * @covers Zend\Db\Sql\Insert::__set
+     * @covers \Zend\Db\Sql\Insert::__set
      */
+    // @codingStandardsIgnoreStart
     public function test__set()
     {
+        // @codingStandardsIgnoreEnd
         $this->insert->foo = 'bar';
-        $this->assertEquals(['foo'], $this->insert->getRawState('columns'));
-        $this->assertEquals(['bar'], $this->insert->getRawState('values'));
+        self::assertEquals(['foo'], $this->insert->getRawState('columns'));
+        self::assertEquals(['bar'], $this->insert->getRawState('values'));
     }
 
     /**
-     * @covers Zend\Db\Sql\Insert::__unset
+     * @covers \Zend\Db\Sql\Insert::__unset
      */
+    // @codingStandardsIgnoreStart
     public function test__unset()
     {
+        // @codingStandardsIgnoreEnd
         $this->insert->foo = 'bar';
-        $this->assertEquals(['foo'], $this->insert->getRawState('columns'));
-        $this->assertEquals(['bar'], $this->insert->getRawState('values'));
+        self::assertEquals(['foo'], $this->insert->getRawState('columns'));
+        self::assertEquals(['bar'], $this->insert->getRawState('values'));
         unset($this->insert->foo);
-        $this->assertEquals([], $this->insert->getRawState('columns'));
-        $this->assertEquals([], $this->insert->getRawState('values'));
+        self::assertEquals([], $this->insert->getRawState('columns'));
+        self::assertEquals([], $this->insert->getRawState('values'));
 
-        $this->insert->foo = NULL;
-        $this->assertEquals(['foo'], $this->insert->getRawState('columns'));
-        $this->assertEquals([NULL], $this->insert->getRawState('values'));
+        $this->insert->foo = null;
+        self::assertEquals(['foo'], $this->insert->getRawState('columns'));
+        self::assertEquals([null], $this->insert->getRawState('values'));
 
         unset($this->insert->foo);
-        $this->assertEquals([], $this->insert->getRawState('columns'));
-        $this->assertEquals([], $this->insert->getRawState('values'));
+        self::assertEquals([], $this->insert->getRawState('columns'));
+        self::assertEquals([], $this->insert->getRawState('values'));
     }
 
     /**
-     * @covers Zend\Db\Sql\Insert::__isset
+     * @covers \Zend\Db\Sql\Insert::__isset
      */
+    // @codingStandardsIgnoreStart
     public function test__isset()
     {
+        // @codingStandardsIgnoreEnd
         $this->insert->foo = 'bar';
-        $this->assertTrue(isset($this->insert->foo));
+        self::assertTrue(isset($this->insert->foo));
 
-        $this->insert->foo = NULL;
-        $this->assertTrue(isset($this->insert->foo));
+        $this->insert->foo = null;
+        self::assertTrue(isset($this->insert->foo));
     }
 
     /**
-     * @covers Zend\Db\Sql\Insert::__get
+     * @covers \Zend\Db\Sql\Insert::__get
      */
+    // @codingStandardsIgnoreStart
     public function test__get()
     {
+        // @codingStandardsIgnoreEnd
         $this->insert->foo = 'bar';
-        $this->assertEquals('bar', $this->insert->foo);
+        self::assertEquals('bar', $this->insert->foo);
 
-        $this->insert->foo = NULL;
-        $this->assertNull($this->insert->foo);
+        $this->insert->foo = null;
+        self::assertNull($this->insert->foo);
     }
 
     /**
@@ -303,7 +328,10 @@ class InsertTest extends \PHPUnit_Framework_TestCase
         $this->insert->into('foo')
             ->values(['qux' => 100], Insert::VALUES_MERGE);
 
-        $this->assertEquals('INSERT INTO "foo" ("bar", "boo", "bam", "qux") VALUES (\'baz\', NOW(), NULL, \'100\')', $this->insert->getSqlString(new TrustingSql92Platform()));
+        self::assertEquals(
+            'INSERT INTO "foo" ("bar", "boo", "bam", "qux") VALUES (\'baz\', NOW(), NULL, \'100\')',
+            $this->insert->getSqlString(new TrustingSql92Platform())
+        );
     }
 
     /**
@@ -313,12 +341,15 @@ class InsertTest extends \PHPUnit_Framework_TestCase
     {
         $replace = new Replace();
 
-        $mockDriver = $this->getMock('Zend\Db\Adapter\Driver\DriverInterface');
+        $mockDriver = $this->getMockBuilder('Zend\Db\Adapter\Driver\DriverInterface')->getMock();
         $mockDriver->expects($this->any())->method('getPrepareType')->will($this->returnValue('positional'));
         $mockDriver->expects($this->any())->method('formatParameterName')->will($this->returnValue('?'));
-        $mockAdapter = $this->getMock('Zend\Db\Adapter\Adapter', null, [$mockDriver]);
+        $mockAdapter = $this->getMockBuilder('Zend\Db\Adapter\Adapter')
+            ->setMethods()
+            ->setConstructorArgs([$mockDriver])
+            ->getMock();
 
-        $mockStatement = $this->getMock('Zend\Db\Adapter\Driver\StatementInterface');
+        $mockStatement = $this->getMockBuilder('Zend\Db\Adapter\Driver\StatementInterface')->getMock();
         $pContainer = new \Zend\Db\Adapter\ParameterContainer([]);
         $mockStatement->expects($this->any())->method('getParameterContainer')->will($this->returnValue($pContainer));
         $mockStatement->expects($this->at(1))
@@ -333,12 +364,15 @@ class InsertTest extends \PHPUnit_Framework_TestCase
         // with TableIdentifier
         $replace = new Replace();
 
-        $mockDriver = $this->getMock('Zend\Db\Adapter\Driver\DriverInterface');
+        $mockDriver = $this->getMockBuilder('Zend\Db\Adapter\Driver\DriverInterface')->getMock();
         $mockDriver->expects($this->any())->method('getPrepareType')->will($this->returnValue('positional'));
         $mockDriver->expects($this->any())->method('formatParameterName')->will($this->returnValue('?'));
-        $mockAdapter = $this->getMock('Zend\Db\Adapter\Adapter', null, [$mockDriver]);
+        $mockAdapter = $this->getMockBuilder('Zend\Db\Adapter\Adapter')
+            ->setMethods()
+            ->setConstructorArgs([$mockDriver])
+            ->getMock();
 
-        $mockStatement = $this->getMock('Zend\Db\Adapter\Driver\StatementInterface');
+        $mockStatement = $this->getMockBuilder('Zend\Db\Adapter\Driver\StatementInterface')->getMock();
         $pContainer = new \Zend\Db\Adapter\ParameterContainer([]);
         $mockStatement->expects($this->any())->method('getParameterContainer')->will($this->returnValue($pContainer));
         $mockStatement->expects($this->at(1))
@@ -360,28 +394,19 @@ class InsertTest extends \PHPUnit_Framework_TestCase
         $replace->into('foo')
             ->values(['bar' => 'baz', 'boo' => new Expression('NOW()'), 'bam' => null]);
 
-        $this->assertEquals('REPLACE INTO "foo" ("bar", "boo", "bam") VALUES (\'baz\', NOW(), NULL)', $replace->getSqlString(new TrustingSql92Platform()));
+        self::assertEquals(
+            'REPLACE INTO "foo" ("bar", "boo", "bam") VALUES (\'baz\', NOW(), NULL)',
+            $replace->getSqlString(new TrustingSql92Platform())
+        );
 
         // with TableIdentifier
         $replace = new Replace();
         $replace->into(new TableIdentifier('foo', 'sch'))
             ->values(['bar' => 'baz', 'boo' => new Expression('NOW()'), 'bam' => null]);
 
-        $this->assertEquals('REPLACE INTO "sch"."foo" ("bar", "boo", "bam") VALUES (\'baz\', NOW(), NULL)', $replace->getSqlString(new TrustingSql92Platform()));
-    }
-}
-
-class Replace extends Insert
-{
-    const SPECIFICATION_INSERT = 'replace';
-
-    protected $specifications = [
-        self::SPECIFICATION_INSERT => 'REPLACE INTO %1$s (%2$s) VALUES (%3$s)',
-        self::SPECIFICATION_SELECT => 'REPLACE INTO %1$s %2$s %3$s',
-    ];
-
-    protected function processreplace(\Zend\Db\Adapter\Platform\PlatformInterface $platform, \Zend\Db\Adapter\Driver\DriverInterface $driver = null, \Zend\Db\Adapter\ParameterContainer $parameterContainer = null)
-    {
-        return parent::processInsert($platform, $driver, $parameterContainer);
+        self::assertEquals(
+            'REPLACE INTO "sch"."foo" ("bar", "boo", "bam") VALUES (\'baz\', NOW(), NULL)',
+            $replace->getSqlString(new TrustingSql92Platform())
+        );
     }
 }

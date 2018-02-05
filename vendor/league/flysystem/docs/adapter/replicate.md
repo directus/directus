@@ -20,4 +20,5 @@ The `ReplicateAdapter` facilitates smooth transitions between adapters, allowing
 $source = new League\Flysystem\AwsS3V3\AwsS3Adapter(...);
 $replica = new League\Flysystem\Adapter\Local(...);
 $adapter = new League\Flysystem\Replicate\ReplicateAdapter($source, $replica);
+$filesystem = new Filesystem($adapter);
 ~~~

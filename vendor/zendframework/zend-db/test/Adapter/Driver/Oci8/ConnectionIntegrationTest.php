@@ -9,8 +9,8 @@
 
 namespace ZendTest\Db\Adapter\Driver\Oci8;
 
-use Zend\Db\Adapter\Driver\Oci8\Oci8;
 use Zend\Db\Adapter\Driver\Oci8\Connection;
+use Zend\Db\Adapter\Driver\Oci8\Oci8;
 
 /**
  * @group integration
@@ -19,24 +19,28 @@ use Zend\Db\Adapter\Driver\Oci8\Connection;
 class ConnectionIntegrationTest extends AbstractIntegrationTest
 {
     /**
-     * @covers Zend\Db\Adapter\Driver\Oci8\Connection::getCurrentSchema
+     * @covers \Zend\Db\Adapter\Driver\Oci8\Connection::getCurrentSchema
      */
     public function testGetCurrentSchema()
     {
         $connection = new Connection($this->variables);
-        $this->assertInternalType('string', $connection->getCurrentSchema());
+        self::assertInternalType('string', $connection->getCurrentSchema());
     }
 
     /**
-     * @covers Zend\Db\Adapter\Driver\Oci8\Connection::setResource
+     * @covers \Zend\Db\Adapter\Driver\Oci8\Connection::setResource
      */
     public function testSetResource()
     {
         $this->markTestIncomplete('edit this');
-        $resource = oci_connect($this->variables['username'], $this->variables['password'], $this->variables['hostname']);
+        $resource = oci_connect(
+            $this->variables['username'],
+            $this->variables['password'],
+            $this->variables['hostname']
+        );
 
         $connection = new Connection([]);
-        $this->assertSame($connection, $connection->setResource($resource));
+        self::assertSame($connection, $connection->setResource($resource));
 
         $connection->disconnect();
         unset($connection);
@@ -44,59 +48,59 @@ class ConnectionIntegrationTest extends AbstractIntegrationTest
     }
 
     /**
-     * @covers Zend\Db\Adapter\Driver\Oci8\Connection::getResource
+     * @covers \Zend\Db\Adapter\Driver\Oci8\Connection::getResource
      */
     public function testGetResource()
     {
         $connection = new Connection($this->variables);
         $connection->connect();
-        $this->assertInternalType('resource', $connection->getResource());
+        self::assertInternalType('resource', $connection->getResource());
 
         $connection->disconnect();
         unset($connection);
     }
 
     /**
-     * @covers Zend\Db\Adapter\Driver\Oci8\Connection::connect
+     * @covers \Zend\Db\Adapter\Driver\Oci8\Connection::connect
      */
     public function testConnect()
     {
         $connection = new Connection($this->variables);
-        $this->assertSame($connection, $connection->connect());
-        $this->assertTrue($connection->isConnected());
+        self::assertSame($connection, $connection->connect());
+        self::assertTrue($connection->isConnected());
 
         $connection->disconnect();
         unset($connection);
     }
 
     /**
-     * @covers Zend\Db\Adapter\Driver\Oci8\Connection::isConnected
+     * @covers \Zend\Db\Adapter\Driver\Oci8\Connection::isConnected
      */
     public function testIsConnected()
     {
         $connection = new Connection($this->variables);
-        $this->assertFalse($connection->isConnected());
-        $this->assertSame($connection, $connection->connect());
-        $this->assertTrue($connection->isConnected());
+        self::assertFalse($connection->isConnected());
+        self::assertSame($connection, $connection->connect());
+        self::assertTrue($connection->isConnected());
 
         $connection->disconnect();
         unset($connection);
     }
 
     /**
-     * @covers Zend\Db\Adapter\Driver\Oci8\Connection::disconnect
+     * @covers \Zend\Db\Adapter\Driver\Oci8\Connection::disconnect
      */
     public function testDisconnect()
     {
         $connection = new Connection($this->variables);
         $connection->connect();
-        $this->assertTrue($connection->isConnected());
+        self::assertTrue($connection->isConnected());
         $connection->disconnect();
-        $this->assertFalse($connection->isConnected());
+        self::assertFalse($connection->isConnected());
     }
 
     /**
-     * @covers Zend\Db\Adapter\Driver\Oci8\Connection::beginTransaction
+     * @covers \Zend\Db\Adapter\Driver\Oci8\Connection::beginTransaction
      * @todo   Implement testBeginTransaction().
      */
     public function testBeginTransaction()
@@ -108,7 +112,7 @@ class ConnectionIntegrationTest extends AbstractIntegrationTest
     }
 
     /**
-     * @covers Zend\Db\Adapter\Driver\Oci8\Connection::commit
+     * @covers \Zend\Db\Adapter\Driver\Oci8\Connection::commit
      * @todo   Implement testCommit().
      */
     public function testCommit()
@@ -120,7 +124,7 @@ class ConnectionIntegrationTest extends AbstractIntegrationTest
     }
 
     /**
-     * @covers Zend\Db\Adapter\Driver\Oci8\Connection::rollback
+     * @covers \Zend\Db\Adapter\Driver\Oci8\Connection::rollback
      * @todo   Implement testRollback().
      */
     public function testRollback()
@@ -132,7 +136,7 @@ class ConnectionIntegrationTest extends AbstractIntegrationTest
     }
 
     /**
-     * @covers Zend\Db\Adapter\Driver\Oci8\Connection::execute
+     * @covers \Zend\Db\Adapter\Driver\Oci8\Connection::execute
      */
     public function testExecute()
     {
@@ -140,11 +144,11 @@ class ConnectionIntegrationTest extends AbstractIntegrationTest
         $connection = $oci8->getConnection();
 
         $result = $connection->execute('SELECT \'foo\' FROM DUAL');
-        $this->assertInstanceOf('Zend\Db\Adapter\Driver\Oci8\Result', $result);
+        self::assertInstanceOf('Zend\Db\Adapter\Driver\Oci8\Result', $result);
     }
 
     /**
-     * @covers Zend\Db\Adapter\Driver\Oci8\Connection::getLastGeneratedValue
+     * @covers \Zend\Db\Adapter\Driver\Oci8\Connection::getLastGeneratedValue
      */
     public function testGetLastGeneratedValue()
     {
@@ -159,11 +163,15 @@ class ConnectionIntegrationTest extends AbstractIntegrationTest
     public function testConnectReturnsConnectionWhenResourceSet()
     {
         $this->markTestIncomplete('edit this');
-        $resource = oci_connect($this->variables['username'], $this->variables['password'], $this->variables['hostname']);
+        $resource = oci_connect(
+            $this->variables['username'],
+            $this->variables['password'],
+            $this->variables['hostname']
+        );
 
         $connection = new Connection([]);
         $connection->setResource($resource);
-        $this->assertSame($connection, $connection->connect());
+        self::assertSame($connection, $connection->connect());
 
         $connection->disconnect();
         unset($connection);

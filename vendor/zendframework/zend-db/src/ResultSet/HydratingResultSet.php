@@ -41,12 +41,12 @@ class HydratingResultSet extends AbstractResultSet
      * Set the row object prototype
      *
      * @param  object $objectPrototype
+     * @return self Provides a fluent interface
      * @throws Exception\InvalidArgumentException
-     * @return ResultSet
      */
     public function setObjectPrototype($objectPrototype)
     {
-        if (!is_object($objectPrototype)) {
+        if (! is_object($objectPrototype)) {
             throw new Exception\InvalidArgumentException(
                 'An object must be set as the object prototype, a ' . gettype($objectPrototype) . ' was provided.'
             );
@@ -69,7 +69,7 @@ class HydratingResultSet extends AbstractResultSet
      * Set the hydrator to use for each row object
      *
      * @param HydratorInterface $hydrator
-     * @return HydratingResultSet
+     * @return self Provides a fluent interface
      */
     public function setHydrator(HydratorInterface $hydrator)
     {

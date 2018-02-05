@@ -9,7 +9,9 @@
 
 namespace ZendTest\Db\Adapter\Driver\IbmDb2;
 
-abstract class AbstractIntegrationTest extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+abstract class AbstractIntegrationTest extends TestCase
 {
     /**
      * @var array
@@ -27,13 +29,15 @@ abstract class AbstractIntegrationTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         foreach ($this->variables as $name => $value) {
-            if (!getenv($value)) {
-                $this->markTestSkipped('Missing required variable ' . $value . ' from phpunit.xml for this integration test');
+            if (! getenv($value)) {
+                $this->markTestSkipped(
+                    'Missing required variable ' . $value . ' from phpunit.xml for this integration test'
+                );
             }
             $this->variables[$name] = getenv($value);
         }
 
-        if (!extension_loaded('ibm_db2')) {
+        if (! extension_loaded('ibm_db2')) {
             $this->fail('The phpunit group integration-ibm_db2 was enabled, but the extension is not loaded.');
         }
     }

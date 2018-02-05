@@ -9,16 +9,17 @@
 
 namespace ZendTest\Db\Sql\Ddl;
 
+use PHPUnit\Framework\TestCase;
 use Zend\Db\Sql\Ddl\DropTable;
 
-class DropTableTest extends \PHPUnit_Framework_TestCase
+class DropTableTest extends TestCase
 {
     /**
-     * @covers Zend\Db\Sql\Ddl\DropTable::getSqlString
+     * @covers \Zend\Db\Sql\Ddl\DropTable::getSqlString
      */
     public function testGetSqlString()
     {
         $dt = new DropTable('foo');
-        $this->assertEquals('DROP TABLE "foo"', $dt->getSqlString());
+        self::assertEquals('DROP TABLE "foo"', $dt->getSqlString());
     }
 }

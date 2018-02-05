@@ -19,12 +19,12 @@ class IbmDb2IntegrationTest extends AbstractIntegrationTest
 {
     /**
      * @group integration-ibm_db2
-     * @covers Zend\Db\Adapter\Driver\IbmDb2\IbmDb2::checkEnvironment
+     * @covers \Zend\Db\Adapter\Driver\IbmDb2\IbmDb2::checkEnvironment
      */
     public function testCheckEnvironment()
     {
         $ibmdb2 = new IbmDb2([]);
-        $this->assertNull($ibmdb2->checkEnvironment());
+        self::assertNull($ibmdb2->checkEnvironment());
     }
 
     public function testCreateStatement()
@@ -42,13 +42,14 @@ class IbmDb2IntegrationTest extends AbstractIntegrationTest
         $driver->getConnection()->setResource($resource);
 
         $stmt = $driver->createStatement('SELECT 1 FROM SYSIBM.SYSDUMMY1');
-        $this->assertInstanceOf('Zend\Db\Adapter\Driver\IbmDb2\Statement', $stmt);
+        self::assertInstanceOf('Zend\Db\Adapter\Driver\IbmDb2\Statement', $stmt);
         $stmt = $driver->createStatement($stmtResource);
-        $this->assertInstanceOf('Zend\Db\Adapter\Driver\IbmDb2\Statement', $stmt);
+        self::assertInstanceOf('Zend\Db\Adapter\Driver\IbmDb2\Statement', $stmt);
         $stmt = $driver->createStatement();
-        $this->assertInstanceOf('Zend\Db\Adapter\Driver\IbmDb2\Statement', $stmt);
+        self::assertInstanceOf('Zend\Db\Adapter\Driver\IbmDb2\Statement', $stmt);
 
-        $this->setExpectedException('Zend\Db\Adapter\Exception\InvalidArgumentException', 'only accepts an SQL string or an ibm_db2 resource');
+        $this->expectException('Zend\Db\Adapter\Exception\InvalidArgumentException');
+        $this->expectExceptionMessage('only accepts an SQL string or an ibm_db2 resource');
         $driver->createStatement(new \stdClass);
     }
 }

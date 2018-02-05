@@ -6,7 +6,7 @@ title: Mount Manager
 
 # Mount Manager
 
-Flysystem comes with an wrapper class to easily work with multiple file system instances
+Flysystem comes with a wrapper class to easily work with multiple file system instances
 from a single object. The `League\Flysystem\MountManager` is an easy to use container allowing
 you to simplify more complex cross file system interactions.
 

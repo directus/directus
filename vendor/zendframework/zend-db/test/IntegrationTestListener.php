@@ -10,12 +10,13 @@
 namespace ZendTest\Db;
 
 use Exception;
-use PHPUnit_Framework_AssertionFailedError;
-use PHPUnit_Framework_Test;
-use PHPUnit_Framework_TestListener;
-use PHPUnit_Framework_TestSuite;
+use PHPUnit\Framework\TestListener;
+use PHPUnit\Framework\Warning;
+use PHPUnit_Framework_AssertionFailedError as AssertionFailedError;
+use PHPUnit_Framework_Test as Test;
+use PHPUnit_Framework_TestSuite as TestSuite;
 
-class IntegrationTestListener implements PHPUnit_Framework_TestListener
+class IntegrationTestListener implements TestListener
 {
     protected $adapters = [
         'mysqli' => null,
@@ -29,7 +30,7 @@ class IntegrationTestListener implements PHPUnit_Framework_TestListener
 
     public function __construct()
     {
-        if (getenv('TESTS_ZEND_DB_ADAPTER_DRIVER_MYSQL_HOSTNAME')) {
+        if (getenv('TESTS_ZEND_DB_ADAPTER_DRIVER_MYSQL')) {
             if (extension_loaded('mysqli')) {
                 $this->adapters['mysqli'] = new \mysqli(
                     getenv('TESTS_ZEND_DB_ADAPTER_DRIVER_MYSQL_HOSTNAME'),
@@ -40,13 +41,14 @@ class IntegrationTestListener implements PHPUnit_Framework_TestListener
             }
             if (extension_loaded('pdo')) {
                 $this->adapters['pdo_mysql'] = new \Pdo(
-                    'mysql:host=' . getenv('TESTS_ZEND_DB_ADAPTER_DRIVER_MYSQL_HOSTNAME') . ';dbname=' . getenv('TESTS_ZEND_DB_ADAPTER_DRIVER_MYSQL_DATABASE'),
+                    'mysql:host=' . getenv('TESTS_ZEND_DB_ADAPTER_DRIVER_MYSQL_HOSTNAME') . ';dbname='
+                    . getenv('TESTS_ZEND_DB_ADAPTER_DRIVER_MYSQL_DATABASE'),
                     getenv('TESTS_ZEND_DB_ADAPTER_DRIVER_MYSQL_USERNAME'),
                     getenv('TESTS_ZEND_DB_ADAPTER_DRIVER_MYSQL_PASSWORD')
                 );
             }
         }
-        if (getenv('TESTS_ZEND_DB_ADAPTER_DRIVER_PGSQL_HOSTNAME')) {
+        if (getenv('TESTS_ZEND_DB_ADAPTER_DRIVER_PGSQL')) {
             if (extension_loaded('pgsql')) {
                 $this->adapters['pgsql'] = pg_connect(
                     'host=' . getenv('TESTS_ZEND_DB_ADAPTER_DRIVER_PGSQL_HOSTNAME')
@@ -57,7 +59,8 @@ class IntegrationTestListener implements PHPUnit_Framework_TestListener
             }
             if (extension_loaded('pdo')) {
                 $this->adapters['pdo_pgsql'] = new \Pdo(
-                    'pgsql:host=' . getenv('TESTS_ZEND_DB_ADAPTER_DRIVER_PGSQL_HOSTNAME') . ';dbname=' . getenv('TESTS_ZEND_DB_ADAPTER_DRIVER_PGSQL_DATABASE'),
+                    'pgsql:host=' . getenv('TESTS_ZEND_DB_ADAPTER_DRIVER_PGSQL_HOSTNAME') . ';dbname='
+                    . getenv('TESTS_ZEND_DB_ADAPTER_DRIVER_PGSQL_DATABASE'),
                     getenv('TESTS_ZEND_DB_ADAPTER_DRIVER_PGSQL_USERNAME'),
                     getenv('TESTS_ZEND_DB_ADAPTER_DRIVER_PGSQL_PASSWORD')
                 );
@@ -70,18 +73,17 @@ class IntegrationTestListener implements PHPUnit_Framework_TestListener
                 );
             }
         }
-        if (getenv('TESTS_ZEND_DB_ADAPTER_DRIVER_SQLSRV_HOSTNAME')) {
+        if (getenv('TESTS_ZEND_DB_ADAPTER_DRIVER_SQLSRV')) {
             if (extension_loaded('sqlsrv')) {
                 $this->adapters['sqlsrv'] = sqlsrv_connect(
                     getenv('TESTS_ZEND_DB_ADAPTER_DRIVER_SQLSRV_HOSTNAME'),
                     [
                         'UID' => getenv('TESTS_ZEND_DB_ADAPTER_DRIVER_SQLSRV_USERNAME'),
                         'PWD' => getenv('TESTS_ZEND_DB_ADAPTER_DRIVER_SQLSRV_PASSWORD'),
-                        'Database' => (getenv('TESTS_ZEND_DB_ADAPTER_DRIVER_SQLSRV_DATABASE')
-                            ? : null)
+                        'Database' => (getenv('TESTS_ZEND_DB_ADAPTER_DRIVER_SQLSRV_DATABASE') ? : null),
                     ]
                 );
-                if (!$this->adapters['sqlsrv']) {
+                if (! $this->adapters['sqlsrv']) {
                     var_dump(sqlsrv_errors());
                     exit;
                 }
@@ -89,8 +91,7 @@ class IntegrationTestListener implements PHPUnit_Framework_TestListener
             if (extension_loaded('pdo')) {
                 $this->adapters['pdo_sqlsrv'] = new \Pdo(
                     'sqlsrv:Server=' . getenv('TESTS_ZEND_DB_ADAPTER_DRIVER_SQLSRV_HOSTNAME')
-                        . ';Database=' . (getenv('TESTS_ZEND_DB_ADAPTER_DRIVER_SQLSRV_DATABASE')
-                            ?  : null),
+                        . ';Database=' . (getenv('TESTS_ZEND_DB_ADAPTER_DRIVER_SQLSRV_DATABASE') ? : null),
                     getenv('TESTS_ZEND_DB_ADAPTER_DRIVER_SQLSRV_USERNAME'),
                     getenv('TESTS_ZEND_DB_ADAPTER_DRIVER_SQLSRV_PASSWORD')
                 );
@@ -99,36 +100,46 @@ class IntegrationTestListener implements PHPUnit_Framework_TestListener
     }
 
     /** methods required for the listener interface compliance */
-    public function addError(PHPUnit_Framework_Test $test, Exception $e, $time)
+    public function addError(Test $test, Exception $e, $time)
     {
     }
-    public function addFailure(PHPUnit_Framework_Test $test, PHPUnit_Framework_AssertionFailedError $e, $time)
+
+    public function addWarning(Test $test, Warning $e, $time)
     {
     }
-    public function addIncompleteTest(PHPUnit_Framework_Test $test, Exception $e, $time)
+
+    public function addFailure(Test $test, AssertionFailedError $e, $time)
     {
     }
-    public function addSkippedTest(PHPUnit_Framework_Test $test, Exception $e, $time)
+
+    public function addIncompleteTest(Test $test, Exception $e, $time)
     {
     }
-    public function startTestSuite(PHPUnit_Framework_TestSuite $suite)
+
+    public function addSkippedTest(Test $test, Exception $e, $time)
     {
     }
-    public function endTestSuite(PHPUnit_Framework_TestSuite $suite)
+
+    public function startTestSuite(TestSuite $suite)
     {
     }
-    public function addRiskyTest(PHPUnit_Framework_Test $test, Exception $e, $time)
+
+    public function endTestSuite(TestSuite $suite)
+    {
+    }
+
+    public function addRiskyTest(Test $test, Exception $e, $time)
     {
     } // Support PHPUnit 3.8+
 
     /**
      * A test started.
      *
-     * @param  PHPUnit_Framework_Test $test
+     * @param Test $test
      */
-    public function startTest(PHPUnit_Framework_Test $test)
+    public function startTest(Test $test)
     {
-        /** @var $test \PHPUnit_Framework_TestCase */
+        /** @var $test \PHPUnit\Framework\TestCase */
         $testcase = get_class($test);
         if (strpos($testcase, 'ZendTest\Db') === 0 && strpos($testcase, 'Integration')) {
             $refObj = new \ReflectionObject($test);
@@ -143,12 +154,12 @@ class IntegrationTestListener implements PHPUnit_Framework_TestListener
     /**
      * A test ended.
      *
-     * @param  PHPUnit_Framework_Test $test
-     * @param  float                  $time
+     * @param Test $test
+     * @param float $time
      */
-    public function endTest(PHPUnit_Framework_Test $test, $time)
+    public function endTest(Test $test, $time)
     {
-        /** @var $test \PHPUnit_Framework_TestCase */
+        /** @var $test \PHPUnit\Framework\TestCase */
         $testcase = get_class($test);
         if (strpos($testcase, 'ZendTest\Db') === 0 && strpos($testcase, 'Integration')) {
             $refObj = new \ReflectionObject($test);

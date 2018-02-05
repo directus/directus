@@ -9,9 +9,11 @@
 
 namespace ZendTest\Db\Adapter\Platform;
 
+use PHPUnit\Framework\Error;
+use PHPUnit\Framework\TestCase;
 use Zend\Db\Adapter\Platform\Oracle;
 
-class OracleTest extends \PHPUnit_Framework_TestCase
+class OracleTest extends TestCase
 {
     /**
      * @var Oracle
@@ -28,19 +30,19 @@ class OracleTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Zend\Db\Adapter\Platform\Oracle::__construct
+     * @covers \Zend\Db\Adapter\Platform\Oracle::__construct
      */
     public function testContructWithOptions()
     {
-        $this->assertEquals('"\'test\'.\'test\'"', $this->platform->quoteIdentifier('"test"."test"'));
-        $plataform1 = new Oracle(['quote_identifiers'=> false]);
-        $this->assertEquals('"test"."test"', $plataform1->quoteIdentifier('"test"."test"'));
-        $plataform2 = new Oracle(['quote_identifiers'=> 'false']);
-        $this->assertEquals('"test"."test"', $plataform2->quoteIdentifier('"test"."test"'));
+        self::assertEquals('"\'test\'.\'test\'"', $this->platform->quoteIdentifier('"test"."test"'));
+        $plataform1 = new Oracle(['quote_identifiers' => false]);
+        self::assertEquals('"test"."test"', $plataform1->quoteIdentifier('"test"."test"'));
+        $plataform2 = new Oracle(['quote_identifiers' => 'false']);
+        self::assertEquals('"test"."test"', $plataform2->quoteIdentifier('"test"."test"'));
     }
 
     /**
-     * @covers Zend\Db\Adapter\Platform\Oracle::__construct
+     * @covers \Zend\Db\Adapter\Platform\Oracle::__construct
      */
     public function testContructWithDriver()
     {
@@ -54,11 +56,11 @@ class OracleTest extends \PHPUnit_Framework_TestCase
             []
         );
         $platform = new Oracle([], $mockDriver);
-        $this->assertEquals($mockDriver, $platform->getDriver());
+        self::assertEquals($mockDriver, $platform->getDriver());
     }
 
     /**
-     * @covers Zend\Db\Adapter\Platform\Oracle::setDriver
+     * @covers \Zend\Db\Adapter\Platform\Oracle::setDriver
      */
     public function testSetDriver()
     {
@@ -72,84 +74,86 @@ class OracleTest extends \PHPUnit_Framework_TestCase
             []
         );
         $platform = $this->platform->setDriver($mockDriver);
-        $this->assertEquals($mockDriver, $platform->getDriver());
+        self::assertEquals($mockDriver, $platform->getDriver());
     }
 
     /**
-     * @covers Zend\Db\Adapter\Platform\Oracle::setDriver
-     * @expectedException Zend\Db\Adapter\Exception\InvalidArgumentException
-     * @expectedMessage $driver must be a Oci8 or Oracle PDO Zend\Db\Adapter\Driver, Oci8 instance or Oci PDO instance
+     * @covers \Zend\Db\Adapter\Platform\Oracle::setDriver
      */
     public function testSetDriverInvalid()
     {
+        $this->expectException('Zend\Db\Adapter\Exception\InvalidArgumentException');
+        $this->expectExceptionMessage(
+            '$driver must be a Oci8 or Oracle PDO Zend\Db\Adapter\Driver, Oci8 instance, or Oci PDO instance'
+        );
         $this->platform->setDriver(null);
     }
 
     /**
-     * @covers Zend\Db\Adapter\Platform\Oracle::getDriver
+     * @covers \Zend\Db\Adapter\Platform\Oracle::getDriver
      */
     public function testGetDriver()
     {
-        $this->assertNull($this->platform->getDriver());
+        self::assertNull($this->platform->getDriver());
     }
 
     /**
-     * @covers Zend\Db\Adapter\Platform\Oracle::getName
+     * @covers \Zend\Db\Adapter\Platform\Oracle::getName
      */
     public function testGetName()
     {
-        $this->assertEquals('Oracle', $this->platform->getName());
+        self::assertEquals('Oracle', $this->platform->getName());
     }
 
     /**
-     * @covers Zend\Db\Adapter\Platform\Oracle::getQuoteIdentifierSymbol
+     * @covers \Zend\Db\Adapter\Platform\Oracle::getQuoteIdentifierSymbol
      */
     public function testGetQuoteIdentifierSymbol()
     {
-        $this->assertEquals('"', $this->platform->getQuoteIdentifierSymbol());
+        self::assertEquals('"', $this->platform->getQuoteIdentifierSymbol());
     }
 
     /**
-     * @covers Zend\Db\Adapter\Platform\Oracle::quoteIdentifier
+     * @covers \Zend\Db\Adapter\Platform\Oracle::quoteIdentifier
      */
     public function testQuoteIdentifier()
     {
-        $this->assertEquals('"identifier"', $this->platform->quoteIdentifier('identifier'));
+        self::assertEquals('"identifier"', $this->platform->quoteIdentifier('identifier'));
 
         $platform = new Oracle(['quote_identifiers' => false]);
-        $this->assertEquals('identifier', $platform->quoteIdentifier('identifier'));
+        self::assertEquals('identifier', $platform->quoteIdentifier('identifier'));
     }
 
     /**
-     * @covers Zend\Db\Adapter\Platform\Oracle::quoteIdentifierChain
+     * @covers \Zend\Db\Adapter\Platform\Oracle::quoteIdentifierChain
      */
     public function testQuoteIdentifierChain()
     {
-        $this->assertEquals('"identifier"', $this->platform->quoteIdentifierChain('identifier'));
-        $this->assertEquals('"identifier"', $this->platform->quoteIdentifierChain(['identifier']));
-        $this->assertEquals('"schema"."identifier"', $this->platform->quoteIdentifierChain(['schema', 'identifier']));
+        self::assertEquals('"identifier"', $this->platform->quoteIdentifierChain('identifier'));
+        self::assertEquals('"identifier"', $this->platform->quoteIdentifierChain(['identifier']));
+        self::assertEquals('"schema"."identifier"', $this->platform->quoteIdentifierChain(['schema', 'identifier']));
 
         $platform = new Oracle(['quote_identifiers' => false]);
-        $this->assertEquals('identifier', $platform->quoteIdentifierChain('identifier'));
-        $this->assertEquals('identifier', $platform->quoteIdentifierChain(['identifier']));
-        $this->assertEquals('schema.identifier', $platform->quoteIdentifierChain(['schema', 'identifier']));
+        self::assertEquals('identifier', $platform->quoteIdentifierChain('identifier'));
+        self::assertEquals('identifier', $platform->quoteIdentifierChain(['identifier']));
+        self::assertEquals('schema.identifier', $platform->quoteIdentifierChain(['schema', 'identifier']));
     }
 
     /**
-     * @covers Zend\Db\Adapter\Platform\Oracle::getQuoteValueSymbol
+     * @covers \Zend\Db\Adapter\Platform\Oracle::getQuoteValueSymbol
      */
     public function testGetQuoteValueSymbol()
     {
-        $this->assertEquals("'", $this->platform->getQuoteValueSymbol());
+        self::assertEquals("'", $this->platform->getQuoteValueSymbol());
     }
 
     /**
-     * @covers Zend\Db\Adapter\Platform\Oracle::quoteValue
+     * @covers \Zend\Db\Adapter\Platform\Oracle::quoteValue
      */
     public function testQuoteValueRaisesNoticeWithoutPlatformSupport()
     {
-        $this->setExpectedException(
-            'PHPUnit_Framework_Error_Notice',
+        $this->expectException(Error\Notice::class);
+        $this->expectExceptionMessage(
             'Attempting to quote a value in Zend\Db\Adapter\Platform\Oracle without '
             . 'extension/driver support can introduce security vulnerabilities in a production environment'
         );
@@ -157,82 +161,82 @@ class OracleTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Zend\Db\Adapter\Platform\Oracle::quoteValue
+     * @covers \Zend\Db\Adapter\Platform\Oracle::quoteValue
      */
     public function testQuoteValue()
     {
-        $this->assertEquals("'value'", @$this->platform->quoteValue('value'));
-        $this->assertEquals("'Foo O''Bar'", @$this->platform->quoteValue("Foo O'Bar"));
-        $this->assertEquals(
+        self::assertEquals("'value'", @$this->platform->quoteValue('value'));
+        self::assertEquals("'Foo O''Bar'", @$this->platform->quoteValue("Foo O'Bar"));
+        self::assertEquals(
             '\'\'\'; DELETE FROM some_table; -- \'',
             @$this->platform->quoteValue('\'; DELETE FROM some_table; -- ')
         );
-        $this->assertEquals(
+        self::assertEquals(
             "'\\''; DELETE FROM some_table; -- '",
             @$this->platform->quoteValue('\\\'; DELETE FROM some_table; -- ')
         );
     }
 
     /**
-     * @covers Zend\Db\Adapter\Platform\Oracle::quoteTrustedValue
+     * @covers \Zend\Db\Adapter\Platform\Oracle::quoteTrustedValue
      */
     public function testQuoteTrustedValue()
     {
-        $this->assertEquals("'value'", $this->platform->quoteTrustedValue('value'));
-        $this->assertEquals("'Foo O''Bar'", $this->platform->quoteTrustedValue("Foo O'Bar"));
-        $this->assertEquals(
+        self::assertEquals("'value'", $this->platform->quoteTrustedValue('value'));
+        self::assertEquals("'Foo O''Bar'", $this->platform->quoteTrustedValue("Foo O'Bar"));
+        self::assertEquals(
             '\'\'\'; DELETE FROM some_table; -- \'',
             $this->platform->quoteTrustedValue('\'; DELETE FROM some_table; -- ')
         );
 
         //                   '\\\'; DELETE FROM some_table; -- '  <- actual below
-        $this->assertEquals(
+        self::assertEquals(
             "'\\''; DELETE FROM some_table; -- '",
             $this->platform->quoteTrustedValue('\\\'; DELETE FROM some_table; -- ')
         );
     }
 
     /**
-     * @covers Zend\Db\Adapter\Platform\Oracle::quoteValueList
+     * @covers \Zend\Db\Adapter\Platform\Oracle::quoteValueList
      */
     public function testQuoteValueList()
     {
-        $this->setExpectedException(
-            'PHPUnit_Framework_Error',
+        $this->expectException(Error\Error::class);
+        $this->expectExceptionMessage(
             'Attempting to quote a value in Zend\Db\Adapter\Platform\Oracle without '
             . 'extension/driver support can introduce security vulnerabilities in a production environment'
         );
-        $this->assertEquals("'Foo O''Bar'", $this->platform->quoteValueList("Foo O'Bar"));
+        self::assertEquals("'Foo O''Bar'", $this->platform->quoteValueList("Foo O'Bar"));
     }
 
     /**
-     * @covers Zend\Db\Adapter\Platform\Oracle::getIdentifierSeparator
+     * @covers \Zend\Db\Adapter\Platform\Oracle::getIdentifierSeparator
      */
     public function testGetIdentifierSeparator()
     {
-        $this->assertEquals('.', $this->platform->getIdentifierSeparator());
+        self::assertEquals('.', $this->platform->getIdentifierSeparator());
     }
 
     /**
-     * @covers Zend\Db\Adapter\Platform\Oracle::quoteIdentifierInFragment
+     * @covers \Zend\Db\Adapter\Platform\Oracle::quoteIdentifierInFragment
      */
     public function testQuoteIdentifierInFragment()
     {
-        $this->assertEquals('"foo"."bar"', $this->platform->quoteIdentifierInFragment('foo.bar'));
-        $this->assertEquals('"foo" as "bar"', $this->platform->quoteIdentifierInFragment('foo as bar'));
+        self::assertEquals('"foo"."bar"', $this->platform->quoteIdentifierInFragment('foo.bar'));
+        self::assertEquals('"foo" as "bar"', $this->platform->quoteIdentifierInFragment('foo as bar'));
 
         $platform = new Oracle(['quote_identifiers' => false]);
-        $this->assertEquals('foo.bar', $platform->quoteIdentifierInFragment('foo.bar'));
-        $this->assertEquals('foo as bar', $platform->quoteIdentifierInFragment('foo as bar'));
+        self::assertEquals('foo.bar', $platform->quoteIdentifierInFragment('foo.bar'));
+        self::assertEquals('foo as bar', $platform->quoteIdentifierInFragment('foo as bar'));
 
         // single char words
-        $this->assertEquals(
+        self::assertEquals(
             '("foo"."bar" = "boo"."baz")',
             $this->platform->quoteIdentifierInFragment('(foo.bar = boo.baz)', ['(', ')', '='])
         );
 
         // case insensitive safe words
-        $this->assertEquals(
+        self::assertEquals(
             '("foo"."bar" = "boo"."baz") AND ("foo"."baz" = "boo"."baz")',
             $this->platform->quoteIdentifierInFragment(
                 '(foo.bar = boo.baz) AND (foo.baz = boo.baz)',
@@ -241,7 +245,7 @@ class OracleTest extends \PHPUnit_Framework_TestCase
         );
 
         // case insensitive safe words in field
-        $this->assertEquals(
+        self::assertEquals(
             '("foo"."bar" = "boo".baz) AND ("foo".baz = "boo".baz)',
             $this->platform->quoteIdentifierInFragment(
                 '(foo.bar = boo.baz) AND (foo.baz = boo.baz)',

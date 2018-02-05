@@ -9,24 +9,29 @@
 
 namespace ZendTest\Db\Sql\Ddl\Column;
 
+use PHPUnit\Framework\TestCase;
 use Zend\Db\Sql\Ddl\Column\Varchar;
 
-class VarcharTest extends \PHPUnit_Framework_TestCase
+class VarcharTest extends TestCase
 {
     /**
-     * @covers Zend\Db\Sql\Ddl\Column\Varchar::getExpressionData
+     * @covers \Zend\Db\Sql\Ddl\Column\Varchar::getExpressionData
      */
     public function testGetExpressionData()
     {
         $column = new Varchar('foo', 20);
-        $this->assertEquals(
+        self::assertEquals(
             [['%s %s NOT NULL', ['foo', 'VARCHAR(20)'], [$column::TYPE_IDENTIFIER, $column::TYPE_LITERAL]]],
             $column->getExpressionData()
         );
 
         $column->setDefault('bar');
-        $this->assertEquals(
-            [['%s %s NOT NULL DEFAULT %s', ['foo', 'VARCHAR(20)', 'bar'], [$column::TYPE_IDENTIFIER, $column::TYPE_LITERAL, $column::TYPE_VALUE]]],
+        self::assertEquals(
+            [[
+                '%s %s NOT NULL DEFAULT %s',
+                ['foo', 'VARCHAR(20)', 'bar'],
+                [$column::TYPE_IDENTIFIER, $column::TYPE_LITERAL, $column::TYPE_VALUE],
+            ]],
             $column->getExpressionData()
         );
     }

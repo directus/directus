@@ -76,7 +76,11 @@ class IbmDb2 extends AbstractPlatform
     public function quoteIdentifierChain($identifierChain)
     {
         if ($this->quoteIdentifiers === false) {
-            return (is_array($identifierChain)) ? implode($this->identifierSeparator, $identifierChain) : $identifierChain;
+            if (is_array($identifierChain)) {
+                return implode($this->identifierSeparator, $identifierChain);
+            } else {
+                return $identifierChain;
+            }
         }
         $identifierChain = str_replace('"', '\\"', $identifierChain);
         if (is_array($identifierChain)) {

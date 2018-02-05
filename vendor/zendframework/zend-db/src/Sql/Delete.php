@@ -71,7 +71,7 @@ class Delete extends AbstractPreparableSql
      * Create from statement
      *
      * @param  string|TableIdentifier $table
-     * @return Delete
+     * @return self Provides a fluent interface
      */
     public function from($table)
     {
@@ -101,7 +101,7 @@ class Delete extends AbstractPreparableSql
      * @param  Where|\Closure|string|array $predicate
      * @param  string $combination One of the OP_* constants from Predicate\PredicateSet
      *
-     * @return Delete
+     * @return self Provides a fluent interface
      */
     public function where($predicate, $combination = Predicate\PredicateSet::OP_AND)
     {
@@ -120,8 +120,11 @@ class Delete extends AbstractPreparableSql
      *
      * @return string
      */
-    protected function processDelete(PlatformInterface $platform, DriverInterface $driver = null, ParameterContainer $parameterContainer = null)
-    {
+    protected function processDelete(
+        PlatformInterface $platform,
+        DriverInterface $driver = null,
+        ParameterContainer $parameterContainer = null
+    ) {
         return sprintf(
             $this->specifications[static::SPECIFICATION_DELETE],
             $this->resolveTable($this->table, $platform, $driver, $parameterContainer)
@@ -135,8 +138,11 @@ class Delete extends AbstractPreparableSql
      *
      * @return null|string
      */
-    protected function processWhere(PlatformInterface $platform, DriverInterface $driver = null, ParameterContainer $parameterContainer = null)
-    {
+    protected function processWhere(
+        PlatformInterface $platform,
+        DriverInterface $driver = null,
+        ParameterContainer $parameterContainer = null
+    ) {
         if ($this->where->count() == 0) {
             return;
         }

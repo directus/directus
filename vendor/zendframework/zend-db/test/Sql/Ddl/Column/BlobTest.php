@@ -9,17 +9,18 @@
 
 namespace ZendTest\Db\Sql\Ddl\Column;
 
+use PHPUnit\Framework\TestCase;
 use Zend\Db\Sql\Ddl\Column\Blob;
 
-class BlobTest extends \PHPUnit_Framework_TestCase
+class BlobTest extends TestCase
 {
     /**
-     * @covers Zend\Db\Sql\Ddl\Column\Blob::getExpressionData
+     * @covers \Zend\Db\Sql\Ddl\Column\Blob::getExpressionData
      */
     public function testGetExpressionData()
     {
         $column = new Blob('foo');
-        $this->assertEquals(
+        self::assertEquals(
             [['%s %s NOT NULL', ['foo', 'BLOB'], [$column::TYPE_IDENTIFIER, $column::TYPE_LITERAL]]],
             $column->getExpressionData()
         );

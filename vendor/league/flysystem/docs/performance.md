@@ -12,10 +12,10 @@ will make extra calls to assert whether or not a file exists. This improves the 
 but also impacts performance. You can opt out of this behaviour.
 
 ~~~ php
-new League\Flysystem\Config;
-new League\Flysystem\Filesystem;
+use League\Flysystem\Config;
+use League\Flysystem\Filesystem;
 
-$local = Filesystem($localAdapter, new Config([
+$local = new Filesystem($localAdapter, new Config([
     'disable_asserts' => true,
 ]));
 ~~~

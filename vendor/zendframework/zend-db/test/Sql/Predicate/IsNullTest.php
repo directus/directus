@@ -9,7 +9,7 @@
 
 namespace ZendTest\Db\Sql\Predicate;
 
-use PHPUnit_Framework_TestCase as TestCase;
+use PHPUnit\Framework\TestCase;
 use Zend\Db\Sql\Predicate\IsNotNull;
 
 class IsNullTest extends TestCase
@@ -17,34 +17,34 @@ class IsNullTest extends TestCase
     public function testEmptyConstructorYieldsNullIdentifier()
     {
         $isNotNull = new IsNotNull();
-        $this->assertNull($isNotNull->getIdentifier());
+        self::assertNull($isNotNull->getIdentifier());
     }
 
     public function testSpecificationHasSaneDefaultValue()
     {
         $isNotNull = new IsNotNull();
-        $this->assertEquals('%1$s IS NOT NULL', $isNotNull->getSpecification());
+        self::assertEquals('%1$s IS NOT NULL', $isNotNull->getSpecification());
     }
 
     public function testCanPassIdentifierToConstructor()
     {
         $isNotNull = new IsNotNull();
         $isnull = new IsNotNull('foo.bar');
-        $this->assertEquals('foo.bar', $isnull->getIdentifier());
+        self::assertEquals('foo.bar', $isnull->getIdentifier());
     }
 
     public function testIdentifierIsMutable()
     {
         $isNotNull = new IsNotNull();
         $isNotNull->setIdentifier('foo.bar');
-        $this->assertEquals('foo.bar', $isNotNull->getIdentifier());
+        self::assertEquals('foo.bar', $isNotNull->getIdentifier());
     }
 
     public function testSpecificationIsMutable()
     {
         $isNotNull = new IsNotNull();
         $isNotNull->setSpecification('%1$s NOT NULL');
-        $this->assertEquals('%1$s NOT NULL', $isNotNull->getSpecification());
+        self::assertEquals('%1$s NOT NULL', $isNotNull->getSpecification());
     }
 
     public function testRetrievingWherePartsReturnsSpecificationArrayOfIdentifierAndArrayOfTypes()
@@ -56,6 +56,6 @@ class IsNullTest extends TestCase
             ['foo.bar'],
             [IsNotNull::TYPE_IDENTIFIER],
         ]];
-        $this->assertEquals($expected, $isNotNull->getExpressionData());
+        self::assertEquals($expected, $isNotNull->getExpressionData());
     }
 }

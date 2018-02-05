@@ -9,15 +9,16 @@
 
 namespace ZendTest\Db\Adapter\Driver\Oci8;
 
-use Zend\Db\Adapter\Driver\Oci8\Statement;
+use PHPUnit\Framework\TestCase;
 use Zend\Db\Adapter\Driver\Oci8\Oci8;
+use Zend\Db\Adapter\Driver\Oci8\Statement;
 use Zend\Db\Adapter\ParameterContainer;
 use Zend\Db\Adapter\Profiler\Profiler;
 
 /**
  * @group integrationOracle
  */
-class StatementTest extends \PHPUnit_Framework_TestCase
+class StatementTest extends TestCase
 {
     /**
      * @var Statement
@@ -42,70 +43,70 @@ class StatementTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Zend\Db\Adapter\Driver\Oci8\Statement::setDriver
+     * @covers \Zend\Db\Adapter\Driver\Oci8\Statement::setDriver
      */
     public function testSetDriver()
     {
-        $this->assertEquals($this->statement, $this->statement->setDriver(new Oci8([])));
+        self::assertEquals($this->statement, $this->statement->setDriver(new Oci8([])));
     }
 
     /**
-     * @covers Zend\Db\Adapter\Driver\Oci8\Statement::setProfiler
+     * @covers \Zend\Db\Adapter\Driver\Oci8\Statement::setProfiler
      */
     public function testSetProfiler()
     {
-        $this->assertEquals($this->statement, $this->statement->setProfiler(new Profiler()));
+        self::assertEquals($this->statement, $this->statement->setProfiler(new Profiler()));
     }
 
     /**
-     * @covers Zend\Db\Adapter\Driver\Oci8\Statement::getProfiler
+     * @covers \Zend\Db\Adapter\Driver\Oci8\Statement::getProfiler
      */
     public function testGetProfiler()
     {
         $profiler = new Profiler();
         $this->statement->setProfiler($profiler);
-        $this->assertEquals($profiler, $this->statement->getProfiler());
+        self::assertEquals($profiler, $this->statement->getProfiler());
     }
 
     /**
-     * @covers Zend\Db\Adapter\Driver\Oci8\Statement::initialize
+     * @covers \Zend\Db\Adapter\Driver\Oci8\Statement::initialize
      */
     public function testInitialize()
     {
         $oci8 = new Oci8([]);
-        $this->assertEquals($this->statement, $this->statement->initialize($oci8));
+        self::assertEquals($this->statement, $this->statement->initialize($oci8));
     }
 
     /**
-     * @covers Zend\Db\Adapter\Driver\Oci8\Statement::setSql
+     * @covers \Zend\Db\Adapter\Driver\Oci8\Statement::setSql
      */
     public function testSetSql()
     {
-        $this->assertEquals($this->statement, $this->statement->setSql('select * from table'));
-        $this->assertEquals('select * from table', $this->statement->getSql());
+        self::assertEquals($this->statement, $this->statement->setSql('select * from table'));
+        self::assertEquals('select * from table', $this->statement->getSql());
     }
 
     /**
-     * @covers Zend\Db\Adapter\Driver\Oci8\Statement::setParameterContainer
+     * @covers \Zend\Db\Adapter\Driver\Oci8\Statement::setParameterContainer
      */
     public function testSetParameterContainer()
     {
-        $this->assertSame($this->statement, $this->statement->setParameterContainer(new ParameterContainer));
+        self::assertSame($this->statement, $this->statement->setParameterContainer(new ParameterContainer));
     }
 
     /**
-     * @covers Zend\Db\Adapter\Driver\Oci8\Statement::getParameterContainer
+     * @covers \Zend\Db\Adapter\Driver\Oci8\Statement::getParameterContainer
      * @todo   Implement testGetParameterContainer().
      */
     public function testGetParameterContainer()
     {
         $container = new ParameterContainer;
         $this->statement->setParameterContainer($container);
-        $this->assertSame($container, $this->statement->getParameterContainer());
+        self::assertSame($container, $this->statement->getParameterContainer());
     }
 
     /**
-     * @covers Zend\Db\Adapter\Driver\Oci8\Statement::getResource
+     * @covers \Zend\Db\Adapter\Driver\Oci8\Statement::getResource
      * @todo   Implement testGetResource().
      */
     public function testGetResource()
@@ -117,17 +118,17 @@ class StatementTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Zend\Db\Adapter\Driver\Oci8\Statement::getSql
+     * @covers \Zend\Db\Adapter\Driver\Oci8\Statement::getSql
      * @todo   Implement testGetSql().
      */
     public function testGetSql()
     {
-        $this->assertEquals($this->statement, $this->statement->setSql('select * from table'));
-        $this->assertEquals('select * from table', $this->statement->getSql());
+        self::assertEquals($this->statement, $this->statement->setSql('select * from table'));
+        self::assertEquals('select * from table', $this->statement->getSql());
     }
 
     /**
-     * @covers Zend\Db\Adapter\Driver\Oci8\Statement::prepare
+     * @covers \Zend\Db\Adapter\Driver\Oci8\Statement::prepare
      * @todo   Implement testPrepare().
      */
     public function testPrepare()
@@ -139,15 +140,15 @@ class StatementTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Zend\Db\Adapter\Driver\Oci8\Statement::isPrepared
+     * @covers \Zend\Db\Adapter\Driver\Oci8\Statement::isPrepared
      */
     public function testIsPrepared()
     {
-        $this->assertFalse($this->statement->isPrepared());
+        self::assertFalse($this->statement->isPrepared());
     }
 
     /**
-     * @covers Zend\Db\Adapter\Driver\Oci8\Statement::execute
+     * @covers \Zend\Db\Adapter\Driver\Oci8\Statement::execute
      * @todo   Implement testExecute().
      */
     public function testExecute()

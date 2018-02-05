@@ -9,17 +9,18 @@
 
 namespace ZendTest\Db\Sql\Ddl\Column;
 
+use PHPUnit\Framework\TestCase;
 use Zend\Db\Sql\Ddl\Column\Char;
 
-class CharTest extends \PHPUnit_Framework_TestCase
+class CharTest extends TestCase
 {
     /**
-     * @covers Zend\Db\Sql\Ddl\Column\Char::getExpressionData
+     * @covers \Zend\Db\Sql\Ddl\Column\Char::getExpressionData
      */
     public function testGetExpressionData()
     {
         $column = new Char('foo', 20);
-        $this->assertEquals(
+        self::assertEquals(
             [['%s %s NOT NULL', ['foo', 'CHAR(20)'], [$column::TYPE_IDENTIFIER, $column::TYPE_LITERAL]]],
             $column->getExpressionData()
         );

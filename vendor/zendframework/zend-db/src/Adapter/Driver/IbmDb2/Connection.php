@@ -56,7 +56,7 @@ class Connection extends AbstractConnection
      * Set driver
      *
      * @param  IbmDb2 $driver
-     * @return self
+     * @return self Provides a fluent interface
      */
     public function setDriver(IbmDb2 $driver)
     {
@@ -67,11 +67,11 @@ class Connection extends AbstractConnection
 
     /**
      * @param  resource $resource DB2 resource
-     * @return self
+     * @return self Provides a fluent interface
      */
     public function setResource($resource)
     {
-        if (!is_resource($resource) || get_resource_type($resource) !== 'DB2 Connection') {
+        if (! is_resource($resource) || get_resource_type($resource) !== 'DB2 Connection') {
             throw new Exception\InvalidArgumentException('The resource provided must be of type "DB2 Connection"');
         }
         $this->resource = $resource;
@@ -84,7 +84,7 @@ class Connection extends AbstractConnection
      */
     public function getCurrentSchema()
     {
-        if (!$this->isConnected()) {
+        if (! $this->isConnected()) {
             $this->connect();
         }
 
@@ -161,13 +161,13 @@ class Connection extends AbstractConnection
      */
     public function beginTransaction()
     {
-        if ($this->isI5() && !ini_get('ibm_db2.i5_allow_commit')) {
+        if ($this->isI5() && ! ini_get('ibm_db2.i5_allow_commit')) {
             throw new Exception\RuntimeException(
                 'DB2 transactions are not enabled, you need to set the ibm_db2.i5_allow_commit=1 in your php.ini'
             );
         }
 
-        if (!$this->isConnected()) {
+        if (! $this->isConnected()) {
             $this->connect();
         }
 
@@ -183,11 +183,11 @@ class Connection extends AbstractConnection
      */
     public function commit()
     {
-        if (!$this->isConnected()) {
+        if (! $this->isConnected()) {
             $this->connect();
         }
 
-        if (!db2_commit($this->resource)) {
+        if (! db2_commit($this->resource)) {
             throw new Exception\RuntimeException("The commit has not been successful");
         }
 
@@ -203,19 +203,20 @@ class Connection extends AbstractConnection
     /**
      * Rollback
      *
-     * @return Connection
+     * @return self Provides a fluent interface
+     * @throws Exception\RuntimeException
      */
     public function rollback()
     {
-        if (!$this->isConnected()) {
+        if (! $this->isConnected()) {
             throw new Exception\RuntimeException('Must be connected before you can rollback.');
         }
 
-        if (!$this->inTransaction()) {
+        if (! $this->inTransaction()) {
             throw new Exception\RuntimeException('Must call beginTransaction() before you can rollback.');
         }
 
-        if (!db2_rollback($this->resource)) {
+        if (! db2_rollback($this->resource)) {
             throw new Exception\RuntimeException('The rollback has not been successful');
         }
 
@@ -233,7 +234,7 @@ class Connection extends AbstractConnection
      */
     public function execute($sql)
     {
-        if (!$this->isConnected()) {
+        if (! $this->isConnected()) {
             $this->connect();
         }
 
@@ -241,7 +242,8 @@ class Connection extends AbstractConnection
             $this->profiler->profilerStart($sql);
         }
 
-        set_error_handler(function () {}, E_WARNING); // suppress warnings
+        set_error_handler(function () {
+        }, E_WARNING); // suppress warnings
         $resultResource = db2_exec($this->resource, $sql);
         restore_error_handler();
 

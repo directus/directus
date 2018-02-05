@@ -9,53 +9,54 @@
 
 namespace ZendTest\Db\Adapter\Driver\Pdo\Feature;
 
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use Zend\Db\Adapter\Driver\Pdo\Feature\OracleRowCounter;
 
-class OracleRowCounterTest extends PHPUnit_Framework_TestCase
+class OracleRowCounterTest extends TestCase
 {
     /**
      * @var OracleRowCounter
      */
     protected $rowCounter;
 
-    public function setUp()
+    protected function setUp()
     {
         $this->rowCounter = new OracleRowCounter();
     }
 
     /**
-     * @covers Zend\Db\Adapter\Driver\Pdo\Feature\OracleRowCounter::getName
+     * @covers \Zend\Db\Adapter\Driver\Pdo\Feature\OracleRowCounter::getName
      */
     public function testGetName()
     {
-        $this->assertEquals('OracleRowCounter', $this->rowCounter->getName());
+        self::assertEquals('OracleRowCounter', $this->rowCounter->getName());
     }
 
     /**
-     * @covers Zend\Db\Adapter\Driver\Pdo\Feature\OracleRowCounter::getCountForStatement
+     * @covers \Zend\Db\Adapter\Driver\Pdo\Feature\OracleRowCounter::getCountForStatement
      */
     public function testGetCountForStatement()
     {
         $statement = $this->getMockStatement('SELECT XXX', 5);
-        $statement->expects($this->once())->method('prepare')->with($this->equalTo('SELECT COUNT(*) as "count" FROM (SELECT XXX)'));
+        $statement->expects($this->once())->method('prepare')
+            ->with($this->equalTo('SELECT COUNT(*) as "count" FROM (SELECT XXX)'));
 
         $count = $this->rowCounter->getCountForStatement($statement);
-        $this->assertEquals(5, $count);
+        self::assertEquals(5, $count);
     }
 
     /**
-     * @covers Zend\Db\Adapter\Driver\Pdo\Feature\OracleRowCounter::getCountForSql
+     * @covers \Zend\Db\Adapter\Driver\Pdo\Feature\OracleRowCounter::getCountForSql
      */
     public function testGetCountForSql()
     {
         $this->rowCounter->setDriver($this->getMockDriver(5));
         $count = $this->rowCounter->getCountForSql('SELECT XXX');
-        $this->assertEquals(5, $count);
+        self::assertEquals(5, $count);
     }
 
     /**
-     * @covers Zend\Db\Adapter\Driver\Pdo\Feature\OracleRowCounter::getRowCountClosure
+     * @covers \Zend\Db\Adapter\Driver\Pdo\Feature\OracleRowCounter::getRowCountClosure
      */
     public function testGetRowCountClosure()
     {
@@ -63,23 +64,28 @@ class OracleRowCounterTest extends PHPUnit_Framework_TestCase
 
         /** @var \Closure $closure */
         $closure = $this->rowCounter->getRowCountClosure($stmt);
-        $this->assertInstanceOf('Closure', $closure);
-        $this->assertEquals(5, $closure());
+        self::assertInstanceOf('Closure', $closure);
+        self::assertEquals(5, $closure());
     }
 
     protected function getMockStatement($sql, $returnValue)
     {
         /** @var \Zend\Db\Adapter\Driver\Pdo\Statement|\PHPUnit_Framework_MockObject_MockObject $statement */
-        $statement = $this->getMock('Zend\Db\Adapter\Driver\Pdo\Statement', ['prepare', 'execute'], [], '', false);
+        $statement = $this->getMockBuilder('Zend\Db\Adapter\Driver\Pdo\Statement')
+            ->setMethods(['prepare', 'execute'])
+            ->disableOriginalConstructor()
+            ->getMock();
 
         // mock PDOStatement with stdClass
-        $resource = $this->getMock('stdClass', ['fetch']);
+        $resource = $this->getMockBuilder('stdClass')
+            ->setMethods(['fetch'])
+            ->getMock();
         $resource->expects($this->once())
             ->method('fetch')
             ->will($this->returnValue(['count' => $returnValue]));
 
         // mock the result
-        $result = $this->getMock('Zend\Db\Adapter\Driver\ResultInterface');
+        $result = $this->getMockBuilder('Zend\Db\Adapter\Driver\ResultInterface')->getMock();
         $result->expects($this->once())
             ->method('getResource')
             ->will($this->returnValue($resource));
@@ -94,22 +100,30 @@ class OracleRowCounterTest extends PHPUnit_Framework_TestCase
 
     protected function getMockDriver($returnValue)
     {
-        $pdoStatement = $this->getMock('stdClass', ['fetch'], [], '', false); // stdClass can be used here
+        $pdoStatement = $this->getMockBuilder('stdClass')
+            ->setMethods(['fetch'])
+            ->disableOriginalConstructor()
+            ->getMock(); // stdClass can be used here
         $pdoStatement->expects($this->once())
             ->method('fetch')
             ->will($this->returnValue(['count' => $returnValue]));
 
-        $pdoConnection = $this->getMock('stdClass', ['query']);
+        $pdoConnection = $this->getMockBuilder('stdClass')
+            ->setMethods(['query'])
+            ->getMock();
         $pdoConnection->expects($this->once())
             ->method('query')
             ->will($this->returnValue($pdoStatement));
 
-        $connection = $this->getMock('Zend\Db\Adapter\Driver\ConnectionInterface');
+        $connection = $this->getMockBuilder('Zend\Db\Adapter\Driver\ConnectionInterface')->getMock();
         $connection->expects($this->once())
             ->method('getResource')
             ->will($this->returnValue($pdoConnection));
 
-        $driver = $this->getMock('Zend\Db\Adapter\Driver\Pdo\Pdo', ['getConnection'], [], '', false);
+        $driver = $this->getMockBuilder('Zend\Db\Adapter\Driver\Pdo\Pdo')
+            ->setMethods(['getConnection'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $driver->expects($this->once())
             ->method('getConnection')
             ->will($this->returnValue($connection));

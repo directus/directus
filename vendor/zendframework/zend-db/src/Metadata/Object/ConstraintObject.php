@@ -160,7 +160,7 @@ class ConstraintObject
      * Set table name
      *
      * @param  string $tableName
-     * @return ConstraintObject
+     * @return self Provides a fluent interface
      */
     public function setTableName($tableName)
     {
@@ -190,7 +190,7 @@ class ConstraintObject
 
     public function hasColumns()
     {
-        return (!empty($this->columns));
+        return (! empty($this->columns));
     }
 
     /**
@@ -207,7 +207,7 @@ class ConstraintObject
      * Set Columns.
      *
      * @param string[] $columns
-     * @return ConstraintObject
+     * @return self Provides a fluent interface
      */
     public function setColumns(array $columns)
     {
@@ -229,7 +229,7 @@ class ConstraintObject
      * Set Referenced Table Schema.
      *
      * @param string $referencedTableSchema
-     * @return ConstraintObject
+     * @return self Provides a fluent interface
      */
     public function setReferencedTableSchema($referencedTableSchema)
     {
@@ -251,7 +251,7 @@ class ConstraintObject
      * Set Referenced Table Name.
      *
      * @param string $referencedTableName
-     * @return ConstraintObject
+     * @return self Provides a fluent interface
      */
     public function setReferencedTableName($referencedTableName)
     {
@@ -273,7 +273,7 @@ class ConstraintObject
      * Set Referenced Columns.
      *
      * @param string[] $referencedColumns
-     * @return ConstraintObject
+     * @return self Provides a fluent interface
      */
     public function setReferencedColumns(array $referencedColumns)
     {
@@ -295,7 +295,7 @@ class ConstraintObject
      * Set Match Option.
      *
      * @param string $matchOption
-     * @return ConstraintObject
+     * @return self Provides a fluent interface
      */
     public function setMatchOption($matchOption)
     {
@@ -317,7 +317,7 @@ class ConstraintObject
      * Set Update Rule.
      *
      * @param string $updateRule
-     * @return ConstraintObject
+     * @return self Provides a fluent interface
      */
     public function setUpdateRule($updateRule)
     {
@@ -339,7 +339,7 @@ class ConstraintObject
      * Set Delete Rule.
      *
      * @param string $deleteRule
-     * @return ConstraintObject
+     * @return self Provides a fluent interface
      */
     public function setDeleteRule($deleteRule)
     {
@@ -361,7 +361,7 @@ class ConstraintObject
      * Set Check Clause.
      *
      * @param string $checkClause
-     * @return ConstraintObject
+     * @return self Provides a fluent interface
      */
     public function setCheckClause($checkClause)
     {

@@ -54,7 +54,9 @@ class SqlServerMetadata extends AbstractSource
             ['V', 'IS_UPDATABLE'],
         ];
 
-        array_walk($isColumns, function (&$c) use ($p) { $c = $p->quoteIdentifierChain($c); });
+        array_walk($isColumns, function (&$c) use ($p) {
+            $c = $p->quoteIdentifierChain($c);
+        });
 
         $sql = 'SELECT ' . implode(', ', $isColumns)
             . ' FROM ' . $p->quoteIdentifierChain(['INFORMATION_SCHEMA', 'TABLES']) . ' t'
@@ -111,7 +113,9 @@ class SqlServerMetadata extends AbstractSource
             ['C', 'COLUMN_NAME'],
         ];
 
-        array_walk($isColumns, function (&$c) use ($p) { $c = $p->quoteIdentifierChain($c); });
+        array_walk($isColumns, function (&$c) use ($p) {
+            $c = $p->quoteIdentifierChain($c);
+        });
 
         $sql = 'SELECT ' . implode(', ', $isColumns)
             . ' FROM ' . $p->quoteIdentifierChain(['INFORMATION_SCHEMA', 'TABLES']) . 'T'

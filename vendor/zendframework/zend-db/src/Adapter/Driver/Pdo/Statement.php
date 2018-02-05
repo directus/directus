@@ -69,7 +69,7 @@ class Statement implements StatementInterface, Profiler\ProfilerAwareInterface
      * Set driver
      *
      * @param  Pdo $driver
-     * @return Statement
+     * @return self Provides a fluent interface
      */
     public function setDriver(Pdo $driver)
     {
@@ -79,7 +79,7 @@ class Statement implements StatementInterface, Profiler\ProfilerAwareInterface
 
     /**
      * @param Profiler\ProfilerInterface $profiler
-     * @return Statement
+     * @return self Provides a fluent interface
      */
     public function setProfiler(Profiler\ProfilerInterface $profiler)
     {
@@ -99,7 +99,7 @@ class Statement implements StatementInterface, Profiler\ProfilerAwareInterface
      * Initialize
      *
      * @param  \PDO $connectionResource
-     * @return Statement
+     * @return self Provides a fluent interface
      */
     public function initialize(\PDO $connectionResource)
     {
@@ -111,7 +111,7 @@ class Statement implements StatementInterface, Profiler\ProfilerAwareInterface
      * Set resource
      *
      * @param  \PDOStatement $pdoStatement
-     * @return Statement
+     * @return self Provides a fluent interface
      */
     public function setResource(\PDOStatement $pdoStatement)
     {
@@ -133,7 +133,7 @@ class Statement implements StatementInterface, Profiler\ProfilerAwareInterface
      * Set sql
      *
      * @param string $sql
-     * @return Statement
+     * @return self Provides a fluent interface
      */
     public function setSql($sql)
     {
@@ -153,7 +153,7 @@ class Statement implements StatementInterface, Profiler\ProfilerAwareInterface
 
     /**
      * @param ParameterContainer $parameterContainer
-     * @return Statement
+     * @return self Provides a fluent interface
      */
     public function setParameterContainer(ParameterContainer $parameterContainer)
     {
@@ -208,12 +208,12 @@ class Statement implements StatementInterface, Profiler\ProfilerAwareInterface
      */
     public function execute($parameters = null)
     {
-        if (!$this->isPrepared) {
+        if (! $this->isPrepared) {
             $this->prepare();
         }
 
         /** START Standard ParameterContainer Merging Block */
-        if (!$this->parameterContainer instanceof ParameterContainer) {
+        if (! $this->parameterContainer instanceof ParameterContainer) {
             if ($parameters instanceof ParameterContainer) {
                 $this->parameterContainer = $parameters;
                 $parameters = null;
@@ -289,7 +289,7 @@ class Statement implements StatementInterface, Profiler\ProfilerAwareInterface
             }
 
             // parameter is named or positional, value is reference
-            $parameter = is_int($name) ? ($name + 1) : $name;
+            $parameter = is_int($name) ? ($name + 1) : $this->driver->formatParameterName($name);
             $this->resource->bindParam($parameter, $value, $type);
         }
     }

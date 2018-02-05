@@ -89,7 +89,7 @@ class ConstraintKeyObject
      * Set column name
      *
      * @param  string $columnName
-     * @return ConstraintKeyObject
+     * @return self Provides a fluent interface
      */
     public function setColumnName($columnName)
     {
@@ -111,7 +111,7 @@ class ConstraintKeyObject
      * Set ordinal position
      *
      * @param  int $ordinalPosition
-     * @return ConstraintKeyObject
+     * @return self Provides a fluent interface
      */
     public function setOrdinalPosition($ordinalPosition)
     {
@@ -133,7 +133,7 @@ class ConstraintKeyObject
      * Set position in unique constraint
      *
      * @param  bool $positionInUniqueConstraint
-     * @return ConstraintKeyObject
+     * @return self Provides a fluent interface
      */
     public function setPositionInUniqueConstraint($positionInUniqueConstraint)
     {
@@ -155,7 +155,7 @@ class ConstraintKeyObject
      * Set referenced table schema
      *
      * @param string $referencedTableSchema
-     * @return ConstraintKeyObject
+     * @return self Provides a fluent interface
      */
     public function setReferencedTableSchema($referencedTableSchema)
     {
@@ -177,7 +177,7 @@ class ConstraintKeyObject
      * Set Referenced table name
      *
      * @param  string $referencedTableName
-     * @return ConstraintKeyObject
+     * @return self Provides a fluent interface
      */
     public function setReferencedTableName($referencedTableName)
     {
@@ -199,7 +199,7 @@ class ConstraintKeyObject
      * Set referenced column name
      *
      * @param  string $referencedColumnName
-     * @return ConstraintKeyObject
+     * @return self Provides a fluent interface
      */
     public function setReferencedColumnName($referencedColumnName)
     {

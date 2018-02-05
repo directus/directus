@@ -82,7 +82,10 @@ class AbstractPlatform implements PlatformDecoratorInterface, PreparableSqlInter
     public function prepareStatement(AdapterInterface $adapter, StatementContainerInterface $statementContainer)
     {
         if (! $this->subject instanceof PreparableSqlInterface) {
-            throw new Exception\RuntimeException('The subject does not appear to implement Zend\Db\Sql\PreparableSqlInterface, thus calling prepareStatement() has no effect');
+            throw new Exception\RuntimeException(
+                'The subject does not appear to implement Zend\Db\Sql\PreparableSqlInterface, thus calling '
+                . 'prepareStatement() has no effect'
+            );
         }
 
         $this->getTypeDecorator($this->subject)->prepareStatement($adapter, $statementContainer);
@@ -98,7 +101,10 @@ class AbstractPlatform implements PlatformDecoratorInterface, PreparableSqlInter
     public function getSqlString(PlatformInterface $adapterPlatform = null)
     {
         if (! $this->subject instanceof SqlInterface) {
-            throw new Exception\RuntimeException('The subject does not appear to implement Zend\Db\Sql\SqlInterface, thus calling prepareStatement() has no effect');
+            throw new Exception\RuntimeException(
+                'The subject does not appear to implement Zend\Db\Sql\SqlInterface, thus calling '
+                . 'prepareStatement() has no effect'
+            );
         }
 
         return $this->getTypeDecorator($this->subject)->getSqlString($adapterPlatform);

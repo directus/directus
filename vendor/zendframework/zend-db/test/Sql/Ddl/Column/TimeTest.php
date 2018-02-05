@@ -9,17 +9,18 @@
 
 namespace ZendTest\Db\Sql\Ddl\Column;
 
+use PHPUnit\Framework\TestCase;
 use Zend\Db\Sql\Ddl\Column\Time;
 
-class TimeTest extends \PHPUnit_Framework_TestCase
+class TimeTest extends TestCase
 {
     /**
-     * @covers Zend\Db\Sql\Ddl\Column\Time::getExpressionData
+     * @covers \Zend\Db\Sql\Ddl\Column\Time::getExpressionData
      */
     public function testGetExpressionData()
     {
         $column = new Time('foo');
-        $this->assertEquals(
+        self::assertEquals(
             [['%s %s NOT NULL', ['foo', 'TIME'], [$column::TYPE_IDENTIFIER, $column::TYPE_LITERAL]]],
             $column->getExpressionData()
         );

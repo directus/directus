@@ -9,14 +9,15 @@
 
 namespace ZendTest\Db\Adapter\Driver\Pdo;
 
+use PHPUnit\Framework\TestCase;
 use Zend\Db\Adapter\Driver\Pdo\Connection;
 
-class ConnectionTest extends \PHPUnit_Framework_TestCase
+class ConnectionTest extends TestCase
 {
     /**
      * @var Connection
      */
-    protected $connection = null;
+    protected $connection;
 
     /**
      * Sets up the fixture, for example, opens a network connection.
@@ -30,18 +31,18 @@ class ConnectionTest extends \PHPUnit_Framework_TestCase
     /**
      * Test getResource method tries to connect to  the database, it should never return null
      *
-     * @covers Zend\Db\Adapter\Driver\Pdo\Connection::getResource
+     * @covers \Zend\Db\Adapter\Driver\Pdo\Connection::getResource
      */
     public function testResource()
     {
-        $this->setExpectedException('Zend\Db\Adapter\Exception\InvalidConnectionParametersException');
+        $this->expectException('Zend\Db\Adapter\Exception\InvalidConnectionParametersException');
         $this->connection->getResource();
     }
 
     /**
      * Test getConnectedDsn returns a DSN string if it has been set
      *
-     * @covers Zend\Db\Adapter\Driver\Pdo\Connection::getDsn
+     * @covers \Zend\Db\Adapter\Driver\Pdo\Connection::getDsn
      */
     public function testGetDsn()
     {
@@ -53,7 +54,7 @@ class ConnectionTest extends \PHPUnit_Framework_TestCase
         }
         $responseString = $this->connection->getDsn();
 
-        $this->assertEquals($dsn, $responseString);
+        self::assertEquals($dsn, $responseString);
     }
 
     /**
@@ -74,17 +75,17 @@ class ConnectionTest extends \PHPUnit_Framework_TestCase
         }
         $responseString = $this->connection->getDsn();
 
-        $this->assertStringStartsWith('mysql:', $responseString);
-        $this->assertContains('charset=utf8', $responseString);
-        $this->assertContains('dbname=foo', $responseString);
-        $this->assertContains('port=3306', $responseString);
-        $this->assertContains('unix_socket=/var/run/mysqld/mysqld.sock', $responseString);
+        self::assertStringStartsWith('mysql:', $responseString);
+        self::assertContains('charset=utf8', $responseString);
+        self::assertContains('dbname=foo', $responseString);
+        self::assertContains('port=3306', $responseString);
+        self::assertContains('unix_socket=/var/run/mysqld/mysqld.sock', $responseString);
     }
 
     public function testHostnameAndUnixSocketThrowsInvalidConnectionParametersException()
     {
-        $this->setExpectedException(
-            'Zend\Db\Adapter\Exception\InvalidConnectionParametersException',
+        $this->expectException('Zend\Db\Adapter\Exception\InvalidConnectionParametersException');
+        $this->expectExceptionMessage(
             'Ambiguous connection parameters, both hostname and unix_socket parameters were set'
         );
 
@@ -96,5 +97,27 @@ class ConnectionTest extends \PHPUnit_Framework_TestCase
             'unix_socket' => '/var/run/mysqld/mysqld.sock',
         ]);
         $this->connection->connect();
+    }
+
+    public function testDblibArrayOfConnectionParametersCreatesCorrectDsn()
+    {
+        $this->connection->setConnectionParameters([
+            'driver'  => 'pdo_dblib',
+            'charset' => 'UTF-8',
+            'dbname'  => 'foo',
+            'port'    => '1433',
+            'version' => '7.3',
+        ]);
+        try {
+            $this->connection->connect();
+        } catch (\Exception $e) {
+        }
+        $responseString = $this->connection->getDsn();
+
+        $this->assertStringStartsWith('dblib:', $responseString);
+        $this->assertContains('charset=UTF-8', $responseString);
+        $this->assertContains('dbname=foo', $responseString);
+        $this->assertContains('port=1433', $responseString);
+        $this->assertContains('version=7.3', $responseString);
     }
 }

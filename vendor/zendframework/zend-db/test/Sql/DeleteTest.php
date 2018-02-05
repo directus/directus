@@ -9,12 +9,14 @@
 
 namespace ZendTest\Db\Sql;
 
+use PHPUnit\Framework\TestCase;
 use Zend\Db\Sql\Delete;
 use Zend\Db\Sql\Predicate\IsNotNull;
 use Zend\Db\Sql\TableIdentifier;
 use Zend\Db\Sql\Where;
+use ZendTest\Db\TestAsset\DeleteIgnore;
 
-class DeleteTest extends \PHPUnit_Framework_TestCase
+class DeleteTest extends TestCase
 {
     /**
      * @var Delete
@@ -39,20 +41,20 @@ class DeleteTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Zend\Db\Sql\Delete::from
+     * @covers \Zend\Db\Sql\Delete::from
      */
     public function testFrom()
     {
         $this->delete->from('foo', 'bar');
-        $this->assertEquals('foo', $this->readAttribute($this->delete, 'table'));
+        self::assertEquals('foo', $this->readAttribute($this->delete, 'table'));
 
         $tableIdentifier = new TableIdentifier('foo', 'bar');
         $this->delete->from($tableIdentifier);
-        $this->assertEquals($tableIdentifier, $this->readAttribute($this->delete, 'table'));
+        self::assertEquals($tableIdentifier, $this->readAttribute($this->delete, 'table'));
     }
 
     /**
-     * @covers Zend\Db\Sql\Delete::where
+     * @covers \Zend\Db\Sql\Delete::where
      *
      * @todo REMOVE THIS IN 3.x
      */
@@ -69,51 +71,54 @@ class DeleteTest extends \PHPUnit_Framework_TestCase
         $where = $this->delete->where;
 
         $predicates = $this->readAttribute($where, 'predicates');
-        $this->assertEquals('AND', $predicates[0][0]);
-        $this->assertInstanceOf('Zend\Db\Sql\Predicate\Literal', $predicates[0][1]);
+        self::assertEquals('AND', $predicates[0][0]);
+        self::assertInstanceOf('Zend\Db\Sql\Predicate\Literal', $predicates[0][1]);
 
-        $this->assertEquals('AND', $predicates[1][0]);
-        $this->assertInstanceOf('Zend\Db\Sql\Predicate\Expression', $predicates[1][1]);
+        self::assertEquals('AND', $predicates[1][0]);
+        self::assertInstanceOf('Zend\Db\Sql\Predicate\Expression', $predicates[1][1]);
 
-        $this->assertEquals('AND', $predicates[2][0]);
-        $this->assertInstanceOf('Zend\Db\Sql\Predicate\Operator', $predicates[2][1]);
+        self::assertEquals('AND', $predicates[2][0]);
+        self::assertInstanceOf('Zend\Db\Sql\Predicate\Operator', $predicates[2][1]);
 
-        $this->assertEquals('OR', $predicates[3][0]);
-        $this->assertInstanceOf('Zend\Db\Sql\Predicate\Literal', $predicates[3][1]);
+        self::assertEquals('OR', $predicates[3][0]);
+        self::assertInstanceOf('Zend\Db\Sql\Predicate\Literal', $predicates[3][1]);
 
-        $this->assertEquals('AND', $predicates[4][0]);
-        $this->assertInstanceOf('Zend\Db\Sql\Predicate\IsNull', $predicates[4][1]);
+        self::assertEquals('AND', $predicates[4][0]);
+        self::assertInstanceOf('Zend\Db\Sql\Predicate\IsNull', $predicates[4][1]);
 
-        $this->assertEquals('AND', $predicates[5][0]);
-        $this->assertInstanceOf('Zend\Db\Sql\Predicate\In', $predicates[5][1]);
+        self::assertEquals('AND', $predicates[5][0]);
+        self::assertInstanceOf('Zend\Db\Sql\Predicate\In', $predicates[5][1]);
 
-        $this->assertEquals('AND', $predicates[6][0]);
-        $this->assertInstanceOf('Zend\Db\Sql\Predicate\IsNotNull', $predicates[6][1]);
+        self::assertEquals('AND', $predicates[6][0]);
+        self::assertInstanceOf('Zend\Db\Sql\Predicate\IsNotNull', $predicates[6][1]);
 
-        $this->assertEquals('AND', $predicates[7][0]);
-        $this->assertInstanceOf('Zend\Db\Sql\Predicate\Operator', $predicates[7][1]);
+        self::assertEquals('AND', $predicates[7][0]);
+        self::assertInstanceOf('Zend\Db\Sql\Predicate\Operator', $predicates[7][1]);
 
-        $this->assertEquals('AND', $predicates[8][0]);
-        $this->assertInstanceOf('Zend\Db\Sql\Predicate\Operator', $predicates[8][1]);
+        self::assertEquals('AND', $predicates[8][0]);
+        self::assertInstanceOf('Zend\Db\Sql\Predicate\Operator', $predicates[8][1]);
 
         $where = new Where;
         $this->delete->where($where);
-        $this->assertSame($where, $this->delete->where);
+        self::assertSame($where, $this->delete->where);
 
         $this->delete->where(function ($what) use ($where) {
-            $this->assertSame($where, $what);
+            self::assertSame($where, $what);
         });
     }
 
     /**
-     * @covers Zend\Db\Sql\Delete::prepareStatement
+     * @covers \Zend\Db\Sql\Delete::prepareStatement
      */
     public function testPrepareStatement()
     {
-        $mockDriver = $this->getMock('Zend\Db\Adapter\Driver\DriverInterface');
-        $mockAdapter = $this->getMock('Zend\Db\Adapter\Adapter', null, [$mockDriver]);
+        $mockDriver = $this->getMockBuilder('Zend\Db\Adapter\Driver\DriverInterface')->getMock();
+        $mockAdapter = $this->getMockBuilder('Zend\Db\Adapter\Adapter')
+            ->setMethods()
+            ->setConstructorArgs([$mockDriver])
+            ->getMock();
 
-        $mockStatement = $this->getMock('Zend\Db\Adapter\Driver\StatementInterface');
+        $mockStatement = $this->getMockBuilder('Zend\Db\Adapter\Driver\StatementInterface')->getMock();
         $mockStatement->expects($this->at(2))
             ->method('setSql')
             ->with($this->equalTo('DELETE FROM "foo" WHERE x = y'));
@@ -125,10 +130,13 @@ class DeleteTest extends \PHPUnit_Framework_TestCase
 
         // with TableIdentifier
         $this->delete = new Delete;
-        $mockDriver = $this->getMock('Zend\Db\Adapter\Driver\DriverInterface');
-        $mockAdapter = $this->getMock('Zend\Db\Adapter\Adapter', null, [$mockDriver]);
+        $mockDriver = $this->getMockBuilder('Zend\Db\Adapter\Driver\DriverInterface')->getMock();
+        $mockAdapter = $this->getMockBuilder('Zend\Db\Adapter\Adapter')
+            ->setMethods()
+            ->setConstructorArgs([$mockDriver])
+            ->getMock();
 
-        $mockStatement = $this->getMock('Zend\Db\Adapter\Driver\StatementInterface');
+        $mockStatement = $this->getMockBuilder('Zend\Db\Adapter\Driver\StatementInterface')->getMock();
         $mockStatement->expects($this->at(2))
             ->method('setSql')
             ->with($this->equalTo('DELETE FROM "sch"."foo" WHERE x = y'));
@@ -140,19 +148,19 @@ class DeleteTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Zend\Db\Sql\Delete::getSqlString
+     * @covers \Zend\Db\Sql\Delete::getSqlString
      */
     public function testGetSqlString()
     {
         $this->delete->from('foo')
             ->where('x = y');
-        $this->assertEquals('DELETE FROM "foo" WHERE x = y', $this->delete->getSqlString());
+        self::assertEquals('DELETE FROM "foo" WHERE x = y', $this->delete->getSqlString());
 
         // with TableIdentifier
         $this->delete = new Delete;
         $this->delete->from(new TableIdentifier('foo', 'sch'))
             ->where('x = y');
-        $this->assertEquals('DELETE FROM "sch"."foo" WHERE x = y', $this->delete->getSqlString());
+        self::assertEquals('DELETE FROM "sch"."foo" WHERE x = y', $this->delete->getSqlString());
     }
 
     /**
@@ -162,10 +170,13 @@ class DeleteTest extends \PHPUnit_Framework_TestCase
     {
         $deleteIgnore = new DeleteIgnore();
 
-        $mockDriver = $this->getMock('Zend\Db\Adapter\Driver\DriverInterface');
-        $mockAdapter = $this->getMock('Zend\Db\Adapter\Adapter', null, [$mockDriver]);
+        $mockDriver = $this->getMockBuilder('Zend\Db\Adapter\Driver\DriverInterface')->getMock();
+        $mockAdapter = $this->getMockBuilder('Zend\Db\Adapter\Adapter')
+            ->setMethods()
+            ->setConstructorArgs([$mockDriver])
+            ->getMock();
 
-        $mockStatement = $this->getMock('Zend\Db\Adapter\Driver\StatementInterface');
+        $mockStatement = $this->getMockBuilder('Zend\Db\Adapter\Driver\StatementInterface')->getMock();
         $mockStatement->expects($this->at(2))
             ->method('setSql')
             ->with($this->equalTo('DELETE IGNORE FROM "foo" WHERE x = y'));
@@ -180,10 +191,13 @@ class DeleteTest extends \PHPUnit_Framework_TestCase
         // with TableIdentifier
         $deleteIgnore = new DeleteIgnore();
 
-        $mockDriver = $this->getMock('Zend\Db\Adapter\Driver\DriverInterface');
-        $mockAdapter = $this->getMock('Zend\Db\Adapter\Adapter', null, [$mockDriver]);
+        $mockDriver = $this->getMockBuilder('Zend\Db\Adapter\Driver\DriverInterface')->getMock();
+        $mockAdapter = $this->getMockBuilder('Zend\Db\Adapter\Adapter')
+            ->setMethods()
+            ->setConstructorArgs([$mockDriver])
+            ->getMock();
 
-        $mockStatement = $this->getMock('Zend\Db\Adapter\Driver\StatementInterface');
+        $mockStatement = $this->getMockBuilder('Zend\Db\Adapter\Driver\StatementInterface')->getMock();
         $mockStatement->expects($this->at(2))
             ->method('setSql')
             ->with($this->equalTo('DELETE IGNORE FROM "sch"."foo" WHERE x = y'));
@@ -203,27 +217,12 @@ class DeleteTest extends \PHPUnit_Framework_TestCase
 
         $deleteIgnore->from('foo')
             ->where('x = y');
-        $this->assertEquals('DELETE IGNORE FROM "foo" WHERE x = y', $deleteIgnore->getSqlString());
+        self::assertEquals('DELETE IGNORE FROM "foo" WHERE x = y', $deleteIgnore->getSqlString());
 
         // with TableIdentifier
         $deleteIgnore = new DeleteIgnore();
         $deleteIgnore->from(new TableIdentifier('foo', 'sch'))
             ->where('x = y');
-        $this->assertEquals('DELETE IGNORE FROM "sch"."foo" WHERE x = y', $deleteIgnore->getSqlString());
-    }
-}
-
-class DeleteIgnore extends Delete
-{
-    const SPECIFICATION_DELETE = 'deleteIgnore';
-
-    protected $specifications = [
-        self::SPECIFICATION_DELETE => 'DELETE IGNORE FROM %1$s',
-        self::SPECIFICATION_WHERE  => 'WHERE %1$s',
-    ];
-
-    protected function processdeleteIgnore(\Zend\Db\Adapter\Platform\PlatformInterface $platform, \Zend\Db\Adapter\Driver\DriverInterface $driver = null, \Zend\Db\Adapter\ParameterContainer $parameterContainer = null)
-    {
-        return parent::processDelete($platform, $driver, $parameterContainer);
+        self::assertEquals('DELETE IGNORE FROM "sch"."foo" WHERE x = y', $deleteIgnore->getSqlString());
     }
 }

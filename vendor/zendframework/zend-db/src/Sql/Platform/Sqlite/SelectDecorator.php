@@ -26,7 +26,7 @@ class SelectDecorator extends Select implements PlatformDecoratorInterface
      * Set Subject
      *
      * @param Select $select
-     * @return self
+     * @return self Provides a fluent interface
      */
     public function setSubject($select)
     {
@@ -47,16 +47,22 @@ class SelectDecorator extends Select implements PlatformDecoratorInterface
     /**
      * {@inheritDoc}
      */
-    protected function processStatementStart(PlatformInterface $platform, DriverInterface $driver = null, ParameterContainer $parameterContainer = null)
-    {
+    protected function processStatementStart(
+        PlatformInterface $platform,
+        DriverInterface $driver = null,
+        ParameterContainer $parameterContainer = null
+    ) {
         return '';
     }
 
     /**
      * {@inheritDoc}
      */
-    protected function processStatementEnd(PlatformInterface $platform, DriverInterface $driver = null, ParameterContainer $parameterContainer = null)
-    {
+    protected function processStatementEnd(
+        PlatformInterface $platform,
+        DriverInterface $driver = null,
+        ParameterContainer $parameterContainer = null
+    ) {
         return '';
     }
 }

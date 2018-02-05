@@ -29,4 +29,33 @@ $client = S3Client::factory([
 ]);
 
 $adapter = new AwsS3Adapter($client, 'your-bucket-name', 'optional/path/prefix');
+
+$filesystem = new Filesystem($adapter);
+~~~
+
+The required IAM permissions are:
+
+~~~ json
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "Stmt1420044805001",
+            "Effect": "Allow",
+            "Action": [
+                "s3:ListBucket",
+                "s3:GetObject",
+                "s3:GetObjectAcl",
+                "s3:PutObject",
+                "s3:PutObjectAcl",
+                "s3:ReplicateObject",
+                "s3:DeleteObject"                
+            ],
+            "Resource": [
+                "arn:aws:s3:::your-bucket-name",
+                "arn:aws:s3:::your-bucket-name/*"
+            ]
+        }
+    ]
+}
 ~~~

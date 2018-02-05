@@ -9,6 +9,7 @@
 
 namespace ZendTest\Db\Adapter\Driver\Pdo;
 
+use PHPUnit\Framework\TestCase;
 use stdClass;
 use Zend\Db\Adapter\Driver\Pdo\Result;
 
@@ -18,17 +19,17 @@ use Zend\Db\Adapter\Driver\Pdo\Result;
  *
  * @group result-pdo
  */
-class ResultTest extends \PHPUnit_Framework_TestCase
+class ResultTest extends TestCase
 {
 
     /**
      * Tests current method returns same data on consecutive calls.
      *
-     * @covers Zend\Db\Adapter\Driver\Pdo\Result::current
+     * @covers \Zend\Db\Adapter\Driver\Pdo\Result::current
      */
     public function testCurrent()
     {
-        $stub = $this->getMock('PDOStatement');
+        $stub = $this->getMockBuilder('PDOStatement')->getMock();
         $stub->expects($this->any())
             ->method('fetch')
             ->will($this->returnCallback(function () {
@@ -38,15 +39,14 @@ class ResultTest extends \PHPUnit_Framework_TestCase
         $result = new Result();
         $result->initialize($stub, null);
 
-        $this->assertEquals($result->current(), $result->current());
+        self::assertEquals($result->current(), $result->current());
     }
 
-    /**
-     * @expectedException \Zend\Db\Adapter\Exception\InvalidArgumentException
-     */
     public function testFetchModeException()
     {
         $result = new Result();
+
+        $this->expectException('\Zend\Db\Adapter\Exception\InvalidArgumentException');
         $result->setFetchMode(11);
     }
 
@@ -55,7 +55,7 @@ class ResultTest extends \PHPUnit_Framework_TestCase
      */
     public function testFetchModeAnonymousObject()
     {
-        $stub = $this->getMock('PDOStatement');
+        $stub = $this->getMockBuilder('PDOStatement')->getMock();
         $stub->expects($this->any())
             ->method('fetch')
             ->will($this->returnCallback(function () {
@@ -66,7 +66,7 @@ class ResultTest extends \PHPUnit_Framework_TestCase
         $result->initialize($stub, null);
         $result->setFetchMode(\PDO::FETCH_OBJ);
 
-        $this->assertEquals(5, $result->getFetchMode());
-        $this->assertInstanceOf('stdClass', $result->current());
+        self::assertEquals(5, $result->getFetchMode());
+        self::assertInstanceOf('stdClass', $result->current());
     }
 }

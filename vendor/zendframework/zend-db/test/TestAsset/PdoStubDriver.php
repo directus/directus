@@ -14,7 +14,8 @@ class PdoStubDriver extends \PDO
     }
 
     public function __construct($dsn, $user, $password)
-    {}
+    {
+    }
 
     public function rollBack()
     {

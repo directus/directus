@@ -9,21 +9,23 @@
 
 namespace ZendTest\Db\Sql\Platform\Mysql;
 
+use PHPUnit\Framework\TestCase;
 use Zend\Db\Sql\Platform\Mysql\Mysql;
 
-class MysqlTest extends \PHPUnit_Framework_TestCase
+class MysqlTest extends TestCase
 {
     /**
      * @testdox unit test / object test: Test Mysql object has Select proxy
-     * @covers Zend\Db\Sql\Platform\Mysql\Mysql::__construct
+     * @covers \Zend\Db\Sql\Platform\Mysql\Mysql::__construct
      */
     public function testConstruct()
     {
         $mysql = new Mysql;
         $decorators = $mysql->getDecorators();
 
-        list($type, $decorator) = each($decorators);
-        $this->assertEquals('Zend\Db\Sql\Select', $type);
-        $this->assertInstanceOf('Zend\Db\Sql\Platform\Mysql\SelectDecorator', $decorator);
+        $type = key($decorators);
+        $decorator = current($decorators);
+        self::assertEquals('Zend\Db\Sql\Select', $type);
+        self::assertInstanceOf('Zend\Db\Sql\Platform\Mysql\SelectDecorator', $decorator);
     }
 }

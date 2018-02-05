@@ -1,7 +1,7 @@
 # Table Gateways
 
 The Table Gateway subcomponent provides an object-oriented representation of a
-datbase table; its methods mirror the most common table operations. In code,
+database table; its methods mirror the most common table operations. In code,
 the interface resembles:
 
 ```php
@@ -160,7 +160,7 @@ There are a number of features built-in and shipped with zend-db:
     ```php
     use Zend\Db\TableGateway\AbstractTableGateway;
     use Zend\Db\TableGateway\Feature;
-    
+
     class MyTableGateway extends AbstractTableGateway
     {
         public function __construct()
@@ -171,10 +171,10 @@ There are a number of features built-in and shipped with zend-db:
             $this->initialize();
         }
     }
-    
+
     // elsewhere in code, in a bootstrap
     Zend\Db\TableGateway\Feature\GlobalAdapterFeature::setStaticAdapter($adapter);
-    
+
     // in a controller, or model somewhere
     $table = new MyTableGateway(); // adapter is statically loaded
     ```
@@ -210,7 +210,7 @@ There are a number of features built-in and shipped with zend-db:
     ```php
     $table   = new TableGateway('artist', $adapter, new Feature\RowGatewayFeature('id'));
     $results = $table->select(['id' => 2]);
-    
+
     $artistRow       = $results->current();
     $artistRow->name = 'New Name';
     $artistRow->save();

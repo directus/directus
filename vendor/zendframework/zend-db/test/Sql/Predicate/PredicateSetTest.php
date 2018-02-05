@@ -9,7 +9,7 @@
 
 namespace ZendTest\Db\Sql\Predicate;
 
-use PHPUnit_Framework_TestCase as TestCase;
+use PHPUnit\Framework\TestCase;
 use Zend\Db\Sql\Predicate\IsNull;
 use Zend\Db\Sql\Predicate\PredicateSet;
 
@@ -18,7 +18,7 @@ class PredicateSetTest extends TestCase
     public function testEmptyConstructorYieldsCountOfZero()
     {
         $predicateSet = new PredicateSet();
-        $this->assertEquals(0, count($predicateSet));
+        self::assertCount(0, $predicateSet);
     }
 
     public function testCombinationIsAndByDefault()
@@ -27,9 +27,9 @@ class PredicateSetTest extends TestCase
         $predicateSet->addPredicate(new IsNull('foo'))
                   ->addPredicate(new IsNull('bar'));
         $parts = $predicateSet->getExpressionData();
-        $this->assertEquals(3, count($parts));
-        $this->assertContains('AND', $parts[1]);
-        $this->assertNotContains('OR', $parts[1]);
+        self::assertCount(3, $parts);
+        self::assertContains('AND', $parts[1]);
+        self::assertNotContains('OR', $parts[1]);
     }
 
     public function testCanPassPredicatesAndDefaultCombinationViaConstructor()
@@ -40,9 +40,9 @@ class PredicateSetTest extends TestCase
             new IsNull('bar'),
         ], 'OR');
         $parts = $set->getExpressionData();
-        $this->assertEquals(3, count($parts));
-        $this->assertContains('OR', $parts[1]);
-        $this->assertNotContains('AND', $parts[1]);
+        self::assertCount(3, $parts);
+        self::assertContains('OR', $parts[1]);
+        self::assertNotContains('AND', $parts[1]);
     }
 
     public function testCanPassBothPredicateAndCombinationToAddPredicate()
@@ -53,16 +53,16 @@ class PredicateSetTest extends TestCase
                   ->addPredicate(new IsNull('baz'), 'OR')
                   ->addPredicate(new IsNull('bat'), 'AND');
         $parts = $predicateSet->getExpressionData();
-        $this->assertEquals(7, count($parts));
+        self::assertCount(7, $parts);
 
-        $this->assertNotContains('OR', $parts[1], var_export($parts, 1));
-        $this->assertContains('AND', $parts[1]);
+        self::assertNotContains('OR', $parts[1], var_export($parts, 1));
+        self::assertContains('AND', $parts[1]);
 
-        $this->assertContains('OR', $parts[3]);
-        $this->assertNotContains('AND', $parts[3]);
+        self::assertContains('OR', $parts[3]);
+        self::assertNotContains('AND', $parts[3]);
 
-        $this->assertNotContains('OR', $parts[5]);
-        $this->assertContains('AND', $parts[5]);
+        self::assertNotContains('OR', $parts[5]);
+        self::assertContains('AND', $parts[5]);
     }
 
     public function testCanUseOrPredicateAndAndPredicateMethods()
@@ -73,20 +73,20 @@ class PredicateSetTest extends TestCase
                   ->orPredicate(new IsNull('baz'))
                   ->andPredicate(new IsNull('bat'));
         $parts = $predicateSet->getExpressionData();
-        $this->assertEquals(7, count($parts));
+        self::assertCount(7, $parts);
 
-        $this->assertNotContains('OR', $parts[1], var_export($parts, 1));
-        $this->assertContains('AND', $parts[1]);
+        self::assertNotContains('OR', $parts[1], var_export($parts, 1));
+        self::assertContains('AND', $parts[1]);
 
-        $this->assertContains('OR', $parts[3]);
-        $this->assertNotContains('AND', $parts[3]);
+        self::assertContains('OR', $parts[3]);
+        self::assertNotContains('AND', $parts[3]);
 
-        $this->assertNotContains('OR', $parts[5]);
-        $this->assertContains('AND', $parts[5]);
+        self::assertNotContains('OR', $parts[5]);
+        self::assertContains('AND', $parts[5]);
     }
 
     /**
-     * @covers Zend\Db\Sql\Predicate\PredicateSet::addPredicates
+     * @covers \Zend\Db\Sql\Predicate\PredicateSet::addPredicates
      */
     public function testAddPredicates()
     {
@@ -101,32 +101,33 @@ class PredicateSetTest extends TestCase
         $predicateSet->addPredicates([new \Zend\Db\Sql\Predicate\IsNotNull('c3')]);
 
         $predicates = $this->readAttribute($predicateSet, 'predicates');
-        $this->assertEquals('AND', $predicates[0][0]);
-        $this->assertInstanceOf('Zend\Db\Sql\Predicate\Literal', $predicates[0][1]);
+        self::assertEquals('AND', $predicates[0][0]);
+        self::assertInstanceOf('Zend\Db\Sql\Predicate\Literal', $predicates[0][1]);
 
-        $this->assertEquals('AND', $predicates[1][0]);
-        $this->assertInstanceOf('Zend\Db\Sql\Predicate\Expression', $predicates[1][1]);
+        self::assertEquals('AND', $predicates[1][0]);
+        self::assertInstanceOf('Zend\Db\Sql\Predicate\Expression', $predicates[1][1]);
 
-        $this->assertEquals('AND', $predicates[2][0]);
-        $this->assertInstanceOf('Zend\Db\Sql\Predicate\Operator', $predicates[2][1]);
+        self::assertEquals('AND', $predicates[2][0]);
+        self::assertInstanceOf('Zend\Db\Sql\Predicate\Operator', $predicates[2][1]);
 
-        $this->assertEquals('OR', $predicates[3][0]);
-        $this->assertInstanceOf('Zend\Db\Sql\Predicate\Literal', $predicates[3][1]);
+        self::assertEquals('OR', $predicates[3][0]);
+        self::assertInstanceOf('Zend\Db\Sql\Predicate\Literal', $predicates[3][1]);
 
-        $this->assertEquals('AND', $predicates[4][0]);
-        $this->assertInstanceOf('Zend\Db\Sql\Predicate\IsNull', $predicates[4][1]);
+        self::assertEquals('AND', $predicates[4][0]);
+        self::assertInstanceOf('Zend\Db\Sql\Predicate\IsNull', $predicates[4][1]);
 
-        $this->assertEquals('AND', $predicates[5][0]);
-        $this->assertInstanceOf('Zend\Db\Sql\Predicate\In', $predicates[5][1]);
+        self::assertEquals('AND', $predicates[5][0]);
+        self::assertInstanceOf('Zend\Db\Sql\Predicate\In', $predicates[5][1]);
 
-        $this->assertEquals('AND', $predicates[6][0]);
-        $this->assertInstanceOf('Zend\Db\Sql\Predicate\IsNotNull', $predicates[6][1]);
+        self::assertEquals('AND', $predicates[6][0]);
+        self::assertInstanceOf('Zend\Db\Sql\Predicate\IsNotNull', $predicates[6][1]);
 
         $predicateSet->addPredicates(function ($what) use ($predicateSet) {
-            $this->assertSame($predicateSet, $what);
+            self::assertSame($predicateSet, $what);
         });
 
-        $this->setExpectedException('Zend\Db\Sql\Exception\InvalidArgumentException', 'Predicate cannot be null');
+        $this->expectException('Zend\Db\Sql\Exception\InvalidArgumentException');
+        $this->expectExceptionMessage('Predicate cannot be null');
         $predicateSet->addPredicates(null);
     }
 }

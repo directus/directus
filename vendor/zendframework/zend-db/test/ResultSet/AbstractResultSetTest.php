@@ -9,7 +9,9 @@
 
 namespace ZendTest\Db\ResultSet;
 
-class AbstractResultSetTest extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class AbstractResultSetTest extends TestCase
 {
     /**
      * @var \PHPUnit_Framework_MockObject_MockObject
@@ -26,27 +28,27 @@ class AbstractResultSetTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Zend\Db\ResultSet\AbstractResultSet::initialize
+     * @covers \Zend\Db\ResultSet\AbstractResultSet::initialize
      */
     public function testInitialize()
     {
         $resultSet = $this->getMockForAbstractClass('Zend\Db\ResultSet\AbstractResultSet');
 
-        $this->assertSame($resultSet, $resultSet->initialize([
+        self::assertSame($resultSet, $resultSet->initialize([
             ['id' => 1, 'name' => 'one'],
             ['id' => 2, 'name' => 'two'],
             ['id' => 3, 'name' => 'three'],
         ]));
 
-        $this->setExpectedException(
-            'Zend\Db\ResultSet\Exception\InvalidArgumentException',
+        $this->expectException('Zend\Db\ResultSet\Exception\InvalidArgumentException');
+        $this->expectExceptionMessage(
             'DataSource provided is not an array, nor does it implement Iterator or IteratorAggregate'
         );
         $resultSet->initialize('foo');
     }
 
     /**
-     * @covers Zend\Db\ResultSet\AbstractResultSet::initialize
+     * @covers \Zend\Db\ResultSet\AbstractResultSet::initialize
      */
     public function testInitializeDoesNotCallCount()
     {
@@ -57,12 +59,12 @@ class AbstractResultSetTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Zend\Db\ResultSet\AbstractResultSet::buffer
+     * @covers \Zend\Db\ResultSet\AbstractResultSet::buffer
      */
     public function testBuffer()
     {
         $resultSet = $this->getMockForAbstractClass('Zend\Db\ResultSet\AbstractResultSet');
-        $this->assertSame($resultSet, $resultSet->buffer());
+        self::assertSame($resultSet, $resultSet->buffer());
 
         $resultSet = $this->getMockForAbstractClass('Zend\Db\ResultSet\AbstractResultSet');
         $resultSet->initialize(new \ArrayIterator([
@@ -71,26 +73,24 @@ class AbstractResultSetTest extends \PHPUnit_Framework_TestCase
                 ['id' => 3, 'name' => 'three'],
         ]));
         $resultSet->next(); // start iterator
-        $this->setExpectedException(
-            'Zend\Db\ResultSet\Exception\RuntimeException',
-            'Buffering must be enabled before iteration is started'
-        );
+        $this->expectException('Zend\Db\ResultSet\Exception\RuntimeException');
+        $this->expectExceptionMessage('Buffering must be enabled before iteration is started');
         $resultSet->buffer();
     }
 
     /**
-     * @covers Zend\Db\ResultSet\AbstractResultSet::isBuffered
+     * @covers \Zend\Db\ResultSet\AbstractResultSet::isBuffered
      */
     public function testIsBuffered()
     {
         $resultSet = $this->getMockForAbstractClass('Zend\Db\ResultSet\AbstractResultSet');
-        $this->assertFalse($resultSet->isBuffered());
+        self::assertFalse($resultSet->isBuffered());
         $resultSet->buffer();
-        $this->assertTrue($resultSet->isBuffered());
+        self::assertTrue($resultSet->isBuffered());
     }
 
     /**
-     * @covers Zend\Db\ResultSet\AbstractResultSet::getDataSource
+     * @covers \Zend\Db\ResultSet\AbstractResultSet::getDataSource
      */
     public function testGetDataSource()
     {
@@ -100,11 +100,11 @@ class AbstractResultSetTest extends \PHPUnit_Framework_TestCase
             ['id' => 2, 'name' => 'two'],
             ['id' => 3, 'name' => 'three'],
         ]));
-        $this->assertInstanceOf('\ArrayIterator', $resultSet->getDataSource());
+        self::assertInstanceOf('\ArrayIterator', $resultSet->getDataSource());
     }
 
     /**
-     * @covers Zend\Db\ResultSet\AbstractResultSet::getFieldCount
+     * @covers \Zend\Db\ResultSet\AbstractResultSet::getFieldCount
      */
     public function testGetFieldCount()
     {
@@ -112,11 +112,11 @@ class AbstractResultSetTest extends \PHPUnit_Framework_TestCase
         $resultSet->initialize(new \ArrayIterator([
             ['id' => 1, 'name' => 'one'],
         ]));
-        $this->assertEquals(2, $resultSet->getFieldCount());
+        self::assertEquals(2, $resultSet->getFieldCount());
     }
 
     /**
-     * @covers Zend\Db\ResultSet\AbstractResultSet::next
+     * @covers \Zend\Db\ResultSet\AbstractResultSet::next
      */
     public function testNext()
     {
@@ -126,11 +126,11 @@ class AbstractResultSetTest extends \PHPUnit_Framework_TestCase
             ['id' => 2, 'name' => 'two'],
             ['id' => 3, 'name' => 'three'],
         ]));
-        $this->assertNull($resultSet->next());
+        self::assertNull($resultSet->next());
     }
 
     /**
-     * @covers Zend\Db\ResultSet\AbstractResultSet::key
+     * @covers \Zend\Db\ResultSet\AbstractResultSet::key
      */
     public function testKey()
     {
@@ -141,15 +141,15 @@ class AbstractResultSetTest extends \PHPUnit_Framework_TestCase
             ['id' => 3, 'name' => 'three'],
         ]));
         $resultSet->next();
-        $this->assertEquals(1, $resultSet->key());
+        self::assertEquals(1, $resultSet->key());
         $resultSet->next();
-        $this->assertEquals(2, $resultSet->key());
+        self::assertEquals(2, $resultSet->key());
         $resultSet->next();
-        $this->assertEquals(3, $resultSet->key());
+        self::assertEquals(3, $resultSet->key());
     }
 
     /**
-     * @covers Zend\Db\ResultSet\AbstractResultSet::current
+     * @covers \Zend\Db\ResultSet\AbstractResultSet::current
      */
     public function testCurrent()
     {
@@ -159,11 +159,11 @@ class AbstractResultSetTest extends \PHPUnit_Framework_TestCase
             ['id' => 2, 'name' => 'two'],
             ['id' => 3, 'name' => 'three'],
         ]));
-        $this->assertEquals(['id' => 1, 'name' => 'one'], $resultSet->current());
+        self::assertEquals(['id' => 1, 'name' => 'one'], $resultSet->current());
     }
 
     /**
-     * @covers Zend\Db\ResultSet\AbstractResultSet::valid
+     * @covers \Zend\Db\ResultSet\AbstractResultSet::valid
      */
     public function testValid()
     {
@@ -173,15 +173,15 @@ class AbstractResultSetTest extends \PHPUnit_Framework_TestCase
             ['id' => 2, 'name' => 'two'],
             ['id' => 3, 'name' => 'three'],
         ]));
-        $this->assertTrue($resultSet->valid());
+        self::assertTrue($resultSet->valid());
         $resultSet->next();
         $resultSet->next();
         $resultSet->next();
-        $this->assertFalse($resultSet->valid());
+        self::assertFalse($resultSet->valid());
     }
 
     /**
-     * @covers Zend\Db\ResultSet\AbstractResultSet::rewind
+     * @covers \Zend\Db\ResultSet\AbstractResultSet::rewind
      */
     public function testRewind()
     {
@@ -191,11 +191,11 @@ class AbstractResultSetTest extends \PHPUnit_Framework_TestCase
             ['id' => 2, 'name' => 'two'],
             ['id' => 3, 'name' => 'three'],
         ]));
-        $this->assertNull($resultSet->rewind());
+        self::assertNull($resultSet->rewind());
     }
 
     /**
-     * @covers Zend\Db\ResultSet\AbstractResultSet::count
+     * @covers \Zend\Db\ResultSet\AbstractResultSet::count
      */
     public function testCount()
     {
@@ -205,11 +205,11 @@ class AbstractResultSetTest extends \PHPUnit_Framework_TestCase
             ['id' => 2, 'name' => 'two'],
             ['id' => 3, 'name' => 'three'],
         ]));
-        $this->assertEquals(3, $resultSet->count());
+        self::assertEquals(3, $resultSet->count());
     }
 
     /**
-     * @covers Zend\Db\ResultSet\AbstractResultSet::toArray
+     * @covers \Zend\Db\ResultSet\AbstractResultSet::toArray
      */
     public function testToArray()
     {
@@ -219,7 +219,7 @@ class AbstractResultSetTest extends \PHPUnit_Framework_TestCase
             ['id' => 2, 'name' => 'two'],
             ['id' => 3, 'name' => 'three'],
         ]));
-        $this->assertEquals(
+        self::assertEquals(
             [
                 ['id' => 1, 'name' => 'one'],
                 ['id' => 2, 'name' => 'two'],
@@ -244,19 +244,19 @@ class AbstractResultSetTest extends \PHPUnit_Framework_TestCase
         $resultSet->buffer();
 
         $data = $resultSet->current();
-        $this->assertEquals(1, $data['id']);
+        self::assertEquals(1, $data['id']);
         $resultSet->next();
         $data = $resultSet->current();
-        $this->assertEquals(2, $data['id']);
+        self::assertEquals(2, $data['id']);
 
         $resultSet->rewind();
         $data = $resultSet->current();
-        $this->assertEquals(1, $data['id']);
+        self::assertEquals(1, $data['id']);
         $resultSet->next();
         $data = $resultSet->current();
-        $this->assertEquals(2, $data['id']);
+        self::assertEquals(2, $data['id']);
         $resultSet->next();
         $data = $resultSet->current();
-        $this->assertEquals(3, $data['id']);
+        self::assertEquals(3, $data['id']);
     }
 }

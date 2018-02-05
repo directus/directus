@@ -1,6 +1,6 @@
 # Contributor Code of Conduct
 
-The Zend Framework project adheres to [The Code Manifesto](http://codemanifesto.com)
+This project adheres to [The Code Manifesto](http://codemanifesto.com)
 as its guidelines for contributor interactions.
 
 ## The Code Manifesto

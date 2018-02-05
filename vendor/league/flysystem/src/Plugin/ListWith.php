@@ -40,8 +40,8 @@ class ListWith extends AbstractPlugin
     /**
      * Get a meta-data value by key name.
      *
-     * @param array $object
-     * @param       $key
+     * @param array  $object
+     * @param string $key
      *
      * @return array
      */

@@ -9,21 +9,22 @@
 
 namespace ZendTest\Db\Sql\Ddl\Constraint;
 
+use PHPUnit\Framework\TestCase;
 use Zend\Db\Sql\Ddl\Constraint\UniqueKey;
 
-class UniqueKeyTest extends \PHPUnit_Framework_TestCase
+class UniqueKeyTest extends TestCase
 {
     /**
-     * @covers Zend\Db\Sql\Ddl\Constraint\UniqueKey::getExpressionData
+     * @covers \Zend\Db\Sql\Ddl\Constraint\UniqueKey::getExpressionData
      */
     public function testGetExpressionData()
     {
         $uk = new UniqueKey('foo', 'my_uk');
-        $this->assertEquals(
+        self::assertEquals(
             [[
                 'CONSTRAINT %s UNIQUE (%s)',
                 ['my_uk', 'foo'],
-                [$uk::TYPE_IDENTIFIER, $uk::TYPE_IDENTIFIER]
+                [$uk::TYPE_IDENTIFIER, $uk::TYPE_IDENTIFIER],
             ]],
             $uk->getExpressionData()
         );

@@ -40,7 +40,9 @@ class RowGateway extends AbstractRowGateway
         }
 
         if ($this->sql->getTable() !== $this->table) {
-            throw new Exception\InvalidArgumentException('The Sql object provided does not have a table that matches this row object');
+            throw new Exception\InvalidArgumentException(
+                'The Sql object provided does not have a table that matches this row object'
+            );
         }
 
         $this->initialize();

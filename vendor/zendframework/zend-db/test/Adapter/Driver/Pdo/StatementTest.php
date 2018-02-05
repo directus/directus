@@ -9,12 +9,14 @@
 
 namespace ZendTest\Db\Adapter\Driver\Pdo;
 
+use PHPUnit\Framework\TestCase;
 use Zend\Db\Adapter\Driver\Pdo\Connection;
-use Zend\Db\Adapter\Driver\Pdo\Statement;
 use Zend\Db\Adapter\Driver\Pdo\Pdo;
+use Zend\Db\Adapter\Driver\Pdo\Result;
+use Zend\Db\Adapter\Driver\Pdo\Statement;
 use Zend\Db\Adapter\ParameterContainer;
 
-class StatementTest extends \PHPUnit_Framework_TestCase
+class StatementTest extends TestCase
 {
     /**
      * @var Statement
@@ -39,34 +41,34 @@ class StatementTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Zend\Db\Adapter\Driver\Pdo\Statement::setDriver
+     * @covers \Zend\Db\Adapter\Driver\Pdo\Statement::setDriver
      */
     public function testSetDriver()
     {
-        $this->assertEquals($this->statement, $this->statement->setDriver(new Pdo([])));
+        self::assertEquals($this->statement, $this->statement->setDriver(new Pdo([])));
     }
 
     /**
-     * @covers Zend\Db\Adapter\Driver\Pdo\Statement::setParameterContainer
+     * @covers \Zend\Db\Adapter\Driver\Pdo\Statement::setParameterContainer
      */
     public function testSetParameterContainer()
     {
-        $this->assertSame($this->statement, $this->statement->setParameterContainer(new ParameterContainer));
+        self::assertSame($this->statement, $this->statement->setParameterContainer(new ParameterContainer));
     }
 
     /**
-     * @covers Zend\Db\Adapter\Driver\Pdo\Statement::getParameterContainer
+     * @covers \Zend\Db\Adapter\Driver\Pdo\Statement::getParameterContainer
      * @todo   Implement testGetParameterContainer().
      */
     public function testGetParameterContainer()
     {
         $container = new ParameterContainer;
         $this->statement->setParameterContainer($container);
-        $this->assertSame($container, $this->statement->getParameterContainer());
+        self::assertSame($container, $this->statement->getParameterContainer());
     }
 
     /**
-     * @covers Zend\Db\Adapter\Driver\Pdo\Statement::getResource
+     * @covers \Zend\Db\Adapter\Driver\Pdo\Statement::getResource
      */
     public function testGetResource()
     {
@@ -74,56 +76,56 @@ class StatementTest extends \PHPUnit_Framework_TestCase
         $stmt = $pdo->prepare('SELECT 1');
         $this->statement->setResource($stmt);
 
-        $this->assertSame($stmt, $this->statement->getResource());
+        self::assertSame($stmt, $this->statement->getResource());
     }
 
     /**
-     * @covers Zend\Db\Adapter\Driver\Pdo\Statement::setSql
+     * @covers \Zend\Db\Adapter\Driver\Pdo\Statement::setSql
      */
     public function testSetSql()
     {
         $this->statement->setSql('SELECT 1');
-        $this->assertEquals('SELECT 1', $this->statement->getSql());
+        self::assertEquals('SELECT 1', $this->statement->getSql());
     }
 
     /**
-     * @covers Zend\Db\Adapter\Driver\Pdo\Statement::getSql
+     * @covers \Zend\Db\Adapter\Driver\Pdo\Statement::getSql
      */
     public function testGetSql()
     {
         $this->statement->setSql('SELECT 1');
-        $this->assertEquals('SELECT 1', $this->statement->getSql());
+        self::assertEquals('SELECT 1', $this->statement->getSql());
     }
 
     /**
-     * @covers Zend\Db\Adapter\Driver\Pdo\Statement::prepare
+     * @covers \Zend\Db\Adapter\Driver\Pdo\Statement::prepare
      * @todo   Implement testPrepare().
      */
     public function testPrepare()
     {
         $this->statement->initialize(new TestAsset\SqliteMemoryPdo());
-        $this->assertNull($this->statement->prepare('SELECT 1'));
+        self::assertNull($this->statement->prepare('SELECT 1'));
     }
 
     /**
-     * @covers Zend\Db\Adapter\Driver\Pdo\Statement::isPrepared
+     * @covers \Zend\Db\Adapter\Driver\Pdo\Statement::isPrepared
      */
     public function testIsPrepared()
     {
-        $this->assertFalse($this->statement->isPrepared());
+        self::assertFalse($this->statement->isPrepared());
         $this->statement->initialize(new TestAsset\SqliteMemoryPdo());
         $this->statement->prepare('SELECT 1');
-        $this->assertTrue($this->statement->isPrepared());
+        self::assertTrue($this->statement->isPrepared());
     }
 
     /**
-     * @covers Zend\Db\Adapter\Driver\Pdo\Statement::execute
+     * @covers \Zend\Db\Adapter\Driver\Pdo\Statement::execute
      */
     public function testExecute()
     {
         $this->statement->setDriver(new Pdo(new Connection($pdo = new TestAsset\SqliteMemoryPdo())));
         $this->statement->initialize($pdo);
         $this->statement->prepare('SELECT 1');
-        $this->assertInstanceOf('Zend\Db\Adapter\Driver\Pdo\Result', $this->statement->execute());
+        self::assertInstanceOf('Zend\Db\Adapter\Driver\Pdo\Result', $this->statement->execute());
     }
 }

@@ -9,10 +9,11 @@
 
 namespace ZendTest\Db\Adapter\Profiler;
 
+use PHPUnit\Framework\TestCase;
 use Zend\Db\Adapter\Profiler\Profiler;
 use Zend\Db\Adapter\StatementContainer;
 
-class ProfilerTest extends \PHPUnit_Framework_TestCase
+class ProfilerTest extends TestCase
 {
     /**
      * @var Profiler
@@ -29,56 +30,52 @@ class ProfilerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Zend\Db\Adapter\Profiler\Profiler::profilerStart
+     * @covers \Zend\Db\Adapter\Profiler\Profiler::profilerStart
      */
     public function testProfilerStart()
     {
         $ret = $this->profiler->profilerStart('SELECT * FROM FOO');
-        $this->assertSame($this->profiler, $ret);
+        self::assertSame($this->profiler, $ret);
         $ret = $this->profiler->profilerStart(new StatementContainer());
-        $this->assertSame($this->profiler, $ret);
+        self::assertSame($this->profiler, $ret);
 
-        $this->setExpectedException(
-            'Zend\Db\Adapter\Exception\InvalidArgumentException',
-            'profilerStart takes either a StatementContainer or a string'
-        );
+        $this->expectException('Zend\Db\Adapter\Exception\InvalidArgumentException');
+        $this->expectExceptionMessage('profilerStart takes either a StatementContainer or a string');
         $this->profiler->profilerStart(5);
     }
 
     /**
-     * @covers Zend\Db\Adapter\Profiler\Profiler::profilerFinish
+     * @covers \Zend\Db\Adapter\Profiler\Profiler::profilerFinish
      */
     public function testProfilerFinish()
     {
         $this->profiler->profilerStart('SELECT * FROM FOO');
         $ret = $this->profiler->profilerFinish();
-        $this->assertSame($this->profiler, $ret);
+        self::assertSame($this->profiler, $ret);
 
         $profiler = new Profiler;
-        $this->setExpectedException(
-            'Zend\Db\Adapter\Exception\RuntimeException',
-            'A profile must be started before profilerFinish can be called'
-        );
+        $this->expectException('Zend\Db\Adapter\Exception\RuntimeException');
+        $this->expectExceptionMessage('A profile must be started before profilerFinish can be called');
         $profiler->profilerFinish();
     }
 
     /**
-     * @covers Zend\Db\Adapter\Profiler\Profiler::getLastProfile
+     * @covers \Zend\Db\Adapter\Profiler\Profiler::getLastProfile
      */
     public function testGetLastProfile()
     {
         $this->profiler->profilerStart('SELECT * FROM FOO');
         $this->profiler->profilerFinish();
         $profile = $this->profiler->getLastProfile();
-        $this->assertEquals('SELECT * FROM FOO', $profile['sql']);
-        $this->assertNull($profile['parameters']);
-        $this->assertInternalType('float', $profile['start']);
-        $this->assertInternalType('float', $profile['end']);
-        $this->assertInternalType('float', $profile['elapse']);
+        self::assertEquals('SELECT * FROM FOO', $profile['sql']);
+        self::assertNull($profile['parameters']);
+        self::assertInternalType('float', $profile['start']);
+        self::assertInternalType('float', $profile['end']);
+        self::assertInternalType('float', $profile['elapse']);
     }
 
     /**
-     * @covers Zend\Db\Adapter\Profiler\Profiler::getProfiles
+     * @covers \Zend\Db\Adapter\Profiler\Profiler::getProfiles
      */
     public function testGetProfiles()
     {
@@ -87,6 +84,6 @@ class ProfilerTest extends \PHPUnit_Framework_TestCase
         $this->profiler->profilerStart('SELECT * FROM FOO2');
         $this->profiler->profilerFinish();
 
-        $this->assertCount(2, $this->profiler->getProfiles());
+        self::assertCount(2, $this->profiler->getProfiles());
     }
 }

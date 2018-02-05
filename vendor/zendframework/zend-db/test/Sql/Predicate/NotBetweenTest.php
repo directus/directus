@@ -9,7 +9,7 @@
 
 namespace ZendTest\Db\Sql\Predicate;
 
-use PHPUnit_Framework_TestCase as TestCase;
+use PHPUnit\Framework\TestCase;
 use Zend\Db\Sql\Predicate\NotBetween;
 
 class NotBetweenTest extends TestCase
@@ -17,23 +17,23 @@ class NotBetweenTest extends TestCase
     /**
      * @var NotBetween
      */
-    protected $notBetween = null;
+    protected $notBetween;
 
-    public function setUp()
+    protected function setUp()
     {
         $this->notBetween = new NotBetween();
     }
 
     /**
-     * @covers Zend\Db\Sql\Predicate\NotBetween::getSpecification
+     * @covers \Zend\Db\Sql\Predicate\NotBetween::getSpecification
      */
     public function testSpecificationHasSameDefaultValue()
     {
-        $this->assertEquals('%1$s NOT BETWEEN %2$s AND %3$s', $this->notBetween->getSpecification());
+        self::assertEquals('%1$s NOT BETWEEN %2$s AND %3$s', $this->notBetween->getSpecification());
     }
 
     /**
-     * @covers Zend\Db\Sql\Predicate\NotBetween::getExpressionData
+     * @covers \Zend\Db\Sql\Predicate\NotBetween::getExpressionData
      */
     public function testRetrievingWherePartsReturnsSpecificationArrayOfIdentifierAndValuesAndArrayOfTypes()
     {
@@ -45,16 +45,16 @@ class NotBetweenTest extends TestCase
             ['foo.bar', 10, 19],
             [NotBetween::TYPE_IDENTIFIER, NotBetween::TYPE_VALUE, NotBetween::TYPE_VALUE],
         ]];
-        $this->assertEquals($expected, $this->notBetween->getExpressionData());
+        self::assertEquals($expected, $this->notBetween->getExpressionData());
 
-        $this->notBetween->setIdentifier([10=>NotBetween::TYPE_VALUE])
-                      ->setMinValue(['foo.bar'=>NotBetween::TYPE_IDENTIFIER])
-                      ->setMaxValue(['foo.baz'=>NotBetween::TYPE_IDENTIFIER]);
+        $this->notBetween->setIdentifier([10 => NotBetween::TYPE_VALUE])
+                      ->setMinValue(['foo.bar' => NotBetween::TYPE_IDENTIFIER])
+                      ->setMaxValue(['foo.baz' => NotBetween::TYPE_IDENTIFIER]);
         $expected = [[
             $this->notBetween->getSpecification(),
             [10, 'foo.bar', 'foo.baz'],
             [NotBetween::TYPE_VALUE, NotBetween::TYPE_IDENTIFIER, NotBetween::TYPE_IDENTIFIER],
         ]];
-        $this->assertEquals($expected, $this->notBetween->getExpressionData());
+        self::assertEquals($expected, $this->notBetween->getExpressionData());
     }
 }

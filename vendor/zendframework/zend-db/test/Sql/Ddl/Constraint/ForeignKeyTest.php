@@ -9,116 +9,124 @@
 
 namespace ZendTest\Db\Sql\Ddl\Constraint;
 
+use PHPUnit\Framework\TestCase;
 use Zend\Db\Sql\Ddl\Constraint\ForeignKey;
 
-class ForeignKeyTest extends \PHPUnit_Framework_TestCase
+class ForeignKeyTest extends TestCase
 {
     /**
-     * @covers Zend\Db\Sql\Ddl\Constraint\ForeignKey::setName
+     * @covers \Zend\Db\Sql\Ddl\Constraint\ForeignKey::setName
      */
     public function testSetName()
     {
         $fk = new ForeignKey('foo', 'bar', 'baz', 'bam');
-        $this->assertSame($fk, $fk->setName('xxxx'));
+        self::assertSame($fk, $fk->setName('xxxx'));
         return $fk;
     }
 
     /**
-     * @covers Zend\Db\Sql\Ddl\Constraint\ForeignKey::getName
+     * @covers \Zend\Db\Sql\Ddl\Constraint\ForeignKey::getName
      * @depends testSetName
      */
     public function testGetName(ForeignKey $fk)
     {
-        $this->assertEquals('xxxx', $fk->getName());
+        self::assertEquals('xxxx', $fk->getName());
     }
 
     /**
-     * @covers Zend\Db\Sql\Ddl\Constraint\ForeignKey::setReferenceTable
+     * @covers \Zend\Db\Sql\Ddl\Constraint\ForeignKey::setReferenceTable
      */
     public function testSetReferenceTable()
     {
         $fk = new ForeignKey('foo', 'bar', 'baz', 'bam');
-        $this->assertSame($fk, $fk->setReferenceTable('xxxx'));
+        self::assertSame($fk, $fk->setReferenceTable('xxxx'));
         return $fk;
     }
 
     /**
-     * @covers Zend\Db\Sql\Ddl\Constraint\ForeignKey::getReferenceTable
+     * @covers \Zend\Db\Sql\Ddl\Constraint\ForeignKey::getReferenceTable
      * @depends testSetReferenceTable
      */
     public function testGetReferenceTable(ForeignKey $fk)
     {
-        $this->assertEquals('xxxx', $fk->getReferenceTable());
+        self::assertEquals('xxxx', $fk->getReferenceTable());
     }
 
     /**
-     * @covers Zend\Db\Sql\Ddl\Constraint\ForeignKey::setReferenceColumn
+     * @covers \Zend\Db\Sql\Ddl\Constraint\ForeignKey::setReferenceColumn
      */
     public function testSetReferenceColumn()
     {
         $fk = new ForeignKey('foo', 'bar', 'baz', 'bam');
-        $this->assertSame($fk, $fk->setReferenceColumn('xxxx'));
+        self::assertSame($fk, $fk->setReferenceColumn('xxxx'));
         return $fk;
     }
 
     /**
-     * @covers Zend\Db\Sql\Ddl\Constraint\ForeignKey::getReferenceColumn
+     * @covers \Zend\Db\Sql\Ddl\Constraint\ForeignKey::getReferenceColumn
      * @depends testSetReferenceColumn
      */
     public function testGetReferenceColumn(ForeignKey $fk)
     {
-        $this->assertEquals(['xxxx'], $fk->getReferenceColumn());
+        self::assertEquals(['xxxx'], $fk->getReferenceColumn());
     }
 
     /**
-     * @covers Zend\Db\Sql\Ddl\Constraint\ForeignKey::setOnDeleteRule
+     * @covers \Zend\Db\Sql\Ddl\Constraint\ForeignKey::setOnDeleteRule
      */
     public function testSetOnDeleteRule()
     {
         $fk = new ForeignKey('foo', 'bar', 'baz', 'bam');
-        $this->assertSame($fk, $fk->setOnDeleteRule('CASCADE'));
+        self::assertSame($fk, $fk->setOnDeleteRule('CASCADE'));
         return $fk;
     }
 
     /**
-     * @covers Zend\Db\Sql\Ddl\Constraint\ForeignKey::getOnDeleteRule
+     * @covers \Zend\Db\Sql\Ddl\Constraint\ForeignKey::getOnDeleteRule
      * @depends testSetOnDeleteRule
      */
     public function testGetOnDeleteRule(ForeignKey $fk)
     {
-        $this->assertEquals('CASCADE', $fk->getOnDeleteRule());
+        self::assertEquals('CASCADE', $fk->getOnDeleteRule());
     }
 
     /**
-     * @covers Zend\Db\Sql\Ddl\Constraint\ForeignKey::setOnUpdateRule
+     * @covers \Zend\Db\Sql\Ddl\Constraint\ForeignKey::setOnUpdateRule
      */
     public function testSetOnUpdateRule()
     {
         $fk = new ForeignKey('foo', 'bar', 'baz', 'bam');
-        $this->assertSame($fk, $fk->setOnUpdateRule('CASCADE'));
+        self::assertSame($fk, $fk->setOnUpdateRule('CASCADE'));
         return $fk;
     }
 
     /**
-     * @covers Zend\Db\Sql\Ddl\Constraint\ForeignKey::getOnUpdateRule
+     * @covers \Zend\Db\Sql\Ddl\Constraint\ForeignKey::getOnUpdateRule
      * @depends testSetOnUpdateRule
      */
     public function testGetOnUpdateRule(ForeignKey $fk)
     {
-        $this->assertEquals('CASCADE', $fk->getOnUpdateRule());
+        self::assertEquals('CASCADE', $fk->getOnUpdateRule());
     }
 
     /**
-     * @covers Zend\Db\Sql\Ddl\Constraint\ForeignKey::getExpressionData
+     * @covers \Zend\Db\Sql\Ddl\Constraint\ForeignKey::getExpressionData
      */
     public function testGetExpressionData()
     {
         $fk = new ForeignKey('foo', 'bar', 'baz', 'bam', 'CASCADE', 'SET NULL');
-        $this->assertEquals(
+        self::assertEquals(
             [[
                 'CONSTRAINT %s FOREIGN KEY (%s) REFERENCES %s (%s) ON DELETE %s ON UPDATE %s',
                 ['foo', 'bar', 'baz', 'bam', 'CASCADE', 'SET NULL'],
-                [$fk::TYPE_IDENTIFIER, $fk::TYPE_IDENTIFIER, $fk::TYPE_IDENTIFIER, $fk::TYPE_IDENTIFIER, $fk::TYPE_LITERAL, $fk::TYPE_LITERAL]
+                [
+                    $fk::TYPE_IDENTIFIER,
+                    $fk::TYPE_IDENTIFIER,
+                    $fk::TYPE_IDENTIFIER,
+                    $fk::TYPE_IDENTIFIER,
+                    $fk::TYPE_LITERAL,
+                    $fk::TYPE_LITERAL,
+                ],
             ]],
             $fk->getExpressionData()
         );

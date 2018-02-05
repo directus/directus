@@ -40,6 +40,10 @@ class FeatureSet
         }
     }
 
+    /**
+     * @param AbstractRowGateway $rowGateway
+     * @return self Provides a fluent interface
+     */
     public function setRowGateway(AbstractRowGateway $rowGateway)
     {
         $this->rowGateway = $rowGateway;
@@ -61,6 +65,10 @@ class FeatureSet
         return $feature;
     }
 
+    /**
+     * @param array $features
+     * @return self Provides a fluent interface
+     */
     public function addFeatures(array $features)
     {
         foreach ($features as $feature) {
@@ -69,6 +77,10 @@ class FeatureSet
         return $this;
     }
 
+    /**
+     * @param AbstractFeature $feature
+     * @return self Provides a fluent interface
+     */
     public function addFeature(AbstractFeature $feature)
     {
         $this->features[] = $feature;

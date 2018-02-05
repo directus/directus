@@ -3,7 +3,7 @@
     "type": "library",
     "description": "Swiftmailer, free feature-rich PHP mailer",
     "keywords": ["mail","mailer","email"],
-    "homepage": "http://swiftmailer.org",
+    "homepage": "https://swiftmailer.symfony.com",
     "license": "MIT",
     "authors": [
         {

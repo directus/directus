@@ -49,7 +49,7 @@ class AdapterAbstractServiceFactory implements AbstractFactoryInterface
     /**
      * Determine if we can create a service with name (SM v2 compatibility)
      *
-     * @param serviceLocator $serviceLocator
+     * @param ServiceLocatorInterface $serviceLocator
      * @param string $name
      * @param string $requestedName
      * @return bool

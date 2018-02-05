@@ -9,4 +9,4 @@ to access different database vendors such as MySQL, PostgreSQL, Oracle, IBM DB2,
 Microsoft Sql Server, PDO, etc.
 
 - File issues at https://github.com/zendframework/zend-db/issues
-- Documentation is at https://zendframework.github.io/zend-db/
+- Documentation is at https://docs.zendframework.com/zend-db/

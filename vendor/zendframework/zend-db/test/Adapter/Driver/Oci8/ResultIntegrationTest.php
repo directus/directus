@@ -9,13 +9,14 @@
 
 namespace ZendTest\Db\Adapter\Driver\Oci8;
 
+use PHPUnit\Framework\TestCase;
 use Zend\Db\Adapter\Driver\Oci8\Result;
 
 /**
  * @group integration
  * @group integration-oracle
  */
-class ResultIntegrationTest extends \PHPUnit_Framework_TestCase
+class ResultIntegrationTest extends TestCase
 {
     /**
      * @var Result
@@ -40,7 +41,7 @@ class ResultIntegrationTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Zend\Db\Adapter\Driver\Oci8\Result::initialize
+     * @covers \Zend\Db\Adapter\Driver\Oci8\Result::initialize
      * @todo   Implement testInitialize().
      */
     public function testInitialize()
@@ -52,7 +53,7 @@ class ResultIntegrationTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Zend\Db\Adapter\Driver\Oci8\Result::buffer
+     * @covers \Zend\Db\Adapter\Driver\Oci8\Result::buffer
      * @todo   Implement testBuffer().
      */
     public function testBuffer()
@@ -64,7 +65,7 @@ class ResultIntegrationTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Zend\Db\Adapter\Driver\Oci8\Result::getResource
+     * @covers \Zend\Db\Adapter\Driver\Oci8\Result::getResource
      * @todo   Implement testGetResource().
      */
     public function testGetResource()
@@ -76,7 +77,7 @@ class ResultIntegrationTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Zend\Db\Adapter\Driver\Oci8\Result::current
+     * @covers \Zend\Db\Adapter\Driver\Oci8\Result::current
      * @todo   Implement testCurrent().
      */
     public function testCurrent()
@@ -88,7 +89,7 @@ class ResultIntegrationTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Zend\Db\Adapter\Driver\Oci8\Result::next
+     * @covers \Zend\Db\Adapter\Driver\Oci8\Result::next
      * @todo   Implement testNext().
      */
     public function testNext()
@@ -100,7 +101,7 @@ class ResultIntegrationTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Zend\Db\Adapter\Driver\Oci8\Result::key
+     * @covers \Zend\Db\Adapter\Driver\Oci8\Result::key
      * @todo   Implement testKey().
      */
     public function testKey()
@@ -112,7 +113,7 @@ class ResultIntegrationTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Zend\Db\Adapter\Driver\Oci8\Result::rewind
+     * @covers \Zend\Db\Adapter\Driver\Oci8\Result::rewind
      * @todo   Implement testRewind().
      */
     public function testRewind()
@@ -124,7 +125,7 @@ class ResultIntegrationTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Zend\Db\Adapter\Driver\Oci8\Result::valid
+     * @covers \Zend\Db\Adapter\Driver\Oci8\Result::valid
      * @todo   Implement testValid().
      */
     public function testValid()
@@ -136,7 +137,7 @@ class ResultIntegrationTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Zend\Db\Adapter\Driver\Oci8\Result::count
+     * @covers \Zend\Db\Adapter\Driver\Oci8\Result::count
      * @todo   Implement testCount().
      */
     public function testCount()
@@ -148,7 +149,7 @@ class ResultIntegrationTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Zend\Db\Adapter\Driver\Oci8\Result::getFieldCount
+     * @covers \Zend\Db\Adapter\Driver\Oci8\Result::getFieldCount
      * @todo   Implement testGetFieldCount().
      */
     public function testGetFieldCount()
@@ -160,7 +161,7 @@ class ResultIntegrationTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Zend\Db\Adapter\Driver\Oci8\Result::isQueryResult
+     * @covers \Zend\Db\Adapter\Driver\Oci8\Result::isQueryResult
      * @todo   Implement testIsQueryResult().
      */
     public function testIsQueryResult()
@@ -172,7 +173,7 @@ class ResultIntegrationTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Zend\Db\Adapter\Driver\Oci8\Result::getAffectedRows
+     * @covers \Zend\Db\Adapter\Driver\Oci8\Result::getAffectedRows
      * @todo   Implement testGetAffectedRows().
      */
     public function testGetAffectedRows()
@@ -184,7 +185,7 @@ class ResultIntegrationTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Zend\Db\Adapter\Driver\Oci8\Result::getGeneratedValue
+     * @covers \Zend\Db\Adapter\Driver\Oci8\Result::getGeneratedValue
      * @todo   Implement testGetGeneratedValue().
      */
     public function testGetGeneratedValue()

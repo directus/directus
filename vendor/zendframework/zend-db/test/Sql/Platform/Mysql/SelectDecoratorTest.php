@@ -9,38 +9,40 @@
 
 namespace ZendTest\Db\Sql\Platform\Mysql;
 
-use Zend\Db\Sql\Platform\Mysql\SelectDecorator;
-use Zend\Db\Sql\Select;
+use PHPUnit\Framework\TestCase;
 use Zend\Db\Adapter\ParameterContainer;
 use Zend\Db\Adapter\Platform\Mysql as MysqlPlatform;
+use Zend\Db\Sql\Platform\Mysql\SelectDecorator;
+use Zend\Db\Sql\Select;
 
-class SelectDecoratorTest extends \PHPUnit_Framework_TestCase
+class SelectDecoratorTest extends TestCase
 {
     /**
-     * @testdox integration test: Testing SelectDecorator will use Select an internal state to prepare a proper limit/offset sql statement
-     * @covers Zend\Db\Sql\Platform\Mysql\SelectDecorator::prepareStatement
-     * @covers Zend\Db\Sql\Platform\Mysql\SelectDecorator::processLimit
-     * @covers Zend\Db\Sql\Platform\Mysql\SelectDecorator::processOffset
+     * @testdox integration test: Testing SelectDecorator will use Select an internal state to prepare
+     *                            a proper limit/offset sql statement
+     * @covers \Zend\Db\Sql\Platform\Mysql\SelectDecorator::prepareStatement
+     * @covers \Zend\Db\Sql\Platform\Mysql\SelectDecorator::processLimit
+     * @covers \Zend\Db\Sql\Platform\Mysql\SelectDecorator::processOffset
      * @dataProvider dataProvider
      */
     public function testPrepareStatement(Select $select, $expectedSql, $expectedParams)
     {
-        $driver = $this->getMock('Zend\Db\Adapter\Driver\DriverInterface');
+        $driver = $this->getMockBuilder('Zend\Db\Adapter\Driver\DriverInterface')->getMock();
         $driver->expects($this->any())->method('formatParameterName')->will($this->returnValue('?'));
 
         // test
-        $adapter = $this->getMock(
-            'Zend\Db\Adapter\Adapter',
-            null,
-            [
+        $adapter = $this->getMockBuilder('Zend\Db\Adapter\Adapter')
+            ->setMethods()
+            ->setConstructorArgs([
                 $driver,
-                new MysqlPlatform()
-            ]
-        );
+                new MysqlPlatform(),
+            ])
+            ->getMock();
 
         $parameterContainer = new ParameterContainer;
-        $statement = $this->getMock('Zend\Db\Adapter\Driver\StatementInterface');
-        $statement->expects($this->any())->method('getParameterContainer')->will($this->returnValue($parameterContainer));
+        $statement = $this->getMockBuilder('Zend\Db\Adapter\Driver\StatementInterface')->getMock();
+        $statement->expects($this->any())->method('getParameterContainer')
+            ->will($this->returnValue($parameterContainer));
 
         $statement->expects($this->once())->method('setSql')->with($expectedSql);
 
@@ -48,25 +50,27 @@ class SelectDecoratorTest extends \PHPUnit_Framework_TestCase
         $selectDecorator->setSubject($select);
         $selectDecorator->prepareStatement($adapter, $statement);
 
-        $this->assertEquals($expectedParams, $parameterContainer->getNamedArray());
+        self::assertEquals($expectedParams, $parameterContainer->getNamedArray());
     }
 
     /**
-     * @testdox integration test: Testing SelectDecorator will use Select an internal state to prepare a proper limit/offset sql statement
-     * @covers Zend\Db\Sql\Platform\Mysql\SelectDecorator::getSqlString
-     * @covers Zend\Db\Sql\Platform\Mysql\SelectDecorator::processLimit
-     * @covers Zend\Db\Sql\Platform\Mysql\SelectDecorator::processOffset
+     * @testdox integration test: Testing SelectDecorator will use Select an internal state to prepare
+     *                            a proper limit/offset sql statement
+     * @covers \Zend\Db\Sql\Platform\Mysql\SelectDecorator::getSqlString
+     * @covers \Zend\Db\Sql\Platform\Mysql\SelectDecorator::processLimit
+     * @covers \Zend\Db\Sql\Platform\Mysql\SelectDecorator::processOffset
      * @dataProvider dataProvider
      */
     public function testGetSqlString(Select $select, $ignore, $alsoIgnore, $expectedSql)
     {
         $parameterContainer = new ParameterContainer;
-        $statement = $this->getMock('Zend\Db\Adapter\Driver\StatementInterface');
-        $statement->expects($this->any())->method('getParameterContainer')->will($this->returnValue($parameterContainer));
+        $statement = $this->getMockBuilder('Zend\Db\Adapter\Driver\StatementInterface')->getMock();
+        $statement->expects($this->any())->method('getParameterContainer')
+            ->will($this->returnValue($parameterContainer));
 
         $selectDecorator = new SelectDecorator;
         $selectDecorator->setSubject($select);
-        $this->assertEquals($expectedSql, $selectDecorator->getSqlString(new MysqlPlatform));
+        self::assertEquals($expectedSql, $selectDecorator->getSqlString(new MysqlPlatform));
     }
 
     public function dataProvider()

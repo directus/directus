@@ -9,24 +9,25 @@
 
 namespace ZendTest\Db\Sql\Ddl\Column;
 
+use PHPUnit\Framework\TestCase;
 use Zend\Db\Sql\Ddl\Column\Boolean;
 
-class BooleanTest extends \PHPUnit_Framework_TestCase
+class BooleanTest extends TestCase
 {
     /**
-     * @covers Zend\Db\Sql\Ddl\Column\Boolean::getExpressionData
+     * @covers \Zend\Db\Sql\Ddl\Column\Boolean::getExpressionData
      */
     public function testGetExpressionData()
     {
         $column = new Boolean('foo');
-        $this->assertEquals(
+        self::assertEquals(
             [['%s %s NOT NULL', ['foo', 'BOOLEAN'], [$column::TYPE_IDENTIFIER, $column::TYPE_LITERAL]]],
             $column->getExpressionData()
         );
     }
 
     /**
-     * @covers Zend\Db\Sql\Ddl\Column\Boolean
+     * @covers \Zend\Db\Sql\Ddl\Column\Boolean
      *
      * @group 6257
      */
@@ -34,10 +35,10 @@ class BooleanTest extends \PHPUnit_Framework_TestCase
     {
         $column = new Boolean('foo', true);
 
-        $this->assertFalse($column->isNullable());
+        self::assertFalse($column->isNullable());
 
         $column->setNullable(true);
 
-        $this->assertFalse($column->isNullable());
+        self::assertFalse($column->isNullable());
     }
 }

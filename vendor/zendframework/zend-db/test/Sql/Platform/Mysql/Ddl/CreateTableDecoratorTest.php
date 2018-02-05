@@ -9,26 +9,27 @@
 
 namespace ZendTest\Db\Sql\Platform\Mysql\Ddl;
 
+use PHPUnit\Framework\TestCase;
 use Zend\Db\Adapter\Platform\Mysql;
 use Zend\Db\Sql\Ddl\Column\Column;
 use Zend\Db\Sql\Ddl\Constraint\PrimaryKey;
 use Zend\Db\Sql\Ddl\CreateTable;
 use Zend\Db\Sql\Platform\Mysql\Ddl\CreateTableDecorator;
 
-class CreateTableDecoratorTest extends \PHPUnit_Framework_TestCase
+class CreateTableDecoratorTest extends TestCase
 {
     /**
-     * @covers Zend\Db\Sql\Platform\Mysql\Ddl\CreateTableDecorator::setSubject
+     * @covers \Zend\Db\Sql\Platform\Mysql\Ddl\CreateTableDecorator::setSubject
      */
     public function testSetSubject()
     {
         $ctd = new CreateTableDecorator();
         $ct = new CreateTable;
-        $this->assertSame($ctd, $ctd->setSubject($ct));
+        self::assertSame($ctd, $ctd->setSubject($ct));
     }
 
     /**
-     * @covers Zend\Db\Sql\Platform\Mysql\Ddl\CreateTableDecorator::getSqlString
+     * @covers \Zend\Db\Sql\Platform\Mysql\Ddl\CreateTableDecorator::getSqlString
      */
     public function testGetSqlString()
     {
@@ -46,8 +47,10 @@ class CreateTableDecoratorTest extends \PHPUnit_Framework_TestCase
         $col->addConstraint(new PrimaryKey());
         $ct->addColumn($col);
 
-        $this->assertEquals(
+        self::assertEquals(
+            // @codingStandardsIgnoreStart
             "CREATE TABLE `foo` ( \n    `bar` INTEGER UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT 'baz' COLUMN_FORMAT FIXED STORAGE MEMORY \n)",
+            // @codingStandardsIgnoreEnd
             @$ctd->getSqlString(new Mysql())
         );
     }

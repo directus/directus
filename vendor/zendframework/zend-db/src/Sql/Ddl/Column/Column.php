@@ -64,7 +64,7 @@ class Column implements ColumnInterface
 
     /**
      * @param  string $name
-     * @return self
+     * @return self Provides a fluent interface
      */
     public function setName($name)
     {
@@ -82,7 +82,7 @@ class Column implements ColumnInterface
 
     /**
      * @param  bool $nullable
-     * @return self
+     * @return self Provides a fluent interface
      */
     public function setNullable($nullable)
     {
@@ -100,7 +100,7 @@ class Column implements ColumnInterface
 
     /**
      * @param  null|string|int $default
-     * @return self
+     * @return self Provides a fluent interface
      */
     public function setDefault($default)
     {
@@ -118,7 +118,7 @@ class Column implements ColumnInterface
 
     /**
      * @param  array $options
-     * @return self
+     * @return self Provides a fluent interface
      */
     public function setOptions(array $options)
     {
@@ -129,7 +129,7 @@ class Column implements ColumnInterface
     /**
      * @param  string $name
      * @param  string $value
-     * @return self
+     * @return self Provides a fluent interface
      */
     public function setOption($name, $value)
     {
@@ -148,7 +148,7 @@ class Column implements ColumnInterface
     /**
      * @param ConstraintInterface $constraint
      *
-     * @return self
+     * @return self Provides a fluent interface
      */
     public function addConstraint(ConstraintInterface $constraint)
     {
@@ -170,7 +170,7 @@ class Column implements ColumnInterface
 
         $types = [self::TYPE_IDENTIFIER, self::TYPE_LITERAL];
 
-        if (!$this->isNullable) {
+        if (! $this->isNullable) {
             $spec .= ' NOT NULL';
         }
 

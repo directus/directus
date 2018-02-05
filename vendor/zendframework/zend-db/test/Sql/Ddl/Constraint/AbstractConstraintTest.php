@@ -9,40 +9,42 @@
 
 namespace ZendTest\Db\Sql\Ddl\Constraint;
 
-class AbstractConstraintTest extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class AbstractConstraintTest extends TestCase
 {
     /** @var \Zend\Db\Sql\Ddl\Constraint\AbstractConstraint */
     protected $ac;
 
-    public function setup()
+    protected function setUp()
     {
         $this->ac = $this->getMockForAbstractClass('Zend\Db\Sql\Ddl\Constraint\AbstractConstraint');
     }
 
     /**
-     * @covers Zend\Db\Sql\Ddl\Constraint\AbstractConstraint::setColumns
+     * @covers \Zend\Db\Sql\Ddl\Constraint\AbstractConstraint::setColumns
      */
     public function testSetColumns()
     {
-        $this->assertSame($this->ac, $this->ac->setColumns(['foo', 'bar']));
-        $this->assertEquals(['foo', 'bar'], $this->ac->getColumns());
+        self::assertSame($this->ac, $this->ac->setColumns(['foo', 'bar']));
+        self::assertEquals(['foo', 'bar'], $this->ac->getColumns());
     }
 
     /**
-     * @covers Zend\Db\Sql\Ddl\Constraint\AbstractConstraint::addColumn
+     * @covers \Zend\Db\Sql\Ddl\Constraint\AbstractConstraint::addColumn
      */
     public function testAddColumn()
     {
-        $this->assertSame($this->ac, $this->ac->addColumn('foo'));
-        $this->assertEquals(['foo'], $this->ac->getColumns());
+        self::assertSame($this->ac, $this->ac->addColumn('foo'));
+        self::assertEquals(['foo'], $this->ac->getColumns());
     }
 
     /**
-     * @covers Zend\Db\Sql\Ddl\Constraint\AbstractConstraint::getColumns
+     * @covers \Zend\Db\Sql\Ddl\Constraint\AbstractConstraint::getColumns
      */
     public function testGetColumns()
     {
         $this->ac->setColumns(['foo', 'bar']);
-        $this->assertEquals(['foo', 'bar'], $this->ac->getColumns());
+        self::assertEquals(['foo', 'bar'], $this->ac->getColumns());
     }
 }

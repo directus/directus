@@ -13,8 +13,12 @@ use Zend\Db\Sql;
 
 class DeleteDecorator extends Sql\Delete implements Sql\Platform\PlatformDecoratorInterface
 {
-    protected $subject = null;
+    protected $subject;
 
+    /**
+     * @param $subject
+     * @return self Provides a fluent interface
+     */
     public function setSubject($subject)
     {
         $this->subject = $subject;

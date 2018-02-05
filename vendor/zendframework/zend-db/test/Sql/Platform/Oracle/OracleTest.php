@@ -9,21 +9,23 @@
 
 namespace ZendTest\Db\Sql\Platform\Oracle;
 
+use PHPUnit\Framework\TestCase;
 use Zend\Db\Sql\Platform\Oracle\Oracle;
 
-class OracleTest extends \PHPUnit_Framework_TestCase
+class OracleTest extends TestCase
 {
     /**
      * @testdox unit test / object test: Test Mysql object has Select proxy
-     * @covers Zend\Db\Sql\Platform\Oracle\Oracle::__construct
+     * @covers \Zend\Db\Sql\Platform\Oracle\Oracle::__construct
      */
     public function testConstruct()
     {
         $oracle = new Oracle;
         $decorators = $oracle->getDecorators();
 
-        list($type, $decorator) = each($decorators);
-        $this->assertEquals('Zend\Db\Sql\Select', $type);
-        $this->assertInstanceOf('Zend\Db\Sql\Platform\Oracle\SelectDecorator', $decorator);
+        $type = key($decorators);
+        $decorator = current($decorators);
+        self::assertEquals('Zend\Db\Sql\Select', $type);
+        self::assertInstanceOf('Zend\Db\Sql\Platform\Oracle\SelectDecorator', $decorator);
     }
 }

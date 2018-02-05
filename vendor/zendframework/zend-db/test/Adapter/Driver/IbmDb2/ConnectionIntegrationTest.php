@@ -9,8 +9,8 @@
 
 namespace ZendTest\Db\Adapter\Driver\IbmDb2;
 
-use Zend\Db\Adapter\Driver\IbmDb2\IbmDb2;
 use Zend\Db\Adapter\Driver\IbmDb2\Connection;
+use Zend\Db\Adapter\Driver\IbmDb2\IbmDb2;
 
 /**
  * @group integration
@@ -19,16 +19,16 @@ use Zend\Db\Adapter\Driver\IbmDb2\Connection;
 class ConnectionIntegrationTest extends AbstractIntegrationTest
 {
     /**
-     * @covers Zend\Db\Adapter\Driver\IbmDb2\Connection::getCurrentSchema
+     * @covers \Zend\Db\Adapter\Driver\IbmDb2\Connection::getCurrentSchema
      */
     public function testGetCurrentSchema()
     {
         $connection = new Connection($this->variables);
-        $this->assertInternalType('string', $connection->getCurrentSchema());
+        self::assertInternalType('string', $connection->getCurrentSchema());
     }
 
     /**
-     * @covers Zend\Db\Adapter\Driver\IbmDb2\Connection::setResource
+     * @covers \Zend\Db\Adapter\Driver\IbmDb2\Connection::setResource
      */
     public function testSetResource()
     {
@@ -38,7 +38,7 @@ class ConnectionIntegrationTest extends AbstractIntegrationTest
             $this->variables['password']
         );
         $connection = new Connection([]);
-        $this->assertSame($connection, $connection->setResource($resource));
+        self::assertSame($connection, $connection->setResource($resource));
 
         $connection->disconnect();
         unset($connection);
@@ -46,79 +46,79 @@ class ConnectionIntegrationTest extends AbstractIntegrationTest
     }
 
     /**
-     * @covers Zend\Db\Adapter\Driver\IbmDb2\Connection::getResource
+     * @covers \Zend\Db\Adapter\Driver\IbmDb2\Connection::getResource
      */
     public function testGetResource()
     {
         $connection = new Connection($this->variables);
         $connection->connect();
-        $this->assertInternalType('resource', $connection->getResource());
+        self::assertInternalType('resource', $connection->getResource());
 
         $connection->disconnect();
         unset($connection);
     }
 
     /**
-     * @covers Zend\Db\Adapter\Driver\IbmDb2\Connection::connect
+     * @covers \Zend\Db\Adapter\Driver\IbmDb2\Connection::connect
      */
     public function testConnect()
     {
         $connection = new Connection($this->variables);
-        $this->assertSame($connection, $connection->connect());
-        $this->assertTrue($connection->isConnected());
+        self::assertSame($connection, $connection->connect());
+        self::assertTrue($connection->isConnected());
 
         $connection->disconnect();
         unset($connection);
     }
 
     /**
-     * @covers Zend\Db\Adapter\Driver\IbmDb2\Connection::isConnected
+     * @covers \Zend\Db\Adapter\Driver\IbmDb2\Connection::isConnected
      */
     public function testIsConnected()
     {
         $connection = new Connection($this->variables);
-        $this->assertFalse($connection->isConnected());
-        $this->assertSame($connection, $connection->connect());
-        $this->assertTrue($connection->isConnected());
+        self::assertFalse($connection->isConnected());
+        self::assertSame($connection, $connection->connect());
+        self::assertTrue($connection->isConnected());
 
         $connection->disconnect();
         unset($connection);
     }
 
     /**
-     * @covers Zend\Db\Adapter\Driver\IbmDb2\Connection::disconnect
+     * @covers \Zend\Db\Adapter\Driver\IbmDb2\Connection::disconnect
      */
     public function testDisconnect()
     {
         $connection = new Connection($this->variables);
         $connection->connect();
-        $this->assertTrue($connection->isConnected());
+        self::assertTrue($connection->isConnected());
         $connection->disconnect();
-        $this->assertFalse($connection->isConnected());
+        self::assertFalse($connection->isConnected());
     }
 
     /**
-     * @covers Zend\Db\Adapter\Driver\IbmDb2\Connection::beginTransaction
+     * @covers \Zend\Db\Adapter\Driver\IbmDb2\Connection::beginTransaction
      */
     public function testBeginTransaction()
     {
-        if (!$this->isTransactionEnabled()) {
+        if (! $this->isTransactionEnabled()) {
             $this->markTestIncomplete(
                 'I cannot test without the DB2 transactions enabled'
             );
         }
         $connection = new Connection($this->variables);
         $connection->beginTransaction();
-        $this->assertTrue($connection->inTransaction());
-        $this->assertEquals(0, db2_autocommit($connection->getResource()));
+        self::assertTrue($connection->inTransaction());
+        self::assertEquals(0, db2_autocommit($connection->getResource()));
     }
 
     /**
-     * @covers Zend\Db\Adapter\Driver\IbmDb2\Connection::commit
+     * @covers \Zend\Db\Adapter\Driver\IbmDb2\Connection::commit
      */
     public function testCommit()
     {
-        if (!$this->isTransactionEnabled()) {
+        if (! $this->isTransactionEnabled()) {
             $this->markTestIncomplete(
                 'I cannot test without the DB2 transactions enabled'
             );
@@ -128,18 +128,18 @@ class ConnectionIntegrationTest extends AbstractIntegrationTest
 
         $oldValue = db2_autocommit($connection->getResource());
         $connection->beginTransaction();
-        $this->assertTrue($connection->inTransaction());
+        self::assertTrue($connection->inTransaction());
         $connection->commit();
-        $this->assertFalse($connection->inTransaction());
-        $this->assertEquals($oldValue, db2_autocommit($connection->getResource()));
+        self::assertFalse($connection->inTransaction());
+        self::assertEquals($oldValue, db2_autocommit($connection->getResource()));
     }
 
     /**
-     * @covers Zend\Db\Adapter\Driver\IbmDb2\Connection::rollback
+     * @covers \Zend\Db\Adapter\Driver\IbmDb2\Connection::rollback
      */
     public function testRollback()
     {
-        if (!$this->isTransactionEnabled()) {
+        if (! $this->isTransactionEnabled()) {
             $this->markTestIncomplete(
                 'I cannot test without the DB2 transactions enabled'
             );
@@ -149,10 +149,10 @@ class ConnectionIntegrationTest extends AbstractIntegrationTest
 
         $oldValue = db2_autocommit($connection->getResource());
         $connection->beginTransaction();
-        $this->assertTrue($connection->inTransaction());
+        self::assertTrue($connection->inTransaction());
         $connection->rollback();
-        $this->assertFalse($connection->inTransaction());
-        $this->assertEquals($oldValue, db2_autocommit($connection->getResource()));
+        self::assertFalse($connection->inTransaction());
+        self::assertEquals($oldValue, db2_autocommit($connection->getResource()));
     }
 
     /**
@@ -171,7 +171,7 @@ class ConnectionIntegrationTest extends AbstractIntegrationTest
     }
 
     /**
-     * @covers Zend\Db\Adapter\Driver\IbmDb2\Connection::execute
+     * @covers \Zend\Db\Adapter\Driver\IbmDb2\Connection::execute
      */
     public function testExecute()
     {
@@ -179,11 +179,11 @@ class ConnectionIntegrationTest extends AbstractIntegrationTest
         $connection = $ibmdb2->getConnection();
 
         $result = $connection->execute('SELECT \'foo\' FROM SYSIBM.SYSDUMMY1');
-        $this->assertInstanceOf('Zend\Db\Adapter\Driver\IbmDb2\Result', $result);
+        self::assertInstanceOf('Zend\Db\Adapter\Driver\IbmDb2\Result', $result);
     }
 
     /**
-     * @covers Zend\Db\Adapter\Driver\IbmDb2\Connection::getLastGeneratedValue
+     * @covers \Zend\Db\Adapter\Driver\IbmDb2\Connection::getLastGeneratedValue
      */
     public function testGetLastGeneratedValue()
     {
@@ -204,7 +204,7 @@ class ConnectionIntegrationTest extends AbstractIntegrationTest
         );
         $connection = new Connection([]);
         $connection->setResource($resource);
-        $this->assertSame($connection, $connection->connect());
+        self::assertSame($connection, $connection->connect());
 
         $connection->disconnect();
         unset($connection);

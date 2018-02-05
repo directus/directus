@@ -29,7 +29,7 @@ abstract class AbstractTimestampColumn extends Column
 
         $types = [self::TYPE_IDENTIFIER, self::TYPE_LITERAL];
 
-        if (!$this->isNullable) {
+        if (! $this->isNullable) {
             $spec .= ' NOT NULL';
         }
 

@@ -766,7 +766,15 @@ abstract class AbstractProvider
 
         $request = $this->getAuthenticatedRequest(self::METHOD_GET, $url, $token);
 
-        return $this->getParsedResponse($request);
+        $response = $this->getParsedResponse($request);
+
+        if (false === is_array($response)) {
+            throw new UnexpectedValueException(
+                'Invalid response received from Authorization Server. Expected JSON.'
+            );
+        }
+
+        return $response;
     }
 
     /**

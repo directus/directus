@@ -39,7 +39,7 @@ class IsNull extends AbstractExpression implements PredicateInterface
      * Set identifier for comparison
      *
      * @param  string $identifier
-     * @return IsNull
+     * @return self Provides a fluent interface
      */
     public function setIdentifier($identifier)
     {
@@ -61,7 +61,7 @@ class IsNull extends AbstractExpression implements PredicateInterface
      * Set specification string to use in forming SQL predicate
      *
      * @param  string $specification
-     * @return IsNull
+     * @return self Provides a fluent interface
      */
     public function setSpecification($specification)
     {

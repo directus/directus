@@ -6,16 +6,16 @@
         "sort-packages": true
     },
     "require": {
-        "php": ">=5.6.0",
+        "php": "^5.6|^7.0",
         "guzzlehttp/guzzle": "^6.0",
         "paragonie/random_compat": "^1|^2"
     },
     "require-dev": {
         "eloquent/liberator": "^2.0",
-        "eloquent/phony": "^0.14.1",
-        "jakub-onderka/php-parallel-lint": "~0.9",
-        "phpunit/phpunit": "^5.0",
-        "squizlabs/php_codesniffer": "^2.0"
+        "eloquent/phony-phpunit": "^1.0|^3.0",
+        "jakub-onderka/php-parallel-lint": "^0.9.2",
+        "phpunit/phpunit": "^5.7|^6.0",
+        "squizlabs/php_codesniffer": "^2.3|^3.0"
     },
     "keywords": [
         "oauth",

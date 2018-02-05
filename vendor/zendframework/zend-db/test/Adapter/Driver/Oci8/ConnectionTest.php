@@ -9,10 +9,11 @@
 
 namespace ZendTest\Db\Adapter\Driver\Oci8;
 
-use Zend\Db\Adapter\Driver\Oci8\Oci8;
+use PHPUnit\Framework\TestCase;
 use Zend\Db\Adapter\Driver\Oci8\Connection;
+use Zend\Db\Adapter\Driver\Oci8\Oci8;
 
-class ConnectionTest extends \PHPUnit_Framework_TestCase
+class ConnectionTest extends TestCase
 {
     /**
      * @var Connection
@@ -37,27 +38,27 @@ class ConnectionTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Zend\Db\Adapter\Driver\Oci8\Connection::setDriver
+     * @covers \Zend\Db\Adapter\Driver\Oci8\Connection::setDriver
      */
     public function testSetDriver()
     {
-        $this->assertEquals($this->connection, $this->connection->setDriver(new Oci8([])));
+        self::assertEquals($this->connection, $this->connection->setDriver(new Oci8([])));
     }
 
     /**
-     * @covers Zend\Db\Adapter\Driver\Oci8\Connection::setConnectionParameters
+     * @covers \Zend\Db\Adapter\Driver\Oci8\Connection::setConnectionParameters
      */
     public function testSetConnectionParameters()
     {
-        $this->assertEquals($this->connection, $this->connection->setConnectionParameters([]));
+        self::assertEquals($this->connection, $this->connection->setConnectionParameters([]));
     }
 
     /**
-     * @covers Zend\Db\Adapter\Driver\Oci8\Connection::getConnectionParameters
+     * @covers \Zend\Db\Adapter\Driver\Oci8\Connection::getConnectionParameters
      */
     public function testGetConnectionParameters()
     {
         $this->connection->setConnectionParameters(['foo' => 'bar']);
-        $this->assertEquals(['foo' => 'bar'], $this->connection->getConnectionParameters());
+        self::assertEquals(['foo' => 'bar'], $this->connection->getConnectionParameters());
     }
 }

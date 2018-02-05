@@ -9,31 +9,38 @@
 
 namespace ZendTest\Db\Sql\Platform\SqlServer\Ddl;
 
+use PHPUnit\Framework\TestCase;
+use Zend\Db\Sql\Ddl\Column\Column;
 use Zend\Db\Sql\Ddl\CreateTable;
 use Zend\Db\Sql\Platform\SqlServer\Ddl\CreateTableDecorator;
-use Zend\Db\Sql\Ddl\Column\Column;
 
-class CreateTableDecoratorTest extends \PHPUnit_Framework_TestCase
+class CreateTableDecoratorTest extends TestCase
 {
     /**
-     * @covers Zend\Db\Sql\Platform\SqlServer\Ddl\CreateTableDecorator::getSqlString
+     * @covers \Zend\Db\Sql\Platform\SqlServer\Ddl\CreateTableDecorator::getSqlString
      */
     public function testGetSqlString()
     {
         $ctd = new CreateTableDecorator();
 
         $ct = new CreateTable('foo');
-        $this->assertEquals("CREATE TABLE \"foo\" ( \n)", $ctd->setSubject($ct)->getSqlString());
+        self::assertEquals("CREATE TABLE \"foo\" ( \n)", $ctd->setSubject($ct)->getSqlString());
 
         $ct = new CreateTable('foo', true);
-        $this->assertEquals("CREATE TABLE \"#foo\" ( \n)", $ctd->setSubject($ct)->getSqlString());
+        self::assertEquals("CREATE TABLE \"#foo\" ( \n)", $ctd->setSubject($ct)->getSqlString());
 
         $ct = new CreateTable('foo');
         $ct->addColumn(new Column('bar'));
-        $this->assertEquals("CREATE TABLE \"foo\" ( \n    \"bar\" INTEGER NOT NULL \n)", $ctd->setSubject($ct)->getSqlString());
+        self::assertEquals(
+            "CREATE TABLE \"foo\" ( \n    \"bar\" INTEGER NOT NULL \n)",
+            $ctd->setSubject($ct)->getSqlString()
+        );
 
         $ct = new CreateTable('foo', true);
         $ct->addColumn(new Column('bar'));
-        $this->assertEquals("CREATE TABLE \"#foo\" ( \n    \"bar\" INTEGER NOT NULL \n)", $ctd->setSubject($ct)->getSqlString());
+        self::assertEquals(
+            "CREATE TABLE \"#foo\" ( \n    \"bar\" INTEGER NOT NULL \n)",
+            $ctd->setSubject($ct)->getSqlString()
+        );
     }
 }

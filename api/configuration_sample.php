@@ -44,13 +44,14 @@ return [
         'root_url' => '/storage/uploads',
         // All thumbnails will exist at your-domain.com/media/thumbs
         'root_thumb_url' => '/storage/uploads/thumbs',
-        //   'key'    => 's3-key',
-        //   'secret' => 's3-key',
-        //   'region' => 's3-region',
-        //   'version' => 's3-version',
-        //   'bucket' => 's3-bucket',
-        //   Digital Ocean endpoint
-        //   'endpoint' => ''
+        //  'key'    => 's3-key',
+        //  'secret' => 's3-key',
+        //  'region' => 's3-region',
+        //  'version' => 's3-version',
+        //  'bucket' => 's3-bucket',
+        //  // Digital Ocean endpoint
+        //  'endpoint' => ''
+        //  'visibility' => 'public'
     ],
 
     // Third-party authentication options

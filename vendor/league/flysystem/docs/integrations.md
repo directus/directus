@@ -19,3 +19,8 @@ Want to get started quickly? Check out some of these bridging packages:
 ### Other integrations
 
 Laravel 5 will ship with Flysystem as the underlying engine for local and remote file handling.
+
+### Additional Plugin/Framework Driver Integrations
+ 
+ * Laravel
+   * [Laravel SFTP Integration](https://github.com/ragingdave/flysystem-sftp-laravel)

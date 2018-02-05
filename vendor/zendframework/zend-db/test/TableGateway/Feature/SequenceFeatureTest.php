@@ -9,16 +9,16 @@
 
 namespace ZendTest\Db\TableGateway\Feature;
 
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use Zend\Db\TableGateway\Feature\SequenceFeature;
 
-class SequenceFeatureTest extends PHPUnit_Framework_TestCase
+class SequenceFeatureTest extends TestCase
 {
     /** @var SequenceFeature */
-    protected $feature = null;
+    protected $feature;
 
     /** @var \Zend\Db\TableGateway\TableGateway */
-    protected $tableGateway = null;
+    protected $tableGateway;
 
     /**  @var string primary key name */
     protected $primaryKeyField = 'id';
@@ -26,7 +26,7 @@ class SequenceFeatureTest extends PHPUnit_Framework_TestCase
     /** @var string  sequence name */
     protected $sequenceName = 'table_sequence';
 
-    public function setup()
+    protected function setUp()
     {
         $this->feature = new SequenceFeature($this->primaryKeyField, $this->sequenceName);
     }
@@ -43,15 +43,34 @@ class SequenceFeatureTest extends PHPUnit_Framework_TestCase
         $platform->expects($this->any())
             ->method('quoteIdentifier')
             ->will($this->returnValue($this->sequenceName));
-        $adapter = $this->getMock('Zend\Db\Adapter\Adapter', ['getPlatform', 'createStatement'], [], '', false);
+        $adapter = $this->getMockBuilder('Zend\Db\Adapter\Adapter')
+            ->setMethods(['getPlatform', 'createStatement'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $adapter->expects($this->any())
             ->method('getPlatform')
             ->will($this->returnValue($platform));
-        $result = $this->getMockForAbstractClass('Zend\Db\Adapter\Driver\ResultInterface', [], '', false, true, true, ['current']);
+        $result = $this->getMockForAbstractClass(
+            'Zend\Db\Adapter\Driver\ResultInterface',
+            [],
+            '',
+            false,
+            true,
+            true,
+            ['current']
+        );
         $result->expects($this->any())
             ->method('current')
             ->will($this->returnValue(['nextval' => 2]));
-        $statement = $this->getMockForAbstractClass('Zend\Db\Adapter\Driver\StatementInterface', [], '', false, true, true, ['prepare', 'execute']);
+        $statement = $this->getMockForAbstractClass(
+            'Zend\Db\Adapter\Driver\StatementInterface',
+            [],
+            '',
+            false,
+            true,
+            true,
+            ['prepare', 'execute']
+        );
         $statement->expects($this->any())
             ->method('execute')
             ->will($this->returnValue($result));
@@ -61,7 +80,12 @@ class SequenceFeatureTest extends PHPUnit_Framework_TestCase
         $adapter->expects($this->once())
             ->method('createStatement')
             ->will($this->returnValue($statement));
-        $this->tableGateway = $this->getMockForAbstractClass('Zend\Db\TableGateway\TableGateway', ['table', $adapter], '', true);
+        $this->tableGateway = $this->getMockForAbstractClass(
+            'Zend\Db\TableGateway\TableGateway',
+            ['table', $adapter],
+            '',
+            true
+        );
         $this->feature->setTableGateway($this->tableGateway);
         $this->feature->nextSequenceId();
     }

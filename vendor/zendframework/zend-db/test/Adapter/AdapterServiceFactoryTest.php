@@ -10,14 +10,14 @@
 namespace ZendTest\Db\Adapter;
 
 use Interop\Container\ContainerInterface;
-use PHPUnit_Framework_TestCase as TestCase;
+use PHPUnit\Framework\TestCase;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\Adapter\AdapterServiceFactory;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
 class AdapterServiceFactoryTest extends TestCase
 {
-    public function setUp()
+    protected function setUp()
     {
         if (! extension_loaded('pdo_sqlite')) {
             $this->markTestSkipped('Adapter factory tests require pdo_sqlite');
@@ -39,7 +39,7 @@ class AdapterServiceFactoryTest extends TestCase
         ]);
 
         $adapter = $this->factory->createService($this->services->reveal());
-        $this->assertInstanceOf(Adapter::class, $adapter);
+        self::assertInstanceOf(Adapter::class, $adapter);
     }
 
     public function testV3FactoryReturnsAdapter()
@@ -52,6 +52,6 @@ class AdapterServiceFactoryTest extends TestCase
         ]);
 
         $adapter = $this->factory->__invoke($this->services->reveal(), Adapter::class);
-        $this->assertInstanceOf(Adapter::class, $adapter);
+        self::assertInstanceOf(Adapter::class, $adapter);
     }
 }

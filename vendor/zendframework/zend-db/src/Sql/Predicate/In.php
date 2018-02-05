@@ -33,7 +33,7 @@ class In extends AbstractExpression implements PredicateInterface
         if ($identifier) {
             $this->setIdentifier($identifier);
         }
-        if ($valueSet) {
+        if ($valueSet !== null) {
             $this->setValueSet($valueSet);
         }
     }
@@ -42,7 +42,7 @@ class In extends AbstractExpression implements PredicateInterface
      * Set identifier for comparison
      *
      * @param  string|array $identifier
-     * @return In
+     * @return self Provides a fluent interface
      */
     public function setIdentifier($identifier)
     {
@@ -65,12 +65,12 @@ class In extends AbstractExpression implements PredicateInterface
      * Set set of values for IN comparison
      *
      * @param  array|Select                       $valueSet
+     * @return self Provides a fluent interface
      * @throws Exception\InvalidArgumentException
-     * @return In
      */
     public function setValueSet($valueSet)
     {
-        if (!is_array($valueSet) && !$valueSet instanceof Select) {
+        if (! is_array($valueSet) && ! $valueSet instanceof Select) {
             throw new Exception\InvalidArgumentException(
                 '$valueSet must be either an array or a Zend\Db\Sql\Select object, ' . gettype($valueSet) . ' given'
             );
@@ -81,7 +81,7 @@ class In extends AbstractExpression implements PredicateInterface
     }
 
     /**
-     * Gets set of values in IN comparision
+     * Gets set of values in IN comparison
      *
      * @return array|Select
      */
@@ -122,9 +122,10 @@ class In extends AbstractExpression implements PredicateInterface
             foreach ($values as $argument) {
                 list($replacements[], $types[]) = $this->normalizeArgument($argument, self::TYPE_VALUE);
             }
+            $valuePlaceholders = count($values) > 0 ? array_fill(0, count($values), '%s') : [];
             $specification = vsprintf(
                 $this->specification,
-                [$identifierSpecFragment, '(' . implode(', ', array_fill(0, count($values), '%s')) . ')']
+                [$identifierSpecFragment, '(' . implode(', ', $valuePlaceholders) . ')']
             );
         }
 

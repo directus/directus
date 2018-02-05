@@ -4,16 +4,25 @@ permalink: /core-concepts/
 title: Core Concepts
 ---
 
-# Core Concepts
+# Core concepts
 
 In order to better understand how and why Flysystem works
 the way it does, several concepts require some explanation.
 
 ## Overview
 
+* [Focus/Goal](#focus)
 * [Adapters](#adapters)
 * [Relative Paths](#relative-paths)
 * [Files first](#files-first)
+
+## Focus
+
+Flysystem's focus is to provide a standardized interface to working
+with filesystems. We've searched for common ground across various
+filesystems and implemented that in a cross-filesystem-compatible way.
+This also means that we often don't support filesystem specific things.
+This limitation is by design.
 
 ## Adapters
 
@@ -22,13 +31,20 @@ FilesystemInterface. When working with file systems, this is
 the class you'll want to be talking to.
 
 Flysystem works the way it does because of its use of the 
-adapter pattern. The inconsistencies of the different file 
-systems are eliminated in these adapters.
+adapter pattern. The inconsistencies of the different
+filesystems are eliminated in these adapters.
 
 While adapters have a public interface (publicly accessible
 methods), they should be considered __internal__.
 
-## Relative Paths
+Every adapter should always be wrapped in a `League\Flysystem\Filesystem`
+class:
+
+```php
+$filesystem = new League\Flysystem\Filesystem($yourAdapter)
+```
+
+## Relative paths
 
 Portability is a very important concept within Flysystem. In order
 to roll out this aspect to the fullest, all paths in Flysystem are
@@ -41,7 +57,7 @@ Like the storage type, root paths are an implementation detail. When
 root paths are defined as configuration, the stability of your code
 improves.
 
-## Files First
+## Files first, directories second.
 
 Flysystem has a files first approach. Storage systems like AWS S3
 are linear file systems, this means the path to a file is used as an

@@ -9,27 +9,23 @@
 
 namespace ZendTest\Db\Adapter;
 
-use Zend\ServiceManager\ServiceManager;
+use PHPUnit\Framework\TestCase;
 use Zend\ServiceManager\Config;
+use Zend\ServiceManager\ServiceManager;
 
-class AdapterAbstractServiceFactoryTest extends \PHPUnit_Framework_TestCase
+class AdapterAbstractServiceFactoryTest extends TestCase
 {
     /**
      * @var \Zend\ServiceManager\ServiceLocatorInterface
      */
     private $serviceManager;
 
-    /**
-     * Set up service manager and database configuration.
-     *
-     * @see PHPUnit_Framework_TestCase::setUp()
-     */
     protected function setUp()
     {
         $this->serviceManager = new ServiceManager();
 
         $config = new Config([
-            'abstract_factories' => ['Zend\Db\Adapter\AdapterAbstractServiceFactory']
+            'abstract_factories' => ['Zend\Db\Adapter\AdapterAbstractServiceFactory'],
         ]);
         $config->configureServiceManager($this->serviceManager);
 
@@ -76,16 +72,17 @@ class AdapterAbstractServiceFactoryTest extends \PHPUnit_Framework_TestCase
     public function testValidService($service)
     {
         $actual = $this->serviceManager->get($service);
-        $this->assertInstanceOf('Zend\Db\Adapter\Adapter', $actual);
+        self::assertInstanceOf('Zend\Db\Adapter\Adapter', $actual);
     }
 
     /**
-     * @param string $service
      * @dataProvider providerInvalidService
-     * @expectedException \Zend\ServiceManager\Exception\ServiceNotFoundException
+     *
+     * @param string $service
      */
     public function testInvalidService($service)
     {
-        $actual = $this->serviceManager->get($service);
+        $this->expectException('\Zend\ServiceManager\Exception\ServiceNotFoundException');
+        $this->serviceManager->get($service);
     }
 }

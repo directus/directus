@@ -9,17 +9,18 @@
 
 namespace ZendTest\Db\Sql\Ddl\Column;
 
+use PHPUnit\Framework\TestCase;
 use Zend\Db\Sql\Ddl\Column\Decimal;
 
-class DecimalTest extends \PHPUnit_Framework_TestCase
+class DecimalTest extends TestCase
 {
     /**
-     * @covers Zend\Db\Sql\Ddl\Column\Decimal::getExpressionData
+     * @covers \Zend\Db\Sql\Ddl\Column\Decimal::getExpressionData
      */
     public function testGetExpressionData()
     {
         $column = new Decimal('foo', 10, 5);
-        $this->assertEquals(
+        self::assertEquals(
             [['%s %s NOT NULL', ['foo', 'DECIMAL(10,5)'], [$column::TYPE_IDENTIFIER, $column::TYPE_LITERAL]]],
             $column->getExpressionData()
         );

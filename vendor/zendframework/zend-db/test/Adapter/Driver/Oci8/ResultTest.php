@@ -9,6 +9,7 @@
 
 namespace ZendTest\Db\Adapter\Driver\Oci8;
 
+use PHPUnit\Framework\TestCase;
 use Zend\Db\Adapter\Driver\Oci8\Result;
 
 /**
@@ -17,55 +18,55 @@ use Zend\Db\Adapter\Driver\Oci8\Result;
  * @package ZendTest\Db\Adapter\Driver\Oci8
  * @group result-oci8
  */
-class ResultTest extends \PHPUnit_Framework_TestCase
+class ResultTest extends TestCase
 {
     /**
-     * @covers Zend\Db\Adapter\Driver\Oci8\Result::getResource
+     * @covers \Zend\Db\Adapter\Driver\Oci8\Result::getResource
      */
     public function testGetResource()
     {
         $result = new Result();
-        $this->assertNull($result->getResource());
+        self::assertNull($result->getResource());
     }
 
     /**
-     * @covers Zend\Db\Adapter\Driver\Oci8\Result::buffer
+     * @covers \Zend\Db\Adapter\Driver\Oci8\Result::buffer
      */
     public function testBuffer()
     {
         $result = new Result();
-        $this->assertNull($result->buffer());
+        self::assertNull($result->buffer());
     }
 
     /**
-     * @covers Zend\Db\Adapter\Driver\Oci8\Result::isBuffered
+     * @covers \Zend\Db\Adapter\Driver\Oci8\Result::isBuffered
      */
     public function testIsBuffered()
     {
         $result = new Result();
-        $this->assertFalse($result->isBuffered());
+        self::assertFalse($result->isBuffered());
     }
 
     /**
-     * @covers Zend\Db\Adapter\Driver\Oci8\Result::getGeneratedValue
+     * @covers \Zend\Db\Adapter\Driver\Oci8\Result::getGeneratedValue
      */
     public function testGetGeneratedValue()
     {
         $result = new Result();
-        $this->assertNull($result->getGeneratedValue());
+        self::assertNull($result->getGeneratedValue());
     }
 
     /**
-     * @covers Zend\Db\Adapter\Driver\Oci8\Result::key
+     * @covers \Zend\Db\Adapter\Driver\Oci8\Result::key
      */
     public function testKey()
     {
         $result = new Result();
-        $this->assertEquals(0, $result->key());
+        self::assertEquals(0, $result->key());
     }
 
     /**
-     * @covers Zend\Db\Adapter\Driver\Oci8\Result::next
+     * @covers \Zend\Db\Adapter\Driver\Oci8\Result::next
      */
     public function testNext()
     {
@@ -75,15 +76,15 @@ class ResultTest extends \PHPUnit_Framework_TestCase
         $mockResult->expects($this->any())
             ->method('loadData')
             ->will($this->returnValue(true));
-        $this->assertTrue($mockResult->next());
+        self::assertTrue($mockResult->next());
     }
 
     /**
-     * @covers Zend\Db\Adapter\Driver\Oci8\Result::rewind
+     * @covers \Zend\Db\Adapter\Driver\Oci8\Result::rewind
      */
     public function testRewind()
     {
         $result = new Result();
-        $this->assertNull($result->rewind());
+        self::assertNull($result->rewind());
     }
 }

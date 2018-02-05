@@ -5,6 +5,7 @@ namespace Directus\Filesystem;
 use Aws\S3\S3Client;
 use Directus\Util\ArrayUtils;
 use League\Flysystem\Adapter\Local as LocalAdapter;
+use League\Flysystem\AdapterInterface;
 use League\Flysystem\AwsS3v3\AwsS3Adapter as S3Adapter;
 use League\Flysystem\Filesystem as Flysystem;
 
@@ -38,13 +39,21 @@ class FilesystemFactory
                 'secret' => $config['secret'],
             ],
             'region' => $config['region'],
-            'version' => ($config['version'] ?: 'latest'),
-            'endpoint' => ArrayUtils::get($config, 'endpoint')
+            'version' => ($config['version'] ?: 'latest')
         ];
+
+        // Make sure the endpoint was set by the user before trying to use it
+        // This will result in a error for S3.
+        // This is meant for Digital Ocean Spaces
+        if (isset($config['endpoint'])) {
+            $options['endpoint'] = ArrayUtils::get($config, 'endpoint');
+        }
 
         $client = S3Client::factory($options);
         $adapter = new S3Adapter($client, $config['bucket'], $config['root'] ?: null);
 
-        return new Flysystem($adapter);
+        return new Flysystem($adapter, [
+            'visibility' => ArrayUtils::get($config, 'visibility', AdapterInterface::VISIBILITY_PUBLIC)
+        ]);
     }
 }

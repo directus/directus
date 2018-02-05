@@ -9,34 +9,35 @@
 
 namespace ZendTest\Db\Adapter\Driver\Pdo;
 
-use Zend\Db\Adapter\Driver\Pdo\Pdo;
+use PHPUnit\Framework\TestCase;
 use Zend\Db\Adapter\Driver\Pdo\Connection;
+use Zend\Db\Adapter\Driver\Pdo\Pdo;
 
 /**
  * @group integration
  * @group integration-pdo
  */
-class ConnectionIntegrationTest extends \PHPUnit_Framework_TestCase
+class ConnectionIntegrationTest extends TestCase
 {
     protected $variables = ['pdodriver' => 'sqlite', 'database' => ':memory:'];
 
     /**
-     * @covers Zend\Db\Adapter\Driver\Pdo\Connection::getCurrentSchema
+     * @covers \Zend\Db\Adapter\Driver\Pdo\Connection::getCurrentSchema
      */
     public function testGetCurrentSchema()
     {
         $connection = new Connection($this->variables);
-        $this->assertInternalType('string', $connection->getCurrentSchema());
+        self::assertInternalType('string', $connection->getCurrentSchema());
     }
 
     /**
-     * @covers Zend\Db\Adapter\Driver\Pdo\Connection::setResource
+     * @covers \Zend\Db\Adapter\Driver\Pdo\Connection::setResource
      */
     public function testSetResource()
     {
         $resource = new TestAsset\SqliteMemoryPdo();
         $connection = new Connection([]);
-        $this->assertSame($connection, $connection->setResource($resource));
+        self::assertSame($connection, $connection->setResource($resource));
 
         $connection->disconnect();
         unset($connection);
@@ -44,59 +45,59 @@ class ConnectionIntegrationTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Zend\Db\Adapter\Driver\Pdo\Connection::getResource
+     * @covers \Zend\Db\Adapter\Driver\Pdo\Connection::getResource
      */
     public function testGetResource()
     {
         $connection = new Connection($this->variables);
         $connection->connect();
-        $this->assertInstanceOf('PDO', $connection->getResource());
+        self::assertInstanceOf('PDO', $connection->getResource());
 
         $connection->disconnect();
         unset($connection);
     }
 
     /**
-     * @covers Zend\Db\Adapter\Driver\Pdo\Connection::connect
+     * @covers \Zend\Db\Adapter\Driver\Pdo\Connection::connect
      */
     public function testConnect()
     {
         $connection = new Connection($this->variables);
-        $this->assertSame($connection, $connection->connect());
-        $this->assertTrue($connection->isConnected());
+        self::assertSame($connection, $connection->connect());
+        self::assertTrue($connection->isConnected());
 
         $connection->disconnect();
         unset($connection);
     }
 
     /**
-     * @covers Zend\Db\Adapter\Driver\Pdo\Connection::isConnected
+     * @covers \Zend\Db\Adapter\Driver\Pdo\Connection::isConnected
      */
     public function testIsConnected()
     {
         $connection = new Connection($this->variables);
-        $this->assertFalse($connection->isConnected());
-        $this->assertSame($connection, $connection->connect());
-        $this->assertTrue($connection->isConnected());
+        self::assertFalse($connection->isConnected());
+        self::assertSame($connection, $connection->connect());
+        self::assertTrue($connection->isConnected());
 
         $connection->disconnect();
         unset($connection);
     }
 
     /**
-     * @covers Zend\Db\Adapter\Driver\Pdo\Connection::disconnect
+     * @covers \Zend\Db\Adapter\Driver\Pdo\Connection::disconnect
      */
     public function testDisconnect()
     {
         $connection = new Connection($this->variables);
         $connection->connect();
-        $this->assertTrue($connection->isConnected());
+        self::assertTrue($connection->isConnected());
         $connection->disconnect();
-        $this->assertFalse($connection->isConnected());
+        self::assertFalse($connection->isConnected());
     }
 
     /**
-     * @covers Zend\Db\Adapter\Driver\Pdo\Connection::beginTransaction
+     * @covers \Zend\Db\Adapter\Driver\Pdo\Connection::beginTransaction
      * @todo   Implement testBeginTransaction().
      */
     public function testBeginTransaction()
@@ -108,7 +109,7 @@ class ConnectionIntegrationTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Zend\Db\Adapter\Driver\Pdo\Connection::commit
+     * @covers \Zend\Db\Adapter\Driver\Pdo\Connection::commit
      * @todo   Implement testCommit().
      */
     public function testCommit()
@@ -120,7 +121,7 @@ class ConnectionIntegrationTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Zend\Db\Adapter\Driver\Pdo\Connection::rollback
+     * @covers \Zend\Db\Adapter\Driver\Pdo\Connection::rollback
      * @todo   Implement testRollback().
      */
     public function testRollback()
@@ -132,7 +133,7 @@ class ConnectionIntegrationTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Zend\Db\Adapter\Driver\Pdo\Connection::execute
+     * @covers \Zend\Db\Adapter\Driver\Pdo\Connection::execute
      */
     public function testExecute()
     {
@@ -140,11 +141,11 @@ class ConnectionIntegrationTest extends \PHPUnit_Framework_TestCase
         $connection = $sqlsrv->getConnection();
 
         $result = $connection->execute('SELECT \'foo\'');
-        $this->assertInstanceOf('Zend\Db\Adapter\Driver\Pdo\Result', $result);
+        self::assertInstanceOf('Zend\Db\Adapter\Driver\Pdo\Result', $result);
     }
 
     /**
-     * @covers Zend\Db\Adapter\Driver\Pdo\Connection::prepare
+     * @covers \Zend\Db\Adapter\Driver\Pdo\Connection::prepare
      */
     public function testPrepare()
     {
@@ -152,11 +153,11 @@ class ConnectionIntegrationTest extends \PHPUnit_Framework_TestCase
         $connection = $sqlsrv->getConnection();
 
         $statement = $connection->prepare('SELECT \'foo\'');
-        $this->assertInstanceOf('Zend\Db\Adapter\Driver\Pdo\Statement', $statement);
+        self::assertInstanceOf('Zend\Db\Adapter\Driver\Pdo\Statement', $statement);
     }
 
     /**
-     * @covers Zend\Db\Adapter\Driver\Pdo\Connection::getLastGeneratedValue
+     * @covers \Zend\Db\Adapter\Driver\Pdo\Connection::getLastGeneratedValue
      */
     public function testGetLastGeneratedValue()
     {
@@ -173,7 +174,7 @@ class ConnectionIntegrationTest extends \PHPUnit_Framework_TestCase
         $resource = new TestAsset\SqliteMemoryPdo();
         $connection = new Connection([]);
         $connection->setResource($resource);
-        $this->assertSame($connection, $connection->connect());
+        self::assertSame($connection, $connection->connect());
 
         $connection->disconnect();
         unset($connection);

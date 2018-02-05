@@ -9,21 +9,22 @@
 
 namespace ZendTest\Db\Sql\Ddl\Constraint;
 
+use PHPUnit\Framework\TestCase;
 use Zend\Db\Sql\Ddl\Constraint\Check;
 
-class CheckTest extends \PHPUnit_Framework_TestCase
+class CheckTest extends TestCase
 {
     /**
-     * @covers Zend\Db\Sql\Ddl\Constraint\Check::getExpressionData
+     * @covers \Zend\Db\Sql\Ddl\Constraint\Check::getExpressionData
      */
     public function testGetExpressionData()
     {
         $check = new Check('id>0', 'foo');
-        $this->assertEquals(
+        self::assertEquals(
             [[
                 'CONSTRAINT %s CHECK (%s)',
                 ['foo', 'id>0'],
-                [$check::TYPE_IDENTIFIER, $check::TYPE_LITERAL]
+                [$check::TYPE_IDENTIFIER, $check::TYPE_LITERAL],
             ]],
             $check->getExpressionData()
         );

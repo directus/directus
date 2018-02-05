@@ -42,7 +42,7 @@ class Sqlsrv implements DriverInterface, Profiler\ProfilerAwareInterface
      */
     public function __construct($connection, Statement $statementPrototype = null, Result $resultPrototype = null)
     {
-        if (!$connection instanceof Connection) {
+        if (! $connection instanceof Connection) {
             $connection = new Connection($connection);
         }
 
@@ -53,7 +53,7 @@ class Sqlsrv implements DriverInterface, Profiler\ProfilerAwareInterface
 
     /**
      * @param Profiler\ProfilerInterface $profiler
-     * @return Sqlsrv
+     * @return self Provides a fluent interface
      */
     public function setProfiler(Profiler\ProfilerInterface $profiler)
     {
@@ -79,7 +79,7 @@ class Sqlsrv implements DriverInterface, Profiler\ProfilerAwareInterface
      * Register connection
      *
      * @param  Connection $connection
-     * @return Sqlsrv
+     * @return self Provides a fluent interface
      */
     public function registerConnection(Connection $connection)
     {
@@ -92,7 +92,7 @@ class Sqlsrv implements DriverInterface, Profiler\ProfilerAwareInterface
      * Register statement prototype
      *
      * @param Statement $statementPrototype
-     * @return Sqlsrv
+     * @return self Provides a fluent interface
      */
     public function registerStatementPrototype(Statement $statementPrototype)
     {
@@ -105,7 +105,7 @@ class Sqlsrv implements DriverInterface, Profiler\ProfilerAwareInterface
      * Register result prototype
      *
      * @param Result $resultPrototype
-     * @return Sqlsrv
+     * @return self Provides a fluent interface
      */
     public function registerResultPrototype(Result $resultPrototype)
     {
@@ -136,8 +136,10 @@ class Sqlsrv implements DriverInterface, Profiler\ProfilerAwareInterface
      */
     public function checkEnvironment()
     {
-        if (!extension_loaded('sqlsrv')) {
-            throw new Exception\RuntimeException('The Sqlsrv extension is required for this adapter but the extension is not loaded');
+        if (! extension_loaded('sqlsrv')) {
+            throw new Exception\RuntimeException(
+                'The Sqlsrv extension is required for this adapter but the extension is not loaded'
+            );
         }
     }
 
@@ -159,14 +161,16 @@ class Sqlsrv implements DriverInterface, Profiler\ProfilerAwareInterface
         if (is_resource($sqlOrResource)) {
             $statement->initialize($sqlOrResource);
         } else {
-            if (!$this->connection->isConnected()) {
+            if (! $this->connection->isConnected()) {
                 $this->connection->connect();
             }
             $statement->initialize($this->connection->getResource());
             if (is_string($sqlOrResource)) {
                 $statement->setSql($sqlOrResource);
             } elseif ($sqlOrResource !== null) {
-                throw new Exception\InvalidArgumentException('createStatement() only accepts an SQL string or a Sqlsrv resource');
+                throw new Exception\InvalidArgumentException(
+                    'createStatement() only accepts an SQL string or a Sqlsrv resource'
+                );
             }
         }
         return $statement;

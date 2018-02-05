@@ -141,7 +141,7 @@ class ParameterContainer implements Iterator, ArrayAccess, Countable
      * Offset unset
      *
      * @param  string $name
-     * @return ParameterContainer
+     * @return self Provides a fluent interface
      */
     public function offsetUnset($name)
     {
@@ -156,7 +156,7 @@ class ParameterContainer implements Iterator, ArrayAccess, Countable
      * Set from array
      *
      * @param  array $data
-     * @return ParameterContainer
+     * @return self Provides a fluent interface
      */
     public function setFromArray(array $data)
     {
@@ -192,7 +192,7 @@ class ParameterContainer implements Iterator, ArrayAccess, Countable
         if (is_int($name)) {
             $name = $this->positions[$name];
         }
-        if (!array_key_exists($name, $this->data)) {
+        if (! array_key_exists($name, $this->data)) {
             throw new Exception\InvalidArgumentException('Data does not exist for this name/position');
         }
         return $this->maxLength[$name];
@@ -223,7 +223,7 @@ class ParameterContainer implements Iterator, ArrayAccess, Countable
         if (is_int($name)) {
             $name = $this->positions[$name];
         }
-        if (!array_key_exists($name, $this->maxLength)) {
+        if (! array_key_exists($name, $this->maxLength)) {
             throw new Exception\InvalidArgumentException('Data does not exist for this name/position');
         }
         $this->maxLength[$name] = null;
@@ -265,7 +265,7 @@ class ParameterContainer implements Iterator, ArrayAccess, Countable
         if (is_int($name)) {
             $name = $this->positions[$name];
         }
-        if (!array_key_exists($name, $this->data)) {
+        if (! array_key_exists($name, $this->data)) {
             throw new Exception\InvalidArgumentException('Data does not exist for this name/position');
         }
         return $this->errata[$name];
@@ -296,7 +296,7 @@ class ParameterContainer implements Iterator, ArrayAccess, Countable
         if (is_int($name)) {
             $name = $this->positions[$name];
         }
-        if (!array_key_exists($name, $this->errata)) {
+        if (! array_key_exists($name, $this->errata)) {
             throw new Exception\InvalidArgumentException('Data does not exist for this name/position');
         }
         $this->errata[$name] = null;
@@ -392,13 +392,15 @@ class ParameterContainer implements Iterator, ArrayAccess, Countable
 
     /**
      * @param array|ParameterContainer $parameters
+     * @return self Provides a fluent interface
      * @throws Exception\InvalidArgumentException
-     * @return ParameterContainer
      */
     public function merge($parameters)
     {
-        if (!is_array($parameters) && !$parameters instanceof ParameterContainer) {
-            throw new Exception\InvalidArgumentException('$parameters must be an array or an instance of ParameterContainer');
+        if (! is_array($parameters) && ! $parameters instanceof ParameterContainer) {
+            throw new Exception\InvalidArgumentException(
+                '$parameters must be an array or an instance of ParameterContainer'
+            );
         }
 
         if (count($parameters) == 0) {

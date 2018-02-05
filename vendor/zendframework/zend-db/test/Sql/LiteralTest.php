@@ -9,35 +9,37 @@
 
 namespace ZendTest\Db\Sql;
 
+use PHPUnit\Framework\TestCase;
 use Zend\Db\Sql\Literal;
 
-class LiteralTest extends \PHPUnit_Framework_TestCase
+class LiteralTest extends TestCase
 {
     public function testSetLiteral()
     {
         $literal = new Literal('bar');
-        $this->assertSame($literal, $literal->setLiteral('foo'));
+        self::assertSame($literal, $literal->setLiteral('foo'));
     }
 
     public function testGetLiteral()
     {
         $literal = new Literal('bar');
-        $this->assertEquals('bar', $literal->getLiteral());
+        self::assertEquals('bar', $literal->getLiteral());
     }
 
     public function testGetExpressionData()
     {
         $literal = new Literal('bar');
-        $this->assertEquals([['bar', [], []]], $literal->getExpressionData());
+        self::assertEquals([['bar', [], []]], $literal->getExpressionData());
     }
 
     public function testGetExpressionDataWillEscapePercent()
     {
         $expression = new Literal('X LIKE "foo%"');
-        $this->assertEquals([[
+        self::assertEquals(
+            [[
                 'X LIKE "foo%%"',
                 [],
-                []
+                [],
             ]],
             $expression->getExpressionData()
         );

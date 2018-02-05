@@ -23,10 +23,10 @@ class OneToManyRelation extends Builder
         $this->columnRight = $columnRight;
         $this->relatedTable = $relatedTable;
 
-        $this->columns([$this->column]);
-        $this->from($relatedTable);
+        $this->columns([$this->columnRight]);
+        $this->from($this->table);
         $on = sprintf('%s.%s = %s.%s', $this->relatedTable, $this->column, $this->table, $this->columnRight);
-        $this->join($this->table, $on, [$this->columnRight], 'right');
+        $this->join($this->relatedTable, $on, [$this->column], 'left');
     }
 
     public function all(array $values)

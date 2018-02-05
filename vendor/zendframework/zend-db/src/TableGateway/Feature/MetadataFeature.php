@@ -55,7 +55,7 @@ class MetadataFeature extends AbstractFeature
         $this->sharedData['metadata']['columns'] = $columns;
 
         // process primary key only if table is a table; there are no PK constraints on views
-        if (!($m->getTable($t->table) instanceof TableObject)) {
+        if (! ($m->getTable($t->table) instanceof TableObject)) {
             return;
         }
 

@@ -87,7 +87,7 @@ class SqliteMetadata extends AbstractSource
                 // cid appears to be zero-based, ordinal position needs to be one-based
                 'ordinal_position'          => $row['cid'] + 1,
                 'column_default'            => $row['dflt_value'],
-                'is_nullable'               => !((bool) $row['notnull']),
+                'is_nullable'               => ! ((bool) $row['notnull']),
                 'data_type'                 => $row['type'],
                 'character_maximum_length'  => null,
                 'character_octet_length'    => null,
@@ -126,7 +126,7 @@ class SqliteMetadata extends AbstractSource
         $constraints = [];
         $indexes = $this->fetchPragma('index_list', $table, $schema);
         foreach ($indexes as $index) {
-            if (!((bool) $index['unique'])) {
+            if (! ((bool) $index['unique'])) {
                 continue;
             }
             $constraint = [
@@ -270,7 +270,7 @@ class SqliteMetadata extends AbstractSource
             ]);
         }
 
-        if (!preg_match($re, $sql, $matches)) {
+        if (! preg_match($re, $sql, $matches)) {
             return;
         }
         return [
@@ -305,7 +305,7 @@ class SqliteMetadata extends AbstractSource
             ]);
         }
 
-        if (!preg_match($re, $sql, $matches)) {
+        if (! preg_match($re, $sql, $matches)) {
             return;
         }
         $data = [];
@@ -322,7 +322,7 @@ class SqliteMetadata extends AbstractSource
         if (empty($data['action_condition'])) {
             $data['action_condition'] = null;
         }
-        if (!empty($data['action_timing'])) {
+        if (! empty($data['action_timing'])) {
             $data['action_timing'] = strtoupper($data['action_timing']);
             if ('I' == $data['action_timing'][0]) {
                 // normalize the white-space between the two words

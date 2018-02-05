@@ -9,9 +9,11 @@
 
 namespace ZendTest\Db\Adapter\Platform;
 
+use PHPUnit\Framework\Error;
+use PHPUnit\Framework\TestCase;
 use Zend\Db\Adapter\Platform\Sqlite;
 
-class SqliteTest extends \PHPUnit_Framework_TestCase
+class SqliteTest extends TestCase
 {
     /**
      * @var Sqlite
@@ -28,142 +30,165 @@ class SqliteTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Zend\Db\Adapter\Platform\Sqlite::getName
+     * @covers \Zend\Db\Adapter\Platform\Sqlite::getName
      */
     public function testGetName()
     {
-        $this->assertEquals('SQLite', $this->platform->getName());
+        self::assertEquals('SQLite', $this->platform->getName());
     }
 
     /**
-     * @covers Zend\Db\Adapter\Platform\Sqlite::getQuoteIdentifierSymbol
+     * @covers \Zend\Db\Adapter\Platform\Sqlite::getQuoteIdentifierSymbol
      */
     public function testGetQuoteIdentifierSymbol()
     {
-        $this->assertEquals('"', $this->platform->getQuoteIdentifierSymbol());
+        self::assertEquals('"', $this->platform->getQuoteIdentifierSymbol());
     }
 
     /**
-     * @covers Zend\Db\Adapter\Platform\Sqlite::quoteIdentifier
+     * @covers \Zend\Db\Adapter\Platform\Sqlite::quoteIdentifier
      */
     public function testQuoteIdentifier()
     {
-        $this->assertEquals('"identifier"', $this->platform->quoteIdentifier('identifier'));
+        self::assertEquals('"identifier"', $this->platform->quoteIdentifier('identifier'));
     }
 
     /**
-     * @covers Zend\Db\Adapter\Platform\Sqlite::quoteIdentifierChain
+     * @covers \Zend\Db\Adapter\Platform\Sqlite::quoteIdentifierChain
      */
     public function testQuoteIdentifierChain()
     {
-        $this->assertEquals('"identifier"', $this->platform->quoteIdentifierChain('identifier'));
-        $this->assertEquals('"identifier"', $this->platform->quoteIdentifierChain(['identifier']));
-        $this->assertEquals('"schema"."identifier"', $this->platform->quoteIdentifierChain(['schema', 'identifier']));
+        self::assertEquals('"identifier"', $this->platform->quoteIdentifierChain('identifier'));
+        self::assertEquals('"identifier"', $this->platform->quoteIdentifierChain(['identifier']));
+        self::assertEquals('"schema"."identifier"', $this->platform->quoteIdentifierChain(['schema', 'identifier']));
     }
 
     /**
-     * @covers Zend\Db\Adapter\Platform\Sqlite::getQuoteValueSymbol
+     * @covers \Zend\Db\Adapter\Platform\Sqlite::getQuoteValueSymbol
      */
     public function testGetQuoteValueSymbol()
     {
-        $this->assertEquals("'", $this->platform->getQuoteValueSymbol());
+        self::assertEquals("'", $this->platform->getQuoteValueSymbol());
     }
 
     /**
-     * @covers Zend\Db\Adapter\Platform\Sqlite::quoteValue
+     * @covers \Zend\Db\Adapter\Platform\Sqlite::quoteValue
      */
     public function testQuoteValueRaisesNoticeWithoutPlatformSupport()
     {
-        $this->setExpectedException(
-            'PHPUnit_Framework_Error_Notice',
-            'Attempting to quote a value in Zend\Db\Adapter\Platform\Sqlite without extension/driver support can introduce security vulnerabilities in a production environment'
+        $this->expectException(Error\Notice::class);
+        $this->expectExceptionMessage(
+            'Attempting to quote a value in Zend\Db\Adapter\Platform\Sqlite without extension/driver support can '
+            . 'introduce security vulnerabilities in a production environment'
         );
         $this->platform->quoteValue('value');
     }
 
     /**
-     * @covers Zend\Db\Adapter\Platform\Sqlite::quoteValue
+     * @covers \Zend\Db\Adapter\Platform\Sqlite::quoteValue
      */
     public function testQuoteValue()
     {
-        $this->assertEquals("'value'", @$this->platform->quoteValue('value'));
-        $this->assertEquals("'Foo O\\'Bar'", @$this->platform->quoteValue("Foo O'Bar"));
-        $this->assertEquals('\'\\\'; DELETE FROM some_table; -- \'', @$this->platform->quoteValue('\'; DELETE FROM some_table; -- '));
-        $this->assertEquals("'\\\\\\'; DELETE FROM some_table; -- '", @$this->platform->quoteValue('\\\'; DELETE FROM some_table; -- '));
+        self::assertEquals("'value'", @$this->platform->quoteValue('value'));
+        self::assertEquals("'Foo O\\'Bar'", @$this->platform->quoteValue("Foo O'Bar"));
+        self::assertEquals(
+            '\'\\\'; DELETE FROM some_table; -- \'',
+            @$this->platform->quoteValue('\'; DELETE FROM some_table; -- ')
+        );
+        self::assertEquals(
+            "'\\\\\\'; DELETE FROM some_table; -- '",
+            @$this->platform->quoteValue('\\\'; DELETE FROM some_table; -- ')
+        );
     }
 
     /**
-     * @covers Zend\Db\Adapter\Platform\Sqlite::quoteTrustedValue
+     * @covers \Zend\Db\Adapter\Platform\Sqlite::quoteTrustedValue
      */
     public function testQuoteTrustedValue()
     {
-        $this->assertEquals("'value'", $this->platform->quoteTrustedValue('value'));
-        $this->assertEquals("'Foo O\\'Bar'", $this->platform->quoteTrustedValue("Foo O'Bar"));
-        $this->assertEquals('\'\\\'; DELETE FROM some_table; -- \'', $this->platform->quoteTrustedValue('\'; DELETE FROM some_table; -- '));
+        self::assertEquals("'value'", $this->platform->quoteTrustedValue('value'));
+        self::assertEquals("'Foo O\\'Bar'", $this->platform->quoteTrustedValue("Foo O'Bar"));
+        self::assertEquals(
+            '\'\\\'; DELETE FROM some_table; -- \'',
+            $this->platform->quoteTrustedValue('\'; DELETE FROM some_table; -- ')
+        );
 
         //                   '\\\'; DELETE FROM some_table; -- '  <- actual below
-        $this->assertEquals("'\\\\\\'; DELETE FROM some_table; -- '", $this->platform->quoteTrustedValue('\\\'; DELETE FROM some_table; -- '));
+        self::assertEquals(
+            "'\\\\\\'; DELETE FROM some_table; -- '",
+            $this->platform->quoteTrustedValue('\\\'; DELETE FROM some_table; -- ')
+        );
     }
 
     /**
-     * @covers Zend\Db\Adapter\Platform\Sqlite::quoteValueList
+     * @covers \Zend\Db\Adapter\Platform\Sqlite::quoteValueList
      */
     public function testQuoteValueList()
     {
-        $this->setExpectedException(
-            'PHPUnit_Framework_Error',
-            'Attempting to quote a value in Zend\Db\Adapter\Platform\Sqlite without extension/driver support can introduce security vulnerabilities in a production environment'
+        $this->expectException(Error\Error::class);
+        $this->expectExceptionMessage(
+            'Attempting to quote a value in Zend\Db\Adapter\Platform\Sqlite without extension/driver support can '
+            . 'introduce security vulnerabilities in a production environment'
         );
-        $this->assertEquals("'Foo O\\'Bar'", $this->platform->quoteValueList("Foo O'Bar"));
+        self::assertEquals("'Foo O\\'Bar'", $this->platform->quoteValueList("Foo O'Bar"));
     }
 
     /**
-     * @covers Zend\Db\Adapter\Platform\Sqlite::getIdentifierSeparator
+     * @covers \Zend\Db\Adapter\Platform\Sqlite::getIdentifierSeparator
      */
     public function testGetIdentifierSeparator()
     {
-        $this->assertEquals('.', $this->platform->getIdentifierSeparator());
+        self::assertEquals('.', $this->platform->getIdentifierSeparator());
     }
 
     /**
-     * @covers Zend\Db\Adapter\Platform\Sqlite::quoteIdentifierInFragment
+     * @covers \Zend\Db\Adapter\Platform\Sqlite::quoteIdentifierInFragment
      */
     public function testQuoteIdentifierInFragment()
     {
-        $this->assertEquals('"foo"."bar"', $this->platform->quoteIdentifierInFragment('foo.bar'));
-        $this->assertEquals('"foo" as "bar"', $this->platform->quoteIdentifierInFragment('foo as bar'));
+        self::assertEquals('"foo"."bar"', $this->platform->quoteIdentifierInFragment('foo.bar'));
+        self::assertEquals('"foo" as "bar"', $this->platform->quoteIdentifierInFragment('foo as bar'));
 
         // single char words
-        $this->assertEquals('("foo"."bar" = "boo"."baz")', $this->platform->quoteIdentifierInFragment('(foo.bar = boo.baz)', ['(', ')', '=']));
+        self::assertEquals(
+            '("foo"."bar" = "boo"."baz")',
+            $this->platform->quoteIdentifierInFragment('(foo.bar = boo.baz)', ['(', ')', '='])
+        );
 
         // case insensitive safe words
-        $this->assertEquals(
+        self::assertEquals(
             '("foo"."bar" = "boo"."baz") AND ("foo"."baz" = "boo"."baz")',
-            $this->platform->quoteIdentifierInFragment('(foo.bar = boo.baz) AND (foo.baz = boo.baz)', ['(', ')', '=', 'and'])
+            $this->platform->quoteIdentifierInFragment(
+                '(foo.bar = boo.baz) AND (foo.baz = boo.baz)',
+                ['(', ')', '=', 'and']
+            )
         );
 
         // case insensitive safe words in field
-        $this->assertEquals(
+        self::assertEquals(
             '("foo"."bar" = "boo".baz) AND ("foo".baz = "boo".baz)',
-            $this->platform->quoteIdentifierInFragment('(foo.bar = boo.baz) AND (foo.baz = boo.baz)', ['(', ')', '=', 'and', 'bAz'])
+            $this->platform->quoteIdentifierInFragment(
+                '(foo.bar = boo.baz) AND (foo.baz = boo.baz)',
+                ['(', ')', '=', 'and', 'bAz']
+            )
         );
     }
 
     /**
-     * @covers Zend\Db\Adapter\Platform\Sqlite::quoteValue
-     * @covers Zend\Db\Adapter\Platform\Sqlite::quoteTrustedValue
+     * @covers \Zend\Db\Adapter\Platform\Sqlite::quoteValue
+     * @covers \Zend\Db\Adapter\Platform\Sqlite::quoteTrustedValue
      */
     public function testCanCloseConnectionAfterQuoteValue()
     {
         // Creating the SQLite database file
         $filePath = realpath(__DIR__) . "/_files/sqlite.db";
-        if (!file_exists($filePath)) {
+        if (! file_exists($filePath)) {
             touch($filePath);
         }
 
         $driver = new \Zend\Db\Adapter\Driver\Pdo\Pdo([
             'driver' => 'Pdo_Sqlite',
-            'database' => $filePath
+            'database' => $filePath,
         ]);
 
         $this->platform->setDriver($driver);
@@ -176,6 +201,6 @@ class SqliteTest extends \PHPUnit_Framework_TestCase
 
         @unlink($filePath);
 
-        $this->assertFileNotExists($filePath);
+        self::assertFileNotExists($filePath);
     }
 }

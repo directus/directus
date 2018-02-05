@@ -19,27 +19,32 @@ class Oci8IntegrationTest extends AbstractIntegrationTest
 {
     /**
      * @group integration-oci8
-     * @covers Zend\Db\Adapter\Driver\Oci8\Oci8::checkEnvironment
+     * @covers \Zend\Db\Adapter\Driver\Oci8\Oci8::checkEnvironment
      */
     public function testCheckEnvironment()
     {
         $sqlserver = new Oci8([]);
-        $this->assertNull($sqlserver->checkEnvironment());
+        self::assertNull($sqlserver->checkEnvironment());
     }
 
     public function testCreateStatement()
     {
         $driver = new Oci8([]);
-        $resource = oci_connect($this->variables['username'], $this->variables['password'], $this->variables['hostname']);
+        $resource = oci_connect(
+            $this->variables['username'],
+            $this->variables['password'],
+            $this->variables['hostname']
+        );
 
         $driver->getConnection()->setResource($resource);
 
         $stmt = $driver->createStatement('SELECT * FROM DUAL');
-        $this->assertInstanceOf('Zend\Db\Adapter\Driver\Oci8\Statement', $stmt);
+        self::assertInstanceOf('Zend\Db\Adapter\Driver\Oci8\Statement', $stmt);
         $stmt = $driver->createStatement();
-        $this->assertInstanceOf('Zend\Db\Adapter\Driver\Oci8\Statement', $stmt);
+        self::assertInstanceOf('Zend\Db\Adapter\Driver\Oci8\Statement', $stmt);
 
-        $this->setExpectedException('Zend\Db\Adapter\Exception\InvalidArgumentException', 'only accepts an SQL string or an oci8 resource');
+        $this->expectException('Zend\Db\Adapter\Exception\InvalidArgumentException');
+        $this->expectExceptionMessage('only accepts an SQL string or an oci8 resource');
         $driver->createStatement(new \stdClass);
     }
 }

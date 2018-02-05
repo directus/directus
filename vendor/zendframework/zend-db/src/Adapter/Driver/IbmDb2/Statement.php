@@ -9,6 +9,7 @@
 
 namespace Zend\Db\Adapter\Driver\IbmDb2;
 
+use ErrorException;
 use Zend\Db\Adapter\Driver\StatementInterface;
 use Zend\Db\Adapter\Exception;
 use Zend\Db\Adapter\ParameterContainer;
@@ -53,7 +54,7 @@ class Statement implements StatementInterface, Profiler\ProfilerAwareInterface
 
     /**
      * @param $resource
-     * @return Statement
+     * @return self Provides a fluent interface
      */
     public function initialize($resource)
     {
@@ -63,7 +64,7 @@ class Statement implements StatementInterface, Profiler\ProfilerAwareInterface
 
     /**
      * @param IbmDb2 $driver
-     * @return Statement
+     * @return self Provides a fluent interface
      */
     public function setDriver(IbmDb2 $driver)
     {
@@ -73,7 +74,7 @@ class Statement implements StatementInterface, Profiler\ProfilerAwareInterface
 
     /**
      * @param Profiler\ProfilerInterface $profiler
-     * @return Statement
+     * @return self Provides a fluent interface
      */
     public function setProfiler(Profiler\ProfilerInterface $profiler)
     {
@@ -93,7 +94,7 @@ class Statement implements StatementInterface, Profiler\ProfilerAwareInterface
      * Set sql
      *
      * @param $sql
-     * @return mixed
+     * @return self Provides a fluent interface
      */
     public function setSql($sql)
     {
@@ -115,7 +116,7 @@ class Statement implements StatementInterface, Profiler\ProfilerAwareInterface
      * Set parameter container
      *
      * @param ParameterContainer $parameterContainer
-     * @return mixed
+     * @return self Provides a fluent interface
      */
     public function setParameterContainer(ParameterContainer $parameterContainer)
     {
@@ -159,7 +160,8 @@ class Statement implements StatementInterface, Profiler\ProfilerAwareInterface
      * Prepare sql
      *
      * @param string|null $sql
-     * @return Statement
+     * @return self Provides a fluent interface
+     * @throws Exception\RuntimeException
      */
     public function prepare($sql = null)
     {
@@ -171,7 +173,14 @@ class Statement implements StatementInterface, Profiler\ProfilerAwareInterface
             $sql = $this->sql;
         }
 
-        $this->resource = db2_prepare($this->db2, $sql);
+        try {
+            set_error_handler($this->createErrorHandler());
+            $this->resource = db2_prepare($this->db2, $sql);
+        } catch (ErrorException $e) {
+            throw new Exception\RuntimeException($e->getMessage() . '. ' . db2_stmt_errormsg(), db2_stmt_error(), $e);
+        } finally {
+            restore_error_handler();
+        }
 
         if ($this->resource === false) {
             throw new Exception\RuntimeException(db2_stmt_errormsg(), db2_stmt_error());
@@ -199,12 +208,12 @@ class Statement implements StatementInterface, Profiler\ProfilerAwareInterface
      */
     public function execute($parameters = null)
     {
-        if (!$this->isPrepared) {
+        if (! $this->isPrepared) {
             $this->prepare();
         }
 
         /** START Standard ParameterContainer Merging Block */
-        if (!$this->parameterContainer instanceof ParameterContainer) {
+        if (! $this->parameterContainer instanceof ParameterContainer) {
             if ($parameters instanceof ParameterContainer) {
                 $this->parameterContainer = $parameters;
                 $parameters = null;
@@ -222,7 +231,8 @@ class Statement implements StatementInterface, Profiler\ProfilerAwareInterface
             $this->profiler->profilerStart($this);
         }
 
-        set_error_handler(function () {}, E_WARNING); // suppress warnings
+        set_error_handler(function () {
+        }, E_WARNING); // suppress warnings
         $response = db2_execute($this->resource, $this->parameterContainer->getPositionalArray());
         restore_error_handler();
 
@@ -236,5 +246,32 @@ class Statement implements StatementInterface, Profiler\ProfilerAwareInterface
 
         $result = $this->driver->createResult($this->resource);
         return $result;
+    }
+
+    /**
+     * Creates and returns a callable error handler that raises exceptions.
+     *
+     * Only raises exceptions for errors that are within the error_reporting mask.
+     *
+     * @return callable
+     */
+    private function createErrorHandler()
+    {
+        /**
+         * @param int $errno
+         * @param string $errstr
+         * @param string $errfile
+         * @param int $errline
+         * @return void
+         * @throws ErrorException if error is not within the error_reporting mask.
+         */
+        return function ($errno, $errstr, $errfile, $errline) {
+            if (! (error_reporting() & $errno)) {
+                // error_reporting does not include this error
+                return;
+            }
+
+            throw new ErrorException($errstr, 0, $errno, $errfile, $errline);
+        };
     }
 }

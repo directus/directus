@@ -9,38 +9,39 @@
 
 namespace ZendTest\Db\Sql\Platform\Sqlite;
 
-use Zend\Db\Sql\Platform\Sqlite\SelectDecorator;
-use Zend\Db\Sql\Select;
+use PHPUnit\Framework\TestCase;
 use Zend\Db\Adapter\ParameterContainer;
 use Zend\Db\Adapter\Platform\Sqlite as SqlitePlatform;
+use Zend\Db\Sql\Platform\Sqlite\SelectDecorator;
+use Zend\Db\Sql\Select;
 
-class SelectDecoratorTest extends \PHPUnit_Framework_TestCase
+class SelectDecoratorTest extends TestCase
 {
     /**
      * @testdox integration test: Testing SelectDecorator will use Select an internal state to prepare a proper combine
      * statement
-     * @covers Zend\Db\Sql\Platform\Sqlite\SelectDecorator::prepareStatement
-     * @covers Zend\Db\Sql\Platform\Sqlite\SelectDecorator::processCombine
+     * @covers \Zend\Db\Sql\Platform\Sqlite\SelectDecorator::prepareStatement
+     * @covers \Zend\Db\Sql\Platform\Sqlite\SelectDecorator::processCombine
      * @dataProvider dataProviderUnionSyntaxFromCombine
      */
     public function testPrepareStatementPreparesUnionSyntaxFromCombine(Select $select, $expectedSql, $expectedParams)
     {
-        $driver = $this->getMock('Zend\Db\Adapter\Driver\DriverInterface');
+        $driver = $this->getMockBuilder('Zend\Db\Adapter\Driver\DriverInterface')->getMock();
         $driver->expects($this->any())->method('formatParameterName')->will($this->returnValue('?'));
 
         // test
-        $adapter = $this->getMock(
-            'Zend\Db\Adapter\Adapter',
-            null,
-            [
+        $adapter = $this->getMockBuilder('Zend\Db\Adapter\Adapter')
+            ->setMethods()
+            ->setConstructorArgs([
                 $driver,
-                new SqlitePlatform()
-            ]
-        );
+                new SqlitePlatform(),
+            ])
+            ->getMock();
 
         $parameterContainer = new ParameterContainer;
-        $statement = $this->getMock('Zend\Db\Adapter\Driver\StatementInterface');
-        $statement->expects($this->any())->method('getParameterContainer')->will($this->returnValue($parameterContainer));
+        $statement = $this->getMockBuilder('Zend\Db\Adapter\Driver\StatementInterface')->getMock();
+        $statement->expects($this->any())->method('getParameterContainer')
+            ->will($this->returnValue($parameterContainer));
 
         $statement->expects($this->once())->method('setSql')->with($expectedSql);
 
@@ -48,25 +49,26 @@ class SelectDecoratorTest extends \PHPUnit_Framework_TestCase
         $selectDecorator->setSubject($select);
         $selectDecorator->prepareStatement($adapter, $statement);
 
-        $this->assertEquals($expectedParams, $parameterContainer->getNamedArray());
+        self::assertEquals($expectedParams, $parameterContainer->getNamedArray());
     }
 
     /**
      * @testdox integration test: Testing SelectDecorator will use Select an internal state to prepare a proper combine
      * statement
-     * @covers Zend\Db\Sql\Platform\Sqlite\SelectDecorator::getSqlString
-     * @covers Zend\Db\Sql\Platform\Sqlite\SelectDecorator::processCombine
+     * @covers \Zend\Db\Sql\Platform\Sqlite\SelectDecorator::getSqlString
+     * @covers \Zend\Db\Sql\Platform\Sqlite\SelectDecorator::processCombine
      * @dataProvider dataProviderUnionSyntaxFromCombine
      */
     public function testGetSqlStringPreparesUnionSyntaxFromCombine(Select $select, $ignore, $alsoIgnore, $expectedSql)
     {
         $parameterContainer = new ParameterContainer;
-        $statement = $this->getMock('Zend\Db\Adapter\Driver\StatementInterface');
-        $statement->expects($this->any())->method('getParameterContainer')->will($this->returnValue($parameterContainer));
+        $statement = $this->getMockBuilder('Zend\Db\Adapter\Driver\StatementInterface')->getMock();
+        $statement->expects($this->any())->method('getParameterContainer')
+            ->will($this->returnValue($parameterContainer));
 
         $selectDecorator = new SelectDecorator;
         $selectDecorator->setSubject($select);
-        $this->assertEquals($expectedSql, $selectDecorator->getSqlString(new SqlitePlatform));
+        self::assertEquals($expectedSql, $selectDecorator->getSqlString(new SqlitePlatform));
     }
 
     /**

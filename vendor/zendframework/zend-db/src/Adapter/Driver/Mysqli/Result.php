@@ -72,12 +72,15 @@ class Result implements
      * @param mixed $resource
      * @param mixed $generatedValue
      * @param bool|null $isBuffered
+     * @return self Provides a fluent interface
      * @throws Exception\InvalidArgumentException
-     * @return Result
      */
     public function initialize($resource, $generatedValue, $isBuffered = null)
     {
-        if (!$resource instanceof \mysqli && !$resource instanceof \mysqli_result && !$resource instanceof \mysqli_stmt) {
+        if (! $resource instanceof \mysqli
+            && ! $resource instanceof \mysqli_result
+            && ! $resource instanceof \mysqli_stmt
+        ) {
             throw new Exception\InvalidArgumentException('Invalid resource provided.');
         }
 
@@ -203,7 +206,7 @@ class Result implements
         }
 
         if (($r = $this->resource->fetch()) === null) {
-            if (!$this->isBuffered) {
+            if (! $this->isBuffered) {
                 $this->resource->close();
             }
             return false;
@@ -276,11 +279,10 @@ class Result implements
      */
     public function rewind()
     {
-        if ($this->position !== 0) {
-            if ($this->isBuffered === false) {
-                throw new Exception\RuntimeException('Unbuffered results cannot be rewound for multiple iterations');
-            }
+        if (0 !== $this->position && false === $this->isBuffered) {
+            throw new Exception\RuntimeException('Unbuffered results cannot be rewound for multiple iterations');
         }
+
         $this->resource->data_seek(0); // works for both mysqli_result & mysqli_stmt
         $this->currentComplete = false;
         $this->position = 0;

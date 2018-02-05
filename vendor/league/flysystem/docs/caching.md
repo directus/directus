@@ -29,13 +29,13 @@ Setting it up is easy:
 use League\Flysystem\Filesystem;
 use League\Flysystem\Adapter\Local as Adapter;
 use League\Flysystem\Cached\CachedAdapter;
-use League\Flysystem\Cached\Storage\Memory as CacheStore;
+use League\Flysystem\Cached\Storage\Memory as MemoryStore;
 
 // Create the adapter
 $localAdapter = new Local('/path/to/root');
 
 // Create the cache store
-$cacheStore = new CacheStore();
+$cacheStore = new MemoryStore();
 
 // Decorate the adapter
 $adapter = new CachedAdapter($localAdapter, $cacheStore);
@@ -56,14 +56,14 @@ The following examples demonstrate how you can setup persistent meta-data cachin
 use League\Flysystem\Filesystem;
 use League\Flysystem\Adapter\Local as Adapter;
 use League\Flysystem\Cached\CachedAdapter;
-use League\Flysystem\Cached\Storage\Predis as Cache;
+use League\Flysystem\Cached\Storage\Predis as PredisStore;
 
-$adapter = new CachedAdapter(new Adapter(__DIR__.'/path/to/root'), new Cache);
+$adapter = new CachedAdapter(new Adapter(__DIR__.'/path/to/root'), new PredisStore);
 $filesystem = new Filesystem($adapter);
 
 // Or supply a client
 $client = new Predis\Client;
-$adapter = new CachedAdapter(new Adapter(__DIR__.'/path/to/root'), new Cache($client));
+$adapter = new CachedAdapter(new Adapter(__DIR__.'/path/to/root'), new PredisStore($client));
 $filesystem = new Filesystem($adapter);
 ~~~
 
@@ -73,14 +73,14 @@ $filesystem = new Filesystem($adapter);
 use League\Flysystem\Filesystem;
 use League\Flysystem\Adapter\Local as Adapter;
 use League\Flysystem\Cached\CachedAdapter;
-use League\Flysystem\Cached\Storage\Memcached as Cache;
+use League\Flysystem\Cached\Storage\Memcached as MemcachedStore;
 
 $memcached = new Memcached;
 $memcached->addServer('localhost', 11211);
 
 $adapter = new CachedAdapter(
     new Adapter(__DIR__.'/path/to/root'),
-    new Cache($memcached, 'storageKey', 300)
+    new MemcachedStore($memcached, 'storageKey', 300)
 );
 $filesystem = new Filesystem($adapter);
 // Storage Key and expire time are optional
@@ -111,12 +111,12 @@ $filesystem = new Filesystem($adapter);
 use Stash\Pool;
 use League\Flysystem\Adapter\Local as Adapter;
 use League\Flysystem\Cached\CachedAdapter;
-use League\Flysystem\Cached\Storage\Stash as Cache;
+use League\Flysystem\Cached\Storage\Stash as StashStore;
 
 $pool = new Pool();
 // you can optionally pass a driver (recommended, default: in-memory driver)
 
-$cache = new Cache($pool, 'storageKey', 300);
+$cache = new StashStore($pool, 'storageKey', 300);
 // Storage Key and expire time are optional
 
 $adapter = new CachedAdapter(new Adapter(__DIR__.'/path/to/root'), $cache);

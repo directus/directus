@@ -18,7 +18,9 @@ class AdapterServiceFactory implements FactoryInterface
     /**
      * Create db adapter service
      *
-     * @param  ContainerInterface $container
+     * @param ContainerInterface $container
+     * @param string $requestedName
+     * @param array $options
      * @return Adapter
      */
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)

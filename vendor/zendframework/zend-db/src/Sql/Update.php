@@ -88,7 +88,7 @@ class Update extends AbstractPreparableSql
      * Specify table for statement
      *
      * @param  string|TableIdentifier $table
-     * @return Update
+     * @return self Provides a fluent interface
      */
     public function table($table)
     {
@@ -101,8 +101,8 @@ class Update extends AbstractPreparableSql
      *
      * @param  array $values Associative array of key values
      * @param  string $flag One of the VALUES_* constants
+     * @return self Provides a fluent interface
      * @throws Exception\InvalidArgumentException
-     * @return Update
      */
     public function set(array $values, $flag = self::VALUES_SET)
     {
@@ -115,7 +115,7 @@ class Update extends AbstractPreparableSql
         }
         $priority = is_numeric($flag) ? $flag : 0;
         foreach ($values as $k => $v) {
-            if (!is_string($k)) {
+            if (! is_string($k)) {
                 throw new Exception\InvalidArgumentException('set() expects a string for the value key');
             }
             $this->set->insert($k, $v, $priority);
@@ -128,8 +128,8 @@ class Update extends AbstractPreparableSql
      *
      * @param  Where|\Closure|string|array $predicate
      * @param  string $combination One of the OP_* constants from Predicate\PredicateSet
+     * @return self Provides a fluent interface
      * @throws Exception\InvalidArgumentException
-     * @return Update
      */
     public function where($predicate, $combination = Predicate\PredicateSet::OP_AND)
     {
@@ -147,8 +147,8 @@ class Update extends AbstractPreparableSql
      * @param  string|array $name
      * @param  string $on
      * @param  string $type one of the JOIN_* constants
+     * @return self Provides a fluent interface
      * @throws Exception\InvalidArgumentException
-     * @return Update
      */
     public function join($name, $on, $type = Join::JOIN_INNER)
     {
@@ -169,16 +169,22 @@ class Update extends AbstractPreparableSql
         return (isset($key) && array_key_exists($key, $rawState)) ? $rawState[$key] : $rawState;
     }
 
-    protected function processUpdate(PlatformInterface $platform, DriverInterface $driver = null, ParameterContainer $parameterContainer = null)
-    {
+    protected function processUpdate(
+        PlatformInterface $platform,
+        DriverInterface $driver = null,
+        ParameterContainer $parameterContainer = null
+    ) {
         return sprintf(
             $this->specifications[static::SPECIFICATION_UPDATE],
             $this->resolveTable($this->table, $platform, $driver, $parameterContainer)
         );
     }
 
-    protected function processSet(PlatformInterface $platform, DriverInterface $driver = null, ParameterContainer $parameterContainer = null)
-    {
+    protected function processSet(
+        PlatformInterface $platform,
+        DriverInterface $driver = null,
+        ParameterContainer $parameterContainer = null
+    ) {
         $setSql = [];
         $pIndex = 0;
 
@@ -204,8 +210,11 @@ class Update extends AbstractPreparableSql
         );
     }
 
-    protected function processWhere(PlatformInterface $platform, DriverInterface $driver = null, ParameterContainer $parameterContainer = null)
-    {
+    protected function processWhere(
+        PlatformInterface $platform,
+        DriverInterface $driver = null,
+        ParameterContainer $parameterContainer = null
+    ) {
         if ($this->where->count() == 0) {
             return;
         }
@@ -215,8 +224,11 @@ class Update extends AbstractPreparableSql
         );
     }
 
-    protected function processJoins(PlatformInterface $platform, DriverInterface $driver = null, ParameterContainer $parameterContainer = null)
-    {
+    protected function processJoins(
+        PlatformInterface $platform,
+        DriverInterface $driver = null,
+        ParameterContainer $parameterContainer = null
+    ) {
         return $this->processJoin($this->joins, $platform, $driver, $parameterContainer);
     }
 

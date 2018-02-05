@@ -9,37 +9,41 @@
 
 namespace ZendTest\Db\RowGateway;
 
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use Zend\Db\RowGateway\RowGateway;
 
-class RowGatewayTest extends PHPUnit_Framework_TestCase
+class RowGatewayTest extends TestCase
 {
     protected $mockAdapter;
     protected $rowGateway;
 
-    public function setup()
+    protected function setUp()
     {
         // mock the adapter, driver, and parts
-        $mockResult = $this->getMock('Zend\Db\Adapter\Driver\ResultInterface');
+        $mockResult = $this->getMockBuilder('Zend\Db\Adapter\Driver\ResultInterface')->getMock();
         $mockResult->expects($this->any())->method('getAffectedRows')->will($this->returnValue(1));
         $this->mockResult = $mockResult;
 
-        $mockStatement = $this->getMock('Zend\Db\Adapter\Driver\StatementInterface');
+        $mockStatement = $this->getMockBuilder('Zend\Db\Adapter\Driver\StatementInterface')->getMock();
         $mockStatement->expects($this->any())->method('execute')->will($this->returnValue($mockResult));
 
-        $mockConnection = $this->getMock('Zend\Db\Adapter\Driver\ConnectionInterface');
+        $mockConnection = $this->getMockBuilder('Zend\Db\Adapter\Driver\ConnectionInterface')->getMock();
 
-        $mockDriver = $this->getMock('Zend\Db\Adapter\Driver\DriverInterface');
+        $mockDriver = $this->getMockBuilder('Zend\Db\Adapter\Driver\DriverInterface')->getMock();
         $mockDriver->expects($this->any())->method('createStatement')->will($this->returnValue($mockStatement));
         $mockDriver->expects($this->any())->method('getConnection')->will($this->returnValue($mockConnection));
 
         // setup mock adapter
-        $this->mockAdapter = $this->getMock('Zend\Db\Adapter\Adapter', null, [$mockDriver]);
+        $this->mockAdapter = $this->getMockBuilder('Zend\Db\Adapter\Adapter')
+            ->setMethods()
+            ->setConstructorArgs([$mockDriver])
+            ->getMock();
     }
 
     public function testEmptyPrimaryKey()
     {
-        $this->setExpectedException('Zend\Db\RowGateway\Exception\RuntimeException', 'This row object does not have a primary key column set.');
+        $this->expectException('Zend\Db\RowGateway\Exception\RuntimeException');
+        $this->expectExceptionMessage('This row object does not have a primary key column set.');
         $this->rowGateway = new RowGateway('', 'foo', $this->mockAdapter);
     }
 }

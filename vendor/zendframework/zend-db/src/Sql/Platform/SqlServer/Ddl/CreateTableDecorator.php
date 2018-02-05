@@ -22,7 +22,7 @@ class CreateTableDecorator extends CreateTable implements PlatformDecoratorInter
 
     /**
      * @param CreateTable $subject
-     * @return self
+     * @return self Provides a fluent interface
      */
     public function setSubject($subject)
     {

@@ -32,6 +32,13 @@ class Mysql extends AbstractPlatform
     protected $resource = null;
 
     /**
+     * NOTE: Include dashes for MySQL only, need tests for others platforms
+     *
+     * @var string
+     */
+    protected $quoteIdentifierFragmentPattern = '/([^0-9,a-z,A-Z$_\-:])/i';
+
+    /**
      * @param null|\Zend\Db\Adapter\Driver\Mysqli\Mysqli|\Zend\Db\Adapter\Driver\Pdo\Pdo|\mysqli|\PDO $driver
      */
     public function __construct($driver = null)
@@ -43,9 +50,8 @@ class Mysql extends AbstractPlatform
 
     /**
      * @param \Zend\Db\Adapter\Driver\Mysqli\Mysqli|\Zend\Db\Adapter\Driver\Pdo\Pdo|\mysqli|\PDO $driver
+     * @return self Provides a fluent interface
      * @throws \Zend\Db\Adapter\Exception\InvalidArgumentException
-     *
-     * @return self
      */
     public function setDriver($driver)
     {
@@ -59,7 +65,9 @@ class Mysql extends AbstractPlatform
             return $this;
         }
 
-        throw new Exception\InvalidArgumentException('$driver must be a Mysqli or Mysql PDO Zend\Db\Adapter\Driver, Mysqli instance or MySQL PDO instance');
+        throw new Exception\InvalidArgumentException(
+            '$driver must be a Mysqli or Mysql PDO Zend\Db\Adapter\Driver, Mysqli instance or MySQL PDO instance'
+        );
     }
 
     /**

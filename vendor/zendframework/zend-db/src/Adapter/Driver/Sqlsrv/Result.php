@@ -46,7 +46,7 @@ class Result implements Iterator, ResultInterface
      *
      * @param  resource $resource
      * @param  mixed    $generatedValue
-     * @return Result
+     * @return self Provides a fluent interface
      */
     public function initialize($resource, $generatedValue = null)
     {

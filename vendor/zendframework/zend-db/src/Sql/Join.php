@@ -108,14 +108,14 @@ class Join implements Iterator, Countable
     }
 
     /**
-     * @param string|array $name A table name on which to join, or a single
-     *     element associative array, of the form alias => table
+     * @param string|array|TableIdentifier $name A table name on which to join, or a single
+     *     element associative array, of the form alias => table, or TableIdentifier instance
      * @param string $on A string specification describing the fields to join on.
      * @param string|string[]|int|int[] $columns A single column name, an array
      *     of column names, or (a) specification(s) such as SQL_STAR representing
      *     the columns to join.
      * @param string $type The JOIN type to use; see the JOIN_* constants.
-     * @return self Implements a fluent interface.
+     * @return self Provides a fluent interface
      * @throws Exception\InvalidArgumentException for invalid $name values.
      */
     public function join($name, $on, $columns = [Select::SQL_STAR], $type = Join::JOIN_INNER)
@@ -143,7 +143,7 @@ class Join implements Iterator, Countable
     /**
      * Reset to an empty list of JOIN specifications.
      *
-     * @return self Implements a fluent interface.
+     * @return self Provides a fluent interface
      */
     public function reset()
     {

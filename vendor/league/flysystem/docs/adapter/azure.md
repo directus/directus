@@ -15,7 +15,7 @@ composer require league/flysystem-azure
 ## Usage
 
 ~~~ php
-use WindowsAzure\Common\ServicesBuilder;
+use MicrosoftAzure\Storage\Common\ServicesBuilder;
 use League\Flysystem\Filesystem;
 use League\Flysystem\Azure\AzureAdapter;
 

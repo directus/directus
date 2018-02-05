@@ -9,11 +9,12 @@
 
 namespace ZendTest\Db\Sql\Ddl\Column;
 
+use PHPUnit\Framework\TestCase;
 use Zend\Db\Sql\Ddl\Column\Float as FloatColumn;
 
-class FloatTest extends \PHPUnit_Framework_TestCase
+class FloatTest extends TestCase
 {
-    public function setUp()
+    protected function setUp()
     {
         if (version_compare(PHP_VERSION, '7.0', '>=')) {
             $this->markTestSkipped('Cannot test Float column under PHP 7; reserved keyword');
@@ -22,7 +23,7 @@ class FloatTest extends \PHPUnit_Framework_TestCase
 
     public function testRaisesDeprecationNoticeOnInstantiation()
     {
-        $this->setExpectedException('PHPUnit_Framework_Error_Deprecated');
+        $this->expectException('PHPUnit_Framework_Error_Deprecated');
         new FloatColumn('foo', 10, 5);
     }
 }

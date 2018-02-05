@@ -9,7 +9,7 @@
 
 namespace ZendTest\Db\Sql\Predicate;
 
-use PHPUnit_Framework_TestCase as TestCase;
+use PHPUnit\Framework\TestCase;
 use Zend\Db\Sql\Predicate\Expression;
 use Zend\Db\Sql\Predicate\IsNull;
 
@@ -18,8 +18,8 @@ class ExpressionTest extends TestCase
     public function testEmptyConstructorYieldsEmptyLiteralAndParameter()
     {
         $expression = new Expression();
-        $this->assertEquals('', $expression->getExpression());
-        $this->assertEmpty($expression->getParameters());
+        self::assertEquals('', $expression->getExpression());
+        self::assertEmpty($expression->getParameters());
     }
 
     /**
@@ -28,8 +28,8 @@ class ExpressionTest extends TestCase
     public function testCanPassLiteralAndSingleScalarParameterToConstructor()
     {
         $expression = new Expression('foo.bar = ?', 'bar');
-        $this->assertEquals('foo.bar = ?', $expression->getExpression());
-        $this->assertEquals(['bar'], $expression->getParameters());
+        self::assertEquals('foo.bar = ?', $expression->getExpression());
+        self::assertEquals(['bar'], $expression->getParameters());
     }
 
     /**
@@ -38,7 +38,7 @@ class ExpressionTest extends TestCase
     public function testCanPassNoParameterToConstructor()
     {
         $expression = new Expression('foo.bar');
-        $this->assertEquals([], $expression->getParameters());
+        self::assertEquals([], $expression->getParameters());
     }
 
     /**
@@ -47,7 +47,7 @@ class ExpressionTest extends TestCase
     public function testCanPassSingleNullParameterToConstructor()
     {
         $expression = new Expression('?', null);
-        $this->assertEquals([null], $expression->getParameters());
+        self::assertEquals([null], $expression->getParameters());
     }
 
     /**
@@ -56,7 +56,7 @@ class ExpressionTest extends TestCase
     public function testCanPassSingleZeroParameterValueToConstructor()
     {
         $predicate = new Expression('?', 0);
-        $this->assertEquals([0], $predicate->getParameters());
+        self::assertEquals([0], $predicate->getParameters());
     }
 
     /**
@@ -66,7 +66,7 @@ class ExpressionTest extends TestCase
     {
         $predicate = new IsNull('foo.baz');
         $expression = new Expression('?', $predicate);
-        $this->assertEquals([$predicate], $expression->getParameters());
+        self::assertEquals([$predicate], $expression->getParameters());
     }
 
     /**
@@ -75,7 +75,7 @@ class ExpressionTest extends TestCase
     public function testCanPassMultiScalarParametersToConstructor()
     {
         $expression = new Expression('? OR ?', 'foo', 'bar');
-        $this->assertEquals(['foo', 'bar'], $expression->getParameters());
+        self::assertEquals(['foo', 'bar'], $expression->getParameters());
     }
 
     /**
@@ -84,7 +84,7 @@ class ExpressionTest extends TestCase
     public function testCanPassMultiNullParametersToConstructor()
     {
         $expression = new Expression('? OR ?', null, null);
-        $this->assertEquals([null, null], $expression->getParameters());
+        self::assertEquals([null, null], $expression->getParameters());
     }
 
     /**
@@ -94,7 +94,7 @@ class ExpressionTest extends TestCase
     {
         $predicate = new IsNull('foo.baz');
         $expression = new Expression('? OR ?', $predicate, $predicate);
-        $this->assertEquals([$predicate, $predicate], $expression->getParameters());
+        self::assertEquals([$predicate, $predicate], $expression->getParameters());
     }
 
     /**
@@ -103,7 +103,7 @@ class ExpressionTest extends TestCase
     public function testCanPassArrayOfOneScalarParameterToConstructor()
     {
         $expression = new Expression('?', ['foo']);
-        $this->assertEquals(['foo'], $expression->getParameters());
+        self::assertEquals(['foo'], $expression->getParameters());
     }
 
     /**
@@ -112,7 +112,7 @@ class ExpressionTest extends TestCase
     public function testCanPassArrayOfMultiScalarsParameterToConstructor()
     {
         $expression = new Expression('? OR ?', ['foo', 'bar']);
-        $this->assertEquals(['foo', 'bar'], $expression->getParameters());
+        self::assertEquals(['foo', 'bar'], $expression->getParameters());
     }
 
     /**
@@ -121,7 +121,7 @@ class ExpressionTest extends TestCase
     public function testCanPassArrayOfOneNullParameterToConstructor()
     {
         $expression = new Expression('?', [null]);
-        $this->assertEquals([null], $expression->getParameters());
+        self::assertEquals([null], $expression->getParameters());
     }
 
     /**
@@ -130,7 +130,7 @@ class ExpressionTest extends TestCase
     public function testCanPassArrayOfMultiNullsParameterToConstructor()
     {
         $expression = new Expression('? OR ?', [null, null]);
-        $this->assertEquals([null, null], $expression->getParameters());
+        self::assertEquals([null, null], $expression->getParameters());
     }
 
     /**
@@ -140,7 +140,7 @@ class ExpressionTest extends TestCase
     {
         $predicate = new IsNull('foo.baz');
         $expression = new Expression('?', [$predicate]);
-        $this->assertEquals([$predicate], $expression->getParameters());
+        self::assertEquals([$predicate], $expression->getParameters());
     }
 
     /**
@@ -150,21 +150,21 @@ class ExpressionTest extends TestCase
     {
         $predicate = new IsNull('foo.baz');
         $expression = new Expression('? OR ?', [$predicate, $predicate]);
-        $this->assertEquals([$predicate, $predicate], $expression->getParameters());
+        self::assertEquals([$predicate, $predicate], $expression->getParameters());
     }
 
     public function testLiteralIsMutable()
     {
         $expression = new Expression();
         $expression->setExpression('foo.bar = ?');
-        $this->assertEquals('foo.bar = ?', $expression->getExpression());
+        self::assertEquals('foo.bar = ?', $expression->getExpression());
     }
 
     public function testParameterIsMutable()
     {
         $expression = new Expression();
         $expression->setParameters(['foo', 'bar']);
-        $this->assertEquals(['foo', 'bar'], $expression->getParameters());
+        self::assertEquals(['foo', 'bar'], $expression->getParameters());
     }
 
     public function testRetrievingWherePartsReturnsSpecificationArrayOfLiteralAndParametersAndArrayOfTypes()
@@ -178,6 +178,6 @@ class ExpressionTest extends TestCase
             [Expression::TYPE_VALUE, Expression::TYPE_VALUE],
         ]];
         $test = $expression->getExpressionData();
-        $this->assertEquals($expected, $test, var_export($test, 1));
+        self::assertEquals($expected, $test, var_export($test, 1));
     }
 }

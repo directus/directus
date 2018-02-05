@@ -9,6 +9,7 @@
 
 namespace ZendTest\Db\Sql;
 
+use PHPUnit\Framework\TestCase;
 use stdClass;
 use Zend\Db\Sql\TableIdentifier;
 
@@ -17,51 +18,51 @@ use Zend\Db\Sql\TableIdentifier;
  *
  * @covers \Zend\Db\Sql\TableIdentifier
  */
-class TableIdentifierTest extends \PHPUnit_Framework_TestCase
+class TableIdentifierTest extends TestCase
 {
     public function testGetTable()
     {
         $tableIdentifier = new TableIdentifier('foo');
 
-        $this->assertSame('foo', $tableIdentifier->getTable());
+        self::assertSame('foo', $tableIdentifier->getTable());
     }
 
     public function testGetDefaultSchema()
     {
         $tableIdentifier = new TableIdentifier('foo');
 
-        $this->assertNull($tableIdentifier->getSchema());
+        self::assertNull($tableIdentifier->getSchema());
     }
 
     public function testGetSchema()
     {
         $tableIdentifier = new TableIdentifier('foo', 'bar');
 
-        $this->assertSame('bar', $tableIdentifier->getSchema());
+        self::assertSame('bar', $tableIdentifier->getSchema());
     }
 
     public function testGetTableFromObjectStringCast()
     {
-        $table = $this->getMock('stdClass', ['__toString']);
+        $table = $this->getMockBuilder('stdClass')->setMethods(['__toString'])->getMock();
 
         $table->expects($this->once())->method('__toString')->will($this->returnValue('castResult'));
 
         $tableIdentifier = new TableIdentifier($table);
 
-        $this->assertSame('castResult', $tableIdentifier->getTable());
-        $this->assertSame('castResult', $tableIdentifier->getTable());
+        self::assertSame('castResult', $tableIdentifier->getTable());
+        self::assertSame('castResult', $tableIdentifier->getTable());
     }
 
     public function testGetSchemaFromObjectStringCast()
     {
-        $schema = $this->getMock('stdClass', ['__toString']);
+        $schema = $this->getMockBuilder('stdClass')->setMethods(['__toString'])->getMock();
 
         $schema->expects($this->once())->method('__toString')->will($this->returnValue('castResult'));
 
         $tableIdentifier = new TableIdentifier('foo', $schema);
 
-        $this->assertSame('castResult', $tableIdentifier->getSchema());
-        $this->assertSame('castResult', $tableIdentifier->getSchema());
+        self::assertSame('castResult', $tableIdentifier->getSchema());
+        self::assertSame('castResult', $tableIdentifier->getSchema());
     }
 
     /**
@@ -71,7 +72,7 @@ class TableIdentifierTest extends \PHPUnit_Framework_TestCase
      */
     public function testRejectsInvalidTable($invalidTable)
     {
-        $this->setExpectedException('Zend\Db\Sql\Exception\InvalidArgumentException');
+        $this->expectException('Zend\Db\Sql\Exception\InvalidArgumentException');
 
         new TableIdentifier($invalidTable);
     }
@@ -83,7 +84,7 @@ class TableIdentifierTest extends \PHPUnit_Framework_TestCase
      */
     public function testRejectsInvalidSchema($invalidSchema)
     {
-        $this->setExpectedException('Zend\Db\Sql\Exception\InvalidArgumentException');
+        $this->expectException('Zend\Db\Sql\Exception\InvalidArgumentException');
 
         new TableIdentifier('foo', $invalidSchema);
     }

@@ -9,6 +9,7 @@
 
 namespace ZendTest\Db\Sql;
 
+use PHPUnit\Framework\TestCase;
 use Zend\Db\Sql\Expression;
 
 /**
@@ -17,95 +18,101 @@ use Zend\Db\Sql\Expression;
  *
  * Expression is a value object with no dependencies/collaborators, therefore, no fixure needed
  */
-class ExpressionTest extends \PHPUnit_Framework_TestCase
+class ExpressionTest extends TestCase
 {
     /**
-     * @covers Zend\Db\Sql\Expression::setExpression
+     * @covers \Zend\Db\Sql\Expression::setExpression
      * @return Expression
      */
     public function testSetExpression()
     {
         $expression = new Expression();
         $return = $expression->setExpression('Foo Bar');
-        $this->assertSame($expression, $return);
+        self::assertSame($expression, $return);
         return $return;
     }
 
     /**
-     * @covers Zend\Db\Sql\Expression::setExpression
+     * @covers \Zend\Db\Sql\Expression::setExpression
      */
     public function testSetExpressionException()
     {
         $expression = new Expression();
-        $this->setExpectedException('Zend\Db\Sql\Exception\InvalidArgumentException', 'Supplied expression must be a string.');
+        $this->expectException('Zend\Db\Sql\Exception\InvalidArgumentException');
+        $this->expectExceptionMessage('Supplied expression must be a string.');
         $expression->setExpression(null);
     }
 
     /**
-     * @covers Zend\Db\Sql\Expression::getExpression
+     * @covers \Zend\Db\Sql\Expression::getExpression
      * @depends testSetExpression
      */
     public function testGetExpression(Expression $expression)
     {
-        $this->assertEquals('Foo Bar', $expression->getExpression());
+        self::assertEquals('Foo Bar', $expression->getExpression());
     }
 
     /**
-     * @covers Zend\Db\Sql\Expression::setParameters
+     * @covers \Zend\Db\Sql\Expression::setParameters
      */
     public function testSetParameters()
     {
         $expression = new Expression();
         $return = $expression->setParameters('foo');
-        $this->assertSame($expression, $return);
+        self::assertSame($expression, $return);
         return $return;
     }
 
     /**
-     * @covers Zend\Db\Sql\Expression::setParameters
+     * @covers \Zend\Db\Sql\Expression::setParameters
      */
     public function testSetParametersException()
     {
         $expression = new Expression('', 'foo');
 
-        $this->setExpectedException('Zend\Db\Sql\Exception\InvalidArgumentException', 'Expression parameters must be a scalar or array.');
+        $this->expectException('Zend\Db\Sql\Exception\InvalidArgumentException');
+        $this->expectExceptionMessage('Expression parameters must be a scalar or array.');
         $expression->setParameters(null);
     }
 
     /**
-     * @covers Zend\Db\Sql\Expression::getParameters
+     * @covers \Zend\Db\Sql\Expression::getParameters
      * @depends testSetParameters
      */
     public function testGetParameters(Expression $expression)
     {
-        $this->assertEquals('foo', $expression->getParameters());
+        self::assertEquals('foo', $expression->getParameters());
     }
 
     /**
-     * @covers Zend\Db\Sql\Expression::setTypes
+     * @covers \Zend\Db\Sql\Expression::setTypes
      */
     public function testSetTypes()
     {
         $expression = new Expression();
-        $return = $expression->setTypes([Expression::TYPE_IDENTIFIER, Expression::TYPE_VALUE, Expression::TYPE_LITERAL]);
-        $this->assertSame($expression, $return);
+        $return = $expression->setTypes([
+            Expression::TYPE_IDENTIFIER,
+            Expression::TYPE_VALUE,
+            Expression::TYPE_LITERAL,
+        ]);
+        self::assertSame($expression, $return);
         return $expression;
     }
 
     /**
-     * @covers Zend\Db\Sql\Expression::getTypes
+     * @covers \Zend\Db\Sql\Expression::getTypes
      * @depends testSetTypes
      */
     public function testGetTypes(Expression $expression)
     {
-        $this->assertEquals(
+        self::assertEquals(
             [Expression::TYPE_IDENTIFIER, Expression::TYPE_VALUE, Expression::TYPE_LITERAL],
             $expression->getTypes()
         );
     }
 
     /**
-     * @covers Zend\Db\Sql\Expression::getExpressionData
+     * @covers \Zend\Db\Sql\Expression::getExpressionData
      */
     public function testGetExpressionData()
     {
@@ -115,11 +122,11 @@ class ExpressionTest extends \PHPUnit_Framework_TestCase
             [Expression::TYPE_IDENTIFIER, Expression::TYPE_VALUE, Expression::TYPE_LITERAL]
         );
 
-        $this->assertEquals(
+        self::assertEquals(
             [[
                 'X SAME AS %s AND Y = %s BUT LITERALLY %s',
                 ['foo', 5, 'FUNC(FF%X)'],
-                [Expression::TYPE_IDENTIFIER, Expression::TYPE_VALUE, Expression::TYPE_LITERAL]
+                [Expression::TYPE_IDENTIFIER, Expression::TYPE_VALUE, Expression::TYPE_LITERAL],
             ]],
             $expression->getExpressionData()
         );
@@ -135,16 +142,16 @@ class ExpressionTest extends \PHPUnit_Framework_TestCase
         $expected = [[
             'X SAME AS %s AND Y = %s BUT LITERALLY %s',
             ['foo', 5, 'FUNC(FF%X)'],
-            [Expression::TYPE_IDENTIFIER, Expression::TYPE_VALUE, Expression::TYPE_LITERAL]
+            [Expression::TYPE_IDENTIFIER, Expression::TYPE_VALUE, Expression::TYPE_LITERAL],
         ]];
 
-        $this->assertEquals($expected, $expression->getExpressionData());
+        self::assertEquals($expected, $expression->getExpressionData());
     }
 
     public function testGetExpressionDataWillEscapePercent()
     {
         $expression = new Expression('X LIKE "foo%"');
-        $this->assertEquals(
+        self::assertEquals(
             ['X LIKE "foo%%"'],
             $expression->getExpressionData()
         );
@@ -153,7 +160,7 @@ class ExpressionTest extends \PHPUnit_Framework_TestCase
     public function testConstructorWithLiteralZero()
     {
         $expression = new Expression('0');
-        $this->assertSame('0', $expression->getExpression());
+        self::assertSame('0', $expression->getExpression());
     }
 
     /**
@@ -164,7 +171,7 @@ class ExpressionTest extends \PHPUnit_Framework_TestCase
         $expressionString = 'FROM_UNIXTIME(date, "%Y-%m")';
         $expression       = new Expression($expressionString);
 
-        $this->assertSame($expressionString, $expression->getExpression());
+        self::assertSame($expressionString, $expression->getExpression());
     }
 
     public function testNumberOfReplacemensConsidersWhenSameVariableIsUsedManyTimes()

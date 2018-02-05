@@ -150,7 +150,7 @@ $select->from(['t' => 'table']);
 
 // Using a Sql\TableIdentifier:
 // (same output as above)
-$select->from(new TableIdentifier(['t' => 'table']));
+$select->from(['t' => new TableIdentifier('table')]);
 ```
 
 ### columns()
@@ -161,7 +161,16 @@ $select->columns(['foo', 'bar']);
 
 // As an associative array with aliases as the keys
 // (produces 'bar' AS 'foo', 'bax' AS 'baz')
-$select->columns(['foo' => 'bar', 'baz' => 'bax']);
+$select->columns([
+    'foo' => 'bar', 
+    'baz' => 'bax'
+]);
+
+// Sql function call on the column
+// (produces CONCAT_WS('/', 'bar', 'bax') AS 'foo')
+$select->columns([
+    'foo' => new \Zend\Db\Sql\Expression("CONCAT_WS('/', 'bar', 'bax')")
+]);
 ```
 
 ### join()
@@ -227,7 +236,7 @@ If you provide an array with integer indices, the value can be one of:
 
 - a string; this will be used to build a `Predicate\Expression`.
 - any object implementing `Predicate\PredicateInterface`.
-    
+
 In either case, the instances are pushed onto the `Where` stack with the
 `$combination` provided (defaulting to `AND`).
 
@@ -256,6 +265,23 @@ $select->from('foo')->where([
     'c2' => [1, 2, 3],
     new \Zend\Db\Sql\Predicate\IsNotNull('c3'),
 ]);
+```
+
+As another example of complex queries with nested conditions e.g.
+
+```sql
+SELECT * WHERE (column1 is null or column1 = 2) AND (column2 = 3)
+```
+
+you need to use the `nest()` and `unnest()` methods, as follows:
+
+```php
+$select->where->nest() // bracket opened
+    ->isNull('column1')
+    ->or
+    ->equalTo('column1', '2')
+    ->unnest();  // bracket closed
+    ->equalTo('column2', '3');
 ```
 
 ### order()

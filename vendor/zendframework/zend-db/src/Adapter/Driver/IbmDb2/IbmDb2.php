@@ -38,7 +38,7 @@ class IbmDb2 implements DriverInterface, Profiler\ProfilerAwareInterface
      */
     public function __construct($connection, Statement $statementPrototype = null, Result $resultPrototype = null)
     {
-        if (!$connection instanceof Connection) {
+        if (! $connection instanceof Connection) {
             $connection = new Connection($connection);
         }
 
@@ -49,7 +49,7 @@ class IbmDb2 implements DriverInterface, Profiler\ProfilerAwareInterface
 
     /**
      * @param Profiler\ProfilerInterface $profiler
-     * @return IbmDb2
+     * @return self Provides a fluent interface
      */
     public function setProfiler(Profiler\ProfilerInterface $profiler)
     {
@@ -73,7 +73,7 @@ class IbmDb2 implements DriverInterface, Profiler\ProfilerAwareInterface
 
     /**
      * @param  Connection $connection
-     * @return IbmDb2
+     * @return self Provides a fluent interface
      */
     public function registerConnection(Connection $connection)
     {
@@ -84,7 +84,7 @@ class IbmDb2 implements DriverInterface, Profiler\ProfilerAwareInterface
 
     /**
      * @param  Statement $statementPrototype
-     * @return IbmDb2
+     * @return self Provides a fluent interface
      */
     public function registerStatementPrototype(Statement $statementPrototype)
     {
@@ -95,7 +95,7 @@ class IbmDb2 implements DriverInterface, Profiler\ProfilerAwareInterface
 
     /**
      * @param  Result $resultPrototype
-     * @return IbmDb2
+     * @return self Provides a fluent interface
      */
     public function registerResultPrototype(Result $resultPrototype)
     {
@@ -125,7 +125,7 @@ class IbmDb2 implements DriverInterface, Profiler\ProfilerAwareInterface
      */
     public function checkEnvironment()
     {
-        if (!extension_loaded('ibm_db2')) {
+        if (! extension_loaded('ibm_db2')) {
             throw new Exception\RuntimeException('The ibm_db2 extension is required by this driver.');
         }
     }
@@ -159,7 +159,7 @@ class IbmDb2 implements DriverInterface, Profiler\ProfilerAwareInterface
                     __FUNCTION__ . ' only accepts an SQL string or an ibm_db2 resource'
                 );
             }
-            if (!$this->connection->isConnected()) {
+            if (! $this->connection->isConnected()) {
                 $this->connection->connect();
             }
             $statement->initialize($this->connection->getResource());

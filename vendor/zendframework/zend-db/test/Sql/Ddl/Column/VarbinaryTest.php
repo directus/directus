@@ -9,17 +9,18 @@
 
 namespace ZendTest\Db\Sql\Ddl\Column;
 
+use PHPUnit\Framework\TestCase;
 use Zend\Db\Sql\Ddl\Column\Varbinary;
 
-class VarbinaryTest extends \PHPUnit_Framework_TestCase
+class VarbinaryTest extends TestCase
 {
     /**
-     * @covers Zend\Db\Sql\Ddl\Column\Varbinary::getExpressionData
+     * @covers \Zend\Db\Sql\Ddl\Column\Varbinary::getExpressionData
      */
     public function testGetExpressionData()
     {
         $column = new Varbinary('foo', 20);
-        $this->assertEquals(
+        self::assertEquals(
             [['%s %s NOT NULL', ['foo', 'VARBINARY(20)'], [$column::TYPE_IDENTIFIER, $column::TYPE_LITERAL]]],
             $column->getExpressionData()
         );

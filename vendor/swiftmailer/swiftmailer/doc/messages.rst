@@ -283,10 +283,8 @@ the same filename as the one you attached.
     // Attach it to the message
     $message->attach($attachment);
 
-
     // The two statements above could be written in one line instead
     $message->attach(Swift_Attachment::fromPath('/path/to/image.jpg'));
-
 
     // You can attach files from a URL if allow_url_fopen is on in php.ini
     $message->attach(Swift_Attachment::fromPath('http://site.tld/logo.png'));
@@ -310,7 +308,6 @@ the email will rename the file to something else.
     // Create the attachment and call its setFilename() method
     $attachment = Swift_Attachment::fromPath('/path/to/image.jpg')
       ->setFilename('cool.jpg');
-
 
     // Because there's a fluid interface, you can do this in one statement
     $message->attach(

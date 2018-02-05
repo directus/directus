@@ -9,10 +9,11 @@
 
 namespace ZendTest\Db\Adapter\Driver\Sqlsrv;
 
-use Zend\Db\Adapter\Driver\Sqlsrv\Sqlsrv;
+use PHPUnit\Framework\TestCase;
 use Zend\Db\Adapter\Driver\Sqlsrv\Connection;
+use Zend\Db\Adapter\Driver\Sqlsrv\Sqlsrv;
 
-class ConnectionTest extends \PHPUnit_Framework_TestCase
+class ConnectionTest extends TestCase
 {
     /**
      * @var Connection
@@ -37,27 +38,27 @@ class ConnectionTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Zend\Db\Adapter\Driver\Sqlsrv\Connection::setDriver
+     * @covers \Zend\Db\Adapter\Driver\Sqlsrv\Connection::setDriver
      */
     public function testSetDriver()
     {
-        $this->assertEquals($this->connection, $this->connection->setDriver(new Sqlsrv([])));
+        self::assertEquals($this->connection, $this->connection->setDriver(new Sqlsrv([])));
     }
 
     /**
-     * @covers Zend\Db\Adapter\Driver\Sqlsrv\Connection::setConnectionParameters
+     * @covers \Zend\Db\Adapter\Driver\Sqlsrv\Connection::setConnectionParameters
      */
     public function testSetConnectionParameters()
     {
-        $this->assertEquals($this->connection, $this->connection->setConnectionParameters([]));
+        self::assertEquals($this->connection, $this->connection->setConnectionParameters([]));
     }
 
     /**
-     * @covers Zend\Db\Adapter\Driver\Sqlsrv\Connection::getConnectionParameters
+     * @covers \Zend\Db\Adapter\Driver\Sqlsrv\Connection::getConnectionParameters
      */
     public function testGetConnectionParameters()
     {
         $this->connection->setConnectionParameters(['foo' => 'bar']);
-        $this->assertEquals(['foo' => 'bar'], $this->connection->getConnectionParameters());
+        self::assertEquals(['foo' => 'bar'], $this->connection->getConnectionParameters());
     }
 }

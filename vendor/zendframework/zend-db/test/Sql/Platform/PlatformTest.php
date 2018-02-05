@@ -9,13 +9,14 @@
 
 namespace ZendTest\Db\Sql\Platform;
 
+use PHPUnit\Framework\TestCase;
 use ReflectionMethod;
-use Zend\Db\Adapter\StatementContainer;
-use ZendTest\Db\TestAsset;
-use Zend\Db\Sql\Platform\Platform;
 use Zend\Db\Adapter\Adapter;
+use Zend\Db\Adapter\StatementContainer;
+use Zend\Db\Sql\Platform\Platform;
+use ZendTest\Db\TestAsset;
 
-class PlatformTest extends \PHPUnit_Framework_TestCase
+class PlatformTest extends TestCase
 {
     public function testResolveDefaultPlatform()
     {
@@ -26,7 +27,7 @@ class PlatformTest extends \PHPUnit_Framework_TestCase
 
         $reflectionMethod->setAccessible(true);
 
-        $this->assertEquals($adapter->getPlatform(), $reflectionMethod->invoke($platform, null));
+        self::assertEquals($adapter->getPlatform(), $reflectionMethod->invoke($platform, null));
     }
 
     public function testResolvePlatformName()
@@ -37,10 +38,13 @@ class PlatformTest extends \PHPUnit_Framework_TestCase
 
         $reflectionMethod->setAccessible(true);
 
-        $this->assertEquals('mysql', $reflectionMethod->invoke($platform, new TestAsset\TrustingMysqlPlatform()));
-        $this->assertEquals('sqlserver', $reflectionMethod->invoke($platform, new TestAsset\TrustingSqlServerPlatform()));
-        $this->assertEquals('oracle', $reflectionMethod->invoke($platform, new TestAsset\TrustingOraclePlatform()));
-        $this->assertEquals('sql92', $reflectionMethod->invoke($platform, new TestAsset\TrustingSql92Platform()));
+        self::assertEquals('mysql', $reflectionMethod->invoke($platform, new TestAsset\TrustingMysqlPlatform()));
+        self::assertEquals('sqlserver', $reflectionMethod->invoke(
+            $platform,
+            new TestAsset\TrustingSqlServerPlatform()
+        ));
+        self::assertEquals('oracle', $reflectionMethod->invoke($platform, new TestAsset\TrustingOraclePlatform()));
+        self::assertEquals('sql92', $reflectionMethod->invoke($platform, new TestAsset\TrustingSql92Platform()));
     }
 
     /**
@@ -58,7 +62,8 @@ class PlatformTest extends \PHPUnit_Framework_TestCase
 
         $reflectionMethod->setAccessible(true);
 
-        $this->setExpectedException('Zend\Db\Sql\Exception\RuntimeException', '$this->defaultPlatform was not set');
+        $this->expectException('Zend\Db\Sql\Exception\RuntimeException');
+        $this->expectExceptionMessage('$this->defaultPlatform was not set');
 
         $reflectionMethod->invoke($platform, null);
     }
@@ -78,7 +83,8 @@ class PlatformTest extends \PHPUnit_Framework_TestCase
 
         $reflectionMethod->setAccessible(true);
 
-        $this->setExpectedException('Zend\Db\Sql\Exception\RuntimeException', '$this->defaultPlatform was not set');
+        $this->expectException('Zend\Db\Sql\Exception\RuntimeException');
+        $this->expectExceptionMessage('$this->defaultPlatform was not set');
 
         $platform->getDecorators();
     }
@@ -93,22 +99,22 @@ class PlatformTest extends \PHPUnit_Framework_TestCase
         $platform = null;
 
         switch ($platformName) {
-            case 'sql92' :
+            case 'sql92':
                 $platform = new TestAsset\TrustingSql92Platform();
                 break;
-            case 'MySql' :
+            case 'MySql':
                 $platform = new TestAsset\TrustingMysqlPlatform();
                 break;
-            case 'Oracle' :
+            case 'Oracle':
                 $platform = new TestAsset\TrustingOraclePlatform();
                 break;
-            case 'SqlServer' :
+            case 'SqlServer':
                 $platform = new TestAsset\TrustingSqlServerPlatform();
                 break;
         }
 
         /* @var $mockDriver \Zend\Db\Adapter\Driver\DriverInterface|\PHPUnit_Framework_MockObject_MockObject */
-        $mockDriver = $this->getMock('Zend\Db\Adapter\Driver\DriverInterface');
+        $mockDriver = $this->getMockBuilder('Zend\Db\Adapter\Driver\DriverInterface')->getMock();
 
         $mockDriver->expects($this->any())->method('formatParameterName')->will($this->returnValue('?'));
         $mockDriver->expects($this->any())->method('createStatement')->will($this->returnCallback(function () {

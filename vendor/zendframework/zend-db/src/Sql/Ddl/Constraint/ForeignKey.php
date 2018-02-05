@@ -52,8 +52,14 @@ class ForeignKey extends AbstractConstraint
      * @param null|string       $onDeleteRule
      * @param null|string       $onUpdateRule
      */
-    public function __construct($name, $columns, $referenceTable, $referenceColumn, $onDeleteRule = null, $onUpdateRule = null)
-    {
+    public function __construct(
+        $name,
+        $columns,
+        $referenceTable,
+        $referenceColumn,
+        $onDeleteRule = null,
+        $onUpdateRule = null
+    ) {
         $this->setName($name);
         $this->setColumns($columns);
         $this->setReferenceTable($referenceTable);
@@ -70,7 +76,7 @@ class ForeignKey extends AbstractConstraint
 
     /**
      * @param  string $referenceTable
-     * @return self
+     * @return self Provides a fluent interface
      */
     public function setReferenceTable($referenceTable)
     {
@@ -88,7 +94,7 @@ class ForeignKey extends AbstractConstraint
 
     /**
      * @param  null|string|array $referenceColumn
-     * @return self
+     * @return self Provides a fluent interface
      */
     public function setReferenceColumn($referenceColumn)
     {
@@ -107,7 +113,7 @@ class ForeignKey extends AbstractConstraint
 
     /**
      * @param  string $onDeleteRule
-     * @return self
+     * @return self Provides a fluent interface
      */
     public function setOnDeleteRule($onDeleteRule)
     {
@@ -126,7 +132,7 @@ class ForeignKey extends AbstractConstraint
 
     /**
      * @param  string $onUpdateRule
-     * @return self
+     * @return self Provides a fluent interface
      */
     public function setOnUpdateRule($onUpdateRule)
     {

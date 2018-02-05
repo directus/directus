@@ -35,6 +35,10 @@ class FeatureSet
         }
     }
 
+    /**
+     * @param AbstractTableGateway $tableGateway
+     * @return self Provides a fluent interface
+     */
     public function setTableGateway(AbstractTableGateway $tableGateway)
     {
         $this->tableGateway = $tableGateway;
@@ -56,6 +60,10 @@ class FeatureSet
         return $feature;
     }
 
+    /**
+     * @param array $features
+     * @return self Provides a fluent interface
+     */
     public function addFeatures(array $features)
     {
         foreach ($features as $feature) {
@@ -64,6 +72,10 @@ class FeatureSet
         return $this;
     }
 
+    /**
+     * @param AbstractFeature $feature
+     * @return self Provides a fluent interface
+     */
     public function addFeature(AbstractFeature $feature)
     {
         if ($this->tableGateway instanceof TableGatewayInterface) {
@@ -131,7 +143,7 @@ class FeatureSet
      */
     public function canCallMagicCall($method)
     {
-        if (!empty($this->features)) {
+        if (! empty($this->features)) {
             foreach ($this->features as $feature) {
                 if (method_exists($feature, $method)) {
                     return true;
