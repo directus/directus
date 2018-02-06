@@ -8,4 +8,7 @@ $app->get('/time/?', function () use ($app) {
     return $app->response([
         'datetime' => \Directus\Util\DateUtils::convertToISOFormat($datetime, date_default_timezone_get())
     ]);
-});
+})->name('_example_time');
+
+/* Example of makeing a route public */
+$app->whitelistRoute('_example_time');

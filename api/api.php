@@ -103,20 +103,6 @@ $app->error(function ($exception) use ($app) {
     $exceptionHandler->handleException($exception);
 });
 
-// Routes which do not need protection by the authentication and the request
-// @TODO: Move this to a middleware
-$authRouteWhitelist = [
-    'auth_login',
-    'auth_logout',
-    'auth_session',
-    'auth_clear_session',
-    'auth_reset_password',
-    'auth_forgot_password',
-    'debug_acl_poc',
-    'ping_server',
-    'request_token',
-];
-
 /**
  * Bootstrap Providers
  */
@@ -133,7 +119,7 @@ $acl = Bootstrap::get('acl');
 $authentication = Bootstrap::get('auth');
 
 $app->hookEmitter->run('application.boot', $app);
-$app->hook('slim.before.dispatch', function () use ($app, $authRouteWhitelist, $ZendDb, $acl, $authentication) {
+$app->hook('slim.before.dispatch', function () use ($app, $ZendDb, $acl, $authentication) {
     // API/Server is about to initialize
     $app->hookEmitter->run('application.init', $app);
 
@@ -141,6 +127,7 @@ $app->hook('slim.before.dispatch', function () use ($app, $authRouteWhitelist, $
 
     /** Skip routes which don't require these protections */
     $routeName = $app->router()->getCurrentRoute()->getName();
+    $authRouteWhitelist = $app->getRouteWhitelist();
     if (!in_array($routeName, $authRouteWhitelist)) {
         $headers = $app->request()->headers();
         $authToken = false;

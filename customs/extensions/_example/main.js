@@ -22,8 +22,9 @@ define([
     getMainView: function () {
       if (!this.mainView) {
         this.mainView = new MainView();
-        app.router.v.main.setView('#content', this.mainView);
       }
+
+      app.router.v.main.setView('#content', this.mainView);
 
       return this.mainView;
     },
