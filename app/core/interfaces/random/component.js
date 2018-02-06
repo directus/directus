@@ -30,12 +30,30 @@ define([
         ui: 'toggle',
         comment: 'Allow the user to override the random string',
         default_value: true
-      }, {
+      },
+      {
         id: 'auto_generate',
         ui: 'toggle',
         type: 'Boolean',
         comment: 'Automatically generate a random string',
         default_value: false
+      },
+      {
+        id: 'type_of_value',
+        ui: 'dropdown',
+        type: 'String',
+        comment: 'Type of random string to generate',
+        default_value: 'alphanumeric',
+        options: {
+          options: {
+            alphanumeric: 'Letters and numbers',
+            numeric: 'Numbers only',
+            loweralpha: 'Lowercase letters only',
+            upperalpha: 'Uppercase letters only',
+            loweralphanumeric: 'Lowercase letters and numbers',
+            upperalphanumeric: 'Uppercase letters and numbers',
+          }
+        }
       },
       {
         id: 'placeholder',

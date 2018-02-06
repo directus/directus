@@ -120,12 +120,21 @@ class StringUtils
      * Random string shuffled from a list of alphanumeric characters
      *
      * @param int $length
+     * @param string $type
      *
      * @return string
      */
-    public static function randomString($length = 16)
+    public static function randomString($length = 16, $type = 'alphanumeric')
     {
         $pool = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+        switch ($type) {
+            case 'numeric': $pool = '0123456789'; break;
+            case 'loweralpha': $pool = 'abcdefghijklmnopqrstuvwxyz'; break;
+            case 'upperalpha': $pool = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'; break;
+            case 'loweralphanumeric': $pool = '0123456789abcdefghijklmnopqrstuvwxyz'; break;
+            case 'upperalphanumeric': $pool = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'; break;
+        }
 
         return substr(str_shuffle(str_repeat($pool, $length)), 0, $length);
     }
