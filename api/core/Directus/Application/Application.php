@@ -41,6 +41,22 @@ class Application extends Slim
     protected $providers = [];
 
     /**
+     * Routes which do not need protection by the authentication and the request
+     * @var array
+     */
+    protected $routeWhitelist = [
+        'auth_login',
+        'auth_logout',
+        'auth_session',
+        'auth_clear_session',
+        'auth_reset_password',
+        'auth_forgot_password',
+        'debug_acl_poc',
+        'ping_server',
+        'request_token'
+    ];
+
+    /**
      * Application constructor.
      *
      * @param array $userSettings
@@ -306,6 +322,23 @@ class Application extends Slim
         }
 
         return $resolved;
+    }
+
+    /**
+     * @param string $routeName
+     */
+    public function whitelistRoute($routeName) {
+        if (!in_array($routeName, $this->routeWhitelist)) {
+            $this->routeWhitelist[] = $routeName;
+        }
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getRouteWhitelist() {
+        return $this->routeWhitelist;
     }
 
     protected function guessOutputFormat()
