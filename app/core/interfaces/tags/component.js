@@ -25,7 +25,13 @@ define([
         default_value: true
       },
       {
-    	id: 'max_items',
+    	  id: 'placeholder',
+    	  ui: 'text_input',
+    	  type: 'String',
+    	  comment: 'Enter Placeholder Text',
+    	  default_value: ''
+      }, {
+    	  id: 'max_items',
         ui: 'numeric',
         type: 'Number',
         comment: 'Max Items (0 = no limitation)',
