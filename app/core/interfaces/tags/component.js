@@ -23,6 +23,13 @@ define([
         type: 'Boolean',
         comment: 'Convert all tags to lowercase',
         default_value: true
+      },
+      {
+    	id: 'max_items',
+        ui: 'numeric',
+        type: 'Number',
+        comment: 'Max Items (0 = no limitation)',
+        default_value: '0'
       }
       // TODO: Include spaces in CSV value
     ],
