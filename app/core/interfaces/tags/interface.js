@@ -64,7 +64,12 @@ define([
       }
 
       this.model.set(this.name, this.getTagsValue());
-      this.render().$('#tag-input').focus();
+      var maxItems = Number(this.options.settings.get('max_items'));
+      if(this.tags.length == maxItems) {
+    	  this.render().$('#tag-input').prop( "disabled", true);
+      } else {
+    	  this.render().$('#tag-input').prop( "disabled", false).focus();      	  
+      }
     },
 
     getTagsValue: function () {

@@ -25,11 +25,17 @@ define([
         default_value: true
       },
       {
-    	id: 'placeholder',
-    	ui: 'text_input',
-    	type: 'String',
-    	comment: 'Enter Placeholder Text',
-    	default_value: ''
+    	  id: 'placeholder',
+    	  ui: 'text_input',
+    	  type: 'String',
+    	  comment: 'Enter Placeholder Text',
+    	  default_value: ''
+      }, {
+    	  id: 'max_items',
+        ui: 'numeric',
+        type: 'Number',
+        comment: 'Max Items (0 = no limitation)',
+        default_value: '0'
       }
       // TODO: Include spaces in CSV value
     ],
