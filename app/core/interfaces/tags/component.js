@@ -23,6 +23,13 @@ define([
         type: 'Boolean',
         comment: 'Convert all tags to lowercase',
         default_value: true
+      },
+      {
+    	id: 'placeholder',
+    	ui: 'text_input',
+    	type: 'String',
+    	comment: 'Enter Placeholder Text',
+    	default_value: ''
       }
       // TODO: Include spaces in CSV value
     ],
