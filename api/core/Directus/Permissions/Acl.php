@@ -36,6 +36,20 @@ class Acl
         'allow_delete' => 2,
         'allow_alter' => 1
     ];
+    const PERMISSION_READ = [
+        'allow_view' => 2,
+        'allow_add' => 0,
+        'allow_edit' => 0,
+        'allow_delete' => 0,
+        'allow_alter' => 0
+    ];
+    const PERMISSION_WRITE = [
+        'allow_view' => 2,
+        'allow_add' => 1,
+        'allow_edit' => 2,
+        'allow_delete' => 0,
+        'allow_alter' => 0
+    ];
     const PERMISSION_NONE = [
         'allow_view' => 0,
         'allow_add' => 0,
