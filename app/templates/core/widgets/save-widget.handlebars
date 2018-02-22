@@ -1,4 +1,4 @@
-<button id="save_button" class="action primary help{{#unless state.enabled}} disabled{{/unless}}"{{#unless state.enabled}} disabled{{/unless}} data-help="This button saves the current item. You can also click the 'three dots' at the top for more save options.">
+<div id="save_button" class="action primary help{{#unless state.enabled}} disabled{{/unless}}"{{#unless state.enabled}} disabled{{/unless}} data-help="This button saves the current item. You can also click the 'three dots' at the top for more save options.">
 	<i class="material-icons center">check</i>
 	<div class="action-text">Save</div>
 	{{#unless basicSave}}
@@ -16,7 +16,7 @@
 		<i class="material-icons">more_horiz</i>
 	</div>
 	{{/unless}}
-</button>
+</div>
 {{!--
 <span class="select-and-circle {{#unless isUpToDate}}saved-success{{/unless}}">
   <button type="button" id="save" class="tool-item btn btn-header" title="Save">
