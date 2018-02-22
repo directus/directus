@@ -210,7 +210,8 @@ define([
 
         if (action === 'save-form-add') {
           goToNewItem();
-        } else {
+        } else if (action !== 'save-form-stay') {
+          // Go back to the table view unless we are supposed to stay on this page
           // Write this as a helper function
           var route = Backbone.history.fragment.split('/');
           route.pop();
