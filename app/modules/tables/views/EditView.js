@@ -145,7 +145,7 @@ define([
         route.push('new');
         app.router.go(route);
       };
-      var afterSaved = function () {
+      var notifyParent = function () {
         _.each(app.getCorsTargets(), function (origin) {
           window.parent.postMessage('item.saved', origin);
         });
@@ -157,7 +157,7 @@ define([
             self.onSuccess(model, response, options);
           }
 
-          afterSaved();
+          notifyParent();
 
           var route = Backbone.history.fragment.split('/');
           if (!model.table.get('single')) {
@@ -175,7 +175,7 @@ define([
             self.onSuccess(model, response, options);
           }
 
-          afterSaved();
+          notifyParent();
 
           if (action === 'save-form-add') {
             goToNewItem();
@@ -211,6 +211,7 @@ define([
         if (action === 'save-form-add') {
           goToNewItem();
         } else {
+          notifyParent();
           // Write this as a helper function
           var route = Backbone.history.fragment.split('/');
           route.pop();

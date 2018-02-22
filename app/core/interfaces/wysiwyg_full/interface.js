@@ -224,10 +224,12 @@ define([
           collection.once('sync', function(collection) {
             var images = [];
             collection.each(function(model) {
-              images.push({
-                'text': model.get('title'),
-                'value': model.get('url')
-              });
+              if (model.get('type').match(/image/g)) {
+                images.push({
+                  'text': model.get('title'),
+                  'value': model.get('url')
+                });
+              }
             });
             success(images)
           })

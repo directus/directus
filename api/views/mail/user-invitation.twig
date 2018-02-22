@@ -6,5 +6,5 @@
 {% set invitation_url = settings.global.project_url|trim('/') ~ '?invitation_code=' ~ token %}
 <p><a href="{{ invitation_url }}">{{ invitation_url }}</a></p>
 
-<p>{{ t('Love,') }}<br>Directus</p>
+<p>{{ t('Love,') }}<br>{{ settings.global.project_name }}</p>
 {% endblock %}
