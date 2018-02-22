@@ -22,8 +22,10 @@ define([
     getMainView: function () {
       if (!this.mainView) {
         this.mainView = new MainView();
-        app.router.v.main.setView('#content', this.mainView);
       }
+      // Update the #content view with the extensions view. This will be refactored in 7.0 so that extensions don't need
+      // to manage updating the app's #content view.
+      app.router.v.main.setView('#content', this.mainView);
 
       return this.mainView;
     },
