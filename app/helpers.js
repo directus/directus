@@ -5,9 +5,10 @@ require([
   'core/UIManager',
   'helpers/file',
   'helpers/status',
+  'helpers/string',
   'core/t',
   'moment'
-], function (app, _, Handlebars, UIManager, FileHelper, StatusHelper, __t, moment) {
+], function (app, _, Handlebars, UIManager, FileHelper, StatusHelper, StringHelper, __t, moment) {
 
   'use strict';
 
@@ -54,6 +55,10 @@ require([
     }
 
     return __t(key, options.hash);
+  });
+
+  Handlebars.registerHelper('ascii', function (string, options) {
+    return StringHelper.ascii(string);
   });
 
   //Raw handlebars data, helpful with data types

@@ -3,9 +3,10 @@ define([
   'app',
   'backbone',
   'utils',
+  'helpers/string',
   'core/t',
   'core/Modal'
-], function (app, Backbone, Utils, __t, ModalView) {
+], function (app, Backbone, Utils, StringHelper, __t, ModalView) {
   'use strict';
 
   var EditFields = Backbone.Layout.extend({
@@ -33,7 +34,7 @@ define([
     toggleColumn: function (columnName) {
       var attr = this.name + '_field_blacklist';
       var blacklist = Utils.parseCSV(this.model.get(attr));
-      var $checkbox = this.$('#check_' + columnName);
+      var $checkbox = this.$('#check_c_' + StringHelper.ascii(columnName));
       var changed = false;
 
       // Remove or add to blacklist
