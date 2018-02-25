@@ -30,7 +30,7 @@ define(['app', 'core/Modal'], function(app, Modal) {
       var data = model.toJSON();
       var authenticatedUser = app.user;
       var timeDiff = authenticatedUser.timezoneDifference(model);
-      var canEdit = (model.isMe() && model.canEdit()) || authenticatedUser.isAdmin() && model.id;
+      var canEdit = model.canEdit();
 
       data.online = model.isOnline();
       data.lastSeen = model.lastSeen();
