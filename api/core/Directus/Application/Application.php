@@ -28,7 +28,7 @@ class Application extends Slim
      *
      * @var string
      */
-    const DIRECTUS_VERSION = '6.4.6';
+    const DIRECTUS_VERSION = '6.4.7';
 
     /**
      * @var bool

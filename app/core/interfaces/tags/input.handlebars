@@ -1,4 +1,4 @@
-<input type="text" id="tag-input" placeholder="{{t "tags_placeholder"}}" {{#if readOnly}}readonly{{/if}}>
+<input type="text" id="tag-input" {{#if placeholder}}placeholder="{{placeholder}}"{{/if}} {{#if readOnly}}readonly{{/if}}>
 <div class="tag-container">
 	{{#tags}}<div class="tag">{{this}}</div>{{/tags}}
 </div>

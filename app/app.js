@@ -6753,6 +6753,11 @@ define('helpers/string',[], function () {
   }
 
   return {
+    ascii: function (string) {
+      return (string || '').split('').map(function (char) {
+        return char.charCodeAt(0).toString(16);
+      }).join('');
+    },
     nl2br: function (string) {
       // add new lines
       return (string || '').replace(/[\r\n]/g, '<br>');
@@ -19673,9 +19678,10 @@ define('core/interfaces/_internals/permissions/edit-fields-modal',[
   'app',
   'backbone',
   'utils',
+  'helpers/string',
   'core/t',
   'core/Modal'
-], function (app, Backbone, Utils, __t, ModalView) {
+], function (app, Backbone, Utils, StringHelper, __t, ModalView) {
   
 
   var EditFields = Backbone.Layout.extend({
@@ -19703,7 +19709,7 @@ define('core/interfaces/_internals/permissions/edit-fields-modal',[
     toggleColumn: function (columnName) {
       var attr = this.name + '_field_blacklist';
       var blacklist = Utils.parseCSV(this.model.get(attr));
-      var $checkbox = this.$('#check_' + columnName);
+      var $checkbox = this.$('#check_c_' + StringHelper.ascii(columnName));
       var changed = false;
 
       // Remove or add to blacklist
@@ -22149,8 +22155,9 @@ define('core/interfaces/random/interface',[
       'input input': 'onInputChange',
       'click .string-generate': function () {
         var length = this.options.settings.get('string_length');
+        var type = this.options.settings.get('type_of_value');
 
-        this.generateString(length);
+        this.generateString(length, type);
       }
     },
 
@@ -22160,8 +22167,9 @@ define('core/interfaces/random/interface',[
       this.model.set(this.name, $target.val());
     },
 
-    generateString: function (length) {
+    generateString: function (length, type) {
       length = (length || this.options.settings.get('string_length') || 32);
+      type = (type || this.options.settings.get('type_of_value') || 'alphanumeric');
 
       var randomSuccess = _.bind(function (resp) {
         var randomString;
@@ -22180,7 +22188,7 @@ define('core/interfaces/random/interface',[
       $.ajax({
         type: 'POST',
         url: app.API_URL + 'random/',
-        data: {length: length},
+        data: {length: length, type: type},
         success: randomSuccess,
         dataType: 'json',
         error: function () {
@@ -22239,12 +22247,30 @@ define('core/interfaces/random/component',[
         ui: 'toggle',
         comment: 'Allow the user to override the random string',
         default_value: true
-      }, {
+      },
+      {
         id: 'auto_generate',
         ui: 'toggle',
         type: 'Boolean',
         comment: 'Automatically generate a random string',
         default_value: false
+      },
+      {
+        id: 'type_of_value',
+        ui: 'dropdown',
+        type: 'String',
+        comment: 'Type of random string to generate',
+        default_value: 'alphanumeric',
+        options: {
+          options: {
+            alphanumeric: 'Letters and numbers',
+            numeric: 'Numbers only',
+            loweralpha: 'Lowercase letters only',
+            upperalpha: 'Uppercase letters only',
+            loweralphanumeric: 'Lowercase letters and numbers',
+            upperalphanumeric: 'Uppercase letters and numbers',
+          }
+        }
       },
       {
         id: 'placeholder',
@@ -23034,7 +23060,12 @@ define('core/interfaces/tags/interface',[
       }
 
       this.model.set(this.name, this.getTagsValue());
-      this.render().$('#tag-input').focus();
+      var maxItems = Number(this.options.settings.get('max_items'));
+      if(this.tags.length == maxItems) {
+    	  this.render().$('#tag-input').prop( "disabled", true);
+      } else {
+    	  this.render().$('#tag-input').prop( "disabled", false).focus();      	  
+      }
     },
 
     getTagsValue: function () {
@@ -23052,7 +23083,8 @@ define('core/interfaces/tags/interface',[
         name: this.options.name,
         readOnly: this.options.settings.get('read_only') || !this.options.canWrite,
         tags: this.tags,
-        comment: this.options.schema.get('comment')
+        comment: this.options.schema.get('comment'),
+        placeholder: this.options.settings.get('placeholder')
       };
     },
 
@@ -23087,6 +23119,19 @@ define('core/interfaces/tags/component',[
         type: 'Boolean',
         comment: 'Convert all tags to lowercase',
         default_value: true
+      },
+      {
+    	  id: 'placeholder',
+    	  ui: 'text_input',
+    	  type: 'String',
+    	  comment: 'Enter Placeholder Text',
+    	  default_value: ''
+      }, {
+    	  id: 'max_items',
+        ui: 'numeric',
+        type: 'Number',
+        comment: 'Max Items (0 = no limitation)',
+        default_value: '0'
       }
       // TODO: Include spaces in CSV value
     ],
@@ -23593,10 +23638,12 @@ define('core/interfaces/wysiwyg_full/interface',[
           collection.once('sync', function(collection) {
             var images = [];
             collection.each(function(model) {
-              images.push({
-                'text': model.get('title'),
-                'value': model.get('url')
-              });
+              if (model.get('type').match(/image/g)) {
+                images.push({
+                  'text': model.get('title'),
+                  'value': model.get('url')
+                });
+              }
             });
             success(images)
           })
@@ -29000,9 +29047,10 @@ require([
   'core/UIManager',
   'helpers/file',
   'helpers/status',
+  'helpers/string',
   'core/t',
   'moment'
-], function (app, _, Handlebars, UIManager, FileHelper, StatusHelper, __t, moment) {
+], function (app, _, Handlebars, UIManager, FileHelper, StatusHelper, StringHelper, __t, moment) {
 
   
 
@@ -29049,6 +29097,10 @@ require([
     }
 
     return __t(key, options.hash);
+  });
+
+  Handlebars.registerHelper('ascii', function (string, options) {
+    return StringHelper.ascii(string);
   });
 
   //Raw handlebars data, helpful with data types
@@ -31152,7 +31204,7 @@ define('core/modals/user',['app', 'core/Modal'], function(app, Modal) {
       var data = model.toJSON();
       var authenticatedUser = app.user;
       var timeDiff = authenticatedUser.timezoneDifference(model);
-      var canEdit = (model.isMe() && model.canEdit()) || authenticatedUser.isAdmin() && model.id;
+      var canEdit = model.canEdit();
 
       data.online = model.isOnline();
       data.lastSeen = model.lastSeen();
@@ -39880,7 +39932,7 @@ define('modules/tables/views/EditView',[
         route.push('new');
         app.router.go(route);
       };
-      var afterSaved = function () {
+      var notifyParent = function () {
         _.each(app.getCorsTargets(), function (origin) {
           window.parent.postMessage('item.saved', origin);
         });
@@ -39892,7 +39944,7 @@ define('modules/tables/views/EditView',[
             self.onSuccess(model, response, options);
           }
 
-          afterSaved();
+          notifyParent();
 
           var route = Backbone.history.fragment.split('/');
           if (!model.table.get('single')) {
@@ -39910,7 +39962,7 @@ define('modules/tables/views/EditView',[
             self.onSuccess(model, response, options);
           }
 
-          afterSaved();
+          notifyParent();
 
           if (action === 'save-form-add') {
             goToNewItem();
@@ -39945,7 +39997,9 @@ define('modules/tables/views/EditView',[
 
         if (action === 'save-form-add') {
           goToNewItem();
-        } else {
+        } else if (action !== 'save-form-stay') {
+          notifyParent();
+          // Go back to the table view unless we are supposed to stay on this page
           // Write this as a helper function
           var route = Backbone.history.fragment.split('/');
           route.pop();
@@ -45081,10 +45135,6 @@ define('router',['require','exports','module','app','directus','backbone','under
       var user = app.user;
       var userGroup = user.get('group');
 
-      if (!(parseInt(id,10) === user.id || userGroup.id === 1)) {
-        return this.notFound();
-      }
-
       var model;
       var isNew = id === 'new';
       this.setTitle(app.settings.get('global').get('project_name') + ' | Users');
@@ -45106,7 +45156,11 @@ define('router',['require','exports','module','app','directus','backbone','under
       }
 
       var self = this;
-      var displayView = function () {
+      var displayView = function (model, resp) {
+        if (resp.data.length === 0) {
+          return self.notFound();
+        }
+
         self.v.main.setView('#content', new Users.Views.Edit({
           model: model,
           warnOnExit: true,

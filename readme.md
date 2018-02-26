@@ -40,20 +40,38 @@ Our full API reference can be found over at [api.getdirectus.com](https://api.ge
 You can find the source of this documentation in [our API docs repo](https://github.com/directus/api-docs).
 
 
+## Help and Support
+
+### Reporting Bugs
+Think you've discovered a bug? First, read through our [docs](https://docs.getdirectus.com) to be sure – then submit a ticket to our [GitHub Issues](https://github.com/directus/directus/issues/new). And if you already know a good solution, we love [Pull Requests](https://github.com/directus/directus/pulls)! **For all security related issues, please chat with us directly through [getdirectus.com](https://getdirectus.com/).**
+
+### Requesting Features or Enhancements
+Use our [Feature Request Tool](https://request.getdirectus.com/) to request new features or vote on existing commmunity suggestions.
+
+### Technical Support
+For support using Directus, please post questions with the `directus` tag on [Stack Overflow](https://stackoverflow.com/questions/tagged/directus).
+
+### Team and Community Chat
+If you're interested in discussing things with our core team or the Directus community, feel free to join us on [Slack](https://slack.getdirectus.com). This is _not_ a place for free/faster tech support.
+
+
 ## Contributing to Directus
 First of all, thank you for taking the time to work on Directus!
 
 The following is a set of guidelines for contributing to Directus and its components. These are just guidelines, not strict rules. Feel free to propose changes to this and other documents in a pull request.
 
-### How Can I Contribute?
-
-#### Financial Support
+### Financial Support
 [<img src="https://user-images.githubusercontent.com/522079/33287837-0218cbfc-d388-11e7-9fbe-36ff3261b61a.png" alt="Patreon" />](https://www.patreon.com/directus)
 
-#### Reporting Bugs
-Think you've discovered a bug? First, read through our [docs](https://docs.getdirectus.com) to be sure – then submit a ticket to our [GitHub Issues](https://github.com/directus/directus/issues/new). And if you already know a good solution, we love [Pull Requests](https://github.com/directus/directus/pulls)! **For all security related issues, please chat with us directly through [getdirectus.com](https://getdirectus.com/).**
+### Pull Requests
+Pull requests are always welcome for every part of Directus. Please make sure to adhere to our [`.editorconfig`](http://editorconfig.org) rules and to lint your code with [XO](https://github.com/sindresorhus/xo).
 
-#### Translations
+### Your First Code Contribution
+Unsure where to begin contributing to Directus? You can start by looking through the [`Beginner`](https://github.com/directus/directus/issues?q=is%3Aopen+is%3Aissue+label%3ABeginner), [`good first issue`](https://github.com/directus/directus/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22) and [`Help Wanted`](https://github.com/directus/directus/issues?q=is%3Aopen+is%3Aissue+label%3A%22Help+Wanted%22) issues. `Beginner` and `good first issue` issues are issues that often only require a few lines of code. `Help wanted` issues are a bit more involved than beginner issues.
+
+Want to help but have some trouble understanding the issue, ask us and we will help you to get you started.
+
+### Translations
 Directus has multilingual support – and we're looking for anyone interested in helping translate our [English default language file](https://github.com/directus/directus/blob/master/api/locales/en.json) into other languages. It's as easy as copying that `en.json` file and changing the values!
 
 PR any translations into [this Directory](https://github.com/directus/directus/tree/master/api/locales).
@@ -71,34 +89,23 @@ Huge thanks to the following contributors!
 - 🇯🇵  [@hokkaidobeard](https://github.com/hokkaidobeard)
 - 🇳🇴  [@franctic-aerobic](https://github.com/franctic-aerobic)
 
-#### Requesting Features or Enhancements
-Use our [Feature Request Tool](https://request.getdirectus.com/) to request new features or vote on existing commmunity suggestions.
-
-#### Your First Code Contribution
-Unsure where to begin contributing to Directus? You can start by looking through the [`Beginner`](https://github.com/directus/directus/issues?q=is%3Aopen+is%3Aissue+label%3ABeginner), [`good first issue`](https://github.com/directus/directus/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22) and [`Help Wanted`](https://github.com/directus/directus/issues?q=is%3Aopen+is%3Aissue+label%3A%22Help+Wanted%22) issues. `Beginner` and `good first issue` issues are issues that often only require a few lines of code. `Help wanted` issues are a bit more involved than beginner issues.
-
-Want to help but have some trouble understanding the issue, ask us and we will help you to get you started.
-
-#### Pull Requests
-Pull requests are always welcome for every part of Directus. Please make sure to adhere to our [`.editorconfig`](http://editorconfig.org) rules and to lint your code with [XO](https://github.com/sindresorhus/xo).
-
 
 ## Public Roadmap
 _This is what we want to get done next:_
 
-### Q4 2017
-- CMS App Decoupled from API
-- API 2.0 - Speed improvements, better relational filtering / querying and increased i18n support
-
 ### Q1 2018
 - Begin work on Directus v7.0 (moving from Backbone to Vue)
+- CMS App Decoupled from API
+- API 2.0 - Speed improvements, better relational filtering / querying and increased i18n support
 - [Support for multiple database (multitenant)](https://request.getdirectus.com/r/1)
 - [Digital Asset Management improvements](https://request.getdirectus.com/r/2)
 - [Web Hooks](https://request.getdirectus.com/r/9)
 
+### Q2 2018
 - [GraphQL endpoint](https://request.getdirectus.com/r/11)
 - [Support for PostgreSQL DBs](https://request.getdirectus.com/r/14)
 - Marketplace for easier distribution of interfaces / extensions
+- Updated Marketing site and SaaS platform
 
 
 ## Team
