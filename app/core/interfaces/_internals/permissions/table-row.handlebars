@@ -21,16 +21,16 @@
 {{#each permissions}}
 <td class="permissions-{{name}} js-permission-name" data-name="{{name}}">
 	<div class="global">
-		<input class="custom-checkbox permission-toggle{{#if onlyMine}} partial{{/if}}" id="check_{{name}}_{{../table_name}}" type="checkbox" value="" {{#unless cannot}}checked="checked"{{/unless}}>
-		<label class="js-permission-toggle" for="check_{{name}}_{{../table_name}}">
+		<input class="custom-checkbox permission-toggle{{#if onlyMine}} partial{{/if}}" id="check_c_{{ascii name}}_{{../table_name}}" type="checkbox" value="" {{#unless cannot}}checked="checked"{{/unless}}>
+		<label class="js-permission-toggle" for="check_c_{{ascii name}}_{{../table_name}}">
 			<span title="{{title}}"></span>
 		</label>
 	</div>
 	{{#each statuses}}
 	<div class="workflow js-permission" data-table="{{table_name}}" data-id="{{id}}" data-cid="{{cid}}">
 		<div class="state js-permission-name" data-name="{{name}}">
-			<input class="custom-checkbox permission-toggle{{#if onlyMine}} partial{{/if}}" id="check_{{../name}}_{{statusId}}_{{../../table_name}}" type="checkbox" value="" {{#unless cannot}}checked="checked"{{/unless}}>
-			<label class="js-permission-toggle" for="check_{{../name}}_{{statusId}}_{{../../table_name}}">
+			<input class="custom-checkbox permission-toggle{{#if onlyMine}} partial{{/if}}" id="check_c_{{ascii ../name}}_{{statusId}}_{{../../table_name}}" type="checkbox" value="" {{#unless cannot}}checked="checked"{{/unless}}>
+			<label class="js-permission-toggle" for="check_c_{{ascii ../name}}_{{statusId}}_{{../../table_name}}">
 				<span title="{{title}}"></span>
 			</label>
 		</div>

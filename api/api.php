@@ -164,7 +164,7 @@ $app->hook('slim.before.dispatch', function () use ($app, $authRouteWhitelist, $
         if ($authToken) {
             // @TODO: Users without group shouldn't be allow to log in
             $DirectusUsersTableGateway = new \Zend\Db\TableGateway\TableGateway('directus_users', $ZendDb);
-            $user = $DirectusUsersTableGateway->select(['token' => $authToken]);
+            $user = $DirectusUsersTableGateway->select(['token' => $authToken, 'status' => 1]);
             $userFound = $user->count() > 0 ? true : false;
 
             if (!$userFound) {

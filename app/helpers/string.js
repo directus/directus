@@ -9,6 +9,11 @@ define([], function () {
   }
 
   return {
+    ascii: function (string) {
+      return (string || '').split('').map(function (char) {
+        return char.charCodeAt(0).toString(16);
+      }).join('');
+    },
     nl2br: function (string) {
       // add new lines
       return (string || '').replace(/[\r\n]/g, '<br>');

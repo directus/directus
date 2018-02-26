@@ -64,7 +64,12 @@ define([
       }
 
       this.model.set(this.name, this.getTagsValue());
-      this.render().$('#tag-input').focus();
+      var maxItems = Number(this.options.settings.get('max_items'));
+      if(this.tags.length == maxItems) {
+    	  this.render().$('#tag-input').prop( "disabled", true);
+      } else {
+    	  this.render().$('#tag-input').prop( "disabled", false).focus();      	  
+      }
     },
 
     getTagsValue: function () {
@@ -82,7 +87,8 @@ define([
         name: this.options.name,
         readOnly: this.options.settings.get('read_only') || !this.options.canWrite,
         tags: this.tags,
-        comment: this.options.schema.get('comment')
+        comment: this.options.schema.get('comment'),
+        placeholder: this.options.settings.get('placeholder')
       };
     },
 

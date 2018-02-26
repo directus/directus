@@ -15,8 +15,9 @@ define([
       'input input': 'onInputChange',
       'click .string-generate': function () {
         var length = this.options.settings.get('string_length');
+        var type = this.options.settings.get('type_of_value');
 
-        this.generateString(length);
+        this.generateString(length, type);
       }
     },
 
@@ -26,8 +27,9 @@ define([
       this.model.set(this.name, $target.val());
     },
 
-    generateString: function (length) {
+    generateString: function (length, type) {
       length = (length || this.options.settings.get('string_length') || 32);
+      type = (type || this.options.settings.get('type_of_value') || 'alphanumeric');
 
       var randomSuccess = _.bind(function (resp) {
         var randomString;
@@ -46,7 +48,7 @@ define([
       $.ajax({
         type: 'POST',
         url: app.API_URL + 'random/',
-        data: {length: length},
+        data: {length: length, type: type},
         success: randomSuccess,
         dataType: 'json',
         error: function () {
