@@ -643,11 +643,7 @@ define(function (require, exports, module) {
       }
 
       var self = this;
-      var displayView = function (model, resp) {
-        if (resp.data.length === 0) {
-          return self.notFound();
-        }
-
+      var displayView = function () {
         self.v.main.setView('#content', new Users.Views.Edit({
           model: model,
           warnOnExit: true,
@@ -659,7 +655,13 @@ define(function (require, exports, module) {
       if (isNew) {
         displayView();
       } else {
-        model.fetch({success: displayView});
+        model.fetch({success: function (model, resp) {
+          if (_.isEmpty(resp.data)) {
+            return self.notFound();
+          }
+
+          displayView();
+        }});
       }
     },
 
