@@ -644,7 +644,7 @@ define(function (require, exports, module) {
 
       var self = this;
       var displayView = function (model, resp) {
-        if (resp.data.length === 0) {
+        if (resp && resp.data.length === 0) {
           return self.notFound();
         }
 
