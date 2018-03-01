@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * Add this file to you system cron list to run every minute
+ * eg. `* * * * * * php /var/www/bin/cron.php`
+ */
+
 (PHP_SAPI !== 'cli' || isset($_SERVER['HTTP_USER_AGENT'])) && die('Cron Job: comment out the first line in the cron.php file to be able to run from browser');
 
 define('BASE_PATH', realpath(__DIR__ . '/../'));
