@@ -170,7 +170,7 @@ class Console
         $result = $userTableGateway->update([
             // @TODO: Provider doesn't has static methods anymore
             'password' => \Directus\Authentication\Provider::hashPassword($data['password']),
-            'access_token' => sha1($data['id'] . \Directus\Util\StringUtils::random())
+            'access_token' => sha1($data['id'] . \Directus\Util\StringUtils::randomString())
         ], ['id' => $data['id']]);
 
         $message = 'Error trying to update the password.';
