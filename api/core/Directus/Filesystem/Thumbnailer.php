@@ -379,10 +379,14 @@ class Thumbnailer {
      * Return supported action options as set in config
      *
      * @param string $action
+     *
+     * @return array
      */
     public function getSupportedActionOptions($action)
     {
-        return ArrayUtils::get($this->getConfig(), 'supportedActions.' . $action . '.options');
+        $options = ArrayUtils::get($this->getConfig(), 'supportedActions.' . $action . '.options', []);
+
+        return is_array($options) ? $options : [];
     }
 
     /**
