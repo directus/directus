@@ -37,7 +37,9 @@ class CorsMiddleware extends Middleware
                 // 1. [Key, Value]
                 // 2. Key => Value
                 if (is_array($value)) {
-                    list($name, $value) = $value;
+                    // using $value will make name the first value character of $value value
+                    $temp = $value;
+                    list($name, $value) = $temp;
                 }
 
                 $response->header($name, $value);
