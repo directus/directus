@@ -69,6 +69,10 @@ class CorsMiddleware extends Middleware
         $responseOrigin = null;
         $allowedOrigins = ArrayUtils::get($corsOptions, 'origin', '*');
 
+        if (is_array($requestOrigin)) {
+            $requestOrigin = array_shift($requestOrigin);
+        }
+
         if (!is_array($allowedOrigins)) {
             if (is_string($allowedOrigins)) {
                 $allowedOrigins = StringUtils::csv($allowedOrigins);
