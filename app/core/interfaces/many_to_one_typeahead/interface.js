@@ -52,8 +52,9 @@ define(['app', 'handlebars', 'core/UIView', 'utils'], function (app, Handlebars,
     afterRender: function () {
       var self = this;
       var url = app.API_URL + 'tables/' + this.collection.table.id + '/typeahead/';
-      var model = this.model.get(this.name);
       var params = {};
+      var tableName = this.model.structure.get(this.name).getRelatedTableName();
+      var table = app.schemaManager.getTable(tableName);
 
       if (this.visibleColumn) {
         params.columns = this.visibleColumn;
@@ -64,8 +65,8 @@ define(['app', 'handlebars', 'core/UIView', 'utils'], function (app, Handlebars,
         status = this.options.settings.get('visible_status_ids');
       }
 
-      if (model.table.hasStatusColumn()) {
-        params[model.table.getStatusColumnName()] = status;
+      if (table.hasStatusColumn()) {
+        params[table.getStatusColumnName()] = status;
       }
 
       var urlParams = Utils.encodeQueryParams(params);
