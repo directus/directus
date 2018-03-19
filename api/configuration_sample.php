@@ -204,9 +204,15 @@ return [
 
     // This is the configuration for the Directus Dynamic Thumbnailer
     // It creates image thumbnails on the fly, simply by requesting them. For example:
-    // http://directus.example.com/thumbnail/100/100/crop/best/original-image-name.jpg
+    // http://directus.example.com/thumbnail/100/100/crop/best/original-image-name.jpg 
     'thumbnailer' => [
         '404imageLocation' => __DIR__ . '/../thumbnail/img-not-found.png',
+        /*
+            By default the 404imageLocation is served if dimension is not supported
+            Adding the fallback would send the nearest availble size back instead
+            For example: using below, /200/200/... will fallback to /300/200/...
+        */
+        'fallback' => true, 
         'supportedThumbnailDimensions' => [
             // width x height
             // '100x100',
