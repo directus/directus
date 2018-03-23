@@ -54,7 +54,8 @@ function(app, Backbone, _, Utils, __t, Notification) {
 
         if (column === 'sort' || isDefaultSorting) {
           collection.setOrder(defaultSortColumn, order_sort);
-          this.parentView.fixWidths();
+          // Note: this is a quick fix that forces Backbone to rerender columns with proper sorting
+          Backbone.history.loadUrl();
           return;
         }
 
@@ -67,7 +68,8 @@ function(app, Backbone, _, Utils, __t, Notification) {
           collection.setOrder(column, order_sort);
         }
 
-        this.parentView.fixWidths();
+        // Note: this is a quick fix that forces Backbone to rerender columns with proper sorting
+        Backbone.history.loadUrl();
       },
 
       'click .js-sort-toggle': function () {
