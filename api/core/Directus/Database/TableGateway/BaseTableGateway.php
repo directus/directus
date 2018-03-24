@@ -618,7 +618,7 @@ class BaseTableGateway extends TableGateway
         }
 
         $default = '';
-        if (ArrayUtils::get($columnData, 'default_value')) {
+        if (ArrayUtils::has($columnData, 'default_value')) {
             $value = ArrayUtils::get($columnData, 'default_value');
             $length = ArrayUtils::get($columnData, 'length');
             $defaultValue = $this->schemaManager->castDefaultValue($value, $dataType, $length);
