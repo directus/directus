@@ -206,7 +206,8 @@ class Files
             return $info;
         }
 
-        $urlInfo = pathinfo($url);
+        $urlPath = parse_url($url, PHP_URL_PATH);
+        $urlInfo = pathinfo($urlPath);
         $content = file_get_contents($url);
         if (!$content) {
             return $info;
