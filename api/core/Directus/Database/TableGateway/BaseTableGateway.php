@@ -618,12 +618,24 @@ class BaseTableGateway extends TableGateway
         }
 
         $default = '';
-        if (ArrayUtils::has($columnData, 'default_value')) {
-            $value = ArrayUtils::get($columnData, 'default_value');
+        $defaultValue = ArrayUtils::get($columnData, 'default_value');
+        if ($defaultValue !== '') {
             $length = ArrayUtils::get($columnData, 'length');
-            $defaultValue = $this->schemaManager->castDefaultValue($value, $dataType, $length);
+            $defaultValue = $this->schemaManager->castDefaultValue(
+                $defaultValue,
+                $dataType,
+                $length
+            );
 
-            $default = ' DEFAULT ' . (is_string($defaultValue) ? sprintf('"%s"', $defaultValue) : $defaultValue);
+            if (is_string($defaultValue)) {
+                $defaultValueString = sprintf('"%s"', $defaultValue);
+            } else if (is_null($defaultValue)) {
+                $defaultValueString = 'NULL';
+            } else {
+                $defaultValueString = $defaultValue;
+            }
+
+            $default = sprintf(' DEFAULT %s', $defaultValueString);
         }
 
         // TODO: wrap this into an abstract DDL class
