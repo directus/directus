@@ -50,13 +50,11 @@ class GoogleProvider extends TwoSocialProvider
      */
     protected function createProvider()
     {
-        $request = Application::getInstance()->request();
-
         $this->provider = new Google([
             'clientId'          => $this->config->get('client_id'),
             'clientSecret'      => $this->config->get('client_secret'),
             'redirectUri'       => $this->getRedirectUrl($this->getName()),
-            'hostedDomain'      => $request->getUrl(),
+            'hostedDomain'      => $this->config->get('hosted_domain'),
         ]);
 
         return $this->provider;
