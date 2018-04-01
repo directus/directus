@@ -51,7 +51,7 @@ class Table implements \ArrayAccess, Arrayable, \JsonSerializable
     /**
      * @var Column[]
      */
-    protected $columns;
+    protected $columns = [];
 
     /**
      * Column that represents the table main value
@@ -1100,8 +1100,11 @@ class Table implements \ArrayAccess, Arrayable, \JsonSerializable
     {
         $array = $this->propertyArray();
         $columns = [];
-        foreach($array['columns'] as $column) {
-            $columns[] = $column->toArray();
+
+        if (isset($array['columns'])) {
+            foreach($array['columns'] as $column) {
+                $columns[] = $column->toArray();
+            }
         }
 
         $array['columns'] = $columns;
