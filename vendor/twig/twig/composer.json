@@ -30,8 +30,8 @@
         "php": ">=5.3.3"
     },
     "require-dev": {
-        "symfony/phpunit-bridge": "~3.3@dev",
-        "symfony/debug": "~2.7",
+        "symfony/phpunit-bridge": "^3.3",
+        "symfony/debug": "^2.7",
         "psr/container": "^1.0"
     },
     "autoload": {

@@ -19,6 +19,9 @@ class GoogleUser implements ResourceOwnerInterface
 
     public function getId()
     {
+        if (array_key_exists('sub', $this->response)) {
+            return $this->response['sub'];
+        }
         return $this->response['id'];
     }
 
@@ -29,6 +32,9 @@ class GoogleUser implements ResourceOwnerInterface
      */
     public function getName()
     {
+        if (array_key_exists('name', $this->response) && is_string($this->response['name'])) {
+            return $this->response['name'];
+        }
         return $this->response['displayName'];
     }
 
@@ -39,6 +45,9 @@ class GoogleUser implements ResourceOwnerInterface
      */
     public function getFirstName()
     {
+        if (array_key_exists('given_name', $this->response)) {
+            return $this->response['given_name'];
+        }
         return $this->response['name']['givenName'];
     }
 
@@ -49,6 +58,9 @@ class GoogleUser implements ResourceOwnerInterface
      */
     public function getLastName()
     {
+        if (array_key_exists('family_name', $this->response)) {
+            return $this->response['family_name'];
+        }
         return $this->response['name']['familyName'];
     }
 
@@ -59,9 +71,30 @@ class GoogleUser implements ResourceOwnerInterface
      */
     public function getEmail()
     {
+        if (array_key_exists('email', $this->response)) {
+            return $this->response['email'];
+        }
         if (!empty($this->response['emails'])) {
             return $this->response['emails'][0]['value'];
         }
+        return null;
+    }
+
+    /**
+     * Get hosted domain.
+     *
+     * @return string|null
+     */
+    public function getHostedDomain()
+    {
+        if (array_key_exists('hd', $this->response)) {
+            return $this->response['hd'];
+        }
+        if (array_key_exists('domain', $this->response)) {
+            return $this->response['domain'];
+        }
+
+        return null;
     }
 
     /**
@@ -71,9 +104,13 @@ class GoogleUser implements ResourceOwnerInterface
      */
     public function getAvatar()
     {
+        if (array_key_exists('picture', $this->response)) {
+            return $this->response['picture'];
+        }
         if (!empty($this->response['image']['url'])) {
             return $this->response['image']['url'];
         }
+        return null;
     }
 
     /**

@@ -800,7 +800,7 @@ The simplest way to use methods is to define them on the extension itself::
 
         public function rot13($value)
         {
-            return $rot13Provider->rot13($value);
+            return $this->rot13Provider->rot13($value);
         }
     }
 
@@ -849,7 +849,7 @@ It is now possible to move the runtime logic to a new
 
         public function rot13($value)
         {
-            return $rot13Provider->rot13($value);
+            return $this->rot13Provider->rot13($value);
         }
     }
 

@@ -8,17 +8,16 @@ cache:
         - $HOME/.composer/cache/files
 
 php:
-    - 5.3
     - 5.4
     - 5.5
     - 5.6
     - 7.0
     - 7.1
+    - 7.2
     - nightly
 
 env:
     - TWIG_EXT=no
-    - TWIG_EXT=yes
 
 before_install:
     # turn off XDebug
@@ -40,10 +39,16 @@ script: |
 
 matrix:
     fast_finish: true
-    exclude:
-        - php: 7.0
+    include:
+        - php: 5.3
+          dist: precise
           env: TWIG_EXT=yes
-        - php: 7.1
+        - php: 5.3
+          dist: precise
+          env: TWIG_EXT=no
+        - php: 5.4
           env: TWIG_EXT=yes
-        - php: nightly
+        - php: 5.5
+          env: TWIG_EXT=yes
+        - php: 5.6
           env: TWIG_EXT=yes

@@ -2,6 +2,7 @@
 
 namespace League\OAuth2\Client\Provider;
 
+use League\OAuth2\Client\Exception\HostedDomainException;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use League\OAuth2\Client\Token\AccessToken;
 use League\OAuth2\Client\Tool\BearerAuthorizationTrait;
@@ -42,6 +43,12 @@ class Google extends AbstractProvider
      */
     protected $userFields = [];
 
+    /**
+     * Use OpenID Connect endpoints for getting the user info/resource owner
+     * @var bool
+     */
+    protected $useOidcMode = false;
+
     public function getBaseAuthorizationUrl()
     {
         return 'https://accounts.google.com/o/oauth2/auth';
@@ -49,12 +56,21 @@ class Google extends AbstractProvider
 
     public function getBaseAccessTokenUrl(array $params)
     {
-        return 'https://accounts.google.com/o/oauth2/token';
+        return 'https://www.googleapis.com/oauth2/v4/token';
     }
 
     public function getResourceOwnerDetailsUrl(AccessToken $token)
     {
-        $fields = array_merge($this->defaultUserFields, $this->userFields);
+        if ($this->useOidcMode) {
+            // OIDC endpoints can be found https://accounts.google.com/.well-known/openid-configuration
+            return 'https://www.googleapis.com/oauth2/v3/userinfo';
+        }
+        // fields that are required based on other configuration options
+        $configurationUserFields = [];
+        if (isset($this->hostedDomain)) {
+            $configurationUserFields[] = 'domain';
+        }
+        $fields = array_merge($this->defaultUserFields, $this->userFields, $configurationUserFields);
         return 'https://www.googleapis.com/plus/v1/people/me?' . http_build_query([
             'fields' => implode(',', $fields),
             'alt'    => 'json',
@@ -107,6 +123,16 @@ class Google extends AbstractProvider
 
     protected function createResourceOwner(array $response, AccessToken $token)
     {
-        return new GoogleUser($response);
+        $user = new GoogleUser($response);
+        // Validate hosted domain incase the user edited the initial authorization code grant request
+        if ($this->hostedDomain === '*') {
+            if (empty($user->getHostedDomain())) {
+                throw HostedDomainException::notMatchingDomain($this->hostedDomain);
+            }
+        } elseif (!empty($this->hostedDomain) && $this->hostedDomain !== $user->getHostedDomain()) {
+            throw HostedDomainException::notMatchingDomain($this->hostedDomain);
+        }
+
+        return $user;
     }
 }

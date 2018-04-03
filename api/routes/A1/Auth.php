@@ -38,6 +38,8 @@ class Auth extends Route
                 $response['data'] = [
                     'token' => $accessToken
                 ];
+            } else {
+                $response['message'] = __t('missing_token');
             }
         }
 

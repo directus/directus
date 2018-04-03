@@ -25,6 +25,10 @@ The following versions of PHP are supported.
 * PHP 7.1
 * HHVM
 
+[Google Sign In](https://developers.google.com/identity/sign-in/web/sign-in) will also need to be set up, which will provide you with the `{google-app-id}` and `{google-app-secret}` required (see [Usage](#usage) below).
+
+If you're using the default [scopes](#scopes) then you'll also need to enable the [Google+ API](https://developers.google.com/+/web/api/rest/) for your project.
+
 ## Installation
 
 To install, use composer:
@@ -42,7 +46,7 @@ $provider = new League\OAuth2\Client\Provider\Google([
     'clientId'     => '{google-app-id}',
     'clientSecret' => '{google-app-secret}',
     'redirectUri'  => 'https://example.com/callback-url',
-    'hostedDomain' => 'https://example.com',
+    'hostedDomain' => 'example.com',
 ]);
 
 if (!empty($_GET['error'])) {
@@ -140,6 +144,13 @@ $provider = new League\OAuth2\Client\Provider\Google([
 $grant = new League\OAuth2\Client\Grant\RefreshToken();
 $token = $provider->getAccessToken($grant, ['refresh_token' => $refreshToken]);
 ```
+## Resource Owner Attributes
+
+By default the Google plus API is used to load profile information. If you want to use the OpenIDConnect
+user info endpoint to load profile information then add `useOidcMode => true` to your configuration.
+
+The two endpoints provide attributes with different names and structures. The `GoogleUser` class hides
+these differences for the most common attributes.
 
 ## Scopes
 
@@ -154,6 +165,8 @@ $authorizationUrl = $provider->getAuthorizationUrl([
 header('Location: ' . $authorizationUrl);
 exit;
 ```
+
+Note that the default scopes include `email` and `profile`, which require that the [Google+ API](https://developers.google.com/+/web/api/rest/) is enabled for your project.
 
 ## Testing
 

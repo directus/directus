@@ -68,6 +68,7 @@ return [
         // 'google' => [
         //     'client_id'       => '',
         //     'client_secret'   => '',
+        //     'hosted_domain'   => '*',
         // ],
         // 'twitter' => [
         //     'identifier'   => '',

@@ -199,11 +199,14 @@ class Twig_ExpressionParser
                     break;
                 }
 
+                // no break
             default:
                 if ($token->test(Twig_Token::PUNCTUATION_TYPE, '[')) {
                     $node = $this->parseArrayExpression();
                 } elseif ($token->test(Twig_Token::PUNCTUATION_TYPE, '{')) {
                     $node = $this->parseHashExpression();
+                } elseif ($token->test(Twig_Token::OPERATOR_TYPE, '=') && ('==' === $this->parser->getStream()->look(-1)->getValue() || '!=' === $this->parser->getStream()->look(-1)->getValue())) {
+                    throw new Twig_Error_Syntax(sprintf('Unexpected operator of value "%s". Did you try to use "===" or "!==" for strict comparison? Use "is same as(value)" instead.', $token->getValue()), $token->getLine(), $this->parser->getStream()->getSourceContext());
                 } else {
                     throw new Twig_Error_Syntax(sprintf('Unexpected token "%s" of value "%s".', Twig_Token::typeToEnglish($token->getType()), $token->getValue()), $token->getLine(), $this->parser->getStream()->getSourceContext());
                 }
@@ -313,7 +316,7 @@ class Twig_ExpressionParser
     {
         while (true) {
             $token = $this->parser->getCurrentToken();
-            if ($token->getType() == Twig_Token::PUNCTUATION_TYPE) {
+            if (Twig_Token::PUNCTUATION_TYPE == $token->getType()) {
                 if ('.' == $token->getValue() || '[' == $token->getValue()) {
                     $node = $this->parseSubscriptExpression($node);
                 } elseif ('|' == $token->getValue()) {
@@ -384,14 +387,14 @@ class Twig_ExpressionParser
         $lineno = $token->getLine();
         $arguments = new Twig_Node_Expression_Array(array(), $lineno);
         $type = Twig_Template::ANY_CALL;
-        if ($token->getValue() == '.') {
+        if ('.' == $token->getValue()) {
             $token = $stream->next();
             if (
-                $token->getType() == Twig_Token::NAME_TYPE
+                Twig_Token::NAME_TYPE == $token->getType()
                 ||
-                $token->getType() == Twig_Token::NUMBER_TYPE
+                Twig_Token::NUMBER_TYPE == $token->getType()
                 ||
-                ($token->getType() == Twig_Token::OPERATOR_TYPE && preg_match(Twig_Lexer::REGEX_NAME, $token->getValue()))
+                (Twig_Token::OPERATOR_TYPE == $token->getType() && preg_match(Twig_Lexer::REGEX_NAME, $token->getValue()))
             ) {
                 $arg = new Twig_Node_Expression_Constant($token->getValue(), $lineno);
 

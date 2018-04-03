@@ -1,3 +1,22 @@
+* 1.35.3 (2018-03-20)
+
+ * fixed block names unicity
+ * fixed counting children of SimpleXMLElement objects
+ * added missing else clause to avoid infinite loops
+ * fixed .. (range operator) in sandbox policy
+
+* 1.35.2 (2018-03-03)
+
+ * fixed a regression in the way the profiler is registered in templates
+
+* 1.35.1 (2018-03-02)
+
+ * added an exception when using "===" instead of "same as"
+ * fixed possible array to string conversion concealing actual error
+ * made variable names deterministic in compiled templates
+ * fixed length filter when passing an instance of IteratorAggregate
+ * fixed Environment::resolveTemplate to accept instances of TemplateWrapper
+
 * 1.35.0 (2017-09-27)
 
  * added Twig_Profiler_Profile::reset()

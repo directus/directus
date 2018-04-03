@@ -36,6 +36,7 @@ class Twig_Tests_Extension_SandboxTest extends \PHPUnit\Framework\TestCase
             '1_layout' => '{% block content %}{% endblock %}',
             '1_child' => "{% extends \"1_layout\" %}\n{% block content %}\n{{ \"a\"|json_encode }}\n{% endblock %}",
             '1_include' => '{{ include("1_basic1", sandboxed=true) }}',
+            '1_range_operator' => '{{ (1..2)[0] }}',
         );
     }
 
@@ -143,6 +144,18 @@ class Twig_Tests_Extension_SandboxTest extends \PHPUnit\Framework\TestCase
         }
     }
 
+    public function testSandboxUnallowedRangeOperator()
+    {
+        $twig = $this->getEnvironment(true, array(), self::$templates);
+        try {
+            $twig->loadTemplate('1_range_operator')->render(self::$params);
+            $this->fail('Sandbox throws a SecurityError exception if the unallowed range operator is called');
+        } catch (Twig_Sandbox_SecurityError $e) {
+            $this->assertInstanceOf('Twig_Sandbox_SecurityNotAllowedFunctionError', $e, 'Exception should be an instance of Twig_Sandbox_SecurityNotAllowedFunctionError');
+            $this->assertEquals('range', $e->getFunctionName(), 'Exception should be raised on the "range" function');
+        }
+    }
+
     public function testSandboxAllowMethodFoo()
     {
         $twig = $this->getEnvironment(true, array(), self::$templates, array(), array(), array('FooObject' => 'foo'));
@@ -189,6 +202,12 @@ class Twig_Tests_Extension_SandboxTest extends \PHPUnit\Framework\TestCase
     {
         $twig = $this->getEnvironment(true, array(), self::$templates, array(), array(), array(), array(), array('cycle'));
         $this->assertEquals('bar', $twig->loadTemplate('1_basic7')->render(self::$params), 'Sandbox allow some functions');
+    }
+
+    public function testSandboxAllowRangeOperator()
+    {
+        $twig = $this->getEnvironment(true, array(), self::$templates, array(), array(), array(), array(), array('range'));
+        $this->assertEquals('1', $twig->loadTemplate('1_range_operator')->render(self::$params), 'Sandbox allow the range operator');
     }
 
     public function testSandboxAllowFunctionsCaseInsensitive()
@@ -252,7 +271,7 @@ EOF
         } catch (Throwable $e) {
         } catch (Exception $e) {
         }
-        if ($e === null) {
+        if (null === $e) {
             $this->fail('An exception should be thrown for this test to be valid.');
         }
 

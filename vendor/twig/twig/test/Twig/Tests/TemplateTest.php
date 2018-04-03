@@ -58,6 +58,7 @@ class Twig_Tests_TemplateTest extends \PHPUnit\Framework\TestCase
             array('{{ string.a() }}', 'Impossible to invoke a method ("a") on a string variable ("foo") in "%s" at line 1.'),
             array('{{ null.a }}', 'Impossible to access an attribute ("a") on a null variable in "%s" at line 1.'),
             array('{{ null.a() }}', 'Impossible to invoke a method ("a") on a null variable in "%s" at line 1.'),
+            array('{{ array.a() }}', 'Impossible to invoke a method ("a") on an array in "%s" at line 1.'),
             array('{{ empty_array.a }}', 'Key "a" does not exist as the array is empty in "%s" at line 1.'),
             array('{{ array.a }}', 'Key "a" for array with keys "foo" does not exist in "%s" at line 1.'),
             array('{{ attribute(array, -10) }}', 'Key "-10" for array with keys "foo" does not exist in "%s" at line 1.'),

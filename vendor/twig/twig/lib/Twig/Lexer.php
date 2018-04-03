@@ -235,7 +235,7 @@ class Twig_Lexer implements Twig_LexerInterface
             $this->moveCursor($match[0]);
 
             if ($this->cursor >= $this->end) {
-                throw new Twig_Error_Syntax(sprintf('Unclosed "%s".', $this->state === self::STATE_BLOCK ? 'block' : 'variable'), $this->currentVarBlockLine, $this->source);
+                throw new Twig_Error_Syntax(sprintf('Unclosed "%s".', self::STATE_BLOCK === $this->state ? 'block' : 'variable'), $this->currentVarBlockLine, $this->source);
             }
         }
 
@@ -337,12 +337,15 @@ class Twig_Lexer implements Twig_LexerInterface
             $this->moveCursor($match[0]);
         } elseif (preg_match(self::REGEX_DQ_STRING_DELIM, $this->code, $match, null, $this->cursor)) {
             list($expect, $lineno) = array_pop($this->brackets);
-            if ($this->code[$this->cursor] != '"') {
+            if ('"' != $this->code[$this->cursor]) {
                 throw new Twig_Error_Syntax(sprintf('Unclosed "%s".', $expect), $lineno, $this->source);
             }
 
             $this->popState();
             ++$this->cursor;
+        } else {
+            // unlexable
+            throw new Twig_Error_Syntax(sprintf('Unexpected character "%s".', $this->code[$this->cursor]), $this->lineno, $this->source);
         }
     }
 

@@ -16,11 +16,11 @@
  */
 class Twig_Environment
 {
-    const VERSION = '1.35.0';
-    const VERSION_ID = 13500;
+    const VERSION = '1.35.3';
+    const VERSION_ID = 13503;
     const MAJOR_VERSION = 1;
     const MINOR_VERSION = 35;
-    const RELEASE_VERSION = 0;
+    const RELEASE_VERSION = 3;
     const EXTRA_VERSION = '';
 
     protected $charset;
@@ -132,14 +132,14 @@ class Twig_Environment
         // For BC
         if (is_string($this->originalCache)) {
             $r = new ReflectionMethod($this, 'writeCacheFile');
-            if ($r->getDeclaringClass()->getName() !== __CLASS__) {
+            if (__CLASS__ !== $r->getDeclaringClass()->getName()) {
                 @trigger_error('The Twig_Environment::writeCacheFile method is deprecated since version 1.22 and will be removed in Twig 2.0.', E_USER_DEPRECATED);
 
                 $this->bcWriteCacheFile = true;
             }
 
             $r = new ReflectionMethod($this, 'getCacheFilename');
-            if ($r->getDeclaringClass()->getName() !== __CLASS__) {
+            if (__CLASS__ !== $r->getDeclaringClass()->getName()) {
                 @trigger_error('The Twig_Environment::getCacheFilename method is deprecated since version 1.22 and will be removed in Twig 2.0.', E_USER_DEPRECATED);
 
                 $this->bcGetCacheFilename = true;
@@ -562,12 +562,12 @@ class Twig_Environment
     /**
      * Tries to load a template consecutively from an array.
      *
-     * Similar to loadTemplate() but it also accepts Twig_TemplateInterface instances and an array
-     * of templates where each is tried to be loaded.
+     * Similar to loadTemplate() but it also accepts instances of Twig_Template and
+     * Twig_TemplateWrapper, and an array of templates where each is tried to be loaded.
      *
-     * @param string|Twig_Template|array $names A template or an array of templates to try consecutively
+     * @param string|Twig_Template|Twig_TemplateWrapper|array $names A template or an array of templates to try consecutively
      *
-     * @return Twig_Template
+     * @return Twig_Template|Twig_TemplateWrapper
      *
      * @throws Twig_Error_Loader When none of the templates can be found
      * @throws Twig_Error_Syntax When an error occurred during compilation
@@ -580,6 +580,10 @@ class Twig_Environment
 
         foreach ($names as $name) {
             if ($name instanceof Twig_Template) {
+                return $name;
+            }
+
+            if ($name instanceof Twig_TemplateWrapper) {
                 return $name;
             }
 

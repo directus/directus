@@ -40,7 +40,7 @@ class Twig_TokenParser_For extends Twig_TokenParser
 
         $stream->expect(Twig_Token::BLOCK_END_TYPE);
         $body = $this->parser->subparse(array($this, 'decideForFork'));
-        if ($stream->next()->getValue() == 'else') {
+        if ('else' == $stream->next()->getValue()) {
             $stream->expect(Twig_Token::BLOCK_END_TYPE);
             $else = $this->parser->subparse(array($this, 'decideForEnd'), true);
         } else {

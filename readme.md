@@ -21,10 +21,10 @@ Learn more at [getdirectus.com](https://getdirectus.com), chat with us on [Slack
 Download the latest pre-built version from [our releases page](https://github.com/directus/directus/releases) or clone this repo and install the composer dependencies by running `composer install` from the root folder. 
 
 ### Requirements:
-NGINX or Apache Server, MySQL 5.2+, PHP 5.5+ (curl, gd, finfo, pdo_mysql)
+NGINX or Apache Server, MySQL 5.2+, PHP 5.6+ (curl, gd, finfo, pdo_mysql)
 
 ### Database types
-While Directus has been abstracted to allow for different database adapters in the future, currently only MySQL is supported. PostgreSQL, SQLite, and MongoDB support is under development – and we hope to expand support for additional database types as we gain contributors.
+While Directus has been abstracted to allow for different database adapters in the future, currently only MySQL is supported. PostgreSQL, SQLite, and MongoDB support are under development – and we hope to expand support for additional database types as we gain contributors.
 
 
 ## Documentation
@@ -46,7 +46,7 @@ You can find the source of this documentation in [our API docs repo](https://git
 Think you've discovered a bug? First, read through our [docs](https://docs.getdirectus.com) to be sure – then submit a ticket to our [GitHub Issues](https://github.com/directus/directus/issues/new). And if you already know a good solution, we love [Pull Requests](https://github.com/directus/directus/pulls)! **For all security related issues, please chat with us directly through [getdirectus.com](https://getdirectus.com/).**
 
 ### Requesting Features or Enhancements
-Use our [Feature Request Tool](https://request.getdirectus.com/) to request new features or vote on existing commmunity suggestions.
+Use our [Feature Request Tool](https://request.getdirectus.com/) to request new features or vote on existing community suggestions.
 
 ### Technical Support
 For support using Directus, please post questions with the `directus` tag on [Stack Overflow](https://stackoverflow.com/questions/tagged/directus).
@@ -96,8 +96,8 @@ _This is what we want to get done next:_
 ### Q1 2018
 - Begin work on Directus v7.0 (moving from Backbone to Vue)
 - CMS App Decoupled from API
-- API 2.0 - Speed improvements, better relational filtering / querying and increased i18n support
-- [Support for multiple database (multitenant)](https://request.getdirectus.com/r/1)
+- API 2.0 - Speed improvements, better relational filtering / querying, and increased i18n support
+- [Support for multiple databases (multitenant)](https://request.getdirectus.com/r/1)
 - [Digital Asset Management improvements](https://request.getdirectus.com/r/2)
 - [Web Hooks](https://request.getdirectus.com/r/9)
 
@@ -120,5 +120,5 @@ Sponsors: Bas Jansen
 
 ## Copyright, License, and Trademarks
 * Directus Core codebase released under the [GPLv3](http://www.gnu.org/copyleft/gpl.html) license.
-* Example Code, Design Previews, Demonstration Apps, Custom Extensions, Custom interfaces, and Documentation copyright 2017 [RANGER Studio LLC](http://rngr.org/).
+* Example Code, Design Previews, Demonstration Apps, Custom Extensions, Custom interfaces, and Documentation copyright 2018 [RANGER Studio LLC](http://rngr.org/).
 * RANGER Studio owns all Directus trademarks, service marks, and graphic logos on behalf of our project's community. The names of all Directus projects are trademarks of [RANGER Studio LLC](http://rngr.org/).

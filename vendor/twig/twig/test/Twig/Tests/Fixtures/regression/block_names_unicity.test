@@ -1,0 +1,19 @@
+--TEST--
+Block names are unique per template
+--TEMPLATE--
+{% extends 'layout' %}
+{% block content -%}
+    {% filter title -%}
+        second
+    {% endfilter %}
+{% endblock %}
+--TEMPLATE(layout)--
+{% filter title -%}
+    first
+{% endfilter %}
+{% block content %}{% endblock %}
+--DATA--
+return array();
+--EXPECT--
+First
+Second

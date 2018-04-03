@@ -37,7 +37,9 @@ class CorsMiddleware extends Middleware
                 // 1. [Key, Value]
                 // 2. Key => Value
                 if (is_array($value)) {
-                    list($name, $value) = $value;
+                    // using $value will make name the first value character of $value value
+                    $temp = $value;
+                    list($name, $value) = $temp;
                 }
 
                 $response->header($name, $value);
@@ -66,6 +68,10 @@ class CorsMiddleware extends Middleware
         $requestOrigin = $this->app->request()->headers->get('Origin');
         $responseOrigin = null;
         $allowedOrigins = ArrayUtils::get($corsOptions, 'origin', '*');
+
+        if (is_array($requestOrigin)) {
+            $requestOrigin = array_shift($requestOrigin);
+        }
 
         if (!is_array($allowedOrigins)) {
             if (is_string($allowedOrigins)) {

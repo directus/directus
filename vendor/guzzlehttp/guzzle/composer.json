@@ -19,7 +19,7 @@
     },
     "require-dev": {
         "ext-curl": "*",
-        "phpunit/phpunit": "^4.0 || ^5.0",
+        "phpunit/phpunit": "^4.8.35 || ^5.7 || ^6.4",
         "psr/log": "^1.0"
     },
     "autoload": {
@@ -38,7 +38,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "6.2-dev"
+            "dev-master": "6.3-dev"
         }
     }
 }

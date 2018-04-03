@@ -35,14 +35,13 @@ class SetCookie
         $data = self::$defaults;
         // Explode the cookie string using a series of semicolons
         $pieces = array_filter(array_map('trim', explode(';', $cookie)));
-        // The name of the cookie (first kvp) must include an equal sign.
-        if (empty($pieces) || !strpos($pieces[0], '=')) {
+        // The name of the cookie (first kvp) must exist and include an equal sign.
+        if (empty($pieces[0]) || !strpos($pieces[0], '=')) {
             return new self($data);
         }
 
         // Add the cookie pieces into the parsed data array
         foreach ($pieces as $part) {
-
             $cookieParts = explode('=', $part, 2);
             $key = trim($cookieParts[0]);
             $value = isset($cookieParts[1])
@@ -349,7 +348,7 @@ class SetCookie
             return false;
         }
 
-        return (bool) preg_match('/\.' . preg_quote($cookieDomain) . '$/', $domain);
+        return (bool) preg_match('/\.' . preg_quote($cookieDomain, '/') . '$/', $domain);
     }
 
     /**
@@ -359,7 +358,7 @@ class SetCookie
      */
     public function isExpired()
     {
-        return $this->getExpires() && time() > $this->getExpires();
+        return $this->getExpires() !== null && time() > $this->getExpires();
     }
 
     /**

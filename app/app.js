@@ -13442,7 +13442,8 @@ function(app, Backbone, _, Utils, __t, Notification) {
 
         if (column === 'sort' || isDefaultSorting) {
           collection.setOrder(defaultSortColumn, order_sort);
-          this.parentView.fixWidths();
+          // Note: this is a quick fix that forces Backbone to rerender columns with proper sorting
+          Backbone.history.loadUrl();
           return;
         }
 
@@ -13455,7 +13456,8 @@ function(app, Backbone, _, Utils, __t, Notification) {
           collection.setOrder(column, order_sort);
         }
 
-        this.parentView.fixWidths();
+        // Note: this is a quick fix that forces Backbone to rerender columns with proper sorting
+        Backbone.history.loadUrl();
       },
 
       'click .js-sort-toggle': function () {
@@ -21915,21 +21917,21 @@ define('core/interfaces/json/interface',['core/UIView'], function (UIView) {
     events: {
       'keydown textarea': 'process',
       'keyup textarea': 'onKeyUp',
+      'input textarea': 'onInputChange',
       'click .interface_json_example': 'fillWithExample'
     },
     change: 0,
     lastValue: '',
     onKeyUp: function (event) {
-      var value = event.currentTarget.value;
-
-      this.validate(event.currentTarget);
-      this.model.set(this.name, value);
+      this.updateValue(event.currentTarget.value);
+    },
+    onInputChange: function (event) {
+      this.updateValue(event.currentTarget.value);
     },
     process: function (event) {
       var textarea = event.target;
 
       this.change = textarea.value.length - this.lastValue.length;
-
       var caret = textarea.selectionStart;
 
       var code = event.keyCode;
@@ -21965,8 +21967,17 @@ define('core/interfaces/json/interface',['core/UIView'], function (UIView) {
       }
     },
 
-    validate: function (target) {
-      var value = target.value;
+    updateValue: function (newValue) {
+      this.validate(newValue);
+      this.model.set(this.name, newValue);
+    },
+
+    validate: function (value) {
+      var target = this.$('#' + this.name).get(0);
+
+      if (!value || !target) {
+        return;
+      }
 
       if (value.length === 0) {
         return target.classList.remove('invalid');
@@ -22072,7 +22083,7 @@ define('core/interfaces/json/interface',['core/UIView'], function (UIView) {
     },
 
     afterRender: function () {
-      this.validate(this.$('#' + this.name).get(0));
+      this.validate(this.model.get(this.name));
     }
   });
 });
@@ -22890,12 +22901,16 @@ define('core/interfaces/dropdown_multiselect/interface',['core/UIView', 'select2
     },
 
     afterRender: function () {
-      var native = Boolean(Number(this.options.settings.get('use_native_input'))) || false;
+      var native = Boolean(Number(this.options.settings.get('use_native_input'))) || false,
+      	  maxItems = Number(this.options.settings.get('max_items'));
+
 
       if (!native) {
         var interface = this;
         var select = $('[name=' + this.options.name + ']')
-          .select2()
+          .select2({
+        	  maximumSelectionLength : maxItems
+          })
           .on('change', function(event) {
             var value = select.val() && select.val().toString() || '';
             interface.model.set(this.name, value);
@@ -22959,6 +22974,13 @@ define('core/interfaces/dropdown_multiselect/component',['./interface', 'core/UI
             value: 'Value'
           }
         }
+      },
+      {
+          id: 'max_items',
+          ui: 'numeric',
+          type: 'Number',
+          comment: 'Max Items (0 = no limitation)',
+          default_value: '0'
       }
     ],
     Input: Input,
@@ -23551,7 +23573,7 @@ define('core/interfaces/wysiwyg_full/interface',[
         menubar: false,
         readonly: this.options.settings.get('read_only') || !this.options.canWrite,
         toolbar: toolbar,
-        content_style: 'body.mce-content-body {font-family: \'Roboto\', sans-serif;line-height:24px;letter-spacing:0.2px;font-size:14px;color:#333;margin:0;padding: 10px 30px !important;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}body.mce-content-body p{line-height:inherit !important;}',
+        content_style: 'body.mce-content-body {font-family: \'Roboto\', sans-serif;line-height:24px;letter-spacing:0.2px;font-size:14px;color:#333;margin:0;padding: 10px 30px !important;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}body.mce-content-body p{line-height:inherit !important;}body.mce-content-body img{max-width:100% !important;}',
         style_formats: styleFormats,
         setup: function (editor) {
           /**
@@ -24901,7 +24923,7 @@ define('core/interfaces/datetime/date',[
 
     unsavedChange: function () {
       // NOTE: Only set the new value (mark changed) if the value has changed
-      if (this.model.isNew() || this.model.hasChanges(this.name)) {
+      if (this.value.isValid() && (this.model.isNew() || this.model.hasChanges(this.name))) {
         return this.value.format(this.getFormat());
       }
     },
@@ -26053,7 +26075,7 @@ define('core/interfaces/slider/component',['core/interfaces/slider/interface', '
 
   return UIComponent.extend({
     id: 'slider',
-    dataTypes: ['INT', 'TINYINT', 'SMALLINT', 'MEDIUMINT', 'BIGINT'],
+    dataTypes: ['INT', 'TINYINT', 'SMALLINT', 'MEDIUMINT', 'BIGINT', 'DECIMAL'],
     options: [
       {
         id: 'read_only',
@@ -26249,8 +26271,9 @@ define('core/interfaces/many_to_one_typeahead/interface',['app', 'handlebars', '
     afterRender: function () {
       var self = this;
       var url = app.API_URL + 'tables/' + this.collection.table.id + '/typeahead/';
-      var model = this.model.get(this.name);
       var params = {};
+      var tableName = this.model.structure.get(this.name).getRelatedTableName();
+      var table = app.schemaManager.getTable(tableName);
 
       if (this.visibleColumn) {
         params.columns = this.visibleColumn;
@@ -26261,8 +26284,8 @@ define('core/interfaces/many_to_one_typeahead/interface',['app', 'handlebars', '
         status = this.options.settings.get('visible_status_ids');
       }
 
-      if (model.table.hasStatusColumn()) {
-        params[model.table.getStatusColumnName()] = status;
+      if (table.hasStatusColumn()) {
+        params[table.getStatusColumnName()] = status;
       }
 
       var urlParams = Utils.encodeQueryParams(params);

@@ -1,4 +1,22 @@
-# CHANGELOG
+# Change Log
+
+## 6.3.2 - 2018-03-26
+
+* Fix: Release process
+
+
+## 6.3.1 - 2018-03-26
+
+* Bug fix: Parsing 0 epoch expiry times in cookies [#2014](https://github.com/guzzle/guzzle/pull/2014)
+* Improvement: Better ConnectException detection [#2012](https://github.com/guzzle/guzzle/pull/2012)
+* Bug fix: Malformed domain that contains a "/" [#1999](https://github.com/guzzle/guzzle/pull/1999)
+* Bug fix: Undefined offset when a cookie has no first key-value pair [#1998](https://github.com/guzzle/guzzle/pull/1998)
+* Improvement: Support PHPUnit 6 [#1953](https://github.com/guzzle/guzzle/pull/1953)
+* Bug fix: Support empty headers [#1915](https://github.com/guzzle/guzzle/pull/1915)
+* Bug fix: Ignore case during header modifications [#1916](https://github.com/guzzle/guzzle/pull/1916)
+
++ Minor code cleanups, documentation fixes and clarifications.
+
 
 ## 6.3.0 - 2017-06-22
 

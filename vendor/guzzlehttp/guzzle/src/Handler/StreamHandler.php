@@ -4,7 +4,6 @@ namespace GuzzleHttp\Handler;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Promise\FulfilledPromise;
-use GuzzleHttp\Promise\RejectedPromise;
 use GuzzleHttp\Promise\PromiseInterface;
 use GuzzleHttp\Psr7;
 use GuzzleHttp\TransferStats;
@@ -61,6 +60,7 @@ class StreamHandler
             if (strpos($message, 'getaddrinfo') // DNS lookup failed
                 || strpos($message, 'Connection refused')
                 || strpos($message, "couldn't connect to host") // error on HHVM
+                || strpos($message, "connection attempt failed")
             ) {
                 $e = new ConnectException($e->getMessage(), $request, $e);
             }
@@ -103,7 +103,7 @@ class StreamHandler
         $status = $parts[1];
         $reason = isset($parts[2]) ? $parts[2] : null;
         $headers = \GuzzleHttp\headers_from_lines($hdrs);
-        list ($stream, $headers) = $this->checkDecode($options, $headers, $stream);
+        list($stream, $headers) = $this->checkDecode($options, $headers, $stream);
         $stream = Psr7\stream_for($stream);
         $sink = $stream;
 
@@ -276,7 +276,7 @@ class StreamHandler
         }
 
         $params = [];
-        $context = $this->getDefaultContext($request, $options);
+        $context = $this->getDefaultContext($request);
 
         if (isset($options['on_headers']) && !is_callable($options['on_headers'])) {
             throw new \InvalidArgumentException('on_headers must be callable');
@@ -307,7 +307,6 @@ class StreamHandler
             && isset($options['auth'][2])
             && 'ntlm' == $options['auth'][2]
         ) {
-
             throw new \InvalidArgumentException('Microsoft NTLM authentication only supported with curl handler');
         }
 

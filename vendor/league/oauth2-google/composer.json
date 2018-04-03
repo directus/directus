@@ -24,7 +24,7 @@
     "require-dev": {
         "eloquent/phony": "^0.14.6",
         "phpunit/phpunit": "^5.7",
-        "satooshi/php-coveralls": "dev-master as 2.0.0",
+        "satooshi/php-coveralls": "^2.0",
         "squizlabs/php_codesniffer": "^2.0"
     },
     "autoload": {

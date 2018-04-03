@@ -290,7 +290,14 @@ class Client implements ClientInterface
      */
     private function applyOptions(RequestInterface $request, array &$options)
     {
-        $modify = [];
+        $modify = [
+            'set_headers' => [],
+        ];
+
+        if (isset($options['headers'])) {
+            $modify['set_headers'] = $options['headers'];
+            unset($options['headers']);
+        }
 
         if (isset($options['form_params'])) {
             if (isset($options['multipart'])) {
@@ -302,6 +309,8 @@ class Client implements ClientInterface
             }
             $options['body'] = http_build_query($options['form_params'], '', '&');
             unset($options['form_params']);
+            // Ensure that we don't have the header in different case and set the new value.
+            $options['_conditional'] = Psr7\_caseless_remove(['Content-Type'], $options['_conditional']);
             $options['_conditional']['Content-Type'] = 'application/x-www-form-urlencoded';
         }
 
@@ -313,22 +322,17 @@ class Client implements ClientInterface
         if (isset($options['json'])) {
             $options['body'] = \GuzzleHttp\json_encode($options['json']);
             unset($options['json']);
+            // Ensure that we don't have the header in different case and set the new value.
+            $options['_conditional'] = Psr7\_caseless_remove(['Content-Type'], $options['_conditional']);
             $options['_conditional']['Content-Type'] = 'application/json';
         }
 
         if (!empty($options['decode_content'])
             && $options['decode_content'] !== true
         ) {
+            // Ensure that we don't have the header in different case and set the new value.
+            $options['_conditional'] = Psr7\_caseless_remove(['Accept-Encoding'], $modify['set_headers']);
             $modify['set_headers']['Accept-Encoding'] = $options['decode_content'];
-        }
-
-        if (isset($options['headers'])) {
-            if (isset($modify['set_headers'])) {
-                $modify['set_headers'] = $options['headers'] + $modify['set_headers'];
-            } else {
-                $modify['set_headers'] = $options['headers'];
-            }
-            unset($options['headers']);
         }
 
         if (isset($options['body'])) {
@@ -344,6 +348,8 @@ class Client implements ClientInterface
             $type = isset($value[2]) ? strtolower($value[2]) : 'basic';
             switch ($type) {
                 case 'basic':
+                    // Ensure that we don't have the header in different case and set the new value.
+                    $modify['set_headers'] = Psr7\_caseless_remove(['Authorization'], $modify['set_headers']);
                     $modify['set_headers']['Authorization'] = 'Basic '
                         . base64_encode("$value[0]:$value[1]");
                     break;
@@ -382,6 +388,8 @@ class Client implements ClientInterface
         $request = Psr7\modify_request($request, $modify);
         if ($request->getBody() instanceof Psr7\MultipartStream) {
             // Use a multipart/form-data POST if a Content-Type is not set.
+            // Ensure that we don't have the header in different case and set the new value.
+            $options['_conditional'] = Psr7\_caseless_remove(['Content-Type'], $options['_conditional']);
             $options['_conditional']['Content-Type'] = 'multipart/form-data; boundary='
                 . $request->getBody()->getBoundary();
         }
