@@ -33,7 +33,7 @@ define([
 
     unsavedChange: function () {
       // NOTE: Only set the new value (mark changed) if the value has changed
-      if (this.model.isNew() || this.model.hasChanges(this.name)) {
+      if (this.value.isValid() && (this.model.isNew() || this.model.hasChanges(this.name))) {
         return this.value.format(this.getFormat());
       }
     },

@@ -52,6 +52,13 @@ define(['./interface', 'core/UIComponent', 'core/t', 'utils'], function (Input, 
             value: 'Value'
           }
         }
+      },
+      {
+          id: 'max_items',
+          ui: 'numeric',
+          type: 'Number',
+          comment: 'Max Items (0 = no limitation)',
+          default_value: '0'
       }
     ],
     Input: Input,

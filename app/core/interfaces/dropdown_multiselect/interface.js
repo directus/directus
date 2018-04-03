@@ -41,12 +41,16 @@ define(['core/UIView', 'select2'], function (UIView) {
     },
 
     afterRender: function () {
-      var native = Boolean(Number(this.options.settings.get('use_native_input'))) || false;
+      var native = Boolean(Number(this.options.settings.get('use_native_input'))) || false,
+      	  maxItems = Number(this.options.settings.get('max_items'));
+
 
       if (!native) {
         var interface = this;
         var select = $('[name=' + this.options.name + ']')
-          .select2()
+          .select2({
+        	  maximumSelectionLength : maxItems
+          })
           .on('change', function(event) {
             var value = select.val() && select.val().toString() || '';
             interface.model.set(this.name, value);

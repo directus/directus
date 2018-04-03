@@ -4,21 +4,21 @@ define(['core/UIView'], function (UIView) {
     events: {
       'keydown textarea': 'process',
       'keyup textarea': 'onKeyUp',
+      'input textarea': 'onInputChange',
       'click .interface_json_example': 'fillWithExample'
     },
     change: 0,
     lastValue: '',
     onKeyUp: function (event) {
-      var value = event.currentTarget.value;
-
-      this.validate(event.currentTarget);
-      this.model.set(this.name, value);
+      this.updateValue(event.currentTarget.value);
+    },
+    onInputChange: function (event) {
+      this.updateValue(event.currentTarget.value);
     },
     process: function (event) {
       var textarea = event.target;
 
       this.change = textarea.value.length - this.lastValue.length;
-
       var caret = textarea.selectionStart;
 
       var code = event.keyCode;
@@ -54,8 +54,17 @@ define(['core/UIView'], function (UIView) {
       }
     },
 
-    validate: function (target) {
-      var value = target.value;
+    updateValue: function (newValue) {
+      this.validate(newValue);
+      this.model.set(this.name, newValue);
+    },
+
+    validate: function (value) {
+      var target = this.$('#' + this.name).get(0);
+
+      if (!value || !target) {
+        return;
+      }
 
       if (value.length === 0) {
         return target.classList.remove('invalid');
@@ -161,7 +170,7 @@ define(['core/UIView'], function (UIView) {
     },
 
     afterRender: function () {
-      this.validate(this.$('#' + this.name).get(0));
+      this.validate(this.model.get(this.name));
     }
   });
 });

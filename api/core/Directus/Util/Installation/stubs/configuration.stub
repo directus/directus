@@ -36,6 +36,28 @@ return [
         //  'visibility' => 'public'
     ],
 
+    // Third-party authentication options
+    'auth' => [
+        // 'github' => [
+        //     'client_id' => '',
+        //     'client_secret' => ''
+        // ],
+        // 'facebook' => [
+        //     'client_id'          => '',
+        //     'client_secret'      => '',
+        //     'graph_api_version'  => 'v2.8',
+        // ],
+        // 'google' => [
+        //     'client_id'       => '',
+        //     'client_secret'   => '',
+        //     'hosted_domain'   => '*',
+        // ],
+        // 'twitter' => [
+        //     'identifier'   => '',
+        //     'secret'       => ''
+        // ]
+    ],
+
     'http' => [
         'emulate_enabled' => false,
         // can be null, or an array list of method to be emulated
