@@ -21,7 +21,7 @@ define(['core/UIView'], function (UIView) {
       }
 
       return {
-        value: this.options.value || 0,
+        value: this.options.value || this.options.settings.get('minimum') || 0,
         name: this.options.name,
         readOnly: this.options.settings.get('read_only') || !this.options.canWrite,
         min: this.options.settings.get('minimum'),
