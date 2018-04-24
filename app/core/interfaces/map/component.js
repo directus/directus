@@ -99,7 +99,7 @@ define(['./interface', 'core/UIComponent', 'core/t'], function (Input, UICompone
         id: 'show_lat_lng',
         ui: 'toggle',
         type: 'Boolean',
-        comment: __t('map_showLatLng_comment'),
+        comment: __t('map_mapLatLng_comment'),
         default_value: false
       }
     ],
