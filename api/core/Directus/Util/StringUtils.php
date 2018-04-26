@@ -133,7 +133,7 @@ class StringUtils
 
         switch ($type) {
             case 'numeric':
-                $min = str_repeat('9', $length-1);
+                $min = str_repeat('9', $length-1) + 1;
                 $max = str_repeat('9', $length);
                 return (string) mt_rand($min, $max);
             break;
