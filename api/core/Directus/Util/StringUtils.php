@@ -135,7 +135,7 @@ class StringUtils
             case 'numeric':
                 $min = str_repeat('9', $length-1);
                 $max = str_repeat('9', $length);
-                return (string) random_int($min, $max);
+                return (string) mt_rand($min, $max);
             break;
             case 'loweralpha': $pool = $loweralpha; break;
             case 'upperalpha': $pool = $upperalpha; break;
