@@ -132,7 +132,11 @@ class StringUtils
         $pool = '';
 
         switch ($type) {
-            case 'numeric': $pool = $numeric; break;
+            case 'numeric':
+                $min = str_repeat('9', $length-1) + 1;
+                $max = str_repeat('9', $length);
+                return (string) mt_rand($min, $max);
+            break;
             case 'loweralpha': $pool = $loweralpha; break;
             case 'upperalpha': $pool = $upperalpha; break;
             case 'loweralphanumeric': $pool = $numeric . $loweralpha; break;
