@@ -24,6 +24,24 @@ define(['./interface', 'core/UIComponent', 'core/t'], function (Input, UICompone
       },
       // Column names to fill with respective item
       {
+        id: 'lat_field',
+        ui: 'text_input',
+        type: 'String',
+        comment: 'Latitude column to fill',
+        default_value: '',
+        required: false,
+        char_length: 200
+      },
+      {
+        id: 'lng_field',
+        ui: 'text_input',
+        type: 'String',
+        comment: 'Longitude column to fill',
+        default_value: '',
+        required: false,
+        char_length: 200
+      },
+      {
         id: 'street_number_field',
         ui: 'text_input',
         type: 'String',

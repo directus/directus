@@ -94,8 +94,9 @@ define([
             map: map
           });
         }
-
-        var latlngVal = event.latLng.lat() + ',' + event.latLng.lng();
+        var lat = event.latLng.lat();
+        var lng = event.latLng.lng();
+        var latlngVal = lat + ',' + lng;
         that.$el.find('input').val(latlngVal);
         that.model.set(that.name, latlngVal);
 
@@ -105,6 +106,8 @@ define([
           if (data.results && data.results.length > 0) {
             data = data.results[0].address_components;
             var address = {};
+            address.lat = Math.round(lat * 100000000) / 100000000;
+            address.lng = Math.round(lng * 100000000) / 100000000;
             data.forEach(function (part) {
               switch (part.types[0]) {
                 case 'street_number':
