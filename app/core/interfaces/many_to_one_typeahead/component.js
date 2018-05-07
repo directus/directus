@@ -87,6 +87,19 @@ define([
       }
 
       return interfaceOptions.value;
-    }
+    },
+    validate: function (value, interfaceOptions) {
+        var hasValue;
+
+        if (value instanceof Backbone.Model) {
+            hasValue = !_.isEmpty(value.attributes);
+        } else {
+            hasValue = Utils.isSomething(value);
+        }
+
+        if (interfaceOptions.schema.isRequired() && !hasValue) {
+            return __t('this_field_is_required');
+        }
+    },
   });
 });
