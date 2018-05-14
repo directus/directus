@@ -28,3 +28,6 @@ script:
 after_script:
   - wget https://scrutinizer-ci.com/ocular.phar
   - if [[ $TRAVIS_PHP_VERSION != 'hhvm' && $TRAVIS_PHP_VERSION != '7.0' ]]; then php ocular.phar code-coverage:upload --format=php-clover coverage.clover; fi
+
+git:
+  depth: 5
