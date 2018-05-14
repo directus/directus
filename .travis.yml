@@ -32,3 +32,4 @@ after_script:
 cache:
   directories:
     - "$HOME/.composer/cache/files"
+    - node_modules
