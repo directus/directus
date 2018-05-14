@@ -49,10 +49,8 @@ define([
 
       editItem: function (event) {
         var id = $(event.currentTarget).data('id');
-        var route = Backbone.history.fragment.split('/');
-
-        route.push(id);
-        app.router.go(route);
+        const table_name = this.options.collection.table.attributes.table_name ;
+        app.router.go( [ 'tables', table_name, id] );
       },
 
       serialize: function () {

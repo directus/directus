@@ -143,6 +143,8 @@ class StringUtils
         return substr(str_shuffle(str_repeat($pool, $length)), 0, $length);
     }
 
+    protected static $camelHash = array();
+
     /**
      * Convert a string separated by $separator to camel case.
      *
@@ -154,18 +156,29 @@ class StringUtils
      */
     public static function toCamelCase($string, $first = false, $separator = '_')
     {
+
+        $key = $string.($first ? 'T' : 'F').$separator;
+        if ( array_key_exists($key,static::$camelHash) ){
+            return static::$camelHash[ $key ];
+        }
+
         $parts = explode($separator, $string);
         $newParts = array_map(function ($string) {
             return ucwords($string);
         }, $parts);
 
-        $newString = implode('', $newParts);
+        $camelCased = implode('', $newParts);
 
         if ($first === false) {
-            $newString[0] = strtolower($newString[0]);
+            $camelCased[0] = strtolower($camelCased[0]);
         }
 
-        return $newString;
+        if ( count(static::$camelHash) < 200 ){
+            static::$camelHash[ $key ] = $camelCased;
+        }
+        
+        return $camelCased;
+
     }
 
     /**

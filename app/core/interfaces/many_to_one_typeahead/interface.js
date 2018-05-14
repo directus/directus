@@ -45,7 +45,8 @@ define(['app', 'handlebars', 'core/UIView', 'utils'], function (app, Handlebars,
         selectedItem: relatedModel,
         hasSelectedItem: !relatedModel.isNew(),
         comment: this.options.schema.get('comment'),
-        selectedValue: this.getSelectedValue()
+        selectedValue: this.getSelectedValue(),
+        required: this.options.schema.isRequired()
       };
     },
 

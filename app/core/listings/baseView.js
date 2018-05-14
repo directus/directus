@@ -106,9 +106,8 @@ define(['app', 'underscore', 'backbone', 'core/t'], function(app, _, Backbone, _
     },
 
     navigate: function (id) {
-      var route = Backbone.history.fragment.split('/');
-      route.push(id);
-      app.router.go(route);
+      const table_name = this.options.collection.table.attributes.table_name 
+      app.router.go( [ 'tables', table_name, id] );
     },
 
     cleanup: function () {
