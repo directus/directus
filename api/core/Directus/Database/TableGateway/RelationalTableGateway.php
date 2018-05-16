@@ -1481,7 +1481,7 @@ class RelationalTableGateway extends BaseTableGateway
         }
 
         $skipAcl = $this->acl === null;
-        if (ArrayUtils::get($params, 'status') && TableSchema::hasStatusColumn($this->getTable(), $skipAcl)) {
+        if (ArrayUtils::has($params, 'status') && TableSchema::hasStatusColumn($this->getTable(), $skipAcl)) {
             $statuses = $params['status'];
             if (!is_array($statuses)) {
                 $statuses = array_map(function($item) {
@@ -1489,7 +1489,7 @@ class RelationalTableGateway extends BaseTableGateway
                 }, explode(',', $params['status']));
             }
 
-            $statuses = array_filter($statuses);
+            $statuses = array_filter($statuses, "is_numeric");
             if ($statuses) {
                 $query->whereIn(TableSchema::getStatusColumn(
                     $this->getTable(),
