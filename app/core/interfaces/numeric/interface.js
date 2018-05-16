@@ -22,8 +22,19 @@ define([
     onChangeInput: function (event) {
       this.updateValue(event.currentTarget.value);
     },
+    
+    unsavedChange: function () {
+        // NOTE: Only set the new value (mark changed) if the value has changed
+        var hasValue = Utils.isSomething(this.value);
+        var nullable = this.columnSchema.isNullable();
+
+        if ((hasValue || this.value === null && nullable)  && (this.model.isNew() || this.model.hasChanges(this.name))) {
+          return this.value;
+        }
+    },
 
     updateValue: function (value) {
+      this.value = value;
       this.model.set(this.name, value);
     },
 
@@ -68,6 +79,10 @@ define([
         readOnly: this.options.settings.get('read_only') || !this.options.canWrite,
         step: step
       };
+    },
+    
+    initialize: function (options) {
+        this.value = options.value !== undefined ? options.value : options.default_value;
     }
   });
 });
