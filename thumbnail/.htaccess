@@ -1,2 +1,4 @@
 RewriteEngine On
+# Uncomment this if you are getting routing errors:
+# RewriteBase /thumbnail
 RewriteRule (.*) index.php [L]
