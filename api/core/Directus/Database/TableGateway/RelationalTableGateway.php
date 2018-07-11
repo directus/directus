@@ -2,6 +2,7 @@
 
 namespace Directus\Database\TableGateway;
 
+use Directus\API\Routes\A1\Traits;
 use Directus\Database\Exception;
 use Directus\Database\Filters\Filter;
 use Directus\Database\Filters\In;
@@ -22,6 +23,8 @@ use Zend\Db\TableGateway\TableGateway;
 
 class RelationalTableGateway extends BaseTableGateway
 {
+    use Traits\ActivityMode;
+    
     const ACTIVITY_ENTRY_MODE_DISABLED = 0;
     const ACTIVITY_ENTRY_MODE_PARENT = 1;
     const ACTIVITY_ENTRY_MODE_CHILD = 2;
@@ -2018,6 +2021,7 @@ class RelationalTableGateway extends BaseTableGateway
     public function updateCollection($entries)
     {
         $entries = ArrayUtils::isNumericKeys($entries) ? $entries : [$entries];
+        $activityMode = $this->getActivityMode();
         foreach ($entries as $entry) {
             $entry = $this->updateRecord($entry);
             $entry->save();
