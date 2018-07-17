@@ -417,7 +417,7 @@
   "url_x_cannot_be_parse_by_x": "URL %{url} kann nicht geparst werden durch %{class}",
   "video": "Video",
   "x_x_id_not_detected": "%{service} %{type} ID nicht erkannt. Bitte fügen Sie den gesamten Link ein.",
-  "unable_to_retrieve_x_title": "Kan denn %{service} Titel nicht sbrufen",
+  "unable_to_retrieve_x_title": "Kann den %{service} Titel nicht abrufen",
   "x_type_x": "%{service} %{type}",
   "bad_x_api_key": "Falscher ´ %{service} API Schlüssel",
   "mail_configuration_not_defined": "Mail Konfiguration nicht eingestellt.",
