@@ -18,17 +18,17 @@ composer.lock
 # Ignore log files, but track the log README
 *.log
 
-!customs/endpoints/_example.php
-customs/extensions/*
-!customs/extensions/.gitignore
-!customs/extensions/_example/
-customs/interfaces/*
-!customs/interfaces/.gitignore
-!customs/interfaces/_example
-/customs/listviews/*
-!customs/listviews/.gitignore
-!storage/uploads/.gitignore
-!storage/uploads/thumbs/.gitignore
+!./customs/endpoints/_example.php
+./customs/extensions/*
+!./customs/extensions/.gitignore
+!./customs/extensions/_example/
+./customs/interfaces/*
+!./customs/interfaces/.gitignore
+!./customs/interfaces/_example
+./customs/listviews/*
+!./customs/listviews/.gitignore
+!./storage/uploads/.gitignore
+!./storage/uploads/thumbs/.gitignore
 
 thumbnail/**/
 
@@ -37,4 +37,4 @@ thumbnail/**/
 .sass-cache
 .gulp-scss-cache
 node_modules
-storage
+./storage
