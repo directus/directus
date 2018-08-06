@@ -32,6 +32,10 @@ class GcloudStorageAdapter extends AbstractStorageAdapter
             $options['keyFilePath'] = $this->config['keyFilePath'];
         }
 
+        if (isset($this->config['keyFile'])) {
+            $options['keyFile'] = $this->config['keyFile'];
+        }
+
         return new StorageClient($options);
     }
 
