@@ -19,9 +19,10 @@ class FilesystemFactoryTest extends PHPUnit_Framework_TestCase
     {
         return [
             [['adapter' => 'local', 'root' => '']],
-            [['adapter' => 's3', 'root' => '', 'key' => '', 'secret' => '', 'region' => '', 'version' => '', 'bucket' => '']],
             [['adapter' => 'non_existant', 'root' => '']],
-            [['adapter' => 'gcloud', 'projectId' => '', 'bucket' => '', 'keyFilePath' => '']],
+            // You must install first s3 and cloud storage adapters to include the following
+            // [['adapter' => 's3', 'root' => '', 'key' => '', 'secret' => '', 'region' => '', 'version' => '', 'bucket' => '']],
+            // [['adapter' => 'gcloud', 'projectId' => '', 'bucket' => '', 'keyFilePath' => '']],
         ];
     }
 }
