@@ -16,7 +16,7 @@ class GcloudStorageAdapter extends AbstractStorageAdapter
         $client = $this->getGClodStorageClient();
         $bucket = $client->bucket($this->config['bucket']);
 
-        return new GoogleStorageAdapter($client, $bucket);
+        return new GoogleStorageAdapter($client, $bucket, $this->config['root']);
     }
 
     /**
@@ -29,7 +29,7 @@ class GcloudStorageAdapter extends AbstractStorageAdapter
         ];
 
         if (isset($this->config['keyFilePath'])) {
-            $this->config['keyFilePath'] = $this->config['keyFilePath'];
+            $options['keyFilePath'] = $this->config['keyFilePath'];
         }
 
         return new StorageClient($options);
