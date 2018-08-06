@@ -15,13 +15,13 @@ class FilesystemFactoryTest extends PHPUnit_Framework_TestCase
         $this->assertInstanceOf(FilesystemInterface::class, $adapter);
     }
 
-
     public function configDataProvider()
     {
         return [
             [['adapter' => 'local', 'root' => '']],
             [['adapter' => 's3', 'root' => '', 'key' => '', 'secret' => '', 'region' => '', 'version' => '', 'bucket' => '']],
             [['adapter' => 'non_existant', 'root' => '']],
+            [['adapter' => 'gcloud', 'projectId' => '', 'bucket' => '', 'keyFilePath' => '']],
         ];
     }
 }
