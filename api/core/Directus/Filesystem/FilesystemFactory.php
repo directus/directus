@@ -50,7 +50,7 @@ class FilesystemFactory
         }
 
         $client = S3Client::factory($options);
-        $adapter = new S3Adapter($client, $config['bucket'], $config['root'] ?: null, $config['option'] ?: array());
+        $adapter = new S3Adapter($client, $config['bucket'], $config['root'] ?: null, isset($config['s3-option']) ? $config['s3-option'] : array());
 
         return new Flysystem($adapter, [
             'visibility' => ArrayUtils::get($config, 'visibility', AdapterInterface::VISIBILITY_PUBLIC)
