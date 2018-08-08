@@ -146,9 +146,7 @@ define([
         app.router.go(route);
       };
       var notifyParent = function () {
-        _.each(app.getCorsTargets(), function (origin) {
-          window.parent.postMessage('item.saved', origin);
-        });
+        window.parent.postMessage('item.saved', window.location.origin);
       };
 
       if (action === 'save-form-stay') {
