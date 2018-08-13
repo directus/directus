@@ -2023,7 +2023,7 @@ class RelationalTableGateway extends BaseTableGateway
         $entries = ArrayUtils::isNumericKeys($entries) ? $entries : [$entries];
         $activityMode = $this->getActivityMode();
         foreach ($entries as $entry) {
-            $entry = $this->updateRecord($entry);
+            $entry = $this->updateRecord($entry, $activityMode);
             $entry->save();
         }
     }
