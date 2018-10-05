@@ -1,1 +1,0 @@
-deny from all

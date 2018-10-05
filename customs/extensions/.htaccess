@@ -1,5 +1,0 @@
-# Prevent directory listing
-IndexIgnore *
-
-# Prevent direct access to extension api end-points
-RedirectMatch 403 [^/]+/api\.php$

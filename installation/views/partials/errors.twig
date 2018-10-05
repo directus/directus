@@ -1,9 +1,0 @@
-{% if directus.step.getResponse() %}
-
-    <div class="errors">
-        {% for message in directus.step.getResponse.getErrors() %}
-            <p>{{ message|t|raw }}</p>
-        {% endfor %}
-    </div>
-
-{% endif %}

@@ -1,9 +1,0 @@
-{% if directus.step.getResponse() and directus.getResponse.getWarnings() %}
-
-    <div class="warnings">
-        <h3>Warnings:</h3>
-        {% for message in directus.getResponse.getWarnings() %}
-            <p><em>{{ message|t }}</em></p>
-        {% endfor %}
-    </div>
-{% endif %}
