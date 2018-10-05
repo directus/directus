@@ -1,0 +1,18 @@
+--TEST--
+Exception for multiline array with undefined variable
+--TEMPLATE--
+{% set foo = {
+   foo: 'foo',
+   bar: 'bar',
+
+
+   foobar: foobar,
+
+
+
+   foo2: foo2,
+} %}
+--DATA--
+return array('foobar' => 'foobar')
+--EXCEPTION--
+Twig_Error_Runtime: Variable "foo2" does not exist in "index.twig" at line 11.

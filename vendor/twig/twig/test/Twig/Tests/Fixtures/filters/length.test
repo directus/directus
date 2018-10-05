@@ -1,0 +1,37 @@
+--TEST--
+"length" filter
+--TEMPLATE--
+{{ array|length }}
+{{ string|length }}
+{{ number|length }}
+{{ to_string_able|length }}
+{{ countable|length }}
+{{ iterator_aggregate|length }}
+{{ null|length }}
+{{ magic|length }}
+{{ non_countable|length }}
+{{ simple_xml_element|length }}
+--DATA--
+return array(
+    'array' => array(1, 4),
+    'string' => 'foo',
+    'number' => 1000,
+    'to_string_able' => new ToStringStub('foobar'),
+    'countable' => new CountableStub(42),       /* also asserts we do *not* call __toString() */
+    'iterator_aggregate' => new IteratorAggregateStub(array('a', 'b', 'c')),   /* also asserts we do *not* call __toString() */
+    'null'          => null,
+    'magic'         => new MagicCallStub(),     /* used to assert we do *not* call __call */
+    'non_countable' => new \StdClass(),
+    'simple_xml_element' => new \SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><doc><elem/><elem/></doc>'),
+);
+--EXPECT--
+2
+3
+4
+6
+42
+3
+0
+1
+1
+2

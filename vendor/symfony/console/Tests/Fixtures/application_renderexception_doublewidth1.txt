@@ -1,0 +1,8 @@
+
+In ApplicationTest.php line %d:
+                    
+  エラーメッセージ  
+                    
+
+foo
+

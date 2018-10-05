@@ -1,0 +1,85 @@
+--- %YAML:1.0
+test: Trailing Document Separator
+todo: true
+brief: >
+    You can separate YAML documents
+    with a string of three dashes.
+yaml: |
+    - foo: 1
+      bar: 2
+    ---
+    more: stuff
+python: |
+    [
+        [ { 'foo': 1, 'bar': 2 } ],
+        { 'more': 'stuff' }
+    ]
+ruby: |
+    [ { 'foo' => 1, 'bar' => 2 } ]
+
+---
+test: Leading Document Separator
+todo: true
+brief: >
+    You can explicitly give an opening
+    document separator to your YAML stream.
+yaml: |
+    ---
+    - foo: 1
+      bar: 2
+    ---
+    more: stuff
+python: |
+    [
+        [ {'foo': 1, 'bar': 2}],
+        {'more': 'stuff'}
+    ]
+ruby: |
+    [ { 'foo' => 1, 'bar' => 2 } ]
+
+---
+test: YAML Header
+todo: true
+brief: >
+    The opening separator can contain directives
+    to the YAML parser, such as the version
+    number.
+yaml: |
+    --- %YAML:1.0
+    foo: 1
+    bar: 2
+php: |
+    array('foo' => 1, 'bar' => 2)
+documents: 1
+
+---
+test: Red Herring Document Separator
+brief: >
+    Separators included in blocks or strings
+    are treated as blocks or strings, as the
+    document separator should have no indentation
+    preceding it.
+yaml: |
+    foo: |
+        ---
+php: |
+    array('foo' => "---\n")
+
+---
+test: Multiple Document Separators in Block
+brief: >
+    This technique allows you to embed other YAML
+    documents within literal blocks.
+yaml: |
+    foo: |
+        ---
+        foo: bar
+        ---
+        yo: baz
+    bar: |
+        fooness
+php: |
+    array(
+       'foo' => "---\nfoo: bar\n---\nyo: baz\n",
+       'bar' => "fooness\n"
+    )

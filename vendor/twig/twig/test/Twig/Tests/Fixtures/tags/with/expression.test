@@ -1,0 +1,10 @@
+--TEST--
+"with" tag with expression
+--TEMPLATE--
+{% with {foo: 'foo', bar: 'BAZ'} %}
+    {{ foo }}{{ bar }}
+{% endwith %}
+--DATA--
+return array('foo' => 'baz')
+--EXPECT--
+fooBAZ

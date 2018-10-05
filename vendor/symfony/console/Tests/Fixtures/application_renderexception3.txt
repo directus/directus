@@ -1,0 +1,18 @@
+
+In Foo3Command.php line 26:
+                                              
+  Third exception <fg=blue;bg=red>comment</>  
+                                              
+
+In Foo3Command.php line 23:
+                                               
+  Second exception <comment>comment</comment>  
+                                               
+
+In Foo3Command.php line 21:
+                                       
+  First exception <p>this is html</p>  
+                                       
+
+foo3:bar
+

@@ -1,0 +1,319 @@
+<?xml version="1.0"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file source-language="en" datatype="plaintext" original="file.ext">
+        <body>
+            <trans-unit id="1">
+                <source>This value should be false.</source>
+                <target>Táto hodnota by mala byť nastavená na false.</target>
+            </trans-unit>
+            <trans-unit id="2">
+                <source>This value should be true.</source>
+                <target>Táto hodnota by mala byť nastavená na true.</target>
+            </trans-unit>
+            <trans-unit id="3">
+                <source>This value should be of type {{ type }}.</source>
+                <target>Táto hodnota by mala byť typu {{ type }}.</target>
+            </trans-unit>
+            <trans-unit id="4">
+                <source>This value should be blank.</source>
+                <target>Táto hodnota by mala byť prázdna.</target>
+            </trans-unit>
+            <trans-unit id="5">
+                <source>The value you selected is not a valid choice.</source>
+                <target>Táto hodnota by mala byť jednou z poskytnutých možností.</target>
+            </trans-unit>
+            <trans-unit id="6">
+                <source>You must select at least {{ limit }} choice.|You must select at least {{ limit }} choices.</source>
+                <target>Mali by ste vybrať minimálne {{ limit }} možnosť.|Mali by ste vybrať minimálne {{ limit }} možnosti.|Mali by ste vybrať minimálne {{ limit }} možností.</target>
+            </trans-unit>
+            <trans-unit id="7">
+                <source>You must select at most {{ limit }} choice.|You must select at most {{ limit }} choices.</source>
+                <target>Mali by ste vybrať najviac {{ limit }} možnosť.|Mali by ste vybrať najviac {{ limit }} možnosti.|Mali by ste vybrať najviac {{ limit }} možností.</target>
+            </trans-unit>
+            <trans-unit id="8">
+                <source>One or more of the given values is invalid.</source>
+                <target>Niektoré z uvedených hodnôt sú neplatné.</target>
+            </trans-unit>
+            <trans-unit id="9">
+                <source>This field was not expected.</source>
+                <target>Toto pole sa neočakáva.</target>
+            </trans-unit>
+            <trans-unit id="10">
+                <source>This field is missing.</source>
+                <target>Toto pole chýba.</target>
+            </trans-unit>
+            <trans-unit id="11">
+                <source>This value is not a valid date.</source>
+                <target>Tato hodnota nemá platný formát dátumu.</target>
+            </trans-unit>
+            <trans-unit id="12">
+                <source>This value is not a valid datetime.</source>
+                <target>Táto hodnota nemá platný formát dátumu a času.</target>
+            </trans-unit>
+            <trans-unit id="13">
+                <source>This value is not a valid email address.</source>
+                <target>Táto hodnota nie je platná emailová adresa.</target>
+            </trans-unit>
+            <trans-unit id="14">
+                <source>The file could not be found.</source>
+                <target>Súbor sa nenašiel.</target>
+            </trans-unit>
+            <trans-unit id="15">
+                <source>The file is not readable.</source>
+                <target>Súbor nie je čitateľný.</target>
+            </trans-unit>
+            <trans-unit id="16">
+                <source>The file is too large ({{ size }} {{ suffix }}). Allowed maximum size is {{ limit }} {{ suffix }}.</source>
+                <target>Súbor je príliš veľký ({{ size }} {{ suffix }}). Maximálna povolená veľkosť je {{ limit }} {{ suffix }}.</target>
+            </trans-unit>
+            <trans-unit id="17">
+                <source>The mime type of the file is invalid ({{ type }}). Allowed mime types are {{ types }}.</source>
+                <target>Súbor typu ({{ type }}) nie je podporovaný. Podporované typy sú {{ types }}.</target>
+            </trans-unit>
+            <trans-unit id="18">
+                <source>This value should be {{ limit }} or less.</source>
+                <target>Táto hodnota by mala byť {{ limit }} alebo menej.</target>
+            </trans-unit>
+            <trans-unit id="19">
+                <source>This value is too long. It should have {{ limit }} character or less.|This value is too long. It should have {{ limit }} characters or less.</source>
+                <target>Táto hodnota obsahuje viac znakov ako je povolené. Mala by obsahovať najviac {{ limit }} znak.|Táto hodnota obsahuje viac znakov ako je povolené. Mala by obsahovať najviac {{ limit }} znaky.|Táto hodnota obsahuje viac znakov ako je povolené. Mala by obsahovať najviac {{ limit }} znakov.</target>
+            </trans-unit>
+            <trans-unit id="20">
+                <source>This value should be {{ limit }} or more.</source>
+                <target>Táto hodnota by mala byť viac ako {{ limit }}.</target>
+            </trans-unit>
+            <trans-unit id="21">
+                <source>This value is too short. It should have {{ limit }} character or more.|This value is too short. It should have {{ limit }} characters or more.</source>
+                <target>Táto hodnota je príliš krátka. Musí obsahovať minimálne {{ limit }} znak.|Táto hodnota je príliš krátka. Musí obsahovať minimálne {{ limit }} znaky.|Táto hodnota je príliš krátka. Minimálny počet znakov je {{ limit }}.</target>
+            </trans-unit>
+            <trans-unit id="22">
+                <source>This value should not be blank.</source>
+                <target>Táto hodnota by mala byť vyplnená.</target>
+            </trans-unit>
+            <trans-unit id="23">
+                <source>This value should not be null.</source>
+                <target>Táto hodnota by nemala byť null.</target>
+            </trans-unit>
+            <trans-unit id="24">
+                <source>This value should be null.</source>
+                <target>Táto hodnota by mala byť null.</target>
+            </trans-unit>
+            <trans-unit id="25">
+                <source>This value is not valid.</source>
+                <target>Táto hodnota nie je platná.</target>
+            </trans-unit>
+            <trans-unit id="26">
+                <source>This value is not a valid time.</source>
+                <target>Tato hodnota nemá správny formát času.</target>
+            </trans-unit>
+            <trans-unit id="27">
+                <source>This value is not a valid URL.</source>
+                <target>Táto hodnota nie je platnou URL adresou.</target>
+            </trans-unit>
+            <trans-unit id="31">
+                <source>The two values should be equal.</source>
+                <target>Tieto dve hodnoty by mali byť rovnaké.</target>
+            </trans-unit>
+            <trans-unit id="32">
+                <source>The file is too large. Allowed maximum size is {{ limit }} {{ suffix }}.</source>
+                <target>Súbor je príliš veľký. Maximálna povolená veľkosť je {{ limit }} {{ suffix }}.</target>
+            </trans-unit>
+            <trans-unit id="33">
+                <source>The file is too large.</source>
+                <target>Súbor je príliš veľký.</target>
+            </trans-unit>
+            <trans-unit id="34">
+                <source>The file could not be uploaded.</source>
+                <target>Súbor sa nepodarilo nahrať.</target>
+            </trans-unit>
+            <trans-unit id="35">
+                <source>This value should be a valid number.</source>
+                <target>Táto hodnota by mala byť číslo.</target>
+            </trans-unit>
+            <trans-unit id="36">
+                <source>This file is not a valid image.</source>
+                <target>Tento súbor nie je obrázok.</target>
+            </trans-unit>
+            <trans-unit id="37">
+                <source>This is not a valid IP address.</source>
+                <target>Toto nie je platná IP adresa.</target>
+            </trans-unit>
+            <trans-unit id="38">
+                <source>This value is not a valid language.</source>
+                <target>Tento jazyk neexistuje.</target>
+            </trans-unit>
+            <trans-unit id="39">
+                <source>This value is not a valid locale.</source>
+                <target>Táto lokalizácia neexistuje.</target>
+            </trans-unit>
+            <trans-unit id="40">
+                <source>This value is not a valid country.</source>
+                <target>Táto krajina neexistuje.</target>
+            </trans-unit>
+            <trans-unit id="41">
+                <source>This value is already used.</source>
+                <target>Táto hodnota sa už používa.</target>
+            </trans-unit>
+            <trans-unit id="42">
+                <source>The size of the image could not be detected.</source>
+                <target>Nepodarilo sa zistiť rozmery obrázku.</target>
+            </trans-unit>
+            <trans-unit id="43">
+                <source>The image width is too big ({{ width }}px). Allowed maximum width is {{ max_width }}px.</source>
+                <target>Obrázok je príliš široký ({{ width }}px). Maximálna povolená šírka obrázku je {{ max_width }}px.</target>
+            </trans-unit>
+            <trans-unit id="44">
+                <source>The image width is too small ({{ width }}px). Minimum width expected is {{ min_width }}px.</source>
+                <target>Obrázok je príliš úzky ({{ width }}px). Minimálna šírka obrázku by mala byť {{ min_width }}px.</target>
+            </trans-unit>
+            <trans-unit id="45">
+                <source>The image height is too big ({{ height }}px). Allowed maximum height is {{ max_height }}px.</source>
+                <target>>Obrázok je príliš vysoký ({{ height }}px). Maximálna povolená výška obrázku je {{ max_height }}px.</target>
+            </trans-unit>
+            <trans-unit id="46">
+                <source>The image height is too small ({{ height }}px). Minimum height expected is {{ min_height }}px.</source>
+                <target>Obrázok je príliš nízky ({{ height }}px). Minimálna výška obrázku by mala byť {{ min_height }}px.</target>
+            </trans-unit>
+            <trans-unit id="47">
+                <source>This value should be the user's current password.</source>
+                <target>Táto hodnota by mala byť aktuálne heslo používateľa.</target>
+            </trans-unit>
+            <trans-unit id="48">
+                <source>This value should have exactly {{ limit }} character.|This value should have exactly {{ limit }} characters.</source>
+                <target>Táto hodnota by mala mať presne {{ limit }} znak.|Táto hodnota by mala mať presne {{ limit }} znaky.|Táto hodnota by mala mať presne {{ limit }} znakov.</target>
+            </trans-unit>
+            <trans-unit id="49">
+                <source>The file was only partially uploaded.</source>
+                <target>Bola nahraná len časť súboru.</target>
+            </trans-unit>
+            <trans-unit id="50">
+                <source>No file was uploaded.</source>
+                <target>Žiadny súbor nebol nahraný.</target>
+            </trans-unit>
+            <trans-unit id="51">
+                <source>No temporary folder was configured in php.ini.</source>
+                <target>V php.ini nie je nastavená cesta k adresáru pre dočasné súbory.</target>
+            </trans-unit>
+            <trans-unit id="52">
+                <source>Cannot write temporary file to disk.</source>
+                <target>Dočasný súbor sa nepodarilo zapísať na disk.</target>
+            </trans-unit>
+            <trans-unit id="53">
+                <source>A PHP extension caused the upload to fail.</source>
+                <target>Rozšírenie PHP zabránilo nahraniu súboru.</target>
+            </trans-unit>
+            <trans-unit id="54">
+                <source>This collection should contain {{ limit }} element or more.|This collection should contain {{ limit }} elements or more.</source>
+                <target>Táto kolekcia by mala obsahovať aspoň {{ limit }} prvok alebo viac.|Táto kolekcia by mala obsahovať aspoň {{ limit }} prvky alebo viac.|Táto kolekcia by mala obsahovať aspoň {{ limit }} prvkov alebo viac.</target>
+            </trans-unit>
+            <trans-unit id="55">
+                <source>This collection should contain {{ limit }} element or less.|This collection should contain {{ limit }} elements or less.</source>
+                <target>Táto kolekcia by mala maximálne {{ limit }} prvok.|Táto kolekcia by mala obsahovať maximálne {{ limit }} prvky.|Táto kolekcia by mala obsahovať maximálne {{ limit }} prvkov.</target>
+            </trans-unit>
+            <trans-unit id="56">
+                <source>This collection should contain exactly {{ limit }} element.|This collection should contain exactly {{ limit }} elements.</source>
+                <target>Táto kolekcia by mala obsahovať presne {{ limit }} prvok.|Táto kolekcia by mala obsahovať presne {{ limit }} prvky.|Táto kolekcia by mala obsahovať presne {{ limit }} prvkov.</target>
+            </trans-unit>
+            <trans-unit id="57">
+                <source>Invalid card number.</source>
+                <target>Neplatné číslo karty.</target>
+            </trans-unit>
+            <trans-unit id="58">
+                <source>Unsupported card type or invalid card number.</source>
+                <target>Nepodporovaný typ karty alebo neplatné číslo karty.</target>
+            </trans-unit>
+            <trans-unit id="59">
+                <source>This is not a valid International Bank Account Number (IBAN).</source>
+                <target>Toto je neplatný IBAN.</target>
+            </trans-unit>
+            <trans-unit id="60">
+                <source>This value is not a valid ISBN-10.</source>
+                <target>Táto hodnota je neplatné ISBN-10.</target>
+            </trans-unit>
+            <trans-unit id="61">
+                <source>This value is not a valid ISBN-13.</source>
+                <target>Táto hodnota je neplatné ISBN-13.</target>
+            </trans-unit>
+            <trans-unit id="62">
+                <source>This value is neither a valid ISBN-10 nor a valid ISBN-13.</source>
+                <target>Táto hodnota nie je platné ISBN-10 ani ISBN-13.</target>
+            </trans-unit>
+            <trans-unit id="63">
+                <source>This value is not a valid ISSN.</source>
+                <target>Táto hodnota nie je platné ISSN.</target>
+            </trans-unit>
+            <trans-unit id="64">
+                <source>This value is not a valid currency.</source>
+                <target>Táto hodnota nie je platná mena.</target>
+            </trans-unit>
+            <trans-unit id="65">
+                <source>This value should be equal to {{ compared_value }}.</source>
+                <target>Táto hodnota by mala byť rovná {{ compared_value }}.</target>
+            </trans-unit>
+            <trans-unit id="66">
+                <source>This value should be greater than {{ compared_value }}.</source>
+                <target>Táto hodnota by mala byť väčšia ako {{ compared_value }}.</target>
+            </trans-unit>
+            <trans-unit id="67">
+                <source>This value should be greater than or equal to {{ compared_value }}.</source>
+                <target>Táto hodnota by mala byť väčšia alebo rovná {{ compared_value }}.</target>
+            </trans-unit>
+            <trans-unit id="68">
+                <source>This value should be identical to {{ compared_value_type }} {{ compared_value }}.</source>
+                <target>Táto hodnota by mala byť typu {{ compared_value_type }} a zároveň by mala byť rovná {{ compared_value }}.</target>
+            </trans-unit>
+            <trans-unit id="69">
+                <source>This value should be less than {{ compared_value }}.</source>
+                <target>Táto hodnota by mala byť menšia ako {{ compared_value }}.</target>
+            </trans-unit>
+            <trans-unit id="70">
+                <source>This value should be less than or equal to {{ compared_value }}.</source>
+                <target>Táto hodnota by mala byť menšia alebo rovná {{ compared_value }}.</target>
+            </trans-unit>
+            <trans-unit id="71">
+                <source>This value should not be equal to {{ compared_value }}.</source>
+                <target>Táto hodnota by nemala byť rovná {{ compared_value }}.</target>
+            </trans-unit>
+            <trans-unit id="72">
+                <source>This value should not be identical to {{ compared_value_type }} {{ compared_value }}.</source>
+                <target>Táto hodnota by nemala byť typu {{ compared_value_type }} a zároveň by nemala byť rovná {{ compared_value }}.</target>
+            </trans-unit>
+            <trans-unit id="73">
+                <source>The image ratio is too big ({{ ratio }}). Allowed maximum ratio is {{ max_ratio }}.</source>
+                <target>Pomer strán obrázku je príliš veľký ({{ ratio }}). Maximálny povolený pomer strán obrázku je {{ max_ratio }}.</target>
+            </trans-unit>
+            <trans-unit id="74">
+                <source>The image ratio is too small ({{ ratio }}). Minimum ratio expected is {{ min_ratio }}.</source>
+                <target>Pomer strán obrázku je príliš malý ({{ ratio }}). Minimálny povolený pomer strán obrázku je {{ min_ratio }}.</target>
+            </trans-unit>
+            <trans-unit id="75">
+                <source>The image is square ({{ width }}x{{ height }}px). Square images are not allowed.</source>
+                <target>Strany obrázku sú štvorcové ({{ width }}x{{ height }}px). Štvorcové obrázky nie sú povolené.</target>
+            </trans-unit>
+            <trans-unit id="76">
+                <source>The image is landscape oriented ({{ width }}x{{ height }}px). Landscape oriented images are not allowed.</source>
+                <target>Obrázok je orientovaný na šírku ({{ width }}x{{ height }}px). Obrázky orientované na šírku nie sú povolené.</target>
+            </trans-unit>
+            <trans-unit id="77">
+                <source>The image is portrait oriented ({{ width }}x{{ height }}px). Portrait oriented images are not allowed.</source>
+                <target>Obrázok je orientovaný na výšku ({{ width }}x{{ height }}px). Obrázky orientované na výšku nie sú povolené.</target>
+            </trans-unit>
+            <trans-unit id="78">
+                <source>An empty file is not allowed.</source>
+                <target>Súbor nesmie byť prázdny.</target>
+            </trans-unit>
+            <trans-unit id="79">
+                <source>The host could not be resolved.</source>
+                <target>Hostiteľa nebolo možné rozpoznať.</target>
+            </trans-unit>
+            <trans-unit id="80">
+                <source>This value does not match the expected {{ charset }} charset.</source>
+                <target>Táto hodnota nezodpovedá očakávanej znakovej sade {{ charset }}.</target>
+            </trans-unit>
+            <trans-unit id="81">
+                <source>This is not a valid Business Identifier Code (BIC).</source>
+                <target>Táto hodnota nie je platný identifikačný kód podniku (BIC).</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

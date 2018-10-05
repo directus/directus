@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<phpunit backupGlobals="true"
+         backupStaticAttributes="false"
+         bootstrap="/path/to/bootstrap.php"
+         cacheTokens="false"
+         columns="80"
+         colors="false"
+         stderr="false"
+         convertErrorsToExceptions="true"
+         convertNoticesToExceptions="true"
+         convertWarningsToExceptions="true"
+         forceCoversAnnotation="false"
+         stopOnFailure="false"
+         stopOnWarning="false"
+         failOnWarning="false"
+         failOnRisky="false"
+         extensionsDirectory="/tmp"
+         printerClass="PHPUnit_TextUI_ResultPrinter"
+         testSuiteLoaderClass="PHPUnit_Runner_StandardTestSuiteLoader"
+         beStrictAboutChangesToGlobalState="false"
+         beStrictAboutOutputDuringTests="false"
+         beStrictAboutResourceUsageDuringSmallTests="false"
+         beStrictAboutTestsThatDoNotTestAnything="false"
+         beStrictAboutTodoAnnotatedTests="false"
+         beStrictAboutCoversAnnotation="false"
+         enforceTimeLimit="false"
+         timeoutForSmallTests="1"
+         timeoutForMediumTests="10"
+         timeoutForLargeTests="60"
+         verbose="false">
+         <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+             href="configuration.xml"
+             parse="xml"
+             xpointer="xpointer(/phpunit/testsuites)" />
+
+  <groups>
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+          href="configuration.xml"
+        parse="xml"
+        xpointer="xpointer(/phpunit/groups/*)" />
+  </groups>
+
+
+  <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+      href="configuration.xml"
+      parse="xml"
+      xpointer="xpointer(/phpunit/filter)" />
+  <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+      href="configuration.xml"
+      parse="xml"
+      xpointer="xpointer(/phpunit/listeners)" />
+  <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+      href="configuration.xml"
+      parse="xml"
+      xpointer="xpointer(/phpunit/logging)" />
+
+  <php>
+    <includePath>.</includePath>
+    <includePath>/path/to/lib</includePath>
+    <ini name="foo" value="bar"/>
+    <const name="FOO" value="false"/>
+    <const name="BAR" value="true"/>
+    <var name="foo" value="false"/>
+    <env name="foo" value="true"/>
+    <post name="foo" value="bar"/>
+    <get name="foo" value="bar"/>
+    <cookie name="foo" value="bar"/>
+    <server name="foo" value="bar"/>
+    <files name="foo" value="bar"/>
+    <request name="foo" value="bar"/>
+  </php>
+</phpunit>
+

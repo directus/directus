@@ -1,0 +1,12 @@
+--TEST--
+"extends" tag
+--TEMPLATE--
+{% extends "layout.twig" %}{% block content %}{{ parent() }}index {% endblock %}
+--TEMPLATE(layout.twig)--
+{% extends "base.twig" %}{% block content %}{{ parent() }}layout {% endblock %}
+--TEMPLATE(base.twig)--
+{% block content %}base {% endblock %}
+--DATA--
+return array()
+--EXPECT--
+base layout index

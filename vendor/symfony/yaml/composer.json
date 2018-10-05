@@ -1,0 +1,43 @@
+{
+    "name": "symfony/yaml",
+    "type": "library",
+    "description": "Symfony Yaml Component",
+    "keywords": [],
+    "homepage": "https://symfony.com",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Fabien Potencier",
+            "email": "fabien@symfony.com"
+        },
+        {
+            "name": "Symfony Community",
+            "homepage": "https://symfony.com/contributors"
+        }
+    ],
+    "require": {
+        "php": "^7.1.3",
+        "symfony/polyfill-ctype": "~1.8"
+    },
+    "require-dev": {
+        "symfony/console": "~3.4|~4.0"
+    },
+    "conflict": {
+        "symfony/console": "<3.4"
+    },
+    "suggest": {
+        "symfony/console": "For validating YAML files using the lint command"
+    },
+    "autoload": {
+        "psr-4": { "Symfony\\Component\\Yaml\\": "" },
+        "exclude-from-classmap": [
+            "/Tests/"
+        ]
+    },
+    "minimum-stability": "dev",
+    "extra": {
+        "branch-alias": {
+            "dev-master": "4.1-dev"
+        }
+    }
+}

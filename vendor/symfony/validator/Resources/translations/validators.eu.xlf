@@ -1,0 +1,291 @@
+<?xml version="1.0"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file source-language="en" datatype="plaintext" original="file.ext">
+        <body>
+            <trans-unit id="1">
+                <source>This value should be false.</source>
+                <target>Balio hau faltsua izan beharko litzateke.</target>
+            </trans-unit>
+            <trans-unit id="2">
+                <source>This value should be true.</source>
+                <target>Balio hau egia izan beharko litzateke.</target>
+            </trans-unit>
+            <trans-unit id="3">
+                <source>This value should be of type {{ type }}.</source>
+                <target>Balio hau {{ type }} motakoa izan beharko litzateke.</target>
+            </trans-unit>
+            <trans-unit id="4">
+                <source>This value should be blank.</source>
+                <target>Balio hau hutsik egon beharko litzateke.</target>
+            </trans-unit>
+            <trans-unit id="5">
+                <source>The value you selected is not a valid choice.</source>
+                <target>Hautatu duzun balioa ez da aukera egoki bat.</target>
+            </trans-unit>
+            <trans-unit id="6">
+                <source>You must select at least {{ limit }} choice.|You must select at least {{ limit }} choices.</source>
+                <target>Gutxienez aukera {{ limit }} hautatu behar duzu.|Gutxienez {{ limit }} aukera hautatu behar dituzu.</target>
+            </trans-unit>
+            <trans-unit id="7">
+                <source>You must select at most {{ limit }} choice.|You must select at most {{ limit }} choices.</source>
+                <target>Gehienez aukera {{ limit }} hautatu behar duzu.|Gehienez {{ limit }} aukera hautatu behar dituzu.</target>
+            </trans-unit>
+            <trans-unit id="8">
+                <source>One or more of the given values is invalid.</source>
+                <target>Emandako balioetatik gutxienez bat ez da egokia.</target>
+            </trans-unit>
+            <trans-unit id="9">
+                <source>This field was not expected.</source>
+                <target>Eremu hau ez zen espero.</target>
+            </trans-unit>
+            <trans-unit id="10">
+                <source>This field is missing.</source>
+                <target>Eremu hau falta da.</target>
+            </trans-unit>
+            <trans-unit id="11">
+                <source>This value is not a valid date.</source>
+                <target>Balio hau ez da data egoki bat.</target>
+            </trans-unit>
+            <trans-unit id="12">
+                <source>This value is not a valid datetime.</source>
+                <target>Balio hau ez da data-ordu egoki bat.</target>
+            </trans-unit>
+            <trans-unit id="13">
+                <source>This value is not a valid email address.</source>
+                <target>Balio hau ez da posta elektroniko egoki bat.</target>
+            </trans-unit>
+            <trans-unit id="14">
+                <source>The file could not be found.</source>
+                <target>Ezin izan da fitxategia aurkitu.</target>
+            </trans-unit>
+            <trans-unit id="15">
+                <source>The file is not readable.</source>
+                <target>Fitxategia ez da irakurgarria.</target>
+            </trans-unit>
+            <trans-unit id="16">
+                <source>The file is too large ({{ size }} {{ suffix }}). Allowed maximum size is {{ limit }} {{ suffix }}.</source>
+                <target>Fitxategia handiegia da ({{ size }} {{ suffix }}). Baimendutako tamaina handiena {{ limit }} {{ suffix }} da.</target>
+            </trans-unit>
+            <trans-unit id="17">
+                <source>The mime type of the file is invalid ({{ type }}). Allowed mime types are {{ types }}.</source>
+                <target>Fitxategiaren mime mota ez da egokia ({{ type }}). Hauek dira baimendutako mime motak: {{ types }}.</target>
+            </trans-unit>
+            <trans-unit id="18">
+                <source>This value should be {{ limit }} or less.</source>
+                <target>Balio hau gehienez {{ limit }} izan beharko litzateke.</target>
+            </trans-unit>
+            <trans-unit id="19">
+                <source>This value is too long. It should have {{ limit }} character or less.|This value is too long. It should have {{ limit }} characters or less.</source>
+                <target>Balio hau luzeegia da. Gehienez karaktere {{ limit }} eduki beharko luke.|Balio hau luzeegia da. Gehienez {{ limit }} karaktere eduki beharko lituzke.</target>
+            </trans-unit>
+            <trans-unit id="20">
+                <source>This value should be {{ limit }} or more.</source>
+                <target>Balio hau gutxienez {{ limit }} izan beharko litzateke.</target>
+            </trans-unit>
+            <trans-unit id="21">
+                <source>This value is too short. It should have {{ limit }} character or more.|This value is too short. It should have {{ limit }} characters or more.</source>
+                <target>Balio hau motzegia da. Karaktere {{ limit }} gutxienez eduki beharko luke.|Balio hau motzegia da. Gutxienez {{ limit }} karaktere eduki beharko lituzke.</target>
+            </trans-unit>
+            <trans-unit id="22">
+                <source>This value should not be blank.</source>
+                <target>Balio hau ez litzateke hutsik egon behar.</target>
+            </trans-unit>
+            <trans-unit id="23">
+                <source>This value should not be null.</source>
+                <target>Balio hau ez litzateke nulua izan behar.</target>
+            </trans-unit>
+            <trans-unit id="24">
+                <source>This value should be null.</source>
+                <target>Balio hau nulua izan beharko litzateke.</target>
+            </trans-unit>
+            <trans-unit id="25">
+                <source>This value is not valid.</source>
+                <target>Balio hau ez da egokia.</target>
+            </trans-unit>
+            <trans-unit id="26">
+                <source>This value is not a valid time.</source>
+                <target>Balio hau ez da ordu egoki bat.</target>
+           </trans-unit>
+            <trans-unit id="27">
+                <source>This value is not a valid URL.</source>
+                <target>Balio hau ez da baliabideen kokatzaile uniforme (URL) egoki bat.</target>
+            </trans-unit>
+            <trans-unit id="31">
+                <source>The two values should be equal.</source>
+                <target>Bi balioak berdinak izan beharko lirateke.</target>
+            </trans-unit>
+            <trans-unit id="32">
+                <source>The file is too large. Allowed maximum size is {{ limit }} {{ suffix }}.</source>
+                <target>Fitxategia handiegia da. Baimendutako tamaina handiena {{ limit }} {{ suffix }} da.</target>
+            </trans-unit>
+            <trans-unit id="33">
+                <source>The file is too large.</source>
+                <target>Fitxategia handiegia da.</target>
+            </trans-unit>
+            <trans-unit id="34">
+                <source>The file could not be uploaded.</source>
+                <target>Ezin izan da fitxategia igo.</target>
+            </trans-unit>
+            <trans-unit id="35">
+                <source>This value should be a valid number.</source>
+                <target>Balio hau zenbaki egoki bat izan beharko litzateke.</target>
+            </trans-unit>
+            <trans-unit id="36">
+                <source>This file is not a valid image.</source>
+                <target>Fitxategi hau ez da irudi egoki bat.</target>
+            </trans-unit>
+            <trans-unit id="37">
+                <source>This is not a valid IP address.</source>
+                <target>Honako hau ez da IP helbide egoki bat.</target>
+            </trans-unit>
+            <trans-unit id="38">
+                <source>This value is not a valid language.</source>
+                <target>Balio hau ez da hizkuntza egoki bat.</target>
+            </trans-unit>
+            <trans-unit id="39">
+                <source>This value is not a valid locale.</source>
+                <target>Balio hau ez da kokapen egoki bat.</target>
+            </trans-unit>
+            <trans-unit id="40">
+                <source>This value is not a valid country.</source>
+                <target>Balio hau ez da herrialde egoki bat.</target>
+            </trans-unit>
+            <trans-unit id="41">
+                <source>This value is already used.</source>
+                <target>Balio hau jadanik erabilia izan da.</target>
+            </trans-unit>
+            <trans-unit id="42">
+                <source>The size of the image could not be detected.</source>
+                <target>Ezin izan da irudiaren tamaina detektatu.</target>
+            </trans-unit>
+            <trans-unit id="43">
+                <source>The image width is too big ({{ width }}px). Allowed maximum width is {{ max_width }}px.</source>
+                <target>Irudiaren zabalera handiegia da ({{ width }}px). Onartutako gehienezko zabalera {{ max_width }}px dira.</target>
+            </trans-unit>
+            <trans-unit id="44">
+                <source>The image width is too small ({{ width }}px). Minimum width expected is {{ min_width }}px.</source>
+                <target>Irudiaren zabalera txikiegia da ({{ width }}px). Onartutako gutxieneko zabalera {{ min_width }}px dira.</target>
+            </trans-unit>
+            <trans-unit id="45">
+                <source>The image height is too big ({{ height }}px). Allowed maximum height is {{ max_height }}px.</source>
+                <target>Irudiaren altuera handiegia da ({{ height }}px). Onartutako gehienezko altuera {{ max_height }}px dira.</target>
+            </trans-unit>
+            <trans-unit id="46">
+                <source>The image height is too small ({{ height }}px). Minimum height expected is {{ min_height }}px.</source>
+                <target>Irudiaren altuera txikiegia da ({{ height }}px). Onartutako gutxieneko altuera {{ min_height }}px dira.</target>
+            </trans-unit>
+            <trans-unit id="47">
+                <source>This value should be the user's current password.</source>
+                <target>Balio hau uneko erabiltzailearen pasahitza izan beharko litzateke.</target>
+            </trans-unit>
+            <trans-unit id="48">
+                <source>This value should have exactly {{ limit }} character.|This value should have exactly {{ limit }} characters.</source>
+                <target>Balio honek zehazki karaktere {{ limit }} izan beharko luke.|Balio honek zehazki {{ limit }} karaktere izan beharko lituzke.</target>
+            </trans-unit>
+            <trans-unit id="49">
+                <source>The file was only partially uploaded.</source>
+                <target>Fitxategiaren zati bat bakarrik igo da.</target>
+            </trans-unit>
+            <trans-unit id="50">
+                <source>No file was uploaded.</source>
+                <target>Ez da fitxategirik igo.</target>
+            </trans-unit>
+            <trans-unit id="51">
+                <source>No temporary folder was configured in php.ini.</source>
+                <target>Ez da aldi baterako karpetarik konfiguratu php.ini fitxategian.</target>
+            </trans-unit>
+            <trans-unit id="52">
+                <source>Cannot write temporary file to disk.</source>
+                <target>Ezin izan da aldi baterako fitxategia diskoan idatzi.</target>
+            </trans-unit>
+            <trans-unit id="53">
+                <source>A PHP extension caused the upload to fail.</source>
+                <target>PHP luzapen batek igoeraren hutsa eragin du.</target>
+            </trans-unit>
+            <trans-unit id="54">
+                <source>This collection should contain {{ limit }} element or more.|This collection should contain {{ limit }} elements or more.</source>
+                <target>Bilduma honek gutxienez elementu {{ limit }} eduki beharko luke.|Bilduma honek gutxienez {{ limit }} elementu eduki beharko lituzke.</target>
+            </trans-unit>
+            <trans-unit id="55">
+                <source>This collection should contain {{ limit }} element or less.|This collection should contain {{ limit }} elements or less.</source>
+                <target>Bilduma honek gehienez elementu {{ limit }} eduki beharko luke.|Bilduma honek gehienez {{ limit }} elementu eduki beharko lituzke.</target>
+            </trans-unit>
+            <trans-unit id="56">
+                <source>This collection should contain exactly {{ limit }} element.|This collection should contain exactly {{ limit }} elements.</source>
+                <target>Bilduma honek zehazki elementu {{ limit }} eduki beharko luke.|Bilduma honek zehazki {{ limit }} elementu eduki beharko lituzke.</target>
+            </trans-unit>
+            <trans-unit id="57">
+                <source>Invalid card number.</source>
+                <target>Txartel zenbaki baliogabea.</target>
+            </trans-unit>
+            <trans-unit id="58">
+                <source>Unsupported card type or invalid card number.</source>
+                <target>Txartel mota onartezina edo txartel zenbaki baliogabea.</target>
+            </trans-unit>
+            <trans-unit id="59">
+                <source>This is not a valid International Bank Account Number (IBAN).</source>
+                <target>Hau ez da baliozko banku internazionaleko kontu zenbaki (IBAN) bat.</target>
+            </trans-unit>
+            <trans-unit id="60">
+                <source>This value is not a valid ISBN-10.</source>
+                <target>Balio hau ez da onartutako ISBN-10 bat.</target>
+            </trans-unit>
+            <trans-unit id="61">
+                <source>This value is not a valid ISBN-13.</source>
+                <target>Balio hau ez da onartutako ISBN-13 bat.</target>
+            </trans-unit>
+            <trans-unit id="62">
+                <source>This value is neither a valid ISBN-10 nor a valid ISBN-13.</source>
+                <target>Balio hau ez da onartutako ISBN-10 edo ISBN-13 bat.</target>
+            </trans-unit>
+            <trans-unit id="63">
+                <source>This value is not a valid ISSN.</source>
+                <target>Balio hau ez da onartutako ISSN bat.</target>
+            </trans-unit>
+            <trans-unit id="64">
+                <source>This value is not a valid currency.</source>
+                <target>Balio hau ez da baliozko moneta bat.</target>
+            </trans-unit>
+            <trans-unit id="65">
+                <source>This value should be equal to {{ compared_value }}.</source>
+                <target>Balio hau {{ compared_value }}-(r)en berbera izan beharko litzateke.</target>
+            </trans-unit>
+            <trans-unit id="66">
+                <source>This value should be greater than {{ compared_value }}.</source>
+                <target>Balio hau {{ compared_value }} baino handiagoa izan beharko litzateke.</target>
+            </trans-unit>
+            <trans-unit id="67">
+                <source>This value should be greater than or equal to {{ compared_value }}.</source>
+                <target>Balio hau {{ compared_value }}-(r)en berdina edota handiagoa izan beharko litzateke.</target>
+            </trans-unit>
+            <trans-unit id="68">
+                <source>This value should be identical to {{ compared_value_type }} {{ compared_value }}.</source>
+                <target>Balio hau {{ compared_value_type }} {{ compared_value }}-(r)en berbera izan beharko litzateke.</target>
+            </trans-unit>
+            <trans-unit id="69">
+                <source>This value should be less than {{ compared_value }}.</source>
+                <target>Balio hau {{ compared_value }} baino txikiagoa izan beharko litzateke.</target>
+            </trans-unit>
+            <trans-unit id="70">
+                <source>This value should be less than or equal to {{ compared_value }}.</source>
+                <target>Balio hau {{ compared_value }}-(r)en berdina edota txikiagoa izan beharko litzateke.</target>
+            </trans-unit>
+            <trans-unit id="71">
+                <source>This value should not be equal to {{ compared_value }}.</source>
+                <target>Balio hau ez litzateke {{ compared_value }}-(r)en berdina izan behar.</target>
+            </trans-unit>
+            <trans-unit id="72">
+                <source>This value should not be identical to {{ compared_value_type }} {{ compared_value }}.</source>
+                <target>Balio hau ez litzateke {{ compared_value_type }} {{ compared_value }}-(r)en berbera izan behar.</target>
+            </trans-unit>
+            <trans-unit id="82">
+                <source>Error</source>
+                <target>Errore</target>
+            </trans-unit>
+            <trans-unit id="83">
+                <source>This is not a valid UUID.</source>
+                <target>Balio hau ez da onartutako UUID bat.</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

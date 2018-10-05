@@ -1,0 +1,6 @@
+--TEST--
+The PHP === strict comparison operator is not supported
+--TEMPLATE--
+{{ 1 === 2 }}
+--EXCEPTION--
+Twig_Error_Syntax: Unexpected operator of value "=". Did you try to use "===" or "!==" for strict comparison? Use "is same as(value)" instead in "index.twig" at line 2.

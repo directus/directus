@@ -1,0 +1,11 @@
+
+fieldset[data-v-216b24]{padding:8px 0 0
+}
+label[data-v-216b24]{margin-bottom:10px;margin-top:30px
+}
+.draggable[data-v-216b24]{display:flex;align-items:center;justify-content:space-between;cursor:ns-resize
+}
+.draggable .checkbox[data-v-216b24]{max-width:125px
+}
+.draggable i[data-v-216b24]{color:var(--lighter-gray)
+}

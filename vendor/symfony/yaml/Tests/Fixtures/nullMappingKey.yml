@@ -1,0 +1,9 @@
+--- %YAML:1.0
+test: Miscellaneous
+spec: 2.21
+yaml: |
+  null: ~
+php: |
+  array(
+    'null' => null,
+  )

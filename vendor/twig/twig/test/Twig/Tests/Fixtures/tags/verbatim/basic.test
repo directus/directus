@@ -1,0 +1,10 @@
+--TEST--
+"verbatim" tag
+--TEMPLATE--
+{% verbatim %}
+{{ foo }}
+{% endverbatim %}
+--DATA--
+return array()
+--EXPECT--
+{{ foo }}

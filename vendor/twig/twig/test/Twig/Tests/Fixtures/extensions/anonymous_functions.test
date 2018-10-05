@@ -1,0 +1,10 @@
+--TEST--
+use an anonymous function as a function
+--TEMPLATE--
+{{ anon_foo('bar') }}
+{{ 'bar'|anon_foo }}
+--DATA--
+return array()
+--EXPECT--
+*bar*
+*bar*

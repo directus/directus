@@ -1,0 +1,19 @@
+<?xml version="1.0" ?>
+
+<constraint-mapping xmlns="http://symfony.com/schema/dic/constraint-mapping"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/constraint-mapping http://symfony.com/schema/dic/constraint-mapping/constraint-mapping-1.0.xsd">
+
+  <namespace prefix="custom">Symfony\Component\Validator\Tests\Fixtures\</namespace>
+
+  <class name="Symfony\Component\Validator\Tests\Fixtures\Entity">
+    <property name="firstName">
+      <!-- Constraint with a Boolean -->
+      <constraint name="Regex">
+          <option name="pattern">/^1/</option>
+          <option name="match">false</option>
+      </constraint>
+    </property>
+  </class>
+
+</constraint-mapping>

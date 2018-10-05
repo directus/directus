@@ -1,0 +1,40 @@
+language: php
+
+env:
+  matrix:
+    - PIMPLE_EXT=no
+    - PIMPLE_EXT=yes
+  global:
+    - REPORT_EXIT_STATUS=1
+
+php:
+  - 5.3
+  - 5.4
+  - 5.5
+  - 5.6
+  - 7.0
+  - 7.1
+
+before_script:
+  - composer self-update
+  - COMPOSER_ROOT_VERSION=dev-master composer install
+  - if [ "$PIMPLE_EXT" == "yes" ]; then sh -c "cd ext/pimple && phpize && ./configure && make && sudo make install"; fi
+  - if [ "$PIMPLE_EXT" == "yes" ]; then echo "extension=pimple.so" >> `php --ini | grep "Loaded Configuration" | sed -e "s|.*:\s*||"`; fi
+
+script:
+  - cd ext/pimple
+  - if [ "$PIMPLE_EXT" == "yes" ]; then yes n | make test | tee output ; grep -E 'Tests failed +. +0' output; fi
+  - if [ "$PIMPLE_EXT" == "yes" ]; then export SYMFONY_DEPRECATIONS_HELPER=weak; fi
+  - cd ../..
+  - ./vendor/bin/simple-phpunit
+
+matrix:
+  include:
+    - php: hhvm
+      dist: trusty
+      env: PIMPLE_EXT=no
+  exclude:
+    - php: 7.0
+      env: PIMPLE_EXT=yes
+    - php: 7.1
+      env: PIMPLE_EXT=yes

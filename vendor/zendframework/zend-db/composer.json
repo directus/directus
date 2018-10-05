@@ -1,0 +1,71 @@
+{
+    "name": "zendframework/zend-db",
+    "description": "Database abstraction layer, SQL abstraction, result set abstraction, and RowDataGateway and TableDataGateway implementations",
+    "license": "BSD-3-Clause",
+    "keywords": [
+        "zf",
+        "zendframework",
+        "db"
+    ],
+    "support": {
+        "docs": "https://docs.zendframework.com/zend-db/",
+        "issues": "https://github.com/zendframework/zend-db/issues",
+        "source": "https://github.com/zendframework/zend-db",
+        "rss": "https://github.com/zendframework/zend-db/releases.atom",
+        "slack": "https://zendframework-slack.herokuapp.com",
+        "forum": "https://discourse.zendframework.com/c/questions/components"
+    },
+    "require": {
+        "php": "^5.6 || ^7.0",
+        "zendframework/zend-stdlib": "^2.7 || ^3.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^5.7.25 || ^6.4.4",
+        "zendframework/zend-coding-standard": "~1.0.0",
+        "zendframework/zend-eventmanager": "^2.6.2 || ^3.0",
+        "zendframework/zend-hydrator": "^1.1 || ^2.1",
+        "zendframework/zend-servicemanager": "^2.7.5 || ^3.0.3"
+    },
+    "suggest": {
+        "zendframework/zend-eventmanager": "Zend\\EventManager component",
+        "zendframework/zend-hydrator": "Zend\\Hydrator component for using HydratingResultSets",
+        "zendframework/zend-servicemanager": "Zend\\ServiceManager component"
+    },
+    "autoload": {
+        "psr-4": {
+            "Zend\\Db\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "files": [
+            "test/autoload.php"
+        ],
+        "psr-4": {
+            "ZendTest\\Db\\": "test/"
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "2.9-dev",
+            "dev-develop": "2.10-dev"
+        },
+        "zf": {
+            "component": "Zend\\Db",
+            "config-provider": "Zend\\Db\\ConfigProvider"
+        }
+    },
+    "scripts": {
+        "check": [
+            "@cs-check",
+            "@test"
+        ],
+        "cs-check": "phpcs",
+        "cs-fix": "phpcbf",
+        "test": "phpunit --colors=always",
+        "test-coverage": "phpunit --colors=always --coverage-clover clover.xml",
+        "upload-coverage": "coveralls -v"
+    }
+}

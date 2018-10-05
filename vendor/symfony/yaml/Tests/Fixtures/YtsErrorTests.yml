@@ -1,0 +1,25 @@
+---
+test: Missing value for hash item
+todo: true
+brief: |
+    Third item in this hash doesn't have a value
+yaml: |
+    okay: value
+    also okay: ~
+    causes error because no value specified
+    last key: value okay here too
+python-error: causes error because no value specified
+
+---
+test: Not indenting enough
+brief: |
+    There was a bug in PyYaml where it was off by one
+    in the indentation check.  It was allowing the YAML
+    below.
+# This is actually valid YAML now. Someone should tell showell.
+yaml: |
+    foo:
+    firstline: 1
+    secondline: 2
+php: |
+  array('foo' => null, 'firstline' => 1, 'secondline' => 2)

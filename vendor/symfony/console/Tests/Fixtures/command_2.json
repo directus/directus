@@ -1,0 +1,33 @@
+{
+    "name": "descriptor:command2",
+    "hidden": false,
+    "usage": [
+        "descriptor:command2 [-o|--option_name] [--] <argument_name>",
+        "descriptor:command2 -o|--option_name <argument_name>",
+        "descriptor:command2 <argument_name>"
+    ],
+    "description": "command 2 description",
+    "help": "command 2 help",
+    "definition": {
+        "arguments": {
+            "argument_name": {
+                "name": "argument_name",
+                "is_required": true,
+                "is_array": false,
+                "description": "",
+                "default": null
+            }
+        },
+        "options": {
+            "option_name": {
+                "name": "--option_name",
+                "shortcut": "-o",
+                "accept_value": false,
+                "is_value_required": false,
+                "is_multiple": false,
+                "description": "",
+                "default": false
+            }
+        }
+    }
+}

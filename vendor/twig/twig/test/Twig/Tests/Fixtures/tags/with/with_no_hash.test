@@ -1,0 +1,10 @@
+--TEST--
+"with" tag with an expression that is not a hash
+--TEMPLATE--
+{% with vars %}
+    {{ foo }}{{ bar }}
+{% endwith %}
+--DATA--
+return array('vars' => 'no-hash')
+--EXCEPTION--
+Twig_Error_Runtime: Variables passed to the "with" tag must be a hash in "index.twig" at line 2.

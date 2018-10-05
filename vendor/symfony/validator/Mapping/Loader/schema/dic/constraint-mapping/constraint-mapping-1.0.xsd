@@ -1,0 +1,160 @@
+<?xml version="1.0" ?>
+
+<xsd:schema xmlns="http://symfony.com/schema/dic/constraint-mapping"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    targetNamespace="http://symfony.com/schema/dic/constraint-mapping"
+    elementFormDefault="qualified">
+
+  <xsd:annotation>
+    <xsd:documentation><![CDATA[
+      Symfony Validator Constraint Mapping Schema, version 1.0
+      Authors: Bernhard Schussek
+
+      A constraint mapping connects classes, properties and getters with
+      validation constraints.
+    ]]></xsd:documentation>
+  </xsd:annotation>
+  
+  <xsd:element name="constraint-mapping" type="constraint-mapping" />
+  
+  <xsd:complexType name="constraint-mapping">
+    <xsd:annotation>
+      <xsd:documentation><![CDATA[
+        The root element of the constraint mapping definition.
+      ]]></xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="namespace" type="namespace" minOccurs="0" maxOccurs="unbounded" />
+      <xsd:element name="class" type="class" maxOccurs="unbounded" />
+    </xsd:sequence>
+  </xsd:complexType>
+  
+  <xsd:complexType name="namespace">
+    <xsd:annotation>
+      <xsd:documentation><![CDATA[
+        Contains the abbreviation for a namespace.
+      ]]></xsd:documentation>
+    </xsd:annotation>
+    <xsd:simpleContent>
+      <xsd:extension base="xsd:string">
+        <xsd:attribute name="prefix" type="xsd:string" use="required" />
+      </xsd:extension>
+    </xsd:simpleContent>
+  </xsd:complexType>
+  
+  <xsd:complexType name="class">
+    <xsd:annotation>
+      <xsd:documentation><![CDATA[
+        Contains constraints for a single class.
+        
+        Nested elements may be class constraints, property and/or getter 
+        definitions.
+      ]]></xsd:documentation>
+    </xsd:annotation>
+    <xsd:choice minOccurs="0" maxOccurs="unbounded">
+      <xsd:element name="group-sequence-provider" type="group-sequence-provider" minOccurs="0" maxOccurs="1" />
+      <xsd:element name="group-sequence" type="group-sequence" minOccurs="0" maxOccurs="1" />
+      <xsd:element name="constraint" type="constraint" minOccurs="0" maxOccurs="unbounded" />
+      <xsd:element name="property" type="property" minOccurs="0" maxOccurs="unbounded" />
+      <xsd:element name="getter" type="getter" minOccurs="0" maxOccurs="unbounded" />
+    </xsd:choice>
+    <xsd:attribute name="name" type="xsd:string" use="required" />
+  </xsd:complexType>
+
+  <xsd:complexType name="group-sequence">
+    <xsd:annotation>
+      <xsd:documentation><![CDATA[
+        Contains the group sequence of a class. Each group should be written
+        into a "value" tag.
+      ]]></xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="value" type="value" minOccurs="1" maxOccurs="unbounded" />
+    </xsd:sequence>
+  </xsd:complexType>
+  
+  <xsd:complexType name="group-sequence-provider">
+    <xsd:annotation>
+      <xsd:documentation><![CDATA[
+        Defines the name of the group sequence provider for a class.
+      ]]></xsd:documentation>
+    </xsd:annotation>
+  </xsd:complexType>
+  
+  <xsd:complexType name="property">
+    <xsd:annotation>
+      <xsd:documentation><![CDATA[
+        Contains constraints for a single property. The name of the property
+        should be given in the "name" option.
+      ]]></xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="constraint" type="constraint" maxOccurs="unbounded" />
+    </xsd:sequence>
+    <xsd:attribute name="name" type="xsd:string" use="required" />
+  </xsd:complexType>
+  
+  <xsd:complexType name="getter">
+    <xsd:annotation>
+      <xsd:documentation><![CDATA[
+        Contains constraints for a getter method. The name of the corresponding
+        property should be given in the "property" option.
+      ]]></xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="constraint" type="constraint" maxOccurs="unbounded" />
+    </xsd:sequence>
+    <xsd:attribute name="property" type="xsd:string" use="required" />
+  </xsd:complexType>
+  
+  <xsd:complexType name="constraint" mixed="true">
+    <xsd:annotation>
+      <xsd:documentation><![CDATA[
+        Contains a constraint definition. The name of the constraint should be
+        given in the "name" option.
+        
+        May contain a single value, multiple "constraint" elements, 
+        multiple "value" elements or multiple "option" elements.
+      ]]></xsd:documentation>
+    </xsd:annotation>
+    <xsd:choice minOccurs="0">
+      <xsd:element name="constraint" type="constraint" minOccurs="1" maxOccurs="unbounded" />
+      <xsd:element name="option" type="option" minOccurs="1" maxOccurs="unbounded" />
+      <xsd:element name="value" type="value" minOccurs="1" maxOccurs="unbounded" />
+    </xsd:choice>
+    <xsd:attribute name="name" type="xsd:string" use="required" />    
+  </xsd:complexType>
+  
+  <xsd:complexType name="option" mixed="true">
+    <xsd:annotation>
+      <xsd:documentation><![CDATA[
+        Contains a constraint option definition. The name of the option
+        should be given in the "name" option.
+        
+        May contain a single value, multiple "value" elements or multiple
+        "constraint" elements.
+      ]]></xsd:documentation>
+    </xsd:annotation>
+    <xsd:choice minOccurs="0">
+      <xsd:element name="constraint" type="constraint" minOccurs="1" maxOccurs="unbounded" />
+      <xsd:element name="value" type="value" minOccurs="1" maxOccurs="unbounded" />
+    </xsd:choice>
+    <xsd:attribute name="name" type="xsd:string" use="required" />  
+  </xsd:complexType>
+  
+  <xsd:complexType name="value" mixed="true">
+    <xsd:annotation>
+      <xsd:documentation><![CDATA[
+        A value of an element.
+        
+        May contain a single value, multiple "value" elements or multiple
+        "constraint" elements.
+      ]]></xsd:documentation>
+    </xsd:annotation>
+    <xsd:choice minOccurs="0">
+      <xsd:element name="constraint" type="constraint" minOccurs="1" maxOccurs="unbounded" />
+      <xsd:element name="value" type="value" minOccurs="1" maxOccurs="unbounded" />
+    </xsd:choice>
+    <xsd:attribute name="key" type="xsd:string" use="optional" /> 
+  </xsd:complexType>
+</xsd:schema>

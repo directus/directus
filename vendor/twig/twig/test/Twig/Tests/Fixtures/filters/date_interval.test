@@ -1,0 +1,17 @@
+--TEST--
+"date" filter (interval support)
+--TEMPLATE--
+{{ date1|date }}
+{{ date1|date('%d days %h hours') }}
+{{ date1|date('%d days %h hours', timezone1) }}
+--DATA--
+date_default_timezone_set('UTC');
+return array(
+    'date1' => new DateInterval('P2D'),
+    // This should have no effect on DateInterval formatting
+    'timezone1' => new DateTimeZone('America/New_York'),
+)
+--EXPECT--
+2 days
+2 days 0 hours
+2 days 0 hours

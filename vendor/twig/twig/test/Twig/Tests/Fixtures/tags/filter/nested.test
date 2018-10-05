@@ -1,0 +1,16 @@
+--TEST--
+"filter" tags can be nested at will
+--TEMPLATE--
+{% filter lower|title %}
+  {{ var }}
+  {% filter upper %}
+    {{ var }}
+  {% endfilter %}
+  {{ var }}
+{% endfilter %}
+--DATA--
+return array('var' => 'var')
+--EXPECT--
+  Var
+      Var
+    Var

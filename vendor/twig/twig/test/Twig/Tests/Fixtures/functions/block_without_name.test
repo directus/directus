@@ -1,0 +1,12 @@
+--TEST--
+"block" function without arguments
+--TEMPLATE--
+{% extends 'base.twig' %}
+{% block bar %}BAR{% endblock %}
+--TEMPLATE(base.twig)--
+{% block foo %}{{ block() }}{% endblock %}
+{% block bar %}BAR_BASE{% endblock %}
+--DATA--
+return array()
+--EXCEPTION--
+Twig_Error_Syntax: The "block" function takes one argument (the block name) in "base.twig" at line 2.

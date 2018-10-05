@@ -1,0 +1,24 @@
+{
+  "name": "nikic/fast-route",
+  "description": "Fast request router for PHP",
+  "keywords": ["routing", "router"],
+  "license": "BSD-3-Clause",
+  "authors": [
+    {
+      "name": "Nikita Popov",
+      "email": "nikic@php.net"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "FastRoute\\": "src/"
+    },
+    "files": ["src/functions.php"]
+  },
+  "require": {
+    "php": ">=5.4.0"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^4.8.35|~5.7"
+  }
+}

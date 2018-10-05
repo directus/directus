@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<phpunit xmlns="http://schema.phpunit.de/coverage/1.0">
+  <project name="%s">
+    <tests>
+      <test name="ClassWithAnonymousFunction" size="unknown" result="0" status="PASSED"/>
+    </tests>
+    <directory name="%s">
+      <totals>
+        <lines total="19" comments="2" code="17" executable="8" executed="7" percent="87.50%"/>
+        <methods count="2" tested="1" percent="50.00%"/>
+        <functions count="0" tested="0" percent=""/>
+        <classes count="1" tested="0" percent="0.00%"/>
+        <traits count="0" tested="0" percent=""/>
+      </totals>
+      <file name="source_with_class_and_anonymous_function.php" href="source_with_class_and_anonymous_function.php.xml">
+        <totals>
+          <lines total="19" comments="2" code="17" executable="8" executed="7" percent="87.50%"/>
+          <methods count="2" tested="1" percent="50.00%"/>
+          <functions count="0" tested="0" percent=""/>
+          <classes count="1" tested="0" percent="0.00%"/>
+          <traits count="0" tested="0" percent=""/>
+        </totals>
+      </file>
+    </directory>
+  </project>
+</phpunit>

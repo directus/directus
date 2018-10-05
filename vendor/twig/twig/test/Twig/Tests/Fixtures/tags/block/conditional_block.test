@@ -1,0 +1,9 @@
+--TEST--
+conditional "block" tag
+--TEMPLATE--
+{% if false %}{% block foo %}FOO{% endblock %}{% endif %}
+{% if true %}{% block bar %}BAR{% endblock %}{% endif %}
+--DATA--
+return array()
+--EXPECT--
+BAR

@@ -1,0 +1,3 @@
+- booleanMappingKeys
+- numericMappingKeys
+- nullMappingKey

@@ -1,0 +1,23 @@
+{
+  "name": "directus/hash",
+  "description": "Directus Hash Library",
+  "keywords": [
+    "directus",
+    "hash"
+  ],
+  "license": "MIT",
+  "require": {
+    "php": ">=5.5.0",
+    "directus/utils": "^1.0.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Directus\\Hash\\": ""
+    }
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-version/6.4": "0.9.x-dev"
+    }
+  }
+}

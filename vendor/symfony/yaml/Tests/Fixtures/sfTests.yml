@@ -1,0 +1,140 @@
+--- %YAML:1.0
+test: Multiple quoted string on one line
+brief: >
+    Multiple quoted string on one line
+yaml: |
+    stripped_title: { name: "foo bar", help: "bar foo" }
+php: |
+    array('stripped_title' => array('name' => 'foo bar', 'help' => 'bar foo'))
+---
+test: Empty sequence
+yaml: |
+    foo: [ ]
+php: |
+    array('foo' => array())
+---
+test: Empty value
+yaml: |
+    foo:
+php: |
+    array('foo' => null)
+---
+test: Inline string parsing
+brief: >
+    Inline string parsing
+yaml: |
+    test: ['complex: string', 'another [string]']
+php: |
+    array('test' => array('complex: string', 'another [string]'))
+---
+test: Boolean
+brief: >
+    Boolean
+yaml: |
+    - false
+    - true
+    - null
+    - ~
+    - 'false'
+    - 'true'
+    - 'null'
+    - '~'
+php: |
+    array(
+      false,
+      true,
+      null,
+      null,
+      'false',
+      'true',
+      'null',
+      '~',
+    )
+---
+test: Empty lines in literal blocks
+brief: >
+  Empty lines in literal blocks
+yaml: |
+  foo:
+    bar: |
+      foo
+
+
+        
+      bar
+php: |
+  array('foo' => array('bar' => "foo\n\n\n  \nbar\n"))
+---
+test: Empty lines in folded blocks
+brief: >
+  Empty lines in folded blocks
+yaml: |
+  foo:
+    bar: >
+
+      foo
+
+      
+      bar
+php: |
+  array('foo' => array('bar' => "\nfoo\n\nbar\n"))
+---
+test: IP addresses
+brief: >
+  IP addresses
+yaml: |
+  foo: 10.0.0.2
+php: |
+  array('foo' => '10.0.0.2')
+---
+test: A sequence with an embedded mapping
+brief: >
+  A sequence with an embedded mapping
+yaml: |
+  - foo
+  - bar: { bar: foo }
+php: |
+  array('foo', array('bar' => array('bar' => 'foo')))
+---
+test: Octal
+brief: as in spec example 2.19, octal value is converted
+yaml: |
+  foo: 0123
+php: |
+  array('foo' => 83)
+---
+test: Octal strings
+brief: Octal notation in a string must remain a string
+yaml: |
+  foo: "0123"
+php: |
+  array('foo' => '0123')
+---
+test: Octal strings
+brief: Octal notation in a string must remain a string
+yaml: |
+  foo: '0123'
+php: |
+  array('foo' => '0123')
+---
+test: Octal strings
+brief: Octal notation in a string must remain a string
+yaml: |
+  foo: |
+    0123
+php: |
+  array('foo' => "0123\n")
+---
+test: Document as a simple hash
+brief: Document as a simple hash
+yaml: |
+  { foo: bar }
+php: |
+  array('foo' => 'bar')
+---
+test: Document as a simple array
+brief: Document as a simple array
+yaml: |
+  [ foo, bar ]
+php: |
+  array('foo', 'bar')

@@ -1,0 +1,12 @@
+--TEST--
+"include" tag accept variables
+--TEMPLATE--
+{% include "foo.twig" with {'foo': 'bar'} %}
+{% include "foo.twig" with vars %}
+--TEMPLATE(foo.twig)--
+{{ foo }}
+--DATA--
+return array('vars' => array('foo' => 'bar'))
+--EXPECT--
+bar
+bar

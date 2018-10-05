@@ -1,0 +1,21 @@
+language: php
+
+php:
+  - 5.3.3
+  - 5.3
+  - 5.4
+  - 5.5
+  - 5.6
+  - hhvm
+
+sudo: false
+
+before_script:
+  - composer self-update
+  - composer install --no-interaction --prefer-source --dev
+
+script: ./vendor/bin/phpunit
+
+notifications:
+  email: false
+  irc: "irc.freenode.org#phpunit"

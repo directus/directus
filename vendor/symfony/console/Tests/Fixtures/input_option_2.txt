@@ -1,0 +1,1 @@
+  <info>-o, --option_name[=OPTION_NAME]</info>  option description<comment> [default: "default_value"]</comment>

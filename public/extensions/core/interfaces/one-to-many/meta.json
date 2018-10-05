@@ -1,0 +1,1 @@
+{"name":"$t:o2m","version":"1.0.0","types":["o2m"],"options":{},"relation":"o2m","icon":"call_split","translation":{"en-US":{"o2m":"One to Many","select_items":"Select the items","relation_not_setup":"The relationship hasn't been configured correctly"}}}

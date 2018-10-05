@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<crap_result>
+  <project>CoverageForFileWithIgnoredLines</project>
+  <timestamp>%s</timestamp>
+  <stats>
+    <name>Method Crap Stats</name>
+    <methodCount>2</methodCount>
+    <crapMethodCount>0</crapMethodCount>
+    <crapLoad>0</crapLoad>
+    <totalCrap>2</totalCrap>
+    <crapMethodPercent>0</crapMethodPercent>
+  </stats>
+  <methods>
+    <method>
+      <package>global</package>
+      <className>Foo</className>
+      <methodName>bar</methodName>
+      <methodSignature>bar()</methodSignature>
+      <fullMethod>bar()</fullMethod>
+      <crap>1</crap>
+      <complexity>1</complexity>
+      <coverage>100</coverage>
+      <crapLoad>0</crapLoad>
+    </method>
+    <method>
+      <package>global</package>
+      <className>Bar</className>
+      <methodName>foo</methodName>
+      <methodSignature>foo()</methodSignature>
+      <fullMethod>foo()</fullMethod>
+      <crap>1</crap>
+      <complexity>1</complexity>
+      <coverage>100</coverage>
+      <crapLoad>0</crapLoad>
+    </method>
+  </methods>
+</crap_result>

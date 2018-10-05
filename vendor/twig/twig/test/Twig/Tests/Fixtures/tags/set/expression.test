@@ -1,0 +1,12 @@
+--TEST--
+"set" tag
+--TEMPLATE--
+{% set foo, bar = 'foo' ~ 'bar', 'bar' ~ 'foo' %}
+
+{{ foo }}
+{{ bar }}
+--DATA--
+return array()
+--EXPECT--
+foobar
+barfoo

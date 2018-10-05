@@ -1,0 +1,9 @@
+/*
+  Place your custom style overrides here.
+  Checkout /src/assets/global.scss for an overview of all globally available css variables you
+    can override
+
+  NOTE: The main application's styling is included through JavaScript. Therefore, it gets added to
+    the head _after_ this file. If you want to override the globally used CSS variables, you can either
+    use !important, or increase the specificity from :root
+*/

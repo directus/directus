@@ -1,0 +1,10 @@
+--TEST--
+__staticCall calls
+--TEMPLATE--
+{{ 'foo'|magic_call_string }}
+{{ 'foo'|magic_call_array }}
+--DATA--
+return array()
+--EXPECT--
+static_magic_foo
+static_magic_foo

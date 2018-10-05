@@ -1,0 +1,319 @@
+<?xml version="1.0"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file source-language="en" datatype="plaintext" original="file.ext">
+        <body>
+            <trans-unit id="1">
+                <source>This value should be false.</source>
+                <target>Este valor deve ser falso.</target>
+            </trans-unit>
+            <trans-unit id="2">
+                <source>This value should be true.</source>
+                <target>Este valor deve ser verdadeiro.</target>
+            </trans-unit>
+            <trans-unit id="3">
+                <source>This value should be of type {{ type }}.</source>
+                <target>Este valor deve ser do tipo {{ type }}.</target>
+            </trans-unit>
+            <trans-unit id="4">
+                <source>This value should be blank.</source>
+                <target>Este valor deve ser vazio.</target>
+            </trans-unit>
+            <trans-unit id="5">
+                <source>The value you selected is not a valid choice.</source>
+                <target>O valor selecionado não é uma opção válida.</target>
+            </trans-unit>
+            <trans-unit id="6">
+                <source>You must select at least {{ limit }} choice.|You must select at least {{ limit }} choices.</source>
+                <target>Você deve selecionar, no mínimo, {{ limit }} opção.|Você deve selecionar, no mínimo, {{ limit }} opções.</target>
+            </trans-unit>
+            <trans-unit id="7">
+                <source>You must select at most {{ limit }} choice.|You must select at most {{ limit }} choices.</source>
+                <target>Você deve selecionar, no máximo, {{ limit }} opção.|Você deve selecionar, no máximo, {{ limit }} opções.</target>
+            </trans-unit>
+            <trans-unit id="8">
+                <source>One or more of the given values is invalid.</source>
+                <target>Um ou mais valores informados são inválidos.</target>
+            </trans-unit>
+            <trans-unit id="9">
+                <source>This field was not expected.</source>
+                <target>Este campo não era esperado.</target>
+            </trans-unit>
+            <trans-unit id="10">
+                <source>This field is missing.</source>
+                <target>Este campo está ausente.</target>
+            </trans-unit>
+            <trans-unit id="11">
+                <source>This value is not a valid date.</source>
+                <target>Este valor não é uma data válida.</target>
+            </trans-unit>
+            <trans-unit id="12">
+                <source>This value is not a valid datetime.</source>
+                <target>Este valor não é uma data e hora válida.</target>
+            </trans-unit>
+            <trans-unit id="13">
+                <source>This value is not a valid email address.</source>
+                <target>Este valor não é um endereço de e-mail válido.</target>
+            </trans-unit>
+            <trans-unit id="14">
+                <source>The file could not be found.</source>
+                <target>O arquivo não foi encontrado.</target>
+            </trans-unit>
+            <trans-unit id="15">
+                <source>The file is not readable.</source>
+                <target>O arquivo não pode ser lido.</target>
+            </trans-unit>
+            <trans-unit id="16">
+                <source>The file is too large ({{ size }} {{ suffix }}). Allowed maximum size is {{ limit }} {{ suffix }}.</source>
+                <target>O arquivo é muito grande ({{ size }} {{ suffix }}). O tamanho máximo permitido é {{ limit }} {{ suffix }}.</target>
+            </trans-unit>
+            <trans-unit id="17">
+                <source>The mime type of the file is invalid ({{ type }}). Allowed mime types are {{ types }}.</source>
+                <target>O tipo mime do arquivo é inválido ({{ type }}). Os tipos mime permitidos são {{ types }}.</target>
+            </trans-unit>
+            <trans-unit id="18">
+                <source>This value should be {{ limit }} or less.</source>
+                <target>Este valor deve ser {{ limit }} ou menos.</target>
+            </trans-unit>
+            <trans-unit id="19">
+                <source>This value is too long. It should have {{ limit }} character or less.|This value is too long. It should have {{ limit }} characters or less.</source>
+                <target>Este valor é muito longo. Deve ter {{ limit }} caractere ou menos.|Este valor é muito longo. Deve ter {{ limit }} caracteres ou menos.</target>
+            </trans-unit>
+            <trans-unit id="20">
+                <source>This value should be {{ limit }} or more.</source>
+                <target>Este valor deve ser {{ limit }} ou mais.</target>
+            </trans-unit>
+            <trans-unit id="21">
+                <source>This value is too short. It should have {{ limit }} character or more.|This value is too short. It should have {{ limit }} characters or more.</source>
+                <target>Este valor é muito curto. Deve ter {{ limit }} caractere ou mais.|Este valor é muito curto. Deve ter {{ limit }} caracteres ou mais.</target>
+            </trans-unit>
+            <trans-unit id="22">
+                <source>This value should not be blank.</source>
+                <target>Este valor não deve ser vazio.</target>
+            </trans-unit>
+            <trans-unit id="23">
+                <source>This value should not be null.</source>
+                <target>Este valor não deve ser nulo.</target>
+            </trans-unit>
+            <trans-unit id="24">
+                <source>This value should be null.</source>
+                <target>Este valor deve ser nulo.</target>
+            </trans-unit>
+            <trans-unit id="25">
+                <source>This value is not valid.</source>
+                <target>Este valor não é válido.</target>
+            </trans-unit>
+            <trans-unit id="26">
+                <source>This value is not a valid time.</source>
+                <target>Este valor não é uma hora válida.</target>
+            </trans-unit>
+            <trans-unit id="27">
+                <source>This value is not a valid URL.</source>
+                <target>Este valor não é uma URL válida.</target>
+            </trans-unit>
+            <trans-unit id="31">
+                <source>The two values should be equal.</source>
+                <target>Os dois valores devem ser iguais.</target>
+            </trans-unit>
+            <trans-unit id="32">
+                <source>The file is too large. Allowed maximum size is {{ limit }} {{ suffix }}.</source>
+                <target>O arquivo é muito grande. O tamanho máximo permitido é de {{ limit }} {{ suffix }}.</target>
+            </trans-unit>
+            <trans-unit id="33">
+                <source>The file is too large.</source>
+                <target>O arquivo é muito grande.</target>
+            </trans-unit>
+            <trans-unit id="34">
+                <source>The file could not be uploaded.</source>
+                <target>O arquivo não pode ser enviado.</target>
+            </trans-unit>
+            <trans-unit id="35">
+                <source>This value should be a valid number.</source>
+                <target>Este valor deve ser um número válido.</target>
+            </trans-unit>
+            <trans-unit id="36">
+                <source>This file is not a valid image.</source>
+                <target>Este arquivo não é uma imagem válida.</target>
+            </trans-unit>
+            <trans-unit id="37">
+                <source>This is not a valid IP address.</source>
+                <target>Este não é um endereço de IP válido.</target>
+            </trans-unit>
+            <trans-unit id="38">
+                <source>This value is not a valid language.</source>
+                <target>Este valor não é um idioma válido.</target>
+            </trans-unit>
+            <trans-unit id="39">
+                <source>This value is not a valid locale.</source>
+                <target>Este valor não é uma localidade válida.</target>
+            </trans-unit>
+            <trans-unit id="40">
+                <source>This value is not a valid country.</source>
+                <target>Este valor não é um país válido.</target>
+            </trans-unit>
+            <trans-unit id="41">
+                <source>This value is already used.</source>
+                <target>Este valor já está sendo usado.</target>
+            </trans-unit>
+            <trans-unit id="42">
+                <source>The size of the image could not be detected.</source>
+                <target>O tamanho da imagem não pode ser detectado.</target>
+            </trans-unit>
+            <trans-unit id="43">
+                <source>The image width is too big ({{ width }}px). Allowed maximum width is {{ max_width }}px.</source>
+                <target>A largura da imagem é muito grande ({{ width }}px). A largura máxima permitida é de {{ max_width }}px.</target>
+            </trans-unit>
+            <trans-unit id="44">
+                <source>The image width is too small ({{ width }}px). Minimum width expected is {{ min_width }}px.</source>
+                <target>A largura da imagem é muito pequena ({{ width }}px). A largura mínima esperada é de {{ min_width }}px.</target>
+            </trans-unit>
+            <trans-unit id="45">
+                <source>The image height is too big ({{ height }}px). Allowed maximum height is {{ max_height }}px.</source>
+                <target>A altura da imagem é muito grande ({{ height }}px). A altura máxima permitida é de {{ max_height }}px.</target>
+            </trans-unit>
+            <trans-unit id="46">
+                <source>The image height is too small ({{ height }}px). Minimum height expected is {{ min_height }}px.</source>
+                <target>A altura da imagem é muito pequena ({{ height }}px). A altura mínima esperada é de {{ min_height }}px.</target>
+            </trans-unit>
+            <trans-unit id="47">
+                <source>This value should be the user's current password.</source>
+                <target>Este valor deve ser a senha atual do usuário.</target>
+            </trans-unit>
+            <trans-unit id="48">
+                <source>This value should have exactly {{ limit }} character.|This value should have exactly {{ limit }} characters.</source>
+                <target>Este valor deve ter exatamente {{ limit }} caractere.|Este valor deve ter exatamente {{ limit }} caracteres.</target>
+            </trans-unit>
+            <trans-unit id="49">
+                <source>The file was only partially uploaded.</source>
+                <target>O arquivo foi enviado apenas parcialmente.</target>
+            </trans-unit>
+            <trans-unit id="50">
+                <source>No file was uploaded.</source>
+                <target>Nenhum arquivo foi enviado.</target>
+            </trans-unit>
+            <trans-unit id="51">
+                <source>No temporary folder was configured in php.ini.</source>
+                <target>Nenhum diretório temporário foi configurado no php.ini.</target>
+            </trans-unit>
+            <trans-unit id="52">
+                <source>Cannot write temporary file to disk.</source>
+                <target>Não foi possível escrever o arquivo temporário no disco.</target>
+            </trans-unit>
+            <trans-unit id="53">
+                <source>A PHP extension caused the upload to fail.</source>
+                <target>Uma extensão PHP fez com que o envio falhasse.</target>
+            </trans-unit>
+            <trans-unit id="54">
+                <source>This collection should contain {{ limit }} element or more.|This collection should contain {{ limit }} elements or more.</source>
+                <target>Esta coleção deve conter {{ limit }} elemento ou mais.|Esta coleção deve conter {{ limit }} elementos ou mais.</target>
+            </trans-unit>
+            <trans-unit id="55">
+                <source>This collection should contain {{ limit }} element or less.|This collection should contain {{ limit }} elements or less.</source>
+                <target>Esta coleção deve conter {{ limit }} elemento ou menos.|Esta coleção deve conter {{ limit }} elementos ou menos.</target>
+            </trans-unit>
+            <trans-unit id="56">
+                <source>This collection should contain exactly {{ limit }} element.|This collection should contain exactly {{ limit }} elements.</source>
+                <target>Esta coleção deve conter exatamente {{ limit }} elemento.|Esta coleção deve conter exatamente {{ limit }} elementos.</target>
+            </trans-unit>
+            <trans-unit id="57">
+                <source>Invalid card number.</source>
+                <target>Número de cartão inválido.</target>
+            </trans-unit>
+            <trans-unit id="58">
+                <source>Unsupported card type or invalid card number.</source>
+                <target>Tipo de cartão não suportado ou número de cartão inválido.</target>
+            </trans-unit>
+            <trans-unit id="59">
+                <source>This is not a valid International Bank Account Number (IBAN).</source>
+                <target>Este não é um Número Internacional de Conta Bancária (IBAN) válido.</target>
+            </trans-unit>
+            <trans-unit id="60">
+                <source>This value is not a valid ISBN-10.</source>
+                <target>Este valor não é um ISBN-10 válido.</target>
+            </trans-unit>
+            <trans-unit id="61">
+                <source>This value is not a valid ISBN-13.</source>
+                <target>Este valor não é um ISBN-13 válido.</target>
+            </trans-unit>
+            <trans-unit id="62">
+                <source>This value is neither a valid ISBN-10 nor a valid ISBN-13.</source>
+                <target>Este valor não é um ISBN-10 e nem um ISBN-13 válido.</target>
+            </trans-unit>
+            <trans-unit id="63">
+                <source>This value is not a valid ISSN.</source>
+                <target>Este valor não é um ISSN válido.</target>
+            </trans-unit>
+            <trans-unit id="64">
+                <source>This value is not a valid currency.</source>
+                <target>Este não é um valor monetário válido.</target>
+            </trans-unit>
+            <trans-unit id="65">
+                <source>This value should be equal to {{ compared_value }}.</source>
+                <target>Este valor deve ser igual a {{ compared_value }}.</target>
+            </trans-unit>
+            <trans-unit id="66">
+                <source>This value should be greater than {{ compared_value }}.</source>
+                <target>Este valor deve ser maior que {{ compared_value }}.</target>
+            </trans-unit>
+            <trans-unit id="67">
+                <source>This value should be greater than or equal to {{ compared_value }}.</source>
+                <target>Este valor deve ser maior ou igual a {{ compared_value }}.</target>
+            </trans-unit>
+            <trans-unit id="68">
+                <source>This value should be identical to {{ compared_value_type }} {{ compared_value }}.</source>
+                <target>Este valor deve ser idêntico a {{ compared_value_type }} {{ compared_value }}.</target>
+            </trans-unit>
+            <trans-unit id="69">
+                <source>This value should be less than {{ compared_value }}.</source>
+                <target>Este valor deve ser menor que {{ compared_value }}.</target>
+            </trans-unit>
+            <trans-unit id="70">
+                <source>This value should be less than or equal to {{ compared_value }}.</source>
+                <target>Este valor deve ser menor ou igual a {{ compared_value }}.</target>
+            </trans-unit>
+            <trans-unit id="71">
+                <source>This value should not be equal to {{ compared_value }}.</source>
+                <target>Este valor não deve ser igual a {{ compared_value }}.</target>
+            </trans-unit>
+            <trans-unit id="72">
+                <source>This value should not be identical to {{ compared_value_type }} {{ compared_value }}.</source>
+                <target>Este valor não deve ser idêntico a {{ compared_value_type }} {{ compared_value }}.</target>
+            </trans-unit>
+            <trans-unit id="73">
+                <source>The image ratio is too big ({{ ratio }}). Allowed maximum ratio is {{ max_ratio }}.</source>
+                <target>A proporção da imagem é muito grande ({{ ratio }}). A proporção máxima permitida é {{ max_ratio }}.</target>
+            </trans-unit>
+            <trans-unit id="74">
+                <source>The image ratio is too small ({{ ratio }}). Minimum ratio expected is {{ min_ratio }}.</source>
+                <target>A proporção da imagem é muito pequena ({{ ratio }}). A proporção mínima esperada é {{ min_ratio }}.</target>
+            </trans-unit>
+            <trans-unit id="75">
+                <source>The image is square ({{ width }}x{{ height }}px). Square images are not allowed.</source>
+                <target>A imagem está num formato quadrado ({{ width }}x{{ height }}px). Imagens com formato quadrado não são permitidas.</target>
+            </trans-unit>
+            <trans-unit id="76">
+                <source>The image is landscape oriented ({{ width }}x{{ height }}px). Landscape oriented images are not allowed.</source>
+                <target>A imagem está orientada à paisagem ({{ width }}x{{ height }}px). Imagens orientadas à paisagem não são permitidas.</target>
+            </trans-unit>
+            <trans-unit id="77">
+                <source>The image is portrait oriented ({{ width }}x{{ height }}px). Portrait oriented images are not allowed.</source>
+                <target>A imagem está orientada ao retrato ({{ width }}x{{ height }}px). Imagens orientadas ao retrato não são permitidas.</target>
+            </trans-unit>
+            <trans-unit id="78">
+                <source>An empty file is not allowed.</source>
+                <target>Arquivo vazio não é permitido.</target>
+            </trans-unit>
+            <trans-unit id="79">
+                <source>The host could not be resolved.</source>
+                <target>O host não pôde ser resolvido.</target>
+            </trans-unit>
+            <trans-unit id="80">
+                <source>This value does not match the expected {{ charset }} charset.</source>
+                <target>Este valor não corresponde ao charset {{ charset }} esperado.</target>
+            </trans-unit>
+            <trans-unit id="81">
+                <source>This is not a valid Business Identifier Code (BIC).</source>
+                <target>Este não é um Código Identificador Bancário (BIC) válido.</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

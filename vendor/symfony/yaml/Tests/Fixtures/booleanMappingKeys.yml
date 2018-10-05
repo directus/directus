@@ -1,0 +1,11 @@
+--- %YAML:1.0
+test: Miscellaneous
+spec: 2.21
+yaml: |
+  true: true
+  false: false
+php: |
+  array(
+    'true' => true,
+    'false' => false,
+  )

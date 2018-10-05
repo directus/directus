@@ -1,0 +1,159 @@
+--- %YAML:1.0
+test: Compact notation
+brief: |
+    Compact notation for sets of mappings with single element
+yaml: |
+  ---
+  # products purchased
+  - item    : Super Hoop
+  - item    : Basketball
+    quantity: 1
+  - item:
+      name: Big Shoes
+      nick: Biggies
+    quantity: 1
+php: |
+  array (
+    array (
+      'item' => 'Super Hoop',
+    ),
+    array (
+      'item' => 'Basketball',
+      'quantity' => 1,
+    ),
+    array (
+      'item' => array(
+        'name' => 'Big Shoes',
+        'nick' => 'Biggies'
+      ),
+      'quantity' => 1
+    )
+  )
+---
+test: Compact notation combined with inline notation
+brief: |
+    Combinations of compact and inline notation are allowed
+yaml: |
+  ---
+  items:
+    - { item: Super Hoop, quantity: 1 }
+    - [ Basketball, Big Shoes ]
+php: |
+  array (
+    'items' => array (
+      array (
+        'item' => 'Super Hoop',
+        'quantity' => 1,
+      ),
+      array (
+        'Basketball',
+        'Big Shoes'
+      )
+    )
+  )
+--- %YAML:1.0
+test: Compact notation
+brief: |
+    Compact notation for sets of mappings with single element
+yaml: |
+  ---
+  # products purchased
+  - item    : Super Hoop
+  - item    : Basketball
+    quantity: 1
+  - item:
+      name: Big Shoes
+      nick: Biggies
+    quantity: 1
+php: |
+  array (
+    array (
+      'item' => 'Super Hoop',
+    ),
+    array (
+      'item' => 'Basketball',
+      'quantity' => 1,
+    ),
+    array (
+      'item' => array(
+        'name' => 'Big Shoes',
+        'nick' => 'Biggies'
+      ),
+      'quantity' => 1
+    )
+  )
+---
+test: Compact notation combined with inline notation
+brief: |
+    Combinations of compact and inline notation are allowed
+yaml: |
+  ---
+  items:
+    - { item: Super Hoop, quantity: 1 }
+    - [ Basketball, Big Shoes ]
+php: |
+  array (
+    'items' => array (
+      array (
+        'item' => 'Super Hoop',
+        'quantity' => 1,
+      ),
+      array (
+        'Basketball',
+        'Big Shoes'
+      )
+    )
+  )
+--- %YAML:1.0
+test: Compact notation
+brief: |
+    Compact notation for sets of mappings with single element
+yaml: |
+  ---
+  # products purchased
+  - item    : Super Hoop
+  - item    : Basketball
+    quantity: 1
+  - item:
+      name: Big Shoes
+      nick: Biggies
+    quantity: 1
+php: |
+  array (
+    array (
+      'item' => 'Super Hoop',
+    ),
+    array (
+      'item' => 'Basketball',
+      'quantity' => 1,
+    ),
+    array (
+      'item' => array(
+        'name' => 'Big Shoes',
+        'nick' => 'Biggies'
+      ),
+      'quantity' => 1
+    )
+  )
+---
+test: Compact notation combined with inline notation
+brief: |
+    Combinations of compact and inline notation are allowed
+yaml: |
+  ---
+  items:
+    - { item: Super Hoop, quantity: 1 }
+    - [ Basketball, Big Shoes ]
+php: |
+  array (
+    'items' => array (
+      array (
+        'item' => 'Super Hoop',
+        'quantity' => 1,
+      ),
+      array (
+        'Basketball',
+        'Big Shoes'
+      )
+    )
+  )

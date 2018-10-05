@@ -1,0 +1,4 @@
+<?php
+if ($neverHappens) {
+    print '*';
+}

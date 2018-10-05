@@ -1,0 +1,9 @@
+#!/usr/bin/env php
+<?php
+
+if (!file_exists(__DIR__.'/vendor/phpunit/phpunit/phpunit')) {
+    echo "Unable to find the `PHPUnit` script in `vendor/phpunit/phpunit/`.\nPlease run `composer update` before running this command.\n";
+    exit(1);
+}
+
+require __DIR__.'/vendor/phpunit/phpunit/phpunit';

@@ -1,0 +1,44 @@
+{
+    "name": "league/oauth2-google",
+    "description": "Google OAuth 2.0 Client Provider for The PHP League OAuth2-Client",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Woody Gilk",
+            "email": "woody.gilk@gmail.com",
+            "homepage": "http://shadowhand.me"
+        }
+    ],
+    "keywords": [
+        "oauth",
+        "oauth2",
+        "client",
+        "authorization",
+        "authentication",
+        "google"
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "league/oauth2-client": "^2.0"
+    },
+    "require-dev": {
+        "eloquent/phony": "^0.14.6",
+        "phpunit/phpunit": "^5.7",
+        "satooshi/php-coveralls": "^2.0",
+        "squizlabs/php_codesniffer": "^2.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "League\\OAuth2\\Client\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "League\\OAuth2\\Client\\Test\\": "tests/src/"
+        }
+    },
+    "scripts": {
+        "test": "phpunit",
+        "check": "phpcs src --standard=psr2 -sp"
+    }
+}

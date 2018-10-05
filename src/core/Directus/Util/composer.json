@@ -1,0 +1,23 @@
+{
+  "name": "directus/utils",
+  "description": "Directus Utils",
+  "keywords": [
+    "directus",
+    "utils",
+    "helpers"
+  ],
+  "license": "MIT",
+  "require": {
+    "php": ">=5.4.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Directus\\Util\\": ""
+    }
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-d64": "0.9.x-dev"
+    }
+  }
+}

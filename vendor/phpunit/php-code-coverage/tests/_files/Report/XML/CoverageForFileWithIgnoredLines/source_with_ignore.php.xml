@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<phpunit xmlns="http://schema.phpunit.de/coverage/1.0">
+  <file name="source_with_ignore.php">
+    <totals>
+      <lines total="37" comments="12" code="25" executable="2" executed="1" percent="50.00%"/>
+      <methods count="0" tested="0" percent=""/>
+      <functions count="1" tested="0" percent="0.00%"/>
+      <classes count="0" tested="0" percent=""/>
+      <traits count="0" tested="0" percent=""/>
+    </totals>
+    <class name="Foo" start="11" executable="0" executed="0" crap="1">
+      <package full="" name="" sub="" category=""/>
+      <namespace name=""/>
+      <method name="bar" signature="bar()" start="13" end="15" crap="1" executable="0" executed="0" coverage="100"/>
+    </class>
+    <class name="Bar" start="18" executable="0" executed="0" crap="1">
+      <package full="" name="" sub="" category=""/>
+      <namespace name=""/>
+      <method name="foo" signature="foo()" start="23" end="25" crap="1" executable="0" executed="0" coverage="100"/>
+    </class>
+    <function name="baz" signature="baz()" start="28" crap="0" executable="0" executed="0" coverage="0"/>
+    <coverage>
+      <line nr="2">
+        <covered by="FileWithIgnoredLines"/>
+      </line>
+    </coverage>
+  </file>
+</phpunit>

@@ -1,0 +1,30 @@
+--TEST--
+Twig supports the ?? operator
+--TEMPLATE--
+{{ 'OK' ?? 'KO' }}
+{{ null ?? 'OK' }}
+{{ bar ?? 'KO' }}
+{{ baz ?? 'OK' }}
+{{ foo.bar ?? 'KO' }}
+{{ foo.missing ?? 'OK' }}
+{{ foo.bar.baz.missing ?? 'OK' }}
+{{ foo['bar'] ?? 'KO' }}
+{{ foo['missing'] ?? 'OK' }}
+{{ nope ?? nada ?? 'OK' }}
+{{ 1 + nope ?? nada ?? 2 }}
+{{ 1 + nope ?? 3 + nada ?? 2 }}
+--DATA--
+return array('bar' => 'OK', 'foo' => array('bar' => 'OK'))
+--EXPECT--
+OK
+OK
+OK
+OK
+OK
+OK
+OK
+OK
+OK
+OK
+3
+6

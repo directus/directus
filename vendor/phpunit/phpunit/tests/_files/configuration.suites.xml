@@ -1,0 +1,6 @@
+<phpunit>
+    <testsuites>
+        <testsuite name="Suite One"></testsuite>
+        <testsuite name="Suite Two"></testsuite>
+    </testsuites>
+</phpunit>

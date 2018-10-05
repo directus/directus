@@ -1,0 +1,31 @@
+--- %YAML:1.0
+test: Simple Alias Example
+brief: >
+    If you need to refer to the same item of data twice,
+    you can give that item an alias.  The alias is a plain
+    string, starting with an ampersand.  The item may then
+    be referred to by the alias throughout your document
+    by using an asterisk before the name of the alias.
+    This is called an anchor.
+yaml: |
+    - &showell Steve
+    - Clark
+    - Brian
+    - Oren
+    - *showell
+php: |
+    array('Steve', 'Clark', 'Brian', 'Oren', 'Steve')
+
+---
+test: Alias of a Mapping
+brief: >
+    An alias can be used on any item of data, including
+    sequences, mappings, and other complex data types.
+yaml: |
+    - &hello
+        Meat: pork
+        Starch: potato
+    - banana
+    - *hello
+php: |
+    array(array('Meat'=>'pork', 'Starch'=>'potato'), 'banana', array('Meat'=>'pork', 'Starch'=>'potato'))

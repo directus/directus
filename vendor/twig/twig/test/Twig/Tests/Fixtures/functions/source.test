@@ -1,0 +1,17 @@
+--TEST--
+"source" function
+--TEMPLATE--
+FOO
+{{ source("foo.twig") }}
+
+BAR
+--TEMPLATE(foo.twig)--
+{{ foo }}<br />
+--DATA--
+return array()
+--EXPECT--
+FOO
+
+{{ foo }}<br />
+
+BAR
