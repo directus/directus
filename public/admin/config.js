@@ -6,7 +6,7 @@
     // Object values are used as project name in the app
     // Don't forget to add the API environment!
     api: {
-      "../_/": "API"
+      "../_/": "Directus API"
     },
 
     // Allow the user to connect to any API by entering a URL in a text field
@@ -26,7 +26,7 @@
     // like /admin, this will cause the routes to be wrong (eg /collection instead
     // of /admin/collections). To combat this, set the routerBaseUrl to the path
     // you're serving the application from
-    routerBaseUrl: "/admin/"
+    routerBaseUrl: "/"
   };
 
   window.__DirectusConfig__ = config;

@@ -367,8 +367,8 @@ class BaseTableGateway extends TableGateway
         $this->validateRecordArray($recordData);
 
         $listenerId = null;
-        if (static::$emitter) {
-            $hookName = 'collection.insert.' . SchemaManager::COLLECTION_FILES;
+        if (static::$emitter && $this->shouldUseFilter()) {
+            $hookName = 'item.create.' . SchemaManager::COLLECTION_FILES;
             // TODO: Implement once execute. Allowing a hook callback to run once.
             $listenerId = static::$emitter->addAction($hookName, function ($data) use (&$recordData) {
                 $recordData['filename'] = $data['filename'];
@@ -377,6 +377,11 @@ class BaseTableGateway extends TableGateway
 
         $TableGateway = $this->makeTable($this->table);
         $primaryKey = $TableGateway->primaryKeyFieldName;
+
+        if (!$this->shouldUseFilter()) {
+            $TableGateway->ignoreFilters();
+        }
+
         $TableGateway->insert($recordData);
 
         if (static::$emitter && $listenerId) {
@@ -479,17 +484,17 @@ class BaseTableGateway extends TableGateway
             $drop = new Ddl\DropTable($tableName);
             $query = $sql->buildSqlString($drop);
 
-            $this->runHook('collection.drop:before', [$tableName]);
+            $this->runHook('collection.delete:before', [$tableName]);
 
             $dropped = $this->getAdapter()->query(
                 $query
             )->execute();
-
-            $this->runHook('collection.drop', [$tableName]);
-            $this->runHook('collection.drop:after', [$tableName]);
         }
 
         $this->stopManaging();
+
+        $this->runHook('collection.delete', [$tableName]);
+        $this->runHook('collection.delete:after', [$tableName]);
 
         return $dropped;
     }
@@ -695,7 +700,7 @@ class BaseTableGateway extends TableGateway
      */
     protected function executeSelect(Select $select)
     {
-        $useFilter = ArrayUtils::get($this->options, 'filter', true) !== false;
+        $useFilter = $this->shouldUseFilter();
         unset($this->options['filter']);
 
         if ($this->acl) {
@@ -707,8 +712,8 @@ class BaseTableGateway extends TableGateway
 
         if ($useFilter) {
             $selectState = $this->applyHooks([
-                'collection.select:before',
-                'collection.select.' . $selectCollectionName . ':before',
+                'item.read:before',
+                'item.read.' . $selectCollectionName . ':before',
             ], $selectState, [
                 'collection_name' => $selectCollectionName
             ]);
@@ -728,8 +733,8 @@ class BaseTableGateway extends TableGateway
 
         if ($useFilter) {
             $result = $this->applyHooks([
-                'collection.select',
-                'collection.select.' . $selectCollectionName
+                'item.read',
+                'item.read.' . $selectCollectionName
             ], $result, [
                 'selectState' => $selectState,
                 'collection_name' => $selectCollectionName
@@ -748,6 +753,9 @@ class BaseTableGateway extends TableGateway
      */
     protected function executeInsert(Insert $insert)
     {
+        $useFilter = $this->shouldUseFilter();
+        unset($this->options['filter']);
+
         if ($this->acl) {
             $this->enforceInsertPermission($insert);
         }
@@ -758,22 +766,24 @@ class BaseTableGateway extends TableGateway
         // Data to be inserted with the column name as assoc key.
         $insertDataAssoc = array_combine($insertState['columns'], $insertData);
 
-        $this->runHook('collection.insert:before', [$insertTable, $insertDataAssoc]);
-        $this->runHook('collection.insert.' . $insertTable . ':before', [$insertDataAssoc]);
+        if ($useFilter) {
+            $this->runHook('item.create:before', [$insertTable, $insertDataAssoc]);
+            $this->runHook('item.create.' . $insertTable . ':before', [$insertDataAssoc]);
 
-        $newInsertData = $this->applyHook('collection.insert:before', $insertDataAssoc, [
-            'collection_name' => $insertTable
-        ]);
-        $newInsertData = $this->applyHook('collection.insert.' . $insertTable . ':before', $newInsertData);
+            $newInsertData = $this->applyHook('item.create:before', $insertDataAssoc, [
+                'collection_name' => $insertTable
+            ]);
+            $newInsertData = $this->applyHook('item.create.' . $insertTable . ':before', $newInsertData);
 
-        // NOTE: set the primary key to null
-        // to default the value to whatever increment value is next
-        // avoiding the error of inserting nothing
-        if (empty($newInsertData)) {
-            $newInsertData[$this->primaryKeyFieldName] = null;
+            // NOTE: set the primary key to null
+            // to default the value to whatever increment value is next
+            // avoiding the error of inserting nothing
+            if (empty($newInsertData)) {
+                $newInsertData[$this->primaryKeyFieldName] = null;
+            }
+
+            $insert->values($newInsertData);
         }
-
-        $insert->values($newInsertData);
 
         try {
             $result = parent::executeInsert($insert);
@@ -806,10 +816,12 @@ class BaseTableGateway extends TableGateway
 
         $resultData = $insertTableGateway->find($generatedValue);
 
-        $this->runHook('collection.insert', [$insertTable, $resultData]);
-        $this->runHook('collection.insert.' . $insertTable, [$resultData]);
-        $this->runHook('collection.insert:after', [$insertTable, $resultData]);
-        $this->runHook('collection.insert.' . $insertTable . ':after', [$resultData]);
+        if ($useFilter) {
+            $this->runHook('item.create', [$insertTable, $resultData]);
+            $this->runHook('item.create.' . $insertTable, [$resultData]);
+            $this->runHook('item.create:after', [$insertTable, $resultData]);
+            $this->runHook('item.create.' . $insertTable . ':after', [$resultData]);
+        }
 
         return $result;
     }
@@ -823,7 +835,7 @@ class BaseTableGateway extends TableGateway
      */
     protected function executeUpdate(Update $update)
     {
-        $useFilter = ArrayUtils::get($this->options, 'filter', true) !== false;
+        $useFilter = $this->shouldUseFilter();
         unset($this->options['filter']);
 
         if ($this->acl) {
@@ -894,8 +906,8 @@ class BaseTableGateway extends TableGateway
 
             foreach ($ids as $id) {
                 $deleteData = ['id' => $id];
-                $this->runHook('collection.delete:before', [$deleteTable, $deleteData]);
-                $this->runHook('collection.delete.' . $deleteTable . ':before', [$deleteData]);
+                $this->runHook('item.delete:before', [$deleteTable, $deleteData]);
+                $this->runHook('item.delete.' . $deleteTable . ':before', [$deleteData]);
             }
 
             try {
@@ -909,10 +921,10 @@ class BaseTableGateway extends TableGateway
 
             foreach ($ids as $id) {
                 $deleteData = ['id' => $id];
-                $this->runHook('collection.delete', [$deleteTable, $deleteData]);
-                $this->runHook('collection.delete:after', [$deleteTable, $deleteData]);
-                $this->runHook('collection.delete.' . $deleteTable, [$deleteData]);
-                $this->runHook('collection.delete.' . $deleteTable . ':after', [$deleteData]);
+                $this->runHook('item.delete', [$deleteTable, $deleteData]);
+                $this->runHook('item.delete:after', [$deleteTable, $deleteData]);
+                $this->runHook('item.delete.' . $deleteTable, [$deleteData]);
+                $this->runHook('item.delete.' . $deleteTable . ':after', [$deleteData]);
             }
 
             return $result;
@@ -1075,6 +1087,7 @@ class BaseTableGateway extends TableGateway
      * @param Builder $builder
      *
      * @throws ForbiddenCollectionReadException
+     * @throws UnableFindOwnerItemsException
      */
     protected function enforceReadPermission(Builder $builder)
     {
@@ -1126,10 +1139,6 @@ class BaseTableGateway extends TableGateway
                 foreach ($statuses as $status) {
                     $canReadAll = $this->acl->canReadAll($collection, $status);
                     $canReadMine = $this->acl->canReadMine($collection, $status);
-
-                    if (!$userCreatedField && !$canReadAll) {
-                        throw new UnableFindOwnerItemsException($collection);
-                    }
 
                     if ((!$canReadAll && !$userCreatedField) || !$canReadMine) {
                         continue;
@@ -1487,14 +1496,14 @@ class BaseTableGateway extends TableGateway
     protected function runBeforeUpdateHooks($updateCollectionName, $updateData)
     {
         // Filters
-        $updateData = $this->applyHook('collection.update:before', $updateData, [
+        $updateData = $this->applyHook('item.update:before', $updateData, [
             'collection_name' => $updateCollectionName
         ]);
-        $updateData = $this->applyHook('collection.update.' . $updateCollectionName . ':before', $updateData);
+        $updateData = $this->applyHook('item.update.' . $updateCollectionName . ':before', $updateData);
 
         // Hooks
-        $this->runHook('collection.update:before', [$updateCollectionName, $updateData]);
-        $this->runHook('collection.update.' . $updateCollectionName . ':before', [$updateData]);
+        $this->runHook('item.update:before', [$updateCollectionName, $updateData]);
+        $this->runHook('item.update.' . $updateCollectionName . ':before', [$updateData]);
 
         return $updateData;
     }
@@ -1507,10 +1516,10 @@ class BaseTableGateway extends TableGateway
      */
     protected function runAfterUpdateHooks($updateTable, $updateData)
     {
-        $this->runHook('collection.update', [$updateTable, $updateData]);
-        $this->runHook('collection.update:after', [$updateTable, $updateData]);
-        $this->runHook('collection.update.' . $updateTable, [$updateData]);
-        $this->runHook('collection.update.' . $updateTable . ':after', [$updateData]);
+        $this->runHook('item.update', [$updateTable, $updateData]);
+        $this->runHook('item.update:after', [$updateTable, $updateData]);
+        $this->runHook('item.update.' . $updateTable, [$updateData]);
+        $this->runHook('item.update.' . $updateTable . ':after', [$updateData]);
     }
 
     /**
@@ -1556,16 +1565,6 @@ class BaseTableGateway extends TableGateway
     }
 
     /**
-     * Gets the table published statuses
-     *
-     * @return array
-     */
-    public function getPublishedStatuses()
-    {
-        return $this->getStatuses('published');
-    }
-
-    /**
      * Gets the table non-soft-delete statuses
      *
      * @return array
@@ -1589,9 +1588,6 @@ class BaseTableGateway extends TableGateway
 
         if ($statusMapping) {
             switch ($type) {
-                case 'published':
-                    $statuses = $statusMapping->getPublishedStatusesValue();
-                    break;
                 case 'non-soft-delete':
                     $statuses = $statusMapping->getNonSoftDeleteStatusesValue();
                     break;
@@ -1743,5 +1739,13 @@ class BaseTableGateway extends TableGateway
     protected function shouldNullSortedLast()
     {
         return (bool) get_directus_setting('global', 'sort_null_last', true);
+    }
+
+    /**
+     * @return bool
+     */
+    protected function shouldUseFilter()
+    {
+        return !is_array($this->options) || ArrayUtils::get($this->options, 'filter', true) !== false;
     }
 }

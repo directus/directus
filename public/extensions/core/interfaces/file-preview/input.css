@@ -1,7 +1,7 @@
 
 .audio[data-v-09bfc6],.file[data-v-09bfc6],.image[data-v-09bfc6],.video[data-v-09bfc6]{width:100%;background-color:var(--black);text-align:center;border-radius:var(--border-radius);overflow:hidden
 }
-.audio img[data-v-09bfc6],.audio video[data-v-09bfc6],.file img[data-v-09bfc6],.file video[data-v-09bfc6],.image img[data-v-09bfc6],.image video[data-v-09bfc6],.video img[data-v-09bfc6],.video video[data-v-09bfc6]{margin:0 auto;max-height:400px;max-width:100%;display:block
+.audio img[data-v-09bfc6],.audio video[data-v-09bfc6],.file img[data-v-09bfc6],.file video[data-v-09bfc6],.image img[data-v-09bfc6],.image video[data-v-09bfc6],.video img[data-v-09bfc6],.video video[data-v-09bfc6]{margin:0 auto;max-height:414px;max-width:100%;display:block
 }
 .audio audio[data-v-09bfc6],.file audio[data-v-09bfc6],.image audio[data-v-09bfc6],.video audio[data-v-09bfc6]{margin:0 auto;width:100%;max-width:100%;display:block
 }

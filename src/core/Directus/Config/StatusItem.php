@@ -36,7 +36,6 @@ class StatusItem
         'listing_badge' => false,
         'soft_delete' => false,
         'hard_delete' => false,
-        'published' => true,
     ];
 
     public function __construct($value, $name, $sort, array $attributes = [])

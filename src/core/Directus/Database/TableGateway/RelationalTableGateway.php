@@ -717,28 +717,18 @@ class RelationalTableGateway extends BaseTableGateway
             unset($defaultParams['sort']);
         }
 
-        $allStatus = ArrayUtils::get($params, 'status') === '*';
-        $isAdmin = $this->acl->isAdmin();
-        if (!$this->getTableSchema()->hasStatusField() || ($allStatus && $isAdmin)) {
-            ArrayUtils::remove($params, 'status');
-        } else if ($allStatus && !$isAdmin) {
-            $params['status'] = $this->getNonSoftDeleteStatuses();
-        } else if (!ArrayUtils::has($params, 'id') && !ArrayUtils::has($params, 'status')) {
-            $defaultParams['status'] = $this->getPublishedStatuses();
-        } else if (ArrayUtils::has($params, 'status') && is_string(ArrayUtils::get($params, 'status'))) {
-            $params['status'] = StringUtils::csv($params['status']);
+        $status = ArrayUtils::pull($params, 'status');
+        $statusList = $status ? StringUtils::safeCvs($status) : [];
+        $allStatus = in_array('*', $statusList);
+
+        if (!$this->getTableSchema()->hasStatusField() || $allStatus) {
+            $statusList = null;
+        } else if (empty($statusList)){
+            $statusList = $this->getNonSoftDeleteStatuses();
         }
 
-        // Remove soft-delete from status list for non-admins users
-        if (!$isAdmin && ArrayUtils::has($params, 'status')) {
-            if (!empty($params['status'])) {
-                $params['status'] = ArrayUtils::intersection(
-                    $params['status'],
-                    $this->getNonSoftDeleteStatuses()
-                );
-            } else if (ArrayUtils::has($params, 'id')) {
-                $params['status'] = $this->getNonSoftDeleteStatuses();
-            }
+        if ($statusList) {
+            $params['status'] = $statusList;
         }
 
         $params = array_merge($defaultParams, $params);

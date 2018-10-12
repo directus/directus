@@ -68,9 +68,9 @@ class Files
     public function delete($file)
     {
         if ($this->exists($file['filename'])) {
-            $this->emitter->run('files.deleting', [$file]);
+            $this->emitter->run('file.delete', [$file]);
             $this->filesystem->getAdapter()->delete($file['filename']);
-            $this->emitter->run('files.deleting:after', [$file]);
+            $this->emitter->run('file.delete:after', [$file]);
         }
     }
 
@@ -247,9 +247,9 @@ class Files
 
         $filePath = $this->getConfig('root') . '/' . $fileName;
 
-        $this->emitter->run('files.saving', ['name' => $fileName, 'size' => strlen($fileData)]);
+        $this->emitter->run('file.save', ['name' => $fileName, 'size' => strlen($fileData)]);
         $this->write($fileName, $fileData, $replace);
-        $this->emitter->run('files.saving:after', ['name' => $fileName, 'size' => strlen($fileData)]);
+        $this->emitter->run('file.save:after', ['name' => $fileName, 'size' => strlen($fileData)]);
 
         unset($fileData);
 
@@ -473,9 +473,9 @@ class Files
         $finalPath = rtrim($mediaPath, '/') . '/' . $targetName;
         $data = file_get_contents($filePath);
 
-        $this->emitter->run('files.saving', ['name' => $targetName, 'size' => strlen($data)]);
+        $this->emitter->run('file.save', ['name' => $targetName, 'size' => strlen($data)]);
         $this->write($targetName, $data);
-        $this->emitter->run('files.saving:after', ['name' => $targetName, 'size' => strlen($data)]);
+        $this->emitter->run('file.save:after', ['name' => $targetName, 'size' => strlen($data)]);
 
         $fileData['name'] = basename($finalPath);
         $fileData['date_uploaded'] = DateTimeUtils::nowInUTC()->toString();

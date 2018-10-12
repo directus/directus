@@ -713,13 +713,13 @@ class Builder
             $orderDirection = $options[1];
             $nullLast = $options[2];
 
-            if ($nullLast === true) {
-                $order[] = new IsNull($this->getIdentifier($orderBy));
-            }
-
             if ($orderBy === '?') {
                 $expression = new Expression('RAND()');
             } else {
+                if ($nullLast === true) {
+                    $order[] = new IsNull($this->getIdentifier($orderBy));
+                }
+
                 $expression = sprintf('%s %s', $this->getIdentifier($orderBy), $orderDirection);
             }
 

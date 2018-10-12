@@ -5,6 +5,8 @@ namespace Directus\Services;
 use Directus\Application\Container;
 use Directus\Database\Exception\CollectionNotManagedException;
 use Directus\Database\Exception\FieldAlreadyExistsException;
+use Directus\Database\Exception\FieldLengthNotSupportedException;
+use Directus\Database\Exception\FieldLengthRequiredException;
 use Directus\Database\Exception\FieldNotFoundException;
 use Directus\Database\Exception\CollectionAlreadyExistsException;
 use Directus\Database\Exception\CollectionNotFoundException;
@@ -175,7 +177,9 @@ class TablesService extends AbstractService
 
         /** @var SchemaManager $schemaManager */
         $schemaManager = $this->container->get('schema_manager');
-        $collectionObject = $schemaManager->getCollection($collection);
+        // NOTE: Always skip temporary cache when fetching collection data
+        // It avoids error error trying to fetch recently created field
+        $collectionObject = $schemaManager->getCollection($collection, [], true);
         if (!$collectionObject) {
             throw new CollectionNotFoundException($collection);
         }
@@ -259,7 +263,17 @@ class TablesService extends AbstractService
 
         $tableService = new TablesService($this->container);
 
+        /** @var Emitter $hookEmitter */
+        $hookEmitter = $this->container->get('hook_emitter');
+        $hookEmitter->run('field.delete:before', [$collection, $field]);
+        $hookEmitter->run('field.delete.' . $collection. ':before', [$field]);
+
         $tableService->dropColumn($collection, $field);
+
+        $hookEmitter->run('field.delete', [$collection, $field]);
+        $hookEmitter->run('field.delete.' . $collection, [$field]);
+        $hookEmitter->run('field.delete:after', [$collection, $field]);
+        $hookEmitter->run('field.delete.' . $collection . ':after', [$field]);
 
         return true;
     }
@@ -355,6 +369,15 @@ class TablesService extends AbstractService
         $item['collection'] = $name;
 
         $table = $collectionsTableGateway->manageRecordUpdate('directus_collections', $item);
+
+        // NOTE: The collection didn't exists.
+        // This means the collection was created instead of started to being managed by directus
+        if (!$collection) {
+            /** @var Emitter $hookEmitter */
+            $hookEmitter = $this->container->get('hook_emitter');
+            $hookEmitter->run('collection.create', $name);
+            $hookEmitter->run('collection.create:after', $name);
+        }
 
         // ----------------------------------------------------------------------------
 
@@ -516,6 +539,11 @@ class TablesService extends AbstractService
             'field' => $columnName
         ]);
 
+        /** @var Emitter $hookEmitter */
+        $hookEmitter = $this->container->get('hook_emitter');
+        $hookEmitter->run('field.create:before', [$collectionName, $columnName, $data]);
+        $hookEmitter->run('field.create.' . $collectionName . ':before', [$columnName, $data]);
+
         // TODO: Only call this when necessary
         $this->updateTableSchema($collection, [
             'fields' => [$columnData]
@@ -523,13 +551,14 @@ class TablesService extends AbstractService
 
         // ----------------------------------------------------------------------------
 
-        $field = $this->addFieldInfo($collectionName, $columnName, $columnData);
+        $this->addFieldInfo($collectionName, $columnName, $columnData);
 
-        return $this->getFieldsTableGateway()->wrapData(
-            $field->toArray(),
-            true,
-            ArrayUtils::get($params, 'meta', 0)
-        );
+        $hookEmitter->run('field.create', [$collectionName, $columnName, $data]);
+        $hookEmitter->run('field.create.' . $collectionName, [$columnName, $data]);
+        $hookEmitter->run('field.create:after', [$collectionName, $columnName, $data]);
+        $hookEmitter->run('field.create.' . $collectionName . ':after', [$columnName, $data]);
+
+        return $this->findField($collectionName, $columnName, $params);
     }
 
     /**
@@ -573,6 +602,11 @@ class TablesService extends AbstractService
             throw new FieldNotFoundException($fieldName);
         }
 
+        /** @var Emitter $hookEmitter */
+        $hookEmitter = $this->container->get('hook_emitter');
+        $hookEmitter->run('field.update:before', [$collectionName, $fieldName, $data]);
+        $hookEmitter->run('field.update.' . $collectionName . ':before', [$fieldName, $data]);
+
         if ($this->shouldUpdateSchema($data)) {
             $this->updateTableSchema($collection, [
                 'fields' => [array_merge($field->toArray(), $data)]
@@ -582,6 +616,11 @@ class TablesService extends AbstractService
         // $this->invalidateCacheTags(['tableColumnsSchema_'.$tableName, 'columnSchema_'.$tableName.'_'.$columnName]);
         $resultData = $this->addOrUpdateFieldInfo($collectionName, $fieldName, $data);
         // ----------------------------------------------------------------------------
+
+        $hookEmitter->run('field.update', [$collectionName, $fieldName, $data]);
+        $hookEmitter->run('field.update.' . $collectionName, [$fieldName, $data]);
+        $hookEmitter->run('field.update:after', [$collectionName, $fieldName, $data]);
+        $hookEmitter->run('field.update.' . $collectionName . ':after', [$fieldName, $data]);
 
         return $this->getFieldsTableGateway()->wrapData(
             $resultData,
@@ -1001,9 +1040,6 @@ class TablesService extends AbstractService
 
         $result = $schemaFactory->buildTable($table);
 
-        $hookEmitter->run('collection.create', $name);
-        $hookEmitter->run('collection.create:after', $name);
-
         return $result ? true : false;
     }
 
@@ -1021,6 +1057,10 @@ class TablesService extends AbstractService
 
         $fields = ArrayUtils::get($data, 'fields', []);
         $this->validateSystemFields($fields);
+
+        /** @var Emitter $hookEmitter */
+        $hookEmitter = $this->container->get('hook_emitter');
+        $hookEmitter->run('collection.update:before', [$name, $data]);
 
         $toAdd = $toChange = $toDrop = [];
         foreach ($fields as $fieldData) {
@@ -1052,15 +1092,11 @@ class TablesService extends AbstractService
             'drop' => $toDrop
         ]);
 
-        /** @var Emitter $hookEmitter */
-        $hookEmitter = $this->container->get('hook_emitter');
-        $hookEmitter->run('collection.update:before', $name);
-
         $result = $schemaFactory->buildTable($table);
         $this->updateColumnsRelation($name, array_merge($toAdd, $toChange));
 
-        $hookEmitter->run('collection.update', $name);
-        $hookEmitter->run('collection.update:after', $name);
+        $hookEmitter->run('collection.update', [$name, $data]);
+        $hookEmitter->run('collection.update:after', [$name, $data]);
 
         return $result ? true : false;
     }
@@ -1150,14 +1186,7 @@ class TablesService extends AbstractService
 
         $length = ArrayUtils::get($data, 'length');
         if ($dataType && $this->getSchemaManager()->isTypeLengthRequired($dataType) && !$length) {
-            $message = 'Missing length';
-
-            if ($fieldName) {
-                $message .= ' for: ' . $fieldName;
-            }
-
-            // TODO: Create an exception class for length required
-            throw new UnprocessableEntityException($message);
+            throw new FieldLengthRequiredException($fieldName);
         }
 
         $fieldDataType = $dataType;
@@ -1166,10 +1195,7 @@ class TablesService extends AbstractService
         }
 
         if ($length && !$this->getSchemaManager()->canTypeUseLength($fieldDataType)) {
-            // TODO: Create an exception class for length is not supported
-            throw new UnprocessableEntityException(
-                sprintf('field "%s" does not support length', $fieldName)
-            );
+            throw new FieldLengthNotSupportedException($fieldName);
         }
 
         if ($type && !DataTypes::exists($type)) {

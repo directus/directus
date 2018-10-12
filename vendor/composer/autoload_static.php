@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit981a078995f745663b59dfe6277ca51e
+class ComposerStaticInit7efdf560d85835ce68b3bf895988d9a9
 {
     public static $files = array (
         '320cde22f66dd4f5d3fd621d3e88b98f' => __DIR__ . '/..' . '/symfony/polyfill-ctype/bootstrap.php',
@@ -524,6 +524,8 @@ class ComposerStaticInit981a078995f745663b59dfe6277ca51e
         'Directus\\Database\\Exception\\DuplicateItemException' => __DIR__ . '/../..' . '/src/core/Directus/Database/Exception/DuplicateItemException.php',
         'Directus\\Database\\Exception\\FieldAlreadyExistsException' => __DIR__ . '/../..' . '/src/core/Directus/Database/Exception/FieldAlreadyExistsException.php',
         'Directus\\Database\\Exception\\FieldAlreadyHasUniqueKeyException' => __DIR__ . '/../..' . '/src/core/Directus/Database/Exception/FieldAlreadyHasUniqueKeyException.php',
+        'Directus\\Database\\Exception\\FieldLengthNotSupportedException' => __DIR__ . '/../..' . '/src/core/Directus/Database/Exception/FieldLengthNotSupportedException.php',
+        'Directus\\Database\\Exception\\FieldLengthRequiredException' => __DIR__ . '/../..' . '/src/core/Directus/Database/Exception/FieldLengthRequiredException.php',
         'Directus\\Database\\Exception\\FieldNotFoundException' => __DIR__ . '/../..' . '/src/core/Directus/Database/Exception/FieldNotFoundException.php',
         'Directus\\Database\\Exception\\ForbiddenSystemTableDirectAccessException' => __DIR__ . '/../..' . '/src/core/Directus/Database/Exception/ForbiddenSystemTableDirectAccessException.php',
         'Directus\\Database\\Exception\\InvalidFieldException' => __DIR__ . '/../..' . '/src/core/Directus/Database/Exception/InvalidFieldException.php',
@@ -2961,10 +2963,10 @@ class ComposerStaticInit981a078995f745663b59dfe6277ca51e
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit981a078995f745663b59dfe6277ca51e::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit981a078995f745663b59dfe6277ca51e::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInit981a078995f745663b59dfe6277ca51e::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInit981a078995f745663b59dfe6277ca51e::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit7efdf560d85835ce68b3bf895988d9a9::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit7efdf560d85835ce68b3bf895988d9a9::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit7efdf560d85835ce68b3bf895988d9a9::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInit7efdf560d85835ce68b3bf895988d9a9::$classMap;
 
         }, null, ClassLoader::class);
     }

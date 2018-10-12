@@ -8,12 +8,12 @@ self.__precacheManifest = [
     "url": "style.css"
   },
   {
-    "revision": "17ee45df7466d24f5a2cd5cfe3ed761a",
-    "url": "fonts/roboto-regular.17ee45df.woff"
+    "revision": "c2b94f49a45b5fe5a35e3d2e73745ff7",
+    "url": "fonts/roboto-light.c2b94f49.woff"
   },
   {
-    "revision": "810bebe1a336064f73df",
-    "url": "js/chunk-vendors.18bd69aa.js"
+    "revision": "ed9d3000b949624bddd9",
+    "url": "js/chunk-vendors.cfb142b9.js"
   },
   {
     "revision": "1a8dd33f84da7ea3c284",
@@ -36,16 +36,16 @@ self.__precacheManifest = [
     "url": "img/sprite.661fa73c.svg"
   },
   {
-    "revision": "acf2383f7af9a5965967a8695c97c81b",
+    "revision": "d999676a29c5366c5a736d4b85d9907d",
     "url": "index.html"
   },
   {
-    "revision": "c45e4be420379df65a15",
-    "url": "js/app.34ca5da6.js"
+    "revision": "aaada9fe05e26ec0f9e7",
+    "url": "js/app.e84fad1e.js"
   },
   {
-    "revision": "0b13ce4c83dff3f78559239cfc3f7f4d",
-    "url": "fonts/roboto-medium.0b13ce4c.woff"
+    "revision": "4edcbeabfcea8e7bdedfbd566cd60def",
+    "url": "fonts/robotomono-bold.4edcbeab.woff"
   },
   {
     "revision": "44e0a2ef806baf926fd3d43413de397e",
@@ -64,24 +64,24 @@ self.__precacheManifest = [
     "url": "img/logo-dark.912f80a1.svg"
   },
   {
-    "revision": "4edcbeabfcea8e7bdedfbd566cd60def",
-    "url": "fonts/robotomono-bold.4edcbeab.woff"
-  },
-  {
     "revision": "fb63a2a5e055c7162236c32f956c2c1b",
     "url": "fonts/roboto-regular.fb63a2a5.woff2"
+  },
+  {
+    "revision": "17ee45df7466d24f5a2cd5cfe3ed761a",
+    "url": "fonts/roboto-regular.17ee45df.woff"
   },
   {
     "revision": "4c104b963611ee56cf683b9d7a27617d",
     "url": "fonts/roboto-medium.4c104b96.woff2"
   },
   {
-    "revision": "fd6783f3c6654d48ad2f6e27b1b64bb8",
-    "url": "fonts/roboto-light.fd6783f3.woff2"
+    "revision": "0b13ce4c83dff3f78559239cfc3f7f4d",
+    "url": "fonts/roboto-medium.0b13ce4c.woff"
   },
   {
-    "revision": "c2b94f49a45b5fe5a35e3d2e73745ff7",
-    "url": "fonts/roboto-light.c2b94f49.woff"
+    "revision": "fd6783f3c6654d48ad2f6e27b1b64bb8",
+    "url": "fonts/roboto-light.fd6783f3.woff2"
   },
   {
     "revision": "316e008b8f3adf89ab74b1b5ed0c0427",
@@ -92,15 +92,15 @@ self.__precacheManifest = [
     "url": "fonts/material-icons.8a9a261c.woff2"
   },
   {
-    "revision": "c45e4be420379df65a15",
-    "url": "css/app.dd9df156.css"
+    "revision": "aaada9fe05e26ec0f9e7",
+    "url": "css/app.77286be3.css"
   },
   {
     "revision": "f98bf21581ba1f532845896dac67ca78",
     "url": "config_example.js"
   },
   {
-    "revision": "022ff2e1a1c23f2be85cd5bff862b4b5",
-    "url": "Dockerfile"
+    "revision": "619f7069c2de60a492aeb81e7e02fef1",
+    "url": ".htaccess"
   }
 ];

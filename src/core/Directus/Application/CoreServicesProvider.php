@@ -172,17 +172,17 @@ class CoreServicesProvider
                 $cachePool->invalidateTags(['table_'.$tableName]);
             };
 
-            foreach (['collection.update:after', 'collection.drop:after'] as $action) {
+            foreach (['item.update:after', 'collection.delete:after'] as $action) {
                 $emitter->addAction($action, $cacheTableTagInvalidator);
             }
 
-            $emitter->addAction('collection.delete:after', function ($tableName, $ids) use ($cachePool){
+            $emitter->addAction('item.delete:after', function ($tableName, $ids) use ($cachePool){
                 foreach ($ids as $id) {
                     $cachePool->invalidateTags(['entity_'.$tableName.'_'.$id]);
                 }
             });
 
-            $emitter->addAction('collection.update.directus_permissions:after', function ($data) use($container, $cachePool) {
+            $emitter->addAction('item.update.directus_permissions:after', function ($data) use($container, $cachePool) {
                 $acl = $container->get('acl');
                 $dbConnection = $container->get('database');
                 $privileges = new DirectusPermissionsTableGateway($dbConnection, $acl);
@@ -205,7 +205,7 @@ class CoreServicesProvider
                 }
                 return $payload;
             });
-            $emitter->addAction('collection.insert.directus_roles', function ($data) use ($container) {
+            $emitter->addAction('item.create.directus_roles', function ($data) use ($container) {
                 $acl = $container->get('acl');
                 $zendDb = $container->get('database');
                 $privilegesTable = new DirectusPermissionsTableGateway($zendDb, $acl);
@@ -225,7 +225,7 @@ class CoreServicesProvider
                     }
                 }
             });
-            $emitter->addFilter('collection.insert:before', function (Payload $payload) use ($container) {
+            $emitter->addFilter('item.create:before', function (Payload $payload) use ($container) {
                 $collectionName = $payload->attribute('collection_name');
                 $collection = SchemaService::getCollection($collectionName);
                 /** @var Acl $acl */
@@ -316,7 +316,7 @@ class CoreServicesProvider
                     $payload->set('uploaded_on', DateTimeUtils::nowInUTC()->toString());
                 }
             };
-            $emitter->addFilter('collection.update:before', function (Payload $payload) use ($container, $savesFile) {
+            $emitter->addFilter('item.update:before', function (Payload $payload) use ($container, $savesFile) {
                 $collection = SchemaService::getCollection($payload->attribute('collection_name'));
 
                 /** @var Acl $acl */
@@ -338,7 +338,7 @@ class CoreServicesProvider
 
                 return $payload;
             }, Emitter::P_HIGH);
-            $emitter->addFilter('collection.insert:before', function (Payload $payload) use ($savesFile) {
+            $emitter->addFilter('item.create:before', function (Payload $payload) use ($savesFile) {
                 $savesFile($payload, false);
 
                 return $payload;
@@ -346,7 +346,7 @@ class CoreServicesProvider
             $addFilesUrl = function ($rows) {
                 return \Directus\append_storage_information($rows);
             };
-            $emitter->addFilter('collection.select.directus_files:before', function (Payload $payload) {
+            $emitter->addFilter('item.read.directus_files:before', function (Payload $payload) {
                 $columns = $payload->get('columns');
                 if (!in_array('filename', $columns)) {
                     $columns[] = 'filename';
@@ -442,7 +442,7 @@ class CoreServicesProvider
                 return $data;
             };
 
-            $emitter->addFilter('collection.insert:before', function (Payload $payload) use ($parseJson, $parseArray) {
+            $emitter->addFilter('item.create:before', function (Payload $payload) use ($parseJson, $parseArray) {
                 $payload->replace(
                     $parseJson(
                         false,
@@ -455,7 +455,7 @@ class CoreServicesProvider
 
                 return $payload;
             });
-            $emitter->addFilter('collection.update:before', function (Payload $payload) use ($parseJson, $parseArray) {
+            $emitter->addFilter('item.update:before', function (Payload $payload) use ($parseJson, $parseArray) {
                 $payload->replace(
                     $parseJson(
                         false,
@@ -473,7 +473,7 @@ class CoreServicesProvider
 
                 return $payload;
             });
-            $emitter->addFilter('collection.select', function (Payload $payload) use ($container, $parseJson, $parseArray, $parseBoolean) {
+            $emitter->addFilter('item.read', function (Payload $payload) use ($container, $parseJson, $parseArray, $parseBoolean) {
                 $rows = $payload->getData();
                 $collectionName = $payload->attribute('collection_name');
                 /** @var SchemaManager $schemaManager */
@@ -510,14 +510,14 @@ class CoreServicesProvider
             });
             // -------------------------------------------------------------------------------------------
             // Add file url and thumb url
-            $emitter->addFilter('collection.select.directus_files', function (Payload $payload) use ($addFilesUrl, $container) {
+            $emitter->addFilter('item.read.directus_files', function (Payload $payload) use ($addFilesUrl, $container) {
                 $rows = $addFilesUrl($payload->getData());
 
                 $payload->replace($rows);
 
                 return $payload;
             });
-            $emitter->addFilter('collection.select.directus_users', function (Payload $payload) use ($container) {
+            $emitter->addFilter('item.read.directus_users', function (Payload $payload) use ($container) {
                 $acl = $container->get('acl');
                 $rows = $payload->getData();
                 $userId = $acl->getUserId();
@@ -581,9 +581,9 @@ class CoreServicesProvider
                 }
             };
 
-            $emitter->addAction('collection.insert.directus_user_roles:before', $preventNonAdminFromUpdateRoles);
-            $emitter->addAction('collection.update.directus_user_roles:before', $preventNonAdminFromUpdateRoles);
-            $emitter->addAction('collection.delete.directus_user_roles:before', $preventNonAdminFromUpdateRoles);
+            $emitter->addAction('item.create.directus_user_roles:before', $preventNonAdminFromUpdateRoles);
+            $emitter->addAction('item.update.directus_user_roles:before', $preventNonAdminFromUpdateRoles);
+            $emitter->addAction('item.delete.directus_user_roles:before', $preventNonAdminFromUpdateRoles);
             $generateExternalId = function (Payload $payload) {
                 // generate an external id if none is passed
                 if (!$payload->get('external_id')) {
@@ -592,13 +592,13 @@ class CoreServicesProvider
 
                 return $payload;
             };
-            $emitter->addFilter('collection.insert.directus_users:before', $hashUserPassword);
-            $emitter->addFilter('collection.update.directus_users:before', $hashUserPassword);
-            $emitter->addFilter('collection.insert.directus_users:before', $generateExternalId);
-            $emitter->addFilter('collection.insert.directus_roles:before', $generateExternalId);
+            $emitter->addFilter('item.create.directus_users:before', $hashUserPassword);
+            $emitter->addFilter('item.update.directus_users:before', $hashUserPassword);
+            $emitter->addFilter('item.create.directus_users:before', $generateExternalId);
+            $emitter->addFilter('item.create.directus_roles:before', $generateExternalId);
 
-            $emitter->addFilter('collection.insert:before', $onInsertOrUpdate);
-            $emitter->addFilter('collection.update:before', $onInsertOrUpdate);
+            $emitter->addFilter('item.create:before', $onInsertOrUpdate);
+            $emitter->addFilter('item.update:before', $onInsertOrUpdate);
             $preventUsePublicGroup = function (Payload $payload) use ($container) {
                 $data = $payload->getData();
                 if (!ArrayUtils::has($data, 'role')) {
@@ -624,8 +624,8 @@ class CoreServicesProvider
 
                 return $payload;
             };
-            $emitter->addFilter('collection.insert.directus_user_roles:before', $preventUsePublicGroup);
-            $emitter->addFilter('collection.update.directus_user_roles:before', $preventUsePublicGroup);
+            $emitter->addFilter('item.create.directus_user_roles:before', $preventUsePublicGroup);
+            $emitter->addFilter('item.update.directus_user_roles:before', $preventUsePublicGroup);
             $beforeSavingFiles = function ($payload) use ($container) {
                 $acl = $container->get('acl');
                 if (!$acl->canUpdate('directus_files')) {
@@ -634,14 +634,13 @@ class CoreServicesProvider
 
                 return $payload;
             };
-            $emitter->addAction('files.saving', $beforeSavingFiles);
-            $emitter->addAction('files.thumbnail.saving', $beforeSavingFiles);
+            $emitter->addAction('file.save', $beforeSavingFiles);
             // TODO: Make insert actions and filters
-            $emitter->addFilter('collection.insert.directus_files:before', $beforeSavingFiles);
-            $emitter->addFilter('collection.update.directus_files:before', $beforeSavingFiles);
-            $emitter->addFilter('collection.delete.directus_files:before', $beforeSavingFiles);
+            $emitter->addFilter('item.create.directus_files:before', $beforeSavingFiles);
+            $emitter->addFilter('item.update.directus_files:before', $beforeSavingFiles);
+            $emitter->addFilter('item.delete.directus_files:before', $beforeSavingFiles);
 
-            $emitter->addAction('auth.authenticated:credentials', function () use ($container) {
+            $emitter->addAction('auth.request:credentials', function () use ($container) {
                 /** @var Session $session */
                 $session = $container->get('session');
                 if ($session->getStorage()->get('telemetry') === true) {

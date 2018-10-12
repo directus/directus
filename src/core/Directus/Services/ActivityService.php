@@ -79,7 +79,7 @@ class ActivityService extends AbstractService
 
         // make sure to create new one instead of update
         unset($data[$tableGateway->primaryKeyFieldName]);
-        $newComment = $tableGateway->createRecord($data, $this->getCRUDParams($params));
+        $newComment = $tableGateway->ignoreFilters()->createRecord($data, $this->getCRUDParams($params));
 
         return $tableGateway->wrapData(
             $newComment->toArray(),

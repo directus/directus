@@ -20,4 +20,12 @@ class CustomHasher implements \Directus\Hash\Hasher\HasherInterface
 
         return implode('', $letters);
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function verify($string, $hash, array $options = [])
+    {
+        return $hash === $this->hash($string, $options);
+    }
 }

@@ -102,9 +102,10 @@ return [
         'timeout' => 10
     ],
 
-    'hooks' => [],
-
-    'filters' => [],
+    'hooks' => [
+        'actions' => [],
+        'filters' => [],
+    ],
 
     'feedback' => [
         'token' => 'a-kind-of-unique-token',

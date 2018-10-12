@@ -63,6 +63,6 @@ class DirectusActivityTableGateway extends RelationalTableGateway
         $insert
             ->values($logData);
 
-        $this->insertWith($insert);
+        $this->ignoreFilters()->insertWith($insert);
     }
 }

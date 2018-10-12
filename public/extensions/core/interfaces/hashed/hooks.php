@@ -27,7 +27,7 @@ $hashValue = function (Payload $payload) {
 
 return [
     'filters' => [
-        'collection.insert:before' => $hashValue,
-        'collection.update:before' => $hashValue,
+        'item.create:before' => $hashValue,
+        'item.update:before' => $hashValue,
     ]
 ];

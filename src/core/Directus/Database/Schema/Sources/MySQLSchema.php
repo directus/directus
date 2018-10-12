@@ -151,7 +151,6 @@ class MySQLSchema extends AbstractSchema
         $selectOne->columns([
             'collection' => 'TABLE_NAME',
             'field' => 'COLUMN_NAME',
-            'sort' => new Expression('IFNULL(DF.sort, SF.ORDINAL_POSITION)'),
             'datatype' => new Expression('UCASE(SF.DATA_TYPE)'),
             'key' => 'COLUMN_KEY',
             'unique' => new Expression('IF(SF.COLUMN_KEY="UNI",1,0)'),
@@ -175,6 +174,7 @@ class MySQLSchema extends AbstractSchema
             [
                 'id' => new Expression('IF(ISNULL(DF.id), NULL, DF.id)'),
                 'type',
+                'sort',
                 'managed' =>  new Expression('IF(ISNULL(DF.id),0,1)'),
                 'interface',
                 'hidden_detail' => new Expression('IF(DF.hidden_detail=1,1,0)'),
@@ -202,11 +202,12 @@ class MySQLSchema extends AbstractSchema
             ]);
         }
 
+        $selectOne->order(['collection' => 'ASC', 'SF.ORDINAL_POSITION' => 'ASC']);
+
         $selectTwo = new Select();
         $selectTwo->columns([
             'collection',
             'field',
-            'sort',
             'datatype' => new Expression('NULL'),
             'key' => new Expression('NULL'),
             'unique' => new Expression('NULL'),
@@ -223,6 +224,7 @@ class MySQLSchema extends AbstractSchema
             'signed' => new Expression('NULL'),
             'id',
             'type' => new Expression('UCASE(type)'),
+            'sort',
             'managed' =>  new Expression('IF(ISNULL(DF2.id),0,1)'),
             'interface',
             'hidden_detail',

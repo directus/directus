@@ -357,6 +357,13 @@ class FieldsSeeder extends AbstractSeed
             ],
             [
                 'collection' => 'directus_fields',
+                'field' => 'validation',
+                'type' => \Directus\Database\Schema\DataTypes::TYPE_STRING,
+                'interface' => 'text-input',
+                'locked' => 1,
+            ],
+            [
+                'collection' => 'directus_fields',
                 'field' => 'required',
                 'type' => \Directus\Database\Schema\DataTypes::TYPE_BOOLEAN,
                 'interface' => 'toggle',
@@ -968,7 +975,6 @@ class FieldsSeeder extends AbstractSeed
                          'listing_subdued' => false,
                          'listing_badge' => true,
                          'soft_delete' => false,
-                         'published' => true
                       ],
                       'invited' => [
                          'name' => 'Invited',
@@ -977,7 +983,6 @@ class FieldsSeeder extends AbstractSeed
                          'listing_subdued' => false,
                          'listing_badge' => true,
                          'soft_delete' => false,
-                         'published' => false
                       ],
                       'active' => [
                          'name' => 'Active',
@@ -986,7 +991,6 @@ class FieldsSeeder extends AbstractSeed
                          'listing_subdued' => false,
                          'listing_badge' => false,
                          'soft_delete' => false,
-                         'published' => true
                       ],
                       'suspended' => [
                          'name' => 'Suspended',
@@ -995,7 +999,6 @@ class FieldsSeeder extends AbstractSeed
                          'listing_subdued' => false,
                          'listing_badge' => true,
                          'soft_delete' => false,
-                         'published' => false
                       ],
                       'deleted' => [
                          'name' => 'Deleted',
@@ -1004,7 +1007,6 @@ class FieldsSeeder extends AbstractSeed
                          'listing_subdued' => false,
                          'listing_badge' => true,
                          'soft_delete' => true,
-                         'published' => false
                       ]
                    ]
                 ]),

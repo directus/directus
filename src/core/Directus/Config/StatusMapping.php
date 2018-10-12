@@ -53,16 +53,6 @@ class StatusMapping extends Collection
     }
 
     /**
-     * Get a list of published statuses
-     *
-     * @return array
-     */
-    public function getPublishedStatusesValue()
-    {
-        return $this->getStatusesValue('published', true);
-    }
-
-    /**
      * Returns a list of soft delete status values
      *
      * @return array

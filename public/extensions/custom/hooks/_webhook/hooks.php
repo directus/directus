@@ -3,7 +3,7 @@
 return [
     'actions' => [
         // Send an alert when a post is created
-        'collection.insert.posts' => function (array $data) {
+        'item.create.posts' => function (array $data) {
             $client = new \GuzzleHttp\Client([
                 'base_uri' => 'http://example.com'
             ]);

@@ -30,8 +30,12 @@ class AuthenticationMiddleware extends AbstractMiddleware
     {
         $user = $this->authenticate($request);
         $publicRoleId = $this->getPublicRoleId();
+        $hookEmitter = $this->container->get('hook_emitter');
+
         if (!$user && !$publicRoleId) {
-            throw new UserNotAuthenticatedException();
+            $exception = new UserNotAuthenticatedException();
+            $hookEmitter->run('auth.fail', [$exception]);
+            throw $exception;
         }
 
         /** @var Acl $acl */
@@ -58,7 +62,9 @@ class AuthenticationMiddleware extends AbstractMiddleware
         $acl->setRolesIpWhitelist($rolesIpWhitelist);
 
         if (!$acl->isIpAllowed(\Directus\get_request_ip())) {
-            throw new UnauthorizedLocationException();
+            $exception = new UnauthorizedLocationException();
+            $hookEmitter->run('auth.fail', [$exception]);
+            throw $exception;
         }
 
         // TODO: Adding an user should auto set its ID and GROUP
@@ -68,8 +74,7 @@ class AuthenticationMiddleware extends AbstractMiddleware
         $acl->setUserEmail($user->getEmail());
         $acl->setUserFullName($user->get('first_name') . ' ' . $user->get('last_name'));
 
-        $hookEmitter = $this->container->get('hook_emitter');
-        $hookEmitter->run('directus.authenticated', [$user]);
+        $hookEmitter->run('auth.success', [$user]);
 
         return $next($request, $response);
     }

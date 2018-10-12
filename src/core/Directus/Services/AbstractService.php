@@ -318,7 +318,7 @@ abstract class AbstractService
 
         $listenerId = null;
         if ($cacheEnabled) {
-            $listenerId = $hookEmitter->addFilter('collection.select', $setIdTags, Emitter::P_LOW);
+            $listenerId = $hookEmitter->addFilter('item.read', $setIdTags, Emitter::P_LOW);
         }
 
         $result = call_user_func_array($callable, $callableParams);

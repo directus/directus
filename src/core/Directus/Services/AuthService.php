@@ -48,7 +48,7 @@ class AuthService extends AbstractService
         ]);
 
         $hookEmitter = $this->container->get('hook_emitter');
-        $hookEmitter->run('auth.authenticated:credentials', [$user]);
+        $hookEmitter->run('auth.request:credentials', [$user]);
 
         // TODO: Move to the hook above
         /** @var DirectusActivityTableGateway $activityTableGateway */
