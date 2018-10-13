@@ -1108,7 +1108,7 @@ class FieldsSeeder extends AbstractSeed
                         'America/Anchorage' => 'Anchorage (Alaska)',
                         'Pacific/Honolulu' => 'Honolulu (Hawaii)'
                     ],
-                    'placeholder' => 'Choose a language...'
+                    'placeholder' => 'Choose a timezone...'
                 ]),
                 'locked' => 1,
                 'sort' => 10,
@@ -1138,6 +1138,7 @@ class FieldsSeeder extends AbstractSeed
                 'interface' => 'code',
                 'locked' => 1,
                 'hidden_browse' => 1,
+                'hidden_detail' => 1,
                 'sort' => 12
             ],
             [
@@ -1222,10 +1223,8 @@ class FieldsSeeder extends AbstractSeed
                 'collection' => 'directus_users',
                 'field' => 'roles',
                 'type' => \Directus\Database\Schema\DataTypes::TYPE_O2M,
-                'interface' => 'many-to-many',
-                'locked' => 1,
-                'hidden_detail' => 1,
-                'hidden_browse' => 1
+                'interface' => 'user-roles',
+                'locked' => 1
             ],
             [
                 'collection' => 'directus_users',
