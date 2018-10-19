@@ -32,7 +32,7 @@
 
 ## 🐰 Introduction
 
-Directus is an open-source suite of software for managing content in projects of any size. Instances of the [Directus API](https://github.com/directus/api) allow you to easily connect any SQL database content anywhere (websites, native apps, wearables, IoT devices, kiosks, etc) while the [Directus App](https://github.com/directus/app) allows non-technical users to intuitively manage that content. 
+Directus is an open-source suite of software for managing content in projects of any size. Instances of the [Directus API](https://github.com/directus/api) allow you to easily connect SQL database content anywhere (websites, native apps, wearables, IoT devices, kiosks, etc) while the [Directus App](https://github.com/directus/app) allows non-technical users to intuitively manage that content. You can easily install a build of the full [Directus Suite](https://github.com/directus/directus) which includes the App, API, and all dependencies.
 
 * **No Assumptions.** That’s our motto, and we mean it. It’s your content, your workflow, your stack, your servers, and your database – Directus stays out of the way.
 * **Pure, decoupled content.** Directus stores all your data unaltered, in SQL databases designed by you. Connect to your data from anywhere everywhere.
@@ -95,7 +95,7 @@ We love pull-requests! To work on Directus you'll need to install it locally fro
 
 ### Online Demos
 
-We have two online demos available so you can easily check out Directus in action: [stable](https://directus.app) or [canary](https://next.directus.app)
+We have two online demos available so you can easily check out Directus in action: [stable](https://directus.app) or [canary](https://next.directus.app). The credentials to login are: `admin@example.com` and `password`
 
 <p>&nbsp;</p>
 
