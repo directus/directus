@@ -8,6 +8,7 @@ use Directus\Permissions\Exception\ForbiddenCommentUpdateException;
 use Directus\Permissions\Exception\ForbiddenFieldReadException;
 use Directus\Permissions\Exception\ForbiddenFieldWriteException;
 use Directus\Util\ArrayUtils;
+use Directus\Util\StringUtils;
 
 class Acl
 {
@@ -96,6 +97,13 @@ class Acl
      * @var array
      */
     protected $globalPermissions = [];
+
+    /**
+     * Permissions by custom "status" grouped by collections
+     *
+     * @var array
+     */
+    protected $customPermissions = [];
 
     /**
      * Authenticated user id
@@ -349,6 +357,8 @@ class Acl
 
         if (is_null($status) && !isset($this->globalPermissions[$collection])) {
             $this->globalPermissions[$collection] = $permission;
+        } else if (!is_null($status) && StringUtils::startsWith($status, '$')) {
+            $this->customPermissions[$collection][$status] = $permission;
         } else if (!is_null($status) && !isset($this->statusPermissions[$collection][$status])) {
             $this->statusPermissions[$collection][$status] = $permission;
             unset($this->globalPermissions[$collection]);
@@ -375,7 +385,12 @@ class Acl
     public function getAllPermissions()
     {
         $allPermissions = array_values($this->globalPermissions);
+
         foreach ($this->statusPermissions as $collection => $permissions) {
+            $allPermissions = array_merge($allPermissions, array_values($permissions));
+        }
+
+        foreach ($this->customPermissions as $collection => $permissions) {
             $allPermissions = array_merge($allPermissions, array_values($permissions));
         }
 

@@ -26,7 +26,7 @@
     // like /admin, this will cause the routes to be wrong (eg /collection instead
     // of /admin/collections). To combat this, set the routerBaseUrl to the path
     // you're serving the application from
-    routerBaseUrl: "/"
+    routerBaseUrl: "/admin"
   };
 
   window.__DirectusConfig__ = config;

@@ -134,7 +134,7 @@ if (!function_exists('send_reset_password_email')) {
     {
         $data = [
             'new_password' => $password,
-            'user_full_name' => $user->get('first_name') . ' ' . $user->get('last_name'),
+            'user_full_name' => get_user_full_name($user),
         ];
         send_mail_with_template('reset-password.twig', $data, function (Message $message) use ($user) {
             $message->setSubject(
@@ -149,14 +149,14 @@ if (!function_exists('send_forgot_password_email')) {
     /**
      * Sends a new reset password email
      *
-     * @param $user
+     * @param array $user
      * @param string $token
      */
-    function send_forgot_password_email($user, $token)
+    function send_forgot_password_email(array $user, $token)
     {
         $data = [
             'reset_token' => $token,
-            'user_full_name' => $user->get('first_name') . ' ' . $user->get('last_name'),
+            'user_full_name' => get_user_full_name($user),
         ];
         send_mail_with_template('forgot-password.twig', $data, function (Message  $message) use ($user) {
             $message->setSubject(
@@ -200,5 +200,23 @@ if (!function_exists('send_user_invitation_email')) {
             );
             $message->setTo($email);
         });
+    }
+}
+
+if (!function_exists('get_user_full_name')) {
+    /**
+     * Returns the user full name based on the data.first_name and data.last_name
+     *
+     * @param array $data
+     *
+     * @return string
+     */
+    function get_user_full_name(array $data)
+    {
+        $names = array_filter(
+            [array_get($data, 'first_name'), array_get($data, 'last_name')]
+        );
+
+        return !empty($names) ? implode(' ', $names) : '';
     }
 }

@@ -46,7 +46,7 @@ class TransportManager
     public function get($name)
     {
         if (!isset($this->instances[$name])) {
-            $this->instances[$name] = $this->build($name, ArrayUtils::get($this->config, $name, []));
+            $this->instances[$name] = $this->build($name, $this->getConfig($name));
         }
 
         return $this->instances[$name];
@@ -59,14 +59,47 @@ class TransportManager
      */
     public function getDefault()
     {
-        $instance = null;
+        return $this->get($this->getDefaultKey());
+    }
+
+    /**
+     * Returns a transport configuration based on its name
+     *
+     * @param string $name
+     *
+     * @return array
+     */
+    public function getConfig($name)
+    {
+        return ArrayUtils::get($this->config, $name, []);
+    }
+
+    /**
+     * Returns the default transport configuration
+     *
+     * @return array
+     */
+    public function getDefaultConfig()
+    {
+        return $this->getConfig($this->getDefaultKey());
+    }
+
+    /**
+     * Returns the default transport key
+     *
+     * @return null|string
+     */
+    protected function getDefaultKey()
+    {
+        $key = null;
         if (array_key_exists('default', $this->transports)) {
-            $instance = $this->get('default');
+            $key = 'default';
         } else if (count($this->transports) > 0) {
-            $instance = $this->get($this->transports[0]);
+            reset($this->transports);
+            $key = key($this->transports);
         }
 
-        return $instance;
+        return $key;
     }
 
     /**
@@ -98,16 +131,18 @@ class TransportManager
         if (is_callable($transport)) {
             $instance = call_user_func($transport);
         } else if (is_string($transport)) {
-            $instance = new $transport($config);
+            $instance = new $transport();
         } else {
             $instance = $transport;
         }
 
         if (!($instance instanceof AbstractTransport)) {
             throw new RuntimeException(
-                sprintf('%s is not an instance of %s', $instance, AbstractTransport::class)
+                sprintf('%s is not an instance of %s', gettype($instance), AbstractTransport::class)
             );
         }
+
+        $instance->replaceConfig($config);
 
         return $instance;
     }

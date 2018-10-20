@@ -3,7 +3,6 @@
 namespace League\Flysystem;
 
 use InvalidArgumentException;
-use League\Flysystem\FilesystemNotFoundException;
 use League\Flysystem\Plugin\PluggableTrait;
 use League\Flysystem\Plugin\PluginNotFoundException;
 
@@ -14,36 +13,15 @@ use League\Flysystem\Plugin\PluginNotFoundException;
  *
  * @method AdapterInterface getAdapter($prefix)
  * @method Config getConfig($prefix)
- * @method bool has($path)
- * @method bool write($path, $contents, array $config = [])
- * @method bool writeStream($path, $resource, array $config = [])
- * @method bool put($path, $contents, $config = [])
- * @method bool putStream($path, $contents, $config = [])
- * @method string readAndDelete($path)
- * @method bool update($path, $contents, $config = [])
- * @method bool updateStream($path, $resource, $config = [])
- * @method string|false read($path)
- * @method resource|false readStream($path)
- * @method bool rename($path, $newpath)
- * @method bool delete($path)
- * @method bool deleteDir($dirname)
- * @method bool createDir($dirname, $config = [])
  * @method array listFiles($directory = '', $recursive = false)
  * @method array listPaths($directory = '', $recursive = false)
  * @method array getWithMetadata($path, array $metadata)
- * @method string|false getMimetype($path)
- * @method int|false getTimestamp($path)
- * @method string|false getVisibility($path)
- * @method int|false getSize($path);
- * @method bool setVisibility($path, $visibility)
- * @method array|false getMetadata($path)
- * @method Handler get($path, Handler $handler = null)
  * @method Filesystem flushCache()
  * @method void assertPresent($path)
  * @method void assertAbsent($path)
  * @method Filesystem addPlugin(PluginInterface $plugin)
  */
-class MountManager
+class MountManager implements FilesystemInterface
 {
     use PluggableTrait;
 
@@ -317,5 +295,354 @@ class MountManager
         }
 
         return explode('://', $path, 2);
+    }
+
+    /**
+     * Check whether a file exists.
+     *
+     * @param string $path
+     *
+     * @return bool
+     */
+    public function has($path)
+    {
+        list($prefix, $path) = $this->getPrefixAndPath($path);
+
+        return $this->getFilesystem($prefix)->has($path);
+    }
+
+    /**
+     * Read a file.
+     *
+     * @param string $path The path to the file.
+     *
+     * @throws FileNotFoundException
+     *
+     * @return string|false The file contents or false on failure.
+     */
+    public function read($path)
+    {
+        list($prefix, $path) = $this->getPrefixAndPath($path);
+
+        return $this->getFilesystem($prefix)->read($path);
+    }
+
+    /**
+     * Retrieves a read-stream for a path.
+     *
+     * @param string $path The path to the file.
+     *
+     * @throws FileNotFoundException
+     *
+     * @return resource|false The path resource or false on failure.
+     */
+    public function readStream($path)
+    {
+        list($prefix, $path) = $this->getPrefixAndPath($path);
+
+        return $this->getFilesystem($prefix)->readStream($path);
+    }
+
+    /**
+     * Get a file's metadata.
+     *
+     * @param string $path The path to the file.
+     *
+     * @throws FileNotFoundException
+     *
+     * @return array|false The file metadata or false on failure.
+     */
+    public function getMetadata($path)
+    {
+        list($prefix, $path) = $this->getPrefixAndPath($path);
+
+        return $this->getFilesystem($prefix)->getMetadata($path);
+    }
+
+    /**
+     * Get a file's size.
+     *
+     * @param string $path The path to the file.
+     *
+     * @throws FileNotFoundException
+     *
+     * @return int|false The file size or false on failure.
+     */
+    public function getSize($path)
+    {
+        list($prefix, $path) = $this->getPrefixAndPath($path);
+
+        return $this->getFilesystem($prefix)->getSize($path);
+    }
+
+    /**
+     * Get a file's mime-type.
+     *
+     * @param string $path The path to the file.
+     *
+     * @throws FileNotFoundException
+     *
+     * @return string|false The file mime-type or false on failure.
+     */
+    public function getMimetype($path)
+    {
+        list($prefix, $path) = $this->getPrefixAndPath($path);
+
+        return $this->getFilesystem($prefix)->getMimetype($path);
+    }
+
+    /**
+     * Get a file's timestamp.
+     *
+     * @param string $path The path to the file.
+     *
+     * @throws FileNotFoundException
+     *
+     * @return string|false The timestamp or false on failure.
+     */
+    public function getTimestamp($path)
+    {
+        list($prefix, $path) = $this->getPrefixAndPath($path);
+
+        return $this->getFilesystem($prefix)->getTimestamp($path);
+    }
+
+    /**
+     * Get a file's visibility.
+     *
+     * @param string $path The path to the file.
+     *
+     * @throws FileNotFoundException
+     *
+     * @return string|false The visibility (public|private) or false on failure.
+     */
+    public function getVisibility($path)
+    {
+        list($prefix, $path) = $this->getPrefixAndPath($path);
+
+        return $this->getFilesystem($prefix)->getVisibility($path);
+    }
+
+    /**
+     * Write a new file.
+     *
+     * @param string $path     The path of the new file.
+     * @param string $contents The file contents.
+     * @param array  $config   An optional configuration array.
+     *
+     * @throws FileExistsException
+     *
+     * @return bool True on success, false on failure.
+     */
+    public function write($path, $contents, array $config = [])
+    {
+        list($prefix, $path) = $this->getPrefixAndPath($path);
+
+        return $this->getFilesystem($prefix)->write($path, $contents, $config);
+    }
+
+    /**
+     * Write a new file using a stream.
+     *
+     * @param string   $path     The path of the new file.
+     * @param resource $resource The file handle.
+     * @param array    $config   An optional configuration array.
+     *
+     * @throws InvalidArgumentException If $resource is not a file handle.
+     * @throws FileExistsException
+     *
+     * @return bool True on success, false on failure.
+     */
+    public function writeStream($path, $resource, array $config = [])
+    {
+        list($prefix, $path) = $this->getPrefixAndPath($path);
+
+        return $this->getFilesystem($prefix)->writeStream($path, $resource, $config);
+    }
+
+    /**
+     * Update an existing file.
+     *
+     * @param string $path     The path of the existing file.
+     * @param string $contents The file contents.
+     * @param array  $config   An optional configuration array.
+     *
+     * @throws FileNotFoundException
+     *
+     * @return bool True on success, false on failure.
+     */
+    public function update($path, $contents, array $config = [])
+    {
+        list($prefix, $path) = $this->getPrefixAndPath($path);
+
+        return $this->getFilesystem($prefix)->update($path, $contents, $config);
+    }
+
+    /**
+     * Update an existing file using a stream.
+     *
+     * @param string   $path     The path of the existing file.
+     * @param resource $resource The file handle.
+     * @param array    $config   An optional configuration array.
+     *
+     * @throws InvalidArgumentException If $resource is not a file handle.
+     * @throws FileNotFoundException
+     *
+     * @return bool True on success, false on failure.
+     */
+    public function updateStream($path, $resource, array $config = [])
+    {
+        list($prefix, $path) = $this->getPrefixAndPath($path);
+
+        return $this->getFilesystem($prefix)->updateStream($path, $resource, $config);
+    }
+
+    /**
+     * Rename a file.
+     *
+     * @param string $path    Path to the existing file.
+     * @param string $newpath The new path of the file.
+     *
+     * @throws FileExistsException   Thrown if $newpath exists.
+     * @throws FileNotFoundException Thrown if $path does not exist.
+     *
+     * @return bool True on success, false on failure.
+     */
+    public function rename($path, $newpath)
+    {
+        list($prefix, $path) = $this->getPrefixAndPath($path);
+
+        return $this->getFilesystem($prefix)->rename($path, $newpath);
+    }
+
+    /**
+     * Delete a file.
+     *
+     * @param string $path
+     *
+     * @throws FileNotFoundException
+     *
+     * @return bool True on success, false on failure.
+     */
+    public function delete($path)
+    {
+        list($prefix, $path) = $this->getPrefixAndPath($path);
+
+        return $this->getFilesystem($prefix)->delete($path);
+    }
+
+    /**
+     * Delete a directory.
+     *
+     * @param string $dirname
+     *
+     * @throws RootViolationException Thrown if $dirname is empty.
+     *
+     * @return bool True on success, false on failure.
+     */
+    public function deleteDir($dirname)
+    {
+        list($prefix, $dirname) = $this->getPrefixAndPath($dirname);
+
+        return $this->getFilesystem($prefix)->deleteDir($dirname);
+    }
+
+    /**
+     * Create a directory.
+     *
+     * @param string $dirname The name of the new directory.
+     * @param array  $config  An optional configuration array.
+     *
+     * @return bool True on success, false on failure.
+     */
+    public function createDir($dirname, array $config = [])
+    {
+        list($prefix, $dirname) = $this->getPrefixAndPath($dirname);
+
+        return $this->getFilesystem($prefix)->createDir($dirname);
+    }
+
+    /**
+     * Set the visibility for a file.
+     *
+     * @param string $path       The path to the file.
+     * @param string $visibility One of 'public' or 'private'.
+     *
+     * @throws FileNotFoundException
+     *
+     * @return bool True on success, false on failure.
+     */
+    public function setVisibility($path, $visibility)
+    {
+        list($prefix, $path) = $this->getPrefixAndPath($path);
+
+        return $this->getFilesystem($prefix)->setVisibility($path, $visibility);
+    }
+
+    /**
+     * Create a file or update if exists.
+     *
+     * @param string $path     The path to the file.
+     * @param string $contents The file contents.
+     * @param array  $config   An optional configuration array.
+     *
+     * @return bool True on success, false on failure.
+     */
+    public function put($path, $contents, array $config = [])
+    {
+        list($prefix, $path) = $this->getPrefixAndPath($path);
+
+        return $this->getFilesystem($prefix)->put($path, $contents, $config);
+    }
+
+    /**
+     * Create a file or update if exists.
+     *
+     * @param string   $path     The path to the file.
+     * @param resource $resource The file handle.
+     * @param array    $config   An optional configuration array.
+     *
+     * @throws InvalidArgumentException Thrown if $resource is not a resource.
+     *
+     * @return bool True on success, false on failure.
+     */
+    public function putStream($path, $resource, array $config = [])
+    {
+        list($prefix, $path) = $this->getPrefixAndPath($path);
+
+        return $this->getFilesystem($prefix)->putStream($path, $resource, $config);
+    }
+
+    /**
+     * Read and delete a file.
+     *
+     * @param string $path The path to the file.
+     *
+     * @throws FileNotFoundException
+     *
+     * @return string|false The file contents, or false on failure.
+     */
+    public function readAndDelete($path)
+    {
+        list($prefix, $path) = $this->getPrefixAndPath($path);
+
+        return $this->getFilesystem($prefix)->readAndDelete($path);
+    }
+
+    /**
+     * Get a file/directory handler.
+     *
+     * @deprecated
+     *
+     * @param string  $path    The path to the file.
+     * @param Handler $handler An optional existing handler to populate.
+     *
+     * @return Handler Either a file or directory handler.
+     */
+    public function get($path, Handler $handler = null)
+    {
+        list($prefix, $path) = $this->getPrefixAndPath($path);
+
+        return $this->getFilesystem($prefix)->get($path);
     }
 }

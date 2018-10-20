@@ -42,7 +42,8 @@ use Directus\Hook\Emitter;
 use Directus\Hook\Payload;
 use Directus\Mail\Mailer;
 use Directus\Mail\TransportManager;
-use Directus\Mail\Transports\SimpleFileTransport;
+use Directus\Mail\Transports\SendMailTransport;
+use Directus\Mail\Transports\SmtpTransport;
 use Directus\Permissions\Acl;
 use Directus\Services\AuthService;
 use Directus\Session\Session;
@@ -1002,9 +1003,8 @@ class CoreServicesProvider
             $manager = new TransportManager();
 
             $transports = [
-                'simple_file' => SimpleFileTransport::class,
-                'smtp' => \Swift_SmtpTransport::class,
-                'sendmail' => \Swift_SendmailTransport::class
+                'smtp' => SmtpTransport::class,
+                'sendmail' => SendMailTransport::class,
             ];
 
             $mailConfigs = $config->get('mail');

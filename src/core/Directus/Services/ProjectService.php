@@ -16,8 +16,6 @@ class ProjectService extends AbstractService
             throw new ForbiddenException('Creating new instance is locked');
         }
 
-        $data = ArrayUtils::defaults(['user_token' => null], $data);
-
         $this->validate($data, [
             'project' => 'string|regex:/^[a-z_-]+$/i',
 

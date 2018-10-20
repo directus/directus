@@ -7,6 +7,7 @@ use Directus\Database\Schema\Object\Field;
 use Directus\Database\Schema\Object\Collection;
 use Directus\Database\Schema\Sources\SchemaInterface;
 use Directus\Util\ArrayUtils;
+use Directus\Util\DateTimeUtils;
 
 class SchemaManager
 {
@@ -562,6 +563,10 @@ class SchemaManager
         // We reserved the word "NULL" on nullable data type to be actually null
         if ($column['nullable'] === true && $column['default_value'] == 'NULL') {
             $column['default_value'] = null;
+        }
+
+        if (DataTypes::isDateTimeType($column['type']) && $column['default_value'] !== null) {
+            $column['default_value'] = DateTimeUtils::createFromDefaultFormat($column['default_value'], 'UTC')->toISO8601Format();
         }
 
         $castAttributesToBool = function (&$array, array $keys) {

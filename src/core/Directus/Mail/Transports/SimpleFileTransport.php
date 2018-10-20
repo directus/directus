@@ -2,21 +2,10 @@
 
 namespace Directus\Mail\Transports;
 
-use Directus\Collection\Collection;
 use Swift_Mime_Message;
 
 class SimpleFileTransport extends AbstractTransport
 {
-    /**
-     * @var Collection
-     */
-    protected $config;
-
-    public function __construct(array $config = [])
-    {
-        $this->config = new Collection($config);
-    }
-
     /**
      * @inheritdoc
      */

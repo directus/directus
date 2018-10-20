@@ -2154,6 +2154,11 @@ class RelationalTableGateway extends BaseTableGateway
             $deltaRecordData = $payload;
         }
 
+        // remove "data" from directus_files payload
+        if ($this->getTable() === SchemaManager::COLLECTION_FILES) {
+            unset($deltaRecordData['data']);
+        }
+
         // Save parent log entry
         $parentLogEntry = BaseRowGateway::makeRowGatewayFromTableName('id', 'directus_activity', $this->adapter);
         $logData = [

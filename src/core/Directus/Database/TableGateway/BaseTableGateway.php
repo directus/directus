@@ -1092,13 +1092,54 @@ class BaseTableGateway extends TableGateway
     protected function enforceReadPermission(Builder $builder)
     {
         // ----------------------------------------------------------------------------
+        // Fixed owner field for system collections
+        // ----------------------------------------------------------------------------
+        switch ($this->table) {
+            case SchemaManager::COLLECTION_ROLES:
+                $field = 'id';
+                break;
+            case SchemaManager::COLLECTION_PERMISSIONS:
+                $field = 'role';
+                break;
+            default:
+                $field = null;
+        }
+
+        if ($field) {
+            $permission = $this->acl->getPermission($this->table);
+            $readPermission = ArrayUtils::get($permission, Acl::ACTION_READ);
+            $rolesIds = [];
+
+            // TODO: Implement how to process `role` permission
+            if ($readPermission === Acl::LEVEL_MINE) {
+                $rolesIds = $this->acl->getRolesId();
+            }
+
+            if (!empty($rolesIds)) {
+                $builder->whereIn($field, $rolesIds);
+                return;
+            }
+        }
+
+        // ----------------------------------------------------------------------------
         // Make sure the user has permission to at least their items
         // ----------------------------------------------------------------------------
         $this->acl->enforceReadOnce($this->table);
         $collectionObject = $this->getTableSchema();
-        $userCreatedField = $collectionObject->getUserCreatedField();
         $statuses = $this->acl->getCollectionStatuses($this->table);
         $statusField = $collectionObject->getStatusField();
+
+        $userCreatedField = $collectionObject->getUserCreatedField();
+        if ($this->schemaManager->isSystemCollection($this->table)) {
+            switch ($this->table) {
+                case SchemaManager::COLLECTION_USERS:
+                    $userCreatedField = $collectionObject->getField('id');
+                    break;
+                case SchemaManager::COLLECTION_USER_ROLES:
+                    $userCreatedField = $collectionObject->getField('user');
+                    break;
+            }
+        }
 
         // throw exception if the user has status permission enabled and not status field
         if (!empty($statuses) && !$statusField) {
@@ -1111,7 +1152,7 @@ class BaseTableGateway extends TableGateway
             return;
         }
 
-        // User can read all items, nothing else to check
+        // If User can read all items, nothing else needs to be checked
         if ($this->acl->canReadAll($this->table)) {
             return;
         }

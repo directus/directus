@@ -199,7 +199,7 @@ class InstallerUtils
         $data = ArrayUtils::defaults([
             'user_email' => 'admin@example.com',
             'user_password' => 'password',
-            'user_token' => 'admin_token'
+            'user_token' => null
         ], $data);
 
         $hash = $auth->hashPassword($data['user_password']);

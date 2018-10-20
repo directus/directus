@@ -6,7 +6,7 @@ use Directus\Exception\UnauthorizedException;
 
 class UserInactiveException extends UnauthorizedException
 {
-    const ERROR_CODE = 104;
+    const ERROR_CODE = 103;
 
     public function __construct()
     {

@@ -89,6 +89,7 @@ $middleware = [
     'ip' => new RKA\Middleware\IpAddress(),
     'cors' => new \Directus\Application\Http\Middleware\CorsMiddleware($app->getContainer()),
     'auth' => new \Directus\Application\Http\Middleware\AuthenticationMiddleware($app->getContainer()),
+    'auth_user' => new \Directus\Application\Http\Middleware\AuthenticatedMiddleware($app->getContainer()),
     'auth_ignore_origin' => new \Directus\Application\Http\Middleware\AuthenticationIgnoreOriginMiddleware($app->getContainer()),
     'rate_limit_user' => new \Directus\Application\Http\Middleware\UserRateLimitMiddleware($app->getContainer()),
 ];
@@ -98,6 +99,7 @@ $app->add($middleware['rate_limit_ip'])
     ->add($middleware['cors']);
 
 $app->get('/', \Directus\Api\Routes\Home::class)
+    ->add($middleware['auth_user'])
     ->add($middleware['auth'])
     ->add($middleware['auth_ignore_origin'])
     ->add($middleware['table_gateway']);
@@ -107,6 +109,7 @@ $app->group('/projects', \Directus\Api\Routes\Projects::class)
 
 $app->group('/{project}', function () use ($middleware) {
     $this->get('/', \Directus\Api\Routes\ProjectHome::class)
+        ->add($middleware['auth_user'])
         ->add($middleware['rate_limit_user'])
         ->add($middleware['auth'])
         ->add($middleware['table_gateway']);

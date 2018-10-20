@@ -2,8 +2,6 @@
 
 namespace Directus\Mail\Transports;
 
-use Directus\Collection\Collection;
-
 class SendMailTransport extends AbstractTransport
 {
     /**
@@ -11,18 +9,23 @@ class SendMailTransport extends AbstractTransport
      */
     protected $sendmail;
 
-    public function __construct(array $config = [])
-    {
-        $this->config = new Collection($config);
-
-        $this->sendmail = \Swift_SendmailTransport::newInstance($this->config->get('sendmail'));
-    }
-
     /**
      * @inheritdoc
      */
     public function send(\Swift_Mime_Message $message, &$failedRecipients = null)
     {
-        return $this->sendmail->send($message, &$failedRecipients);
+        return $this->getSendmail()->send($message, $failedRecipients);
+    }
+
+    /**
+     * @return \Swift_SendmailTransport
+     */
+    protected function getSendmail()
+    {
+        if (!$this->sendmail) {
+            $this->sendmail = \Swift_SendmailTransport::newInstance($this->config->get('sendmail'));
+        }
+
+        return $this->sendmail;
     }
 }

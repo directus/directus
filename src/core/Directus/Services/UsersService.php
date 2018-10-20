@@ -68,7 +68,7 @@ class UsersService extends AbstractService
             'last_access_on' => DateTimeUtils::nowInUTC()->toString()
         ];
 
-        $this->getTableGateway()->update($data, [
+        $this->createTableGateway($this->collection, false)->update($data, [
             'id' => $this->getUserId($id)
         ]);
 

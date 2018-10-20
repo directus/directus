@@ -2,6 +2,7 @@
 
 namespace Directus\Mail;
 
+use Directus\Collection\Collection;
 use function Directus\get_api_project_from_request;
 
 class Mailer
@@ -47,7 +48,7 @@ class Mailer
         $message = $this->createMessage();
 
         // Get global information
-        $config = $transport->getConfig();
+        $config = new Collection($this->transports->getDefaultConfig());
         if ($config->has('from')) {
             $message->setFrom($config->get('from'));
         }
@@ -66,11 +67,12 @@ class Mailer
             call_user_func($callback, $message);
         }
 
-        if (!array_key_exists($transport->getName(), $this->mailers)) {
-            $this->mailers[$transport->getName()] = new \Swift_Mailer($transport);
+        $transportId = get_class($transport);
+        if (!array_key_exists($transportId, $this->mailers)) {
+            $this->mailers[$transportId] = new \Swift_Mailer($transport);
         }
 
-        $swiftMailer = $this->mailers[$transport->getName()];
+        $swiftMailer = $this->mailers[$transportId];
         $swiftMailer->send($message);
     }
 }
