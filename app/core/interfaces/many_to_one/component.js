@@ -11,7 +11,7 @@ define([
 
   return UIComponent.extend({
     id: 'many_to_one',
-    dataTypes: ['INT', 'TINYINT', 'SMALL', 'BIGINT', 'CHAR', 'VARCHAR'],
+    dataTypes: ['INT', 'TINYINT', 'SMALLINT', 'MEIUMINT', 'BIGINT', 'CHAR', 'VARCHAR'],
     options: [
       {
         id: 'read_only',
