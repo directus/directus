@@ -1,9 +1,0 @@
-{{#if hasStatusColumn}}
-<select name="type" class="js-status">
-	<option value="">{{t 'widget_set_status'}}</option>
-	{{#mapping}}
-	<option value="{{id}}">{{capitalize name}}</option>
-	{{/mapping}}
-</select>
-<i class="material-icons select-arrow">arrow_drop_down</i>
-{{/if}}
