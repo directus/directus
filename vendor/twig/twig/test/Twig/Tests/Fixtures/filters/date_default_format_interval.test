@@ -1,0 +1,14 @@
+--TEST--
+"date" filter (interval support)
+--TEMPLATE--
+{{ date2|date }}
+{{ date2|date('%d days') }}
+--DATA--
+date_default_timezone_set('UTC');
+$twig->getExtension('Twig_Extension_Core')->setDateFormat('Y-m-d', '%d days %h hours');
+return array(
+    'date2' => new DateInterval('P2D'),
+)
+--EXPECT--
+2 days 0 hours
+2 days

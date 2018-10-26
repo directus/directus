@@ -1,0 +1,40 @@
+language: php
+
+sudo: false
+
+env:
+  global:
+    - COMPOSER_ROOT_VERSION=1.8.0
+
+php:
+  - '7.1'
+  - '7.2'
+  - nightly
+
+matrix:
+  fast_finish: true
+  include:
+    - php: '7.1'
+      env: COMPOSER_FLAGS="--prefer-lowest"
+  allow_failures:
+    - php: nightly
+
+cache:
+  directories:
+    - $HOME/.composer/cache/files
+
+install:
+  - composer update --no-interaction --no-progress --no-suggest --prefer-dist $COMPOSER_FLAGS
+  - wget https://github.com/satooshi/php-coveralls/releases/download/v1.0.0/coveralls.phar
+
+before_script:
+  - mkdir -p build/logs
+
+script:
+  - vendor/bin/phpunit --coverage-clover build/logs/clover.xml
+
+after_script:
+  - php coveralls.phar -v
+
+notifications:
+    email: false

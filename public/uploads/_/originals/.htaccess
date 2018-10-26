@@ -1,0 +1,15 @@
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresDefault "access 1 year"
+</IfModule>
+
+<FilesMatch "\.(php|phps|php5|htm|shtml|xhtml|cgi.+)$">
+    ForceType text/plain
+</FilesMatch>
+
+# Respond with 404 if the file doesn't exists
+# Before the API mod_rewrite catches the request
+<IfModule mod_rewrite.c>
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteRule .* - [L,R=404]
+</IfModule>

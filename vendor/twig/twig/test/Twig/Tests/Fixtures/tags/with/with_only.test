@@ -1,0 +1,10 @@
+--TEST--
+"with" tag with expression and only
+--TEMPLATE--
+{% with {foo: 'foo', bar: 'BAZ'} only %}
+    {{ foo }}{{ bar }}{{ baz }}
+{% endwith %}
+--DATA--
+return array('foo' => 'baz', 'baz' => 'baz')
+--EXCEPTION--
+Twig_Error_Runtime: Variable "baz" does not exist in "index.twig" at line 3.

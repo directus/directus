@@ -1,0 +1,17 @@
+<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en-US" trgLang="en-US">
+    <file id="f1">
+        <unit id="1">
+            <notes>
+                <note category="processed">true</note>
+            </notes>
+            <segment id="id-foo">
+                <source>foo</source>
+                <target>foo (translated)</target>
+            </segment>
+            <segment id="id-bar">
+                <source>bar</source>
+                <target>bar (translated)</target>
+            </segment>
+        </unit>
+    </file>
+</xliff>

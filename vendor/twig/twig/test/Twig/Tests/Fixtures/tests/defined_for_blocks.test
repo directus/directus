@@ -1,0 +1,38 @@
+--TEST--
+"defined" support for blocks
+--TEMPLATE--
+{% extends 'parent' %}
+{% block icon %}icon{% endblock %}
+{% block body %}
+    {{ parent() }}
+    {{ block('foo') is defined ? 'ok' : 'ko' }}
+    {{ block('footer') is defined ? 'ok' : 'ko' }}
+    {{ block('icon') is defined ? 'ok' : 'ko' }}
+    {{ block('block1') is defined ? 'ok' : 'ko' }}
+    {%- embed 'embed' %}
+        {% block content %}content{% endblock %}
+    {% endembed %}
+{% endblock %}
+{% use 'blocks' %}
+--TEMPLATE(parent)--
+{% block body %}
+  {{ block('icon') is defined ? 'ok' : 'ko' -}}
+{% endblock %}
+{% block footer %}{% endblock %}
+--TEMPLATE(embed)--
+{{ block('icon') is defined ? 'ok' : 'ko' }}
+{{ block('content') is defined ? 'ok' : 'ko' }}
+{{ block('block1') is defined ? 'ok' : 'ko' }}
+--TEMPLATE(blocks)--
+{% block block1 %}{%endblock %}
+--DATA--
+return array()
+--EXPECT--
+ok
+    ko
+    ok
+    ok
+    ok
+ko
+ok
+ko

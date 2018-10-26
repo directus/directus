@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xsd:schema xmlns="http://example.com/schema"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    targetNamespace="http://example.com/schema"
+    elementFormDefault="qualified">
+
+  <xsd:element name="root" />
+</xsd:schema>

@@ -1,0 +1,24 @@
+{
+  "name": "directus/filesystem",
+  "description": "Directus Filesystem Library",
+  "keywords": [
+    "directus",
+    "filesystem"
+  ],
+  "license": "MIT",
+  "require": {
+    "php": ">=5.4.0",
+    "league/flysystem": "^1.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Directus\\Filesystem\\": ""
+    }
+  },
+  "minimum-stability": "dev",
+  "extra": {
+    "branch-alias": {
+      "dev-d64": "0.9.x-dev"
+    }
+  }
+}

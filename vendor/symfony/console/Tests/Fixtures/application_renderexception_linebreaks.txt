@@ -1,0 +1,11 @@
+
+In ApplicationTest.php line %d:
+                                    
+  line 1 with extra spaces          
+  line 2                            
+                                    
+  line 4                            
+                                    
+
+foo
+

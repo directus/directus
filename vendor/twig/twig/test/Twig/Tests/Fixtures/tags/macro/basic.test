@@ -1,0 +1,17 @@
+--TEST--
+"macro" tag
+--TEMPLATE--
+{% import _self as macros %}
+
+{{ macros.input('username') }}
+{{ macros.input('password', null, 'password', 1) }}
+
+{% macro input(name, value, type, size) %}
+  <input type="{{ type|default("text") }}" name="{{ name }}" value="{{ value|e|default('') }}" size="{{ size|default(20) }}">
+{% endmacro %}
+--DATA--
+return array()
+--EXPECT--
+  <input type="text" name="username" value="" size="20">
+
+  <input type="password" name="password" value="" size="1">

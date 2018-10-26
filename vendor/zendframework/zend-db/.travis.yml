@@ -1,0 +1,83 @@
+sudo: false
+
+language: php
+
+cache:
+  directories:
+    - $HOME/.composer/cache
+
+env:
+  global:
+    - COMPOSER_ARGS="--no-interaction"
+    - COVERAGE_DEPS="satooshi/php-coveralls"
+    - TESTS_ZEND_DB_ADAPTER_DRIVER_MYSQL_HOSTNAME=localhost
+    - TESTS_ZEND_DB_ADAPTER_DRIVER_MYSQL_PASSWORD=
+    - TESTS_ZEND_DB_ADAPTER_DRIVER_PGSQL_HOSTNAME=localhost
+
+matrix:
+  include:
+    - php: 5.6
+      env:
+        - DEPS=lowest
+    - php: 5.6
+      env:
+        - DEPS=locked
+        - LEGACY_DEPS="phpunit/phpunit"
+    - php: 5.6
+      env:
+        - DEPS=latest
+    - php: 7.0
+      env:
+        - DEPS=lowest
+    - php: 7.0
+      env:
+        - DEPS=locked
+        - LEGACY_DEPS="phpunit/phpunit"
+    - php: 7.0
+      env:
+        - DEPS=latest
+    - php: 7.1
+      env:
+        - DEPS=lowest
+    - php: 7.1
+      env:
+        - DEPS=locked
+        - CS_CHECK=true
+        - TEST_COVERAGE=true
+    - php: 7.1
+      env:
+        - DEPS=latest
+    - php: 7.2
+      env:
+        - DEPS=lowest
+    - php: 7.2
+      env:
+        - DEPS=locked
+    - php: 7.2
+      env:
+        - DEPS=latest
+
+before_install:
+  - if [[ $TEST_COVERAGE != 'true' ]]; then phpenv config-rm xdebug.ini || return 0 ; fi
+
+install:
+  - travis_retry composer install $COMPOSER_ARGS --ignore-platform-reqs
+  - if [[ $LEGACY_DEPS != '' ]]; then travis_retry composer update $COMPOSER_ARGS --with-dependencies $LEGACY_DEPS ; fi
+  - if [[ $DEPS == 'latest' ]]; then travis_retry composer update $COMPOSER_ARGS ; fi
+  - if [[ $DEPS == 'lowest' ]]; then travis_retry composer update --prefer-lowest --prefer-stable $COMPOSER_ARGS ; fi
+  - if [[ $TEST_COVERAGE == 'true' ]]; then travis_retry composer require --dev $COMPOSER_ARGS $COVERAGE_DEPS ; fi
+  - stty cols 120 && composer show
+
+before_script:
+  - .ci/mysql_fixtures_travis.sh
+  - .ci/pgsql_fixtures.sh
+
+script:
+  - if [[ $TEST_COVERAGE == 'true' ]]; then composer test-coverage ; else composer test ; fi
+  - if [[ $CS_CHECK == 'true' ]]; then composer cs-check ; fi
+
+after_script:
+  - if [[ $TEST_COVERAGE == 'true' ]]; then composer upload-coverage ; fi
+
+notifications:
+  email: false

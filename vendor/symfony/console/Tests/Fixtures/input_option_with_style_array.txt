@@ -1,0 +1,1 @@
+  <info>-o, --option_name=OPTION_NAME</info>  option description<comment> [default: ["\<comment>Hello\</comment>","\<info>world\</info>"]]</comment><comment> (multiple values allowed)</comment>

@@ -1,0 +1,8 @@
+--TEST--
+"escape" filter
+--TEMPLATE--
+{{ "é ♜ 𝌆"|e('js') }}
+--DATA--
+return array()
+--EXPECT--
+\u00E9\u0020\u265C\u0020\uD834\uDF06

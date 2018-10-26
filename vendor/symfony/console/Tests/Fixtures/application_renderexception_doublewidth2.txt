@@ -1,0 +1,9 @@
+
+In ApplicationTest.php line %d:
+                              
+  コマンドの実行中にエラーが  
+  発生しました。              
+                              
+
+foo
+

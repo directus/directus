@@ -1,0 +1,159 @@
+--TEST--
+"default" filter
+--TEMPLATE--
+Variable:
+{{ definedVar                  |default('default') is same as('default') ? 'ko' : 'ok' }}
+{{ zeroVar                     |default('default') is same as('default') ? 'ko' : 'ok' }}
+{{ emptyVar                    |default('default') is same as('default') ? 'ok' : 'ko' }}
+{{ nullVar                     |default('default') is same as('default') ? 'ok' : 'ko' }}
+{{ undefinedVar                |default('default') is same as('default') ? 'ok' : 'ko' }}
+Array access:
+{{ nested.definedVar           |default('default') is same as('default') ? 'ko' : 'ok' }}
+{{ nested['definedVar']        |default('default') is same as('default') ? 'ko' : 'ok' }}
+{{ nested.zeroVar              |default('default') is same as('default') ? 'ko' : 'ok' }}
+{{ nested.emptyVar             |default('default') is same as('default') ? 'ok' : 'ko' }}
+{{ nested.nullVar              |default('default') is same as('default') ? 'ok' : 'ko' }}
+{{ nested.undefinedVar         |default('default') is same as('default') ? 'ok' : 'ko' }}
+{{ nested['undefinedVar']      |default('default') is same as('default') ? 'ok' : 'ko' }}
+{{ undefined['undefined']      |default('default') is same as('default') ? 'ok' : 'ko' }}
+{{ undefinedVar.foo            |default('default') is same as('default') ? 'ok' : 'ko' }}
+Plain values:
+{{ 'defined'                   |default('default') is same as('default') ? 'ko' : 'ok' }}
+{{ 0                           |default('default') is same as('default') ? 'ko' : 'ok' }}
+{{ ''                          |default('default') is same as('default') ? 'ok' : 'ko' }}
+{{ null                        |default('default') is same as('default') ? 'ok' : 'ko' }}
+Precedence:
+{{ 'o' ~ nullVar               |default('k') }}
+{{ 'o' ~ nested.nullVar        |default('k') }}
+Object methods:
+{{ object.foo                  |default('default') is same as('default') ? 'ko' : 'ok' }}
+{{ object.undefinedMethod      |default('default') is same as('default') ? 'ok' : 'ko' }}
+{{ object.getFoo()             |default('default') is same as('default') ? 'ko' : 'ok' }}
+{{ object.getFoo('a')          |default('default') is same as('default') ? 'ko' : 'ok' }}
+{{ object.undefinedMethod()    |default('default') is same as('default') ? 'ok' : 'ko' }}
+{{ object.undefinedMethod('a') |default('default') is same as('default') ? 'ok' : 'ko' }}
+Deep nested:
+{{ nested.undefinedVar.foo.bar |default('default') is same as('default') ? 'ok' : 'ko' }}
+{{ nested.definedArray.0       |default('default') is same as('default') ? 'ko' : 'ok' }}
+{{ nested['definedArray'][0]   |default('default') is same as('default') ? 'ko' : 'ok' }}
+{{ nested['undefinedVar'][0]   |default('default') is same as('default') ? 'ok' : 'ko' }}
+{{ undefined['undefined'][0]   |default('default') is same as('default') ? 'ok' : 'ko' }}
+{{ object.self.foo             |default('default') is same as('default') ? 'ko' : 'ok' }}
+{{ object.self.undefinedMethod |default('default') is same as('default') ? 'ok' : 'ko' }}
+{{ object.undefinedMethod.self |default('default') is same as('default') ? 'ok' : 'ko' }}
+--DATA--
+return array(
+    'definedVar' => 'defined',
+    'zeroVar'    => 0,
+    'emptyVar'   => '',
+    'nullVar'    => null,
+    'nested'     => array(
+        'definedVar'   => 'defined',
+        'zeroVar'      => 0,
+        'emptyVar'     => '',
+        'nullVar'      => null,
+        'definedArray' => array(0),
+    ),
+    'object' => new TwigTestFoo(),
+)
+--CONFIG--
+return array('strict_variables' => false)
+--EXPECT--
+Variable:
+ok
+ok
+ok
+ok
+ok
+Array access:
+ok
+ok
+ok
+ok
+ok
+ok
+ok
+ok
+ok
+Plain values:
+ok
+ok
+ok
+ok
+Precedence:
+ok
+ok
+Object methods:
+ok
+ok
+ok
+ok
+ok
+ok
+Deep nested:
+ok
+ok
+ok
+ok
+ok
+ok
+ok
+ok
+--DATA--
+return array(
+    'definedVar' => 'defined',
+    'zeroVar'    => 0,
+    'emptyVar'   => '',
+    'nullVar'    => null,
+    'nested'     => array(
+        'definedVar'   => 'defined',
+        'zeroVar'      => 0,
+        'emptyVar'     => '',
+        'nullVar'      => null,
+        'definedArray' => array(0),
+    ),
+    'object' => new TwigTestFoo(),
+)
+--CONFIG--
+return array('strict_variables' => true)
+--EXPECT--
+Variable:
+ok
+ok
+ok
+ok
+ok
+Array access:
+ok
+ok
+ok
+ok
+ok
+ok
+ok
+ok
+ok
+Plain values:
+ok
+ok
+ok
+ok
+Precedence:
+ok
+ok
+Object methods:
+ok
+ok
+ok
+ok
+ok
+ok
+Deep nested:
+ok
+ok
+ok
+ok
+ok
+ok
+ok
+ok

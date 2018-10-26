@@ -1,0 +1,11 @@
+<phpunit>
+  <testsuite name="My Test Suite">
+    <file>Test.php</file>
+  </testsuite>
+
+  <groups>
+    <exclude>
+      <group>one</group>
+    </exclude>
+  </groups>
+</phpunit>

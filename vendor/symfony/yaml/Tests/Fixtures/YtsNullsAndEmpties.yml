@@ -1,0 +1,45 @@
+--- %YAML:1.0
+test: Empty Sequence
+brief: >
+    You can represent the empty sequence
+    with an empty inline sequence.
+yaml: |
+    empty: []
+php: |
+    array('empty' => array())
+---
+test: Empty Mapping
+brief: >
+    You can represent the empty mapping
+    with an empty inline mapping.
+yaml: |
+    empty: {}
+php: |
+    array('empty' => array())
+---
+test: Empty Sequence as Entire Document
+yaml: |
+    []
+php: |
+    array()
+---
+test: Empty Mapping as Entire Document
+yaml: |
+    {}
+php: |
+    array()
+---
+test: Null as Document
+yaml: |
+    ~
+php: |
+    null
+---
+test: Empty String
+brief: >
+    You can represent an empty string
+    with a pair of quotes.
+yaml: |
+    ''
+php: |
+    ''

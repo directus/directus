@@ -1,0 +1,15 @@
+--TEST--
+Exception for an undefined template in a child template
+--TEMPLATE--
+{% extends 'base.twig' %}
+
+{% block sidebar %}
+    {{ include('include.twig') }}
+{% endblock %}
+--TEMPLATE(base.twig)--
+{% block sidebar %}
+{% endblock %}
+--DATA--
+return array()
+--EXCEPTION--
+Twig_Error_Loader: Template "include.twig" is not defined in "index.twig" at line 5.

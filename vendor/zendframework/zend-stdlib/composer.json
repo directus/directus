@@ -1,0 +1,56 @@
+{
+    "name": "zendframework/zend-stdlib",
+    "description": "SPL extensions, array utilities, error handlers, and more",
+    "license": "BSD-3-Clause",
+    "keywords": [
+        "zf",
+        "zendframework",
+        "stdlib"
+    ],
+    "support": {
+        "docs": "https://docs.zendframework.com/zend-stdlib/",
+        "issues": "https://github.com/zendframework/zend-stdlib/issues",
+        "source": "https://github.com/zendframework/zend-stdlib",
+        "rss": "https://github.com/zendframework/zend-stdlib/releases.atom",
+        "slack": "https://zendframework-slack.herokuapp.com",
+        "forum": "https://discourse.zendframework.com/c/questions/components"
+    },
+    "require": {
+        "php": "^5.6 || ^7.0"
+    },
+    "require-dev": {
+        "phpbench/phpbench": "^0.13",
+        "phpunit/phpunit": "^5.7.27 || ^6.5.8 || ^7.1.2",
+        "zendframework/zend-coding-standard": "~1.0.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Zend\\Stdlib\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "ZendTest\\Stdlib\\": "test/",
+            "ZendBench\\Stdlib\\": "benchmark/"
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "3.2.x-dev",
+            "dev-develop": "3.3.x-dev"
+        }
+    },
+    "scripts": {
+        "check": [
+            "@cs-check",
+            "@test"
+        ],
+        "cs-check": "phpcs",
+        "cs-fix": "phpcbf",
+        "test": "phpunit --colors=always",
+        "test-coverage": "phpunit --colors=always --coverage-clover clover.xml"
+    }
+}

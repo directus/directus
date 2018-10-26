@@ -1,0 +1,16 @@
+--TEST--
+"embed" tag
+--TEMPLATE(index.twig)--
+FOO
+{% embed "foo.twig" %}
+    {% block c1 %}
+        {{ nothing }}
+    {% endblock %}
+{% endembed %}
+BAR
+--TEMPLATE(foo.twig)--
+{% block c1 %}{% endblock %}
+--DATA--
+return array()
+--EXCEPTION--
+Twig_Error_Runtime: Variable "nothing" does not exist in "index.twig" at line 5.

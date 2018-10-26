@@ -1,0 +1,36 @@
+{
+    "name": "phpunit/php-file-iterator",
+    "description": "FilterIterator implementation that filters files based on a list of suffixes.",
+    "type": "library",
+    "keywords": [
+        "iterator",
+        "filesystem"
+    ],
+    "homepage": "https://github.com/sebastianbergmann/php-file-iterator/",
+    "license": "BSD-3-Clause",
+    "authors": [
+        {
+            "name": "Sebastian Bergmann",
+            "email": "sb@sebastian-bergmann.de",
+            "role": "lead"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/sebastianbergmann/php-file-iterator/issues",
+        "irc": "irc://irc.freenode.net/phpunit"
+    },
+    "require": {
+        "php": ">=5.3.3"
+    },
+    "autoload": {
+        "classmap": [
+            "src/"
+        ]
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.4.x-dev"
+        }
+    }
+}
+

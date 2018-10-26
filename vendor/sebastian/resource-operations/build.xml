@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="resource-operations" default="build">
+ <target name="build" depends="generate" />
+
+ <target name="generate" depends="download-arginfo">
+  <exec executable="${basedir}/build/generate.php" taskname="generate" />
+ </target>
+
+ <target name="download-arginfo">
+  <tstamp>
+   <format property="thirty.days.ago" pattern="MM/dd/yyyy hh:mm aa" offset="-30" unit="day"/>
+  </tstamp>
+
+  <delete>
+   <fileset dir="${basedir}/build">
+    <include name="arginfo.php" />
+    <date datetime="${thirty.days.ago}" when="before"/>
+   </fileset>
+  </delete>
+
+  <get src="https://raw.githubusercontent.com/rlerdorf/phan/master/includes/arginfo.php" dest="${basedir}/build/arginfo.php" skipexisting="true"/>
+ </target>
+</project>
+

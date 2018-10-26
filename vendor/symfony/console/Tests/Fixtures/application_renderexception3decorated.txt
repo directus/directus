@@ -1,0 +1,18 @@
+
+[33mIn Foo3Command.php line 26:[39m
+[37;41m                                              [39;49m
+[37;41m  Third exception <fg=blue;bg=red>comment</>  [39;49m
+[37;41m                                              [39;49m
+
+[33mIn Foo3Command.php line 23:[39m
+[37;41m                                               [39;49m
+[37;41m  Second exception <comment>comment</comment>  [39;49m
+[37;41m                                               [39;49m
+
+[33mIn Foo3Command.php line 21:[39m
+[37;41m                                       [39;49m
+[37;41m  First exception <p>this is html</p>  [39;49m
+[37;41m                                       [39;49m
+
+[32mfoo3:bar[39m
+

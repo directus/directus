@@ -1,0 +1,23 @@
+# Comment this line if you are getting: "Option SymLinksIfOwnerMatch not allowed here" error
+# in Apache
+Options +SymLinksIfOwnerMatch
+
+<ifModule mod_rewrite.c>
+    RewriteEngine On
+
+    RewriteRule .* - [env=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
+    # Map all admin endpoints to the admin app
+    RewriteRule ^admin/(.*)   admin/index.html [NC,L]
+
+    # Yield static media
+    RewriteCond %{REQUEST_FILENAME} !-f
+
+    # Map all other requests to the main front controller, invoking the API router
+    RewriteRule !^admin index.php?%{QUERY_STRING} [L]
+</ifModule>
+
+<ifModule mod_php5.c>
+    # Fix $HTTP_RAW_POST_DATA deprecated warning
+    php_value always_populate_raw_post_data -1
+</ifModule>

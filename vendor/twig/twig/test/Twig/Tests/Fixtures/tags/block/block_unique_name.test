@@ -1,0 +1,11 @@
+--TEST--
+"block" tag
+--TEMPLATE--
+{% block content %}
+    {% block content %}
+    {% endblock %}
+{% endblock %}
+--DATA--
+return array()
+--EXCEPTION--
+Twig_Error_Syntax: The block 'content' has already been defined line 2 in "index.twig" at line 3.

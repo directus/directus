@@ -1,0 +1,131 @@
+--TEST--
+"autoescape" tag applies escaping after calling filters
+--TEMPLATE--
+{% autoescape 'html' %}
+
+(escape_and_nl2br is an escaper filter)
+
+1. Don't escape escaper filter output
+( var is escaped by |escape_and_nl2br, line-breaks are added, 
+  the output is not escaped )
+{{ var|escape_and_nl2br }}
+
+2. Don't escape escaper filter output
+( var is escaped by |escape_and_nl2br, line-breaks are added, 
+  the output is not escaped, |raw is redundant )
+{{ var|escape_and_nl2br|raw }}
+
+3. Explicit escape
+( var is escaped by |escape_and_nl2br, line-breaks are added,
+  the output is explicitly escaped by |escape )
+{{ var|escape_and_nl2br|escape }}
+
+4. Escape non-escaper filter output
+( var is upper-cased by |upper,
+  the output is auto-escaped )
+{{ var|upper }}
+
+5. Escape if last filter is not an escaper
+( var is escaped by |escape_and_nl2br, line-breaks are added,
+  the output is upper-cased by |upper,
+  the output is auto-escaped as |upper is not an escaper )
+{{ var|escape_and_nl2br|upper }}
+
+6. Don't escape escaper filter output
+( var is upper cased by upper,
+  the output is escaped by |escape_and_nl2br, line-breaks are added,
+  the output is not escaped as |escape_and_nl2br is an escaper )
+{{ var|upper|escape_and_nl2br }}
+
+7. Escape if last filter is not an escaper
+( the output of |format is "<b>" ~ var ~ "</b>",
+  the output is auto-escaped )
+{{ "<b>%s</b>"|format(var) }}
+
+8. Escape if last filter is not an escaper
+( the output of |format is "<b>" ~ var ~ "</b>",
+  |raw is redundant,
+  the output is auto-escaped )
+{{ "<b>%s</b>"|raw|format(var) }}
+
+9. Don't escape escaper filter output
+( the output of |format is "<b>" ~ var ~ "</b>",
+  the output is not escaped due to |raw filter at the end )
+{{ "<b>%s</b>"|format(var)|raw }}
+
+10. Don't escape escaper filter output
+( the output of |format is "<b>" ~ var ~ "</b>",
+  the output is not escaped due to |raw filter at the end,
+  the |raw filter on var is redundant )
+{{ "<b>%s</b>"|format(var|raw)|raw }}
+
+{% endautoescape %}
+--DATA--
+return array('var' => "<Fabien>\nTwig")
+--EXPECT--
+
+(escape_and_nl2br is an escaper filter)
+
+1. Don't escape escaper filter output
+( var is escaped by |escape_and_nl2br, line-breaks are added, 
+  the output is not escaped )
+&lt;Fabien&gt;<br />
+Twig
+
+2. Don't escape escaper filter output
+( var is escaped by |escape_and_nl2br, line-breaks are added, 
+  the output is not escaped, |raw is redundant )
+&lt;Fabien&gt;<br />
+Twig
+
+3. Explicit escape
+( var is escaped by |escape_and_nl2br, line-breaks are added,
+  the output is explicitly escaped by |escape )
+&amp;lt;Fabien&amp;gt;&lt;br /&gt;
+Twig
+
+4. Escape non-escaper filter output
+( var is upper-cased by |upper,
+  the output is auto-escaped )
+&lt;FABIEN&gt;
+TWIG
+
+5. Escape if last filter is not an escaper
+( var is escaped by |escape_and_nl2br, line-breaks are added,
+  the output is upper-cased by |upper,
+  the output is auto-escaped as |upper is not an escaper )
+&amp;LT;FABIEN&amp;GT;&lt;BR /&gt;
+TWIG
+
+6. Don't escape escaper filter output
+( var is upper cased by upper,
+  the output is escaped by |escape_and_nl2br, line-breaks are added,
+  the output is not escaped as |escape_and_nl2br is an escaper )
+&lt;FABIEN&gt;<br />
+TWIG
+
+7. Escape if last filter is not an escaper
+( the output of |format is "<b>" ~ var ~ "</b>",
+  the output is auto-escaped )
+&lt;b&gt;&lt;Fabien&gt;
+Twig&lt;/b&gt;
+
+8. Escape if last filter is not an escaper
+( the output of |format is "<b>" ~ var ~ "</b>",
+  |raw is redundant,
+  the output is auto-escaped )
+&lt;b&gt;&lt;Fabien&gt;
+Twig&lt;/b&gt;
+
+9. Don't escape escaper filter output
+( the output of |format is "<b>" ~ var ~ "</b>",
+  the output is not escaped due to |raw filter at the end )
+<b><Fabien>
+Twig</b>
+
+10. Don't escape escaper filter output
+( the output of |format is "<b>" ~ var ~ "</b>",
+  the output is not escaped due to |raw filter at the end,
+  the |raw filter on var is redundant )
+<b><Fabien>
+Twig</b>

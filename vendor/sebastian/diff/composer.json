@@ -1,0 +1,33 @@
+{
+    "name": "sebastian/diff",
+    "description": "Diff implementation",
+    "keywords": ["diff"],
+    "homepage": "https://github.com/sebastianbergmann/diff",
+    "license": "BSD-3-Clause",
+    "authors": [
+        {
+            "name": "Sebastian Bergmann",
+            "email": "sebastian@phpunit.de"
+        },
+        {
+            "name": "Kore Nordmann",
+            "email": "mail@kore-nordmann.de"
+        }
+    ],
+    "require": {
+        "php": "^5.3.3 || ^7.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^4.8.35 || ^5.7 || ^6.0"
+    },
+    "autoload": {
+        "classmap": [
+            "src/"
+        ]
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.4-dev"
+        }
+    }
+}

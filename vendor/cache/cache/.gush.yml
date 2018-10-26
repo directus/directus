@@ -1,0 +1,18 @@
+# Gush configuration file, any comments will be lost.
+repo_adapter: github
+issue_tracker: github
+repo_org: php-cache
+repo_name: cache
+issue_project_org: php-cache
+issue_project_name: issues
+pr_type:
+    - feature
+    - bugfix
+    - refactor
+    - tests
+    - remove
+    - style
+    - documentation
+    - security
+table-pr:
+    fixed_tickets: ['Fixed Tickets', '']

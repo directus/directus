@@ -1,0 +1,29 @@
+{
+    "name": "pimple/pimple",
+    "type": "library",
+    "description": "Pimple, a simple Dependency Injection Container",
+    "keywords": ["dependency injection", "container"],
+    "homepage": "http://pimple.sensiolabs.org",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Fabien Potencier",
+            "email": "fabien@symfony.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.0",
+        "psr/container": "^1.0"
+    },
+    "require-dev": {
+        "symfony/phpunit-bridge": "^3.2"
+    },
+    "autoload": {
+        "psr-0": { "Pimple": "src/" }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "3.2.x-dev"
+        }
+    }
+}

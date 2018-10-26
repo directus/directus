@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<phpunit bootstrap=""
+         testSuiteLoaderFile=""
+         printerFile="">
+  <testsuites>
+    <testsuite name="My Test Suite">
+      <directory></directory>
+      <file></file>
+    </testsuite>
+  </testsuites>
+
+  <groups>
+    <include>
+      <group></group>
+    </include>
+    <exclude>
+      <group></group>
+    </exclude>
+  </groups>
+
+  <filter>
+    <whitelist>
+      <directory></directory>
+      <file></file>
+      <exclude>
+        <directory></directory>
+        <file></file>
+      </exclude>
+    </whitelist>
+  </filter>
+
+  <logging>
+    <log type="coverage-html" target=""/>
+    <log type="coverage-clover" target=""/>
+    <log type="json" target=""/>
+    <log type="plain" target=""/>
+    <log type="tap" target=""/>
+    <log type="junit" target="" logIncompleteSkipped="false"/>
+    <log type="testdox-html" target=""/>
+    <log type="testdox-text" target=""/>
+  </logging>
+
+  <php>
+    <includePath/>
+    <includePath></includePath>
+  </php>
+</phpunit>
+

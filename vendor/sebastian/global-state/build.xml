@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="global-state">
+ <target name="clean" description="Cleanup build artifacts">
+  <delete dir="${basedir}/vendor"/>
+  <delete file="${basedir}/composer.lock"/>
+ </target>
+
+ <target name="composer" depends="clean" description="Install dependencies with Composer">
+  <tstamp>
+   <format property="thirty.days.ago" pattern="MM/dd/yyyy hh:mm aa" offset="-30" unit="day"/>
+  </tstamp>
+  <delete>
+   <fileset dir="${basedir}">
+    <include name="composer.phar" />
+    <date datetime="${thirty.days.ago}" when="before"/>
+   </fileset>
+  </delete>
+
+  <get src="https://getcomposer.org/composer.phar" dest="${basedir}/composer.phar" skipexisting="true"/>
+
+  <exec executable="php">
+   <arg value="composer.phar"/>
+   <arg value="install"/>
+  </exec>
+ </target>
+
+ <target name="phpunit" description="Run unit tests with PHPUnit">
+  <exec executable="${basedir}/vendor/bin/phpunit" failonerror="true">
+   <arg value="--configuration"/>
+   <arg path="${basedir}/build/phpunit.xml"/>
+  </exec>
+ </target>
+</project>

@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<phpunit xmlns="http://schema.phpunit.de/coverage/1.0">
+  <project name="%s">
+    <tests>
+      <test name="BankAccountTest::testBalanceIsInitiallyZero" size="unknown" result="0" status="PASSED"/>
+      <test name="BankAccountTest::testBalanceCannotBecomeNegative" size="unknown" result="0" status="PASSED"/>
+      <test name="BankAccountTest::testBalanceCannotBecomeNegative2" size="unknown" result="0" status="PASSED"/>
+      <test name="BankAccountTest::testDepositWithdrawMoney" size="unknown" result="0" status="PASSED"/>
+    </tests>
+    <directory name="%s">
+      <totals>
+        <lines total="33" comments="0" code="33" executable="10" executed="5" percent="50.00%"/>
+        <methods count="4" tested="3" percent="75.00%"/>
+        <functions count="0" tested="0" percent=""/>
+        <classes count="1" tested="0" percent="0.00%"/>
+        <traits count="0" tested="0" percent=""/>
+      </totals>
+      <file name="BankAccount.php" href="BankAccount.php.xml">
+        <totals>
+          <lines total="33" comments="0" code="33" executable="10" executed="5" percent="50.00%"/>
+          <methods count="4" tested="3" percent="75.00%"/>
+          <functions count="0" tested="0" percent=""/>
+          <classes count="1" tested="0" percent="0.00%"/>
+          <traits count="0" tested="0" percent=""/>
+        </totals>
+      </file>
+    </directory>
+  </project>
+</phpunit>

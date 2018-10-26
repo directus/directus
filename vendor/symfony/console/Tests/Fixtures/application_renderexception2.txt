@@ -1,0 +1,7 @@
+
+                                      
+  The "--foo" option does not exist.  
+                                      
+
+list [--raw] [--format FORMAT] [--] [<namespace>]
+

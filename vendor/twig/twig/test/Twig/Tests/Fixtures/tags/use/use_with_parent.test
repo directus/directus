@@ -1,0 +1,24 @@
+--TEST--
+"use" tag with a parent block
+--TEMPLATE--
+{% extends "parent.twig" %}
+
+{% use 'blocks.twig' %}
+
+{% block body %}
+    {{ parent() -}}
+    CHILD
+    {{ block('content') }}
+{% endblock %}
+--TEMPLATE(parent.twig)--
+{% block body %}
+    PARENT
+{% endblock %}
+--TEMPLATE(blocks.twig)--
+{% block content 'BLOCK' %}
+--DATA--
+return array()
+--EXPECT--
+PARENT
+CHILD
+    BLOCK

@@ -1,0 +1,30 @@
+{
+    "name": "akrabat/rka-ip-address-middleware",
+    "description": "PSR-7 Middleware that determines the client IP address and stores it as an ServerRequest attribute",
+    "keywords": [
+        "psr7", "middleware", "ip"
+    ],
+    "homepage": "http://github.com/akrabat/rka-ip-address-middleware",
+    "type": "library",
+    "license": "BSD-3-Clause",
+    "authors": [
+        {
+            "name": "Rob Allen",
+            "email": "rob@akrabat.com",
+            "homepage": "http://akrabat.com"
+        }
+    ],
+    "require": {
+        "psr/http-message": "^1.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^4.8",
+        "squizlabs/php_codesniffer": "^2.3",
+        "zendframework/zend-diactoros": "^1.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "RKA\\Middleware\\": "src"
+        }
+    }
+}
