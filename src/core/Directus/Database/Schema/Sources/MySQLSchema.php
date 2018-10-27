@@ -136,9 +136,9 @@ class MySQLSchema extends AbstractSchema
     /**
      * @inheritDoc
      */
-    public function getFields($tableName, $params = null)
+    public function getFields($tableName, array $params = [])
     {
-        return $this->getAllFields(['collection' => $tableName]);
+        return $this->getAllFields(array_merge($params, ['collection' => $tableName]));
     }
 
     /**
@@ -200,6 +200,14 @@ class MySQLSchema extends AbstractSchema
             $selectOne->where([
                 'SF.TABLE_NAME' => $params['collection']
             ]);
+        }
+
+        if (isset($params['field'])) {
+            $where = $selectOne->where->nest();
+            $where->equalTo('DF.field', $params['field']);
+            $where->or;
+            $where->equalTo('SF.COLUMN_NAME', $params['field']);
+            $where->unnest();
         }
 
         $selectOne->order(['collection' => 'ASC', 'SF.ORDINAL_POSITION' => 'ASC']);

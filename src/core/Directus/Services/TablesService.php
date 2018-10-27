@@ -588,7 +588,7 @@ class TablesService extends AbstractService
         $this->validateFieldPayload($data, array_keys($data), $params);
 
         // Remove field from data
-        ArrayUtils::pull($data, 'field');
+        ArrayUtils::remove($data, 'field');
 
         // ----------------------------------------------------------------------------
 
@@ -812,6 +812,15 @@ class TablesService extends AbstractService
             'collection' => $collection,
             'field' => $field
         ]);
+
+        // Get the Directus based on the source type
+        if (ArrayUtils::get($data, 'type') === null) {
+            $fieldObject = $this->getSchemaManager()->getField($collection, $field);
+
+            if ($fieldObject) {
+                $data['type'] = $this->getSchemaManager()->getSource()->getTypeFromSource($fieldObject->getDataType());
+            }
+        }
 
         $collectionObject = $this->getSchemaManager()->getCollection('directus_fields');
 

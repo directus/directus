@@ -162,8 +162,7 @@ class SchemaManager
 
         if (!$columnSchema || $skipCache) {
             // Get the column schema data from the source
-            $columnResult = $this->source->getFields($tableName, ['column_name' => $columnName]);
-            $columnData = $columnResult->current();
+            $columnData = $this->source->getField($tableName, $columnName);
 
             // Create a column object based of the table schema data
             $columnSchema = $this->createFieldFromArray($columnData);

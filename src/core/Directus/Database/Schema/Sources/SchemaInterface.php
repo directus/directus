@@ -53,7 +53,7 @@ interface SchemaInterface
      *
      * @return ResultSet
      */
-    public function getFields($tableName, $params = null);
+    public function getFields($tableName, array $params = []);
 
     /**
      * Gets all columns in the current schema
