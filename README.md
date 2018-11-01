@@ -76,7 +76,7 @@ If you believe you've found a bug in the Directus Core codebase, please submit n
 
 ### Community Discussions
 
-Join us on [Slack](https://slack.directus.io) to talk to hundreds of members of the Directus community.
+Join us on [Slack](https://slack.getdirectus.com) to talk to hundreds of members of the Directus community.
 
 ### Updates & Social
 
