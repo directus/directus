@@ -68,7 +68,7 @@ ini_set('display_errors', $displayErrors);
 // =============================================================================
 // Timezone
 // =============================================================================
-date_default_timezone_set($app->getConfig()->get('timezone', 'America/New_York'));
+date_default_timezone_set($app->getConfig()->get('app.timezone', 'America/New_York'));
 
 $container = $app->getContainer();
 

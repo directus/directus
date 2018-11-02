@@ -363,6 +363,31 @@ final class DataTypes
     }
 
     /**
+     * Returns all users type
+     *
+     * @return array
+     */
+    public static function getUsersType()
+    {
+        return [
+            static::TYPE_USER_CREATED,
+            static::TYPE_USER_UPDATED,
+        ];
+    }
+
+    /**
+     * Checks whether or not the given type is user type
+     *
+     * @param string $type
+     *
+     * @return bool
+     */
+    public static function isUsersType($type)
+    {
+        return in_array(strtolower($type), static::getUsersType());
+    }
+
+    /**
      * Checks whether or not a given type exists
      *
      * @param string $type

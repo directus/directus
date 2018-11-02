@@ -220,6 +220,7 @@ return array(
     'Directus\\Database\\Exception\\StatusMappingEmptyException' => $baseDir . '/src/core/Directus/Database/Exception/StatusMappingEmptyException.php',
     'Directus\\Database\\Exception\\StatusMappingWrongValueTypeException' => $baseDir . '/src/core/Directus/Database/Exception/StatusMappingWrongValueTypeException.php',
     'Directus\\Database\\Exception\\SuppliedArrayAsColumnValue' => $baseDir . '/src/core/Directus/Database/Exception/SuppliedArrayAsColumnValue.php',
+    'Directus\\Database\\Exception\\UnableSortAliasFieldException' => $baseDir . '/src/core/Directus/Database/Exception/UnableSortAliasFieldException.php',
     'Directus\\Database\\Exception\\UnknownTypeException' => $baseDir . '/src/core/Directus/Database/Exception/UnknownTypeException.php',
     'Directus\\Database\\Filters\\Filter' => $baseDir . '/src/core/Directus/Database/Filters/Filter.php',
     'Directus\\Database\\Filters\\In' => $baseDir . '/src/core/Directus/Database/Filters/In.php',

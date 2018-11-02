@@ -6,6 +6,7 @@ use Directus\Database\Exception\CollectionNotFoundException;
 use Directus\Database\Schema\Object\Field;
 use Directus\Database\Schema\Object\Collection;
 use Directus\Database\Schema\Sources\SchemaInterface;
+use function Directus\is_valid_datetime;
 use Directus\Util\ArrayUtils;
 use Directus\Util\DateTimeUtils;
 
@@ -558,16 +559,6 @@ class SchemaManager
             $column['length'] = $column['char_length'];
         }
 
-        // NOTE: MariaDB store "NULL" as a string on some data types such as VARCHAR.
-        // We reserved the word "NULL" on nullable data type to be actually null
-        if ($column['nullable'] === true && $column['default_value'] == 'NULL') {
-            $column['default_value'] = null;
-        }
-
-        if (DataTypes::isDateTimeType($column['type']) && $column['default_value'] !== null) {
-            $column['default_value'] = DateTimeUtils::createFromDefaultFormat($column['default_value'], 'UTC')->toISO8601Format();
-        }
-
         $castAttributesToBool = function (&$array, array $keys) {
             foreach ($keys as $key) {
                 $array[$key] = (bool) ArrayUtils::get($array, $key);
@@ -586,6 +577,16 @@ class SchemaManager
             'nullable',
             'readonly',
         ]);
+
+        // NOTE: MariaDB store "NULL" as a string on some data types such as VARCHAR.
+        // We reserved the word "NULL" on nullable data type to be actually null
+        if ($column['nullable'] === true && $column['default_value'] == 'NULL') {
+            $column['default_value'] = null;
+        }
+
+        if (DataTypes::isDateTimeType($column['type']) && is_valid_datetime($column['default_value'], $this->source->getDateTimeFormat())) {
+            $column['default_value'] = DateTimeUtils::createDateFromFormat($this->source->getDateTimeFormat(), $column['default_value'])->toISO8601Format();
+        }
 
         return new Field($column);
     }
@@ -614,6 +615,13 @@ class SchemaManager
                     'collection_many' => $field->getCollectionName(),
                     'field_many' => $field->getName(),
                     'collection_one' => static::COLLECTION_FILES,
+                    'field_one' => 'id'
+                ]);
+            } else if (DataTypes::isUsersType($field->getType()) && !$field->getRelationship()) {
+                $field->setRelationship([
+                    'collection_many' => $field->getCollectionName(),
+                    'field_many' => $field->getName(),
+                    'collection_one' => static::COLLECTION_USERS,
                     'field_one' => 'id'
                 ]);
             }

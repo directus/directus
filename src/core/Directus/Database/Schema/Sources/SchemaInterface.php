@@ -305,4 +305,11 @@ interface SchemaInterface
      * @return bool
      */
     public function isTypeLengthAllowed($type);
+
+    /**
+     * Returns database datetime format
+     *
+     * @return string
+     */
+    public function getDateTimeFormat();
 }

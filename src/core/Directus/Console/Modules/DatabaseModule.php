@@ -36,7 +36,7 @@ class DatabaseModule extends ModuleBase
 
     public function cmdInstall($args, $extra)
     {
-        $this->runMigration('schema');
+        $this->runMigration('schemas');
     }
 
     public function cmdUpgrade($args, $extra)

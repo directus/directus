@@ -1553,3 +1553,41 @@ if (!function_exists('phinx_update')) {
         return sprintf('UPDATE %s SET %s WHERE %s;', $adapter->quoteTableName($table), $set, $where);
     }
 }
+
+if (!function_exists('is_valid_datetime')) {
+    /**
+     * Checks if the given datetime string has the given datetime format
+     *
+     * @param string $value
+     * @param string $format
+     *
+     * @return bool
+     */
+    function is_valid_datetime($value, $format)
+    {
+        $datetime = \DateTime::createFromFormat($format, $value);
+
+        return $datetime && $datetime->format($format) === $value;
+    }
+}
+
+if (!function_exists('is_iso8601_datetime')) {
+    /**
+     * Checks if the given datetime string is a ISO 8601 datetime format
+     *
+     * @param string $value
+     *
+     * @return bool
+     */
+    function is_iso8601_datetime($value)
+    {
+        $datetime = substr($value, 0, 19);
+        $offset = substr($value, -5, 5);
+
+        // TODO: It will be ideal to check for all ISO 8601 Formats
+        // NOTE: This only checks for the following format: 2018-10-31T15:01:35+00:00
+        return strlen($value) === 25
+            && is_valid_datetime($datetime, 'Y-m-d\TH:i:s')
+            && is_valid_datetime($offset, 'H:i');
+    }
+}

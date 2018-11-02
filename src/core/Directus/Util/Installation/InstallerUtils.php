@@ -583,19 +583,19 @@ class InstallerUtils
         $configPath = static::createConfigPath($basePath, $projectName);
         $migrationPath = $basePath . '/migrations/' . $migrationName;
 
-        $apiConfig = require $configPath;
+        $apiConfig = ArrayUtils::get(require $configPath, 'database', []);
+
+        // Rename directus configuration to phinx configuration
+        ArrayUtils::rename($apiConfig, 'type', 'adapter');
+        ArrayUtils::rename($apiConfig, 'username', 'user');
+        ArrayUtils::rename($apiConfig, 'password', 'pass');
+        ArrayUtils::rename($apiConfig, 'socket', 'unix_socket');
+        $apiConfig['charset'] = ArrayUtils::get($apiConfig, 'database.charset', 'utf8mb4');
+
         $configArray = require $basePath . '/config/migrations.php';
         $configArray['paths']['migrations'] = $migrationPath . '/schemas';
         $configArray['paths']['seeds'] = $migrationPath . '/seeds';
-        $configArray['environments']['development'] = [
-            'adapter' => ArrayUtils::get($apiConfig, 'database.type'),
-            'host' => ArrayUtils::get($apiConfig, 'database.host'),
-            'port' => ArrayUtils::get($apiConfig, 'database.port'),
-            'name' => ArrayUtils::get($apiConfig, 'database.name'),
-            'user' => ArrayUtils::get($apiConfig, 'database.username'),
-            'pass' => ArrayUtils::get($apiConfig, 'database.password'),
-            'charset' => ArrayUtils::get($apiConfig, 'database.charset', 'utf8')
-        ];
+        $configArray['environments']['development'] = $apiConfig;
 
         return new Config($configArray);
     }

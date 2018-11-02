@@ -40,6 +40,7 @@ use function Directus\get_url;
 use Directus\Hash\HashManager;
 use Directus\Hook\Emitter;
 use Directus\Hook\Payload;
+use function Directus\is_iso8601_datetime;
 use Directus\Mail\Mailer;
 use Directus\Mail\TransportManager;
 use Directus\Mail\Transports\SendMailTransport;
@@ -234,11 +235,11 @@ class CoreServicesProvider
 
 
                 if ($dateCreated = $collection->getDateCreatedField()) {
-                    $payload[$dateCreated] = DateTimeUtils::nowInUTC()->toString();
+                    $payload[$dateCreated->getName()] = DateTimeUtils::nowInUTC()->toString();
                 }
 
-                if ($dateCreated = $collection->getDateModifiedField()) {
-                    $payload[$dateCreated] = DateTimeUtils::nowInUTC()->toString();
+                if ($dateModified = $collection->getDateModifiedField()) {
+                    $payload[$dateModified->getName()] = DateTimeUtils::nowInUTC()->toString();
                 }
 
                 // Directus Users created user are themselves (primary key)
@@ -323,11 +324,11 @@ class CoreServicesProvider
                 /** @var Acl $acl */
                 $acl = $container->get('acl');
                 if ($dateModified = $collection->getDateModifiedField()) {
-                    $payload[$dateModified] = DateTimeUtils::nowInUTC()->toString();
+                    $payload[$dateModified->getName()] = DateTimeUtils::nowInUTC()->toString();
                 }
 
                 if ($userModified = $collection->getUserModifiedField()) {
-                    $payload[$userModified] = $acl->getUserId();
+                    $payload[$userModified->getName()] = $acl->getUserId();
                 }
 
                 // NOTE: exclude date_uploaded from updating a file record
@@ -433,7 +434,7 @@ class CoreServicesProvider
 
                     if ($decode === true) {
                         $value = is_string($value) ? json_decode($value) : $value;
-                    } else {
+                    } else if ($value !== null) {
                         $value = !is_string($value) ? json_encode($value) : $value;
                     }
 
@@ -554,6 +555,7 @@ class CoreServicesProvider
                 $schemaManager = $container->get('schema_manager');
                 $collectionName = $payload->attribute('collection_name');
                 $collection = $schemaManager->getCollection($collectionName);
+                $isSystemCollection = $schemaManager->isSystemCollection($collectionName);
 
                 $data = $payload->getData();
                 foreach ($data as $key => $value) {
@@ -561,7 +563,13 @@ class CoreServicesProvider
 
                    if (DataTypes::isDateTimeType($field->getType())) {
                        $dateTime = new DateTimeUtils($value);
-                       $payload->set($key, $dateTime->toUTCString());
+                       if ($isSystemCollection || is_iso8601_datetime($value)) {
+                           $dateTimeValue = $dateTime->toUTCString();
+                       } else {
+                           $dateTimeValue = $dateTime->toString();
+                       }
+
+                       $payload->set($key, $dateTimeValue);
                    } else if (DataTypes::isDateType($field->getType())) {
                        $dateTime = new DateTimeUtils($value);
                        $payload->set($key, $dateTime->toString(DateTimeUtils::DEFAULT_DATE_FORMAT));

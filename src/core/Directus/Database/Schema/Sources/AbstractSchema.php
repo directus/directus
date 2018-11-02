@@ -9,6 +9,11 @@ use Directus\Util\ArrayUtils;
 abstract class AbstractSchema implements SchemaInterface
 {
     /**
+     * @var string
+     */
+    protected $datetimeFormat = 'Y-m-d H:i:s';
+
+    /**
      * Cast records values by its column data type
      *
      * @param array    $records
@@ -166,5 +171,13 @@ abstract class AbstractSchema implements SchemaInterface
         }
 
         return $type;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getDateTimeFormat()
+    {
+        return $this->datetimeFormat;
     }
 }
