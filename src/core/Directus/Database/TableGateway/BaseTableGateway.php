@@ -141,9 +141,13 @@ class BaseTableGateway extends TableGateway
             $features = new Feature\FeatureSet($features);
         }
 
-        $rowGatewayPrototype = new BaseRowGateway($this->primaryKeyFieldName, $table, $adapter, $this->acl);
-        $rowGatewayFeature = new RowGatewayFeature($rowGatewayPrototype);
-        $features->addFeature($rowGatewayFeature);
+        // NOTE: This is a hotfix to prevent add a rowgateway feature when there's not primaryKeyFieldName set
+        // BaseRowGateway requires a primary key to works
+        if ($this->primaryKeyFieldName) {
+            $rowGatewayPrototype = new BaseRowGateway($this->primaryKeyFieldName, $table, $adapter, $this->acl);
+            $rowGatewayFeature = new RowGatewayFeature($rowGatewayPrototype);
+            $features->addFeature($rowGatewayFeature);
+        }
 
         parent::__construct($table, $adapter, $features, $resultSetPrototype, $sql);
 

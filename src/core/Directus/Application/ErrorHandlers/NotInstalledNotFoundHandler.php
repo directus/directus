@@ -18,6 +18,6 @@ class NotInstalledNotFoundHandler
      */
     public function __invoke(Request $request, Response $response)
     {
-        throw new NotInstalledException('This instance of the Directus API has not been configured properly. Read More at: https://github.com/directus');
+        throw new NotInstalledException('This Directus API instance has not been configured. Install via the Directus App (eg: /admin) or read more about configuration at: https://docs.directus.io/install.html#configure');
     }
 }

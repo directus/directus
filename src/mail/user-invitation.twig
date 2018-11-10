@@ -1,9 +1,9 @@
 {% extends "base.twig" %}
 {% block content %}
 
-<p>You have been invited to {{settings.global.project.name }}. Please click the link below to join:</p>
+<p>You have been invited to {{settings.global.project_name }}. Please click the link below to join:</p>
 
-{% set invitation_url = settings.global.project.url|trim('/') ~ '/' ~ api.project ~ '/auth/invitation/' ~ token %}
+{% set invitation_url = settings.global.project_url|trim('/') ~ '/' ~ api.project ~ '/auth/invitation/' ~ token %}
 <p><a href="{{ invitation_url }}">{{ invitation_url }}</a></p>
 
 <p>Love,<br>Directus</p>

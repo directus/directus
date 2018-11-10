@@ -25,12 +25,12 @@ class SyslogUdpHandler extends AbstractSyslogHandler
     protected $ident;
 
     /**
-     * @param string  $host
-     * @param int     $port
-     * @param mixed   $facility
-     * @param int     $level    The minimum logging level at which this handler will be triggered
-     * @param Boolean $bubble   Whether the messages that are handled can bubble up the stack or not
-     * @param string  $ident    Program name or tag for each log message.
+     * @param string $host
+     * @param int    $port
+     * @param mixed  $facility
+     * @param int    $level    The minimum logging level at which this handler will be triggered
+     * @param bool   $bubble   Whether the messages that are handled can bubble up the stack or not
+     * @param string $ident    Program name or tag for each log message.
      */
     public function __construct($host, $port = 514, $facility = LOG_USER, $level = Logger::DEBUG, $bubble = true, $ident = 'php')
     {

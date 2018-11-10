@@ -318,6 +318,14 @@
                 <source>Error</source>
                 <target>Błąd</target>
             </trans-unit>
+            <trans-unit id="83">
+                <source>This is not a valid UUID.</source>
+                <target>To nie jest poprawne UUID.</target>
+            </trans-unit>
+            <trans-unit id="84">
+                <source>This value should be a multiple of {{ compared_value }}.</source>
+                <target>Ta wartość powinna być wielokrotnością {{ compared_value }}.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

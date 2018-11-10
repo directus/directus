@@ -68,6 +68,11 @@ class Users extends Route
             $request->getQueryParams()
         );
 
+        if (!$responseData) {
+            $response = $response->withStatus(204);
+            $responseData = [];
+        }
+
         return $this->responseWithData($request, $response, $responseData);
     }
 

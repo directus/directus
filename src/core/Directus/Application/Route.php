@@ -41,6 +41,7 @@ abstract class Route
     {
         $data = $this->getResponseData($request, $response, $data, $options);
 
+        // TODO: Ideally here we should check if the response is a empty response and return 204 not content
         return $response->withJson($data);
     }
 

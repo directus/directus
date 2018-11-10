@@ -24,10 +24,10 @@ class Auth extends Route
         $app->get('/password/reset/{token}', [$this, 'resetPassword']);
         $app->post('/refresh', [$this, 'refresh']);
         $app->get('/sso', [$this, 'listSsoAuthServices']);
+        $app->post('/sso/access_token', [$this, 'ssoAccessToken']);
         $app->get('/sso/{service}', [$this, 'ssoService']);
         $app->post('/sso/{service}', [$this, 'ssoAuthenticate']);
         $app->get('/sso/{service}/callback', [$this, 'ssoServiceCallback']);
-        $app->post('/sso/access_token', [$this, 'ssoAccessToken']);
     }
 
     /**

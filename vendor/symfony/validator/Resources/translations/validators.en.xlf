@@ -322,6 +322,10 @@
                 <source>This is not a valid UUID.</source>
                 <target>This is not a valid UUID.</target>
             </trans-unit>
+            <trans-unit id="84">
+                <source>This value should be a multiple of {{ compared_value }}.</source>
+                <target>This value should be a multiple of {{ compared_value }}.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

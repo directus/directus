@@ -102,12 +102,12 @@ class WildfireFormatter extends NormalizerFormatter
         throw new \BadMethodCallException('Batch formatting does not make sense for the WildfireFormatter');
     }
 
-    protected function normalize($data)
+    protected function normalize($data, $depth = 0)
     {
         if (is_object($data) && !$data instanceof \DateTime) {
             return $data;
         }
 
-        return parent::normalize($data);
+        return parent::normalize($data, $depth);
     }
 }

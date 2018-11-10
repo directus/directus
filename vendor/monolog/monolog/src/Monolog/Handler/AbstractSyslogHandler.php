@@ -53,9 +53,9 @@ abstract class AbstractSyslogHandler extends AbstractProcessingHandler
     );
 
     /**
-     * @param mixed   $facility
-     * @param int     $level    The minimum logging level at which this handler will be triggered
-     * @param Boolean $bubble   Whether the messages that are handled can bubble up the stack or not
+     * @param mixed $facility
+     * @param int   $level The minimum logging level at which this handler will be triggered
+     * @param bool  $bubble Whether the messages that are handled can bubble up the stack or not
      */
     public function __construct($facility = LOG_USER, $level = Logger::DEBUG, $bubble = true)
     {

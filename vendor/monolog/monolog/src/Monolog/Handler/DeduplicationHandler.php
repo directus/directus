@@ -60,7 +60,7 @@ class DeduplicationHandler extends BufferHandler
      * @param string           $deduplicationStore The file/path where the deduplication log should be kept
      * @param int              $deduplicationLevel The minimum logging level for log records to be looked at for deduplication purposes
      * @param int              $time               The period (in seconds) during which duplicate entries should be suppressed after a given log is sent through
-     * @param Boolean          $bubble             Whether the messages that are handled can bubble up the stack or not
+     * @param bool             $bubble             Whether the messages that are handled can bubble up the stack or not
      */
     public function __construct(HandlerInterface $handler, $deduplicationStore = null, $deduplicationLevel = Logger::ERROR, $time = 60, $bubble = true)
     {

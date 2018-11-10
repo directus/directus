@@ -111,7 +111,12 @@ if (!function_exists('parse_twig')) {
     {
         $app = Application::getInstance();
 
-        $mailSettings = [];
+        $mailSettings = [
+            'global' => [
+                'project_url' => 'http://localhost',
+            ]
+        ];
+
         $settings = $app->getContainer()->get('app_settings');
         foreach ($settings as $setting) {
             $mailSettings[$setting['scope']][$setting['key']] = $setting['value'];

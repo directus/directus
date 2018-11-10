@@ -52,7 +52,7 @@
             </trans-unit>
             <trans-unit id="13">
                 <source>This value is not a valid email address.</source>
-                <target>Värdet är inte en giltig epost-adress.</target>
+                <target>Värdet är inte en giltig e-postadress.</target>
             </trans-unit>
             <trans-unit id="14">
                 <source>The file could not be found.</source>

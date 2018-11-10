@@ -12,6 +12,7 @@
 namespace Monolog\Handler;
 
 use Monolog\Formatter\FormatterInterface;
+use Monolog\ResettableInterface;
 
 /**
  * Forwards records to multiple handlers
@@ -23,8 +24,8 @@ class GroupHandler extends AbstractHandler
     protected $handlers;
 
     /**
-     * @param array   $handlers Array of Handlers.
-     * @param Boolean $bubble   Whether the messages that are handled can bubble up the stack or not
+     * @param array $handlers Array of Handlers.
+     * @param bool  $bubble   Whether the messages that are handled can bubble up the stack or not
      */
     public function __construct(array $handlers, $bubble = true)
     {
@@ -87,6 +88,17 @@ class GroupHandler extends AbstractHandler
 
         foreach ($this->handlers as $handler) {
             $handler->handleBatch($records);
+        }
+    }
+
+    public function reset()
+    {
+        parent::reset();
+
+        foreach ($this->handlers as $handler) {
+            if ($handler instanceof ResettableInterface) {
+                $handler->reset();
+            }
         }
     }
 

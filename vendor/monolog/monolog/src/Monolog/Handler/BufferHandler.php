@@ -12,6 +12,7 @@
 namespace Monolog\Handler;
 
 use Monolog\Logger;
+use Monolog\ResettableInterface;
 
 /**
  * Buffers all records until closing the handler and then pass them as batch.
@@ -34,8 +35,8 @@ class BufferHandler extends AbstractHandler
      * @param HandlerInterface $handler         Handler.
      * @param int              $bufferLimit     How many entries should be buffered at most, beyond that the oldest items are removed from the buffer.
      * @param int              $level           The minimum logging level at which this handler will be triggered
-     * @param Boolean          $bubble          Whether the messages that are handled can bubble up the stack or not
-     * @param Boolean          $flushOnOverflow If true, the buffer is flushed when the max size has been reached, by default oldest entries are discarded
+     * @param bool             $bubble          Whether the messages that are handled can bubble up the stack or not
+     * @param bool             $flushOnOverflow If true, the buffer is flushed when the max size has been reached, by default oldest entries are discarded
      */
     public function __construct(HandlerInterface $handler, $bufferLimit = 0, $level = Logger::DEBUG, $bubble = true, $flushOnOverflow = false)
     {
@@ -113,5 +114,16 @@ class BufferHandler extends AbstractHandler
     {
         $this->bufferSize = 0;
         $this->buffer = array();
+    }
+
+    public function reset()
+    {
+        $this->flush();
+
+        parent::reset();
+
+        if ($this->handler instanceof ResettableInterface) {
+            $this->handler->reset();
+        }
     }
 }

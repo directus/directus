@@ -55,6 +55,7 @@
 - _RollbarHandler_: Logs records to a [Rollbar](https://rollbar.com/) account.
 - _SyslogUdpHandler_: Logs records to a remote [Syslogd](http://www.rsyslog.com/) server.
 - _LogEntriesHandler_: Logs records to a [LogEntries](http://logentries.com/) account.
+- _InsightOpsHandler_: Logs records to a [InsightOps](https://www.rapid7.com/products/insightops/) account.
 
 ### Logging in development
 

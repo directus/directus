@@ -5,6 +5,8 @@
   help in some older codebases or for ease of use.
 - _ErrorHandler_: The `Monolog\ErrorHandler` class allows you to easily register
   a Logger instance as an exception handler, error handler or fatal error handler.
+- _SignalHandler_: The `Monolog\SignalHandler` class allows you to easily register
+  a Logger instance as a POSIX signal handler.
 - _ErrorLevelActivationStrategy_: Activates a FingersCrossedHandler when a certain log
   level is reached.
 - _ChannelLevelActivationStrategy_: Activates a FingersCrossedHandler when a certain

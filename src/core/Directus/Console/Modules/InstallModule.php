@@ -7,6 +7,7 @@ use Directus\Console\Common\Exception\UserUpdateException;
 use Directus\Console\Common\Setting;
 use Directus\Console\Common\User;
 use Directus\Console\Exception\CommandFailedException;
+use Directus\Util\ArrayUtils;
 use Directus\Util\Installation\InstallerUtils;
 
 class InstallModule extends ModuleBase
@@ -140,16 +141,16 @@ class InstallModule extends ModuleBase
         foreach ($args as $key => $value) {
             switch ($key) {
                 case 'e':
-                    $data['directus_email'] = $value;
+                    $data['user_email'] = $value;
                     break;
                 case 'p':
-                    $data['directus_password'] = $value;
+                    $data['user_password'] = $value;
                     break;
                 case 't':
-                    $data['directus_name'] = $value;
+                    $data['project_name'] = $value;
                     break;
                 case 'T':
-                    $data['directus_token'] = $value;
+                    $data['user_token'] = $value;
                     break;
                 case 'N':
                     $projectName = $value;
@@ -164,17 +165,26 @@ class InstallModule extends ModuleBase
                 InstallerUtils::addDefaultSettings($directus_path, $data, $projectName);
                 InstallerUtils::addDefaultUser($directus_path, $data, $projectName);
             } else {
-                $setting->setSetting('global', 'project_name', $data['directus_name']);
-                 // NOTE: Do we really want to change the email when re-run install command?
-                 $user = new User($directus_path);
-                 try {
-                     $user->changeEmail(1, $data['directus_email']);
-                     $user->changePassword($data['directus_email'], $data['directus_password']);
-                 } catch (UserUpdateException $ex) {
-                     throw new CommandFailedException('Error changing admin e-mail' . ': ' . $ex->getMessage());
-                 } catch (PasswordChangeException $ex) {
-                     throw new CommandFailedException('Error changing user password' . ': ' . $ex->getMessage());
-                 }
+                if (ArrayUtils::has($data, 'project_name')) {
+                    $setting->setSetting('global', 'project_name', $data['project_name']);
+                }
+
+                // NOTE: Do we really want to change the email when re-run install command?
+                $user = new User($directus_path);
+                try {
+                    $hasEmail = ArrayUtils::has($data, 'user_email');
+                    if ($hasEmail) {
+                        $user->changeEmail(1, $data['user_email']);
+                    }
+
+                    if ($hasEmail && ArrayUtils::has($data, 'user_password')) {
+                        $user->changePassword($data['user_email'], $data['user_password']);
+                    }
+                } catch (UserUpdateException $ex) {
+                    throw new CommandFailedException('Error changing admin e-mail' . ': ' . $ex->getMessage());
+                } catch (PasswordChangeException $ex) {
+                    throw new CommandFailedException('Error changing user password' . ': ' . $ex->getMessage());
+                }
             }
         } catch (\PDOException $e) {
             echo PHP_EOL . "PDO Excetion!!" . PHP_EOL;

@@ -40,7 +40,7 @@ class FluentdFormatterTest extends TestCase
 
         $formatter = new FluentdFormatter();
         $this->assertEquals(
-            '["test",0,{"message":"test","extra":[],"level":300,"level_name":"WARNING"}]',
+            '["test",0,{"message":"test","context":[],"extra":[],"level":300,"level_name":"WARNING"}]',
             $formatter->format($record)
         );
     }
@@ -55,7 +55,7 @@ class FluentdFormatterTest extends TestCase
 
         $formatter = new FluentdFormatter(true);
         $this->assertEquals(
-            '["test.error",0,{"message":"test","extra":[]}]',
+            '["test.error",0,{"message":"test","context":[],"extra":[]}]',
             $formatter->format($record)
         );
     }

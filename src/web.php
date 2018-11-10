@@ -180,6 +180,7 @@ $app->group('/{project}', function () use ($middleware) {
         ->add($middleware['table_gateway']);
     $this->group('/mail', \Directus\Api\Routes\Mail::class)
         ->add($middleware['rate_limit_user'])
+        ->add($middleware['auth_user'])
         ->add($middleware['auth'])
         ->add($middleware['table_gateway']);
 

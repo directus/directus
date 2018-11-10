@@ -52,7 +52,7 @@ class CreateCollectionsTable extends AbstractMigration
             'default' => false
         ]);
         $table->addColumn('icon', 'string', [
-            'limit' => 20,
+            'limit' => 30,
             'null' => true,
             'default' => null
         ]);

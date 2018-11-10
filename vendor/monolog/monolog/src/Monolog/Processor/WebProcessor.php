@@ -16,7 +16,7 @@ namespace Monolog\Processor;
  *
  * @author Jordi Boggiano <j.boggiano@seld.be>
  */
-class WebProcessor
+class WebProcessor implements ProcessorInterface
 {
     /**
      * @var array|\ArrayAccess

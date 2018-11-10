@@ -1,3 +1,31 @@
+### 1.24.0 (2018-11-05)
+
+  * Added a `ResettableInterface` in order to reset/reset/clear/flush handlers and processors
+  * Added a `ProcessorInterface` as an optional way to label a class as being a processor (mostly useful for autowiring dependency containers)
+  * Added a way to log signals being received using Monolog\SignalHandler
+  * Added ability to customize error handling at the Logger level using Logger::setExceptionHandler
+  * Added InsightOpsHandler to migrate users of the LogEntriesHandler
+  * Added protection to NormalizerHandler against circular and very deep structures, it now stops normalizing at a depth of 9
+  * Added capture of stack traces to ErrorHandler when logging PHP errors
+  * Added RavenHandler support for a `contexts` context or extra key to forward that to Sentry's contexts
+  * Added forwarding of context info to FluentdFormatter
+  * Added SocketHandler::setChunkSize to override the default chunk size in case you must send large log lines to rsyslog for example
+  * Added ability to extend/override BrowserConsoleHandler
+  * Added SlackWebhookHandler::getWebhookUrl and SlackHandler::getToken to enable class extensibility
+  * Added SwiftMailerHandler::getSubjectFormatter to enable class extensibility
+  * Dropped official support for HHVM in test builds
+  * Fixed normalization of exception traces when call_user_func is used to avoid serializing objects and the data they contain
+  * Fixed naming of fields in Slack handler, all field names are now capitalized in all cases
+  * Fixed HipChatHandler bug where slack dropped messages randomly
+  * Fixed normalization of objects in Slack handlers
+  * Fixed support for PHP7's Throwable in NewRelicHandler
+  * Fixed race bug when StreamHandler sometimes incorrectly reported it failed to create a directory
+  * Fixed table row styling issues in HtmlFormatter
+  * Fixed RavenHandler dropping the message when logging exception
+  * Fixed WhatFailureGroupHandler skipping processors when using handleBatch
+    and implement it where possible
+  * Fixed display of anonymous class names
+
 ### 1.23.0 (2017-06-19)
 
   * Improved SyslogUdpHandler's support for RFC5424 and added optional `$ident` argument

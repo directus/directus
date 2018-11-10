@@ -16,7 +16,7 @@ namespace Symfony\Component\Config\Definition\Builder;
  *
  * @author Victor Berchet <victor@suumit.com>
  *
- * @method NodeDefinition[] getChildNodeDefinitions() should be implemented since 4.1
+ * @method NodeDefinition[] getChildNodeDefinitions() Gets the child node definitions - not implementing it is deprecated since Symfony 4.2
  */
 interface ParentNodeDefinitionInterface extends BuilderAwareInterface
 {
