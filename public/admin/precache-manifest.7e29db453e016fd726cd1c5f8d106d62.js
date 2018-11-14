@@ -1,10 +1,10 @@
 self.__precacheManifest = [
   {
-    "revision": "44e0a2ef806baf926fd3d43413de397e",
-    "url": "fonts/robotomono-bold.44e0a2ef.woff2"
+    "revision": "158556ec136bd5bf5340b85df3dc63c2",
+    "url": "fonts/robotomono-regular.158556ec.woff2"
   },
   {
-    "revision": "f140ad13006c19b819a7481f5c82f102",
+    "revision": "142d3b02c69f3ae8257e91f38caa76fd",
     "url": "index.html"
   },
   {
@@ -20,12 +20,16 @@ self.__precacheManifest = [
     "url": "js/lang-fr-FR-legacy.2ff4e622.js"
   },
   {
+    "revision": "7910dc722dcd1e515e58",
+    "url": "js/lang-it-IT-legacy.ecd67158.js"
+  },
+  {
     "revision": "fec87e7a3d6059d54939",
     "url": "js/lang-nl-NL-legacy.b44526f5.js"
   },
   {
-    "revision": "38ede92a6f968b4f6dd1",
-    "url": "js/app-legacy.fd3bc1df.js"
+    "revision": "05faefb91107c36a1e4e",
+    "url": "js/app-legacy.284c4a5d.js"
   },
   {
     "revision": "c2b94f49a45b5fe5a35e3d2e73745ff7",
@@ -48,12 +52,12 @@ self.__precacheManifest = [
     "url": "img/logo-dark.912f80a1.svg"
   },
   {
-    "revision": "4c104b963611ee56cf683b9d7a27617d",
-    "url": "fonts/roboto-medium.4c104b96.woff2"
+    "revision": "44e0a2ef806baf926fd3d43413de397e",
+    "url": "fonts/robotomono-bold.44e0a2ef.woff2"
   },
   {
-    "revision": "158556ec136bd5bf5340b85df3dc63c2",
-    "url": "fonts/robotomono-regular.158556ec.woff2"
+    "revision": "4c104b963611ee56cf683b9d7a27617d",
+    "url": "fonts/roboto-medium.4c104b96.woff2"
   },
   {
     "revision": "0b13ce4c83dff3f78559239cfc3f7f4d",
@@ -68,12 +72,12 @@ self.__precacheManifest = [
     "url": "fonts/roboto-regular.fb63a2a5.woff2"
   },
   {
-    "revision": "4edcbeabfcea8e7bdedfbd566cd60def",
-    "url": "fonts/robotomono-bold.4edcbeab.woff"
-  },
-  {
     "revision": "27f450a1ecf6e3ebcb5df1df703366e8",
     "url": "fonts/robotomono-regular.27f450a1.woff"
+  },
+  {
+    "revision": "4edcbeabfcea8e7bdedfbd566cd60def",
+    "url": "fonts/robotomono-bold.4edcbeab.woff"
   },
   {
     "revision": "316e008b8f3adf89ab74b1b5ed0c0427",
@@ -88,7 +92,7 @@ self.__precacheManifest = [
     "url": "fonts/material-icons.8a9a261c.woff2"
   },
   {
-    "revision": "38ede92a6f968b4f6dd1",
-    "url": "css/app.68da9c43.css"
+    "revision": "05faefb91107c36a1e4e",
+    "url": "css/app.dcbca242.css"
   }
 ];
