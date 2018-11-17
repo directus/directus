@@ -1,15 +1,19 @@
 self.__precacheManifest = [
   {
-    "revision": "158556ec136bd5bf5340b85df3dc63c2",
-    "url": "fonts/robotomono-regular.158556ec.woff2"
+    "revision": "fb63a2a5e055c7162236c32f956c2c1b",
+    "url": "fonts/roboto-regular.fb63a2a5.woff2"
   },
   {
-    "revision": "142d3b02c69f3ae8257e91f38caa76fd",
+    "revision": "b0853f34230e2afaed20b0572585fc01",
     "url": "index.html"
   },
   {
-    "revision": "85c8e4668b173b8ccaeb",
-    "url": "js/chunk-vendors-legacy.32b20d61.js"
+    "revision": "908e54799f4962d87a4e",
+    "url": "js/chunk-vendors-legacy.3f344648.js"
+  },
+  {
+    "revision": "bafdcf5691496c7c6c21",
+    "url": "js/lang-cs-CZ-legacy.f23541c8.js"
   },
   {
     "revision": "fd447da9dddfbdaf70d3",
@@ -24,12 +28,12 @@ self.__precacheManifest = [
     "url": "js/lang-it-IT-legacy.ecd67158.js"
   },
   {
-    "revision": "fec87e7a3d6059d54939",
-    "url": "js/lang-nl-NL-legacy.b44526f5.js"
+    "revision": "967025f4f8a970d23c5e",
+    "url": "js/lang-nl-NL-legacy.3ddd2734.js"
   },
   {
-    "revision": "05faefb91107c36a1e4e",
-    "url": "js/app-legacy.284c4a5d.js"
+    "revision": "ca6ed7daf73ec691923e",
+    "url": "js/app-legacy.6c43d616.js"
   },
   {
     "revision": "c2b94f49a45b5fe5a35e3d2e73745ff7",
@@ -48,8 +52,8 @@ self.__precacheManifest = [
     "url": "fonts/roboto-light.fd6783f3.woff2"
   },
   {
-    "revision": "912f80a1260318cec60e2f2674884bd0",
-    "url": "img/logo-dark.912f80a1.svg"
+    "revision": "158556ec136bd5bf5340b85df3dc63c2",
+    "url": "fonts/robotomono-regular.158556ec.woff2"
   },
   {
     "revision": "44e0a2ef806baf926fd3d43413de397e",
@@ -68,8 +72,8 @@ self.__precacheManifest = [
     "url": "img/box.713f50cf.svg"
   },
   {
-    "revision": "fb63a2a5e055c7162236c32f956c2c1b",
-    "url": "fonts/roboto-regular.fb63a2a5.woff2"
+    "revision": "912f80a1260318cec60e2f2674884bd0",
+    "url": "img/logo-dark.912f80a1.svg"
   },
   {
     "revision": "27f450a1ecf6e3ebcb5df1df703366e8",
@@ -92,7 +96,7 @@ self.__precacheManifest = [
     "url": "fonts/material-icons.8a9a261c.woff2"
   },
   {
-    "revision": "05faefb91107c36a1e4e",
-    "url": "css/app.dcbca242.css"
+    "revision": "ca6ed7daf73ec691923e",
+    "url": "css/app.110cc956.css"
   }
 ];

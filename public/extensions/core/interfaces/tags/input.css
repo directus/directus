@@ -1,9 +1,9 @@
 
-.interface-tags[data-v-f57554]{max-width:var(--width-medium)
+.interface-tags[data-v-192827]{max-width:var(--width-medium)
 }
-.buttons[data-v-f57554]{display:flex;flex-wrap:wrap;padding:5px 0
+.buttons[data-v-192827]{display:flex;flex-wrap:wrap;padding:5px 0
 }
-.buttons button[data-v-f57554]{transition:var(--fast) var(--transition);margin:2px;padding:2px 4px 3px;background-color:var(--gray);color:var(--white);border-radius:var(--border-radius)
+.buttons button[data-v-192827]{transition:var(--fast) var(--transition);margin:2px;padding:2px 4px 3px;background-color:var(--gray);color:var(--white);border-radius:var(--border-radius)
 }
-.buttons button[data-v-f57554]:hover,.user-is-tabbing .buttons button[data-v-f57554]:focus{background-color:var(--danger)
+.buttons button[data-v-192827]:hover,.user-is-tabbing .buttons button[data-v-192827]:focus{background-color:var(--danger)
 }

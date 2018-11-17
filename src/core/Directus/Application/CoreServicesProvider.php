@@ -542,13 +542,6 @@ class CoreServicesProvider
                 $payload->replace($rows);
                 return $payload;
             });
-            $hashUserPassword = function (Payload $payload) use ($container) {
-                if ($payload->has('password')) {
-                    $auth = $container->get('auth');
-                    $payload['password'] = $auth->hashPassword($payload['password']);
-                }
-                return $payload;
-            };
 
             $onInsertOrUpdate = function (Payload $payload) use ($container) {
                 /** @var SchemaManager $schemaManager */
@@ -601,8 +594,6 @@ class CoreServicesProvider
 
                 return $payload;
             };
-            $emitter->addFilter('item.create.directus_users:before', $hashUserPassword);
-            $emitter->addFilter('item.update.directus_users:before', $hashUserPassword);
             $emitter->addFilter('item.create.directus_users:before', $generateExternalId);
             $emitter->addFilter('item.create.directus_roles:before', $generateExternalId);
 
