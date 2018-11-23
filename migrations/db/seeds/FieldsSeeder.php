@@ -1265,14 +1265,9 @@ class FieldsSeeder extends AbstractSeed
                 'collection' => 'directus_users',
                 'field' => 'locale',
                 'type' => \Directus\Database\Schema\DataTypes::TYPE_STRING,
-                'interface' => 'dropdown',
+                'interface' => 'language',
                 'options' => json_encode([
-                    'choices' => [
-                        'en-US' => 'English (US)',
-                        'nl-NL' => 'Dutch (Nederlands)',
-                        'de-DE' => 'German (Deutsche)'
-                    ],
-                    'placeholder' => 'Choose a language...'
+                    'limit' => true
                 ]),
                 'locked' => 1,
                 'sort' => 12,

@@ -1076,10 +1076,14 @@ class TablesService extends AbstractService
 
             if ($field) {
                 $fullFieldData = array_merge($field->toArray(), $fieldData);
-                // NOTE: To avoid the table builder to add another primary key constraint
-                //       the primary key flag should be remove if the field already has primary key
+                // NOTE: To avoid the table builder to add another primary or unique key constraint
+                //       the primary_key and unique flag should be remove if the field already has primary or unique key
                 if ($field->hasPrimaryKey() && $fullFieldData['primary_key'] === true) {
                     unset($fullFieldData['primary_key']);
+                }
+
+                if ($field->hasUniqueKey() && $fullFieldData['unique'] === true) {
+                    unset($fullFieldData['unique']);
                 }
 
                 if (!$field->isAlias() && DataTypes::isAliasType(ArrayUtils::get($fieldData, 'type'))) {

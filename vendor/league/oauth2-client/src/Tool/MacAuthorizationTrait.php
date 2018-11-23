@@ -15,6 +15,7 @@
 namespace League\OAuth2\Client\Tool;
 
 use League\OAuth2\Client\Token\AccessToken;
+use League\OAuth2\Client\Token\AccessTokenInterface;
 
 /**
  * Enables `MAC` header authorization for providers.
@@ -48,12 +49,12 @@ trait MacAuthorizationTrait
      * @param  int $length Length of the random string to be generated.
      * @return string
      */
-    abstract protected function getRandomState($length);
+    abstract protected function getRandomState($length = 32);
 
     /**
      * Returns the authorization headers for the 'mac' grant.
      *
-     * @param  AccessToken $token
+     * @param  AccessTokenInterface|string|null $token Either a string or an access token instance
      * @return array
      * @codeCoverageIgnore
      *
@@ -61,8 +62,12 @@ trait MacAuthorizationTrait
      * complete the implementation, please create a pull request for
      * https://github.com/thephpleague/oauth2-client
      */
-    protected function getAuthorizationHeaders($token)
+    protected function getAuthorizationHeaders($token = null)
     {
+        if ($token === null) {
+            return [];
+        }
+
         $ts    = time();
         $id    = $this->getTokenId($token);
         $nonce = $this->getRandomState(16);

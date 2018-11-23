@@ -629,6 +629,11 @@ class InstallerUtils
                 'value' => ''
             ],
             [
+                'scope' => 'global',
+                'key' => 'color',
+                'value' => 'light-blue-600'
+            ],
+            [
                 'scope' => 'files',
                 'key' => 'youtube_api_key',
                 'value' => ''

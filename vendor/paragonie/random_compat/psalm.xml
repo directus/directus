@@ -1,28 +1,19 @@
 <?xml version="1.0"?>
 <psalm
     autoloader="psalm-autoload.php"
+    stopOnFirstError="false"
     useDocblockTypes="true"
-    totallyTyped="true"
 >
     <projectFiles>
         <directory name="lib" />
     </projectFiles>
     <issueHandlers>
         <RedundantConditionGivenDocblockType errorLevel="info" />
-            <!-- We have to be explicit because PHP 5 lacks scalar types -->
         <UnresolvableInclude errorLevel="info" />
-            <!-- Because we put the variants into their own subdirectory -->
         <DuplicateClass errorLevel="info" />
-            <!-- Later versions of Psalm are only PHP 7 compatible, which
-                 sees our redefinition of Error and TypeError as duplicate
-                 class errors. -->
+        <InvalidOperand errorLevel="info" />
         <UndefinedConstant errorLevel="info" />
-            <!-- The Mcrypt constants aren't defined in PHP 7.2 -->
         <MissingReturnType errorLevel="info" />
-            <!-- False positive with some versions of (Psalm, PHP) -->
         <InvalidReturnType errorLevel="info" />
-            <!-- The "last resort" function in lib/random.php -->
-        <MixedInferredReturnType errorLevel="suppress" />
-            <!-- Only used in totallyTyped mode -->
     </issueHandlers>
 </psalm>

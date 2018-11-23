@@ -1591,3 +1591,44 @@ if (!function_exists('is_iso8601_datetime')) {
             && is_valid_datetime($offset, 'H:i');
     }
 }
+
+if (!function_exists('normalize_exception')) {
+    /**
+     * @param \Exception|\Throwable $e
+     *
+     * @return string
+     */
+    function normalize_exception($e)
+    {
+        if (!($e instanceof \Exception) && !($e instanceof \Throwable)) {
+            return '';
+        }
+
+        $stack = [
+            sprintf("%s: %s in %s:%d\nStack trace:", get_class($e), $e->getMessage(), $e->getFile(), $e->getLine())
+        ];
+
+        // format: stack index - filename - line - call
+        $format = '#%d %s%s: %s';
+        foreach ($e->getTrace() as $i => $trace) {
+            $file = isset($trace['file']) ? $trace['file'] : '[internal function]';
+            $line = isset($trace['line']) ? sprintf('(%s)', $trace['line']) : '';
+
+            if (isset($trace['class'])) {
+                $call = $trace['class'] . $trace['type'] . $trace['function'];
+            } else {
+                $call = $trace['function'];
+            }
+
+            $stack[] = sprintf(
+                $format,
+                $i,
+                $file,
+                $line,
+                $call
+            );
+        }
+
+        return implode("\n", $stack);
+    }
+}

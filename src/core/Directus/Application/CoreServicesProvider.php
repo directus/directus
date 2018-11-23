@@ -45,6 +45,7 @@ use Directus\Mail\Mailer;
 use Directus\Mail\TransportManager;
 use Directus\Mail\Transports\SendMailTransport;
 use Directus\Mail\Transports\SmtpTransport;
+use function Directus\normalize_exception;
 use Directus\Permissions\Acl;
 use Directus\Services\AuthService;
 use Directus\Session\Session;
@@ -197,7 +198,7 @@ class CoreServicesProvider
                 /** @var Logger $logger */
                 $logger = $container->get('logger');
 
-                $logger->error($e);
+                $logger->error(normalize_exception($e));
             });
             $emitter->addFilter('response', function (Payload $payload) use ($container) {
                 /** @var Acl $acl */

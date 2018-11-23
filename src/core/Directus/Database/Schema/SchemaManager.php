@@ -605,7 +605,6 @@ class SchemaManager
             foreach ($fieldsRelation as $key => $value) {
                 if (ArrayUtils::get($value, 'field_many') == $field->getName() || ArrayUtils::get($value, 'field_one') == $field->getName()) {
                     $field->setRelationship(ArrayUtils::pull($fieldsRelation, $key));
-                    break;
                 }
             }
 

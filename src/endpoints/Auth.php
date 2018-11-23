@@ -230,7 +230,7 @@ class Auth extends Route
                 $urlParams['attributes'] = $e->getAttributes();
             }
 
-            $urlParams['code'] = $e->getErrorCode();
+            $urlParams['code'] = ($e instanceof \Directus\Exception\Exception) ? $e->getErrorCode() : 0;
             $urlParams['error'] = true;
         }
 

@@ -17,7 +17,7 @@ class ProjectService extends AbstractService
         }
 
         $this->validate($data, [
-            'project' => 'string|regex:/^[a-z_-]+$/i',
+            'project' => 'string|regex:/^[0-9a-z_-]+$/i',
 
             'force' => 'bool',
 

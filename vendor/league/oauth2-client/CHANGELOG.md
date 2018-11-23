@@ -1,5 +1,33 @@
 # OAuth 2.0 Client Changelog
 
+## 2.4.1
+
+_Released: 2018-11-22_
+
+* Revert to use of `AccessToken` in type hints to preserve backwards
+  compatibility; this fixes the issue reported in [#752](https://github.com/thephpleague/oauth2-client/issues/752)
+  and [#753](https://github.com/thephpleague/oauth2-client/issues/753)
+
+## 2.4.0
+
+_Released: 2018-11-21_
+
+* Add `HttpBasicAuthOptionProvider` to ease implementation for providers
+  requiring HTTP basic auth
+* Add `GuardedPropertyTrait` to allow providers the ability to specify
+  properties that may not be overridden by user-defined values passed to the
+  provider constructor
+* Add `AccessTokenInterface` and `ResourceOwnerAccessTokenInterface` to allow
+  providers the ability to override the default `AccessToken`
+
+## 2.3.1
+
+_Released: 2018-11-19_
+
+* Allow paragonie/random_compat's empty 9.99.99 placeholder
+* Throw an `UnexpectedValueException` on non-JSON responses from access token
+  request (when calling `AbstractProvider::getAccessToken()`)
+
 ## 2.3.0
 
 _Released: 2018-01-13_
