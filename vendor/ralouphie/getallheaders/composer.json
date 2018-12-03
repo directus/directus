@@ -1,0 +1,21 @@
+{
+	"name": "ralouphie/getallheaders",
+	"description": "A polyfill for getallheaders.",
+	"license": "MIT",
+	"authors": [
+		{
+			"name": "Ralph Khattar",
+			"email": "ralph.khattar@gmail.com"
+		}
+	],
+	"require": {
+		"php": ">=5.3"
+	},
+	"require-dev": {
+		"phpunit/phpunit": "~3.7.0",
+		"satooshi/php-coveralls": ">=1.0"
+	},
+	"autoload": {
+		"files": ["src/getallheaders.php"]
+	}
+}

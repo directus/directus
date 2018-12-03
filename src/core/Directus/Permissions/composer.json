@@ -6,14 +6,19 @@
     "permissions",
     "acl"
   ],
-  "license": "MIT",
+  "license": "GPL-3.0-only",
   "require": {
-    "php": ">=5.4.0",
-    "directus/exception": "~2.0.0"
+    "php": "^5.6 || ^7.0",
+    "directus/exception": "2.x-dev"
   },
   "autoload": {
     "psr-4": {
       "Directus\\Permissions\\": ""
+    }
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-master": "2.x-dev"
     }
   }
 }

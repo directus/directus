@@ -13,11 +13,13 @@ namespace Symfony\Component\Translation;
 
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Translation\Exception\InvalidArgumentException;
+use Symfony\Component\Translation\TranslatorInterface as LegacyTranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * @author Abdellatif Ait boudad <a.aitboudad@gmail.com>
  */
-class LoggingTranslator implements TranslatorInterface, TranslatorBagInterface
+class LoggingTranslator implements TranslatorInterface, LegacyTranslatorInterface, TranslatorBagInterface
 {
     /**
      * @var TranslatorInterface|TranslatorBagInterface
@@ -30,8 +32,11 @@ class LoggingTranslator implements TranslatorInterface, TranslatorBagInterface
      * @param TranslatorInterface $translator The translator must implement TranslatorBagInterface
      * @param LoggerInterface     $logger
      */
-    public function __construct(TranslatorInterface $translator, LoggerInterface $logger)
+    public function __construct($translator, LoggerInterface $logger)
     {
+        if (!$translator instanceof LegacyTranslatorInterface && !$translator instanceof TranslatorInterface) {
+            throw new \TypeError(sprintf('Argument 1 passed to %s() must be an instance of %s, %s given.', __METHOD__, TranslatorInterface::class, \is_object($translator) ? \get_class($translator) : \gettype($translator)));
+        }
         if (!$translator instanceof TranslatorBagInterface) {
             throw new InvalidArgumentException(sprintf('The Translator "%s" must implement TranslatorInterface and TranslatorBagInterface.', \get_class($translator)));
         }
@@ -53,10 +58,19 @@ class LoggingTranslator implements TranslatorInterface, TranslatorBagInterface
 
     /**
      * {@inheritdoc}
+     *
+     * @deprecated since Symfony 4.2, use the trans() method instead with a %count% parameter
      */
     public function transChoice($id, $number, array $parameters = array(), $domain = null, $locale = null)
     {
-        $trans = $this->translator->transChoice($id, $number, $parameters, $domain, $locale);
+        @trigger_error(sprintf('The "%s()" method is deprecated since Symfony 4.2, use the trans() one instead with a "%count%" parameter.', __METHOD__), E_USER_DEPRECATED);
+
+        if ($this->translator instanceof TranslatorInterface) {
+            $trans = $this->translator->trans($id, array('%count%' => $number) + $parameters, $domain, $locale);
+        } else {
+            $trans = $this->translator->transChoice($id, $number, $parameters, $domain, $locale);
+        }
+
         $this->log($id, $domain, $locale);
 
         return $trans;
@@ -89,7 +103,7 @@ class LoggingTranslator implements TranslatorInterface, TranslatorBagInterface
     /**
      * Gets the fallback locales.
      *
-     * @return array $locales The fallback locales
+     * @return array The fallback locales
      */
     public function getFallbackLocales()
     {
@@ -105,7 +119,7 @@ class LoggingTranslator implements TranslatorInterface, TranslatorBagInterface
      */
     public function __call($method, $args)
     {
-        return \call_user_func_array(array($this->translator, $method), $args);
+        return $this->translator->{$method}(...$args);
     }
 
     /**

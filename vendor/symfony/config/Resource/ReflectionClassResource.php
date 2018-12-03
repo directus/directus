@@ -11,8 +11,9 @@
 
 namespace Symfony\Component\Config\Resource;
 
-use Symfony\Component\DependencyInjection\ServiceSubscriberInterface;
+use Symfony\Component\DependencyInjection\ServiceSubscriberInterface as LegacyServiceSubscriberInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Contracts\Service\ServiceSubscriberInterface;
 
 /**
  * @author Nicolas Grekas <p@tchwork.com>
@@ -157,7 +158,10 @@ class ReflectionClassResource implements SelfCheckingResourceInterface, \Seriali
             yield print_r(\call_user_func(array($class->name, 'getSubscribedEvents')), true);
         }
 
-        if (interface_exists(ServiceSubscriberInterface::class, false) && $class->isSubclassOf(ServiceSubscriberInterface::class)) {
+        if (interface_exists(LegacyServiceSubscriberInterface::class, false) && $class->isSubclassOf(LegacyServiceSubscriberInterface::class)) {
+            yield LegacyServiceSubscriberInterface::class;
+            yield print_r(\call_user_func(array($class->name, 'getSubscribedServices')), true);
+        } elseif (interface_exists(ServiceSubscriberInterface::class, false) && $class->isSubclassOf(ServiceSubscriberInterface::class)) {
             yield ServiceSubscriberInterface::class;
             yield print_r(\call_user_func(array($class->name, 'getSubscribedServices')), true);
         }

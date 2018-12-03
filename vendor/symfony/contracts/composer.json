@@ -1,0 +1,44 @@
+{
+    "name": "symfony/contracts",
+    "type": "library",
+    "description": "A set of abstractions extracted out of the Symfony components",
+    "keywords": ["abstractions", "contracts", "decoupling", "interfaces", "interoperability", "standards"],
+    "homepage": "https://symfony.com",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Nicolas Grekas",
+            "email": "p@tchwork.com"
+        },
+        {
+            "name": "Symfony Community",
+            "homepage": "https://symfony.com/contributors"
+        }
+    ],
+    "require": {
+        "php": "^7.1.3"
+    },
+    "require-dev": {
+        "psr/cache": "^1.0",
+        "psr/container": "^1.0"
+    },
+    "suggest": {
+        "psr/cache": "When using the Cache contracts",
+        "psr/container": "When using the Service contracts",
+        "symfony/cache-contracts-implementation": "",
+        "symfony/service-contracts-implementation": "",
+        "symfony/translation-contracts-implementation": ""
+    },
+    "autoload": {
+        "psr-4": { "Symfony\\Contracts\\": "" },
+        "exclude-from-classmap": [
+            "**/Tests/"
+        ]
+    },
+    "minimum-stability": "dev",
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0-dev"
+        }
+    }
+}

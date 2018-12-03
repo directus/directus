@@ -58,6 +58,7 @@ class MimeType
         'z'     => 'application/x-compress',
         'xhtml' => 'application/xhtml+xml',
         'xht'   => 'application/xhtml+xml',
+        'rdf'   => 'application/rdf+xml',
         'zip'   => 'application/x-zip',
         'rar'   => 'application/x-rar',
         'mid'   => 'audio/midi',

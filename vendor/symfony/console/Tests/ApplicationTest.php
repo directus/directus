@@ -824,6 +824,56 @@ class ApplicationTest extends TestCase
         $this->assertStringMatchesFormatFile(self::$fixturesPath.'/application_renderexception_linebreaks.txt', $tester->getDisplay(true), '->renderException() keep multiple line breaks');
     }
 
+    public function testRenderAnonymousException()
+    {
+        $application = new Application();
+        $application->setAutoExit(false);
+        $application->register('foo')->setCode(function () {
+            throw new class('') extends \InvalidArgumentException {
+            };
+        });
+        $tester = new ApplicationTester($application);
+
+        $tester->run(array('command' => 'foo'), array('decorated' => false));
+        $this->assertContains('[InvalidArgumentException@anonymous]', $tester->getDisplay(true));
+
+        $application = new Application();
+        $application->setAutoExit(false);
+        $application->register('foo')->setCode(function () {
+            throw new \InvalidArgumentException(sprintf('Dummy type "%s" is invalid.', \get_class(new class() {
+            })));
+        });
+        $tester = new ApplicationTester($application);
+
+        $tester->run(array('command' => 'foo'), array('decorated' => false));
+        $this->assertContains('Dummy type "@anonymous" is invalid.', $tester->getDisplay(true));
+    }
+
+    public function testRenderExceptionStackTraceContainsRootException()
+    {
+        $application = new Application();
+        $application->setAutoExit(false);
+        $application->register('foo')->setCode(function () {
+            throw new class('') extends \InvalidArgumentException {
+            };
+        });
+        $tester = new ApplicationTester($application);
+
+        $tester->run(array('command' => 'foo'), array('decorated' => false));
+        $this->assertContains('[InvalidArgumentException@anonymous]', $tester->getDisplay(true));
+
+        $application = new Application();
+        $application->setAutoExit(false);
+        $application->register('foo')->setCode(function () {
+            throw new \InvalidArgumentException(sprintf('Dummy type "%s" is invalid.', \get_class(new class() {
+            })));
+        });
+        $tester = new ApplicationTester($application);
+
+        $tester->run(array('command' => 'foo'), array('decorated' => false));
+        $this->assertContains('Dummy type "@anonymous" is invalid.', $tester->getDisplay(true));
+    }
+
     public function testRun()
     {
         $application = new Application();

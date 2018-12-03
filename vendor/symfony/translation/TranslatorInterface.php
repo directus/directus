@@ -17,6 +17,8 @@ use Symfony\Component\Translation\Exception\InvalidArgumentException;
  * TranslatorInterface.
  *
  * @author Fabien Potencier <fabien@symfony.com>
+ *
+ * @deprecated since Symfony 4.2, use Symfony\Contracts\Translation\TranslatorInterface instead
  */
 interface TranslatorInterface
 {

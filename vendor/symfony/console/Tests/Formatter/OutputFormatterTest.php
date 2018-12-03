@@ -322,6 +322,25 @@ more text
 EOF
         ));
     }
+
+    public function testFormatAndWrap()
+    {
+        $formatter = new OutputFormatter(true);
+
+        $this->assertSame("fo\no\e[37;41mb\e[39;49m\n\e[37;41mar\e[39;49m\nba\nz", $formatter->formatAndWrap('foo<error>bar</error> baz', 2));
+        $this->assertSame("pr\ne \e[37;41m\e[39;49m\n\e[37;41mfo\e[39;49m\n\e[37;41mo \e[39;49m\n\e[37;41mba\e[39;49m\n\e[37;41mr \e[39;49m\n\e[37;41mba\e[39;49m\n\e[37;41mz\e[39;49m \npo\nst", $formatter->formatAndWrap('pre <error>foo bar baz</error> post', 2));
+        $this->assertSame("pre\e[37;41m\e[39;49m\n\e[37;41mfoo\e[39;49m\n\e[37;41mbar\e[39;49m\n\e[37;41mbaz\e[39;49m\npos\nt", $formatter->formatAndWrap('pre <error>foo bar baz</error> post', 3));
+        $this->assertSame("pre \e[37;41m\e[39;49m\n\e[37;41mfoo \e[39;49m\n\e[37;41mbar \e[39;49m\n\e[37;41mbaz\e[39;49m \npost", $formatter->formatAndWrap('pre <error>foo bar baz</error> post', 4));
+        $this->assertSame("pre \e[37;41mf\e[39;49m\n\e[37;41moo ba\e[39;49m\n\e[37;41mr baz\e[39;49m\npost", $formatter->formatAndWrap('pre <error>foo bar baz</error> post', 5));
+
+        $formatter = new OutputFormatter();
+
+        $this->assertSame("fo\nob\nar\nba\nz", $formatter->formatAndWrap('foo<error>bar</error> baz', 2));
+        $this->assertSame("pr\ne \nfo\no \nba\nr \nba\nz \npo\nst", $formatter->formatAndWrap('pre <error>foo bar baz</error> post', 2));
+        $this->assertSame("pre\nfoo\nbar\nbaz\npos\nt", $formatter->formatAndWrap('pre <error>foo bar baz</error> post', 3));
+        $this->assertSame("pre \nfoo \nbar \nbaz \npost", $formatter->formatAndWrap('pre <error>foo bar baz</error> post', 4));
+        $this->assertSame("pre f\noo ba\nr baz\npost", $formatter->formatAndWrap('pre <error>foo bar baz</error> post', 5));
+    }
 }
 
 class TableCell

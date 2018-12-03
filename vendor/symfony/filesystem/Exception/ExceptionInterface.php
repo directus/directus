@@ -16,6 +16,6 @@ namespace Symfony\Component\Filesystem\Exception;
  *
  * @author Romain Neutron <imprec@gmail.com>
  */
-interface ExceptionInterface
+interface ExceptionInterface extends \Throwable
 {
 }

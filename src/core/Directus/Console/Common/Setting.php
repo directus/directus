@@ -63,18 +63,17 @@ class Setting
      *                  other case.
      *
      */
-    public function settingExists($collection, $setting)
+    public function settingExists($setting)
     {
         try {
             $rowset = $this->settingsTableGateway->select([
-                'scope' => $collection,
                 'key' => $setting
             ]);
             if ($rowset->count() > 0) {
                 return true;
             }
             return false;
-        } catch (PDOException $ex) {
+        } catch (\PDOException $ex) {
             return false;
         }
     }
@@ -84,7 +83,6 @@ class Setting
      *
      *  The function will create the given setting with the passed value.
      *
-     * @param string $collection The collection to which this setting applies.
      * @param string $setting The name of the setting to create.
      * @param string $value The value of the setting.
      *
@@ -93,11 +91,9 @@ class Setting
      * @throws SettingUpdateException Thrown when the creation of the setting fails.
      *
      */
-    public function createSetting($collection, $setting, $value)
+    public function createSetting($setting, $value)
     {
-
         $insert = [
-            'scope' => $collection,
             'key' => $setting,
             'value' => $value
         ];
@@ -105,9 +101,8 @@ class Setting
         try {
             $this->settingsTableGateway->insert($insert);
         } catch (\PDOException $ex) {
-            throw new SettingUpdateException('Could not create setting ' . $collection . '.' . $setting . ': ' . 'PDO Error: ' . string($ex));
+            throw new SettingUpdateException('Could not create setting ' . $setting . ': ' . 'PDO Error: ' . $ex->getMessage());
         }
-
     }
 
     /**
@@ -116,7 +111,6 @@ class Setting
      *  The function will change the given setting to the passed value if it already
      *  exists and will create it if it doesn't.
      *
-     * @param string $scope The collection to which this setting applies.
      * @param string $setting The name of the setting to change.
      * @param string $value The value of the setting.
      *
@@ -125,11 +119,11 @@ class Setting
      * @throws SettingUpdateException Thrown when the changing the setting fails.
      *
      */
-    public function setSetting($scope, $setting, $value)
+    public function setSetting($setting, $value)
     {
 
-        if (!$this->settingExists($scope, $setting)) {
-            return $this->createSetting($scope, $setting, $value);
+        if (!$this->settingExists($setting)) {
+            return $this->createSetting($setting, $value);
         }
 
         $update = [
@@ -138,11 +132,10 @@ class Setting
 
         try {
             $this->settingsTableGateway->update($update, [
-                'scope' => $scope,
                 'key' => $setting
             ]);
         } catch (\PDOException $ex) {
-            throw new SettingUpdateException('Could not change setting ' . $scope . '.' . $setting . ': ' . 'PDO Error: ' . string($ex));
+            throw new SettingUpdateException('Could not change setting ' . $setting . ': ' . 'PDO Error: ' . $ex->getMessage());
         }
     }
 

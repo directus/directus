@@ -27,7 +27,7 @@ class InflateStream implements StreamInterface
         $stream = new LimitStream($stream, -1, 10 + $filenameHeaderLength);
         $resource = StreamWrapper::getResource($stream);
         stream_filter_append($resource, 'zlib.inflate', STREAM_FILTER_READ);
-        $this->stream = new Stream($resource);
+        $this->stream = $stream->isSeekable() ? new Stream($resource) : new NoSeekStream(new Stream($resource));
     }
 
     /**

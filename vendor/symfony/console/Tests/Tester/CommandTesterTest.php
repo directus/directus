@@ -160,4 +160,23 @@ class CommandTesterTest extends TestCase
 
         $this->assertEquals(0, $tester->getStatusCode());
     }
+
+    public function testErrorOutput()
+    {
+        $command = new Command('foo');
+        $command->addArgument('command');
+        $command->addArgument('foo');
+        $command->setCode(function ($input, $output) {
+            $output->getErrorOutput()->write('foo');
+        }
+        );
+
+        $tester = new CommandTester($command);
+        $tester->execute(
+            array('foo' => 'bar'),
+            array('capture_stderr_separately' => true)
+        );
+
+        $this->assertSame('foo', $tester->getErrorOutput());
+    }
 }

@@ -5,9 +5,9 @@
     "directus",
     "filesystem"
   ],
-  "license": "MIT",
+  "license": "GPL-3.0-only",
   "require": {
-    "php": ">=5.4.0",
+    "php": "^5.6 || ^7.0",
     "league/flysystem": "^1.0"
   },
   "autoload": {
@@ -15,10 +15,9 @@
       "Directus\\Filesystem\\": ""
     }
   },
-  "minimum-stability": "dev",
   "extra": {
     "branch-alias": {
-      "dev-d64": "0.9.x-dev"
+      "dev-master": "2.x-dev"
     }
   }
 }

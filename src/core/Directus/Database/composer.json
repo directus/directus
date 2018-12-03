@@ -5,14 +5,11 @@
     "directus",
     "database"
   ],
-  "license": "MIT",
+  "license": "GPL-3.0-only",
   "require": {
-    "php": ">=5.5.0",
+    "php": "^5.6 || ^7.0",
     "zendframework/zend-db": "dev-directus",
-    "directus/collection": "^1.0.0"
-  },
-  "require-dev": {
-    "phpunit/phpunit": "~3.7.0"
+    "directus/collection": "2.x-dev"
   },
   "autoload": {
     "psr-4": {
@@ -21,7 +18,7 @@
   },
   "extra": {
     "branch-alias": {
-      "dev-version/6.4": "0.9.x-dev"
+      "dev-master": "2.x-dev"
     }
   },
   "repositories": [

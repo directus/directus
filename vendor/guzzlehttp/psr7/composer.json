@@ -2,7 +2,7 @@
     "name": "guzzlehttp/psr7",
     "type": "library",
     "description": "PSR-7 message implementation that also provides common utility methods",
-    "keywords": ["request", "response", "message", "stream", "http", "uri", "url"],
+    "keywords": ["request", "response", "message", "stream", "http", "uri", "url", "psr-7"],
     "license": "MIT",
     "authors": [
         {
@@ -17,10 +17,11 @@
     ],
     "require": {
         "php": ">=5.4.0",
-        "psr/http-message": "~1.0"
+        "psr/http-message": "~1.0",
+        "ralouphie/getallheaders": "^2.0.5"
     },
     "require-dev": {
-        "phpunit/phpunit": "~4.0"
+        "phpunit/phpunit": "~4.8.36 || ^5.7.27 || ^6.5.8"
     },
     "provide": {
         "psr/http-message-implementation": "1.0"
@@ -31,9 +32,14 @@
         },
         "files": ["src/functions_include.php"]
     },
+    "autoload-dev": {
+        "psr-4": {
+            "GuzzleHttp\\Tests\\Psr7\\": "tests/"
+        }
+    },
     "extra": {
         "branch-alias": {
-            "dev-master": "1.4-dev"
+            "dev-master": "1.5-dev"
         }
     }
 }

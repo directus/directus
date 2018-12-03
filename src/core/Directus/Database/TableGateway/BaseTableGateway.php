@@ -1577,12 +1577,11 @@ class BaseTableGateway extends TableGateway
     /**
      * Gets Directus settings (from DB)
      *
-     * @param null|string $scope
      * @param null|string $key
      *
      * @return mixed
      */
-    public function getSettings($scope, $key = null)
+    public function getSettings($key = null)
     {
         $settings = [];
 
@@ -1591,9 +1590,9 @@ class BaseTableGateway extends TableGateway
         }
 
         if ($key !== null) {
-            $settings = \Directus\get_directus_setting($scope, $key);
+            $settings = \Directus\get_directus_setting($key);
         } else {
-            $settings = \Directus\get_kv_directus_settings($scope);
+            $settings = \Directus\get_kv_directus_settings();
         }
 
         return $settings;
@@ -1790,7 +1789,7 @@ class BaseTableGateway extends TableGateway
      */
     protected function shouldNullSortedLast()
     {
-        return (bool) get_directus_setting('global', 'sort_null_last', true);
+        return (bool) get_directus_setting('sort_null_last', true);
     }
 
     /**

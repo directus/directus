@@ -97,6 +97,9 @@ class TranslationDataCollector extends DataCollector implements LateDataCollecto
         return !empty($this->data['locale']) ? $this->data['locale'] : null;
     }
 
+    /**
+     * @internal since Symfony 4.2
+     */
     public function getFallbackLocales()
     {
         return (isset($this->data['fallback_locales']) && \count($this->data['fallback_locales']) > 0) ? $this->data['fallback_locales'] : array();

@@ -8,6 +8,9 @@ use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Validator\Constraints\Type;
+use Symfony\Component\Validator\ConstraintViolation;
+use Symfony\Component\Validator\ConstraintViolationList;
+use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 use Symfony\Component\Validator\Validation;
 
 class Validator
@@ -32,7 +35,21 @@ class Validator
     {
         // TODO: Support OR validation
         // Ex. value must be Numeric or string type (Scalar without boolean)
-        return $this->provider->validate($value, $this->createConstraintFromList($constraints));
+        try {
+            $violations = $this->provider->validate($value, $this->createConstraintFromList($constraints));
+        } catch (UnexpectedTypeException $e) {
+            $message = $e->getMessage();
+
+            preg_match('/Expected argument of type "(.*)", "(.*)" given/', $message, $matches);
+            if (count($matches) === 3) {
+                $message = 'This value should be of type ' . $matches[1];
+            }
+
+            $violations = new ConstraintViolationList();
+            $violations->add(new ConstraintViolation($message . '.', '', [], '', '', ''));
+        }
+
+        return $violations;
     }
 
     /**

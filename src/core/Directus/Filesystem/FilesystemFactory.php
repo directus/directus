@@ -51,6 +51,8 @@ class FilesystemFactory
             'version' => ($config['version'] ?: 'latest'),
         ]);
 
-        return new Flysystem(new S3Adapter($client, $config['bucket'], array_get($config, $rootKey)));
+        $options = array_get($config, 'options', []);
+
+        return new Flysystem(new S3Adapter($client, $config['bucket'], array_get($config, $rootKey), $options));
     }
 }

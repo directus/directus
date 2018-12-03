@@ -26,6 +26,7 @@ class MessageFormatterTest extends TestCase
 
     /**
      * @dataProvider getTransChoiceMessages
+     * @group legacy
      */
     public function testFormatPlural($expected, $message, $number, $parameters)
     {

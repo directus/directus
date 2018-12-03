@@ -141,7 +141,7 @@ class Question
         }
 
         if (null !== $values && !\is_array($values) && !$values instanceof \Traversable) {
-            throw new InvalidArgumentException('Autocompleter values can be either an array, `null` or a `Traversable` object.');
+            throw new InvalidArgumentException('Autocompleter values can be either an array, "null" or a "Traversable" object.');
         }
 
         if ($this->hidden) {

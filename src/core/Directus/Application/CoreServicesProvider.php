@@ -36,6 +36,8 @@ use Directus\Filesystem\Filesystem;
 use Directus\Filesystem\FilesystemFactory;
 use function Directus\generate_uuid4;
 use function Directus\get_api_project_from_request;
+use function Directus\get_directus_files_settings;
+use function Directus\get_directus_setting;
 use function Directus\get_url;
 use Directus\Hash\HashManager;
 use Directus\Hook\Emitter;
@@ -1059,17 +1061,10 @@ class CoreServicesProvider
     protected function getStatusMapping()
     {
         return function (Container $container) {
-            $settings = $container->get('app_settings');
+            $statusMapping = get_directus_setting('status_mapping');
 
-            $statusMapping = [];
-            foreach ($settings as $setting) {
-                if (
-                    ArrayUtils::get($setting, 'scope') == 'status'
-                    && ArrayUtils::get($setting, 'key') == 'status_mapping'
-                ) {
-                    $statusMapping = json_decode($setting['value'], true);
-                    break;
-                }
+            if (is_string($statusMapping)) {
+                $statusMapping = json_decode($statusMapping, true);
             }
 
             if (!is_array($statusMapping)) {
@@ -1101,15 +1096,8 @@ class CoreServicesProvider
     protected function getFiles()
     {
         return function (Container $container) {
-            $settings = $container->get('app_settings');
-
             // Convert result into a key-value array
-            $filesSettings = [];
-            foreach ($settings as $setting) {
-                if ($setting['scope'] === 'files') {
-                    $filesSettings[$setting['key']] = $setting['value'];
-                }
-            }
+            $filesSettings = get_directus_files_settings();
 
             $filesystem = $container->get('filesystem');
             $config = $container->get('config');
@@ -1130,15 +1118,10 @@ class CoreServicesProvider
         return function (Container $container) {
             $app = Application::getInstance();
             $embedManager = new EmbedManager();
-            $acl = $container->get('acl');
-            $adapter = $container->get('database');
 
             // Fetch files settings
-            $settingsTableGateway = new DirectusSettingsTableGateway($adapter, $acl);
             try {
-                $settings = $settingsTableGateway->fetchItems([
-                    'filter' => ['scope' => 'files']
-                ]);
+                $settings = get_directus_files_settings();
             } catch (\Exception $e) {
                 $settings = [];
                 /** @var Logger $logger */

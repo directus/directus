@@ -690,7 +690,7 @@ class RelationalTableGateway extends BaseTableGateway
         // NOTE: Performance spot
         // TODO: Split this, into default and process params
         $defaultParams = $this->defaultEntriesSelectParams;
-        $defaultLimit = $this->getSettings('global', 'default_limit');
+        $defaultLimit = $this->getSettings('default_limit');
 
         // Set default rows limit from db settings
         if ($defaultLimit) {

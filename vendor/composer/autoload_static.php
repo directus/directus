@@ -4,11 +4,12 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit4b464e0e943b7a2aea0989e7161a0475
+class ComposerStaticInit4f9e964ab5d13530b71a4959685cbe76
 {
     public static $files = array (
         '320cde22f66dd4f5d3fd621d3e88b98f' => __DIR__ . '/..' . '/symfony/polyfill-ctype/bootstrap.php',
         '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
+        '7b11c4dc42b3b3023073cb14e519683c' => __DIR__ . '/..' . '/ralouphie/getallheaders/src/getallheaders.php',
         'a0edc8309cc5e1d60e3047b5df6b7052' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/functions_include.php',
         'c964ee0ededf28c96ebd9db5099ef910' => __DIR__ . '/..' . '/guzzlehttp/promises/src/functions_include.php',
         '37a3dc5111fe8f707ab4c132ef1dbc62' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/functions_include.php',
@@ -41,6 +42,7 @@ class ComposerStaticInit4b464e0e943b7a2aea0989e7161a0475
         array (
             'Symfony\\Polyfill\\Mbstring\\' => 26,
             'Symfony\\Polyfill\\Ctype\\' => 23,
+            'Symfony\\Contracts\\' => 18,
             'Symfony\\Component\\Yaml\\' => 23,
             'Symfony\\Component\\Validator\\' => 28,
             'Symfony\\Component\\Translation\\' => 30,
@@ -143,6 +145,10 @@ class ComposerStaticInit4b464e0e943b7a2aea0989e7161a0475
         'Symfony\\Polyfill\\Ctype\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-ctype',
+        ),
+        'Symfony\\Contracts\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/contracts',
         ),
         'Symfony\\Component\\Yaml\\' => 
         array (
@@ -594,6 +600,7 @@ class ComposerStaticInit4b464e0e943b7a2aea0989e7161a0475
         'Directus\\Exception\\Http\\BadRequestException' => __DIR__ . '/../..' . '/src/core/Directus/Exception/Http/BadRequestException.php',
         'Directus\\Exception\\Http\\NotFoundException' => __DIR__ . '/../..' . '/src/core/Directus/Exception/Http/NotFoundException.php',
         'Directus\\Exception\\InvalidConfigPathException' => __DIR__ . '/../..' . '/src/core/Directus/Exception/InvalidConfigPathException.php',
+        'Directus\\Exception\\InvalidDatabaseConnectionException' => __DIR__ . '/../..' . '/src/core/Directus/Exception/InvalidDatabaseConnectionException.php',
         'Directus\\Exception\\InvalidPathException' => __DIR__ . '/../..' . '/src/core/Directus/Exception/InvalidPathException.php',
         'Directus\\Exception\\InvalidPayloadException' => __DIR__ . '/../..' . '/src/core/Directus/Exception/InvalidPayloadException.php',
         'Directus\\Exception\\MethodNotAllowedException' => __DIR__ . '/../..' . '/src/core/Directus/Exception/MethodNotAllowedException.php',
@@ -809,6 +816,7 @@ class ComposerStaticInit4b464e0e943b7a2aea0989e7161a0475
         'GuzzleHttp\\Psr7\\PumpStream' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/PumpStream.php',
         'GuzzleHttp\\Psr7\\Request' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/Request.php',
         'GuzzleHttp\\Psr7\\Response' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/Response.php',
+        'GuzzleHttp\\Psr7\\Rfc7230' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/Rfc7230.php',
         'GuzzleHttp\\Psr7\\ServerRequest' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/ServerRequest.php',
         'GuzzleHttp\\Psr7\\Stream' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/Stream.php',
         'GuzzleHttp\\Psr7\\StreamDecoratorTrait' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/StreamDecoratorTrait.php',
@@ -1943,6 +1951,7 @@ class ComposerStaticInit4b464e0e943b7a2aea0989e7161a0475
         'Symfony\\Component\\Config\\Exception\\FileLoaderImportCircularReferenceException' => __DIR__ . '/..' . '/symfony/config/Exception/FileLoaderImportCircularReferenceException.php',
         'Symfony\\Component\\Config\\Exception\\FileLoaderLoadException' => __DIR__ . '/..' . '/symfony/config/Exception/FileLoaderLoadException.php',
         'Symfony\\Component\\Config\\Exception\\FileLocatorFileNotFoundException' => __DIR__ . '/..' . '/symfony/config/Exception/FileLocatorFileNotFoundException.php',
+        'Symfony\\Component\\Config\\Exception\\LoaderLoadException' => __DIR__ . '/..' . '/symfony/config/Exception/LoaderLoadException.php',
         'Symfony\\Component\\Config\\FileLocator' => __DIR__ . '/..' . '/symfony/config/FileLocator.php',
         'Symfony\\Component\\Config\\FileLocatorInterface' => __DIR__ . '/..' . '/symfony/config/FileLocatorInterface.php',
         'Symfony\\Component\\Config\\Loader\\DelegatingLoader' => __DIR__ . '/..' . '/symfony/config/Loader/DelegatingLoader.php',
@@ -2002,6 +2011,7 @@ class ComposerStaticInit4b464e0e943b7a2aea0989e7161a0475
         'Symfony\\Component\\Console\\Formatter\\OutputFormatterStyle' => __DIR__ . '/..' . '/symfony/console/Formatter/OutputFormatterStyle.php',
         'Symfony\\Component\\Console\\Formatter\\OutputFormatterStyleInterface' => __DIR__ . '/..' . '/symfony/console/Formatter/OutputFormatterStyleInterface.php',
         'Symfony\\Component\\Console\\Formatter\\OutputFormatterStyleStack' => __DIR__ . '/..' . '/symfony/console/Formatter/OutputFormatterStyleStack.php',
+        'Symfony\\Component\\Console\\Formatter\\WrappableOutputFormatterInterface' => __DIR__ . '/..' . '/symfony/console/Formatter/WrappableOutputFormatterInterface.php',
         'Symfony\\Component\\Console\\Helper\\DebugFormatterHelper' => __DIR__ . '/..' . '/symfony/console/Helper/DebugFormatterHelper.php',
         'Symfony\\Component\\Console\\Helper\\DescriptorHelper' => __DIR__ . '/..' . '/symfony/console/Helper/DescriptorHelper.php',
         'Symfony\\Component\\Console\\Helper\\FormatterHelper' => __DIR__ . '/..' . '/symfony/console/Helper/FormatterHelper.php',
@@ -2088,6 +2098,8 @@ class ComposerStaticInit4b464e0e943b7a2aea0989e7161a0475
         'Symfony\\Component\\Translation\\Extractor\\PhpExtractor' => __DIR__ . '/..' . '/symfony/translation/Extractor/PhpExtractor.php',
         'Symfony\\Component\\Translation\\Extractor\\PhpStringTokenParser' => __DIR__ . '/..' . '/symfony/translation/Extractor/PhpStringTokenParser.php',
         'Symfony\\Component\\Translation\\Formatter\\ChoiceMessageFormatterInterface' => __DIR__ . '/..' . '/symfony/translation/Formatter/ChoiceMessageFormatterInterface.php',
+        'Symfony\\Component\\Translation\\Formatter\\IntlFormatter' => __DIR__ . '/..' . '/symfony/translation/Formatter/IntlFormatter.php',
+        'Symfony\\Component\\Translation\\Formatter\\IntlFormatterInterface' => __DIR__ . '/..' . '/symfony/translation/Formatter/IntlFormatterInterface.php',
         'Symfony\\Component\\Translation\\Formatter\\MessageFormatter' => __DIR__ . '/..' . '/symfony/translation/Formatter/MessageFormatter.php',
         'Symfony\\Component\\Translation\\Formatter\\MessageFormatterInterface' => __DIR__ . '/..' . '/symfony/translation/Formatter/MessageFormatterInterface.php',
         'Symfony\\Component\\Translation\\IdentityTranslator' => __DIR__ . '/..' . '/symfony/translation/IdentityTranslator.php',
@@ -2118,6 +2130,7 @@ class ComposerStaticInit4b464e0e943b7a2aea0989e7161a0475
         'Symfony\\Component\\Translation\\TranslatorBagInterface' => __DIR__ . '/..' . '/symfony/translation/TranslatorBagInterface.php',
         'Symfony\\Component\\Translation\\TranslatorInterface' => __DIR__ . '/..' . '/symfony/translation/TranslatorInterface.php',
         'Symfony\\Component\\Translation\\Util\\ArrayConverter' => __DIR__ . '/..' . '/symfony/translation/Util/ArrayConverter.php',
+        'Symfony\\Component\\Translation\\Util\\XliffUtils' => __DIR__ . '/..' . '/symfony/translation/Util/XliffUtils.php',
         'Symfony\\Component\\Translation\\Writer\\TranslationWriter' => __DIR__ . '/..' . '/symfony/translation/Writer/TranslationWriter.php',
         'Symfony\\Component\\Translation\\Writer\\TranslationWriterInterface' => __DIR__ . '/..' . '/symfony/translation/Writer/TranslationWriterInterface.php',
         'Symfony\\Component\\Validator\\Constraint' => __DIR__ . '/..' . '/symfony/validator/Constraint.php',
@@ -2302,6 +2315,25 @@ class ComposerStaticInit4b464e0e943b7a2aea0989e7161a0475
         'Symfony\\Component\\Yaml\\Tag\\TaggedValue' => __DIR__ . '/..' . '/symfony/yaml/Tag/TaggedValue.php',
         'Symfony\\Component\\Yaml\\Unescaper' => __DIR__ . '/..' . '/symfony/yaml/Unescaper.php',
         'Symfony\\Component\\Yaml\\Yaml' => __DIR__ . '/..' . '/symfony/yaml/Yaml.php',
+        'Symfony\\Contracts\\Cache\\CacheInterface' => __DIR__ . '/..' . '/symfony/contracts/Cache/CacheInterface.php',
+        'Symfony\\Contracts\\Cache\\CacheTrait' => __DIR__ . '/..' . '/symfony/contracts/Cache/CacheTrait.php',
+        'Symfony\\Contracts\\Cache\\CallbackInterface' => __DIR__ . '/..' . '/symfony/contracts/Cache/CallbackInterface.php',
+        'Symfony\\Contracts\\Cache\\ItemInterface' => __DIR__ . '/..' . '/symfony/contracts/Cache/ItemInterface.php',
+        'Symfony\\Contracts\\Cache\\TagAwareCacheInterface' => __DIR__ . '/..' . '/symfony/contracts/Cache/TagAwareCacheInterface.php',
+        'Symfony\\Contracts\\Service\\ResetInterface' => __DIR__ . '/..' . '/symfony/contracts/Service/ResetInterface.php',
+        'Symfony\\Contracts\\Service\\ServiceLocatorTrait' => __DIR__ . '/..' . '/symfony/contracts/Service/ServiceLocatorTrait.php',
+        'Symfony\\Contracts\\Service\\ServiceSubscriberInterface' => __DIR__ . '/..' . '/symfony/contracts/Service/ServiceSubscriberInterface.php',
+        'Symfony\\Contracts\\Service\\ServiceSubscriberTrait' => __DIR__ . '/..' . '/symfony/contracts/Service/ServiceSubscriberTrait.php',
+        'Symfony\\Contracts\\Tests\\Cache\\CacheTraitTest' => __DIR__ . '/..' . '/symfony/contracts/Tests/Cache/CacheTraitTest.php',
+        'Symfony\\Contracts\\Tests\\Cache\\TestPool' => __DIR__ . '/..' . '/symfony/contracts/Tests/Cache/CacheTraitTest.php',
+        'Symfony\\Contracts\\Tests\\Service\\ChildTestService' => __DIR__ . '/..' . '/symfony/contracts/Tests/Service/ServiceSubscriberTraitTest.php',
+        'Symfony\\Contracts\\Tests\\Service\\ParentTestService' => __DIR__ . '/..' . '/symfony/contracts/Tests/Service/ServiceSubscriberTraitTest.php',
+        'Symfony\\Contracts\\Tests\\Service\\ServiceLocatorTest' => __DIR__ . '/..' . '/symfony/contracts/Tests/Service/ServiceLocatorTest.php',
+        'Symfony\\Contracts\\Tests\\Service\\ServiceSubscriberTraitTest' => __DIR__ . '/..' . '/symfony/contracts/Tests/Service/ServiceSubscriberTraitTest.php',
+        'Symfony\\Contracts\\Tests\\Service\\TestService' => __DIR__ . '/..' . '/symfony/contracts/Tests/Service/ServiceSubscriberTraitTest.php',
+        'Symfony\\Contracts\\Tests\\Translation\\TranslatorTest' => __DIR__ . '/..' . '/symfony/contracts/Tests/Translation/TranslatorTest.php',
+        'Symfony\\Contracts\\Translation\\TranslatorInterface' => __DIR__ . '/..' . '/symfony/contracts/Translation/TranslatorInterface.php',
+        'Symfony\\Contracts\\Translation\\TranslatorTrait' => __DIR__ . '/..' . '/symfony/contracts/Translation/TranslatorTrait.php',
         'Symfony\\Polyfill\\Ctype\\Ctype' => __DIR__ . '/..' . '/symfony/polyfill-ctype/Ctype.php',
         'Symfony\\Polyfill\\Mbstring\\Mbstring' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/Mbstring.php',
         'Text_Template' => __DIR__ . '/..' . '/phpunit/php-text-template/src/Template.php',
@@ -2975,10 +3007,10 @@ class ComposerStaticInit4b464e0e943b7a2aea0989e7161a0475
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit4b464e0e943b7a2aea0989e7161a0475::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit4b464e0e943b7a2aea0989e7161a0475::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInit4b464e0e943b7a2aea0989e7161a0475::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInit4b464e0e943b7a2aea0989e7161a0475::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit4f9e964ab5d13530b71a4959685cbe76::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit4f9e964ab5d13530b71a4959685cbe76::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit4f9e964ab5d13530b71a4959685cbe76::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInit4f9e964ab5d13530b71a4959685cbe76::$classMap;
 
         }, null, ClassLoader::class);
     }

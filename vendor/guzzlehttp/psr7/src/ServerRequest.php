@@ -166,7 +166,7 @@ class ServerRequest extends Request implements ServerRequestInterface
     public static function fromGlobals()
     {
         $method = isset($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : 'GET';
-        $headers = function_exists('getallheaders') ? getallheaders() : [];
+        $headers = getallheaders();
         $uri = self::getUriFromGlobals();
         $body = new LazyOpenStream('php://input', 'r+');
         $protocol = isset($_SERVER['SERVER_PROTOCOL']) ? str_replace('HTTP/', '', $_SERVER['SERVER_PROTOCOL']) : '1.1';
@@ -180,23 +180,41 @@ class ServerRequest extends Request implements ServerRequestInterface
             ->withUploadedFiles(self::normalizeFiles($_FILES));
     }
 
+    private static function extractHostAndPortFromAuthority($authority)
+    {
+        $uri = 'http://'.$authority;
+        $parts = parse_url($uri);
+        if (false === $parts) {
+            return [null, null];
+        }
+
+        $host = isset($parts['host']) ? $parts['host'] : null;
+        $port = isset($parts['port']) ? $parts['port'] : null;
+
+        return [$host, $port];
+    }
+
     /**
      * Get a Uri populated with values from $_SERVER.
      *
      * @return UriInterface
      */
-    public static function getUriFromGlobals() {
+    public static function getUriFromGlobals()
+    {
         $uri = new Uri('');
 
         $uri = $uri->withScheme(!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 'https' : 'http');
 
         $hasPort = false;
         if (isset($_SERVER['HTTP_HOST'])) {
-            $hostHeaderParts = explode(':', $_SERVER['HTTP_HOST']);
-            $uri = $uri->withHost($hostHeaderParts[0]);
-            if (isset($hostHeaderParts[1])) {
+            list($host, $port) = self::extractHostAndPortFromAuthority($_SERVER['HTTP_HOST']);
+            if ($host !== null) {
+                $uri = $uri->withHost($host);
+            }
+
+            if ($port !== null) {
                 $hasPort = true;
-                $uri = $uri->withPort($hostHeaderParts[1]);
+                $uri = $uri->withPort($port);
             }
         } elseif (isset($_SERVER['SERVER_NAME'])) {
             $uri = $uri->withHost($_SERVER['SERVER_NAME']);
@@ -210,7 +228,7 @@ class ServerRequest extends Request implements ServerRequestInterface
 
         $hasQuery = false;
         if (isset($_SERVER['REQUEST_URI'])) {
-            $requestUriParts = explode('?', $_SERVER['REQUEST_URI']);
+            $requestUriParts = explode('?', $_SERVER['REQUEST_URI'], 2);
             $uri = $uri->withPath($requestUriParts[0]);
             if (isset($requestUriParts[1])) {
                 $hasQuery = true;

@@ -1,6 +1,12 @@
 CHANGELOG
 =========
 
+4.2.0
+-----
+
+ * deprecated constructing a `TreeBuilder` without passing root node information
+ * renamed `FileLoaderLoadException` to `LoaderLoadException`
+
 4.1.0
 -----
 

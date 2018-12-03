@@ -400,8 +400,8 @@ class AuthService extends AbstractService
             'password' => $password
         ];
         $constraints = [
-            'email' => 'required|email',
-            'password' => 'required'
+            'email' => 'required|string|email',
+            'password' => 'required|string'
         ];
 
         // throws an exception if the constraints are not met

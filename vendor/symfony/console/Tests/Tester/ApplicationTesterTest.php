@@ -90,4 +90,24 @@ class ApplicationTesterTest extends TestCase
     {
         $this->assertSame(0, $this->tester->getStatusCode(), '->getStatusCode() returns the status code');
     }
+
+    public function testErrorOutput()
+    {
+        $application = new Application();
+        $application->setAutoExit(false);
+        $application->register('foo')
+            ->addArgument('foo')
+            ->setCode(function ($input, $output) {
+                $output->getErrorOutput()->write('foo');
+            })
+        ;
+
+        $tester = new ApplicationTester($application);
+        $tester->run(
+            array('command' => 'foo', 'foo' => 'bar'),
+            array('capture_stderr_separately' => true)
+        );
+
+        $this->assertSame('foo', $tester->getErrorOutput());
+    }
 }

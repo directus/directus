@@ -169,12 +169,16 @@ if (!function_exists('create_uri_from_global')) {
 
             if (isset($matches[2])) {
                 $port = (int)substr($matches[2], 1);
+            } else {
+                $port = $isSecure ? 443 : 80;
             }
         } else {
             $pos = strpos($host, ':');
             if ($pos !== false) {
                 $port = (int)substr($host, $pos + 1);
                 $host = strstr($host, ':', true);
+            } else {
+                $port = $isSecure ? 443 : 80;
             }
         }
 

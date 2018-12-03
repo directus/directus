@@ -1,6 +1,17 @@
 CHANGELOG
 =========
 
+4.2.0
+-----
+
+ * allowed passing commands as `array($process, 'ENV_VAR' => 'value')` to
+   `ProcessHelper::run()` to pass environment variables
+ * deprecated passing a command as a string to `ProcessHelper::run()`,
+   pass it the command as an array of its arguments instead
+ * made the `ProcessHelper` class final
+ * added `WrappableOutputFormatterInterface::formatAndWrap()` (implemented in `OutputFormatter`)
+ * added `capture_stderr_separately` option to `CommandTester::execute()`
+
 4.1.0
 -----
 

@@ -13,6 +13,8 @@ namespace Symfony\Component\Translation\Formatter;
 
 /**
  * @author Abdellatif Ait boudad <a.aitboudad@gmail.com>
+ *
+ * @deprecated since Symfony 4.2, use MessageFormatterInterface::format() with a %count% parameter instead
  */
 interface ChoiceMessageFormatterInterface
 {

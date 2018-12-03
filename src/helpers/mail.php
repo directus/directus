@@ -112,14 +112,12 @@ if (!function_exists('parse_twig')) {
         $app = Application::getInstance();
 
         $mailSettings = [
-            'global' => [
-                'project_url' => 'http://localhost',
-            ]
+            'project_url' => 'http://localhost',
         ];
 
         $settings = $app->getContainer()->get('app_settings');
         foreach ($settings as $setting) {
-            $mailSettings[$setting['scope']][$setting['key']] = $setting['value'];
+            $mailSettings[$setting['key']] = $setting['value'];
         }
 
         $data = array_merge(['settings' => $mailSettings], $data);
@@ -143,7 +141,7 @@ if (!function_exists('send_reset_password_email')) {
         ];
         send_mail_with_template('reset-password.twig', $data, function (Message $message) use ($user) {
             $message->setSubject(
-                sprintf('New Temporary Password: %s', get_directus_setting('global', 'project_name', ''))
+                sprintf('New Temporary Password: %s', get_directus_setting('project_name', ''))
             );
             $message->setTo($user['email']);
         });
@@ -165,7 +163,7 @@ if (!function_exists('send_forgot_password_email')) {
         ];
         send_mail_with_template('forgot-password.twig', $data, function (Message  $message) use ($user) {
             $message->setSubject(
-                sprintf('Password Reset Request: %s', get_directus_setting('global', 'project_name', ''))
+                sprintf('Password Reset Request: %s', get_directus_setting('project_name', ''))
             );
             $message->setTo($user['email']);
         });
@@ -182,7 +180,7 @@ if (!function_exists('send_new_install_email')) {
     {
         send_mail_with_template('new-install.twig', $data, function (Message $message) use ($data) {
             $message->setSubject(
-                sprintf('Your New Instance: %s', get_directus_setting('global', 'project_name', ''))
+                sprintf('Your New Instance: %s', get_directus_setting('project_name', ''))
             );
             $message->setTo($data['user']['email']);
         });
@@ -201,7 +199,7 @@ if (!function_exists('send_user_invitation_email')) {
         $data = ['token' => $token];
         send_mail_with_template('user-invitation.twig', $data, function (Message $message) use ($email) {
             $message->setSubject(
-                sprintf('Invitation to Instance: %s', get_directus_setting('global', 'project_name', ''))
+                sprintf('Invitation to Instance: %s', get_directus_setting('project_name', ''))
             );
             $message->setTo($email);
         });

@@ -81,7 +81,7 @@ if (!function_exists('append_storage_information'))
 
         $container = Application::getInstance()->getContainer();
         $thumbnailDimensions = array_filter(
-            explode(',', get_directus_setting('thumbnail', 'dimensions'))
+            explode(',', get_directus_setting('thumbnail_dimensions'))
         );
 
         // Add default size

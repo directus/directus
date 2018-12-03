@@ -13,6 +13,7 @@ namespace Symfony\Component\Validator\Constraints;
 
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
+use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 
 /**
  * @author Michael Hirschler <michael.vhirsch@gmail.com>
@@ -26,6 +27,10 @@ class BicValidator extends ConstraintValidator
      */
     public function validate($value, Constraint $constraint)
     {
+        if (!$constraint instanceof Bic) {
+            throw new UnexpectedTypeException($constraint, __NAMESPACE__.'\Bic');
+        }
+
         if (null === $value || '' === $value) {
             return;
         }

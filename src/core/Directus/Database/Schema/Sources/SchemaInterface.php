@@ -252,7 +252,7 @@ interface SchemaInterface
     /**
      * Gets String data types
      *
-     * @return mixed
+     * @return array
      */
     public function getStringTypes();
 
@@ -264,6 +264,22 @@ interface SchemaInterface
      * @return bool
      */
     public function isStringType($type);
+
+    /**
+     * Returns a list of date and time types
+     *
+     * @return array
+     */
+    public function getDateAndTimeTypes();
+
+    /**
+     * Checks whether the given type is date/time type
+     *
+     * @param string $type
+     *
+     * @return bool
+     */
+    public function isDateAndTimeTypes($type);
 
     /**
      * Gets the Directus' type based on the source data type

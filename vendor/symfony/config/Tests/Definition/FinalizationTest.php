@@ -20,9 +20,9 @@ class FinalizationTest extends TestCase
 {
     public function testUnsetKeyWithDeepHierarchy()
     {
-        $tb = new TreeBuilder();
+        $tb = new TreeBuilder('config', 'array');
         $tree = $tb
-            ->root('config', 'array')
+            ->getRootNode()
                 ->children()
                     ->node('level1', 'array')
                         ->canBeUnset()

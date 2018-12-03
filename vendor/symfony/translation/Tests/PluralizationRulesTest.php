@@ -26,6 +26,8 @@ use Symfony\Component\Translation\PluralizationRules;
  * The goal to cover all languages is to far fetched so this test case is smaller.
  *
  * @author Clemens Tolboom clemens@build2be.nl
+ *
+ * @group legacy
  */
 class PluralizationRulesTest extends TestCase
 {

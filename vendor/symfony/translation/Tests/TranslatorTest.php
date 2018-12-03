@@ -234,6 +234,42 @@ class TranslatorTest extends TestCase
         $this->assertEquals('bar', $translator->trans('foo', array(), 'resources'));
     }
 
+    public function testTransWithIcuFallbackLocale()
+    {
+        $translator = new Translator('en_GB');
+        $translator->addLoader('array', new ArrayLoader());
+        $translator->addResource('array', array('foo' => 'foofoo'), 'en_GB');
+        $translator->addResource('array', array('bar' => 'foobar'), 'en_001');
+        $translator->addResource('array', array('baz' => 'foobaz'), 'en');
+        $this->assertSame('foofoo', $translator->trans('foo'));
+        $this->assertSame('foobar', $translator->trans('bar'));
+        $this->assertSame('foobaz', $translator->trans('baz'));
+    }
+
+    public function testTransWithIcuVariantFallbackLocale()
+    {
+        $translator = new Translator('en_GB_scouse');
+        $translator->addLoader('array', new ArrayLoader());
+        $translator->addResource('array', array('foo' => 'foofoo'), 'en_GB_scouse');
+        $translator->addResource('array', array('bar' => 'foobar'), 'en_GB');
+        $translator->addResource('array', array('baz' => 'foobaz'), 'en_001');
+        $translator->addResource('array', array('qux' => 'fooqux'), 'en');
+        $this->assertSame('foofoo', $translator->trans('foo'));
+        $this->assertSame('foobar', $translator->trans('bar'));
+        $this->assertSame('foobaz', $translator->trans('baz'));
+        $this->assertSame('fooqux', $translator->trans('qux'));
+    }
+
+    public function testTransWithIcuRootFallbackLocale()
+    {
+        $translator = new Translator('az_Cyrl');
+        $translator->addLoader('array', new ArrayLoader());
+        $translator->addResource('array', array('foo' => 'foofoo'), 'az_Cyrl');
+        $translator->addResource('array', array('bar' => 'foobar'), 'az');
+        $this->assertSame('foofoo', $translator->trans('foo'));
+        $this->assertSame('bar', $translator->trans('bar'));
+    }
+
     public function testTransWithFallbackLocaleBis()
     {
         $translator = new Translator('en_US');
@@ -357,6 +393,7 @@ class TranslatorTest extends TestCase
 
     /**
      * @dataProvider getTransChoiceTests
+     * @group legacy
      */
     public function testTransChoice($expected, $id, $translation, $number, $parameters, $locale, $domain)
     {
@@ -370,6 +407,7 @@ class TranslatorTest extends TestCase
     /**
      * @dataProvider      getInvalidLocalesTests
      * @expectedException \Symfony\Component\Translation\Exception\InvalidArgumentException
+     * @group legacy
      */
     public function testTransChoiceInvalidLocale($locale)
     {
@@ -382,6 +420,7 @@ class TranslatorTest extends TestCase
 
     /**
      * @dataProvider      getValidLocalesTests
+     * @group legacy
      */
     public function testTransChoiceValidLocale($locale)
     {
@@ -463,7 +502,7 @@ class TranslatorTest extends TestCase
             array('Il y a 0 pomme', new StringClass('{0} There are no appless|{1} There is one apple|]1,Inf] There is %count% apples'), '[0,1] Il y a %count% pomme|]1,Inf] Il y a %count% pommes', 0, array(), 'fr', ''),
 
             // Override %count% with a custom value
-            array('Il y a quelques pommes', 'one: There is one apple|more: There are %count% apples', 'one: Il y a %count% pomme|more: Il y a %count% pommes', 2, array('%count%' => 'quelques'), 'fr', ''),
+            array('Il y a quelques pommes', 'one: There is one apple|more: There are %count% apples', 'one: Il y a %count% pomme|more: Il y a quelques pommes', 2, array('%count%' => 'quelques'), 'fr', ''),
         );
     }
 
@@ -501,6 +540,24 @@ class TranslatorTest extends TestCase
         );
     }
 
+    /**
+     * @requires extension intl
+     */
+    public function testIntlFormattedDomain()
+    {
+        $translator = new Translator('en');
+        $translator->addLoader('array', new ArrayLoader());
+
+        $translator->addResource('array', array('some_message' => 'Hello %name%'), 'en');
+        $this->assertSame('Hello Bob', $translator->trans('some_message', array('%name%' => 'Bob')));
+
+        $translator->addResource('array', array('some_message' => 'Hi {name}'), 'en', 'messages+intl-icu');
+        $this->assertSame('Hi Bob', $translator->trans('some_message', array('%name%' => 'Bob')));
+    }
+
+    /**
+     * @group legacy
+     */
     public function testTransChoiceFallback()
     {
         $translator = new Translator('ru');
@@ -511,6 +568,9 @@ class TranslatorTest extends TestCase
         $this->assertEquals('10 things', $translator->transChoice('some_message2', 10, array('%count%' => 10)));
     }
 
+    /**
+     * @group legacy
+     */
     public function testTransChoiceFallbackBis()
     {
         $translator = new Translator('ru');
@@ -521,6 +581,9 @@ class TranslatorTest extends TestCase
         $this->assertEquals('10 things', $translator->transChoice('some_message2', 10, array('%count%' => 10)));
     }
 
+    /**
+     * @group legacy
+     */
     public function testTransChoiceFallbackWithNoTranslation()
     {
         $translator = new Translator('ru');

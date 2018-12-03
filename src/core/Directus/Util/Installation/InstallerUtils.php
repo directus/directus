@@ -4,6 +4,7 @@ namespace Directus\Util\Installation;
 
 use Directus\Application\Application;
 use Directus\Database\Connection;
+use Directus\Database\Exception\ConnectionFailedException;
 use Directus\Database\Schema\SchemaManager;
 use Directus\Database\Schema\Sources\MySQLSchema;
 use Directus\Database\TableGateway\DirectusUsersTableGateway;
@@ -150,7 +151,7 @@ class InstallerUtils
         try {
             $db->connect();
         } catch (\Exception $e) {
-            throw new Exception('Cannot connect to the database');
+            throw new ConnectionFailedException($e);
         }
     }
 
@@ -609,32 +610,26 @@ class InstallerUtils
     {
         return [
             [
-                'scope' => 'global',
                 'key' => 'auto_sign_out',
                 'value' => '60'
             ],
             [
-                'scope' => 'global',
                 'key' => 'project_name',
                 'value' => isset($data['project_name']) ? $data['project_name'] : 'Directus'
             ],
             [
-                'scope' => 'global',
                 'key' => 'default_limit',
                 'value' => '200'
             ],
             [
-                'scope' => 'global',
                 'key' => 'logo',
                 'value' => ''
             ],
             [
-                'scope' => 'global',
                 'key' => 'color',
                 'value' => 'light-blue-600'
             ],
             [
-                'scope' => 'files',
                 'key' => 'youtube_api_key',
                 'value' => ''
             ]

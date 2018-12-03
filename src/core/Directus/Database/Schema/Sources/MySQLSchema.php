@@ -18,6 +18,8 @@ use Zend\Db\Sql\Where;
 
 class MySQLSchema extends AbstractSchema
 {
+    protected $isMariaDb = null;
+
     /**
      * Database connection adapter
      *
@@ -267,7 +269,7 @@ class MySQLSchema extends AbstractSchema
         $selectUnion = new Select();
         $selectUnion->from(['fields' => $selectOne]);
 
-        $sortNullLast = (bool) get_directus_setting('global', 'sort_null_last', true);
+        $sortNullLast = (bool) get_directus_setting('sort_null_last', true);
         foreach ($sorts as $field) {
             $sort = compact_sort_to_array($field);
             if ($sortNullLast) {
@@ -645,6 +647,27 @@ class MySQLSchema extends AbstractSchema
     /**
      * @inheritdoc
      */
+    public function getDateAndTimeTypes()
+    {
+        return [
+            'date',
+            'datetime',
+            'time',
+            'timestamp',
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function isDateAndTimeTypes($type)
+    {
+        return in_array(strtolower($type), $this->getDateAndTimeTypes());
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function getTypesRequireLength()
     {
         return [
@@ -680,5 +703,21 @@ class MySQLSchema extends AbstractSchema
     public function isTypeLengthAllowed($type)
     {
         return in_array(strtolower($type), $this->getTypesAllowLength());
+    }
+
+    /**
+     * Checks whether the connection is to a MariaDB server
+     *
+     * @return bool
+     */
+    public function isMariaDb()
+    {
+        if ($this->isMariaDb === null) {
+            $variable = $this->adapter->query('SHOW VARIABLES LIKE "version_comment";')->execute()->current();
+
+            $this->isMariaDb = $variable && strpos(strtolower(ArrayUtils::get($variable, 'Value', '')), 'mariadb') !== false;
+        }
+
+        return $this->isMariaDb;
     }
 }

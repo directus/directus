@@ -1,6 +1,18 @@
 CHANGELOG
 =========
 
+4.2.0
+-----
+
+ * Started using ICU parent locales as fallback locales.
+ * allow using the ICU message format using domains with the "+intl-icu" suffix
+ * deprecated `Translator::transChoice()` in favor of using `Translator::trans()` with a `%count%` parameter
+ * deprecated `TranslatorInterface` in favor of `Symfony\Contracts\Translation\TranslatorInterface`
+ * deprecated `MessageSelector`, `Interval` and `PluralizationRules`; use `IdentityTranslator` instead
+ * Added `IntlFormatter` and `IntlFormatterInterface`
+ * added support for multiple files and directories in `XliffLintCommand`
+ * Marked `Translator::getFallbackLocales()` and `TranslationDataCollector::getFallbackLocales()` as internal
+
 4.1.0
 -----
 

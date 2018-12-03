@@ -53,6 +53,15 @@ class FnStream implements StreamInterface
     }
 
     /**
+     * An unserialize would allow the __destruct to run when the unserialized value goes out of scope.
+     * @throws \LogicException
+     */
+    public function __wakeup()
+    {
+        throw new \LogicException('FnStream should never be unserialized');
+    }
+
+    /**
      * Adds custom functionality to an underlying stream by intercepting
      * specific method calls.
      *

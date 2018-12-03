@@ -1332,6 +1332,46 @@ class FilesystemTest extends FilesystemTestCase
         $this->assertFileNotExists($targetPath.'target');
     }
 
+    public function testMirrorWithCustomIterator()
+    {
+        $sourcePath = $this->workspace.DIRECTORY_SEPARATOR.'source'.DIRECTORY_SEPARATOR;
+        mkdir($sourcePath);
+
+        $file = $sourcePath.DIRECTORY_SEPARATOR.'file';
+        file_put_contents($file, 'FILE');
+
+        $targetPath = $this->workspace.DIRECTORY_SEPARATOR.'target'.DIRECTORY_SEPARATOR;
+
+        $splFile = new \SplFileInfo($file);
+        $iterator = new \ArrayObject(array($splFile));
+
+        $this->filesystem->mirror($sourcePath, $targetPath, $iterator);
+
+        $this->assertTrue(is_dir($targetPath));
+        $this->assertFileEquals($file, $targetPath.DIRECTORY_SEPARATOR.'file');
+    }
+
+    /**
+     * @expectedException \Symfony\Component\Filesystem\Exception\IOException
+     * @expectedExceptionMessageRegExp /Unable to mirror "(.*)" directory/
+     */
+    public function testMirrorWithCustomIteratorWithRelativePath()
+    {
+        $sourcePath = $this->workspace.DIRECTORY_SEPARATOR.'source'.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'source'.DIRECTORY_SEPARATOR;
+        $realSourcePath = $this->workspace.DIRECTORY_SEPARATOR.'source'.DIRECTORY_SEPARATOR;
+        mkdir($realSourcePath);
+
+        $file = $realSourcePath.'file';
+        file_put_contents($file, 'FILE');
+
+        $targetPath = $this->workspace.DIRECTORY_SEPARATOR.'target'.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'target'.DIRECTORY_SEPARATOR;
+
+        $splFile = new \SplFileInfo($file);
+        $iterator = new \ArrayObject(array($splFile));
+
+        $this->filesystem->mirror($sourcePath, $targetPath, $iterator);
+    }
+
     /**
      * @dataProvider providePathsForIsAbsolutePath
      */

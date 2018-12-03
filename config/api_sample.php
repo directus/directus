@@ -67,7 +67,8 @@ return [
         //   'secret' => 's3-secret',
         //   'region' => 's3-region',
         //   'version' => 's3-version',
-        //   'bucket' => 's3-bucket'
+        //   'bucket' => 's3-bucket',
+        //   'options' => ['ACL' => 'public-read', 'Cache-Control' => 'max-age=604800']
     ],
 
     'mail' => [

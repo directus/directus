@@ -30,7 +30,7 @@ Jan-10-2006
 -->
 <xsd:schema xmlns:xlf="urn:oasis:names:tc:xliff:document:1.2" xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="urn:oasis:names:tc:xliff:document:1.2" xml:lang="en">
   <!-- Import for xml:lang and xml:space -->
-  <xsd:import namespace="http://www.w3.org/XML/1998/namespace" schemaLocation="../../Loader/schema/dic/xliff-core/xml.xsd"/>
+  <xsd:import namespace="http://www.w3.org/XML/1998/namespace" schemaLocation="http://www.w3.org/2001/xml.xsd"/>
   <!-- Attributes Lists -->
   <xsd:simpleType name="XTend">
     <xsd:restriction base="xsd:string">

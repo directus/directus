@@ -8,45 +8,32 @@ if (!function_exists('get_directus_settings')) {
     /**
      * Returns an array of directus settings
      *
-     * @param string|null $scope
-     *
      * @return array
      */
-    function get_directus_settings($scope = null)
+    function get_directus_settings()
     {
         $app = Application::getInstance();
 
-        $settings = $app->getContainer()->get('app_settings');
-
-        if ($scope !== null) {
-            foreach ($settings as $index => $setting) {
-                if ($setting['scope'] !== $scope) {
-                    unset($settings[$index]);
-                }
-            }
-        }
-
-        return $settings;
+        return $app->getContainer()->get('app_settings');
     }
 }
 
 if (!function_exists('get_directus_setting')) {
     /**
-     * Returns a directus settings by key+scope combo
+     * Returns a directus settings by key
      *
-     * @param string $scope
      * @param string $key
      * @param null $default
      *
      * @return mixed
      */
-    function get_directus_setting($scope, $key, $default = null)
+    function get_directus_setting($key, $default = null)
     {
         $settings = get_directus_settings();
         $value = $default;
 
         foreach ($settings as $setting) {
-            if ($setting['scope'] == $scope && $setting['key'] == $key) {
+            if ($setting['key'] == $key) {
                 $value = $setting['value'];
                 break;
             }
@@ -60,13 +47,11 @@ if (!function_exists('get_kv_directus_settings')) {
     /**
      * Returns the settings in a key-value format
      *
-     * @param null|string $scope
-     *
      * @return array
      */
-    function get_kv_directus_settings($scope = null)
+    function get_kv_directus_settings()
     {
-        $settings = get_directus_settings($scope);
+        $settings = get_directus_settings();
         $result = [];
 
         foreach ($settings as $setting) {
@@ -74,5 +59,60 @@ if (!function_exists('get_kv_directus_settings')) {
         }
 
         return $result;
+    }
+}
+
+if (!function_exists('get_directus_files_settings')) {
+    /**
+     * Get all directus files settings
+     *
+     * @return array
+     */
+    function get_directus_files_settings()
+    {
+        return get_directus_settings_by_keys([
+            'file_naming',
+            'youtube_api_key',
+        ]);
+    }
+}
+
+if (!function_exists('get_directus_thumbnail_settings')) {
+    /**
+     * Get all directus files settings
+     *
+     * @return array
+     */
+    function get_directus_thumbnail_settings()
+    {
+        return get_directus_settings_by_keys([
+            'thumbnail_dimensions',
+            'thumbnail_not_found_location',
+            'thumbnail_quality_tags',
+            'thumbnail_actions',
+            'thumbnail_cache_ttl',
+        ]);
+    }
+}
+
+if (!function_exists('get_directus_settings_by_keys')) {
+    /**
+     * Get all directus files settings
+     *
+     * @param array $keys
+     *
+     * @return array
+     */
+    function get_directus_settings_by_keys(array $keys)
+    {
+        $settings = get_directus_settings();
+
+        foreach ($settings as $setting) {
+            if (in_array($setting['key'], $keys)) {
+                $filesSettings[$setting['key']] = $setting['value'];
+            }
+        }
+
+        return $settings;
     }
 }

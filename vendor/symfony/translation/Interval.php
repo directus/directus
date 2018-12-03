@@ -11,6 +11,8 @@
 
 namespace Symfony\Component\Translation;
 
+@trigger_error(sprintf('The "%s" class is deprecated since Symfony 4.2, use IdentityTranslator instead.', Interval::class), E_USER_DEPRECATED);
+
 use Symfony\Component\Translation\Exception\InvalidArgumentException;
 
 /**
@@ -32,6 +34,7 @@ use Symfony\Component\Translation\Exception\InvalidArgumentException;
  * @author Fabien Potencier <fabien@symfony.com>
  *
  * @see    http://en.wikipedia.org/wiki/Interval_%28mathematics%29#The_ISO_notation
+ * @deprecated since Symfony 4.2, use IdentityTranslator instead
  */
 class Interval
 {

@@ -166,7 +166,7 @@ class InstallModule extends ModuleBase
                 InstallerUtils::addDefaultUser($directus_path, $data, $projectName);
             } else {
                 if (ArrayUtils::has($data, 'project_name')) {
-                    $setting->setSetting('global', 'project_name', $data['project_name']);
+                    $setting->setSetting('project_name', $data['project_name']);
                 }
 
                 // NOTE: Do we really want to change the email when re-run install command?

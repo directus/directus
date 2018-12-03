@@ -45,7 +45,7 @@ abstract class FileDumper implements DumperInterface
     /**
      * Sets backup flag.
      *
-     * @param bool
+     * @param bool $backup
      *
      * @deprecated since Symfony 4.1
      */
@@ -76,7 +76,26 @@ abstract class FileDumper implements DumperInterface
                     throw new RuntimeException(sprintf('Unable to create directory "%s".', $directory));
                 }
             }
-            // save file
+
+            $intlDomain = $domain.MessageCatalogue::INTL_DOMAIN_SUFFIX;
+            $intlMessages = $messages->all($intlDomain);
+
+            if ($intlMessages) {
+                $intlPath = $options['path'].'/'.$this->getRelativePath($intlDomain, $messages->getLocale());
+                file_put_contents($intlPath, $this->formatCatalogue($messages, $intlDomain, $options));
+
+                $messages->replace(array(), $intlDomain);
+
+                try {
+                    if ($messages->all($domain)) {
+                        file_put_contents($fullpath, $this->formatCatalogue($messages, $domain, $options));
+                    }
+                    continue;
+                } finally {
+                    $messages->replace($intlMessages, $intlDomain);
+                }
+            }
+
             file_put_contents($fullpath, $this->formatCatalogue($messages, $domain, $options));
         }
     }

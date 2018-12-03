@@ -2,7 +2,7 @@
 
 return [
     'app' => [
-        'env' => 'development',
+        'env' => 'production',
         'timezone' => 'America/New_York',
     ],
 
@@ -68,6 +68,7 @@ return [
         //   'region' => 's3-region',
         //   'version' => 's3-version',
         //   'bucket' => 's3-bucket'
+        //   'options' => ['ACL' => 'public-read', 'Cache-Control' => 'max-age=604800']
     ],
 
     'mail' => [

@@ -37,6 +37,18 @@ class LintCommandTest extends TestCase
         $this->assertRegExp('/^\/\/ OK in /', trim($tester->getDisplay()));
     }
 
+    public function testLintCorrectFiles()
+    {
+        $tester = $this->createCommandTester();
+        $filename1 = $this->createFile('foo: bar');
+        $filename2 = $this->createFile('bar: baz');
+
+        $ret = $tester->execute(array('filename' => array($filename1, $filename2)), array('verbosity' => OutputInterface::VERBOSITY_VERBOSE, 'decorated' => false));
+
+        $this->assertEquals(0, $ret, 'Returns 0 in case of success');
+        $this->assertRegExp('/^\/\/ OK in /', trim($tester->getDisplay()));
+    }
+
     public function testLintIncorrectFile()
     {
         $incorrectContent = '

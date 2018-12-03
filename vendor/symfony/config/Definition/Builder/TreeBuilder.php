@@ -24,6 +24,15 @@ class TreeBuilder implements NodeParentInterface
     protected $tree;
     protected $root;
 
+    public function __construct(string $name = null, string $type = 'array', NodeBuilder $builder = null)
+    {
+        if (null === $name) {
+            @trigger_error('A tree builder without a root node is deprecated since Symfony 4.2 and will not be supported anymore in 5.0.', E_USER_DEPRECATED);
+        } else {
+            $this->root($name, $type, $builder);
+        }
+    }
+
     /**
      * Creates the root node.
      *
@@ -40,6 +49,15 @@ class TreeBuilder implements NodeParentInterface
         $builder = $builder ?: new NodeBuilder();
 
         return $this->root = $builder->node($name, $type)->setParent($this);
+    }
+
+    public function getRootNode(): NodeDefinition
+    {
+        if (null === $this->root) {
+            throw new \RuntimeException(sprintf('Calling %s() before creating the root node is not supported, migrate to the new constructor signature instead.', __METHOD__));
+        }
+
+        return $this->root;
     }
 
     /**

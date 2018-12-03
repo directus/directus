@@ -180,7 +180,7 @@ abstract class AbstractService
             }
 
             if ($errors) {
-                $results[] = sprintf('%s: %s', $field, implode(', ', $errors));
+                $results[] = sprintf('%s: %s', $field, implode(' ', $errors));
             }
         }
 

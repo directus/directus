@@ -11,7 +11,7 @@
 
 namespace Symfony\Component\Config\Loader;
 
-use Symfony\Component\Config\Exception\FileLoaderLoadException;
+use Symfony\Component\Config\Exception\LoaderLoadException;
 
 /**
  * DelegatingLoader delegates loading to other loaders using a loader resolver.
@@ -34,7 +34,7 @@ class DelegatingLoader extends Loader
     public function load($resource, $type = null)
     {
         if (false === $loader = $this->resolver->resolve($resource, $type)) {
-            throw new FileLoaderLoadException($resource, null, null, null, $type);
+            throw new LoaderLoadException($resource, null, null, null, $type);
         }
 
         return $loader->load($resource, $type);

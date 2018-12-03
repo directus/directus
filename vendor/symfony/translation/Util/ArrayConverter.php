@@ -69,7 +69,7 @@ class ArrayConverter
             $elem = &$elem[$part];
         }
 
-        if (\is_array($elem) && \count($elem) > 0 && $parentOfElem) {
+        if ($elem && \is_array($elem) && $parentOfElem) {
             /* Process next case:
              *    'foo.bar': 'test1'
              *    'foo': 'test2'

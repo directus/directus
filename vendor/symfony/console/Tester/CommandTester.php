@@ -13,7 +13,6 @@ namespace Symfony\Component\Console\Tester;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\ArrayInput;
-use Symfony\Component\Console\Output\StreamOutput;
 
 /**
  * Eases the testing of console commands.
@@ -39,9 +38,10 @@ class CommandTester
      *
      * Available execution options:
      *
-     *  * interactive: Sets the input interactive flag
-     *  * decorated:   Sets the output decorated flag
-     *  * verbosity:   Sets the output verbosity flag
+     *  * interactive:               Sets the input interactive flag
+     *  * decorated:                 Sets the output decorated flag
+     *  * verbosity:                 Sets the output verbosity flag
+     *  * capture_stderr_separately: Make output of stdOut and stdErr separately available
      *
      * @param array $input   An array of command arguments and options
      * @param array $options An array of execution options
@@ -68,11 +68,11 @@ class CommandTester
             $this->input->setInteractive($options['interactive']);
         }
 
-        $this->output = new StreamOutput(fopen('php://memory', 'w', false));
-        $this->output->setDecorated(isset($options['decorated']) ? $options['decorated'] : false);
-        if (isset($options['verbosity'])) {
-            $this->output->setVerbosity($options['verbosity']);
+        if (!isset($options['decorated'])) {
+            $options['decorated'] = false;
         }
+
+        $this->initOutput($options);
 
         return $this->statusCode = $this->command->run($this->input, $this->output);
     }

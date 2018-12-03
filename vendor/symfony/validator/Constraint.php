@@ -120,7 +120,7 @@ abstract class Constraint
         if (\is_array($options)) {
             reset($options);
         }
-        if (\is_array($options) && \count($options) > 0 && \is_string(key($options))) {
+        if ($options && \is_array($options) && \is_string(key($options))) {
             foreach ($options as $option => $value) {
                 if (array_key_exists($option, $knownOptions)) {
                     $this->$option = $value;

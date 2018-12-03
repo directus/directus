@@ -2,8 +2,10 @@
 
 namespace Directus\Services;
 
+use Directus\Database\Exception\ConnectionFailedException;
 use Directus\Exception\ForbiddenException;
 use Directus\Exception\InvalidConfigPathException;
+use Directus\Exception\InvalidDatabaseConnectionException;
 use Directus\Exception\ProjectAlreadyExistException;
 use Directus\Util\ArrayUtils;
 use Directus\Util\Installation\InstallerUtils;
@@ -51,7 +53,14 @@ class ProjectService extends AbstractService
             throw new ProjectAlreadyExistException($projectName);
         }
 
-        InstallerUtils::ensureCanCreateTables($basePath, $data, $force);
+        try {
+            InstallerUtils::ensureCanCreateTables($basePath, $data, $force);
+        } catch (ConnectionFailedException $e) {
+            // Throw invalid database connection instead of connection failed
+            // At this point the user is providing database credentials
+            // If failed, there was a problem if the data they already sent
+            throw new InvalidDatabaseConnectionException();
+        }
 
         InstallerUtils::createConfig($basePath, $data, $force);
         InstallerUtils::createTables($basePath, $projectName, $force);

@@ -355,7 +355,7 @@ class Thumbnailer {
         $defaultDimension = '200x200';
 
         $dimensions =  $this->parseCSV(
-            ArrayUtils::get($this->getConfig(), 'dimensions')
+            ArrayUtils::get($this->getConfig(), 'thumbnail_dimensions')
         );
 
         if (!in_array($defaultDimension, $dimensions)) {
@@ -412,7 +412,7 @@ class Thumbnailer {
             'best' => 100,
         ];
 
-        $qualityTags =  ArrayUtils::get($this->getConfig(), 'quality_tags') ?: [];
+        $qualityTags =  ArrayUtils::get($this->getConfig(), 'thumbnail_quality_tags') ?: [];
         if (is_string($qualityTags)) {
             $qualityTags = json_decode($qualityTags, true);
         }
@@ -439,7 +439,7 @@ class Thumbnailer {
      */
     public function getActions()
     {
-        $actions =  ArrayUtils::get($this->getConfig(), 'actions');
+        $actions =  ArrayUtils::get($this->getConfig(), 'thumbnail_actions');
         if (is_string($actions) && !empty($actions)) {
             $actions = json_decode($actions, true);
         }

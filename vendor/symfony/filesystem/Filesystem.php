@@ -569,6 +569,10 @@ class Filesystem
         }
 
         foreach ($iterator as $file) {
+            if (false === strpos($file->getPath(), $originDir)) {
+                throw new IOException(sprintf('Unable to mirror "%s" directory. If the origin directory is relative, try using "realpath" before calling the mirror method.', $originDir), 0, null, $originDir);
+            }
+
             $target = $targetDir.substr($file->getPathname(), $originDirLen);
 
             if ($copyOnWindows) {
@@ -741,7 +745,7 @@ class Filesystem
         self::$lastError = null;
         \set_error_handler(__CLASS__.'::handleError');
         try {
-            $result = \call_user_func_array($func, \array_slice(\func_get_args(), 1));
+            $result = $func(...\array_slice(\func_get_args(), 1));
             \restore_error_handler();
 
             return $result;

@@ -14,6 +14,9 @@
         <source>baz</source>
         <target>foo</target>
       </trans-unit>
+      <trans-unit id="4" resname="qux">
+        <source>qux source</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>

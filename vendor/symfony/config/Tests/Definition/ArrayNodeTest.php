@@ -37,6 +37,31 @@ class ArrayNodeTest extends TestCase
         $node->normalize(array('foo' => 'bar'));
     }
 
+    /**
+     * @expectedException        \Symfony\Component\Config\Definition\Exception\InvalidConfigurationException
+     * @expectedExceptionMessage Did you mean "alpha1", "alpha2"?
+     */
+    public function testNormalizeWithProposals()
+    {
+        $node = new ArrayNode('root');
+        $node->addChild(new ArrayNode('alpha1'));
+        $node->addChild(new ArrayNode('alpha2'));
+        $node->addChild(new ArrayNode('beta'));
+        $node->normalize(array('alpha3' => 'foo'));
+    }
+
+    /**
+     * @expectedException        \Symfony\Component\Config\Definition\Exception\InvalidConfigurationException
+     * @expectedExceptionMessage Available options are "alpha1", "alpha2".
+     */
+    public function testNormalizeWithoutProposals()
+    {
+        $node = new ArrayNode('root');
+        $node->addChild(new ArrayNode('alpha1'));
+        $node->addChild(new ArrayNode('alpha2'));
+        $node->normalize(array('beta' => 'foo'));
+    }
+
     public function ignoreAndRemoveMatrixProvider()
     {
         $unrecognizedOptionException = new InvalidConfigurationException('Unrecognized option "foo" under "root"');

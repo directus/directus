@@ -43,7 +43,7 @@ class ArrayNodeDefinitionTest extends TestCase
     {
         $node = new ArrayNodeDefinition('root');
 
-        \call_user_func_array(array($node, $method), $args);
+        $node->{$method}(...$args);
 
         $node->getNode();
     }
@@ -230,6 +230,25 @@ class ArrayNodeDefinitionTest extends TestCase
 
         $this->assertEquals($node, $result);
         $this->assertFalse($this->getField($node, 'normalizeKeys'));
+    }
+
+    public function testUnsetChild()
+    {
+        $node = new ArrayNodeDefinition('root');
+        $node
+            ->children()
+                ->scalarNode('value')
+                    ->beforeNormalization()
+                        ->ifTrue(function ($value) {
+                            return empty($value);
+                        })
+                        ->thenUnset()
+                    ->end()
+                ->end()
+            ->end()
+        ;
+
+        $this->assertSame(array(), $node->getNode()->normalize(array('value' => null)));
     }
 
     public function testPrototypeVariable()

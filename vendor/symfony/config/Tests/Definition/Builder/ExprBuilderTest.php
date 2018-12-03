@@ -212,10 +212,10 @@ class ExprBuilderTest extends TestCase
      */
     protected function getTestBuilder()
     {
-        $builder = new TreeBuilder();
+        $builder = new TreeBuilder('test');
 
         return $builder
-            ->root('test')
+            ->getRootNode()
             ->children()
             ->variableNode('key')
             ->validate()
