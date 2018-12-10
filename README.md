@@ -14,9 +14,9 @@
   <a href="https://directus.io">Website</a> • 
   <a href="https://docs.directus.io">Docs</a> • 
   <a href="https://docs.directus.io/api/reference.html">API Reference</a> • 
-  <a href="https://docs.directus.io/app/user-guide.html">User Guide</a> • 
+  <a href="https://docs.directus.io/guides/user-guide.html">User Guide</a> • 
   <a href="https://directus.app">Demo</a> • 
-  <a href="https://docs.directus.io/supporting-directus.html">Contribute</a>
+  <a href="https://docs.directus.io/getting-started/supporting-directus.html">Contribute</a>
 </h3>
 
 <p>&nbsp;</p>
@@ -44,11 +44,11 @@ Directus is an open-source suite of software for managing content in projects of
 ## 📖 Documentation
 
 * [What is Directus?](https://docs.directus.io/getting-started/introduction.html#what-is-directus)
-* [Installing the Directus Suite](https://docs.directus.io/getting-started/installation.html#requirements)
+* [Installing the Directus Suite](https://docs.directus.io/getting-started/installation.html)
 * [Extending Directus](https://docs.directus.io/extensions/)
 * Directus App
   * [App Docs](https://docs.directus.io/advanced/app/standalone.html)
-  * [User Guide](https://docs.directus.io/app/user-guide.html)
+  * [User Guide](https://docs.directus.io/guides/user-guide.html)
   * [Install the App](https://docs.directus.io/advanced/app/standalone.html#installation)
 * Directus API
   * [API Docs](https://docs.directus.io/advanced/api/standalone.html)
@@ -90,8 +90,8 @@ Feature requests are managed as GitHub issues within the appropriate Directus re
 
 We love pull-requests! To work on Directus you'll need to install it locally from source by following the instructions below. Submit all pull-requests to the `development` branch of our `api` and `app` repositories.
 
-* [Setup API Development Environment](https://docs.directus.io/api/contributor/install-dev.html)
-* [Setup App Development Environment](https://docs.directus.io/app/contributor/install-dev.html)
+* [Setup API Development Environment](https://docs.directus.io/advanced/source.html#api-source)
+* [Setup App Development Environment](https://docs.directus.io/advanced/source.html#application-source)
 
 ### Online Demos
 
@@ -105,7 +105,7 @@ Directus is a GPLv3-licensed open source project with development made possible 
 
 * [Become a backer or sponsor through Patreon](https://www.patreon.com/directus)
 * [One-time donation through PayPal](https://www.paypal.me/supportdirectus)
-* [Other ways to help](https://docs.directus.io/supporting-directus.html)
+* [Other ways to help](https://docs.directus.io/getting-started/supporting-directus.html)
 
 ### Sponsors
 
@@ -133,7 +133,7 @@ Directus is a GPLv3-licensed open source project with development made possible 
    </tr>
 </table>
 
-**Other Key Contributors: [coolov](https://github.com/coolov), [freen](https://github.com/freen), [jel-massih](https://github.com/jel-massih), [Lasha](https://github.com/Lasha)**
+**[Advisors, Sponsors, Partners, and Key Contributors](https://directus.io/organization.html#the-team)**
 
 <p>&nbsp;</p>
 
