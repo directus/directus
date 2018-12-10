@@ -2009,6 +2009,7 @@ return array(
     'Symfony\\Contracts\\Tests\\Service\\ServiceSubscriberTraitTest' => $vendorDir . '/symfony/contracts/Tests/Service/ServiceSubscriberTraitTest.php',
     'Symfony\\Contracts\\Tests\\Service\\TestService' => $vendorDir . '/symfony/contracts/Tests/Service/ServiceSubscriberTraitTest.php',
     'Symfony\\Contracts\\Tests\\Translation\\TranslatorTest' => $vendorDir . '/symfony/contracts/Tests/Translation/TranslatorTest.php',
+    'Symfony\\Contracts\\Translation\\LocaleAwareInterface' => $vendorDir . '/symfony/contracts/Translation/LocaleAwareInterface.php',
     'Symfony\\Contracts\\Translation\\TranslatorInterface' => $vendorDir . '/symfony/contracts/Translation/TranslatorInterface.php',
     'Symfony\\Contracts\\Translation\\TranslatorTrait' => $vendorDir . '/symfony/contracts/Translation/TranslatorTrait.php',
     'Symfony\\Polyfill\\Ctype\\Ctype' => $vendorDir . '/symfony/polyfill-ctype/Ctype.php',

@@ -481,17 +481,17 @@
     },
     {
         "name": "guzzlehttp/psr7",
-        "version": "1.5.0",
-        "version_normalized": "1.5.0.0",
+        "version": "1.5.2",
+        "version_normalized": "1.5.2.0",
         "source": {
             "type": "git",
             "url": "https://github.com/guzzle/psr7.git",
-            "reference": "53662d6688033a5eccde987bdd5a4a98ebe2d952"
+            "reference": "9f83dded91781a01c63574e387eaa769be769115"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/guzzle/psr7/zipball/53662d6688033a5eccde987bdd5a4a98ebe2d952",
-            "reference": "53662d6688033a5eccde987bdd5a4a98ebe2d952",
+            "url": "https://api.github.com/repos/guzzle/psr7/zipball/9f83dded91781a01c63574e387eaa769be769115",
+            "reference": "9f83dded91781a01c63574e387eaa769be769115",
             "shasum": ""
         },
         "require": {
@@ -505,7 +505,7 @@
         "require-dev": {
             "phpunit/phpunit": "~4.8.36 || ^5.7.27 || ^6.5.8"
         },
-        "time": "2018-12-03T05:07:51+00:00",
+        "time": "2018-12-04T20:46:45+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -3073,17 +3073,17 @@
     },
     {
         "name": "symfony/config",
-        "version": "v4.2.0",
-        "version_normalized": "4.2.0.0",
+        "version": "v4.2.1",
+        "version_normalized": "4.2.1.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/config.git",
-            "reference": "10ba96d42cc9a482bce05c8179f06e24e665c920"
+            "reference": "005d9a083d03f588677d15391a716b1ac9b887c0"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/config/zipball/10ba96d42cc9a482bce05c8179f06e24e665c920",
-            "reference": "10ba96d42cc9a482bce05c8179f06e24e665c920",
+            "url": "https://api.github.com/repos/symfony/config/zipball/005d9a083d03f588677d15391a716b1ac9b887c0",
+            "reference": "005d9a083d03f588677d15391a716b1ac9b887c0",
             "shasum": ""
         },
         "require": {
@@ -3103,7 +3103,7 @@
         "suggest": {
             "symfony/yaml": "To use the yaml reference dumper"
         },
-        "time": "2018-11-26T10:55:26+00:00",
+        "time": "2018-11-30T22:21:14+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -3138,8 +3138,8 @@
     },
     {
         "name": "symfony/console",
-        "version": "v4.2.0",
-        "version_normalized": "4.2.0.0",
+        "version": "v4.2.1",
+        "version_normalized": "4.2.1.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/console.git",
@@ -3209,17 +3209,17 @@
     },
     {
         "name": "symfony/contracts",
-        "version": "v1.0.1",
-        "version_normalized": "1.0.1.0",
+        "version": "v1.0.2",
+        "version_normalized": "1.0.2.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/contracts.git",
-            "reference": "3edf0ab943d1985a356721952cba36ff31bd6e5f"
+            "reference": "1aa7ab2429c3d594dd70689604b5cf7421254cdf"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/contracts/zipball/3edf0ab943d1985a356721952cba36ff31bd6e5f",
-            "reference": "3edf0ab943d1985a356721952cba36ff31bd6e5f",
+            "url": "https://api.github.com/repos/symfony/contracts/zipball/1aa7ab2429c3d594dd70689604b5cf7421254cdf",
+            "reference": "1aa7ab2429c3d594dd70689604b5cf7421254cdf",
             "shasum": ""
         },
         "require": {
@@ -3236,7 +3236,7 @@
             "symfony/service-contracts-implementation": "",
             "symfony/translation-contracts-implementation": ""
         },
-        "time": "2018-11-24T09:35:08+00:00",
+        "time": "2018-12-05T08:06:11+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -3279,8 +3279,8 @@
     },
     {
         "name": "symfony/filesystem",
-        "version": "v4.2.0",
-        "version_normalized": "4.2.0.0",
+        "version": "v4.2.1",
+        "version_normalized": "4.2.1.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/filesystem.git",
@@ -3452,22 +3452,22 @@
     },
     {
         "name": "symfony/translation",
-        "version": "v4.2.0",
-        "version_normalized": "4.2.0.0",
+        "version": "v4.2.1",
+        "version_normalized": "4.2.1.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/translation.git",
-            "reference": "ff9a878c9b8f8bcd4d9138e2d32f508c942773d9"
+            "reference": "c0e2191e9bed845946ab3d99767513b56ca7dcd6"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/translation/zipball/ff9a878c9b8f8bcd4d9138e2d32f508c942773d9",
-            "reference": "ff9a878c9b8f8bcd4d9138e2d32f508c942773d9",
+            "url": "https://api.github.com/repos/symfony/translation/zipball/c0e2191e9bed845946ab3d99767513b56ca7dcd6",
+            "reference": "c0e2191e9bed845946ab3d99767513b56ca7dcd6",
             "shasum": ""
         },
         "require": {
             "php": "^7.1.3",
-            "symfony/contracts": "^1.0",
+            "symfony/contracts": "^1.0.2",
             "symfony/polyfill-mbstring": "~1.0"
         },
         "conflict": {
@@ -3492,7 +3492,7 @@
             "symfony/config": "",
             "symfony/yaml": ""
         },
-        "time": "2018-11-27T07:20:32+00:00",
+        "time": "2018-12-06T10:45:32+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -3527,17 +3527,17 @@
     },
     {
         "name": "symfony/validator",
-        "version": "v3.4.19",
-        "version_normalized": "3.4.19.0",
+        "version": "v3.4.20",
+        "version_normalized": "3.4.20.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/validator.git",
-            "reference": "05a6285201cbfd7c564d095de5ad76a589ad9adb"
+            "reference": "39bcf80269aa504c5aa3f18c7c63938ed0b66f00"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/validator/zipball/05a6285201cbfd7c564d095de5ad76a589ad9adb",
-            "reference": "05a6285201cbfd7c564d095de5ad76a589ad9adb",
+            "url": "https://api.github.com/repos/symfony/validator/zipball/39bcf80269aa504c5aa3f18c7c63938ed0b66f00",
+            "reference": "39bcf80269aa504c5aa3f18c7c63938ed0b66f00",
             "shasum": ""
         },
         "require": {
@@ -3579,7 +3579,7 @@
             "symfony/property-access": "For accessing properties within comparison constraints",
             "symfony/yaml": ""
         },
-        "time": "2018-11-20T16:01:59+00:00",
+        "time": "2018-12-01T08:21:59+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -3614,8 +3614,8 @@
     },
     {
         "name": "symfony/yaml",
-        "version": "v4.2.0",
-        "version_normalized": "4.2.0.0",
+        "version": "v4.2.1",
+        "version_normalized": "4.2.1.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/yaml.git",

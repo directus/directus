@@ -31,7 +31,7 @@ try {
         $app->getContainer()->get('filesystem'),
         $app->getContainer()->get('filesystem_thumb'),
         $settings,
-        \Directus\get_virtual_path()
+        urldecode(\Directus\get_virtual_path())
     );
 
     $image = $thumbnailer->get();

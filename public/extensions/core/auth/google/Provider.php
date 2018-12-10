@@ -33,7 +33,8 @@ class Provider extends TwoSocialProvider
             'clientId'          => $this->config->get('client_id'),
             'clientSecret'      => $this->config->get('client_secret'),
             'redirectUri'       => $this->getRedirectUrl(),
-            'hostedDomain'      => $this->config->get('hosted_domain')
+            'hostedDomain'      => $this->config->get('hosted_domain'),
+            'useOidcMode'       => (bool) $this->config->get('use_oidc_mode'),
         ]);
 
         return $this->provider;

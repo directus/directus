@@ -713,9 +713,12 @@ class MySQLSchema extends AbstractSchema
     public function isMariaDb()
     {
         if ($this->isMariaDb === null) {
-            $variable = $this->adapter->query('SHOW VARIABLES LIKE "version_comment";')->execute()->current();
-
-            $this->isMariaDb = $variable && strpos(strtolower(ArrayUtils::get($variable, 'Value', '')), 'mariadb') !== false;
+            $this->isMariaDb = false;
+            $result = $this->adapter->query('SHOW VARIABLES WHERE Variable_Name LIKE "version" OR Variable_Name LIKE "version_comment";')->execute();
+            while ($result->valid() && !$this->isMariaDb) {
+                $this->isMariaDb = $result->current() && strpos(strtolower(ArrayUtils::get($result->current(), 'Value', '')), 'mariadb') !== false;
+                $result->next();
+            }
         }
 
         return $this->isMariaDb;

@@ -14,7 +14,7 @@ namespace Symfony\Contracts\Translation;
 use Symfony\Component\Translation\Exception\InvalidArgumentException;
 
 /**
- * A trait to help implement TranslatorInterface.
+ * A trait to help implement TranslatorInterface and LocaleAwareInterface.
  *
  * @author Fabien Potencier <fabien@symfony.com>
  */

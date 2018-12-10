@@ -10,6 +10,20 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [Unreleased]
 
 
+## [1.5.2] - 2018-12-04
+
+### Fixed
+
+- Check body size when getting the message summary
+
+
+## [1.5.1] - 2018-12-04
+
+### Fixed
+
+- Get the summary of a body only if it is readable
+
+
 ## [1.5.0] - 2018-12-03
 
 ### Added
@@ -195,7 +209,9 @@ Currently unsupported:
 
 
 
-[Unreleased]: https://github.com/guzzle/psr7/compare/1.5.0...HEAD
+[Unreleased]: https://github.com/guzzle/psr7/compare/1.5.2...HEAD
+[1.5.2]: https://github.com/guzzle/psr7/compare/1.5.1...1.5.2
+[1.5.1]: https://github.com/guzzle/psr7/compare/1.5.0...1.5.1
 [1.5.0]: https://github.com/guzzle/psr7/compare/1.4.2...1.5.0
 [1.4.2]: https://github.com/guzzle/psr7/compare/1.4.1...1.4.2
 [1.4.1]: https://github.com/guzzle/psr7/compare/1.4.0...1.4.1

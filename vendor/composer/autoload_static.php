@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit4f9e964ab5d13530b71a4959685cbe76
+class ComposerStaticInitda3402f41b8474e901bfaf00d50525d0
 {
     public static $files = array (
         '320cde22f66dd4f5d3fd621d3e88b98f' => __DIR__ . '/..' . '/symfony/polyfill-ctype/bootstrap.php',
@@ -2332,6 +2332,7 @@ class ComposerStaticInit4f9e964ab5d13530b71a4959685cbe76
         'Symfony\\Contracts\\Tests\\Service\\ServiceSubscriberTraitTest' => __DIR__ . '/..' . '/symfony/contracts/Tests/Service/ServiceSubscriberTraitTest.php',
         'Symfony\\Contracts\\Tests\\Service\\TestService' => __DIR__ . '/..' . '/symfony/contracts/Tests/Service/ServiceSubscriberTraitTest.php',
         'Symfony\\Contracts\\Tests\\Translation\\TranslatorTest' => __DIR__ . '/..' . '/symfony/contracts/Tests/Translation/TranslatorTest.php',
+        'Symfony\\Contracts\\Translation\\LocaleAwareInterface' => __DIR__ . '/..' . '/symfony/contracts/Translation/LocaleAwareInterface.php',
         'Symfony\\Contracts\\Translation\\TranslatorInterface' => __DIR__ . '/..' . '/symfony/contracts/Translation/TranslatorInterface.php',
         'Symfony\\Contracts\\Translation\\TranslatorTrait' => __DIR__ . '/..' . '/symfony/contracts/Translation/TranslatorTrait.php',
         'Symfony\\Polyfill\\Ctype\\Ctype' => __DIR__ . '/..' . '/symfony/polyfill-ctype/Ctype.php',
@@ -3007,10 +3008,10 @@ class ComposerStaticInit4f9e964ab5d13530b71a4959685cbe76
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit4f9e964ab5d13530b71a4959685cbe76::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit4f9e964ab5d13530b71a4959685cbe76::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInit4f9e964ab5d13530b71a4959685cbe76::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInit4f9e964ab5d13530b71a4959685cbe76::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInitda3402f41b8474e901bfaf00d50525d0::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInitda3402f41b8474e901bfaf00d50525d0::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInitda3402f41b8474e901bfaf00d50525d0::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInitda3402f41b8474e901bfaf00d50525d0::$classMap;
 
         }, null, ClassLoader::class);
     }

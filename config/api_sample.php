@@ -140,6 +140,9 @@ return [
             //     'client_id'       => '',
             //     'client_secret'   => '',
             //     'hosted_domain'   => '*',
+            //     // Uses OpenIDConnect to fetch the email instead of using the Google+ API
+            //     // Disabling the OIDC Mode, requires you to enable the Google+ API otherwise it will fail
+            //     'use_oidc_mode'   => true,
             // ],
             // 'twitter' => [
             //     'identifier'   => '',

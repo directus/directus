@@ -73,6 +73,20 @@ class GlobResourceTest extends TestCase
         $this->assertArrayNotHasKey($file, $paths);
     }
 
+    public function testIteratorSkipsSubfoldersForGivenExcludedPrefixes()
+    {
+        $dir = \dirname(__DIR__).\DIRECTORY_SEPARATOR.'Fixtures';
+        $resource = new GlobResource($dir, '/*Exclude/*', true, false, array($dir.\DIRECTORY_SEPARATOR.'Exclude' => true));
+
+        $paths = iterator_to_array($resource);
+
+        $file = $dir.\DIRECTORY_SEPARATOR.'Exclude'.\DIRECTORY_SEPARATOR.'AnExcludedFile.txt';
+        $this->assertArrayNotHasKey($file, $paths);
+
+        $file = $dir.\DIRECTORY_SEPARATOR.'Exclude'.\DIRECTORY_SEPARATOR.'ExcludeToo'.\DIRECTORY_SEPARATOR.'AnotheExcludedFile.txt';
+        $this->assertArrayNotHasKey($file, $paths);
+    }
+
     public function testIteratorSkipsFoldersWithForwardSlashForGivenExcludedPrefixes()
     {
         $dir = \dirname(__DIR__).\DIRECTORY_SEPARATOR.'Fixtures';

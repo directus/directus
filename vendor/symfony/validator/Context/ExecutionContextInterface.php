@@ -112,7 +112,7 @@ interface ExecutionContextInterface
      * Returns the currently validated object.
      *
      * If the validator is currently validating a class constraint, the
-     * object of that class is returned. If it is a validating a property or
+     * object of that class is returned. If it is validating a property or
      * getter constraint, the object that the property/getter belongs to is
      * returned.
      *

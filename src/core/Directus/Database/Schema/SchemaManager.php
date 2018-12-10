@@ -594,32 +594,61 @@ class SchemaManager
     {
         $fieldsRelation = $this->getRelationshipsData($collectionName);
 
-        foreach ($fields as $field) {
-            foreach ($fieldsRelation as $key => $value) {
-                if (ArrayUtils::get($value, 'field_many') == $field->getName() || ArrayUtils::get($value, 'field_one') == $field->getName()) {
-                    $field->setRelationship(ArrayUtils::pull($fieldsRelation, $key));
-                }
+        if (count($fieldsRelation) > 0) {
+            $fieldsByName = [];
+
+            foreach ($fields as $field) {
+                $fieldsByName[$field->getName()] = $field;
             }
 
-            if (DataTypes::isFilesType($field->getType()) && !$field->getRelationship()) {
-                // Set all FILE data type related to directus files (M2O)
-                $field->setRelationship([
-                    'collection_many' => $field->getCollectionName(),
-                    'field_many' => $field->getName(),
-                    'collection_one' => static::COLLECTION_FILES,
-                    'field_one' => 'id'
-                ]);
-            } else if (DataTypes::isUsersType($field->getType()) && !$field->getRelationship()) {
-                $field->setRelationship([
-                    'collection_many' => $field->getCollectionName(),
-                    'field_many' => $field->getName(),
-                    'collection_one' => static::COLLECTION_USERS,
-                    'field_one' => 'id'
-                ]);
+            foreach ($fieldsRelation as $relation) {
+                $fieldManyName = ArrayUtils::get($relation, 'field_many');
+                $fieldOneName = ArrayUtils::get($relation, 'field_one');
+                $fieldMany = $fieldManyName ? ArrayUtils::pull($fieldsByName, $fieldManyName) : null;
+                $fieldOne = $fieldOneName ? ArrayUtils::pull($fieldsByName, $fieldOneName) : null;
+
+                if ($fieldMany) {
+                    $fieldMany->setRelationship($relation);
+                }
+
+                if ($fieldOne) {
+                    $fieldOne->setRelationship($relation);
+                }
             }
         }
 
+        // At set the relationship to user and file type
+        // "file" and "user" must be related to directus_files and directus_users
+        foreach ($fields as $field) {
+            $this->setSystemTypeRelationship($field);
+        }
+
         return $fields;
+    }
+
+    /**
+     * Sets System Field Type relationship
+     *
+     * @param Field $field
+     */
+    protected function setSystemTypeRelationship(Field $field)
+    {
+        if (DataTypes::isFilesType($field->getType())) {
+            // Set all FILE data type related to directus files (M2O)
+            $field->setRelationship([
+                'collection_many' => $field->getCollectionName(),
+                'field_many' => $field->getName(),
+                'collection_one' => static::COLLECTION_FILES,
+                'field_one' => 'id'
+            ]);
+        } else if (DataTypes::isUsersType($field->getType())) {
+            $field->setRelationship([
+                'collection_many' => $field->getCollectionName(),
+                'field_many' => $field->getName(),
+                'collection_one' => static::COLLECTION_USERS,
+                'field_one' => 'id'
+            ]);
+        }
     }
 
     /**

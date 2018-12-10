@@ -66,7 +66,7 @@ class MessageFormatter implements MessageFormatterInterface, IntlFormatterInterf
      */
     public function choiceFormat($message, $number, $locale, array $parameters = array())
     {
-        @trigger_error(sprintf('The "%s()" method is deprecated since Symfony 4.2, use the format() one instead with a %count% parameter.', __METHOD__), E_USER_DEPRECATED);
+        @trigger_error(sprintf('The "%s()" method is deprecated since Symfony 4.2, use the format() one instead with a %%count%% parameter.', __METHOD__), E_USER_DEPRECATED);
 
         $parameters = array('%count%' => $number) + $parameters;
 
