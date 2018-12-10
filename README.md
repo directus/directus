@@ -43,17 +43,17 @@ Directus is an open-source suite of software for managing content in projects of
 
 ## 📖 Documentation
 
-* [What is Directus?](https://docs.directus.io/what-is-directus.html)
-* [Installing the Directus Suite](https://docs.directus.io/install.html)
+* [What is Directus?](https://docs.directus.io/getting-started/introduction.html#what-is-directus)
+* [Installing the Directus Suite](https://docs.directus.io/getting-started/installation.html#requirements)
 * [Extending Directus](https://docs.directus.io/extensions/)
 * Directus App
-  * [App Docs](https://docs.directus.io/app/admin/)
+  * [App Docs](https://docs.directus.io/advanced/app/standalone.html)
   * [User Guide](https://docs.directus.io/app/user-guide.html)
-  * [Install the App](https://docs.directus.io/app/admin/install.html)
+  * [Install the App](https://docs.directus.io/advanced/app/standalone.html#installation)
 * Directus API
-  * [API Docs](https://docs.directus.io/api/admin/)
+  * [API Docs](https://docs.directus.io/advanced/api/standalone.html)
   * [API Reference](https://docs.directus.io/api/reference.html)
-  * [Install the API](https://docs.directus.io/api/admin/install.html)
+  * [Install the API](https://docs.directus.io/advanced/api/standalone.html#installation)
 * Tutorials
   * [Tutorials](https://medium.com/directus)
   * [Videos](https://www.youtube.com/playlist?list=PLD--x9rY3ZL31stRPkA4FdGC4idIM-8-d)
