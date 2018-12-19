@@ -23,3 +23,4 @@ Tags
     use
     verbatim
     with
+    deprecated

@@ -289,11 +289,8 @@ class Files
         }
 
         $fileName = isset($fileInfo['filename']) ? $fileInfo['filename'] : md5(time()) . '.jpg';
-        $imageData = $this->saveData($fileInfo['data'], $fileName);
 
-        return array_merge($imageData, $fileInfo, [
-            'filename' => $fileName
-        ]);
+        return $this->saveData($fileInfo['data'], $fileName);
     }
 
     /**

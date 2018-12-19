@@ -870,7 +870,7 @@ class Acl
      */
     public function canDeleteAnyComments($collection, $status = null)
     {
-        return $this->canDeleteAnyComments($collection, $status);
+        return $this->canComment(static::COMMENT_LEVEL_FULL, $collection, $status);
     }
 
     /**

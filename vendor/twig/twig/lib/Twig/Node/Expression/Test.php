@@ -27,6 +27,7 @@ class Twig_Node_Expression_Test extends Twig_Node_Expression_Call
 
         $this->setAttribute('name', $name);
         $this->setAttribute('type', 'test');
+        $this->setAttribute('arguments', $test->getArguments());
         $this->setAttribute('callable', $test->getCallable());
         $this->setAttribute('is_variadic', $test->isVariadic());
 

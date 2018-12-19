@@ -3675,34 +3675,34 @@
     },
     {
         "name": "twig/twig",
-        "version": "v2.5.0",
-        "version_normalized": "2.5.0.0",
+        "version": "v2.6.0",
+        "version_normalized": "2.6.0.0",
         "source": {
             "type": "git",
             "url": "https://github.com/twigphp/Twig.git",
-            "reference": "6a5f676b77a90823c2d4eaf76137b771adf31323"
+            "reference": "a11dd39f5b6589e14f0ff3b36675d06047c589b1"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/twigphp/Twig/zipball/6a5f676b77a90823c2d4eaf76137b771adf31323",
-            "reference": "6a5f676b77a90823c2d4eaf76137b771adf31323",
+            "url": "https://api.github.com/repos/twigphp/Twig/zipball/a11dd39f5b6589e14f0ff3b36675d06047c589b1",
+            "reference": "a11dd39f5b6589e14f0ff3b36675d06047c589b1",
             "shasum": ""
         },
         "require": {
             "php": "^7.0",
             "symfony/polyfill-ctype": "^1.8",
-            "symfony/polyfill-mbstring": "~1.0"
+            "symfony/polyfill-mbstring": "^1.3"
         },
         "require-dev": {
             "psr/container": "^1.0",
             "symfony/debug": "^2.7",
-            "symfony/phpunit-bridge": "^3.3"
+            "symfony/phpunit-bridge": "^3.4.19|^4.1.8"
         },
-        "time": "2018-07-13T07:18:09+00:00",
+        "time": "2018-12-16T10:36:48+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
-                "dev-master": "2.5-dev"
+                "dev-master": "2.6-dev"
             }
         },
         "installation-source": "dist",
@@ -3849,6 +3849,62 @@
             "oauth",
             "oauth2",
             "okta"
+        ]
+    },
+    {
+        "name": "wellingguzman/proxy-detection",
+        "version": "0.5.1",
+        "version_normalized": "0.5.1.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/WellingGuzman/proxy-detection.git",
+            "reference": "e1fd098352dec991bb857e216a099a0758615328"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/WellingGuzman/proxy-detection/zipball/e1fd098352dec991bb857e216a099a0758615328",
+            "reference": "e1fd098352dec991bb857e216a099a0758615328",
+            "shasum": ""
+        },
+        "require": {
+            "psr/http-message": "^1.0"
+        },
+        "require-dev": {
+            "php": ">=5.6",
+            "phpunit/phpunit": "^5",
+            "squizlabs/php_codesniffer": "^2.3",
+            "zendframework/zend-diactoros": "^1.1"
+        },
+        "time": "2018-12-10T20:24:05+00:00",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "RKA\\Middleware\\": "src"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "BSD-3-Clause"
+        ],
+        "authors": [
+            {
+                "name": "Rob Allen",
+                "email": "rob@akrabat.com",
+                "homepage": "http://akrabat.com"
+            },
+            {
+                "name": "Welling Guzmán",
+                "email": "hola@wellingguzman.com",
+                "homepage": "http://wellingguzman.com"
+            }
+        ],
+        "description": "PSR-7 Middleware that determines the scheme, host and port from the 'X-Forwarded-Proto', 'X-Forwarded-Host' and 'X-Forwarded-Port' headers and updates the Request's Uri object.",
+        "homepage": "http://github.com/wellingguzman/proxy-detection",
+        "keywords": [
+            "IP",
+            "middleware",
+            "psr7"
         ]
     },
     {

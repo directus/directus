@@ -39,12 +39,6 @@ The recommended way to install Twig is via Composer:
 
     composer require "twig/twig:^2.0"
 
-.. note::
-
-    To learn more about the other installation methods, read the
-    :doc:`installation<installation>` chapter; it also explains how to install
-    the Twig C extension.
-
 Basic API Usage
 ---------------
 

@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInitda3402f41b8474e901bfaf00d50525d0
+class ComposerStaticInit882498c686275475a4c7ef22c0627276
 {
     public static $files = array (
         '320cde22f66dd4f5d3fd621d3e88b98f' => __DIR__ . '/..' . '/symfony/polyfill-ctype/bootstrap.php',
@@ -193,6 +193,7 @@ class ComposerStaticInitda3402f41b8474e901bfaf00d50525d0
         'RKA\\Middleware\\' => 
         array (
             0 => __DIR__ . '/..' . '/akrabat/rka-ip-address-middleware/src',
+            1 => __DIR__ . '/..' . '/wellingguzman/proxy-detection/src',
         ),
         'Psr\\SimpleCache\\' => 
         array (
@@ -604,6 +605,7 @@ class ComposerStaticInitda3402f41b8474e901bfaf00d50525d0
         'Directus\\Exception\\InvalidPathException' => __DIR__ . '/../..' . '/src/core/Directus/Exception/InvalidPathException.php',
         'Directus\\Exception\\InvalidPayloadException' => __DIR__ . '/../..' . '/src/core/Directus/Exception/InvalidPayloadException.php',
         'Directus\\Exception\\MethodNotAllowedException' => __DIR__ . '/../..' . '/src/core/Directus/Exception/MethodNotAllowedException.php',
+        'Directus\\Exception\\MissingStorageConfigurationException' => __DIR__ . '/../..' . '/src/core/Directus/Exception/MissingStorageConfigurationException.php',
         'Directus\\Exception\\NotFoundException' => __DIR__ . '/../..' . '/src/core/Directus/Exception/NotFoundException.php',
         'Directus\\Exception\\NotFoundExceptionInterface' => __DIR__ . '/../..' . '/src/core/Directus/Exception/NotFoundExceptionInterface.php',
         'Directus\\Exception\\NotInstalledException' => __DIR__ . '/../..' . '/src/core/Directus/Exception/NotInstalledException.php',
@@ -1716,6 +1718,8 @@ class ComposerStaticInitda3402f41b8474e901bfaf00d50525d0
         'Psr\\SimpleCache\\CacheInterface' => __DIR__ . '/..' . '/psr/simple-cache/src/CacheInterface.php',
         'Psr\\SimpleCache\\InvalidArgumentException' => __DIR__ . '/..' . '/psr/simple-cache/src/InvalidArgumentException.php',
         'RKA\\Middleware\\IpAddress' => __DIR__ . '/..' . '/akrabat/rka-ip-address-middleware/src/IpAddress.php',
+        'RKA\\Middleware\\ProxyDetection' => __DIR__ . '/..' . '/wellingguzman/proxy-detection/src/ProxyDetection.php',
+        'RKA\\Middleware\\ProxyDetectionMiddleware' => __DIR__ . '/..' . '/wellingguzman/proxy-detection/src/ProxyDetectionMiddleware.php',
         'Ramsey\\Uuid\\BinaryUtils' => __DIR__ . '/..' . '/ramsey/uuid/src/BinaryUtils.php',
         'Ramsey\\Uuid\\Builder\\DefaultUuidBuilder' => __DIR__ . '/..' . '/ramsey/uuid/src/Builder/DefaultUuidBuilder.php',
         'Ramsey\\Uuid\\Builder\\DegradedUuidBuilder' => __DIR__ . '/..' . '/ramsey/uuid/src/Builder/DegradedUuidBuilder.php',
@@ -2383,6 +2387,7 @@ class ComposerStaticInitda3402f41b8474e901bfaf00d50525d0
         'Twig\\Node\\BlockReferenceNode' => __DIR__ . '/..' . '/twig/twig/src/Node/BlockReferenceNode.php',
         'Twig\\Node\\BodyNode' => __DIR__ . '/..' . '/twig/twig/src/Node/BodyNode.php',
         'Twig\\Node\\CheckSecurityNode' => __DIR__ . '/..' . '/twig/twig/src/Node/CheckSecurityNode.php',
+        'Twig\\Node\\DeprecatedNode' => __DIR__ . '/..' . '/twig/twig/src/Node/DeprecatedNode.php',
         'Twig\\Node\\DoNode' => __DIR__ . '/..' . '/twig/twig/src/Node/DoNode.php',
         'Twig\\Node\\EmbedNode' => __DIR__ . '/..' . '/twig/twig/src/Node/EmbedNode.php',
         'Twig\\Node\\Expression\\AbstractExpression' => __DIR__ . '/..' . '/twig/twig/src/Node/Expression/AbstractExpression.php',
@@ -2486,6 +2491,7 @@ class ComposerStaticInitda3402f41b8474e901bfaf00d50525d0
         'Twig\\TokenParser\\AbstractTokenParser' => __DIR__ . '/..' . '/twig/twig/src/TokenParser/AbstractTokenParser.php',
         'Twig\\TokenParser\\AutoEscapeTokenParser' => __DIR__ . '/..' . '/twig/twig/src/TokenParser/AutoEscapeTokenParser.php',
         'Twig\\TokenParser\\BlockTokenParser' => __DIR__ . '/..' . '/twig/twig/src/TokenParser/BlockTokenParser.php',
+        'Twig\\TokenParser\\DeprecatedTokenParser' => __DIR__ . '/..' . '/twig/twig/src/TokenParser/DeprecatedTokenParser.php',
         'Twig\\TokenParser\\DoTokenParser' => __DIR__ . '/..' . '/twig/twig/src/TokenParser/DoTokenParser.php',
         'Twig\\TokenParser\\EmbedTokenParser' => __DIR__ . '/..' . '/twig/twig/src/TokenParser/EmbedTokenParser.php',
         'Twig\\TokenParser\\ExtendsTokenParser' => __DIR__ . '/..' . '/twig/twig/src/TokenParser/ExtendsTokenParser.php',
@@ -2559,6 +2565,7 @@ class ComposerStaticInitda3402f41b8474e901bfaf00d50525d0
         'Twig_Node_BlockReference' => __DIR__ . '/..' . '/twig/twig/lib/Twig/Node/BlockReference.php',
         'Twig_Node_Body' => __DIR__ . '/..' . '/twig/twig/lib/Twig/Node/Body.php',
         'Twig_Node_CheckSecurity' => __DIR__ . '/..' . '/twig/twig/lib/Twig/Node/CheckSecurity.php',
+        'Twig_Node_Deprecated' => __DIR__ . '/..' . '/twig/twig/lib/Twig/Node/Deprecated.php',
         'Twig_Node_Do' => __DIR__ . '/..' . '/twig/twig/lib/Twig/Node/Do.php',
         'Twig_Node_Embed' => __DIR__ . '/..' . '/twig/twig/lib/Twig/Node/Embed.php',
         'Twig_Node_Expression' => __DIR__ . '/..' . '/twig/twig/lib/Twig/Node/Expression.php',
@@ -2663,6 +2670,7 @@ class ComposerStaticInitda3402f41b8474e901bfaf00d50525d0
         'Twig_TokenParserInterface' => __DIR__ . '/..' . '/twig/twig/lib/Twig/TokenParserInterface.php',
         'Twig_TokenParser_AutoEscape' => __DIR__ . '/..' . '/twig/twig/lib/Twig/TokenParser/AutoEscape.php',
         'Twig_TokenParser_Block' => __DIR__ . '/..' . '/twig/twig/lib/Twig/TokenParser/Block.php',
+        'Twig_TokenParser_Deprecated' => __DIR__ . '/..' . '/twig/twig/lib/Twig/TokenParser/Deprecated.php',
         'Twig_TokenParser_Do' => __DIR__ . '/..' . '/twig/twig/lib/Twig/TokenParser/Do.php',
         'Twig_TokenParser_Embed' => __DIR__ . '/..' . '/twig/twig/lib/Twig/TokenParser/Embed.php',
         'Twig_TokenParser_Extends' => __DIR__ . '/..' . '/twig/twig/lib/Twig/TokenParser/Extends.php',
@@ -3008,10 +3016,10 @@ class ComposerStaticInitda3402f41b8474e901bfaf00d50525d0
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInitda3402f41b8474e901bfaf00d50525d0::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInitda3402f41b8474e901bfaf00d50525d0::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInitda3402f41b8474e901bfaf00d50525d0::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInitda3402f41b8474e901bfaf00d50525d0::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit882498c686275475a4c7ef22c0627276::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit882498c686275475a4c7ef22c0627276::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit882498c686275475a4c7ef22c0627276::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInit882498c686275475a4c7ef22c0627276::$classMap;
 
         }, null, ClassLoader::class);
     }

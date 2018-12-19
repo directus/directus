@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/3.6.3/workbox-sw.js");
 
 importScripts(
-  "precache-manifest.44ac168a6c14bd6ff3ede0a8d396d270.js"
+  "precache-manifest.ec1f0d7a3003369e1270b9cb620a1694.js"
 );
 
 workbox.core.setCacheNameDetails({prefix: "directus"});

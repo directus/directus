@@ -129,6 +129,7 @@ final class Twig_Extension_Core extends Twig_Extension
             new Twig_TokenParser_Do(),
             new Twig_TokenParser_Embed(),
             new Twig_TokenParser_With(),
+            new Twig_TokenParser_Deprecated(),
         );
     }
 
@@ -902,6 +903,10 @@ function twig_escape_filter(Twig_Environment $env, $string, $strategy = 'html', 
         }
     }
 
+    if ('' === $string) {
+        return '';
+    }
+
     if (null === $charset) {
         $charset = $env->getCharset();
     }
@@ -953,7 +958,7 @@ function twig_escape_filter(Twig_Environment $env, $string, $strategy = 'html', 
                 $string = iconv($charset, 'UTF-8', $string);
             }
 
-            if (0 == strlen($string) ? false : 1 !== preg_match('/^./su', $string)) {
+            if (!preg_match('//u', $string)) {
                 throw new Twig_Error_Runtime('The string to escape is not a valid UTF-8 string.');
             }
 
@@ -1001,27 +1006,14 @@ function twig_escape_filter(Twig_Environment $env, $string, $strategy = 'html', 
                 $string = iconv($charset, 'UTF-8', $string);
             }
 
-            if (0 == strlen($string) ? false : 1 !== preg_match('/^./su', $string)) {
+            if (!preg_match('//u', $string)) {
                 throw new Twig_Error_Runtime('The string to escape is not a valid UTF-8 string.');
             }
 
             $string = preg_replace_callback('#[^a-zA-Z0-9]#Su', function ($matches) {
                 $char = $matches[0];
 
-                // \xHH
-                if (!isset($char[1])) {
-                    $hex = ltrim(strtoupper(bin2hex($char)), '0');
-                    if (0 === strlen($hex)) {
-                        $hex = '0';
-                    }
-
-                    return '\\'.$hex.' ';
-                }
-
-                // \uHHHH
-                $char = twig_convert_encoding($char, 'UTF-16BE', 'UTF-8');
-
-                return '\\'.ltrim(strtoupper(bin2hex($char)), '0').' ';
+                return sprintf('\\%X ', 1 === strlen($char) ? ord($char) : mb_ord($char, 'UTF-8'));
             }, $string);
 
             if ('UTF-8' !== $charset) {
@@ -1035,7 +1027,7 @@ function twig_escape_filter(Twig_Environment $env, $string, $strategy = 'html', 
                 $string = iconv($charset, 'UTF-8', $string);
             }
 
-            if (0 == strlen($string) ? false : 1 !== preg_match('/^./su', $string)) {
+            if (!preg_match('//u', $string)) {
                 throw new Twig_Error_Runtime('The string to escape is not a valid UTF-8 string.');
             }
 
@@ -1046,18 +1038,6 @@ function twig_escape_filter(Twig_Environment $env, $string, $strategy = 'html', 
                  * @copyright Copyright (c) 2005-2012 Zend Technologies USA Inc. (https://www.zend.com)
                  * @license   https://framework.zend.com/license/new-bsd New BSD License
                  */
-                /*
-                 * While HTML supports far more named entities, the lowest common denominator
-                 * has become HTML5's XML Serialisation which is restricted to the those named
-                 * entities that XML supports. Using HTML entities would result in this error:
-                 *     XML Parsing Error: undefined entity
-                 */
-                static $entityMap = array(
-                    34 => 'quot', /* quotation mark */
-                    38 => 'amp',  /* ampersand */
-                    60 => 'lt',   /* less-than sign */
-                    62 => 'gt',   /* greater-than sign */
-                );
 
                 $chr = $matches[0];
                 $ord = ord($chr);
@@ -1074,23 +1054,32 @@ function twig_escape_filter(Twig_Environment $env, $string, $strategy = 'html', 
                  * Check if the current character to escape has a name entity we should
                  * replace it with while grabbing the hex value of the character.
                  */
-                if (1 == strlen($chr)) {
-                    $hex = strtoupper(substr('00'.bin2hex($chr), -2));
-                } else {
-                    $chr = twig_convert_encoding($chr, 'UTF-16BE', 'UTF-8');
-                    $hex = strtoupper(substr('0000'.bin2hex($chr), -4));
-                }
+                if (1 === strlen($chr)) {
+                    /*
+                     * While HTML supports far more named entities, the lowest common denominator
+                     * has become HTML5's XML Serialisation which is restricted to the those named
+                     * entities that XML supports. Using HTML entities would result in this error:
+                     *     XML Parsing Error: undefined entity
+                     */
+                    static $entityMap = array(
+                        34 => '&quot;', /* quotation mark */
+                        38 => '&amp;',  /* ampersand */
+                        60 => '&lt;',   /* less-than sign */
+                        62 => '&gt;',   /* greater-than sign */
+                    );
 
-                $int = hexdec($hex);
-                if (array_key_exists($int, $entityMap)) {
-                    return sprintf('&%s;', $entityMap[$int]);
+                    if (isset($entityMap[$ord])) {
+                        return $entityMap[$ord];
+                    }
+
+                    return sprintf('&#x%02X;', $ord);
                 }
 
                 /*
                  * Per OWASP recommendations, we'll use hex entities for any other
                  * characters where a named entity does not exist.
                  */
-                return sprintf('&#x%s;', $hex);
+                return sprintf('&#x%04X;', mb_ord($chr, 'UTF-8'));
             }, $string);
 
             if ('UTF-8' !== $charset) {
@@ -1321,7 +1310,7 @@ function twig_include(Twig_Environment $env, $context, $template, $variables = a
         }
     }
 
-    $result = null;
+    $result = '';
     try {
         $result = $env->resolveTemplate($template)->render($variables);
     } catch (Twig_Error_Loader $e) {

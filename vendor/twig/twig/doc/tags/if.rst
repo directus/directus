@@ -50,12 +50,12 @@ use more complex ``expressions`` there too:
 
 .. code-block:: jinja
 
-    {% if kenny.sick %}
-        Kenny is sick.
-    {% elseif kenny.dead %}
-        You killed Kenny! You bastard!!!
+    {% if product.stock > 10 %}
+       Available
+    {% elseif product.stock > 0 %}
+       Only {{ product.stock }} left!
     {% else %}
-        Kenny looks okay --- so far
+       Sold-out!
     {% endif %}
 
 .. note::

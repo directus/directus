@@ -39,7 +39,7 @@ class CreateSettingsTable extends AbstractMigration
 
         $table->addIndex(['key'], [
             'unique' => true,
-            'name' => 'idx_scope_name'
+            'name' => 'idx_key'
         ]);
 
         $table->create();

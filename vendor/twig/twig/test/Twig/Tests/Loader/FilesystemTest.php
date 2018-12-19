@@ -220,4 +220,19 @@ class Twig_Tests_Loader_FilesystemTest extends \PHPUnit\Framework\TestCase
         $loader->addPath('phar://'.__DIR__.'/Fixtures/phar/phar-sample.phar');
         $this->assertSame('hello from phar', $loader->getSourceContext('hello.twig')->getCode());
     }
+
+    public function testTemplateExistsAlwaysReturnsBool()
+    {
+        $loader = new Twig_Loader_Filesystem(array());
+        $this->assertFalse($loader->exists("foo\0.twig"));
+        $this->assertFalse($loader->exists('../foo.twig'));
+        $this->assertFalse($loader->exists('@foo'));
+        $this->assertFalse($loader->exists('foo'));
+        $this->assertFalse($loader->exists('@foo/bar.twig'));
+
+        $loader->addPath(__DIR__.'/Fixtures/normal');
+        $this->assertTrue($loader->exists('index.html'));
+        $loader->addPath(__DIR__.'/Fixtures/normal', 'foo');
+        $this->assertTrue($loader->exists('@foo/index.html'));
+    }
 }

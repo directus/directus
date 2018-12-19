@@ -3,12 +3,20 @@
 namespace Directus;
 
 use Directus\Application\Application;
+use Directus\Application\Http\Request;
 use Directus\Database\TableGatewayFactory;
 use Directus\Exception\Exception;
 use Directus\Hook\Emitter;
 use Directus\Util\ArrayUtils;
 use Directus\Util\StringUtils;
 use Phinx\Db\Adapter\AdapterInterface;
+use RKA\Middleware\ProxyDetection;
+use Slim\Http\Cookies;
+use Slim\Http\Environment;
+use Slim\Http\Headers;
+use Slim\Http\RequestBody;
+use Slim\Http\UploadedFile;
+use Slim\Http\Uri;
 
 require __DIR__ . '/constants.php';
 require __DIR__ . '/app.php';
@@ -136,90 +144,65 @@ if (!function_exists('get_url')) {
     }
 }
 
+if (!function_exists('create_request_from_global')) {
+    /**
+     * Create a Request object from global variables
+     *
+     * @param array $options
+     *
+     * @return Request
+     */
+    function create_request_from_global($options = [])
+    {
+        $environment = new Environment($_SERVER);
+        $method = $environment['REQUEST_METHOD'];
+        $uri = Uri::createFromEnvironment($environment);
+        $headers = Headers::createFromEnvironment($environment);
+        $cookies = Cookies::parseHeader($headers->get('Cookie', []));
+        $serverParams = $environment->all();
+        $body = new RequestBody();
+        $uploadedFiles = [];
+        $ignorePayload = array_get($options, 'ignore_payload', false) === true;
+
+        if (!$ignorePayload) {
+            $uploadedFiles = UploadedFile::createFromEnvironment($environment);
+        }
+
+        $request = new Request($method, $uri, $headers, $cookies, $serverParams, $body, $uploadedFiles);
+
+        if (
+            !$ignorePayload
+            && $method === 'POST'
+            && in_array($request->getMediaType(), ['application/x-www-form-urlencoded', 'multipart/form-data'])
+        ) {
+            // parsed body must be $_POST
+            $request = $request->withParsedBody($_POST);
+        }
+
+        return $request;
+    }
+}
+
 if (!function_exists('create_uri_from_global')) {
     /**
      * Creates a uri object based on $_SERVER
      *
      * Snippet copied from Slim URI class
      *
-     * @return \Slim\Http\Uri
+     * @param $checkProxy
+     *
+     * @return \Psr\Http\Message\UriInterface
      */
-    function create_uri_from_global()
+    function create_uri_from_global($checkProxy = true)
     {
-        // Scheme
-        $env = $_SERVER;
-        $isSecure = \Directus\Util\ArrayUtils::get($env, 'HTTPS');
-        $scheme = (empty($isSecure) || $isSecure === 'off') ? 'http' : 'https';
+        $request = create_request_from_global(['ignore_payload' => true]);
 
-        // Authority: Username and password
-        $username = \Directus\Util\ArrayUtils::get($env, 'PHP_AUTH_USER', '');
-        $password = \Directus\Util\ArrayUtils::get($env, 'PHP_AUTH_PW', '');
-
-        // Authority: Host
-        if (\Directus\Util\ArrayUtils::has($env, 'HTTP_HOST')) {
-            $host = \Directus\Util\ArrayUtils::get($env, 'HTTP_HOST');
-        } else {
-            $host = \Directus\Util\ArrayUtils::get($env, 'SERVER_NAME');
+        if ($checkProxy) {
+            $proxyDetection = new ProxyDetection(get_trusted_proxies());
+            $request = $proxyDetection->processRequestIfTrusted($request);
         }
 
-        // Authority: Port
-        $port = (int)\Directus\Util\ArrayUtils::get($env, 'SERVER_PORT', 80);
-        if (preg_match('/^(\[[a-fA-F0-9:.]+\])(:\d+)?\z/', $host, $matches)) {
-            $host = $matches[1];
-
-            if (isset($matches[2])) {
-                $port = (int)substr($matches[2], 1);
-            } else {
-                $port = $isSecure ? 443 : 80;
-            }
-        } else {
-            $pos = strpos($host, ':');
-            if ($pos !== false) {
-                $port = (int)substr($host, $pos + 1);
-                $host = strstr($host, ':', true);
-            } else {
-                $port = $isSecure ? 443 : 80;
-            }
-        }
-
-        // Path
-        $requestScriptName = parse_url(\Directus\Util\ArrayUtils::get($env, 'SCRIPT_NAME'), PHP_URL_PATH);
-        $requestScriptDir = dirname($requestScriptName);
-
-        // parse_url() requires a full URL. As we don't extract the domain name or scheme,
-        // we use a stand-in.
-        $requestUri = parse_url('http://example.com' . \Directus\Util\ArrayUtils::get($env, 'REQUEST_URI'), PHP_URL_PATH);
-
-        $basePath = '';
-        $virtualPath = $requestUri;
-        if ($requestUri == $requestScriptName) {
-            $basePath = $requestScriptDir;
-        } elseif (stripos($requestUri, $requestScriptName) === 0) {
-            $basePath = $requestScriptName;
-        } elseif ($requestScriptDir !== '/' && stripos($requestUri, $requestScriptDir) === 0) {
-            $basePath = $requestScriptDir;
-        }
-
-        if ($basePath) {
-            $virtualPath = ltrim(substr($requestUri, strlen($basePath)), '/');
-        }
-
-        // Query string
-        $queryString = \Directus\Util\ArrayUtils::get($env, 'QUERY_STRING', '');
-        if ($queryString === '') {
-            $queryString = parse_url('http://example.com' . \Directus\Util\ArrayUtils::get($env, 'REQUEST_URI'), PHP_URL_QUERY);
-        }
-
-        // Fragment
-        $fragment = '';
-
-        // Build Uri
-        $uri = new \Slim\Http\Uri($scheme, $host, $port, $virtualPath, $queryString, $fragment, $username, $password);
-        if ($basePath) {
-            $uri = $uri->withBasePath($basePath);
-        }
-
-        return $uri;
+        return $request->getUri();
     }
 }
 
@@ -231,7 +214,7 @@ if (!function_exists('get_virtual_path')) {
      */
     function get_virtual_path()
     {
-        return create_uri_from_global()->getPath();
+        return create_uri_from_global(false)->getPath();
     }
 }
 

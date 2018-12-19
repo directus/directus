@@ -947,6 +947,13 @@ class FieldsSeeder extends AbstractSeed
                 'interface' => 'color-palette',
                 'locked' => 1
             ],
+            [
+                'collection' => 'directus_settings',
+                'field' => 'trusted_proxies',
+                'type' => \Directus\Database\Schema\DataTypes::TYPE_ARRAY,
+                'interface' => 'tags',
+                'locked' => 1
+            ],
 
 
             // Users

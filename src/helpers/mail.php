@@ -111,16 +111,25 @@ if (!function_exists('parse_twig')) {
     {
         $app = Application::getInstance();
 
-        $mailSettings = [
-            'project_url' => 'http://localhost',
+        $mailDefaultSettings = [
+            'project_url' => get_url(),
         ];
 
         $settings = $app->getContainer()->get('app_settings');
+        $mailSettings = [];
         foreach ($settings as $setting) {
             $mailSettings[$setting['key']] = $setting['value'];
         }
 
-        $data = array_merge(['settings' => $mailSettings], $data);
+        $data = array_merge([
+            'settings' => ArrayUtils::defaults(
+                $mailDefaultSettings,
+                // Remove NULL and Empty values
+                array_filter($mailSettings, function ($v) {
+                    return $v !== null && $v !== '';
+                })
+            )
+        ], $data);
 
         return $app->getContainer()->get('mail_view')->fetch($viewPath, $data);
     }

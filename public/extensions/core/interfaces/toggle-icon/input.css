@@ -1,9 +1,1 @@
-
-.interface-toggle-icon[data-v-8270d9]{user-select:none
-}
-input[data-v-8270d9]{position:absolute!important;height:1px;width:1px;overflow:hidden;clip:rect(1px,1px,1px,1px);clip-path:polygon(0 0,0 0,0 0,0 0)
-}
-input[disabled]+label[data-v-8270d9]{opacity:.6
-}
-label[data-v-8270d9]{cursor:pointer;display:inline-block
-}
+.interface-toggle-icon[data-v-7794bf]{user-select:none}input[data-v-7794bf]{position:absolute!important;height:1px;width:1px;overflow:hidden;clip:rect(1px,1px,1px,1px);clip-path:polygon(0 0,0 0,0 0,0 0)}input[disabled]+label[data-v-7794bf]{opacity:.6}label[data-v-7794bf]{cursor:pointer;display:inline-block}

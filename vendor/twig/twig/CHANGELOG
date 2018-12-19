@@ -1,3 +1,12 @@
+* 2.6.0 (2018-12-16)
+
+ * made sure twig_include returns a string
+ * fixed multi-byte UFT-8 in escape('html_attr')
+ * added the "deprecated" tag
+ * added support for dynamically named tests
+ * fixed GlobalsInterface extended class
+ * fixed filesystem loader throwing an exception instead of returning false
+
 * 2.5.0 (2018-07-13)
 
  * deprecated using the spaceless tag at the root level of a child template (noop anyway)
@@ -116,9 +125,18 @@
  * improved the performance of the filesystem loader
  * removed features that were deprecated in 1.x
 
-* 1.35.5 (2018-XX-XX)
+* 1.36.1 (2018-XX-XX)
 
  * n/a
+
+* 1.36.0 (2018-12-16)
+
+ * made sure twig_include returns a string
+ * fixed multi-byte UFT-8 in escape('html_attr')
+ * added the "deprecated" tag
+ * added support for dynamically named tests
+ * fixed GlobalsInterface extended class
+ * fixed filesystem loader throwing an exception instead of returning false
 
 * 1.35.4 (2018-07-13)
 

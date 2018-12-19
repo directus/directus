@@ -3,6 +3,7 @@
 namespace Directus;
 
 use Directus\Application\Application;
+use Directus\Util\StringUtils;
 
 if (!function_exists('get_directus_settings')) {
     /**
@@ -114,5 +115,17 @@ if (!function_exists('get_directus_settings_by_keys')) {
         }
 
         return $settings;
+    }
+}
+
+if (!function_exists('get_trusted_proxies')) {
+    /**
+     * @return array
+     */
+    function get_trusted_proxies()
+    {
+        $trustedProxies = get_directus_setting('trusted_proxies');
+
+        return $trustedProxies ? StringUtils::safeCvs($trustedProxies) : [];
     }
 }

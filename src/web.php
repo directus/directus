@@ -87,6 +87,7 @@ $middleware = [
     'table_gateway' => new \Directus\Application\Http\Middleware\TableGatewayMiddleware($app->getContainer()),
     'rate_limit_ip' => new \Directus\Application\Http\Middleware\IpRateLimitMiddleware($app->getContainer()),
     'ip' => new RKA\Middleware\IpAddress(),
+    'proxy' => new \RKA\Middleware\ProxyDetectionMiddleware(\Directus\get_trusted_proxies()),
     'cors' => new \Directus\Application\Http\Middleware\CorsMiddleware($app->getContainer()),
     'auth' => new \Directus\Application\Http\Middleware\AuthenticationMiddleware($app->getContainer()),
     'auth_user' => new \Directus\Application\Http\Middleware\AuthenticatedMiddleware($app->getContainer()),
@@ -96,6 +97,7 @@ $middleware = [
 ];
 
 $app->add($middleware['rate_limit_ip'])
+    ->add($middleware['proxy'])
     ->add($middleware['ip'])
     ->add($middleware['cors']);
 

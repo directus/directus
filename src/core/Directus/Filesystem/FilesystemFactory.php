@@ -42,15 +42,21 @@ class FilesystemFactory
 
     public static function createS3Adapter(Array $config, $rootKey = 'root')
     {
-        $client = S3Client::factory([
+        $options = [
             'credentials' => [
                 'key' => $config['key'],
                 'secret' => $config['secret'],
             ],
             'region' => $config['region'],
             'version' => ($config['version'] ?: 'latest'),
-        ]);
+        ];
 
+        if (isset($config['endpoint']) && $config['endpoint']) {
+          $options['endpoint'] = $config['endpoint'];
+          $options['use_path_style_endpoint'] = true;
+        }
+
+        $client = S3Client::factory($options);
         $options = array_get($config, 'options', []);
 
         return new Flysystem(new S3Adapter($client, $config['bucket'], array_get($config, $rootKey), $options));

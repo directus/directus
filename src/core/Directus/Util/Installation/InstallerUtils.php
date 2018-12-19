@@ -632,7 +632,11 @@ class InstallerUtils
             [
                 'key' => 'youtube_api_key',
                 'value' => ''
-            ]
+            ],
+            [
+                'key' => 'trusted_proxies',
+                'value' => ''
+            ],
         ];
     }
 

@@ -23,6 +23,7 @@ class Twig_Test_EscapingTest extends \PHPUnit\Framework\TestCase
         '\'' => '&#x27;',
         /* Characters beyond ASCII value 255 to unicode escape */
         'Ā' => '&#x0100;',
+        '😀' => '&#x1F600;',
         /* Immune chars excluded */
         ',' => ',',
         '.' => '.',

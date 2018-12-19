@@ -386,6 +386,19 @@ final class Twig_ExtensionSet
             return $this->tests[$name];
         }
 
+        foreach ($this->tests as $pattern => $test) {
+            $pattern = str_replace('\\*', '(.*?)', preg_quote($pattern, '#'), $count);
+
+            if ($count) {
+                if (preg_match('#^'.$pattern.'$#', $name, $matches)) {
+                    array_shift($matches);
+                    $test->setArguments($matches);
+
+                    return $test;
+                }
+            }
+        }
+
         return false;
     }
 

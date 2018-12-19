@@ -69,6 +69,8 @@ return [
         //   'version' => 's3-version',
         //   'bucket' => 's3-bucket',
         //   'options' => ['ACL' => 'public-read', 'Cache-Control' => 'max-age=604800']
+        // Set custom S3 endpoint
+        //   'endpoint' => 's3-endpoint',
     ],
 
     'mail' => [

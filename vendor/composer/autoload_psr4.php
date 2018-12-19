@@ -25,7 +25,7 @@ return array(
     'Slim\\' => array($vendorDir . '/slim/slim/Slim'),
     'RateLimit\\' => array($vendorDir . '/wellingguzman/rate-limit/src'),
     'Ramsey\\Uuid\\' => array($vendorDir . '/ramsey/uuid/src'),
-    'RKA\\Middleware\\' => array($vendorDir . '/akrabat/rka-ip-address-middleware/src'),
+    'RKA\\Middleware\\' => array($vendorDir . '/akrabat/rka-ip-address-middleware/src', $vendorDir . '/wellingguzman/proxy-detection/src'),
     'Psr\\SimpleCache\\' => array($vendorDir . '/psr/simple-cache/src'),
     'Psr\\Log\\' => array($vendorDir . '/psr/log/Psr/Log'),
     'Psr\\Http\\Message\\' => array($vendorDir . '/psr/http-message/src'),

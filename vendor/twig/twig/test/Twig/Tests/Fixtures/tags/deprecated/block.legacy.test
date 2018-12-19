@@ -1,0 +1,20 @@
+--TEST--
+Deprecating a block with "deprecated" tag
+--TEMPLATE--
+{% use 'greeting.twig' %}
+
+{{ block('welcome') }}
+
+--TEMPLATE(greeting.twig)--
+{% block welcome %}
+  {% deprecated 'The "welcome" block is deprecated, use "hello" instead.' %}
+  {{ block('hello') }}
+{% endblock %}
+
+{% block hello %}
+Hello Fabien
+{% endblock %}
+--DATA--
+return array()
+--EXPECT--
+  Hello Fabien

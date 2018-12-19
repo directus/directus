@@ -53,7 +53,7 @@ class VimeoProvider extends AbstractProvider
     {
         $info = [];
 
-        $info['title'] = 'Unable to retrieve Vimeo title';
+        $info['title'] = null;
         $info['filesize'] = 0;
         $info['width'] = 560;
         $info['height'] = 540;
