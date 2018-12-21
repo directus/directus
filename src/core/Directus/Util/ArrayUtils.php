@@ -50,6 +50,13 @@ class ArrayUtils
             }
         }
 
+        if(static::deepLevel($array) > 0) {
+            $k = array_search($key, array_column($array, 'key'));
+            if(static::exists($array, $k)) {
+                return $array[$k]['value'];
+            }
+        }
+
         return $default;
     }
 
