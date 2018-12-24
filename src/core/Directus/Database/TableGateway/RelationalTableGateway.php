@@ -979,14 +979,14 @@ class RelationalTableGateway extends BaseTableGateway
         $builder = new Builder($this->getAdapter());
         $builder->from($this->getTable());
 
-        $selectedFields = array_merge(
-            [$collectionObject->getPrimaryKeyName()],
-            $this->getSelectedNonAliasFields($fields ?: ['*'])
-        );
+        $selectedFields = $this->getSelectedNonAliasFields($fields ?: ['*']);
+        if (!in_array($collectionObject->getPrimaryKeyName(), $selectedFields)) {
+            $selectedFields = array_unshift($selectedFields, $collectionObject->getPrimaryKeyName());
+        }
 
         $statusField = $collectionObject->getStatusField();
-        if ($statusField && $this->acl->getCollectionStatuses($this->table)) {
-            $selectedFields = array_merge($selectedFields, [$statusField->getName()]);
+        if ($statusField && !in_array($statusField->getName(), $selectedFields) && $this->acl->getCollectionStatuses($this->table)) {
+            $selectedFields = array_unshift($selectedFields, $statusField->getName());
         }
 
         $builder->columns($selectedFields);

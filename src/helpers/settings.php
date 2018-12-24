@@ -107,6 +107,7 @@ if (!function_exists('get_directus_settings_by_keys')) {
     function get_directus_settings_by_keys(array $keys)
     {
         $settings = get_directus_settings();
+        $filesSettings = [];
 
         foreach ($settings as $setting) {
             if (in_array($setting['key'], $keys)) {
@@ -114,7 +115,7 @@ if (!function_exists('get_directus_settings_by_keys')) {
             }
         }
 
-        return $settings;
+        return $filesSettings;
     }
 }
 

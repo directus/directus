@@ -13,7 +13,7 @@ class Application extends App
      *
      * @var string
      */
-    const DIRECTUS_VERSION = '2.0.12';
+    const DIRECTUS_VERSION = '2.0.13';
 
     /**
      * NOT USED

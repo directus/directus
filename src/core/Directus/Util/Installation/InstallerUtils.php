@@ -618,6 +618,10 @@ class InstallerUtils
                 'value' => isset($data['project_name']) ? $data['project_name'] : 'Directus'
             ],
             [
+                'key' => 'project_url',
+                'value' => ''
+            ],
+            [
                 'key' => 'default_limit',
                 'value' => '200'
             ],

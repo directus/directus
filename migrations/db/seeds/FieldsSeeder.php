@@ -954,6 +954,13 @@ class FieldsSeeder extends AbstractSeed
                 'interface' => 'tags',
                 'locked' => 1
             ],
+            [
+                'collection' => 'directus_settings',
+                'field' => 'project_url',
+                'type' => \Directus\Database\Schema\DataTypes::TYPE_STRING,
+                'interface' => 'text-input',
+                'locked' => 1
+            ],
 
 
             // Users
