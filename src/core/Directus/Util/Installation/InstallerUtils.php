@@ -156,6 +156,26 @@ class InstallerUtils
     }
 
     /**
+     * Checks whether there's a single Directus collection in the database using the given data
+     *
+     * @param array $data
+     *
+     * @return bool
+     */
+    public static function hasSomeDirectusTablesFromData(array $data)
+    {
+        $exists = false;
+
+        static::getDirectusTablesFromData($data, function () use (&$exists) {
+            $exists = true;
+
+            return false;
+        });
+
+        return $exists;
+    }
+
+    /**
      * Run the migration files
      *
      * @param $directusPath
@@ -227,7 +247,9 @@ class InstallerUtils
         $data = ArrayUtils::defaults([
             'user_email' => 'admin@example.com',
             'user_password' => 'password',
-            'user_token' => null
+            'user_token' => null,
+            'timezone' => 'America/New_York',
+            'locale' => 'en-US',
         ], $data);
 
         $hash = $auth->hashPassword($data['user_password']);
@@ -239,7 +261,8 @@ class InstallerUtils
             'email' => $data['user_email'],
             'password' => $hash,
             'token' => $data['user_token'],
-            'locale' => 'en-US'
+            'timezone' => $data['timezone'],
+            'locale' => $data['locale'],
         ]);
 
         $userRolesTableGateway = new TableGateway('directus_user_roles', $db);
@@ -610,10 +633,6 @@ class InstallerUtils
     {
         return [
             [
-                'key' => 'auto_sign_out',
-                'value' => '60'
-            ],
-            [
                 'key' => 'project_name',
                 'value' => isset($data['project_name']) ? $data['project_name'] : 'Directus'
             ],
@@ -622,8 +641,8 @@ class InstallerUtils
                 'value' => ''
             ],
             [
-                'key' => 'default_limit',
-                'value' => '200'
+                'key' => 'app_url',
+                'value' => isset($data['app_url']) ? $data['app_url'] : ''
             ],
             [
                 'key' => 'logo',
@@ -634,11 +653,43 @@ class InstallerUtils
                 'value' => 'light-blue-600'
             ],
             [
+                'key' => 'default_limit',
+                'value' => '200'
+            ],
+            [
+                'key' => 'sort_null_last',
+                'value' => 1
+            ],
+            [
+                'key' => 'auto_sign_out',
+                'value' => '60'
+            ],
+            [
                 'key' => 'youtube_api_key',
                 'value' => ''
             ],
             [
                 'key' => 'trusted_proxies',
+                'value' => ''
+            ],
+            [
+                'key' => 'thumbnail_dimensions',
+                'value' => '200x200'
+            ],
+            [
+                'key' => 'thumbnail_quality_tags',
+                'value' => '{"poor": 25, "good": 50, "better":  75, "best": 100}'
+            ],
+            [
+                'key' => 'thumbnail_actions',
+                'value' => '{"contain":{"options":{"resizeCanvas":false,"position":"center","resizeRelative":false,"canvasBackground":"ccc"}},"crop":{"options":{"position":"center"}}}'
+            ],
+            [
+                'key' => 'thumbnail_cache_ttl',
+                'value' => '86400'
+            ],
+            [
+                'key' => 'thumbnail_not_found_location',
                 'value' => ''
             ],
         ];
@@ -722,14 +773,29 @@ class InstallerUtils
      */
     private static function ensureSystemTablesDoesNotExistsFromData(array $data)
     {
+        static::getDirectusTablesFromData($data, function (Connection $db, $name) {
+            throw new Exception(
+                sprintf('Directus seems to has been installed in the "%s" database.', $db->getCurrentSchema())
+            );
+        });
+    }
+
+    /**
+     * Loop through all Directus tables using the given connection data
+     *
+     * @param array $data
+     * @param \Closure $callback
+     */
+    private static function getDirectusTablesFromData(array $data, \Closure $callback)
+    {
         $db = static::createDatabaseConnectionFromData($data);
         $schemaManager = static::createSchemaManagerFromData($data, $db);
 
         foreach (SchemaManager::getSystemCollections() as $table) {
             if ($schemaManager->collectionExists($table)) {
-                throw new Exception(
-                    sprintf('Directus seems to has been installed in the "%s" database.', $db->getCurrentSchema())
-                );
+                if ($callback($db, $table) === false) {
+                    break;
+                }
             }
         }
     }
@@ -757,6 +823,11 @@ class InstallerUtils
             \PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true,
             \PDO::MYSQL_ATTR_INIT_COMMAND => sprintf('SET NAMES "%s"', $charset)
         ];
+
+        if (ArrayUtils::get($data, 'db_socket')) {
+            ArrayUtils::remove($dbConfig, 'host');
+            $dbConfig['unix_socket'] = $data['db_socket'];
+        }
 
         return new Connection($dbConfig);
     }
@@ -825,12 +896,14 @@ class InstallerUtils
             'db_host' => 'localhost',
             'db_port' => 3306,
             'db_password' => null,
+            'db_socket' => '',
             'mail_from' => 'admin@example.com',
             'feedback_token' => sha1(gmdate('U') . StringUtils::randomString(32)),
             'auth_secret' => StringUtils::randomString(32),
             'auth_public' => generate_uuid4(),
             'feedback_login' => true,
-            'cors_enabled' => true
+            'cors_enabled' => true,
+            'timezone' => 'America/New_York',
         ], $data);
     }
 }

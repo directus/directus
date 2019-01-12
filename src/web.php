@@ -87,7 +87,7 @@ $middleware = [
     'table_gateway' => new \Directus\Application\Http\Middleware\TableGatewayMiddleware($app->getContainer()),
     'rate_limit_ip' => new \Directus\Application\Http\Middleware\IpRateLimitMiddleware($app->getContainer()),
     'ip' => new RKA\Middleware\IpAddress(),
-    'proxy' => new \RKA\Middleware\ProxyDetectionMiddleware(\Directus\get_trusted_proxies()),
+    'proxy' => new \Directus\Application\Http\Middleware\ProxyMiddleware(),
     'cors' => new \Directus\Application\Http\Middleware\CorsMiddleware($app->getContainer()),
     'auth' => new \Directus\Application\Http\Middleware\AuthenticationMiddleware($app->getContainer()),
     'auth_user' => new \Directus\Application\Http\Middleware\AuthenticatedMiddleware($app->getContainer()),
@@ -102,6 +102,7 @@ $app->add($middleware['rate_limit_ip'])
     ->add($middleware['cors']);
 
 $app->get('/', \Directus\Api\Routes\Home::class)
+    ->add($middleware['rate_limit_user'])
     ->add($middleware['auth_user'])
     ->add($middleware['auth'])
     ->add($middleware['auth_ignore_origin'])
@@ -219,22 +220,26 @@ $app->group('/{project}', function () use ($middleware) {
 
 $app->group('/interfaces', \Directus\Api\Routes\Interfaces::class)
     ->add($middleware['rate_limit_user'])
+    ->add($middleware['auth_user'])
     ->add($middleware['auth'])
     ->add($middleware['auth_ignore_origin'])
     ->add($middleware['table_gateway']);
 $app->group('/layouts', \Directus\Api\Routes\Layouts::class)
     ->add($middleware['rate_limit_user'])
+    ->add($middleware['auth_user'])
     ->add($middleware['auth'])
     ->add($middleware['auth_ignore_origin'])
     ->add($middleware['table_gateway']);
 $app->group('/pages', \Directus\Api\Routes\Pages::class)
     ->add($middleware['rate_limit_user'])
+    ->add($middleware['auth_user'])
     ->add($middleware['auth'])
     ->add($middleware['auth_ignore_origin'])
     ->add($middleware['table_gateway']);
 $app->group('/server', \Directus\Api\Routes\Server::class);
 $app->group('/types', \Directus\Api\Routes\Types::class)
     ->add($middleware['rate_limit_user'])
+    ->add($middleware['auth_user'])
     ->add($middleware['auth'])
     ->add($middleware['auth_ignore_origin'])
     ->add($middleware['table_gateway']);

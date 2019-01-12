@@ -46,7 +46,7 @@ class PluralizationRules
         }
 
         if (isset(self::$rules[$locale])) {
-            $return = \call_user_func(self::$rules[$locale], $number);
+            $return = self::$rules[$locale]($number);
 
             if (!\is_int($return) || $return < 0) {
                 return 0;

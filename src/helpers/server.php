@@ -13,7 +13,14 @@ if (!function_exists('get_max_upload_size')) {
     function get_max_upload_size($global = false)
     {
         $function = 'ini_get';
-        if ($global === true) {
+        // NOTE: From php docs
+        // This function (get_cfg_var) will not return configuration information set when the PHP was compiled,
+        // or read from an Apache configuration file.
+        //
+        // To check whether the system is using a configuration file,
+        // try retrieving the value of the cfg_file_path configuration setting.
+        // If this is available, a configuration file is being used.
+        if ($global === true && get_cfg_var('cfg_file_path')) {
             $function = 'get_cfg_var';
         }
 

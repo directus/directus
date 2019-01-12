@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit6bfc922f9eb1aafe71e22e5529681071
+class ComposerStaticInit70889f11ef4030169783506052b87d42
 {
     public static $files = array (
         '320cde22f66dd4f5d3fd621d3e88b98f' => __DIR__ . '/..' . '/symfony/polyfill-ctype/bootstrap.php',
@@ -62,6 +62,7 @@ class ComposerStaticInit6bfc922f9eb1aafe71e22e5529681071
         array (
             'Psr\\SimpleCache\\' => 16,
             'Psr\\Log\\' => 8,
+            'Psr\\Http\\Server\\' => 16,
             'Psr\\Http\\Message\\' => 17,
             'Psr\\Container\\' => 14,
             'Psr\\Cache\\' => 10,
@@ -192,7 +193,7 @@ class ComposerStaticInit6bfc922f9eb1aafe71e22e5529681071
         ),
         'RKA\\Middleware\\' => 
         array (
-            0 => __DIR__ . '/..' . '/akrabat/rka-ip-address-middleware/src',
+            0 => __DIR__ . '/..' . '/akrabat/ip-address-middleware/src',
             1 => __DIR__ . '/..' . '/wellingguzman/proxy-detection/src',
         ),
         'Psr\\SimpleCache\\' => 
@@ -202,6 +203,11 @@ class ComposerStaticInit6bfc922f9eb1aafe71e22e5529681071
         'Psr\\Log\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/log/Psr/Log',
+        ),
+        'Psr\\Http\\Server\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/psr/http-server-handler/src',
+            1 => __DIR__ . '/..' . '/psr/http-server-middleware/src',
         ),
         'Psr\\Http\\Message\\' => 
         array (
@@ -434,6 +440,7 @@ class ComposerStaticInit6bfc922f9eb1aafe71e22e5529681071
         'Directus\\Application\\Http\\Middleware\\AuthenticationMiddleware' => __DIR__ . '/../..' . '/src/core/Directus/Application/Http/Middleware/AuthenticationMiddleware.php',
         'Directus\\Application\\Http\\Middleware\\CorsMiddleware' => __DIR__ . '/../..' . '/src/core/Directus/Application/Http/Middleware/CorsMiddleware.php',
         'Directus\\Application\\Http\\Middleware\\IpRateLimitMiddleware' => __DIR__ . '/../..' . '/src/core/Directus/Application/Http/Middleware/IpRateLimitMiddleware.php',
+        'Directus\\Application\\Http\\Middleware\\ProxyMiddleware' => __DIR__ . '/../..' . '/src/core/Directus/Application/Http/Middleware/ProxyMiddleware.php',
         'Directus\\Application\\Http\\Middleware\\RateLimit\\UserIdentityResolver' => __DIR__ . '/../..' . '/src/core/Directus/Application/Http/Middleware/RateLimit/UserIdentityResolver.php',
         'Directus\\Application\\Http\\Middleware\\ResponseCacheMiddleware' => __DIR__ . '/../..' . '/src/core/Directus/Application/Http/Middleware/ResponseCacheMiddleware.php',
         'Directus\\Application\\Http\\Middleware\\TableGatewayMiddleware' => __DIR__ . '/../..' . '/src/core/Directus/Application/Http/Middleware/TableGatewayMiddleware.php',
@@ -491,7 +498,6 @@ class ComposerStaticInit6bfc922f9eb1aafe71e22e5529681071
         'Directus\\Console\\Exception\\CommandFailedException' => __DIR__ . '/../..' . '/src/core/Directus/Console/Exception/CommandFailedException.php',
         'Directus\\Console\\Exception\\UnsupportedCommandException' => __DIR__ . '/../..' . '/src/core/Directus/Console/Exception/UnsupportedCommandException.php',
         'Directus\\Console\\Exception\\WrongArgumentsException' => __DIR__ . '/../..' . '/src/core/Directus/Console/Exception/WrongArgumentsException.php',
-        'Directus\\Console\\Modules\\CacheModule' => __DIR__ . '/../..' . '/src/core/Directus/Console/Modules/CacheModule.php',
         'Directus\\Console\\Modules\\DatabaseModule' => __DIR__ . '/../..' . '/src/core/Directus/Console/Modules/DatabaseModule.php',
         'Directus\\Console\\Modules\\InstallModule' => __DIR__ . '/../..' . '/src/core/Directus/Console/Modules/InstallModule.php',
         'Directus\\Console\\Modules\\LogModule' => __DIR__ . '/../..' . '/src/core/Directus/Console/Modules/LogModule.php',
@@ -545,6 +551,7 @@ class ComposerStaticInit6bfc922f9eb1aafe71e22e5529681071
         'Directus\\Database\\Exception\\StatusMappingWrongValueTypeException' => __DIR__ . '/../..' . '/src/core/Directus/Database/Exception/StatusMappingWrongValueTypeException.php',
         'Directus\\Database\\Exception\\SuppliedArrayAsColumnValue' => __DIR__ . '/../..' . '/src/core/Directus/Database/Exception/SuppliedArrayAsColumnValue.php',
         'Directus\\Database\\Exception\\UnableSortAliasFieldException' => __DIR__ . '/../..' . '/src/core/Directus/Database/Exception/UnableSortAliasFieldException.php',
+        'Directus\\Database\\Exception\\UnknownFilterException' => __DIR__ . '/../..' . '/src/core/Directus/Database/Exception/UnknownFilterException.php',
         'Directus\\Database\\Exception\\UnknownTypeException' => __DIR__ . '/../..' . '/src/core/Directus/Database/Exception/UnknownTypeException.php',
         'Directus\\Database\\Filters\\Filter' => __DIR__ . '/../..' . '/src/core/Directus/Database/Filters/Filter.php',
         'Directus\\Database\\Filters\\In' => __DIR__ . '/../..' . '/src/core/Directus/Database/Filters/In.php',
@@ -1703,6 +1710,8 @@ class ComposerStaticInit6bfc922f9eb1aafe71e22e5529681071
         'Psr\\Http\\Message\\StreamInterface' => __DIR__ . '/..' . '/psr/http-message/src/StreamInterface.php',
         'Psr\\Http\\Message\\UploadedFileInterface' => __DIR__ . '/..' . '/psr/http-message/src/UploadedFileInterface.php',
         'Psr\\Http\\Message\\UriInterface' => __DIR__ . '/..' . '/psr/http-message/src/UriInterface.php',
+        'Psr\\Http\\Server\\MiddlewareInterface' => __DIR__ . '/..' . '/psr/http-server-middleware/src/MiddlewareInterface.php',
+        'Psr\\Http\\Server\\RequestHandlerInterface' => __DIR__ . '/..' . '/psr/http-server-handler/src/RequestHandlerInterface.php',
         'Psr\\Log\\AbstractLogger' => __DIR__ . '/..' . '/psr/log/Psr/Log/AbstractLogger.php',
         'Psr\\Log\\InvalidArgumentException' => __DIR__ . '/..' . '/psr/log/Psr/Log/InvalidArgumentException.php',
         'Psr\\Log\\LogLevel' => __DIR__ . '/..' . '/psr/log/Psr/Log/LogLevel.php',
@@ -1717,7 +1726,7 @@ class ComposerStaticInit6bfc922f9eb1aafe71e22e5529681071
         'Psr\\SimpleCache\\CacheException' => __DIR__ . '/..' . '/psr/simple-cache/src/CacheException.php',
         'Psr\\SimpleCache\\CacheInterface' => __DIR__ . '/..' . '/psr/simple-cache/src/CacheInterface.php',
         'Psr\\SimpleCache\\InvalidArgumentException' => __DIR__ . '/..' . '/psr/simple-cache/src/InvalidArgumentException.php',
-        'RKA\\Middleware\\IpAddress' => __DIR__ . '/..' . '/akrabat/rka-ip-address-middleware/src/IpAddress.php',
+        'RKA\\Middleware\\IpAddress' => __DIR__ . '/..' . '/akrabat/ip-address-middleware/src/IpAddress.php',
         'RKA\\Middleware\\ProxyDetection' => __DIR__ . '/..' . '/wellingguzman/proxy-detection/src/ProxyDetection.php',
         'RKA\\Middleware\\ProxyDetectionMiddleware' => __DIR__ . '/..' . '/wellingguzman/proxy-detection/src/ProxyDetectionMiddleware.php',
         'Ramsey\\Uuid\\BinaryUtils' => __DIR__ . '/..' . '/ramsey/uuid/src/BinaryUtils.php',
@@ -3016,10 +3025,10 @@ class ComposerStaticInit6bfc922f9eb1aafe71e22e5529681071
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit6bfc922f9eb1aafe71e22e5529681071::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit6bfc922f9eb1aafe71e22e5529681071::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInit6bfc922f9eb1aafe71e22e5529681071::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInit6bfc922f9eb1aafe71e22e5529681071::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit70889f11ef4030169783506052b87d42::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit70889f11ef4030169783506052b87d42::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit70889f11ef4030169783506052b87d42::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInit70889f11ef4030169783506052b87d42::$classMap;
 
         }, null, ClassLoader::class);
     }

@@ -40,7 +40,7 @@
             </trans-unit>
             <trans-unit id="10">
                 <source>This field is missing.</source>
-                <target>Lĩnh vực này là mất tích.</target>
+                <target>Lĩnh vực này bị thiếu.</target>
             </trans-unit>
             <trans-unit id="11">
                 <source>This value is not a valid date.</source>
@@ -132,7 +132,7 @@
             </trans-unit>
             <trans-unit id="36">
                 <source>This file is not a valid image.</source>
-                <target>Tập tin không phải là hình ảnh.</target>
+                <target>Tập tin không phải là hình ảnh hợp lệ.</target>
             </trans-unit>
             <trans-unit id="37">
                 <source>This is not a valid IP address.</source>
@@ -148,7 +148,7 @@
             </trans-unit>
             <trans-unit id="40">
                 <source>This value is not a valid country.</source>
-                <target>Giá trị không phải là nước hợp lệ.</target>
+                <target>Giá trị không phải là quốc gia hợp lệ.</target>
             </trans-unit>
             <trans-unit id="41">
                 <source>This value is already used.</source>
@@ -180,7 +180,7 @@
             </trans-unit>
             <trans-unit id="48">
                 <source>This value should have exactly {{ limit }} character.|This value should have exactly {{ limit }} characters.</source>
-                <target>Giá trị phải có chính xác {{ limit }} kí tự.|Giá trị phải có chính xác {{ limit }} kí tự.</target>
+                <target>Giá trị này phải có chính xác {{ limit }} kí tự.|Giá trị này phải có chính xác {{ limit }} kí tự.</target>
             </trans-unit>
             <trans-unit id="49">
                 <source>The file was only partially uploaded.</source>
@@ -204,11 +204,11 @@
             </trans-unit>
             <trans-unit id="54">
                 <source>This collection should contain {{ limit }} element or more.|This collection should contain {{ limit }} elements or more.</source>
-                <target>Danh sách phải chứa {{ limit }} hoặc nhiều hơn thành phần.|Danh sách phải chứa {{ limit }} hoặc nhiều hơn thành phần.</target>
+                <target>Danh sách phải chứa {{ limit }} thành phần hoặc nhiều hơn.|Danh sách phải chứa {{ limit }} thành phần hoặc nhiều hơn.</target>
             </trans-unit>
             <trans-unit id="55">
                 <source>This collection should contain {{ limit }} element or less.|This collection should contain {{ limit }} elements or less.</source>
-                <target>Danh sách phải chứa {{ limit }} hoặc ít hơn thành phần.|Danh sách phải chứa {{ limit }} hoặc ít hơn thành phần.</target>
+                <target>Danh sách phải chứa {{ limit }} thành phần hoặc ít hơn.|Danh sách phải chứa {{ limit }} thành phần hoặc ít hơn.</target>
             </trans-unit>
             <trans-unit id="56">
                 <source>This collection should contain exactly {{ limit }} element.|This collection should contain exactly {{ limit }} elements.</source>
@@ -240,11 +240,11 @@
             </trans-unit>
             <trans-unit id="63">
                 <source>This value is not a valid ISSN.</source>
-                <target>Giá trị không là ISSN hợp lệ.</target>
+                <target>Giá trị không phải là ISSN hợp lệ.</target>
             </trans-unit>
             <trans-unit id="64">
                 <source>This value is not a valid currency.</source>
-                <target>Giá trị không phải là đơn vi tiền tệ hợp lệ.</target>
+                <target>Giá trị không phải là đơn vị tiền tệ hợp lệ.</target>
             </trans-unit>
             <trans-unit id="65">
                 <source>This value should be equal to {{ compared_value }}.</source>
@@ -268,7 +268,7 @@
             </trans-unit>
             <trans-unit id="70">
                 <source>This value should be less than or equal to {{ compared_value }}.</source>
-                <target>Giá trị không được phép nhỏ hơn hoặc bằng {{ compared_value }}.</target>
+                <target>Giá trị phải nhỏ hơn hoặc bằng {{ compared_value }}.</target>
             </trans-unit>
             <trans-unit id="71">
                 <source>This value should not be equal to {{ compared_value }}.</source>

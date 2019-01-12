@@ -1,9 +1,0 @@
-<?xml version="1.0"?>
-<ruleset name="RKA">
-    <rule ref="PSR2"/>
-    
-    <!-- Check src and tests directories -->
-    <file>src</file>
-    <file>tests</file>
-
-</ruleset>

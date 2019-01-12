@@ -4,12 +4,14 @@ namespace Directus\Console;
 
 use Directus\Console\Exception\UnsupportedCommandException;
 use Directus\Console\Exception\WrongArgumentsException;
+use Directus\Util\ArrayUtils;
 
 class Cli
 {
     private $command = '';
     private $help_module = '';
     private $options = [];
+    private $arguments = [];
     private $extra = [];
     private $directusPath = '';
 
@@ -30,9 +32,9 @@ class Cli
 
         if ($this->command == 'help') {
             $this->help_module = array_shift($argv);
-        } else {
-            $this->options = $this->parseOptions($argv);
         }
+
+        $this->arguments = $argv;
 
         $this->loadModules();
     }
@@ -82,7 +84,8 @@ class Cli
         }
 
         try {
-            $this->cmd_modules[$module]->runCommand($command, $this->options, $this->extra);
+            $options = $this->parseOptions($this->arguments, $this->cmd_modules[$module]->getOptions($command));
+            $this->cmd_modules[$module]->runCommand($command, $options, $this->extra);
         } catch (WrongArgumentsException $e) {
             echo PHP_EOL . PHP_EOL . 'Module ' . $module . ' error: ' . $e->getMessage() . PHP_EOL . PHP_EOL;
         } catch (UnsupportedCommandException $e) {
@@ -113,7 +116,7 @@ class Cli
         echo PHP_EOL . 'For more information on a command use: "directus <module name>:help command"' . PHP_EOL . PHP_EOL;
     }
 
-    private function parseOptions($argv)
+    private function parseOptions($argv, array $types = [])
     {
         $options = [];
 
@@ -123,6 +126,8 @@ class Cli
             $arg = $argv[$arg_idx];
             if (preg_match("/^(-{1,2})([A-Za-z0-9-_]+)$/", $arg, $argMatch)) {
                 $key = $argMatch[2];
+                $type = ArrayUtils::get($types, $key, null);
+
                 /**
                  * There is still at least an argument - this could be the
                  * value for this option.
@@ -132,7 +137,7 @@ class Cli
                         /**
                          * Next argument is another option - so this must be a switch.
                          */
-                        $value = true;
+                        $value = $type === 'boolean' ? true : '';
                         $arg_idx++;
                         $num_args--;
                     } else {
@@ -147,7 +152,7 @@ class Cli
                     /**
                      * There is no other value, this is just a switch.
                      */
-                    $value = true;
+                    $value = $type === 'boolean' ? true : '';
                     $arg_idx++;
                     $num_args--;
                 }

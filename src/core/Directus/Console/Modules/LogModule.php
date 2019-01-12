@@ -27,14 +27,6 @@ class LogModule extends ModuleBase
     {
         $days = (int) ArrayUtils::get($extra, 0, 30);
 
-        foreach ($args as $key => $value) {
-            switch ($key) {
-                case 's':
-                    $data['since'] = (int) $value;
-                    break;
-            }
-        }
-
         if ($days <= 0) {
             throw new WrongArgumentsException($this->__module_name . ':prune ' . ' days must be greater than 0');
         }

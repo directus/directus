@@ -12,6 +12,10 @@
 namespace Symfony\Component\Validator\Tests\Validator;
 
 use Symfony\Component\Translation\IdentityTranslator;
+use Symfony\Component\Validator\Constraints\All;
+use Symfony\Component\Validator\Constraints\Collection;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\ConstraintValidatorFactory;
 use Symfony\Component\Validator\Context\ExecutionContextFactory;
 use Symfony\Component\Validator\Mapping\Factory\MetadataFactoryInterface;
@@ -94,5 +98,39 @@ class RecursiveValidatorTest extends AbstractTest
             ->willReturn($validatorContext);
 
         $validator->validate($entity, null, array());
+    }
+
+    public function testCollectionConstraintValidateAllGroupsForNestedConstraints()
+    {
+        $this->metadata->addPropertyConstraint('data', new Collection(array('fields' => array(
+            'one' => array(new NotBlank(array('groups' => 'one')), new Length(array('min' => 2, 'groups' => 'two'))),
+            'two' => array(new NotBlank(array('groups' => 'two'))),
+        ))));
+
+        $entity = new Entity();
+        $entity->data = array('one' => 't', 'two' => '');
+
+        $violations = $this->validator->validate($entity, null, array('one', 'two'));
+
+        $this->assertCount(2, $violations);
+        $this->assertInstanceOf(Length::class, $violations->get(0)->getConstraint());
+        $this->assertInstanceOf(NotBlank::class, $violations->get(1)->getConstraint());
+    }
+
+    public function testAllConstraintValidateAllGroupsForNestedConstraints()
+    {
+        $this->metadata->addPropertyConstraint('data', new All(array('constraints' => array(
+            new NotBlank(array('groups' => 'one')),
+            new Length(array('min' => 2, 'groups' => 'two')),
+        ))));
+
+        $entity = new Entity();
+        $entity->data = array('one' => 't', 'two' => '');
+
+        $violations = $this->validator->validate($entity, null, array('one', 'two'));
+
+        $this->assertCount(2, $violations);
+        $this->assertInstanceOf(NotBlank::class, $violations->get(0)->getConstraint());
+        $this->assertInstanceOf(Length::class, $violations->get(1)->getConstraint());
     }
 }

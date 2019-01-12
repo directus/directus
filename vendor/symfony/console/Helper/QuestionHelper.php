@@ -381,7 +381,7 @@ class QuestionHelper extends Helper
             }
 
             try {
-                return \call_user_func($question->getValidator(), $interviewer());
+                return $question->getValidator()($interviewer());
             } catch (RuntimeException $e) {
                 throw $e;
             } catch (\Exception $error) {

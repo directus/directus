@@ -272,9 +272,9 @@ class Builder
         return $this->whereIn($column, $values, true);
     }
 
-    public function whereBetween($column, array $values, $not = false)
+    public function whereBetween($column, array $values, $not = false, $logical = 'and')
     {
-        return $this->where($column, 'between', $values, $not);
+        return $this->where($column, 'between', $values, $not, $logical);
     }
 
     public function whereNotBetween($column, array $values)
@@ -774,11 +774,9 @@ class Builder
                 $expression = new NotIn($identifier, $value);
                 break;
             case 'like':
-                $value = "%$value%";
                 $expression = new Like($identifier, $value);
                 break;
             case 'nlike':
-                $value = "%$value%";
                 $expression = new NotLike($identifier, $value);
                 break;
             case 'null':

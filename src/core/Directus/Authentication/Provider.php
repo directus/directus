@@ -13,6 +13,7 @@ use Directus\Authentication\User\Provider\UserProviderInterface;
 use Directus\Authentication\User\UserInterface;
 use Directus\Exception\Exception;
 use function Directus\get_api_project_from_request;
+use function Directus\get_project_config;
 use Directus\Util\ArrayUtils;
 use Directus\Util\DateTimeUtils;
 use Directus\Util\JWTUtils;
@@ -514,10 +515,18 @@ class Provider
     /**
      * Authentication secret key
      *
+     * @param string|null $project
+     *
      * @return string
      */
-    public function getSecretKey()
+    public function getSecretKey($project = null)
     {
+        if ($project) {
+            $config = get_project_config($project);
+
+            return $config->get('auth.secret_key');
+        }
+
         return $this->secretKey;
     }
 
@@ -551,7 +560,8 @@ class Provider
      */
     protected function getTokenPayload($token, $ignoreOrigin = false)
     {
-        $payload = JWTUtils::decode($token, $this->getSecretKey(), [$this->getTokenAlgorithm()]);
+        $projectName = $ignoreOrigin ? JWTUtils::getPayload($token, 'project') : null;
+        $payload = JWTUtils::decode($token, $this->getSecretKey($projectName), [$this->getTokenAlgorithm()]);
 
         if ($ignoreOrigin !== true && !$this->isPayloadLocal($payload)) {
             // Empty payload, log this as debug?

@@ -114,10 +114,12 @@ class ErrorHandler extends AbstractHandler
 
         if ($exception instanceof Exception) {
             $code = $exception->getErrorCode();
+            $httpStatusCode = $exception->getStatusCode() ?? 500;
+        } else {
+            $httpStatusCode = 500;
         }
 
         // TODO: Implement a method/property that returns the exception type/status
-        $httpStatusCode = 500;
         if ($exception instanceof BadRequestExceptionInterface) {
             $httpStatusCode = 400;
         } else if ($exception instanceof NotFoundExceptionInterface) {

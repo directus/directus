@@ -1,0 +1,19 @@
+sudo: false
+
+language: php
+
+php:
+  - 7.0
+  - 7.1
+  - 7.2
+
+before_install:
+  - composer self-update
+
+install:
+  - travis_retry composer install --no-interaction
+  - composer info -i
+
+script:
+  - vendor/bin/phpcs
+  - vendor/bin/phpunit

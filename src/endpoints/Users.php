@@ -104,11 +104,8 @@ class Users extends Route
         $this->validateRequestPayload($request);
         $service = new UsersService($this->container);
 
-        $email = $request->getParsedBodyParam('email');
-        $emails = explode(',', $email);
-
         $responseData = $service->invite(
-            $emails,
+            $request->getParsedBodyParam('email'),
             $request->getQueryParams()
         );
 

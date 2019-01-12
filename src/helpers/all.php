@@ -1214,8 +1214,8 @@ if (!function_exists('get_missing_requirements')) {
     {
         $errors = [];
 
-        if (version_compare(PHP_VERSION, '5.6.0', '<')) {
-            $errors[] = 'Your host needs to use PHP 5.6.0 or higher to run this version of Directus!';
+        if (version_compare(PHP_VERSION, '7.1.0', '<')) {
+            $errors[] = 'Your host needs to use PHP 7.1.0 or higher to run this version of Directus!';
         }
 
         if (!defined('PDO::ATTR_DRIVER_NAME')) {
@@ -1489,6 +1489,36 @@ if (!function_exists('is_valid_regex_pattern')) {
     }
 }
 
+if (!function_exists('is_custom_validation')) {
+    /**
+     * Checks whether the given value is a custom validation
+     *
+     * @param string $value
+     *
+     * @return bool
+     */
+    function is_custom_validation($value)
+    {
+        return in_array(strtolower((string)$value), [
+            '$email',
+        ]);
+    }
+}
+
+if (!function_exists('get_custom_validation_name')) {
+    /**
+     * Returns the custom validation constraint name
+     *
+     * @param string $value
+     *
+     * @return string
+     */
+    function get_custom_validation_name($value)
+    {
+        return strtolower(substr((string)$value, 1));
+    }
+}
+
 if (!function_exists('env')) {
     /**
      * Returns an environment variable
@@ -1568,14 +1598,37 @@ if (!function_exists('is_iso8601_datetime')) {
      */
     function is_iso8601_datetime($value)
     {
-        $datetime = substr($value, 0, 19);
-        $offset = substr($value, -5, 5);
+        // 2019-01-04T16:12:05+00:00
+        $isFormatOne = function ($value) {
+            $datetime = substr($value, 0, 19);
+            $offset = substr($value, -5, 5);
 
-        // TODO: It will be ideal to check for all ISO 8601 Formats
-        // NOTE: This only checks for the following format: 2018-10-31T15:01:35+00:00
-        return strlen($value) === 25
-            && is_valid_datetime($datetime, 'Y-m-d\TH:i:s')
-            && is_valid_datetime($offset, 'H:i');
+            return strlen($value) === 25
+                && is_valid_datetime($datetime, 'Y-m-d\TH:i:s')
+                && is_valid_datetime($offset, 'H:i');
+        };
+
+        // 2019-01-04T16:12:05Z
+        $isFormatTwo = function ($value) {
+            $datetime = substr($value, 0, 19);
+            $offset = strtolower(substr($value, -1, 1));
+
+            return strlen($value) === 20
+                && is_valid_datetime($datetime, 'Y-m-d\TH:i:s')
+                && $offset === 'z';
+        };
+
+        // 20190104T161205Z
+        $isFormatThree = function ($value) {
+            $datetime = substr($value, 0, 14);
+            $offset = strtolower(substr($value, -1, 1));
+
+            return strlen($value) === 16
+                && is_valid_datetime($datetime, 'Ymd\THis')
+                && $offset === 'z';
+        };
+
+        return $isFormatOne($value) || $isFormatTwo($value) || $isFormatThree($value);
     }
 }
 

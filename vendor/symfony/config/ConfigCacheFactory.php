@@ -43,7 +43,7 @@ class ConfigCacheFactory implements ConfigCacheFactoryInterface
 
         $cache = new ConfigCache($file, $this->debug);
         if (!$cache->isFresh()) {
-            \call_user_func($callback, $cache);
+            $callback($cache);
         }
 
         return $cache;

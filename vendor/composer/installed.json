@@ -1,28 +1,33 @@
 [
     {
-        "name": "akrabat/rka-ip-address-middleware",
-        "version": "0.5",
-        "version_normalized": "0.5.0.0",
+        "name": "akrabat/ip-address-middleware",
+        "version": "1.0.1",
+        "version_normalized": "1.0.1.0",
         "source": {
             "type": "git",
-            "url": "https://github.com/akrabat/rka-ip-address-middleware.git",
-            "reference": "832687b13bae4d7fe889fab1414aef6fafeecf80"
+            "url": "https://github.com/akrabat/ip-address-middleware.git",
+            "reference": "9b0bffcad90bd365c5bfbdb430563cd4e35a93ba"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/akrabat/rka-ip-address-middleware/zipball/832687b13bae4d7fe889fab1414aef6fafeecf80",
-            "reference": "832687b13bae4d7fe889fab1414aef6fafeecf80",
+            "url": "https://api.github.com/repos/akrabat/ip-address-middleware/zipball/9b0bffcad90bd365c5bfbdb430563cd4e35a93ba",
+            "reference": "9b0bffcad90bd365c5bfbdb430563cd4e35a93ba",
             "shasum": ""
         },
         "require": {
-            "psr/http-message": "^1.0"
+            "php": "^7.0",
+            "psr/http-message": "^1.0",
+            "psr/http-server-middleware": "^1.0"
+        },
+        "replace": {
+            "akrabat/rka-ip-address-middleware": "*"
         },
         "require-dev": {
-            "phpunit/phpunit": "^4.8",
-            "squizlabs/php_codesniffer": "^2.3",
-            "zendframework/zend-diactoros": "^1.1"
+            "phpunit/phpunit": "^6.5",
+            "squizlabs/php_codesniffer": "^3.2",
+            "zendframework/zend-diactoros": "^1.7"
         },
-        "time": "2016-11-13T12:23:41+00:00",
+        "time": "2018-07-03T06:53:57+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -41,14 +46,13 @@
                 "homepage": "http://akrabat.com"
             }
         ],
-        "description": "PSR-7 Middleware that determines the client IP address and stores it as an ServerRequest attribute",
+        "description": "PSR-15 middleware that determines the client IP address and stores it as a ServerRequest attribute",
         "homepage": "http://github.com/akrabat/rka-ip-address-middleware",
         "keywords": [
             "IP",
             "middleware",
             "psr7"
-        ],
-        "abandoned": "akrabat/ip-address-middleware"
+        ]
     },
     {
         "name": "cache/cache",
@@ -2059,6 +2063,116 @@
         ]
     },
     {
+        "name": "psr/http-server-handler",
+        "version": "1.0.1",
+        "version_normalized": "1.0.1.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/php-fig/http-server-handler.git",
+            "reference": "aff2f80e33b7f026ec96bb42f63242dc50ffcae7"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/php-fig/http-server-handler/zipball/aff2f80e33b7f026ec96bb42f63242dc50ffcae7",
+            "reference": "aff2f80e33b7f026ec96bb42f63242dc50ffcae7",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=7.0",
+            "psr/http-message": "^1.0"
+        },
+        "time": "2018-10-30T16:46:14+00:00",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "1.0.x-dev"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Psr\\Http\\Server\\": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "PHP-FIG",
+                "homepage": "http://www.php-fig.org/"
+            }
+        ],
+        "description": "Common interface for HTTP server-side request handler",
+        "keywords": [
+            "handler",
+            "http",
+            "http-interop",
+            "psr",
+            "psr-15",
+            "psr-7",
+            "request",
+            "response",
+            "server"
+        ]
+    },
+    {
+        "name": "psr/http-server-middleware",
+        "version": "1.0.1",
+        "version_normalized": "1.0.1.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/php-fig/http-server-middleware.git",
+            "reference": "2296f45510945530b9dceb8bcedb5cb84d40c5f5"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/php-fig/http-server-middleware/zipball/2296f45510945530b9dceb8bcedb5cb84d40c5f5",
+            "reference": "2296f45510945530b9dceb8bcedb5cb84d40c5f5",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=7.0",
+            "psr/http-message": "^1.0",
+            "psr/http-server-handler": "^1.0"
+        },
+        "time": "2018-10-30T17:12:04+00:00",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "1.0.x-dev"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Psr\\Http\\Server\\": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "PHP-FIG",
+                "homepage": "http://www.php-fig.org/"
+            }
+        ],
+        "description": "Common interface for HTTP server-side middleware",
+        "keywords": [
+            "http",
+            "http-interop",
+            "middleware",
+            "psr",
+            "psr-15",
+            "psr-7",
+            "request",
+            "response"
+        ]
+    },
+    {
         "name": "psr/log",
         "version": "1.1.0",
         "version_normalized": "1.1.0.0",
@@ -3073,17 +3187,17 @@
     },
     {
         "name": "symfony/config",
-        "version": "v4.2.1",
-        "version_normalized": "4.2.1.0",
+        "version": "v4.2.2",
+        "version_normalized": "4.2.2.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/config.git",
-            "reference": "005d9a083d03f588677d15391a716b1ac9b887c0"
+            "reference": "a7a7d0a0244cfc82f040729ccf769e6cf55a78fb"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/config/zipball/005d9a083d03f588677d15391a716b1ac9b887c0",
-            "reference": "005d9a083d03f588677d15391a716b1ac9b887c0",
+            "url": "https://api.github.com/repos/symfony/config/zipball/a7a7d0a0244cfc82f040729ccf769e6cf55a78fb",
+            "reference": "a7a7d0a0244cfc82f040729ccf769e6cf55a78fb",
             "shasum": ""
         },
         "require": {
@@ -3103,7 +3217,7 @@
         "suggest": {
             "symfony/yaml": "To use the yaml reference dumper"
         },
-        "time": "2018-11-30T22:21:14+00:00",
+        "time": "2019-01-03T09:07:35+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -3138,17 +3252,17 @@
     },
     {
         "name": "symfony/console",
-        "version": "v4.2.1",
-        "version_normalized": "4.2.1.0",
+        "version": "v4.2.2",
+        "version_normalized": "4.2.2.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/console.git",
-            "reference": "4dff24e5d01e713818805c1862d2e3f901ee7dd0"
+            "reference": "b0a03c1bb0fcbe288629956cf2f1dd3f1dc97522"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/console/zipball/4dff24e5d01e713818805c1862d2e3f901ee7dd0",
-            "reference": "4dff24e5d01e713818805c1862d2e3f901ee7dd0",
+            "url": "https://api.github.com/repos/symfony/console/zipball/b0a03c1bb0fcbe288629956cf2f1dd3f1dc97522",
+            "reference": "b0a03c1bb0fcbe288629956cf2f1dd3f1dc97522",
             "shasum": ""
         },
         "require": {
@@ -3174,7 +3288,7 @@
             "symfony/lock": "",
             "symfony/process": ""
         },
-        "time": "2018-11-27T07:40:44+00:00",
+        "time": "2019-01-04T15:13:53+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -3279,24 +3393,24 @@
     },
     {
         "name": "symfony/filesystem",
-        "version": "v4.2.1",
-        "version_normalized": "4.2.1.0",
+        "version": "v4.2.2",
+        "version_normalized": "4.2.2.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/filesystem.git",
-            "reference": "2f4c8b999b3b7cadb2a69390b01af70886753710"
+            "reference": "c2ffd9a93f2d6c5be2f68a0aa7953cc229f871f8"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/filesystem/zipball/2f4c8b999b3b7cadb2a69390b01af70886753710",
-            "reference": "2f4c8b999b3b7cadb2a69390b01af70886753710",
+            "url": "https://api.github.com/repos/symfony/filesystem/zipball/c2ffd9a93f2d6c5be2f68a0aa7953cc229f871f8",
+            "reference": "c2ffd9a93f2d6c5be2f68a0aa7953cc229f871f8",
             "shasum": ""
         },
         "require": {
             "php": "^7.1.3",
             "symfony/polyfill-ctype": "~1.8"
         },
-        "time": "2018-11-11T19:52:12+00:00",
+        "time": "2019-01-03T09:07:35+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -3452,17 +3566,17 @@
     },
     {
         "name": "symfony/translation",
-        "version": "v4.2.1",
-        "version_normalized": "4.2.1.0",
+        "version": "v4.2.2",
+        "version_normalized": "4.2.2.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/translation.git",
-            "reference": "c0e2191e9bed845946ab3d99767513b56ca7dcd6"
+            "reference": "939fb792d73f2ce80e6ae9019d205fc480f1c9a0"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/translation/zipball/c0e2191e9bed845946ab3d99767513b56ca7dcd6",
-            "reference": "c0e2191e9bed845946ab3d99767513b56ca7dcd6",
+            "url": "https://api.github.com/repos/symfony/translation/zipball/939fb792d73f2ce80e6ae9019d205fc480f1c9a0",
+            "reference": "939fb792d73f2ce80e6ae9019d205fc480f1c9a0",
             "shasum": ""
         },
         "require": {
@@ -3492,7 +3606,7 @@
             "symfony/config": "",
             "symfony/yaml": ""
         },
-        "time": "2018-12-06T10:45:32+00:00",
+        "time": "2019-01-03T09:07:35+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -3527,17 +3641,17 @@
     },
     {
         "name": "symfony/validator",
-        "version": "v3.4.20",
-        "version_normalized": "3.4.20.0",
+        "version": "v3.4.21",
+        "version_normalized": "3.4.21.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/validator.git",
-            "reference": "39bcf80269aa504c5aa3f18c7c63938ed0b66f00"
+            "reference": "cd3fba16d309347883b74bb0ee8cb4720a60554c"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/validator/zipball/39bcf80269aa504c5aa3f18c7c63938ed0b66f00",
-            "reference": "39bcf80269aa504c5aa3f18c7c63938ed0b66f00",
+            "url": "https://api.github.com/repos/symfony/validator/zipball/cd3fba16d309347883b74bb0ee8cb4720a60554c",
+            "reference": "cd3fba16d309347883b74bb0ee8cb4720a60554c",
             "shasum": ""
         },
         "require": {
@@ -3579,7 +3693,7 @@
             "symfony/property-access": "For accessing properties within comparison constraints",
             "symfony/yaml": ""
         },
-        "time": "2018-12-01T08:21:59+00:00",
+        "time": "2019-01-06T14:07:11+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -3614,17 +3728,17 @@
     },
     {
         "name": "symfony/yaml",
-        "version": "v4.2.1",
-        "version_normalized": "4.2.1.0",
+        "version": "v4.2.2",
+        "version_normalized": "4.2.2.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/yaml.git",
-            "reference": "c41175c801e3edfda90f32e292619d10c27103d7"
+            "reference": "d0aa6c0ea484087927b49fd513383a7d36190ca6"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/yaml/zipball/c41175c801e3edfda90f32e292619d10c27103d7",
-            "reference": "c41175c801e3edfda90f32e292619d10c27103d7",
+            "url": "https://api.github.com/repos/symfony/yaml/zipball/d0aa6c0ea484087927b49fd513383a7d36190ca6",
+            "reference": "d0aa6c0ea484087927b49fd513383a7d36190ca6",
             "shasum": ""
         },
         "require": {
@@ -3640,7 +3754,7 @@
         "suggest": {
             "symfony/console": "For validating YAML files using the lint command"
         },
-        "time": "2018-11-11T19:52:12+00:00",
+        "time": "2019-01-03T09:07:35+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -3744,27 +3858,28 @@
     },
     {
         "name": "webmozart/assert",
-        "version": "1.3.0",
-        "version_normalized": "1.3.0.0",
+        "version": "1.4.0",
+        "version_normalized": "1.4.0.0",
         "source": {
             "type": "git",
             "url": "https://github.com/webmozart/assert.git",
-            "reference": "0df1908962e7a3071564e857d86874dad1ef204a"
+            "reference": "83e253c8e0be5b0257b881e1827274667c5c17a9"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/webmozart/assert/zipball/0df1908962e7a3071564e857d86874dad1ef204a",
-            "reference": "0df1908962e7a3071564e857d86874dad1ef204a",
+            "url": "https://api.github.com/repos/webmozart/assert/zipball/83e253c8e0be5b0257b881e1827274667c5c17a9",
+            "reference": "83e253c8e0be5b0257b881e1827274667c5c17a9",
             "shasum": ""
         },
         "require": {
-            "php": "^5.3.3 || ^7.0"
+            "php": "^5.3.3 || ^7.0",
+            "symfony/polyfill-ctype": "^1.8"
         },
         "require-dev": {
             "phpunit/phpunit": "^4.6",
             "sebastian/version": "^1.0.1"
         },
-        "time": "2018-01-29T19:49:41+00:00",
+        "time": "2018-12-25T11:19:39+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {

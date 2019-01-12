@@ -87,4 +87,13 @@ interface ModuleInterface
      * @throws CommandFailed if the module failed to execute a command.
      */
     public function runCommand($command, $args, $extra);
+
+    /**
+     * Returns the given command options
+     *
+     * @param string $command
+     *
+     * @return array
+     */
+    public function getOptions($command);
 }

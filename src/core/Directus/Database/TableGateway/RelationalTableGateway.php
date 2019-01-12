@@ -44,6 +44,8 @@ class RelationalTableGateway extends BaseTableGateway
         'status' => null
     ];
 
+    // TODO: Improve this as list of operators
+    // Instead of shorthands, it could be a list of filters that maps to a method
     protected $operatorShorthand = [
         'eq' => ['operator' => 'equal_to', 'not' => false],
         '='  => ['operator' => 'equal_to', 'not' => false],
@@ -64,6 +66,9 @@ class RelationalTableGateway extends BaseTableGateway
         'nlike' => ['operator' => 'like', 'not' => true],
         'contains' => ['operator' => 'like'],
         'ncontains' => ['operator' => 'like', 'not' => true],
+
+        'rlike' => ['operator' => 'like'],
+        'nrlike' => ['operator' => 'like', 'not' => true],
 
         'nnull' => ['operator' => 'null', 'not' => true],
 
@@ -598,7 +603,7 @@ class RelationalTableGateway extends BaseTableGateway
             // Update/Add foreign record
             if ($this->recordDataContainsNonPrimaryKeyData($foreignRow, $foreignTableSchema->getPrimaryKeyName())) {
                 // NOTE: using manageRecordUpdate instead of addOrUpdateRecordByArray to update related data
-                $foreignRow = $this->manageRecordUpdate($foreignTableName, $foreignRow);
+                $foreignRow = $ForeignTable->manageRecordUpdate($foreignTableName, $foreignRow);
             }
 
             $parentRow[$fieldName] = $foreignRow[$primaryKey];
@@ -665,10 +670,10 @@ class RelationalTableGateway extends BaseTableGateway
 
                 // only add parent id's to items that are lacking the parent column
                 if (!array_key_exists($foreignJoinColumn, $foreignRecord)) {
-                    $foreignRecord[$foreignJoinColumn] = $parentRow['id'];
+                    $foreignRecord[$foreignJoinColumn] = $parentRow[$this->primaryKeyFieldName];
                 }
 
-                $foreignRecord = $this->manageRecordUpdate(
+                $foreignRecord = $ForeignTable->manageRecordUpdate(
                     $foreignTableName,
                     $foreignRecord,
                     ['activity_mode' => self::ACTIVITY_ENTRY_MODE_CHILD],
@@ -981,12 +986,12 @@ class RelationalTableGateway extends BaseTableGateway
 
         $selectedFields = $this->getSelectedNonAliasFields($fields ?: ['*']);
         if (!in_array($collectionObject->getPrimaryKeyName(), $selectedFields)) {
-            $selectedFields = array_unshift($selectedFields, $collectionObject->getPrimaryKeyName());
+            array_unshift($selectedFields, $collectionObject->getPrimaryKeyName());
         }
 
         $statusField = $collectionObject->getStatusField();
         if ($statusField && !in_array($statusField->getName(), $selectedFields) && $this->acl->getCollectionStatuses($this->table)) {
-            $selectedFields = array_unshift($selectedFields, $statusField->getName());
+            array_unshift($selectedFields, $statusField->getName());
         }
 
         $builder->columns($selectedFields);
@@ -1293,10 +1298,14 @@ class RelationalTableGateway extends BaseTableGateway
         }
 
         $condition = $this->parseCondition($condition);
-        $operator = ArrayUtils::get($condition, 'operator');
+        $operator = $filter = ArrayUtils::get($condition, 'operator');
         $value = ArrayUtils::get($condition, 'value');
         $not = ArrayUtils::get($condition, 'not');
         $logical = ArrayUtils::get($condition, 'logical');
+
+        if (!$this->isFilterSupported($operator)) {
+            throw new Exception\UnknownFilterException($operator);
+        }
 
         // TODO: if there's more, please add a better way to handle all this
         if ($field->isOneToMany()) {
@@ -1335,6 +1344,10 @@ class RelationalTableGateway extends BaseTableGateway
         if (in_array($operator, $splitOperators) && is_scalar($value)) {
             $value = explode(',', $value);
         }
+
+        // After "between" and "in" to support multiple values of "now"
+        $value = $this->getFieldNowValues($field, $value);
+        $value = $this->getLikeValue($operator, $filter, $value);
 
         $arguments = [$column, $value];
 
@@ -1418,13 +1431,19 @@ class RelationalTableGateway extends BaseTableGateway
     {
         $filters = $this->parseDotFilters($query, $filters);
 
-        foreach ($filters as $column => $condition) {
-            if ($condition instanceof Filter) {
-                $column =  $condition->getIdentifier();
-                $condition = $condition->getValue();
+        foreach ($filters as $column => $conditions) {
+            if ($conditions instanceof Filter) {
+                $column =  $conditions->getIdentifier();
+                $conditions = $conditions->getValue();
             }
 
-            $this->doFilter($query, $column, $condition, $this->getTable());
+            if (!is_array($conditions) || !isset($conditions[0])) {
+                $conditions = [$conditions];
+            }
+
+            foreach ($conditions as $condition) {
+                $this->doFilter($query, $column, $condition, $this->getTable());
+            }
         }
     }
 
@@ -2191,5 +2210,89 @@ class RelationalTableGateway extends BaseTableGateway
                 'parent_changed' => ArrayUtils::get($item, 'parent_changed')
             ]);
         }
+    }
+
+    /**
+     * List of all supported filters
+     *
+     * @return array
+     */
+    protected function getSupportedFilters()
+    {
+        $shorthands = array_keys($this->operatorShorthand);
+
+        $operators = [
+            'like',
+            'null',
+            'all',
+            'has',
+            'between',
+            'empty',
+        ];
+
+        return array_merge($shorthands, $operators);
+    }
+
+    /**
+     * Checks whether a given filter operator is supported
+     *
+     * @param string $operator
+     *
+     * @return bool
+     */
+    protected function isFilterSupported($operator)
+    {
+        return in_array($operator, $this->getSupportedFilters());
+    }
+
+    /**
+     * Returns the value of "now" for a date or datetime field
+     *
+     * @param Field $field
+     * @param string $value
+     *
+     * @return string
+     */
+    protected function getFieldNowValue(Field $field, $value)
+    {
+        $isNow = is_string($value) && strtolower($value) === 'now';
+        $isDateType = DataTypes::isDateType($field->getType());
+        $isDateTimeType = DataTypes::isDateTimeType($field->getType());
+
+        if (!$isNow || (!$isDateType && !$isDateTimeType)) {
+            return $value;
+        }
+
+        $isSystemCollection = $this->schemaManager->isSystemCollection($field->getCollectionName());
+        $datetime = DateTimeUtils::now();
+        $format = null;
+        if ($isDateType) {
+            $format = DateTimeUtils::DEFAULT_DATE_FORMAT;
+        }
+
+        return $isSystemCollection ? $datetime->toUTCString($format) : $datetime->toString($format);
+    }
+
+    protected function getFieldNowValues(Field $field, $value)
+    {
+        if (is_array($value)) {
+            foreach ($value as &$v) {
+                $v = $this->getFieldNowValue($field, $v);
+            }
+        } else {
+            $value = $this->getFieldNowValue($field, $value);
+        }
+
+        return $value;
+    }
+
+    protected function getLikeValue($operator, $filter, $value)
+    {
+        // Ignore raw like filter and non-like operators
+        if (in_array($filter, ['rlike', 'nrlike']) || $operator !== 'like') {
+            return $value;
+        }
+
+        return sprintf('%%%s%%', addcslashes($value, '%_'));
     }
 }

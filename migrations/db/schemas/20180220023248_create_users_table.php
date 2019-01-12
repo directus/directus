@@ -97,7 +97,7 @@ class CreateUsersTable extends AbstractMigration
             'default' => null
         ]);
         $table->addColumn('last_page', 'string', [
-            'limit' => 45,
+            'limit' => 192,
             'null' => true,
             'default' => null
         ]);

@@ -326,6 +326,10 @@
                 <source>This value should be a multiple of {{ compared_value }}.</source>
                 <target>{{ compared_value }}の倍数でなければなりません。</target>
             </trans-unit>
+            <trans-unit id="85">
+                <source>This Business Identifier Code (BIC) is not associated with IBAN {{ iban }}.</source>
+                <target>このSWIFTコードはIBANコード（{{ iban }}）に関連付けられていません。</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

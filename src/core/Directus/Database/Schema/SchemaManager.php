@@ -604,8 +604,8 @@ class SchemaManager
             foreach ($fieldsRelation as $relation) {
                 $fieldManyName = ArrayUtils::get($relation, 'field_many');
                 $fieldOneName = ArrayUtils::get($relation, 'field_one');
-                $fieldMany = $fieldManyName ? ArrayUtils::pull($fieldsByName, $fieldManyName) : null;
-                $fieldOne = $fieldOneName ? ArrayUtils::pull($fieldsByName, $fieldOneName) : null;
+                $fieldMany = $fieldManyName ? ArrayUtils::get($fieldsByName, $fieldManyName) : null;
+                $fieldOne = $fieldOneName ? ArrayUtils::get($fieldsByName, $fieldOneName) : null;
 
                 if ($fieldMany) {
                     $fieldMany->setRelationship($relation);

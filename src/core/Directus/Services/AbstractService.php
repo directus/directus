@@ -224,6 +224,8 @@ abstract class AbstractService
 
             if ($isRequired || (!$field->isNullable() && $field->getDefaultValue() == null)) {
                 $columnConstraints[] = 'required';
+            } else if (in_array($field->getName(), $fields) && !$field->isNullable()) {
+                $columnConstraints[] = 'notnullable';
             }
 
             if (DataTypes::isArray($field->getType())) {
@@ -439,14 +441,22 @@ abstract class AbstractService
             }
 
             if ($validation = $field->getValidation()) {
-                if (!\Directus\is_valid_regex_pattern($validation)) {
+                $isCustomValidation = \Directus\is_custom_validation($validation);
+
+                if (!$isCustomValidation && !\Directus\is_valid_regex_pattern($validation)) {
                     throw new UnprocessableEntityException(
                         sprintf('Field "%s": "%s" is an invalid regular expression', $fieldName, $validation)
                     );
                 }
 
+                if ($isCustomValidation) {
+                    $constraint = $this->validator->getConstraint(\Directus\get_custom_validation_name($validation));
+                } else {
+                    $constraint = new Regex($validation);
+                }
+
                 $violations[$fieldName] = $this->validator->getProvider()->validate($value, [
-                    new Regex($validation)
+                    $constraint
                 ]);
             }
         }

@@ -156,6 +156,7 @@ class IbanValidatorTest extends ConstraintValidatorTestCase
             array('TR330006100519786457841326'), //Turkey
             array('UA213223130000026007233566001'), //Ukraine
             array('AE260211000000230064016'), //United Arab Emirates
+            array('VA59001123000012345678'), //Vatican City State
         );
     }
 
@@ -274,6 +275,7 @@ class IbanValidatorTest extends ConstraintValidatorTestCase
             array('TR3300061005197864578413261'), //Turkey
             array('UA21AAAA1300000260072335660012'), //Ukraine
             array('AE2602110000002300640161'), //United Arab Emirates
+            array('VA590011230000123456781'), //Vatican City State
         );
     }
 
@@ -385,6 +387,7 @@ class IbanValidatorTest extends ConstraintValidatorTestCase
             array('TR330006100519786457841327'), //Turkey
             array('UA213223130000026007233566002'), //Ukraine
             array('AE260211000000230064017'), //United Arab Emirates
+            array('VA59001123000012345671'), //Vatican City State
         );
     }
 

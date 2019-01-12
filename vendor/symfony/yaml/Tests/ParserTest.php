@@ -2024,6 +2024,48 @@ EOE;
     }
 
     /**
+     * @dataProvider circularReferenceProvider
+     * @expectedException \Symfony\Component\Yaml\Exception\ParseException
+     * @expectedExceptionMessage Circular reference [foo, bar, foo] detected
+     */
+    public function testDetectCircularReferences($yaml)
+    {
+        $this->parser->parse($yaml, Yaml::PARSE_CUSTOM_TAGS);
+    }
+
+    public function circularReferenceProvider()
+    {
+        $tests = array();
+
+        $yaml = <<<YAML
+foo:
+    - &foo
+      - &bar
+        bar: foobar
+        baz: *foo
+YAML;
+        $tests['sequence'] = array($yaml);
+
+        $yaml = <<<YAML
+foo: &foo
+    bar: &bar
+        foobar: baz
+        baz: *foo
+YAML;
+        $tests['mapping'] = array($yaml);
+
+        $yaml = <<<YAML
+foo: &foo
+    bar: &bar
+        foobar: baz
+        <<: *foo
+YAML;
+        $tests['mapping with merge key'] = array($yaml);
+
+        return $tests;
+    }
+
+    /**
      * @dataProvider indentedMappingData
      */
     public function testParseIndentedMappings($yaml, $expected)

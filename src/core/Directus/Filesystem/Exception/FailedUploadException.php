@@ -16,4 +16,9 @@ class FailedUploadException extends FilesystemException
     {
         return static::ERROR_CODE + $this->uploadedError;
     }
+
+    public function getStatusCode()
+    {
+        return \Directus\get_uploaded_file_status($this->uploadedError);
+    }
 }

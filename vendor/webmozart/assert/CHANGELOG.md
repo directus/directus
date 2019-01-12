@@ -3,6 +3,25 @@ Changelog
 
 ## UNRELEASED
 
+## 1.4.0 (2018-12-25)
+
+### Added
+
+* added `Assert::ip()`
+* added `Assert::ipv4()`
+* added `Assert::ipv6()`
+* added `Assert::notRegex()`
+* added `Assert::interfaceExists()`
+* added `Assert::isList()`
+* added `Assert::isMap()`
+* added polyfill for ctype
+
+### Fixed
+
+* Special case when comparing objects implementing `__toString()`
+
+## 1.3.0 (2018-01-29)
+
 ### Added 
 
 * added `Assert::minCount()`
@@ -19,6 +38,10 @@ Changelog
 ### Fixed
 
 * `stringNotEmpty` will no longer report "0" is an empty string
+
+### Deprecation
+
+* deprecated `Assert::isTraversable()` in favor of `Assert::isIterable()`
 
 ## 1.2.0 (2016-11-23)
 

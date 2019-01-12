@@ -23,6 +23,7 @@ return [
         'charset' => 'utf8mb4',
         // When using unix socket to connect to the database the host attribute should be removed
         // 'socket' => '/var/lib/mysql/mysql.sock',
+        'socket' => '',
     ],
 
     'cache' => [

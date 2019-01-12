@@ -696,11 +696,19 @@ class CoreServicesProvider
                 ];
             }
 
+            $parameters = array_merge($defaultConfig, $dbConfig, [
+                'driver' => $type ? 'Pdo_' . $type : null,
+                'charset' => $charset
+            ]);
+
+            if (!ArrayUtils::get($parameters, 'unix_socket')) {
+                ArrayUtils::remove($parameters, 'unix_socket');
+            } else {
+                ArrayUtils::remove($parameters, 'host');
+            }
+
             try {
-                $db = new Connection(array_merge($defaultConfig, $dbConfig, [
-                    'driver' => $type ? 'Pdo_' . $type : null,
-                    'charset' => $charset
-                ]));
+                $db = new Connection($parameters);
                 $db->connect();
             } catch (\Exception $e) {
                 throw new ConnectionFailedException($e);

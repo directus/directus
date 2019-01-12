@@ -78,35 +78,37 @@ class Inline
             mb_internal_encoding('ASCII');
         }
 
-        $i = 0;
-        $tag = self::parseTag($value, $i, $flags);
-        switch ($value[$i]) {
-            case '[':
-                $result = self::parseSequence($value, $flags, $i, $references);
-                ++$i;
-                break;
-            case '{':
-                $result = self::parseMapping($value, $flags, $i, $references);
-                ++$i;
-                break;
-            default:
-                $result = self::parseScalar($value, $flags, null, $i, null === $tag, $references);
-        }
+        try {
+            $i = 0;
+            $tag = self::parseTag($value, $i, $flags);
+            switch ($value[$i]) {
+                case '[':
+                    $result = self::parseSequence($value, $flags, $i, $references);
+                    ++$i;
+                    break;
+                case '{':
+                    $result = self::parseMapping($value, $flags, $i, $references);
+                    ++$i;
+                    break;
+                default:
+                    $result = self::parseScalar($value, $flags, null, $i, null === $tag, $references);
+            }
 
-        if (null !== $tag && '' !== $tag) {
-            return new TaggedValue($tag, $result);
-        }
+            if (null !== $tag && '' !== $tag) {
+                return new TaggedValue($tag, $result);
+            }
 
-        // some comments are allowed at the end
-        if (preg_replace('/\s+#.*$/A', '', substr($value, $i))) {
-            throw new ParseException(sprintf('Unexpected characters near "%s".', substr($value, $i)), self::$parsedLineNumber + 1, $value, self::$parsedFilename);
-        }
+            // some comments are allowed at the end
+            if (preg_replace('/\s+#.*$/A', '', substr($value, $i))) {
+                throw new ParseException(sprintf('Unexpected characters near "%s".', substr($value, $i)), self::$parsedLineNumber + 1, $value, self::$parsedFilename);
+            }
 
-        if (isset($mbEncoding)) {
-            mb_internal_encoding($mbEncoding);
+            return $result;
+        } finally {
+            if (isset($mbEncoding)) {
+                mb_internal_encoding($mbEncoding);
+            }
         }
-
-        return $result;
     }
 
     /**

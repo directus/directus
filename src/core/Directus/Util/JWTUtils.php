@@ -138,11 +138,12 @@ class JWTUtils
     /**
      * Get the token payload object
      *
-     * @param $token
+     * @param string $token
+     * @param string $attribute
      *
      * @return null|object
      */
-    public static function getPayload($token)
+    public static function getPayload($token, $attribute = null)
     {
         if (!is_string($token)) {
             return null;
@@ -155,7 +156,17 @@ class JWTUtils
 
         list($headb64, $bodyb64, $cryptob64) = $parts;
 
-        return JWT::jsonDecode(JWT::urlsafeB64Decode($bodyb64));
+        $payload = JWT::jsonDecode(JWT::urlsafeB64Decode($bodyb64));
+
+        if ($attribute === null) {
+            return $payload;
+        }
+
+        if (!is_string($attribute) || !property_exists($payload, $attribute)) {
+            return null;
+        }
+
+        return $payload->{$attribute};
     }
 
     /**

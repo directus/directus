@@ -127,7 +127,7 @@ class TranslatorCacheTest extends TestCase
     {
         /*
          * Similar to the previous test. After we used the second translator, make
-         * sure there's still a useable cache for the first one.
+         * sure there's still a usable cache for the first one.
          */
 
         $locale = 'any_locale';
@@ -146,7 +146,7 @@ class TranslatorCacheTest extends TestCase
         $translator->addResource($format, array($msgid => 'FAIL'), $locale);
         $translator->trans($msgid);
 
-        // Now the first translator must still have a useable cache.
+        // Now the first translator must still have a usable cache.
         $translator = new Translator($locale, null, $this->tmpDir, $debug);
         $translator->addLoader($format, $this->createFailingLoader());
         $translator->addResource($format, array($msgid => 'OK'), $locale);

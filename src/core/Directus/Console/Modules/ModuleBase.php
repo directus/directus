@@ -4,12 +4,14 @@ namespace Directus\Console\Modules;
 
 use Directus\Console\Exception\UnsupportedCommandException;
 use Directus\Console\Exception\WrongArgumentsException;
+use Directus\Util\ArrayUtils;
 
 class ModuleBase implements ModuleInterface
 {
     protected $__module_name;
     protected $__module_description;
 
+    protected $options = [];
     protected $commands_help;
     protected $help;
     protected $basePath = '';
@@ -71,5 +73,13 @@ class ModuleBase implements ModuleInterface
             echo "\t" . 'Options: ' . PHP_EOL . $this->getCommandHelp($extra[0]);
         }
         echo PHP_EOL . PHP_EOL;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getOptions($command)
+    {
+        return ArrayUtils::get($this->options, $command, []);
     }
 }

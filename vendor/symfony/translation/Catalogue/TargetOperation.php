@@ -40,10 +40,10 @@ class TargetOperation extends AbstractOperation
         // For 'all' messages, the code can't be simplified as ``$this->messages[$domain]['all'] = $target->all($domain);``,
         // because doing so will drop messages like {x: x ∈ source ∧ x ∉ target.all ∧ x ∈ target.fallback}
         //
-        // For 'new' messages, the code can't be simplied as ``array_diff_assoc($this->target->all($domain), $this->source->all($domain));``
+        // For 'new' messages, the code can't be simplified as ``array_diff_assoc($this->target->all($domain), $this->source->all($domain));``
         // because doing so will not exclude messages like {x: x ∈ target ∧ x ∉ source.all ∧ x ∈ source.fallback}
         //
-        // For 'obsolete' messages, the code can't be simplifed as ``array_diff_assoc($this->source->all($domain), $this->target->all($domain))``
+        // For 'obsolete' messages, the code can't be simplified as ``array_diff_assoc($this->source->all($domain), $this->target->all($domain))``
         // because doing so will not exclude messages like {x: x ∈ source ∧ x ∉ target.all ∧ x ∈ target.fallback}
 
         foreach ($this->source->all($domain) as $id => $message) {

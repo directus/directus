@@ -6,6 +6,10 @@ $basePath = realpath(__DIR__ . '/../');
 $loader = require $basePath . '/vendor/autoload.php';
 
 $cli = new \Directus\Console\Cli($basePath);
-$cli->run();
+try {
+    $cli->run();
+} catch (\Exception $e) {
+    echo $e->getMessage() . PHP_EOL;
+}
 
 ?>

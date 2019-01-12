@@ -64,6 +64,38 @@ if (!function_exists('get_uploaded_file_error')) {
     }
 }
 
+if (!function_exists('get_uploaded_file_status')) {
+    /**
+     * Returns the upload file http status code
+     *
+     * @param $error
+     *
+     * @return int|null
+     */
+    function get_uploaded_file_status($error)
+    {
+        switch ($error) {
+            case UPLOAD_ERR_INI_SIZE:
+                $code = 413;
+                break;
+            case UPLOAD_ERR_FORM_SIZE:
+            case UPLOAD_ERR_PARTIAL:
+            case UPLOAD_ERR_NO_FILE:
+            case UPLOAD_ERR_NO_TMP_DIR:
+            case UPLOAD_ERR_CANT_WRITE:
+            case UPLOAD_ERR_EXTENSION:
+            default:
+                $code = null;
+                break;
+            case UPLOAD_ERR_OK:
+                $code = 200;
+                break;
+        }
+
+        return $code;
+    }
+}
+
 if (!function_exists('append_storage_information'))
 {
     /**

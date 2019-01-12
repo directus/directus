@@ -9,6 +9,7 @@ use Directus\Application\Http\Middleware\CorsMiddleware;
 use Directus\Application\Http\Request;
 use Directus\Application\Http\Response;
 use Directus\Collection\Collection;
+use Directus\Config\Config;
 use Directus\Exception\Exception;
 use Slim\Http\Body;
 
@@ -46,18 +47,63 @@ if (!function_exists('create_app_with_project_name')) {
      */
     function create_app_with_project_name($basePath, $name, array $values = [])
     {
+        return create_app($basePath, get_project_config($name, $basePath)->toArray(), $values);
+    }
+}
+
+if (!function_exists('get_project_config')) {
+    /**
+     * Returns the configuration for a given project
+     *
+     * @param string|null $name
+     * @param string|null $basePath
+     *
+     * @return Config
+     *
+     * @throws Exception
+     */
+    function get_project_config($name = null, $basePath = null)
+    {
+        static $configs = [];
+
+        if ($basePath === null) {
+            $basePath = get_app_base_path();
+        }
+
         $configPath = $basePath . '/config';
-        $configFilePath = $configPath . '/api.php';
 
         if (!empty($name) && $name !== '_') {
             $configFilePath = sprintf('%s/api.%s.php', $configPath, $name);
+        } else {
+            $configFilePath = $configPath . '/api.php';
+        }
+
+        if (isset($configs[$configFilePath])) {
+            return $configs[$configFilePath];
         }
 
         if (!file_exists($configFilePath)) {
             throw new Exception('Unknown environment: ' . $name);
         }
 
-        return create_app($basePath, require $configFilePath);
+        $config = new Config(require $configFilePath);
+        $configs[$configFilePath] = $config;
+
+        return $config;
+    }
+}
+
+if (!function_exists('get_app_base_path')) {
+    /**
+     * Returns the application base path
+     *
+     * @return string
+     */
+    function get_app_base_path()
+    {
+        $container = Application::getInstance()->getContainer();
+
+        return $container->get('path_base');
     }
 }
 

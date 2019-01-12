@@ -7,7 +7,7 @@
 #
 # Host: localhost (MySQL 5.6.38)
 # Database: directus
-# Generation Time: 2018-12-17 21:48:43 +0000
+# Generation Time: 2019-01-11 21:49:49 +0000
 # ************************************************************
 
 
@@ -245,35 +245,46 @@ VALUES
 	(101,'directus_roles','description','string','text-input',NULL,1,NULL,0,0,0,0,2,2,NULL,NULL,NULL),
 	(102,'directus_roles','ip_whitelist','string','textarea',NULL,1,NULL,0,0,0,0,NULL,4,NULL,NULL,NULL),
 	(103,'directus_roles','nav_blacklist','string','textarea',NULL,1,NULL,0,0,1,1,NULL,4,NULL,NULL,NULL),
-	(104,'directus_settings','auto_sign_out','integer','numeric',NULL,1,NULL,0,0,0,0,NULL,4,NULL,NULL,NULL),
-	(105,'directus_settings','logo','file','file',NULL,1,NULL,0,0,0,0,NULL,4,NULL,NULL,NULL),
-	(106,'directus_settings','color','string','color-palette',NULL,1,NULL,0,0,0,0,NULL,4,NULL,NULL,NULL),
-	(107,'directus_settings','trusted_proxies','array','tags',NULL,1,NULL,0,0,0,0,NULL,4,NULL,NULL,NULL),
-	(108,'directus_users','id','integer','primary-key',NULL,1,NULL,1,0,1,0,1,4,NULL,NULL,NULL),
-	(109,'directus_users','status','status','status','{\"status_mapping\":{\"draft\":{\"name\":\"Draft\",\"text_color\":\"white\",\"background_color\":\"light-gray\",\"listing_subdued\":false,\"listing_badge\":true,\"soft_delete\":false},\"invited\":{\"name\":\"Invited\",\"text_color\":\"white\",\"background_color\":\"light-gray\",\"listing_subdued\":false,\"listing_badge\":true,\"soft_delete\":false},\"active\":{\"name\":\"Active\",\"text_color\":\"white\",\"background_color\":\"success\",\"listing_subdued\":false,\"listing_badge\":false,\"soft_delete\":false},\"suspended\":{\"name\":\"Suspended\",\"text_color\":\"white\",\"background_color\":\"light-gray\",\"listing_subdued\":false,\"listing_badge\":true,\"soft_delete\":false},\"deleted\":{\"name\":\"Deleted\",\"text_color\":\"white\",\"background_color\":\"danger\",\"listing_subdued\":false,\"listing_badge\":true,\"soft_delete\":true}}}',1,NULL,0,0,0,0,2,4,NULL,NULL,NULL),
-	(110,'directus_users','first_name','string','text-input','{\"placeholder\":\"Enter your give name...\"}',1,NULL,1,0,0,0,3,2,NULL,NULL,NULL),
-	(111,'directus_users','last_name','string','text-input','{\"placeholder\":\"Enter your surname...\"}',1,NULL,1,0,0,0,4,2,NULL,NULL,NULL),
-	(112,'directus_users','email','string','text-input','{\"placeholder\":\"Enter your email address...\"}',1,NULL,1,0,0,0,5,2,NULL,NULL,NULL),
-	(113,'directus_users','email_notifications','boolean','toggle',NULL,1,NULL,0,0,0,0,6,2,NULL,NULL,NULL),
-	(114,'directus_users','password','string','password',NULL,1,NULL,1,0,0,0,7,2,NULL,NULL,NULL),
-	(115,'directus_users','roles','o2m','user-roles',NULL,1,NULL,0,0,0,0,8,2,NULL,NULL,NULL),
-	(116,'directus_users','company','string','text-input','{\"placeholder\":\"Enter your company or organization name...\"}',0,NULL,0,0,0,0,9,2,NULL,NULL,NULL),
-	(117,'directus_users','title','string','text-input','{\"placeholder\":\"Enter your title or role...\"}',0,NULL,0,0,0,0,10,2,NULL,NULL,NULL),
-	(118,'directus_users','timezone','string','dropdown','{\"choices\":{\"Pacific\\/Midway\":\"(UTC-11:00) Midway Island\",\"Pacific\\/Samoa\":\"(UTC-11:00) Samoa\",\"Pacific\\/Honolulu\":\"(UTC-10:00) Hawaii\",\"US\\/Alaska\":\"(UTC-09:00) Alaska\",\"America\\/Los_Angeles\":\"(UTC-08:00) Pacific Time (US & Canada)\",\"America\\/Tijuana\":\"(UTC-08:00) Tijuana\",\"US\\/Arizona\":\"(UTC-07:00) Arizona\",\"America\\/Chihuahua\":\"(UTC-07:00) Chihuahua\",\"America\\/Mexico\\/La_Paz\":\"(UTC-07:00) La Paz\",\"America\\/Mazatlan\":\"(UTC-07:00) Mazatlan\",\"US\\/Mountain\":\"(UTC-07:00) Mountain Time (US & Canada)\",\"America\\/Managua\":\"(UTC-06:00) Central America\",\"US\\/Central\":\"(UTC-06:00) Central Time (US & Canada)\",\"America\\/Guadalajara\":\"(UTC-06:00) Guadalajara\",\"America\\/Mexico_City\":\"(UTC-06:00) Mexico City\",\"America\\/Monterrey\":\"(UTC-06:00) Monterrey\",\"Canada\\/Saskatchewan\":\"(UTC-06:00) Saskatchewan\",\"America\\/Bogota\":\"(UTC-05:00) Bogota\",\"US\\/Eastern\":\"(UTC-05:00) Eastern Time (US & Canada)\",\"US\\/East-Indiana\":\"(UTC-05:00) Indiana (East)\",\"America\\/Lima\":\"(UTC-05:00) Lima\",\"America\\/Quito\":\"(UTC-05:00) Quito\",\"Canada\\/Atlantic\":\"(UTC-04:00) Atlantic Time (Canada)\",\"America\\/New_York\":\"(UTC-04:00) New York\",\"America\\/Caracas\":\"(UTC-04:30) Caracas\",\"America\\/La_Paz\":\"(UTC-04:00) La Paz\",\"America\\/Santiago\":\"(UTC-04:00) Santiago\",\"America\\/Santo_Domingo\":\"(UTC-04:00) Santo Domingo\",\"Canada\\/Newfoundland\":\"(UTC-03:30) Newfoundland\",\"America\\/Sao_Paulo\":\"(UTC-03:00) Brasilia\",\"America\\/Argentina\\/Buenos_Aires\":\"(UTC-03:00) Buenos Aires\",\"America\\/Argentina\\/GeorgeTown\":\"(UTC-03:00) Georgetown\",\"America\\/Godthab\":\"(UTC-03:00) Greenland\",\"America\\/Noronha\":\"(UTC-02:00) Mid-Atlantic\",\"Atlantic\\/Azores\":\"(UTC-01:00) Azores\",\"Atlantic\\/Cape_Verde\":\"(UTC-01:00) Cape Verde Is.\",\"Africa\\/Casablanca\":\"(UTC+00:00) Casablanca\",\"Europe\\/Edinburgh\":\"(UTC+00:00) Edinburgh\",\"Etc\\/Greenwich\":\"(UTC+00:00) Greenwich Mean Time : Dublin\",\"Europe\\/Lisbon\":\"(UTC+00:00) Lisbon\",\"Europe\\/London\":\"(UTC+00:00) London\",\"Africa\\/Monrovia\":\"(UTC+00:00) Monrovia\",\"UTC\":\"(UTC+00:00) UTC\",\"Europe\\/Amsterdam\":\"(UTC+01:00) Amsterdam\",\"Europe\\/Belgrade\":\"(UTC+01:00) Belgrade\",\"Europe\\/Berlin\":\"(UTC+01:00) Berlin\",\"Europe\\/Bern\":\"(UTC+01:00) Bern\",\"Europe\\/Bratislava\":\"(UTC+01:00) Bratislava\",\"Europe\\/Brussels\":\"(UTC+01:00) Brussels\",\"Europe\\/Budapest\":\"(UTC+01:00) Budapest\",\"Europe\\/Copenhagen\":\"(UTC+01:00) Copenhagen\",\"Europe\\/Ljubljana\":\"(UTC+01:00) Ljubljana\",\"Europe\\/Madrid\":\"(UTC+01:00) Madrid\",\"Europe\\/Paris\":\"(UTC+01:00) Paris\",\"Europe\\/Prague\":\"(UTC+01:00) Prague\",\"Europe\\/Rome\":\"(UTC+01:00) Rome\",\"Europe\\/Sarajevo\":\"(UTC+01:00) Sarajevo\",\"Europe\\/Skopje\":\"(UTC+01:00) Skopje\",\"Europe\\/Stockholm\":\"(UTC+01:00) Stockholm\",\"Europe\\/Vienna\":\"(UTC+01:00) Vienna\",\"Europe\\/Warsaw\":\"(UTC+01:00) Warsaw\",\"Africa\\/Lagos\":\"(UTC+01:00) West Central Africa\",\"Europe\\/Zagreb\":\"(UTC+01:00) Zagreb\",\"Europe\\/Athens\":\"(UTC+02:00) Athens\",\"Europe\\/Bucharest\":\"(UTC+02:00) Bucharest\",\"Africa\\/Cairo\":\"(UTC+02:00) Cairo\",\"Africa\\/Harare\":\"(UTC+02:00) Harare\",\"Europe\\/Helsinki\":\"(UTC+02:00) Helsinki\",\"Europe\\/Istanbul\":\"(UTC+02:00) Istanbul\",\"Asia\\/Jerusalem\":\"(UTC+02:00) Jerusalem\",\"Europe\\/Kyiv\":\"(UTC+02:00) Kyiv\",\"Africa\\/Johannesburg\":\"(UTC+02:00) Pretoria\",\"Europe\\/Riga\":\"(UTC+02:00) Riga\",\"Europe\\/Sofia\":\"(UTC+02:00) Sofia\",\"Europe\\/Tallinn\":\"(UTC+02:00) Tallinn\",\"Europe\\/Vilnius\":\"(UTC+02:00) Vilnius\",\"Asia\\/Baghdad\":\"(UTC+03:00) Baghdad\",\"Asia\\/Kuwait\":\"(UTC+03:00) Kuwait\",\"Europe\\/Minsk\":\"(UTC+03:00) Minsk\",\"Africa\\/Nairobi\":\"(UTC+03:00) Nairobi\",\"Asia\\/Riyadh\":\"(UTC+03:00) Riyadh\",\"Europe\\/Volgograd\":\"(UTC+03:00) Volgograd\",\"Asia\\/Tehran\":\"(UTC+03:30) Tehran\",\"Asia\\/Abu_Dhabi\":\"(UTC+04:00) Abu Dhabi\",\"Asia\\/Baku\":\"(UTC+04:00) Baku\",\"Europe\\/Moscow\":\"(UTC+04:00) Moscow\",\"Asia\\/Muscat\":\"(UTC+04:00) Muscat\",\"Europe\\/St_Petersburg\":\"(UTC+04:00) St. Petersburg\",\"Asia\\/Tbilisi\":\"(UTC+04:00) Tbilisi\",\"Asia\\/Yerevan\":\"(UTC+04:00) Yerevan\",\"Asia\\/Kabul\":\"(UTC+04:30) Kabul\",\"Asia\\/Islamabad\":\"(UTC+05:00) Islamabad\",\"Asia\\/Karachi\":\"(UTC+05:00) Karachi\",\"Asia\\/Tashkent\":\"(UTC+05:00) Tashkent\",\"Asia\\/Calcutta\":\"(UTC+05:30) Chennai\",\"Asia\\/Kolkata\":\"(UTC+05:30) Kolkata\",\"Asia\\/Mumbai\":\"(UTC+05:30) Mumbai\",\"Asia\\/New_Delhi\":\"(UTC+05:30) New Delhi\",\"Asia\\/Sri_Jayawardenepura\":\"(UTC+05:30) Sri Jayawardenepura\",\"Asia\\/Katmandu\":\"(UTC+05:45) Kathmandu\",\"Asia\\/Almaty\":\"(UTC+06:00) Almaty\",\"Asia\\/Astana\":\"(UTC+06:00) Astana\",\"Asia\\/Dhaka\":\"(UTC+06:00) Dhaka\",\"Asia\\/Yekaterinburg\":\"(UTC+06:00) Ekaterinburg\",\"Asia\\/Rangoon\":\"(UTC+06:30) Rangoon\",\"Asia\\/Bangkok\":\"(UTC+07:00) Bangkok\",\"Asia\\/Hanoi\":\"(UTC+07:00) Hanoi\",\"Asia\\/Jakarta\":\"(UTC+07:00) Jakarta\",\"Asia\\/Novosibirsk\":\"(UTC+07:00) Novosibirsk\",\"Asia\\/Beijing\":\"(UTC+08:00) Beijing\",\"Asia\\/Chongqing\":\"(UTC+08:00) Chongqing\",\"Asia\\/Hong_Kong\":\"(UTC+08:00) Hong Kong\",\"Asia\\/Krasnoyarsk\":\"(UTC+08:00) Krasnoyarsk\",\"Asia\\/Kuala_Lumpur\":\"(UTC+08:00) Kuala Lumpur\",\"Australia\\/Perth\":\"(UTC+08:00) Perth\",\"Asia\\/Singapore\":\"(UTC+08:00) Singapore\",\"Asia\\/Taipei\":\"(UTC+08:00) Taipei\",\"Asia\\/Ulan_Bator\":\"(UTC+08:00) Ulaan Bataar\",\"Asia\\/Urumqi\":\"(UTC+08:00) Urumqi\",\"Asia\\/Irkutsk\":\"(UTC+09:00) Irkutsk\",\"Asia\\/Osaka\":\"(UTC+09:00) Osaka\",\"Asia\\/Sapporo\":\"(UTC+09:00) Sapporo\",\"Asia\\/Seoul\":\"(UTC+09:00) Seoul\",\"Asia\\/Tokyo\":\"(UTC+09:00) Tokyo\",\"Australia\\/Adelaide\":\"(UTC+09:30) Adelaide\",\"Australia\\/Darwin\":\"(UTC+09:30) Darwin\",\"Australia\\/Brisbane\":\"(UTC+10:00) Brisbane\",\"Australia\\/Canberra\":\"(UTC+10:00) Canberra\",\"Pacific\\/Guam\":\"(UTC+10:00) Guam\",\"Australia\\/Hobart\":\"(UTC+10:00) Hobart\",\"Australia\\/Melbourne\":\"(UTC+10:00) Melbourne\",\"Pacific\\/Port_Moresby\":\"(UTC+10:00) Port Moresby\",\"Australia\\/Sydney\":\"(UTC+10:00) Sydney\",\"Asia\\/Yakutsk\":\"(UTC+10:00) Yakutsk\",\"Asia\\/Vladivostok\":\"(UTC+11:00) Vladivostok\",\"Pacific\\/Auckland\":\"(UTC+12:00) Auckland\",\"Pacific\\/Fiji\":\"(UTC+12:00) Fiji\",\"Pacific\\/Kwajalein\":\"(UTC+12:00) International Date Line West\",\"Asia\\/Kamchatka\":\"(UTC+12:00) Kamchatka\",\"Asia\\/Magadan\":\"(UTC+12:00) Magadan\",\"Pacific\\/Marshall_Is\":\"(UTC+12:00) Marshall Is.\",\"Asia\\/New_Caledonia\":\"(UTC+12:00) New Caledonia\",\"Asia\\/Solomon_Is\":\"(UTC+12:00) Solomon Is.\",\"Pacific\\/Wellington\":\"(UTC+12:00) Wellington\",\"Pacific\\/Tongatapu\":\"(UTC+13:00) Nuku\'alofa\"},\"placeholder\":\"Choose a timezone...\"}',1,NULL,0,0,0,0,11,2,NULL,NULL,NULL),
-	(119,'directus_users','locale','string','language','{\"limit\":true}',1,NULL,0,0,0,0,12,2,NULL,NULL,NULL),
-	(120,'directus_users','locale_options','json','code',NULL,1,NULL,0,0,1,1,13,4,NULL,NULL,NULL),
-	(121,'directus_users','token','string','text-input',NULL,1,NULL,0,0,1,1,14,4,NULL,NULL,NULL),
-	(122,'directus_users','last_login','datetime','datetime',NULL,1,NULL,0,1,0,0,15,2,NULL,NULL,NULL),
-	(123,'directus_users','last_access_on','datetime','datetime',NULL,1,NULL,0,1,1,0,16,2,NULL,NULL,NULL),
-	(124,'directus_users','last_page','string','text-input',NULL,1,NULL,0,1,1,1,17,2,NULL,NULL,NULL),
-	(125,'directus_users','avatar','file','file',NULL,1,NULL,0,0,0,0,18,4,NULL,NULL,NULL),
-	(126,'directus_users','invite_token','string','text-input',NULL,1,NULL,0,0,1,1,NULL,4,NULL,NULL,NULL),
-	(127,'directus_users','invite_accepted','boolean','toggle',NULL,1,NULL,0,0,1,1,NULL,4,NULL,NULL,NULL),
-	(128,'directus_users','last_ip','string','text-input',NULL,1,NULL,0,1,1,0,NULL,4,NULL,NULL,NULL),
-	(129,'directus_users','external_id','string','text-input',NULL,1,NULL,0,1,1,0,NULL,4,NULL,NULL,NULL),
-	(130,'directus_user_roles','id','integer','primary-key',NULL,1,NULL,1,0,1,0,NULL,4,NULL,NULL,NULL),
-	(131,'directus_user_roles','user','m2o','many-to-one',NULL,1,NULL,0,0,0,0,NULL,4,NULL,NULL,NULL),
-	(132,'directus_user_roles','role','m2o','many-to-one',NULL,1,NULL,0,0,0,0,NULL,4,NULL,NULL,NULL);
+	(104,'directus_settings','project_name','string','text-input',NULL,1,NULL,0,0,0,0,NULL,4,NULL,NULL,NULL),
+	(105,'directus_settings','project_url','string','text-input',NULL,1,NULL,0,0,0,0,NULL,4,NULL,NULL,NULL),
+	(106,'directus_settings','app_url','string','text-input',NULL,1,NULL,0,0,0,0,NULL,4,NULL,NULL,NULL),
+	(107,'directus_settings','logo','file','file',NULL,1,NULL,0,0,0,0,NULL,4,NULL,NULL,NULL),
+	(108,'directus_settings','color','string','color-palette',NULL,1,NULL,0,0,0,0,NULL,4,NULL,NULL,NULL),
+	(109,'directus_settings','default_limit','integer','numeric',NULL,1,NULL,0,0,0,0,NULL,4,NULL,NULL,NULL),
+	(110,'directus_settings','sort_null_last','boolean','toggle',NULL,1,NULL,0,0,0,0,NULL,4,NULL,NULL,NULL),
+	(111,'directus_settings','auto_sign_out','integer','numeric',NULL,1,NULL,0,0,0,0,NULL,4,NULL,NULL,NULL),
+	(112,'directus_settings','trusted_proxies','array','tags',NULL,1,NULL,0,0,0,0,NULL,4,NULL,NULL,NULL),
+	(113,'directus_settings','youtube_api','string','text-input',NULL,1,NULL,0,0,0,0,NULL,4,NULL,NULL,NULL),
+	(114,'directus_settings','thumbnail_dimensions','array','tags',NULL,1,NULL,0,0,0,0,NULL,4,NULL,NULL,NULL),
+	(115,'directus_settings','thumbnail_quality_tags','json','code',NULL,1,NULL,0,0,0,0,NULL,4,NULL,NULL,NULL),
+	(116,'directus_settings','thumbnail_actions','json','code',NULL,1,NULL,0,0,0,0,NULL,4,NULL,NULL,NULL),
+	(117,'directus_settings','thumbnail_cache_ttl','integer','numeric',NULL,1,NULL,0,0,0,0,NULL,4,NULL,NULL,NULL),
+	(118,'directus_settings','thumbnail_not_found_location','string','text-input',NULL,1,NULL,0,0,0,0,NULL,4,NULL,NULL,NULL),
+	(119,'directus_users','id','integer','primary-key',NULL,1,NULL,1,0,1,0,1,4,NULL,NULL,NULL),
+	(120,'directus_users','status','status','status','{\"status_mapping\":{\"draft\":{\"name\":\"Draft\",\"text_color\":\"white\",\"background_color\":\"light-gray\",\"listing_subdued\":false,\"listing_badge\":true,\"soft_delete\":false},\"invited\":{\"name\":\"Invited\",\"text_color\":\"white\",\"background_color\":\"light-gray\",\"listing_subdued\":false,\"listing_badge\":true,\"soft_delete\":false},\"active\":{\"name\":\"Active\",\"text_color\":\"white\",\"background_color\":\"success\",\"listing_subdued\":false,\"listing_badge\":false,\"soft_delete\":false},\"suspended\":{\"name\":\"Suspended\",\"text_color\":\"white\",\"background_color\":\"light-gray\",\"listing_subdued\":false,\"listing_badge\":true,\"soft_delete\":false},\"deleted\":{\"name\":\"Deleted\",\"text_color\":\"white\",\"background_color\":\"danger\",\"listing_subdued\":false,\"listing_badge\":true,\"soft_delete\":true}}}',1,NULL,0,0,0,0,2,4,NULL,NULL,NULL),
+	(121,'directus_users','first_name','string','text-input','{\"placeholder\":\"Enter your give name...\"}',1,NULL,1,0,0,0,3,2,NULL,NULL,NULL),
+	(122,'directus_users','last_name','string','text-input','{\"placeholder\":\"Enter your surname...\"}',1,NULL,1,0,0,0,4,2,NULL,NULL,NULL),
+	(123,'directus_users','email','string','text-input','{\"placeholder\":\"Enter your email address...\"}',1,'$email',1,0,0,0,5,2,NULL,NULL,NULL),
+	(124,'directus_users','email_notifications','boolean','toggle',NULL,1,NULL,0,0,0,0,6,2,NULL,NULL,NULL),
+	(125,'directus_users','password','string','password',NULL,1,NULL,1,0,0,0,7,2,NULL,NULL,NULL),
+	(126,'directus_users','roles','o2m','user-roles',NULL,1,NULL,0,0,0,0,8,2,NULL,NULL,NULL),
+	(127,'directus_users','company','string','text-input','{\"placeholder\":\"Enter your company or organization name...\"}',0,NULL,0,0,0,0,9,2,NULL,NULL,NULL),
+	(128,'directus_users','title','string','text-input','{\"placeholder\":\"Enter your title or role...\"}',0,NULL,0,0,0,0,10,2,NULL,NULL,NULL),
+	(129,'directus_users','timezone','string','dropdown','{\"choices\":{\"Pacific\\/Midway\":\"(UTC-11:00) Midway Island\",\"Pacific\\/Samoa\":\"(UTC-11:00) Samoa\",\"Pacific\\/Honolulu\":\"(UTC-10:00) Hawaii\",\"US\\/Alaska\":\"(UTC-09:00) Alaska\",\"America\\/Los_Angeles\":\"(UTC-08:00) Pacific Time (US & Canada)\",\"America\\/Tijuana\":\"(UTC-08:00) Tijuana\",\"US\\/Arizona\":\"(UTC-07:00) Arizona\",\"America\\/Chihuahua\":\"(UTC-07:00) Chihuahua\",\"America\\/Mexico\\/La_Paz\":\"(UTC-07:00) La Paz\",\"America\\/Mazatlan\":\"(UTC-07:00) Mazatlan\",\"US\\/Mountain\":\"(UTC-07:00) Mountain Time (US & Canada)\",\"America\\/Managua\":\"(UTC-06:00) Central America\",\"US\\/Central\":\"(UTC-06:00) Central Time (US & Canada)\",\"America\\/Guadalajara\":\"(UTC-06:00) Guadalajara\",\"America\\/Mexico_City\":\"(UTC-06:00) Mexico City\",\"America\\/Monterrey\":\"(UTC-06:00) Monterrey\",\"Canada\\/Saskatchewan\":\"(UTC-06:00) Saskatchewan\",\"America\\/Bogota\":\"(UTC-05:00) Bogota\",\"US\\/Eastern\":\"(UTC-05:00) Eastern Time (US & Canada)\",\"US\\/East-Indiana\":\"(UTC-05:00) Indiana (East)\",\"America\\/Lima\":\"(UTC-05:00) Lima\",\"America\\/Quito\":\"(UTC-05:00) Quito\",\"Canada\\/Atlantic\":\"(UTC-04:00) Atlantic Time (Canada)\",\"America\\/New_York\":\"(UTC-04:00) New York\",\"America\\/Caracas\":\"(UTC-04:30) Caracas\",\"America\\/La_Paz\":\"(UTC-04:00) La Paz\",\"America\\/Santiago\":\"(UTC-04:00) Santiago\",\"America\\/Santo_Domingo\":\"(UTC-04:00) Santo Domingo\",\"Canada\\/Newfoundland\":\"(UTC-03:30) Newfoundland\",\"America\\/Sao_Paulo\":\"(UTC-03:00) Brasilia\",\"America\\/Argentina\\/Buenos_Aires\":\"(UTC-03:00) Buenos Aires\",\"America\\/Argentina\\/GeorgeTown\":\"(UTC-03:00) Georgetown\",\"America\\/Godthab\":\"(UTC-03:00) Greenland\",\"America\\/Noronha\":\"(UTC-02:00) Mid-Atlantic\",\"Atlantic\\/Azores\":\"(UTC-01:00) Azores\",\"Atlantic\\/Cape_Verde\":\"(UTC-01:00) Cape Verde Is.\",\"Africa\\/Casablanca\":\"(UTC+00:00) Casablanca\",\"Europe\\/Edinburgh\":\"(UTC+00:00) Edinburgh\",\"Etc\\/Greenwich\":\"(UTC+00:00) Greenwich Mean Time : Dublin\",\"Europe\\/Lisbon\":\"(UTC+00:00) Lisbon\",\"Europe\\/London\":\"(UTC+00:00) London\",\"Africa\\/Monrovia\":\"(UTC+00:00) Monrovia\",\"UTC\":\"(UTC+00:00) UTC\",\"Europe\\/Amsterdam\":\"(UTC+01:00) Amsterdam\",\"Europe\\/Belgrade\":\"(UTC+01:00) Belgrade\",\"Europe\\/Berlin\":\"(UTC+01:00) Berlin\",\"Europe\\/Bern\":\"(UTC+01:00) Bern\",\"Europe\\/Bratislava\":\"(UTC+01:00) Bratislava\",\"Europe\\/Brussels\":\"(UTC+01:00) Brussels\",\"Europe\\/Budapest\":\"(UTC+01:00) Budapest\",\"Europe\\/Copenhagen\":\"(UTC+01:00) Copenhagen\",\"Europe\\/Ljubljana\":\"(UTC+01:00) Ljubljana\",\"Europe\\/Madrid\":\"(UTC+01:00) Madrid\",\"Europe\\/Paris\":\"(UTC+01:00) Paris\",\"Europe\\/Prague\":\"(UTC+01:00) Prague\",\"Europe\\/Rome\":\"(UTC+01:00) Rome\",\"Europe\\/Sarajevo\":\"(UTC+01:00) Sarajevo\",\"Europe\\/Skopje\":\"(UTC+01:00) Skopje\",\"Europe\\/Stockholm\":\"(UTC+01:00) Stockholm\",\"Europe\\/Vienna\":\"(UTC+01:00) Vienna\",\"Europe\\/Warsaw\":\"(UTC+01:00) Warsaw\",\"Africa\\/Lagos\":\"(UTC+01:00) West Central Africa\",\"Europe\\/Zagreb\":\"(UTC+01:00) Zagreb\",\"Europe\\/Athens\":\"(UTC+02:00) Athens\",\"Europe\\/Bucharest\":\"(UTC+02:00) Bucharest\",\"Africa\\/Cairo\":\"(UTC+02:00) Cairo\",\"Africa\\/Harare\":\"(UTC+02:00) Harare\",\"Europe\\/Helsinki\":\"(UTC+02:00) Helsinki\",\"Europe\\/Istanbul\":\"(UTC+02:00) Istanbul\",\"Asia\\/Jerusalem\":\"(UTC+02:00) Jerusalem\",\"Europe\\/Kyiv\":\"(UTC+02:00) Kyiv\",\"Africa\\/Johannesburg\":\"(UTC+02:00) Pretoria\",\"Europe\\/Riga\":\"(UTC+02:00) Riga\",\"Europe\\/Sofia\":\"(UTC+02:00) Sofia\",\"Europe\\/Tallinn\":\"(UTC+02:00) Tallinn\",\"Europe\\/Vilnius\":\"(UTC+02:00) Vilnius\",\"Asia\\/Baghdad\":\"(UTC+03:00) Baghdad\",\"Asia\\/Kuwait\":\"(UTC+03:00) Kuwait\",\"Europe\\/Minsk\":\"(UTC+03:00) Minsk\",\"Africa\\/Nairobi\":\"(UTC+03:00) Nairobi\",\"Asia\\/Riyadh\":\"(UTC+03:00) Riyadh\",\"Europe\\/Volgograd\":\"(UTC+03:00) Volgograd\",\"Asia\\/Tehran\":\"(UTC+03:30) Tehran\",\"Asia\\/Abu_Dhabi\":\"(UTC+04:00) Abu Dhabi\",\"Asia\\/Baku\":\"(UTC+04:00) Baku\",\"Europe\\/Moscow\":\"(UTC+04:00) Moscow\",\"Asia\\/Muscat\":\"(UTC+04:00) Muscat\",\"Europe\\/St_Petersburg\":\"(UTC+04:00) St. Petersburg\",\"Asia\\/Tbilisi\":\"(UTC+04:00) Tbilisi\",\"Asia\\/Yerevan\":\"(UTC+04:00) Yerevan\",\"Asia\\/Kabul\":\"(UTC+04:30) Kabul\",\"Asia\\/Islamabad\":\"(UTC+05:00) Islamabad\",\"Asia\\/Karachi\":\"(UTC+05:00) Karachi\",\"Asia\\/Tashkent\":\"(UTC+05:00) Tashkent\",\"Asia\\/Calcutta\":\"(UTC+05:30) Chennai\",\"Asia\\/Kolkata\":\"(UTC+05:30) Kolkata\",\"Asia\\/Mumbai\":\"(UTC+05:30) Mumbai\",\"Asia\\/New_Delhi\":\"(UTC+05:30) New Delhi\",\"Asia\\/Sri_Jayawardenepura\":\"(UTC+05:30) Sri Jayawardenepura\",\"Asia\\/Katmandu\":\"(UTC+05:45) Kathmandu\",\"Asia\\/Almaty\":\"(UTC+06:00) Almaty\",\"Asia\\/Astana\":\"(UTC+06:00) Astana\",\"Asia\\/Dhaka\":\"(UTC+06:00) Dhaka\",\"Asia\\/Yekaterinburg\":\"(UTC+06:00) Ekaterinburg\",\"Asia\\/Rangoon\":\"(UTC+06:30) Rangoon\",\"Asia\\/Bangkok\":\"(UTC+07:00) Bangkok\",\"Asia\\/Hanoi\":\"(UTC+07:00) Hanoi\",\"Asia\\/Jakarta\":\"(UTC+07:00) Jakarta\",\"Asia\\/Novosibirsk\":\"(UTC+07:00) Novosibirsk\",\"Asia\\/Beijing\":\"(UTC+08:00) Beijing\",\"Asia\\/Chongqing\":\"(UTC+08:00) Chongqing\",\"Asia\\/Hong_Kong\":\"(UTC+08:00) Hong Kong\",\"Asia\\/Krasnoyarsk\":\"(UTC+08:00) Krasnoyarsk\",\"Asia\\/Kuala_Lumpur\":\"(UTC+08:00) Kuala Lumpur\",\"Australia\\/Perth\":\"(UTC+08:00) Perth\",\"Asia\\/Singapore\":\"(UTC+08:00) Singapore\",\"Asia\\/Taipei\":\"(UTC+08:00) Taipei\",\"Asia\\/Ulan_Bator\":\"(UTC+08:00) Ulaan Bataar\",\"Asia\\/Urumqi\":\"(UTC+08:00) Urumqi\",\"Asia\\/Irkutsk\":\"(UTC+09:00) Irkutsk\",\"Asia\\/Osaka\":\"(UTC+09:00) Osaka\",\"Asia\\/Sapporo\":\"(UTC+09:00) Sapporo\",\"Asia\\/Seoul\":\"(UTC+09:00) Seoul\",\"Asia\\/Tokyo\":\"(UTC+09:00) Tokyo\",\"Australia\\/Adelaide\":\"(UTC+09:30) Adelaide\",\"Australia\\/Darwin\":\"(UTC+09:30) Darwin\",\"Australia\\/Brisbane\":\"(UTC+10:00) Brisbane\",\"Australia\\/Canberra\":\"(UTC+10:00) Canberra\",\"Pacific\\/Guam\":\"(UTC+10:00) Guam\",\"Australia\\/Hobart\":\"(UTC+10:00) Hobart\",\"Australia\\/Melbourne\":\"(UTC+10:00) Melbourne\",\"Pacific\\/Port_Moresby\":\"(UTC+10:00) Port Moresby\",\"Australia\\/Sydney\":\"(UTC+10:00) Sydney\",\"Asia\\/Yakutsk\":\"(UTC+10:00) Yakutsk\",\"Asia\\/Vladivostok\":\"(UTC+11:00) Vladivostok\",\"Pacific\\/Auckland\":\"(UTC+12:00) Auckland\",\"Pacific\\/Fiji\":\"(UTC+12:00) Fiji\",\"Pacific\\/Kwajalein\":\"(UTC+12:00) International Date Line West\",\"Asia\\/Kamchatka\":\"(UTC+12:00) Kamchatka\",\"Asia\\/Magadan\":\"(UTC+12:00) Magadan\",\"Pacific\\/Marshall_Is\":\"(UTC+12:00) Marshall Is.\",\"Asia\\/New_Caledonia\":\"(UTC+12:00) New Caledonia\",\"Asia\\/Solomon_Is\":\"(UTC+12:00) Solomon Is.\",\"Pacific\\/Wellington\":\"(UTC+12:00) Wellington\",\"Pacific\\/Tongatapu\":\"(UTC+13:00) Nuku\'alofa\"},\"placeholder\":\"Choose a timezone...\"}',1,NULL,0,0,0,0,11,2,NULL,NULL,NULL),
+	(130,'directus_users','locale','string','language','{\"limit\":true}',1,NULL,0,0,0,0,12,2,NULL,NULL,NULL),
+	(131,'directus_users','locale_options','json','code',NULL,1,NULL,0,0,1,1,13,4,NULL,NULL,NULL),
+	(132,'directus_users','token','string','text-input',NULL,1,NULL,0,0,1,1,14,4,NULL,NULL,NULL),
+	(133,'directus_users','last_login','datetime','datetime',NULL,1,NULL,0,1,0,0,15,2,NULL,NULL,NULL),
+	(134,'directus_users','last_access_on','datetime','datetime',NULL,1,NULL,0,1,1,0,16,2,NULL,NULL,NULL),
+	(135,'directus_users','last_page','string','text-input',NULL,1,NULL,0,1,1,1,17,2,NULL,NULL,NULL),
+	(136,'directus_users','avatar','file','file',NULL,1,NULL,0,0,0,0,18,4,NULL,NULL,NULL),
+	(137,'directus_users','invite_token','string','text-input',NULL,1,NULL,0,0,1,1,NULL,4,NULL,NULL,NULL),
+	(138,'directus_users','invite_accepted','boolean','toggle',NULL,1,NULL,0,0,1,1,NULL,4,NULL,NULL,NULL),
+	(139,'directus_users','last_ip','string','text-input',NULL,1,NULL,0,1,1,0,NULL,4,NULL,NULL,NULL),
+	(140,'directus_users','external_id','string','text-input',NULL,1,NULL,0,1,1,0,NULL,4,NULL,NULL,NULL),
+	(141,'directus_user_roles','id','integer','primary-key',NULL,1,NULL,1,0,1,0,NULL,4,NULL,NULL,NULL),
+	(142,'directus_user_roles','user','m2o','many-to-one',NULL,1,NULL,0,0,0,0,NULL,4,NULL,NULL,NULL),
+	(143,'directus_user_roles','role','m2o','many-to-one',NULL,1,NULL,0,0,0,0,NULL,4,NULL,NULL,NULL);
 
 /*!40000 ALTER TABLE `directus_fields` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -342,20 +353,20 @@ LOCK TABLES `directus_migrations` WRITE;
 
 INSERT INTO `directus_migrations` (`version`, `migration_name`, `start_time`, `end_time`, `breakpoint`)
 VALUES
-	(20180220023138,'CreateActivityTable','2018-12-17 21:48:32','2018-12-17 21:48:32',0),
-	(20180220023144,'CreateActivitySeenTable','2018-12-17 21:48:32','2018-12-17 21:48:32',0),
-	(20180220023152,'CreateCollectionsPresetsTable','2018-12-17 21:48:32','2018-12-17 21:48:32',0),
-	(20180220023157,'CreateCollectionsTable','2018-12-17 21:48:32','2018-12-17 21:48:32',0),
-	(20180220023202,'CreateFieldsTable','2018-12-17 21:48:32','2018-12-17 21:48:32',0),
-	(20180220023208,'CreateFilesTable','2018-12-17 21:48:32','2018-12-17 21:48:33',0),
-	(20180220023213,'CreateFoldersTable','2018-12-17 21:48:33','2018-12-17 21:48:33',0),
-	(20180220023217,'CreateRolesTable','2018-12-17 21:48:33','2018-12-17 21:48:33',0),
-	(20180220023226,'CreatePermissionsTable','2018-12-17 21:48:33','2018-12-17 21:48:33',0),
-	(20180220023232,'CreateRelationsTable','2018-12-17 21:48:33','2018-12-17 21:48:33',0),
-	(20180220023238,'CreateRevisionsTable','2018-12-17 21:48:33','2018-12-17 21:48:33',0),
-	(20180220023243,'CreateSettingsTable','2018-12-17 21:48:33','2018-12-17 21:48:33',0),
-	(20180220023248,'CreateUsersTable','2018-12-17 21:48:33','2018-12-17 21:48:33',0),
-	(20180426173310,'CreateUserRoles','2018-12-17 21:48:33','2018-12-17 21:48:33',0);
+	(20180220023138,'CreateActivityTable','2019-01-11 22:49:38','2019-01-11 22:49:38',0),
+	(20180220023144,'CreateActivitySeenTable','2019-01-11 22:49:38','2019-01-11 22:49:38',0),
+	(20180220023152,'CreateCollectionsPresetsTable','2019-01-11 22:49:38','2019-01-11 22:49:38',0),
+	(20180220023157,'CreateCollectionsTable','2019-01-11 22:49:38','2019-01-11 22:49:38',0),
+	(20180220023202,'CreateFieldsTable','2019-01-11 22:49:38','2019-01-11 22:49:38',0),
+	(20180220023208,'CreateFilesTable','2019-01-11 22:49:38','2019-01-11 22:49:38',0),
+	(20180220023213,'CreateFoldersTable','2019-01-11 22:49:38','2019-01-11 22:49:38',0),
+	(20180220023217,'CreateRolesTable','2019-01-11 22:49:38','2019-01-11 22:49:38',0),
+	(20180220023226,'CreatePermissionsTable','2019-01-11 22:49:38','2019-01-11 22:49:38',0),
+	(20180220023232,'CreateRelationsTable','2019-01-11 22:49:38','2019-01-11 22:49:38',0),
+	(20180220023238,'CreateRevisionsTable','2019-01-11 22:49:38','2019-01-11 22:49:38',0),
+	(20180220023243,'CreateSettingsTable','2019-01-11 22:49:38','2019-01-11 22:49:38',0),
+	(20180220023248,'CreateUsersTable','2019-01-11 22:49:38','2019-01-11 22:49:38',0),
+	(20180426173310,'CreateUserRoles','2019-01-11 22:49:38','2019-01-11 22:49:38',0);
 
 /*!40000 ALTER TABLE `directus_migrations` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -491,13 +502,21 @@ LOCK TABLES `directus_settings` WRITE;
 
 INSERT INTO `directus_settings` (`id`, `key`, `value`)
 VALUES
-	(1,'auto_sign_out','60'),
-	(2,'project_name','Directus'),
-	(3,'default_limit','200'),
+	(1,'project_name','Directus'),
+	(2,'project_url',''),
+	(3,'app_url',''),
 	(4,'logo',''),
 	(5,'color','light-blue-600'),
-	(6,'youtube_api_key',''),
-	(7,'trusted_proxies','');
+	(6,'default_limit','200'),
+	(7,'sort_null_last','1'),
+	(8,'auto_sign_out','60'),
+	(9,'youtube_api_key',''),
+	(10,'trusted_proxies',''),
+	(11,'thumbnail_dimensions','200x200'),
+	(12,'thumbnail_quality_tags','{\"poor\": 25, \"good\": 50, \"better\":  75, \"best\": 100}'),
+	(13,'thumbnail_actions','{\"contain\":{\"options\":{\"resizeCanvas\":false,\"position\":\"center\",\"resizeRelative\":false,\"canvasBackground\":\"ccc\"}},\"crop\":{\"options\":{\"position\":\"center\"}}}'),
+	(14,'thumbnail_cache_ttl','86400'),
+	(15,'thumbnail_not_found_location','');
 
 /*!40000 ALTER TABLE `directus_settings` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -548,7 +567,7 @@ CREATE TABLE `directus_users` (
   `title` varchar(191) DEFAULT NULL,
   `email_notifications` int(1) NOT NULL DEFAULT '1',
   `last_access_on` datetime DEFAULT NULL,
-  `last_page` varchar(45) DEFAULT NULL,
+  `last_page` varchar(192) DEFAULT NULL,
   `external_id` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `idx_users_email` (`email`),
@@ -561,7 +580,7 @@ LOCK TABLES `directus_users` WRITE;
 
 INSERT INTO `directus_users` (`id`, `status`, `first_name`, `last_name`, `email`, `password`, `token`, `timezone`, `locale`, `locale_options`, `avatar`, `company`, `title`, `email_notifications`, `last_access_on`, `last_page`, `external_id`)
 VALUES
-	(1,'active','Admin','User','admin@example.com','$2y$10$wOITnScbHZQnKmSJEwvmM.gxiYc3o4L9xHhCvUJVfeL6xZk2Xb2mO',NULL,'America/New_York','en-US',NULL,NULL,NULL,NULL,1,NULL,NULL,NULL);
+	(1,'active','Admin','User','admin@example.com','$2y$10$b7G1nbeJWJbNDK942ZIRyeCUq6RHIbWVPvIx71GDjUsl60PeNdPMW',NULL,'America/New_York','en-US',NULL,NULL,NULL,NULL,1,'2019-01-12 02:49:43','/settings/global',NULL);
 
 /*!40000 ALTER TABLE `directus_users` ENABLE KEYS */;
 UNLOCK TABLES;

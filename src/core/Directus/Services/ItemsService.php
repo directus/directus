@@ -93,6 +93,8 @@ class ItemsService extends AbstractService
      */
     public function findByIds($collection, $ids, array $params = [])
     {
+        $params = ArrayUtils::omit($params, static::SINGLE_ITEM_PARAMS_BLACKLIST);
+
         $statusValue = $this->getStatusValue($collection, $ids);
         $tableGateway = $this->createTableGateway($collection);
         $ids = StringUtils::safeCvs($ids, false, false);

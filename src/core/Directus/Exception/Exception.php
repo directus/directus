@@ -27,4 +27,14 @@ class Exception extends \Exception
     {
         return $this->attributes;
     }
+
+    /**
+     * Returns the HTTP Status Code
+     *
+     * @return int
+     */
+    public function getStatusCode()
+    {
+        return 500;
+    }
 }

@@ -120,10 +120,14 @@ class UsersService extends AbstractService
         return $this->getItemsAndSetResponseCacheTags($this->getTableGateway(), $params);
     }
 
-    public function invite(array $emails, array $params = [])
+    public function invite($emails, array $params = [])
     {
         if (!$this->getAcl()->isAdmin()) {
             throw new ForbiddenException('Inviting user was denied');
+        }
+
+        if (!is_array($emails)) {
+            $emails = [$emails];
         }
 
         foreach ($emails as $email) {

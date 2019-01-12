@@ -7,7 +7,7 @@
   ],
   "license": "GPL-3.0-only",
   "require": {
-    "php": "^5.6 || ^7.0"
+    "php": "^7.1",
   },
   "autoload": {
     "psr-4": {
