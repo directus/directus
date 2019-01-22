@@ -132,23 +132,4 @@ class FieldRelationship extends AbstractObject
 
         return $type;
     }
-
-    /**
-     * Change the direction of the relationship
-     *
-     * @param array $attributes
-     *
-     * @return array
-     */
-    protected function swapRelationshipAttributes(array $attributes)
-    {
-        $newAttributes = [
-            'collection_many' => ArrayUtils::get($attributes, 'collection_one'),
-            'field_many' => ArrayUtils::get($attributes, 'field_one'),
-            'collection_one' => ArrayUtils::get($attributes, 'collection_many'),
-            'field_one' => ArrayUtils::get($attributes, 'field_many'),
-        ];
-
-        return $newAttributes;
-    }
 }

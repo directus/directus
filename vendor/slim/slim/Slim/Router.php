@@ -112,6 +112,16 @@ class Router implements RouterInterface
     }
 
     /**
+     * Get the base path used in pathFor()
+     *
+     * @return string
+     */
+    public function getBasePath()
+    {
+        return $this->basePath;
+    }
+
+    /**
      * Set path to fast route cache file. If this is false then route caching is disabled.
      *
      * @param string|false $cacheFile
@@ -167,8 +177,9 @@ class Router implements RouterInterface
         // According to RFC methods are defined in uppercase (See RFC 7231)
         $methods = array_map("strtoupper", $methods);
 
-        // Add route
+        /** @var \Slim\Route */
         $route = $this->createRoute($methods, $pattern, $handler);
+        // Add route
         $this->routes[$route->getIdentifier()] = $route;
         $this->routeCounter++;
 
@@ -335,7 +346,8 @@ class Router implements RouterInterface
     }
 
     /**
-     * @param $identifier
+     *
+     * @param string $identifier
      * @return \Slim\Interfaces\RouteInterface
      */
     public function lookupRoute($identifier)
@@ -371,6 +383,7 @@ class Router implements RouterInterface
         $routeDatas = array_reverse($routeDatas);
 
         $segments = [];
+        $segmentName = '';
         foreach ($routeDatas as $routeData) {
             foreach ($routeData as $item) {
                 if (is_string($item)) {

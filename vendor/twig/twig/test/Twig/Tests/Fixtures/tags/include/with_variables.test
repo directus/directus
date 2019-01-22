@@ -6,7 +6,7 @@
 --TEMPLATE(foo.twig)--
 {{ foo }}
 --DATA--
-return array('vars' => array('foo' => 'bar'))
+return ['vars' => ['foo' => 'bar']]
 --EXPECT--
 bar
 bar

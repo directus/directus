@@ -38,9 +38,11 @@ final class Twig_TemplateWrapper
      *
      * @return string The rendered template
      */
-    public function render($context = array())
+    public function render($context = [])
     {
-        return $this->template->render($context);
+        // using func_get_args() allows to not expose the blocks argument
+        // as it should only be used by internal code
+        return $this->template->render($context, func_get_args()[1] ?? []);
     }
 
     /**
@@ -48,9 +50,11 @@ final class Twig_TemplateWrapper
      *
      * @param array $context An array of parameters to pass to the template
      */
-    public function display($context = array())
+    public function display($context = [])
     {
-        $this->template->display($context);
+        // using func_get_args() allows to not expose the blocks argument
+        // as it should only be used by internal code
+        $this->template->display($context, func_get_args()[1] ?? []);
     }
 
     /**
@@ -61,7 +65,7 @@ final class Twig_TemplateWrapper
      *
      * @return bool
      */
-    public function hasBlock($name, $context = array())
+    public function hasBlock($name, $context = [])
     {
         return $this->template->hasBlock($name, $context);
     }
@@ -73,7 +77,7 @@ final class Twig_TemplateWrapper
      *
      * @return string[] An array of defined template block names
      */
-    public function getBlockNames($context = array())
+    public function getBlockNames($context = [])
     {
         return $this->template->getBlockNames($context);
     }
@@ -86,7 +90,7 @@ final class Twig_TemplateWrapper
      *
      * @return string The rendered block
      */
-    public function renderBlock($name, $context = array())
+    public function renderBlock($name, $context = [])
     {
         $context = $this->env->mergeGlobals($context);
         $level = ob_get_level();
@@ -110,7 +114,7 @@ final class Twig_TemplateWrapper
      * @param string $name    The block name to render
      * @param array  $context An array of parameters to pass to the template
      */
-    public function displayBlock($name, $context = array())
+    public function displayBlock($name, $context = [])
     {
         $this->template->displayBlock($name, $this->env->mergeGlobals($context));
     }

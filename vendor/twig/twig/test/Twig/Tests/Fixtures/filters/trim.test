@@ -11,7 +11,7 @@
 {{ "/  foo/"|trim(character_mask="/", side="left") }}
 {{ "  do nothing.  "|trim("", "right") }}
 --DATA--
-return array('text' => "  If you have some <strong>HTML</strong> it will be escaped.  ")
+return ['text' => "  If you have some <strong>HTML</strong> it will be escaped.  "]
 --EXPECT--
 I like Twig.
 If you have some &lt;strong&gt;HTML&lt;/strong&gt; it will be escaped.

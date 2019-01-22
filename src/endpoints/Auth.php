@@ -74,10 +74,7 @@ class Auth extends Route
             $this->container->get('logger')->error($e);
         }
 
-        $responseData = [];
-        $response = $response->withStatus(204);
-
-        return $this->responseWithData($request, $response, $responseData);
+        return $this->responseWithData($request, $response, []);
     }
 
     /**
@@ -95,10 +92,7 @@ class Auth extends Route
             $request->getAttribute('token')
         );
 
-        $responseData = [];
-        $response = $response->withStatus(204);
-
-        return $this->responseWithData($request, $response, $responseData);
+        return $this->responseWithData($request, $response, []);
     }
 
     /**

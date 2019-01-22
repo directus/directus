@@ -7,10 +7,10 @@
 --TEMPLATE(included.twig)--
 {% block foo %}FOO{% endblock %}
 --DATA--
-return array(
+return [
     'included_loaded' => $twig->load('included.twig'),
     'included_loaded_internal' => $twig->loadTemplate('included.twig'),
-)
+]
 --EXPECT--
 ok
 ok

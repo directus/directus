@@ -8,7 +8,7 @@
 --TEMPLATE(forms.twig)--
 {% macro foo(name) %}{{ name|default('foo') }}{{ global }}{% endmacro %}
 --DATA--
-return array()
+return []
 --EXPECT--
 fooglobal
 fooglobal

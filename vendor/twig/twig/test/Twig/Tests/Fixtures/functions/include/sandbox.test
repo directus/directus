@@ -8,6 +8,6 @@
 {{ foo|e }}
 {{ foo|e }}
 --DATA--
-return array()
+return []
 --EXCEPTION--
 Twig_Sandbox_SecurityNotAllowedFilterError: Filter "e" is not allowed in "foo.twig" at line 4.

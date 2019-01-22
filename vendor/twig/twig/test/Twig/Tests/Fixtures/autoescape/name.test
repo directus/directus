@@ -12,9 +12,9 @@
 --TEMPLATE(index.txt.twig)--
 {{ br -}}
 --DATA--
-return array('br' => '<br />')
+return ['br' => '<br />']
 --CONFIG--
-return array('autoescape' => 'name')
+return ['autoescape' => 'name']
 --EXPECT--
 &lt;br /&gt;
 \u003Cbr\u0020\/\u003E

@@ -22,8 +22,8 @@ class Twig_Tests_Node_Expression_AssignNameTest extends Twig_Test_NodeTestCase
     {
         $node = new Twig_Node_Expression_AssignName('foo', 1);
 
-        return array(
-            array($node, '$context["foo"]'),
-        );
+        return [
+            [$node, '$context["foo"]'],
+        ];
     }
 }

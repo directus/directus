@@ -8,7 +8,7 @@
 {{ 'Ä€é'|last }}
 {{ ''|last }}
 --DATA--
-return array('arr' => new ArrayObject(array(1, 2, 3, 4)))
+return ['arr' => new ArrayObject([1, 2, 3, 4])]
 --EXPECT--
 4
 4

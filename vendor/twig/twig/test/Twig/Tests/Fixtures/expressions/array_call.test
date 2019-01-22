@@ -6,7 +6,7 @@ Twig supports method calls
 {{ items[foo] }}
 {{ items[items[foo]] }}
 --DATA--
-return array('foo' => 'bar', 'items' => array('foo' => 'bar', 'bar' => 'foo'))
+return ['foo' => 'bar', 'items' => ['foo' => 'bar', 'bar' => 'foo']]
 --EXPECT--
 bar
 bar

@@ -6,7 +6,7 @@
 {{ constant('FOOBAR') is not defined ? 'ok' : 'ko' }}
 {{ constant('FOOBAR', object) is not defined ? 'ok' : 'ko' }}
 --DATA--
-return array('expect' => DATE_W3C, 'object' => new ArrayObject(array('hi')));
+return ['expect' => DATE_W3C, 'object' => new ArrayObject(['hi'])]
 --EXPECT--
 ok
 ok

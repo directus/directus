@@ -52,7 +52,7 @@ final class Twig_TokenParser_Set extends Twig_TokenParser
 
             $stream->expect(/* Twig_Token::BLOCK_END_TYPE */ 3);
 
-            $values = $this->parser->subparse(array($this, 'decideBlockEnd'), true);
+            $values = $this->parser->subparse([$this, 'decideBlockEnd'], true);
             $stream->expect(/* Twig_Token::BLOCK_END_TYPE */ 3);
         }
 

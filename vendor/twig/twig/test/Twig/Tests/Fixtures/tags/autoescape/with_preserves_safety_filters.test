@@ -23,7 +23,7 @@
 
 {% endautoescape %}
 --DATA--
-return array('var' => "<Fabien>\nTwig")
+return ['var' => "<Fabien>\nTwig"]
 --EXPECT--
 
 (preserves_safety is preserving safety for "html")

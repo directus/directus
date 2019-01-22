@@ -6,7 +6,7 @@
 {{ 1 is not even ? 'ok' : 'ko' }}
 {{ 2 is not even ? 'ko' : 'ok' }}
 --DATA--
-return array()
+return []
 --EXPECT--
 ok
 ok

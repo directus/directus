@@ -13,6 +13,6 @@ macro
 
 {{ macros.foo(macros.bar()) }}
 --DATA--
-return array();
+return []
 --EXPECT--
 <br />

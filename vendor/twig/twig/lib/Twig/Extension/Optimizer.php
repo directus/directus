@@ -20,7 +20,7 @@ final class Twig_Extension_Optimizer extends Twig_Extension
 
     public function getNodeVisitors()
     {
-        return array(new Twig_NodeVisitor_Optimizer($this->optimizers));
+        return [new Twig_NodeVisitor_Optimizer($this->optimizers)];
     }
 }
 

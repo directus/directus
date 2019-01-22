@@ -21,8 +21,8 @@ class Twig_Tests_Node_PrintTest extends Twig_Test_NodeTestCase
 
     public function getTests()
     {
-        $tests = array();
-        $tests[] = array(new Twig_Node_Print(new Twig_Node_Expression_Constant('foo', 1), 1), "// line 1\necho \"foo\";");
+        $tests = [];
+        $tests[] = [new Twig_Node_Print(new Twig_Node_Expression_Constant('foo', 1), 1), "// line 1\necho \"foo\";"];
 
         return $tests;
     }

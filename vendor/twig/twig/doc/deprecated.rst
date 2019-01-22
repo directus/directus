@@ -13,6 +13,12 @@ Inheritance
   ``Twig_Error_Syntax`` exception. It does not work anyway, so most projects
   won't need to do anything to upgrade.
 
+Errors
+------
+
+ * Passing a string as the ``$source`` argument on ``Twig_Error`` constructor is
+   deprecated since Twig 2.6.1. Pass an instance of ``Twig_Source`` instead.
+
 Tags
 ----
 

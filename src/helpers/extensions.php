@@ -148,6 +148,11 @@ if (!function_exists('create_route_from_array')) {
             );
         }
 
+        // Make sure the route path always start with a forward slash when it's not an empty string
+        if ($routePath) {
+            $routePath = '/' . ltrim($routePath, '/');
+        }
+
         $app->map($methods, $routePath, $handler);
     }
 }

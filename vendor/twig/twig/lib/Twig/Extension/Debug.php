@@ -23,9 +23,9 @@ final class Twig_Extension_Debug extends Twig_Extension
             || 'cli' === PHP_SAPI
         ;
 
-        return array(
-            new Twig_Function('dump', 'twig_var_dump', array('is_safe' => $isDumpOutputHtmlSafe ? array('html') : array(), 'needs_context' => true, 'needs_environment' => true)),
-        );
+        return [
+            new Twig_Function('dump', 'twig_var_dump', ['is_safe' => $isDumpOutputHtmlSafe ? ['html'] : [], 'needs_context' => true, 'needs_environment' => true]),
+        ];
     }
 }
 
@@ -38,7 +38,7 @@ function twig_var_dump(Twig_Environment $env, $context, ...$vars)
     ob_start();
 
     if (!$vars) {
-        $vars = array();
+        $vars = [];
         foreach ($context as $key => $value) {
             if (!$value instanceof Twig_Template) {
                 $vars[$key] = $value;

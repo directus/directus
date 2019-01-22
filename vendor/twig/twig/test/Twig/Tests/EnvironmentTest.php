@@ -13,19 +13,19 @@ class Twig_Tests_EnvironmentTest extends \PHPUnit\Framework\TestCase
 {
     public function testAutoescapeOption()
     {
-        $loader = new Twig_Loader_Array(array(
+        $loader = new Twig_Loader_Array([
             'html' => '{{ foo }} {{ foo }}',
             'js' => '{{ bar }} {{ bar }}',
-        ));
+        ]);
 
-        $twig = new Twig_Environment($loader, array(
+        $twig = new Twig_Environment($loader, [
             'debug' => true,
             'cache' => false,
-            'autoescape' => array($this, 'escapingStrategyCallback'),
-        ));
+            'autoescape' => [$this, 'escapingStrategyCallback'],
+        ]);
 
-        $this->assertEquals('foo&lt;br/ &gt; foo&lt;br/ &gt;', $twig->render('html', array('foo' => 'foo<br/ >')));
-        $this->assertEquals('foo\u003Cbr\/\u0020\u003E foo\u003Cbr\/\u0020\u003E', $twig->render('js', array('bar' => 'foo<br/ >')));
+        $this->assertEquals('foo&lt;br/ &gt; foo&lt;br/ &gt;', $twig->render('html', ['foo' => 'foo<br/ >']));
+        $this->assertEquals('foo\u003Cbr\/\u0020\u003E foo\u003Cbr\/\u0020\u003E', $twig->render('js', ['bar' => 'foo<br/ >']));
     }
 
     public function escapingStrategyCallback($name)
@@ -65,7 +65,7 @@ class Twig_Tests_EnvironmentTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('bar', $globals['foo']);
 
         // globals can be modified after extensions and a template has been loaded
-        $arrayLoader = new Twig_Loader_Array(array('index' => '{{foo}}'));
+        $arrayLoader = new Twig_Loader_Array(['index' => '{{foo}}']);
         $twig = new Twig_Environment($arrayLoader);
         $twig->addGlobal('foo', 'foo');
         $twig->getGlobals();
@@ -79,7 +79,7 @@ class Twig_Tests_EnvironmentTest extends \PHPUnit\Framework\TestCase
         $twig->getGlobals();
         $twig->addGlobal('foo', 'bar');
         $template = $twig->loadTemplate('index');
-        $this->assertEquals('bar', $template->render(array()));
+        $this->assertEquals('bar', $template->render([]));
 
         // globals cannot be added after a template has been loaded
         $twig = new Twig_Environment($loader);
@@ -132,10 +132,10 @@ class Twig_Tests_EnvironmentTest extends \PHPUnit\Framework\TestCase
     public function testExtensionsAreNotInitializedWhenRenderingACompiledTemplate()
     {
         $cache = new Twig_Cache_Filesystem($dir = sys_get_temp_dir().'/twig');
-        $options = array('cache' => $cache, 'auto_reload' => false, 'debug' => false);
+        $options = ['cache' => $cache, 'auto_reload' => false, 'debug' => false];
 
         // force compilation
-        $twig = new Twig_Environment($loader = new Twig_Loader_Array(array('index' => '{{ foo }}')), $options);
+        $twig = new Twig_Environment($loader = new Twig_Loader_Array(['index' => '{{ foo }}']), $options);
 
         $key = $cache->generateKey('index', $twig->getTemplateClass('index'));
         $cache->write($key, $twig->compileSource(new Twig_Source('{{ foo }}', 'index')));
@@ -143,15 +143,15 @@ class Twig_Tests_EnvironmentTest extends \PHPUnit\Framework\TestCase
         // check that extensions won't be initialized when rendering a template that is already in the cache
         $twig = $this
             ->getMockBuilder('Twig_Environment')
-            ->setConstructorArgs(array($loader, $options))
-            ->setMethods(array('initExtensions'))
+            ->setConstructorArgs([$loader, $options])
+            ->setMethods(['initExtensions'])
             ->getMock()
         ;
 
         $twig->expects($this->never())->method('initExtensions');
 
         // render template
-        $output = $twig->render('index', array('foo' => 'bar'));
+        $output = $twig->render('index', ['foo' => 'bar']);
         $this->assertEquals('bar', $output);
 
         Twig_Tests_FilesystemHelper::removeDir($dir);
@@ -164,7 +164,7 @@ class Twig_Tests_EnvironmentTest extends \PHPUnit\Framework\TestCase
 
         $cache = $this->getMockBuilder('Twig_CacheInterface')->getMock();
         $loader = $this->getMockLoader($templateName, $templateContent);
-        $twig = new Twig_Environment($loader, array('cache' => $cache, 'auto_reload' => true, 'debug' => false));
+        $twig = new Twig_Environment($loader, ['cache' => $cache, 'auto_reload' => true, 'debug' => false]);
 
         // Cache miss: getTimestamp returns 0 and as a result the load() is
         // skipped.
@@ -191,7 +191,7 @@ class Twig_Tests_EnvironmentTest extends \PHPUnit\Framework\TestCase
 
         $cache = $this->getMockBuilder('Twig_CacheInterface')->getMock();
         $loader = $this->getMockLoader($templateName, $templateContent);
-        $twig = new Twig_Environment($loader, array('cache' => $cache, 'auto_reload' => true, 'debug' => false));
+        $twig = new Twig_Environment($loader, ['cache' => $cache, 'auto_reload' => true, 'debug' => false]);
 
         $now = time();
 
@@ -219,7 +219,7 @@ class Twig_Tests_EnvironmentTest extends \PHPUnit\Framework\TestCase
 
         $cache = $this->getMockBuilder('Twig_CacheInterface')->getMock();
         $loader = $this->getMockLoader($templateName, $templateContent);
-        $twig = new Twig_Environment($loader, array('cache' => $cache, 'auto_reload' => true, 'debug' => false));
+        $twig = new Twig_Environment($loader, ['cache' => $cache, 'auto_reload' => true, 'debug' => false]);
 
         $now = time();
 
@@ -280,7 +280,7 @@ class Twig_Tests_EnvironmentTest extends \PHPUnit\Framework\TestCase
     {
         $extension = $this->getMockBuilder('Twig_ExtensionInterface')->getMock();
 
-        $loader = new Twig_Loader_Array(array('page' => 'hey'));
+        $loader = new Twig_Loader_Array(['page' => 'hey']);
 
         $twig = new Twig_Environment($loader);
         $twig->addExtension($extension);
@@ -319,14 +319,14 @@ class Twig_Tests_EnvironmentTest extends \PHPUnit\Framework\TestCase
         $runtimeLoader = $this->getMockBuilder('Twig_RuntimeLoaderInterface')->getMock();
         $runtimeLoader->expects($this->any())->method('load')->will($this->returnValue(new Twig_Tests_EnvironmentTest_Runtime()));
 
-        $loader = new Twig_Loader_Array(array(
+        $loader = new Twig_Loader_Array([
             'func_array' => '{{ from_runtime_array("foo") }}',
             'func_array_default' => '{{ from_runtime_array() }}',
             'func_array_named_args' => '{{ from_runtime_array(name="foo") }}',
             'func_string' => '{{ from_runtime_string("foo") }}',
             'func_string_default' => '{{ from_runtime_string() }}',
             'func_string_named_args' => '{{ from_runtime_string(name="foo") }}',
-        ));
+        ]);
 
         $twig = new Twig_Environment($loader);
         $twig->addExtension(new Twig_Tests_EnvironmentTest_ExtensionWithoutRuntime());
@@ -347,7 +347,7 @@ class Twig_Tests_EnvironmentTest extends \PHPUnit\Framework\TestCase
     public function testFailLoadTemplate()
     {
         $template = 'testFailLoadTemplate.twig';
-        $twig = new Twig_Environment(new Twig_Loader_Array(array($template => false)));
+        $twig = new Twig_Environment(new Twig_Loader_Array([$template => false]));
         //$twig->setCache(new CorruptCache());
         $twig->loadTemplate($template, 'abc');
     }
@@ -358,9 +358,9 @@ class Twig_Tests_EnvironmentTest extends \PHPUnit\Framework\TestCase
      */
     public function testFailLoadTemplateOnCircularReference()
     {
-        $twig = new Twig_Environment(new Twig_Loader_Array(array(
+        $twig = new Twig_Environment(new Twig_Loader_Array([
             'base.html.twig' => '{% extends "base.html.twig" %}',
-        )));
+        ]));
 
         $twig->loadTemplate('base.html.twig');
     }
@@ -371,10 +371,10 @@ class Twig_Tests_EnvironmentTest extends \PHPUnit\Framework\TestCase
      */
     public function testFailLoadTemplateOnComplexCircularReference()
     {
-        $twig = new Twig_Environment(new Twig_Loader_Array(array(
+        $twig = new Twig_Environment(new Twig_Loader_Array([
             'base1.html.twig' => '{% extends "base2.html.twig" %}',
             'base2.html.twig' => '{% extends "base1.html.twig" %}',
-        )));
+        ]));
 
         $twig->loadTemplate('base1.html.twig');
     }
@@ -420,9 +420,9 @@ class Twig_Tests_EnvironmentTest_Extension_WithGlobals extends Twig_Extension
 {
     public function getGlobals()
     {
-        return array(
+        return [
             'foo_global' => 'foo_global',
-        );
+        ];
     }
 }
 
@@ -430,52 +430,52 @@ class Twig_Tests_EnvironmentTest_Extension extends Twig_Extension implements Twi
 {
     public function getTokenParsers()
     {
-        return array(
+        return [
             new Twig_Tests_EnvironmentTest_TokenParser(),
-        );
+        ];
     }
 
     public function getNodeVisitors()
     {
-        return array(
+        return [
             new Twig_Tests_EnvironmentTest_NodeVisitor(),
-        );
+        ];
     }
 
     public function getFilters()
     {
-        return array(
+        return [
             new Twig_Filter('foo_filter'),
-        );
+        ];
     }
 
     public function getTests()
     {
-        return array(
+        return [
             new Twig_Test('foo_test'),
-        );
+        ];
     }
 
     public function getFunctions()
     {
-        return array(
+        return [
             new Twig_Function('foo_function'),
-        );
+        ];
     }
 
     public function getOperators()
     {
-        return array(
-            array('foo_unary' => array()),
-            array('foo_binary' => array()),
-        );
+        return [
+            ['foo_unary' => []],
+            ['foo_binary' => []],
+        ];
     }
 
     public function getGlobals()
     {
-        return array(
+        return [
             'foo_global' => 'foo_global',
-        );
+        ];
     }
 }
 class_alias('Twig_Tests_EnvironmentTest_Extension', 'Twig\Tests\EnvironmentTest\Extension', false);
@@ -528,10 +528,10 @@ class Twig_Tests_EnvironmentTest_ExtensionWithoutRuntime extends Twig_Extension
 {
     public function getFunctions()
     {
-        return array(
-            new Twig_Function('from_runtime_array', array('Twig_Tests_EnvironmentTest_Runtime', 'fromRuntime')),
+        return [
+            new Twig_Function('from_runtime_array', ['Twig_Tests_EnvironmentTest_Runtime', 'fromRuntime']),
             new Twig_Function('from_runtime_string', 'Twig_Tests_EnvironmentTest_Runtime::fromRuntime'),
-        );
+        ];
     }
 
     public function getName()

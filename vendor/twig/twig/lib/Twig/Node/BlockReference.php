@@ -19,7 +19,7 @@ class Twig_Node_BlockReference extends Twig_Node implements Twig_NodeOutputInter
 {
     public function __construct($name, $lineno, $tag = null)
     {
-        parent::__construct(array(), array('name' => $name), $lineno, $tag);
+        parent::__construct([], ['name' => $name], $lineno, $tag);
     }
 
     public function compile(Twig_Compiler $compiler)

@@ -28,8 +28,8 @@ final class Twig_NodeVisitor_Optimizer extends Twig_BaseNodeVisitor
     // obsolete, does not do anything
     const OPTIMIZE_VAR_ACCESS = 8;
 
-    private $loops = array();
-    private $loopsTargets = array();
+    private $loops = [];
+    private $loopsTargets = [];
     private $optimizers;
 
     /**

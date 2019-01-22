@@ -6,28 +6,28 @@
 {{ attribute(nested, definedVarName)   is     defined ? 'ok' : 'ko' }}
 {{ attribute(nested, undefinedVarName) is not defined ? 'ok' : 'ko' }}
 --DATA--
-return array(
-    'nested' => array(
+return [
+    'nested' => [
         'definedVar' => 'defined',
-    ),
+    ],
     'definedVarName' => 'definedVar',
     'undefinedVarName' => 'undefinedVar',
-);
+]
 --EXPECT--
 ok
 ok
 ok
 ok
 --DATA--
-return array(
-    'nested' => array(
+return [
+    'nested' => [
         'definedVar' => 'defined',
-    ),
+    ],
     'definedVarName' => 'definedVar',
     'undefinedVarName' => 'undefinedVar',
-);
+]
 --CONFIG--
-return array('strict_variables' => false)
+return ['strict_variables' => false]
 --EXPECT--
 ok
 ok

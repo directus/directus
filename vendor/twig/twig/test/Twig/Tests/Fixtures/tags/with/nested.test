@@ -9,7 +9,7 @@ nested "with" tags
 {% endwith %}
 {{ foo }}{{ bar }}
 --DATA--
-return array()
+return []
 --EXPECT--
 FOOBAZ
     foobar

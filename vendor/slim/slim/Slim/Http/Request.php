@@ -1030,13 +1030,16 @@ class Request extends Message implements ServerRequestInterface
 
         $mediaType = $this->getMediaType();
 
-        // look for a media type with a structured syntax suffix (RFC 6839)
-        $parts = explode('+', $mediaType);
-        if (count($parts) >= 2) {
-            $mediaType = 'application/' . $parts[count($parts)-1];
+        // Check if this specific media type has a parser registered first
+        if (!isset($this->bodyParsers[$mediaType])) {
+            // If not, look for a media type with a structured syntax suffix (RFC 6839)
+            $parts = explode('+', $mediaType);
+            if (count($parts) >= 2) {
+                $mediaType = 'application/' . $parts[count($parts)-1];
+            }
         }
 
-        if (isset($this->bodyParsers[$mediaType]) === true) {
+        if (isset($this->bodyParsers[$mediaType])) {
             $body = (string)$this->getBody();
             $parsed = $this->bodyParsers[$mediaType]($body);
 

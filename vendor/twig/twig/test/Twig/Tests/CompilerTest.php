@@ -20,7 +20,7 @@ class Twig_Tests_CompilerTest extends \PHPUnit\Framework\TestCase
             $this->markTestSkipped('Your platform does not support locales.');
         }
 
-        $required_locales = array('fr_FR.UTF-8', 'fr_FR.UTF8', 'fr_FR.utf-8', 'fr_FR.utf8', 'French_France.1252');
+        $required_locales = ['fr_FR.UTF-8', 'fr_FR.UTF8', 'fr_FR.utf-8', 'fr_FR.utf8', 'French_France.1252'];
         if (false === setlocale(LC_NUMERIC, $required_locales)) {
             $this->markTestSkipped('Could not set any of required locales: '.implode(', ', $required_locales));
         }

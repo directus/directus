@@ -5,7 +5,7 @@ Twig supports unary operators (not, -, +)
 {{ +1 + 1 }}/{{ -1 - 1 }}
 {{ not (false or true) }}
 --DATA--
-return array()
+return []
 --EXPECT--
 /1
 2/-2

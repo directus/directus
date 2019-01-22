@@ -3,6 +3,6 @@
 --TEMPLATE--
 {{ "foo <br />"|e }}
 --DATA--
-return array()
+return []
 --EXPECT--
 foo &lt;br /&gt;

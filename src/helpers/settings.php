@@ -3,6 +3,8 @@
 namespace Directus;
 
 use Directus\Application\Application;
+use Directus\Database\TableGateway\RelationalTableGateway;
+use Directus\Database\TableGatewayFactory;
 use Directus\Util\StringUtils;
 
 if (!function_exists('get_directus_settings')) {
@@ -128,5 +130,53 @@ if (!function_exists('get_trusted_proxies')) {
         $trustedProxies = get_directus_setting('trusted_proxies');
 
         return $trustedProxies ? StringUtils::safeCvs($trustedProxies) : [];
+    }
+}
+
+if (!function_exists('get_project_info')) {
+    /**
+     * Returns the project information
+     *
+     * @return array
+     */
+    function get_project_info()
+    {
+        $settings = get_directus_settings_by_keys(['project_name', 'logo']);
+
+        if (array_get($settings, 'logo')) {
+            $settings['logo'] = get_project_logo_data(array_get($settings, 'logo'));
+        }
+
+        array_rename($settings, [
+            'logo' => 'project_logo',
+        ]);
+
+        return $settings;
+    }
+}
+
+if (!function_exists('get_project_logo_data')) {
+    /**
+     * @param int $id
+     *
+     * @return array
+     */
+    function get_project_logo_data($id)
+    {
+        /** @var RelationalTableGateway $table */
+        $table = TableGatewayFactory::create('directus_files', ['acl' => false]);
+
+        try {
+            $result = $table->getItemsByIds($id, ['fields' => 'data']);
+            $data = array_get($result, 'data.data', []);
+        } catch (\Exception $e) {
+            $data = null;
+        }
+
+        if ($data) {
+            $data = array_pick($data, ['full_url', 'url']);
+        }
+
+        return $data;
     }
 }

@@ -11,7 +11,7 @@
 {% macro foo(name) %}foo{{ name }}{% endmacro %}
 {% macro bar(name) %}bar{{ name }}{% endmacro %}
 --DATA--
-return array()
+return []
 --EXPECT--
 foofoo
 foofoo

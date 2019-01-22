@@ -14,7 +14,7 @@
 {{ number5|abs }}
 {{ number6|abs }}
 --DATA--
-return array('number1' => -5.5, 'number2' => -5, 'number3' => -0, 'number4' => 0, 'number5' => 5, 'number6' => 5.5)
+return ['number1' => -5.5, 'number2' => -5, 'number3' => -0, 'number4' => 0, 'number5' => 5, 'number6' => 5.5]
 --EXPECT--
 5.5
 5

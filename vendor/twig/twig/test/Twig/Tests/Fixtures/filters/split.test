@@ -9,7 +9,7 @@
 {{ baz|split('', 2)|join('-') }}
 {{ foo|split(',', -2)|join('-') }}
 --DATA--
-return array('foo' => "one,two,three,four,five", 'baz' => '12345',)
+return ['foo' => "one,two,three,four,five", 'baz' => '12345',]
 --EXPECT--
 one-two-three-four-five
 one-two-three-four-five

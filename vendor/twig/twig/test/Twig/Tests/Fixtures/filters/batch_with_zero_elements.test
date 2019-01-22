@@ -4,7 +4,7 @@
 {{ []|batch(3)|length }}
 {{ []|batch(3, 'fill')|length }}
 --DATA--
-return array()
+return []
 --EXPECT--
 0
 0

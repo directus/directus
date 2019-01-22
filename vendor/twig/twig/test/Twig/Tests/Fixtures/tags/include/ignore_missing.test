@@ -6,5 +6,5 @@
 {% include "foo.twig" ignore missing with {} %}
 {% include "foo.twig" ignore missing with {} only %}
 --DATA--
-return array()
+return []
 --EXPECT--

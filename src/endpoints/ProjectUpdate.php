@@ -14,7 +14,6 @@ class ProjectUpdate extends Route
     {
         InstallerUtils::updateTables($this->container->get('path_base'), get_api_project_from_request());
 
-        $response = $response->withStatus(204);
         return $this->responseWithData($request, $response, []);
     }
 }

@@ -9,6 +9,6 @@
 --TEMPLATE(foo.twig)--
 {% block content %}BAR{% endblock %}
 --DATA--
-return array()
+return []
 --EXPECT--
 BAR

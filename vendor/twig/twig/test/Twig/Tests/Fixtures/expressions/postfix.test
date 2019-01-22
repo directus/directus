@@ -12,7 +12,7 @@ Twig parses postfix expressions
 {{ macros.foo() }}
 {{ (macros).foo() }}
 --DATA--
-return array();
+return []
 --EXPECT--
 a
 A

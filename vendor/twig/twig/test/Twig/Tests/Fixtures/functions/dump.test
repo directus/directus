@@ -6,9 +6,9 @@
 {{ dump('foo') }}
 {{ dump('foo', 'bar') }}
 --DATA--
-return array('foo' => 'foo', 'bar' => 'bar')
+return ['foo' => 'foo', 'bar' => 'bar']
 --CONFIG--
-return array('debug' => true, 'autoescape' => false);
+return ['debug' => true, 'autoescape' => false]
 --EXPECT--
 string(3) "foo"
 

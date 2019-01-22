@@ -5,7 +5,7 @@
 {{ array2|sort|join }}
 {{ traversable|sort|join }}
 --DATA--
-return array('array1' => array(4, 1), 'array2' => array('foo', 'bar'), 'traversable' => new ArrayObject(array(0 => 3, 1 => 2, 2 => 1)))
+return ['array1' => [4, 1], 'array2' => ['foo', 'bar'], 'traversable' => new ArrayObject([0 => 3, 1 => 2, 2 => 1])]
 --EXPECT--
 14
 barfoo

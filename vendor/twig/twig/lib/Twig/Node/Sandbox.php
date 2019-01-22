@@ -18,7 +18,7 @@ class Twig_Node_Sandbox extends Twig_Node
 {
     public function __construct(Twig_Node $body, $lineno, $tag = null)
     {
-        parent::__construct(array('body' => $body), array(), $lineno, $tag);
+        parent::__construct(['body' => $body], [], $lineno, $tag);
     }
 
     public function compile(Twig_Compiler $compiler)

@@ -6,5 +6,5 @@
 {{ include("foo.twig", ignore_missing = true, variables = {}) }}
 {{ include("foo.twig", ignore_missing = true, variables = {}, with_context = true) }}
 --DATA--
-return array()
+return []
 --EXPECT--

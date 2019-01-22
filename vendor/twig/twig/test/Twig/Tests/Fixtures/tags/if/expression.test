@@ -9,14 +9,14 @@
   A3
 {% endif %}
 --DATA--
-return array('a' => 1)
+return ['a' => 1]
 --EXPECT--
   A1
 --DATA--
-return array('a' => 12)
+return ['a' => 12]
 --EXPECT--
   A2
 --DATA--
-return array('a' => 7)
+return ['a' => 7]
 --EXPECT--
   A3

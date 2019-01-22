@@ -13,7 +13,7 @@
 --TEMPLATE(2_parent.twig)--
 {% block content %}2{% endblock %}
 --DATA--
-return array()
+return []
 --EXPECT--
 1 parent
 

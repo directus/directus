@@ -5,6 +5,6 @@
 --TEMPLATE(foo.twig)--
 <p>Test</p>
 --DATA--
-return array()
+return []
 --EXPECT--
 <p>Test</p>

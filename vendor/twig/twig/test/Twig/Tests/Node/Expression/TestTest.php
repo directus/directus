@@ -26,54 +26,54 @@ class Twig_Tests_Node_Expression_TestTest extends Twig_Test_NodeTestCase
     public function getTests()
     {
         $environment = new Twig_Environment($this->getMockBuilder('Twig_LoaderInterface')->getMock());
-        $environment->addTest(new Twig_Test('barbar', 'twig_tests_test_barbar', array('is_variadic' => true, 'need_context' => true)));
+        $environment->addTest(new Twig_Test('barbar', 'twig_tests_test_barbar', ['is_variadic' => true, 'need_context' => true]));
 
-        $tests = array();
+        $tests = [];
 
         $expr = new Twig_Node_Expression_Constant('foo', 1);
-        $node = new Twig_Node_Expression_Test_Null($expr, 'null', new Twig_Node(array()), 1);
-        $tests[] = array($node, '(null === "foo")');
+        $node = new Twig_Node_Expression_Test_Null($expr, 'null', new Twig_Node([]), 1);
+        $tests[] = [$node, '(null === "foo")'];
 
         // test as an anonymous function
-        $node = $this->createTest(new Twig_Node_Expression_Constant('foo', 1), 'anonymous', array(new Twig_Node_Expression_Constant('foo', 1)));
-        $tests[] = array($node, 'call_user_func_array($this->env->getTest(\'anonymous\')->getCallable(), array("foo", "foo"))');
+        $node = $this->createTest(new Twig_Node_Expression_Constant('foo', 1), 'anonymous', [new Twig_Node_Expression_Constant('foo', 1)]);
+        $tests[] = [$node, 'call_user_func_array($this->env->getTest(\'anonymous\')->getCallable(), ["foo", "foo"])'];
 
         // arbitrary named arguments
         $string = new Twig_Node_Expression_Constant('abc', 1);
         $node = $this->createTest($string, 'barbar');
-        $tests[] = array($node, 'twig_tests_test_barbar("abc")', $environment);
+        $tests[] = [$node, 'twig_tests_test_barbar("abc")', $environment];
 
-        $node = $this->createTest($string, 'barbar', array('foo' => new Twig_Node_Expression_Constant('bar', 1)));
-        $tests[] = array($node, 'twig_tests_test_barbar("abc", null, null, array("foo" => "bar"))', $environment);
+        $node = $this->createTest($string, 'barbar', ['foo' => new Twig_Node_Expression_Constant('bar', 1)]);
+        $tests[] = [$node, 'twig_tests_test_barbar("abc", null, null, ["foo" => "bar"])', $environment];
 
-        $node = $this->createTest($string, 'barbar', array('arg2' => new Twig_Node_Expression_Constant('bar', 1)));
-        $tests[] = array($node, 'twig_tests_test_barbar("abc", null, "bar")', $environment);
+        $node = $this->createTest($string, 'barbar', ['arg2' => new Twig_Node_Expression_Constant('bar', 1)]);
+        $tests[] = [$node, 'twig_tests_test_barbar("abc", null, "bar")', $environment];
 
-        $node = $this->createTest($string, 'barbar', array(
+        $node = $this->createTest($string, 'barbar', [
             new Twig_Node_Expression_Constant('1', 1),
             new Twig_Node_Expression_Constant('2', 1),
             new Twig_Node_Expression_Constant('3', 1),
             'foo' => new Twig_Node_Expression_Constant('bar', 1),
-        ));
-        $tests[] = array($node, 'twig_tests_test_barbar("abc", "1", "2", array(0 => "3", "foo" => "bar"))', $environment);
+        ]);
+        $tests[] = [$node, 'twig_tests_test_barbar("abc", "1", "2", [0 => "3", "foo" => "bar"])', $environment];
 
         return $tests;
     }
 
-    protected function createTest($node, $name, array $arguments = array())
+    protected function createTest($node, $name, array $arguments = [])
     {
         return new Twig_Node_Expression_Test($node, $name, new Twig_Node($arguments), 1);
     }
 
     protected function getEnvironment()
     {
-        $env = new Twig_Environment(new Twig_Loader_Array(array()));
+        $env = new Twig_Environment(new Twig_Loader_Array([]));
         $env->addTest(new Twig_Test('anonymous', function () {}));
 
         return $env;
     }
 }
 
-function twig_tests_test_barbar($string, $arg1 = null, $arg2 = null, array $args = array())
+function twig_tests_test_barbar($string, $arg1 = null, $arg2 = null, array $args = [])
 {
 }

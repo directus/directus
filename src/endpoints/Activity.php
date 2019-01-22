@@ -104,8 +104,6 @@ class Activity extends Route
             $request->getAttribute('id')
         );
 
-        $response = $response->withStatus(204);
-
         return $this->responseWithData($request, $response, []);
     }
 }

@@ -3,6 +3,6 @@ Twig outputs 0 nodes correctly
 --TEMPLATE--
 {{ foo }}0{{ foo }}
 --DATA--
-return array('foo' => 'foo')
+return ['foo' => 'foo']
 --EXPECT--
 foo0foo

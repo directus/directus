@@ -20,10 +20,10 @@ class Twig_Tests_Node_Expression_ConstantTest extends Twig_Test_NodeTestCase
 
     public function getTests()
     {
-        $tests = array();
+        $tests = [];
 
         $node = new Twig_Node_Expression_Constant('foo', 1);
-        $tests[] = array($node, '"foo"');
+        $tests[] = [$node, '"foo"'];
 
         return $tests;
     }

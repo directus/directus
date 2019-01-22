@@ -22,7 +22,7 @@ Twig supports binary operations (+, -, *, /, ~, %, and, or)
 {{ foo ~ bar }}
 {{ 20 // 7 }}
 --DATA--
-return array('foo' => 'bar', 'bar' => 'foo')
+return ['foo' => 'bar', 'bar' => 'foo']
 --EXPECT--
 2
 1

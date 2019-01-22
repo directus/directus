@@ -13,7 +13,7 @@ Twig manages negative numbers as default parameters
 {% macro positive_number1(nb = +1) %}{{ nb }}{% endmacro %}
 {% macro positive_number2(nb = ++1) %}{{ nb }}{% endmacro %}
 --DATA--
-return array()
+return []
 --EXPECT--
 -1
 1

@@ -1,3 +1,18 @@
+* 2.6.2 (2019-01-14)
+
+ * fixed regression (key exists check for non ArrayObject objects)
+
+* 2.6.1 (2019-01-14)
+
+ * fixed ArrayObject access with a null value
+ * fixed embedded templates starting with a BOM
+ * fixed using a Twig_TemplateWrapper instance as an argument to extends
+ * fixed error location when calling an undefined block
+ * deprecated passing a string as a source on Twig_Error
+ * switched generated code to use the PHP short array notation
+ * fixed float representation in compiled templates
+ * added a second argument to the join filter (last separator configuration)
+
 * 2.6.0 (2018-12-16)
 
  * made sure twig_include returns a string
@@ -125,9 +140,20 @@
  * improved the performance of the filesystem loader
  * removed features that were deprecated in 1.x
 
-* 1.36.1 (2018-XX-XX)
+* 1.37.1 (2019-XX-XX)
 
- * n/a
+ * fixed regression (key exists check for non ArrayObject objects)
+ * fixed logic in TemplateWrapper
+
+* 1.37.0 (2019-01-14)
+
+ * fixed ArrayObject access with a null value
+ * fixed embedded templates starting with a BOM
+ * fixed using a Twig_TemplateWrapper instance as an argument to extends
+ * switched generated code to use the PHP short array notation
+ * dropped PHP 5.3 support
+ * fixed float representation in compiled templates
+ * added a second argument to the join filter (last separator configuration)
 
 * 1.36.0 (2018-12-16)
 

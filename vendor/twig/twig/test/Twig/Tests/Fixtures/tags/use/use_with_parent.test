@@ -17,7 +17,7 @@
 --TEMPLATE(blocks.twig)--
 {% block content 'BLOCK' %}
 --DATA--
-return array()
+return []
 --EXPECT--
 PARENT
 CHILD

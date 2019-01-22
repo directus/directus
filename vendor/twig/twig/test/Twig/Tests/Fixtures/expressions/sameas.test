@@ -11,7 +11,7 @@ Twig supports the "same as" operator
     as
     (true) ? 'OK' }}
 --DATA--
-return array()
+return []
 --EXPECT--
 OK
 OK

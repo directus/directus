@@ -4,6 +4,6 @@
 {% for i, item in items if loop.last > 0 %}
 {% endfor %}
 --DATA--
-return array('items' => array('a', 'b'))
+return ['items' => ['a', 'b']]
 --EXCEPTION--
 Twig_Error_Syntax: The "loop" variable cannot be used in a looping condition in "index.twig" at line 2.

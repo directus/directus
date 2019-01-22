@@ -317,9 +317,9 @@ class Field extends AbstractObject
      *
      * @return bool
      */
-    public function isSystemDateType()
+    public function isSystemDateTimeType()
     {
-        return DataTypes::isSystemDateType($this->getType());
+        return DataTypes::isSystemDateTimeType($this->getType());
     }
 
     /**

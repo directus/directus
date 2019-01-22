@@ -9,7 +9,7 @@ Twig supports the "divisible by" operator
    by
    (3) ? 'OK' }}
 --DATA--
-return array()
+return []
 --EXPECT--
 OK
 OK

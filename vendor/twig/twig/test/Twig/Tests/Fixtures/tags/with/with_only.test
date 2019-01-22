@@ -5,6 +5,6 @@
     {{ foo }}{{ bar }}{{ baz }}
 {% endwith %}
 --DATA--
-return array('foo' => 'baz', 'baz' => 'baz')
+return ['foo' => 'baz', 'baz' => 'baz']
 --EXCEPTION--
 Twig_Error_Runtime: Variable "baz" does not exist in "index.twig" at line 3.

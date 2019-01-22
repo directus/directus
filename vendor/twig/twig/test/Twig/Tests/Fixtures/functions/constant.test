@@ -4,7 +4,7 @@
 {{ constant('DATE_W3C') == expect ? 'true' : 'false' }}
 {{ constant('ARRAY_AS_PROPS', object) }}
 --DATA--
-return array('expect' => DATE_W3C, 'object' => new ArrayObject(array('hi')));
+return ['expect' => DATE_W3C, 'object' => new ArrayObject(['hi'])]
 --EXPECT--
 true
 2

@@ -26,7 +26,7 @@ final class Twig_TokenParser_Sandbox extends Twig_TokenParser
     {
         $stream = $this->parser->getStream();
         $stream->expect(/* Twig_Token::BLOCK_END_TYPE */ 3);
-        $body = $this->parser->subparse(array($this, 'decideBlockEnd'), true);
+        $body = $this->parser->subparse([$this, 'decideBlockEnd'], true);
         $stream->expect(/* Twig_Token::BLOCK_END_TYPE */ 3);
 
         // in a sandbox tag, only include tags are allowed

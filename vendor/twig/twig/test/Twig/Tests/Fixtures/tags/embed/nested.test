@@ -24,7 +24,7 @@ B
 {% endblock %}
 C
 --DATA--
-return array()
+return []
 --EXPECT--
 A
             block1

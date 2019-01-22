@@ -14,11 +14,11 @@ class Twig_Tests_Loader_ChainTest extends \PHPUnit\Framework\TestCase
     public function testGetSourceContext()
     {
         $path = __DIR__.'/../Fixtures';
-        $loader = new Twig_Loader_Chain(array(
-            new Twig_Loader_Array(array('foo' => 'bar')),
-            new Twig_Loader_Array(array('errors/index.html' => 'baz')),
-            new Twig_Loader_Filesystem(array($path)),
-        ));
+        $loader = new Twig_Loader_Chain([
+            new Twig_Loader_Array(['foo' => 'bar']),
+            new Twig_Loader_Array(['errors/index.html' => 'baz']),
+            new Twig_Loader_Filesystem([$path]),
+        ]);
 
         $this->assertEquals('foo', $loader->getSourceContext('foo')->getName());
         $this->assertSame('', $loader->getSourceContext('foo')->getPath());
@@ -37,17 +37,17 @@ class Twig_Tests_Loader_ChainTest extends \PHPUnit\Framework\TestCase
      */
     public function testGetSourceContextWhenTemplateDoesNotExist()
     {
-        $loader = new Twig_Loader_Chain(array());
+        $loader = new Twig_Loader_Chain([]);
 
         $loader->getSourceContext('foo');
     }
 
     public function testGetCacheKey()
     {
-        $loader = new Twig_Loader_Chain(array(
-            new Twig_Loader_Array(array('foo' => 'bar')),
-            new Twig_Loader_Array(array('foo' => 'foobar', 'bar' => 'foo')),
-        ));
+        $loader = new Twig_Loader_Chain([
+            new Twig_Loader_Array(['foo' => 'bar']),
+            new Twig_Loader_Array(['foo' => 'foobar', 'bar' => 'foo']),
+        ]);
 
         $this->assertEquals('foo:bar', $loader->getCacheKey('foo'));
         $this->assertEquals('bar:foo', $loader->getCacheKey('bar'));
@@ -58,7 +58,7 @@ class Twig_Tests_Loader_ChainTest extends \PHPUnit\Framework\TestCase
      */
     public function testGetCacheKeyWhenTemplateDoesNotExist()
     {
-        $loader = new Twig_Loader_Chain(array());
+        $loader = new Twig_Loader_Chain([]);
 
         $loader->getCacheKey('foo');
     }
@@ -66,7 +66,7 @@ class Twig_Tests_Loader_ChainTest extends \PHPUnit\Framework\TestCase
     public function testAddLoader()
     {
         $loader = new Twig_Loader_Chain();
-        $loader->addLoader(new Twig_Loader_Array(array('foo' => 'bar')));
+        $loader->addLoader(new Twig_Loader_Array(['foo' => 'bar']));
 
         $this->assertEquals('bar', $loader->getSourceContext('foo')->getCode());
     }

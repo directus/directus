@@ -17,7 +17,7 @@
   BAR
 {% endblock %}
 --DATA--
-return array()
+return []
 --EXPECT--
 
 INSIDE OVERRIDDEN

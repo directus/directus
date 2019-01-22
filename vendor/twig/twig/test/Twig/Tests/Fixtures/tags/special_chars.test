@@ -3,6 +3,6 @@
 --TEMPLATE--
 {% § %}
 --DATA--
-return array()
+return []
 --EXPECT--
 §

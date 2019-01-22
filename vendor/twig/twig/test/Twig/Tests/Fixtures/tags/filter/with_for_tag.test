@@ -7,7 +7,7 @@
 {% endfor %}
 {% endfilter %}
 --DATA--
-return array('items' => array('a', 'b'))
+return ['items' => ['a', 'b']]
 --EXPECT--
 A
 B

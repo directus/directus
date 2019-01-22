@@ -10,7 +10,7 @@
   <input type="{{ type|default("text") }}" name="{{ name }}" value="{{ value|e|default('') }}" size="{{ size|default(20) }}">
 {% endmacro %}
 --DATA--
-return array()
+return []
 --EXPECT--
   <input type="text" name="username" value="" size="20">
 

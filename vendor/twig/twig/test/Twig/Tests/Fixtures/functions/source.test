@@ -8,7 +8,7 @@ BAR
 --TEMPLATE(foo.twig)--
 {{ foo }}<br />
 --DATA--
-return array()
+return []
 --EXPECT--
 FOO
 

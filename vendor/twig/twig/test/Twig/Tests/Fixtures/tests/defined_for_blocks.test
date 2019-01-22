@@ -26,7 +26,7 @@
 --TEMPLATE(blocks)--
 {% block block1 %}{%endblock %}
 --DATA--
-return array()
+return []
 --EXPECT--
 ok
     ko

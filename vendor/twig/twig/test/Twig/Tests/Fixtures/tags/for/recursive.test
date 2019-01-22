@@ -8,7 +8,7 @@
 {% endfor %}
 {% endfor %}
 --DATA--
-return array('items' => array('a' => array('a1', 'a2', 'a3'), 'b' => array('b1')))
+return ['items' => ['a' => ['a1', 'a2', 'a3'], 'b' => ['b1']]]
 --EXPECT--
 * a (2):
   * a1 (3)

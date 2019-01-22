@@ -12,7 +12,7 @@ Twig supports the "ends with" operator
 {{ false ends with false ? 'OK' : 'KO' }}
 {{ false ends with '' ? 'OK' : 'KO' }}
 --DATA--
-return array()
+return []
 --EXPECT--
 OK
 OK

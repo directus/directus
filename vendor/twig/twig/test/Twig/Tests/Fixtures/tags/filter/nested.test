@@ -9,7 +9,7 @@
   {{ var }}
 {% endfilter %}
 --DATA--
-return array('var' => 'var')
+return ['var' => 'var']
 --EXPECT--
   Var
       Var

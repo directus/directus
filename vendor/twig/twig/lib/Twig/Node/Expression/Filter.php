@@ -13,7 +13,7 @@ class Twig_Node_Expression_Filter extends Twig_Node_Expression_Call
 {
     public function __construct(Twig_Node $node, Twig_Node_Expression_Constant $filterName, Twig_Node $arguments, $lineno, $tag = null)
     {
-        parent::__construct(array('node' => $node, 'filter' => $filterName, 'arguments' => $arguments), array(), $lineno, $tag);
+        parent::__construct(['node' => $node, 'filter' => $filterName, 'arguments' => $arguments], [], $lineno, $tag);
     }
 
     public function compile(Twig_Compiler $compiler)

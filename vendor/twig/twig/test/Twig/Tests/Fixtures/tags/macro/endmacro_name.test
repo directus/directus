@@ -9,7 +9,7 @@
 {% macro foo() %}foo{% endmacro %}
 {% macro bar() %}bar{% endmacro bar %}
 --DATA--
-return array()
+return []
 --EXPECT--
 foo
 bar

@@ -3,6 +3,6 @@ _self returns the template name
 --TEMPLATE--
 {{ _self }}
 --DATA--
-return array()
+return []
 --EXPECT--
 index.twig

@@ -8,7 +8,7 @@ Twig supports the ternary operator
 {{ 1 == 1 ? 'foo<br />':'' }}
 {{ foo ~ (bar ? ('-' ~ bar) : '') }}
 --DATA--
-return array('foo' => 'foo', 'bar' => 'bar')
+return ['foo' => 'foo', 'bar' => 'bar']
 --EXPECT--
 YES
 NO

@@ -8,7 +8,7 @@ foo
 --TEMPLATE(bar.twig)--
 {{ foo|e }}
 --DATA--
-return array('foo' => 'bar<br />')
+return ['foo' => 'bar<br />']
 --EXPECT--
 foo
 

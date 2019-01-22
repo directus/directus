@@ -14,7 +14,7 @@ sandbox tag
 --TEMPLATE(foo.twig)--
 foo
 --DATA--
-return array()
+return []
 --EXPECT--
 foo
 foo

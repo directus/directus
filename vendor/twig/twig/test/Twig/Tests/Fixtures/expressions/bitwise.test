@@ -6,7 +6,7 @@ Twig supports bitwise operations
 {{ 1 b-xor 5 }}
 {{ (1 and 0 b-or 0) is same as(1 and (0 b-or 0)) ? 'ok' : 'ko' }}
 --DATA--
-return array()
+return []
 --EXPECT--
 1
 5

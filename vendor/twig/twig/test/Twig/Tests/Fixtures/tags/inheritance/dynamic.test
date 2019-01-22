@@ -9,6 +9,6 @@ FOO
 --TEMPLATE(foo.twig)--
 {% block content %}{% endblock %}
 --DATA--
-return array('foo' => 'foo.twig')
+return ['foo' => 'foo.twig']
 --EXPECT--
 FOO

@@ -10,7 +10,7 @@ macro
 {{ test('foo') }}
 {{ test('bar', 'foo') }}
 --DATA--
-return array();
+return []
 --EXPECT--
 foobar
 barfoo

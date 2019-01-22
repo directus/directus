@@ -20,12 +20,12 @@ class Twig_Tests_Node_BlockReferenceTest extends Twig_Test_NodeTestCase
 
     public function getTests()
     {
-        return array(
-            array(new Twig_Node_BlockReference('foo', 1), <<<EOF
+        return [
+            [new Twig_Node_BlockReference('foo', 1), <<<EOF
 // line 1
 \$this->displayBlock('foo', \$context, \$blocks);
 EOF
-            ),
-        );
+            ],
+        ];
     }
 }

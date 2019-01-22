@@ -30,14 +30,14 @@ final class Twig_TokenParser_Embed extends Twig_TokenParser_Include
         }
 
         // inject a fake parent to make the parent() function work
-        $stream->injectTokens(array(
+        $stream->injectTokens([
             new Twig_Token(/* Twig_Token::BLOCK_START_TYPE */ 1, '', $token->getLine()),
             new Twig_Token(/* Twig_Token::NAME_TYPE */ 5, 'extends', $token->getLine()),
             $parentToken,
             new Twig_Token(/* Twig_Token::BLOCK_END_TYPE */ 3, '', $token->getLine()),
-        ));
+        ]);
 
-        $module = $this->parser->parse($stream, array($this, 'decideBlockEnd'), true);
+        $module = $this->parser->parse($stream, [$this, 'decideBlockEnd'], true);
 
         // override the parent with the correct one
         if ($fakeParentToken === $parentToken) {

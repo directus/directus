@@ -31,7 +31,7 @@
 
 {% endautoescape %}
 --DATA--
-return array('var' => "<Fabien>\nTwig")
+return ['var' => "<Fabien>\nTwig"]
 --EXPECT--
 
 (nl2br is pre_escaped for "html" and declared safe for "html")

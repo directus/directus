@@ -10,6 +10,6 @@ index
 foo
 {{ foo.bar }}
 --DATA--
-return array('foo' => 'foo');
+return ['foo' => 'foo']
 --EXCEPTION--
 Twig_Error_Runtime: Impossible to access an attribute ("bar") on a string variable ("foo") in "foo" at line 3.

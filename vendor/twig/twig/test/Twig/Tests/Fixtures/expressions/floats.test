@@ -1,0 +1,14 @@
+--TEST--
+Twig compiles floats properly
+--TEMPLATE--
+{% set val2 = 0.0 %}
+
+{{ val is same as (0.0) ? 'Yes' : 'No' }}
+{{ val2 is same as (0.0) ? 'Yes' : 'No' }}
+{{ val is same as (val2) ? 'Yes' : 'No' }}
+--DATA--
+return array('val' => 0.0)
+--EXPECT--
+Yes
+Yes
+Yes

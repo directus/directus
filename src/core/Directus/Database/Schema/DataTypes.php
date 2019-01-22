@@ -119,7 +119,7 @@ final class DataTypes
      */
     public static function getDateTimeTypes()
     {
-        return array_merge(static::getSystemDateTypes(), [
+        return array_merge(static::getSystemDateTimeTypes(), [
             static::TYPE_DATETIME,
         ]);
     }
@@ -286,11 +286,11 @@ final class DataTypes
     }
 
     /**
-     * Returns all the date types
+     * Returns all the system datetime types
      *
      * @return array
      */
-    public static function getSystemDateTypes()
+    public static function getSystemDateTimeTypes()
     {
         return [
             static::TYPE_DATETIME_CREATED,
@@ -299,15 +299,15 @@ final class DataTypes
     }
 
     /**
-     * Checks whether or not the given type is system date type
+     * Checks whether or not the given type is system datetime type
      *
      * @param string $type
      *
      * @return bool
      */
-    public static function isSystemDateType($type)
+    public static function isSystemDateTimeType($type)
     {
-        return in_array(strtolower($type), static::getSystemDateTypes());
+        return in_array(strtolower($type), static::getSystemDateTimeTypes());
     }
 
     /**
@@ -325,7 +325,7 @@ final class DataTypes
             static::TYPE_STATUS,
             static::TYPE_SORT,
             static::TYPE_LANG,
-        ], static::getSystemDateTypes());
+        ], static::getSystemDateTimeTypes());
     }
 
     /**

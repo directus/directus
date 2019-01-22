@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit70889f11ef4030169783506052b87d42
+class ComposerStaticInitb3915753c90eeaba6f2db8f393858965
 {
     public static $files = array (
         '320cde22f66dd4f5d3fd621d3e88b98f' => __DIR__ . '/..' . '/symfony/polyfill-ctype/bootstrap.php',
@@ -438,6 +438,7 @@ class ComposerStaticInit70889f11ef4030169783506052b87d42
         'Directus\\Application\\Http\\Middleware\\AuthenticatedMiddleware' => __DIR__ . '/../..' . '/src/core/Directus/Application/Http/Middleware/AuthenticatedMiddleware.php',
         'Directus\\Application\\Http\\Middleware\\AuthenticationIgnoreOriginMiddleware' => __DIR__ . '/../..' . '/src/core/Directus/Application/Http/Middleware/AuthenticationIgnoreOriginMiddleware.php',
         'Directus\\Application\\Http\\Middleware\\AuthenticationMiddleware' => __DIR__ . '/../..' . '/src/core/Directus/Application/Http/Middleware/AuthenticationMiddleware.php',
+        'Directus\\Application\\Http\\Middleware\\AuthenticationOptionalMiddleware' => __DIR__ . '/../..' . '/src/core/Directus/Application/Http/Middleware/AuthenticationOptionalMiddleware.php',
         'Directus\\Application\\Http\\Middleware\\CorsMiddleware' => __DIR__ . '/../..' . '/src/core/Directus/Application/Http/Middleware/CorsMiddleware.php',
         'Directus\\Application\\Http\\Middleware\\IpRateLimitMiddleware' => __DIR__ . '/../..' . '/src/core/Directus/Application/Http/Middleware/IpRateLimitMiddleware.php',
         'Directus\\Application\\Http\\Middleware\\ProxyMiddleware' => __DIR__ . '/../..' . '/src/core/Directus/Application/Http/Middleware/ProxyMiddleware.php',
@@ -540,6 +541,7 @@ class ComposerStaticInit70889f11ef4030169783506052b87d42
         'Directus\\Database\\Exception\\FieldLengthNotSupportedException' => __DIR__ . '/../..' . '/src/core/Directus/Database/Exception/FieldLengthNotSupportedException.php',
         'Directus\\Database\\Exception\\FieldLengthRequiredException' => __DIR__ . '/../..' . '/src/core/Directus/Database/Exception/FieldLengthRequiredException.php',
         'Directus\\Database\\Exception\\FieldNotFoundException' => __DIR__ . '/../..' . '/src/core/Directus/Database/Exception/FieldNotFoundException.php',
+        'Directus\\Database\\Exception\\ForbiddenFieldAccessException' => __DIR__ . '/../..' . '/src/core/Directus/Database/Exception/ForbiddenFieldAccessException.php',
         'Directus\\Database\\Exception\\ForbiddenSystemTableDirectAccessException' => __DIR__ . '/../..' . '/src/core/Directus/Database/Exception/ForbiddenSystemTableDirectAccessException.php',
         'Directus\\Database\\Exception\\InvalidFieldException' => __DIR__ . '/../..' . '/src/core/Directus/Database/Exception/InvalidFieldException.php',
         'Directus\\Database\\Exception\\InvalidQueryException' => __DIR__ . '/../..' . '/src/core/Directus/Database/Exception/InvalidQueryException.php',
@@ -3025,10 +3027,10 @@ class ComposerStaticInit70889f11ef4030169783506052b87d42
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit70889f11ef4030169783506052b87d42::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit70889f11ef4030169783506052b87d42::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInit70889f11ef4030169783506052b87d42::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInit70889f11ef4030169783506052b87d42::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInitb3915753c90eeaba6f2db8f393858965::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInitb3915753c90eeaba6f2db8f393858965::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInitb3915753c90eeaba6f2db8f393858965::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInitb3915753c90eeaba6f2db8f393858965::$classMap;
 
         }, null, ClassLoader::class);
     }

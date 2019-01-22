@@ -8,7 +8,7 @@
 --TEMPLATE(foo.twig)--
 {% for k, v in _context %}{{ k }},{% endfor %}
 --DATA--
-return array('foo' => 'bar')
+return ['foo' => 'bar']
 --EXPECT--
 foo,global,_parent,
 global,_parent,

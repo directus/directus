@@ -174,20 +174,20 @@ class Twig_Tests_Cache_FilesystemTest extends \PHPUnit\Framework\TestCase
     {
         $pattern = '#a/b/[a-zA-Z0-9]+/[a-zA-Z0-9]+.php$#';
 
-        return array(
-            array($pattern, 'a/b'),
-            array($pattern, 'a/b/'),
-            array($pattern, 'a/b\\'),
-            array($pattern, 'a/b\\/'),
-            array($pattern, 'a/b\\//'),
-            array('#/'.substr($pattern, 1), '/a/b'),
-        );
+        return [
+            [$pattern, 'a/b'],
+            [$pattern, 'a/b/'],
+            [$pattern, 'a/b\\'],
+            [$pattern, 'a/b\\/'],
+            [$pattern, 'a/b\\//'],
+            ['#/'.substr($pattern, 1), '/a/b'],
+        ];
     }
 
     private function generateSource()
     {
-        return strtr('<?php class {{classname}} {}', array(
+        return strtr('<?php class {{classname}} {}', [
             '{{classname}}' => $this->classname,
-        ));
+        ]);
     }
 }

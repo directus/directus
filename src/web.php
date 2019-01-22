@@ -92,6 +92,7 @@ $middleware = [
     'auth' => new \Directus\Application\Http\Middleware\AuthenticationMiddleware($app->getContainer()),
     'auth_user' => new \Directus\Application\Http\Middleware\AuthenticatedMiddleware($app->getContainer()),
     'auth_admin' => new \Directus\Application\Http\Middleware\AdminOnlyMiddleware($app->getContainer()),
+    'auth_optional' => new \Directus\Application\Http\Middleware\AuthenticationOptionalMiddleware($app->getContainer()),
     'auth_ignore_origin' => new \Directus\Application\Http\Middleware\AuthenticationIgnoreOriginMiddleware($app->getContainer()),
     'rate_limit_user' => new \Directus\Application\Http\Middleware\UserRateLimitMiddleware($app->getContainer()),
 ];
@@ -116,6 +117,7 @@ $app->group('/{project}', function () use ($middleware) {
         ->add($middleware['auth_user'])
         ->add($middleware['rate_limit_user'])
         ->add($middleware['auth'])
+        ->add($middleware['auth_optional'])
         ->add($middleware['table_gateway']);
     $this->post('/update', \Directus\Api\Routes\ProjectUpdate::class)
         ->add($middleware['auth_admin'])

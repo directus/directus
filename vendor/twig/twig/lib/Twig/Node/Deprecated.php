@@ -18,7 +18,7 @@ class Twig_Node_Deprecated extends Twig_Node
 {
     public function __construct(Twig_Node_Expression $expr, $lineno, $tag = null)
     {
-        parent::__construct(array('expr' => $expr), array(), $lineno, $tag);
+        parent::__construct(['expr' => $expr], [], $lineno, $tag);
     }
 
     public function compile(Twig_Compiler $compiler)

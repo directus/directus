@@ -207,8 +207,6 @@ class ScimTwo extends Route
         $response->setHeader('Content-Type', 'application/scim+json');
         $this->getService()->deleteGroup($request->getAttribute('id'));
 
-        $response = $response->withStatus(204);
-
         return $this->responseScimWithData(
             $request,
             $response,

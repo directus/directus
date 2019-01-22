@@ -14,7 +14,7 @@ Twig supports the ?? operator
 {{ 1 + nope ?? nada ?? 2 }}
 {{ 1 + nope ?? 3 + nada ?? 2 }}
 --DATA--
-return array('bar' => 'OK', 'foo' => array('bar' => 'OK'))
+return ['bar' => 'OK', 'foo' => ['bar' => 'OK']]
 --EXPECT--
 OK
 OK

@@ -13,7 +13,7 @@ Block names are unique per template
 {% endfilter %}
 {% block content %}{% endblock %}
 --DATA--
-return array();
+return []
 --EXPECT--
 First
 Second

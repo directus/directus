@@ -120,7 +120,7 @@ using)::
     /* Hello {{ name }} */
     class __TwigTemplate_1121b6f109fe93ebe8c6e22e3712bceb extends Twig_Template
     {
-        protected function doDisplay(array $context, array $blocks = array())
+        protected function doDisplay(array $context, array $blocks = [])
         {
             // line 1
             echo "Hello ";

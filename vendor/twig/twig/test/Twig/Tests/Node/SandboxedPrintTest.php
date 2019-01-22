@@ -20,13 +20,13 @@ class Twig_Tests_Node_SandboxedPrintTest extends Twig_Test_NodeTestCase
 
     public function getTests()
     {
-        $tests = array();
+        $tests = [];
 
-        $tests[] = array(new Twig_Node_SandboxedPrint(new Twig_Node_Expression_Constant('foo', 1), 1), <<<EOF
+        $tests[] = [new Twig_Node_SandboxedPrint(new Twig_Node_Expression_Constant('foo', 1), 1), <<<EOF
 // line 1
 echo \$this->extensions['Twig_Extension_Sandbox']->ensureToStringAllowed("foo");
 EOF
-        );
+        ];
 
         return $tests;
     }

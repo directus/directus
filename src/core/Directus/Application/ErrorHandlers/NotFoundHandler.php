@@ -2,11 +2,12 @@
 
 namespace Directus\Application\ErrorHandlers;
 
+use Directus\Application\ErrorHandlers\ErrorHandler;
 use Directus\Application\Http\Request;
 use Directus\Application\Http\Response;
 use Directus\Exception\NotFoundException;
 
-class NotFoundHandler
+class NotFoundHandler extends ErrorHandler
 {
     /**
      * @param Request $request
@@ -16,11 +17,17 @@ class NotFoundHandler
      */
     public function __invoke(Request $request, Response $response)
     {
-        return $response
-            ->withStatus(Response::HTTP_NOT_FOUND)
-            ->withJson(['error' => [
+        $response = $response->withStatus(Response::HTTP_NOT_FOUND);
+
+        $data = [
+            'error' => [
                 'code' => NotFoundException::ERROR_CODE,
                 'message' => 'Not Found'
-            ]]);
+            ]
+        ];
+
+        $this->triggerResponseAction($request, $response, $data);
+
+        return $response->withJson($data);
     }
 }

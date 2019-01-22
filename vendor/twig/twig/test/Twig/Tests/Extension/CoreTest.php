@@ -25,36 +25,36 @@ class Twig_Tests_Extension_CoreTest extends \PHPUnit\Framework\TestCase
 
     public function getRandomFunctionTestData()
     {
-        return array(
-            array(// array
-                array('apple', 'orange', 'citrus'),
-                array('apple', 'orange', 'citrus'),
-            ),
-            array(// Traversable
-                new ArrayObject(array('apple', 'orange', 'citrus')),
-                array('apple', 'orange', 'citrus'),
-            ),
-            array(// unicode string
+        return [
+            [// array
+                ['apple', 'orange', 'citrus'],
+                ['apple', 'orange', 'citrus'],
+            ],
+            [// Traversable
+                new ArrayObject(['apple', 'orange', 'citrus']),
+                ['apple', 'orange', 'citrus'],
+            ],
+            [// unicode string
                 'Ä€é',
-                array('Ä', '€', 'é'),
-            ),
-            array(// numeric but string
+                ['Ä', '€', 'é'],
+            ],
+            [// numeric but string
                 '123',
-                array('1', '2', '3'),
-            ),
-            array(// integer
+                ['1', '2', '3'],
+            ],
+            [// integer
                 5,
                 range(0, 5, 1),
-            ),
-            array(// float
+            ],
+            [// float
                 5.9,
                 range(0, 5, 1),
-            ),
-            array(// negative
+            ],
+            [// negative
                 -2,
-                array(0, -1, -2),
-            ),
-        );
+                [0, -1, -2],
+            ],
+        ];
     }
 
     public function testRandomFunctionWithoutParameter()
@@ -70,7 +70,7 @@ class Twig_Tests_Extension_CoreTest extends \PHPUnit\Framework\TestCase
     public function testRandomFunctionReturnsAsIs()
     {
         $this->assertSame('', twig_random(new Twig_Environment($this->getMockBuilder('Twig_LoaderInterface')->getMock()), ''));
-        $this->assertSame('', twig_random(new Twig_Environment($this->getMockBuilder('Twig_LoaderInterface')->getMock(), array('charset' => null)), ''));
+        $this->assertSame('', twig_random(new Twig_Environment($this->getMockBuilder('Twig_LoaderInterface')->getMock(), ['charset' => null]), ''));
 
         $instance = new stdClass();
         $this->assertSame($instance, twig_random(new Twig_Environment($this->getMockBuilder('Twig_LoaderInterface')->getMock()), $instance));
@@ -81,7 +81,7 @@ class Twig_Tests_Extension_CoreTest extends \PHPUnit\Framework\TestCase
      */
     public function testRandomFunctionOfEmptyArrayThrowsException()
     {
-        twig_random(new Twig_Environment($this->getMockBuilder('Twig_LoaderInterface')->getMock()), array());
+        twig_random(new Twig_Environment($this->getMockBuilder('Twig_LoaderInterface')->getMock()), []);
     }
 
     public function testRandomFunctionOnNonUTF8String()
@@ -92,7 +92,7 @@ class Twig_Tests_Extension_CoreTest extends \PHPUnit\Framework\TestCase
         $text = iconv('UTF-8', 'ISO-8859-1', 'Äé');
         for ($i = 0; $i < 30; ++$i) {
             $rand = twig_random($twig, $text);
-            $this->assertTrue(in_array(iconv('ISO-8859-1', 'UTF-8', $rand), array('Ä', 'é'), true));
+            $this->assertTrue(in_array(iconv('ISO-8859-1', 'UTF-8', $rand), ['Ä', 'é'], true));
         }
     }
 
@@ -120,11 +120,11 @@ class Twig_Tests_Extension_CoreTest extends \PHPUnit\Framework\TestCase
 
     public function provideCustomEscaperCases()
     {
-        return array(
-            array('fooUTF-8', 'foo', 'foo'),
-            array('UTF-8', null, 'foo'),
-            array('42UTF-8', 42, 'foo'),
-        );
+        return [
+            ['fooUTF-8', 'foo', 'foo'],
+            ['UTF-8', null, 'foo'],
+            ['42UTF-8', 42, 'foo'],
+        ];
     }
 
     /**
@@ -146,15 +146,15 @@ class Twig_Tests_Extension_CoreTest extends \PHPUnit\Framework\TestCase
 
     public function provideTwigFirstCases()
     {
-        $i = array(1 => 'a', 2 => 'b', 3 => 'c');
+        $i = [1 => 'a', 2 => 'b', 3 => 'c'];
 
-        return array(
-            array('a', 'abc'),
-            array(1, array(1, 2, 3)),
-            array('', null),
-            array('', ''),
-            array('a', new CoreTestIterator($i, array_keys($i), true, 3)),
-        );
+        return [
+            ['a', 'abc'],
+            [1, [1, 2, 3]],
+            ['', null],
+            ['', ''],
+            ['a', new CoreTestIterator($i, array_keys($i), true, 3)],
+        ];
     }
 
     /**
@@ -168,15 +168,15 @@ class Twig_Tests_Extension_CoreTest extends \PHPUnit\Framework\TestCase
 
     public function provideTwigLastCases()
     {
-        $i = array(1 => 'a', 2 => 'b', 3 => 'c');
+        $i = [1 => 'a', 2 => 'b', 3 => 'c'];
 
-        return array(
-            array('c', 'abc'),
-            array(3, array(1, 2, 3)),
-            array('', null),
-            array('', ''),
-            array('c', new CoreTestIterator($i, array_keys($i), true)),
-        );
+        return [
+            ['c', 'abc'],
+            [3, [1, 2, 3]],
+            ['', null],
+            ['', ''],
+            ['c', new CoreTestIterator($i, array_keys($i), true)],
+        ];
     }
 
     /**
@@ -189,17 +189,17 @@ class Twig_Tests_Extension_CoreTest extends \PHPUnit\Framework\TestCase
 
     public function provideArrayKeyCases()
     {
-        $array = array('a' => 'a1', 'b' => 'b1', 'c' => 'c1');
+        $array = ['a' => 'a1', 'b' => 'b1', 'c' => 'c1'];
         $keys = array_keys($array);
 
-        return array(
-            array($keys, $array),
-            array($keys, new CoreTestIterator($array, $keys)),
-            array($keys, new CoreTestIteratorAggregate($array, $keys)),
-            array($keys, new CoreTestIteratorAggregateAggregate($array, $keys)),
-            array(array(), null),
-            array(array('a'), new SimpleXMLElement('<xml><a></a></xml>')),
-        );
+        return [
+            [$keys, $array],
+            [$keys, new CoreTestIterator($array, $keys)],
+            [$keys, new CoreTestIteratorAggregate($array, $keys)],
+            [$keys, new CoreTestIteratorAggregateAggregate($array, $keys)],
+            [[], null],
+            [['a'], new SimpleXMLElement('<xml><a></a></xml>')],
+        ];
     }
 
     /**
@@ -212,22 +212,22 @@ class Twig_Tests_Extension_CoreTest extends \PHPUnit\Framework\TestCase
 
     public function provideInFilterCases()
     {
-        $array = array(1, 2, 'a' => 3, 5, 6, 7);
+        $array = [1, 2, 'a' => 3, 5, 6, 7];
         $keys = array_keys($array);
 
-        return array(
-            array(true, 1, $array),
-            array(true, '3', $array),
-            array(true, '3', 'abc3def'),
-            array(true, 1, new CoreTestIterator($array, $keys, true, 1)),
-            array(true, '3', new CoreTestIterator($array, $keys, true, 3)),
-            array(true, '3', new CoreTestIteratorAggregateAggregate($array, $keys, true, 3)),
-            array(false, 4, $array),
-            array(false, 4, new CoreTestIterator($array, $keys, true)),
-            array(false, 4, new CoreTestIteratorAggregateAggregate($array, $keys, true)),
-            array(false, 1, 1),
-            array(true, 'b', new SimpleXMLElement('<xml><a>b</a></xml>')),
-        );
+        return [
+            [true, 1, $array],
+            [true, '3', $array],
+            [true, '3', 'abc3def'],
+            [true, 1, new CoreTestIterator($array, $keys, true, 1)],
+            [true, '3', new CoreTestIterator($array, $keys, true, 3)],
+            [true, '3', new CoreTestIteratorAggregateAggregate($array, $keys, true, 3)],
+            [false, 4, $array],
+            [false, 4, new CoreTestIterator($array, $keys, true)],
+            [false, 4, new CoreTestIteratorAggregateAggregate($array, $keys, true)],
+            [false, 1, 1],
+            [true, 'b', new SimpleXMLElement('<xml><a>b</a></xml>')],
+        ];
     }
 
     /**
@@ -241,23 +241,23 @@ class Twig_Tests_Extension_CoreTest extends \PHPUnit\Framework\TestCase
 
     public function provideSliceFilterCases()
     {
-        $i = array('a' => 1, 'b' => 2, 'c' => 3, 'd' => 4);
+        $i = ['a' => 1, 'b' => 2, 'c' => 3, 'd' => 4];
         $keys = array_keys($i);
 
-        return array(
-            array(array('a' => 1), $i, 0, 1, true),
-            array(array('a' => 1), $i, 0, 1, false),
-            array(array('b' => 2, 'c' => 3), $i, 1, 2),
-            array(array(1), array(1, 2, 3, 4), 0, 1),
-            array(array(2, 3), array(1, 2, 3, 4), 1, 2),
-            array(array(2, 3), new CoreTestIterator($i, $keys, true), 1, 2),
-            array(array('c' => 3, 'd' => 4), new CoreTestIteratorAggregate($i, $keys, true), 2, null, true),
-            array($i, new CoreTestIterator($i, $keys, true), 0, count($keys) + 10, true),
-            array(array(), new CoreTestIterator($i, $keys, true), count($keys) + 10),
-            array('de', 'abcdef', 3, 2),
-            array(array(), new SimpleXMLElement('<items><item>1</item><item>2</item></items>'), 3),
-            array(array(), new ArrayIterator(array(1, 2)), 3),
-        );
+        return [
+            [['a' => 1], $i, 0, 1, true],
+            [['a' => 1], $i, 0, 1, false],
+            [['b' => 2, 'c' => 3], $i, 1, 2],
+            [[1], [1, 2, 3, 4], 0, 1],
+            [[2, 3], [1, 2, 3, 4], 1, 2],
+            [[2, 3], new CoreTestIterator($i, $keys, true), 1, 2],
+            [['c' => 3, 'd' => 4], new CoreTestIteratorAggregate($i, $keys, true), 2, null, true],
+            [$i, new CoreTestIterator($i, $keys, true), 0, count($keys) + 10, true],
+            [[], new CoreTestIterator($i, $keys, true), count($keys) + 10],
+            ['de', 'abcdef', 3, 2],
+            [[], new SimpleXMLElement('<items><item>1</item><item>2</item></items>'), 3],
+            [[], new ArrayIterator([1, 2]), 3],
+        ];
     }
 }
 

@@ -7,6 +7,6 @@
 --TEMPLATE(blocks.twig)--
 {% block content 'foo' %}
 --DATA--
-return array()
+return []
 --EXPECT--
 foo

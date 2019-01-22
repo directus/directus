@@ -29,8 +29,8 @@ class Twig_Node_CheckSecurity extends Twig_Node
 
     public function compile(Twig_Compiler $compiler)
     {
-        $tags = $filters = $functions = array();
-        foreach (array('tags', 'filters', 'functions') as $type) {
+        $tags = $filters = $functions = [];
+        foreach (['tags', 'filters', 'functions'] as $type) {
             foreach ($this->{'used'.ucfirst($type)} as $name => $node) {
                 if ($node instanceof Twig_Node) {
                     ${$type}[$name] = $node->getTemplateLine();
@@ -48,9 +48,9 @@ class Twig_Node_CheckSecurity extends Twig_Node
             ->indent()
             ->write("\$this->extensions['Twig_Extension_Sandbox']->checkSecurity(\n")
             ->indent()
-            ->write(!$tags ? "array(),\n" : "array('".implode("', '", array_keys($tags))."'),\n")
-            ->write(!$filters ? "array(),\n" : "array('".implode("', '", array_keys($filters))."'),\n")
-            ->write(!$functions ? "array()\n" : "array('".implode("', '", array_keys($functions))."')\n")
+            ->write(!$tags ? "[],\n" : "['".implode("', '", array_keys($tags))."'],\n")
+            ->write(!$filters ? "[],\n" : "['".implode("', '", array_keys($filters))."'],\n")
+            ->write(!$functions ? "[]\n" : "['".implode("', '", array_keys($functions))."']\n")
             ->outdent()
             ->write(");\n")
             ->outdent()

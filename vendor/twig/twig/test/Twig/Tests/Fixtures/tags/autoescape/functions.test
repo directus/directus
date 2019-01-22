@@ -44,7 +44,7 @@ safe_br
 
 {% endautoescape %}
 --DATA--
-return array()
+return []
 --EXPECT--
 
 autoescape false

@@ -17,7 +17,7 @@
     Content of block
 {% endblock foobar %}
 --DATA--
-return array()
+return []
 --EXPECT--
 Content of block
 Content of block (first override)

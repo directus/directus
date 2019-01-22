@@ -7,6 +7,6 @@
 {% block foo %}{{ block('bar') }}{% endblock %}
 {% block bar %}BAR_BASE{% endblock %}
 --DATA--
-return array()
+return []
 --EXPECT--
 BARBAR

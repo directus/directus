@@ -6,7 +6,7 @@ dynamic test
 {{ 'bar' is test_foo ? '1' :'0' }}
 {{ 'foo' is test_bar ? '1' :'0' }}
 --DATA--
-return array()
+return []
 --EXPECT--
 1
 1

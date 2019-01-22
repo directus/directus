@@ -14,12 +14,12 @@
  */
 final class Twig_Profiler_Dumper_Html extends Twig_Profiler_Dumper_Base
 {
-    private static $colors = array(
+    private static $colors = [
         'block' => '#dfd',
         'macro' => '#ddf',
         'template' => '#ffd',
         'big' => '#d44',
-    );
+    ];
 
     public function dump(Twig_Profiler_Profile $profile)
     {

@@ -68,11 +68,6 @@ class Users extends Route
             $request->getQueryParams()
         );
 
-        if (!$responseData) {
-            $response = $response->withStatus(204);
-            $responseData = [];
-        }
-
         return $this->responseWithData($request, $response, $responseData);
     }
 
@@ -144,8 +139,6 @@ class Users extends Route
             $request->getAttribute('id'),
             $request->getQueryParams()
         );
-
-        $response = $response->withStatus(204);
 
         return $this->responseWithData($request, $response, []);
     }

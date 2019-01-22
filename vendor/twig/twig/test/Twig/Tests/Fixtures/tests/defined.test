@@ -34,18 +34,18 @@
 {{ [1, 2]                         is     defined ? 'ok' : 'ko' }}
 {{ { foo: "bar" }                 is     defined ? 'ok' : 'ko' }}
 --DATA--
-return array(
+return [
     'definedVar' => 'defined',
     'zeroVar'    => 0,
     'nullVar'    => null,
-    'nested'      => array(
+    'nested'      => [
         'definedVar'   => 'defined',
         'zeroVar'      => 0,
         'nullVar'      => null,
-        'definedArray' => array(0),
-    ),
+        'definedArray' => [0],
+    ],
     'object' => new TwigTestFoo(),
-);
+]
 --EXPECT--
 ok
 ok
@@ -80,20 +80,20 @@ ok
 ok
 ok
 --DATA--
-return array(
+return [
     'definedVar' => 'defined',
     'zeroVar'    => 0,
     'nullVar'    => null,
-    'nested'      => array(
+    'nested'      => [
         'definedVar'   => 'defined',
         'zeroVar'      => 0,
         'nullVar'      => null,
-        'definedArray' => array(0),
-    ),
+        'definedArray' => [0],
+    ],
     'object' => new TwigTestFoo(),
-);
+]
 --CONFIG--
-return array('strict_variables' => false)
+return ['strict_variables' => false]
 --EXPECT--
 ok
 ok

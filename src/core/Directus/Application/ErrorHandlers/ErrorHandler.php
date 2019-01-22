@@ -68,9 +68,12 @@ class ErrorHandler extends AbstractHandler
     {
         $data = $this->processException($exception);
 
+        $response = $response->withStatus($data['http_status_code']);
+
+        $this->triggerResponseAction($request, $response, $data);
+
         if ($this->isMessageSCIM($response)) {
             return $response
-                ->withStatus($data['http_status_code'])
                 ->withJson([
                     'schemas' => [ScimService::SCHEMA_ERROR],
                     'status' => $data['http_status_code'],
@@ -79,7 +82,6 @@ class ErrorHandler extends AbstractHandler
         }
 
         return $response
-            ->withStatus($data['http_status_code'])
             ->withJson(['error' => $data['error']]);
     }
 
@@ -230,5 +232,33 @@ class ErrorHandler extends AbstractHandler
         }
 
         return $message;
+    }
+
+    /**
+     * Trigger a response action
+     * @param  Request  $request
+     * @param  Response $response
+     * @return void
+     */
+    protected function triggerResponseAction(Request $request, Response $response, array $data) {
+        if (!$this->emitter) return;
+
+        $uri = $request->getUri();
+
+        $responseInfo = [
+            'path' => $uri->getPath(),
+            'query' => $uri->getQuery(),
+            'status' => $response->getStatusCode(),
+            'method' => $request->getMethod(),
+
+            // This will count the total byte length of the data. It isn't
+            // 100% accurate, as it will count the size of the serialized PHP
+            // array instead of the JSON object. Converting it to JSON before
+            // counting would introduce too much latency and the difference in
+            // length between the JSON and PHP array is insignificant
+            'size' => mb_strlen(serialize((array) $data), '8bit')
+        ];
+
+        $this->emitter->run("response", [$responseInfo, $data]);
     }
 }

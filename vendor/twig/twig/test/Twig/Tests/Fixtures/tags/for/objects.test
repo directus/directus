@@ -18,14 +18,14 @@
 --DATA--
 class ItemsIterator implements Iterator
 {
-  protected $values = array('foo' => 'bar', 'bar' => 'foo');
+  protected $values = ['foo' => 'bar', 'bar' => 'foo'];
   public function current() { return current($this->values); }
   public function key() { return key($this->values); }
   public function next() { return next($this->values); }
   public function rewind() { return reset($this->values); }
   public function valid() { return false !== current($this->values); }
 }
-return array('items' => new ItemsIterator())
+return ['items' => new ItemsIterator()]
 --EXPECT--
   * bar
   * 1/0

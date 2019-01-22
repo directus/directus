@@ -7,7 +7,7 @@
   {% endfor %}
 {% endfor %}
 --DATA--
-return array('k' => 0)
+return ['k' => 0]
 --EXPECT--
       0 1
       1 1

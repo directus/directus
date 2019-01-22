@@ -145,8 +145,6 @@ class Settings extends Route
             $request->getQueryParams()
         );
 
-        $response = $response->withStatus(204);
-
         return $this->responseWithData($request, $response, []);
     }
 
@@ -173,11 +171,6 @@ class Settings extends Route
         } else if ($request->isDelete()) {
             $ids = explode(',', $request->getAttribute('id'));
             $settingsService->batchDeleteWithIds($ids, $params);
-        }
-
-        if (empty($responseData)) {
-            $response = $response->withStatus(204);
-            $responseData = [];
         }
 
         return $this->responseWithData($request, $response, $responseData);

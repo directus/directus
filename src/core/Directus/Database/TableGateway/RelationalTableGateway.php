@@ -14,12 +14,14 @@ use Directus\Database\SchemaService;
 use Directus\Exception\ErrorException;
 use Directus\Exception\UnprocessableEntityException;
 use Directus\Permissions\Exception\ForbiddenCollectionReadException;
+use Directus\Permissions\Exception\ForbiddenFieldReadException;
 use Directus\Permissions\Exception\PermissionException;
 use Directus\Permissions\Exception\UnableFindOwnerItemsException;
 use Directus\Util\ArrayUtils;
 use Directus\Util\DateTimeUtils;
 use Directus\Util\StringUtils;
 use Zend\Db\Sql\Expression;
+use Zend\Db\Sql\Predicate\In;
 use Zend\Db\Sql\Predicate\PredicateInterface;
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Sql;
@@ -774,18 +776,20 @@ class RelationalTableGateway extends BaseTableGateway
         // ----------------------------------------------------------------------------
         // STATUS VALUES
         // ----------------------------------------------------------------------------
-        $statusField = $this->getTableSchema()->getStatusField();
-        $permissionStatuses = $this->acl->getCollectionStatusesReadPermission($this->getTable());
-        if ($statusField && is_array($permissionStatuses)) {
-            $paramStatuses = ArrayUtils::get($params, 'status');
-            if (is_array($paramStatuses)) {
-                $permissionStatuses = ArrayUtils::intersection(
-                    $permissionStatuses,
-                    $paramStatuses
-                );
-            }
+        if ($this->acl) {
+            $statusField = $this->getTableSchema()->getStatusField();
+            $permissionStatuses = $this->acl->getCollectionStatusesReadPermission($this->getTable());
+            if ($statusField && is_array($permissionStatuses)) {
+                $paramStatuses = ArrayUtils::get($params, 'status');
+                if (is_array($paramStatuses)) {
+                    $permissionStatuses = ArrayUtils::intersection(
+                        $permissionStatuses,
+                        $paramStatuses
+                    );
+                }
 
-            $params['status'] = $permissionStatuses;
+                $params['status'] = $permissionStatuses;
+            }
         }
 
         // @TODO: Query Builder Object
@@ -946,7 +950,13 @@ class RelationalTableGateway extends BaseTableGateway
         }
 
         if (in_array('total_count', $list)) {
-            $metadata['total_count'] = $this->countTotal();
+            $condition = null;
+            if ($this->getTableSchema()->hasStatusField()) {
+                $fieldName = $this->getTableSchema()->getStatusField()->getName();
+                $condition = new In($fieldName, $this->getNonSoftDeleteStatuses());
+            }
+
+            $metadata['total_count'] = $this->countTotal($condition);
         }
 
         if ($tableSchema->hasStatusField() && in_array('status', $list)) {
@@ -1189,6 +1199,12 @@ class RelationalTableGateway extends BaseTableGateway
             while ($relational) {
                 $nextTable = SchemaService::getRelatedCollectionName($nextTable, $nextColumn);
                 $nextColumn = array_shift($columnList);
+
+                // Confirm the user has permission to all chained (dot) fields
+                if ($this->acl && !$this->acl->canRead($nextTable)) {
+                    throw new Exception\ForbiddenFieldAccessException($nextColumn);
+                }
+
                 $relational = SchemaService::hasRelationship($nextTable, $nextColumn);
                 $columnsTable[] = $nextTable;
             }
@@ -1238,9 +1254,6 @@ class RelationalTableGateway extends BaseTableGateway
 
                 if ($field->isAlias()) {
                     $column = $collection->getPrimaryField()->getName();
-                }
-
-                if ($field->isManyToMany()) {
                 }
 
                 $query->columns([$selectColumn]);
@@ -2095,27 +2108,16 @@ class RelationalTableGateway extends BaseTableGateway
         $statement = $sql->prepareStatementForSqlObject($select);
         $results = $statement->execute();
 
-        $statusMap = $this->getStatusMapping();
         $stats = [];
         foreach ($results as $row) {
-            if (isset($row[$statusFieldName])) {
-                foreach ($statusMap as $status) {
-                    if ($status->getValue() == $row[$statusFieldName]) {
-                        $stats[$status->getValue()] = (int) $row['quantity'];
-                    }
-                }
-            }
+            $stats[$row[$statusFieldName]] = (int) $row['quantity'];
         }
 
-        $vals = [];
+        $statusMap = $this->getStatusMapping();
         foreach ($statusMap as $value) {
-            array_push($vals, $value->getValue());
-        }
-
-        $possibleValues = array_values($vals);
-        $makeMeZero = array_diff($possibleValues, array_keys($stats));
-        foreach ($makeMeZero as $unsetActiveColumn) {
-            $stats[$unsetActiveColumn] = 0;
+            if (!isset($stats[$value->getValue()])) {
+                $stats[$value->getValue()] = 0;
+            }
         }
 
         return $stats;

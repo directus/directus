@@ -7,6 +7,6 @@ Deprecating a template with "deprecated" tag
 --TEMPLATE(greeting.twig)--
 Hello Fabien
 --DATA--
-return array()
+return []
 --EXPECT--
 Hello Fabien

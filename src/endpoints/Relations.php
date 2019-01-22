@@ -55,11 +55,6 @@ class Relations extends Route
             $request->getQueryParams()
         );
 
-        if (is_null($responseData)) {
-            $response = $response->withStatus(204);
-            $responseData = [];
-        }
-
         return $this->responseWithData($request, $response, $responseData);
     }
 
@@ -101,11 +96,6 @@ class Relations extends Route
         $relationsService = new RelationsService($this->container);
         $responseData = $relationsService->update($id, $payload, $params);
 
-        if (is_null($responseData)) {
-            $response = $response->withStatus(204);
-            $responseData = [];
-        }
-
         return $this->responseWithData($request, $response, $responseData);
     }
 
@@ -125,10 +115,7 @@ class Relations extends Route
         $relationsService = new RelationsService($this->container);
         $relationsService->delete($request->getAttribute('id'), $request->getQueryParams());
 
-        $responseData = [];
-        $response = $response->withStatus(204);
-
-        return $this->responseWithData($request, $response, $responseData);
+        return $this->responseWithData($request, $response, []);
     }
 
     /**
@@ -152,11 +139,6 @@ class Relations extends Route
         } else if ($request->isDelete()) {
             $ids = explode(',', $request->getAttribute('id'));
             $relationsService->batchDeleteWithIds($ids, $params);
-        }
-
-        if (empty($responseData)) {
-            $response = $response->withStatus(204);
-            $responseData = [];
         }
 
         return $this->responseWithData($request, $response, $responseData);

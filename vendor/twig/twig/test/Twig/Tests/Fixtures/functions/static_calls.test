@@ -4,7 +4,7 @@ Functions as static method calls
 {{ static_call_string('foo') }}
 {{ static_call_array('foo') }}
 --DATA--
-return array('foo' => 'foo')
+return ['foo' => 'foo']
 --EXPECT--
 *foo*
 *foo*

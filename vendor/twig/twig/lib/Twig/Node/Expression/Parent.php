@@ -19,7 +19,7 @@ class Twig_Node_Expression_Parent extends Twig_Node_Expression
 {
     public function __construct($name, $lineno, $tag = null)
     {
-        parent::__construct(array(), array('output' => false, 'name' => $name), $lineno, $tag);
+        parent::__construct([], ['output' => false, 'name' => $name], $lineno, $tag);
     }
 
     public function compile(Twig_Compiler $compiler)

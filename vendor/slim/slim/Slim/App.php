@@ -9,6 +9,7 @@
 namespace Slim;
 
 use Exception;
+use Psr\Http\Message\UriInterface;
 use Slim\Exception\InvalidMethodException;
 use Slim\Http\Response;
 use Throwable;
@@ -52,7 +53,7 @@ class App
      *
      * @var string
      */
-    const VERSION = '3.11.0';
+    const VERSION = '3.12.1-dev';
 
     /**
      * Container
@@ -273,8 +274,8 @@ class App
      * declarations in the callback will be prepended by the group(s)
      * that it is in.
      *
-     * @param string   $pattern
-     * @param callable $callable
+     * @param string           $pattern
+     * @param callable|Closure $callable
      *
      * @return RouteGroupInterface
      */
@@ -461,7 +462,7 @@ class App
             if (isset($contentLength)) {
                 $amountToRead = $contentLength;
                 while ($amountToRead > 0 && !$body->eof()) {
-                    $data = $body->read(min($chunkSize, $amountToRead));
+                    $data = $body->read(min((int)$chunkSize, (int)$amountToRead));
                     echo $data;
 
                     $amountToRead -= strlen($data);
@@ -472,7 +473,7 @@ class App
                 }
             } else {
                 while (!$body->eof()) {
-                    echo $body->read($chunkSize);
+                    echo $body->read((int)$chunkSize);
                     if (connection_status() != CONNECTION_NORMAL) {
                         break;
                     }

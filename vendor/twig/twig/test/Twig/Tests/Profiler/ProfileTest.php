@@ -62,8 +62,8 @@ class Twig_Tests_Profiler_ProfileTest extends \PHPUnit\Framework\TestCase
         $profile->addProfile($a = new Twig_Profiler_Profile());
         $profile->addProfile($b = new Twig_Profiler_Profile());
 
-        $this->assertSame(array($a, $b), $profile->getProfiles());
-        $this->assertSame(array($a, $b), iterator_to_array($profile));
+        $this->assertSame([$a, $b], $profile->getProfiles());
+        $this->assertSame([$a, $b], iterator_to_array($profile));
     }
 
     public function testGetDuration()

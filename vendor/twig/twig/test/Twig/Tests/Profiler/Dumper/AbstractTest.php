@@ -21,24 +21,24 @@ abstract class Twig_Tests_Profiler_Dumper_AbstractTest extends \PHPUnit\Framewor
         $profile->expects($this->any())->method('getMemoryUsage')->will($this->returnValue(0));
         $profile->expects($this->any())->method('getPeakMemoryUsage')->will($this->returnValue(0));
 
-        $subProfiles = array(
+        $subProfiles = [
             $this->getIndexProfile(
-                array(
+                [
                     $this->getEmbeddedBlockProfile(),
                     $this->getEmbeddedTemplateProfile(
-                        array(
+                        [
                             $this->getIncludedTemplateProfile(),
-                        )
+                        ]
                     ),
                     $this->getMacroProfile(),
                     $this->getEmbeddedTemplateProfile(
-                        array(
+                        [
                             $this->getIncludedTemplateProfile(),
-                        )
+                        ]
                     ),
-                )
+                ]
             ),
-        );
+        ];
 
         $profile->expects($this->any())->method('getProfiles')->will($this->returnValue($subProfiles));
         $profile->expects($this->any())->method('getIterator')->will($this->returnValue(new ArrayIterator($subProfiles)));
@@ -46,27 +46,27 @@ abstract class Twig_Tests_Profiler_Dumper_AbstractTest extends \PHPUnit\Framewor
         return $profile;
     }
 
-    private function getIndexProfile(array $subProfiles = array())
+    private function getIndexProfile(array $subProfiles = [])
     {
         return $this->generateProfile('main', 1, true, 'template', 'index.twig', $subProfiles);
     }
 
-    private function getEmbeddedBlockProfile(array $subProfiles = array())
+    private function getEmbeddedBlockProfile(array $subProfiles = [])
     {
         return $this->generateProfile('body', 0.0001, false, 'block', 'embedded.twig', $subProfiles);
     }
 
-    private function getEmbeddedTemplateProfile(array $subProfiles = array())
+    private function getEmbeddedTemplateProfile(array $subProfiles = [])
     {
         return $this->generateProfile('main', 0.0001, true, 'template', 'embedded.twig', $subProfiles);
     }
 
-    private function getIncludedTemplateProfile(array $subProfiles = array())
+    private function getIncludedTemplateProfile(array $subProfiles = [])
     {
         return $this->generateProfile('main', 0.0001, true, 'template', 'included.twig', $subProfiles);
     }
 
-    private function getMacroProfile(array $subProfiles = array())
+    private function getMacroProfile(array $subProfiles = [])
     {
         return $this->generateProfile('foo', 0.0001, false, 'macro', 'index.twig', $subProfiles);
     }
@@ -81,7 +81,7 @@ abstract class Twig_Tests_Profiler_Dumper_AbstractTest extends \PHPUnit\Framewor
      *
      * @return Twig_Profiler_Profile
      */
-    private function generateProfile($name, $duration, $isTemplate, $type, $templateName, array $subProfiles = array())
+    private function generateProfile($name, $duration, $isTemplate, $type, $templateName, array $subProfiles = [])
     {
         $profile = $this->getMockBuilder('Twig_Profiler_Profile')->disableOriginalConstructor()->getMock();
 

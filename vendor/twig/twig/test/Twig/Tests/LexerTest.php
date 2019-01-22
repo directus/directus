@@ -159,10 +159,10 @@ class Twig_Tests_LexerTest extends \PHPUnit\Framework\TestCase
 
     public function testStringWithEscapedDelimiter()
     {
-        $tests = array(
+        $tests = [
             "{{ 'foo \' bar' }}" => 'foo \' bar',
             '{{ "foo \" bar" }}' => 'foo " bar',
-        );
+        ];
 
         $lexer = new Twig_Lexer(new Twig_Environment($this->getMockBuilder('Twig_LoaderInterface')->getMock()));
         foreach ($tests as $template => $expected) {

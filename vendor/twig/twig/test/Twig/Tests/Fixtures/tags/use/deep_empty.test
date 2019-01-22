@@ -6,5 +6,5 @@
 {% use "bar.twig" %}
 --TEMPLATE(bar.twig)--
 --DATA--
-return array()
+return []
 --EXPECT--

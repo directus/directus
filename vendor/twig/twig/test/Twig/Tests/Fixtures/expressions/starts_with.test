@@ -13,7 +13,7 @@ with 'f' ? 'OK' : 'KO' }}
 {{ 'a' starts with false ? 'OK' : 'KO' }}
 {{ false starts with '' ? 'OK' : 'KO' }}
 --DATA--
-return array()
+return []
 --EXPECT--
 OK
 OK

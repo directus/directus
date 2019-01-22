@@ -5,7 +5,7 @@ Twig supports the "matches" operator
 {{ 'foo' matches '/^fo/' ? 'OK' : 'KO' }}
 {{ 'foo' matches '/O/i' ? 'OK' : 'KO' }}
 --DATA--
-return array()
+return []
 --EXPECT--
 OK
 OK

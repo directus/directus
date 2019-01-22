@@ -4,7 +4,7 @@ Filters as static method calls
 {{ 'foo'|static_call_string }}
 {{ 'foo'|static_call_array }}
 --DATA--
-return array('foo' => 'foo')
+return ['foo' => 'foo']
 --EXPECT--
 *foo*
 *foo*

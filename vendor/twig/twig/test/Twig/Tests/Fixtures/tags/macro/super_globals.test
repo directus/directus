@@ -9,6 +9,6 @@ Super globals as macro arguments
     {{ GET }}
 {% endmacro %}
 --DATA--
-return array()
+return []
 --EXPECT--
 foo

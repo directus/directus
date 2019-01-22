@@ -106,8 +106,6 @@ class CollectionPresets extends Route
             $request->getQueryParams()
         );
 
-        $response = $response->withStatus(204);
-
         return $this->responseWithData($request, $response, []);
     }
 }

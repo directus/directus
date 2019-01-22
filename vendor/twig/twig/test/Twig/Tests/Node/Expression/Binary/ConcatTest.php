@@ -27,8 +27,8 @@ class Twig_Tests_Node_Expression_Binary_ConcatTest extends Twig_Test_NodeTestCas
         $right = new Twig_Node_Expression_Constant(2, 1);
         $node = new Twig_Node_Expression_Binary_Concat($left, $right, 1);
 
-        return array(
-            array($node, '(1 . 2)'),
-        );
+        return [
+            [$node, '(1 . 2)'],
+        ];
     }
 }

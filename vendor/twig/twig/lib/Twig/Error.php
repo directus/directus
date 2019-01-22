@@ -63,7 +63,7 @@ class Twig_Error extends Exception
         if (null === $source) {
             $name = null;
         } elseif (!$source instanceof Twig_Source) {
-            // for compat with the Twig C ext., passing the template name as string is accepted
+            @trigger_error(sprintf('Passing a string as a source to %s is deprecated since version 2.6.1; pass a Twig_Source instance instead.', __CLASS__), E_USER_DEPRECATED);
             $name = $source;
         } else {
             $name = $source->getName();
@@ -234,14 +234,14 @@ class Twig_Error extends Exception
         $r = new ReflectionObject($template);
         $file = $r->getFileName();
 
-        $exceptions = array($e = $this);
+        $exceptions = [$e = $this];
         while ($e = $e->getPrevious()) {
             $exceptions[] = $e;
         }
 
         while ($e = array_pop($exceptions)) {
             $traces = $e->getTrace();
-            array_unshift($traces, array('file' => $e->getFile(), 'line' => $e->getLine()));
+            array_unshift($traces, ['file' => $e->getFile(), 'line' => $e->getLine()]);
 
             while ($trace = array_shift($traces)) {
                 if (!isset($trace['file']) || !isset($trace['line']) || $file != $trace['file']) {

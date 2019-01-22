@@ -19,7 +19,7 @@
 --DATA--
 class ItemsIteratorCountable implements Iterator, Countable
 {
-  protected $values = array('foo' => 'bar', 'bar' => 'foo');
+  protected $values = ['foo' => 'bar', 'bar' => 'foo'];
   public function current() { return current($this->values); }
   public function key() { return key($this->values); }
   public function next() { return next($this->values); }
@@ -27,7 +27,7 @@ class ItemsIteratorCountable implements Iterator, Countable
   public function valid() { return false !== current($this->values); }
   public function count() { return count($this->values); }
 }
-return array('items' => new ItemsIteratorCountable())
+return ['items' => new ItemsIteratorCountable()]
 --EXPECT--
   * bar
   * 1/0

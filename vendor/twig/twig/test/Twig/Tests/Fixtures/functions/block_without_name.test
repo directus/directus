@@ -7,6 +7,6 @@
 {% block foo %}{{ block() }}{% endblock %}
 {% block bar %}BAR_BASE{% endblock %}
 --DATA--
-return array()
+return []
 --EXCEPTION--
 Twig_Error_Syntax: The "block" function takes one argument (the block name) in "base.twig" at line 2.

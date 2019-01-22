@@ -31,8 +31,8 @@ final class Twig_TokenParser_If extends Twig_TokenParser
         $expr = $this->parser->getExpressionParser()->parseExpression();
         $stream = $this->parser->getStream();
         $stream->expect(/* Twig_Token::BLOCK_END_TYPE */ 3);
-        $body = $this->parser->subparse(array($this, 'decideIfFork'));
-        $tests = array($expr, $body);
+        $body = $this->parser->subparse([$this, 'decideIfFork']);
+        $tests = [$expr, $body];
         $else = null;
 
         $end = false;
@@ -40,13 +40,13 @@ final class Twig_TokenParser_If extends Twig_TokenParser
             switch ($stream->next()->getValue()) {
                 case 'else':
                     $stream->expect(/* Twig_Token::BLOCK_END_TYPE */ 3);
-                    $else = $this->parser->subparse(array($this, 'decideIfEnd'));
+                    $else = $this->parser->subparse([$this, 'decideIfEnd']);
                     break;
 
                 case 'elseif':
                     $expr = $this->parser->getExpressionParser()->parseExpression();
                     $stream->expect(/* Twig_Token::BLOCK_END_TYPE */ 3);
-                    $body = $this->parser->subparse(array($this, 'decideIfFork'));
+                    $body = $this->parser->subparse([$this, 'decideIfFork']);
                     $tests[] = $expr;
                     $tests[] = $body;
                     break;
@@ -67,12 +67,12 @@ final class Twig_TokenParser_If extends Twig_TokenParser
 
     public function decideIfFork(Twig_Token $token)
     {
-        return $token->test(array('elseif', 'else', 'endif'));
+        return $token->test(['elseif', 'else', 'endif']);
     }
 
     public function decideIfEnd(Twig_Token $token)
     {
-        return $token->test(array('endif'));
+        return $token->test(['endif']);
     }
 
     public function getTag()

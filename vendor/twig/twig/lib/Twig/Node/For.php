@@ -21,18 +21,18 @@ class Twig_Node_For extends Twig_Node
 
     public function __construct(Twig_Node_Expression_AssignName $keyTarget, Twig_Node_Expression_AssignName $valueTarget, Twig_Node_Expression $seq, Twig_Node_Expression $ifexpr = null, Twig_Node $body, Twig_Node $else = null, $lineno, $tag = null)
     {
-        $body = new Twig_Node(array($body, $this->loop = new Twig_Node_ForLoop($lineno, $tag)));
+        $body = new Twig_Node([$body, $this->loop = new Twig_Node_ForLoop($lineno, $tag)]);
 
         if (null !== $ifexpr) {
-            $body = new Twig_Node_If(new Twig_Node(array($ifexpr, $body)), null, $lineno, $tag);
+            $body = new Twig_Node_If(new Twig_Node([$ifexpr, $body]), null, $lineno, $tag);
         }
 
-        $nodes = array('key_target' => $keyTarget, 'value_target' => $valueTarget, 'seq' => $seq, 'body' => $body);
+        $nodes = ['key_target' => $keyTarget, 'value_target' => $valueTarget, 'seq' => $seq, 'body' => $body];
         if (null !== $else) {
             $nodes['else'] = $else;
         }
 
-        parent::__construct($nodes, array('with_loop' => true, 'ifexpr' => null !== $ifexpr), $lineno, $tag);
+        parent::__construct($nodes, ['with_loop' => true, 'ifexpr' => null !== $ifexpr], $lineno, $tag);
     }
 
     public function compile(Twig_Compiler $compiler)
@@ -51,12 +51,12 @@ class Twig_Node_For extends Twig_Node
 
         if ($this->getAttribute('with_loop')) {
             $compiler
-                ->write("\$context['loop'] = array(\n")
+                ->write("\$context['loop'] = [\n")
                 ->write("  'parent' => \$context['_parent'],\n")
                 ->write("  'index0' => 0,\n")
                 ->write("  'index'  => 1,\n")
                 ->write("  'first'  => true,\n")
-                ->write(");\n")
+                ->write("];\n")
             ;
 
             if (!$this->getAttribute('ifexpr')) {

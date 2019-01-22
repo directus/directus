@@ -15,7 +15,7 @@
 {% block content 'bar' %}
 {% block bar 'bar' %}
 --DATA--
-return array()
+return []
 --EXPECT--
 foo
 foo

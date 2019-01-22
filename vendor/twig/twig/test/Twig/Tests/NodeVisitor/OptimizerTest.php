@@ -12,7 +12,7 @@ class Twig_Tests_NodeVisitor_OptimizerTest extends \PHPUnit\Framework\TestCase
 {
     public function testRenderBlockOptimizer()
     {
-        $env = new Twig_Environment($this->getMockBuilder('Twig_LoaderInterface')->getMock(), array('cache' => false, 'autoescape' => false));
+        $env = new Twig_Environment($this->getMockBuilder('Twig_LoaderInterface')->getMock(), ['cache' => false, 'autoescape' => false]);
 
         $stream = $env->parse($env->tokenize(new Twig_Source('{{ block("foo") }}', 'index')));
 
@@ -24,7 +24,7 @@ class Twig_Tests_NodeVisitor_OptimizerTest extends \PHPUnit\Framework\TestCase
 
     public function testRenderParentBlockOptimizer()
     {
-        $env = new Twig_Environment($this->getMockBuilder('Twig_LoaderInterface')->getMock(), array('cache' => false, 'autoescape' => false));
+        $env = new Twig_Environment($this->getMockBuilder('Twig_LoaderInterface')->getMock(), ['cache' => false, 'autoescape' => false]);
 
         $stream = $env->parse($env->tokenize(new Twig_Source('{% extends "foo" %}{% block content %}{{ parent() }}{% endblock %}', 'index')));
 
@@ -39,7 +39,7 @@ class Twig_Tests_NodeVisitor_OptimizerTest extends \PHPUnit\Framework\TestCase
      */
     public function testForOptimizer($template, $expected)
     {
-        $env = new Twig_Environment($this->getMockBuilder('Twig_LoaderInterface')->getMock(), array('cache' => false));
+        $env = new Twig_Environment($this->getMockBuilder('Twig_LoaderInterface')->getMock(), ['cache' => false]);
 
         $stream = $env->parse($env->tokenize(new Twig_Source($template, 'index')));
 
@@ -50,41 +50,41 @@ class Twig_Tests_NodeVisitor_OptimizerTest extends \PHPUnit\Framework\TestCase
 
     public function getTestsForForOptimizer()
     {
-        return array(
-            array('{% for i in foo %}{% endfor %}', array('i' => false)),
+        return [
+            ['{% for i in foo %}{% endfor %}', ['i' => false]],
 
-            array('{% for i in foo %}{{ loop.index }}{% endfor %}', array('i' => true)),
+            ['{% for i in foo %}{{ loop.index }}{% endfor %}', ['i' => true]],
 
-            array('{% for i in foo %}{% for j in foo %}{% endfor %}{% endfor %}', array('i' => false, 'j' => false)),
+            ['{% for i in foo %}{% for j in foo %}{% endfor %}{% endfor %}', ['i' => false, 'j' => false]],
 
-            array('{% for i in foo %}{% include "foo" %}{% endfor %}', array('i' => true)),
+            ['{% for i in foo %}{% include "foo" %}{% endfor %}', ['i' => true]],
 
-            array('{% for i in foo %}{% include "foo" only %}{% endfor %}', array('i' => false)),
+            ['{% for i in foo %}{% include "foo" only %}{% endfor %}', ['i' => false]],
 
-            array('{% for i in foo %}{% include "foo" with { "foo": "bar" } only %}{% endfor %}', array('i' => false)),
+            ['{% for i in foo %}{% include "foo" with { "foo": "bar" } only %}{% endfor %}', ['i' => false]],
 
-            array('{% for i in foo %}{% include "foo" with { "foo": loop.index } only %}{% endfor %}', array('i' => true)),
+            ['{% for i in foo %}{% include "foo" with { "foo": loop.index } only %}{% endfor %}', ['i' => true]],
 
-            array('{% for i in foo %}{% for j in foo %}{{ loop.index }}{% endfor %}{% endfor %}', array('i' => false, 'j' => true)),
+            ['{% for i in foo %}{% for j in foo %}{{ loop.index }}{% endfor %}{% endfor %}', ['i' => false, 'j' => true]],
 
-            array('{% for i in foo %}{% for j in foo %}{{ loop.parent.loop.index }}{% endfor %}{% endfor %}', array('i' => true, 'j' => true)),
+            ['{% for i in foo %}{% for j in foo %}{{ loop.parent.loop.index }}{% endfor %}{% endfor %}', ['i' => true, 'j' => true]],
 
-            array('{% for i in foo %}{% set l = loop %}{% for j in foo %}{{ l.index }}{% endfor %}{% endfor %}', array('i' => true, 'j' => false)),
+            ['{% for i in foo %}{% set l = loop %}{% for j in foo %}{{ l.index }}{% endfor %}{% endfor %}', ['i' => true, 'j' => false]],
 
-            array('{% for i in foo %}{% for j in foo %}{{ foo.parent.loop.index }}{% endfor %}{% endfor %}', array('i' => false, 'j' => false)),
+            ['{% for i in foo %}{% for j in foo %}{{ foo.parent.loop.index }}{% endfor %}{% endfor %}', ['i' => false, 'j' => false]],
 
-            array('{% for i in foo %}{% for j in foo %}{{ loop["parent"].loop.index }}{% endfor %}{% endfor %}', array('i' => true, 'j' => true)),
+            ['{% for i in foo %}{% for j in foo %}{{ loop["parent"].loop.index }}{% endfor %}{% endfor %}', ['i' => true, 'j' => true]],
 
-            array('{% for i in foo %}{{ include("foo") }}{% endfor %}', array('i' => true)),
+            ['{% for i in foo %}{{ include("foo") }}{% endfor %}', ['i' => true]],
 
-            array('{% for i in foo %}{{ include("foo", with_context = false) }}{% endfor %}', array('i' => false)),
+            ['{% for i in foo %}{{ include("foo", with_context = false) }}{% endfor %}', ['i' => false]],
 
-            array('{% for i in foo %}{{ include("foo", with_context = true) }}{% endfor %}', array('i' => true)),
+            ['{% for i in foo %}{{ include("foo", with_context = true) }}{% endfor %}', ['i' => true]],
 
-            array('{% for i in foo %}{{ include("foo", { "foo": "bar" }, with_context = false) }}{% endfor %}', array('i' => false)),
+            ['{% for i in foo %}{{ include("foo", { "foo": "bar" }, with_context = false) }}{% endfor %}', ['i' => false]],
 
-            array('{% for i in foo %}{{ include("foo", { "foo": loop.index }, with_context = false) }}{% endfor %}', array('i' => true)),
-        );
+            ['{% for i in foo %}{{ include("foo", { "foo": loop.index }, with_context = false) }}{% endfor %}', ['i' => true]],
+        ];
     }
 
     public function checkForConfiguration(Twig_Node $node, $target, $withLoop)

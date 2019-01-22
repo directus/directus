@@ -4,7 +4,7 @@ Twig allows multi-word tests without a custom node class
 {{ 'foo' is multi word ? 'yes' : 'no' }}
 {{ 'foo bar' is multi word ? 'yes' : 'no' }}
 --DATA--
-return array()
+return []
 --EXPECT--
 no
 yes

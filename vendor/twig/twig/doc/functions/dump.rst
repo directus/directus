@@ -15,10 +15,10 @@ introspecting its variables:
     ``Twig_Extension_Debug`` extension explicitly when creating your Twig
     environment::
 
-        $twig = new Twig_Environment($loader, array(
+        $twig = new Twig_Environment($loader, [
             'debug' => true,
             // ...
-        ));
+        ]);
         $twig->addExtension(new Twig_Extension_Debug());
 
     Even when enabled, the ``dump`` function won't display anything if the

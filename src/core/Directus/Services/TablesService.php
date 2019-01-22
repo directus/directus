@@ -885,18 +885,36 @@ class TablesService extends AbstractService
     }
 
     /**
-     * Checks whether the given name is a valid clean table name
+     * Checks whether the given name is a valid clean collection name
      *
-     * @param $name
+     * @param string $name
      *
      * @return bool
      */
-    public function isValidName($name)
+    public function isValidCollectionName($name)
     {
         $isTableNameAlphanumeric = preg_match("/[a-z0-9]+/i", $name);
         $zeroOrMoreUnderscoresDashes = preg_match("/[_-]*/i", $name);
 
         return $isTableNameAlphanumeric && $zeroOrMoreUnderscoresDashes;
+    }
+
+    /**
+     * Throws an exception when the collection name is invalid
+     *
+     * @param string $name
+     *
+     * @throws InvalidRequestException
+     */
+    public function enforceValidCollectionName($name)
+    {
+        if (!$this->isValidCollectionName($name)) {
+            throw new InvalidRequestException('Invalid collection name');
+        }
+
+        if (StringUtils::startsWith($name, 'directus_')) {
+            throw new InvalidRequestException('Collection name cannot begin with "directus_"');
+        }
     }
 
     /**
@@ -1166,9 +1184,7 @@ class TablesService extends AbstractService
      */
     protected function validateCollectionPayload($name, array $data, array $fields = null, $update = false, array $params = [])
     {
-        if (!$this->isValidName($name)) {
-            throw new InvalidRequestException('Invalid collection name');
-        }
+        $this->enforceValidCollectionName($name);
 
         $collectionsCollectionName = 'directus_collections';
         $this->validatePayload($collectionsCollectionName, $fields, $data, $params);

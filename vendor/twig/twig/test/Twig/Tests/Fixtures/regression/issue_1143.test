@@ -8,7 +8,7 @@ class House
     const REGION_S = 1;
     const REGION_P = 2;
 
-    public static $regionChoices = array(self::REGION_S => 'house.region.s', self::REGION_P => 'house.region.p');
+    public static $regionChoices = [self::REGION_S => 'house.region.s', self::REGION_P => 'house.region.p'];
 
     public function getRegionChoices()
     {
@@ -18,6 +18,6 @@ class House
 
 $object = new House();
 $object->region = 1;
-return array('object' => $object)
+return ['object' => $object]
 --EXPECT--
 house.region.s

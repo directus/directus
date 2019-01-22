@@ -3005,17 +3005,17 @@
     },
     {
         "name": "slim/slim",
-        "version": "3.11.0",
-        "version_normalized": "3.11.0.0",
+        "version": "3.12.0",
+        "version_normalized": "3.12.0.0",
         "source": {
             "type": "git",
             "url": "https://github.com/slimphp/Slim.git",
-            "reference": "d378e70431e78ee92ee32ddde61ecc72edf5dc0a"
+            "reference": "f4947cc900b6e51cbfda58b9f1247bca2f76f9f0"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/slimphp/Slim/zipball/d378e70431e78ee92ee32ddde61ecc72edf5dc0a",
-            "reference": "d378e70431e78ee92ee32ddde61ecc72edf5dc0a",
+            "url": "https://api.github.com/repos/slimphp/Slim/zipball/f4947cc900b6e51cbfda58b9f1247bca2f76f9f0",
+            "reference": "f4947cc900b6e51cbfda58b9f1247bca2f76f9f0",
             "shasum": ""
         },
         "require": {
@@ -3033,7 +3033,7 @@
             "phpunit/phpunit": "^4.0",
             "squizlabs/php_codesniffer": "^2.5"
         },
-        "time": "2018-09-16T10:54:21+00:00",
+        "time": "2019-01-15T13:21:25+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -3491,7 +3491,7 @@
             },
             {
                 "name": "Gert de Pagter",
-                "email": "BackEndTea@gmail.com"
+                "email": "backendtea@gmail.com"
             }
         ],
         "description": "Symfony polyfill for ctype functions",
@@ -3789,17 +3789,17 @@
     },
     {
         "name": "twig/twig",
-        "version": "v2.6.0",
-        "version_normalized": "2.6.0.0",
+        "version": "v2.6.2",
+        "version_normalized": "2.6.2.0",
         "source": {
             "type": "git",
             "url": "https://github.com/twigphp/Twig.git",
-            "reference": "a11dd39f5b6589e14f0ff3b36675d06047c589b1"
+            "reference": "7d7342c8a4059fefb9b8d07db0cc14007021f9b7"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/twigphp/Twig/zipball/a11dd39f5b6589e14f0ff3b36675d06047c589b1",
-            "reference": "a11dd39f5b6589e14f0ff3b36675d06047c589b1",
+            "url": "https://api.github.com/repos/twigphp/Twig/zipball/7d7342c8a4059fefb9b8d07db0cc14007021f9b7",
+            "reference": "7d7342c8a4059fefb9b8d07db0cc14007021f9b7",
             "shasum": ""
         },
         "require": {
@@ -3812,7 +3812,7 @@
             "symfony/debug": "^2.7",
             "symfony/phpunit-bridge": "^3.4.19|^4.1.8"
         },
-        "time": "2018-12-16T10:36:48+00:00",
+        "time": "2019-01-14T15:00:48+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {

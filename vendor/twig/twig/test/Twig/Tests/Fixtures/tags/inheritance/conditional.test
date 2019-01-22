@@ -9,6 +9,6 @@
 --TEMPLATE(bar.twig)--
 {% block content %}BAR{% endblock %}
 --DATA--
-return array('foo' => 'foo.twig', 'standalone' => true)
+return ['foo' => 'foo.twig', 'standalone' => true]
 --EXPECT--
 FOOFOO

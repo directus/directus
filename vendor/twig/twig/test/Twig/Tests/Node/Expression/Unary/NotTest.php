@@ -24,8 +24,8 @@ class Twig_Tests_Node_Expression_Unary_NotTest extends Twig_Test_NodeTestCase
         $node = new Twig_Node_Expression_Constant(1, 1);
         $node = new Twig_Node_Expression_Unary_Not($node, 1);
 
-        return array(
-            array($node, '!1'),
-        );
+        return [
+            [$node, '!1'],
+        ];
     }
 }

@@ -40,7 +40,7 @@
 {{ '2010-01-28 15:00:00'|date(timezone="Asia/Hong_Kong") }}
 --DATA--
 date_default_timezone_set('Europe/Paris');
-return array(
+return [
     'date1' => mktime(13, 45, 0, 10, 4, 2010),
     'date2' => new DateTime('2010-10-04 13:45'),
     'date3' => '2010-10-04 13:45',
@@ -49,7 +49,7 @@ return array(
     'date6' => new DateTime('2010-10-04 13:45', new DateTimeZone('America/New_York')),
     'date7' => '2010-01-28T15:00:00+04:00',
     'timezone1' => new DateTimeZone('America/New_York'),
-)
+]
 --EXPECT--
 October 4, 2010 13:45
 04/10/2010

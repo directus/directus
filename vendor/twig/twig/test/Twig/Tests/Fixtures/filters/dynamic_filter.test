@@ -4,7 +4,7 @@ dynamic filter
 {{ 'bar'|foo_path }}
 {{ 'bar'|a_foo_b_bar }}
 --DATA--
-return array()
+return []
 --EXPECT--
 foo/bar
 a/b/bar

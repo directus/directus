@@ -16,6 +16,6 @@
 --TEMPLATE(base.twig)--
 {{ block('list') }}
 --DATA--
-return array('item' => array('1', '2', array('3.1', array('3.2.1', '3.2.2'), '3.4')))
+return ['item' => ['1', '2', ['3.1', ['3.2.1', '3.2.2'], '3.4']]]
 --EXPECT--
 <ol class="b"><li>"1"</li><li>"2"</li><li><ol class="b"><li>"3.1"</li><li><ol class="b"><li>"3.2.1"</li><li>"3.2.2"</li></ol></li><li>"3.4"</li></ol></li></ol>

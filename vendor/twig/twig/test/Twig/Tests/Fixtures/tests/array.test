@@ -5,15 +5,15 @@ array index test
 {{ key }}
 {% endfor %}
 --DATA--
-return array('days' => array(
-    1  => array('money' => 9),
-    2  => array('money' => 21),
-    3  => array('money' => 38),
-    4  => array('money' => 6),
-    18 => array('money' => 6),
-    19 => array('money' => 3),
-    31 => array('money' => 11),
-));
+return ['days' => [
+    1  => ['money' => 9],
+    2  => ['money' => 21],
+    3  => ['money' => 38],
+    4  => ['money' => 6],
+    18 => ['money' => 6],
+    19 => ['money' => 3],
+    31 => ['money' => 11],
+]]
 --EXPECT--
 1
 2

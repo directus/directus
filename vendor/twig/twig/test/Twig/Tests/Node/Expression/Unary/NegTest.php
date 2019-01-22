@@ -24,9 +24,9 @@ class Twig_Tests_Node_Expression_Unary_NegTest extends Twig_Test_NodeTestCase
         $node = new Twig_Node_Expression_Constant(1, 1);
         $node = new Twig_Node_Expression_Unary_Neg($node, 1);
 
-        return array(
-            array($node, '-1'),
-            array(new Twig_Node_Expression_Unary_Neg($node, 1), '- -1'),
-        );
+        return [
+            [$node, '-1'],
+            [new Twig_Node_Expression_Unary_Neg($node, 1), '- -1'],
+        ];
     }
 }

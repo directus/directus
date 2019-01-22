@@ -7,6 +7,6 @@ Exception for multiline tag with undefined variable
 --TEMPLATE(foo)--
 Foo
 --DATA--
-return array()
+return []
 --EXCEPTION--
 Twig_Error_Runtime: Variable "vars" does not exist in "index.twig" at line 3.

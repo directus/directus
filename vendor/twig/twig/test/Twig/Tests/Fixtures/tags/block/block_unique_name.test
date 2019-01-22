@@ -6,6 +6,6 @@
     {% endblock %}
 {% endblock %}
 --DATA--
-return array()
+return []
 --EXCEPTION--
 Twig_Error_Syntax: The block 'content' has already been defined line 2 in "index.twig" at line 3.

@@ -9,6 +9,6 @@ global variables
 called foobar
 {% endmacro %}
 --DATA--
-return array();
+return []
 --EXPECT--
 called foobar

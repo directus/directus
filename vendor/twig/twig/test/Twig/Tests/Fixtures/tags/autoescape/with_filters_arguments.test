@@ -9,7 +9,7 @@
 {{ var|nl2br(sep|escape) }}
 {% endautoescape %}
 --DATA--
-return array('var' => "<Fabien>\nTwig", 'sep' => '<br />')
+return ['var' => "<Fabien>\nTwig", 'sep' => '<br />']
 --EXPECT--
 &lt;Fabien&gt;<br />
 Twig

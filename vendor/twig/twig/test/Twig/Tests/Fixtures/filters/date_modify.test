@@ -5,10 +5,10 @@
 {{ date2|date_modify('-1day')|date('Y-m-d H:i:s') }}
 --DATA--
 date_default_timezone_set('UTC');
-return array(
+return [
     'date1' => '2010-10-04 13:45',
     'date2' => new DateTime('2010-10-04 13:45'),
-)
+]
 --EXPECT--
 2010-10-03 13:45:00
 2010-10-03 13:45:00

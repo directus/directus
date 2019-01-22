@@ -51,7 +51,7 @@ Combined:
 
 end
 --DATA--
-return array('leading' => 'leading space', 'trailing' => 'trailing space', 'both' => 'both')
+return ['leading' => 'leading space', 'trailing' => 'trailing space', 'both' => 'both']
 --EXPECT--
 15
 18

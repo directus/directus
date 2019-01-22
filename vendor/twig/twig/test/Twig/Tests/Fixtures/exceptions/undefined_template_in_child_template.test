@@ -10,6 +10,6 @@ Exception for an undefined template in a child template
 {% block sidebar %}
 {% endblock %}
 --DATA--
-return array()
+return []
 --EXCEPTION--
 Twig_Error_Loader: Template "include.twig" is not defined in "index.twig" at line 5.

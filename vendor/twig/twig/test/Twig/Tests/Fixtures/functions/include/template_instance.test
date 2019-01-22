@@ -5,6 +5,6 @@
 --TEMPLATE(foo.twig)--
 BAR
 --DATA--
-return array('foo' => $twig->loadTemplate('foo.twig'))
+return ['foo' => $twig->loadTemplate('foo.twig')]
 --EXPECT--
 BAR FOO

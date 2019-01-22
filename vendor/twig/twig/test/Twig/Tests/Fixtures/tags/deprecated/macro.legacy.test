@@ -16,6 +16,6 @@ Deprecating a macro with "deprecated" tag
 Hello {{ name }}
 {% endmacro %}
 --DATA--
-return array()
+return []
 --EXPECT--
   Hello Fabien

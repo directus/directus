@@ -160,7 +160,7 @@ instance, Twig will use it as the parent template::
 
     $layout = $twig->load('some_layout_template.twig');
 
-    $twig->display('template.twig', array('layout' => $layout));
+    $twig->display('template.twig', ['layout' => $layout]);
 
 You can also provide a list of templates that are checked for existence. The
 first template that exists will be used as a parent:

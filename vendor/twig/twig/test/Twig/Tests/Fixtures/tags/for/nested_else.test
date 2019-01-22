@@ -11,7 +11,7 @@
   no item1
 {% endfor %}
 --DATA--
-return array('items' => array('a', 'b'), 'items1' => array())
+return ['items' => ['a', 'b'], 'items1' => []]
 --EXPECT--
 no a
         no b

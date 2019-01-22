@@ -16,11 +16,11 @@
  */
 class Twig_Environment
 {
-    const VERSION = '2.6.0';
-    const VERSION_ID = 20600;
+    const VERSION = '2.6.2';
+    const VERSION_ID = 20602;
     const MAJOR_VERSION = 2;
     const MINOR_VERSION = 6;
-    const RELEASE_VERSION = 0;
+    const RELEASE_VERSION = 2;
     const EXTRA_VERSION = '';
 
     private $charset;
@@ -32,17 +32,17 @@ class Twig_Environment
     private $parser;
     private $compiler;
     private $baseTemplateClass;
-    private $globals = array();
+    private $globals = [];
     private $resolvedGlobals;
     private $loadedTemplates;
     private $strictVariables;
     private $templateClassPrefix = '__TwigTemplate_';
     private $originalCache;
     private $extensionSet;
-    private $runtimeLoaders = array();
-    private $runtimes = array();
+    private $runtimeLoaders = [];
+    private $runtimes = [];
     private $optionsHash;
-    private $loading = array();
+    private $loading = [];
 
     /**
      * Constructor.
@@ -81,11 +81,11 @@ class Twig_Environment
      * @param Twig_LoaderInterface $loader
      * @param array                $options An array of options
      */
-    public function __construct(Twig_LoaderInterface $loader, $options = array())
+    public function __construct(Twig_LoaderInterface $loader, $options = [])
     {
         $this->setLoader($loader);
 
-        $options = array_merge(array(
+        $options = array_merge([
             'debug' => false,
             'charset' => 'UTF-8',
             'base_template_class' => 'Twig_Template',
@@ -94,7 +94,7 @@ class Twig_Environment
             'cache' => false,
             'auto_reload' => null,
             'optimizations' => -1,
-        ), $options);
+        ], $options);
 
         $this->debug = (bool) $options['debug'];
         $this->setCharset($options['charset']);
@@ -284,7 +284,7 @@ class Twig_Environment
      * @throws Twig_Error_Syntax  When an error occurred during compilation
      * @throws Twig_Error_Runtime When an error occurred during rendering
      */
-    public function render($name, array $context = array())
+    public function render($name, array $context = [])
     {
         return $this->loadTemplate($name)->render($context);
     }
@@ -299,7 +299,7 @@ class Twig_Environment
      * @throws Twig_Error_Syntax  When an error occurred during compilation
      * @throws Twig_Error_Runtime When an error occurred during rendering
      */
-    public function display($name, array $context = array())
+    public function display($name, array $context = [])
     {
         $this->loadTemplate($name)->display($context);
     }
@@ -388,7 +388,7 @@ class Twig_Environment
         $this->extensionSet->initRuntime($this);
 
         if (isset($this->loading[$cls])) {
-            throw new Twig_Error_Runtime(sprintf('Circular reference detected for Twig template "%s", path: %s.', $name, implode(' -> ', array_merge($this->loading, array($name)))));
+            throw new Twig_Error_Runtime(sprintf('Circular reference detected for Twig template "%s", path: %s.', $name, implode(' -> ', array_merge($this->loading, [$name]))));
         }
 
         $this->loading[$cls] = $name;
@@ -418,10 +418,10 @@ class Twig_Environment
     {
         $name = sprintf('__string_template__%s', hash('sha256', $template, false));
 
-        $loader = new Twig_Loader_Chain(array(
-            new Twig_Loader_Array(array($name => $template)),
+        $loader = new Twig_Loader_Chain([
+            new Twig_Loader_Array([$name => $template]),
             $current = $this->getLoader(),
-        ));
+        ]);
 
         $this->setLoader($loader);
         try {
@@ -466,7 +466,7 @@ class Twig_Environment
     public function resolveTemplate($names)
     {
         if (!is_array($names)) {
-            $names = array($names);
+            $names = [$names];
         }
 
         foreach ($names as $name) {
@@ -720,7 +720,7 @@ class Twig_Environment
      */
     public function getTags()
     {
-        $tags = array();
+        $tags = [];
         foreach ($this->getTokenParsers() as $parser) {
             $tags[$parser->getTag()] = $parser;
         }
@@ -955,7 +955,7 @@ class Twig_Environment
 
     private function updateOptionsHash()
     {
-        $this->optionsHash = implode(':', array(
+        $this->optionsHash = implode(':', [
             $this->extensionSet->getSignature(),
             PHP_MAJOR_VERSION,
             PHP_MINOR_VERSION,
@@ -963,7 +963,7 @@ class Twig_Environment
             (int) $this->debug,
             $this->baseTemplateClass,
             (int) $this->strictVariables,
-        ));
+        ]);
     }
 }
 

@@ -57,7 +57,7 @@ And if the expression evaluates to a ``Twig_Template`` or a
 
     $template = $twig->load('some_template.twig');
 
-    $twig->display('template.twig', array('template' => $template));
+    $twig->display('template.twig', ['template' => $template]);
 
 You can mark an include with ``ignore missing`` in which case Twig will ignore
 the statement if the template to be included does not exist. It has to be

@@ -30,12 +30,12 @@ final class Twig_TokenParser_Block extends Twig_TokenParser
         if ($this->parser->hasBlock($name)) {
             throw new Twig_Error_Syntax(sprintf("The block '%s' has already been defined line %d.", $name, $this->parser->getBlock($name)->getTemplateLine()), $stream->getCurrent()->getLine(), $stream->getSourceContext());
         }
-        $this->parser->setBlock($name, $block = new Twig_Node_Block($name, new Twig_Node(array()), $lineno));
+        $this->parser->setBlock($name, $block = new Twig_Node_Block($name, new Twig_Node([]), $lineno));
         $this->parser->pushLocalScope();
         $this->parser->pushBlockStack($name);
 
         if ($stream->nextIf(/* Twig_Token::BLOCK_END_TYPE */ 3)) {
-            $body = $this->parser->subparse(array($this, 'decideBlockEnd'), true);
+            $body = $this->parser->subparse([$this, 'decideBlockEnd'], true);
             if ($token = $stream->nextIf(/* Twig_Token::NAME_TYPE */ 5)) {
                 $value = $token->getValue();
 
@@ -44,9 +44,9 @@ final class Twig_TokenParser_Block extends Twig_TokenParser
                 }
             }
         } else {
-            $body = new Twig_Node(array(
+            $body = new Twig_Node([
                 new Twig_Node_Print($this->parser->getExpressionParser()->parseExpression(), $lineno),
-            ));
+            ]);
         }
         $stream->expect(/* Twig_Token::BLOCK_END_TYPE */ 3);
 

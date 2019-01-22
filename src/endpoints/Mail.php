@@ -21,8 +21,6 @@ class Mail extends Route
         $mailService = new MailService($this->container);
         $mailService->send($request->getParsedBody());
 
-        $response = $response->withStatus(204);
-
         return $this->responseWithData($request, $response, []);
     }
 }

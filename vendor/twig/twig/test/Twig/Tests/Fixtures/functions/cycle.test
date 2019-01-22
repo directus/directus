@@ -5,7 +5,7 @@
 {{ cycle(array1, i) }}-{{ cycle(array2, i) }}
 {% endfor %}
 --DATA--
-return array('array1' => array('odd', 'even'), 'array2' => array('apple', 'orange', 'citrus'))
+return ['array1' => ['odd', 'even'], 'array2' => ['apple', 'orange', 'citrus']]
 --EXPECT--
 odd-apple
 even-orange

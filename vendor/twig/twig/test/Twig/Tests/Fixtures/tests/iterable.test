@@ -6,12 +6,12 @@
 {{ obj is iterable ? 'ok' : 'ko' }}
 {{ val is iterable ? 'ok' : 'ko' }}
 --DATA--
-return array(
-    'foo' => array(),
-    'traversable' => new ArrayIterator(array()),
+return [
+    'foo' => [],
+    'traversable' => new ArrayIterator([]),
     'obj' => new stdClass(),
     'val' => 'test',
-);
+]
 --EXPECT--
 ok
 ok

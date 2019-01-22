@@ -357,15 +357,20 @@ class ArrayUtils
      *
      * @param array $defaultArray
      * @param array $sourceArray
+     * @param \Closure $validate
      *
      * @return array
      *
      * @link http://php.net/manual/es/function.array-merge-recursive.php#92195
      */
-    public static function defaults(array $defaultArray, array $sourceArray)
+    public static function defaults(array $defaultArray, array $sourceArray, \Closure $validate = null)
     {
         $newArray = $defaultArray;
         foreach ($sourceArray as $key => $value) {
+            if ($validate && $validate($value, $key) !== true) {
+                continue;
+            }
+
             if (is_array($value) && array_key_exists($key, $defaultArray) && is_array($defaultArray[$key])) {
                 $newArray[$key] = static::defaults($newArray[$key], $value);
             } else {

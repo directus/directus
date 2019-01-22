@@ -74,7 +74,7 @@ TRUE
 {{ 5.5 in '125.5' ? 'TRUE' : 'FALSE' }}
 {{ '5.5' in 125.5 ? 'TRUE' : 'FALSE' }}
 --DATA--
-return array('bar' => 'bar', 'foo' => array('bar' => 'bar'), 'dir_object' => new SplFileInfo(__DIR__), 'object' => new stdClass(), 'resource' => opendir(__DIR__))
+return ['bar' => 'bar', 'foo' => ['bar' => 'bar'], 'dir_object' => new SplFileInfo(__DIR__), 'object' => new stdClass(), 'resource' => opendir(__DIR__)]
 --EXPECT--
 TRUE
 TRUE

@@ -3,6 +3,6 @@
 --TEMPLATE--
 {% filter json_encode|raw %}test{% endfilter %}
 --DATA--
-return array()
+return []
 --EXPECT--
 "test"

@@ -17,6 +17,6 @@ class Twig_Tests_Node_Expression_NullCoalesceTest extends Twig_Test_NodeTestCase
         $right = new Twig_Node_Expression_Constant(2, 1);
         $node = new Twig_Node_Expression_NullCoalesce($left, $right, 1);
 
-        return array(array($node, "((// line 1\n\$context[\"foo\"]) ?? (2))"));
+        return [[$node, "((// line 1\n\$context[\"foo\"]) ?? (2))"]];
     }
 }

@@ -13,7 +13,7 @@ abstract class Twig_Node_Expression_Binary extends Twig_Node_Expression
 {
     public function __construct(Twig_Node $left, Twig_Node $right, $lineno)
     {
-        parent::__construct(array('left' => $left, 'right' => $right), array(), $lineno);
+        parent::__construct(['left' => $left, 'right' => $right], [], $lineno);
     }
 
     public function compile(Twig_Compiler $compiler)

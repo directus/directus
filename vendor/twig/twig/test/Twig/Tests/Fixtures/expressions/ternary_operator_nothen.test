@@ -4,7 +4,7 @@ Twig supports the ternary operator
 {{ 'YES' ?: 'NO' }}
 {{ 0 ?: 'NO' }}
 --DATA--
-return array()
+return []
 --EXPECT--
 YES
 NO

@@ -8,7 +8,7 @@ BAR
 --TEMPLATE(foo.twig)--
 FOOBAR
 --DATA--
-return array('foo' => 'foo.twig')
+return ['foo' => 'foo.twig']
 --EXPECT--
 FOO
 

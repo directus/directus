@@ -25,15 +25,15 @@ class Twig_Tests_Node_BlockTest extends Twig_Test_NodeTestCase
         $body = new Twig_Node_Text('foo', 1);
         $node = new Twig_Node_Block('foo', $body, 1);
 
-        return array(
-            array($node, <<<EOF
+        return [
+            [$node, <<<EOF
 // line 1
-public function block_foo(\$context, array \$blocks = array())
+public function block_foo(\$context, array \$blocks = [])
 {
     echo "foo";
 }
 EOF
-            ),
-        );
+            ],
+        ];
     }
 }

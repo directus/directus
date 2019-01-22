@@ -21,7 +21,7 @@ class TestClassForMagicCallAttributes
     }
 }
 
-return array('foo' => new TestClassForMagicCallAttributes())
+return ['foo' => new TestClassForMagicCallAttributes()]
 --EXPECT--
 foo_from_call
 bar_from_getbar

@@ -4,7 +4,7 @@
 {{ {'foo': 'bar', 'key': 'value'}|batch(4)|first|keys|join(',')  }}
 {{ {'foo': 'bar', 'key': 'value'}|batch(4, 'fill')|first|keys|join(',')  }}
 --DATA--
-return array()
+return []
 --EXPECT--
 foo,key
 foo,key,0,1

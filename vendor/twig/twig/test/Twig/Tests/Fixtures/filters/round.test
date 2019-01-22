@@ -10,7 +10,7 @@
 {{ 21.3|round(-1, 'ceil')}}
 {{ 21.3|round(-1, 'floor')}}
 --DATA--
-return array()
+return []
 --EXPECT--
 3
 2

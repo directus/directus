@@ -8,7 +8,7 @@
 --TEMPLATE(parent.twig)--
 {% block content %}{% endblock %}
 --DATA--
-return array('name' => 'Fabien', 'template' => "Hello {{ name }}")
+return ['name' => 'Fabien', 'template' => "Hello {{ name }}"]
 --EXPECT--
 Hello Fabien
 Hello Fabien

@@ -21,12 +21,12 @@ class Twig_Tests_Node_SandboxTest extends Twig_Test_NodeTestCase
 
     public function getTests()
     {
-        $tests = array();
+        $tests = [];
 
         $body = new Twig_Node_Text('foo', 1);
         $node = new Twig_Node_Sandbox($body, 1);
 
-        $tests[] = array($node, <<<EOF
+        $tests[] = [$node, <<<EOF
 // line 1
 \$sandbox = \$this->extensions['Twig_Extension_Sandbox'];
 if (!\$alreadySandboxed = \$sandbox->isSandboxed()) {
@@ -37,7 +37,7 @@ if (!\$alreadySandboxed) {
     \$sandbox->disableSandbox();
 }
 EOF
-        );
+        ];
 
         return $tests;
     }

@@ -18,7 +18,7 @@ class Twig_Node_Set extends Twig_Node implements Twig_NodeCaptureInterface
 {
     public function __construct($capture, Twig_Node $names, Twig_Node $values, $lineno, $tag = null)
     {
-        parent::__construct(array('names' => $names, 'values' => $values), array('capture' => $capture, 'safe' => false), $lineno, $tag);
+        parent::__construct(['names' => $names, 'values' => $values], ['capture' => $capture, 'safe' => false], $lineno, $tag);
 
         /*
          * Optimizes the node when capture is used for a large block of text.
@@ -69,7 +69,7 @@ class Twig_Node_Set extends Twig_Node implements Twig_NodeCaptureInterface
             $compiler->raw(' = ');
 
             if (count($this->getNode('names')) > 1) {
-                $compiler->write('array(');
+                $compiler->write('[');
                 foreach ($this->getNode('values') as $idx => $value) {
                     if ($idx) {
                         $compiler->raw(', ');
@@ -77,7 +77,7 @@ class Twig_Node_Set extends Twig_Node implements Twig_NodeCaptureInterface
 
                     $compiler->subcompile($value);
                 }
-                $compiler->raw(')');
+                $compiler->raw(']');
             } else {
                 if ($this->getAttribute('safe')) {
                     $compiler

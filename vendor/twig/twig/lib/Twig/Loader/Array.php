@@ -23,12 +23,12 @@
  */
 final class Twig_Loader_Array implements Twig_LoaderInterface, Twig_ExistsLoaderInterface, Twig_SourceContextLoaderInterface
 {
-    private $templates = array();
+    private $templates = [];
 
     /**
      * @param array $templates An array of templates (keys are the names, and values are the source code)
      */
-    public function __construct(array $templates = array())
+    public function __construct(array $templates = [])
     {
         $this->templates = $templates;
     }

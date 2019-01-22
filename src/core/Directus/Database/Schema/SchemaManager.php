@@ -543,8 +543,14 @@ class SchemaManager
             $column['required'] = true;
         }
 
-        $options = json_decode(isset($column['options']) ? $column['options'] : '', true);
-        $column['options'] = $options ? $options : null;
+        $castAttributesToJSON = function (&$array, array $keys) {
+            foreach ($keys as $key) {
+                $value = json_decode(isset($array[$key]) ? $array[$key] : '', true);
+                $array[$key] = $value ? $value : null;
+            }
+        };
+
+        $castAttributesToJSON($column, ['options', 'translation']);
 
         $fieldType = ArrayUtils::get($column, 'type');
         // NOTE: Alias column must are nullable

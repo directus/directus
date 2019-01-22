@@ -8,7 +8,7 @@ Twig manages negative numbers correctly
 {{ 5 + -1 }}
 {{ 5 + - 1 }}
 --DATA--
-return array()
+return []
 --EXPECT--
 -1
 -1

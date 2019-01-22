@@ -175,8 +175,6 @@ class Fields extends Route
             $request->getQueryParams()
         );
 
-        $response = $response->withStatus(204);
-
         return $this->responseWithData($request, $response, []);
     }
 
@@ -203,11 +201,6 @@ class Fields extends Route
             $responseData = $tablesService->batchUpdateFieldWithIds($collection, $ids, $payload, $params);
         } else {
             $responseData = $tablesService->batchUpdateField($collection, $payload, $params);
-        }
-
-        if (empty($responseData)) {
-            $response = $response->withStatus(204);
-            $responseData = [];
         }
 
         return $this->responseWithData($request, $response, $responseData);

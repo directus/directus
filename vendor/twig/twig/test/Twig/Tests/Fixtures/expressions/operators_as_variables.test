@@ -7,7 +7,7 @@ Twig allows to use named operators as variable names
 {{ in }}
 {{ is }}
 --DATA--
-return array('matches' => array(1, 2, 3), 'in' => 'in', 'is' => 'is')
+return ['matches' => [1, 2, 3], 'in' => 'in', 'is' => 'is']
 --EXPECT--
 1
 2

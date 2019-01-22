@@ -23,7 +23,7 @@ class Twig_Filter
     private $name;
     private $callable;
     private $options;
-    private $arguments = array();
+    private $arguments = [];
 
     /**
      * Creates a template filter.
@@ -32,7 +32,7 @@ class Twig_Filter
      * @param callable|null $callable A callable implementing the filter. If null, you need to overwrite the "node_class" option to customize compilation.
      * @param array         $options  Options array
      */
-    public function __construct(string $name, $callable = null, array $options = array())
+    public function __construct(string $name, $callable = null, array $options = [])
     {
         if (__CLASS__ !== get_class($this)) {
             @trigger_error('Overriding '.__CLASS__.' is deprecated since version 2.4.0 and the class will be final in 3.0.', E_USER_DEPRECATED);
@@ -40,7 +40,7 @@ class Twig_Filter
 
         $this->name = $name;
         $this->callable = $callable;
-        $this->options = array_merge(array(
+        $this->options = array_merge([
             'needs_environment' => false,
             'needs_context' => false,
             'is_variadic' => false,
@@ -51,7 +51,7 @@ class Twig_Filter
             'node_class' => 'Twig_Node_Expression_Filter',
             'deprecated' => false,
             'alternative' => null,
-        ), $options);
+        ], $options);
     }
 
     public function getName()

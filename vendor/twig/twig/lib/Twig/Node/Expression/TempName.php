@@ -12,7 +12,7 @@ class Twig_Node_Expression_TempName extends Twig_Node_Expression
 {
     public function __construct($name, $lineno)
     {
-        parent::__construct(array(), array('name' => $name), $lineno);
+        parent::__construct([], ['name' => $name], $lineno);
     }
 
     public function compile(Twig_Compiler $compiler)

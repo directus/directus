@@ -4,7 +4,7 @@ dynamic function
 {{ foo_path('bar') }}
 {{ a_foo_b_bar('bar') }}
 --DATA--
-return array()
+return []
 --EXPECT--
 foo/bar
 a/b/bar

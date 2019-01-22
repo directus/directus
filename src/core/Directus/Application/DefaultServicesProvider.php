@@ -41,14 +41,14 @@ class DefaultServicesProvider extends \Slim\DefaultServicesProvider
         };
 
         if (!isset($container['notFoundHandler'])) {
-            $container['notFoundHandler'] = function () {
-                return new NotFoundHandler();
+            $container['notFoundHandler'] = function () use ($container) {
+                return new NotFoundHandler($container['hook_emitter']);
             };
         }
 
         if (!isset($container['notAllowedHandler'])) {
-            $container['notAllowedHandler'] = function () {
-                return new MethodNotAllowedHandler();
+            $container['notAllowedHandler'] = function () use ($container) {
+                return new MethodNotAllowedHandler($container['hook_emitter']);
             };
         }
 

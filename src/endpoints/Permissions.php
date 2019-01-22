@@ -140,8 +140,6 @@ class Permissions extends Route
             $request->getQueryParams()
         );
 
-        $response = $response->withStatus(204);
-
         return $this->responseWithData($request, $response, []);
     }
     /**
@@ -191,11 +189,6 @@ class Permissions extends Route
         } else if ($request->isDelete()) {
             $ids = explode(',', $request->getAttribute('id'));
             $permissionService->batchDeleteWithIds($ids, $params);
-        }
-
-        if (empty($responseData)) {
-            $response = $response->withStatus(204);
-            $responseData = [];
         }
 
         return $this->responseWithData($request, $response, $responseData);

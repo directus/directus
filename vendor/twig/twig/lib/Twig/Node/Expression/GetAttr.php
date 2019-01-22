@@ -13,12 +13,12 @@ class Twig_Node_Expression_GetAttr extends Twig_Node_Expression
 {
     public function __construct(Twig_Node_Expression $node, Twig_Node_Expression $attribute, Twig_Node_Expression $arguments = null, $type, $lineno)
     {
-        $nodes = array('node' => $node, 'attribute' => $attribute);
+        $nodes = ['node' => $node, 'attribute' => $attribute];
         if (null !== $arguments) {
             $nodes['arguments'] = $arguments;
         }
 
-        parent::__construct($nodes, array('type' => $type, 'is_defined_test' => false, 'ignore_strict_check' => false, 'optimizable' => true), $lineno);
+        parent::__construct($nodes, ['type' => $type, 'is_defined_test' => false, 'ignore_strict_check' => false, 'optimizable' => true], $lineno);
     }
 
     public function compile(Twig_Compiler $compiler)
@@ -71,7 +71,7 @@ class Twig_Node_Expression_GetAttr extends Twig_Node_Expression
             if ($this->hasNode('arguments')) {
                 $compiler->raw(', ')->subcompile($this->getNode('arguments'));
             } else {
-                $compiler->raw(', array()');
+                $compiler->raw(', []');
             }
         }
 

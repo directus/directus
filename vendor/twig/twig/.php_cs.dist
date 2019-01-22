@@ -1,15 +1,15 @@
 <?php
 
 return PhpCsFixer\Config::create()
-    ->setRules(array(
+    ->setRules([
         '@Symfony' => true,
         '@Symfony:risky' => true,
-        'array_syntax' => array('syntax' => 'long'),
+        'array_syntax' => ['syntax' => 'short'],
         'php_unit_fqcn_annotation' => false,
         'no_unreachable_default_argument_value' => false,
-        'braces' => array('allow_single_line_closure' => true),
+        'braces' => ['allow_single_line_closure' => true],
         'heredoc_to_nowdoc' => false,
-    ))
+    ])
     ->setRiskyAllowed(true)
     ->setFinder(PhpCsFixer\Finder::create()->in(__DIR__))
 ;

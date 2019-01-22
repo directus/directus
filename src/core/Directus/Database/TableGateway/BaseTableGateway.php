@@ -1099,6 +1099,10 @@ class BaseTableGateway extends TableGateway
      */
     protected function enforceReadPermission(Builder $builder)
     {
+        if (!$this->acl) {
+            return;
+        }
+
         // ----------------------------------------------------------------------------
         // Fixed owner field for system collections
         // ----------------------------------------------------------------------------
