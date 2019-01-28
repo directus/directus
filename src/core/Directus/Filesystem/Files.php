@@ -7,6 +7,7 @@ use function Directus\filename_put_ext;
 use function Directus\generate_uuid5;
 use Directus\Util\DateTimeUtils;
 use Directus\Util\Formatting;
+use Directus\Util\MimeTypeUtils;
 
 class Files
 {
@@ -261,7 +262,8 @@ class Files
         $fileData = array_merge($this->defaults, $fileData);
 
         return [
-            'type' => $fileData['type'],
+            // The MIME type will be based on its extension, rather than its content
+            'type' => MimeTypeUtils::getFromFilename($fileData['filename']),
             'filename' => $fileData['filename'],
             'title' => $fileData['title'],
             'tags' => $fileData['tags'],

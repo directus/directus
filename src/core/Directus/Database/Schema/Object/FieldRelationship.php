@@ -108,24 +108,28 @@ class FieldRelationship extends AbstractObject
      */
     protected function guessType()
     {
-        $fieldName = $this->fromField->getName();
-        $isAlias = $this->fromField->isAlias();
         $type = null;
 
         if (!$this->fromField) {
-            $type = null;
-        } else if (
+            return $type;
+        }
+
+        $fieldName = $this->fromField->getName();
+        $fieldCollectionName = $this->fromField->getCollectionName();
+        $isAlias = $this->fromField->isAlias();
+
+        if (
             !$isAlias                   &&
             $this->getCollectionOne()   !== null &&
             $this->getFieldMany()       === $fieldName &&
-            $this->getCollectionMany()  !== null
+            $this->getCollectionMany()  === $fieldCollectionName
         ) {
             $type = static::MANY_TO_ONE;
         } else if (
             $isAlias                    &&
             $this->getCollectionMany()  !== null &&
             $this->getFieldOne()        === $fieldName &&
-            $this->getCollectionOne()   !== null
+            $this->getCollectionOne()   === $fieldCollectionName
         ) {
             $type = static::ONE_TO_MANY;
         }

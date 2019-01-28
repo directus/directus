@@ -47,7 +47,7 @@ class ActivityService extends AbstractService
     {
         $data = array_merge($data, [
             'action' => DirectusActivityTableGateway::ACTION_COMMENT,
-            'action_on' => DateTimeUtils::nowInUTC()->toString(),
+            'action_on' => DateTimeUtils::now()->toString(),
             'ip' => \Directus\get_request_ip(),
             'user_agent' => isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '',
             'action_by' => $this->getAcl()->getUserId(),
@@ -79,7 +79,7 @@ class ActivityService extends AbstractService
 
         // make sure to create new one instead of update
         unset($data[$tableGateway->primaryKeyFieldName]);
-        $newComment = $tableGateway->ignoreFilters()->createRecord($data, $this->getCRUDParams($params));
+        $newComment = $tableGateway->createRecord($data, $this->getCRUDParams($params));
 
         return $tableGateway->wrapData(
             $newComment->toArray(),
@@ -95,7 +95,7 @@ class ActivityService extends AbstractService
         $data = [
             'id' => $id,
             'comment' => $comment,
-            'edited_on' => DateTimeUtils::nowInUTC()->toString()
+            'edited_on' => DateTimeUtils::now()->toString()
         ];
 
         $this->enforcepermissionsOnExisting(Acl::ACTION_UPDATE, $id, $params);
@@ -116,7 +116,7 @@ class ActivityService extends AbstractService
 
         $tableGateway = $this->getTableGateway();
         $tableGateway->updateRecord($id, [
-            'comment_deleted_on' => DateTimeUtils::nowInUTC()->toString()
+            'comment_deleted_on' => DateTimeUtils::now()->toString()
         ]);
     }
 

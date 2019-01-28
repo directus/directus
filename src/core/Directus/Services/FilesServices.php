@@ -28,8 +28,12 @@ class FilesServices extends AbstractService
         $this->enforceCreatePermissions($this->collection, $data, $params);
         $tableGateway = $this->createTableGateway($this->collection);
 
+        // These values are going to be set in a hook
+        // These fields should be ignore on validation as these values are automatically filled
+        // These values are set here to avoid validation
+        // FIXME: These values shouldn't not be validated
         $data['uploaded_by'] = $this->getAcl()->getUserId();
-        $data['uploaded_on'] = DateTimeUtils::nowInUTC()->toString();
+        $data['uploaded_on'] = DateTimeUtils::now()->toString();
 
         $validationConstraints = $this->createConstraintFor($this->collection);
         $this->validate($data, array_merge(['data' => 'required'], $validationConstraints));

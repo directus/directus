@@ -1,10 +1,10 @@
 self.__precacheManifest = [
   {
-    "revision": "fb63a2a5e055c7162236c32f956c2c1b",
-    "url": "fonts/roboto-regular.fb63a2a5.woff2"
+    "revision": "fd6783f3c6654d48ad2f6e27b1b64bb8",
+    "url": "fonts/roboto-light.fd6783f3.woff2"
   },
   {
-    "revision": "eb9d42705686848114f3f4fdb445e3a3",
+    "revision": "360c7716332b27254bf191cc550dde79",
     "url": "index.html"
   },
   {
@@ -40,8 +40,8 @@ self.__precacheManifest = [
     "url": "js/lang-zh-CN-legacy.0d904e0a.js"
   },
   {
-    "revision": "e080ba9d9ea754d2915f",
-    "url": "js/app-legacy.7c27d65b.js"
+    "revision": "bc6cac0f4f72cec9f3c6",
+    "url": "js/app-legacy.f83a059e.js"
   },
   {
     "revision": "c2b94f49a45b5fe5a35e3d2e73745ff7",
@@ -64,14 +64,6 @@ self.__precacheManifest = [
     "url": "fonts/robotomono-regular.27f450a1.woff"
   },
   {
-    "revision": "44e0a2ef806baf926fd3d43413de397e",
-    "url": "fonts/robotomono-bold.44e0a2ef.woff2"
-  },
-  {
-    "revision": "4edcbeabfcea8e7bdedfbd566cd60def",
-    "url": "fonts/robotomono-bold.4edcbeab.woff"
-  },
-  {
     "revision": "158556ec136bd5bf5340b85df3dc63c2",
     "url": "fonts/robotomono-regular.158556ec.woff2"
   },
@@ -80,16 +72,24 @@ self.__precacheManifest = [
     "url": "img/box.713f50cf.svg"
   },
   {
+    "revision": "4edcbeabfcea8e7bdedfbd566cd60def",
+    "url": "fonts/robotomono-bold.4edcbeab.woff"
+  },
+  {
+    "revision": "44e0a2ef806baf926fd3d43413de397e",
+    "url": "fonts/robotomono-bold.44e0a2ef.woff2"
+  },
+  {
+    "revision": "fb63a2a5e055c7162236c32f956c2c1b",
+    "url": "fonts/roboto-regular.fb63a2a5.woff2"
+  },
+  {
     "revision": "4c104b963611ee56cf683b9d7a27617d",
     "url": "fonts/roboto-medium.4c104b96.woff2"
   },
   {
     "revision": "0b13ce4c83dff3f78559239cfc3f7f4d",
     "url": "fonts/roboto-medium.0b13ce4c.woff"
-  },
-  {
-    "revision": "fd6783f3c6654d48ad2f6e27b1b64bb8",
-    "url": "fonts/roboto-light.fd6783f3.woff2"
   },
   {
     "revision": "316e008b8f3adf89ab74b1b5ed0c0427",
@@ -104,7 +104,7 @@ self.__precacheManifest = [
     "url": "fonts/material-icons.8a9a261c.woff2"
   },
   {
-    "revision": "e080ba9d9ea754d2915f",
-    "url": "css/app.e4fc8b26.css"
+    "revision": "bc6cac0f4f72cec9f3c6",
+    "url": "css/app.b57caa71.css"
   }
 ];

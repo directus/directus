@@ -54,7 +54,7 @@ class DirectusActivityTableGateway extends RelationalTableGateway
             'action' => self::ACTION_AUTHENTICATE,
             'action_by' => $userId,
             'item' => $userId,
-            'action_on' => DateTimeUtils::nowInUTC()->toString(),
+            'action_on' => DateTimeUtils::now()->toString(),
             'ip' => \Directus\get_request_ip(),
             'user_agent' => isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : ''
         ];
@@ -63,6 +63,6 @@ class DirectusActivityTableGateway extends RelationalTableGateway
         $insert
             ->values($logData);
 
-        $this->ignoreFilters()->insertWith($insert);
+        $this->insertWith($insert);
     }
 }

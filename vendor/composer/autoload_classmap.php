@@ -375,6 +375,7 @@ return array(
     'Directus\\Util\\Git' => $baseDir . '/src/core/Directus/Util/Git.php',
     'Directus\\Util\\Installation\\InstallerUtils' => $baseDir . '/src/core/Directus/Util/Installation/InstallerUtils.php',
     'Directus\\Util\\JWTUtils' => $baseDir . '/src/core/Directus/Util/JWTUtils.php',
+    'Directus\\Util\\MimeTypeUtils' => $baseDir . '/src/core/Directus/Util/MimeTypeUtils.php',
     'Directus\\Util\\SchemaUtils' => $baseDir . '/src/core/Directus/Util/SchemaUtils.php',
     'Directus\\Util\\StringUtils' => $baseDir . '/src/core/Directus/Util/StringUtils.php',
     'Directus\\Validator\\Constraints\\Required' => $baseDir . '/src/core/Directus/Validator/Constraints/Required.php',

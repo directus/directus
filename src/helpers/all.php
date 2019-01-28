@@ -1358,7 +1358,13 @@ if (!function_exists('get_unflat_columns')) {
                     }
 
                     $child = get_unflat_columns($parts[1]);
-                    $names[$parts[0]][key($child)] = current($child);
+                    if (isset($names[$parts[0]][key($child)])) {
+                        $childValue = array_merge($names[$parts[0]][key($child)], current($child));
+                    } else {
+                        $childValue = current($child);
+                    }
+
+                    $names[$parts[0]][key($child)] = $childValue;
                 };
             }
         }

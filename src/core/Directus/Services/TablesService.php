@@ -48,6 +48,11 @@ class TablesService extends AbstractService
      */
     protected $collectionsTableGateway;
 
+    /**
+     * @var RelationalTableGateway
+     */
+    protected $relationsTableGateway;
+
     public function __construct(Container $container)
     {
         parent::__construct($container);
@@ -728,6 +733,10 @@ class TablesService extends AbstractService
             }
         }
 
+        if ($columnObject->hasRelationship()) {
+            $this->removeColumnRelationship($columnObject);
+        }
+
         if ($columnObject->isManaged()) {
             $this->removeColumnInfo($collectionName, $fieldName);
         }
@@ -843,6 +852,124 @@ class TablesService extends AbstractService
             'collection' => $collectionName,
             'field' => $fieldName
         ]);
+    }
+
+    /**
+     * Removes the relationship of a given field
+     *
+     * @param Field $field
+     *
+     * @return bool|int
+     */
+    public function removeColumnRelationship(Field $field)
+    {
+        if (!$field->hasRelationship()) {
+            return false;
+        }
+
+        if ($this->shouldRemoveRelationshipRecord($field)) {
+            $result = $this->removeRelationshipRecord($field);
+        } else {
+            $result = $this->removeRelationshipFromRecord($field);
+        }
+
+        return $result;
+    }
+
+    /**
+     * Checks whether or not the relationship record should be removed
+     *
+     * @param Field $field
+     *
+     * @return bool
+     */
+    protected function shouldRemoveRelationshipRecord(Field $field)
+    {
+        $relationship = $field->getRelationship();
+        $isOne = ($field->getName() === $relationship->getFieldOne());
+
+        return ($isOne && !$relationship->getFieldMany())
+            || (!$isOne && !$relationship->getFieldOne());
+    }
+
+    /**
+     * Removes the relationship record of a given field
+     *
+     * @param Field $field
+     *
+     * @return int
+     */
+    protected function removeRelationshipRecord(Field $field)
+    {
+        $tableGateway = $this->getRelationsTableGateway();
+        $conditions = $this->getRemoveRelationshipConditions($field);
+
+        return $tableGateway->delete($conditions['values']);
+    }
+
+    /**
+     * Removes the relationship data of a given field
+     *
+     * @param Field $field
+     *
+     * @return int
+     */
+    protected function removeRelationshipFromRecord(Field $field)
+    {
+        $tableGateway = $this->getRelationsTableGateway();
+        $conditions = $this->getRemoveRelationshipConditions($field);
+
+        $data = [
+            $conditions['field'] => null
+        ];
+
+        return $tableGateway->update($data, $conditions['values']);
+    }
+
+    /**
+     * Returns the conditions values to remove a given field relationship
+     *
+     * @param Field $field
+     *
+     * @return array
+     */
+    protected function getRemoveRelationshipConditions(Field $field)
+    {
+        $fieldName = $field->getName();
+        $collectionName = $field->getCollectionName();
+        $fieldAttr = 'field_';
+        $collectionAttr = 'collection_';
+
+        $suffix = $this->getRelationshipAttributeSuffix($field);
+        $collectionAttr .= $suffix;
+        $fieldAttr .= $suffix;
+
+        return [
+            'field' => $fieldAttr,
+            'collection' => $collectionAttr,
+            'values' => [
+                $collectionAttr => $collectionName,
+                $fieldAttr => $fieldName,
+            ],
+        ];
+    }
+
+    /**
+     * Returns the relationship attribute suffix
+     *
+     * @param Field $field
+     *
+     * @return string
+     */
+    protected function getRelationshipAttributeSuffix(Field $field)
+    {
+        if ($field->getName() === $field->getRelationship()->getFieldOne()) {
+            $suffix = 'one';
+        } else {
+            $suffix = 'many';
+        }
+
+        return $suffix;
     }
 
     /**
@@ -1089,6 +1216,11 @@ class TablesService extends AbstractService
 
                 if ($field->hasUniqueKey() && $fullFieldData['unique'] === true) {
                     unset($fullFieldData['unique']);
+                }
+
+                $type = ArrayUtils::get($fullFieldData, 'type');
+                if ($type && !$this->getSchemaManager()->isTypeLengthRequired($type)) {
+                    unset($fullFieldData['length']);
                 }
 
                 if (!$field->isAlias() && DataTypes::isAliasType(ArrayUtils::get($fieldData, 'type'))) {
@@ -1509,7 +1641,7 @@ class TablesService extends AbstractService
     protected function getFieldsTableGateway()
     {
         if (!$this->fieldsTableGateway) {
-            $this->fieldsTableGateway = $this->createTableGateway('directus_fields');
+            $this->fieldsTableGateway = $this->createTableGateway(SchemaManager::COLLECTION_FIELDS);
         }
 
         return $this->fieldsTableGateway;
@@ -1521,10 +1653,22 @@ class TablesService extends AbstractService
     protected function getCollectionsTableGateway()
     {
         if (!$this->collectionsTableGateway) {
-            $this->collectionsTableGateway = $this->createTableGateway('directus_collections');
+            $this->collectionsTableGateway = $this->createTableGateway(SchemaManager::COLLECTION_COLLECTIONS);
         }
 
         return $this->collectionsTableGateway;
+    }
+
+    /**
+     * @return RelationalTableGateway
+     */
+    protected function getRelationsTableGateway()
+    {
+        if (!$this->relationsTableGateway) {
+            $this->relationsTableGateway = $this->createTableGateway(SchemaManager::COLLECTION_RELATIONS);
+        }
+
+        return $this->relationsTableGateway;
     }
 
     protected function getAllFieldsParams(array $params)

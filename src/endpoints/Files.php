@@ -76,7 +76,6 @@ class Files extends Route
             $data = file_get_contents($uploadedFile->file);
             $payload = array_merge([
                 'filename' => $uploadedFile->getClientFilename(),
-                'type' => $uploadedFile->getClientMediaType(),
                 'data' => base64_encode($data)
             ], $payload);
         }
