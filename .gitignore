@@ -11,7 +11,7 @@ package-lock.json
 
 # Don't track composer phar/vendors
 composer.phar
-composer.lock
+/vendor
 
 # Ignore configuration files
 /config/*
